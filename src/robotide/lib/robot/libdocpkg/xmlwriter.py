@@ -1,4 +1,4 @@
-#  Copyright 2008-2014 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -39,4 +39,8 @@ class LibdocXmlWriter(object):
                 writer.element('arg', arg)
             writer.end('arguments')
             writer.element('doc', kw.doc)
+            writer.start('tags')
+            for tag in kw.tags:
+                writer.element('tag', tag)
+            writer.end('tags')
             writer.end(type)

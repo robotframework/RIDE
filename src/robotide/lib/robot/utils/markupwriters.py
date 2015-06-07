@@ -1,4 +1,4 @@
-#  Copyright 2008-2014 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -13,11 +13,13 @@
 #  limitations under the License.
 
 from .markuputils import html_escape, xml_escape, attribute_escape
+from .robottypes import is_string
 
 
 class _MarkupWriter(object):
 
-    def __init__(self, output, line_separator='\n', encoding='UTF-8'):
+    def __init__(self, output, line_separator='\n', encoding='UTF-8',
+                 write_empty=True):
         """
         :param output: Either an opened, file like object, or a path to the
             desired output file. In the latter case, the file is created
@@ -25,23 +27,33 @@ class _MarkupWriter(object):
         :param line_separator: Defines the used line separator.
         :param encoding: Encoding to be used to encode all text written to the
             output file. If `None`, text will not be encoded.
+        :param write_empty: Whether to write empty elements and attributes.
         """
-        if isinstance(output, basestring):
+        if is_string(output):
             output = open(output, 'w')
         self.output = output
         self._line_separator = line_separator
         self._encoding = encoding
+        self._write_empty = write_empty
         self._preamble()
 
     def _preamble(self):
         pass
 
     def start(self, name, attrs=None, newline=True):
-        self._write('<%s %s>' % (name, self._format_attrs(attrs))
-                    if attrs else '<%s>' % name, newline)
+        attrs = self._format_attrs(attrs)
+        self._start(name, attrs, newline)
+
+    def _start(self, name, attrs, newline):
+        self._write('<%s %s>' % (name, attrs) if attrs else '<%s>' % name,
+                    newline)
 
     def _format_attrs(self, attrs):
-        return ' '.join('%s="%s"' % (name, attribute_escape(attrs[name]))
+        if not attrs:
+            return ''
+        if not self._write_empty:
+            attrs = dict((k, v) for k, v in attrs.items() if v)
+        return ' '.join('%s="%s"' % (name, attribute_escape(attrs[name] or ''))
                         for name in self._order_attrs(attrs))
 
     def _order_attrs(self, attrs):
@@ -62,9 +74,11 @@ class _MarkupWriter(object):
 
     def element(self, name, content=None, attrs=None, escape=True,
                 newline=True, replace_newlines=False):
-        self.start(name, attrs, newline=False)
-        self.content(content, escape, replace_newlines)
-        self.end(name, newline)
+        attrs = self._format_attrs(attrs)
+        if self._write_empty or content or attrs:
+            self._start(name, attrs, newline=False)
+            self.content(content, escape, replace_newlines)
+            self.end(name, newline)
 
     def close(self):
         """Closes the underlying output file."""

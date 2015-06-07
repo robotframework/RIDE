@@ -1,4 +1,4 @@
-#  Copyright 2008-2014 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -14,7 +14,6 @@
 
 from contextlib import contextmanager
 import logging
-import sys
 
 from robot import utils
 
@@ -24,15 +23,8 @@ from . import librarylogger
 LEVELS = {'TRACE': logging.NOTSET,
           'DEBUG': logging.DEBUG,
           'INFO': logging.INFO,
-          'WARN': logging.WARNING}
-
-
-# TODO: Remove in RF 2.9. robot_handler_enabled used instead since 2.8.7.
-# https://github.com/robotframework/robotframework/issues/1821
-def initialize(level):
-    logging.raiseExceptions = False
-    logging.getLogger().addHandler(RobotHandler())
-    set_level(level)
+          'WARN': logging.WARNING,
+          'ERROR': logging.ERROR}
 
 
 @contextmanager
@@ -50,9 +42,7 @@ def robot_handler_enabled(level):
         yield
     finally:
         root.removeHandler(handler)
-        # Avoid errors at exit: http://bugs.jython.org/issue2253
-        if not (sys.platform.startswith('java') and sys.version_info >= (2, 7)):
-            logging.raiseExceptions = old_raise
+        logging.raiseExceptions = old_raise
 
 
 def set_level(level):
@@ -82,6 +72,8 @@ class RobotHandler(logging.Handler):
             return message, error
 
     def _get_logger_method(self, level):
+        if level >= logging.ERROR:
+            return librarylogger.error
         if level >= logging.WARNING:
             return librarylogger.warn
         if level >= logging.INFO:

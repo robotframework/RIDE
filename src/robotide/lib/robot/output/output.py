@@ -1,4 +1,4 @@
-#  Copyright 2008-2014 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -31,8 +31,7 @@ class Output(AbstractLogger):
 
     def _register_loggers(self, listeners, debugfile):
         LOGGER.register_context_changing_logger(self._xmllogger)
-        for logger in (Listeners(listeners), LibraryListeners(),
-                       DebugFile(debugfile)):
+        for logger in (Listeners(listeners), LibraryListeners(), DebugFile(debugfile)):
             if logger:
                 LOGGER.register_logger(logger)
         LOGGER.disable_message_cache()
@@ -70,4 +69,3 @@ class Output(AbstractLogger):
     def set_log_level(self, level):
         pyloggingconf.set_level(level)
         return self._xmllogger.set_log_level(level)
-

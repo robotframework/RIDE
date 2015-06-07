@@ -1,4 +1,4 @@
-#  Copyright 2008-2014 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,35 +12,40 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from __future__ import with_statement
 import inspect
 import os
-import sys
 
 from robot.errors import DataError
+from robot.libraries import STDLIBS, DEPRECATED_STDLIBS
 from robot.output import LOGGER
-from robot.utils import (getdoc, get_error_details, Importer,
-                         is_java_init, is_java_method, normalize,
-                         NormalizedDict, seq2str2, unic)
+from robot.utils import (getdoc, get_error_details, Importer, is_java_init,
+                         is_java_method, JYTHON, normalize, seq2str2, unic,
+                         is_list_like)
 
-from .baselibrary import BaseLibrary
+from .arguments import EmbeddedArguments
 from .dynamicmethods import (GetKeywordArguments, GetKeywordDocumentation,
                              GetKeywordNames, RunKeyword)
-from .handlers import Handler, InitHandler, DynamicHandler
+from .handlers import Handler, InitHandler, DynamicHandler, EmbeddedArgsTemplate
+from .handlerstore import HandlerStore
 from .outputcapture import OutputCapturer
 
-if sys.platform.startswith('java'):
+if JYTHON:
     from java.lang import Object
 else:
     Object = None
 
 
 def TestLibrary(name, args=None, variables=None, create_handlers=True):
+    if name in STDLIBS or name in DEPRECATED_STDLIBS:
+        import_name = 'robot.libraries.' + name
+    else:
+        import_name = name
     with OutputCapturer(library_import=True):
         importer = Importer('test library')
-        libcode = importer.import_class_or_module(name)
+        libcode, source = importer.import_class_or_module(import_name,
+                                                          return_source=True)
     libclass = _get_lib_class(libcode)
-    lib = libclass(libcode, name, args or [], variables)
+    lib = libclass(libcode, name, args or [], source, variables)
     if create_handlers:
         lib.create_handlers()
     return lib
@@ -57,30 +62,30 @@ def _get_lib_class(libcode):
     return _ClassLibrary
 
 
-class _BaseTestLibrary(BaseLibrary):
-    _log_success = LOGGER.debug
-    _log_failure = LOGGER.info
-    _log_failure_details = LOGGER.debug
+class _BaseTestLibrary(object):
+    _failure_level = 'INFO'
 
-    def __init__(self, libcode, name, args, variables):
+    def __init__(self, libcode, name, args, source, variables):
         if os.path.exists(name):
             name = os.path.splitext(os.path.basename(os.path.abspath(name)))[0]
         self.version = self._get_version(libcode)
         self.name = name
-        self.orig_name = name # Stores original name also after copying
-        self.positional_args = []
-        self.named_args = {}
+        self.orig_name = name  # Stores original name when importing WITH NAME
+        self.source = source
+        self.handlers = HandlerStore(self.name)
         self._instance_cache = []
         self.has_listener = None  # Set when first instance is created
+        self._doc = None
+        self.doc_format = self._get_doc_format(libcode)
+        self.scope = self._get_scope(libcode)
+        self.init = self._create_init_handler(libcode)
+        self.positional_args, self.named_args \
+            = self.init.resolve_arguments(args, variables)
+        self._libcode = libcode
         self._libinst = None
-        if libcode is not None:
-            self._doc = None
-            self.doc_format = self._get_doc_format(libcode)
-            self.scope = self._get_scope(libcode)
-            self._libcode = libcode
-            self.init = self._create_init_handler(libcode)
-            self.positional_args, self.named_args \
-                = self.init.resolve_arguments(args, variables)
+
+    def __len__(self):
+        return len(self.handlers)
 
     @property
     def doc(self):
@@ -89,18 +94,24 @@ class _BaseTestLibrary(BaseLibrary):
         return self._doc
 
     @property
-    def listener(self):
+    def listeners(self):
         if self.has_listener:
-            return self._get_listener(self.get_instance())
+            return self._get_listeners(self.get_instance())
         return None
 
-    def _get_listener(self, inst):
-        return getattr(inst, 'ROBOT_LIBRARY_LISTENER', None)
+    def _get_listeners(self, inst):
+        if not hasattr(inst, 'ROBOT_LIBRARY_LISTENER'):
+            return None
+        listeners = inst.ROBOT_LIBRARY_LISTENER
+        return listeners if is_list_like(listeners) else [listeners]
 
     def create_handlers(self):
-        if self._libcode:
-            self.handlers = self._create_handlers(self.get_instance())
-            self.init_scope_handling()
+        self._create_handlers(self.get_instance())
+        self.init_scope_handling()
+
+    def reload(self):
+        self.handlers = HandlerStore(self.name)
+        self._create_handlers(self.get_instance())
 
     def start_suite(self):
         pass
@@ -158,30 +169,30 @@ class _BaseTestLibrary(BaseLibrary):
     def _restoring_end(self):
         self._libinst = self._instance_cache.pop()
 
-    def get_instance(self):
+    def get_instance(self, create=True):
+        if not create:
+            return self._libinst
         if self._libinst is None:
-            self._libinst = self._get_instance()
+            self._libinst = self._get_instance(self._libcode)
         if self.has_listener is None:
-            self.has_listener = self._get_listener(self._libinst) is not None
+            self.has_listener = self._get_listeners(self._libinst) is not None
         return self._libinst
 
-    def _get_instance(self):
+    def _get_instance(self, libcode):
         with OutputCapturer(library_import=True):
             try:
-                return self._libcode(*self.positional_args, **self.named_args)
+                return libcode(*self.positional_args, **self.named_args)
             except:
                 self._raise_creating_instance_failed()
 
     def _create_handlers(self, libcode):
-        handlers = NormalizedDict(ignore='_')
         for name in self._get_handler_names(libcode):
             method = self._try_to_get_handler_method(libcode, name)
             if method:
-                handler = self._try_to_create_handler(name, method)
+                handler, embedded = self._try_to_create_handler(name, method)
                 if handler:
-                    handlers[name] = handler
-                    self._log_success("Created keyword '%s'" % handler.name)
-        return handlers
+                    self.handlers.add(handler, embedded)
+                    LOGGER.debug("Created keyword '%s'" % handler.name)
 
     def _get_handler_names(self, libcode):
         return [name for name in dir(libcode)
@@ -192,13 +203,16 @@ class _BaseTestLibrary(BaseLibrary):
             return self._get_handler_method(libcode, name)
         except:
             self._report_adding_keyword_failed(name)
+            return None
 
-    def _report_adding_keyword_failed(self, name):
-        msg, details = get_error_details()
-        self._log_failure("Adding keyword '%s' to library '%s' failed: %s"
-                          % (name, self.name, msg))
+    def _report_adding_keyword_failed(self, name, message=None, details=None,
+                                      level=None):
+        if not message:
+            message, details = get_error_details()
+        LOGGER.write("Adding keyword '%s' to library '%s' failed: %s"
+                     % (name, self.name, message), level or self._failure_level)
         if details:
-            self._log_failure_details('Details:\n%s' % details)
+            LOGGER.debug('Details:\n%s' % details)
 
     def _get_handler_method(self, libcode, name):
         method = getattr(libcode, name)
@@ -208,12 +222,34 @@ class _BaseTestLibrary(BaseLibrary):
 
     def _try_to_create_handler(self, name, method):
         try:
-            return self._create_handler(name, method)
+            handler = self._create_handler(name, method)
+        except DataError as err:
+            self._report_adding_keyword_failed(name, unicode(err), level='ERROR')
+            return None, False
         except:
             self._report_adding_keyword_failed(name)
+            return None, False
+        try:
+            return self._get_possible_embedded_args_handler(handler)
+        except DataError as err:
+            self._report_adding_keyword_failed(handler.name, unicode(err),
+                                               level='ERROR')
+            return None, False
 
     def _create_handler(self, handler_name, handler_method):
         return Handler(self, handler_name, handler_method)
+
+    def _get_possible_embedded_args_handler(self, handler):
+        embedded = EmbeddedArguments(handler.name)
+        if embedded:
+            self._validate_embedded_count(embedded, handler.arguments)
+            return EmbeddedArgsTemplate(embedded.name, handler), True
+        return handler, False
+
+    def _validate_embedded_count(self, embedded, arguments):
+        if not (arguments.minargs <= len(embedded.args) <= arguments.maxargs):
+            raise DataError('Embedded argument count does not match number of '
+                            'accepted arguments.')
 
     def _raise_creating_instance_failed(self):
         msg, details = get_error_details()
@@ -275,9 +311,11 @@ class _ModuleLibrary(_BaseTestLibrary):
             raise DataError('Not exposed as a keyword')
         return method
 
-    def get_instance(self):
+    def get_instance(self, create=True):
+        if not create:
+            return self._libcode
         if self.has_listener is None:
-            self.has_listener = self._get_listener(self._libcode) is not None
+            self.has_listener = self._get_listeners(self._libcode) is not None
         return self._libcode
 
     def _create_init_handler(self, libcode):
@@ -285,7 +323,7 @@ class _ModuleLibrary(_BaseTestLibrary):
 
 
 class _HybridLibrary(_BaseTestLibrary):
-    _log_failure = LOGGER.warn
+    _failure_level = 'ERROR'
 
     def _get_handler_names(self, instance):
         try:
@@ -295,10 +333,10 @@ class _HybridLibrary(_BaseTestLibrary):
 
 
 class _DynamicLibrary(_BaseTestLibrary):
-    _log_failure = LOGGER.warn
+    _failure_level = 'ERROR'
 
-    def __init__(self, libcode, name, args, variables=None):
-        _BaseTestLibrary.__init__(self, libcode, name, args, variables)
+    def __init__(self, libcode, name, args, source, variables=None):
+        _BaseTestLibrary.__init__(self, libcode, name, args, source, variables)
 
     @property
     def doc(self):

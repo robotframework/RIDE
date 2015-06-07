@@ -1,3 +1,6 @@
+#  Copyright 2008-2015 Nokia Solutions and Networks
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
 #  You may obtain a copy of the License at
 #
@@ -16,7 +19,7 @@ if sys.platform.startswith('java'):
     from java.util import List, Map
 
 from robot.errors import DataError
-from robot.variables import is_list_var, is_scalar_var
+from robot.variables import is_dict_var, is_list_var, is_scalar_var
 
 from .argumentspec import ArgumentSpec
 
@@ -102,12 +105,12 @@ class _ArgumentSpecParser(_ArgumentParser):
         result = ArgumentSpec(name, self._type)
         for arg in argspec:
             if result.kwargs:
-                raise DataError('Only last argument can be kwargs.')
+                self._raise_invalid_spec('Only last argument can be kwargs.')
             if self._is_kwargs(arg):
                 self._add_kwargs(arg, result)
                 continue
             if result.varargs:
-                raise DataError('Positional argument after varargs.')
+                self._raise_invalid_spec('Positional argument after varargs.')
             if self._is_varargs(arg):
                 self._add_varargs(arg, result)
                 continue
@@ -115,9 +118,13 @@ class _ArgumentSpecParser(_ArgumentParser):
                 self._add_arg_with_default(arg, result)
                 continue
             if result.defaults:
-                raise DataError('Non-default argument after default arguments.')
+                self._raise_invalid_spec('Non-default argument after default '
+                                         'arguments.')
             self._add_arg(arg, result)
         return result
+
+    def _raise_invalid_spec(self, error):
+        raise DataError('Invalid argument specification: %s' % error)
 
     def _is_kwargs(self, arg):
         raise NotImplementedError
@@ -167,15 +174,18 @@ class DynamicArgumentParser(_ArgumentSpecParser):
 class UserKeywordArgumentParser(_ArgumentSpecParser):
 
     def _is_kwargs(self, arg):
-        return False
+        return is_dict_var(arg)
 
     def _is_varargs(self, arg):
         return is_list_var(arg)
+
+    def _format_kwargs(self, kwargs):
+        return kwargs[2:-1]
 
     def _format_varargs(self, varargs):
         return varargs[2:-1]
 
     def _format_arg(self, arg):
         if not is_scalar_var(arg):
-            raise DataError("Invalid argument '%s'." % arg)
+            self._raise_invalid_spec("Invalid argument syntax '%s'." % arg)
         return arg[2:-1]

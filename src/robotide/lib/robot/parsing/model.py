@@ -1,4 +1,4 @@
-#  Copyright 2008-2014 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -18,13 +18,14 @@ import copy
 from robot.errors import DataError
 from robot.variables import is_var
 from robot.output import LOGGER
-from robot import utils
 from robot.writer import DataFileWriter
+from robot.utils import abspath, is_string, normalize, NormalizedDict
 
 from .comments import Comment
 from .populators import FromFilePopulator, FromDirectoryPopulator
-from .settings import (Documentation, Fixture, Timeout, Tags, Metadata, Library,
-    Resource, Variables, Arguments, Return, Template, MetadataList, ImportList)
+from .settings import (Documentation, Fixture, Timeout, Tags, Metadata,
+                       Library, Resource, Variables, Arguments, Return,
+                       Template, MetadataList, ImportList)
 
 
 def TestData(parent=None, source=None, include_suites=None,
@@ -50,9 +51,9 @@ class _TestData(object):
 
     def __init__(self, parent=None, source=None):
         self.parent = parent
-        self.source = utils.abspath(source) if source else None
+        self.source = abspath(source) if source else None
         self.children = []
-        self._tables = utils.NormalizedDict(self._get_tables())
+        self._tables = NormalizedDict(self._get_tables())
 
     def _get_tables(self):
         for names, table in [(self._setting_table_names, self.setting_table),
@@ -285,7 +286,7 @@ class _WithSettings(object):
         return self.normalize(setting_name) in self._setters
 
     def normalize(self, setting):
-        result = utils.normalize(setting)
+        result = normalize(setting)
         return result[0:-1] if result and result[-1]==':' else result
 
 
@@ -467,8 +468,8 @@ class Variable(object):
         self.name = name.rstrip('= ')
         if name.startswith('$') and value == []:
             value = ''
-        if isinstance(value, basestring):
-            value = [value]  # Must support scalar lists until RF 2.8 (issue 939)
+        if is_string(value):
+            value = [value]
         self.value = value
         self.comment = Comment(comment)
 
@@ -572,6 +573,7 @@ class UserKeyword(TestCase):
         self.return_ = Return('[Return]', self)
         self.timeout = Timeout('[Timeout]', self)
         self.teardown = Fixture('[Teardown]', self)
+        self.tags = Tags('[Tags]', self)
         self.steps = []
 
     _setters = {'documentation': lambda s: s.doc.populate,
@@ -579,36 +581,49 @@ class UserKeyword(TestCase):
                 'arguments': lambda s: s.args.populate,
                 'return': lambda s: s.return_.populate,
                 'timeout': lambda s: s.timeout.populate,
-                'teardown': lambda s: s.teardown.populate}
+                'teardown': lambda s: s.teardown.populate,
+                'tags': lambda s: s.tags.populate}
 
     def _add_to_parent(self, test):
         self.parent.keywords.append(test)
 
     @property
     def settings(self):
-        return [self.args, self.doc, self.timeout, self.teardown, self.return_]
+        return [self.args, self.doc, self.tags, self.timeout, self.teardown, self.return_]
 
     def __iter__(self):
-        for element in [self.args, self.doc, self.timeout] \
+        for element in [self.args, self.doc, self.tags, self.timeout] \
                         + self.steps + [self.teardown, self.return_]:
             yield element
 
 
 class ForLoop(_WithSteps):
+    """The parsed representation of a for-loop.
+
+    :param list declaration: The literal cell values that declare the loop
+                             (excluding ":FOR").
+    :param str comment: A comment, default None.
+    :ivar str flavor: The value of the 'IN' item, uppercased.
+                      Typically 'IN', 'IN RANGE', 'IN ZIP', or 'IN ENUMERATE'.
+    :ivar list vars: Variables set per-iteration by this loop.
+    :ivar list items: Loop values that come after the 'IN' item.
+    :ivar str comment: A comment, or None.
+    :ivar list steps: A list of steps in the loop.
+    """
 
     def __init__(self, declaration, comment=None):
-        self.range, index = self._get_range_and_index(declaration)
+        self.flavor, index = self._get_flavors_and_index(declaration)
         self.vars = declaration[:index]
         self.items = declaration[index+1:]
         self.comment = Comment(comment)
         self.steps = []
 
-    def _get_range_and_index(self, declaration):
+    def _get_flavors_and_index(self, declaration):
         for index, item in enumerate(declaration):
-            item = item.upper().replace(' ', '')
-            if item in ['IN', 'INRANGE']:
-                return item == 'INRANGE', index
-        return False, len(declaration)
+            item = item.upper()
+            if item.replace(' ', '').startswith('IN'):
+                return item, index
+        return 'IN', len(declaration)
 
     def is_comment(self):
         return False
@@ -617,9 +632,8 @@ class ForLoop(_WithSteps):
         return True
 
     def as_list(self, indent=False, include_comment=True):
-        IN = ['IN RANGE' if self.range else 'IN']
         comments = self.comment.as_list() if include_comment else []
-        return  [': FOR'] + self.vars + IN + self.items + comments
+        return  [': FOR'] + self.vars + [self.flavor] + self.items + comments
 
     def __iter__(self):
         return iter(self.steps)
@@ -633,9 +647,9 @@ class Step(object):
     def __init__(self, content, comment=None):
         self.assign = list(self._get_assigned_vars(content))
         try:
-            self.keyword = content[len(self.assign)]
+            self.name = content[len(self.assign)]
         except IndexError:
-            self.keyword = None
+            self.name = None
         self.args = content[len(self.assign)+1:]
         self.comment = Comment(comment)
 
@@ -646,7 +660,7 @@ class Step(object):
             yield item
 
     def is_comment(self):
-        return not (self.assign or self.keyword or self.args)
+        return not (self.assign or self.name or self.args)
 
     def is_for_loop(self):
         return False
@@ -655,7 +669,7 @@ class Step(object):
         return True
 
     def as_list(self, indent=False, include_comment=True):
-        kw = [self.keyword] if self.keyword is not None else []
+        kw = [self.name] if self.name is not None else []
         comments = self.comment.as_list() if include_comment else []
         data = self.assign + kw + self.args + comments
         if indent:

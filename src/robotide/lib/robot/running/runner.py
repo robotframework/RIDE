@@ -1,4 +1,4 @@
-#  Copyright 2008-2014 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,16 +12,14 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from __future__ import with_statement
-
 from robot.errors import ExecutionFailed, DataError, PassExecution
 from robot.model import SuiteVisitor
 from robot.result import TestSuite, Result
-from robot.variables import GLOBAL_VARIABLES
 from robot.utils import get_timestamp, NormalizedDict
+from robot.variables import VariableScopes
 
 from .context import EXECUTION_CONTEXTS
-from .keywords import Keywords, Keyword
+from .keywordrunner import KeywordRunner
 from .namespace import Namespace
 from .status import SuiteStatus, TestStatus
 from .timeouts import TestTimeout
@@ -35,6 +33,7 @@ class Runner(SuiteVisitor):
         self.result = None
         self._output = output
         self._settings = settings
+        self._variables = VariableScopes(settings)
         self._suite = None
         self._suite_status = None
         self._executed_tests = None
@@ -43,14 +42,7 @@ class Runner(SuiteVisitor):
     def _context(self):
         return EXECUTION_CONTEXTS.current
 
-    @property
-    def _variables(self):
-        ctx = self._context
-        return ctx.variables if ctx else None
-
     def start_suite(self, suite):
-        variables = GLOBAL_VARIABLES.copy()
-        variables.set_from_variable_table(suite.variables)
         result = TestSuite(source=suite.source,
                            name=suite.name,
                            doc=suite.doc,
@@ -64,22 +56,24 @@ class Runner(SuiteVisitor):
                                   stat_config=self._settings.statistics_config)
         else:
             self._suite.suites.append(result)
-        ns = Namespace(result, variables, self._variables,
-                       suite.user_keywords, suite.imports)
-        EXECUTION_CONTEXTS.start_suite(ns, self._output, self._settings.dry_run)
-        self._context.set_suite_variables(result)
-        if not (self._suite_status and self._suite_status.failures):
-            ns.handle_imports()
-        variables.resolve_delayed()
-        result.doc = self._resolve_setting(result.doc)
-        result.metadata = [(self._resolve_setting(n), self._resolve_setting(v))
-                           for n, v in result.metadata.items()]
-        self._context.set_suite_variables(result)
         self._suite = result
         self._suite_status = SuiteStatus(self._suite_status,
                                          self._settings.exit_on_failure,
                                          self._settings.exit_on_error,
                                          self._settings.skip_teardown_on_exit)
+        ns = Namespace(self._variables, result, suite.resource.keywords,
+                       suite.resource.imports)
+        ns.start_suite()
+        ns.variables.set_from_variable_table(suite.resource.variables)
+        EXECUTION_CONTEXTS.start_suite(ns, self._output, self._settings.dry_run)
+        self._context.set_suite_variables(result)
+        if not self._suite_status.failures:
+            ns.handle_imports()
+            ns.variables.resolve_delayed()
+        result.doc = self._resolve_setting(result.doc)
+        result.metadata = [(self._resolve_setting(n), self._resolve_setting(v))
+                           for n, v in result.metadata.items()]
+        self._context.set_suite_variables(result)
         self._output.start_suite(ModelCombiner(result, suite,
                                                tests=suite.tests,
                                                suites=suite.suites,
@@ -99,6 +93,8 @@ class Runner(SuiteVisitor):
             failure = self._run_teardown(suite.keywords.teardown, self._suite_status)
             if failure:
                 self._suite.suite_teardown_failed(unicode(failure))
+                if self._suite.statistics.critical.failed:
+                    self._suite_status.critical_failure_occurred()
         self._suite.endtime = get_timestamp()
         self._suite.message = self._suite_status.message
         self._context.end_suite(self._suite)
@@ -115,43 +111,56 @@ class Runner(SuiteVisitor):
                                           tags=test.tags,
                                           starttime=get_timestamp(),
                                           timeout=self._get_timeout(test))
-        keywords = Keywords(test.keywords.normal, bool(test.template))
-        status = TestStatus(self._suite_status)
+        status = TestStatus(self._suite_status, result.critical)
         if not status.failures and not test.name:
-            status.test_failed('Test case name cannot be empty.', result.critical)
-        if not status.failures and not keywords:
-            status.test_failed('Test case contains no keywords.', result.critical)
+            status.test_failed('Test case name cannot be empty.')
+        if not status.failures and not test.keywords.normal:
+            status.test_failed('Test case contains no keywords.')
         try:
             result.tags = self._context.variables.replace_list(result.tags)
-        except DataError, err:
+        except DataError as err:
             status.test_failed('Replacing variables from test tags failed: %s'
-                               % unicode(err), result.critical)
+                               % unicode(err))
         self._context.start_test(result)
         self._output.start_test(ModelCombiner(result, test))
+        if status.exit:
+            self._add_exit_combine()
+            result.tags.add('robot-exit')
         self._run_setup(test.keywords.setup, status, result)
         try:
             if not status.failures:
-                keywords.run(self._context)
-        except PassExecution, exception:
+                runner = KeywordRunner(self._context, bool(test.template))
+                runner.run_keywords(test.keywords.normal)
+            else:
+                status.test_failed(status.message)
+        except PassExecution as exception:
             err = exception.earlier_failures
             if err:
-                status.test_failed(err, result.critical)
+                status.test_failed(err)
             else:
                 result.message = exception.message
-        except ExecutionFailed, err:
-            status.test_failed(err, result.critical)
+        except ExecutionFailed as err:
+            status.test_failed(err)
         result.status = status.status
         result.message = status.message or result.message
         if status.teardown_allowed:
             with self._context.test_teardown(result):
-                self._run_teardown(test.keywords.teardown, status, result)
+                failure = self._run_teardown(test.keywords.teardown, status,
+                                             result)
+                if failure and result.critical:
+                    status.critical_failure_occurred()
         if not status.failures and result.timeout and result.timeout.timed_out():
-            status.test_failed(result.timeout.get_message(), result.critical)
+            status.test_failed(result.timeout.get_message())
             result.message = status.message
         result.status = status.status
         result.endtime = get_timestamp()
         self._output.end_test(ModelCombiner(result, test))
         self._context.end_test(result)
+
+    def _add_exit_combine(self):
+        exit_combine = ('NOT robot-exit', '')
+        if exit_combine not in self._settings['TagStatCombine']:
+            self._settings['TagStatCombine'].append(exit_combine)
 
     def _get_timeout(self, test):
         if not test.timeout:
@@ -163,33 +172,33 @@ class Runner(SuiteVisitor):
 
     def _run_setup(self, setup, status, result=None):
         if not status.failures:
-            exception = self._run_setup_or_teardown(setup, 'setup')
+            exception = self._run_setup_or_teardown(setup)
             status.setup_executed(exception)
             if result and isinstance(exception, PassExecution):
                 result.message = exception.message
 
     def _run_teardown(self, teardown, status, result=None):
         if status.teardown_allowed:
-            exception = self._run_setup_or_teardown(teardown, 'teardown')
+            exception = self._run_setup_or_teardown(teardown)
             status.teardown_executed(exception)
             failed = not isinstance(exception, PassExecution)
             if result and exception:
                 result.message = status.message if failed else exception.message
             return exception if failed else None
 
-    def _run_setup_or_teardown(self, data, kw_type):
+    def _run_setup_or_teardown(self, data):
         if not data:
             return None
         try:
             name = self._variables.replace_string(data.name)
-        except DataError, err:
+        except DataError as err:
             return err
         if name.upper() in ('', 'NONE'):
             return None
-        kw = Keyword(name, data.args, type=kw_type)
+        runner = KeywordRunner(self._context)
         try:
-            kw.run(self._context)
-        except ExecutionFailed, err:
+            runner.run_keyword(data, name=name)
+        except ExecutionFailed as err:
             return err
 
 

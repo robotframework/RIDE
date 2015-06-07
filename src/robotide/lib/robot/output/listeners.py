@@ -1,4 +1,4 @@
-#  Copyright 2008-2014 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -15,16 +15,13 @@
 import inspect
 import os.path
 
-from robot import utils
 from robot.errors import DataError
-from robot.model import Tags
+from robot.utils import (get_error_details, is_string, is_list_like,
+                         is_dict_like, split_args_from_name_or_path,
+                         type_name, Importer)
 
 from .loggerhelper import AbstractLoggerProxy
 from .logger import LOGGER
-
-if utils.is_jython:
-    from java.lang import Object
-    from java.util import HashMap
 
 
 class _RecursionAvoidingMetaclass(type):
@@ -55,7 +52,8 @@ class Listeners(object):
     __metaclass__ = _RecursionAvoidingMetaclass
     _start_attrs = ('id', 'doc', 'starttime', 'longname')
     _end_attrs = _start_attrs + ('endtime', 'elapsedtime', 'status', 'message')
-    _kw_extra_attrs = ('args', '-id', '-longname', '-message')
+    _kw_extra_attrs = ('args', 'assign', 'kwname', 'libname',
+                       '-id', '-longname', '-message')
 
     def __init__(self, listeners):
         self._listeners = self._import_listeners(listeners)
@@ -67,14 +65,14 @@ class Listeners(object):
 
     def _import_listeners(self, listener_data):
         listeners = []
-        for name, args in listener_data:
+        for listener in listener_data:
             try:
-                listeners.append(ListenerProxy(name, args))
-            except DataError, err:
-                if args:
-                    name += ':' + ':'.join(args)
+                listeners.append(ListenerProxy(listener))
+            except DataError as err:
+                if not is_string(listener):
+                    listener = type_name(listener)
                 LOGGER.error("Taking listener '%s' into use failed: %s"
-                             % (name, unicode(err)))
+                             % (listener, unicode(err)))
         return listeners
 
     def start_suite(self, suite):
@@ -166,6 +164,11 @@ class Listeners(object):
         return '%s %s' % (('Test' if self._running_test else 'Suite'),
                           kw.type.title())
 
+    def imported(self, import_type, name, attrs):
+        for listener in self._listeners:
+            method = getattr(listener, '%s_import' % import_type.lower())
+            listener.call_method(method, name, attrs)
+
     def log_message(self, msg):
         for listener in self._listeners:
             if listener.version == 2:
@@ -180,9 +183,10 @@ class Listeners(object):
         return {'timestamp': msg.timestamp, 'message': msg.message,
                 'level': msg.level, 'html': 'yes' if msg.html else 'no'}
 
-    def output_file(self, name, path):
+    def output_file(self, file_type, path):
         for listener in self._listeners:
-            listener.call_method(getattr(listener, '%s_file' % name.lower()), path)
+            method = getattr(listener, '%s_file' % file_type.lower())
+            listener.call_method(method, path)
 
     def close(self):
         for listener in self._listeners:
@@ -212,9 +216,9 @@ class Listeners(object):
         return self._take_copy_of_mutable_value(value)
 
     def _take_copy_of_mutable_value(self, value):
-        if isinstance(value, (dict, utils.NormalizedDict)):
+        if is_dict_like(value):
             return dict(value)
-        if isinstance(value, (list, tuple, Tags)):
+        if is_list_like(value):
             return list(value)
         return value
 
@@ -223,20 +227,24 @@ class ListenerProxy(AbstractLoggerProxy):
     _methods = ['start_suite', 'end_suite', 'start_test', 'end_test',
                 'start_keyword', 'end_keyword', 'log_message', 'message',
                 'output_file', 'report_file', 'log_file', 'debug_file',
-                'xunit_file', 'close']
+                'xunit_file', 'close', 'library_import', 'resource_import',
+                'variables_import']
 
-    def __init__(self, name, args):
-        listener = self._import_listener(name, args)
+    def __init__(self, listener):
+        if is_string(listener):
+            name, args = split_args_from_name_or_path(listener)
+            listener = self._import_listener(name, args)
+        else:
+            name = type_name(listener)
         AbstractLoggerProxy.__init__(self, listener)
         self.name = name
         self.version = self._get_version(listener)
-        self.is_java = self._is_java(listener)
-
-    def _is_java(self, listener):
-        return utils.is_jython and isinstance(listener, Object)
+        if self.version == 1:
+            LOGGER.warn("Listener '%s' uses deprecated API version 1. "
+                        "Switch to API version 2 instead." % self.name)
 
     def _import_listener(self, name, args):
-        importer = utils.Importer('listener')
+        importer = Importer('listener')
         return importer.import_class_or_module(os.path.normpath(name),
                                                instantiate_with_args=args)
 
@@ -247,23 +255,10 @@ class ListenerProxy(AbstractLoggerProxy):
             return 1
 
     def call_method(self, method, *args):
-        if self.is_java:
-            args = [self._to_map(a) if isinstance(a, dict) else a for a in args]
         try:
             method(*args)
         except:
-            message, details = utils.get_error_details()
-            LOGGER.error("Calling listener method '%s' of listener '%s' failed: %s"
-                     % (method.__name__, self.name, message))
+            message, details = get_error_details()
+            LOGGER.error("Calling listener method '%s' of listener '%s' "
+                         "failed: %s" % (method.__name__, self.name, message))
             LOGGER.info("Details:\n%s" % details)
-
-    def _to_map(self, dictionary):
-        map = HashMap()
-        for key, value in dictionary.iteritems():
-            map.put(key, value)
-        return map
-
-
-# TODO: Remove in 2.9, left here in 2.8.5 for backwards compatibility.
-# Consider also decoupling importing from __init__ to ease extending.
-_ListenerProxy = ListenerProxy

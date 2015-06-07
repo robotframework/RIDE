@@ -1,4 +1,4 @@
-#  Copyright 2008-2014 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,10 +12,12 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+from .robottypes import is_integer, is_string
+
 
 def frange(*args):
     """Like ``range()`` but accepts float arguments."""
-    if all(isinstance(arg, (int, long)) for arg in args):
+    if all(is_integer(arg) for arg in args):
         return range(*args)
     start, stop, step = _get_start_stop_step(args)
     digits = max(_digits(start), _digits(stop), _digits(step))
@@ -32,11 +34,11 @@ def _get_start_stop_step(args):
         return args[0], args[1], 1
     if len(args) == 3:
         return args
-    raise TypeError('frange expected 1-3 arguments, got %d' % len(args))
+    raise TypeError('frange expected 1-3 arguments, got %d.' % len(args))
 
 
 def _digits(number):
-    if not isinstance(number, str):
+    if not is_string(number):
         number = repr(number)
     if 'e' in number:
         return _digits_with_exponent(number)

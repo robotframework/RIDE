@@ -1,4 +1,4 @@
-#  Copyright 2008-2014 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,14 +12,13 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from __future__ import with_statement
-
 from robot.errors import DataError
 from robot.model import SuiteVisitor
 from robot.utils import ET, ETSource, get_error_message
 
 from .executionresult import Result, CombinedResult
-from .flattenkeywordmatcher import FlattenKeywordMatcher
+from .flattenkeywordmatcher import (FlattenByNameMatcher, FlattenByTypeMatcher,
+                                    FlattenByTagMatcher)
 from .merger import Merger
 from .xmlelementhandlers import XmlElementHandler
 
@@ -62,7 +61,7 @@ def _single_result(source, options):
     ets = ETSource(source)
     try:
         return ExecutionResultBuilder(ets, **options).build(Result(source))
-    except IOError, err:
+    except IOError as err:
         error = err.strerror
     except:
         error = get_error_message()
@@ -123,24 +122,57 @@ class ExecutionResultBuilder(object):
                 omitted_kws -= 1
 
     def _flatten_keywords(self, context, flattened):
-        match = FlattenKeywordMatcher(flattened).match
-        started = -1
+        # Performance optimized. Do not change without profiling!
+        name_match, by_name = self._get_matcher(FlattenByNameMatcher, flattened)
+        type_match, by_type = self._get_matcher(FlattenByTypeMatcher, flattened)
+        tags_match, by_tags = self._get_matcher(FlattenByTagMatcher, flattened)
+        started = -1  # if 0 or more, we are flattening
+        tags = []
+        inside_kw = 0  # to make sure we don't read tags from a test
+        seen_doc = False
         for event, elem in context:
             tag = elem.tag
-            if event == 'start' and tag == 'kw':
+            start = event == 'start'
+            end = not start
+            if start and tag == 'kw':
+                inside_kw += 1
                 if started >= 0:
                     started += 1
-                elif match(elem.get('name'), elem.get('type')):
+                elif by_name and name_match(elem.get('name', ''), elem.get('library')):
                     started = 0
-            if started == 0 and event == 'end' and tag == 'doc':
+                    seen_doc = False
+                elif by_type and type_match(elem.get('type', 'kw')):
+                    started = 0
+                    seen_doc = False
+            elif started < 0 and by_tags and inside_kw:
+                if end and tag == 'tag':
+                    tags.append(elem.text or '')
+                elif end and tag == 'tags':
+                    if tags_match(tags):
+                        started = 0
+                        seen_doc = False
+                    tags = []
+            if end and tag == 'kw':
+                inside_kw -= 1
+                if started == 0 and not seen_doc:
+                    doc = ET.Element('doc')
+                    doc.text = '_*Keyword content flattened.*_'
+                    yield 'start', doc
+                    yield 'end', doc
+            if started == 0 and end and tag == 'doc':
+                seen_doc = True
                 elem.text = ('%s\n\n_*Keyword content flattened.*_'
                              % (elem.text or '')).strip()
             if started <= 0 or tag == 'msg':
                 yield event, elem
             else:
                 elem.clear()
-            if started >= 0 and event == 'end' and tag == 'kw':
+            if started >= 0 and end and tag == 'kw':
                 started -= 1
+
+    def _get_matcher(self, matcher_class, flattened):
+        matcher = matcher_class(flattened)
+        return matcher.match, bool(matcher)
 
 
 class RemoveKeywords(SuiteVisitor):

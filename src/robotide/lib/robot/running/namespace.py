@@ -1,4 +1,4 @@
-#  Copyright 2008-2014 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -15,39 +15,32 @@
 import os
 import copy
 
-from robot import utils
 from robot.errors import DataError
-from robot.variables import GLOBAL_VARIABLES, is_scalar_var
+from robot.libraries import STDLIBS, STDLIB_TO_DEPRECATED_MAP
 from robot.output import LOGGER, Message
 from robot.parsing.settings import Library, Variables, Resource
+from robot.utils import (eq, find_file, is_string, printable_name, seq2str2,
+                         RecommendationFinder)
 
 from .usererrorhandler import UserErrorHandler
 from .userkeyword import UserLibrary
 from .importer import Importer, ImportCache
 from .runkwregister import RUN_KW_REGISTER
-from .handlers import _XTimesHandler
-from .context import EXECUTION_CONTEXTS
 
 
-STDLIB_NAMES = set(('BuiltIn', 'Collections', 'DateTime', 'Dialogs', 'Easter',
-                    'OperatingSystem', 'Process', 'Remote', 'Reserved',
-                    'Screenshot', 'String', 'Telnet', 'XML'))
 IMPORTER = Importer()
 
 
-class Namespace:
+class Namespace(object):
     _default_libraries = ('BuiltIn', 'Reserved', 'Easter')
-    _deprecated_libraries = {'BuiltIn': 'DeprecatedBuiltIn',
-                             'OperatingSystem': 'DeprecatedOperatingSystem'}
     _library_import_by_path_endings = ('.py', '.java', '.class', '/', os.sep)
 
-    def __init__(self, suite, variables, parent_variables, user_keywords,
-                 imports):
+    def __init__(self, variables, suite, user_keywords, imports):
         LOGGER.info("Initializing namespace for test suite '%s'" % suite.longname)
         self.suite = suite
         self.test = None
         self.uk_handlers = []
-        self.variables = _VariableScopes(variables, parent_variables)
+        self.variables = variables
         self._imports = imports
         self._kw_store = KeywordStore(user_keywords)
         self._imported_variable_files = ImportCache()
@@ -60,14 +53,9 @@ class Namespace:
         self._import_default_libraries()
         self._handle_imports(self._imports)
 
-    def _create_variables(self, suite, parent_vars, suite_variables=None):
-        if suite_variables is None:
-            suite_variables = suite.variables
-        return _VariableScopes(suite_variables, parent_vars)
-
     def _import_default_libraries(self):
         for name in self._default_libraries:
-            self.import_library(name)
+            self.import_library(name, notify=name == 'BuiltIn')
 
     def _handle_imports(self, import_settings):
         for item in import_settings:
@@ -75,7 +63,7 @@ class Namespace:
                 if not item.name:
                     raise DataError('%s setting requires a name' % item.type)
                 self._import(item)
-            except DataError, err:
+            except DataError as err:
                 item.report_invalid_syntax(unicode(err))
 
     def _import(self, import_setting):
@@ -92,11 +80,13 @@ class Namespace:
         self._validate_not_importing_init_file(path)
         if overwrite or path not in self._kw_store.resources:
             resource = IMPORTER.import_resource(path)
-            self.variables.set_from_variable_table(resource.variable_table,
-                                                   overwrite)
-            self._kw_store.resources[path] \
-                = UserLibrary(resource.keyword_table.keywords, resource.source)
-            self._handle_imports(resource.setting_table.imports)
+            self.variables.set_from_variable_table(resource.variables, overwrite)
+            user_library = UserLibrary(resource.keywords, resource.source)
+            self._kw_store.resources[path] = user_library
+            self._handle_imports(resource.imports)
+            LOGGER.imported("Resource", user_library.name,
+                            importer=import_setting.source,
+                            source=path)
         else:
             LOGGER.info("Resource file '%s' already imported by suite '%s'"
                         % (path, self.suite.longname))
@@ -114,19 +104,24 @@ class Namespace:
         path = self._resolve_name(import_setting)
         args = self._resolve_args(import_setting)
         if overwrite or (path, args) not in self._imported_variable_files:
-            self._imported_variable_files.add((path,args))
+            self._imported_variable_files.add((path, args))
             self.variables.set_from_file(path, args, overwrite)
+            LOGGER.imported("Variables", os.path.basename(path),
+                            args=list(args),
+                            importer=import_setting.source,
+                            source=path)
         else:
             msg = "Variable file '%s'" % path
             if args:
-                msg += " with arguments %s" % utils.seq2str2(args)
+                msg += " with arguments %s" % seq2str2(args)
             LOGGER.info("%s already imported by suite '%s'"
                         % (msg, self.suite.longname))
 
-    def import_library(self, name, args=None, alias=None):
-        self._import_library(Library(None, name, args=args, alias=alias))
+    def import_library(self, name, args=None, alias=None, notify=True):
+        self._import_library(Library(None, name, args=args, alias=alias),
+                             notify=notify)
 
-    def _import_library(self, import_setting):
+    def _import_library(self, import_setting, notify=True):
         name = self._resolve_name(import_setting)
         lib = IMPORTER.import_library(name, import_setting.args,
                                       import_setting.alias, self.variables)
@@ -134,28 +129,35 @@ class Namespace:
             LOGGER.info("Test library '%s' already imported by suite '%s'"
                         % (lib.name, self.suite.longname))
             return
+        if notify:
+            LOGGER.imported("Library", lib.name,
+                            args=list(import_setting.args),
+                            originalname=lib.orig_name,
+                            importer=import_setting.source,
+                            source=lib.source)
         self._kw_store.libraries[lib.name] = lib
         lib.start_suite()
         if self.test:
             lib.start_test()
-        self._import_deprecated_standard_libs(lib.name)
+        if name in STDLIB_TO_DEPRECATED_MAP:
+            self.import_library(STDLIB_TO_DEPRECATED_MAP[name], notify=False)
 
     def _resolve_name(self, import_setting):
         name = import_setting.name
         try:
             name = self.variables.replace_string(name)
-        except DataError, err:
+        except DataError as err:
             self._raise_replacing_vars_failed(import_setting, err)
-        return self._get_path(name, import_setting.directory, import_setting.type)
+        return self._get_name(name, import_setting.directory, import_setting.type)
 
     def _raise_replacing_vars_failed(self, import_setting, err):
         raise DataError("Replacing variables from setting '%s' failed: %s"
                         % (import_setting.type, unicode(err)))
 
-    def _get_path(self, name, basedir, import_type):
+    def _get_name(self, name, basedir, import_type):
         if import_type == 'Library' and not self._is_library_by_path(name):
             return name.replace(' ', '')
-        return utils.find_file(name, basedir, file_type=import_type)
+        return find_file(name, basedir, file_type=import_type)
 
     def _is_library_by_path(self, path):
         return path.lower().endswith(self._library_import_by_path_endings)
@@ -163,12 +165,8 @@ class Namespace:
     def _resolve_args(self, import_setting):
         try:
             return self.variables.replace_list(import_setting.args)
-        except DataError, err:
+        except DataError as err:
             self._raise_replacing_vars_failed(import_setting, err)
-
-    def _import_deprecated_standard_libs(self, name):
-        if name in self._deprecated_libraries:
-            self.import_library(self._deprecated_libraries[name])
 
     def set_search_order(self, new_order):
         old_order = self._kw_store.search_order
@@ -188,6 +186,9 @@ class Namespace:
         for lib in self.libraries:
             lib.end_test()
 
+    def start_suite(self):
+        self.variables.start_suite()
+
     def end_suite(self):
         self.suite = None
         self.variables.end_suite()
@@ -195,20 +196,25 @@ class Namespace:
             lib.end_suite()
 
     def start_user_keyword(self, handler):
-        self.variables.start_uk()
+        self.variables.start_keyword()
         self.uk_handlers.append(handler)
 
     def end_user_keyword(self):
-        self.variables.end_uk()
+        self.variables.end_keyword()
         self.uk_handlers.pop()
 
     def get_library_instance(self, libname):
         return self._kw_store.get_library(libname).get_instance()
 
+    def reload_library(self, libname_or_instance):
+        library = self._kw_store.get_library(libname_or_instance)
+        library.reload()
+        return library
+
     def get_handler(self, name):
         try:
             handler = self._kw_store.get_handler(name)
-        except DataError, err:
+        except DataError as err:
             handler = UserErrorHandler(name, unicode(err))
         self._replace_variables_from_user_handlers(handler)
         return handler
@@ -226,11 +232,22 @@ class KeywordStore(object):
         self.resources = ImportCache()
         self.search_order = ()
 
-    def get_library(self, name):
+    def get_library(self, name_or_instance):
         try:
-            return self.libraries[name.replace(' ', '')]
+            if is_string(name_or_instance):
+                return self.libraries[name_or_instance.replace(' ', '')]
+            else:
+                return self._get_lib_by_instance(name_or_instance)
         except KeyError:
-            raise DataError("No library with name '%s' found." % name)
+            raise DataError("No library '%s' found." % name_or_instance)
+
+    def _get_lib_by_instance(self, instance):
+        if instance is None:
+            raise KeyError
+        for lib in self.libraries.values():
+            if lib.get_instance(create=False) == instance:
+                return lib
+        raise KeyError
 
     def get_handler(self, name):
         handler = self._get_handler(name)
@@ -251,7 +268,7 @@ class KeywordStore(object):
         handler = None
         if not name:
             raise DataError('Keyword name cannot be empty.')
-        if not isinstance(name, basestring):
+        if not is_string(name):
             raise DataError('Keyword name must be a string.')
         if '.' in name:
             handler = self._get_explicit_handler(name)
@@ -259,27 +276,7 @@ class KeywordStore(object):
             handler = self._get_implicit_handler(name)
         if not handler:
             handler = self._get_bdd_style_handler(name)
-        if not handler:
-            handler = self._get_x_times_handler(name)
         return handler
-
-    def _get_x_times_handler(self, name):
-        if not self._is_old_x_times_syntax(name):
-            return None
-        return _XTimesHandler(self._get_handler('Repeat Keyword'), name)
-
-    def _is_old_x_times_syntax(self, name):
-        if not name.lower().endswith('x'):
-            return False
-        times = name[:-1].strip()
-        if is_scalar_var(times):
-            return True
-        try:
-            int(times)
-        except ValueError:
-            return False
-        else:
-            return True
 
     def _get_bdd_style_handler(self, name):
         for prefix in ['given ', 'when ', 'then ', 'and ', 'but ']:
@@ -301,12 +298,12 @@ class KeywordStore(object):
         return None
 
     def _get_handler_from_test_case_file_user_keywords(self, name):
-        if self.user_keywords.has_handler(name):
-            return self.user_keywords.get_handler(name)
+        if name in self.user_keywords.handlers:
+            return self.user_keywords.handlers[name]
 
     def _get_handler_from_resource_file_user_keywords(self, name):
-        found = [lib.get_handler(name) for lib in self.resources.values()
-                 if lib.has_handler(name)]
+        found = [lib.handlers[name] for lib in self.resources.values()
+                 if name in lib.handlers]
         if not found:
             return None
         if len(found) > 1:
@@ -316,8 +313,8 @@ class KeywordStore(object):
         self._raise_multiple_keywords_found(name, found)
 
     def _get_handler_from_library_keywords(self, name):
-        found = [lib.get_handler(name) for lib in self.libraries.values()
-                 if lib.has_handler(name)]
+        found = [lib.handlers[name] for lib in self.libraries.values()
+                 if name in lib.handlers]
         if not found:
             return None
         if len(found) > 1:
@@ -333,7 +330,7 @@ class KeywordStore(object):
     def _get_handler_based_on_search_order(self, handlers):
         for libname in self.search_order:
             for handler in handlers:
-                if utils.eq(libname, handler.libname):
+                if eq(libname, handler.libname):
                     return [handler]
         return handlers
 
@@ -345,9 +342,10 @@ class KeywordStore(object):
         return [handler1, handler2]
 
     def _filter_stdlib_handler(self, handler1, handler2):
-        if handler1.library.orig_name in STDLIB_NAMES:
+        stdlibs_without_remote = STDLIBS - set(['Remote'])
+        if handler1.library.orig_name in stdlibs_without_remote:
             standard, custom = handler1, handler2
-        elif handler2.library.orig_name in STDLIB_NAMES:
+        elif handler2.library.orig_name in stdlibs_without_remote:
             standard, custom = handler2, handler1
         else:
             return [handler1, handler2]
@@ -388,17 +386,16 @@ class KeywordStore(object):
             yield '.'.join(tokens[:i]), '.'.join(tokens[i:])
 
     def _find_keywords(self, owner_name, name):
-        return [owner.get_handler(name)
+        return [owner.handlers[name]
                 for owner in self.libraries.values() + self.resources.values()
-                if utils.eq(owner.name, owner_name) and owner.has_handler(name)]
+                if eq(owner.name, owner_name) and name in owner.handlers]
 
     def _raise_multiple_keywords_found(self, name, found, implicit=True):
-        error = "Multiple keywords with name '%s' found.\n" % name
+        error = "Multiple keywords with name '%s' found" % name
         if implicit:
-            error += "Give the full name of the keyword you want to use.\n"
+            error += ". Give the full name of the keyword you want to use"
         names = sorted(handler.longname for handler in found)
-        error += "Found: %s" % utils.seq2str(names)
-        raise DataError(error)
+        raise DataError('\n    '.join([error+':'] + names))
 
 
 class KeywordRecommendationFinder(object):
@@ -413,12 +410,12 @@ class KeywordRecommendationFinder(object):
         candidates = self._get_candidates('.' in name)
         normalizer = lambda name: candidates.get(name, name).lower().replace(
             '_', ' ')
-        finder = utils.RecommendationFinder(normalizer)
+        finder = RecommendationFinder(normalizer)
         return finder.find_recommendations(name, candidates)
 
     @staticmethod
     def format_recommendations(msg, recommendations):
-        return utils.RecommendationFinder.format_recommendations(
+        return RecommendationFinder.format_recommendations(
             msg, recommendations)
 
     def _get_candidates(self, use_full_name):
@@ -438,122 +435,13 @@ class KeywordRecommendationFinder(object):
         """
         excluded = ['DeprecatedBuiltIn', 'DeprecatedOperatingSystem',
                     'Reserved']
-        handlers = [(None, utils.printable_name(handler_name, True))
-                    for handler_name in self.user_keywords.handlers.keys()]
+        handlers = [(None, printable_name(handler.name, True))
+                    for handler in self.user_keywords.handlers]
         for library in (self.libraries.values() + self.resources.values()):
             if library.name not in excluded:
                 handlers.extend(
                     ((library.name,
-                      utils.printable_name(handler_name, code_style=True))
-                     for handler_name in library.handlers))
+                      printable_name(handler.name, code_style=True))
+                     for handler in library.handlers))
         # sort handlers to ensure consistent ordering between Jython and Python
         return sorted(handlers)
-
-
-class _VariableScopes:
-
-    def __init__(self, suite_variables, parent_variables):
-        # suite and parent are None only when used by copy_all
-        if suite_variables is not None:
-            suite_variables.update(GLOBAL_VARIABLES)
-            self._suite = self.current = suite_variables
-        else:
-            self._suite = self.current = None
-        self._parents = []
-        if parent_variables is not None:
-            self._parents.append(parent_variables.current)
-            self._parents.extend(parent_variables._parents)
-        self._test = None
-        self._uk_handlers = []
-
-    def __len__(self):
-        if self.current:
-            return len(self.current)
-        return 0
-
-    def copy_all(self):
-        vs = _VariableScopes(None, None)
-        vs._suite = self._suite
-        vs._test = self._test
-        vs._uk_handlers = self._uk_handlers[:]
-        vs._parents = self._parents[:]
-        vs.current = self.current
-        return vs
-
-    def replace_list(self, items, replace_until=None):
-        return self.current.replace_list(items, replace_until)
-
-    def replace_scalar(self, items):
-        return self.current.replace_scalar(items)
-
-    def replace_string(self, string, ignore_errors=False):
-        return self.current.replace_string(string, ignore_errors=ignore_errors)
-
-    def set_from_file(self, path, args, overwrite=False):
-        variables = self._suite.set_from_file(path, args, overwrite)
-        if self._test is not None:
-            self._test._set_from_file(variables, overwrite=True)
-        for varz in self._uk_handlers:
-            varz._set_from_file(variables, overwrite=True)
-        if self._uk_handlers:
-            self.current._set_from_file(variables, overwrite=True)
-
-    def set_from_variable_table(self, rawvariables, overwrite=False):
-        self._suite.set_from_variable_table(rawvariables, overwrite)
-        if self._test is not None:
-            self._test.set_from_variable_table(rawvariables, overwrite)
-        for varz in self._uk_handlers:
-            varz.set_from_variable_table(rawvariables, overwrite)
-        if self._uk_handlers:
-            self.current.set_from_variable_table(rawvariables, overwrite)
-
-    def __getitem__(self, name):
-        return self.current[name]
-
-    def __setitem__(self, name, value):
-        self.current[name] = value
-
-    def end_suite(self):
-        self._suite = self._test = self.current = None
-
-    def start_test(self):
-        self._test = self.current = self._suite.copy()
-
-    def end_test(self):
-        self.current = self._suite
-
-    def start_uk(self):
-        self._uk_handlers.append(self.current)
-        self.current = self.current.copy()
-
-    def end_uk(self):
-        self.current = self._uk_handlers.pop()
-
-    def set_global(self, name, value):
-        GLOBAL_VARIABLES.__setitem__(name, value)
-        for ns in EXECUTION_CONTEXTS.namespaces:
-            ns.variables.set_suite(name, value)
-
-    def set_suite(self, name, value):
-        self._suite.__setitem__(name, value)
-        self.set_test(name, value, False)
-
-    def set_test(self, name, value, fail_if_no_test=True):
-        if self._test is not None:
-            self._test.__setitem__(name, value)
-        elif fail_if_no_test:
-            raise DataError("Cannot set test variable when no test is started")
-        for varz in self._uk_handlers:
-            varz.__setitem__(name, value)
-        self.current.__setitem__(name, value)
-
-    def keys(self):
-        return self.current.keys()
-
-    def has_key(self, key):
-        return self.current.has_key(key)
-
-    __contains__ = has_key
-
-    def contains(self, name, extended=False):
-        return self.current.contains(name, extended)

@@ -1,4 +1,4 @@
-#  Copyright 2008-2014 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -18,7 +18,9 @@ from .argumentmapper import ArgumentMapper
 from .argumentparser import (PythonArgumentParser, UserKeywordArgumentParser,
                              DynamicArgumentParser, JavaArgumentParser)
 from .argumentresolver import ArgumentResolver
+from .argumentspec import ArgumentSpec
 from .argumentvalidator import ArgumentValidator
+from .embedded import EmbeddedArguments
 if sys.platform.startswith('java'):
     from .javaargumentcoercer import JavaArgumentCoercer
 else:

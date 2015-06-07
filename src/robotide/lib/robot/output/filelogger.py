@@ -1,4 +1,4 @@
-#  Copyright 2008-2014 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ class FileLogger(AbstractLogger):
     def _get_writer(self, path):
         try:
             return open(path, 'w')
-        except EnvironmentError, err:
+        except EnvironmentError as err:
             raise DataError(err.strerror)
 
     def message(self, msg):

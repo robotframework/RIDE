@@ -1,4 +1,4 @@
-#  Copyright 2008-2014 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@ import sys
 from StringIO import StringIO
 
 from robot.output import LOGGER
-from robot.utils import decode_output, encode_output
+from robot.utils import decode_output, encode_output, JYTHON
 
 
 class OutputCapturer(object):
@@ -99,7 +99,7 @@ class PythonCapturer(object):
         stream.flush = lambda: None
 
 
-if not sys.platform.startswith('java'):
+if not JYTHON:
 
     class JavaCapturer(object):
 

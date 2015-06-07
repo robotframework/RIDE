@@ -1,4 +1,4 @@
-#  Copyright 2008-2014 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -13,17 +13,17 @@
 #  limitations under the License.
 
 from robot.errors import DataError
-from robot.parsing import TestData
+from robot.parsing import TestData, ResourceFile as ResourceData
 from robot.running.defaults import TestDefaults
-from robot.utils import abspath
+from robot.utils import abspath, is_string
 from robot.variables import VariableIterator
 
-from .model import TestSuite, ForLoop
+from .model import ForLoop, ResourceFile, TestSuite
 
 
 class TestSuiteBuilder(object):
 
-    def __init__(self, include_suites=None, warn_on_skipped=False, include_empty_suites=False):
+    def __init__(self, include_suites=None, warn_on_skipped=False):
         """Create programmatically executable
         :class:`~robot.running.model.TestSuite` objects based on existing data
         on the file system.
@@ -32,35 +32,29 @@ class TestSuiteBuilder(object):
         """
         self.include_suites = include_suites
         self.warn_on_skipped = warn_on_skipped
-        self.include_empty_suites = include_empty_suites
+        self._create_step = StepBuilder().build
 
     def build(self, *paths):
         if not paths:
             raise DataError('One or more source paths required.')
         if len(paths) == 1:
-            return self._build_and_check_if_empty(paths[0])
+            return self._parse_and_build(paths[0])
         root = TestSuite()
         for path in paths:
-            root.suites.append(self._build_and_check_if_empty(path))
+            root.suites.append(self._parse_and_build(path))
         return root
 
-    def _build_and_check_if_empty(self, path):
-        builded = self._build_suite(self._parse(path))
-        if not self._empty_suites_allowed and not builded.test_count:
-                raise DataError("Suite '%s' contains no tests." % builded.name)
-        builded.remove_empty_suites()
-        return builded
-
-    @property
-    def _empty_suites_allowed(self):
-        return self.include_empty_suites or self.include_suites
+    def _parse_and_build(self, path):
+        suite = self._build_suite(self._parse(path))
+        suite.remove_empty_suites()
+        return suite
 
     def _parse(self, path):
         try:
             return TestData(source=abspath(path),
                             include_suites=self.include_suites,
                             warn_on_skipped=self.warn_on_skipped)
-        except DataError, err:
+        except DataError as err:
             raise DataError("Parsing '%s' failed: %s" % (path, unicode(err)))
 
     def _build_suite(self, data, parent_defaults=None):
@@ -69,29 +63,18 @@ class TestSuiteBuilder(object):
                           source=data.source,
                           doc=unicode(data.setting_table.doc),
                           metadata=self._get_metadata(data.setting_table))
-        for import_data in data.setting_table.imports:
-            self._create_import(suite, import_data)
         self._create_setup(suite, data.setting_table.suite_setup)
         self._create_teardown(suite, data.setting_table.suite_teardown)
-        for var_data in data.variable_table.variables:
-            self._create_variable(suite, var_data)
-        for uk_data in data.keyword_table.keywords:
-            self._create_user_keyword(suite, uk_data)
         for test_data in data.testcase_table.tests:
             self._create_test(suite, test_data, defaults)
         for child in data.children:
             suite.suites.append(self._build_suite(child, defaults))
+        ResourceFileBuilder().build(data, target=suite.resource)
         return suite
 
     def _get_metadata(self, settings):
         # Must return as a list to preserve ordering
         return [(meta.name, meta.value) for meta in settings.metadata]
-
-    def _create_import(self, suite, data):
-        suite.imports.create(type=data.type,
-                             name=data.name,
-                             args=tuple(data.args),
-                             alias=data.alias)
 
     def _create_test(self, suite, data, defaults):
         values = defaults.get_test_values(data)
@@ -111,20 +94,6 @@ class TestSuiteBuilder(object):
     def _get_template(self, template):
         return unicode(template) if template.is_active() else None
 
-    def _create_user_keyword(self, suite, data):
-        uk = suite.user_keywords.create(name=data.name,
-                                        args=tuple(data.args),
-                                        doc=unicode(data.doc),
-                                        return_=tuple(data.return_),
-                                        timeout=data.timeout,
-                                        teardown=data.teardown)
-        for step_data in data.steps:
-            self._create_step(uk, step_data)
-
-    def _create_variable(self, suite, data):
-        if data:
-            suite.variables.create(name=data.name, value=data.value)
-
     def _create_setup(self, parent, data):
         if data.is_active():
             self._create_step(parent, data, kw_type='setup')
@@ -133,7 +102,58 @@ class TestSuiteBuilder(object):
         if data.is_active():
             self._create_step(parent, data, kw_type='teardown')
 
-    def _create_step(self, parent, data, template=None, kw_type='kw'):
+
+class ResourceFileBuilder(object):
+
+    def __init__(self):
+        self._create_step = StepBuilder().build
+
+    def build(self, path_or_data, target=None):
+        data, source = self._import_resource_if_needed(path_or_data)
+        if not target:
+            target = ResourceFile(doc=data.setting_table.doc.value, source=source)
+        for import_data in data.setting_table.imports:
+            self._create_import(target, import_data)
+        for var_data in data.variable_table.variables:
+            self._create_variable(target, var_data)
+        for kw_data in data.keyword_table.keywords:
+            self._create_keyword(target, kw_data)
+        return target
+
+    def _import_resource_if_needed(self, path_or_data):
+        if not is_string(path_or_data):
+            return path_or_data, path_or_data.source
+        return ResourceData(path_or_data).populate(), path_or_data
+
+    def _create_import(self, target, data):
+        target.imports.create(type=data.type,
+                              name=data.name,
+                              args=tuple(data.args),
+                              alias=data.alias)
+
+    def _create_variable(self, target, data):
+        if data:
+            target.variables.create(name=data.name, value=data.value)
+
+    def _create_keyword(self, target, data):
+        kw = target.keywords.create(name=data.name,
+                                    args=tuple(data.args),
+                                    doc=unicode(data.doc),
+                                    tags=tuple(data.tags),
+                                    return_=tuple(data.return_),
+                                    timeout=self._get_timeout(data.timeout))
+        for step_data in data.steps:
+            self._create_step(kw, step_data)
+        if data.teardown.is_active():
+            self._create_step(kw, data.teardown, kw_type='teardown')
+
+    def _get_timeout(self, timeout):
+        return (timeout.value, timeout.message) if timeout else None
+
+
+class StepBuilder(object):
+
+    def build(self, parent, data, template=None, kw_type='kw'):
         if not data or data.is_comment():
             return
         if data.is_for_loop():
@@ -141,7 +161,7 @@ class TestSuiteBuilder(object):
         elif template and template.is_active():
             self._create_templated(parent, data, template)
         else:
-            parent.keywords.create(name=data.keyword,
+            parent.keywords.create(name=data.name,
                                    args=tuple(data.args),
                                    assign=tuple(data.assign),
                                    type=kw_type)
@@ -163,8 +183,8 @@ class TestSuiteBuilder(object):
         return ''.join(temp), ()
 
     def _create_for_loop(self, parent, data, template):
-        loop = parent.keywords.append(ForLoop(vars=data.vars,
-                                              items=data.items,
-                                              range=data.range))
+        loop = parent.keywords.append(ForLoop(variables=data.vars,
+                                              values=data.items,
+                                              flavor=data.flavor))
         for step in data.steps:
-            self._create_step(loop, step, template=template)
+            self.build(loop, step, template=template)

@@ -1,4 +1,4 @@
-#  Copyright 2008-2014 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from __future__ import with_statement
 import os.path
 
 from robot.errors import DataError
@@ -57,4 +56,5 @@ class SpecDocBuilder(object):
     def _create_keyword(self, elem):
         return KeywordDoc(name=elem.get('name', ''),
                           args=[a.text for a in elem.findall('arguments/arg')],
-                          doc=elem.find('doc').text or '')
+                          doc=elem.find('doc').text or '',
+                          tags=[t.text for t in elem.findall('tags/tag')])
