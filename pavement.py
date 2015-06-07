@@ -6,9 +6,6 @@ import shutil
 import tempfile
 from StringIO import StringIO
 import urllib2
-import getpass
-
-from github3 import login
 from paver.easy import *
 from paver.setuputils import setup, find_package_data
 
@@ -310,6 +307,8 @@ def release_notes(args):
 
 
 def _get_issues(milestone, username):
+    import getpass
+    from github3 import login
     password = getpass.getpass(
         'Github password for {user}: '.format(user=username))
     gh = login(username, password=password)
