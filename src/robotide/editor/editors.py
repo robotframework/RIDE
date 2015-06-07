@@ -15,16 +15,16 @@
 import wx
 
 from robotide import robotapi, context
-from robotide.controller.settingcontrollers import (DocumentationController,
-    VariableController, TagsController)
+from robotide.controller.settingcontrollers import DocumentationController,\
+    VariableController, TagsController
 from robotide.usages.UsageRunner import ResourceFileUsages
-from robotide.publish import (RideItemSettingsChanged, RideInitFileRemoved,
-                              RideFileNameChanged)
-from robotide.widgets import (ButtonWithHandler, Label, HeaderLabel,
-        HorizontalSizer, HtmlWindow)
+from robotide.publish import RideItemSettingsChanged, RideInitFileRemoved,\
+    RideFileNameChanged
+from robotide.widgets import ButtonWithHandler, Label, HeaderLabel,\
+    HorizontalSizer, HtmlWindow
 
-from .settingeditors import (DocumentationEditor, SettingEditor, TagsEditor,
-        ImportSettingListEditor, VariablesListEditor, MetadataListEditor)
+from .settingeditors import DocumentationEditor, SettingEditor, TagsEditor,\
+    ImportSettingListEditor, VariablesListEditor, MetadataListEditor
 
 
 class WelcomePage(HtmlWindow):
@@ -72,8 +72,8 @@ class _RobotTableEditor(EditorPanel):
         self.SetSizer(self.sizer)
         if self.title:
             self.sizer.Add(self._create_header(self.title),
-                           0, wx.EXPAND|wx.ALL, 5)
-            self.sizer.Add((0,10))
+                           0, wx.EXPAND | wx.ALL, 5)
+            self.sizer.Add((0, 10))
         self._editors = []
         self._reset_last_show_tooltip()
         self._populate()
@@ -85,7 +85,8 @@ class _RobotTableEditor(EditorPanel):
         return self.plugin.global_settings[self._settings_open_id]
 
     def _store_settings_open_status(self):
-        self.plugin.global_settings[self._settings_open_id] = self._settings.IsExpanded()
+        self.plugin.global_settings[self._settings_open_id] = \
+            self._settings.IsExpanded()
 
     def _settings_changed(self, data):
         if data.item == self.controller:
@@ -101,7 +102,7 @@ class _RobotTableEditor(EditorPanel):
         mx, my = wx.GetMousePosition()
         tx, ty = self._last_shown_tooltip.screen_position
         dx, dy = self._last_shown_tooltip.size
-        return (mx<tx or mx>tx+dx) or (my<ty or my>ty+dy)
+        return (mxa < tx or mx > tx+dx) or (my < ty or my > ty+dy)
 
     def tooltip_allowed(self, tooltip):
         if wx.GetMouseState().ControlDown() or \
@@ -114,7 +115,8 @@ class _RobotTableEditor(EditorPanel):
         self._last_shown_tooltip = None
 
     def close(self):
-        self.plugin.unsubscribe(self._settings_changed, RideItemSettingsChanged)
+        self.plugin.unsubscribe(
+            self._settings_changed, RideItemSettingsChanged)
         self.Unbind(wx.EVT_MOTION)
         self.Show(False)
 
@@ -132,15 +134,13 @@ class _RobotTableEditor(EditorPanel):
         self._settings = self._create_settings()
         self._restore_settings_open_status()
         self._editors.append(self._settings)
-        self.sizer.Add(self._settings, 0, wx.ALL|wx.EXPAND, 2)
+        self.sizer.Add(self._settings, 0, wx.ALL |wx.EXPAND, 2)
 
     def _create_settings(self):
-        settings = Settings(self, self.plugin, self._tree)
-        settings.Bind(wx.EVT_COLLAPSIBLEPANE_CHANGED, self._collabsible_changed)
-        for setting in self.controller.settings:
-            editor = settings.create_editor_for(setting)
-            settings.add(editor)
-        settings.build()
+        settings = Settings(self)
+        settings.Bind(
+            wx.EVT_COLLAPSIBLEPANE_CHANGED, self._collabsible_changed)
+        settings.build(self.controller.settings, self.plugin, self._tree)
         return settings
 
     def _restore_settings_open_status(self):
@@ -182,12 +182,11 @@ class _RobotTableEditor(EditorPanel):
 class Settings(wx.CollapsiblePane):
     BORDER = 2
 
-    def __init__(self, parent, plugin, tree):
-        wx.CollapsiblePane.__init__(self, parent, wx.ID_ANY, 'Settings',
-                                    style=wx.CP_DEFAULT_STYLE|wx.CP_NO_TLW_RESIZE)
+    def __init__(self, parent):
+        wx.CollapsiblePane.__init__(
+            self, parent, wx.ID_ANY, 'Settings',
+            style=wx.CP_DEFAULT_STYLE | wx.CP_NO_TLW_RESIZE)
         self._sizer = wx.BoxSizer(wx.VERTICAL)
-        self._plugin = plugin
-        self._tree = tree
         self._editors = []
         self.Bind(wx.EVT_SIZE, self._recalc_size)
 
@@ -207,9 +206,9 @@ class Settings(wx.CollapsiblePane):
         for editor in self._editors:
             editor.update_value()
 
-    def create_editor_for(self, controller):
+    def create_editor_for(self, controller, plugin, tree):
         editor_cls = self._get_editor_class(controller)
-        return editor_cls(self.GetPane(), controller, self._plugin, self._tree)
+        return editor_cls(self.GetPane(), controller, plugin, tree)
 
     def _get_editor_class(self, controller):
         if isinstance(controller, DocumentationController):
@@ -218,18 +217,19 @@ class Settings(wx.CollapsiblePane):
             return TagsEditor
         return SettingEditor
 
-    def add(self, editor):
-        self._sizer.Add(editor, 0, wx.ALL|wx.EXPAND, self.BORDER)
-        self._editors.append(editor)
-
-    def build(self):
+    def build(self, settings, plugin, tree):
+        for setting in settings:
+            editor = self.create_editor_for(setting, plugin, tree)
+            self._sizer.Add(editor, 0, wx.ALL | wx.EXPAND, self.BORDER)
+            self._editors.append(editor)
         self.GetPane().SetSizer(self._sizer)
         self._sizer.SetSizeHints(self.GetPane())
 
     def _recalc_size(self, event=None):
         if self.IsExpanded():
             expand_button_height = 32  # good guess...
-            height = sum(editor.Size[1]+2*self.BORDER for editor in self._editors)
+            height = sum(editor.Size[1] + 2 * self.BORDER
+                         for editor in self._editors)
             self.SetSizeHints(-1, height + expand_button_height)
         if event:
             event.Skip()
@@ -251,7 +251,8 @@ class _FileEditor(_RobotTableEditor):
 
     def __init__(self, *args):
         _RobotTableEditor.__init__(self, *args)
-        self.plugin.subscribe(self._update_source_and_name, RideFileNameChanged)
+        self.plugin.subscribe(
+            self._update_source_and_name, RideFileNameChanged)
 
     def _update_source(self, message=None):
         self._source.SetValue(self.controller.data.source)
@@ -266,8 +267,11 @@ class _FileEditor(_RobotTableEditor):
 
     def _populate(self):
         datafile = self.controller.data
-        self.sizer.Add(self._create_header(datafile.name, not self.controller.is_modifiable()), 0, wx.EXPAND|wx.ALL, 5)
-        self.sizer.Add(self._create_source_label(datafile.source), 0, wx.EXPAND|wx.ALL, 1)
+        header = self._create_header(
+            datafile.name, not self.controller.is_modifiable())
+        self.sizer.Add(header, 0, wx.EXPAND | wx.ALL, 5)
+        self.sizer.Add(
+            self._create_source_label(datafile.source), 0, wx.EXPAND | wx.ALL, 1)
         self.sizer.Add((0, 10))
         self._add_settings()
         self._add_import_settings()
