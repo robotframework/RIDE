@@ -50,9 +50,8 @@ class ResourceFactory(object):
 
     def new_resource(self, directory, name):
         path = os.path.join(directory, name) if directory else name
-        path = self._normalize(path)
         resource = robotapi.ResourceFile(source=path)
-        self.cache[path] = resource
+        self.cache[self._normalize(path)] = resource
         return resource
 
     def resource_filename_changed(self, old_name, new_name):
