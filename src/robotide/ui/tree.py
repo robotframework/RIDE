@@ -14,46 +14,54 @@
 
 import wx
 from wx.lib.agw import customtreectrl
-from wx.lib.agw.customtreectrl import GenericTreeItem
 from wx.lib.mixins import treemixin
 
-from robotide.controller.ui.treecontroller import TreeController, TestSelectionController
+from robotide.controller.ui.treecontroller import TreeController, \
+    TestSelectionController
 from robotide.context import IS_WINDOWS
 from robotide.action.actioninfo import ActionInfo
 from robotide.controller.filecontrollers import ResourceFileController
-from robotide.publish.messages import RideTestRunning, RideTestPassed, RideTestFailed, RideTestExecutionStarted, \
-    RideImportSetting, RideExcludesChanged, RideIncludesChanged, RideOpenSuite, RideNewProject
-from robotide.ui.images import RUNNING_IMAGE_INDEX, PASSED_IMAGE_INDEX, FAILED_IMAGE_INDEX, ROBOT_IMAGE_INDEX
+from robotide.publish.messages import RideTestRunning, RideTestPassed, \
+    RideTestFailed, RideTestExecutionStarted, RideImportSetting, \
+    RideExcludesChanged, RideIncludesChanged, RideOpenSuite, RideNewProject
+from robotide.ui.images import RUNNING_IMAGE_INDEX, PASSED_IMAGE_INDEX, \
+    FAILED_IMAGE_INDEX, ROBOT_IMAGE_INDEX
 from robotide.ui.treenodehandlers import TestCaseHandler
-from robotide.publish import (PUBLISHER, RideTreeSelection, RideFileNameChanged,
-    RideItem, RideUserKeywordAdded, RideTestCaseAdded,
-    RideUserKeywordRemoved, RideTestCaseRemoved, RideDataFileRemoved, RideDataChangedToDirty,
-    RideDataDirtyCleared, RideVariableRemoved, RideVariableAdded,
-    RideVariableMovedUp, RideVariableMovedDown, RideVariableUpdated,
-    RideOpenResource, RideSuiteAdded, RideSelectResource, RideDataFileSet)
+from robotide.publish import PUBLISHER, RideTreeSelection, RideFileNameChanged,\
+    RideItem, RideUserKeywordAdded, RideTestCaseAdded, RideUserKeywordRemoved,\
+    RideTestCaseRemoved, RideDataFileRemoved, RideDataChangedToDirty,\
+    RideDataDirtyCleared, RideVariableRemoved, RideVariableAdded,\
+    RideVariableMovedUp, RideVariableMovedDown, RideVariableUpdated,\
+    RideOpenResource, RideSuiteAdded, RideSelectResource, RideDataFileSet
 from robotide.controller.commands import MoveTo
 from robotide.widgets import PopupCreator
 from robotide import utils
 
-from .treenodehandlers import ResourceRootHandler, action_handler_class, ResourceFileHandler
+from .treenodehandlers import ResourceRootHandler, action_handler_class,\
+    ResourceFileHandler
 from .images import TreeImageList
 
-_TREE_ARGS = {'style':wx.TR_DEFAULT_STYLE}
+_TREE_ARGS = {'style': wx.TR_DEFAULT_STYLE}
 
 if wx.VERSION_STRING >= '2.8.11.0':
-    _TREE_ARGS['agwStyle']=customtreectrl.TR_DEFAULT_STYLE | customtreectrl.TR_HIDE_ROOT | customtreectrl.TR_EDIT_LABELS
+    _TREE_ARGS['agwStyle'] = \
+        customtreectrl.TR_DEFAULT_STYLE | customtreectrl.TR_HIDE_ROOT | \
+        customtreectrl.TR_EDIT_LABELS
 if IS_WINDOWS:
     _TREE_ARGS['style'] |= wx.TR_EDIT_LABELS
 
 
-class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEventHandler):
+class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
+           utils.RideEventHandler):
 
     _RESOURCES_NODE_LABEL = 'External Resources'
 
     def __init__(self, parent, action_registerer, settings=None):
         self._checkboxes_for_tests = False
         self._test_selection_controller = self._create_test_selection_controller()
-        self._controller = TreeController(self, action_registerer, settings=settings, test_selection=self._test_selection_controller)
+        self._controller = TreeController(
+            self, action_registerer, settings=settings,
+            test_selection=self._test_selection_controller)
         treemixin.DragAndDrop.__init__(self, parent, **_TREE_ARGS)
         self._controller.register_tree_actions()
         self._bind_tree_events()
@@ -551,7 +559,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
             event.Veto()
         elif hasattr(event, 'Position'):
             item, flags = self.HitTest(event.Position)
-            if not (item.IsOk() and self._click_on_item(flags)):
+            if not self._click_on_item(item, flags):
                 return
         else:
             return
@@ -563,8 +571,9 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, utils.RideEvent
                 return node
         return None
 
-    def _click_on_item(self, flags):
-        return flags & wx.TREE_HITTEST_ONITEM
+    def _click_on_item(self, item, flags):
+        return item is not None and item.IsOk() and \
+            flags & wx.TREE_HITTEST_ONITEM
 
     def _get_datafile_index(self, node):
         insertion_index = self.GetPrevSibling(node)
@@ -819,4 +828,3 @@ class TreeLabelEditListener(object):
 
     def _get_handler(self, item=None):
         return self._tree._get_handler(item)
-
