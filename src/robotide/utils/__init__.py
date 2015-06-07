@@ -96,5 +96,5 @@ def overrides(interface_class):
 
 
 def is_same_drive(path1, path2):
-    return os.path.splitdrive(path1)[0].lower() is \
+    return os.path.splitdrive(path1)[0].lower() == \
         os.path.splitdrive(path2)[0].lower()
