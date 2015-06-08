@@ -177,7 +177,7 @@ def set_version(args):
 
 
 @task
-@needs('clean', '_prepare_build', '_release_notes', 'generate_setup',
+@needs('clean', '_prepare_build', 'release_notes_plugin', 'generate_setup',
        'minilib', 'setuptools.command.sdist')
 def sdist():
     """Creates source distribution with bundled dependencies"""
@@ -204,10 +204,9 @@ def _prepare_build():
 
 
 @task
-def _release_notes():
-    if FINAL_RELEASE:
-        changes = _download_and_format_issues(VERSION)
-        _update_release_notes_plugin(changes)
+def release_notes_plugin():
+    changes = _download_and_format_issues()
+    _update_release_notes_plugin(changes)
 
 
 @task
@@ -258,7 +257,7 @@ def _after_distribution():
     _clean(keep_dist=True)
 
 
-def _download_and_format_issues(milestone):
+def _download_and_format_issues():
     try:
         from robot.utils import HtmlWriter, html_format
     except ImportError:
@@ -268,17 +267,19 @@ def _download_and_format_issues(milestone):
     writer.start('table', attrs={'border': '1'})
     writer.start('tr')
     for header in ['ID', 'Type', 'Priority', 'Summary']:
-        writer.element('td', header, escape=False)
+        writer.element(
+            'td', html_format('*{}*'.format(header)), escape=False)
     writer.end('tr')
-    issues = list(_get_issues(milestone))
+    issues = list(_get_issues())
     for issue in issues:
+        writer.start('tr')
         link_tmpl = '<a href="http://github.com/robotframework/RIDE/issues/{0}">Issue {0}</a>'
         row = [link_tmpl.format(issue.number),
                find_type(issue),
                find_priority(issue),
                issue.title]
         for cell in row:
-            writer.element('td', html_format(cell), escape=False)
+            writer.element('td', cell, escape=False)
         writer.end('tr')
     writer.end('table')
     writer.element('p', 'Altogether %d issues.' % len(issues))
@@ -294,10 +295,9 @@ def _update_release_notes_plugin(changes):
 
 
 @task
-@consume_args
-def release_notes(args):
+def release_notes():
     milestone = args[0]
-    issues = _get_issues(milestone)
+    issues = _get_issues()
     print """ID  | Type | Priority | Summary
 --- | ---- | -------- | ------- """
     for i in issues:
@@ -305,7 +305,8 @@ def release_notes(args):
                           find_priority(i), i.title))
 
 
-def _get_issues(milestone):
+def _get_issues():
+    milestone = re.split('[ab-]', VERSION)[0]
     import getpass
     from github3 import login
     username = raw_input('Enter GitHub username for downloading issues: ')
@@ -317,8 +318,20 @@ def _get_issues(milestone):
     if milestone_number is None:
         print 'milestone not found'
         sys.exit(1)
-    return [i for i in repo.iter_issues(
-        milestone=milestone_number, state='closed')]
+    issues = list(repo.iter_issues(milestone=milestone_number, state='closed'))
+    issues.sort(cmp=issue_sorter)
+    return issues
+
+
+def issue_sorter(i1, i2):
+    prio_mapping = {
+        'critical': 0,
+        'high': 1,
+        'medium': 2,
+        'low': 3
+    }
+    prio1, prio2 = find_priority(i1), find_priority(i2)
+    return cmp(prio_mapping[prio1], prio_mapping[prio2])
 
 
 def find_type(issue):
