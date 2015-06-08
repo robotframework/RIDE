@@ -98,10 +98,9 @@ Releasing
 * Release early and often!
 * **Consider making a preview release** - this will give you possibility to test the new release with friendly real users
 * Manually test run RIDE in windows, linux and OSX
-* Following steps are needed for a final release. Updating release notes plugin is optional for pre-releases
 * Primary distribution channel is PyPi.
+* Following steps are needed for a final release. Updating release notes plugin is optional for pre-releases::
 
-::
   > paver test
   > paver set_version 1.xx
   > paver register
@@ -110,13 +109,12 @@ Releasing
   > git commit -am 'Version 1.xx'
   > git tag 1.xx
   > git push --tags
-::
+  
 
-* For final releases, create Windows installer with following command and upload it to GitHub
+* For final releases, create Windows installer with following command and upload it to GitHub::
 
-::
   > paver bdist_wininst
-::
+  
 
 * Announce on usergroup, robot homepage, and twitter
 
