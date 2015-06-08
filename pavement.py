@@ -204,10 +204,9 @@ def _prepare_build():
 
 
 @task
-@consume_args
-def _release_notes(args):
+def _release_notes():
     if FINAL_RELEASE:
-        changes = _download_and_format_issues(VERSION, args[0])
+        changes = _download_and_format_issues(VERSION)
         _update_release_notes_plugin(changes)
 
 
@@ -259,7 +258,7 @@ def _after_distribution():
     _clean(keep_dist=True)
 
 
-def _download_and_format_issues(milestone, username):
+def _download_and_format_issues(milestone):
     try:
         from robot.utils import HtmlWriter, html_format
     except ImportError:
@@ -271,7 +270,7 @@ def _download_and_format_issues(milestone, username):
     for header in ['ID', 'Type', 'Priority', 'Summary']:
         writer.element('td', header, escape=False)
     writer.end('tr')
-    issues = list(_get_issues('1.4', username))
+    issues = list(_get_issues(milestone))
     for issue in issues:
         link_tmpl = '<a href="http://github.com/robotframework/RIDE/issues/{0}">Issue {0}</a>'
         row = [link_tmpl.format(issue.number),
@@ -297,8 +296,8 @@ def _update_release_notes_plugin(changes):
 @task
 @consume_args
 def release_notes(args):
-    milestone, username = args
-    issues = _get_issues(milestone, username)
+    milestone = args[0]
+    issues = _get_issues(milestone)
     print """ID  | Type | Priority | Summary
 --- | ---- | -------- | ------- """
     for i in issues:
@@ -306,9 +305,10 @@ def release_notes(args):
                           find_priority(i), i.title))
 
 
-def _get_issues(milestone, username):
+def _get_issues(milestone):
     import getpass
     from github3 import login
+    username = raw_input('Enter GitHub username for downloading issues: ')
     password = getpass.getpass(
         'Github password for {user}: '.format(user=username))
     gh = login(username, password=password)
