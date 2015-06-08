@@ -28,6 +28,7 @@ from robotide.spec.iteminfo import TestCaseUserKeywordInfo,\
     ResourceUserKeywordInfo, VariableInfo, _UserKeywordInfo, ArgumentInfo
 from robotide.namespace.embeddedargs import EmbeddedArgsHandler
 from robotide.publish import PUBLISHER, RideSettingsChanged
+from robotide.robotapi import VariableFileSetter
 
 
 installation_path = os.path.normpath(
@@ -74,6 +75,8 @@ class Namespace(object):
                     sys.path.remove(BUNDLED_LIBRARIES_PATH)
                     sys.path.append(REMOTE_LIB_PATH)
                 self._settings.set('installed robot version', rf_version)
+        elif BUNDLED_LIBRARIES_PATH not in sys.path:
+            sys.path.insert(0, BUNDLED_LIBRARIES_PATH)
         for path in self._settings.get('pythonpath', []):
             if path not in sys.path:
                 normalized = path.replace('/', os.sep)
@@ -167,8 +170,9 @@ class Namespace(object):
         start_normalized = utils.normalize(start)
         self._add_kw_arg_vars(controller, ctx.vars)
         variables = self._retriever.get_variables_from(datafile, ctx)
-        return (v for v in variables
+        sugs = (v for v in variables
                 if utils.normalize(v.name).startswith(start_normalized))
+        return sugs
 
     def _add_kw_arg_vars(self, controller, variables):
         for name, value in controller.get_local_variables().iteritems():
@@ -295,7 +299,7 @@ class _VariableStash(object):
         '${PREV_TEST_MESSAGE}': '',
         '${CURDIR}': '.',
         '${TEST_NAME}': '',
-        '@{TEST_TAGS}': '',
+        '@{TEST_TAGS}': [],
         '${TEST_STATUS}': '',
         '${TEST_MESSAGE}': '',
         '${SUITE_NAME}': '',
@@ -314,7 +318,7 @@ class _VariableStash(object):
 
     def set(self, name, value, source):
         self._vars[name] = value
-        self._sources[name] = source
+        self._sources[name[2:-1]] = source
 
     def set_argument(self, name, value):
         self.set(name, value, self.ARGUMENT_SOURCE)
@@ -326,24 +330,29 @@ class _VariableStash(object):
             return self._vars.replace_string(value, ignore_errors=True)
 
     def set_from_variable_table(self, variable_table):
+        reader = robotapi.VariableTableReader()
         for variable in variable_table:
             try:
-                if not self._vars.has_key(variable.name):
-                    _, value = self._vars._get_var_table_name_and_value(
-                        variable.name, variable.value,
-                        variable.report_invalid_syntax)
-                    self.set(variable.name, value, variable_table.source)
+                if variable.name not in self._vars.store:
+                    _, value = reader._get_name_and_value(
+                        variable.name,
+                        variable.value,
+                        variable.report_invalid_syntax
+                    )
+                    self.set(variable.name, value.resolve(self._vars), variable_table.source)
             except robotapi.DataError:
                 if robotapi.is_var(variable.name):
                     self.set(variable.name, '', variable_table.source)
 
     def set_from_file(self, varfile_path, args):
-        for item in variablefetcher.import_varfile(varfile_path, args):
-            self.set(*item)
+        for name, value in VariableFileSetter(None)._import_if_needed(varfile_path, args):
+            self.set(name, value, varfile_path)
 
     def __iter__(self):
-        for name, value in self._vars.items():
+        for name, value in self._vars.store.data.items():
             source = self._sources[name]
+            prefix = '@' if utils.is_list_like(value) else '$'
+            name = '{0}{{{1}}}'.format(prefix, name)
             if source == self.ARGUMENT_SOURCE:
                 yield ArgumentInfo(name, value)
             else:

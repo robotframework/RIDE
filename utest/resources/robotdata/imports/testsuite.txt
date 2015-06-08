@@ -6,11 +6,9 @@ Library   String  # A built in library from PYTHONPATH
 Library   libs//existing.py
 Library   libs//none_existing.py  AS  nothing
 Library   libs//corrupted.py
-Library   libs//exiting.py
 Library   ${LIB}
 Variables  vars//vars.py
 Variables  vars//none_existing.py
-Variables  vars//exiting.py
 
 *** Variables ***
 ${RESU}  res//with_variable.txt

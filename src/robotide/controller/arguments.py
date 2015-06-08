@@ -38,5 +38,6 @@ def parse_argument(argument):
     if match:
         return (match.group(1), match.group(2))
     if is_var(argument):
-        return (argument, None)
+        value = '' if variablematcher.is_scalar_variable(argument) else []
+        return (argument, value)
     return None

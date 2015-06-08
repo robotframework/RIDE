@@ -18,6 +18,7 @@ class TestImports(unittest.TestCase):
         data_file = data_file or self
         for i in data_file.imports:
             if i.name == name:
+                print i.name
                 return i
         raise AssertionError('No import found with name "%s"' % name)
 
@@ -56,9 +57,6 @@ class TestImports(unittest.TestCase):
 
     def test_importing_none_existing_variable_file_has_error(self):
         self._has_error('vars//none_existing.py')
-
-    def test_importing_exiting_variable_file_has_error(self):
-        self._has_error('vars//exiting.py')
 
     def test_library_import_in_subsuite_init_file_with_relative_path_has_no_error(self):
         self._has_no_error('..//outer_lib.py', self.project.data.suites[0])

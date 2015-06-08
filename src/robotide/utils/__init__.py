@@ -20,7 +20,7 @@ import robot.utils
 from robot.utils import printable_name, normalize, eq, ET, \
     HtmlWriter, NormalizedDict, timestr_to_secs, secs_to_timestr, normpath,\
     unic, asserts, unescape, html_escape, html_attr_escape,\
-    get_timestamp, matches
+    get_timestamp, Matcher, is_list_like, is_dict_like
 
 from eventhandler import RideEventHandler
 from printing import Printing

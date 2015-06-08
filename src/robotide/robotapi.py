@@ -27,12 +27,14 @@ from robot.parsing.tablepopulators import (UserKeywordPopulator,
     TestCasePopulator)
 from robot.parsing.txtreader import TxtReader
 from robot.running import TestLibrary
-from robot.running.namespace import STDLIB_NAMES
+from robot.libraries import STDLIBS as STDLIB_NAMES
 from robot.running.usererrorhandler import UserErrorHandler
-from robot.running.userkeyword import EmbeddedArgsTemplate
+from robot.running.arguments.embedded import EmbeddedArgumentParser
 from robot.utils import normpath, NormalizedDict
 from robot.variables import Variables as RobotVariables
 from robot.variables import is_scalar_var, is_list_var, is_var, VariableSplitter
+from robot.variables.filesetter import VariableFileSetter
+from robot.variables.tablesetter import VariableTableReader
 from robot.version import get_version
 
 ROBOT_VERSION = get_version()

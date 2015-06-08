@@ -1,6 +1,7 @@
 import sys
 import unittest
 
+from robotide.context import IS_WINDOWS
 from robot.parsing.settings import Resource
 from robot.parsing.model import VariableTable, TestDataDirectory
 from robot.utils import robotpath
@@ -12,7 +13,6 @@ from robotide.robotapi import TestCaseFile
 from robotide.controller.filecontrollers import DataController
 from datafilereader import *
 from robotide.spec.iteminfo import ArgumentInfo, VariableInfo
-from robotide.context import IS_WINDOWS
 from robotide.spec.librarymanager import LibraryManager
 
 RESOURCES_DIR = 'resources'
@@ -372,6 +372,9 @@ class TestKeywordSearch(_DataFileTest):
 
 class TestVariableStash(unittest.TestCase):
 
+    def _variable_stash_contains(self, name, vars):
+        assert_true('${{{}}}'.format(name) in [v.name for v in vars])
+
     def test_variable_resolving(self):
         vars = _VariableStash()
         var_table = VariableTable(ParentMock())
@@ -379,7 +382,7 @@ class TestVariableStash(unittest.TestCase):
         var_table.add('${var2}', 'bar')
         vars.set_from_variable_table(var_table)
         result = vars.replace_variables('hoo${var1}hii${var2}huu')
-        assert_equals('hoofoohiibarhuu',result)
+        assert_equals('hoofoohiibarhuu', result)
 
     def test_variable_resolving_with_unresolvable_value(self):
         vars = _VariableStash()
@@ -387,13 +390,13 @@ class TestVariableStash(unittest.TestCase):
         var_table.add('${var1}', '${unresolvable variable}')
         var_table.add('${var2}', 'bar')
         vars.set_from_variable_table(var_table)
-        assert_true('${var1}' in [v.name for v in vars])
-        assert_true('${var2}' in [v.name for v in vars])
+        self._variable_stash_contains('var1', vars)
+        self._variable_stash_contains('var2', vars)
 
     def test_has_default_values(self):
         vars = _VariableStash()
-        assert_true('${SPACE}' in [v.name for v in vars])
-        assert_true('${PREV_TEST_MESSAGE}' in [v.name for v in vars])
+        self._variable_stash_contains('SPACE', vars)
+        self._variable_stash_contains('PREV_TEST_MESSAGE', vars)
 
     def test_global_variable_trues_value_is_replaced_with_true(self):
         assert_equals(_VariableStash().replace_variables('${True}'), True)

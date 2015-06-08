@@ -1,9 +1,9 @@
 import unittest
-from robot.parsing.model import TestCaseFile
 
+from robotide.controller import Project
 from robot.utils.asserts import assert_equals, assert_true, assert_false
 from resources import FakeSettings
-from robotide.controller import Project
+from robot.parsing.model import TestCaseFile
 from robotide.controller.macrocontrollers import KEYWORD_NAME_FIELD
 from robotide.controller.commands import Undo, FindOccurrences, FindVariableOccurrences, NullObserver, RenameKeywordOccurrences, ChangeCellValue
 from robotide.controller.filecontrollers import (TestCaseFileController,
@@ -277,11 +277,11 @@ class FindVariableOccurrencesTest(unittest.TestCase):
     def test_occurrences_local_variable(self):
         check_for_variable_occurrences(self._case2, "${log}", ((self._case2.name, 'Steps', 2),
                                                            (self._case2.name, 'Documentation', 1)))
-        
+
         check_for_variable_occurrences(self._kw2, "${arg1}", ((self._kw2.name, 'Arguments', 1),
                                                             (self._kw2.name, 'Documentation', 1),
                                                             (self._kw2.name, 'Steps', 1)))
-        
+
         check_for_variable_occurrences(self._kw2, "@{arg2}", ((self._kw2.name, 'Arguments', 1),
                                                             (self._kw2.name, 'Teardown', 1),
                                                             (self._kw2.name, 'Steps', 1)))
@@ -291,7 +291,7 @@ class FindVariableOccurrencesTest(unittest.TestCase):
                                                             (self._case1.name, 'Setup', 1),
                                                             (self._case3.name, 'Steps', 1),
                                                             (self._suite1.name, 'Variable Table', 1)))
-        
+
         check_for_variable_occurrences(self._kw2, "${resVar}", ((self._resource1.name, 'Variable Table', 1),
                                                             (self._kw2.name, 'Steps', 1),
                                                             (self._kw1.name, 'Teardown', 1),
@@ -304,7 +304,7 @@ class FindVariableOccurrencesTest(unittest.TestCase):
                                                             (self._kw1.name, 'Teardown', 1),
                                                             (self._case5.name, 'Steps', 1),
                                                             (self._case5.name, 'Documentation', 1)))
-    
+
     def test_occurrences_external_file_variable(self):
         check_for_variable_occurrences(self._case2, "${ServerHost}", ((self._case1.name, 'Steps', 1),
                                                             (self._case2.name, 'Steps', 1),
@@ -313,7 +313,7 @@ class FindVariableOccurrencesTest(unittest.TestCase):
         check_for_variable_occurrences(self._case5, "${ServerHost}", ((self._case1.name, 'Steps', 1),
                                                              (self._case2.name, 'Steps', 1),
                                                              (self._case5.name, 'Steps', 1)))
-        
+
         check_for_variable_occurrences(self._case1, "${ServerPort}", ((self._case1.name, 'Steps', 1),
                                                                        (self._kw1.name, 'Steps', 1)))
 
@@ -322,11 +322,11 @@ class FindVariableOccurrencesTest(unittest.TestCase):
                                                              (self._case6.name, 'Setup', 1),
                                                              (self._case6.name, 'Steps', 1),
                                                              (self._kw1.name, 'Steps', 1)))
-        
+
         check_for_variable_occurrences(self._case6, "${False}", ((self._case6.name, 'Documentation', 1),
                                                              (self._case1.name, 'Steps', 1),
                                                              (self._kw1.name, 'Steps', 1)))
-        
+
         check_for_variable_occurrences(self._case3, "${EMPTY}", ((self._resource1.name, 'Variable Table', 1),
                                                              (self._case3.name, 'Steps', 1)))
 
@@ -486,4 +486,3 @@ class RenameOccurrenceTest(unittest.TestCase):
     def _add_step(self, keyword):
         self.test_ctrl.execute(ChangeCellValue(100, 100, keyword))
         self._steps_have_changed = False
-

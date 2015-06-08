@@ -75,4 +75,4 @@ def contains_scalar_variable(value):
 
 
 def value_contains_variable(value, varname):
-    return utils.matches(value, "*%s*" % varname)
+    return utils.Matcher("*%s*" % varname).match(value)

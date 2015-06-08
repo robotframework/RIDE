@@ -1,12 +1,12 @@
 import unittest
 import sys
 import os
-from robot.running.timeouts.stoppablethread import Thread
+from robotide.spec.librarymanager import LibraryManager
+from threading import Thread
 
 from robotide.namespace.cache import LibraryCache
 
 from resources import DATAPATH
-from robotide.spec.librarymanager import LibraryManager
 
 sys.path.append(os.path.join(DATAPATH, 'libs'))
 
@@ -41,8 +41,8 @@ class TestLibraryCache(unittest.TestCase):
         def check_test_lib_keyword():
             cache.get_default_keywords()
             self._thread_results.append('ok')
-        t1 = Thread(runner=check_test_lib_keyword)
-        t2 = Thread(runner=check_test_lib_keyword)
+        t1 = Thread(target=check_test_lib_keyword)
+        t2 = Thread(target=check_test_lib_keyword)
         t1.start()
         t2.start()
         t1.join()

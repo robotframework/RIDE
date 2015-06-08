@@ -1,6 +1,6 @@
 import unittest
-from robot.utils.asserts import assert_equals, assert_false, assert_true
 import datafilereader
+from robot.utils.asserts import assert_equals, assert_false, assert_true
 
 
 class TestLocalNamespace(unittest.TestCase):
@@ -9,6 +9,7 @@ class TestLocalNamespace(unittest.TestCase):
         self._project = datafilereader.construct_project(datafilereader.SIMPLE_PROJECT)
         self._test = datafilereader.get_ctrl_by_name('Test Case', self._project.datafiles[0].tests)
         self._keyword = datafilereader.get_ctrl_by_name('Keyword', self._project.datafiles[0].keywords)
+        print self._keyword
 
     def tearDown(self):
         self._project.close()

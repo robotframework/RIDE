@@ -8,7 +8,7 @@ from resources.mocks import FakeSettings
 
 
 def test_bundled_libraries_path_is_in_sys_path_by_default():
-    assert_true(namespace.BUNDLED_LIBRARIES_PATH in sys.path)
+    assert_true(namespace.BUNDLED_LIBRARIES_PATH in sys.path, sys.path)
 
 
 @patch.object(robotlibraryloader, 'find_installed_robot_libraries')
