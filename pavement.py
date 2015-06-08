@@ -296,7 +296,6 @@ def _update_release_notes_plugin(changes):
 
 @task
 def release_notes():
-    milestone = args[0]
     issues = _get_issues()
     print """ID  | Type | Priority | Summary
 --- | ---- | -------- | ------- """

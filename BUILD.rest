@@ -88,22 +88,6 @@ Additionally, there's a special case when writing event handler methods. We
 have chosen to name event handlers following this pattern: `OnEventName` (e.g.
 `OnMouseClick`).
 
-Variable names
---------------
-
-Instance variables also follow the `lowercase_with_underscore` naming
-convention.  Additionally, a leading underscore indicates that the variable is
-considered private.
-
-Global variables (provided there's really a need for such) use `ALL_CAPS`
-style.
-
-Getters and setters
--------------------
-
-We follow the Pythonic way of not implementing getters and setters in the case
-where direct attribute access is sufficient
-
 
  http://www.python.org/dev/peps/pep-0008/
 
@@ -111,101 +95,31 @@ where direct attribute access is sufficient
 Releasing
 =========
 
-* All positive (and negative) value from development to the end users comes only after you have released what you have made.
-* Every day you keep postponing release will remove some value you could have added by releasing today (fixed bugs are still in production and new features are still not there).
 * Release early and often!
-
-Currently (10.8.2012) RIDE is used in many differing environments by a rather large userbase (reported bugs per feature is 1.56 - compared to RF:s 0.75).
-Thus simulating (testing) all the possible use cases is more or less impossible (NOTE: You should still try to test all the relevant cases).
-We can still keep the user observed quality good by doing small changes at a time and reacting fast to any observed regressions.
-This should efficiently limit the number of users that encounter a specific defect.
-
 * **Consider making a preview release** - this will give you possibility to test the new release with friendly real users
-
-Remember the "good old" times - these are not the only ones:
-
-  * https://groups.google.com/d/topic/robotframework-users/C4SdqaqLFcw/discussion
-  * https://groups.google.com/d/topic/robotframework-users/_7D3MR9fMQw/discussion
-  * https://groups.google.com/d/topic/robotframework-users/Al7PpTfpUgw/discussion
-
-And then positive examples from previews:
-
-  * https://groups.google.com/d/topic/robotframework-users/02kWX2nnfds/discussion
-  * https://groups.google.com/d/topic/robotframework-users/rjyPg8C7FXM/discussion - most of the discussion in this case is not public but without it we would have been in a lot of trouble (multiprocessing was removed from library database)
-
-* Usually I try to do releases before lunch - this gives us some time to react to possible regressions during the release day
-* Avoid releasing on Fridays! - lousy reaction time (or weekend work) if there is a regression
 * Manually test run RIDE in windows, linux and OSX
-* Update the ReleaseNotes with "python get_issues.py rotes ride 0.xx" (the script is from robotframework-wiki-project / tools)
+* Following steps are needed for a final release. Updating release notes plugin is optional for pre-releases
+* Primary distribution channel is PyPi.
 
 ::
-
   > paver test
-  > paver set_version 0.xx
-  > paver sdist
-  > git commit -am 'Version 0.xx'
-  > git tag 0.xx
-  > git push
-  > git push --tags
-
-* currently (10.8.2012) it seems that something creates garbage to development directory so I always take a new clone for distribution packages
-
-::
-
-  > cd ..
-  > git clone [your local ride clone] ride-release
-  > cd ride-release
-  > git checkout 0.xx
-  > paver sdist OR paver wininst
-  > cd ..
-
-* Upload new packages to github
-* Register new packages to PyPI - the Python Package Index.
-  NOTE! RIDE automatic update notifier checks updates from PyPI - so no update notifications without this step.
-
-::
-
+  > paver set_version 1.xx
   > paver register
+  > paver release_notes_plugin
+  > paver sdist upload
+  > git commit -am 'Version 1.xx'
+  > git tag 1.xx
+  > git push --tags
+::
+
+* For final releases, create Windows installer with following command and upload it to GitHub
+
+::
+  > paver bdist_wininst
+::
 
 * Announce on usergroup, robot homepage, and twitter
 
-Minor releases
-==============
-
-If there for some reason is a critical problem with a new release, it is important to get that fixed quickly.
-The user observed quality is somewhat based on time. Less time that a critical problem exists implies
-less users affected by the critical problem. Also the users that have been affected by the problem will
-see quick resolution as a quality attribute - we are listening to them and doing things to help them versus
-we are ignoring there problems.
-
-* First things first: Fix the problem and commit
-
-If there are other work already commited to master:
-
-* Checkout the tagged release to a new branch - mitigate the probability of introducing new defects
-
-::
-
-  > git checkout 0.xx -b 0.xx.x
-
-* Cherrypick the fix to that branch
-
-::
-
-  > git cherry-pick FIX_COMMIT
-
-* Make a new tagged minor release from that branch
-
-::
-
-  > git push origin 0.xx.x
-  > paver test
-  > paver set_version 0.xx.y
-  > paver sdist
-  > git commit -am 'Version 0.xx.y'
-  > git tag 0.xx.y
-  > git push
-  > git push --tags
 
 Settings migration
 ==================
