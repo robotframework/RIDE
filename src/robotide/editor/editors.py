@@ -102,7 +102,7 @@ class _RobotTableEditor(EditorPanel):
         mx, my = wx.GetMousePosition()
         tx, ty = self._last_shown_tooltip.screen_position
         dx, dy = self._last_shown_tooltip.size
-        return (mxa < tx or mx > tx+dx) or (my < ty or my > ty+dy)
+        return (mx < tx or mx > tx+dx) or (my < ty or my > ty+dy)
 
     def tooltip_allowed(self, tooltip):
         if wx.GetMouseState().ControlDown() or \
