@@ -86,7 +86,7 @@ WELCOME_TEXT = """
 # Release notes are updated automatically by package.py script whenever
 # a numbered distribution is created.
 RELEASE_NOTES = """
-<h2>Release notes for 1.4b2</h2>
+<h2>Release notes for 1.4b3</h2>
 <table border="1">
 <tr>
 <td><p><b>ID</b></p></td>
