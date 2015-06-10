@@ -7,36 +7,44 @@ from robot.utils.asserts import assert_equals, assert_true, assert_false,\
 from robotide.controller.cellinfo import CellType, ContentType, CellInfo,\
     CellContent, CellPosition
 
+
 class TestCellInfoErrors(unittest.TestCase):
 
     def test_empty_mandatory_is_error(self):
-        cell = CellInfo(CellContent(ContentType.EMPTY, '', ''), CellPosition(CellType.MANDATORY, None))
+        cell = CellInfo(CellContent(ContentType.EMPTY, '', ''),
+                        CellPosition(CellType.MANDATORY, None))
         assert_true(cell.has_error())
         assert_true(cell.argument_missing())
 
     def test_none_empty_mandatory_is_not_error(self):
-        cell = CellInfo(CellContent(ContentType.LIBRARY_KEYWORD, '', ''), CellPosition(CellType.MANDATORY, None))
+        cell = CellInfo(CellContent(ContentType.LIBRARY_KEYWORD, '', ''),
+                        CellPosition(CellType.MANDATORY, None))
         assert_false(cell.has_error())
         assert_false(cell.argument_missing())
 
     def test_commented_mandatory_is_error(self):
-        cell = CellInfo(CellContent(ContentType.COMMENTED, '', ''), CellPosition(CellType.MANDATORY, None))
+        cell = CellInfo(CellContent(ContentType.COMMENTED, '', ''),
+                        CellPosition(CellType.MANDATORY, None))
         assert_true(cell.has_error())
         assert_true(cell.argument_missing())
 
     def test_none_empty_mandatory_empty_is_error(self):
-        cell = CellInfo(CellContent(ContentType.STRING, '', ''), CellPosition(CellType.MUST_BE_EMPTY, None))
+        cell = CellInfo(CellContent(ContentType.STRING, '', ''),
+                        CellPosition(CellType.MUST_BE_EMPTY, None))
         assert_true(cell.has_error())
         assert_true(cell.too_many_arguments())
 
     def test_empty_mandatory_empty_is_not_error(self):
-        cell = CellInfo(CellContent(ContentType.EMPTY, '', ''), CellPosition(CellType.MUST_BE_EMPTY, None))
+        cell = CellInfo(CellContent(ContentType.EMPTY, '', ''),
+                        CellPosition(CellType.MUST_BE_EMPTY, None))
         assert_false(cell.has_error())
         assert_false(cell.too_many_arguments())
 
     def test_optional_has_no_error(self):
-        assert_false(CellInfo(CellContent(ContentType.EMPTY, '', ''), CellPosition(CellType.OPTIONAL, None)).has_error())
-        assert_false(CellInfo(CellContent(ContentType.STRING, '', ''), CellPosition(CellType.OPTIONAL, None)).has_error())
+        assert_false(CellInfo(CellContent(ContentType.EMPTY, '', ''),
+                              CellPosition(CellType.OPTIONAL, None)).has_error())
+        assert_false(CellInfo(CellContent(ContentType.STRING, '', ''),
+                              CellPosition(CellType.OPTIONAL, None)).has_error())
 
 
 class TestCellInfo(unittest.TestCase):
@@ -73,12 +81,6 @@ class TestCellInfo(unittest.TestCase):
         self._verify_string_change(0, 2, CellType.OPTIONAL)
         self._verify_string_change(0, 3, CellType.MUST_BE_EMPTY)
 
-    def test_list_variables_item_in_keyword_args(self):
-        self.test.execute(PasteArea((0,0), [[self.keyword5.name, '@{LIST_VARIABLE}[0]']]))
-        self._verify_cell_info(0, 0, ContentType.USER_KEYWORD, CellType.KEYWORD)
-        self._verify_cell_info(0, 1, ContentType.VARIABLE, CellType.MANDATORY)
-        self._verify_cell_info(0, 2, ContentType.EMPTY, CellType.MANDATORY)
-
     def test_keyword_with_optional_and_list_arguments(self):
         self.test.execute(ChangeCellValue(0, 0, self.keyword4.name))
         self._verify_cell_info(0, 0, ContentType.USER_KEYWORD, CellType.KEYWORD)
@@ -94,6 +96,26 @@ class TestCellInfo(unittest.TestCase):
         self._verify_cell_info(0, 1, ContentType.UNKNOWN_VARIABLE, CellType.UNKNOWN)
         self._verify_cell_info(0, 2, ContentType.EMPTY, CellType.UNKNOWN)
         self._verify_cell_info(0, 3, ContentType.EMPTY, CellType.UNKNOWN)
+
+    def test_celltype_is_unknown_if_dict_var_given(self):
+        self.test.execute(ChangeCellValue(0, 0, self.keyword1.name))
+        self.test.execute(ChangeCellValue(0, 1, '&{vars}'))
+        self._verify_cell_info(0, 0, ContentType.USER_KEYWORD, CellType.KEYWORD)
+        self._verify_cell_info(0, 1, ContentType.UNKNOWN_VARIABLE, CellType.UNKNOWN)
+        self._verify_cell_info(0, 2, ContentType.EMPTY, CellType.UNKNOWN)
+        self._verify_cell_info(0, 3, ContentType.EMPTY, CellType.UNKNOWN)
+
+    def test_list_variables_item_in_keyword_args(self):
+        self.test.execute(PasteArea((0,0), [[self.keyword5.name, '@{LIST_VARIABLE}[0]']]))
+        self._verify_cell_info(0, 0, ContentType.USER_KEYWORD, CellType.KEYWORD)
+        self._verify_cell_info(0, 1, ContentType.VARIABLE, CellType.MANDATORY)
+        self._verify_cell_info(0, 2, ContentType.EMPTY, CellType.MANDATORY)
+
+    def test_dict_variables_item_in_keyword_args(self):
+        self.test.execute(PasteArea((0,0), [[self.keyword5.name, '&{DICT_VARIABLE}[foo]']]))
+        self._verify_cell_info(0, 0, ContentType.USER_KEYWORD, CellType.KEYWORD)
+        self._verify_cell_info(0, 1, ContentType.VARIABLE, CellType.MANDATORY)
+        self._verify_cell_info(0, 2, ContentType.EMPTY, CellType.MANDATORY)
 
     def test_variable_is_known_when_defining_it(self):
         self.test.execute(ChangeCellValue(0, 0, '${var}='))

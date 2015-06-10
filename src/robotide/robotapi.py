@@ -32,7 +32,8 @@ from robot.running.usererrorhandler import UserErrorHandler
 from robot.running.arguments.embedded import EmbeddedArgumentParser
 from robot.utils import normpath, NormalizedDict
 from robot.variables import Variables as RobotVariables
-from robot.variables import is_scalar_var, is_list_var, is_var, VariableSplitter
+from robot.variables import is_scalar_var, is_list_var, is_var, is_dict_var,\
+    VariableSplitter
 from robot.variables.filesetter import VariableFileSetter
 from robot.variables.tablesetter import VariableTableReader
 from robot.version import get_version

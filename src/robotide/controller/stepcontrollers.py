@@ -114,7 +114,7 @@ class StepController(_BaseController):
             return CellPosition(CellType.MUST_BE_EMPTY, None)
         if col >= args_amount and self._last_argument_is_varargs(args):
             return CellPosition(CellType.OPTIONAL, args[-1])
-        if self._has_list_var_value_before(col - 1):
+        if self._has_list_or_dict_var_value_before(col - 1):
             return CellPosition(CellType.UNKNOWN, None)
         if col > args_amount:
             return CellPosition(CellType.MUST_BE_EMPTY, None)
@@ -132,12 +132,15 @@ class StepController(_BaseController):
     def _last_argument_is_varargs(self, args):
         return args[-1].startswith('*')
 
-    def _has_list_var_value_before(self, arg_index):
+    def _has_list_or_dict_var_value_before(self, arg_index):
         for idx, value in enumerate(self.args):
             if idx > arg_index:
                 return False
             if variablematcher.is_list_variable(value) and \
                not variablematcher.is_list_variable_subitem(value):
+                return True
+            if robotapi.is_dict_var(value) and \
+               not variablematcher.is_dict_var_access(value):
                 return True
         return False
 

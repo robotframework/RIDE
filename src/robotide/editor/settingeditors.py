@@ -30,7 +30,7 @@ from robotide.utils.highlightmatcher import highlight_matcher
 from .formatters import ListToStringFormatter
 from .gridcolorizer import ColorizationSettings
 from .editordialogs import EditorDialog, DocumentationDialog, MetadataDialog,\
-    ScalarVariableDialog, ListVariableDialog, LibraryDialog,\
+    ScalarVariableDialog, ListVariableDialog, DictionaryVariableDialog, LibraryDialog,\
     ResourceDialog, VariablesDialog
 from .listeditor import ListEditor
 from .popupwindow import HtmlPopupWindow
@@ -361,7 +361,7 @@ class _AbstractListEditor(ListEditor):
 
 class VariablesListEditor(_AbstractListEditor):
     _titles = ['Variable', 'Value', 'Comment']
-    _buttons = ['Add Scalar', 'Add List']
+    _buttons = ['Add Scalar', 'Add List', 'Add Dict']
 
     def __init__(self, parent, tree, controller):
         PUBLISHER.subscribe(
@@ -391,15 +391,19 @@ class VariablesListEditor(_AbstractListEditor):
         self._list.SetFocus()
 
     def OnAddScalar(self, event):
-        dlg = ScalarVariableDialog(self._controller)
-        if dlg.ShowModal() == wx.ID_OK:
-            ctrl = self._controller.add_variable(*dlg.get_value())
-            ctrl.set_comment(dlg.get_comment())
-            self.update_data()
-        dlg.Destroy()
+        self._show_dialog(
+            ScalarVariableDialog(self._controller))
 
     def OnAddList(self, event):
-        dlg = ListVariableDialog(self._controller, plugin=self.Parent.plugin)
+        self._show_dialog(
+            ListVariableDialog(self._controller, plugin=self.Parent.plugin))
+
+    def OnAddDict(self, event):
+        self._show_dialog(
+            DictionaryVariableDialog(self._controller,
+                                     plugin=self.Parent.plugin))
+
+    def _show_dialog(self, dlg):
         if dlg.ShowModal() == wx.ID_OK:
             ctrl = self._controller.add_variable(*dlg.get_value())
             ctrl.set_comment(dlg.get_comment())
@@ -416,9 +420,12 @@ class VariablesListEditor(_AbstractListEditor):
     def _open_var_dialog(self, var):
         if var.name.startswith('${'):
             dlg = ScalarVariableDialog(self._controller, item=var)
-        else:
+        elif var.name.startswith('@{'):
             dlg = ListVariableDialog(self._controller, item=var,
                                      plugin=self.Parent.plugin)
+        elif var.name.startswith('&{'):
+            dlg = DictionaryVariableDialog(self._controller, item=var,
+                                           plugin=self.Parent.plugin)
         if dlg.ShowModal() == wx.ID_OK:
             name, value = dlg.get_value()
             var.execute(UpdateVariable(name, value, dlg.get_comment()))

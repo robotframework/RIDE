@@ -65,6 +65,7 @@ def _add_variable_table(tcf):
     tcf.variable_table.add(EXTENSION_VAR, EXTENSION)
     tcf.variable_table.add(UNRESOLVABLE_VARIABLE, UNKNOWN_VARIABLE)
     tcf.variable_table.add(COLLIDING_CONSTANT, 'collision')
+    tcf.variable_table.add('&{dict var}', {'key': 'value'})
 
 def _add_keyword_table(tcf):
     uk_table = tcf.keyword_table
@@ -197,15 +198,22 @@ class TestKeywordSuggestions(_DataFileTest):
         sugs = self.ns.get_suggestions_for(self.kw, 'Resu UK')
         self._assert_import_kws(sugs, 'resu.txt')
 
-    def test_variable_suggestion(self):
+    def test_scalar_variable_suggestion(self):
         scalar_vars = self.ns.get_suggestions_for(self.kw, '$')
         assert_true(len(scalar_vars) > 0)
         assert_true(len(self.ns.get_suggestions_for(self.kw, '${')) == len(scalar_vars))
+        sug = self.ns.get_suggestions_for(self.kw, '${lib')
+        assert_true(sug[0].name == LIB_NAME_VARIABLE)
+
+    def test_list_variable_suggestion(self):
         list_vars = self.ns.get_suggestions_for(self.kw, '@')
         assert_true(len(list_vars) > 0)
         assert_true(len(self.ns.get_suggestions_for(self.kw, '@{')) == len(list_vars))
-        sug = self.ns.get_suggestions_for(self.kw, '${lib')
-        assert_true(sug[0].name == LIB_NAME_VARIABLE)
+
+    def test_dict_variable_suggestion(self):
+        dict_vars = self.ns.get_suggestions_for(self.kw, '&')
+        assert_true(len(dict_vars) > 0)
+        assert_true(len(self.ns.get_suggestions_for(self.kw, '&{')) == len(dict_vars))
 
     def test_variable_suggestions_without_varwrapping(self):
         self._test_global_variable('space', '${SPACE}')
@@ -383,6 +391,21 @@ class TestVariableStash(unittest.TestCase):
         vars.set_from_variable_table(var_table)
         result = vars.replace_variables('hoo${var1}hii${var2}huu')
         assert_equals('hoofoohiibarhuu', result)
+
+    def test_list_variable_index_resolving(self):
+        vars = _VariableStash()
+        var_table = VariableTable(ParentMock())
+        var_table.add('@{var}', ['foo', 'bar'])
+        vars.set_from_variable_table(var_table)
+        assert_equals('Hi, foo!', vars.replace_variables('Hi, @{var}[0]!'))
+
+    def test_dict_variable_key_resolving(self):
+        vars = _VariableStash()
+        var_table = VariableTable(ParentMock())
+        var_table.add('&{var}', ['foo=bar'])
+        vars.set_from_variable_table(var_table)
+        assert_equals('Hi, bar!', vars.replace_variables('Hi, &{var}[foo]!'))
+
 
     def test_variable_resolving_with_unresolvable_value(self):
         vars = _VariableStash()

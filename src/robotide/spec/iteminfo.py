@@ -105,6 +105,7 @@ class LocalVariableInfo(VariableInfo):
     def __init__(self, name):
         VariableInfo.__init__(self, name, '', self.SOURCE)
 
+
 class _KeywordInfo(ItemInfo):
 
     def __init__(self, item):
@@ -139,6 +140,7 @@ class _KeywordInfo(ItemInfo):
         return 'KeywordInfo[name: %s, source: %s, doc: %s]' %(self.name,
                                                               self.source,
                                                               self.doc)
+
     def _name(self, item):
         return item.name
 
@@ -219,6 +221,8 @@ class _UserKeywordInfo(_KeywordInfo):
                 parsed.append(self._parse_name_and_default(arg))
             elif self._is_list(arg):
                 parsed.append(self._parse_vararg(arg))
+            elif self._is_dict(arg):
+                parsed.append(self._parse_kwarg(arg))
         return parsed
 
     def _is_scalar(self, arg):
@@ -237,8 +241,14 @@ class _UserKeywordInfo(_KeywordInfo):
     def _is_list(self, arg):
         return arg.startswith('@')
 
+    def _is_dict(self, arg):
+        return arg.startswith('&')
+
     def _parse_vararg(self, arg):
         return '*' + self._strip_var_syntax_chars(arg)
+
+    def _parse_kwarg(self, arg):
+        return '**' + self._strip_var_syntax_chars(arg)
 
 
 class TestCaseUserKeywordInfo(_UserKeywordInfo):

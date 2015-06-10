@@ -19,23 +19,26 @@ _VAR_BODY = r'([^\}]|\\\})*'
 _SCALAR_VARIABLE_MATCHER = re.compile(r'\$\{'+_VAR_BODY+'\}')
 _SCALAR_VARIABLE_LINE_MATCHER = re.compile(r'^(\$\{'+_VAR_BODY+'\}) *=?$')
 _LIST_VARIABLE_MATCHER = re.compile(r'^(@\{'+_VAR_BODY+'\})( ?=?|\[\d*\])$')
-_LIST_VARIABLE_SUBITEM_END_MATCHER = re.compile(r'\[\d+\]\s*(=\s*)?$')
+_DICT_VARIABLE_MATCHER = re.compile(r'^(&\{'+_VAR_BODY+'\})( ?=?|\[[a-zA-Z_]*\])$')
+_LIST_VARIABLE_SUBITEM_END_MATCHER = re.compile(r'\[\d+\]$')
+_DICT_VARIABLE_SUBITEM_END_MATCHER = re.compile(r'\[[a-zA-Z_]+\]$')
 
 
 def is_variable(value):
-    return is_scalar_variable(value) or is_list_variable(value)
+    return is_scalar_variable(value) or is_list_variable(value) or \
+        is_dict_variable(value)
 
 
 def is_scalar_variable(value):
-    return _match_scalar_variable(value)
-
-
-def _match_scalar_variable(value):
     return _SCALAR_VARIABLE_LINE_MATCHER.match(value.strip())
 
 
 def is_list_variable(value):
-    return _match_list_variable(value)
+    return _LIST_VARIABLE_MATCHER.match(value.strip())
+
+
+def is_dict_variable(value):
+    return _DICT_VARIABLE_MATCHER.match(value.strip())
 
 
 def is_list_variable_subitem(value):
@@ -43,8 +46,9 @@ def is_list_variable_subitem(value):
         _LIST_VARIABLE_SUBITEM_END_MATCHER.search(value)
 
 
-def _match_list_variable(value):
-    return _LIST_VARIABLE_MATCHER.match(value.strip())
+def is_dict_var_access(value):
+    return is_dict_variable(value) and \
+        _DICT_VARIABLE_SUBITEM_END_MATCHER.search(value)
 
 
 def get_variable(value):

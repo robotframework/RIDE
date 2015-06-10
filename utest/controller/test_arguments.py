@@ -58,8 +58,9 @@ class TestArgument(unittest.TestCase):
         assert_equals(arg, ('${my arg}', 'huh\\}uu'))
 
     def test_invalid_argument(self):
-        arg = parse_argument('${my invalid')
-        assert_none(arg)
+        name, value = parse_argument('${my invalid')
+        assert_none(name)
+        assert_none(value)
 
 
 if __name__ == "__main__":
