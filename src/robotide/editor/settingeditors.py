@@ -209,7 +209,7 @@ class SettingValueDisplay(wx.TextCtrl):
             style=wx.TE_RICH | wx.TE_MULTILINE)
         self.SetEditable(False)
         self._colour_provider = ColorizationSettings(
-            parent.plugin.global_settings)
+            parent.plugin.global_settings['Grid'])
         self._empty_values()
 
     def _empty_values(self):
