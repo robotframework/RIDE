@@ -150,7 +150,7 @@ def test_parallel():
 
 
 @task
-@needs('_prepare_build', 'setuptools.command.install')
+@needs('setuptools.command.install')
 def install():
     """Installs development version and dependencies"""
     try:
@@ -163,7 +163,7 @@ def install():
 
 
 @task
-@needs('_prepare_build', 'setuptools.command.register')
+@needs('setuptools.command.register')
 def register():
     """Register current version to Python package index"""
     pass
@@ -189,8 +189,7 @@ def sdist():
 
 
 @task
-@needs('_windows', 'clean', '_prepare_build',
-       'setuptools.command.bdist_wininst')
+@needs('_windows', 'clean', 'setuptools.command.bdist_wininst')
 def wininst():
     """Creates Windows installer with bundled dependencies"""
     _after_distribution()
