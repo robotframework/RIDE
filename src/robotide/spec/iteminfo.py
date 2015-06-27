@@ -78,6 +78,26 @@ class VariableInfo(ItemInfo):
     def _source_name(self, source):
         return unicode(os.path.basename(source)) if source else ''
 
+    def name_matches(self, pattern):
+        normalized = utils.normalize(self._undecorate(pattern))
+        return utils.normalize(self.name[2:-1]).startswith(normalized)
+
+    def _undecorate(self, pattern):
+        def get_prefix_length():
+            if pattern[0] not in ['$', '@', '&']:
+                return 0
+            elif len(pattern) > 1 and pattern[1] == '{':
+                return 2
+            else:
+                return 1
+        if not pattern:
+            return pattern
+        without_prefix = pattern[get_prefix_length():]
+        if pattern[-1] == '}':
+            return without_prefix[:-1]
+        else:
+            return without_prefix
+
     @property
     def details(self):
         value = self._value
@@ -97,6 +117,7 @@ class ArgumentInfo(VariableInfo):
 
     def __init__(self, name, value):
         VariableInfo.__init__(self, name, value, self.SOURCE)
+
 
 class LocalVariableInfo(VariableInfo):
 

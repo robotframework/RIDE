@@ -406,7 +406,6 @@ class TestVariableStash(unittest.TestCase):
         vars.set_from_variable_table(var_table)
         assert_equals('Hi, bar!', vars.replace_variables('Hi, &{var}[foo]!'))
 
-
     def test_variable_resolving_with_unresolvable_value(self):
         vars = _VariableStash()
         var_table = VariableTable(ParentMock())

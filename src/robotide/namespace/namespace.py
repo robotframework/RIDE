@@ -134,14 +134,11 @@ class Namespace(object):
         ctx = self._context_factory.ctx_for_controller(controller)
         sugs = set()
         sugs.update(self._get_suggestions_from_hooks(datafile, start))
-        if self._blank(start) or self._looks_like_variable(start):
-            sugs.update(self._variable_suggestions(controller, start, ctx))
-        else:
-            for prefix in ['${', '@{', '&{']:
-                sugs.update(self._variable_suggestions(
-                    controller, prefix+start, ctx))
         if self._blank(start) or not self._looks_like_variable(start):
+            sugs.update(self._variable_suggestions(controller, start, ctx))
             sugs.update(self._keyword_suggestions(datafile, start, ctx))
+        else:
+            sugs.update(self._variable_suggestions(controller, start, ctx))
         sugs_list = list(sugs)
         sugs_list.sort()
         return sugs_list
@@ -163,12 +160,10 @@ class Namespace(object):
             or (len(start) >= 2 and start[:2] in ['${', '@{', '&{'])
 
     def _variable_suggestions(self, controller, start, ctx):
-        datafile = controller.datafile
-        start_normalized = utils.normalize(start)
         self._add_kw_arg_vars(controller, ctx.vars)
-        variables = self._retriever.get_variables_from(datafile, ctx)
-        sugs = (v for v in variables
-                if utils.normalize(v.name).startswith(start_normalized))
+        variables = self._retriever.get_variables_from(
+            controller.datafile, ctx)
+        sugs = (v for v in variables if v.name_matches(start))
         return sugs
 
     def _add_kw_arg_vars(self, controller, variables):
