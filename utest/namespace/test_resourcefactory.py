@@ -2,7 +2,7 @@ import os
 import unittest
 from robot.parsing.settings import _Import
 from resources import FakeSettings
-from robotide.context.platform import IS_WINDOWS
+from robotide.context import IS_WINDOWS
 from robotide.namespace.resourcefactory import ResourceFactory
 
 

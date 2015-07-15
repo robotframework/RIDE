@@ -15,7 +15,7 @@
 import os
 import shutil
 
-from robotide.context.platform import IS_WINDOWS
+from robotide.context import IS_WINDOWS
 from robotide.preferences.configobj import ConfigObj, ConfigObjError,\
     Section, UnreprError
 from robotide.preferences import excludes

@@ -14,7 +14,7 @@
 import wx
 from robot import utils
 from robotide.action.actioninfo import ActionInfoCollection, ActionInfo
-from robotide.context.platform import IS_WINDOWS, ctrl_or_cmd, bind_keys_to_evt_menu
+from robotide.context import IS_WINDOWS, ctrl_or_cmd, bind_keys_to_evt_menu
 from robotide.controller.commands import ChangeTag
 from robotide.controller.tags import Tag, DefaultTag
 from robotide.publish import RideTestSelectedForRunningChanged, PUBLISHER, RideNewProject, RideOpenSuite

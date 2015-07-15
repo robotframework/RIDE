@@ -17,7 +17,7 @@ import wx
 import wx.lib.mixins.listctrl as listmix
 import time
 import re
-from robotide.context.platform import IS_MAC
+from robotide.context import IS_MAC
 from robotide.ui.searchdots import DottedSearch
 from robotide.widgets import ButtonWithHandler, Label
 from robotide.spec.iteminfo import LibraryKeywordInfo
@@ -198,12 +198,12 @@ class ReviewDialog(wx.Frame):
         else:
             self._enable_filter()
         self._filter_pane.on_change(event)
-    
+
     def _disable_filter(self):
         self._runner.set_filter_active(False)
         self.label_filter_status.SetLabel('inactive')
         self.label_filter_status.SetForegroundColour(wx.RED)
-        
+
     def _enable_filter(self):
         self._runner.set_filter_active(True)
         self.label_filter_status.SetLabel('active')
@@ -480,7 +480,7 @@ class ResultListCtrl(wx.ListCtrl, listmix.CheckListCtrlMixin, listmix.ListCtrlAu
         print self._clientData
 
 class MyCollapsiblePane(wx.CollapsiblePane):
-    
+
     def __init__(self, parent, *args, **kwargs):
         wx.CollapsiblePane.__init__(self, parent, *args, **kwargs)
         self.Bind(wx.EVT_SIZE, self._recalc_size)

@@ -23,6 +23,7 @@ from robotide.ui import LoadProgressObserver
 from robotide.ui.mainframe import RideFrame
 from robotide.pluginapi import RideLogMessage
 from robotide import context, contrib
+from robotide.context import coreplugins
 from robotide.preferences import Preferences, RideSettings
 from robotide.application.pluginloader import PluginLoader
 from robotide.application.editorprovider import EditorProvider
@@ -49,7 +50,7 @@ class RIDE(wx.App):
         self.frame = RideFrame(self, self._controller)
         self._editor_provider = EditorProvider()
         self._plugin_loader = PluginLoader(self, self._get_plugin_dirs(),
-                                           context.get_core_plugins())
+                                           coreplugins.get_core_plugins())
         self._plugin_loader.enable_plugins()
         self.editor = self._get_editor()
         self.editor.show()

@@ -41,7 +41,7 @@ import robotide.utils as utils
 from Queue import Empty, Queue
 from robot.output.loggerhelper import LEVELS
 from robot.utils.encoding import SYSTEM_ENCODING
-from robotide.context.platform import IS_WINDOWS
+from robotide.context import IS_WINDOWS
 from robotide.contrib.testrunner import TestRunnerAgent
 from robotide.controller.testexecutionresults import TestExecutionResults
 

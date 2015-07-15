@@ -2,7 +2,7 @@ import unittest
 
 from robotide.action.actioninfo import ActionInfoCollection
 from robot.utils.asserts import assert_equals
-from robotide.context.platform import IS_MAC
+from robotide.context import IS_MAC
 
 
 def _check_mac(value, expected, expected_mac):

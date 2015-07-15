@@ -13,10 +13,8 @@
 #  limitations under the License.
 
 import wx
-from robotide.action import ActionInfo
 
-from robotide.context import IS_WINDOWS
-from robotide.context.platform import IS_MAC
+from robotide.context import IS_WINDOWS, IS_MAC
 
 
 class MenuBar(object):

@@ -18,7 +18,7 @@ from robotide.controller.commands import MoveUp, MoveDown, DeleteItem
 
 from robotide.utils import RideEventHandler
 from robotide.widgets import PopupMenu, PopupMenuItems, ButtonWithHandler, Font
-from robotide.context.platform import ctrl_or_cmd, bind_keys_to_evt_menu, IS_WINDOWS
+from robotide.context import ctrl_or_cmd, bind_keys_to_evt_menu, IS_WINDOWS
 
 
 class ListEditorBase(wx.Panel):
@@ -215,4 +215,3 @@ class AutoWidthColumnList(wx.ListCtrl, ListCtrlAutoWidthMixin):
             self.Select(index, on=True)
             self.EnsureVisible(index)
             self.Focus(index)
-
