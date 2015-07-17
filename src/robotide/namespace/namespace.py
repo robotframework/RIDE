@@ -20,7 +20,8 @@ import tempfile
 from itertools import chain
 
 from robotide import robotapi, utils
-from robotide.namespace import variablefetcher
+from robotide.context import SYSLOG
+from robotide.namespace import variablefetcher, robotlibraryloader
 from robotide.namespace.cache import LibraryCache, ExpiringCache
 from robotide.namespace.resourcefactory import ResourceFactory
 from robotide.spec.iteminfo import TestCaseUserKeywordInfo,\
@@ -44,14 +45,34 @@ class Namespace(object):
         self._lib_cache = LibraryCache(
             self._settings, self.update, self._library_manager)
         self._resource_factory = ResourceFactory(self._settings)
-        self._retriever = DatafileRetriever(self._lib_cache, self._resource_factory)
+        self._retriever = DatafileRetriever(self._lib_cache,
+                                            self._resource_factory)
         self._context_factory = _RetrieverContextFactory()
 
     def _set_pythonpath(self):
-        values = self._settings.get('pythonpath', [])
-        for path in values:
+        """Add user configured paths to PYTHONAPATH.
+
+        In addition, if `use installaed robot libraries` setting is `True`, and
+        a Robot Framework installation is found, remove bundled RF libraries
+        from PYTHONAPATH and create spec files for the installed RF's standard
+        libraries.
+        """
+        if self._settings['use installed robot libraries']:
+            rf_version = robotlibraryloader.find_installed_robot_libraries(
+                self._settings.get('installed robot version', None))
+            if rf_version is not None:
+                installation_path = os.path.normpath(
+                    os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
+                bundled_libraries_path = os.path.join(
+                    installation_path, 'lib', 'robot', 'libraries')
+                if bundled_libraries_path in sys.path:
+                    sys.path.remove(bundled_libraries_path)
+                self._settings.set('installed robot version', rf_version)
+        for path in self._settings.get('pythonpath', []):
             if path not in sys.path:
-                sys.path.insert(0, path.replace('/', os.sep))
+                normalized = path.replace('/', os.sep)
+                sys.path.insert(0, normalized)
+                SYSLOG("Inserted '{0}' to sys.path.".format(normalized))
 
     def _setting_changed(self, message):
         section, setting = message.keys
@@ -107,8 +128,10 @@ class Namespace(object):
         if self._blank(start) or self._looks_like_variable(start):
             sugs.update(self._variable_suggestions(controller, start, ctx))
         else:
-            sugs.update(self._variable_suggestions(controller, '${'+start, ctx))
-            sugs.update(self._variable_suggestions(controller, '@{'+start, ctx))
+            sugs.update(self._variable_suggestions(controller, '${' + start,
+                                                   ctx))
+            sugs.update(self._variable_suggestions(controller, '@{' + start,
+                                                   ctx))
         if self._blank(start) or not self._looks_like_variable(start):
             sugs.update(self._keyword_suggestions(datafile, start, ctx))
         sugs_list = list(sugs)
@@ -158,7 +181,8 @@ class Namespace(object):
 
     def get_resource(self, path, directory='', report_status=True):
         return self._resource_factory.get_resource(
-            directory, path, report_status=report_status)
+            directory, path,
+            report_status=report_status)
 
     def find_resource_with_import(self, imp):
         ctx = self._context_factory.ctx_for_datafile(imp.parent.parent)
@@ -202,14 +226,14 @@ class Namespace(object):
 
 
 class _RetrieverContextFactory(object):
-
     def __init__(self):
         self._context_cache = {}
 
     def ctx_for_controller(self, controller):
         if controller not in self._context_cache:
             self._context_cache[controller] = RetrieverContext()
-            self._context_cache[controller.datafile] = self._context_cache[controller]
+            self._context_cache[controller.datafile
+                                ] = self._context_cache[controller]
         return self._context_cache[controller]
 
     def ctx_for_datafile(self, datafile):
@@ -221,7 +245,6 @@ class _RetrieverContextFactory(object):
 
 
 class RetrieverContext(object):
-
     def __init__(self):
         self.vars = _VariableStash()
         self.parsed = set()
@@ -244,34 +267,36 @@ class RetrieverContext(object):
 
 class _VariableStash(object):
     # Global variables copied from robot.variables.__init__.py
-    global_variables =  {'${TEMPDIR}': os.path.normpath(tempfile.gettempdir()),
-                         '${EXECDIR}': os.path.abspath('.'),
-                         '${/}': os.sep,
-                         '${:}': os.pathsep,
-                         '${SPACE}': ' ',
-                         '${EMPTY}': '',
-                         '${True}': True,
-                         '${False}': False,
-                         '${None}': None,
-                         '${null}': None,
-                         '${OUTPUT_DIR}': '',
-                         '${OUTPUT_FILE}': '',
-                         '${SUMMARY_FILE}': '',
-                         '${REPORT_FILE}': '',
-                         '${LOG_FILE}': '',
-                         '${DEBUG_FILE}': '',
-                         '${PREV_TEST_NAME}': '',
-                         '${PREV_TEST_STATUS}': '',
-                         '${PREV_TEST_MESSAGE}': '',
-                         '${CURDIR}': '.',
-                         '${TEST_NAME}': '',
-                         '@{TEST_TAGS}': '',
-                         '${TEST_STATUS}': '',
-                         '${TEST_MESSAGE}': '',
-                         '${SUITE_NAME}': '',
-                         '${SUITE_SOURCE}': '',
-                         '${SUITE_STATUS}': '',
-                         '${SUITE_MESSAGE}': ''}
+    global_variables = {
+        '${TEMPDIR}': os.path.normpath(tempfile.gettempdir()),
+        '${EXECDIR}': os.path.abspath('.'),
+        '${/}': os.sep,
+        '${:}': os.pathsep,
+        '${SPACE}': ' ',
+        '${EMPTY}': '',
+        '${True}': True,
+        '${False}': False,
+        '${None}': None,
+        '${null}': None,
+        '${OUTPUT_DIR}': '',
+        '${OUTPUT_FILE}': '',
+        '${SUMMARY_FILE}': '',
+        '${REPORT_FILE}': '',
+        '${LOG_FILE}': '',
+        '${DEBUG_FILE}': '',
+        '${PREV_TEST_NAME}': '',
+        '${PREV_TEST_STATUS}': '',
+        '${PREV_TEST_MESSAGE}': '',
+        '${CURDIR}': '.',
+        '${TEST_NAME}': '',
+        '@{TEST_TAGS}': '',
+        '${TEST_STATUS}': '',
+        '${TEST_MESSAGE}': '',
+        '${SUITE_NAME}': '',
+        '${SUITE_SOURCE}': '',
+        '${SUITE_STATUS}': '',
+        '${SUITE_MESSAGE}': ''
+    }
 
     ARGUMENT_SOURCE = object()
 
@@ -299,10 +324,8 @@ class _VariableStash(object):
             try:
                 if not self._vars.has_key(variable.name):
                     _, value = self._vars._get_var_table_name_and_value(
-                        variable.name,
-                        variable.value,
-                        variable.report_invalid_syntax
-                    )
+                        variable.name, variable.value,
+                        variable.report_invalid_syntax)
                     self.set(variable.name, value, variable_table.source)
             except robotapi.DataError:
                 if robotapi.is_var(variable.name):
@@ -322,7 +345,6 @@ class _VariableStash(object):
 
 
 class DatafileRetriever(object):
-
     def __init__(self, lib_cache, resource_factory):
         self._lib_cache = lib_cache
         self._resource_factory = resource_factory
@@ -398,7 +420,8 @@ class DatafileRetriever(object):
 
     def _get_imported_resource_keywords(self, datafile, ctx):
         return self._collect_kws_from_imports(datafile, robotapi.Resource,
-                                              self._res_kw_recursive_getter, ctx)
+                                              self._res_kw_recursive_getter,
+                                              ctx)
 
     def _res_kw_recursive_getter(self, imp, ctx):
         kws = []
@@ -413,7 +436,8 @@ class DatafileRetriever(object):
         return [ResourceUserKeywordInfo(kw) for kw in res.keywords] + kws
 
     def get_variables_from(self, datafile, ctx=None):
-        return self._get_vars_recursive(datafile, ctx or RetrieverContext()).vars
+        return self._get_vars_recursive(datafile,
+                                        ctx or RetrieverContext()).vars
 
     def _get_vars_recursive(self, datafile, ctx):
         ctx.set_variables_from_datafile_variable_table(datafile)
@@ -427,13 +451,13 @@ class DatafileRetriever(object):
 
     def _import_vars(self, ctx, datafile, imp):
         varfile_path = os.path.join(datafile.directory,
-            ctx.replace_variables(imp.name))
+                                    ctx.replace_variables(imp.name))
         args = [ctx.replace_variables(a) for a in imp.args]
         try:
             ctx.vars.set_from_file(varfile_path, args)
             return True
         except robotapi.DataError:
-            return False # TODO: log somewhere
+            return False  # TODO: log somewhere
 
     def _var_collector(self, res, ctx, items):
         self._get_vars_recursive(res, ctx)
@@ -441,19 +465,22 @@ class DatafileRetriever(object):
     def get_keywords_cached(self, datafile, context_factory):
         values = self.keyword_cache.get(datafile.source)
         if not values:
-            words = self.get_keywords_from(datafile, context_factory.ctx_for_datafile(datafile))
+            words = self.get_keywords_from(
+                datafile, context_factory.ctx_for_datafile(datafile))
             words.extend(self.default_kws)
             values = _Keywords(words)
             self.keyword_cache.put(datafile.source, values)
         return values
 
     def _get_user_keywords_from(self, datafile):
-        return list(self._get_user_keywords_recursive(datafile, RetrieverContext()))
+        return list(self._get_user_keywords_recursive(datafile,
+                                                      RetrieverContext()))
 
     def _get_user_keywords_recursive(self, datafile, ctx):
         kws = set()
         kws.update(datafile.keywords)
-        kws_from_res = self._collect_each_res_import(datafile, ctx,
+        kws_from_res = self._collect_each_res_import(
+            datafile, ctx,
             lambda res, ctx, kws: kws.update(self._get_user_keywords_recursive(res, ctx)))
         kws.update(kws_from_res)
         return kws
@@ -469,7 +496,8 @@ class DatafileRetriever(object):
         return items
 
     def get_resources_from(self, datafile):
-        resources = list(self._get_resources_recursive(datafile, RetrieverContext()))
+        resources = list(self._get_resources_recursive(datafile,
+                                                       RetrieverContext()))
         resources.sort(key=operator.attrgetter('name'))
         return resources
 
