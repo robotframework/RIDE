@@ -18,18 +18,13 @@ import sys
 from robotide import robotapi, utils
 from robotide.utils.versioncomparator import cmp_versions
 from iteminfo import _XMLKeywordContent
-from robotide.preferences.settings import SETTINGS_DIRECTORY
-
-LIBRARY_XML_DIRECTORY = os.path.join(SETTINGS_DIRECTORY, 'library_xmls')
-if not os.path.isdir(LIBRARY_XML_DIRECTORY):
-    os.makedirs(LIBRARY_XML_DIRECTORY)
-
+from robotide import context
 
 class SpecInitializer(object):
 
     def __init__(self, directories=None):
         self._directories = directories or []
-        self._directories.append(LIBRARY_XML_DIRECTORY)
+        self._directories.append(context.LIBRARY_XML_DIRECTORY)
 
     def init_from_spec(self, name):
         specfile = self._find_from_pythonpath(name) or \

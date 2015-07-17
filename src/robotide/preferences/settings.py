@@ -15,18 +15,11 @@
 import os
 import shutil
 
-from robotide.context import IS_WINDOWS
+from robotide.context import SETTINGS_DIRECTORY
 from robotide.preferences.configobj import ConfigObj, ConfigObjError,\
     Section, UnreprError
 from robotide.preferences import excludes
 from robotide.publish import RideSettingsChanged
-
-if IS_WINDOWS:
-    SETTINGS_DIRECTORY = os.path.join(
-        os.environ['APPDATA'], 'RobotFramework', 'ride')
-else:
-    SETTINGS_DIRECTORY = os.path.join(
-        os.path.expanduser('~/.robotframework'), 'ride')
 
 
 def initialize_settings(path, dest_file_name=None):
@@ -94,9 +87,11 @@ class SettingsMigrator(object):
             self.migrate_from_4_to_5(self._old_settings)
         if self._old_settings.get(self.SETTINGS_VERSION) == 5:
             self.migrate_from_5_to_6(self._old_settings)
+        if self._old_settings.get(self.SETTINGS_VERSION) == 6:
+            self.migrate_from_6_to_7(self._old_settings)
         # so next would be something like:
         # if self._old_settings[self.SETTINGS_VERSION] == 6:
-        #   self.migrate_from_6_to_8(self._old_settings)
+        #   self.migrate_from_7_to_8(self._old_settings)
         self.merge()
 
     def merge(self):
@@ -164,6 +159,10 @@ class SettingsMigrator(object):
             settings['Text Edit']['font size'] = text_font_size
             del settings['text edit font size']
         settings[self.SETTINGS_VERSION] = 6
+
+    def migrate_from_6_to_7(self, settings):
+        settings['use installed robot libraries'] = True
+        settings[self.SETTINGS_VERSION] = 7
 
     def _write_merged_settings(self, settings, path):
         try:

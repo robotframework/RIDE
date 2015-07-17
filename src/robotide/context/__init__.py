@@ -30,6 +30,16 @@ IS_WINDOWS = os.sep == '\\'
 IS_MAC = sys.platform == 'darwin'
 WX_VERSION = wx.VERSION_STRING
 
+if IS_WINDOWS:
+    SETTINGS_DIRECTORY = os.path.join(
+        os.environ['APPDATA'], 'RobotFramework', 'ride')
+else:
+    SETTINGS_DIRECTORY = os.path.join(
+        os.path.expanduser('~/.robotframework'), 'ride')
+LIBRARY_XML_DIRECTORY = os.path.join(SETTINGS_DIRECTORY, 'library_xmls')
+if not os.path.isdir(LIBRARY_XML_DIRECTORY):
+    os.makedirs(LIBRARY_XML_DIRECTORY)
+
 SETTING_EDITOR_WIDTH = 450
 SETTING_LABEL_WIDTH = 150
 SETTING_ROW_HEIGTH = 25
