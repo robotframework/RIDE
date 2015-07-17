@@ -18,13 +18,18 @@ import wx
 
 from robotide.version import VERSION
 from robotide.robotapi import ROBOT_LOGGER
-
-from logger import Logger
+import logger
 
 APP = None
-LOG = Logger()
+LOG = logger.Logger()
 ROBOT_LOGGER.disable_automatic_console_logger()
 ROBOT_LOGGER.register_logger(LOG)
+_SYSLOG = logger.Syslog()
+
+
+def SYSLOG(message, level='INFO'):
+    _SYSLOG.message(message, level)
+
 
 IS_WINDOWS = os.sep == '\\'
 IS_MAC = sys.platform == 'darwin'
