@@ -13,6 +13,7 @@
 #  limitations under the License.
 
 import os
+import re
 import sys
 import subprocess
 
@@ -42,14 +43,30 @@ def find_installed_robot_libraries(previous_rf_version):
 
 
 def _create_standard_library_spec_files(rf_version, previous_rf_version):
-    stdlib_names = _run_python_command(
-        ["from robot.running.namespace import STDLIB_NAMES; "
-         "print ','.join(STDLIB_NAMES)"]).strip().split(',')
+    stdlib_names = _get_standard_library_names(rf_version)
     for name in [n for n in stdlib_names if n not in ('Remote', 'Reserved')]:
         outpath = os.path.join(LIBRARY_XML_DIRECTORY, '{0}.xml'.format(name))
         if not os.path.exists(outpath) or rf_version != previous_rf_version:
             _run_python_command(['robot.libdoc', name, outpath], mode='m')
             SYSLOG("Created library spec file: '{0}'.".format(outpath))
+
+
+def _get_standard_library_names(rf_version):
+    def stdlib_command():
+        major_minor = re.split('(a|b|rc|.dev)', rf_version)[0].split('.')[:2]
+        if [int(i) for i in major_minor] >= [2, 9]:
+            return "from robot.libraries import STDLIBS; " \
+                   "print ','.join(STDLIBS)"
+        else:
+            return "from robot.running.namespace import STDLIB_NAMES; " \
+                   "print ','.join(STDLIB_NAMES)"
+    output = _run_python_command([stdlib_command()])
+    if 'ImportError' not in output:
+        return output.strip().split(',')
+    else:
+        SYSLOG('Resolving RF standard library names failed: {0}.'
+               .format(output))
+        return []
 
 
 def _run_python_command(command, mode='c'):
