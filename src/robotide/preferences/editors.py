@@ -16,12 +16,11 @@ import wx
 from wx.lib.masked import NumCtrl
 from os.path import abspath, dirname, join
 
-from robotide.preferences import PreferencesPanel, PreferencesColorPicker
-from robotide.preferences.saving import IntegerChoiceEditor
+from robotide.preferences import widgets
 from robotide.widgets import Label
 
 
-class EditorPreferences(PreferencesPanel):
+class EditorPreferences(widgets.PreferencesPanel):
 
     def __init__(self, settings, *args, **kwargs):
         super(EditorPreferences, self).__init__(*args, **kwargs)
@@ -42,18 +41,14 @@ class EditorPreferences(PreferencesPanel):
         self.SetSizer(main_sizer)
 
     def _create_font_editor(self):
-        f = IntegerChoiceEditor(self._settings, 'font size', 'Font Size',
-                                [str(i) for i in range(8, 16)])
+        f = widgets.IntegerChoiceEditor(
+            self._settings, 'font size', 'Font Size',
+            [str(i) for i in range(8, 16)])
         sizer = wx.FlexGridSizer(rows=2, cols=2, hgap=30)
         sizer.AddMany([f.label(self), f.chooser(self)])
         if 'fixed font' in self._settings:
-            sizer.Add(Label(self, label='Use fixed width font'))
-            editor = wx.CheckBox(self)
-            editor.SetValue(self._settings['fixed font'])
-            editor.Bind(wx.EVT_CHECKBOX,
-                        lambda evt: self._settings.set('fixed font',
-                                                       editor.GetValue()))
-            sizer.Add(editor)
+            sizer.AddMany(widgets.boolean_editor(
+                self, self._settings, 'fixed font', 'Use fixed width font'))
         return sizer
 
     def create_colors_sizer(self):
@@ -90,7 +85,7 @@ class TextEditorPreferences(EditorPreferences):
                 column = 0
                 row += 1
             label = wx.StaticText(self, wx.ID_ANY, label_text)
-            button = PreferencesColorPicker(
+            button = widgets.PreferencesColorPicker(
                 self, wx.ID_ANY, self._settings, settings_key)
             container.Add(button, (row, column),
                           flag=wx.ALL | wx.ALIGN_CENTER_VERTICAL, border=4)
@@ -140,8 +135,8 @@ class GridEditorPreferences(EditorPreferences):
         sizer = wx.FlexGridSizer(rows=3, cols=2, vgap=10)
         sizer.Add(self._label_for('Default column size'))
         sizer.Add(self._number_editor(settings, 'col size'))
-        sizer.Add(self._label_for('Auto size columns'))
-        sizer.Add(self._boolean_editor(settings, 'auto size cols'))
+        sizer.AddMany(widgets.boolean_editor(
+            self, settings, 'auto size cols', 'Auto size columns'))
         sizer.Add(self._label_for('Max column size\n(applies when auto size is on)'))
         sizer.Add(self._number_editor(settings, 'max col size'))
         return sizer
@@ -155,14 +150,6 @@ class GridEditorPreferences(EditorPreferences):
         editor = NumCtrl(self, value=initial_value)
         editor.Bind(wx.EVT_TEXT,
                     lambda evt: settings.set(name, int(editor.GetValue())))
-        return editor
-
-    def _boolean_editor(self, settings, name):
-        initial_value = settings[name]
-        editor = wx.CheckBox(self)
-        editor.SetValue(initial_value)
-        editor.Bind(wx.EVT_CHECKBOX,
-                    lambda evt: settings.set(name, editor.GetValue()))
         return editor
 
     def create_colors_sizer(self):
@@ -182,7 +169,7 @@ class GridEditorPreferences(EditorPreferences):
             ('text empty', 'Empty Foreground'),
         ):
             lbl = wx.StaticText(self, wx.ID_ANY, label)
-            btn = PreferencesColorPicker(
+            btn = widgets.PreferencesColorPicker(
                 self, wx.ID_ANY, self._settings, key)
             colors_sizer.Add(btn, (row, 0),
                              flag=wx.ALL | wx.ALIGN_CENTER_VERTICAL, border=4)
@@ -203,7 +190,7 @@ class GridEditorPreferences(EditorPreferences):
             ('background highlight', 'Highlight Background')
         ):
             lbl = wx.StaticText(self, wx.ID_ANY, label)
-            btn = PreferencesColorPicker(
+            btn = widgets.PreferencesColorPicker(
                 self, wx.ID_ANY, self._settings, key)
             colors_sizer.Add(btn, (row, 2),
                              flag=wx.ALL | wx.ALIGN_CENTER_VERTICAL, border=4)

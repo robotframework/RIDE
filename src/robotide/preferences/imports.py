@@ -14,56 +14,39 @@
 
 import wx
 
-from robotide.widgets import (
-    Label, TextField, VerticalSizer, HorizontalSizer, HelpLabel)
-
-from .widgets import PreferencesPanel
+from robotide.preferences import widgets
 
 
-class ImportPreferences(PreferencesPanel):
+class ImportPreferences(widgets.PreferencesPanel):
     location = ('Importing')
-    title = 'Automatic imports and PYTHONPATH'
+    title = 'Library imports and PYTHONPATH'
 
     def __init__(self, parent, settings):
-        super(PreferencesPanel, self).__init__(parent)
-        self.SetSizer(VerticalSizer())
-        self._settings = [
-            Setting(settings, 'auto imports',
-                    'Comma separated list of libraries to be automatically imported.'),
-            Setting(settings, 'pythonpath',
-                    'Comma separated list of directories to be added to PYTHONPATH when libraries are searched.'),
-            Setting(settings, 'library xml directories',
-                    'Directories to search for library xml files')
+        super(widgets.PreferencesPanel, self).__init__(parent)
+        self.SetSizer(wx.FlexGridSizer(rows=4, cols=2, vgap=10, hgap=5))
+        self.Sizer.AddGrowableCol(1, proportion=1)
+        self._add_settings(settings)
+
+    def _add_settings(self, settings):
+        installed_libs = 'use installed robot libraries'
+        self.Sizer.AddMany(widgets.boolean_editor(
+            self, settings, installed_libs, installed_libs.capitalize(),
+            'Use standard libraries of installed Robot Framework instead '
+            'of RF bunlded with RIDE.'
+        ))
+        list_settings = [
+            ('auto imports', 'Comma separated list of libraries to be '
+                             'automatically imported.'),
+            ('pythonpath', 'Comma separated list of directories to be added '
+                           'to PYTHONPATH when libraries are searched.'),
+            ('library xml directories', 'Comma separated list of directories '
+                                        'containing library spec files.')
         ]
-        for s in self._settings:
-            self._create_editor(s)
+        for (name, help) in list_settings:
+            self._create_list_setting_editor(settings, name, help)
 
-    def _create_editor(self, setting):
-        sizer = HorizontalSizer()
-        sizer.add_with_padding(self._label_for(setting))
-        sizer.add(self._editor_for(setting), proportion=1)
-        self.Sizer.Add(sizer, flag=wx.EXPAND)
-        self.Sizer.add_with_padding(HelpLabel(self, setting.help))
-
-    def _label_for(self, setting):
-        label = ('%s: ' % setting.name).capitalize()
-        return Label(self, label=label)
-
-    def _editor_for(self, setting):
-        initial_value = ', '.join(setting.original_value)
-        editor = TextField(self, initial_value)
-        editor.Bind(wx.EVT_KILL_FOCUS, lambda evt: setting.set(editor.GetValue()))
-        return editor
-
-
-class Setting(object):
-
-    def __init__(self, settings, name, help):
-        self._settings = settings
-        self.name = name
-        self.help = help
-        self.original_value = settings[name]
-
-    def set(self, new_value):
-        self._settings[self.name] = \
-            [token.strip() for token in new_value.split(',') if token.strip()]
+    def _create_list_setting_editor(self, settings, name, help):
+        label, editor = widgets.comma_separated_value_editor(
+            self, settings, name, name.capitalize(), help)
+        self.Sizer.Add(label)
+        self.Sizer.Add(editor, flag=wx.EXPAND)
