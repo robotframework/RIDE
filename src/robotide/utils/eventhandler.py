@@ -14,11 +14,13 @@
 
 import wx
 
+
 class eventhandlertype(type):
     def __new__(cls, name, bases, dict):
         def mod_time_wrapper(method):
             def wrapped(self, event=None):
-                if self._can_be_edited(event):
+                # First condition is guard against dead object
+                if self and self._can_be_edited(event):
                     method(self, event)
             return wrapped
         for attr in dict:
