@@ -14,36 +14,44 @@
 
 import wx
 
-from robotide.controller.commands import (RenameKeywordOccurrences, RemoveMacro,
-    AddKeyword, AddTestCase, RenameTest, CopyMacroAs, AddVariable,
-    UpdateVariableName, RenameFile, RenameResourceFile, DeleteFile, SortKeywords, Include, Exclude)
+from robotide.controller.commands import (
+    RenameKeywordOccurrences, RemoveMacro, AddKeyword, AddTestCase, RenameTest,
+    CopyMacroAs, AddVariable, UpdateVariableName, RenameFile,
+    RenameResourceFile, DeleteFile, SortKeywords, Include, Exclude)
 from robotide.controller.settingcontrollers import VariableController
-from robotide.controller.macrocontrollers import (TestCaseController,
-                                                  UserKeywordController)
-from robotide.controller.filecontrollers import (TestDataDirectoryController,
-    ResourceFileController, TestCaseFileController, ExcludedDirectoryController, DirtyRobotDataException)
-from robotide.editor.editordialogs import (TestCaseNameDialog,
-    UserKeywordNameDialog, ScalarVariableDialog, ListVariableDialog,
-    CopyUserKeywordDialog)
+from robotide.controller.macrocontrollers import (
+    TestCaseController, UserKeywordController)
+from robotide.controller.filecontrollers import (
+    TestDataDirectoryController, ResourceFileController,
+    TestCaseFileController, ExcludedDirectoryController,
+    DirtyRobotDataException)
+from robotide.editor.editordialogs import (
+    TestCaseNameDialog, UserKeywordNameDialog, ScalarVariableDialog,
+    ListVariableDialog, CopyUserKeywordDialog)
 from robotide.publish import RideOpenVariableDialog
 from robotide.ui.progress import LoadProgressObserver
 from robotide.usages.UsageRunner import Usages, ResourceFileUsages
-from .filedialogs import (AddSuiteDialog, AddDirectoryDialog, ChangeFormatDialog, NewResourceDialog, AddResourceDialog)
+from .filedialogs import (
+    AddSuiteDialog, AddDirectoryDialog, ChangeFormatDialog, NewResourceDialog,
+    RobotFilePathDialog)
 from robotide.utils import overrides
 from robotide.widgets import PopupMenuItems
 from .progress import RenameProgressObserver
 from .resourcedialogs import ResourceRenameDialog, ResourceDeleteDialog
 from robotide.ui.resourcedialogs import FolderDeleteDialog
 
+
 def action_handler_class(controller):
-    return {TestDataDirectoryController:TestDataDirectoryHandler,
-         ResourceFileController:ResourceFileHandler,
-         TestCaseFileController:TestCaseFileHandler,
-         TestCaseController:TestCaseHandler,
-         UserKeywordController:UserKeywordHandler,
-         VariableController:VariableHandler,
-         ExcludedDirectoryController:ExcludedDirectoryHandler
-     }[controller.__class__]
+    return {
+        TestDataDirectoryController: TestDataDirectoryHandler,
+        ResourceFileController: ResourceFileHandler,
+        TestCaseFileController: TestCaseFileHandler,
+        TestCaseController: TestCaseHandler,
+        UserKeywordController: UserKeywordHandler,
+        VariableController: VariableHandler,
+        ExcludedDirectoryController: ExcludedDirectoryHandler
+    }[controller.__class__]
+
 
 class _ActionHandler(wx.Window):
     is_user_keyword = False
@@ -95,6 +103,7 @@ class _ActionHandler(wx.Window):
     def show_popup(self):
         self._popup_creator.show(self, PopupMenuItems(self, self._actions),
                                  self.controller)
+
     def begin_label_edit(self):
         return False
 
@@ -163,8 +172,9 @@ class _CanBeRenamed(object):
 
     def begin_label_edit(self):
         def label_edit():
-            #FIXME: yep.yep.yep.yep.yep
-            node = self._tree._controller.find_node_by_controller(self.controller)
+            # FIXME: yep.yep.yep.yep.yep
+            node = self._tree._controller.find_node_by_controller(
+                self.controller)
             if node:
                 self._tree.EditLabel(node)
         # Must handle pending events before label edit
@@ -202,8 +212,9 @@ class DirectoryHandler(_ActionHandler):
 
 
 class TestDataHandler(_ActionHandler):
-    accepts_drag = lambda self, dragged: (isinstance(dragged, UserKeywordHandler) or
-                                          isinstance(dragged, VariableHandler))
+    accepts_drag = lambda self, dragged: \
+        (isinstance(dragged, UserKeywordHandler) or
+         isinstance(dragged, VariableHandler))
 
     is_draggable = False
     is_test_suite = True
@@ -344,7 +355,8 @@ class _FileHandlerThanCanBeRenamed(_CanBeRenamed):
     @overrides(_CanBeRenamed)
     def end_label_edit(self, event):
         if not event.IsEditCancelled():
-            result = self.controller.execute(self._rename_command(event.GetLabel()))
+            result = self.controller.execute(
+                self._rename_command(event.GetLabel()))
             if result:
                 self._rename_ok_handler()
                 self._old_label = self.controller.basename
@@ -385,7 +397,8 @@ class ResourceFileHandler(_FileHandlerThanCanBeRenamed, TestDataHandler):
 
     @overrides(_FileHandlerThanCanBeRenamed)
     def _rename_command(self, label):
-        return RenameResourceFile(label, self._check_should_rename_static_imports)
+        return RenameResourceFile(
+            label, self._check_should_rename_static_imports)
 
     def _check_should_rename_static_imports(self):
         return ResourceRenameDialog(self.controller).execute()
@@ -434,8 +447,10 @@ class TestCaseFileHandler(_FileHandlerThanCanBeRenamed, TestDataHandler):
 class _TestOrUserKeywordHandler(_CanBeRenamed, _ActionHandler):
     accepts_drag = lambda *args: False
     is_draggable = True
-    _actions = [_ActionHandler._label_copy_macro, 'Move Up\tCtrl-Up', 'Move Down\tCtrl-Down',
-                _ActionHandler._label_rename, '---', 'Delete']
+    _actions = [
+        _ActionHandler._label_copy_macro, 'Move Up\tCtrl-Up',
+        'Move Down\tCtrl-Down', _ActionHandler._label_rename, '---', 'Delete'
+    ]
 
     def remove(self):
         self.controller.delete()
@@ -476,15 +491,17 @@ class UserKeywordHandler(_TestOrUserKeywordHandler):
     is_user_keyword = True
     _datalist = property(lambda self: self.item.datalist)
     _copy_name_dialog_class = CopyUserKeywordDialog
-    _actions = _TestOrUserKeywordHandler._actions + [_ActionHandler._label_find_usages]
+    _actions = _TestOrUserKeywordHandler._actions + [
+        _ActionHandler._label_find_usages]
 
     def _add_copy_to_tree(self, parent_node, copied):
         self._tree.add_keyword(parent_node, copied)
 
     def _create_rename_command(self, new_name):
-        return RenameKeywordOccurrences(self.controller.name, new_name,
-                                        RenameProgressObserver(self.GetParent().GetParent()),
-                                        self.controller.info)
+        return RenameKeywordOccurrences(
+            self.controller.name, new_name,
+            RenameProgressObserver(self.GetParent().GetParent()),
+            self.controller.info)
 
     def OnFindUsages(self, event):
         Usages(self.controller, self._tree.highlight).show()
@@ -526,7 +543,8 @@ class ResourceRootHandler(_ActionHandler):
         return None
 
     def OnAddResource(self, event):
-        path = AddResourceDialog(self, self.controller).execute()
+        path = RobotFilePathDialog(
+            self, self.controller, self._settings).execute()
         if path:
             self.controller.load_resource(path, LoadProgressObserver(self))
 
