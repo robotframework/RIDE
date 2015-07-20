@@ -13,17 +13,37 @@
 #  limitations under the License.
 
 import sys
+import os
+import wx
 
 from robotide.version import VERSION
 from robotide.robotapi import ROBOT_LOGGER
+import logger
 
-from coreplugins import get_core_plugins
-from logger import Logger
-from platform import (IS_MAC, IS_WINDOWS, WX_VERSION, ctrl_or_cmd,
-    bind_keys_to_evt_menu)
-LOG = Logger()
+APP = None
+LOG = logger.Logger()
 ROBOT_LOGGER.disable_automatic_console_logger()
 ROBOT_LOGGER.register_logger(LOG)
+_SYSLOG = logger.Syslog()
+
+
+def SYSLOG(message, level='INFO'):
+    _SYSLOG.message(message, level)
+
+
+IS_WINDOWS = os.sep == '\\'
+IS_MAC = sys.platform == 'darwin'
+WX_VERSION = wx.VERSION_STRING
+
+if IS_WINDOWS:
+    SETTINGS_DIRECTORY = os.path.join(
+        os.environ['APPDATA'], 'RobotFramework', 'ride')
+else:
+    SETTINGS_DIRECTORY = os.path.join(
+        os.path.expanduser('~/.robotframework'), 'ride')
+LIBRARY_XML_DIRECTORY = os.path.join(SETTINGS_DIRECTORY, 'library_xmls')
+if not os.path.isdir(LIBRARY_XML_DIRECTORY):
+    os.makedirs(LIBRARY_XML_DIRECTORY)
 
 SETTING_EDITOR_WIDTH = 450
 SETTING_LABEL_WIDTH = 150
@@ -40,6 +60,23 @@ For more information, see project pages at
 <a href="http://github.com/robotframework/RIDE">http://github.com/robotframework/RIDE</a>.</p>
 <p>Some of the icons are from <a href="http://www.famfamfam.com/lab/icons/silk/">Silk Icons</a>.</p>
 ''' % (VERSION, pyversion)
+
+
+def ctrl_or_cmd():
+    if IS_MAC:
+        return wx.ACCEL_CMD
+    return wx.ACCEL_CTRL
+
+
+def bind_keys_to_evt_menu(target, actions):
+    accelrators = []
+    for accel, keycode, handler in actions:
+        id = wx.NewId()
+        target.Bind(wx.EVT_MENU, handler, id=id)
+        accelrators.append((accel, keycode, id))
+    target.SetAcceleratorTable(wx.AcceleratorTable(accelrators))
+
+
 SHORTCUT_KEYS = '''\
 <h2>Shortcut keys in RIDE</h2>
 <table>
@@ -291,5 +328,3 @@ SHORTCUT_KEYS = '''\
     </tr>
 </table>
 '''
-
-APP = None

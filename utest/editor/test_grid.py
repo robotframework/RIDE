@@ -7,7 +7,7 @@ from resources import PYAPP_REFERENCE as _ #Needed to be able to create wx compo
 
 # wx needs to imported last so that robotide can select correct wx version.
 import wx
-from robotide.context.platform import IS_WINDOWS
+from robotide.context import IS_WINDOWS
 
 DATA = [['kw1', '', ''],
         ['kw2', 'arg1', ''],

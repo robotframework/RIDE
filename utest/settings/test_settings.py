@@ -307,7 +307,8 @@ class TestInitializeSettings(TestSettingsHelper):
         initialize_settings(self.settings_path, 'user.cfg')
         self._check_content(
             {'foo': 'new value', 'hello': 'world',
-             SettingsMigrator.SETTINGS_VERSION: 6}, False)
+             'use installed robot libraries': True,
+             SettingsMigrator.SETTINGS_VERSION: 7}, False)
 
     def test_initialize_settings_raises_exception_when_invalid_user_settings(
             self):

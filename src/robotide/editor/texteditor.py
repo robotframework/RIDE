@@ -19,7 +19,7 @@ import wx
 from wx import stc
 
 from robotide import robotapi
-from robotide.context.platform import IS_WINDOWS, IS_MAC
+from robotide.context import IS_WINDOWS, IS_MAC
 from robotide.controller.commands import SetDataFile
 from robotide.publish.messages import RideMessage
 from robotide.widgets import VerticalSizer, HorizontalSizer, ButtonWithHandler

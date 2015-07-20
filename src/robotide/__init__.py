@@ -29,7 +29,6 @@ release. The most stable, and best documented, module is `robotide.pluginapi`.
 
 import sys
 import os
-import subprocess
 from string import Template
 
 errorMessageTemplate = Template("""$reason
@@ -66,38 +65,6 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'lib'))
 sys.path.append(os.path.join(os.path.dirname(__file__), 'spec'))
 
 
-def set_python_path():
-    """Ensure that installed RF libraries are found first."""
-
-    # Force evaluation of robotapi, since importing robot there modifies
-    # sys.path also
-    from robotide import robotapi
-
-    process = subprocess.Popen(
-        [sys.executable,
-         '-c',
-         'import robot; print robot.__file__ + ", " + robot.__version__'],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT
-    )
-    output, _ = process.communicate()
-    robot_found = 'ImportError' not in output
-    if robot_found:
-        installation_path = os.path.normpath(
-            os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
-        bundled_libraries_path = os.path.join(
-            installation_path, 'lib', 'robot', 'libraries')
-        if bundled_libraries_path in sys.path:
-            sys.path.remove(bundled_libraries_path)
-        rf_file, rf_version = output.strip().split(', ')
-        rf_installation_path = os.path.dirname(rf_file)
-        sys.path.insert(0, os.path.join(rf_installation_path, 'libraries'))
-        return 'Found Robot Framework version {0} from {1}'.format(
-           rf_version, rf_installation_path)
-    else:
-        return 'Robot Framework installation not found'
-
-
 def main(*args):
     noupdatecheck, debug_console, inpath = _parse_args(args)
     if len(args) > 3 or '--help' in args:
@@ -105,8 +72,10 @@ def main(*args):
         sys.exit()
     try:
         _run(inpath, not noupdatecheck, debug_console)
-    except Exception, err:
-        print unicode(err) + '\n\nUse --help to get usage information.'
+    except Exception:
+        import traceback
+        traceback.print_exception(*sys.exc_info())
+        sys.stderr.write('\n\nUse --help to get usage information.\n')
 
 
 def _parse_args(args):
@@ -121,7 +90,6 @@ def _parse_args(args):
 
 def _run(inpath=None, updatecheck=True, debug_console=False):
     try:
-        messages = set_python_path()
         from robotide.application import RIDE
         from robotide.application import debugconsole
     except ImportError:
@@ -129,7 +97,7 @@ def _run(inpath=None, updatecheck=True, debug_console=False):
         raise
     if inpath:
         inpath = unicode(inpath, sys.getfilesystemencoding())
-    ride = RIDE(inpath, updatecheck, messages)
+    ride = RIDE(inpath, updatecheck)
     _show_old_wxpython_warning_if_needed(ride.frame)
     if debug_console:
         debugconsole.start(ride)

@@ -23,6 +23,7 @@ from robotide.ui import LoadProgressObserver
 from robotide.ui.mainframe import RideFrame
 from robotide.pluginapi import RideLogMessage
 from robotide import context, contrib
+from robotide.context import coreplugins
 from robotide.preferences import Preferences, RideSettings
 from robotide.application.pluginloader import PluginLoader
 from robotide.application.editorprovider import EditorProvider
@@ -33,14 +34,15 @@ from robotide.application.updatenotifier import UpdateNotifierController, \
 
 class RIDE(wx.App):
 
-    def __init__(self, path=None, updatecheck=True, messages=''):
+    def __init__(self, path=None, updatecheck=True):
         self._initial_path = path
         self._updatecheck = updatecheck
-        self._messages = messages
         context.APP = self
         wx.App.__init__(self, redirect=False)
 
     def OnInit(self):
+        # Needed for SetToolTipString to work
+        wx.HelpProvider_Set(wx.SimpleHelpProvider())
         self.settings = RideSettings()
         librarydatabase.initialize_database()
         self.preferences = Preferences(self.settings)
@@ -49,7 +51,7 @@ class RIDE(wx.App):
         self.frame = RideFrame(self, self._controller)
         self._editor_provider = EditorProvider()
         self._plugin_loader = PluginLoader(self, self._get_plugin_dirs(),
-                                           context.get_core_plugins())
+                                           coreplugins.get_core_plugins())
         self._plugin_loader.enable_plugins()
         self.editor = self._get_editor()
         self.editor.show()
@@ -63,8 +65,7 @@ class RIDE(wx.App):
         return True
 
     def _publish_system_info(self):
-        RideLogMessage(
-            "{0}\n{1}".format(context.SYSTEM_INFO, self._messages)).publish()
+        RideLogMessage(context.SYSTEM_INFO).publish()
 
     @property
     def model(self):

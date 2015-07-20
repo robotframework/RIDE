@@ -13,43 +13,11 @@
 #  limitations under the License.
 
 import wx
-import textwrap
 
-from .widgets import (PreferencesPanel, PreferencesComboBox,
-                      IntegerPreferenceComboBox)
-from robotide.widgets import HelpLabel
+from robotide.preferences import widgets
 
 
-class _ChoiceEditor(object):
-    _editor_class = None
-
-    def __init__(self, settings, setting_name, label, choices, help=''):
-        self._settings = settings
-        self._setting_name = setting_name
-        self._label = label
-        self._choices = choices
-        self._help = help
-
-    def chooser(self, parent):
-        return self._editor_class(parent, wx.ID_ANY, self._settings,
-                                  key=self._setting_name, choices=self._choices)
-
-    def label(self, parent):
-        return wx.StaticText(parent, wx.ID_ANY, self._label)
-
-    def help(self, parent):
-        return HelpLabel(parent, '\n'.join(textwrap.wrap(self._help, 60)))
-
-
-class StringChoiceEditor(_ChoiceEditor):
-    _editor_class = PreferencesComboBox
-
-
-class IntegerChoiceEditor(_ChoiceEditor):
-    _editor_class = IntegerPreferenceComboBox
-
-
-class SavingPreferences(PreferencesPanel):
+class SavingPreferences(widgets.PreferencesPanel):
     location = ('Saving',)
     title = 'Saving Preferences'
 
@@ -62,23 +30,23 @@ class SavingPreferences(PreferencesPanel):
 
     def _create_editors(self, settings):
         return [
-            StringChoiceEditor(settings,
+            widgets.StringChoiceEditor(settings,
                 'default file format',
                 'Default file format:',
                 ('txt', 'tsv', 'html', 'robot')
             ),
-            StringChoiceEditor(settings,
+            widgets.StringChoiceEditor(settings,
                 'txt format separator',
                 'TXT format separator:',
                 ('pipe', 'space')
             ),
-            StringChoiceEditor(settings,
+            widgets.StringChoiceEditor(settings,
                 'line separator',
                 'Line separator:',
                 ('native', 'CRLF', 'LF'),
                 'Possible values are native (of current OS) CRLF (Windows) and LF (Unixy)'
             ),
-            IntegerChoiceEditor(settings,
+            widgets.IntegerChoiceEditor(settings,
                 'txt number of spaces',
                 'Separating spaces',
                 [str(i) for i in range(2, 11)],

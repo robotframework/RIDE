@@ -5,7 +5,7 @@ from robot.utils.asserts import assert_equals
 
 # Needed to be able to create wx components
 from resources import PYAPP_REFERENCE as _
-from robotide.context.platform import IS_WINDOWS
+from robotide.context import IS_WINDOWS
 from robotide.editor.clipboard import _GridClipboard
 
 

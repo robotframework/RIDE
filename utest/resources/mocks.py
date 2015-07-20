@@ -54,6 +54,7 @@ class FakeSettings(Settings):
         self.add_section('Plugins')
         self.set('pythonpath', [])
         self.set('auto imports', [])
+        self.set('use installed robot libraries', False)
         if temp_dir_for_excludes:
             self.excludes = Excludes(temp_dir_for_excludes)
 

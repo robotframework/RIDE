@@ -5,7 +5,8 @@ import os
 from robot.utils.asserts import assert_equals
 
 from resources import DATAPATH
-from robotide.spec.xmlreaders import SpecInitializer, LIBRARY_XML_DIRECTORY
+from robotide.context import LIBRARY_XML_DIRECTORY
+from robotide.spec.xmlreaders import SpecInitializer
 from robotide.utils import overrides
 
 sys.path.append(os.path.join(DATAPATH, 'libs'))
