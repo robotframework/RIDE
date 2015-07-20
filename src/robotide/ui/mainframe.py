@@ -20,6 +20,7 @@ from robotide.controller.commands import SaveFile, SaveAll
 from robotide.publish import RideSaveAll, RideClosing, RideSaved, PUBLISHER,\
     RideInputValidationError, RideTreeSelection, RideModificationPrevented
 from robotide.ui.tagdialogs import ViewAllTagsDialog
+from robotide.ui.filedialogs import RobotFilePathDialog
 from robotide.utils import RideEventHandler
 from robotide.widgets import Dialog, ImageProvider, HtmlWindow
 from robotide.preferences import PreferenceEditor
@@ -190,7 +191,8 @@ class RideFrame(wx.Frame, RideEventHandler):
     def OnOpenTestSuite(self, event):
         if not self.check_unsaved_modifications():
             return
-        path = self._get_path()
+        path = RobotFilePathDialog(
+            self, self._controller, self._application.settings).execute()
         if path:
             self.open_suite(path)
 
@@ -201,19 +203,6 @@ class RideFrame(wx.Frame, RideEventHandler):
                                 'Warning', wx.ICON_WARNING|wx.YES_NO)
             return ret == wx.YES
         return True
-
-    def _get_path(self):
-        wildcard = 'Robot data (*robot)|*.robot|Robot data (*txt)|*.txt|All files|*.*'
-        dlg = wx.FileDialog(
-            self, message='Open', wildcard=wildcard,
-            defaultDir=self._controller.default_dir, style=wx.OPEN)
-        if dlg.ShowModal() == wx.ID_OK:
-            path = dlg.GetPath()
-            self._controller.update_default_dir(path)
-        else:
-            path = None
-        dlg.Destroy()
-        return path
 
     def open_suite(self, path):
         self._controller.update_default_dir(path)

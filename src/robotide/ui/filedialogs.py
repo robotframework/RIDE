@@ -261,15 +261,26 @@ class InitFileFormatDialog(_FileFormatDialog):
         self._controller.execute(SetFileFormat(self._get_format()))
 
 
-class AddResourceDialog(wx.FileDialog):
+class RobotFilePathDialog(wx.FileDialog):
 
-    def __init__(self, window, controller):
-        wildcard = 'Robot data (*.robot)|*.robot|Robot data (*.txt)|*.txt|\
-            All files|*.*'
+    def __init__(self, window, controller, settings):
         self._controller = controller
         wx.FileDialog.__init__(
-            self, window, message='Open', wildcard=wildcard,
-            defaultDir=self._controller.default_dir, style=wx.OPEN)
+            self, window, style=wx.OPEN, wildcard=self._get_wildcard(settings),
+            defaultDir=self._controller.default_dir, message='Open')
+
+    def _get_wildcard(self, settings):
+        fileTypes = [
+            ('robot', 'Robot data (*.robot)|*.robot'),
+            ('txt', 'Robot data (*.txt)|*.txt'),
+            ('all', 'All files|*.*')
+        ]
+        default_format = settings['default file format']
+        if default_format not in ['robot', 'txt']:
+            default_format = 'all'
+        first = [ft for ft in fileTypes if ft[0] == default_format]
+        rest = [ft for ft in fileTypes if ft[0] != default_format]
+        return '|'.join(ft[1] for ft in first + rest)
 
     def execute(self):
         if self.ShowModal() == wx.ID_OK:
