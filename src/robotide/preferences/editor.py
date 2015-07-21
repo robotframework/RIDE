@@ -39,13 +39,15 @@ TREE_THRESHOLD = 5
 class PreferenceEditor(wx.Dialog):
     """A dialog for showing the preference panels"""
     def __init__(self, parent, title, preferences, style="auto"):
-        panels = preferences.preference_panels
+        wx.Dialog.__init__(self, parent, wx.ID_ANY, title, size=(800, 500),
+                           style=wx.RESIZE_BORDER | wx.DEFAULT_DIALOG_STYLE)
+        self.Bind(wx.EVT_CLOSE, self.OnClose)
         self._current_panel = None
         self._panels = []
         self._settings = preferences.settings
-        wx.Dialog.__init__(self, parent, wx.ID_ANY, title, size=(800,500),
-                           style=wx.RESIZE_BORDER|wx.DEFAULT_DIALOG_STYLE)
+        self._closing = False
 
+        panels = preferences.preference_panels
         if style not in ("tree","notebook","single","auto"):
             raise Exception("invalid style; must be one of 'tree','notebook','single' or 'auto'")
 
@@ -93,23 +95,27 @@ class PreferenceEditor(wx.Dialog):
             panel = self._container.AddPanel(panels[0])
             self._container.ShowPanel(panel)
 
+    def OnClose(self, evt):
+        self._closing = True
+        evt.Skip()
+
     def OnTreeSelection(self, event):
         """Show panel that corresponds to selected tree item
 
         Used only when the hierarchical tree is shown.
         """
-        pydata = self._tree.GetItemPyData(event.GetItem())
+        # On Windows, closing the Dialog causes tree selection events to be
+        # triggered. This is a workaround to ignore those events, which might
+        # try to access dead objects.
+        if self._closing:
+            return
 
-        if pydata is None:
-            panel_class = GenericPreferencesPanel
-        else:
-            panel_class = pydata
-
-        if isinstance(panel_class, wx.Panel):
-            panel = pydata
+        instance_or_class = self._tree.GetItemPyData(event.GetItem())
+        if isinstance(instance_or_class, wx.Panel):
+            panel = instance_or_class
         else:
             # not an instance, assume it's a class
-            panel = self._container.AddPanel(panel_class, self._settings)
+            panel = self._container.AddPanel(instance_or_class, self._settings)
             self._panels.append(panel)
             self._tree.SetItemPyData(event.GetItem(), panel)
         self._container.ShowPanel(panel)
