@@ -86,7 +86,7 @@ WELCOME_TEXT = """
 # Release notes are updated automatically by package.py script whenever
 # a numbered distribution is created.
 RELEASE_NOTES = """
-<h2>Release notes for 1.4</h2>
+<h2>Release notes for 1.4.1b1</h2>
 <table border="1">
 <tr>
 <td><p><b>ID</b></p></td>
@@ -95,107 +95,29 @@ RELEASE_NOTES = """
 <td><p><b>Summary</b></p></td>
 </tr>
 <tr>
-<td><a href="http://github.com/robotframework/RIDE/issues/1446">Issue 1446</a></td>
-<td>enhancement</td>
-<td>critical</td>
-<td>Robot Framework 2.8 compatibility</td>
-</tr>
-<tr>
-<td><a href="http://github.com/robotframework/RIDE/issues/1371">Issue 1371</a></td>
+<td><a href="http://github.com/robotframework/RIDE/issues/1476">Issue 1476</a></td>
 <td>bug</td>
 <td>high</td>
-<td>Use installed RF to list standard libraries</td>
+<td>Standard library imports may fail if a different major version of RF is installed </td>
 </tr>
 <tr>
-<td><a href="http://github.com/robotframework/RIDE/issues/1449">Issue 1449</a></td>
+<td><a href="http://github.com/robotframework/RIDE/issues/1473">Issue 1473</a></td>
 <td>enhancement</td>
 <td>medium</td>
-<td>Grid editor columns auto-resize</td>
+<td>Change file opening dialogs to filter primarily by default file format</td>
 </tr>
 <tr>
-<td><a href="http://github.com/robotframework/RIDE/issues/1395">Issue 1395</a></td>
-<td>bug</td>
-<td>medium</td>
-<td>RIDE IndexError during test execution</td>
-</tr>
-<tr>
-<td><a href="http://github.com/robotframework/RIDE/issues/1370">Issue 1370</a></td>
-<td>bug</td>
-<td>medium</td>
-<td>'View All Tags (F7)' does not work if there are multiple identical tags with different case(upper/lower)</td>
-</tr>
-<tr>
-<td><a href="http://github.com/robotframework/RIDE/issues/1249">Issue 1249</a></td>
-<td>bug</td>
-<td>medium</td>
-<td>Text box stuck on UI when renaming a test suite</td>
-</tr>
-<tr>
-<td><a href="http://github.com/robotframework/RIDE/issues/1248">Issue 1248</a></td>
-<td>bug</td>
-<td>medium</td>
-<td>Lib directory included twice into the source distribution</td>
-</tr>
-<tr>
-<td><a href="http://github.com/robotframework/RIDE/issues/1162">Issue 1162</a></td>
-<td>enhancement</td>
-<td>medium</td>
-<td>Preferences dialog has no action button to refresh the display</td>
-</tr>
-<tr>
-<td><a href="http://github.com/robotframework/RIDE/issues/1105">Issue 1105</a></td>
-<td>enhancement</td>
-<td>medium</td>
-<td>Run Keyword If argument enhancement</td>
-</tr>
-<tr>
-<td><a href="http://github.com/robotframework/RIDE/issues/1455">Issue 1455</a></td>
+<td><a href="http://github.com/robotframework/RIDE/issues/1484">Issue 1484</a></td>
 <td>bug</td>
 <td>low</td>
-<td>Grid colorizer does not recognize changed settings.</td>
+<td>PyDeadObjectError is thrown when preferences dialog is closed in Windows</td>
 </tr>
 <tr>
-<td><a href="http://github.com/robotframework/RIDE/issues/1443">Issue 1443</a></td>
+<td><a href="http://github.com/robotframework/RIDE/issues/1469">Issue 1469</a></td>
 <td>bug</td>
 <td>low</td>
-<td>Import library spec dialog does not work on OSX</td>
-</tr>
-<tr>
-<td><a href="http://github.com/robotframework/RIDE/issues/1403">Issue 1403</a></td>
-<td>bug</td>
-<td>low</td>
-<td>RIDE doesn't restore to the un-minimised size, if it is closed when minimised.</td>
-</tr>
-<tr>
-<td><a href="http://github.com/robotframework/RIDE/issues/1402">Issue 1402</a></td>
-<td>bug</td>
-<td>low</td>
-<td>"New version of RIDE available"-dialog has wrong download URL </td>
-</tr>
-<tr>
-<td><a href="http://github.com/robotframework/RIDE/issues/1401">Issue 1401</a></td>
-<td>enhancement</td>
-<td>low</td>
-<td>Option to use monospace font in grid</td>
-</tr>
-<tr>
-<td><a href="http://github.com/robotframework/RIDE/issues/1317">Issue 1317</a></td>
-<td>enhancement</td>
-<td>low</td>
-<td>Bad error message when Robot Framework is not installed</td>
-</tr>
-<tr>
-<td><a href="http://github.com/robotframework/RIDE/issues/1277">Issue 1277</a></td>
-<td>bug</td>
-<td>low</td>
-<td>New resource file name is lower cased in Windows</td>
-</tr>
-<tr>
-<td><a href="http://github.com/robotframework/RIDE/issues/837">Issue 837</a></td>
-<td>bug</td>
-<td>low</td>
-<td>Tag display only half visible</td>
+<td>iCCP: known incorrect sRGB profile error shown in terminal</td>
 </tr>
 </table>
-<p>Altogether 17 issues.</p>
+<p>Altogether 4 issues.</p>
 """
