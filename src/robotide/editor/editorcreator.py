@@ -19,8 +19,8 @@ from robotide.controller.filecontrollers import ExcludedDirectoryController
 from robotide.controller.settingcontrollers import VariableController
 from robotide import robotapi
 
-from .editors import (InitFileEditor, TestCaseFileEditor, WelcomePage,
-        ResourceFileEditor)
+from .editors import (
+    InitFileEditor, TestCaseFileEditor, WelcomePage, ResourceFileEditor)
 from .macroeditors import TestCaseEditor, UserKeywordEditor
 
 
@@ -55,8 +55,9 @@ class EditorCreator(object):
     def _create_editor(self, editor_panel, plugin, tree):
         controller = plugin.get_selected_item()
         if self._invalid(controller):
-            # see http://code.google.com/p/robotframework-ride/issues/detail?id=1092
-            if self._editor and tree and (not tree._datafile_nodes or self._only_resource_files(tree)):
+            # http://code.google.com/p/robotframework-ride/issues/detail?id=1092
+            if self._editor and tree and (not tree._datafile_nodes or
+                                          self._only_resource_files(tree)):
                 self._editor.destroy()
                 self._editor = None
                 return None
@@ -69,13 +70,13 @@ class EditorCreator(object):
 
     def _invalid(self, controller):
         return not controller or controller.data is None or \
-               isinstance(controller, Project) or \
-               isinstance(controller, ExcludedDirectoryController)
+            isinstance(controller, Project) or \
+            isinstance(controller, ExcludedDirectoryController)
 
     def _should_use_old_editor(self, controller):
         return self._editor and \
-               isinstance(controller, VariableController) and \
-               controller.datafile_controller is self._editor.controller
+            isinstance(controller, VariableController) and \
+            controller.datafile_controller is self._editor.controller
 
     def _create_new_editor(self, controller, editor_panel, plugin, tree):
         editor_class = plugin.get_editor(controller.data.__class__)
@@ -85,4 +86,5 @@ class EditorCreator(object):
         return editor_class(plugin, editor_panel, controller, tree)
 
     def _only_resource_files(self, tree):
-        return all([tree.node_is_resource_file(node) for node in tree._datafile_nodes])
+        return all([tree.node_is_resource_file(node)
+                    for node in tree._datafile_nodes])

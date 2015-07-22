@@ -13,12 +13,13 @@
 #  limitations under the License.
 
 import wx
-from robotide.publish.messages import RideMessage, RideDataFileSet, RideDataFileRemoved
 
-from robotide.pluginapi import (Plugin, ActionInfoCollection,
-                                TreeAwarePluginMixin)
-from robotide.publish import (RideTreeSelection, RideNotebookTabChanging,
-                              RideNotebookTabChanged, RideSaving)
+from robotide.publish.messages import RideDataFileRemoved
+from robotide.pluginapi import (
+    Plugin, ActionInfoCollection, TreeAwarePluginMixin)
+from robotide.publish import (
+    RideTreeSelection, RideNotebookTabChanging, RideNotebookTabChanged,
+    RideSaving)
 from robotide.utils import overrides
 from robotide.widgets import PopupCreator
 from editorcreator import EditorCreator
@@ -49,6 +50,7 @@ Delete Rows | Delete Rows | Ctrlcmd-D
 Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword and variable completions | | | POSITION-70
 """
 
+
 class EditorPlugin(Plugin, TreeAwarePluginMixin):
     """The default editor plugin.
 
@@ -65,7 +67,8 @@ class EditorPlugin(Plugin, TreeAwarePluginMixin):
     def enable(self):
         self._creator.register_editors()
         self._show_editor()
-        self.register_actions(ActionInfoCollection(_EDIT, self._tab, self._tab))
+        self.register_actions(
+            ActionInfoCollection(_EDIT, self._tab, self._tab))
         self.subscribe(self.OnTreeItemSelected, RideTreeSelection)
         self.subscribe(self.OnTabChanged, RideNotebookTabChanged)
         self.subscribe(self.OnTabChanging, RideNotebookTabChanging)
@@ -151,6 +154,7 @@ class EditorPlugin(Plugin, TreeAwarePluginMixin):
 
     def OnFileDeleted(self, message):
         self._create_editor()
+
 
 class _EditorTab(wx.Panel):
 
