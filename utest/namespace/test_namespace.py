@@ -381,7 +381,7 @@ class TestKeywordSearch(_DataFileTest):
 class TestVariableStash(unittest.TestCase):
 
     def _variable_stash_contains(self, name, vars):
-        assert_true('${{{}}}'.format(name) in [v.name for v in vars])
+        assert_true('${{{0}}}'.format(name) in [v.name for v in vars])
 
     def test_variable_resolving(self):
         vars = _VariableStash()
