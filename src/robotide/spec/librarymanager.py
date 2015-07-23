@@ -12,12 +12,12 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from Queue import Queue
 from _sqlite3 import OperationalError
+import Queue
 import os
 from threading import Thread
 
-from robotide.publish import RideLogException
+from robotide.publish import RideLogException, RideLogMessage
 from robotide.spec.librarydatabase import LibraryDatabase
 from robotide.spec.libraryfetcher import get_import_result
 from robotide.spec.xmlreaders import get_path, SpecInitializer
@@ -28,7 +28,7 @@ class LibraryManager(Thread):
     def __init__(self, database_name, spec_initializer=None):
         self._database_name = database_name
         self._database = None
-        self._messages = Queue()
+        self._messages = Queue.Queue()
         self._spec_initializer = spec_initializer or SpecInitializer()
         Thread.__init__(self)
         self.setDaemon(True)
@@ -91,17 +91,20 @@ class LibraryManager(Thread):
         _, library_name, library_args, result_queue = message
         keywords = self._fetch_keywords(library_name, library_args)
         self._insert(library_name, library_args, keywords,
-                     result_queue.put)
+                     lambda res: result_queue.put(res, timeout=3))
 
     def _insert(self, library_name, library_args, keywords, callback):
-        self._database.insert_library_keywords(library_name, library_args, keywords or [])
+        self._database.insert_library_keywords(
+            library_name, library_args, keywords or [])
         self._call(callback, keywords)
 
-    def _update_database_and_call_callback_if_needed(self, library_key, keywords, callback):
+    def _update_database_and_call_callback_if_needed(
+            self, library_key, keywords, callback):
         db_keywords = self._database.fetch_library_keywords(*library_key)
         try:
             if not db_keywords or self._keywords_differ(keywords, db_keywords):
-                self._insert(library_key[0], library_key[1], keywords, callback)
+                self._insert(
+                    library_key[0], library_key[1], keywords, callback)
             else:
                 self._database.update_library_timestamp(*library_key)
         except OperationalError:
@@ -115,18 +118,25 @@ class LibraryManager(Thread):
             RideLogException(message=msg, exception=err, level='WARN').publish()
 
     def fetch_keywords(self, library_name, library_args, callback):
-        self._messages.put(('fetch', library_name, library_args, callback))
+        self._messages.put(('fetch', library_name, library_args, callback),
+                           timeout=3)
 
     def get_and_insert_keywords(self, library_name, library_args):
-        result_queue = Queue(maxsize=1)
-        self._messages.put(('insert', library_name, library_args, result_queue))
-        return result_queue.get()
+        result_queue = Queue.Queue(maxsize=1)
+        self._messages.put(
+            ('insert', library_name, library_args, result_queue), timeout=3)
+        try:
+            return result_queue.get(timeout=5)
+        except Queue.Empty as e:
+            RideLogMessage('Failed to read keywords from library db: {}'
+                           .format(unicode(e))).publish()
+            return []
 
     def create_database(self):
-        self._messages.put(('create',))
+        self._messages.put(('create',), timeout=3)
 
     def stop(self):
-        self._messages.put(False)
+        self._messages.put(False, timeout=3)
 
     def _keywords_differ(self, keywords1, keywords2):
         if keywords1 != keywords2 and None in (keywords1, keywords2):
