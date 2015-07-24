@@ -30,6 +30,15 @@ from robotide.namespace.embeddedargs import EmbeddedArgsHandler
 from robotide.publish import PUBLISHER, RideSettingsChanged
 
 
+installation_path = os.path.normpath(
+    os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
+BUNDLED_LIBRARIES_PATH = os.path.join(
+    installation_path, 'lib', 'robot', 'libraries')
+REMOTE_LIB_PATH = os.path.join(
+    installation_path, 'spec', 'remote')
+del installation_path
+
+
 class Namespace(object):
 
     def __init__(self, settings):
@@ -61,12 +70,9 @@ class Namespace(object):
             rf_version = robotlibraryloader.find_installed_robot_libraries(
                 self._settings.get('installed robot version', None))
             if rf_version is not None:
-                installation_path = os.path.normpath(
-                    os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
-                bundled_libraries_path = os.path.join(
-                    installation_path, 'lib', 'robot', 'libraries')
-                if bundled_libraries_path in sys.path:
-                    sys.path.remove(bundled_libraries_path)
+                if BUNDLED_LIBRARIES_PATH in sys.path:
+                    sys.path.remove(BUNDLED_LIBRARIES_PATH)
+                    sys.path.append(REMOTE_LIB_PATH)
                 self._settings.set('installed robot version', rf_version)
         for path in self._settings.get('pythonpath', []):
             if path not in sys.path:

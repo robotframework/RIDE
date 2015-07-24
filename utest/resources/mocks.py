@@ -49,14 +49,15 @@ class _FakeUIObject(object):
 
 
 class FakeSettings(Settings):
-    def __init__(self, temp_dir_for_excludes=None):
+    def __init__(self, settings=None):
         Settings.__init__(self, None)
         self.add_section('Plugins')
         self.set('pythonpath', [])
         self.set('auto imports', [])
         self.set('use installed robot libraries', False)
-        if temp_dir_for_excludes:
-            self.excludes = Excludes(temp_dir_for_excludes)
+        if settings:
+            for key, val in settings.items():
+                self.set(key, val)
 
 
 class FakeApplication(object):
