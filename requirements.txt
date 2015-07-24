@@ -1,3 +1,4 @@
+setuptools
 nose
 mock
 paver
