@@ -223,14 +223,14 @@ class Settings(wx.CollapsiblePane):
             self._sizer.Add(editor, 0, wx.ALL | wx.EXPAND, self.BORDER)
             self._editors.append(editor)
         self.GetPane().SetSizer(self._sizer)
-        self._sizer.SetSizeHints(self.GetPane())
 
     def _recalc_size(self, event=None):
         if self.IsExpanded():
             expand_button_height = 32  # good guess...
             height = sum(editor.Size[1] + 2 * self.BORDER
                          for editor in self._editors)
-            self.SetSizeHints(-1, height + expand_button_height)
+            self.SetSize((-1, height + expand_button_height))
+            self._sizer.Layout()
         if event:
             event.Skip()
 
