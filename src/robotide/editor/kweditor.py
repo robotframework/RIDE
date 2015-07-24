@@ -149,7 +149,6 @@ class KeywordEditor(GridEditor, RideEventHandler):
     def OnSelectCell(self, event):
         self._cell_selected = True
         GridEditor.OnSelectCell(self, event)
-        self._colorize_grid()
         event.Skip()
 
     def OnKillFocus(self, event):
