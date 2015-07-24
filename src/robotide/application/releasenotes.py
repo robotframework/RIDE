@@ -86,7 +86,7 @@ WELCOME_TEXT = """
 # Release notes are updated automatically by package.py script whenever
 # a numbered distribution is created.
 RELEASE_NOTES = """
-<h2>Release notes for 1.4.1b1</h2>
+<h2>Release notes for 1.4.1b2</h2>
 <table border="1">
 <tr>
 <td><p><b>ID</b></p></td>
@@ -113,11 +113,17 @@ RELEASE_NOTES = """
 <td>PyDeadObjectError is thrown when preferences dialog is closed in Windows</td>
 </tr>
 <tr>
+<td><a href="http://github.com/robotframework/RIDE/issues/1481">Issue 1481</a></td>
+<td>bug</td>
+<td>low</td>
+<td>Misleading error message when run with wxPython3</td>
+</tr>
+<tr>
 <td><a href="http://github.com/robotframework/RIDE/issues/1469">Issue 1469</a></td>
 <td>bug</td>
 <td>low</td>
 <td>iCCP: known incorrect sRGB profile error shown in terminal</td>
 </tr>
 </table>
-<p>Altogether 4 issues.</p>
+<p>Altogether 5 issues.</p>
 """
