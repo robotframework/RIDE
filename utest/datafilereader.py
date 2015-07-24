@@ -49,8 +49,9 @@ SMALL_TEST_PATH = _makepath('small_test')
 
 IMPORTS = _makepath('imports')
 
+
 def construct_project(datapath, temp_dir_for_excludes=None):
-    settings = FakeSettings(temp_dir_for_excludes)
+    settings = FakeSettings({'excludes': temp_dir_for_excludes})
     library_manager = LibraryManager(':memory:')
     library_manager.create_database()
     project = Project(Namespace(settings), settings, library_manager)
