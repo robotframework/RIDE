@@ -86,7 +86,7 @@ WELCOME_TEXT = """
 # Release notes are updated automatically by package.py script whenever
 # a numbered distribution is created.
 RELEASE_NOTES = """
-<h2>Release notes for 1.4.1</h2>
+<h2>Release notes for 1.5a1</h2>
 <table border="1">
 <tr>
 <td><p><b>ID</b></p></td>
@@ -95,35 +95,11 @@ RELEASE_NOTES = """
 <td><p><b>Summary</b></p></td>
 </tr>
 <tr>
-<td><a href="http://github.com/robotframework/RIDE/issues/1476">Issue 1476</a></td>
-<td>bug</td>
-<td>high</td>
-<td>Standard library imports may fail if a different major version of RF is installed </td>
-</tr>
-<tr>
-<td><a href="http://github.com/robotframework/RIDE/issues/1473">Issue 1473</a></td>
+<td><a href="http://github.com/robotframework/RIDE/issues/1445">Issue 1445</a></td>
 <td>enhancement</td>
-<td>medium</td>
-<td>Change file opening dialogs to filter primarily by default file format</td>
-</tr>
-<tr>
-<td><a href="http://github.com/robotframework/RIDE/issues/1484">Issue 1484</a></td>
-<td>bug</td>
-<td>low</td>
-<td>PyDeadObjectError is thrown when preferences dialog is closed in Windows</td>
-</tr>
-<tr>
-<td><a href="http://github.com/robotframework/RIDE/issues/1481">Issue 1481</a></td>
-<td>bug</td>
-<td>low</td>
-<td>Misleading error message when run with wxPython3</td>
-</tr>
-<tr>
-<td><a href="http://github.com/robotframework/RIDE/issues/1469">Issue 1469</a></td>
-<td>bug</td>
-<td>low</td>
-<td>iCCP: known incorrect sRGB profile error shown in terminal</td>
+<td>critical</td>
+<td>Support RF 2.9</td>
 </tr>
 </table>
-<p>Altogether 5 issues.</p>
+<p>Altogether 1 issues.</p>
 """
