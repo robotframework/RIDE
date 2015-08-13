@@ -1,8 +1,9 @@
 *** Test Cases ***
-Keissi
+Keissi   KW1
 
 *** Variables ***
 @{LIST_VARIABLE}  1  2  3
+&{DICT_VARIABLE}  key=val   anotherone=bites the dust
 
 *** Keywords ***
 KW1

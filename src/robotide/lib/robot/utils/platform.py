@@ -1,4 +1,4 @@
-#  Copyright 2008-2014 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,19 +12,12 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robot.errors import DataError
+import os
+import sys
 
 
-class BaseLibrary:
-
-    def get_handler(self, name):
-        try:
-            return self.handlers[name]
-        except KeyError:
-            raise DataError("No keyword handler with name '%s' found"  % name)
-
-    def has_handler(self, name):
-        return name in self.handlers
-
-    def __len__(self):
-        return len(self.handlers)
+JYTHON = sys.platform.startswith('java')
+IRONPYTHON = sys.platform == 'cli'
+PYTHON = not (JYTHON or IRONPYTHON)
+UNIXY = os.sep == '/'
+WINDOWS = not UNIXY

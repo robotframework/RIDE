@@ -88,4 +88,4 @@ class HorizontalFlowSizer(wx.PySizer):
 
     @property
     def height(self):
-        return self._height + 25
+        return self._height

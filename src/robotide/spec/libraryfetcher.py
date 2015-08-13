@@ -24,7 +24,7 @@ def get_import_result(path, args):
             kw.doc,
             kw.library.name,
             _parse_args(kw.arguments)
-        ) for kw in lib.handlers.values()]
+        ) for kw in lib.handlers]
     return kws
 
 

@@ -1,18 +1,31 @@
 import unittest
 
-from robot.utils.asserts import assert_equals, assert_none
-
 from robotide.validators import ArgumentsValidator
+
+from robot.utils.asserts import assert_equals, assert_none
 
 
 class Test(unittest.TestCase):
     validate = ArgumentsValidator()._validate
+    validation_error = \
+        'List and scalar arguments must be beforenamed and dictionary arguments'
 
     def test_valid_arguments_validation(self):
-        for arg in ["${arg}", "${arg}|${arg2}", "${arg}=", "${arg}=def val",
-                    "${a} | ${b}=d | ${c}=\\| | ${d}=", "@{list}",
-                    "${a} | ${b} | ${c}=1 | ${d}=2 | ${e}=3 | @{f}"]:
-            assert_none(self.validate(arg))
+        for arg in [
+                "${arg}",
+                "${arg}|${arg2}",
+                "${arg}=",
+                "${arg}=def val",
+                "${a} | ${b}=d | ${c}=\\| | ${d}=",
+                "@{list}",
+                "@{list} | ${arg}",
+                "${a} | ${b} | @{f}",
+                "&{dict}",
+                "${arg} | &{dict}",
+                "@{list} | &{dict}",
+                "${a} | ${b} | @{f} | &{dict}",
+        ]:
+            assert_none(self.validate(arg), arg)
 
     def test_invalid_arguments_validation(self):
         for arg in ["arg", "@{list}=", "@{list}=fooness"]:
@@ -22,14 +35,12 @@ class Test(unittest.TestCase):
             assert_equals(self.validate(arg),
                           "Invalid argument syntax '%s'" % err)
 
-    def test_list_arg_not_last(self):
-        for arg in ["@{list} | ${arg}", "@{list} | ${arg} | @{list2}",
-                    "@{list} | ${arg}=foo", "@{list} | @{list2}"]:
-            assert_equals(self.validate(arg),
-                          "List variable allowed only as the last argument")
+    def test_list_arg_in_incorrect_poition(self):
+        for arg in ["${arg}=foo | @{list}",
+                    "&{dict} | @{list}"]:
+            assert_equals(self.validate(arg), self.validation_error)
 
     def test_req_arg_after_defaults(self):
-        for arg in ["${a}=default | ${a2}", "${a} | ${b}=default | ${c}"]:
-            assert_equals(self.validate(arg),
-                          "Required arguments not allowed after arguments "
-                          "with default values.")
+        for arg in ["${a}=default | ${a2}",
+                    "${a} | ${b}=default | ${c}"]:
+            assert_equals(self.validate(arg), self.validation_error)

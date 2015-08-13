@@ -1,4 +1,4 @@
-#  Copyright 2008-2014 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -14,6 +14,7 @@
 
 from robot.conf import RebotSettings
 from robot.errors import DataError
+from robot.model import ModelModifier
 from robot.output import LOGGER
 from robot.result import ExecutionResult, Result
 from robot.utils import unic
@@ -82,9 +83,9 @@ class ResultWriter(object):
     def _write(self, name, writer, path, *args):
         try:
             writer(path, *args)
-        except DataError, err:
+        except DataError as err:
             LOGGER.error(unicode(err))
-        except EnvironmentError, err:
+        except EnvironmentError as err:
             # `err.filename` can be different than `path` at least if reading
             # log/report templates or writing split log fails.
             # `unic` is needed due to http://bugs.jython.org/issue1825.
@@ -121,6 +122,10 @@ class Results(object):
             self._result.configure(self._settings.status_rc,
                                    self._settings.suite_config,
                                    self._settings.statistics_config)
+            modifier = ModelModifier(self._settings.pre_rebot_modifiers,
+                                     self._settings.process_empty_suite,
+                                     LOGGER)
+            self._result.suite.visit(modifier)
             self.return_code = self._result.return_code
         return self._result
 

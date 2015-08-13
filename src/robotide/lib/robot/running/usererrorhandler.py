@@ -1,4 +1,4 @@
-#  Copyright 2008-2014 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@
 #  limitations under the License.
 
 from robot.errors import DataError
+from robot.model import Tags
 
 
 class UserErrorHandler:
@@ -26,9 +27,11 @@ class UserErrorHandler:
 
     def __init__(self, name, error):
         self.name = self.longname = name
+        self.libname = ''
         self.doc = self.shortdoc = ''
         self.error = error
         self.timeout = ''
+        self.tags = Tags()
 
     def init_keyword(self, varz):
         pass

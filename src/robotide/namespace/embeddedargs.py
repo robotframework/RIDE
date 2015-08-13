@@ -15,12 +15,12 @@
 from robotide import robotapi
 
 
-class EmbeddedArgsHandler(robotapi.EmbeddedArgsTemplate):
+class EmbeddedArgsHandler(object):
 
     def __init__(self, keyword):
         if keyword.arguments:
             raise TypeError('Cannot have normal arguments')
-        self.embedded_args, self.name_regexp \
-                = self._read_embedded_args_and_regexp(keyword.name)
+        self.name_regexp, self.embedded_args = \
+            robotapi.EmbeddedArgumentParser().parse(keyword.name)
         if not self.embedded_args:
             raise TypeError('Must have embedded arguments')

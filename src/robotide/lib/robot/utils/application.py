@@ -1,4 +1,4 @@
-#  Copyright 2008-2014 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from __future__ import with_statement
 import sys
 from contextlib import contextmanager
 
@@ -39,7 +38,8 @@ class Application(object):
         return options, arguments
 
     def execute_cli(self, cli_arguments):
-        with self._logging():
+        with self._logger:
+            self._logger.info('%s %s' % (self._ap.name, self._ap.version))
             options, arguments = self._parse_arguments(cli_arguments)
             rc = self._execute(arguments, options)
         self._exit(rc)
@@ -48,21 +48,12 @@ class Application(object):
         if msg:
             print encode_output(msg)
 
-    @contextmanager
-    def _logging(self):
-        self._logger.register_file_logger()
-        self._logger.info('%s %s' % (self._ap.name, self._ap.version))
-        try:
-            yield
-        finally:
-            self._logger.close()
-
     def _parse_arguments(self, cli_args):
         try:
             options, arguments = self.parse_arguments(cli_args)
-        except Information, msg:
+        except Information as msg:
             self._report_info(unicode(msg))
-        except DataError, err:
+        except DataError as err:
             self._report_error(unicode(err), help=True, exit=True)
         else:
             self._logger.info('Arguments: %s' % ','.join(arguments))
@@ -79,19 +70,20 @@ class Application(object):
         return self._ap.parse_args(cli_args)
 
     def execute(self, *arguments, **options):
-        with self._logging():
+        with self._logger:
+            self._logger.info('%s %s' % (self._ap.name, self._ap.version))
             return self._execute(list(arguments), options)
 
     def _execute(self, arguments, options):
         try:
             rc = self.main(arguments, **options)
-        except DataError, err:
+        except DataError as err:
             return self._report_error(unicode(err), help=True)
         except (KeyboardInterrupt, SystemExit):
             return self._report_error('Execution stopped by user.',
                                       rc=STOPPED_BY_USER)
         except:
-            error, details = get_error_details()
+            error, details = get_error_details(exclude_robot_traces=False)
             return self._report_error('Unexpected error: %s' % error,
                                       details, rc=FRAMEWORK_ERROR)
         else:
@@ -118,9 +110,6 @@ class Application(object):
 
 class DefaultLogger(object):
 
-    def register_file_logger(self):
-        pass
-
     def info(self, message):
         pass
 
@@ -128,4 +117,10 @@ class DefaultLogger(object):
         print encode_output(message)
 
     def close(self):
+        pass
+
+    def __enter__(self):
+        pass
+
+    def __exit__(self, *exc_info):
         pass

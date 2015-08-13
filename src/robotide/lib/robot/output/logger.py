@@ -1,4 +1,4 @@
-#  Copyright 2008-2014 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -16,9 +16,9 @@ import os
 
 from robot.errors import DataError
 
+from .console import ConsoleOutput
 from .filelogger import FileLogger
 from .loggerhelper import AbstractLogger, AbstractLoggerProxy
-from .monitor import CommandLineMonitor
 from .stdoutlogsplitter import StdoutLogSplitter
 
 
@@ -41,6 +41,8 @@ class Logger(AbstractLogger):
         self._started_keywords = 0
         self._error_occurred = False
         self._error_listener = None
+        self._prev_log_message_handlers = []
+        self._enabled = 0
         if register_console_logger:
             self.register_console_logger()
 
@@ -65,9 +67,9 @@ class Logger(AbstractLogger):
         for log in loggers:
             self._loggers.unregister_logger(log)
 
-    def register_console_logger(self, width=78, colors='AUTO', markers='AUTO',
-                                stdout=None, stderr=None):
-        logger = CommandLineMonitor(width, colors, markers, stdout, stderr)
+    def register_console_logger(self, type='verbose', width=78, colors='AUTO',
+                                markers='AUTO', stdout=None, stderr=None):
+        logger = ConsoleOutput(type, width, colors, markers, stdout, stderr)
         if self._console_logger:
             self._loggers.unregister_logger(self._console_logger)
         self._console_logger = logger
@@ -81,10 +83,6 @@ class Logger(AbstractLogger):
         self._console_logger = None
         return logger
 
-    # TODO: Remove in RF 2.9. Not used outside utests since 2.8.4 but may
-    # be used by external tools. Need to check that before removal.
-    disable_automatic_console_logger = unregister_console_logger
-
     def register_file_logger(self, path=None, level='INFO'):
         if not path:
             path = os.environ.get('ROBOT_SYSLOG_FILE', 'NONE')
@@ -93,7 +91,7 @@ class Logger(AbstractLogger):
             return
         try:
             logger = FileLogger(path, level)
-        except DataError, err:
+        except DataError as err:
             self.error("Opening syslog file '%s' failed: %s" % (path, unicode(err)))
         else:
             self.register_logger(logger)
@@ -118,7 +116,7 @@ class Logger(AbstractLogger):
         """Log messages written (mainly) by libraries"""
         for logger in self._loggers.all_loggers():
             logger.log_message(msg)
-        if msg.level == 'WARN':
+        if msg.level in ('WARN', 'ERROR'):
             self.message(msg)
 
     log_message = message
@@ -128,16 +126,16 @@ class Logger(AbstractLogger):
             self.log_message(msg)
 
     def enable_library_import_logging(self):
-        self._prev_log_message = self.log_message
+        self._prev_log_message_handlers.append(self.log_message)
         self.log_message = self.message
 
     def disable_library_import_logging(self):
-        self.log_message = self._prev_log_message
+        self.log_message = self._prev_log_message_handlers.pop()
 
-    def output_file(self, name, path):
+    def output_file(self, file_type, path):
         """Finished output, report, log, debug, or xunit file"""
         for logger in self._loggers.all_loggers():
-            logger.output_file(name, path)
+            logger.output_file(file_type, path)
 
     def close(self):
         for logger in self._loggers.all_loggers():
@@ -174,8 +172,22 @@ class Logger(AbstractLogger):
         if not self._started_keywords:
             self.log_message = self.message
 
+    def imported(self, import_type, name, **attrs):
+        for logger in self._loggers.all_loggers():
+            logger.imported(import_type, name, attrs)
+
     def __iter__(self):
         return iter(self._loggers)
+
+    def __enter__(self):
+        if not self._enabled:
+            self.register_file_logger()
+        self._enabled += 1
+
+    def __exit__(self, *exc_info):
+        self._enabled -= 1
+        if not self._enabled:
+            self.close()
 
 
 class LoggerCollection(object):
@@ -191,10 +203,6 @@ class LoggerCollection(object):
     def register_context_changing_logger(self, logger):
         self._context_changing_loggers.append(_LoggerProxy(logger))
         return self._context_changing_loggers[-1]
-
-    # TODO: Remove in RF 2.9. Doesn't seem to be used anywhere since 2.8.4.
-    def remove_first_regular_logger(self):
-        return self._regular_loggers.pop(0)
 
     def unregister_logger(self, logger):
         self._regular_loggers = [proxy for proxy in self._regular_loggers
@@ -219,7 +227,7 @@ class LoggerCollection(object):
 class _LoggerProxy(AbstractLoggerProxy):
     _methods = ['message', 'log_message', 'output_file', 'close',
                 'start_suite', 'end_suite', 'start_test', 'end_test',
-                'start_keyword', 'end_keyword']
+                'start_keyword', 'end_keyword', 'imported']
 
 
 LOGGER = Logger()

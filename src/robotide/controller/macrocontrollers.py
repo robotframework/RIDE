@@ -336,12 +336,14 @@ class TestCaseController(_WithStepsController):
 
     @property
     def settings(self):
-        return [self.documentation,
-                FixtureController(self, self._test.setup),
-                FixtureController(self, self._test.teardown),
-                TimeoutController(self, self._test.timeout),
-                TemplateController(self, self._test.template),
-                self.tags]
+        return [
+            self.documentation,
+            FixtureController(self, self._test.setup),
+            FixtureController(self, self._test.teardown),
+            self.tags,
+            TimeoutController(self, self._test.timeout),
+            TemplateController(self, self._test.template)
+        ]
 
     @property
     def documentation(self):
@@ -382,6 +384,9 @@ class UserKeywordController(_WithStepsController):
 
     def _init(self, kw):
         self._kw = kw
+        # Needed for API compatibility in tag search
+        self.force_tags = []
+        self.default_tags = []
 
     def __eq__(self, other):
         if self is other:
@@ -408,20 +413,20 @@ class UserKeywordController(_WithStepsController):
 
     @property
     def settings(self):
-        result = [DocumentationController(self, self._kw.doc),
-                  ArgumentsController(self, self._kw.args),
-                  TimeoutController(self, self._kw.timeout),
-                  ReturnValueController(self, self._kw.return_)]
-        if hasattr(self._kw, 'teardown'):
-            result = result[:2] + [self.teardown] + result[2:]
+        result = [
+            DocumentationController(self, self._kw.doc),
+            TagsController(self, self._kw.tags),
+            ArgumentsController(self, self._kw.args),
+            self.teardown,
+            ReturnValueController(self, self._kw.return_),
+            TimeoutController(self, self._kw.timeout)
+        ]
         return result
 
     @property
     def teardown(self):
         if self._teardown == self._TEARDOWN_NOT_SET:
-            self._teardown = None
-            if hasattr(self._kw, 'teardown'):
-                self._teardown = FixtureController(self, self._kw.teardown)
+            self._teardown = FixtureController(self, self._kw.teardown)
         return self._teardown
 
     @property

@@ -13,11 +13,13 @@
 #  limitations under the License.
 
 import wx
-from robotide.namespace.suggesters import ResourceSuggester, LibrariesSuggester, HistorySuggester
 
-from robotide.validators import (ScalarVariableNameValidator,
-    ListVariableNameValidator, TimeoutValidator, ArgumentsValidator,
-    TestCaseNameValidator, UserKeywordNameValidator)
+from robotide.namespace.suggesters import ResourceSuggester, \
+    LibrariesSuggester, HistorySuggester
+from robotide.validators import ScalarVariableNameValidator, \
+    ListVariableNameValidator, TimeoutValidator, ArgumentsValidator, \
+    TestCaseNameValidator, UserKeywordNameValidator, \
+    DictionaryVariableNameValidator
 from robotide import utils
 from robotide.widgets import HelpLabel, Dialog
 
@@ -88,12 +90,24 @@ class ScalarVariableDialog(_Dialog):
         return [VariableNameEditor(self, name, 'Name', validator),
                 ValueEditor(self, value, 'Value')]
 
+
 class ListVariableDialog(_Dialog):
 
     def _get_editors(self, var):
         name = var.name if var and var.name else '@{}'
         value = var.value if var and var.value else ''
         validator = ListVariableNameValidator(self._controller, name)
+        return [VariableNameEditor(self, name, 'Name', validator),
+                ListValueEditor(self, value, 'Value',
+                                settings=self.plugin.global_settings)]
+
+
+class DictionaryVariableDialog(_Dialog):
+
+    def _get_editors(self, var):
+        name = var.name if var and var.name else '&{}'
+        value = var.value if var and var.value else ''
+        validator = DictionaryVariableNameValidator(self._controller, name)
         return [VariableNameEditor(self, name, 'Name', validator),
                 ListValueEditor(self, value, 'Value',
                                 settings=self.plugin.global_settings)]

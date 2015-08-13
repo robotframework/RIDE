@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-#  Copyright 2008-2014 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -67,7 +67,7 @@ Options
  -R --merge               When combining results, merge outputs together
                           instead of putting them under a new top level suite.
                           Example: rebot --merge orig.xml rerun.xml
-    --rerunmerge          Deprecated. Use --merge instead.
+    --rerunmerge          Deprecated since RF 2.8.6. Use --merge instead.
  -N --name name           Set the name of the top level test suite. Underscores
                           in the name are converted to spaces. Default name is
                           created from the name of the executed data source.
@@ -123,7 +123,6 @@ Options
                           similarly as --log. Default: report.html
  -x --xunit file          xUnit compatible result file. Not created unless this
                           option is specified.
-    --xunitfile file      Deprecated. Use --xunit instead.
     --xunitskipnoncritical  Mark non-critical tests on xUnit output as skipped.
  -T --timestampoutputs    When this option is used, timestamp in a format
                           `YYYYMMDD-hhmmss` is added to all generated output
@@ -186,9 +185,10 @@ Options
                           automatically converted to spaces.
                           Examples: --tagstatlink mytag:http://my.domain:Link
                           --tagstatlink bug-*:http://tracker/id=%1:Bug_Tracker
-    --removekeywords all|passed|for|wuks|name:<pattern> *  Remove keyword data
-                          from all generated outputs. Keywords containing
-                          warnings are not removed except in `all` mode.
+    --removekeywords all|passed|for|wuks|name:<pattern>|tag:<pattern> *
+                          Remove keyword data from all generated outputs.
+                          Keywords containing warnings are not removed except
+                          in `all` mode.
                           all:     remove data from all keywords
                           passed:  remove data only from keywords in passed
                                    test cases and suites
@@ -203,15 +203,27 @@ Options
                                    and may contain `*` and `?` as wildcards.
                                    Examples: --removekeywords name:Lib.HugeKw
                                              --removekeywords name:myresource.*
-    --flattenkeywords for|foritem|name:<pattern> *  Flattens matching keywords
-                          in all generated outputs. Matching keywords get all
-                          log messages from their child keywords and children
-                          are discarded otherwise.
+                          tag:<pattern>:  remove data from keywords that match
+                                   the given pattern. Tags are case and space
+                                   insensitive and it is possible to use
+                                   patterns with `*` and `?` as wildcards.
+                                   Tags and patterns can also be combined
+                                   together with `AND`, `OR`, and `NOT`
+                                   operators.
+                                   Examples: --removekeywords foo
+                                             --removekeywords fooANDbar*
+    --flattenkeywords for|foritem|name:<pattern>|tag:<pattern> *
+                          Flattens matching keywords in all generated outputs.
+                          Matching keywords get all log messages from their
+                          child keywords and children are discarded otherwise.
                           for:     flatten for loops fully
                           foritem: flatten individual for loop iterations
                           name:<pattern>:  flatten matched keywords using same
                                    matching rules as with
                                    `--removekeywords name:<pattern>`
+                          tag:<pattern>:  flatten matched keywords using same
+                                   matching rules as with
+                                   `--removekeywords tag:<pattern>`
     --starttime timestamp  Set starting time of test execution when creating
                           reports. Timestamp must be given in format
                           `2007-10-01 15:12:42.268` where all separators are
@@ -228,12 +240,17 @@ Options
                           of combined test suites together.
     --nostatusrc          Sets the return code to zero regardless of failures
                           in test cases. Error codes are returned normally.
- -C --monitorcolors auto|on|ansi|off  Use colors on console output or not.
+    --prerebotmodifier class *  Class to programmatically modify the result
+                          model before creating outputs.
+ -C --consolecolors auto|on|ansi|off  Use colors on console output or not.
                           auto: use colors when output not redirected (default)
                           on:   always use colors
                           ansi: like `on` but use ANSI colors also on Windows
                           off:  disable colors altogether
                           Note that colors do not work with Jython on Windows.
+    --monitorcolors colors  Deprecated. Use --consolecolors instead.
+ -P --pythonpath path *   Additional locations to add to the module search path
+                          that is used when importing Python based extensions.
  -E --escape what:with *  Escape characters which are problematic in console.
                           `what` is the name of the character to escape and
                           `with` is the string to escape it with. Note that
@@ -259,7 +276,13 @@ Options
 
 Options that are marked with an asterisk (*) can be specified multiple times.
 For example, `--test first --test third` selects test cases with name `first`
-and `third`. If other options are given multiple times, the last value is used.
+and `third`. If an option accepts a value but is not marked with an asterisk,
+the last given value has precedence. For example, `--log A.html --log B.html`
+creates log file `B.html`. Options accepting no values can be disabled by
+using the same option again with `no` prefix added or dropped. The last option
+has precedence regardless of how many times options are used. For example,
+`--merge --merge --nomerge --nostatusrc --statusrc` would not activate the
+merge mode and would return normal status rc.
 
 Long option format is case-insensitive. For example, --SuiteStatLevel is
 equivalent to but easier to read than --suitestatlevel. Long options can
@@ -321,7 +344,7 @@ class Rebot(RobotFramework):
 
     def main(self, datasources, **options):
         settings = RebotSettings(options)
-        LOGGER.register_console_logger(**settings.console_logger_config)
+        LOGGER.register_console_logger(**settings.console_output_config)
         LOGGER.disable_message_cache()
         rc = ResultWriter(*datasources).write_results(settings)
         if rc < 0:

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-#  Copyright 2008-2014 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -29,8 +29,6 @@ This module is also used by the installed ``pybot``, ``jybot`` and
 This module also provides :func:`run` and :func:`run_cli` functions
 that can be used programmatically. Other code is for internal usage.
 """
-
-from __future__ import with_statement
 
 USAGE = """Robot Framework -- A generic test automation framework
 
@@ -118,25 +116,19 @@ Options
  -n --noncritical tag *   Tests with given tag are not critical even if they
                           have a tag set with --critical. Tag can be a pattern.
  -v --variable name:value *  Set variables in the test data. Only scalar
-                          variables are supported and name is given without
-                          `${}`. See --escape for how to use special characters
-                          and --variablefile for a more powerful variable
-                          setting mechanism that allows also list variables.
+                          variables with string value are supported and name is
+                          given without `${}`. See --escape for how to use
+                          special characters and --variablefile for a more
+                          powerful variable setting mechanism.
                           Examples:
-                          --variable str:Hello  =>  ${str} = `Hello`
-                          -v str:Hi_World -E space:_  =>  ${str} = `Hi World`
-                          -v x: -v y:42  =>  ${x} = ``, ${y} = `42`
- -V --variablefile path *  File to read variables from (e.g. `path/vars.py`).
-                          Example file:
-                          |  import random
-                          |  __all__ = [`scalar`, `LIST__var`, `integer`]
-                          |  scalar = `Hello world!`
-                          |  LIST__var = [`Hello`, `list`, `world`]
-                          |  integer = random.randint(1,10)
-                          =>
-                          ${scalar} = `Hello world!`
-                          @{var} = [`Hello`,`list`,`world`]
-                          ${integer} = <random integer from 1 to 10>
+                          --variable str:Hello       =>  ${str} = `Hello`
+                          -v hi:Hi_World -E space:_  =>  ${hi} = `Hi World`
+                          -v x: -v y:42              =>  ${x} = ``, ${y} = `42`
+ -V --variablefile path *  Python or YAML file file to read variables from.
+                          Possible arguments to the variable file can be given
+                          after the path using colon or semicolon as separator.
+                          Examples: --variablefile path/vars.yaml
+                                    --variablefile environment.py:testing
  -d --outputdir dir       Where to create output files. The default is the
                           directory where tests are run from and the given path
                           is considered relative to that unless it is absolute.
@@ -156,7 +148,6 @@ Options
                           similarly as --log. Default: report.html
  -x --xunit file          xUnit compatible result file. Not created unless this
                           option is specified.
-    --xunitfile file      Deprecated. Use --xunit instead.
     --xunitskipnoncritical  Mark non-critical tests on xUnit output as skipped.
  -b --debugfile file      Debug file written during execution. Not created
                           unless this option is specified.
@@ -221,9 +212,10 @@ Options
                           automatically converted to spaces.
                           Examples: --tagstatlink mytag:http://my.domain:Link
                           --tagstatlink bug-*:http://tracker/id=%1:Bug_Tracker
-    --removekeywords all|passed|for|wuks|name:<pattern> *  Remove keyword data
-                          from the generated log file. Keywords containing
-                          warnings are not removed except in `all` mode.
+    --removekeywords all|passed|for|wuks|name:<pattern>|tag:<pattern> *
+                          Remove keyword data from the generated log file.
+                          Keywords containing warnings are not removed except
+                          in `all` mode.
                           all:     remove data from all keywords
                           passed:  remove data only from keywords in passed
                                    test cases and suites
@@ -238,20 +230,33 @@ Options
                                    and may contain `*` and `?` as wildcards.
                                    Examples: --removekeywords name:Lib.HugeKw
                                              --removekeywords name:myresource.*
-    --flattenkeywords for|foritem|name:<pattern> *  Flattens matching keywords
-                          in the generated log file. Matching keywords get all
-                          log messages from their child keywords and children
-                          are discarded otherwise.
+                          tag:<pattern>:  remove data from keywords that match
+                                   the given pattern. Tags are case and space
+                                   insensitive and it is possible to use
+                                   patterns with `*` and `?` as wildcards.
+                                   Tags and patterns can also be combined
+                                   together with `AND`, `OR`, and `NOT`
+                                   operators.
+                                   Examples: --removekeywords foo
+                                             --removekeywords fooANDbar*
+    --flattenkeywords for|foritem|name:<pattern>|tag:<pattern> *
+                          Flattens matching keywords in the generated log file.
+                          Matching keywords get all log messages from their
+                          child keywords and children are discarded otherwise.
                           for:     flatten for loops fully
                           foritem: flatten individual for loop iterations
                           name:<pattern>:  flatten matched keywords using same
                                    matching rules as with
                                    `--removekeywords name:<pattern>`
+                          tag:<pattern>:  flatten matched keywords using same
+                                   matching rules as with
+                                   `--removekeywords tag:<pattern>`
     --listener class *    A class for monitoring test execution. Gets
                           notifications e.g. when a test case starts and ends.
-                          Arguments to listener class can be given after class
-                          name, using colon as separator. For example:
-                          --listener MyListenerClass:arg1:arg2
+                          Arguments to the listener class can be given after
+                          the name using colon or semicolon as a separator.
+                          Examples: --listener MyListenerClass
+                                    --listener path/to/Listener.py:arg1:arg2
     --warnonskippedfiles  If this option is used, skipped test data files will
                           cause a warning that is visible in the console output
                           and the log file. By default skipped files only cause
@@ -277,25 +282,39 @@ Options
                           The seed must be an integer.
                           Examples: --randomize all
                                     --randomize tests:1234
-    --runmode mode *      Deprecated in version 2.8. Use individual options
-                          --dryrun, --exitonfailure, --skipteardownonexit, or
-                          --randomize instead.
- -W --monitorwidth chars  Width of the monitor output. Default is 78.
- -C --monitorcolors auto|on|ansi|off  Use colors on console output or not.
+    --prerunmodifier class *  Class to programmatically modify the test suite
+                          structure before execution.
+    --prerebotmodifier class *  Class to programmatically modify the result
+                          model before creating reports and logs.
+    --console type        How to report execution on the console.
+                          verbose:  report every suite and test (default)
+                          dotted:   only show `.` for passed test, `f` for
+                                    failed non-critical tests, and `F` for
+                                    failed critical tests
+                          quiet:    no output except for errors and warnings
+                          none:     no output whatsoever
+ -. --dotted              Shortcut for `--console dotted`.
+    --quiet               Shortcut for `--console quiet`.
+ -W --consolewidth chars  Width of the monitor output. Default is 78.
+ -C --consolecolors auto|on|ansi|off  Use colors on console output or not.
                           auto: use colors when output not redirected (default)
                           on:   always use colors
                           ansi: like `on` but use ANSI colors also on Windows
                           off:  disable colors altogether
                           Note that colors do not work with Jython on Windows.
- -K --monitormarkers auto|on|off  Show `.` (success) or `F` (failure) on
-                          console when top level keywords in test cases end.
-                          Values have same semantics as with --monitorcolors.
+ -K --consolemarkers auto|on|off  Show markers on the console when top level
+                          keywords in a test case end. Values have same
+                          semantics as with --consolecolors.
+    --monitorwidth chars  Deprecated. Use --consolewidth instead.
+    --monitorcolors colors  Deprecated. Use --consolecolors instead.
+    --monitormarkers value  Deprecated. Use --consolemarkers instead.
  -P --pythonpath path *   Additional locations (directories, ZIPs, JARs) where
-                          to search test libraries from when they are imported.
-                          Multiple paths can be given by separating them with a
-                          colon (`:`) or using this option several times. Given
-                          path can also be a glob pattern matching multiple
-                          paths but then it normally must be escaped or quoted.
+                          to search test libraries and other extensions when
+                          they are imported. Multiple paths can be given by
+                          separating them with a colon (`:`) or by using this
+                          option several times. Given path can also be a glob
+                          pattern matching multiple paths but then it normally
+                          must be escaped or quoted.
                           Examples:
                           --pythonpath libs/
                           --pythonpath /opt/testlibs:mylibs.zip:yourlibs
@@ -329,7 +348,13 @@ Options
 
 Options that are marked with an asterisk (*) can be specified multiple times.
 For example, `--test first --test third` selects test cases with name `first`
-and `third`. If other options are given multiple times, the last value is used.
+and `third`. If an option accepts a value but is not marked with an asterisk,
+the last given value has precedence. For example, `--log A.html --log B.html`
+creates log file `B.html`. Options accepting no values can be disabled by
+using the same option again with `no` prefix added or dropped. The last option
+has precedence regardless of how many times options are used. For example,
+`--dryrun --dryrun --nodryrun --nostatusrc --statusrc` would not activate the
+dry-run mode and would return normal status rc.
 
 Long option format is case-insensitive. For example, --SuiteStatLevel is
 equivalent to but easier to read than --suitestatlevel. Long options can
@@ -383,6 +408,7 @@ if 'robot' not in sys.modules and __name__ == '__main__':
     import pythonpathsetter
 
 from robot.conf import RobotSettings
+from robot.model import ModelModifier
 from robot.output import LOGGER, pyloggingconf
 from robot.reporting import ResultWriter
 from robot.running import TestSuiteBuilder
@@ -397,12 +423,14 @@ class RobotFramework(Application):
 
     def main(self, datasources, **options):
         settings = RobotSettings(options)
-        LOGGER.register_console_logger(**settings.console_logger_config)
+        LOGGER.register_console_logger(**settings.console_output_config)
         LOGGER.info('Settings:\n%s' % unicode(settings))
         suite = TestSuiteBuilder(settings['SuiteNames'],
-                                 settings['WarnOnSkipped'],
-                                 settings['RunEmptySuite']).build(*datasources)
+                                 settings['WarnOnSkipped']).build(*datasources)
         suite.configure(**settings.suite_config)
+        if settings.pre_run_modifiers:
+            suite.visit(ModelModifier(settings.pre_run_modifiers,
+                                      settings.run_empty_suite, LOGGER))
         with pyloggingconf.robot_handler_enabled(settings.log_level):
             result = suite.run(settings)
             LOGGER.info("Tests execution ended. Statistics:\n%s"
@@ -417,7 +445,8 @@ class RobotFramework(Application):
         return self._filter_options_without_value(options), arguments
 
     def _filter_options_without_value(self, options):
-        return dict((name, value) for name, value in options.items() if value)
+        return dict((name, value) for name, value in options.items()
+                    if value not in (None, []))
 
 
 def run_cli(arguments):
@@ -449,6 +478,10 @@ def run(*datasources, **options):
     Options that can be given on the command line multiple times can be
     passed as lists like `include=['tag1', 'tag2']`. If such option is used
     only once, it can be given also as a single string like `include='tag'`.
+
+    Additionally listener, prerunmodifier and prerebotmodifier options support
+    passing values as instances in addition to module names. For example,
+    `run('tests.robot', listener=Listener(), prerunmodifier=Modifier())`.
 
     To capture stdout and/or stderr streams, pass open file objects in as
     special keyword arguments `stdout` and `stderr`, respectively.

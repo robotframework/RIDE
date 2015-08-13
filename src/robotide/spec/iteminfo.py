@@ -78,6 +78,26 @@ class VariableInfo(ItemInfo):
     def _source_name(self, source):
         return unicode(os.path.basename(source)) if source else ''
 
+    def name_matches(self, pattern):
+        normalized = utils.normalize(self._undecorate(pattern))
+        return utils.normalize(self.name[2:-1]).startswith(normalized)
+
+    def _undecorate(self, pattern):
+        def get_prefix_length():
+            if pattern[0] not in ['$', '@', '&']:
+                return 0
+            elif len(pattern) > 1 and pattern[1] == '{':
+                return 2
+            else:
+                return 1
+        if not pattern:
+            return pattern
+        without_prefix = pattern[get_prefix_length():]
+        if pattern[-1] == '}':
+            return without_prefix[:-1]
+        else:
+            return without_prefix
+
     @property
     def details(self):
         value = self._value
@@ -98,12 +118,14 @@ class ArgumentInfo(VariableInfo):
     def __init__(self, name, value):
         VariableInfo.__init__(self, name, value, self.SOURCE)
 
+
 class LocalVariableInfo(VariableInfo):
 
     SOURCE = 'Local variable'
 
     def __init__(self, name):
         VariableInfo.__init__(self, name, '', self.SOURCE)
+
 
 class _KeywordInfo(ItemInfo):
 
@@ -139,6 +161,7 @@ class _KeywordInfo(ItemInfo):
         return 'KeywordInfo[name: %s, source: %s, doc: %s]' %(self.name,
                                                               self.source,
                                                               self.doc)
+
     def _name(self, item):
         return item.name
 
@@ -219,6 +242,8 @@ class _UserKeywordInfo(_KeywordInfo):
                 parsed.append(self._parse_name_and_default(arg))
             elif self._is_list(arg):
                 parsed.append(self._parse_vararg(arg))
+            elif self._is_dict(arg):
+                parsed.append(self._parse_kwarg(arg))
         return parsed
 
     def _is_scalar(self, arg):
@@ -237,8 +262,14 @@ class _UserKeywordInfo(_KeywordInfo):
     def _is_list(self, arg):
         return arg.startswith('@')
 
+    def _is_dict(self, arg):
+        return arg.startswith('&')
+
     def _parse_vararg(self, arg):
         return '*' + self._strip_var_syntax_chars(arg)
+
+    def _parse_kwarg(self, arg):
+        return '**' + self._strip_var_syntax_chars(arg)
 
 
 class TestCaseUserKeywordInfo(_UserKeywordInfo):

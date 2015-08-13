@@ -11,10 +11,12 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+
 from robotide.controller.basecontroller import _BaseController
 
+
 class Tag(_BaseController):
-    tooltip = "Test case's tag"
+    tooltip = "Own tag"
 
     def __init__(self, name, index=None, controller=None):
         self.name = name
@@ -52,10 +54,13 @@ class ForcedTag(Tag):
 
     @property
     def tooltip(self):
-        return 'Force tag from suite '+self.controller.datafile_controller.name
+        return 'Force tag from suite {0}'.format(
+            self.controller.datafile_controller.name)
+
 
 class DefaultTag(Tag):
 
     @property
     def tooltip(self):
-        return 'Default tag from suite '+self.controller.datafile_controller.name
+        return 'Default tag from suite {0}'.format(
+            self.controller.datafile_controller.name)

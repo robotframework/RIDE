@@ -16,7 +16,7 @@ from robotide.publish import RideTestCaseRemoved, RideVariableAdded, \
     RideVariableRemoved, RideVariableMovedUp, RideVariableMovedDown, \
     RideUserKeywordRemoved, RideUserKeywordAdded, RideTestCaseAdded
 from robotide.publish.messages import RideItemMovedUp, RideItemMovedDown
-from robotide.robotapi import is_list_var, is_scalar_var
+from robotide.robotapi import is_list_var, is_scalar_var, is_dict_var
 from robotide import utils
 
 from .basecontroller import ControllerWithParent
@@ -113,6 +113,9 @@ class VariableTableController(_TableController, _WithListOperations):
     def validate_list_variable_name(self, name, item=None):
         return self._validate_name(_ListVarValidator(), name, item)
 
+    def validate_dict_variable_name(self, name, item=None):
+        return self._validate_name(_DictVarValidator(), name, item)
+
     def _validate_name(self, validator, name, item=None):
         return VariableNameValidation(self, validator, name, item)
 
@@ -154,6 +157,12 @@ class _ListVarValidator(object):
     __call__ = lambda self, name: is_list_var(name)
     name = 'List'
     prefix = '@'
+
+
+class _DictVarValidator(object):
+    __call__ = lambda self, name: is_dict_var(name)
+    name = 'Dictionary'
+    prefix = '&'
 
 
 class _NameValidation(object):

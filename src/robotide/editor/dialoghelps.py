@@ -36,6 +36,10 @@ Give name and value of the variable.
 List Variable
 Give name and value of the variable. Input list variable items into separate cells.
 
+Dictionary Variable
+Give name and value of the variable. Input dictionary items into separate cells.
+Individual items must be in format `key=value`
+
 Library
 Give name, optional arguments and optional alias of the library to import.
 Separate multiple arguments with a pipe character like 'arg 1 | arg 2'.

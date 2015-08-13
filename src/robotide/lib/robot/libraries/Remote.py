@@ -1,4 +1,4 @@
-#  Copyright 2008-2014 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -25,10 +25,8 @@ except ImportError:   # No expat in IronPython 2.7
         pass
 
 from robot.errors import RemoteError
-from robot.utils import is_list_like, is_dict_like, timestr_to_secs, unic
-
-
-IRONPYTHON = sys.platform == 'cli'
+from robot.utils import (is_bytes, is_dict_like, is_list_like, is_number,
+                         is_string, timestr_to_secs, unic, DotDict, IRONPYTHON)
 
 
 class Remote(object):
@@ -48,7 +46,7 @@ class Remote(object):
         the keyword.
 
         Support for timeouts is a new feature in Robot Framework 2.8.6.
-        Timeouts do not work with Python/Jython 2.5 nor with IronPython.
+        Timeouts do not work with IronPython.
         """
         if '://' not in uri:
             uri = 'http://' + uri
@@ -59,12 +57,13 @@ class Remote(object):
 
     def get_keyword_names(self, attempts=2):
         for i in range(attempts):
+            time.sleep(i)
             try:
                 return self._client.get_keyword_names()
-            except TypeError, err:
-                time.sleep(i)
+            except TypeError as err:
+                error = err
         raise RuntimeError('Connecting remote server at %s failed: %s'
-                           % (self._uri, err))
+                           % (self._uri, error))
 
     def get_keyword_arguments(self, name):
         try:
@@ -97,17 +96,17 @@ class ArgumentCoercer(object):
     def coerce(self, argument):
         for handles, handle in [(self._is_string, self._handle_string),
                                 (self._is_number, self._pass_through),
-                                (is_list_like, self._coerce_list),
                                 (is_dict_like, self._coerce_dict),
+                                (is_list_like, self._coerce_list),
                                 (lambda arg: True, self._to_string)]:
             if handles(argument):
                 return handle(argument)
 
     def _is_string(self, arg):
-        return isinstance(arg, basestring)
+        return is_string(arg)
 
     def _is_number(self, arg):
-        return isinstance(arg, (int, long, float))
+        return is_number(arg)
 
     def _handle_string(self, arg):
         if self._contains_binary(arg):
@@ -116,7 +115,7 @@ class ArgumentCoercer(object):
 
     def _contains_binary(self, arg):
         return (self.binary.search(arg) or
-                isinstance(arg, str) and not IRONPYTHON and
+                is_bytes(arg) and not IRONPYTHON and
                 self.non_ascii.search(arg))
 
     def _handle_binary(self, arg):
@@ -168,15 +167,15 @@ class RemoteResult(object):
 
     def _get(self, result, key, default=''):
         value = result.get(key, default)
-        return self._handle_binary(value)
+        return self._convert(value)
 
-    def _handle_binary(self, value):
+    def _convert(self, value):
         if isinstance(value, xmlrpclib.Binary):
             return str(value)
-        if is_list_like(value):
-            return [self._handle_binary(v) for v in value]
         if is_dict_like(value):
-            return dict((k, self._handle_binary(v)) for k, v in value.items())
+            return DotDict((k, self._convert(v)) for k, v in value.items())
+        if is_list_like(value):
+            return [self._convert(v) for v in value]
         return value
 
 
@@ -190,7 +189,7 @@ class XmlRpcRemoteClient(object):
     def get_keyword_names(self):
         try:
             return self._server.get_keyword_names()
-        except (socket.error, xmlrpclib.Error), err:
+        except (socket.error, xmlrpclib.Error) as err:
             raise TypeError(err)
 
     def get_keyword_arguments(self, name):
@@ -209,11 +208,11 @@ class XmlRpcRemoteClient(object):
         run_keyword_args = [name, args, kwargs] if kwargs else [name, args]
         try:
             return self._server.run_keyword(*run_keyword_args)
-        except xmlrpclib.Fault, err:
+        except xmlrpclib.Fault as err:
             message = err.faultString
-        except socket.error, err:
+        except socket.error as err:
             message = 'Connection to remote server broken: %s' % err
-        except ExpatError, err:
+        except ExpatError as err:
             message = ('Processing XML-RPC return value failed. '
                        'Most often this happens when the return value '
                        'contains characters that are not valid in XML. '
@@ -257,11 +256,11 @@ if sys.version_info[:2] == (2, 6):
             self._setup(self._connection_class(host, port, strict, timeout=timeout))
 
 
-if sys.version_info[:2] == (2, 5) or sys.platform == 'cli':
+if IRONPYTHON:
 
     class TimeoutTransport(xmlrpclib.Transport):
 
         def __init__(self, use_datetime=0, timeout=None):
             xmlrpclib.Transport.__init__(self, use_datetime)
             if timeout:
-                raise RuntimeError('This Python version does not support timeouts.')
+                raise RuntimeError('Timeouts are not supported on IronPython.')

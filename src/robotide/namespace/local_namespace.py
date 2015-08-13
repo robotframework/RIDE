@@ -51,6 +51,7 @@ class LocalRowNamespace(LocalMacroNamespace):
         else:
             suggestions = self._harvest_local_variables('${'+start, suggestions)
             suggestions = self._harvest_local_variables('@{'+start, suggestions)
+            suggestions = self._harvest_local_variables('&{'+start, suggestions)
         return suggestions
 
     def _harvest_local_variables(self, start, suggestions):
@@ -69,7 +70,7 @@ class LocalRowNamespace(LocalMacroNamespace):
         return suggestions
 
     def _could_be_variable(self, start):
-        return len(start) == 0 or start.startswith('$') or start.startswith('@')
+        return len(start) == 0 or start[0] in ['$', '@', '&']
 
     def has_name(self, value):
         if self._row is not None:

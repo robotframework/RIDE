@@ -1,4 +1,4 @@
-#  Copyright 2008-2014 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -49,7 +49,7 @@ class JarRunner(RobotRunner):
     def run(self, args):
         try:
             self._run(args)
-        except SystemExit, err:
+        except SystemExit as err:
             return err.code
 
     def _run(self, args):

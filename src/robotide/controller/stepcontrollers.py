@@ -65,7 +65,7 @@ class StepController(_BaseController):
         if not snd:
             return False
         return (fst.assign == snd.assign and
-                fst.keyword == snd.keyword and
+                fst.name == snd.name and
                 fst.args == snd.args)
 
     def get_value(self, col):
@@ -105,7 +105,7 @@ class StepController(_BaseController):
             return CellPosition(CellType.ASSIGN, None)
         if col == 0:
             return CellPosition(CellType.KEYWORD, None)
-        info = self.get_keyword_info(self._step.keyword)
+        info = self.get_keyword_info(self._step.name)
         if not info:
             return CellPosition(CellType.UNKNOWN, None)
         args = info.arguments
@@ -114,7 +114,7 @@ class StepController(_BaseController):
             return CellPosition(CellType.MUST_BE_EMPTY, None)
         if col >= args_amount and self._last_argument_is_varargs(args):
             return CellPosition(CellType.OPTIONAL, args[-1])
-        if self._has_list_var_value_before(col - 1):
+        if self._has_list_or_dict_var_value_before(col - 1):
             return CellPosition(CellType.UNKNOWN, None)
         if col > args_amount:
             return CellPosition(CellType.MUST_BE_EMPTY, None)
@@ -132,12 +132,15 @@ class StepController(_BaseController):
     def _last_argument_is_varargs(self, args):
         return args[-1].startswith('*')
 
-    def _has_list_var_value_before(self, arg_index):
+    def _has_list_or_dict_var_value_before(self, arg_index):
         for idx, value in enumerate(self.args):
             if idx > arg_index:
                 return False
             if variablematcher.is_list_variable(value) and \
                not variablematcher.is_list_variable_subitem(value):
+                return True
+            if robotapi.is_dict_var(value) and \
+               not variablematcher.is_dict_var_access(value):
                 return True
         return False
 
@@ -218,7 +221,7 @@ class StepController(_BaseController):
 
     def replace_keyword(self, new_name, old_name):
         if self._kw_name_match(self.keyword or '', old_name):
-            self._step.keyword = self._kw_name_replace(
+            self._step.name = self._kw_name_replace(
                 self.keyword, new_name, old_name)
         for index, value in enumerate(self.args):
             if self._kw_name_match(value, old_name):
@@ -241,7 +244,7 @@ class StepController(_BaseController):
 
     @property
     def keyword(self):
-        return self._step.keyword
+        return self._step.name
 
     @property
     def assign(self):
@@ -287,7 +290,7 @@ class StepController(_BaseController):
         return self.keyword.strip().lower() == "comment"
 
     def uncomment(self):
-        if self._step.keyword == 'Comment':
+        if self._step.name == 'Comment':
             self.shift_left(0)
 
     def shift_right(self, from_column):
@@ -466,13 +469,14 @@ class ForLoopStepController(StepController):
 
     def _get_cell_position(self, col):
         until_range = len(self._step.vars) + 1
+        flavor = self._step.flavor
         if col == 0:
             return CellPosition(CellType.MANDATORY, None)
         if col < until_range:
             return CellPosition(CellType.ASSIGN, None)
         if col == until_range:
             return CellPosition(CellType.MANDATORY, None)
-        if not self._step.range:
+        if 'RANGE' not in flavor:
             return CellPosition(CellType.OPTIONAL, None)
         if col <= until_range + 1:
             return CellPosition(CellType.MANDATORY, None)
@@ -593,7 +597,7 @@ class IntendedStepController(StepController):
         self._step.__init__(['Comment'] + self._step.as_list())
 
     def uncomment(self):
-        if self._step.keyword == 'Comment':
+        if self._step.name == 'Comment':
             self._step.__init__(self._step.as_list()[1:])
 
     def _recreate(self, cells, comment=None):

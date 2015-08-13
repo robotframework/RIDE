@@ -1,4 +1,4 @@
-#  Copyright 2008-2014 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,7 +12,11 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import utils
+"""Exceptions and return codes used internally.
+
+External libraries should not used exceptions defined here.
+"""
+
 
 # Return codes from Robot and Rebot.
 # RC below 250 is the number of failed critical tests and exactly 250
@@ -28,6 +32,7 @@ class RobotError(Exception):
 
     Do not raise this method but use more specific errors instead.
     """
+
     def __init__(self, message='', details=''):
         Exception.__init__(self, message)
         self.details = details
@@ -35,10 +40,6 @@ class RobotError(Exception):
     @property
     def message(self):
         return self.__unicode__()
-
-    def __unicode__(self):
-        # Needed to handle exceptions w/ Unicode correctly on Python 2.5
-        return unicode(self.args[0]) if self.args else u''
 
 
 class FrameworkError(RobotError):
@@ -53,9 +54,16 @@ class FrameworkError(RobotError):
 class DataError(RobotError):
     """Used when the provided test data is invalid.
 
-    DataErrors are not be caught by keywords that run other keywords
-    (e.g. `Run Keyword And Expect Error`). Libraries should thus use
-    this exception with care.
+    DataErrors are not caught by keywords that run other keywords
+    (e.g. `Run Keyword And Expect Error`).
+    """
+
+
+class VariableError(DataError):
+    """Used when variable does not exist.
+
+    VariableErrors are caught by keywords that run other keywords
+    (e.g. `Run Keyword And Expect Error`).
     """
 
 
@@ -65,7 +73,7 @@ class TimeoutError(RobotError):
     This exception is handled specially so that execution of the
     current test is always stopped immediately and it is not caught by
     keywords executing other keywords (e.g. `Run Keyword And Expect
-    Error`). Libraries should thus NOT use this exception themselves.
+    Error`).
     """
 
 
@@ -80,27 +88,27 @@ class ExecutionFailed(RobotError):
                  continue_on_failure=False, return_value=None):
         if '\r\n' in message:
             message = message.replace('\r\n', '\n')
-        RobotError.__init__(self, utils.cut_long_message(message))
+        from robot.utils import cut_long_message
+        RobotError.__init__(self, cut_long_message(message))
         self.timeout = timeout
         self.syntax = syntax
         self.exit = exit
-        self.continue_on_failure = continue_on_failure
+        self._continue_on_failure = continue_on_failure
         self.return_value = return_value
 
     @property
     def dont_continue(self):
         return self.timeout or self.syntax or self.exit
 
-    def _get_continue_on_failure(self):
+    @property
+    def continue_on_failure(self):
         return self._continue_on_failure
 
-    def _set_continue_on_failure(self, continue_on_failure):
+    @continue_on_failure.setter
+    def continue_on_failure(self, continue_on_failure):
         self._continue_on_failure = continue_on_failure
         for child in getattr(self, '_errors', []):
             child.continue_on_failure = continue_on_failure
-
-    continue_on_failure = property(_get_continue_on_failure,
-                                   _set_continue_on_failure)
 
     def can_continue(self, teardown=False, templated=False, dry_run=False):
         if dry_run:
@@ -114,31 +122,26 @@ class ExecutionFailed(RobotError):
     def get_errors(self):
         return [self]
 
+    @property
+    def status(self):
+        return 'FAIL'
+
 
 class HandlerExecutionFailed(ExecutionFailed):
 
-    def __init__(self):
-        details = utils.ErrorDetails()
+    def __init__(self, details):
         timeout = isinstance(details.error, TimeoutError)
-        syntax = isinstance(details.error, DataError)
+        syntax = isinstance(details.error, DataError) \
+                 and not isinstance(details.error, VariableError)
         exit_on_failure = self._get(details.error, 'EXIT_ON_FAILURE')
         continue_on_failure = self._get(details.error, 'CONTINUE_ON_FAILURE')
         ExecutionFailed.__init__(self, details.message, timeout, syntax,
                                  exit_on_failure, continue_on_failure)
         self.full_message = details.message
         self.traceback = details.traceback
-        self._handle_deprecated_exit_for_loop(details.error)
 
     def _get(self, error, attr):
         return bool(getattr(error, 'ROBOT_' + attr, False))
-
-    def _handle_deprecated_exit_for_loop(self, error):
-        if self._get(error, 'EXIT_FOR_LOOP'):
-            from robot.output import LOGGER
-            LOGGER.warn("Support for using 'ROBOT_EXIT_FOR_LOOP' attribute to "
-                        "exit for loops is deprecated in Robot Framework 2.8 "
-                        "and will be removed in 2.9.")
-            raise ExitForLoop
 
 
 class ExecutionFailures(ExecutionFailed):
@@ -201,8 +204,9 @@ class ExecutionPassed(ExecutionFailed):
         self._earlier_failures = []
 
     def _get_message(self):
+        from robot.utils import printable_name
         return "Invalid '%s' usage." \
-               % utils.printable_name(self.__class__.__name__, code_style=True)
+               % printable_name(self.__class__.__name__, code_style=True)
 
     def set_earlier_failures(self, failures):
         if failures:
@@ -213,6 +217,10 @@ class ExecutionPassed(ExecutionFailed):
         if not self._earlier_failures:
             return None
         return ExecutionFailures(self._earlier_failures)
+
+    @property
+    def status(self):
+        return 'PASS' if not self._earlier_failures else 'FAIL'
 
 
 class PassExecution(ExecutionPassed):

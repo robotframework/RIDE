@@ -1,4 +1,4 @@
-#  Copyright 2008-2014 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ class TestCase(ModelObject):
         self.name = name
         #: Test case documentation.
         self.doc = doc
-        #: Test case tags, a list of strings.
+        #: Test case tags as a list like :class:`~.model.tags.Tags` object.
         self.tags = tags
         #: Test case timeout.
         self.timeout = timeout
@@ -70,7 +70,8 @@ class TestCases(ItemList):
     def __init__(self, test_class=TestCase, parent=None, tests=None):
         ItemList.__init__(self, test_class, {'parent': parent}, tests)
 
-    def _check_type_and_set_attrs(self, test):
-        ItemList._check_type_and_set_attrs(self, test)
-        for visitor in test.parent._visitors:
-            test.visit(visitor)
+    def _check_type_and_set_attrs(self, *tests):
+        ItemList._check_type_and_set_attrs(self, *tests)
+        for test in tests:
+            for visitor in test.parent._visitors:
+                test.visit(visitor)

@@ -23,7 +23,7 @@ def import_varfile(varfile_path, args):
     except SystemExit:
         raise robotapi.DataError('Variable file import failed')
     return [(name, _format_value(value), varfile_path)
-            for (name, value) in temp.items()]
+            for (name, value) in temp.store.data.items()]
 
 
 # Must be picklable

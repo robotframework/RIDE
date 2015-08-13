@@ -22,7 +22,7 @@ import logger
 
 APP = None
 LOG = logger.Logger()
-ROBOT_LOGGER.disable_automatic_console_logger()
+ROBOT_LOGGER.unregister_console_logger()
 ROBOT_LOGGER.register_logger(LOG)
 _SYSLOG = logger.Syslog()
 

@@ -1,4 +1,4 @@
-#  Copyright 2008-2014 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -21,8 +21,7 @@ This package contains base classes, for example, for
 functionality, such as :mod:`visitors <robot.model.visitor>`.
 
 These classes are extended both in :mod:`robot.result` and :mod:`robot.running`
-packages and used also elsewhere. There should, however, be no need to
-externally use these classes directly, and they are not part of the public API.
+packages and used also elsewhere.
 
 This package is considered stable.
 """
@@ -30,12 +29,13 @@ This package is considered stable.
 from .configurer import SuiteConfigurer
 from .testsuite import TestSuite
 from .testcase import TestCase
-from .keyword import Keyword
+from .keyword import Keyword, Keywords
 from .message import Message
-from .tags import Tags, TagPatterns
+from .modifier import ModelModifier
+from .tags import Tags, TagPattern, TagPatterns
 from .criticality import Criticality
 from .namepatterns import SuiteNamePatterns, TestNamePatterns
-from .visitor import SuiteVisitor, SkipAllVisitor
+from .visitor import SuiteVisitor
 from .totalstatistics import TotalStatisticsBuilder
 from .statistics import Statistics
 from .imports import Imports

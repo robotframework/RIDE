@@ -80,6 +80,7 @@ class LibraryManager(Thread):
                 library_name.replace('/', os.sep), os.path.abspath('.'))
             return get_import_result(path, library_args)
         except Exception, err:
+            print 'FAILED', library_name, err
             kws = self._spec_initializer.init_from_spec(library_name)
             if not kws:
                 msg = 'Importing test library "%s" failed' % library_name

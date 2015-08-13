@@ -70,6 +70,10 @@ class TimeoutValidator(_AbstractValidator):
         self.Window.SetValue(value)
 
 
+class ArgumentTypes(object):
+    POSITIONAL, NAMED = range(1, 3)
+
+
 class ArgumentsValidator(_AbstractValidator):
 
     def _validate(self, args_str):
@@ -78,30 +82,23 @@ class ArgumentsValidator(_AbstractValidator):
                      for arg in utils.split_value(args_str)]
         except ValueError:
             return "Invalid argument syntax '%s'" % arg
-        return self._validate_list_args_in_correct_place(
-            types) or self._validate_req_args_in_correct_place(types) or None
+        return self._validate_argument_order(types)
 
     def _get_type(self, arg):
-        if robotapi.is_scalar_var(arg):
-            return 1
-        elif robotapi.is_scalar_var(arg.split("=")[0]):
-            return 2
-        elif robotapi.is_list_var(arg):
-            return 3
+        if robotapi.is_scalar_var(arg) or robotapi.is_list_var(arg):
+            return ArgumentTypes.POSITIONAL
+        elif robotapi.is_scalar_var(arg.split("=")[0]) or \
+                robotapi.is_dict_var(arg):
+            return ArgumentTypes.NAMED
         else:
             raise ValueError
 
-    def _validate_list_args_in_correct_place(self, types):
-        if 3 in types and types.index(3) != len(types) - 1:
-            return "List variable allowed only as the last argument"
-        return None
-
-    def _validate_req_args_in_correct_place(self, types):
-        prev = 0
+    def _validate_argument_order(self, types):
+        prev = ArgumentTypes.POSITIONAL
         for t in types:
             if t < prev:
-                return ("Required arguments not allowed after arguments "
-                        "with default values.")
+                return ('List and scalar arguments must be before'
+                        'named and dictionary arguments')
             prev = t
         return None
 
@@ -199,3 +196,9 @@ class ListVariableNameValidator(_NameValidator):
     @property
     def _validation_method(self):
         return self._controller.validate_list_variable_name
+
+
+class DictionaryVariableNameValidator(_NameValidator):
+    @property
+    def _validation_method(self):
+        return self._controller.validate_dict_variable_name

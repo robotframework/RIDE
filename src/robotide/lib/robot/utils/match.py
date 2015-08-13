@@ -1,4 +1,4 @@
-#  Copyright 2008-2014 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@ import re
 from functools import partial
 
 from .normalizing import normalize
+from .robottypes import is_string
 
 
 def eq(str1, str2, ignore=(), caseless=True, spaceless=True):
@@ -54,6 +55,9 @@ class Matcher(object):
     def match_any(self, strings):
         return any(self.match(s) for s in strings)
 
+    def __nonzero__(self):
+        return bool(self._normalize(self.pattern))
+
 
 class MultiMatcher(object):
 
@@ -66,7 +70,7 @@ class MultiMatcher(object):
     def _ensure_list(self, patterns):
         if patterns is None:
             return []
-        if isinstance(patterns, basestring):
+        if is_string(patterns):
             return [patterns]
         return patterns
 

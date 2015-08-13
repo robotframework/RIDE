@@ -1,4 +1,4 @@
-#  Copyright 2008-2014 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -14,10 +14,9 @@
 
 """Module that adds directories needed by Robot to sys.path when imported."""
 
-import os
 import sys
 import fnmatch
-from os.path import abspath, dirname, join
+from os.path import abspath, dirname
 
 ROBOTDIR = dirname(abspath(__file__))
 
@@ -39,12 +38,3 @@ def remove_path(path):
 # internal modules directly.
 add_path(dirname(ROBOTDIR))
 remove_path(ROBOTDIR)
-
-# Default library search locations.
-add_path(join(ROBOTDIR, 'libraries'))
-add_path('.', end=True)
-
-# Support libraries/resources in PYTHONPATH also with Jython and IronPython.
-for item in os.getenv('PYTHONPATH', '').split(os.pathsep):
-    add_path(abspath(item), end=True)
-

@@ -27,15 +27,15 @@ class TestCaseEditor(_RobotTableEditor):
 
     def _populate(self):
         self.header = self._create_header(self.controller.name)
-        self.sizer.Add(self.header, 0, wx.EXPAND|wx.ALL, 5)
+        self.sizer.Add(self.header, 0, wx.EXPAND | wx.ALL, 5)
         self._add_settings()
-        self.sizer.Add((0,10))
+        self.sizer.Add((0, 10))
         self._create_kweditor()
         self.plugin.subscribe(self._name_changed, RideItemNameChanged)
 
     def _create_kweditor(self):
         self.kweditor = KeywordEditor(self, self.controller, self._tree)
-        self.sizer.Add(self.kweditor, 1, wx.EXPAND|wx.ALL, 2)
+        self.sizer.Add(self.kweditor, 1, wx.EXPAND | wx.ALL, 2)
         self._editors.append(self.kweditor)
 
     def _name_changed(self, data):

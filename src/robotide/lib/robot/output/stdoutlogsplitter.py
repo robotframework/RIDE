@@ -1,4 +1,4 @@
-#  Copyright 2008-2014 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Solutions and Networks
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -16,16 +16,16 @@ import re
 
 from robot.utils import format_time
 
-from .loggerhelper import Message, LEVELS
+from .loggerhelper import Message
 
 
 class StdoutLogSplitter(object):
     """Splits messages logged through stdout (or stderr) into Message objects"""
 
     _split_from_levels = re.compile('^(?:\*'
-                                    '(%s|HTML)'          # Level
+                                    '(TRACE|DEBUG|INFO|HTML|WARN|ERROR)'
                                     '(:\d+(?:\.\d+)?)?'  # Optional timestamp
-                                    '\*)' % '|'.join(LEVELS), re.MULTILINE)
+                                    '\*)', re.MULTILINE)
 
     def __init__(self, output):
         self._messages = list(self._get_messages(output.strip()))
