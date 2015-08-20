@@ -1,4 +1,6 @@
+# setuptools is required by mock
 setuptools
 nose
 mock
-paver
+invoke
+Pygments
