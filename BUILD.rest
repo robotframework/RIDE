@@ -18,16 +18,16 @@ Necessary development dependencies can be installed with::
 
     pip install -r requirements.txt
 
-RIDE uses Paver__ as it's build tool. Packaging, testing, and running a
-development version without installation can all be done using Paver.
+RIDE uses Invoke__ as it's task runner. Packaging, testing, and running a
+development version without installation can all be done using Invoke.
 Run::
 
-    paver help
+    invoke --list
 
 for more information.
 
 __ https://pypi.python.org/pypi/virtualenv
-__ http://paver.github.com/paver
+__ http://www.pyinvoke.org
 
 
 MacOS 10.7 - 10.8
@@ -62,7 +62,7 @@ Unit tests
 
 Unit tests are in `utest` directory. They can be executed with::
 
-  paver test
+  invoke test
 
 
 
@@ -101,20 +101,23 @@ Releasing
 * Primary distribution channel is PyPi.
 * Following steps are needed for a final release. Updating release notes plugin is optional for pre-releases::
 
-  > paver test
-  > paver set_version 1.xx
-  > paver register
-  > paver release_notes_plugin
-  > paver sdist upload
+  > invoke test
+  > invoke version 1.xx
+  > invoke register
+  > invoke sdist upload
   > git commit -am 'Version 1.xx'
   > git tag 1.xx
   > git push --tags
-  
+
 
 * For final releases, create Windows installer with following command and upload it to GitHub::
 
-  > paver bdist_wininst
-  
+  > invoke wininst
+
+* Release notes in markdown format can be created with::
+
+  > invoke release_notes
+
 
 * Announce on usergroup, robot homepage, and twitter
 
