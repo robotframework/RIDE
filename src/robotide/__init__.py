@@ -61,7 +61,6 @@ if "ansi" in wx.PlatformInfo:
 
 
 # Insert bundled robot to path before anything else
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'lib'))
 sys.path.append(os.path.join(os.path.dirname(__file__), 'spec'))
 
 

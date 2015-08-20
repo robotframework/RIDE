@@ -1,8 +1,10 @@
 import unittest
+from nose.tools import assert_equals
+
 from robotide.editor.tags import TagsDisplay
 from controller.controller_creator import testcase_controller as tc
-from robot.utils.asserts import assert_equals
 from robotide.controller.tags import Tag
+
 
 class _PartialTagsDisplay(TagsDisplay):
 
@@ -15,6 +17,7 @@ class _PartialTagsDisplay(TagsDisplay):
 
     def build(self):
         pass
+
 
 class _TagInfo(object):
 

@@ -1,6 +1,7 @@
 import unittest
-from robot.parsing.model import TestCase, TestCaseFile
-from robot.utils.asserts import assert_equals
+from nose.tools import assert_equals
+
+from robotide.robotapi import TestCase, TestCaseFile
 from robotide.controller.commands import ChangeTag
 from robotide.controller.filecontrollers import TestCaseFileController
 from robotide.controller.macrocontrollers import TestCaseController

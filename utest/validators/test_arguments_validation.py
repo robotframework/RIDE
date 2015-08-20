@@ -2,7 +2,7 @@ import unittest
 
 from robotide.validators import ArgumentsValidator
 
-from robot.utils.asserts import assert_equals, assert_none
+from nose.tools import assert_equals
 
 
 class Test(unittest.TestCase):
@@ -25,7 +25,7 @@ class Test(unittest.TestCase):
                 "@{list} | &{dict}",
                 "${a} | ${b} | @{f} | &{dict}",
         ]:
-            assert_none(self.validate(arg), arg)
+            assert_equals(self.validate(arg), None, arg)
 
     def test_invalid_arguments_validation(self):
         for arg in ["arg", "@{list}=", "@{list}=fooness"]:

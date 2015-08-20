@@ -1,7 +1,7 @@
 import unittest
 import wx
 from editor.fakeplugin import FakePlugin
-from robot.utils.asserts import assert_true
+from nose.tools import assert_true
 from robotide.controller.macrocontrollers import TestCaseController
 from robotide.editor.macroeditors import TestCaseEditor
 

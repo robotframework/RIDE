@@ -46,8 +46,9 @@ import socket
 import threading
 import SocketServer
 
-from robot.running.signalhandler import STOP_SIGNAL_MONITOR
-from robot.errors import ExecutionFailed
+from robotide.robotapi import (
+    STOP_SIGNAL_MONITOR, ExecutionFailed, EXECUTION_CONTEXTS)
+import robotide.utils
 
 if sys.hexversion > 0x2060000:
     import json
@@ -71,34 +72,21 @@ except ImportError:
 
 HOST = "localhost"
 
-try:
-    # RF 2.7.5
-    from robot.running import EXECUTION_CONTEXTS
-    def _is_logged(level):
-        current = EXECUTION_CONTEXTS.current
-        if current is None:
-            return True
-        out = current.output
-        if out is None:
-            return True
-        return out._xmllogger._log_message_is_logged(level)
-except ImportError:
-    # RF 2.5.6
-    # RF 2.6.3
-    def _is_logged(level):
-        # Needs to be imported in the function as OUTPUT is not a constant
-        from robot.output import OUTPUT
-        if OUTPUT is None:
-            return True
-        return OUTPUT._xmllogger._log_message_is_logged(level)
-
 # Setting Output encoding to UTF-8 and ignoring the platform specs
 # RIDE will expect UTF-8
-import robot.utils.encoding
 # Set output encoding to UTF-8 for piped output streams
-robot.utils.encoding.OUTPUT_ENCODING = 'UTF-8'
-# RF 2.6.3 and RF 2.5.7
-robot.utils.encoding._output_encoding = robot.utils.encoding.OUTPUT_ENCODING
+robotide.utils.encoding.OUTPUT_ENCODING = 'UTF-8'
+
+
+def _is_logged(level):
+    current = EXECUTION_CONTEXTS.current
+    if current is None:
+        return True
+    out = current.output
+    if out is None:
+        return True
+    return out._xmllogger._log_message_is_logged(level)
+
 
 class TestRunnerAgent:
     """Pass all listener events to a remote listener
@@ -347,7 +335,7 @@ def dumps(obj):
     header. Replaces pickle.dumps, so can be used in place without
     the memory leaks on receiving side in pickle.loads (related to
     memoization of data)
-    
+
     NOTE: Protocol is ignored when json representation is used
     """
     fp = StringIO()
@@ -359,7 +347,7 @@ def loads(s):
     Reads in json message or pickle message prepended with message length
     header from a string. Message is expected to be encoded by this class as
     well, to have same message length header type.
-    
+
     Specifically replaces pickle.loads as that function/method has serious
     memory leak issues with long term use of same Unpickler object for
     encoding data to send, specifically related to memoization of data to
@@ -378,14 +366,14 @@ class StreamHandler(object):
     python < 2.6). If neither are available, falls back to pickle.Pickler and
     pickle.Unpickler, attempting to eliminate memory leakage where possible at
     the expense of CPU usage (by not re-using Pickler or Unpickler objects).
-    
+
     NOTE: StreamHandler currently assumes that same python version is installed
     on both sides of reading/writing (or simplejson is loaded in case of one
     side or other using python < 2.6). This could be resolved by requiring an
     initial header with json vs pickle determination from the writing side, but
     would considerably complicate the protocol(s) further (handshake would need
     to occur at least, and assumes encoding is used over a socket, etc.)
-    
+
     json.raw_decode could be used rather than prepending with a message header
     in theory (assuming json is available), but performance of repeatedly
     failing to parse written data would make this an unworkable solution in
@@ -393,13 +381,13 @@ class StreamHandler(object):
     '''
     loads = staticmethod(loads)
     dumps = staticmethod(dumps)
-    
+
     def __init__(self, fp):
         """
         Stream handler that encodes objects as either JSON (if available) with
         message length header prepended for sending over a socket, or as a
         pickled object if using python < 2.6 and simplejson is not installed.
-        
+
         Since pickle.load has memory leak issues with memoization (remembers
         absolutely everything decoded since instantiation), json is a preferred
         method to encode/decode for long running processes which pass large
@@ -424,7 +412,7 @@ class StreamHandler(object):
         header. Replaces pickle.dump, so can be used in place without
         the memory leaks on receiving side in pickle.load (related to
         memoization of data)
-        
+
         NOTE: Protocol is ignored when json representation is used
         """
         # NOTE: Slightly less efficient than doing iterencode directly into the
@@ -447,7 +435,7 @@ class StreamHandler(object):
         Reads in json message prepended with message length header from a file
         (or socket, or other .read() enabled object). Message is expected to be
         encoded by this class as well, to have same message length header type.
-        
+
         Specifically replaces pickle.load as that function/method has serious
         memory leak issues with long term use of same Unpickler object for
         encoding data to send, specifically related to memoization of data to
@@ -471,7 +459,7 @@ class StreamHandler(object):
                 raise DecodeError("Message type %r not supported" % msgtype)
         except DecodeError.wrapped_exceptions, e:
             raise DecodeError(str(e))
-        
+
     def _load_header(self):
         """
         Load in just the header bit from a socket/file pointer

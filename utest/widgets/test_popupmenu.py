@@ -1,6 +1,6 @@
 import unittest
 
-from robot.utils.asserts import assert_equals, assert_none
+from nose.tools import assert_equals
 
 from robotide.widgets.popupmenu import PopupMenuItems, PopupMenuItem
 
@@ -64,7 +64,7 @@ class TestPopupMenuItem(unittest.TestCase):
     def test_creating_separator(self):
         item = PopupMenuItem('---')
         assert_equals(item.name, '---')
-        assert_none(item.callable)
+        assert_equals(item.callable, None)
 
 
 if __name__ == "__main__":

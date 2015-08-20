@@ -2,7 +2,7 @@ import os
 import tempfile
 import unittest
 
-from robot.utils.asserts import assert_true, assert_equals
+from nose.tools import assert_true, assert_equals
 from robotide.controller.robotdata import NewTestCaseFile, NewTestDataDirectory
 
 

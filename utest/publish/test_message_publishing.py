@@ -1,13 +1,9 @@
 import unittest
 
-from robot.utils.asserts import assert_equals, assert_raises_with_msg,\
-    assert_true
+from nose.tools import assert_equals, assert_raises, assert_true
 
 from robotide.publish import RideMessage, RideLogMessage, RideLogException, \
     Publisher
-
-
-_ARGS_ERROR = "Argument mismatch, expected: ['foo', 'bar']"
 
 
 class RideTestMessage(RideMessage):
@@ -36,17 +32,14 @@ class TestMessage(unittest.TestCase):
         assert_equals(msg.bar, 'quux')
 
     def test_missing_mandatory_attribute(self):
-        assert_raises_with_msg(TypeError, _ARGS_ERROR,
-                               RideTestMessageWithAttrs, foo='bar')
+        assert_raises(TypeError, RideTestMessageWithAttrs, foo='bar')
 
     def test_missing_many_mandatory_attributes(self):
-        assert_raises_with_msg(
-            TypeError, _ARGS_ERROR, RideTestMessageWithAttrs)
+        assert_raises(TypeError, RideTestMessageWithAttrs)
 
     def test_no_such_attribute_should_fail(self):
-        assert_raises_with_msg(
-            TypeError, _ARGS_ERROR, RideTestMessageWithAttrs, foo='', bar='',
-            quux='camel')
+        assert_raises(TypeError, RideTestMessageWithAttrs, foo='', bar='',
+                      quux='camel')
 
 
 class TestRideLogMessage(unittest.TestCase):
@@ -92,6 +85,3 @@ class TestPublisher(unittest.TestCase):
     def _broken_listener(self, data):
         self._msg = data
         raise RuntimeError(data)
-
-if __name__ == '__main__':
-    unittest.main()

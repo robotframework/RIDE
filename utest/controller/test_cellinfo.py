@@ -2,8 +2,8 @@ import unittest
 import datafilereader
 from robotide.controller.commands import ChangeCellValue, DeleteRows, AddKeyword,\
     Undo, PasteArea
-from robot.utils.asserts import assert_equals, assert_true, assert_false,\
-    assert_none
+from nose.tools import assert_equals, assert_true, assert_false,\
+    assert_is_none
 from robotide.controller.cellinfo import CellType, ContentType, CellInfo,\
     CellContent, CellPosition
 
@@ -69,10 +69,10 @@ class TestCellInfo(unittest.TestCase):
         self.test.execute(DeleteRows([i for i in range(len(self.test.steps))]))
 
     def test_no_cell_info_if_no_data(self):
-        assert_none(self.test.get_cell_info(0, 0))
-        assert_none(self.test.get_cell_info(0, 1))
-        assert_none(self.test.get_cell_info(0, 2))
-        assert_none(self.test.get_cell_info(0, 3))
+        assert_is_none(self.test.get_cell_info(0, 0))
+        assert_is_none(self.test.get_cell_info(0, 1))
+        assert_is_none(self.test.get_cell_info(0, 2))
+        assert_is_none(self.test.get_cell_info(0, 3))
 
     def test_keyword_with_mandatory_and_optional_arguments(self):
         self.test.execute(ChangeCellValue(0, 0, self.keyword1.name))

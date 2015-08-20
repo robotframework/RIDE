@@ -1,7 +1,7 @@
 import unittest
 
 from robotide.action.actioninfo import ActionInfoCollection
-from robot.utils.asserts import assert_equals
+from nose.tools import assert_equals
 from robotide.context import IS_MAC
 
 

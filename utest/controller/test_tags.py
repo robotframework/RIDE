@@ -1,5 +1,6 @@
 import unittest
-from robot.utils.asserts import fail, assert_true, assert_false
+from nose.tools import assert_true, assert_false
+
 from controller_creator import testcase_controller
 from robotide.controller.tags import Tag, DefaultTag, ForcedTag
 from robotide.controller.commands import ChangeTag

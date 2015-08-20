@@ -37,7 +37,7 @@ else:
 
 def TestLibrary(name, args=None, variables=None, create_handlers=True):
     if name in STDLIBS or name in DEPRECATED_STDLIBS:
-        import_name = 'robotide.lib.robot.libraries.' + name
+        import_name = 'robot.libraries.' + name
     else:
         import_name = name
     with OutputCapturer(library_import=True):

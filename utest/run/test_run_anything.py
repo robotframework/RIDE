@@ -2,7 +2,7 @@ import unittest
 import time
 import os
 import sys
-from robot.utils.asserts import assert_equals, assert_true
+from nose.tools import assert_equals, assert_true
 
 from robotide.run.runanything import RunConfig
 from robotide.run.ui import Runner

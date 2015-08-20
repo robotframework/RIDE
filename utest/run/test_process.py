@@ -2,7 +2,7 @@ import unittest
 import os
 
 from robotide.run.process import Process
-from robot.utils.asserts import assert_equals, assert_raises_with_msg
+from nose.tools import assert_equals
 
 
 SCRIPT = os.path.join(os.path.dirname(__file__),

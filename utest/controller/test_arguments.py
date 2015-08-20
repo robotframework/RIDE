@@ -1,7 +1,7 @@
 import unittest
 from robotide.controller.arguments import parse_argument,\
     parse_arguments_to_var_dict
-from robot.utils.asserts import assert_equals, assert_none
+from nose.tools import assert_equals, assert_is_none
 
 
 class TestParseArguments(unittest.TestCase):
@@ -59,8 +59,8 @@ class TestArgument(unittest.TestCase):
 
     def test_invalid_argument(self):
         name, value = parse_argument('${my invalid')
-        assert_none(name)
-        assert_none(value)
+        assert_is_none(name)
+        assert_is_none(value)
 
 
 if __name__ == "__main__":

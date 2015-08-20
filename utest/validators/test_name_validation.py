@@ -1,8 +1,13 @@
 import unittest
-from robot.parsing.model import VariableTable, KeywordTable, TestCaseTable
-from robotide.controller.macrocontrollers import UserKeywordController, TestCaseController
-from robotide.controller.tablecontrollers import VariableTableController, KeywordTableController, TestCaseTableController
-from robotide.validators import ScalarVariableNameValidator, ListVariableNameValidator, UserKeywordNameValidator, TestCaseNameValidator
+
+from robotide.robotapi import VariableTable, KeywordTable, TestCaseTable
+from robotide.controller.macrocontrollers import (
+    UserKeywordController, TestCaseController)
+from robotide.controller.tablecontrollers import (
+    VariableTableController, KeywordTableController, TestCaseTableController)
+from robotide.validators import (
+    ScalarVariableNameValidator, ListVariableNameValidator,
+    UserKeywordNameValidator, TestCaseNameValidator)
 
 
 class _NameValidationTest(object):
@@ -39,11 +44,13 @@ class _NameValidationTest(object):
 class _VariableNameValidationTest(_NameValidationTest):
 
     def setUp(self):
-        self._variable_table_ctrl = VariableTableController(self, VariableTable(self))
+        self._variable_table_ctrl = VariableTableController(
+            self, VariableTable(self))
         self.mock_ctrl()
 
     def add_named(self, name):
-        self._variable_table_ctrl.add_variable('%s{%s}' % (self.symbol, name), 'value')
+        self._variable_table_ctrl.add_variable(
+            '%s{%s}' % (self.symbol, name), 'value')
 
     def validate(self, name, old=None):
         self._validator = self.validator_class(self._variable_table_ctrl, old)
@@ -95,7 +102,3 @@ class TestCaseNameValidationTest(_MacroNameValidationTest, unittest.TestCase):
     table_ctrl_class = TestCaseTableController
     ctrl_class = TestCaseController
     validator_class = TestCaseNameValidator
-
-
-if __name__ == '__main__':
-    unittest.main()

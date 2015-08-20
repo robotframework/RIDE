@@ -3,7 +3,7 @@ import os
 import shutil
 
 from robotide.robotapi import TestCase, TestCaseFile, TestDataDirectory
-from robot.utils.asserts import (assert_equals, assert_true, assert_false)
+from nose.tools import (assert_equals, assert_true, assert_false)
 
 from robotide.controller.filecontrollers import TestCaseFileController, \
     TestDataDirectoryController, _FileSystemElement

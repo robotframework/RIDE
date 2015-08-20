@@ -1,6 +1,6 @@
 import unittest
 import time
-from robot.utils.asserts import assert_none, assert_equals
+from nose.tools import assert_is_none, assert_equals
 
 from robotide.namespace.cache import ExpiringCache
 
@@ -16,7 +16,7 @@ class TestExpiringCache(unittest.TestCase):
         cache = ExpiringCache(0.01)
         cache.put('a', 'b')
         time.sleep(0.1)
-        assert_none(cache.get('a'))
+        assert_is_none(cache.get('a'))
         cache.put('a', 'c')
         assert_equals('c', cache.get('a'))
 

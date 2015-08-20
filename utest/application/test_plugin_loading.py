@@ -1,6 +1,6 @@
 import os
 import unittest
-from robot.utils.asserts import assert_true, assert_false
+from nose.tools import assert_true, assert_false
 
 import robotide.context
 from robotide import utils

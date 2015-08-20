@@ -1,15 +1,18 @@
 import os
 import unittest
 from mock import Mock
-from robot.parsing.model import TestCaseFile, ResourceFile
 
+from robotide.robotapi import TestCaseFile, ResourceFile
 from robotide.controller import Project
 from robotide.controller.commands import RenameResourceFile
 from robotide.controller.filecontrollers import TestCaseFileController
 from robotide.namespace.namespace import Namespace
-from robot.utils.asserts import assert_not_none, assert_true, assert_false, assert_equals, assert_none
+from nose.tools import (
+    assert_is_not_none, assert_true, assert_false, assert_equals,
+    assert_is_none)
 
-from resources import MINIMAL_SUITE_PATH, SUITEPATH, MessageRecordingLoadObserver, FakeSettings
+from resources import (
+    MINIMAL_SUITE_PATH, SUITEPATH, MessageRecordingLoadObserver, FakeSettings)
 from robotide.spec.librarymanager import LibraryManager
 
 
@@ -27,7 +30,7 @@ class TestFormatChange(unittest.TestCase):
 
     def _test_format_change(self, to_format):
         controller = self._get_file_controller(MINIMAL_SUITE_PATH)
-        assert_not_none(controller)
+        assert_is_not_none(controller)
         controller.save_with_new_format(to_format)
         self._assert_removed(MINIMAL_SUITE_PATH)
         path_with_tsv = os.path.splitext(MINIMAL_SUITE_PATH)[0] + '.'+to_format
@@ -117,7 +120,7 @@ class _UnitTestsWithWorkingResourceImports(unittest.TestCase):
             msg = 'Resolved to source %s' % imported_controller.source
         else:
             msg = None
-        assert_none(imported_controller, msg)
+        assert_is_none(imported_controller, msg)
 
 
 class TestResourceFileRename(_UnitTestsWithWorkingResourceImports):
@@ -188,6 +191,3 @@ class TestResourceFormatChange(_UnitTestsWithWorkingResourceImports):
         assert_equals(imp.name, import_name)
         assert_equals(self.res_controller.filename, os.path.abspath(resource_path))
         self._verify_import_reference(imp_is_resolved)
-
-if __name__ == "__main__":
-    unittest.main()

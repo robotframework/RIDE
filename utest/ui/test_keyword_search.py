@@ -1,5 +1,5 @@
 import unittest
-from robot.utils.asserts import assert_equals, assert_true
+from nose.tools import assert_equals, assert_true
 
 from robotide.ui.keywordsearch import _KeywordData, _SearchCriteria,\
     ALL_KEYWORDS, ALL_USER_KEYWORDS, ALL_LIBRARY_KEYWORDS, _SortOrder

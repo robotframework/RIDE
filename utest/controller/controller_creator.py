@@ -1,5 +1,5 @@
-from robot.parsing.model import TestCaseFile, TestDataDirectory
-from robot.parsing.populators import FromFilePopulator
+from robotide.robotapi import(
+    TestCaseFile, TestDataDirectory, FromFilePopulator)
 from robotide.controller.basecontroller import WithNamespace
 from robotide.controller.filecontrollers import TestCaseFileController,\
     TestDataDirectoryController

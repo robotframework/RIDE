@@ -37,10 +37,10 @@ import tempfile
 import threading
 import signal
 import sys
-import robotide.utils as utils
 from Queue import Empty, Queue
-from robot.output.loggerhelper import LEVELS
-from robot.utils.encoding import SYSTEM_ENCODING
+
+from robotide import utils
+from robotide.robotapi import LOG_LEVELS
 from robotide.context import IS_WINDOWS
 from robotide.contrib.testrunner import TestRunnerAgent
 from robotide.controller.testexecutionresults import TestExecutionResults
@@ -184,7 +184,7 @@ class TestRunner(object):
 
     @staticmethod
     def get_message_log_level(command):
-        min_log_level_number = LEVELS['INFO']
+        min_log_level_number = LOG_LEVELS['INFO']
         if '-L' in command:
             switch = '-L'
         elif '--loglevel' in command:
@@ -195,7 +195,7 @@ class TestRunner(object):
         if len(command) == i:
             return
         level = command[i+1].upper().split(':')[0]
-        return LEVELS.get(level, min_log_level_number)
+        return LOG_LEVELS.get(level, min_log_level_number)
 
     def _get_listener_to_cmd(self):
         path = os.path.abspath(TestRunnerAgent.__file__)
@@ -275,7 +275,7 @@ class Process(object):
                         stdout=subprocess.PIPE,
                         stderr=subprocess.PIPE,
                         stdin=subprocess.PIPE,
-                        cwd=self._cwd.encode(SYSTEM_ENCODING))
+                        cwd=self._cwd.encode(utils.SYSTEM_ENCODING))
         if IS_WINDOWS:
             startupinfo = subprocess.STARTUPINFO()
             try:
@@ -287,7 +287,7 @@ class Process(object):
         else:
             subprocess_args['preexec_fn'] = os.setsid
             subprocess_args['shell'] = True
-        self._process = subprocess.Popen(command.encode(SYSTEM_ENCODING),
+        self._process = subprocess.Popen(command.encode(utils.SYSTEM_ENCODING),
                                          **subprocess_args)
         self._process.stdin.close()
         self._output_stream = StreamReaderThread(self._process.stdout)

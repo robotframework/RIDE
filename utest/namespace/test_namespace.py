@@ -1,19 +1,19 @@
 import sys
 import unittest
+from nose.tools import assert_true, assert_false, assert_is_not_none, \
+    assert_equals, assert_is_none
 
+from robotide.robotapi import (
+    TestCaseFile, Resource, VariableTable, TestDataDirectory)
 from robotide.context import IS_WINDOWS
-from robot.parsing.settings import Resource
-from robot.parsing.model import VariableTable, TestDataDirectory
-from robot.utils import robotpath
-from robot.utils.asserts import assert_true, assert_false, assert_not_none, \
-    assert_equals, fail, assert_none
-from resources.mocks import FakeSettings
 from robotide.namespace.namespace import _VariableStash
-from robotide.robotapi import TestCaseFile
 from robotide.controller.filecontrollers import DataController
-from datafilereader import *
 from robotide.spec.iteminfo import ArgumentInfo, VariableInfo
 from robotide.spec.librarymanager import LibraryManager
+from robotide.utils import normpath
+
+from datafilereader import *
+from resources.mocks import FakeSettings
 
 RESOURCES_DIR = 'resources'
 
@@ -234,7 +234,7 @@ class TestKeywordSuggestions(_DataFileTest):
         for item in sugs:
             if item.name == 'Get Mandatory':
                 return
-        fail('Get mandatory not found')
+        raise AssertionError('Get mandatory not found')
 
     def test_vars_from_path_resource_file(self):
         sugs = self.ns.get_suggestions_for(self._get_controller(TESTCASEFILE_WITH_EVERYTHING).keywords[0],
@@ -318,7 +318,7 @@ class TestKeywordSearch(_DataFileTest):
 
     def test_find_default_keywords(self):
         all_kws = self.ns.get_all_keywords([])
-        assert_not_none(all_kws)
+        assert_is_not_none(all_kws)
         self.assert_in_keywords(all_kws, 'Should Be Equal')
 
     def test_find_suite_keywords(self):
@@ -347,8 +347,8 @@ class TestKeywordSearch(_DataFileTest):
         assert_equals(results[0], (u'Only From Resource', u'testdata_resource.txt'))
 
     def test_find_user_keyword_name_normalized(self):
-        assert_not_none(self.ns.find_user_keyword(self.tcf, 'UK Fromresource from rESOURCE with variaBLE'))
-        assert_none(self.ns.find_user_keyword(self.tcf, 'Copy List'))
+        assert_is_not_none(self.ns.find_user_keyword(self.tcf, 'UK Fromresource from rESOURCE with variaBLE'))
+        assert_is_none(self.ns.find_user_keyword(self.tcf, 'Copy List'))
 
     def test_is_user_keyword(self):
         assert_true(self.ns.is_user_keyword(self.tcf, 'UKFromResource from ResourcewithVariable'))
@@ -357,22 +357,22 @@ class TestKeywordSearch(_DataFileTest):
 
     def test_is_user_keyword_in_resource_file(self):
         everything_tcf = TestCaseFile(source=TESTCASEFILE_WITH_EVERYTHING).populate()
-        assert_not_none(self.ns.find_user_keyword(everything_tcf, 'Duplicate UK'))
+        assert_is_not_none(self.ns.find_user_keyword(everything_tcf, 'Duplicate UK'))
         assert_true(self.ns.is_user_keyword(everything_tcf, 'Duplicate UK'))
-        assert_not_none(self.ns.find_user_keyword(everything_tcf, 'Another Resource UK'))
+        assert_is_not_none(self.ns.find_user_keyword(everything_tcf, 'Another Resource UK'))
         assert_true(self.ns.is_user_keyword(everything_tcf, 'Another Resource UK'))
 
     def test_given_when_then_and_aliases(self):
-        assert_not_none(self.ns.find_user_keyword(self.tcf, '  Given   UK Fromresource from rESOURCE with variaBLE'))
-        assert_not_none(self.ns.find_user_keyword(self.tcf, 'when  UK Fromresource from rESOURCE with variaBLE'))
-        assert_not_none(self.ns.find_user_keyword(self.tcf, '  then UK Fromresource from rESOURCE with variaBLE'))
-        assert_not_none(self.ns.find_user_keyword(self.tcf, 'AND UK Fromresource from rESOURCE with variaBLE'))
-        assert_none(self.ns.find_user_keyword(self.tcf, 'given and UK Fromresource from rESOURCE with variaBLE'))
+        assert_is_not_none(self.ns.find_user_keyword(self.tcf, '  Given   UK Fromresource from rESOURCE with variaBLE'))
+        assert_is_not_none(self.ns.find_user_keyword(self.tcf, 'when  UK Fromresource from rESOURCE with variaBLE'))
+        assert_is_not_none(self.ns.find_user_keyword(self.tcf, '  then UK Fromresource from rESOURCE with variaBLE'))
+        assert_is_not_none(self.ns.find_user_keyword(self.tcf, 'AND UK Fromresource from rESOURCE with variaBLE'))
+        assert_is_none(self.ns.find_user_keyword(self.tcf, 'given and UK Fromresource from rESOURCE with variaBLE'))
 
     def assert_in_keywords(self, keywords, *kw_names):
         for kw_name in kw_names:
             if not self._in_keywords(keywords, kw_name):
-                fail(kw_name)
+                raise AssertionError(kw_name)
 
     def _in_keywords(self, keywords, kw_name):
         return any([kw_name.lower() == kw.name.lower() for kw in keywords])
@@ -440,7 +440,7 @@ class TestResourceGetter(_DataFileTest):
         assert_equals(len(resources),8)
         paths = []
         for res in resources:
-            normalized = robotpath.normpath(res.source)
+            normalized = normpath(res.source)
             assert_false(normalized in paths)
             paths.append(normalized)
 
@@ -462,7 +462,7 @@ class TestResourceCache(_DataFileTest):
 
     def test_file_with_invalid_path(self):
         imp = Resource(ParentMock(), '${kumikameli}')
-        assert_none(self._res_cache.get_resource(imp.directory, imp.name))
+        assert_is_none(self._res_cache.get_resource(imp.directory, imp.name))
 
     if IS_WINDOWS:
         def test_case_sensetive_filenames(self):

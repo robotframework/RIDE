@@ -1,9 +1,7 @@
 import unittest
-from robot.parsing.model import TestCaseFile, TestCaseFileSettingTable
-from robot.parsing.settings import _Import
-from robot.parsing.tablepopulators import SettingTablePopulator
-from robot.utils.asserts import assert_equals
+from nose.tools import assert_equals
 
+from robotide.robotapi import TestCaseFile, TestCaseFileSettingTable
 from robotide.controller.filecontrollers import TestCaseFileController
 from robotide.controller.tablecontrollers import ImportSettingsController
 

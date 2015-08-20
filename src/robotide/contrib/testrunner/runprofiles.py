@@ -26,14 +26,12 @@ any additional arguments.
 import wx
 from wx.lib.filebrowsebutton import FileBrowseButton
 import os
-from robot.errors import DataError, Information
-from robotide.contrib.testrunner.usages import USAGE
-from robot.utils.argumentparser import ArgumentParser
-from robot.utils.encoding import SYSTEM_ENCODING
 
 from robotide import pluginapi
 from robotide.widgets import Label
-from robotide.utils import overrides
+from robotide.robotapi import DataError, Information
+from robotide.utils import overrides, SYSTEM_ENCODING, ArgumentParser
+from robotide.contrib.testrunner.usages import USAGE
 
 
 class BaseProfile(object):

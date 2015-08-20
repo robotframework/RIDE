@@ -1,18 +1,19 @@
-from editor.fakeplugin import FakePlugin
-from resources import PYAPP_REFERENCE
 import unittest
 import wx
 import os
 from mock import Mock
-from robot.parsing.model import Variable
-from robot.utils.asserts import assert_equals, assert_true
+from nose.tools import assert_equals, assert_true
 
+from robotide.robotapi import Variable
 from robotide.controller import DataController
 from robotide.controller.robotdata import NewTestCaseFile
 from robotide.controller.settingcontrollers import VariableController
 from robotide.controller.tablecontrollers import VariableTableController
 from robotide.editor import EditorCreator
 from robotide.editor.editors import TestCaseFileEditor, WelcomePage
+from editor.fakeplugin import FakePlugin
+
+from resources import PYAPP_REFERENCE
 
 
 DATADIR = 'fake'

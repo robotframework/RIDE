@@ -1,6 +1,6 @@
 import unittest
 import datafilereader
-from robot.utils.asserts import assert_true
+from nose.tools import assert_true
 from robotide.ui.review import ReviewRunner
 
 

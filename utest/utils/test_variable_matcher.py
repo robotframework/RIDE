@@ -1,6 +1,6 @@
 import unittest
 from robotide.utils.variablematcher import *
-from robot.utils.asserts import assert_equals, assert_true, assert_false
+from nose.tools import assert_equals, assert_true, assert_false
 
 
 class _BaseTestIsVariable(object):

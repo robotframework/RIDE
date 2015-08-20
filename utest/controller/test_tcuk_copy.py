@@ -5,7 +5,7 @@ from robotide.robotapi import TestCaseFile
 from robotide.controller.filecontrollers import TestCaseFileController
 
 from resources import COMPLEX_SUITE_PATH
-from robot.utils.asserts import assert_equals, assert_true
+from nose.tools import assert_equals, assert_true
 
 
 class TestCaseAndUserKeywordCopyingTest(unittest.TestCase):

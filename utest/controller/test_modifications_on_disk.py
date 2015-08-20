@@ -2,20 +2,22 @@ import random
 import unittest
 import os
 import tempfile
-from robot.utils.asserts import assert_true, assert_false, assert_equals
-from robot.parsing.model import TestCaseFile, TestDataDirectory, ResourceFile
-from resources.mocks import FakeSettings
-from robotide.controller.commands import DeleteResourceAndImports, DeleteFile, SaveFile
+import shutil
+from nose.tools import assert_true, assert_false, assert_equals
 
-from robotide.controller.filecontrollers import (TestCaseFileController,
-                                                 TestDataDirectoryController,
-                                                 ResourceFileController)
+from robotide.robotapi import TestCaseFile, TestDataDirectory, ResourceFile
+from robotide.controller.commands import (
+    DeleteResourceAndImports, DeleteFile, SaveFile)
+from robotide.controller.filecontrollers import (
+    TestCaseFileController, TestDataDirectoryController,
+    ResourceFileController)
 from robotide.controller import Project
 from robotide.publish.messages import RideDataFileRemoved
 from robotide.publish import PUBLISHER
-import shutil
 from robotide.namespace.namespace import Namespace
 from robotide.spec.librarymanager import LibraryManager
+from resources.mocks import FakeSettings
+
 
 def create_test_data(path, filepath, resourcepath, initpath):
     if not os.path.exists(path):

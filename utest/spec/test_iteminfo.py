@@ -1,9 +1,9 @@
 import sys
 import os
 import unittest
-from robot.running import TestLibrary
-from robot.parsing.model import UserKeyword, KeywordTable
-from robot.utils.asserts import assert_true, assert_equals
+from nose.tools import assert_true, assert_equals
+
+from robotide.robotapi import TestLibrary, UserKeyword, KeywordTable
 from robotide.namespace import variablefetcher
 from robotide.spec import libraryfetcher
 

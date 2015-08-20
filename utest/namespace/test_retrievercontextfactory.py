@@ -1,7 +1,8 @@
 import unittest
+from nose.tools import assert_equals
+
 from robotide.namespace.namespace import _RetrieverContextFactory
-from robot.parsing.model import ResourceFile
-from robot.utils.asserts import assert_equals
+from robotide.robotapi import ResourceFile
 
 
 def datafileWithVariables(vars):

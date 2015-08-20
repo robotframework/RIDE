@@ -2,7 +2,7 @@ import unittest
 import sys
 import os
 
-from robot.utils.asserts import assert_equals
+from nose.tools import assert_equals
 
 from resources import DATAPATH
 from robotide.context import LIBRARY_XML_DIRECTORY

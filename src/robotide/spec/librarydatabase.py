@@ -16,7 +16,7 @@ import sqlite3
 import time
 from robotide.preferences.settings import SETTINGS_DIRECTORY
 from robotide.spec.iteminfo import LibraryKeywordInfo
-from robot.utils import decode_from_system
+from robotide.utils import decode_from_system
 
 CREATION_SCRIPT = """\
 CREATE TABLE libraries (id INTEGER PRIMARY KEY,

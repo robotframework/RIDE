@@ -1,6 +1,6 @@
 import unittest
 import datafilereader
-from robot.utils.asserts import assert_equals
+from nose.tools import assert_equals
 from robotide.usages.commands import FindResourceUsages
 
 
