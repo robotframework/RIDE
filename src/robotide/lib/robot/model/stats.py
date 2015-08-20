@@ -12,7 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robot.utils import (elapsed_time_to_string, html_escape, normalize,
+from robotide.lib.robot.utils import (elapsed_time_to_string, html_escape, normalize,
                          is_string)
 
 from .tags import TagPatterns

@@ -14,8 +14,8 @@
 
 from contextlib import contextmanager
 
-from robot.errors import DataError
-from robot.utils import split_from_equals, unic, is_string, DotDict
+from robotide.lib.robot.errors import DataError
+from robotide.lib.robot.utils import split_from_equals, unic, is_string, DotDict
 
 from .isvar import validate_var
 from .splitter import VariableSplitter

@@ -14,7 +14,7 @@
 
 from signal import setitimer, signal, SIGALRM, ITIMER_REAL
 
-from robot.errors import TimeoutError
+from robotide.lib.robot.errors import TimeoutError
 
 
 class Timeout(object):

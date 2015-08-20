@@ -15,10 +15,10 @@
 import os
 import sys
 
-from robot.errors import DataError
-from robot.running import TestLibrary, UserLibrary
-from robot.parsing import disable_curdir_processing
-from robot import utils
+from robotide.lib.robot.errors import DataError
+from robotide.lib.robot.running import TestLibrary, UserLibrary
+from robotide.lib.robot.parsing import disable_curdir_processing
+from robotide.lib.robot import utils
 
 from .model import LibraryDoc, KeywordDoc
 

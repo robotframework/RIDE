@@ -14,10 +14,10 @@
 
 import copy
 
-from robot import utils
-from robot.errors import DataError
-from robot.model import Keywords, Tags
-from robot.variables import contains_var, is_list_var
+from robotide.lib.robot import utils
+from robotide.lib.robot.errors import DataError
+from robotide.lib.robot.model import Keywords, Tags
+from robotide.lib.robot.variables import contains_var, is_list_var
 
 from .arguments import (ArgumentResolver, ArgumentSpec, ArgumentMapper,
                         DynamicArgumentParser, JavaArgumentCoercer,

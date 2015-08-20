@@ -133,9 +133,9 @@ import os
 if 'robot' not in sys.modules and __name__ == '__main__':
     import pythonpathsetter
 
-from robot.utils import Application, seq2str
-from robot.errors import DataError
-from robot.libdocpkg import LibraryDocumentation, ConsoleViewer
+from robotide.lib.robot.utils import Application, seq2str
+from robotide.lib.robot.errors import DataError
+from robotide.lib.robot.libdocpkg import LibraryDocumentation, ConsoleViewer
 
 
 class LibDoc(Application):
@@ -189,7 +189,7 @@ def libdoc_cli(arguments):
 
     Example::
 
-        from robot.libdoc import libdoc_cli
+        from robotide.lib.robot.libdoc import libdoc_cli
 
         libdoc_cli(['--version', '1.0', 'MyLibrary.py', 'MyLibraryDoc.html'])
     """
@@ -204,7 +204,7 @@ def libdoc(library_or_resource, outfile, name='', version='', format=None):
 
     Example::
 
-        from robot.libdoc import libdoc
+        from robotide.lib.robot.libdoc import libdoc
 
         libdoc('MyLibrary.py', 'MyLibraryDoc.html', version='1.0')
     """

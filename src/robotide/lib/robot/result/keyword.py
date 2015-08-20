@@ -12,7 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robot import model, utils
+from robotide.lib.robot import model, utils
 
 from .message import Message
 

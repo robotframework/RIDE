@@ -12,7 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robot.utils import NormalizedDict
+from robotide.lib.robot.utils import NormalizedDict
 
 
 class Metadata(NormalizedDict):

@@ -14,12 +14,12 @@
 
 import os
 
-from robot.errors import (DataError, ExecutionFailed, ExecutionPassed,
+from robotide.lib.robot.errors import (DataError, ExecutionFailed, ExecutionPassed,
                           PassExecution, ReturnFromKeyword,
                           UserKeywordExecutionFailed)
-from robot.variables import is_list_var
-from robot.output import LOGGER
-from robot import utils
+from robotide.lib.robot.variables import is_list_var
+from robotide.lib.robot.output import LOGGER
+from robotide.lib.robot import utils
 
 from .arguments import (ArgumentMapper, ArgumentResolver,
                         EmbeddedArguments, UserKeywordArgumentParser)

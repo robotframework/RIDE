@@ -12,7 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robot.utils import MultiMatcher
+from robotide.lib.robot.utils import MultiMatcher
 
 
 class _NamePatterns(object):

@@ -17,9 +17,9 @@ from fnmatch import fnmatchcase
 from random import randint
 from string import ascii_lowercase, ascii_uppercase, digits
 
-from robot.api import logger
-from robot.utils import is_bytes, is_string, is_truthy, is_unicode, lower, unic
-from robot.version import get_version
+from robotide.lib.robot.api import logger
+from robotide.lib.robot.utils import is_bytes, is_string, is_truthy, is_unicode, lower, unic
+from robotide.lib.robot.version import get_version
 
 
 class String(object):

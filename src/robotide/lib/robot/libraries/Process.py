@@ -18,11 +18,11 @@ import subprocess
 import time
 import signal as signal_module
 
-from robot.utils import (ConnectionCache, abspath, encode_to_system,
+from robotide.lib.robot.utils import (ConnectionCache, abspath, encode_to_system,
                          decode_output, is_truthy, secs_to_timestr,
                          timestr_to_secs, IRONPYTHON, JYTHON)
-from robot.version import get_version
-from robot.api import logger
+from robotide.lib.robot.version import get_version
+from robotide.lib.robot.api import logger
 
 
 class Process(object):

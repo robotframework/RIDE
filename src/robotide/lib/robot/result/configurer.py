@@ -12,8 +12,8 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robot import model
-from robot.utils import is_string, secs_to_timestamp, timestamp_to_secs
+from robotide.lib.robot import model
+from robotide.lib.robot.utils import is_string, secs_to_timestamp, timestamp_to_secs
 
 
 class SuiteConfigurer(model.SuiteConfigurer):

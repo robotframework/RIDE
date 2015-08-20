@@ -12,14 +12,14 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robot.errors import (ExecutionFailed, ExecutionFailures, ExecutionPassed,
+from robotide.lib.robot.errors import (ExecutionFailed, ExecutionFailures, ExecutionPassed,
                           ExitForLoop, ContinueForLoop, DataError,
                           HandlerExecutionFailed)
-from robot.result.keyword import Keyword as KeywordResult
-from robot.utils import (ErrorDetails, format_assign_message, frange,
+from robotide.lib.robot.result.keyword import Keyword as KeywordResult
+from robotide.lib.robot.utils import (ErrorDetails, format_assign_message, frange,
                          get_error_message, get_timestamp, is_list_like,
                          is_number, plural_or_not as s, type_name)
-from robot.variables import is_scalar_var, VariableAssigner
+from robotide.lib.robot.variables import is_scalar_var, VariableAssigner
 
 
 class KeywordRunner(object):

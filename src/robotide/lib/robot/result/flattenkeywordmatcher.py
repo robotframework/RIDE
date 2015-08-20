@@ -12,9 +12,9 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robot.errors import DataError
-from robot.model import TagPatterns
-from robot.utils import MultiMatcher, is_list_like
+from robotide.lib.robot.errors import DataError
+from robotide.lib.robot.model import TagPatterns
+from robotide.lib.robot.utils import MultiMatcher, is_list_like
 
 
 def validate_flatten_keyword(options):

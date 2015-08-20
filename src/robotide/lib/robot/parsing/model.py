@@ -15,11 +15,11 @@
 import os
 import copy
 
-from robot.errors import DataError
-from robot.variables import is_var
-from robot.output import LOGGER
-from robot.writer import DataFileWriter
-from robot.utils import abspath, is_string, normalize, NormalizedDict
+from robotide.lib.robot.errors import DataError
+from robotide.lib.robot.variables import is_var
+from robotide.lib.robot.output import LOGGER
+from robotide.lib.robot.writer import DataFileWriter
+from robotide.lib.robot.utils import abspath, is_string, normalize, NormalizedDict
 
 from .comments import Comment
 from .populators import FromFilePopulator, FromDirectoryPopulator

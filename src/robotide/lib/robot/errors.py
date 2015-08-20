@@ -88,7 +88,7 @@ class ExecutionFailed(RobotError):
                  continue_on_failure=False, return_value=None):
         if '\r\n' in message:
             message = message.replace('\r\n', '\n')
-        from robot.utils import cut_long_message
+        from robotide.lib.robot.utils import cut_long_message
         RobotError.__init__(self, cut_long_message(message))
         self.timeout = timeout
         self.syntax = syntax
@@ -204,7 +204,7 @@ class ExecutionPassed(ExecutionFailed):
         self._earlier_failures = []
 
     def _get_message(self):
-        from robot.utils import printable_name
+        from robotide.lib.robot.utils import printable_name
         return "Invalid '%s' usage." \
                % printable_name(self.__class__.__name__, code_style=True)
 

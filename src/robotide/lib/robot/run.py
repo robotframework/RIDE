@@ -407,12 +407,12 @@ import sys
 if 'robot' not in sys.modules and __name__ == '__main__':
     import pythonpathsetter
 
-from robot.conf import RobotSettings
-from robot.model import ModelModifier
-from robot.output import LOGGER, pyloggingconf
-from robot.reporting import ResultWriter
-from robot.running import TestSuiteBuilder
-from robot.utils import Application
+from robotide.lib.robot.conf import RobotSettings
+from robotide.lib.robot.model import ModelModifier
+from robotide.lib.robot.output import LOGGER, pyloggingconf
+from robotide.lib.robot.reporting import ResultWriter
+from robotide.lib.robot.running import TestSuiteBuilder
+from robotide.lib.robot.utils import Application
 
 
 class RobotFramework(Application):
@@ -460,7 +460,7 @@ def run_cli(arguments):
 
     Example::
 
-        from robot import run_cli
+        from robotide.lib.robot import run_cli
 
         run_cli(['--include', 'tag', 'path/to/tests.html'])
     """
@@ -490,7 +490,7 @@ def run(*datasources, **options):
 
     Example::
 
-        from robot import run
+        from robotide.lib.robot import run
 
         run('path/to/tests.html', include=['tag1', 'tag2'])
         with open('stdout.txt', 'w') as stdout:

@@ -14,7 +14,7 @@
 
 from operator import itemgetter
 
-from robot.utils import compress_text
+from robotide.lib.robot.utils import compress_text
 
 
 class StringIndex(long):

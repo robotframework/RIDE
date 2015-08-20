@@ -16,7 +16,7 @@ import re
 import sys
 import traceback
 
-from robot.errors import RobotError
+from robotide.lib.robot.errors import RobotError
 
 from .platform import JYTHON
 from .unic import unic

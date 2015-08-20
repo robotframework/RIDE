@@ -14,7 +14,7 @@
 
 import re
 
-from robot.output import LOGGER
+from robotide.lib.robot.output import LOGGER
 
 
 class DataRow(object):

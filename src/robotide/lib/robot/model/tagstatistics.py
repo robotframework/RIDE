@@ -14,7 +14,7 @@
 
 import re
 
-from robot.utils import NormalizedDict
+from robotide.lib.robot.utils import NormalizedDict
 
 from .criticality import Criticality
 from .stats import TagStat, CombinedTagStat

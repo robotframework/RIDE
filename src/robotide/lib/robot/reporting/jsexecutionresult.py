@@ -14,7 +14,7 @@
 
 import time
 
-from robot import utils
+from robotide.lib.robot import utils
 
 from .stringcache import StringIndex
 
