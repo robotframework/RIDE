@@ -266,7 +266,7 @@ class TestRunnerPlugin(Plugin):
         command_as_list = self._test_runner.get_command(
             self.get_current_profile(),
             self.global_settings.get('pythonpath', None),
-            self._get_monitor_width(),
+            self._get_console_width(),
             self._names_to_run)
         self._min_log_level_number = self._test_runner.get_message_log_level(command_as_list)
         command = self._format_command(command_as_list)
@@ -446,7 +446,7 @@ class TestRunnerPlugin(Plugin):
             linecount = textctrl.GetLineCount()
             textctrl.ScrollToLine(linecount)
 
-    def _get_monitor_width(self):
+    def _get_console_width(self):
         # robot wants to know a fixed size for output, so calculate the
         # width of the window based on average width of a character. A
         # little is subtracted just to make sure there's a little margin

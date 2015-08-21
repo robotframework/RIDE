@@ -171,7 +171,7 @@ class TestRunner(object):
         self._process = Process(cwd)
         self._process.run_command(command)
 
-    def get_command(self, profile, pythonpath, monitor_width, names_to_run):
+    def get_command(self, profile, pythonpath, console_width, names_to_run):
         '''Return the command (as a list) used to run the test'''
         command = profile.get_command_prefix()[:]
         argfile = os.path.join(self._output_dir, "argfile.txt")
@@ -179,7 +179,7 @@ class TestRunner(object):
         command.extend(["--listener", self._get_listener_to_cmd()])
         command.append(self._get_suite_source_for_command())
         self._write_argfile(argfile, self._create_standard_args(
-            command, profile, pythonpath, monitor_width, names_to_run))
+            command, profile, pythonpath, console_width, names_to_run))
         return command
 
     @staticmethod
@@ -211,14 +211,14 @@ class TestRunner(object):
         return os.path.abspath(self._project.suite.source)
 
     def _create_standard_args(
-            self, command, profile, pythonpath, monitor_width, names_to_run):
+            self, command, profile, pythonpath, console_width, names_to_run):
         standard_args = []
         standard_args.extend(profile.get_custom_args())
         self._add_tmp_outputdir_if_not_given_by_user(command, standard_args)
         self._add_pythonpath_if_in_settings_and_not_given_by_user(
             command, standard_args, pythonpath)
-        standard_args.extend(["--monitorcolors", "off"])
-        standard_args.extend(["--monitorwidth", monitor_width])
+        standard_args.extend(["--consolecolors", "off"])
+        standard_args.extend(["--consolewidth", console_width])
         for suite, test in names_to_run:
             standard_args += ['--suite', suite, '--test', test]
         return standard_args
