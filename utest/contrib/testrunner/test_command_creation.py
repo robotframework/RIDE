@@ -28,8 +28,8 @@ class CommandCreationTestCase(unittest.TestCase):
             ['custom', 'args',
              '--outputdir', 'temppi',
              '--pythonpath', 'PYTHON:PATH',
-             '--consolecolors', 'off',
-             '--consolewidth', 7,
+             '-C', 'off', # --consolecolors
+             '-W', 7, # --consolewidth
              '--suite', 'suite',
              '--test', 'suite.test'])
 
