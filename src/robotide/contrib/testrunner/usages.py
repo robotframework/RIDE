@@ -240,7 +240,7 @@ Options
                           Note that colors do not work with Jython on Windows.
  -K --consolemarkers auto|on|off  Show `.` (success) or `F` (failure) on
                           console when top level keywords in test cases end.
-                          Values have same semantics as with --consoleocolors.
+                          Values have same semantics as with --consolecolors.
  -P --pythonpath path *   Additional locations (directories, ZIPs, JARs) where
                           to search test libraries from when they are imported.
                           Multiple paths can be given by separating them with a
