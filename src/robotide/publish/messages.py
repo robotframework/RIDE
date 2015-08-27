@@ -12,13 +12,14 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from wx.lib.pubsub import Publisher as WxPublisher
 import inspect
-import messagetype
 import sys
 import traceback
 
 from robotide import utils
+
+from . import messagetype
+from . import publisher
 
 
 class RideMessage(object):
@@ -68,7 +69,7 @@ class RideMessage(object):
                                            exception=err, level='ERROR'))
 
     def _publish(self, msg):
-        WxPublisher().sendMessage(msg.topic, msg)
+        publisher.PUBLISHER.publish(msg.topic, msg)
 
 
 class RideLog(RideMessage):
