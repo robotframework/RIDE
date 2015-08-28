@@ -13,6 +13,9 @@
 #  limitations under the License.
 
 import wx
+import os
+import tempfile
+import atexit
 
 from robotide.pluginapi import Plugin, ActionInfo, RideLog
 from robotide import widgets
@@ -27,9 +30,26 @@ class LogPlugin(Plugin):
     """Viewer for internal log messages."""
 
     def __init__(self, app):
-        Plugin.__init__(self, app, default_settings={'log_to_console': False})
+        Plugin.__init__(self, app, default_settings={
+            'log_to_console': False,
+            'log_to_file': True
+        })
         self._log = []
         self._window = None
+        self._path = os.path.join(tempfile.gettempdir(), 'ride.log')
+        self._outfile = None
+        atexit.register(self._close)
+
+    def _close(self):
+        if self._outfile is not None:
+            self._outfile.flush()
+            self._outfile.close()
+
+    @property
+    def _logfile(self):
+        if self._outfile is None:
+            self._outfile = open(self._path, 'w')
+        return self._outfile
 
     def enable(self):
         self._create_menu()
@@ -52,6 +72,8 @@ class LogPlugin(Plugin):
             self._window.update_log()
         if self.log_to_console:
             print _message_to_string(log_event)
+        if self.log_to_file:
+            self._logfile.write(_message_to_string(log_event))
         if log_event.notify_user:
             font_size = 13 if context.IS_MAC else -1
             widgets.HtmlDialog(log_event.level, log_event.message,

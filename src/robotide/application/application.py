@@ -23,7 +23,7 @@ from robotide.ui import LoadProgressObserver
 from robotide.ui.mainframe import RideFrame
 from robotide.pluginapi import RideLogMessage
 from robotide import context, contrib
-from robotide.context import coreplugins, SYSLOG
+from robotide.context import coreplugins
 from robotide.preferences import Preferences, RideSettings
 from robotide.application.pluginloader import PluginLoader
 from robotide.application.editorprovider import EditorProvider
@@ -98,15 +98,15 @@ class RIDE(wx.App):
         robot_found = 'ImportError' not in output
         if robot_found:
             rf_file, rf_version = output.strip().split(', ')
-            SYSLOG("Found Robot Framework version {0} from '{1}'.".format(
-                rf_version, os.path.dirname(rf_file)))
+            RideLogMessage(
+                "Found Robot Framework version {0} from '{1}'.".format(
+                    rf_version, os.path.dirname(rf_file))).publish()
             return rf_version
         else:
             RideLogMessage("""Robot Framework installation not found!<br><br>
 
             Starting from RIDE 1.5, Robot Framework standard libraries are no longer included in RIDE insallation. In order to have intellisense features work with Robot Framework standard libraries, it must be installed separately. See the <a href="http://robotframework.org">official website</a> for installation instructions.
 """, notify_user=True).publish()
-            SYSLOG('Robot Framework installation not found on the system.')
             return None
 
 

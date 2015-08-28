@@ -12,40 +12,11 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import sys
-import os
-import re
-import datetime
-import tempfile
 import wx
-import atexit
+import sys
+import re
 
 from robotide.widgets import Dialog
-
-
-class Syslog(object):
-    """Global logger to write debug info to a syslog file
-
-    The syslog file is overwritten on each restart.
-    """
-    def __init__(self):
-        self._path = os.path.join(tempfile.gettempdir(), 'ride.log')
-        self._outfile = None
-        atexit.register(self._close)
-
-    def _close(self):
-        self._output.flush()
-        self._output.close()
-
-    @property
-    def _output(self):
-        if self._outfile is None:
-            self._outfile = open(self._path, 'w')
-        return self._outfile
-
-    def message(self, msg, level='INFO'):
-        ts = datetime.datetime.utcnow().isoformat()
-        self._output.write('{0} | {1} | {2}\n'.format(ts, level, msg))
 
 
 class Logger(object):

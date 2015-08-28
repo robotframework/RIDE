@@ -24,12 +24,6 @@ APP = None
 LOG = logger.Logger()
 ROBOT_LOGGER.unregister_console_logger()
 ROBOT_LOGGER.register_logger(LOG)
-_SYSLOG = logger.Syslog()
-
-
-def SYSLOG(message, level='INFO'):
-    _SYSLOG.message(message, level)
-
 
 IS_WINDOWS = os.sep == '\\'
 IS_MAC = sys.platform == 'darwin'
@@ -52,7 +46,7 @@ POPUP_BACKGROUND = (255, 255, 187)
 
 pyversion = '.'.join(str(v) for v in sys.version_info[:3])
 SYSTEM_INFO = "Started RIDE %s using python version %s with wx version %s in %s." % \
-        (VERSION, pyversion, WX_VERSION, sys.platform)
+    (VERSION, pyversion, WX_VERSION, sys.platform)
 ABOUT_RIDE = '''<h3>RIDE -- Robot Framework Test Data Editor</h3>
 <p>RIDE %s running on Python %s.</p>
 <p>RIDE is a test data editor for <a href="http://robotframework.org">Robot Framework</a>.
