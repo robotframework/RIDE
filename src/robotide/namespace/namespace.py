@@ -21,7 +21,6 @@ from itertools import chain
 
 from robotide import robotapi, utils
 from robotide.context import SYSLOG
-from robotide.namespace import variablefetcher, robotlibraryloader
 from robotide.namespace.cache import LibraryCache, ExpiringCache
 from robotide.namespace.resourcefactory import ResourceFactory
 from robotide.spec.iteminfo import TestCaseUserKeywordInfo,\
@@ -29,15 +28,6 @@ from robotide.spec.iteminfo import TestCaseUserKeywordInfo,\
 from robotide.namespace.embeddedargs import EmbeddedArgsHandler
 from robotide.publish import PUBLISHER, RideSettingsChanged
 from robotide.robotapi import VariableFileSetter
-
-
-installation_path = os.path.normpath(
-    os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
-BUNDLED_LIBRARIES_PATH = os.path.join(
-    installation_path, 'lib', 'robot', 'libraries')
-REMOTE_LIB_PATH = os.path.join(
-    installation_path, 'spec', 'remote')
-del installation_path
 
 
 class Namespace(object):
@@ -61,22 +51,7 @@ class Namespace(object):
 
     def _set_pythonpath(self):
         """Add user configured paths to PYTHONAPATH.
-
-        In addition, if `use installaed robot libraries` setting is `True`, and
-        a Robot Framework installation is found, remove bundled RF libraries
-        from PYTHONAPATH and create spec files for the installed RF's standard
-        libraries.
         """
-        if self._settings['use installed robot libraries']:
-            rf_version = robotlibraryloader.find_installed_robot_libraries(
-                self._settings.get('installed robot version', None))
-            if rf_version is not None:
-                if BUNDLED_LIBRARIES_PATH in sys.path:
-                    sys.path.remove(BUNDLED_LIBRARIES_PATH)
-                    sys.path.append(REMOTE_LIB_PATH)
-                self._settings.set('installed robot version', rf_version)
-        elif BUNDLED_LIBRARIES_PATH not in sys.path:
-            sys.path.insert(0, BUNDLED_LIBRARIES_PATH)
         for path in self._settings.get('pythonpath', []):
             if path not in sys.path:
                 normalized = path.replace('/', os.sep)
