@@ -28,12 +28,6 @@ class ImportPreferences(widgets.PreferencesPanel):
         self._add_settings(settings)
 
     def _add_settings(self, settings):
-        installed_libs = 'use installed robot libraries'
-        self.Sizer.AddMany(widgets.boolean_editor(
-            self, settings, installed_libs, installed_libs.capitalize(),
-            'Use standard libraries of installed Robot Framework instead '
-            'of RF bunlded with RIDE.'
-        ))
         list_settings = [
             ('auto imports', 'Comma separated list of libraries to be '
                              'automatically imported.'),

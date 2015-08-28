@@ -89,9 +89,8 @@ class SettingsMigrator(object):
             self.migrate_from_5_to_6(self._old_settings)
         if self._old_settings.get(self.SETTINGS_VERSION) == 6:
             self.migrate_from_6_to_7(self._old_settings)
-        # so next would be something like:
-        # if self._old_settings[self.SETTINGS_VERSION] == 6:
-        #   self.migrate_from_7_to_8(self._old_settings)
+        if self._old_settings.get(self.SETTINGS_VERSION) == 7:
+            self.migrate_from_7_to_8(self._old_settings)
         self.merge()
 
     def merge(self):
@@ -163,6 +162,12 @@ class SettingsMigrator(object):
     def migrate_from_6_to_7(self, settings):
         settings['use installed robot libraries'] = True
         settings[self.SETTINGS_VERSION] = 7
+
+    def migrate_from_7_to_8(self, settings):
+        installed_rf_libs = settings.get('use installed robot libraries', None)
+        if installed_rf_libs:
+            del settings['use installed robot libraries']
+        settings[self.SETTINGS_VERSION] = 8
 
     def _write_merged_settings(self, settings, path):
         try:
