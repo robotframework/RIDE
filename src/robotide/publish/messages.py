@@ -89,7 +89,7 @@ class RideLogMessage(RideLog):
     """
     data = ['message', 'level', 'timestamp', 'notify_user']
 
-    def __init__(self, message, level='INFO', notify_user=False ):
+    def __init__(self, message, level='INFO', notify_user=False):
         """Initializes a RIDE log message.
 
         The log ``level`` has default value ``INFO`` and the ``timestamp``

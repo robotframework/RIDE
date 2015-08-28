@@ -50,11 +50,12 @@ class Dialog(wx.Dialog):
 
 class HtmlDialog(Dialog):
 
-    def __init__(self, title, content, padding=0):
+    def __init__(self, title, content, padding=0, font_size=-1):
         Dialog.__init__(self, title)
         szr = sizers.VerticalSizer()
-        szr.add_expanding(htmlwindow.HtmlWindow(
-            self, text=content), padding=padding)
+        html = htmlwindow.HtmlWindow(self, text=content)
+        html.SetStandardFonts(size=font_size)
+        szr.add_expanding(html, padding=padding)
         self.SetSizer(szr)
 
     def OnKey(self, event):

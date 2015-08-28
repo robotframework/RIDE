@@ -16,6 +16,7 @@ import wx
 
 from robotide.pluginapi import Plugin, ActionInfo, RideLog
 from robotide import widgets
+from robotide import context
 
 
 def _message_to_string(msg):
@@ -52,8 +53,9 @@ class LogPlugin(Plugin):
         if self.log_to_console:
             print _message_to_string(log_event)
         if log_event.notify_user:
-            widgets.HtmlDialog(
-                log_event.level, log_event.message, padding=10).Show()
+            font_size = 13 if context.IS_MAC else -1
+            widgets.HtmlDialog(log_event.level, log_event.message,
+                               padding=10, font_size=font_size).Show()
 
     def OnViewLog(self, event):
         if not self._window:
