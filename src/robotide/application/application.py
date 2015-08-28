@@ -23,13 +23,14 @@ from robotide.ui import LoadProgressObserver
 from robotide.ui.mainframe import RideFrame
 from robotide.pluginapi import RideLogMessage
 from robotide import context, contrib
-from robotide.context import coreplugins
+from robotide.context import coreplugins, SYSLOG
 from robotide.preferences import Preferences, RideSettings
 from robotide.application.pluginloader import PluginLoader
 from robotide.application.editorprovider import EditorProvider
 from robotide.application.releasenotes import ReleaseNotes
 from robotide.application.updatenotifier import UpdateNotifierController, \
     UpdateDialog
+from robotide import utils
 
 
 class RIDE(wx.App):
@@ -54,10 +55,10 @@ class RIDE(wx.App):
                                            coreplugins.get_core_plugins())
         self._plugin_loader.enable_plugins()
         self.editor = self._get_editor()
-        self.editor.show()
         self._load_data()
         self.frame.tree.populate(self.model)
         self.frame.tree.set_editor(self.editor)
+        self._find_robot_installation()
         self._publish_system_info()
         if self._updatecheck:
             UpdateNotifierController(self.settings).notify_update_if_needed(UpdateDialog)
@@ -79,8 +80,10 @@ class RIDE(wx.App):
     def _get_editor(self):
         from robotide.editor import EditorPlugin
         for pl in self._plugin_loader.plugins:
-            if isinstance(pl._plugin, EditorPlugin):
-                return pl._plugin
+            maybe_editor = pl._plugin
+            if isinstance(maybe_editor, EditorPlugin):
+                maybe_editor.show()
+                return maybe_editor
 
     def _load_data(self):
         path = self._initial_path or self._get_latest_path()
@@ -88,6 +91,24 @@ class RIDE(wx.App):
             with self.active_event_loop():
                 observer = LoadProgressObserver(self.frame)
                 self._controller.load_data(path, observer)
+
+    def _find_robot_installation(self):
+        output = utils.run_python_command(
+            ['import robot; print robot.__file__ + ", " + robot.__version__'])
+        robot_found = 'ImportError' not in output
+        if robot_found:
+            rf_file, rf_version = output.strip().split(', ')
+            SYSLOG("Found Robot Framework version {0} from '{1}'.".format(
+                rf_version, os.path.dirname(rf_file)))
+            return rf_version
+        else:
+            RideLogMessage("""Robot Framework installation not found!<br><br>
+
+            Starting from RIDE 1.5, Robot Framework standard libraries are no longer included in RIDE insallation. In order to have intellisense features work with Robot Framework standard libraries, it must be installed separately. See the <a href="http://robotframework.org">official website</a> for installation instructions.
+""", notify_user=True).publish()
+            SYSLOG('Robot Framework installation not found on the system.')
+            return None
+
 
     def _get_latest_path(self):
         recent = self._get_recentfiles_plugin()

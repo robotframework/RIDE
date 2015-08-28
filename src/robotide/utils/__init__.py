@@ -15,6 +15,7 @@
 import os
 import sys
 import inspect
+import subprocess
 
 import robotide.lib.robot.utils
 from robotide.lib.robot.utils.encoding import SYSTEM_ENCODING
@@ -101,3 +102,13 @@ def overrides(interface_class):
 def is_same_drive(path1, path2):
     return os.path.splitdrive(path1)[0].lower() == \
         os.path.splitdrive(path2)[0].lower()
+
+
+def run_python_command(command, mode='c'):
+    cmd = [sys.executable, '-{0}'.format(mode)] + command
+    process = subprocess.Popen(
+        cmd,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT)
+    output, _ = process.communicate()
+    return output
