@@ -117,5 +117,12 @@ the `robotide.pluginapi` module and plugins should import them there.
 """
 
 
+import os
+
 from messages import *
 from publisher import PUBLISHER
+
+
+def get_html_message(name):
+    return open(os.path.join(
+        os.path.dirname(__file__), 'html', '{}.html'.format(name))).read()

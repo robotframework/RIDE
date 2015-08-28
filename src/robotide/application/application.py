@@ -21,7 +21,7 @@ from robotide.controller import Project
 from robotide.spec import librarydatabase
 from robotide.ui import LoadProgressObserver
 from robotide.ui.mainframe import RideFrame
-from robotide.pluginapi import RideLogMessage
+from robotide import publish
 from robotide import context, contrib
 from robotide.context import coreplugins
 from robotide.preferences import Preferences, RideSettings
@@ -61,12 +61,13 @@ class RIDE(wx.App):
         self._find_robot_installation()
         self._publish_system_info()
         if self._updatecheck:
-            UpdateNotifierController(self.settings).notify_update_if_needed(UpdateDialog)
+            UpdateNotifierController(
+                self.settings).notify_update_if_needed(UpdateDialog)
         wx.CallLater(200, ReleaseNotes(self).bring_to_front)
         return True
 
     def _publish_system_info(self):
-        RideLogMessage(context.SYSTEM_INFO).publish()
+        publish.RideLogMessage(context.SYSTEM_INFO).publish()
 
     @property
     def model(self):
@@ -98,17 +99,14 @@ class RIDE(wx.App):
         robot_found = 'ImportError' not in output
         if robot_found:
             rf_file, rf_version = output.strip().split(', ')
-            RideLogMessage(
+            publish.RideLogMessage(
                 "Found Robot Framework version {0} from '{1}'.".format(
                     rf_version, os.path.dirname(rf_file))).publish()
             return rf_version
         else:
-            RideLogMessage("""Robot Framework installation not found!<br><br>
-
-            Starting from RIDE 1.5, Robot Framework standard libraries are no longer included in RIDE insallation. In order to have intellisense features work with Robot Framework standard libraries, it must be installed separately. See the <a href="http://robotframework.org">official website</a> for installation instructions.
-""", notify_user=True).publish()
-            return None
-
+            publish.RideLogMessage(
+                publish.get_html_message('no_robot'), notify_user=True
+            ).publish()
 
     def _get_latest_path(self):
         recent = self._get_recentfiles_plugin()
@@ -130,7 +128,7 @@ class RIDE(wx.App):
         self.preferences.add(panel_class)
 
     def unregister_preference_panel(self, panel_class):
-        '''Remove the given panel class from the list of known preference panels'''
+        '''Remove the given panel class from the known preference panels'''
         self.preferences.remove(panel_class)
 
     def register_editor(self, object_class, editor_class, activate):
