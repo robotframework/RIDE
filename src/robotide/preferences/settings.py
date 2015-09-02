@@ -15,7 +15,7 @@
 import os
 import shutil
 
-from robotide.context import SETTINGS_DIRECTORY
+from robotide.context import SETTINGS_DIRECTORY, LIBRARY_XML_DIRECTORY
 from robotide.preferences.configobj import ConfigObj, ConfigObjError,\
     Section, UnreprError
 from robotide.preferences import excludes
@@ -167,6 +167,14 @@ class SettingsMigrator(object):
         installed_rf_libs = settings.get('use installed robot libraries', None)
         if installed_rf_libs:
             del settings['use installed robot libraries']
+            for name in [
+                'BuiltIn', 'Collections', 'DateTime', 'Dialogs', 'Easter',
+                'OperatingSystem', 'Process', 'Remote',
+                'Screenshot', 'String', 'Telnet', 'XML']:
+                lib_xml_path = os.path.join(LIBRARY_XML_DIRECTORY,
+                                            '{}.xml'.format(name))
+                if os.path.exists(lib_xml_path):
+                    os.remove(lib_xml_path)
         settings[self.SETTINGS_VERSION] = 8
 
     def _write_merged_settings(self, settings, path):
