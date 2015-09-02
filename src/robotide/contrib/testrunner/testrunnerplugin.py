@@ -51,8 +51,6 @@ import wx
 import wx.stc
 from wx.lib.embeddedimage import PyEmbeddedImage
 
-from robot.output import LEVELS
-from robot.utils import robottime
 
 from robotide.action.shortcut import localize_shortcuts
 from robotide.context import IS_WINDOWS, IS_MAC
@@ -61,6 +59,8 @@ from robotide.contrib.testrunner import runprofiles
 from robotide.publish.messages import RideTestSelectedForRunningChanged
 from robotide.pluginapi import Plugin, ActionInfo
 from robotide.widgets import Label, ImageProvider
+from robotide.robotapi import LOG_LEVELS
+from robotide.utils import robottime
 
 
 ID_RUN = wx.NewId()
@@ -108,7 +108,7 @@ class TestRunnerPlugin(Plugin):
         self._currently_executing_keyword = None
         self._test_runner = TestRunner(application.model)
         self._register_shortcuts()
-        self._min_log_level_number = LEVELS['INFO']
+        self._min_log_level_number = LOG_LEVELS['INFO']
         self._names_to_run = set()
 
     def _register_shortcuts(self):
@@ -710,7 +710,7 @@ class TestRunnerPlugin(Plugin):
 
     def _handle_log_message(self, args):
         a = args[0]
-        if self.show_message_log and LEVELS[a['level']] >= self._min_log_level_number:
+        if self.show_message_log and LOG_LEVELS[a['level']] >= self._min_log_level_number:
             prefix = '%s : %s : ' % (a['timestamp'], a['level'].rjust(5))
             message = a['message']
             if '\n' in message:

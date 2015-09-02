@@ -14,9 +14,9 @@
 
 import re
 
-from robot.errors import DataError
-from robot.utils import get_error_message
-from robot.variables import VariableIterator
+from robotide.lib.robot.errors import DataError
+from robotide.lib.robot.utils import get_error_message
+from robotide.lib.robot.variables import VariableIterator
 
 
 class EmbeddedArguments(object):

@@ -15,9 +15,9 @@
 from operator import attrgetter
 from os.path import splitext
 
-from robot.errors import DataError
-from robot.parsing import VALID_EXTENSIONS as RESOURCE_EXTENSIONS
-from robot.utils import NormalizedDict
+from robotide.lib.robot.errors import DataError
+from robotide.lib.robot.parsing import VALID_EXTENSIONS as RESOURCE_EXTENSIONS
+from robotide.lib.robot.utils import NormalizedDict
 
 
 class HandlerStore(object):

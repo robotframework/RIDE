@@ -15,8 +15,8 @@
 import sys
 from StringIO import StringIO
 
-from robot.output import LOGGER
-from robot.utils import decode_output, encode_output, JYTHON
+from robotide.lib.robot.output import LOGGER
+from robotide.lib.robot.utils import decode_output, encode_output, JYTHON
 
 
 class OutputCapturer(object):

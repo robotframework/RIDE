@@ -120,10 +120,10 @@ from StringIO import StringIO
 if 'robot' not in sys.modules and __name__ == '__main__':
     import pythonpathsetter
 
-from robot.errors import DataError
-from robot.parsing import (ResourceFile, TestDataDirectory, TestCaseFile,
+from robotide.lib.robot.errors import DataError
+from robotide.lib.robot.parsing import (ResourceFile, TestDataDirectory, TestCaseFile,
                            disable_curdir_processing)
-from robot.utils import Application
+from robotide.lib.robot.utils import Application
 
 
 class Tidy(object):
@@ -312,7 +312,7 @@ def tidy_cli(arguments):
 
     Example::
 
-        from robot.tidy import tidy_cli
+        from robotide.lib.robot.tidy import tidy_cli
 
         tidy_cli(['--format', 'txt', 'tests.html'])
     """

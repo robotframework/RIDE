@@ -14,8 +14,8 @@
 
 import os
 
-from robot.result.visitor import ResultVisitor
-from robot.utils import XmlWriter
+from robotide.lib.robot.result.visitor import ResultVisitor
+from robotide.lib.robot.utils import XmlWriter
 
 
 class XUnitWriter(object):

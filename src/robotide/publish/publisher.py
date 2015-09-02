@@ -12,10 +12,6 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from wx.lib.pubsub import Publisher as WxPublisher
-
-from messages import RideLogException
-
 
 class Publisher(object):
 
@@ -23,7 +19,7 @@ class Publisher(object):
         self._listeners = {}
 
     def publish(self, topic, data):
-        WxPublisher().sendMessage(topic, data)
+        self._sendMessage(topic, data)
 
     def subscribe(self, listener, topic, key=None):
         """Start to listen to messages with the specified ``topic``.
@@ -39,6 +35,13 @@ class Publisher(object):
         """
         wrapper = _ListenerWrapper(listener, topic)
         self._listeners.setdefault(key, []).append(wrapper)
+
+    def _sendMessage(self, topic, data):
+        current_wrappers = self._listeners.values()
+        for wrappers in current_wrappers:
+            for wrapper in wrappers:
+                if wrapper.listens(topic):
+                    wrapper(data)
 
     def unsubscribe(self, listener, topic, key=None):
         """Stop listening for messages with the specified ``topic``.
@@ -59,14 +62,11 @@ class Publisher(object):
         del self._listeners[key]
 
 
-class _ListenerWrapper:
-    # Must be an old-style class because wxPython's pubsub doesn't handle
-    # new-style classes in 2.8.7.1. Newer versions have that bug fixed.
+class _ListenerWrapper(object):
 
     def __init__(self, listener, topic):
         self.listener = listener
         self.topic = self._get_topic(topic)
-        WxPublisher().subscribe(self, self.topic)
 
     def _get_topic(self, topic):
         if not isinstance(topic, basestring):
@@ -76,16 +76,24 @@ class _ListenerWrapper:
     def wraps(self, listener, topic):
         return self.listener == listener and self.topic == self._get_topic(topic)
 
-    def unsubscribe(self):
-        WxPublisher().unsubscribe(self, self.topic)
+    def listens(self, topic):
+        return self._get_topic(topic).startswith(self.topic)
 
-    def __call__(self, event):
+    def unsubscribe(self):
+        pass
+
+    def __call__(self, data):
+        from messages import RideLogException
         try:
-            self.listener(event.data)
+            self.listener(data)
         except Exception, err:
             # Prevent infinite recursion if RideLogMessage listener is broken,
-            if not isinstance(event.data, RideLogException):
+            if not isinstance(data, RideLogException):
                 RideLogException(message='Error in listener: %s\n' \
                                          'While handling %s' % (unicode(err),
-                                                                unicode(event.data)),
+                                                                unicode(data)),
                                  exception=err, level='ERROR').publish()
+
+
+"""Global `Publisher` instance for subscribing to and unsubscribing from messages."""
+PUBLISHER = Publisher()

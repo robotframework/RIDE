@@ -12,8 +12,8 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robot.errors import DataError
-from robot.utils import (get_error_message, unic, is_java_method,
+from robotide.lib.robot.errors import DataError
+from robotide.lib.robot.utils import (get_error_message, unic, is_java_method,
                          is_string, is_unicode)
 
 from .arguments import JavaArgumentParser, PythonArgumentParser

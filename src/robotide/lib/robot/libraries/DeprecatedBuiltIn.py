@@ -15,7 +15,7 @@
 import re
 import fnmatch
 
-from robot.utils import asserts, printable_name
+from robotide.lib.robot.utils import asserts, printable_name
 
 from .BuiltIn import BuiltIn
 

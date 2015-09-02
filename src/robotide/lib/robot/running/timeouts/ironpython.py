@@ -17,7 +17,7 @@ import threading
 
 from System.Threading import Thread, ThreadStart
 
-from robot.errors import TimeoutError
+from robotide.lib.robot.errors import TimeoutError
 
 
 class Timeout(object):

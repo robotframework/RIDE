@@ -1,5 +1,5 @@
 import unittest
-from robot.utils.asserts import assert_equals, assert_none
+from nose.tools import assert_equals
 from robotide.ui.actiontriggers import _NameBuilder
 
 
@@ -54,7 +54,7 @@ class TestGetNameWithAccelerator(unittest.TestCase):
         self._test('&File', '&File')
         for name in 'F&ile', 'File', '&File', 'FI&LE', 'fil&e', 'file':
             assert_equals(self._nb.get_registered_name(name), '&File')
-        assert_none(self._nb.get_registered_name('Non Existing'))
+        assert_equals(self._nb.get_registered_name('Non Existing'), None)
 
 
 if __name__ == '__main__':

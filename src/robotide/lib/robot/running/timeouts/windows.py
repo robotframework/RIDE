@@ -17,7 +17,7 @@ import thread
 import time
 from threading import Timer
 
-from robot.errors import TimeoutError
+from robotide.lib.robot.errors import TimeoutError
 
 
 class Timeout(object):

@@ -1,21 +1,22 @@
 import unittest
+from nose.tools import assert_equals, assert_true, assert_false
 
+from robotide.robotapi import TestCaseFile
 from robotide.controller import Project
-from robot.utils.asserts import assert_equals, assert_true, assert_false
-from resources import FakeSettings
-from robot.parsing.model import TestCaseFile
 from robotide.controller.macrocontrollers import KEYWORD_NAME_FIELD
-from robotide.controller.commands import Undo, FindOccurrences, FindVariableOccurrences, NullObserver, RenameKeywordOccurrences, ChangeCellValue
-from robotide.controller.filecontrollers import (TestCaseFileController,
-                                                 TestCaseTableController,
-                                                 TestCaseController)
+from robotide.controller.commands import (
+    Undo, FindOccurrences, FindVariableOccurrences, NullObserver,
+    RenameKeywordOccurrences, ChangeCellValue)
+from robotide.controller.filecontrollers import (
+    TestCaseFileController, TestCaseTableController, TestCaseController)
 from robotide.publish import PUBLISHER
 from robotide.publish.messages import RideItemStepsChanged, RideItemSettingsChanged,\
     RideItemNameChanged
 from robotide.namespace.namespace import Namespace
-import datafilereader
 from robotide.spec.librarymanager import LibraryManager
 from robotide.usages.commands import FindUsages
+from resources import FakeSettings
+import datafilereader
 
 
 STEP1_KEYWORD = 'Log'

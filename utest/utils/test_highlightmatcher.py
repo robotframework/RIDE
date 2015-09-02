@@ -1,6 +1,6 @@
 import unittest
 
-from robot.utils.asserts import assert_true, assert_false
+from nose.tools import assert_true, assert_false
 
 from robotide.utils.highlightmatcher import highlight_matcher
 

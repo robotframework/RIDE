@@ -15,11 +15,11 @@
 import os
 import copy
 
-from robot.errors import DataError
-from robot.libraries import STDLIBS, STDLIB_TO_DEPRECATED_MAP
-from robot.output import LOGGER, Message
-from robot.parsing.settings import Library, Variables, Resource
-from robot.utils import (eq, find_file, is_string, printable_name, seq2str2,
+from robotide.lib.robot.errors import DataError
+from robotide.lib.robot.libraries import STDLIBS, STDLIB_TO_DEPRECATED_MAP
+from robotide.lib.robot.output import LOGGER, Message
+from robotide.lib.robot.parsing.settings import Library, Variables, Resource
+from robotide.lib.robot.utils import (eq, find_file, is_string, printable_name, seq2str2,
                          RecommendationFinder)
 
 from .usererrorhandler import UserErrorHandler

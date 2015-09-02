@@ -1,6 +1,6 @@
 import unittest
 
-from robot.parsing.model import TestCase
+from robotide.robotapi import TestCase
 from robotide.controller.macrocontrollers import TestCaseController
 from robotide.searchtests.searchtests import TestSearchMatcher
 

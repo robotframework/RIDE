@@ -1,5 +1,6 @@
 import unittest
-from robot.parsing.model import Variable
+
+from robotide.robotapi import Variable
 from robotide.controller.settingcontrollers import VariableController
 
 

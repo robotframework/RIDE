@@ -1,7 +1,7 @@
 import unittest
 import random
 
-from robot.libraries.String import String
+from robotide.lib.robot.libraries.String import String
 
 from robotide.controller.cellinfo import CellInfo, ContentType, CellType,\
     CellContent, CellPosition

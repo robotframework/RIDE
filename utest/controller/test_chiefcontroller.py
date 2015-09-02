@@ -1,16 +1,15 @@
 import os
-import unittest
-
 from os.path import join as j
+import unittest
+from nose.tools import assert_true, assert_equals, assert_is_none
 
-from robot.parsing.model import TestDataDirectory, TestCaseFile, ResourceFile
-from robot.utils.asserts import assert_true, assert_equals, assert_none
-
+from robotide.robotapi import TestDataDirectory, TestCaseFile, ResourceFile
 from robotide.controller import Project
 from robotide.namespace import Namespace
 from robotide.controller.filecontrollers import TestCaseFileController, \
     TestDataDirectoryController, ResourceFileController
 from robotide.publish.messages import RideOpenSuite, RideOpenResource
+from robotide.spec.librarymanager import LibraryManager
 
 from resources import (COMPLEX_SUITE_PATH, MINIMAL_SUITE_PATH, RESOURCE_PATH,
                        MessageRecordingLoadObserver, SUITEPATH,
@@ -19,7 +18,6 @@ from resources import (COMPLEX_SUITE_PATH, MINIMAL_SUITE_PATH, RESOURCE_PATH,
                        EXTERNAL_RES_UNSORTED_PATH, FakeSettings)
 from resources.mocks import PublisherListener
 import datafilereader
-from robotide.spec.librarymanager import LibraryManager
 
 
 ALL_RESOURCE_PATH_RELATED_RESOURCE_IMPORTS = [RESOURCE_PATH, RESOURCE_PATH2, RESOURCE_PATH3, RESOURCE_PATH_TXT]
@@ -99,7 +97,7 @@ class ProjectTest(unittest.TestCase):
         self._test_listeners([], [])
 
     def test_loading_invalid_resource(self):
-        assert_none(self.ctrl.load_resource('invalid', self.load_observer))
+        assert_is_none(self.ctrl.load_resource('invalid', self.load_observer))
         assert_equals(self.load_observer.message, "Invalid resource file 'invalid'.")
         self._test_listeners([], [])
 

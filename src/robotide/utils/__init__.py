@@ -15,19 +15,23 @@
 import os
 import sys
 import inspect
+import subprocess
 
-import robot.utils
-from robot.utils import printable_name, normalize, eq, ET, \
+import robotide.lib.robot.utils
+from robotide.lib.robot.utils.encoding import SYSTEM_ENCODING
+import robotide.lib.robot.utils.encoding as encoding
+from robotide.lib.robot.utils import printable_name, normalize, eq, ET, \
     HtmlWriter, NormalizedDict, timestr_to_secs, secs_to_timestr, normpath,\
-    unic, asserts, unescape, html_escape, html_attr_escape,\
-    get_timestamp, Matcher, is_list_like, is_dict_like
+    unic, asserts, unescape, html_escape, html_attr_escape, robottime,\
+    get_timestamp, Matcher, is_list_like, is_dict_like, decode_from_system,\
+    ArgumentParser, get_error_details
 
 from eventhandler import RideEventHandler
 from printing import Printing
 
 
 def html_format(text):
-    return robot.utils.html_format(text)
+    return robotide.lib.robot.utils.html_format(text)
 
 
 def name_from_class(item, drop=None):
@@ -98,3 +102,13 @@ def overrides(interface_class):
 def is_same_drive(path1, path2):
     return os.path.splitdrive(path1)[0].lower() == \
         os.path.splitdrive(path2)[0].lower()
+
+
+def run_python_command(command, mode='c'):
+    cmd = [sys.executable, '-{0}'.format(mode)] + command
+    process = subprocess.Popen(
+        cmd,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT)
+    output, _ = process.communicate()
+    return output

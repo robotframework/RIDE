@@ -14,8 +14,8 @@
 
 import re
 
-from robot.errors import DataError
-from robot.utils import (format_assign_message, get_error_message, prepr,
+from robotide.lib.robot.errors import DataError
+from robotide.lib.robot.utils import (format_assign_message, get_error_message, prepr,
                          type_name, is_number, is_string)
 
 

@@ -1,7 +1,7 @@
 import os
 import unittest
 
-from robot.utils.asserts import assert_equals
+from nose.tools import assert_equals
 
 # Needed to be able to create wx components
 from resources import PYAPP_REFERENCE as _

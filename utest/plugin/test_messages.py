@@ -1,7 +1,6 @@
 import unittest
 
-from robot.utils.asserts import assert_equals, assert_none, assert_false, \
-    assert_true
+from nose.tools import assert_equals, assert_false, assert_true
 
 from robotide.publish import RideMessage, RideLog, PUBLISHER
 from robotide.pluginapi import Plugin
@@ -72,20 +71,20 @@ class TestUnsubscribingFromEvents(unittest.TestCase):
         listener_count = len(PUBLISHER._listeners[self.plugin])
         self.plugin.unsubscribe(self.plugin.OnTestEventClass, RideTestMessage)
         RideTestMessage().publish()
-        assert_none(self.plugin.class_handler_topic)
+        assert_equals(self.plugin.class_handler_topic, None)
         assert_equals(
             len(PUBLISHER._listeners[self.plugin]), listener_count - 1)
 
     def test_unsubscribe_with_string(self):
         self.plugin.unsubscribe(self.plugin.OnTestEventString, 'ride.test')
         RideTestMessage().publish()
-        assert_none(self.plugin.string_handler_topic)
+        assert_equals(self.plugin.string_handler_topic, None)
 
     def test_unsubscribe_with_string_is_case_insensitive(self):
         self.plugin.unsubscribe(
             self.plugin.OnTestEventStringWrongCase, 'RiDe.TEst')
         RideTestMessage().publish()
-        assert_none(self.plugin.case_insensitive_string_handler_topic)
+        assert_equals(self.plugin.case_insensitive_string_handler_topic, None)
 
     def test_unsubscribing_multiple_times_subscribed_once(self):
         self.plugin.unsubscribe(self.plugin.counting_handler, RideTestMessage)
@@ -127,9 +126,9 @@ class TestUnsubscribingFromEvents(unittest.TestCase):
         self._unsubscribe_all = False
         RideTestMessage().publish()
         RideMessageWithData(data_item='Data', more_data=[1, 2, 3]).publish()
-        assert_none(self.plugin.class_handler_topic)
-        assert_none(self.plugin.string_handler_topic)
-        assert_none(self.plugin.case_insensitive_string_handler_topic)
+        assert_equals(self.plugin.class_handler_topic, None)
+        assert_equals(self.plugin.string_handler_topic, None)
+        assert_equals(self.plugin.case_insensitive_string_handler_topic, None)
         assert_equals(self.plugin.record, {})
         assert_equals(self.plugin.count, 0)
         assert_equals(self.plugin.hierarchy_events, [])

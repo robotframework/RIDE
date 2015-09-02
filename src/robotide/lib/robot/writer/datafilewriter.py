@@ -14,7 +14,7 @@
 
 import os
 
-from robot.errors import DataError
+from robotide.lib.robot.errors import DataError
 
 from .filewriters import FileWriter
 

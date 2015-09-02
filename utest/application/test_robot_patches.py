@@ -1,7 +1,7 @@
-from robot.parsing.settings import Timeout, Tags, Fixture, Template
-from robot.utils.asserts import assert_equals
-import robotide
+from nose.tools import assert_equals
 import unittest
+
+from robotide.robotapi import Timeout, Tags, Fixture, Template
 
 
 class Test(unittest.TestCase):

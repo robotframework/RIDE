@@ -2,7 +2,7 @@ import unittest
 
 from robotide.robotapi import (TestDataDirectory, TestCaseFile, ResourceFile,
                                TestCase, UserKeyword)
-from robot.utils.asserts import assert_equals
+from nose.tools import assert_equals
 from robotide.spec.librarymanager import LibraryManager
 from robotide.ui.images import TreeImageList
 

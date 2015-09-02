@@ -21,13 +21,13 @@ backwards compatibility between major versions is not guaranteed.
 All utilities are exposed via the :mod:`robot.utils` package, and should be
 used either like::
 
-    from robot import utils
+    from robotide.lib.robot import utils
 
     assert utils.Matcher('H?llo').match('Hillo')
 
 or::
 
-    from robot.utils import Matcher
+    from robotide.lib.robot.utils import Matcher
 
     assert Matcher('H?llo').match('Hillo')
 """

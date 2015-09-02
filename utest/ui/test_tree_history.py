@@ -1,6 +1,6 @@
 import unittest
 
-from robot.utils.asserts import assert_equals
+from nose.tools import assert_equals
 from robotide.controller.ui.treecontroller import _History
 
 

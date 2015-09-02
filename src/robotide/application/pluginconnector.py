@@ -19,8 +19,8 @@ from robotide import utils
 def PluginFactory(application, plugin_class):
     try:
         plugin = plugin_class(application)
-    except Exception, err:
-        return BrokenPlugin(str(err), plugin_class)
+    except Exception:
+        return BrokenPlugin(utils.get_error_details(), plugin_class)
     else:
         return PluginConnector(plugin, application)
 

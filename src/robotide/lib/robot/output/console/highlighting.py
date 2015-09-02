@@ -24,8 +24,8 @@ try:
 except ImportError:  # Not on Windows or using Jython
     windll = None
 
-from robot.errors import DataError
-from robot.utils import encode_output, isatty
+from robotide.lib.robot.errors import DataError
+from robotide.lib.robot.utils import encode_output, isatty
 
 
 class HighlightingStream(object):

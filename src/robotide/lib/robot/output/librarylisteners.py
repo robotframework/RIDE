@@ -45,7 +45,7 @@ class LibraryListeners(Listeners):
 
     @property
     def _listeners(self):
-        from robot.running import EXECUTION_CONTEXTS
+        from robotide.lib.robot.running import EXECUTION_CONTEXTS
         if not EXECUTION_CONTEXTS.current:
             return []
         listeners = [_LibraryListenerProxy(library, listener)

@@ -1,14 +1,15 @@
 import unittest
-from robot.utils.asserts import assert_equals
-from robot.parsing.model import TestCaseFile
+from nose.tools import assert_equals
 
-from controller.base_command_test import testcase_controller
+from robotide.robotapi import TestCaseFile
 from robotide.controller.filecontrollers import TestCaseFileController
 from robotide.publish.messages import RideUserKeywordAdded, RideUserKeywordRemoved,\
     RideTestCaseAdded, RideTestCaseRemoved, RideItemNameChanged
 from robotide.controller.commands import AddKeyword, RemoveMacro, Undo,\
     AddTestCase, AddKeywordFromCells, RenameTest
 from robotide.publish import PUBLISHER
+
+from controller.base_command_test import testcase_controller
 
 
 class _TestMacroCommands(object):

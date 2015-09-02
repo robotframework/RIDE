@@ -1,5 +1,5 @@
 import unittest
-from robot.utils.asserts import assert_false, assert_equals, assert_true
+from nose.tools import assert_false, assert_equals, assert_true
 
 from robotide.utils import html_escape
 from robotide.controller.cellinfo import CellInfo, CellContent, ContentType,\

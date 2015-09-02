@@ -1,8 +1,9 @@
 import os
 import unittest
-from robot.output import LEVELS
+
+from robotide.robotapi import LOG_LEVELS as LEVELS
 from robotide.contrib.testrunner.testrunner import TestRunner
-from robotide.contrib.testrunner.testrunnerplugin import TestRunnerPlugin
+
 
 class CommandCreator(TestRunner):
 

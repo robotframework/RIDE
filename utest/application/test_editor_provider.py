@@ -1,6 +1,6 @@
 import unittest
 
-from robot.utils.asserts import assert_equals, assert_raises
+from nose.tools import assert_equals, assert_raises
 
 from robotide.application.editorprovider import EditorProvider
 

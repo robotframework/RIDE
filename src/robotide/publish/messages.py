@@ -12,13 +12,14 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from wx.lib.pubsub import Publisher as WxPublisher
 import inspect
-import messagetype
 import sys
 import traceback
 
 from robotide import utils
+
+from . import messagetype
+from . import publisher
 
 
 class RideMessage(object):
@@ -68,7 +69,7 @@ class RideMessage(object):
                                            exception=err, level='ERROR'))
 
     def _publish(self, msg):
-        WxPublisher().sendMessage(msg.topic, msg)
+        publisher.PUBLISHER.publish(msg.topic, msg)
 
 
 class RideLog(RideMessage):
@@ -88,7 +89,7 @@ class RideLogMessage(RideLog):
     """
     data = ['message', 'level', 'timestamp', 'notify_user']
 
-    def __init__(self, message, level='INFO', notify_user=False ):
+    def __init__(self, message, level='INFO', notify_user=False):
         """Initializes a RIDE log message.
 
         The log ``level`` has default value ``INFO`` and the ``timestamp``

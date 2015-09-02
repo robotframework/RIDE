@@ -57,7 +57,7 @@ unittest license::
 Examples::
 
     import unittest
-    from robot.util.asserts import *
+    from robotide.lib.robot.util.asserts import *
 
     class MyTests(unittest.TestCase):
 

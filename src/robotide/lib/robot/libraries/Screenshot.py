@@ -38,10 +38,10 @@ else:
     except ImportError:
         ImageGrab = None
 
-from robot import utils
-from robot.api import logger
-from robot.libraries.BuiltIn import BuiltIn
-from robot.version import get_version
+from robotide.lib.robot import utils
+from robotide.lib.robot.api import logger
+from robotide.lib.robot.libraries.BuiltIn import BuiltIn
+from robotide.lib.robot.version import get_version
 
 
 class Screenshot(object):

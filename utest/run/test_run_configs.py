@@ -1,5 +1,5 @@
 import unittest
-from robot.utils.asserts import assert_equals
+from nose.tools import assert_equals
 
 from robotide.run.runanything import RunConfigs
 

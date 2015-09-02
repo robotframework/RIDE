@@ -14,7 +14,7 @@
 
 import inspect
 
-from robot.utils import NormalizedDict
+from robotide.lib.robot.utils import NormalizedDict
 
 
 class _RunKeywordRegister:

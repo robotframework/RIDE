@@ -12,7 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robot.utils import Matcher, NormalizedDict, is_string, setter, unic
+from robotide.lib.robot.utils import Matcher, NormalizedDict, is_string, setter, unic
 
 
 class Tags(object):

@@ -1,8 +1,8 @@
 import os
 import unittest
-from robot.parsing.model import TestCaseFile
+from nose.tools import assert_equals, assert_true
 
-from robot.utils.asserts import assert_equals, assert_true
+from robotide.robotapi import TestCaseFile
 from robotide.controller.commands import RenameFile
 from robotide.controller.filecontrollers import TestCaseFileController
 from robotide.controller.validators import ERROR_ILLEGAL_CHARACTERS, ERROR_EMPTY_FILENAME, ERROR_NEWLINES_IN_THE_FILENAME, ERROR_FILE_ALREADY_EXISTS

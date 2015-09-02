@@ -13,10 +13,10 @@
 #  limitations under the License.
 
 from org.robotframework import RobotRunner
-from robot import run_cli, rebot_cli
-from robot.libdoc import libdoc_cli
-from robot.tidy import tidy_cli
-from robot.testdoc import testdoc_cli
+from robotide.lib.robot import run_cli, rebot_cli
+from robotide.lib.robot.libdoc import libdoc_cli
+from robotide.lib.robot.tidy import tidy_cli
+from robotide.lib.robot.testdoc import testdoc_cli
 
 
 USAGE = """robotframework.jar - Robot Framework runner.

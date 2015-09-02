@@ -16,7 +16,7 @@ import sys
 
 from java.lang import Thread, Runnable
 
-from robot.errors import TimeoutError
+from robotide.lib.robot.errors import TimeoutError
 
 
 class Timeout(object):

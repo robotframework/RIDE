@@ -1,6 +1,6 @@
 import unittest
 import datafilereader
-from robot.utils.asserts import assert_true, assert_false, assert_equals
+from nose.tools import assert_true, assert_false, assert_equals
 from robotide.controller.commands import MoveTo
 
 

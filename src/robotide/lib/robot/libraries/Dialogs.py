@@ -28,8 +28,8 @@ The library has following two limitations:
 - It cannot be used with timeouts on Python.
 """
 
-from robot.version import get_version
-from robot.utils import IRONPYTHON, JYTHON, is_truthy
+from robotide.lib.robot.version import get_version
+from robotide.lib.robot.utils import IRONPYTHON, JYTHON, is_truthy
 
 if JYTHON:
     from .dialogs_jy import MessageDialog, PassFailDialog, InputDialog, SelectionDialog

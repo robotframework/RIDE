@@ -15,8 +15,8 @@
 from contextlib import contextmanager
 import os.path
 
-from robot.output.loggerhelper import LEVELS
-from robot.utils import (get_link_path, html_attr_escape, html_escape,
+from robotide.lib.robot.output.loggerhelper import LEVELS
+from robotide.lib.robot.utils import (get_link_path, html_attr_escape, html_escape,
                          html_format, is_string, is_unicode, timestamp_to_secs)
 
 from .stringcache import StringCache

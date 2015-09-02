@@ -1,6 +1,6 @@
 import unittest
 import datafilereader
-from robot.utils.asserts import assert_equals, assert_false, assert_true
+from nose.tools import assert_equals, assert_false, assert_true
 
 
 class TestLocalNamespace(unittest.TestCase):

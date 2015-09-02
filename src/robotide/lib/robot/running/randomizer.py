@@ -14,7 +14,7 @@
 
 from random import Random
 
-from robot.model import SuiteVisitor
+from robotide.lib.robot.model import SuiteVisitor
 
 
 class Randomizer(SuiteVisitor):

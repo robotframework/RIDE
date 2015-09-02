@@ -1,7 +1,7 @@
 import unittest
 import datafilereader
 from robotide.controller.commands import ExtractScalar, ExtractList
-from robot.utils.asserts import assert_equals
+from nose.tools import assert_equals
 
 
 class TestExtractVariableCommands(unittest.TestCase):

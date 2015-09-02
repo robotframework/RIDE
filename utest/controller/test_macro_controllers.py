@@ -1,13 +1,12 @@
 import unittest
-from robot.parsing.model import TestCaseFile
-from robot.utils.asserts import assert_equals, assert_true, assert_false
+from nose.tools import assert_equals, assert_true, assert_false
 
+from robotide.robotapi import TestCaseFile
 from robotide.controller.filecontrollers import TestCaseFileController
-from robotide.controller.macrocontrollers import (TestCaseController,
-                                                  UserKeywordController,
-                                                  StepController)
-from robotide.controller.tablecontrollers import (TestCaseTableController,
-                                                  KeywordTableController)
+from robotide.controller.macrocontrollers import (
+    TestCaseController, UserKeywordController)
+from robotide.controller.tablecontrollers import (
+    TestCaseTableController, KeywordTableController)
 
 
 class _BaseWithSteps(unittest.TestCase):
@@ -131,7 +130,3 @@ class UserKeywordControllerTest(_BaseWithSteps):
 
     def test_copy_content(self):
         self._test_copy_content()
-
-
-if __name__ == "__main__":
-    unittest.main()

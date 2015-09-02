@@ -1,6 +1,6 @@
 import sys
 import os
-from os.path import join, isdir, isfile, exists
+from os.path import join, exists
 import re
 import shutil
 import tempfile
@@ -15,6 +15,7 @@ TEST_DIR = join(ROOT_DIR, 'utest')
 DIST_DIR = join(ROOT_DIR, 'dist')
 BUILD_DIR = join(ROOT_DIR, 'build')
 ROBOTIDE_PACKAGE = join(ROOT_DIR, 'src', 'robotide')
+BUNDLED_ROBOT_DIR = join(ROBOTIDE_PACKAGE, 'lib', 'robot')
 # MANIFEST = ROOT_DIR/'MANIFEST.in'
 
 TEST_PROJECT_DIR = 'theproject'
@@ -22,6 +23,8 @@ TEST_LIBS_GENERATED = 10
 # Set VERSION global variable
 execfile('src/robotide/version.py')
 FINAL_RELEASE = bool(re.match('^(\d*\.){1,2}\d*$', VERSION))
+wxPythonDownloadUrl = \
+    "http://sourceforge.net/projects/wxpython/files/wxPython/2.8.12.1/"
 
 
 # Developemnt tasks
@@ -64,17 +67,52 @@ def clean():
 
 
 @task
+def update_robot(version=''):
+    """Update robot framework to specified commit or tag.
+
+    By default, update to current master.
+    This task also repackages RF under `robotide.robot` to avoid
+    accidentally importing system installation.
+
+    `git`, `grep` and `sed` must be installed
+    """
+    target = version if version else 'master'
+    run('(cd ../robotframework && git fetch && git checkout {})'.format(target))
+    rf_commit_hash = run('(cd ../robotframework && git rev-parse HEAD)').stdout
+    run('rm -rf {}'.format(BUNDLED_ROBOT_DIR))
+    run('cp -r ../robotframework/src/robot src/robotide/lib/')
+    # Prevent .pyc matching grep expressions
+    _clean()
+    # `import robot` -> `from robotide.lib import robot`
+    _run_sed_on_matching_files(
+        'import robot',
+        's/import robot/from robotide.lib import robot/')
+    # `from robot.pkg import stuff` -> `from robotide.lib.robot.pkg import stuff`
+    _run_sed_on_matching_files(
+        'from robot\..* import',
+        's/from robot\./from robotide.lib.robot./')
+    # `from robot import stuff` -> `from robotide.lib.robot import stuff`
+    _run_sed_on_matching_files(
+        'from robot import',
+        's/from robot import/from robotide.lib.robot import/')
+    with open(join(ROBOTIDE_PACKAGE, 'lib', 'robot-commit'), 'w') as rf_version_file:
+        rf_version_file.write('{}\n'.format(rf_commit_hash))
+    _log('Updated bundled Robot Framework to version {}/{}'.format(
+        target, rf_commit_hash))
+
+
+@task
 def generate_big_project(install=False, upgrade=False, args=''):
     """Generate big test data project to help perf testing."""
     _remove_bytecode_files()
     if install or upgrade:
         rfgen_url = \
             "https://raw.github.com/robotframework/Generator/master/rfgen.py"
-        print "Installing/upgrading rfgen.py from github."
+        _log("Installing/upgrading rfgen.py from github.")
         f = open('rfgen.py', 'wb')
         f.write(urllib2.urlopen(rfgen_url).read())
         f.close()
-        print "Done."
+        _log("Done.")
 
     _set_development_path()
     sys.path.insert(0, '.')
@@ -83,8 +121,8 @@ def generate_big_project(install=False, upgrade=False, args=''):
         import rfgen
         assert rfgen.main(args.split(','))
     except ImportError:
-        print "Error: Did not find 'rfgen' script or installation"
-        print "Use 'invoke generate_big_project --install'"
+        _log("Error: Did not find 'rfgen' script or installation")
+        _log("Use 'invoke generate_big_project --install'")
 
 
 @task
@@ -124,10 +162,11 @@ def install():
     try:
         import wxversion
     except ImportError:
-        print "No wxPython installation detected!"
-        print ""
-        print "Please ensure that you have wxPython installed before running RIDE."
-        print "You can obtain wxPython 2.8.12.1 from http://sourceforge.net/projects/wxpython/files/wxPython/2.8.12.1/"
+        _log("""No wxPython installation detected!
+
+Please install wxPython before running RIDE.
+You can download wxPython 2.8.12.1 from {}
+""".format(wxPythonDownloadUrl))
     _run_setup('install')
 
 
@@ -145,7 +184,8 @@ def release_notes_plugin():
 
 
 @task(pre=[clean],
-      help={'release-notes': 'If enabled, release notes plugin will be updated'})
+      help={
+          'release-notes': 'If enabled, release notes plugin will be updated'})
 def sdist(release_notes=True):
     """Creates source distribution with bundled dependencies."""
     if release_notes:
@@ -168,11 +208,12 @@ def wininst():
 def release_notes():
     """Download and format issues in markdown format."""
     issues = _get_issues()
-    print """ID  | Type | Priority | Summary
---- | ---- | -------- | ------- """
+    _log("""ID  | Type | Priority | Summary
+--- | ---- | -------- | ------- """)
     for i in issues:
-        print ' | '.join(('#{}'.format(i.number), _find_type(i),
-                          _find_priority(i), i.title))
+        parts = ('#{}'.format(i.number), _find_type(i), _find_priority(i),
+                 i.title)
+        _log(' | '.join(parts))
 
 
 # Helper functions
@@ -200,6 +241,11 @@ def _set_development_path():
     sys.path.insert(0, SOURCE_DIR)
 
 
+def _run_sed_on_matching_files(pattern, sed_expression):
+    run("grep -lr '{}' {} | xargs sed -i '' -e '{}'".format(
+        pattern, BUNDLED_ROBOT_DIR, sed_expression))
+
+
 def _after_distribution():
     _log('Created:')
     for path in os.listdir(DIST_DIR):
@@ -221,10 +267,11 @@ def _download_and_format_issues():
             'td', html_format('*{}*'.format(header)), escape=False)
     writer.end('tr')
     issues = _get_issues()
+    base_url = 'http://github.com/robotframework/RIDE/issues/'
     for issue in issues:
         writer.start('tr')
-        link_tmpl = '<a href="http://github.com/robotframework/RIDE/issues/{0}">Issue {0}</a>'
-        row = [link_tmpl.format(issue.number),
+        link_tmpl = '<a href="{0}{0}">Issue {0}</a>'
+        row = [link_tmpl.format(base_url, issue.number, issue.number),
                _find_type(issue),
                _find_priority(issue),
                issue.title]
@@ -247,7 +294,7 @@ def _get_issues():
     repo = gh.repository('robotframework', 'RIDE')
     milestone_number = _get_milestone(repo, milestone)
     if milestone_number is None:
-        print 'milestone not found'
+        _log('milestone not found')
         sys.exit(1)
     issues = list(repo.iter_issues(milestone=milestone_number, state='closed'))
     issues.sort(cmp=_issue_sorter)

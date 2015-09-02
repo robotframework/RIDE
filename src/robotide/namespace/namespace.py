@@ -20,24 +20,14 @@ import tempfile
 from itertools import chain
 
 from robotide import robotapi, utils
-from robotide.context import SYSLOG
-from robotide.namespace import variablefetcher, robotlibraryloader
-from robotide.namespace.cache import LibraryCache, ExpiringCache
-from robotide.namespace.resourcefactory import ResourceFactory
+from robotide.publish import PUBLISHER, RideSettingsChanged, RideLogMessage
+from robotide.robotapi import VariableFileSetter
 from robotide.spec.iteminfo import TestCaseUserKeywordInfo,\
     ResourceUserKeywordInfo, VariableInfo, _UserKeywordInfo, ArgumentInfo
-from robotide.namespace.embeddedargs import EmbeddedArgsHandler
-from robotide.publish import PUBLISHER, RideSettingsChanged
-from robotide.robotapi import VariableFileSetter
 
-
-installation_path = os.path.normpath(
-    os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
-BUNDLED_LIBRARIES_PATH = os.path.join(
-    installation_path, 'lib', 'robot', 'libraries')
-REMOTE_LIB_PATH = os.path.join(
-    installation_path, 'spec', 'remote')
-del installation_path
+from .cache import LibraryCache, ExpiringCache
+from .resourcefactory import ResourceFactory
+from .embeddedargs import EmbeddedArgsHandler
 
 
 class Namespace(object):
@@ -61,27 +51,13 @@ class Namespace(object):
 
     def _set_pythonpath(self):
         """Add user configured paths to PYTHONAPATH.
-
-        In addition, if `use installaed robot libraries` setting is `True`, and
-        a Robot Framework installation is found, remove bundled RF libraries
-        from PYTHONAPATH and create spec files for the installed RF's standard
-        libraries.
         """
-        if self._settings['use installed robot libraries']:
-            rf_version = robotlibraryloader.find_installed_robot_libraries(
-                self._settings.get('installed robot version', None))
-            if rf_version is not None:
-                if BUNDLED_LIBRARIES_PATH in sys.path:
-                    sys.path.remove(BUNDLED_LIBRARIES_PATH)
-                    sys.path.append(REMOTE_LIB_PATH)
-                self._settings.set('installed robot version', rf_version)
-        elif BUNDLED_LIBRARIES_PATH not in sys.path:
-            sys.path.insert(0, BUNDLED_LIBRARIES_PATH)
         for path in self._settings.get('pythonpath', []):
             if path not in sys.path:
                 normalized = path.replace('/', os.sep)
                 sys.path.insert(0, normalized)
-                SYSLOG("Inserted '{0}' to sys.path.".format(normalized))
+                RideLogMessage("Inserted '{0}' to sys.path."
+                               .format(normalized)).publish()
 
     def _setting_changed(self, message):
         section, setting = message.keys
@@ -172,9 +148,9 @@ class Namespace(object):
 
     def _keyword_suggestions(self, datafile, start, ctx):
         start_normalized = utils.normalize(start)
-        return (sug for sug in chain(
-            self._get_default_keywords(),
-            self._retriever.get_keywords_from(datafile, ctx))
+        all_kws = chain(self._get_default_keywords(),
+                        self._retriever.get_keywords_from(datafile, ctx))
+        return (sug for sug in all_kws
                 if sug.name_begins_with(start_normalized) or
                 sug.longname_begins_with(start_normalized))
 
@@ -258,11 +234,12 @@ class RetrieverContext(object):
         return self.vars.replace_variables(text)
 
     def allow_going_through_resources_again(self):
-        """Resets the parsed-cache.
+        """Resets the parsed resources cache.
+
         Normally all resources that have been handled are added to 'parsed' and
-        then not handled again, to prevent looping forever. If this same context
-        is used for going through the resources again, then you should call
-        this.
+        then not handled again, to prevent looping forever. If this same
+        context is used for going through the resources again, this method
+        should be called first.
         """
         self.parsed = set()
 
@@ -331,7 +308,8 @@ class _VariableStash(object):
                         variable.value,
                         variable.report_invalid_syntax
                     )
-                    self.set(variable.name, value.resolve(self._vars), variable_table.source)
+                    self.set(variable.name, value.resolve(self._vars),
+                             variable_table.source)
             except robotapi.DataError:
                 if robotapi.is_var(variable.name):
                     val = self._empty_value_for_variable_type(variable.name)
@@ -345,7 +323,9 @@ class _VariableStash(object):
         return {}
 
     def set_from_file(self, varfile_path, args):
-        for name, value in VariableFileSetter(None)._import_if_needed(varfile_path, args):
+        vars_from_file = VariableFileSetter(None)._import_if_needed(
+            varfile_path, args)
+        for name, value in vars_from_file:
             self.set(name, value, varfile_path)
 
     def _get_prefix(self, value):
@@ -397,9 +377,10 @@ class DatafileRetriever(object):
     def get_keywords_from(self, datafile, ctx):
         self._get_vars_recursive(datafile, ctx)
         ctx.allow_going_through_resources_again()
-        return sorted(set(self._get_datafile_keywords(datafile) +\
-              self._get_imported_resource_keywords(datafile, ctx) +\
-              self._get_imported_library_keywords(datafile, ctx)))
+        return sorted(set(
+            self._get_datafile_keywords(datafile) +
+            self._get_imported_resource_keywords(datafile, ctx) +
+            self._get_imported_library_keywords(datafile, ctx)))
 
     def is_library_import_ok(self, datafile, imp, ctx):
         self._get_vars_recursive(datafile, ctx)
@@ -504,7 +485,8 @@ class DatafileRetriever(object):
         kws.update(datafile.keywords)
         kws_from_res = self._collect_each_res_import(
             datafile, ctx,
-            lambda res, ctx, kws: kws.update(self._get_user_keywords_recursive(res, ctx)))
+            lambda res, ctx, kws:
+                kws.update(self._get_user_keywords_recursive(res, ctx)))
         kws.update(kws_from_res)
         return kws
 
@@ -551,8 +533,9 @@ class _Keywords(object):
             self._add_keyword(kw)
 
     def _add_keyword(self, kw):
-        # TODO: this hack creates a preference for local keywords over resources and libraries
-        # Namespace should be rewritten to handle keyword preference order
+        # TODO: this hack creates a preference for local keywords over
+        # resources and libraries Namespace should be rewritten to handle
+        # keyword preference order
         if kw.name not in self.keywords:
             self.keywords[kw.name] = kw
             self._add_embedded(kw)

@@ -1,14 +1,11 @@
 import unittest
 import os
-from robot.parsing.model import TestCaseFile
-from robot.parsing.populators import FromFilePopulator
-from robot.utils.asserts import assert_equals
+from nose.tools import assert_equals
 
 from robotide.publish import PUBLISHER
-from robotide.controller.filecontrollers import TestCaseFileController
 from robotide.publish.messages import RideItemStepsChanged
-from controller.controller_creator import _FakeProject, testcase_controller,\
-   BASE_DATA
+from controller.controller_creator import (
+    _FakeProject, testcase_controller, BASE_DATA)
 
 
 class TestCaseCommandTest(unittest.TestCase, _FakeProject):

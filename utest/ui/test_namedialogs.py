@@ -1,9 +1,10 @@
 import unittest
-from robot.parsing.model import TestCaseFile
-from robot.utils.asserts import assert_equals
+from nose.tools import assert_equals
 
 from robotide.controller.filecontrollers import TestCaseFileController
-from robotide.editor.editordialogs import TestCaseNameDialog, UserKeywordNameDialog
+from robotide.editor.editordialogs import (
+    TestCaseNameDialog, UserKeywordNameDialog)
+from robotide.robotapi import TestCaseFile
 
 from resources import PYAPP_REFERENCE, wx
 

@@ -1,6 +1,6 @@
 import unittest
 from robotide.namespace.embeddedargs import EmbeddedArgsHandler
-from robot.utils.asserts import assert_true, assert_raises, assert_false
+from nose.tools import assert_true, assert_raises, assert_false
 
 
 class KWMock(object):

@@ -15,8 +15,8 @@
 import inspect
 import os.path
 
-from robot.errors import DataError
-from robot.utils import (get_error_details, is_string, is_list_like,
+from robotide.lib.robot.errors import DataError
+from robotide.lib.robot.utils import (get_error_details, is_string, is_list_like,
                          is_dict_like, split_args_from_name_or_path,
                          type_name, Importer)
 

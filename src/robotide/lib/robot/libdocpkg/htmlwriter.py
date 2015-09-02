@@ -15,10 +15,10 @@
 import re
 import urllib
 
-from robot.errors import DataError
-from robot.htmldata import HtmlFileWriter, ModelWriter, JsonWriter, LIBDOC
-from robot.utils import get_timestamp, html_escape, html_format, NormalizedDict
-from robot.utils.htmlformatters import HeaderFormatter
+from robotide.lib.robot.errors import DataError
+from robotide.lib.robot.htmldata import HtmlFileWriter, ModelWriter, JsonWriter, LIBDOC
+from robotide.lib.robot.utils import get_timestamp, html_escape, html_format, NormalizedDict
+from robotide.lib.robot.utils.htmlformatters import HeaderFormatter
 
 
 class LibdocHtmlWriter(object):

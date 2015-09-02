@@ -1,22 +1,25 @@
 import re
 import unittest
 from mock import Mock
-from robot.parsing.settings import Fixture, Documentation, Timeout, Tags, Return
-from robot.utils.asserts import assert_equals, assert_true, assert_false
-from robot.parsing.model import TestCaseFile
+from nose.tools import assert_equals, assert_true, assert_false
 
+from robotide.robotapi import (
+    Fixture, Documentation, Timeout, Tags, Return, TestCaseFile)
 from robotide.controller.filecontrollers import TestCaseFileController
-from robotide.controller.settingcontrollers import (DocumentationController,
-        FixtureController, TagsController, ImportController,
-        ReturnValueController, TimeoutController, ForceTagsController,
-        DefaultTagsController)
-from robotide.controller.tablecontrollers import (VariableTableController,
-        MetadataListController, ImportSettingsController, _WithListOperations)
-from robotide.publish.messages import (RideImportSetting, RideImportSettingRemoved,
-        RideImportSettingAdded, RideImportSettingChanged)
+from robotide.controller.settingcontrollers import (
+    DocumentationController, FixtureController, TagsController,
+    ImportController, ReturnValueController, TimeoutController,
+    ForceTagsController, DefaultTagsController)
+from robotide.controller.tablecontrollers import (
+    VariableTableController, MetadataListController, ImportSettingsController,
+    _WithListOperations)
+from robotide.publish.messages import (
+    RideImportSetting, RideImportSettingRemoved, RideImportSettingAdded,
+    RideImportSettingChanged)
+from robotide.controller.tags import Tag
+
 from resources.mocks import PublisherListener
 from controller.base_command_test import _FakeProject
-from robotide.controller.tags import Tag
 
 
 class _FakeParent(_FakeProject):

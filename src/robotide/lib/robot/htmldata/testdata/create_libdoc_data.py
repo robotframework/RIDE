@@ -11,8 +11,8 @@ OUTPUT = join(BASE, 'libdoc.js')
 
 sys.path.insert(0, SRC)
 
-from robot.libdoc import LibraryDocumentation
-from robot.libdocpkg.htmlwriter import LibdocModelWriter
+from robotide.lib.robot.libdoc import LibraryDocumentation
+from robotide.lib.robot.libdocpkg.htmlwriter import LibdocModelWriter
 
 with open(OUTPUT, 'w') as output:
     libdoc = LibraryDocumentation(INPUT)
