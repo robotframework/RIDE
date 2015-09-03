@@ -620,7 +620,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
             self._tree.highlight, searchstring).show()
 
     def _cell_value_contains_multiple_search_items(self, value):
-        variables = utils.find_variable_basenames(value)
+        variables = variablematcher.find_variable_basenames(value)
         return variables and variables[0] != value
 
     def _extract_scalar(self, cell):
