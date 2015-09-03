@@ -86,7 +86,7 @@ WELCOME_TEXT = """
 # Release notes are updated automatically by package.py script whenever
 # a numbered distribution is created.
 RELEASE_NOTES = """
-<h2>Release notes for 1.5a1</h2>
+<h2>Release notes for 1.5a2</h2>
 <table border="1">
 <tr>
 <td><p><b>ID</b></p></td>
@@ -95,11 +95,41 @@ RELEASE_NOTES = """
 <td><p><b>Summary</b></p></td>
 </tr>
 <tr>
-<td><a href="http://github.com/robotframework/RIDE/issues/1445">Issue 1445</a></td>
+<td><a href="http://github.com/robotframework/RIDE/issues/http://github.com/robotframework/RIDE/issues/">Issue http://github.com/robotframework/RIDE/issues/</a></td>
+<td>bug</td>
+<td>critical</td>
+<td>Cannot import remote library in 1.4.1</td>
+</tr>
+<tr>
+<td><a href="http://github.com/robotframework/RIDE/issues/http://github.com/robotframework/RIDE/issues/">Issue http://github.com/robotframework/RIDE/issues/</a></td>
 <td>enhancement</td>
 <td>critical</td>
 <td>Support RF 2.9</td>
 </tr>
+<tr>
+<td><a href="http://github.com/robotframework/RIDE/issues/http://github.com/robotframework/RIDE/issues/">Issue http://github.com/robotframework/RIDE/issues/</a></td>
+<td>bug</td>
+<td>high</td>
+<td>'--monitorcolors' and '--monitorwidth' is deprecated WARN message</td>
+</tr>
+<tr>
+<td><a href="http://github.com/robotframework/RIDE/issues/http://github.com/robotframework/RIDE/issues/">Issue http://github.com/robotframework/RIDE/issues/</a></td>
+<td>bug</td>
+<td>medium</td>
+<td>Highlighting selected cell (and matches) does not work.</td>
+</tr>
+<tr>
+<td><a href="http://github.com/robotframework/RIDE/issues/http://github.com/robotframework/RIDE/issues/">Issue http://github.com/robotframework/RIDE/issues/</a></td>
+<td>bug</td>
+<td>medium</td>
+<td>RIDE Log shows "The C++ part of the VariablesListEditor object has been deleted, attribute access no longer allowed"</td>
+</tr>
+<tr>
+<td><a href="http://github.com/robotframework/RIDE/issues/http://github.com/robotframework/RIDE/issues/">Issue http://github.com/robotframework/RIDE/issues/</a></td>
+<td>bug</td>
+<td>medium</td>
+<td>"Find Where Used" in editor not working</td>
+</tr>
 </table>
-<p>Altogether 1 issues.</p>
+<p>Altogether 6 issues.</p>
 """
