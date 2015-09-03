@@ -410,7 +410,9 @@ class VariablesListEditor(_AbstractListEditor):
         self._open_var_dialog(var)
 
     def _open_variable_dialog(self, message):
-        self._open_var_dialog(message.controller)
+        # Prevent opening a dialog if self hase been destroyed
+        if self:
+            self._open_var_dialog(message.controller)
 
     def _open_var_dialog(self, var):
         if var.name.startswith('${'):
