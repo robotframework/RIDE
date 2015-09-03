@@ -109,9 +109,7 @@ class TestKeywordSuggestions(_DataFileTest):
     def test_getting_suggestions_for_empty_datafile(self):
         start = 'shOulD'
         sugs = self.ns.get_suggestions_for(self.kw, start)
-        for s in sugs:
-            print s.name
-        assert_false(len(sugs) > 0)
+        assert_true(len(sugs) > 0)
         for s in sugs:
             assert_true(s.name.lower().startswith(start.lower()))
 
