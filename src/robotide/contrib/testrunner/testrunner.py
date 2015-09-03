@@ -217,8 +217,10 @@ class TestRunner(object):
         self._add_tmp_outputdir_if_not_given_by_user(command, standard_args)
         self._add_pythonpath_if_in_settings_and_not_given_by_user(
             command, standard_args, pythonpath)
-        standard_args.extend(["--monitorcolors", "off"])
-        standard_args.extend(["--monitorwidth", monitor_width])
+        # Have to use short options, because of long option was changed in
+        # RF 2.8 -> 2.9, and we don't necessarily know the installed version.
+        standard_args.extend(["-C", "off"])
+        standard_args.extend(["-W", monitor_width])
         for suite, test in names_to_run:
             standard_args += ['--suite', suite, '--test', test]
         return standard_args
