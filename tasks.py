@@ -186,11 +186,11 @@ def release_notes_plugin():
 @task(pre=[clean],
       help={
           'release-notes': 'If enabled, release notes plugin will be updated'})
-def sdist(release_notes=True):
+def sdist(release_notes=True, upload=False):
     """Creates source distribution with bundled dependencies."""
     if release_notes:
         release_notes_plugin()
-    _run_setup('sdist')
+    _run_setup('sdist{}'.format('' if not upload else ' upload'))
     _after_distribution()
 
 

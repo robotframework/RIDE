@@ -104,7 +104,7 @@ Releasing
   > invoke test
   > invoke version 1.xx
   > invoke register
-  > invoke sdist upload
+  > invoke sdist --upload
   > git commit -am 'Version 1.xx'
   > git tag 1.xx
   > git push --tags
