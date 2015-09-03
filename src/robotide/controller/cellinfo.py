@@ -51,8 +51,8 @@ class CellInfo(object):
             [ContentType.EMPTY, ContentType.COMMENTED]
 
     def matches(self, value):
-        return highlightmatcher.highlight_matcher(
-            value, self._cell_content.value)
+        return highlightmatcher.highlight_matcher(value,
+                                                  self._cell_content.value)
 
 
 def TipMessage(cell):
