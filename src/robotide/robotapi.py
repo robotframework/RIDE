@@ -15,7 +15,7 @@
 import robotide.lib.robot.parsing.populators
 robotide.lib.robot.parsing.populators.PROCESS_CURDIR = False
 
-from robotide.lib.robot.errors import DataError, ExecutionFailed, Information
+from robotide.lib.robot.errors import DataError, Information
 from robotide.lib.robot.model import TagPatterns
 from robotide.lib.robot.output import LOGGER as ROBOT_LOGGER
 from robotide.lib.robot.output.loggerhelper import LEVELS as LOG_LEVELS
@@ -33,7 +33,6 @@ from robotide.lib.robot.parsing.tablepopulators import (
 from robotide.lib.robot.parsing.txtreader import TxtReader
 from robotide.lib.robot.running import TestLibrary, EXECUTION_CONTEXTS
 from robotide.lib.robot.libraries import STDLIBS as STDLIB_NAMES
-from robotide.lib.robot.running.signalhandler import STOP_SIGNAL_MONITOR
 from robotide.lib.robot.running.usererrorhandler import UserErrorHandler
 from robotide.lib.robot.running.arguments.embedded import EmbeddedArgumentParser
 from robotide.lib.robot.utils import normpath, NormalizedDict
