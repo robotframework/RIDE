@@ -46,10 +46,14 @@ import socket
 import threading
 import SocketServer
 
-from robot.errors import ExecutionFailed
-from robot.running import EXECUTION_CONTEXTS
-from robot.running.signalhandler import STOP_SIGNAL_MONITOR
-from robot.utils import encoding
+try:
+    from robot.errors import ExecutionFailed
+    from robot.running import EXECUTION_CONTEXTS
+    from robot.running.signalhandler import STOP_SIGNAL_MONITOR
+    from robot.utils import encoding
+except ImportError:
+    encoding = None
+
 
 if sys.hexversion > 0x2060000:
     import json
@@ -76,7 +80,8 @@ HOST = "localhost"
 # Setting Output encoding to UTF-8 and ignoring the platform specs
 # RIDE will expect UTF-8
 # Set output encoding to UTF-8 for piped output streams
-encoding.OUTPUT_ENCODING = 'UTF-8'
+if encoding:
+    encoding.OUTPUT_ENCODING = 'UTF-8'
 
 
 def _is_logged(level):
