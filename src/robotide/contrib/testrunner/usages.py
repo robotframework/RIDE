@@ -32,9 +32,9 @@ Outputs in HTML format are for human consumption and XML output for integration
 with other systems. XML outputs can also be combined and otherwise further
 processed with `rebot` tool. Run `rebot --help` for more information.
 
-Robot Framework is open source software released under Apache License 2.0.
-Its copyrights are owned and development supported by Nokia Siemens Networks.
-For more information about the framework see http://robotframework.org.
+Robot Framework is open source software released under Apache License 2.0. Its
+copyrights are owned and development supported by Nokia Solutions and Networks.
+For more information about the framework see http://robotframework.org/.
 
 Options
 =======
@@ -46,10 +46,10 @@ Options
                           Underscores in the documentation are converted to
                           spaces and it may also contain simple HTML formatting
                           (e.g. *bold* and http://url/).
- -M --metadata name:value *  Set metadata of the top level test suite.
-                          Underscores in the name and value are converted to
-                          spaces. Value can contain same HTML formatting as
-                          --doc. Example: `--metadata version:1.2`
+ -M --metadata name:value *  Set metadata of the top level suite. Underscores
+                          in the name and value are converted to spaces. Value
+                          can contain same HTML formatting as --doc.
+                          Example: --metadata version:1.2
  -G --settag tag *        Sets given tag(s) to all executed test cases.
  -t --test name *         Select test cases to run by name or long name. Name
                           is case and space insensitive and it can also be a
@@ -63,49 +63,38 @@ Options
                           pattern similarly as with --test and it can contain
                           parent name separated with a dot. For example
                           `-s X.Y` selects suite `Y` only if its parent is `X`.
- -i --include tag *       Select test cases to run by tag. Similarly as name in
-                          --test, tag is case and space insensitive. There are
-                          three ways to include test based on tags:
-                          1) One tag as a simple pattern. Tests having a tag
-                          matching the pattern are included. Example: `it-*`
-                          2) Two or more tags (or patterns) separated by `&` or
-                          `AND`. Only tests having all these tags are included.
-                          Examples: `tag1&tag2`, `smokeANDowner-*ANDit-10`
-                          3) Two or more tags (or patterns) separated by `NOT`.
-                          Tests having the first tag but not any of the latter
-                          ones are included. Example: `it-10NOTsmoke`
+ -i --include tag *       Select test cases to run by tag. Similarly as name
+                          with --test, tag is case and space insensitive and it
+                          is possible to use patterns with `*` and `?` as
+                          wildcards. Tags and patterns can also be combined
+                          together with `AND`, `OR`, and `NOT` operators.
+                          Examples: --include foo --include bar*
+                                    --include fooANDbar*
  -e --exclude tag *       Select test cases not to run by tag. These tests are
-                          not run even if they are included with --include.
-                          Tags are excluded using the rules explained in
-                          --include.
- -R --runfailed output    Select failed tests from an earlier output file to be
+                          not run even if included with --include. Tags are
+                          matched using the rules explained with --include.
+ -R --rerunfailed output  Select failed tests from an earlier output file to be
                           re-executed. Equivalent to selecting same tests
                           individually using --test option.
  -c --critical tag *      Tests having given tag are considered critical. If no
                           critical tags are set, all tags are critical. Tags
-                          can be given as a pattern like e.g. with --test.
+                          can be given as a pattern like with --include.
  -n --noncritical tag *   Tests with given tag are not critical even if they
                           have a tag set with --critical. Tag can be a pattern.
  -v --variable name:value *  Set variables in the test data. Only scalar
-                          variables are supported and name is given without
-                          `${}`. See --escape for how to use special characters
-                          and --variablefile for a more powerful variable
-                          setting mechanism that allows also list variables.
+                          variables with string value are supported and name is
+                          given without `${}`. See --escape for how to use
+                          special characters and --variablefile for a more
+                          powerful variable setting mechanism.
                           Examples:
-                          --variable str:Hello  =>  ${str} = `Hello`
-                          -v str:Hi_World -E space:_  =>  ${str} = `Hi World`
-                          -v x: -v y:42  =>  ${x} = ``, ${y} = `42`
- -V --variablefile path *  File to read variables from (e.g. `path/vars.py`).
-                          Example file:
-                          |  import random
-                          |  __all__ = [`scalar`, `LIST__var`, `integer`]
-                          |  scalar = `Hello world!`
-                          |  LIST__var = [`Hello`, `list`, `world`]
-                          |  integer = random.randint(1,10)
-                          =>
-                          ${scalar} = `Hello world!`
-                          @{var} = [`Hello`,`list`,`world`]
-                          ${integer} = <random integer from 1 to 10>
+                          --variable str:Hello       =>  ${str} = `Hello`
+                          -v hi:Hi_World -E space:_  =>  ${hi} = `Hi World`
+                          -v x: -v y:42              =>  ${x} = ``, ${y} = `42`
+ -V --variablefile path *  Python or YAML file file to read variables from.
+                          Possible arguments to the variable file can be given
+                          after the path using colon or semicolon as separator.
+                          Examples: --variablefile path/vars.yaml
+                                    --variablefile environment.py:testing
  -d --outputdir dir       Where to create output files. The default is the
                           directory where tests are run from and the given path
                           is considered relative to that unless it is absolute.
@@ -125,7 +114,6 @@ Options
                           similarly as --log. Default: report.html
  -x --xunit file          xUnit compatible result file. Not created unless this
                           option is specified.
-    --xunitfile file      Deprecated. Use --xunit instead.
     --xunitskipnoncritical  Mark non-critical tests on xUnit output as skipped.
  -b --debugfile file      Debug file written during execution. Not created
                           unless this option is specified.
@@ -170,8 +158,8 @@ Options
                           `name` is not given, name of the combined tag is got
                           from the specified tags. Tags are combined using the
                           rules explained in --include.
-                          Examples: --tagstatcombine tag1ANDtag2:My_name
-                                    --tagstatcombine requirement-*
+                          Examples: --tagstatcombine requirement-*
+                                    --tagstatcombine tag1ANDtag2:My_name
     --tagdoc pattern:doc *  Add documentation to tags matching given pattern.
                           Documentation is shown in `Test Details` and also as
                           a tooltip in `Statistics by Tag`. Pattern can contain
@@ -190,29 +178,55 @@ Options
                           automatically converted to spaces.
                           Examples: --tagstatlink mytag:http://my.domain:Link
                           --tagstatlink bug-*:http://tracker/id=%1:Bug_Tracker
-    --removekeywords all|passed|for|wuks|name:<pattern> *  Remove keyword data
-                          from the generated log file. Keywords containing
-                          warnings are not removed except in `all` mode.
-                          all:            remove data from all keywords
-                          passed:         remove data only from keywords in
-                                          passed test cases and suites
-                          for:            remove passed iterations from for
-                                          loops
-                          wuks:           remove all but last failing keyword
-                                          from `Wait Until Keyword Succeeds`
-                          name:<pattern>: remove those keywords that matches
-                                          pattern. Pattern can be the full name
-                                          of the keyword with spaces removed or
-                                          `*` wildcard.
+    --removekeywords all|passed|for|wuks|name:<pattern>|tag:<pattern> *
+                          Remove keyword data from the generated log file.
+                          Keywords containing warnings are not removed except
+                          in `all` mode.
+                          all:     remove data from all keywords
+                          passed:  remove data only from keywords in passed
+                                   test cases and suites
+                          for:     remove passed iterations from for loops
+                          wuks:    remove all but the last failing keyword
+                                   inside `BuiltIn.Wait Until Keyword Succeeds`
+                          name:<pattern>:  remove data from keywords that match
+                                   the given pattern. The pattern is matched
+                                   against the full name of the keyword (e.g.
+                                   'MyLib.Keyword', 'resource.Second Keyword'),
+                                   is case, space, and underscore insensitive,
+                                   and may contain `*` and `?` as wildcards.
+                                   Examples: --removekeywords name:Lib.HugeKw
+                                             --removekeywords name:myresource.*
+                          tag:<pattern>:  remove data from keywords that match
+                                   the given pattern. Tags are case and space
+                                   insensitive and it is possible to use
+                                   patterns with `*` and `?` as wildcards.
+                                   Tags and patterns can also be combined
+                                   together with `AND`, `OR`, and `NOT`
+                                   operators.
+                                   Examples: --removekeywords foo
+                                             --removekeywords fooANDbar*
+    --flattenkeywords for|foritem|name:<pattern>|tag:<pattern> *
+                          Flattens matching keywords in the generated log file.
+                          Matching keywords get all log messages from their
+                          child keywords and children are discarded otherwise.
+                          for:     flatten for loops fully
+                          foritem: flatten individual for loop iterations
+                          name:<pattern>:  flatten matched keywords using same
+                                   matching rules as with
+                                   `--removekeywords name:<pattern>`
+                          tag:<pattern>:  flatten matched keywords using same
+                                   matching rules as with
+                                   `--removekeywords tag:<pattern>`
     --listener class *    A class for monitoring test execution. Gets
                           notifications e.g. when a test case starts and ends.
-                          Arguments to listener class can be given after class
-                          name, using colon as separator. For example:
-                          --listener MyListenerClass:arg1:arg2
-    --warnonskippedfiles  If this option is used, skipped files will cause a
-                          warning that is visible to console output and log
-                          files. By default skipped files only cause an info
-                          level syslog message.
+                          Arguments to the listener class can be given after
+                          the name using colon or semicolon as a separator.
+                          Examples: --listener MyListenerClass
+                                    --listener path/to/Listener.py:arg1:arg2
+    --warnonskippedfiles  If this option is used, skipped test data files will
+                          cause a warning that is visible in the console output
+                          and the log file. By default skipped files only cause
+                          an info level syslog message.
     --nostatusrc          Sets the return code to zero regardless of failures
                           in test cases. Error codes are returned normally.
     --runemptysuite       Executes tests also if the top level test suite is
@@ -220,7 +234,9 @@ Options
                           is not an error that no test matches the condition.
     --dryrun              Verifies test data and runs tests so that library
                           keywords are not executed.
-    --exitonfailure       Stops test execution if ant critical test fails.
+    --exitonfailure       Stops test execution if any critical test fails.
+    --exitonerror         Stops test execution if any error occurs when parsing
+                          test data, importing libraries, and so on.
     --skipteardownonexit  Causes teardowns to be skipped if test execution is
                           stopped prematurely.
     --randomize all|suites|tests|none  Randomizes the test execution order.
@@ -228,25 +244,43 @@ Options
                           suites: randomizes suites
                           tests:  randomizes tests
                           none:   no randomization (default)
-    --runmode mode *      Deprecated in version 2.8. Use individual options
-                          --dryrun, --exitonfailure, --skipteardownonexit, or
-                          --randomize instead.
- -W --monitorwidth chars  Width of the monitor output. Default is 78.
- -C --monitorcolors auto|on|ansi|off  Use colors on console output or not.
+                          Use syntax `VALUE:SEED` to give a custom random seed.
+                          The seed must be an integer.
+                          Examples: --randomize all
+                                    --randomize tests:1234
+    --prerunmodifier class *  Class to programmatically modify the test suite
+                          structure before execution.
+    --prerebotmodifier class *  Class to programmatically modify the result
+                          model before creating reports and logs.
+    --console type        How to report execution on the console.
+                          verbose:  report every suite and test (default)
+                          dotted:   only show `.` for passed test, `f` for
+                                    failed non-critical tests, and `F` for
+                                    failed critical tests
+                          quiet:    no output except for errors and warnings
+                          none:     no output whatsoever
+ -. --dotted              Shortcut for `--console dotted`.
+    --quiet               Shortcut for `--console quiet`.
+ -W --consolewidth chars  Width of the monitor output. Default is 78.
+ -C --consolecolors auto|on|ansi|off  Use colors on console output or not.
                           auto: use colors when output not redirected (default)
                           on:   always use colors
                           ansi: like `on` but use ANSI colors also on Windows
                           off:  disable colors altogether
                           Note that colors do not work with Jython on Windows.
- -K --monitormarkers auto|on|off  Show `.` (success) or `F` (failure) on
-                          console when top level keywords in test cases end.
-                          Values have same semantics as with --monitorcolors.
+ -K --consolemarkers auto|on|off  Show markers on the console when top level
+                          keywords in a test case end. Values have same
+                          semantics as with --consolecolors.
+    --monitorwidth chars  Deprecated. Use --consolewidth instead.
+    --monitorcolors colors  Deprecated. Use --consolecolors instead.
+    --monitormarkers value  Deprecated. Use --consolemarkers instead.
  -P --pythonpath path *   Additional locations (directories, ZIPs, JARs) where
-                          to search test libraries from when they are imported.
-                          Multiple paths can be given by separating them with a
-                          colon (`:`) or using this option several times. Given
-                          path can also be a glob pattern matching multiple
-                          paths but then it normally must be escaped or quoted.
+                          to search test libraries and other extensions when
+                          they are imported. Multiple paths can be given by
+                          separating them with a colon (`:`) or by using this
+                          option several times. Given path can also be a glob
+                          pattern matching multiple paths but then it normally
+                          must be escaped or quoted.
                           Examples:
                           --pythonpath libs/
                           --pythonpath /opt/testlibs:mylibs.zip:yourlibs
@@ -285,7 +319,13 @@ Options
 
 Options that are marked with an asterisk (*) can be specified multiple times.
 For example, `--test first --test third` selects test cases with name `first`
-and `third`. If other options are given multiple times, the last value is used.
+and `third`. If an option accepts a value but is not marked with an asterisk,
+the last given value has precedence. For example, `--log A.html --log B.html`
+creates log file `B.html`. Options accepting no values can be disabled by
+using the same option again with `no` prefix added or dropped. The last option
+has precedence regardless of how many times options are used. For example,
+`--dryrun --dryrun --nodryrun --nostatusrc --statusrc` would not activate the
+dry-run mode and would return normal status rc.
 
 Long option format is case-insensitive. For example, --SuiteStatLevel is
 equivalent to but easier to read than --suitestatlevel. Long options can
@@ -296,6 +336,8 @@ but the latter matches --log, --loglevel and --logtitle.
 Environment Variables
 =====================
 
+ROBOT_OPTIONS             Space separated list of default options to be placed
+                          in front of any explicit options on the command line.
 ROBOT_SYSLOG_FILE         Path to a file where Robot Framework writes internal
                           information about parsing test case files and running
                           tests. Can be useful when debugging problems. If not
@@ -323,7 +365,8 @@ $ jython /path/to/robot/run.py tests.robot
 # Executing multiple test case files and using case-insensitive long options.
 $ pybot --SuiteStatLevel 2 /my/tests/*.html /your/tests.html
 
-# Setting syslog file before running tests.
+# Setting default options and syslog file before running tests.
+$ export ROBOT_OPTIONS="--critical regression --suitestatlevel 2"
 $ export ROBOT_SYSLOG_FILE=/tmp/syslog.txt
 $ pybot tests.tsv
 """
