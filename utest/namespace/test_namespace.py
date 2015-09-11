@@ -69,6 +69,8 @@ def _add_variable_table(tcf):
     tcf.variable_table.add(UNRESOLVABLE_VARIABLE, UNKNOWN_VARIABLE)
     tcf.variable_table.add(COLLIDING_CONSTANT, 'collision')
     tcf.variable_table.add('&{dict var}', {'key': 'value'})
+    tcf.variable_table.add(u'${I <3 Unicode and \xe4iti}', u'123 \xe7')
+
 
 
 def _add_keyword_table(tcf):

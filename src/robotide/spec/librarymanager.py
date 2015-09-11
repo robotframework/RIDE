@@ -129,7 +129,7 @@ class LibraryManager(Thread):
         try:
             return result_queue.get(timeout=5)
         except Queue.Empty as e:
-            RideLogMessage('Failed to read keywords from library db: {}'
+            RideLogMessage(u'Failed to read keywords from library db: {}'
                            .format(unicode(e))).publish()
             return []
 
