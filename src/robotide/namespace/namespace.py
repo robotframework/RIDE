@@ -56,7 +56,7 @@ class Namespace(object):
             if path not in sys.path:
                 normalized = path.replace('/', os.sep)
                 sys.path.insert(0, normalized)
-                RideLogMessage("Inserted '{0}' to sys.path."
+                RideLogMessage(u'Inserted \'{0}\' to sys.path.'
                                .format(normalized)).publish()
 
     def _setting_changed(self, message):
@@ -340,7 +340,7 @@ class _VariableStash(object):
         for name, value in self._vars.store.data.items():
             source = self._sources[name]
             prefix = self._get_prefix(value)
-            name = '{0}{{{1}}}'.format(prefix, name)
+            name = u'{0}{{{1}}}'.format(prefix, name)
             if source == self.ARGUMENT_SOURCE:
                 yield ArgumentInfo(name, value)
             else:

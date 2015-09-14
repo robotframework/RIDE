@@ -54,7 +54,7 @@ class ForcedTag(Tag):
 
     @property
     def tooltip(self):
-        return 'Force tag from suite {0}'.format(
+        return u'Force tag from suite {0}'.format(
             self.controller.datafile_controller.name)
 
 
@@ -62,5 +62,5 @@ class DefaultTag(Tag):
 
     @property
     def tooltip(self):
-        return 'Default tag from suite {0}'.format(
+        return u'Default tag from suite {0}'.format(
             self.controller.datafile_controller.name)
