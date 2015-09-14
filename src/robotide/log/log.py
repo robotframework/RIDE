@@ -15,7 +15,9 @@
 import wx
 import os
 import tempfile
+import uuid
 import atexit
+import glob
 
 from robotide.pluginapi import Plugin, ActionInfo, RideLog
 from robotide import widgets
@@ -36,14 +38,24 @@ class LogPlugin(Plugin):
         })
         self._log = []
         self._window = None
-        self._path = os.path.join(tempfile.gettempdir(), 'ride.log')
+        self._path = os.path.join(
+            tempfile.gettempdir(), '{}-ride.log'.format(uuid.uuid4()))
         self._outfile = None
+        self._remove_old_log_files()
         atexit.register(self._close)
 
     def _close(self):
         if self._outfile is not None:
             self._outfile.flush()
             self._outfile.close()
+
+    def _remove_old_log_files(self):
+        for fname in glob.glob(
+                os.path.join(tempfile.gettempdir(), '*ride.log')):
+            try:
+                os.remove(fname)
+            except IOError:
+                pass
 
     @property
     def _logfile(self):
