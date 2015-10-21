@@ -71,7 +71,7 @@ class TimeoutValidator(_AbstractValidator):
 
 
 class ArgumentTypes(object):
-    POSITIONAL, NAMED = range(1, 3)
+    SCALAR, DEFAULT, LIST, DICT = range(1, 5)
 
 
 class ArgumentsValidator(_AbstractValidator):
@@ -85,19 +85,22 @@ class ArgumentsValidator(_AbstractValidator):
         return self._validate_argument_order(types)
 
     def _get_type(self, arg):
-        if robotapi.is_scalar_var(arg) or robotapi.is_list_var(arg):
-            return ArgumentTypes.POSITIONAL
-        elif robotapi.is_scalar_var(arg.split("=")[0]) or \
-                robotapi.is_dict_var(arg):
-            return ArgumentTypes.NAMED
+        if robotapi.is_scalar_var(arg):
+            return ArgumentTypes.SCALAR
+        elif robotapi.is_scalar_var(arg.split("=")[0]):
+            return ArgumentTypes.DEFAULT
+        elif robotapi.is_list_var(arg):
+            return ArgumentTypes.LIST
+        elif robotapi.is_dict_var(arg):
+            return ArgumentTypes.DICT
         else:
             raise ValueError
 
     def _validate_argument_order(self, types):
-        prev = ArgumentTypes.POSITIONAL
+        prev = ArgumentTypes.SCALAR
         for t in types:
             if t < prev:
-                return ('List and scalar arguments must be before'
+                return ('List and scalar arguments must be before '
                         'named and dictionary arguments')
             prev = t
         return None

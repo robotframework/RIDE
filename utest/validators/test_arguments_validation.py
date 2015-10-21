@@ -8,7 +8,7 @@ from nose.tools import assert_equals
 class Test(unittest.TestCase):
     validate = ArgumentsValidator()._validate
     validation_error = \
-        'List and scalar arguments must be beforenamed and dictionary arguments'
+        'List and scalar arguments must be before named and dictionary arguments'
 
     def test_valid_arguments_validation(self):
         for arg in [
@@ -18,12 +18,12 @@ class Test(unittest.TestCase):
                 "${arg}=def val",
                 "${a} | ${b}=d | ${c}=\\| | ${d}=",
                 "@{list}",
-                "@{list} | ${arg}",
                 "${a} | ${b} | @{f}",
                 "&{dict}",
                 "${arg} | &{dict}",
                 "@{list} | &{dict}",
                 "${a} | ${b} | @{f} | &{dict}",
+                "${arg}=foo | @{list}"
         ]:
             assert_equals(self.validate(arg), None, arg)
 
@@ -35,10 +35,10 @@ class Test(unittest.TestCase):
             assert_equals(self.validate(arg),
                           "Invalid argument syntax '%s'" % err)
 
-    def test_list_arg_in_incorrect_poition(self):
-        for arg in ["${arg}=foo | @{list}",
+    def test_list_arg_in_incorrect_position(self):
+        for arg in ["@{list} | ${foo}",
                     "&{dict} | @{list}"]:
-            assert_equals(self.validate(arg), self.validation_error)
+            assert_equals(self.validate(arg), self.validation_error, arg)
 
     def test_req_arg_after_defaults(self):
         for arg in ["${a}=default | ${a2}",
