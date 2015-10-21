@@ -231,16 +231,16 @@ Options
     --runmode mode *      Deprecated in version 2.8. Use individual options
                           --dryrun, --exitonfailure, --skipteardownonexit, or
                           --randomize instead.
- -W --monitorwidth chars  Width of the monitor output. Default is 78.
- -C --monitorcolors auto|on|ansi|off  Use colors on console output or not.
+ -W --consolewidth chars  Width of the console output. Default is 78.
+ -C --consolecolors auto|on|ansi|off  Use colors on console output or not.
                           auto: use colors when output not redirected (default)
                           on:   always use colors
                           ansi: like `on` but use ANSI colors also on Windows
                           off:  disable colors altogether
                           Note that colors do not work with Jython on Windows.
- -K --monitormarkers auto|on|off  Show `.` (success) or `F` (failure) on
+ -K --consolemarkers auto|on|off  Show `.` (success) or `F` (failure) on
                           console when top level keywords in test cases end.
-                          Values have same semantics as with --monitorcolors.
+                          Values have same semantics as with --consolecolors.
  -P --pythonpath path *   Additional locations (directories, ZIPs, JARs) where
                           to search test libraries from when they are imported.
                           Multiple paths can be given by separating them with a
