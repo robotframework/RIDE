@@ -3,7 +3,8 @@ RIDE
 
 RIDE is a development environment for Robot Framework test cases.
 
-*NEW* Trying out Gitter chat room at https://gitter.im/robotframework/RIDE
+*NEW* Join RIDE discussion in Robot Framework Slack: https://robotframework.slack.com
+(signup page: https://robotframework-slack.herokuapp.com)
 
   * Downloads_
   * Usage instructions and some tips and tricks can be found from the Wiki_
