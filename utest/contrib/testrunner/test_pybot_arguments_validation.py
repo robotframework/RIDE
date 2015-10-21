@@ -25,9 +25,6 @@ class TestPybotArgumentsValidation(unittest.TestCase):
     def test_runfailed_argument_works(self):
         self._working_arguments('--runfailed output.xml')
 
-    def test_old_runmode_argument_works(self):
-        self._working_arguments('--runmode DryRun')
-
 
 if __name__ == '__main__':
     unittest.main()
