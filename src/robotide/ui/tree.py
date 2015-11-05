@@ -283,7 +283,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
                                  index, with_checkbox=(handler_class == TestCaseHandler and self._checkboxes_for_tests))
         if isinstance(controller, ResourceFileController):
             if not controller.is_used():
-                self.SetItemTextColour(node, wx.ColorRGB(0xA9A9A9))
+                self.SetItemTextColour(node, wx.Colour(0xA9,0xA9,0xA9))
         self.SetPyData(node, handler_class(controller, self, node, self._controller.settings))
         if controller.is_excluded():
             self._set_item_excluded(node)
