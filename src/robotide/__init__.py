@@ -32,15 +32,13 @@ import os
 from string import Template
 
 errorMessageTemplate = Template("""$reason
-You need to install wxPython 2.8.12.1 with unicode support to run RIDE.
-wxPython 2.8.12.1 can be downloaded from http://sourceforge.net/projects/wxpython/files/wxPython/2.8.12.1/""")
-supported_versions = ["2.8"]
+You need to install wxPython 2.9.1 (or newer) with unicode support to run RIDE.
+wxPython 2.9.1.1 can be downloaded from http://sourceforge.net/projects/wxpython/files/wxPython/2.9.1.1/""")
+supported_versions = ["2.9", "3.0"]
 
 try:
     import wxversion
     from wxversion import VersionError
-    if sys.platform == 'darwin':
-        supported_versions.append("2.9")
     wxversion.select(supported_versions)
     import wx
 except ImportError as e:
@@ -104,19 +102,18 @@ def _run(inpath=None, updatecheck=True, debug_console=False):
 
 
 def _show_old_wxpython_warning_if_needed(parent=None):
-    if wx.VERSION >= (2, 8, 12, 1):
+    if wx.VERSION >= (2, 9, 1, 1):
         return
     title = 'Please upgrade your wxPython installation'
-    message = ('RIDE officially supports wxPython 2.8.12.1. '
+    message = ('RIDE officially supports wxPython 2.9.1.1. '
                'Your current version is %s.\n\n'
-               'Older wxPython versions are known to miss some features used by RIDE. '
-               'Notice also that wxPython 3.0 is not yet supported.\n\n'
-               'wxPython 2.8.12.1 packages can be found from\n'
-               'http://sourceforge.net/projects/wxpython/files/wxPython/2.8.12.1/.'
+               'Older wxPython versions are no longer supported by this version of RIDE. '
+               'RIDE 1.4.1 was the last version to support wxPython 2.8.12.1.\n'
+               'Recent versions can be downloaded from http://sourceforge.net/projects/wxpython/files/wxPython/.'
                % wx.VERSION_STRING)
     style = wx.ICON_EXCLAMATION
     if not parent:
-        _ = wx.PySimpleApp()
+        _ = wx.App()
         parent = wx.Frame(None, size=(0,0))
     wx.MessageDialog(parent, message, title, style).ShowModal()
 
