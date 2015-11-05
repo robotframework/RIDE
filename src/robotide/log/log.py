@@ -40,6 +40,7 @@ class LogPlugin(Plugin):
         self._window = None
         self._path = os.path.join(
             tempfile.gettempdir(), '{}-ride.log'.format(uuid.uuid4()))
+        print self._path
         self._outfile = None
         self._remove_old_log_files()
         atexit.register(self._close)
@@ -95,9 +96,9 @@ class LogPlugin(Plugin):
         if not self._window:
             self._window = _LogWindow(self.notebook, self._log)
             self._window.update_log()
-            self.register_shortcut('CtrlCmd-C', lambda e: self._window.Copy())
-            self.register_shortcut(
-                'CtrlCmd-A', lambda e: self._window.SelectAll())
+            #self.register_shortcut('CtrlCmd-C', lambda e: self._window.Copy())
+            #self.register_shortcut(
+            #    'CtrlCmd-A', lambda e: self._window.SelectAll())
         else:
             self.notebook.show_tab(self._window)
 
