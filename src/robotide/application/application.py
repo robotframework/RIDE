@@ -87,7 +87,7 @@ class RIDE(wx.App):
                 return maybe_editor
 
     def _load_data(self):
-        path = self._initial_path or self._get_latest_path()
+        path = self._initial_path # or self._get_latest_path() #Removed recent files
         if path:
             with self.active_event_loop():
                 observer = LoadProgressObserver(self.frame)
