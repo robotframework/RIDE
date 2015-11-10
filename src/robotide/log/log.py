@@ -38,14 +38,12 @@ class LogPlugin(Plugin):
             'log_to_file': True
         })
         self._log = []
-        #self._window = None
         self._panel = None
         self._path = os.path.join(
             tempfile.gettempdir(), '{}-ride.log'.format(uuid.uuid4()))
         self._outfile = None
         self._remove_old_log_files()
         atexit.register(self._close)
-        print >> sys.stderr, 'DEBUG: LogPlugin: _init_: self._path= ' + self._path
 
     def _close(self):
         if self._outfile is not None:
@@ -76,23 +74,16 @@ class LogPlugin(Plugin):
         self.unregister_actions()
         if self._panel:
             self._panel.close(self.notebook)
-        #self.delete_tab(self._panel)
-        #self._panel = None
-        #if self._window:
-        #    self._window.close(self.notebook)
 
     def _create_menu(self):
         self.unregister_actions()
         self.register_action(ActionInfo(
             'Tools', 'View RIDE Log', self.OnViewLog, position=84))
-        print >> sys.stderr, 'DEBUG: LogPlugin: _create_menu: Registered Menu'
 
     def _log_message(self, log_event):
         self._log.append(log_event)
         if self._panel:
             self._panel.update_log()
-        #if self._window:
-        #    self._window.update_log()
         if self.log_to_console:
             print >> sys.stdout, _message_to_string(log_event)
         if self.log_to_file:
@@ -103,15 +94,14 @@ class LogPlugin(Plugin):
                                padding=10, font_size=font_size).Show()
 
     def OnViewLog(self, event):
-        if not self._window:
-            self._window = _LogWindow(self.notebook, self._log)
-            self._window.update_log()
-            self.register_shortcut('CtrlCmd-C', lambda e: self._window.Copy())
+        if not self._panel:
+            self._panel = _LogWindow(self.notebook, self._log)
+            self._panel.update_log()
+            self.register_shortcut('CtrlCmd-C', lambda e: self._panel.Copy())
             self.register_shortcut(
-                'CtrlCmd-A', lambda e: self._window.SelectAll())
+                 'CtrlCmd-A', lambda e: self._panel.SelectAll())
         else:
             self.notebook.show_tab(self._panel)
-            print >> sys.stderr, 'DEBUG: LogPlugin: OnViewLog: Shown tab window'
 
 
 class _LogWindow(wx.Panel):
@@ -120,7 +110,6 @@ class _LogWindow(wx.Panel):
         wx.Panel.__init__(self, notebook)
         self._output = wx.TextCtrl(self, style=wx.TE_READONLY | wx.TE_MULTILINE)
         self._log = log
-        self._create_ui(notebook)
         self._add_to_notebook(notebook)
         self.SetFont(widgets.Font().fixed_log)
         self.Bind(wx.EVT_SIZE, self.OnSize)
@@ -130,7 +119,6 @@ class _LogWindow(wx.Panel):
         self.Sizer.add_expanding(self._output)
 
     def _add_to_notebook(self, notebook):
-        print >> sys.stderr, 'DEBUG: LogPlugin: _LogWindow: _add_to_notebook: Enter add_tab'
         notebook.add_tab(self, 'RIDE Log', allow_closing=True)
         notebook.show_tab(self)
         self._output.SetSize(self.Size)
