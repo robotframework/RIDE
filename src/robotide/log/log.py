@@ -96,40 +96,44 @@ class LogPlugin(Plugin):
         if not self._window:
             self._window = _LogWindow(self.notebook, self._log)
             self._window.update_log()
-            #self.register_shortcut('CtrlCmd-C', lambda e: self._window.Copy())
-            #self.register_shortcut(
-            #    'CtrlCmd-A', lambda e: self._window.SelectAll())
+            self.register_shortcut('CtrlCmd-C', lambda e: self._window.Copy())
+            self.register_shortcut(
+                'CtrlCmd-A', lambda e: self._window.SelectAll())
         else:
             self.notebook.show_tab(self._window)
 
 
-class _LogWindow(wx.TextCtrl):
+class _LogWindow(wx.Panel):
 
     def __init__(self, notebook, log):
-        wx.TextCtrl.__init__(
-            self, notebook, style=wx.TE_READONLY | wx.TE_MULTILINE)
+        wx.Panel.__init__(self, notebook)
+        self._output = wx.TextCtrl(self, style=wx.TE_READONLY | wx.TE_MULTILINE)
         self._log = log
         self._create_ui()
         self._add_to_notebook(notebook)
         self.SetFont(widgets.Font().fixed_log)
+        self.Bind(wx.EVT_SIZE, self.OnSize)
 
     def _create_ui(self):
-        sizer = wx.BoxSizer(wx.VERTICAL)
-        sizer.Add(self)
-        self.SetSizer(sizer)
+        self.SetSizer(widgets.VerticalSizer())
+        self.Sizer.add_expanding(self._output)
 
     def _add_to_notebook(self, notebook):
         notebook.add_tab(self, 'Log', allow_closing=True)
         notebook.show_tab(self)
+        self._output.SetSize(self.Size)
 
     def close(self, notebook):
         notebook.delete_tab(self)
 
     def update_log(self):
-        self.SetValue(self._decode_log(self._log))
+        self._output.SetValue(self._decode_log(self._log))
 
     def _decode_log(self, log):
         result = ''
         for msg in log:
             result += _message_to_string(msg)
         return result
+
+    def OnSize(self, evt):
+        self._output.SetSize(self.Size)
