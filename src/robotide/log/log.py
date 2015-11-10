@@ -18,6 +18,7 @@ import tempfile
 import uuid
 import atexit
 import glob
+import sys
 
 from robotide.pluginapi import Plugin, ActionInfo, RideLog
 from robotide import widgets
@@ -37,13 +38,14 @@ class LogPlugin(Plugin):
             'log_to_file': True
         })
         self._log = []
-        self._window = None
+        #self._window = None
+        self._panel = None
         self._path = os.path.join(
             tempfile.gettempdir(), '{}-ride.log'.format(uuid.uuid4()))
-        print self._path
         self._outfile = None
         self._remove_old_log_files()
         atexit.register(self._close)
+        print >> sys.stderr, 'DEBUG: LogPlugin: _init_: self._path= ' + self._path
 
     def _close(self):
         if self._outfile is not None:
@@ -56,6 +58,7 @@ class LogPlugin(Plugin):
             try:
                 os.remove(fname)
             except IOError:
+                print >> sys.stderr, 'DEBUG: LogPlugin: _remove_old_log_files: IOError: fname= ' + fname
                 pass
 
     @property
@@ -71,20 +74,27 @@ class LogPlugin(Plugin):
     def disable(self):
         self.unsubscribe_all()
         self.unregister_actions()
-        if self._window:
-            self._window.close(self.notebook)
+        if self._panel:
+            self._panel.close(self.notebook)
+        #self.delete_tab(self._panel)
+        #self._panel = None
+        #if self._window:
+        #    self._window.close(self.notebook)
 
     def _create_menu(self):
         self.unregister_actions()
         self.register_action(ActionInfo(
             'Tools', 'View RIDE Log', self.OnViewLog, position=84))
+        print >> sys.stderr, 'DEBUG: LogPlugin: _create_menu: Registered Menu'
 
     def _log_message(self, log_event):
         self._log.append(log_event)
-        if self._window:
-            self._window.update_log()
+        if self._panel:
+            self._panel.update_log()
+        #if self._window:
+        #    self._window.update_log()
         if self.log_to_console:
-            print _message_to_string(log_event)
+            print >> sys.stdout, _message_to_string(log_event)
         if self.log_to_file:
             self._logfile.write(_message_to_string(log_event))
         if log_event.notify_user:
@@ -93,34 +103,43 @@ class LogPlugin(Plugin):
                                padding=10, font_size=font_size).Show()
 
     def OnViewLog(self, event):
-        if not self._window:
-            self._window = _LogWindow(self.notebook, self._log)
-            self._window.update_log()
-            #self.register_shortcut('CtrlCmd-C', lambda e: self._window.Copy())
-            #self.register_shortcut(
-            #    'CtrlCmd-A', lambda e: self._window.SelectAll())
+        if not self._panel:
+            self._panel = LogWindow(self.notebook, self._log)
+            print >> sys.stderr, 'DEBUG: LogPlugin: OnViewLog: Called _LogWindow'
+            self._panel.update_log()
+            self.register_shortcut('CtrlCmd-C', lambda e: self._panel.Copy())
+            self.register_shortcut('CtrlCmd-A', lambda e: self._panel.SelectAll())
+            print >> sys.stderr, 'DEBUG: LogPlugin: OnViewLog: Created window'
         else:
-            self.notebook.show_tab(self._window)
+            self.notebook.show_tab(self._panel)
+            print >> sys.stderr, 'DEBUG: LogPlugin: OnViewLog: Shown tab window'
 
 
-class _LogWindow(wx.TextCtrl):
+class LogWindow(wx.TextCtrl):
 
     def __init__(self, notebook, log):
+        print >> sys.stderr, 'DEBUG: LogPlugin: _LogWindow: _init_'
         wx.TextCtrl.__init__(
             self, notebook, style=wx.TE_READONLY | wx.TE_MULTILINE)
         self._log = log
-        self._create_ui()
+        self._create_ui(notebook)
         self._add_to_notebook(notebook)
         self.SetFont(widgets.Font().fixed_log)
+        #notebook.AddPage(self, "Log Page")
+        print >> sys.stderr, 'DEBUG: LogPlugin: _LogWindow: _add_to_notebook: _init_'
 
-    def _create_ui(self):
+    def _create_ui(self, notebook):
         sizer = wx.BoxSizer(wx.VERTICAL)
-        sizer.Add(self)
-        self.SetSizer(sizer)
+        #sizer.Add(self)
+        #sizer.Add(notebook, 1, wx.ALL|wx.EXPAND, 5)
+        sizer.Add(self, 1, 0, 0)
+        notebook.SetSizer(sizer)
 
     def _add_to_notebook(self, notebook):
-        notebook.add_tab(self, 'Log', allow_closing=True)
+        print >> sys.stderr, 'DEBUG: LogPlugin: _LogWindow: _add_to_notebook: Enter add_tab'
+        notebook.add_tab(self, 'RIDE Log', allow_closing=True)
         notebook.show_tab(self)
+        print >> sys.stderr, 'DEBUG: LogPlugin: _LogWindow: _add_to_notebook: After show_tab'
 
     def close(self, notebook):
         notebook.delete_tab(self)
