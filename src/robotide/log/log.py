@@ -109,7 +109,6 @@ class _LogWindow(wx.Panel):
         wx.Panel.__init__(self, notebook)
         self._output = wx.TextCtrl(self, style=wx.TE_READONLY | wx.TE_MULTILINE)
         self._log = log
-        self._create_ui()
         self._add_to_notebook(notebook)
         self.SetFont(widgets.Font().fixed_log)
         self.Bind(wx.EVT_SIZE, self.OnSize)
