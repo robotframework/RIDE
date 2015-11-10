@@ -103,52 +103,49 @@ class LogPlugin(Plugin):
                                padding=10, font_size=font_size).Show()
 
     def OnViewLog(self, event):
-        if not self._panel:
-            self._panel = LogWindow(self.notebook, self._log)
-            print >> sys.stderr, 'DEBUG: LogPlugin: OnViewLog: Called _LogWindow'
-            self._panel.update_log()
-            self.register_shortcut('CtrlCmd-C', lambda e: self._panel.Copy())
-            self.register_shortcut('CtrlCmd-A', lambda e: self._panel.SelectAll())
-            print >> sys.stderr, 'DEBUG: LogPlugin: OnViewLog: Created window'
+        if not self._window:
+            self._window = _LogWindow(self.notebook, self._log)
+            self._window.update_log()
+            self.register_shortcut('CtrlCmd-C', lambda e: self._window.Copy())
+            self.register_shortcut(
+                'CtrlCmd-A', lambda e: self._window.SelectAll())
         else:
             self.notebook.show_tab(self._panel)
             print >> sys.stderr, 'DEBUG: LogPlugin: OnViewLog: Shown tab window'
 
 
-class LogWindow(wx.TextCtrl):
+class _LogWindow(wx.Panel):
 
     def __init__(self, notebook, log):
-        print >> sys.stderr, 'DEBUG: LogPlugin: _LogWindow: _init_'
-        wx.TextCtrl.__init__(
-            self, notebook, style=wx.TE_READONLY | wx.TE_MULTILINE)
+        wx.Panel.__init__(self, notebook)
+        self._output = wx.TextCtrl(self, style=wx.TE_READONLY | wx.TE_MULTILINE)
         self._log = log
         self._create_ui(notebook)
         self._add_to_notebook(notebook)
         self.SetFont(widgets.Font().fixed_log)
-        #notebook.AddPage(self, "Log Page")
-        print >> sys.stderr, 'DEBUG: LogPlugin: _LogWindow: _add_to_notebook: _init_'
+        self.Bind(wx.EVT_SIZE, self.OnSize)
 
-    def _create_ui(self, notebook):
-        sizer = wx.BoxSizer(wx.VERTICAL)
-        #sizer.Add(self)
-        #sizer.Add(notebook, 1, wx.ALL|wx.EXPAND, 5)
-        sizer.Add(self, 1, 0, 0)
-        notebook.SetSizer(sizer)
+    def _create_ui(self):
+        self.SetSizer(widgets.VerticalSizer())
+        self.Sizer.add_expanding(self._output)
 
     def _add_to_notebook(self, notebook):
         print >> sys.stderr, 'DEBUG: LogPlugin: _LogWindow: _add_to_notebook: Enter add_tab'
         notebook.add_tab(self, 'RIDE Log', allow_closing=True)
         notebook.show_tab(self)
-        print >> sys.stderr, 'DEBUG: LogPlugin: _LogWindow: _add_to_notebook: After show_tab'
+        self._output.SetSize(self.Size)
 
     def close(self, notebook):
         notebook.delete_tab(self)
 
     def update_log(self):
-        self.SetValue(self._decode_log(self._log))
+        self._output.SetValue(self._decode_log(self._log))
 
     def _decode_log(self, log):
         result = ''
         for msg in log:
             result += _message_to_string(msg)
         return result
+
+    def OnSize(self, evt):
+        self._output.SetSize(self.Size)

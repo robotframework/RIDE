@@ -15,7 +15,7 @@
 
 def get_core_plugins():
     from robotide.run import RunAnything
-    from robotide.recentfiles import RecentFilesPlugin
+    # from robotide.recentfiles import RecentFilesPlugin
     from robotide.ui.preview import PreviewPlugin
     from robotide.ui.keywordsearch import KeywordSearch
     from robotide.editor import EditorPlugin
@@ -24,6 +24,7 @@ def get_core_plugins():
     from robotide.searchtests.searchtests import TestSearchPlugin
     from robotide.spec.specimporter import SpecImporterPlugin
 
-    return [RunAnything, RecentFilesPlugin, PreviewPlugin, SpecImporterPlugin,
+    # removed RecentFilesPlugin,
+    return [RunAnything, PreviewPlugin, SpecImporterPlugin,
             EditorPlugin, TextEditorPlugin, KeywordSearch, LogPlugin, TestSearchPlugin]
 
