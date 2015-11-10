@@ -147,7 +147,7 @@ class ViewAllTagsDialog(wx.Frame):
                     self._unique_tags[tag_name].append(test)
                     self._tagit[tag_name].append(tag)
                 else:
-                    self._unique_tags.set(tag_name, [test])
+                    self._unique_tags[tag_name] = [test]
                     self._tagit[tag_name] = [tag]
 
         self.total_test_cases = len(self._test_cases)

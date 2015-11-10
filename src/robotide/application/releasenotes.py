@@ -86,7 +86,7 @@ WELCOME_TEXT = """
 # Release notes are updated automatically by package.py script whenever
 # a numbered distribution is created.
 RELEASE_NOTES = """
-<h2>Release notes for 1.5a2</h2>
+<h2>Release notes for 1.5</h2>
 <table border="1">
 <tr>
 <td><p><b>ID</b></p></td>
@@ -110,7 +110,43 @@ RELEASE_NOTES = """
 <td><a href="http://github.com/robotframework/RIDE/issues/http://github.com/robotframework/RIDE/issues/">Issue http://github.com/robotframework/RIDE/issues/</a></td>
 <td>bug</td>
 <td>high</td>
+<td>Argument validation error thrown when a valid ordering is specified</td>
+</tr>
+<tr>
+<td><a href="http://github.com/robotframework/RIDE/issues/http://github.com/robotframework/RIDE/issues/">Issue http://github.com/robotframework/RIDE/issues/</a></td>
+<td>enhancement</td>
+<td>high</td>
+<td>Re-package bundled Robot Framework, never use bundled standard libraries</td>
+</tr>
+<tr>
+<td><a href="http://github.com/robotframework/RIDE/issues/http://github.com/robotframework/RIDE/issues/">Issue http://github.com/robotframework/RIDE/issues/</a></td>
+<td>bug</td>
+<td>high</td>
 <td>'--monitorcolors' and '--monitorwidth' is deprecated WARN message</td>
+</tr>
+<tr>
+<td><a href="http://github.com/robotframework/RIDE/issues/http://github.com/robotframework/RIDE/issues/">Issue http://github.com/robotframework/RIDE/issues/</a></td>
+<td>bug</td>
+<td>medium</td>
+<td>fix view all tags(F7) doesn't work on windows #1526</td>
+</tr>
+<tr>
+<td><a href="http://github.com/robotframework/RIDE/issues/http://github.com/robotframework/RIDE/issues/">Issue http://github.com/robotframework/RIDE/issues/</a></td>
+<td>enhancement</td>
+<td>medium</td>
+<td>Updates arguments for pybot to RF 2.9.1.</td>
+</tr>
+<tr>
+<td><a href="http://github.com/robotframework/RIDE/issues/http://github.com/robotframework/RIDE/issues/">Issue http://github.com/robotframework/RIDE/issues/</a></td>
+<td>bug</td>
+<td>medium</td>
+<td>Content Assist fails with unicode characters</td>
+</tr>
+<tr>
+<td><a href="http://github.com/robotframework/RIDE/issues/http://github.com/robotframework/RIDE/issues/">Issue http://github.com/robotframework/RIDE/issues/</a></td>
+<td>bug</td>
+<td>medium</td>
+<td>#1500: Remove deprecated options warning messages</td>
 </tr>
 <tr>
 <td><a href="http://github.com/robotframework/RIDE/issues/http://github.com/robotframework/RIDE/issues/">Issue http://github.com/robotframework/RIDE/issues/</a></td>
@@ -131,5 +167,5 @@ RELEASE_NOTES = """
 <td>"Find Where Used" in editor not working</td>
 </tr>
 </table>
-<p>Altogether 6 issues.</p>
+<p>Altogether 12 issues.</p>
 """
