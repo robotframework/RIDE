@@ -17,9 +17,7 @@ from wx.lib.scrolledpanel import ScrolledPanel
 
 from robotide.context import LOG
 from robotide.publish import RideLogException
-from robotide import widgets
 from robotide.widgets import Label
-import sys
 
 class PluginManager(object):
 
@@ -41,7 +39,6 @@ class _PluginPanel(wx.Panel):
 
     def __init__(self, notebook, plugins, activation_callback):
         wx.Panel.__init__(self, notebook)
-        #self.SetSizer(widgets.VerticalSizer())
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(self._create_header(), 0, flag=wx.LEFT|wx.RIGHT|wx.TOP, border=16)
         sizer.Add(self._create_info_text(), 0, flag=wx.EXPAND|wx.LEFT|wx.RIGHT, border=16)
@@ -61,18 +58,15 @@ class _PluginPanel(wx.Panel):
     def _create_body(self, plugins, activation_callback):
         panel = ScrolledPanel(self, wx.ID_ANY, style=wx.TAB_TRAVERSAL)
         panel.SetupScrolling()
-        sizer = wx.FlexGridSizer(1, 2, hgap=8, vgap=8)
+        sizer = wx.FlexGridSizer(0, 2, hgap=8, vgap=8)
         sizer.AddGrowableCol(1, 1)
         sizer.Add(self._create_label(panel, 'Enabled'), 0, wx.BOTTOM, border=8)
         sizer.Add(self._create_label(panel, 'Plugin'), 0,
                   wx.BOTTOM|wx.EXPAND, border=8)
         for plugin in sorted(plugins, key=lambda p: p.name):
-            print >> sys.stderr, 'DEBUG: PluginPanel: _create_body: p.name= ' + plugin.name
-            #sizer.Add(self._create_label(panel, plugin.name), 0, wx.BOTTOM, border=8)
-            sizer.Add(Label(panel, wx.ID_ANY, plugin.name), 0, wx.BOTTOM, border=8)
-        #    sizer.Add(_PluginEnablationCheckBox(panel, plugin, activation_callback),
-        #              flag=wx.ALIGN_CENTER_HORIZONTAL)
-        #    sizer.Add(_PluginRow(panel, plugin), 0, wx.EXPAND)
+            sizer.Add(_PluginEnablationCheckBox(panel, plugin, activation_callback),
+                      flag=wx.ALIGN_CENTER_HORIZONTAL)
+            sizer.Add(_PluginRow(panel, plugin), 0, wx.EXPAND)
         panel.SetSizer(sizer)
         return panel
 
