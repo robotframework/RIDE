@@ -65,10 +65,9 @@ class BrokenPlugin(_PluginConnector):
 
     def __init__(self, error, plugin_class):
         name = utils.name_from_class(plugin_class, 'Plugin')
-        doc = "This plugin is disabled because it failed to load properly.\n" \
-        % "Error: " % error
+        doc = "This plugin is disabled because it failed to load properly.\nError: {}".format(error)
         _PluginConnector.__init__(self, name, doc=doc, error=error)
-        LOG.error("Taking %s plugin into use failed:\n%s" % (name, error))
+        LOG.error("Taking {} plugin into use failed:\n{}".format(name, error))
 
     def enable_on_startup(self):
         pass
