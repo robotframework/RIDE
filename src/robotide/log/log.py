@@ -55,8 +55,9 @@ class LogPlugin(Plugin):
                 os.path.join(tempfile.gettempdir(), '*ride.log')):
             try:
                 os.remove(fname)
-            except IOError:
-                print >> sys.stderr, 'DEBUG: LogPlugin: _remove_old_log_files: IOError: fname= ' + fname
+            except OSError or IOError as e:
+                # print >> sys.stderr, 'DEBUG: LogPlugin: _remove_old_log_files: IOError: fname= ' + fname
+                print >> sys.stderr, e
                 pass
 
     @property

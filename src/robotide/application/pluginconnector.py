@@ -20,7 +20,7 @@ def PluginFactory(application, plugin_class):
     try:
         plugin = plugin_class(application)
     except Exception:
-        return BrokenPlugin(utils.get_error_details(), plugin_class)
+        raise # return BrokenPlugin(utils.get_error_details(), plugin_class)
     else:
         return PluginConnector(plugin, application)
 
