@@ -84,6 +84,7 @@ class PreferencesColorPicker(wx.ColourPickerCtrl):
     def OnPickColor(self, event):
         """Set the color for the given key to the color of the widget"""
         color = event.GetColour()
+        # TODO: wxPyDeprecationWarning: Call to deprecated item. asTuple is deprecated, use `Get` instead rgb = "#%02X%02X%02X" % color.asTuple()
         rgb = "#%02X%02X%02X" % color.asTuple()
         self.settings[self.key] = rgb
         self.settings.save()

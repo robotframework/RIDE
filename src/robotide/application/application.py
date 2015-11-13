@@ -87,10 +87,11 @@ class RIDE(wx.App):
                 return maybe_editor
 
     def _load_data(self):
-        path = self._initial_path # or self._get_latest_path() #Removed recent files
+        path = self._initial_path or self._get_latest_path()
         if path:
             with self.active_event_loop():
-                observer = LoadProgressObserver(self.frame)
+                observer = None
+                # observer = LoadProgressObserver(self.frame) # This is causing crash in Windows 7
                 self._controller.load_data(path, observer)
 
     def _find_robot_installation(self):
