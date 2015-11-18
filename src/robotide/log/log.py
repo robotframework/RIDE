@@ -18,6 +18,7 @@ import tempfile
 import uuid
 import atexit
 import glob
+import sys
 
 from robotide.pluginapi import Plugin, ActionInfo, RideLog
 from robotide import widgets
@@ -51,10 +52,11 @@ class LogPlugin(Plugin):
 
     def _remove_old_log_files(self):
         for fname in glob.glob(
-                os.path.join(tempfile.gettempdir(), '*ride.log')):
+                os.path.join(tempfile.gettempdir(), '*-ride.log')):
             try:
                 os.remove(fname)
-            except IOError:
+            except OSError or IOError as e:
+                sys.stderr.write(e)
                 pass
 
     @property
