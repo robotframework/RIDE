@@ -22,7 +22,8 @@ execfile(join(ROOT_DIR, 'src', 'robotide', 'version.py'))
 package_data = {
     'robotide.preferences': ['settings.cfg'],
     'robotide.widgets': ['*.png', '*.ico'],
-    'robotide.messages': ['*.html']
+    'robotide.messages': ['*.html'],
+    'robotide.publish.html': ['no_robot.html']
 }
 
 long_description = """
