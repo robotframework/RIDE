@@ -52,12 +52,11 @@ class LogPlugin(Plugin):
 
     def _remove_old_log_files(self):
         for fname in glob.glob(
-                os.path.join(tempfile.gettempdir(), '*ride.log')):
+                os.path.join(tempfile.gettempdir(), '*-ride.log')):
             try:
                 os.remove(fname)
             except OSError or IOError as e:
-                # print >> sys.stderr, 'DEBUG: LogPlugin: _remove_old_log_files: IOError: fname= ' + fname
-                print >> sys.stderr, e
+                sys.stderr.write(e)
                 pass
 
     @property
@@ -86,7 +85,7 @@ class LogPlugin(Plugin):
         if self._panel:
             self._panel.update_log()
         if self.log_to_console:
-            print >> sys.stdout, _message_to_string(log_event)
+            print _message_to_string(log_event)
         if self.log_to_file:
             self._logfile.write(_message_to_string(log_event))
         if log_event.notify_user:

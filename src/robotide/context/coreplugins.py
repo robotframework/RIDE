@@ -24,7 +24,5 @@ def get_core_plugins():
     from robotide.spec.specimporter import SpecImporterPlugin
     from robotide.recentfiles import RecentFilesPlugin
 
-    # removed RecentFilesPlugin,
-    return [RunAnything, PreviewPlugin, SpecImporterPlugin,
-            EditorPlugin, TextEditorPlugin, KeywordSearch, LogPlugin, TestSearchPlugin, RecentFilesPlugin]
-
+    return [RunAnything, RecentFilesPlugin, PreviewPlugin, SpecImporterPlugin,
+            EditorPlugin, TextEditorPlugin, KeywordSearch, LogPlugin, TestSearchPlugin]
