@@ -32,9 +32,9 @@ import os
 from string import Template
 
 errorMessageTemplate = Template("""$reason
-You need to install wxPython 2.8, 2.9 or 3.0 (minimum version is 2.8.12.1 with unicode support) to run RIDE.
+You need to install wxPython 2.8.12.1 or 3.0.2 or newer with unicode support to run RIDE.
 wxPython can be downloaded from http://sourceforge.net/projects/wxpython/files/wxPython/""")
-supported_versions = ["2.8", "2.9", "3.0"]
+supported_versions = ["2.8", "3.0"]
 
 try:
     import wxversion
@@ -105,7 +105,7 @@ def _show_old_wxpython_warning_if_needed(parent=None):
     if wx.VERSION >= (2, 8, 12, 1):
         return
     title = 'Please upgrade your wxPython installation'
-    message = ('RIDE officially supports wxPython minimum 2.8.12.1. '
+    message = ('RIDE officially supports wxPython 2.8.12.1, 3.0.2 and newer releases in 3.0 series. '
                'Your current version is %s.\n\n'
                'Older wxPython versions are known to miss some features used by RIDE. '
                'From RIDE version 1.5.2, wxPython 2.9 and 3.0 are supported.\n\n'
@@ -114,7 +114,7 @@ def _show_old_wxpython_warning_if_needed(parent=None):
                % wx.VERSION_STRING)
     style = wx.ICON_EXCLAMATION
     if not parent:
-        _ = wx.App()
+        _ = wx.PySimpleApp()
         parent = wx.Frame(None, size=(0,0))
     wx.MessageDialog(parent, message, title, style).ShowModal()
 

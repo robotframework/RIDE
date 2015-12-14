@@ -19,6 +19,7 @@ from robotide.context import LOG
 from robotide.publish import RideLogException
 from robotide.widgets import Label
 
+
 class PluginManager(object):
 
     def __init__(self, notebook):
@@ -28,7 +29,7 @@ class PluginManager(object):
     def show(self, plugins):
         if not self._tab:
             self._tab = _PluginPanel(self._notebook, plugins, self._show_tab)
-            self._notebook.add_tab(self._tab, 'Manage Plugins', allow_closing=True)
+            self._notebook.add_tab(self._tab, 'Manage Plugins', allow_closing=true)
         self._show_tab()
 
     def _show_tab(self):
@@ -58,7 +59,7 @@ class _PluginPanel(wx.Panel):
     def _create_body(self, plugins, activation_callback):
         panel = ScrolledPanel(self, wx.ID_ANY, style=wx.TAB_TRAVERSAL)
         panel.SetupScrolling()
-        sizer = wx.FlexGridSizer(0, 2, hgap=8, vgap=8)
+        sizer = wx.FlexGridSizer(1, 2, hgap=8, vgap=8)
         sizer.AddGrowableCol(1, 1)
         sizer.Add(self._create_label(panel, 'Enabled'), 0, wx.BOTTOM, border=8)
         sizer.Add(self._create_label(panel, 'Plugin'), 0,
