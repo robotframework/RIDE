@@ -420,7 +420,7 @@ class VariableController(_SettingController):
         self.parent.notify_variable_added(self)
 
     def validate_name(self, new_name):
-        if utils.is_scalar_variable(self.name):
+        if variablematcher.is_scalar_variable(self.name):
             return self.parent.validate_scalar_variable_name(new_name, self)
         return self.parent.validate_list_variable_name(new_name, self)
 

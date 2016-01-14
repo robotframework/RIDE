@@ -415,12 +415,13 @@ class VariablesListEditor(_AbstractListEditor):
             self._open_var_dialog(message.controller)
 
     def _open_var_dialog(self, var):
-        if var.name.startswith('${'):
+        var_name = var.name.lower()
+        if var_name.startswith('${'):
             dlg = ScalarVariableDialog(self._controller, item=var)
-        elif var.name.startswith('@{'):
+        elif var_name.startswith('@{'):
             dlg = ListVariableDialog(self._controller, item=var,
                                      plugin=self.Parent.plugin)
-        elif var.name.startswith('&{'):
+        elif var_name.startswith('&{'):
             dlg = DictionaryVariableDialog(self._controller, item=var,
                                            plugin=self.Parent.plugin)
         if dlg.ShowModal() == wx.ID_OK:
