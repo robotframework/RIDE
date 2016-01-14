@@ -27,7 +27,7 @@ from robotide.controller.filecontrollers import (
     DirtyRobotDataException)
 from robotide.editor.editordialogs import (
     TestCaseNameDialog, UserKeywordNameDialog, ScalarVariableDialog,
-    ListVariableDialog, CopyUserKeywordDialog)
+    ListVariableDialog, CopyUserKeywordDialog, DictionaryVariableDialog)
 from robotide.publish import RideOpenVariableDialog
 from robotide.ui.progress import LoadProgressObserver
 from robotide.usages.UsageRunner import Usages, ResourceFileUsages
@@ -65,6 +65,7 @@ class _ActionHandler(wx.Window):
     _label_sort_keywords = 'Sort Keywords'
     _label_new_scalar = 'New Scalar\tCtrl-Shift-V'
     _label_new_list_variable = 'New List Variable\tCtrl-Shift-L'
+    _label_new_dict_variable = 'New Dictionary Variable'
     _label_change_format = 'Change Format'
     _label_copy_macro = 'Copy\tCtrl-Shift-C'
     _label_rename = 'Rename\tF2'
@@ -135,6 +136,9 @@ class _ActionHandler(wx.Window):
         pass
 
     def OnNewListVariable(self, event):
+        pass
+
+    def OnNewDictionaryVariable(self, event):
         pass
 
     def OnCopy(self, event):
@@ -274,6 +278,11 @@ class TestDataHandler(_ActionHandler):
             global_settings = self._settings
         self._new_var(ListVariableDialog, plugin=FakePlugin())
 
+    def OnNewDictionaryVariable(self, event):
+        class FakePlugin(object):
+            global_settings = self._settings
+        self._new_var(DictionaryVariableDialog, plugin=FakePlugin())
+
     def _new_var(self, dialog_class, plugin=None):
         dlg = dialog_class(self._var_controller, plugin=plugin)
         if dlg.ShowModal() == wx.ID_OK:
@@ -298,6 +307,7 @@ class TestDataDirectoryHandler(TestDataHandler):
             _ActionHandler._label_new_user_keyword,
             _ActionHandler._label_new_scalar,
             _ActionHandler._label_new_list_variable,
+            _ActionHandler._label_new_dict_variable,
             '---',
             _ActionHandler._label_change_format
         ]
@@ -379,7 +389,9 @@ class ResourceFileHandler(_FileHandlerThanCanBeRenamed, TestDataHandler):
     is_test_suite = False
     _actions = [_ActionHandler._label_new_user_keyword,
                 _ActionHandler._label_new_scalar,
-                _ActionHandler._label_new_list_variable, '---',
+                _ActionHandler._label_new_list_variable,
+                _ActionHandler._label_new_dict_variable,
+                '---',
                 _ActionHandler._label_rename,
                 _ActionHandler._label_change_format,
                 _ActionHandler._label_sort_keywords,
@@ -409,7 +421,9 @@ class TestCaseFileHandler(_FileHandlerThanCanBeRenamed, TestDataHandler):
     _actions = [_ActionHandler._label_new_test_case,
                 _ActionHandler._label_new_user_keyword,
                 _ActionHandler._label_new_scalar,
-                _ActionHandler._label_new_list_variable, '---',
+                _ActionHandler._label_new_list_variable,
+                _ActionHandler._label_new_dict_variable,
+                '---',
                 _ActionHandler._label_rename,
                 _ActionHandler._label_change_format,
                 _ActionHandler._label_sort_keywords,
