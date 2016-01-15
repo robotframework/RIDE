@@ -639,7 +639,7 @@ class TestRunnerPlugin(Plugin):
         out.SetMarginWidth(3,0)
 
     def _create_font(self):
-        font=wx.SystemSettings.GetFont(wx.SYS_SYSTEM_FIXED_FONT)
+        font=wx.SystemSettings.GetFont(wx.SYS_ANSI_FIXED_FONT)
         if not font.IsFixedWidth():
             # fixed width fonts are typically a little bigger than their variable width
             # peers so subtract one from the point size.
