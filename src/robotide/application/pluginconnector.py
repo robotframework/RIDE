@@ -20,7 +20,7 @@ def PluginFactory(application, plugin_class):
     try:
         plugin = plugin_class(application)
     except Exception:
-        raise # return BrokenPlugin(utils.get_error_details(), plugin_class)
+        return BrokenPlugin(utils.get_error_details(), plugin_class)
     else:
         return PluginConnector(plugin, application)
 
@@ -65,7 +65,8 @@ class BrokenPlugin(_PluginConnector):
 
     def __init__(self, error, plugin_class):
         name = utils.name_from_class(plugin_class, 'Plugin')
-        doc = "This plugin is disabled because it failed to load properly.\nError: {}".format(error)
+        doc = 'The plugin is disabled because it failed to load properly.\n' \
+              + 'Error: {}'.format(error)
         _PluginConnector.__init__(self, name, doc=doc, error=error)
         LOG.error("Taking {} plugin into use failed:\n{}".format(name, error))
 
