@@ -86,7 +86,7 @@ WELCOME_TEXT = """
 # Release notes are updated automatically by package.py script whenever
 # a numbered distribution is created.
 RELEASE_NOTES = """
-<h2>Release notes for 1.5</h2>
+<h2>Release notes for 1.5.1</h2>
 <table border="1">
 <tr>
 <td><p><b>ID</b></p></td>
@@ -97,75 +97,33 @@ RELEASE_NOTES = """
 <tr>
 <td><a href="http://github.com/robotframework/RIDE/issues/http://github.com/robotframework/RIDE/issues/">Issue http://github.com/robotframework/RIDE/issues/</a></td>
 <td>bug</td>
-<td>critical</td>
-<td>Cannot import remote library in 1.4.1</td>
-</tr>
-<tr>
-<td><a href="http://github.com/robotframework/RIDE/issues/http://github.com/robotframework/RIDE/issues/">Issue http://github.com/robotframework/RIDE/issues/</a></td>
-<td>enhancement</td>
-<td>critical</td>
-<td>Support RF 2.9</td>
+<td>high</td>
+<td>Error in RIDE startup</td>
 </tr>
 <tr>
 <td><a href="http://github.com/robotframework/RIDE/issues/http://github.com/robotframework/RIDE/issues/">Issue http://github.com/robotframework/RIDE/issues/</a></td>
 <td>bug</td>
 <td>high</td>
-<td>Argument validation error thrown when a valid ordering is specified</td>
-</tr>
-<tr>
-<td><a href="http://github.com/robotframework/RIDE/issues/http://github.com/robotframework/RIDE/issues/">Issue http://github.com/robotframework/RIDE/issues/</a></td>
-<td>enhancement</td>
-<td>high</td>
-<td>Re-package bundled Robot Framework, never use bundled standard libraries</td>
+<td>Problem with opening two ride </td>
 </tr>
 <tr>
 <td><a href="http://github.com/robotframework/RIDE/issues/http://github.com/robotframework/RIDE/issues/">Issue http://github.com/robotframework/RIDE/issues/</a></td>
 <td>bug</td>
 <td>high</td>
-<td>'--monitorcolors' and '--monitorwidth' is deprecated WARN message</td>
+<td>Should not crash when removing old log files fails</td>
 </tr>
 <tr>
 <td><a href="http://github.com/robotframework/RIDE/issues/http://github.com/robotframework/RIDE/issues/">Issue http://github.com/robotframework/RIDE/issues/</a></td>
 <td>bug</td>
 <td>medium</td>
-<td>fix view all tags(F7) doesn't work on windows #1526</td>
-</tr>
-<tr>
-<td><a href="http://github.com/robotframework/RIDE/issues/http://github.com/robotframework/RIDE/issues/">Issue http://github.com/robotframework/RIDE/issues/</a></td>
-<td>enhancement</td>
-<td>medium</td>
-<td>Updates arguments for pybot to RF 2.9.1.</td>
+<td>It is possible to create suite variables with a blank space before the $, @ or &</td>
 </tr>
 <tr>
 <td><a href="http://github.com/robotframework/RIDE/issues/http://github.com/robotframework/RIDE/issues/">Issue http://github.com/robotframework/RIDE/issues/</a></td>
 <td>bug</td>
 <td>medium</td>
-<td>Content Assist fails with unicode characters</td>
-</tr>
-<tr>
-<td><a href="http://github.com/robotframework/RIDE/issues/http://github.com/robotframework/RIDE/issues/">Issue http://github.com/robotframework/RIDE/issues/</a></td>
-<td>bug</td>
-<td>medium</td>
-<td>#1500: Remove deprecated options warning messages</td>
-</tr>
-<tr>
-<td><a href="http://github.com/robotframework/RIDE/issues/http://github.com/robotframework/RIDE/issues/">Issue http://github.com/robotframework/RIDE/issues/</a></td>
-<td>bug</td>
-<td>medium</td>
-<td>Highlighting selected cell (and matches) does not work.</td>
-</tr>
-<tr>
-<td><a href="http://github.com/robotframework/RIDE/issues/http://github.com/robotframework/RIDE/issues/">Issue http://github.com/robotframework/RIDE/issues/</a></td>
-<td>bug</td>
-<td>medium</td>
-<td>RIDE Log shows "The C++ part of the VariablesListEditor object has been deleted, attribute access no longer allowed"</td>
-</tr>
-<tr>
-<td><a href="http://github.com/robotframework/RIDE/issues/http://github.com/robotframework/RIDE/issues/">Issue http://github.com/robotframework/RIDE/issues/</a></td>
-<td>bug</td>
-<td>medium</td>
-<td>"Find Where Used" in editor not working</td>
+<td>Create Dictionary Variable is missing from the tree context menu</td>
 </tr>
 </table>
-<p>Altogether 12 issues.</p>
+<p>Altogether 5 issues.</p>
 """
