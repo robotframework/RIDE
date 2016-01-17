@@ -23,7 +23,7 @@ from robotide.ui.treenodehandlers import ResourceRootHandler, \
 from robotide.widgets import ButtonWithHandler, PopupMenuItems
 
 
-class ViewAllTagsDialog(wx.Frame):
+class ViewAllTagsDialog(wx.Frame, listmix.ColumnSorterMixin):
 
     def __init__(self, controller, frame):
         style = wx.SYSTEM_MENU | wx.CAPTION | wx.CLOSE_BOX | wx.CLIP_CHILDREN | \
@@ -32,6 +32,7 @@ class ViewAllTagsDialog(wx.Frame):
         self.frame = frame
         self.tree = self.frame.tree
         self._controller = controller
+        self.itemDataMap = dict()
         self._results = utils.NormalizedDict()
         self.selected_tests = list()
         self.tagged_test_cases = list()
@@ -40,6 +41,10 @@ class ViewAllTagsDialog(wx.Frame):
         self._index = -1
         self._build_ui()
         self._make_bindings()
+
+        # init ColumnSorterMixin at the end because it calls self.GetListCtrl and
+        # therefore self._tags_list has to be declared
+        listmix.ColumnSorterMixin.__init__(self, 2)
 
     def _build_ui(self):
         self.SetSize((500, 400))
@@ -107,6 +112,8 @@ class ViewAllTagsDialog(wx.Frame):
                 self.unique_tags, unicode(tag_name))
             self.tagged_test_cases += tests
             self._tags_list.SetStringItem(self.unique_tags, 1, str(len(tests)))
+            self._tags_list.SetItemData(self.unique_tags, self.unique_tags)
+            self.itemDataMap[self.unique_tags] = (tag_name, len(tests))
             self.unique_tags += 1
         self._tags_list.SetColumnWidth(1, wx.LIST_AUTOSIZE_USEHEADER)
         self._tags_list.setResizeColumn(1)
