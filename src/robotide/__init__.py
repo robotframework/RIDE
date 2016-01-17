@@ -114,7 +114,7 @@ def _show_old_wxpython_warning_if_needed(parent=None):
                % wx.VERSION_STRING)
     style = wx.ICON_EXCLAMATION
     if not parent:
-        _ = wx.PySimpleApp()
+        _ = wx.PyApp()
         parent = wx.Frame(None, size=(0,0))
     wx.MessageDialog(parent, message, title, style).ShowModal()
 
