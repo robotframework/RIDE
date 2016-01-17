@@ -32,12 +32,13 @@ class ViewAllTagsDialog(wx.Frame, listmix.ColumnSorterMixin):
         self.frame = frame
         self.tree = self.frame.tree
         self._controller = controller
-        self.itemDataMap = dict()
         self._results = utils.NormalizedDict()
         self.selected_tests = list()
         self.tagged_test_cases = list()
         self.unique_tags = 0
         self.total_test_cases = 0
+        self.itemDataMap = dict()
+        self.sort_state = (1, 0)
         self._index = -1
         self._build_ui()
         self._make_bindings()
@@ -98,6 +99,7 @@ class ViewAllTagsDialog(wx.Frame, listmix.ColumnSorterMixin):
         self.Bind(wx.EVT_CLOSE, self._close_dialog)
         self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.OnTagSelected)
         self._tags_list.Bind(wx.EVT_LIST_ITEM_RIGHT_CLICK, self.OnRightClick)
+        self._tags_list.Bind(wx.EVT_LIST_COL_CLICK, self.OnColClick)
 
     def _execute(self):
         self._clear_search_results()
@@ -119,6 +121,7 @@ class ViewAllTagsDialog(wx.Frame, listmix.ColumnSorterMixin):
         self._tags_list.setResizeColumn(1)
         self.tagged_test_cases = list(set(self.tagged_test_cases))
         self.update_footer()
+        self.SortListItems(self.sort_state[0], self.sort_state[1])
 
     def update_footer(self):
         footer_string = "Total tests %d, Tests with tags %d, Unique tags %d, Currently selected tests %d" % \
@@ -165,6 +168,7 @@ class ViewAllTagsDialog(wx.Frame, listmix.ColumnSorterMixin):
         return self._tags_list
 
     def OnColClick(self, event):
+        self.sort_state = self.GetSortState()
         event.Skip()
 
     def _add_checked_tags_into_list(self):
