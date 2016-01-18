@@ -23,7 +23,7 @@ from robotide.ui.treenodehandlers import ResourceRootHandler, \
 from robotide.widgets import ButtonWithHandler, PopupMenuItems
 
 
-class ViewAllTagsDialog(wx.Frame):
+class ViewAllTagsDialog(wx.Frame, listmix.ColumnSorterMixin):
 
     def __init__(self, controller, frame):
         style = wx.SYSTEM_MENU | wx.CAPTION | wx.CLOSE_BOX | wx.CLIP_CHILDREN | \
@@ -37,9 +37,15 @@ class ViewAllTagsDialog(wx.Frame):
         self.tagged_test_cases = list()
         self.unique_tags = 0
         self.total_test_cases = 0
+        self.itemDataMap = dict()
+        self.sort_state = (1, 0)
         self._index = -1
         self._build_ui()
         self._make_bindings()
+
+        # init ColumnSorterMixin at the end because it calls self.GetListCtrl and
+        # therefore self._tags_list has to be declared
+        listmix.ColumnSorterMixin.__init__(self, 2)
 
     def _build_ui(self):
         self.SetSize((500, 400))
@@ -93,6 +99,7 @@ class ViewAllTagsDialog(wx.Frame):
         self.Bind(wx.EVT_CLOSE, self._close_dialog)
         self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.OnTagSelected)
         self._tags_list.Bind(wx.EVT_LIST_ITEM_RIGHT_CLICK, self.OnRightClick)
+        self._tags_list.Bind(wx.EVT_LIST_COL_CLICK, self.OnColClick)
 
     def _execute(self):
         self._clear_search_results()
@@ -107,11 +114,15 @@ class ViewAllTagsDialog(wx.Frame):
                 self.unique_tags, unicode(tag_name))
             self.tagged_test_cases += tests
             self._tags_list.SetStringItem(self.unique_tags, 1, str(len(tests)))
+            self._tags_list.SetItemData(self.unique_tags, self.unique_tags)
+            # make tag_name lowercase for the sorting algorithm only
+            self.itemDataMap[self.unique_tags] = (tag_name.lower(), len(tests))
             self.unique_tags += 1
         self._tags_list.SetColumnWidth(1, wx.LIST_AUTOSIZE_USEHEADER)
         self._tags_list.setResizeColumn(1)
         self.tagged_test_cases = list(set(self.tagged_test_cases))
         self.update_footer()
+        self.SortListItems(self.sort_state[0], self.sort_state[1])
 
     def update_footer(self):
         footer_string = "Total tests %d, Tests with tags %d, Unique tags %d, Currently selected tests %d" % \
@@ -158,6 +169,7 @@ class ViewAllTagsDialog(wx.Frame):
         return self._tags_list
 
     def OnColClick(self, event):
+        self.sort_state = self.GetSortState()
         event.Skip()
 
     def _add_checked_tags_into_list(self):
