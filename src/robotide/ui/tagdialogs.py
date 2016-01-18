@@ -115,7 +115,8 @@ class ViewAllTagsDialog(wx.Frame, listmix.ColumnSorterMixin):
             self.tagged_test_cases += tests
             self._tags_list.SetStringItem(self.unique_tags, 1, str(len(tests)))
             self._tags_list.SetItemData(self.unique_tags, self.unique_tags)
-            self.itemDataMap[self.unique_tags] = (tag_name, len(tests))
+            # make tag_name lowercase for the sorting algorithm only
+            self.itemDataMap[self.unique_tags] = (tag_name.lower(), len(tests))
             self.unique_tags += 1
         self._tags_list.SetColumnWidth(1, wx.LIST_AUTOSIZE_USEHEADER)
         self._tags_list.setResizeColumn(1)
