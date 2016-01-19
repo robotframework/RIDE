@@ -639,13 +639,20 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
         if not self.HasAGWFlag(customtreectrl.TR_HIDE_ROOT) or item != self.GetRootItem():
             if isinstance(item.GetData(), ResourceRootHandler or ResourceFileHandler):
                 return
-            self.Expand(item)
+
+            is_item_expanded = self.IsExpanded(item)
+            if is_item_expanded is False:
+                self.Expand(item)
             if self._is_test_node(item):
                 func(item)
             if not self.IsExpanded(item):
                 return
+
         for child in item.GetChildren():
             self._for_all_tests(child, func)
+
+        if not is_item_expanded:
+            self.Collapse(item)
 
     def _for_all_drawn_tests(self, item, func):
         if self._is_test_node(item):
