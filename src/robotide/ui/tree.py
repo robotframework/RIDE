@@ -651,7 +651,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
         for child in item.GetChildren():
             self._for_all_tests(child, func)
 
-        if is_item_expanded is False:
+        if not is_item_expanded:
             self.Collapse(item)
 
     def _for_all_drawn_tests(self, item, func):
