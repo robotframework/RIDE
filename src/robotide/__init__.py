@@ -114,7 +114,7 @@ http://sourceforge.net/projects/wxpython/files/wxPython/2.8.12.1/.".format(
         wx.VERSION_STRING))
     style = wx.ICON_EXCLAMATION
     if not parent:
-        _ = wx.PySimpleApp()
+        _ = wx.App()
         parent = wx.Frame(None, size=(0, 0))
     wx.MessageDialog(parent, message, title, style).ShowModal()
 
