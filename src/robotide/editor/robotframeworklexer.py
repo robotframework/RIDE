@@ -275,7 +275,7 @@ class KeywordCall(Tokenizer):
 
 
 class GherkinTokenizer(object):
-    _gherkin_prefix = re.compile('^(Given|When|Then|And) ', re.IGNORECASE)
+    _gherkin_prefix = re.compile('^(Given|When|Then|And|But) ', re.IGNORECASE)
 
     def tokenize(self, value, token):
         match = self._gherkin_prefix.match(value)
@@ -321,7 +321,7 @@ class _Table(object):
 
     def _continues(self, value, index):
         return value == '...' and all(self._is_empty(t)
-            for t in self._prev_values_on_row)
+                                      for t in self._prev_values_on_row)
 
     def _is_empty(self, value):
         return value in ('', '\\')
@@ -367,8 +367,8 @@ class TestCaseTable(_Table):
 
     @property
     def _tokenizer_class(self):
-        if self._test_template or (self._default_template and
-                                           self._test_template is not False):
+        if self._test_template or (self._default_template
+                                   and self._test_template is not False):
             return TemplatedKeywordCall
         return KeywordCall
 
@@ -470,7 +470,7 @@ class VariableSplitter:
                 self._state(char, index)
             except StopIteration:
                 return
-            if index  == max_index and not self._scanning_list_variable_index():
+            if index == max_index and not self._scanning_list_variable_index():
                 return
 
     def _scanning_list_variable_index(self):
