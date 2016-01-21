@@ -32,8 +32,9 @@ import os
 from string import Template
 
 errorMessageTemplate = Template("""$reason
-You need to install wxPython 2.8.12.1 or 3.0.2 or newer with unicode support to run RIDE.
-wxPython can be downloaded from http://sourceforge.net/projects/wxpython/files/wxPython/""")
+You need to install wxPython 2.8.12.1 or 3.0.2 or newer with unicode support \
+to run RIDE. wxPython can be downloaded from \
+http://sourceforge.net/projects/wxpython/files/wxPython/""")
 supported_versions = ["2.8", "3.0"]
 
 try:
@@ -42,19 +43,19 @@ try:
     wxversion.select(supported_versions)
     import wx
 except ImportError as e:
-    if "no appropriate 64-bit architecture" in e.message.lower() and \
+    if "no appropriate 64-bit architecture" in "{0}".format(e).lower() and \
        sys.platform == 'darwin':
-        print "python should be executed in 32-bit mode with wxPython on OSX."
+        print("python should be executed in 32-bit mode with wxPython on OSX.")
     else:
-        print errorMessageTemplate.substitute(reason="wxPython not found.")
+        print(errorMessageTemplate.substitute(reason="wxPython not found."))
     sys.exit(1)
 except VersionError:
-    print errorMessageTemplate.substitute(reason="Wrong wxPython version.")
+    print(errorMessageTemplate.substitute(reason="Wrong wxPython version."))
     sys.exit(1)
 
 if "ansi" in wx.PlatformInfo:
-    print errorMessageTemplate.substitute(
-        reason="wxPython with ansi encoding is not supported")
+    print(errorMessageTemplate.substitute(reason="wxPython with ansi encoding \
+is not supported"))
     sys.exit(1)
 
 
@@ -65,7 +66,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), 'spec'))
 def main(*args):
     noupdatecheck, debug_console, inpath = _parse_args(args)
     if len(args) > 3 or '--help' in args:
-        print __doc__
+        print(__doc__)
         sys.exit()
     try:
         _run(inpath, not noupdatecheck, debug_console)
@@ -80,7 +81,7 @@ def _parse_args(args):
         return False, False, None
     noupdatecheck = '--noupdatecheck' in args
     debug_console = '--debugconsole' in args
-    inpath = args[-1] if args[-1] not in ['--noupdatecheck', '--debugconsole'] \
+    inpath = args[-1] if args[-1] not in ['--noupdatecheck', '--debugconsole']\
         else None
     return noupdatecheck, debug_console, inpath
 
@@ -105,19 +106,17 @@ def _show_old_wxpython_warning_if_needed(parent=None):
     if wx.VERSION >= (2, 8, 12, 1):
         return
     title = 'Please upgrade your wxPython installation'
-    message = ('RIDE officially supports wxPython 2.8.12.1, 3.0.2 and newer releases in 3.0 series. '
-               'Your current version is %s.\n\n'
-               'Older wxPython versions are known to miss some features used by RIDE. '
-               'Notice also that wxPython 3.0 is not yet supported.\n\n'
-               'wxPython 2.8.12.1 packages can be found from\n'
-               'http://sourceforge.net/projects/wxpython/files/wxPython/2.8.12.1/.'
-               % wx.VERSION_STRING)
+    message = ("RIDE officially supports wxPython 2.8.12.1, 3.0.2 and newer \
+releases in 3.0 series. Your current version is {0}.\n\n \
+Older wxPython versions are known to miss some features used by RIDE.\n \
+wxPython 2.8.12.1 packages can be found from\n \
+http://sourceforge.net/projects/wxpython/files/wxPython/2.8.12.1/.".format(
+        wx.VERSION_STRING))
     style = wx.ICON_EXCLAMATION
     if not parent:
-        _ = wx.PyApp()
-        parent = wx.Frame(None, size=(0,0))
+        _ = wx.App()
+        parent = wx.Frame(None, size=(0, 0))
     wx.MessageDialog(parent, message, title, style).ShowModal()
-
 
 if __name__ == '__main__':
     main(sys.argv[1:])

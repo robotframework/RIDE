@@ -40,7 +40,7 @@ class LogPlugin(Plugin):
         self._log = []
         self._window = None
         self._path = os.path.join(
-            tempfile.gettempdir(), '{}-ride.log'.format(uuid.uuid4()))
+            tempfile.gettempdir(), '{0}-ride.log'.format(uuid.uuid4()))
         self._outfile = None
         self._remove_old_log_files()
         atexit.register(self._close)
@@ -56,7 +56,7 @@ class LogPlugin(Plugin):
             try:
                 os.remove(fname)
             except OSError or IOError as e:
-                sys.stderr.write("{}".format(e))
+                sys.stderr.write("{0}".format(e))
 
     @property
     def _logfile(self):
@@ -118,7 +118,7 @@ class _LogWindow(wx.Panel):
         self.Sizer.add_expanding(self._output)
 
     def _add_to_notebook(self, notebook):
-        notebook.add_tab(self, 'Log', allow_closing=True)
+        notebook.add_tab(self, 'RIDE Log', allow_closing=True)
         notebook.show_tab(self)
         self._output.SetSize(self.Size)
 

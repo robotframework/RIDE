@@ -56,7 +56,6 @@ class GridEditor(grid.Grid):
         if update_history:
             self._update_history()
         self._expand_if_necessary(row, col)
-        print self.GetCellSize(row, col)
         self.SetCellValue(row, col, value)
 
     def _expand_if_necessary(self, row, col):
