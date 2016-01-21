@@ -43,7 +43,7 @@ try:
     wxversion.select(supported_versions)
     import wx
 except ImportError as e:
-    if "no appropriate 64-bit architecture" in e.message.lower() and \
+    if "no appropriate 64-bit architecture" in "{0}".format(e).lower() and \
        sys.platform == 'darwin':
         print("python should be executed in 32-bit mode with wxPython on OSX.")
     else:
