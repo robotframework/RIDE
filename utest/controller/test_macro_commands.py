@@ -3,8 +3,9 @@ from nose.tools import assert_equals
 
 from robotide.robotapi import TestCaseFile
 from robotide.controller.filecontrollers import TestCaseFileController
-from robotide.publish.messages import RideUserKeywordAdded, RideUserKeywordRemoved,\
-    RideTestCaseAdded, RideTestCaseRemoved, RideItemNameChanged
+from robotide.publish.messages import RideUserKeywordAdded,\
+    RideUserKeywordRemoved, RideTestCaseAdded, RideTestCaseRemoved,\
+    RideItemNameChanged
 from robotide.controller.commands import AddKeyword, RemoveMacro, Undo,\
     AddTestCase, AddKeywordFromCells, RenameTest
 from robotide.publish import PUBLISHER
@@ -16,7 +17,8 @@ class _TestMacroCommands(object):
 
     def setUp(self):
         for listener, topic in [(self._on_keyword_added, RideUserKeywordAdded),
-                                (self._on_keyword_deleted, RideUserKeywordRemoved),
+                                (self._on_keyword_deleted,
+                                 RideUserKeywordRemoved),
                                 (self._on_test_added, RideTestCaseAdded),
                                 (self._on_test_deleted, RideTestCaseRemoved)]:
             PUBLISHER.subscribe(listener, topic)
@@ -99,7 +101,8 @@ class _TestMacroCommands(object):
 
     def _bdd_test(self, prefix, new_kw_name):
         self._exec(AddKeyword(prefix + ' ' + new_kw_name))
-        assert_equals(self._new_keyword.name, self._bdd_name(prefix, new_kw_name))
+        assert_equals(self._new_keyword.name, self._bdd_name(prefix,
+                                                             new_kw_name))
         assert_equals(self._new_keyword.arguments.value, '')
 
     def test_add_keyword_with_bdd_when(self):
@@ -114,7 +117,13 @@ class _TestMacroCommands(object):
         self._bdd_test('And', 'the end')
         self._bdd_test('and', 'really no more')
 
-class TestMacroCommandsInTestCaseContext(_TestMacroCommands, unittest.TestCase):
+    def test_add_keyword_with_bdd_but(self):
+        self._bdd_test('But', 'george awakes')
+        self._bdd_test('but', 'steve says bye')
+
+
+class TestMacroCommandsInTestCaseContext(_TestMacroCommands,
+                                         unittest.TestCase):
 
     def setUp(self):
         _TestMacroCommands.setUp(self)
@@ -124,7 +133,8 @@ class TestMacroCommandsInTestCaseContext(_TestMacroCommands, unittest.TestCase):
         return name
 
 
-class TestMacroCommandsInDataFileContext(_TestMacroCommands, unittest.TestCase):
+class TestMacroCommandsInDataFileContext(_TestMacroCommands,
+                                         unittest.TestCase):
 
     def setUp(self):
         _TestMacroCommands.setUp(self)
