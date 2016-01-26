@@ -305,10 +305,12 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
         if isinstance(controller, ResourceFileController):
             if not controller.is_used():
                 self.SetItemTextColour(node, wx.ColorRGB(0xA9A9A9))
+        self.SetPyData(node, handler_class(controller, self, node, self._controller.settings))
 
-        action_handler = handler_class(
-            controller, self, node, self._controller.settings)
-        self.SetPyData(node, action_handler)
+        # if we have a TestCase node we have to make sure that we retain the checked state
+        if (handler_class == TestCaseHandler and self._checkboxes_for_tests) and \
+                self._test_selection_controller.is_test_selected(controller):
+            self.CheckItem(node, True)
 
         if controller.is_excluded():
             self._set_item_excluded(node)
@@ -412,6 +414,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
 
     def _leaf_item_removed(self, message):
         node = self._controller.find_node_by_controller(message.item)
+        self._test_selection_controller.select(message.item, False)
         self.delete_node(node)
 
     def _test_added(self, message):
@@ -558,7 +561,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
         if not current:  # If tree is not yet in use - do not expand anything.
             self._end_silent_mode()
             return
-        self._uncheck_tests(current)
+
         item = self.GetSelection()
         current_txt = self.GetItemText(item) if item.IsOk() else ''
         # after refresh current and current_txt might have been changed
@@ -592,7 +595,6 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
         self._handle_pending_selection(to_be_selected, new_node)
 
     def _refresh_datafile(self, controller):
-        self._uncheck_tests(controller)
         orig_node = self._get_data_controller_node(controller)
         if orig_node is not None:
             insertion_index = self._get_datafile_index(orig_node)
