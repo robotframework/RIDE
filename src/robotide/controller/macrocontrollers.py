@@ -232,7 +232,7 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
 
     def _remove_bdd_prefix(self, name):
         matcher = name.lower()
-        for match in ['given ', 'when ', 'then ', 'and ']:
+        for match in ['given ', 'when ', 'then ', 'and ', 'but ']:
             if matcher.startswith(match):
                 return name[len(match):]
         return name

@@ -521,7 +521,7 @@ class DatafileRetriever(object):
 
 class _Keywords(object):
 
-    regexp = re.compile("\s*(given|when|then|and)\s*(.*)", re.IGNORECASE)
+    regexp = re.compile("\s*(given|when|then|and|but)\s*(.*)", re.IGNORECASE)
 
     def __init__(self, keywords):
         self.keywords = robotapi.NormalizedDict(ignore=['_'])

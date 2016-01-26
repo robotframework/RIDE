@@ -270,7 +270,7 @@ def _download_and_format_issues():
     base_url = 'http://github.com/robotframework/RIDE/issues/'
     for issue in issues:
         writer.start('tr')
-        link_tmpl = '<a href="{0}{0}">Issue {0}</a>'
+        link_tmpl = '<a href="{}{}">Issue {}</a>'
         row = [link_tmpl.format(base_url, issue.number, issue.number),
                _find_type(issue),
                _find_priority(issue),

@@ -24,7 +24,8 @@ from robotide.namespace.local_namespace import LocalNamespace
 
 class StepController(_BaseController):
 
-    _GIVEN_WHEN_THEN_MATCHER = re.compile(r'^(given|when|then|and)\s*', re.I)
+    _GIVEN_WHEN_THEN_MATCHER = re.compile(r'^(given|when|then|and|but)\s*',
+                                          re.I)
 
     def __init__(self, parent, step):
         self._init(parent, step)
