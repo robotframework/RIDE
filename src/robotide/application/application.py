@@ -87,12 +87,11 @@ class RIDE(wx.App):
                 return maybe_editor
 
     def _load_data(self):
-        # FIXME: wxPython3 hack
-        path = None #self._initial_path or self._get_latest_path()
+        path = self._initial_path or self._get_latest_path()
         if path:
             with self.active_event_loop():
                 # FIXME: wxPython3 hack
-                #observer = LoadProgressObserver(self.frame)
+                # observer = LoadProgressObserver(self.frame)
                 self._controller.load_data(path, None)
 
     def _find_robot_installation(self):
