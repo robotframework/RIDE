@@ -40,7 +40,7 @@ class LogPlugin(Plugin):
         self._log = []
         self._window = None
         self._path = os.path.join(
-            tempfile.gettempdir(), '{0}-ride.log'.format(uuid.uuid4()))
+            tempfile.gettempdir(), '{}-ride.log'.format(uuid.uuid4()))
         self._outfile = None
         self._remove_old_log_files()
         atexit.register(self._close)
@@ -56,7 +56,7 @@ class LogPlugin(Plugin):
             try:
                 os.remove(fname)
             except OSError or IOError as e:
-                sys.stderr.write("{0}".format(e))
+                sys.stderr.write("{}".format(e))
 
     @property
     def _logfile(self):
@@ -103,36 +103,33 @@ class LogPlugin(Plugin):
             self.notebook.show_tab(self._window)
 
 
-class _LogWindow(wx.Panel):
+class _LogWindow(wx.TextCtrl):
 
     def __init__(self, notebook, log):
-        wx.Panel.__init__(self, notebook)
-        self._output = wx.TextCtrl(self, style=wx.TE_READONLY | wx.TE_MULTILINE)
+        wx.TextCtrl.__init__(
+            self, notebook, style=wx.TE_READONLY | wx.TE_MULTILINE)
         self._log = log
+        self._create_ui()
         self._add_to_notebook(notebook)
         self.SetFont(widgets.Font().fixed_log)
-        self.Bind(wx.EVT_SIZE, self.OnSize)
 
     def _create_ui(self):
-        self.SetSizer(widgets.VerticalSizer())
-        self.Sizer.add_expanding(self._output)
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        sizer.Add(self)
+        self.SetSizer(sizer)
 
     def _add_to_notebook(self, notebook):
-        notebook.add_tab(self, 'RIDE Log', allow_closing=True)
+        notebook.add_tab(self, 'Log', allow_closing=True)
         notebook.show_tab(self)
-        self._output.SetSize(self.Size)
 
     def close(self, notebook):
         notebook.delete_tab(self)
 
     def update_log(self):
-        self._output.SetValue(self._decode_log(self._log))
+        self.SetValue(self._decode_log(self._log))
 
     def _decode_log(self, log):
         result = ''
         for msg in log:
             result += _message_to_string(msg)
         return result
-
-    def OnSize(self, evt):
-        self._output.SetSize(self.Size)

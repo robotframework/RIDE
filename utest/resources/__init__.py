@@ -40,4 +40,4 @@ EXTERNAL_RES_UNSORTED_PATH = os.path.join(
 
 PATH_RESOURCE_NAME = 'pathresource.html' if CIF else 'PathResource.html'
 
-PYAPP_REFERENCE = wx.App()
+PYAPP_REFERENCE = wx.PySimpleApp()

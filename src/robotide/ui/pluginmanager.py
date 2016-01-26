@@ -29,7 +29,7 @@ class PluginManager(object):
     def show(self, plugins):
         if not self._tab:
             self._tab = _PluginPanel(self._notebook, plugins, self._show_tab)
-            self._notebook.add_tab(self._tab, 'Manage Plugins', allow_closing=true)
+            self._notebook.add_tab(self._tab, 'Manage Plugins')
         self._show_tab()
 
     def _show_tab(self):
