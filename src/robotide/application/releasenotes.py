@@ -86,7 +86,7 @@ WELCOME_TEXT = """
 # Release notes are updated automatically by package.py script whenever
 # a numbered distribution is created.
 RELEASE_NOTES = """
-<h2>Release notes for 1.5.1</h2>
+<h2>Release notes for 2.0a1</h2>
 <table border="1">
 <tr>
 <td><p><b>ID</b></p></td>
@@ -94,36 +94,6 @@ RELEASE_NOTES = """
 <td><p><b>Priority</b></p></td>
 <td><p><b>Summary</b></p></td>
 </tr>
-<tr>
-<td><a href="http://github.com/robotframework/RIDE/issues/http://github.com/robotframework/RIDE/issues/">Issue http://github.com/robotframework/RIDE/issues/</a></td>
-<td>bug</td>
-<td>high</td>
-<td>Error in RIDE startup</td>
-</tr>
-<tr>
-<td><a href="http://github.com/robotframework/RIDE/issues/http://github.com/robotframework/RIDE/issues/">Issue http://github.com/robotframework/RIDE/issues/</a></td>
-<td>bug</td>
-<td>high</td>
-<td>Problem with opening two ride </td>
-</tr>
-<tr>
-<td><a href="http://github.com/robotframework/RIDE/issues/http://github.com/robotframework/RIDE/issues/">Issue http://github.com/robotframework/RIDE/issues/</a></td>
-<td>bug</td>
-<td>high</td>
-<td>Should not crash when removing old log files fails</td>
-</tr>
-<tr>
-<td><a href="http://github.com/robotframework/RIDE/issues/http://github.com/robotframework/RIDE/issues/">Issue http://github.com/robotframework/RIDE/issues/</a></td>
-<td>bug</td>
-<td>medium</td>
-<td>It is possible to create suite variables with a blank space before the $, @ or &</td>
-</tr>
-<tr>
-<td><a href="http://github.com/robotframework/RIDE/issues/http://github.com/robotframework/RIDE/issues/">Issue http://github.com/robotframework/RIDE/issues/</a></td>
-<td>bug</td>
-<td>medium</td>
-<td>Create Dictionary Variable is missing from the tree context menu</td>
-</tr>
 </table>
-<p>Altogether 5 issues.</p>
+<p>Altogether 0 issues.</p>
 """
