@@ -8,22 +8,26 @@ class FakeStep(StepController):
     def __init__(self):
         pass
 
+
 class UpdatingArgumentsTest(unittest.TestCase):
 
     def test_converting_last_empty_cell_without_args(self):
-        self.assertEqual(FakeStep()._change_last_empty_to_empty_var([], None), [])
+        self.assertEqual(
+            FakeStep()._change_last_empty_to_empty_var([], None), [])
 
     def test_converting_last_empty_cell_with_single_value(self):
-        self.assertEqual(FakeStep()._change_last_empty_to_empty_var([''], None),
-                         ['${EMPTY}'])
+        self.assertEqual(
+            FakeStep()._change_last_empty_to_empty_var([''], None),
+            ['${EMPTY}'])
 
     def test_converting_last_empty_cell_with_multiple_values(self):
-        self.assertEqual(FakeStep()._change_last_empty_to_empty_var(['Foo', '', ''], None),
-                         ['Foo', '', '${EMPTY}'])
+        self.assertEqual(
+            FakeStep()._change_last_empty_to_empty_var(['Foo', '', ''], None),
+            ['Foo', '', '${EMPTY}'])
 
     def test_converting_last_empty_cell_with_comment(self):
-        self.assertEqual(FakeStep()._change_last_empty_to_empty_var([''], 'comment'),
-                         [''])
+        self.assertEqual(
+            FakeStep()._change_last_empty_to_empty_var([''], 'comment'), [''])
 
 
 class StepContainsKeywordTest(unittest.TestCase, FakeStep):
@@ -70,6 +74,10 @@ class StepContainsKeywordTest(unittest.TestCase, FakeStep):
     def test_contains_keyword_with_and_prefix(self):
         self._keyword = 'and Nothing Else'
         self._verify_contains('nothingelse')
+
+    def test_contains_keyword_with_but_prefix(self):
+        self._keyword = 'but on the other end'
+        self._verify_contains('ontheotherend')
 
     def test_does_not_remove_too_many_prefixes(self):
         self._keyword = 'Then And Nothing'

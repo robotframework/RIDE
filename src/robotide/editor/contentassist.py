@@ -37,6 +37,8 @@ class _ContentAssistTextCtrlBase(object):
         self.Bind(wx.EVT_MOVE, self.OnFocusLost)
         self._showing_content_assist = False
         self._row = None
+        self.gherkin_prefix = ''  # Store gherkin prefix from input to add \
+        # later after search is performed
 
     def set_row(self, row):
         self._row = row
@@ -48,7 +50,7 @@ class _ContentAssistTextCtrlBase(object):
         if keycode == wx.WXK_SPACE and event.ControlDown():
             self.show_content_assist()
             return
-        if keycode in [wx.WXK_UP, wx.WXK_DOWN, wx.WXK_PAGEUP, wx.WXK_PAGEDOWN] \
+        if keycode in [wx.WXK_UP, wx.WXK_DOWN, wx.WXK_PAGEUP, wx.WXK_PAGEDOWN]\
                 and self._popup.is_shown():
             self._popup.select_and_scroll(keycode)
             return
@@ -62,14 +64,16 @@ class _ContentAssistTextCtrlBase(object):
             return
         elif self._popup.is_shown() and keycode < 256:
             self._populate_content_assist(event)
-        elif keycode in (ord('1'), ord('2')) and event.ControlDown() and not event.AltDown():
-            self.execute_variable_creator(list_variable=(keycode==ord('2')))
+        elif keycode in (ord('1'), ord('2')) and event.ControlDown() and not \
+                event.AltDown():
+            self.execute_variable_creator(list_variable=(keycode == ord('2')))
         event.Skip()
 
     def execute_variable_creator(self, list_variable=False):
         from_, to_ = self.GetSelection()
         symbol = '@' if list_variable else '$'
-        self.SetValue(self._variable_creator_value(self.Value, symbol, from_, to_))
+        self.SetValue(self._variable_creator_value(
+            self.Value, symbol, from_, to_))
         if from_ == to_:
             self.SetInsertionPoint(from_ + 2)
         else:
@@ -81,7 +85,7 @@ class _ContentAssistTextCtrlBase(object):
     def OnFocusLost(self, event, set_value=True):
         if not self._popup.is_shown():
             return
-        value = self._popup.get_value()
+        value = self.gherkin_prefix + self._popup.get_value()
         if set_value and value:
             self.SetValue(value)
             self.SetInsertionPoint(len(self.Value))
@@ -113,7 +117,14 @@ class _ContentAssistTextCtrlBase(object):
                 return False
             else:
                 value += unichr(event.GetRawKeyCode())
+        (self.gherkin_prefix, value) = self._remove_bdd_prefix(value)
         return self._popup.content_assist_for(value, row=self._row)
+
+    def _remove_bdd_prefix(self, name):
+        for match in ['given ', 'when ', 'then ', 'and ', 'but ']:
+            if name.lower().startswith(match):
+                return (name[:len(match)], name[len(match):])
+        return ('', name)
 
     def _show_content_assist(self):
         height = self.GetSizeTuple()[1]
@@ -121,18 +132,26 @@ class _ContentAssistTextCtrlBase(object):
         self._popup.show(x, y, height)
 
     def content_assist_value(self):
-        return self._popup.content_assist_value(self.Value)
+        suggestion = self._popup.content_assist_value(self.Value)
+        if suggestion is None:
+            return suggestion
+        else:
+            return self.gherkin_prefix + suggestion
 
     def hide(self):
         self._popup.hide()
         self._showing_content_assist = False
 
 
-class ExpandingContentAssistTextCtrl(_ContentAssistTextCtrlBase, ExpandoTextCtrl):
+class ExpandingContentAssistTextCtrl(_ContentAssistTextCtrlBase,
+                                     ExpandoTextCtrl):
 
     def __init__(self, parent, plugin, controller):
-        ExpandoTextCtrl.__init__(self, parent, size=wx.DefaultSize, style=wx.WANTS_CHARS)
-        _ContentAssistTextCtrlBase.__init__(self, SuggestionSource(plugin, controller))
+        ExpandoTextCtrl.__init__(self, parent, size=wx.DefaultSize,
+                                 style=wx.WANTS_CHARS)
+        _ContentAssistTextCtrlBase.__init__(self,
+                                            SuggestionSource(plugin,
+                                                             controller))
 
 
 class ContentAssistTextCtrl(_ContentAssistTextCtrlBase, wx.TextCtrl):
@@ -144,10 +163,11 @@ class ContentAssistTextCtrl(_ContentAssistTextCtrlBase, wx.TextCtrl):
 
 class ContentAssistFileButton(_ContentAssistTextCtrlBase, FileBrowseButton):
 
-    def __init__(self, parent, suggestion_source, label, controller, size=wx.DefaultSize):
+    def __init__(self, parent, suggestion_source, label, controller,
+                 size=wx.DefaultSize):
         FileBrowseButton.__init__(self, parent, labelText=label,
-            size=size, fileMask="*",
-            changeCallback=self.OnFileChanged)
+                                  size=size, fileMask="*",
+                                  changeCallback=self.OnFileChanged)
         self._parent = parent
         self._controller = controller
         self._browsed = False
@@ -183,10 +203,11 @@ class ContentAssistFileButton(_ContentAssistTextCtrlBase, FileBrowseButton):
     def _relative_path(self, value):
         src = self._controller.datafile.source
         if utils.is_same_drive(src, value):
-            path =  relpath(value, src if isdir(src) else dirname(src))
+            path = relpath(value, src if isdir(src) else dirname(src))
         else:
             path = value
-        return path.replace('\\', '/') if context.IS_WINDOWS else path.replace('\\', '\\\\')
+        return path.replace('\\', '/') if context.IS_WINDOWS else\
+            path.replace('\\', '\\\\')
 
 
 class Suggestions(object):
@@ -199,7 +220,7 @@ class Suggestions(object):
     def get_for(self, value, row=None):
         self._previous_choices = self._get_choices(value, row)
         self._previous_value = value
-        return [k for k,_ in self._previous_choices]
+        return [k for k, _ in self._previous_choices]
 
     def get_item(self, name):
         for k, v in self._previous_choices:
@@ -210,7 +231,7 @@ class Suggestions(object):
     def _get_choices(self, value, row):
         if self._previous_value and value.startswith(self._previous_value):
             return [(key, val) for key, val in self._previous_choices
-                                    if utils.normalize(key).startswith(utils.normalize(value))]
+                    if utils.normalize(key).startswith(utils.normalize(value))]
         choices = self._suggestion_source.get_suggestions(value, row)
         duplicate_names = self._get_duplicate_names(choices)
         return self._format_choices(choices, value, duplicate_names)
@@ -225,15 +246,18 @@ class Suggestions(object):
         return results
 
     def _format_choices(self, choices, prefix, duplicate_names):
-        return [(self._format(val, prefix, duplicate_names), val) for val in choices]
+        return [(self._format(val, prefix, duplicate_names), val) for val in
+                choices]
 
     def _format(self, choice, prefix, duplicate_names):
-        return choice.name if self._matches_unique_shortname(choice, prefix, duplicate_names) else choice.longname
+        return choice.name if self._matches_unique_shortname(
+            choice, prefix, duplicate_names) else choice.longname
 
     def _matches_unique_shortname(self, choice, prefix, duplicate_names):
         if isinstance(choice, VariableInfo):
             return True
-        if not utils.normalize(choice.name).startswith(utils.normalize(prefix)):
+        if not utils.normalize(choice.name).startswith(
+                utils.normalize(prefix)):
             return False
         if utils.normalize(choice.name) in duplicate_names:
             return False
@@ -247,7 +271,8 @@ class ContentAssistPopup(object):
         self._main_popup = RidePopupWindow(parent, _PREFERRED_POPUP_SIZE)
         self._details_popup = HtmlPopupWindow(parent, _PREFERRED_POPUP_SIZE)
         self._selection = -1
-        self._list = ContentAssistList(self._main_popup, self.OnListItemSelected,
+        self._list = ContentAssistList(self._main_popup,
+                                       self.OnListItemSelected,
                                        self.OnListItemActivated)
         self._suggestions = Suggestions(suggestion_source)
 
@@ -255,7 +280,8 @@ class ContentAssistPopup(object):
         self._selection = -1
 
     def get_value(self):
-        return self._selection != -1 and self._list.get_text(self._selection) or None
+        return self._selection != -1 and self._list.get_text(
+            self._selection) or None
 
     def content_assist_for(self, value, row=None):
         self._choices = self._suggestions.get_for(value, row=row)
@@ -275,9 +301,12 @@ class ContentAssistPopup(object):
         return None
 
     def show(self, xcoord, ycoord, cell_height):
-        self._main_popup.SetPosition((xcoord, self._move_y_where_room(ycoord, cell_height)))
+        self._main_popup.SetPosition((xcoord,
+                                      self._move_y_where_room(ycoord,
+                                                              cell_height)))
         self._details_popup.SetPosition((self._move_x_where_room(xcoord),
-                                         self._move_y_where_room(ycoord, cell_height)))
+                                         self._move_y_where_room(ycoord,
+                                                                 cell_height)))
         self._main_popup.Show()
         self._list.SetFocus()
 
@@ -303,13 +332,13 @@ class ContentAssistPopup(object):
 
     def select_and_scroll(self, keycode):
         sel = self._list.GetFirstSelected()
-        if keycode == wx.WXK_DOWN :
+        if keycode == wx.WXK_DOWN:
             if sel < (self._list.GetItemCount() - 1):
                 self._select_and_scroll(sel + 1)
             else:
                 self._select_and_scroll(0)
         elif keycode == wx.WXK_UP:
-            if sel > 0 :
+            if sel > 0:
                 self._select_and_scroll(sel - 1)
             else:
                 self._select_and_scroll(self._list.GetItemCount() - 1)
