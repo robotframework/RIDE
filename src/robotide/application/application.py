@@ -88,7 +88,8 @@ class RIDE(wx.App):
 
     def _load_data(self):
         path = self._initial_path or self._get_latest_path()
-        if path:
+        # FIXME: Loading suite on startuup causes segfault in OSX.
+        if path and not context.IS_MAC:
             with self.active_event_loop():
                 # FIXME: wxPython3 hack
                 # observer = LoadProgressObserver(self.frame)
