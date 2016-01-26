@@ -86,7 +86,7 @@ WELCOME_TEXT = """
 # Release notes are updated automatically by package.py script whenever
 # a numbered distribution is created.
 RELEASE_NOTES = """
-<h2>Release notes for 1.5.2</h2>
+<h2>Release notes for 1.5.2.1</h2>
 <table border="1">
 <tr>
 <td><p><b>ID</b></p></td>
@@ -95,23 +95,11 @@ RELEASE_NOTES = """
 <td><p><b>Summary</b></p></td>
 </tr>
 <tr>
-<td><a href="http://github.com/robotframework/RIDE/issues/1529">Issue 1529</a></td>
+<td><a href="http://github.com/robotframework/RIDE/issues/1577">Issue 1577</a></td>
 <td>bug</td>
-<td>medium</td>
-<td>Using '(De)select all tests' option will expand all nodes</td>
-</tr>
-<tr>
-<td><a href="http://github.com/robotframework/RIDE/issues/1527">Issue 1527</a></td>
-<td>enhancement</td>
-<td>medium</td>
-<td>Tag list sort by name in View all tags.</td>
-</tr>
-<tr>
-<td><a href="http://github.com/robotframework/RIDE/issues/1224">Issue 1224</a></td>
-<td>enhancement</td>
-<td>medium</td>
-<td>Keyword auto complete doesn't work when prefixed with Given, Then, And or When</td>
+<td>critical</td>
+<td>RIDE 1.5.2 does not work with wxPython 2.8.12.1</td>
 </tr>
 </table>
-<p>Altogether 3 issues.</p>
+<p>Altogether 1 issues.</p>
 """
