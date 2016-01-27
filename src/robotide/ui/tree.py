@@ -549,7 +549,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
         orig_node = self._get_data_controller_node(controller)
         if orig_node is not None:
             insertion_index = self._get_datafile_index(orig_node)
-            parent = self._get_parent(orig_node)
+            parent = self.GetItemParent(orig_node)
             self._remove_datafile_node(orig_node)
             return self._render_datafile(parent, controller, insertion_index)
 
@@ -580,9 +580,6 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
         if not insertion_index:
             insertion_index = 0
         return insertion_index
-
-    def _get_parent(self, node):
-        return self.GetItemParent(node)
 
     def _remove_datafile_node(self, node):
         for child in self.GetItemChildren(node):
