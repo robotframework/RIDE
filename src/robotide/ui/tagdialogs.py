@@ -34,7 +34,6 @@ class ViewAllTagsDialog(wx.Frame, listmix.ColumnSorterMixin):
         self.tree = self.frame.tree
         self._controller = controller
         self._results = utils.NormalizedDict()
-        self._tags = utils.NormalizedDict()
         self.selected_tests = list()
         self.tagged_test_cases = list()
         self.unique_tags = 0
