@@ -1,23 +1,16 @@
-import os
-from os.path import abspath, join, dirname, isdir, isfile
-from distutils.core import setup
+#!/usr/bin/env python
 
+import sys
+from os.path import abspath, join, dirname
 
-def find_packages(where):
-    def is_package(path):
-        return isdir(path) and isfile(join(path, '__init__.py'))
-    pkgs = []
-    for dirpath, dirs, _ in os.walk(where):
-        for dir_name in dirs:
-            pkg_path = join(dirpath, dir_name)
-            if is_package(pkg_path):
-                pkgs.append('.'.join((pkg_path.split(os.sep)[1:])))
-    return pkgs
+sys.path.append(join(dirname(__file__), 'src'))
+from setuptools import setup, find_packages
 
 ROOT_DIR = dirname(abspath(__file__))
 SOURCE_DIR = 'src'
 
-execfile(join(ROOT_DIR, 'src', 'robotide', 'version.py'))
+version_file = join(ROOT_DIR, 'src', 'robotide', 'version.py')
+exec(compile(open(version_file).read(), version_file, 'exec'))
 
 package_data = {
     'robotide.preferences': ['settings.cfg'],
@@ -40,6 +33,18 @@ Programming Language :: Python
 Topic :: Software Development :: Testing
 """.strip().splitlines()
 
+# This solution is found at http://stackoverflow.com/a/26490820/5889853
+from setuptools.command.install import install
+import os
+
+
+class CustomInstallCommand(install):
+    """Customized setuptools install command - prints a friendly greeting."""
+    def run(self):
+        install.run(self)
+        _ = sys.stderr.write("Creating Desktop Shortcut to RIDE...\n")
+        os.system("ride_postinstall.py -install")
+
 setup(
     name='robotframework-ride',
     version=VERSION,
@@ -59,6 +64,7 @@ setup(
     # Robot Framework package data is not included, but RIDE does not need it.
     # Always install everything, since we may be switching between versions
     options={'install': {'force': True}},
-    scripts=['src/bin/ride.py', 'ride_postinstall.py'],
+    scripts=['src/bin/ride.py', 'src/bin/ride_postinstall.py'],
+    cmdclass={'install': CustomInstallCommand},
     requires=['Pygments']
 )
