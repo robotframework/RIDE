@@ -26,8 +26,8 @@ from robotide.widgets import ButtonWithHandler, PopupMenuItems
 class ViewAllTagsDialog(wx.Frame, listmix.ColumnSorterMixin):
 
     def __init__(self, controller, frame):
-        style = wx.SYSTEM_MENU | wx.CAPTION | wx.CLOSE_BOX | wx.CLIP_CHILDREN | \
-            wx.FRAME_FLOAT_ON_PARENT
+        style = wx.SYSTEM_MENU | wx.CAPTION | wx.CLOSE_BOX | wx.CLIP_CHILDREN\
+            | wx.FRAME_FLOAT_ON_PARENT
         wx.Frame.__init__(self, frame, title="View all tags", style=style)
         self.frame = frame
         self.tree = self.frame.tree
@@ -38,13 +38,13 @@ class ViewAllTagsDialog(wx.Frame, listmix.ColumnSorterMixin):
         self.unique_tags = 0
         self.total_test_cases = 0
         self.itemDataMap = dict()
-        self.sort_state = (1, 0)
+        self.sort_state = (0, 1)
         self._index = -1
         self._build_ui()
         self._make_bindings()
 
-        # init ColumnSorterMixin at the end because it calls self.GetListCtrl and
-        # therefore self._tags_list has to be declared
+        # init ColumnSorterMixin at the end because it calls self.GetListCtrl
+        # and therefore self._tags_list has to be declared
         listmix.ColumnSorterMixin.__init__(self, 2)
 
     def _build_ui(self):
@@ -97,7 +97,6 @@ class ViewAllTagsDialog(wx.Frame, listmix.ColumnSorterMixin):
 
     def _make_bindings(self):
         self.Bind(wx.EVT_CLOSE, self._close_dialog)
-        self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.OnTagSelected)
         self._tags_list.Bind(wx.EVT_LIST_ITEM_RIGHT_CLICK, self.OnRightClick)
         self._tags_list.Bind(wx.EVT_LIST_COL_CLICK, self.OnColClick)
 
@@ -109,14 +108,11 @@ class ViewAllTagsDialog(wx.Frame, listmix.ColumnSorterMixin):
         self.unique_tags = 0
 
         for tag_name, tests in self._results:
-            self._tags_list.SetClientData(self.unique_tags, (tests, tag_name))
-            self._tags_list.InsertStringItem(
-                self.unique_tags, unicode(tag_name))
+            model_entry = self._tags_list.add_tag((tests, tag_name))
             self.tagged_test_cases += tests
-            self._tags_list.SetStringItem(self.unique_tags, 1, str(len(tests)))
-            self._tags_list.SetItemData(self.unique_tags, self.unique_tags)
+            # Mapping the lists model entry with the model for sorting.
             # make tag_name lowercase for the sorting algorithm only
-            self.itemDataMap[self.unique_tags] = (tag_name.lower(), len(tests))
+            self.itemDataMap[model_entry] = (tag_name.lower(), len(tests))
             self.unique_tags += 1
         self._tags_list.SetColumnWidth(1, wx.LIST_AUTOSIZE_USEHEADER)
         self._tags_list.setResizeColumn(1)
@@ -125,7 +121,8 @@ class ViewAllTagsDialog(wx.Frame, listmix.ColumnSorterMixin):
         self.SortListItems(self.sort_state[0], self.sort_state[1])
 
     def update_footer(self):
-        footer_string = "Total tests %d, Tests with tags %d, Unique tags %d, Currently selected tests %d" % \
+        footer_string = "Total tests %d, Tests with tags %d, Unique tags %d," \
+                        " Currently selected tests %d" % \
             (self.total_test_cases, len(self.tagged_test_cases),
              self.unique_tags, len(self.selected_tests))
         self._footer_text.SetLabel(footer_string)
@@ -161,9 +158,11 @@ class ViewAllTagsDialog(wx.Frame, listmix.ColumnSorterMixin):
                     self._unique_tags[tag_name] = [test]
                     self._tagit[tag_name] = [tag]
 
+        isreversed = (self.sort_state[1] != 1)
         self.total_test_cases = len(self._test_cases)
-        self._results = sorted(
-            self._unique_tags.items(), key=lambda x: len(x[1]), reverse=True)
+        self._results = sorted(self._unique_tags.items(),
+                               key=lambda x: str(x[0]).lower,
+                               reverse=isreversed)
 
     def GetListCtrl(self):
         return self._tags_list
@@ -192,10 +191,6 @@ class ViewAllTagsDialog(wx.Frame, listmix.ColumnSorterMixin):
         self._execute()
         for _, tests in self._results:
             self.tree.DeselectTests(tests)
-        for item in self.tree.GetItemChildren():
-            if not isinstance(item.GetData(), ResourceRootHandler or
-                              ResourceFileHandler):
-                self.tree.CollapseAllSubNodes(item)
         self.update_footer()
 
     def OnSelectAll(self, event):
@@ -216,19 +211,19 @@ class ViewAllTagsDialog(wx.Frame, listmix.ColumnSorterMixin):
     def OnShowTestsWithThisTag(self, event):
         if self._index == -1:
             return
-        _, tag_name = self._tags_list.GetClientData(self._index)
+        _, tag_name = self._tags_list.get_tag(self._index)
         RideOpenTagSearch(includes=tag_name, excludes="").publish()
 
     def OnShowTestsWithoutThisTag(self, event):
         if self._index == -1:
             return
-        _, tag_name = self._tags_list.GetClientData(self._index)
+        _, tag_name = self._tags_list.get_tag(self._index)
         RideOpenTagSearch(includes="", excludes=tag_name).publish()
 
     def OnRename(self, event):
         if self._index == -1:
             return
-        tests, tag_name = self._tags_list.GetClientData(self._index)
+        tests, tag_name = self._tags_list.get_tag(self._index)
         tags_to_rename = self._tagit[tag_name.lower()]
         name = wx.GetTextFromUser(
             message="Renaming tag '%s'." % tag_name, default_value=tag_name,
@@ -243,7 +238,7 @@ class ViewAllTagsDialog(wx.Frame, listmix.ColumnSorterMixin):
     def OnDelete(self, event):
         if self._index == -1:
             return
-        tests, tag_name = self._tags_list.GetClientData(self._index)
+        tests, tag_name = self._tags_list.get_tag(self._index)
         tags_to_delete = self._tagit[tag_name]
         if wx.MessageBox(
             "Delete a tag '%s' ?" % tag_name, caption='Confirm',
@@ -260,13 +255,10 @@ class ViewAllTagsDialog(wx.Frame, listmix.ColumnSorterMixin):
         else:
             self.Destroy()
 
-    def OnTagSelected(self, event):
-        self._tags_list.GetItem(event.GetIndex())
-
     def item_in_kw_list_checked(self, index, flag):
         self.selected_tests = list()
         if flag is False:
-            tests, _ = self._tags_list.GetClientData(index)
+            tests, _ = self._tags_list.get_tag(index)
             self.tree.DeselectTests(tests)
         if self._tags_list.get_number_of_checked_items() > 0:
             for tests, _ in self._tags_list.get_checked_items():
@@ -289,21 +281,12 @@ class TagsListCtrl(wx.ListCtrl, listmix.CheckListCtrlMixin,
     def OnCheckItem(self, index, flag):
         if self._dlg:
             self._dlg.item_in_kw_list_checked(index, flag)
-        else:
-            pass
-
-    def get_next_checked_item(self):
-        for i in range(self.GetItemCount()):
-            if self.IsChecked(i):
-                item = self.GetItem(i)
-                return ([i, self.GetClientData(item.GetData()), item])
-        return None
 
     def get_checked_items(self):
         items = []
         for i in range(self.GetItemCount()):
             if self.IsChecked(i):
-                items.append(self.GetClientData(i))
+                items.append(self.get_tag(i))
         return items
 
     def get_number_of_checked_items(self):
@@ -316,14 +299,59 @@ class TagsListCtrl(wx.ListCtrl, listmix.CheckListCtrlMixin,
     def set_dialog(self, dialog):
         self._dlg = dialog
 
-    def SetClientData(self, index, data):
-        self._clientData[index] = data
+    def add_tag(self, tag_to_tests):
+        """ Append a tag with associated tests to the list.
 
-    def GetClientData(self, index):
-        return self._clientData.get(index, None)
+        This method associates the internal model data with the GUI. While the
+        sort order of the GUI can change at any time, the order of the data in
+        the model does not.
+        The entry in the model is referenced by a new id generated by
+        wx.NewId(). This prevents overwriting entries when combining delete and
+        insert statements.
 
-    def RemoveClientData(self, index):
-        del self._clientData[index]
+        Args:
+            index: An int marking the position to insert the row at.
+            tag_to_tests: A tuple mapping tests(list, index 0) to a
+            tag(str, index 1).
+
+        Returns:
+            An int indicating the entry in the model so that it can be
+            associated with the sorting algorithm for example.
+        """
+
+        model_index = wx.NewId()
+        position = self.GetItemCount()
+        self._clientData[model_index] = tag_to_tests
+        self.InsertStringItem(position, unicode(tag_to_tests[1]))
+        self.SetStringItem(position, 1, str(len(tag_to_tests[0])))
+        # associate the model with the GUI
+        self.SetItemData(position, model_index)
+        return model_index
+
+    def get_tag(self, index):
+        """ Get a tag with associated test from the list based on the position
+        in the list.
+
+        Args:
+            index: An int marking the position of the element in the list.
+
+        Returns:
+            A tuple mapping tests(list, index 0) to a tag(str, index 1).
+        """
+
+        model_index = self.GetItemData(index)
+        return self._clientData.get(model_index, None)
+
+    def remove_tag(self, index):
+        """ Remove a tag based on its position in the list.
+
+        Args:
+            index: An int marking the position of the element in the list.
+        """
+
+        model_index = self.GetItemData(index)
+        self.DeleteItem(model_index)
+        del self._clientData[model_index]
 
     def ClearAll(self):
         self.DeleteAllItems()
