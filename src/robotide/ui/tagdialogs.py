@@ -38,7 +38,7 @@ class ViewAllTagsDialog(wx.Frame, listmix.ColumnSorterMixin):
         self.unique_tags = 0
         self.total_test_cases = 0
         self.itemDataMap = dict()
-        self.sort_state = (1, 0)
+        self.sort_state = (1, 1)
         self._index = -1
         self._build_ui()
         self._make_bindings()
@@ -162,8 +162,8 @@ class ViewAllTagsDialog(wx.Frame, listmix.ColumnSorterMixin):
                     self._tagit[tag_name] = [tag]
 
         self.total_test_cases = len(self._test_cases)
-        self._results = sorted(
-            self._unique_tags.items(), key=lambda x: len(x[1]), reverse=True)
+        self._results = sorted(self._unique_tags.items(),
+                               key=lambda x: len(x[1]), reverse=True)
 
     def GetListCtrl(self):
         return self._tags_list
@@ -192,10 +192,12 @@ class ViewAllTagsDialog(wx.Frame, listmix.ColumnSorterMixin):
         self._execute()
         for _, tests in self._results:
             self.tree.DeselectTests(tests)
+        """  Leave the tree as it was (Expanded/Collapsed)
         for item in self.tree.GetItemChildren():
             if not isinstance(item.GetData(), ResourceRootHandler or
                               ResourceFileHandler):
                 self.tree.CollapseAllSubNodes(item)
+        """
         self.update_footer()
 
     def OnSelectAll(self, event):
