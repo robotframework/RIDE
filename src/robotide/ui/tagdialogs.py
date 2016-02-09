@@ -35,7 +35,7 @@ class ViewAllTagsDialog(wx.Frame, listmix.ColumnSorterMixin):
         self._results = utils.NormalizedDict()
         self.selected_tests = list()
         self.tagged_test_cases = list()
-        self.unique_tags = 0
+        #  self.unique_tags = 0
         self.total_test_cases = 0
         self.itemDataMap = dict()
         self.sort_state = (1, 1)
@@ -161,9 +161,11 @@ class ViewAllTagsDialog(wx.Frame, listmix.ColumnSorterMixin):
                     self._unique_tags[tag_name] = [test]
                     self._tagit[tag_name] = [tag]
 
+        isreversed = (self.sort_state[1] != 1)
         self.total_test_cases = len(self._test_cases)
         self._results = sorted(self._unique_tags.items(),
-                               key=lambda x: len(x[1]), reverse=True)
+                               key=lambda x: str(x[0]).lower, reverse=isreversed)
+        #                       key=lambda x: len(x[1]), reverse=isreversed)
 
     def GetListCtrl(self):
         return self._tags_list
