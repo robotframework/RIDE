@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#!/usr/bin/env python
 
 #  Copyright 2008-2015 Nokia Solutions and Networks
 #  

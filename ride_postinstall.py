@@ -62,7 +62,8 @@ def _create_desktop_shortcut_linux():
     try:
         ndesktop = desktop[DEFAULT_LANGUAGE[0][:2]]
         user = subprocess.check_output(['logname']).strip()
-        link = os.path.join("/home", user, ndesktop, "RIDE.desktop")
+        directory = os.path.join("/home", user, ndesktop)
+        link = os.path.join(directory, "RIDE.desktop")
     except KeyError as kerr:
         directory = _askdirectory(title="Locate Desktop Directory",
                                   initialdir=os.path.join(os.path.expanduser(
@@ -71,6 +72,9 @@ def _create_desktop_shortcut_linux():
             sys.exit("Desktop shortcut creation aborted!")
         else:
             link = join(directory, "RIDE.desktop")
+    defaultdir = os.path.join(os.path.expanduser('~'), "Desktop")
+    if exists(defaultdir) and not exists(directory):
+       link = join(defaultdir, "RIDE.desktop")
     if exists(link) or _askyesno("Setup", "Create desktop shortcut?"):
         roboticon = "/usr/lib/python{0}/site-packages/robotide/widgets/robot.p\
 ng".format(sys.version[:3])
