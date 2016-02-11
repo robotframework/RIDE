@@ -35,10 +35,10 @@ class ViewAllTagsDialog(wx.Frame, listmix.ColumnSorterMixin):
         self._results = utils.NormalizedDict()
         self.selected_tests = list()
         self.tagged_test_cases = list()
-        #  self.unique_tags = 0
+        self.unique_tags = 0
         self.total_test_cases = 0
         self.itemDataMap = dict()
-        self.sort_state = (1, 1)
+        self.sort_state = (0, 1)
         self._index = -1
         self._build_ui()
         self._make_bindings()
