@@ -97,7 +97,6 @@ class ViewAllTagsDialog(wx.Frame, listmix.ColumnSorterMixin):
 
     def _make_bindings(self):
         self.Bind(wx.EVT_CLOSE, self._close_dialog)
-        self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.OnTagSelected)
         self._tags_list.Bind(wx.EVT_LIST_ITEM_RIGHT_CLICK, self.OnRightClick)
         self._tags_list.Bind(wx.EVT_LIST_COL_CLICK, self.OnColClick)
 
@@ -264,9 +263,6 @@ class ViewAllTagsDialog(wx.Frame, listmix.ColumnSorterMixin):
         else:
             self.Destroy()
 
-    def OnTagSelected(self, event):
-        self._tags_list.GetItem(event.GetIndex())
-
     def item_in_kw_list_checked(self, index, flag):
         self.selected_tests = list()
         if flag is False:
@@ -293,15 +289,6 @@ class TagsListCtrl(wx.ListCtrl, listmix.CheckListCtrlMixin,
     def OnCheckItem(self, index, flag):
         if self._dlg:
             self._dlg.item_in_kw_list_checked(index, flag)
-        else:
-            pass
-
-    def get_next_checked_item(self):
-        for i in range(self.GetItemCount()):
-            if self.IsChecked(i):
-                item = self.GetItem(i)
-                return ([i, self.GetClientData(item.GetData()), item])
-        return None
 
     def get_checked_items(self):
         items = []
