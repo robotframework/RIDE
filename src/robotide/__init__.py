@@ -14,7 +14,7 @@
 
 """RIDE -- Robot Framework test data editor
 
-Usage: ride.py [--noupdatecheck] [--debugconsole] [inpath]
+Usage: ride.py [--noupdatecheck] [--debugconsole] [--version] [inpath]
 
 RIDE can be started either without any arguments or by giving a path to a test
 data file or directory to be opened.
@@ -22,6 +22,8 @@ data file or directory to be opened.
 To disable update checker use --noupdatecheck.
 
 To start debug console for RIDE problem debugging use --debugconsole option.
+
+To see RIDE's version use --version.
 
 RIDE's API is still evolving while the project is moving towards the 1.0
 release. The most stable, and best documented, module is `robotide.pluginapi`.
@@ -33,7 +35,8 @@ from string import Template
 
 errorMessageTemplate = Template("""$reason
 You need to install wxPython 2.8.12.1 with unicode support to run RIDE.
-wxPython 2.8.12.1 can be downloaded from http://sourceforge.net/projects/wxpython/files/wxPython/2.8.12.1/""")
+wxPython 2.8.12.1 can be downloaded from http://sourceforge.net/projects/wxpyt\
+hon/files/wxPython/2.8.12.1/""")
 supported_versions = ["2.8"]
 
 try:
@@ -46,17 +49,17 @@ try:
 except ImportError as e:
     if "no appropriate 64-bit architecture" in e.message.lower() and \
        sys.platform == 'darwin':
-        print "python should be executed in 32-bit mode with wxPython on OSX."
+        print("python should be executed in 32-bit mode with wxPython on OSX.")
     else:
-        print errorMessageTemplate.substitute(reason="wxPython not found.")
+        print(errorMessageTemplate.substitute(reason="wxPython not found."))
     sys.exit(1)
 except VersionError:
-    print errorMessageTemplate.substitute(reason="Wrong wxPython version.")
+    print(errorMessageTemplate.substitute(reason="Wrong wxPython version."))
     sys.exit(1)
 
 if "ansi" in wx.PlatformInfo:
-    print errorMessageTemplate.substitute(
-        reason="wxPython with ansi encoding is not supported")
+    print(errorMessageTemplate.substitute(
+        reason="wxPython with ansi encoding is not supported"))
     sys.exit(1)
 
 
@@ -67,8 +70,16 @@ sys.path.append(os.path.join(os.path.dirname(__file__), 'spec'))
 def main(*args):
     noupdatecheck, debug_console, inpath = _parse_args(args)
     if len(args) > 3 or '--help' in args:
-        print __doc__
+        print(__doc__)
         sys.exit()
+    if '--version' in args:
+        try:
+            import version
+        except ImportError:
+            print("Error getting RIDE version!")
+            sys.exit(1)
+        print(version.VERSION)
+        sys.exit(0)
     try:
         _run(inpath, not noupdatecheck, debug_console)
     except Exception:
@@ -82,7 +93,7 @@ def _parse_args(args):
         return False, False, None
     noupdatecheck = '--noupdatecheck' in args
     debug_console = '--debugconsole' in args
-    inpath = args[-1] if args[-1] not in ['--noupdatecheck', '--debugconsole'] \
+    inpath = args[-1] if args[-1] not in ['--noupdatecheck', '--debugconsole']\
         else None
     return noupdatecheck, debug_console, inpath
 
@@ -109,15 +120,17 @@ def _show_old_wxpython_warning_if_needed(parent=None):
     title = 'Please upgrade your wxPython installation'
     message = ('RIDE officially supports wxPython 2.8.12.1. '
                'Your current version is %s.\n\n'
-               'Older wxPython versions are known to miss some features used by RIDE. '
+               'Older wxPython versions are known to miss some features used b\
+y RIDE. '
                'Notice also that wxPython 3.0 is not yet supported.\n\n'
                'wxPython 2.8.12.1 packages can be found from\n'
-               'http://sourceforge.net/projects/wxpython/files/wxPython/2.8.12.1/.'
+               'http://sourceforge.net/projects/wxpython/files/wxPython/2.8.12\
+.1/.'
                % wx.VERSION_STRING)
     style = wx.ICON_EXCLAMATION
     if not parent:
-        _ = wx.PySimpleApp()
-        parent = wx.Frame(None, size=(0,0))
+        _ = wx.App()
+        parent = wx.Frame(None, size=(0, 0))
     wx.MessageDialog(parent, message, title, style).ShowModal()
 
 
