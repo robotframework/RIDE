@@ -12,3 +12,4 @@ RIDE.wiki
 .spyderworkspace
 rfgen.py
 MANIFEST
+*.iml
