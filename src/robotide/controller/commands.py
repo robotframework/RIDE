@@ -290,8 +290,8 @@ class RenameKeywordOccurrences(_ReversibleCommand):
         self._occurrences = None
 
     def _check_gherkin(self, new_name, original_name):
-        was_gherkin, keyword_name = self._get_gerkin(original_name)
-        is_gherkin, new_keyword_name = self._get_gerkin(new_name)
+        was_gherkin, keyword_name = self._get_gherkin(original_name)
+        is_gherkin, new_keyword_name = self._get_gherkin(new_name)
         if was_gherkin and not is_gherkin:
             keyword_name = original_name
         if not was_gherkin and is_gherkin:
@@ -306,7 +306,7 @@ class RenameKeywordOccurrences(_ReversibleCommand):
                 keyword_name = original_name
         return keyword_name, new_keyword_name
 
-    def _get_gerkin(self, original_name):
+    def _get_gherkin(self, original_name):
         keyword_value = re.sub(self._gherkin_prefix, '', original_name)
         value_is_gherkin = (keyword_value != original_name)
         return value_is_gherkin, keyword_value
