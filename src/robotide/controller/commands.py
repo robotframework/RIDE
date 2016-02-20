@@ -15,6 +15,7 @@
 from itertools import chain
 import time
 import os
+import re
 
 from robotide.namespace.embeddedargs import EmbeddedArgsHandler
 from robotide.publish.messages import RideSelectResource, RideFileNameChanged,\
@@ -278,12 +279,37 @@ class NullObserver(object):
 
 class RenameKeywordOccurrences(_ReversibleCommand):
 
+    _gherkin_prefix = re.compile('^(Given|When|Then|And|But) ', re.IGNORECASE)
+
     def __init__(self, original_name, new_name, observer, keyword_info=None):
-        self._original_name = original_name
-        self._new_name = new_name
+        self._original_name, self._new_name = self._check_gherkin(new_name,
+                                                                  original_name
+                                                                  )
         self._observer = observer
         self._keyword_info = keyword_info
         self._occurrences = None
+
+    def _check_gherkin(self, new_name, original_name):
+        was_gherkin, keyword_name = self._get_gherkin(original_name)
+        is_gherkin, new_keyword_name = self._get_gherkin(new_name)
+        if was_gherkin and not is_gherkin:
+            keyword_name = original_name
+        if not was_gherkin and is_gherkin:
+            # When we change non-gherkin to gherkin, the keyword changes too.
+            # The workaround is not to Rename keyword, but only edit field.
+            new_keyword_name = new_name
+        if was_gherkin and is_gherkin:
+            # Check if the first word has changed
+            if original_name.split(' ', 1)[0].lower() != new_name.split(
+                    ' ', 1)[0].lower():
+                new_keyword_name = new_name
+                keyword_name = original_name
+        return keyword_name, new_keyword_name
+
+    def _get_gherkin(self, original_name):
+        keyword_value = re.sub(self._gherkin_prefix, '', original_name)
+        value_is_gherkin = (keyword_value != original_name)
+        return value_is_gherkin, keyword_value
 
     def _params(self):
         return (self._original_name, self._new_name,
