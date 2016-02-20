@@ -689,6 +689,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
                 self._expand_or_collapse_nodes(child, callback)
 
     def _for_all_tests(self, item, func):
+        item_was_expanded = self.IsExpanded(item)
         if not self.HasAGWFlag(customtreectrl.TR_HIDE_ROOT) or \
                 item != self.GetRootItem():
             if isinstance(item.GetData(), ResourceRootHandler or
@@ -706,7 +707,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
         for child in item.GetChildren():
             self._for_all_tests(child, func)
 
-        if not is_item_expanded:
+        if not item_was_expanded:
             self.Collapse(item)
 
     def _for_all_drawn_tests(self, item, func):
