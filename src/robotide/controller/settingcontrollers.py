@@ -422,6 +422,8 @@ class VariableController(_SettingController):
     def validate_name(self, new_name):
         if variablematcher.is_scalar_variable(self.name):
             return self.parent.validate_scalar_variable_name(new_name, self)
+        if variablematcher.is_dict_variable(self.name):
+            return self.parent.validate_dict_variable_name(new_name, self)
         return self.parent.validate_list_variable_name(new_name, self)
 
     def __eq__(self, other):
