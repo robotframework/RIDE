@@ -4,7 +4,7 @@ Default Tags      This is Default
 
 *** Test Cases ***
 Dummy Test #1
-    [Tags]    Random
+    [Tags]    Random    Áção
     No Operation
 
 Dummy Test #2
