@@ -74,8 +74,8 @@ def _parse_args(args):
         return False, False, None
     noupdatecheck = '--noupdatecheck' in args
     debug_console = '--debugconsole' in args
-    inpath = args[-1] if args[-1] not in ['--noupdatecheck', '--debugconsole'] \
-        else None
+    inpath = args[-1] if args[-1] not in ['--noupdatecheck',
+                                          '--debugconsole'] else None
     return noupdatecheck, debug_console, inpath
 
 
@@ -89,7 +89,7 @@ def _run(inpath=None, updatecheck=True, debug_console=False):
     if inpath:
         inpath = unicode(inpath, sys.getfilesystemencoding())
     ride = RIDE(inpath, updatecheck)
-    _show_old_wxpython_warning_if_needed(ride.frame)
+    wx.CallAfter(_show_old_wxpython_warning_if_needed, ride.frame)
     if debug_console:
         debugconsole.start(ride)
     ride.MainLoop()
@@ -104,7 +104,7 @@ def _show_old_wxpython_warning_if_needed(parent=None):
                        "\n"
                        "There are significant changes in newer wxPython "
                        "versions. Notice that RIDE is still under development "
-                       "for wxPython 3.0.2 and newer (wxPython-Phoenix)."
+                       "for wxPython 3.0.2 and newer (wxPython-Phoenix). "
                        "wxPython 2.8.12.1 packages can be found from "
                        "http://sourceforge.net/projects/wxpython/files/"
                        "wxPython/2.8.12.1/."
@@ -114,26 +114,29 @@ def _show_old_wxpython_warning_if_needed(parent=None):
                 _ = wx.App()
                 parent = wx.Frame(None, size=(0, 0))
             sys.stderr.write("{0}\n{1}\n".format(title, message))
-            wx.MessageDialog(parent, message, title, style).ShowModal()
-        return
-    title = "Please upgrade your wxPython installation"
-    message = ("RIDE officially supports wxPython 2.8.12.1. "
-               "Your current version is %s. "
-               "\n"
-               "Older wxPython versions are known to miss some features used "
-               "by RIDE. "
-               "Notice also that wxPython 3.0 is not yet supported. "
-               "\n"
-               "wxPython 2.8.12.1 packages can be found from "
-               "http://sourceforge.net/projects/wxpython/files/wxPython/"
-               "2.8.12.1/."
-               % wx.VERSION_STRING)
-    style = wx.ICON_EXCLAMATION
-    if not parent:
-        _ = wx.App()
-        parent = wx.Frame(None, size=(0, 0))
-    sys.stderr.write("{0}\n{1}\n".format(title, message))
-    wx.MessageDialog(parent, message, title, style).ShowModal()
+            wx.MessageDialog(parent, message=message, caption=title,
+                             style=style).ShowModal()
+    else:
+        title = "Please upgrade your wxPython installation"
+        message = ("RIDE officially supports wxPython 2.8.12.1. "
+                   "Your current version is %s. "
+                   "\n"
+                   "Older wxPython versions are known to miss some features "
+                   "used "
+                   "by RIDE. "
+                   "Notice also that wxPython 3.0 is considered experimental."
+                   "\n"
+                   "wxPython 2.8.12.1 packages can be found from "
+                   "http://sourceforge.net/projects/wxpython/files/wxPython/"
+                   "2.8.12.1/."
+                   % wx.VERSION_STRING)
+        style = wx.ICON_EXCLAMATION
+        if not parent:
+            _ = wx.App()
+            parent = wx.Frame(None, size=(0, 0))
+        sys.stderr.write("{0}\n{1}\n".format(title, message))
+        wx.MessageDialog(parent, message=message, caption=title,
+                         style=style).ShowModal()
 
 
 if __name__ == '__main__':

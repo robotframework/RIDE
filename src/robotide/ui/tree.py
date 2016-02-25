@@ -17,8 +17,10 @@ from wx.lib.agw import customtreectrl
 from wx.lib.mixins import treemixin
 try:
     from wx import ColorRGB as Colour
+    TREETEXTCOLOUR = Colour(0xA9A9A9)  # wxPython 2.8.12
 except ImportError:
     from wx import Colour
+    TREETEXTCOLOUR = Colour(0xA9, 0xA9, 0xA9)  # wxPython 3.0.2
 
 from robotide.controller.ui.treecontroller import TreeController, \
     TestSelectionController
@@ -308,7 +310,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
 
         if isinstance(controller, ResourceFileController):
             if not controller.is_used():
-                self.SetItemTextColour(node, wx.ColorRGB(0xA9A9A9))
+                self.SetItemTextColour(node, TREETEXTCOLOUR)  # wxPython3 hack
         action_handler = handler_class(
             controller, self, node, self._controller.settings)
         self.SetPyData(node, action_handler)
@@ -345,10 +347,11 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
             self._create_node_with_handler(node, childitem, index)
 
     def _children_of(self, handler):
-        return [v for v in handler.variables if v.has_data()] + list(handler.tests) + \
-            list(handler.keywords)
+        return [v for v in handler.variables if v.has_data()] + \
+               list(handler.tests) + list(handler.keywords)
 
-    def _create_node(self, parent_node, label, img, index=None, with_checkbox=False):
+    def _create_node(self, parent_node, label, img, index=None,
+                     with_checkbox=False):
         node = self._wx_node(parent_node, index, label, with_checkbox)
         self.SetItemImage(node, img.normal, wx.TreeItemIcon_Normal)
         self.SetItemImage(node, img.expanded, wx.TreeItemIcon_Expanded)
