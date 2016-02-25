@@ -90,7 +90,8 @@ class RIDE(wx.App):
         path = self._initial_path or self._get_latest_path()
         if path:
             with self.active_event_loop():
-                observer = LoadProgressObserver(self.frame)
+                # observer = LoadProgressObserver(self.frame)
+                observer = None  # Avoid crash in Windows with wxPython 3
                 self._controller.load_data(path, observer)
 
     def _find_robot_installation(self):
