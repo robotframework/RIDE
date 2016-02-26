@@ -223,7 +223,9 @@ class SeparatorMenuItem(_MenuItem):
 
     def set_wx_menu_item(self, wx_menu_item):
         _MenuItem.set_wx_menu_item(self, wx_menu_item)
-        self._wx_menu_item.SetId(self.id)
+        # Should get  ITEM_SEPARATOR
+        self.id = wx.ID_SEPARATOR
+        # self._wx_menu_item.SetId(self.id)  # Not in wxPhoenix
 
     def _is_enabled(self):
         return False

@@ -62,7 +62,10 @@ _menudata = """
 """
 
 
+# Metaclass fix from http://code.activestate.com/recipes/204197-solving-the-metaclass-conflict/
+from robotide.utils.noconflict import classmaker
 class RideFrame(wx.Frame, RideEventHandler):
+    __metaclass__ = classmaker()
 
     def __init__(self, application, controller):
         wx.Frame.__init__(self, parent=None, title='RIDE',

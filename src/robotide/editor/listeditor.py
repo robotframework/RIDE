@@ -140,8 +140,11 @@ class ListEditorBase(wx.Panel):
         return False
 
 
-class ListEditor(ListEditorBase, RideEventHandler): pass
-
+# Metaclass fix from http://code.activestate.com/recipes/204197-solving-the-metaclass-conflict/
+from robotide.utils.noconflict import classmaker
+class ListEditor(ListEditorBase, RideEventHandler):
+    __metaclass__ = classmaker()
+    pass
 
 class AutoWidthColumnList(wx.ListCtrl, ListCtrlAutoWidthMixin):
 

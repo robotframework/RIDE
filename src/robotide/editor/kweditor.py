@@ -51,7 +51,10 @@ def requires_focus(function):
     return decorated_function
 
 
+# Metaclass fix from http://code.activestate.com/recipes/204197-solving-the-metaclass-conflict/
+from robotide.utils.noconflict import classmaker
 class KeywordEditor(GridEditor, RideEventHandler):
+    __metaclass__ = classmaker()
     _no_cell = (-1, -1)
     _popup_menu_shown = False
     dirty = property(lambda self: self._controller.dirty)

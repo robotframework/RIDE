@@ -43,7 +43,7 @@ class RIDE(wx.App):
 
     def OnInit(self):
         # Needed for SetToolTipString to work
-        wx.HelpProvider_Set(wx.SimpleHelpProvider())
+        wx.HelpProvider.Set(wx.SimpleHelpProvider())  # TODO adjust to wx versions 
         self.settings = RideSettings()
         librarydatabase.initialize_database()
         self.preferences = Preferences(self.settings)
