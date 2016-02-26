@@ -57,8 +57,11 @@ if IS_WINDOWS:
     _TREE_ARGS['style'] |= wx.TR_EDIT_LABELS
 
 
+# Metaclass fix from http://code.activestate.com/recipes/204197-solving-the-metaclass-conflict/
+from robotide.utils.noconflict import classmaker
 class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
            utils.RideEventHandler):
+    __metaclass__ = classmaker()
 
     _RESOURCES_NODE_LABEL = 'External Resources'
 

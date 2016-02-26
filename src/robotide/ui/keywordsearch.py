@@ -376,7 +376,7 @@ class _KeywordList(wx.ListCtrl, ListCtrlAutoWidthMixin):
 
     def _create_image_list(self):
         imglist = wx.ImageList(16, 16)
-        imglist.Add(wx.ArtProvider_GetBitmap(wx.ART_GO_UP, wx.ART_OTHER, (16, 16)))
+        imglist.Add(wx.ArtProvider.GetBitmap(wx.ART_GO_UP, wx.ART_OTHER, (16, 16)))
         self.SetImageList(imglist, wx.IMAGE_LIST_SMALL)
         return imglist
 
