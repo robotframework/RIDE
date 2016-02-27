@@ -64,6 +64,8 @@ _menudata = """
 
 # Metaclass fix from http://code.activestate.com/recipes/204197-solving-the-metaclass-conflict/
 from robotide.utils.noconflict import classmaker
+
+
 class RideFrame(wx.Frame, RideEventHandler):
     __metaclass__ = classmaker()
 
@@ -151,14 +153,17 @@ class RideFrame(wx.Frame, RideEventHandler):
     def OnSize(self, event):
         if not self.IsMaximized():
             self._application.settings['mainframe maximized'] = False
-            self._application.settings['mainframe size'] = self.GetSizeTuple()
+            self._application.settings['mainframe size'] = self.MyGetSize()
+            # DEBUG wxPhoenix .GetSizeTuple()
         event.Skip()
 
     def OnMove(self, event):
         # When the window is Iconized, a move event is also raised, but we
         # don't want to update the position in the settings file
         if not self.IsIconized() and not self.IsMaximized():
-            self._application.settings['mainframe position'] = self.GetPositionTuple()
+            # DEBUG wxPhoenix writes wx.Point(50, 30) instead of just (50, 30)
+            self._application.settings['mainframe position'] = self.MyGetPosition()
+            # DEBUG wxPhoenix self.GetPositionTuple()
         event.Skip()
 
     def OnMaximize(self, event):
@@ -167,6 +172,18 @@ class RideFrame(wx.Frame, RideEventHandler):
 
     def OnReleasenotes(self, event):
         pass
+
+    def MyGetSize(self):
+        if wx.VERSION >= (3, 0, 3, '', ''):  # DEBUG wxPhoenix
+            return self.DoGetSize()
+        else:
+            return self.GetSizeTuple()
+
+    def MyGetPosition(self):
+        if wx.VERSION >= (3, 0, 3, '', ''):  # DEBUG wxPhoenix
+            return self.DoGetPosition()
+        else:
+            return self.GetPositionTuple()
 
     def _allowed_to_exit(self):
         if self.has_unsaved_changes():

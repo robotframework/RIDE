@@ -225,7 +225,7 @@ class SeparatorMenuItem(_MenuItem):
         _MenuItem.set_wx_menu_item(self, wx_menu_item)
         # Should get  ITEM_SEPARATOR
         self.id = wx.ID_SEPARATOR
-        # self._wx_menu_item.SetId(self.id)  # Not in wxPhoenix
+        # self._wx_menu_item.SetId(self.id)  # DEBUG Not in wxPhoenix
 
     def _is_enabled(self):
         return False
@@ -265,8 +265,20 @@ class ToolBar(object):
     def _create_button(self, action):
         button = ToolBarButton(self._frame, self, action)
         name = self._format_button_tooltip(action)
-        self._wx_toolbar.AddLabelTool(button.id, label=name, bitmap=action.icon,
-                                      shortHelp=name, longHelp=action.doc)
+        if wx.VERSION >= (3, 0, 3, '', ''):  # DEBUG wxPhoenix
+            """
+            self._wx_toolbar.AddTool(toolid=button.id, label=name,
+            bitmap=action.icon, bmpDisabled=wx.NullBitmap, kind=wx.ITEM_NORMAL,
+             shortHelpString=name, longHelpString=action.doc)
+            """
+            self._wx_toolbar.AddTool(button.id, name, action.icon,
+                                     wx.NullBitmap, wx.ITEM_NORMAL,
+                                     shortHelpString=name,
+                                     longHelpString=action.doc)
+        else:
+            self._wx_toolbar.AddLabelTool(button.id, label=name,
+                                          bitmap=action.icon, shortHelp=name,
+                                          longHelp=action.doc)
         self._wx_toolbar.Realize()
         self._buttons.append(button)
         return button
