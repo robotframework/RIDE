@@ -14,7 +14,7 @@
 
 """RIDE -- Robot Framework test data editor
 
-Usage: ride.py [--noupdatecheck] [--debugconsole] [inpath]
+Usage: ride.py [--noupdatecheck] [--debugconsole] [--version] [inpath]
 
 RIDE can be started either without any arguments or by giving a path to a test
 data file or directory to be opened.
@@ -22,6 +22,8 @@ data file or directory to be opened.
 To disable update checker use --noupdatecheck.
 
 To start debug console for RIDE problem debugging use --debugconsole option.
+
+To see RIDE's version use --version.
 
 RIDE's API is still evolving while the project is moving towards the 1.0
 release. The most stable, and best documented, module is `robotide.pluginapi`.
@@ -69,6 +71,14 @@ def main(*args):
     if len(args) > 3 or '--help' in args:
         print __doc__
         sys.exit()
+    if '--version' in args:
+        try:
+            from robotide import version
+        except ImportError:
+            print("Error getting RIDE version!")
+            sys.exit(1)
+        print(version.VERSION)
+        sys.exit(0)
     try:
         _run(inpath, not noupdatecheck, debug_console)
     except Exception:
