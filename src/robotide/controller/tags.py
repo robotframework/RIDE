@@ -42,7 +42,7 @@ class Tag(_BaseController):
         return mapping[self.__class__]
 
     def delete(self):
-        self.controller._tags.remove(unicode(self.name))
+        self.controller.remove(unicode(self.name))
         if type(self) is Tag and len(self.controller._tags) == 0:
             if len(self.controller.parent.default_tags.value) > 0:
                 self.controller.set_value("")
