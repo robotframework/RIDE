@@ -61,7 +61,7 @@ def get_variable(value):
 
 def get_variable_basename(value):
     "Return variable without extended variable syntax part"
-    if is_list_variable(value):
+    if is_list_variable(value) or is_dict_variable(value):
         return get_variable(value)
     match = re.match('\${(.+?)[^\s\w-]+.*?}?', value)
     if not match:
@@ -71,7 +71,7 @@ def get_variable_basename(value):
 
 def find_variable_basenames(value):
     return [get_variable_basename(var)
-            for var in re.findall('[\@\$]{.*?}', value)]
+            for var in re.findall('[\@\$\&]{.*?}', value)]
 
 
 def contains_scalar_variable(value):

@@ -35,8 +35,7 @@ from string import Template
 
 errorMessageTemplate = Template("""$reason
 You need to install wxPython 2.8.12.1 with unicode support to run RIDE.
-wxPython 2.8.12.1 can be downloaded from \
-http://sourceforge.net/projects/wxpython/files/wxPython/2.8.12.1/""")
+wxPython 2.8.12.1 can be downloaded from http://sourceforge.net/projects/wxpython/files/wxPython/2.8.12.1/""")
 
 try:
     import wx
@@ -65,7 +64,7 @@ def main(*args):
         sys.exit()
     if '--version' in args:
         try:
-            import version
+            from robotide import version
         except ImportError:
             print("Error getting RIDE version!")
             sys.exit(1)
@@ -84,7 +83,7 @@ def _parse_args(args):
         return False, False, None
     noupdatecheck = '--noupdatecheck' in args
     debug_console = '--debugconsole' in args
-    inpath = args[-1] if args[-1] not in ['--noupdatecheck', '--debugconsole']\
+    inpath = args[-1] if args[-1] not in ['--noupdatecheck', '--debugconsole'] \
         else None
     return noupdatecheck, debug_console, inpath
 
