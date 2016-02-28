@@ -34,12 +34,13 @@ def verify_install():
     try:
         from wx import version
     except ImportError as err:
-        sys.stderr.write("No wxPython installation detected!\n")
-        sys.stderr.write("\n")
-        sys.stderr.write("Please ensure that you have wxPython installed befor\
-e running RIDE.\n")
-        sys.stderr.write("You can obtain wxPython 2.8.12.1 from \
-http://sourceforge.net/projects/wxpython/files/wxPython/2.8.12.1/\n")
+        sys.stderr.write("No wxPython installation detected!"
+                         "\n"
+                         "Please ensure that you have wxPython installed "
+                         "before running RIDE. "
+                         "You can obtain wxPython 2.8.12.1 from "
+                         "http://sourceforge.net/projects/wxpython/files/"
+                         "wxPython/2.8.12.1/\n")
         return False
     else:
         sys.stderr.write("Installation successful.\n")
@@ -125,8 +126,8 @@ def _create_desktop_shortcut_linux(frame=None):
         if not option_q and not option_f:
             if not _askyesno("Setup", "Create desktop shortcut?", frame):
                 return False
-        roboticon = "/usr/lib/python{0}/site-packages/robotide/widgets/robot.p\
-ng".format(sys.version[:3])
+        roboticon = os.path.dirname(os.path.realpath(__file__)).\
+            replace("postinstall", "widgets/robot.png")
         with open(link, "w+") as shortcut:
             shortcut.write("#!/usr/bin/env xdg-open\n[Desktop Entry]\nExec=\
 ride.py\nComment=A Robot Framework IDE\nGenericName=RIDE\n")
