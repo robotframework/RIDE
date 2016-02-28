@@ -78,8 +78,7 @@ class ImageProvider(object):
             icons.AddIcon(self._get_img_path('robot.ico'),
                           wx.BITMAP_TYPE_ANY)
         else:
-            # icons.AddIconFromFile(self._get_img_path('robot.ico'),
-            #                      wx.BITMAP_TYPE_ANY)
-            icons.AddIcon(self._get_img_path('robot.ico'),
+            # DEBUG wxPython 3.0.2
+            icons.AddIconFromFile(self._get_img_path('robot.ico'),
                           wx.BITMAP_TYPE_ANY)
         return icons
