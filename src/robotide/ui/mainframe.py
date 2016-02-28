@@ -174,13 +174,13 @@ class RideFrame(wx.Frame, RideEventHandler):
         pass
 
     def MyGetSize(self):
-        if wx.VERSION >= (3, 0, 3, '', ''):  # DEBUG wxPhoenix
+        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
             return self.DoGetSize()
         else:
             return self.GetSizeTuple()
 
     def MyGetPosition(self):
-        if wx.VERSION >= (3, 0, 3, '', ''):  # DEBUG wxPhoenix
+        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
             return self.DoGetPosition()
         else:
             return self.GetPositionTuple()

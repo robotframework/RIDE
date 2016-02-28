@@ -521,7 +521,7 @@ class TestRunnerPlugin(Plugin):
 
     def MyAddTool(self, obj, toolid, label, bitmap, bmpDisabled=wx.NullBitmap,
                   kind=wx.ITEM_NORMAL, shortHelp="", longHelp=""):
-        if wx.VERSION >= (3, 0, 3, '', ''):  # DEBUG wxPhoenix
+        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
             obj.AddTool(toolid, label, bitmap, bmpDisabled, kind,
                         shortHelp, longHelp)
         else:

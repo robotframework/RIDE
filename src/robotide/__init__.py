@@ -98,7 +98,10 @@ def _run(inpath=None, updatecheck=True, debug_console=False):
     if inpath:
         inpath = unicode(inpath, sys.getfilesystemencoding())
     ride = RIDE(inpath, updatecheck)
-    wx.CallAfter(_show_old_wxpython_warning_if_needed, ride.frame)
+    if wx.VERSION <= (2, 8, 12, 1, ''):
+        _show_old_wxpython_warning_if_needed(ride.frame)
+    else:
+        wx.CallAfter(_show_old_wxpython_warning_if_needed, ride.frame)
     if debug_console:
         debugconsole.start(ride)
     ride.MainLoop()

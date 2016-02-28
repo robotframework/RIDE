@@ -12,7 +12,7 @@
 
 import wx
 
-if wx.VERSION >= (3, 0, 3, '', ''):  # DEBUG wxPhoenix
+if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
     from wx import Sizer  # wxPhoenix
 else:
     from wx import PySizer as Sizer

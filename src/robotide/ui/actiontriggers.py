@@ -265,23 +265,20 @@ class ToolBar(object):
     def _create_button(self, action):
         button = ToolBarButton(self._frame, self, action)
         name = self._format_button_tooltip(action)
-        if wx.VERSION >= (3, 0, 3, '', ''):  # DEBUG wxPhoenix
-            """
-            self._wx_toolbar.AddTool(toolid=button.id, label=name,
-            bitmap=action.icon, bmpDisabled=wx.NullBitmap, kind=wx.ITEM_NORMAL,
-             shortHelpString=name, longHelpString=action.doc)
-            """
-            self._wx_toolbar.AddTool(button.id, name, action.icon,
-                                     wx.NullBitmap, wx.ITEM_NORMAL,
-                                     shortHelpString=name,
-                                     longHelpString=action.doc)
-        else:
-            self._wx_toolbar.AddLabelTool(button.id, label=name,
-                                          bitmap=action.icon, shortHelp=name,
-                                          longHelp=action.doc)
+        self.MyAddTool(self._wx_toolbar, button.id, label=name,
+                       bitmap=action.icon, shortHelp=name, longHelp=action.doc)
         self._wx_toolbar.Realize()
         self._buttons.append(button)
         return button
+
+    def MyAddTool(self, obj, toolid, label, bitmap, bmpDisabled=wx.NullBitmap,
+                  kind=wx.ITEM_NORMAL, shortHelp="", longHelp=""):
+        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
+            obj.AddTool(toolid, label, bitmap, bmpDisabled, kind,
+                        shortHelp, longHelp)
+        else:
+            obj.AddLabelTool(toolid, label, bitmap, shortHelp=shortHelp,
+                             longHelp=longHelp)
 
     def _format_button_tooltip(self, action):
         tooltip = action.name.replace('&', '')

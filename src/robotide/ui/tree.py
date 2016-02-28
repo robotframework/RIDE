@@ -49,7 +49,7 @@ from .images import TreeImageList
 
 _TREE_ARGS = {'style': wx.TR_DEFAULT_STYLE}
 
-if wx.VERSION_STRING >= '2.8.11.0':
+if wx.VERSION >= (2, 8, 11, ''): # wx.VERSION_STRING >= '2.8.11.0':
     _TREE_ARGS['agwStyle'] = \
         customtreectrl.TR_DEFAULT_STYLE | customtreectrl.TR_HIDE_ROOT | \
         customtreectrl.TR_EDIT_LABELS

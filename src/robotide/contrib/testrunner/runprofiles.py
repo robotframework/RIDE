@@ -262,7 +262,7 @@ class PybotProfile(BaseProfile):
             'Arguments for the test run. Arguments are space separated list.')
 
     def MySetToolTip(self, obj, tip):
-        if wx.VERSION >= (3, 0, 3, '', ''):  # DEBUG wxPhoenix
+        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
             obj.SetToolTip(tip)
         else:
             obj.SetToolTipString(tip)

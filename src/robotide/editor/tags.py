@@ -143,7 +143,7 @@ class TagBox(wx.TextCtrl):
         self._colorize()
 
     def MySetToolTip(self, obj, tip):
-        if wx.VERSION >= (3, 0, 3, '', ''):  # DEBUG wxPhoenix
+        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
             obj.SetToolTip(tip)
         else:
             obj.SetToolTipString(tip)
