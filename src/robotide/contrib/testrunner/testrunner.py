@@ -397,7 +397,7 @@ class StreamReaderThread(object):
                 result += self._queue.get_nowait()
             except Empty:
                 pass
-        return result.decode('UTF-8')
+        return result.decode('UTF-8', 'ignore')  # DEBUG
 
 
 # The following two classes implement a small line-buffered socket
