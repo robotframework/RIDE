@@ -109,15 +109,15 @@ def _show_old_wxpython_warning_if_needed(parent=None):
     if wx.VERSION >= (2, 8, 12, 1, ''):
         if wx.VERSION > (2, 8, 12, 1, ''):
             title = "Please be aware of untested wxPython installation"
-            message = ("RIDE officially supports wxPython 2.8.12.1."
-                       "Your current version is %s."
+            message = ("RIDE officially supports wxPython 2.8.12.1. Your "
+                       "current version is %s."
                        "\n"
                        "There are significant changes in newer wxPython "
                        "versions. Notice that RIDE is still under development "
                        "for wxPython 3.0.2 and newer (wxPython-Phoenix). "
-                       "wxPython 2.8.12.1 packages can be found from "
-                       "http://sourceforge.net/projects/wxpython/files/"
-                       "wxPython/2.8.12.1/."
+                       "wxPython 2.8.12.1 packages can be found from http://"
+                       "sourceforge.net/projects/wxpython/files/wxPython/"
+                       "2.8.12.1/."
                        % wx.VERSION_STRING)
             style = wx.OK | wx.ICON_INFORMATION | wx.CENTER
             if not parent:
@@ -128,16 +128,13 @@ def _show_old_wxpython_warning_if_needed(parent=None):
                              style=style).ShowModal()
     else:
         title = "Please upgrade your wxPython installation"
-        message = ("RIDE officially supports wxPython 2.8.12.1. "
-                   "Your current version is %s. "
+        message = ("RIDE officially supports wxPython 2.8.12.1. Your current "
+                   "version is %s."
                    "\n"
                    "Older wxPython versions are known to miss some features "
-                   "used "
-                   "by RIDE. "
-                   "Notice also that wxPython 3.0 is considered experimental."
-                   "\n"
-                   "wxPython 2.8.12.1 packages can be found from "
-                   "http://sourceforge.net/projects/wxpython/files/wxPython/"
+                   "used by RIDE. Notice also that wxPython 3.0 is considered "
+                   "experimental. wxPython 2.8.12.1 packages can be found from"
+                   " http://sourceforge.net/projects/wxpython/files/wxPython/"
                    "2.8.12.1/."
                    % wx.VERSION_STRING)
         style = wx.ICON_EXCLAMATION
