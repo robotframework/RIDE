@@ -131,6 +131,13 @@ class TestTestSelectionController(unittest.TestCase):
         self._tsc.select(self._create_test(), False)
         self.assertTrue(self._tsc.is_empty())
 
+    def test_is_test_selected(self):
+        test = self._create_test()
+        self.assertFalse(self._tsc.is_test_selected(test))
+
+        self._tsc.select(test)
+        self.assertTrue(self._tsc.is_test_selected(test))
+
     def test_adding_tag_to_selected_tests(self):
         tests = [self._create_test('test%d' % i) for i in range(10)]
         for t in tests:

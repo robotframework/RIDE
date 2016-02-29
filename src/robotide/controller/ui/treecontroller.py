@@ -176,6 +176,9 @@ class TestSelectionController(object):
     def is_empty(self):
         return not bool(self._tests)
 
+    def is_test_selected(self, test):
+        return test.longname in self._tests.keys()
+
     def clear_all(self, message=None):
         self._tests = {}
         self.send_selection_changed_message()
@@ -187,7 +190,7 @@ class TestSelectionController(object):
     def select(self, test, selected=True):
         if selected:
             self._tests[test.longname] = test
-        elif test.longname in self._tests:
+        elif self.is_test_selected(test):
             del self._tests[test.longname]
         self.send_selection_changed_message()
 

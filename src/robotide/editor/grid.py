@@ -36,7 +36,6 @@ class GridEditor(grid.Grid):
         self.SetDefaultRenderer(grid.GridCellAutoWrapStringRenderer())
         self._clipboard_handler = ClipboardHandler(self)
         self._history = _GridState()
-        self.SetColMinimalAcceptableWidth(70)
         self.CreateGrid(num_rows, num_cols)
         self._popup_creator = popup_creator or PopupCreator()
         self.settings = settings

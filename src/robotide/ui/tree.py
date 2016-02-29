@@ -15,10 +15,6 @@
 import wx
 from wx.lib.agw import customtreectrl
 from wx.lib.mixins import treemixin
-try:
-    from wx import ColorRGB as Colour
-except ImportError:
-    from wx import Colour
 
 from robotide.controller.ui.treecontroller import TreeController, \
     TestSelectionController
@@ -62,7 +58,8 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
 
     def __init__(self, parent, action_registerer, settings=None):
         self._checkboxes_for_tests = False
-        self._test_selection_controller = self._create_test_selection_controller()
+        self._test_selection_controller = \
+            self._create_test_selection_controller()
         self._controller = TreeController(
             self, action_registerer, settings=settings,
             test_selection=self._test_selection_controller)
@@ -90,7 +87,8 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
         return tsc
 
     def _on_cancel_edit(self, item):
-        le = customtreectrl.TreeEvent(customtreectrl.wxEVT_TREE_END_LABEL_EDIT, self.GetId())
+        le = customtreectrl.TreeEvent(
+            customtreectrl.wxEVT_TREE_END_LABEL_EDIT, self.GetId())
         le._item = item
         le.SetEventObject(self)
         le._label = ""
@@ -172,21 +170,28 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
 
     def _handle_import_setting_message(self, message):
         if message.is_resource():
-            self._set_resource_color(message.import_controller.get_imported_controller())
-            self._set_resource_color(message.import_controller.get_previous_imported_controller())
+            self._set_resource_color(
+                message.import_controller.get_imported_controller())
+            self._set_resource_color(
+                message.import_controller.get_previous_imported_controller())
 
     def _set_resource_color(self, resource_controller):
         if not resource_controller:
             return
         node = self._controller.find_node_by_controller(resource_controller)
         if node:
-            self.SetItemTextColour(node, self._get_resource_text_color(resource_controller))
+            self.SetItemTextColour(
+                node, self._get_resource_text_color(resource_controller))
 
     def _get_resource_text_color(self, resource_controller):
-        return self.GetDefaultAttributes().colFg if resource_controller.is_used() else wx.LIGHT_GREY
+        if resource_controller.is_used():
+            return self.GetDefaultAttributes().colFg
+        else:
+            return wx.LIGHT_GREY
 
     def _testing_started(self, message):
-        self._for_all_drawn_tests(self._root, lambda t: self.SetItemImage(t, ROBOT_IMAGE_INDEX))
+        self._for_all_drawn_tests(
+            self._root, lambda t: self.SetItemImage(t, ROBOT_IMAGE_INDEX))
         self._execution_results = message.results
         self._images.set_execution_results(message.results)
 
@@ -214,7 +219,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
         self._clear_tree_data()
         self._populate_model(model)
         self._refresh_view()
-        self.SetFocus() # Needed for keyboard shortcuts
+        self.SetFocus()  # Needed for keyboard shortcuts
 
     def _clear_tree_data(self):
         self.DeleteAllItems()
@@ -240,7 +245,12 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
         ctrl = message.datafile
         if self._controller.find_node_by_controller(ctrl):
             return
-        parent = self._get_dir_node(ctrl.parent) if ctrl.parent else self._resource_root
+
+        parent = None
+        if ctrl.parent:
+            parent = self._get_dir_node(ctrl.parent)
+        else:
+            parent = self._resource_root
         self._render_datafile(parent, ctrl)
 
     def _get_dir_node(self, ctrl):
@@ -283,17 +293,28 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
 
     def _create_node_with_handler(self, parent_node, controller, index=None):
         handler_class = action_handler_class(controller)
-        node = self._create_node(parent_node, controller.display_name, self._images[controller],
-                                 index, with_checkbox=(handler_class == TestCaseHandler and self._checkboxes_for_tests))
+        with_checkbox = (handler_class == TestCaseHandler and
+                         self._checkboxes_for_tests)
+
+        node = self._create_node(parent_node,
+                                 controller.display_name,
+                                 self._images[controller],
+                                 index,
+                                 with_checkbox=with_checkbox)
+
         if isinstance(controller, ResourceFileController):
             if not controller.is_used():
-                try:
-                    colour = Colour(0xA9A9A9)
-                except:
-                    #wxPython 3.0 compatibilty
-                    colour = Colour(0xA9, 0xA9, 0xA9)
-                self.SetItemTextColour(node, colour)
-        self.SetPyData(node, handler_class(controller, self, node, self._controller.settings))
+                self.SetItemTextColour(node, wx.ColorRGB(0xA9A9A9))
+        action_handler = handler_class(
+            controller, self, node, self._controller.settings)
+        self.SetPyData(node, action_handler)
+
+        # if we have a TestCase node we have to make sure that
+        # we retain the checked state
+        if (handler_class == TestCaseHandler and self._checkboxes_for_tests) \
+                and self._test_selection_controller.is_test_selected(
+                    controller):
+            self.CheckItem(node, True)
         if controller.is_excluded():
             self._set_item_excluded(node)
         return node
@@ -310,7 +331,8 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
         handler = self._controller.get_handler(node)
         if not handler or not handler.can_be_rendered:
             return
-        self._create_child_nodes(node, handler, lambda item: item.is_test_suite)
+        self._create_child_nodes(
+            node, handler, lambda item: item.is_test_suite)
         handler.set_rendered()
 
     def _create_child_nodes(self, node, handler, predicate):
@@ -320,7 +342,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
 
     def _children_of(self, handler):
         return [v for v in handler.variables if v.has_data()] + list(handler.tests) + \
-                list(handler.keywords)
+            list(handler.keywords)
 
     def _create_node(self, parent_node, label, img, index=None, with_checkbox=False):
         node = self._wx_node(parent_node, index, label, with_checkbox)
@@ -333,17 +355,21 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
         if index is not None:
             # blame wxPython for this ugliness
             if isinstance(index, int):
-                return self.InsertItemByIndex(parent_node, index, label, ct_type=ct_type)
+                return self.InsertItemByIndex(
+                    parent_node, index, label, ct_type=ct_type)
             else:
-                return self.InsertItem(parent_node, index, label, ct_type=ct_type)
+                return self.InsertItem(
+                    parent_node, index, label, ct_type=ct_type)
         return self.AppendItem(parent_node, label, ct_type=ct_type)
 
     def add_datafile(self, parent, suite):
-        snode = self._render_datafile(self._get_datafile_node(parent.data), suite)
+        snode = self._render_datafile(
+            self._get_datafile_node(parent.data), suite)
         self.SelectItem(snode)
 
     def add_test(self, parent_node, test):
-        self._add_dataitem(parent_node, test, lambda item: item.is_user_keyword)
+        self._add_dataitem(
+            parent_node, test, lambda item: item.is_user_keyword)
 
     def add_keyword(self, parent_node, kw):
         self._add_dataitem(parent_node, kw, lambda item: item.is_test_suite)
@@ -356,7 +382,9 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
     def _get_or_create_node(self, parent_node, dataitem, predicate):
         if not self.IsExpanded(parent_node):
             self._expand_and_render_children(parent_node)
-            return self._controller.find_node_with_label(parent_node, dataitem.display_name)
+            return self._controller.find_node_with_label(
+                parent_node, dataitem.display_name)
+
         index = self._get_insertion_index(parent_node, predicate)
         return self._create_node_with_handler(parent_node, dataitem, index)
 
@@ -382,11 +410,14 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
                          message.item)
 
     def _variable_added(self, message):
-        self._get_or_create_node(self._get_datafile_node(self.get_selected_datafile()),
-                           message.item, lambda item: not item.is_variable or item.index > message.index)
+        self._get_or_create_node(
+            self._get_datafile_node(self.get_selected_datafile()),
+            message.item,
+            lambda item: not item.is_variable or item.index > message.index)
 
     def _leaf_item_removed(self, message):
         node = self._controller.find_node_by_controller(message.item)
+        self._test_selection_controller.select(message.item, False)
         self.delete_node(node)
 
     def _test_added(self, message):
@@ -438,7 +469,8 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
     def select_node_by_data(self, controller):
         '''Find and select the tree item associated with the given controller.
 
-        Controller can be any of the controllers that are represented in the tree.'''
+        Controller can be any of the controllers that are represented in the
+        tree.'''
         parent_node = self._get_datafile_node(controller.datafile)
         if not parent_node:
             return None
@@ -455,7 +487,8 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
             return
         if not self.IsExpanded(parent_node):
             self._expand_and_render_children(parent_node)
-        node = self._controller.find_node_with_label(parent_node, utils.normalize(uk.name))
+        node = self._controller.find_node_with_label(
+            parent_node, utils.normalize(uk.name))
         if node != self.GetSelection():
             self.SelectItem(node)
 
@@ -468,8 +501,8 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
     def get_selected_datafile(self):
         """Returns currently selected data file.
 
-        If a test or user keyword node is selected, returns parent of that item.
-        """
+        If a test or user keyword node is selected, returns parent of that
+        item."""
         datafile = self._get_selected_datafile_node()
         if not datafile:
             return None
@@ -478,10 +511,14 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
     def get_selected_datafile_controller(self):
         """Returns controller associated with currently active data file.
 
-        If a test or user keyword node is selected, returns parent of that item.
-        """
+        If a test or user keyword node is selected, returns parent of that
+        item."""
         dfnode = self._get_selected_datafile_node()
-        return self._controller.get_handler(dfnode).controller if dfnode else None
+
+        if dfnode:
+            return self._controller.get_handler(dfnode).controller
+        else:
+            return None
 
     def _get_selected_datafile_node(self):
         node = self.GetSelection()
@@ -492,7 +529,8 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
         return node
 
     def get_selected_item(self):
-        """Returns model object associated with currently selected tree node."""
+        """Returns model object associated with currently selected tree node.
+        """
         selection = self.GetSelection()
         if not selection:
             return None
@@ -510,31 +548,37 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
             self._switch_items(node, next, node)
 
     def _switch_items(self, first, second, currently_selected):
-        """Changes the order of given items, first is expected to be directly above the second"""
+        """Changes the order of given items, first is expected to be directly
+        above the second"""
         selection = self.GetItemPyData(currently_selected).controller
         controller = self._controller.get_handler(first).controller
         self.Delete(first)
-        self._create_node_with_handler(self.GetItemParent(second),
-                                              controller, second)
+        self._create_node_with_handler(
+            self.GetItemParent(second), controller, second)
         self.select_node_by_data(selection)
 
     def _refresh_datafile_when_file_set(self, controller):
-        self._start_silent_mode() #Prevent tab selections based on tree item selected events
+        # Prevent tab selections based on tree item selected events
+        self._start_silent_mode()
         current = self.get_selected_datafile_controller()
-        if not current: # If tree is not yet in use - do not expand anything.
+        if not current:  # If tree is not yet in use - do not expand anything.
             self._end_silent_mode()
             return
-        self._uncheck_tests(current)
+
         item = self.GetSelection()
         current_txt = self.GetItemText(item) if item.IsOk() else ''
         # after refresh current and current_txt might have been changed
         node = self._refresh_datafile(controller)
         if node is None:
-            #TODO: Find out why this sometimes happens
+            # TODO: Find out why this sometimes happens
             return
         self._expand_and_render_children(node)
         if current == controller:
-            wx.CallAfter(self.SelectItem, self._controller.find_node_with_label(node, current_txt) or node)
+            select_item = self._controller.find_node_with_label(
+                node, current_txt)
+            if select_item is None:
+                select_item = node
+            wx.CallAfter(self.SelectItem, select_item)
             wx.CallAfter(self._end_silent_mode)
         else:
             self._end_silent_mode()
@@ -554,11 +598,10 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
         self._handle_pending_selection(to_be_selected, new_node)
 
     def _refresh_datafile(self, controller):
-        self._uncheck_tests(controller)
         orig_node = self._get_data_controller_node(controller)
         if orig_node is not None:
             insertion_index = self._get_datafile_index(orig_node)
-            parent = self._get_parent(orig_node)
+            parent = self.GetItemParent(orig_node)
             self._remove_datafile_node(orig_node)
             return self._render_datafile(parent, controller, insertion_index)
 
@@ -590,9 +633,6 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
             insertion_index = 0
         return insertion_index
 
-    def _get_parent(self, node):
-        return self.GetItemParent(node)
-
     def _remove_datafile_node(self, node):
         for child in self.GetItemChildren(node):
             if child in self._datafile_nodes:
@@ -603,9 +643,9 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
     def _handle_pending_selection(self, to_be_selected, parent_node):
         if to_be_selected:
             self._expand_and_render_children(parent_node)
-            wx.CallAfter(self.SelectItem,
-                         self._controller.find_node_with_label(parent_node, to_be_selected))
-
+            select_item = self._controller.find_node_with_label(
+                parent_node, to_be_selected)
+            wx.CallAfter(self.SelectItem, select_item)
 
     def OnSelChanged(self, event):
         node = event.GetItem()
@@ -615,7 +655,10 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
         self._controller.add_to_history(node)
         handler = self._controller.get_handler(node)
         if handler and handler.item:
-            RideTreeSelection(node=node, item=handler.controller, silent=self._silent_mode).publish()
+            RideTreeSelection(
+                node=node,
+                item=handler.controller,
+                silent=self._silent_mode).publish()
         self.SetFocus()
 
     def OnTreeItemExpanding(self, event):
@@ -639,14 +682,18 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
         self._expand_or_collapse_nodes(item, self.Collapse)
 
     def _expand_or_collapse_nodes(self, item, callback):
-        if not self.HasAGWFlag(customtreectrl.TR_HIDE_ROOT) or item != self.GetRootItem():
+        if not self.HasAGWFlag(customtreectrl.TR_HIDE_ROOT) or \
+                item != self.GetRootItem():
             callback(item)
             for child in item.GetChildren():
                 self._expand_or_collapse_nodes(child, callback)
 
     def _for_all_tests(self, item, func):
-        if not self.HasAGWFlag(customtreectrl.TR_HIDE_ROOT) or item != self.GetRootItem():
-            if isinstance(item.GetData(), ResourceRootHandler or ResourceFileHandler):
+        item_was_expanded = self.IsExpanded(item)
+        if not self.HasAGWFlag(customtreectrl.TR_HIDE_ROOT) or \
+                item != self.GetRootItem():
+            if isinstance(item.GetData(), ResourceRootHandler or
+               ResourceFileHandler):
                 return
 
             is_item_expanded = self.IsExpanded(item)
@@ -660,7 +707,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
         for child in item.GetChildren():
             self._for_all_tests(child, func)
 
-        if not is_item_expanded:
+        if not item_was_expanded:
             self.Collapse(item)
 
     def _for_all_drawn_tests(self, item, func):
@@ -684,18 +731,23 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
     def SelectFailedTests(self, item):
         def func(t):
             # FIXME: This information should be in domain model!
-            self.CheckItem(t, checked=(self.GetItemImage(t) == FAILED_IMAGE_INDEX))
+            is_checked = self.GetItemImage(t) == FAILED_IMAGE_INDEX
+            self.CheckItem(t, checked=is_checked)
+
         self._for_all_tests(item, func)
 
     def SelectPassedTests(self, item):
         def func(t):
-            self.CheckItem(t, checked=(self.GetItemImage(t) == PASSED_IMAGE_INDEX))
+            is_checked = self.GetItemImage(t) == PASSED_IMAGE_INDEX
+            self.CheckItem(t, checked=is_checked)
+
         self._for_all_tests(item, func)
 
     def OnTreeItemChecked(self, event):
         node = event.GetItem()
         handler = self._controller.get_handler(node=node)
-        self._test_selection_controller.select(handler.controller, node.IsChecked())
+        self._test_selection_controller.select(
+            handler.controller, node.IsChecked())
 
     def OnItemActivated(self, event):
         node = event.GetItem()
@@ -712,7 +764,10 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
             event.Skip()
 
     def OnRightClick(self, event):
-        handler = self._controller.get_handler(event.GetItem() if hasattr(event, 'GetItem') else None)
+        handler = None
+        if hasattr(event, 'GetItem'):
+            handler = self._controller.get_handler(event.GetItem())
+
         if handler:
             if not self.IsExpanded(handler.node):
                 self.Expand(handler.node)
@@ -751,7 +806,8 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
             self.SetItemText(node, data.item.name)
             self._test_selection_controller.send_selection_changed_message()
         if controller.dirty:
-            self._controller.mark_node_dirty(self._get_datafile_node(controller.datafile))
+            self._controller.mark_node_dirty(
+                self._get_datafile_node(controller.datafile))
 
     def _variable_moved_up(self, data):
         if self._should_update_variable_positions(data):
@@ -762,7 +818,8 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
             self._do_action_if_datafile_node_is_expanded(self.move_down, data)
 
     def _should_update_variable_positions(self, message):
-        return message.item != message.other and message.item.has_data() and message.other.has_data()
+        return message.item != message.other and message.item.has_data() and \
+            message.other.has_data()
 
     def _do_action_if_datafile_node_is_expanded(self, action, data):
         if self.IsExpanded(self._get_datafile_node(data.item.datafile)):
@@ -777,7 +834,8 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
         self._editor.highlight(text)
 
     def node_is_resource_file(self, node):
-        return self._controller.get_handler(node).__class__ == ResourceFileHandler
+        return self._controller.get_handler(node).__class__ == \
+            ResourceFileHandler
 
 
 class TreeLabelEditListener(object):
@@ -788,20 +846,24 @@ class TreeLabelEditListener(object):
         tree.Bind(wx.EVT_TREE_END_LABEL_EDIT, self.OnLabelEdited)
         tree.Bind(wx.EVT_LEFT_DOWN, self.OnLeftDown)
         if IS_WINDOWS:
-            #Delete key does not work in windows without registration
-            action_registerer.register_shortcut(ActionInfo(None, None, action=self.OnDelete, shortcut='Del'))
+            # Delete key does not work in windows without registration
+            delete_key_action = ActionInfo(
+                None, None, action=self.OnDelete, shortcut='Del')
+            action_registerer.register_shortcut(delete_key_action)
         self._editing_label = False
         self._on_label_edit_called = False
 
     def OnBeginLabelEdit(self, event):
-        #See http://code.google.com/p/robotframework-ride/issues/detail?id=756
+        # See http://code.google.com/p/robotframework-ride/issues/detail?id=756
         self._editing_label = True
         if not self._on_label_edit_called:
             self.OnLabelEdit()
-            event.Veto() # On windows CustomTreeCtrl will create Editor component
-            # And we want this to be done by the handler -- as it knows if there should be one or not
-            # And because this will make it work the same way as when pressing F2
-            # .. so in other words there is a bug if we don't Veto this event
+            event.Veto()
+            # On windows CustomTreeCtrl will create Editor component
+            # And we want this to be done by the handler -- as it knows if
+            # there should be one or not. And because this will make it work
+            # the same way as when pressing F2 .. so in other words there is
+            # a bug if we don't Veto this event
 
     def OnLabelEdit(self, event=None):
         if not self._on_label_edit_called:
@@ -814,13 +876,16 @@ class TreeLabelEditListener(object):
     def OnLabelEdited(self, event):
         self._editing_label = False
         self._on_label_edit_called = False
-        self._tree._controller.get_handler(event.GetItem()).end_label_edit(event)
-        # Reset edit control as it doesn't seem to reset it in case the focus goes directly
-        # away from the tree control
+        self._tree._controller.get_handler(event.GetItem()) \
+            .end_label_edit(event)
+
+        # Reset edit control as it doesn't seem to reset it in case the focus
+        # goes directly away from the tree control
         # Use CallAfter to prevent messing up the current end label edit
         # .. and the another CallAfter because of
-        # customtreectrl.TreeTextCtrl#OnChar will call CallAfter(self.Finish) when Enter is pressed
-        # --> Results in PyDeadObject if called after ResetEditControl..
+        # customtreectrl.TreeTextCtrl#OnChar will call CallAfter(self.Finish)
+        # when Enter is pressed --> Results in PyDeadObject if called after
+        # ResetEditControl..
         wx.CallAfter(wx.CallAfter, self._stop_editing)
 
     def _stop_editing(self):
@@ -832,10 +897,10 @@ class TreeLabelEditListener(object):
         editor = self._tree.GetEditControl()
         if editor and wx.Window.FindFocus() == editor:
             start, end = editor.GetSelection()
-            editor.Remove(start, max(end, start+1))
+            editor.Remove(start, max(end, start + 1))
 
     def OnLeftDown(self, event):
-        #See http://code.google.com/p/robotframework-ride/issues/detail?id=756
+        # See http://code.google.com/p/robotframework-ride/issues/detail?id=756
         if IS_WINDOWS and self._editing_label:
             # This method works only on Windows, luckily the issue 756 exists
             # only on Windows
