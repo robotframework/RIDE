@@ -12,13 +12,6 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-try:
-    from wx.lib.pubsub import Publisher
-    WxPublisher = Publisher()
-except ImportError:
-    from wx.lib.pubsub import pub
-    WxPublisher = pub.getDefaultPublisher()
-
 
 class Publisher(object):
 
@@ -74,7 +67,7 @@ class _ListenerWrapper(object):
     def __init__(self, listener, topic):
         self.listener = listener
         self.topic = self._get_topic(topic)
-        WxPublisher.subscribe(self, self.topic)
+        # WxPublisher.subscribe(self, self.topic)
 
     def _get_topic(self, topic):
         if not isinstance(topic, basestring):
@@ -88,7 +81,8 @@ class _ListenerWrapper(object):
         return self._get_topic(topic).startswith(self.topic)
 
     def unsubscribe(self):
-        WxPublisher.unsubscribe(self, self.topic)
+        pass
+        # WxPublisher.unsubscribe(self, self.topic)
 
     def __call__(self, data):
         from messages import RideLogException

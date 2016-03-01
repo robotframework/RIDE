@@ -12,12 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-try:
-    from wx.lib.pubsub import Publisher
-    WxPublisher = Publisher()
-except ImportError:
-    from wx.lib.pubsub import pub
-    WxPublisher = pub.getDefaultPublisher()
+
 import inspect
 import sys
 import traceback
