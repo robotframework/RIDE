@@ -83,7 +83,10 @@ class _ClipboardHandler(object):
         return self._grid.get_cell_edit_control()
 
     def _edit_control_shown(self):
-        return self._grid.IsCellEditControlShown()
+        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
+            return self._grid.IsCellEditControlEnabled()
+        else:
+            return self._grid.IsCellEditControlShown()
 
 
 class _WindowsClipboardHandler(_ClipboardHandler):
@@ -104,8 +107,7 @@ class _WindowsClipboardHandler(_ClipboardHandler):
         self._get_edit_control().Paste()
 
 
-ClipboardHandler = IS_WINDOWS and _WindowsClipboardHandler\
-                                    or _ClipboardHandler
+ClipboardHandler = IS_WINDOWS and _WindowsClipboardHandler or _ClipboardHandler
 
 
 class _GridClipboard(object):
