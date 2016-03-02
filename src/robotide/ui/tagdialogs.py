@@ -106,10 +106,34 @@ class ViewAllTagsDialog(wx.Frame, listmix.ColumnSorterMixin):
         # Make tag_name lowercase for the sorting algorithm only
         tag_name = tag_name.lower()
         # Compare numbers as numeric values
-        # m = re.search(r"([^0-9]*)([0-9]*)", tag_name)
-        m = re.search(r"(\w*)([0-9]*)", tag_name)
-        g = m.groups()
-        return g[0], int(g[1] or 0)
+        # First found by priority is returned
+        m = re.search(r"(.)(\d*$)", tag_name)             # 4th whatever+digits
+        n = re.search(r"^(\w*\D*)(\d*)\w*\D*(\w*|\d*)", tag_name)  # 3rd digits
+        p = re.search(r"^(\W*)(\d*$)", tag_name)            # 2nd symbol+digits
+        q = re.search(r"^(\d*)(.*)", tag_name)            # 1st digits+whatever
+        mg = m.groups() if m is not None else [0, 0]
+        ng = n.groups() if n is not None else [0, 0]
+        pg = p.groups() if p is not None else [0, 0]
+        qg = q.groups() if q is not None else [0, 0]
+        k = [0, 0]
+        if int(qg[0] or -1) != -1:
+            k[0] = int(qg[0])
+            k[1] = qg[1]
+            return k[0], k[1]
+        if int(pg[1] or -1) != -1:
+            k[0] = pg[0]
+            k[1] = int(pg[1])
+            return k[0], k[1]
+        if int(ng[1] or -1) != -1:
+            k[0] = ng[0]  # Special case, numbers in middle and end
+            k[1] = (int(ng[1]) if int(ng[2] or -1) <= 0 else
+                    (str(int(ng[1])).zfill(2)+str(int(ng[2])).zfill(2)))
+            return k[0], k[1]
+        if int(mg[1] or -1) != -1:
+            k[0] = mg[0]
+            k[1] = int(mg[1])
+            return k[0], k[1]
+        return tag_name, 0
 
     def _execute(self):
         self._clear_search_results()
