@@ -102,7 +102,11 @@ class GridEditor(grid.Grid):
 
     def delete(self):
         self._update_history()
-        if self.IsCellEditControlShown():
+        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
+            _iscelleditcontrolshown = self.IsCellEditControlEnabled()
+        else:
+            _iscelleditcontrolshown = self.IsCellEditControlShown()
+        if _iscelleditcontrolshown:
             if IS_WINDOWS:
                 self._delete_from_cell_editor()
         else:

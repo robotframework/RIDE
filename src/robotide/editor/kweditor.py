@@ -45,7 +45,11 @@ def requires_focus(function):
         return self.FindFocus() is None
 
     def decorated_function(self, *args):
-        if self.has_focus() or self.IsCellEditControlShown() or \
+        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
+            _iscelleditcontrolshown = self.IsCellEditControlEnabled()
+        else:
+            _iscelleditcontrolshown = self.IsCellEditControlShown()
+        if self.has_focus() or _iscelleditcontrolshown or \
            _row_header_selected_on_linux(self):
             function(self, *args)
     return decorated_function
@@ -135,7 +139,11 @@ class KeywordEditor(GridEditor, RideEventHandler):
         self.Bind(wx.EVT_KILL_FOCUS, self.OnKillFocus)
 
     def get_tooltip_content(self):
-        if self.IsCellEditControlShown() or self._popup_menu_shown:
+        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
+            _iscelleditcontrolshown = self.IsCellEditControlEnabled()
+        else:
+            _iscelleditcontrolshown = self.IsCellEditControlShown()
+        if _iscelleditcontrolshown or self._popup_menu_shown:
             return ''
         cell = self.cell_under_cursor
         cell_info = self._controller.get_cell_info(cell.Row, cell.Col)
@@ -327,7 +335,11 @@ class KeywordEditor(GridEditor, RideEventHandler):
         self.OnDelete(event)
 
     def OnDelete(self, event=None):
-        if self.IsCellEditControlShown():
+        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
+            _iscelleditcontrolshown = self.IsCellEditControlEnabled()
+        else:
+            _iscelleditcontrolshown = self.IsCellEditControlShown()
+        if _iscelleditcontrolshown:
             # On Windows, Delete key does not work in TextCtrl automatically
             self.delete()
         elif self.has_focus():
@@ -339,7 +351,11 @@ class KeywordEditor(GridEditor, RideEventHandler):
         self._execute_clipboard_command(PasteArea)
 
     def _execute_clipboard_command(self, command_class):
-        if not self.IsCellEditControlShown():
+        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
+            _iscelleditcontrolshown = self.IsCellEditControlEnabled()
+        else:
+            _iscelleditcontrolshown = self.IsCellEditControlShown()
+        if not _iscelleditcontrolshown:
             data = self._clipboard_handler.clipboard_content()
             if data:
                 data = [[data]] if isinstance(data, basestring) else data
@@ -356,7 +372,11 @@ class KeywordEditor(GridEditor, RideEventHandler):
 
     @requires_focus
     def OnUndo(self, event=None):
-        if not self.IsCellEditControlShown():
+        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
+            _iscelleditcontrolshown = self.IsCellEditControlEnabled()
+        else:
+            _iscelleditcontrolshown = self.IsCellEditControlShown()
+        if not _iscelleditcontrolshown:
             self._execute(Undo())
         else:
             self.GetCellEditor(*self.selection.cell).Reset()
@@ -377,13 +397,21 @@ class KeywordEditor(GridEditor, RideEventHandler):
 
     def save(self):
         self._tooltips.hide()
-        if self.IsCellEditControlShown():
+        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
+            _iscelleditcontrolshown = self.IsCellEditControlEnabled()
+        else:
+            _iscelleditcontrolshown = self.IsCellEditControlShown()
+        if _iscelleditcontrolshown:
             cell_editor = self.GetCellEditor(*self.selection.cell)
             cell_editor.EndEdit(self.selection.topleft.row,
                                 self.selection.topleft.col, self)
 
     def show_content_assist(self):
-        if self.IsCellEditControlShown():
+        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
+            _iscelleditcontrolshown = self.IsCellEditControlEnabled()
+        else:
+            _iscelleditcontrolshown = self.IsCellEditControlShown()
+        if _iscelleditcontrolshown:
             self.GetCellEditor(*self.selection.cell).show_content_assist(
                 self.selection.topleft.row)
 
