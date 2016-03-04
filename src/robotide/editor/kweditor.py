@@ -15,6 +15,11 @@
 import wx
 from wx import grid
 
+if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
+    from wx.grid import GridCellEditor
+else:
+    from wx.grid import PyGridCellEditor as GridCellEditor
+
 from robotide.context import IS_MAC
 from robotide.controller.commands import ChangeCellValue, ClearArea,\
     PasteArea, DeleteRows, AddRows, CommentRows, InsertCells, DeleteCells,\
@@ -57,6 +62,8 @@ def requires_focus(function):
 
 # Metaclass fix from http://code.activestate.com/recipes/204197-solving-the-metaclass-conflict/
 from robotide.utils.noconflict import classmaker
+
+
 class KeywordEditor(GridEditor, RideEventHandler):
     __metaclass__ = classmaker()
     _no_cell = (-1, -1)
@@ -563,7 +570,9 @@ work.</li>
 
     def OnCellLeftClick(self, event):
         self._tooltips.hide()
-        if event.ControlDown() or event.CmdDown():
+        # if event.GetModifiers() == wx.MOD_CONTROL:
+        #  or event.CmdDown(): # DEBUG wxPhoenix
+        if event.ControlDown():
             if self._navigate_to_matching_user_keyword(event.Row, event.Col):
                 return
         if not self._has_been_clicked:
@@ -689,10 +698,10 @@ work.</li>
                 old_name, new_name, RenameProgressObserver(self.GetParent())))
 
 
-class ContentAssistCellEditor(grid.PyGridCellEditor):
+class ContentAssistCellEditor(GridCellEditor):  # DEBUG wxPhoenix PyGridCellEdi
 
     def __init__(self, plugin, controller):
-        grid.PyGridCellEditor.__init__(self)
+        GridCellEditor.__init__(self)
         self._plugin = plugin
         self._controller = controller
         self._grid = None
@@ -711,8 +720,9 @@ class ContentAssistCellEditor(grid.PyGridCellEditor):
             self._tc.PushEventHandler(evthandler)
 
     def SetSize(self, rect):
-        self._tc.SetDimensions(rect.x, rect.y, rect.width + 2, rect.height + 2,
-                               wx.SIZE_ALLOW_MINUS_ONE)
+        #TODO it was SetDimensions, change causes problems in 2.8.12.1
+        self._tc.SetSize(rect.x, rect.y, rect.width + 2, rect.height + 2,
+                               wx.SIZE_ALLOW_MINUS_ONE)  # DEBUG wxPhoenix
 
     def SetHeight(self, height):
         self._height = height
