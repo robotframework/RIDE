@@ -167,10 +167,16 @@ class AutoWidthColumnList(wx.ListCtrl, ListCtrlAutoWidthMixin):
     def _insert_data(self, data):
         for row, item in enumerate(data):
             rowdata = self._parent.get_column_values(item)
-            self.InsertStringItem(row, rowdata[0])
-            for i in range(1, len(rowdata)):
-                data = rowdata[i] is not None and rowdata[i] or ''
-                self.SetStringItem(row, i, data)
+            if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
+                self.InsertItem(row, rowdata[0])
+                for i in range(1, len(rowdata)):
+                    data = rowdata[i] is not None and rowdata[i] or ''
+                    self.SetItem(row, i, data)
+            else:
+                self.InsertStringItem(row, rowdata[0])
+                for i in range(1, len(rowdata)):
+                    data = rowdata[i] is not None and rowdata[i] or ''
+                    self.SetStringItem(row, i, data)
             self._add_style(row, item)
 
     def _set_column_widths(self):

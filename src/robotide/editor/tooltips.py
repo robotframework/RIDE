@@ -49,7 +49,10 @@ class GridToolTips(object):
         if window is None:
             return False
         rect = window.GetTopLevelParent().GetScreenRect()
-        return rect.Inside(wx.GetMousePosition())
+        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
+            return rect.Contains(wx.GetMousePosition())
+        else:
+            return rect.Inside(wx.GetMousePosition())
 
     def OnGridEditorHidden(self, event):
         cell = event.Row, event.Col

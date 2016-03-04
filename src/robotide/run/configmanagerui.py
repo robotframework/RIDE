@@ -151,7 +151,10 @@ class _TextEditListCtrl(AutoWidthColumnList, TextEditMixin):
 
     def new_item(self):
         self._new_item_creation = True
-        self.InsertStringItem(self.ItemCount, '')
+        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
+            self.InsertItem(self.ItemCount, '')
+        else:
+            self.InsertStringItem(self.ItemCount, '')
         self.Select(self.ItemCount-1, True)
         self.open_editor(self.last_index)
 

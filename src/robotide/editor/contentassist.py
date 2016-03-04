@@ -391,8 +391,12 @@ class ContentAssistList(wx.ListCtrl):
     def populate(self, data):
         self.ClearAll()
         self.InsertColumn(0, '', width=self.Size[0])
-        for row, item in enumerate(data):
-            self.InsertStringItem(row, item)
+        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
+            for row, item in enumerate(data):
+                self.InsertItem(row, item)
+        else:
+            for row, item in enumerate(data):
+                self.InsertStringItem(row, item)
         self.Select(0)
 
     def get_text(self, index):

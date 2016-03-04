@@ -39,6 +39,8 @@ from .tags import TagsDisplay
 
 # Metaclass fix from http://code.activestate.com/recipes/204197-solving-the-metaclass-conflict/
 from robotide.utils.noconflict import classmaker
+
+
 class SettingEditor(wx.Panel, utils.RideEventHandler):
     __metaclass__ = classmaker()
 
@@ -138,7 +140,12 @@ class SettingEditor(wx.Panel, utils.RideEventHandler):
         self._stop_popup_timer()
 
     def OnPopupTimer(self, event):
-        if self.Parent.tooltip_allowed(self._tooltip):
+        # TODO This prevents tool tip for ex. Template edit field in wxPhoenix
+        try:  # DEBUG wxPhoenix
+            _tooltipallowed= self.Parent.tooltip_allowed(self._tooltip)
+        except AttributeError:
+             return
+        if _tooltipallowed:
             details, title = self._get_details_for_tooltip()
             if details:
                 self._tooltip.set_content(details, title)

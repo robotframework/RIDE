@@ -281,9 +281,15 @@ class ReviewDialog(wx.Frame):
 
     def add_result_unused_keyword(self, index, keyword):
         keyword_info = keyword.info
-        self._unused_kw_list.InsertStringItem(index, keyword_info.name)
+        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
+            self._unused_kw_list.InsertItem(index, keyword_info.name)
+        else:
+            self._unused_kw_list.InsertStringItem(index, keyword_info.name)
         filename = os.path.basename(keyword_info.item.source)
-        self._unused_kw_list.SetStringItem(index, 1, filename)
+        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
+            self._unused_kw_list.SetItem(index, 1, filename)
+        else:
+            self._unused_kw_list.SetStringItem(index, 1, filename)
         self._unused_kw_list.SetItemData(index, index)
         self._unused_kw_list.SetClientData(index, keyword)
 

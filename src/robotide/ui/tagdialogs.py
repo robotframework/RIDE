@@ -330,8 +330,12 @@ class TagsListCtrl(wx.ListCtrl, listmix.CheckListCtrlMixin,
         model_index = wx.NewId()
         position = self.GetItemCount()
         self._clientData[model_index] = tag_to_tests
-        self.InsertStringItem(position, unicode(tag_to_tests[1]))
-        self.SetStringItem(position, 1, str(len(tag_to_tests[0])))
+        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
+            self.InsertItem(position, unicode(tag_to_tests[1]))
+            self.SetItem(position, 1, str(len(tag_to_tests[0])))
+        else:
+            self.InsertStringItem(position, unicode(tag_to_tests[1]))
+            self.SetStringItem(position, 1, str(len(tag_to_tests[0])))
         # associate the model with the GUI
         self.SetItemData(position, model_index)
         return model_index

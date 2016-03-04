@@ -720,9 +720,12 @@ class ContentAssistCellEditor(GridCellEditor):  # DEBUG wxPhoenix PyGridCellEdi
             self._tc.PushEventHandler(evthandler)
 
     def SetSize(self, rect):
-        #TODO it was SetDimensions, change causes problems in 2.8.12.1
-        self._tc.SetSize(rect.x, rect.y, rect.width + 2, rect.height + 2,
-                               wx.SIZE_ALLOW_MINUS_ONE)  # DEBUG wxPhoenix
+        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
+            self._tc.SetSize(rect.x, rect.y, rect.width + 2, rect.height + 2,
+                             wx.SIZE_ALLOW_MINUS_ONE)  # DEBUG wxPhoenix
+        else:
+            self._tc.SetDimensions(rect.x, rect.y, rect.width + 2, rect.height
+                                   + 2, wx.SIZE_ALLOW_MINUS_ONE)
 
     def SetHeight(self, height):
         self._height = height
