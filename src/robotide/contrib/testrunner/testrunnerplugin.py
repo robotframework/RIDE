@@ -464,7 +464,10 @@ class TestRunnerPlugin(Plugin):
         # robot wants to know a fixed size for output, so calculate the
         # width of the window based on average width of a character. A
         # little is subtracted just to make sure there's a little margin
-        out_width, _ = self.out.GetSizeTuple()
+        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
+            out_width, _ = self.out.GetSize()
+        else:
+            out_width, _ = self.out.GetSizeTuple()
         char_width = self.out.GetCharWidth()
         return str(int(out_width/char_width)-10)
 
@@ -614,7 +617,10 @@ class TestRunnerPlugin(Plugin):
         p = self._test_runner.get_profile(profile)
         for child in self.config_sizer.GetChildren():
             child.GetWindow().Hide()
-            self.config_sizer.Remove(child.GetWindow())
+            if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix #TODO fix BoxSizer
+                self.config_sizer.RemoveChild(child.GetWindow())
+            else:
+                self.config_sizer.Remove(child.GetWindow())
         toolbar = p.get_toolbar(self.config_panel)
 
         if toolbar:
