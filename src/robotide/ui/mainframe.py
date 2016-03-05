@@ -40,7 +40,8 @@ _menudata = """
 !&New Project | Create a new top level suite | Ctrlcmd-N
 ---
 !&Open Test Suite | Open file containing tests | Ctrlcmd-O | ART_FILE_OPEN
-!Open &Directory | Open directory containing datafiles | Shift-Ctrlcmd-O | ART_FOLDER_OPEN
+!Open &Directory | Open directory containing datafiles | Shift-Ctrlcmd-O | \
+ART_FOLDER_OPEN
 ---
 &Save | Save selected datafile | Ctrlcmd-S | ART_FILE_SAVE
 !Save &All | Save all changes | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS
@@ -62,7 +63,8 @@ _menudata = """
 """
 
 
-# Metaclass fix from http://code.activestate.com/recipes/204197-solving-the-metaclass-conflict/
+# Metaclass fix from http://code.activestate.com/recipes/
+# 204197-solving-the-metaclass-conflict/
 from robotide.utils.noconflict import classmaker
 
 
@@ -96,7 +98,8 @@ class RideFrame(wx.Frame, RideEventHandler):
             (lambda msg: self.SetStatusText('Saved all files'), RideSaveAll),
             (self._set_label, RideTreeSelection),
             (self._show_validation_error, RideInputValidationError),
-            (self._show_modification_prevented_error, RideModificationPrevented)
+            (self._show_modification_prevented_error,
+             RideModificationPrevented)
         ]:
             PUBLISHER.subscribe(listener, topic)
 
@@ -116,8 +119,9 @@ class RideFrame(wx.Frame, RideEventHandler):
         wx.MessageBox(message.message, 'Validation Error', style=wx.ICON_ERROR)
 
     def _show_modification_prevented_error(self, message):
-        wx.MessageBox('"%s" is read only' % message.controller.datafile_controller.filename,
-                      'Modification prevented',
+        wx.MessageBox("\"%s\" is read only" %
+                      message.controller.datafile_controller.filename,
+                      "Modification prevented",
                       style=wx.ICON_ERROR)
 
     def _init_ui(self):
@@ -162,7 +166,8 @@ class RideFrame(wx.Frame, RideEventHandler):
         # don't want to update the position in the settings file
         if not self.IsIconized() and not self.IsMaximized():
             # DEBUG wxPhoenix writes wx.Point(50, 30) instead of just (50, 30)
-            self._application.settings['mainframe position'] = self.MyGetPosition()
+            self._application.settings['mainframe position'] = \
+                self.MyGetPosition()
             # DEBUG wxPhoenix self.GetPositionTuple()
         event.Skip()
 
@@ -187,9 +192,10 @@ class RideFrame(wx.Frame, RideEventHandler):
 
     def _allowed_to_exit(self):
         if self.has_unsaved_changes():
-            ret = wx.MessageBox('There are unsaved modifications.\n'
-                                'Do you want to save your changes before exiting?',
-                                'Warning', wx.ICON_WARNING|wx.CANCEL|wx.YES_NO)
+            ret = wx.MessageBox("There are unsaved modifications.\n"
+                                "Do you want to save your changes before "
+                                "exiting?", "Warning",
+                                wx.ICON_WARNING | wx.CANCEL | wx.YES_NO)
             if ret == wx.CANCEL:
                 return False
             if ret == wx.YES:
@@ -218,9 +224,9 @@ class RideFrame(wx.Frame, RideEventHandler):
 
     def check_unsaved_modifications(self):
         if self.has_unsaved_changes():
-            ret = wx.MessageBox('There are unsaved modifications.\n'
-                                'Do you want to proceed without saving?',
-                                'Warning', wx.ICON_WARNING|wx.YES_NO)
+            ret = wx.MessageBox("There are unsaved modifications.\n"
+                                "Do you want to proceed without saving?",
+                                "Warning", wx.ICON_WARNING | wx.YES_NO)
             return ret == wx.YES
         return True
 
@@ -234,8 +240,15 @@ class RideFrame(wx.Frame, RideEventHandler):
 
     def OnOpenDirectory(self, event):
         if self.check_unsaved_modifications():
-            path = wx.DirSelector(message='Choose a directory containing Robot files',
-                                  defaultPath=self._controller.default_dir)
+            if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
+                path = wx.DirSelector(message="Choose a directory containing "
+                                              "Robot files",
+                                      default_path=self._controller.default_dir
+                                      )
+            else:
+                path = wx.DirSelector(message="Choose a directory containing "
+                                              "Robot files",
+                                      defaultPath=self._controller.default_dir)
             if path:
                 self.open_suite(path)
 
@@ -250,7 +263,7 @@ class RideFrame(wx.Frame, RideEventHandler):
         self._controller.execute(SaveAll())
 
     def save(self, controller=None):
-        if controller is None :
+        if controller is None:
             controller = self.get_selected_datafile_controller()
         if controller is not None:
             if not controller.has_format():
@@ -259,7 +272,8 @@ class RideFrame(wx.Frame, RideEventHandler):
                 controller.execute(SaveFile())
 
     def _show_dialog_for_files_without_format(self, controller=None):
-        files_without_format = self._controller.get_files_without_format(controller)
+        files_without_format = self._controller.get_files_without_format(
+            controller)
         for f in files_without_format:
             self._show_format_dialog_for(f)
 
@@ -274,7 +288,8 @@ class RideFrame(wx.Frame, RideEventHandler):
 
     def OnViewAllTags(self, event):
         if self._view_all_tags_dialog is None:
-            self._view_all_tags_dialog = ViewAllTagsDialog(self._controller, self)
+            self._view_all_tags_dialog = ViewAllTagsDialog(self._controller,
+                                                           self)
         self._view_all_tags_dialog.show_dialog()
 
     def OnSearchUnusedKeywords(self, event):
@@ -302,10 +317,11 @@ class RideFrame(wx.Frame, RideEventHandler):
         dialog.Show()
 
     def OnReportaProblem(self, event):
-        wx.LaunchDefaultBrowser('http://github.com/robotframework/RIDE/issues')
+        wx.LaunchDefaultBrowser("http://github.com/robotframework/RIDE/issues")
 
     def OnUserGuide(self, event):
-        wx.LaunchDefaultBrowser('http://robotframework.org/robotframework/#user-guide')
+        wx.LaunchDefaultBrowser("http://robotframework.org/robotframework/"
+                                "#user-guide")
 
     def _has_data(self):
         return self._controller.data is not None
@@ -355,7 +371,7 @@ class ActionRegisterer(object):
         menubar_can_be_registered = True
         action = ActionFactory(action_info)
         self._shortcut_registry.register(action)
-        if hasattr(action_info,"menu_name"):
+        if hasattr(action_info, "menu_name"):
             if action_info.menu_name == "Tools":
                 self._tools_items[action_info.position] = action
                 menubar_can_be_registered = False
@@ -366,7 +382,8 @@ class ActionRegisterer(object):
 
     def register_tools(self):
         separator_action = ActionFactory(SeparatorInfo("Tools"))
-        add_separator_after = ["stop test run","search unused keywords","preview","view ride log"]
+        add_separator_after = ["stop test run", "search unused keywords",
+                               "preview", "view ride log"]
         for key in sorted(self._tools_items.iterkeys()):
             self._menubar.register(self._tools_items[key])
             if self._tools_items[key].name.lower() in add_separator_after:
@@ -397,9 +414,11 @@ class AboutDialog(Dialog):
 class ShortcutKeysDialog(Dialog):
 
     def __init__(self):
-        Dialog.__init__(self, title='Shortcut keys for RIDE')
+        Dialog.__init__(self, title="Shortcut keys for RIDE")
         sizer = wx.BoxSizer(wx.HORIZONTAL)
-        sizer.Add(HtmlWindow(self, (350, 400), self._get_platform_specific_shortcut_keys()), 1, flag=wx.EXPAND)
+        sizer.Add(HtmlWindow(self, (350, 400),
+                             self._get_platform_specific_shortcut_keys()), 1,
+                  flag=wx.EXPAND)
         self.SetSizerAndFit(sizer)
 
     def OnKey(self, *args):
