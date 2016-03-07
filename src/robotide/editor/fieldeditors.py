@@ -21,7 +21,7 @@ from robotide.namespace.suggesters import SuggestionSource
 from robotide.widgets import Label
 
 from .contentassist import ContentAssistTextCtrl
-from .grid import GridEditor
+from .gridbase import GridEditor
 
 
 class ValueEditor(wx.Panel):
