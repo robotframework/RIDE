@@ -35,7 +35,7 @@ from robotide import robotapi, utils
 from robotide.utils import RideEventHandler, variablematcher
 from robotide.widgets import PopupMenu, PopupMenuItems
 
-from .grid import GridEditor
+from .gridbase import GridEditor
 from .tooltips import GridToolTips
 from .editordialogs import UserKeywordNameDialog, ScalarVariableDialog,\
     ListVariableDialog
@@ -774,16 +774,15 @@ class ContentAssistCellEditor(GridCellEditor):  # DEBUG wxPhoenix PyGridCellEdi
 class ChooseUsageSearchStringDialog(wx.Dialog):
 
     def __init__(self, cellvalue):
-        from collections import OrderedDict
         wx.Dialog.__init__(self, None, wx.ID_ANY, "Find Where Used",
                            style=wx.DEFAULT_DIALOG_STYLE)
         self.caption = "Please select what you want to check for usage"
-        variables = variablematcher.find_variable_basenames(cellvalue)
-        variables = variablematcher.find_unique(variables)
+        variables = set(variablematcher.find_variable_basenames(cellvalue))
         self.choices = [(False, cellvalue)] + [(True, v) for v in variables]
-        # Bug in wx.RadioBox never shows the '&'
+        # Bug in wx.RadioBox never shows the '&' even if '&&'
+        # See https://github.com/wxWidgets/Phoenix/issues/39
         self.choices_string = ["Complete cell content"] + \
-                              ["Variable " + var.replace("&", "\\x26") for var
+                              ["Variable " + var.replace("&", "&&") for var
                                in variables]
         self._build_ui()
 
