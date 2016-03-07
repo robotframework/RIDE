@@ -1,7 +1,7 @@
 import unittest
 from nose.tools import assert_equals
 
-from robotide.editor.grid import GridEditor
+from robotide.editor.gridbase import GridEditor
 
 from resources import PYAPP_REFERENCE as _ #Needed to be able to create wx components
 

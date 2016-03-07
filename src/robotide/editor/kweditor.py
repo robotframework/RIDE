@@ -30,7 +30,7 @@ from robotide import robotapi, utils
 from robotide.utils import RideEventHandler, variablematcher
 from robotide.widgets import PopupMenu, PopupMenuItems
 
-from .grid import GridEditor
+from .gridbase import GridEditor
 from .tooltips import GridToolTips
 from .editordialogs import UserKeywordNameDialog, ScalarVariableDialog,\
     ListVariableDialog
