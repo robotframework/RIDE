@@ -15,11 +15,6 @@
 import wx
 from wx import grid
 
-if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
-    from wx.grid import GridCellEditor
-else:
-    from wx.grid import PyGridCellEditor as GridCellEditor
-
 from robotide.widgets import PopupCreator, PopupMenuItems
 from robotide.context import IS_WINDOWS
 from clipboard import ClipboardHandler

@@ -932,6 +932,7 @@ class ChangeCellValue(_StepsChangingCommand):
         self._row = row
         self._col = col
         self._value = value
+        print("DEBUG: ChangeCellValue {0} {1} {2} {3}\n".format(self.__class__.__name__, self._row, self._col, self._value))
 
     def change_steps(self, context):
         steps = context.steps
