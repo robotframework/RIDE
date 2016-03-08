@@ -126,6 +126,8 @@ def _show_old_wxpython_warning_if_needed(parent=None):
             sys.stderr.write("{0}\n{1}\n".format(title, message))
             wx.MessageDialog(parent, message=message, caption=title,
                              style=style).ShowModal()
+            parent.Destroy()
+            sys.exit(1)
     else:
         title = "Please upgrade your wxPython installation"
         message = ("RIDE officially supports wxPython 2.8.12.1. Your current "
