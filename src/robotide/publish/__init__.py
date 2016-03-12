@@ -119,8 +119,8 @@ the `robotide.pluginapi` module and plugins should import them there.
 
 import os
 
-from messages import *
-from publisher import PUBLISHER
+from .messages import *
+from .publisher import PUBLISHER
 
 
 def get_html_message(name):
