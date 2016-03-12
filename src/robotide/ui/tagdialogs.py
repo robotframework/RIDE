@@ -141,9 +141,9 @@ class ViewAllTagsDialog(wx.Frame, listmix.ColumnSorterMixin):
         pass
 
     def _search_for_tags(self):
-        self._unique_tags = utils.NormalizedDict()
-        self._tagit = utils.NormalizedDict()
-        self._test_cases = list()
+        unique_tags = utils.NormalizedDict()
+        self._tags = utils.NormalizedDict()
+        self._test_cases = []
         for test in self.frame._controller.all_testcases():
             self._test_cases.append(test)
             for tag in test.tags:
@@ -151,17 +151,17 @@ class ViewAllTagsDialog(wx.Frame, listmix.ColumnSorterMixin):
                     continue
                 else:
                     tag_name = unicode(tag)
-                if tag_name in self._unique_tags:
-                    self._unique_tags[tag_name].append(test)
-                    self._tagit[tag_name].append(tag)
+                if tag_name in unique_tags:
+                    unique_tags[tag_name].append(test)
+                    self._tags[tag_name].append(tag)
                 else:
-                    self._unique_tags[tag_name] = [test]
-                    self._tagit[tag_name] = [tag]
+                    unique_tags[tag_name] = [test]
+                    self._tags[tag_name] = [tag]
 
         isreversed = (self.sort_state[1] != 1)
         self.total_test_cases = len(self._test_cases)
-        self._results = sorted(self._unique_tags.items(),
-                               key=lambda x: str(x[0]).lower,
+        self._results = sorted(unique_tags.items(),
+                               key=lambda item: item[0].lower,
                                reverse=isreversed)
 
     def GetListCtrl(self):
