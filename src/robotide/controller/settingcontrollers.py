@@ -213,6 +213,10 @@ class TagsController(_SettingController):
         tag.set_index(len(self._tags.value))
         self._tags.value.append(tag.name)
 
+    def remove(self, tag):
+        if tag in self._tags.value:
+            self._tags.value.remove(tag)
+
     def __iter__(self):
         forced = self._parent.force_tags
         if self._tags.value is None:

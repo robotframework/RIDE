@@ -16,10 +16,11 @@ import wx
 from wx import grid
 
 from robotide.context import IS_MAC
-from robotide.controller.commands import ChangeCellValue, ClearArea, PasteArea,\
-    DeleteRows, AddRows, CommentRows, InsertCells, DeleteCells, UncommentRows,\
-    Undo, Redo, RenameKeywordOccurrences, ExtractKeyword, AddKeywordFromCells,\
-    MoveRowsUp, MoveRowsDown, ExtractScalar, ExtractList, InsertArea
+from robotide.controller.commands import ChangeCellValue, ClearArea,\
+    PasteArea, DeleteRows, AddRows, CommentRows, InsertCells, DeleteCells,\
+    UncommentRows, Undo, Redo, RenameKeywordOccurrences, ExtractKeyword,\
+    AddKeywordFromCells, MoveRowsUp, MoveRowsDown, ExtractScalar, ExtractList,\
+    InsertArea
 from robotide.controller.cellinfo import TipMessage, ContentType, CellType
 from robotide.publish import (RideItemStepsChanged,
                               RideSettingsChanged, PUBLISHER)
@@ -29,7 +30,7 @@ from robotide import robotapi, utils
 from robotide.utils import RideEventHandler, variablematcher
 from robotide.widgets import PopupMenu, PopupMenuItems
 
-from .grid import GridEditor
+from .gridbase import GridEditor
 from .tooltips import GridToolTips
 from .editordialogs import UserKeywordNameDialog, ScalarVariableDialog,\
     ListVariableDialog
@@ -455,8 +456,8 @@ class KeywordEditor(GridEditor, RideEventHandler):
         details = self._plugin.get_keyword_details(value)
         if not details:
             info = self._controller.get_cell_info(cell.Row, cell.Col)
-            if info.cell_type == CellType.KEYWORD and \
-                     info.content_type == ContentType.STRING:
+            if info.cell_type == CellType.KEYWORD and info.content_type == \
+                    ContentType.STRING:
                 details = """\
         <b>Keyword was not detected by RIDE</b>
         <br>Possible corrections:<br>
@@ -466,7 +467,8 @@ class KeywordEditor(GridEditor, RideEventHandler):
             (Tools / Import Library Spec XML or by adding the XML file with the
             correct name to PYTHONPATH) to enable keyword completion
             for example for Java libraries.
-            Library spec XML can be created using libdoc tool from Robot Framework.</li>
+            Library spec XML can be created using libdoc tool from Robot Frame\
+work.</li>
         </ul>"""
         if details:
             self._tooltips.show_info_at(
@@ -731,10 +733,13 @@ class ChooseUsageSearchStringDialog(wx.Dialog):
         wx.Dialog.__init__(self, None, wx.ID_ANY, "Find Where Used",
                            style=wx.DEFAULT_DIALOG_STYLE)
         self.caption = "Please select what you want to check for usage"
-        variables = utils.find_variable_basenames(cellvalue)
+        variables = set(variablematcher.find_variable_basenames(cellvalue))
         self.choices = [(False, cellvalue)] + [(True, v) for v in variables]
+        # Bug in wx.RadioBox never shows the '&' even if '&&'
+        # See https://github.com/wxWidgets/Phoenix/issues/39
         self.choices_string = ["Complete cell content"] + \
-                              ["Variable " + var for var in variables]
+                              ["Variable " + var.replace("&", "&&") for var
+                               in variables]
         self._build_ui()
 
     def _build_ui(self):
@@ -742,7 +747,8 @@ class ChooseUsageSearchStringDialog(wx.Dialog):
             self, choices=self.choices_string, style=wx.RA_SPECIFY_COLS,
             majorDimension=1)
         sizer = wx.BoxSizer(wx.VERTICAL)
-        sizer.Add(wx.StaticText(self, label=self.caption), 0, wx.ALL | wx.EXPAND, 5)
+        sizer.Add(wx.StaticText(self, label=self.caption), 0, wx.ALL |
+                  wx.EXPAND, 5)
         sizer.Add(self.radiobox_choices, 0, wx.ALL | wx.EXPAND, 5)
         sizer.Add(wx.Button(self, wx.ID_OK, label="Search"),
                   0, wx.ALL | wx.ALIGN_CENTER, 5)
