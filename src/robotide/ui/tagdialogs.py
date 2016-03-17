@@ -224,7 +224,7 @@ class ViewAllTagsDialog(wx.Frame, listmix.ColumnSorterMixin):
         if self._index == -1:
             return
         tests, tag_name = self._tags_list.get_tag(self._index)
-        tags_to_rename = self._tagit[tag_name.lower()]
+        tags_to_rename = self._tags[tag_name.lower()]
         name = wx.GetTextFromUser(
             message="Renaming tag '%s'." % tag_name, default_value=tag_name,
             caption='Rename')
@@ -239,7 +239,7 @@ class ViewAllTagsDialog(wx.Frame, listmix.ColumnSorterMixin):
         if self._index == -1:
             return
         tests, tag_name = self._tags_list.get_tag(self._index)
-        tags_to_delete = self._tagit[tag_name]
+        tags_to_delete = self._tags[tag_name]
         if wx.MessageBox(
             "Delete a tag '%s' ?" % tag_name, caption='Confirm',
                 style=wx.YES_NO | wx.ICON_QUESTION) == wx.YES:
