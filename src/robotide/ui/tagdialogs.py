@@ -102,7 +102,7 @@ class ViewAllTagsDialog(wx.Frame, listmix.ColumnSorterMixin):
         self._tags_list.Bind(wx.EVT_LIST_ITEM_RIGHT_CLICK, self.OnRightClick)
         self._tags_list.Bind(wx.EVT_LIST_COL_CLICK, self.OnColClick)
 
-    def _tag_name_for_sort(self, tag_name):
+    def tag_name_for_sort(self, tag_name):
         # Make tag_name lowercase for the sorting algorithm only
         tag_name = tag_name.lower()
         # Compare numbers as numeric values
@@ -147,7 +147,7 @@ class ViewAllTagsDialog(wx.Frame, listmix.ColumnSorterMixin):
             self.tagged_test_cases += tests
             # Mapping the lists model entry with the model for sorting.
             self.itemDataMap[model_entry] = \
-                (self._tag_name_for_sort(tag_name), len(tests))
+                (self.tag_name_for_sort(tag_name), len(tests))
             self.unique_tags += 1
         self._tags_list.SetColumnWidth(1, wx.LIST_AUTOSIZE_USEHEADER)
         self._tags_list.setResizeColumn(1)
