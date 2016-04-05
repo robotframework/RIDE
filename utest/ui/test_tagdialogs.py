@@ -8,13 +8,16 @@ from robotide.robotapi import (TestDataDirectory, TestCaseFile, ResourceFile,
 from nose.tools import assert_equals
 from robotide.spec.librarymanager import LibraryManager
 from robotide.ui.images import TreeImageList
+from robotide.ui.mainframe import ActionRegisterer
+from robotide.ui.actiontriggers import MenuBar, ToolBar, ShortcutRegistry
+from robotide.ui.notebook import NoteBook
 
 from robotide.application import Project
 from robotide.controller.filecontrollers import (TestDataDirectoryController,
                                                  ResourceFileController)
 
 from robotide import utils
-from resources import PYAPP_REFERENCE, FakeSettings
+from resources import PYAPP_REFERENCE, FakeSettings, FakeApplication
 
 from robotide.ui import tree as st
 from robotide.ui import treenodehandlers as th
@@ -37,7 +40,17 @@ class _FakeMainFrame(wx.Frame):
     _editor_panel = None
 
     def __init__(self):
-        self._tree = None
+        self._frame = wx.Frame(None)
+        # self._tree = Tree._get_selected_datafile_node(Tree(None, None, None)) #Tree(None, None, None)
+        splitter = wx.SplitterWindow(self._frame, style=wx.SP_LIVE_UPDATE)
+        self._application = FakeApplication()
+        #self.Bind(wx.EVT_CLOSE, self.OnClose)
+        self.notebook = NoteBook(splitter, self._application)
+        mb = MenuBar(self._frame)
+        self.toolbar = ToolBar(self._frame)
+        self.actions = ActionRegisterer(mb, self.toolbar,
+                                        ShortcutRegistry(self))
+        self.tree = Tree(splitter, self.actions, self._application.settings)
 
     def publish(self, *args):
         pass
@@ -63,15 +76,26 @@ class _FakeEditor(object):
     view = close = lambda *args: None
 
 
-class _ViewAllTagsDialog(ViewAllTagsDialog): # wx.Frame, object):
-    sort_state = (0, 1)
+class _ViewAllTagsDialog(ViewAllTagsDialog): #(wx.Frame, object)):
 
-    def __init__(self,  controller, frame):
-        #empty = wx.Frame(None)
-        #super(_ViewAllTagsDialog, self).__init__(empty, 0)
+    def __init__(self, frame, controller):
+        # empty = wx.Frame(None)
+        style = wx.SYSTEM_MENU | wx.CAPTION | wx.CLOSE_BOX | wx.CLIP_CHILDREN\
+            | wx.FRAME_FLOAT_ON_PARENT
+        # wx.Frame.__init__(self, frame, title="View all tags", style=style)
+        # self.frame = frame
+        self.frame = _FakeMainFrame()
+        # self.tree = Tree(self, frame, frame)
+        self.tree = self.frame.tree
+        print("DEBUG: init calling super\n")
+        super(_ViewAllTagsDialog, self).__init__(self, self.frame._frame)
+        # wx.Frame.__init__(self, frame, title="View all tags", style=style)
+        #ViewAllTagsDialog.__init__(self, controller, frame)
         self._tags_list = utils.NormalizedDict()
         self._results = utils.NormalizedDict()
         self.itemDataMap = []
+        self.sort_state = (0, 1)
+        print("DEBUG: Leaving init _ViewAllTagsDialog\n")
 
     def _search_for_tags(self):
         self._tags_list = {"tag-11":[1,2], "tag-02":[3], "tag-12":[4,8], "tag-2":[5,6,7], "tag-3":[9],
@@ -125,14 +149,19 @@ class _ViewAllTagsDialog(ViewAllTagsDialog): # wx.Frame, object):
 class _BaseSuiteTreeTest(unittest.TestCase):
 
     def setUp(self):
-        frame = _FakeMainFrame()
-        self._model = self._create_model()
-        self._tagsdialog = _ViewAllTagsDialog(frame, None)
-        self._tagsdialog._search_for_tags()
-        self._tagsdialog._execute()
+        #frame = _FakeMainFrame()
+        self.app = wx.App()
+        self.frame = wx.Frame(None)
+        self.frame.Show()
+        print("DEBUG: setup tagsdialog\n")
+        self._tagsdialog = _ViewAllTagsDialog(self.frame, self.frame)
+        print("DEBUG: Leaving setup\n")
+        # self._model = self._create_model()
 
     def tearDown(self):
         PUBLISHER.unsubscribe_all()
+        wx.CallAfter(self.app.Exit)
+        self.app.MainLoop()
 
     def _create_model(self):
         suite = self._create_directory_suite('/top_suite')
@@ -170,18 +199,29 @@ class _BaseSuiteTreeTest(unittest.TestCase):
             for i in range(5)]
         return suite
 
+    def ShowDialog(self):
+        # self.dlg = MyDialog(self.frame)
+        #self._tagsdialog = _ViewAllTagsDialog(self.frame, None)
+        self._tagsdialog._search_for_tags()
+        self._tagsdialog._execute()
+        self._tagsdialog.ShowModal()
+        self._tagsdialog.Destroy()
+
 
 class TestSortTags(_BaseSuiteTreeTest):
 
     def test_sort_tags_ascending(self):
         assert_equals(self._tagsdialog.sort_state, (0, 1))
-        self._tagsdialog.show_dialog()
+        self.ShowDialog()
+        #self._tagsdialog.show_dialog()
 
+    """
     def test_sort_tags_descending(self):
         assert_equals(self._tagsdialog.sort_state, (0, 1))
         self._tagsdialog.OnColClick()
         assert_equals(self._tagsdialog.sort_state, (0, 0))
         self._tagsdialog.show_dialog()
-
+    """
+    
 if __name__ == '__main__':
     unittest.main()
