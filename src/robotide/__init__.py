@@ -34,7 +34,7 @@ from string import Template
 errorMessageTemplate = Template("""$reason
 You need to install wxPython 2.8.12.1 with unicode support to run RIDE.
 wxPython 2.8.12.1 can be downloaded from http://sourceforge.net/projects/wxpython/files/wxPython/2.8.12.1/""")
-supported_versions = ["2.8"]
+supported_versions = ["2.8", "2.9"]
 
 try:
     import wxversion

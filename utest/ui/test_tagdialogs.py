@@ -50,7 +50,8 @@ class _FakeMainFrame(wx.Frame):
         self.toolbar = ToolBar(self._frame)
         self.actions = ActionRegisterer(mb, self.toolbar,
                                         ShortcutRegistry(self))
-        self.tree = Tree(splitter, self.actions, self._application.settings)
+        #self.tree = Tree(splitter, self.actions, self._application.settings)
+        self.tree = None
 
     def publish(self, *args):
         pass
@@ -85,8 +86,8 @@ class _ViewAllTagsDialog(ViewAllTagsDialog): #(wx.Frame, object)):
         # wx.Frame.__init__(self, frame, title="View all tags", style=style)
         # self.frame = frame
         self.frame = _FakeMainFrame()
-        # self.tree = Tree(self, frame, frame)
-        self.tree = self.frame.tree
+        self.tree = Tree(self, frame, frame)
+        #####self.tree = self.frame.tree
         print("DEBUG: init calling super\n")
         super(_ViewAllTagsDialog, self).__init__(self, self.frame._frame)
         # wx.Frame.__init__(self, frame, title="View all tags", style=style)
@@ -212,7 +213,7 @@ class TestSortTags(_BaseSuiteTreeTest):
 
     def test_sort_tags_ascending(self):
         assert_equals(self._tagsdialog.sort_state, (0, 1))
-        self.ShowDialog()
+        # self.ShowDialog()
         #self._tagsdialog.show_dialog()
 
     """
