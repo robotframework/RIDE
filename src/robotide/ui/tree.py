@@ -304,7 +304,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
 
         if isinstance(controller, ResourceFileController):
             if not controller.is_used():
-                self.SetItemTextColour(node, wx.ColorRGB(0xA9A9A9))
+                self.SetItemTextColour(node, wx.Colour(169, 169, 169))
         action_handler = handler_class(
             controller, self, node, self._controller.settings)
         self.SetPyData(node, action_handler)
