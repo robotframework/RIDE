@@ -4,7 +4,7 @@ Default Tags      This is Default
 
 *** Test Cases ***
 Dummy Test #1
-    [Tags]    Random
+    [Tags]    Random    Áção
     No Operation
 
 Dummy Test #2
@@ -12,11 +12,11 @@ Dummy Test #2
     No Operation
 
 Dummy Test #3
-    [Tags]    Random20
+    [Tags]    Random20    +3    -2
     No Operation
 
 Dummy Test #4
-    [Tags]    Random #89
+    [Tags]    Random #89    35-3    -5-7
     No Operation
 
 Dummy Test #5
@@ -24,27 +24,27 @@ Dummy Test #5
     No Operation
 
 Dummy Test #6
-    [Tags]    Another_57
+    [Tags]    Another_57    abcd
     No Operation
 
 Dummy Test #7
-    [Tags]    Random18
+    [Tags]    Random18    foo-06    yo-02-27
     No Operation
 
 Dummy Test #8
-    [Tags]    Random #7
+    [Tags]    Random #7    yo-01-12
     No Operation
 
 Dummy Test #9
-    [Tags]    Random93
+    [Tags]    Random93    cde
     No Operation
 
 Dummy Test #10
-    [Tags]    Another_21
+    [Tags]    Another_21    ^a
     No Operation
 
 Dummy Test #11
-    [Tags]    Random9
+    [Tags]    Random9    b^
     No Operation
 
 Dummy Test #12
@@ -52,7 +52,7 @@ Dummy Test #12
     No Operation
 
 Dummy Test #13
-    [Tags]    Random57
+    [Tags]    Random57    ab-08+01
     No Operation
 
 Dummy Test #14
@@ -60,11 +60,11 @@ Dummy Test #14
     No Operation
 
 Dummy Test #15
-    [Tags]    Random53
+    [Tags]    Random53    yo-01-27
     No Operation
 
 Dummy Test #16
-    [Tags]    Random #85
+    [Tags]    Random #85    yo-1-07
     No Operation
 
 Dummy Test #17
@@ -76,11 +76,11 @@ Dummy Test #18
     No Operation
 
 Dummy Test #19
-    [Tags]    Random24
+    [Tags]    Random24    foo-1
     No Operation
 
 Dummy Test #20
-    [Tags]    Random #12
+    [Tags]    Random #120    ab-01+01
     No Operation
 
 Dummy Test #21
@@ -88,7 +88,7 @@ Dummy Test #21
     No Operation
 
 Dummy Test #22
-    [Tags]    Another_81
+    [Tags]    Another_81    yo-02-17
     No Operation
 
 Dummy Test #23
@@ -96,30 +96,30 @@ Dummy Test #23
     No Operation
 
 Dummy Test #24
-    [Tags]    Another_18
+    [Tags]    Another_18    ab-8+01
     No Operation
 
 Dummy Test #25
-    [Tags]    Random60
+    [Tags]    Random60    ab-08-09
     No Operation
 
 Dummy Test #26
-    [Tags]    Random36
+    [Tags]    Random36    ab-8-1
     No Operation
 
 Dummy Test #27
-    [Tags]    Random26
+    [Tags]    Random26    foo-7
     No Operation
 
 Dummy Test #28
-    [Tags]    Random#77
+    [Tags]    Random#77    ab-1+02
     No Operation
 
 Dummy Test #29
     No Operation
 
 Dummy Test #30
-    [Tags]    Another_10
+    [Tags]    Another_10    foo-02
     No Operation
 
 Dummy Test #31

@@ -101,13 +101,38 @@ class ViewAllTagsDialog(wx.Frame, listmix.ColumnSorterMixin):
         self._tags_list.Bind(wx.EVT_LIST_ITEM_RIGHT_CLICK, self.OnRightClick)
         self._tags_list.Bind(wx.EVT_LIST_COL_CLICK, self.OnColClick)
 
-    def _tag_name_for_sort(self, tag_name):
+    def tag_name_for_sort(self, tag_name):
         # Make tag_name lowercase for the sorting algorithm only
         tag_name = tag_name.lower()
         # Compare numbers as numeric values
-        m = re.search(r'([^0-9]*)([0-9]*)', tag_name)
-        g = m.groups()
-        return g[0], int(g[1] or 0)
+        # First found by priority is returned
+        m = re.search(r"(.)(\d*$)", tag_name)             # 4th whatever+digits
+        n = re.search(r"^(\w*\D*)(\d*)\w*\D*(\w*|\d*)", tag_name)  # 3rd digits
+        p = re.search(r"^(\W*)(\d*$)", tag_name)            # 2nd symbol+digits
+        q = re.search(r"^(\d*)(.*)", tag_name)            # 1st digits+whatever
+        mg = m.groups() if m is not None else [0, 0]
+        ng = n.groups() if n is not None else [0, 0]
+        pg = p.groups() if p is not None else [0, 0]
+        qg = q.groups() if q is not None else [0, 0]
+        k = [0, 0]
+        if int(qg[0] or -1) != -1:
+            k[0] = int(qg[0])
+            k[1] = qg[1]
+            return k[0], k[1]
+        if int(pg[1] or -1) != -1:
+            k[0] = pg[0]
+            k[1] = int(pg[1])
+            return k[0], k[1]
+        if int(ng[1] or -1) != -1:
+            k[0] = ng[0]  # Special case, numbers in middle and end
+            k[1] = (int(ng[1]) if int(ng[2] or -1) <= 0 else
+                    (str(int(ng[1])).zfill(2)+str(int(ng[2])).zfill(2)))
+            return k[0], k[1]
+        if int(mg[1] or -1) != -1:
+            k[0] = mg[0]
+            k[1] = int(mg[1])
+            return k[0], k[1]
+        return tag_name, 0
 
     def _execute(self):
         self._clear_search_results()
@@ -121,7 +146,7 @@ class ViewAllTagsDialog(wx.Frame, listmix.ColumnSorterMixin):
             self.tagged_test_cases += tests
             # Mapping the lists model entry with the model for sorting.
             self.itemDataMap[model_entry] = \
-                (self._tag_name_for_sort(tag_name), len(tests))
+                (self.tag_name_for_sort(tag_name), len(tests))
             self.unique_tags += 1
         self._tags_list.SetColumnWidth(1, wx.LIST_AUTOSIZE_USEHEADER)
         self._tags_list.setResizeColumn(1)
@@ -151,7 +176,7 @@ class ViewAllTagsDialog(wx.Frame, listmix.ColumnSorterMixin):
 
     def _search_for_tags(self):
         unique_tags = utils.NormalizedDict()
-        self._tagit = utils.NormalizedDict()
+        self._tags = utils.NormalizedDict()
         self._test_cases = []
         for test in self.frame._controller.all_testcases():
             self._test_cases.append(test)
@@ -162,10 +187,10 @@ class ViewAllTagsDialog(wx.Frame, listmix.ColumnSorterMixin):
                     tag_name = unicode(tag)
                 if tag_name in unique_tags:
                     unique_tags[tag_name].append(test)
-                    self._tagit[tag_name].append(tag)
+                    self._tags[tag_name].append(tag)
                 else:
                     unique_tags[tag_name] = [test]
-                    self._tagit[tag_name] = [tag]
+                    self._tags[tag_name] = [tag]
 
         isreversed = (self.sort_state[1] != 1)
         self.total_test_cases = len(self._test_cases)
@@ -233,7 +258,7 @@ class ViewAllTagsDialog(wx.Frame, listmix.ColumnSorterMixin):
         if self._index == -1:
             return
         tests, tag_name = self._tags_list.get_tag(self._index)
-        tags_to_rename = self._tagit[tag_name.lower()]
+        tags_to_rename = self._tags[tag_name.lower()]
         name = wx.GetTextFromUser(
             message="Renaming tag '%s'." % tag_name, default_value=tag_name,
             caption='Rename')
@@ -248,7 +273,7 @@ class ViewAllTagsDialog(wx.Frame, listmix.ColumnSorterMixin):
         if self._index == -1:
             return
         tests, tag_name = self._tags_list.get_tag(self._index)
-        tags_to_delete = self._tagit[tag_name]
+        tags_to_delete = self._tags[tag_name]
         if wx.MessageBox(
             "Delete a tag '%s' ?" % tag_name, caption='Confirm',
                 style=wx.YES_NO | wx.ICON_QUESTION) == wx.YES:
