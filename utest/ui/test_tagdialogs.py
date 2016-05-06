@@ -78,27 +78,63 @@ class _FakeEditor(object):
 
 class _ViewAllTagsDialog(ViewAllTagsDialog):
 
-    def __init__(self, frame, controller):
+    def __init__(self,  frame, controller):
         style = wx.SYSTEM_MENU | wx.CAPTION | wx.CLOSE_BOX | wx.CLIP_CHILDREN\
             | wx.FRAME_FLOAT_ON_PARENT
         self.frame = frame
-        self.tree = self.frame.tree
+        # self.tree = self.frame.tree
+        self._controller = controller._controller
         # print("DEBUG: init calling super\n")
-        super(_ViewAllTagsDialog, self).__init__(self, self.frame)
+        super(_ViewAllTagsDialog, self).__init__(self, self.frame) #, self._controller)
+        self.model = controller
         self._tags_list = utils.NormalizedDict()
         self._results = utils.NormalizedDict()
         self.itemDataMap = []
         self.sort_state = (0, 1)
+        self._tags_list = {"tag-11": [1, 2], "tag-02": [3], "tag-12": [4, 8],
+                           "tag-2": [5, 6, 7], "tag-3": [9],
+                           "tag-21": [10, 11, 12], "tag-12": [13],
+                           "tag-22": [10], "tag-1": [14], "tag-03": [15]}
+        # print("DEBUG: model {0}\n".format(self.model._controller.display_name))
+        # for i in self.model._controller.__dict__:
+        #     print("DEBUG model {0}\n".format(i))
         # print("DEBUG: Leaving init _ViewAllTagsDialog\n")
 
     def _search_for_tags(self):
+        unique_tags = utils.NormalizedDict()
+        self._tags = utils.NormalizedDict()
+        self._test_cases = []
+        for i in self.model.suite.children: #testcase_table.tests:
+            # print("DEBUG child {0}\n".format(i.name))
+            for test in i.testcase_table.tests:
+                # print("DEBUG test {0}\n".format(test.name))
+                for tag in getattr(test.tags, 'tags').split("    "):
+                    # print("DEBUG: _search_for_tags tag {0}\n".format(tag))
+                    if tag is None or len(unicode(tag).strip()) == 0:
+                        continue
+                    else:
+                        tag_name = unicode(tag)
+                    if tag_name in unique_tags:
+                        unique_tags[tag_name].append(test)
+                        self._tags[tag_name].append(tag)
+                    else:
+                        unique_tags[tag_name] = [test]
+                        self._tags[tag_name] = [tag]
+        isreversed = (self.sort_state[1] != 1)
+        self.total_test_cases = len(self._test_cases)
+        self._results = sorted(unique_tags.items(),
+                               key=lambda item: item[0].lower,
+                               reverse=isreversed)
+        # old
+        """
         self._tags_list = {"tag-11":[1,2], "tag-02":[3], "tag-12":[4,8], "tag-2":[5,6,7], "tag-3":[9],
                            "tag-21":[10,11,12], "tag-12":[13], "tag-22":[10], "tag-1":[14], "tag-03":[15]}
         isreversed = (self.sort_state[1] != 1)
         self._results = sorted(self._tags_list.items(),
                                key=lambda item: item[0].lower,
                                reverse=isreversed)
-        print("DEBUG: _search_for_tags {0}\n".format(self._results))
+        """
+        #print("DEBUG: _search_for_tags {0}\n".format(self._results))
 
     def _execute(self):
         #self._clear_search_results()
@@ -112,7 +148,7 @@ class _ViewAllTagsDialog(ViewAllTagsDialog):
             model_entry = idx
             self.tagged_test_cases += tests
             # Mapping the lists model entry with the model for sorting.
-            self.itemDataMap.insert(model_entry, (self.tag_name_for_sort(tag_name), len(tests)) )
+            self.itemDataMap.insert(model_entry, (self._tag_name_for_sort(tag_name), len(tests)) )
             self.unique_tags += 1
             idx += 1
 
@@ -149,10 +185,10 @@ class _BaseSuiteTreeTest(unittest.TestCase):
         self.frame.tree = Tree(self.frame, ActionRegisterer(
             MenuBar(self.frame), ToolBar(self.frame), ShortcutRegistry(self.frame)))
         self.frame.Show()
+        self.model = self._create_model()
         # print("DEBUG: setup tagsdialog\n")
-        self._tagsdialog = _ViewAllTagsDialog(self.frame,self.frame)
+        self._tagsdialog = _ViewAllTagsDialog( self.frame, self.model)
         # print("DEBUG: Leaving setup\n")
-        self._model = self._create_model()
 
     def tearDown(self):
         PUBLISHER.unsubscribe_all()
@@ -182,7 +218,12 @@ class _BaseSuiteTreeTest(unittest.TestCase):
     def _create_file_suite(self, source):
         suite = self._create_suite(TestCaseFile, source)
         suite.testcase_table.tests = [TestCase(
-            suite, '%s Fake Test %d' % (suite.name, i)) for i in range(15)]
+            suite, '%s Fake Test %d' % (suite.name, i)) for i in range(16)]
+        count = 0
+        for i in suite.testcase_table.tests:
+            setattr(i.tags, 'tags', "tag-{0}{1}".format(count, ("    odd" if ((count % 2) == 0) else "" )))
+            # OK print("DEBUG test {0} {1}\n".format(i.name, getattr(i.tags,'tags')))
+            count += 1
         return suite
 
     def _create_suite(self, suite_class, source, is_dir=False):
@@ -198,18 +239,39 @@ class _BaseSuiteTreeTest(unittest.TestCase):
 
 class TestSortTags(_BaseSuiteTreeTest):
 
-    def test_sort_tags_ascending(self):
-        self._tagsdialog.show_dialog()
+    def test_sort_tags_ascending_count(self):
+        #self._tagsdialog.show_dialog()
         assert_equals(self._tagsdialog.sort_state, (0, 1))
         # self.ShowDialog()
+        self._tagsdialog.OnColClick()
+        assert_equals(self._tagsdialog.sort_state, (0, 0))
+        self._tagsdialog.OnColClick()
+        assert_equals(self._tagsdialog.sort_state, (0, 1))
         self._tagsdialog.show_dialog()
 
-    def test_sort_tags_descending(self):
+    def test_sort_tags_descending_count(self):
         assert_equals(self._tagsdialog.sort_state, (0, 1))
         self._tagsdialog.OnColClick()
         assert_equals(self._tagsdialog.sort_state, (0, 0))
         self._tagsdialog.show_dialog()
 
+    def test_sort_tags_ascending_value(self):
+        #self._tagsdialog.show_dialog()
+        self._tagsdialog.sort_state = (1,0)
+        assert_equals(self._tagsdialog.sort_state, (1, 0))
+        # self.ShowDialog()
+        self._tagsdialog.OnColClick()
+        assert_equals(self._tagsdialog.sort_state, (1, 1))
+        self._tagsdialog.OnColClick()
+        assert_equals(self._tagsdialog.sort_state, (1, 0))
+        self._tagsdialog.show_dialog()
+
+    def test_sort_tags_descending_value(self):
+        self._tagsdialog.sort_state = (1, 0)
+        assert_equals(self._tagsdialog.sort_state, (1, 0))
+        self._tagsdialog.OnColClick()
+        assert_equals(self._tagsdialog.sort_state, (1, 1))
+        self._tagsdialog.show_dialog()
     
 if __name__ == '__main__':
     unittest.main()
