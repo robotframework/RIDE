@@ -249,7 +249,7 @@ class TestSortTags(_BaseSuiteTreeTest):
         self._tagsdialog.sort_state = (1, 0)
         self._tagsdialog.OnColClick()
         assert_equals(self._tagsdialog.sort_state, (1, 1))
-        reference = [((u'tag-', 2), 3), ((u'tag-', 3), 3), ((u'tag-', 1), 3), ((u'tag-', 13), 3), ((u'tag-', 3), 3), ((u'tag-', 22), 3), ((u'tag-', 11), 6), ((u'tag-', 12), 9), ((u'tag-', 21), 9), ((u'tag-', 2), 9)]
+        reference = [[[u'tag-', 2], 3], [[u'tag-', 3], 3], [[u'tag-', 1], 3], [[u'tag-', 13], 3], [[u'tag-', 3], 3], [[u'tag-', 22], 3], [[u'tag-', 11], 6], [[u'tag-', 12], 9], [[u'tag-', 21], 9], [[u'tag-', 2], 9]]
         cref = list(j for i, j in reference)
         # reference = [((u'tag-j', 0), 3), ((u'tag-i', 0), 3),
         #             ((u'tag-h', 0), 3), ((u'tag-a', 0), 6),
@@ -264,7 +264,7 @@ class TestSortTags(_BaseSuiteTreeTest):
         self._tagsdialog.sort_state = (1, 1)
         self._tagsdialog.OnColClick()
         assert_equals(self._tagsdialog.sort_state, (1, 0))
-        reference = [((u'tag-', 21), 9), ((u'tag-', 2), 9), ((u'tag-', 12), 9), ((u'tag-', 11), 6), ((u'tag-', 3), 3), ((u'tag-', 1), 3), ((u'tag-', 13), 3), ((u'tag-', 3), 3), ((u'tag-', 22), 3), ((u'tag-', 2), 3)]
+        reference = [[[u'tag-', 21], 9], [[u'tag-', 2], 9], [[u'tag-', 12], 9], [[u'tag-', 11], 6], [[u'tag-', 3], 3], [[u'tag-', 1], 3], [[u'tag-', 13], 3], [[u'tag-', 3], 3], [[u'tag-', 22], 3], [[u'tag-', 2], 3]]
         cref = list(j for i, j in reference)
         dref = list(j for i, j in self._tagsdialog.itemDataMap)
         #print("cref = {0}\ndref = {1}\n".format(cref, dref))
@@ -275,7 +275,7 @@ class TestSortTags(_BaseSuiteTreeTest):
         self._tagsdialog.sort_state = (0, 0)
         self._tagsdialog.OnColClick()
         assert_equals(self._tagsdialog.sort_state, (0, 1))
-        reference = [((u'tag-', 1), 3), ((u'tag-', 2), 3), ((u'tag-', 2), 9), ((u'tag-', 3), 3), ((u'tag-', 3), 3), ((u'tag-', 11), 6), ((u'tag-', 12), 9), ((u'tag-', 13), 3), ((u'tag-', 21), 9), ((u'tag-', 22), 3)]
+        reference = [[[u'tag-', 1], 3], [[u'tag-', 2], 3], [[u'tag-', 2], 9], [[u'tag-', 3], 3], [[u'tag-', 3], 3], [[u'tag-', 11], 6], [[u'tag-', 12], 9], [[u'tag-', 13], 3], [[u'tag-', 21], 9], [[u'tag-', 22], 3]]
         tref = list(i for i, j in reference)
         dref = list(i for i, j in self._tagsdialog.itemDataMap)
         #print("tref = {0}\ndref = {1}\n".format(tref, dref))
@@ -287,7 +287,7 @@ class TestSortTags(_BaseSuiteTreeTest):
         # self.ShowDialog()
         self._tagsdialog.OnColClick()
         assert_equals(self._tagsdialog.sort_state, (0, 0))
-        reference = [((u'tag-', 22), 3), ((u'tag-', 21), 9), ((u'tag-', 13), 3), ((u'tag-', 12), 9), ((u'tag-', 11), 6), ((u'tag-', 3), 3), ((u'tag-', 3), 3), ((u'tag-', 2), 9), ((u'tag-', 2), 3), ((u'tag-', 1), 3)]
+        reference = [[[u'tag-', 22], 3], [[u'tag-', 21], 9], [[u'tag-', 13], 3], [[u'tag-', 12], 9], [[u'tag-', 11], 6], [[u'tag-', 3], 3], [[u'tag-', 3], 3], [[u'tag-', 2], 9], [[u'tag-', 2], 3], [[u'tag-', 1], 3]]
         #reference = [((u'tag-j', 0), 3), ((u'tag-i', 0), 3), ((u'tag-h', 0), 3), ((u'tag-f', 0), 12), ((u'tag-c', 0), 18), ((u'tag-b', 0), 9), ((u'tag-a', 0), 6)]
         tref = list(i for i, j in reference)
         dref = list(i for i, j in self._tagsdialog.itemDataMap)

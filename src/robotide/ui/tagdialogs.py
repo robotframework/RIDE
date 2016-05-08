@@ -103,6 +103,14 @@ class ViewAllTagsDialog(wx.Frame, listmix.ColumnSorterMixin):
         self._tags_list.Bind(wx.EVT_LIST_COL_CLICK, self.OnColClick)
 
     def _tag_name_for_sort(self, tag_name):
+         mylist = [part if index % 2 == 0 else int(part) for index, part in
+                enumerate(re.split(r'(\d+)', tag_name.lower()))]
+         if mylist[-1] == unicode(''):
+             del mylist[-1]
+         # print("DEBUG: _tag_name_for_sort, mylist = {0}\n".format(mylist))
+         return mylist
+    """
+    def _tag_name_for_sort(self, tag_name):
         # Make tag_name lowercase for the sorting algorithm only
         tag_name = tag_name.lower()
         # Compare numbers as numeric values
@@ -134,6 +142,7 @@ class ViewAllTagsDialog(wx.Frame, listmix.ColumnSorterMixin):
             k[1] = int(mg[1])
             return k[0], k[1]
         return tag_name, 0
+    """
 
     def _execute(self):
         self._clear_search_results()
