@@ -103,46 +103,14 @@ class ViewAllTagsDialog(wx.Frame, listmix.ColumnSorterMixin):
         self._tags_list.Bind(wx.EVT_LIST_COL_CLICK, self.OnColClick)
 
     def _tag_name_for_sort(self, tag_name):
-         mylist = [part if index % 2 == 0 else int(part) for index, part in
-                enumerate(re.split(r'(\d+)', tag_name.lower()))]
-         if mylist[-1] == unicode(''):
-             del mylist[-1]
-         # print("DEBUG: _tag_name_for_sort, mylist = {0}\n".format(mylist))
-         return mylist
-    """
-    def _tag_name_for_sort(self, tag_name):
-        # Make tag_name lowercase for the sorting algorithm only
-        tag_name = tag_name.lower()
-        # Compare numbers as numeric values
-        # First found by priority is returned
-        m = re.search(r"(.)(\d*$)", tag_name)             # 4th whatever+digits
-        n = re.search(r"^(\w*\D*)(\d*)\w*\D*(\w*|\d*)", tag_name)  # 3rd digits
-        p = re.search(r"^(\W*)(\d*$)", tag_name)            # 2nd symbol+digits
-        q = re.search(r"^(\d*)(.*)", tag_name)            # 1st digits+whatever
-        mg = m.groups() if m is not None else [0, 0]
-        ng = n.groups() if n is not None else [0, 0]
-        pg = p.groups() if p is not None else [0, 0]
-        qg = q.groups() if q is not None else [0, 0]
-        k = [0, 0]
-        if int(qg[0] or -1) != -1:
-            k[0] = int(qg[0])
-            k[1] = qg[1]
-            return k[0], k[1]
-        if int(pg[1] or -1) != -1:
-            k[0] = pg[0]
-            k[1] = int(pg[1])
-            return k[0], k[1]
-        if int(ng[1] or -1) != -1:
-            k[0] = ng[0]  # Special case, numbers in middle and end
-            k[1] = (int(ng[1]) if int(ng[2] or -1) <= 0 else
-                    (str(int(ng[1])).zfill(2)+str(int(ng[2])).zfill(2)))
-            return k[0], k[1]
-        if int(mg[1] or -1) != -1:
-            k[0] = mg[0]
-            k[1] = int(mg[1])
-            return k[0], k[1]
-        return tag_name, 0
-    """
+        mylist = [part if index % 2 == 0 else int(part) for index, part in
+                  enumerate(re.split(r'(\d+)', tag_name.lower()))]
+        # Side effect from using regex, u'' will be removed from start or end
+        if mylist[0] == unicode(''):
+            del mylist[0]
+        if mylist[-1] == unicode(''):
+            del mylist[-1]
+        return mylist
 
     def _execute(self):
         self._clear_search_results()

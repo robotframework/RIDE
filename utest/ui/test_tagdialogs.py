@@ -64,49 +64,33 @@ class _ViewAllTagsDialog(ViewAllTagsDialog):
         style = wx.SYSTEM_MENU | wx.CAPTION | wx.CLOSE_BOX | wx.CLIP_CHILDREN\
             | wx.FRAME_FLOAT_ON_PARENT
         self.frame = frame
-        # self.tree = self.frame.tree
         self._controller = controller._controller
-        # print("DEBUG: init calling super\n")
-        super(_ViewAllTagsDialog, self).__init__(self, self.frame) #, self._controller)
+        super(_ViewAllTagsDialog, self).__init__(self, self.frame)
         self.model = controller
         self._results = utils.NormalizedDict()
         self.itemDataMap = []
         self.sort_state = (0, 1)
-        # print("DEBUG: model {0}\n".format(self.model._controller.display_name))
-        # for i in self.model._controller.__dict__:
-        #     print("DEBUG model {0}\n".format(i))
-        # print("DEBUG: Leaving init _ViewAllTagsDialog\n")
 
     def _search_for_tags(self):
         unique_tags = utils.NormalizedDict()
-        # self._tags = utils.NormalizedDict()
-        # self._test_cases = []
-        for i in self.model.suite.children: #testcase_table.tests:
-            # print("DEBUG child {0}\n".format(i.name))
+        for i in self.model.suite.children:
             for test in i.testcase_table.tests:
-                # print("DEBUG test {0}\n".format(test.name))
                 try:
                     for tag in getattr(test.tags, 'tags').split("    "):
-                        # print("DEBUG: _search_for_tags tag {0}\n".format(tag))
                         if tag is None or len(unicode(tag).strip()) == 0:
                             continue
                         else:
                             tag_name = unicode(tag)
                         if tag_name in unique_tags:
                             unique_tags[tag_name].append(test)
-                            # self._tags[tag_name].append(tag)
                         else:
                             unique_tags[tag_name] = [test]
-                            # self._tags[tag_name] = [tag]
                 except AttributeError:
                     pass
         isreversed = (self.sort_state[0] == 0 and self.sort_state[1] == 0)
-        # self.total_test_cases = len(self._test_cases)
         self._results = sorted(unique_tags.items(),
                                key=lambda item: item[0].lower,
                                reverse=isreversed)
-
-        #print("DEBUG: _search_for_tags {0}\n".format(self._results))
 
     def _execute(self):
         self._clear_search_results()
@@ -120,14 +104,16 @@ class _ViewAllTagsDialog(ViewAllTagsDialog):
             model_entry = idx
             self.tagged_test_cases += tests
             # Mapping the lists model entry with the model for sorting.
-            self.itemDataMap.insert(model_entry, (self._tag_name_for_sort(tag_name), len(tests)) )
+            self.itemDataMap.insert(model_entry,
+                                    (self._tag_name_for_sort(tag_name),
+                                     len(tests)))
             self.unique_tags += 1
             idx += 1
         isreversed = (self.sort_state[1] == 0)
-        self.itemDataMap.sort(key=lambda item: item[self.sort_state[0]], reverse=isreversed)
+        self.itemDataMap.sort(key=lambda item: item[self.sort_state[0]],
+                              reverse=isreversed)
 
     def show_dialog(self):
-        # self._execute()
         print("DEBUG: Unique tags {0}\n".format(self.unique_tags))
         print("DEBUG: _tags_list {0}\n".format(self.itemDataMap))
 
@@ -138,7 +124,6 @@ class _ViewAllTagsDialog(ViewAllTagsDialog):
         self._tagsdialog.Destroy()
 
     def _clear_search_results(self):
-        # self.selected_tests = list()
         self._results = {}
         self.itemDataMap = []
 
@@ -157,28 +142,25 @@ class _ViewAllTagsDialog(ViewAllTagsDialog):
 class _BaseSuiteTreeTest(unittest.TestCase):
 
     def setUp(self):
-        #frame = _FakeMainFrame()
+        # frame = _FakeMainFrame()
         self.app = wx.App()
         self.frame = wx.Frame(None)
         self.frame.tree = Tree(self.frame, ActionRegisterer(
-            MenuBar(self.frame), ToolBar(self.frame), ShortcutRegistry(self.frame)))
+            MenuBar(self.frame), ToolBar(self.frame),
+            ShortcutRegistry(self.frame)))
         self.frame.Show()
         self._tags_list = utils.NormalizedDict()
-        self._tags_list = {"tag-11": [1, 2], "tag-02": [3], "tag-12": [4, 8, 13],
-                           "tag-2": [5, 6, 7], "tag-3": [9],
-                           "tag-21": [10, 11, 12], "tag-13": [13],
-                           "tag-22": [10], "tag-1": [14], "tag-03": [15]}
-        """
-        self._tags_list = {"tag-a": [1], "tag-b": [2],
-                           "tag-c": [3, 6, 8],
-                           "tag-C": [3, 4, 5], "tag-B": [7, 3],
-                           "tag-f": [8, 9, 10, 11], "tag-A": [12],
-                           "tag-h": [1], "tag-i": [2], "tag-j": [15]}
-        """
+        self._tags_list = {"tag-11": [1, 2], "tag-02": [3],
+                           "tag-12": [4, 8, 12], "tag-2": [5, 6, 7],
+                           "tag-3": [9], "tag-21": [10, 11, 12],
+                           "tag-22": [10], "tag-1": [14], "tag-03": [15],
+                           "a-01-a2": [1], "08-b": [2],
+                           "3-2-1-tag-2c": [3, 6, 8],
+                           "8-B-1": [3, 4, 5], "2-b": [7, 3],
+                           "a-1-a3": [8, 9, 10, 11], "3-2-03-tag-2a": [12],
+                           "a-01-a03": [1], "b-1-a01": [2], "b-01-a01": [15]}
         self.model = self._create_model()
-        # print("DEBUG: setup tagsdialog\n")
-        self._tagsdialog = _ViewAllTagsDialog( self.frame, self.model)
-        # print("DEBUG: Leaving setup\n")
+        self._tagsdialog = _ViewAllTagsDialog(self.frame, self.model)
 
     def tearDown(self):
         PUBLISHER.unsubscribe_all()
@@ -212,23 +194,11 @@ class _BaseSuiteTreeTest(unittest.TestCase):
         # Initialization of Tags
         count = 0
         for i in suite.testcase_table.tests:
-            # Basic Tags
-            # setattr(i.tags, 'tags', "tag-{0}{1}".format(count, ("    odd" if ((count % 2) == 0) else "" )))
-            # OK print("DEBUG test {0} {1}\n".format(i.name, getattr(i.tags,'tags')))
-            #if count != 0:
-            #if suite.name == "Sub Suite 2":
-            #    prefix = "02" if (count % 2) == 0 else "2"
-            #    #print("DEBUG tags_list prefix {0}=at {1}\n".format(prefix, count))
-            #else:
-            #   prefix = ""
             newtag = ""
             for key, test in self._tags_list.iteritems():
-                newtag += key + "    " if count in test else "" #.get(count)
+                newtag += key + "    " if count in test else ""
                 if len(newtag):
                     setattr(i.tags, 'tags', "{0}".format(newtag))
-                # print("DEBUG tags_list {0}={1}\n".format(count, newtag))
-            #else:
-            #    setattr(i.tags, 'tags', "zero") # Test 0 must have tags attribute
             count += 1
         return suite
 
@@ -249,14 +219,19 @@ class TestSortTags(_BaseSuiteTreeTest):
         self._tagsdialog.sort_state = (1, 0)
         self._tagsdialog.OnColClick()
         assert_equals(self._tagsdialog.sort_state, (1, 1))
-        reference = [[[u'tag-', 2], 3], [[u'tag-', 3], 3], [[u'tag-', 1], 3], [[u'tag-', 13], 3], [[u'tag-', 3], 3], [[u'tag-', 22], 3], [[u'tag-', 11], 6], [[u'tag-', 12], 9], [[u'tag-', 21], 9], [[u'tag-', 2], 9]]
+        reference = [[[u'b-', 1, u'-a', 1], 3], [[u'tag-', 3], 3],
+                     [[3, u'-', 2, u'-', 3, u'-tag-', 2, u'a'], 3],
+                     [[u'tag-', 1], 3], [[u'tag-', 22], 3], [[u'tag-', 3], 3],
+                     [[u'tag-', 2], 3], [[u'b-', 1, u'-a', 1], 3],
+                     [[8, u'-b'], 3], [[u'a-', 1, u'-a', 3], 3],
+                     [[u'a-', 1, u'-a', 2], 3], [[u'tag-', 11], 6],
+                     [[2, u'-b'], 6], [[u'tag-', 21], 9], [[u'tag-', 2], 9],
+                     [[u'tag-', 12], 9],
+                     [[3, u'-', 2, u'-', 1, u'-tag-', 2, u'c'], 9],
+                     [[8, u'-b-', 1], 9], [[u'a-', 1, u'-a', 3], 12]]
         cref = list(j for i, j in reference)
-        # reference = [((u'tag-j', 0), 3), ((u'tag-i', 0), 3),
-        #             ((u'tag-h', 0), 3), ((u'tag-a', 0), 6),
-        #             ((u'tag-b', 0), 9), ((u'tag-f', 0), 12),
-        #             ((u'tag-c', 0), 18)]
         dref = list(j for i, j in self._tagsdialog.itemDataMap)
-        #print("cref = {0}\ndref = {1}\n".format(cref, dref))
+        # print("cref = {0}\ndref = {1}\n".format(cref, dref))
         assert_equals(dref, cref)
         self._tagsdialog.show_dialog()
 
@@ -264,10 +239,19 @@ class TestSortTags(_BaseSuiteTreeTest):
         self._tagsdialog.sort_state = (1, 1)
         self._tagsdialog.OnColClick()
         assert_equals(self._tagsdialog.sort_state, (1, 0))
-        reference = [[[u'tag-', 21], 9], [[u'tag-', 2], 9], [[u'tag-', 12], 9], [[u'tag-', 11], 6], [[u'tag-', 3], 3], [[u'tag-', 1], 3], [[u'tag-', 13], 3], [[u'tag-', 3], 3], [[u'tag-', 22], 3], [[u'tag-', 2], 3]]
+        reference = [[[u'a-', 1, u'-a', 3], 12], [[u'tag-', 21], 9],
+                     [[u'tag-', 2], 9], [[u'tag-', 12], 9],
+                     [[3, u'-', 2, u'-', 1, u'-tag-', 2, u'c'], 9],
+                     [[8, u'-b-', 1], 9], [[u'tag-', 11], 6], [[2, u'-b'], 6],
+                     [[u'tag-', 3], 3], [[u'b-', 1, u'-a', 1], 3],
+                     [[3, u'-', 2, u'-', 3, u'-tag-', 2, u'a'], 3],
+                     [[u'tag-', 1], 3], [[u'tag-', 22], 3], [[u'tag-', 3], 3],
+                     [[u'tag-', 2], 3], [[u'b-', 1, u'-a', 1], 3],
+                     [[8, u'-b'], 3], [[u'a-', 1, u'-a', 3], 3],
+                     [[u'a-', 1, u'-a', 2], 3]]
         cref = list(j for i, j in reference)
         dref = list(j for i, j in self._tagsdialog.itemDataMap)
-        #print("cref = {0}\ndref = {1}\n".format(cref, dref))
+        # print("cref = {0}\ndref = {1}\n".format(cref, dref))
         assert_equals(dref, cref)
         self._tagsdialog.show_dialog()
 
@@ -275,10 +259,19 @@ class TestSortTags(_BaseSuiteTreeTest):
         self._tagsdialog.sort_state = (0, 0)
         self._tagsdialog.OnColClick()
         assert_equals(self._tagsdialog.sort_state, (0, 1))
-        reference = [[[u'tag-', 1], 3], [[u'tag-', 2], 3], [[u'tag-', 2], 9], [[u'tag-', 3], 3], [[u'tag-', 3], 3], [[u'tag-', 11], 6], [[u'tag-', 12], 9], [[u'tag-', 13], 3], [[u'tag-', 21], 9], [[u'tag-', 22], 3]]
+        reference = [[[2, u'-b'], 6],
+                     [[3, u'-', 2, u'-', 1, u'-tag-', 2, u'c'], 9],
+                     [[3, u'-', 2, u'-', 3, u'-tag-', 2, u'a'], 3],
+                     [[8, u'-b'], 3], [[8, u'-b-', 1], 9],
+                     [[u'a-', 1, u'-a', 2], 3], [[u'a-', 1, u'-a', 3], 3],
+                     [[u'a-', 1, u'-a', 3], 12], [[u'b-', 1, u'-a', 1], 3],
+                     [[u'b-', 1, u'-a', 1], 3], [[u'tag-', 1], 3],
+                     [[u'tag-', 2], 3], [[u'tag-', 2], 9], [[u'tag-', 3], 3],
+                     [[u'tag-', 3], 3], [[u'tag-', 11], 6], [[u'tag-', 12], 9],
+                     [[u'tag-', 21], 9], [[u'tag-', 22], 3]]
         tref = list(i for i, j in reference)
         dref = list(i for i, j in self._tagsdialog.itemDataMap)
-        #print("tref = {0}\ndref = {1}\n".format(tref, dref))
+        # print("tref = {0}\ndref = {1}\n".format(tref, dref))
         assert_equals(dref, tref)
         self._tagsdialog.show_dialog()
 
@@ -287,11 +280,19 @@ class TestSortTags(_BaseSuiteTreeTest):
         # self.ShowDialog()
         self._tagsdialog.OnColClick()
         assert_equals(self._tagsdialog.sort_state, (0, 0))
-        reference = [[[u'tag-', 22], 3], [[u'tag-', 21], 9], [[u'tag-', 13], 3], [[u'tag-', 12], 9], [[u'tag-', 11], 6], [[u'tag-', 3], 3], [[u'tag-', 3], 3], [[u'tag-', 2], 9], [[u'tag-', 2], 3], [[u'tag-', 1], 3]]
-        #reference = [((u'tag-j', 0), 3), ((u'tag-i', 0), 3), ((u'tag-h', 0), 3), ((u'tag-f', 0), 12), ((u'tag-c', 0), 18), ((u'tag-b', 0), 9), ((u'tag-a', 0), 6)]
+        reference = [[[u'tag-', 22], 3], [[u'tag-', 21], 9],
+                     [[u'tag-', 12], 9], [[u'tag-', 11], 6], [[u'tag-', 3], 3],
+                     [[u'tag-', 3], 3], [[u'tag-', 2], 9], [[u'tag-', 2], 3],
+                     [[u'tag-', 1], 3], [[u'b-', 1, u'-a', 1], 3],
+                     [[u'b-', 1, u'-a', 1], 3], [[u'a-', 1, u'-a', 3], 12],
+                     [[u'a-', 1, u'-a', 3], 3], [[u'a-', 1, u'-a', 2], 3],
+                     [[8, u'-b-', 1], 9], [[8, u'-b'], 3],
+                     [[3, u'-', 2, u'-', 3, u'-tag-', 2, u'a'], 3],
+                     [[3, u'-', 2, u'-', 1, u'-tag-', 2, u'c'], 9],
+                     [[2, u'-b'], 6]]
         tref = list(i for i, j in reference)
         dref = list(i for i, j in self._tagsdialog.itemDataMap)
-        #print("tref = {0}\ndref = {1}\n".format(tref, dref))
+        # print("tref = {0}\ndref = {1}\n".format(tref, dref))
         assert_equals(dref, tref)
         self._tagsdialog.show_dialog()
 

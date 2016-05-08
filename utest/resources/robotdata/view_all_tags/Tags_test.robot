@@ -48,7 +48,7 @@ Dummy Test #11
     No Operation
 
 Dummy Test #12
-    [Tags]    Another_86
+    [Tags]    Another_86    3-2-03-tag-2a
     No Operation
 
 Dummy Test #13
@@ -56,7 +56,6 @@ Dummy Test #13
     No Operation
 
 Dummy Test #14
-    [Tags]    Random46
     No Operation
 
 Dummy Test #15
@@ -68,19 +67,19 @@ Dummy Test #16
     No Operation
 
 Dummy Test #17
-    [Tags]    Random-99
+    [Tags]    Random-99    3-2-1-tag-2c
     No Operation
 
 Dummy Test #18
-    [Tags]    46-test
+    [Tags]    46-test    ãçõè    3-2-03-tag-2a
     No Operation
 
 Dummy Test #19
-    [Tags]    Random24    foo-1
+    [Tags]    Random24    foo-1    3-2-03-tag-2a
     No Operation
 
 Dummy Test #20
-    [Tags]    Random #120    ab-01+01
+    [Tags]    Random #120    ab-01+01    3-2-03-tag-2a
     No Operation
 
 Dummy Test #21
@@ -104,7 +103,7 @@ Dummy Test #25
     No Operation
 
 Dummy Test #26
-    [Tags]    Random36    ab-8-1
+    [Tags]    Random36    ab-8-1    3-20-03-tag-2b
     No Operation
 
 Dummy Test #27
@@ -123,11 +122,11 @@ Dummy Test #30
     No Operation
 
 Dummy Test #31
-    [Tags]    Random97
+    [Tags]    Random97    3-2-1-tag-2c
     No Operation
 
 Dummy Test #32
-    [Tags]    Random #74
+    [Tags]    Random #74    3-20-03-tag-2a
     No Operation
 
 Dummy Test #33
@@ -135,7 +134,6 @@ Dummy Test #33
     No Operation
 
 Dummy Test #34
-    [Tags]    Another_31
     No Operation
 
 Dummy Test #35
@@ -147,11 +145,11 @@ Dummy Test #36
     No Operation
 
 Dummy Test #37
-    [Tags]    Random45
+    [Tags]    Random45    02-20-03-tag-2a
     No Operation
 
 Dummy Test #38
-    [Tags]    Random28
+    [Tags]    Random28    02-20-03-tag-2
     No Operation
 
 Dummy Test #39
@@ -159,7 +157,7 @@ Dummy Test #39
     No Operation
 
 Dummy Test #40
-    [Tags]    Random #23
+    [Tags]    Random #23    02-20-03-tag-21
     No Operation
 
 Dummy Test #41
@@ -171,7 +169,7 @@ Dummy Test #42
     No Operation
 
 Dummy Test #43
-    [Tags]    Random5
+    [Tags]    Random5    2-020-03-tag-01
     No Operation
 
 Dummy Test #44
@@ -179,7 +177,7 @@ Dummy Test #44
     No Operation
 
 Dummy Test #45
-    [Tags]    Random60
+    [Tags]    Random60    2-020-03-tag-1
     No Operation
 
 Dummy Test #46
@@ -187,19 +185,19 @@ Dummy Test #46
     No Operation
 
 Dummy Test #47
-    [Tags]    Random79
+    [Tags]
     No Operation
 
 Dummy Test #48
-    [Tags]    Another_32
+    [Tags]
     No Operation
 
 Dummy Test #49
-    [Tags]    Random25
+    [Tags]    Random25    2-02#03-tag-3
     No Operation
 
 Dummy Test #50
-    [Tags]    Random35
+    [Tags]    Random35    2-2#3-gag-1
     No Operation
 
 Dummy Test #51
@@ -219,7 +217,6 @@ Dummy Test #54
     No Operation
 
 Dummy Test #55
-    [Tags]    Random27
     No Operation
 
 Dummy Test #56
@@ -298,7 +295,7 @@ Dummy Test #74
     No Operation
 
 Dummy Test #75
-    [Tags]    Random53
+    [Tags]
     No Operation
 
 Dummy Test #76
@@ -322,7 +319,6 @@ Dummy Test #80
     No Operation
 
 Dummy Test #81
-    [Tags]    Random32
     No Operation
 
 Dummy Test #82
@@ -342,7 +338,6 @@ Dummy Test #85
     No Operation
 
 Dummy Test #86
-    [Tags]    Random74
     No Operation
 
 Dummy Test #87
@@ -622,7 +617,7 @@ Dummy Test #155
     No Operation
 
 Dummy Test #156
-    [Tags]    Another_31
+    [Tags]
     No Operation
 
 Dummy Test #157
