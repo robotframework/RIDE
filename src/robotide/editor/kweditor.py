@@ -327,7 +327,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
         return ret
 
     def cell_value_edited(self, row, col, value):
-        print("DEBUG: cell_value_edited, execute GONNA LOOP from here!\n")
+        # print("DEBUG: cell_value_edited, execute GONNA LOOP from here!\n")
         self._execute(ChangeCellValue(row, col, value))
 
     def get_selected_datafile_controller(self):
@@ -612,7 +612,7 @@ work.</li>
             return
         try:
             self._execute(AddKeywordFromCells(cells))
-        except ValueError, err:
+        except ValueError as err:
             wx.MessageBox(unicode(err))
 
     def _data_cells_from_current_row(self):
@@ -732,31 +732,31 @@ class ContentAssistCellEditor(GridCellEditor):  # DEBUG wxPhoenix PyGridCellEdi
         self._height = height
 
     def BeginEdit(self, row, col, grid):
-        print("DEBUG: Begin Edit entering \n")
+        # print("DEBUG: Begin Edit entering \n")
         self._tc.SetSize((-1, self._height))
         self._tc.set_row(row)
         self._original_value = grid.GetCellValue(row, col)
         self._grid = grid
         self.StartingClick()
-        print("DEBUG: Begin Edit leaving orig val {0}\n".format(self._original_value))
+        # print("DEBUG: Begin Edit leaving orig val {0}\n".format(self._original_value))
 
     def EndEdit(self, row, col, grid, *ignored):
-        print("DEBUG: End Edit entering \n")
+        # print("DEBUG: End Edit entering \n")
         value = self._get_value()
         if value != self._original_value:
-            print("DEBUG: EndEdit value orig val {0} value {1}\n".format(self._original_value, value))
+            # print("DEBUG: EndEdit value orig val {0} value {1}\n".format(self._original_value, value))
             grid.cell_value_edited(row, col, value)
             # DEBUG wxPhoenix
             # When editing a keyword or variable with diff val. in a cell new
             # or old, with or without content assist this is never reached.
-            print("DEBUG: EndEdit value changed \n")
+            # print("DEBUG: EndEdit value changed \n")
         self._tc.hide()
         grid.SetFocus()
-        print("DEBUG: EndEdit leaving \n")
+        # print("DEBUG: EndEdit leaving \n")
         return True
 
     def ApplyEdit(self, row, col, grid):
-        print("DEBUG: ApplyEdit gonna CRASH :(\n")
+        # print("DEBUG: ApplyEdit gonna CRASH :(\n")
         # value = self._get_value()
         # self._tc.SetValue(value)
         # self._tc.Show()
@@ -780,7 +780,7 @@ class ContentAssistCellEditor(GridCellEditor):  # DEBUG wxPhoenix PyGridCellEdi
         self._tc.SetInsertionPointEnd()
 
     def StartingClick(self):
-        print("DEBUG: Starting Click entering orig val {0}\n".format(self._original_value))
+        # print("DEBUG: Starting Click entering orig val {0}\n".format(self._original_value))
         self._tc.SetValue(self._original_value)
         self._tc.SelectAll()
         self._tc.SetFocus()
