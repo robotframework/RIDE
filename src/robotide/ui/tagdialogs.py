@@ -102,19 +102,12 @@ class ViewAllTagsDialog(wx.Frame, listmix.ColumnSorterMixin):
         self._tags_list.Bind(wx.EVT_LIST_COL_CLICK, self.OnColClick)
 
     def _tag_name_for_sort(self, tag_name):
-        mylist = [part if index % 2 == 0 else int(part) for index, part in
-                  enumerate(re.split(r'(\d+)', tag_name.lower()))]
-        # Side effect from using regex, u'' will be removed from start or end
-        if mylist[0] == unicode(''):
-            del mylist[0]
-        if mylist[-1] == unicode(''):
-            del mylist[-1]
-        return mylist
+        return [part if index % 2 == 0 else int(part) for index, part in
+                enumerate(re.split(r'(\d+)', tag_name.lower()))]
 
     def _execute(self):
         self._clear_search_results()
         self._search_for_tags()
-
         self.tagged_test_cases = list()
         self.unique_tags = 0
 
@@ -132,7 +125,7 @@ class ViewAllTagsDialog(wx.Frame, listmix.ColumnSorterMixin):
         self.SortListItems(self.sort_state[0], self.sort_state[1])
 
     def update_footer(self):
-        footer_string = ("Total tests %d, Tests with tags %d, Unique tags %d, "
+        footer_string = ("Total tests %d, Tests with tags %d, Unique tags %d\n"
                          "Currently selected tests %d") % \
                         (self.total_test_cases, len(self.tagged_test_cases),
                          self.unique_tags, len(self.selected_tests))

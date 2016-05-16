@@ -259,16 +259,19 @@ class TestSortTags(_BaseSuiteTreeTest):
         self._tagsdialog.sort_state = (0, 0)
         self._tagsdialog.OnColClick()
         assert_equals(self._tagsdialog.sort_state, (0, 1))
-        reference = [[[2, u'-b'], 6],
-                     [[3, u'-', 2, u'-', 1, u'-tag-', 2, u'c'], 9],
-                     [[3, u'-', 2, u'-', 3, u'-tag-', 2, u'a'], 3],
-                     [[8, u'-b'], 3], [[8, u'-b-', 1], 9],
-                     [[u'a-', 1, u'-a', 2], 3], [[u'a-', 1, u'-a', 3], 3],
-                     [[u'a-', 1, u'-a', 3], 12], [[u'b-', 1, u'-a', 1], 3],
-                     [[u'b-', 1, u'-a', 1], 3], [[u'tag-', 1], 3],
-                     [[u'tag-', 2], 3], [[u'tag-', 2], 9], [[u'tag-', 3], 3],
-                     [[u'tag-', 3], 3], [[u'tag-', 11], 6], [[u'tag-', 12], 9],
-                     [[u'tag-', 21], 9], [[u'tag-', 22], 3]]
+        reference = [[[u'', 2, u'-b'], 6],
+                     [[u'', 3, u'-', 2, u'-', 1, u'-tag-', 2, u'c'], 9],
+                     [[u'', 3, u'-', 2, u'-', 3, u'-tag-', 2, u'a'], 3],
+                     [[u'', 8, u'-b'], 3], [[u'', 8, u'-b-', 1, u''], 9],
+                     [[u'a-', 1, u'-a', 2, u''], 3],
+                     [[u'a-', 1, u'-a', 3, u''], 3],
+                     [[u'a-', 1, u'-a', 3, u''], 12],
+                     [[u'b-', 1, u'-a', 1, u''], 3],
+                     [[u'b-', 1, u'-a', 1, u''], 3], [[u'tag-', 1, u''], 3],
+                     [[u'tag-', 2, u''], 3], [[u'tag-', 2, u''], 9],
+                     [[u'tag-', 3, u''], 3], [[u'tag-', 3, u''], 3],
+                     [[u'tag-', 11, u''], 6], [[u'tag-', 12, u''], 9],
+                     [[u'tag-', 21, u''], 9], [[u'tag-', 22, u''], 3]]
         tref = list(i for i, j in reference)
         dref = list(i for i, j in self._tagsdialog.itemDataMap)
         # print("tref = {0}\ndref = {1}\n".format(tref, dref))
@@ -280,16 +283,19 @@ class TestSortTags(_BaseSuiteTreeTest):
         # self.ShowDialog()
         self._tagsdialog.OnColClick()
         assert_equals(self._tagsdialog.sort_state, (0, 0))
-        reference = [[[u'tag-', 22], 3], [[u'tag-', 21], 9],
-                     [[u'tag-', 12], 9], [[u'tag-', 11], 6], [[u'tag-', 3], 3],
-                     [[u'tag-', 3], 3], [[u'tag-', 2], 9], [[u'tag-', 2], 3],
-                     [[u'tag-', 1], 3], [[u'b-', 1, u'-a', 1], 3],
-                     [[u'b-', 1, u'-a', 1], 3], [[u'a-', 1, u'-a', 3], 12],
-                     [[u'a-', 1, u'-a', 3], 3], [[u'a-', 1, u'-a', 2], 3],
-                     [[8, u'-b-', 1], 9], [[8, u'-b'], 3],
-                     [[3, u'-', 2, u'-', 3, u'-tag-', 2, u'a'], 3],
-                     [[3, u'-', 2, u'-', 1, u'-tag-', 2, u'c'], 9],
-                     [[2, u'-b'], 6]]
+        reference = [[[u'tag-', 22, u''], 3], [[u'tag-', 21, u''], 9],
+                     [[u'tag-', 12, u''], 9], [[u'tag-', 11, u''], 6],
+                     [[u'tag-', 3, u''], 3], [[u'tag-', 3, u''], 3],
+                     [[u'tag-', 2, u''], 9], [[u'tag-', 2, u''], 3],
+                     [[u'tag-', 1, u''], 3], [[u'b-', 1, u'-a', 1, u''], 3],
+                     [[u'b-', 1, u'-a', 1, u''], 3],
+                     [[u'a-', 1, u'-a', 3, u''], 12],
+                     [[u'a-', 1, u'-a', 3, u''], 3],
+                     [[u'a-', 1, u'-a', 2, u''], 3],
+                     [[u'', 8, u'-b-', 1, u''], 9], [[u'', 8, u'-b'], 3],
+                     [[u'', 3, u'-', 2, u'-', 3, u'-tag-', 2, u'a'], 3],
+                     [[u'', 3, u'-', 2, u'-', 1, u'-tag-', 2, u'c'], 9],
+                     [[u'', 2, u'-b'], 6]]
         tref = list(i for i, j in reference)
         dref = list(i for i, j in self._tagsdialog.itemDataMap)
         # print("tref = {0}\ndref = {1}\n".format(tref, dref))
