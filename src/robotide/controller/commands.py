@@ -259,7 +259,9 @@ class _StepsChangingCommand(_ReversibleCommand):
 
     def change_steps(self, context):
         '''Return True if steps changed, False otherwise'''
-        raise NotImplementedError(self.__class__.__name__)
+        # DEBUG wxPhoenix
+        # raise NotImplementedError(self.__class__.__name__)
+        return True
 
     def _step(self, context):
         try:
