@@ -78,14 +78,22 @@ class PreferencesColorPicker(wx.ColourPickerCtrl):
         self.settings = settings
         self.key = key
         value = settings[key]
-        super(PreferencesColorPicker, self).__init__(parent, id, col=value)
+        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
+            super(PreferencesColorPicker, self).__init__(parent, id,
+                                                         colour=value)
+        else:
+            super(PreferencesColorPicker, self).__init__(parent, id, col=value)
         self.Bind(wx.EVT_COLOURPICKER_CHANGED, self.OnPickColor)
 
     def OnPickColor(self, event):
         """Set the color for the given key to the color of the widget"""
         color = event.GetColour()
         # TODO: wxPyDeprecationWarning: Call to deprecated item. asTuple is deprecated, use `Get` instead rgb = "#%02X%02X%02X" % color.asTuple()
-        rgb = "#%02X%02X%02X" % color.asTuple()
+        # TODO: Test new style in 2.8.12.1 then remove comments
+        #  rgb = "#%02X%02X%02X" % color.asTuple()
+        # rgb = "#%02X%02X%02X" % color.Get(includeAlpha=False)
+        # print("DEBUG: rgb {0} string {1}\n".format(rgb, color.GetAsString(flags=wx.C2S_HTML_SYNTAX)))
+        rgb = color.GetAsString(flags=wx.C2S_HTML_SYNTAX)
         self.settings[self.key] = rgb
         self.settings.save()
 
@@ -136,14 +144,14 @@ def _create_checkbox_editor(parent, settings, name, help):
     editor.SetValue(initial_value)
     editor.Bind(wx.EVT_CHECKBOX,
                 lambda evt: settings.set(name, editor.GetValue()))
-    editor.SetToolTipString(help)
+    MySetToolTip(editor, help)
     return editor
 
 
 def comma_separated_value_editor(parent, settings, name, label, help=''):
     initial_value = ', '.join(settings[name])
     editor = TextField(parent, initial_value)
-    editor.SetToolTipString(help)
+    MySetToolTip(editor, help)
 
     def set_value():
         new_value = [token.strip() for token in editor.GetValue().split(',')
@@ -152,3 +160,10 @@ def comma_separated_value_editor(parent, settings, name, label, help=''):
     editor.Bind(wx.EVT_KILL_FOCUS, lambda evt: set_value())
 
     return Label(parent, label=label), editor
+
+
+def MySetToolTip(obj, tip):
+    if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
+        obj.SetToolTip(tip)
+    else:
+        obj.SetToolTipString(tip)
