@@ -17,6 +17,11 @@ from fnmatch import fnmatch
 import os
 import wx
 
+if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
+    from wx.adv import HyperlinkCtrl, EVT_HYPERLINK
+else:
+    from wx import HyperlinkCtrl, EVT_HYPERLINK
+
 from robotide.widgets import Dialog, HtmlWindow
 from .widgets import PreferencesPanel
 
@@ -107,8 +112,9 @@ class ExcludePreferences(PreferencesPanel):
         self.SetSizer(sizer)
 
     def _add_help_dialog(self, sizer):
-        sizer.Add(wx.HyperlinkCtrl(self, wx.ID_ANY, '', 'Need help?'))
-        self.Bind(wx.EVT_HYPERLINK, self.OnHelp)
+        # DEBUG wxPhoenix
+        sizer.Add(HyperlinkCtrl(self, wx.ID_ANY, '', 'Need help?'))
+        self.Bind(EVT_HYPERLINK, self.OnHelp)
 
     def _add_text_box(self, sizer):
         self._text_box = wx.TextCtrl(self,
@@ -118,7 +124,8 @@ class ExcludePreferences(PreferencesPanel):
         sizer.Add(self._text_box, proportion=wx.EXPAND)
 
     def _add_button_and_status(self, sizer):
-        status_and_button_sizer = wx.GridSizer(rows=1, cols=2, hgap=10)
+        # DEBUG wxPhoenix
+        status_and_button_sizer = wx.GridSizer(rows=1, cols=2, vgap=10, hgap=10)
         status_and_button_sizer.Add(wx.Button(self, id=wx.ID_SAVE))
         self.Bind(wx.EVT_BUTTON, self.OnSave)
         self._status_label = wx.StaticText(self)
@@ -229,3 +236,6 @@ The following shell-style wildcards are supported:
 
     def OnKey(self, *args):
         pass
+
+    def close(self):
+        self.Destroy()

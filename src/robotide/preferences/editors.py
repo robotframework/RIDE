@@ -35,7 +35,7 @@ class EditorPreferences(widgets.PreferencesPanel):
 
         font_editor = self._create_font_editor()
         colors_sizer = self.create_colors_sizer()
-        main_sizer = wx.FlexGridSizer(rows=3, cols=1, hgap=10)
+        main_sizer = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
         main_sizer.Add(font_editor)
         main_sizer.Add(colors_sizer)
         self.SetSizer(main_sizer)
@@ -44,7 +44,7 @@ class EditorPreferences(widgets.PreferencesPanel):
         f = widgets.IntegerChoiceEditor(
             self._settings, 'font size', 'Font Size',
             [str(i) for i in range(8, 16)])
-        sizer = wx.FlexGridSizer(rows=2, cols=2, hgap=30)
+        sizer = wx.FlexGridSizer(rows=2, cols=2, vgap=10, hgap=30)
         sizer.AddMany([f.label(self), f.chooser(self)])
         if 'fixed font' in self._settings:
             sizer.AddMany(widgets.boolean_editor(
@@ -132,7 +132,7 @@ class GridEditorPreferences(EditorPreferences):
 
     def _create_grid_config_editor(self):
         settings = self._settings
-        sizer = wx.FlexGridSizer(rows=3, cols=2, vgap=10)
+        sizer = wx.FlexGridSizer(rows=3, cols=2, vgap=10, hgap=10)
         sizer.Add(self._label_for('Default column size'))
         sizer.Add(self._number_editor(settings, 'col size'))
         sizer.AddMany(widgets.boolean_editor(
