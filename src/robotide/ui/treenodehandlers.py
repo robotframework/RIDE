@@ -53,7 +53,7 @@ def action_handler_class(controller):
     }[controller.__class__]
 
 
-class _ActionHandler(wx.Window):
+class _ActionHandler(object):
     is_user_keyword = False
     is_test_suite = False
     is_variable = False
@@ -84,13 +84,11 @@ class _ActionHandler(wx.Window):
     _label_collapse_all = 'Collapse all'
 
     def __init__(self, controller, tree, node, settings):
-        wx.Window.__init__(self, tree)
         self.controller = controller
         self._tree = tree
         self._node = node
         self._settings = settings
         self._rendered = False
-        self.Show(False)
         self._popup_creator = tree._popup_creator
 
     @property
@@ -102,7 +100,7 @@ class _ActionHandler(wx.Window):
         return self._node
 
     def show_popup(self):
-        self._popup_creator.show(self, PopupMenuItems(self, self._actions),
+        self._popup_creator.show(self._tree, PopupMenuItems(self, self._actions),
                                  self.controller)
 
     def begin_label_edit(self):
@@ -514,7 +512,7 @@ class UserKeywordHandler(_TestOrUserKeywordHandler):
     def _create_rename_command(self, new_name):
         return RenameKeywordOccurrences(
             self.controller.name, new_name,
-            RenameProgressObserver(self.GetParent().GetParent()),
+            RenameProgressObserver(self._tree.GetParent()),
             self.controller.info)
 
     def OnFindUsages(self, event):
