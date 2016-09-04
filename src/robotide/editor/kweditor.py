@@ -19,7 +19,7 @@ if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
     from wx.grid import GridCellEditor
     import sys
     # print("DEBUG: Recursion Limit {0}\n".format(sys.getrecursionlimit()))
-    sys.setrecursionlimit(100)  # with 150 crashes at edit cell
+    sys.setrecursionlimit(200)  # with 150 crashes at edit cell
 else:
     from wx.grid import PyGridCellEditor as GridCellEditor
 
