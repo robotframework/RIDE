@@ -64,6 +64,7 @@ from robotide.utils import robottime
 
 
 ID_RUN = wx.NewId()
+ID_RUNDEBUG = wx.NewId()
 ID_STOP = wx.NewId()
 ID_PAUSE = wx.NewId()
 ID_CONTINUE = wx.NewId()
@@ -147,6 +148,9 @@ class TestRunnerPlugin(Plugin):
         run_action_info = ActionInfo("Tools", "Run Tests", self.OnRun, None,
                                      "F8", ImageProvider().TOOLBAR_PLAY, "Run the selected tests", position=10)
         self._run_action = self.register_action(run_action_info)
+        run_action_debug = ActionInfo("Tools", "Run Tests with Debug", self.OnRunDebug, None,
+                                     "F9", getBugIconBitmap(), "Run the selected tests with Debug", position=8)
+        self._run_action = self.register_action(run_action_debug)
         stop_action_info = ActionInfo("Tools", "Stop Test Run", self.OnStop, None,
                                       "CtrlCmd-F8", ImageProvider().TOOLBAR_STOP, "Stop a running test",position=11)
         self._stop_action = self.register_action(stop_action_info)
@@ -241,6 +245,18 @@ class TestRunnerPlugin(Plugin):
         self._AppendText(self.out, '[ SENDING STEP OVER SIGNAL ]\n')
         self._test_runner.send_step_over_signal()
 
+    def OnRunDebug(self, event):
+        ''' Called when the user clicks or presses the F9, Run with Debug
+            It can still be overwritten in RIDE Arguments line
+        '''
+        # Save the original function so we can inject "-L Debug"
+        tempFunc = self._create_command 
+        self._create_command = self._create_debug_command
+        # Do normal run with
+        self.OnRun(event)
+        # Restore original function
+        self._create_command = tempFunc
+
     def OnRun(self, event):
         '''Called when the user clicks the "Run" button'''
         if not self._can_start_running_tests():
@@ -271,7 +287,20 @@ class TestRunnerPlugin(Plugin):
         self._min_log_level_number = self._test_runner.get_message_log_level(command_as_list)
         command = self._format_command(command_as_list)
         return command
-
+    
+    def _create_debug_command(self):
+        command_as_list = self._test_runner.get_command(
+            self.get_current_profile(),
+            self.global_settings.get('pythonpath', None),
+            self._get_console_width(),
+            self._names_to_run)
+        if '-L' not in command_as_list:
+            command_as_list.insert(1,'-L')
+            command_as_list.insert(2, 'DEBUG')
+        self._min_log_level_number = self._test_runner.get_message_log_level(command_as_list)
+        command = self._format_command(command_as_list)
+        return command
+    
     def _get_current_working_dir(self):
         profile = self.get_current_profile()
         if profile.name == runprofiles.CustomScriptProfile.name:
@@ -480,6 +509,8 @@ class TestRunnerPlugin(Plugin):
         toolbar = wx.ToolBar(self.panel, wx.ID_ANY, style=wx.TB_HORIZONTAL|wx.TB_HORZ_TEXT)
         toolbar.AddLabelTool(ID_RUN,"Start", ImageProvider().TOOLBAR_PLAY, shortHelp="Start robot",
                              longHelp="Start running the robot test suite")
+        toolbar.AddLabelTool(ID_RUNDEBUG,"Debug", getBugIconBitmap(), shortHelp="Start robot",
+                             longHelp="Start running the robot test suite")							 
         toolbar.AddLabelTool(ID_STOP,"Stop", ImageProvider().TOOLBAR_STOP,
                              shortHelp="Stop a running test",
                              longHelp="Stop a running test")
@@ -498,6 +529,7 @@ class TestRunnerPlugin(Plugin):
     def _bind_runner_toolbar_events(self, toolbar):
         for event, callback, id in (
             (wx.EVT_TOOL, self.OnRun, ID_RUN),
+            (wx.EVT_TOOL, self.OnRunDebug, ID_RUNDEBUG),
             (wx.EVT_TOOL, self.OnStop, ID_STOP),
             (wx.EVT_TOOL, self.OnPause, ID_PAUSE),
             (wx.EVT_TOOL, self.OnContinue, ID_CONTINUE),
@@ -744,6 +776,7 @@ class TestRunnerPlugin(Plugin):
         stop = not run
         debug = stop and not paused
         for id, enabled in ((ID_RUN, run),
+                            (ID_RUNDEBUG, run),
                             (ID_STOP, stop),
                             (ID_PAUSE, paused),
                             (ID_CONTINUE, debug),
@@ -925,3 +958,22 @@ LogIcon = PyEmbeddedImage(
     "+KEM01SY3gM6wBsEAQB0gJ+maZoC3gI6iPYaAIBJsiRmHU0AALOeFC3aK2cWAACUXe7+AwO0"
     "lc9eTHYTAAAAAElFTkSuQmCC")
 getLogIconBitmap = LogIcon.GetBitmap
+
+# page_white_text.png from http://www.famfamfam.com/lab/icons/silk
+BugIcon = PyEmbeddedImage(
+    "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0"
+    "RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAKYSURBVDjLnZPJT1NRFMb5G1wD"
+    "HV5boNiqdHrvFYolCAtsGSSWKpMFKhYqlDI6oAEKaVJwCIgSphaKtLYWCgSNBgRjMNHoxsSF"
+    "S3cmJmA0NMTw+R6JKKZl4eJL7sm953fOd3JPHIC4WMpcppG5SGnZc8ZjVVF6QLn975sDgfaZ"
+    "mvg71oRJZIRUYcuAnq/2KWroGfm3QwEn2YpLVPPvOD2oiqj9yq/mGznegl56mx6T7ZbY1M6Y"
+    "AM0CuZkxT0b2Wg6QW/SsApRXDsotR+d6E9Y/h9DuqoCuJq0lKoDxqU1/pITGR27mBU4h+GEc"
+    "Tz5OY+ClA5JbyahYzof/9TBO9B/FcWcqpA4xU3We3GJ87ntnfO5meinMvruNnqcmXA2XoDVc"
+    "Cc0wCYkzBaZpA7ILRJ/2O2B87jA+QT9UeDRe8svZYAG8b/txc6kc9mA+yqayYPQXwvdmBEOr"
+    "A5B2p0BtFIYOWKCm5RukWwZyXIbA+0F0LpaiKaBHmVsLw4we99ccsM8a8GClF5JOMcQdou8p"
+    "rULrgRmQo7KI0VcE13MrGv06lE5kodhzGvdWu2GdKkTVWC4DcELcJkKyXbCb1EhAVM//M0DV"
+    "UNqP2qAJd1baUDaZjTMTeXAttsPi0cM0mgvHvA0NkxYk2QRIrieOsDmEmXttH0DfVfSluSTo"
+    "WmpD8bgOroUOWNw6VI7koGfOBuq6EqLLTNU6ojrmP5D1HVsjmrkYezGIrlA9LjKgnrlGXJlp"
+    "gbCOD0EtD0QNN8I3cZqjAlhJr4rXpB1iNLhrYffUQWoT7yUKzbxqJlHLq0jc5JYmgHMunogK"
+    "YJVqF7mTrPyfgktMRTMX/CrOq1gLF3fYNrLiX+Bs8MoTwT2fQPwXgBXHGL+TaIjfinb3C7cs"
+    "cRMIcYL6AAAAAElFTkSuQmCC")
+getBugIconBitmap = BugIcon.GetBitmap
