@@ -445,6 +445,11 @@ class KeywordEditor(GridEditor, RideEventHandler):
         self.MoveCursorDown(event.ShiftDown())
 
     def OnKeyDown(self, event):
+        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
+            _iscelleditcontrolshown = self.IsCellEditControlEnabled()
+        else:
+            _iscelleditcontrolshown = self.IsCellEditControlShown()
+
         keycode, control_down = event.GetKeyCode(), event.CmdDown()
         if keycode == wx.WXK_CONTROL:
             self._show_cell_information()
@@ -457,7 +462,10 @@ class KeywordEditor(GridEditor, RideEventHandler):
         elif keycode == wx.WXK_WINDOWS_MENU:
             self.OnCellRightClick(event)
         elif keycode in [wx.WXK_RETURN, wx.WXK_BACK]:
-            self._move_grid_cursor(event, keycode)
+            if not _iscelleditcontrolshown:
+                self._move_grid_cursor(event, keycode)
+            else:
+                self.save()
         elif control_down and keycode == wx.WXK_SPACE:
             self._open_cell_editor_with_content_assist()
         elif control_down and not event.AltDown() and \
