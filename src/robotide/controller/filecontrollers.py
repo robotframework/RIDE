@@ -270,6 +270,17 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
         self.execute(commands.SaveFile())
         if old_file != self.filename:
             self.remove_from_filesystem(old_file)
+    
+    def open_filemanager(self, path=None):
+		# tested on Win7 x64
+        path = path or self.filename
+        if os.path.exists(path):
+            if sys.platform=='win32':
+                os.startfile('"{}"'.format(os.path.dirname(path)), 'explore')
+    
+    def remove_readonly(self, path=None):
+            path = path or self.filename
+            os.chmod(path, stat.S_IWRITE)
 
     def open_filemanager(self, path=None):
         # tested on Win7 x64
