@@ -17,7 +17,8 @@ import wx
 from robotide.controller.commands import (
     RenameKeywordOccurrences, RemoveMacro, AddKeyword, AddTestCase, RenameTest,
     CopyMacroAs, AddVariable, UpdateVariableName, RenameFile,
-    RenameResourceFile, DeleteFile, SortKeywords, Include, Exclude)
+    RenameResourceFile, DeleteFile, SortKeywords, Include, Exclude, OpenContainingFolder,
+    RemoveReadOnly)
 from robotide.controller.settingcontrollers import VariableController
 from robotide.controller.macrocontrollers import (
     TestCaseController, UserKeywordController)
@@ -82,7 +83,9 @@ class _ActionHandler(wx.Window):
     _label_include = 'Include'
     _label_expand_all = 'Expand all'
     _label_collapse_all = 'Collapse all'
-
+    _label_remove_readonly = 'Remove Read Only'
+    _label_open_folder =  'Open Containing Folder'
+    
     def __init__(self, controller, tree, node, settings):
         wx.Window.__init__(self, tree)
         self.controller = controller
@@ -310,7 +313,8 @@ class TestDataDirectoryHandler(TestDataHandler):
             _ActionHandler._label_new_dict_variable,
             '---',
             _ActionHandler._label_change_format
-        ]
+         ]
+        
         if self.controller.parent:
             self._actions.extend([_ActionHandler._label_delete_no_kbsc])
 
@@ -327,7 +331,7 @@ class TestDataDirectoryHandler(TestDataHandler):
         self._actions.extend(['---',
                               _ActionHandler._label_expand_all,
                               _ActionHandler._label_collapse_all])
-
+                
     def OnExpandAll(self, event):
         self._tree.ExpandAllSubNodes(self._node)
 
@@ -396,8 +400,23 @@ class ResourceFileHandler(_FileHandlerThanCanBeRenamed, TestDataHandler):
                 _ActionHandler._label_change_format,
                 _ActionHandler._label_sort_keywords,
                 _ActionHandler._label_find_usages,
-                _ActionHandler._label_delete]
+                _ActionHandler._label_delete,
+                '---',
+                _ActionHandler._label_remove_readonly,
+                _ActionHandler._label_open_folder
+                ]
+                
+    def OnRemoveReadOnly(self, event):
 
+        def returnTrue():
+            return True
+        self.controller.is_modifiable = returnTrue
+        self.controller.execute(RemoveReadOnly())
+        
+    def OnOpenContainingFolder(self, event):
+
+        self.controller.execute(OpenContainingFolder())
+ 
     def OnFindUsages(self, event):
         ResourceFileUsages(self.controller, self._tree.highlight).show()
 
@@ -432,9 +451,23 @@ class TestCaseFileHandler(_FileHandlerThanCanBeRenamed, TestDataHandler):
                 _ActionHandler._label_select_all,
                 _ActionHandler._label_deselect_all,
                 _ActionHandler._label_select_failed_tests,
-                _ActionHandler._label_select_passed_tests
+                _ActionHandler._label_select_passed_tests,
+                '---',
+                _ActionHandler._label_remove_readonly,
+                _ActionHandler._label_open_folder
                 ]
+                
+    def OnRemoveReadOnly(self, event):
 
+        def returnTrue():
+            return True
+        self.controller.is_modifiable = returnTrue
+        self.controller.execute(RemoveReadOnly())
+        
+    def OnOpenContainingFolder(self, event):
+
+        self.controller.execute(OpenContainingFolder())
+        
     def OnNewTestCase(self, event):
         dlg = TestCaseNameDialog(self.controller)
         if dlg.ShowModal() == wx.ID_OK:
