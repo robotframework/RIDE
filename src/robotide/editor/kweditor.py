@@ -14,6 +14,7 @@
 
 import wx
 from wx import grid
+import json
 
 from robotide.context import IS_MAC
 from robotide.controller.commands import ChangeCellValue, ClearArea,\
@@ -60,7 +61,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
         'Create Keyword', 'Extract Keyword', 'Extract Variable',
         'Rename Keyword', 'Find Where Used', '---', 'Make Variable\tCtrl-1',
         'Make List Variable\tCtrl-2', '---', 'Go to Definition\tCtrl-B', '---'
-    ] + GridEditor._popup_items
+    ] + GridEditor._popup_items + ['Json Edit\tCtrl-Shift-J']
 
     def __init__(self, parent, controller, tree):
         GridEditor.__init__(
@@ -423,6 +424,8 @@ class KeywordEditor(GridEditor, RideEventHandler):
                 list_variable=(keycode == ord('2')))
         elif control_down and event.ShiftDown() and keycode == ord('I'):
             self.OnInsertCells()
+        elif control_down and event.ShiftDown() and keycode == ord('J'):
+            self.OnJsonEdit()
         elif control_down and event.ShiftDown() and keycode == ord('D'):
             self.OnDeleteCells()
         elif control_down and keycode == ord('B'):
@@ -656,6 +659,36 @@ work.</li>
         if new_name:
             self._execute(RenameKeywordOccurrences(
                 old_name, new_name, RenameProgressObserver(self.GetParent())))
+    
+    # Add one new Dialog to edit pretty json String
+    def OnJsonEdit(self, event):
+        diaglog = wx.Dialog(self, title='JSON Editor', size=(500, 500))
+        okBtn = wx.Button(diaglog, wx.ID_OK, "Save", pos=(415, 5))
+        cnlBtn = wx.Button(diaglog, wx.ID_CANCEL, "Cancel", pos=(415, 30))
+        richText = wx.TextCtrl(diaglog, wx.ID_ANY,
+                            "If supported by the native control, this is reversed, and this is a different font.",
+                            size=(400, 475), style=wx.HSCROLL | wx.TE_MULTILINE)
+        # Get cell value of parent grid
+        if self.is_json(self._current_cell_value()):
+            jsonStr = json.loads(self._current_cell_value())
+            richText.SetValue(json.dumps(jsonStr, indent=4, ensure_ascii=False))
+        else:
+            richText.SetValue(self._current_cell_value())
+            
+        # If click Save, then save the value in richText into the original grid cell, and clear all indent.
+        if diaglog.ShowModal() == wx.ID_OK:
+            strJson = json.loads(richText.GetValue())
+            self.SetCellValue(self.selection.cell[0], self.selection.cell[1], json.dumps(strJson, ensure_ascii=False))
+        else:
+            pass
+    
+    # If the jsonStr is json format, then return True
+    def is_json(self, jsonStr):
+        try:
+            json.loads(jsonStr)
+        except ValueError:
+            return False
+        return True
 
 
 class ContentAssistCellEditor(grid.PyGridCellEditor):
