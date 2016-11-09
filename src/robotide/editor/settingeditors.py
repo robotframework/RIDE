@@ -144,7 +144,7 @@ class SettingEditor(wx.Panel, utils.RideEventHandler):
         try:  # DEBUG wxPhoenix
             _tooltipallowed= self.Parent.tooltip_allowed(self._tooltip)
         except AttributeError:
-             print("DEBUG: There was an attempt to show a Tool Tip.\n")
+             # print("DEBUG: There was an attempt to show a Tool Tip.\n")
              return
         if _tooltipallowed:
             details, title = self._get_details_for_tooltip()

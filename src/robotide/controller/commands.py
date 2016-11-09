@@ -259,7 +259,6 @@ class _StepsChangingCommand(_ReversibleCommand):
 
     def change_steps(self, context):
         '''Return True if steps changed, False otherwise'''
-        # DEBUG wxPhoenix Caused crash at cell edit: commented raise and added # return True
         raise NotImplementedError(self.__class__.__name__)
 
     def _step(self, context):
@@ -933,7 +932,6 @@ class ChangeCellValue(_StepsChangingCommand):
         self._row = row
         self._col = col
         self._value = value
-        #  print("DEBUG: ChangeCellValue {0} {1} {2} {3}\n".format(self.__class__.__name__, self._row, self._col, self._value))
 
     def change_steps(self, context):
         steps = context.steps
