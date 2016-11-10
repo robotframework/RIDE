@@ -678,7 +678,7 @@ work.</li>
         # If click Save, then save the value in richText into the original grid cell, and clear all indent.
         if diaglog.ShowModal() == wx.ID_OK:
             strJson = json.loads(richText.GetValue())
-            self.SetCellValue(self.selection.cell[0], self.selection.cell[1], json.dumps(strJson, ensure_ascii=False))
+            self.cell_value_edited(self.selection.cell[0], self.selection.cell[1], json.dumps(strJson, ensure_ascii=False))
         else:
             pass
     
