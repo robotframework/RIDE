@@ -148,7 +148,7 @@ class _PluginRow(wx.Panel):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         sizer.Add(Label(self, label='%s: ' % name))
         if value.split('://')[0] in ['http', 'https']:
-            if wx.VERSION >= (3, 0, 2, 0, ''):
+            if wx.VERSION > (3, 0, 2, 0, ''):
                 from wx.lib.agw.hyperlink import HyperLinkCtrl as HLCTL  # DEBUG wxPhoenix
                 sizer.Add(HLCTL(self, -1, label=value, url=value))
             else:
