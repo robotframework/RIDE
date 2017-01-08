@@ -35,8 +35,10 @@ from string import Template
 
 errorMessageTemplate = Template("""$reason
 You need to install wxPython 2.8.12.1 with unicode support to run RIDE.
-wxPython 2.8.12.1 can be downloaded from http://sourceforge.net/projects/wxpython/files/wxPython/2.8.12.1/
-This version will run also on wxPython 3.0.2, download from https://sourceforge.net/projects/wxpython/files/wxPython/3.0.2.0/""")
+wxPython 2.8.12.1 can be downloaded from http://sourceforge.net/projects/wxpyt\
+hon/files/wxPython/2.8.12.1/
+This version will run also on wxPython 3.0.2, download from https://sourceforg\
+e.net/projects/wxpython/files/wxPython/3.0.2.0/""")
 
 try:
     import wx
@@ -138,7 +140,8 @@ def _show_old_wxpython_warning_if_needed(parent=None):
                    " http://sourceforge.net/projects/wxpython/files/wxPython/"
                    "2.8.12.1/.\n"
                    "This version will run also on wxPython 3.0.2, download "
-                   "from http://sourceforge.net/projects/wxpython/files/wxPython/3.0.2.0/."
+                   "from http://sourceforge.net/projects/wxpython/files/wxPyth"
+                   "on/3.0.2.0/."
                    % wx.VERSION_STRING)
         style = wx.ICON_EXCLAMATION
         if not parent:
