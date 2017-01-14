@@ -114,8 +114,8 @@ def _show_old_wxpython_warning_if_needed(parent=None):
     if wx.VERSION >= (2, 8, 12, 1, ''):
         if wx.VERSION > (3, 0, 2, 0, ''):
             title = "Please be aware of untested wxPython installation"
-            message = ("RIDE officially supports wxPython 2.8.12.1 and 3.0.2. "
-                       "\n"
+            message = ("RIDE officially supports wxPython 2.8.12.1 and 3.0.2."
+                       "\nYour current version is %s.\n"
                        "There are significant changes in newer wxPython "
                        "versions. Notice that RIDE is still under development "
                        "for wxPython 3.0.3 and newer (wxPython-Phoenix). "
