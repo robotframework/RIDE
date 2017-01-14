@@ -28,6 +28,11 @@ from robotide.pluginapi import Plugin, RideSaving, TreeAwarePluginMixin,\
     RideOpenSuite, RideDataChangedToDirty
 from robotide.widgets import TextField, Label, HtmlDialog
 
+if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
+    from wx.adv import HyperlinkCtrl, EVT_HYPERLINK
+else:
+    from wx import HyperlinkCtrl, EVT_HYPERLINK
+
 try:
     from . import robotframeworklexer
 except Exception as e:
@@ -299,8 +304,8 @@ class SourceEditor(wx.Panel):
         if self._syntax_colorization_help_exists:
             return
         label = Label(self, label="Syntax colorization disabled due to missing requirements.")
-        link = wx.HyperlinkCtrl(self, -1, label="Get help", url="")
-        link.Bind(wx.EVT_HYPERLINK, self.show_help_dialog)
+        link = HyperlinkCtrl(self, -1, label="Get help", url="")
+        link.Bind(EVT_HYPERLINK, self.show_help_dialog)
         flags = wx.ALIGN_CENTER_VERTICAL|wx.ALIGN_RIGHT
         syntax_colorization_help_sizer = wx.BoxSizer(wx.VERTICAL)
         syntax_colorization_help_sizer.AddMany([
