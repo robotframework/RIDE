@@ -18,7 +18,7 @@ Necessary development dependencies can be installed with::
 
     pip install -r requirements.txt
 
-RIDE uses Invoke__ as it's task runner. Packaging, testing, and running a
+RIDE uses Invoke__ (version 0.13 or newer) as it's task runner. Packaging, testing, and running a
 development version without installation can all be done using Invoke.
 Run::
 
