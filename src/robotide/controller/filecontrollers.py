@@ -13,10 +13,15 @@
 #  limitations under the License.
 
 import os
+import sys
+import stat
 from itertools import chain
 import shutil
-import robotide.controller.ctrlcommands
-
+import commands
+try:
+    import subprocess32 as subprocess
+except ImportError:
+    import subprocess
 from robotide.controller.dataloader import ExcludedDirectory, TestData
 
 from robotide.publish import (RideDataFileRemoved, RideInitFileRemoved,
@@ -26,14 +31,14 @@ from robotide.publish.messages import RideDataFileSet, RideOpenResource
 from robotide.robotapi import TestDataDirectory, TestCaseFile, ResourceFile
 from robotide import utils
 
-from robotide.controller.basecontroller import WithUndoRedoStacks, _BaseController, WithNamespace, ControllerWithParent
-from robotide.controller.macrocontrollers import UserKeywordController
-from robotide.controller.robotdata import NewTestCaseFile, NewTestDataDirectory
-from robotide.utils import basestring, overrides
-from robotide.controller.settingcontrollers import (DocumentationController, FixtureController,
+from .basecontroller import WithUndoRedoStacks, _BaseController, WithNamespace, ControllerWithParent
+from .macrocontrollers import UserKeywordController
+from .robotdata import NewTestCaseFile, NewTestDataDirectory
+from robotide.utils import overrides
+from .settingcontrollers import (DocumentationController, FixtureController,
         TimeoutController, TemplateController, DefaultTagsController,
         ForceTagsController)
-from robotide.controller.tablecontrollers import (VariableTableController, TestCaseTableController,
+from .tablecontrollers import (VariableTableController, TestCaseTableController,
         KeywordTableController, ImportSettingsController,
         MetadataListController, TestCaseController)
 
@@ -262,9 +267,25 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
         old_file = self.filename
         self.data.source = os.path.join(self.directory, '%s.%s' % (basename, self.get_format()))
         self.filename = self.data.source
-        self.execute(robotide.controller.ctrlcommands.SaveFile())
+        self.execute(commands.SaveFile())
         if old_file != self.filename:
             self.remove_from_filesystem(old_file)
+    
+    def open_filemanager(self, path=None):
+        # tested on Win7 x64
+        path = path or self.filename
+        if os.path.exists(path):
+            if sys.platform=='win32':
+                os.startfile("{}".format(os.path.dirname(path)), 'explore')
+            elif sys.platform=='linux2':
+                # how to detect which explorer is used? nautilus, dolphin
+                subprocess.Popen(["nautilus", "{}".format(os.path.dirname(path))])
+            else:
+                subprocess.Popen(["finder", "{}".format(os.path.dirname(path))])
+    
+    def remove_readonly(self, path=None):
+            path = path or self.filename
+            os.chmod(path, stat.S_IWRITE)
 
     def remove_from_filesystem(self, path=None):
         path = path or self.filename
