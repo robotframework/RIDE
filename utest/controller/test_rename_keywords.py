@@ -1,5 +1,5 @@
 import unittest
-from robotide.controller.commands import *
+from robotide.controller.ctrlcommands import *
 from nose.tools import assert_true, assert_false, assert_equals
 
 from base_command_test import TestCaseCommandTest

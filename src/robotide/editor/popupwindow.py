@@ -46,8 +46,8 @@ class _PopupWindowBase(object):
         dlg = HtmlDialog(self._detached_title, self._current_details)
         dlg.SetPosition((wx.GetMouseState().x, wx.GetMouseState().y))
         dlg.Show()
-        if IS_WINDOWS:
-            event.Skip()
+        #  if IS_WINDOWS:   # DEBUG Should be for all
+        event.Skip()
 
     def show_at(self, position):
         if not self.IsShown():
@@ -76,8 +76,8 @@ class _PopupWindowBase(object):
 class RidePopupWindow(wx.PopupWindow, _PopupWindowBase):
 
     def __init__(self, parent, size):
-        wx.PopupWindow.__init__(self, parent)
-        self.SetSize(size)
+        wx.PopupWindow.__init__(self, parent, flags=wx.DEFAULT_DIALOG_STYLE)
+        self.SetSize(size)   # wx.BORDER_NONE
 
     def _set_auto_hiding(self):
         # EVT_LEAVE is triggered on different components on different OSes.

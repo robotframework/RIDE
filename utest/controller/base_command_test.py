@@ -4,7 +4,7 @@ from nose.tools import assert_equals
 
 from robotide.publish import PUBLISHER
 from robotide.publish.messages import RideItemStepsChanged
-from controller.controller_creator import (
+from controller_creator import (
     _FakeProject, testcase_controller, BASE_DATA)
 
 
@@ -23,6 +23,7 @@ class TestCaseCommandTest(unittest.TestCase, _FakeProject):
     def tearDown(self):
         if os.path.exists('path'):
             os.removedirs('path')
+        PUBLISHER.unsubscribe(self._test_changed, RideItemStepsChanged)
 
     def _create_data(self):
         return BASE_DATA[:]
@@ -30,8 +31,8 @@ class TestCaseCommandTest(unittest.TestCase, _FakeProject):
     def save(self, controller):
         self._file_saved = (controller == self._ctrl.datafile_controller)
 
-    def tearDown(self):
-        PUBLISHER.unsubscribe(self._test_changed, RideItemStepsChanged)
+    # def tearDown(self):
+    #     PUBLISHER.unsubscribe(self._test_changed, RideItemStepsChanged)
 
     def _get_macros(self):
         return [m for m in self._ctrl._parent]

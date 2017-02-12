@@ -82,7 +82,7 @@ def _add_keyword_table(tcf):
 
 class ParentMock(object):
     source = '/tmp/example/parentmock'
-    directory = '/tmp/exmaple'
+    directory = '/tmp/example'
     report_invalid_syntax = lambda *args: None
 
 
@@ -109,6 +109,7 @@ class TestKeywordSuggestions(_DataFileTest):
 
     def test_getting_suggestions_for_empty_datafile(self):
         start = 'shOulD'
+        # print("DEBUG: %s kw %s\n" % (start, self.kw.__doc__))
         sugs = self.ns.get_suggestions_for(self.kw, start)
         assert_true(len(sugs) > 0)
         for s in sugs:
@@ -200,7 +201,8 @@ class TestKeywordSuggestions(_DataFileTest):
                 kw_set.append(key)
 
     def _not_variable(self, item):
-        return not (item.name.startswith('$') or item.name.startswith('@'))
+        return not (item.name.startswith('$') or item.name.startswith('@') or
+                    item.name.startswith('&'))
 
     def test_global_variable_list_suggestions(self):
         global_vars = [name for name in _VariableStash.global_variables]
@@ -369,9 +371,12 @@ class TestKeywordSearch(_DataFileTest):
         self._check_resource_keyword_only_once(all_kws)
 
     def test_resource_kws_only_once_through_project(self):
-        project = construct_project(SIMPLE_TEST_SUITE_PATH)
+        # print("DEBUG: project path %s\n" % (SIMPLE_TEST_SUITE_PATH))
+        project = construct_project(SIMPLE_TEST_SUITE_PATH+"/TestSuite1.txt")
+        # print("DEBUG: project %s key %s\n" % (project.name, project.get_all_keywords))
         all_kws = project.get_all_keywords()
         project.close()
+        # print("DEBUG: all keys %s\n" % all_kws)
         self._check_resource_keyword_only_once(all_kws)
 
     def _check_resource_keyword_only_once(self, all_kws):
@@ -520,6 +525,7 @@ class TestResourceCache(_DataFileTest):
             second = self._res_cache.get_resource(
                 imp.directory, imp.name.upper())
             assert_true(first is second)
+
 
 if __name__ == "__main__":
     unittest.main()

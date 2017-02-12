@@ -60,7 +60,7 @@ from robotide.publish.messages import RideTestSelectedForRunningChanged
 from robotide.pluginapi import Plugin, ActionInfo
 from robotide.widgets import Label, ImageProvider
 from robotide.robotapi import LOG_LEVELS
-from robotide.utils import robottime
+from robotide.utils import robottime, unicode
 
 
 ID_RUN = wx.NewId()
@@ -86,7 +86,7 @@ class TestRunnerPlugin(Plugin):
     """A plugin for running tests from within RIDE"""
     defaults = {"auto_save": False,
                 "show_message_log": True,
-                "profile": "pybot",
+                "profile": "robot",
                 "sash_position": 200,
                 "runprofiles":
                     [('jybot', 'jybot' + ('.bat' if os.name == 'nt' else ''))]}
@@ -262,7 +262,7 @@ class TestRunnerPlugin(Plugin):
             self._process_timer.Start(41) # roughly 24fps
             self._set_running()
             self._progress_bar.Start()
-        except Exception, e:
+        except Exception as e:
             self._set_stopped()
             error, log_message = self.get_current_profile().format_error(
                 unicode(e), None)
@@ -444,10 +444,11 @@ class TestRunnerPlugin(Plugin):
         textctrl.SetReadOnly(False)
         try:
             textctrl.AppendText(string)
-        except UnicodeDecodeError,e:
+        except UnicodeDecodeError as e:
             # I'm not sure why I sometimes get this, and I don't know what I
             # can do other than to ignore it.
-            pass
+            # pass
+            raise  # DEBUG
 
         new_text_end = textctrl.GetLength()
 
@@ -593,9 +594,10 @@ class TestRunnerPlugin(Plugin):
         return toolbar
 
     def _bind_toolbar_events(self, toolbar):
-        for event, callback, id in (
-            (wx.EVT_TOOL, self.OnShowReport, ID_SHOW_REPORT),
-            (wx.EVT_TOOL, self.OnShowLog, ID_SHOW_LOG)):
+        for event, callback, id in ((wx.EVT_TOOL, self.OnShowReport,
+                                     ID_SHOW_REPORT), (wx.EVT_TOOL,
+                                                       self.OnShowLog,
+                                                       ID_SHOW_LOG)):
             toolbar.Bind(event, callback, id=id)
         toolbar.Bind(wx.EVT_CHECKBOX, self.OnAutoSaveCheckbox, self.savecb)
         toolbar.Bind(wx.EVT_CHECKBOX, self.OnShowHideMessageLog,
@@ -617,10 +619,11 @@ class TestRunnerPlugin(Plugin):
         p = self._test_runner.get_profile(profile)
         for child in self.config_sizer.GetChildren():
             child.GetWindow().Hide()
-            if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix #TODO fix BoxSizer
-                self.config_sizer.RemoveChild(child.GetWindow())
-            else:
-                self.config_sizer.Remove(child.GetWindow())
+            # if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix #TODO fix BoxSizer
+            #     self.config_sizer.RemoveChild(child.GetWindow())
+            # else:
+            #     self.config_sizer.Remove(child.GetWindow())
+            self.config_sizer.Detach(child.GetWindow())
         toolbar = p.get_toolbar(self.config_panel)
 
         if toolbar:
@@ -911,6 +914,7 @@ class OutputStyledTextCtrl(wx.stc.StyledTextCtrl):
             if self.GetScrollWidth() < width + 50:
                 self.SetScrollWidth(width + 50)
         except UnicodeDecodeError:
+            print("DEBUG: UnicodeDecodeError at update scroll, testrunnerplugin, string is %s\n" % string)
             pass
 
 

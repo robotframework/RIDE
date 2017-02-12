@@ -12,8 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robotide.utils import highlightmatcher, html_escape
-
+from robotide.utils import highlightmatcher, html_escape, unicode
 
 class CellInfo(object):
 
@@ -75,7 +74,7 @@ class _TooltipMessage(object):
     OPTIONAL_ARGUMENT = "Optional argument:  %s"
     MISSING_ARGUMENT = "Missing argument:  %s"
 
-    KEYWORD = "Keyword from:  %s\n\nPress <ctrl> for details"
+    KEYWORD = "Keyword from:  %s\n\nPress <Ctrl-M> for details"
 
     def __init__(self, cell):
         self.message = self._get_message(cell)

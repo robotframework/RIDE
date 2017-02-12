@@ -15,12 +15,12 @@
 import wx
 
 from robotide import context
-from robotide.controller.commands import UpdateVariable, UpdateDocumentation,\
+from robotide.controller.ctrlcommands import UpdateVariable, UpdateDocumentation,\
     SetValues, AddLibrary, AddResource, AddVariablesFileImport, ClearSetting
 from robotide.editor.listeditor import ListEditorBase
 from robotide.publish.messages import RideImportSetting,\
     RideOpenVariableDialog, RideExecuteSpecXmlImport, RideSaving
-from robotide.utils import overrides
+from robotide.utils import basestring, overrides
 from robotide.widgets import ButtonWithHandler, Label, HtmlWindow, PopupMenu,\
     PopupMenuItems, HtmlDialog
 from robotide.publish import PUBLISHER

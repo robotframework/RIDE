@@ -8,7 +8,7 @@ from nose.tools import (assert_equals, assert_true, assert_false)
 from robotide.controller.filecontrollers import TestCaseFileController, \
     TestDataDirectoryController, _FileSystemElement
 from robotide.controller.tablecontrollers import TestCaseController
-from robotide.controller.commands import AddTestCaseFile, AddTestDataDirectory,\
+from robotide.controller.ctrlcommands import AddTestCaseFile, AddTestDataDirectory,\
     SortKeywords, Undo, Redo
 from robotide.publish import PUBLISHER
 from robotide.publish.messages import RideDataChangedToDirty,\
@@ -263,7 +263,7 @@ class DatafileIteratorTest(unittest.TestCase):
                 self.in_sub_dir = False
             def __call__(self, controller):
                 self.iteration_count += 1
-                print controller.filename
+                print(controller.filename)
                 if controller.filename and controller.filename.endswith('test.txt'):
                     self.in_sub_dir = True
         check_count_and_sub_dir = Checker()

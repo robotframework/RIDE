@@ -16,7 +16,7 @@ import re
 
 from pygments.lexer import Lexer
 from pygments.token import Token
-
+from robotide.utils import unicode
 
 HEADING = Token.Generic.Heading
 SETTING = Token.Keyword.Namespace

@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -15,8 +16,8 @@
 import os.path
 import re
 
-from robotide.lib.robot.utils import HtmlWriter
-from robotide.lib.robot.version import get_full_version
+from robot.utils import HtmlWriter
+from robot.version import get_full_version
 
 from .template import HtmlTemplate
 

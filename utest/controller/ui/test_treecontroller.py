@@ -2,7 +2,7 @@ import unittest
 from nose.tools import assert_equals
 
 from robotide.robotapi import TestCase, TestCaseFile
-from robotide.controller.commands import ChangeTag
+from robotide.controller.ctrlcommands import ChangeTag
 from robotide.controller.filecontrollers import TestCaseFileController
 from robotide.controller.macrocontrollers import TestCaseController
 from robotide.controller.tablecontrollers import TestCaseTableController

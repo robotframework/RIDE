@@ -73,7 +73,7 @@ In this example the ``OnTreeSelection`` method is the listener and the
            self.subscribe(self.OnTreeSelection, RideTreeSelection)
 
        def OnTreeSelection(self, message):
-           print message.topic, message.node
+           print(message.topic, message.node)
 
 Unsubscribing
 ~~~~~~~~~~~~~
@@ -125,4 +125,4 @@ from .publisher import PUBLISHER
 
 def get_html_message(name):
     return open(os.path.join(
-        os.path.dirname(__file__), 'html', '{}.html'.format(name))).read()
+        os.path.dirname(__file__), 'htmlmessages', '{}.html'.format(name))).read()

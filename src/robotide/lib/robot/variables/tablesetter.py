@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -14,8 +15,8 @@
 
 from contextlib import contextmanager
 
-from robotide.lib.robot.errors import DataError
-from robotide.lib.robot.utils import split_from_equals, unic, is_string, DotDict
+from robot.errors import DataError
+from robot.utils import DotDict, is_string, split_from_equals, unic
 
 from .isvar import validate_var
 from .splitter import VariableSplitter
@@ -42,6 +43,7 @@ class VariableTableReader(object):
                                                var.report_invalid_syntax)
             except DataError as err:
                 var.report_invalid_syntax(err)
+                raise  # DEBUG RIDE
 
     def _get_name_and_value(self, name, value, error_reporter):
         return name[2:-1], VariableTableValue(value, name, error_reporter)
@@ -85,7 +87,7 @@ class VariableTableValueBase(object):
 
     def report_error(self, error):
         if self._error_reporter:
-            self._error_reporter(unicode(error))
+            self._error_reporter(unic(error))
 
 
 class ScalarVariableTableValue(VariableTableValueBase):

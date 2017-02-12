@@ -453,7 +453,7 @@ class ResultListCtrl(wx.ListCtrl, listmix.CheckListCtrlMixin, listmix.ListCtrlAu
         if self._dlg:
             self._dlg.item_in_kw_list_checked()
         else:
-            print "No dialog set"
+            print("No dialog set")
 
     def get_next_checked_item(self):
         for i in range(self.GetItemCount()):
@@ -483,7 +483,7 @@ class ResultListCtrl(wx.ListCtrl, listmix.CheckListCtrlMixin, listmix.ListCtrlAu
         self._clientData.clear()
 
     def print_data(self):
-        print self._clientData
+        print(self._clientData)
 
 class MyCollapsiblePane(wx.CollapsiblePane):
 

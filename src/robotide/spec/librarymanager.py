@@ -12,8 +12,11 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from _sqlite3 import OperationalError
-import Queue
+from sqlite3 import OperationalError
+try:
+    import Queue
+except ImportError:  # py3
+    import queue as Queue
 import os
 from threading import Thread
 
@@ -21,7 +24,7 @@ from robotide.publish import RideLogException, RideLogMessage
 from robotide.spec.librarydatabase import LibraryDatabase
 from robotide.spec.libraryfetcher import get_import_result
 from robotide.spec.xmlreaders import get_path, SpecInitializer
-
+from robotide.utils import unicode
 
 class LibraryManager(Thread):
 
@@ -39,7 +42,7 @@ class LibraryManager(Thread):
             try:
                 if not self._handle_message():
                     break
-            except Exception, err:
+            except Exception as err:
                 msg = 'Library import handling threw an unexpected exception'
                 RideLogException(message=msg, exception=err, level='WARN').publish()
         self._database.close()
@@ -79,8 +82,8 @@ class LibraryManager(Thread):
             path = get_path(
                 library_name.replace('/', os.sep), os.path.abspath('.'))
             return get_import_result(path, library_args)
-        except Exception, err:
-            print 'FAILED', library_name, err
+        except Exception as err:
+            print('FAILED', library_name, err)
             kws = self._spec_initializer.init_from_spec(library_name)
             if not kws:
                 msg = 'Importing test library "%s" failed' % library_name
@@ -114,7 +117,7 @@ class LibraryManager(Thread):
     def _call(self, callback, *args):
         try:
             callback(*args)
-        except Exception, err:
+        except Exception as err:
             msg = 'Library import callback threw an unexpected exception'
             RideLogException(message=msg, exception=err, level='WARN').publish()
 

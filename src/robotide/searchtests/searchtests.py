@@ -20,7 +20,7 @@ from robotide.pluginapi import Plugin
 from robotide.publish import RideOpenTagSearch
 from robotide.searchtests.dialogsearchtests import TestsDialog
 from robotide.widgets import ImageProvider
-
+from robotide.utils import unicode
 
 class TestSearchPlugin(Plugin):
     """A plugin for searching tests based on name, tags and documentation"""

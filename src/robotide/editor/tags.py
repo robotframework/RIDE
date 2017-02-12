@@ -19,7 +19,7 @@ if __name__ == '__main__':
 import wx
 
 from robotide.editor.flowsizer import HorizontalFlowSizer
-from robotide.controller.commands import ChangeTag
+from robotide.controller.ctrlcommands import ChangeTag
 from robotide.controller.tags import ForcedTag, DefaultTag, Tag
 
 
@@ -273,6 +273,15 @@ class DefaultTagBoxProperties(_TagBoxProperties):
     background_color = '#D3D3D3'
     enabled = False
 
+# Debug
+import sys
+import traceback
+
+def _show_error():
+    message = ''.join(traceback.format_exception(*sys.exc_info()))
+    dialog = wx.MessageDialog(None, message, 'Error!', wx.OK|wx.ICON_ERROR)
+    dialog.ShowModal()
+
 
 if __name__ == '__main__':
     class MyFrame(wx.Frame):
@@ -282,17 +291,24 @@ if __name__ == '__main__':
         def OnInit(self):
             frame = MyFrame(None , -1, 'Frame Window Demo')
             sz = wx.BoxSizer()
+            from robotide.controller.basecontroller import _BaseController
+            my_controller = _BaseController()
             display = TagsDisplay(frame, None)
-            display.add_tag(ForcedTag('forced'), False)
-            display.add_tag(DefaultTag('default'), False)
+            # display.add_tag(ForcedTag('forced'))  # , False)
+            # display.add_tag(DefaultTag('default'))  #, False)
+            print("Added tag")
             for name in ['foo', 'bar', 'foobo', 'jee', 'huu', 'asb', 'sdfajkd', 'Sprint-1']:
-                display.add_tag(Tag(name), True)
-            display.add_tag(Tag(''), False)
+                display.add_tag(Tag(name, 0, my_controller))  # , True)
+            # display.add_tag(Tag(''))  #, False)
             display.build()
             sz.Add(display, 0, wx.GROW|wx.ALL, 5)
             frame.Show(True)
             self.SetTopWindow(frame)
             return True
-    # Run program
-    app=MyMenuApp(0)
-    app.MainLoop()
+    # Debug
+    try:
+        # Run program
+        app=MyMenuApp(0)
+        app.MainLoop()
+    except:
+        _show_error()

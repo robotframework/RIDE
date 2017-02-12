@@ -15,7 +15,7 @@
 import robotide.lib.robot.parsing.populators
 robotide.lib.robot.parsing.populators.PROCESS_CURDIR = False
 
-from robotide.lib.robot.errors import DataError, Information
+from robotide.lib.robot.errors import DataError, VariableError, Information
 from robotide.lib.robot.model import TagPatterns
 from robotide.lib.robot.output import LOGGER as ROBOT_LOGGER
 from robotide.lib.robot.output.loggerhelper import LEVELS as LOG_LEVELS

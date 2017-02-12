@@ -2,7 +2,8 @@ import unittest
 
 from nose.tools import assert_equals, assert_raises, assert_true
 
-from robotide.publish.messages import RideMessage, RideLogMessage, RideLogException
+from robotide.publish.messages import (RideMessage, RideLogMessage,
+                                       RideLogException)
 from robotide.publish.publisher import Publisher
 
 
@@ -53,7 +54,7 @@ class TestRideLogMessage(unittest.TestCase):
     def test_log_exception(self):
         try:
             1 / 0
-        except Exception, err:
+        except Exception as err:
             msg = RideLogException(
                 message='Some error text', exception=err, level='ERROR')
             assert_true(msg.message.startswith(

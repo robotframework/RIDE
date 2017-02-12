@@ -15,6 +15,7 @@
 import os
 import wx
 from robotide.context import IS_WINDOWS
+from robotide.utils import basestring
 
 
 class _ClipboardHandler(object):
@@ -31,6 +32,7 @@ class _ClipboardHandler(object):
         action if the user is editing a cell, otherwise it places the selected
         range of cells on the data.
         """
+        print("DEBUG: Clipboard copy() got called \n")
         if not self._edit_control_shown():
             self._add_selected_data_to_clipboard()
 
@@ -83,11 +85,11 @@ class _ClipboardHandler(object):
         return self._grid.get_cell_edit_control()
 
     def _edit_control_shown(self):
-        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
-            return self._grid.IsCellEditControlEnabled()
-        else:
-            return self._grid.IsCellEditControlShown()
-
+        # if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
+        #     return self._grid.IsCellEditControlEnabled()
+        # else:
+        #     return self._grid.IsCellEditControlShown()
+        return self._grid.IsCellEditControlShown()
 
 class _WindowsClipboardHandler(_ClipboardHandler):
 

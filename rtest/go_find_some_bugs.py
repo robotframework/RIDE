@@ -25,7 +25,7 @@ src = os.path.join(ROOT, '..', 'src')
 sys.path.insert(0, src)
 
 
-from test_runner import Runner
+from .test_runner import Runner
 
 
 def do_test(seed, path):
@@ -36,11 +36,11 @@ def do_test(seed, path):
             ride_runner.step()
         return 'PASS', seed, i, path
     except Exception:
-        print '-'*80
+        print('-'*80)
         traceback.print_exc()
-        print 'i = ', i
-        print 'seed was', str(seed)
-        print 'path was', path
+        print('i = ', i)
+        print('seed was', str(seed))
+        print('path was', path)
         return 'FAIL', seed, i or 0, path
 
 def init_ride_runner(seed, path):
@@ -54,7 +54,7 @@ def skip_steps(runner, number_of_steps):
         runner.skip_step()
 
 def debug(seed, path, last_index, trace, start, end):
-    print '*'*80
+    print('*'*80)
     if last_index == start:
         return trace + [last_index]
     if end <= start:
@@ -68,12 +68,14 @@ def debug(seed, path, last_index, trace, start, end):
         for j in range(midpoint, last_index):
             runner.step()
         return debug(seed, path, last_index, trace, start, midpoint-1)
-    except Exception, err:
+    except Exception as err:
         if runner.count == last_index:
             return debug(seed, path, last_index, trace, midpoint, end)
         else:
-            print 'New exception during debugging!'
-            return debug(seed, path, runner.count, trace, midpoint, runner.count)
+            print('New exception during debugging!')
+            return debug(seed, path, runner.count, trace, midpoint,
+                         runner.count)
+
 
 def run_trace(runner, trace):
     i = 0
@@ -84,28 +86,31 @@ def run_trace(runner, trace):
             runner.skip_step()
         i += 1
 
+
 def generate_seed():
     seed = long(time.time() * 256)
     if len(sys.argv) == 3:
         seed = long(sys.argv[2])
     return seed
 
+
 def _debugging(seed, path, i):
-    print '='*80
+    print('='*80)
     trace = debug(seed, path, i, [], 0, i)
-    print '#'*80
-    print trace
-    print '%'*80
-    print 'seed = ', seed
+    print('#'*80)
+    print(trace)
+    print('%'*80)
+    print('seed = ', seed)
     run_trace(init_ride_runner(seed, path), trace)
+
 
 def main(path):
     result, seed, i, path = do_test(generate_seed(), path)
-    #_debugging(seed, path, i)
-    #???>>>!!! simplifier.simplify(range(i+1), init_ride_runner(seed, path))
+    # _debugging(seed, path, i)
+    #  ???>>>!!! simplifier.simplify(range(i+1), init_ride_runner(seed, path))
     return result != 'FAIL'
 
 if __name__ == '__main__':
     if not main(sys.argv[1]):
-        print 'error occurred!'
+        print('error occurred!')
         sys.exit(1) #indicate failure

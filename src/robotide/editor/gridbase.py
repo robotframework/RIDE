@@ -17,7 +17,7 @@ from wx import grid
 
 from robotide.widgets import PopupCreator, PopupMenuItems
 from robotide.context import IS_WINDOWS
-from clipboard import ClipboardHandler
+from .clipboard import ClipboardHandler
 
 
 class GridEditor(grid.Grid):
@@ -85,6 +85,7 @@ class GridEditor(grid.Grid):
         self.MakeCellVisible(row, column)
 
     def copy(self):
+        print("DEBUG: GridBase copy() called\n")
         self._clipboard_handler.copy()
 
     def cut(self):
@@ -102,10 +103,11 @@ class GridEditor(grid.Grid):
 
     def delete(self):
         self._update_history()
-        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
-            _iscelleditcontrolshown = self.IsCellEditControlEnabled()
-        else:
-            _iscelleditcontrolshown = self.IsCellEditControlShown()
+        # if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
+        #     _iscelleditcontrolshown = self.IsCellEditControlEnabled()
+        # else:
+        #     _iscelleditcontrolshown = self.IsCellEditControlShown()
+        _iscelleditcontrolshown = self.IsCellEditControlShown()
         if _iscelleditcontrolshown:
             if IS_WINDOWS:
                 self._delete_from_cell_editor()

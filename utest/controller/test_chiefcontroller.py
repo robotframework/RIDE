@@ -28,6 +28,7 @@ def _library_manager():
     library_manager.create_database()
     return library_manager
 
+
 class ProjectTest(unittest.TestCase):
 
     def setUp(self):
@@ -175,6 +176,7 @@ def _data_directory(path):
     data = TestDataDirectory()
     data.source = data.directory = os.path.normpath(path)
     return data
+
 
 def _testcasefile(path):
     data = TestCaseFile()

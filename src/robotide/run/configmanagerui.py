@@ -28,7 +28,7 @@ This means that shell commands and extensions are not available. For example,
 in Windows batch files to execute must contain the '.bat' extension and 'dir'
 command does not work.'''.replace('\n', ' '),
 '''Examples:
-    pybot.bat --include smoke C:\\my_tests
+    robot.bat --include smoke C:\\my_tests
     svn update /home/robot
     C:\\Program<SPACE>Files\\App\\prg.exe argument<SPACE>with<SPACE>space''',
 '''Run configurations are stored in the RIDE settings file.'''

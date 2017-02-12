@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+#----------------------------------------------------------------------------
 # Copyright 2010 Orbitz WorldWide
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -33,19 +35,37 @@
 #   Licensed under the Apache License, Version 2.0
 #      http://www.apache.org/licenses/LICENSE-2.0
 
-'''A Robot Framework listener that sends information to a socket
+"""A Robot Framework listener that sends information to a socket
 
 This uses a custom streamhandler module, preferring json but sending either
 json or pickle to send objects to the listening server. It should probably be
 refactored to call an XMLRPC server.
-'''
+"""
 
+import copy
 import os
 import sys
 import socket
 import threading
-import SocketServer
-import copy
+
+import platform
+PLATFORM = platform.python_implementation()
+
+if sys.version_info[0] == 2:
+    PYTHON2 = True
+    PYTHON3 = False
+elif sys.version_info[0] == 3:
+    # print("TestRunnerAgent: Running under Python 3")  # DEBUG
+    PYTHON2 = False
+    PYTHON3 = True
+
+try:
+    import SocketServer
+except ImportError:#py3
+    try:
+        import socketserver as SocketServer
+    except ImportError as e:
+        raise e
 
 try:
     from robot.errors import ExecutionFailed
@@ -54,6 +74,7 @@ try:
     from robot.utils import encoding
 except ImportError:
     encoding = None
+    raise     # DEBUG
 
 
 if sys.hexversion > 0x2060000:
@@ -68,13 +89,16 @@ else:
 
 try:
     import cPickle as pickle
-except ImportError:
+except ImportError:  # py3
     import pickle as pickle
 
 try:
     from cStringIO import StringIO
 except ImportError:
-    from StringIO import StringIO
+    try:
+        from StringIO import StringIO
+    except ImportError:  # py3
+        from io import StringIO
 
 HOST = "localhost"
 
@@ -83,6 +107,7 @@ HOST = "localhost"
 # Set output encoding to UTF-8 for piped output streams
 if encoding:
     encoding.OUTPUT_ENCODING = 'UTF-8'
+# print("DEBUG: TestRunnerAgent encoding %s\n" % encoding.OUTPUT_ENCODING )
 
 
 def _is_logged(level):
@@ -113,6 +138,7 @@ class TestRunnerAgent:
         self._send_pid()
         self._create_debugger((len(args)>=2) and (args[1] == 'True'))
         self._create_kill_server()
+        print("TestRunnerAgent: Running under %s %s\n" % (PLATFORM, sys.version.split()[0]))
 
     def _create_debugger(self, pause_on_failure):
         self._debugger = RobotDebugger(pause_on_failure)
@@ -193,14 +219,14 @@ class TestRunnerAgent:
             self.sock.close()
 
     def _connect(self):
-        '''Establish a connection for sending data'''
+        """Establish a connection for sending data"""
         try:
             self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.sock.connect((self.host, self.port))
             # Iron python does not return right object type if not binary mode
             self.filehandler = self.sock.makefile('wb')
             self.streamhandler = StreamHandler(self.filehandler)
-        except socket.error, e:
+        except socket.error as e:
             print('unable to open socket to "%s:%s" error: %s'
                   % (self.host, self.port, str(e)))
             self.sock = None
@@ -265,8 +291,8 @@ class RobotDebugger(object):
 
     def end_keyword(self, passed=True):
         self._keyword_level -= 1
-        if self._keyword_level == self._pause_when_on_level \
-        or (self._pause_on_failure and not passed):
+        if self._keyword_level == self._pause_when_on_level or\
+                (self._pause_on_failure and not passed):
             self._state = 'pause'
 
     def is_paused(self):
@@ -275,9 +301,11 @@ class RobotDebugger(object):
 
 class RobotKillerServer(SocketServer.TCPServer):
     allow_reuse_address = True
+
     def __init__(self, debugger):
         SocketServer.TCPServer.__init__(self, ("",0), RobotKillerHandler)
         self.debugger = debugger
+
 
 class RobotKillerHandler(SocketServer.StreamRequestHandler):
     def handle(self):
@@ -336,11 +364,14 @@ class DecodeError(StreamError):
         if hasattr(json, 'JSONDecodeError'):
             wrapped_exceptions = (pickle.UnpicklingError, json.JSONDecodeError)
 
+
 def dump(obj, fp):
     StreamHandler(fp).dump(obj)
 
+
 def load(fp):
     return StreamHandler(fp).load()
+
 
 def dumps(obj):
     """
@@ -354,6 +385,7 @@ def dumps(obj):
     fp = StringIO()
     StreamHandler(fp).dump(obj)
     return fp.getvalue()
+
 
 def loads(s):
     """
@@ -371,7 +403,7 @@ def loads(s):
 
 
 class StreamHandler(object):
-    '''
+    """
     This class provides a common streaming approach for the purpose
     of reliably sending data over a socket interface. Replaces usage of
     Unpickler.load where possible with JSON format prepended by message length
@@ -391,7 +423,7 @@ class StreamHandler(object):
     in theory (assuming json is available), but performance of repeatedly
     failing to parse written data would make this an unworkable solution in
     many cases.
-    '''
+    """
     loads = staticmethod(loads)
     dumps = staticmethod(dumps)
 
@@ -440,7 +472,10 @@ class StreamHandler(object):
             write_list.append('P')
             s = pickle.dumps(obj, pickle.HIGHEST_PROTOCOL)
             write_list.extend([str(len(s)), '|', s])
-        self.fp.write(''.join(write_list))
+        if PYTHON2:
+            self.fp.write(''.join(write_list))
+        elif PYTHON3:
+            self.fp.write(bytes(''.join(write_list), "UTF-8"))
         #self.fp.flush()
 
     def load(self):
@@ -470,7 +505,7 @@ class StreamHandler(object):
                 return pickle.loads(buff.getvalue())
             else:
                 raise DecodeError("Message type %r not supported" % msgtype)
-        except DecodeError.wrapped_exceptions, e:
+        except DecodeError.wrapped_exceptions as e:
             raise DecodeError(str(e))
 
     def _load_header(self):

@@ -12,8 +12,8 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from project import Project
-from commands import FindOccurrences, RenameKeywordOccurrences
-from dataloader import DataLoader
-from filecontrollers import DataController, ResourceFileController
-from tablecontrollers import UserKeywordController
+from .project import Project
+from .ctrlcommands import FindOccurrences, RenameKeywordOccurrences
+from .dataloader import DataLoader
+from .filecontrollers import DataController, ResourceFileController
+from .tablecontrollers import UserKeywordController

@@ -39,7 +39,7 @@ from robotide.publish import PUBLISHER, RideTreeSelection, RideFileNameChanged,\
     RideDataDirtyCleared, RideVariableRemoved, RideVariableAdded,\
     RideVariableMovedUp, RideVariableMovedDown, RideVariableUpdated,\
     RideOpenResource, RideSuiteAdded, RideSelectResource, RideDataFileSet
-from robotide.controller.commands import MoveTo
+from robotide.controller.ctrlcommands import MoveTo
 from robotide.widgets import PopupCreator
 from robotide import utils
 

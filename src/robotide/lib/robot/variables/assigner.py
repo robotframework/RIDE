@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -14,13 +15,13 @@
 
 import re
 
-from robotide.lib.robot.errors import DataError
-from robotide.lib.robot.utils import (format_assign_message, get_error_message, prepr,
-                         type_name, is_number, is_string)
+from robot.errors import (DataError, ExecutionFailed, HandlerExecutionFailed,
+                          VariableError)
+from robot.utils import (ErrorDetails, format_assign_message, get_error_message,
+                         is_number, is_string, prepr, type_name)
 
 
-class VariableAssigner(object):
-    _valid_extended_attr = re.compile('^[_a-zA-Z]\w*$')
+class VariableAssignment(object):
 
     def __init__(self, assignment):
         validator = AssignmentValidator()
@@ -31,50 +32,19 @@ class VariableAssigner(object):
             self.assignment = assignment
             self.error = err
 
+    def __iter__(self):
+        return iter(self.assignment)
+
+    def __len__(self):
+        return len(self.assignment)
+
     def validate_assignment(self):
         if self.error:
             raise self.error
 
-    def assign(self, context, return_value):
+    def assigner(self, context):
         self.validate_assignment()
-        context.trace(lambda: 'Return: %s' % prepr(return_value))
-        resolver = ReturnValueResolver(self.assignment)
-        for name, value in resolver.resolve(return_value):
-            if not self._extended_assign(name, value, context.variables):
-                value = self._normal_assign(name, value, context.variables)
-            context.info(format_assign_message(name, value))
-
-    def _extended_assign(self, name, value, variables):
-        if name[0] != '$' or '.' not in name or name in variables:
-            return False
-        base, attr = self._split_extended_assign(name)
-        try:
-            var = variables[base]
-        except DataError:
-            return False
-        if not (self._variable_supports_extended_assign(var) and
-                self._is_valid_extended_attribute(attr)):
-            return False
-        try:
-            setattr(var, attr, value)
-        except:
-            raise DataError("Setting attribute '%s' to variable '%s' failed: %s"
-                            % (attr, base, get_error_message()))
-        return True
-
-    def _split_extended_assign(self, name):
-        base, attr = name.rsplit('.', 1)
-        return base.strip() + '}', attr[:-1].strip()
-
-    def _variable_supports_extended_assign(self, var):
-        return not (is_string(var) or is_number(var))
-
-    def _is_valid_extended_attribute(self, attr):
-        return self._valid_extended_attr.match(attr) is not None
-
-    def _normal_assign(self, name, value, variables):
-        variables[name] = value
-        return variables[name]
+        return VariableAssigner(self.assignment, context)
 
 
 class AssignmentValidator(object):
@@ -107,6 +77,72 @@ class AssignmentValidator(object):
         self._seen_list += is_list
         self._seen_dict += is_dict
         self._seen_any_var = True
+
+
+class VariableAssigner(object):
+    _valid_extended_attr = re.compile('^[_a-zA-Z]\w*$')
+
+    def __init__(self, assignment, context):
+        self._assignment = assignment
+        self._context = context
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if exc_val is None:
+            return
+        failure = self._get_failure(exc_type, exc_val, exc_tb)
+        if failure.can_continue(self._context.in_teardown):
+            self.assign(failure.return_value)
+
+    def _get_failure(self, exc_type, exc_val, exc_tb):
+        if isinstance(exc_val, ExecutionFailed):
+            return exc_val
+        exc_info = (exc_type, exc_val, exc_tb)
+        return HandlerExecutionFailed(ErrorDetails(exc_info))
+
+    def assign(self, return_value):
+        context = self._context
+        context.trace(lambda: 'Return: %s' % prepr(return_value))
+        resolver = ReturnValueResolver(self._assignment)
+        for name, value in resolver.resolve(return_value):
+            if not self._extended_assign(name, value, context.variables):
+                value = self._normal_assign(name, value, context.variables)
+            context.info(format_assign_message(name, value))
+
+    def _extended_assign(self, name, value, variables):
+        if name[0] != '$' or '.' not in name or name in variables:
+            return False
+        base, attr = self._split_extended_assign(name)
+        try:
+            var = variables[base]
+        except DataError:
+            return False
+        if not (self._variable_supports_extended_assign(var) and
+                self._is_valid_extended_attribute(attr)):
+            return False
+        try:
+            setattr(var, attr, value)
+        except:
+            raise VariableError("Setting attribute '%s' to variable '%s' "
+                                "failed: %s" % (attr, base, get_error_message()))
+        return True
+
+    def _split_extended_assign(self, name):
+        base, attr = name.rsplit('.', 1)
+        return base.strip() + '}', attr[:-1].strip()
+
+    def _variable_supports_extended_assign(self, var):
+        return not (is_string(var) or is_number(var))
+
+    def _is_valid_extended_attribute(self, attr):
+        return self._valid_extended_attr.match(attr) is not None
+
+    def _normal_assign(self, name, value, variables):
+        variables[name] = value
+        # Always return the actually assigned value.
+        return value if name[0] == '$' else variables[name]
 
 
 def ReturnValueResolver(assignment):
@@ -162,7 +198,7 @@ class _MultiReturnValueResolver(object):
         self._raise('Expected list-like value, got %s.' % type_name(ret))
 
     def _raise(self, error):
-        raise DataError('Cannot set variables: %s' % error)
+        raise VariableError('Cannot set variables: %s' % error)
 
     def _validate(self, return_count):
         raise NotImplementedError
@@ -179,7 +215,7 @@ class ScalarsOnlyReturnValueResolver(_MultiReturnValueResolver):
                         % (self._min_count, return_count))
 
     def _resolve(self, return_value):
-        return zip(self._variables, return_value)
+        return list(zip(self._variables, return_value))
 
 
 class ScalarsAndListReturnValueResolver(_MultiReturnValueResolver):
@@ -198,9 +234,9 @@ class ScalarsAndListReturnValueResolver(_MultiReturnValueResolver):
             = self._split_variables(self._variables)
         before_items, list_items, after_items \
             = self._split_return(return_value, before_vars, after_vars)
-        return (zip(before_vars, before_items) +
-                [(list_var, list_items)] +
-                zip(after_vars, after_items))
+        before = list(zip(before_vars, before_items))
+        after = list(zip(after_vars, after_items))
+        return before + [(list_var, list_items)] + after
 
     def _split_variables(self, variables):
         list_index = [v[0] for v in variables].index('@')

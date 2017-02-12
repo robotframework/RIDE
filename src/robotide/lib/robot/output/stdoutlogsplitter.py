@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -14,7 +15,7 @@
 
 import re
 
-from robotide.lib.robot.utils import format_time
+from robot.utils import format_time
 
 from .loggerhelper import Message
 
@@ -39,7 +40,7 @@ class StdoutLogSplitter(object):
     def _split_output(self, output):
         tokens = self._split_from_levels.split(output)
         tokens = self._add_initial_level_and_time_if_needed(tokens)
-        for i in xrange(0, len(tokens), 3):
+        for i in range(0, len(tokens), 3):
             yield tokens[i:i+3]
 
     def _add_initial_level_and_time_if_needed(self, tokens):

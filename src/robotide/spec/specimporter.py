@@ -50,8 +50,8 @@ class SpecImporterPlugin(Plugin):
         dlg = wx.FileDialog(self.frame,
                             message='Import Library Spec XML',
                             wildcard=wildcard,
-                            defaultDir=self.model.default_dir,
-                            style=wx.OPEN)
+                            defaultDir=self.model.default_dir)  # DEBUG
+        # , style=wx.OPEN)
         if dlg.ShowModal() == wx.ID_OK:
             path = dlg.GetPath()
         else:

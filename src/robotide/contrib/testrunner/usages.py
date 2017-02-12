@@ -1,7 +1,7 @@
 USAGE = """\
 Robot Framework -- A generic test automation framework
 
-Usage:  pybot|jybot|ipybot [options] data_sources
+Usage:  robot|jybot|irobot [options] data_sources
    or:  python|jython|ipy -m robot.run [options] data_sources
    or:  python|jython|ipy path/to/robot/run.py [options] data_sources
    or:  java -jar robotframework.jar run [options] data_sources
@@ -14,7 +14,7 @@ or Java. Users can also create new keywords from existing ones using the same
 simple syntax that is used for creating test cases.
 
 Depending is Robot Framework installed using Python, Jython, or IronPython
-interpreter, it has a start-up script, `pybot`, `jybot` or `ipybot`,
+interpreter, it has a start-up script, `robot`, `jybot` or `irobot`,
 respectively. Alternatively, it is possible to directly execute `robot.run`
 module (e.g. `python -m robot.run`) or `robot/run.py` script using a selected
 interpreter. Finally, there is also a standalone JAR distribution.
@@ -351,8 +351,8 @@ ROBOT_SYSLOG_LEVEL        Log level to use when writing to the syslog file.
 Examples
 ========
 
-# Simple test run with `pybot` without options.
-$ pybot tests.html
+# Simple test run with `robot` without options.
+$ robot tests.html
 
 # Using options and running with `jybot`.
 $ jybot --include smoke --name Smoke_Tests path/to/tests.txt
@@ -364,10 +364,10 @@ $ python -m robot.run --test test1 --test test2 test_directory
 $ jython /path/to/robot/run.py tests.robot
 
 # Executing multiple test case files and using case-insensitive long options.
-$ pybot --SuiteStatLevel 2 /my/tests/*.html /your/tests.html
+$ robot --SuiteStatLevel 2 /my/tests/*.html /your/tests.html
 
 # Setting default options and syslog file before running tests.
 $ export ROBOT_OPTIONS="--critical regression --suitestatlevel 2"
 $ export ROBOT_SYSLOG_FILE=/tmp/syslog.txt
-$ pybot tests.tsv
+$ robot tests.tsv
 """

@@ -15,5 +15,6 @@ My Test
 *** Keywords ***
 My Keyword
    No Operation
+
 None Keyword
    No Operation

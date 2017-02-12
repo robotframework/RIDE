@@ -1,7 +1,3 @@
-# setuptools is required by mock
-setuptools
-nose
-mock
-invoke
+wxPython
 Pygments
 robotframework

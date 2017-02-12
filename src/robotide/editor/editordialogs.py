@@ -23,10 +23,10 @@ from robotide.validators import ScalarVariableNameValidator, \
 from robotide import utils
 from robotide.widgets import HelpLabel, Dialog
 
-from fieldeditors import ValueEditor, ListValueEditor, MultiLineEditor,\
+from .fieldeditors import ValueEditor, ListValueEditor, MultiLineEditor,\
     ContentAssistEditor, VariableNameEditor, ArgumentEditor, FileNameEditor
-from formatters import ListToStringFormatter
-from dialoghelps import get_help
+from .formatters import ListToStringFormatter
+from .dialoghelps import get_help
 
 
 def EditorDialog(obj):

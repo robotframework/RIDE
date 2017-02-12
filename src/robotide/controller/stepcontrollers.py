@@ -15,7 +15,7 @@
 import re
 
 from robotide import robotapi, utils
-from robotide.utils import variablematcher
+from robotide.utils import basestring, variablematcher
 from robotide.controller.basecontroller import _BaseController
 from robotide.controller.cellinfo import (CellPosition, CellType, CellInfo,
                                           CellContent, ContentType)

@@ -85,7 +85,7 @@ class LogPlugin(Plugin):
         if self._panel:
             self._panel.update_log()
         if self.log_to_console:
-            print >> sys.stdout, _message_to_string(log_event)
+            print("".format(_message_to_string(log_event))) # >> sys.stdout, _message_to_string(log_event)
         if self.log_to_file:
             self._logfile.write(_message_to_string(log_event))
         if log_event.notify_user:
@@ -137,3 +137,9 @@ class _LogWindow(wx.Panel):
 
     def OnSize(self, evt):
         self._output.SetSize(self.Size)
+
+    def Copy(self):
+        pass
+
+    def SelectAll(self):
+        pass

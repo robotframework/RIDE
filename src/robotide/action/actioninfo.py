@@ -15,8 +15,9 @@
 import wx
 import re
 
-from shortcut import Shortcut
+from .shortcut import Shortcut
 from robotide.widgets import ImageProvider
+from robotide.utils import basestring
 
 
 def ActionInfoCollection(data, event_handler, container=None):

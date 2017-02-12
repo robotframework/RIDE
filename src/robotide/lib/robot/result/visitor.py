@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -20,7 +21,7 @@ This module contains :class:`ResultVisitor` for traversing the whole
 for the test suite structure.
 """
 
-from robotide.lib.robot.model import SuiteVisitor
+from robot.model import SuiteVisitor
 
 
 class ResultVisitor(SuiteVisitor):

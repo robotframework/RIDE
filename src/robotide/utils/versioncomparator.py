@@ -12,7 +12,30 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 import re
+import sys
 
+PY3 = sys.version_info[0] >= 3
+if PY3:
+    def cmp(a, b):
+        return (a > b) - (a < b)
+
+    # mixin class for Python3 supporting __cmp__
+    class PY3__cmp__:
+        def __eq__(self, other):
+            return self.__cmp__(other) == 0
+        def __ne__(self, other):
+            return self.__cmp__(other) != 0
+        def __gt__(self, other):
+            return self.__cmp__(other) > 0
+        def __lt__(self, other):
+            return self.__cmp__(other) < 0
+        def __ge__(self, other):
+            return self.__cmp__(other) >= 0
+        def __le__(self, other):
+            return self.__cmp__(other) <= 0
+else:
+    class PY3__cmp__:
+        pass
 
 def cmp_versions(version1, version2):
     if version1 == version2:
@@ -33,9 +56,10 @@ def cmp_versions(version1, version2):
 _PREVIEW_VERSION = re.compile(r'(\d+)(\.\d+)*(a|b|rc)(\d*)$')
 _PREVIEW_PREFERENCE = {'a':-3, 'b':-2, 'rc':-1}
 
+
 def _version_string_to_list(version_string):
     if version_string == 'trunk':
-        return [-100]
+        return ['-100']
     version_list = version_string.split('.')
     if _PREVIEW_VERSION.match(version_string):
         m = _PREVIEW_VERSION.match(version_list[-1])
@@ -43,6 +67,7 @@ def _version_string_to_list(version_string):
         version_list += [_PREVIEW_PREFERENCE[m.group(3)]]
         version_list += [m.group(4)]
     return _strip_leading_zeros(version_list)
+
 
 def _strip_leading_zeros(version_list):
     while version_list and version_list[-1] == '0':

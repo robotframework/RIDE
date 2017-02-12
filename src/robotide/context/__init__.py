@@ -18,7 +18,7 @@ import wx
 
 from robotide.version import VERSION
 from robotide.robotapi import ROBOT_LOGGER
-import logger
+from . import logger
 
 APP = None
 LOG = logger.Logger()

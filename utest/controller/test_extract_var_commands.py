@@ -1,6 +1,6 @@
 import unittest
 import datafilereader
-from robotide.controller.commands import ExtractScalar, ExtractList
+from robotide.controller.ctrlcommands import ExtractScalar, ExtractList
 from nose.tools import assert_equals
 
 

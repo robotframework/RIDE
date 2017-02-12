@@ -4,6 +4,7 @@ import unittest
 import time
 from robotide.contrib.testrunner.TestRunnerAgent import RobotDebugger
 
+
 class TestDebugger(unittest.TestCase):
 
     def setUp(self):
@@ -53,9 +54,8 @@ class TestDebugger(unittest.TestCase):
             self._debugger.step_next()
             self._verify_done(third_keyword_done)
 
-
     def _verify_done(self, event):
-        self.assertTrue(event.wait(timeout=10.0) or event.isSet())
+        self.assertTrue(event.wait(timeout=5.0) or event.isSet())
 
     @contextmanager
     def kw(self, passes=True):

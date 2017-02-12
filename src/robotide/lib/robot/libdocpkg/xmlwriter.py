@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,13 +13,13 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robotide.lib.robot.utils import XmlWriter, get_timestamp
+from robot.utils import XmlWriter, get_timestamp
 
 
 class LibdocXmlWriter(object):
 
     def write(self, libdoc, outfile):
-        writer = XmlWriter(outfile, encoding='UTF-8')
+        writer = XmlWriter(outfile)
         writer.start('keywordspec', {'name': libdoc.name, 'type': libdoc.type,
                                      'format': libdoc.doc_format,
                                      'generated': get_timestamp(millissep=None)})

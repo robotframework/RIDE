@@ -26,7 +26,10 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-import SocketServer
+try:
+    import SocketServer
+except ImportError:  # py3
+    import socketserver as SocketServer
 import atexit
 import codecs
 import os
@@ -37,15 +40,26 @@ import tempfile
 import threading
 import signal
 import sys
-from Queue import Empty, Queue
+try:
+    from Queue import Empty, Queue
+except ImportError:  # py3
+    from queue import Empty, Queue
 
 from robotide import utils
 from robotide.robotapi import LOG_LEVELS
 from robotide.context import IS_WINDOWS
 from robotide.contrib.testrunner import TestRunnerAgent
 from robotide.controller.testexecutionresults import TestExecutionResults
+try:
+    from robot.utils import encoding
+except ImportError:
+    encoding = None
+# DEBUG we are forcing UTF-8
+if encoding:
+    encoding.OUTPUT_ENCODING = 'UTF-8'
 
 ATEXIT_LOCK = threading.RLock()
+
 
 class TestRunner(object):
 
@@ -172,7 +186,8 @@ class TestRunner(object):
         self._process.run_command(command)
 
     def get_command(self, profile, pythonpath, console_width, names_to_run):
-        '''Return the command (as a list) used to run the test'''
+        """Return the command (as a list) used to run the test"""
+
         command = profile.get_command_prefix()[:]
         argfile = os.path.join(self._output_dir, "argfile.txt")
         command.extend(["--argumentfile", argfile])
@@ -277,7 +292,9 @@ class Process(object):
                         stdout=subprocess.PIPE,
                         stderr=subprocess.PIPE,
                         stdin=subprocess.PIPE,
-                        cwd=self._cwd.encode(utils.SYSTEM_ENCODING))
+                        cwd=self._cwd.encode(encoding.OUTPUT_ENCODING))
+                        # DEBUG cwd=self._cwd.encode(utils.SYSTEM_ENCODING))
+
         if IS_WINDOWS:
             startupinfo = subprocess.STARTUPINFO()
             try:
@@ -289,7 +306,9 @@ class Process(object):
         else:
             subprocess_args['preexec_fn'] = os.setsid
             subprocess_args['shell'] = True
-        self._process = subprocess.Popen(command.encode(utils.SYSTEM_ENCODING),
+        # DEBUG self._process = subprocess.Popen(command.encode(utils.SYSTEM_ENCODING),
+        #                                 **subprocess_args)
+        self._process = subprocess.Popen(command.encode(encoding.OUTPUT_ENCODING),
                                          **subprocess_args)
         self._process.stdin.close()
         self._output_stream = StreamReaderThread(self._process.stdout)
@@ -392,12 +411,16 @@ class StreamReaderThread(object):
 
     def pop(self):
         result = ""
-        for _ in xrange(self._queue.qsize()):
+        try:
+            myqueuerng = xrange(self._queue.qsize())
+        except NameError:  # py3
+            myqueuerng = range(self._queue.qsize())
+        for _ in myqueuerng:
             try:
-                result += self._queue.get_nowait()
+                result += self._queue.get_nowait().decode(utils.SYSTEM_ENCODING, 'replace')  # .decode('UTF-8','ignore')
             except Empty:
                 pass
-        return result.decode('UTF-8', 'ignore')  # DEBUG
+        return result  # DEBUG .decode('UTF-8', 'ignore')
 
 
 # The following two classes implement a small line-buffered socket
@@ -407,9 +430,11 @@ class StreamReaderThread(object):
 class RideListenerServer(SocketServer.TCPServer):
     """Implements a simple line-buffered socket server"""
     allow_reuse_address = True
+
     def __init__(self, RequestHandlerClass, callback):
         SocketServer.TCPServer.__init__(self, ("",0), RequestHandlerClass)
         self.callback = callback
+
 
 class RideListenerHandler(SocketServer.StreamRequestHandler):
     def handle(self):

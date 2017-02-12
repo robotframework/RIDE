@@ -20,8 +20,14 @@ from robotide.utils.versioncomparator import cmp_versions
 from robotide.widgets.button import ButtonWithHandler
 
 import time
-import urllib2
-import xmlrpclib
+try:
+    import urllib2
+except ImportError:  # py3
+    import urllib as urllib2
+try:
+    import xmlrpclib
+except ImportError:  # py3
+    import xmlrpc
 import robotide.version as version
 
 _CHECK_FOR_UPDATES_SETTING = 'check for updates'
@@ -51,8 +57,8 @@ class UpdateNotifierController(object):
         try:
             self._newest_version = self._get_newest_version()
             self._download_url = self._get_download_url(self._newest_version)
-        except Exception, e:
-            print e
+        except Exception as e:
+            print(e)
             #There are many possible errors:
             # - Timeout
             # - Corrupted data

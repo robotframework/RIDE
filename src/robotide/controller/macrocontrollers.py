@@ -30,7 +30,7 @@ from robotide.spec.iteminfo import ResourceUserKeywordInfo, \
     TestCaseUserKeywordInfo
 from robotide.controller.tags import Tag
 from robotide import robotapi
-from robotide.utils import variablematcher
+from robotide.utils import basestring, variablematcher
 
 
 KEYWORD_NAME_FIELD = 'Keyword Name'

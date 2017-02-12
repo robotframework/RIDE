@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -24,8 +25,8 @@ try:
 except ImportError:  # Not on Windows or using Jython
     windll = None
 
-from robotide.lib.robot.errors import DataError
-from robotide.lib.robot.utils import encode_output, isatty
+from robot.errors import DataError
+from robot.utils import console_encode, isatty, WINDOWS
 
 
 class HighlightingStream(object):
@@ -47,7 +48,7 @@ class HighlightingStream(object):
         return highlighter(stream)
 
     def write(self, text, flush=True):
-        self.stream.write(encode_output(text))
+        self.stream.write(console_encode(text, stream=self.stream))
         if flush:
             self.flush()
 
@@ -55,8 +56,17 @@ class HighlightingStream(object):
         self.stream.flush()
 
     def highlight(self, text, status=None, flush=True):
+        if self._must_flush_before_and_after_highlighting():
+            self.flush()
+            flush = True
         with self._highlighting(status or text):
             self.write(text, flush)
+
+    def _must_flush_before_and_after_highlighting(self):
+        # Must flush on Windows before and after highlighting to make sure set
+        # console colors only affect the actual highlighted text. Problems
+        # only encountered with Python 3, but better to be safe than sorry.
+        return WINDOWS and not isinstance(self._highlighter, NoHighlighting)
 
     def error(self, message, level):
         self.write('[ ', flush=False)

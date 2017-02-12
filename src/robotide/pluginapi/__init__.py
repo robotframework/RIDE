@@ -129,5 +129,5 @@ settings may look something like this::
 
 from robotide.action import ActionInfoCollection, ActionInfo, SeparatorInfo
 from robotide.publish.messages import *
-from plugin import Plugin
-from tree_aware_plugin_mixin import TreeAwarePluginMixin
+from .plugin import Plugin
+from .tree_aware_plugin_mixin import TreeAwarePluginMixin

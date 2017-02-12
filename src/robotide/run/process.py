@@ -16,7 +16,7 @@ import os
 import time
 import tempfile
 import subprocess
-
+from robotide.utils import basestring
 
 class Process(object):
 
@@ -44,7 +44,7 @@ class Process(object):
         try:
             self._process = subprocess.Popen(self._command, stdout=self._out_fd,
                                              stderr=subprocess.STDOUT)
-        except OSError, err:
+        except OSError as err:
             self._error = str(err)
 
     def is_finished(self):

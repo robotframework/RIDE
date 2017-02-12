@@ -101,7 +101,7 @@ class RIDE(wx.App):
 
     def _find_robot_installation(self):
         output = utils.run_python_command(
-            ['import robot; print robot.__file__ + ", " + robot.__version__'])
+            ['import robot; print(robot.__file__ + ", " + robot.__version__)'])
         robot_found = 'ImportError' not in output
         if robot_found:
             rf_file, rf_version = output.strip().split(', ')

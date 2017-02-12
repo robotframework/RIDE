@@ -20,7 +20,7 @@ class RetrieverContextFactoryTest(unittest.TestCase):
             datafileWithVariables({'${foo}': 'moi', '${bar}': 'hoi',
                                    '@{zoo}': 'koi'}))
         result = ctx.vars.replace_variables('!${foo}!${bar}!@{zoo}!')
-        print ctx.vars
+        print(ctx.vars)
         assert_equals(result, "!moi!hoi!['koi']!")
 
 if __name__ == '__main__':

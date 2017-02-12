@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -13,14 +14,15 @@
 #  limitations under the License.
 
 import inspect
+import io
 try:
     import yaml
 except ImportError:
     yaml = None
 
-from robotide.lib.robot.errors import DataError
-from robotide.lib.robot.output import LOGGER
-from robotide.lib.robot.utils import (get_error_message, is_dict_like, is_list_like,
+from robot.errors import DataError
+from robot.output import LOGGER
+from robot.utils import (get_error_message, is_dict_like, is_list_like,
                          is_string, seq2str2, type_name, DotDict, Importer)
 
 
@@ -47,6 +49,7 @@ class VariableFileSetter(object):
             return importer.import_variables(path_or_variables, args)
         except:
             args = 'with arguments %s ' % seq2str2(args) if args else ''
+            #  print("DEBUG: ROBOT _import_if_needed except %s\n" % (get_error_message()))
             raise DataError("Processing variable file '%s' %sfailed: %s"
                             % (path_or_variables, args, get_error_message()))
 
@@ -71,7 +74,7 @@ class YamlImporter(object):
                 for name, value in variables]
 
     def _import(self, path):
-        with open(path) as stream:
+        with io.open(path, encoding='UTF-8') as stream:
             variables = yaml.load(stream)
         if not is_dict_like(variables):
             raise DataError('YAML variable file must be a mapping, got %s.'
