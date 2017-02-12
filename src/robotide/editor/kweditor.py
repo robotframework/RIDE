@@ -17,8 +17,8 @@ from wx import grid
 
 if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
     from wx.grid import GridCellEditor
-    import sys
-    sys.setrecursionlimit(200)  # with 150 crashes at edit cell
+    # import sys
+    # sys.setrecursionlimit(200)  # with 150 crashes at edit cell
 else:
     from wx.grid import PyGridCellEditor as GridCellEditor
 
@@ -448,8 +448,17 @@ class KeywordEditor(GridEditor, RideEventHandler):
             _iscelleditcontrolshown = self.IsCellEditControlShown()
 
         keycode, control_down = event.GetKeyCode(), event.CmdDown()
-        if keycode == wx.WXK_CONTROL:
+        print("DEBUG: keycode=%d Control Down=%s singleCtrl? %s" % (keycode, control_down, keycode==wx.WXK_CONTROL))
+        if keycode == ord('M') and control_down:  #  keycode == wx.WXK_CONTROL 
             self._show_cell_information()
+        elif keycode == ord('C') and control_down:
+            self.OnCopy(event)
+        elif keycode == ord('X') and control_down:
+            self.OnCut(event)
+        elif keycode == ord('V') and control_down:
+            self.OnPaste(event)
+        elif keycode == ord('Z') and control_down:
+            self.OnUndo(event)
         elif keycode == ord('A') and control_down:
             self.OnSelectAll(event)
         elif event.AltDown() and keycode in [wx.WXK_DOWN, wx.WXK_UP]:

@@ -1,5 +1,5 @@
 import unittest
-import mock
+import mockito
 
 from robotide.ui.tagdialogs import ViewAllTagsDialog
 

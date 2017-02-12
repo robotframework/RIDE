@@ -1,6 +1,6 @@
 import os
 import unittest
-from mock import Mock
+from mockito import mock
 
 from robotide.robotapi import TestCaseFile, ResourceFile
 from robotide.controller import Project
@@ -155,8 +155,8 @@ class TestResourceFileRename(_UnitTestsWithWorkingResourceImports):
         assert_equals(self.import_setting.name, '${path}')
 
     def _execute_rename_resource(self, new_basename, boolean_variable):
-        self.res_controller.remove_from_filesystem = Mock()
-        self.res_controller.save = Mock()
+        self.res_controller.remove_from_filesystem = mock()
+        self.res_controller.save = mock()
         self.res_controller.execute(RenameResourceFile(new_basename, lambda : boolean_variable))
 
     def _rename_resource(self, new_basename, boolean_variable):

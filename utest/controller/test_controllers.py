@@ -1,6 +1,6 @@
 import re
 import unittest
-from mock import Mock
+from mockito import mock
 from nose.tools import assert_equals, assert_true, assert_false
 
 from robotide.robotapi import (
@@ -351,7 +351,7 @@ class ImportSettingsControllerTest(unittest.TestCase):
     def setUp(self):
         self.tcf = TestCaseFile()
         filectrl = TestCaseFileController(self.tcf)
-        filectrl.resource_import_modified = Mock()
+        filectrl.resource_import_modified = mock()
         resource_file_controller_mock = lambda:0
         resource_file_controller_mock.add_known_import = lambda *_:0
         resu_factory_mock = lambda:0

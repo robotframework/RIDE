@@ -1,7 +1,7 @@
 import unittest
 import wx
 import os
-from mock import Mock
+from mockito import mock
 from nose.tools import assert_equals, assert_true
 
 from robotide.robotapi import Variable
@@ -11,7 +11,7 @@ from robotide.controller.settingcontrollers import VariableController
 from robotide.controller.tablecontrollers import VariableTableController
 from robotide.editor import EditorCreator
 from robotide.editor.editors import TestCaseFileEditor, WelcomePage
-from editor.fakeplugin import FakePlugin
+from .fakeplugin import FakePlugin
 
 from resources import PYAPP_REFERENCE
 
@@ -76,7 +76,7 @@ class EditorCreatorTest(unittest.TestCase):
 
     def test_editor_is_destroyed_when_new_is_created(self):
         ed = self._datafile_editor()
-        ed.destroy = Mock()
+        ed.destroy = mock()
         self._datafile_editor()
         assert_true(ed.destroy.called)
 
