@@ -1,7 +1,7 @@
 import unittest
 import wx
 import os
-from mock import Mock
+from mockito import mock as Mock
 from nose.tools import assert_equals, assert_true
 
 from robotide.robotapi import Variable
