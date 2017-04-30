@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+#----------------------------------------------------------------------------
 # Copyright 2010 Orbitz WorldWide
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -42,9 +44,23 @@ refactored to call an XMLRPC server.
 
 import os
 import sys
+if sys.version_info[0] == 2:
+    print("TestRunnerAgent: Running under Python 2")
+    PYTHON2 = True
+    PYTHON3 = False
+elif sys.version_info[0] == 3:
+    print("TestRunnerAgent: Running under Python 3")
+    PYTHON2 = False
+    PYTHON3 = True
 import socket
 import threading
-import SocketServer
+try:
+    import SocketServer
+except ImportError:#py3
+    try:
+        import socketserver as SocketServer
+    except ImportError as e:
+        raise e
 import copy
 
 try:
@@ -68,13 +84,19 @@ else:
 
 try:
     import cPickle as pickle
-except ImportError:
+except ImportError:#py3
     import pickle as pickle
 
 try:
     from cStringIO import StringIO
 except ImportError:
-    from StringIO import StringIO
+    try:
+        from StringIO import StringIO
+    except ImportError:#py3
+        try:
+            from io import StringIO
+        except ImportError as e:
+            raise e
 
 HOST = "localhost"
 
@@ -200,7 +222,7 @@ class TestRunnerAgent:
             # Iron python does not return right object type if not binary mode
             self.filehandler = self.sock.makefile('wb')
             self.streamhandler = StreamHandler(self.filehandler)
-        except socket.error, e:
+        except socket.error as e:
             print('unable to open socket to "%s:%s" error: %s'
                   % (self.host, self.port, str(e)))
             self.sock = None
@@ -440,7 +462,10 @@ class StreamHandler(object):
             write_list.append('P')
             s = pickle.dumps(obj, pickle.HIGHEST_PROTOCOL)
             write_list.extend([str(len(s)), '|', s])
-        self.fp.write(''.join(write_list))
+        if PYTHON2:
+            self.fp.write(''.join(write_list))
+        elif PYTHON3:
+            self.fp.write(bytes(''.join(write_list), "UTF-8"))
         #self.fp.flush()
 
     def load(self):
@@ -470,7 +495,7 @@ class StreamHandler(object):
                 return pickle.loads(buff.getvalue())
             else:
                 raise DecodeError("Message type %r not supported" % msgtype)
-        except DecodeError.wrapped_exceptions, e:
+        except DecodeError.wrapped_exceptions as e:
             raise DecodeError(str(e))
 
     def _load_header(self):

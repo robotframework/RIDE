@@ -52,10 +52,11 @@ def requires_focus(function):
         return self.FindFocus() is None
 
     def decorated_function(self, *args):
-        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
-            _iscelleditcontrolshown = self.IsCellEditControlEnabled()
-        else:
-            _iscelleditcontrolshown = self.IsCellEditControlShown()
+        # if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
+        #     _iscelleditcontrolshown = self.IsCellEditControlEnabled()
+        # else:
+        #     _iscelleditcontrolshown = self.IsCellEditControlShown()
+        _iscelleditcontrolshown = self.IsCellEditControlShown()
         if self.has_focus() or _iscelleditcontrolshown or \
            _row_header_selected_on_linux(self):
             function(self, *args)
@@ -448,7 +449,6 @@ class KeywordEditor(GridEditor, RideEventHandler):
             _iscelleditcontrolshown = self.IsCellEditControlShown()
 
         keycode, control_down = event.GetKeyCode(), event.CmdDown()
-        print("DEBUG: keycode=%d Control Down=%s singleCtrl? %s" % (keycode, control_down, keycode==wx.WXK_CONTROL))
         if keycode == ord('M') and control_down:  #  keycode == wx.WXK_CONTROL 
             self._show_cell_information()
         elif keycode == ord('C') and control_down:
@@ -772,19 +772,6 @@ class ContentAssistCellEditor(GridCellEditor):  # DEBUG wxPhoenix PyGridCellEdi
 
     def ApplyEdit(self, row, col, grid):
         pass
-
-    """
-    def ApplyEdit(self, row, col, grid):
-        self._counter += 1
-        print("DEBUG: ApplyEdit gonna CRASH :( (counter is {0})\n".format(self._counter))
-        value = self._get_value()
-        if value != self._original_value:
-            print("DEBUG: ApplyEdit Value different from original.\n")
-            self._tc.SetValue(value)
-            self._tc.Show()
-            # self._original_value = value
-        return
-    """
 
     def _get_value(self):
         suggestion = self._tc.content_assist_value()

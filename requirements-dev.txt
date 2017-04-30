@@ -1,0 +1,8 @@
+# setuptools is required by mock(ito?)
+wxPython
+setuptools
+nose
+mockito
+invoke
+Pygments
+robotframework

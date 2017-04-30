@@ -593,9 +593,10 @@ class TestRunnerPlugin(Plugin):
         return toolbar
 
     def _bind_toolbar_events(self, toolbar):
-        for event, callback, id in (
-            (wx.EVT_TOOL, self.OnShowReport, ID_SHOW_REPORT),
-            (wx.EVT_TOOL, self.OnShowLog, ID_SHOW_LOG)):
+        for event, callback, id in ((wx.EVT_TOOL, self.OnShowReport,
+                                     ID_SHOW_REPORT), (wx.EVT_TOOL,
+                                                       self.OnShowLog,
+                                                       ID_SHOW_LOG)):
             toolbar.Bind(event, callback, id=id)
         toolbar.Bind(wx.EVT_CHECKBOX, self.OnAutoSaveCheckbox, self.savecb)
         toolbar.Bind(wx.EVT_CHECKBOX, self.OnShowHideMessageLog,

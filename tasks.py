@@ -223,6 +223,16 @@ def release_notes(ctx):
                  i.title)
         _log(' | '.join(parts))
 
+@task
+def tags_test(ctx):
+    """Runs the main section of src/robotide/editor/tags.py."""
+    _set_development_path()
+    try:
+        import subprocess
+        p = subprocess.Popen(["/usr/bin/python", "/home/helio/github/RIDE/src/robotide/editor/tags.py"])
+        p.communicate('')
+    finally:
+        pass
 
 # Helper functions
 
