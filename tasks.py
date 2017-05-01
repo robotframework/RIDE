@@ -6,8 +6,14 @@ from os.path import join, exists
 import re
 import shutil
 import tempfile
-from StringIO import StringIO
-import urllib2
+try:
+    from StringIO import StringIO
+except ImportError:  # py3
+    from io import StringIO
+try:
+    import urllib2
+except ImportError:  # py3
+    import urllib as urllib2
 
 try:
     from invoke import task, __version_info__ as invoke_version
@@ -29,7 +35,11 @@ BUNDLED_ROBOT_DIR = join(ROBOTIDE_PACKAGE, 'lib', 'robot')
 TEST_PROJECT_DIR = 'theproject'
 TEST_LIBS_GENERATED = 10
 # Set VERSION global variable
-execfile('src/robotide/version.py')
+# execfile('src/robotide/version.py')
+with open("src/robotide/version.py") as f:
+    code = compile(f.read(), "version.py", 'exec')
+    exec(code)
+
 FINAL_RELEASE = bool(re.match('^(\d*\.){1,2}\d*$', VERSION))
 wxPythonDownloadUrl = \
     "http://sourceforge.net/projects/wxpython/files/wxPython/2.8.12.1/"
@@ -351,4 +361,4 @@ def _get_milestone(repo, milestone_title):
 
 
 def _log(msg):
-    print msg
+    print(msg)

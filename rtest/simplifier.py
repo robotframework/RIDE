@@ -2,8 +2,9 @@
 def simplify(trace, runner):
     try:
         return _simplify(1, trace, runner)
-    except ResetSimplify, reset:
+    except ResetSimplify as reset:
         return simplify(reset.trace, runner)
+
 
 def _simplify(min_i, trace, runner):
     max_i = len(trace)
@@ -16,6 +17,7 @@ def _simplify(min_i, trace, runner):
             return _simplify(min_i, new_trace, runner)
     return _simplify(min_i+1, trace, runner)
 
+
 class ResetSimplify(Exception):
 
     def __init__(self, trace):
@@ -24,16 +26,17 @@ class ResetSimplify(Exception):
 
 
 def test_trace(trace, runner):
-    print '>'*80
-    print '! >>> %d' % len(trace)
+    print('>'*80)
+    print('! >>> %d' % len(trace))
     runner.initialize()
     try:
         run_trace(runner, trace)
         return False
-    except Exception:
+    except ValueError:  # was Exception:
         if runner.count <= trace[-1]:
             raise ResetSimplify([i for i in trace if i < runner.count])
         return True
+
 
 def run_trace(runner, trace):
     i = 0
@@ -70,18 +73,21 @@ if __name__ == '__main__':
             d = self._data.pop(0)
             self._fails &= (not d)
 
-
     for z in range(10):
-        test_data = [False for _ in xrange(10000)]
+        try:
+            my10k = xrange(10000)
+        except NameError:  # py3
+            my10k = range(10000)
+        test_data = [False for _ in my10k]
         test_data[-1] = True
         for i in range(random.randint(0, 10)):
             test_data[random.randint(0, 9999)] = True
         runner = Runner(test_data)
         trace = range(10000)
-        print '!!'
+        print('!!')
         optimal_trace = simplify(trace, runner)
-        print optimal_trace
-        print '--'
+        print(optimal_trace)
+        print('--')
         for n in optimal_trace:
             assert test_data[n]
         assert len([i for i in test_data if i]) == len(optimal_trace)
