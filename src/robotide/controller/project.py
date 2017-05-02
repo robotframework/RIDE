@@ -303,7 +303,7 @@ class Serializer(object):
         with Backup(controller):
             try:
                 controller.datafile.save(**self._get_options())
-            except Exception, err:
+            except Exception as err:
                 self._cache_error(controller, err)
                 raise
 

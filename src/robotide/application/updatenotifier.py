@@ -51,8 +51,8 @@ class UpdateNotifierController(object):
         try:
             self._newest_version = self._get_newest_version()
             self._download_url = self._get_download_url(self._newest_version)
-        except Exception, e:
-            print e
+        except Exception as e:
+            print(e)
             #There are many possible errors:
             # - Timeout
             # - Corrupted data

@@ -262,7 +262,7 @@ class TestRunnerPlugin(Plugin):
             self._process_timer.Start(41) # roughly 24fps
             self._set_running()
             self._progress_bar.Start()
-        except Exception, e:
+        except Exception as e:
             self._set_stopped()
             error, log_message = self.get_current_profile().format_error(
                 unicode(e), None)
@@ -444,7 +444,7 @@ class TestRunnerPlugin(Plugin):
         textctrl.SetReadOnly(False)
         try:
             textctrl.AppendText(string)
-        except UnicodeDecodeError,e:
+        except UnicodeDecodeError as e:
             # I'm not sure why I sometimes get this, and I don't know what I
             # can do other than to ignore it.
             pass

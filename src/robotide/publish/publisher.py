@@ -88,7 +88,7 @@ class _ListenerWrapper(object):
         from messages import RideLogException
         try:
             self.listener(data)
-        except Exception, err:
+        except Exception as err:
             # Prevent infinite recursion if RideLogMessage listener is broken,
             if not isinstance(data, RideLogException):
                 RideLogException(message='Error in listener: %s\n' \

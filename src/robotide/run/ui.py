@@ -46,7 +46,7 @@ class Runner(wx.EvtHandler):
     def stop(self):
         try:
             self._process.stop()
-        except Exception, err:
+        except Exception as err:
             wx.MessageBox(str(err), style=wx.ICON_ERROR)
 
 

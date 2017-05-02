@@ -362,7 +362,7 @@ class TestMergeSettings(TestSettingsHelper):
     def test_merge_fails_reasonably_when_settings_file_is_read_only(self):
         try:
             SettingsMigrator(self.settings_path, self.read_only_path).merge()
-        except RuntimeError, e:
+        except RuntimeError as e:
             self.assertTrue(str(e).startswith('Could not open'))
         else:
             raise AssertionError('merging read-only file succeeded')

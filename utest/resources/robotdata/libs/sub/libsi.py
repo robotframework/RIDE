@@ -1,2 +1,2 @@
 def libsi_keyword():
-    print 'libsi keyword'
+    print('libsi keyword')

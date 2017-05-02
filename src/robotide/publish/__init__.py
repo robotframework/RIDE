@@ -73,7 +73,7 @@ In this example the ``OnTreeSelection`` method is the listener and the
            self.subscribe(self.OnTreeSelection, RideTreeSelection)
 
        def OnTreeSelection(self, message):
-           print message.topic, message.node
+           print(message.topic, message.node)
 
 Unsubscribing
 ~~~~~~~~~~~~~
