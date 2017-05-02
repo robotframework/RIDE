@@ -274,7 +274,7 @@ class PybotProfile(BaseProfile):
             if bool(invalid):
                 return 'Unknown option(s): '+' '.join(invalid)
             return None
-        except DataError, e:
+        except DataError as e:
             return e.message
         except Information:
             return 'Does not execute - help or version option given'

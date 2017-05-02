@@ -120,7 +120,7 @@ class _PluginEnablationCheckBox(wx.CheckBox):
     def _execute(self, method):
         try:
             method()
-        except Exception, err:
+        except Exception as err:
             self.SetValue(False)
             self.Enable(False)
             msg = 'Failed to %s plugin %s:\n%s' % (method.__name__,

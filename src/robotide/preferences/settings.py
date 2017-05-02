@@ -44,9 +44,9 @@ def _copy_or_migrate_user_settings(settings_dir, source_path, dest_file_name):
     else:
         try:
             SettingsMigrator(source_path, settings_path).migrate()
-        except ConfigObjError, parsing_error:
-            print 'WARNING! corrupted configuration file replaced with defaults'
-            print parsing_error
+        except ConfigObjError as parsing_error:
+            print('WARNING! corrupted configuration file replaced with defaults')
+            print(parsing_error)
             shutil.copyfile(source_path, settings_path)
     return os.path.abspath(settings_path)
 
@@ -60,7 +60,7 @@ class SettingsMigrator(object):
         self._user_path = user_path
         try:
             self._old_settings = ConfigObj(user_path, unrepr=True)
-        except UnreprError, err:
+        except UnreprError as err:
             raise ConfigurationError("Invalid config file '%s': %s" %
                                      (user_path, err))
 
@@ -301,7 +301,7 @@ class Settings(_Section):
     def __init__(self, user_path):
         try:
             _Section.__init__(self, ConfigObj(user_path, unrepr=True))
-        except UnreprError, error:
+        except UnreprError as error:
             raise ConfigurationError(error)
         self.excludes = excludes.Excludes(SETTINGS_DIRECTORY)
 

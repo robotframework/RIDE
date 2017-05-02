@@ -18,7 +18,7 @@ class TestImports(unittest.TestCase):
         data_file = data_file or self
         for i in data_file.imports:
             if i.name == name:
-                print i.name
+                print(i.name)
                 return i
         raise AssertionError('No import found with name "%s"' % name)
 

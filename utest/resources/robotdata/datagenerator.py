@@ -76,18 +76,18 @@ def generate(directory, suites, tests, keywords):
     r.close()
 
 def usage():
-    print 'datagenerator.py -d [directory] -s [NUMBER OF SUITES] -t [NUMBER OF TESTS IN SUITE] -k [NUMBER OF KEYWORDS]'
+    print('datagenerator.py -d [directory] -s [NUMBER OF SUITES] -t [NUMBER OF TESTS IN SUITE] -k [NUMBER OF KEYWORDS]')
 
 def main(args):
     try:
         opts, args = getopt(args, 'd:s:t:k:', [])
-    except GetoptError, e:
-        print e
+    except GetoptError as e:
+        print(e)
         usage()
         sys.exit(2)
     if len(opts) != 4:
         if opts:
-            print opts
+            print(opts)
         usage()
         sys.exit(2)
     for opt, arg in opts:

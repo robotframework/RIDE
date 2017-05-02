@@ -148,7 +148,7 @@ class PreviewPanel(wx.Panel):
                 pipe_separated=self._pipe_separated,
                 txt_separating_spaces=self._parent.global_settings['txt number of spaces']
             )
-        except Exception, e:
+        except Exception as e:
             return "Creating preview of '%s' failed: %s" % (datafile.name, e)
         else:
             return output.getvalue()

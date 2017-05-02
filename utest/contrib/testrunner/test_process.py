@@ -13,7 +13,7 @@ class ProcessUnicodeTestCase(unittest.TestCase):
             Process(u'\xf6').run_command(u'echo \xf6')
         except UnicodeEncodeError:
             self.fail('Should not throw unicode error')
-        except OSError, expected:
+        except OSError as expected:
             pass
 
     def test_running_pybot_test(self):

@@ -65,7 +65,7 @@ class RideMessage(object):
         """
         try:
             self._publish(self)
-        except Exception, err:
+        except Exception as err:
             self._publish(RideLogException(message='Error in publishing message: ' + str(err),
                                            exception=err, level='ERROR'))
 

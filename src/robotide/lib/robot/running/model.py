@@ -153,7 +153,7 @@ class TestSuite(model.TestSuite):
                                output='example.xml',
                                exitonfailure=True,
                                stdout=stdout)
-            print result.return_code
+            print(result.return_code)
 
         To save memory, the returned
         :class:`~robot.result.executionresult.Result` object does not
