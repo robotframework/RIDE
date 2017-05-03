@@ -1503,7 +1503,7 @@ class OperatingSystem(object):
         if logger:
             logger.write(msg, level)
         else:
-            print '*%s* %s' % (level, msg)
+            print('*%s* %s' % (level, msg))
 
 
 class _Process:

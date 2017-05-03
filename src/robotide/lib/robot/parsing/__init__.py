@@ -37,9 +37,9 @@ Example
     from robotide.lib.robot.api import TestData
 
     def print_suite(suite):
-        print 'Suite:', suite.name
+        print('Suite:', suite.name)
         for test in suite.testcase_table:
-            print '-', test.name
+            print('-', test.name)
         for child in suite.children:
             print_suite(child)
 

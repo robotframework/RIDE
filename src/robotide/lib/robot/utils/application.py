@@ -46,7 +46,7 @@ class Application(object):
 
     def console(self, msg):
         if msg:
-            print encode_output(msg)
+            print(encode_output(msg))
 
     def _parse_arguments(self, cli_args):
         try:
@@ -114,7 +114,7 @@ class DefaultLogger(object):
         pass
 
     def error(self, message):
-        print encode_output(message)
+        print(encode_output(message))
 
     def close(self):
         pass

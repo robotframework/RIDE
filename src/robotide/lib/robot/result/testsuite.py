@@ -61,9 +61,9 @@ class TestSuite(model.TestSuite):
         to a variable and inspecting it is often a good idea::
 
             stats = suite.statistics
-            print stats.critical.failed
-            print stats.all.total
-            print stats.message
+            print(stats.critical.failed)
+            print(stats.all.total)
+            print(stats.message)
         """
         return TotalStatisticsBuilder(self).stats
 
