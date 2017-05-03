@@ -13,8 +13,12 @@
 #  limitations under the License.
 
 from collections import Mapping
-from UserDict import UserDict
-from UserString import UserString
+try:
+    from UserDict import UserDict
+    from UserString import UserString
+except ImportError:  # py3
+    from collections import UserDict
+    from collections import UserString
 try:
     from java.lang import String
 except ImportError:
