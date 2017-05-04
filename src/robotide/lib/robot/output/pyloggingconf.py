@@ -15,7 +15,8 @@
 from contextlib import contextmanager
 import logging
 
-from robotide.lib.robot import utils
+# from robotide.lib.robot import utils
+import robotide.lib.robot.utils
 
 from . import librarylogger
 
@@ -67,8 +68,8 @@ class RobotHandler(logging.Handler):
             return record.getMessage(), None
         except:
             message = 'Failed to log following message properly: %s' \
-                        % utils.unic(record.msg)
-            error = '\n'.join(utils.get_error_details())
+                        % robotide.lib.robot.utils.unic(record.msg)
+            error = '\n'.join(robotide.lib.robot.utils.get_error_details())
             return message, error
 
     def _get_logger_method(self, level):
