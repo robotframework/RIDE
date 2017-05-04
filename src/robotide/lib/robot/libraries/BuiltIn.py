@@ -16,7 +16,10 @@ import re
 import time
 import token
 from tokenize import generate_tokens, untokenize
-from StringIO import StringIO
+try:
+    from StringIO import StringIO
+except ImportError:  # py3
+    from io import StringIO
 
 from robotide.lib.robot.api import logger
 from robotide.lib.robot.errors import (ContinueForLoop, DataError, ExecutionFailed,

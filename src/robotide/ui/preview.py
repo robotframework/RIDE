@@ -13,7 +13,10 @@
 #  limitations under the License.
 
 import wx.html
-from StringIO import StringIO
+try:
+    from StringIO import StringIO
+except ImportError:  # py3
+    from io import StringIO
 
 from robotide.pluginapi import Plugin, ActionInfo, TreeAwarePluginMixin
 from robotide.publish import (RideTreeSelection, RideNotebookTabChanged,

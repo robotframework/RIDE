@@ -13,7 +13,10 @@
 #  limitations under the License.
 
 import os.path
-from StringIO import StringIO
+try:
+    from StringIO import StringIO
+except ImportError:  # py3
+    from io import StringIO
 
 from .robottypes import is_string
 from .platform import IRONPYTHON

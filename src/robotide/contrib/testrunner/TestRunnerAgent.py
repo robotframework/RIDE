@@ -93,10 +93,7 @@ except ImportError:
     try:
         from StringIO import StringIO
     except ImportError:#py3
-        try:
-            from io import StringIO
-        except ImportError as e:
-            raise e
+        from io import StringIO
 
 HOST = "localhost"
 

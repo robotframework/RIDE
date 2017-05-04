@@ -113,7 +113,10 @@ http://robotframework.org/robotframework/#built-in-tools.
 
 import os
 import sys
-from StringIO import StringIO
+try:
+    from StringIO import StringIO
+except ImportError:  # py3
+    from io import StringIO
 
 # Allows running as a script. __name__ check needed with multiprocessing:
 # http://code.google.com/p/robotframework/issues/detail?id=1137

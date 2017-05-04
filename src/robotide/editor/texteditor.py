@@ -13,7 +13,10 @@
 #  limitations under the License.
 
 from time import time
-from StringIO import StringIO
+try:
+    from StringIO import StringIO
+except ImportError:  # py3
+    from io import StringIO
 import string
 import wx
 from wx import stc

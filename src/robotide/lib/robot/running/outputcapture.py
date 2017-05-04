@@ -13,7 +13,10 @@
 #  limitations under the License.
 
 import sys
-from StringIO import StringIO
+try:
+    from StringIO import StringIO
+except ImportError:  # py3
+    from io import StringIO
 
 from robotide.lib.robot.output import LOGGER
 from robotide.lib.robot.utils import decode_output, encode_output, JYTHON
