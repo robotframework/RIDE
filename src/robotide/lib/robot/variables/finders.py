@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -21,8 +22,8 @@ except ImportError:
     get_java_property = lambda name: None
     get_java_properties = lambda: {}
 
-from robotide.lib.robot.errors import DataError, VariableError
-from robotide.lib.robot.utils import (get_env_var, get_env_vars, get_error_message,
+from robot.errors import DataError, VariableError
+from robot.utils import (get_env_var, get_env_vars, get_error_message,
                          is_dict_like, is_list_like, normalize, DotDict,
                          NormalizedDict)
 
@@ -49,7 +50,13 @@ class VariableFinder(object):
                     value = finder.find(name)
                 except (KeyError, ValueError):
                     continue
-                return self._validate_value(value, identifier, name)
+                try:
+                    return self._validate_value(value, identifier, name)
+                except VariableError:
+                    raise
+                except:
+                    raise VariableError("Resolving variable '%s' failed: %s"
+                                        % (name, get_error_message()))
         variable_not_found(name, self._store.data)
 
     def _validate_value(self, value, identifier, name):
@@ -118,7 +125,7 @@ class ExtendedFinder(object):
             variable = self._find_variable('${%s}' % base_name)
         except DataError as err:
             raise VariableError("Resolving variable '%s' failed: %s"
-                                % (name, unicode(err)))
+                                % (name, err.message))
         try:
             return eval('_BASE_VAR_' + extended, {'_BASE_VAR_': variable})
         except:

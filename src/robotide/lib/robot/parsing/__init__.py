@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -34,12 +35,12 @@ Example
 ::
 
     import sys
-    from robotide.lib.robot.api import TestData
+    from robot.api import TestData
 
     def print_suite(suite):
-        print('Suite:', suite.name)
+        print 'Suite:', suite.name
         for test in suite.testcase_table:
-            print('-', test.name)
+            print '-', test.name
         for child in suite.children:
             print_suite(child)
 

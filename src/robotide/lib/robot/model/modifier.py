@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,8 +13,8 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robotide.lib.robot.errors import DataError
-from robotide.lib.robot.utils import (get_error_details, is_string,
+from robot.errors import DataError
+from robot.utils import (get_error_details, is_string,
                          split_args_from_name_or_path, type_name, Importer)
 
 from .visitor import SuiteVisitor
@@ -48,4 +49,4 @@ class ModelModifier(SuiteVisitor):
                     name, args = split_args_from_name_or_path(visitor)
                     yield importer.import_class_or_module(name, args)
             except DataError as err:
-                self._log_error(unicode(err))
+                self._log_error(err.message)

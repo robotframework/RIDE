@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -42,7 +43,7 @@ def _prune_excess_lines(lines, lengths, from_end=False):
         lengths.reverse()
     ret = []
     total = 0
-    limit = _MAX_ERROR_LINES/2
+    limit = _MAX_ERROR_LINES // 2
     for line, length in zip(lines[:limit], lengths[:limit]):
         if total + length >= limit:
             ret.append(_cut_long_line(line, total, from_end))
@@ -54,7 +55,7 @@ def _prune_excess_lines(lines, lengths, from_end=False):
     return ret
 
 def _cut_long_line(line, used, from_end):
-    available_lines = _MAX_ERROR_LINES/2 - used
+    available_lines = _MAX_ERROR_LINES // 2 - used
     available_chars = available_lines * _MAX_ERROR_LINE_LENGTH - 3
     if len(line) > available_chars:
         if not from_end:

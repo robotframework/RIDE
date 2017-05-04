@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -15,8 +16,7 @@
 from contextlib import contextmanager
 import logging
 
-# from robotide.lib.robot import utils
-import robotide.lib.robot.utils
+from robot import utils
 
 from . import librarylogger
 
@@ -68,8 +68,8 @@ class RobotHandler(logging.Handler):
             return record.getMessage(), None
         except:
             message = 'Failed to log following message properly: %s' \
-                        % robotide.lib.robot.utils.unic(record.msg)
-            error = '\n'.join(robotide.lib.robot.utils.get_error_details())
+                        % utils.unic(record.msg)
+            error = '\n'.join(utils.get_error_details())
             return message, error
 
     def _get_logger_method(self, level):

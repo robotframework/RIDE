@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,10 +13,12 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+from .compat import py2to3
 from .normalizing import NormalizedDict
 from .robottypes import is_string
 
 
+@py2to3
 class ConnectionCache(object):
     """Cache for test libs to use with concurrent connections, processes, etc.
 
@@ -157,6 +160,7 @@ class ConnectionCache(object):
         return index
 
 
+@py2to3
 class NoConnection(object):
 
     def __init__(self, message):

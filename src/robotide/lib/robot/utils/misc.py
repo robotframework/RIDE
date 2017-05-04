@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,12 +13,35 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import inspect
-import sys
+from __future__ import division
 
-from .unic import unic
+import inspect
+
 from .platform import IRONPYTHON
 from .robottypes import is_integer, is_unicode
+from .unic import unic
+
+
+def roundup(number, ndigits=0, return_type=None):
+    """Rounds number to the given number of digits.
+
+    Numbers equally close to a certain precision are always rounded away from
+    zero. By default return value is float when ``ndigits`` is positive and
+    int otherwise, but that can be controlled with ``return_type``.
+
+    With the built-in ``round()`` rounding equally close numbers as well as
+    the return type depends on the Python version.
+    """
+    sign = 1 if number >= 0 else -1
+    precision = 10 ** (-1 * ndigits)
+    if not return_type:
+        return_type = float if ndigits > 0 else int
+    quotient, remainder = divmod(abs(number), precision)
+    # https://github.com/IronLanguages/main/issues/1236
+    if (not (IRONPYTHON and (quotient * precision + remainder > abs(number)))
+        and remainder >= precision / 2):
+        quotient += 1
+    return sign * return_type(quotient * precision)
 
 
 def printable_name(string, code_style=False):
@@ -42,35 +66,33 @@ def printable_name(string, code_style=False):
     if code_style and '_' in string:
         string = string.replace('_', ' ')
     parts = string.split()
-    if not parts:
-        return ''
-    if code_style and len(parts) == 1:
-        parts = _splitCamelCaseString(parts[0])
-    return ' '.join(part[0].upper() + part[1:] for part in parts if part != '')
+    if code_style and len(parts) == 1 \
+            and not (string.isalpha() and string.islower()):
+        parts = _split_camel_case(parts[0])
+    return ' '.join(part[0].upper() + part[1:] for part in parts)
 
 
-def _splitCamelCaseString(string):
-    parts = []
-    current_part = []
-    string = ' ' + string + ' '  # extra spaces make going through string easier
-    for i in range(1, len(string)-1):
-        # on 1st/last round prev/next is ' ' and char is 1st/last real char
-        prev, char, next = string[i-1:i+2]
-        if _isWordBoundary(prev, char, next):
-            parts.append(''.join(current_part))
-            current_part = [char]
+def _split_camel_case(string):
+    tokens = []
+    token = []
+    for prev, char, next in zip(' ' + string, string, string[1:] + ' '):
+        if _is_camel_case_boundary(prev, char, next):
+            if token:
+                tokens.append(''.join(token))
+            token = [char]
         else:
-            current_part.append(char)
-    parts.append(''.join(current_part))   # append last part
-    return parts
+            token.append(char)
+    if token:
+        tokens.append(''.join(token))
+    return tokens
 
 
-def _isWordBoundary(prev, char, next):
+def _is_camel_case_boundary(prev, char, next):
+    if prev.isdigit():
+        return not char.isdigit()
     if char.isupper():
-        return (prev.islower() or next.islower()) and prev.isalnum()
-    if char.isdigit():
-        return prev.isalpha()
-    return prev.isdigit()
+        return next.islower() or prev.isalpha() and not prev.isupper()
+    return char.isdigit()
 
 
 def plural_or_not(item):
@@ -79,19 +101,18 @@ def plural_or_not(item):
 
 
 def seq2str(sequence, quote="'", sep=', ', lastsep=' and '):
-    """Returns sequence in format 'item 1', 'item 2' and 'item 3'"""
-    quote_elem = lambda string: quote + unic(string) + quote
+    """Returns sequence in format `'item 1', 'item 2' and 'item 3'`."""
+    sequence = [quote + unic(item) + quote for item in sequence]
     if not sequence:
         return ''
     if len(sequence) == 1:
-        return quote_elem(sequence[0])
-    elems = [quote_elem(s) for s in sequence[:-2]]
-    elems.append(quote_elem(sequence[-2]) + lastsep + quote_elem(sequence[-1]))
-    return sep.join(elems)
+        return sequence[0]
+    last_two = lastsep.join(sequence[-2:])
+    return sep.join(sequence[:-2] + [last_two])
 
 
 def seq2str2(sequence):
-    """Returns sequence in format [ item 1 | item 2 | ... ] """
+    """Returns sequence in format `[ item 1 | item 2 | ... ]`."""
     if not sequence:
         return '[ ]'
     return '[ %s ]' % ' | '.join(unic(item) for item in sequence)
@@ -105,26 +126,3 @@ def getdoc(item):
         return doc.decode('UTF-8')
     except UnicodeDecodeError:
         return unic(doc)
-
-
-# On IronPython sys.stdxxx.isatty() always returns True
-if not IRONPYTHON:
-
-    def isatty(stream):
-        # first check if buffer was detached
-        if hasattr(stream, 'buffer') and stream.buffer is None:
-            return False
-        return hasattr(stream, 'isatty') and stream.isatty()
-
-else:
-
-    from ctypes import windll
-
-    _HANDLE_IDS = {sys.__stdout__ : -11, sys.__stderr__ : -12}
-    _CONSOLE_TYPE = 2
-
-    def isatty(stream):
-        if stream not in _HANDLE_IDS:
-            return False
-        handle = windll.kernel32.GetStdHandle(_HANDLE_IDS[stream])
-        return windll.kernel32.GetFileType(handle) == _CONSOLE_TYPE

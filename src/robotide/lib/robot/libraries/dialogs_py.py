@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -14,8 +15,14 @@
 
 import sys
 from threading import currentThread
-from Tkinter import (Tk, Toplevel, Frame, Listbox, Label, Button, Entry,
-                     BOTH, END, LEFT, W)
+import time
+
+try:
+    from Tkinter import (Button, Entry, Frame, Label, Listbox, TclError,
+                         Toplevel, Tk, BOTH, END, LEFT, W)
+except ImportError:
+    from tkinter import (Button, Entry, Frame, Label, Listbox, TclError,
+                         Toplevel, Tk, BOTH, END, LEFT, W)
 
 
 class _TkDialog(Toplevel):
@@ -45,15 +52,26 @@ class _TkDialog(Toplevel):
     def _initialize_dialog(self):
         self.title('Robot Framework')
         self.grab_set()
-        self.protocol("WM_DELETE_WINDOW", self._right_button_clicked)
-        self.bind("<Escape>", self._right_button_clicked)
+        self.protocol("WM_DELETE_WINDOW", self._close)
+        self.bind("<Escape>", self._close)
         self.minsize(250, 80)
         self.geometry("+%d+%d" % self._get_center_location())
         self._bring_to_front()
 
+    def grab_set(self, timeout=30):
+        maxtime = time.time() + timeout
+        while time.time() < maxtime:
+            try:
+                # Fails at least on Linux if mouse is hold down.
+                return Toplevel.grab_set(self)
+            except TclError:
+                pass
+        raise RuntimeError('Failed to open dialog in %s seconds. One possible '
+                           'reason is holding down mouse button.' % timeout)
+
     def _get_center_location(self):
-        x = (self.winfo_screenwidth() - self.winfo_reqwidth()) / 2
-        y = (self.winfo_screenheight() - self.winfo_reqheight()) / 2
+        x = (self.winfo_screenwidth() - self.winfo_reqwidth()) // 2
+        y = (self.winfo_screenheight() - self.winfo_reqheight()) // 2
         return x, y
 
     def _bring_to_front(self):
@@ -96,7 +114,7 @@ class _TkDialog(Toplevel):
     def _get_value(self):
         return None
 
-    def _close(self):
+    def _close(self, event=None):
         # self.destroy() is not enough on Linux
         self._parent.destroy()
 
@@ -140,6 +158,7 @@ class SelectionDialog(_TkDialog):
         self._listbox = Listbox(parent)
         for item in values:
             self._listbox.insert(END, item)
+        self._listbox.config(width=0)
         return self._listbox
 
     def _validate_value(self):

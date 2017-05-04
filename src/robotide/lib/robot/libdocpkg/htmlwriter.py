@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -13,12 +14,15 @@
 #  limitations under the License.
 
 import re
-import urllib
+try:
+    from urllib import quote
+except ImportError:
+    from urllib.parse import quote
 
-from robotide.lib.robot.errors import DataError
-from robotide.lib.robot.htmldata import HtmlFileWriter, ModelWriter, JsonWriter, LIBDOC
-from robotide.lib.robot.utils import get_timestamp, html_escape, html_format, NormalizedDict
-from robotide.lib.robot.utils.htmlformatters import HeaderFormatter
+from robot.errors import DataError
+from robot.htmldata import HtmlFileWriter, ModelWriter, JsonWriter, LIBDOC
+from robot.utils import get_timestamp, html_escape, html_format, NormalizedDict
+from robot.utils.htmlformatters import HeaderFormatter
 
 
 class LibdocHtmlWriter(object):
@@ -111,11 +115,11 @@ class DocFormatter(object):
 
     def _escape_and_encode_targets(self, targets):
         return NormalizedDict((html_escape(key), self._encode_uri_component(value))
-                              for key, value in targets.iteritems())
+                              for key, value in targets.items())
 
     def _encode_uri_component(self, value):
         # Emulates encodeURIComponent javascript function
-        return urllib.quote(value.encode('UTF-8'), safe="-_.!~*'()")
+        return quote(value.encode('UTF-8'), safe="-_.!~*'()")
 
     def html(self, doc, intro=False):
         doc = self._doc_to_html(doc)
@@ -155,7 +159,8 @@ class DocToHtml(object):
             from docutils.core import publish_parts
         except ImportError:
             raise DataError("reST format requires 'docutils' module to be installed.")
-        parts = publish_parts(doc, writer_name='html')
+        parts = publish_parts(doc, writer_name='html',
+                              settings_overrides={'syntax_highlight': 'short'})
         return self._format_html(parts['html_body'])
 
     def __call__(self, doc):

@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -14,7 +15,7 @@
 
 import os
 
-from robotide.lib.robot.utils import seq2str
+from robot.utils import seq2str
 
 from .itemlist import ItemList
 
@@ -41,7 +42,7 @@ class Import(object):
         return os.path.dirname(self.source)
 
     def report_invalid_syntax(self, message, level='ERROR'):
-        from robotide.lib.robot.output import LOGGER
+        from robot.output import LOGGER
         LOGGER.write("Error in file '%s': %s"
                      % (self.source or '<unknown>', message), level)
 

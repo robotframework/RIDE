@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,20 +13,19 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robotide.lib.robot.errors import DataError
-from robotide.lib.robot.utils import is_string
+from robot.errors import DataError
+from robot.utils import is_string
 
 from .splitter import VariableIterator
 
 
 def is_var(string, identifiers='$@&'):
-    if not is_string(string):
+    if not string or not is_string(string) or len(string) < 4:
         return False
-    length = len(string)
-    return (length > 3 and
-            string[0] in identifiers and
-            string.rfind('{') == 1 and
-            string.find('}') == length - 1)
+    if string[0] not in identifiers or string[1] != '{' or string[-1] != '}':
+        return False
+    body = string[2:-1]
+    return '{' not in body and '}' not in body
 
 
 def is_scalar_var(string):

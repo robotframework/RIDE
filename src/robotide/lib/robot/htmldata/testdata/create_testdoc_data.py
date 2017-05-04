@@ -14,12 +14,12 @@ REAL_OUTPUT =  join(BASE, 'testdoc.js')
 
 sys.path.insert(0, SRC)
 
-from robotide.lib.robot.testdoc import TestSuiteFactory, TestdocModelWriter
+from robot.testdoc import TestSuiteFactory, TestdocModelWriter
 
 with open(OUTPUT, 'w') as output:
     TestdocModelWriter(output, TestSuiteFactory(DATA)).write_data()
 
 shutil.move(OUTPUT, REAL_OUTPUT)
 
-print(REAL_OUTPUT)
+print REAL_OUTPUT
 

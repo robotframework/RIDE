@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -14,8 +15,8 @@
 
 from functools import partial
 
-from robotide.lib.robot.errors import VariableError
-from robotide.lib.robot.utils import (is_dict_like, is_list_like, normalize,
+from robot.errors import VariableError
+from robot.utils import (is_dict_like, is_list_like, normalize,
                          RecommendationFinder)
 
 

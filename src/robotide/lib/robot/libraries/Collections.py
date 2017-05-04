@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,11 +13,17 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robotide.lib.robot.api import logger
-from robotide.lib.robot.utils import (is_dict_like, is_string, is_truthy, plural_or_not,
+from robot.api import logger
+from robot.utils import (is_dict_like, is_string, is_truthy, plural_or_not,
                          seq2str, seq2str2, type_name, unic, Matcher)
-from robotide.lib.robot.utils.asserts import assert_equals
-from robotide.lib.robot.version import get_version
+from robot.utils.asserts import assert_equal
+from robot.version import get_version
+
+
+class NotSet(object):
+    def __repr__(self):
+        return ""
+NOT_SET = NotSet()
 
 
 class _List(object):
@@ -290,7 +297,7 @@ class _List(object):
         _verify_condition(value in list_, default, msg)
 
     def list_should_not_contain_value(self, list_, value, msg=None):
-        """Fails if the ``value`` is not found from ``list``.
+        """Fails if the ``value`` is found from ``list``.
 
         See `List Should Contain Value` for an explanation of ``msg``.
         """
@@ -328,7 +335,9 @@ class _List(object):
         The keyword first verifies that the lists have equal lengths, and then
         it checks are all their values equal. Possible differences between the
         values are listed in the default error message like ``Index 4: ABC !=
-        Abc``.
+        Abc``. The types of the lists do not need to be the same. For example,
+        Python tuple and list with same content are considered equal.
+
 
         The error message can be configured using ``msg`` and ``values``
         arguments:
@@ -376,7 +385,7 @@ class _List(object):
         for index, (item1, item2) in enumerate(zip(list1, list2)):
             name = ' (%s)' % names[index] if index in names else ''
             try:
-                assert_equals(item1, item2, msg='Index %d%s' % (index, name))
+                assert_equal(item1, item2, msg='Index %d%s' % (index, name))
             except AssertionError as err:
                 yield unic(err)
 
@@ -485,6 +494,26 @@ class _Dictionary(object):
             else:
                 logger.info("Key '%s' not found." % key)
 
+    def pop_from_dictionary(self, dictionary, key, default=NOT_SET):
+        """Pops the given ``key`` from the ``dictionary`` and returns its value.
+
+        By default the keyword fails if the given ``key`` cannot be found from
+        the ``dictionary``. If optional ``default`` value is given, it will be
+        returned instead of failing.
+
+        Example:
+        | ${val}= | Pop From Dictionary | ${D3} | b |
+        =>
+        | ${val} = 2
+        | ${D3} = {'a': 1, 'c': 3}
+
+        New in Robot Framework 2.9.2.
+        """
+        if default is NOT_SET:
+            self.dictionary_should_contain_key(dictionary, key)
+            return dictionary.pop(key)
+        return dictionary.pop(key, default)
+
     def keep_in_dictionary(self, dictionary, *keys):
         """Keeps the given ``keys`` in the ``dictionary`` and removes all other.
 
@@ -509,8 +538,8 @@ class _Dictionary(object):
     def get_dictionary_keys(self, dictionary):
         """Returns keys of the given ``dictionary``.
 
-        Keys are returned in sorted order. The given ``dictionary`` is never
-        altered by this keyword.
+        If keys are sortable, they are returned in sorted order. The given
+        ``dictionary`` is never altered by this keyword.
 
         Example:
         | ${keys} = | Get Dictionary Keys | ${D3} |
@@ -518,7 +547,11 @@ class _Dictionary(object):
         | ${keys} = ['a', 'b', 'c']
         """
         # TODO: Possibility to disable sorting. Can be handy with OrderedDicts.
-        return sorted(dictionary)
+        keys = dictionary.keys()
+        try:
+            return sorted(keys)
+        except TypeError:
+            return list(keys)
 
     def get_dictionary_values(self, dictionary):
         """Returns values of the given dictionary.
@@ -596,7 +629,7 @@ class _Dictionary(object):
         The given dictionary is never altered by this keyword.
         """
         self.dictionary_should_contain_key(dictionary, key, msg)
-        actual, expected = unicode(dictionary[key]), unicode(value)
+        actual, expected = unic(dictionary[key]), unic(value)
         default = "Value of dictionary key '%s' does not match: %s != %s" % (key, actual, expected)
         _verify_condition(actual == expected, default, msg)
 
@@ -625,7 +658,8 @@ class _Dictionary(object):
 
         First the equality of dictionaries' keys is checked and after that all
         the key value pairs. If there are differences between the values, those
-        are listed in the error message.
+        are listed in the error message. The types of the dictionaries do not
+        need to be same.
 
         See `Lists Should Be Equal` for more information about configuring
         the error message with ``msg`` and ``values`` arguments.
@@ -694,7 +728,7 @@ class _Dictionary(object):
     def _yield_dict_diffs(self, keys, dict1, dict2):
         for key in keys:
             try:
-                assert_equals(dict1[key], dict2[key], msg='Key %s' % (key,))
+                assert_equal(dict1[key], dict2[key], msg='Key %s' % (key,))
             except AssertionError as err:
                 yield unic(err)
 

@@ -20,10 +20,7 @@
 #     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 #     OTHER DEALINGS IN THE SOFTWARE.
 
-try:
-    from UserDict import DictMixin
-except ImportError:  # py3
-    from collections import MutableMapping as DictMixin
+from UserDict import DictMixin
 
 class OrderedDict(dict, DictMixin):
 
