@@ -1,6 +1,6 @@
 import unittest
 import datafilereader
-from robotide.controller.commands import ChangeCellValue, DeleteRows, AddKeyword,\
+from robotide.controller.ctrlcommands import ChangeCellValue, DeleteRows, AddKeyword,\
     Undo, PasteArea
 from nose.tools import assert_equals, assert_true, assert_false,\
     assert_is_none

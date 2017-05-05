@@ -15,7 +15,7 @@ from robotide.controller.filecontrollers import ResourceFileController
 
 import wx
 
-from robotide.controller.commands import DeleteResourceAndImports, DeleteFile, DeleteFolder, DeleteFolderAndImports
+from robotide.controller.ctrlcommands import DeleteResourceAndImports, DeleteFile, DeleteFolder, DeleteFolderAndImports
 from robotide.usages.commands import FindResourceUsages, FindTestFolderUsages
 from robotide.usages.usagesdialog import ResourceImportListModel, RecursiveResourceImportListModel
 from robotide.widgets import Dialog, VirtualList, VerticalSizer, Label

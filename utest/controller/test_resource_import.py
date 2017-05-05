@@ -2,7 +2,7 @@ import os
 import unittest
 import datafilereader
 
-from robotide.controller.commands import AddKeyword, ChangeCellValue,\
+from robotide.controller.ctrlcommands import AddKeyword, ChangeCellValue,\
     CreateNewResource, SaveFile
 from nose.tools import assert_equals
 from robotide.controller.cellinfo import ContentType, CellType

@@ -14,6 +14,7 @@
 
 import os
 
+from robotide.utils import unicode
 from robotide import utils
 
 

@@ -13,7 +13,7 @@
 #  limitations under the License.
 import os
 
-from robotide.controller.commands import FindOccurrences, _Command, FindVariableOccurrences
+from robotide.controller.ctrlcommands import FindOccurrences, _Command, FindVariableOccurrences
 from robotide.controller.macrocontrollers import KeywordNameController
 
 

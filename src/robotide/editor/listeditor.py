@@ -14,7 +14,7 @@
 
 import wx
 from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
-from robotide.controller.commands import MoveUp, MoveDown, DeleteItem
+from robotide.controller.ctrlcommands import MoveUp, MoveDown, DeleteItem
 
 from robotide.utils import RideEventHandler
 from robotide.widgets import PopupMenu, PopupMenuItems, ButtonWithHandler, Font

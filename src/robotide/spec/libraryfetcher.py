@@ -14,6 +14,7 @@
 
 from robotide import robotapi
 from robotide.spec.iteminfo import LibraryKeywordInfo
+from robotide.utils import unicode
 
 
 def get_import_result(path, args):

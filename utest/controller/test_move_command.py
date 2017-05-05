@@ -1,7 +1,7 @@
 import unittest
 import datafilereader
 from nose.tools import assert_true, assert_false, assert_equals
-from robotide.controller.commands import MoveTo
+from robotide.controller.ctrlcommands import MoveTo
 
 
 class TestMoveCommand(unittest.TestCase):

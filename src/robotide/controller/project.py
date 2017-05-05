@@ -17,7 +17,7 @@ import shutil
 import tempfile
 
 from robotide.context import LOG
-from robotide.controller.commands import NullObserver, SaveFile
+from robotide.controller.ctrlcommands import NullObserver, SaveFile
 from robotide.publish.messages import RideOpenSuite, RideNewProject, RideFileNameChanged
 
 from .basecontroller import WithNamespace, _BaseController
@@ -27,7 +27,7 @@ from .robotdata import NewTestCaseFile, NewTestDataDirectory
 from robotide.spec.librarydatabase import DATABASE_FILE
 from robotide.spec.librarymanager import LibraryManager
 from robotide.spec.xmlreaders import SpecInitializer
-from robotide.utils import overrides
+from robotide.utils import overrides, unicode
 
 
 class Project(_BaseController, WithNamespace):

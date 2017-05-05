@@ -12,7 +12,8 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robotide import robotapi
+# from robotide import robotapi
+from robotide.lib.robot.running.arguments.embedded import EmbeddedArgumentParser
 
 
 class EmbeddedArgsHandler(object):
@@ -21,6 +22,6 @@ class EmbeddedArgsHandler(object):
         if keyword.arguments:
             raise TypeError('Cannot have normal arguments')
         self.name_regexp, self.embedded_args = \
-            robotapi.EmbeddedArgumentParser().parse(keyword.name)
+            EmbeddedArgumentParser().parse(keyword.name)
         if not self.embedded_args:
             raise TypeError('Must have embedded arguments')

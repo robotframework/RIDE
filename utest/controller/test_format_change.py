@@ -4,7 +4,7 @@ from mockito import mock
 
 from robotide.robotapi import TestCaseFile, ResourceFile
 from robotide.controller import Project
-from robotide.controller.commands import RenameResourceFile
+from robotide.controller.ctrlcommands import RenameResourceFile
 from robotide.controller.filecontrollers import TestCaseFileController
 from robotide.namespace.namespace import Namespace
 from nose.tools import (

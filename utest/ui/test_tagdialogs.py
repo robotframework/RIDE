@@ -15,7 +15,7 @@ from robotide.ui.notebook import NoteBook
 from robotide.application import Project
 from robotide.controller.filecontrollers import (TestDataDirectoryController,
                                                  ResourceFileController)
-
+from robotide.utils import unicode
 from robotide import utils
 from resources import PYAPP_REFERENCE, FakeSettings, FakeApplication
 # import utest.resources

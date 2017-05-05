@@ -22,7 +22,7 @@ from robotide.publish.messages import RideSelectResource, RideFileNameChanged,\
     RideSaving, RideSaved, RideSaveAll, RideExcludesChanged
 from robotide.namespace.namespace import _VariableStash
 
-from robotide.utils import overrides, variablematcher
+from robotide.utils import basestring, overrides, variablematcher
 from .filecontrollers import ResourceFileController
 from .macrocontrollers import KeywordNameController, ForLoopStepController, \
     TestCaseController

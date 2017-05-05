@@ -12,8 +12,11 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from _sqlite3 import OperationalError
-import Queue
+from sqlite3 import OperationalError
+try:
+    import Queue
+except ImportError:  # py3
+    import queue as Queue
 import os
 from threading import Thread
 
@@ -21,7 +24,7 @@ from robotide.publish import RideLogException, RideLogMessage
 from robotide.spec.librarydatabase import LibraryDatabase
 from robotide.spec.libraryfetcher import get_import_result
 from robotide.spec.xmlreaders import get_path, SpecInitializer
-
+from robotide.utils import unicode
 
 class LibraryManager(Thread):
 

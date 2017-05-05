@@ -6,7 +6,7 @@ import shutil
 from nose.tools import assert_true, assert_false, assert_equals
 
 from robotide.robotapi import TestCaseFile, TestDataDirectory, ResourceFile
-from robotide.controller.commands import (
+from robotide.controller.ctrlcommands import (
     DeleteResourceAndImports, DeleteFile, SaveFile)
 from robotide.controller.filecontrollers import (
     TestCaseFileController, TestDataDirectoryController,

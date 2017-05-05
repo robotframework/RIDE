@@ -13,6 +13,7 @@
 #  limitations under the License.
 
 from robotide import robotapi
+from robotide.utils import basestring, unicode
 
 # NOTE! This is in own module to reduce the number of dependencies as this is executed in another process
 

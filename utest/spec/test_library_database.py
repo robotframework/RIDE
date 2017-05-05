@@ -2,6 +2,8 @@ import unittest
 from robotide.spec.iteminfo import LibraryKeywordInfo
 from robotide.spec.librarydatabase import LibraryDatabase
 from robotide.spec.libraryfetcher import get_import_result
+from robotide.utils import unicode
+
 
 class TestLibraryDatabase(unittest.TestCase):
 

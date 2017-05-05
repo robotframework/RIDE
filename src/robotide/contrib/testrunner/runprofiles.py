@@ -30,7 +30,7 @@ import os
 from robotide import pluginapi
 from robotide.widgets import Label
 from robotide.robotapi import DataError, Information
-from robotide.utils import overrides, SYSTEM_ENCODING, ArgumentParser
+from robotide.utils import overrides, SYSTEM_ENCODING, ArgumentParser, unicode
 from robotide.contrib.testrunner.usages import USAGE
 
 

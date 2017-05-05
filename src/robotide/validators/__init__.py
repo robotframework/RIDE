@@ -80,8 +80,8 @@ class ArgumentsValidator(_AbstractValidator):
         try:
             types = [self._get_type(arg)
                      for arg in utils.split_value(args_str)]
-        except ValueError:
-            return "Invalid argument syntax '%s'" % arg
+        except ValueError as e:
+            return "Invalid argument syntax '%s'" % str(e)  # was arg
         return self._validate_argument_order(types)
 
     def _get_type(self, arg):

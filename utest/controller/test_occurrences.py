@@ -4,7 +4,7 @@ from nose.tools import assert_equals, assert_true, assert_false
 from robotide.robotapi import TestCaseFile
 from robotide.controller import Project
 from robotide.controller.macrocontrollers import KEYWORD_NAME_FIELD
-from robotide.controller.commands import (
+from robotide.controller.ctrlcommands import (
     Undo, FindOccurrences, FindVariableOccurrences, NullObserver,
     RenameKeywordOccurrences, ChangeCellValue)
 from robotide.controller.filecontrollers import (

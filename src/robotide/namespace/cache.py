@@ -16,7 +16,7 @@ import os
 import time
 
 from robotide.robotapi import normpath
-
+from robotide.utils import unicode
 
 class LibraryCache(object):
 

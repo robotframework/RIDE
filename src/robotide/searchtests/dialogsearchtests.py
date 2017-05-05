@@ -11,7 +11,7 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-from robotide.utils import overrides
+from robotide.utils import overrides, unicode
 from robotide.widgets import Dialog, VerticalSizer, VirtualList, Label, HelpLabel, ImageProvider, ButtonWithHandler
 import wx
 from robotide.widgets.list import ListModel

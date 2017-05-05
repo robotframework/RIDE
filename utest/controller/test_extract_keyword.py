@@ -1,6 +1,6 @@
 from controller.base_command_test import *
 
-from robotide.controller.commands import ExtractKeyword, Undo
+from robotide.controller.ctrlcommands import ExtractKeyword, Undo
 from robotide.publish.messages import RideUserKeywordAdded
 from nose.tools import assert_true
 from controller.controller_creator import FOR_LOOP_HEADER, FOR_LOOP_STEP2,\

@@ -16,7 +16,7 @@ import wx
 
 from robotide.action import ActionInfoCollection, ActionFactory, SeparatorInfo
 from robotide.context import ABOUT_RIDE, SHORTCUT_KEYS
-from robotide.controller.commands import SaveFile, SaveAll
+from robotide.controller.ctrlcommands import SaveFile, SaveAll
 from robotide.publish import RideSaveAll, RideClosing, RideSaved, PUBLISHER,\
     RideInputValidationError, RideTreeSelection, RideModificationPrevented
 from robotide.ui.tagdialogs import ViewAllTagsDialog

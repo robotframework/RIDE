@@ -1,7 +1,7 @@
 import os
 from resources import FakeSettings
 from robotide.controller import Project
-from robotide.controller.commands import NullObserver
+from robotide.controller.ctrlcommands import NullObserver
 from robotide.namespace import Namespace
 from robotide.spec.librarymanager import LibraryManager
 

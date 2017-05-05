@@ -19,7 +19,7 @@ from robotide.publish.messages import RideImportSettingChanged,\
     RideImportSettingRemoved, RideVariableUpdated, RideItemSettingsChanged, \
     RideImportSettingAdded
 from robotide import robotapi, utils
-from robotide.utils import overrides, variablematcher
+from robotide.utils import basestring, overrides, variablematcher
 
 from .tags import Tag, ForcedTag, DefaultTag
 from .basecontroller import ControllerWithParent

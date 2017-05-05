@@ -1,7 +1,7 @@
 import unittest
 from nose.tools import assert_true, assert_false, assert_equals
 from robotide.controller.tags import DefaultTag
-from robotide.controller.commands import *
+from robotide.controller.ctrlcommands import *
 
 from base_command_test import TestCaseCommandTest
 from controller_creator import *

@@ -23,10 +23,11 @@ from __future__ import generators
 import sys
 import os
 import re
+from robotide.utils import basestring, unicode
 
 compiler = None
 try:
-    import py_compile  as compiler # compiler
+    import py_compile as compiler # compiler
 except ImportError:
     # for IronPython
     pass

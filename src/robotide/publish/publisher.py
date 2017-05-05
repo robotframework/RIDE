@@ -12,6 +12,8 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+from robotide.utils import basestring, unicode
+
 
 class Publisher(object):
 
@@ -85,7 +87,7 @@ class _ListenerWrapper(object):
         # WxPublisher.unsubscribe(self, self.topic)
 
     def __call__(self, data):
-        from messages import RideLogException
+        from .messages import RideLogException
         try:
             self.listener(data)
         except Exception as err:

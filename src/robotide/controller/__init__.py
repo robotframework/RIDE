@@ -13,7 +13,7 @@
 #  limitations under the License.
 
 from .project import Project
-from .commands import FindOccurrences, RenameKeywordOccurrences
+from .ctrlcommands import FindOccurrences, RenameKeywordOccurrences
 from .dataloader import DataLoader
 from .filecontrollers import DataController, ResourceFileController
 from .tablecontrollers import UserKeywordController
