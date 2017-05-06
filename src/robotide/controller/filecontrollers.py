@@ -15,7 +15,7 @@
 import os
 from itertools import chain
 import shutil
-from . import ctrlcommands
+from .ctrlcommands import SaveFile
 
 from robotide.controller.dataloader import ExcludedDirectory, TestData
 
@@ -262,7 +262,7 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
         old_file = self.filename
         self.data.source = os.path.join(self.directory, '%s.%s' % (basename, self.get_format()))
         self.filename = self.data.source
-        self.execute(ctrlcommands.SaveFile())
+        self.execute(SaveFile())
         if old_file != self.filename:
             self.remove_from_filesystem(old_file)
 

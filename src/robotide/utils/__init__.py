@@ -29,10 +29,10 @@ from .eventhandler import RideEventHandler
 from .printing import Printing
 
 try:
-  basestring
-except NameError:  # py3
-  basestring = str
-  unicode = str
+    from past.builtins import basestring, unicode
+except ImportError:  # pip install future
+    basestring = str
+    unicode = str
 
 
 def html_format(text):

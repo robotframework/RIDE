@@ -11,21 +11,30 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+from __future__ import unicode_literals
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
 
+from future import standard_library
+standard_library.install_aliases()
+
+from builtins import str
+from builtins import range
+from past.builtins import basestring
+from builtins import object
 from itertools import chain
 import time
 import os
 import re
 
 from robotide.namespace.embeddedargs import EmbeddedArgsHandler
-from robotide.publish.messages import RideSelectResource, RideFileNameChanged,\
-    RideSaving, RideSaved, RideSaveAll, RideExcludesChanged
+from robotide.publish.messages import RideSelectResource, RideFileNameChanged, RideSaving, RideSaved, RideSaveAll, RideExcludesChanged
 from robotide.namespace.namespace import _VariableStash
 
-from robotide.utils import basestring, overrides, variablematcher
+from robotide.utils import overrides, variablematcher
 from .filecontrollers import ResourceFileController
-from .macrocontrollers import KeywordNameController, ForLoopStepController, \
-    TestCaseController
+from .macrocontrollers import KeywordNameController, ForLoopStepController, TestCaseController
 from .settingcontrollers import _SettingController, VariableController
 from .tablecontrollers import VariableTableController
 from .validators import BaseNameValidator
@@ -714,7 +723,7 @@ class FindVariableOccurrences(FindOccurrences):
             [None, context.datafile_controller]
 
     def _is_builtin_variable(self, name):
-        return name in _VariableStash.global_variables.keys()
+        return name in list(_VariableStash.global_variables.keys())
 
     def _get_source_of_imported_var(self, name, context):
         for df in self._get_all_imported(context):
