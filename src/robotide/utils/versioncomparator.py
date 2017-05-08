@@ -56,9 +56,10 @@ def cmp_versions(version1, version2):
 _PREVIEW_VERSION = re.compile(r'(\d+)(\.\d+)*(a|b|rc)(\d*)$')
 _PREVIEW_PREFERENCE = {'a':-3, 'b':-2, 'rc':-1}
 
+
 def _version_string_to_list(version_string):
     if version_string == 'trunk':
-        return [-100]
+        return ['-100']
     version_list = version_string.split('.')
     if _PREVIEW_VERSION.match(version_string):
         m = _PREVIEW_VERSION.match(version_list[-1])
@@ -66,6 +67,7 @@ def _version_string_to_list(version_string):
         version_list += [_PREVIEW_PREFERENCE[m.group(3)]]
         version_list += [m.group(4)]
     return _strip_leading_zeros(version_list)
+
 
 def _strip_leading_zeros(version_list):
     while version_list and version_list[-1] == '0':

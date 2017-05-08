@@ -19,7 +19,7 @@ import inspect
 from robotide.context import LOG
 from robotide.pluginapi import Plugin
 
-from pluginconnector import PluginFactory
+from .pluginconnector import PluginFactory
 
 
 class PluginLoader(object):

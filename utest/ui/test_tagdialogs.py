@@ -1,6 +1,14 @@
 import unittest
 import mockito
 
+import sys
+if sys.version_info[0] == 2:
+    PYTHON2 = True
+    PYTHON3 = False
+elif sys.version_info[0] == 3:
+    PYTHON2 = False
+    PYTHON3 = True
+
 from robotide.ui.tagdialogs import ViewAllTagsDialog
 
 from robotide.robotapi import (TestDataDirectory, TestCaseFile, ResourceFile,
@@ -195,10 +203,16 @@ class _BaseSuiteTreeTest(unittest.TestCase):
         count = 0
         for i in suite.testcase_table.tests:
             newtag = ""
-            for key, test in self._tags_list.iteritems():
-                newtag += key + "    " if count in test else ""
-                if len(newtag):
-                    setattr(i.tags, 'tags', "{0}".format(newtag))
+            if PYTHON2:
+                for key, test in self._tags_list.iteritems():
+                    newtag += key + "    " if count in test else ""
+                    if len(newtag):
+                        setattr(i.tags, 'tags', "{0}".format(newtag))
+            elif PYTHON3:
+                for key, test in self._tags_list.items():
+                    newtag += key + "    " if count in test else ""
+                    if len(newtag):
+                        setattr(i.tags, 'tags', "{0}".format(newtag))
             count += 1
         return suite
 

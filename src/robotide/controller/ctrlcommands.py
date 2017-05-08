@@ -11,18 +11,7 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-from __future__ import unicode_literals
-from __future__ import print_function
-from __future__ import division
-from __future__ import absolute_import
 
-from future import standard_library
-standard_library.install_aliases()
-
-from builtins import str
-from builtins import range
-from past.builtins import basestring
-from builtins import object
 from itertools import chain
 import time
 import os
@@ -32,12 +21,12 @@ from robotide.namespace.embeddedargs import EmbeddedArgsHandler
 from robotide.publish.messages import RideSelectResource, RideFileNameChanged, RideSaving, RideSaved, RideSaveAll, RideExcludesChanged
 from robotide.namespace.namespace import _VariableStash
 
-from robotide.utils import overrides, variablematcher
-from .filecontrollers import ResourceFileController
-from .macrocontrollers import KeywordNameController, ForLoopStepController, TestCaseController
-from .settingcontrollers import _SettingController, VariableController
-from .tablecontrollers import VariableTableController
-from .validators import BaseNameValidator
+from robotide.utils import basestring, overrides, variablematcher
+from robotide.controller.filecontrollers import ResourceFileController
+from robotide.controller.macrocontrollers import KeywordNameController, ForLoopStepController, TestCaseController
+from robotide.controller.settingcontrollers import _SettingController, VariableController
+from robotide.controller.tablecontrollers import VariableTableController
+from robotide.controller.validators import BaseNameValidator
 
 
 class Occurrence(object):

@@ -1,6 +1,10 @@
 # Metaclass fix from http://code.activestate.com/recipes/204197-solving-the-metaclass-conflict/
 
-import inspect, types, __builtin__
+import inspect, types
+try:
+    import __builtin__
+except ImportError:  # py3
+    import builtins
 
 ############## preliminary: two utility functions #####################
 
