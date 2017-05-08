@@ -1,4 +1,5 @@
 import unittest
+import robot.errors
 from robotide.contrib.testrunner.runprofiles import PybotProfile
 
 
@@ -8,7 +9,10 @@ class TestPybotArgumentsValidation(unittest.TestCase):
         self._profile = PybotProfile(lambda:0)
 
     def test_invalid_argument(self):
-        self.assertNotEqual(None, self._profile._get_invalid_message('--invalidargument'))
+        self.assertRaisesRegexp(robot.errors.DataError,
+                                'option --invalidargument not recognized',
+                                self._profile._get_invalid_message,
+                                '--invalidargument')
 
     def test_valid_argument_short(self):
         self._working_arguments('-T')

@@ -125,8 +125,11 @@ class Project(_BaseController, WithNamespace):
             return
         if self._load_resource(path, load_observer):
             return
-        load_observer.error("Given file '%s' is not a valid Robot Framework "
+        try:
+            load_observer.error("Given file '%s' is not a valid Robot Framework "
                             "test case or resource file." % path)
+        except AttributeError:  # DEBUG
+            pass
 
     def is_excluded(self, source):
         return self._settings.excludes.contains(source) if self._settings else False

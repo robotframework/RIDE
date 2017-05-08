@@ -74,7 +74,7 @@ class _ListenerWrapper(object):
     def _get_topic(self, topic):
         if not isinstance(topic, basestring):
             topic = topic.topic
-        return topic.lower()
+        return topic  # DEBUG .lower()
 
     def wraps(self, listener, topic):
         return self.listener == listener and self.topic == self._get_topic(topic)
