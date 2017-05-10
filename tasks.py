@@ -16,7 +16,7 @@ except ImportError:  # py3
     import urllib as urllib2
 
 try:
-    from invoke import task, __version_info__ as invoke_version
+    from invoke import task, run, __version_info__ as invoke_version
 
     if invoke_version < (0, 13):
         raise ImportError
