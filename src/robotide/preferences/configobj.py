@@ -23,10 +23,18 @@ from __future__ import generators
 import sys
 import os
 import re
+from robotide.utils import basestring, unicode
+
+if sys.version_info[0] == 2:
+    PYTHON2 = True
+    PYTHON3 = False
+elif sys.version_info[0] == 3:
+    PYTHON2 = False
+    PYTHON3 = True
 
 compiler = None
 try:
-    import py_compile  as compiler # compiler
+    import py_compile as compiler # compiler
 except ImportError:
     # for IronPython
     pass
@@ -348,9 +356,14 @@ class InterpolationEngine(object):
             This is similar to a depth-first-search algorithm.
             """
             # Have we been here already?
-            if backtrail.has_key((key, section.name)):
-                # Yes - infinite loop detected
-                raise InterpolationLoopError(key)
+            if PYTHON2:
+                if backtrail.has_key((key, section.name)):
+                    # Yes - infinite loop detected
+                    raise InterpolationLoopError(key)
+            elif PYTHON3:
+                if (key, section.name) in backtrail:
+                    # Yes - infinite loop detected
+                    raise InterpolationLoopError(key)
             # Place a marker on our backtrail so we won't come back here again
             backtrail[(key, section.name)] = 1
 
@@ -535,9 +548,12 @@ class Section(dict):
         self._initialise()
         # we do this explicitly so that __setitem__ is used properly
         # (rather than just passing to ``dict.__init__``)
-        for entry, value in indict.iteritems():
-            self[entry] = value
-
+        if PYTHON2:
+            for entry, value in indict.iteritems():
+                self[entry] = value
+        elif PYTHON3:
+            for entry, value in indict.items():
+                self[entry] = value
 
     def _initialise(self):
         # the sequence of scalar values in this Section
@@ -603,46 +619,86 @@ class Section(dict):
             raise ValueError('The key "%s" is not a string.' % key)
 
         # add the comment
-        if not self.comments.has_key(key):
-            self.comments[key] = []
-            self.inline_comments[key] = ''
-        # remove the entry from defaults
-        if key in self.defaults:
-            self.defaults.remove(key)
-        #
-        if isinstance(value, Section):
-            if not self.has_key(key):
-                self.sections.append(key)
-            dict.__setitem__(self, key, value)
-        elif isinstance(value, dict) and not unrepr:
-            # First create the new depth level,
-            # then create the section
-            if not self.has_key(key):
-                self.sections.append(key)
-            new_depth = self.depth + 1
-            dict.__setitem__(
-                self,
-                key,
-                Section(
+        if PYTHON2:
+            if not self.comments.has_key(key):
+                self.comments[key] = []
+                self.inline_comments[key] = ''
+            # remove the entry from defaults
+            if key in self.defaults:
+                self.defaults.remove(key)
+            #
+            if isinstance(value, Section):
+                if not self.has_key(key):
+                    self.sections.append(key)
+                dict.__setitem__(self, key, value)
+            elif isinstance(value, dict) and not unrepr:
+                # First create the new depth level,
+                # then create the section
+                if not self.has_key(key):
+                    self.sections.append(key)
+                new_depth = self.depth + 1
+                dict.__setitem__(
                     self,
-                    new_depth,
-                    self.main,
-                    indict=value,
-                    name=key))
-        else:
-            if not self.has_key(key):
-                self.scalars.append(key)
-            if not self.main.stringify:
-                if isinstance(value, basestring):
-                    pass
-                elif isinstance(value, (list, tuple)):
-                    for entry in value:
-                        if not isinstance(entry, basestring):
-                            raise TypeError('Value is not a string "%s".' % entry)
-                else:
-                    raise TypeError('Value is not a string "%s".' % value)
-            dict.__setitem__(self, key, value)
-
+                    key,
+                    Section(
+                        self,
+                        new_depth,
+                        self.main,
+                        indict=value,
+                        name=key))
+            else:
+                if not self.has_key(key):
+                    self.scalars.append(key)
+                if not self.main.stringify:
+                    if isinstance(value, basestring):
+                        pass
+                    elif isinstance(value, (list, tuple)):
+                        for entry in value:
+                            if not isinstance(entry, basestring):
+                                raise TypeError('Value is not a string "%s".' % entry)
+                    else:
+                        raise TypeError('Value is not a string "%s".' % value)
+                dict.__setitem__(self, key, value)
+        elif PYTHON3:
+            if not key in self.comments:
+                self.comments[key] = []
+                self.inline_comments[key] = ''
+            # remove the entry from defaults
+            if key in self.defaults:
+                self.defaults.remove(key)
+            #
+            if isinstance(value, Section):
+                if not key in self:
+                    self.sections.append(key)
+                dict.__setitem__(self, key, value)
+            elif isinstance(value, dict) and not unrepr:
+                # First create the new depth level,
+                # then create the section
+                if not key in self:
+                    self.sections.append(key)
+                new_depth = self.depth + 1
+                dict.__setitem__(
+                    self,
+                    key,
+                    Section(
+                        self,
+                        new_depth,
+                        self.main,
+                        indict=value,
+                        name=key))
+            else:
+                if not key in self:
+                    self.scalars.append(key)
+                if not self.main.stringify:
+                    if isinstance(value, basestring):
+                        pass
+                    elif isinstance(value, (list, tuple)):
+                        for entry in value:
+                            if not isinstance(entry, basestring):
+                                raise TypeError('Value is not a string "%s".' % entry)
+                    else:
+                        raise TypeError('Value is not a string "%s".' % value)
+                dict.__setitem__(self, key, value)
 
     def __delitem__(self, key):
         """Remove items from the sequence when deleting."""
@@ -1553,10 +1609,16 @@ class ConfigObj(Section):
                                        NestingError, infile, cur_index)
 
                 sect_name = self._unquote(sect_name)
-                if parent.has_key(sect_name):
-                    self._handle_error('Duplicate section name at line %s.',
-                                       DuplicateError, infile, cur_index)
-                    continue
+                if PYTHON2:
+                    if parent.has_key(sect_name):
+                        self._handle_error('Duplicate section name at line %s.',
+                                           DuplicateError, infile, cur_index)
+                        continue
+                elif PYTHON3:
+                    if sect_name in parent:
+                        self._handle_error('Duplicate section name at line %s.',
+                                           DuplicateError, infile, cur_index)
+                        continue
 
                 # create the new section
                 this_section = Section(
@@ -1631,11 +1693,18 @@ class ConfigObj(Section):
                             continue
                 #
                 key = self._unquote(key)
-                if this_section.has_key(key):
-                    self._handle_error(
-                        'Duplicate keyword name at line %s.',
-                        DuplicateError, infile, cur_index)
-                    continue
+                if PYTHON2:
+                    if this_section.has_key(key):
+                        self._handle_error(
+                            'Duplicate keyword name at line %s.',
+                            DuplicateError, infile, cur_index)
+                        continue
+                elif PYTHON3:
+                    if key in this_section:
+                        self._handle_error(
+                            'Duplicate keyword name at line %s.',
+                            DuplicateError, infile, cur_index)
+                        continue
                 # add the key.
                 # we set unrepr because if we have got this far we will never
                 # be creating a new section

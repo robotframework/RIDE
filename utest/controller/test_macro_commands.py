@@ -6,7 +6,7 @@ from robotide.controller.filecontrollers import TestCaseFileController
 from robotide.publish.messages import RideUserKeywordAdded,\
     RideUserKeywordRemoved, RideTestCaseAdded, RideTestCaseRemoved,\
     RideItemNameChanged
-from robotide.controller.commands import AddKeyword, RemoveMacro, Undo,\
+from robotide.controller.ctrlcommands import AddKeyword, RemoveMacro, Undo,\
     AddTestCase, AddKeywordFromCells, RenameTest
 from robotide.publish import PUBLISHER
 

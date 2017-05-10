@@ -15,7 +15,7 @@
 import wx
 import wx.grid
 
-from popupwindow import HtmlPopupWindow
+from .popupwindow import HtmlPopupWindow
 
 
 class GridToolTips(object):

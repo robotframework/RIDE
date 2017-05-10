@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -14,8 +15,8 @@
 
 import os.path
 
-from robotide.lib.robot.errors import DataError
-from robotide.lib.robot.utils import ET, ETSource
+from robot.errors import DataError
+from robot.utils import ET, ETSource
 
 from .model import LibraryDoc, KeywordDoc
 

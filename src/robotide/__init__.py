@@ -32,6 +32,7 @@ release. The most stable, and best documented, module is `robotide.pluginapi`.
 import sys
 import os
 from string import Template
+from robotide.utils import basestring, unicode
 
 errorMessageTemplate = Template("""$reason
 You need to install wxPython 2.8.12.1 with unicode support to run RIDE.

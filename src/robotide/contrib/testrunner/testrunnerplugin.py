@@ -60,7 +60,7 @@ from robotide.publish.messages import RideTestSelectedForRunningChanged
 from robotide.pluginapi import Plugin, ActionInfo
 from robotide.widgets import Label, ImageProvider
 from robotide.robotapi import LOG_LEVELS
-from robotide.utils import robottime
+from robotide.utils import robottime, unicode
 
 
 ID_RUN = wx.NewId()

@@ -12,11 +12,13 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+from robotide.utils import basestring, unicode
+
 
 class Publisher(object):
 
     def __init__(self):
-        self._listeners = {}
+        self._listeners = dict()  # DEBUG  {}
 
     def publish(self, topic, data):
         self._sendMessage(topic, data)
@@ -72,7 +74,7 @@ class _ListenerWrapper(object):
     def _get_topic(self, topic):
         if not isinstance(topic, basestring):
             topic = topic.topic
-        return topic.lower()
+        return topic  # DEBUG .lower()
 
     def wraps(self, listener, topic):
         return self.listener == listener and self.topic == self._get_topic(topic)
@@ -85,7 +87,7 @@ class _ListenerWrapper(object):
         # WxPublisher.unsubscribe(self, self.topic)
 
     def __call__(self, data):
-        from messages import RideLogException
+        from .messages import RideLogException
         try:
             self.listener(data)
         except Exception as err:

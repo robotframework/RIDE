@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -14,7 +15,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-"""Module implementing the command line entry point for the `Libdoc` tool.
+"""Module implementing the command line entry point for the Libdoc tool.
 
 This module can be executed from the command line using the following
 approaches::
@@ -29,6 +30,19 @@ that can be used programmatically. Other code is for internal usage.
 
 Libdoc itself is implemented in the :mod:`~robot.libdocpkg` package.
 """
+
+import sys
+import os
+
+# Allows running as a script. __name__ check needed with multiprocessing:
+# https://github.com/robotframework/robotframework/issues/1137
+if 'robot' not in sys.modules and __name__ == '__main__':
+    import pythonpathsetter
+
+from robot.utils import Application, seq2str
+from robot.errors import DataError
+from robot.libdocpkg import LibraryDocumentation, ConsoleViewer
+
 
 USAGE = """robot.libdoc -- Robot Framework library documentation generator
 
@@ -125,18 +139,6 @@ For more information about Libdoc and other built-in tools, see
 http://robotframework.org/robotframework/#built-in-tools.
 """
 
-import sys
-import os
-
-# Allows running as a script. __name__ check needed with multiprocessing:
-# http://code.google.com/p/robotframework/issues/detail?id=1137
-if 'robot' not in sys.modules and __name__ == '__main__':
-    import pythonpathsetter
-
-from robotide.lib.robot.utils import Application, seq2str
-from robotide.lib.robot.errors import DataError
-from robotide.lib.robot.libdocpkg import LibraryDocumentation, ConsoleViewer
-
 
 class LibDoc(Application):
 
@@ -189,7 +191,7 @@ def libdoc_cli(arguments):
 
     Example::
 
-        from robotide.lib.robot.libdoc import libdoc_cli
+        from robot.libdoc import libdoc_cli
 
         libdoc_cli(['--version', '1.0', 'MyLibrary.py', 'MyLibraryDoc.html'])
     """
@@ -197,14 +199,24 @@ def libdoc_cli(arguments):
 
 
 def libdoc(library_or_resource, outfile, name='', version='', format=None):
-    """Executes libdoc.
+    """Executes Libdoc.
+
+    :param library_or_resource: Name or path of the test library or resource
+        file to be documented.
+    :param outfile: Path path to the file where to write outputs.
+    :param name: Custom name to give to the documented library or resource.
+    :param version: Version to give to the documented library or resource.
+    :param format: Documentation source format. Possible values are ``ROBOT``,
+        ``reST``, ``HTML`` and ``TEXT``. Default value is ``ROBOT`` but
+        libraries can override it themselves.
 
     Arguments have same semantics as Libdoc command line options with
-    same names.
+    same names. Run ``python -m robot.libdoc --help`` or consult the Libdoc
+    section in the Robot Framework User Guide for more details.
 
     Example::
 
-        from robotide.lib.robot.libdoc import libdoc
+        from robot.libdoc import libdoc
 
         libdoc('MyLibrary.py', 'MyLibraryDoc.html', version='1.0')
     """

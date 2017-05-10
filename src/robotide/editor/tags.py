@@ -19,7 +19,7 @@ if __name__ == '__main__':
 import wx
 
 from robotide.editor.flowsizer import HorizontalFlowSizer
-from robotide.controller.commands import ChangeTag
+from robotide.controller.ctrlcommands import ChangeTag
 from robotide.controller.tags import ForcedTag, DefaultTag, Tag
 
 

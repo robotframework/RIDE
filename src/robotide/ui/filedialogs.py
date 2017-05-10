@@ -16,7 +16,7 @@ import os
 import wx
 from wx.lib.filebrowsebutton import DirBrowseButton
 
-from robotide.controller.commands import CreateNewResource,\
+from robotide.controller.ctrlcommands import CreateNewResource,\
     AddTestDataDirectory, AddTestCaseFile, CreateNewDirectoryProject,\
     CreateNewFileProject, SetFileFormat, SetFileFormatRecuresively
 from robotide.utils import overrides

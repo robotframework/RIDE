@@ -18,17 +18,15 @@ import os
 import re
 
 from robotide.namespace.embeddedargs import EmbeddedArgsHandler
-from robotide.publish.messages import RideSelectResource, RideFileNameChanged,\
-    RideSaving, RideSaved, RideSaveAll, RideExcludesChanged
+from robotide.publish.messages import RideSelectResource, RideFileNameChanged, RideSaving, RideSaved, RideSaveAll, RideExcludesChanged
 from robotide.namespace.namespace import _VariableStash
 
-from robotide.utils import overrides, variablematcher
-from .filecontrollers import ResourceFileController
-from .macrocontrollers import KeywordNameController, ForLoopStepController, \
-    TestCaseController
-from .settingcontrollers import _SettingController, VariableController
-from .tablecontrollers import VariableTableController
-from .validators import BaseNameValidator
+from robotide.utils import basestring, overrides, variablematcher
+from robotide.controller.filecontrollers import ResourceFileController
+from robotide.controller.macrocontrollers import KeywordNameController, ForLoopStepController, TestCaseController
+from robotide.controller.settingcontrollers import _SettingController, VariableController
+from robotide.controller.tablecontrollers import VariableTableController
+from robotide.controller.validators import BaseNameValidator
 
 
 class Occurrence(object):
@@ -714,7 +712,7 @@ class FindVariableOccurrences(FindOccurrences):
             [None, context.datafile_controller]
 
     def _is_builtin_variable(self, name):
-        return name in _VariableStash.global_variables.keys()
+        return name in list(_VariableStash.global_variables.keys())
 
     def _get_source_of_imported_var(self, name, context):
         for df in self._get_all_imported(context):

@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -14,8 +15,8 @@
 
 from os.path import basename, splitext
 
-from robotide.lib.robot.htmldata import HtmlFileWriter, ModelWriter, LOG, REPORT
-from robotide.lib.robot.utils import is_string
+from robot.htmldata import HtmlFileWriter, ModelWriter, LOG, REPORT
+from robot.utils import file_writer, is_string
 
 from .jswriter import JsResultWriter, SplitLogWriter
 
@@ -26,7 +27,7 @@ class _LogReportWriter(object):
         self._js_model = js_model
 
     def _write_file(self, path, config, template):
-        outfile = open(path, 'w') \
+        outfile = file_writer(path) \
             if is_string(path) else path  # unit test hook
         with outfile:
             model_writer = RobotModelWriter(outfile, self._js_model, config)
@@ -47,7 +48,7 @@ class LogWriter(_LogReportWriter):
             self._write_split_log(index, keywords, strings, '%s-%d.js' % (base, index))
 
     def _write_split_log(self, index, keywords, strings, path):
-        with open(path, 'w') as outfile:
+        with file_writer(path) as outfile:
             writer = SplitLogWriter(outfile)
             writer.write(keywords, strings, index, basename(path))
 

@@ -15,7 +15,8 @@
 import os
 from itertools import chain
 import shutil
-import commands
+import robotide.controller.ctrlcommands
+
 from robotide.controller.dataloader import ExcludedDirectory, TestData
 
 from robotide.publish import (RideDataFileRemoved, RideInitFileRemoved,
@@ -25,14 +26,14 @@ from robotide.publish.messages import RideDataFileSet, RideOpenResource
 from robotide.robotapi import TestDataDirectory, TestCaseFile, ResourceFile
 from robotide import utils
 
-from .basecontroller import WithUndoRedoStacks, _BaseController, WithNamespace, ControllerWithParent
-from .macrocontrollers import UserKeywordController
-from .robotdata import NewTestCaseFile, NewTestDataDirectory
-from robotide.utils import overrides
-from .settingcontrollers import (DocumentationController, FixtureController,
+from robotide.controller.basecontroller import WithUndoRedoStacks, _BaseController, WithNamespace, ControllerWithParent
+from robotide.controller.macrocontrollers import UserKeywordController
+from robotide.controller.robotdata import NewTestCaseFile, NewTestDataDirectory
+from robotide.utils import basestring, overrides
+from robotide.controller.settingcontrollers import (DocumentationController, FixtureController,
         TimeoutController, TemplateController, DefaultTagsController,
         ForceTagsController)
-from .tablecontrollers import (VariableTableController, TestCaseTableController,
+from robotide.controller.tablecontrollers import (VariableTableController, TestCaseTableController,
         KeywordTableController, ImportSettingsController,
         MetadataListController, TestCaseController)
 
@@ -261,7 +262,7 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
         old_file = self.filename
         self.data.source = os.path.join(self.directory, '%s.%s' % (basename, self.get_format()))
         self.filename = self.data.source
-        self.execute(commands.SaveFile())
+        self.execute(robotide.controller.ctrlcommands.SaveFile())
         if old_file != self.filename:
             self.remove_from_filesystem(old_file)
 

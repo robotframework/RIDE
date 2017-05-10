@@ -26,7 +26,10 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-import SocketServer
+try:
+    import SocketServer
+except ImportError:  # py3
+    import socketserver as SocketServer
 import atexit
 import codecs
 import os
@@ -37,7 +40,10 @@ import tempfile
 import threading
 import signal
 import sys
-from Queue import Empty, Queue
+try:
+    from Queue import Empty, Queue
+except ImportError:  # py3
+    from queue import Empty, Queue
 
 from robotide import utils
 from robotide.robotapi import LOG_LEVELS
@@ -392,12 +398,16 @@ class StreamReaderThread(object):
 
     def pop(self):
         result = ""
-        for _ in xrange(self._queue.qsize()):
+        try:
+            myqueuerng = xrange(self._queue.qsize())
+        except NameError:  # py3
+            myqueuerng = range(self._queue.qsize())
+        for _ in myqueuerng:
             try:
-                result += self._queue.get_nowait()
+                result += self._queue.get_nowait().decode('UTF-8', 'ignore')
             except Empty:
                 pass
-        return result.decode('UTF-8', 'ignore')  # DEBUG
+        return result  # DEBUG .decode('UTF-8', 'ignore')
 
 
 # The following two classes implement a small line-buffered socket

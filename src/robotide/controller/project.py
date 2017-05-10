@@ -17,7 +17,7 @@ import shutil
 import tempfile
 
 from robotide.context import LOG
-from robotide.controller.commands import NullObserver, SaveFile
+from robotide.controller.ctrlcommands import NullObserver, SaveFile
 from robotide.publish.messages import RideOpenSuite, RideNewProject, RideFileNameChanged
 
 from .basecontroller import WithNamespace, _BaseController
@@ -27,7 +27,7 @@ from .robotdata import NewTestCaseFile, NewTestDataDirectory
 from robotide.spec.librarydatabase import DATABASE_FILE
 from robotide.spec.librarymanager import LibraryManager
 from robotide.spec.xmlreaders import SpecInitializer
-from robotide.utils import overrides
+from robotide.utils import overrides, unicode
 
 
 class Project(_BaseController, WithNamespace):
@@ -125,8 +125,11 @@ class Project(_BaseController, WithNamespace):
             return
         if self._load_resource(path, load_observer):
             return
-        load_observer.error("Given file '%s' is not a valid Robot Framework "
+        try:
+            load_observer.error("Given file '%s' is not a valid Robot Framework "
                             "test case or resource file." % path)
+        except AttributeError:  # DEBUG
+            pass
 
     def is_excluded(self, source):
         return self._settings.excludes.contains(source) if self._settings else False

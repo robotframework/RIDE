@@ -4,8 +4,8 @@ import os
 import sys
 import wx
 
-from mocks import FakeSettings, FakeApplication, MessageRecordingLoadObserver
-from setting_utils import TestSettingsHelper
+from .mocks import FakeSettings, FakeApplication, MessageRecordingLoadObserver
+from .setting_utils import TestSettingsHelper
 
 if os.sep == '\\':
     CIF = True

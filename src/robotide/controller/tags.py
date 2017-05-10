@@ -13,7 +13,7 @@
 #  limitations under the License.
 
 from robotide.controller.basecontroller import _BaseController
-
+from robotide.utils import unicode
 
 class Tag(_BaseController):
     tooltip = "Own tag"

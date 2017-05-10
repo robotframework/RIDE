@@ -21,12 +21,18 @@ import robotide.lib.robot.utils
 from robotide.lib.robot.utils.encoding import SYSTEM_ENCODING
 from robotide.lib.robot.utils import printable_name, normalize, eq, ET, \
     HtmlWriter, NormalizedDict, timestr_to_secs, secs_to_timestr, normpath,\
-    unic, asserts, unescape, html_escape, html_attr_escape, robottime,\
-    get_timestamp, Matcher, is_list_like, is_dict_like, decode_from_system,\
+    unic, asserts, unescape, html_escape, attribute_escape, robottime,\
+    get_timestamp, Matcher, is_list_like, is_dict_like, system_decode,\
     ArgumentParser, get_error_details
 
-from eventhandler import RideEventHandler
-from printing import Printing
+from .eventhandler import RideEventHandler
+from .printing import Printing
+
+try:
+    from past.builtins import basestring, unicode
+except ImportError:  # pip install future
+    basestring = str
+    unicode = str
 
 
 def html_format(text):

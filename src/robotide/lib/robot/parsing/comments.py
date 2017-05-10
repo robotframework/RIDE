@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,7 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robotide.lib.robot.utils import is_string
+from robot.utils import is_string
 
 
 class CommentCache(object):
@@ -24,7 +25,8 @@ class CommentCache(object):
         self._comments.append(comment)
 
     def consume_with(self, function):
-        map(function, self._comments)
+        for comment in self._comments:
+            function(comment)
         self.__init__()
 
 

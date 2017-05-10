@@ -3,7 +3,7 @@ from nose.tools import assert_true, assert_false
 
 from controller_creator import testcase_controller
 from robotide.controller.tags import Tag, DefaultTag, ForcedTag
-from robotide.controller.commands import ChangeTag
+from robotide.controller.ctrlcommands import ChangeTag
 
 
 class Test(unittest.TestCase):

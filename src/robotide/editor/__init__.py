@@ -22,7 +22,7 @@ from robotide.publish import (
     RideSaving)
 from robotide.utils import overrides
 from robotide.widgets import PopupCreator
-from editorcreator import EditorCreator
+from .editorcreator import EditorCreator
 
 
 _EDIT = """

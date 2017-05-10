@@ -28,11 +28,11 @@ except ImportError:  # py3
     import urllib as urllib2
 
 if sys.version_info[0] == 2:
-    print("rfgen: Running under Python 2")
+    print("rfgen: Running under Python 2")  # DEBUG
     PYTHON2 = True
     PYTHON3 = False
 elif sys.version_info[0] == 3:
-    print("rfgen: Running under Python 3")
+    print("rfgen: Running under Python 3")  # DEBUG
     PYTHON2 = False
     PYTHON3 = True
 

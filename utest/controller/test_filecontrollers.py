@@ -8,7 +8,7 @@ from nose.tools import (assert_equals, assert_true, assert_false)
 from robotide.controller.filecontrollers import TestCaseFileController, \
     TestDataDirectoryController, _FileSystemElement
 from robotide.controller.tablecontrollers import TestCaseController
-from robotide.controller.commands import AddTestCaseFile, AddTestDataDirectory,\
+from robotide.controller.ctrlcommands import AddTestCaseFile, AddTestDataDirectory,\
     SortKeywords, Undo, Redo
 from robotide.publish import PUBLISHER
 from robotide.publish.messages import RideDataChangedToDirty,\

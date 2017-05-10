@@ -19,6 +19,13 @@ import operator
 import tempfile
 from itertools import chain
 
+if sys.version_info[0] == 2:
+    PYTHON2 = True
+    PYTHON3 = False
+elif sys.version_info[0] == 3:
+    PYTHON2 = False
+    PYTHON3 = True
+
 from robotide import robotapi, utils
 from robotide.publish import PUBLISHER, RideSettingsChanged, RideLogMessage
 from robotide.robotapi import VariableFileSetter
@@ -143,8 +150,12 @@ class Namespace(object):
         return sugs
 
     def _add_kw_arg_vars(self, controller, variables):
-        for name, value in controller.get_local_variables().iteritems():
-            variables.set_argument(name, value)
+        if PYTHON2:
+            for name, value in controller.get_local_variables().iteritems():
+                variables.set_argument(name, value)
+        elif PYTHON3:
+            for name, value in controller.get_local_variables().items():
+                variables.set_argument(name, value)
 
     def _keyword_suggestions(self, datafile, start, ctx):
         start_normalized = utils.normalize(start)
@@ -282,8 +293,12 @@ class _VariableStash(object):
     def __init__(self):
         self._vars = robotapi.RobotVariables()
         self._sources = {}
-        for k, v in self.global_variables.iteritems():
-            self.set(k, v, 'built-in')
+        if PYTHON2:
+            for k, v in self.global_variables.iteritems():
+                self.set(k, v, 'built-in')
+        elif PYTHON3:
+            for k, v in self.global_variables.items():
+                self.set(k, v, 'built-in')
 
     def set(self, name, value, source):
         self._vars[name] = value

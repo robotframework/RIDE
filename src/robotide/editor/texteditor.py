@@ -13,14 +13,17 @@
 #  limitations under the License.
 
 from time import time
-from StringIO import StringIO
+try:
+    from StringIO import StringIO
+except ImportError:  # py3
+    from io import StringIO
 import string
 import wx
 from wx import stc
 
 from robotide import robotapi
 from robotide.context import IS_WINDOWS, IS_MAC
-from robotide.controller.commands import SetDataFile
+from robotide.controller.ctrlcommands import SetDataFile
 from robotide.publish.messages import RideMessage
 from robotide.widgets import VerticalSizer, HorizontalSizer, ButtonWithHandler
 from robotide.pluginapi import Plugin, RideSaving, TreeAwarePluginMixin,\

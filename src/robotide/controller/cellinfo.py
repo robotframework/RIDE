@@ -12,8 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robotide.utils import highlightmatcher, html_escape
-
+from robotide.utils import highlightmatcher, html_escape, unicode
 
 class CellInfo(object):
 

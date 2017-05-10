@@ -17,12 +17,12 @@ import wx
 import wx.lib.mixins.listctrl as listmix
 
 from robotide import utils
-from robotide.controller.commands import ChangeTag, DeleteTag
+from robotide.controller.ctrlcommands import ChangeTag, DeleteTag
 from robotide.publish import RideOpenTagSearch
 from robotide.ui.treenodehandlers import ResourceRootHandler, \
     ResourceFileHandler
 from robotide.widgets import ButtonWithHandler, PopupMenuItems
-
+from robotide.utils import basestring, unicode
 
 class ViewAllTagsDialog(wx.Frame, listmix.ColumnSorterMixin):
 

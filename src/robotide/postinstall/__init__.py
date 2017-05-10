@@ -12,4 +12,4 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from desktopshortcut import ShortcutPlugin
+from .desktopshortcut import ShortcutPlugin

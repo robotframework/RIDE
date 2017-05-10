@@ -23,7 +23,7 @@ else:
     from wx.grid import PyGridCellEditor as GridCellEditor
 
 from robotide.context import IS_MAC
-from robotide.controller.commands import ChangeCellValue, ClearArea,\
+from robotide.controller.ctrlcommands import ChangeCellValue, ClearArea,\
     PasteArea, DeleteRows, AddRows, CommentRows, InsertCells, DeleteCells,\
     UncommentRows, Undo, Redo, RenameKeywordOccurrences, ExtractKeyword,\
     AddKeywordFromCells, MoveRowsUp, MoveRowsDown, ExtractScalar, ExtractList,\
@@ -34,7 +34,7 @@ from robotide.publish import (RideItemStepsChanged,
 from robotide.usages.UsageRunner import Usages, VariableUsages
 from robotide.ui.progress import RenameProgressObserver
 from robotide import robotapi, utils
-from robotide.utils import RideEventHandler, variablematcher
+from robotide.utils import RideEventHandler, variablematcher, basestring, unicode
 from robotide.widgets import PopupMenu, PopupMenuItems
 
 from .gridbase import GridEditor

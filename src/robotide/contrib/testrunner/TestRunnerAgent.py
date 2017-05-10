@@ -45,11 +45,11 @@ refactored to call an XMLRPC server.
 import os
 import sys
 if sys.version_info[0] == 2:
-    print("TestRunnerAgent: Running under Python 2")
+    print("TestRunnerAgent: Running under Python 2")  # DEBUG
     PYTHON2 = True
     PYTHON3 = False
 elif sys.version_info[0] == 3:
-    print("TestRunnerAgent: Running under Python 3")
+    print("TestRunnerAgent: Running under Python 3")  # DEBUG
     PYTHON2 = False
     PYTHON3 = True
 import socket
@@ -93,10 +93,7 @@ except ImportError:
     try:
         from StringIO import StringIO
     except ImportError:#py3
-        try:
-            from io import StringIO
-        except ImportError as e:
-            raise e
+        from io import StringIO
 
 HOST = "localhost"
 

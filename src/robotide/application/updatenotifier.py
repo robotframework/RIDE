@@ -20,8 +20,14 @@ from robotide.utils.versioncomparator import cmp_versions
 from robotide.widgets.button import ButtonWithHandler
 
 import time
-import urllib2
-import xmlrpclib
+try:
+    import urllib2
+except ImportError:  # py3
+    import urllib as urllib2
+try:
+    import xmlrpclib
+except ImportError:  # py3
+    import xmlrpc
 import robotide.version as version
 
 _CHECK_FOR_UPDATES_SETTING = 'check for updates'

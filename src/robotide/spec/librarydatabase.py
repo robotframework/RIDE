@@ -16,7 +16,7 @@ import sqlite3
 import time
 from robotide.preferences.settings import SETTINGS_DIRECTORY
 from robotide.spec.iteminfo import LibraryKeywordInfo
-from robotide.utils import decode_from_system
+from robotide.utils import system_decode, unicode
 
 CREATION_SCRIPT = """\
 CREATE TABLE libraries (id INTEGER PRIMARY KEY,
@@ -31,7 +31,7 @@ CREATE TABLE keywords (name TEXT,
                        FOREIGN KEY(library) REFERENCES libraries(id));
 """
 
-DATABASE_FILE = os.path.join(decode_from_system(SETTINGS_DIRECTORY), 'librarykeywords.db')
+DATABASE_FILE = os.path.join(system_decode(SETTINGS_DIRECTORY), 'librarykeywords.db')
 
 def _create_database():
     print('Creating librarykeywords database to "%s"' % DATABASE_FILE)
