@@ -1,6 +1,7 @@
 import os
 import unittest
-from mock import Mock
+from mockito import mock as Mock
+# from mock import Mock
 
 from robotide.robotapi import TestCaseFile, ResourceFile
 from robotide.controller import Project

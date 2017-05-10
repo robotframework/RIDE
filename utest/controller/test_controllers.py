@@ -1,6 +1,6 @@
 import re
 import unittest
-from mock import Mock
+from mockito import mock as Mock
 from nose.tools import assert_equals, assert_true, assert_false
 
 from robotide.robotapi import (

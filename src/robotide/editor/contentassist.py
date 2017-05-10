@@ -46,6 +46,7 @@ class _ContentAssistTextCtrlBase(object):
     def OnChar(self, event):
         # TODO: This might benefit from some cleanup
         keycode = event.GetKeyCode()
+        print("DEBUG: Keypressed=%s ControlPressed? %s" % (keycode, event.ControlDown()))
         # Ctrl-Space handling needed for dialogs
         if keycode == wx.WXK_SPACE and event.ControlDown():
             self.show_content_assist()
