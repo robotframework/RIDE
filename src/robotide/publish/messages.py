@@ -153,33 +153,41 @@ class RideSettingsChanged(RideMessage):
 class RideExecuteSpecXmlImport(RideMessage):
     """Sent whenever spec xml import is requested"""
 
+
 class RideTreeSelection(RideMessage):
     """Sent whenever user selects a node from the tree."""
     data = ['node', 'item', 'silent']
+
 
 class RideOpenVariableDialog(RideMessage):
     """Sent when variable dialog is requested to be open"""
     data = ['controller']
 
+
 class RideTestExecutionStarted(RideMessage):
     """Sent whenever new test execution is started."""
     data = ['results']
+
 
 class RideTestSelectedForRunningChanged(RideMessage):
     """Sent whenever a test is selected or unselected from the tree."""
     data = ['tests']
 
+
 class RideTestRunning(RideMessage):
     """Sent whenever RIDE is starting to run a test case."""
     data = ['item']
+
 
 class RideTestPassed(RideMessage):
     """Sent whenever RIDE has executed a test case and it passed."""
     data = ['item']
 
+
 class RideTestFailed(RideMessage):
     """Sent whenever RIDE has executed a test case and it failed."""
     data = ['item']
+
 
 class RideNotebookTabChanging(RideMessage):
     """Sent when the notebook tab change has started.
@@ -276,11 +284,14 @@ class RideImportSetting(RideDataChanged):
     def name(self):
         return self.import_controller.name
 
+
 class _RideExcludes(RideMessage):
     data = ['old_controller', 'new_controller']
 
+
 class RideIncludesChanged(_RideExcludes):
     pass
+
 
 class RideExcludesChanged(_RideExcludes):
     pass

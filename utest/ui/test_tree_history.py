@@ -12,11 +12,11 @@ class TestChange(unittest.TestCase):
             self.history.change(i)
 
     def test_history_states(self):
-        assert_equals(self.history._back, range(4))
+        assert_equals(self.history._back, list(range(4)))
 
     def test_change_ignores_state_if_same_as_previous(self):
         self.history.change(3)
-        assert_equals(self.history._back, range(4))
+        assert_equals(self.history._back, list(range(4)))
 
     def test_forward_list_is_kept_when_state_is_ignored(self):
         self.history.back()
@@ -31,7 +31,7 @@ class TestChange(unittest.TestCase):
         for _ in range(7):
             self.history.change(3)
         self.history.change(4)
-        assert_equals(self.history._back, range(5))
+        assert_equals(self.history._back, list(range(5)))
 
 
 class TestBack(unittest.TestCase):
