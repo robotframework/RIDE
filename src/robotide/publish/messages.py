@@ -20,8 +20,8 @@ import traceback
 from robotide.utils import unicode
 from robotide import utils
 
-from . import messagetype
-from . import publisher
+from robotide.publish import messagetype
+from robotide.publish import publisher
 
 
 class RideMessage(object):

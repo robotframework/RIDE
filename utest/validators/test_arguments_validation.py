@@ -28,7 +28,7 @@ class Test(unittest.TestCase):
             assert_equals(self.validate(arg), None, arg)
 
     def test_invalid_arguments_validation(self):
-        for arg in ["arg", "@{list}=", "@{list}=fooness"]:
+        for arg in ['arg', '@{list}=', '@{list}=fooness']:
             assert_equals(self.validate(arg),
                           "Invalid argument syntax '%s'" % arg)
         for arg, err in [("|${a}", ""), ("${a} | ${a2} | invalid", "invalid")]:

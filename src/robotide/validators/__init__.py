@@ -81,7 +81,7 @@ class ArgumentsValidator(_AbstractValidator):
             types = [self._get_type(arg)
                      for arg in utils.split_value(args_str)]
         except ValueError as e:
-            return "Invalid argument syntax '%s'" % str(e)  # was arg
+            return "Invalid argument syntax '%s'" % str(e)  # DEBUG  was arg
         return self._validate_argument_order(types)
 
     def _get_type(self, arg):
@@ -94,7 +94,7 @@ class ArgumentsValidator(_AbstractValidator):
         elif robotapi.is_dict_var(arg):
             return ArgumentTypes.DICT
         else:
-            raise ValueError
+            raise ValueError(arg)  # py3
 
     def _validate_argument_order(self, types):
         prev = ArgumentTypes.SCALAR

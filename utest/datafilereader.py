@@ -10,6 +10,7 @@ RESOURCES_HTML = 'resource.html'
 DATAPATH = os.path.join(os.path.abspath(os.path.split(__file__)[0]),
                         RESOURCES_DIR, 'robotdata')
 
+
 def _makepath(*elements):
     elements = [DATAPATH]+list(elements)
     return os.path.normpath(os.path.join(*elements)).replace('\\', '/')
@@ -27,13 +28,15 @@ KW3000_TESTCASEFILE = _makepath('performance', 'suite_kw3000.txt')
 KW4000_TESTCASEFILE = _makepath('performance', 'suite_kw4000.txt')
 RESOURCE_WITH_VARIABLE_IN_PATH = _makepath(RESOURCES_DIR, 'resu.${extension}')
 LIBRARY_WITH_SPACES_IN_PATH = _makepath('lib with spaces', 'spacelib.py')
-TESTCASEFILE_WITH_RESOURCES_WITH_VARIABLES_FROM_VARIABLE_FILE = _makepath('var_file_variables',
-                                            'import_resource_with_variable_from_var_file.txt')
+TESTCASEFILE_WITH_RESOURCES_WITH_VARIABLES_FROM_VARIABLE_FILE = \
+    _makepath('var_file_variables',
+              'import_resource_with_variable_from_var_file.txt')
 
 SIMPLE_TEST_SUITE_RESOURCE_NAME = 'Testdata Resource'
 SIMPLE_TEST_SUITE_RESOURCE_FILE = 'testdata_resource.txt'
 SIMPLE_TEST_SUITE_INNER_RESOURCE_DIR = 'Resources Folder'
-SIMPLE_TEST_SUITE_PATH = _makepath('simple_testsuite_with_different_namespaces')
+SIMPLE_TEST_SUITE_PATH = \
+    _makepath('simple_testsuite_with_different_namespaces')
 
 FOR_LOOP_PATH = _makepath('forloop')
 
@@ -57,6 +60,7 @@ def construct_project(datapath, temp_dir_for_excludes=None):
     project = Project(Namespace(settings), settings, library_manager)
     project.load_data(datapath, NullObserver())
     return project
+
 
 def get_ctrl_by_name(name, datafiles):
     for file in datafiles:

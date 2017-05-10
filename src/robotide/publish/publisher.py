@@ -18,7 +18,7 @@ from robotide.utils import basestring, unicode
 class Publisher(object):
 
     def __init__(self):
-        self._listeners = {}
+        self._listeners = dict()  # DEBUG  {}
 
     def publish(self, topic, data):
         self._sendMessage(topic, data)
