@@ -1,2 +1,2 @@
-*** User Keywords ***
+*** Keywords ***
 Resu UK  No Operation

@@ -23,55 +23,58 @@ from robotide import utils
 from robotide.publish import messagetype
 from robotide.publish import publisher
 
-
-class RideMessage(object):
-    """Base class for all messages sent by RIDE.
-
-    :CVariables:
-      topic
-        Topic of this message. If not overridden, value is got from the class
-        name by lowercasing it, separating words with a dot and dropping possible
-        ``Message`` from the end. For example classes ``MyExample`` and
-        ``AnotherExampleMessage`` get titles ``my.example`` and
-        ``another.example``, respectively.
-      data
-        Names of attributes this message provides. These must be given as
-        keyword arguments to `__init__` when an instance is created.
-    """
-    __metaclass__ = messagetype.messagetype
-    topic = None
-    data = []
-
-    def __init__(self, **kwargs):
-        """Initializes message based on given keyword arguments.
-
-        Names of the given keyword arguments must match to names in `data`
-        class attribute, otherwise the initialization fails.
-
-        Must be called explicitly by subclass if overridden.
+PY3 = sys.version_info[0] >= 3
+if PY3:
+    from .messages3 import RideMessage
+else:
+    class RideMessage(object):
+        """Base class for all messages sent by RIDE.
+    
+        :CVariables:
+          topic
+            Topic of this message. If not overridden, value is got from the class
+            name by lowercasing it, separating words with a dot and dropping possible
+            ``Message`` from the end. For example classes ``MyExample`` and
+            ``AnotherExampleMessage`` get titles ``my.example`` and
+            ``another.example``, respectively.
+          data
+            Names of attributes this message provides. These must be given as
+            keyword arguments to `__init__` when an instance is created.
         """
-        if sorted(kwargs.keys()) != sorted(self.data):
-            raise TypeError('Argument mismatch, expected: %s' % self.data)
-        self.__dict__.update(kwargs)
+        __metaclass__ = messagetype.messagetype
+        topic = None  #  DEBUG None
+        data = []
 
-    def publish(self):
-        """Publishes the message.
+        def __init__(self, **kwargs):
+            """Initializes message based on given keyword arguments.
+    
+            Names of the given keyword arguments must match to names in `data`
+            class attribute, otherwise the initialization fails.
+    
+            Must be called explicitly by subclass if overridden.
+            """
+            if sorted(kwargs.keys()) != sorted(self.data):
+                raise TypeError('Argument mismatch, expected: %s' % self.data)
+            self.__dict__.update(kwargs)
 
-        All listeners that have subscribed to the topic of this message will be
-        called with the this instance as an argument.
+        def publish(self):
+            """Publishes the message.
+    
+            All listeners that have subscribed to the topic of this message will be
+            called with the this instance as an argument.
+    
+            Notifications are sent sequentially. Due to the limitations of current
+            implementation, if any of the listeners raises an exception, subsequent
+            listeners will not get the notification.
+            """
+            try:
+                self._publish(self)
+            except Exception as err:
+                self._publish(RideLogException(message='Error in publishing message: ' + str(err),
+                                               exception=err, level='ERROR'))
 
-        Notifications are sent sequentially. Due to the limitations of current
-        implementation, if any of the listeners raises an exception, subsequent
-        listeners will not get the notification.
-        """
-        try:
-            self._publish(self)
-        except Exception as err:
-            self._publish(RideLogException(message='Error in publishing message: ' + str(err),
-                                           exception=err, level='ERROR'))
-
-    def _publish(self, msg):
-        publisher.PUBLISHER.publish(msg.topic, msg)
+        def _publish(self, msg):
+            publisher.PUBLISHER.publish(msg.topic, msg)
 
 
 class RideLog(RideMessage):
