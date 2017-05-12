@@ -2,7 +2,8 @@ import unittest
 
 from nose.tools import assert_equals, assert_raises, assert_true
 
-from robotide.publish.messages import RideMessage, RideLogMessage, RideLogException
+from robotide.publish.messages import (RideMessage, RideLogMessage,
+                                       RideLogException)
 from robotide.publish.publisher import Publisher
 
 
