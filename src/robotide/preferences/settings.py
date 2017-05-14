@@ -14,6 +14,14 @@
 
 import os
 import shutil
+import sys
+
+if sys.version_info[0] == 2:
+    PYTHON2 = True
+    PYTHON3 = False
+elif sys.version_info[0] == 3:
+    PYTHON2 = False
+    PYTHON3 = True
 
 from robotide.context import SETTINGS_DIRECTORY, LIBRARY_XML_DIRECTORY
 from robotide.preferences.configobj import ConfigObj, ConfigObjError,\
@@ -119,7 +127,7 @@ class SettingsMigrator(object):
             with open(old_excludes) as f:
                 old = f.read()
             new = '\n'.join(d for d in old.split('\n') if os.path.isdir(d))+'\n'
-            with open(old_excludes, 'w') as f:
+            with open(old_excludes, 'wb') as f:
                 f.write(new)
         settings[self.SETTINGS_VERSION] = 3
 
@@ -180,7 +188,10 @@ class SettingsMigrator(object):
     def _write_merged_settings(self, settings, path):
         try:
             with open(path, 'wb') as outfile:
-                settings.write(outfile)
+                if PYTHON2:
+                    settings.write(outfile)
+                elif PYTHON3:
+                    settings.write(outfile.encoding('UTF-8'))
         except IOError:
             raise RuntimeError(
                 'Could not open settings file "%s" for writing' % path)
@@ -221,7 +232,10 @@ class _Section(object):
 
     def iteritems(self):
         '''Returns an iterator over the (key,value) items of the section'''
-        return self._config_obj.iteritems()
+        if PYTHON2:
+            return self._config_obj.iteritems()
+        elif PYTHON3:
+            return self._config_obj.items()
 
     def has_setting(self, name):
         return name in self._config_obj

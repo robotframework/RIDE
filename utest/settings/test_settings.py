@@ -225,12 +225,12 @@ class TestSections(TestSettingsHelper):
 
     def test_set_should_fail_if_section_with_same_name_already_exists(self):
         self.settings.add_section('Plugin 1')
-        self.assertRaises(SectionError, self.settings.set, 'Plugin 1', 123)
+        self.assertRaises(SectionError, set, 'Plugin 1', 123)
 
     def test_set_overriding_section_with_other_section(self):
         self.settings.add_section('Plugin 1', foo='bar', hello='world')
         section = self.settings.add_section('Plugin 2', zip=2)
-        self.settings.set('Plugin 1', section)
+        set('Plugin 1', section)
         self.assertEquals(self.settings['Plugin 1']._config_obj, {'zip': 2})
         self.assertEquals(
             self._read_settings()['Plugin 1']._config_obj, {'zip': 2})
@@ -239,7 +239,7 @@ class TestSections(TestSettingsHelper):
         self.settings.add_section('Plugin 1', foo='bar', hello='world')
         section = self.settings.add_section(
             'Plugin 2', foo='new value', zip=2)
-        self.settings.set('Plugin 1', section, override=False)
+        set('Plugin 1', section, override=False)
         expected = {'foo': 'bar', 'hello': 'world', 'zip': 2}
         self.assertEquals(self.settings['Plugin 1']._config_obj, expected)
         self.assertEquals(
@@ -302,6 +302,8 @@ class TestInitializeSettings(TestSettingsHelper):
         os.mkdir(self.settings_dir)
         self._write_settings(
             "foo = 'bar'\nhello = 'world'", self.settings_path)
+        # print("DEBUG: test_settings test_initialize_settings_does_merge_when_settings_exists wrote file! %s", self.settings_path)
+        # unittest.skip("DEBUG")
         self._write_settings("foo = 'new value'\nhello = 'world'",
                              self.user_settings_path)
         initialize_settings(self.settings_path, 'user.cfg')

@@ -42,8 +42,12 @@ json or pickle to send objects to the listening server. It should probably be
 refactored to call an XMLRPC server.
 '''
 
+import copy
 import os
 import sys
+import socket
+import threading
+
 if sys.version_info[0] == 2:
     print("TestRunnerAgent: Running under Python 2")  # DEBUG
     PYTHON2 = True
@@ -52,8 +56,7 @@ elif sys.version_info[0] == 3:
     print("TestRunnerAgent: Running under Python 3")  # DEBUG
     PYTHON2 = False
     PYTHON3 = True
-import socket
-import threading
+
 try:
     import SocketServer
 except ImportError:#py3
@@ -61,7 +64,6 @@ except ImportError:#py3
         import socketserver as SocketServer
     except ImportError as e:
         raise e
-import copy
 
 try:
     from robot.errors import ExecutionFailed
@@ -84,7 +86,7 @@ else:
 
 try:
     import cPickle as pickle
-except ImportError:#py3
+except ImportError:  # py3
     import pickle as pickle
 
 try:
@@ -92,7 +94,7 @@ try:
 except ImportError:
     try:
         from StringIO import StringIO
-    except ImportError:#py3
+    except ImportError:  # py3
         from io import StringIO
 
 HOST = "localhost"
@@ -261,15 +263,15 @@ class RobotDebugger(object):
     def resume(self):
         self._state = 'running'
         self._pause_when_on_level = -1
-        self._resume.set()
+        set()
 
     def step_next(self):
         self._state = 'step_next'
-        self._resume.set()
+        set()
 
     def step_over(self):
         self._state = 'step_over'
-        self._resume.set()
+        set()
 
     def start_keyword(self):
         while self._state == 'pause':
@@ -284,8 +286,8 @@ class RobotDebugger(object):
 
     def end_keyword(self, passed=True):
         self._keyword_level -= 1
-        if self._keyword_level == self._pause_when_on_level \
-        or (self._pause_on_failure and not passed):
+        if self._keyword_level == self._pause_when_on_level or\
+                (self._pause_on_failure and not passed):
             self._state = 'pause'
 
     def is_paused(self):
@@ -294,9 +296,11 @@ class RobotDebugger(object):
 
 class RobotKillerServer(SocketServer.TCPServer):
     allow_reuse_address = True
+
     def __init__(self, debugger):
         SocketServer.TCPServer.__init__(self, ("",0), RobotKillerHandler)
         self.debugger = debugger
+
 
 class RobotKillerHandler(SocketServer.StreamRequestHandler):
     def handle(self):
@@ -355,11 +359,14 @@ class DecodeError(StreamError):
         if hasattr(json, 'JSONDecodeError'):
             wrapped_exceptions = (pickle.UnpicklingError, json.JSONDecodeError)
 
+
 def dump(obj, fp):
     StreamHandler(fp).dump(obj)
 
+
 def load(fp):
     return StreamHandler(fp).load()
+
 
 def dumps(obj):
     """
@@ -373,6 +380,7 @@ def dumps(obj):
     fp = StringIO()
     StreamHandler(fp).dump(obj)
     return fp.getvalue()
+
 
 def loads(s):
     """

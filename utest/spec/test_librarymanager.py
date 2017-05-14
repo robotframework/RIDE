@@ -42,7 +42,7 @@ class TestLibraryManager(unittest.TestCase):
         self.assertEqual(len(self._keywords), 3)
 
     def test_manager_handler_library_that_throws_timeout_exception(self):
-        import Exceptional as e
+        from . import Exceptional as e
         self._library_manager.fetch_keywords(e.__file__, '', self._callback)
         self._library_manager._handle_message()
         self.assertEqual(self._keywords, [])

@@ -27,6 +27,7 @@ class ResourceFactoryDirectoryIgnoreTestCase(unittest.TestCase):
 
     def setUp(self):
         self._import = _Import(None, __file__)
+        print("DEBUG Test Resource Factory _import name: %s", str(self._import.name))
         self._context = self._mock_context()
 
     def tearDown(self):
@@ -37,9 +38,11 @@ class ResourceFactoryDirectoryIgnoreTestCase(unittest.TestCase):
         self.r = _ResourceFactory(FakeSettings())
         self._is_resolved(self.r)
 
-    def test_resourcefactory_ignores_imported_resource_from_ignore_directory(self):
+    def test_resourcefactory_ignores_imported_resource_from_ignore_directory(
+            self):
         self.r = self._create_factory(os.path.dirname(__file__))
-        self.assertEqual(None, self.r.get_resource_from_import(self._import, self._context))
+        self.assertEqual(None, self.r.get_resource_from_import(self._import,
+                                                               self._context))
 
     def test_resourcefactory_ignores_imported_resource_from_ignore_subdirectory(self):
         self.r = self._create_factory(os.path.split(os.path.dirname(__file__))[0])
@@ -91,7 +94,10 @@ class ResourceFactoryDirectoryIgnoreTestCase(unittest.TestCase):
         return _ResourceFactory(settings)
 
     def _mock_context(self):
-        context = lambda:0
+
+        def context():
+            return 0
+
         context.vars = context
         context.replace_variables = lambda s: s
         return context
