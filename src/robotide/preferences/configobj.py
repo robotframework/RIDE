@@ -624,7 +624,7 @@ class Section(dict):
                         raise TypeError('Value is not a string "%s".' % value)
                 dict.__setitem__(self, key, value)
         elif PYTHON3:
-            if not key in self.comments:
+            if key not in self.comments:
                 self.comments[key] = []
                 self.inline_comments[key] = ''
             # remove the entry from defaults
@@ -632,13 +632,13 @@ class Section(dict):
                 self.defaults.remove(key)
             #
             if isinstance(value, Section):
-                if not key in self:
+                if key not in self:
                     self.sections.append(key)
                 dict.__setitem__(self, key, value)
             elif isinstance(value, dict) and not unrepr:
                 # First create the new depth level,
                 # then create the section
-                if not key in self:
+                if key not in self:
                     self.sections.append(key)
                 new_depth = self.depth + 1
                 dict.__setitem__(
@@ -651,7 +651,7 @@ class Section(dict):
                         indict=value,
                         name=key))
             else:
-                if not key in self:
+                if key not in self:
                     self.scalars.append(key)
                 if not self.main.stringify:
                     if isinstance(value, basestring):
@@ -712,7 +712,7 @@ class Section(dict):
         if not sequence:
             raise KeyError(": 'popitem(): dictionary is empty'")
         key = sequence[0]
-        val =  self[key]
+        val = self[key]
         del self[key]
         return key, val
 
@@ -1214,12 +1214,12 @@ class ConfigObj(Section):
         if isinstance(infile, basestring):
             self.filename = infile
             if os.path.isfile(self.filename):
-                print("DEBUG: configobj is path _load filepath %s", self.filename)
+                # print("DEBUG: configobj is path _load filepath %s", self.filename)
                 try:
                     h = open(self.filename, 'r')
                     infile = h.read() or []
                     h.close()
-                except IOError as er:
+                except IOError:
                     raise IOError(
                         'Config file not found: "%s".' % self.filename)
             elif self.file_error:
@@ -1230,10 +1230,13 @@ class ConfigObj(Section):
                 if self.create_empty:
                     # this is a good test that the filename specified
                     # isn't impossible - like on a non-existent device
-                    h = open(infile, 'w')
-                    h.write('')
+                    h = open(infile, 'w+b')
+                    if PYTHON2:
+                        h.write('#')
+                    elif PYTHON3:
+                        h.write('#'.encode('UTF-8'))
                     h.close()
-                    print("DEBUG: configobj created empty _load filepath %s", h.name)
+                    # print("DEBUG: configobj created empty _load filepath %s", h.name)
                 infile = []
 
         elif isinstance(infile, (list, tuple)):
@@ -1264,7 +1267,7 @@ class ConfigObj(Section):
         else:
             raise TypeError('infile must be a filename, file like object, or list of lines.')
 
-        print("DEBUG: configobj cleaning infile BOM %s", infile)
+        # print("DEBUG: configobj cleaning infile BOM %s", infile)
         if infile:
             # don't do it for the empty ConfigObj
             infile = self._handle_bom(infile)
@@ -1281,16 +1284,15 @@ class ConfigObj(Section):
                         break
                 break
 
-            if PYTHON2:  # No need? TODO Remove condition
-                infile = [line.rstrip('\r\n') for line in infile]
-            elif PYTHON3:
-                infile = [line.rstrip('\r\n') for line in infile]
-            print("DEBUG: configobj stripped %s", infile)
+            infile = [line.rstrip('\r\n') for line in infile]
 
+        # print("DEBUG: configobj before parsing %s\n", infile)
         self._parse(infile)
-        print("DEBUG: configobj parsed infile %s", infile)
+        print("DEBUG: configobj parsed infile %s\n", infile)
+        # print("DEBUG: Errors are: %s", self._errors)
+        # print("DEBUG: ############################### BY PASS ERROR PARSER!!!!!!!!")
         # if we had any errors, now is the time to raise them
-        if self._errors:
+        if self._errors:  # and False:
             info = "at line %s." % self._errors[0].line_number
             if len(self._errors) > 1:
                 msg = "Parsing failed with several errors.\nFirst error %s" % info
@@ -1344,8 +1346,8 @@ class ConfigObj(Section):
 
     def __repr__(self):
         return ('ConfigObj({%s})' %
-                ', '.join([('%s: %s' % (repr(key), repr(self[key])))
-                for key in (self.scalars + self.sections)]))
+                ', '.join([('%s: %s' % (repr(key), repr(self[key]))) for key in
+                           (self.scalars + self.sections)]))
 
     def _handle_bom(self, infile):
         """
@@ -2046,7 +2048,7 @@ class ConfigObj(Section):
         if outfile is not None:
             outfile.write(output)
         else:
-            h = open(self.filename, 'wb')
+            h = open(self.filename, 'w+b')
             if PYTHON2:
                 h.write(output)
             elif PYTHON3:

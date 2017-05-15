@@ -95,9 +95,7 @@ class ResourceFactoryDirectoryIgnoreTestCase(unittest.TestCase):
 
     def _mock_context(self):
 
-        def context():
-            return 0
-
+        context = lambda s: 0
         context.vars = context
         context.replace_variables = lambda s: s
         return context

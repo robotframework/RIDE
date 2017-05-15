@@ -187,7 +187,7 @@ class SettingsMigrator(object):
 
     def _write_merged_settings(self, settings, path):
         try:
-            with open(path, 'wb') as outfile:
+            with open(path, 'w+b') as outfile:
                 if PYTHON2:
                     settings.write(outfile)
                 elif PYTHON3:
