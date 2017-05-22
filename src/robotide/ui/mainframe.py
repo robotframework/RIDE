@@ -73,10 +73,10 @@ class RideFrame(wx.Frame, RideEventHandler):
 
     def __init__(self, application, controller):
         wx.Frame.__init__(self, parent=None, title='RIDE',
-                          pos=application.settings['mainframe position'],
-                          size=application.settings['mainframe size'])
+                          pos=application.settings.get('mainframe position', (50, 30)),
+                          size=application.settings.get('mainframe size', (1100, 700)))
         self.ensure_on_screen()
-        if application.settings['mainframe maximized']:
+        if application.settings.get('mainframe maximized', False):
             self.Maximize()
         self._application = application
         self._controller = controller

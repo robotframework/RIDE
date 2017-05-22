@@ -137,7 +137,7 @@ class ListValueEditor(ValueEditor):
     def _create_editor(self, value, label, settings):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         self._settings = settings
-        cols = self._settings["list variable columns"]
+        cols = self._settings.get("list variable columns", 4)
         sizer.Add(self._create_components(label, cols))
         self._editor = _EditorGrid(self, value, cols)
         sizer.Add(self._editor, 1, self._sizer_flags_for_editor, 3)

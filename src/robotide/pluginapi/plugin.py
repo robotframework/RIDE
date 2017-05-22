@@ -143,7 +143,7 @@ class Plugin(object):
         is saved. This can be used to prevent saving the value while user is
         typing it.
         """
-        set(name, value, autosave=delay == 0, override=override)
+        self.__settings.set(name, value, autosave=delay == 0, override=override)
         self._delay_saving(delay)
 
     def _delay_saving(self, delay):

@@ -34,7 +34,8 @@ elif sys.version_info[0] == 3:
 
 compiler = None
 try:
-    import py_compile as compiler # compiler
+    # import py_compile as compiler # compiler
+    import ast as compiler  # compiler
 except ImportError:
     # for IronPython
     pass
@@ -149,8 +150,8 @@ def getObj(s):
     s = "a=" + s
     if compiler is None:
         raise ImportError('compiler module not available')
-    p = compiler.parse(s)
-    return p.getChildren()[1].getChildren()[0].getChildren()[1]
+    p = compiler.literal_eval(s)  # .parse(s) # .literal_eval(s)  # .literal_eval(s)
+    return p #  p.getChildren()[1].getChildren()[0].getChildren()[1]
 
 
 class UnknownType(Exception):
@@ -160,6 +161,7 @@ class UnknownType(Exception):
 class Builder(object):
 
     def build(self, o):
+        # print("DEBUG build name: %s", 'build_' + o.__class__.__name__)
         m = getattr(self, 'build_' + o.__class__.__name__, None)
         if m is None:
             raise UnknownType(o.__class__.__name__)
@@ -218,6 +220,7 @@ _builder = Builder()
 
 def unrepr(s):
     if not s:
+        # print("DEBUG return s from unrepr %s\n", s)
         return s
     return _builder.build(getObj(s))
 
@@ -1219,6 +1222,7 @@ class ConfigObj(Section):
                     h = open(self.filename, 'r')
                     infile = h.read() or []
                     h.close()
+                    # print("DEBUG: configobj is path _load content %s", infile)
                 except IOError:
                     raise IOError(
                         'Config file not found: "%s".' % self.filename)
@@ -1287,8 +1291,9 @@ class ConfigObj(Section):
             infile = [line.rstrip('\r\n') for line in infile]
 
         # print("DEBUG: configobj before parsing %s\n", infile)
+        # print("DEBUG: Before parsing Errors are: %s", self._errors)
         self._parse(infile)
-        print("DEBUG: configobj parsed infile %s\n", infile)
+        # print("DEBUG: configobj parsed infile %s\n", infile)
         # print("DEBUG: Errors are: %s", self._errors)
         # print("DEBUG: ############################### BY PASS ERROR PARSER!!!!!!!!")
         # if we had any errors, now is the time to raise them
@@ -1529,8 +1534,8 @@ class ConfigObj(Section):
                 (indent, sect_open, sect_name, sect_close, comment) = mat.groups()
                 if indent and (self.indent_type is None):
                     self.indent_type = indent
-                cur_depth = sect_open.count(b'[')
-                if cur_depth != sect_close.count(b']'):
+                cur_depth = sect_open.count('[')
+                if cur_depth != sect_close.count(']'):
                     self._handle_error("Cannot compute the section depth at line %s.",
                                        NestingError, infile, cur_index)
                     continue
@@ -1594,10 +1599,12 @@ class ConfigObj(Section):
                     self.indent_type = indent
                 # check for a multiline value
                 if value[:3] in ['"""', "'''"]:
+                    # print("DEBUG: _parser multiline value: %s\n", value)
                     try:
                         (value, comment, cur_index) = self._multiline(
                             value, infile, cur_index, maxline)
-                    except SyntaxError:
+                    except SyntaxError as s:
+                        # print("DEBUG: _parser multiline value Syntaxerror: %s\n", str(s))
                         self._handle_error(
                             'Parse error in value at line %s.',
                             ParseError, infile, cur_index)
@@ -1616,17 +1623,20 @@ class ConfigObj(Section):
                                     cur_index)
                                 continue
                 else:
+                    # print("DEBUG: _parser not multiline value: %s\n", value)
                     if self.unrepr:
                         comment = ''
                         try:
+                            # print("DEBUG: _parser before unrepr? value: %s\n", value)
                             value = unrepr(value)
-                        except Exception as e:
+                        except Exception as e: #  Exception as e:
+                            # print("DEBUG: _parser exception at unrepr? error: %s\n", str(e))
                             if isinstance(e, UnknownType):
                                 msg = 'Unknown name or type in value at line %s.'
-                            else:
-                                msg = 'Parse error in value at line %s.'
-                            self._handle_error(msg, UnreprError, infile,
-                                cur_index)
+                            # else:
+                            #    msg = 'Parse error in value at line %s.'
+                            #self._handle_error(msg, UnreprError, infile,
+                            #    cur_index)
                             continue
                     else:
                         # extract comment and lists

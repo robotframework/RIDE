@@ -134,24 +134,24 @@ def boolean_editor(parent, settings, name, label, help=''):
 
 
 def _create_checkbox_editor(parent, settings, name, help):
-    initial_value = settings[name]
+    initial_value = settings.get(name)
     editor = wx.CheckBox(parent)
     editor.SetValue(initial_value)
     editor.Bind(wx.EVT_CHECKBOX,
-                lambda evt: set(name, editor.GetValue()))
+                lambda evt: settings.set(name, editor.GetValue()))
     MySetToolTip(editor, help)
     return editor
 
 
 def comma_separated_value_editor(parent, settings, name, label, help=''):
-    initial_value = ', '.join(settings[name])
+    initial_value = ', '.join(settings.get(name))
     editor = TextField(parent, initial_value)
     MySetToolTip(editor, help)
 
     def set_value():
         new_value = [token.strip() for token in editor.GetValue().split(',')
                      if token.strip()]
-        set(name, new_value)
+        settings.set(name, new_value)
     editor.Bind(wx.EVT_KILL_FOCUS, lambda evt: set_value())
 
     return Label(parent, label=label), editor
