@@ -538,43 +538,43 @@ class RobotStylizer(object):
         color_settings = self.settings.get_without_default('Text Edit')
         styles = {
             robotframeworklexer.ARGUMENT: {
-                'fore': color_settings['argument']
+                'fore': color_settings.get('argument','#bb8844')
             },
             robotframeworklexer.COMMENT: {
-                'fore': color_settings['comment']
+                'fore': color_settings.get('comment', 'black')
             },
             robotframeworklexer.ERROR: {
-                'fore': color_settings['error']
+                'fore': color_settings.get('error', 'black')
             },
             robotframeworklexer.GHERKIN: {
-                'fore': color_settings['gherkin']
+                'fore': color_settings.get('gherkin', 'black')
             },
             robotframeworklexer.HEADING: {
-                'fore': color_settings['heading'],
+                'fore': color_settings.get('heading', '#999999'),
                 'bold': 'true'
             },
             robotframeworklexer.IMPORT: {
-                'fore': color_settings['import']
+                'fore': color_settings.get('import', '#555555')
             },
             robotframeworklexer.KEYWORD: {
-                'fore': color_settings['keyword'],
+                'fore': color_settings.get('keyword', '#990000'),
                 'bold': 'true'
             },
             robotframeworklexer.SEPARATOR: {
-                'fore': color_settings['separator']
+                'fore': color_settings.get('separator', 'black')
             },
             robotframeworklexer.SETTING: {
-                'fore': color_settings['setting'],
+                'fore': color_settings.get('setting', 'black'),
                 'bold': 'true'
             },
             robotframeworklexer.SYNTAX: {
-                'fore': color_settings['syntax']
+                'fore': color_settings.get('syntax', 'black')
             },
             robotframeworklexer.TC_KW_NAME: {
-                'fore': color_settings['tc_kw_name']
+                'fore': color_settings.get('tc_kw_name', '#aaaaaa')
             },
             robotframeworklexer.VARIABLE: {
-                'fore': color_settings['variable']
+                'fore': color_settings.get('variable', '#008080')
             }
         }
         self.tokens = {}

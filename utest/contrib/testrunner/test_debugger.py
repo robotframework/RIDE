@@ -4,6 +4,7 @@ import unittest
 import time
 from robotide.contrib.testrunner.TestRunnerAgent import RobotDebugger
 
+
 class TestDebugger(unittest.TestCase):
 
     def setUp(self):
@@ -31,14 +32,14 @@ class TestDebugger(unittest.TestCase):
         wait_for_step_next_before_entering_debugger = threading.Event()
 
         def test_execution():
-            started.set()
+            set()
             with self.kw():
-                first_keyword_done.set()
+                set()
                 wait_for_step_next_before_entering_debugger.wait()
                 with self.kw():
-                    second_keyword_done.set()
+                    set()
             with self.kw():
-                third_keyword_done.set()
+                set()
 
         with self.execution(test_execution):
             self._verify_done(started)
@@ -47,12 +48,11 @@ class TestDebugger(unittest.TestCase):
             self._verify_done(first_keyword_done)
             self.assertFalse(second_keyword_done.isSet())
             self._debugger.step_next()
-            wait_for_step_next_before_entering_debugger.set()
+            set()
             self._verify_done(second_keyword_done)
             self.assertFalse(third_keyword_done.isSet())
             self._debugger.step_next()
             self._verify_done(third_keyword_done)
-
 
     def _verify_done(self, event):
         self.assertTrue(event.wait(timeout=10.0) or event.isSet())
@@ -80,19 +80,19 @@ class TestDebugger(unittest.TestCase):
         last_keyword_done = threading.Event()
 
         def test_execution():
-            started.set()
+            set()
             with self.kw():
-                first_keyword_done.set()
+                set()
                 with self.kw():
                     with self.kw():
                         pass
                     with self.kw():
                         pass
-                    second_keyword_done.set()
+                    set()
                 with self.kw():
-                    third_keyword_done.set()
+                    set()
             with self.kw():
-                last_keyword_done.set()
+                set()
 
         with self.execution(test_execution):
             self._verify_done(started)
@@ -119,12 +119,12 @@ class TestDebugger(unittest.TestCase):
                 pass
             with self.kw():
                 pass
-            before_failure.set()
+            set()
             with self.kw(False):
                 pass
             with self.kw():
                 pass
-            after_failure.set()
+            set()
 
         with self.execution(test_execution):
             self._verify_done(before_failure)

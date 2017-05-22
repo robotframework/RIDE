@@ -154,7 +154,7 @@ class GridEditorPreferences(EditorPreferences):
     def _set_value(self, editor, name):
         # Guard against dead object
         if editor:
-            self._settings.set(name, int(editor.GetValue()))
+            set(name, int(editor.GetValue()))
 
     def create_colors_sizer(self):
         colors_sizer = wx.GridBagSizer()

@@ -73,7 +73,7 @@ class Project(_BaseController, WithNamespace):
 
     def update_default_dir(self, path):
         default_dir = path if os.path.isdir(path) else os.path.dirname(path)
-        self._settings.set('default directory', default_dir)
+        set('default directory', default_dir)
 
     # TODO: in all other controllers data returns a robot data model object.
     @property
