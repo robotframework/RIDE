@@ -51,13 +51,13 @@ class PluginConnector(_PluginConnector):
             self.enable()
 
     def enable(self):
-        set('_enabled', True)
+        self._settings.set('_enabled', True)
         self.enabled = True
         self._plugin.enable()
 
     def disable(self):
         if self.enabled:
-            set('_enabled', False)
+            self._settings.set('_enabled', False)
             self.enabled = False
             self._plugin.disable()
 
