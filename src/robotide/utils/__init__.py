@@ -93,6 +93,7 @@ def replace_extension(path, new_extension):
 
 
 def overrides(interface_class):
+    # type: (object) -> object
     """
     A decorator that can be used to validate method override
 

@@ -256,8 +256,8 @@ class DataFileWrapper(object): # TODO: bad class name
     def _txt_data(self, data):
         output = StringIO()
         data.save(output=output, format='txt',
-                  txt_separating_spaces=self._settings['txt number of spaces'])
-        return output.getvalue().decode('UTF-8')
+                  txt_separating_spaces=self._settings.get('txt number of spaces', 4))
+        return output.getvalue().decode('utf-8')
 
 
 class SourceEditor(wx.Panel):
@@ -527,7 +527,7 @@ class RobotStylizer(object):
         self.editor = editor
         self.lexer = None
         self.settings = settings
-        self.font_size = settings['Text Edit'].get('font size', 8)
+        self.font_size = settings['Text Edit'].get('font size', 10)
         if robotframeworklexer:
             self.lexer = robotframeworklexer.RobotFrameworkLexer()
             self._set_styles()

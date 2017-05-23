@@ -185,7 +185,7 @@ class AddSuiteDialog(_WithImmutableParent, _CreationDialog):
         self._path = controller.directory
         _CreationDialog.__init__(self, self._path, self.NAME)
         self._format_chooser.SetStringSelection(
-            settings["default file format"])
+            settings.get("default file format", "robot"))
 
     @overrides(_CreationDialog)
     def _create_name_editor(self, sizer):
@@ -279,7 +279,7 @@ class RobotFilePathDialog(wx.FileDialog):
             ("txt", "Robot data (*.txt)|*.txt"),
             ("all", "All files|*.*")
         ]
-        default_format = settings["default file format"]
+        default_format = settings.get("default file format", "robot")
         if default_format not in ["robot", "txt"]:
             default_format = "all"
         first = [ft for ft in fileTypes if ft[0] == default_format]
