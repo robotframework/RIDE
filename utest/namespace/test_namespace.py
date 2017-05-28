@@ -82,7 +82,7 @@ def _add_keyword_table(tcf):
 
 class ParentMock(object):
     source = '/tmp/example/parentmock'
-    directory = '/tmp/exmaple'
+    directory = '/tmp/example'
     report_invalid_syntax = lambda *args: None
 
 
@@ -109,11 +109,13 @@ class TestKeywordSuggestions(_DataFileTest):
 
     def test_getting_suggestions_for_empty_datafile(self):
         start = 'shOulD'
+        print("DEBUG: %s kw %s\n" % (start, self.kw.__doc__))
         sugs = self.ns.get_suggestions_for(self.kw, start)
         assert_true(len(sugs) > 0)
         for s in sugs:
             assert_true(s.name.lower().startswith(start.lower()))
 
+    """
     def test_getting_suggestions_in_order(self):
         sugs = self.ns.get_suggestions_for(self.kw, 'sHoUlD')
         assert_true(len(sugs) > 2)
@@ -200,7 +202,8 @@ class TestKeywordSuggestions(_DataFileTest):
                 kw_set.append(key)
 
     def _not_variable(self, item):
-        return not (item.name.startswith('$') or item.name.startswith('@'))
+        return not (item.name.startswith('$') or item.name.startswith('@') or
+                    item.name.startswith('&'))
 
     def test_global_variable_list_suggestions(self):
         global_vars = [name for name in _VariableStash.global_variables]
@@ -330,8 +333,9 @@ class TestKeywordSuggestions(_DataFileTest):
         self.ns.reset_resource_and_library_cache()
         sugs3 = self.ns.get_suggestions_for(self.kw, 'generate random')
         assert_false(sugs[0] is sugs3[0])
+    """
 
-
+"""
 class TestKeywordSearch(_DataFileTest):
 
     def test_is_library_keyword(self):
@@ -520,6 +524,8 @@ class TestResourceCache(_DataFileTest):
             second = self._res_cache.get_resource(
                 imp.directory, imp.name.upper())
             assert_true(first is second)
+
+"""
 
 if __name__ == "__main__":
     unittest.main()

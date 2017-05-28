@@ -3,12 +3,16 @@ import os
 
 from robotide.preferences import RideSettings
 
+# TODO make sure it does not use real user settings file (it get damaged)
+
 
 class TestRideSettings(unittest.TestCase):
 
     def test_loading_settings(self):
         settings = RideSettings()
-        self.assertTrue(settings._config_obj["mainframe size"])
+        print("DEBUG: RideSettings, %s", settings._config_obj.__repr__())
+        print("DEBUG: settings path %s", settings._config_obj['install root'])
+        self.assertTrue(settings._config_obj['mainframe size'])
 
 
 class TestGettingPath(unittest.TestCase):

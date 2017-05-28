@@ -771,7 +771,7 @@ class Section(dict):
     def __repr__(self):
         """x.__repr__() <==> repr(x)"""
         return '{%s}' % ', '.join([('%s: %s' % (repr(key), repr(self[key])))
-            for key in (self.scalars + self.sections)])
+                                   for key in (self.scalars + self.sections)])
 
     __str__ = __repr__
     __str__.__doc__ = "x.__str__() <==> str(x)"
@@ -1095,8 +1095,7 @@ class ConfigObj(Section):
         \s*=\s*                 # divider
         (.*)                    # value (including list values and comments)
         $   # line end
-        ''',
-        re.VERBOSE)
+        ''', re.VERBOSE)
 
     _sectionmarker = re.compile(r'''^
         (\s*)                     # 1: indentation
@@ -1108,8 +1107,7 @@ class ConfigObj(Section):
         )                         # section name close
         ((?:\s*\])+)              # 4: section marker close
         \s*(\#.*)?                # 5: optional comment
-        $''',
-        re.VERBOSE)
+        $''', re.VERBOSE)
 
     # this regexp pulls list values out as a single string
     # or single values and comments
@@ -1136,8 +1134,7 @@ class ConfigObj(Section):
             (,)             # alternatively a single comma - empty list
         )
         \s*(\#.*)?          # optional comment
-        $''',
-        re.VERBOSE)
+        $''', re.VERBOSE)
 
     # use findall to get the members of a list value
     _listvalueexp = re.compile(r'''
@@ -1147,8 +1144,7 @@ class ConfigObj(Section):
             (?:[^'",\#].*?)       # unquoted
         )
         \s*,\s*                 # comma
-        ''',
-        re.VERBOSE)
+        ''', re.VERBOSE)
 
     # this regexp is used for the value
     # when lists are switched off
@@ -1160,8 +1156,7 @@ class ConfigObj(Section):
             (?:)                # Empty value
         )
         \s*(\#.*)?              # optional comment
-        $''',
-        re.VERBOSE)
+        $''', re.VERBOSE)
 
     # regexes for finding triple quoted values on one line
     _single_line_single = re.compile(r"^'''(.*?)'''\s*(#.*)?$")
@@ -1210,19 +1205,20 @@ class ConfigObj(Section):
         self._initialise(defaults)
         configspec = defaults['configspec']
         self._original_configspec = configspec
-        #print("DEBUG: configobj init_load filepath %s", infile)
+        # print("DEBUG: configobj defaults %s\n", defaults)
+        # print("DEBUG: configobj init_load filepath %s\n", infile)
         self._load(infile, configspec)
 
     def _load(self, infile, configspec):
         if isinstance(infile, basestring):
             self.filename = infile
             if os.path.isfile(self.filename):
-                # print("DEBUG: configobj is path _load filepath %s", self.filename)
+                print("DEBUG: configobj is path _load filepath %s", self.filename)
                 try:
-                    h = open(self.filename, 'r')
+                    h = open(self.filename, 'rb')
                     infile = h.read() or []
                     h.close()
-                    # print("DEBUG: configobj is path _load content %s", infile)
+                    print("DEBUG: configobj is path _load content %s", infile)
                 except IOError:
                     raise IOError(
                         'Config file not found: "%s".' % self.filename)
@@ -2058,7 +2054,7 @@ class ConfigObj(Section):
         if outfile is not None:
             outfile.write(output)
         else:
-            h = open(self.filename, 'w+b')
+            h = open(self.filename, 'wb')
             if PYTHON2:
                 h.write(output)
             elif PYTHON3:

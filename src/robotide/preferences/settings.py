@@ -49,6 +49,7 @@ def _copy_or_migrate_user_settings(settings_dir, source_path, dest_file_name):
     settings_path = os.path.join(settings_dir, dest_file_name)
     if not os.path.exists(settings_path):
         shutil.copyfile(source_path, settings_path)
+        print("DEBUG: source %s new settings %s\n" %(source_path,settings_path))
     else:
         try:
             SettingsMigrator(source_path, settings_path).migrate()
@@ -56,6 +57,8 @@ def _copy_or_migrate_user_settings(settings_dir, source_path, dest_file_name):
             print('WARNING! corrupted configuration file replaced with defaults')
             print(parsing_error)
             shutil.copyfile(source_path, settings_path)
+            print("DEBUG: source %s corrupted settings %s\n" % (
+            source_path, settings_path))
     return os.path.abspath(settings_path)
 
 
@@ -102,7 +105,9 @@ class SettingsMigrator(object):
         self.merge()
 
     def merge(self):
+        print("DEBUG: Merge before: %s\n", self._default_settings.__repr__())
         self._default_settings.merge(self._old_settings)
+        print("DEBUG: Merge after: %s, old%s\n", (self._default_settings.__repr__(), self._old_settings.__repr__()))
         self._write_merged_settings(self._default_settings, self._user_path)
 
     def migrate_from_0_to_1(self, settings):
@@ -187,11 +192,11 @@ class SettingsMigrator(object):
 
     def _write_merged_settings(self, settings, path):
         try:
-            with open(path, 'w+b') as outfile:
+            with open(path, 'wb') as outfile:
                 if PYTHON2:
                     settings.write(outfile)
                 elif PYTHON3:
-                    settings.write(outfile.encoding('UTF-8'))
+                    settings.write(outfile).encoding('UTF-8')
         except IOError:
             raise RuntimeError(
                 'Could not open settings file "%s" for writing' % path)
@@ -231,7 +236,7 @@ class _Section(object):
         return len(self._config_obj)
 
     def iteritems(self):
-        '''Returns an iterator over the (key,value) items of the section'''
+        """Returns an iterator over the (key,value) items of the section"""
         if PYTHON2:
             return self._config_obj.iteritems()
         elif PYTHON3:
@@ -327,9 +332,11 @@ class RideSettings(Settings):
 
     def __init__(self):
         default_path = os.path.join(os.path.dirname(__file__), 'settings.cfg')
+        print("DEBUG: RideSettings, default_path %s\n", default_path)
         user_path = initialize_settings(default_path)
         Settings.__init__(self, user_path)
         self._settings_dir = os.path.dirname(user_path)
+        print("DEBUG: RideSettings, self._settings_dir %s\n", self._settings_dir)
         self.set('install root', os.path.dirname(os.path.dirname(__file__)))
 
     def get_path(self, *parts):

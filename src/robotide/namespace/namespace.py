@@ -256,36 +256,43 @@ class RetrieverContext(object):
 
 
 class _VariableStash(object):
-    # Global variables copied from robot.variables.__init__.py
+    # Global variables copied from robot.variables
     global_variables = {
-        '${TEMPDIR}': os.path.normpath(tempfile.gettempdir()),
-        '${EXECDIR}': os.path.abspath('.'),
-        '${/}': os.sep,
         '${:}': os.pathsep,
-        '${SPACE}': ' ',
+        '${/}': os.sep,
+        '${CURDIR}': '.',
+        '${DEBUG_FILE}': '',
         '${EMPTY}': '',
-        '${True}': True,
+        '${EXECDIR}': os.path.abspath('.'),
         '${False}': False,
+        '${KEYWORD_MESSAGE}': '',
+        '${KEYWORD_STATUS}': '',
+        '${LOG_FILE}': '',
+        '${LOG_LEVEL}': '',
+        '${\\n}': '',
         '${None}': None,
         '${null}': None,
         '${OUTPUT_DIR}': '',
         '${OUTPUT_FILE}': '',
-        '${SUMMARY_FILE}': '',
-        '${REPORT_FILE}': '',
-        '${LOG_FILE}': '',
-        '${DEBUG_FILE}': '',
+        '${PREV_TEST_MESSAGE}': '',
         '${PREV_TEST_NAME}': '',
         '${PREV_TEST_STATUS}': '',
-        '${PREV_TEST_MESSAGE}': '',
-        '${CURDIR}': '.',
-        '${TEST_NAME}': '',
-        '@{TEST_TAGS}': [],
-        '${TEST_STATUS}': '',
-        '${TEST_MESSAGE}': '',
+        '${REPORT_FILE}': '',
+        '${SPACE}': ' ',
+        '${SUITE_DOCUMENTATION}': '',
+        '${SUITE_MESSAGE}': '',
+        '${SUITE_METADATA}': '',
         '${SUITE_NAME}': '',
         '${SUITE_SOURCE}': '',
         '${SUITE_STATUS}': '',
-        '${SUITE_MESSAGE}': ''
+        # '${SUMMARY_FILE}': '',
+        '${TEMPDIR}': os.path.normpath(tempfile.gettempdir()),
+        '${TEST_DOCUMENTATION}': '',
+        '${TEST_MESSAGE}': '',
+        '${TEST_NAME}': '',
+        '${TEST_STATUS}': '',
+        '@{TEST_TAGS}': [],
+        '${True}': True
     }
 
     ARGUMENT_SOURCE = object()
