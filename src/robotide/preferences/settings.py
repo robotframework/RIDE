@@ -69,11 +69,13 @@ class SettingsMigrator(object):
     def __init__(self, default_path, user_path):
         self._default_settings = ConfigObj(default_path, unrepr=True)
         self._user_path = user_path
+        print("DEBUG: Settings migrator 1: %s\nuser_path %s" % (self._default_settings.__repr__(), self._user_path))
         try:
             self._old_settings = ConfigObj(user_path, unrepr=True)
         except UnreprError as err:
             raise ConfigurationError("Invalid config file '%s': %s" %
                                      (user_path, err))
+        print("DEBUG: Settings migrator: %s\n", self._default_settings.__repr__())
 
     def migrate(self):
         # Add migrations here.
@@ -105,7 +107,7 @@ class SettingsMigrator(object):
         self.merge()
 
     def merge(self):
-        print("DEBUG: Merge before: %s\n", self._default_settings.__repr__())
+        # print("DEBUG: Merge before: %s\n", self._default_settings.__repr__())
         self._default_settings.merge(self._old_settings)
         print("DEBUG: Merge after: %s, old%s\n", (self._default_settings.__repr__(), self._old_settings.__repr__()))
         self._write_merged_settings(self._default_settings, self._user_path)
@@ -331,9 +333,9 @@ class Settings(_Section):
 class RideSettings(Settings):
 
     def __init__(self):
-        default_path = os.path.join(os.path.dirname(__file__), 'settings.cfg')
-        print("DEBUG: RideSettings, default_path %s\n", default_path)
-        user_path = initialize_settings(default_path)
+        self._default_path = os.path.join(os.path.dirname(__file__), 'settings.cfg')
+        print("DEBUG: RideSettings, default_path %s\n", self._default_path)
+        user_path = initialize_settings(self._default_path)
         Settings.__init__(self, user_path)
         self._settings_dir = os.path.dirname(user_path)
         print("DEBUG: RideSettings, self._settings_dir %s\n", self._settings_dir)

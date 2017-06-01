@@ -147,10 +147,15 @@ OPTION_DEFAULTS = {
 
 
 def getObj(s):
-    s = "a=" + s
+    x = "a=\'" + s + "\'"
     if compiler is None:
         raise ImportError('compiler module not available')
-    p = compiler.literal_eval(s)  # .parse(s) # .literal_eval(s)  # .literal_eval(s)
+    try:
+        p = compiler.literal_eval(x)  # .parse(s) # .literal_eval(s)
+    except ValueError as e:
+        print("DEBUG: parser getObj Error %s\n", str(e))
+        raise ValueError
+    print("DEBUG: parser getObj string %s  eval %s\n", (x, p))
     return p #  p.getChildren()[1].getChildren()[0].getChildren()[1]
 
 
@@ -161,7 +166,7 @@ class UnknownType(Exception):
 class Builder(object):
 
     def build(self, o):
-        # print("DEBUG build name: %s", 'build_' + o.__class__.__name__)
+        print("DEBUG build name: %s", 'build_' + o.__class__.__name__)
         m = getattr(self, 'build_' + o.__class__.__name__, None)
         if m is None:
             raise UnknownType(o.__class__.__name__)
@@ -220,7 +225,7 @@ _builder = Builder()
 
 def unrepr(s):
     if not s:
-        # print("DEBUG return s from unrepr %s\n", s)
+        print("DEBUG return s from unrepr %s\n", s)
         return s
     return _builder.build(getObj(s))
 
@@ -313,7 +318,7 @@ class InterpolationEngine(object):
     """
 
     # compiled regexp to use in self.interpolate()
-    _KEYCRE = re.compile(r"%\(([^)]*)\)s")
+    ds = re.compile(r"%\(([^)]*)\)s")
 
     def __init__(self, section):
         # the Section instance that "owns" this engine
@@ -1101,9 +1106,9 @@ class ConfigObj(Section):
         (\s*)                     # 1: indentation
         ((?:\[\s*)+)              # 2: section marker open
         (                         # 3: section name open
-            (?:"\s*\S.*?\s*")|    # at least one non-space with double quotes
-            (?:'\s*\S.*?\s*')|    # at least one non-space with single quotes
-            (?:[^'"\s].*?)        # at least one non-space unquoted
+            (?:\"\s*\S.*?\s*\")|    # at least one non-space with double quotes
+            (?:\'\s*\S.*?\s*\')|    # at least one non-space with single quotes
+            (?:[^\'\"\s].*?)        # at least one non-space unquoted
         )                         # section name close
         ((?:\s*\])+)              # 4: section marker close
         \s*(\#.*)?                # 5: optional comment
@@ -1213,12 +1218,12 @@ class ConfigObj(Section):
         if isinstance(infile, basestring):
             self.filename = infile
             if os.path.isfile(self.filename):
-                print("DEBUG: configobj is path _load filepath %s", self.filename)
+                # print("DEBUG: configobj is path _load filepath %s", self.filename)
                 try:
                     h = open(self.filename, 'rb')
                     infile = h.read() or []
                     h.close()
-                    print("DEBUG: configobj is path _load content %s", infile)
+                    # print("DEBUG: configobj is path _load content %s", infile)
                 except IOError:
                     raise IOError(
                         'Config file not found: "%s".' % self.filename)
@@ -1284,9 +1289,9 @@ class ConfigObj(Section):
                         break
                 break
 
-            infile = [line.rstrip('\r\n') for line in infile]
+            infile = [line.rstrip(self.newlines) for line in infile]
 
-        # print("DEBUG: configobj before parsing %s\n", infile)
+        print("DEBUG: configobj before parsing %s\n", infile)
         # print("DEBUG: Before parsing Errors are: %s", self._errors)
         self._parse(infile)
         # print("DEBUG: configobj parsed infile %s\n", infile)
@@ -1313,6 +1318,8 @@ class ConfigObj(Section):
             self.configspec = None
         else:
             self._handle_configspec(configspec)
+
+        print("DEBUG: configobj items from _load %s", self.items())
 
     def _initialise(self, options=None):
         if options is None:
@@ -1420,7 +1427,7 @@ class ConfigObj(Section):
 
         # No encoding specified - so we need to check for UTF8/UTF16
         for BOM, (encoding, final_encoding) in BOMS.items():
-            if not line.startswith(str(BOM)):
+            if not line.startswith(BOM):
                 continue
             else:
                 # BOM discovered
@@ -1497,6 +1504,7 @@ class ConfigObj(Section):
         if self.unrepr:
             self.list_values = False
 
+        # print("DEBUG: _parser self.list_values: %s\n", self.list_values)
         comment_list = []
         done_start = False
         this_section = self
@@ -1510,8 +1518,9 @@ class ConfigObj(Section):
             cur_index += 1
             line = infile[cur_index]
             sline = line.strip()
+            print("DEBUG: _parser init cycles: line[%d]= %s\n", (cur_index,sline))
             # do we have anything on the line ?
-            if not sline or sline.startswith('#'):
+            if not sline or sline.startswith(b'#'):
                 reset_comment = False
                 comment_list.append(line)
                 continue
@@ -1524,10 +1533,13 @@ class ConfigObj(Section):
 
             reset_comment = True
             # first we check if it's a section marker
-            mat = self._sectionmarker.match(line)
+            mat = self._sectionmarker.match(str(line))
+            print("<<<<<<<<\nDEBUG: _parser section mat: %s\n", (mat))
             if mat is not None:
                 # is a section line
                 (indent, sect_open, sect_name, sect_close, comment) = mat.groups()
+                print("========\nDEBUG: _parser SECTION: %s>%s>%s>%s>%s\n",
+                      (indent, sect_open, sect_name, sect_close, comment))
                 if indent and (self.indent_type is None):
                     self.indent_type = indent
                 cur_depth = sect_open.count('[')
@@ -1580,7 +1592,7 @@ class ConfigObj(Section):
             #
             # it's not a section marker,
             # so it should be a valid ``key = value`` line
-            mat = self._keyword.match(line)
+            mat = self._keyword.match(str(line))
             if mat is None:
                 # it neither matched as a keyword
                 # or a section marker
@@ -1591,6 +1603,7 @@ class ConfigObj(Section):
                 # is a keyword value
                 # value will include any inline comment
                 (indent, key, value) = mat.groups()
+                print("<<<<<<<<\nDEBUG: _parser keyword mat: %s\n", (mat))
                 if indent and (self.indent_type is None):
                     self.indent_type = indent
                 # check for a multiline value
