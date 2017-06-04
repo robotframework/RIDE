@@ -59,6 +59,6 @@ class TestSettingsHelper(unittest.TestCase):
         try:
             return Settings(self._get_path(path))
         except:
-            print("DEBUG: settings utils_READ SETTINGS_errored path %s", path)
+            print("DEBUG: settings utils_READ SETTINGS_errored path %s" % path)
             print(self._read_settings_file_content())
             raise

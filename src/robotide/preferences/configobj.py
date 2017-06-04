@@ -35,7 +35,8 @@ elif sys.version_info[0] == 3:
 compiler = None
 try:
     # import py_compile as compiler # compiler
-    import ast as compiler  # compiler
+    # import ast as compiler  # 
+    import compiler
 except ImportError:
     # for IronPython
     pass
@@ -147,9 +148,13 @@ OPTION_DEFAULTS = {
 
 
 def getObj(s):
-    x = "a=\'" + s + "\'"
+    # x = "a=\'" + s + "\'"
+    s = "a=" + s
     if compiler is None:
         raise ImportError('compiler module not available')
+    p = compiler.parse(s)
+    return p.getChildren()[1].getChildren()[0].getChildren()[1]
+    """
     try:
         p = compiler.literal_eval(x)  # .parse(s) # .literal_eval(s)
     except ValueError as e:
@@ -157,6 +162,7 @@ def getObj(s):
         raise ValueError
     print("DEBUG: parser getObj string %s  eval %s\n", (x, p))
     return p #  p.getChildren()[1].getChildren()[0].getChildren()[1]
+    """
 
 
 class UnknownType(Exception):
@@ -318,7 +324,7 @@ class InterpolationEngine(object):
     """
 
     # compiled regexp to use in self.interpolate()
-    ds = re.compile(r"%\(([^)]*)\)s")
+    _KEYCRE = re.compile(r"%\(([^)]*)\)s")
 
     def __init__(self, section):
         # the Section instance that "owns" this engine
@@ -1534,11 +1540,11 @@ class ConfigObj(Section):
             reset_comment = True
             # first we check if it's a section marker
             mat = self._sectionmarker.match(str(line))
-            print("<<<<<<<<\nDEBUG: _parser section mat: %s\n", (mat))
+            print("<<<<<<<<\nDEBUG: _parser section mat: %s\n" % (mat))
             if mat is not None:
                 # is a section line
                 (indent, sect_open, sect_name, sect_close, comment) = mat.groups()
-                print("========\nDEBUG: _parser SECTION: %s>%s>%s>%s>%s\n",
+                print("========\nDEBUG: _parser SECTION: %s>%s>%s>%s>%s\n" %
                       (indent, sect_open, sect_name, sect_close, comment))
                 if indent and (self.indent_type is None):
                     self.indent_type = indent
@@ -1603,12 +1609,12 @@ class ConfigObj(Section):
                 # is a keyword value
                 # value will include any inline comment
                 (indent, key, value) = mat.groups()
-                print("<<<<<<<<\nDEBUG: _parser keyword mat: %s\n", (mat))
+                print("<<<<<<<<\nDEBUG: _parser keyword mat: %s\n" % (mat))
                 if indent and (self.indent_type is None):
                     self.indent_type = indent
                 # check for a multiline value
                 if value[:3] in ['"""', "'''"]:
-                    # print("DEBUG: _parser multiline value: %s\n", value)
+                    # print("DEBUG: _parser multiline value: %s\n" % value)
                     try:
                         (value, comment, cur_index) = self._multiline(
                             value, infile, cur_index, maxline)
