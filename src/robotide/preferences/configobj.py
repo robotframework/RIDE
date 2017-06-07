@@ -1431,29 +1431,32 @@ class ConfigObj(Section):
             self.BOM = True
             return self._decode(infile, self.encoding)
 
-        # No encoding specified - so we need to check for UTF8/UTF16
-        for BOM, (encoding, final_encoding) in BOMS.items():
-            if not line.startswith(BOM):
-                continue
-            else:
-                # BOM discovered
-                self.encoding = final_encoding
-                if not final_encoding:
-                    self.BOM = True
-                    # UTF8
-                    # remove BOM
-                    newline = line[len(BOM):]
-                    if isinstance(infile, (list, tuple)):
-                        infile[0] = newline
-                    else:
-                        infile = newline
-                    # UTF8 - don't decode
-                    if isinstance(infile, basestring):
-                        return infile.splitlines(True)
-                    else:
-                        return infile
-                # UTF16 - have to decode
-                return self._decode(infile, encoding)
+        # DEBUG Just ignore BOM if using Python 3
+        # TODO fix code for Python 3
+        if not PYTHON3:
+            # No encoding specified - so we need to check for UTF8/UTF16
+            for BOM, (encoding, final_encoding) in BOMS.items():
+                if not line.startswith(BOM):
+                    continue
+                else:
+                    # BOM discovered
+                    self.encoding = final_encoding
+                    if not final_encoding:
+                        self.BOM = True
+                        # UTF8
+                        # remove BOM
+                        newline = line[len(BOM):]
+                        if isinstance(infile, (list, tuple)):
+                            infile[0] = newline
+                        else:
+                            infile = newline
+                        # UTF8 - don't decode
+                        if isinstance(infile, basestring):
+                            return infile.splitlines(True)
+                        else:
+                            return infile
+                    # UTF16 - have to decode
+                    return self._decode(infile, encoding)
 
         # No BOM discovered and no encoding specified, just return
         if isinstance(infile, basestring):
@@ -1525,8 +1528,9 @@ class ConfigObj(Section):
             line = infile[cur_index]
             sline = line.strip()
             print("DEBUG: _parser init cycles: line[%d]= %s\n", (cur_index,sline))
+            # DEBUG if PYTHON3: ('#'.encode('UTF-8'))
             # do we have anything on the line ?
-            if not sline or sline.startswith(b'#'):
+            if not sline or sline.startswith('#'.encode('UTF-8')):
                 reset_comment = False
                 comment_list.append(line)
                 continue
