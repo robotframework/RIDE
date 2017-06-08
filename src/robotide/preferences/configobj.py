@@ -35,7 +35,8 @@ elif sys.version_info[0] == 3:
 compiler = None
 try:
     # import py_compile as compiler # compiler
-    import ast as compiler  # compiler
+    # import ast as compiler  # 
+    import compiler
 except ImportError:
     # for IronPython
     pass
@@ -147,11 +148,21 @@ OPTION_DEFAULTS = {
 
 
 def getObj(s):
+    # x = "a=\'" + s + "\'"
     s = "a=" + s
     if compiler is None:
         raise ImportError('compiler module not available')
-    p = compiler.literal_eval(s)  # .parse(s) # .literal_eval(s)  # .literal_eval(s)
+    p = compiler.parse(s)
+    return p.getChildren()[1].getChildren()[0].getChildren()[1]
+    """
+    try:
+        p = compiler.literal_eval(x)  # .parse(s) # .literal_eval(s)
+    except ValueError as e:
+        print("DEBUG: parser getObj Error %s\n", str(e))
+        raise ValueError
+    print("DEBUG: parser getObj string %s  eval %s\n", (x, p))
     return p #  p.getChildren()[1].getChildren()[0].getChildren()[1]
+    """
 
 
 class UnknownType(Exception):
@@ -161,7 +172,7 @@ class UnknownType(Exception):
 class Builder(object):
 
     def build(self, o):
-        # print("DEBUG build name: %s", 'build_' + o.__class__.__name__)
+        print("DEBUG build name: %s", 'build_' + o.__class__.__name__)
         m = getattr(self, 'build_' + o.__class__.__name__, None)
         if m is None:
             raise UnknownType(o.__class__.__name__)
@@ -220,7 +231,7 @@ _builder = Builder()
 
 def unrepr(s):
     if not s:
-        # print("DEBUG return s from unrepr %s\n", s)
+        print("DEBUG return s from unrepr %s\n", s)
         return s
     return _builder.build(getObj(s))
 
@@ -771,7 +782,7 @@ class Section(dict):
     def __repr__(self):
         """x.__repr__() <==> repr(x)"""
         return '{%s}' % ', '.join([('%s: %s' % (repr(key), repr(self[key])))
-            for key in (self.scalars + self.sections)])
+                                   for key in (self.scalars + self.sections)])
 
     __str__ = __repr__
     __str__.__doc__ = "x.__str__() <==> str(x)"
@@ -1095,21 +1106,19 @@ class ConfigObj(Section):
         \s*=\s*                 # divider
         (.*)                    # value (including list values and comments)
         $   # line end
-        ''',
-        re.VERBOSE)
+        ''', re.VERBOSE)
 
     _sectionmarker = re.compile(r'''^
         (\s*)                     # 1: indentation
         ((?:\[\s*)+)              # 2: section marker open
         (                         # 3: section name open
-            (?:"\s*\S.*?\s*")|    # at least one non-space with double quotes
-            (?:'\s*\S.*?\s*')|    # at least one non-space with single quotes
-            (?:[^'"\s].*?)        # at least one non-space unquoted
+            (?:\"\s*\S.*?\s*\")|    # at least one non-space with double quotes
+            (?:\'\s*\S.*?\s*\')|    # at least one non-space with single quotes
+            (?:[^\'\"\s].*?)        # at least one non-space unquoted
         )                         # section name close
         ((?:\s*\])+)              # 4: section marker close
         \s*(\#.*)?                # 5: optional comment
-        $''',
-        re.VERBOSE)
+        $''', re.VERBOSE)
 
     # this regexp pulls list values out as a single string
     # or single values and comments
@@ -1136,8 +1145,7 @@ class ConfigObj(Section):
             (,)             # alternatively a single comma - empty list
         )
         \s*(\#.*)?          # optional comment
-        $''',
-        re.VERBOSE)
+        $''', re.VERBOSE)
 
     # use findall to get the members of a list value
     _listvalueexp = re.compile(r'''
@@ -1147,8 +1155,7 @@ class ConfigObj(Section):
             (?:[^'",\#].*?)       # unquoted
         )
         \s*,\s*                 # comma
-        ''',
-        re.VERBOSE)
+        ''', re.VERBOSE)
 
     # this regexp is used for the value
     # when lists are switched off
@@ -1160,8 +1167,7 @@ class ConfigObj(Section):
             (?:)                # Empty value
         )
         \s*(\#.*)?              # optional comment
-        $''',
-        re.VERBOSE)
+        $''', re.VERBOSE)
 
     # regexes for finding triple quoted values on one line
     _single_line_single = re.compile(r"^'''(.*?)'''\s*(#.*)?$")
@@ -1210,7 +1216,8 @@ class ConfigObj(Section):
         self._initialise(defaults)
         configspec = defaults['configspec']
         self._original_configspec = configspec
-        #print("DEBUG: configobj init_load filepath %s", infile)
+        # print("DEBUG: configobj defaults %s\n", defaults)
+        # print("DEBUG: configobj init_load filepath %s\n", infile)
         self._load(infile, configspec)
 
     def _load(self, infile, configspec):
@@ -1219,7 +1226,7 @@ class ConfigObj(Section):
             if os.path.isfile(self.filename):
                 # print("DEBUG: configobj is path _load filepath %s", self.filename)
                 try:
-                    h = open(self.filename, 'r')
+                    h = open(self.filename, 'rb')
                     infile = h.read() or []
                     h.close()
                     # print("DEBUG: configobj is path _load content %s", infile)
@@ -1288,9 +1295,9 @@ class ConfigObj(Section):
                         break
                 break
 
-            infile = [line.rstrip('\r\n') for line in infile]
+            infile = [line.rstrip(self.newlines) for line in infile]
 
-        # print("DEBUG: configobj before parsing %s\n", infile)
+        print("DEBUG: configobj before parsing %s\n", infile)
         # print("DEBUG: Before parsing Errors are: %s", self._errors)
         self._parse(infile)
         # print("DEBUG: configobj parsed infile %s\n", infile)
@@ -1317,6 +1324,8 @@ class ConfigObj(Section):
             self.configspec = None
         else:
             self._handle_configspec(configspec)
+
+        print("DEBUG: configobj items from _load %s", self.items())
 
     def _initialise(self, options=None):
         if options is None:
@@ -1422,29 +1431,32 @@ class ConfigObj(Section):
             self.BOM = True
             return self._decode(infile, self.encoding)
 
-        # No encoding specified - so we need to check for UTF8/UTF16
-        for BOM, (encoding, final_encoding) in BOMS.items():
-            if not line.startswith(str(BOM)):
-                continue
-            else:
-                # BOM discovered
-                self.encoding = final_encoding
-                if not final_encoding:
-                    self.BOM = True
-                    # UTF8
-                    # remove BOM
-                    newline = line[len(BOM):]
-                    if isinstance(infile, (list, tuple)):
-                        infile[0] = newline
-                    else:
-                        infile = newline
-                    # UTF8 - don't decode
-                    if isinstance(infile, basestring):
-                        return infile.splitlines(True)
-                    else:
-                        return infile
-                # UTF16 - have to decode
-                return self._decode(infile, encoding)
+        # DEBUG Just ignore BOM if using Python 3
+        # TODO fix code for Python 3
+        if not PYTHON3:
+            # No encoding specified - so we need to check for UTF8/UTF16
+            for BOM, (encoding, final_encoding) in BOMS.items():
+                if not line.startswith(BOM):
+                    continue
+                else:
+                    # BOM discovered
+                    self.encoding = final_encoding
+                    if not final_encoding:
+                        self.BOM = True
+                        # UTF8
+                        # remove BOM
+                        newline = line[len(BOM):]
+                        if isinstance(infile, (list, tuple)):
+                            infile[0] = newline
+                        else:
+                            infile = newline
+                        # UTF8 - don't decode
+                        if isinstance(infile, basestring):
+                            return infile.splitlines(True)
+                        else:
+                            return infile
+                    # UTF16 - have to decode
+                    return self._decode(infile, encoding)
 
         # No BOM discovered and no encoding specified, just return
         if isinstance(infile, basestring):
@@ -1501,6 +1513,7 @@ class ConfigObj(Section):
         if self.unrepr:
             self.list_values = False
 
+        # print("DEBUG: _parser self.list_values: %s\n", self.list_values)
         comment_list = []
         done_start = False
         this_section = self
@@ -1514,8 +1527,10 @@ class ConfigObj(Section):
             cur_index += 1
             line = infile[cur_index]
             sline = line.strip()
+            print("DEBUG: _parser init cycles: line[%d]= %s\n", (cur_index,sline))
+            # DEBUG if PYTHON3: ('#'.encode('UTF-8'))
             # do we have anything on the line ?
-            if not sline or sline.startswith('#'):
+            if not sline or sline.startswith('#'.encode('UTF-8')):
                 reset_comment = False
                 comment_list.append(line)
                 continue
@@ -1528,10 +1543,13 @@ class ConfigObj(Section):
 
             reset_comment = True
             # first we check if it's a section marker
-            mat = self._sectionmarker.match(line)
+            mat = self._sectionmarker.match(str(line))
+            print("<<<<<<<<\nDEBUG: _parser section mat: %s\n" % (mat))
             if mat is not None:
                 # is a section line
                 (indent, sect_open, sect_name, sect_close, comment) = mat.groups()
+                print("========\nDEBUG: _parser SECTION: %s>%s>%s>%s>%s\n" %
+                      (indent, sect_open, sect_name, sect_close, comment))
                 if indent and (self.indent_type is None):
                     self.indent_type = indent
                 cur_depth = sect_open.count('[')
@@ -1584,7 +1602,7 @@ class ConfigObj(Section):
             #
             # it's not a section marker,
             # so it should be a valid ``key = value`` line
-            mat = self._keyword.match(line)
+            mat = self._keyword.match(str(line))
             if mat is None:
                 # it neither matched as a keyword
                 # or a section marker
@@ -1595,11 +1613,12 @@ class ConfigObj(Section):
                 # is a keyword value
                 # value will include any inline comment
                 (indent, key, value) = mat.groups()
+                print("<<<<<<<<\nDEBUG: _parser keyword mat: %s\n" % (mat))
                 if indent and (self.indent_type is None):
                     self.indent_type = indent
                 # check for a multiline value
                 if value[:3] in ['"""', "'''"]:
-                    # print("DEBUG: _parser multiline value: %s\n", value)
+                    # print("DEBUG: _parser multiline value: %s\n" % value)
                     try:
                         (value, comment, cur_index) = self._multiline(
                             value, infile, cur_index, maxline)
@@ -2058,7 +2077,7 @@ class ConfigObj(Section):
         if outfile is not None:
             outfile.write(output)
         else:
-            h = open(self.filename, 'w+b')
+            h = open(self.filename, 'wb')
             if PYTHON2:
                 h.write(output)
             elif PYTHON3:

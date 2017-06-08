@@ -263,15 +263,15 @@ class RobotDebugger(object):
     def resume(self):
         self._state = 'running'
         self._pause_when_on_level = -1
-        set()
+        self._resume.set()
 
     def step_next(self):
         self._state = 'step_next'
-        set()
+        self._resume.set()
 
     def step_over(self):
         self._state = 'step_over'
-        set()
+        self._resume.set()
 
     def start_keyword(self):
         while self._state == 'pause':
