@@ -330,9 +330,12 @@ class _VariableStash(object):
                         variable.value,
                         variable.report_invalid_syntax
                     )
+                    #  print("DEBUG: variable.name= %s \n" % variable.name)
                     self.set(variable.name, value.resolve(self._vars),
                              variable_table.source)
-            except robotapi.DataError:
+            except:  #  (robotapi.VariableError, robotapi.DataError):
+                #  Exception as e:  # robotapi.VariableError:  # robotapi.DataError
+                #  print("DEBUG: Exception = %s \n" % str(e))
                 if robotapi.is_var(variable.name):
                     val = self._empty_value_for_variable_type(variable.name)
                     self.set(variable.name, val, variable_table.source)
@@ -345,8 +348,11 @@ class _VariableStash(object):
         return {}
 
     def set_from_file(self, varfile_path, args):
-        vars_from_file = VariableFileSetter(None)._import_if_needed(
-            varfile_path, args)
+        try:
+            vars_from_file = VariableFileSetter(None)._import_if_needed(
+                varfile_path, args)
+        except:  # robotapi.DataError:
+            return  # vars_from_file = {}   # DEBUG
         for name, value in vars_from_file:
             self.set(name, value, varfile_path)
 
