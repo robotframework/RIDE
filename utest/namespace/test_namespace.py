@@ -115,7 +115,6 @@ class TestKeywordSuggestions(_DataFileTest):
         for s in sugs:
             assert_true(s.name.lower().startswith(start.lower()))
 
-    """
     def test_getting_suggestions_in_order(self):
         sugs = self.ns.get_suggestions_for(self.kw, 'sHoUlD')
         assert_true(len(sugs) > 2)
@@ -333,9 +332,8 @@ class TestKeywordSuggestions(_DataFileTest):
         self.ns.reset_resource_and_library_cache()
         sugs3 = self.ns.get_suggestions_for(self.kw, 'generate random')
         assert_false(sugs[0] is sugs3[0])
-    """
 
-"""
+
 class TestKeywordSearch(_DataFileTest):
 
     def test_is_library_keyword(self):
@@ -373,9 +371,12 @@ class TestKeywordSearch(_DataFileTest):
         self._check_resource_keyword_only_once(all_kws)
 
     def test_resource_kws_only_once_through_project(self):
-        project = construct_project(SIMPLE_TEST_SUITE_PATH)
+        print("DEBUG: project path %s\n" % (SIMPLE_TEST_SUITE_PATH))
+        project = construct_project(SIMPLE_TEST_SUITE_PATH+"/TestSuite1.txt")
+        print("DEBUG: project %s key %s\n" % (project.name, project.get_all_keywords))
         all_kws = project.get_all_keywords()
         project.close()
+        print("DEBUG: all keys %s\n" % all_kws)
         self._check_resource_keyword_only_once(all_kws)
 
     def _check_resource_keyword_only_once(self, all_kws):
@@ -525,7 +526,6 @@ class TestResourceCache(_DataFileTest):
                 imp.directory, imp.name.upper())
             assert_true(first is second)
 
-"""
 
 if __name__ == "__main__":
     unittest.main()
