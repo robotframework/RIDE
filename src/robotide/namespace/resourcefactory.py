@@ -48,10 +48,10 @@ class ResourceFactory(object):
     def get_resource_from_import(self, import_, retriever_context):
         resolved_name = retriever_context.vars.replace_variables(import_.name)
         result = self.get_resource(import_.directory, resolved_name)
-        print("""
-            DEBUG Resource Factory: get_resource_from_import importdir: %s
-            resolved_name: %s :result: %s
-            """ % (import_.directory, resolved_name, result))
+        # print("""
+        #    DEBUG Resource Factory: get_resource_from_import importdir: %s
+        #    resolved_name: %s :result: %s
+        #    """ % (import_.directory, resolved_name, result))
         return result
 
     def new_resource(self, directory, name):
@@ -81,7 +81,7 @@ class ResourceFactory(object):
                 self.cache[normalized] = \
                     self._load_resource(path, report_status=report_status)
             except Exception as e:
-                print("DEBUG Resource Factory: exception %s", str(e))
+                # print("DEBUG Resource Factory: exception %s" % str(e))
                 self.cache[normalized] = None
                 return None
         return self.cache[normalized]

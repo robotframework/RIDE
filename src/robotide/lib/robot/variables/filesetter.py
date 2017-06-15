@@ -49,6 +49,7 @@ class VariableFileSetter(object):
             return importer.import_variables(path_or_variables, args)
         except:
             args = 'with arguments %s ' % seq2str2(args) if args else ''
+            #  print("DEBUG: ROBOT _import_if_needed except %s\n" % (get_error_message()))
             raise DataError("Processing variable file '%s' %sfailed: %s"
                             % (path_or_variables, args, get_error_message()))
 

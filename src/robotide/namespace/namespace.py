@@ -321,7 +321,9 @@ class _VariableStash(object):
             return self._vars.replace_string(value, ignore_errors=True)
 
     def set_from_variable_table(self, variable_table):
+        # print("DEBUG: set_from_variable_table = %s \n" % list(variable_table))
         reader = robotapi.VariableTableReader()
+        # print("DEBUG: set_from_variable_table reader %s \n" % reader)
         for variable in variable_table:
             try:
                 if variable.name not in self._vars.store:
@@ -330,12 +332,12 @@ class _VariableStash(object):
                         variable.value,
                         variable.report_invalid_syntax
                     )
-                    #  print("DEBUG: variable.name= %s \n" % variable.name)
+                    #  print("DEBUG: inside variable.name= %s \n" % variable.name)
                     self.set(variable.name, value.resolve(self._vars),
                              variable_table.source)
-            except:  #  (robotapi.VariableError, robotapi.DataError):
-                #  Exception as e:  # robotapi.VariableError:  # robotapi.DataError
-                #  print("DEBUG: Exception = %s \n" % str(e))
+            except Exception as e: #  (robotapi.VariableError, robotapi.DataError):
+                #    # robotapi.VariableError:  # robotapi.DataError
+                print("DEBUG: Namespace Exception = %s \n" % str(e))
                 if robotapi.is_var(variable.name):
                     val = self._empty_value_for_variable_type(variable.name)
                     self.set(variable.name, val, variable_table.source)
@@ -348,11 +350,13 @@ class _VariableStash(object):
         return {}
 
     def set_from_file(self, varfile_path, args):
+        #  print("DEBUG: enter set_from_file %s\n" % (varfile_path))
         try:
             vars_from_file = VariableFileSetter(None)._import_if_needed(
                 varfile_path, args)
-        except:  # robotapi.DataError:
-            return  # vars_from_file = {}   # DEBUG
+        except Exception as e: # robotapi.DataError
+            #  print("DEBUG: leave with error set_from_file %s\n" % str(e))
+            raise  # return # vars_from_file = {}   # DEBUG
         for name, value in vars_from_file:
             self.set(name, value, varfile_path)
 
@@ -416,6 +420,7 @@ class DatafileRetriever(object):
 
     def is_variables_import_ok(self, datafile, imp, ctx):
         self._get_vars_recursive(datafile, ctx)
+        # print("DEBUG: Namespace is_variables_import_ok %s\n" % datafile.source)
         return self._import_vars(ctx, datafile, imp)
 
     def _get_datafile_keywords(self, datafile):
@@ -485,10 +490,12 @@ class DatafileRetriever(object):
         varfile_path = os.path.join(datafile.directory,
                                     ctx.replace_variables(imp.name))
         args = [ctx.replace_variables(a) for a in imp.args]
+        # print("DEBUG: Namespace _import_vars: %s args %s\n" % (varfile_path, args))
         try:
             ctx.vars.set_from_file(varfile_path, args)
             return True
-        except robotapi.DataError:
+        except Exception as e:  # robotapi.DataError as e:
+            # print("DEBUG: Namespace Error at import_vars: %s\n" % str(e))
             return False  # TODO: log somewhere
 
     def _var_collector(self, res, ctx, items):

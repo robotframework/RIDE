@@ -8,7 +8,9 @@ class TestImports(unittest.TestCase):
     def setUpClass(cls):
         cls.project = datafilereader.construct_project(datafilereader.IMPORTS)
         suite = cls.project.data.suites[1]
-        cls.imports =  [i for i in suite.imports]
+        # print("DEBUG: testimports setup suite: %s\n" % str(cls.project.data.suites))
+        cls.imports = [i for i in suite.imports]
+        # print("DEBUG: cls.imports setup suite: %s\n" % (cls.imports))
 
     @classmethod
     def tearDownClass(cls):
@@ -16,10 +18,13 @@ class TestImports(unittest.TestCase):
 
     def _find_by_name(self, name, data_file=None):
         data_file = data_file or self
+        # print("DEBUG: find by name: %s\n" % (data_file.imports))
         for i in data_file.imports:
+            # print("DEBUG: find by name: loop %s\n" % (i.name))
             if i.name == name:
                 print(i.name)
                 return i
+        # print("DEBUG: find by name: AssertError %s\n" % (name))
         raise AssertionError('No import found with name "%s"' % name)
 
     def _has_error(self, name):
@@ -40,6 +45,9 @@ class TestImports(unittest.TestCase):
     def test_importing_none_existing_resource_has_error(self):
         self._has_error('res//none_existing.txt')
 
+    def test_importing_none_existing_variable_file_has_error(self):
+        self._has_error('vars//none_existing.py')
+
     def test_importing_none_existing_library_has_error(self):
         self._has_error('libs//none_existing.py')
 
@@ -54,9 +62,6 @@ class TestImports(unittest.TestCase):
 
     def test_variable_import_has_no_error(self):
         self._has_no_error('vars//vars.py')
-
-    def test_importing_none_existing_variable_file_has_error(self):
-        self._has_error('vars//none_existing.py')
 
     def test_library_import_in_subsuite_init_file_with_relative_path_has_no_error(self):
         self._has_no_error('..//outer_lib.py', self.project.data.suites[0])

@@ -112,6 +112,7 @@ class WithNamespace(object):
         return self._namespace.is_library_import_ok(self.datafile, imp)
 
     def is_variables_import_ok(self, imp):
+        # print("DEBUG: BaseController is_variables_import_ok %s\n" % imp.name)
         return self._namespace.is_variables_import_ok(self.datafile, imp)
 
 

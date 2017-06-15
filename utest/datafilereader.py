@@ -54,11 +54,16 @@ IMPORTS = _makepath('imports')
 
 
 def construct_project(datapath, temp_dir_for_excludes=None):
+    # print("DEBUG: construct_project with argpath: %s\n" % datapath)
     settings = FakeSettings({'excludes': temp_dir_for_excludes})
+    #print("DEBUG: construct_project FakeSettings: %s\n" % list(settings.iteritems()))
     library_manager = LibraryManager(':memory:')
     library_manager.create_database()
     project = Project(Namespace(settings), settings, library_manager)
-    project.load_data(datapath, NullObserver())
+    # print("DEBUG: construct_project Project: %s\n" % project.display_name)
+    project.load_data(datapath)  #, NullObserver())
+    # DEBUG
+    # print("DEBUG: Path arg is: %s\n" % datapath)
     return project
 
 
