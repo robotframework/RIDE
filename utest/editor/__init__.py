@@ -1,0 +1,1 @@
+from .fakeplugin import FakePlugin
