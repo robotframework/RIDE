@@ -11,7 +11,7 @@ from robotide.controller.settingcontrollers import VariableController
 from robotide.controller.tablecontrollers import VariableTableController
 from robotide.editor import EditorCreator
 from robotide.editor.editors import TestCaseFileEditor, WelcomePage
-from .fakeplugin import FakePlugin
+from fakeplugin import FakePlugin
 
 from resources import PYAPP_REFERENCE
 

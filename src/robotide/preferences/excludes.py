@@ -57,6 +57,7 @@ class Excludes():
     def update_excludes(self, new_excludes):
         excludes = self._get_excludes()
         self.write_excludes(excludes.union(new_excludes))
+        print("DEBUG: Excludes, excluded %s, %s\n" % (excludes, new_excludes))
 
     def _get_exclude_file(self, read_write):
         if not os.path.exists(self._exclude_file_path) and read_write.startswith('r'):

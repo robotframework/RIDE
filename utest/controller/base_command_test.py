@@ -4,7 +4,7 @@ from nose.tools import assert_equals
 
 from robotide.publish import PUBLISHER
 from robotide.publish.messages import RideItemStepsChanged
-from .controller_creator import (
+from controller_creator import (
     _FakeProject, testcase_controller, BASE_DATA)
 
 

@@ -27,7 +27,6 @@ class ResourceFactoryDirectoryIgnoreTestCase(unittest.TestCase):
 
     def setUp(self):
         self._import = _Import(None, __file__)
-        print("DEBUG Test Resource Factory _import name: %s", str(self._import.name))
         self._context = self._mock_context()
 
     def tearDown(self):
@@ -91,6 +90,7 @@ class ResourceFactoryDirectoryIgnoreTestCase(unittest.TestCase):
         settings = FakeSettings()
         settings.set('default directory', os.path.dirname(__file__))
         settings.excludes.update_excludes([excluded_dir])
+        print("DEBUG Test Resource Factory create factory: %s\n" % list(settings))
         return _ResourceFactory(settings)
 
     def _mock_context(self):

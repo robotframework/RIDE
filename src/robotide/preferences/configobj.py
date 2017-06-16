@@ -1297,7 +1297,7 @@ class ConfigObj(Section):
 
             infile = [line.rstrip(self.newlines) for line in infile]
 
-        print("DEBUG: configobj before parsing %s\n", infile)
+        # print("DEBUG: configobj before parsing %s\n" % infile)
         # print("DEBUG: Before parsing Errors are: %s", self._errors)
         self._parse(infile)
         # print("DEBUG: configobj parsed infile %s\n", infile)
@@ -1325,7 +1325,7 @@ class ConfigObj(Section):
         else:
             self._handle_configspec(configspec)
 
-        print("DEBUG: configobj items from _load %s", self.items())
+        # print("DEBUG: configobj items from _load %s" % self.items())
 
     def _initialise(self, options=None):
         if options is None:
