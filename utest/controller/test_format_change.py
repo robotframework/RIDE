@@ -143,6 +143,8 @@ class TestResourceFileRename(_UnitTestsWithWorkingResourceImports):
         self._create_data('fooo.txt', 'fooo.txt')
         self._verify_import_reference_exists()
         self._execute_rename_resource('gooo', None)
+        # just2delay = os.getpid()  # DEBUG
+        # print("DEBUG: test_cancel_execute_when_modify_imports_is_canceled PID=%s\n" % just2delay)
         assert_false(self.res_controller.remove_from_filesystem.called)
         assert_false(self.res_controller.save.called)
 
