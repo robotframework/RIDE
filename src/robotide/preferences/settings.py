@@ -49,7 +49,7 @@ def _copy_or_migrate_user_settings(settings_dir, source_path, dest_file_name):
     settings_path = os.path.join(settings_dir, dest_file_name)
     if not os.path.exists(settings_path):
         shutil.copyfile(source_path, settings_path)
-        print("DEBUG: source %s new settings %s\n" %(source_path,settings_path))
+        # print("DEBUG: source %s new settings %s\n" %(source_path,settings_path))
     else:
         try:
             SettingsMigrator(source_path, settings_path).migrate()
@@ -57,8 +57,8 @@ def _copy_or_migrate_user_settings(settings_dir, source_path, dest_file_name):
             print('WARNING! corrupted configuration file replaced with defaults')
             print(parsing_error)
             shutil.copyfile(source_path, settings_path)
-            print("DEBUG: source %s corrupted settings %s\n" % (
-            source_path, settings_path))
+            # print("DEBUG: source %s corrupted settings %s\n" % (
+            # source_path, settings_path))
     return os.path.abspath(settings_path)
 
 
@@ -69,13 +69,13 @@ class SettingsMigrator(object):
     def __init__(self, default_path, user_path):
         self._default_settings = ConfigObj(default_path, unrepr=True)
         self._user_path = user_path
-        print("DEBUG: Settings migrator 1: %s\nuser_path %s" % (self._default_settings.__repr__(), self._user_path))
+        # print("DEBUG: Settings migrator 1: %s\nuser_path %s" % (self._default_settings.__repr__(), self._user_path))
         try:
             self._old_settings = ConfigObj(user_path, unrepr=True)
         except UnreprError as err:
             raise ConfigurationError("Invalid config file '%s': %s" %
                                      (user_path, err))
-        print("DEBUG: Settings migrator: %s\n", self._default_settings.__repr__())
+        # print("DEBUG: Settings migrator: %s\n", self._default_settings.__repr__())
 
     def migrate(self):
         # Add migrations here.
@@ -109,7 +109,7 @@ class SettingsMigrator(object):
     def merge(self):
         # print("DEBUG: Merge before: %s\n", self._default_settings.__repr__())
         self._default_settings.merge(self._old_settings)
-        print("DEBUG: Merge after: %s, old%s\n" % (self._default_settings.__repr__(), self._old_settings.__repr__()))
+        # print("DEBUG: Merge after: %s, old%s\n" % (self._default_settings.__repr__(), self._old_settings.__repr__()))
         self._write_merged_settings(self._default_settings, self._user_path)
 
     def migrate_from_0_to_1(self, settings):
@@ -334,11 +334,11 @@ class RideSettings(Settings):
 
     def __init__(self):
         self._default_path = os.path.join(os.path.dirname(__file__), 'settings.cfg')
-        print("DEBUG: RideSettings, default_path %s\n" % self._default_path)
+        # print("DEBUG: RideSettings, default_path %s\n" % self._default_path)
         user_path = initialize_settings(self._default_path)
         Settings.__init__(self, user_path)
         self._settings_dir = os.path.dirname(user_path)
-        print("DEBUG: RideSettings, self._settings_dir %s\n" % self._settings_dir)
+        # print("DEBUG: RideSettings, self._settings_dir %s\n" % self._settings_dir)
         self.set('install root', os.path.dirname(os.path.dirname(__file__)))
 
     def get_path(self, *parts):

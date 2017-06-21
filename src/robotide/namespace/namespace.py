@@ -337,7 +337,7 @@ class _VariableStash(object):
                              variable_table.source)
             except Exception as e: #  (robotapi.VariableError, robotapi.DataError):
                 #    # robotapi.VariableError:  # robotapi.DataError
-                print("DEBUG: Namespace Exception = %s \n" % str(e))
+                # print("DEBUG: Namespace Exception = %s \n" % str(e))
                 if robotapi.is_var(variable.name):
                     val = self._empty_value_for_variable_type(variable.name)
                     self.set(variable.name, val, variable_table.source)
