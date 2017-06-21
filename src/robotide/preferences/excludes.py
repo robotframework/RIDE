@@ -36,7 +36,7 @@ class Excludes():
         return separator.join(self._get_excludes())
 
     def _get_excludes(self):
-        with self._get_exclude_file('rb') as exclude_file:
+        with self._get_exclude_file('r') as exclude_file:
             if not exclude_file:
                 return set()
             return set(exclude_file.read().split())
@@ -48,7 +48,7 @@ class Excludes():
 
     def write_excludes(self, excludes):
         excludes = [self._normalize(e) for e in excludes]
-        with self._get_exclude_file(read_write='wb') as exclude_file:
+        with self._get_exclude_file(read_write='w') as exclude_file:
             for exclude in excludes:
                 if not exclude:
                     continue
@@ -57,13 +57,13 @@ class Excludes():
     def update_excludes(self, new_excludes):
         excludes = self._get_excludes()
         self.write_excludes(excludes.union(new_excludes))
-        print("DEBUG: Excludes, excluded %s, %s\n" % (excludes, new_excludes))
+        print("DEBUG: Excludes, excluded, union %s, %s, %s\n" % (excludes, new_excludes, excludes.union(new_excludes)))
 
     def _get_exclude_file(self, read_write):
         if not os.path.exists(self._exclude_file_path) and read_write.startswith('r'):
             if not os.path.isdir(self._settings_directory):
                 os.makedirs(self._settings_directory)
-            return open(self._exclude_file_path, 'wb+')
+            return open(self._exclude_file_path, 'w+')
         if os.path.isdir(self._exclude_file_path):
             raise NameError('"%s" is a directory, not file' % self._exclude_file_path)
         try:
