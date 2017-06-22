@@ -35,7 +35,7 @@ elif sys.version_info[0] == 3:
 compiler = None
 try:
     # import py_compile as compiler # compiler
-    # import ast as compiler  # 
+    # import ast as compiler  #
     import compiler
 except ImportError:
     # for IronPython
@@ -172,7 +172,7 @@ class UnknownType(Exception):
 class Builder(object):
 
     def build(self, o):
-        print("DEBUG build name: %s", 'build_' + o.__class__.__name__)
+        # print("DEBUG build name: %s\n" % 'build_' + o.__class__.__name__)
         m = getattr(self, 'build_' + o.__class__.__name__, None)
         if m is None:
             raise UnknownType(o.__class__.__name__)
@@ -231,7 +231,7 @@ _builder = Builder()
 
 def unrepr(s):
     if not s:
-        print("DEBUG return s from unrepr %s\n", s)
+        # print("DEBUG return s from unrepr %s\n", s)
         return s
     return _builder.build(getObj(s))
 
@@ -1527,7 +1527,7 @@ class ConfigObj(Section):
             cur_index += 1
             line = infile[cur_index]
             sline = line.strip()
-            print("DEBUG: _parser init cycles: line[%d]= %s\n", (cur_index,sline))
+            # print("DEBUG: _parser init cycles: line[%d]= %s\n", (cur_index,sline))
             # DEBUG if PYTHON3: ('#'.encode('UTF-8'))
             # do we have anything on the line ?
             if not sline or sline.startswith('#'.encode('UTF-8')):
@@ -1544,12 +1544,12 @@ class ConfigObj(Section):
             reset_comment = True
             # first we check if it's a section marker
             mat = self._sectionmarker.match(str(line))
-            print("<<<<<<<<\nDEBUG: _parser section mat: %s\n" % (mat))
+            # print("<<<<<<<<\nDEBUG: _parser section mat: %s\n" % (mat))
             if mat is not None:
                 # is a section line
                 (indent, sect_open, sect_name, sect_close, comment) = mat.groups()
-                print("========\nDEBUG: _parser SECTION: %s>%s>%s>%s>%s\n" %
-                      (indent, sect_open, sect_name, sect_close, comment))
+                # print("========\nDEBUG: _parser SECTION: %s>%s>%s>%s>%s\n" %
+                #      (indent, sect_open, sect_name, sect_close, comment))
                 if indent and (self.indent_type is None):
                     self.indent_type = indent
                 cur_depth = sect_open.count('[')
@@ -1613,7 +1613,7 @@ class ConfigObj(Section):
                 # is a keyword value
                 # value will include any inline comment
                 (indent, key, value) = mat.groups()
-                print("<<<<<<<<\nDEBUG: _parser keyword mat: %s\n" % (mat))
+                # print("<<<<<<<<\nDEBUG: _parser keyword mat: %s\n" % (mat))
                 if indent and (self.indent_type is None):
                     self.indent_type = indent
                 # check for a multiline value
