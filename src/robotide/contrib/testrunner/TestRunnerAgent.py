@@ -49,11 +49,10 @@ import socket
 import threading
 
 if sys.version_info[0] == 2:
-    print("TestRunnerAgent: Running under Python 2")  # DEBUG
     PYTHON2 = True
     PYTHON3 = False
 elif sys.version_info[0] == 3:
-    print("TestRunnerAgent: Running under Python 3")  # DEBUG
+    # print("TestRunnerAgent: Running under Python 3")  # DEBUG
     PYTHON2 = False
     PYTHON3 = True
 
@@ -134,6 +133,8 @@ class TestRunnerAgent:
         self._send_pid()
         self._create_debugger((len(args)>=2) and (args[1] == 'True'))
         self._create_kill_server()
+        print("TestRunnerAgent: Running under Python %s\n" %
+              sys.version.split()[0])  # DEBUG
 
     def _create_debugger(self, pause_on_failure):
         self._debugger = RobotDebugger(pause_on_failure)

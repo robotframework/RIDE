@@ -153,7 +153,6 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         elif message.oldtab == self.title:
             self._editor.remove_and_store_state()
 
-
     def _apply_txt_changes_to_model(self):
         if not self._editor.save():
             return False
@@ -257,7 +256,7 @@ class DataFileWrapper(object): # TODO: bad class name
         output = StringIO()
         data.save(output=output, format='txt',
                   txt_separating_spaces=self._settings.get('txt number of spaces', 4))
-        return output.getvalue().decode('UTF-8')
+        return output.getvalue()  # DEBUG .decode('utf-8')
 
 
 class SourceEditor(wx.Panel):
