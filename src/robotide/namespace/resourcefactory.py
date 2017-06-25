@@ -26,6 +26,7 @@ class ResourceFactory(object):
         self.python_path_cache = {}
         self._excludes = settings.excludes
         self.check_path_from_excludes = self._excludes.contains
+        # print("DEBUG: ResourceFactory init path_excludes %s\n" % self.check_path_from_excludes)
 
     def _with_separator(self, dir):
         return os.path.abspath(dir) + os.path.sep
