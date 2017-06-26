@@ -53,11 +53,12 @@ class Excludes():
                 if not exclude:
                     continue
                 exclude_file.write("%s\n" % exclude)
+        # print("DEBUG:real excluded self._get_excludes()=%s\n" % self._get_excludes())
 
     def update_excludes(self, new_excludes):
         excludes = self._get_excludes()
         self.write_excludes(excludes.union(new_excludes))
-        print("DEBUG: Excludes, excluded, union %s, %s, %s\n" % (excludes, new_excludes, excludes.union(new_excludes)))
+        # print("DEBUG: Excludes, excluded, union %s, %s, %s\n" % (excludes, new_excludes, excludes.union(new_excludes)))
 
     def _get_exclude_file(self, read_write):
         if not os.path.exists(self._exclude_file_path) and read_write.startswith('r'):
@@ -79,6 +80,8 @@ class Excludes():
             return False
         path = self._normalize(path)
         excludes = [self._normalize(e) for e in excludes]
+        # print("DEBUG: excludes contains %s path %s\n"
+        #      "any: %s\n" % (excludes[0], path, any(self._match(path, e) for e in excludes)) )
         return any(self._match(path, e) for e in excludes)
 
     def _match(self, path, e):

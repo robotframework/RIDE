@@ -74,6 +74,8 @@ class _ListenerWrapper(object):
     def _get_topic(self, topic):
         if not isinstance(topic, basestring):
             topic = topic.topic
+            # print("DEBUG: topic not instance: %s\n" % topic)
+        # print("DEBUG: topic is instance: %s\n" % topic)
         return topic  # DEBUG .lower()
 
     def wraps(self, listener, topic):
