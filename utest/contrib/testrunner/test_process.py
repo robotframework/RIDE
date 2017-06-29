@@ -41,13 +41,13 @@ class ProcessUnicodeTestCase(unittest.TestCase):
     def _run_small_test(self):
         p = Process(datafilereader.SMALL_TEST_PATH)
         p.run_command('pybot' + ('.bat' if IS_WINDOWS else '') + ' --output NONE --log NONE --report NONE .')
-        max_time = 5.0
+        max_time = 7.0
         while p.is_alive() and max_time > 0:
             time.sleep(0.1)
             max_time -= 0.1
         if max_time <= 0:
             p.kill()
-            raise AssertionError('process did not stop in 5 second time')
+            raise AssertionError('process did not stop in 7 second time')
         return p.get_output(), p.get_errors()
 
     def test_stopping_pybot_with_listener_should_generate_outputs(self):

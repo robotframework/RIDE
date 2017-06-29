@@ -299,7 +299,8 @@ class CustomScriptProfile(PybotProfile):
     default_settings = dict(PybotProfile.default_settings, runner_script="")
 
     def get_command(self):
-        return self.runner_script
+        # strip the starting and ending spaces to ensure /bin/sh finding the executable file
+        return self.runner_script.strip()
 
     def get_cwd(self):
         return os.path.dirname(self.runner_script)
