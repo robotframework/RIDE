@@ -71,6 +71,7 @@ try:
     from robot.utils import encoding
 except ImportError:
     encoding = None
+    raise     # DEBUG
 
 
 if sys.hexversion > 0x2060000:
@@ -103,6 +104,7 @@ HOST = "localhost"
 # Set output encoding to UTF-8 for piped output streams
 if encoding:
     encoding.OUTPUT_ENCODING = 'UTF-8'
+# print("DEBUG: TestRunnerAgent encoding %s\n" % encoding.OUTPUT_ENCODING )
 
 
 def _is_logged(level):
