@@ -50,6 +50,13 @@ from robotide.robotapi import LOG_LEVELS
 from robotide.context import IS_WINDOWS
 from robotide.contrib.testrunner import TestRunnerAgent
 from robotide.controller.testexecutionresults import TestExecutionResults
+try:
+    from robot.utils import encoding
+except ImportError:
+    encoding = None
+# DEBUG we are forcing UTF-8
+if encoding:
+    encoding.OUTPUT_ENCODING = 'UTF-8'
 
 ATEXIT_LOCK = threading.RLock()
 
@@ -283,7 +290,9 @@ class Process(object):
                         stdout=subprocess.PIPE,
                         stderr=subprocess.PIPE,
                         stdin=subprocess.PIPE,
-                        cwd=self._cwd.encode(utils.SYSTEM_ENCODING))
+                        cwd=self._cwd.encode(encoding.OUTPUT_ENCODING))
+                        # DEBUG cwd=self._cwd.encode(utils.SYSTEM_ENCODING))
+
         if IS_WINDOWS:
             startupinfo = subprocess.STARTUPINFO()
             try:
@@ -295,7 +304,9 @@ class Process(object):
         else:
             subprocess_args['preexec_fn'] = os.setsid
             subprocess_args['shell'] = True
-        self._process = subprocess.Popen(command.encode(utils.SYSTEM_ENCODING),
+        # DEBUG self._process = subprocess.Popen(command.encode(utils.SYSTEM_ENCODING),
+        #                                 **subprocess_args)
+        self._process = subprocess.Popen(command.encode(encoding.OUTPUT_ENCODING),
                                          **subprocess_args)
         self._process.stdin.close()
         self._output_stream = StreamReaderThread(self._process.stdout)

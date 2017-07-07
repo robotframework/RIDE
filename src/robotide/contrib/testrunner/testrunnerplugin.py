@@ -447,7 +447,8 @@ class TestRunnerPlugin(Plugin):
         except UnicodeDecodeError as e:
             # I'm not sure why I sometimes get this, and I don't know what I
             # can do other than to ignore it.
-            pass
+            # pass
+            raise  # DEBUG
 
         new_text_end = textctrl.GetLength()
 
@@ -912,6 +913,7 @@ class OutputStyledTextCtrl(wx.stc.StyledTextCtrl):
             if self.GetScrollWidth() < width + 50:
                 self.SetScrollWidth(width + 50)
         except UnicodeDecodeError:
+            print("DEBUG: UnicodeDecodeError at update scroll, testrunnerplugin, string is %s\n" % string)
             pass
 
 
