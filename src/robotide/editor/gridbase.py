@@ -85,6 +85,7 @@ class GridEditor(grid.Grid):
         self.MakeCellVisible(row, column)
 
     def copy(self):
+        print("DEBUG: GridBase copy() called\n")
         self._clipboard_handler.copy()
 
     def cut(self):

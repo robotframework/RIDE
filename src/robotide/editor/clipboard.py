@@ -32,6 +32,7 @@ class _ClipboardHandler(object):
         action if the user is editing a cell, otherwise it places the selected
         range of cells on the data.
         """
+        print("DEBUG: Clipboard copy() got called \n")
         if not self._edit_control_shown():
             self._add_selected_data_to_clipboard()
 

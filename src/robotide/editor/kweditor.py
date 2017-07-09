@@ -49,7 +49,8 @@ _DEFAULT_FONT_SIZE = 11
 
 def requires_focus(function):
     def _row_header_selected_on_linux(self):
-        return self.FindFocus() is None
+        # print("DEBUG: _row_header_selected_on_linux: %s has focus %s\n" % (self.FindFocus(), self.has_focus()))
+        return self.FindFocus() is None #  or isinstance(GridEditor)
 
     def decorated_function(self, *args):
         # if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
@@ -57,9 +58,11 @@ def requires_focus(function):
         # else:
         #     _iscelleditcontrolshown = self.IsCellEditControlShown()
         _iscelleditcontrolshown = self.IsCellEditControlShown()
+        # print("DEBUG: decorated: iscelleditshown = %s focus =%s rowheaderselected=%s\n" % (_iscelleditcontrolshown, self.has_focus(), _row_header_selected_on_linux(self)))
         if self.has_focus() or _iscelleditcontrolshown or \
            _row_header_selected_on_linux(self):
             function(self, *args)
+
     return decorated_function
 
 
@@ -251,12 +254,12 @@ class KeywordEditor(GridEditor, RideEventHandler):
                                   self.selection.bottomright))
         self._skip_except_on_mac(event)
 
-    @requires_focus
+    #DEBUG @requires_focus
     def OnCommentRows(self, event=None):
         self._execute(CommentRows(self.selection.rows()))
         self._skip_except_on_mac(event)
 
-    @requires_focus
+    #DEBUG @requires_focus
     def OnUncommentRows(self, event=None):
         self._execute(UncommentRows(self.selection.rows()))
         self._skip_except_on_mac(event)
@@ -337,11 +340,12 @@ class KeywordEditor(GridEditor, RideEventHandler):
     def get_selected_datafile_controller(self):
         return self._controller.datafile_controller
 
-    @requires_focus
+    #DEBUG @requires_focus
     def OnCopy(self, event=None):
+        # print("DEBUG: OnCopy called event %s\n" % str(event))
         self.copy()
 
-    @requires_focus
+    #DEBUG @requires_focus
     def OnCut(self, event=None):
         self._clipboard_handler.cut()
         self.OnDelete(event)
@@ -360,7 +364,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
             self._execute(ClearArea(self.selection.topleft,
                                     self.selection.bottomright))
 
-    @requires_focus
+    #DEBUG    @requires_focus
     def OnPaste(self, event=None):
         self._execute_clipboard_command(PasteArea)
 
@@ -377,7 +381,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
                 data = [[data]] if isinstance(data, basestring) else data
                 self._execute(command_class(self.selection.topleft, data))
 
-    @requires_focus
+    #DEBUG @requires_focus
     def OnInsert(self, event=None):
         self._execute_clipboard_command(InsertArea)
 
@@ -386,7 +390,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
         self.ClearSelection()
         self._skip_except_on_mac(event)
 
-    @requires_focus
+    #DEBUG @requires_focus
     def OnUndo(self, event=None):
         """ Fixed on 4.0.0a3
         if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
@@ -399,7 +403,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
         else:
             self.GetCellEditor(*self.selection.cell).Reset()
 
-    @requires_focus
+    #DEBUG @requires_focus
     def OnRedo(self, event=None):
         self._execute(Redo())
 
@@ -467,6 +471,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
         if keycode == ord('M') and control_down:  #  keycode == wx.WXK_CONTROL
             self._show_cell_information()
         elif keycode == ord('C') and control_down:
+            # print("DEBUG: captured Control-C\n")
             self.OnCopy(event)
         elif keycode == ord('X') and control_down:
             self.OnCut(event)
@@ -577,6 +582,7 @@ work.</li>
         celleditor = self.GetCellEditor(self.GetGridCursorCol(), row)
         celleditor.Show(True)
         wx.CallAfter(celleditor.show_content_assist)
+        # print("DEBUG: Called content assist %s\n" % self._show_cell_information())
 
     def _open_cell_editor_and_execute_variable_creator(
             self, list_variable=False):
