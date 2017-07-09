@@ -811,7 +811,6 @@ class ContentAssistCellEditor(GridCellEditor):  # DEBUG wxPhoenix PyGridCellEdi
         self._tc.SelectAll()
         self._tc.SetFocus()
 
-
     def Clone(self):
         return ContentAssistCellEditor()
 
