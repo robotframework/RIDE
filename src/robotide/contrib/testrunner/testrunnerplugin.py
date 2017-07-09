@@ -86,7 +86,7 @@ class TestRunnerPlugin(Plugin):
     """A plugin for running tests from within RIDE"""
     defaults = {"auto_save": False,
                 "show_message_log": True,
-                "profile": "pybot",
+                "profile": "robot",
                 "sash_position": 200,
                 "runprofiles":
                     [('jybot', 'jybot' + ('.bat' if os.name == 'nt' else ''))]}

@@ -73,7 +73,7 @@ class BaseProfile(object):
 
     def get_command_prefix(self):
         '''Returns a command and any special arguments for this profile'''
-        return ["pybot.bat" if os.name == "nt" else "pybot"]
+        return ["robot.bat" if os.name == "nt" else "robot"]
 
     def set_setting(self, name, value):
         '''Sets a plugin setting
@@ -119,11 +119,11 @@ installation instructions.
 
 
 class PybotProfile(BaseProfile):
-    '''A runner profile which uses pybot
+    '''A runner profile which uses robot
 
-    It is assumed that pybot is on the path
+    It is assumed that robot is on the path
     '''
-    name = "pybot"
+    name = "robot"
     default_settings = {"arguments": u"",
                         "include_tags": "",
                         "exclude_tags": "",
@@ -142,7 +142,7 @@ class PybotProfile(BaseProfile):
         return self.arguments.split()
 
     def get_command(self):
-        return "pybot.bat" if os.name == "nt" else "pybot"
+        return "robot.bat" if os.name == "nt" else "robot"
 
     def get_custom_args(self):
         args = []
