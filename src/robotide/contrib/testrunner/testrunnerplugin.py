@@ -86,7 +86,7 @@ class TestRunnerPlugin(Plugin):
     """A plugin for running tests from within RIDE"""
     defaults = {"auto_save": False,
                 "show_message_log": True,
-                "profile": "pybot",
+                "profile": "robot",
                 "sash_position": 200,
                 "runprofiles":
                     [('jybot', 'jybot' + ('.bat' if os.name == 'nt' else ''))]}
@@ -619,10 +619,11 @@ class TestRunnerPlugin(Plugin):
         p = self._test_runner.get_profile(profile)
         for child in self.config_sizer.GetChildren():
             child.GetWindow().Hide()
-            if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix #TODO fix BoxSizer
-                self.config_sizer.RemoveChild(child.GetWindow())
-            else:
-                self.config_sizer.Remove(child.GetWindow())
+            # if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix #TODO fix BoxSizer
+            #     self.config_sizer.RemoveChild(child.GetWindow())
+            # else:
+            #     self.config_sizer.Remove(child.GetWindow())
+            self.config_sizer.Detach(child.GetWindow())
         toolbar = p.get_toolbar(self.config_panel)
 
         if toolbar:

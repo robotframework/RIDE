@@ -35,18 +35,21 @@
 #   Licensed under the Apache License, Version 2.0
 #      http://www.apache.org/licenses/LICENSE-2.0
 
-'''A Robot Framework listener that sends information to a socket
+"""A Robot Framework listener that sends information to a socket
 
 This uses a custom streamhandler module, preferring json but sending either
 json or pickle to send objects to the listening server. It should probably be
 refactored to call an XMLRPC server.
-'''
+"""
 
 import copy
 import os
 import sys
 import socket
 import threading
+
+import platform
+PLATFORM = platform.python_implementation()
 
 if sys.version_info[0] == 2:
     PYTHON2 = True
@@ -135,8 +138,7 @@ class TestRunnerAgent:
         self._send_pid()
         self._create_debugger((len(args)>=2) and (args[1] == 'True'))
         self._create_kill_server()
-        print("TestRunnerAgent: Running under Python %s\n" %
-              sys.version.split()[0])  # DEBUG
+        print("TestRunnerAgent: Running under %s %s\n" % (PLATFORM, sys.version.split()[0]))
 
     def _create_debugger(self, pause_on_failure):
         self._debugger = RobotDebugger(pause_on_failure)
@@ -217,7 +219,7 @@ class TestRunnerAgent:
             self.sock.close()
 
     def _connect(self):
-        '''Establish a connection for sending data'''
+        """Establish a connection for sending data"""
         try:
             self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.sock.connect((self.host, self.port))
@@ -401,7 +403,7 @@ def loads(s):
 
 
 class StreamHandler(object):
-    '''
+    """
     This class provides a common streaming approach for the purpose
     of reliably sending data over a socket interface. Replaces usage of
     Unpickler.load where possible with JSON format prepended by message length
@@ -421,7 +423,7 @@ class StreamHandler(object):
     in theory (assuming json is available), but performance of repeatedly
     failing to parse written data would make this an unworkable solution in
     many cases.
-    '''
+    """
     loads = staticmethod(loads)
     dumps = staticmethod(dumps)
 

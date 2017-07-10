@@ -61,7 +61,7 @@ class TestsDialog(Dialog):
         controls_sizer.Add(self._create_tag_search_button(panel), 0, wx.ALL | wx.EXPAND, 3)
         controls_sizer.Add(self._create_add_to_selected_button(panel), 0, wx.ALL | wx.EXPAND, 3)
         panel.Sizer.Add(controls_sizer)
-        panel.Sizer.Add(self._add_info_text(panel, "Find matches using tag patterns. See RF User Guide or 'pybot --help' for more information."), 0, wx.ALL, 3)
+        panel.Sizer.Add(self._add_info_text(panel, "Find matches using tag patterns. See RF User Guide or 'robot --help' for more information."), 0, wx.ALL, 3)
         self._tags_results = _TestSearchListModel([])
         self._tags_list = VirtualList(panel, ['Test', 'Tags', 'Source'], self._tags_results)
         self._tags_list.add_selection_listener(self._select_tag_search_result)

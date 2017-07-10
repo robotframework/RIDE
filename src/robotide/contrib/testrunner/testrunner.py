@@ -60,6 +60,7 @@ if encoding:
 
 ATEXIT_LOCK = threading.RLock()
 
+
 class TestRunner(object):
 
     def __init__(self, project):
@@ -185,7 +186,8 @@ class TestRunner(object):
         self._process.run_command(command)
 
     def get_command(self, profile, pythonpath, console_width, names_to_run):
-        '''Return the command (as a list) used to run the test'''
+        """Return the command (as a list) used to run the test"""
+
         command = profile.get_command_prefix()[:]
         argfile = os.path.join(self._output_dir, "argfile.txt")
         command.extend(["--argumentfile", argfile])
@@ -415,7 +417,7 @@ class StreamReaderThread(object):
             myqueuerng = range(self._queue.qsize())
         for _ in myqueuerng:
             try:
-                result += self._queue.get_nowait().decode('UTF-8', 'ignore')
+                result += self._queue.get_nowait().decode(utils.SYSTEM_ENCODING, 'replace')  # .decode('UTF-8','ignore')
             except Empty:
                 pass
         return result  # DEBUG .decode('UTF-8', 'ignore')
@@ -428,9 +430,11 @@ class StreamReaderThread(object):
 class RideListenerServer(SocketServer.TCPServer):
     """Implements a simple line-buffered socket server"""
     allow_reuse_address = True
+
     def __init__(self, RequestHandlerClass, callback):
         SocketServer.TCPServer.__init__(self, ("",0), RequestHandlerClass)
         self.callback = callback
+
 
 class RideListenerHandler(SocketServer.StreamRequestHandler):
     def handle(self):

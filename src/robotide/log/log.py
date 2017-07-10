@@ -137,3 +137,9 @@ class _LogWindow(wx.Panel):
 
     def OnSize(self, evt):
         self._output.SetSize(self.Size)
+
+    def Copy(self):
+        pass
+
+    def SelectAll(self):
+        pass

@@ -16,7 +16,7 @@ class ProcessUnicodeTestCase(unittest.TestCase):
         except OSError as expected:
             pass
 
-    def test_running_pybot_test(self):
+    def test_running_robot_test(self):
         output, errors = self._run_small_test()
         self.assertTrue(output.replace('\r','').startswith(
         '==============================================================================\n'
@@ -40,7 +40,7 @@ class ProcessUnicodeTestCase(unittest.TestCase):
 
     def _run_small_test(self):
         p = Process(datafilereader.SMALL_TEST_PATH)
-        p.run_command('pybot' + ('.bat' if IS_WINDOWS else '') + ' --output NONE --log NONE --report NONE .')
+        p.run_command('robot' + ('.bat' if IS_WINDOWS else '') + ' --output NONE --log NONE --report NONE .')
         max_time = 7.0
         while p.is_alive() and max_time > 0:
             time.sleep(0.1)
@@ -50,10 +50,10 @@ class ProcessUnicodeTestCase(unittest.TestCase):
             raise AssertionError('process did not stop in 7 second time')
         return p.get_output(), p.get_errors()
 
-    def test_stopping_pybot_with_listener_should_generate_outputs(self):
+    def test_stopping_robot_with_listener_should_generate_outputs(self):
         pass
 
-    def test_stopping_pybot_with_two_kill_signals_should_not_generate_outputs(self):
+    def test_stopping_robot_with_two_kill_signals_should_not_generate_outputs(self):
         pass
 
 if __name__ == '__main__':
