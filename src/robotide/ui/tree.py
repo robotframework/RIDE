@@ -52,7 +52,9 @@ _TREE_ARGS = {'style': wx.TR_DEFAULT_STYLE}
 if wx.VERSION >= (2, 8, 11, ''): # wx.VERSION_STRING >= '2.8.11.0':
     _TREE_ARGS['agwStyle'] = \
         customtreectrl.TR_DEFAULT_STYLE | customtreectrl.TR_HIDE_ROOT | \
-        customtreectrl.TR_EDIT_LABELS
+        customtreectrl.TR_EDIT_LABELS | customtreectrl.TR_ELLIPSIZE_LONG_ITEMS | \
+        customtreectrl.TR_TOOLTIP_ON_LONG_ITEMS
+
 if IS_WINDOWS:
     _TREE_ARGS['style'] |= wx.TR_EDIT_LABELS
 
@@ -86,6 +88,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
         self._clear_tree_data()
         self._editor = None
         self._execution_results = None
+        self.SetBackgroundColour('white')  # TODO get background color from def
         if not hasattr(self, 'OnCancelEdit'):
             self.OnCancelEdit = self._on_cancel_edit
 
