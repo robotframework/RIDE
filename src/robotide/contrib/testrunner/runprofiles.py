@@ -30,7 +30,7 @@ import os
 from robotide import pluginapi
 from robotide.widgets import Label
 from robotide.robotapi import DataError, Information
-from robotide.utils import overrides, SYSTEM_ENCODING, ArgumentParser, unicode
+from robotide.utils import overrides, SYSTEM_ENCODING, ArgumentParser, unicode, is_unicode
 from robotide.contrib.testrunner.usages import USAGE
 
 
@@ -250,7 +250,8 @@ class PybotProfile(BaseProfile):
         self.set_setting("arguments", args)
 
     def _validate_arguments(self, args):
-        assert type(args) is unicode
+        # assert type(args) is unicode
+        # print("DEBUG: runprofiles: type(args)=%s is_unicode(args)=%s" % (type(args), is_unicode(args)))
         invalid_message = self._get_invalid_message(args)
         self._arguments.SetBackgroundColour(
             'red' if invalid_message else 'white')
