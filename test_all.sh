@@ -3,8 +3,8 @@
 export PYTHONPATH=/home/helio/github/RIDE/utest/:$PYTHONPATH
 export PYTHONPATH=/home/helio/github/RIDE/src/:$PYTHONPATH
 
-export PYTHONROOT=/usr/local/bin
-#export PYTHONROOT=/usr/bin
+#export PYTHONROOT=/usr/local/bin
+export PYTHONROOT=/usr/bin
 
 if [ $# -ge 1 ]
 then

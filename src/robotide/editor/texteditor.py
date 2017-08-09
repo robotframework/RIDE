@@ -466,6 +466,7 @@ class SourceEditor(wx.Panel):
         self._editor.Bind(wx.EVT_KEY_UP, self.OnEditorKey)
         self._editor.Bind(wx.EVT_KILL_FOCUS, self.LeaveFocus)
         self._editor.Bind(wx.EVT_SET_FOCUS, self.GetFocus)
+        # TODO Add here binding for keyword help
 
     def LeaveFocus(self, event):
         self._editor.SetCaretPeriod(0)

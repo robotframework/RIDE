@@ -48,7 +48,7 @@ class RobotFrameworkLexer(Lexer):
     """
     name = 'RobotFramework'
     aliases = ['RobotFramework', 'robotframework']
-    filenames = ['*.txt']
+    filenames = ['*.txt', '*.robot']
     mimetypes = ['text/x-robotframework']
 
     def __init__(self):
@@ -62,7 +62,9 @@ class RobotFrameworkLexer(Lexer):
             for value, token in row_tokenizer.tokenize(row):
                 for value, token in var_tokenizer.tokenize(value, token):
                     if value:
-                        yield index, token, unicode(value)
+                        yield index, token, value
+                        #  DEBUG was unicode(value) str.encode(value,'utf-8')
+                        #  DEBUG There are errors with UTF-8 chars
                         index += len(value)
 
 

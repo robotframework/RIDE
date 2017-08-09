@@ -85,7 +85,7 @@ class _ContentAssistTextCtrlBase(object):
     def OnFocusLost(self, event, set_value=True):
         if not self._popup.is_shown():
             return
-        value = self.gherkin_prefix + self._popup.get_value()
+        value = self.gherkin_prefix + self._popup.get_value() or ""
         if set_value and value:
             self.SetValue(value)
             self.SetInsertionPoint(len(self.Value))
@@ -161,7 +161,7 @@ class ExpandingContentAssistTextCtrl(_ContentAssistTextCtrlBase,
 class ContentAssistTextCtrl(_ContentAssistTextCtrlBase, wx.TextCtrl):
 
     def __init__(self, parent, suggestion_source, size=wx.DefaultSize):
-        wx.TextCtrl.__init__(self, parent, size=size, style=wx.WANTS_CHARS)
+        wx.TextCtrl.__init__(self, parent, size=size, style=wx.DEFAULT_FRAME_STYLE | wx.WANTS_CHARS) # DEBUG style
         _ContentAssistTextCtrlBase.__init__(self, suggestion_source)
 
 

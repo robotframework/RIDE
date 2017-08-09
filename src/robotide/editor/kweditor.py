@@ -439,7 +439,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
         _iscelleditcontrolshown = self.IsCellEditControlShown()
         if _iscelleditcontrolshown:
             self.GetCellEditor(*self.selection.cell).show_content_assist(
-                self.selection.topleft.row)
+                self.selection.cell)  # DEBUG self.selection.topleft.row)
 
     def refresh_datafile(self, item, event):
         self._tree.refresh_datafile(item, event)
