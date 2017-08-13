@@ -1,6 +1,6 @@
 import unittest
 import datafilereader
-from nose.tools import assert_true, assert_false, assert_equals
+from nose.tools import assert_true, assert_false, assert_equal
 from robotide.controller.ctrlcommands import MoveTo
 
 
@@ -39,21 +39,21 @@ class TestMoveCommand(unittest.TestCase):
         test_from_suite2 = self.ts2.tests[1]
         len_before = len(self.ts2.tests)
         test_from_suite2.execute(MoveTo(self.ts1))
-        assert_equals(test_from_suite2, self.ts1.tests[1])
-        assert_equals(len(self.ts2.tests), len_before-1)
+        assert_equal(test_from_suite2, self.ts1.tests[1])
+        assert_equal(len(self.ts2.tests), len_before-1)
 
     def test_move_keyword_from_suite_to_another_suite(self):
         kw_from_suite1 = self.ts1.keywords[1]
         kw_from_suite1.execute(MoveTo(self.ts2))
         self._verify_namespace_works()
-        assert_equals(kw_from_suite1, self.ts2.keywords[-1])
-        assert_equals(len(self.ts1.keywords), 1)
+        assert_equal(kw_from_suite1, self.ts2.keywords[-1])
+        assert_equal(len(self.ts1.keywords), 1)
 
     def test_move_keyword_from_suite_to_resource(self):
         kw_from_suite2 = self.ts2.keywords[1]
         kw_from_suite2.execute(MoveTo(self.resu))
         self._verify_namespace_works()
-        assert_equals(kw_from_suite2, self.resu.keywords[-1])
+        assert_equal(kw_from_suite2, self.resu.keywords[-1])
 
     def test_move_keyword_from_resource_to_suite(self):
         kw_from_resu = self.resu.keywords[-1]
@@ -61,8 +61,8 @@ class TestMoveCommand(unittest.TestCase):
         kw_from_resu.execute(MoveTo(self.ts2))
         self._verify_namespace_works()
         resu_len2, ts2_len2 = len(self.resu.keywords), len(self.ts2.keywords)
-        assert_equals(resu_len, resu_len2+1)
-        assert_equals(ts2_len+1, ts2_len2)
+        assert_equal(resu_len, resu_len2+1)
+        assert_equal(ts2_len+1, ts2_len2)
 
     def _verify_namespace_works(self):
         self.ts1.tests[0].get_cell_info(0,0)

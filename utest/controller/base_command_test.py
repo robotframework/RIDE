@@ -1,6 +1,6 @@
 import unittest
 import os
-from nose.tools import assert_equals
+from nose.tools import assert_equal
 
 from robotide.publish import PUBLISHER
 from robotide.publish.messages import RideItemStepsChanged
@@ -55,14 +55,14 @@ class TestCaseCommandTest(unittest.TestCase, _FakeProject):
 
     def _verify_step_unchanged(self, step_data):
         row = self._data_row(step_data)
-        assert_equals(self._steps[row].as_list(), self._data_step_as_list(step_data))
+        assert_equal(self._steps[row].as_list(), self._data_step_as_list(step_data))
 
     def _verify_steps_unchanged(self, *steps):
         for step in steps:
             self._verify_step_unchanged(step)
 
     def _verify_number_of_test_changes(self, expected):
-        assert_equals(self._number_of_test_changes, expected)
+        assert_equal(self._number_of_test_changes, expected)
 
     def _verify_row_does_not_exist(self, line):
         for step in self._steps:
@@ -70,13 +70,13 @@ class TestCaseCommandTest(unittest.TestCase, _FakeProject):
                 raise AssertionError('Row "%s" exists' % line)
 
     def _verify_step_is_empty(self, index):
-        assert_equals(self._steps[index].as_list(), [])
+        assert_equal(self._steps[index].as_list(), [])
 
     def _verify_step(self, index, exp_name, exp_args=[], exp_comment=None):
         exp = [exp_name] + exp_args
         if exp_comment:
             exp += [exp_comment]
-        assert_equals(self._steps[index].as_list(), exp)
+        assert_equal(self._steps[index].as_list(), exp)
 
     def _verify_step_number_change(self, change):
-        assert_equals(len(self._steps), self._orig_number_of_steps + change)
+        assert_equal(len(self._steps), self._orig_number_of_steps + change)

@@ -13,7 +13,7 @@ from robotide.ui.tagdialogs import ViewAllTagsDialog
 
 from robotide.robotapi import (TestDataDirectory, TestCaseFile, ResourceFile,
                                TestCase, UserKeyword, robotide)
-from nose.tools import assert_equals
+from nose.tools import assert_equal
 from robotide.spec.librarymanager import LibraryManager
 from robotide.ui.images import TreeImageList
 from robotide.ui.mainframe import ActionRegisterer
@@ -232,7 +232,7 @@ class TestSortTags(_BaseSuiteTreeTest):
     def test_sort_tags_ascending_count(self):
         self._tagsdialog.sort_state = (1, 0)
         self._tagsdialog.OnColClick()
-        assert_equals(self._tagsdialog.sort_state, (1, 1))
+        assert_equal(self._tagsdialog.sort_state, (1, 1))
         reference = [[[u'b-', 1, u'-a', 1], 3], [[u'tag-', 3], 3],
                      [[3, u'-', 2, u'-', 3, u'-tag-', 2, u'a'], 3],
                      [[u'tag-', 1], 3], [[u'tag-', 22], 3], [[u'tag-', 3], 3],
@@ -246,13 +246,13 @@ class TestSortTags(_BaseSuiteTreeTest):
         cref = list(j for i, j in reference)
         dref = list(j for i, j in self._tagsdialog.itemDataMap)
         # print("cref = {0}\ndref = {1}\n".format(cref, dref))
-        assert_equals(dref, cref)
+        assert_equal(dref, cref)
         self._tagsdialog.show_dialog()
 
     def test_sort_tags_descending_count(self):
         self._tagsdialog.sort_state = (1, 1)
         self._tagsdialog.OnColClick()
-        assert_equals(self._tagsdialog.sort_state, (1, 0))
+        assert_equal(self._tagsdialog.sort_state, (1, 0))
         reference = [[[u'a-', 1, u'-a', 3], 12], [[u'tag-', 21], 9],
                      [[u'tag-', 2], 9], [[u'tag-', 12], 9],
                      [[3, u'-', 2, u'-', 1, u'-tag-', 2, u'c'], 9],
@@ -266,13 +266,13 @@ class TestSortTags(_BaseSuiteTreeTest):
         cref = list(j for i, j in reference)
         dref = list(j for i, j in self._tagsdialog.itemDataMap)
         # print("cref = {0}\ndref = {1}\n".format(cref, dref))
-        assert_equals(dref, cref)
+        assert_equal(dref, cref)
         self._tagsdialog.show_dialog()
 
     def test_sort_tags_ascending_value(self):
         self._tagsdialog.sort_state = (0, 0)
         self._tagsdialog.OnColClick()
-        assert_equals(self._tagsdialog.sort_state, (0, 1))
+        assert_equal(self._tagsdialog.sort_state, (0, 1))
         reference = [[[u'', 2, u'-b'], 6],
                      [[u'', 3, u'-', 2, u'-', 1, u'-tag-', 2, u'c'], 9],
                      [[u'', 3, u'-', 2, u'-', 3, u'-tag-', 2, u'a'], 3],
@@ -289,14 +289,14 @@ class TestSortTags(_BaseSuiteTreeTest):
         tref = list(i for i, j in reference)
         dref = list(i for i, j in self._tagsdialog.itemDataMap)
         # print("tref = {0}\ndref = {1}\n".format(tref, dref))
-        assert_equals(dref, tref)
+        assert_equal(dref, tref)
         self._tagsdialog.show_dialog()
 
     def test_sort_tags_descending_value(self):
         self._tagsdialog.sort_state = (0, 1)
         # self.ShowDialog()
         self._tagsdialog.OnColClick()
-        assert_equals(self._tagsdialog.sort_state, (0, 0))
+        assert_equal(self._tagsdialog.sort_state, (0, 0))
         reference = [[[u'tag-', 22, u''], 3], [[u'tag-', 21, u''], 9],
                      [[u'tag-', 12, u''], 9], [[u'tag-', 11, u''], 6],
                      [[u'tag-', 3, u''], 3], [[u'tag-', 3, u''], 3],
@@ -313,7 +313,7 @@ class TestSortTags(_BaseSuiteTreeTest):
         tref = list(i for i, j in reference)
         dref = list(i for i, j in self._tagsdialog.itemDataMap)
         # print("tref = {0}\ndref = {1}\n".format(tref, dref))
-        assert_equals(dref, tref)
+        assert_equal(dref, tref)
         self._tagsdialog.show_dialog()
 
 if __name__ == '__main__':

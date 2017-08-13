@@ -1,7 +1,7 @@
 import sys
 import os
 import unittest
-from nose.tools import assert_true, assert_equals
+from nose.tools import assert_true, assert_equal
 
 from robotide.robotapi import TestLibrary, UserKeyword, KeywordTable
 from robotide.namespace import variablefetcher
@@ -48,7 +48,7 @@ class TestKeywordInfo(unittest.TestCase):
     def test_resource_uk_longname(self):
         uk = UserKeyword(KeywordTable(_FakeResourceFile()), 'UK')
         kw_info = ResourceUserKeywordInfo(uk)
-        self.assertEquals(kw_info.longname, 'resource.UK')
+        self.assertEqual(kw_info.longname, 'resource.UK')
 
 
 class TestVariableInfo(unittest.TestCase):
@@ -58,7 +58,7 @@ class TestVariableInfo(unittest.TestCase):
         source = 'source'
         value = True
         info = VariableInfo(name, value, source)
-        assert_equals(info.name, name)
+        assert_equal(info.name, name)
         assert_in_details(info, source, 'True')
 
     def test_variable_item_info_when_value_none(self):
@@ -66,7 +66,7 @@ class TestVariableInfo(unittest.TestCase):
         source = 'source'
         value = None
         info = VariableInfo(name, value, source)
-        assert_equals(info.name, name)
+        assert_equal(info.name, name)
         assert_in_details(info, source, '')
 
     def test_list_variable_item_info(self):
@@ -74,7 +74,7 @@ class TestVariableInfo(unittest.TestCase):
         source = 'source'
         value = variablefetcher._format_value([1,2,3])
         info = VariableInfo(name, value, source)
-        assert_equals(info.name, name)
+        assert_equal(info.name, name)
         assert_in_details(info, source, '[ 1 | 2 | 3 ]')
 
     def test_list_variable_item_info_when_value_none(self):
@@ -82,7 +82,7 @@ class TestVariableInfo(unittest.TestCase):
         source = 'source'
         value = None
         info = VariableInfo(name, value, source)
-        assert_equals(info.name, name)
+        assert_equal(info.name, name)
         assert_in_details(info, source, '')
 
 if __name__ == "__main__":

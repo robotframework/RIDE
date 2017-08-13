@@ -1,7 +1,7 @@
 import sys
 import unittest
 from nose.tools import assert_true, assert_false, assert_is_not_none, \
-    assert_equals, assert_is_none
+    assert_equal, assert_is_none
 
 from robotide.robotapi import (
     TestCaseFile, Resource, VariableTable, TestDataDirectory)
@@ -118,7 +118,7 @@ class TestKeywordSuggestions(_DataFileTest):
     def test_getting_suggestions_in_order(self):
         sugs = self.ns.get_suggestions_for(self.kw, 'sHoUlD')
         assert_true(len(sugs) > 2)
-        assert_equals(sugs, sorted(sugs))
+        assert_equal(sugs, sorted(sugs))
 
     def test_user_keywords(self):
         sugs = self.ns.get_suggestions_for(self.kw, 'sHoUlD')
@@ -211,7 +211,7 @@ class TestKeywordSuggestions(_DataFileTest):
         self._test_global_variable(global_vars[-1])
 
     def _test_global_variable(self, variable, expected=None):
-        assert_equals(expected or variable,
+        assert_equal(expected or variable,
                       self.ns.get_suggestions_for(self.kw, variable)[0].name)
 
     def test_resource_with_variable_in_path(self):
@@ -281,10 +281,10 @@ class TestKeywordSuggestions(_DataFileTest):
 
     def test_vars_from_keyword_arguments(self):
         sugs = self.ns.get_suggestions_for(self.kw, '${keyword argu')
-        assert_equals(len(sugs), 2)
+        assert_equal(len(sugs), 2)
         sugs = self.ns.get_suggestions_for(
             self.kw, '${keyword argument with defau')
-        assert_equals(len(sugs), 1)
+        assert_equal(len(sugs), 1)
         self._check_source(
             self.kw, '${keyword argument with defau', ArgumentInfo.SOURCE)
 
@@ -316,8 +316,8 @@ class TestKeywordSuggestions(_DataFileTest):
 
     def _check_source(self, controller, name, source):
         sugs = self.ns.get_suggestions_for(controller, name)
-        assert_equals(len(sugs), 1)
-        assert_equals(sugs[0].source, source)
+        assert_equal(len(sugs), 1)
+        assert_equal(sugs[0].source, source)
 
     def _assert_import_kws(self, sugs, source):
         assert_true(len(sugs) > 0)
@@ -382,8 +382,8 @@ class TestKeywordSearch(_DataFileTest):
     def _check_resource_keyword_only_once(self, all_kws):
         results = [(kw.name, kw.source)
                    for kw in all_kws if kw.name == "Only From Resource"]
-        assert_equals(len(results), 1)
-        assert_equals(
+        assert_equal(len(results), 1)
+        assert_equal(
             results[0], (u'Only From Resource', u'testdata_resource.txt'))
 
     def test_find_user_keyword_name_normalized(self):
@@ -443,21 +443,21 @@ class TestVariableStash(unittest.TestCase):
         var_table.add('${var2}', 'bar')
         vars.set_from_variable_table(var_table)
         result = vars.replace_variables('hoo${var1}hii${var2}huu')
-        assert_equals('hoofoohiibarhuu', result)
+        assert_equal('hoofoohiibarhuu', result)
 
     def test_list_variable_index_resolving(self):
         vars = _VariableStash()
         var_table = VariableTable(ParentMock())
         var_table.add('@{var}', ['foo', 'bar'])
         vars.set_from_variable_table(var_table)
-        assert_equals('Hi, foo!', vars.replace_variables('Hi, @{var}[0]!'))
+        assert_equal('Hi, foo!', vars.replace_variables('Hi, @{var}[0]!'))
 
     def test_dict_variable_key_resolving(self):
         vars = _VariableStash()
         var_table = VariableTable(ParentMock())
         var_table.add('&{var}', ['foo=bar'])
         vars.set_from_variable_table(var_table)
-        assert_equals('Hi, bar!', vars.replace_variables('Hi, &{var}[foo]!'))
+        assert_equal('Hi, bar!', vars.replace_variables('Hi, &{var}[foo]!'))
 
     def test_variable_resolving_with_unresolvable_value(self):
         vars = _VariableStash()
@@ -474,23 +474,23 @@ class TestVariableStash(unittest.TestCase):
         self._variable_stash_contains('PREV_TEST_MESSAGE', vars)
 
     def test_global_variable_trues_value_is_replaced_with_true(self):
-        assert_equals(_VariableStash().replace_variables('${True}'), True)
+        assert_equal(_VariableStash().replace_variables('${True}'), True)
 
     def test_global_variable_falses_value_is_replaced_with_false(self):
-        assert_equals(_VariableStash().replace_variables('${False}'), False)
+        assert_equal(_VariableStash().replace_variables('${False}'), False)
 
     def test_global_variable_nones_value_is_replaced_with_none(self):
-        assert_equals(_VariableStash().replace_variables('${None}'), None)
+        assert_equal(_VariableStash().replace_variables('${None}'), None)
 
     def test_global_variable_nulls_value_is_replaced_with_none(self):
-        assert_equals(_VariableStash().replace_variables('${null}'), None)
+        assert_equal(_VariableStash().replace_variables('${null}'), None)
 
 
 class TestResourceGetter(_DataFileTest):
 
     def test_resource_getter(self):
         resources = self.ns.get_resources(self.tcf)
-        assert_equals(len(resources), 8)
+        assert_equal(len(resources), 8)
         paths = []
         for res in resources:
             normalized = normpath(res.source)

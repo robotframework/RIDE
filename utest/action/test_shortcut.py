@@ -38,7 +38,7 @@ class TestShortcutParsing(unittest.TestCase):
 
     def _test(self, data):
         for shortcut, expected in data:
-            self.assertEquals(Shortcut(shortcut).parse(), expected)
+            self.assertEqual(Shortcut(shortcut).parse(), expected)
 
 
 if __name__ == '__main__':

@@ -1,7 +1,7 @@
 import re
 import unittest
 from mockito import mock
-from nose.tools import assert_equals, assert_true, assert_false
+from nose.tools import assert_equal, assert_true, assert_false
 
 from robotide.robotapi import (
     Fixture, Documentation, Timeout, Tags, Return, TestCaseFile)
@@ -43,20 +43,20 @@ class DocumentationControllerTest(unittest.TestCase):
         self.ctrl = DocumentationController(self.parent, self.doc)
 
     def test_creation(self):
-        assert_equals(self.ctrl.display_value, 'Initial doc')
+        assert_equal(self.ctrl.display_value, 'Initial doc')
         assert_true(self.ctrl.datafile is None)
         ctrl = DocumentationController(self.parent, Documentation('[Documentation]'))
-        assert_equals(ctrl.label, 'Documentation')
+        assert_equal(ctrl.label, 'Documentation')
 
     def test_setting_value(self):
         self.ctrl.set_value('Doc changed')
-        assert_equals(self.doc.value, 'Doc changed')
+        assert_equal(self.doc.value, 'Doc changed')
         self.ctrl.set_value('Doc changed | again')
-        assert_equals(self.doc.value, 'Doc changed | again')
+        assert_equal(self.doc.value, 'Doc changed | again')
 
     def test_get_editable_value(self):
         self.doc.value = 'My doc \\n with enters \\\\\\r\\n and \\t tabs and escapes \\\\n \\\\\\\\r'
-        assert_equals(self.ctrl.editable_value, 'My doc \n with enters \\\\\n'
+        assert_equal(self.ctrl.editable_value, 'My doc \n with enters \\\\\n'
                                                 ' and \\t tabs and escapes \\\\n \\\\\\\\r')
 
     def test_set_editable_value(self):
@@ -64,17 +64,17 @@ class DocumentationControllerTest(unittest.TestCase):
  with enters
  and \t tabs'''
         self.ctrl.editable_value = test_text
-        assert_equals(self.doc.value, 'My doc\\n with enters\\n and \t tabs')
-        assert_equals(self.ctrl.editable_value, test_text)
+        assert_equal(self.doc.value, 'My doc\\n with enters\\n and \t tabs')
+        assert_equal(self.ctrl.editable_value, test_text)
 
     def test_set_editable_value_should_escape_leading_hash(self):
         self.ctrl.editable_value = '# Not # Comment'
-        assert_equals(self.doc.value, '\\# Not # Comment')
-        assert_equals(self.ctrl.editable_value, '\\# Not # Comment')
+        assert_equal(self.doc.value, '\\# Not # Comment')
+        assert_equal(self.ctrl.editable_value, '\\# Not # Comment')
 
     def test_get_visible_value(self):
         self.doc.value = 'My doc \\n with enters \\n and \t tabs'
-        assert_equals(self.ctrl.visible_value, '<p>My doc with enters and \t tabs</p>')
+        assert_equal(self.ctrl.visible_value, '<p>My doc with enters and \t tabs</p>')
 
     def test_setting_value_informs_parent_controller_about_dirty_model(self):
         self.ctrl.set_value('Blaa')
@@ -82,7 +82,7 @@ class DocumentationControllerTest(unittest.TestCase):
 
     def test_set_empty_value(self):
         self.ctrl.set_value('')
-        assert_equals(self.doc.value, '')
+        assert_equal(self.doc.value, '')
         assert_true(self.ctrl.dirty)
 
     def test_same_value(self):
@@ -91,7 +91,7 @@ class DocumentationControllerTest(unittest.TestCase):
 
     def test_clear(self):
         self.ctrl.clear()
-        assert_equals(self.doc.value, '')
+        assert_equal(self.doc.value, '')
         assert_true(self.ctrl.dirty)
 
 
@@ -105,26 +105,26 @@ class FixtureControllerTest(unittest.TestCase):
         self.ctrl = FixtureController(self.parent, self.fix)
 
     def test_creation(self):
-        assert_equals(self.ctrl.display_value, 'My Setup | argh | urgh')
-        assert_equals(self.ctrl.label, 'Suite Setup')
+        assert_equal(self.ctrl.display_value, 'My Setup | argh | urgh')
+        assert_equal(self.ctrl.label, 'Suite Setup')
         assert_true(self.ctrl.is_set)
 
     def test_value_with_empty_fixture(self):
-        assert_equals(FixtureController(self.parent, Fixture('Teardown')).display_value, '')
+        assert_equal(FixtureController(self.parent, Fixture('Teardown')).display_value, '')
 
     def test_setting_value_changes_fixture_state(self):
         self.ctrl.set_value('Blaa')
-        assert_equals(self.fix.name, 'Blaa')
-        assert_equals(self.fix.args, [])
+        assert_equal(self.fix.name, 'Blaa')
+        assert_equal(self.fix.args, [])
         self.ctrl.set_value('Blaa | a')
-        assert_equals(self.fix.name, 'Blaa')
-        assert_equals(self.fix.args, ['a'])
+        assert_equal(self.fix.name, 'Blaa')
+        assert_equal(self.fix.args, ['a'])
 
     def test_whitespace_is_ignored_in_value(self):
         self.ctrl.set_value('Name |   a    |    b      |     c')
-        assert_equals(self.fix.name, 'Name')
-        assert_equals(self.fix.args, ['a', 'b', 'c'])
-        assert_equals(self.ctrl.display_value, 'Name | a | b | c')
+        assert_equal(self.fix.name, 'Name')
+        assert_equal(self.fix.args, ['a', 'b', 'c'])
+        assert_equal(self.ctrl.display_value, 'Name | a | b | c')
 
     def test_setting_value_informs_parent_controller_about_dirty_model(self):
         self.ctrl.set_value('Blaa')
@@ -132,8 +132,8 @@ class FixtureControllerTest(unittest.TestCase):
 
     def test_set_empty_value(self):
         self.ctrl.set_value('')
-        assert_equals(self.fix.name, '')
-        assert_equals(self.fix.args, [])
+        assert_equal(self.fix.name, '')
+        assert_equal(self.fix.args, [])
         assert_true(self.ctrl.dirty)
 
     def test_same_value(self):
@@ -142,7 +142,7 @@ class FixtureControllerTest(unittest.TestCase):
 
     def test_setting_comment(self):
         self.ctrl.set_comment(['My comment'])
-        assert_equals(self.ctrl.comment.as_list(), ['# My comment'])
+        assert_equal(self.ctrl.comment.as_list(), ['# My comment'])
         assert_true(self.ctrl.dirty)
 
     def test_contains_keyword_with_regexp_with_empty_fixture(self):
@@ -160,17 +160,17 @@ class TagsControllerTest(unittest.TestCase):
         self.ctrl = TagsController(self.parent, self.tags)
 
     def test_creation(self):
-        assert_equals(self.ctrl.display_value, 'f1 | f2')
+        assert_equal(self.ctrl.display_value, 'f1 | f2')
         assert_true(self.ctrl.is_set)
 
     def test_value_with_empty_fixture(self):
-        assert_equals(TagsController(self.parent, Tags('Tags')).display_value, '')
+        assert_equal(TagsController(self.parent, Tags('Tags')).display_value, '')
 
     def test_setting_value_changes_fixture_state(self):
         self.ctrl.set_value('Blaa')
-        assert_equals(self.tags.value, ['Blaa'])
+        assert_equal(self.tags.value, ['Blaa'])
         self.ctrl.set_value('a1 | a2 | a3')
-        assert_equals(self.tags.value, ['a1', 'a2', 'a3'])
+        assert_equal(self.tags.value, ['a1', 'a2', 'a3'])
 
     def test_setting_value_informs_parent_controller_about_dirty_model(self):
         self.ctrl.set_value('Blaa')
@@ -178,7 +178,7 @@ class TagsControllerTest(unittest.TestCase):
 
     def test_set_empty_value(self):
         self.ctrl.set_value('')
-        assert_equals(self.tags.value, [])
+        assert_equal(self.tags.value, [])
         assert_true(self.ctrl.dirty)
 
     def test_same_value(self):
@@ -187,12 +187,12 @@ class TagsControllerTest(unittest.TestCase):
 
     def test_escaping_pipes_in_value(self):
         self.ctrl.set_value('first \| second')
-        assert_equals(self.tags.value, ['first | second'])
-        assert_equals(self.ctrl.display_value, 'first \| second')
+        assert_equal(self.tags.value, ['first | second'])
+        assert_equal(self.ctrl.display_value, 'first \| second')
 
     def test_adding_tag(self):
         self.ctrl.add(Tag('new tag'))
-        assert_equals(self.tags.value, ['f1', 'f2', 'new tag'])
+        assert_equal(self.tags.value, ['f1', 'f2', 'new tag'])
 
 
 class TimeoutControllerTest(unittest.TestCase):
@@ -205,20 +205,20 @@ class TimeoutControllerTest(unittest.TestCase):
         self.ctrl = TimeoutController(self.parent, self.to)
 
     def test_creation(self):
-        assert_equals(self.ctrl.display_value, '1 s | message')
+        assert_equal(self.ctrl.display_value, '1 s | message')
         assert_true(self.ctrl.is_set)
 
     def test_value_with_empty_timeout(self):
-        assert_equals(TimeoutController(self.parent,
+        assert_equal(TimeoutController(self.parent,
                                         Timeout('Timeout')).display_value, '')
 
     def test_setting_value_changes_fixture_state(self):
         self.ctrl.set_value('3 s')
-        assert_equals(self.to.value, '3 s')
-        assert_equals(self.to.message, '')
+        assert_equal(self.to.value, '3 s')
+        assert_equal(self.to.message, '')
         self.ctrl.set_value('3 s | new message')
-        assert_equals(self.to.value, '3 s')
-        assert_equals(self.to.message, 'new message')
+        assert_equal(self.to.value, '3 s')
+        assert_equal(self.to.message, 'new message')
 
     def test_setting_value_informs_parent_controller_about_dirty_model(self):
         self.ctrl.set_value('1 min')
@@ -226,8 +226,8 @@ class TimeoutControllerTest(unittest.TestCase):
 
     def test_set_empty_value(self):
         self.ctrl.set_value('')
-        assert_equals(self.to.value, '')
-        assert_equals(self.to.message, '')
+        assert_equal(self.to.value, '')
+        assert_equal(self.to.message, '')
         assert_true(self.ctrl.dirty)
 
     def test_same_value(self):
@@ -239,7 +239,7 @@ class ReturnValueControllerTest(unittest.TestCase):
 
     def test_creation(self):
         ctrl = ReturnValueController(_FakeParent(), Return('[Return]'))
-        assert_equals(ctrl.label, 'Return Value')
+        assert_equal(ctrl.label, 'Return Value')
 
 
 class ImportControllerTest(unittest.TestCase):
@@ -284,9 +284,9 @@ class ImportControllerTest(unittest.TestCase):
         self._assert_import(2, 'BuiltIn', exp_alias='InBuilt')
 
     def test_display_value(self):
-        assert_equals(self.parent[0].display_value, 'foo | bar')
-        assert_equals(self.parent[1].display_value, '')
-        assert_equals(self.parent[2].display_value, 'WITH NAME | InBuilt')
+        assert_equal(self.parent[0].display_value, 'foo | bar')
+        assert_equal(self.parent[1].display_value, '')
+        assert_equal(self.parent[2].display_value, 'WITH NAME | InBuilt')
 
     def test_editing(self):
         ctrl = ImportController(self.parent, self.parent[1]._import)
@@ -334,16 +334,16 @@ class ImportControllerTest(unittest.TestCase):
 
     def _test_listener(self, name, type, listener, index=0):
         data = listener.data[index]
-        assert_equals(data.name, name)
-        assert_equals(data.type, type)
-        assert_equals(data.datafile, self.tcf_ctrl)
-        assert_equals(self.import_listener.data[index].name, name)
+        assert_equal(data.name, name)
+        assert_equal(data.type, type)
+        assert_equal(data.datafile, self.tcf_ctrl)
+        assert_equal(self.import_listener.data[index].name, name)
 
     def _assert_import(self, index, exp_name, exp_args=[], exp_alias=''):
         item = self.parent[index]
-        assert_equals(item.name, exp_name)
-        assert_equals(item.args, exp_args)
-        assert_equals(item.alias, exp_alias)
+        assert_equal(item.name, exp_name)
+        assert_equal(item.args, exp_args)
+        assert_equal(item.alias, exp_alias)
 
 
 class ImportSettingsControllerTest(unittest.TestCase):
@@ -372,8 +372,8 @@ class ImportSettingsControllerTest(unittest.TestCase):
 
     def _assert_import(self, exp_name, exp_args=[], exp_alias=None):
         imp = self.tcf.setting_table.imports[-1]
-        assert_equals(imp.name, exp_name)
-        assert_equals(imp.args, exp_args)
+        assert_equal(imp.name, exp_name)
+        assert_equal(imp.args, exp_args)
         assert_true(self.ctrl.dirty)
 
     def test_creation(self):
@@ -393,8 +393,8 @@ class VariablesControllerTest(unittest.TestCase):
         self.tcf.variable_table.add(name, value)
 
     def test_creation(self):
-        assert_equals(self.ctrl[0].name, '${foo}')
-        assert_equals(self.ctrl[1].name, '@{bar}')
+        assert_equal(self.ctrl[0].name, '${foo}')
+        assert_equal(self.ctrl[1].name, '@{bar}')
 
     def test_adding_scalar(self):
         self.ctrl.add_variable('${blaa}', 'value')
@@ -409,12 +409,12 @@ class VariablesControllerTest(unittest.TestCase):
         assert_true(self.ctrl.dirty)
 
     def _assert_var_in_ctrl(self, index, name, value):
-        assert_equals(self.ctrl[index].name, name)
-        assert_equals(self.ctrl[index].value, value)
+        assert_equal(self.ctrl[index].name, name)
+        assert_equal(self.ctrl[index].value, value)
 
     def _assert_var_in_model(self, index, name, value):
-        assert_equals(self.tcf.variable_table.variables[index].name, name)
-        assert_equals(self.tcf.variable_table.variables[index].value, value)
+        assert_equal(self.tcf.variable_table.variables[index].name, name)
+        assert_equal(self.tcf.variable_table.variables[index].value, value)
 
 
 class MetadataListControllerTest(unittest.TestCase):
@@ -434,16 +434,16 @@ class MetadataListControllerTest(unittest.TestCase):
         assert_true(self.ctrl[0].dirty)
 
     def test_serialization(self):
-        assert_equals(self._get_metadata(0).as_list(),
+        assert_equal(self._get_metadata(0).as_list(),
                       ['Metadata', 'Meta name', 'Some value'])
 
     def _assert_meta_in_ctrl(self, index, name, value):
-        assert_equals(self.ctrl[index].name, name)
-        assert_equals(self.ctrl[index].value, value)
+        assert_equal(self.ctrl[index].name, name)
+        assert_equal(self.ctrl[index].value, value)
 
     def _assert_meta_in_model(self, index, name, value):
-        assert_equals(self._get_metadata(index).name, name)
-        assert_equals(self._get_metadata(index).value, value)
+        assert_equal(self._get_metadata(index).name, name)
+        assert_equal(self._get_metadata(index).value, value)
 
     def _get_metadata(self, index):
         return self.tcf.setting_table.metadata[index]
@@ -495,7 +495,7 @@ class WithListOperationsTest(unittest.TestCase):
         self._assert_item_in(0, 'bar')
 
     def _assert_item_in(self, index, name):
-        assert_equals(self._list_operations._items[index], name)
+        assert_equal(self._list_operations._items[index], name)
 
 
 if __name__ == "__main__":

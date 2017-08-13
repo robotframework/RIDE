@@ -50,7 +50,7 @@ class CommandCreationTestCase(unittest.TestCase):
 
     def _min_log_level_setting_test(self, command_as_list, expected_level):
         creator = CommandCreator(None)
-        self.assertEquals(creator.get_message_log_level(command_as_list), LEVELS[expected_level])
+        self.assertEqual(creator.get_message_log_level(command_as_list), LEVELS[expected_level])
 
 
 if __name__ == '__main__':

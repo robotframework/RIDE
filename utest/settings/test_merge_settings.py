@@ -23,7 +23,7 @@ class TestMergeSettings(TestSettingsHelper):
         # content = self._read_settings_file_content(self.settings_cfg)
         line_count = len(content.splitlines())
         print("DEBUG: len %s content:\n%s" % (line_count, content))
-        # self.assertEquals(line_count, 33, "line count should be 33 was %s" %
+        # self.assertEqual(line_count, 33, "line count should be 33 was %s" %
         #                  line_count)
 
 
