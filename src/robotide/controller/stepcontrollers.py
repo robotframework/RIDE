@@ -213,7 +213,7 @@ class StepController(_BaseController):
                    for item in [self.keyword or ''] + self.args)
 
     def _kw_name_match(self, item, expected):
-        if isinstance(expected, basestring):
+        if isinstance(expected, basestring) or isinstance(expected, unicode):
             return utils.eq(item, expected) or (
                 self._GIVEN_WHEN_THEN_MATCHER.match(item) and
                 utils.eq(

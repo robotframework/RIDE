@@ -37,6 +37,7 @@ except ImportError:  # pip install future
 PY2 = sys.version_info[0] == 2
 PY3 = not PY2
 
+
 def html_format(text):
     return robotide.lib.robot.utils.html_format(text)
 

@@ -65,8 +65,9 @@ class _SettingController(ControllerWithParent):
         return ''
 
     def contains_keyword(self, name):
-        matcher = name.match if not isinstance(name, basestring) \
-            else lambda i: utils.eq(i, name)
+        matcher = name.match if not (isinstance(name, basestring) or
+                                     isinstance(name, unicode)) \
+                                    else lambda i: utils.eq(i, name)
         return self._contains_keyword(matcher)
 
     def _contains_keyword(self, matcher_function):

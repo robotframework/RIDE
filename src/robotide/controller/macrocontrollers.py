@@ -47,7 +47,7 @@ class ItemNameController(object):
         self._item = item
 
     def contains_keyword(self, name):
-        if isinstance(name, basestring):
+        if isinstance(name, basestring) or isinstance(name, unicode):
             return self._item.name == name
         return name.match(self._item.name)
 
