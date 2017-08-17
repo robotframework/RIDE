@@ -43,7 +43,7 @@ class Namespace(object):
         self._settings = settings
         self._library_manager = None
         self._content_assist_hooks = []
-        self._update_listeners = set()
+        self._update_listeners = list()  # DEBUG py3 set()
         self._init_caches()
         self._set_pythonpath()
         PUBLISHER.subscribe(self._setting_changed, RideSettingsChanged)
@@ -91,14 +91,14 @@ class Namespace(object):
         self._init_caches()
 
     def register_update_listener(self, listener):
-        self._update_listeners.add(listener)
+        self._update_listeners.append(listener)  # DEBUG .add(listener)
 
     def unregister_update_listener(self, listener):
         if listener in self._update_listeners:
             self._update_listeners.remove(listener)
 
     def clear_update_listeners(self):
-        self._update_listeners.clear()
+        self._update_listeners = list()  # DEBUG .clear()
 
     def register_content_assist_hook(self, hook):
         self._content_assist_hooks.append(hook)
@@ -135,10 +135,12 @@ class Namespace(object):
     def get_all_cached_library_names(self):
         return self._retriever.get_all_cached_library_names()
 
-    def _blank(self, start):
+    @staticmethod
+    def _blank(start):
         return start == ''
 
-    def _looks_like_variable(self, start):
+    @staticmethod
+    def _looks_like_variable(start):
         return len(start) == 1 and start[0] in ['$', '@', '&'] \
             or (len(start) >= 2 and start[:2] in ['${', '@{', '&{'])
 
@@ -149,7 +151,8 @@ class Namespace(object):
         sugs = (v for v in variables if v.name_matches(start))
         return sugs
 
-    def _add_kw_arg_vars(self, controller, variables):
+    @staticmethod
+    def _add_kw_arg_vars(controller, variables):
         if PYTHON2:
             for name, value in controller.get_local_variables().iteritems():
                 variables.set_argument(name, value)
@@ -445,13 +448,15 @@ class DatafileRetriever(object):
         alias = ctx.replace_variables(imp.alias) if imp.alias else None
         return self._lib_cache.get_library_keywords(name, args, alias)
 
-    def _convert_to_absolute_path(self, name, import_):
+    @staticmethod
+    def _convert_to_absolute_path(name, import_):
         full_name = os.path.join(import_.directory, name)
         if os.path.exists(full_name):
             return full_name
         return name
 
-    def _collect_import_of_type(self, datafile, instance_type):
+    @staticmethod
+    def _collect_import_of_type(datafile, instance_type):
         return [imp for imp in datafile.imports
                 if isinstance(imp, instance_type)]
 
@@ -486,7 +491,8 @@ class DatafileRetriever(object):
         for imp in self._collect_import_of_type(datafile, robotapi.Variables):
             self._import_vars(ctx, datafile, imp)
 
-    def _import_vars(self, ctx, datafile, imp):
+    @staticmethod
+    def _import_vars(ctx, datafile, imp):
         varfile_path = os.path.join(datafile.directory,
                                     ctx.replace_variables(imp.name))
         args = [ctx.replace_variables(a) for a in imp.args]
@@ -539,7 +545,7 @@ class DatafileRetriever(object):
         resources = list(self._get_resources_recursive(datafile,
                                                        RetrieverContext()))
         resources.sort(key=operator.attrgetter('name'))
-        return resources
+        return resources  # DEBUG
 
     def _get_resources_recursive(self, datafile, ctx):
         resources = set()
