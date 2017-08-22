@@ -43,7 +43,7 @@ class Namespace(object):
         self._settings = settings
         self._library_manager = None
         self._content_assist_hooks = []
-        self._update_listeners = list()  # DEBUG py3 set()
+        self._update_listeners = set() # list()  # DEBUG py3 set()
         self._init_caches()
         self._set_pythonpath()
         PUBLISHER.subscribe(self._setting_changed, RideSettingsChanged)
@@ -91,14 +91,14 @@ class Namespace(object):
         self._init_caches()
 
     def register_update_listener(self, listener):
-        self._update_listeners.append(listener)  # DEBUG .add(listener)
+        self._update_listeners.add(listener)  # append(listener)  # DEBUG .add(listener)
 
     def unregister_update_listener(self, listener):
         if listener in self._update_listeners:
             self._update_listeners.remove(listener)
 
     def clear_update_listeners(self):
-        self._update_listeners = list()  # DEBUG .clear()
+        self._update_listeners.clear()  # = list()  # DEBUG .clear()
 
     def register_content_assist_hook(self, hook):
         self._content_assist_hooks.append(hook)
@@ -107,7 +107,7 @@ class Namespace(object):
         kws = set()
         kws.update(self._get_default_keywords())
         kws.update(self._retriever.get_keywords_from_several(testsuites))
-        return list(kws)
+        return kws
 
     def _get_default_keywords(self):
         return self._lib_cache.get_default_keywords()

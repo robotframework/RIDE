@@ -312,6 +312,9 @@ class TestCaseController(_WithStepsController):
             return False
         return self._test == other._test
 
+    def __hash__(self):
+        return hash(repr(self))
+
     @property
     def longname(self):
         return self.parent.parent.longname + '.' + self.data.name
@@ -396,6 +399,9 @@ class UserKeywordController(_WithStepsController):
         if other.__class__ != self.__class__:
             return False
         return self._kw == other._kw
+
+    def __hash__(self):
+        return hash(repr(self))
 
     @property
     def info(self):
