@@ -1,11 +1,19 @@
 import unittest
 import os
+import sys
 from nose.tools import assert_equal
+
+# Workaround for relative import in non-module
+# see https://stackoverflow.com/questions/16981921/relative-imports-in-python-3
+PACKAGE_PARENT = '..'
+SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(),
+                                              os.path.expanduser(__file__))))
+sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
 
 from robotide.publish import PUBLISHER
 from robotide.publish.messages import RideItemStepsChanged
-from controller_creator import (
-    _FakeProject, testcase_controller, BASE_DATA)
+from controller.controller_creator import (_FakeProject, testcase_controller,
+                                           BASE_DATA)
 
 
 class TestCaseCommandTest(unittest.TestCase, _FakeProject):
@@ -55,7 +63,8 @@ class TestCaseCommandTest(unittest.TestCase, _FakeProject):
 
     def _verify_step_unchanged(self, step_data):
         row = self._data_row(step_data)
-        assert_equal(self._steps[row].as_list(), self._data_step_as_list(step_data))
+        assert_equal(self._steps[row].as_list(),
+                     self._data_step_as_list(step_data))
 
     def _verify_steps_unchanged(self, *steps):
         for step in steps:
