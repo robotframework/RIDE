@@ -22,7 +22,11 @@ class TestResourceImport(unittest.TestCase):
         self.test.execute(ChangeCellValue(0,1,'value'))
 
     def tearDown(self):
-        os.remove(self.res_full_name)
+        try:
+            os.remove(self.res_full_name)
+        except OSError or IOError as e:
+            print("DEBUG: Error removing file {}".format(e))
+            pass
         self.ctrl.close()
 
     def _create_resource(self):

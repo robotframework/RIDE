@@ -38,9 +38,9 @@ do
                 # bypass file that is passing with invoke test
                 if [ "$j" = "$a/test_resourcefactory.py" ]
                 then
-                   b=`true`
+                        b=`true`
                 else 
-                   b=`$PYTHONROOT/python$PY $j`
+                        b=`$PYTHONROOT/python$PY $j`
                 fi
                 if [ $? -eq 1 ]
 		then
