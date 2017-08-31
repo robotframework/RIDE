@@ -166,7 +166,7 @@ class NewResourceDialog(_WithImmutableParent, _CreationDialog):
         _CreationDialog.__init__(self, controller.default_dir,
                                  "New Resource File")
         self._format_chooser.SetStringSelection(
-            settings["default file format"])
+            settings.get("default file format", "robot"))
         self._controller = controller
 
     def _execute(self):

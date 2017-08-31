@@ -285,13 +285,14 @@ class TestInitializeSettings(TestSettingsHelper):
         self.settings_dir = os.path.join(os.path.dirname(__file__), 'ride')
         settings.SETTINGS_DIRECTORY = self.settings_dir
         self._init_settings_paths()
-        self._write_settings("foo = 'bar'\nhello = 'world'",
+        self._write_settings("foo = 'bar'\nhello = 'world'\n",
                              self.settings_path)
         self.user_settings_path = os.path.join(self.settings_dir, 'user.cfg')
 
     def tearDown(self):
         settings.SETTINGS_DIRECTORY = self._orig_dir
         self._remove_path(self.user_settings_path)
+        self._remove_path((self.user_settings_path+'_old_broken'))
         os.removedirs(self.settings_dir)
 
     def test_initialize_settings_creates_directory(self):
@@ -305,10 +306,10 @@ class TestInitializeSettings(TestSettingsHelper):
     def test_initialize_settings_does_merge_when_settings_exists(self):
         os.mkdir(self.settings_dir)
         self._write_settings(
-            "foo = 'bar'\nhello = 'world'", self.settings_path)
+            "foo = 'bar'\nhello = 'world'\n", self.settings_path)
         print("DEBUG: test_settings test_initialize_settings_does_merge_when_settings_exists wrote file! %s" % self.settings_path)
         # unittest.skip("DEBUG")
-        self._write_settings("foo = 'new value'\nhello = 'world'",
+        self._write_settings("foo = 'new value'\nhello = 'world'\n",
                              self.user_settings_path)
         initialize_settings(self.settings_path, 'user.cfg')
         self._check_content(
@@ -318,18 +319,15 @@ class TestInitializeSettings(TestSettingsHelper):
     def test_initialize_settings_raises_exception_when_invalid_user_settings(
             self):
         os.mkdir(self.settings_dir)
-        self._write_settings("foo = 'bar'\nhello = 'world'",
+        self._write_settings("foo = 'bar'\nhello = 'world'\n",
                              self.settings_path)
         self._write_settings("invalid = invalid", self.user_settings_path)
+        # DEBUG Error is not raised
+        #self.assertRaises(ConfigurationError, initialize_settings,
+        #                  self.settings_path, 'user.cfg')
         initialize_settings(self.settings_path, 'user.cfg')
         self._check_content(
             {'foo': 'bar', 'hello': 'world', 'settings_version': 8}, False)
-        # DEBUG Error is not raised
-        '''
-        self.assertRaises(
-            ConfigurationError, initialize_settings,
-            self.settings_path, 'user.cfg')
-        '''
 
     def test_initialize_settings_replaces_corrupted_settings_with_defaults(
             self):
@@ -349,7 +347,7 @@ class TestMergeSettings(TestSettingsHelper):
 
     def setUp(self):
         self._init_settings_paths()
-        self._write_settings("foo = 'bar'\nhello = 'world'",
+        self._write_settings("foo = 'bar'\nhello = 'world'\n",
                              self.settings_path)
 
     def test_merge_when_no_user_settings(self):
@@ -357,15 +355,15 @@ class TestMergeSettings(TestSettingsHelper):
         self._check_content({'foo': 'bar', 'hello': 'world'}, False)
 
     def test_merge_when_user_settings_are_changed(self):
-        self._write_settings("foo = 'new value'\nhello = 'world'",
+        self._write_settings("foo = 'new value'\nhello = 'world'\n",
                              self.user_settings_path)
         SettingsMigrator(self.settings_path, self.user_settings_path).merge()
         self._check_content({'foo': 'new value', 'hello': 'world'}, False)
 
     def test_merge_when_new_settings_in_defaults(self):
-        self._write_settings("foo = 'bar'\nhello = 'world'\nnew = 'value'",
+        self._write_settings("foo = 'bar'\nhello = 'world'\nnew = 'value'\n",
                              self.settings_path)
-        self._write_settings("foo = 'new value'\nhello = 'world'",
+        self._write_settings("foo = 'new value'\nhello = 'world'\n",
                              self.user_settings_path)
         SettingsMigrator(self.settings_path, self.user_settings_path).merge()
         self._check_content(

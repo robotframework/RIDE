@@ -74,14 +74,14 @@ class UpdateNotifierController(object):
         return self._get_response(('robotframework-ride', version), 'release_data')['download_url']
 
     def _get_response(self, params, method):
-        req = urllib2.Request('http://pypi.python.org/pypi', xmlrpclib.dumps(params, method), {'Content-Type':'text/xml'})
+        req = urllib2.Request('https://pypi.python.org/pypi', xmlrpclib.dumps(params, method), {'Content-Type':'text/xml'})
         return xmlrpclib.loads(urllib2.urlopen(req, timeout=1).read())[0][0]
 
 
 class HtmlWindow(wx.html.HtmlWindow):
     def __init__(self, parent, id, size=(600,400)):
         wx.html.HtmlWindow.__init__(self,parent, id, size=size)
-        if "gtk2" in wx.PlatformInfo:
+        if "gtk2" or "gtk3" in wx.PlatformInfo:
             self.SetStandardFonts()
 
     def OnLinkClicked(self, link):

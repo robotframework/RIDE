@@ -91,7 +91,7 @@ class ResourceFactoryDirectoryIgnoreTestCase(unittest.TestCase):
 
     def _create_factory(self, excluded_dir):
         settings = FakeSettings()
-        settings.set('default_directory', os.path.dirname(__file__))
+        settings.set('default directory', os.path.dirname(__file__))
         settings.excludes.update_excludes([excluded_dir])
         print("DEBUG Test Resource Factory create factory: %s\n" % list(settings))
         return _ResourceFactory(settings)

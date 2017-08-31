@@ -19,7 +19,7 @@ from robotide import utils, robotapi
 
 
 class ResourceFactory(object):
-    _IGNORE_RESOURCE_DIRECTORY_SETTING_NAME = 'ignored_resource_directory'
+    _IGNORE_RESOURCE_DIRECTORY_SETTING_NAME = 'ignored resource directory'
 
     def __init__(self, settings):
         self.cache = {}

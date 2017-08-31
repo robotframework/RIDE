@@ -35,8 +35,7 @@ elif sys.version_info[0] == 3:
 compiler = None
 try:
     # import py_compile as compiler # compiler
-    # import ast as compiler  #
-    import compiler
+    import ast as compiler  # DEBUG    import compiler
 except ImportError:
     # for IronPython
     pass
@@ -146,23 +145,19 @@ OPTION_DEFAULTS = {
     'write_empty_values': False,
 }
 
-
+# TODO Remove DEBUG info
 def getObj(s):
-    # x = "a=\'" + s + "\'"
-    s = "a=" + s
-    if compiler is None:
-        raise ImportError('compiler module not available')
-    p = compiler.parse(s)
-    return p.getChildren()[1].getChildren()[0].getChildren()[1]
-    """
+    x = "a=" + s
     try:
-        p = compiler.literal_eval(x)  # .parse(s) # .literal_eval(s)
-    except ValueError as e:
-        print("DEBUG: parser getObj Error %s\n", str(e))
-        raise ValueError
-    print("DEBUG: parser getObj string %s  eval %s\n", (x, p))
-    return p #  p.getChildren()[1].getChildren()[0].getChildren()[1]
-    """
+        p = compiler.parse(x)
+    except (ValueError, SyntaxError) as e:
+        # print("DEBUG: parser getObj Error %s\n" % str(e))
+        raise  #ValueError
+    y = list()
+    for i in compiler.walk(p):
+        y.append(i)
+    # print("DEBUG: parser getObj y= %s v=%s " % (y[3].__class__.__name__, compiler.literal_eval(y[3])))
+    return y[3:-1]
 
 
 class UnknownType(Exception):
@@ -172,18 +167,25 @@ class UnknownType(Exception):
 class Builder(object):
 
     def build(self, o):
-        # print("DEBUG build name: %s\n" % 'build_' + o.__class__.__name__)
-        m = getattr(self, 'build_' + o.__class__.__name__, None)
+        # print("DEBUG build name: %s class name %s " % ('build_' + o[0].__class__.__name__.strip(), o[0].__class__.__name__ ))
+        if o.__class__.__name__ == 'Tuple':
+            m = getattr(self, 'build_Tuple')  # DEBUG Tuple
+            return m(o[0])
+        m = getattr(self, ('build_' + o[0].__class__.__name__.strip()))
+        # print("DEBUG: m=%s M object=%s  " % (m, m(o[0])))
         if m is None:
-            raise UnknownType(o.__class__.__name__)
-        return m(o)
+            raise UnknownType(o.__class__.__name__.strip())
+        return m(o[0])
 
     def build_List(self, o):
-        return map(self.build, o.getChildren())
+        # print("DEBUG: build_List v=%s " % compiler.literal_eval(o))
+        return compiler.literal_eval(o)
 
     def build_Const(self, o):
-        return o.value
+        # return o.value
+        return compiler.literal_eval(o)
 
+    # TODO Update to AST code
     def build_Dict(self, o):
         d = {}
         i = iter(map(self.build, o.getChildren()))
@@ -192,19 +194,42 @@ class Builder(object):
         return d
 
     def build_Tuple(self, o):
-        return tuple(self.build_List(o))
+        # print("DEBUG: build_Tuple o=%s *******************************" % o)
+        m_tuple = list()
+        for node in compiler.iter_child_nodes(o):
+            try:
+                if node.__class__.__name__ not in ['List', 'Load', 'Tuple']:
+                    # print("DEBUG: build_Tuple class=%s **" % node.__class__.__name__)
+                    v = compiler.literal_eval(node)
+                    # print("DEBUG: build_Tuple v=%s **" % v)
+                    m_tuple.append(v)
+            except ValueError:
+                m_tuple.pop()
+                pass
+        # print("DEBUG: node in Tuple n=%s " % m_tuple)
+        # print("DEBUG: build_Tuple v=%s " % compiler.dump(o, annotate_fields=False))
+        return tuple(m_tuple)
 
     def build_Name(self, o):
-        if o.name == 'None':
-            return None
-        if o.name == 'True':
-            return True
-        if o.name == 'False':
-            return False
+        try:
+            name = compiler.literal_eval(o)
+            # print("DEBUG: build_Name v=%s \n" % name)
+        except ValueError:
+            raise UnknownType('Name')
+        return name
 
-        # An undefined Name
-        raise UnknownType('Undefined Name')
+    def build_Num(self, o):
+        # print("DEBUG: build_Num v=%s \n" % compiler.literal_eval(o))
+        return compiler.literal_eval(o)
 
+    def build_NameConstant(self, o):
+        return self.build_Name(o)
+
+    def build_Str(self, o):
+        # print("DEBUG: build_Str v=%s \n" % compiler.literal_eval(o))
+        return compiler.literal_eval(o)
+
+    # TODO Update to AST code
     def build_Add(self, o):
         real, imag = map(self.build_Const, o.getChildren())
         try:
@@ -215,13 +240,16 @@ class Builder(object):
             raise UnknownType('Add')
         return real+imag
 
+    # TODO Update to AST code
     def build_Getattr(self, o):
         parent = self.build(o.expr)
         return getattr(parent, o.attrname)
 
+    # TODO Update to AST code
     def build_UnarySub(self, o):
         return -self.build_Const(o.getChildren()[0])
 
+    # TODO Update to AST code
     def build_UnaryAdd(self, o):
         return self.build_Const(o.getChildren()[0])
 
@@ -231,7 +259,7 @@ _builder = Builder()
 
 def unrepr(s):
     if not s:
-        # print("DEBUG return s from unrepr %s\n", s)
+        # print("DEBUG return s from unrepr %s\n" % s)
         return s
     return _builder.build(getObj(s))
 

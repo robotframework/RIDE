@@ -74,6 +74,7 @@ class ItemInfo(object):
         return hash((self.name, self.source))
 
 
+@total_ordering
 class VariableInfo(ItemInfo):
 
     def __init__(self, name, value, source):
@@ -116,13 +117,32 @@ class VariableInfo(ItemInfo):
                 '<tr><td valign=top><i>Value:</i></td><td>%s</td></tr>'
                 '</table>') % (self.name, self._original_source, unicode(value))
 
+    def __eq__(self, other):
+        return self.name.lower() == other.name.lower()
 
+    def __hash__(self):
+        return hash(repr(self))
+
+    def __lt__(self, other):
+        return self.name.lower() < other.name.lower()
+
+
+@total_ordering
 class ArgumentInfo(VariableInfo):
 
     SOURCE = 'Argument'
 
     def __init__(self, name, value):
         VariableInfo.__init__(self, name, value, self.SOURCE)
+
+    def __eq__(self, other):
+        return self.longname.lower() == other.longname.lower()
+
+    def __hash__(self):
+        return hash(repr(self))
+
+    def __lt__(self, other):
+        return self.longname.lower() < other.longname.lower()
 
 
 class LocalVariableInfo(VariableInfo):
@@ -133,6 +153,7 @@ class LocalVariableInfo(VariableInfo):
         VariableInfo.__init__(self, name, '', self.SOURCE)
 
 
+@total_ordering
 class _KeywordInfo(ItemInfo):
 
     def __init__(self, item):
@@ -170,6 +191,15 @@ class _KeywordInfo(ItemInfo):
 
     def _name(self, item):
         return item.name
+
+    def __eq__(self, other):
+        return self.name.lower() == other.name.lower()
+
+    def __hash__(self):
+        return hash(repr(self))
+
+    def __lt__(self, other):
+        return self.name.lower() < other.name.lower()
 
 
 class _XMLKeywordContent(_KeywordInfo):
