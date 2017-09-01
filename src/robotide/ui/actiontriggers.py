@@ -351,7 +351,11 @@ class ShortcutRegistry(object):
     def _update_accerelator_table(self):
         accerelators = []
         for delegator in self._actions.values():
-            flags, key_code = delegator.shortcut.parse()
+            print("DEBUG: actiontrigger updateacelerators  delegator %s" % delegator)
+            try:
+                flags, key_code = delegator.shortcut.parse()
+            except TypeError:
+                continue
             accerelators.append(wx.AcceleratorEntry(flags, key_code, delegator.id))
         self._frame.SetAcceleratorTable(wx.AcceleratorTable(accerelators))
 

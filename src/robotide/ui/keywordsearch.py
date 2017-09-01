@@ -13,9 +13,10 @@
 #  limitations under the License.
 
 import wx
-from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
 import os.path
 
+from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
+from functools import (total_ordering, cmp_to_key)
 from robotide.controller.filecontrollers import (ResourceFileController,
                                                  TestCaseFileController)
 from robotide.pluginapi import (Plugin, ActionInfo, RideOpenSuite,
@@ -120,7 +121,8 @@ class _SearchCriteria(object):
 class KeywordSearchDialog(wx.Frame):
 
     def __init__(self, parent, searcher):
-        wx.Frame.__init__(self, parent, title="Search Keywords", style=wx.DEFAULT_FRAME_STYLE|wx.FRAME_FLOAT_ON_PARENT)
+        wx.Frame.__init__(self, parent, title="Search Keywords",
+                          style=wx.DEFAULT_FRAME_STYLE|wx.FRAME_FLOAT_ON_PARENT)
         self._plugin = searcher
         self._create_components()
         self._make_bindings()
@@ -340,12 +342,17 @@ class _KeywordData(list):
         return result
 
     def _sort_by_attr(self, keywords, sort_order):
-        return sorted(keywords, cmp=self._get_comparator_for(self.headers[sort_order.column].lower()),
+        return sorted(keywords, key=cmp_to_key(self._get_comparator_for(
+            self.headers[sort_order.column].lower())),
                       reverse=not sort_order.sort_up)
 
+    @staticmethod
+    def m_cmp(a, b):
+        return (a > b) - (a < b)
+
     def _get_comparator_for(self, atrr_name):
-        return lambda kw, kw2: cmp(self._value_lowerer(kw, atrr_name),
-                                   self._value_lowerer(kw2, atrr_name))
+        return lambda kw, kw2: self.m_cmp(self._value_lowerer(kw, atrr_name),
+                                          self._value_lowerer(kw2, atrr_name))
 
     def _value_lowerer(self, kw, attr_name):
         return getattr(kw, attr_name).lower()

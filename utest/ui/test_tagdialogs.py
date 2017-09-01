@@ -9,6 +9,7 @@ elif sys.version_info[0] == 3:
     PYTHON2 = False
     PYTHON3 = True
 
+from functools import total_ordering
 from robotide.ui.tagdialogs import ViewAllTagsDialog
 
 from robotide.robotapi import (TestDataDirectory, TestCaseFile, ResourceFile,
@@ -18,6 +19,8 @@ from robotide.spec.librarymanager import LibraryManager
 from robotide.ui.images import TreeImageList
 from robotide.ui.mainframe import ActionRegisterer
 from robotide.ui.actiontriggers import MenuBar, ToolBar, ShortcutRegistry
+from robotide.preferences import RideSettings
+# TODO make sure it does not use real user settings file (it get damaged)
 from robotide.ui.notebook import NoteBook
 
 from robotide.application import Project
@@ -65,6 +68,46 @@ class _FakeMainFrame(wx.Frame):
         pass
 """
 
+#TODO Improve Code and remove DEBUG
+
+@total_ordering
+class _SortableD(utils.NormalizedDict):
+
+    def __init__(self, initial=None, ignore=(), caseless=True, spaceless=True):
+        self._data = {}
+        self._keys = {}
+        self._normalize = lambda s: utils.normalize(s, ignore, caseless,
+                                                    spaceless)
+        super(utils.NormalizedDict)
+
+    # def __eq__(self, other):
+    #     return self.name.lower() == other.name.lower()
+    def __hash__(self):
+        return hash(repr(self))
+
+    def __lt__(self, other):
+        return self._keys[0].lower() < other._keys[0].lower()
+        return   # self.name.lower() < other.name.lower()
+
+    def __repr__(self):
+        return self.__str__()
+
+    # def __iter__(self):
+    #    return iter(self._keys)
+
+    def __len__(self):
+        return len(self._keys)
+
+    def __iter__(self):
+        return (self._keys[norm_key] for norm_key in sorted(self._keys))
+
+    def iteritems(self):
+        """Returns an iterator over the (key,data) items of the tags"""
+        if PYTHON2:
+            return self._keys.iteritems()
+        elif PYTHON3:
+            return self._keys.items()
+
 
 class _ViewAllTagsDialog(ViewAllTagsDialog):
 
@@ -75,12 +118,12 @@ class _ViewAllTagsDialog(ViewAllTagsDialog):
         self._controller = controller._controller
         super(_ViewAllTagsDialog, self).__init__(self, self.frame)
         self.model = controller
-        self._results = utils.NormalizedDict()
+        self._results = _SortableD()  # utils.NormalizedDict()
         self.itemDataMap = []
         self.sort_state = (0, 1)
 
     def _search_for_tags(self):
-        unique_tags = utils.NormalizedDict()
+        unique_tags = _SortableD()  # dict()  # utils.NormalizedDict() # DEBUG
         for i in self.model.suite.children:
             for test in i.testcase_table.tests:
                 try:
@@ -97,8 +140,11 @@ class _ViewAllTagsDialog(ViewAllTagsDialog):
                     pass
         isreversed = (self.sort_state[0] == 0 and self.sort_state[1] == 0)
         self._results = sorted(unique_tags.items(),
-                               key=lambda item: item[0].lower,
+                               key=lambda item: len(item[0]),
                                reverse=isreversed)
+        # self._results = sorted(unique_tags.items(),
+        #                        key=lambda item: item[0].lower,
+        #                        reverse=isreversed)
 
     def _execute(self):
         self._clear_search_results()
@@ -151,11 +197,12 @@ class _BaseSuiteTreeTest(unittest.TestCase):
 
     def setUp(self):
         # frame = _FakeMainFrame()
+        settings = FakeSettings()
         self.app = wx.App()
         self.frame = wx.Frame(None)
         self.frame.tree = Tree(self.frame, ActionRegisterer(
             MenuBar(self.frame), ToolBar(self.frame),
-            ShortcutRegistry(self.frame)))
+            ShortcutRegistry(self.frame)), settings)
         self.frame.Show()
         self._tags_list = utils.NormalizedDict()
         self._tags_list = {"tag-11": [1, 2], "tag-02": [3],
@@ -254,15 +301,15 @@ class TestSortTags(_BaseSuiteTreeTest):
         self._tagsdialog.OnColClick()
         assert_equal(self._tagsdialog.sort_state, (1, 0))
         reference = [[[u'a-', 1, u'-a', 3], 12], [[u'tag-', 21], 9],
-                     [[u'tag-', 2], 9], [[u'tag-', 12], 9],
-                     [[3, u'-', 2, u'-', 1, u'-tag-', 2, u'c'], 9],
-                     [[8, u'-b-', 1], 9], [[u'tag-', 11], 6], [[2, u'-b'], 6],
-                     [[u'tag-', 3], 3], [[u'b-', 1, u'-a', 1], 3],
-                     [[3, u'-', 2, u'-', 3, u'-tag-', 2, u'a'], 3],
-                     [[u'tag-', 1], 3], [[u'tag-', 22], 3], [[u'tag-', 3], 3],
-                     [[u'tag-', 2], 3], [[u'b-', 1, u'-a', 1], 3],
-                     [[8, u'-b'], 3], [[u'a-', 1, u'-a', 3], 3],
-                     [[u'a-', 1, u'-a', 2], 3]]
+                 [[u'tag-', 2], 9], [[u'tag-', 12], 9],
+                 [[3, u'-', 2, u'-', 1, u'-tag-', 2, u'c'], 9],
+                 [[8, u'-b-', 1], 9], [[u'tag-', 11], 6], [[2, u'-b'], 6],
+                 [[u'tag-', 3], 3], [[u'b-', 1, u'-a', 1], 3],
+                 [[3, u'-', 2, u'-', 3, u'-tag-', 2, u'a'], 3],
+                 [[u'tag-', 1], 3], [[u'tag-', 22], 3], [[u'tag-', 3], 3],
+                 [[u'tag-', 2], 3], [[u'b-', 1, u'-a', 1], 3],
+                 [[8, u'-b'], 3], [[u'a-', 1, u'-a', 3], 3],
+                 [[u'a-', 1, u'-a', 2], 3]]
         cref = list(j for i, j in reference)
         dref = list(j for i, j in self._tagsdialog.itemDataMap)
         # print("cref = {0}\ndref = {1}\n".format(cref, dref))
