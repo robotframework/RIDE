@@ -285,11 +285,11 @@ class SettingsMigrator(object):
 
     def _write_merged_settings(self, settings, path):
         try:
-            with open(path, 'wb') as outfile:
+            with open(path, 'wb') as outfile: # DEBUG used to be 'wb'
                 if PYTHON2:
                     settings.write(outfile)
                 elif PYTHON3:  # DEBUG
-                    settings.write(outfile).encoding('UTF-8')
+                    settings.write(outfile) # DEBUG .encoding('UTF-8')
         except IOError:
             raise RuntimeError(
                 'Could not open settings file "%s" for writing' % path)

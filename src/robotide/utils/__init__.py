@@ -121,3 +121,24 @@ def run_python_command(command, mode='c'):
         stderr=subprocess.STDOUT)
     output, _ = process.communicate()
     return output
+
+
+def converttypes(data, prefer_str=True):
+    """
+    Convert all types from Python2 to Python3
+    """
+    if PY2:
+        return data
+    enc = sys.stdout.encoding or "utf-8"
+    data_type = type(data)
+
+    if data_type == bytes:
+        if prefer_str:
+            return str(data.decode(enc))
+        return data.decode(enc)
+    if data_type in (str, int):
+        return str(data)
+
+    if data_type == dict:
+        data = data.items()
+    return data_type(map(converttypes, data))

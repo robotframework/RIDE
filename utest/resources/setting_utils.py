@@ -42,7 +42,7 @@ class TestSettingsHelper(unittest.TestCase):
         f.close()
 
     def _read_settings_file_content(self, path=None):
-        f = open(self._get_path(path), 'rb')
+        f = open(self._get_path(path), 'r')  # DEBUG was 'rb'
         value = f.read()
         f.close()
         return value

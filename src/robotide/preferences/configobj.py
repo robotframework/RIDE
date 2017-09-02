@@ -23,7 +23,7 @@ from __future__ import generators
 import sys
 import os
 import re
-from robotide.utils import basestring, unicode
+from robotide.utils import basestring, unicode, converttypes
 
 if sys.version_info[0] == 2:
     PYTHON2 = True
@@ -144,6 +144,7 @@ OPTION_DEFAULTS = {
     'unrepr': False,
     'write_empty_values': False,
 }
+
 
 # TODO Remove DEBUG info
 def getObj(s):
@@ -1312,9 +1313,13 @@ class ConfigObj(Section):
             infile = self._handle_bom(infile)
             # infile is now *always* a list
             #
+            # if isinstance(infile, bytes):  # DEBUG This is when Python 3
+            #     print("DEBUG: infile is bytes")
+            #     infile = infile.decode()
+            #     infile.split('\n')
             # Set the newlines attribute (first line ending it finds)
             # and strip trailing '\n' or '\r' from lines
-            for line in infile:
+            for line in infile:  # DEBUG
                 if (not line) or (line[-1] not in ('\r', '\n', '\r\n')):
                     continue
                 for end in ('\r\n', '\n', '\r'):
@@ -1325,10 +1330,11 @@ class ConfigObj(Section):
 
             infile = [line.rstrip(self.newlines) for line in infile]
 
+        infile = converttypes(infile)
         # print("DEBUG: configobj before parsing %s\n" % infile)
         # print("DEBUG: Before parsing Errors are: %s", self._errors)
         self._parse(infile)
-        # print("DEBUG: configobj parsed infile %s\n", infile)
+        # print("DEBUG: configobj parsed infile keys %s" % self.keys())
         # print("DEBUG: Errors are: %s", self._errors)
         # print("DEBUG: ############################### BY PASS ERROR PARSER!!!!!!!!")
         # if we had any errors, now is the time to raise them
@@ -1418,6 +1424,7 @@ class ConfigObj(Section):
             # No need to check for a BOM
             # the encoding specified doesn't have one
             # just decode
+            # print("DEBUG: returning from no enconding defined")
             return self._decode(infile, self.encoding)
 
         if isinstance(infile, (list, tuple)):
@@ -1438,15 +1445,18 @@ class ConfigObj(Section):
                         ### BOM discovered
                         ##self.BOM = True
                         # Don't need to remove BOM
+                        # print("DEBUG: returning from enconding UTF-16")
                         return self._decode(infile, encoding)
 
                 # If we get this far, will *probably* raise a DecodeError
                 # As it doesn't appear to start with a BOM
+                # print("DEBUG: returning from enconding UTF-16, no BOM")
                 return self._decode(infile, self.encoding)
 
             # Must be UTF8
             BOM = BOM_SET[enc]
             if not line.startswith(BOM):
+                # print("DEBUG: returning from enconding UTF-8, no BOM")
                 return self._decode(infile, self.encoding)
 
             newline = line[len(BOM):]
@@ -1457,39 +1467,49 @@ class ConfigObj(Section):
             else:
                 infile = newline
             self.BOM = True
+            # print("DEBUG: returning from enconding UTF-8, removed BOM")
             return self._decode(infile, self.encoding)
 
         # DEBUG Just ignore BOM if using Python 3
         # TODO fix code for Python 3
-        if not PYTHON3:
-            # No encoding specified - so we need to check for UTF8/UTF16
-            for BOM, (encoding, final_encoding) in BOMS.items():
-                if not line.startswith(BOM):
-                    continue
-                else:
-                    # BOM discovered
-                    self.encoding = final_encoding
-                    if not final_encoding:
-                        self.BOM = True
-                        # UTF8
-                        # remove BOM
-                        newline = line[len(BOM):]
-                        if isinstance(infile, (list, tuple)):
-                            infile[0] = newline
-                        else:
-                            infile = newline
-                        # UTF8 - don't decode
-                        if isinstance(infile, basestring):
-                            return infile.splitlines(True)
-                        else:
-                            return infile
-                    # UTF16 - have to decode
-                    return self._decode(infile, encoding)
+        # if not PYTHON3:
+        # print("DEBUG: entering no enconding defined")
+        # No encoding specified - so we need to check for UTF8/UTF16
+        for BOM, (encoding, final_encoding) in BOMS.items():
+            if not line.startswith(BOM):
+                continue
+            else:
+                # BOM discovered
+                self.encoding = final_encoding
+                if not final_encoding:
+                    self.BOM = True
+                    # UTF8
+                    # remove BOM
+                    newline = line[len(BOM):]
+                    if isinstance(infile, (list, tuple)):
+                        infile[0] = newline
+                    else:
+                        infile = newline
+                    # UTF8 - don't decode
+                    if isinstance(infile, basestring):
+                        # print("DEBUG: returning lines enconding UTF-8, w BOM")
+                        return infile.splitlines(True)
+                    else:
+                        # print("DEBUG: returning str enconding UTF-8, w BOM")
+                        return infile
+                # UTF16 - have to decode
+                # print("DEBUG: returning from enconding UTF-16, w BOM")
+                return self._decode(infile, encoding)
 
         # No BOM discovered and no encoding specified, just return
         if isinstance(infile, basestring):
             # infile read from a file will be a single string
+            # print("DEBUG: returning str from list no enconding, no BOM")
             return infile.splitlines(True)
+        if isinstance(infile, bytes):  # DEBUG Python 3
+            infile.decode()
+            return infile.splitlines(True)
+        # print("DEBUG: returning str from no enconding, no BOM, type %s" % type(infile))
         return infile
 
     def _a_to_u(self, aString):
@@ -1558,7 +1578,7 @@ class ConfigObj(Section):
             # print("DEBUG: _parser init cycles: line[%d]= %s\n", (cur_index,sline))
             # DEBUG if PYTHON3: ('#'.encode('UTF-8'))
             # do we have anything on the line ?
-            if not sline or sline.startswith('#'.encode('UTF-8')):
+            if not sline or sline.startswith('#'): # .encode('UTF-8')):
                 reset_comment = False
                 comment_list.append(line)
                 continue
@@ -2103,7 +2123,11 @@ class ConfigObj(Section):
         if not output.endswith(newline):
             output += newline
         if outfile is not None:
-            outfile.write(output)
+            if PYTHON2:
+                outfile.write(output)
+            elif PYTHON3:
+                outfile.write(output.encode('UTF-8'))
+            outfile.close()
         else:
             h = open(self.filename, 'wb')
             if PYTHON2:
