@@ -25,7 +25,7 @@ class TestResourceImport(unittest.TestCase):
         try:
             os.remove(self.res_full_name)
         except OSError or IOError as e:
-            print("DEBUG: Error removing file {}".format(e))
+            # print("DEBUG: Error removing file {}".format(e))
             pass
         self.ctrl.close()
 

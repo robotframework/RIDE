@@ -914,7 +914,7 @@ class OutputStyledTextCtrl(wx.stc.StyledTextCtrl):
             if self.GetScrollWidth() < width + 50:
                 self.SetScrollWidth(width + 50)
         except UnicodeDecodeError:
-            print("DEBUG: UnicodeDecodeError at update scroll, testrunnerplugin, string is %s\n" % string)
+            # print("DEBUG: UnicodeDecodeError at update scroll, testrunnerplugin, string is %s\n" % string)
             pass
 
 

@@ -98,7 +98,7 @@ class Shortcut(object):
     def _split(self, shortcut):
         try:
             m_str=shortcut.replace('+', '-').split('-')
-            print("DEBUG: Shortcut %s" % m_str)
+            # print("DEBUG: Shortcut %s" % m_str)
             return m_str
         except AttributeError:  # DEBUG On python 3 there are NoneType
             pass

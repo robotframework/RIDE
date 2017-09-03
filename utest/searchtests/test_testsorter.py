@@ -6,7 +6,7 @@ class TestTestSorter(_TestSearchTest, unittest.TestCase):
 
     def _matches_in_order(self, match_text, matches):
         matches = [self._match(match_text, name=name) for name in matches]
-        print("DEBUG: _matches list %s" % matches)
+        # print("DEBUG: _matches list %s" % matches)
         for i in range(1, len(matches)):
             self._assert_is_greater(matches[i], matches[i - 1])
 

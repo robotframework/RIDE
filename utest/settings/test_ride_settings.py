@@ -10,8 +10,8 @@ class TestRideSettings(unittest.TestCase):
 
     def test_loading_settings(self):
         settings = RideSettings()
-        print("DEBUG: RideSettings, %s", settings._config_obj.__repr__())
-        print("DEBUG: settings path %s", settings._config_obj['install root'])
+        # print("DEBUG: RideSettings, %s", settings._config_obj.__repr__())
+        # print("DEBUG: settings path %s", settings._config_obj['install root'])
         self.assertTrue(settings._config_obj['mainframe size'])
 
 

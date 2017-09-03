@@ -307,7 +307,7 @@ class TestInitializeSettings(TestSettingsHelper):
         os.mkdir(self.settings_dir)
         self._write_settings(
             "foo = 'bar'\nhello = 'world'\n", self.settings_path)
-        print("DEBUG: test_settings test_initialize_settings_does_merge_when_settings_exists wrote file! %s" % self.settings_path)
+        # print("DEBUG: test_settings test_initialize_settings_does_merge_when_settings_exists wrote file! %s" % self.settings_path)
         # unittest.skip("DEBUG")
         self._write_settings("foo = 'new value'\nhello = 'world'\n",
                              self.user_settings_path)

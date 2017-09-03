@@ -40,7 +40,7 @@ class ResourceFactoryDirectoryIgnoreTestCase(unittest.TestCase):
     def test_resourcefactory_ignores_imported_resource_from_ignore_directory(
             self):
         self.r = self._create_factory(os.path.dirname(__file__))
-        print("DEBUG: test self._import, %s  file %s\n" % (str(self._import.name), os.path.dirname(__file__)))
+        # print("DEBUG: test self._import, %s  file %s\n" % (str(self._import.name), os.path.dirname(__file__)))
         #self.assertEqual(None, self.r.get_resource_from_import(self._import,
         #                                                       self._context))
         self.assertIsNone(self.r.get_resource_from_import(self._import,
@@ -93,7 +93,7 @@ class ResourceFactoryDirectoryIgnoreTestCase(unittest.TestCase):
         settings = FakeSettings()
         settings.set('default directory', os.path.dirname(__file__))
         settings.excludes.update_excludes([excluded_dir])
-        print("DEBUG Test Resource Factory create factory: %s\n" % list(settings))
+        # print("DEBUG Test Resource Factory create factory: %s\n" % list(settings))
         return _ResourceFactory(settings)
 
     def _mock_context(self):

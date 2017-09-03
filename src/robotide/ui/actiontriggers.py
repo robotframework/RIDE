@@ -351,7 +351,7 @@ class ShortcutRegistry(object):
     def _update_accerelator_table(self):
         accerelators = []
         for delegator in self._actions.values():
-            print("DEBUG: actiontrigger updateacelerators  delegator %s" % delegator)
+            # print("DEBUG: actiontrigger updateacelerators  delegator %s" % delegator)
             try:
                 flags, key_code = delegator.shortcut.parse()
             except TypeError:
