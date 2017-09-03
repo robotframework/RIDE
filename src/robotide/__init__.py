@@ -78,7 +78,7 @@ def main(*args):
         sys.exit(0)
     try:
         _run(inpath, not noupdatecheck, debug_console)
-    except Exception:
+    except Exception:  # DEBUG
         import traceback
         traceback.print_exception(*sys.exc_info())
         sys.stderr.write('\n\nUse --help to get usage information.\n')
@@ -102,7 +102,8 @@ def _run(inpath=None, updatecheck=True, debug_console=False):
         _show_old_wxpython_warning_if_needed()
         raise
     if PY3:
-        raise NotImplementedError
+        print("Thank you for helping developing and testing RIDE on Python 3 and wxPython 4")
+        # raise NotImplementedError
     if inpath:
         inpath = inpath
         # if not isinstance(inpath[0], unicode):

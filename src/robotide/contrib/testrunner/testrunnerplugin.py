@@ -46,7 +46,10 @@ import datetime
 import time
 import os
 import re
-from Queue import Queue
+try:
+    from Queue import Queue
+except ImportError: # Python 3
+    from queue import Queue
 import wx
 import wx.stc
 from wx.lib.embeddedimage import PyEmbeddedImage

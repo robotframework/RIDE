@@ -13,6 +13,7 @@
 #  limitations under the License.
 
 import os
+import sys
 import wx
 from contextlib import contextmanager
 
@@ -102,9 +103,12 @@ class RIDE(wx.App):
     def _find_robot_installation(self):
         output = utils.run_python_command(
             ['import robot; print(robot.__file__ + ", " + robot.__version__)'])
-        robot_found = 'ImportError' not in output
+        if utils.PY2:
+            robot_found = "ImportError" not in output
+        else:
+            robot_found = b"ImportError" not in output
         if robot_found:
-            rf_file, rf_version = output.strip().split(', ')
+            rf_file, rf_version = output.strip().split(b", ")
             publish.RideLogMessage(
                 "Found Robot Framework version {0} from '{1}'.".format(
                     rf_version, os.path.dirname(rf_file))).publish()

@@ -118,7 +118,7 @@ def run_python_command(command, mode='c'):
     process = subprocess.Popen(
         cmd,
         stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT)
+        stderr=subprocess.PIPE)  # DEBUG STDOUT PIPE
     output, _ = process.communicate()
     return output
 

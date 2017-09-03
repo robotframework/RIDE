@@ -12,6 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+
 import inspect
 import sys
 import traceback
@@ -23,7 +24,7 @@ from robotide.publish import messagetype
 from robotide.publish import publisher
 
 
-class RideMessage(object, metaclass=messagetype.messagetype):
+class RideMessage(object):
     """Base class for all messages sent by RIDE.
 
     :CVariables:
@@ -37,8 +38,8 @@ class RideMessage(object, metaclass=messagetype.messagetype):
         Names of attributes this message provides. These must be given as
         keyword arguments to `__init__` when an instance is created.
     """
-
-    topic = None  # DEBUG None
+    __metaclass__ = messagetype.messagetype
+    topic = None  #  DEBUG None
     data = []
 
     def __init__(self, **kwargs):
@@ -66,9 +67,8 @@ class RideMessage(object, metaclass=messagetype.messagetype):
         try:
             self._publish(self)
         except Exception as err:
-            self._publish(RideLogException(
-                message='Error in publishing message: ' + str(err),
-                exception=err, level='ERROR'))
+            self._publish(RideLogException(message='Error in publishing message: ' + str(err),
+                                           exception=err, level='ERROR'))
 
     def _publish(self, msg):
         publisher.PUBLISHER.publish(msg.topic, msg)
