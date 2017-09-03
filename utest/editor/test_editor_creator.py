@@ -1,6 +1,7 @@
 import unittest
 import wx
 import os
+import sys
 from mockito import mock
 from nose.tools import assert_equal, assert_true
 
@@ -11,7 +12,16 @@ from robotide.controller.settingcontrollers import VariableController
 from robotide.controller.tablecontrollers import VariableTableController
 from robotide.editor import EditorCreator
 from robotide.editor.editors import TestCaseFileEditor, WelcomePage
-from .fakeplugin import FakePlugin
+# Workaround for relative import in non-module
+# see https://stackoverflow.com/questions/16981921/relative-imports-in-python-3
+PACKAGE_PARENT = '..'
+SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(),
+                                              os.path.expanduser(__file__))))
+sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
+try:
+    from fakeplugin import FakePlugin
+except ImportError:  # Python 3
+    from .fakeplugin import FakePlugin
 
 from resources import PYAPP_REFERENCE
 

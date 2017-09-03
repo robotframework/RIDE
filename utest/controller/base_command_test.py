@@ -12,8 +12,12 @@ sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
 
 from robotide.publish import PUBLISHER
 from robotide.publish.messages import RideItemStepsChanged
-from controller.controller_creator import (_FakeProject, testcase_controller,
-                                           BASE_DATA)
+try:
+    from controller_creator import (_FakeProject, testcase_controller,
+                                    BASE_DATA)
+except ImportError:  # Python 3
+    from .controller_creator import (_FakeProject, testcase_controller,
+                                    BASE_DATA)
 
 
 class TestCaseCommandTest(unittest.TestCase, _FakeProject):

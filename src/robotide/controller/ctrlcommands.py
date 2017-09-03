@@ -108,7 +108,9 @@ class _Command(object):
     modifying = True
 
     def execute(self, context):
-        raise NotImplementedError(self.__class__)
+        print("DEBUG: _Command.execute %s" % repr(context))
+        # return context.execute()
+        raise NotImplementedError(self.__class__)  # DEBUG
 
     def __str__(self):
         return '%s(%s)' % (self.__class__.__name__, self._params_str())

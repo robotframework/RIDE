@@ -30,7 +30,7 @@ from robotide.spec.iteminfo import ResourceUserKeywordInfo, \
     TestCaseUserKeywordInfo
 from robotide.controller.tags import Tag
 from robotide import robotapi
-from robotide.utils import basestring, unicode, variablematcher
+from robotide.utils import basestring, is_unicode, variablematcher
 
 
 KEYWORD_NAME_FIELD = 'Keyword Name'
@@ -47,7 +47,7 @@ class ItemNameController(object):
         self._item = item
 
     def contains_keyword(self, name):
-        if isinstance(name, basestring) or isinstance(name, unicode):
+        if isinstance(name, basestring) or is_unicode(name):
             return self._item.name == name
         return name.match(self._item.name)
 

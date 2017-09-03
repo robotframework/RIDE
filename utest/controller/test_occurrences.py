@@ -15,6 +15,7 @@ from robotide.publish.messages import RideItemStepsChanged,\
 from robotide.namespace.namespace import Namespace
 from robotide.spec.librarymanager import LibraryManager
 from robotide.usages.commands import FindUsages
+from robotide.utils import PY2
 from resources import FakeSettings
 import datafilereader
 
@@ -105,8 +106,10 @@ def _first_occurrence(test_ctrl, kw_name):
     occurrences = test_ctrl.execute(FindOccurrences(kw_name))
     if not occurrences:
         raise AssertionError('No occurrences found for "%s"' % kw_name)
-    return occurrences.next()
-
+    if PY2:
+        return occurrences.next()  # Python 2.7
+    return occurrences.__next__()  # DEBUG .next() Python 3
+    # see https://stackoverflow.com/questions/21622193/python-3-2-coroutine-attributeerror-generator-object-has-no-attribute-next
 
 def _get_ctrl_by_name(self, name, datafiles):
     for file in datafiles:
@@ -148,9 +151,17 @@ class TestFindOccurrencesWithFiles(unittest.TestCase):
 
     def test_first_occurrences_are_from_the_same_file(self):
         occ = self.resu.execute(FindOccurrences('My Keyword'))
-        assert_true(self.resu.filename.endswith(occ.next().item.parent.source))
-        assert_equal(occ.next().source, self.ts2.source)
-        assert_equal(occ.next().source, self.ts2.source)
+        if PY2:
+            # Python 2.7
+            assert_true(self.resu.filename.endswith(occ.next().item.parent.source))
+            assert_equal(occ.next().source, self.ts2.source)
+            assert_equal(occ.next().source, self.ts2.source)
+            return
+        # Python 3
+        # see https://stackoverflow.com/questions/21622193/python-3-2-coroutine-attributeerror-generator-object-has-no-attribute-next
+        assert_true(self.resu.filename.endswith(occ.__next__().item.parent.source))
+        assert_equal(occ.__next__().source, self.ts2.source)
+        assert_equal(occ.__next__().source, self.ts2.source)
 
     def test_finds_occurrences_that_are_unrecognized(self):
         self.assert_occurrences(self.ts1, 'None Keyword', 2)

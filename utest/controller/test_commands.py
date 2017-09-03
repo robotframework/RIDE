@@ -1,10 +1,21 @@
+import sys
 import unittest
 from nose.tools import assert_true, assert_false, assert_equal
 from robotide.controller.tags import DefaultTag
 from robotide.controller.ctrlcommands import *
 
-from .base_command_test import TestCaseCommandTest
-from .controller_creator import *
+# Workaround for relative import in non-module
+# see https://stackoverflow.com/questions/16981921/relative-imports-in-python-3
+PACKAGE_PARENT = '..'
+SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(),
+                                              os.path.expanduser(__file__))))
+sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
+try:
+    from base_command_test import TestCaseCommandTest
+    from controller_creator import *
+except ImportError:  # Python 3
+    from .base_command_test import TestCaseCommandTest
+    from .controller_creator import *
 
 
 class UnmodifyingCommandsTest(unittest.TestCase):
