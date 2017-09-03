@@ -2,7 +2,7 @@ import unittest
 from robotide.controller.ctrlcommands import *
 from nose.tools import assert_true, assert_false, assert_equal
 
-from base_command_test import TestCaseCommandTest
+from .base_command_test import TestCaseCommandTest
 
 
 class TestRenameKeywords(TestCaseCommandTest):
