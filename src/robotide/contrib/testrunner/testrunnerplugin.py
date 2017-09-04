@@ -46,12 +46,13 @@ import datetime
 import time
 import os
 import re
+import wx
+import wx.stc
+from functools import reduce
 try:
     from Queue import Queue
 except ImportError: # Python 3
     from queue import Queue
-import wx
-import wx.stc
 from wx.lib.embeddedimage import PyEmbeddedImage
 
 
@@ -927,7 +928,6 @@ def secondsToString(t):
     return "%d:%02d:%02d" % \
         reduce(lambda ll,b : divmod(ll[0],b) + ll[1:],
             [(t,),60, 60])
-
 
 
 Robot = PyEmbeddedImage(
