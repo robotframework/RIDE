@@ -40,6 +40,7 @@ try:
     from . import robotframeworklexer
 except Exception as e:
     robotframeworklexer = None
+    raise
 
 
 class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
@@ -196,15 +197,15 @@ class DataValidationHandler(object):
 
     def _handle_sanity_check_failure(self):
         if self._last_answer == wx.ID_NO and \
-            time() - self._last_answer_time <= 0.2:
+        time() - self._last_answer_time <= 0.2:
             self._editor._mark_file_dirty()
             return
         # TODO: use widgets.Dialog
         id = wx.MessageDialog(self._editor,
-                         'ERROR: Data sanity check failed!\n'\
-                         'Reset changes?',
-                         'Can not apply changes from Txt Editor',
-                          style=wx.YES|wx.NO).ShowModal()
+                              'ERROR: Data sanity check failed!\n'
+                              'Reset changes?',
+                              'Can not apply changes from Txt Editor',
+                              style=wx.YES|wx.NO).ShowModal()
         self._last_answer = id
         self._last_answer_time = time()
         if id == wx.ID_NO:
