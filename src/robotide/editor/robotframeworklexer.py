@@ -57,9 +57,12 @@ class RobotFrameworkLexer(Lexer):
     def get_tokens_unprocessed(self, text):
         row_tokenizer = RowTokenizer()
         var_tokenizer = VariableTokenizer()
+        #print("DEBUG: Enter get_tokens_unprocessed(self, text): %s" % text)
         index = 0
         for row in text.splitlines():
+            # print("DEBUG: row: %s\nNormalized:%s:" % (row, normalize(row,'*')))
             for value, token in row_tokenizer.tokenize(row):
+                # print("DEBUG: Enter row_tokenizer(value, token): %s +++ %s" % (value, token))
                 for value, token in var_tokenizer.tokenize(value, token):
                     if value:
                         yield index, token, value
@@ -434,16 +437,22 @@ class VariableSplitter(object):
         self.end = -1
         self._identifiers = identifiers
         self._may_have_internal_variables = False
+        if not string:  # On Python3 first char is 0 len
+            return
         if not is_string(string):
             self._max_end = -1
             return
         self._max_end = len(string)
+        #print("DEBUG: enter VariableSplitter:%s:%s:-->Type:%s:len%r" % (string, identifiers, type(string), self._max_end ))
         try:
             self._split(string)
+            #print("DEBUG: At No error Valueerror VariableSplitter:self:%s" % self)
         except ValueError:
+            #print("DEBUG: At Valueerror VariableSplitter:self:%s" % self)
             pass
         else:
             self._finalize()
+        #print("DEBUG: Return from VariableSplitter:%s" % self)
 
     def get_replaced_variable(self, replacer):
         if self._may_have_internal_variables:
@@ -480,6 +489,7 @@ class VariableSplitter(object):
 
     def _split(self, string):
         start_index, max_index = self._find_variable(string)
+        # print("DEBUG: At _split:start:%s, max_idx:%s" % (start_index, max_index))
         self.start = start_index
         self._open_curly = 1
         self._state = self._variable_state
@@ -501,13 +511,14 @@ class VariableSplitter(object):
 
     def _find_variable(self, string):
         max_end_index = string.rfind('}')
+        # print("DEBUG: After _find_variable rfind:%s, pos:%r" % (string, max_end_index))
         if max_end_index == -1:
-            return ValueError('No variable end found')
+            raise(ValueError('No variable end found'))
         if self._is_escaped(string, max_end_index):
             return self._find_variable(string[:max_end_index])
         start_index = self._find_start_index(string, 1, max_end_index)
         if start_index == -1:
-            return ValueError('No variable start found')
+            raise(ValueError('No variable start found'))
         return start_index, max_end_index
 
     def _find_start_index(self, string, start, end):
