@@ -175,16 +175,19 @@ class DataValidationHandler(object):
         self._editor = editor
 
     def validate_and_update(self, data, text):
-        if not self._sanity_check(data, text):
+        m_text = text.decode("utf-8")
+        if not self._sanity_check(data, m_text):
+            print("DEBUG: _handle_sanity_check_failure")
             self._handle_sanity_check_failure()
             return False
         else:
             self._editor.reset()
-            data.update_from(text)
+            print("DEBUG: updating type %s" % type(m_text))
+            data.update_from(m_text)
             return True
 
     def _sanity_check(self, data, text):
-        formatted_text = data.format_text(text).encode('UTF-8')
+        formatted_text = data.format_text(text)
         c = self._normalize(formatted_text)
         e = self._normalize(text)
         return len(c) == len(e)
@@ -192,6 +195,7 @@ class DataValidationHandler(object):
     def _normalize(self, text):
         for item in tuple(string.whitespace) + ('...', '*'):
             if item in text:
+                print("DEBUG: _normaliz item %s txt %s" % (item, text))
                 text = text.replace(item, '')
         return text
 
@@ -229,7 +233,7 @@ class DataFileWrapper(object): # TODO: bad class name
         self._data.execute(SetDataFile(self._create_target_from(content)))
 
     def _create_target_from(self, content):
-        src = StringIO(content)
+        src = StringIO(content.decode("utf-8"))  # DEBUG because Apply Changes
         target = self._create_target()
         FromStringIOPopulator(target).populate(src)
         return target

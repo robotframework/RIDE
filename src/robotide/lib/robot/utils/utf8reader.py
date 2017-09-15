@@ -47,6 +47,9 @@ class Utf8Reader(object):
             yield self._decode(line, remove_bom=index == 0)
 
     def _decode(self, content, remove_bom=True):
-        if remove_bom and content.startswith(BOM_UTF8):
-            content = content[len(BOM_UTF8):]
-        return content.decode('UTF-8')
+        # print("DEBUG: utf8reader type %s" % type(content))
+        if type(content) is bytes:  # DEBUG we should not be here with str
+            if remove_bom and content.startswith(BOM_UTF8):
+                content = content[len(BOM_UTF8):]
+            return content.decode('UTF-8')
+        return content
