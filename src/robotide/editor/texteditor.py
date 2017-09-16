@@ -25,6 +25,7 @@ from robotide import robotapi
 from robotide.context import IS_WINDOWS, IS_MAC
 from robotide.controller.ctrlcommands import SetDataFile
 from robotide.publish.messages import RideMessage
+from robotide.utils import PY2
 from robotide.widgets import VerticalSizer, HorizontalSizer, ButtonWithHandler
 from robotide.pluginapi import Plugin, RideSaving, TreeAwarePluginMixin,\
     RideTreeSelection, RideNotebookTabChanging, RideDataChanged,\
@@ -177,12 +178,12 @@ class DataValidationHandler(object):
     def validate_and_update(self, data, text):
         m_text = text.decode("utf-8")
         if not self._sanity_check(data, m_text):
-            print("DEBUG: _handle_sanity_check_failure")
+            # print("DEBUG: _handle_sanity_check_failure")
             self._handle_sanity_check_failure()
             return False
         else:
             self._editor.reset()
-            print("DEBUG: updating type %s" % type(m_text))
+            # print("DEBUG: updating type %s" % type(m_text))
             data.update_from(m_text)
             return True
 
@@ -195,7 +196,7 @@ class DataValidationHandler(object):
     def _normalize(self, text):
         for item in tuple(string.whitespace) + ('...', '*'):
             if item in text:
-                print("DEBUG: _normaliz item %s txt %s" % (item, text))
+                # print("DEBUG: _normaliz item %s txt %s" % (item, text))
                 text = text.replace(item, '')
         return text
 
@@ -233,7 +234,10 @@ class DataFileWrapper(object): # TODO: bad class name
         self._data.execute(SetDataFile(self._create_target_from(content)))
 
     def _create_target_from(self, content):
-        src = StringIO(content.decode("utf-8"))  # DEBUG because Apply Changes
+        if PY2:
+            src = StringIO(content.encode("utf-8"))
+        else:   # DEBUG because Apply Changes
+            src = StringIO(content)
         target = self._create_target()
         FromStringIOPopulator(target).populate(src)
         return target

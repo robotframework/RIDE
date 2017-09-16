@@ -29,10 +29,12 @@ from .eventhandler import RideEventHandler
 from .printing import Printing
 
 try:
-    from past.builtins import basestring, unicode
+    from past.builtins import basestring, unicode, unichr
 except ImportError:  # pip install future
     basestring = str
     unicode = str
+    unichr = chr
+
 
 PY2 = sys.version_info[0] == 2
 PY3 = not PY2

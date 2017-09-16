@@ -45,6 +45,7 @@ class ValueEditor(wx.Panel):
             sizer.Add(Label(self, label=self._label, size=(80, -1)), 0,
                       self._sizer_flags_for_label, 5)
         self._editor = self._get_text_ctrl()
+        # self._editor.SetDefaultStyle(wx.TextAttr(wx.TEXT_ATTR_ALL))
         self._editor.AppendText(value)
         sizer.Add(self._editor, 1, self._sizer_flags_for_editor, 3)
         self._sizer.Add(sizer, 1, wx.EXPAND)
