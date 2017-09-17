@@ -69,6 +69,7 @@ class RideMessage(object, metaclass=messagetype.messagetype):
             self._publish(RideLogException(
                 message='Error in publishing message: ' + str(err),
                 exception=err, level='ERROR'))
+            raise # DEBUG on Python3 we have a loop
 
     def _publish(self, msg):
         publisher.PUBLISHER.publish(msg.topic, msg)
@@ -356,14 +357,17 @@ class RideItem(RideDataChanged):
 
 class RideItemStepsChanged(RideItem):
     """"""
+    pass
 
 
 class RideItemNameChanged(RideItem):
     """"""
+    pass
 
 
 class RideItemSettingsChanged(RideItem):
     """"""
+    pass
 
 
 class RideTestCaseAdded(RideDataChanged):

@@ -200,6 +200,7 @@ class RideNotebookTabChanging(RideMessage):
 
 class RideNotebookTabChanged(RideMessage):
     """Sent after the notebook tab change has completed."""
+    pass
 
 
 class RideSaving(RideMessage):
@@ -217,6 +218,7 @@ class RideSaved(RideMessage):
 
 class RideSaveAll(RideMessage):
     """Sent when user selects ``Save All`` from ``File`` menu or via shortcut."""
+    pass
 
 
 class RideDataDirtyCleared(RideMessage):
@@ -254,6 +256,7 @@ class RideSelectResource(RideMessage):
 
 class RideDataChanged(RideMessage):
     """Base class for all messages notifying that data in model has changed."""
+    pass
 
 
 class RideFileNameChanged(RideDataChanged):
@@ -337,6 +340,7 @@ class RideDataFileSet(RideDataChanged):
 
 class RideUserKeyword(RideDataChanged):
     """Base class for all messages about changes to any user keyword."""
+    pass
 
 
 class RideUserKeywordAdded(RideUserKeyword):
@@ -356,14 +360,17 @@ class RideItem(RideDataChanged):
 
 class RideItemStepsChanged(RideItem):
     """"""
+    pass
 
 
 class RideItemNameChanged(RideItem):
     """"""
+    pass
 
 
 class RideItemSettingsChanged(RideItem):
     """"""
+    pass
 
 
 class RideTestCaseAdded(RideDataChanged):

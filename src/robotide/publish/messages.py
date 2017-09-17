@@ -12,9 +12,9 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robotide import utils
+from robotide.utils import PY3
 
-if utils.PY3:
+if PY3:
     from .messages3 import *
 else:
     from .messages2 import *

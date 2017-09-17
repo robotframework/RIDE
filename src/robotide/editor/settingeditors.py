@@ -142,7 +142,8 @@ class SettingEditor(wx.Panel, utils.RideEventHandler):
     def OnPopupTimer(self, event):
         # TODO This prevents tool tip for ex. Template edit field in wxPhoenix
         try:  # DEBUG wxPhoenix
-            _tooltipallowed= self.Parent.tooltip_allowed(self._tooltip)
+             _tooltipallowed = self.Parent.tooltip_allowed(self._tooltip)
+            #_tooltipallowed = self._get_tooltip()
         except AttributeError:
             print("DEBUG: There was an attempt to show a Tool Tip.\n")
             return
@@ -427,6 +428,7 @@ class VariablesListEditor(_AbstractListEditor):
 
     def _open_var_dialog(self, var):
         var_name = var.name.lower()
+        dlg = None
         if var_name.startswith('${'):
             dlg = ScalarVariableDialog(self._controller, item=var)
         elif var_name.startswith('@{'):
@@ -435,11 +437,12 @@ class VariablesListEditor(_AbstractListEditor):
         elif var_name.startswith('&{'):
             dlg = DictionaryVariableDialog(self._controller, item=var,
                                            plugin=self.Parent.plugin)
-        if dlg.ShowModal() == wx.ID_OK:
-            name, value = dlg.get_value()
-            var.execute(UpdateVariable(name, value, dlg.get_comment()))
-            self.update_data()
-        dlg.Destroy()
+        if dlg:  # DEBUG robot accepts % variable definition
+            if dlg.ShowModal() == wx.ID_OK:
+                name, value = dlg.get_value()
+                var.execute(UpdateVariable(name, value, dlg.get_comment()))
+                self.update_data()
+            dlg.Destroy()
 
     def close(self):
         PUBLISHER.unsubscribe_all(key=self)
