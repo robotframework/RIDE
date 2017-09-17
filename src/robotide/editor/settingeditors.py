@@ -130,7 +130,7 @@ class SettingEditor(wx.Panel, utils.RideEventHandler):
 
     def OnEnterWindow(self, event):
         if self._mainframe_has_focus():
-            self.popup_timer = wx.CallLater(500, self.OnPopupTimer)
+            self.popup_timer = wx.CallLater(500, self.OnPopupTimer, event)
 
     def _mainframe_has_focus(self):
         return wx.GetTopLevelParent(self.FindFocus()) == \
