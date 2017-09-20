@@ -46,10 +46,12 @@ class _ContentAssistTextCtrlBase(object):
     def OnChar(self, event):
         # TODO: This might benefit from some cleanup
         keycode = event.GetKeyCode()
-        # Ctrl-Space handling needed for dialogs
-        if keycode == wx.WXK_SPACE and event.ControlDown():
-            self.show_content_assist()
-            return
+        event.Skip()  # DEBUG do it as soon we do not need it
+        # Ctrl-Space handling needed for dialogs # DEBUG add Ctrl-m
+        if event.ControlDown():
+            if keycode in (wx.WXK_SPACE, ord('m')):
+                self.show_content_assist()
+                return
         if keycode in [wx.WXK_UP, wx.WXK_DOWN, wx.WXK_PAGEUP, wx.WXK_PAGEDOWN]\
                 and self._popup.is_shown():
             self._popup.select_and_scroll(keycode)
@@ -67,8 +69,9 @@ class _ContentAssistTextCtrlBase(object):
         elif keycode in (ord('1'), ord('2')) and event.ControlDown() and not \
                 event.AltDown():
             self.execute_variable_creator(list_variable=(keycode == ord('2')))
-        event.Skip()
+        # event.Skip() # DEBUG Move up
 
+    # TODO Add dictionary?
     def execute_variable_creator(self, list_variable=False):
         from_, to_ = self.GetSelection()
         symbol = '@' if list_variable else '$'
@@ -161,7 +164,7 @@ class ExpandingContentAssistTextCtrl(_ContentAssistTextCtrlBase,
 class ContentAssistTextCtrl(_ContentAssistTextCtrlBase, wx.TextCtrl):
 
     def __init__(self, parent, suggestion_source, size=wx.DefaultSize):
-        wx.TextCtrl.__init__(self, parent, size=size, style=wx.DEFAULT_FRAME_STYLE | wx.WANTS_CHARS) # DEBUG style
+        wx.TextCtrl.__init__(self, parent, size=size, style=wx.WANTS_CHARS)
         _ContentAssistTextCtrlBase.__init__(self, suggestion_source)
 
 
@@ -279,6 +282,7 @@ class ContentAssistPopup(object):
                                        self.OnListItemSelected,
                                        self.OnListItemActivated)
         self._suggestions = Suggestions(suggestion_source)
+        # TODO Add detach popup from list with mouse drag or key
 
     def reset(self):
         self._selection = -1
