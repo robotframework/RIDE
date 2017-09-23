@@ -318,4 +318,5 @@ class ContentAssistEditor(ValueEditor):
         ValueEditor.__init__(self, parent, value, label, validator, settings)
 
     def _get_text_ctrl(self):
-        return ContentAssistTextCtrl(self, self._suggestion_source, (500, -1))
+        return ContentAssistTextCtrl(self, self._suggestion_source)
+        #DEBUG size, (500, -1))
