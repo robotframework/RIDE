@@ -748,6 +748,7 @@ class ContentAssistCellEditor(GridCellEditor):  # DEBUG wxPhoenix PyGridCellEdi
         self._controller = controller
         self._grid = None
         self._original_value = None
+        self._value = None
         self._tc = None
         self._counter = 0
 
@@ -785,16 +786,20 @@ class ContentAssistCellEditor(GridCellEditor):  # DEBUG wxPhoenix PyGridCellEdi
     def EndEdit(self, row, col, grid, *ignored):
         value = self._get_value()
         if value != self._original_value:
-            self._grid.cell_value_edited(row, col, value)
-            return True
+            # self._grid.cell_value_edited(row, col, value)
+            self._value = value
+            return value  # DEBUG wxPhoenix True
         else:
             # DEBUG wxPhoenix
             self._tc.hide()
             grid.SetFocus()
-            return True
+            return None
 
     def ApplyEdit(self, row, col, grid):
-        pass
+        # print("DEBUG: This is where it crashed ApplyEdit")
+        if self._value:
+            self._grid.cell_value_edited(row, col, self._value)
+        # pass
 
     def _get_value(self):
         suggestion = self._tc.content_assist_value()
