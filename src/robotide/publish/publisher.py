@@ -47,7 +47,7 @@ class Publisher(object):
 
     def _sendMessage(self, topic, data):
         current_wrappers = self._listeners.values()
-        for wrappers in current_wrappers:
+        for wrappers in list(current_wrappers):  # DEBUG
             for wrapper in wrappers:
                 if wrapper.listens(topic):
                     wrapper(data)
