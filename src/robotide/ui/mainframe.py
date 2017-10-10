@@ -21,7 +21,7 @@ from robotide.publish import RideSaveAll, RideClosing, RideSaved, PUBLISHER,\
     RideInputValidationError, RideTreeSelection, RideModificationPrevented
 from robotide.ui.tagdialogs import ViewAllTagsDialog
 from robotide.ui.filedialogs import RobotFilePathDialog
-from robotide.utils import RideEventHandler
+from robotide.utils import RideEventHandler, PY2
 from robotide.widgets import Dialog, ImageProvider, HtmlWindow
 from robotide.preferences import PreferenceEditor
 
@@ -89,8 +89,17 @@ class RideFrame(wx.Frame, RideEventHandler):
         self.Bind(wx.EVT_MOVE, self.OnMove)
         self.Bind(wx.EVT_MAXIMIZE, self.OnMaximize)
         self._subscribe_messages()
+        print("DEBUG: Call Show")
         self.Show()
-        wx.CallLater(100, self.actions.register_tools)
+        print("DEBUG: Call register_tools, actions: %s" % self.actions.__repr__())
+        if PY2:
+            wx.CallLater(100, self.actions.register_tools)  # DEBUG
+        else:
+            # self.actions.register_tools()
+            myobj = wx.CallLater(100, self.actions.register_tools)
+            from time import sleep
+            sleep(.200)
+            print("DEBUG: called register_tools: %s " % myobj.HasRun())
 
     def _subscribe_messages(self):
         for listener, topic in [
@@ -386,13 +395,17 @@ class ActionRegisterer(object):
         add_separator_after = ["stop test run", "search unused keywords",
                                "preview", "view ride log"]
         #for key in sorted(self._tools_items.iterkeys()):
+        print("DEBUG: at register_tools, tools: %s" % self._tools_items)
         for key in sorted(self._tools_items.keys()):  #DEBUG Python3
             self._menubar.register(self._tools_items[key])
+            print("DEBUG: key=%s name=%s" % (key, self._tools_items[key].name.lower()))
             if self._tools_items[key].name.lower() in add_separator_after:
                 self._menubar.register(separator_action)
 
     def register_actions(self, actions):
         for action in actions:
+            if not isinstance(action, SeparatorInfo):  # DEBUG
+                print("DEBUG: action=%s" % action.name)
             self.register_action(action)
 
     def register_shortcut(self, action_info):
