@@ -58,7 +58,7 @@ from wx.lib.embeddedimage import PyEmbeddedImage
 
 from robotide.action.shortcut import localize_shortcuts
 from robotide.context import IS_WINDOWS, IS_MAC
-from robotide.contrib.testrunner.testrunner import TestRunner
+from robotide.contrib.testrunner import TestRunner
 from robotide.contrib.testrunner import runprofiles
 from robotide.publish.messages import RideTestSelectedForRunningChanged
 from robotide.pluginapi import Plugin, ActionInfo

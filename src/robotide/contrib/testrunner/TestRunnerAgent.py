@@ -68,10 +68,10 @@ except ImportError:#py3
         raise e
 
 try:
-    from robot.errors import ExecutionFailed
-    from robot.running import EXECUTION_CONTEXTS
-    from robot.running.signalhandler import STOP_SIGNAL_MONITOR
-    from robot.utils import encoding
+    from robotide.lib.robot.errors import ExecutionFailed
+    from robotide.lib.robot.running import EXECUTION_CONTEXTS
+    from robotide.lib.robot.running.signalhandler import STOP_SIGNAL_MONITOR
+    from robotide.lib.robot.utils import encoding
 except ImportError:
     encoding = None
     raise     # DEBUG

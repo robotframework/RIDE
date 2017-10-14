@@ -95,11 +95,13 @@ class RideFrame(wx.Frame, RideEventHandler):
         if PY2:
             wx.CallLater(100, self.actions.register_tools)  # DEBUG
         else:
+            wx.CallAfter(self.actions.register_tools)  # DEBUG
             # self.actions.register_tools()
-            myobj = wx.CallLater(100, self.actions.register_tools)
-            from time import sleep
-            sleep(.200)
-            print("DEBUG: called register_tools: %s " % myobj.HasRun())
+            # myobj = wx.CallLater(100, self.actions.register_tools)
+            # myobj.Start(100)
+            # from time import sleep
+            # sleep(.200)
+            #vprint("DEBUG: called register_tools: %s " % myobj.HasRun())
 
     def _subscribe_messages(self):
         for listener, topic in [
@@ -375,7 +377,7 @@ class ActionRegisterer(object):
         self._menubar = menubar
         self._toolbar = toolbar
         self._shortcut_registry = shortcut_registry
-        self._tools_items = {}
+        self._tools_items = dict()
 
     def register_action(self, action_info):
         menubar_can_be_registered = True
@@ -406,7 +408,7 @@ class ActionRegisterer(object):
         for action in actions:
             if not isinstance(action, SeparatorInfo):  # DEBUG
                 print("DEBUG: action=%s" % action.name)
-            self.register_action(action)
+                self.register_action(action)
 
     def register_shortcut(self, action_info):
         action = ActionFactory(action_info)

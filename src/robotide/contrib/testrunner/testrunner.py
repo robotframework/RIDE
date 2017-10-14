@@ -51,7 +51,7 @@ from robotide.context import IS_WINDOWS
 from robotide.contrib.testrunner import TestRunnerAgent
 from robotide.controller.testexecutionresults import TestExecutionResults
 try:
-    from robot.utils import encoding
+    from robotide.lib.robot.utils import encoding
 except ImportError:
     encoding = None
 # DEBUG we are forcing UTF-8

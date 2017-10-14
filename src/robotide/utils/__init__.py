@@ -117,6 +117,7 @@ def is_same_drive(path1, path2):
 
 def run_python_command(command, mode='c'):
     cmd = [sys.executable, '-{0}'.format(mode)] + command
+    print("DEBUG: app init detecting robot with cmd: %s" % cmd)
     process = subprocess.Popen(
         cmd,
         stdout=subprocess.PIPE,
