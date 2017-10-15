@@ -29,7 +29,7 @@ from .eventhandler import RideEventHandler
 from .printing import Printing
 
 try:
-    from past.builtins import basestring, unicode, unichr
+    from past.types import basestring, unicode, unichr
 except ImportError:  # pip install future
     basestring = str
     unicode = str
@@ -117,7 +117,8 @@ def is_same_drive(path1, path2):
 
 def run_python_command(command, mode='c'):
     cmd = [sys.executable, '-{0}'.format(mode)] + command
-    print("DEBUG: app init detecting robot with cmd: %s" % cmd)
+    # TODO Let the user select with robot to use
+    # print("DEBUG: app init detecting robot with cmd: %s" % cmd)
     process = subprocess.Popen(
         cmd,
         stdout=subprocess.PIPE,

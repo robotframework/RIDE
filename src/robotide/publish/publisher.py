@@ -79,6 +79,8 @@ class _ListenerWrapper(object):
         WxPublisher.subscribe(self, self.topic)
 
     def _get_topic(self, topic):
+        # DEBUG RecursionError on python 3
+        # print("DEBUG: topic(%s) is %s" % (topic, type(topic)))
         if not isinstance(topic, basestring):
             topic = topic.topic
         return topic.lower()

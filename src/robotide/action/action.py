@@ -78,7 +78,7 @@ class Action(_Registrable):
         self.shortcut = action_info.shortcut
         self.icon = action_info.icon
         self.doc = action_info.doc
-        print("DEBUG: Action: %s::%s" % (self.menu_name,self.name))
+        # print("DEBUG: Action: %s::%s" % (self.menu_name,self.name))
 
     def get_shortcut(self):
         return self.shortcut.printable

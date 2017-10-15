@@ -157,7 +157,7 @@ class _NameBuilder(object):
             name = self._use_given_accelerator(name)
         except ValueError:
             name = self._generate_accelerator(name)
-            print("DEBUG: actiontriggers get_name on ValueErr: %s" % name)
+            # print("DEBUG: actiontriggers get_name on ValueErr: %s" % name)
         self._register(name)
         return name
 

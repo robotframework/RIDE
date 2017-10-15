@@ -33,7 +33,7 @@ class PluginLoader(object):
         self._load_errors = []
         self.plugins = [ PluginFactory(application, cls) for cls in
                          standard_classes + self._find_classes(load_dirs) ]
-        print("DEBUG: PluginLoader plugins:%s" % self.plugins)
+        # print("DEBUG: PluginLoader plugins:%s" % self.plugins)
         if self._load_errors:
             LOG.error('\n\n'.join(self._load_errors))
 
@@ -47,7 +47,7 @@ class PluginLoader(object):
             for cls in self._import_classes(path):
                 # print("DEBUG: _find_classes cls:%s" % cls)
                 if self._is_plugin_class(path, cls):
-                    print("DEBUG: _find_classes Plugin:%s" % cls)
+                    # print("DEBUG: _find_classes Plugin:%s" % cls)
                     classes.append(cls)
         return classes
 
@@ -103,7 +103,7 @@ class PluginLoader(object):
         spec = importlib.util.spec_from_file_location(modulename, path)
         #spec = importlib.util.find_spec(modulename, dirpath)
         if spec is None:
-            print("DEBUG: import_class spec is None: %s" % modulename)
+            # print("DEBUG: import_class spec is None: %s" % modulename)
             return []
         try:
             m_module = importlib.util.module_from_spec(spec)

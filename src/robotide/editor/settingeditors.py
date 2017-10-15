@@ -140,13 +140,14 @@ class SettingEditor(wx.Panel, utils.RideEventHandler):
         self._stop_popup_timer()
 
     def OnPopupTimer(self, event):
+        _tooltipallowed = False
         # TODO This prevents tool tip for ex. Template edit field in wxPhoenix
         try:  # DEBUG wxPhoenix
              _tooltipallowed = self.Parent.tooltip_allowed(self._tooltip)
             #_tooltipallowed = self._get_tooltip()
         except AttributeError:
-            print("DEBUG: There was an attempt to show a Tool Tip.\n")
-            return
+            # print("DEBUG: There was an attempt to show a Tool Tip.\n")
+            pass
         if _tooltipallowed:
             details, title = self._get_details_for_tooltip()
             if details:

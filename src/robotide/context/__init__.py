@@ -155,6 +155,10 @@ SHORTCUT_KEYS = '''\
         <td>Suggestions and auto completion</td>
     </tr>
     <tr>
+        <td>CtrlCmd-M</td>
+        <td>Help for cell content</td>
+    </tr>
+    <tr>
         <td>CtrlCmd-I</td>
         <td>Insert row(s)</td>
     </tr>
