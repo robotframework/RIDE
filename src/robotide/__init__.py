@@ -61,6 +61,7 @@ PY3 = not PY2
 
 # Insert bundled robot to path before anything else
 sys.path.append(os.path.join(os.path.dirname(__file__), 'spec'))
+sys.path.append(os.path.join(os.path.dirname(__file__), 'lib'))
 
 
 def main(*args):
