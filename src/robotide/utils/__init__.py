@@ -124,6 +124,8 @@ def run_python_command(command, mode='c'):
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE)  # DEBUG STDOUT PIPE
     output, _ = process.communicate()
+    # if output:
+    #    print("DEBUG: run_python result: %s" % output)
     return output
 
 

@@ -102,16 +102,17 @@ class RIDE(wx.App):
 
     def _find_robot_installation(self):
         output = utils.run_python_command(
-            ['import robot; print(robot.__file__ + ", " + robot.__version__)'])
+            ['import robot; print(robot.__file__ + \", \" + robot.__version__)'])
         if utils.PY2:
-            robot_found = "ImportError" not in output
+            robot_found = "ImportError" not in output and output
         else:
-            robot_found = b"ImportError" not in output
+            robot_found = b"ModuleNotFoundError" not in output and output
         if robot_found:
+            # print("DEBUG: output: %s  strip: %s" % (output, output.strip().split(b", ")))
             rf_file, rf_version = output.strip().split(b", ")
             publish.RideLogMessage(
-                "Found Robot Framework version {0} from '{1}'.".format(
-                    rf_version, os.path.dirname(rf_file))).publish()
+                "Found Robot Framework version %s from %s." % (
+                    str(rf_version), str(os.path.dirname(rf_file)))).publish()
             return rf_version
         else:
             publish.RideLogMessage(
