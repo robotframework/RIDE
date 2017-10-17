@@ -796,7 +796,7 @@ class ContentAssistCellEditor(GridCellEditor):  # DEBUG wxPhoenix PyGridCellEdi
             return None
 
     def ApplyEdit(self, row, col, grid):
-        print("DEBUG: This is where it crashed ApplyEdit")
+        # print("DEBUG: This is where it crashed ApplyEdit")
         if self._value:
             self._grid.cell_value_edited(row, col, self._value)
         # pass

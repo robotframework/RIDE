@@ -110,9 +110,15 @@ class RIDE(wx.App):
         if robot_found:
             # print("DEBUG: output: %s  strip: %s" % (output, output.strip().split(b", ")))
             rf_file, rf_version = output.strip().split(b", ")
-            publish.RideLogMessage(
-                "Found Robot Framework version %s from %s." % (
-                    str(rf_version), str(os.path.dirname(rf_file)))).publish()
+            if utils.PY2:
+                publish.RideLogMessage(
+                    "Found Robot Framework version %s from %s." % (
+                        rf_version, os.path.dirname(rf_file))).publish()
+            else:
+                publish.RideLogMessage(
+                    "Found Robot Framework version %s from %s." % (
+                        str(rf_version, 'utf-8'),
+                        str(os.path.dirname(rf_file), 'utf-8'))).publish()
             return rf_version
         else:
             publish.RideLogMessage(
