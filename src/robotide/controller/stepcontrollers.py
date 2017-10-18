@@ -149,7 +149,9 @@ class StepController(_BaseController):
         value = self.get_value(col)
         if self._is_commented(col):
             return CellContent(ContentType.COMMENTED, value)
-        if self._get_last_none_empty_col_idx() < col:
+        last_none_empty = self._get_last_none_empty_col_idx()
+        if isinstance(last_none_empty, int) and last_none_empty < col:
+            # DEBUG if self._get_last_none_empty_col_idx() < col:
             return CellContent(ContentType.EMPTY, value)
         if variablematcher.is_variable(value):
             if self._is_unknow_variable(value, position):
