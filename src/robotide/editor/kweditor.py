@@ -782,6 +782,10 @@ class ContentAssistCellEditor(GridCellEditor):  # DEBUG wxPhoenix PyGridCellEdi
         self._tc.set_row(row)
         self._original_value = grid.GetCellValue(row, col)
         self._grid = grid
+        self._tc.SetInsertionPointEnd()
+        self._tc.SetFocus()
+        # For this example, select the text   # DEBUG nov_2017
+        self._tc.SetSelection(0, self._tc.GetLastPosition())
 
     def EndEdit(self, row, col, grid, *ignored):
         value = self._get_value()
@@ -799,12 +803,19 @@ class ContentAssistCellEditor(GridCellEditor):  # DEBUG wxPhoenix PyGridCellEdi
             if wx.VERSION >= (3, 0, 2, ''):  # DEBUG wxPhoenix
                 return None
             else:
-                return True
+                return None   # DEBUG
 
     def ApplyEdit(self, row, col, grid):
-        # print("DEBUG: This is where it crashed ApplyEdit")
+        #  print("DEBUG: This is where it crashed ApplyEdit")
+        # TODO Revise code, origial causes crashes
+        val = self._tc.GetValue()
+        grid.GetTable().SetValue(row, col, val) # update the table
+
+        self._original_value = ''
+        self._tc.SetValue('')
         if wx.VERSION >= (3, 0, 2, ''):  # DEBUG wxPhoenix
             if self._value:
+                # print("DEBUG: Calling value edited on ApplyEdit")
                 self._grid.cell_value_edited(row, col, self._value)
         # pass
 
