@@ -1280,6 +1280,8 @@ def InsertCells(top_left, bottom_right):
 def DeleteCells(top_left, bottom_right):
     row_s, col_s = top_left
     row_e, col_e = bottom_right
+    # print("DEBUG ctrlcommands delete cells (%d, %d), (%d, %d) " % (row_s, col_s,
+    #                                               row_e, col_e))
     return StepsChangingCompositeCommand(
         *[DeleteCell(row, col_s)
           for row in range(row_s, row_e + 1)

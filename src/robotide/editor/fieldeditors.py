@@ -241,6 +241,7 @@ class _EditorGrid(GridEditor):
         self._insert_or_delete_cells_on_single_row(insert_cells, event)
 
     def OnDeleteCells(self, event):
+        # print("DEBUG delete cells %s" % self.selection.rows())
         if len(self.selection.rows()) != 1:
             self._delete_cells_from_multiple_rows(event)
             return

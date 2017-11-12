@@ -104,6 +104,9 @@ class KeywordEditor(GridEditor, RideEventHandler):
         self._write_steps(self._controller)
         self._tree = tree
         self._has_been_clicked = False
+        self._counter = 0  # Workaround for double delete actions
+        self._dcells = None  # Workaround for double delete actions
+        self._icells = None  # Workaround for double insert actions
         PUBLISHER.subscribe(self._data_changed, RideItemStepsChanged)
         PUBLISHER.subscribe(self.OnSettingsChanged, RideSettingsChanged)
 
@@ -243,14 +246,39 @@ class KeywordEditor(GridEditor, RideEventHandler):
 
     def _skip_except_on_mac(self, event):  # TODO Do we still need this?
         if event is not None and not IS_MAC:
+            # print("DEBUG skip!")
             event.Skip()
 
     def OnInsertCells(self, event=None):
+        # TODO remove below workaround for double actions
+        if self._counter == 1:
+            if self._icells == (self.selection.topleft, self.selection.bottomright):
+                self._counter = 0
+                self._icells = None
+                return
+        else:
+            self._counter = 1
+
+        self._icells = (self.selection.topleft,
+                        self.selection.bottomright)
         self._execute(InsertCells(self.selection.topleft,
                                   self.selection.bottomright))
         self._skip_except_on_mac(event)
 
     def OnDeleteCells(self, event=None):
+        # TODO remove below workaround for double actions
+        if self._counter == 1:
+            if self._dcells == (self.selection.topleft, self.selection.bottomright):
+                self._counter = 0
+                self._dcells = None
+                return
+        else:
+            self._counter = 1
+
+        self._dcells = (self.selection.topleft,
+                        self.selection.bottomright)
+        # print("DEBUG kweditor delete cells %s, %s " % (self.selection.topleft,
+        #                          self.selection.bottomright))
         self._execute(DeleteCells(self.selection.topleft,
                                   self.selection.bottomright))
         self._skip_except_on_mac(event)
