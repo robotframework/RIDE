@@ -183,6 +183,7 @@ class TestRunner(object):
     def run_command(self, command, cwd):
         self._pid_to_kill = None
         self._process = Process(cwd)
+        print("DEBUG: run_command command: %s\nCWD: %s\n" % (command, cwd))
         self._process.run_command(command)
 
     def get_command(self, profile, pythonpath, console_width, names_to_run):
@@ -292,7 +293,9 @@ class Process(object):
                         stdout=subprocess.PIPE,
                         stderr=subprocess.PIPE,
                         stdin=subprocess.PIPE,
-                        cwd=self._cwd.encode(encoding.OUTPUT_ENCODING))
+                        cwd=self._cwd)
+                               # DEBUG .encode(encoding.OUTPUT_ENCODING))
+                        # DEBUG was encoding.OUTPUT_ENCODING)
                         # DEBUG cwd=self._cwd.encode(utils.SYSTEM_ENCODING))
 
         if IS_WINDOWS:
@@ -308,8 +311,10 @@ class Process(object):
             subprocess_args['shell'] = True
         # DEBUG self._process = subprocess.Popen(command.encode(utils.SYSTEM_ENCODING),
         #                                 **subprocess_args)
-        self._process = subprocess.Popen(command.encode(encoding.OUTPUT_ENCODING),
-                                         **subprocess_args)
+        print("DEBUG: run_command calling Subprocess: %s\nCommand: %s\n" % (subprocess_args,str(command.encode(encoding.OUTPUT_ENCODING))))
+        self._process = subprocess.Popen(command,
+                                         **subprocess_args)  # DEBUG was .encode(encoding.OUTPUT_ENCODING) .OUTPUT_ENCODING
+        print("DEBUG: run_command Called Subprocess_args: %s\n" % subprocess_args)
         self._process.stdin.close()
         self._output_stream = StreamReaderThread(self._process.stdout)
         self._error_stream = StreamReaderThread(self._process.stderr)

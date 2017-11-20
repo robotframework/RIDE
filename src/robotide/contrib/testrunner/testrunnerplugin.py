@@ -263,10 +263,12 @@ class TestRunnerPlugin(Plugin):
         try:
             self._test_runner.run_command(
                 command, self._get_current_working_dir())
+            self._output("DEBUG: Passed test_runner.run_command\n")
             self._process_timer.Start(41) # roughly 24fps
             self._set_running()
             self._progress_bar.Start()
         except Exception as e:
+            self._output("DEBUG: Except block test_runner.run_command\n")
             self._set_stopped()
             error, log_message = self.get_current_profile().format_error(
                 unicode(e), None)
@@ -447,7 +449,7 @@ class TestRunnerPlugin(Plugin):
 
         textctrl.SetReadOnly(False)
         try:
-            textctrl.AppendText(string)
+            textctrl.AppendText(string.encode('utf-8'))
         except UnicodeDecodeError as e:
             # I'm not sure why I sometimes get this, and I don't know what I
             # can do other than to ignore it.
