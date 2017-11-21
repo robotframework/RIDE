@@ -64,7 +64,7 @@ from robotide.publish.messages import RideTestSelectedForRunningChanged
 from robotide.pluginapi import Plugin, ActionInfo
 from robotide.widgets import Label, ImageProvider
 from robotide.robotapi import LOG_LEVELS
-from robotide.utils import robottime, unicode
+from robotide.utils import robottime, unicode, is_unicode, PY2
 
 
 ID_RUN = wx.NewId()
@@ -259,8 +259,9 @@ class TestRunnerPlugin(Plugin):
             return
         self._initialize_ui_for_running()
         command = self._create_command()
-        self._output("command: %s\n" % command)
+        self._output("command: %s\n" % command)  # DEBUG encode
         try:
+            self._output("DEBUG: starting command %s\n" % command)  # DEBUG encode
             self._test_runner.run_command(
                 command, self._get_current_working_dir())
             self._output("DEBUG: Passed test_runner.run_command\n")
@@ -420,6 +421,8 @@ class TestRunnerPlugin(Plugin):
         '''
         result = []
         for arg in argv:
+            if PY2 and is_unicode(arg):
+                arg = arg.encode("utf-8")
             if "'" in arg or " " in arg or "&" in arg:
                 # for windows, if there are spaces we need to use
                 # double quotes. Single quotes cause problems
@@ -428,7 +431,7 @@ class TestRunnerPlugin(Plugin):
                 result.append("'%s'" % arg)
             else:
                 result.append(arg)
-        return " ".join(result)
+        return " ".join(result)  # DEBUG added bytes
 
     def _show_notebook_tab(self):
         '''Show the Run notebook tab'''
@@ -453,8 +456,10 @@ class TestRunnerPlugin(Plugin):
         except UnicodeDecodeError as e:
             # I'm not sure why I sometimes get this, and I don't know what I
             # can do other than to ignore it.
+            textctrl.AppendText(string)
+            print("DEBUG appendtext string=%s\n" % string)
             # pass
-            raise  # DEBUG
+            #  raise  # DEBUG
 
         new_text_end = textctrl.GetLength()
 

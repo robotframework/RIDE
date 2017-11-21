@@ -30,7 +30,8 @@ import os
 from robotide import pluginapi
 from robotide.widgets import Label
 from robotide.robotapi import DataError, Information
-from robotide.utils import overrides, SYSTEM_ENCODING, ArgumentParser, unicode, is_unicode
+from robotide.utils import (overrides, SYSTEM_ENCODING, ArgumentParser,
+                            unicode, is_unicode, PY3)
 from robotide.contrib.testrunner.usages import USAGE
 
 
@@ -270,7 +271,9 @@ class PybotProfile(BaseProfile):
 
     def _get_invalid_message(self, args):
         try:
-            args = args.encode(SYSTEM_ENCODING)
+            # print("DEBUG: runprofiles get inv msg: %s\nraw: %s\n" % (bytes(args), args) )
+            if PY3:
+                args = args.encode(SYSTEM_ENCODING)  # DEBUG SYSTEM_ENCODING
             _, invalid = ArgumentParser(USAGE).parse_args(args.split())
             if bool(invalid):
                 return 'Unknown option(s): '+' '.join(invalid)

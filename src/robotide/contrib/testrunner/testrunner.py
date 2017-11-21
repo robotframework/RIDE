@@ -50,6 +50,7 @@ from robotide.robotapi import LOG_LEVELS
 from robotide.context import IS_WINDOWS
 from robotide.contrib.testrunner import TestRunnerAgent
 from robotide.controller.testexecutionresults import TestExecutionResults
+from robotide.utils import unicode
 try:
     from robotide.lib.robot.utils import encoding
 except ImportError:
@@ -259,7 +260,7 @@ class TestRunner(object):
     @staticmethod
     def _write_argfile(argfile, args):
         f = codecs.open(argfile, "w", "utf-8")
-        f.write("\n".join(args))
+        f.write("\n".join(args))  # DEBUG
         f.close()
 
     def get_output_and_errors(self, profile):
