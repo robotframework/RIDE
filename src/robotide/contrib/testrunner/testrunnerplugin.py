@@ -261,15 +261,15 @@ class TestRunnerPlugin(Plugin):
         command = self._create_command()
         self._output("command: %s\n" % command)  # DEBUG encode
         try:
-            self._output("DEBUG: starting command %s\n" % command)  # DEBUG encode
+            # self._output("DEBUG: starting command %s\n" % command)  # DEBUG encode
             self._test_runner.run_command(
                 command, self._get_current_working_dir())
-            self._output("DEBUG: Passed test_runner.run_command\n")
+            # self._output("DEBUG: Passed test_runner.run_command\n")
             self._process_timer.Start(41) # roughly 24fps
             self._set_running()
             self._progress_bar.Start()
         except Exception as e:
-            self._output("DEBUG: Except block test_runner.run_command\n")
+            # self._output("DEBUG: Except block test_runner.run_command\n")
             self._set_stopped()
             error, log_message = self.get_current_profile().format_error(
                 unicode(e), None)
@@ -452,12 +452,15 @@ class TestRunnerPlugin(Plugin):
 
         textctrl.SetReadOnly(False)
         try:
-            textctrl.AppendText(string.encode('utf-8'))
+            if PY2:
+                textctrl.AppendText(string.encode('utf-8'))
+            else:
+                textctrl.AppendText(str(string))  # DEBUG
         except UnicodeDecodeError as e:
             # I'm not sure why I sometimes get this, and I don't know what I
             # can do other than to ignore it.
             textctrl.AppendText(string)
-            print("DEBUG appendtext string=%s\n" % string)
+            #print("DEBUG appendtext string=%s\n" % string)
             # pass
             #  raise  # DEBUG
 

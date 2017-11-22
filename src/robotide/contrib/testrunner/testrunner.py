@@ -50,7 +50,7 @@ from robotide.robotapi import LOG_LEVELS
 from robotide.context import IS_WINDOWS
 from robotide.contrib.testrunner import TestRunnerAgent
 from robotide.controller.testexecutionresults import TestExecutionResults
-from robotide.utils import unicode
+from robotide.utils import PY2 # , unicode
 try:
     from robotide.lib.robot.utils import encoding
 except ImportError:
@@ -184,7 +184,7 @@ class TestRunner(object):
     def run_command(self, command, cwd):
         self._pid_to_kill = None
         self._process = Process(cwd)
-        print("DEBUG: run_command command: %s\nCWD: %s\n" % (command, cwd))
+        # print("DEBUG: run_command command: %s\nCWD: %s\n" % (command, cwd))
         self._process.run_command(command)
 
     def get_command(self, profile, pythonpath, console_width, names_to_run):
@@ -259,8 +259,12 @@ class TestRunner(object):
 
     @staticmethod
     def _write_argfile(argfile, args):
-        f = codecs.open(argfile, "w", "utf-8")
-        f.write("\n".join(args))  # DEBUG
+        f = codecs.open(argfile, "wb", "utf-8")
+        if PY2:
+            m_args = [unicode(x,"utf-8") for x in args]
+        else:
+            m_args = [str(x) for x in args]
+        f.write(u"\n".join(m_args))  # DEBUG
         f.close()
 
     def get_output_and_errors(self, profile):
@@ -312,10 +316,10 @@ class Process(object):
             subprocess_args['shell'] = True
         # DEBUG self._process = subprocess.Popen(command.encode(utils.SYSTEM_ENCODING),
         #                                 **subprocess_args)
-        print("DEBUG: run_command calling Subprocess: %s\nCommand: %s\n" % (subprocess_args,str(command.encode(encoding.OUTPUT_ENCODING))))
+        # print("DEBUG: run_command calling Subprocess: %s\nCommand: %s\n" % (subprocess_args,str(command.encode(encoding.OUTPUT_ENCODING))))
         self._process = subprocess.Popen(command,
                                          **subprocess_args)  # DEBUG was .encode(encoding.OUTPUT_ENCODING) .OUTPUT_ENCODING
-        print("DEBUG: run_command Called Subprocess_args: %s\n" % subprocess_args)
+        # print("DEBUG: run_command Called Subprocess_args: %s\n" % subprocess_args)
         self._process.stdin.close()
         self._output_stream = StreamReaderThread(self._process.stdout)
         self._error_stream = StreamReaderThread(self._process.stderr)
