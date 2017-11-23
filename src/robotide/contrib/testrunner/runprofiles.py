@@ -126,8 +126,8 @@ class PybotProfile(BaseProfile):
     '''
     name = "robot"
     default_settings = {"arguments": u"",
-                        "include_tags": "",
-                        "exclude_tags": "",
+                        "include_tags": u"",
+                        "exclude_tags": u"",
                         "apply_include_tags": False,
                         "apply_exclude_tags": False}
 

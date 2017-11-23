@@ -2124,14 +2124,14 @@ class ConfigObj(Section):
             output += newline
         if outfile is not None:
             if PYTHON2:
-                outfile.write(output)
+                outfile.write(unicode(output))  # DEBUG
             elif PYTHON3:
                 outfile.write(output.encode('UTF-8'))
             outfile.close()
         else:
             h = open(self.filename, 'wb')
             if PYTHON2:
-                h.write(output)
+                h.write(unicode(output))  # DEBUG
             elif PYTHON3:
                 h.write(output.encode('UTF-8'))
             h.close()

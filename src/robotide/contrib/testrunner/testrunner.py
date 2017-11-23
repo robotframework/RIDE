@@ -264,7 +264,7 @@ class TestRunner(object):
             m_args = [unicode(x,"utf-8") for x in args]
         else:
             m_args = [str(x) for x in args]
-        f.write(u"\n".join(m_args))  # DEBUG
+        f.write("\n".join(m_args))  # DEBUG
         f.close()
 
     def get_output_and_errors(self, profile):
