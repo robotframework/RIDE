@@ -125,9 +125,9 @@ class PybotProfile(BaseProfile):
     It is assumed that robot is on the path
     '''
     name = "robot"
-    default_settings = {"arguments": u"",
-                        "include_tags": u"",
-                        "exclude_tags": u"",
+    default_settings = {"arguments": "",
+                        "include_tags": "",
+                        "exclude_tags": "",
                         "apply_include_tags": False,
                         "apply_exclude_tags": False}
 

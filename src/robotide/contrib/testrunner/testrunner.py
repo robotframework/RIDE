@@ -364,10 +364,14 @@ class Process(object):
         if self._port is None:
             return  # Silent failure..
         sock = None
+        if IS_WINDOWS:  # TODO Verify on Linux
+            host = '127.0.0.1'
+        else:
+            host = 'localhost'
         try:
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            sock.connect(('localhost', self._port))
-            sock.send(data)
+            sock.connect((host, self._port))
+            sock.send(bytes(data.encode("utf-8")))
         finally:
             sock.close()
 

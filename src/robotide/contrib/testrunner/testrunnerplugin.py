@@ -64,7 +64,13 @@ from robotide.publish.messages import RideTestSelectedForRunningChanged
 from robotide.pluginapi import Plugin, ActionInfo
 from robotide.widgets import Label, ImageProvider
 from robotide.robotapi import LOG_LEVELS
-from robotide.utils import robottime, unicode, is_unicode, PY2
+from robotide.utils import robottime, is_unicode, PY2, unicode
+try:
+    from robotide.lib.robot.utils import encoding
+except ImportError:
+    encoding = None
+if encoding:
+    encoding = encoding.SYSTEM_ENCODING  # CONSOLE_ENCODING
 
 
 ID_RUN = wx.NewId()
@@ -261,6 +267,8 @@ class TestRunnerPlugin(Plugin):
         command = self._create_command()
         self._output("command: %s\n" % command)  # DEBUG encode
         try:
+            if PY2:
+                command = bytes(command.encode(encoding))  # TODO This does not work if for example -i Áçãú
             # self._output("DEBUG: starting command %s\n" % command)  # DEBUG encode
             self._test_runner.run_command(
                 command, self._get_current_working_dir())
@@ -460,7 +468,7 @@ class TestRunnerPlugin(Plugin):
             # I'm not sure why I sometimes get this, and I don't know what I
             # can do other than to ignore it.
             textctrl.AppendText(string)
-            #print("DEBUG appendtext string=%s\n" % string)
+            # print("DEBUG UnicodeDecodeError appendtext string=%s\n" % string)
             # pass
             #  raise  # DEBUG
 
