@@ -261,10 +261,15 @@ class TestRunner(object):
     def _write_argfile(argfile, args):
         f = codecs.open(argfile, "wb", "utf-8")
         if PY2:
-            m_args = [unicode(x,"utf-8") for x in args]
+            if IS_WINDOWS:
+                m_args = [unicode(item,"utf-8") for item in args]
+            else:
+                m_args = [item.decode("utf-8") for item in args]
         else:
             m_args = [str(x) for x in args]
-        f.write("\n".join(m_args))  # DEBUG
+        # print("DEBUG: write_args: %s\n" % m_args)
+        data = "\n".join(m_args)
+        f.write(data)  # DEBUG .decode("utf-8")
         f.close()
 
     def get_output_and_errors(self, profile):
