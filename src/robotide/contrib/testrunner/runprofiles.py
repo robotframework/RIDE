@@ -183,7 +183,7 @@ class PybotProfile(BaseProfile):
         # bash and zsh use return code 127 and the text `command not found`
         # In Windows, the error is `The system cannot file the file specified`
         if 'not found' in error or returncode is 127 or \
-                'system cannot find the file specified' in error:
+                        'system cannot find the file specified' in error:
             return pluginapi.RideLogMessage(
                 RF_INSTALLATION_NOT_FOUND, notify_user=True)
         return None
@@ -204,7 +204,7 @@ class PybotProfile(BaseProfile):
             panel, wx.ID_ANY, size=(-1, -1), value=self.arguments)
         # DEBUG wxPhoenix SetToolTipString
         self.MySetToolTip(self._arguments,
-            "Arguments for the test run. Arguments are space separated list.")
+                          "Arguments for the test run. Arguments are space separated list.")
         self._arguments.Bind(wx.EVT_TEXT, self.OnArgumentsChanged)
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         sizer.Add(label, 0, wx.ALL | wx.EXPAND)
@@ -259,9 +259,9 @@ class PybotProfile(BaseProfile):
         self._arguments.SetForegroundColour(
             'white' if invalid_message else 'black')
         # DEBUG wxPhoenix  self._arguments.SetToolTipString
-        self.MySetToolTip(self._arguments,
-            invalid_message or
-            'Arguments for the test run. Arguments are space separated list.')
+        if not bool(invalid_message):
+            invalid_message = 'Arguments for the test run. Arguments are space separated list.'
+        self.MySetToolTip(self._arguments, invalid_message)
 
     def MySetToolTip(self, obj, tip):
         if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
@@ -270,18 +270,19 @@ class PybotProfile(BaseProfile):
             obj.SetToolTipString(tip)
 
     def _get_invalid_message(self, args):
+        invalid = None
         try:
             # print("DEBUG: runprofiles get inv msg: %s\nraw: %s\n" % (bytes(args), args) )
             if PY3:
                 args = args.encode(SYSTEM_ENCODING)  # DEBUG SYSTEM_ENCODING
             _, invalid = ArgumentParser(USAGE).parse_args(args.split())
-            if bool(invalid):
-                return 'Unknown option(s): '+' '.join(invalid)
-            return None
-        except DataError as e:
-            return e.message
         except Information:
             return 'Does not execute - help or version option given'
+        except (DataError, Exception) as e:  # DEBUG  not being caught DataError?
+            return e.message
+        if bool(invalid):
+            return 'Unknown option(s): '+' '.join(invalid)
+        return None
 
     def OnExcludeCheckbox(self, evt):
         self.set_setting("apply_exclude_tags", evt.IsChecked())
