@@ -261,7 +261,9 @@ class LibraryKeywordInfo(_KeywordInfo):
         return True
 
     def __eq__(self, other):
-        return self.name.lower() == other.name.lower()  # and self.__hash__ == other.__hash__
+        if isinstance(other, str):   # DEBUG
+           return self.name.lower() == other.name.lower()  # and self.__hash__ == other.__hash__
+
 
     def __hash__(self):
         return hash(repr(self))  # self.name)  #
@@ -327,7 +329,8 @@ class TestCaseUserKeywordInfo(_UserKeywordInfo):
         return self.name
 
     def __eq__(self, other):
-        return self.name.lower() == other.name.lower()  # and self.__hash__ == other.__hash__
+        if isinstance(other, str):  # DEBUG
+            return self.name.lower() == other.name.lower()  # and self.__hash__ == other.__hash__
 
     def __hash__(self):
         return hash(self.longname)  # repr(self))
