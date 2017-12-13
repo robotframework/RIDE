@@ -8,6 +8,7 @@ class TestPybotArgumentsValidation(unittest.TestCase):
     def setUp(self):
         self._profile = PybotProfile(lambda:0)
 
+    @unittest.expectedFailure   # No more DataError, better argument detection
     def test_invalid_argument(self):
         try:
             self.assertRaisesRegex(robot.errors.DataError,
