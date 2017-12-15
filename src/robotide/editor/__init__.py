@@ -24,7 +24,6 @@ from robotide.utils import overrides
 from robotide.widgets import PopupCreator
 from .editorcreator import EditorCreator
 
-from . import images
 
 _EDIT = """
 [File]

@@ -7,8 +7,8 @@ import os, sys
 import wx
 import wx.stc as stc
 
-#from .images import Background, code, SmallDnArrow, SmallUpArrow
-import images
+from images import Smiles
+#import Smiles  # Background, code, SmallDnArrow, SmallUpArrow
 
 # ----------------------------------------------------------------------
 
@@ -179,7 +179,7 @@ class PythonSTC(stc.StyledTextCtrl):
 
 
         # register some images for use in the AutoComplete box.
-        self.RegisterImage(1, images.Smiles.GetBitmap())
+        self.RegisterImage(1, Smiles.GetBitmap())  # DEBUG was images.
         self.RegisterImage(2,
             wx.ArtProvider.GetBitmap(wx.ART_NEW, size=(16,16)))
         self.RegisterImage(3,
@@ -907,6 +907,7 @@ def LookForExternals(externalDemos, demoName):
 
 
 if __name__ == '__main__':
+    __name__ = 'Editor'
     app = wx.App()
     frame = wx.Frame(None)
     panel = DemoCodePanel(frame, None)
