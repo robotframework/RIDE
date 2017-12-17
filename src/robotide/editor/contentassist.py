@@ -46,7 +46,7 @@ class _ContentAssistTextCtrlBase(object):
     def OnChar(self, event):
         # TODO: This might benefit from some cleanup
         keycode = event.GetKeyCode()
-        event.Skip()  # DEBUG do it as soon we do not need it
+        # event.Skip()  # DEBUG do it as soon we do not need it
         # Ctrl-Space handling needed for dialogs # DEBUG add Ctrl-m
         if event.ControlDown() and keycode in (wx.WXK_SPACE, ord('m')):
             self.show_content_assist()
@@ -68,7 +68,7 @@ class _ContentAssistTextCtrlBase(object):
         elif keycode in (ord('1'), ord('2')) and event.ControlDown() and not \
                 event.AltDown():
             self.execute_variable_creator(list_variable=(keycode == ord('2')))
-        # event.Skip() # DEBUG Move up
+        event.Skip() # DEBUG Move up
 
     # TODO Add dictionary?
     def execute_variable_creator(self, list_variable=False):
@@ -87,10 +87,13 @@ class _ContentAssistTextCtrlBase(object):
     def OnFocusLost(self, event, set_value=True):
         if not self._popup.is_shown():
             return
-        value = self.gherkin_prefix + self._popup.get_value() or ""
+        if self.gherkin_prefix:
+            value = self.gherkin_prefix + self._popup.get_value() or ""
+        else:
+            value =self._popup.get_value() or ""
         if set_value and value:
             self.SetValue(value)
-            self.SetInsertionPoint(len(self.Value))
+            self.SetInsertionPoint(len(value))  # DEBUG was self.Value
         else:
             self.Clear()
         self.hide()
