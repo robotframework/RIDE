@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 #
 # from StyledTextCtrl_2 import PythonSTC
 # -----------------------------------------------------------------
@@ -906,7 +907,9 @@ def LookForExternals(externalDemos, demoName):
 # ----------------------------------------------------------------------------
 
 
-if __name__ == '__main__':
+if __name__ == '__main__' and __package__ is None:
+    from os import sys, path
+    sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
     __name__ = 'Editor'
     app = wx.App()
     frame = wx.Frame(None)
