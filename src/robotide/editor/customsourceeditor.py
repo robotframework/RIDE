@@ -52,10 +52,10 @@ else:
 
 # This is how you pre-establish a file filter so that the dialog
 # only shows the extension(s) you want it to.
-wildcard = "JASON file (*.json)|*.json|"        \
-           "Python source (*.py)|*.py|"     \
+wildcard = "Python source (*.py)|*.py|"     \
+           "JASON file (*.json)|*.json|"        \
+           "Robot Framework (*.robot)|*.robot|" \
            "Robot Framework (*.txt)|*.txt|" \
-           "Robot Framework (*.robot)|*.robot|"    \
            "YAML file (*.yml)|*.yml|"        \
            "All files (*.*)|*.*"
 
@@ -666,33 +666,16 @@ class DemoCodePanel(wx.Panel):
     def OnCodeModified(self, event):
         self.btnSave.Enable(self.editor.IsModified())
 
-    def OnSave(self, event):
-        if self.demoModules.Exists(modModified):
-            if self.demoModules.GetActiveID() == modOriginal:
-                overwriteMsg = "You are about to overwrite an already existing modified copy\n" + \
-                               "Do you want to continue?"
-                dlg = wx.MessageDialog(self, overwriteMsg, "wxPython Demo",
-                                       wx.YES_NO | wx.NO_DEFAULT| wx.ICON_EXCLAMATION)
-                result = dlg.ShowModal()
-                if result == wx.ID_NO:
-                    return
-                dlg.Destroy()
-
-        self.demoModules.SetActive(modModified)
-        modifiedFilename = GetModifiedFilename(self.demoModules.name)
-
-        # Create the demo directory if one doesn't already exist
-        if not os.path.exists(GetModifiedDirectory()):
-            try:
-                os.makedirs(GetModifiedDirectory())
-                if not os.path.exists(GetModifiedDirectory()):
-                    wx.LogMessage("BUG: Created demo directory but it still doesn't exist")
-                    raise AssertionError
-            except:
-                wx.LogMessage("Error creating demo directory: %s" % GetModifiedDirectory())
+    def OnSave(self, modifiedFilename):
+        if os.path.isfile(modifiedFilename):
+            overwriteMsg = "You are about to overwrite an existing file\n" + \
+                           "Do you want to continue?"
+            dlg = wx.MessageDialog(self, overwriteMsg, "Editor Writer",
+                                   wx.YES_NO | wx.NO_DEFAULT| wx.ICON_EXCLAMATION)
+            result = dlg.ShowModal()
+            if result == wx.ID_NO:
                 return
-            else:
-                wx.LogMessage("Created directory for modified demos: %s" % GetModifiedDirectory())
+            dlg.Destroy()
 
         # Save
         f = open(modifiedFilename, "wt")
@@ -702,11 +685,11 @@ class DemoCodePanel(wx.Panel):
         finally:
             f.close()
 
-        busy = wx.BusyInfo("Reloading demo module...")
-        self.demoModules.LoadFromFile(modModified, modifiedFilename)
-        self.ActiveModuleChanged()
+        # busy = wx.BusyInfo("Reloading demo module...")
+        # self.demoModules.LoadFromFile(modModified, modifiedFilename)
+        #self.ActiveModuleChanged()
 
-        self.mainFrame.SetTreeModified(True)
+        #self.mainFrame.SetTreeModified(True)
 
     def OnRestore(self, event): # Handles the "Delete Modified" button
         modifiedFilename = GetModifiedFilename(self.demoModules.name)
@@ -734,10 +717,10 @@ class DemoCodePanel(wx.Panel):
             defaultDir=os.getcwd(),
             defaultFile="",
             wildcard=wildcard,
-            style=wx.FD_OPEN | wx.FD_MULTIPLE |
+            style=wx.FD_OPEN |
                   wx.FD_CHANGE_DIR | wx.FD_FILE_MUST_EXIST |
                   wx.FD_PREVIEW
-            )
+            )  #  wx.FD_MULTIPLE |
 
         # Show the dialog and retrieve the user response. If it is the OK response,
         # process the data.
@@ -752,6 +735,15 @@ class DemoCodePanel(wx.Panel):
                 # self.log.WriteText('           %s\n' % path)
                 self.log.write('           %s\n' % path)
 
+            # Open
+            f = open(path, "r")
+            try:
+                source = f.read()
+            finally:
+                f.close()
+
+            self.log.write('%s\n' % source)
+            self.LoadDemoSource(source)  # Just the last file
         # Compare this with the debug above; did we change working dirs?
         # self.log.WriteText("CWD: %s\n" % os.getcwd())
         self.log.write("CWD: %s\n" % os.getcwd())
@@ -773,12 +765,12 @@ class DemoCodePanel(wx.Panel):
         # directory than the one initially set.
         dlg = wx.FileDialog(
             self, message="Save file as ...", defaultDir=os.getcwd(),
-            defaultFile="", wildcard=wildcard, style=wx.FD_SAVE | wx.FD_OVERWRITE_PROMPT
-            )
+            defaultFile="", wildcard=wildcard, style=wx.FD_SAVE
+            )  # | wx.FD_OVERWRITE_PROMPT
 
         # This sets the default filter that the user will initially see. Otherwise,
         # the first filter in the list will be used by default.
-        dlg.SetFilterIndex(2)
+        # dlg.SetFilterIndex(2)
 
         # Show the dialog and retrieve the user response. If it is the OK response,
         # process the data.
@@ -800,7 +792,7 @@ class DemoCodePanel(wx.Panel):
             #
             # You might want to add some error checking :-)
             #
-
+            self.OnSave(path)
         # Note that the current working dir didn't change. This is good since
         # that's the way we set it up.
         # self.log.WriteText("CWD: %s\n" % os.getcwd())
@@ -891,127 +883,6 @@ def GetConfig():
 
 
 _platformNames = ["wxMSW", "wxGTK", "wxMac"]
-
-
-def MakeDocDirs():
-
-    docDir = os.path.join(GetDataDir(), "docs")
-    if not os.path.exists(docDir):
-        os.makedirs(docDir)
-
-    for plat in _platformNames:
-        imageDir = os.path.join(docDir, "images", plat)
-        if not os.path.exists(imageDir):
-            os.makedirs(imageDir)
-
-
-def GetDocFile():
-
-    docFile = os.path.join(GetDataDir(), "docs", "TrunkDocs.pkl")
-
-    return docFile
-
-
-def GetDocImagesDir():
-
-    MakeDocDirs()
-    return os.path.join(GetDataDir(), "docs", "images")
-
-
-def SearchDemo(name, keyword):
-    """ Returns whether a demo contains the search keyword or not. """
-    fid = open(GetOriginalFilename(name), "rt")
-    fullText = fid.read()
-    fid.close()
-
-    fullText = fullText.decode("iso-8859-1")
-
-    if fullText.find(keyword) >= 0:
-        return True
-
-    return False
-
-"""
-def HuntExternalDemos():
-#
-#    Searches for external demos (i.e. packages like AGW) in the wxPython
-#    demo sub-directories. In order to be found, these external packages
-#    must have a __demo__.py file in their directory.
-# 
-
-    externalDemos = {}
-    originalDir = os.getcwd()
-    listDir = os.listdir(originalDir)
-    # Loop over the content of the demo directory
-    for item in listDir:
-        if not os.path.isdir(item):
-            # Not a directory, continue
-            continue
-        dirFile = os.listdir(item)
-        # See if a __demo__.py file is there
-        if "__demo__.py" in dirFile:
-            # Extend sys.path and import the external demos
-            sys.path.append(item)
-            externalDemos[item] = __import__("__demo__")
-
-    if not externalDemos:
-        # Nothing to import...
-        return {}
-
-    # Modify the tree items and icons
-    index = 0
-    for category, demos in _treeList:
-        # We put the external packages right before the
-        # More Windows/Controls item
-        if category == "More Windows/Controls":
-            break
-        index += 1
-
-    # Sort and reverse the external demos keys so that they
-    # come back in alphabetical order
-    keys = list(externalDemos.keys())
-    keys.sort()
-    keys.reverse()
-
-    # Loop over all external packages
-    for extern in keys:
-        package = externalDemos[extern]
-        # Insert a new package in the _treeList of demos
-        _treeList.insert(index, package.GetDemos())
-        # Get the recent additions for this package
-        _treeList[0][1].extend(package.GetRecentAdditions())
-        # Extend the demo bitmaps and the catalog
-        _demoPngs.insert(index+1, extern)
-        images.catalog[extern] = package.GetDemoBitmap()
-
-    # That's all folks...
-    return externalDemos
-"""
-
-
-def LookForExternals(externalDemos, demoName):
-    """
-    Checks if a demo name is in any of the external packages (like AGW) or
-    if the user clicked on one of the external packages parent items in the
-    tree, in which case it returns the html overview for the package.
-    """
-
-    pkg = overview = None
-    # Loop over all the external demos
-    for key, package in externalDemos.items():
-        # Get the tree item name for the package and its demos
-        treeName, treeDemos = package.GetDemos()
-        # Get the overview for the package
-        treeOverview = package.GetOverview()
-        if treeName == demoName:
-            # The user clicked on the parent tree item, return the overview
-            return pkg, treeOverview
-        elif demoName in treeDemos:
-            # The user clicked on a real demo, return the package
-            return key, overview
-
-    # No match found, return None for both
-    return pkg, overview
 
 # ----------------------------------------------------------------------------
 # ----------------------------------------------------------------------------
