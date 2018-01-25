@@ -23,7 +23,7 @@ from __future__ import generators
 import sys
 import os
 import re
-from robotide.utils import basestring, unicode
+from robotide.utils import basestring, unicode, converttypes
 
 if sys.version_info[0] == 2:
     PYTHON2 = True
@@ -35,8 +35,7 @@ elif sys.version_info[0] == 3:
 compiler = None
 try:
     # import py_compile as compiler # compiler
-    # import ast as compiler  #
-    import compiler
+    import ast as compiler  # DEBUG    import compiler
 except ImportError:
     # for IronPython
     pass
@@ -147,22 +146,19 @@ OPTION_DEFAULTS = {
 }
 
 
+# TODO Remove DEBUG info
 def getObj(s):
-    # x = "a=\'" + s + "\'"
-    s = "a=" + s
-    if compiler is None:
-        raise ImportError('compiler module not available')
-    p = compiler.parse(s)
-    return p.getChildren()[1].getChildren()[0].getChildren()[1]
-    """
+    x = "a=" + s
     try:
-        p = compiler.literal_eval(x)  # .parse(s) # .literal_eval(s)
-    except ValueError as e:
-        print("DEBUG: parser getObj Error %s\n", str(e))
-        raise ValueError
-    print("DEBUG: parser getObj string %s  eval %s\n", (x, p))
-    return p #  p.getChildren()[1].getChildren()[0].getChildren()[1]
-    """
+        p = compiler.parse(x)
+    except (ValueError, SyntaxError) as e:
+        # print("DEBUG: parser getObj Error %s\n" % str(e))
+        raise  #ValueError
+    y = list()
+    for i in compiler.walk(p):
+        y.append(i)
+    # print("DEBUG: parser getObj y= %s v=%s " % (y[3].__class__.__name__, compiler.literal_eval(y[3])))
+    return y[3:-1]
 
 
 class UnknownType(Exception):
@@ -172,18 +168,25 @@ class UnknownType(Exception):
 class Builder(object):
 
     def build(self, o):
-        # print("DEBUG build name: %s\n" % 'build_' + o.__class__.__name__)
-        m = getattr(self, 'build_' + o.__class__.__name__, None)
+        # print("DEBUG build name: %s class name %s " % ('build_' + o[0].__class__.__name__.strip(), o[0].__class__.__name__ ))
+        if o.__class__.__name__ == 'Tuple':
+            m = getattr(self, 'build_Tuple')  # DEBUG Tuple
+            return m(o[0])
+        m = getattr(self, ('build_' + o[0].__class__.__name__.strip()))
+        # print("DEBUG: m=%s M object=%s  " % (m, m(o[0])))
         if m is None:
-            raise UnknownType(o.__class__.__name__)
-        return m(o)
+            raise UnknownType(o.__class__.__name__.strip())
+        return m(o[0])
 
     def build_List(self, o):
-        return map(self.build, o.getChildren())
+        # print("DEBUG: build_List v=%s " % compiler.literal_eval(o))
+        return compiler.literal_eval(o)
 
     def build_Const(self, o):
-        return o.value
+        # return o.value
+        return compiler.literal_eval(o)
 
+    # TODO Update to AST code
     def build_Dict(self, o):
         d = {}
         i = iter(map(self.build, o.getChildren()))
@@ -192,19 +195,42 @@ class Builder(object):
         return d
 
     def build_Tuple(self, o):
-        return tuple(self.build_List(o))
+        # print("DEBUG: build_Tuple o=%s *******************************" % o)
+        m_tuple = list()
+        for node in compiler.iter_child_nodes(o):
+            try:
+                if node.__class__.__name__ not in ['List', 'Load', 'Tuple']:
+                    # print("DEBUG: build_Tuple class=%s **" % node.__class__.__name__)
+                    v = compiler.literal_eval(node)
+                    # print("DEBUG: build_Tuple v=%s **" % v)
+                    m_tuple.append(v)
+            except ValueError:
+                m_tuple.pop()
+                pass
+        # print("DEBUG: node in Tuple n=%s " % m_tuple)
+        # print("DEBUG: build_Tuple v=%s " % compiler.dump(o, annotate_fields=False))
+        return tuple(m_tuple)
 
     def build_Name(self, o):
-        if o.name == 'None':
-            return None
-        if o.name == 'True':
-            return True
-        if o.name == 'False':
-            return False
+        try:
+            name = compiler.literal_eval(o)
+            # print("DEBUG: build_Name v=%s \n" % name)
+        except ValueError:
+            raise UnknownType('Name')
+        return name
 
-        # An undefined Name
-        raise UnknownType('Undefined Name')
+    def build_Num(self, o):
+        # print("DEBUG: build_Num v=%s \n" % compiler.literal_eval(o))
+        return compiler.literal_eval(o)
 
+    def build_NameConstant(self, o):
+        return self.build_Name(o)
+
+    def build_Str(self, o):
+        # print("DEBUG: build_Str v=%s \n" % compiler.literal_eval(o))
+        return compiler.literal_eval(o)
+
+    # TODO Update to AST code
     def build_Add(self, o):
         real, imag = map(self.build_Const, o.getChildren())
         try:
@@ -215,13 +241,16 @@ class Builder(object):
             raise UnknownType('Add')
         return real+imag
 
+    # TODO Update to AST code
     def build_Getattr(self, o):
         parent = self.build(o.expr)
         return getattr(parent, o.attrname)
 
+    # TODO Update to AST code
     def build_UnarySub(self, o):
         return -self.build_Const(o.getChildren()[0])
 
+    # TODO Update to AST code
     def build_UnaryAdd(self, o):
         return self.build_Const(o.getChildren()[0])
 
@@ -231,7 +260,7 @@ _builder = Builder()
 
 def unrepr(s):
     if not s:
-        # print("DEBUG return s from unrepr %s\n", s)
+        # print("DEBUG return s from unrepr %s\n" % s)
         return s
     return _builder.build(getObj(s))
 
@@ -1284,9 +1313,13 @@ class ConfigObj(Section):
             infile = self._handle_bom(infile)
             # infile is now *always* a list
             #
+            # if isinstance(infile, bytes):  # DEBUG This is when Python 3
+            #     print("DEBUG: infile is bytes")
+            #     infile = infile.decode()
+            #     infile.split('\n')
             # Set the newlines attribute (first line ending it finds)
             # and strip trailing '\n' or '\r' from lines
-            for line in infile:
+            for line in infile:  # DEBUG
                 if (not line) or (line[-1] not in ('\r', '\n', '\r\n')):
                     continue
                 for end in ('\r\n', '\n', '\r'):
@@ -1297,10 +1330,11 @@ class ConfigObj(Section):
 
             infile = [line.rstrip(self.newlines) for line in infile]
 
+        infile = converttypes(infile)
         # print("DEBUG: configobj before parsing %s\n" % infile)
         # print("DEBUG: Before parsing Errors are: %s", self._errors)
         self._parse(infile)
-        # print("DEBUG: configobj parsed infile %s\n", infile)
+        # print("DEBUG: configobj parsed infile keys %s" % self.keys())
         # print("DEBUG: Errors are: %s", self._errors)
         # print("DEBUG: ############################### BY PASS ERROR PARSER!!!!!!!!")
         # if we had any errors, now is the time to raise them
@@ -1390,6 +1424,7 @@ class ConfigObj(Section):
             # No need to check for a BOM
             # the encoding specified doesn't have one
             # just decode
+            # print("DEBUG: returning from no enconding defined")
             return self._decode(infile, self.encoding)
 
         if isinstance(infile, (list, tuple)):
@@ -1410,15 +1445,18 @@ class ConfigObj(Section):
                         ### BOM discovered
                         ##self.BOM = True
                         # Don't need to remove BOM
+                        # print("DEBUG: returning from enconding UTF-16")
                         return self._decode(infile, encoding)
 
                 # If we get this far, will *probably* raise a DecodeError
                 # As it doesn't appear to start with a BOM
+                # print("DEBUG: returning from enconding UTF-16, no BOM")
                 return self._decode(infile, self.encoding)
 
             # Must be UTF8
             BOM = BOM_SET[enc]
             if not line.startswith(BOM):
+                # print("DEBUG: returning from enconding UTF-8, no BOM")
                 return self._decode(infile, self.encoding)
 
             newline = line[len(BOM):]
@@ -1429,39 +1467,49 @@ class ConfigObj(Section):
             else:
                 infile = newline
             self.BOM = True
+            # print("DEBUG: returning from enconding UTF-8, removed BOM")
             return self._decode(infile, self.encoding)
 
         # DEBUG Just ignore BOM if using Python 3
         # TODO fix code for Python 3
-        if not PYTHON3:
-            # No encoding specified - so we need to check for UTF8/UTF16
-            for BOM, (encoding, final_encoding) in BOMS.items():
-                if not line.startswith(BOM):
-                    continue
-                else:
-                    # BOM discovered
-                    self.encoding = final_encoding
-                    if not final_encoding:
-                        self.BOM = True
-                        # UTF8
-                        # remove BOM
-                        newline = line[len(BOM):]
-                        if isinstance(infile, (list, tuple)):
-                            infile[0] = newline
-                        else:
-                            infile = newline
-                        # UTF8 - don't decode
-                        if isinstance(infile, basestring):
-                            return infile.splitlines(True)
-                        else:
-                            return infile
-                    # UTF16 - have to decode
-                    return self._decode(infile, encoding)
+        # if not PYTHON3:
+        # print("DEBUG: entering no enconding defined")
+        # No encoding specified - so we need to check for UTF8/UTF16
+        for BOM, (encoding, final_encoding) in BOMS.items():
+            if not line.startswith(BOM):
+                continue
+            else:
+                # BOM discovered
+                self.encoding = final_encoding
+                if not final_encoding:
+                    self.BOM = True
+                    # UTF8
+                    # remove BOM
+                    newline = line[len(BOM):]
+                    if isinstance(infile, (list, tuple)):
+                        infile[0] = newline
+                    else:
+                        infile = newline
+                    # UTF8 - don't decode
+                    if isinstance(infile, basestring):
+                        # print("DEBUG: returning lines enconding UTF-8, w BOM")
+                        return infile.splitlines(True)
+                    else:
+                        # print("DEBUG: returning str enconding UTF-8, w BOM")
+                        return infile
+                # UTF16 - have to decode
+                # print("DEBUG: returning from enconding UTF-16, w BOM")
+                return self._decode(infile, encoding)
 
         # No BOM discovered and no encoding specified, just return
         if isinstance(infile, basestring):
             # infile read from a file will be a single string
+            # print("DEBUG: returning str from list no enconding, no BOM")
             return infile.splitlines(True)
+        if isinstance(infile, bytes):  # DEBUG Python 3
+            infile.decode()
+            return infile.splitlines(True)
+        # print("DEBUG: returning str from no enconding, no BOM, type %s" % type(infile))
         return infile
 
     def _a_to_u(self, aString):
@@ -1530,7 +1578,7 @@ class ConfigObj(Section):
             # print("DEBUG: _parser init cycles: line[%d]= %s\n", (cur_index,sline))
             # DEBUG if PYTHON3: ('#'.encode('UTF-8'))
             # do we have anything on the line ?
-            if not sline or sline.startswith('#'.encode('UTF-8')):
+            if not sline or sline.startswith('#'): # .encode('UTF-8')):
                 reset_comment = False
                 comment_list.append(line)
                 continue
@@ -2075,11 +2123,15 @@ class ConfigObj(Section):
         if not output.endswith(newline):
             output += newline
         if outfile is not None:
-            outfile.write(output)
+            if PYTHON2:
+                outfile.write(unicode(output))  # DEBUG
+            elif PYTHON3:
+                outfile.write(output.encode('UTF-8'))
+            outfile.close()
         else:
             h = open(self.filename, 'wb')
             if PYTHON2:
-                h.write(output)
+                h.write(unicode(output))  # DEBUG
             elif PYTHON3:
                 h.write(output.encode('UTF-8'))
             h.close()

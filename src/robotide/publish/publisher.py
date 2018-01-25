@@ -14,11 +14,18 @@
 
 from robotide.utils import basestring, unicode
 
+try:
+    from wx.lib.pubsub import Publisher
+    WxPublisher = Publisher()
+except ImportError:
+    from wx.lib.pubsub import pub
+    WxPublisher = pub.getDefaultPublisher()
+
 
 class Publisher(object):
 
     def __init__(self):
-        self._listeners = dict()  # DEBUG  {}
+        self._listeners = {}
 
     def publish(self, topic, data):
         self._sendMessage(topic, data)
@@ -40,7 +47,7 @@ class Publisher(object):
 
     def _sendMessage(self, topic, data):
         current_wrappers = self._listeners.values()
-        for wrappers in current_wrappers:
+        for wrappers in list(current_wrappers):  # DEBUG
             for wrapper in wrappers:
                 if wrapper.listens(topic):
                     wrapper(data)
@@ -69,14 +76,14 @@ class _ListenerWrapper(object):
     def __init__(self, listener, topic):
         self.listener = listener
         self.topic = self._get_topic(topic)
-        # WxPublisher.subscribe(self, self.topic)
+        WxPublisher.subscribe(self, self.topic)
 
     def _get_topic(self, topic):
+        # DEBUG RecursionError on python 3
+        # print("DEBUG: topic(%s) is %s" % (topic, type(topic)))
         if not isinstance(topic, basestring):
             topic = topic.topic
-            # print("DEBUG: topic not instance: %s\n" % topic)
-        # print("DEBUG: topic is instance: %s\n" % topic)
-        return topic  # DEBUG .lower()
+        return topic.lower()
 
     def wraps(self, listener, topic):
         return self.listener == listener and self.topic == self._get_topic(topic)
@@ -85,8 +92,7 @@ class _ListenerWrapper(object):
         return self._get_topic(topic).startswith(self.topic)
 
     def unsubscribe(self):
-        pass
-        # WxPublisher.unsubscribe(self, self.topic)
+        WxPublisher.unsubscribe(self, self.topic)
 
     def __call__(self, data):
         from .messages import RideLogException

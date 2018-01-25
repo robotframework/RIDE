@@ -38,6 +38,11 @@ this package are for for internal usage and may change without prior notice.
 .. tip:: More public APIs are exposed by the :mod:`robot.api` package.
 """
 
+# required when not installed
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+
 from robot.rebot import rebot, rebot_cli
 from robot.run import run, run_cli
 from robot.version import get_version

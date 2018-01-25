@@ -287,10 +287,11 @@ if __name__ == '__main__':
     class MyFrame(wx.Frame):
         def __init__(self, parent, id, title):
             wx.Frame.__init__(self, parent, id, title)
+
     class MyMenuApp( wx.App):
         def OnInit(self):
             frame = MyFrame(None , -1, 'Frame Window Demo')
-            sz = wx.BoxSizer()
+            sz = wx.BoxSizer(wx.HORIZONTAL)
             from robotide.controller.basecontroller import _BaseController
             my_controller = _BaseController()
             display = TagsDisplay(frame, None)

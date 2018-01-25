@@ -17,6 +17,7 @@
 
 import sys
 from os.path import exists, join
+from robotide.utils import PY2, PY3
 
 __doc__ = """
 Usage: python ride_postinstall.py [options] <-install|-remove>
@@ -136,7 +137,7 @@ ride.py\nComment=A Robot Framework IDE\nGenericName=RIDE\n")
 e=Application\nX-KDE-SubstituteUID=false\n")
             uid = pwd.getpwnam(user).pw_uid
             os.chown(link, uid, -1)  # groupid == -1 means keep unchanged
-            os.chmod(link, 0744)
+            os.chmod(link, 0o744)
 
 
 def _create_desktop_shortcut_mac(frame=None):
@@ -155,14 +156,20 @@ png".format(sys.version[:3])  # TODO: Find a way to change shortcut icon
             shortcut.write("#!/bin/sh\n/usr/local/bin/ride.py $* &\n")
         uid = pwd.getpwnam(user).pw_uid
         os.chown(link, uid, -1)  # groupid == -1 means keep unchanged
-        os.chmod(link, 0744)
+        os.chmod(link, 0o744)
 
 
 def _create_desktop_shortcut_windows(frame=None):
     # Dependency of http://sourceforge.net/projects/pywin32/
     import os
     import sys
-    from win32com.shell import shell, shellcon
+    try:
+        from win32com.shell import shell, shellcon
+    except ImportError:
+        sys.stderr.write("Cannot create desktop shortcut.\nPlease install"
+                         " pywin32 from http://sourceforge.net/projects/"
+                         "pywin32/")
+        return False
     desktop = shell.SHGetFolderPath(0, shellcon.CSIDL_DESKTOP, None, 0)
     link = os.path.join(desktop, 'RIDE.lnk')
     icon = os.path.join(sys.prefix, 'Lib', 'site-packages', 'robotide',

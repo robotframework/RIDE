@@ -266,7 +266,9 @@ def _remove_files_matching(directory, pattern):
 
 
 def _set_development_path():
+    sys.path.insert(0, TEST_DIR)
     sys.path.insert(0, SOURCE_DIR)
+
 
 
 def _run_sed_on_matching_files(ctx, pattern, sed_expression):

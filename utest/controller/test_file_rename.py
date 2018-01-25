@@ -1,6 +1,6 @@
 import os
 import unittest
-from nose.tools import assert_equals, assert_true
+from nose.tools import assert_equal, assert_true
 
 from robotide.robotapi import TestCaseFile
 from robotide.controller.ctrlcommands import RenameFile
@@ -36,47 +36,47 @@ class TestRenameTestCaseFile(unittest.TestCase):
 
     def test_rename_changes_basename_but_keeps_extension(self):
         RenameFile('quux').execute(self._create_controller())
-        assert_equals(self._error_message, None)
-        assert_equals(self.ctrl.filename, 'quux.txt')
-        assert_equals(self.ctrl.data.source, self.ctrl.filename)
+        assert_equal(self._error_message, None)
+        assert_equal(self.ctrl.filename, 'quux.txt')
+        assert_equal(self.ctrl.data.source, self.ctrl.filename)
 
     def test_rename_preserves_directory_path(self):
         RenameFile('quux').execute(self._create_controller('foo/bar.html'))
-        assert_equals(self._error_message, None)
+        assert_equal(self._error_message, None)
         assert_true(self.ctrl.filename.endswith(os.path.join('foo', 'quux.html')))
 
     def test_rename_deletes_old_path(self):
         RenameFile('quux').execute(self._create_controller())
-        assert_equals(self._error_message, None)
+        assert_equal(self._error_message, None)
         assert_true(self.deleted is True)
 
     def test_rename_saves_file(self):
         RenameFile('quux').execute(self._create_controller())
-        assert_equals(self._error_message, None)
+        assert_equal(self._error_message, None)
         assert_true(self.saved is True)
 
     def test_rename_publishes_message(self):
         RenameFile('some').execute(self._create_controller())
-        assert_equals(self._error_message, None)
-        assert_equals(self._message, self.ctrl)
+        assert_equal(self._error_message, None)
+        assert_equal(self._message, self.ctrl)
 
     def test_rename_illegal_character_error(self):
         RenameFile("dsk\//\sdfj$''lkfdsjflk$'\'fdslkjlsuite....").execute(self._create_controller())
-        assert_equals(self._error_message, ERROR_ILLEGAL_CHARACTERS)
+        assert_equal(self._error_message, ERROR_ILLEGAL_CHARACTERS)
 
     def test_rename_empty_name_error(self):
         RenameFile("").execute(self._create_controller())
-        assert_equals(self._error_message, ERROR_EMPTY_FILENAME)
+        assert_equal(self._error_message, ERROR_EMPTY_FILENAME)
 
     def test_rename_newlines_in_name_error(self):
         RenameFile("ashdjashdhjasd\nasdads").execute(self._create_controller())
-        assert_equals(self._error_message, ERROR_NEWLINES_IN_THE_FILENAME)
+        assert_equal(self._error_message, ERROR_NEWLINES_IN_THE_FILENAME)
 
     def test_rename_already_existing_error(self):
         rename_command = RenameFile("jup")
         rename_command._validator._file_exists = lambda *_: True
         rename_command.execute(self._create_controller())
-        assert_equals(self._error_message, ERROR_FILE_ALREADY_EXISTS % "jup.txt")
+        assert_equal(self._error_message, ERROR_FILE_ALREADY_EXISTS % "jup.txt")
 
     def _create_controller(self, path='some.txt'):
         self._filenames_to_remove.append(path)

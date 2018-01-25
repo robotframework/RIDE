@@ -4,19 +4,31 @@ from searchtests.test_matcher import _TestSearchTest
 
 class TestTestSorter(_TestSearchTest, unittest.TestCase):
 
+    def _matches_in_order(self, match_text, matches):
+        matches = [self._match(match_text, name=name) for name in matches]
+        # print("DEBUG: _matches list %s" % matches)
+        for i in range(1, len(matches)):
+            self._assert_is_greater(matches[i], matches[i - 1])
+
+    def _assert_is_greater(self, greater, smaller):
+        self.assertTrue(
+            greater > smaller, msg='%r !>! %r' % (greater, smaller))
+        #self.assertFalse(smaller > greater)
+        #self.assertFalse(greater == smaller)
+
     def test_exact_match_is_better_than_partial(self):
         values = ['aexact', 'exact', 'exact jotain', 'exact_foo',
                   'jotain exact', 'zexact']
         self._matches_in_order('exact', values)
 
-    def _matches_in_order(self, match_text, matches):
-        matches = [self._match(match_text, name=name) for name in matches]
-        for i in range(1, len(matches)):
-            self._assert_is_greater(matches[i], matches[i - 1])
-
     def test_all_matches_is_better_than_some(self):
-        self._matches_in_order(
-            'zoo foo bar', ['zoo foo bar', 'zoo foo', 'bar'])
+        self._matches_in_order('zoo foo bar',
+                               ['zoo foo bar', 'zoo foo', 'bar'])
+
+    def test_name_is_better_than_doc(self):
+        name_match = self._match('name', name='name')
+        doc_match = self._match('doc', doc='doc')
+        self._assert_is_greater(doc_match, name_match)
 
     def test_more_matches_is_better_than_some_in_name(self):
         all_matches_in_docs = self._match('foo bar', doc='foo bar')
@@ -34,11 +46,6 @@ class TestTestSorter(_TestSearchTest, unittest.TestCase):
             'foo bar', doc='bar bar bar bar bar bar')
         self._assert_is_greater(some_match_in_doc, all_matches_in_name)
 
-    def test_name_is_better_than_doc(self):
-        name_match = self._match('name', name='name')
-        doc_match = self._match('doc', doc='doc')
-        self._assert_is_greater(doc_match, name_match)
-
     def test_name_is_better_than_tag(self):
         name_match = self._match('name', name='name')
         tag_match = self._match('tag', tags=['tag'])
@@ -54,8 +61,11 @@ class TestTestSorter(_TestSearchTest, unittest.TestCase):
         tag2_match = self._match('tag', tags=['btag'])
         self._assert_is_greater(tag2_match, tag1_match)
 
-    def _assert_is_greater(self, greater, smaller):
-        self.assertTrue(
-            greater > smaller, msg='%r !>! %r' % (greater, smaller))
-        self.assertFalse(smaller > greater)
-        self.assertFalse(greater == smaller)
+
+if __name__ == "__main__":
+    unittest.main()
+
+
+
+
+

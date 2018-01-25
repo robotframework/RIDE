@@ -66,7 +66,7 @@ class _TooltipMessage(object):
 
     TOO_MANY_ARGUMENTS = "Too many arguments"
     KEYWORD_NOT_FOUND = \
-        "Keyword not found! For possible corrections press <ctrl>"
+        "Keyword not found! For possible corrections press <Ctrl-M>"
     VARIABLE_ASSIGMENT = "Variable assignment"
     UNKNOWN_VARIABLE = "\n\nUnknown variable"
 

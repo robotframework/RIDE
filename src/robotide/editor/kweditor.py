@@ -34,7 +34,8 @@ from robotide.publish import (RideItemStepsChanged,
 from robotide.usages.UsageRunner import Usages, VariableUsages
 from robotide.ui.progress import RenameProgressObserver
 from robotide import robotapi, utils
-from robotide.utils import RideEventHandler, variablematcher, basestring, unicode
+from robotide.utils import (RideEventHandler, variablematcher, basestring,
+                            unicode, unichr)
 from robotide.widgets import PopupMenu, PopupMenuItems
 
 from .gridbase import GridEditor
@@ -103,6 +104,9 @@ class KeywordEditor(GridEditor, RideEventHandler):
         self._write_steps(self._controller)
         self._tree = tree
         self._has_been_clicked = False
+        self._counter = 0  # Workaround for double delete actions
+        self._dcells = None  # Workaround for double delete actions
+        self._icells = None  # Workaround for double insert actions
         PUBLISHER.subscribe(self._data_changed, RideItemStepsChanged)
         PUBLISHER.subscribe(self.OnSettingsChanged, RideSettingsChanged)
 
@@ -242,14 +246,39 @@ class KeywordEditor(GridEditor, RideEventHandler):
 
     def _skip_except_on_mac(self, event):  # TODO Do we still need this?
         if event is not None and not IS_MAC:
+            # print("DEBUG skip!")
             event.Skip()
 
     def OnInsertCells(self, event=None):
+        # TODO remove below workaround for double actions
+        if self._counter == 1:
+            if self._icells == (self.selection.topleft, self.selection.bottomright):
+                self._counter = 0
+                self._icells = None
+                return
+        else:
+            self._counter = 1
+
+        self._icells = (self.selection.topleft,
+                        self.selection.bottomright)
         self._execute(InsertCells(self.selection.topleft,
                                   self.selection.bottomright))
         self._skip_except_on_mac(event)
 
     def OnDeleteCells(self, event=None):
+        # TODO remove below workaround for double actions
+        if self._counter == 1:
+            if self._dcells == (self.selection.topleft, self.selection.bottomright):
+                self._counter = 0
+                self._dcells = None
+                return
+        else:
+            self._counter = 1
+
+        self._dcells = (self.selection.topleft,
+                        self.selection.bottomright)
+        # print("DEBUG kweditor delete cells %s, %s " % (self.selection.topleft,
+        #                          self.selection.bottomright))
         self._execute(DeleteCells(self.selection.topleft,
                                   self.selection.bottomright))
         self._skip_except_on_mac(event)
@@ -439,7 +468,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
         _iscelleditcontrolshown = self.IsCellEditControlShown()
         if _iscelleditcontrolshown:
             self.GetCellEditor(*self.selection.cell).show_content_assist(
-                self.selection.topleft.row)
+                self.selection.cell)  # DEBUG self.selection.topleft.row)
 
     def refresh_datafile(self, item, event):
         self._tree.refresh_datafile(item, event)
@@ -747,6 +776,7 @@ class ContentAssistCellEditor(GridCellEditor):  # DEBUG wxPhoenix PyGridCellEdi
         self._controller = controller
         self._grid = None
         self._original_value = None
+        self._value = None
         self._tc = None
         self._counter = 0
 
@@ -780,20 +810,42 @@ class ContentAssistCellEditor(GridCellEditor):  # DEBUG wxPhoenix PyGridCellEdi
         self._tc.set_row(row)
         self._original_value = grid.GetCellValue(row, col)
         self._grid = grid
+        self._tc.SetInsertionPointEnd()
+        self._tc.SetFocus()
+        # For this example, select the text   # DEBUG nov_2017
+        self._tc.SetSelection(0, self._tc.GetLastPosition())
 
     def EndEdit(self, row, col, grid, *ignored):
         value = self._get_value()
         if value != self._original_value:
-            self._grid.cell_value_edited(row, col, value)
-            return True
+            if wx.VERSION >= (3, 0, 2, ''):  # DEBUG wxPhoenix
+                self._value = value
+                return value  # DEBUG wxPhoenix True
+            else:
+                self._grid.cell_value_edited(row, col, value)
+                return True  # DEBUG wxPhoenix True
         else:
             # DEBUG wxPhoenix
             self._tc.hide()
             grid.SetFocus()
-            return True
+            if wx.VERSION >= (3, 0, 2, ''):  # DEBUG wxPhoenix
+                return None
+            else:
+                return None   # DEBUG
 
     def ApplyEdit(self, row, col, grid):
-        pass
+        #  print("DEBUG: This is where it crashed ApplyEdit")
+        # TODO Revise code, origial causes crashes
+        val = self._tc.GetValue()
+        grid.GetTable().SetValue(row, col, val) # update the table
+
+        self._original_value = ''
+        self._tc.SetValue('')
+        if wx.VERSION >= (3, 0, 2, ''):  # DEBUG wxPhoenix
+            if self._value:
+                # print("DEBUG: Calling value edited on ApplyEdit")
+                self._grid.cell_value_edited(row, col, self._value)
+        # pass
 
     def _get_value(self):
         suggestion = self._tc.content_assist_value()

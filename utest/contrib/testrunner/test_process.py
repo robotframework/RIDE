@@ -36,7 +36,7 @@ class ProcessUnicodeTestCase(unittest.TestCase):
         '2 critical tests, 1 passed, 1 failed\n2 tests total, 1 passed, 1 failed\n'
         '==============================================================================\n'),
         msg=repr(output))
-        self.assertEquals(errors.replace('\r', ''), u'[ WARN ] this passes\n')
+        self.assertEqual(errors.replace('\r', ''), u'[ WARN ] this passes\n')
 
     def _run_small_test(self):
         p = Process(datafilereader.SMALL_TEST_PATH)

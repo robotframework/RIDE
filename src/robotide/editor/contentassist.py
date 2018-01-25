@@ -21,7 +21,7 @@ from wx.lib.filebrowsebutton import FileBrowseButton
 from robotide import context, utils
 from robotide.namespace.suggesters import SuggestionSource
 from robotide.spec.iteminfo import VariableInfo
-
+from robotide.utils import unichr
 from .popupwindow import RidePopupWindow, HtmlPopupWindow
 
 
@@ -46,8 +46,9 @@ class _ContentAssistTextCtrlBase(object):
     def OnChar(self, event):
         # TODO: This might benefit from some cleanup
         keycode = event.GetKeyCode()
-        # Ctrl-Space handling needed for dialogs
-        if keycode == wx.WXK_SPACE and event.ControlDown():
+        # event.Skip()  # DEBUG do it as soon we do not need it
+        # Ctrl-Space handling needed for dialogs # DEBUG add Ctrl-m
+        if event.ControlDown() and keycode in (wx.WXK_SPACE, ord('m')):
             self.show_content_assist()
             return
         if keycode in [wx.WXK_UP, wx.WXK_DOWN, wx.WXK_PAGEUP, wx.WXK_PAGEDOWN]\
@@ -67,8 +68,9 @@ class _ContentAssistTextCtrlBase(object):
         elif keycode in (ord('1'), ord('2')) and event.ControlDown() and not \
                 event.AltDown():
             self.execute_variable_creator(list_variable=(keycode == ord('2')))
-        event.Skip()
+        event.Skip() # DEBUG Move up
 
+    # TODO Add dictionary?
     def execute_variable_creator(self, list_variable=False):
         from_, to_ = self.GetSelection()
         symbol = '@' if list_variable else '$'
@@ -85,10 +87,13 @@ class _ContentAssistTextCtrlBase(object):
     def OnFocusLost(self, event, set_value=True):
         if not self._popup.is_shown():
             return
-        value = self.gherkin_prefix + self._popup.get_value()
+        if self.gherkin_prefix:
+            value = self.gherkin_prefix + self._popup.get_value() or ""
+        else:
+            value =self._popup.get_value() or ""
         if set_value and value:
             self.SetValue(value)
-            self.SetInsertionPoint(len(self.Value))
+            self.SetInsertionPoint(len(value))  # DEBUG was self.Value
         else:
             self.Clear()
         self.hide()
@@ -279,6 +284,7 @@ class ContentAssistPopup(object):
                                        self.OnListItemSelected,
                                        self.OnListItemActivated)
         self._suggestions = Suggestions(suggestion_source)
+        # TODO Add detach popup from list with mouse drag or key
 
     def reset(self):
         self._selection = -1

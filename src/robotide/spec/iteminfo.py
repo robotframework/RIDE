@@ -14,6 +14,7 @@
 
 import os
 
+from functools import total_ordering
 from robotide.utils import unicode
 from robotide import utils
 
@@ -56,11 +57,15 @@ class ItemInfo(object):
     def is_user_keyword(self):
         return not self.is_library_keyword()
 
+    @staticmethod
+    def m_cmp(a, b):
+        return (a > b) - (a < b)
+
     def __cmp__(self, other):
         if self._priority == other._priority:
-            name_cmp = cmp(self.name.upper(), other.name.upper())
-            return name_cmp if name_cmp else cmp(self.source, other.source)
-        return cmp(self._priority, other._priority)
+            name_cmp = self.m_cmp(self.name.upper(),other.name.upper())
+            return name_cmp if name_cmp else self.m_cmp(self.source, other.source)
+        return self.m_cmp(self._priority, other._priority)
 
     def __eq__(self, other):
         return not self.__cmp__(other) if isinstance(other, ItemInfo) else False
@@ -69,6 +74,7 @@ class ItemInfo(object):
         return hash((self.name, self.source))
 
 
+@total_ordering
 class VariableInfo(ItemInfo):
 
     def __init__(self, name, value, source):
@@ -111,13 +117,32 @@ class VariableInfo(ItemInfo):
                 '<tr><td valign=top><i>Value:</i></td><td>%s</td></tr>'
                 '</table>') % (self.name, self._original_source, unicode(value))
 
+    def __eq__(self, other):
+        return self.name.lower() == other.name.lower()
 
+    def __hash__(self):
+        return hash(repr(self))
+
+    def __lt__(self, other):
+        return self.name.lower() < other.name.lower()
+
+
+@total_ordering
 class ArgumentInfo(VariableInfo):
 
     SOURCE = 'Argument'
 
     def __init__(self, name, value):
         VariableInfo.__init__(self, name, value, self.SOURCE)
+
+    def __eq__(self, other):
+        return self.longname.lower() == other.longname.lower()
+
+    def __hash__(self):
+        return hash(repr(self))
+
+    def __lt__(self, other):
+        return self.longname.lower() < other.longname.lower()
 
 
 class LocalVariableInfo(VariableInfo):
@@ -128,6 +153,7 @@ class LocalVariableInfo(VariableInfo):
         VariableInfo.__init__(self, name, '', self.SOURCE)
 
 
+@total_ordering
 class _KeywordInfo(ItemInfo):
 
     def __init__(self, item):
@@ -166,6 +192,15 @@ class _KeywordInfo(ItemInfo):
     def _name(self, item):
         return item.name
 
+    def __eq__(self, other):
+        return self.name.lower() == other.name.lower()
+
+    def __hash__(self):
+        return hash(repr(self))
+
+    def __lt__(self, other):
+        return self.name.lower() < other.name.lower()
+
 
 class _XMLKeywordContent(_KeywordInfo):
 
@@ -194,6 +229,7 @@ class _XMLKeywordContent(_KeywordInfo):
         return True
 
 
+@total_ordering
 class LibraryKeywordInfo(_KeywordInfo):
     _type = 'test library'
     _library_alias = None
@@ -223,6 +259,17 @@ class LibraryKeywordInfo(_KeywordInfo):
 
     def is_library_keyword(self):
         return True
+
+    def __eq__(self, other):
+        if isinstance(other, str):   # DEBUG
+           return self.name.lower() == other.name.lower()  # and self.__hash__ == other.__hash__
+
+
+    def __hash__(self):
+        return hash(repr(self))  # self.name)  #
+
+    def __lt__(self, other):
+        return self.name.lower() < other.name.lower()
 
     def _name(self, item):
         return self._item_name
@@ -273,6 +320,7 @@ class _UserKeywordInfo(_KeywordInfo):
         return '**' + self._strip_var_syntax_chars(arg)
 
 
+@total_ordering
 class TestCaseUserKeywordInfo(_UserKeywordInfo):
     _type = 'test case file'
 
@@ -280,13 +328,33 @@ class TestCaseUserKeywordInfo(_UserKeywordInfo):
     def longname(self):
         return self.name
 
+    def __eq__(self, other):
+        if isinstance(other, str):  # DEBUG
+            return self.name.lower() == other.name.lower()  # and self.__hash__ == other.__hash__
 
+    def __hash__(self):
+        return hash(self.longname)  # repr(self))
+
+    def __lt__(self, other):
+        return self.name.lower() < other.name.lower()
+
+
+@total_ordering
 class ResourceUserKeywordInfo(_UserKeywordInfo):
     _type = 'resource file'
 
     @property
     def longname(self):
         return self.item.parent.parent.name + '.' + self.name
+
+    def __eq__(self, other):
+        return self.name.lower() == other.name.lower() # and self.__hash__ == other.__hash__
+
+    def __hash__(self):
+        return hash(self.longname)  # repr(self))
+
+    def __lt__(self, other):
+        return self.name.lower() < other.name.lower()
 
 
 PRIORITIES = {ItemInfo: 50,

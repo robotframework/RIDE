@@ -25,6 +25,7 @@ from robotide import robotapi
 from robotide.context import IS_WINDOWS, IS_MAC
 from robotide.controller.ctrlcommands import SetDataFile
 from robotide.publish.messages import RideMessage
+from robotide.utils import PY2
 from robotide.widgets import VerticalSizer, HorizontalSizer, ButtonWithHandler
 from robotide.pluginapi import Plugin, RideSaving, TreeAwarePluginMixin,\
     RideTreeSelection, RideNotebookTabChanging, RideDataChanged,\
@@ -40,6 +41,7 @@ try:
     from . import robotframeworklexer
 except Exception as e:
     robotframeworklexer = None
+    raise
 
 
 class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
@@ -174,16 +176,19 @@ class DataValidationHandler(object):
         self._editor = editor
 
     def validate_and_update(self, data, text):
-        if not self._sanity_check(data, text):
+        m_text = text.decode("utf-8")
+        if not self._sanity_check(data, m_text):
+            # print("DEBUG: _handle_sanity_check_failure")
             self._handle_sanity_check_failure()
             return False
         else:
             self._editor.reset()
-            data.update_from(text)
+            # print("DEBUG: updating type %s" % type(m_text))
+            data.update_from(m_text)
             return True
 
     def _sanity_check(self, data, text):
-        formatted_text = data.format_text(text).encode('UTF-8')
+        formatted_text = data.format_text(text)
         c = self._normalize(formatted_text)
         e = self._normalize(text)
         return len(c) == len(e)
@@ -191,20 +196,21 @@ class DataValidationHandler(object):
     def _normalize(self, text):
         for item in tuple(string.whitespace) + ('...', '*'):
             if item in text:
+                # print("DEBUG: _normaliz item %s txt %s" % (item, text))
                 text = text.replace(item, '')
         return text
 
     def _handle_sanity_check_failure(self):
         if self._last_answer == wx.ID_NO and \
-            time() - self._last_answer_time <= 0.2:
+        time() - self._last_answer_time <= 0.2:
             self._editor._mark_file_dirty()
             return
         # TODO: use widgets.Dialog
         id = wx.MessageDialog(self._editor,
-                         'ERROR: Data sanity check failed!\n'\
-                         'Reset changes?',
-                         'Can not apply changes from Txt Editor',
-                          style=wx.YES|wx.NO).ShowModal()
+                              'ERROR: Data sanity check failed!\n'
+                              'Reset changes?',
+                              'Can not apply changes from Txt Editor',
+                              style=wx.YES|wx.NO).ShowModal()
         self._last_answer = id
         self._last_answer_time = time()
         if id == wx.ID_NO:
@@ -228,7 +234,10 @@ class DataFileWrapper(object): # TODO: bad class name
         self._data.execute(SetDataFile(self._create_target_from(content)))
 
     def _create_target_from(self, content):
-        src = StringIO(content)
+        if PY2:
+            src = StringIO(content.encode("utf-8"))
+        else:   # DEBUG because Apply Changes
+            src = StringIO(content)
         target = self._create_target()
         FromStringIOPopulator(target).populate(src)
         return target
@@ -466,6 +475,7 @@ class SourceEditor(wx.Panel):
         self._editor.Bind(wx.EVT_KEY_UP, self.OnEditorKey)
         self._editor.Bind(wx.EVT_KILL_FOCUS, self.LeaveFocus)
         self._editor.Bind(wx.EVT_SET_FOCUS, self.GetFocus)
+        # TODO Add here binding for keyword help
 
     def LeaveFocus(self, event):
         self._editor.SetCaretPeriod(0)

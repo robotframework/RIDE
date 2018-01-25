@@ -1,5 +1,5 @@
 import unittest
-from nose.tools import assert_equals
+from nose.tools import assert_equal
 
 from robotide.editor.tags import TagsDisplay
 from controller.controller_creator import testcase_controller as tc
@@ -63,20 +63,20 @@ class TestTagsModifications(unittest.TestCase):
 
     def test_set_empty_value(self):
         self._tags_display.set_value(self._cntrl.tags)
-        assert_equals(len(self.tagboxes), 0)
+        assert_equal(len(self.tagboxes), 0)
 
     def test_set_non_empty_value(self):
         tag = Tag('moro')
         self._cntrl.tags.add(tag)
         self._tags_display.set_value(self._cntrl.tags)
-        assert_equals(len(self.tagboxes), 1)
-        assert_equals(self.tagboxes[0]._tag, tag)
+        assert_equal(len(self.tagboxes), 1)
+        assert_equal(self.tagboxes[0]._tag, tag)
 
     def test_remove_only_tag(self):
         self.test_set_non_empty_value()
         self._cntrl.tags.clear()
         self._tags_display.clear()
-        assert_equals(len(self.tagboxes), 0)
+        assert_equal(len(self.tagboxes), 0)
 
 
 if __name__ == '__main__':

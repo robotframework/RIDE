@@ -30,7 +30,7 @@ from robotide.spec.iteminfo import ResourceUserKeywordInfo, \
     TestCaseUserKeywordInfo
 from robotide.controller.tags import Tag
 from robotide import robotapi
-from robotide.utils import basestring, variablematcher
+from robotide.utils import basestring, is_unicode, variablematcher
 
 
 KEYWORD_NAME_FIELD = 'Keyword Name'
@@ -47,7 +47,7 @@ class ItemNameController(object):
         self._item = item
 
     def contains_keyword(self, name):
-        if isinstance(name, basestring):
+        if isinstance(name, basestring) or is_unicode(name):
             return self._item.name == name
         return name.match(self._item.name)
 
@@ -259,7 +259,8 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         extracted_steps = self.steps[rem_start:rem_end + 1]
         return self._convert_controller_to_steps(extracted_steps)
 
-    def _convert_controller_to_steps(self, step_controllers):
+    @staticmethod
+    def _convert_controller_to_steps(step_controllers):
         return [robotapi.Step(s.as_list()) for s in step_controllers]
 
     def _replace_steps_with_kw(self, name, step_range):
@@ -311,6 +312,9 @@ class TestCaseController(_WithStepsController):
             return False
         return self._test == other._test
 
+    def __hash__(self):
+        return hash(repr(self))
+
     @property
     def longname(self):
         return self.parent.parent.longname + '.' + self.data.name
@@ -361,7 +365,8 @@ class TestCaseController(_WithStepsController):
     def validate_keyword_name(self, name):
         return self.datafile_controller.validate_keyword_name(name)
 
-    def get_local_variables(self):
+    @staticmethod
+    def get_local_variables():
         return {}
 
     def has_template(self):
@@ -394,6 +399,9 @@ class UserKeywordController(_WithStepsController):
         if other.__class__ != self.__class__:
             return False
         return self._kw == other._kw
+
+    def __hash__(self):
+        return hash(repr(self))
 
     @property
     def info(self):

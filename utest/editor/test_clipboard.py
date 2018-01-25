@@ -1,7 +1,7 @@
 import os
 import unittest
 
-from nose.tools import assert_equals
+from nose.tools import assert_equal
 
 # Needed to be able to create wx components
 from resources import PYAPP_REFERENCE as _
@@ -25,5 +25,5 @@ if not IS_WINDOWS:
         def _test_clipboard(self, content, expected=''):
             clipb = _GridClipboard()
             clipb.set_contents(content)
-            assert_equals(clipb._get_contents(),
+            assert_equal(clipb._get_contents(),
                           expected.replace('\n', os.linesep))

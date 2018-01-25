@@ -41,7 +41,9 @@ class ResourceFactoryDirectoryIgnoreTestCase(unittest.TestCase):
             self):
         self.r = self._create_factory(os.path.dirname(__file__))
         # print("DEBUG: test self._import, %s  file %s\n" % (str(self._import.name), os.path.dirname(__file__)))
-        self.assertEqual(None, self.r.get_resource_from_import(self._import,
+        #self.assertEqual(None, self.r.get_resource_from_import(self._import,
+        #                                                       self._context))
+        self.assertIsNone(self.r.get_resource_from_import(self._import,
                                                                self._context))
 
     def test_resourcefactory_ignores_imported_resource_from_ignore_subdirectory(self):

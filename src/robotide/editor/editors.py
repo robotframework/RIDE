@@ -73,7 +73,7 @@ class _RobotTableEditor(EditorPanel):
         if self.title:
             self.sizer.Add(self._create_header(self.title),
                            0, wx.EXPAND | wx.ALL, 5)
-            self.sizer.Add((0, 10))
+            # self.sizer.Add((0, 10))  # DEBUG why this?
         self._editors = []
         self._reset_last_show_tooltip()
         self._populate()

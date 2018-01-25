@@ -3,15 +3,17 @@
 export PYTHONPATH=/home/helio/github/RIDE/utest/:$PYTHONPATH
 export PYTHONPATH=/home/helio/github/RIDE/src/:$PYTHONPATH
 
+#export PYTHONROOT=/usr/local/bin
+export PYTHONROOT=/usr/bin
 
 if [ $# -ge 1 ]
 then
     if [ $1 -eq 2 ]
     then
-         PY=2
+         PY=2.7
     elif [ $1 -eq 3 ]
     then
-         PY=3
+         PY=3.6
     else
         DIR="$1"
     fi
@@ -36,9 +38,9 @@ do
                 # bypass file that is passing with invoke test
                 if [ "$j" = "$a/test_resourcefactory.py" ]
                 then
-                   b=`true`
+                        b=`true`
                 else 
-                   b=`python$PY $j`
+                        b=`$PYTHONROOT/python$PY $j`
                 fi
                 if [ $? -eq 1 ]
 		then

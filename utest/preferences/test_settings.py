@@ -19,6 +19,7 @@ class SettingsMigrationTestCase(SettingsMigrator, unittest.TestCase):
         self._from_5_to_6_called = False
         self._from_6_to_7_called = False
         self._from_7_to_8_called = False
+        # self._from_8_to_9_called = False
         self._merge_called = False
 
     def test_migration_from_0_to_2(self):
@@ -77,6 +78,15 @@ class SettingsMigrationTestCase(SettingsMigrator, unittest.TestCase):
         self.assertTrue(self._from_7_to_8_called)
         self.assertTrue(self._merge_called)
 
+    """
+    def test_migration_from_8_to_9(self):
+        self._old_settings[SettingsMigrator.SETTINGS_VERSION] = 8
+        self.migrate()
+        self.assertFalse(self._from_7_to_8_called)
+        self.assertTrue(self._from_8_to_9_called)
+        self.assertTrue(self._merge_called)
+    """
+
     @overrides(SettingsMigrator)
     def migrate_from_0_to_1(self, settings):
         self.assertEqual(self._old_settings, settings)
@@ -124,6 +134,14 @@ class SettingsMigrationTestCase(SettingsMigrator, unittest.TestCase):
         self.assertEqual(self._old_settings, settings)
         self._from_7_to_8_called = True
         settings[SettingsMigrator.SETTINGS_VERSION] = 8
+
+    """
+    @overrides(SettingsMigrator)
+    def migrate_from_8_to_9(self, settings):
+        self.assertEqual(self._old_settings, settings)
+        self._from_8_to_9_called = True
+        settings[SettingsMigrator.SETTINGS_VERSION] = 9
+    """
 
     def merge(self):
         self._merge_called = True

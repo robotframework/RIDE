@@ -8,11 +8,18 @@ class TestPybotArgumentsValidation(unittest.TestCase):
     def setUp(self):
         self._profile = PybotProfile(lambda:0)
 
+    @unittest.expectedFailure   # No more DataError, better argument detection
     def test_invalid_argument(self):
-        self.assertRaisesRegexp(robot.errors.DataError,
-                                'option --invalidargument not recognized',
-                                self._profile._get_invalid_message,
-                                '--invalidargument')
+        try:
+            self.assertRaisesRegex(robot.errors.DataError,
+                                   'option --invalidargument not recognized',
+                                   self._profile._get_invalid_message,
+                                   '--invalidargument')
+        except AttributeError:  # Python2
+            self.assertRaisesRegexp(robot.errors.DataError,
+                                    'option --invalidargument not recognized',
+                                    self._profile._get_invalid_message,
+                                    '--invalidargument')
 
     def test_valid_argument_short(self):
         self._working_arguments('-T')

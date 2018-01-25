@@ -12,6 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+
 def ActionFactory(action_info):
     if action_info.is_separator():
         return _MenuSeparator(action_info)
@@ -77,6 +78,7 @@ class Action(_Registrable):
         self.shortcut = action_info.shortcut
         self.icon = action_info.icon
         self.doc = action_info.doc
+        # print("DEBUG: Action: %s::%s" % (self.menu_name,self.name))
 
     def get_shortcut(self):
         return self.shortcut.printable

@@ -108,7 +108,9 @@ class _Command(object):
     modifying = True
 
     def execute(self, context):
-        raise NotImplementedError(self.__class__)
+        # print("DEBUG: _Command.execute %s" % repr(context))
+        # return context.execute()
+        raise NotImplementedError(self.__class__)  # DEBUG
 
     def __str__(self):
         return '%s(%s)' % (self.__class__.__name__, self._params_str())
@@ -1278,6 +1280,8 @@ def InsertCells(top_left, bottom_right):
 def DeleteCells(top_left, bottom_right):
     row_s, col_s = top_left
     row_e, col_e = bottom_right
+    # print("DEBUG ctrlcommands delete cells (%d, %d), (%d, %d) " % (row_s, col_s,
+    #                                               row_e, col_e))
     return StepsChangingCompositeCommand(
         *[DeleteCell(row, col_s)
           for row in range(row_s, row_e + 1)

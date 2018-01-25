@@ -45,6 +45,7 @@ class ValueEditor(wx.Panel):
             sizer.Add(Label(self, label=self._label, size=(80, -1)), 0,
                       self._sizer_flags_for_label, 5)
         self._editor = self._get_text_ctrl()
+        # self._editor.SetDefaultStyle(wx.TextAttr(wx.TEXT_ATTR_ALL))
         self._editor.AppendText(value)
         sizer.Add(self._editor, 1, self._sizer_flags_for_editor, 3)
         self._sizer.Add(sizer, 1, wx.EXPAND)
@@ -240,6 +241,7 @@ class _EditorGrid(GridEditor):
         self._insert_or_delete_cells_on_single_row(insert_cells, event)
 
     def OnDeleteCells(self, event):
+        # print("DEBUG delete cells %s" % self.selection.rows())
         if len(self.selection.rows()) != 1:
             self._delete_cells_from_multiple_rows(event)
             return
@@ -317,4 +319,5 @@ class ContentAssistEditor(ValueEditor):
         ValueEditor.__init__(self, parent, value, label, validator, settings)
 
     def _get_text_ctrl(self):
-        return ContentAssistTextCtrl(self, self._suggestion_source, (500, -1))
+        return ContentAssistTextCtrl(self, self._suggestion_source)
+        #DEBUG size, (500, -1))

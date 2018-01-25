@@ -1,7 +1,19 @@
+import os
+import sys
 import unittest
 from nose.tools import assert_true, assert_false
 
-from controller_creator import testcase_controller
+# Workaround for relative import in non-module
+# see https://stackoverflow.com/questions/16981921/relative-imports-in-python-3
+PACKAGE_PARENT = '..'
+SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(),
+                                              os.path.expanduser(__file__))))
+sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
+try:
+    from controller_creator import testcase_controller
+except ImportError:  # Python 3
+    from .controller_creator import testcase_controller
+
 from robotide.controller.tags import Tag, DefaultTag, ForcedTag
 from robotide.controller.ctrlcommands import ChangeTag
 

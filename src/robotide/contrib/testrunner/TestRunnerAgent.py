@@ -68,12 +68,15 @@ except ImportError:#py3
         raise e
 
 try:
+    # to find robot (we use provided lib)
+    sys.path.append(os.path.join(os.path.dirname(__file__), '../../lib'))
     from robot.errors import ExecutionFailed
     from robot.running import EXECUTION_CONTEXTS
     from robot.running.signalhandler import STOP_SIGNAL_MONITOR
     from robot.utils import encoding
 except ImportError:
     encoding = None
+    # print("TestRunnerAgent: Maybe you did not installed RIDE under this Python?")  # DEBUG
     raise     # DEBUG
 
 

@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 # Copyright 2010 Orbitz WorldWide
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -46,21 +47,31 @@ import datetime
 import time
 import os
 import re
-from Queue import Queue
 import wx
 import wx.stc
+from functools import reduce
+try:
+    from Queue import Queue
+except ImportError: # Python 3
+    from queue import Queue
 from wx.lib.embeddedimage import PyEmbeddedImage
 
 
 from robotide.action.shortcut import localize_shortcuts
 from robotide.context import IS_WINDOWS, IS_MAC
-from robotide.contrib.testrunner.testrunner import TestRunner
+from robotide.contrib.testrunner import TestRunner
 from robotide.contrib.testrunner import runprofiles
 from robotide.publish.messages import RideTestSelectedForRunningChanged
 from robotide.pluginapi import Plugin, ActionInfo
 from robotide.widgets import Label, ImageProvider
 from robotide.robotapi import LOG_LEVELS
-from robotide.utils import robottime, unicode
+from robotide.utils import robottime, is_unicode, PY2, unicode
+try:
+    from robotide.lib.robot.utils import encoding
+except ImportError:
+    encoding = None
+if encoding:
+    encoding = encoding.SYSTEM_ENCODING  # CONSOLE_ENCODING
 
 
 ID_RUN = wx.NewId()
@@ -255,14 +266,19 @@ class TestRunnerPlugin(Plugin):
             return
         self._initialize_ui_for_running()
         command = self._create_command()
-        self._output("command: %s\n" % command)
+        self._output("command: %s\n" % command)  # DEBUG encode
         try:
+            if PY2:
+                command = bytes(command.encode(encoding))  # TODO This does not work if for example -i Áçãú
+            # self._output("DEBUG: starting command %s\n" % command)  # DEBUG encode
             self._test_runner.run_command(
                 command, self._get_current_working_dir())
+            # self._output("DEBUG: Passed test_runner.run_command\n")
             self._process_timer.Start(41) # roughly 24fps
             self._set_running()
             self._progress_bar.Start()
         except Exception as e:
+            # self._output("DEBUG: Except block test_runner.run_command\n")
             self._set_stopped()
             error, log_message = self.get_current_profile().format_error(
                 unicode(e), None)
@@ -414,6 +430,8 @@ class TestRunnerPlugin(Plugin):
         '''
         result = []
         for arg in argv:
+            if PY2 and is_unicode(arg):
+                arg = arg.encode("utf-8")
             if "'" in arg or " " in arg or "&" in arg:
                 # for windows, if there are spaces we need to use
                 # double quotes. Single quotes cause problems
@@ -422,7 +440,7 @@ class TestRunnerPlugin(Plugin):
                 result.append("'%s'" % arg)
             else:
                 result.append(arg)
-        return " ".join(result)
+        return " ".join(result)  # DEBUG added bytes
 
     def _show_notebook_tab(self):
         '''Show the Run notebook tab'''
@@ -443,12 +461,17 @@ class TestRunnerPlugin(Plugin):
 
         textctrl.SetReadOnly(False)
         try:
-            textctrl.AppendText(string)
+            if PY2:
+                textctrl.AppendText(string.encode('utf-8'))
+            else:
+                textctrl.AppendText(str(string))  # DEBUG
         except UnicodeDecodeError as e:
             # I'm not sure why I sometimes get this, and I don't know what I
             # can do other than to ignore it.
+            textctrl.AppendText(string)
+            # print("DEBUG UnicodeDecodeError appendtext string=%s\n" % string)
             # pass
-            raise  # DEBUG
+            #  raise  # DEBUG
 
         new_text_end = textctrl.GetLength()
 
@@ -914,7 +937,7 @@ class OutputStyledTextCtrl(wx.stc.StyledTextCtrl):
             if self.GetScrollWidth() < width + 50:
                 self.SetScrollWidth(width + 50)
         except UnicodeDecodeError:
-            print("DEBUG: UnicodeDecodeError at update scroll, testrunnerplugin, string is %s\n" % string)
+            # print("DEBUG: UnicodeDecodeError at update scroll, testrunnerplugin, string is %s\n" % string)
             pass
 
 
@@ -924,7 +947,6 @@ def secondsToString(t):
     return "%d:%02d:%02d" % \
         reduce(lambda ll,b : divmod(ll[0],b) + ll[1:],
             [(t,),60, 60])
-
 
 
 Robot = PyEmbeddedImage(

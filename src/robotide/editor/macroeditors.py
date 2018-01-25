@@ -74,13 +74,14 @@ class TestCaseEditor(_RobotTableEditor):
         self.kweditor.OnInsertCells()
 
     def delete_cells(self):
+        # print("DEBUG macro delete cells ")
         self.kweditor.OnDeleteCells()
 
     def insert_rows(self):
-        self.kweditor.OnInsertRows()
+        self.kweditor.OnInsertRows(None)  # DEBUG python 3
 
     def delete_rows(self):
-        self.kweditor.OnDeleteRows()
+        self.kweditor.OnDeleteRows(None)  # DEBUG python 3
 
     def delete(self):
         self.kweditor.OnDelete()

@@ -32,9 +32,9 @@ class TestSettingsHelper(unittest.TestCase):
 
     def _check_content(self, expected_dict, check_self_settings=True):
         settings = Settings(self.user_settings_path)
-        self.assertEquals(settings._config_obj, expected_dict)
+        self.assertEqual(settings._config_obj, expected_dict)
         if check_self_settings:
-            self.assertEquals(self.settings._config_obj, expected_dict)
+            self.assertEqual(self.settings._config_obj, expected_dict)
 
     def _write_settings(self, content, path=None):
         f = open(self._get_path(path), 'wb')
@@ -42,7 +42,7 @@ class TestSettingsHelper(unittest.TestCase):
         f.close()
 
     def _read_settings_file_content(self, path=None):
-        f = open(self._get_path(path), 'rb')
+        f = open(self._get_path(path), 'r')  # DEBUG was 'rb'
         value = f.read()
         f.close()
         return value
@@ -59,6 +59,6 @@ class TestSettingsHelper(unittest.TestCase):
         try:
             return Settings(self._get_path(path))
         except:
-            print("DEBUG: settings utils_READ SETTINGS_errored path %s" % path)
+            # print("DEBUG: settings utils_READ SETTINGS_errored path %s" % path)
             print(self._read_settings_file_content())
             raise

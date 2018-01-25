@@ -1,8 +1,9 @@
 import unittest
 import wx
 import os
+import sys
 from mockito import mock
-from nose.tools import assert_equals, assert_true
+from nose.tools import assert_equal, assert_true
 
 from robotide.robotapi import Variable
 from robotide.controller import DataController
@@ -11,7 +12,16 @@ from robotide.controller.settingcontrollers import VariableController
 from robotide.controller.tablecontrollers import VariableTableController
 from robotide.editor import EditorCreator
 from robotide.editor.editors import TestCaseFileEditor, WelcomePage
-from fakeplugin import FakePlugin
+# Workaround for relative import in non-module
+# see https://stackoverflow.com/questions/16981921/relative-imports-in-python-3
+PACKAGE_PARENT = '..'
+SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(),
+                                              os.path.expanduser(__file__))))
+sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
+try:
+    from fakeplugin import FakePlugin
+except ImportError:  # Python 3
+    from .fakeplugin import FakePlugin
 
 from resources import PYAPP_REFERENCE
 
@@ -35,7 +45,7 @@ class EditorCreatorTest(unittest.TestCase):
         self._registered_editors[iclass] = eclass
 
     def test_registering_editors_for_model_objects(self):
-        assert_equals(len(self._registered_editors), len(self.creator._EDITORS))
+        assert_equal(len(self._registered_editors), len(self.creator._EDITORS))
 
     def test_creating_editor_for_datafile_controller(self):
         plugin = self._datafile_plugin()
@@ -59,13 +69,13 @@ class EditorCreatorTest(unittest.TestCase):
         plugin = self._no_item_selected_plugin()
         editor = self._editor_for(plugin)
         editor2 = self._editor_for(plugin)
-        assert_equals(editor, editor2)
+        assert_equal(editor, editor2)
 
     def test_same_testcasefile_editor_instance_is_returned_if_called_multiple_times(self):
         plugin = self._variable_plugin()
         editor = self._editor_for(plugin)
         editor2 = self._editor_for(plugin)
-        assert_equals(editor, editor2)
+        assert_equal(editor, editor2)
 
     def test_editor_is_recreated_when_controller_changes(self):
         p1 = self._datafile_plugin()

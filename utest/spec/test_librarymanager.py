@@ -42,6 +42,9 @@ class TestLibraryManager(unittest.TestCase):
         self.assertEqual(len(self._keywords), 3)
 
     def test_manager_handler_library_that_throws_timeout_exception(self):
+        import sys
+        from os import path      # DEBUG import non module
+        sys.path.append(path.dirname(path.abspath(__file__)))
         import Exceptional as e
         self._library_manager.fetch_keywords(e.__file__, '', self._callback)
         self._library_manager._handle_message()
@@ -49,7 +52,6 @@ class TestLibraryManager(unittest.TestCase):
 
     def _callback(self, keywords):
         self._keywords = keywords
-
 
 if __name__ == '__main__':
     unittest.main()

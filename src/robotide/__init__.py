@@ -56,9 +56,12 @@ if "ansi" in wx.PlatformInfo:
         reason="wxPython with ansi encoding is not supported"))
     sys.exit(1)
 
+PY2 = sys.version_info[0] == 2
+PY3 = not PY2
 
 # Insert bundled robot to path before anything else
 sys.path.append(os.path.join(os.path.dirname(__file__), 'spec'))
+sys.path.append(os.path.join(os.path.dirname(__file__), 'lib'))
 
 
 def main(*args):
@@ -76,7 +79,7 @@ def main(*args):
         sys.exit(0)
     try:
         _run(inpath, not noupdatecheck, debug_console)
-    except Exception:
+    except Exception:  # DEBUG
         import traceback
         traceback.print_exception(*sys.exc_info())
         sys.stderr.write('\n\nUse --help to get usage information.\n')
@@ -99,8 +102,14 @@ def _run(inpath=None, updatecheck=True, debug_console=False):
     except ImportError:
         _show_old_wxpython_warning_if_needed()
         raise
+    if PY3:
+        print("Thank you for helping developing and testing RIDE on Python 3 and wxPython 4")
+        # raise NotImplementedError
     if inpath:
-        inpath = unicode(inpath, sys.getfilesystemencoding())
+        inpath = inpath
+        # if not isinstance(inpath[0], unicode):
+        #     for i in range(len(inpath)):
+        #         inpath[i] = inpath[i].decode(sys.getfilesystemencoding())
     ride = RIDE(inpath, updatecheck)
     if wx.VERSION <= (2, 8, 12, 1, ''):
         _show_old_wxpython_warning_if_needed(ride.frame)

@@ -55,9 +55,17 @@ class Comment(object):
         return len(self._comment)
 
     def as_list(self):
+        my_comment = self._comment
         if self._not_commented():
-            self._comment[0] = '# ' + self._comment[0]
+            # DEBUG RecursionError: maximum recursion depth exceeded
+            # print("DEBUG: lib.robot.comments.as_list comment:%s" % self._comment)
+            self._comment[0] = '# ' + my_comment[0]    # self._comment[0]
         return self._comment
 
     def _not_commented(self):
-        return self._comment and self._comment[0] and self._comment[0][0] != '#'
+        # DEBUG RecursionError: maximum recursion depth exceeded
+        # print("DEBUG: lib.robot.comments.as_list comment:%s" % self._comment)
+        if self._comment:
+            if self._comment[0]:
+                return self._comment[0][0] != '#'
+        # return self._comment and self._comment[0] and self._comment[0][0] != '#'

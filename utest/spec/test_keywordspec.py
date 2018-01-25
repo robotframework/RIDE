@@ -2,7 +2,7 @@ import unittest
 import sys
 import os
 
-from nose.tools import assert_equals
+from nose.tools import assert_equal
 
 from resources import DATAPATH
 from robotide.context import LIBRARY_XML_DIRECTORY
@@ -19,7 +19,7 @@ class TestLibrarySpec(unittest.TestCase):
 
     def test_reading_library_from_xml(self):
         kws = self._spec('LibSpecLibrary')
-        assert_equals(len(kws), 3)
+        assert_equal(len(kws), 3)
         exp_doc = 'This is kw documentation.\n\nThis is more docs.'
         self._assert_keyword(kws[0], 'Normal Keyword', exp_doc,
                              exp_doc.splitlines()[0], '[ foo ]')
@@ -29,7 +29,7 @@ class TestLibrarySpec(unittest.TestCase):
 
     def test_reading_library_from_old_style_xml(self):
         kws = self._spec('OldStyleLibSpecLibrary')
-        assert_equals(len(kws), 3)
+        assert_equal(len(kws), 3)
         exp_doc = 'This is kw documentation.\n\nThis is more docs.'
         self._assert_keyword(kws[0], 'Normal Keyword', exp_doc,
                              exp_doc.splitlines()[0], '[ foo ]')
@@ -38,11 +38,11 @@ class TestLibrarySpec(unittest.TestCase):
                              args='[ arg1 | arg2=default value | *args ]')
 
     def _assert_keyword(self, kw, name, doc='', shortdoc='', args='[  ]'):
-        assert_equals(kw.name, name)
-        assert_equals(kw.doc, doc, repr(kw.doc))
-        assert_equals(kw.shortdoc, shortdoc)
+        assert_equal(kw.name, name)
+        assert_equal(kw.doc, doc, repr(kw.doc))
+        assert_equal(kw.shortdoc, shortdoc)
         if args:
-            assert_equals(kw.args, args)
+            assert_equal(kw.args, args)
 
 
 class MockedSpecInitializer(SpecInitializer):
@@ -81,21 +81,21 @@ class TestSpecInitializer(unittest.TestCase):
 
     def test_pythonpath_is_preferred_before_xml_directory(self):
         specinitializer = MockedSpecInitializer()
-        self.assertEquals('OK', specinitializer.init_from_spec('name'))
+        self.assertEqual('OK', specinitializer.init_from_spec('name'))
         self.assertTrue(specinitializer.initialized_from_pythonpath)
         self.assertFalse(specinitializer.initialized_from_xml_directory)
 
     def test_default_directory_is_always_used(self):
         specinitializer = MockedSpecInitializer(pythonpath_return_value=None)
-        self.assertEquals('OK', specinitializer.init_from_spec('name'))
+        self.assertEqual('OK', specinitializer.init_from_spec('name'))
         self.assertFalse(specinitializer.initialized_from_pythonpath)
         self.assertTrue(specinitializer.initialized_from_xml_directory)
-        self.assertEquals(specinitializer.directory, LIBRARY_XML_DIRECTORY)
+        self.assertEqual(specinitializer.directory, LIBRARY_XML_DIRECTORY)
 
     def test_not_finding_correct_file(self):
         specinitializer = MockedSpecInitializer(
             pythonpath_return_value=None, directory_mapping={})
-        self.assertEquals(None, specinitializer.init_from_spec('name'))
+        self.assertEqual(None, specinitializer.init_from_spec('name'))
         self.assertFalse(specinitializer.initialized_from_pythonpath)
         self.assertFalse(specinitializer.initialized_from_xml_directory)
 
@@ -103,7 +103,7 @@ class TestSpecInitializer(unittest.TestCase):
         specinitializer = MockedSpecInitializer(
             directories=['my_dir'], pythonpath_return_value=None,
             directory_mapping={'my_dir': 'directory'})
-        self.assertEquals('OK', specinitializer.init_from_spec('name'))
+        self.assertEqual('OK', specinitializer.init_from_spec('name'))
         self.assertFalse(specinitializer.initialized_from_pythonpath)
         self.assertTrue(specinitializer.initialized_from_xml_directory)
-        self.assertEquals(specinitializer.directory, 'my_dir')
+        self.assertEqual(specinitializer.directory, 'my_dir')

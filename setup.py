@@ -16,7 +16,7 @@ package_data = {
     'robotide.preferences': ['settings.cfg'],
     'robotide.widgets': ['*.png', '*.ico'],
     'robotide.messages': ['*.html'],
-    'robotide.publish.html': ['no_robot.html']
+    'robotide.publish.htmlmessages': ['no_robot.html']
 }
 
 long_description = """
@@ -66,5 +66,5 @@ setup(
     options={'install': {'force': True}},
     scripts=['src/bin/ride.py', 'src/bin/ride_postinstall.py'],
     cmdclass={'install': CustomInstallCommand},
-    requires=['Pygments']
+    requires=['Pygments', 'wxPython']
 )

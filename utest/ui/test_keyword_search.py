@@ -1,5 +1,5 @@
 import unittest
-from nose.tools import assert_equals, assert_true
+from nose.tools import assert_equal, assert_true
 
 from robotide.ui.keywordsearch import _KeywordData, _SearchCriteria,\
     ALL_KEYWORDS, ALL_USER_KEYWORDS, ALL_LIBRARY_KEYWORDS, _SortOrder
@@ -75,7 +75,7 @@ class TestSearchCriteria(unittest.TestCase):
     def _test_criteria(self, expected, pattern, search_doc, keyword,
                        source_filter=ALL_KEYWORDS):
         criteria = _SearchCriteria(pattern, search_doc, source_filter)
-        assert_equals(criteria.matches(keyword), expected)
+        assert_equal(criteria.matches(keyword), expected)
 
 
 class TestKeyWordData(unittest.TestCase):
@@ -89,7 +89,7 @@ class TestKeyWordData(unittest.TestCase):
                                       'get bar',
                                       'get bar2',
                                       'Get File']):
-            assert_equals(kw_data[index].name, name)
+            assert_equal(kw_data[index].name, name)
 
     def test_sort_by_name(self):
         order = _SortOrder()
@@ -101,7 +101,7 @@ class TestKeyWordData(unittest.TestCase):
                                       'Get File',
                                       'Should Be Equal',
                                       'User Keyword']):
-            assert_equals(kw_data[index].name, name)
+            assert_equal(kw_data[index].name, name)
 
     def test_sort_by_name_reversed(self):
         order = _SortOrder()
@@ -114,7 +114,7 @@ class TestKeyWordData(unittest.TestCase):
                                       'get bar',
                                       'BarBar',
                                       'Bar']):
-            assert_equals(kw_data[index].name, name)
+            assert_equal(kw_data[index].name, name)
 
     def test_sort_by_source(self):
         order = _SortOrder()
@@ -127,7 +127,7 @@ class TestKeyWordData(unittest.TestCase):
                                       'User Keyword',
                                       'get bar',
                                       'get bar2']):
-            assert_equals(kw_data[index].name, name)
+            assert_equal(kw_data[index].name, name)
 
     def test_sort_by_source_reversed(self):
         order = _SortOrder()
@@ -141,7 +141,7 @@ class TestKeyWordData(unittest.TestCase):
                                       'Bar',
                                       'BarBar',
                                       'Should Be Equal']):
-            assert_equals(kw_data[index].name, name)
+            assert_equal(kw_data[index].name, name)
 
 
 if __name__ == "__main__":

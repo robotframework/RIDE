@@ -50,8 +50,9 @@ from robotide.robotapi import LOG_LEVELS
 from robotide.context import IS_WINDOWS
 from robotide.contrib.testrunner import TestRunnerAgent
 from robotide.controller.testexecutionresults import TestExecutionResults
+from robotide.utils import PY2 # , unicode
 try:
-    from robot.utils import encoding
+    from robotide.lib.robot.utils import encoding
 except ImportError:
     encoding = None
 # DEBUG we are forcing UTF-8
@@ -183,6 +184,7 @@ class TestRunner(object):
     def run_command(self, command, cwd):
         self._pid_to_kill = None
         self._process = Process(cwd)
+        # print("DEBUG: run_command command: %s\nCWD: %s\n" % (command, cwd))
         self._process.run_command(command)
 
     def get_command(self, profile, pythonpath, console_width, names_to_run):
@@ -257,8 +259,18 @@ class TestRunner(object):
 
     @staticmethod
     def _write_argfile(argfile, args):
-        f = codecs.open(argfile, "w", "utf-8")
-        f.write("\n".join(args))
+        f = codecs.open(argfile, "wb", "utf-8")
+        if PY2:
+            # if IS_WINDOWS:
+            #    m_args = [unicode(item,"utf-8") for item in args]
+            #else:
+            m_args = args
+            # m_args = [item.decode("utf-8") for item in args]
+        else:
+            m_args = [str(x) for x in args]
+        # print("DEBUG: write_args: %s\n" % m_args)
+        data = "\n".join(m_args)
+        f.write(data)  # DEBUG .decode("utf-8")
         f.close()
 
     def get_output_and_errors(self, profile):
@@ -292,7 +304,9 @@ class Process(object):
                         stdout=subprocess.PIPE,
                         stderr=subprocess.PIPE,
                         stdin=subprocess.PIPE,
-                        cwd=self._cwd.encode(encoding.OUTPUT_ENCODING))
+                        cwd=self._cwd)
+                               # DEBUG .encode(encoding.OUTPUT_ENCODING))
+                        # DEBUG was encoding.OUTPUT_ENCODING)
                         # DEBUG cwd=self._cwd.encode(utils.SYSTEM_ENCODING))
 
         if IS_WINDOWS:
@@ -308,8 +322,10 @@ class Process(object):
             subprocess_args['shell'] = True
         # DEBUG self._process = subprocess.Popen(command.encode(utils.SYSTEM_ENCODING),
         #                                 **subprocess_args)
-        self._process = subprocess.Popen(command.encode(encoding.OUTPUT_ENCODING),
-                                         **subprocess_args)
+        # print("DEBUG: run_command calling Subprocess: %s\nCommand: %s\n" % (subprocess_args,str(command.encode(encoding.OUTPUT_ENCODING))))
+        self._process = subprocess.Popen(command,
+                                         **subprocess_args)  # DEBUG was .encode(encoding.OUTPUT_ENCODING) .OUTPUT_ENCODING
+        # print("DEBUG: run_command Called Subprocess_args: %s\n" % subprocess_args)
         self._process.stdin.close()
         self._output_stream = StreamReaderThread(self._process.stdout)
         self._error_stream = StreamReaderThread(self._process.stderr)
@@ -354,10 +370,14 @@ class Process(object):
         if self._port is None:
             return  # Silent failure..
         sock = None
+        if IS_WINDOWS:  # TODO Verify on Linux
+            host = '127.0.0.1'
+        else:
+            host = 'localhost'
         try:
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            sock.connect(('localhost', self._port))
-            sock.send(data)
+            sock.connect((host, self._port))
+            sock.send(bytes(data.encode("utf-8")))
         finally:
             sock.close()
 

@@ -1,6 +1,6 @@
 import unittest
 import datafilereader
-from nose.tools import assert_equals, assert_false, assert_true
+from nose.tools import assert_equal, assert_false, assert_true
 
 
 class TestLocalNamespace(unittest.TestCase):
@@ -63,7 +63,7 @@ class TestLocalNamespace(unittest.TestCase):
 
     def _verify_suggestions_on_row(self, row, start='${', contains=None, does_not_contain=None):
         suggestion_names = [suggestion.name for suggestion in self._keyword.get_local_namespace_for_row(row).get_suggestions(start)]
-        self.assertEquals(len(suggestion_names), len(set(suggestion_names)))
+        self.assertEqual(len(suggestion_names), len(set(suggestion_names)))
         if contains:
             for name in contains:
                 if name not in suggestion_names:

@@ -130,7 +130,7 @@ class SettingEditor(wx.Panel, utils.RideEventHandler):
 
     def OnEnterWindow(self, event):
         if self._mainframe_has_focus():
-            self.popup_timer = wx.CallLater(500, self.OnPopupTimer)
+            self.popup_timer = wx.CallLater(500, self.OnPopupTimer, event)
 
     def _mainframe_has_focus(self):
         return wx.GetTopLevelParent(self.FindFocus()) == \
@@ -140,12 +140,14 @@ class SettingEditor(wx.Panel, utils.RideEventHandler):
         self._stop_popup_timer()
 
     def OnPopupTimer(self, event):
+        _tooltipallowed = False
         # TODO This prevents tool tip for ex. Template edit field in wxPhoenix
         try:  # DEBUG wxPhoenix
-            _tooltipallowed= self.Parent.tooltip_allowed(self._tooltip)
+             _tooltipallowed = self.Parent.tooltip_allowed(self._tooltip)
+            #_tooltipallowed = self._get_tooltip()
         except AttributeError:
-             # print("DEBUG: There was an attempt to show a Tool Tip.\n")
-             return
+            # print("DEBUG: There was an attempt to show a Tool Tip.\n")
+            pass
         if _tooltipallowed:
             details, title = self._get_details_for_tooltip()
             if details:
@@ -427,6 +429,7 @@ class VariablesListEditor(_AbstractListEditor):
 
     def _open_var_dialog(self, var):
         var_name = var.name.lower()
+        dlg = None
         if var_name.startswith('${'):
             dlg = ScalarVariableDialog(self._controller, item=var)
         elif var_name.startswith('@{'):
@@ -435,11 +438,12 @@ class VariablesListEditor(_AbstractListEditor):
         elif var_name.startswith('&{'):
             dlg = DictionaryVariableDialog(self._controller, item=var,
                                            plugin=self.Parent.plugin)
-        if dlg.ShowModal() == wx.ID_OK:
-            name, value = dlg.get_value()
-            var.execute(UpdateVariable(name, value, dlg.get_comment()))
-            self.update_data()
-        dlg.Destroy()
+        if dlg:  # DEBUG robot accepts % variable definition
+            if dlg.ShowModal() == wx.ID_OK:
+                name, value = dlg.get_value()
+                var.execute(UpdateVariable(name, value, dlg.get_comment()))
+                self.update_data()
+            dlg.Destroy()
 
     def close(self):
         PUBLISHER.unsubscribe_all(key=self)

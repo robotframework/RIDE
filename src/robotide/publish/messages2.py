@@ -12,6 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+
 import inspect
 import sys
 import traceback
@@ -23,7 +24,7 @@ from robotide.publish import messagetype
 from robotide.publish import publisher
 
 
-class RideMessage(object, metaclass=messagetype.messagetype):
+class RideMessage(object):
     """Base class for all messages sent by RIDE.
 
     :CVariables:
@@ -37,8 +38,8 @@ class RideMessage(object, metaclass=messagetype.messagetype):
         Names of attributes this message provides. These must be given as
         keyword arguments to `__init__` when an instance is created.
     """
-
-    topic = None  # DEBUG None
+    __metaclass__ = messagetype.messagetype
+    topic = None  #  DEBUG None
     data = []
 
     def __init__(self, **kwargs):
@@ -66,10 +67,8 @@ class RideMessage(object, metaclass=messagetype.messagetype):
         try:
             self._publish(self)
         except Exception as err:
-            self._publish(RideLogException(
-                message='Error in publishing message: ' + str(err),
-                exception=err, level='ERROR'))
-            raise # DEBUG on Python3 we have a loop
+            self._publish(RideLogException(message='Error in publishing message: ' + str(err),
+                                           exception=err, level='ERROR'))
 
     def _publish(self, msg):
         publisher.PUBLISHER.publish(msg.topic, msg)
@@ -201,6 +200,7 @@ class RideNotebookTabChanging(RideMessage):
 
 class RideNotebookTabChanged(RideMessage):
     """Sent after the notebook tab change has completed."""
+    pass
 
 
 class RideSaving(RideMessage):
@@ -218,6 +218,7 @@ class RideSaved(RideMessage):
 
 class RideSaveAll(RideMessage):
     """Sent when user selects ``Save All`` from ``File`` menu or via shortcut."""
+    pass
 
 
 class RideDataDirtyCleared(RideMessage):
@@ -255,6 +256,7 @@ class RideSelectResource(RideMessage):
 
 class RideDataChanged(RideMessage):
     """Base class for all messages notifying that data in model has changed."""
+    pass
 
 
 class RideFileNameChanged(RideDataChanged):
@@ -338,6 +340,7 @@ class RideDataFileSet(RideDataChanged):
 
 class RideUserKeyword(RideDataChanged):
     """Base class for all messages about changes to any user keyword."""
+    pass
 
 
 class RideUserKeywordAdded(RideUserKeyword):
@@ -424,7 +427,6 @@ class RideVariableUpdated(RideDataChanged):
 class RideOpenTagSearch(RideMessage):
     """ Sent we when want to open Search Tags)"""
     data = ['includes','excludes']
-
 
 __all__ = [ name for name, cls in globals().items()
             if inspect.isclass(cls) and issubclass(cls, RideMessage) ]

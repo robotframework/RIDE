@@ -1,5 +1,5 @@
 import unittest
-from nose.tools import assert_equals
+from nose.tools import assert_equal
 from robotide.ui.actiontriggers import _NameBuilder
 
 
@@ -9,7 +9,7 @@ class TestGetNameWithAccelerator(unittest.TestCase):
         self._nb = _NameBuilder()
 
     def _test(self, input, expected):
-        assert_equals(self._nb.get_name(input), expected)
+        assert_equal(self._nb.get_name(input), expected)
 
     def test_use_first_free_char(self):
         self._test('File', '&File')
@@ -53,8 +53,8 @@ class TestGetNameWithAccelerator(unittest.TestCase):
     def test_get_registered_name(self):
         self._test('&File', '&File')
         for name in 'F&ile', 'File', '&File', 'FI&LE', 'fil&e', 'file':
-            assert_equals(self._nb.get_registered_name(name), '&File')
-        assert_equals(self._nb.get_registered_name('Non Existing'), None)
+            assert_equal(self._nb.get_registered_name(name), '&File')
+        assert_equal(self._nb.get_registered_name('Non Existing'), None)
 
 
 if __name__ == '__main__':
