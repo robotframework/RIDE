@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#----------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
 # Copyright 2010 Orbitz WorldWide
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -35,6 +35,28 @@
 #   Licensed under the Apache License, Version 2.0
 #      http://www.apache.org/licenses/LICENSE-2.0
 
+#
+# Modified by Mateusz Marzec under NSN copyrights
+# Copyright 2015 Nokia Solutions and Networks
+# * Licensed under the Apache License, Version 2.0,
+# * see license.txt file for details.
+#
+
+# Ammended by Helio Guilherme <helioxentric@gmail.com>
+# Copyright 2016-     Robot Framework Foundation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 """A Robot Framework listener that sends information to a socket
 
 This uses a custom streamhandler module, preferring json but sending either
@@ -44,18 +66,17 @@ refactored to call an XMLRPC server.
 
 import copy
 import os
+import platform
 import sys
 import socket
 import threading
 
-import platform
 PLATFORM = platform.python_implementation()
 
 if sys.version_info[0] == 2:
     PYTHON2 = True
     PYTHON3 = False
 elif sys.version_info[0] == 3:
-    # print("TestRunnerAgent: Running under Python 3")  # DEBUG
     PYTHON2 = False
     PYTHON3 = True
 
@@ -76,7 +97,6 @@ try:
     from robot.utils import encoding
 except ImportError:
     encoding = None
-    # print("TestRunnerAgent: Maybe you did not installed RIDE under this Python?")  # DEBUG
     raise     # DEBUG
 
 
@@ -141,7 +161,8 @@ class TestRunnerAgent:
         self._send_pid()
         self._create_debugger((len(args)>=2) and (args[1] == 'True'))
         self._create_kill_server()
-        print("TestRunnerAgent: Running under %s %s\n" % (PLATFORM, sys.version.split()[0]))
+        print("TestRunnerAgent: Running under %s %s\n" %
+              (PLATFORM, sys.version.split()[0]))
 
     def _create_debugger(self, pause_on_failure):
         self._debugger = RobotDebugger(pause_on_failure)
@@ -167,17 +188,29 @@ class TestRunnerAgent:
         self._send_socket("end_test", name, attrs)
 
     def start_suite(self, name, attrs):
-        self._send_socket("start_suite", name, attrs)
+        attrs_copy = copy.copy(attrs)
+        del attrs_copy['doc']
+        attrs_copy['is_dir'] = os.path.isdir(attrs['source'])
+        self._send_socket("start_suite", name, attrs_copy)
 
     def end_suite(self, name, attrs):
-        self._send_socket("end_suite", name, attrs)
+        attrs_copy = copy.copy(attrs)
+        del attrs_copy['doc']
+        attrs_copy['is_dir'] = os.path.isdir(attrs['source'])
+        self._send_socket("end_suite", name, attrs_copy)
 
     def start_keyword(self, name, attrs):
-        # pass empty args, see https://github.com/nokia/RED/issues/32#issuecomment-240713102
+        # pass empty args, see https://github.com/nokia/RED/issues/32
+
+        # we're cutting args from original attrs dict, because it may contain
+        # objects which are not json-serializable and we don't need them anyway
         attrs_copy = copy.copy(attrs)
-        attrs_copy['args'] = list()
+        del attrs_copy['args']
+        del attrs_copy['doc']
+        del attrs_copy['assign']
+
         self._send_socket("start_keyword", name, attrs_copy)
-        if self._debugger.is_breakpoint(name, attrs_copy):
+        if self._debugger.is_breakpoint(name, attrs): # must check the original
             self._debugger.pause()
         paused = self._debugger.is_paused()
         if paused:
@@ -187,11 +220,14 @@ class TestRunnerAgent:
             self._send_socket('continue')
 
     def end_keyword(self, name, attrs):
-        # pass empty args, see https://github.com/nokia/RED/issues/32#issuecomment-240713102
+        # pass empty args, see https://github.com/nokia/RED/issues/32
         attrs_copy = copy.copy(attrs)
-        attrs_copy['args'] = list()
+        del attrs_copy['args']
+        del attrs_copy['doc']
+        del attrs_copy['assign']
+
         self._send_socket("end_keyword", name, attrs_copy)
-        self._debugger.end_keyword(attrs['status']=='PASS')
+        self._debugger.end_keyword(attrs['status'] == 'PASS')
 
     def message(self, message):
         pass
@@ -259,7 +295,8 @@ class RobotDebugger(object):
 
     @staticmethod
     def is_breakpoint(name, attrs):
-        return name == 'BuiltIn.Comment' and attrs['args'] == ['PAUSE']
+        return name == 'BuiltIn.Comment' and\
+               str(attrs['args'][0]).upper().startswith('PAUSE')
 
     def pause(self):
         self._resume.clear()
