@@ -48,11 +48,21 @@ class PreferencesComboBox(wx.ComboBox):
         self.settings = settings
         self.key = key
         super(PreferencesComboBox, self).__init__(parent, id, self._get_value(),
+                                                  size=self._get_size(choices),
                                                   choices=choices)
         self.Bind(wx.EVT_COMBOBOX, self.OnSelect)
 
     def _get_value(self):
         return self.settings[self.key]
+
+    def _get_size(self, choices=[]):
+        """ In Linux with GTK3 wxPython 4, there was not enough spacing.
+            The value 72 is there for 2 digits numeric lists, for
+            IntegerPreferenceComboBox.
+        """
+        if choices:
+            return wx.Size(max(max(len(str(s)) for s in choices)*18, 72), 20)
+        return wx.DefaultSize
 
     def OnSelect(self, event):
         self._set_value(str(event.GetEventObject().GetValue()))

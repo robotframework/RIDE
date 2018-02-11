@@ -132,7 +132,7 @@ class GridEditorPreferences(EditorPreferences):
 
     def _create_grid_config_editor(self):
         settings = self._settings
-        sizer = wx.FlexGridSizer(rows=3, cols=2, vgap=10, hgap=10)
+        sizer = wx.FlexGridSizer(rows=6, cols=2, vgap=10, hgap=10)
         sizer.Add(self._label_for('Default column size'))
         sizer.Add(self._number_editor(settings, 'col size'))
         sizer.AddMany(widgets.boolean_editor(
