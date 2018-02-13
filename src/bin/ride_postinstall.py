@@ -24,4 +24,5 @@ import sys
 # http://docs.python.org/library/multiprocessing.html#windows
 if __name__ == '__main__':
     arg = " ".join(sys.argv[1:]) if len(sys.argv[1:]) > 0 else "-help"
-    os.system("python -m robotide.postinstall {0}\n".format(arg))
+    py = sys.executable
+    os.system("{} -m robotide.postinstall {}\n".format(py,arg))

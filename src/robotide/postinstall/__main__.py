@@ -91,9 +91,17 @@ def _create_desktop_shortcut_linux(frame=None):
     desktop = {"de": "Desktop", "en": "Desktop", "es": "Escritorio",
                "fi": r"Työpöytä", "fr": "Bureau", "it": "Scrivania",
                "pt": r"Área de Trabalho"}
-    user = subprocess.check_output(['logname']).strip()
+    if PY2:
+        user = unicode(subprocess.check_output(['logname']).strip())
+    else:
+        user = str(subprocess.check_output(['logname']).strip(),
+                   encoding='utf-8')
+    # print("DEBUG: user is %s value %s" % (type(user), user))
     try:
         ndesktop = desktop[DEFAULT_LANGUAGE[0][:2]]
+        if PY2:
+            ndesktop = ndesktop.decode('utf-8')
+        # print("DEBUG: ndesktop is %s" % type(ndesktop))
         directory = os.path.join("/home", user, ndesktop)
         defaultdir = os.path.join("/home", user, "Desktop")
         if not exists(directory):
@@ -119,7 +127,9 @@ def _create_desktop_shortcut_linux(frame=None):
         sys.stderr.write("Desktop shortcut creation aborted!\n")
         return False
     try:
-        directory.decode('utf-8')
+        if PY2:
+            directory.decode('utf-8')
+        # print("DEBUG: directory is %s" % directory)
         link = join(directory, "RIDE.desktop")
     except UnicodeError:
         link = join(directory.encode('utf-8'), "RIDE.desktop")
