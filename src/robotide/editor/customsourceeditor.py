@@ -8,7 +8,7 @@ import os, sys
 import wx
 import wx.stc as stc
 
-from images import Smiles
+# from images import Smiles
 #import Smiles  # Background, code, SmallDnArrow, SmallUpArrow
 
 # ----------------------------------------------------------------------
@@ -189,7 +189,9 @@ class PythonSTC(stc.StyledTextCtrl):
         self.SetCaretForeground("BLUE")
 
         # register some images for use in the AutoComplete box.
-        self.RegisterImage(1, Smiles.GetBitmap())  # DEBUG was images.
+        #### self.RegisterImage(1, Smiles.GetBitmap())  # DEBUG was images.
+        self.RegisterImage(1,
+            wx.ArtProvider.GetBitmap(wx.ART_FLOPPY, size=(16,16)))
         self.RegisterImage(2,
             wx.ArtProvider.GetBitmap(wx.ART_NEW, size=(16,16)))
         self.RegisterImage(3,
