@@ -433,7 +433,9 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
 
     def _leaf_item_removed(self, message):
         node = self._controller.find_node_by_controller(message.item)
+        parent_node = self._get_datafile_node(message.datafile)  # DEBUG
         self._test_selection_controller.select(message.item, False)
+        self._controller.mark_node_dirty(parent_node) # DEBUG
         self.delete_node(node)
 
     def _test_added(self, message):
@@ -461,6 +463,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
         self.add_keyword(parent, controller)
 
     def delete_node(self, node):
+        print("DEBUG at delete_node %s" % (repr(node)))
         if node is None:
             return
         parent = self.GetItemParent(node)

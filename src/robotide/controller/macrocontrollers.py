@@ -23,7 +23,7 @@ from robotide.controller.arguments import parse_arguments_to_var_dict
 from robotide.controller.basecontroller import WithUndoRedoStacks
 from robotide.namespace.local_namespace import LocalNamespace
 from robotide.publish.messages import RideItemStepsChanged, RideItemNameChanged,\
-    RideItemSettingsChanged
+    RideItemSettingsChanged, RideUserKeywordRemoved  # DEBUG
 from robotide.controller.stepcontrollers import ForLoopStepController,\
     StepController, IntendedStepController
 from robotide.spec.iteminfo import ResourceUserKeywordInfo, \
@@ -179,6 +179,7 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         return self.datafile_controller.is_library_keyword(value)
 
     def delete(self):
+        print("DEBUG _WithStepsController delete this is parent %s" % self._parent)
         self.datafile_controller.unregister_namespace_updates(
             self._clear_cached_steps)
         return self._parent.delete(self)
@@ -283,6 +284,11 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
     def notify_name_changed(self):
         self.update_namespace()
         self._notify(RideItemNameChanged)
+
+    def notify_keyword_removed(self):  # DEBUG
+        self.update_namespace()
+        self._notify(RideUserKeywordRemoved)
+        self.notify_steps_changed()
 
     def notify_settings_changed(self):
         self.update_namespace()

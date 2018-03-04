@@ -360,6 +360,7 @@ class SourceEditor(wx.Panel):
 
     def set_editor_caret_position(self):
         position = self._positions.get(self.datafile_controller, None)
+        print("DEBUG: Called set caret position=%s" % position)
         if position:
             self._editor.SetFocus()
             self._editor.SetCurrentPos(position)
@@ -372,7 +373,6 @@ class SourceEditor(wx.Panel):
     @property
     def datafile_controller(self):
         return self._data._data if self._data else None
-
 
     def OnFind(self, event):
         if self._editor:

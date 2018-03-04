@@ -205,6 +205,7 @@ class ContentAssistFileButton(_ContentAssistTextCtrlBase, FileBrowseButton):
             self._browsed = False
             self.SetValue(self._relative_path(self.GetValue()))
             self._parent.setFocusToOK()
+        print("DEBUG: FileBrowseButton: %s\n" % evt.GetString())
 
     def SelectAll(self):
         self.textControl.SelectAll()
