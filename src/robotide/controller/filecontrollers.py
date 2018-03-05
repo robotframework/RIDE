@@ -17,7 +17,7 @@ import sys
 import stat
 from itertools import chain
 import shutil
-import robotide.controller.ctrlcommands
+import robotide.controller.ctrlcommands as commands
 try:
     import subprocess32 as subprocess
 except ImportError:
@@ -267,10 +267,10 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
         old_file = self.filename
         self.data.source = os.path.join(self.directory, '%s.%s' % (basename, self.get_format()))
         self.filename = self.data.source
-        self.execute(robotide.controller.ctrlcommands.SaveFile())
+        self.execute(commands.SaveFile())
         if old_file != self.filename:
             self.remove_from_filesystem(old_file)
-    
+
     def open_filemanager(self, path=None):
         # tested on Win7 x64
         path = path or self.filename
