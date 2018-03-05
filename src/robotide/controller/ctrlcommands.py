@@ -485,7 +485,17 @@ class DeleteFile(_Command):
         context.remove_from_filesystem()
         context.remove()
 
+class OpenContainingFolder(_Command):
+    modifying  = False
 
+    def execute(self, context):
+        context.open_filemanager()
+
+class RemoveReadOnly(_Command):
+    
+    def execute(self, context):
+        context.remove_readonly()
+        
 class DeleteFolder(_Command):
 
     def execute(self, context):

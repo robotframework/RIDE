@@ -17,7 +17,7 @@ import sys
 import stat
 from itertools import chain
 import shutil
-import commands
+import robotide.controller.ctrlcommands as commands
 try:
     import subprocess32 as subprocess
 except ImportError:
@@ -34,7 +34,7 @@ from robotide import utils
 from .basecontroller import WithUndoRedoStacks, _BaseController, WithNamespace, ControllerWithParent
 from .macrocontrollers import UserKeywordController
 from .robotdata import NewTestCaseFile, NewTestDataDirectory
-from robotide.utils import overrides
+from robotide.utils import overrides, basestring
 from .settingcontrollers import (DocumentationController, FixtureController,
         TimeoutController, TemplateController, DefaultTagsController,
         ForceTagsController)
@@ -272,6 +272,17 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
             self.remove_from_filesystem(old_file)
     
     def open_filemanager(self, path=None):
+		# tested on Win7 x64
+        path = path or self.filename
+        if os.path.exists(path):
+            if sys.platform=='win32':
+                os.startfile('"{}"'.format(os.path.dirname(path)), 'explore')
+    
+    def remove_readonly(self, path=None):
+            path = path or self.filename
+            os.chmod(path, stat.S_IWRITE)
+
+    def open_filemanager(self, path=None):
         # tested on Win7 x64
         path = path or self.filename
         if os.path.exists(path):
@@ -279,10 +290,16 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
                 os.startfile("{}".format(os.path.dirname(path)), 'explore')
             elif sys.platform=='linux2':
                 # how to detect which explorer is used? nautilus, dolphin
-                subprocess.Popen(["nautilus", "{}".format(os.path.dirname(path))])
+                try:
+                    subprocess.Popen(["nauXilus", "{}".format(os.path.dirname(path))])
+                except Exception as e:
+                    print(e)
+                    subprocess.Popen(
+                        ["dolphin", "{}".format(os.path.dirname(path))])
+                    raise
             else:
                 subprocess.Popen(["finder", "{}".format(os.path.dirname(path))])
-    
+
     def remove_readonly(self, path=None):
             path = path or self.filename
             os.chmod(path, stat.S_IWRITE)

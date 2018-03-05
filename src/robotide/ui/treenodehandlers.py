@@ -17,7 +17,8 @@ import wx
 from robotide.controller.ctrlcommands import (
     RenameKeywordOccurrences, RemoveMacro, AddKeyword, AddTestCase, RenameTest,
     CopyMacroAs, AddVariable, UpdateVariableName, RenameFile, DeleteItem,
-    RenameResourceFile, DeleteFile, SortKeywords, Include, Exclude)
+    RenameResourceFile, DeleteFile, SortKeywords, Include, Exclude, OpenContainingFolder,
+    RemoveReadOnly)
 from robotide.controller.settingcontrollers import VariableController
 from robotide.controller.macrocontrollers import (
     TestCaseController, UserKeywordController)
@@ -82,6 +83,8 @@ class _ActionHandler(wx.Window):
     _label_include = 'Include'
     _label_expand_all = 'Expand all'
     _label_collapse_all = 'Collapse all'
+    _label_remove_readonly = 'Remove Read Only'
+    _label_open_folder =  'Open Containing Folder'
 
     def __init__(self, controller, tree, node, settings):
         wx.Window.__init__(self, tree)
@@ -396,7 +399,22 @@ class ResourceFileHandler(_FileHandlerThanCanBeRenamed, TestDataHandler):
                 _ActionHandler._label_change_format,
                 _ActionHandler._label_sort_keywords,
                 _ActionHandler._label_find_usages,
-                _ActionHandler._label_delete]
+                _ActionHandler._label_delete,
+                '---',
+                _ActionHandler._label_remove_readonly,
+                _ActionHandler._label_open_folder
+                ]
+                
+    def OnRemoveReadOnly(self, event):
+
+        def returnTrue():
+            return True
+        self.controller.is_modifiable = returnTrue
+        self.controller.execute(RemoveReadOnly())
+        
+    def OnOpenContainingFolder(self, event):
+
+        self.controller.execute(OpenContainingFolder())
 
     def OnFindUsages(self, event):
         ResourceFileUsages(self.controller, self._tree.highlight).show()
@@ -432,8 +450,22 @@ class TestCaseFileHandler(_FileHandlerThanCanBeRenamed, TestDataHandler):
                 _ActionHandler._label_select_all,
                 _ActionHandler._label_deselect_all,
                 _ActionHandler._label_select_failed_tests,
-                _ActionHandler._label_select_passed_tests
+                _ActionHandler._label_select_passed_tests,
+                '---',
+                _ActionHandler._label_remove_readonly,
+                _ActionHandler._label_open_folder
                 ]
+                
+    def OnRemoveReadOnly(self, event):
+
+        def returnTrue():
+            return True
+        self.controller.is_modifiable = returnTrue
+        self.controller.execute(RemoveReadOnly())
+        
+    def OnOpenContainingFolder(self, event):
+
+        self.controller.execute(OpenContainingFolder())
 
     def OnNewTestCase(self, event):
         dlg = TestCaseNameDialog(self.controller)
@@ -467,11 +499,9 @@ class _TestOrUserKeywordHandler(_CanBeRenamed, _ActionHandler):
     ]
 
     def remove(self):
-        print("DEBUG Keyword remove %s" % self.controller.name)
         self.controller.delete()
 
     def rename(self, new_name):
-        print("DEBUG Keyword rename %s" % self.controller.name)
         self.controller.execute(self._create_rename_command(new_name))
 
     def OnCopy(self, event):
@@ -489,11 +519,7 @@ class _TestOrUserKeywordHandler(_CanBeRenamed, _ActionHandler):
             self._tree.move_down(self._node)
 
     def OnDelete(self, event):
-        print("DEBUG Keyword OnDelete %s" % self.controller.name)
-        name = self.controller.name
         self.controller.execute(RemoveMacro(self.controller))
-        print("DEBUG Keyword OnDelete after %s" % self.controller.validate_name(name))
-        # self.remove()
 
 
 class TestCaseHandler(_TestOrUserKeywordHandler):
