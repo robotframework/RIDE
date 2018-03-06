@@ -17,7 +17,7 @@ import sys
 import stat
 from itertools import chain
 import shutil
-import robotide.controller.ctrlcommands as commands
+import robotide.controller.ctrlcommands
 try:
     import subprocess32 as subprocess
 except ImportError:
@@ -267,12 +267,12 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
         old_file = self.filename
         self.data.source = os.path.join(self.directory, '%s.%s' % (basename, self.get_format()))
         self.filename = self.data.source
-        self.execute(commands.SaveFile())
+        self.execute(robotide.controller.ctrlcommands.SaveFile())
         if old_file != self.filename:
             self.remove_from_filesystem(old_file)
     
     def open_filemanager(self, path=None):
-		# tested on Win7 x64
+        # tested on Win7 x64
         path = path or self.filename
         if os.path.exists(path):
             if sys.platform=='win32':
@@ -288,17 +288,29 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
         if os.path.exists(path):
             if sys.platform=='win32':
                 os.startfile("{}".format(os.path.dirname(path)), 'explore')
-            elif sys.platform=='linux2':
-                # how to detect which explorer is used? nautilus, dolphin
+            elif sys.platform.startswith('linux'):
+                # how to detect which explorer is used?
+                # nautilus, dolphin, konqueror
+                # TODO check if explorer exits
+                # TODO get prefered explorer from preferences
                 try:
-                    subprocess.Popen(["nauXilus", "{}".format(os.path.dirname(path))])
-                except Exception as e:
-                    print(e)
-                    subprocess.Popen(
-                        ["dolphin", "{}".format(os.path.dirname(path))])
-                    raise
+                    subprocess.Popen(["nautilus", "{}".format(
+                        os.path.dirname(path))])
+                except OSError or FileNotFoundError:
+                    try:
+                        subprocess.Popen(
+                            ["dolphin", "{}".format(os.path.dirname(path))])
+                    except  OSError or FileNotFoundError:
+                        try:
+                            subprocess.Popen(
+                               ["konqueror", "{}".format(
+                                   os.path.dirname(path))])
+                        except  OSError or FileNotFoundError:
+                            print("Could not launch explorer. Tryed nautilus, "
+                                  "dolphin and konqueror.")
             else:
-                subprocess.Popen(["finder", "{}".format(os.path.dirname(path))])
+                subprocess.Popen(["finder", "{}".format(
+                    os.path.dirname(path))])
 
     def remove_readonly(self, path=None):
             path = path or self.filename
