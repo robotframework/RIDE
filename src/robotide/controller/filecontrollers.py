@@ -311,7 +311,7 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
             else:
                 subprocess.Popen(["finder", "{}".format(
                     os.path.dirname(path))])
-    
+
     def remove_readonly(self, path=None):
             path = path or self.filename
             os.chmod(path, stat.S_IWRITE)
