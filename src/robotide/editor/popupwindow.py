@@ -21,6 +21,7 @@ from robotide.widgets import VerticalSizer, HtmlWindow, HtmlDialog
 class _PopupWindowBase(object):
 
     def __init__(self, size, detachable=True, autohide=False):
+        print("DEBUG: PopupWindow at init")
         self.panel = self._create_ui(size)
         if autohide:
             self._set_auto_hiding()
@@ -39,9 +40,12 @@ class _PopupWindowBase(object):
         return panel
 
     def _set_detachable(self):
+        print("DEBUG: PopupWindow at Binding mouse on help")
         self._details.Bind(wx.EVT_LEFT_UP, self._detach)
+        self._details.Bind(wx.EVT_LEFT_DCLICK, self._detach) # DEBUG add double-click
 
     def _detach(self, event):
+        print("DEBUG: PopupWindow at detached call")
         self.hide()
         dlg = HtmlDialog(self._detached_title, self._current_details)
         dlg.SetPosition((wx.GetMouseState().x, wx.GetMouseState().y))
@@ -76,7 +80,7 @@ class _PopupWindowBase(object):
 class RidePopupWindow(wx.PopupWindow, _PopupWindowBase):
 
     def __init__(self, parent, size):
-        wx.PopupWindow.__init__(self, parent, flags=wx.DEFAULT_DIALOG_STYLE)
+        wx.PopupWindow.__init__(self, parent, flags=wx.DEFAULT_FRAME_STYLE) # DEBUG |wx.DEFAULT_DIALOG_STYLE)
         self.SetSize(size)   # wx.BORDER_NONE
 
     def _set_auto_hiding(self):
@@ -88,6 +92,7 @@ class RidePopupWindow(wx.PopupWindow, _PopupWindowBase):
 class HtmlPopupWindow(RidePopupWindow):
 
     def __init__(self, parent, size, detachable=True, autohide=False):
+        # print("DEBUG: HtmlPopupWindow we must make it border in Windows to be detached")
         RidePopupWindow.__init__(self, parent, size)
         _PopupWindowBase.__init__(self, size, detachable, autohide)
 
