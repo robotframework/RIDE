@@ -493,14 +493,17 @@ class DemoCodeEditor(PythonSTC):
         """
         # Global default style
         if wx.Platform == '__WXMSW__':
+            print("DEBUG: Setup on Windows")
             self.StyleSetSpec(stc.STC_STYLE_DEFAULT,
                               'fore:#000000,back:#FFFFFF,face:Courier New')
         elif wx.Platform == '__WXMAC__':
+            print("DEBUG: Setup on Mac")
             # TODO: if this looks fine on Linux too, remove the Mac-specific case
             # and use this whenever OS != MSW.
             self.StyleSetSpec(stc.STC_STYLE_DEFAULT,
                               'fore:#000000,back:#FFFFFF,face:Monaco')
         else:
+            print("DEBUG: Setup on Linux")
             defsize = wx.SystemSettings.GetFont(wx.SYS_ANSI_FIXED_FONT).GetPointSize()
             self.StyleSetSpec(stc.STC_STYLE_DEFAULT,
                               'fore:#000000,back:#FFFFFF,face:Courier,size:%d'%defsize)
@@ -572,8 +575,9 @@ class DemoCodePanel(wx.Panel):
     def __init__(self, parent, mainFrame):
         self.log = sys.stdout  # From FileDialog
         wx.Panel.__init__(self, parent, size=(1,1))
-        if 'wxMSW' in wx.PlatformInfo:
-            self.Hide()
+        #if 'wxMSW' in wx.PlatformInfo:
+        #    # print("DEBUG: Panel Hide on Windows")
+        #    # self.Hide()
         self.mainFrame = mainFrame
         self.editor = DemoCodeEditor(self)
         self.editor.RegisterModifiedEvent(self.OnCodeModified)
@@ -615,15 +619,15 @@ class DemoCodePanel(wx.Panel):
         self.box.Fit(self)
         self.SetSizer(self.box)
 
-    # Loads a demo from a DemoModules object
-    def LoadDemo(self, demoModules):
-        self.demoModules = demoModules
-        if (modDefault == modModified) and demoModules.Exists(modModified):
-            demoModules.SetActive(modModified)
-        else:
-            demoModules.SetActive(modOriginal)
-        self.radioButtons[demoModules.GetActiveID()].Enable(True)
-        self.ActiveModuleChanged()
+    # # Loads a demo from a DemoModules object
+    # def LoadDemo(self, demoModules):
+    #     self.demoModules = demoModules
+    #     if (modDefault == modModified) and demoModules.Exists(modModified):
+    #         demoModules.SetActive(modModified)
+    #     else:
+    #         demoModules.SetActive(modOriginal)
+    #     self.radioButtons[demoModules.GetActiveID()].Enable(True)
+    #     self.ActiveModuleChanged()
 
     def ActiveModuleChanged(self):
         self.LoadDemoSource(self.demoModules.GetSource())
