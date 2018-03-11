@@ -21,7 +21,7 @@ from robotide.widgets import VerticalSizer, HtmlWindow, HtmlDialog
 class _PopupWindowBase(object):
 
     def __init__(self, size, detachable=True, autohide=False):
-        print("DEBUG: PopupWindow at init")
+        # print("DEBUG: PopupWindow at init")
         self.panel = self._create_ui(size)
         if autohide:
             self._set_auto_hiding()
@@ -40,12 +40,12 @@ class _PopupWindowBase(object):
         return panel
 
     def _set_detachable(self):
-        print("DEBUG: PopupWindow at Binding mouse on help")
+        # print("DEBUG: PopupWindow at Binding mouse on help")
         self._details.Bind(wx.EVT_LEFT_UP, self._detach)
         self._details.Bind(wx.EVT_LEFT_DCLICK, self._detach) # DEBUG add double-click
 
     def _detach(self, event):
-        print("DEBUG: PopupWindow at detached call")
+        # print("DEBUG: PopupWindow at detached call")
         self.hide()
         dlg = HtmlDialog(self._detached_title, self._current_details)
         dlg.SetPosition((wx.GetMouseState().x, wx.GetMouseState().y))
