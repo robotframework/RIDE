@@ -184,8 +184,14 @@ class ContentAssistFileButton(_ContentAssistTextCtrlBase, FileBrowseButton):
         self._browsed = False
         _ContentAssistTextCtrlBase.__init__(self, suggestion_source)
 
+    # TODO Re-enable ContentAssist for Library and Resources
+    """
+    # DEBUG With this commented, at least we can type Libraries and Resources on Windows
     def Bind(self, *args):
+        print("DEBUG: Bind ContentAssistFileButton: %s\n" % args.__repr__())
         self.textControl.Bind(*args)
+    """
+
 
     def SetInsertionPoint(self, pos):
         self.textControl.SetInsertionPoint(pos)
@@ -207,6 +213,7 @@ class ContentAssistFileButton(_ContentAssistTextCtrlBase, FileBrowseButton):
             self._browsed = False
             self.SetValue(self._relative_path(self.GetValue()))
             self._parent.setFocusToOK()
+        # print("DEBUG: FileBrowseButton: %s\n" % evt.GetString())
 
     def SelectAll(self):
         self.textControl.SelectAll()
