@@ -77,10 +77,10 @@ class _PopupWindowBase(object):
         self._detached_title = title
 
 
-class RidePopupWindow(wx.PopupWindow, _PopupWindowBase):
+class RidePopupWindow(wx.PopupWindow, _PopupWindowBase): # DEBUG wx.PopupWindow,
 
     def __init__(self, parent, size):
-        wx.PopupWindow.__init__(self, parent, flags=wx.DEFAULT_FRAME_STYLE) # DEBUG |wx.DEFAULT_DIALOG_STYLE)
+        wx.PopupWindow.__init__(self, parent, flags=wx.DEFAULT_FRAME_STYLE) # DEBUG |wx.DEFAULT_DIALOG_STYLE
         self.SetSize(size)   # wx.BORDER_NONE
 
     def _set_auto_hiding(self):
@@ -97,20 +97,21 @@ class HtmlPopupWindow(RidePopupWindow):
         _PopupWindowBase.__init__(self, size, detachable, autohide)
 
 
-class MacRidePopupWindow(wx.Frame, _PopupWindowBase):
-
-    def __init__(self, parent, size, detachable=True, autohide=False):
-        wx.Frame.__init__(self, parent, style=wx.SIMPLE_BORDER)
-        _PopupWindowBase.__init__(self, size, detachable, autohide)
-        self.hide()
-
-    def _set_auto_hiding(self):
-        self._details.Bind(wx.EVT_MOTION, lambda evt: self.hide())
-
-    def OnKey(self, *params):
-        pass
-
-
-if wx.PlatformInfo[0] == '__WXMAC__':
-    RidePopupWindow = HtmlPopupWindow = MacRidePopupWindow
-del MacRidePopupWindow
+# TODO: See if we need to have Mac specific window
+# class MacRidePopupWindow(wx.MiniFrame, _PopupWindowBase):
+#
+#     def __init__(self, parent, size, detachable=True, autohide=False):
+#         wx.MiniFrame.__init__(self, parent, style=wx.SIMPLE_BORDER)
+#         _PopupWindowBase.__init__(self, size, detachable, autohide)
+#         self.hide()
+#
+#     def _set_auto_hiding(self):
+#         self._details.Bind(wx.EVT_MOTION, lambda evt: self.hide())
+#
+#     def OnKey(self, *params):
+#         pass
+#
+#
+# if wx.PlatformInfo[0] == '__WXMAC__':
+#     RidePopupWindow = HtmlPopupWindow = MacRidePopupWindow
+# del MacRidePopupWindow
