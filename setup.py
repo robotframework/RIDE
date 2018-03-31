@@ -14,7 +14,7 @@ exec(compile(open(version_file).read(), version_file, 'exec'))
 
 package_data = {
     'robotide.preferences': ['settings.cfg'],
-    'robotide.widgets': ['*.png', '*.ico'],
+    'robotide.widgets': ['*.png', '*.gif', '*.ico'],
     'robotide.messages': ['*.html'],
     'robotide.publish.htmlmessages': ['no_robot.html']
 }
