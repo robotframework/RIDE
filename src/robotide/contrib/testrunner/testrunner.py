@@ -125,6 +125,15 @@ class TestRunner(object):
             testname = args[0]
             self._results.set_running(self._get_test_controller(longname,
                                                                 testname))
+        if event == 'paused':
+            print("DEBUG: testrunner pause %s" % self._results.PAUSED)
+            """
+            % args[0])
+            longname = args[1]['longname']
+            testname = args[0]
+            self._results.set_paused(self._get_test_controller(longname, testname))
+            """
+
         if event == 'end_test':
             longname = args[1]['longname']
             testname = args[0]

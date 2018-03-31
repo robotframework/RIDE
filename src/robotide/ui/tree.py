@@ -27,11 +27,12 @@ from robotide.controller.ui.treecontroller import TreeController, \
 from robotide.context import IS_WINDOWS
 from robotide.action.actioninfo import ActionInfo
 from robotide.controller.filecontrollers import ResourceFileController
-from robotide.publish.messages import RideTestRunning, RideTestPassed, \
-    RideTestFailed, RideTestExecutionStarted, RideImportSetting, \
-    RideExcludesChanged, RideIncludesChanged, RideOpenSuite, RideNewProject
+from robotide.publish.messages import RideTestRunning, RideTestPaused, \
+    RideTestPassed, RideTestFailed, RideTestExecutionStarted, \
+    RideImportSetting, RideExcludesChanged, RideIncludesChanged, \
+    RideOpenSuite, RideNewProject
 from robotide.ui.images import RUNNING_IMAGE_INDEX, PASSED_IMAGE_INDEX, \
-    FAILED_IMAGE_INDEX, ROBOT_IMAGE_INDEX
+    FAILED_IMAGE_INDEX, PAUSED_IMAGE_INDEX, ROBOT_IMAGE_INDEX
 from robotide.ui.treenodehandlers import TestCaseHandler
 from robotide.publish import PUBLISHER, RideTreeSelection, RideFileNameChanged,\
     RideItem, RideUserKeywordAdded, RideTestCaseAdded, RideUserKeywordRemoved,\
@@ -164,6 +165,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
             (self._filename_changed, RideFileNameChanged),
             (self._testing_started, RideTestExecutionStarted),
             (self._test_result, RideTestRunning),
+            (self._test_result, RideTestPaused),
             (self._test_result, RideTestPassed),
             (self._test_result, RideTestFailed),
             (self._handle_import_setting_message, RideImportSetting),
@@ -217,11 +219,29 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
         node = self._controller.find_node_by_controller(controller)
         if not node:
             return
-        self.SetItemImage(node, self._get_icon_index_for(controller))
+        img_index = self._get_icon_index_for(controller)
+        if img_index in (RUNNING_IMAGE_INDEX, PAUSED_IMAGE_INDEX):
+            # DEBUG Must animate GIF images
+            from wx.adv import Animation, AnimationCtrl
+            import os
+            _BASE = os.path.join(os.path.dirname(__file__), '..', 'widgets')
+            img = os.path.join(_BASE, 'robot-running.gif')
+            ani = Animation(img)
+            obj = self  # .GetItemWindow(node.GetParent())
+            rect = (node.GetX(), node.GetY())
+            self.ScrollTo(node)
+            print("DEBUG setIcon obj=%s" % (type(obj)))
+            ctrl = AnimationCtrl(obj, -1, ani, rect)
+            ctrl.SetBackgroundColour(obj.GetBackgroundColour())
+            ctrl.Play()
+        else:
+            self.SetItemImage(node, img_index)
 
     def _get_icon_index_for(self, controller):
         if not self._execution_results:
             return ROBOT_IMAGE_INDEX
+        if self._execution_results.is_paused(controller):
+            return PAUSED_IMAGE_INDEX
         if self._execution_results.is_running(controller):
             return RUNNING_IMAGE_INDEX
         if self._execution_results.has_passed(controller):

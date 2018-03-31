@@ -26,6 +26,8 @@ ROBOT_IMAGE_INDEX = 3
 RUNNING_IMAGE_INDEX = 7
 PASSED_IMAGE_INDEX = 8
 FAILED_IMAGE_INDEX = 9
+PAUSED_IMAGE_INDEX = 10
+
 
 class TreeImageList(wx.ImageList):
 
@@ -40,12 +42,13 @@ class TreeImageList(wx.ImageList):
             UserKeywordController: _TreeImage(self, 'cog.png'),
             ResourceFileController: _TreeImage(self, 'page_white_gear.png'),
             VariableController: _TreeImage(self, 'dollar.png'),
-            'running': _TreeImage(self, 'robot_running.png'),
+            'running': _TreeImage(self, 'robot-running.gif'),
             'passed': _TreeImage(self, 'robot_passed.png'),
             'failed': _TreeImage(self, 'robot_failed.png'),
+            'paused': _TreeImage(self, 'robot-pause.gif'),
             ExcludedDirectoryController: _TreeImage(self, 'folder_excluded.png')
         }
-
+# 'running': _TreeImage(self, 'robot_running.png'),
     @property
     def directory(self):
         return self._images['resource directory']
@@ -56,6 +59,8 @@ class TreeImageList(wx.ImageList):
     def __getitem__(self, controller):
         if controller.__class__ == TestCaseController:
             if self._execution_results:
+                if self._execution_results.is_paused(controller):
+                    return self._images['paused']
                 if self._execution_results.is_running(controller):
                     return self._images['running']
                 if self._execution_results.has_passed(controller):
@@ -79,5 +84,8 @@ class _TreeImage(object):
             img = wx.ArtProvider_GetBitmap(source, wx.ART_OTHER, _SIZE)
         else:
             path = os.path.join(_BASE, source)
-            img = wx.Image(path, wx.BITMAP_TYPE_PNG).ConvertToBitmap()
+            if source.endswith('gif'):
+                img = wx.Image(path, wx.BITMAP_TYPE_GIF).ConvertToBitmap()
+            else:
+                img = wx.Image(path, wx.BITMAP_TYPE_PNG).ConvertToBitmap()
         return image_list.Add(img)

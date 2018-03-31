@@ -180,6 +180,11 @@ class RideTestRunning(RideMessage):
     data = ['item']
 
 
+class RideTestPaused(RideMessage):
+    """Sent whenever RIDE is running a test case and paused."""
+    data = ['item']
+
+
 class RideTestPassed(RideMessage):
     """Sent whenever RIDE has executed a test case and it passed."""
     data = ['item']
