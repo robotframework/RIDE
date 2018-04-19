@@ -1,3 +1,5 @@
 wxPython
 Pygments
 robotframework
+# Pypubsub 4.0.0 does not support Python 2.7
+Pypubsub==3.3.0
