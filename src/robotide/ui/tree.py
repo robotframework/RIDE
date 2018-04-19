@@ -221,16 +221,21 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
             return
         img_index = self._get_icon_index_for(controller)
         if img_index in (RUNNING_IMAGE_INDEX, PAUSED_IMAGE_INDEX):
+            self.SetItemImage(node, img_index)
             # DEBUG Must animate GIF images
             from wx.adv import Animation, AnimationCtrl
             import os
             _BASE = os.path.join(os.path.dirname(__file__), '..', 'widgets')
             img = os.path.join(_BASE, 'robot-running.gif')
             ani = Animation(img)
-            obj = self  # .GetItemWindow(node.GetParent())
+            obj = self #node.GetHandle() # node.GetGtkWidget()
+            # node.EnsureVisible()  # self.GetIndexOfItem(node)  # .GetItemWindow(node.GetParent())
+            # obj = node.GetWindow()
+            elm = node.GetImage()
+            child = node.GetParent().GetWindow()
             rect = (node.GetX(), node.GetY())
             self.ScrollTo(node)
-            print("DEBUG setIcon obj=%s" % (type(obj)))
+            print("DEBUG setIcon obj=%s node=%s wnd=%s leftimg=%d" % (type(obj),type(node), child, elm))
             ctrl = AnimationCtrl(obj, -1, ani, rect)
             ctrl.SetBackgroundColour(obj.GetBackgroundColour())
             ctrl.Play()
