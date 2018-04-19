@@ -22,7 +22,6 @@
 
 from UserDict import DictMixin
 
-
 class OrderedDict(dict, DictMixin):
 
     def __init__(self, *args, **kwds):
