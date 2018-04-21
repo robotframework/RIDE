@@ -75,6 +75,8 @@ class TestRunner(object):
         self.port = None
         self._project = project
         self.profiles = {}
+        self._pause_longname = None
+        self._pause_testname = None
 
     def enable(self, result_handler):
         self._start_listener_server(result_handler)
@@ -116,6 +118,7 @@ class TestRunner(object):
         self.port = self._server.server_address[1]
 
     def _result_handler(self, event, *args):
+        # print("DEBUG: testrunner event %s" % event)
         if event == 'pid':
             self._pid_to_kill = int(args[0])
         if event == 'port' and self._process:
@@ -125,15 +128,18 @@ class TestRunner(object):
             testname = args[0]
             self._results.set_running(self._get_test_controller(longname,
                                                                 testname))
-        if event == 'paused':
-            print("DEBUG: testrunner pause %s" % self._results.PAUSED)
-            """
-            % args[0])
-            longname = args[1]['longname']
-            testname = args[0]
-            self._results.set_paused(self._get_test_controller(longname, testname))
-            """
+            self._pause_longname = longname
+            self._pause_testname = testname
 
+        if event == 'continue':
+            # print("DEBUG: testrunner resume %s" % self._results.RUNNING)
+            self._results.set_running(self._get_test_controller(
+                self._pause_longname, self._pause_testname))
+
+        if event == 'paused':
+            # print("DEBUG: testrunner pause %s" % self._results.PAUSED)
+            self._results.set_paused(self._get_test_controller(
+                self._pause_longname, self._pause_testname))
         if event == 'end_test':
             longname = args[1]['longname']
             testname = args[0]
