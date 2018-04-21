@@ -223,7 +223,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
             return
         img_index = self._get_icon_index_for(controller)
         # Always set the static icon
-        self.SetItemImage(node, img_index)
+            self.SetItemImage(node, img_index)
         # print("DEBUG setIcon img_index=%d" % (img_index))
         if wx.VERSION >= (3, 0, 3, '') and self._animctrl:
             self._animctrl.Stop()
@@ -235,7 +235,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
             import os
             _BASE = os.path.join(os.path.dirname(__file__), '..', 'widgets')
             if img_index == RUNNING_IMAGE_INDEX:
-                img = os.path.join(_BASE, 'robot-running.gif')
+            img = os.path.join(_BASE, 'robot-running.gif')
             else:
                 img = os.path.join(_BASE, 'robot-pause.gif')
             ani = Animation(img)
