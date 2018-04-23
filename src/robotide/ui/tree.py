@@ -220,11 +220,18 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
         node = self._controller.find_node_by_controller(controller)
         if not node:
             return
+        # Expand the node - Nice to have
+        # root = self.GetRootItem()
+        # self.Expand(root)  # node.GetParent())
+        # self.Expand(node)
         img_index = self._get_icon_index_for(controller)
         # print("DEBUG setIcon img_index=%d" % (img_index))
-        # print("DEBUG: set icon Node type: %s" % type(node))
+        if self._animctrl:
+            self._animctrl.Stop()
+            self._animctrl.Animation.Destroy()
+            self._animctrl.Destroy()
+            self._animctrl = None
         if img_index in (RUNNING_IMAGE_INDEX, PAUSED_IMAGE_INDEX):
-            # DEBUG Must animate GIF images
             from wx.adv import Animation, AnimationCtrl
             import os
             _BASE = os.path.join(os.path.dirname(__file__), '..', 'widgets')
@@ -233,23 +240,12 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
             else:
                 img = os.path.join(_BASE, 'robot-pause.gif')
             ani = Animation(img)
-            obj = self #node.GetHandle() # node.GetGtkWidget()
-            # node.EnsureVisible()  # self.GetIndexOfItem(node)  # .GetItemWindow(node.GetParent())
-            # obj = node.GetWindow()
-            elm = node.GetImage()
-            child = node.GetParent().GetWindow()
-            rect = (node.GetX()+20, node.GetY()+1) # DEBUG Ugly hack, lets move right
-            # self.ScrollTo(node)
-            # print("DEBUG setIcon obj=%s node=%s wnd=%s leftimg=%d" % (type(obj),type(node), child, elm))
-            # print("DEBUG setIcon nodeWidth=%s nodeWndSz=%s" % ( node.GetWidth(), node.GetWindowSize()))
+            obj = self
+            rect = (node.GetX()+20, node.GetY()+1) # DEBUG Can't get item window
             self._animctrl = AnimationCtrl(obj, -1, ani, rect)
-            # self._animctrl.Reparent()
             self._animctrl.SetBackgroundColour(obj.GetBackgroundColour())
             self._animctrl.Play()
         else:
-            # TODO Remove Animation
-            if self._animctrl:
-                self._animctrl.Destroy()
             self.SetItemImage(node, img_index)
 
     def _get_icon_index_for(self, controller):
