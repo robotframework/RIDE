@@ -235,7 +235,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
             import os
             _BASE = os.path.join(os.path.dirname(__file__), '..', 'widgets')
             if img_index == RUNNING_IMAGE_INDEX:
-            img = os.path.join(_BASE, 'robot-running.gif')
+                img = os.path.join(_BASE, 'robot-running.gif')
             else:
                 img = os.path.join(_BASE, 'robot-pause.gif')
             ani = Animation(img)
