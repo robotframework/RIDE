@@ -227,12 +227,12 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
         # self.Expand(node)
         img_index = self._get_icon_index_for(controller)
         # print("DEBUG setIcon img_index=%d" % (img_index))
-        if self._animctrl:
+        if wx.VERSION >= (3, 0, 3, '') and self._animctrl:
             self._animctrl.Stop()
             self._animctrl.Animation.Destroy()
             self._animctrl.Destroy()
             self._animctrl = None
-        if img_index in (RUNNING_IMAGE_INDEX, PAUSED_IMAGE_INDEX):
+        if wx.VERSION >= (3, 0, 3, '') and img_index in (RUNNING_IMAGE_INDEX, PAUSED_IMAGE_INDEX):
             from wx.adv import Animation, AnimationCtrl
             import os
             _BASE = os.path.join(os.path.dirname(__file__), '..', 'widgets')
