@@ -119,6 +119,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
         self.Bind(wx.EVT_TREE_ITEM_RIGHT_CLICK, self.OnRightClick)
         self.Bind(wx.EVT_TREE_ITEM_ACTIVATED, self.OnItemActivated)
         self.Bind(customtreectrl.EVT_TREE_ITEM_CHECKED, self.OnTreeItemChecked)
+        self.Bind(wx.EVT_TREE_ITEM_COLLAPSING, self.OnTreeItemCollapsing)
 
     def OnDoubleClick(self, event):
         item, pos = self.HitTest(self.ScreenToClient(wx.GetMousePosition()))
@@ -241,9 +242,10 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
                 img = os.path.join(_BASE, 'robot-pause.gif')
             ani = Animation(img)
             obj = self
-            rect = (node.GetX()+20, node.GetY()+1) # DEBUG Can't get item window
+            rect = (node.GetX()+20, node.GetY()+1)  # Overlaps robot icon
             self._animctrl = AnimationCtrl(obj, -1, ani, rect)
             self._animctrl.SetBackgroundColour(obj.GetBackgroundColour())
+            node.SetWindow(self._animctrl)
             self._animctrl.Play()
         else:
             self.SetItemImage(node, img_index)
@@ -715,6 +717,12 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
         node = event.GetItem()
         if node.IsOk():
             self._render_children(node)
+
+    def OnTreeItemCollapsing(self, event):
+        for item in event.GetItem().GetChildren():
+            itemwindow = item.GetWindow()
+            if itemwindow:
+                itemwindow.Hide()  # Hides animation
 
     def SelectAllTests(self, item):
         self._for_all_tests(item, lambda t: self.CheckItem(t))
