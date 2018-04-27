@@ -245,7 +245,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
             rect = (node.GetX()+20, node.GetY()+1)  # Overlaps robot icon
             self._animctrl = AnimationCtrl(obj, -1, ani, rect)
             self._animctrl.SetBackgroundColour(obj.GetBackgroundColour())
-            node.SetWindow(self._animctrl)
+            node.SetWindow(self._animctrl, False)
             self._animctrl.Play()
         else:
             self.SetItemImage(node, img_index)
@@ -718,6 +718,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
         if node.IsOk():
             self._render_children(node)
 
+    # TODO: Remove method if CustomTreeItem defines it
     def OnTreeItemCollapsing(self, event):
         for item in event.GetItem().GetChildren():
             itemwindow = item.GetWindow()
