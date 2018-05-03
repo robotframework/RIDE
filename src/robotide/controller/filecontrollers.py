@@ -287,7 +287,9 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
         path = path or self.filename
         if os.path.exists(path):
             if sys.platform=='win32':
-                os.startfile("{}".format(os.path.dirname(path)), 'explore')
+                #  There was encoding errors if directory had unicode chars
+                # TODO test on all OS directory names with accented chars, for example 'ccedilla'
+                os.startfile(r"%s" % os.path.dirname(path), 'explore')
             elif sys.platform.startswith('linux'):
                 # how to detect which explorer is used?
                 # nautilus, dolphin, konqueror
@@ -306,7 +308,7 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
                                ["konqueror", "{}".format(
                                    os.path.dirname(path))])
                         except  OSError or FileNotFoundError:
-                            print("Could not launch explorer. Tryed nautilus, "
+                            print("Could not launch explorer. Tried nautilus, "
                                   "dolphin and konqueror.")
             else:
                 subprocess.Popen(["finder", "{}".format(
