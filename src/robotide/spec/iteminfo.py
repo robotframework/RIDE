@@ -83,7 +83,7 @@ class VariableInfo(ItemInfo):
         self._value = value
 
     def _source_name(self, source):
-        return unicode(os.path.basename(source)) if source else ''
+        return (os.path.basename(source)).encode('utf-8') if source else ''
 
     def name_matches(self, pattern):
         normalized = utils.normalize(self._undecorate(pattern))
@@ -278,7 +278,7 @@ class LibraryKeywordInfo(_KeywordInfo):
 class _UserKeywordInfo(_KeywordInfo):
 
     def _source(self, item):
-        return unicode(os.path.basename(item.source)) if item.source else ''
+        return (os.path.basename(item.source)).encode('utf-8') if item.source else ''
 
     def _doc(self, item):
         return utils.unescape(item.doc.value)
