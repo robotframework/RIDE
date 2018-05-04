@@ -226,6 +226,8 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
         # self.Expand(root)  # node.GetParent())
         # self.Expand(node)
         img_index = self._get_icon_index_for(controller)
+        if img_index in (RUNNING_IMAGE_INDEX, PAUSED_IMAGE_INDEX):
+            self.SetItemImage(node, img_index)
         # print("DEBUG setIcon img_index=%d" % (img_index))
         if wx.VERSION >= (3, 0, 3, '') and self._animctrl:
             self._animctrl.Stop()
@@ -244,10 +246,17 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
             obj = self
             rect = (node.GetX()+20, node.GetY()+1)  # Overlaps robot icon
             self._animctrl = AnimationCtrl(obj, -1, ani, rect)
+            # self._animctrl.Reparent()
             self._animctrl.SetBackgroundColour(obj.GetBackgroundColour())
-            node.SetWindow(self._animctrl)
+            try:
+                node.SetWindow(self._animctrl, False)
+            except TypeError:  # DEBUG In case wxPython devel not ready
+                node.SetWindow(self._animctrl)
             self._animctrl.Play()
         else:
+            # TODO Remove Animation
+            if self._animctrl:
+                self._animctrl.Destroy()
             self.SetItemImage(node, img_index)
 
     def _get_icon_index_for(self, controller):
