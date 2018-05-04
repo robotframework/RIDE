@@ -59,6 +59,7 @@ class ValueEditor(wx.Panel):
         self._editor.SetValidator(validator)
 
     def get_value(self):
+        print("DEBUG: ValueEditor get_value: %s" % self._editor.GetValue())
         return self._editor.GetValue()
 
     def set_focus(self):
