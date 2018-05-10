@@ -226,6 +226,8 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
         # self.Expand(root)  # node.GetParent())
         # self.Expand(node)
         img_index = self._get_icon_index_for(controller)
+        # Always set the static icon
+        self.SetItemImage(node, img_index)
         # print("DEBUG setIcon img_index=%d" % (img_index))
         if wx.VERSION >= (3, 0, 3, '') and self._animctrl:
             self._animctrl.Stop()
@@ -250,8 +252,6 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
             except TypeError:  # DEBUG In case wxPython devel not ready
                 node.SetWindow(self._animctrl)
             self._animctrl.Play()
-        else:
-            self.SetItemImage(node, img_index)
 
     def _get_icon_index_for(self, controller):
         if not self._execution_results:
@@ -727,6 +727,10 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
             itemwindow = item.GetWindow()
             if itemwindow:
                 itemwindow.Hide()  # Hides animation
+            for child in item.GetChildren():
+                itemwindow = child.GetWindow()
+                if itemwindow:
+                    itemwindow.Hide()  # Hides animation
 
     def SelectAllTests(self, item):
         self._for_all_tests(item, lambda t: self.CheckItem(t))
