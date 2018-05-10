@@ -607,5 +607,10 @@ class RobotStylizer(object):
         shift = 0
         for position, token, value in self.lexer.get_tokens_unprocessed(self.editor.GetText()):
             self.editor.StartStyling(position+shift, 31)
-            self.editor.SetStyling(len(value.encode('utf-8')), self.tokens[token])
-            shift += len(value.encode('utf-8'))-len(value)
+            # DEBUG Solution for non-utf-8 like emojii, 'surrogateescape')
+            try:
+                self.editor.SetStyling(len(value.encode('utf-8')), self.tokens[token])
+                shift += len(value.encode('utf-8'))-len(value)
+            except UnicodeEncodeError:
+                self.editor.SetStyling(len(value), self.tokens[token])
+                shift += len(value) - len(value)
