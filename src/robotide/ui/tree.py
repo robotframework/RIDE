@@ -727,9 +727,9 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
         self._for_all_running_tests(item, lambda t: self._hideanimation(t))
 
     def _hideanimation(self, item):
-            itemwindow = item.GetWindow()
-            if itemwindow:
-                itemwindow.Hide()
+        itemwindow = item.GetWindow()
+        if itemwindow:
+            itemwindow.Hide()
 
     def _for_all_running_tests(self, item, func):
         if not self.HasAGWFlag(customtreectrl.TR_HIDE_ROOT) or \
@@ -743,8 +743,8 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
             if self._is_test_node(item):
                 func(item)
 
-            for child in item.GetChildren():
-                self._for_all_tests(child, func)
+        for child in item.GetChildren():
+            self._for_all_tests(child, func)
 
     def SelectAllTests(self, item):
         self._for_all_tests(item, lambda t: self.CheckItem(t))
