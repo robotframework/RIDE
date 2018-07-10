@@ -317,7 +317,7 @@ class TestKeywordSuggestions(_DataFileTest):
     def _check_source(self, controller, name, source):
         sugs = self.ns.get_suggestions_for(controller, name)
         assert_equal(len(sugs), 1)
-        assert_equal(sugs[0].source, source)
+        assert_equal(str(sugs[0].source), str(source))  # DEBUG was getting bytes on python3
 
     def _assert_import_kws(self, sugs, source):
         assert_true(len(sugs) > 0)
