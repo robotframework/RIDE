@@ -43,6 +43,7 @@ e.net/projects/wxpython/files/wxPython/3.0.2.0/""")
 
 try:
     import wx
+    import wx.lib.inspection
 except ImportError as e:
     if "no appropriate 64-bit architecture" in e.message.lower() and \
        sys.platform == 'darwin':
@@ -116,6 +117,7 @@ def _run(inpath=None, updatecheck=True, debug_console=False):
     else:
         wx.CallAfter(_show_old_wxpython_warning_if_needed, ride.frame)
     if debug_console:
+        wx.lib.inspection.InspectionTool().Show()
         debugconsole.start(ride)
     ride.MainLoop()
 
