@@ -221,10 +221,6 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
         node = self._controller.find_node_by_controller(controller)
         if not node:
             return
-        # Expand the node - Nice to have
-        # root = self.GetRootItem()
-        # self.Expand(root)  # node.GetParent())
-        # self.Expand(node)
         img_index = self._get_icon_index_for(controller)
         # Always set the static icon
         self.SetItemImage(node, img_index)
@@ -244,7 +240,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
                 img = os.path.join(_BASE, 'robot-pause.gif')
             ani = Animation(img)
             obj = self
-            rect = (node.GetX()+20, node.GetY()+1)  # Overlaps robot icon
+            rect = (node.GetX()+20, node.GetY())  # Overlaps robot icon
             self._animctrl = AnimationCtrl(obj, -1, ani, rect)
             self._animctrl.SetBackgroundColour(obj.GetBackgroundColour())
             try:
@@ -252,6 +248,8 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
             except TypeError:  # DEBUG In case wxPython devel not ready
                 node.SetWindow(self._animctrl)
             self._animctrl.Play()
+        # Make visible the running or paused test
+        self.EnsureVisible(node)
 
     def _get_icon_index_for(self, controller):
         if not self._execution_results:
