@@ -1,5 +1,7 @@
 wxPython
-Pygments
+# Pygments # You will see text not syntax highlighted in Text Editor
 robotframework
 # Pypubsub 4.0.0 does not support Python 2.7
-Pypubsub==3.3.0
+Pypubsub==3.3.0 # You will see deprecation 
+# Only for Windows to have a shortcut created (install before RIDE)
+#Pywin32

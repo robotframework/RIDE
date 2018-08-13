@@ -14,8 +14,12 @@
 
 import re
 
-from pygments.lexer import Lexer
-from pygments.token import Token
+try:
+    from pygments.lexer import Lexer
+    from pygments.token import Token
+except Exception:
+    raise(ImportError)
+
 from robotide.utils import unicode, is_string, py2to3
 
 HEADING = Token.Generic.Heading
