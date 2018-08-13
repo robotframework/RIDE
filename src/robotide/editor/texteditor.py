@@ -41,7 +41,6 @@ try:
     from . import robotframeworklexer
 except Exception as e:
     robotframeworklexer = None
-    raise
 
 
 class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
