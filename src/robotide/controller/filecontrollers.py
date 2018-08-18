@@ -276,17 +276,6 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
         path = path or self.filename
         if os.path.exists(path):
             if sys.platform=='win32':
-                os.startfile('"{}"'.format(os.path.dirname(path)), 'explore')
-    
-    def remove_readonly(self, path=None):
-            path = path or self.filename
-            os.chmod(path, stat.S_IWRITE)
-
-    def open_filemanager(self, path=None):
-        # tested on Win7 x64
-        path = path or self.filename
-        if os.path.exists(path):
-            if sys.platform=='win32':
                 os.startfile("{}".format(os.path.dirname(path)), 'explore')
             elif sys.platform.startswith('linux'):
                 # how to detect which explorer is used?
@@ -311,7 +300,7 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
             else:
                 subprocess.Popen(["finder", "{}".format(
                     os.path.dirname(path))])
-
+    
     def remove_readonly(self, path=None):
             path = path or self.filename
             os.chmod(path, stat.S_IWRITE)
