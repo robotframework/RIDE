@@ -42,10 +42,10 @@ else:
     except ImportError:
         ImageGrab = None
 
-from robot.api import logger
-from robot.libraries.BuiltIn import BuiltIn
-from robot.version import get_version
-from robot.utils import abspath, get_error_message, get_link_path, py2to3
+from robotide.lib.robot.api import logger
+from robotide.lib.robot.libraries.BuiltIn import BuiltIn
+from robotide.lib.robot.version import get_version
+from robotide.lib.robot.utils import abspath, get_error_message, get_link_path, py2to3
 
 
 class Screenshot(object):

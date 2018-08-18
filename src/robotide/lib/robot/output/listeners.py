@@ -15,8 +15,8 @@
 
 import os.path
 
-from robot.errors import DataError
-from robot.utils import (Importer, is_string, py2to3,
+from robotide.lib.robot.errors import DataError
+from robotide.lib.robot.utils import (Importer, is_string, py2to3,
                          split_args_from_name_or_path, type_name)
 
 from .listenermethods import ListenerMethods, LibraryListenerMethods

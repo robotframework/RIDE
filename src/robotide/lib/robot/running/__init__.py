@@ -53,14 +53,14 @@ First, let's assume we have the following test suite in file
 We can easily parse and create an executable test suite based on the above file
 using the :class:`~robot.running.builder.TestSuiteBuilder` class as follows::
 
-    from robot.api import TestSuiteBuilder
+    from robotide.lib.robot.api import TestSuiteBuilder
 
     suite = TestSuiteBuilder().build('path/to/activate_skynet.robot')
 
 That was easy. Let's next generate the same test suite from scratch
 using the :class:`~robot.running.model.TestSuite` class::
 
-    from robot.api import TestSuite
+    from robotide.lib.robot.api import TestSuite
 
     suite = TestSuite('Activate Skynet')
     suite.resource.imports.library('OperatingSystem')
@@ -92,7 +92,7 @@ by using ``output=None``. Generating log, report, and xUnit files based on
 the results is possible using the
 :class:`~robot.reporting.resultwriter.ResultWriter` class::
 
-    from robot.api import ResultWriter
+    from robotide.lib.robot.api import ResultWriter
 
     # Report and xUnit files can be generated based on the result object.
     ResultWriter(result).write_results(report='skynet.html', log=None)

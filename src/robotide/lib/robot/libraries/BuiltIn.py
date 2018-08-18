@@ -19,25 +19,25 @@ import time
 import token
 from tokenize import generate_tokens, untokenize
 
-from robot.api import logger
-from robot.errors import (ContinueForLoop, DataError, ExecutionFailed,
+from robotide.lib.robot.api import logger
+from robotide.lib.robot.errors import (ContinueForLoop, DataError, ExecutionFailed,
                           ExecutionFailures, ExecutionPassed, ExitForLoop,
                           PassExecution, ReturnFromKeyword)
-from robot.running import Keyword, RUN_KW_REGISTER
-from robot.running.context import EXECUTION_CONTEXTS
-from robot.running.usererrorhandler import UserErrorHandler
-from robot.utils import (DotDict, escape, format_assign_message,
+from robotide.lib.robot.running import Keyword, RUN_KW_REGISTER
+from robotide.lib.robot.running.context import EXECUTION_CONTEXTS
+from robotide.lib.robot.running.usererrorhandler import UserErrorHandler
+from robotide.lib.robot.utils import (DotDict, escape, format_assign_message,
                          get_error_message, get_time, html_escape, is_falsy, is_integer,
                          is_string, is_truthy, is_unicode, IRONPYTHON, JYTHON,
                          Matcher, normalize, NormalizedDict, parse_time, prepr,
                          RERAISED_EXCEPTIONS, plural_or_not as s, roundup,
                          secs_to_timestr, seq2str, split_from_equals, StringIO,
                          timestr_to_secs, type_name, unic, is_list_like)
-from robot.utils.asserts import assert_equal, assert_not_equal
-from robot.variables import (is_list_var, is_var, DictVariableTableValue,
+from robotide.lib.robot.utils.asserts import assert_equal, assert_not_equal
+from robotide.lib.robot.variables import (is_list_var, is_var, DictVariableTableValue,
                              VariableTableValue, VariableSplitter,
                              variable_not_found)
-from robot.version import get_version
+from robotide.lib.robot.version import get_version
 
 if JYTHON:
     from java.lang import String, Number
@@ -3234,7 +3234,7 @@ class _Misc(_BuiltInBase):
         other test libraries that have state. This is illustrated by
         the Python example below:
 
-        | from robot.libraries.BuiltIn import BuiltIn
+        | from robotide.lib.robot.libraries.BuiltIn import BuiltIn
         |
         | def title_should_start_with(expected):
         |     seleniumlib = BuiltIn().get_library_instance('SeleniumLibrary')
@@ -3450,7 +3450,7 @@ def register_run_keyword(library, keyword, args_to_process=None,
 
     3) Examples
 
-    from robot.libraries.BuiltIn import BuiltIn, register_run_keyword
+    from robotide.lib.robot.libraries.BuiltIn import BuiltIn, register_run_keyword
 
     def my_run_keyword(name, *args):
         # do something
@@ -3462,7 +3462,7 @@ def register_run_keyword(library, keyword, args_to_process=None,
 
     -------------
 
-    from robot.libraries.BuiltIn import BuiltIn, register_run_keyword
+    from robotide.lib.robot.libraries.BuiltIn import BuiltIn, register_run_keyword
 
     class MyLibrary:
         def my_run_keyword_if(self, expression, name, *args):

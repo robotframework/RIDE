@@ -13,7 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robot.utils import (Matcher, NormalizedDict, is_string, py2to3, setter,
+from robotide.lib.robot.utils import (Matcher, NormalizedDict, is_string, py2to3, setter,
                          unic)
 
 

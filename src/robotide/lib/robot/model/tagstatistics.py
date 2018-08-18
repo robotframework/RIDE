@@ -16,7 +16,7 @@
 from itertools import chain
 import re
 
-from robot.utils import NormalizedDict, PY3
+from robotide.lib.robot.utils import NormalizedDict, PY3
 
 from .criticality import Criticality
 from .stats import CombinedTagStat, CriticalTagStat, TagStat

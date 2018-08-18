@@ -36,9 +36,9 @@ __ http://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#
 import warnings
 
 from robot import model
-from robot.conf import RobotSettings
-from robot.output import LOGGER, Output, pyloggingconf
-from robot.utils import setter
+from robotide.lib.robot.conf import RobotSettings
+from robotide.lib.robot.output import LOGGER, Output, pyloggingconf
+from robotide.lib.robot.utils import setter
 
 from .steprunner import StepRunner
 from .randomizer import Randomizer

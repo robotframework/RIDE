@@ -16,10 +16,10 @@
 import inspect
 import os
 
-from robot.errors import DataError
-from robot.libraries import STDLIBS
-from robot.output import LOGGER
-from robot.utils import (getdoc, get_error_details, Importer, is_java_init,
+from robotide.lib.robot.errors import DataError
+from robotide.lib.robot.libraries import STDLIBS
+from robotide.lib.robot.output import LOGGER
+from robotide.lib.robot.utils import (getdoc, get_error_details, Importer, is_java_init,
                          is_java_method, JYTHON, normalize, seq2str2, unic,
                          is_list_like, PY2, PYPY, type_name)
 

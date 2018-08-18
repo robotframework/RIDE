@@ -28,8 +28,8 @@ The library has a known limitation that it cannot be used with timeouts
 on Python. Support for IronPython was added in Robot Framework 2.9.2.
 """
 
-from robot.version import get_version
-from robot.utils import IRONPYTHON, JYTHON, is_truthy
+from robotide.lib.robot.version import get_version
+from robotide.lib.robot.utils import IRONPYTHON, JYTHON, is_truthy
 
 if JYTHON:
     from .dialogs_jy import MessageDialog, PassFailDialog, InputDialog, SelectionDialog

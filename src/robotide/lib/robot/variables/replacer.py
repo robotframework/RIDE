@@ -13,9 +13,9 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robot.errors import DataError, VariableError
-from robot.output import LOGGER
-from robot.utils import escape, unescape, unic, is_string
+from robotide.lib.robot.errors import DataError, VariableError
+from robotide.lib.robot.output import LOGGER
+from robotide.lib.robot.utils import escape, unescape, unic, is_string
 
 from .splitter import VariableSplitter
 

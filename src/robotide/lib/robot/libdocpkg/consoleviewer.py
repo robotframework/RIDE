@@ -15,8 +15,8 @@
 
 import textwrap
 
-from robot.utils import MultiMatcher, console_encode
-from robot.errors import DataError
+from robotide.lib.robot.utils import MultiMatcher, console_encode
+from robotide.lib.robot.errors import DataError
 
 
 class ConsoleViewer(object):

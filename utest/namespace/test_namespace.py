@@ -290,7 +290,7 @@ class TestKeywordSuggestions(_DataFileTest):
 
     def test_argument_is_superior_to_variable_from_variable_table(self):
         sugs = self.ns.get_suggestions_for(self.kw, COLLIDING_ARGUMENT[0:4])
-        assert_true(any(True for s in sugs if s.source == ArgumentInfo.SOURCE))
+        assert_true(any(True for s in sugs if s.source.decode('utf-8') == ArgumentInfo.SOURCE))
 
     def test_keyword_arguments_are_suggested_first(self):
         sugs = self.ns.get_suggestions_for(self.kw, '')
@@ -317,13 +317,22 @@ class TestKeywordSuggestions(_DataFileTest):
     def _check_source(self, controller, name, source):
         sugs = self.ns.get_suggestions_for(controller, name)
         assert_equal(len(sugs), 1)
-        assert_equal(str(sugs[0].source), str(source))  # DEBUG was getting bytes on python3
+        # assert_equal(str(sugs[0].source), str(source))  # DEBUG was getting bytes on python3
+        if isinstance(sugs[0].source, str):
+            assert_equal(sugs[0].source, source)
+        else:
+            assert_equal(sugs[0].source.decode('utf-8'), source) 
 
     def _assert_import_kws(self, sugs, source):
         assert_true(len(sugs) > 0)
         for s in sugs:
-            assert_true(s.source.endswith(source),
-                        '%s does not end with %s' % (s.source, source))
+            if isinstance(s.source, str):
+                assert_true(s.source.endswith(source),
+                            '%s does not end with %s' % (s.source, source))
+            else:
+                assert_true(s.source.endswith(source.encode('utf-8')),
+                            '%s does not end with %s' % (s.source, source))
+            # print("DEBUG: %s TEST endswith %s" % (s.source if isinstance(s.source, str) else str(s.source, 'utf-8'), source))
 
     def test_reset(self):
         sugs = self.ns.get_suggestions_for(self.kw, 'generate random')
@@ -383,8 +392,9 @@ class TestKeywordSearch(_DataFileTest):
         results = [(kw.name, kw.source)
                    for kw in all_kws if kw.name == "Only From Resource"]
         assert_equal(len(results), 1)
-        assert_equal(
-            results[0], (u'Only From Resource', u'testdata_resource.txt'))
+        # assert_equal(results[0], (u'Only From Resource', u'testdata_resource.txt'))
+        assert_equal(results[0][0], u'Only From Resource')
+        assert_equal(results[0][1].decode('utf-8'), u'testdata_resource.txt')
 
     def test_find_user_keyword_name_normalized(self):
         assert_is_not_none(self.ns.find_user_keyword(

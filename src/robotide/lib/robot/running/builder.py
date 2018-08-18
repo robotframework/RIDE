@@ -13,11 +13,11 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robot.errors import DataError
-from robot.parsing import TestData, ResourceFile as ResourceData, VALID_EXTENSIONS
-from robot.running.defaults import TestDefaults
-from robot.utils import abspath, is_string, unic
-from robot.variables import VariableIterator
+from robotide.lib.robot.errors import DataError
+from robotide.lib.robot.parsing import TestData, ResourceFile as ResourceData, VALID_EXTENSIONS
+from robotide.lib.robot.running.defaults import TestDefaults
+from robotide.lib.robot.utils import abspath, is_string, unic
+from robotide.lib.robot.variables import VariableIterator
 
 from .model import ForLoop, Keyword, ResourceFile, TestSuite
 

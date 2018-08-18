@@ -13,9 +13,9 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robot.errors import DataError
-from robot.model import Message as BaseMessage
-from robot.utils import get_timestamp, is_unicode, unic
+from robotide.lib.robot.errors import DataError
+from robotide.lib.robot.model import Message as BaseMessage
+from robotide.lib.robot.utils import get_timestamp, is_unicode, unic
 
 
 LEVELS = {

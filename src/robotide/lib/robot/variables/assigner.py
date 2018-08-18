@@ -15,9 +15,9 @@
 
 import re
 
-from robot.errors import (DataError, ExecutionFailed, HandlerExecutionFailed,
+from robotide.lib.robot.errors import (DataError, ExecutionFailed, HandlerExecutionFailed,
                           VariableError)
-from robot.utils import (ErrorDetails, format_assign_message, get_error_message,
+from robotide.lib.robot.utils import (ErrorDetails, format_assign_message, get_error_message,
                          is_number, is_string, prepr, type_name)
 
 

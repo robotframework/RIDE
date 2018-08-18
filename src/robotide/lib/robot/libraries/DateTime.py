@@ -289,7 +289,7 @@ provide a stable API for other libraries to use if they want to support
 same date and time formats as this library. All the provided keywords
 are available as functions that can be easily imported:
 
-| from robot.libraries.DateTime import convert_time
+| from robotide.lib.robot.libraries.DateTime import convert_time
 |
 | def example_keyword(timeout):
 |     seconds = convert_time(timeout)
@@ -297,7 +297,7 @@ are available as functions that can be easily imported:
 
 Additionally helper classes ``Date`` and ``Time`` can be used directly:
 
-| from robot.libraries.DateTime import Date, Time
+| from robotide.lib.robot.libraries.DateTime import Date, Time
 |
 | def example_keyword(date, interval):
 |     date = Date(date).convert('datetime')
@@ -311,8 +311,8 @@ from datetime import datetime, timedelta
 import time
 import re
 
-from robot.version import get_version
-from robot.utils import (elapsed_time_to_string, is_falsy, is_number,
+from robotide.lib.robot.version import get_version
+from robotide.lib.robot.utils import (elapsed_time_to_string, is_falsy, is_number,
                          is_string, roundup, secs_to_timestr, timestr_to_secs,
                          type_name, IRONPYTHON)
 

@@ -17,11 +17,11 @@ import os
 import copy
 from itertools import chain
 
-from robot.errors import DataError, KeywordError
-from robot.libraries import STDLIBS
-from robot.output import LOGGER, Message
-from robot.parsing.settings import Library, Variables, Resource
-from robot.utils import (eq, find_file, is_string, OrderedDict, printable_name,
+from robotide.lib.robot.errors import DataError, KeywordError
+from robotide.lib.robot.libraries import STDLIBS
+from robotide.lib.robot.output import LOGGER, Message
+from robotide.lib.robot.parsing.settings import Library, Variables, Resource
+from robotide.lib.robot.utils import (eq, find_file, is_string, OrderedDict, printable_name,
                          seq2str2, RecommendationFinder)
 
 from .usererrorhandler import UserErrorHandler

@@ -44,6 +44,7 @@ do
                 fi
                 if [ $? -eq 1 ]
 		then
+                        printf "$b\n"
 			printf "MUST FIX: $j\n"
 			exit
 		fi

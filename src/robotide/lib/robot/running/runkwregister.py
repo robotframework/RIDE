@@ -16,7 +16,7 @@
 import inspect
 import warnings
 
-from robot.utils import NormalizedDict, PY3
+from robotide.lib.robot.utils import NormalizedDict, PY3
 
 
 class _RunKeywordRegister(object):

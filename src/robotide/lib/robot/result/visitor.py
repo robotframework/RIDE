@@ -21,7 +21,7 @@ This module contains :class:`ResultVisitor` for traversing the whole
 for the test suite structure.
 """
 
-from robot.model import SuiteVisitor
+from robotide.lib.robot.model import SuiteVisitor
 
 
 class ResultVisitor(SuiteVisitor):

@@ -59,7 +59,7 @@ Currently exposed APIs are:
 
 All of the above names can be imported like::
 
-    from robot.api import ApiName
+    from robotide.lib.robot.api import ApiName
 
 See documentations of the individual APIs for more details.
 
@@ -67,8 +67,8 @@ See documentations of the individual APIs for more details.
         via the :mod:`robot` root package.
 """
 
-from robot.model import SuiteVisitor
-from robot.parsing import TestCaseFile, TestDataDirectory, ResourceFile, TestData
-from robot.reporting import ResultWriter
-from robot.result import ExecutionResult, ResultVisitor
-from robot.running import TestSuite, TestSuiteBuilder
+from robotide.lib.robot.model import SuiteVisitor
+from robotide.lib.robot.parsing import TestCaseFile, TestDataDirectory, ResourceFile, TestData
+from robotide.lib.robot.reporting import ResultWriter
+from robotide.lib.robot.result import ExecutionResult, ResultVisitor
+from robotide.lib.robot.running import TestSuite, TestSuiteBuilder

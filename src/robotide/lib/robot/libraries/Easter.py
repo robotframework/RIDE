@@ -13,7 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robot.api import logger
+from robotide.lib.robot.api import logger
 
 
 def none_shall_pass(who):

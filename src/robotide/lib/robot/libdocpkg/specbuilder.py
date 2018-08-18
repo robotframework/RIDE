@@ -15,8 +15,8 @@
 
 import os.path
 
-from robot.errors import DataError
-from robot.utils import ET, ETSource
+from robotide.lib.robot.errors import DataError
+from robotide.lib.robot.utils import ET, ETSource
 
 from .model import LibraryDoc, KeywordDoc
 

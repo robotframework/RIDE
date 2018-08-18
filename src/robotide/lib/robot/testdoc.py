@@ -38,11 +38,11 @@ import time
 if 'robot' not in sys.modules and __name__ == '__main__':
     import pythonpathsetter
 
-from robot.conf import RobotSettings
-from robot.htmldata import HtmlFileWriter, ModelWriter, JsonWriter, TESTDOC
-from robot.parsing import disable_curdir_processing
-from robot.running import TestSuiteBuilder
-from robot.utils import (abspath, Application, file_writer, format_time,
+from robotide.lib.robot.conf import RobotSettings
+from robotide.lib.robot.htmldata import HtmlFileWriter, ModelWriter, JsonWriter, TESTDOC
+from robotide.lib.robot.parsing import disable_curdir_processing
+from robotide.lib.robot.running import TestSuiteBuilder
+from robotide.lib.robot.utils import (abspath, Application, file_writer, format_time,
                          get_link_path, html_escape, html_format, is_string,
                          secs_to_timestr, seq2str2, timestr_to_secs, unescape,
                          IRONPYTHON)
@@ -277,7 +277,7 @@ def testdoc_cli(arguments):
 
     Example::
 
-        from robot.testdoc import testdoc_cli
+        from robotide.lib.robot.testdoc import testdoc_cli
 
         testdoc_cli(['--title', 'Test Plan', 'mytests', 'plan.html'])
     """
@@ -292,7 +292,7 @@ def testdoc(*arguments, **options):
 
     Example::
 
-        from robot.testdoc import testdoc
+        from robotide.lib.robot.testdoc import testdoc
 
         testdoc('mytests', 'plan.html', title='Test Plan')
     """

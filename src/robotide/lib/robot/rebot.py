@@ -37,12 +37,12 @@ import sys
 if 'robot' not in sys.modules and __name__ == '__main__':
     import pythonpathsetter
 
-from robot.conf import RebotSettings
-from robot.errors import DataError
-from robot.reporting import ResultWriter
-from robot.output import LOGGER
-from robot.utils import Application
-from robot.run import RobotFramework
+from robotide.lib.robot.conf import RebotSettings
+from robotide.lib.robot.errors import DataError
+from robotide.lib.robot.reporting import ResultWriter
+from robotide.lib.robot.output import LOGGER
+from robotide.lib.robot.utils import Application
+from robotide.lib.robot.run import RobotFramework
 
 
 USAGE = """Rebot -- Robot Framework report and log generator

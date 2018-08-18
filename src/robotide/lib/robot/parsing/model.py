@@ -16,12 +16,11 @@
 import os
 import copy
 
-from robot.errors import DataError
-from robot.variables import is_var
-from robot.output import LOGGER
-from robot.writer import DataFileWriter
-from robot.utils import (abspath, is_string, normalize, py2to3,
-                         NormalizedDict, is_unicode)
+from robotide.lib.robot.errors import DataError
+from robotide.lib.robot.variables import is_var
+from robotide.lib.robot.output import LOGGER
+from robotide.lib.robot.writer import DataFileWriter
+from robotide.lib.robot.utils import abspath, is_string, normalize, py2to3, NormalizedDict
 
 from .comments import Comment
 from .populators import FromFilePopulator, FromDirectoryPopulator
@@ -505,14 +504,7 @@ class Variable(object):
 
     def as_list(self):
         if self.has_data():
-            print("DEBUG: [self.name] + self.value + self.comment.as_list(): ")
-            print("DEBUG: *%s* *%s* *%s*" % ([self.name], self.value, self.comment.as_list()))
-            # DEBUG This will fail on Python3
-            if isinstance(self.value, str) or is_unicode(self.value):
-                print("DEBUG: *%s* *%s* *%s*" % ([self.name], [self.value], self.comment.as_list()))
-                return [self.name] + [self.value] + self.comment.as_list()
-            else:
-                return [self.name] + self.value + self.comment.as_list()
+            return [self.name] + self.value + self.comment.as_list()
         return self.comment.as_list()
 
     def is_set(self):

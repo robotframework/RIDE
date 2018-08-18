@@ -15,9 +15,9 @@
 
 import os
 
-from robot.errors import DataError
-from robot.parsing import VALID_EXTENSIONS as RESOURCE_EXTENSIONS
-from robot.utils import JYTHON
+from robotide.lib.robot.errors import DataError
+from robotide.lib.robot.parsing import VALID_EXTENSIONS as RESOURCE_EXTENSIONS
+from robotide.lib.robot.utils import JYTHON
 
 from .robotbuilder import LibraryDocBuilder, ResourceDocBuilder
 from .specbuilder import SpecDocBuilder

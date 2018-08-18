@@ -13,7 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robot.model import SuiteVisitor
+from robotide.lib.robot.model import SuiteVisitor
 
 
 class SuiteTeardownFailureHandler(SuiteVisitor):

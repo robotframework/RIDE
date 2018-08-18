@@ -13,8 +13,8 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robot.errors import TimeoutError
-from robot.utils import get_error_details, py2to3
+from robotide.lib.robot.errors import TimeoutError
+from robotide.lib.robot.utils import get_error_details, py2to3
 
 from .listenerarguments import ListenerArguments
 from .logger import LOGGER

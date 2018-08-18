@@ -13,9 +13,9 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robot.errors import (ExecutionFailed, DataError, HandlerExecutionFailed,
+from robotide.lib.robot.errors import (ExecutionFailed, DataError, HandlerExecutionFailed,
                           KeywordError, VariableError)
-from robot.utils import ErrorDetails, get_timestamp
+from robotide.lib.robot.utils import ErrorDetails, get_timestamp
 
 
 class StatusReporter(object):

@@ -15,8 +15,8 @@
 
 from itertools import chain
 
-from robot.model import Tags
-from robot.utils import Sortable, setter
+from robotide.lib.robot.model import Tags
+from robotide.lib.robot.utils import Sortable, setter
 
 from .writer import LibdocWriter
 from .output import LibdocOutput

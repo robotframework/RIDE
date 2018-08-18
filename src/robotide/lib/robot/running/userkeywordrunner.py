@@ -13,13 +13,13 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robot.errors import (ExecutionFailed, ExecutionPassed, ExitForLoop,
+from robotide.lib.robot.errors import (ExecutionFailed, ExecutionPassed, ExitForLoop,
                           ContinueForLoop, DataError, PassExecution,
                           ReturnFromKeyword, UserKeywordExecutionFailed,
                           VariableError)
-from robot.result import Keyword as KeywordResult
-from robot.utils import DotDict, prepr, split_tags_from_doc
-from robot.variables import is_list_var, VariableAssignment
+from robotide.lib.robot.result import Keyword as KeywordResult
+from robotide.lib.robot.utils import DotDict, prepr, split_tags_from_doc
+from robotide.lib.robot.variables import is_list_var, VariableAssignment
 
 from .arguments import DefaultValue
 from .statusreporter import StatusReporter

@@ -15,7 +15,7 @@
 
 import copy
 
-from robot.utils import SetterAwareType, py2to3, with_metaclass
+from robotide.lib.robot.utils import SetterAwareType, py2to3, with_metaclass
 
 
 @py2to3

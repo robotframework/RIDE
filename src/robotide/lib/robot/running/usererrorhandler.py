@@ -13,8 +13,8 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robot.model import Tags
-from robot.result import Keyword as KeywordResult
+from robotide.lib.robot.model import Tags
+from robotide.lib.robot.result import Keyword as KeywordResult
 
 from .arguments import ArgumentSpec
 from .statusreporter import StatusReporter

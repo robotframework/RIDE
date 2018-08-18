@@ -15,8 +15,8 @@
 
 from operator import attrgetter
 
-from robot.errors import DataError, KeywordError
-from robot.utils import NormalizedDict
+from robotide.lib.robot.errors import DataError, KeywordError
+from robotide.lib.robot.utils import NormalizedDict
 
 from .usererrorhandler import UserErrorHandler
 

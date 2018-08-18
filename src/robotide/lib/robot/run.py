@@ -37,12 +37,12 @@ import sys
 if 'robot' not in sys.modules and __name__ == '__main__':
     import pythonpathsetter
 
-from robot.conf import RobotSettings
-from robot.model import ModelModifier
-from robot.output import LOGGER, pyloggingconf
-from robot.reporting import ResultWriter
-from robot.running import TestSuiteBuilder
-from robot.utils import Application, unic
+from robotide.lib.robot.conf import RobotSettings
+from robotide.lib.robot.model import ModelModifier
+from robotide.lib.robot.output import LOGGER, pyloggingconf
+from robotide.lib.robot.reporting import ResultWriter
+from robotide.lib.robot.running import TestSuiteBuilder
+from robotide.lib.robot.utils import Application, unic
 
 
 USAGE = """Robot Framework -- A generic test automation framework

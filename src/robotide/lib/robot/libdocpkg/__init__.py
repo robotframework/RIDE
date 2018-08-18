@@ -21,8 +21,8 @@ are provided by the separate :mod:`robot.libdoc` module.
 This package is considered stable but it is not part of the public API.
 """
 
-from robot.errors import DataError
-from robot.utils import get_error_message
+from robotide.lib.robot.errors import DataError
+from robotide.lib.robot.utils import get_error_message
 
 from .builder import DocumentationBuilder
 from .consoleviewer import ConsoleViewer

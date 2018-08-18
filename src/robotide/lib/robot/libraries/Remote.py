@@ -32,8 +32,8 @@ except ImportError:   # No expat in IronPython 2.7
     class ExpatError(Exception):
         pass
 
-from robot.errors import RemoteError
-from robot.utils import (is_bytes, is_dict_like, is_list_like, is_number,
+from robotide.lib.robot.errors import RemoteError
+from robotide.lib.robot.utils import (is_bytes, is_dict_like, is_list_like, is_number,
                          is_string, timestr_to_secs, unic, DotDict, IRONPYTHON,
                          JYTHON)
 

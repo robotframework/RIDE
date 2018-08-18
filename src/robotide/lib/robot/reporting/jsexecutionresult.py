@@ -16,7 +16,7 @@
 import sys
 import time
 
-from robot.utils import OrderedDict, IRONPYTHON
+from robotide.lib.robot.utils import OrderedDict, IRONPYTHON
 
 from .stringcache import StringIndex
 

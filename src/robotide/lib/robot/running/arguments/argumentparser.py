@@ -19,9 +19,9 @@ if sys.platform.startswith('java'):
     from java.lang import Class
     from java.util import List, Map
 
-from robot.errors import DataError
-from robot.utils import PY2
-from robot.variables import is_dict_var, is_list_var, is_scalar_var
+from robotide.lib.robot.errors import DataError
+from robotide.lib.robot.utils import PY2
+from robotide.lib.robot.variables import is_dict_var, is_list_var, is_scalar_var
 
 from .argumentspec import ArgumentSpec
 

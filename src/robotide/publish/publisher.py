@@ -15,10 +15,10 @@
 from robotide.utils import basestring, unicode
 
 try:
-    from wx.lib.pubsub import Publisher
+    from pubsub import Publisher
     WxPublisher = Publisher()
 except ImportError:
-    from wx.lib.pubsub import pub
+    from pubsub import pub
     WxPublisher = pub.getDefaultPublisher()
 
 

@@ -111,7 +111,7 @@ class ExecutionFailed(RobotError):
                  return_value=None):
         if '\r\n' in message:
             message = message.replace('\r\n', '\n')
-        from robot.utils import cut_long_message
+        from robotide.lib.robot.utils import cut_long_message
         RobotError.__init__(self, cut_long_message(message))
         self.test_timeout = test_timeout
         self.keyword_timeout = keyword_timeout
@@ -200,7 +200,7 @@ class ExecutionFailures(ExecutionFailed):
         )
 
     def _format_html_messages(self, messages):
-        from robot.utils import html_escape
+        from robotide.lib.robot.utils import html_escape
         for msg in messages:
             if msg.startswith('*HTML*'):
                 yield msg[6:].lstrip()
@@ -255,7 +255,7 @@ class ExecutionPassed(ExecutionFailed):
         self._earlier_failures = []
 
     def _get_message(self):
-        from robot.utils import printable_name
+        from robotide.lib.robot.utils import printable_name
         return ("Invalid '%s' usage."
                 % printable_name(type(self).__name__, code_style=True))
 

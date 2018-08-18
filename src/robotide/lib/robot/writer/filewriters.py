@@ -19,7 +19,7 @@ except ImportError:
     # csv module is missing from IronPython < 2.7.1
     csv = None
 
-from robot.utils import HtmlWriter, PY2
+from robotide.lib.robot.utils import HtmlWriter, PY2
 
 from .formatters import TsvFormatter, TxtFormatter, PipeFormatter
 from .htmlformatter import HtmlFormatter

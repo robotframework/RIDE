@@ -13,9 +13,9 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robot.errors import DataError
-from robot.model import SuiteVisitor
-from robot.utils import ET, ETSource, get_error_message, unic
+from robotide.lib.robot.errors import DataError
+from robotide.lib.robot.model import SuiteVisitor
+from robotide.lib.robot.utils import ET, ETSource, get_error_message, unic
 
 from .executionresult import Result, CombinedResult
 from .flattenkeywordmatcher import (FlattenByNameMatcher, FlattenByTypeMatcher,

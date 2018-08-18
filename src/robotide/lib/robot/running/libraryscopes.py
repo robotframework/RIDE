@@ -15,7 +15,7 @@
 
 import inspect
 
-from robot.utils import normalize, unic
+from robotide.lib.robot.utils import normalize, unic
 
 
 def LibraryScope(libcode, library):

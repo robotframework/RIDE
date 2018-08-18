@@ -22,9 +22,9 @@ import sys
 import tempfile
 import time
 
-from robot.version import get_version
-from robot.api import logger
-from robot.utils import (abspath, ConnectionCache, console_decode, del_env_var,
+from robotide.lib.robot.version import get_version
+from robotide.lib.robot.api import logger
+from robotide.lib.robot.utils import (abspath, ConnectionCache, console_decode, del_env_var,
                          get_env_var, get_env_vars, get_time, is_truthy,
                          is_unicode, normpath, parse_time, plural_or_not,
                          secs_to_timestamp, secs_to_timestr, seq2str,

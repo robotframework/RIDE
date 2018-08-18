@@ -16,9 +16,9 @@
 import copy
 import os.path
 
-from robot.output import LOGGER
-from robot.errors import FrameworkError
-from robot.utils import normpath, seq2str2, is_string
+from robotide.lib.robot.output import LOGGER
+from robotide.lib.robot.errors import FrameworkError
+from robotide.lib.robot.utils import normpath, seq2str2, is_string
 
 from .builder import ResourceFileBuilder
 from .handlerstore import HandlerStore

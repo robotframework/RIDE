@@ -16,8 +16,8 @@
 from contextlib import contextmanager
 from os.path import exists, dirname
 
-from robot.output.loggerhelper import LEVELS
-from robot.utils import (attribute_escape, get_link_path, html_escape,
+from robotide.lib.robot.output.loggerhelper import LEVELS
+from robotide.lib.robot.utils import (attribute_escape, get_link_path, html_escape,
                          html_format, is_string, is_unicode, timestamp_to_secs,
                          unic)
 

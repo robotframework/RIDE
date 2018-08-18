@@ -13,8 +13,8 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robot.errors import DataError
-from robot.utils import is_string
+from robotide.lib.robot.errors import DataError
+from robotide.lib.robot.utils import is_string
 
 from .splitter import VariableIterator
 

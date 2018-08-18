@@ -13,7 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robot.model import Statistics
+from robotide.lib.robot.model import Statistics
 
 from .executionerrors import ExecutionErrors
 from .model import TestSuite
@@ -55,7 +55,7 @@ class Result(object):
         them to a variable is thus often a good idea to avoid re-creating
         them unnecessarily::
 
-            from robot.api import ExecutionResult
+            from robotide.lib.robot.api import ExecutionResult
 
             result = ExecutionResult('output.xml')
             result.configure(stat_config={'suite_stat_level': 2,
@@ -100,7 +100,7 @@ class Result(object):
         :param path: Path to save results to. If omitted, overwrites the
             original file.
         """
-        from robot.reporting.outputwriter import OutputWriter
+        from robotide.lib.robot.reporting.outputwriter import OutputWriter
         self.visit(OutputWriter(path or self.source))
 
     def visit(self, visitor):

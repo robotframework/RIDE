@@ -13,10 +13,10 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robot.errors import DataError
-from robot.model import SuiteVisitor
-from robot.result import ExecutionResult
-from robot.utils import get_error_message
+from robotide.lib.robot.errors import DataError
+from robotide.lib.robot.model import SuiteVisitor
+from robotide.lib.robot.result import ExecutionResult
+from robotide.lib.robot.utils import get_error_message
 
 
 class GatherFailedTests(SuiteVisitor):

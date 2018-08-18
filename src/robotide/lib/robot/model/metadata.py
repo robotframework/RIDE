@@ -13,7 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robot.utils import is_string, NormalizedDict, py2to3, unic
+from robotide.lib.robot.utils import is_string, NormalizedDict, py2to3, unic
 
 
 @py2to3

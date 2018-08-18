@@ -22,8 +22,8 @@ except ImportError:
     get_java_property = lambda name: None
     get_java_properties = lambda: {}
 
-from robot.errors import DataError, VariableError
-from robot.utils import (get_env_var, get_env_vars, get_error_message,
+from robotide.lib.robot.errors import DataError, VariableError
+from robotide.lib.robot.utils import (get_env_var, get_env_vars, get_error_message,
                          is_dict_like, is_list_like, normalize, DotDict,
                          NormalizedDict)
 

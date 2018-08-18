@@ -14,7 +14,7 @@
 #  limitations under the License.
 
 from robot import utils
-from robot.errors import DataError
+from robotide.lib.robot.errors import DataError
 
 from .visitor import SuiteVisitor
 

@@ -17,7 +17,7 @@ import os
 import os.path
 import sys
 
-from robot.errors import DataError
+from robotide.lib.robot.errors import DataError
 
 from .encoding import system_decode
 from .platform import WINDOWS, PY2

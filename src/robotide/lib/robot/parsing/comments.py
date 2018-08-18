@@ -13,7 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robot.utils import is_string
+from robotide.lib.robot.utils import is_string
 
 
 class CommentCache(object):

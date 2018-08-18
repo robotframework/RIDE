@@ -13,8 +13,8 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robot.model import ItemList
-from robot.utils import setter
+from robotide.lib.robot.model import ItemList
+from robotide.lib.robot.utils import setter
 
 from .model import Message
 

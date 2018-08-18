@@ -18,11 +18,11 @@ import random
 import sys
 import time
 
-from robot.errors import DataError, FrameworkError
-from robot.output import LOGGER, loggerhelper
-from robot.result.keywordremover import KeywordRemover
-from robot.result.flattenkeywordmatcher import validate_flatten_keyword
-from robot.utils import (abspath, escape, format_time, get_link_path,
+from robotide.lib.robot.errors import DataError, FrameworkError
+from robotide.lib.robot.output import LOGGER, loggerhelper
+from robotide.lib.robot.result.keywordremover import KeywordRemover
+from robotide.lib.robot.result.flattenkeywordmatcher import validate_flatten_keyword
+from robotide.lib.robot.utils import (abspath, escape, format_time, get_link_path,
                          html_escape, is_list_like, py2to3,
                          split_args_from_name_or_path)
 

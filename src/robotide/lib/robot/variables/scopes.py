@@ -16,9 +16,9 @@
 import os
 import tempfile
 
-from robot.errors import DataError
-from robot.output import LOGGER
-from robot.utils import abspath, find_file, get_error_details, NormalizedDict
+from robotide.lib.robot.errors import DataError
+from robotide.lib.robot.output import LOGGER
+from robotide.lib.robot.utils import abspath, find_file, get_error_details, NormalizedDict
 
 from .variables import Variables
 

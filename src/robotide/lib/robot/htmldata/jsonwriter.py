@@ -13,7 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robot.utils import PY2
+from robotide.lib.robot.utils import PY2
 
 
 class JsonWriter(object):

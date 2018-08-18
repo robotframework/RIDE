@@ -14,10 +14,10 @@ SRC = normpath(join(BASEDIR, '..', '..', '..'))
 sys.path.insert(0, SRC)
 
 from robot import run
-from robot.conf.settings import RebotSettings
-from robot.reporting.resultwriter import Results
-from robot.reporting.jswriter import JsResultWriter
-from robot.utils import file_writer
+from robotide.lib.robot.conf.settings import RebotSettings
+from robotide.lib.robot.reporting.resultwriter import Results
+from robotide.lib.robot.reporting.jswriter import JsResultWriter
+from robotide.lib.robot.utils import file_writer
 
 
 def run_robot(testdata, outxml):

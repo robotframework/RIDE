@@ -14,10 +14,10 @@
 #  limitations under the License.
 
 import sys
-from robot.utils import StringIO
+from robotide.lib.robot.utils import StringIO
 
-from robot.output import LOGGER
-from robot.utils import console_decode, console_encode, JYTHON
+from robotide.lib.robot.output import LOGGER
+from robotide.lib.robot.utils import console_decode, console_encode, JYTHON
 
 
 class OutputCapturer(object):

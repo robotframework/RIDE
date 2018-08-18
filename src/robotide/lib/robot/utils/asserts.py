@@ -55,7 +55,7 @@ unittest license::
 Examples::
 
     import unittest
-    from robot.utils.asserts import assert_equal
+    from robotide.lib.robot.utils.asserts import assert_equal
 
     class MyTests(unittest.TestCase):
 

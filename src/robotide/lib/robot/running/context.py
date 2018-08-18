@@ -15,8 +15,8 @@
 
 from contextlib import contextmanager
 
-from robot.errors import DataError
-from robot.utils import unic
+from robotide.lib.robot.errors import DataError
+from robotide.lib.robot.utils import unic
 
 
 class ExecutionContexts(object):

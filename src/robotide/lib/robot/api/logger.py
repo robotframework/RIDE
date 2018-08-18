@@ -58,7 +58,7 @@ Example
 
 ::
 
-    from robot.api import logger
+    from robotide.lib.robot.api import logger
 
     def my_keyword(arg):
         logger.debug('Got argument %s.' % arg)
@@ -68,8 +68,8 @@ Example
 
 import logging
 
-from robot.output import librarylogger
-from robot.running.context import EXECUTION_CONTEXTS
+from robotide.lib.robot.output import librarylogger
+from robotide.lib.robot.running.context import EXECUTION_CONTEXTS
 
 
 def write(msg, level='INFO', html=False):

@@ -15,10 +15,10 @@
 
 import os
 
-from robot.errors import DataError
-from robot.model import SuiteNamePatterns
-from robot.output import LOGGER
-from robot.utils import get_error_message, unic
+from robotide.lib.robot.errors import DataError
+from robotide.lib.robot.model import SuiteNamePatterns
+from robotide.lib.robot.output import LOGGER
+from robotide.lib.robot.utils import get_error_message, unic
 
 from .datarow import DataRow
 from .tablepopulators import (SettingTablePopulator, VariableTablePopulator,

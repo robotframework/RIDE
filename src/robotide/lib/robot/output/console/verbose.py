@@ -15,8 +15,8 @@
 
 import sys
 
-from robot.errors import DataError
-from robot.utils import get_console_length, isatty, pad_console_length
+from robotide.lib.robot.errors import DataError
+from robotide.lib.robot.utils import get_console_length, isatty, pad_console_length
 
 from .highlighting import HighlightingStream
 

@@ -13,7 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robot.utils import is_list_like
+from robotide.lib.robot.utils import is_list_like
 
 from .filesetter import VariableFileSetter
 from .finders import VariableFinder

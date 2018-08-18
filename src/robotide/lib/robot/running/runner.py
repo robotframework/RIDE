@@ -13,11 +13,11 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robot.errors import ExecutionFailed, DataError, PassExecution
-from robot.model import SuiteVisitor
-from robot.result import TestSuite, Result
-from robot.utils import get_timestamp, is_list_like, NormalizedDict, unic
-from robot.variables import VariableScopes
+from robotide.lib.robot.errors import ExecutionFailed, DataError, PassExecution
+from robotide.lib.robot.model import SuiteVisitor
+from robotide.lib.robot.result import TestSuite, Result
+from robotide.lib.robot.utils import get_timestamp, is_list_like, NormalizedDict, unic
+from robotide.lib.robot.variables import VariableScopes
 
 from .context import EXECUTION_CONTEXTS
 from .steprunner import StepRunner

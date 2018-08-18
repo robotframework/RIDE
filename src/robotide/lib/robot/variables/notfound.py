@@ -15,8 +15,8 @@
 
 from functools import partial
 
-from robot.errors import VariableError
-from robot.utils import (is_dict_like, is_list_like, normalize,
+from robotide.lib.robot.errors import VariableError
+from robotide.lib.robot.utils import (is_dict_like, is_list_like, normalize,
                          RecommendationFinder)
 
 

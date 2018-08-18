@@ -13,11 +13,11 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robot.api import logger
-from robot.utils import (is_dict_like, is_string, is_truthy, plural_or_not,
+from robotide.lib.robot.api import logger
+from robotide.lib.robot.utils import (is_dict_like, is_string, is_truthy, plural_or_not,
                          seq2str, seq2str2, type_name, unic, Matcher)
-from robot.utils.asserts import assert_equal
-from robot.version import get_version
+from robotide.lib.robot.utils.asserts import assert_equal
+from robotide.lib.robot.version import get_version
 
 
 class NotSet(object):

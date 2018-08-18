@@ -15,12 +15,12 @@
 
 from org.robotframework import RobotPythonRunner
 
-from robot.errors import INFO_PRINTED
-from robot.libdoc import libdoc_cli
-from robot.run import run_cli
-from robot.rebot import rebot_cli
-from robot.testdoc import testdoc_cli
-from robot.tidy import tidy_cli
+from robotide.lib.robot.errors import INFO_PRINTED
+from robotide.lib.robot.libdoc import libdoc_cli
+from robotide.lib.robot.run import run_cli
+from robotide.lib.robot.rebot import rebot_cli
+from robotide.lib.robot.testdoc import testdoc_cli
+from robotide.lib.robot.tidy import tidy_cli
 
 
 USAGE = """robotframework.jar - Robot Framework runner.

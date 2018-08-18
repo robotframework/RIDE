@@ -15,7 +15,7 @@
 
 import re
 
-from robot.utils import format_time
+from robotide.lib.robot.utils import format_time
 
 from .loggerhelper import Message
 

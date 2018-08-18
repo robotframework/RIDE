@@ -26,10 +26,10 @@ try:
 except ImportError:
     pyte = None
 
-from robot.api import logger
-from robot.utils import (ConnectionCache, is_bytes, is_string, is_truthy,
+from robotide.lib.robot.api import logger
+from robotide.lib.robot.utils import (ConnectionCache, is_bytes, is_string, is_truthy,
                          is_unicode, secs_to_timestr, seq2str, timestr_to_secs)
-from robot.version import get_version
+from robotide.lib.robot.version import get_version
 
 
 class Telnet(object):

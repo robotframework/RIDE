@@ -13,7 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robot.utils import setter
+from robotide.lib.robot.utils import setter
 
 from .itemlist import ItemList
 from .keyword import Keyword, Keywords

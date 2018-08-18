@@ -21,8 +21,8 @@ if sys.platform.startswith('java'):
 else:
     IllegalArgumentException = ValueError
 
-from robot.errors import ExecutionFailed
-from robot.output import LOGGER
+from robotide.lib.robot.errors import ExecutionFailed
+from robotide.lib.robot.output import LOGGER
 
 
 class _StopSignalMonitor(object):

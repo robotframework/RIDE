@@ -13,9 +13,9 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robot.errors import DataError
-from robot.model import SuiteVisitor, TagPattern
-from robot.utils import Matcher, plural_or_not
+from robotide.lib.robot.errors import DataError
+from robotide.lib.robot.model import SuiteVisitor, TagPattern
+from robotide.lib.robot.utils import Matcher, plural_or_not
 
 
 def KeywordRemover(how):

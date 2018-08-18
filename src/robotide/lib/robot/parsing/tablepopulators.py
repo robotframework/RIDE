@@ -15,7 +15,7 @@
 
 import re
 
-from robot.utils import py2to3
+from robotide.lib.robot.utils import py2to3
 
 from .comments import CommentCache, Comments
 from .settings import Documentation, MetadataList

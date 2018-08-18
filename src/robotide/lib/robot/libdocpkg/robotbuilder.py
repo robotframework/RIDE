@@ -16,10 +16,10 @@
 import os
 import sys
 
-from robot.errors import DataError
-from robot.parsing import disable_curdir_processing
-from robot.running import TestLibrary, UserLibrary, UserErrorHandler
-from robot.utils import split_tags_from_doc, unescape
+from robotide.lib.robot.errors import DataError
+from robotide.lib.robot.parsing import disable_curdir_processing
+from robotide.lib.robot.running import TestLibrary, UserLibrary, UserErrorHandler
+from robotide.lib.robot.utils import split_tags_from_doc, unescape
 
 from .model import LibraryDoc, KeywordDoc
 

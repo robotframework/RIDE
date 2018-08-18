@@ -102,17 +102,20 @@ def update_robot(ctx, version=''):
     # Prevent .pyc matching grep expressions
     _clean()
     # `import robot` -> `from robotide.lib import robot`
-    _run_sed_on_matching_files(ctx, 
-        'import robot',
-        's/import robot/from robotide.lib import robot/')
+    # Removed in v3.0.3 
+    #_run_sed_on_matching_files(ctx, 
+    #    'import robot',
+    #    's/import robot/from robotide.lib import robot/')
+
     # `from robot.pkg import stuff` -> `from robotide.lib.robot.pkg import stuff`
     _run_sed_on_matching_files(ctx, 
         'from robot\..* import',
         's/from robot\./from robotide.lib.robot./')
     # `from robot import stuff` -> `from robotide.lib.robot import stuff`
-    _run_sed_on_matching_files(ctx, 
-        'from robot import',
-        's/from robot import/from robotide.lib.robot import/')
+    # Removed in v3.0.3 
+    #_run_sed_on_matching_files(ctx, 
+    #    'from robot import',
+    #    's/from robot import/from robotide.lib.robot import/')
     with open(join(ROBOTIDE_PACKAGE, 'lib', 'robot-commit'), 'w') as rf_version_file:
         rf_version_file.write('{}\n'.format(rf_commit_hash))
     _log('Updated bundled Robot Framework to version {}/{}'.format(
@@ -272,8 +275,12 @@ def _set_development_path():
 
 
 def _run_sed_on_matching_files(ctx, pattern, sed_expression):
-    ctx.run("grep -lr '{}' {} | xargs sed -i '' -e '{}'".format(
-        pattern, BUNDLED_ROBOT_DIR, sed_expression))
+    try:
+        ctx.run("grep -lr '{}' {} | xargs sed -i '' -e '{}'".format(
+            pattern, BUNDLED_ROBOT_DIR, sed_expression))
+    except Exception:
+        pass
+
 
 
 def _after_distribution():

@@ -15,7 +15,7 @@
 
 import os
 
-from robot.utils import file_writer
+from robotide.lib.robot.utils import file_writer
 
 
 class LibdocOutput(object):

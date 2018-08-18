@@ -13,7 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robot.utils import get_timestamp, file_writer, seq2str2
+from robotide.lib.robot.utils import get_timestamp, file_writer, seq2str2
 
 from .logger import LOGGER
 from .loggerhelper import IsLogged

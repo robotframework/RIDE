@@ -13,11 +13,11 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robot.errors import DataError
-from robot.model import Keywords
-from robot.result import Keyword as KeywordResult
-from robot.utils import prepr, unic
-from robot.variables import VariableAssignment, contains_var, is_list_var
+from robotide.lib.robot.errors import DataError
+from robotide.lib.robot.model import Keywords
+from robotide.lib.robot.result import Keyword as KeywordResult
+from robotide.lib.robot.utils import prepr, unic
+from robotide.lib.robot.variables import VariableAssignment, contains_var, is_list_var
 
 from .steprunner import StepRunner
 from .model import Keyword

@@ -15,8 +15,8 @@
 
 from java.lang import Byte, Short, Integer, Long, Boolean, Float, Double
 
-from robot.variables import contains_var
-from robot.utils import is_string, is_list_like
+from robotide.lib.robot.variables import contains_var
+from robotide.lib.robot.utils import is_string, is_list_like
 
 
 class JavaArgumentCoercer(object):

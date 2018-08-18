@@ -15,8 +15,8 @@
 
 import sys
 
-from robot.model import SuiteVisitor
-from robot.utils import plural_or_not, secs_to_timestr
+from robotide.lib.robot.model import SuiteVisitor
+from robotide.lib.robot.utils import plural_or_not, secs_to_timestr
 
 from .highlighting import HighlightingStream
 

@@ -13,7 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robot.utils import is_string, py2to3, PY3
+from robotide.lib.robot.utils import is_string, py2to3, PY3
 
 from .comments import Comment
 
@@ -293,7 +293,7 @@ class _Import(Setting):
         if parent:
             parent.report_invalid_syntax(message, level)
         else:
-            from robot.api import logger
+            from robotide.lib.robot.api import logger
             logger.write(message, level)
 
 

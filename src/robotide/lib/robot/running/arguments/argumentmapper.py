@@ -13,7 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robot.errors import DataError
+from robotide.lib.robot.errors import DataError
 
 
 class ArgumentMapper(object):

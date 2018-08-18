@@ -14,8 +14,8 @@
 #  limitations under the License.
 
 from robot import utils
-from robot.errors import DataError
-from robot.model import Tags
+from robotide.lib.robot.errors import DataError
+from robotide.lib.robot.model import Tags
 
 from .arguments import (ArgumentSpec, DynamicArgumentParser,
                         JavaArgumentCoercer, JavaArgumentParser,

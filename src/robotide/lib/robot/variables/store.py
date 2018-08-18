@@ -13,8 +13,8 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robot.errors import DataError, VariableError
-from robot.utils import (DotDict, is_dict_like, is_list_like, NormalizedDict,
+from robotide.lib.robot.errors import DataError, VariableError
+from robotide.lib.robot.utils import (DotDict, is_dict_like, is_list_like, NormalizedDict,
                          type_name)
 
 from .isvar import validate_var

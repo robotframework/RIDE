@@ -17,7 +17,7 @@ from __future__ import print_function
 
 import sys
 
-from robot.errors import (INFO_PRINTED, DATA_ERROR, STOPPED_BY_USER,
+from robotide.lib.robot.errors import (INFO_PRINTED, DATA_ERROR, STOPPED_BY_USER,
                           FRAMEWORK_ERROR, Information, DataError)
 
 from .argumentparser import ArgumentParser

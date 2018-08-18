@@ -15,7 +15,7 @@
 
 import os
 
-from robot.utils import seq2str
+from robotide.lib.robot.utils import seq2str
 
 from .itemlist import ItemList
 
@@ -42,7 +42,7 @@ class Import(object):
         return os.path.dirname(self.source)
 
     def report_invalid_syntax(self, message, level='ERROR'):
-        from robot.output import LOGGER
+        from robotide.lib.robot.output import LOGGER
         LOGGER.write("Error in file '%s': %s"
                      % (self.source or '<unknown>', message), level)
 

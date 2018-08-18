@@ -16,8 +16,8 @@
 import os.path
 import re
 
-from robot.utils import HtmlWriter
-from robot.version import get_full_version
+from robotide.lib.robot.utils import HtmlWriter
+from robotide.lib.robot.version import get_full_version
 
 from .template import HtmlTemplate
 

@@ -20,9 +20,9 @@ try:
 except ImportError:
     yaml = None
 
-from robot.errors import DataError
-from robot.output import LOGGER
-from robot.utils import (get_error_message, is_dict_like, is_list_like,
+from robotide.lib.robot.errors import DataError
+from robotide.lib.robot.output import LOGGER
+from robotide.lib.robot.utils import (get_error_message, is_dict_like, is_list_like,
                          is_string, seq2str2, type_name, DotDict, Importer)
 
 

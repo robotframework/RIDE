@@ -15,8 +15,8 @@
 
 from os.path import basename, splitext
 
-from robot.htmldata import HtmlFileWriter, ModelWriter, LOG, REPORT
-from robot.utils import file_writer, is_string
+from robotide.lib.robot.htmldata import HtmlFileWriter, ModelWriter, LOG, REPORT
+from robotide.lib.robot.utils import file_writer, is_string
 
 from .jswriter import JsResultWriter, SplitLogWriter
 

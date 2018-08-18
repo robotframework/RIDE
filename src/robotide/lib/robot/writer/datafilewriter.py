@@ -15,8 +15,8 @@
 
 import os
 
-from robot.errors import DataError
-from robot.utils import binary_file_writer, file_writer, PY2
+from robotide.lib.robot.errors import DataError
+from robotide.lib.robot.utils import binary_file_writer, file_writer, PY2
 
 from .filewriters import FileWriter
 

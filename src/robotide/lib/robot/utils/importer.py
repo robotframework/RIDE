@@ -17,7 +17,7 @@ import os
 import sys
 import inspect
 
-from robot.errors import DataError
+from robotide.lib.robot.errors import DataError
 
 from .encoding import system_decode
 from .error import get_error_details
@@ -37,7 +37,7 @@ class Importer(object):
 
     def __init__(self, type=None, logger=None):
         if not logger:
-            from robot.output import LOGGER as logger
+            from robotide.lib.robot.output import LOGGER as logger
         self._type = type or ''
         self._logger = logger
         self._importers = (ByPathImporter(logger),

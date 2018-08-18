@@ -14,7 +14,7 @@ REAL_OUTPUT =  join(BASE, 'testdoc.js')
 
 sys.path.insert(0, SRC)
 
-from robot.testdoc import TestSuiteFactory, TestdocModelWriter
+from robotide.lib.robot.testdoc import TestSuiteFactory, TestdocModelWriter
 
 with open(OUTPUT, 'w') as output:
     TestdocModelWriter(output, TestSuiteFactory(DATA)).write_data()

@@ -13,7 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robot.utils import is_list_like, is_dict_like, is_string, unic
+from robotide.lib.robot.utils import is_list_like, is_dict_like, is_string, unic
 
 
 class ListenerArguments(object):

@@ -15,9 +15,9 @@
 
 import os
 
-from robot.errors import DataError
-from robot.output import LOGGER
-from robot.utils import is_string, unic
+from robotide.lib.robot.errors import DataError
+from robotide.lib.robot.output import LOGGER
+from robotide.lib.robot.utils import is_string, unic
 
 from .builder import ResourceFileBuilder
 from .arguments import EmbeddedArguments, UserKeywordArgumentParser

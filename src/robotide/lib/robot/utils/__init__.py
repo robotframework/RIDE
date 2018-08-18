@@ -28,7 +28,7 @@ used either like::
 
 or::
 
-    from robot.utils import Matcher
+    from robotide.lib.robot.utils import Matcher
 
     assert Matcher('H?llo').match('Hillo')
 """

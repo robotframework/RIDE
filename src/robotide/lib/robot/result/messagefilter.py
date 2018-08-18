@@ -13,9 +13,9 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robot.output.loggerhelper import IsLogged
+from robotide.lib.robot.output.loggerhelper import IsLogged
 
-from robot.model import SuiteVisitor
+from robotide.lib.robot.model import SuiteVisitor
 
 
 class MessageFilter(SuiteVisitor):

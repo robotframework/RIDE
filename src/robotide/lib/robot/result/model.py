@@ -34,7 +34,7 @@ __ http://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#
 
 from itertools import chain
 
-from robot.model import TotalStatisticsBuilder, Criticality
+from robotide.lib.robot.model import TotalStatisticsBuilder, Criticality
 from robot import model, utils
 
 from .configurer import SuiteConfigurer

@@ -22,8 +22,8 @@ import glob
 import string
 import textwrap
 
-from robot.errors import DataError, Information, FrameworkError
-from robot.version import get_full_version
+from robotide.lib.robot.errors import DataError, Information, FrameworkError
+from robotide.lib.robot.version import get_full_version
 
 from .misc import plural_or_not
 from .encoding import console_decode, system_decode

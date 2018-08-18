@@ -13,8 +13,8 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robot.errors import ExecutionFailed, PassExecution
-from robot.utils import html_escape, py2to3, unic
+from robotide.lib.robot.errors import ExecutionFailed, PassExecution
+from robotide.lib.robot.utils import html_escape, py2to3, unic
 
 
 @py2to3

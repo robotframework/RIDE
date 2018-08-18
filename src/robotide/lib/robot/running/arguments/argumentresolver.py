@@ -13,9 +13,9 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robot.errors import DataError
-from robot.utils import is_string, is_dict_like, split_from_equals
-from robot.variables import VariableSplitter
+from robotide.lib.robot.errors import DataError
+from robotide.lib.robot.utils import is_string, is_dict_like, split_from_equals
+from robotide.lib.robot.variables import VariableSplitter
 
 from .argumentvalidator import ArgumentValidator
 

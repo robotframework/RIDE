@@ -35,7 +35,7 @@ Example
 ::
 
     import sys
-    from robot.api import TestData
+    from robotide.lib.robot.api import TestData
 
     def print_suite(suite):
         print 'Suite:', suite.name

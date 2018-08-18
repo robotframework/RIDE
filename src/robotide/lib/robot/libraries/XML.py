@@ -22,11 +22,11 @@ try:
 except ImportError:
     lxml_etree = None
 
-from robot.api import logger
-from robot.libraries.BuiltIn import BuiltIn
-from robot.utils import (asserts, ET, ETSource, is_falsy, is_string, is_truthy,
+from robotide.lib.robot.api import logger
+from robotide.lib.robot.libraries.BuiltIn import BuiltIn
+from robotide.lib.robot.utils import (asserts, ET, ETSource, is_falsy, is_string, is_truthy,
                          plural_or_not as s)
-from robot.version import get_version
+from robotide.lib.robot.version import get_version
 
 
 should_be_equal = asserts.assert_equal

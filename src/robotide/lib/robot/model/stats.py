@@ -13,7 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robot.utils import (Sortable, elapsed_time_to_string, html_escape,
+from robotide.lib.robot.utils import (Sortable, elapsed_time_to_string, html_escape,
                          is_string, normalize, py2to3, PY3)
 
 from .tags import TagPattern

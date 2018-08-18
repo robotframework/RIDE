@@ -13,8 +13,8 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robot.result import ResultVisitor
-from robot.utils import roundup, XmlWriter
+from robotide.lib.robot.result import ResultVisitor
+from robotide.lib.robot.utils import roundup, XmlWriter
 
 
 class XUnitWriter(object):

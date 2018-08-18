@@ -13,7 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robot.utils import Utf8Reader
+from robotide.lib.robot.utils import Utf8Reader
 
 
 NBSP = u'\xA0'

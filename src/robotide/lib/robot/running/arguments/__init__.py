@@ -13,7 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robot.utils import JYTHON
+from robotide.lib.robot.utils import JYTHON
 
 from .argumentmapper import DefaultValue
 from .argumentparser import (PythonArgumentParser, UserKeywordArgumentParser,
