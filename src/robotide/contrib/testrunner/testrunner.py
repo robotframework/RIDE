@@ -279,13 +279,13 @@ class TestRunner(object):
             # if IS_WINDOWS:
             #    m_args = [unicode(item,"utf-8") for item in args]
             #else:
-            m_args = args
-            # m_args = [item.decode("utf-8") for item in args]
+            # DEBUG m_args = args
+            m_args = [item.decode("utf-8") for item in args]
         else:
             m_args = [str(x) for x in args]
         # print("DEBUG: write_args: %s\n" % m_args)
         data = "\n".join(m_args)
-        f.write(data)  # DEBUG .decode("utf-8")
+        f.write(data)  # DEBUG .decode("utf-8") .encode("utf-8")
         f.close()
 
     def get_output_and_errors(self, profile):
