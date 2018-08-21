@@ -1,5 +1,7 @@
 wxPython
 Pygments
 robotframework
+# pywin32 # Uncomment this one if your are on Windows for desktop shortcut creation
 # Pypubsub 4.0.0 does not support Python 2.7
+# Pypubsub # Uncomment this one if your are on Python 3+ and delete next line
 Pypubsub==3.3.0

@@ -195,7 +195,7 @@ with:\npython -m robotide.postinstall -install\n")
                                               pythoncom.CLSCTX_INPROC_SERVER,
                                               shell.IID_IShellLink)
         command_args = " -c \"from robotide import main; main()\""
-        shortcut.SetPath("pythonw.exe")  # sys.executable
+        shortcut.SetPath("python.exe")  # sys.executable
         shortcut.SetArguments(command_args)
         shortcut.SetDescription("Robot Framework testdata editor")
         shortcut.SetIconLocation(icon, 0)
