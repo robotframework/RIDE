@@ -43,7 +43,6 @@ class VariableTableReader(object):
                                                var.report_invalid_syntax)
             except DataError as err:
                 var.report_invalid_syntax(err)
-                raise  # DEBUG RIDE
 
     def _get_name_and_value(self, name, value, error_reporter):
         return name[2:-1], VariableTableValue(value, name, error_reporter)
