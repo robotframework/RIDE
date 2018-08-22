@@ -5,4 +5,5 @@ nose
 mockito
 invoke
 Pygments
+Pypubsub
 robotframework
