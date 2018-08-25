@@ -290,7 +290,17 @@ class TestKeywordSuggestions(_DataFileTest):
 
     def test_argument_is_superior_to_variable_from_variable_table(self):
         sugs = self.ns.get_suggestions_for(self.kw, COLLIDING_ARGUMENT[0:4])
-        assert_true(any(True for s in sugs if s.source.decode('utf-8') == ArgumentInfo.SOURCE))
+        # DEBUG was getting bytes on python3
+        myflag = False
+        for s in sugs:
+            if isinstance(s.source, str):
+                myflag = (s.source == ArgumentInfo.SOURCE)
+            else:
+                myflag = (s.source.decode('utf-8') == ArgumentInfo.SOURCE)
+            if myflag:
+                break
+        assert_true(myflag)
+        # assert_true(any(True for s in sugs if s.source.decode('utf-8') == ArgumentInfo.SOURCE))
 
     def test_keyword_arguments_are_suggested_first(self):
         sugs = self.ns.get_suggestions_for(self.kw, '')
@@ -394,7 +404,11 @@ class TestKeywordSearch(_DataFileTest):
         assert_equal(len(results), 1)
         # assert_equal(results[0], (u'Only From Resource', u'testdata_resource.txt'))
         assert_equal(results[0][0], u'Only From Resource')
-        assert_equal(results[0][1].decode('utf-8'), u'testdata_resource.txt')
+        # DEBUG was getting bytes on python3
+        if isinstance(results[0][1], str):
+            assert_equal(results[0][1], 'testdata_resource.txt')
+        else:
+            assert_equal(results[0][1].decode('utf-8'), u'testdata_resource.txt')
 
     def test_find_user_keyword_name_normalized(self):
         assert_is_not_none(self.ns.find_user_keyword(
