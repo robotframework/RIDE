@@ -22,7 +22,7 @@ import sys
 if 'robot' not in sys.modules and __name__ == '__main__':
     import pythonpathsetter
 
-from robot import run_cli
+from robotide.lib.robot import run_cli
 
 
 run_cli(sys.argv[1:])

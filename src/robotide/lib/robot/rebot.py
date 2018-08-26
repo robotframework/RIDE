@@ -367,7 +367,7 @@ def rebot_cli(arguments, exit=True):
 
     Example::
 
-        from robot import rebot_cli
+        from robotide.lib.robot import rebot_cli
 
         rebot_cli(['--name', 'Example', '--log', 'NONE', 'o1.xml', 'o2.xml'])
 
@@ -393,7 +393,7 @@ def rebot(*outputs, **options):
 
     Examples::
 
-        from robot import rebot
+        from robotide.lib.robot import rebot
 
         rebot('path/to/output.xml')
         with open('stdout.txt', 'w') as stdout:

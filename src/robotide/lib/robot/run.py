@@ -474,7 +474,7 @@ def run_cli(arguments, exit=True):
 
     Example::
 
-        from robot import run_cli
+        from robotide.lib.robot import run_cli
 
         # Run tests and return the return code.
         rc = run_cli(['--name', 'Example', 'tests.robot'], exit=False)
@@ -530,7 +530,7 @@ def run(*tests, **options):
 
     Example::
 
-        from robot import run
+        from robotide.lib.robot import run
 
         run('path/to/tests.robot')
         run('tests.robot', include=['tag1', 'tag2'], splitlog=True)

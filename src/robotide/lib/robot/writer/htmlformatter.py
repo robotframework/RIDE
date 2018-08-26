@@ -15,7 +15,7 @@
 
 import re
 
-from robot import utils
+from robotide.lib.robot import utils
 
 from .formatters import _DataFileFormatter
 

@@ -16,7 +16,7 @@
 from contextlib import contextmanager
 import logging
 
-from robot import utils
+from robotide.lib.robot import utils
 
 from . import librarylogger
 
