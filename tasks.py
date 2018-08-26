@@ -112,10 +112,10 @@ def update_robot(ctx, version=''):
         'from robot\..* import',
         's/from robot\./from robotide.lib.robot./')
     # `from robot import stuff` -> `from robotide.lib.robot import stuff`
-    # Removed in v3.0.3 
-    #_run_sed_on_matching_files(ctx, 
-    #    'from robot import',
-    #    's/from robot import/from robotide.lib.robot import/')
+    # Reintroduced in v3.1a1
+    _run_sed_on_matching_files(ctx, 
+        'from robot import',
+        's/from robot import/from robotide.lib.robot import/')
     with open(join(ROBOTIDE_PACKAGE, 'lib', 'robot-commit'), 'w') as rf_version_file:
         rf_version_file.write('{}\n'.format(rf_commit_hash))
     _log('Updated bundled Robot Framework to version {}/{}'.format(

@@ -73,6 +73,7 @@ except ImportError:
 if encoding:
     encoding = encoding.SYSTEM_ENCODING  # CONSOLE_ENCODING
 
+# print("DEBUG: TestRunnerPlugin encoding=%s" % encoding)
 
 ID_RUN = wx.NewId()
 ID_STOP = wx.NewId()
@@ -269,7 +270,7 @@ class TestRunnerPlugin(Plugin):
         self._output("command: %s\n" % command)  # DEBUG encode
         try:
             if PY2:
-                command = bytes(command.encode(encoding))  # TODO This does not work if for example -i Áçãú
+                command = bytes(command)  # .encode(encoding))  # TODO This does not work if for example -i Áçãú
             # self._output("DEBUG: starting command %s\n" % command)  # DEBUG encode
             self._test_runner.run_command(
                 command, self._get_current_working_dir())
