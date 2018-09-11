@@ -30,7 +30,10 @@ class HeaderLabel(Label):
 
     def __init__(self, parent, label):
         Label.__init__(self, parent, label=label)
-        self.SetFont(wx.Font(12, wx.SWISS, wx.NORMAL, wx.BOLD))
+        if wx.VERSION >= (4, 0, 0, ''):  # DEBUG wxPhoenix
+            self.SetFont(wx.Font(wx.FontInfo(12).Family(wx.FONTFAMILY_SWISS).Bold()))
+        else:
+            self.SetFont(wx.Font(12, wx.SWISS, wx.NORMAL, wx.BOLD))
 
 
 class HelpLabel(Label):

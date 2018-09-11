@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -101,11 +102,11 @@ class TestCaseHandler(_Handler):
     tag = 'test'
 
     def start(self, elem, result):
-        return result.tests.create(name=elem.get('name', ''),
-                                   timeout=elem.get('timeout'))
+        return result.tests.create(name=elem.get('name', ''))
 
     def _children(self):
-        return [DocHandler(), TagsHandler(), TestStatusHandler(), KeywordHandler()]
+        return [DocHandler(), TagsHandler(), TimeoutHandler(),
+                TestStatusHandler(), KeywordHandler()]
 
 
 class KeywordHandler(_Handler):
@@ -114,12 +115,12 @@ class KeywordHandler(_Handler):
     def start(self, elem, result):
         return result.keywords.create(kwname=elem.get('name', ''),
                                       libname=elem.get('library', ''),
-                                      timeout=elem.get('timeout'),
                                       type=elem.get('type', 'kw'))
 
     def _children(self):
         return [DocHandler(), ArgumentsHandler(), AssignHandler(),
-                TagsHandler(), KeywordStatusHandler(), MessageHandler(), self]
+                TagsHandler(), TimeoutHandler(), KeywordStatusHandler(),
+                MessageHandler(), self]
 
 
 class MessageHandler(_Handler):
@@ -203,6 +204,13 @@ class TagHandler(_Handler):
 
     def end(self, elem, result):
         result.tags.add(elem.text or '')
+
+
+class TimeoutHandler(_Handler):
+    tag = 'timeout'
+
+    def end(self, elem, result):
+        result.timeout = elem.get('value')
 
 
 class AssignHandler(_Handler):

@@ -1,8 +1,9 @@
 import unittest
 
-from nose.tools import assert_equals, assert_raises, assert_true
+from nose.tools import assert_equal, assert_raises, assert_true
 
-from robotide.publish.messages import RideMessage, RideLogMessage, RideLogException
+from robotide.publish.messages import (RideMessage, RideLogMessage,
+                                       RideLogException)
 from robotide.publish.publisher import Publisher
 
 
@@ -21,15 +22,15 @@ class RideTestMessageWithLongName(RideTestMessage):
 class TestMessage(unittest.TestCase):
 
     def test_topic(self):
-        assert_equals(RideMessage().topic, 'ride')
-        assert_equals(RideTestMessage().topic, 'my.topic')
-        assert_equals(RideTestMessageWithLongName().topic,
+        assert_equal(RideMessage().topic, 'ride')
+        assert_equal(RideTestMessage().topic, 'my.topic')
+        assert_equal(RideTestMessageWithLongName().topic,
                       'ride.test.message.with.long.name')
 
     def test_all_attributes_given(self):
         msg = RideTestMessageWithAttrs(foo='bar', bar='quux')
-        assert_equals(msg.foo, 'bar')
-        assert_equals(msg.bar, 'quux')
+        assert_equal(msg.foo, 'bar')
+        assert_equal(msg.bar, 'quux')
 
     def test_missing_mandatory_attribute(self):
         assert_raises(TypeError, RideTestMessageWithAttrs, foo='bar')
@@ -46,19 +47,19 @@ class TestRideLogMessage(unittest.TestCase):
 
     def test_log_message(self):
         msg = RideLogMessage(message='Some error text', level='ERROR')
-        assert_equals(msg.message, 'Some error text')
-        assert_equals(msg.level, 'ERROR')
+        assert_equal(msg.message, 'Some error text')
+        assert_equal(msg.level, 'ERROR')
         assert_true(msg.timestamp.startswith('20'))
 
     def test_log_exception(self):
         try:
             1 / 0
-        except Exception, err:
+        except Exception as err:
             msg = RideLogException(
                 message='Some error text', exception=err, level='ERROR')
             assert_true(msg.message.startswith(
                 'Some error text\n\nTraceback (most recent call last):'))
-            assert_equals(msg.level, 'ERROR')
+            assert_equal(msg.level, 'ERROR')
             assert_true(msg.timestamp.startswith('20'))
 
 
@@ -71,13 +72,13 @@ class TestPublisher(unittest.TestCase):
         pub = Publisher()
         pub.subscribe(self._listener, 'test.message')
         pub.publish('test.message', 'content')
-        assert_equals(self._msg, 'content')
+        assert_equal(self._msg, 'content')
 
     def test_broken_string_message_listener(self):
         pub = Publisher()
         pub.subscribe(self._broken_listener, 'test.message')
         pub.publish('test.message', 'content')
-        assert_equals(self._msg, 'content')
+        assert_equal(self._msg, 'content')
 
     def _listener(self, data):
         self._msg = data

@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -15,6 +16,7 @@
 from contextlib import contextmanager
 
 from robotide.lib.robot.errors import DataError
+from robotide.lib.robot.utils import unic
 
 
 class ExecutionContexts(object):
@@ -37,9 +39,10 @@ class ExecutionContexts(object):
     def namespaces(self):
         return (context.namespace for context in self)
 
-    def start_suite(self, namespace, output, dry_run=False):
-        self._contexts.append(_ExecutionContext(namespace, output, dry_run))
-        return self.current
+    def start_suite(self, suite, namespace, output, dry_run=False):
+        ctx = _ExecutionContext(suite, namespace, output, dry_run)
+        self._contexts.append(ctx)
+        return ctx
 
     def end_suite(self):
         self._contexts.pop()
@@ -52,7 +55,10 @@ EXECUTION_CONTEXTS = ExecutionContexts()
 class _ExecutionContext(object):
     _started_keywords_threshold = 42  # Jython on Windows don't work with higher
 
-    def __init__(self, namespace, output, dry_run=False):
+    def __init__(self, suite, namespace, output, dry_run=False):
+        self.suite = suite
+        self.test = None
+        self.timeouts = set()
         self.namespace = namespace
         self.output = output
         self.dry_run = dry_run
@@ -61,21 +67,6 @@ class _ExecutionContext(object):
         self.in_keyword_teardown = 0
         self._started_keywords = 0
         self.timeout_occurred = False
-        self.failure_in_test_teardown = False
-
-    # TODO: namespace should not have suite, test, or uk_handlers.
-
-    @property
-    def suite(self):
-        return self.namespace.suite
-
-    @property
-    def test(self):
-        return self.namespace.test
-
-    @property
-    def keywords(self):
-        return self.namespace.uk_handlers
 
     @contextmanager
     def suite_teardown(self):
@@ -90,29 +81,38 @@ class _ExecutionContext(object):
         self.variables.set_test('${TEST_STATUS}', test.status)
         self.variables.set_test('${TEST_MESSAGE}', test.message)
         self.in_test_teardown = True
+        self._remove_timeout(test.timeout)
         try:
             yield
         finally:
             self.in_test_teardown = False
-            self.failure_in_test_teardown = False
 
     @contextmanager
     def keyword_teardown(self, error):
         self.variables.set_keyword('${KEYWORD_STATUS}', 'FAIL' if error else 'PASS')
-        self.variables.set_keyword('${KEYWORD_MESSAGE}', unicode(error or ''))
+        self.variables.set_keyword('${KEYWORD_MESSAGE}', unic(error or ''))
         self.in_keyword_teardown += 1
         try:
             yield
         finally:
             self.in_keyword_teardown -= 1
 
+    @property
     @contextmanager
-    def user_keyword(self, kw):
-        self.namespace.start_user_keyword(kw)
+    def user_keyword(self):
+        self.namespace.start_user_keyword()
         try:
             yield
         finally:
             self.namespace.end_user_keyword()
+
+    @contextmanager
+    def timeout(self, timeout):
+        self._add_timeout(timeout)
+        try:
+            yield
+        finally:
+            self._remove_timeout(timeout)
 
     @property
     def in_teardown(self):
@@ -123,8 +123,6 @@ class _ExecutionContext(object):
     @property
     def variables(self):
         return self.namespace.variables
-
-    # TODO: Move start_suite here from EXECUTION_CONTEXT
 
     def end_suite(self, suite):
         for name in ['${PREV_TEST_NAME}',
@@ -146,19 +144,30 @@ class _ExecutionContext(object):
         self.variables['${SUITE_MESSAGE}'] = message
 
     def start_test(self, test):
-        self.namespace.start_test(test)
+        self.test = test
+        self._add_timeout(test.timeout)
+        self.namespace.start_test()
         self.variables.set_test('${TEST_NAME}', test.name)
         self.variables.set_test('${TEST_DOCUMENTATION}', test.doc)
         self.variables.set_test('@{TEST_TAGS}', list(test.tags))
 
+    def _add_timeout(self, timeout):
+        if timeout:
+            timeout.start()
+            self.timeouts.add(timeout)
+
+    def _remove_timeout(self, timeout):
+        if timeout in self.timeouts:
+            self.timeouts.remove(timeout)
+
     def end_test(self, test):
+        self.test = None
+        self._remove_timeout(test.timeout)
         self.namespace.end_test()
         self.variables.set_suite('${PREV_TEST_NAME}', test.name)
         self.variables.set_suite('${PREV_TEST_STATUS}', test.status)
         self.variables.set_suite('${PREV_TEST_MESSAGE}', test.message)
         self.timeout_occurred = False
-
-    # Should not need separate start/end_keyword and start/end_user_keyword
 
     def start_keyword(self, keyword):
         self._started_keywords += 1
@@ -169,11 +178,9 @@ class _ExecutionContext(object):
     def end_keyword(self, keyword):
         self.output.end_keyword(keyword)
         self._started_keywords -= 1
-        if self.in_test_teardown and not keyword.passed:
-            self.failure_in_test_teardown = True
 
-    def get_handler(self, name):
-        return self.namespace.get_handler(name)
+    def get_runner(self, name):
+        return self.namespace.get_runner(name)
 
     def trace(self, message):
         self.output.trace(message)

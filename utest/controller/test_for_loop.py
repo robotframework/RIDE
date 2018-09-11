@@ -1,7 +1,7 @@
 import unittest
 import datafilereader
 from robotide.controller.cellinfo import CellType
-from robotide.controller.commands import MoveRowsDown, Undo, ChangeCellValue, InsertCell, DeleteCell, Purify, MoveRowsUp
+from robotide.controller.ctrlcommands import MoveRowsDown, Undo, ChangeCellValue, InsertCell, DeleteCell, Purify, MoveRowsUp
 from robotide.controller.stepcontrollers import ForLoopStepController, IntendedStepController, StepController
 
 

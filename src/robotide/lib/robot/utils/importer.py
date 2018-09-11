@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -18,12 +19,16 @@ import inspect
 
 from robotide.lib.robot.errors import DataError
 
-from .encoding import decode_from_system
+from .encoding import system_decode
 from .error import get_error_details
-from .platform import JYTHON
+from .platform import JYTHON, IRONPYTHON, PY3
 from .robotpath import abspath, normpath
 from .robottypes import type_name, is_unicode
 
+if PY3:
+    from importlib import invalidate_caches as invalidate_import_caches
+else:
+    invalidate_import_caches = lambda: None
 if JYTHON:
     from java.lang.System import getProperty
 
@@ -65,7 +70,8 @@ class Importer(object):
             imported = self._instantiate_if_needed(imported, instantiate_with_args)
         except DataError as err:
             self._raise_import_failed(name, err)
-        return (imported, source) if return_source else imported
+        else:
+            return (imported, source) if return_source else imported
 
     def _import_class_or_module(self, name):
         for importer in self._importers:
@@ -107,7 +113,7 @@ class Importer(object):
         for item in items:
             if item:
                 yield '  %s' % (item if is_unicode(item)
-                                else decode_from_system(item))
+                                else system_decode(item))
 
     def _instantiate_if_needed(self, imported, args):
         if args is None:
@@ -138,19 +144,25 @@ class _Importer(object):
         self._logger = logger
 
     def _import(self, name, fromlist=None, retry=True):
+        if name in sys.builtin_module_names:
+            raise DataError('Cannot import custom module with same name as '
+                            'Python built-in module.')
+        invalidate_import_caches()
         try:
             try:
                 return __import__(name, fromlist=fromlist)
             except ImportError:
                 # Hack to support standalone Jython. For more information, see:
-                # http://code.google.com/p/robotframework/issues/detail?id=515
+                # https://github.com/robotframework/robotframework/issues/515
                 # http://bugs.jython.org/issue1778514
                 if JYTHON and fromlist and retry:
                     __import__('%s.%s' % (name, fromlist[0]))
                     return self._import(name, fromlist, retry=False)
-                # Cannot use plain raise due to
-                # http://ironpython.codeplex.com/workitem/32332
-                raise sys.exc_type, sys.exc_value, sys.exc_traceback
+                # IronPython loses traceback when using plain raise.
+                # https://github.com/IronLanguages/main/issues/989
+                if IRONPYTHON:
+                    exec('raise sys.exc_type, sys.exc_value, sys.exc_traceback')
+                raise
         except:
             raise DataError(*get_error_details())
 

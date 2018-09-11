@@ -81,3 +81,9 @@ def contains_scalar_variable(value):
 
 def value_contains_variable(value, varname):
     return utils.Matcher("*%s*" % varname).match(value)
+
+
+def find_unique(seq):
+    seen = set()
+    seen_add = seen.add
+    return [x for x in seq if not (x in seen or seen_add(x))]

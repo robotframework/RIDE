@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -13,26 +14,26 @@
 #  limitations under the License.
 
 from robotide.lib.robot.errors import (ExecutionFailed, ExecutionFailures, ExecutionPassed,
-                          ExitForLoop, ContinueForLoop, DataError,
-                          HandlerExecutionFailed)
-from robotide.lib.robot.result.keyword import Keyword as KeywordResult
-from robotide.lib.robot.utils import (ErrorDetails, format_assign_message, frange,
-                         get_error_message, get_timestamp, is_list_like,
-                         is_number, plural_or_not as s, type_name)
-from robotide.lib.robot.variables import is_scalar_var, VariableAssigner
+                          ExitForLoop, ContinueForLoop, DataError)
+from robotide.lib.robot.result import Keyword as KeywordResult
+from robotide.lib.robot.utils import (format_assign_message, frange, get_error_message,
+                         is_list_like, is_number, plural_or_not as s, type_name)
+from robotide.lib.robot.variables import is_scalar_var
+
+from .statusreporter import StatusReporter
 
 
-class KeywordRunner(object):
+class StepRunner(object):
 
     def __init__(self, context, templated=False):
         self._context = context
-        self._templated = templated
+        self._templated = bool(templated)
 
-    def run_keywords(self, keywords):
+    def run_steps(self, steps):
         errors = []
-        for kw in keywords:
+        for step in steps:
             try:
-                self.run_keyword(kw)
+                self.run_step(step)
             except ExecutionPassed as exception:
                 exception.set_earlier_failures(errors)
                 raise exception
@@ -45,73 +46,15 @@ class KeywordRunner(object):
         if errors:
             raise ExecutionFailures(errors)
 
-    def run_keyword(self, kw, name=None):
-        if kw.type == kw.FOR_LOOP_TYPE:
-            runner = ForRunner(self._context, self._templated, kw.flavor)
-        else:
-            runner = NormalRunner(self._context)
-        return runner.run(kw, name=name)
-
-
-class NormalRunner(object):
-
-    def __init__(self, context):
-        self._context = context
-
-    def run(self, kw, name=None):
-        handler = self._context.get_handler(name or kw.name)
-        handler.init_keyword(self._context.variables)
-        assigner = VariableAssigner(kw.assign)
-        result = KeywordResult(kwname=handler.name or '',
-                               libname=handler.libname or '',
-                               doc=handler.shortdoc,
-                               args=kw.args,
-                               assign=assigner.assignment,
-                               tags=handler.tags,
-                               timeout=getattr(handler, 'timeout', ''),
-                               type=kw.type)
-        dry_run_lib_kw = self._context.dry_run and handler.type == 'library'
-        with StatusReporter(self._context, result, dry_run_lib_kw):
-            self._warn_if_deprecated(result.name, result.doc)
-            return self._run_and_assign(handler, kw.args, assigner)
-
-    def _warn_if_deprecated(self, name, doc):
-        if doc.startswith('*DEPRECATED') and '*' in doc[1:]:
-            message = ' ' + doc.split('*', 2)[-1].strip()
-            self._context.warn("Keyword '%s' is deprecated.%s" % (name, message))
-
-    def _run_and_assign(self, handler, args, assigner):
-        syntax_error_reporter = SyntaxErrorReporter(self._context)
-        with syntax_error_reporter:
-            assigner.validate_assignment()
-        return_value, exception = self._run(handler, args)
-        if not exception or exception.can_continue(self._context.in_teardown):
-            with syntax_error_reporter:
-                assigner.assign(self._context, return_value)
-        if exception:
-            raise exception
-        return return_value
-
-    def _run(self, handler, args):
-        return_value = exception = None
-        try:
-            return_value = handler.run(self._context, args)
-        except ExecutionFailed as err:
-            exception = err
-        except:
-            exception = self._get_and_report_failure()
-        if exception:
-            return_value = exception.return_value
-        return return_value, exception
-
-    def _get_and_report_failure(self):
-        failure = HandlerExecutionFailed(ErrorDetails())
-        if failure.timeout:
-            self._context.timeout_occurred = True
-        self._context.fail(failure.full_message)
-        if failure.traceback:
-            self._context.debug(failure.traceback)
-        return failure
+    def run_step(self, step, name=None):
+        context = self._context
+        if step.type == step.FOR_LOOP_TYPE:
+            runner = ForRunner(context, self._templated, step.flavor)
+            return runner.run(step)
+        runner = context.get_runner(name or step.name)
+        if context.dry_run:
+            return runner.dry_run(step, context)
+        return runner.run(step, context)
 
 
 def ForRunner(context, templated=False, flavor='IN'):
@@ -136,9 +79,8 @@ class ForInRunner(object):
         result = KeywordResult(kwname=self._get_name(data),
                                type=data.FOR_LOOP_TYPE)
         with StatusReporter(self._context, result):
-            with SyntaxErrorReporter(self._context):
-                self._validate(data)
-                self._run(data)
+            self._validate(data)
+            self._run(data)
 
     def _get_name(self, data):
         return '%s %s [ %s ]' % (' | '.join(data.variables),
@@ -213,9 +155,9 @@ class ForInRunner(object):
                                type=data.FOR_ITEM_TYPE)
         for var, value in zip(data.variables, values):
             self._context.variables[var] = value
-        runner = KeywordRunner(self._context, self._templated)
+        runner = StepRunner(self._context, self._templated)
         with StatusReporter(self._context, result):
-            runner.run_keywords(data.keywords)
+            runner.run_steps(data.keywords)
 
     def _transform_items(self, items):
         return items
@@ -328,40 +270,3 @@ class InvalidForRunner(ForInRunner):
         raise DataError("Invalid FOR loop type '%s'. Expected 'IN', "
                         "'IN RANGE', 'IN ZIP', or 'IN ENUMERATE'."
                         % self.flavor)
-
-
-class StatusReporter(object):
-
-    def __init__(self, context, result, dry_run_lib_kw=False):
-        self._context = context
-        self._result = result
-        self._pass_status = 'PASS' if not dry_run_lib_kw else 'NOT_RUN'
-
-    def __enter__(self):
-        self._result.starttime = get_timestamp()
-        self._context.start_keyword(self._result)
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        if exc_val is None:
-            self._result.status = self._pass_status
-        elif isinstance(exc_val, ExecutionFailed):
-            self._result.status = exc_val.status
-            if self._result.type == self._result.TEARDOWN_TYPE:
-                self._result.message = unicode(exc_val)
-        self._result.endtime = get_timestamp()
-        self._context.end_keyword(self._result)
-
-
-class SyntaxErrorReporter(object):
-
-    def __init__(self, context):
-        self._context = context
-
-    def __enter__(self):
-        pass
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        if isinstance(exc_val, DataError):
-            msg = unicode(exc_val)
-            self._context.fail(msg)
-            raise ExecutionFailed(msg, syntax=True)

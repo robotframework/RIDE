@@ -13,6 +13,7 @@
 #  limitations under the License.
 
 import wx
+from functools import total_ordering
 from robotide.context import IS_MAC
 
 
@@ -47,12 +48,14 @@ _REPLACE = {
     'Down': DOWN_CHAR
 }
 
+
 def localize_shortcuts(string):
     if IS_MAC:
         string = string.replace('CtrlCmd', 'Cmd')
     else:
         string = string.replace('CtrlCmd', 'Ctrl')
     return _replace_mac_chars(string)
+
 
 def _replace_mac_chars(string):
     if not IS_MAC or not string:
@@ -62,6 +65,7 @@ def _replace_mac_chars(string):
     return string
 
 
+@total_ordering
 class Shortcut(object):
 
     def __init__(self, shortcut):
@@ -81,12 +85,24 @@ class Shortcut(object):
         if not shortcut:
             return None
         order = ['Shift', 'Ctrl', 'Cmd', 'Alt']
-        keys = [ self._normalize_key(key) for key in self._split(shortcut) ]
+        keys = [self._normalize_key(key) for key in self._split(shortcut)]
+        try:  # DEBUG only in python3 ??
+            keys.index('')
+            keys.pop()
+            return None
+        except ValueError:
+            pass
         keys.sort(key=lambda t: t in order and order.index(t) or 42)
         return '-'.join(keys)
 
     def _split(self, shortcut):
-        return shortcut.replace('+', '-').split('-')
+        try:
+            m_str=shortcut.replace('+', '-').split('-')
+            # print("DEBUG: Shortcut %s" % m_str)
+            return m_str
+        except AttributeError:  # DEBUG On python 3 there are NoneType
+            pass
+        return ''
 
     def _normalize_key(self, key):
         key = key.title()
@@ -103,12 +119,14 @@ class Shortcut(object):
 
     def parse(self):
         keys = self._split(self.value)
-        if len(keys) == 1:
-            flags = wx.ACCEL_NORMAL
-        else:
-            flags = sum(self._get_wx_key_constant('ACCEL', key)
-                        for key in keys[:-1])
-        return flags, self._get_key(keys[-1])
+        if keys:
+            # print("DEBUG: parser %s" % keys)
+            if len(keys) == 1:
+                flags = wx.ACCEL_NORMAL
+            else:
+                flags = sum(self._get_wx_key_constant('ACCEL', key)
+                            for key in keys[:-1])
+            return flags, self._get_key(keys[-1])
 
     def _get_wx_key_constant(self, prefix, name):
         attr = '%s_%s' % (prefix, name.upper().replace(' ', ''))
@@ -121,3 +139,15 @@ class Shortcut(object):
         if len(key) == 1:
             return ord(key.upper())
         return self._get_wx_key_constant('WXK', self._normalize_key(key))
+
+    def __eq__(self, other):
+        return self.name.lower() == other.name.lower()
+
+    def __hash__(self):
+        return hash(repr(self))
+
+    def __lt__(self, other):
+        return self.name.lower() < other.name.lower()
+
+    def __repr__(self):
+        return self.printable

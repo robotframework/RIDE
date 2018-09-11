@@ -15,15 +15,16 @@ FOR_LOOP_STEP2 = '    No Operation'
 STEP_AFTER_FOR_LOOP = '  Step bar'
 
 BASE_DATA = [TEST_NAME,
-        STEP1,
-        STEP2,
-        STEP_WITH_COMMENT,
-        FOR_LOOP_HEADER,
-        FOR_LOOP_STEP1,
-        FOR_LOOP_STEP2,
-        STEP_AFTER_FOR_LOOP,
-        '  ${variable}=  some value'
+             STEP1,
+             STEP2,
+             STEP_WITH_COMMENT,
+             FOR_LOOP_HEADER,
+             FOR_LOOP_STEP1,
+             FOR_LOOP_STEP2,
+             STEP_AFTER_FOR_LOOP,
+             '  ${variable}=  some value'
 ]
+
 
 class _FakeProject(WithNamespace):
 
@@ -37,6 +38,7 @@ class _FakeProject(WithNamespace):
         pass
 
     resource_file_controller_factory = None
+
 
 def create(data):
     tcf = TestCaseFile()
@@ -52,8 +54,11 @@ def create(data):
 def testcase_controller(project=None, data=None):
     if data is None:
         data = BASE_DATA[:]
-    base_directory_controller = TestDataDirectoryController(TestDataDirectory(), project)
-    directory_controller = TestDataDirectoryController(TestDataDirectory(), project, base_directory_controller)
-    tcf_controller = TestCaseFileController(create(data), project, directory_controller)
+    base_directory_controller = TestDataDirectoryController(
+        TestDataDirectory(), project)
+    directory_controller = TestDataDirectoryController(
+        TestDataDirectory(), project, base_directory_controller)
+    tcf_controller = TestCaseFileController(create(data), project,
+                                            directory_controller)
     tctablectrl = tcf_controller.tests
     return tctablectrl[0]

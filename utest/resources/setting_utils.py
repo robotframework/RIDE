@@ -17,10 +17,10 @@ class TestSettingsHelper(unittest.TestCase):
         self.settings_path = os.path.join(os.path.dirname(__file__),
                                           'settings.cfg')
         self.user_settings_path = os.path.join(os.path.dirname(__file__),
-                                          'user.cfg')
-        self.read_only_path = os.path.join(os.path.dirname(__file__), 'read-only.cfg')
+                                               'user.cfg')
+        self.read_only_path = os.path.join(os.path.dirname(__file__),
+                                           'read-only.cfg')
         os.chmod(self.read_only_path, stat.S_IRUSR)
-
 
     def tearDown(self):
         for path in [self.settings_path, self.user_settings_path]:
@@ -32,17 +32,17 @@ class TestSettingsHelper(unittest.TestCase):
 
     def _check_content(self, expected_dict, check_self_settings=True):
         settings = Settings(self.user_settings_path)
-        self.assertEquals(settings._config_obj, expected_dict)
+        self.assertEqual(settings._config_obj, expected_dict)
         if check_self_settings:
-            self.assertEquals(self.settings._config_obj, expected_dict)
+            self.assertEqual(self.settings._config_obj, expected_dict)
 
     def _write_settings(self, content, path=None):
-        f = open(self._get_path(path), 'w')
-        f.write(content)
+        f = open(self._get_path(path), 'wb')
+        f.write(content.encode('UTF-8'))
         f.close()
 
     def _read_settings_file_content(self, path=None):
-        f = open(self._get_path(path), 'r')
+        f = open(self._get_path(path), 'r')  # DEBUG was 'rb'
         value = f.read()
         f.close()
         return value
@@ -59,5 +59,6 @@ class TestSettingsHelper(unittest.TestCase):
         try:
             return Settings(self._get_path(path))
         except:
-            print self._read_settings_file_content()
+            # print("DEBUG: settings utils_READ SETTINGS_errored path %s" % path)
+            print(self._read_settings_file_content())
             raise

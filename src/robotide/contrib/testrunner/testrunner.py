@@ -26,7 +26,10 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-import SocketServer
+try:
+    import SocketServer
+except ImportError:  # py3
+    import socketserver as SocketServer
 import atexit
 import codecs
 import os
@@ -37,15 +40,27 @@ import tempfile
 import threading
 import signal
 import sys
-from Queue import Empty, Queue
+try:
+    from Queue import Empty, Queue
+except ImportError:  # py3
+    from queue import Empty, Queue
 
 from robotide import utils
 from robotide.robotapi import LOG_LEVELS
 from robotide.context import IS_WINDOWS
 from robotide.contrib.testrunner import TestRunnerAgent
 from robotide.controller.testexecutionresults import TestExecutionResults
+from robotide.utils import PY2, is_unicode # , unicode
+try:
+    from robotide.lib.robot.utils import encoding
+except ImportError:
+    encoding = None
+# DEBUG we are forcing UTF-8
+if encoding:
+    encoding.OUTPUT_ENCODING = 'UTF-8'
 
 ATEXIT_LOCK = threading.RLock()
+
 
 class TestRunner(object):
 
@@ -60,6 +75,8 @@ class TestRunner(object):
         self.port = None
         self._project = project
         self.profiles = {}
+        self._pause_longname = None
+        self._pause_testname = None
 
     def enable(self, result_handler):
         self._start_listener_server(result_handler)
@@ -101,6 +118,7 @@ class TestRunner(object):
         self.port = self._server.server_address[1]
 
     def _result_handler(self, event, *args):
+        # print("DEBUG: testrunner event %s" % event)
         if event == 'pid':
             self._pid_to_kill = int(args[0])
         if event == 'port' and self._process:
@@ -110,6 +128,18 @@ class TestRunner(object):
             testname = args[0]
             self._results.set_running(self._get_test_controller(longname,
                                                                 testname))
+            self._pause_longname = longname
+            self._pause_testname = testname
+
+        if event == 'continue':
+            # print("DEBUG: testrunner resume %s" % self._results.RUNNING)
+            self._results.set_running(self._get_test_controller(
+                self._pause_longname, self._pause_testname))
+
+        if event == 'paused':
+            # print("DEBUG: testrunner pause %s" % self._results.PAUSED)
+            self._results.set_paused(self._get_test_controller(
+                self._pause_longname, self._pause_testname))
         if event == 'end_test':
             longname = args[1]['longname']
             testname = args[0]
@@ -169,10 +199,12 @@ class TestRunner(object):
     def run_command(self, command, cwd):
         self._pid_to_kill = None
         self._process = Process(cwd)
+        # print("DEBUG: run_command command: %s\nCWD: %s\n" % (command, cwd))
         self._process.run_command(command)
 
     def get_command(self, profile, pythonpath, console_width, names_to_run):
-        '''Return the command (as a list) used to run the test'''
+        """Return the command (as a list) used to run the test"""
+
         command = profile.get_command_prefix()[:]
         argfile = os.path.join(self._output_dir, "argfile.txt")
         command.extend(["--argumentfile", argfile])
@@ -242,8 +274,32 @@ class TestRunner(object):
 
     @staticmethod
     def _write_argfile(argfile, args):
-        f = codecs.open(argfile, "w", "utf-8")
-        f.write("\n".join(args))
+        m_args = list()
+        f = codecs.open(argfile, "wb")  # , "utf-8")
+        if PY2:
+            # if IS_WINDOWS:
+            #    m_args = [unicode(item,"utf-8") for item in args]
+            #else:
+            # DEBUG 
+            # m_args = args
+            for item in args:
+                if is_unicode(item):
+                   m_args.append(item.encode("utf-8"))  # .decode("utf-8"))
+                else:
+                   m_args.append(bytes(item))
+            # DEBUG m_args = [item.decode("utf-8") for item in args]
+            # print("DEBUG: write_args: %s\n" % m_args)
+        else:
+            m_args = [str(x) for x in args]  # .encode("utf-8","surrogate")
+        # print("DEBUG: write_args: %s\n" % m_args)
+        # data = r"\n".join(m_args)
+        if PY2:
+            data = b"\n".join(m_args)
+            f.write(bytes(data))  # DEBUG .decode("utf-8") .encode("utf-8")
+        else:
+            data = "\n".join(m_args)
+            f.write(bytes(data.encode("utf-8",
+                                      "surrogate")))
         f.close()
 
     def get_output_and_errors(self, profile):
@@ -277,7 +333,11 @@ class Process(object):
                         stdout=subprocess.PIPE,
                         stderr=subprocess.PIPE,
                         stdin=subprocess.PIPE,
-                        cwd=self._cwd.encode(utils.SYSTEM_ENCODING))
+                        cwd=self._cwd)
+                               # DEBUG .encode(encoding.OUTPUT_ENCODING))
+                        # DEBUG was encoding.OUTPUT_ENCODING)
+                        # DEBUG cwd=self._cwd.encode(utils.SYSTEM_ENCODING))
+
         if IS_WINDOWS:
             startupinfo = subprocess.STARTUPINFO()
             try:
@@ -289,8 +349,12 @@ class Process(object):
         else:
             subprocess_args['preexec_fn'] = os.setsid
             subprocess_args['shell'] = True
-        self._process = subprocess.Popen(command.encode(utils.SYSTEM_ENCODING),
-                                         **subprocess_args)
+        # DEBUG self._process = subprocess.Popen(command.encode(utils.SYSTEM_ENCODING),
+        #                                 **subprocess_args)
+        # print("DEBUG: run_command calling Subprocess: %s\nCommand: %s\n" % (subprocess_args,str(command.encode(encoding.OUTPUT_ENCODING))))
+        self._process = subprocess.Popen(command,
+                                         **subprocess_args)  # DEBUG was .encode(encoding.OUTPUT_ENCODING) .OUTPUT_ENCODING
+        # print("DEBUG: run_command Called Subprocess_args: %s\n" % subprocess_args)
         self._process.stdin.close()
         self._output_stream = StreamReaderThread(self._process.stdout)
         self._error_stream = StreamReaderThread(self._process.stderr)
@@ -335,10 +399,14 @@ class Process(object):
         if self._port is None:
             return  # Silent failure..
         sock = None
+        if IS_WINDOWS:  # TODO Verify on Linux
+            host = '127.0.0.1'
+        else:
+            host = 'localhost'
         try:
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            sock.connect(('localhost', self._port))
-            sock.send(data)
+            sock.connect((host, self._port))
+            sock.send(bytes(data.encode("utf-8")))
         finally:
             sock.close()
 
@@ -392,12 +460,16 @@ class StreamReaderThread(object):
 
     def pop(self):
         result = ""
-        for _ in xrange(self._queue.qsize()):
+        try:
+            myqueuerng = xrange(self._queue.qsize())
+        except NameError:  # py3
+            myqueuerng = range(self._queue.qsize())
+        for _ in myqueuerng:
             try:
-                result += self._queue.get_nowait()
+                result += self._queue.get_nowait().decode(utils.SYSTEM_ENCODING, 'replace')  # .decode('UTF-8','ignore')
             except Empty:
                 pass
-        return result.decode('UTF-8')
+        return result  # DEBUG .decode('UTF-8', 'ignore')
 
 
 # The following two classes implement a small line-buffered socket
@@ -407,9 +479,11 @@ class StreamReaderThread(object):
 class RideListenerServer(SocketServer.TCPServer):
     """Implements a simple line-buffered socket server"""
     allow_reuse_address = True
+
     def __init__(self, RequestHandlerClass, callback):
         SocketServer.TCPServer.__init__(self, ("",0), RequestHandlerClass)
         self.callback = callback
+
 
 class RideListenerHandler(SocketServer.StreamRequestHandler):
     def handle(self):

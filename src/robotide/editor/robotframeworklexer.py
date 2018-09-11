@@ -14,9 +14,13 @@
 
 import re
 
-from pygments.lexer import Lexer
-from pygments.token import Token
+try:
+    from pygments.lexer import Lexer
+    from pygments.token import Token
+except Exception:
+    raise(ImportError)
 
+from robotide.utils import unicode, is_string, py2to3
 
 HEADING = Token.Generic.Heading
 SETTING = Token.Keyword.Namespace
@@ -48,7 +52,7 @@ class RobotFrameworkLexer(Lexer):
     """
     name = 'RobotFramework'
     aliases = ['RobotFramework', 'robotframework']
-    filenames = ['*.txt']
+    filenames = ['*.txt', '*.robot']
     mimetypes = ['text/x-robotframework']
 
     def __init__(self):
@@ -57,19 +61,24 @@ class RobotFrameworkLexer(Lexer):
     def get_tokens_unprocessed(self, text):
         row_tokenizer = RowTokenizer()
         var_tokenizer = VariableTokenizer()
+        #print("DEBUG: Enter get_tokens_unprocessed(self, text): %s" % text)
         index = 0
         for row in text.splitlines():
+            # print("DEBUG: row: %s\nNormalized:%s:" % (row, normalize(row,'*')))
             for value, token in row_tokenizer.tokenize(row):
+                # print("DEBUG: Enter row_tokenizer(value, token): %s +++ %s" % (value, token))
                 for value, token in var_tokenizer.tokenize(value, token):
                     if value:
-                        yield index, token, unicode(value)
+                        yield index, token, value
+                        #  DEBUG was unicode(value) str.encode(value,'utf-8')
+                        #  DEBUG There are errors with UTF-8 chars
                         index += len(value)
 
 
 class VariableTokenizer(object):
 
     def tokenize(self, string, token):
-        var = VariableSplitter(string, identifiers='$@%')
+        var = VariableSplitter(string, identifiers='$@%&')  #DEBUG added dict
         if var.start < 0 or token in (COMMENT, ERROR):
             yield string, token
             return
@@ -187,7 +196,7 @@ class Tokenizer(object):
     def _is_assign(self, value):
         if value.endswith('='):
             value = value[:-1].strip()
-        var = VariableSplitter(value, identifiers='$@')
+        var = VariableSplitter(value, identifiers='$@&')   #DEBUG added dict
         return var.start == 0 and var.end == len(value)
 
 
@@ -419,11 +428,12 @@ class KeywordTable(TestCaseTable):
         return False
 
 
-# Following code copied directly from Robot Framework 2.7.5.
+# Following code was initially copied directly from Robot Framework 2.7.5.
+# The new code was copied directly from Robot Framework 3.0.2.
 
-class VariableSplitter:
+class VariableSplitter(object):
 
-    def __init__(self, string, identifiers):
+    def __init__(self, string, identifiers='$@%&*'):
         self.identifier = None
         self.base = None
         self.index = None
@@ -431,37 +441,64 @@ class VariableSplitter:
         self.end = -1
         self._identifiers = identifiers
         self._may_have_internal_variables = False
+        if not string:  # On Python3 first char is 0 len
+            return
+        if not is_string(string):
+            self._max_end = -1
+            return
+        self._max_end = len(string)
+        #print("DEBUG: enter VariableSplitter:%s:%s:-->Type:%s:len%r" % (string, identifiers, type(string), self._max_end ))
         try:
             self._split(string)
+            #print("DEBUG: At No error Valueerror VariableSplitter:self:%s" % self)
         except ValueError:
+            #print("DEBUG: At Valueerror VariableSplitter:self:%s" % self)
             pass
         else:
             self._finalize()
+        #print("DEBUG: Return from VariableSplitter:%s" % self)
 
-    def get_replaced_base(self, variables):
+    def get_replaced_variable(self, replacer):
         if self._may_have_internal_variables:
-            return variables.replace_string(self.base)
-        return self.base
+            base = replacer.replace_string(self.base)
+        else:
+            base = self.base
+        # This omits possible list/dict variable index.
+        return '%s{%s}' % (self.identifier, base)
+
+    def is_variable(self):
+        return bool(self.identifier and self.base and
+                    self.start == 0 and self.end == self._max_end)
+
+    def is_list_variable(self):
+        return bool(self.identifier == '@' and self.base and
+                    self.start == 0 and self.end == self._max_end and
+                    self.index is None)
+
+    def is_dict_variable(self):
+        return bool(self.identifier == '&' and self.base and
+                    self.start == 0 and self.end == self._max_end and
+                    self.index is None)
 
     def _finalize(self):
         self.identifier = self._variable_chars[0]
         self.base = ''.join(self._variable_chars[2:-1])
         self.end = self.start + len(self._variable_chars)
-        if self._has_list_variable_index():
-            self.index = ''.join(self._list_variable_index_chars[1:-1])
-            self.end += len(self._list_variable_index_chars)
+        if self._has_index():
+            self.index = ''.join(self._index_chars[1:-1])
+            self.end += len(self._index_chars)
 
-    def _has_list_variable_index(self):
-        return self._list_variable_index_chars \
-            and self._list_variable_index_chars[-1] == ']'
+    def _has_index(self):
+        return self._index_chars and self._index_chars[-1] == ']'
 
     def _split(self, string):
         start_index, max_index = self._find_variable(string)
+        # print("DEBUG: At _split:start:%s, max_idx:%s" % (start_index, max_index))
         self.start = start_index
         self._open_curly = 1
         self._state = self._variable_state
         self._variable_chars = [string[start_index], '{']
-        self._list_variable_index_chars = []
+        self._index_chars = []
         self._string = string
         start_index += 2
         for index, char in enumerate(string[start_index:]):
@@ -470,31 +507,32 @@ class VariableSplitter:
                 self._state(char, index)
             except StopIteration:
                 return
-            if index == max_index and not self._scanning_list_variable_index():
+            if index == max_index and not self._scanning_index():
                 return
 
-    def _scanning_list_variable_index(self):
-        return self._state in [self._waiting_list_variable_index_state,
-                               self._list_variable_index_state]
+    def _scanning_index(self):
+        return self._state in (self._waiting_index_state, self._index_state)
 
     def _find_variable(self, string):
         max_end_index = string.rfind('}')
+        # print("DEBUG: After _find_variable rfind:%s, pos:%r" % (string, max_end_index))
         if max_end_index == -1:
-            return ValueError('No variable end found')
+            raise(ValueError('No variable end found'))
         if self._is_escaped(string, max_end_index):
             return self._find_variable(string[:max_end_index])
         start_index = self._find_start_index(string, 1, max_end_index)
         if start_index == -1:
-            return ValueError('No variable start found')
+            raise(ValueError('No variable start found'))
         return start_index, max_end_index
 
     def _find_start_index(self, string, start, end):
-        index = string.find('{', start, end) - 1
-        if index < 0:
-            return -1
-        if self._start_index_is_ok(string, index):
-            return index
-        return self._find_start_index(string, index+2, end)
+        while True:
+            index = string.find('{', start, end) - 1
+            if index < 0:
+                return -1
+            if self._start_index_is_ok(string, index):
+                return index
+            start = index + 2
 
     def _start_index_is_ok(self, string, index):
         return string[index] in self._identifiers \
@@ -512,14 +550,14 @@ class VariableSplitter:
         if char == '}' and not self._is_escaped(self._string, index):
             self._open_curly -= 1
             if self._open_curly == 0:
-                if not self._is_list_variable():
+                if not self._can_contain_index():
                     raise StopIteration
-                self._state = self._waiting_list_variable_index_state
+                self._state = self._waiting_index_state
         elif char in self._identifiers:
             self._state = self._internal_variable_start_state
 
-    def _is_list_variable(self):
-        return self._variable_chars[0] == '@'
+    def _can_contain_index(self):
+        return self._variable_chars[0] in '@&'
 
     def _internal_variable_start_state(self, char, index):
         self._state = self._variable_state
@@ -530,13 +568,43 @@ class VariableSplitter:
         else:
             self._variable_state(char, index)
 
-    def _waiting_list_variable_index_state(self, char, index):
+    def _waiting_index_state(self, char, index):
         if char != '[':
             raise StopIteration
-        self._list_variable_index_chars.append(char)
-        self._state = self._list_variable_index_state
+        self._index_chars.append(char)
+        self._state = self._index_state
 
-    def _list_variable_index_state(self, char, index):
-        self._list_variable_index_chars.append(char)
+    def _index_state(self, char, index):
+        self._index_chars.append(char)
         if char == ']':
             raise StopIteration
+
+
+@py2to3
+class VariableIterator(object):
+
+    def __init__(self, string, identifiers='$@%&*'):
+        self._string = string
+        self._identifiers = identifiers
+
+    def __iter__(self):
+        string = self._string
+        while True:
+            var = VariableSplitter(string, self._identifiers)
+            if var.identifier is None:
+                break
+            before = string[:var.start]
+            variable = '%s{%s}' % (var.identifier, var.base)
+            string = string[var.end:]
+            yield before, variable, string
+
+    def __len__(self):
+        return sum(1 for _ in self)
+
+    def __nonzero__(self):
+        try:
+            next(iter(self))
+        except StopIteration:
+            return False
+        else:
+            return True

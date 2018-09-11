@@ -15,7 +15,7 @@
 import re
 
 from robotide import robotapi, utils
-from robotide.utils import variablematcher
+from robotide.utils import basestring, is_unicode, variablematcher
 from robotide.controller.basecontroller import _BaseController
 from robotide.controller.cellinfo import (CellPosition, CellType, CellInfo,
                                           CellContent, ContentType)
@@ -149,7 +149,9 @@ class StepController(_BaseController):
         value = self.get_value(col)
         if self._is_commented(col):
             return CellContent(ContentType.COMMENTED, value)
-        if self._get_last_none_empty_col_idx() < col:
+        last_none_empty = self._get_last_none_empty_col_idx()
+        if isinstance(last_none_empty, int) and last_none_empty < col:
+            # DEBUG if self._get_last_none_empty_col_idx() < col:
             return CellContent(ContentType.EMPTY, value)
         if variablematcher.is_variable(value):
             if self._is_unknow_variable(value, position):
@@ -213,7 +215,7 @@ class StepController(_BaseController):
                    for item in [self.keyword or ''] + self.args)
 
     def _kw_name_match(self, item, expected):
-        if isinstance(expected, basestring):
+        if isinstance(expected, basestring) or is_unicode(expected):
             return utils.eq(item, expected) or (
                 self._GIVEN_WHEN_THEN_MATCHER.match(item) and
                 utils.eq(

@@ -20,8 +20,14 @@ from robotide.utils.versioncomparator import cmp_versions
 from robotide.widgets.button import ButtonWithHandler
 
 import time
-import urllib2
-import xmlrpclib
+try:
+    import urllib2
+except ImportError:  # py3
+    import urllib as urllib2
+try:
+    import xmlrpclib
+except ImportError:  # py3
+    import xmlrpc
 import robotide.version as version
 
 _CHECK_FOR_UPDATES_SETTING = 'check for updates'
@@ -51,8 +57,8 @@ class UpdateNotifierController(object):
         try:
             self._newest_version = self._get_newest_version()
             self._download_url = self._get_download_url(self._newest_version)
-        except Exception, e:
-            print e
+        except Exception as e:
+            print(e)
             #There are many possible errors:
             # - Timeout
             # - Corrupted data
@@ -68,14 +74,14 @@ class UpdateNotifierController(object):
         return self._get_response(('robotframework-ride', version), 'release_data')['download_url']
 
     def _get_response(self, params, method):
-        req = urllib2.Request('http://pypi.python.org/pypi', xmlrpclib.dumps(params, method), {'Content-Type':'text/xml'})
+        req = urllib2.Request('https://pypi.python.org/pypi', xmlrpclib.dumps(params, method), {'Content-Type':'text/xml'})
         return xmlrpclib.loads(urllib2.urlopen(req, timeout=1).read())[0][0]
 
 
 class HtmlWindow(wx.html.HtmlWindow):
     def __init__(self, parent, id, size=(600,400)):
         wx.html.HtmlWindow.__init__(self,parent, id, size=size)
-        if "gtk2" in wx.PlatformInfo:
+        if "gtk2" or "gtk3" in wx.PlatformInfo:
             self.SetStandardFonts()
 
     def OnLinkClicked(self, link):

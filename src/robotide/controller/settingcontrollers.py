@@ -13,13 +13,21 @@
 #  limitations under the License.
 
 import re
+import sys
 from itertools import chain
 
 from robotide.publish.messages import RideImportSettingChanged,\
     RideImportSettingRemoved, RideVariableUpdated, RideItemSettingsChanged, \
     RideImportSettingAdded
 from robotide import robotapi, utils
-from robotide.utils import overrides, variablematcher
+from robotide.utils import basestring, overrides, variablematcher
+
+if sys.version_info[0] == 2:
+    PYTHON2 = True
+    PYTHON3 = False
+elif sys.version_info[0] == 3:
+    PYTHON2 = False
+    PYTHON3 = True
 
 from .tags import Tag, ForcedTag, DefaultTag
 from .basecontroller import ControllerWithParent
@@ -65,8 +73,11 @@ class _SettingController(ControllerWithParent):
         return ''
 
     def contains_keyword(self, name):
-        matcher = name.match if not isinstance(name, basestring) \
-            else lambda i: utils.eq(i, name)
+        if PYTHON2:
+            istring = isinstance(name, basestring) or isinstance(name, unicode)
+        elif PYTHON3:
+            istring = isinstance(name, basestring)
+        matcher = name.match if not istring else lambda i: utils.eq(i, name)
         return self._contains_keyword(matcher)
 
     def _contains_keyword(self, matcher_function):

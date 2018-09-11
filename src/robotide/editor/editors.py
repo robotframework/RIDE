@@ -73,7 +73,7 @@ class _RobotTableEditor(EditorPanel):
         if self.title:
             self.sizer.Add(self._create_header(self.title),
                            0, wx.EXPAND | wx.ALL, 5)
-            self.sizer.Add((0, 10))
+            # self.sizer.Add((0, 10))  # DEBUG why this?
         self._editors = []
         self._reset_last_show_tooltip()
         self._populate()
@@ -188,7 +188,6 @@ class Settings(wx.CollapsiblePane):
             style=wx.CP_DEFAULT_STYLE | wx.CP_NO_TLW_RESIZE)
         self._sizer = wx.BoxSizer(wx.VERTICAL)
         self._editors = []
-        self.Bind(wx.EVT_SIZE, self._recalc_size)
 
     def Expand(self):
         wx.CollapsiblePane.Expand(self)
@@ -223,16 +222,6 @@ class Settings(wx.CollapsiblePane):
             self._sizer.Add(editor, 0, wx.ALL | wx.EXPAND, self.BORDER)
             self._editors.append(editor)
         self.GetPane().SetSizer(self._sizer)
-
-    def _recalc_size(self, event=None):
-        if self.IsExpanded():
-            expand_button_height = 32  # good guess...
-            height = sum(editor.Size[1] + 2 * self.BORDER
-                         for editor in self._editors)
-            self.SetSize((-1, height + expand_button_height))
-            self._sizer.Layout()
-        if event:
-            event.Skip()
 
     def highlight(self, text, expand=True):
         match = False

@@ -13,20 +13,29 @@
 #  limitations under the License.
 
 from time import time
-from StringIO import StringIO
+try:
+    from StringIO import StringIO
+except ImportError:  # py3
+    from io import StringIO
 import string
 import wx
 from wx import stc
 
 from robotide import robotapi
 from robotide.context import IS_WINDOWS, IS_MAC
-from robotide.controller.commands import SetDataFile
+from robotide.controller.ctrlcommands import SetDataFile
 from robotide.publish.messages import RideMessage
+from robotide.utils import PY2
 from robotide.widgets import VerticalSizer, HorizontalSizer, ButtonWithHandler
 from robotide.pluginapi import Plugin, RideSaving, TreeAwarePluginMixin,\
     RideTreeSelection, RideNotebookTabChanging, RideDataChanged,\
     RideOpenSuite, RideDataChangedToDirty
 from robotide.widgets import TextField, Label, HtmlDialog
+
+if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
+    from wx.adv import HyperlinkCtrl, EVT_HYPERLINK
+else:
+    from wx import HyperlinkCtrl, EVT_HYPERLINK
 
 try:
     from . import robotframeworklexer
@@ -145,7 +154,6 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         elif message.oldtab == self.title:
             self._editor.remove_and_store_state()
 
-
     def _apply_txt_changes_to_model(self):
         if not self._editor.save():
             return False
@@ -167,16 +175,19 @@ class DataValidationHandler(object):
         self._editor = editor
 
     def validate_and_update(self, data, text):
-        if not self._sanity_check(data, text):
+        m_text = text.decode("utf-8")
+        if not self._sanity_check(data, m_text):
+            # print("DEBUG: _handle_sanity_check_failure")
             self._handle_sanity_check_failure()
             return False
         else:
             self._editor.reset()
-            data.update_from(text)
+            # print("DEBUG: updating type %s" % type(m_text))
+            data.update_from(m_text)
             return True
 
     def _sanity_check(self, data, text):
-        formatted_text = data.format_text(text).encode('UTF-8')
+        formatted_text = data.format_text(text)
         c = self._normalize(formatted_text)
         e = self._normalize(text)
         return len(c) == len(e)
@@ -184,20 +195,21 @@ class DataValidationHandler(object):
     def _normalize(self, text):
         for item in tuple(string.whitespace) + ('...', '*'):
             if item in text:
+                # print("DEBUG: _normaliz item %s txt %s" % (item, text))
                 text = text.replace(item, '')
         return text
 
     def _handle_sanity_check_failure(self):
         if self._last_answer == wx.ID_NO and \
-            time() - self._last_answer_time <= 0.2:
+        time() - self._last_answer_time <= 0.2:
             self._editor._mark_file_dirty()
             return
         # TODO: use widgets.Dialog
         id = wx.MessageDialog(self._editor,
-                         'ERROR: Data sanity check failed!\n'\
-                         'Reset changes?',
-                         'Can not apply changes from Txt Editor',
-                          style=wx.YES|wx.NO).ShowModal()
+                              'ERROR: Data sanity check failed!\n'
+                              'Reset changes?',
+                              'Can not apply changes from Txt Editor',
+                              style=wx.YES|wx.NO).ShowModal()
         self._last_answer = id
         self._last_answer_time = time()
         if id == wx.ID_NO:
@@ -221,7 +233,10 @@ class DataFileWrapper(object): # TODO: bad class name
         self._data.execute(SetDataFile(self._create_target_from(content)))
 
     def _create_target_from(self, content):
-        src = StringIO(content)
+        if PY2:
+            src = StringIO(content.encode("utf-8"))
+        else:   # DEBUG because Apply Changes
+            src = StringIO(content)
         target = self._create_target()
         FromStringIOPopulator(target).populate(src)
         return target
@@ -248,8 +263,8 @@ class DataFileWrapper(object): # TODO: bad class name
     def _txt_data(self, data):
         output = StringIO()
         data.save(output=output, format='txt',
-                  txt_separating_spaces=self._settings['txt number of spaces'])
-        return output.getvalue().decode('UTF-8')
+                  txt_separating_spaces=self._settings.get('txt number of spaces', 4))
+        return output.getvalue()  # DEBUG .decode('utf-8')
 
 
 class SourceEditor(wx.Panel):
@@ -299,8 +314,8 @@ class SourceEditor(wx.Panel):
         if self._syntax_colorization_help_exists:
             return
         label = Label(self, label="Syntax colorization disabled due to missing requirements.")
-        link = wx.HyperlinkCtrl(self, -1, label="Get help", url="")
-        link.Bind(wx.EVT_HYPERLINK, self.show_help_dialog)
+        link = HyperlinkCtrl(self, -1, label="Get help", url="")
+        link.Bind(EVT_HYPERLINK, self.show_help_dialog)
         flags = wx.ALIGN_CENTER_VERTICAL|wx.ALIGN_RIGHT
         syntax_colorization_help_sizer = wx.BoxSizer(wx.VERTICAL)
         syntax_colorization_help_sizer.AddMany([
@@ -344,6 +359,7 @@ class SourceEditor(wx.Panel):
 
     def set_editor_caret_position(self):
         position = self._positions.get(self.datafile_controller, None)
+        # print("DEBUG: Called set caret position=%s" % position)
         if position:
             self._editor.SetFocus()
             self._editor.SetCurrentPos(position)
@@ -356,7 +372,6 @@ class SourceEditor(wx.Panel):
     @property
     def datafile_controller(self):
         return self._data._data if self._data else None
-
 
     def OnFind(self, event):
         if self._editor:
@@ -459,10 +474,11 @@ class SourceEditor(wx.Panel):
         self._editor.Bind(wx.EVT_KEY_UP, self.OnEditorKey)
         self._editor.Bind(wx.EVT_KILL_FOCUS, self.LeaveFocus)
         self._editor.Bind(wx.EVT_SET_FOCUS, self.GetFocus)
+        # TODO Add here binding for keyword help
 
     def LeaveFocus(self, event):
         self._editor.SetCaretPeriod(0)
-        self.save()
+        # self.save()
 
     def GetFocus(self, event):
         self._editor.SetCaretPeriod(500)
@@ -519,7 +535,7 @@ class RobotStylizer(object):
         self.editor = editor
         self.lexer = None
         self.settings = settings
-        self.font_size = settings['Text Edit'].get('font size', 8)
+        self.font_size = settings['Text Edit'].get('font size', 10)
         if robotframeworklexer:
             self.lexer = robotframeworklexer.RobotFrameworkLexer()
             self._set_styles()
@@ -530,43 +546,43 @@ class RobotStylizer(object):
         color_settings = self.settings.get_without_default('Text Edit')
         styles = {
             robotframeworklexer.ARGUMENT: {
-                'fore': color_settings['argument']
+                'fore': color_settings.get('argument','#bb8844')
             },
             robotframeworklexer.COMMENT: {
-                'fore': color_settings['comment']
+                'fore': color_settings.get('comment', 'black')
             },
             robotframeworklexer.ERROR: {
-                'fore': color_settings['error']
+                'fore': color_settings.get('error', 'black')
             },
             robotframeworklexer.GHERKIN: {
-                'fore': color_settings['gherkin']
+                'fore': color_settings.get('gherkin', 'black')
             },
             robotframeworklexer.HEADING: {
-                'fore': color_settings['heading'],
+                'fore': color_settings.get('heading', '#999999'),
                 'bold': 'true'
             },
             robotframeworklexer.IMPORT: {
-                'fore': color_settings['import']
+                'fore': color_settings.get('import', '#555555')
             },
             robotframeworklexer.KEYWORD: {
-                'fore': color_settings['keyword'],
+                'fore': color_settings.get('keyword', '#990000'),
                 'bold': 'true'
             },
             robotframeworklexer.SEPARATOR: {
-                'fore': color_settings['separator']
+                'fore': color_settings.get('separator', 'black')
             },
             robotframeworklexer.SETTING: {
-                'fore': color_settings['setting'],
+                'fore': color_settings.get('setting', 'black'),
                 'bold': 'true'
             },
             robotframeworklexer.SYNTAX: {
-                'fore': color_settings['syntax']
+                'fore': color_settings.get('syntax', 'black')
             },
             robotframeworklexer.TC_KW_NAME: {
-                'fore': color_settings['tc_kw_name']
+                'fore': color_settings.get('tc_kw_name', '#aaaaaa')
             },
             robotframeworklexer.VARIABLE: {
-                'fore': color_settings['variable']
+                'fore': color_settings.get('variable', '#008080')
             }
         }
         self.tokens = {}

@@ -11,10 +11,14 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-from robotide.utils import overrides
-from robotide.widgets import Dialog, VerticalSizer, VirtualList, Label, HelpLabel, ImageProvider, ButtonWithHandler
 import wx
+
+from functools import (total_ordering, cmp_to_key)
+from robotide.utils import (overrides, unicode)
+from robotide.widgets import (Dialog, VerticalSizer, VirtualList, Label,
+                              HelpLabel, ImageProvider, ButtonWithHandler)
 from robotide.widgets.list import ListModel
+
 
 class TestsDialog(Dialog):
 
@@ -61,7 +65,7 @@ class TestsDialog(Dialog):
         controls_sizer.Add(self._create_tag_search_button(panel), 0, wx.ALL | wx.EXPAND, 3)
         controls_sizer.Add(self._create_add_to_selected_button(panel), 0, wx.ALL | wx.EXPAND, 3)
         panel.Sizer.Add(controls_sizer)
-        panel.Sizer.Add(self._add_info_text(panel, "Find matches using tag patterns. See RF User Guide or 'pybot --help' for more information."), 0, wx.ALL, 3)
+        panel.Sizer.Add(self._add_info_text(panel, "Find matches using tag patterns. See RF User Guide or 'robot --help' for more information."), 0, wx.ALL, 3)
         self._tags_results = _TestSearchListModel([])
         self._tags_list = VirtualList(panel, ['Test', 'Tags', 'Source'], self._tags_results)
         self._tags_list.add_selection_listener(self._select_tag_search_result)
@@ -221,10 +225,12 @@ class TestsDialog(Dialog):
             self._tags_to_exclude_text.SetValue(include_txt)
             self.OnSearchTags(event)
 
+
+@total_ordering
 class _TestSearchListModel(ListModel):
 
     def __init__(self, tests):
-        self._tests = sorted(tests, cmp=lambda x, y: cmp(x[1], y[1]))
+        self._tests = sorted(tests, key=cmp_to_key(lambda x, y: self.m_cmp(x[1], y[1])))
 
     @property
     @overrides(ListModel)
@@ -241,3 +247,16 @@ class _TestSearchListModel(ListModel):
         if col == 1:
             return u', '.join(unicode(t) for t in test.tags)
         return test.datafile_controller.longname
+
+    @staticmethod
+    def m_cmp(a, b):
+        return (a > b) - (a < b)
+
+    def __eq__(self, other):
+        return self.__class__.__name__.lower() == other.name.lower()
+
+    def __hash__(self):
+        return hash(repr(self))
+
+    def __lt__(self, other):
+        return self.__class__.__name__.lower() < other.name.lower()

@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -14,7 +15,7 @@
 
 from robotide.lib.robot.errors import DataError
 from robotide.lib.robot.model import TagPatterns
-from robotide.lib.robot.utils import MultiMatcher, is_list_like
+from robotide.lib.robot.utils import MultiMatcher, is_list_like, py2to3
 
 
 def validate_flatten_keyword(options):
@@ -27,6 +28,7 @@ def validate_flatten_keyword(options):
                             "'NAME:<pattern>' but got '%s'." % opt)
 
 
+@py2to3
 class FlattenByTypeMatcher(object):
 
     def __init__(self, flatten):
@@ -42,6 +44,7 @@ class FlattenByTypeMatcher(object):
         return bool(self._types)
 
 
+@py2to3
 class FlattenByNameMatcher(object):
 
     def __init__(self, flatten):
@@ -58,6 +61,7 @@ class FlattenByNameMatcher(object):
         return bool(self._matcher)
 
 
+@py2to3
 class FlattenByTagMatcher(object):
 
     def __init__(self, flatten):

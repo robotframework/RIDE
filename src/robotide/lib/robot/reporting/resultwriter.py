@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -84,7 +85,7 @@ class ResultWriter(object):
         try:
             writer(path, *args)
         except DataError as err:
-            LOGGER.error(unicode(err))
+            LOGGER.error(err.message)
         except EnvironmentError as err:
             # `err.filename` can be different than `path` at least if reading
             # log/report templates or writing split log fails.

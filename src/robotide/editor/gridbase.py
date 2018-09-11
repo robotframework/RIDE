@@ -17,7 +17,7 @@ from wx import grid
 
 from robotide.widgets import PopupCreator, PopupMenuItems
 from robotide.context import IS_WINDOWS
-from clipboard import ClipboardHandler
+from .clipboard import ClipboardHandler
 
 
 class GridEditor(grid.Grid):
@@ -85,6 +85,7 @@ class GridEditor(grid.Grid):
         self.MakeCellVisible(row, column)
 
     def copy(self):
+        # print("DEBUG: GridBase copy() called\n")
         self._clipboard_handler.copy()
 
     def cut(self):
@@ -102,7 +103,12 @@ class GridEditor(grid.Grid):
 
     def delete(self):
         self._update_history()
-        if self.IsCellEditControlShown():
+        # if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
+        #     _iscelleditcontrolshown = self.IsCellEditControlEnabled()
+        # else:
+        #     _iscelleditcontrolshown = self.IsCellEditControlShown()
+        _iscelleditcontrolshown = self.IsCellEditControlShown()
+        if _iscelleditcontrolshown:
             if IS_WINDOWS:
                 self._delete_from_cell_editor()
         else:
@@ -214,14 +220,18 @@ class GridEditor(grid.Grid):
         self._popup_creator.show(self, PopupMenuItems(self, self._popup_items),
                                  self.get_selected_content())
 
+    # TODO This code is overriden at fieldeditors
     def OnInsertCells(self, event):
         self._insert_or_delete_cells(self._insert_cells, event)
 
+    # TODO This code is overriden at fieldeditors
     def OnDeleteCells(self, event):
+        # print("DEBUG delete cells %s" % event)
         self._insert_or_delete_cells(self._delete_cells, event)
 
     def _insert_or_delete_cells(self, action, event):
         self._update_history()
+        # print("DEBUG insert or delete selected %s" % self.selection.rows())
         for index in self.selection.rows():
             data = action(self._row_data(index))
             self._write_row(index, data)
@@ -236,7 +246,9 @@ class GridEditor(grid.Grid):
 
     def _delete_cells(self, data):
         cols = self.selection.cols()
-        left, right = cols[0], cols[-1] + 1
+        print("DEBUG delete cols selected %s" % cols)
+        left, right = cols[0], cols[-1]   # + 1  # DEBUG removed extra cell
+        print("DEBUG delete left, right (%d,%d) values %s" % (left, right, data[left:right]))
         data[left:right] = []
         return data + [''] * len(cols)
 

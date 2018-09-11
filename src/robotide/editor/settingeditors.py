@@ -15,12 +15,12 @@
 import wx
 
 from robotide import context
-from robotide.controller.commands import UpdateVariable, UpdateDocumentation,\
+from robotide.controller.ctrlcommands import UpdateVariable, UpdateDocumentation,\
     SetValues, AddLibrary, AddResource, AddVariablesFileImport, ClearSetting
 from robotide.editor.listeditor import ListEditorBase
 from robotide.publish.messages import RideImportSetting,\
     RideOpenVariableDialog, RideExecuteSpecXmlImport, RideSaving
-from robotide.utils import overrides
+from robotide.utils import basestring, overrides
 from robotide.widgets import ButtonWithHandler, Label, HtmlWindow, PopupMenu,\
     PopupMenuItems, HtmlDialog
 from robotide.publish import PUBLISHER
@@ -37,7 +37,12 @@ from .popupwindow import HtmlPopupWindow
 from .tags import TagsDisplay
 
 
+# Metaclass fix from http://code.activestate.com/recipes/204197-solving-the-metaclass-conflict/
+from robotide.utils.noconflict import classmaker
+
+
 class SettingEditor(wx.Panel, utils.RideEventHandler):
+    __metaclass__ = classmaker()
 
     def __init__(self, parent, controller, plugin, tree):
         wx.Panel.__init__(self, parent)
@@ -125,7 +130,7 @@ class SettingEditor(wx.Panel, utils.RideEventHandler):
 
     def OnEnterWindow(self, event):
         if self._mainframe_has_focus():
-            self.popup_timer = wx.CallLater(500, self.OnPopupTimer)
+            self.popup_timer = wx.CallLater(500, self.OnPopupTimer, event)
 
     def _mainframe_has_focus(self):
         return wx.GetTopLevelParent(self.FindFocus()) == \
@@ -135,7 +140,15 @@ class SettingEditor(wx.Panel, utils.RideEventHandler):
         self._stop_popup_timer()
 
     def OnPopupTimer(self, event):
-        if self.Parent.tooltip_allowed(self._tooltip):
+        _tooltipallowed = False
+        # TODO This prevents tool tip for ex. Template edit field in wxPhoenix
+        try:  # DEBUG wxPhoenix
+             _tooltipallowed = self.Parent.tooltip_allowed(self._tooltip)
+            #_tooltipallowed = self._get_tooltip()
+        except AttributeError:
+            # print("DEBUG: There was an attempt to show a Tool Tip.\n")
+            pass
+        if _tooltipallowed:
             details, title = self._get_details_for_tooltip()
             if details:
                 self._tooltip.set_content(details, title)
@@ -416,6 +429,7 @@ class VariablesListEditor(_AbstractListEditor):
 
     def _open_var_dialog(self, var):
         var_name = var.name.lower()
+        dlg = None
         if var_name.startswith('${'):
             dlg = ScalarVariableDialog(self._controller, item=var)
         elif var_name.startswith('@{'):
@@ -424,11 +438,12 @@ class VariablesListEditor(_AbstractListEditor):
         elif var_name.startswith('&{'):
             dlg = DictionaryVariableDialog(self._controller, item=var,
                                            plugin=self.Parent.plugin)
-        if dlg.ShowModal() == wx.ID_OK:
-            name, value = dlg.get_value()
-            var.execute(UpdateVariable(name, value, dlg.get_comment()))
-            self.update_data()
-        dlg.Destroy()
+        if dlg:  # DEBUG robot accepts % variable definition
+            if dlg.ShowModal() == wx.ID_OK:
+                name, value = dlg.get_value()
+                var.execute(UpdateVariable(name, value, dlg.get_comment()))
+                self.update_data()
+            dlg.Destroy()
 
     def close(self):
         PUBLISHER.unsubscribe_all(key=self)

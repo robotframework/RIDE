@@ -314,9 +314,11 @@ class KeywordTableController(_MacroTable):
         return self._table.keywords
 
     def _notify_creation(self, name, ctrl):
+        print("DEBUG notify_creation %s" % name)
         RideUserKeywordAdded(datafile=self.datafile, name=name, item=ctrl).publish()
 
     def _notify_removal(self, item):
+        print("DEBUG notify_removal %s" % item.name)
         RideUserKeywordRemoved(datafile=self.datafile, name=item.name, item=item).publish()
 
     def new(self, name, argstr=''):

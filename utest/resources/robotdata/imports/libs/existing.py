@@ -1,2 +1,2 @@
 def keyword():
-    print 'this is a keyword'
+    print('this is a keyword')

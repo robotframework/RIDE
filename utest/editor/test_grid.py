@@ -1,5 +1,5 @@
 import unittest
-from nose.tools import assert_equals
+from nose.tools import assert_equal
 
 from robotide.editor.gridbase import GridEditor
 
@@ -42,10 +42,10 @@ class TestCoordinates(unittest.TestCase):
         self._verify_selection(0, 1, 3, 4)
 
     def _verify_selection(self, toprow, topcol, botrow, botcol):
-        assert_equals(self._editor.selection.topleft.row, toprow)
-        assert_equals(self._editor.selection.topleft.col, topcol)
-        assert_equals(self._editor.selection.bottomright.row, botrow)
-        assert_equals(self._editor.selection.bottomright.col, botcol)
+        assert_equal(self._editor.selection.topleft.row, toprow)
+        assert_equal(self._editor.selection.topleft.col, topcol)
+        assert_equal(self._editor.selection.bottomright.row, botrow)
+        assert_equal(self._editor.selection.bottomright.col, botcol)
 
 
 if not IS_WINDOWS:
@@ -66,7 +66,7 @@ if not IS_WINDOWS:
         def _copy_block_and_verify(self, block, exp_content):
             self._editor.SelectBlock(*block)
             self._editor.copy()
-            assert_equals(self._editor._clipboard_handler._clipboard.get_contents(),
+            assert_equal(self._editor._clipboard_handler._clipboard.get_contents(),
                           exp_content)
             self._verify_grid_content(DATA)
 
@@ -82,7 +82,7 @@ if not IS_WINDOWS:
 
         def _cut_block_and_verify(self, block, exp_clipboard, exp_grid):
             self._cut_block(block)
-            assert_equals(self._editor._clipboard_handler._clipboard.get_contents(),
+            assert_equal(self._editor._clipboard_handler._clipboard.get_contents(),
                           exp_clipboard)
             self._verify_grid_content(exp_grid)
 
@@ -134,11 +134,11 @@ if not IS_WINDOWS:
                 for col in range(self._editor.NumberCols):
                     value = self._editor.GetCellValue(row, col)
                     try:
-                        assert_equals(value, data[row][col],
+                        assert_equal(value, data[row][col],
                                       'The contents of cell (%d,%d) was not as '
                                       'expected' % (row, col))
                     except IndexError:
-                        assert_equals(value, '')
+                        assert_equal(value, '')
 
         def test_simple_undo(self):
             self._editor.SelectBlock(*(0, 0, 0, 0))

@@ -1,6 +1,6 @@
 import unittest
 from robotide.namespace.namespace import _Keywords
-from nose.tools import assert_true, assert_false, assert_equals
+from nose.tools import assert_true, assert_false, assert_equal
 
 
 class ItemMock(object):
@@ -62,8 +62,8 @@ class TestKeywords(unittest.TestCase):
     def test_first_come_prioritized_when_same_short_name(self):
         kws = _Keywords([ItemMock('My kw', ['${arg}'], 'source.My kw'),
                          ItemMock('My kw', [], 'Collision!')])
-        assert_equals(kws.get('My kw').arguments, ['${arg}'])
-        assert_equals(kws.get('Collision!').arguments, [])
+        assert_equal(kws.get('My kw').arguments, ['${arg}'])
+        assert_equal(kws.get('Collision!').arguments, [])
 
 
 if __name__ == "__main__":

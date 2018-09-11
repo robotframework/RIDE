@@ -1,5 +1,5 @@
 import unittest
-from nose.tools import assert_equals
+from nose.tools import assert_equal
 
 from robotide.pluginapi import Plugin
 from robotide.namespace import Namespace
@@ -14,8 +14,8 @@ from robotide.spec.librarymanager import LibraryManager
 class ContentAssistPlugin(Plugin):
 
     def _get_content_assist_values(self, item, value):
-        assert_equals(item.name, None)
-        assert_equals(value, 'given')
+        assert_equal(item.name, None)
+        assert_equal(value, 'given')
         return [ItemInfo('foo', 'test', 'quux')]
 
 

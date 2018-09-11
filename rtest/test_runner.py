@@ -1,5 +1,4 @@
 import inspect
-from model import RIDE
 import random
 import shutil
 import os

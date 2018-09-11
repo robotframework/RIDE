@@ -121,9 +121,13 @@ class _Menu(object):
     def _get_name(self, action, build_new):
         get_name = build_new and self._name_builder.get_name or \
                                  self._name_builder.get_registered_name
-        if not action.shortcut:
+        if not action.shortcut:  # DEBUG not action.shortcut:
             return get_name(action.name)
-        return '%s    (%s)' % (get_name(action.name), action.get_shortcut())
+        sht = action.get_shortcut()
+        if sht:
+            # print("DEBUG: actiontriggers name:%s shtcut:(%s)" % (get_name(action.name), action.get_shortcut()))
+            return '%s    (%s)' % (get_name(action.name), sht)
+        return '%s' % get_name(action.name)
 
     def _create_menu_item(self, action):
         name_with_accerelator = self._get_name(action, build_new=True)
@@ -153,6 +157,7 @@ class _NameBuilder(object):
             name = self._use_given_accelerator(name)
         except ValueError:
             name = self._generate_accelerator(name)
+            # print("DEBUG: actiontriggers get_name on ValueErr: %s" % name)
         self._register(name)
         return name
 
@@ -223,7 +228,9 @@ class SeparatorMenuItem(_MenuItem):
 
     def set_wx_menu_item(self, wx_menu_item):
         _MenuItem.set_wx_menu_item(self, wx_menu_item)
-        self._wx_menu_item.SetId(self.id)
+        # Should get  ITEM_SEPARATOR
+        self.id = wx.ID_SEPARATOR
+        # self._wx_menu_item.SetId(self.id)  # DEBUG Not in wxPhoenix
 
     def _is_enabled(self):
         return False
@@ -263,11 +270,20 @@ class ToolBar(object):
     def _create_button(self, action):
         button = ToolBarButton(self._frame, self, action)
         name = self._format_button_tooltip(action)
-        self._wx_toolbar.AddLabelTool(button.id, label=name, bitmap=action.icon,
-                                      shortHelp=name, longHelp=action.doc)
+        self.MyAddTool(self._wx_toolbar, button.id, label=name,
+                       bitmap=action.icon, shortHelp=name, longHelp=action.doc)
         self._wx_toolbar.Realize()
         self._buttons.append(button)
         return button
+
+    def MyAddTool(self, obj, toolid, label, bitmap, bmpDisabled=wx.NullBitmap,
+                  kind=wx.ITEM_NORMAL, shortHelp="", longHelp=""):
+        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
+            obj.AddTool(toolid, label, bitmap, bmpDisabled, kind,
+                        shortHelp, longHelp)
+        else:
+            obj.AddLabelTool(toolid, label, bitmap, shortHelp=shortHelp,
+                             longHelp=longHelp)
 
     def _format_button_tooltip(self, action):
         tooltip = action.name.replace('&', '')
@@ -340,7 +356,11 @@ class ShortcutRegistry(object):
     def _update_accerelator_table(self):
         accerelators = []
         for delegator in self._actions.values():
-            flags, key_code = delegator.shortcut.parse()
+            # print("DEBUG: actiontrigger updateacelerators  delegator %s" % delegator)
+            try:
+                flags, key_code = delegator.shortcut.parse()
+            except TypeError:
+                continue
             accerelators.append(wx.AcceleratorEntry(flags, key_code, delegator.id))
         self._frame.SetAcceleratorTable(wx.AcceleratorTable(accerelators))
 

@@ -23,10 +23,10 @@ from robotide.validators import ScalarVariableNameValidator, \
 from robotide import utils
 from robotide.widgets import HelpLabel, Dialog
 
-from fieldeditors import ValueEditor, ListValueEditor, MultiLineEditor,\
+from .fieldeditors import ValueEditor, ListValueEditor, MultiLineEditor,\
     ContentAssistEditor, VariableNameEditor, ArgumentEditor, FileNameEditor
-from formatters import ListToStringFormatter
-from dialoghelps import get_help
+from .formatters import ListToStringFormatter
+from .dialoghelps import get_help
 
 
 def EditorDialog(obj):
@@ -67,7 +67,7 @@ class _Dialog(Dialog):
         self._sizer.Add(HelpLabel(self, label=get_help(self._title)),
                         flag=wx.ALL, border=2)
 
-    def _create_buttons(self):
+    def _create_buttons(self, **kwargs):
         buttons = self.CreateStdDialogButtonSizer(wx.OK|wx.CANCEL)
         self._sizer.Add(buttons, 0, wx.ALIGN_CENTER|wx.ALL, 5)
 
@@ -80,6 +80,9 @@ class _Dialog(Dialog):
     def setFocusToOK(self):
         self.FindWindowById(wx.ID_OK).SetFocus()
 
+    def _execute(self):
+        pass
+
 
 class ScalarVariableDialog(_Dialog):
 
@@ -89,6 +92,9 @@ class ScalarVariableDialog(_Dialog):
         validator = ScalarVariableNameValidator(self._controller, name)
         return [VariableNameEditor(self, name, 'Name', validator),
                 ValueEditor(self, value, 'Value')]
+
+    def _execute(self):
+        pass
 
 
 class ListVariableDialog(_Dialog):
@@ -101,6 +107,9 @@ class ListVariableDialog(_Dialog):
                 ListValueEditor(self, value, 'Value',
                                 settings=self.plugin.global_settings)]
 
+    def _execute(self):
+        pass
+
 
 class DictionaryVariableDialog(_Dialog):
 
@@ -111,6 +120,9 @@ class DictionaryVariableDialog(_Dialog):
         return [VariableNameEditor(self, name, 'Name', validator),
                 ListValueEditor(self, value, 'Value',
                                 settings=self.plugin.global_settings)]
+
+    def _execute(self):
+        pass
 
 
 class LibraryDialog(_Dialog):
@@ -131,6 +143,9 @@ class LibraryDialog(_Dialog):
         self._history_suggester.store(values[0])
         return values
 
+    def _execute(self):
+        pass
+
 
 class VariablesDialog(LibraryDialog):
 
@@ -142,12 +157,18 @@ class VariablesDialog(LibraryDialog):
         return [FileNameEditor(self, path, 'Path', self._controller, suggestion_source=self._history_suggester),
                ValueEditor(self, args, 'Args')]
 
+    def _execute(self):
+        pass
+
 
 class ResourceDialog(_Dialog):
 
     def _get_editors(self, item):
         name = item and item.name or ''
         return [FileNameEditor(self, name, 'Path', self._controller, suggestion_source=ResourceSuggester(self._controller))]
+
+    def _execute(self):
+        pass
 
 
 class DocumentationDialog(_Dialog):
@@ -164,6 +185,9 @@ class DocumentationDialog(_Dialog):
     def get_comment(self):
         return ''
 
+    def _execute(self):
+        pass
+
 
 class _SettingDialog(_Dialog):
     _validator = None
@@ -174,15 +198,23 @@ class _SettingDialog(_Dialog):
             editor.set_validator(self._validator())
         return [editor]
 
+    def _execute(self):
+        pass
+
 
 class ForceTagsDialog(_SettingDialog):
-    pass
+    def _execute(self):
+        pass
+
 
 class DefaultTagsDialog(_SettingDialog):
-    pass
+    def _execute(self):
+        pass
+
 
 class TagsDialog(_SettingDialog):
-    pass
+    def _execute(self):
+        pass
 
 
 class _FixtureDialog(_SettingDialog):
@@ -190,35 +222,75 @@ class _FixtureDialog(_SettingDialog):
     def _get_editors(self, item):
         return [ContentAssistEditor(self, item.value)]
 
-class SuiteSetupDialog(_FixtureDialog): pass
+    def _execute(self):
+        pass
 
-class SuiteTeardownDialog(_FixtureDialog): pass
 
-class TestSetupDialog(_FixtureDialog): pass
+class SuiteSetupDialog(_FixtureDialog):
+    tooltip = "Suite Setup is run before any tests"
 
-class TestTeardownDialog(_FixtureDialog): pass
+    def _execute(self):
+        pass
 
-class SetupDialog(_FixtureDialog): pass
 
-class TeardownDialog(_FixtureDialog): pass
+class SuiteTeardownDialog(_FixtureDialog):
+    def _execute(self):
+        pass
 
-class TemplateDialog(_FixtureDialog): pass
 
-class TestTemplateDialog(_FixtureDialog): pass
+class TestSetupDialog(_FixtureDialog):
+    def _execute(self):
+        pass
+
+
+class TestTeardownDialog(_FixtureDialog):
+    def _execute(self):
+        pass
+
+
+class SetupDialog(_FixtureDialog):
+    def _execute(self):
+        pass
+
+
+class TeardownDialog(_FixtureDialog):
+    def _execute(self):
+        pass
+
+
+class TemplateDialog(_FixtureDialog):
+    def _execute(self):
+        pass
+
+
+class TestTemplateDialog(_FixtureDialog):
+    def _execute(self):
+        pass
 
 
 class ArgumentsDialog(_SettingDialog):
     def _get_editors(self, item):
         return [ArgumentEditor(self, item.value, 'Arguments', ArgumentsValidator())]
 
+    def _execute(self):
+        pass
+
+
 class ReturnValueDialog(_SettingDialog):
-    pass
+    def _execute(self):
+        pass
+
 
 class TestTimeoutDialog(_SettingDialog):
     _validator = TimeoutValidator
 
+    def _execute(self):
+        pass
+
+
 class TimeoutDialog(TestTimeoutDialog):
-    pass
+    def _execute(self):
+        pass
 
 
 class MetadataDialog(_Dialog):
@@ -227,6 +299,9 @@ class MetadataDialog(_Dialog):
         name, value = item and (item.name, item.value) or ('', '')
         return [ValueEditor(self, name, 'Name'),
                 ValueEditor(self, value, 'Value')]
+
+    def _execute(self):
+        pass
 
 
 class TestCaseNameDialog(_Dialog):
@@ -243,6 +318,9 @@ class TestCaseNameDialog(_Dialog):
     def get_name(self):
         return _Dialog.get_value(self)[0]
 
+    def _execute(self):
+        pass
+
 
 class CopyUserKeywordDialog(_Dialog):
     _title = 'Copy User Keyword'
@@ -258,8 +336,14 @@ class CopyUserKeywordDialog(_Dialog):
     def get_name(self):
         return _Dialog.get_value(self)[0]
 
+    def _execute(self):
+        pass
+
 
 class UserKeywordNameDialog(_Dialog):
+    def _execute(self):
+        pass
+
     _title = 'New User Keyword'
 
     def _add_comment_editor(self, item):

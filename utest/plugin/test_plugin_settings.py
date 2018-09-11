@@ -16,25 +16,25 @@ class TestPluginSettings(TestSettingsHelper):
             os.remove(self._settings_path)
 
     def test_setting_default_settings_when_no_settings_exist(self):
-        self.assertEquals(self._create_plugin().foo, 'bar')
+        self.assertEqual(self._create_plugin().foo, 'bar')
 
     def test_set_default_settings_when_settings_exist(self):
         app = self._create_app()
         app.settings['Plugins'].add_section('MyPlug', foo='zip')
-        self.assertEquals(Plugin(app, name='MyPlug').foo, 'zip')
+        self.assertEqual(Plugin(app, name='MyPlug').foo, 'zip')
 
     def test_save_setting_with_override(self):
         p = self._create_plugin()
         p.save_setting('foo', 'new')
-        self.assertEquals(p.foo, 'new')
+        self.assertEqual(p.foo, 'new')
 
     def test_save_setting_without_override(self):
         p = self._create_plugin()
         p.save_setting('foo', 'new', override=False)
-        self.assertEquals(p.foo, 'bar')
+        self.assertEqual(p.foo, 'bar')
 
     def test_direct_attribute_access_with_existing_setting(self):
-        self.assertEquals(self._create_plugin().foo, 'bar')
+        self.assertEqual(self._create_plugin().foo, 'bar')
 
     def test_direct_attribute_access_with_non_existing_setting(self):
         try:

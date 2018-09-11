@@ -4,8 +4,8 @@ import os
 import sys
 import wx
 
-from mocks import FakeSettings, FakeApplication, MessageRecordingLoadObserver
-from setting_utils import TestSettingsHelper
+from .mocks import FakeSettings, FakeApplication, MessageRecordingLoadObserver
+from .setting_utils import TestSettingsHelper
 
 if os.sep == '\\':
     CIF = True
@@ -40,4 +40,4 @@ EXTERNAL_RES_UNSORTED_PATH = os.path.join(
 
 PATH_RESOURCE_NAME = 'pathresource.html' if CIF else 'PathResource.html'
 
-PYAPP_REFERENCE = wx.PySimpleApp()
+PYAPP_REFERENCE = wx.App()

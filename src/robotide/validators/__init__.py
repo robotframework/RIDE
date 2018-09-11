@@ -18,7 +18,7 @@ import wx
 from robotide import robotapi, utils
 
 
-class _AbstractValidator(wx.PyValidator):
+class _AbstractValidator(wx.Validator):
     """Implements methods to keep wxPython happy and some helper methods."""
 
     def Clone(self):
@@ -38,7 +38,7 @@ class _AbstractValidator(wx.PyValidator):
             return False
         return True
 
-    def _show_error(self, message, title='Validation Error'):
+    def _show_error(self, message, title="Validation Error"):
         ret = wx.MessageBox(message, title, style=wx.ICON_ERROR)
         self._set_focus_to_text_control(self.Window)
         return ret
@@ -60,7 +60,7 @@ class TimeoutValidator(_AbstractValidator):
             if secs <= 0:
                 raise ValueError("Timestring must be over zero")
             time_tokens[0] = utils.secs_to_timestr(secs)
-        except ValueError, err:
+        except ValueError as err:
             if '${' not in timestr:
                 return str(err)
         self._set_window_value(utils.join_value(time_tokens))
@@ -80,8 +80,8 @@ class ArgumentsValidator(_AbstractValidator):
         try:
             types = [self._get_type(arg)
                      for arg in utils.split_value(args_str)]
-        except ValueError:
-            return "Invalid argument syntax '%s'" % arg
+        except ValueError as e:
+            return "Invalid argument syntax '%s'" % str(e)  # DEBUG  was arg
         return self._validate_argument_order(types)
 
     def _get_type(self, arg):
@@ -94,14 +94,14 @@ class ArgumentsValidator(_AbstractValidator):
         elif robotapi.is_dict_var(arg):
             return ArgumentTypes.DICT
         else:
-            raise ValueError
+            raise ValueError(arg)  # py3
 
     def _validate_argument_order(self, types):
         prev = ArgumentTypes.SCALAR
         for t in types:
             if t < prev:
-                return ('List and scalar arguments must be before '
-                        'named and dictionary arguments')
+                return ("List and scalar arguments must be before named and "
+                        "dictionary arguments")
             prev = t
         return None
 
@@ -117,7 +117,7 @@ class NonEmptyValidator(_AbstractValidator):
 
     def _validate(self, value):
         if not value:
-            return '%s cannot be empty' % self._field_name
+            return "%s cannot be empty" % self._field_name
         return None
 
 
@@ -134,7 +134,7 @@ class SuiteFileNameValidator(NonEmptyValidator):
         validity = NonEmptyValidator._validate(self, value)
         if not self._is_dir_type() and not validity:
             if value.lower() == '__init__':
-                return 'Invalid suite file name "%s"' % value
+                return "Invalid suite file name \"%s\"" % value
         return validity
 
 
@@ -142,7 +142,7 @@ class DirectoryExistsValidator(_AbstractValidator):
 
     def _validate(self, value):
         if not os.path.isdir(value):
-            return 'Chosen directory must exist'
+            return "Chosen directory must exist"
         return None
 
 
@@ -151,12 +151,12 @@ class NewSuitePathValidator(_AbstractValidator):
     def _validate(self, value):
         path = os.path.normpath(value)
         if os.path.exists(path):
-            return 'Target file or directory must not exist'
+            return "Target file or directory must not exist"
         parentdir, filename = os.path.split(path)
-        if '__init__' in filename:
+        if "__init__" in filename:
             parentdir = os.path.dirname(parentdir)
         if not os.path.exists(parentdir):
-            return 'Parent directory must exist'
+            return "Parent directory must exist"
         return None
 
 

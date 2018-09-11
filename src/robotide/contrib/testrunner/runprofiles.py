@@ -30,7 +30,8 @@ import os
 from robotide import pluginapi
 from robotide.widgets import Label
 from robotide.robotapi import DataError, Information
-from robotide.utils import overrides, SYSTEM_ENCODING, ArgumentParser
+from robotide.utils import (overrides, SYSTEM_ENCODING, ArgumentParser,
+                            unicode, is_unicode, PY3)
 from robotide.contrib.testrunner.usages import USAGE
 
 
@@ -73,7 +74,7 @@ class BaseProfile(object):
 
     def get_command_prefix(self):
         '''Returns a command and any special arguments for this profile'''
-        return ["pybot.bat" if os.name == "nt" else "pybot"]
+        return ["robot.bat" if os.name == "nt" else "robot"]
 
     def set_setting(self, name, value):
         '''Sets a plugin setting
@@ -112,19 +113,19 @@ class BaseProfile(object):
 
 
 RF_INSTALLATION_NOT_FOUND = """Robot Framework installation not found.<br>
-To run tets, you need to install Robot Framework separately.<br>
+To run tests, you need to install Robot Framework separately.<br>
 See <a href="http://robotframework.org">http://robotframework.org</a> for
 installation instructions.
 """
 
 
 class PybotProfile(BaseProfile):
-    '''A runner profile which uses pybot
+    '''A runner profile which uses robot
 
-    It is assumed that pybot is on the path
+    It is assumed that robot is on the path
     '''
-    name = "pybot"
-    default_settings = {"arguments": u"",
+    name = "robot"
+    default_settings = {"arguments": "",
                         "include_tags": "",
                         "exclude_tags": "",
                         "apply_include_tags": False,
@@ -142,7 +143,7 @@ class PybotProfile(BaseProfile):
         return self.arguments.split()
 
     def get_command(self):
-        return "pybot.bat" if os.name == "nt" else "pybot"
+        return "robot.bat" if os.name == "nt" else "robot"
 
     def get_custom_args(self):
         args = []
@@ -182,7 +183,7 @@ class PybotProfile(BaseProfile):
         # bash and zsh use return code 127 and the text `command not found`
         # In Windows, the error is `The system cannot file the file specified`
         if 'not found' in error or returncode is 127 or \
-                'system cannot find the file specified' in error:
+                        'system cannot find the file specified' in error:
             return pluginapi.RideLogMessage(
                 RF_INSTALLATION_NOT_FOUND, notify_user=True)
         return None
@@ -201,8 +202,9 @@ class PybotProfile(BaseProfile):
         label = Label(panel, label="Arguments: ")
         self._arguments = wx.TextCtrl(
             panel, wx.ID_ANY, size=(-1, -1), value=self.arguments)
-        self._arguments.SetToolTipString(
-            "Arguments for the test run. Arguments are space separated list.")
+        # DEBUG wxPhoenix SetToolTipString
+        self.MySetToolTip(self._arguments,
+                          "Arguments for the test run. Arguments are space separated list.")
         self._arguments.Bind(wx.EVT_TEXT, self.OnArgumentsChanged)
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         sizer.Add(label, 0, wx.ALL | wx.EXPAND)
@@ -249,27 +251,38 @@ class PybotProfile(BaseProfile):
         self.set_setting("arguments", args)
 
     def _validate_arguments(self, args):
-        assert type(args) is unicode
+        # assert type(args) is unicode
+        # print("DEBUG: runprofiles: type(args)=%s is_unicode(args)=%s" % (type(args), is_unicode(args)))
         invalid_message = self._get_invalid_message(args)
         self._arguments.SetBackgroundColour(
             'red' if invalid_message else 'white')
         self._arguments.SetForegroundColour(
             'white' if invalid_message else 'black')
-        self._arguments.SetToolTipString(
-            invalid_message or
-            'Arguments for the test run. Arguments are space separated list.')
+        # DEBUG wxPhoenix  self._arguments.SetToolTipString
+        if not bool(invalid_message):
+            invalid_message = 'Arguments for the test run. Arguments are space separated list.'
+        self.MySetToolTip(self._arguments, invalid_message)
+
+    def MySetToolTip(self, obj, tip):
+        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
+            obj.SetToolTip(tip)
+        else:
+            obj.SetToolTipString(tip)
 
     def _get_invalid_message(self, args):
+        invalid = None
         try:
-            args = args.encode(SYSTEM_ENCODING)
+            # print("DEBUG: runprofiles get inv msg: %s\nraw: %s\n" % (bytes(args), args) )
+            if PY3:
+                args = args.encode(SYSTEM_ENCODING)  # DEBUG SYSTEM_ENCODING
             _, invalid = ArgumentParser(USAGE).parse_args(args.split())
-            if bool(invalid):
-                return 'Unknown option(s): '+' '.join(invalid)
-            return None
-        except DataError, e:
-            return e.message
         except Information:
             return 'Does not execute - help or version option given'
+        except (DataError, Exception) as e:  # DEBUG  not being caught DataError?
+            return e.message
+        if bool(invalid):
+            return 'Unknown option(s): '+' '.join(invalid)
+        return None
 
     def OnExcludeCheckbox(self, evt):
         self.set_setting("apply_exclude_tags", evt.IsChecked())
@@ -291,7 +304,8 @@ class CustomScriptProfile(PybotProfile):
     default_settings = dict(PybotProfile.default_settings, runner_script="")
 
     def get_command(self):
-        return self.runner_script
+        # strip the starting and ending spaces to ensure /bin/sh finding the executable file
+        return self.runner_script.strip()
 
     def get_cwd(self):
         return os.path.dirname(self.runner_script)

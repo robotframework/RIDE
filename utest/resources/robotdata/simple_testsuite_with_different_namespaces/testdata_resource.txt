@@ -8,7 +8,9 @@ ${Resource Var}  iadota
 *** Keywords ***
 My Keyword
     No Operation
+
 Only From Resource
     No Operation
+
 Keyword In Both Resources
     No Operation

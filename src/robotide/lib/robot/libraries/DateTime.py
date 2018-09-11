@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -59,12 +60,6 @@ using custom timestamps, in which case it needs to be given using
 ``date_format`` argument. Default result format is timestamp, but it can
 be overridden using ``result_format`` argument.
 
-The earliest date this library supports depends on the platform. Dates before
-the year 1900 are not supported at all, but the limit can also be much stricter.
-For example, on Windows only dates after 1970 are supported. These limitations
-are due to Python's [https://docs.python.org/2/library/time.html#time.mktime|
-time.mktime] function that this library uses internally.
-
 == Timestamp ==
 
 If a date is given as a string, it is always considered to be a timestamp.
@@ -105,6 +100,9 @@ Examples:
 | Should Be Equal | ${date}      | 2014-05-28 12:05:00.000 |
 | ${date} =       | Convert Date | ${date}                 | result_format=%d.%m.%Y |
 | Should Be Equal | ${date}      | 28.05.2014              |
+
+Notice that locale aware directives like ``%b``  do not work correctly with
+Jython on non-English locales: http://bugs.jython.org/issue2285
 
 == Python datetime ==
 
@@ -147,6 +145,19 @@ Examples:
 | Should Be Equal | ${date}      | 2001-09-09 04:46:40.000 |
 | ${date} =       | Convert Date | 2014-06-12 13:27:59.279 | epoch |
 | Should Be Equal | ${date}      | ${1402568879.279}       |
+
+== Earliest supported date ==
+
+The earliest date that is supported depends on the date format and to some
+extend on the platform:
+
+- Timestamps support year 1900 and above.
+- Python datetime objects support year 1 and above.
+- Epoch time supports 1970 and above on Windows with Python and IronPython.
+- On other platforms epoch time supports 1900 and above or even earlier.
+
+Prior to Robot Framework 2.9.2, all formats had same limitation as epoch time
+has nowadays.
 
 = Time formats =
 
@@ -247,10 +258,11 @@ may also be included even if there would be none.
 All keywords returning dates or times have an option to leave milliseconds out
 by giving a true value to ``exclude_millis`` argument. If the argument is given
 as a string, it is considered true unless it is empty or case-insensitively
-equal to ``false`` or ``no``. Other argument types are tested using same
-[http://docs.python.org/2/library/stdtypes.html#truth-value-testing|rules as in
-Python]. Notice that prior to Robot Framework 2.9, all strings except the empty
-string were considered true.
+equal to ``false``, ``none`` or ``no``. Other argument types are tested using
+same [http://docs.python.org/2/library/stdtypes.html#truth-value-testing|rules
+as in Python]. Notice that prior to Robot Framework 2.9, all strings except
+the empty string were considered true, and that considering ``none`` false is
+new in Robot Framework 3.0.3.
 
 When milliseconds are excluded, seconds in returned dates and times are
 rounded to the nearest full second. With `timestamp` and `timer string`
@@ -293,13 +305,15 @@ Additionally helper classes ``Date`` and ``Time`` can be used directly:
 |     # ...
 """
 
+from __future__ import absolute_import
+
 from datetime import datetime, timedelta
 import time
 import re
 
 from robotide.lib.robot.version import get_version
 from robotide.lib.robot.utils import (elapsed_time_to_string, is_falsy, is_number,
-                         is_string, secs_to_timestr, timestr_to_secs,
+                         is_string, roundup, secs_to_timestr, timestr_to_secs,
                          type_name, IRONPYTHON)
 
 __version__ = get_version()
@@ -507,28 +521,36 @@ def subtract_time_from_time(time1, time2, result_format='number',
 class Date(object):
 
     def __init__(self, date, input_format=None):
-        self.seconds = self._convert_date_to_seconds(date, input_format)
-
-    def _convert_date_to_seconds(self, date, input_format):
-        if is_string(date):
-            return self._string_to_epoch(date, input_format)
-        elif isinstance(date, datetime):
-            return self._mktime_with_millis(date)
-        elif is_number(date):
-            return float(date)
-        raise ValueError("Unsupported input '%s'." % date)
+        self.datetime = self._convert_to_datetime(date, input_format)
 
     @property
-    def datetime(self):
-        return self._datetime_from_seconds(self.seconds)
+    def seconds(self):
+        # Mainly for backwards compatibility with RF 2.9.1 and earlier.
+        return self._convert_to_epoch(self.datetime)
 
-    def _string_to_epoch(self, ts, input_format):
+    def _convert_to_datetime(self, date, input_format):
+        if isinstance(date, datetime):
+            return date
+        if is_number(date):
+            return self._seconds_to_datetime(date)
+        if is_string(date):
+            return self._string_to_datetime(date, input_format)
+        raise ValueError("Unsupported input '%s'." % date)
+
+    def _seconds_to_datetime(self, secs):
+        # Workaround microsecond rounding errors with IronPython:
+        # https://github.com/IronLanguages/main/issues/1170
+        # Also Jython had similar problems, but they seem to be fixed in 2.7.
+        dt = datetime.fromtimestamp(secs)
+        return dt.replace(microsecond=roundup(secs % 1 * 1e6))
+
+    def _string_to_datetime(self, ts, input_format):
         if not input_format:
             ts = self._normalize_timestamp(ts)
             input_format = '%Y-%m-%d %H:%M:%S.%f'
         if self._need_to_handle_f_directive(input_format):
             return self._handle_un_supported_f_directive(ts, input_format)
-        return self._mktime_with_millis(datetime.strptime(ts, input_format))
+        return datetime.strptime(ts, input_format)
 
     def _normalize_timestamp(self, date):
         ts = ''.join(d for d in date if d.isdigit())
@@ -544,11 +566,14 @@ class Date(object):
 
     def _handle_un_supported_f_directive(self, ts, input_format):
         input_format = self._remove_f_from_format(input_format)
-        micro = re.search('\d+$', ts).group(0)
-        ts = ts[:-len(micro)]
-        epoch = time.mktime(time.strptime(ts, input_format))
-        epoch += float(micro) / 10**len(micro)
-        return epoch
+        match = re.search('\d+$', ts)
+        if not match:
+            raise ValueError("time data '%s' does not match format '%s%%f'."
+                             % (ts, input_format))
+        end_digits = match.group(0)
+        micro = int(end_digits.ljust(6, '0'))
+        dt = datetime.strptime(ts[:-len(end_digits)], input_format)
+        return dt.replace(microsecond=micro)
 
     def _remove_f_from_format(self, format):
         if not format.endswith('%f'):
@@ -556,50 +581,39 @@ class Date(object):
                              'the format string on this Python interpreter.')
         return format[:-2]
 
-    def _mktime_with_millis(self, dt):
-        return time.mktime(dt.timetuple()) + dt.microsecond / 1e6
-
     def convert(self, format, millis=True):
-        seconds = self.seconds if millis else round(self.seconds)
+        dt = self.datetime
+        if not millis:
+            secs = 1 if dt.microsecond >= 5e5 else 0
+            dt = dt.replace(microsecond=0) + timedelta(seconds=secs)
         if '%' in format:
-            return self._convert_to_custom_timestamp(seconds, format)
-        try:
-            result_converter = getattr(self, '_convert_to_%s' % format.lower())
-        except AttributeError:
-            raise ValueError("Unknown format '%s'." % format)
-        return result_converter(seconds, millis)
+            return self._convert_to_custom_timestamp(dt, format)
+        format = format.lower()
+        if format == 'timestamp':
+            return self._convert_to_timestamp(dt, millis)
+        if format == 'datetime':
+            return dt
+        if format == 'epoch':
+            return self._convert_to_epoch(dt)
+        raise ValueError("Unknown format '%s'." % format)
 
-    def _convert_to_custom_timestamp(self, seconds, format):
-        dt = self._datetime_from_seconds(seconds)
+    def _convert_to_custom_timestamp(self, dt, format):
         if not self._need_to_handle_f_directive(format):
             return dt.strftime(format)
         format = self._remove_f_from_format(format)
-        micro = round(seconds % 1 * 1e6)
-        return '%s%06d' % (dt.strftime(format), micro)
+        return dt.strftime(format) + '%06d' % dt.microsecond
 
-    def _convert_to_timestamp(self, seconds, millis=True):
-        milliseconds = int(round(seconds % 1 * 1000))
-        if milliseconds == 1000:
-            seconds = round(seconds)
-            milliseconds = 0
-        dt = self._datetime_from_seconds(seconds)
-        ts = dt.strftime('%Y-%m-%d %H:%M:%S')
-        if millis:
-            ts += '.%03d' % milliseconds
-        return ts
+    def _convert_to_timestamp(self, dt, millis=True):
+        if not millis:
+            return dt.strftime('%Y-%m-%d %H:%M:%S')
+        ms = roundup(dt.microsecond / 1000.0)
+        if ms == 1000:
+            dt += timedelta(seconds=1)
+            ms = 0
+        return dt.strftime('%Y-%m-%d %H:%M:%S') + '.%03d' % ms
 
-    def _datetime_from_seconds(self, ts):
-        # Workaround microsecond rounding errors with IronPython:
-        # https://github.com/IronLanguages/main/issues/1170
-        # Also Jython had similar problems, but they seem to be fixed in 2.7.
-        dt = datetime.fromtimestamp(ts)
-        return dt.replace(microsecond=int(round(ts % 1 * 1e6)))
-
-    def _convert_to_epoch(self, seconds, millis=True):
-        return seconds
-
-    def _convert_to_datetime(self, seconds, millis=True):
-        return self._datetime_from_seconds(seconds)
+    def _convert_to_epoch(self, dt):
+        return time.mktime(dt.timetuple()) + dt.microsecond / 1e6
 
     def __add__(self, other):
         if isinstance(other, Time):
@@ -618,7 +632,7 @@ class Date(object):
 class Time(object):
 
     def __init__(self, time):
-        self.seconds = self._convert_time_to_seconds(time)
+        self.seconds = float(self._convert_time_to_seconds(time))
 
     def _convert_time_to_seconds(self, time):
         if isinstance(time, timedelta):
@@ -637,7 +651,7 @@ class Time(object):
             result_converter = getattr(self, '_convert_to_%s' % format.lower())
         except AttributeError:
             raise ValueError("Unknown format '%s'." % format)
-        seconds = self.seconds if millis else round(self.seconds)
+        seconds = self.seconds if millis else float(roundup(self.seconds))
         return result_converter(seconds, millis)
 
     def _convert_to_number(self, seconds, millis=True):

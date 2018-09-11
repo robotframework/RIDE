@@ -1,6 +1,6 @@
 import unittest
 from robotide.controller.basecontroller import _BaseController
-from robotide.controller.commands import _Command
+from robotide.controller.ctrlcommands import _Command
 from robotide.controller.filecontrollers import TestCaseFileController, ResourceFileController
 from robotide.controller.macrocontrollers import UserKeywordController, TestCaseController
 from robotide.controller.settingcontrollers import _SettingController, LibraryImportController, ResourceImportController

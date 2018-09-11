@@ -12,6 +12,15 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+from robotide.utils import basestring, unicode
+
+try:
+    from pubsub import Publisher
+    WxPublisher = Publisher()
+except ImportError:
+    from pubsub import pub
+    WxPublisher = pub.getDefaultPublisher()
+
 
 class Publisher(object):
 
@@ -38,7 +47,7 @@ class Publisher(object):
 
     def _sendMessage(self, topic, data):
         current_wrappers = self._listeners.values()
-        for wrappers in current_wrappers:
+        for wrappers in list(current_wrappers):  # DEBUG
             for wrapper in wrappers:
                 if wrapper.listens(topic):
                     wrapper(data)
@@ -67,8 +76,11 @@ class _ListenerWrapper(object):
     def __init__(self, listener, topic):
         self.listener = listener
         self.topic = self._get_topic(topic)
+        WxPublisher.subscribe(self, self.topic)
 
     def _get_topic(self, topic):
+        # DEBUG RecursionError on python 3
+        # print("DEBUG: topic(%s) is %s" % (topic, type(topic)))
         if not isinstance(topic, basestring):
             topic = topic.topic
         return topic.lower()
@@ -80,13 +92,13 @@ class _ListenerWrapper(object):
         return self._get_topic(topic).startswith(self.topic)
 
     def unsubscribe(self):
-        pass
+        WxPublisher.unsubscribe(self, self.topic)
 
     def __call__(self, data):
-        from messages import RideLogException
+        from .messages import RideLogException
         try:
             self.listener(data)
-        except Exception, err:
+        except Exception as err:
             # Prevent infinite recursion if RideLogMessage listener is broken,
             if not isinstance(data, RideLogException):
                 RideLogException(message='Error in listener: %s\n' \

@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -28,6 +29,30 @@ This module also provides :func:`testdoc` and :func:`testdoc_cli` functions
 that can be used programmatically. Other code is for internal usage.
 """
 
+import os.path
+import sys
+import time
+
+# Allows running as a script. __name__ check needed with multiprocessing:
+# https://github.com/robotframework/robotframework/issues/1137
+if 'robot' not in sys.modules and __name__ == '__main__':
+    import pythonpathsetter
+
+from robotide.lib.robot.conf import RobotSettings
+from robotide.lib.robot.htmldata import HtmlFileWriter, ModelWriter, JsonWriter, TESTDOC
+from robotide.lib.robot.parsing import disable_curdir_processing
+from robotide.lib.robot.running import TestSuiteBuilder
+from robotide.lib.robot.utils import (abspath, Application, file_writer, format_time,
+                         get_link_path, html_escape, html_format, is_string,
+                         secs_to_timestr, seq2str2, timestr_to_secs, unescape,
+                         IRONPYTHON)
+
+
+# http://ironpython.codeplex.com/workitem/31549
+if IRONPYTHON and sys.version_info < (2, 7, 2):
+    int = long
+
+
 USAGE = """robot.testdoc -- Robot Framework test data documentation tool
 
 Version:  <VERSION>
@@ -53,6 +78,20 @@ Options
   -s --suite name *      Include suites by name.
   -i --include tag *     Include tests by tags.
   -e --exclude tag *     Exclude tests by tags.
+  -A --argumentfile path *  Text file to read more arguments from. Use special
+                          path `STDIN` to read contents from the standard input
+                          stream. File can have both options and data sources
+                          one per line. Contents do not need to be escaped but
+                          spaces in the beginning and end of lines are removed.
+                          Empty lines and lines starting with a hash character
+                          (#) are ignored. New in Robot Framework 3.0.2.
+                          Example file:
+                          |  --name Example
+                          |  # This is a comment line
+                          |  my_tests.robot
+                          |  output.html
+                          Examples:
+                          --argumentfile argfile.txt --argumentfile STDIN
   -h -? --help           Print this help.
 
 All options except --title have exactly same semantics as same options have
@@ -79,23 +118,6 @@ For more information about Testdoc and other built-in tools, see
 http://robotframework.org/robotframework/#built-in-tools.
 """
 
-import os.path
-import sys
-import time
-
-# Allows running as a script. __name__ check needed with multiprocessing:
-# http://code.google.com/p/robotframework/issues/detail?id=1137
-if 'robot' not in sys.modules and __name__ == '__main__':
-    import pythonpathsetter
-
-from robotide.lib.robot.conf import RobotSettings
-from robotide.lib.robot.htmldata import HtmlFileWriter, ModelWriter, JsonWriter, TESTDOC
-from robotide.lib.robot.parsing import disable_curdir_processing
-from robotide.lib.robot.running import TestSuiteBuilder
-from robotide.lib.robot.utils import (abspath, Application, format_time, get_link_path,
-                         html_escape, html_format, is_string,
-                         secs_to_timestr, seq2str2, timestr_to_secs, unescape)
-
 
 class TestDoc(Application):
 
@@ -109,7 +131,7 @@ class TestDoc(Application):
         self.console(outfile)
 
     def _write_test_doc(self, suite, outfile, title):
-        with open(outfile, 'w') as output:
+        with file_writer(outfile) as output:
             model_writer = TestdocModelWriter(output, suite, title)
             HtmlFileWriter(output, model_writer).write(TESTDOC)
 
@@ -138,12 +160,10 @@ class TestdocModelWriter(ModelWriter):
         self._output.write('</script>\n')
 
     def write_data(self):
-        generated_time = time.localtime()
         model = {
             'suite': JsonConverter(self._output_path).convert(self._suite),
             'title': self._title,
-            'generated': format_time(generated_time, gmtsep=' '),
-            'generatedMillis': long(time.mktime(generated_time) * 1000)
+            'generated': int(time.time() * 1000)
         }
         JsonWriter(self._output).write_json('testdoc = ', model)
 

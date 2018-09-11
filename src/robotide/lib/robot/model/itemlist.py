@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,7 +13,14 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+from robotide.lib.robot.utils import py2to3, PY3
 
+
+if PY3:
+    unicode = str
+
+
+@py2to3
 class ItemList(object):
     __slots__ = ['_item_class', '_common_attrs', '_items']
 
@@ -40,10 +48,22 @@ class ItemList(object):
                                    item.__class__.__name__))
             for attr in common_attrs:
                 setattr(item, attr, common_attrs[attr])
+        return items
 
     def extend(self, items):
-        self._check_type_and_set_attrs(*items)
-        self._items += tuple(items)
+        self._items += self._check_type_and_set_attrs(*items)
+
+    def insert(self, index, item):
+        self._check_type_and_set_attrs(item)
+        items = list(self._items)
+        items.insert(index, item)
+        self._items = tuple(items)
+
+    def pop(self, *index):
+        items = list(self._items)
+        result = items.pop(*index)
+        self._items = tuple(items)
+        return result
 
     def index(self, item, *start_and_end):
         return self._items.index(item, *start_and_end)
@@ -52,7 +72,7 @@ class ItemList(object):
         self._items = ()
 
     def visit(self, visitor):
-        for item in self:
+        for item in self._items:
             item.visit(visitor)
 
     def __iter__(self):
@@ -80,6 +100,3 @@ class ItemList(object):
 
     def __unicode__(self):
         return u'[%s]' % ', '.join(unicode(item) for item in self)
-
-    def __str__(self):
-        return unicode(self).encode('ASCII', 'replace')

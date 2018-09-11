@@ -19,6 +19,11 @@ from robotide.context import LOG
 from robotide.publish import RideLogException
 from robotide.widgets import Label
 
+if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
+    from wx.adv import HyperlinkCtrl
+else:
+    from wx import HyperlinkCtrl
+
 
 class PluginManager(object):
 
@@ -29,7 +34,8 @@ class PluginManager(object):
     def show(self, plugins):
         if not self._tab:
             self._tab = _PluginPanel(self._notebook, plugins, self._show_tab)
-            self._notebook.add_tab(self._tab, 'Manage Plugins')
+            self._notebook.add_tab(self._tab, 'Manage Plugins',
+                                   allow_closing=True)
         self._show_tab()
 
     def _show_tab(self):
@@ -41,16 +47,22 @@ class _PluginPanel(wx.Panel):
     def __init__(self, notebook, plugins, activation_callback):
         wx.Panel.__init__(self, notebook)
         sizer = wx.BoxSizer(wx.VERTICAL)
-        sizer.Add(self._create_header(), 0, flag=wx.LEFT|wx.RIGHT|wx.TOP, border=16)
-        sizer.Add(self._create_info_text(), 0, flag=wx.EXPAND|wx.LEFT|wx.RIGHT, border=16)
-        sizer.Add(self._create_line(), 0, flag=wx.EXPAND|wx.LEFT|wx.RIGHT)
-        sizer.Add(self._create_body(plugins, activation_callback), 1, flag=wx.EXPAND|wx.ALL, border=16)
+        sizer.Add(self._create_header(), 0, flag=wx.EXPAND | wx.LEFT | wx.RIGHT | wx.TOP,
+                  border=16)
+        sizer.Add(self._create_info_text(), 0,
+                  flag=wx.EXPAND | wx.LEFT | wx.RIGHT, border=16)
+        sizer.Add(self._create_line(), 0, flag=wx.EXPAND | wx.LEFT | wx.RIGHT)
+        sizer.Add(self._create_body(plugins, activation_callback), 1,
+                  flag=wx.EXPAND | wx.ALL, border=16)
         self.SetSizer(sizer)
 
     def _create_header(self):
         header_panel = wx.Panel(self, wx.ID_ANY)
         header = Label(header_panel, wx.ID_ANY, "Installed Plugins")
-        header.SetFont(wx.Font(14, wx.SWISS, wx.NORMAL, wx.BOLD))
+        if wx.VERSION >= (4, 0, 0, ''):  # DEBUG wxPhoenix
+            header.SetFont(wx.Font(wx.FontInfo(14).Family(wx.FONTFAMILY_SWISS).Bold()))
+        else:
+            header.SetFont(wx.Font(14, wx.SWISS, wx.NORMAL, wx.BOLD))
         return header
 
     def _create_line(self):
@@ -59,25 +71,34 @@ class _PluginPanel(wx.Panel):
     def _create_body(self, plugins, activation_callback):
         panel = ScrolledPanel(self, wx.ID_ANY, style=wx.TAB_TRAVERSAL)
         panel.SetupScrolling()
-        sizer = wx.FlexGridSizer(1, 2, hgap=8, vgap=8)
+        sizer = wx.FlexGridSizer(0, 2, hgap=8, vgap=8)
         sizer.AddGrowableCol(1, 1)
         sizer.Add(self._create_label(panel, 'Enabled'), 0, wx.BOTTOM, border=8)
-        sizer.Add(self._create_label(panel, 'Plugin'), 0,
-                  wx.BOTTOM|wx.EXPAND, border=8)
+        sizer.Add(self._create_label(panel, 'Plugin'), 0, wx.BOTTOM |
+                  wx.EXPAND, border=8)
         for plugin in sorted(plugins, key=lambda p: p.name):
-            sizer.Add(_PluginEnablationCheckBox(panel, plugin, activation_callback),
+            sizer.Add(_PluginEnablationCheckBox(panel, plugin,
+                                                activation_callback),
                       flag=wx.ALIGN_CENTER_HORIZONTAL)
             sizer.Add(_PluginRow(panel, plugin), 0, wx.EXPAND)
         panel.SetSizer(sizer)
         return panel
 
     def _create_info_text(self):
-        info = wx.StaticText(self, wx.ID_ANY, "Info. Enabling and disabling plugins might require RIDE restart for menus to work.")
-        info.SetFont(wx.Font(12, wx.SWISS, wx.NORMAL, wx.FONTWEIGHT_NORMAL))
+        info = wx.StaticText(self, wx.ID_ANY,
+                             "Info. Enabling and disabling plugins might \
+require RIDE restart for menus to work.")
+        if wx.VERSION >= (4, 0, 0, ''):  # DEBUG wxPhoenix
+            info.SetFont(wx.Font(wx.FontInfo(12).Family(wx.FONTFAMILY_SWISS).Bold(False)))
+        else:
+            info.SetFont(wx.Font(12, wx.SWISS, wx.NORMAL, wx.FONTWEIGHT_NORMAL))
         return info
 
     def _create_label(self, parent, text):
-        boldFont = wx.SystemSettings_GetFont(wx.SYS_DEFAULT_GUI_FONT)
+        if wx.VERSION >= (3, 0, 2, 0, ''):
+            boldFont = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT)
+        else:
+            boldFont = wx.SystemSettings_GetFont(wx.SYS_DEFAULT_GUI_FONT)
         boldFont.SetWeight(wx.FONTWEIGHT_BOLD)
         label = Label(parent, wx.ID_ANY, text)
         label.SetFont(boldFont)
@@ -105,15 +126,16 @@ class _PluginEnablationCheckBox(wx.CheckBox):
     def _execute(self, method):
         try:
             method()
-        except Exception, err:
+        except Exception as err:
             self.SetValue(False)
             self.Enable(False)
-            msg = 'Failed to %s plugin %s:\n%s'\
-                   % (method.__name__, self._plugin.name, err)
+            msg = 'Failed to %s plugin %s:\n%s' % (method.__name__,
+                                                   self._plugin.name, err)
             self._plugin.error = err
             self._plugin.doc = msg
             LOG.error(msg)
-            RideLogException(message=msg, exception=err, level='ERROR').publish()
+            RideLogException(message=msg, exception=err,
+                             level='ERROR').publish()
 
 
 class _PluginRow(wx.Panel):
@@ -127,7 +149,7 @@ class _PluginRow(wx.Panel):
         sizer.Add(self._get_description(plugin), 0, wx.EXPAND)
         config = plugin.config_panel(self)
         if config:
-            sizer.Add(config, 1, wx.EXPAND|wx.LEFT, border=16)
+            sizer.Add(config, 1, wx.EXPAND | wx.LEFT, border=16)
         self.SetSizer(sizer)
 
     def _get_name(self, plugin):
@@ -137,7 +159,7 @@ class _PluginRow(wx.Panel):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         sizer.Add(Label(self, label='%s: ' % name))
         if value.split('://')[0] in ['http', 'https']:
-            sizer.Add(wx.HyperlinkCtrl(self, -1, label=value, url=value))
+            sizer.Add(HyperlinkCtrl(self, -1, label=value, url=value))
         else:
             sizer.Add(Label(self, label=value))
         return sizer

@@ -18,17 +18,15 @@ import os
 import re
 
 from robotide.namespace.embeddedargs import EmbeddedArgsHandler
-from robotide.publish.messages import RideSelectResource, RideFileNameChanged,\
-    RideSaving, RideSaved, RideSaveAll, RideExcludesChanged
+from robotide.publish.messages import RideSelectResource, RideFileNameChanged, RideSaving, RideSaved, RideSaveAll, RideExcludesChanged
 from robotide.namespace.namespace import _VariableStash
 
-from robotide.utils import overrides, variablematcher
-from .filecontrollers import ResourceFileController
-from .macrocontrollers import KeywordNameController, ForLoopStepController, \
-    TestCaseController
-from .settingcontrollers import _SettingController, VariableController
-from .tablecontrollers import VariableTableController
-from .validators import BaseNameValidator
+from robotide.utils import basestring, overrides, variablematcher
+from robotide.controller.filecontrollers import ResourceFileController
+from robotide.controller.macrocontrollers import KeywordNameController, ForLoopStepController, TestCaseController
+from robotide.controller.settingcontrollers import _SettingController, VariableController
+from robotide.controller.tablecontrollers import VariableTableController
+from robotide.controller.validators import BaseNameValidator
 
 
 class Occurrence(object):
@@ -110,7 +108,9 @@ class _Command(object):
     modifying = True
 
     def execute(self, context):
-        raise NotImplementedError(self.__class__)
+        # print("DEBUG: _Command.execute %s" % repr(context))
+        # return context.execute()
+        raise NotImplementedError(self.__class__)  # DEBUG
 
     def __str__(self):
         return '%s(%s)' % (self.__class__.__name__, self._params_str())
@@ -485,7 +485,17 @@ class DeleteFile(_Command):
         context.remove_from_filesystem()
         context.remove()
 
+class OpenContainingFolder(_Command):
+    modifying  = False
 
+    def execute(self, context):
+        context.open_filemanager()
+
+class RemoveReadOnly(_Command):
+    
+    def execute(self, context):
+        context.remove_readonly()
+        
 class DeleteFolder(_Command):
 
     def execute(self, context):
@@ -714,7 +724,7 @@ class FindVariableOccurrences(FindOccurrences):
             [None, context.datafile_controller]
 
     def _is_builtin_variable(self, name):
-        return name in _VariableStash.global_variables.keys()
+        return name in list(_VariableStash.global_variables.keys())
 
     def _get_source_of_imported_var(self, name, context):
         for df in self._get_all_imported(context):
@@ -891,7 +901,11 @@ class RemoveMacro(_ReversibleCommand):
         self._item = item
 
     def _execute(self, context):
-        self._item.delete()
+        print("DEBUG enter RemoveMacro %s" % self._item)
+        # self._item.notify_keyword_removed()  # DEBUG
+        # self._item.notify_value_changed()
+        myobj = self._item.delete()
+        print("DEBUG exit RemoveMacro %s returned %s" % (self._item, myobj))
 
     def _get_undo_command(self):
         return RecreateMacro(self._item)
@@ -1280,6 +1294,8 @@ def InsertCells(top_left, bottom_right):
 def DeleteCells(top_left, bottom_right):
     row_s, col_s = top_left
     row_e, col_e = bottom_right
+    # print("DEBUG ctrlcommands delete cells (%d, %d), (%d, %d) " % (row_s, col_s,
+    #                                               row_e, col_e))
     return StepsChangingCompositeCommand(
         *[DeleteCell(row, col_s)
           for row in range(row_s, row_e + 1)

@@ -50,14 +50,14 @@ class TestReview(unittest.TestCase):
         counter = 0
         for df in self.runner._get_datafile_list():
             if df.name not in results:
-                print "\"%s\" should have been filtered out " % df.name
+                print("\"%s\" should have been filtered out " % df.name)
                 return False
             counter += 1
 
         all_items_checked = counter == len(results)
         if not all_items_checked:
-            print "Result contained %d files, expected %d" % \
-                (counter, len(results))
+            print("Result contained %d files, expected %d" % \
+                (counter, len(results)))
         return all_items_checked
 
 

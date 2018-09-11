@@ -24,7 +24,7 @@ class SavingPreferences(widgets.PreferencesPanel):
     def __init__(self, settings, *args, **kwargs):
         super(SavingPreferences, self).__init__(*args, **kwargs)
         self._settings = settings
-        self.SetSizer(wx.FlexGridSizer(rows=7, cols=2))
+        self.SetSizer(wx.FlexGridSizer(cols=2))
         for editor in self._create_editors(settings):
             self._add_editor(editor)
 

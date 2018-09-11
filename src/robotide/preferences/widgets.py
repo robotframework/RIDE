@@ -48,11 +48,21 @@ class PreferencesComboBox(wx.ComboBox):
         self.settings = settings
         self.key = key
         super(PreferencesComboBox, self).__init__(parent, id, self._get_value(),
+                                                  size=self._get_size(choices),
                                                   choices=choices)
         self.Bind(wx.EVT_COMBOBOX, self.OnSelect)
 
     def _get_value(self):
         return self.settings[self.key]
+
+    def _get_size(self, choices=[]):
+        """ In Linux with GTK3 wxPython 4, there was not enough spacing.
+            The value 72 is there for 2 digits numeric lists, for
+            IntegerPreferenceComboBox.
+        """
+        if choices:
+            return wx.Size(max(max(len(str(s)) for s in choices)*18, 72), 20)
+        return wx.DefaultSize
 
     def OnSelect(self, event):
         self._set_value(str(event.GetEventObject().GetValue()))
@@ -78,13 +88,17 @@ class PreferencesColorPicker(wx.ColourPickerCtrl):
         self.settings = settings
         self.key = key
         value = settings[key]
-        super(PreferencesColorPicker, self).__init__(parent, id, col=value)
+        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
+            super(PreferencesColorPicker, self).__init__(parent, id,
+                                                         colour=value)
+        else:
+            super(PreferencesColorPicker, self).__init__(parent, id, col=value)
         self.Bind(wx.EVT_COLOURPICKER_CHANGED, self.OnPickColor)
 
     def OnPickColor(self, event):
         """Set the color for the given key to the color of the widget"""
         color = event.GetColour()
-        rgb = "#%02X%02X%02X" % color.asTuple()
+        rgb = color.GetAsString(flags=wx.C2S_HTML_SYNTAX)
         self.settings[self.key] = rgb
         self.settings.save()
 
@@ -130,19 +144,19 @@ def boolean_editor(parent, settings, name, label, help=''):
 
 
 def _create_checkbox_editor(parent, settings, name, help):
-    initial_value = settings[name]
+    initial_value = settings.get(name, "")
     editor = wx.CheckBox(parent)
     editor.SetValue(initial_value)
     editor.Bind(wx.EVT_CHECKBOX,
                 lambda evt: settings.set(name, editor.GetValue()))
-    editor.SetToolTipString(help)
+    MySetToolTip(editor, help)
     return editor
 
 
 def comma_separated_value_editor(parent, settings, name, label, help=''):
-    initial_value = ', '.join(settings[name])
+    initial_value = ', '.join(settings.get(name, ""))
     editor = TextField(parent, initial_value)
-    editor.SetToolTipString(help)
+    MySetToolTip(editor, help)
 
     def set_value():
         new_value = [token.strip() for token in editor.GetValue().split(',')
@@ -151,3 +165,10 @@ def comma_separated_value_editor(parent, settings, name, label, help=''):
     editor.Bind(wx.EVT_KILL_FOCUS, lambda evt: set_value())
 
     return Label(parent, label=label), editor
+
+
+def MySetToolTip(obj, tip):
+    if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
+        obj.SetToolTip(tip)
+    else:
+        obj.SetToolTipString(tip)

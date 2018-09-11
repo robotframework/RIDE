@@ -15,12 +15,13 @@ Andreas Brain
 Bjørn Forsman
 Bryan Oakley
 Charandeep S. Matta
+Ferenc Züllich
 Florian Heine
 Hale
+Hélio Guilherme
 Karol Szuster
 Kevin Ormbrek
 Timothy Alexander
 @tuds
 @goodwillcoding
 @synsun
-Ferenc Züllich

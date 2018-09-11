@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -15,6 +16,7 @@
 from contextlib import contextmanager
 import inspect
 import re
+import socket
 import struct
 import telnetlib
 import time
@@ -105,6 +107,14 @@ class Telnet(object):
     Timeout defines how long is the maximum time to wait when reading
     output. It is used internally by `Read Until`, `Read Until Regexp`,
     `Read Until Prompt`, and `Login` keywords. The default value is 3 seconds.
+
+    == Connection Timeout ==
+
+    Connection Timeout defines how long is the maximum time to wait when
+    opening the telnet connection. It is used internally by `Open Connection`.
+    The default value is the system global default timeout.
+
+    New in Robot Framework 2.9.2.
 
     == Newline ==
 
@@ -209,7 +219,7 @@ class Telnet(object):
     = Terminal emulation =
 
     Starting from Robot Framework 2.8.2, Telnet library supports terminal
-    emulation with [https://github.com/selectel/pyte|Pyte]. Terminal emulation
+    emulation with [https://pyte.readthedocs.io|Pyte]. Terminal emulation
     will process the output in a virtual screen. This means that ANSI escape
     codes, like cursor movements, and also control characters, like
     carriage returns and backspaces, have the same effect on the result as they
@@ -228,12 +238,18 @@ class Telnet(object):
     When terminal emulation is used, the `newline` and `encoding` can not be
     changed anymore after opening the connection.
 
-    As a prerequisite for using terminal emulation you need to have
-    [https://github.com/selectel/pyte|Pyte] installed. This is easiest done
-    with [http://pip-installer.org|pip] by running ``pip install pyte``.
-
     Examples:
     | `Open Connection` | lolcathost | terminal_emulation=True | terminal_type=vt100 | window_size=400x100 |
+
+    As a prerequisite for using terminal emulation, you need to have Pyte
+    installed. Due to backwards incompatible changes in Pyte, different
+    Robot Framework versions support different Pyte versions:
+
+    - Pyte 0.6 and newer are supported by Robot Framework 3.0.3.
+      Latest Pyte version can be installed (or upgraded) with
+      ``pip install --upgrade pyte``.
+    - Pyte 0.5.2 and older are supported by Robot Framework 3.0.2 and earlier.
+      Pyte 0.5.2 can be installed with ``pip install pyte==0.5.2``.
 
     = Logging =
 
@@ -266,9 +282,9 @@ class Telnet(object):
 
     Some keywords accept arguments that are handled as Boolean values true or
     false. If such an argument is given as a string, it is considered false if
-    it is either empty or case-insensitively equal to ``false`` or ``no``.
-    Other strings are considered true regardless their value, and other
-    argument types are tested using same
+    it is either an empty string or case-insensitively equal to ``false``,
+    ``none`` or ``no``. Other strings are considered true regardless
+    their value, and other argument types are tested using the same
     [http://docs.python.org/2/library/stdtypes.html#truth-value-testing|rules
     as in Python].
 
@@ -284,8 +300,9 @@ class Telnet(object):
     | `Open Connection` | lolcathost | terminal_emulation=${EMPTY} | # Empty string is false.       |
     | `Open Connection` | lolcathost | terminal_emulation=${FALSE} | # Python ``False`` is false.   |
 
-    Note that prior to Robot Framework 2.9 some keywords considered all
-    non-empty strings, including ``false`` and ``no``, to be true.
+    Prior to Robot Framework 2.9, all non-empty strings, including ``false``
+    and ``no``, were considered to be true. Considering ``none`` false is
+    new in Robot Framework 3.0.3.
     """
     ROBOT_LIBRARY_SCOPE = 'TEST_SUITE'
     ROBOT_LIBRARY_VERSION = get_version()
@@ -295,7 +312,8 @@ class Telnet(object):
                  encoding='UTF-8', encoding_errors='ignore',
                  default_log_level='INFO', window_size=None,
                  environ_user=None, terminal_emulation=False,
-                 terminal_type=None, telnetlib_log_level='TRACE'):
+                 terminal_type=None, telnetlib_log_level='TRACE',
+                 connection_timeout=None):
         """Telnet library can be imported with optional configuration parameters.
 
         Configuration parameters are used as default values when new
@@ -320,6 +338,7 @@ class Telnet(object):
         | Library     | Telnet    | telnetlib_log_level=NONE |                      |                     | # disable logging messages from the underlying telnetlib |
         """
         self._timeout = timeout or 3.0
+        self._set_connection_timeout(connection_timeout)
         self._newline = newline or 'CRLF'
         self._prompt = (prompt, prompt_is_regexp)
         self._encoding = encoding
@@ -373,7 +392,8 @@ class Telnet(object):
                         encoding=None, encoding_errors=None,
                         default_log_level=None, window_size=None,
                         environ_user=None, terminal_emulation=None,
-                        terminal_type=None, telnetlib_log_level=None):
+                        terminal_type=None, telnetlib_log_level=None,
+                        connection_timeout=None):
         """Opens a new Telnet connection to the given host and port.
 
         The ``timeout``, ``newline``, ``prompt``, ``prompt_is_regexp``,
@@ -391,6 +411,9 @@ class Telnet(object):
         `Close All Connections` keyword.
         """
         timeout = timeout or self._timeout
+        connection_timeout = (timestr_to_secs(connection_timeout)
+                              if connection_timeout
+                              else self._connection_timeout)
         newline = newline or self._newline
         encoding = encoding or self._encoding
         encoding_errors = encoding_errors or self._encoding_errors
@@ -403,8 +426,8 @@ class Telnet(object):
         telnetlib_log_level = telnetlib_log_level or self._telnetlib_log_level
         if not prompt:
             prompt, prompt_is_regexp = self._prompt
-        logger.info('Opening connection to %s:%s with prompt: %s'
-                    % (host, port, prompt))
+        logger.info('Opening connection to %s:%s with prompt: %s%s'
+                    % (host, port, prompt, ' (regexp)' if prompt_is_regexp else ''))
         self._conn = self._get_connection(host, port, timeout, newline,
                                           prompt, is_truthy(prompt_is_regexp),
                                           encoding, encoding_errors,
@@ -413,7 +436,8 @@ class Telnet(object):
                                           environ_user,
                                           is_truthy(terminal_emulation),
                                           terminal_type,
-                                          telnetlib_log_level)
+                                          telnetlib_log_level,
+                                          connection_timeout)
         return self._cache.register(self._conn, alias)
 
     def _parse_window_size(self, window_size):
@@ -429,6 +453,11 @@ class Telnet(object):
     def _get_connection(self, *args):
         """Can be overridden to use a custom connection."""
         return TelnetConnection(*args)
+
+    def _set_connection_timeout(self, connection_timeout):
+        self._connection_timeout = connection_timeout
+        if self._connection_timeout:
+            self._connection_timeout = timestr_to_secs(connection_timeout)
 
     def switch_connection(self, index_or_alias):
         """Switches between active connections using an index or an alias.
@@ -481,9 +510,9 @@ class Telnet(object):
 
 
 class TelnetConnection(telnetlib.Telnet):
-    NEW_ENVIRON_IS = chr(0)
-    NEW_ENVIRON_VAR = chr(0)
-    NEW_ENVIRON_VALUE = chr(1)
+    NEW_ENVIRON_IS = b'\x00'
+    NEW_ENVIRON_VAR = b'\x00'
+    NEW_ENVIRON_VALUE = b'\x01'
     INTERNAL_UPDATE_FREQUENCY = 0.03
 
     def __init__(self, host=None, port=23, timeout=3.0, newline='CRLF',
@@ -491,17 +520,21 @@ class TelnetConnection(telnetlib.Telnet):
                  encoding='UTF-8', encoding_errors='ignore',
                  default_log_level='INFO', window_size=None, environ_user=None,
                  terminal_emulation=False, terminal_type=None,
-                 telnetlib_log_level='TRACE'):
-        telnetlib.Telnet.__init__(self, host, int(port) if port else 23)
+                 telnetlib_log_level='TRACE', connection_timeout=None):
+        if connection_timeout is None:
+            telnetlib.Telnet.__init__(self, host, int(port) if port else 23)
+        else:
+            telnetlib.Telnet.__init__(self, host, int(port) if port else 23,
+                                      connection_timeout)
         self._set_timeout(timeout)
         self._set_newline(newline)
         self._set_prompt(prompt, prompt_is_regexp)
         self._set_encoding(encoding, encoding_errors)
         self._set_default_log_level(default_log_level)
         self._window_size = window_size
-        self._environ_user = environ_user
+        self._environ_user = self._encode(environ_user) if environ_user else None
         self._terminal_emulator = self._check_terminal_emulation(terminal_emulation)
-        self._terminal_type = str(terminal_type) if terminal_type else None
+        self._terminal_type = self._encode(terminal_type) if terminal_type else None
         self.set_option_negotiation_callback(self._negotiate_options)
         self._set_telnetlib_log_level(telnetlib_log_level)
         self._opt_responses = list()
@@ -629,7 +662,7 @@ class TelnetConnection(telnetlib.Telnet):
         if is_bytes(text):
             return text
         if self._encoding[0] == 'NONE':
-            return str(text)
+            return text.encode('ASCII')
         return text.encode(*self._encoding)
 
     def _decode(self, bytes):
@@ -694,6 +727,8 @@ class TelnetConnection(telnetlib.Telnet):
 
         See `Logging` section for more information about log levels.
         """
+        if self.sock:
+            self.sock.shutdown(socket.SHUT_RDWR)
         self.close()
         output = self._decode(self.read_all())
         self._log(output, loglevel)
@@ -743,7 +778,7 @@ class TelnetConnection(telnetlib.Telnet):
 
     def _submit_credentials(self, username, password, login_prompt, password_prompt):
         # Using write_bare here instead of write because don't want to wait for
-        # newline: http://code.google.com/p/robotframework/issues/detail?id=1371
+        # newline: https://github.com/robotframework/robotframework/issues/1371
         output = self.read_until(login_prompt, 'TRACE')
         self.write_bare(username + self._newline)
         output += self.read_until(password_prompt, 'TRACE')
@@ -773,12 +808,18 @@ class TelnetConnection(telnetlib.Telnet):
 
         See `Logging` section for more information about log levels.
         """
-        if self._newline in text:
+        newline = self._get_newline_for(text)
+        if newline in text:
             raise RuntimeError("'Write' keyword cannot be used with strings "
                                "containing newlines. Use 'Write Bare' instead.")
-        self.write_bare(text + self._newline)
+        self.write_bare(text + newline)
         # Can't read until 'text' because long lines are cut strangely in the output
         return self.read_until(self._newline, loglevel)
+
+    def _get_newline_for(self, text):
+        if is_bytes(text):
+            return self._encode(self._newline)
+        return self._newline
 
     def write_bare(self, text):
         """Writes the given text, and nothing else, into the connection.
@@ -829,7 +870,7 @@ class TelnetConnection(telnetlib.Telnet):
     def write_control_character(self, character):
         """Writes the given control character into the connection.
 
-        The control character is preprended with an IAC (interpret as command)
+        The control character is prepended with an IAC (interpret as command)
         character.
 
         The following control character names are supported: BRK, IP, AO, AYT,
@@ -871,12 +912,10 @@ class TelnetConnection(telnetlib.Telnet):
         information about log levels.
         """
         self._verify_connection()
-        output = self.read_very_eager()
+        output = self._decode(self.read_very_eager())
         if self._terminal_emulator:
             self._terminal_emulator.feed(output)
             output = self._terminal_emulator.read()
-        else:
-            output = self._decode(output)
         self._log(output, loglevel)
         return output
 
@@ -910,16 +949,16 @@ class TelnetConnection(telnetlib.Telnet):
 
     def _terminal_read_until(self, expected):
         max_time = time.time() + self._timeout
-        out = self._terminal_emulator.read_until(expected)
-        if out:
-            return True, out
+        output = self._terminal_emulator.read_until(expected)
+        if output:
+            return True, output
         while time.time() < max_time:
-            input_bytes = telnetlib.Telnet.read_until(self, expected,
-                                                      self._terminal_frequency)
-            self._terminal_emulator.feed(input_bytes)
-            out = self._terminal_emulator.read_until(expected)
-            if out:
-                return True, out
+            output = telnetlib.Telnet.read_until(self, self._encode(expected),
+                                                 self._terminal_frequency)
+            self._terminal_emulator.feed(self._decode(output))
+            output = self._terminal_emulator.read_until(expected)
+            if output:
+                return True, output
         return False, self._terminal_emulator.read()
 
     def _read_until_regexp(self, *expected):
@@ -932,24 +971,37 @@ class TelnetConnection(telnetlib.Telnet):
 
     def _terminal_read_until_regexp(self, expected_list):
         max_time = time.time() + self._timeout
-        regexp_list = [re.compile(rgx) for rgx in expected_list]
-        out = self._terminal_emulator.read_until_regexp(regexp_list)
+        regexps_bytes = [self._to_byte_regexp(rgx) for rgx in expected_list]
+        regexps_unicode = [re.compile(self._decode(rgx.pattern))
+                               for rgx in regexps_bytes]
+        out = self._terminal_emulator.read_until_regexp(regexps_unicode)
         if out:
             return True, out
         while time.time() < max_time:
-            output = self.expect(regexp_list, self._terminal_frequency)[-1]
-            self._terminal_emulator.feed(output)
-            out = self._terminal_emulator.read_until_regexp(regexp_list)
+            output = self.expect(regexps_bytes, self._terminal_frequency)[-1]
+            self._terminal_emulator.feed(self._decode(output))
+            out = self._terminal_emulator.read_until_regexp(regexps_unicode)
             if out:
                 return True, out
         return False, self._terminal_emulator.read()
 
     def _telnet_read_until_regexp(self, expected_list):
+        expected = [self._to_byte_regexp(exp) for exp in expected_list]
         try:
-            index, _, output = self.expect(expected_list, self._timeout)
+            index, _, output = self.expect(expected, self._timeout)
         except TypeError:
-            index, output = -1, ''
+            index, output = -1, b''
         return index != -1, self._decode(output)
+
+    def _to_byte_regexp(self, exp):
+        if is_bytes(exp):
+            return re.compile(exp)
+        if is_string(exp):
+            return re.compile(self._encode(exp))
+        pattern = exp.pattern
+        if is_bytes(pattern):
+            return exp
+        return re.compile(self._encode(pattern))
 
     def read_until_regexp(self, *expected):
         """Reads output until any of the ``expected`` regular expressions match.
@@ -1108,7 +1160,7 @@ class TelnetConnection(telnetlib.Telnet):
         self.sock.sendall(telnetlib.IAC + telnetlib.WILL + opt)
         self.sock.sendall(telnetlib.IAC + telnetlib.SB + telnetlib.NEW_ENVIRON
                           + self.NEW_ENVIRON_IS + self.NEW_ENVIRON_VAR
-                          + "USER" + self.NEW_ENVIRON_VALUE + environ_user
+                          + b"USER" + self.NEW_ENVIRON_VALUE + environ_user
                           + telnetlib.IAC + telnetlib.SE)
 
     def _opt_window_size(self, opt, window_x, window_y):
@@ -1135,21 +1187,19 @@ class TelnetConnection(telnetlib.Telnet):
             raise RuntimeError("Terminal emulation requires pyte module!\n"
                                "https://pypi.python.org/pypi/pyte/")
         return TerminalEmulator(window_size=self._window_size,
-                                newline=self._newline, encoding=self._encoding)
+                                newline=self._newline)
 
 
 class TerminalEmulator(object):
 
-    def __init__(self, window_size=None, newline="\r\n",
-                 encoding=('UTF-8', 'ignore')):
+    def __init__(self, window_size=None, newline="\r\n"):
         self._rows, self._columns = window_size or (200, 200)
         self._newline = newline
-        self._stream = pyte.ByteStream(encodings=[encoding])
+        self._stream = pyte.Stream()
         self._screen = pyte.HistoryScreen(self._rows,
                                           self._columns,
                                           history=100000)
         self._stream.attach(self._screen)
-        self._screen.set_charset('B', '(')
         self._buffer = ''
         self._whitespace_after_last_feed = ''
 
@@ -1158,25 +1208,27 @@ class TerminalEmulator(object):
         return self._buffer + self._dump_screen()
 
     def _dump_screen(self):
-        return self._get_history() + \
+        return self._get_history(self._screen) + \
                self._get_screen(self._screen) + \
                self._whitespace_after_last_feed
 
-    def _get_history(self):
-        if self._screen.history.top:
-            return self._get_history_screen(self._screen.history.top) + self._newline
-        return ''
-
-    def _get_history_screen(self, deque):
-        return self._newline.join(''.join(c.data for c in row).rstrip()
-                                  for row in deque).rstrip(self._newline)
+    def _get_history(self, screen):
+        if not screen.history.top:
+            return ''
+        rows = []
+        for row in screen.history.top:
+            # Newer pyte versions store row data in mappings
+            data = (char.data for _, char in sorted(row.items()))
+            rows.append(''.join(data).rstrip())
+        return self._newline.join(rows).rstrip(self._newline) + self._newline
 
     def _get_screen(self, screen):
-        return self._newline.join(row.rstrip() for row in screen.display).rstrip(self._newline)
+        rows = (row.rstrip() for row in screen.display)
+        return self._newline.join(rows).rstrip(self._newline)
 
-    def feed(self, input_bytes):
-        self._stream.feed(input_bytes)
-        self._whitespace_after_last_feed = input_bytes[len(input_bytes.rstrip()):]
+    def feed(self, text):
+        self._stream.feed(text)
+        self._whitespace_after_last_feed = text[len(text.rstrip()):]
 
     def read(self):
         current_out = self.current_output
@@ -1204,7 +1256,6 @@ class TerminalEmulator(object):
         self._buffer = terminal_buffer
         self._whitespace_after_last_feed = ''
         self._screen.reset()
-        self._screen.set_charset('B', '(')
 
 
 class NoMatchError(AssertionError):

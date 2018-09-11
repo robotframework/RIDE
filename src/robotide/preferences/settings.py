@@ -14,6 +14,14 @@
 
 import os
 import shutil
+import sys
+
+if sys.version_info[0] == 2:
+    PYTHON2 = True
+    PYTHON3 = False
+elif sys.version_info[0] == 3:
+    PYTHON2 = False
+    PYTHON3 = True
 
 from robotide.context import SETTINGS_DIRECTORY, LIBRARY_XML_DIRECTORY
 from robotide.preferences.configobj import ConfigObj, ConfigObjError,\
@@ -25,8 +33,11 @@ from robotide.publish import RideSettingsChanged
 def initialize_settings(path, dest_file_name=None):
     if not os.path.exists(SETTINGS_DIRECTORY):
         os.makedirs(SETTINGS_DIRECTORY)
-    return _copy_or_migrate_user_settings(
+    (path, error) = _copy_or_migrate_user_settings(
         SETTINGS_DIRECTORY, path, dest_file_name)
+    # if error: # DEBUG This does not work on unitests :(
+    #    raise ConfigurationError(error)
+    return path
 
 
 def _copy_or_migrate_user_settings(settings_dir, source_path, dest_file_name):
@@ -36,19 +47,29 @@ def _copy_or_migrate_user_settings(settings_dir, source_path, dest_file_name):
     Destination file name is the source_path's file name unless dest_file_name
     is given.
     """
+    m_error = None
     if not dest_file_name:
         dest_file_name = os.path.basename(source_path)
     settings_path = os.path.join(settings_dir, dest_file_name)
     if not os.path.exists(settings_path):
         shutil.copyfile(source_path, settings_path)
+        # print("DEBUG: source %s new settings %s\n" %(source_path,settings_path))
     else:
         try:
             SettingsMigrator(source_path, settings_path).migrate()
-        except ConfigObjError, parsing_error:
-            print 'WARNING! corrupted configuration file replaced with defaults'
-            print parsing_error
+        except ConfigObjError as parsing_error:
+            print("WARNING! corrupted configuration file replaced with defaults")
+            print(parsing_error)
+            m_error = parsing_error
+            shutil.copyfile(settings_path, settings_path + '_old_broken')
+            print("(backed up corrupted configuration file at: %s)" %
+                  (settings_path + '_old_broken'))
             shutil.copyfile(source_path, settings_path)
-    return os.path.abspath(settings_path)
+            # print("DEBUG: source %s corrupted settings %s\n" % (source_path, settings_path))
+        finally:  # DEBUG Try to merge some settings
+            # print("DEBUG: Finally merge() %s\n" % settings_path)
+            SettingsMigrator(source_path, settings_path).merge()
+    return os.path.abspath(settings_path), m_error
 
 
 class SettingsMigrator(object):
@@ -58,11 +79,18 @@ class SettingsMigrator(object):
     def __init__(self, default_path, user_path):
         self._default_settings = ConfigObj(default_path, unrepr=True)
         self._user_path = user_path
+        # print("DEBUG: Settings migrator 1: %s\ndefault_path %s" % (self._default_settings.__repr__(), default_path))
         try:
             self._old_settings = ConfigObj(user_path, unrepr=True)
-        except UnreprError, err:
+        except UnreprError as err: # DEBUG errored file
+            # print("DEBUG: Settings migrator ERROR -------- %s path %s" %
+            #      (self._old_settings.__repr__(), user_path))
             raise ConfigurationError("Invalid config file '%s': %s" %
                                      (user_path, err))
+        # print("DEBUG: Settings migrator old_settings: %s\nuser_path %s" %
+        # (self._old_settings.__repr__(), self._user_path))
+        # print("DEBUG: Settings migrator default_settings: %s\nsettings_path "
+        # "%s" % (self._default_settings.__repr__(), default_path))
 
     def migrate(self):
         # Add migrations here.
@@ -91,10 +119,14 @@ class SettingsMigrator(object):
             self.migrate_from_6_to_7(self._old_settings)
         if self._old_settings.get(self.SETTINGS_VERSION) == 7:
             self.migrate_from_7_to_8(self._old_settings)
+        # if self._old_settings.get(self.SETTINGS_VERSION) == 8:
+        #     self.migrate_from_8_to_9(self._old_settings)
         self.merge()
 
     def merge(self):
+        # print("DEBUG: Merge before: %s\n", self._default_settings.__repr__())
         self._default_settings.merge(self._old_settings)
+        # print("DEBUG: Merge after: %s, old%s\n" % (self._default_settings.__repr__(), self._old_settings.__repr__()))
         self._write_merged_settings(self._default_settings, self._user_path)
 
     def migrate_from_0_to_1(self, settings):
@@ -119,8 +151,11 @@ class SettingsMigrator(object):
             with open(old_excludes) as f:
                 old = f.read()
             new = '\n'.join(d for d in old.split('\n') if os.path.isdir(d))+'\n'
-            with open(old_excludes, 'w') as f:
-                f.write(new)
+            with open(old_excludes, 'wb') as f:
+                if PYTHON2:
+                    f.write(new)
+                elif PYTHON3:
+                    f.write(new.encode('UTF-8'))
         settings[self.SETTINGS_VERSION] = 3
 
     def migrate_from_3_to_4(self, settings):
@@ -177,13 +212,88 @@ class SettingsMigrator(object):
                     os.remove(lib_xml_path)
         settings[self.SETTINGS_VERSION] = 8
 
+    """
+    def migrate_from_8_to_9(self, settings):
+        # mainframe_size = settings.get('mainframe size', (1100, 700))
+        parameters = [
+            'mainframe_size',
+            'mainframe_position',
+            'mainframe_maximized',
+            'default_directory',
+            'list_variable_columns',
+            'list_col_min_width',
+            'list_col_max_width',
+            'auto_imports',
+            'library_xml_directories',
+            'txt_number_of_spaces',
+            'txt_format_separator',
+            'line_separator',
+            'default_file_format',
+            'check_for_updates',
+            'last_update_check',
+            'install_root'
+        ]
+        sec_text = ['font size']  # [Text Edit]
+        sec_grid = [              # [Grid]
+            'font_size',
+            'fixed_font',
+            'col_size',
+            'max_col_size',
+            'auto_size_cols',
+            'text_user_keyword',
+            'text_library_keyword',
+            'text_variable',
+            'text_unknown_variable',
+            'text_commented',
+            'text_string',
+            'text_empty',
+            'background_assign',
+            'background_keyword',
+            'background_mandatory',
+            'background_optional',
+            'background_must_be_empty',
+            'background_unknown',
+            'background_error',
+            'background_highlight'
+        ]
+        try:
+            for keyname in parameters:
+                self._key_with_underscore(settings, keyname)
+            for keyname in sec_text:
+                self._key_with_underscore(settings, keyname, 'Text Edit')
+            for keyname in sec_grid:
+                self._key_with_underscore(settings, keyname, 'Grid')
+        except AttributeError:  # DEBUG Ignore errors
+            #  raise ConfigObjError
+            pass
+        settings[self.SETTINGS_VERSION] = 9
+    """
+
+    @staticmethod
+    def _key_with_underscore(settings, keyname, section=None):
+        keyname_old = keyname.replace('_', ' ')
+        if not section:
+            value = settings.get(keyname_old, None)
+            if value:
+                settings[keyname] = value
+                del settings[keyname_old]
+        else:
+            value = settings.get(section, {}).get(keyname_old, None)
+            if value:
+                settings[section][keyname] = value
+                del settings[section][keyname_old]
+
     def _write_merged_settings(self, settings, path):
         try:
-            with open(path, 'wb') as outfile:
-                settings.write(outfile)
+            with open(path, 'wb') as outfile: # DEBUG used to be 'wb'
+                if PYTHON2:
+                    settings.write(outfile)
+                elif PYTHON3:  # DEBUG
+                    settings.write(outfile) # DEBUG .encoding('UTF-8')
         except IOError:
             raise RuntimeError(
                 'Could not open settings file "%s" for writing' % path)
+
 
 
 class SectionError(Exception):
@@ -220,8 +330,11 @@ class _Section(object):
         return len(self._config_obj)
 
     def iteritems(self):
-        '''Returns an iterator over the (key,value) items of the section'''
-        return self._config_obj.iteritems()
+        """Returns an iterator over the (key,value) items of the section"""
+        if PYTHON2:
+            return self._config_obj.iteritems()
+        elif PYTHON3:
+            return self._config_obj.items()
 
     def has_setting(self, name):
         return name in self._config_obj
@@ -301,7 +414,7 @@ class Settings(_Section):
     def __init__(self, user_path):
         try:
             _Section.__init__(self, ConfigObj(user_path, unrepr=True))
-        except UnreprError, error:
+        except UnreprError as error:
             raise ConfigurationError(error)
         self.excludes = excludes.Excludes(SETTINGS_DIRECTORY)
 
@@ -312,10 +425,12 @@ class Settings(_Section):
 class RideSettings(Settings):
 
     def __init__(self):
-        default_path = os.path.join(os.path.dirname(__file__), 'settings.cfg')
-        user_path = initialize_settings(default_path)
+        self._default_path = os.path.join(os.path.dirname(__file__), 'settings.cfg')
+        # print("DEBUG: RideSettings, default_path %s\n" % self._default_path)
+        user_path = initialize_settings(self._default_path)
         Settings.__init__(self, user_path)
         self._settings_dir = os.path.dirname(user_path)
+        # print("DEBUG: RideSettings, self._settings_dir %s\n" % self._settings_dir)
         self.set('install root', os.path.dirname(os.path.dirname(__file__)))
 
     def get_path(self, *parts):

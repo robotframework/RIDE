@@ -17,7 +17,7 @@ import shutil
 import tempfile
 
 from robotide.context import LOG
-from robotide.controller.commands import NullObserver, SaveFile
+from robotide.controller.ctrlcommands import NullObserver, SaveFile
 from robotide.publish.messages import RideOpenSuite, RideNewProject, RideFileNameChanged
 
 from .basecontroller import WithNamespace, _BaseController
@@ -27,7 +27,7 @@ from .robotdata import NewTestCaseFile, NewTestDataDirectory
 from robotide.spec.librarydatabase import DATABASE_FILE
 from robotide.spec.librarymanager import LibraryManager
 from robotide.spec.xmlreaders import SpecInitializer
-from robotide.utils import overrides
+from robotide.utils import overrides, unicode
 
 
 class Project(_BaseController, WithNamespace):
@@ -69,7 +69,7 @@ class Project(_BaseController, WithNamespace):
 
     @property
     def default_dir(self):
-        return os.path.abspath(self._settings['default directory'])
+        return os.path.abspath(self._settings.get('default directory', ''))
 
     def update_default_dir(self, path):
         default_dir = path if os.path.isdir(path) else os.path.dirname(path)
@@ -125,8 +125,11 @@ class Project(_BaseController, WithNamespace):
             return
         if self._load_resource(path, load_observer):
             return
-        load_observer.error("Given file '%s' is not a valid Robot Framework "
+        try:
+            load_observer.error("Given file '%s' is not a valid Robot Framework "
                             "test case or resource file." % path)
+        except AttributeError:  # DEBUG
+            pass
 
     def is_excluded(self, source):
         return self._settings.excludes.contains(source) if self._settings else False
@@ -303,7 +306,7 @@ class Serializer(object):
         with Backup(controller):
             try:
                 controller.datafile.save(**self._get_options())
-            except Exception, err:
+            except Exception as err:
                 self._cache_error(controller, err)
                 raise
 

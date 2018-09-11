@@ -1,8 +1,8 @@
 import unittest
-from nose.tools import assert_equals
+from nose.tools import assert_equal
 
 from robotide.robotapi import TestCase, TestCaseFile
-from robotide.controller.commands import ChangeTag
+from robotide.controller.ctrlcommands import ChangeTag
 from robotide.controller.filecontrollers import TestCaseFileController
 from robotide.controller.macrocontrollers import TestCaseController
 from robotide.controller.tablecontrollers import TestCaseTableController
@@ -25,7 +25,7 @@ class TestTreeController(unittest.TestCase):
     def test_register_tree_actions(self):
         mocked_ar = ActionRegistererMock()
         TreeController(None, mocked_ar, None, None).register_tree_actions()
-        self.assertEquals(
+        self.assertEqual(
             ["Go &Back", "Go &Forward"],
             [a.name for a in mocked_ar.action_collections])
 
@@ -60,7 +60,7 @@ class TestNavigationHistory(_BaseTreeControllerTest, unittest.TestCase):
 
     def test_go_back_one_level(self):
         self._select_node('Top Suite Fake UK 2')
-        self.assertEquals('Top Suite', self._go_back_and_return_selection())
+        self.assertEqual('Top Suite', self._go_back_and_return_selection())
 
     def test_go_back_two_levels(self):
         nodes = ['Top Suite Fake UK 1', 'Sub Suite 1', 'Sub Suite 1 Fake UK 0']
@@ -68,7 +68,7 @@ class TestNavigationHistory(_BaseTreeControllerTest, unittest.TestCase):
             self._select_node(name)
         nodes.reverse()
         for name in nodes[1:]:
-            self.assertEquals(name, self._go_back_and_return_selection())
+            self.assertEqual(name, self._go_back_and_return_selection())
 
     def test_it_is_not_possible_to_go_back_farther_than_history(self):
         nodes = ['Top Suite Fake UK 1', 'Sub Suite 1', 'Sub Suite 1 Fake UK 0']
@@ -107,10 +107,10 @@ class TestNavigationHistory(_BaseTreeControllerTest, unittest.TestCase):
         self._go_forward_and_assert_selection('Sub Suite 0 Fake UK 2')
 
     def _go_back_and_assert_selection(self, expected_selection):
-        assert_equals(self._go_back_and_return_selection(), expected_selection)
+        assert_equal(self._go_back_and_return_selection(), expected_selection)
 
     def _go_forward_and_assert_selection(self, expected_selection):
-        assert_equals(
+        assert_equal(
             self._go_forward_and_return_selection(), expected_selection)
 
 
@@ -150,7 +150,7 @@ class TestTestSelectionController(unittest.TestCase):
         test = self._create_test()
         test.datafile_controller.default_tags.execute(
             ChangeTag(Tag(None), 'default'))
-        assert_equals([t.name for t in test.tags], ['default'])
+        assert_equal([t.name for t in test.tags], ['default'])
         self._tsc.select(test)
         self._tsc.add_tag('custom')
         self.assertEqual([t.name for t in test.tags], ['default', 'custom'])

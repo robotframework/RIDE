@@ -22,7 +22,7 @@ from robotide.publish import (
     RideSaving)
 from robotide.utils import overrides
 from robotide.widgets import PopupCreator
-from editorcreator import EditorCreator
+from .editorcreator import EditorCreator
 
 
 _EDIT = """
@@ -205,6 +205,7 @@ class _EditorTab(wx.Panel):
         self.editor.insert_cells()
 
     def OnDeleteCells(self, event):
+        # print("DEBUG init delete cells call")
         self.editor.delete_cells()
 
     def OnInsertRows(self, event):

@@ -29,7 +29,8 @@ class ValueEditor(wx.Panel):
     _sizer_flags_for_editor = wx.ALL
     _sizer_flags_for_label = wx.ALL
 
-    def __init__(self, parent, value, label=None, validator=None, settings=None):
+    def __init__(self, parent, value, label=None, validator=None,
+                 settings=None):
         wx.Panel.__init__(self, parent)
         self._label = label
         self._sizer = wx.BoxSizer(wx.VERTICAL)
@@ -41,12 +42,15 @@ class ValueEditor(wx.Panel):
     def _create_editor(self, value, label, settings):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         if self._label:
-            sizer.Add(Label(self, label=self._label, size=(80, -1)), 0, self._sizer_flags_for_label, 5)
+            sizer.Add(Label(self, label=self._label, size=(80, -1)), 0,
+                      self._sizer_flags_for_label, 5)
         self._editor = self._get_text_ctrl()
+        # self._editor.SetDefaultStyle(wx.TextAttr(wx.TEXT_ATTR_ALL))
         self._editor.AppendText(value)
         sizer.Add(self._editor, 1, self._sizer_flags_for_editor, 3)
         self._sizer.Add(sizer, 1, wx.EXPAND)
-        wx.EVT_KEY_DOWN(self._editor, self.on_key_down)
+        self._editor.Bind(wx.EVT_KEY_DOWN, self.on_key_down)
+        # print("DEBUG: ValueEditor _create_editor: %s\n" % (self._editor.__repr__()))
 
     def _get_text_ctrl(self):
         return wx.TextCtrl(self, size=(600, -1))
@@ -64,7 +68,8 @@ class ValueEditor(wx.Panel):
     def on_key_down(self, event):
         character = None
         keycode, control_down = event.GetKeyCode(), event.CmdDown()
-        if  event.CmdDown() and event.GetKeyCode() == ord('1'):
+        # print("DEBUG: ValueEditor on_key_down: k=%s Ctrl=%s\n" % (keycode, control_down))
+        if event.CmdDown() and event.GetKeyCode() == ord('1'):
             character = '$'
         elif event.CmdDown() and event.GetKeyCode() == ord('2'):
             character = '@'
@@ -84,7 +89,8 @@ class ArgumentEditor(ValueEditor):
     def _create_editor(self, value, label, settings):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         if self._label:
-            sizer.Add(Label(self, label=self._label, size=(80, -1)), 0, self._sizer_flags_for_label, 5)
+            sizer.Add(Label(self, label=self._label, size=(80, -1)), 0,
+                      self._sizer_flags_for_label, 5)
         self._editor = self._get_text_ctrl()
         self._editor.AppendText(value)
         sizer.Add(self._editor, 1, self._sizer_flags_for_editor, 3)
@@ -94,10 +100,12 @@ class ArgumentEditor(ValueEditor):
 class FileNameEditor(ValueEditor):
 
     _sizer_flags_for_editor = 0
-    _sizer_flags_for_label =  wx.TOP|wx.BOTTOM|wx.LEFT
+    _sizer_flags_for_label = wx.TOP | wx.BOTTOM | wx.LEFT
 
-    def __init__(self, parent, value, label, controller, validator=None, settings=None, suggestion_source=None):
-        self._suggestion_source = suggestion_source or SuggestionSource(parent.plugin, None)
+    def __init__(self, parent, value, label, controller, validator=None,
+                 settings=None, suggestion_source=None):
+        self._suggestion_source = suggestion_source or SuggestionSource(
+            parent.plugin, None)
         self._controller = controller
         self._label = label
         self._parent = parent
@@ -107,7 +115,8 @@ class FileNameEditor(ValueEditor):
         self._parent.setFocusToOK()
 
     def _get_text_ctrl(self):
-        return ContentAssistFileButton(self, self._suggestion_source, '', self._controller, (500, -1))
+        return ContentAssistFileButton(self, self._suggestion_source, '',
+                                       self._controller, (500, -1))
 
 
 class VariableNameEditor(ValueEditor):
@@ -131,7 +140,7 @@ class ListValueEditor(ValueEditor):
     def _create_editor(self, value, label, settings):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         self._settings = settings
-        cols = self._settings['list variable columns']
+        cols = self._settings.get("list variable columns", 4)
         sizer.Add(self._create_components(label, cols))
         self._editor = _EditorGrid(self, value, cols)
         sizer.Add(self._editor, 1, self._sizer_flags_for_editor, 3)
@@ -150,20 +159,20 @@ class ListValueEditor(ValueEditor):
 
     def _create_column_selector(self, cols):
         sizer = wx.BoxSizer(wx.VERTICAL)
-        col_label = Label(self, label='Columns', size=(80, -1))
+        col_label = Label(self, label="Columns", size=(80, -1))
         sizer.Add(col_label, 0, wx.ALL, 5)
         combo = wx.ComboBox(self, value=str(cols), size=(60, 25),
                             choices=[str(i) for i in range(1, 11)])
-        combo.SetToolTip(wx.ToolTip('Number of columns that are shown in this '
-                                    'editor. Selected value is stored and used '
-                                    'globally.'))
+        combo.SetToolTip(wx.ToolTip("Number of columns that are shown in this "
+                                    "editor. Selected value is stored and used"
+                                    " globally."))
         self.Bind(wx.EVT_COMBOBOX, self.OnColumns, source=combo)
         sizer.Add(combo)
         return sizer
 
     def OnColumns(self, event):
         num_cols = int(event.String)
-        self._settings['list variable columns'] = num_cols
+        self._settings["list variable columns"] = num_cols
         self._editor.set_number_of_columns(num_cols)
 
     def OnAddRow(self, event):
@@ -204,7 +213,6 @@ class _EditorGrid(GridEditor):
                 (ctrl_or_cmd(), ord('a'), self.OnSelectAll),
                 (wx.ACCEL_NORMAL, wx.WXK_DELETE, self.OnDelete)]
 
-
     def _write_content(self, value):
         self.ClearGrid()
         for index, item in enumerate(value):
@@ -229,14 +237,17 @@ class _EditorGrid(GridEditor):
         if len(self.selection.rows()) != 1:
             self._insert_cells_to_multiple_rows(event)
             return
+
         def insert_cells(data, start, end):
             return data[:start] + [''] * (end - start) + data[start:]
         self._insert_or_delete_cells_on_single_row(insert_cells, event)
 
     def OnDeleteCells(self, event):
+        # print("DEBUG delete cells %s" % self.selection.rows())
         if len(self.selection.rows()) != 1:
             self._delete_cells_from_multiple_rows(event)
             return
+
         def delete_cells(data, start, end):
             return data[:start] + data[end:]
         self._insert_or_delete_cells_on_single_row(delete_cells, event)
@@ -291,7 +302,7 @@ class _EditorGrid(GridEditor):
         if new_cols > 0:
             self.AppendCols(numCols=new_cols)
         else:
-            self.DeleteCols(numCols= -new_cols)
+            self.DeleteCols(numCols=-new_cols)
 
 
 class MultiLineEditor(ValueEditor):
@@ -303,9 +314,12 @@ class MultiLineEditor(ValueEditor):
 
 class ContentAssistEditor(ValueEditor):
 
-    def __init__(self, parent, value, label=None, validator=None, settings=None, suggestion_source=None):
-        self._suggestion_source = suggestion_source or SuggestionSource(parent.plugin, None)
+    def __init__(self, parent, value, label=None, validator=None,
+                 settings=None, suggestion_source=None):
+        self._suggestion_source = suggestion_source or SuggestionSource(
+            parent.plugin, None)
         ValueEditor.__init__(self, parent, value, label, validator, settings)
 
     def _get_text_ctrl(self):
-        return ContentAssistTextCtrl(self, self._suggestion_source, (500, -1))
+        return ContentAssistTextCtrl(self, self._suggestion_source)
+        #DEBUG size, (500, -1))

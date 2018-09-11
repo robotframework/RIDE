@@ -22,15 +22,15 @@ class TestParents(unittest.TestCase):
         cls.project.close()
 
     def test_test_suite_parent_is_directory(self):
-        self.assertEquals(self.test.parent, self.directory)
+        self.assertEqual(self.test.parent, self.directory)
         self.assertTrue(self.test in self.directory.children)
 
     def test_local_resource_parent_is_directory(self):
-        self.assertEquals(self.resource.parent, self.directory)
+        self.assertEqual(self.resource.parent, self.directory)
         self.assertTrue(self.resource in self.directory.children)
 
     def test_external_resource_parent_is_undefined(self):
-        self.assertEquals(self.external_resource.parent, None)
+        self.assertEqual(self.external_resource.parent, None)
         self.assertTrue(self.external_resource not in self.directory.children)
 
 if __name__ == '__main__':

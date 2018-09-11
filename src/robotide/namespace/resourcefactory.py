@@ -26,9 +26,10 @@ class ResourceFactory(object):
         self.python_path_cache = {}
         self._excludes = settings.excludes
         self.check_path_from_excludes = self._excludes.contains
+        # print("DEBUG: ResourceFactory init path_excludes %s\n" % self.check_path_from_excludes)
 
     def _with_separator(self, dir):
-        return os.path.abspath(dir)+os.path.sep
+        return os.path.abspath(dir) + os.path.sep
 
     def get_resource(self, directory, name, report_status=True):
         path = self._build_path(directory, name)
@@ -37,7 +38,8 @@ class ResourceFactory(object):
             return res
         path_from_pythonpath = self._get_python_path(name)
         if path_from_pythonpath:
-            return self._get_resource(path_from_pythonpath, report_status=report_status)
+            return self._get_resource(path_from_pythonpath,
+                                      report_status=report_status)
         return None
 
     def _build_path(self, directory, name):
@@ -46,7 +48,12 @@ class ResourceFactory(object):
 
     def get_resource_from_import(self, import_, retriever_context):
         resolved_name = retriever_context.vars.replace_variables(import_.name)
-        return self.get_resource(import_.directory, resolved_name)
+        result = self.get_resource(import_.directory, resolved_name)
+        # print("""
+        #    DEBUG Resource Factory: get_resource_from_import importdir: %s
+        #    resolved_name: %s :result: %s
+        #    """ % (import_.directory, resolved_name, result))
+        return result
 
     def new_resource(self, directory, name):
         path = os.path.join(directory, name) if directory else name
@@ -55,7 +62,8 @@ class ResourceFactory(object):
         return resource
 
     def resource_filename_changed(self, old_name, new_name):
-        self.cache[self._normalize(new_name)] = self._get_resource(old_name, report_status=True)
+        self.cache[self._normalize(new_name)] = self._get_resource(old_name,
+                                                                   report_status=True)
         del self.cache[self._normalize(old_name)]
 
     def _get_python_path(self, name):
@@ -66,19 +74,22 @@ class ResourceFactory(object):
 
     def _get_resource(self, path, report_status):
         normalized = self._normalize(path)
-        if self.check_path_from_excludes(path) or self.check_path_from_excludes(normalized):
+        if self.check_path_from_excludes(
+                path) or self.check_path_from_excludes(normalized):
             return None
         if normalized not in self.cache:
             try:
-                self.cache[normalized] = self._load_resource(path, report_status=report_status)
-            except Exception:
+                self.cache[normalized] = \
+                    self._load_resource(path, report_status=report_status)
+            except Exception as e:
+                # print("DEBUG Resource Factory: exception %s" % str(e))
                 self.cache[normalized] = None
                 return None
         return self.cache[normalized]
 
     def _load_resource(self, path, report_status):
         r = robotapi.ResourceFile(path)
-        if os.stat(path)[6]!=0 and report_status:
+        if os.stat(path)[6] != 0 and report_status:
             return r.populate()
         robotapi.FromFilePopulator(r).populate(r.source)
         return r

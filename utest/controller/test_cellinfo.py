@@ -1,8 +1,8 @@
 import unittest
 import datafilereader
-from robotide.controller.commands import ChangeCellValue, DeleteRows, AddKeyword,\
+from robotide.controller.ctrlcommands import ChangeCellValue, DeleteRows, AddKeyword,\
     Undo, PasteArea
-from nose.tools import assert_equals, assert_true, assert_false,\
+from nose.tools import assert_equal, assert_true, assert_false,\
     assert_is_none
 from robotide.controller.cellinfo import CellType, ContentType, CellInfo,\
     CellContent, CellPosition
@@ -272,8 +272,8 @@ class TestCellInfo(unittest.TestCase):
         if macro == None:
             macro = self.test
         cell_info = macro.get_cell_info(row, col)
-        assert_equals(cell_info.cell_type, celltype)
-        assert_equals(cell_info.content_type, contenttype)
+        assert_equal(cell_info.cell_type, celltype)
+        assert_equal(cell_info.content_type, contenttype)
 
 
 if __name__ == "__main__":

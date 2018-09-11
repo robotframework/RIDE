@@ -13,6 +13,7 @@
 #  limitations under the License.
 
 import os
+import sys
 import wx
 from contextlib import contextmanager
 
@@ -43,7 +44,7 @@ class RIDE(wx.App):
 
     def OnInit(self):
         # Needed for SetToolTipString to work
-        wx.HelpProvider_Set(wx.SimpleHelpProvider())
+        wx.HelpProvider.Set(wx.SimpleHelpProvider())  # TODO adjust to wx versions 
         self.settings = RideSettings()
         librarydatabase.initialize_database()
         self.preferences = Preferences(self.settings)
@@ -89,19 +90,35 @@ class RIDE(wx.App):
     def _load_data(self):
         path = self._initial_path or self._get_latest_path()
         if path:
+            observer = LoadProgressObserver(self.frame)
+            self._controller.load_data(path, observer)
+        """
+        if path:
             with self.active_event_loop():
-                observer = LoadProgressObserver(self.frame)
+                # observer = LoadProgressObserver(self.frame)
+                observer = None  # Avoid crash in Windows with wxPython 3
                 self._controller.load_data(path, observer)
+        """
 
     def _find_robot_installation(self):
         output = utils.run_python_command(
-            ['import robot; print robot.__file__ + ", " + robot.__version__'])
-        robot_found = 'ImportError' not in output
+            ['import robot; print(robot.__file__ + \", \" + robot.__version__)'])
+        if utils.PY2:
+            robot_found = "ImportError" not in output and output
+        else:
+            robot_found = b"ModuleNotFoundError" not in output and output
         if robot_found:
-            rf_file, rf_version = output.strip().split(', ')
-            publish.RideLogMessage(
-                "Found Robot Framework version {0} from '{1}'.".format(
-                    rf_version, os.path.dirname(rf_file))).publish()
+            # print("DEBUG: output: %s  strip: %s" % (output, output.strip().split(b", ")))
+            rf_file, rf_version = output.strip().split(b", ")
+            if utils.PY2:
+                publish.RideLogMessage(
+                    "Found Robot Framework version %s from %s." % (
+                        rf_version, os.path.dirname(rf_file))).publish()
+            else:
+                publish.RideLogMessage(
+                    "Found Robot Framework version %s from %s." % (
+                        str(rf_version, 'utf-8'),
+                        str(os.path.dirname(rf_file), 'utf-8'))).publish()
             return rf_version
         else:
             publish.RideLogMessage(

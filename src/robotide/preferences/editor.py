@@ -39,7 +39,7 @@ TREE_THRESHOLD = 5
 class PreferenceEditor(wx.Dialog):
     """A dialog for showing the preference panels"""
     def __init__(self, parent, title, preferences, style="auto"):
-        wx.Dialog.__init__(self, parent, wx.ID_ANY, title, size=(800, 500),
+        wx.Dialog.__init__(self, parent, wx.ID_ANY, title, size=(800, 600),
                            style=wx.RESIZE_BORDER | wx.DEFAULT_DIALOG_STYLE)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
         self._current_panel = None
@@ -110,14 +110,20 @@ class PreferenceEditor(wx.Dialog):
         if self._closing:
             return
 
-        instance_or_class = self._tree.GetItemPyData(event.GetItem())
+        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
+            instance_or_class = self._tree.GetItemData(event.GetItem())
+        else:
+            instance_or_class = self._tree.GetItemPyData(event.GetItem())
         if isinstance(instance_or_class, wx.Panel):
             panel = instance_or_class
         else:
             # not an instance, assume it's a class
             panel = self._container.AddPanel(instance_or_class, self._settings)
             self._panels.append(panel)
-            self._tree.SetItemPyData(event.GetItem(), panel)
+            if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
+                self._tree.SetItemData(event.GetItem(), panel)
+            else:
+                self._tree.SetItemPyData(event.GetItem(), panel)
         self._container.ShowPanel(panel)
 
     def _populate_tree(self, panels):
@@ -133,7 +139,10 @@ class PreferenceEditor(wx.Dialog):
                 # make it not a tuple (eg: ("Plugins")). This fixes that.
                 location = (location,)
             item = self._get_item(location)
-            self._tree.SetItemPyData(item, panel_class)
+            if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
+                self._tree.SetItemData(item, panel_class)
+            else:
+                self._tree.SetItemPyData(item, panel_class)
         self._tree.ExpandAll()
 
     def _get_item(self, location):

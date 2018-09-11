@@ -18,7 +18,7 @@ import wx
 
 from robotide.version import VERSION
 from robotide.robotapi import ROBOT_LOGGER
-import logger
+from . import logger
 
 APP = None
 LOG = logger.Logger()
@@ -153,6 +153,10 @@ SHORTCUT_KEYS = '''\
     <tr>
         <td>Ctrl-Space</td>
         <td>Suggestions and auto completion</td>
+    </tr>
+    <tr>
+        <td>CtrlCmd-M</td>
+        <td>Help for cell content</td>
     </tr>
     <tr>
         <td>CtrlCmd-I</td>

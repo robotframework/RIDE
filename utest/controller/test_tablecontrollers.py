@@ -1,5 +1,5 @@
 import unittest
-from nose.tools import assert_equals
+from nose.tools import assert_equal
 
 from robotide.robotapi import TestCaseFile, TestCaseFileSettingTable
 from robotide.controller.filecontrollers import TestCaseFileController
@@ -37,7 +37,7 @@ class TestCaseNameValidationTest(unittest.TestCase):
 
     def _validate_name(self, name, expected_valid, named_ctrl=None):
         valid = not bool(self.ctrl.validate_name(name, named_ctrl).error_message)
-        assert_equals(valid, expected_valid)
+        assert_equal(valid, expected_valid)
 
 
 class TestCaseCreationTest(unittest.TestCase):
@@ -47,7 +47,7 @@ class TestCaseCreationTest(unittest.TestCase):
 
     def test_whitespace_is_stripped(self):
         test = self.ctrl.new('   ' + VALID_NAME + '\t   \n')
-        assert_equals(test.name, VALID_NAME)
+        assert_equal(test.name, VALID_NAME)
 
 
 class LibraryImportListOperationsTest(unittest.TestCase):

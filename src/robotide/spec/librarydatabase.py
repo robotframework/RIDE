@@ -16,7 +16,7 @@ import sqlite3
 import time
 from robotide.preferences.settings import SETTINGS_DIRECTORY
 from robotide.spec.iteminfo import LibraryKeywordInfo
-from robotide.utils import decode_from_system
+from robotide.utils import system_decode, unicode
 
 CREATION_SCRIPT = """\
 CREATE TABLE libraries (id INTEGER PRIMARY KEY,
@@ -31,10 +31,10 @@ CREATE TABLE keywords (name TEXT,
                        FOREIGN KEY(library) REFERENCES libraries(id));
 """
 
-DATABASE_FILE = os.path.join(decode_from_system(SETTINGS_DIRECTORY), 'librarykeywords.db')
+DATABASE_FILE = os.path.join(system_decode(SETTINGS_DIRECTORY), 'librarykeywords.db')
 
 def _create_database():
-    print 'Creating librarykeywords database to "%s"' % DATABASE_FILE
+    print('Creating librarykeywords database to "%s"' % DATABASE_FILE)
 
     connection = sqlite3.connect(DATABASE_FILE)
     connection.executescript(CREATION_SCRIPT)
@@ -55,9 +55,9 @@ def initialize_database():
     else:
         try:
             _validate_database()
-        except sqlite3.DatabaseError, err:
-            print 'error during database validation "%s"' % err
-            print 'removing database "%s"' % DATABASE_FILE
+        except sqlite3.DatabaseError as err:
+            print('error during database validation "%s"' % err)
+            print('removing database "%s"' % DATABASE_FILE)
             os.remove(DATABASE_FILE)
             _create_database()
 

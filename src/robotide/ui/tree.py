@@ -15,17 +15,24 @@
 import wx
 from wx.lib.agw import customtreectrl
 from wx.lib.mixins import treemixin
+try:
+    from wx import ColorRGB as Colour
+    TREETEXTCOLOUR = Colour(0xA9A9A9)  # wxPython 2.8.12
+except ImportError:
+    from wx import Colour
+    TREETEXTCOLOUR = Colour(0xA9, 0xA9, 0xA9)  # wxPython 3.0.2
 
 from robotide.controller.ui.treecontroller import TreeController, \
     TestSelectionController
 from robotide.context import IS_WINDOWS
 from robotide.action.actioninfo import ActionInfo
 from robotide.controller.filecontrollers import ResourceFileController
-from robotide.publish.messages import RideTestRunning, RideTestPassed, \
-    RideTestFailed, RideTestExecutionStarted, RideImportSetting, \
-    RideExcludesChanged, RideIncludesChanged, RideOpenSuite, RideNewProject
+from robotide.publish.messages import RideTestRunning, RideTestPaused, \
+    RideTestPassed, RideTestFailed, RideTestExecutionStarted, \
+    RideImportSetting, RideExcludesChanged, RideIncludesChanged, \
+    RideOpenSuite, RideNewProject
 from robotide.ui.images import RUNNING_IMAGE_INDEX, PASSED_IMAGE_INDEX, \
-    FAILED_IMAGE_INDEX, ROBOT_IMAGE_INDEX
+    FAILED_IMAGE_INDEX, PAUSED_IMAGE_INDEX, ROBOT_IMAGE_INDEX
 from robotide.ui.treenodehandlers import TestCaseHandler
 from robotide.publish import PUBLISHER, RideTreeSelection, RideFileNameChanged,\
     RideItem, RideUserKeywordAdded, RideTestCaseAdded, RideUserKeywordRemoved,\
@@ -33,7 +40,7 @@ from robotide.publish import PUBLISHER, RideTreeSelection, RideFileNameChanged,\
     RideDataDirtyCleared, RideVariableRemoved, RideVariableAdded,\
     RideVariableMovedUp, RideVariableMovedDown, RideVariableUpdated,\
     RideOpenResource, RideSuiteAdded, RideSelectResource, RideDataFileSet
-from robotide.controller.commands import MoveTo
+from robotide.controller.ctrlcommands import MoveTo
 from robotide.widgets import PopupCreator
 from robotide import utils
 
@@ -43,16 +50,24 @@ from .images import TreeImageList
 
 _TREE_ARGS = {'style': wx.TR_DEFAULT_STYLE}
 
-if wx.VERSION_STRING >= '2.8.11.0':
+if wx.VERSION >= (2, 8, 11, ''): # wx.VERSION_STRING >= '2.8.11.0':
     _TREE_ARGS['agwStyle'] = \
         customtreectrl.TR_DEFAULT_STYLE | customtreectrl.TR_HIDE_ROOT | \
         customtreectrl.TR_EDIT_LABELS
+
+if wx.VERSION >= (3, 0, 3, ''):
+    _TREE_ARGS['agwStyle'] |= customtreectrl.TR_ELLIPSIZE_LONG_ITEMS | \
+        customtreectrl.TR_TOOLTIP_ON_LONG_ITEMS
+
 if IS_WINDOWS:
     _TREE_ARGS['style'] |= wx.TR_EDIT_LABELS
 
 
+# Metaclass fix from http://code.activestate.com/recipes/204197-solving-the-metaclass-conflict/
+from robotide.utils.noconflict import classmaker
 class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
            utils.RideEventHandler):
+    __metaclass__ = classmaker()
 
     _RESOURCES_NODE_LABEL = 'External Resources'
 
@@ -67,6 +82,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
         self._controller.register_tree_actions()
         self._bind_tree_events()
         self._images = TreeImageList()
+        self._animctrl = None
         self._silent_mode = False
         self.SetImageList(self._images)
         self.label_editor = TreeLabelEditListener(self, action_registerer)
@@ -77,6 +93,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
         self._clear_tree_data()
         self._editor = None
         self._execution_results = None
+        self.SetBackgroundColour('white')  # TODO get background color from def
         if not hasattr(self, 'OnCancelEdit'):
             self.OnCancelEdit = self._on_cancel_edit
 
@@ -102,6 +119,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
         self.Bind(wx.EVT_TREE_ITEM_RIGHT_CLICK, self.OnRightClick)
         self.Bind(wx.EVT_TREE_ITEM_ACTIVATED, self.OnItemActivated)
         self.Bind(customtreectrl.EVT_TREE_ITEM_CHECKED, self.OnTreeItemChecked)
+        self.Bind(wx.EVT_TREE_ITEM_COLLAPSING, self.OnTreeItemCollapsing)
 
     def OnDoubleClick(self, event):
         item, pos = self.HitTest(self.ScreenToClient(wx.GetMousePosition()))
@@ -149,6 +167,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
             (self._filename_changed, RideFileNameChanged),
             (self._testing_started, RideTestExecutionStarted),
             (self._test_result, RideTestRunning),
+            (self._test_result, RideTestPaused),
             (self._test_result, RideTestPassed),
             (self._test_result, RideTestFailed),
             (self._handle_import_setting_message, RideImportSetting),
@@ -164,7 +183,8 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
         self._remove_datafile_node(tree)
 
     def _set_item_excluded(self, node):
-        self.SetItemTextColour(node, 'gray')
+        # self.SetItemTextColour(node, 'gray')  # Fixing issue #22
+        self.SetItemTextColour(node, wx.TheColourDatabase.Find("GRAY"))
         self.SetItemItalic(node, True)
         self.SetItemText(node, "%s (excluded)" % self.GetItemText(node))
 
@@ -202,11 +222,42 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
         node = self._controller.find_node_by_controller(controller)
         if not node:
             return
-        self.SetItemImage(node, self._get_icon_index_for(controller))
+        img_index = self._get_icon_index_for(controller)
+        # Always set the static icon
+        self.SetItemImage(node, img_index)
+        # print("DEBUG setIcon img_index=%d" % (img_index))
+        if wx.VERSION >= (3, 0, 3, '') and self._animctrl:
+            self._animctrl.Stop()
+            self._animctrl.Animation.Destroy()
+            self._animctrl.Destroy()
+            self._animctrl = None
+        if wx.VERSION >= (3, 0, 3, '') and img_index in (RUNNING_IMAGE_INDEX, PAUSED_IMAGE_INDEX):
+            from wx.adv import Animation, AnimationCtrl
+            import os
+            _BASE = os.path.join(os.path.dirname(__file__), '..', 'widgets')
+            if img_index == RUNNING_IMAGE_INDEX:
+                img = os.path.join(_BASE, 'robot-running.gif')
+            else:
+                img = os.path.join(_BASE, 'robot-pause.gif')
+            ani = Animation(img)
+            obj = self
+            rect = (node.GetX()+20, node.GetY())  # Overlaps robot icon
+            self._animctrl = AnimationCtrl(obj, -1, ani, rect)
+            # self._animctrl.Reparent()
+            self._animctrl.SetBackgroundColour(obj.GetBackgroundColour())
+            try:
+                node.SetWindow(self._animctrl, False)
+            except TypeError:  # DEBUG In case wxPython devel not ready
+                node.SetWindow(self._animctrl)
+            self._animctrl.Play()
+        # Make visible the running or paused test
+        self.EnsureVisible(node)
 
     def _get_icon_index_for(self, controller):
         if not self._execution_results:
             return ROBOT_IMAGE_INDEX
+        if self._execution_results.is_paused(controller):
+            return PAUSED_IMAGE_INDEX
         if self._execution_results.is_running(controller):
             return RUNNING_IMAGE_INDEX
         if self._execution_results.has_passed(controller):
@@ -304,7 +355,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
 
         if isinstance(controller, ResourceFileController):
             if not controller.is_used():
-                self.SetItemTextColour(node, wx.ColorRGB(0xA9A9A9))
+                self.SetItemTextColour(node, TREETEXTCOLOUR)  # wxPython3 hack
         action_handler = handler_class(
             controller, self, node, self._controller.settings)
         self.SetPyData(node, action_handler)
@@ -341,10 +392,11 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
             self._create_node_with_handler(node, childitem, index)
 
     def _children_of(self, handler):
-        return [v for v in handler.variables if v.has_data()] + list(handler.tests) + \
-            list(handler.keywords)
+        return [v for v in handler.variables if v.has_data()] + \
+               list(handler.tests) + list(handler.keywords)
 
-    def _create_node(self, parent_node, label, img, index=None, with_checkbox=False):
+    def _create_node(self, parent_node, label, img, index=None,
+                     with_checkbox=False):
         node = self._wx_node(parent_node, index, label, with_checkbox)
         self.SetItemImage(node, img.normal, wx.TreeItemIcon_Normal)
         self.SetItemImage(node, img.expanded, wx.TreeItemIcon_Expanded)
@@ -417,7 +469,9 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
 
     def _leaf_item_removed(self, message):
         node = self._controller.find_node_by_controller(message.item)
+        parent_node = self._get_datafile_node(message.datafile)  # DEBUG
         self._test_selection_controller.select(message.item, False)
+        self._controller.mark_node_dirty(parent_node) # DEBUG
         self.delete_node(node)
 
     def _test_added(self, message):
@@ -445,6 +499,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
         self.add_keyword(parent, controller)
 
     def delete_node(self, node):
+        print("DEBUG at delete_node %s" % (repr(node)))
         if node is None:
             return
         parent = self.GetItemParent(node)
@@ -665,6 +720,31 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
         node = event.GetItem()
         if node.IsOk():
             self._render_children(node)
+
+    # TODO: Remove method if CustomTreeItem defines it
+    def OnTreeItemCollapsing(self, event):
+        item = event.GetItem()  # On large trees this is slow when item is root
+        self._for_all_running_tests(item, lambda t: self._hideanimation(t))
+
+    def _hideanimation(self, item):
+            itemwindow = item.GetWindow()
+            if itemwindow:
+                itemwindow.Hide()
+
+    def _for_all_running_tests(self, item, func):
+        if not self.HasAGWFlag(customtreectrl.TR_HIDE_ROOT) or \
+                item != self.GetRootItem():
+            if isinstance(item.GetData(), ResourceRootHandler or
+                                          ResourceFileHandler):
+                return
+
+            if not self.IsExpanded(item):
+                return
+            if self._is_test_node(item):
+                func(item)
+
+            for child in item.GetChildren():
+                self._for_all_tests(child, func)
 
     def SelectAllTests(self, item):
         self._for_all_tests(item, lambda t: self.CheckItem(t))
