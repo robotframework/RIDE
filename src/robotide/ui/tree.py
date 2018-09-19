@@ -248,7 +248,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
             try:
                 node.SetWindow(self._animctrl, False)
             except TypeError:  # DEBUG In case wxPython devel not ready
-            node.SetWindow(self._animctrl)
+                node.SetWindow(self._animctrl)
             self._animctrl.Play()
         # Make visible the running or paused test
         self.EnsureVisible(node)
