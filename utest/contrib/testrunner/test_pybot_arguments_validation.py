@@ -1,5 +1,5 @@
 import unittest
-import robot.errors
+import robotide.lib.robot.errors
 from robotide.contrib.testrunner.runprofiles import PybotProfile
 
 
@@ -11,12 +11,12 @@ class TestPybotArgumentsValidation(unittest.TestCase):
     @unittest.expectedFailure   # No more DataError, better argument detection
     def test_invalid_argument(self):
         try:
-            self.assertRaisesRegex(robot.errors.DataError,
+            self.assertRaisesRegex(robotide.lib.robot.errors.DataError,
                                    'option --invalidargument not recognized',
                                    self._profile._get_invalid_message,
                                    '--invalidargument')
         except AttributeError:  # Python2
-            self.assertRaisesRegexp(robot.errors.DataError,
+            self.assertRaisesRegexp(robotide.lib.robot.errors.DataError,
                                     'option --invalidargument not recognized',
                                     self._profile._get_invalid_message,
                                     '--invalidargument')
