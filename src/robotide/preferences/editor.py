@@ -30,6 +30,7 @@ dialog.
 """
 
 import wx
+from wx.lib.scrolledpanel import ScrolledPanel
 
 # any more than TREE_THRESHOLD panels when style is "auto" forces
 # the UI into showing a hierarchical tree
@@ -188,11 +189,14 @@ class PanelContainer(wx.Panel):
 
         self._current_panel = None
         self.title = wx.StaticText(self, label="Your message here")
-        self.panels_container = wx.Panel(self)
+        # self.panels_container = wx.Panel(self)
+        self.panels_container = ScrolledPanel(self, wx.ID_ANY, style=wx.TAB_TRAVERSAL)
+        self.panels_container.SetupScrolling()
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(self.title, 0, wx.TOP|wx.LEFT|wx.EXPAND, 4)
         sizer.Add(wx.StaticLine(self), 0, wx.EXPAND|wx.TOP|wx.BOTTOM, 4)
         sizer.Add(self.panels_container,1, wx.EXPAND)
+        # sizer.Add(self._create_body(), 1, flag=wx.EXPAND | wx.ALL, border=16)
         self.SetSizer(sizer)
         self.panels_container.SetSizer(wx.BoxSizer(wx.VERTICAL))
 
