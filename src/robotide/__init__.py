@@ -123,26 +123,7 @@ def _run(inpath=None, updatecheck=True, debug_console=False):
 
 
 def _show_old_wxpython_warning_if_needed(parent=None):
-    if wx.VERSION >= (2, 8, 12, 1, ''):
-        if wx.VERSION > (3, 0, 2, 0, ''):
-            title = "Please be aware of untested wxPython installation"
-            message = ("RIDE officially supports wxPython 2.8.12.1 and 3.0.2."
-                       "\nYour current version is %s.\n"
-                       "There are significant changes in newer wxPython "
-                       "versions. Notice that RIDE is still under development "
-                       "for wxPython 3.0.3 and newer (wxPython-Phoenix). "
-                       % wx.VERSION_STRING)
-            """
-            style = wx.OK | wx.ICON_INFORMATION | wx.CENTER
-            if not parent:
-                _ = wx.App()
-                parent = wx.Frame(None, size=(0, 0))
-            """
-            sys.stderr.write("{0}\n{1}\n".format(title, message))
-            # No more annoying dialog box.
-            #  wx.MessageDialog(parent, message=message, caption=title,
-            #                 style=style).ShowModal()
-    else:
+    if wx.VERSION <(2, 8, 12, 1, ''):
         title = "Please upgrade your wxPython installation"
         message = ("RIDE officially supports wxPython 2.8.12.1. Your current "
                    "version is %s."
@@ -154,6 +135,9 @@ def _show_old_wxpython_warning_if_needed(parent=None):
                    "This version will run also on wxPython 3.0.2, download "
                    "from http://sourceforge.net/projects/wxpython/files/wxPyth"
                    "on/3.0.2.0/."
+                   "\n"
+                   "This version runs with wxPython 4 under Python 2.7 or 3.x. See "
+                   "http://wxpython.org/ for downloads and instructions."
                    % wx.VERSION_STRING)
         style = wx.ICON_EXCLAMATION
         if not parent:
