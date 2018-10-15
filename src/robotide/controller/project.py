@@ -384,4 +384,4 @@ class Backup(object):
         shutil.move(from_path, to_path)
 
     def _remove_backup_dir(self):
-        os.rmdir(self._backup_dir)
+        shutil.rmtree(self._backup_dir)

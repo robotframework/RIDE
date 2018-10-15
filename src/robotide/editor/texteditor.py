@@ -17,6 +17,7 @@ try:
     from StringIO import StringIO
 except ImportError:  # py3
     from io import StringIO
+    from io import BytesIO
 import string
 import wx
 from wx import stc
@@ -236,7 +237,7 @@ class DataFileWrapper(object): # TODO: bad class name
         if PY2:
             src = StringIO(content.encode("utf-8"))
         else:   # DEBUG because Apply Changes
-            src = StringIO(content)
+            src = BytesIO(content.encode("utf-8"))
         target = self._create_target()
         FromStringIOPopulator(target).populate(src)
         return target
