@@ -842,7 +842,7 @@ class ContentAssistCellEditor(GridCellEditor):  # DEBUG wxPhoenix PyGridCellEdi
         self._original_value = ''
         self._tc.SetValue('')
         if wx.VERSION >= (3, 0, 2, ''):  # DEBUG wxPhoenix
-            if self._value:
+            if self._value or val == '':
                 # print("DEBUG: Calling value edited on ApplyEdit")
                 self._grid.cell_value_edited(row, col, self._value)
         # pass
@@ -857,12 +857,14 @@ class ContentAssistCellEditor(GridCellEditor):  # DEBUG wxPhoenix PyGridCellEdi
 
     def StartingKey(self, event):
         key = event.GetKeyCode()
-        if key is wx.WXK_DELETE or key > 255:
+        if key == wx.WXK_DELETE or key > 255:
             self._grid.HideCellEditControl()
-            return
-        self._tc.SetValue(unichr(key))
-        self._tc.SetFocus()
-        self._tc.SetInsertionPointEnd()
+        elif key == wx.WXK_BACK:
+            self._tc.SetValue(self._original_value)
+        else:
+            self._tc.SetValue(unichr(key))
+            self._tc.SetFocus()
+            self._tc.SetInsertionPointEnd()
 
     def StartingClick(self):
         self._tc.SetValue(self._original_value)
