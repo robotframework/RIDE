@@ -16,8 +16,7 @@ from time import time
 try:
     from StringIO import StringIO
 except ImportError:  # py3
-    from io import StringIO
-    from io import BytesIO
+    from io import StringIO, BytesIO
 import string
 import wx
 from wx import stc

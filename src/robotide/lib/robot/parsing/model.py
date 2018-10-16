@@ -504,11 +504,11 @@ class Variable(object):
 
     def as_list(self):
         if self.has_data():
-            print("DEBUG: [self.name] + self.value + self.comment.as_list(): ")
-            print("DEBUG: *%s* *%s* *%s*" % ([self.name], self.value, self.comment.as_list()))
+            # print("DEBUG: [self.name] + self.value + self.comment.as_list(): ")
+            # print("DEBUG: *%s* *%s* *%s*" % ([self.name], self.value, self.comment.as_list()))
             # DEBUG This will fail on Python3
             if isinstance(self.value, str) or is_unicode(self.value):
-                print("DEBUG: *%s* *%s* *%s*" % ([self.name], [self.value], self.comment.as_list()))
+                # print("DEBUG: *%s* *%s* *%s*" % ([self.name], [self.value], self.comment.as_list()))
                 return [self.name] + [self.value] + self.comment.as_list()
             else:
                 return [self.name] + self.value + self.comment.as_list()
