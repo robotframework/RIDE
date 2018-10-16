@@ -862,9 +862,15 @@ class ContentAssistCellEditor(GridCellEditor):  # DEBUG wxPhoenix PyGridCellEdi
         elif key == wx.WXK_BACK:
             self._tc.SetValue(self._original_value)
         else:
+<<<<<<< HEAD
+        self._tc.SetValue(unichr(key))
+        self._tc.SetFocus()
+        self._tc.SetInsertionPointEnd()
+=======
             self._tc.SetValue(unichr(key))
             self._tc.SetFocus()
             self._tc.SetInsertionPointEnd()
+>>>>>>> e565f48c... fix wrong EOL
 
     def StartingClick(self):
         self._tc.SetValue(self._original_value)
