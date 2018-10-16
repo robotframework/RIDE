@@ -64,7 +64,7 @@ class GridEditor(grid.Grid):
             self.AppendCols(1)
 
     def has_focus(self):
-        return self.FindFocus() == self.GridWindow
+        return self.FindFocus() == self
 
     def _update_history(self):
         self._history.change(self._get_all_content())
