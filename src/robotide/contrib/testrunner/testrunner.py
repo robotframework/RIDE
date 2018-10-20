@@ -63,7 +63,6 @@ if encoding:
 
 ATEXIT_LOCK = threading.RLock()
 
-
 # Solution from https://stackoverflow.com/questions/10009753/python-dealing-with-mixed-encoding-files
 def mixed_decoder(unicodeError):
     errStr = unicodeError[1]
