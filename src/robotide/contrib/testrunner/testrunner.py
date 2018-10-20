@@ -56,8 +56,8 @@ try:
 except ImportError:
     encoding = None
 # DEBUG we are forcing UTF-8
-if encoding:
-    encoding.OUTPUT_ENCODING = 'UTF-8'
+# if encoding:
+#     encoding.OUTPUT_ENCODING = 'UTF-8'
 
 ATEXIT_LOCK = threading.RLock()
 
@@ -466,7 +466,8 @@ class StreamReaderThread(object):
             myqueuerng = range(self._queue.qsize())
         for _ in myqueuerng:
             try:
-                result += self._queue.get_nowait().decode(utils.SYSTEM_ENCODING, 'replace')  # .decode('UTF-8','ignore')
+                # DEBUG result += self._queue.get_nowait().decode(utils.SYSTEM_ENCODING, 'replace')  # .decode('UTF-8','ignore')
+                result += encoding.console_decode(self._queue.get_nowait(), 'latin1' if IS_WINDOWS else 'UTF-8')   # ,'replace')  # 'latin1' .decode(utils.SYSTEM_ENCODING, 'replace')  # .decode('UTF-8','ignore')
             except Empty:
                 pass
         return result  # DEBUG .decode('UTF-8', 'ignore')
