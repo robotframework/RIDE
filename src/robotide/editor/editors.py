@@ -146,7 +146,7 @@ class _RobotTableEditor(EditorPanel):
     def _restore_settings_open_status(self):
         if self._should_settings_be_open():
             self._settings.Expand()
-            wx.CallLater(200, self._collabsible_changed)
+            wx.CallAfter(self._collabsible_changed)
         else:
             self._settings.Collapse()
 
