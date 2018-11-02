@@ -31,7 +31,6 @@ class GridToolTips(object):
         grid.Bind(wx.grid.EVT_GRID_EDITOR_HIDDEN, self.OnGridEditorHidden)
 
     def OnGridDestroy(self, event):
-        print("destroy ", flush=True)
         self._tooltip_timer.Stop()
         event.Skip()
 
