@@ -495,7 +495,7 @@ class DemoCodeEditor(PythonSTC):
         if wx.Platform == '__WXMSW__':
             print("DEBUG: Setup on Windows")
             self.StyleSetSpec(stc.STC_STYLE_DEFAULT,
-                              'fore:#000000,back:#FFFFFF,face:Courier New')
+                              'fore:#000000,back:#FFFFFF,face:Space Mono')  # Courier New')
         elif wx.Platform == '__WXMAC__':
             print("DEBUG: Setup on Mac")
             # TODO: if this looks fine on Linux too, remove the Mac-specific case
@@ -638,7 +638,7 @@ class DemoCodePanel(wx.Panel):
 
     def LoadDemoSource(self, source):
         self.editor.Clear()
-        self.editor.SetValue(source)
+        self.editor.SetTextRaw(source)  # DEBUG SetValue
         self.JumpToLine(0)
         self.btnSave.Enable(False)
 
@@ -694,8 +694,8 @@ class DemoCodePanel(wx.Panel):
             dlg.Destroy()
 
         # Save
-        f = open(modifiedFilename, "wt")
-        source = self.editor.GetText()
+        f = open(modifiedFilename, "wb")
+        source = self.editor.GetTextRaw()
         try:
             f.write(source)
         finally:
@@ -752,7 +752,7 @@ class DemoCodePanel(wx.Panel):
                 self.log.write('           %s\n' % path)
 
             # Open
-            f = open(path, "r")
+            f = open(path, "rb")
             try:
                 source = f.read()
             finally:
