@@ -863,8 +863,8 @@ class ContentAssistCellEditor(GridCellEditor):  # DEBUG wxPhoenix PyGridCellEdi
             self._tc.SetValue(self._original_value)
         else:
             self._tc.SetValue(unichr(key))
-            self._tc.SetFocus()
-            self._tc.SetInsertionPointEnd()
+        self._tc.SetFocus()
+        self._tc.SetInsertionPointEnd()
 
     def StartingClick(self):
         self._tc.SetValue(self._original_value)
