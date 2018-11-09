@@ -52,12 +52,13 @@ else:
 
 # This is how you pre-establish a file filter so that the dialog
 # only shows the extension(s) you want it to.
-wildcard = "Python source (*.py)|*.py|"     \
+wildcard = "All files (*.*)|*.*|"                \
            "JASON file (*.json)|*.json|"        \
+           "Python source (*.py)|*.py|"         \
            "Robot Framework (*.robot)|*.robot|" \
            "Robot Framework (*.txt)|*.txt|" \
-           "YAML file (*.yml)|*.yml|"        \
-           "All files (*.*)|*.*"
+           "YAML file (*.yml)|*.yml"
+
 
 
 # ----------------------------------------------------------------------
@@ -506,7 +507,7 @@ class DemoCodeEditor(PythonSTC):
             print("DEBUG: Setup on Linux")
             defsize = wx.SystemSettings.GetFont(wx.SYS_ANSI_FIXED_FONT).GetPointSize()
             self.StyleSetSpec(stc.STC_STYLE_DEFAULT,
-                              'fore:#000000,back:#FFFFFF,face:Courier,size:%d'%defsize)
+                              'fore:#000000,back:#FFFFFF,face:Hack,size:%d'%defsize)  # Courier, Space Mono, Source Pro Mono,
 
         # Clear styles and revert to default.
         self.StyleClearAll()
@@ -569,6 +570,17 @@ modDefault = modOriginal
 
 # ---------------------------------------------------------------------------
 
+
+def isUTF8Strict(data):
+    try:
+        decoded = data.decode('UTF-8')
+    except UnicodeDecodeError:
+        return False
+    else:
+        for ch in decoded:
+            if 0xD800 <= ord(ch) <= 0xDFFF:
+                return False
+        return True
 
 class DemoCodePanel(wx.Panel):
     """Panel for the 'Demo Code' tab"""
@@ -696,10 +708,39 @@ class DemoCodePanel(wx.Panel):
         # Save
         f = open(modifiedFilename, "wb")
         source = self.editor.GetTextRaw()
-        try:
-            f.write(source)
-        finally:
-            f.close()
+        # print("DEBUG: Test is Unicode %s",isUTF8Strict(source))
+        if isUTF8Strict(source):
+            try:
+                f.write(source)
+                print("DEBUG: Saved as Unicode")
+            finally:
+                f.close()
+        else:
+            print("DEBUG: there were problems with source not being Unicode.")
+            # Attempt to isolate the problematic bytes
+            bsource = bytearray(source)
+            try:
+                chunksize = 1024
+                for c in range(0, len(source), chunksize):
+                    data = [chr(int(x, base=2)) for x in source[c:c + chunksize]]
+                    f.write(''.join(data))
+            finally:
+                f.close()
+            # idx = 0
+            # while source[idx]:
+            #     try:
+            #         s = bytes(source[idx:-1].encoding('UTF-8'))
+            #         bsource.append(s)
+            #         idx += len(s)
+            #     except:
+            #         print("DEBUG: index=%d" % idx)
+            #         idx += 1
+            #         bsource.append(source[idx])
+            # try:
+            #     f.write(bsource)
+            #     print("DEBUG: Saved bytes")
+            # finally:
+            #     f.close()
 
         # busy = wx.BusyInfo("Reloading demo module...")
         # self.demoModules.LoadFromFile(modModified, modifiedFilename)
