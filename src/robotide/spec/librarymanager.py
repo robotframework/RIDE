@@ -152,6 +152,8 @@ class LibraryManager(Thread):
                 return True
             if k1.doc != k2.doc:
                 return True
+            if k1.doc_format != k2.doc.doc_format:
+                return True
             if k1.arguments != k2.arguments:
                 return True
             if k1.source != k2.source:

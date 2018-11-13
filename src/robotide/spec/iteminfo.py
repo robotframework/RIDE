@@ -17,6 +17,7 @@ import os
 from functools import total_ordering
 from robotide.utils import unicode
 from robotide import utils
+from robotide.lib.robot.libdocpkg.htmlwriter import DocToHtml
 
 
 class ItemInfo(object):
@@ -158,6 +159,7 @@ class _KeywordInfo(ItemInfo):
 
     def __init__(self, item):
         self.doc = self._doc(item).strip()
+        self.doc_format = "ROBOT"
         ItemInfo.__init__(self, self._name(item), self._source(item),
                           None)
         self.shortdoc = self.doc.splitlines()[0] if self.doc else ''
@@ -169,6 +171,7 @@ class _KeywordInfo(ItemInfo):
 
     @property
     def details(self):
+        formatter = DocToHtml(self.doc_format)
         return ('<table>'
                 '<tr><td><i>Name:</i></td><td>%s</td></tr>'
                 '<tr><td><i>Source:</i></td><td>%s &lt;%s&gt;</td></tr>'
@@ -179,7 +182,7 @@ class _KeywordInfo(ItemInfo):
                 '</table>') % \
                 (self._name(self.item), self._source(self.item), self._type,
                  self._format_args(self.arguments),
-                 utils.html_format(self.doc))
+                 formatter(self.doc))
 
     def _format_args(self, args):
         return '[ %s ]' % ' | '.join(args)
@@ -204,11 +207,12 @@ class _KeywordInfo(ItemInfo):
 
 class _XMLKeywordContent(_KeywordInfo):
 
-    def __init__(self, item, source, source_type):
+    def __init__(self, item, source, source_type, doc_format):
         self._type = source_type
         self._source = lambda x: source
         _KeywordInfo.__init__(self, item)
         self.args = self._format_args(self._parse_args(item))
+        self.doc_format = doc_format
 
     def with_alias(self, alias):
         if alias:
@@ -235,9 +239,10 @@ class LibraryKeywordInfo(_KeywordInfo):
     _library_alias = None
     item = None
 
-    def __init__(self, name, doc, library_name, args):
+    def __init__(self, name, doc, doc_format, library_name, args):
         self._item_name = name
         self.doc = doc.strip()
+        self.doc_format = doc_format
         self._item_library_name = library_name
         self._args = args
         ItemInfo.__init__(self, self._item_name, library_name, None)

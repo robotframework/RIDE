@@ -23,6 +23,7 @@ def get_import_result(path, args):
         LibraryKeywordInfo(
             kw.name,
             kw.doc,
+            lib.doc_format,
             kw.library.name,
             _parse_args(kw.arguments)
         ) for kw in lib.handlers]
