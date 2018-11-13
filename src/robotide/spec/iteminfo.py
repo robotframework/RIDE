@@ -242,11 +242,13 @@ class LibraryKeywordInfo(_KeywordInfo):
     def __init__(self, name, doc, doc_format, library_name, args):
         self._item_name = name
         self.doc = doc.strip()
-        self.doc_format = doc_format
         self._item_library_name = library_name
         self._args = args
         ItemInfo.__init__(self, self._item_name, library_name, None)
         self.shortdoc = self.doc.splitlines()[0] if self.doc else ''
+
+        if doc_format != "":
+            self.doc_format = doc_format
 
     def with_alias(self, alias):
         self._library_alias = alias
