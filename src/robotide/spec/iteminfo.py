@@ -249,6 +249,8 @@ class LibraryKeywordInfo(_KeywordInfo):
 
         if doc_format != "":
             self.doc_format = doc_format
+        else:
+            self.doc_format = "ROBOT"
 
     def with_alias(self, alias):
         self._library_alias = alias
