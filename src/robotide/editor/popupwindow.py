@@ -41,6 +41,7 @@ class _PopupWindowBase(object):
 
     def _set_detachable(self):
         # print("DEBUG: PopupWindow at Binding mouse on help")
+        self._details.Bind(wx.EVT_MIDDLE_DOWN, self._detach)
         self._details.Bind(wx.EVT_LEFT_UP, self._detach)
         self._details.Bind(wx.EVT_LEFT_DCLICK, self._detach) # DEBUG add double-click
 
@@ -77,11 +78,13 @@ class _PopupWindowBase(object):
         self._detached_title = title
 
 
-class RidePopupWindow(wx.PopupWindow, _PopupWindowBase): # DEBUG wx.PopupWindow,
+class RidePopupWindow(wx.PopupWindow, _PopupWindowBase):
 
     def __init__(self, parent, size):
-        wx.PopupWindow.__init__(self, parent, flags=wx.DEFAULT_FRAME_STYLE) # DEBUG |wx.DEFAULT_DIALOG_STYLE
-        self.SetSize(size)   # wx.BORDER_NONE
+        wx.PopupWindow.__init__(self, parent,
+                                flags=wx.CAPTION|wx.RESIZE_BORDER|
+                                      wx.DEFAULT_FRAME_STYLE)
+        self.SetSize(size)
 
     def _set_auto_hiding(self):
         # EVT_LEAVE is triggered on different components on different OSes.
@@ -98,20 +101,21 @@ class HtmlPopupWindow(RidePopupWindow):
 
 
 # TODO: See if we need to have Mac specific window
-# class MacRidePopupWindow(wx.MiniFrame, _PopupWindowBase):
-#
-#     def __init__(self, parent, size, detachable=True, autohide=False):
-#         wx.MiniFrame.__init__(self, parent, style=wx.SIMPLE_BORDER)
-#         _PopupWindowBase.__init__(self, size, detachable, autohide)
-#         self.hide()
-#
-#     def _set_auto_hiding(self):
-#         self._details.Bind(wx.EVT_MOTION, lambda evt: self.hide())
-#
-#     def OnKey(self, *params):
-#         pass
-#
-#
-# if wx.PlatformInfo[0] == '__WXMAC__':
-#     RidePopupWindow = HtmlPopupWindow = MacRidePopupWindow
-# del MacRidePopupWindow
+class MacRidePopupWindow(wx.MiniFrame, _PopupWindowBase):
+
+    def __init__(self, parent, size, detachable=True, autohide=False):
+        wx.MiniFrame.__init__(self, parent, style=wx.SIMPLE_BORDER
+                                                  |wx.RESIZE_BORDER)
+        _PopupWindowBase.__init__(self, size, detachable, autohide)
+        self.hide()
+
+    def _set_auto_hiding(self):
+        self._details.Bind(wx.EVT_MOTION, lambda evt: self.hide())
+
+    def OnKey(self, *params):
+        pass
+
+
+if wx.PlatformInfo[0] == '__WXMAC__':
+    RidePopupWindow = HtmlPopupWindow = MacRidePopupWindow
+del MacRidePopupWindow

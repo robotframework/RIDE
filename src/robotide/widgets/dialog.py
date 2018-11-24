@@ -27,7 +27,10 @@ class Dialog(wx.Dialog):
             style = style or (wx.DEFAULT_DIALOG_STYLE | wx.RESIZE_BORDER)
         else:
             style = style or (wx.DEFAULT_DIALOG_STYLE | wx.THICK_FRAME)
-        wx.Dialog.__init__(self, parent, title=title, size=size, style=style)
+        wx.MiniFrame.__init__(self, parent, title=title, size=size, style=style) # style=wx.SIMPLE_BORDER)
+        print(
+            "DEBUG: Created detached dialog, did it work in Windows?")
+        # wx.Dialog.__init__(self, parent, title=title, size=size, style=style)
         self.CenterOnParent()
 
     def _create_buttons(self, sizer):
