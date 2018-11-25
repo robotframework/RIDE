@@ -6,6 +6,7 @@ before_install:
   - sudo touch /etc/machine-id
   - dbus-uuidgen > .myId
   - sudo cp .myId /etc/machine-id
+  - sudo apt-get install python-pyatspi
   # In normal circunstances we would just do "pip install wxPython"
   #- pip install https://wxpython.org/Phoenix/snapshot-builds/linux/gtk3/ubuntu-14.04/wxPython-4.0.0a3.dev3059+4a5c5d9-cp27-cp27mu-linux_x86_64.whl
   - pip install $WXPACK
@@ -18,9 +19,9 @@ matrix:
     - python: "2.7"
       env:
         - WXPACK=https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-14.04/wxPython-4.0.3-cp27-cp27mu-linux_x86_64.whl
-    - python: "3.5"
+    - python: "3.6"
       env:
-        - WXPACK=https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-14.04/wxPython-4.0.3-cp35-cp35m-linux_x86_64.whl
+        - WXPACK=https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-14.04/wxPython-4.0.3-cp36-cp36m-linux_x86_64.whl
 before_script:
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
