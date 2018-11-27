@@ -212,7 +212,10 @@ class _XMLKeywordContent(_KeywordInfo):
         self._source = lambda x: source
         _KeywordInfo.__init__(self, item)
         self.args = self._format_args(self._parse_args(item))
-        self.doc_format = doc_format
+        if doc_format in ("TEXT", "ROBOT", "REST", "HTML"):
+            self.doc_format = doc_format
+        else:
+            self.doc_format = "ROBOT"
 
     def with_alias(self, alias):
         if alias:

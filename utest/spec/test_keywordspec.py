@@ -32,7 +32,7 @@ class TestLibrarySpec(unittest.TestCase):
         assert_equal(len(kws), 3)
         exp_doc = 'This is kw documentation.\n\nThis is more docs.'
         self._assert_keyword(kws[0], 'Normal Keyword', exp_doc,
-                             exp_doc.splitlines()[0], '[ foo ]')
+                             exp_doc.splitlines()[0], 'ROBOT', '[ foo ]')
         self._assert_keyword(kws[1], 'Attributeless Keyword')
         self._assert_keyword(kws[2], 'Multiarg Keyword',
                              args='[ arg1 | arg2=default value | *args ]')
