@@ -33,7 +33,7 @@ class TestKeywordInfo(unittest.TestCase):
         libname = 'TestLib'
         lib = TestLibrary(libname)
         kw = lib.handlers['testlib_keyword_with_args']
-        kw_info = LibraryKeywordInfo(kw.name, kw.doc, kw.library.name, libraryfetcher._parse_args(kw.arguments))
+        kw_info = LibraryKeywordInfo(kw.name, kw.doc, lib.doc_format, kw.library.name, libraryfetcher._parse_args(kw.arguments))
         assert_in_details(kw_info, 'Testlib',
                           '[ arg1 | arg2=default value | *args ]')
 

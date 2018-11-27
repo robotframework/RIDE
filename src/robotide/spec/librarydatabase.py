@@ -83,6 +83,9 @@ class LibraryDatabase(object):
         library_doc_format = "ROBOT"
         if len(keywords) > 0:
             library_doc_format = keywords[0].doc_format
+            #if any(x.doc_format != library_doc_format for x in keywords):
+            #    print("debug: keywords doc format not consistent within library")
+
         cur = self._cursor()
         old_versions = cur.execute('select id from libraries where name = ?  and arguments = ?', (library_name, unicode(library_arguments))).fetchall()
         cur.executemany('delete from keywords where library = ?', old_versions)

@@ -247,7 +247,7 @@ class LibraryKeywordInfo(_KeywordInfo):
         ItemInfo.__init__(self, self._item_name, library_name, None)
         self.shortdoc = self.doc.splitlines()[0] if self.doc else ''
 
-        if doc_format != "":
+        if doc_format in ("TEXT", "ROBOT", "REST", "HTML"):
             self.doc_format = doc_format
         else:
             self.doc_format = "ROBOT"
