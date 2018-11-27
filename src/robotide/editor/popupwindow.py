@@ -30,7 +30,10 @@ class _PopupWindowBase(object):
         self.SetSize(size)
 
     def _create_ui(self, size):
-        panel = wx.Panel(self)
+        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
+            panel = wx.MiniFrame(self)  # DEBUG wx.Panel would not detach on wxPython 4
+        else:
+            panel = wx.Panel(self)
         panel.SetBackgroundColour(POPUP_BACKGROUND)
         szr = VerticalSizer()
         self._details = HtmlWindow(self, size=size)
@@ -77,41 +80,45 @@ class _PopupWindowBase(object):
         self._detached_title = title
 
 
-class RidePopupWindow(wx.PopupWindow, _PopupWindowBase): # DEBUG wx.PopupWindow,
+class RidePopupWindow(wx.PopupWindow, _PopupWindowBase):
 
     def __init__(self, parent, size):
-        wx.PopupWindow.__init__(self, parent, flags=wx.DEFAULT_FRAME_STYLE) # DEBUG |wx.DEFAULT_DIALOG_STYLE
-        self.SetSize(size)   # wx.BORDER_NONE
+        wx.PopupWindow.__init__(self, parent,
+                                flags=wx.CAPTION|wx.RESIZE_BORDER|
+                                      wx.DEFAULT_FRAME_STYLE)
+        self.SetSize(size)
 
     def _set_auto_hiding(self):
         # EVT_LEAVE is triggered on different components on different OSes.
-        component_to_hide = self.panel if IS_WINDOWS else self
-        component_to_hide.Bind(wx.EVT_LEAVE_WINDOW, self.hide)
+        # component_to_hide = self.panel if IS_WINDOWS else self
+        # component_to_hide.Bind(wx.EVT_LEAVE_WINDOW, self.hide)
+        self.Bind(wx.EVT_LEAVE_WINDOW, self.hide)  # DEBUG panel not needed anymore?
 
 
 class HtmlPopupWindow(RidePopupWindow):
 
     def __init__(self, parent, size, detachable=True, autohide=False):
-        # print("DEBUG: HtmlPopupWindow we must make it border in Windows to be detached")
         RidePopupWindow.__init__(self, parent, size)
         _PopupWindowBase.__init__(self, size, detachable, autohide)
+        # print("DEBUG: HtmlPopupWindow we must make it border in Windows to be detached")
 
 
 # TODO: See if we need to have Mac specific window
-# class MacRidePopupWindow(wx.MiniFrame, _PopupWindowBase):
-#
-#     def __init__(self, parent, size, detachable=True, autohide=False):
-#         wx.MiniFrame.__init__(self, parent, style=wx.SIMPLE_BORDER)
-#         _PopupWindowBase.__init__(self, size, detachable, autohide)
-#         self.hide()
-#
-#     def _set_auto_hiding(self):
-#         self._details.Bind(wx.EVT_MOTION, lambda evt: self.hide())
-#
-#     def OnKey(self, *params):
-#         pass
-#
-#
-# if wx.PlatformInfo[0] == '__WXMAC__':
-#     RidePopupWindow = HtmlPopupWindow = MacRidePopupWindow
-# del MacRidePopupWindow
+class MacRidePopupWindow(wx.MiniFrame, _PopupWindowBase):
+
+    def __init__(self, parent, size, detachable=True, autohide=False):
+        wx.MiniFrame.__init__(self, parent, style=wx.SIMPLE_BORDER
+                                                  |wx.RESIZE_BORDER)
+        _PopupWindowBase.__init__(self, size, detachable, autohide)
+        self.hide()
+
+    def _set_auto_hiding(self):
+        self._details.Bind(wx.EVT_MOTION, lambda evt: self.hide())
+
+    def OnKey(self, *params):
+        pass
+
+
+if wx.PlatformInfo[0] == '__WXMAC__':
+    RidePopupWindow = HtmlPopupWindow = MacRidePopupWindow
+del MacRidePopupWindow

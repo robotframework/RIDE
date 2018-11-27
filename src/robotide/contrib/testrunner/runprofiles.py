@@ -74,7 +74,8 @@ class BaseProfile(object):
 
     def get_command_prefix(self):
         '''Returns a command and any special arguments for this profile'''
-        return ["robot.bat" if os.name == "nt" else "robot"]
+        # return ["robot.bat" if os.name == "nt" else "robot"]
+        return ["robot"]
 
     def set_setting(self, name, value):
         '''Sets a plugin setting
@@ -142,8 +143,29 @@ class PybotProfile(BaseProfile):
     def _get_arguments(self):
         return self.arguments.split()
 
-    def get_command(self):
-        return "robot.bat" if os.name == "nt" else "robot"
+    def get_command(self):  # TODO Test on Windows
+        from subprocess import call
+        from tempfile import TemporaryFile
+        result = None
+        try:
+            with TemporaryFile(mode="at") as out:
+                result = call(["robot.bat" if os.name == "nt" else "robot",
+                               "--version"], stdout=out)
+            if result == 251:
+                return "robot.bat" if os.name == "nt" else "robot"
+        except OSError:
+            result = "no robot"
+            try:
+                with TemporaryFile(mode="at") as out:
+                    result = call(["pybot.bat" if os.name == "nt" else "pybot",
+                                   "--version"], stdout=out)
+                if result == 251:
+                    return "pybot.bat" if os.name == "nt" else "pybot"
+            except OSError:
+                result = "no pybot"
+        #finally:
+        #    print("DEBUG runprofiles get_command: %s" % result)
+        return result
 
     def get_custom_args(self):
         args = []

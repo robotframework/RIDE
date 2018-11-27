@@ -122,7 +122,10 @@ class _RobotTableEditor(EditorPanel):
 
     def destroy(self):
         self.close()
-        self.Destroy()
+        if wx.VERSION < (3, 0, 3, ''):  # DEBUG wxPhoenix
+            self.Destroy()
+        else:
+            self.DestroyLater()
 
     def _create_header(self, text, readonly=False):
         if readonly:

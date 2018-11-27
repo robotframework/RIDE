@@ -101,7 +101,9 @@ class TestRunnerPlugin(Plugin):
                 "profile": "robot",
                 "sash_position": 200,
                 "runprofiles":
-                    [('jybot', 'jybot' + ('.bat' if os.name == 'nt' else ''))]}
+                    [('jybot', 'jybot' + ('.bat' if os.name == 'nt' else '')),
+                     ('pybot', 'pybot' + ('.bat' if os.name == 'nt' else '')),
+                     ('robot 3.1', 'robot')]}
     report_regex = re.compile("^Report: {2}(.*\.html)$", re.MULTILINE)
     log_regex = re.compile("^Log: {5}(.*\.html)$", re.MULTILINE)
     title = "Run"

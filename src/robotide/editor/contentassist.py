@@ -294,6 +294,9 @@ class ContentAssistPopup(object):
                                        self.OnListItemActivated)
         self._suggestions = Suggestions(suggestion_source)
         # TODO Add detach popup from list with mouse drag or key
+        # self._details_popup.Bind(wx.EVT_MIDDLE_DOWN, self.OnDetach)
+        # self._main_popup.Bind(wx.EVT_MIDDLE_DOWN, self.OnDetach)
+        # self._list.Bind(wx.EVT_MIDDLE_DOWN, self.OnDetach)
 
     def reset(self):
         self._selection = -1
@@ -393,6 +396,12 @@ class ContentAssistPopup(object):
             self._details_popup.set_content(item.details, item.name)
         elif self._details_popup.IsShown():
             self._details_popup.Show(False)
+
+    # def OnDetach(self, event):  # DEBUG Attempt to activate detach on Windows and wxPython >3.0.3
+    #     print("DEBUG Contentassist Called Detach")
+    #     if not self._details_popup.IsShown():
+    #         return
+    #     self._details_popup._detach(event)
 
 
 class ContentAssistList(wx.ListCtrl):
