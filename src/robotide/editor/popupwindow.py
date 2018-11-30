@@ -90,9 +90,8 @@ class RidePopupWindow(wx.PopupWindow, _PopupWindowBase):
 
     def _set_auto_hiding(self):
         # EVT_LEAVE is triggered on different components on different OSes.
-        # component_to_hide = self.panel if IS_WINDOWS else self
-        # component_to_hide.Bind(wx.EVT_LEAVE_WINDOW, self.hide)
-        self.Bind(wx.EVT_LEAVE_WINDOW, self.hide)  # DEBUG panel not needed anymore?
+        component_to_hide = self.panel if IS_WINDOWS else self
+        component_to_hide.Bind(wx.EVT_LEAVE_WINDOW, self.hide)
 
 
 class HtmlPopupWindow(RidePopupWindow):

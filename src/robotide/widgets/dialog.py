@@ -17,7 +17,7 @@ import wx
 from robotide.widgets import htmlwindow, sizers
 
 
-class Dialog(wx.MiniFrame, wx.Dialog):  # wx.Dialog
+class Dialog(wx.Dialog):
 
     def __init__(self, title='', parent=None, size=None, style=None):
         parent = parent or wx.GetTopLevelWindows()[0]
@@ -25,11 +25,13 @@ class Dialog(wx.MiniFrame, wx.Dialog):  # wx.Dialog
         # wx.THICK_FRAME allows resizing
         if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
             style = style or (wx.DEFAULT_DIALOG_STYLE | wx.RESIZE_BORDER)
-            wx.MiniFrame.__init__(self, parent, title=title, size=size, style=style)  # style=wx.SIMPLE_BORDER)
+            wx.MiniFrame.__init__(self, parent, title=title, size=size, style=style) # style=wx.SIMPLE_BORDER)
         else:
             style = style or (wx.DEFAULT_DIALOG_STYLE | wx.THICK_FRAME)
             wx.Dialog.__init__(self, parent, title=title, size=size, style=style)
-        # print("DEBUG: Created detached dialog, did it work in Windows?")
+        # print(
+        #    "DEBUG: Created detached dialog, did it work in Windows?")
+        # wx.Dialog.__init__(self, parent, title=title, size=size, style=style)
         self.CenterOnParent()
 
     def _create_buttons(self, sizer):
