@@ -78,6 +78,7 @@ class SettingEditor(wx.Panel, utils.RideEventHandler):
         display = self._value_display_control()
         display.Bind(wx.EVT_ENTER_WINDOW, self.OnEnterWindow)
         display.Bind(wx.EVT_LEAVE_WINDOW, self.OnLeaveWindow)
+        display.Bind(wx.EVT_WINDOW_DESTROY, self.OnWindowDestroy)
         display.Bind(wx.EVT_MOTION, self.OnDisplayMotion)
         return display
 
@@ -136,6 +137,9 @@ class SettingEditor(wx.Panel, utils.RideEventHandler):
     def _mainframe_has_focus(self):
         return wx.GetTopLevelParent(self.FindFocus()) == \
             wx.GetTopLevelParent(self)
+
+    def OnWindowDestroy(self, event):
+        self._stop_popup_timer()
 
     def OnLeaveWindow(self, event):
         self._stop_popup_timer()
