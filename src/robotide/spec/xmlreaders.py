@@ -87,9 +87,10 @@ def _parse_xml(file, name):
         return [], ''
     kw_nodes = root.findall('keywords/kw') + root.findall('kw')
     source_type = root.get('type')
+    doc_format = root.get('format')
     if source_type == 'resource':
         source_type += ' file'
-    return [_XMLKeywordContent(node, name, source_type) for node in kw_nodes]
+    return [_XMLKeywordContent(node, name, source_type, doc_format) for node in kw_nodes]
 
 
 def get_path(name, basedir):
