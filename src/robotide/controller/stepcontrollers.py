@@ -382,7 +382,8 @@ class StepController(_BaseController):
             self._step.__init__(cells, comment)
 
     def _is_partial_for_loop_step(self, cells):
-        return cells and cells[0].replace(' ', '').upper() == ':FOR'
+        return cells and (cells[0].replace(' ', '').upper() == ':FOR'
+                          or cells[0] == 'FOR')
 
     def _is_intended_step(self, cells):
         return cells and not cells[0].strip() and \
@@ -413,7 +414,11 @@ class PartialForLoop(robotapi.ForLoop):
     def __init__(self, cells, first_cell=':FOR', comment=None):
         self._cells = cells
         self._first_cell = first_cell
-        robotapi.ForLoop.__init__(self, cells, comment)
+        try:
+            robotapi.ForLoop.__init__(self, cells, comment)
+        except TypeError:  # New RF 3.1 syntax
+            robotapi.ForLoop.__init__(self, self.parent, cells, comment)
+
 
     def as_list(self, indent=False, include_comment=False):
         return [self._first_cell] + self._cells + self.comment.as_list()
@@ -522,11 +527,15 @@ class ForLoopStepController(StepController):
 
     def _recreate_complete_for_loop_header(self, cells):
         steps = self.get_raw_steps()
-        self._step.__init__(cells[1:])
+        try:
+            self._step.__init__(cells[1:])
+        except TypeError:  # New RF 3.1 syntax
+            self._step.__init__(self.parent, cells[1:])
         self.set_raw_steps(steps)
 
     def _recreate_partial_for_loop_header(self, cells, comment):
-        if not cells or cells[0].replace(' ', '').upper() != ':FOR':
+        if not cells or (cells[0].replace(' ', '').upper() != ':FOR'
+                         or cells[0] != 'FOR'):
             self._replace_with_new_cells(cells)
         else:
             steps = self.get_raw_steps()
