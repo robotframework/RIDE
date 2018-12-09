@@ -186,13 +186,10 @@ class ContentAssistFileButton(_ContentAssistTextCtrlBase, FileBrowseButton):
         _ContentAssistTextCtrlBase.__init__(self, suggestion_source)
 
     # TODO Re-enable ContentAssist for Library and Resources
-    """
     # DEBUG With this commented, at least we can type Libraries and Resources on Windows
     def Bind(self, *args):
-        print("DEBUG: Bind ContentAssistFileButton: %s\n" % args.__repr__())
+        # print("DEBUG: Bind ContentAssistFileButton: %s\n" % args.__repr__())
         self.textControl.Bind(*args)
-    """
-
 
     def SetInsertionPoint(self, pos):
         self.textControl.SetInsertionPoint(pos)

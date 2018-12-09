@@ -522,7 +522,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
                 self._move_grid_cursor(event, keycode)
             else:
                 self.save()
-        elif control_down and keycode == wx.WXK_SPACE:
+        elif event.ControlDown() and keycode == wx.WXK_SPACE:  # Avoid Mac CMD
             self._open_cell_editor_with_content_assist()
         elif control_down and not event.AltDown() and \
                 keycode in (ord('1'), ord('2')):
@@ -835,8 +835,6 @@ class ContentAssistCellEditor(GridCellEditor):  # DEBUG wxPhoenix PyGridCellEdi
                 return None   # DEBUG
 
     def ApplyEdit(self, row, col, grid):
-        #  print("DEBUG: This is where it crashed ApplyEdit")
-        # TODO Revise code, origial causes crashes
         val = self._tc.GetValue()
         grid.GetTable().SetValue(row, col, val) # update the table
 
@@ -844,9 +842,7 @@ class ContentAssistCellEditor(GridCellEditor):  # DEBUG wxPhoenix PyGridCellEdi
         self._tc.SetValue('')
         if wx.VERSION >= (3, 0, 2, ''):  # DEBUG wxPhoenix
             if self._value or val == '':
-                # print("DEBUG: Calling value edited on ApplyEdit")
                 self._grid.cell_value_edited(row, col, self._value)
-        # pass
 
     def _get_value(self):
         suggestion = self._tc.content_assist_value()
