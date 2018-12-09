@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # encoding=utf-8
-#  TODO: Copyright 2016 Robot Framework Organization
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
