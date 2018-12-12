@@ -89,6 +89,7 @@ class _ContentAssistTextCtrlBase(object):
 
     def OnFocusLost(self, event, set_value=True):
         if not self._popup.is_shown():
+            event.Skip()
             return
         if self.gherkin_prefix:
             value = self.gherkin_prefix + self._popup.get_value() or ""
@@ -100,6 +101,7 @@ class _ContentAssistTextCtrlBase(object):
         else:
             self.Clear()
         self.hide()
+        event.Skip()
 
     def reset(self):
         self._popup.reset()
