@@ -46,11 +46,11 @@ class _ContentAssistTextCtrlBase(object):
 
     def OnChar(self, event):
         # TODO: This might benefit from some cleanup
-        keycode = event.GetKeyCode()
-        # event.Skip()  # DEBUG do it as soon we do not need it
+        keycode, control_down = event.GetKeyCode(), event.CmdDown()
+        event.Skip()  # DEBUG do it as soon we do not need it
         # print("DEBUG: Onchar before processing")
         # Ctrl-Space handling needed for dialogs # DEBUG add Ctrl-m
-        if event.ControlDown() and keycode in (wx.WXK_SPACE, ord('m')):
+        if (control_down or event.AltDown()) and keycode in (wx.WXK_SPACE, ord('m')):
             self.show_content_assist()
             return
         if keycode in [wx.WXK_UP, wx.WXK_DOWN, wx.WXK_PAGEUP, wx.WXK_PAGEDOWN]\
@@ -71,7 +71,7 @@ class _ContentAssistTextCtrlBase(object):
                 event.AltDown():
             self.execute_variable_creator(list_variable=(keycode == ord('2')))
         # print("DEBUG: Onchar before leaving")
-        event.Skip() # DEBUG Move up
+        # event.Skip() # DEBUG Move up
 
     # TODO Add dictionary?
     def execute_variable_creator(self, list_variable=False):

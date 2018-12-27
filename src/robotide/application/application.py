@@ -16,6 +16,7 @@
 import os
 import sys
 import wx
+
 from contextlib import contextmanager
 
 from robotide.namespace import Namespace

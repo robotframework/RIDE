@@ -32,8 +32,8 @@ from robotide.robotapi import (TestDataDirectory, TestCaseFile, ResourceFile,
 from nose.tools import assert_equal
 from robotide.spec.librarymanager import LibraryManager
 from robotide.ui.images import TreeImageList
-from robotide.ui.mainframe import ActionRegisterer
-from robotide.ui.actiontriggers import MenuBar, ToolBar, ShortcutRegistry
+from robotide.ui.mainframe import ActionRegisterer, ToolBar
+from robotide.ui.actiontriggers import MenuBar, ShortcutRegistry
 from robotide.preferences import RideSettings
 # TODO make sure it does not use real user settings file (it get damaged)
 from robotide.ui.notebook import NoteBook

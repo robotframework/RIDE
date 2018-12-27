@@ -25,8 +25,8 @@ from robotide.application import Project
 from robotide.controller.filecontrollers import (TestDataDirectoryController,
                                                  ResourceFileController)
 
-from robotide.ui.actiontriggers import MenuBar, ToolBar, ShortcutRegistry
-from robotide.ui.mainframe import ActionRegisterer
+from robotide.ui.actiontriggers import MenuBar, ShortcutRegistry
+from robotide.ui.mainframe import ActionRegisterer, ToolBar 
 from resources import PYAPP_REFERENCE, FakeSettings
 
 from robotide.ui import tree as st

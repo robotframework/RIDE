@@ -152,7 +152,7 @@ SHORTCUT_KEYS = '''\
         <th><b>What it does</b></th>
     </tr>
     <tr>
-        <td>Ctrl-Space</td>
+        <td>Ctrl-Space or Alt-Space</td>
         <td>Suggestions and auto completion</td>
     </tr>
     <tr>

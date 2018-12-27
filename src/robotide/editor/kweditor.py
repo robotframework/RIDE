@@ -498,7 +498,8 @@ class KeywordEditor(GridEditor, RideEventHandler):
 
         keycode, control_down = event.GetKeyCode(), event.CmdDown()
         event.Skip()  # DEBUG seen this skip as soon as possible
-        if keycode == ord('M') and control_down:  #  keycode == wx.WXK_CONTROL
+        if keycode == ord('M') and \
+            (control_down or event.AltDown()):  #  keycode == wx.WXK_CONTROL
             self._show_cell_information()
         elif keycode == ord('C') and control_down:
             # print("DEBUG: captured Control-C\n")
@@ -522,7 +523,8 @@ class KeywordEditor(GridEditor, RideEventHandler):
                 self._move_grid_cursor(event, keycode)
             else:
                 self.save()
-        elif event.ControlDown() and keycode == wx.WXK_SPACE:  # Avoid Mac CMD
+        elif (control_down or event.AltDown()) and \
+                keycode == wx.WXK_SPACE:  # Avoid Mac CMD
             self._open_cell_editor_with_content_assist()
         elif control_down and not event.AltDown() and \
                 keycode in (ord('1'), ord('2')):
@@ -854,6 +856,7 @@ class ContentAssistCellEditor(GridCellEditor):  # DEBUG wxPhoenix PyGridCellEdi
 
     def StartingKey(self, event):
         key = event.GetKeyCode()
+        event.Skip()  # DEBUG seen this skip as soon as possible
         if key == wx.WXK_DELETE or key > 255:
             self._grid.HideCellEditControl()
         elif key == wx.WXK_BACK:

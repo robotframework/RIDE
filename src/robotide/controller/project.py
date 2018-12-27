@@ -348,7 +348,7 @@ class Backup(object):
         self._backup = self._get_backup_name(self._path)
 
     def _get_backup_name(self, path):
-        if not os.path.isfile(path):
+        if path is None or not os.path.isfile(path):
             return None
         self._backup_dir = tempfile.mkdtemp(dir=os.path.dirname(path))
         return os.path.join(self._backup_dir, os.path.basename(path))
