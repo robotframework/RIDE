@@ -200,6 +200,10 @@ SHORTCUT_KEYS = '''\
         <td>Uncomment row(s)</td>
     </tr>
     <tr>
+        <td>CtrlCmd-5</td>
+        <td>Make dictionary variable body</td>
+    </tr>
+    <tr>
         <td>Alt-Up</td>
         <td>Move row(s) up</td>
     </tr>

@@ -527,9 +527,10 @@ class KeywordEditor(GridEditor, RideEventHandler):
                 keycode == wx.WXK_SPACE:  # Avoid Mac CMD
             self._open_cell_editor_with_content_assist()
         elif control_down and not event.AltDown() and \
-                keycode in (ord('1'), ord('2')):
+                keycode in (ord('1'), ord('2'), ord('5')):
             self._open_cell_editor_and_execute_variable_creator(
-                list_variable=(keycode == ord('2')))
+                list_variable=(keycode == ord('2')),
+                dict_variable=(keycode == ord('5')))
         elif control_down and event.ShiftDown() and keycode == ord('I'):
             self.OnInsertCells()
         elif control_down and event.ShiftDown() and keycode == ord('D'):
@@ -617,13 +618,14 @@ work.</li>
         # print("DEBUG: Called content assist %s\n" % self._show_cell_information())
 
     def _open_cell_editor_and_execute_variable_creator(
-            self, list_variable=False):
+            self, list_variable=False, dict_variable=False):
         if not self.IsCellEditControlEnabled():
             self.EnableCellEditControl()
         row = self.GetGridCursorRow()
         celleditor = self.GetCellEditor(self.GetGridCursorCol(), row)
         celleditor.Show(True)
-        wx.CallAfter(celleditor.execute_variable_creator, list_variable)
+        wx.CallAfter(celleditor.execute_variable_creator, list_variable,
+                     dict_variable)
 
     def OnMakeVariable(self, event):
         self._open_cell_editor_and_execute_variable_creator(
@@ -786,8 +788,8 @@ class ContentAssistCellEditor(GridCellEditor):  # DEBUG wxPhoenix PyGridCellEdi
     def show_content_assist(self, args=None):
         self._tc.show_content_assist()
 
-    def execute_variable_creator(self, list_variable=False):
-        self._tc.execute_variable_creator(list_variable)
+    def execute_variable_creator(self, list_variable=False, dict_variable=False):
+        self._tc.execute_variable_creator(list_variable, dict_variable)
 
     def Create(self, parent, id, evthandler):
         self._tc = ExpandingContentAssistTextCtrl(

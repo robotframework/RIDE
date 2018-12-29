@@ -67,16 +67,21 @@ class _ContentAssistTextCtrlBase(object):
             return
         elif self._popup.is_shown() and keycode < 256:
             self._populate_content_assist(event)
-        elif keycode in (ord('1'), ord('2')) and event.ControlDown() and not \
+        elif keycode in (ord('1'), ord('2'), ord('5')) and event.ControlDown() and not \
                 event.AltDown():
-            self.execute_variable_creator(list_variable=(keycode == ord('2')))
+            self.execute_variable_creator(list_variable=(keycode == ord('2')),
+                                          dict_variable=(keycode == ord('5')))
         # print("DEBUG: Onchar before leaving")
         # event.Skip() # DEBUG Move up
 
-    # TODO Add dictionary?
-    def execute_variable_creator(self, list_variable=False):
+    def execute_variable_creator(self, list_variable=False, dict_variable=False):
         from_, to_ = self.GetSelection()
-        symbol = '@' if list_variable else '$'
+        if list_variable:
+            symbol = '@'
+        elif dict_variable:
+            symbol = '&'
+        else:
+            symbol = '$'
         self.SetValue(self._variable_creator_value(
             self.Value, symbol, from_, to_))
         if from_ == to_:
