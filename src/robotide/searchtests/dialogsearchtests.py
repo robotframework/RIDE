@@ -16,10 +16,13 @@
 import wx
 
 from functools import (total_ordering, cmp_to_key)
-from robotide.utils import (overrides, unicode)
+from robotide.utils import overrides
 from robotide.widgets import (Dialog, VerticalSizer, VirtualList, Label,
                               HelpLabel, ImageProvider, ButtonWithHandler)
 from robotide.widgets.list import ListModel
+from robotide.utils import PY3
+if PY3:
+    from robotide.utils import unicode
 
 
 class TestsDialog(Dialog):

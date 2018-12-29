@@ -22,8 +22,10 @@ from wx.lib.filebrowsebutton import FileBrowseButton
 from robotide import context, utils
 from robotide.namespace.suggesters import SuggestionSource
 from robotide.spec.iteminfo import VariableInfo
-from robotide.utils import unichr
 from .popupwindow import RidePopupWindow, HtmlPopupWindow
+from robotide.utils import PY3
+if PY3:
+    from robotide.utils import unichr
 
 
 _PREFERRED_POPUP_SIZE = (400, 200)

@@ -22,7 +22,9 @@ from robotide.pluginapi import Plugin
 from robotide.publish import RideOpenTagSearch
 from robotide.searchtests.dialogsearchtests import TestsDialog
 from robotide.widgets import ImageProvider
-from robotide.utils import unicode
+from robotide.utils import PY3
+if PY3:
+    from robotide.utils import unicode
 
 
 @total_ordering

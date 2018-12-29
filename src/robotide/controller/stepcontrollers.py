@@ -16,11 +16,14 @@
 import re
 
 from robotide import robotapi, utils
-from robotide.utils import basestring, is_unicode, variablematcher
+from robotide.utils import is_unicode, variablematcher
 from robotide.controller.basecontroller import _BaseController
 from robotide.controller.cellinfo import (CellPosition, CellType, CellInfo,
                                           CellContent, ContentType)
 from robotide.namespace.local_namespace import LocalNamespace
+from robotide.utils import PY3
+if PY3:
+    from robotide.utils import basestring
 
 
 class StepController(_BaseController):

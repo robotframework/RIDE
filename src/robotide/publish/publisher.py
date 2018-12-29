@@ -13,7 +13,9 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robotide.utils import basestring, unicode
+from robotide.utils import PY3
+if PY3:
+    from robotide.utils import basestring, unicode
 
 try:
     from pubsub import Publisher

@@ -16,9 +16,10 @@
 import os
 
 from functools import total_ordering
-from robotide.utils import unicode
-from robotide import utils
 from robotide.lib.robot.libdocpkg.htmlwriter import DocToHtml
+from robotide import utils
+if utils.PY3:
+    from robotide.utils import unicode
 
 
 class ItemInfo(object):

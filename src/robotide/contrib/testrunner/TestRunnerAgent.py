@@ -71,15 +71,9 @@ import platform
 import sys
 import socket
 import threading
+from robotide.utils import PY2, PY3
 
 PLATFORM = platform.python_implementation()
-
-if sys.version_info[0] == 2:
-    PYTHON2 = True
-    PYTHON3 = False
-elif sys.version_info[0] == 3:
-    PYTHON2 = False
-    PYTHON3 = True
 
 try:
     import SocketServer
@@ -514,9 +508,9 @@ class StreamHandler(object):
             write_list.append('P')
             s = pickle.dumps(obj, pickle.HIGHEST_PROTOCOL)
             write_list.extend([str(len(s)), '|', s])
-        if PYTHON2:
+        if PY2:
             self.fp.write(''.join(write_list))
-        elif PYTHON3:
+        elif PY3:
             self.fp.write(bytes(''.join(write_list), "UTF-8"))
         #self.fp.flush()
 

@@ -40,7 +40,7 @@ else:
 
 try:
     from . import robotframeworklexer
-except Exception as e:
+except ImportError:
     robotframeworklexer = None
 
 

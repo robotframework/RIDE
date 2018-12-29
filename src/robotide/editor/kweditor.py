@@ -35,8 +35,7 @@ from robotide.publish import (RideItemStepsChanged,
 from robotide.usages.UsageRunner import Usages, VariableUsages
 from robotide.ui.progress import RenameProgressObserver
 from robotide import robotapi, utils
-from robotide.utils import (RideEventHandler, variablematcher, basestring,
-                            unicode, unichr)
+from robotide.utils import RideEventHandler, variablematcher
 from robotide.widgets import PopupMenu, PopupMenuItems
 
 from .gridbase import GridEditor
@@ -45,6 +44,9 @@ from .editordialogs import UserKeywordNameDialog, ScalarVariableDialog,\
     ListVariableDialog
 from .contentassist import ExpandingContentAssistTextCtrl
 from .gridcolorizer import Colorizer
+from robotide.utils import PY3
+if PY3:
+    from robotide.utils import basestring, unicode, unichr
 
 _DEFAULT_FONT_SIZE = 11
 

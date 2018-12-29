@@ -19,7 +19,9 @@ import unittest
 from robotide.spec.iteminfo import LibraryKeywordInfo
 from robotide.spec.librarydatabase import LibraryDatabase
 from robotide.spec.libraryfetcher import get_import_result
-from robotide.utils import unicode
+from robotide.utils import PY3
+if PY3:
+    from robotide.utils import unicode
 
 testlibpath = os.path.join(os.path.dirname(__file__), '..', 'resources', 'robotdata', 'lib_with_doc_format')
 sys.path.append(testlibpath)

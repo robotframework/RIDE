@@ -14,15 +14,6 @@
 #  limitations under the License.
 
 import unittest
-import mockito
-
-import sys
-if sys.version_info[0] == 2:
-    PYTHON2 = True
-    PYTHON3 = False
-elif sys.version_info[0] == 3:
-    PYTHON2 = False
-    PYTHON3 = True
 
 from functools import total_ordering
 from robotide.ui.tagdialogs import ViewAllTagsDialog
@@ -41,10 +32,12 @@ from robotide.ui.notebook import NoteBook
 from robotide.application import Project
 from robotide.controller.filecontrollers import (TestDataDirectoryController,
                                                  ResourceFileController)
-from robotide.utils import unicode
 from robotide import utils
 from resources import PYAPP_REFERENCE, FakeSettings, FakeApplication
 # import utest.resources
+from robotide.utils import PY2, PY3
+if PY3:
+    from robotide.utils import unicode
 
 from robotide.ui import tree as st
 from robotide.ui import treenodehandlers as th
@@ -118,9 +111,9 @@ class _SortableD(utils.NormalizedDict):
 
     def iteritems(self):
         """Returns an iterator over the (key,data) items of the tags"""
-        if PYTHON2:
+        if PY2:
             return self._keys.iteritems()
-        elif PYTHON3:
+        elif PY3:
             return self._keys.items()
 
 
@@ -265,12 +258,12 @@ class _BaseSuiteTreeTest(unittest.TestCase):
         count = 0
         for i in suite.testcase_table.tests:
             newtag = ""
-            if PYTHON2:
+            if PY2:
                 for key, test in self._tags_list.iteritems():
                     newtag += key + "    " if count in test else ""
                     if len(newtag):
                         setattr(i.tags, 'tags', "{0}".format(newtag))
-            elif PYTHON3:
+            elif PY3:
                 for key, test in self._tags_list.items():
                     newtag += key + "    " if count in test else ""
                     if len(newtag):

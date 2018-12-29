@@ -35,9 +35,10 @@ from robotide import pluginapi
 from robotide.widgets import Label
 from robotide.robotapi import DataError, Information
 from robotide.utils import (overrides, SYSTEM_ENCODING, ArgumentParser,
-                            unicode, is_unicode, PY3)
+                            is_unicode, PY3)
 from robotide.contrib.testrunner.usages import USAGE
-
+if PY3:
+    from robotide.utils import unicode
 
 class BaseProfile(object):
     '''Base class for all test runner profiles

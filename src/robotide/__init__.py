@@ -33,7 +33,6 @@ release. The most stable, and best documented, module is `robotide.pluginapi`.
 import sys
 import os
 from string import Template
-from robotide.utils import basestring, unicode
 
 errorMessageTemplate = Template("""$reason
 You need to install wxPython 2.8.12.1 with unicode support to run RIDE.
@@ -58,8 +57,9 @@ if "ansi" in wx.PlatformInfo:
         reason="wxPython with ansi encoding is not supported"))
     sys.exit(1)
 
-PY2 = sys.version_info[0] == 2
-PY3 = not PY2
+from robotide.utils import PY2, PY3
+if PY3:
+    from robotide.utils import basestring, unicode
 
 # Insert bundled robot to path before anything else
 sys.path.append(os.path.join(os.path.dirname(__file__), 'spec'))

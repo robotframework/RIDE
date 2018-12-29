@@ -17,7 +17,10 @@ import os
 import time
 import tempfile
 import subprocess
-from robotide.utils import basestring
+from robotide.utils import PY3
+if PY3:
+    from robotide.utils import basestring
+
 
 class Process(object):
 

@@ -18,7 +18,9 @@ import re
 
 from .shortcut import Shortcut
 from robotide.widgets import ImageProvider
-from robotide.utils import basestring
+from robotide.utils import PY3
+if PY3:
+    from robotide.utils import basestring
 
 
 def ActionInfoCollection(data, event_handler, container=None):

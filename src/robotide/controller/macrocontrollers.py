@@ -31,7 +31,10 @@ from robotide.spec.iteminfo import ResourceUserKeywordInfo, \
     TestCaseUserKeywordInfo
 from robotide.controller.tags import Tag
 from robotide import robotapi
-from robotide.utils import basestring, is_unicode, variablematcher
+from robotide.utils import is_unicode, variablematcher
+from robotide.utils import PY3
+if PY3:
+    from robotide.utils import basestring
 
 
 KEYWORD_NAME_FIELD = 'Keyword Name'

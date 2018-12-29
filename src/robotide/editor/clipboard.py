@@ -16,7 +16,9 @@
 import os
 import wx
 from robotide.context import IS_WINDOWS
-from robotide.utils import basestring
+from robotide.utils import PY3
+if PY3:
+    from robotide.utils import basestring
 
 
 class _ClipboardHandler(object):

@@ -29,16 +29,16 @@ from robotide.lib.robot.utils import printable_name, normalize, eq, ET, \
 from .eventhandler import RideEventHandler
 from .printing import Printing
 
-try:
-    from past.types import basestring, unicode, unichr
-except ImportError:  # pip install future
-    basestring = str
-    unicode = str
-    unichr = chr
-
-
 PY2 = sys.version_info[0] == 2
 PY3 = not PY2
+
+if PY3:
+    try:  # This was redefining in PY2 when future was not installed
+        from past.types import basestring, unicode, unichr
+    except ImportError:  # pip install future
+        basestring = str
+        unicode = str
+        unichr = chr
 
 
 def html_format(text):
