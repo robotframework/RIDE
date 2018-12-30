@@ -315,8 +315,12 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
                             print("Could not launch explorer. Tried nautilus, "
                                   "dolphin and konqueror.")
             else:
-                subprocess.Popen(["finder", "{}".format(
-                    os.path.dirname(path))])
+                try:
+                    subprocess.Popen(["finder", "{}".format(
+                        os.path.dirname(path))])
+                except OSError or FileNotFoundError:
+                    subprocess.Popen(["open", "{}".format(
+                        os.path.dirname(path))])
 
     def remove_readonly(self, path=None):
             path = path or self.filename
