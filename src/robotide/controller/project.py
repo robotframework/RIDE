@@ -28,7 +28,10 @@ from .robotdata import NewTestCaseFile, NewTestDataDirectory
 from robotide.spec.librarydatabase import DATABASE_FILE
 from robotide.spec.librarymanager import LibraryManager
 from robotide.spec.xmlreaders import SpecInitializer
-from robotide.utils import overrides, unicode
+from robotide.utils import overrides
+from robotide.utils import PY3
+if PY3:
+    from robotide.utils import unicode
 
 
 class Project(_BaseController, WithNamespace):

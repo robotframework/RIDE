@@ -13,7 +13,11 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robotide.utils import highlightmatcher, html_escape, unicode
+from robotide.utils import highlightmatcher, html_escape
+from robotide.utils import PY3
+if PY3:
+    from robotide.utils import unicode
+
 
 class CellInfo(object):
 

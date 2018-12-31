@@ -18,7 +18,10 @@ import sqlite3
 import time
 from robotide.preferences.settings import SETTINGS_DIRECTORY
 from robotide.spec.iteminfo import LibraryKeywordInfo
-from robotide.utils import system_decode, unicode
+from robotide.utils import system_decode
+from robotide.utils import PY3
+if PY3:
+    from robotide.utils import unicode
 
 CREATION_SCRIPT = """\
 CREATE TABLE libraries (id INTEGER PRIMARY KEY,

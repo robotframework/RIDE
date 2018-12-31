@@ -40,7 +40,7 @@ else:
 
 try:
     from . import robotframeworklexer
-except Exception as e:
+except ImportError:
     robotframeworklexer = None
 
 
@@ -159,6 +159,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         if not self._editor.save():
             return False
         self._editor.reset()
+        self._editor.set_editor_caret_position()
         return True
 
     def is_focused(self):

@@ -15,7 +15,9 @@
 
 from robotide import robotapi
 from robotide.spec.iteminfo import LibraryKeywordInfo
-from robotide.utils import unicode
+from robotide.utils import PY3
+if PY3:
+    from robotide.utils import unicode
 
 
 def get_import_result(path, args):

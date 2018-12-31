@@ -247,9 +247,9 @@ class GridEditor(grid.Grid):
 
     def _delete_cells(self, data):
         cols = self.selection.cols()
-        print("DEBUG delete cols selected %s" % cols)
+        # print("DEBUG delete cols selected %s" % cols)
         left, right = cols[0], cols[-1]   # + 1  # DEBUG removed extra cell
-        print("DEBUG delete left, right (%d,%d) values %s" % (left, right, data[left:right]))
+        # print("DEBUG delete left, right (%d,%d) values %s" % (left, right, data[left:right]))
         data[left:right] = []
         return data + [''] * len(cols)
 

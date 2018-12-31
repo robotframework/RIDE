@@ -500,7 +500,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
         self.add_keyword(parent, controller)
 
     def delete_node(self, node):
-        print("DEBUG at delete_node %s" % (repr(node)))
+        # print("DEBUG at delete_node %s" % (repr(node)))
         if node is None:
             return
         parent = self.GetItemParent(node)

@@ -22,8 +22,10 @@ from wx.lib.filebrowsebutton import FileBrowseButton
 from robotide import context, utils
 from robotide.namespace.suggesters import SuggestionSource
 from robotide.spec.iteminfo import VariableInfo
-from robotide.utils import unichr
 from .popupwindow import RidePopupWindow, HtmlPopupWindow
+from robotide.utils import PY3
+if PY3:
+    from robotide.utils import unichr
 
 
 _PREFERRED_POPUP_SIZE = (400, 200)
@@ -67,16 +69,21 @@ class _ContentAssistTextCtrlBase(object):
             return
         elif self._popup.is_shown() and keycode < 256:
             self._populate_content_assist(event)
-        elif keycode in (ord('1'), ord('2')) and event.ControlDown() and not \
+        elif keycode in (ord('1'), ord('2'), ord('5')) and event.ControlDown() and not \
                 event.AltDown():
-            self.execute_variable_creator(list_variable=(keycode == ord('2')))
+            self.execute_variable_creator(list_variable=(keycode == ord('2')),
+                                          dict_variable=(keycode == ord('5')))
         # print("DEBUG: Onchar before leaving")
         # event.Skip() # DEBUG Move up
 
-    # TODO Add dictionary?
-    def execute_variable_creator(self, list_variable=False):
+    def execute_variable_creator(self, list_variable=False, dict_variable=False):
         from_, to_ = self.GetSelection()
-        symbol = '@' if list_variable else '$'
+        if list_variable:
+            symbol = '@'
+        elif dict_variable:
+            symbol = '&'
+        else:
+            symbol = '$'
         self.SetValue(self._variable_creator_value(
             self.Value, symbol, from_, to_))
         if from_ == to_:

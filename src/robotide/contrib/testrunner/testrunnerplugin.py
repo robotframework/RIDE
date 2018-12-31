@@ -67,13 +67,16 @@ from robotide.publish.messages import RideTestSelectedForRunningChanged
 from robotide.pluginapi import Plugin, ActionInfo
 from robotide.widgets import Label, ImageProvider
 from robotide.robotapi import LOG_LEVELS
-from robotide.utils import robottime, is_unicode, PY2, unicode
+from robotide.utils import robottime, is_unicode, PY2, PY3
 try:
     from robotide.lib.robot.utils import encoding
 except ImportError:
     encoding = None
 if encoding:
     encoding = encoding.SYSTEM_ENCODING  # CONSOLE_ENCODING
+
+if PY3:
+    from robotide.utils import unicode
 
 # print("DEBUG: TestRunnerPlugin encoding=%s" % encoding)
 

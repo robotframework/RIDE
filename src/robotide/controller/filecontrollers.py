@@ -35,13 +35,16 @@ from robotide import utils
 from .basecontroller import WithUndoRedoStacks, _BaseController, WithNamespace, ControllerWithParent
 from .macrocontrollers import UserKeywordController
 from .robotdata import NewTestCaseFile, NewTestDataDirectory
-from robotide.utils import overrides, basestring
+from robotide.utils import overrides
 from .settingcontrollers import (DocumentationController, FixtureController,
         TimeoutController, TemplateController, DefaultTagsController,
         ForceTagsController)
 from .tablecontrollers import (VariableTableController, TestCaseTableController,
         KeywordTableController, ImportSettingsController,
         MetadataListController, TestCaseController)
+from robotide.utils import PY3
+if PY3:
+    from robotide.utils import basestring
 
 
 def _get_controller(project, data, parent):
@@ -312,8 +315,12 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
                             print("Could not launch explorer. Tried nautilus, "
                                   "dolphin and konqueror.")
             else:
-                subprocess.Popen(["finder", "{}".format(
-                    os.path.dirname(path))])
+                try:
+                    subprocess.Popen(["finder", "{}".format(
+                        os.path.dirname(path))])
+                except OSError or FileNotFoundError:
+                    subprocess.Popen(["open", "{}".format(
+                        os.path.dirname(path))])
 
     def remove_readonly(self, path=None):
             path = path or self.filename

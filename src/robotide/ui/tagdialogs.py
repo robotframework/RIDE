@@ -23,7 +23,9 @@ from robotide.publish import RideOpenTagSearch
 from robotide.ui.treenodehandlers import ResourceRootHandler, \
     ResourceFileHandler
 from robotide.widgets import ButtonWithHandler, PopupMenuItems
-from robotide.utils import basestring, unicode
+from robotide.utils import PY3
+if PY3:
+    from robotide.utils import unicode
 
 class ViewAllTagsDialog(wx.Frame, listmix.ColumnSorterMixin):
 
