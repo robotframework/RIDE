@@ -152,7 +152,7 @@ class TestRunner(object):
                 self._results.set_failed(self._get_test_controller(longname,
                                                                    testname))
 
-    def _get_test_controller(self, longname, testname = None):
+    def _get_test_controller(self, longname, testname=None):
         ret = self._project.find_controller_by_longname(longname, testname)
         return ret
 
@@ -253,8 +253,8 @@ class TestRunner(object):
             command, standard_args, pythonpath)
         # Have to use short options, because of long option was changed in
         # RF 2.8 -> 2.9, and we don't necessarily know the installed version.
-        standard_args.extend(["-C", "off"]) # --consolecolor
-        standard_args.extend(["-W", console_width]) # --consolewidth
+        standard_args.extend(["-C", "off"])  # --consolecolor
+        standard_args.extend(["-W", console_width])  # --consolewidth
         for suite, test in names_to_run:
             standard_args += ['--suite', suite, '--test', test]
         return standard_args
@@ -281,14 +281,14 @@ class TestRunner(object):
         if PY2:
             # if IS_WINDOWS:
             #    m_args = [unicode(item,"utf-8") for item in args]
-            #else:
-            # DEBUG 
+            # else:
+            #  DEBUG
             # m_args = args
             for item in args:
                 if is_unicode(item):
-                   m_args.append(item.encode("utf-8"))  # .decode("utf-8"))
+                    m_args.append(item.encode("utf-8"))  # .decode("utf-8"))
                 else:
-                   m_args.append(bytes(item))
+                    m_args.append(bytes(item))
             # DEBUG m_args = [item.decode("utf-8") for item in args]
             # print("DEBUG: write_args: %s\n" % m_args)
         else:
@@ -331,14 +331,12 @@ class Process(object):
     def run_command(self, command):
         # We need to supply stdin for subprocess, because otherways in pythonw
         # subprocess will try using sys.stdin which causes an error in windows
-        subprocess_args = dict(bufsize=0,
-                        stdout=subprocess.PIPE,
-                        stderr=subprocess.PIPE,
-                        stdin=subprocess.PIPE,
-                        cwd=self._cwd)
-                               # DEBUG .encode(encoding.OUTPUT_ENCODING))
-                        # DEBUG was encoding.OUTPUT_ENCODING)
-                        # DEBUG cwd=self._cwd.encode(utils.SYSTEM_ENCODING))
+        subprocess_args = dict(bufsize=0, stdout=subprocess.PIPE,
+                               stderr=subprocess.PIPE, stdin=subprocess.PIPE,
+                               cwd=self._cwd)
+        # DEBUG .encode(encoding.OUTPUT_ENCODING))
+        # DEBUG was encoding.OUTPUT_ENCODING)
+        # DEBUG cwd=self._cwd.encode(utils.SYSTEM_ENCODING))
 
         if IS_WINDOWS:
             startupinfo = subprocess.STARTUPINFO()
@@ -351,12 +349,16 @@ class Process(object):
         else:
             subprocess_args['preexec_fn'] = os.setsid
             subprocess_args['shell'] = True
-        # DEBUG self._process = subprocess.Popen(command.encode(utils.SYSTEM_ENCODING),
-        #                                 **subprocess_args)
-        # print("DEBUG: run_command calling Subprocess: %s\nCommand: %s\n" % (subprocess_args,str(command.encode(encoding.OUTPUT_ENCODING))))
-        self._process = subprocess.Popen(command,
-                                         **subprocess_args)  # DEBUG was .encode(encoding.OUTPUT_ENCODING) .OUTPUT_ENCODING
-        # print("DEBUG: run_command Called Subprocess_args: %s\n" % subprocess_args)
+        # DEBUG self._process = subprocess.Popen(command.encode(
+        #                                        utils.SYSTEM_ENCODING),
+        #                                        **subprocess_args)
+        # print("DEBUG: run_command calling Subprocess: %s\nCommand:
+        # %s\n" % (subprocess_args,str(command.encode(
+        #                              encoding.OUTPUT_ENCODING))))
+        self._process = subprocess.Popen(command, **subprocess_args)
+        # DEBUG was .encode(encoding.OUTPUT_ENCODING) .OUTPUT_ENCODING
+        # print("DEBUG: run_command Called Subprocess_args: %s\n" %
+        # subprocess_args)
         self._process.stdin.close()
         self._output_stream = StreamReaderThread(self._process.stdout)
         self._error_stream = StreamReaderThread(self._process.stderr)
@@ -387,7 +389,7 @@ class Process(object):
             return
         if force:
             self._process.kill()
-        self.resume() # Send so that RF is not blocked
+        self.resume()  # Send so that RF is not blocked
         if IS_WINDOWS and not self._kill_called and self._port is not None:
             self._signal_kill_with_listener_server()
             self._kill_called = True
@@ -433,7 +435,7 @@ class Process(object):
     def _kill(self, pid):
         if pid:
             try:
-                if os.name == 'nt' and sys.version_info < (2,7):
+                if os.name == 'nt' and sys.version_info < (2, 7):
                     import ctypes
                     ctypes.windll.kernel32.TerminateProcess(
                         int(self._process._handle), -1)
@@ -468,8 +470,14 @@ class StreamReaderThread(object):
             myqueuerng = range(self._queue.qsize())
         for _ in myqueuerng:
             try:
-                # DEBUG result += self._queue.get_nowait().decode(utils.SYSTEM_ENCODING, 'replace')  # .decode('UTF-8','ignore')
-                result += encoding.console_decode(self._queue.get_nowait(), 'latin1' if IS_WINDOWS else 'UTF-8')   # ,'replace')  # 'latin1' .decode(utils.SYSTEM_ENCODING, 'replace')  # .decode('UTF-8','ignore')
+                # DEBUG result += self._queue.get_nowait()
+                # .decode(utils.SYSTEM_ENCODING, 'replace')
+                # .decode('UTF-8','ignore')
+                result += encoding.console_decode(self._queue.get_nowait(),
+                                                  'latin1' if IS_WINDOWS
+                                                  else 'UTF-8')
+                # ,'replace')  # 'latin1' .decode(utils.SYSTEM_ENCODING,
+                # 'replace')  # .decode('UTF-8','ignore')
             except Empty:
                 pass
         return result  # DEBUG .decode('UTF-8', 'ignore')
@@ -484,7 +492,7 @@ class RideListenerServer(SocketServer.TCPServer):
     allow_reuse_address = True
 
     def __init__(self, RequestHandlerClass, callback):
-        SocketServer.TCPServer.__init__(self, ("",0), RequestHandlerClass)
+        SocketServer.TCPServer.__init__(self, ("", 0), RequestHandlerClass)
         self.callback = callback
 
 

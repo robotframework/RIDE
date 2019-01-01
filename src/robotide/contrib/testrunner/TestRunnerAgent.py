@@ -77,7 +77,7 @@ PLATFORM = platform.python_implementation()
 
 try:
     import SocketServer
-except ImportError:#py3
+except ImportError:  #py3
     try:
         import socketserver as SocketServer
     except ImportError as e:
@@ -92,19 +92,20 @@ try:
     from robot.utils import encoding
 except ImportError:
     encoding = None
-    # print("TestRunnerAgent: Maybe you did not installed RIDE under this Python?")  # DEBUG
+    # print("TestRunnerAgent: Maybe you did not
+    # installed RIDE under this Python?")  # DEBUG
     raise     # DEBUG
 
 
 if sys.hexversion > 0x2060000:
     import json
-    _JSONAVAIL=True
+    _JSONAVAIL = True
 else:
     try:
         import simplejson as json
-        _JSONAVAIL=True
+        _JSONAVAIL = True
     except ImportError:
-        _JSONAVAIL=False
+        _JSONAVAIL = False
 
 try:
     import cPickle as pickle
@@ -155,7 +156,7 @@ class TestRunnerAgent:
         self.streamhandler = None
         self._connect()
         self._send_pid()
-        self._create_debugger((len(args)>=2) and (args[1] == 'True'))
+        self._create_debugger((len(args) >= 2) and (args[1] == 'True'))
         self._create_kill_server()
         print("TestRunnerAgent: Running under %s %s\n" %
               (PLATFORM, sys.version.split()[0]))
@@ -206,7 +207,7 @@ class TestRunnerAgent:
         del attrs_copy['assign']
 
         self._send_socket("start_keyword", name, attrs_copy)
-        if self._debugger.is_breakpoint(name, attrs): # must check the original
+        if self._debugger.is_breakpoint(name, attrs):  # must check original
             self._debugger.pause()
         paused = self._debugger.is_paused()
         if paused:
@@ -339,7 +340,7 @@ class RobotKillerServer(SocketServer.TCPServer):
     allow_reuse_address = True
 
     def __init__(self, debugger):
-        SocketServer.TCPServer.__init__(self, ("",0), RobotKillerHandler)
+        SocketServer.TCPServer.__init__(self, ("", 0), RobotKillerHandler)
         self.debugger = debugger
 
 
@@ -364,7 +365,7 @@ class RobotKillerHandler(SocketServer.StreamRequestHandler):
     @staticmethod
     def _signal_kill():
         try:
-            STOP_SIGNAL_MONITOR(1,'')
+            STOP_SIGNAL_MONITOR(1, '')
         except ExecutionFailed:
             pass
 
@@ -476,7 +477,7 @@ class StreamHandler(object):
         """
         if _JSONAVAIL:
             self._json_encoder = json.JSONEncoder(separators=(',', ':'),
-                                        sort_keys=True).encode
+                                                  sort_keys=True).encode
             self._json_decoder = json.JSONDecoder(strict=False).decode
         else:
             def json_not_impl(dummy):
@@ -512,7 +513,7 @@ class StreamHandler(object):
             self.fp.write(''.join(write_list))
         elif PY3:
             self.fp.write(bytes(''.join(write_list), "UTF-8"))
-        #self.fp.flush()
+        # self.fp.flush()
 
     def load(self):
         """
