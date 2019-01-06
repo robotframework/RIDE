@@ -27,6 +27,7 @@ from robotide.context import IS_WINDOWS, IS_MAC
 from robotide.controller.ctrlcommands import SetDataFile
 from robotide.publish.messages import RideMessage
 from robotide.utils import PY2
+from robotide.namespace.suggesters import SuggestionSource
 from robotide.widgets import VerticalSizer, HorizontalSizer, ButtonWithHandler
 from robotide.pluginapi import Plugin, RideSaving, TreeAwarePluginMixin,\
     RideTreeSelection, RideNotebookTabChanging, RideDataChanged,\
@@ -88,6 +89,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         self.register_shortcut('CtrlCmd-F', lambda e: self._editor._search_field.SetFocus())
         self.register_shortcut('CtrlCmd-G', lambda e: self._editor.OnFind(e))
         self.register_shortcut('CtrlCmd-Shift-G', lambda e: self._editor.OnFindBackwards(e))
+        self.register_shortcut('CtrlCmd-Space', lambda e: focused(self._editor.OnContentAssist(e)))
 
     def disable(self):
         self.remove_self_from_tree_aware_plugins()
@@ -153,7 +155,15 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
             self._open()
             self._editor.set_editor_caret_position()
         elif message.oldtab == self.title:
+            print("DEBUG: OnTabChange move to another from Text Editor.")
             self._editor.remove_and_store_state()
+
+    def OnTabChanged(self, event):
+        self._show_editor()
+
+    def OnTabChanging(self, message):
+        if 'Edit' in message.oldtab:
+            self._editor.save()
 
     def _apply_txt_changes_to_model(self):
         if not self._editor.save():
@@ -407,9 +417,23 @@ class SourceEditor(wx.Panel):
         else:
             self._search_field_notification.SetLabel('No matches found.')
 
+    def OnContentAssist(self, event):
+        # print("DEBUG: Content assist called")
+        if wx.Window.FindFocus() is self._editor:
+            selected = self._editor.get_selected_or_near_text()
+            sugs = [s.name for s in self._suggestions.get_suggestions(
+                selected or '')]
+            if sugs:
+                caretpos = self._editor.AutoCompPosStart()
+                self._editor.AutoCompSetDropRestOfWord(True)
+                self._editor.AutoCompSetSeparator(ord(';'))
+                self._editor.AutoCompShow(0, ";".join(sugs))
+            event.Skip()
+
     def open(self, data):
         self.reset()
         self._data = data
+        self._suggestions = SuggestionSource(None, data._data.tests[0])
         if not self._editor:
             self._stored_text = self._data.content
         else:
@@ -524,6 +548,30 @@ class RobotDataEditor(stc.StyledTextCtrl):
 
     def OnStyle(self, event):
         self.stylizer.stylize()
+
+    def get_selected_or_near_text(self):
+        # First get selected text
+        selected = self.GetSelectedText()
+        self.SetInsertionPoint(self.GetInsertionPoint() - len(selected))
+        if selected:
+            return selected
+        # Next get text on the left
+        self.SetSelectionEnd(self.GetInsertionPoint())
+        self.WordLeftEndExtend()
+        selected = self.GetSelectedText()
+        select = selected.strip()
+        self.SetInsertionPoint(self.GetInsertionPoint() + len(selected)
+                               - len(select))
+        if select and len(select) > 0:
+            return select
+        # Finally get text on the right
+        self.SetSelectionStart(self.GetInsertionPoint())
+        self.WordRightEndExtend()
+        selected = self.GetSelectedText()
+        select = selected.strip()
+        self.SetInsertionPoint(self.GetInsertionPoint() - len(select))
+        if select and len(select) > 0:
+            return select
 
 
 class FromStringIOPopulator(robotapi.FromFilePopulator):
