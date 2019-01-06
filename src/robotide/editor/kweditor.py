@@ -130,7 +130,8 @@ class KeywordEditor(GridEditor, RideEventHandler):
     def _configure_grid(self):
         self.SetRowLabelSize(25)
         self.SetColLabelSize(0)
-        self.SetDefaultColSize(self.settings['col size'])
+        self.SetDefaultColSize(self.settings['col size'],
+                               resizeExistingCols=True)
         self.SetDefaultCellOverflow(False)
         self.SetDefaultEditor(
             ContentAssistCellEditor(self._plugin, self._controller))
