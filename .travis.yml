@@ -18,10 +18,10 @@ matrix:
   include:
     - python: "2.7"
       env:
-        - WXPACK=https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-14.04/wxPython-4.0.3-cp27-cp27mu-linux_x86_64.whl
+        - WXPACK=https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-14.04/wxPython-4.0.4-cp27-cp27mu-linux_x86_64.whl
     - python: "3.6"
       env:
-        - WXPACK=https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-14.04/wxPython-4.0.3-cp36-cp36m-linux_x86_64.whl
+        - WXPACK=https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-14.04/wxPython-4.0.4-cp36-cp36m-linux_x86_64.whl
 before_script:
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
