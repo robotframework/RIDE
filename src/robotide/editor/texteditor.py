@@ -27,11 +27,13 @@ from robotide.context import IS_WINDOWS, IS_MAC
 from robotide.controller.ctrlcommands import SetDataFile
 from robotide.publish.messages import RideMessage
 from robotide.utils import PY2
-from robotide.namespace.suggesters import SuggestionSource
+from robotide.namespace.suggesters import (SuggestionSource,
+                                           BuiltInLibrariesSuggester)
 from robotide.widgets import VerticalSizer, HorizontalSizer, ButtonWithHandler
-from robotide.pluginapi import Plugin, RideSaving, TreeAwarePluginMixin,\
-    RideTreeSelection, RideNotebookTabChanging, RideDataChanged,\
-    RideOpenSuite, RideDataChangedToDirty
+from robotide.pluginapi import (Plugin, RideSaving, TreeAwarePluginMixin,
+                                RideTreeSelection, RideNotebookTabChanging,
+                                RideDataChanged, RideOpenSuite,
+                                RideDataChangedToDirty)
 from robotide.widgets import TextField, Label, HtmlDialog
 
 if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
@@ -117,7 +119,8 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
                 self._editor.reset()
             if self._editor.dirty:
                 self._apply_txt_changes_to_model()
-            self._refresh_timer.Start(500, True) # For performance reasons only run after all the data changes
+            self._refresh_timer.Start(500, True)
+            # For performance reasons only run after all the data changes
 
     def _on_timer(self, event):
         self._open_tree_selection_in_editor()
@@ -130,11 +133,14 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
     def OnTreeSelection(self, message):
         self._editor.store_position()
         if self.is_focused():
-            next_datafile_controller = message.item and message.item.datafile_controller
+            next_datafile_controller = message.item and\
+                                       message.item.datafile_controller
             if self._editor.dirty:
                 if not self._apply_txt_changes_to_model():
-                    if self._editor.datafile_controller != next_datafile_controller:
-                        self.tree.select_controller_node(self._editor.datafile_controller)
+                    if self._editor.datafile_controller !=\
+                            next_datafile_controller:
+                        self.tree.select_controller_node(
+                            self._editor.datafile_controller)
                     return
             if next_datafile_controller:
                 self._open_data_for_controller(next_datafile_controller)
@@ -155,7 +161,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
             self._open()
             self._editor.set_editor_caret_position()
         elif message.oldtab == self.title:
-            print("DEBUG: OnTabChange move to another from Text Editor.")
+            # print("DEBUG: OnTabChange move to another from Text Editor.")
             self.Skip()
             self._editor.remove_and_store_state()
 
@@ -276,7 +282,8 @@ class DataFileWrapper(object): # TODO: bad class name
     def _txt_data(self, data):
         output = StringIO()
         data.save(output=output, format='txt',
-                  txt_separating_spaces=self._settings.get('txt number of spaces', 4))
+                  txt_separating_spaces=self._settings.get(
+                      'txt number of spaces', 4))
         return output.getvalue()  # DEBUG .decode('utf-8')
 
 
@@ -304,11 +311,13 @@ class SourceEditor(wx.Panel):
         self._parent.add_tab(self, title, allow_closing=False)
 
     def _create_editor_toolbar(self):
-        # needs extra container, since we might add helper text about syntax colorization
+        # needs extra container, since we might add helper
+        # text about syntax colorization
         self.editor_toolbar = HorizontalSizer()
         default_components = HorizontalSizer()
         default_components.add_with_padding(
-            ButtonWithHandler(self, 'Apply Changes', handler=lambda e: self.save()))
+            ButtonWithHandler(self, 'Apply Changes', handler=lambda
+                e: self.save()))
         self._create_search(default_components)
         self.editor_toolbar.add_expanding(default_components)
         self.Sizer.add_expanding(self.editor_toolbar, propotion=0)
@@ -434,7 +443,11 @@ class SourceEditor(wx.Panel):
     def open(self, data):
         self.reset()
         self._data = data
-        self._suggestions = SuggestionSource(None, data._data.tests[0])
+        try:
+            self._suggestions = SuggestionSource(None, data._data.tests[0])
+        except IndexError:  # It is a new project, no content yet
+            self._suggestions = SuggestionSource(None,
+                                                 BuiltInLibrariesSuggester())
         if not self._editor:
             self._stored_text = self._data.content
         else:
@@ -454,7 +467,7 @@ class SourceEditor(wx.Panel):
     def save(self, *args):
         if self.dirty:
             if not self._data_validator.validate_and_update(self._data,
-                                                     self._editor.utf8_text):
+                                                            self._editor.utf8_text):
                 return False
         return True
 

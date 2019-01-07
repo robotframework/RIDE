@@ -670,7 +670,6 @@ class TestCaseFileController(_FileSystemElement, _DataController):
     def find_controller_by_longname(self, longname, node_testname = None):
         return self.find_controller_by_names(longname.split("."), node_testname)
 
-
     def find_controller_by_names(self, names, node_testname = None):
         names = '.'.join(names)
         if not names.startswith(self.name):

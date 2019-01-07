@@ -289,6 +289,10 @@ SHORTCUT_KEYS = '''\
         <th><b>What it does</b></th>
     </tr>
     <tr>
+        <td>Ctrl-Space or Alt-Space</td>
+        <td>Suggestions and auto completion</td>
+    </tr>
+    <tr>
         <td>CtrlCmd-F</td>
         <td>Find in text</td>
     </tr>
