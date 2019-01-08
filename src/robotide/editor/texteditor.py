@@ -156,13 +156,13 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         self._editor.selected(DataFileWrapper(datafile_controller,
                                               self.global_settings))
 
-    def OnTabChange(self, message):
+    def OnTabChange(self, message, event):
         if message.newtab == self.title:
             self._open()
             self._editor.set_editor_caret_position()
         elif message.oldtab == self.title:
             # print("DEBUG: OnTabChange move to another from Text Editor.")
-            self.Skip()
+            event.Skip()
             self._editor.remove_and_store_state()
 
     def OnTabChanged(self, event):
