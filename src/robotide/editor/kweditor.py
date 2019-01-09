@@ -83,7 +83,8 @@ class KeywordEditor(GridEditor, RideEventHandler):
     _popup_items = [
         'Create Keyword', 'Extract Keyword', 'Extract Variable',
         'Rename Keyword', 'Find Where Used', '---', 'Make Variable\tCtrl-1',
-        'Make List Variable\tCtrl-2', '---', 'Go to Definition\tCtrl-B', '---'
+        'Make List Variable\tCtrl-2', 'Make Dict Variable\tCtrl-5', '---',
+        'Go to Definition\tCtrl-B', '---'
     ] + GridEditor._popup_items
 
     def __init__(self, parent, controller, tree):
@@ -637,6 +638,9 @@ work.</li>
     def OnMakeListVariable(self, event):
         self._open_cell_editor_and_execute_variable_creator(list_variable=True)
 
+    def OnMakeDictVariable(self, event):
+        self._open_cell_editor_and_execute_variable_creator(dict_variable=True)
+
     def OnCellRightClick(self, event):
         self._tooltips.hide()
         self._popup_menu_shown = True
@@ -888,8 +892,6 @@ class ChooseUsageSearchStringDialog(wx.Dialog):
         self.caption = "Please select what you want to check for usage"
         variables = set(variablematcher.find_variable_basenames(cellvalue))
         self.choices = [(False, cellvalue)] + [(True, v) for v in variables]
-        # Bug in wx.RadioBox never shows the '&' even if '&&'
-        # See https://github.com/wxWidgets/Phoenix/issues/39
         self.choices_string = ["Complete cell content"] + \
                               ["Variable " + var.replace("&", "&&") for var
                                in variables]
