@@ -1,5 +1,5 @@
 wxPython
-# Pygments # You will not see text syntax highlighted in Text Editor
+Pygments # This enables syntax highlighted in Text Editor
 robotframework
 Pypubsub==3.3.0 ; python_version <= '2.7'
 Pypubsub ; python_version > '2.7'
