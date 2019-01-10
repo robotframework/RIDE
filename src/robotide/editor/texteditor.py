@@ -156,13 +156,13 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         self._editor.selected(DataFileWrapper(datafile_controller,
                                               self.global_settings))
 
-    def OnTabChange(self, message, event):
+    def OnTabChange(self, message):
         if message.newtab == self.title:
             self._open()
             self._editor.set_editor_caret_position()
         elif message.oldtab == self.title:
             # print("DEBUG: OnTabChange move to another from Text Editor.")
-            event.Skip()
+            # event.Skip()
             self._editor.remove_and_store_state()
 
     def OnTabChanged(self, event):
@@ -502,8 +502,8 @@ class SourceEditor(wx.Panel):
         if self._editor:
             self.store_position()
             self._stored_text = self._editor.GetText()
-            self._editor.Destroy()
-            self._editor = None
+            # self._editor.Destroy()  # DEBUG Pressing F8 would crash
+            # self._editor = None
 
     def _create_editor_text_control(self, text=None):
         self._editor = RobotDataEditor(self)
