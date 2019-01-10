@@ -85,7 +85,7 @@ class ListModel(object):
         return ''
 
     def image(self, row):
-        return None
+        return -1
 
     def item_attributes(self, row):
         return None

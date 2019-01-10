@@ -167,8 +167,9 @@ class ViewAllTagsDialog(wx.Frame, listmix.ColumnSorterMixin):
 
         isreversed = (self.sort_state[1] != 1)
         self.total_test_cases = len(self._test_cases)
+
         self._results = sorted(unique_tags.items(),
-                               key=lambda item: item[0].lower,
+                               key=lambda item: item[0].lower(),
                                reverse=isreversed)
 
     def GetListCtrl(self):

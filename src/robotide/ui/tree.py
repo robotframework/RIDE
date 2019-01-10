@@ -244,12 +244,12 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
             obj = self
             rect = (node.GetX()+20, node.GetY())  # Overlaps robot icon
             self._animctrl = AnimationCtrl(obj, -1, ani, rect)
-            # self._animctrl.Reparent()
             self._animctrl.SetBackgroundColour(obj.GetBackgroundColour())
             try:
-                node.SetWindow(self._animctrl, False)
+                self.SetItemWindow(node,self._animctrl, False)
             except TypeError:  # DEBUG In case wxPython devel not ready
-                node.SetWindow(self._animctrl)
+                self.SetItemWindow(node,self._animctrl)
+
             self._animctrl.Play()
         # Make visible the running or paused test
         self.EnsureVisible(node)
