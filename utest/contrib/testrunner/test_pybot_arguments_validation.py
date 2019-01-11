@@ -49,7 +49,7 @@ class TestPybotArgumentsValidation(unittest.TestCase):
         self._working_arguments('--log somelog.html')
 
     def test_runfailed_argument_works(self):
-        self._working_arguments('--runfailed output.xml')
+        self._working_arguments('--rerunfailed output.xml')
 
 
 if __name__ == '__main__':

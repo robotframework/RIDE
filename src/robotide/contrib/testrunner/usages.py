@@ -13,7 +13,10 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-USAGE = """\
+try:
+    from robotide.lib.robot.run import USAGE
+except ImportError:
+    USAGE = """\
 Robot Framework -- A generic test automation framework
 
 Usage:  robot|jybot|irobot [options] data_sources
