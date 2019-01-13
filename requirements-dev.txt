@@ -1,10 +1,7 @@
-# setuptools is required by mock(ito?)
-wxPython
 setuptools
 nose
 mockito
 invoke
-Pygments
-robotframework
-Pypubsub==3.3.0 ; python_version <= '2.7'
-Pypubsub ; python_version > '2.7'
+# Include also normal project requirements.
+-r requirements.txt
+
