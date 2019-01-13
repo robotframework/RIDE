@@ -273,7 +273,8 @@ class RideFrame(wx.Frame, RideEventHandler):
         self._mgr.AddPane(self.tree,
                           aui.AuiPaneInfo().Name("tree_content").
                           Caption("Test Suites").LeftDockable(True).
-                          MaximizeButton(True).MinimizeButton(True))
+                          CloseButton(False))  #.
+        # MaximizeButton(True).MinimizeButton(True))
         self.actions.register_actions(
             ActionInfoCollection(_menudata, self, self.tree))
         mb.take_menu_bar_into_use()
