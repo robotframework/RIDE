@@ -18,13 +18,13 @@
 
 import sys
 from os.path import exists, join
-from robotide.utils import PY2, PY3
+from robotide.utils import PY2
 
 __doc__ = """
 Usage: python ride_postinstall.py [options] <-install|-remove>
     or python -m robotide.postinstall [options] <-install|-remove>
                 -install - Installs a Desktop Shortcut to RIDE.
-                -remove  - Removes a Desktop Shortcut to RIDE.
+                -remove  - [TODO] Removes a Desktop Shortcut to RIDE.
        options: -q    - Quiet, don't ask user for confirmation.
                 -f    - Force action.
                 -help - This help.
@@ -40,12 +40,12 @@ def verify_install():
                          "\n"
                          "Please ensure that you have wxPython installed "
                          "before running RIDE. "
-                         "You can obtain wxPython 2.8.12.1 from "
-                         "http://sourceforge.net/projects/wxpython/files/"
-                         "wxPython/2.8.12.1/\n")
+                         "You can obtain wxPython from "
+                         "https://wxpython.org/pages/downloads/\n"
+                         "or pip install wxPython")
         return False
     else:
-        sys.stderr.write("Installation successful.\n")
+        sys.stderr.write("wxPython is installed.\n%s" % version())
         return True
 
 
@@ -141,11 +141,12 @@ def _create_desktop_shortcut_linux(frame=None):
         roboticon = os.path.dirname(os.path.realpath(__file__)).\
             replace("postinstall", "widgets/robot.png")
         with open(link, "w+") as shortcut:
-            shortcut.write("#!/usr/bin/env xdg-open\n[Desktop Entry]\nExec=\
-ride.py\nComment=A Robot Framework IDE\nGenericName=RIDE\n")
+            shortcut.write("#!/usr/bin/env xdg-open\n[Desktop Entry]\nExec="
+                           "%s -m robotide.__init__\nComment=A Robot Framework"
+                           " IDE\nGenericName=RIDE\n" % sys.executable)
             shortcut.write("Icon={0}\n".format(roboticon))
-            shortcut.write("Name=RIDE\nStartupNotify=true\nTerminal=false\nTyp\
-e=Application\nX-KDE-SubstituteUID=false\n")
+            shortcut.write("Name=RIDE\nStartupNotify=true\nTerminal=false\n"
+                           "Type=Application\nX-KDE-SubstituteUID=false\n")
             uid = pwd.getpwnam(user).pw_uid
             os.chown(link, uid, -1)  # groupid == -1 means keep unchanged
             os.chmod(link, 0o744)
@@ -161,10 +162,11 @@ def _create_desktop_shortcut_mac(frame=None):
         if not option_q and not option_f:
             if not _askyesno("Setup", "Create desktop shortcut?", frame):
                 return False
-        roboticon = "/Library/Python/{0}/site-packages/robotide/widgets/robot.\
-png".format(sys.version[:3])  # TODO: Find a way to change shortcut icon
+        roboticon = "/Library/Python/{0}/site-packages/robotide/widgets/robot."
+        "png".format(sys.version[:3])  # TODO: Find a way to change shortcut icon
         with open(link, "w+") as shortcut:
-            shortcut.write("#!/bin/sh\n/usr/local/bin/ride.py $* &\n")
+            shortcut.write("#!/bin/sh\n%s -m robotide.__init__ $* &\n" %
+                           sys.executable)
         uid = pwd.getpwnam(user).pw_uid
         os.chown(link, uid, -1)  # groupid == -1 means keep unchanged
         os.chmod(link, 0o744)
@@ -178,8 +180,8 @@ def _create_desktop_shortcut_windows(frame=None):
         from win32com.shell import shell, shellcon
     except ImportError:
         sys.stderr.write("Cannot create desktop shortcut.\nPlease install"
-                         " pywin32 from http://sourceforge.net/projects/"
-                         "pywin32/")
+                         " pywin32 from https://github.com/mhammond/pywin32\n"
+                         "or pip install pywin32")
         return False
     desktop = shell.SHGetFolderPath(0, shellcon.CSIDL_DESKTOP, None, 0)
     link = os.path.join(desktop, 'RIDE.lnk')
@@ -188,15 +190,16 @@ def _create_desktop_shortcut_windows(frame=None):
     if not exists(link) or option_f:
         if not option_q and not option_f:
             if not _askyesno("Setup", "Create desktop shortcut?", frame):
-                sys.stderr.write("Users can create a Desktop shortcut to RIDE \
-with:\npython -m robotide.postinstall -install\n")
+                sys.stderr.write("Users can create a Desktop shortcut to RIDE "
+                                 "with:\n%s -m robotide.postinstall -install\n"
+                                 % sys.executable)
                 return False
         import pythoncom
         shortcut = pythoncom.CoCreateInstance(shell.CLSID_ShellLink, None,
                                               pythoncom.CLSCTX_INPROC_SERVER,
                                               shell.IID_IShellLink)
         command_args = " -c \"from robotide import main; main()\""
-        shortcut.SetPath("python.exe")  # sys.executable
+        shortcut.SetPath(sys.executable)
         shortcut.SetArguments(command_args)
         shortcut.SetDescription("Robot Framework testdata editor")
         shortcut.SetIconLocation(icon, 0)
@@ -212,8 +215,8 @@ def create_desktop_shortcut(platform, frame=None):
     elif platform.startswith("win"):
         return _create_desktop_shortcut_windows(frame)
     else:
-        sys.stderr.write("Unknown platform {0}: Failed to create desktop short\
-cut.".format(platform))
+        sys.stderr.write("Unknown platform {0}: Failed to create desktop short"
+                         "cut.".format(platform))
         return False
 
 

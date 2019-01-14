@@ -57,7 +57,7 @@ class ShortcutPlugin(Plugin):
         # else:
         #    self.notebook.show_tab(self._window)
         self._window.call_creator()
-        self.disable()
+        # self.disable()
 
 
 class _ShortcutCreateWindow(wx.TextCtrl):
