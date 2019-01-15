@@ -41,10 +41,13 @@ if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
 else:
     from wx import HyperlinkCtrl, EVT_HYPERLINK
 
-try:
-    from . import robotframeworklexer
+try:  # import installed version first
+    import robotframeworklexer
 except ImportError:
-    robotframeworklexer = None
+    try:  # then import local version
+        from . import robotframeworklexer
+    except ImportError:  # Pygments is not installed
+        robotframeworklexer = None
 
 
 class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
@@ -428,17 +431,19 @@ class SourceEditor(wx.Panel):
             self._search_field_notification.SetLabel('No matches found.')
 
     def OnContentAssist(self, event):
-        # print("DEBUG: Content assist called")
-        if wx.Window.FindFocus() is self._editor:
-            selected = self._editor.get_selected_or_near_text()
-            sugs = [s.name for s in self._suggestions.get_suggestions(
-                selected or '')]
-            if sugs:
-                caretpos = self._editor.AutoCompPosStart()
-                self._editor.AutoCompSetDropRestOfWord(True)
-                self._editor.AutoCompSetSeparator(ord(';'))
-                self._editor.AutoCompShow(0, ";".join(sugs))
-            event.Skip()
+        # print("DEBUG: Content assist called Focused: %s" % self.is_focused())
+        if not self.is_focused():
+            return
+        #  if wx.Window.FindFocus() is self._editor:
+        selected = self._editor.get_selected_or_near_text()
+        sugs = [s.name for s in self._suggestions.get_suggestions(
+            selected or '')]
+        if sugs:
+            caretpos = self._editor.AutoCompPosStart()
+            self._editor.AutoCompSetDropRestOfWord(True)
+            self._editor.AutoCompSetSeparator(ord(';'))
+            self._editor.AutoCompShow(0, ";".join(sugs))
+        event.Skip()
 
     def open(self, data):
         self.reset()
