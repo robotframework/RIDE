@@ -172,8 +172,6 @@ class RideFrame(wx.Frame, RideEventHandler):
         self.Bind(wx.EVT_MOVE, self.OnMove)
         self.Bind(wx.EVT_MAXIMIZE, self.OnMaximize)
         self._subscribe_messages()
-        # print("DEBUG: Call Show")
-        self.Show()
         #print("DEBUG: Call register_tools, actions: %s" % self.actions.__repr__())
         if PY2:
             wx.CallLater(100, self.actions.register_tools)  # DEBUG
@@ -250,7 +248,7 @@ class RideFrame(wx.Frame, RideEventHandler):
         # self.SetToolBar(self.toolbar.GetToolBar())
         self._mgr.AddPane(self.toolbar, aui.AuiPaneInfo().Name("maintoolbar").
                           ToolbarPane().Top())
-        self.actions = ActionRegisterer(mb, self.toolbar,
+        self.actions = ActionRegisterer(self._mgr, mb, self.toolbar,
                                         ShortcutRegistry(self))
         """
         ##### Test
@@ -273,7 +271,7 @@ class RideFrame(wx.Frame, RideEventHandler):
         self._mgr.AddPane(self.tree,
                           aui.AuiPaneInfo().Name("tree_content").
                           Caption("Test Suites").LeftDockable(True).
-                          CloseButton(False))  #.
+                          CloseButton(False))
         # MaximizeButton(True).MinimizeButton(True))
         self.actions.register_actions(
             ActionInfoCollection(_menudata, self, self.tree))
@@ -284,6 +282,7 @@ class RideFrame(wx.Frame, RideEventHandler):
         self.SetIcons(ImageProvider().PROGICONS)
         # tell the manager to "commit" all the changes just made
         self._mgr.Update()
+
 
     def testToolbar(self):
 
@@ -650,13 +649,14 @@ class ToolBar(aui.AuiToolBar):
 
 class ActionRegisterer(object):
 
-    def __init__(self, menubar, toolbar, shortcut_registry):
+    def __init__(self, aui_mgr, menubar, toolbar, shortcut_registry):
+        self._aui_mgr = aui_mgr
         self._menubar = menubar
         self._toolbar = toolbar
         self._shortcut_registry = shortcut_registry
         self._tools_items = dict()
 
-    def register_action(self, action_info):
+    def register_action(self, action_info, update_aui=True):
         menubar_can_be_registered = True
         action = ActionFactory(action_info)
         self._shortcut_registry.register(action)
@@ -667,6 +667,9 @@ class ActionRegisterer(object):
         if menubar_can_be_registered:
             self._menubar.register(action)
         self._toolbar.register(action)
+        if update_aui:
+            # tell the manager to "commit" all the changes just made
+            self._aui_mgr.Update()
         return action
 
     def register_tools(self):
@@ -685,7 +688,9 @@ class ActionRegisterer(object):
         for action in actions:
             if not isinstance(action, SeparatorInfo):  # DEBUG
                 # print("DEBUG: action=%s" % action.name)
-                self.register_action(action)
+                self.register_action(action, update_aui=False)
+        # tell the manager to "commit" all the changes just made
+        self._aui_mgr.Update()
 
     def register_shortcut(self, action_info):
         action = ActionFactory(action_info)
