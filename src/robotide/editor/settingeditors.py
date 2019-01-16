@@ -142,9 +142,11 @@ class SettingEditor(wx.Panel, utils.RideEventHandler):
 
     def OnWindowDestroy(self, event):
         self._stop_popup_timer()
+        event.Skip()
 
     def OnLeaveWindow(self, event):
         self._stop_popup_timer()
+        event.Skip()
 
     def OnPopupTimer(self, event):
         _tooltipallowed = False
