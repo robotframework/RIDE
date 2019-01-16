@@ -54,6 +54,7 @@ Tree.get_active_datafile = lambda self: None
 Tree._select = lambda self, node: self.SelectItem(node)
 # wx needs to imported last so that robotide can select correct wx version.
 import wx
+from wx.lib.agw.aui import AuiManager
 
 
 """
@@ -208,7 +209,7 @@ class _BaseSuiteTreeTest(unittest.TestCase):
         settings = FakeSettings()
         self.app = wx.App()
         self.frame = wx.Frame(None)
-        self.frame.tree = Tree(self.frame, ActionRegisterer(
+        self.frame.tree = Tree(self.frame, ActionRegisterer(AuiManager(self.frame),
             MenuBar(self.frame), ToolBar(self.frame),
             ShortcutRegistry(self.frame)), settings)
         self.frame.Show()
