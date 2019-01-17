@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,7 +13,6 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-
 def get_core_plugins():
     from robotide.run import RunAnything
     from robotide.recentfiles import RecentFilesPlugin
@@ -23,7 +23,8 @@ def get_core_plugins():
     from robotide.log import LogPlugin
     from robotide.searchtests.searchtests import TestSearchPlugin
     from robotide.spec.specimporter import SpecImporterPlugin
+    from robotide.postinstall.desktopshortcut import ShortcutPlugin
 
     return [RunAnything, RecentFilesPlugin, PreviewPlugin, SpecImporterPlugin,
-            EditorPlugin, TextEditorPlugin, KeywordSearch, LogPlugin, TestSearchPlugin]
-
+            EditorPlugin, TextEditorPlugin, KeywordSearch, LogPlugin,
+            TestSearchPlugin, ShortcutPlugin]

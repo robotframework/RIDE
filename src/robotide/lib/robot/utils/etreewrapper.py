@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,39 +13,33 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import os.path
-from StringIO import StringIO
+from io import BytesIO
 
+from .compat import py2to3
+from .platform import IRONPYTHON, PY_VERSION
 from .robottypes import is_string
-from .platform import IRONPYTHON
 
 
-_ERROR = 'No valid ElementTree XML parser module found'
+IRONPYTHON_WITH_BROKEN_ETREE = IRONPYTHON and PY_VERSION < (2, 7, 9)
+NO_ETREE_ERROR = 'No valid ElementTree XML parser module found'
 
 
-if not IRONPYTHON:
+if not IRONPYTHON_WITH_BROKEN_ETREE:
     try:
         from xml.etree import cElementTree as ET
     except ImportError:
         try:
-            import cElementTree as ET
+            from xml.etree import ElementTree as ET
         except ImportError:
-            try:
-                from xml.etree import ElementTree as ET
-            except ImportError:
-                try:
-                    from elementtree import ElementTree as ET
-                except ImportError:
-                    raise ImportError(_ERROR)
+            raise ImportError(NO_ETREE_ERROR)
 else:
-    # Cannot use standard ET available on IronPython because it is broken
-    # both in 2.7.0 and 2.7.1:
-    # http://ironpython.codeplex.com/workitem/31923
-    # http://ironpython.codeplex.com/workitem/21407
+    # Standard ElementTree works only with IronPython 2.7.9+
+    # https://github.com/IronLanguages/ironpython2/issues/370
     try:
         from elementtree import ElementTree as ET
     except ImportError:
-        raise ImportError(_ERROR)
+        raise ImportError(NO_ETREE_ERROR)
+    from StringIO import StringIO
 
 
 # cElementTree.VERSION seems to always be 1.0.6. We want real API version.
@@ -52,6 +47,7 @@ if ET.VERSION < '1.3' and hasattr(ET, 'tostringlist'):
     ET.VERSION = '1.3'
 
 
+@py2to3
 class ETSource(object):
 
     def __init__(self, source):
@@ -66,7 +62,7 @@ class ETSource(object):
         if self._opened:
             self._opened.close()
 
-    def __str__(self):
+    def __unicode__(self):
         if self._source_is_file_name():
             return self._source
         if hasattr(self._source, 'name'):
@@ -78,33 +74,8 @@ class ETSource(object):
                 and not self._source.lstrip().startswith('<')
 
     def _open_source_if_necessary(self):
-        if self._source_is_file_name():
-            return self._open_file(self._source)
-        if is_string(self._source):
-            return self._open_string_io(self._source)
-        return None
-
-    if not IRONPYTHON:
-
-        # File is opened, and later closed, because ElementTree had a bug that
-        # it didn't close files it had opened. This caused problems with Jython
-        # especially on Windows: http://bugs.jython.org/issue1598
-        # The bug has now been fixed in ET and worked around in Jython 2.5.2.
-        def _open_file(self, source):
-            return open(source, 'rb')
-
-        def _open_string_io(self, source):
-            return StringIO(source.encode('UTF-8'))
-
-    else:
-
-        # File cannot be opened on IronPython, however, as ET does not seem to
-        # handle non-ASCII characters correctly in that case. We want to check
-        # that the file exists even in that case, though.
-        def _open_file(self, source):
-            if not os.path.exists(source):
-                raise IOError(2, 'No such file', source)
+        if self._source_is_file_name() or not is_string(self._source):
             return None
-
-        def _open_string_io(self, source):
-            return StringIO(source)
+        if IRONPYTHON_WITH_BROKEN_ETREE:
+            return StringIO(self._source)
+        return BytesIO(self._source.encode('UTF-8'))

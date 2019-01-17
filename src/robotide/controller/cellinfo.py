@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -13,6 +14,9 @@
 #  limitations under the License.
 
 from robotide.utils import highlightmatcher, html_escape
+from robotide.utils import PY3
+if PY3:
+    from robotide.utils import unicode
 
 
 class CellInfo(object):
@@ -67,7 +71,7 @@ class _TooltipMessage(object):
 
     TOO_MANY_ARGUMENTS = "Too many arguments"
     KEYWORD_NOT_FOUND = \
-        "Keyword not found! For possible corrections press <ctrl>"
+        "Keyword not found! For possible corrections press <Ctrl-M>"
     VARIABLE_ASSIGMENT = "Variable assignment"
     UNKNOWN_VARIABLE = "\n\nUnknown variable"
 
@@ -75,7 +79,7 @@ class _TooltipMessage(object):
     OPTIONAL_ARGUMENT = "Optional argument:  %s"
     MISSING_ARGUMENT = "Missing argument:  %s"
 
-    KEYWORD = "Keyword from:  %s\n\nPress <ctrl> for details"
+    KEYWORD = "Keyword from:  %s\n\nPress <Ctrl-M> for details"
 
     def __init__(self, cell):
         self.message = self._get_message(cell)

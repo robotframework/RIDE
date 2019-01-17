@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -16,18 +17,21 @@ import inspect
 import os
 
 from robotide.lib.robot.errors import DataError
-from robotide.lib.robot.libraries import STDLIBS, DEPRECATED_STDLIBS
+from robotide.lib.robot.libraries import STDLIBS
 from robotide.lib.robot.output import LOGGER
 from robotide.lib.robot.utils import (getdoc, get_error_details, Importer, is_java_init,
                          is_java_method, JYTHON, normalize, seq2str2, unic,
-                         is_list_like)
+                         is_list_like, PY2, PYPY, type_name)
 
 from .arguments import EmbeddedArguments
+from .context import EXECUTION_CONTEXTS
 from .dynamicmethods import (GetKeywordArguments, GetKeywordDocumentation,
-                             GetKeywordNames, RunKeyword)
-from .handlers import Handler, InitHandler, DynamicHandler, EmbeddedArgsTemplate
+                             GetKeywordNames, GetKeywordTags, RunKeyword)
+from .handlers import Handler, InitHandler, DynamicHandler, EmbeddedArgumentsHandler
 from .handlerstore import HandlerStore
+from .libraryscopes import LibraryScope
 from .outputcapture import OutputCapturer
+
 
 if JYTHON:
     from java.lang import Object
@@ -36,7 +40,7 @@ else:
 
 
 def TestLibrary(name, args=None, variables=None, create_handlers=True):
-    if name in STDLIBS or name in DEPRECATED_STDLIBS:
+    if name in STDLIBS:
         import_name = 'robot.libraries.' + name
     else:
         import_name = name
@@ -72,12 +76,11 @@ class _BaseTestLibrary(object):
         self.name = name
         self.orig_name = name  # Stores original name when importing WITH NAME
         self.source = source
-        self.handlers = HandlerStore(self.name)
-        self._instance_cache = []
+        self.handlers = HandlerStore(self.name, HandlerStore.TEST_LIBRARY_TYPE)
         self.has_listener = None  # Set when first instance is created
         self._doc = None
         self.doc_format = self._get_doc_format(libcode)
-        self.scope = self._get_scope(libcode)
+        self.scope = LibraryScope(libcode, self)
         self.init = self._create_init_handler(libcode)
         self.positional_args, self.named_args \
             = self.init.resolve_arguments(args, variables)
@@ -93,37 +96,25 @@ class _BaseTestLibrary(object):
             self._doc = getdoc(self.get_instance())
         return self._doc
 
-    @property
-    def listeners(self):
-        if self.has_listener:
-            return self._get_listeners(self.get_instance())
-        return None
-
-    def _get_listeners(self, inst):
-        if not hasattr(inst, 'ROBOT_LIBRARY_LISTENER'):
-            return None
-        listeners = inst.ROBOT_LIBRARY_LISTENER
-        return listeners if is_list_like(listeners) else [listeners]
-
     def create_handlers(self):
         self._create_handlers(self.get_instance())
-        self.init_scope_handling()
+        self.reset_instance()
 
     def reload(self):
-        self.handlers = HandlerStore(self.name)
+        self.handlers = HandlerStore(self.name, HandlerStore.TEST_LIBRARY_TYPE)
         self._create_handlers(self.get_instance())
 
     def start_suite(self):
-        pass
+        self.scope.start_suite()
 
     def end_suite(self):
-        pass
+        self.scope.end_suite()
 
     def start_test(self):
-        pass
+        self.scope.start_test()
 
     def end_test(self):
-        pass
+        self.scope.end_test()
 
     def _get_version(self, libcode):
         return self._get_attr(libcode, 'ROBOT_LIBRARY_VERSION') \
@@ -138,36 +129,28 @@ class _BaseTestLibrary(object):
     def _get_doc_format(self, libcode):
         return self._get_attr(libcode, 'ROBOT_LIBRARY_DOC_FORMAT', upper=True)
 
-    def _get_scope(self, libcode):
-        scope = self._get_attr(libcode, 'ROBOT_LIBRARY_SCOPE', upper=True)
-        return scope if scope in ['GLOBAL','TESTSUITE'] else 'TESTCASE'
-
     def _create_init_handler(self, libcode):
         return InitHandler(self, self._resolve_init_method(libcode))
 
     def _resolve_init_method(self, libcode):
-        init_method = getattr(libcode, '__init__', None)
-        return init_method if self._valid_init(init_method) else lambda: None
+        init = getattr(libcode, '__init__', None)
+        return init if init and self._valid_init(init) else lambda: None
 
     def _valid_init(self, method):
-        return inspect.ismethod(method) or is_java_init(method)
+        # https://bitbucket.org/pypy/pypy/issues/2462/
+        if PYPY:
+            if PY2:
+                return method.__func__ is not object.__init__.__func__
+            return method is not object.__init__
+        return (inspect.ismethod(method) or     # PY2
+                inspect.isfunction(method) or   # PY3
+                is_java_init(method))
 
-    def init_scope_handling(self):
-        if self.scope == 'GLOBAL':
-            return
-        self._libinst = None
-        self.start_suite = self._caching_start
-        self.end_suite = self._restoring_end
-        if self.scope == 'TESTCASE':
-            self.start_test = self._caching_start
-            self.end_test = self._restoring_end
-
-    def _caching_start(self):
-        self._instance_cache.append(self._libinst)
-        self._libinst = None
-
-    def _restoring_end(self):
-        self._libinst = self._instance_cache.pop()
+    def reset_instance(self, instance=None):
+        prev = self._libinst
+        if not self.scope.is_global:
+            self._libinst = instance
+        return prev
 
     def get_instance(self, create=True):
         if not create:
@@ -175,32 +158,98 @@ class _BaseTestLibrary(object):
         if self._libinst is None:
             self._libinst = self._get_instance(self._libcode)
         if self.has_listener is None:
-            self.has_listener = self._get_listeners(self._libinst) is not None
+            self.has_listener = bool(self.get_listeners(self._libinst))
         return self._libinst
 
     def _get_instance(self, libcode):
         with OutputCapturer(library_import=True):
             try:
-                return libcode(*self.positional_args, **self.named_args)
+                return libcode(*self.positional_args, **dict(self.named_args))
             except:
                 self._raise_creating_instance_failed()
 
+    def get_listeners(self, libinst=None):
+        if libinst is None:
+            libinst = self.get_instance()
+        listeners = getattr(libinst, 'ROBOT_LIBRARY_LISTENER', None)
+        if listeners is None:
+            return []
+        if is_list_like(listeners):
+            return listeners
+        return [listeners]
+
+    def register_listeners(self):
+        if self.has_listener:
+            try:
+                listeners = EXECUTION_CONTEXTS.current.output.library_listeners
+                listeners.register(self.get_listeners(), self)
+            except DataError as err:
+                self.has_listener = False
+                # Error should have information about suite where the
+                # problem occurred but we don't have such info here.
+                LOGGER.error("Registering listeners for library '%s' failed: %s"
+                             % (self.name, err))
+
+    def unregister_listeners(self, close=False):
+        if self.has_listener:
+            listeners = EXECUTION_CONTEXTS.current.output.library_listeners
+            listeners.unregister(self, close)
+
+    def close_global_listeners(self):
+        if self.scope.is_global:
+            for listener in self.get_listeners():
+                self._close_listener(listener)
+
+    def _close_listener(self, listener):
+        method = (getattr(listener, 'close', None) or
+                  getattr(listener, '_close', None))
+        try:
+            if method:
+                method()
+        except:
+            message, details = get_error_details()
+            name = getattr(listener, '__name__', None) or type_name(listener)
+            LOGGER.error("Calling method '%s' of listener '%s' failed: %s"
+                         % (method.__name__, name, message))
+            LOGGER.info("Details:\n%s" % details)
+
     def _create_handlers(self, libcode):
-        for name in self._get_handler_names(libcode):
+        try:
+            names = self._get_handler_names(libcode)
+        except:
+            message, details = get_error_details()
+            raise DataError("Getting keyword names from library '%s' failed: %s"
+                            % (self.name, message), details)
+        for name in names:
             method = self._try_to_get_handler_method(libcode, name)
             if method:
                 handler, embedded = self._try_to_create_handler(name, method)
                 if handler:
-                    self.handlers.add(handler, embedded)
-                    LOGGER.debug("Created keyword '%s'" % handler.name)
+                    try:
+                        self.handlers.add(handler, embedded)
+                    except DataError as err:
+                        LOGGER.error("Error in test library '%s': "
+                                     "Creating keyword '%s' failed: %s"
+                                     % (self.name, handler.name, err.message))
+                    else:
+                        LOGGER.debug("Created keyword '%s'" % handler.name)
 
     def _get_handler_names(self, libcode):
         return [name for name in dir(libcode)
-                if not name.startswith(('_', 'ROBOT_LIBRARY_'))]
+                if name[:1] != '_' or self._has_robot_name(name, libcode)]
+
+    def _has_robot_name(self, name, libcode):
+        try:
+            handler = self._get_handler_method(libcode, name)
+        except DataError:
+            return False
+        return hasattr(handler, 'robot_name')
 
     def _try_to_get_handler_method(self, libcode, name):
         try:
             return self._get_handler_method(libcode, name)
+        # TODO: RF 3.1: Catch only DataError or at least consider others errors.
+        # Don't want to do that in a minor release.
         except:
             self._report_adding_keyword_failed(name)
             return None
@@ -224,15 +273,17 @@ class _BaseTestLibrary(object):
         try:
             handler = self._create_handler(name, method)
         except DataError as err:
-            self._report_adding_keyword_failed(name, unicode(err), level='ERROR')
+            self._report_adding_keyword_failed(name, err.message, level='ERROR')
             return None, False
+        # TODO: RF 3.1: Catch only DataError or at least consider others errors.
+        # Don't want to do that in a minor release.
         except:
             self._report_adding_keyword_failed(name)
             return None, False
         try:
             return self._get_possible_embedded_args_handler(handler)
         except DataError as err:
-            self._report_adding_keyword_failed(handler.name, unicode(err),
+            self._report_adding_keyword_failed(handler.name, err.message,
                                                level='ERROR')
             return None, False
 
@@ -243,7 +294,7 @@ class _BaseTestLibrary(object):
         embedded = EmbeddedArguments(handler.name)
         if embedded:
             self._validate_embedded_count(embedded, handler.arguments)
-            return EmbeddedArgsTemplate(embedded.name, handler), True
+            return EmbeddedArgumentsHandler(embedded.name, handler), True
         return handler, False
 
     def _validate_embedded_count(self, embedded, arguments):
@@ -255,7 +306,7 @@ class _BaseTestLibrary(object):
         msg, details = get_error_details()
         if self.positional_args or self.named_args:
             args = self.positional_args \
-                + ['%s=%s' % item for item in self.named_args.items()]
+                + ['%s=%s' % item for item in self.named_args]
             args_text = 'arguments %s' % seq2str2(args)
         else:
             args_text = 'no arguments'
@@ -271,39 +322,28 @@ class _ClassLibrary(_BaseTestLibrary):
         for item in (libinst,) + inspect.getmro(libinst.__class__):
             if item in (object, Object):
                 continue
-            if not (hasattr(item, '__dict__') and name in item.__dict__):
-                continue
-            self._validate_handler(item.__dict__[name])
-            return getattr(libinst, name)
+            if hasattr(item, '__dict__') and name in item.__dict__:
+                self._validate_handler(item.__dict__[name])
+                return getattr(libinst, name)
         raise DataError('No non-implicit implementation found')
 
     def _validate_handler(self, handler):
-        if not self._is_routine(handler):
+        if not inspect.isroutine(handler):
             raise DataError('Not a method or function')
         if self._is_implicit_java_or_jython_method(handler):
             raise DataError('Implicit methods are ignored')
-
-    def _is_routine(self, handler):
-        return inspect.isroutine(handler) or is_java_method(handler)
 
     def _is_implicit_java_or_jython_method(self, handler):
         if not is_java_method(handler):
             return False
         for signature in handler.argslist[:handler.nargs]:
             cls = signature.declaringClass
-            if not (cls is Object or self._is_created_by_jython(handler, cls)):
+            if not (cls is Object or cls.__module__ == 'org.python.proxies'):
                 return False
         return True
 
-    def _is_created_by_jython(self, handler, cls):
-        proxy_methods = getattr(cls, '__supernames__', []) + ['classDictInit']
-        return handler.__name__ in proxy_methods
-
 
 class _ModuleLibrary(_BaseTestLibrary):
-
-    def _get_scope(self, libcode):
-        return 'GLOBAL'
 
     def _get_handler_method(self, libcode, name):
         method = _BaseTestLibrary._get_handler_method(self, libcode, name)
@@ -315,7 +355,7 @@ class _ModuleLibrary(_BaseTestLibrary):
         if not create:
             return self._libcode
         if self.has_listener is None:
-            self.has_listener = self._get_listeners(self._libcode) is not None
+            self.has_listener = bool(self.get_listeners(self._libcode))
         return self._libcode
 
     def _create_init_handler(self, libcode):
@@ -326,10 +366,7 @@ class _HybridLibrary(_BaseTestLibrary):
     _failure_level = 'ERROR'
 
     def _get_handler_names(self, instance):
-        try:
-            return instance.get_keyword_names()
-        except AttributeError:
-            return instance.getKeywordNames()
+        return GetKeywordNames(instance)()
 
 
 class _DynamicLibrary(_BaseTestLibrary):
@@ -345,12 +382,16 @@ class _DynamicLibrary(_BaseTestLibrary):
                          _BaseTestLibrary.doc.fget(self))
         return self._doc
 
-    def _get_kw_doc(self, name, instance=None):
-        getter = GetKeywordDocumentation(instance or self.get_instance())
+    def _get_kw_doc(self, name):
+        getter = GetKeywordDocumentation(self.get_instance())
         return getter(name)
 
-    def _get_kw_args(self, name, instance=None):
-        getter = GetKeywordArguments(instance or self.get_instance())
+    def _get_kw_args(self, name):
+        getter = GetKeywordArguments(self.get_instance())
+        return getter(name)
+
+    def _get_kw_tags(self, name):
+        getter = GetKeywordTags(self.get_instance())
         return getter(name)
 
     def _get_handler_names(self, instance):
@@ -360,9 +401,10 @@ class _DynamicLibrary(_BaseTestLibrary):
         return RunKeyword(instance)
 
     def _create_handler(self, name, method):
-        doc = self._get_kw_doc(name)
         argspec = self._get_kw_args(name)
-        return DynamicHandler(self, name, method, doc, argspec)
+        tags = self._get_kw_tags(name)
+        doc = self._get_kw_doc(name)
+        return DynamicHandler(self, name, method, doc, argspec, tags)
 
     def _create_init_handler(self, libcode):
         docgetter = lambda: self._get_kw_doc('__init__')

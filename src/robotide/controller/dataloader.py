@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -56,7 +57,8 @@ class _DataLoaderThread(Thread):
     def run(self):
         try:
             self.result = self._run()
-        except Exception:
+        except Exception as e:
+            # print("DEBUG: exception at DataLoader %s\n" % str(e))
             pass  # TODO: Log this error somehow
 
 
@@ -101,7 +103,8 @@ class TestDataDirectoryWithExcludes(robotapi.TestDataDirectory):
         self._settings = settings
         robotapi.TestDataDirectory.__init__(self, parent, source)
 
-    def add_child(self, path, include_suites):
+    def add_child(self, path, include_suites, extensions=None,
+                  warn_on_skipped=False):
         if not self._settings.excludes.contains(path):
             self.children.append(TestData(
                 parent=self, source=path, settings=self._settings))
@@ -117,8 +120,11 @@ def TestData(source, parent=None, settings=None):
         :class:`~.model.TestCaseFile` otherwise.
     """
     if os.path.isdir(source):
+        # print("DEBUG: Dataloader Is dir getting testdada %s\n" % source)
         data = TestDataDirectoryWithExcludes(parent, source, settings)
+        # print("DEBUG: Dataloader testdata %s\n" % data.name)
         data.populate()
+        # print("DEBUG: Dataloader after populate %s  %s\n" % (data._tables, data.name))
         return data
     return robotapi.TestCaseFile(parent, source).populate()
 

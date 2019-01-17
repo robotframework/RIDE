@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,6 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import codecs
 import os
 from os.path import abspath, dirname, join, normpath
 
@@ -23,6 +25,6 @@ class HtmlTemplate(object):
         self._path = normpath(join(self._base_dir, filename.replace('/', os.sep)))
 
     def __iter__(self):
-        with open(self._path) as file:
+        with codecs.open(self._path, encoding='UTF-8') as file:
             for line in file:
                 yield line.rstrip()

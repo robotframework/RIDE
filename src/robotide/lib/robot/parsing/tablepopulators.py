@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -14,6 +15,8 @@
 
 import re
 
+from robotide.lib.robot.utils import py2to3
+
 from .comments import CommentCache, Comments
 from .settings import Documentation, MetadataList
 
@@ -28,6 +31,7 @@ class Populator(object):
         raise NotImplementedError
 
 
+@py2to3
 class NullPopulator(Populator):
 
     def add(self, row):
@@ -85,13 +89,12 @@ class _TablePopulator(Populator):
 class SettingTablePopulator(_TablePopulator):
 
     def _get_populator(self, row):
-        row.handle_old_style_metadata()
         setter = self._table.get_setter(row.head)
         if not setter:
             return NullPopulator()
-        if setter.im_class is Documentation:
+        if isinstance(setter.__self__, Documentation):
             return DocumentationPopulator(setter)
-        if setter.im_class is MetadataList:
+        if isinstance(setter.__self__, MetadataList):
             return MetadataPopulator(setter)
         return SettingPopulator(setter)
 
@@ -192,13 +195,29 @@ class _TestCaseUserKeywordPopulator(Populator):
             self._handle_data_row(dedented_row)
 
     def _handle_data_row(self, row):
+        ending_for_loop = False
         if not self._continues(row):
             self._populator.populate()
+            if row.all == ['END']:
+                ending_for_loop = self._end_for_loop()
             self._populator = self._get_populator(row)
             self._comment_cache.consume_with(self._populate_comment_row)
         else:
             self._comment_cache.consume_with(self._populator.add)
-        self._populator.add(row)
+        if not ending_for_loop:
+            self._populator.add(row)
+
+    def _end_for_loop(self):
+        if self._populating_for_loop():
+            return True
+        return self._test_or_uk.end_for_loop()
+
+    def _populating_for_loop(self):
+        return isinstance(self._populator, ForLoopPopulator)
+
+    def _continues(self, row):
+        return (row.is_continuing() and self._populator or
+                self._populating_for_loop() and row.is_indented())
 
     def _populate_comment_row(self, crow):
         populator = StepPopulator(self._test_or_uk.add_step)
@@ -214,16 +233,12 @@ class _TestCaseUserKeywordPopulator(Populator):
             setter = self._setting_setter(row)
             if not setter:
                 return NullPopulator()
-            if setter.im_class is Documentation:
+            if isinstance(setter.__self__, Documentation):
                 return DocumentationPopulator(setter)
             return SettingPopulator(setter)
         if row.starts_for_loop():
             return ForLoopPopulator(self._test_or_uk.add_for_loop)
         return StepPopulator(self._test_or_uk.add_step)
-
-    def _continues(self, row):
-        return row.is_continuing() and self._populator or \
-            (isinstance(self._populator, ForLoopPopulator) and row.is_indented())
 
     def _setting_setter(self, row):
         setting_name = row.test_or_user_keyword_setting_name()

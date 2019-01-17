@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -89,7 +90,7 @@ class SuiteBuilder(_Builder):
                     stats)
 
     def _yield_metadata(self, suite):
-        for name, value in suite.metadata.iteritems():
+        for name, value in suite.metadata.items():
             yield self._string(name)
             yield self._html(value)
 
@@ -160,11 +161,13 @@ class StatisticsBuilder(object):
     def build(self, statistics):
         return (self._build_stats(statistics.total),
                 self._build_stats(statistics.tags),
-                self._build_stats(statistics.suite))
+                self._build_stats(statistics.suite, exclude_empty=False))
 
-    def _build_stats(self, stats):
-        return tuple(stat.get_attributes(include_label=True, include_elapsed=True,
-                                         exclude_empty=True, html_escape=True)
+    def _build_stats(self, stats, exclude_empty=True):
+        return tuple(stat.get_attributes(include_label=True,
+                                         include_elapsed=True,
+                                         exclude_empty=exclude_empty,
+                                         html_escape=True)
                      for stat in stats)
 
 

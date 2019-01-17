@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -11,12 +12,16 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-from robotide.publish.messages import RideTestExecutionStarted, RideTestPassed, RideTestFailed, RideTestRunning
+
+from robotide.publish.messages import RideTestExecutionStarted, RideTestPaused,\
+    RideTestPassed, RideTestFailed, RideTestRunning
+
 
 class TestExecutionResults(object):
     RUNNING = 'Running'
     PASSED = 'Passed'
     FAILED = 'Failed'
+    PAUSED = 'Paused'
 
     def __init__(self):
         self.clear()
@@ -40,8 +45,15 @@ class TestExecutionResults(object):
         self._results[test] = self.FAILED
         RideTestFailed(item=test).publish()
 
+    def set_paused(self, test):
+        self._results[test] = self.PAUSED
+        RideTestPaused(item=test).publish()
+
     def is_running(self, test):
         return test in self._results and self._results[test] == self.RUNNING
+
+    def is_paused(self, test):
+        return test in self._results and self._results[test] == self.PAUSED
 
     def has_passed(self, test):
         return test in self._results and self._results[test] == self.PASSED

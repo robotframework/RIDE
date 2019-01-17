@@ -1,3 +1,18 @@
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
 from robotide.preferences.settings import Settings
 from robotide.preferences.excludes import Excludes
 from robotide.publish import PUBLISHER
@@ -43,7 +58,11 @@ class _FakeActions(object):
 class _FakeUIObject(object):
     Enable = InsertSeparator = Append = Connect = lambda *args: None
     Insert = FindMenu = GetMenuBar = GetMenu = lambda *args: _FakeUIObject()
-    GetMenuItemCount = lambda s: 1
+
+    @property
+    def GetMenuItemCount(self):
+        return 1
+
     notebook = property(lambda *args: _FakeUIObject())
     actions = property(lambda *args: _FakeActions())
 
@@ -63,23 +82,50 @@ class FakeApplication(object):
     frame = _FakeUIObject()
     model = _FakeModel()
     namespace = None
-    get_model = lambda s: _FakeModel()
-    subscribe = lambda s, x, y: None
-    get_menu_bar = lambda s: _FakeUIObject()
-    get_notebook = lambda s: _FakeUIObject()
-    get_frame = lambda s: _FakeUIObject()
-    create_menu_item = lambda *args: None
+
+    @property
+    def get_model(self):
+        return _FakeModel()
+
+    @staticmethod
+    def subscribe(x, y):
+        return None
+
+    @property
+    def get_menu_bar(self):
+        return _FakeUIObject()
+
+    @property
+    def get_notebook(self):
+        return _FakeUIObject()
+
+    @property
+    def get_frame(self):
+        return _FakeUIObject()
+
+    @staticmethod
+    def create_menu_item(self, *args):
+        return None
+
     settings = FakeSettings()
 
 
 class _FakeSetting(object):
-    add_section = lambda self, name: _FakeSetting()
-    get = lambda self, name, default: True
-    set = lambda self, name, value: None
+
+    @staticmethod
+    def add_section(self, name):
+        return _FakeSetting()
+
+    @staticmethod
+    def get(name, default):
+        return True
+
+    @staticmethod
+    def set(name, value):
+        return None
 
 
 class PublisherListener(object):
-
     def __init__(self, topic):
         PUBLISHER.subscribe(self._listener, topic, self)
         self._topic = topic
