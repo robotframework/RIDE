@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -14,7 +15,11 @@
 
 import os
 
+from functools import total_ordering
+from robotide.lib.robot.libdocpkg.htmlwriter import DocToHtml
 from robotide import utils
+if utils.PY3:
+    from robotide.utils import unicode
 
 
 class ItemInfo(object):
@@ -55,11 +60,15 @@ class ItemInfo(object):
     def is_user_keyword(self):
         return not self.is_library_keyword()
 
+    @staticmethod
+    def m_cmp(a, b):
+        return (a > b) - (a < b)
+
     def __cmp__(self, other):
         if self._priority == other._priority:
-            name_cmp = cmp(self.name.upper(), other.name.upper())
-            return name_cmp if name_cmp else cmp(self.source, other.source)
-        return cmp(self._priority, other._priority)
+            name_cmp = self.m_cmp(self.name.upper(),other.name.upper())
+            return name_cmp if name_cmp else self.m_cmp(self.source, other.source)
+        return self.m_cmp(self._priority, other._priority)
 
     def __eq__(self, other):
         return not self.__cmp__(other) if isinstance(other, ItemInfo) else False
@@ -68,6 +77,7 @@ class ItemInfo(object):
         return hash((self.name, self.source))
 
 
+@total_ordering
 class VariableInfo(ItemInfo):
 
     def __init__(self, name, value, source):
@@ -110,13 +120,32 @@ class VariableInfo(ItemInfo):
                 '<tr><td valign=top><i>Value:</i></td><td>%s</td></tr>'
                 '</table>') % (self.name, self._original_source, unicode(value))
 
+    def __eq__(self, other):
+        return self.name.lower() == other.name.lower()
 
+    def __hash__(self):
+        return hash(repr(self))
+
+    def __lt__(self, other):
+        return self.name.lower() < other.name.lower()
+
+
+@total_ordering
 class ArgumentInfo(VariableInfo):
 
     SOURCE = 'Argument'
 
     def __init__(self, name, value):
         VariableInfo.__init__(self, name, value, self.SOURCE)
+
+    def __eq__(self, other):
+        return self.longname.lower() == other.longname.lower()
+
+    def __hash__(self):
+        return hash(repr(self))
+
+    def __lt__(self, other):
+        return self.longname.lower() < other.longname.lower()
 
 
 class LocalVariableInfo(VariableInfo):
@@ -127,10 +156,12 @@ class LocalVariableInfo(VariableInfo):
         VariableInfo.__init__(self, name, '', self.SOURCE)
 
 
+@total_ordering
 class _KeywordInfo(ItemInfo):
 
     def __init__(self, item):
         self.doc = self._doc(item).strip()
+        self.doc_format = "ROBOT"
         ItemInfo.__init__(self, self._name(item), self._source(item),
                           None)
         self.shortdoc = self.doc.splitlines()[0] if self.doc else ''
@@ -142,6 +173,7 @@ class _KeywordInfo(ItemInfo):
 
     @property
     def details(self):
+        formatter = DocToHtml(self.doc_format)
         return ('<table>'
                 '<tr><td><i>Name:</i></td><td>%s</td></tr>'
                 '<tr><td><i>Source:</i></td><td>%s &lt;%s&gt;</td></tr>'
@@ -152,7 +184,7 @@ class _KeywordInfo(ItemInfo):
                 '</table>') % \
                 (self._name(self.item), self._source(self.item), self._type,
                  self._format_args(self.arguments),
-                 utils.html_format(self.doc))
+                 formatter(self.doc))
 
     def _format_args(self, args):
         return '[ %s ]' % ' | '.join(args)
@@ -165,14 +197,27 @@ class _KeywordInfo(ItemInfo):
     def _name(self, item):
         return item.name
 
+    def __eq__(self, other):
+        return self.name.lower() == other.name.lower()
+
+    def __hash__(self):
+        return hash(repr(self))
+
+    def __lt__(self, other):
+        return self.name.lower() < other.name.lower()
+
 
 class _XMLKeywordContent(_KeywordInfo):
 
-    def __init__(self, item, source, source_type):
+    def __init__(self, item, source, source_type, doc_format):
         self._type = source_type
         self._source = lambda x: source
         _KeywordInfo.__init__(self, item)
         self.args = self._format_args(self._parse_args(item))
+        if doc_format in ("TEXT", "ROBOT", "REST", "HTML"):
+            self.doc_format = doc_format
+        else:
+            self.doc_format = "ROBOT"
 
     def with_alias(self, alias):
         if alias:
@@ -193,18 +238,24 @@ class _XMLKeywordContent(_KeywordInfo):
         return True
 
 
+@total_ordering
 class LibraryKeywordInfo(_KeywordInfo):
     _type = 'test library'
     _library_alias = None
     item = None
 
-    def __init__(self, name, doc, library_name, args):
+    def __init__(self, name, doc, doc_format, library_name, args):
         self._item_name = name
         self.doc = doc.strip()
         self._item_library_name = library_name
         self._args = args
         ItemInfo.__init__(self, self._item_name, library_name, None)
         self.shortdoc = self.doc.splitlines()[0] if self.doc else ''
+
+        if doc_format in ("TEXT", "ROBOT", "REST", "HTML"):
+            self.doc_format = doc_format
+        else:
+            self.doc_format = "ROBOT"
 
     def with_alias(self, alias):
         self._library_alias = alias
@@ -222,6 +273,17 @@ class LibraryKeywordInfo(_KeywordInfo):
 
     def is_library_keyword(self):
         return True
+
+    def __eq__(self, other):
+        if isinstance(other, str):   # DEBUG
+           return self.name.lower() == other.name.lower()  # and self.__hash__ == other.__hash__
+
+
+    def __hash__(self):
+        return hash(repr(self))  # self.name)  #
+
+    def __lt__(self, other):
+        return self.name.lower() < other.name.lower()
 
     def _name(self, item):
         return self._item_name
@@ -272,6 +334,7 @@ class _UserKeywordInfo(_KeywordInfo):
         return '**' + self._strip_var_syntax_chars(arg)
 
 
+@total_ordering
 class TestCaseUserKeywordInfo(_UserKeywordInfo):
     _type = 'test case file'
 
@@ -279,13 +342,36 @@ class TestCaseUserKeywordInfo(_UserKeywordInfo):
     def longname(self):
         return self.name
 
+    def __eq__(self, other):
+        if isinstance(other, str):  # DEBUG
+            return self.name.lower() == other.name.lower()  # and self.__hash__ == other.__hash__
 
+    def __hash__(self):
+        return hash(self.longname)  # repr(self))
+
+    def __lt__(self, other):
+        return self.name.lower() < other.name.lower()
+
+
+@total_ordering
 class ResourceUserKeywordInfo(_UserKeywordInfo):
     _type = 'resource file'
 
     @property
     def longname(self):
         return self.item.parent.parent.name + '.' + self.name
+
+    def __eq__(self, other):
+        if isinstance(other, self.__class__):
+            return self.name.lower() == other.name.lower()
+        else:
+            return False
+
+    def __hash__(self):
+        return hash(self.longname)  # repr(self))
+
+    def __lt__(self, other):
+        return self.name.lower() < other.name.lower()
 
 
 PRIORITIES = {ItemInfo: 50,

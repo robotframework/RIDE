@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -13,8 +14,10 @@
 #  limitations under the License.
 
 from robotide.lib.robot.errors import ExecutionFailed, PassExecution
+from robotide.lib.robot.utils import html_escape, py2to3, unic
 
 
+@py2to3
 class Failure(object):
 
     def __init__(self):
@@ -26,6 +29,7 @@ class Failure(object):
         return bool(self.setup or self.test or self.teardown)
 
 
+@py2to3
 class Exit(object):
 
     def __init__(self, failure_mode=False, error_mode=False,
@@ -68,13 +72,13 @@ class _ExecutionStatus(object):
 
     def setup_executed(self, failure=None):
         if failure and not isinstance(failure, PassExecution):
-            self.failure.setup = unicode(failure)
+            self.failure.setup = unic(failure)
             self.exit.failure_occurred(failure)
         self._teardown_allowed = True
 
     def teardown_executed(self, failure=None):
         if failure and not isinstance(failure, PassExecution):
-            self.failure.teardown = unicode(failure)
+            self.failure.teardown = unic(failure)
             self.exit.failure_occurred(failure)
 
     def critical_failure_occurred(self):
@@ -135,7 +139,7 @@ class TestStatus(_ExecutionStatus):
         self._critical = critical
 
     def test_failed(self, failure):
-        self.failure.test = unicode(failure)
+        self.failure.test = unic(failure)
         self.exit.failure_occurred(failure, self._critical)
 
     def _my_message(self):
@@ -152,20 +156,38 @@ class _Message(object):
 
     @property
     def message(self):
-        msg = self._get_message_before_teardown()
-        return self._get_message_after_teardown(msg)
+        message = self._get_message_before_teardown()
+        return self._get_message_after_teardown(message)
 
     def _get_message_before_teardown(self):
         if self.failure.setup:
-            return self.setup_message % self.failure.setup
+            return self._format_setup_or_teardown_message(self.setup_message,
+                                                          self.failure.setup)
         return self.failure.test or ''
 
-    def _get_message_after_teardown(self, msg):
+    def _format_setup_or_teardown_message(self, prefix, message):
+        if message.startswith('*HTML*'):
+            prefix = '*HTML* ' + prefix
+            message = message[6:].lstrip()
+        return prefix % message
+
+    def _get_message_after_teardown(self, message):
         if not self.failure.teardown:
-            return msg
-        if not msg:
-            return self.teardown_message % self.failure.teardown
-        return self.also_teardown_message % (msg, self.failure.teardown)
+            return message
+        if not message:
+            return self._format_setup_or_teardown_message(self.teardown_message,
+                                                          self.failure.teardown)
+        return self._format_message_with_teardown_message(message)
+
+    def _format_message_with_teardown_message(self, message):
+        teardown = self.failure.teardown
+        if teardown.startswith('*HTML*'):
+            teardown = teardown[6:].lstrip()
+            if not message.startswith('*HTML*'):
+                message = '*HTML* ' + html_escape(message)
+        elif message.startswith('*HTML*'):
+            teardown = html_escape(teardown)
+        return self.also_teardown_message % (message, teardown)
 
 
 class TestMessage(_Message):

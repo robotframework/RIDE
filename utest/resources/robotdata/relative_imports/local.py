@@ -1,2 +1,2 @@
 def local():
-    print 'Hello'
+    print('Hello')

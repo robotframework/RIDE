@@ -1,5 +1,20 @@
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
 import unittest
-from nose.tools import assert_equals, assert_true, assert_false
+from nose.tools import assert_equal, assert_true, assert_false
 
 from robotide.robotapi import TestCaseFile
 from robotide.controller.filecontrollers import TestCaseFileController
@@ -26,8 +41,8 @@ class _BaseWithSteps(unittest.TestCase):
         new = self.ctrl.copy('new name')
         for setting in new.settings:
             assert_true(setting.is_set, 'empty %s' % setting.__class__)
-            assert_equals(setting.value, 'boo', 'not boo %s' % setting.__class__)
-            assert_equals(setting.comment.as_list(), ['# hobo'], 'comment not copied %s' % setting.__class__)
+            assert_equal(setting.value, 'boo', 'not boo %s' % setting.__class__)
+            assert_equal(setting.comment.as_list(), ['# hobo'], 'comment not copied %s' % setting.__class__)
 
 
 class TestCaseControllerTest(_BaseWithSteps):
@@ -50,12 +65,12 @@ class TestCaseControllerTest(_BaseWithSteps):
 
     def test_rename(self):
         self.ctrl.rename('Foo Barness')
-        assert_equals(self.ctrl.name, 'Foo Barness')
+        assert_equal(self.ctrl.name, 'Foo Barness')
         assert_true(self.ctrl.dirty)
 
     def test_rename_strips_whitespace(self):
         self.ctrl.rename('\t  \n Foo Barness        ')
-        assert_equals(self.ctrl.name, 'Foo Barness')
+        assert_equal(self.ctrl.name, 'Foo Barness')
         assert_true(self.ctrl.dirty)
 
     def test_copy_empty(self):
@@ -93,7 +108,7 @@ class UserKeywordControllerTest(_BaseWithSteps):
     def test_creation(self):
         for st in self.ctrl.settings:
             assert_true(st is not None)
-        assert_equals(self.ctrl.steps[0].keyword, 'No Operation')
+        assert_equal(self.ctrl.steps[0].keyword, 'No Operation')
         assert_true(self.ctrl.datafile is self.tcf)
 
     def test_dirty(self):
@@ -118,12 +133,12 @@ class UserKeywordControllerTest(_BaseWithSteps):
         self._assert_uk_in(0, 'UK 2')
 
     def _assert_uk_in(self, index, name):
-        assert_equals(self.tcf.keyword_table.keywords[index].name, name)
+        assert_equal(self.tcf.keyword_table.keywords[index].name, name)
 
     def _assert_step(self, step, exp_assign=[], exp_keyword=None, exp_args=[]):
-        assert_equals(step.assign, exp_assign)
-        assert_equals(step.keyword, exp_keyword)
-        assert_equals(step.args, exp_args)
+        assert_equal(step.assign, exp_assign)
+        assert_equal(step.keyword, exp_keyword)
+        assert_equal(step.args, exp_args)
 
     def test_copy_empty(self):
         self._test_copy_empty()

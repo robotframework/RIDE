@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -26,26 +27,23 @@ from .testcase import TestCase, TestCases
 
 class TestSuite(ModelObject):
     """Base model for single suite.
-    """
-    __slots__ = ['parent', 'source', '_name', 'doc', '_my_visitors']
-    test_class = TestCase
-    keyword_class = Keyword
 
-    def __init__(self, name='', doc='', metadata=None, source=None):
-        #: Parent :class:`TestSuite` or `None`.
-        self.parent = None
+    Extended by :class:`robot.running.model.TestSuite` and
+    :class:`robot.result.model.TestSuite`.
+    """
+    __slots__ = ['parent', 'source', '_name', 'doc', '_my_visitors', 'rpa']
+    test_class = TestCase    #: Internal usage only.
+    keyword_class = Keyword  #: Internal usage only.
+
+    def __init__(self, name='', doc='', metadata=None, source=None, rpa=False):
+        self.parent = None  #: Parent suite. ``None`` with the root suite.
         self._name = name
-        self.doc = doc
-        #: Test suite metadata as a dictionary.
+        self.doc = doc  #: Test suite documentation.
         self.metadata = metadata
-        #: Path to the source file or directory.
-        self.source = source
-        #: A list of child :class:`~.model.testsuite.TestSuite` instances.
+        self.source = source  #: Path to the source file or directory.
+        self.rpa = rpa
         self.suites = None
-        #: A list of :class:`~.model.testcase.TestCase` instances.
         self.tests = None
-        #: A list containing setup and teardown as
-        #: :class:`~.model.keyword.Keyword` instances.
         self.keywords = None
         self._my_visitors = []
 
@@ -56,11 +54,19 @@ class TestSuite(ModelObject):
 
     @property
     def name(self):
+        """Test suite name. If not set, constructed from child suite names."""
         return self._name or ' & '.join(s.name for s in self.suites)
 
     @name.setter
     def name(self, name):
         self._name = name
+
+    @property
+    def longname(self):
+        """Suite name prefixed with the long name of the parent suite."""
+        if not self.parent:
+            return self.name
+        return '%s.%s' % (self.parent.longname, self.name)
 
     @setter
     def metadata(self, metadata):
@@ -69,35 +75,34 @@ class TestSuite(ModelObject):
 
     @setter
     def suites(self, suites):
-        """A list-like :class:`~.TestSuites` object containing child suites."""
+        """Child suites as a :class:`~.TestSuites` object."""
         return TestSuites(self.__class__, self, suites)
 
     @setter
     def tests(self, tests):
+        """Tests as a :class:`~.TestCases` object."""
         return TestCases(self.test_class, self, tests)
 
     @setter
     def keywords(self, keywords):
+        """Suite setup and teardown as a :class:`~.Keywords` object."""
         return Keywords(self.keyword_class, self, keywords)
 
     @property
     def id(self):
         """An automatically generated unique id.
 
-        The root suite has id ``s1``, its children have ids ``s1-s1``,
-        ``s1-s2``, ..., their children get ids ``s1-s1-s1``, ``s1-s1-s2``,
+        The root suite has id ``s1``, its child suites have ids ``s1-s1``,
+        ``s1-s2``, ..., their child suites get ids ``s1-s1-s1``, ``s1-s1-s2``,
         ..., ``s1-s2-s1``, ..., and so on.
+
+        The first test in a suite has an id like ``s1-t1``, the second has an
+        id ``s1-t2``, and so on. Similarly keywords in suites (setup/teardown)
+        and in tests get ids like ``s1-k1``, ``s1-t1-k1``, and ``s1-s4-t2-k5``.
         """
         if not self.parent:
             return 's1'
         return '%s-s%d' % (self.parent.id, self.parent.suites.index(self)+1)
-
-    @property
-    def longname(self):
-        """Suite name prefixed with all parent suite names."""
-        if not self.parent:
-            return self.name
-        return '%s.%s' % (self.parent.longname, self.name)
 
     @property
     def test_count(self):
@@ -140,13 +145,26 @@ class TestSuite(ModelObject):
                           included_tags, excluded_tags))
 
     def configure(self, **options):
-        self.visit(SuiteConfigurer(**options))
+        """A shortcut to configure a suite using one method call.
+
+        Can only be used with the root test suite.
+
+        :param options: Passed to
+            :class:`~robot.model.configurer.SuiteConfigurer` that will then
+            set suite attributes, call :meth:`filter`, etc. as needed.
+        """
+        if self.parent is not None:
+            raise ValueError("'TestSuite.configure()' can only be used with "
+                             "the root test suite.")
+        if options:
+            self.visit(SuiteConfigurer(**options))
 
     def remove_empty_suites(self):
         """Removes all child suites not containing any tests, recursively."""
         self.visit(EmptySuiteRemover())
 
     def visit(self, visitor):
+        """:mod:`Visitor interface <robot.model.visitor>` entry-point."""
         visitor.visit_suite(self)
 
 

@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -18,7 +19,12 @@ import wx
 class _BoxSizer(wx.BoxSizer):
 
     def __init__(self):
-        wx.BoxSizer.__init__(self, self.direction)
+        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
+            wx.BoxSizer.__init__(self, self.orient)
+        else:
+            wx.BoxSizer.__init__(self, self.direction)
+
+
 
     def add(self, component, proportion=0, flag=0):
         self.Add(component, proportion=proportion, flag=flag)
@@ -32,11 +38,11 @@ class _BoxSizer(wx.BoxSizer):
 
 
 class VerticalSizer(_BoxSizer):
-    direction = wx.VERTICAL
+    orient = direction = wx.VERTICAL
 
 
 class HorizontalSizer(_BoxSizer):
-    direction = wx.HORIZONTAL
+    orient = direction = wx.HORIZONTAL
 
     def add_to_end(self, component):
         self.Add(component, flag=wx.ALIGN_RIGHT)

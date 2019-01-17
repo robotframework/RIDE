@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -30,6 +31,7 @@ dialog.
 """
 
 import wx
+from wx.lib.scrolledpanel import ScrolledPanel
 
 # any more than TREE_THRESHOLD panels when style is "auto" forces
 # the UI into showing a hierarchical tree
@@ -39,7 +41,7 @@ TREE_THRESHOLD = 5
 class PreferenceEditor(wx.Dialog):
     """A dialog for showing the preference panels"""
     def __init__(self, parent, title, preferences, style="auto"):
-        wx.Dialog.__init__(self, parent, wx.ID_ANY, title, size=(800, 500),
+        wx.Dialog.__init__(self, parent, wx.ID_ANY, title, size=(800, 600),
                            style=wx.RESIZE_BORDER | wx.DEFAULT_DIALOG_STYLE)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
         self._current_panel = None
@@ -110,14 +112,20 @@ class PreferenceEditor(wx.Dialog):
         if self._closing:
             return
 
-        instance_or_class = self._tree.GetItemPyData(event.GetItem())
+        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
+            instance_or_class = self._tree.GetItemData(event.GetItem())
+        else:
+            instance_or_class = self._tree.GetItemPyData(event.GetItem())
         if isinstance(instance_or_class, wx.Panel):
             panel = instance_or_class
         else:
             # not an instance, assume it's a class
             panel = self._container.AddPanel(instance_or_class, self._settings)
             self._panels.append(panel)
-            self._tree.SetItemPyData(event.GetItem(), panel)
+            if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
+                self._tree.SetItemData(event.GetItem(), panel)
+            else:
+                self._tree.SetItemPyData(event.GetItem(), panel)
         self._container.ShowPanel(panel)
 
     def _populate_tree(self, panels):
@@ -133,7 +141,10 @@ class PreferenceEditor(wx.Dialog):
                 # make it not a tuple (eg: ("Plugins")). This fixes that.
                 location = (location,)
             item = self._get_item(location)
-            self._tree.SetItemPyData(item, panel_class)
+            if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
+                self._tree.SetItemData(item, panel_class)
+            else:
+                self._tree.SetItemPyData(item, panel_class)
         self._tree.ExpandAll()
 
     def _get_item(self, location):
@@ -179,11 +190,14 @@ class PanelContainer(wx.Panel):
 
         self._current_panel = None
         self.title = wx.StaticText(self, label="Your message here")
-        self.panels_container = wx.Panel(self)
+        # self.panels_container = wx.Panel(self)
+        self.panels_container = ScrolledPanel(self, wx.ID_ANY, style=wx.TAB_TRAVERSAL)
+        self.panels_container.SetupScrolling()
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(self.title, 0, wx.TOP|wx.LEFT|wx.EXPAND, 4)
         sizer.Add(wx.StaticLine(self), 0, wx.EXPAND|wx.TOP|wx.BOTTOM, 4)
         sizer.Add(self.panels_container,1, wx.EXPAND)
+        # sizer.Add(self._create_body(), 1, flag=wx.EXPAND | wx.ALL, border=16)
         self.SetSizer(sizer)
         self.panels_container.SetSizer(wx.BoxSizer(wx.VERTICAL))
 

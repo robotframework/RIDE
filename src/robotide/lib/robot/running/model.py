@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,29 +13,61 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import warnings
+"""Module implementing test execution related model objects.
+
+When tests are executed normally, these objects are created based on the test
+data on the file system by :class:`~.builder.TestSuiteBuilder`, but external
+tools can also create an executable test suite model structure directly.
+Regardless the approach to create it, the model is executed by calling
+:meth:`~TestSuite.run` method of the root test suite. See the
+:mod:`robot.running` package level documentation for more information and
+examples.
+
+The most important classes defined in this module are :class:`TestSuite`,
+:class:`TestCase` and :class:`Keyword`. When tests are executed, these objects
+can be inspected and modified by `pre-run modifiers`__ and `listeners`__.
+The aforementioned objects are considered stable, but other objects in this
+module may still be changed in the future major releases.
+
+__ http://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#programmatic-modification-of-results
+__ http://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#listener-interface
+"""
 
 from robotide.lib.robot import model
 from robotide.lib.robot.conf import RobotSettings
 from robotide.lib.robot.output import LOGGER, Output, pyloggingconf
 from robotide.lib.robot.utils import setter
 
+from .steprunner import StepRunner
 from .randomizer import Randomizer
 
 
 class Keyword(model.Keyword):
-    """Running model for single keyword."""
+    """Represents a single executable keyword.
+
+    These keywords never have child keywords or messages. The actual keyword
+    that is executed depends on the context where this model is executed.
+
+    See the base class for documentation of attributes not documented here.
+    """
     __slots__ = []
-    message_class = None  # TODO: Remove from base model?
+    message_class = None  #: Internal usage only.
 
     def run(self, context):
-        from .keywordrunner import KeywordRunner
-        return KeywordRunner(context).run_keyword(self)
+        """Execute the keyword.
+
+        Typically called internally by :meth:`TestSuite.run`.
+        """
+        return StepRunner(context).run_step(self)
 
 
 class ForLoop(Keyword):
+    """Represents a for loop in test data.
+
+    Contains keywords in the loop body as child :attr:`keywords`.
+    """
     __slots__ = ['flavor']
-    keyword_class = Keyword
+    keyword_class = Keyword  #: Internal usage only.
 
     def __init__(self, variables, values, flavor):
         Keyword.__init__(self, assign=variables, args=values,
@@ -51,67 +84,71 @@ class ForLoop(Keyword):
 
 
 class TestCase(model.TestCase):
-    """Running model for single test case."""
+    """Represents a single executable test case.
+
+    See the base class for documentation of attributes not documented here.
+    """
     __slots__ = ['template']
-    keyword_class = Keyword
+    keyword_class = Keyword  #: Internal usage only.
 
     def __init__(self, name='', doc='', tags=None, timeout=None, template=None):
         model.TestCase.__init__(self, name, doc, tags, timeout)
         #: Name of the keyword that has been used as template
-        #: when building the test. `None` if no is template used.
+        #: when building the test. ``None`` if no is template used.
         self.template = template
 
     @setter
     def timeout(self, timeout):
-        """Timeout limit of the test case as an instance of
-        :class:`~.Timeout.
+        """Test timeout as a :class:`Timeout` instance or ``None``.
+
+        This attribute is likely to change in the future.
         """
         return Timeout(*timeout) if timeout else None
 
 
 class TestSuite(model.TestSuite):
-    """Running model for single test suite."""
-    __slots__ = ['resource']
-    test_class = TestCase
-    keyword_class = Keyword
+    """Represents a single executable test suite.
 
-    def __init__(self,  name='', doc='', metadata=None, source=None):
-        model.TestSuite.__init__(self, name, doc, metadata, source)
+    See the base class for documentation of attributes not documented here.
+    """
+    __slots__ = ['resource']
+    test_class = TestCase    #: Internal usage only.
+    keyword_class = Keyword  #: Internal usage only.
+
+    def __init__(self,  name='', doc='', metadata=None, source=None, rpa=False):
+        model.TestSuite.__init__(self, name, doc, metadata, source, rpa)
         #: :class:`ResourceFile` instance containing imports, variables and
         #: keywords the suite owns. When data is parsed from the file system,
         #: this data comes from the same test case file that creates the suite.
         self.resource = ResourceFile(source=source)
 
-    # TODO: Remote deprecated propertys below in RF 3.0.
-
-    @property
-    def imports(self):
-        warnings.warn("'TestSuite.imports' is deprecated. Use "
-                      "'TestSuite.resource.imports' instead.",
-                      DeprecationWarning)
-        return self.resource.imports
-
-    @property
-    def variables(self):
-        warnings.warn("'TestSuite.variables' is deprecated. Use "
-                      "'TestSuite.resource.variables' instead.",
-                      DeprecationWarning)
-        return self.resource.variables
-
-    @property
-    def user_keywords(self):
-        warnings.warn("'TestSuite.user_keywords' is deprecated. Use"
-                      "'TestSuite.resource.keywords' instead.",
-                      DeprecationWarning)
-        return self.resource.keywords
-
     def configure(self, randomize_suites=False, randomize_tests=False,
                   randomize_seed=None, **options):
+        """A shortcut to configure a suite using one method call.
+
+        Can only be used with the root test suite.
+
+        :param randomize_xxx: Passed to :meth:`randomize`.
+        :param options: Passed to
+            :class:`~robot.model.configurer.SuiteConfigurer` that will then
+            set suite attributes, call :meth:`filter`, etc. as needed.
+
+        Example::
+
+            suite.configure(included_tags=['smoke'],
+                            doc='Smoke test results.')
+        """
         model.TestSuite.configure(self, **options)
         self.randomize(randomize_suites, randomize_tests, randomize_seed)
 
     def randomize(self, suites=True, tests=True, seed=None):
-        """Randomizes the order of suites and/or tests, recursively."""
+        """Randomizes the order of suites and/or tests, recursively.
+
+        :param suites: Boolean controlling should suites be randomized.
+        :param tests: Boolean controlling should tests be randomized.
+        :param seed: Random seed. Can be given if previous random order needs
+            to be re-created. Seed value is always shown in logs and reports.
+        """
         self.visit(Randomizer(suites, tests, seed))
 
     def run(self, settings=None, **options):
@@ -126,24 +163,25 @@ class TestSuite(model.TestSuite):
             information about executed suites and tests.
 
         If ``options`` are used, their names are the same as long command line
-        options except without hyphens, and they also have the same semantics.
+        options except without hyphens. Some options are ignored (see below),
+        but otherwise they have the same semantics as on the command line.
         Options that can be given on the command line multiple times can be
         passed as lists like ``variable=['VAR1:value1', 'VAR2:value2']``.
         If such an option is used only once, it can be given also as a single
         string like ``variable='VAR:value'``.
 
         Additionally listener option allows passing object directly instead of
-        listener name, e.g. `run('tests.robot', listener=Listener())`.
+        listener name, e.g. ``run('tests.robot', listener=Listener())``.
 
         To capture stdout and/or stderr streams, pass open file objects in as
-        special keyword arguments `stdout` and `stderr`, respectively. Note
-        that this works only in version 2.8.4 and newer.
+        special keyword arguments ``stdout`` and ``stderr``, respectively.
 
         Only options related to the actual test execution have an effect.
-        For example, options related to selecting test cases or creating
-        logs and reports are silently ignored. The output XML generated
-        as part of the execution can be configured, though. This includes
-        disabling it with ``output=None``.
+        For example, options related to selecting or modifying test cases or
+        suites (e.g. ``--include``, ``--name``, ``--prerunmodifier``) or
+        creating logs and reports are silently ignored. The output XML
+        generated as part of the execution can be configured, though. This
+        includes disabling it with ``output=None``.
 
         Example::
 
@@ -189,7 +227,6 @@ class TestSuite(model.TestSuite):
 class Variable(object):
 
     def __init__(self, name, value, source=None):
-        # TODO: check name and value
         self.name = name
         self.value = value
         self.source = source
@@ -248,9 +285,7 @@ class UserKeyword(object):
 
     @setter
     def timeout(self, timeout):
-        """Timeout limit of the keyword as an instance of
-        :class:`~.Timeout.
-        """
+        """Keyword timeout as a :class:`Timeout` instance or ``None``."""
         return Timeout(*timeout) if timeout else None
 
     @setter

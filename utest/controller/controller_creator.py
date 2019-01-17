@@ -1,3 +1,18 @@
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
 from robotide.robotapi import(
     TestCaseFile, TestDataDirectory, FromFilePopulator)
 from robotide.controller.basecontroller import WithNamespace
@@ -15,15 +30,16 @@ FOR_LOOP_STEP2 = '    No Operation'
 STEP_AFTER_FOR_LOOP = '  Step bar'
 
 BASE_DATA = [TEST_NAME,
-        STEP1,
-        STEP2,
-        STEP_WITH_COMMENT,
-        FOR_LOOP_HEADER,
-        FOR_LOOP_STEP1,
-        FOR_LOOP_STEP2,
-        STEP_AFTER_FOR_LOOP,
-        '  ${variable}=  some value'
+             STEP1,
+             STEP2,
+             STEP_WITH_COMMENT,
+             FOR_LOOP_HEADER,
+             FOR_LOOP_STEP1,
+             FOR_LOOP_STEP2,
+             STEP_AFTER_FOR_LOOP,
+             '  ${variable}=  some value'
 ]
+
 
 class _FakeProject(WithNamespace):
 
@@ -37,6 +53,7 @@ class _FakeProject(WithNamespace):
         pass
 
     resource_file_controller_factory = None
+
 
 def create(data):
     tcf = TestCaseFile()
@@ -52,8 +69,11 @@ def create(data):
 def testcase_controller(project=None, data=None):
     if data is None:
         data = BASE_DATA[:]
-    base_directory_controller = TestDataDirectoryController(TestDataDirectory(), project)
-    directory_controller = TestDataDirectoryController(TestDataDirectory(), project, base_directory_controller)
-    tcf_controller = TestCaseFileController(create(data), project, directory_controller)
+    base_directory_controller = TestDataDirectoryController(
+        TestDataDirectory(), project)
+    directory_controller = TestDataDirectoryController(
+        TestDataDirectory(), project, base_directory_controller)
+    tcf_controller = TestCaseFileController(create(data), project,
+                                            directory_controller)
     tctablectrl = tcf_controller.tests
     return tctablectrl[0]

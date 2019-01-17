@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -13,8 +14,11 @@
 #  limitations under the License.
 
 import wx
+import wx.lib.agw.aui as aui
 
 from robotide.context import IS_WINDOWS, IS_MAC
+
+ID_CustomizeToolbar = wx.ID_HIGHEST + 1
 
 
 class MenuBar(object):
@@ -121,9 +125,13 @@ class _Menu(object):
     def _get_name(self, action, build_new):
         get_name = build_new and self._name_builder.get_name or \
                                  self._name_builder.get_registered_name
-        if not action.shortcut:
+        if not action.shortcut:  # DEBUG not action.shortcut:
             return get_name(action.name)
-        return '%s    (%s)' % (get_name(action.name), action.get_shortcut())
+        sht = action.get_shortcut()
+        if sht:
+            # print("DEBUG: actiontriggers name:%s shtcut:(%s)" % (get_name(action.name), action.get_shortcut()))
+            return '%s    (%s)' % (get_name(action.name), sht)
+        return '%s' % get_name(action.name)
 
     def _create_menu_item(self, action):
         name_with_accerelator = self._get_name(action, build_new=True)
@@ -153,6 +161,7 @@ class _NameBuilder(object):
             name = self._use_given_accelerator(name)
         except ValueError:
             name = self._generate_accelerator(name)
+            # print("DEBUG: actiontriggers get_name on ValueErr: %s" % name)
         self._register(name)
         return name
 
@@ -223,67 +232,15 @@ class SeparatorMenuItem(_MenuItem):
 
     def set_wx_menu_item(self, wx_menu_item):
         _MenuItem.set_wx_menu_item(self, wx_menu_item)
-        self._wx_menu_item.SetId(self.id)
+        # Should get  ITEM_SEPARATOR
+        self.id = wx.ID_SEPARATOR
+        # self._wx_menu_item.SetId(self.id)  # DEBUG Not in wxPhoenix
 
     def _is_enabled(self):
         return False
 
     def set_enabled(self):
         pass
-
-
-class ToolBar(object):
-
-    def __init__(self, frame):
-        self._frame = frame
-        self._wx_toolbar = wx.ToolBar(frame)
-        self._wx_toolbar.SetToolBitmapSize((16, 16))
-        self._frame.SetToolBar(self._wx_toolbar)
-        self._buttons = []
-        self._search_handlers = {}
-        self._current_description = None
-
-    def register(self, action):
-        if action.has_icon():
-            button = self._get_existing_button(action)
-            if not button:
-                button = self._create_button(action)
-            button.register(action)
-
-
-    def _get_existing_button(self, action):
-        for button in self._buttons:
-            if button.icon == action.icon:
-                return button
-        return None
-
-    def enabled_status_changed(self, id, action):
-        self._wx_toolbar.EnableTool(id, action.is_active())
-
-    def _create_button(self, action):
-        button = ToolBarButton(self._frame, self, action)
-        name = self._format_button_tooltip(action)
-        self._wx_toolbar.AddLabelTool(button.id, label=name, bitmap=action.icon,
-                                      shortHelp=name, longHelp=action.doc)
-        self._wx_toolbar.Realize()
-        self._buttons.append(button)
-        return button
-
-    def _format_button_tooltip(self, action):
-        tooltip = action.name.replace('&', '')
-        if action.shortcut and action.shortcut.value:
-            tooltip = '%s    (%s)' % (tooltip, action.shortcut.value)
-        return tooltip
-
-    def remove_toolbar_button(self, button):
-        self._buttons.remove(button)
-        self._wx_toolbar.RemoveTool(button.id)
-        self._wx_toolbar.Realize()
-
-    def register_search_handler(self, description, handler, icon, default=False):
-        if default:
-            self._current_description = description
-        self._search_handlers[description] = _RideSearchMenuItem(handler, icon)
 
 
 class _RideSearchMenuItem(object):
@@ -340,7 +297,11 @@ class ShortcutRegistry(object):
     def _update_accerelator_table(self):
         accerelators = []
         for delegator in self._actions.values():
-            flags, key_code = delegator.shortcut.parse()
+            # print("DEBUG: actiontrigger updateacelerators  delegator %s" % delegator)
+            try:
+                flags, key_code = delegator.shortcut.parse()
+            except TypeError:
+                continue
             accerelators.append(wx.AcceleratorEntry(flags, key_code, delegator.id))
         self._frame.SetAcceleratorTable(wx.AcceleratorTable(accerelators))
 

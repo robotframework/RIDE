@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -21,12 +22,23 @@ import robotide.lib.robot.utils
 from robotide.lib.robot.utils.encoding import SYSTEM_ENCODING
 from robotide.lib.robot.utils import printable_name, normalize, eq, ET, \
     HtmlWriter, NormalizedDict, timestr_to_secs, secs_to_timestr, normpath,\
-    unic, asserts, unescape, html_escape, html_attr_escape, robottime,\
-    get_timestamp, Matcher, is_list_like, is_dict_like, decode_from_system,\
-    ArgumentParser, get_error_details
+    unic, asserts, unescape, html_escape, attribute_escape, robottime,\
+    get_timestamp, Matcher, is_list_like, is_dict_like, system_decode,\
+    ArgumentParser, get_error_details, is_unicode, is_string, py2to3
 
-from eventhandler import RideEventHandler
-from printing import Printing
+from .eventhandler import RideEventHandler
+from .printing import Printing
+
+PY2 = sys.version_info[0] == 2
+PY3 = not PY2
+
+if PY3:
+    try:  # This was redefining in PY2 when future was not installed
+        from past.types import basestring, unicode, unichr
+    except ImportError:  # pip install future
+        basestring = str
+        unicode = str
+        unichr = chr
 
 
 def html_format(text):
@@ -87,6 +99,7 @@ def replace_extension(path, new_extension):
 
 
 def overrides(interface_class):
+    # type: (object) -> object
     """
     A decorator that can be used to validate method override
 
@@ -105,9 +118,34 @@ def is_same_drive(path1, path2):
 
 def run_python_command(command, mode='c'):
     cmd = [sys.executable, '-{0}'.format(mode)] + command
+    # TODO Let the user select with robot to use
+    # print("DEBUG: app init detecting robot with cmd: %s" % cmd)
     process = subprocess.Popen(
         cmd,
         stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT)
+        stderr=subprocess.PIPE)  # DEBUG STDOUT PIPE
     output, _ = process.communicate()
+    # if output:
+    #    print("DEBUG: run_python result: %s" % output)
     return output
+
+
+def converttypes(data, prefer_str=True):
+    """
+    Convert all types from Python2 to Python3
+    """
+    if PY2:
+        return data
+    enc = sys.stdout.encoding or "utf-8"
+    data_type = type(data)
+
+    if data_type == bytes:
+        if prefer_str:
+            return str(data.decode(enc))
+        return data.decode(enc)
+    if data_type in (str, int):
+        return str(data)
+
+    if data_type == dict:
+        data = data.items()
+    return data_type(map(converttypes, data))

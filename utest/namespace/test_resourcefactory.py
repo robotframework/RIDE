@@ -1,3 +1,18 @@
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
 import os
 import unittest
 from robotide.robotapi import _Import
@@ -37,9 +52,14 @@ class ResourceFactoryDirectoryIgnoreTestCase(unittest.TestCase):
         self.r = _ResourceFactory(FakeSettings())
         self._is_resolved(self.r)
 
-    def test_resourcefactory_ignores_imported_resource_from_ignore_directory(self):
+    def test_resourcefactory_ignores_imported_resource_from_ignore_directory(
+            self):
         self.r = self._create_factory(os.path.dirname(__file__))
-        self.assertEqual(None, self.r.get_resource_from_import(self._import, self._context))
+        # print("DEBUG: test self._import, %s  file %s\n" % (str(self._import.name), os.path.dirname(__file__)))
+        #self.assertEqual(None, self.r.get_resource_from_import(self._import,
+        #                                                       self._context))
+        self.assertIsNone(self.r.get_resource_from_import(self._import,
+                                                               self._context))
 
     def test_resourcefactory_ignores_imported_resource_from_ignore_subdirectory(self):
         self.r = self._create_factory(os.path.split(os.path.dirname(__file__))[0])
@@ -88,10 +108,12 @@ class ResourceFactoryDirectoryIgnoreTestCase(unittest.TestCase):
         settings = FakeSettings()
         settings.set('default directory', os.path.dirname(__file__))
         settings.excludes.update_excludes([excluded_dir])
+        # print("DEBUG Test Resource Factory create factory: %s\n" % list(settings))
         return _ResourceFactory(settings)
 
     def _mock_context(self):
-        context = lambda:0
+
+        context = lambda s: 0
         context.vars = context
         context.replace_variables = lambda s: s
         return context
