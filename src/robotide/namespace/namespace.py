@@ -60,10 +60,12 @@ class Namespace(object):
     def _set_pythonpath(self):
         """Add user configured paths to PYTHONAPATH.
         """
+        path_idx = 0
         for path in self._settings.get('pythonpath', []):
             if path not in sys.path:
                 normalized = path.replace('/', os.sep)
-                sys.path.insert(0, normalized)
+                sys.path.insert(path_idx, normalized)
+                path_idx += 1
                 RideLogMessage(u'Inserted \'{0}\' to sys.path.'
                                .format(normalized)).publish()
 
