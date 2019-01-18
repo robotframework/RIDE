@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -93,11 +94,11 @@ class VariableScopes(object):
     def __contains__(self, name):
         return name in self.current
 
-    def replace_list(self, items, replace_until=None):
-        return self.current.replace_list(items, replace_until)
+    def replace_list(self, items, replace_until=None, ignore_errors=False):
+        return self.current.replace_list(items, replace_until, ignore_errors)
 
-    def replace_scalar(self, items):
-        return self.current.replace_scalar(items)
+    def replace_scalar(self, items, ignore_errors=False):
+        return self.current.replace_scalar(items, ignore_errors)
 
     def replace_string(self, string, ignore_errors=False):
         return self.current.replace_string(string, ignore_errors=ignore_errors)

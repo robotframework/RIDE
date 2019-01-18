@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,8 +13,12 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+
 import wx.html
-from StringIO import StringIO
+try:
+    from StringIO import StringIO
+except ImportError:  # py3
+    from io import StringIO
 
 from robotide.pluginapi import Plugin, ActionInfo, TreeAwarePluginMixin
 from robotide.publish import (RideTreeSelection, RideNotebookTabChanged,
@@ -148,7 +153,7 @@ class PreviewPanel(wx.Panel):
                 pipe_separated=self._pipe_separated,
                 txt_separating_spaces=self._parent.global_settings['txt number of spaces']
             )
-        except Exception, e:
+        except Exception as e:
             return "Creating preview of '%s' failed: %s" % (datafile.name, e)
         else:
             return output.getvalue()

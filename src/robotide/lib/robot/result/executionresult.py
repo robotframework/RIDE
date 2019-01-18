@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,32 +13,36 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+from robotide.lib.robot.errors import DataError
 from robotide.lib.robot.model import Statistics
 
 from .executionerrors import ExecutionErrors
-from .testsuite import TestSuite
+from .model import TestSuite
 
 
 class Result(object):
     """Test execution results.
 
-    Can be created based on XML output files using
-    the :func:`~.resultbuilder.ExecutionResult` factory method.
-    Also returned by executed :class:`~robot.running.model.TestSuite`.
+    Can be created based on XML output files using the
+    :func:`~.resultbuilder.ExecutionResult`
+    factory method. Also returned by the
+    :meth:`robot.running.TestSuite.run <robot.running.model.TestSuite.run>`
+    method.
     """
 
-    def __init__(self, source=None, root_suite=None, errors=None):
+    def __init__(self, source=None, root_suite=None, errors=None, rpa=None):
         #: Path to the XML file where results are read from.
         self.source = source
         #: Hierarchical execution results as a
-        #: :class:`~.result.testsuite.TestSuite` object.
+        #: :class:`~.result.model.TestSuite` object.
         self.suite = root_suite or TestSuite()
-        #: Execution errors as a
+        #: Execution errors as an
         #: :class:`~.executionerrors.ExecutionErrors` object.
         self.errors = errors or ExecutionErrors()
         self.generated_by_robot = True
         self._status_rc = True
         self._stat_config = {}
+        self.rpa = rpa
 
     @property
     def statistics(self):
@@ -62,7 +67,7 @@ class Result(object):
             print stats.total.critical.passed
             print stats.tags.combined[0].total
         """
-        return Statistics(self.suite, **self._stat_config)
+        return Statistics(self.suite, rpa=self.rpa, **self._stat_config)
 
     @property
     def return_code(self):
@@ -98,7 +103,7 @@ class Result(object):
             original file.
         """
         from robotide.lib.robot.reporting.outputwriter import OutputWriter
-        self.visit(OutputWriter(path or self.source))
+        self.visit(OutputWriter(path or self.source, rpa=self.rpa))
 
     def visit(self, visitor):
         """An entry point to visit the whole result object.
@@ -119,6 +124,19 @@ class Result(object):
         if self.generated_by_robot:
             self.suite.handle_suite_teardown_failures()
 
+    def set_execution_mode(self, other):
+        """Set execution mode based on other result. Internal usage only."""
+        if other.rpa is None:
+            pass
+        elif self.rpa is None:
+            self.rpa = other.rpa
+        elif self.rpa is not other.rpa:
+            this, that = ('task', 'test') if other.rpa else ('test', 'task')
+            raise DataError("Conflicting execution modes. File '%s' has %ss "
+                            "but files parsed earlier have %ss. Use '--rpa' "
+                            "or '--norpa' options to set the execution mode "
+                            "explicitly." % (other.source, this, that))
+
 
 class CombinedResult(Result):
     """Combined results of multiple test executions."""
@@ -129,5 +147,6 @@ class CombinedResult(Result):
             self.add_result(result)
 
     def add_result(self, other):
+        self.set_execution_mode(other)
         self.suite.suites.append(other.suite)
         self.errors.add(other.errors)

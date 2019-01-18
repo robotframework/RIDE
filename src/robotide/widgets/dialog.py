@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -23,8 +24,15 @@ class Dialog(wx.Dialog):
         parent = parent or wx.GetTopLevelWindows()[0]
         size = size or (-1, -1)
         # wx.THICK_FRAME allows resizing
-        style = style or wx.DEFAULT_DIALOG_STYLE | wx.THICK_FRAME
-        wx.Dialog.__init__(self, parent, title=title, size=size, style=style)
+        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
+            style = style or (wx.DEFAULT_DIALOG_STYLE | wx.RESIZE_BORDER)
+            wx.MiniFrame.__init__(self, parent, title=title, size=size, style=style) # style=wx.SIMPLE_BORDER)
+        else:
+            style = style or (wx.DEFAULT_DIALOG_STYLE | wx.THICK_FRAME)
+            wx.Dialog.__init__(self, parent, title=title, size=size, style=style)
+        # print(
+        #    "DEBUG: Created detached dialog, did it work in Windows?")
+        # wx.Dialog.__init__(self, parent, title=title, size=size, style=style)
         self.CenterOnParent()
 
     def _create_buttons(self, sizer):

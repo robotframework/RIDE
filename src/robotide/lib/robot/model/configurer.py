@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,7 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robotide.lib.robot import utils
+from robotide.lib.robot.utils import seq2str
 from robotide.lib.robot.errors import DataError
 
 from .visitor import SuiteVisitor
@@ -59,13 +60,14 @@ class SuiteConfigurer(SuiteVisitor):
         suite.filter(self.include_suites, self.include_tests,
                      self.include_tags, self.exclude_tags)
         if not (suite.test_count or self.empty_suite_ok):
-            self._raise_no_tests_error(name)
+            self._raise_no_tests_error(name, suite.rpa)
 
-    def _raise_no_tests_error(self, suite):
-        selectors = '%s %s' % (self._get_test_selector_msgs(),
-                               self._get_suite_selector_msg())
-        msg = "Suite '%s' contains no tests %s" % (suite, selectors.strip())
-        raise DataError(msg.strip() + '.')
+    def _raise_no_tests_error(self, suite, rpa=False):
+        parts = ['tests' if not rpa else 'tasks',
+                 self._get_test_selector_msgs(),
+                 self._get_suite_selector_msg()]
+        raise DataError("Suite '%s' contains no %s."
+                        % (suite, ' '.join(p for p in parts if p)))
 
     def _get_test_selector_msgs(self):
         parts = []
@@ -74,12 +76,12 @@ class SuiteConfigurer(SuiteVisitor):
                                       ('named', self.include_tests)]:
             if selector:
                 parts.append(self._format_selector_msg(explanation, selector))
-        return utils.seq2str(parts, quote='')
+        return seq2str(parts, quote='')
 
     def _format_selector_msg(self, explanation, selector):
         if len(selector) == 1 and explanation[-1] == 's':
             explanation = explanation[:-1]
-        return '%s %s' % (explanation, utils.seq2str(selector, lastsep=' or '))
+        return '%s %s' % (explanation, seq2str(selector, lastsep=' or '))
 
     def _get_suite_selector_msg(self):
         if not self.include_suites:

@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,63 +13,45 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from collections import Mapping
-from UserDict import UserDict
-from UserString import UserString
-try:
-    from java.lang import String
-except ImportError:
-    String = ()
+from .platform import PY2
 
 
-def is_integer(item):
-    return isinstance(item, (int, long))
+if PY2:
+    from .robottypes2 import (is_bytes, is_dict_like, is_integer, is_list_like,
+                              is_number, is_string, is_unicode, type_name)
+    unicode = unicode
+
+else:
+    from .robottypes3 import (is_bytes, is_dict_like, is_integer, is_list_like,
+                              is_number, is_string, is_unicode, type_name)
+    unicode = str
 
 
-def is_number(item):
-    return isinstance(item, (int, long, float))
-
-
-def is_bytes(item):
-    return isinstance(item, str)
-
-
-def is_string(item):
-    return isinstance(item, basestring)
-
-
-def is_unicode(item):
-    return isinstance(item, unicode)
-
-
-def is_list_like(item):
-    if isinstance(item, (basestring, UserString, String)):
-        return False
-    try:
-        iter(item)
-    except TypeError:
-        return False
-    else:
-        return True
-
-
-def is_dict_like(item):
-    return isinstance(item, (Mapping, UserDict))
+TRUE_STRINGS = {'TRUE', 'YES', 'ON', '1'}
+FALSE_STRINGS = {'FALSE', 'NO', 'OFF', '0', 'NONE', ''}
 
 
 def is_truthy(item):
-    if isinstance(item, basestring):
-        return item.upper() not in ('FALSE', 'NO', '')
+    """Returns `True` or `False` depending is the item considered true or not.
+
+    Validation rules:
+
+    - If the value is a string, it is considered false if it is `'FALSE'`,
+      `'NO'`, `'OFF'`, `'0'`, `'NONE'` or `''`, case-insensitively.
+      Considering `'NONE'` false is new in RF 3.0.3 and considering `'OFF'`
+      and `'0'` false is new in RF 3.1.
+    - Other strings are considered true.
+    - Other values are handled by using the standard `bool()` function.
+
+    Designed to be used also by external test libraries that want to handle
+    Boolean values similarly as Robot Framework itself. See also
+    :func:`is_falsy`.
+    """
+    if is_string(item):
+        return item.upper() not in FALSE_STRINGS
     return bool(item)
 
 
 def is_falsy(item):
+    """Opposite of :func:`is_truthy`."""
     return not is_truthy(item)
-
-
-def type_name(item):
-    cls = item.__class__ if hasattr(item, '__class__') else type(item)
-    named_types = {str: 'string', unicode: 'string', bool: 'boolean',
-                   int: 'integer', long: 'integer', type(None): 'None',
-                   dict: 'dictionary'}
-    return named_types.get(cls, cls.__name__)

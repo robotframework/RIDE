@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -18,6 +19,6 @@ import wx
 class TextField(wx.TextCtrl):
 
     def __init__(self, parent, initial_value, process_enters=False):
-        flags = wx.TE_PROCESS_ENTER if process_enters else 0
+        flags = wx.TE_PROCESS_ENTER|wx.TE_LEFT if process_enters else wx.TE_LEFT
         wx.TextCtrl.__init__(self, parent, style=flags)
         self.SetValue(initial_value)

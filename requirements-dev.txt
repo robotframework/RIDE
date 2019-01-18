@@ -1,0 +1,7 @@
+setuptools
+nose
+mockito
+invoke
+# Include also normal project requirements.
+-r requirements.txt
+

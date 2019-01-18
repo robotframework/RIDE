@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,24 +13,12 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import re
+# TODO: Remove this module in RF 3.2.
 
-from .tsvreader import TsvReader
+import warnings
+
+from .robotreader import RobotReader as TxtReader
 
 
-class TxtReader(TsvReader):
-    _space_splitter = re.compile(' {2,}')
-    _pipe_splitter = re.compile(' \|(?= )')
-    _pipe_starts = ('|', '| ')
-
-    @classmethod
-    def split_row(cls, row):
-        if '\t' in row:
-            row = row.replace('\t', '  ')
-        if row[:2] in cls._pipe_starts:
-            row = row[1:-1] if row.endswith(' |') else row[1:]
-            return [cell.strip() for cell in cls._pipe_splitter.split(row)]
-        return cls._space_splitter.split(row)
-
-    def _process_cell(self, cell):
-        return cell
+warnings.warn("'TxtReader' is deprecated. Use 'RobotReader' instead.",
+              DeprecationWarning,)

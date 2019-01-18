@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -23,34 +24,49 @@ approaches::
     python path/to/robot/run.py
 
 Instead of ``python`` it is possible to use also other Python interpreters.
-This module is also used by the installed ``pybot``, ``jybot`` and
-``ipybot`` start-up scripts.
+This module is also used by the installed ``robot`` start-up script.
 
 This module also provides :func:`run` and :func:`run_cli` functions
 that can be used programmatically. Other code is for internal usage.
 """
 
+import sys
+
+# Allows running as a script. __name__ check needed with multiprocessing:
+# https://github.com/robotframework/robotframework/issues/1137
+if 'robot' not in sys.modules and __name__ == '__main__':
+    import pythonpathsetter
+
+from robotide.lib.robot.conf import RobotSettings
+from robotide.lib.robot.model import ModelModifier
+from robotide.lib.robot.output import LOGGER, pyloggingconf
+from robotide.lib.robot.reporting import ResultWriter
+from robotide.lib.robot.running import TestSuiteBuilder
+from robotide.lib.robot.utils import Application, unic, text
+
+
 USAGE = """Robot Framework -- A generic test automation framework
 
 Version:  <VERSION>
 
-Usage:  pybot|jybot|ipybot [options] data_sources
-   or:  python|jython|ipy -m robot.run [options] data_sources
-   or:  python|jython|ipy path/to/robot/run.py [options] data_sources
-   or:  java -jar robotframework.jar run [options] data_sources
+Usage:  robot [options] data_sources
+   or:  python -m robot [options] data_sources
+   or:  python path/to/robot [options] data_sources
+   or:  java -jar robotframework.jar [options] data_sources
 
 Robot Framework is a Python-based keyword-driven test automation framework for
 acceptance level testing and acceptance test-driven development (ATDD). It has
 an easy-to-use tabular syntax for creating test cases and its testing
 capabilities can be extended by test libraries implemented either with Python
-or Java. Users can also create new keywords from existing ones using the same
-simple syntax that is used for creating test cases.
+or Java. Users can also create new higher level keywords from existing ones
+using the same simple syntax that is used for creating test cases.
 
-Depending is Robot Framework installed using Python, Jython, or IronPython
-interpreter, it has a start-up script, `pybot`, `jybot` or `ipybot`,
-respectively. Alternatively, it is possible to directly execute `robot.run`
-module (e.g. `python -m robot.run`) or `robot/run.py` script using a selected
-interpreter. Finally, there is also a standalone JAR distribution.
+The easiest way to execute tests is using the `robot` script created as part
+of the normal installation. Alternatively it is possible to execute the `robot`
+module directly using `python -m robot`, where `python` can be replaced with
+any supported Python interpreter like `jython`, `ipy` or `python3`. Yet another
+alternative is running the `robot` directory like `python path/to/robot`.
+Finally, there is a standalone JAR distribution available.
 
 Data sources given to Robot Framework are either test case files or directories
 containing them and/or other directories. Single test case file creates a test
@@ -63,32 +79,41 @@ By default Robot Framework creates an XML output file and a log and a report in
 HTML format, but this can be configured using various options listed below.
 Outputs in HTML format are for human consumption and XML output for integration
 with other systems. XML outputs can also be combined and otherwise further
-processed with `rebot` tool. Run `rebot --help` for more information.
+processed with Rebot tool. Run `rebot --help` for more information.
 
-Robot Framework is open source software released under Apache License 2.0. Its
-copyrights are owned and development supported by Nokia Solutions and Networks.
-For more information about the framework see http://robotframework.org/.
+Robot Framework is open source software released under Apache License 2.0.
+For more information about the framework and the rich ecosystem around it
+see http://robotframework.org/.
 
 Options
 =======
 
- -N --name name           Set the name of the top level test suite. Underscores
-                          in the name are converted to spaces. Default name is
-                          created from the name of the executed data source.
+    --rpa                 Turn on generic automation mode. Mainly affects
+                          terminology so that "test" is replaced with "task"
+                          in logs and reports. By default the mode is got
+                          from test/task header in data files. New in RF 3.1.
+ -F --extension value     Parse only files with this extension when executing
+                          a directory. Has no effect when running individual
+                          files or when using resource files. If more than one
+                          extension is needed, separate them with a colon.
+                          Examples: `--extension robot`, `-F robot:txt`
+                          New in RF 3.0.1.
+ -N --name name           Set the name of the top level test suite. Default
+                          name is created from the name of the executed data
+                          source.
  -D --doc documentation   Set the documentation of the top level test suite.
-                          Underscores in the documentation are converted to
-                          spaces and it may also contain simple HTML formatting
-                          (e.g. *bold* and http://url/).
- -M --metadata name:value *  Set metadata of the top level suite. Underscores
-                          in the name and value are converted to spaces. Value
-                          can contain same HTML formatting as --doc.
+                          Simple formatting is supported (e.g. *bold*). If
+                          the documentation contains spaces, it must be quoted.
+                          Example: --doc "Very *good* example"
+ -M --metadata name:value *  Set metadata of the top level suite. Value can
+                          contain formatting similarly as --doc.
                           Example: --metadata version:1.2
  -G --settag tag *        Sets given tag(s) to all executed test cases.
  -t --test name *         Select test cases to run by name or long name. Name
                           is case and space insensitive and it can also be a
                           simple pattern where `*` matches anything and `?`
-                          matches any char. If using `*` and `?` in the console
-                          is problematic see --escape and --argumentfile.
+                          matches any char.
+    --task name *         Alias to --test. Especially applicable with --rpa.
  -s --suite name *        Select test suites to run by name. When this option
                           is used with --test, --include or --exclude, only
                           test cases in matching suites and also matching other
@@ -109,7 +134,8 @@ Options
  -R --rerunfailed output  Select failed tests from an earlier output file to be
                           re-executed. Equivalent to selecting same tests
                           individually using --test option.
-    --runfailed output    Deprecated since RF 2.8.4. Use --rerunfailed instead.
+ -S --rerunfailedsuites output  Select failed suite from an earlier output file
+                          to be re-executed. New in RF 3.0.1.
  -c --critical tag *      Tests having given tag are considered critical. If no
                           critical tags are set, all tags are critical. Tags
                           can be given as a pattern like with --include.
@@ -117,8 +143,7 @@ Options
                           have a tag set with --critical. Tag can be a pattern.
  -v --variable name:value *  Set variables in the test data. Only scalar
                           variables with string value are supported and name is
-                          given without `${}`. See --escape for how to use
-                          special characters and --variablefile for a more
+                          given without `${}`. See --variablefile for a more
                           powerful variable setting mechanism.
                           Examples:
                           --variable str:Hello       =>  ${str} = `Hello`
@@ -160,8 +185,7 @@ Options
     --splitlog            Split log file into smaller pieces that open in
                           browser transparently.
     --logtitle title      Title for the generated test log. The default title
-                          is `<Name Of The Suite> Test Log`. Underscores in
-                          the title are converted into spaces in all titles.
+                          is `<Name Of The Suite> Test Log`.
     --reporttitle title   Title for the generated test report. The default
                           title is `<Name Of The Suite> Test Report`.
     --reportbackground colors  Background colors to use in the report file.
@@ -169,6 +193,9 @@ Options
                           `passed:failed`. Both color names and codes work.
                           Examples: --reportbackground green:yellow:red
                                     --reportbackground #00E:#E00
+    --maxerrorlines lines  Maximum number of error message lines to show in
+                          report when tests fail. Default is 40, minimum is 10
+                          and `NONE` can be used to show the full message.
  -L --loglevel level      Threshold level for logging. Available levels: TRACE,
                           DEBUG, INFO (default), WARN, NONE (no logging). Use
                           syntax `LOGLEVEL:DEFAULT` to define the default
@@ -200,18 +227,16 @@ Options
                           characters `*` (matches anything) and `?` (matches
                           any char). Documentation can contain formatting
                           similarly as with --doc option.
-                          Examples: --tagdoc mytag:My_documentation
-                                    --tagdoc regression:*See*_http://info.html
-                                    --tagdoc owner-*:Original_author
+                          Examples: --tagdoc mytag:Example
+                                    --tagdoc "owner-*:Original author"
     --tagstatlink pattern:link:title *  Add external links into `Statistics by
                           Tag`. Pattern can contain characters `*` (matches
                           anything) and `?` (matches any char). Characters
                           matching to wildcard expressions can be used in link
                           and title with syntax %N, where N is index of the
-                          match (starting from 1). In title underscores are
-                          automatically converted to spaces.
-                          Examples: --tagstatlink mytag:http://my.domain:Link
-                          --tagstatlink bug-*:http://tracker/id=%1:Bug_Tracker
+                          match (starting from 1).
+                          Examples: --tagstatlink mytag:http://my.domain:Title
+                          --tagstatlink "bug-*:http://url/id=%1:Issue Tracker"
     --removekeywords all|passed|for|wuks|name:<pattern>|tag:<pattern> *
                           Remove keyword data from the generated log file.
                           Keywords containing warnings are not removed except
@@ -257,10 +282,7 @@ Options
                           the name using colon or semicolon as a separator.
                           Examples: --listener MyListenerClass
                                     --listener path/to/Listener.py:arg1:arg2
-    --warnonskippedfiles  If this option is used, skipped test data files will
-                          cause a warning that is visible in the console output
-                          and the log file. By default skipped files only cause
-                          an info level syslog message.
+    --warnonskippedfiles  Deprecated. Nowadays all skipped files are reported.
     --nostatusrc          Sets the return code to zero regardless of failures
                           in test cases. Error codes are returned normally.
     --runemptysuite       Executes tests also if the top level test suite is
@@ -268,7 +290,8 @@ Options
                           is not an error that no test matches the condition.
     --dryrun              Verifies test data and runs tests so that library
                           keywords are not executed.
-    --exitonfailure       Stops test execution if any critical test fails.
+ -X --exitonfailure       Stops test execution if any critical test fails.
+                          Short option -X is new in RF 3.0.1.
     --exitonerror         Stops test execution if any error occurs when parsing
                           test data, importing libraries, and so on.
     --skipteardownonexit  Causes teardowns to be skipped if test execution is
@@ -305,29 +328,16 @@ Options
  -K --consolemarkers auto|on|off  Show markers on the console when top level
                           keywords in a test case end. Values have same
                           semantics as with --consolecolors.
-    --monitorwidth chars  Deprecated. Use --consolewidth instead.
-    --monitorcolors colors  Deprecated. Use --consolecolors instead.
-    --monitormarkers value  Deprecated. Use --consolemarkers instead.
  -P --pythonpath path *   Additional locations (directories, ZIPs, JARs) where
                           to search test libraries and other extensions when
                           they are imported. Multiple paths can be given by
                           separating them with a colon (`:`) or by using this
                           option several times. Given path can also be a glob
-                          pattern matching multiple paths but then it normally
-                          must be escaped or quoted.
+                          pattern matching multiple paths.
                           Examples:
-                          --pythonpath libs/
+                          --pythonpath libs/ --pythonpath resources/*.jar
                           --pythonpath /opt/testlibs:mylibs.zip:yourlibs
-                          -E star:STAR -P lib/STAR.jar -P mylib.jar
- -E --escape what:with *  Escape characters which are problematic in console.
-                          `what` is the name of the character to escape and
-                          `with` is the string to escape it with. Note that
-                          all given arguments, incl. data sources, are escaped
-                          so escape characters ought to be selected carefully.
-                          <--------------------ESCAPES------------------------>
-                          Examples:
-                          --escape space:_ --metadata X:Value_with_spaces
-                          -E space:SP -E quot:Q -v var:QhelloSPworldQ
+ -E --escape what:with *  Deprecated. Use console escape mechanism instead.
  -A --argumentfile path *  Text file to read more arguments from. Use special
                           path `STDIN` to read contents from the standard input
                           stream. File can have both options and data sources
@@ -339,7 +349,7 @@ Options
                           |  --include regression
                           |  --name Regression Tests
                           |  # This is a comment line
-                          |  my_tests.html
+                          |  my_tests.robot
                           |  path/to/test/directory/
                           Examples:
                           --argumentfile argfile.txt --argumentfile STDIN
@@ -370,49 +380,37 @@ ROBOT_OPTIONS             Space separated list of default options to be placed
 ROBOT_SYSLOG_FILE         Path to a file where Robot Framework writes internal
                           information about parsing test case files and running
                           tests. Can be useful when debugging problems. If not
-                          set, or set to special value `NONE`, writing to the
+                          set, or set to a special value `NONE`, writing to the
                           syslog file is disabled.
 ROBOT_SYSLOG_LEVEL        Log level to use when writing to the syslog file.
-                          Available levels are the same as for --loglevel
+                          Available levels are the same as with --loglevel
                           command line option and the default is INFO.
+ROBOT_INTERNAL_TRACES     When set to any non-empty value, Robot Framework's
+                          internal methods are included in error tracebacks.
 
 Examples
 ========
 
-# Simple test run with `pybot` without options.
-$ pybot tests.html
+# Simple test run with `robot` without options.
+$ robot tests.robot
 
-# Using options and running with `jybot`.
-$ jybot --include smoke --name Smoke_Tests path/to/tests.txt
+# Using options.
+$ robot --include smoke --name Smoke_Tests path/to/tests.robot
 
-# Executing `robot.run` module using Python.
-$ python -m robot.run --test test1 --test test2 test_directory
+# Executing `robot` module using Python.
+$ python -m robot test_directory
 
-# Running `robot/run.py` script with Jython.
-$ jython /path/to/robot/run.py tests.robot
+# Running `robot` directory with Jython.
+$ jython /opt/robot tests.robot
 
 # Executing multiple test case files and using case-insensitive long options.
-$ pybot --SuiteStatLevel 2 /my/tests/*.html /your/tests.html
+$ robot --SuiteStatLevel 2 --Metadata Version:3 tests/*.robot more/tests.robot
 
 # Setting default options and syslog file before running tests.
 $ export ROBOT_OPTIONS="--critical regression --suitestatlevel 2"
 $ export ROBOT_SYSLOG_FILE=/tmp/syslog.txt
-$ pybot tests.tsv
+$ robot tests.robot
 """
-
-import sys
-
-# Allows running as a script. __name__ check needed with multiprocessing:
-# http://code.google.com/p/robotframework/issues/detail?id=1137
-if 'robot' not in sys.modules and __name__ == '__main__':
-    import pythonpathsetter
-
-from robotide.lib.robot.conf import RobotSettings
-from robotide.lib.robot.model import ModelModifier
-from robotide.lib.robot.output import LOGGER, pyloggingconf
-from robotide.lib.robot.reporting import ResultWriter
-from robotide.lib.robot.running import TestSuiteBuilder
-from robotide.lib.robot.utils import Application
 
 
 class RobotFramework(Application):
@@ -424,15 +422,23 @@ class RobotFramework(Application):
     def main(self, datasources, **options):
         settings = RobotSettings(options)
         LOGGER.register_console_logger(**settings.console_output_config)
-        LOGGER.info('Settings:\n%s' % unicode(settings))
-        suite = TestSuiteBuilder(settings['SuiteNames'],
-                                 settings['WarnOnSkipped']).build(*datasources)
+        LOGGER.info('Settings:\n%s' % unic(settings))
+        builder = TestSuiteBuilder(settings['SuiteNames'],
+                                   extension=settings.extension,
+                                   rpa=settings.rpa)
+        suite = builder.build(*datasources)
+        settings.rpa = builder.rpa
         suite.configure(**settings.suite_config)
         if settings.pre_run_modifiers:
             suite.visit(ModelModifier(settings.pre_run_modifiers,
                                       settings.run_empty_suite, LOGGER))
         with pyloggingconf.robot_handler_enabled(settings.log_level):
-            result = suite.run(settings)
+            old_max_error_lines = text.MAX_ERROR_LINES
+            text.MAX_ERROR_LINES = settings.max_error_lines
+            try:
+                result = suite.run(settings)
+            finally:
+                text.MAX_ERROR_LINES = old_max_error_lines
             LOGGER.info("Tests execution ended. Statistics:\n%s"
                         % result.suite.stat_message)
             if settings.log or settings.report or settings.xunit:
@@ -449,59 +455,94 @@ class RobotFramework(Application):
                     if value not in (None, []))
 
 
-def run_cli(arguments):
+def run_cli(arguments=None, exit=True):
     """Command line execution entry point for running tests.
 
-    :param arguments: Command line arguments as a list of strings.
+    :param arguments: Command line options and arguments as a list of strings.
+        Starting from RF 3.1, defaults to ``sys.argv[1:]`` if not given.
+    :param exit: If ``True``, call ``sys.exit`` with the return code denoting
+        execution status, otherwise just return the rc. New in RF 3.0.1.
 
-    For programmatic usage the :func:`run` function is typically better. It has
-    a better API for that usage and does not call :func:`sys.exit` like this
-    function.
+    Entry point used when running tests from the command line, but can also
+    be used by custom scripts that execute tests. Especially useful if the
+    script itself needs to accept same arguments as accepted by Robot Framework,
+    because the script can just pass them forward directly along with the
+    possible default values it sets itself.
 
     Example::
 
         from robotide.lib.robot import run_cli
 
-        run_cli(['--include', 'tag', 'path/to/tests.html'])
+        # Run tests and return the return code.
+        rc = run_cli(['--name', 'Example', 'tests.robot'], exit=False)
+
+        # Run tests and exit to the system automatically.
+        run_cli(['--name', 'Example', 'tests.robot'])
+
+    See also the :func:`run` function that allows setting options as keyword
+    arguments like ``name="Example"`` and generally has a richer API for
+    programmatic test execution.
     """
-    RobotFramework().execute_cli(arguments)
+    if arguments is None:
+        arguments = sys.argv[1:]
+    return RobotFramework().execute_cli(arguments, exit=exit)
 
 
-def run(*datasources, **options):
-    """Executes given Robot Framework data sources with given options.
+def run(*tests, **options):
+    """Programmatic entry point for running tests.
 
-    Data sources are paths to files and directories, similarly as when running
-    `pybot` command from the command line. Options are given as keyword
-    arguments and their names are same as long command line options except
-    without hyphens.
+    :param tests: Paths to test case files/directories to be executed similarly
+        as when running the ``robot`` command on the command line.
+    :param options: Options to configure and control execution. Accepted
+        options are mostly same as normal command line options to the ``robot``
+        command. Option names match command line option long names without
+        hyphens so that, for example, ``--name`` becomes ``name``.
+
+    Most options that can be given from the command line work. An exception
+    is that options ``--pythonpath``, ``--argumentfile``, ``--help`` and
+    ``--version`` are not supported.
 
     Options that can be given on the command line multiple times can be
-    passed as lists like `include=['tag1', 'tag2']`. If such option is used
-    only once, it can be given also as a single string like `include='tag'`.
+    passed as lists. For example, ``include=['tag1', 'tag2']`` is equivalent
+    to ``--include tag1 --include tag2``. If such options are used only once,
+    they can be given also as a single string like ``include='tag'``.
 
-    Additionally listener, prerunmodifier and prerebotmodifier options support
-    passing values as instances in addition to module names. For example,
-    `run('tests.robot', listener=Listener(), prerunmodifier=Modifier())`.
+    Options that accept no value can be given as Booleans. For example,
+    ``dryrun=True`` is same as using the ``--dryrun`` option.
 
-    To capture stdout and/or stderr streams, pass open file objects in as
-    special keyword arguments `stdout` and `stderr`, respectively.
+    Options that accept string ``NONE`` as a special value can also be used
+    with Python ``None``. For example, using ``log=None`` is equivalent to
+    ``--log NONE``.
+
+    ``listener``, ``prerunmodifier`` and ``prerebotmodifier`` options allow
+    passing values as Python objects in addition to module names these command
+    line options support. For example, ``run('tests', listener=MyListener())``.
+
+    To capture the standard output and error streams, pass an open file or
+    file-like object as special keyword arguments ``stdout`` and ``stderr``,
+    respectively.
 
     A return code is returned similarly as when running on the command line.
+    Zero means that tests were executed and no critical test failed, values up
+    to 250 denote the number of failed critical tests, and values between
+    251-255 are for other statuses documented in the Robot Framework User Guide.
 
     Example::
 
         from robotide.lib.robot import run
 
-        run('path/to/tests.html', include=['tag1', 'tag2'])
+        run('path/to/tests.robot')
+        run('tests.robot', include=['tag1', 'tag2'], splitlog=True)
         with open('stdout.txt', 'w') as stdout:
-            run('t1.txt', 't2.txt', report='r.html', log='NONE', stdout=stdout)
+            run('t1.robot', 't2.robot', name='Example', log=None, stdout=stdout)
 
     Equivalent command line usage::
 
-        pybot --include tag1 --include tag2 path/to/tests.html
-        pybot --report r.html --log NONE t1.txt t2.txt > stdout.txt
+        robot path/to/tests.robot
+        robot --include tag1 --include tag2 --splitlog tests.robot
+        robot --name Example --log NONE t1.robot t2.robot > stdout.txt
     """
-    return RobotFramework().execute(*datasources, **options)
+    return RobotFramework().execute(*tests, **options)
 
 
 if __name__ == '__main__':

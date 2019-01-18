@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -17,7 +18,7 @@ import shutil
 import tempfile
 
 from robotide.context import LOG
-from robotide.controller.commands import NullObserver, SaveFile
+from robotide.controller.ctrlcommands import NullObserver, SaveFile
 from robotide.publish.messages import RideOpenSuite, RideNewProject, RideFileNameChanged
 
 from .basecontroller import WithNamespace, _BaseController
@@ -28,6 +29,9 @@ from robotide.spec.librarydatabase import DATABASE_FILE
 from robotide.spec.librarymanager import LibraryManager
 from robotide.spec.xmlreaders import SpecInitializer
 from robotide.utils import overrides
+from robotide.utils import PY3
+if PY3:
+    from robotide.utils import unicode
 
 
 class Project(_BaseController, WithNamespace):
@@ -69,7 +73,7 @@ class Project(_BaseController, WithNamespace):
 
     @property
     def default_dir(self):
-        return os.path.abspath(self._settings['default directory'])
+        return os.path.abspath(self._settings.get('default directory', ''))
 
     def update_default_dir(self, path):
         default_dir = path if os.path.isdir(path) else os.path.dirname(path)
@@ -125,8 +129,11 @@ class Project(_BaseController, WithNamespace):
             return
         if self._load_resource(path, load_observer):
             return
-        load_observer.error("Given file '%s' is not a valid Robot Framework "
+        try:
+            load_observer.error("Given file '%s' is not a valid Robot Framework "
                             "test case or resource file." % path)
+        except AttributeError:  # DEBUG
+            pass
 
     def is_excluded(self, source):
         return self._settings.excludes.contains(source) if self._settings else False
@@ -303,7 +310,7 @@ class Serializer(object):
         with Backup(controller):
             try:
                 controller.datafile.save(**self._get_options())
-            except Exception, err:
+            except Exception as err:
                 self._cache_error(controller, err)
                 raise
 
@@ -344,7 +351,7 @@ class Backup(object):
         self._backup = self._get_backup_name(self._path)
 
     def _get_backup_name(self, path):
-        if not os.path.isfile(path):
+        if path is None or not os.path.isfile(path):
             return None
         self._backup_dir = tempfile.mkdtemp(dir=os.path.dirname(path))
         return os.path.join(self._backup_dir, os.path.basename(path))
@@ -381,4 +388,4 @@ class Backup(object):
         shutil.move(from_path, to_path)
 
     def _remove_backup_dir(self):
-        os.rmdir(self._backup_dir)
+        shutil.rmtree(self._backup_dir)

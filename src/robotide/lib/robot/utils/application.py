@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,14 +13,15 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+from __future__ import print_function
+
 import sys
-from contextlib import contextmanager
 
 from robotide.lib.robot.errors import (INFO_PRINTED, DATA_ERROR, STOPPED_BY_USER,
                           FRAMEWORK_ERROR, Information, DataError)
 
 from .argumentparser import ArgumentParser
-from .encoding import encode_output
+from .encoding import console_encode
 from .error import get_error_details
 
 
@@ -37,24 +39,26 @@ class Application(object):
     def validate(self, options, arguments):
         return options, arguments
 
-    def execute_cli(self, cli_arguments):
+    def execute_cli(self, cli_arguments, exit=True):
         with self._logger:
             self._logger.info('%s %s' % (self._ap.name, self._ap.version))
             options, arguments = self._parse_arguments(cli_arguments)
             rc = self._execute(arguments, options)
-        self._exit(rc)
+        if exit:
+            self._exit(rc)
+        return rc
 
     def console(self, msg):
         if msg:
-            print encode_output(msg)
+            print(console_encode(msg))
 
     def _parse_arguments(self, cli_args):
         try:
             options, arguments = self.parse_arguments(cli_args)
         except Information as msg:
-            self._report_info(unicode(msg))
+            self._report_info(msg.message)
         except DataError as err:
-            self._report_error(unicode(err), help=True, exit=True)
+            self._report_error(err.message, help=True, exit=True)
         else:
             self._logger.info('Arguments: %s' % ','.join(arguments))
             return options, arguments
@@ -78,7 +82,7 @@ class Application(object):
         try:
             rc = self.main(arguments, **options)
         except DataError as err:
-            return self._report_error(unicode(err), help=True)
+            return self._report_error(err.message, help=True)
         except (KeyboardInterrupt, SystemExit):
             return self._report_error('Execution stopped by user.',
                                       rc=STOPPED_BY_USER)
@@ -89,8 +93,8 @@ class Application(object):
         else:
             return rc or 0
 
-    def _report_info(self, err):
-        self.console(unicode(err))
+    def _report_info(self, message):
+        self.console(message)
         self._exit(INFO_PRINTED)
 
     def _report_error(self, message, details=None, help=False, rc=DATA_ERROR,
@@ -114,7 +118,7 @@ class DefaultLogger(object):
         pass
 
     def error(self, message):
-        print encode_output(message)
+        print(console_encode(message))
 
     def close(self):
         pass

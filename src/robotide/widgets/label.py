@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -30,7 +31,10 @@ class HeaderLabel(Label):
 
     def __init__(self, parent, label):
         Label.__init__(self, parent, label=label)
-        self.SetFont(wx.Font(12, wx.SWISS, wx.NORMAL, wx.BOLD))
+        if wx.VERSION >= (4, 0, 0, ''):  # DEBUG wxPhoenix
+            self.SetFont(wx.Font(wx.FontInfo(12).Family(wx.FONTFAMILY_SWISS).Bold()))
+        else:
+            self.SetFont(wx.Font(12, wx.SWISS, wx.NORMAL, wx.BOLD))
 
 
 class HelpLabel(Label):

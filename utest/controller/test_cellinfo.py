@@ -1,8 +1,23 @@
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
 import unittest
 import datafilereader
-from robotide.controller.commands import ChangeCellValue, DeleteRows, AddKeyword,\
+from robotide.controller.ctrlcommands import ChangeCellValue, DeleteRows, AddKeyword,\
     Undo, PasteArea
-from nose.tools import assert_equals, assert_true, assert_false,\
+from nose.tools import assert_equal, assert_true, assert_false,\
     assert_is_none
 from robotide.controller.cellinfo import CellType, ContentType, CellInfo,\
     CellContent, CellPosition
@@ -272,8 +287,8 @@ class TestCellInfo(unittest.TestCase):
         if macro == None:
             macro = self.test
         cell_info = macro.get_cell_info(row, col)
-        assert_equals(cell_info.cell_type, celltype)
-        assert_equals(cell_info.content_type, contenttype)
+        assert_equal(cell_info.cell_type, celltype)
+        assert_equal(cell_info.content_type, contenttype)
 
 
 if __name__ == "__main__":

@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -15,11 +16,14 @@
 import re
 
 from robotide import robotapi, utils
-from robotide.utils import variablematcher
+from robotide.utils import is_unicode, variablematcher
 from robotide.controller.basecontroller import _BaseController
 from robotide.controller.cellinfo import (CellPosition, CellType, CellInfo,
                                           CellContent, ContentType)
 from robotide.namespace.local_namespace import LocalNamespace
+from robotide.utils import PY3
+if PY3:
+    from robotide.utils import basestring
 
 
 class StepController(_BaseController):
@@ -149,7 +153,9 @@ class StepController(_BaseController):
         value = self.get_value(col)
         if self._is_commented(col):
             return CellContent(ContentType.COMMENTED, value)
-        if self._get_last_none_empty_col_idx() < col:
+        last_none_empty = self._get_last_none_empty_col_idx()
+        if isinstance(last_none_empty, int) and last_none_empty < col:
+            # DEBUG if self._get_last_none_empty_col_idx() < col:
             return CellContent(ContentType.EMPTY, value)
         if variablematcher.is_variable(value):
             if self._is_unknow_variable(value, position):
@@ -213,7 +219,7 @@ class StepController(_BaseController):
                    for item in [self.keyword or ''] + self.args)
 
     def _kw_name_match(self, item, expected):
-        if isinstance(expected, basestring):
+        if isinstance(expected, basestring) or is_unicode(expected):
             return utils.eq(item, expected) or (
                 self._GIVEN_WHEN_THEN_MATCHER.match(item) and
                 utils.eq(
@@ -380,7 +386,8 @@ class StepController(_BaseController):
             self._step.__init__(cells, comment)
 
     def _is_partial_for_loop_step(self, cells):
-        return cells and cells[0].replace(' ', '').upper() == ':FOR'
+        return cells and (cells[0].replace(' ', '').upper() == ':FOR'
+                          or cells[0] == 'FOR')
 
     def _is_intended_step(self, cells):
         return cells and not cells[0].strip() and \
@@ -411,7 +418,11 @@ class PartialForLoop(robotapi.ForLoop):
     def __init__(self, cells, first_cell=':FOR', comment=None):
         self._cells = cells
         self._first_cell = first_cell
-        robotapi.ForLoop.__init__(self, cells, comment)
+        try:
+            robotapi.ForLoop.__init__(self, cells, comment)
+        except TypeError:  # New RF 3.1 syntax
+            robotapi.ForLoop.__init__(self, self.parent, cells, comment)
+
 
     def as_list(self, indent=False, include_comment=False):
         return [self._first_cell] + self._cells + self.comment.as_list()
@@ -520,11 +531,15 @@ class ForLoopStepController(StepController):
 
     def _recreate_complete_for_loop_header(self, cells):
         steps = self.get_raw_steps()
-        self._step.__init__(cells[1:])
+        try:
+            self._step.__init__(cells[1:])
+        except TypeError:  # New RF 3.1 syntax
+            self._step.__init__(self.parent, cells[1:])
         self.set_raw_steps(steps)
 
     def _recreate_partial_for_loop_header(self, cells, comment):
-        if not cells or cells[0].replace(' ', '').upper() != ':FOR':
+        if not cells or (cells[0].replace(' ', '').upper() != ':FOR'
+                         or cells[0] != 'FOR'):
             self._replace_with_new_cells(cells)
         else:
             steps = self.get_raw_steps()

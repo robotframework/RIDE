@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -11,6 +12,7 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+
 from robotide.publish.messages import RideModificationPrevented
 
 
@@ -112,6 +114,7 @@ class WithNamespace(object):
         return self._namespace.is_library_import_ok(self.datafile, imp)
 
     def is_variables_import_ok(self, imp):
+        # print("DEBUG: BaseController is_variables_import_ok %s\n" % imp.name)
         return self._namespace.is_variables_import_ok(self.datafile, imp)
 
 

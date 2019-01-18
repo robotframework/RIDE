@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,7 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robotide.lib.robot.errors import DataError
+from robotide.lib.robot.errors import DataError, VariableError
 from robotide.lib.robot.utils import (DotDict, is_dict_like, is_list_like, NormalizedDict,
                          type_name)
 
@@ -28,14 +29,14 @@ class VariableStore(object):
         self._variables = variables
 
     def resolve_delayed(self):
-        for name, value in self.data.items():
+        for name, value in list(self.data.items()):
             try:
                 self._resolve_delayed(name, value)
             except DataError:
                 pass
 
     def _resolve_delayed(self, name, value):
-        if not isinstance(value, VariableTableValueBase):
+        if not self._is_resolvable(value):
             return value
         try:
             self.data[name] = value.resolve(self._variables)
@@ -47,6 +48,12 @@ class VariableStore(object):
             variable_not_found('${%s}' % name, self.data,
                                "Variable '${%s}' not found." % name)
         return self.data[name]
+
+    def _is_resolvable(self, value):
+        try: # isinstance can throw an exception in ironpython and jython
+            return isinstance(value, VariableTableValueBase)
+        except Exception:
+            return False
 
     def __getitem__(self, name):
         return self._resolve_delayed(name, self.data[name])
@@ -76,8 +83,8 @@ class VariableStore(object):
         return name[2:-1], value
 
     def _raise_cannot_set_type(self, name, value, expected):
-        raise DataError("Cannot set variable '%s': Expected %s-like value, "
-                        "got %s." % (name, expected, type_name(value)))
+        raise VariableError("Cannot set variable '%s': Expected %s-like value, "
+                            "got %s." % (name, expected, type_name(value)))
 
     def remove(self, name):
         if name in self.data:

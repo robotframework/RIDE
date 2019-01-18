@@ -1,5 +1,20 @@
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
 import unittest
-from nose.tools import assert_equals
+from nose.tools import assert_equal
 
 from robotide.run.runanything import RunConfigs
 
@@ -11,7 +26,7 @@ class RunConfigurationsTest(unittest.TestCase):
 
     def test_creation_with_no_data(self):
         configs = RunConfigs([])
-        assert_equals(len(configs), 0)
+        assert_equal(len(configs), 0)
 
     def test_creation_with_data(self):
         self._assert_config(self._create_configs_with_item()[0], *ITEM)
@@ -36,13 +51,13 @@ class RunConfigurationsTest(unittest.TestCase):
 
     def test_data_to_save(self):
         configs = self._create_configs_with_item()
-        assert_equals(configs.data_to_save(), [ITEM])
+        assert_equal(configs.data_to_save(), [ITEM])
 
     def _create_configs_with_item(self):
         return RunConfigs([ITEM])
 
     def _assert_config(self, config, exp_name, exp_cmd, exp_doc):
-        assert_equals(config.name, exp_name)
-        assert_equals(config.command, exp_cmd)
-        assert_equals(config.doc, exp_doc)
+        assert_equal(config.name, exp_name)
+        assert_equal(config.command, exp_cmd)
+        assert_equal(config.doc, exp_doc)
 

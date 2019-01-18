@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -21,8 +22,10 @@ from wx.lib.filebrowsebutton import FileBrowseButton
 from robotide import context, utils
 from robotide.namespace.suggesters import SuggestionSource
 from robotide.spec.iteminfo import VariableInfo
-
 from .popupwindow import RidePopupWindow, HtmlPopupWindow
+from robotide.utils import PY3
+if PY3:
+    from robotide.utils import unichr
 
 
 _PREFERRED_POPUP_SIZE = (400, 200)
@@ -45,9 +48,11 @@ class _ContentAssistTextCtrlBase(object):
 
     def OnChar(self, event):
         # TODO: This might benefit from some cleanup
-        keycode = event.GetKeyCode()
-        # Ctrl-Space handling needed for dialogs
-        if keycode == wx.WXK_SPACE and event.ControlDown():
+        keycode, control_down = event.GetKeyCode(), event.CmdDown()
+        event.Skip()  # DEBUG do it as soon we do not need it
+        # print("DEBUG: Onchar before processing")
+        # Ctrl-Space handling needed for dialogs # DEBUG add Ctrl-m
+        if (control_down or event.AltDown()) and keycode in (wx.WXK_SPACE, ord('m')):
             self.show_content_assist()
             return
         if keycode in [wx.WXK_UP, wx.WXK_DOWN, wx.WXK_PAGEUP, wx.WXK_PAGEDOWN]\
@@ -64,14 +69,21 @@ class _ContentAssistTextCtrlBase(object):
             return
         elif self._popup.is_shown() and keycode < 256:
             self._populate_content_assist(event)
-        elif keycode in (ord('1'), ord('2')) and event.ControlDown() and not \
+        elif keycode in (ord('1'), ord('2'), ord('5')) and event.ControlDown() and not \
                 event.AltDown():
-            self.execute_variable_creator(list_variable=(keycode == ord('2')))
-        event.Skip()
+            self.execute_variable_creator(list_variable=(keycode == ord('2')),
+                                          dict_variable=(keycode == ord('5')))
+        # print("DEBUG: Onchar before leaving")
+        # event.Skip() # DEBUG Move up
 
-    def execute_variable_creator(self, list_variable=False):
+    def execute_variable_creator(self, list_variable=False, dict_variable=False):
         from_, to_ = self.GetSelection()
-        symbol = '@' if list_variable else '$'
+        if list_variable:
+            symbol = '@'
+        elif dict_variable:
+            symbol = '&'
+        else:
+            symbol = '$'
         self.SetValue(self._variable_creator_value(
             self.Value, symbol, from_, to_))
         if from_ == to_:
@@ -84,14 +96,19 @@ class _ContentAssistTextCtrlBase(object):
 
     def OnFocusLost(self, event, set_value=True):
         if not self._popup.is_shown():
+            event.Skip()
             return
-        value = self.gherkin_prefix + self._popup.get_value()
+        if self.gherkin_prefix:
+            value = self.gherkin_prefix + self._popup.get_value() or ""
+        else:
+            value =self._popup.get_value() or ""
         if set_value and value:
             self.SetValue(value)
-            self.SetInsertionPoint(len(self.Value))
+            self.SetInsertionPoint(len(value))  # DEBUG was self.Value
         else:
             self.Clear()
         self.hide()
+        event.Skip()
 
     def reset(self):
         self._popup.reset()
@@ -127,8 +144,12 @@ class _ContentAssistTextCtrlBase(object):
         return ('', name)
 
     def _show_content_assist(self):
-        height = self.GetSizeTuple()[1]
-        x, y = self.ClientToScreenXY(0, 0)
+        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
+            _, height = self.GetSize()
+            x, y = self.ClientToScreen((0, 0))
+        else:
+            height = self.GetSizeTuple()[1]
+            x, y = self.ClientToScreenXY(0, 0)
         self._popup.show(x, y, height)
 
     def content_assist_value(self):
@@ -173,7 +194,10 @@ class ContentAssistFileButton(_ContentAssistTextCtrlBase, FileBrowseButton):
         self._browsed = False
         _ContentAssistTextCtrlBase.__init__(self, suggestion_source)
 
+    # TODO Re-enable ContentAssist for Library and Resources
+    # DEBUG With this commented, at least we can type Libraries and Resources on Windows
     def Bind(self, *args):
+        # print("DEBUG: Bind ContentAssistFileButton: %s\n" % args.__repr__())
         self.textControl.Bind(*args)
 
     def SetInsertionPoint(self, pos):
@@ -196,6 +220,7 @@ class ContentAssistFileButton(_ContentAssistTextCtrlBase, FileBrowseButton):
             self._browsed = False
             self.SetValue(self._relative_path(self.GetValue()))
             self._parent.setFocusToOK()
+        # print("DEBUG: FileBrowseButton: %s\n" % evt.GetString())
 
     def SelectAll(self):
         self.textControl.SelectAll()
@@ -275,6 +300,10 @@ class ContentAssistPopup(object):
                                        self.OnListItemSelected,
                                        self.OnListItemActivated)
         self._suggestions = Suggestions(suggestion_source)
+        # TODO Add detach popup from list with mouse drag or key
+        # self._details_popup.Bind(wx.EVT_MIDDLE_DOWN, self.OnDetach)
+        # self._main_popup.Bind(wx.EVT_MIDDLE_DOWN, self.OnDetach)
+        # self._list.Bind(wx.EVT_MIDDLE_DOWN, self.OnDetach)
 
     def reset(self):
         self._selection = -1
@@ -375,6 +404,12 @@ class ContentAssistPopup(object):
         elif self._details_popup.IsShown():
             self._details_popup.Show(False)
 
+    # def OnDetach(self, event):  # DEBUG Attempt to activate detach on Windows and wxPython >3.0.3
+    #     print("DEBUG Contentassist Called Detach")
+    #     if not self._details_popup.IsShown():
+    #         return
+    #     self._details_popup._detach(event)
+
 
 class ContentAssistList(wx.ListCtrl):
 
@@ -391,8 +426,12 @@ class ContentAssistList(wx.ListCtrl):
     def populate(self, data):
         self.ClearAll()
         self.InsertColumn(0, '', width=self.Size[0])
-        for row, item in enumerate(data):
-            self.InsertStringItem(row, item)
+        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
+            for row, item in enumerate(data):
+                self.InsertItem(row, item)
+        else:
+            for row, item in enumerate(data):
+                self.InsertStringItem(row, item)
         self.Select(0)
 
     def get_text(self, index):

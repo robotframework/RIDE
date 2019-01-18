@@ -1,5 +1,20 @@
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
 import unittest
-from nose.tools import assert_false, assert_equals, assert_true
+from nose.tools import assert_false, assert_equal, assert_true
 
 from robotide.utils import html_escape
 from robotide.controller.cellinfo import CellInfo, CellContent, ContentType,\
@@ -18,14 +33,14 @@ class TestCellTooltip(unittest.TestCase):
                         CellPosition(CellType.KEYWORD, None))
         msg = TipMessage(cell)
         assert_true(msg)
-        assert_equals(str(msg), html_escape(_TooltipMessage.KEYWORD_NOT_FOUND))
+        assert_equal(str(msg), html_escape(_TooltipMessage.KEYWORD_NOT_FOUND))
 
     def test_known_keyword(self):
         cell = CellInfo(CellContent(ContentType.USER_KEYWORD, 'Known', 'my_source'),
                         CellPosition(CellType.KEYWORD, None))
         msg = TipMessage(cell)
         assert_true(msg)
-        assert_equals(str(msg),
+        assert_equal(str(msg),
                       html_escape(_TooltipMessage.KEYWORD % 'my_source'))
 
     def test_for_loop_start(self):
@@ -48,7 +63,7 @@ class TestCellTooltip(unittest.TestCase):
                         CellPosition(CellType.MUST_BE_EMPTY, None), for_loop=True)
         msg = TipMessage(cell)
         assert_true(msg)
-        assert_equals(str(msg), _ForLoopTooltipMessage.TOO_MANY_ARGUMENTS)
+        assert_equal(str(msg), _ForLoopTooltipMessage.TOO_MANY_ARGUMENTS)
 
 
 if __name__ == "__main__":

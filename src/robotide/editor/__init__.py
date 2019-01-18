@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -22,7 +23,7 @@ from robotide.publish import (
     RideSaving)
 from robotide.utils import overrides
 from robotide.widgets import PopupCreator
-from editorcreator import EditorCreator
+from .editorcreator import EditorCreator
 
 
 _EDIT = """
@@ -205,6 +206,7 @@ class _EditorTab(wx.Panel):
         self.editor.insert_cells()
 
     def OnDeleteCells(self, event):
+        # print("DEBUG init delete cells call")
         self.editor.delete_cells()
 
     def OnInsertRows(self, event):

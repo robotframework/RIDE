@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -13,16 +14,18 @@
 #  limitations under the License.
 
 import re
+import sys
 from itertools import chain
 
 from robotide.publish.messages import RideImportSettingChanged,\
     RideImportSettingRemoved, RideVariableUpdated, RideItemSettingsChanged, \
     RideImportSettingAdded
 from robotide import robotapi, utils
-from robotide.utils import overrides, variablematcher
-
 from .tags import Tag, ForcedTag, DefaultTag
 from .basecontroller import ControllerWithParent
+from robotide.utils import PY2, PY3, overrides, variablematcher
+if PY3:
+    from robotide.utils import basestring, unicode
 
 
 class _SettingController(ControllerWithParent):
@@ -65,8 +68,11 @@ class _SettingController(ControllerWithParent):
         return ''
 
     def contains_keyword(self, name):
-        matcher = name.match if not isinstance(name, basestring) \
-            else lambda i: utils.eq(i, name)
+        if PY2:
+            istring = isinstance(name, basestring) or isinstance(name, unicode)
+        elif PY3:
+            istring = isinstance(name, basestring)
+        matcher = name.match if not istring else lambda i: utils.eq(i, name)
         return self._contains_keyword(matcher)
 
     def _contains_keyword(self, matcher_function):
@@ -406,7 +412,8 @@ class VariableController(_SettingController):
         return self.parent.index(self)
 
     def set_value(self, name, value):
-        value = [value] if isinstance(value, basestring) else value
+        if isinstance(value, basestring) or isinstance(value, unicode):
+            value = [value]
         self._var.name = name
         self._var.value = value
         self._parent.mark_dirty()

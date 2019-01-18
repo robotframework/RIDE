@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,35 +13,37 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import re
-import sys
 from collections import MutableMapping
 
-from .robottypes import is_dict_like
-
-
-_WHITESPACE_REGEXP = re.compile('\s+')
+from .platform import IRONPYTHON, PY_VERSION, PY3
+from .robottypes import is_dict_like, is_unicode
 
 
 def normalize(string, ignore=(), caseless=True, spaceless=True):
     """Normalizes given string according to given spec.
 
     By default string is turned to lower case and all whitespace is removed.
-    Additional characters can be removed by giving them in `ignore` list.
+    Additional characters can be removed by giving them in ``ignore`` list.
     """
+    empty = u'' if is_unicode(string) else b''
+    if PY3 and isinstance(ignore, bytes):
+        # Iterating bytes in Python3 yields integers.
+        ignore = [bytes([i]) for i in ignore]
     if spaceless:
-        string = _WHITESPACE_REGEXP.sub('', string)
+        string = empty.join(string.split())
     if caseless:
         string = lower(string)
         ignore = [lower(i) for i in ignore]
-    for ign in ignore:
-        if ign in string:  # performance optimization
-            string = string.replace(ign, '')
+    # both if statements below enhance performance a little
+    if ignore:
+        for ign in ignore:
+            if ign in string:
+                string = string.replace(ign, empty)
     return string
 
 
 # http://ironpython.codeplex.com/workitem/33133
-if sys.platform == 'cli' and sys.version_info < (2, 7, 5):
+if IRONPYTHON and PY_VERSION < (2, 7, 5):
     def lower(string):
         return ('A' + string).lower()[1:]
 else:
@@ -52,12 +55,13 @@ class NormalizedDict(MutableMapping):
     """Custom dictionary implementation automatically normalizing keys."""
 
     def __init__(self, initial=None, ignore=(), caseless=True, spaceless=True):
-        """Initializes with possible initial value and normalizing spec.
+        """Initialized with possible initial value and normalizing spec.
 
         Initial values can be either a dictionary or an iterable of name/value
         pairs. In the latter case items are added in the given order.
 
-        Normalizing spec has exact same semantics as with `normalize` method.
+        Normalizing spec has exact same semantics as with the :func:`normalize`
+        function.
         """
         self._data = {}
         self._keys = {}
@@ -90,7 +94,7 @@ class NormalizedDict(MutableMapping):
         return len(self._data)
 
     def __str__(self):
-        return str(dict(self.items()))
+        return '{%s}' % ', '.join('%r: %r' % (key, self[key]) for key in self)
 
     def __eq__(self, other):
         if not is_dict_like(other):
@@ -99,6 +103,9 @@ class NormalizedDict(MutableMapping):
             other = NormalizedDict(other)
         return self._data == other._data
 
+    def __ne__(self, other):
+        return not self == other
+
     def copy(self):
         copy = NormalizedDict()
         copy._data = self._data.copy()
@@ -106,7 +113,11 @@ class NormalizedDict(MutableMapping):
         copy._normalize = self._normalize
         return copy
 
+    # Speed-ups. Following methods are faster than default implementations.
+
+    def __contains__(self, key):
+        return self._normalize(key) in self._data
+
     def clear(self):
-        # Faster than default implementation of MutableMapping.clear
         self._data.clear()
         self._keys.clear()

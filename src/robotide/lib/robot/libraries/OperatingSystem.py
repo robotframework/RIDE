@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,26 +13,26 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import codecs
 import fnmatch
 import glob
+import io
 import os
 import shutil
-import subprocess
 import sys
 import tempfile
 import time
 
 from robotide.lib.robot.version import get_version
 from robotide.lib.robot.api import logger
-from robotide.lib.robot.utils import (abspath, ConnectionCache, decode_output, del_env_var,
+from robotide.lib.robot.utils import (abspath, ConnectionCache, console_decode, del_env_var,
                          get_env_var, get_env_vars, get_time, is_truthy,
-                         is_unicode, parse_time, plural_or_not,
+                         is_unicode, normpath, parse_time, plural_or_not,
                          secs_to_timestamp, secs_to_timestr, seq2str,
-                         set_env_var, timestr_to_secs, unic)
+                         set_env_var, timestr_to_secs, unic, CONSOLE_ENCODING,
+                         IRONPYTHON, JYTHON, PY2, PY3, SYSTEM_ENCODING, WINDOWS)
 
 __version__ = get_version()
-PROCESSES = ConnectionCache('No active processes')
+PROCESSES = ConnectionCache('No active processes.')
 
 
 class OperatingSystem(object):
@@ -51,7 +52,6 @@ class OperatingSystem(object):
     - `Path separators`
     - `Pattern matching`
     - `Tilde expansion`
-    - `Process library`
     - `Boolean arguments`
     - `Example`
     - `Shortcuts`
@@ -70,21 +70,25 @@ class OperatingSystem(object):
     Notice that the automatic path separator conversion does not work if
     the path is only a part of an argument like with `Run` and `Start Process`
     keywords. In these cases the built-in variable ``${/}`` that contains
-    ``\\`` or ``/``, dependiong on the operationg system, can be used instead.
+    ``\\`` or ``/``, depending on the operating system, can be used instead.
 
     = Pattern matching =
 
-    Some keywords allow their arguments to be specified as _glob patterns_
-    where:
-    | ``*``        | matches anything, even an empty string |
-    | ``?``        | matches any single character |
-    | ``[chars]``  | matches any character inside square brackets (e.g. ``[abc]`` matches either ``a``, ``b`` or ``c``) |
-    | ``[!chars]`` | matches any character not inside square brackets |
+    Some keywords allow their arguments to be specified as
+    [http://en.wikipedia.org/wiki/Glob_(programming)|glob patterns] where:
+
+    | ``*``        | matches any string, even an empty string                |
+    | ``?``        | matches any single character                            |
+    | ``[chars]``  | matches one character in the bracket                    |
+    | ``[!chars]`` | matches one character not in the bracket                |
+    | ``[a-z]``    | matches one character from the range in the bracket     |
+    | ``[!a-z]``   | matches one character not from the range in the bracket |
 
     Unless otherwise noted, matching is case-insensitive on
-    case-insensitive operating systems such as Windows. Pattern
-    matching is implemented using
-    [http://docs.python.org/library/fnmatch.html|fnmatch module].
+    case-insensitive operating systems such as Windows.
+
+    Starting from Robot Framework 2.9.1, globbing is not done if the given path
+    matches an existing file even if it would contain a glob pattern.
 
     = Tilde expansion =
 
@@ -94,28 +98,16 @@ class OperatingSystem(object):
     ``C:\\Users\\<user>\\robot`` on Windows and ``/home/<user>/robot`` on
     Unixes.
 
-    Tilde expansion is a new feature in Robot Framework 2.8. The ``~username``
-    form does not work on Jython
-
-    = Process library =
-
-    [http://robotframework.org/robotframework/latest/libraries/Process.html|
-    Process library] that was added in Robot Framework 2.8 provides much more
-    flexible keywords than this library for running processes in general and
-    for starting processes on background in particular. Keywords provided
-    by the Process library are thus recommended instead of `Run`, `Start
-    Process`, and other related keywords in this library. `Start Process` was
-    even deprecated in Robot Framework 2.9 and will be removed in the future.
+    The ``~username`` form does not work on Jython.
 
     = Boolean arguments =
 
     Some keywords accept arguments that are handled as Boolean values true or
     false. If such an argument is given as a string, it is considered false if
-    it is either empty or case-insensitively equal to ``false`` or ``no``.
-    Other strings are considered true regardless their value, and other
-    argument types are tested using same
-    [http://docs.python.org/2/library/stdtypes.html#truth-value-testing|rules
-    as in Python].
+    it is an empty string or equal to ``FALSE``, ``NONE``, ``NO``, ``OFF`` or
+    ``0``, case-insensitively. Other strings are considered true regardless
+    their value, and other argument types are tested using the same
+    [http://docs.python.org/library/stdtypes.html#truth|rules as in Python].
 
     True examples:
     | `Remove Directory` | ${path} | recursive=True    | # Strings are generally true.    |
@@ -129,8 +121,8 @@ class OperatingSystem(object):
     | `Remove Directory` | ${path} | recursive=${EMPTY} | # Empty string is false.       |
     | `Remove Directory` | ${path} | recursive=${FALSE} | # Python ``False`` is false.   |
 
-    Note that prior to Robot Framework 2.9, all non-empty strings, including
-    ``false`` and ``no``, were considered true.
+    Considering string ``NONE`` false is new in Robot Framework 3.0.3 and
+    considering also ``OFF`` and ``0`` false is new in Robot Framework 3.1.
 
     = Example =
 
@@ -180,9 +172,10 @@ class OperatingSystem(object):
         | Should Be Equal    | ${stdout} | TEST PASSED |
         | File Should Be Empty | /tmp/stderr.txt |
 
-        *TIP:* `Run Process` keyword provided by the `Process library` supports
-        better process configuration and is generally recommended as a
-        replacement for this keyword.
+        *TIP:* `Run Process` keyword provided by the
+        [http://robotframework.org/robotframework/latest/libraries/Process.html|
+        Process library] supports better process configuration and is generally
+        recommended as a replacement for this keyword.
         """
         return self._run(command)[1]
 
@@ -206,9 +199,10 @@ class OperatingSystem(object):
         See `Run` and `Run And Return RC And Output` if you need to get the
         output of the executed command.
 
-        *TIP:* `Run Process` keyword provided by the `Process library` supports
-        better process configuration and is generally recommended as a
-        replacement for this keyword.
+        *TIP:* `Run Process` keyword provided by the
+        [http://robotframework.org/robotframework/latest/libraries/Process.html|
+        Process library] supports better process configuration and is generally
+        recommended as a replacement for this keyword.
         """
         return self._run(command)[0]
 
@@ -227,143 +221,19 @@ class OperatingSystem(object):
         | Should Be Equal      | ${stdout}       | TEST PASSED |
         | File Should Be Empty | /tmp/stderr.txt |
 
-        *TIP:* `Run Process` keyword provided by the `Process library` supports
-        better process configuration and is generally recommended as a
-        replacement for this keyword.
+        *TIP:* `Run Process` keyword provided by the
+        [http://robotframework.org/robotframework/latest/libraries/Process.html|
+        Process library] supports better process configuration and is generally
+        recommended as a replacement for this keyword.
         """
         return self._run(command)
 
     def _run(self, command):
         process = _Process(command)
-        self._info("Running command '%s'" % process)
+        self._info("Running command '%s'." % process)
         stdout = process.read()
         rc = process.close()
         return rc, stdout
-
-    def start_process(self, command, stdin=None, alias=None):
-        """*DEPRECATED.* Use `Process.Start Process` instead.
-
-        Also related keywords `Read Process Output`, `Switch Process`, `Stop
-        Process`, and `Stop All Processes` have been deprecated in favor of
-        more flexible keywords in the Process library.
-
-        ---
-
-        Starts the given command as a background process.
-
-        Starts the process in background and sets it as the active process.
-        `Read Process Output` or `Stop Process` keywords affect this process
-        unless `Switch Process` is used in between.
-
-        If the command needs input through the standard input stream,
-        it can be defined with the ``stdin`` argument.  It is not
-        possible to give input to the command later. Possible command
-        line arguments must be given as part of the command like
-        ``/tmp/script.sh arg1 arg2``.
-
-        Returns the index of this process. Indexing starts from 1, and indices
-        can be used to switch between processes using `Switch Process` keyword.
-        `Stop All Processes` can be used to reset indexing.
-
-        The optional ``alias`` is a name for this process that may be used with
-        `Switch Process` instead of the returned index.
-
-        The standard error stream is redirected to the standard input
-        stream automatically. This is done for the same reasons as with `Run`
-        keyword, but redirecting is done when the process is started and not
-        by adding ``2>&1`` to the command.
-
-        Example:
-        | Start Process  | /path/longlasting.sh |
-        | Do Something   |                      |
-        | ${output} =    | Read Process Output  |
-        | Should Contain | ${output}            | Expected text |
-        | [Teardown]     | Stop All Processes   |
-        """
-        process = _Process2(command, stdin)
-        self._info("Running command '%s'" % process)
-        return PROCESSES.register(process, alias)
-
-    def switch_process(self, index_or_alias):
-        """*Deprecated.* See `Start Process` for details.
-
-        ---
-
-        Switches the active process to the specified process.
-
-        New active process can be specified either using an index or an alias.
-        Indices are return values from `Start Process` and aliases can be
-        given to that keyword.
-
-        Example:
-        | Start Process  | /path/script.sh arg  | alias=1st process |
-        | ${2nd} =       | Start Process        | /path/script2.sh |
-        | Switch Process | 1st process          |
-        | ${out1} =      | Read Process Output  |
-        | Switch Process | ${2nd}               |
-        | ${out2} =      | Read Process Output  |
-        | Log Many       | 1st process: ${out1} | 2nd process: ${out1} |
-        | [Teardown]     | Stop All Processes   |
-        """
-        PROCESSES.switch(index_or_alias)
-
-    def read_process_output(self):
-        """*Deprecated.* See `Start Process` for details.
-
-        ---
-
-        Waits for a process to finish and returns its output.
-
-        This keyword waits for a process started with `Start Process` to end
-        and then returns all output it has produced. The returned output
-        contains everything the process has written into the standard output
-        and error streams.
-
-        There is no need to use `Stop Process` after using this keyword.
-        Trying to read from an already stopped process fails.
-
-        Note that although the process is finished, it still stays as the
-        active process. Use `Switch Process` to switch the active process or
-        `Stop All Processes` to reset the list of started processes.
-        """
-        output = PROCESSES.current.read()
-        PROCESSES.current.close()
-        return output
-
-    def stop_process(self):
-        """*Deprecated.* See `Start Process` for details.
-
-        ---
-
-        Closes the standard output stream of the process.
-
-        This keyword does not actually stop the process nor even wait for it
-        to terminate. Only thing it does is closing the standard output stream
-        of the process. Depending on the process that may terminate it but
-        that is not guaranteed. Use `Read Process Output` instead if you need
-        to wait for the process to complete.
-
-        This keyword operates the active process similarly as `Read Process
-        Output`. Stopping an already stopped process is not an error.
-        """
-        PROCESSES.current.close()
-
-    def stop_all_processes(self):
-        """*Deprecated.* See `Start Process` for details.
-
-        ---
-
-        Closes the standard output of all the processes and resets the process
-        list.
-
-        Exactly like `Stop Process`, this keyword does not actually stop
-        processes nor even wait for them to terminate.
-
-        This keyword resets the indexing that `Start Process` uses. All aliases
-        are also deleted. It does not matter have some of the processes
-        already been closed or not.
-        """
-        PROCESSES.close_all()
 
     def get_file(self, path, encoding='UTF-8', encoding_errors='strict'):
         """Returns the contents of a specified file.
@@ -373,22 +243,45 @@ class OperatingSystem(object):
         See also `Get Binary File`.
 
         ``encoding`` defines the encoding of the file. The default value is
-        UTF-8, which means that UTF-8 and ASCII-encoded files are read
-        correctly.
+        ``UTF-8``, which means that UTF-8 and ASCII encoded files are read
+        correctly. In addition to the encodings supported by the underlying
+        Python implementation, the following special encoding values can be
+        used:
+
+        - ``SYSTEM``: Use the default system encoding.
+        - ``CONSOLE``: Use the console encoding. Outside Windows this is same
+          as the system encoding.
 
         ``encoding_errors`` argument controls what to do if decoding some bytes
         fails. All values accepted by ``decode`` method in Python are valid, but
         in practice the following values are most useful:
 
-        - ``strict``: fail if characters cannot be decoded (default)
-        - ``ignore``: ignore characters that cannot be decoded
-        - ``replace``: replace characters that cannot be decoded with
-          a replacement character
+        - ``strict``: Fail if characters cannot be decoded (default).
+        - ``ignore``: Ignore characters that cannot be decoded.
+        - ``replace``: Replace characters that cannot be decoded with
+          a replacement character.
 
-        ``encoding_errors`` argument is new in Robot Framework 2.8.5.
+        Support for ``SYSTEM`` and ``CONSOLE`` encodings in Robot Framework 3.0.
         """
-        content = self.get_binary_file(path)
-        return unicode(content, encoding, encoding_errors).replace('\r\n', '\n')
+        path = self._absnorm(path)
+        self._link("Getting file '%s'.", path)
+        encoding = self._map_encoding(encoding)
+        if IRONPYTHON:
+            # https://github.com/IronLanguages/main/issues/1233
+            with open(path) as f:
+                content = f.read().decode(encoding, encoding_errors)
+        else:
+            with io.open(path, encoding=encoding, errors=encoding_errors,
+                         newline='') as f:
+                content = f.read()
+        return content.replace('\r\n', '\n')
+
+    def _map_encoding(self, encoding):
+        # Python 3 opens files in native system encoding by default.
+        if PY3 and encoding.upper() == 'SYSTEM':
+            return None
+        return {'SYSTEM': SYSTEM_ENCODING,
+                'CONSOLE': CONSOLE_ENCODING}.get(encoding.upper(), encoding)
 
     def get_binary_file(self, path):
         """Returns the contents of a specified file.
@@ -397,9 +290,9 @@ class OperatingSystem(object):
         See also `Get File`.
         """
         path = self._absnorm(path)
-        self._link("Getting file '%s'", path)
+        self._link("Getting file '%s'.", path)
         with open(path, 'rb') as f:
-            return f.read()
+            return bytes(f.read())
 
     def grep_file(self, path, pattern, encoding='UTF-8', encoding_errors='strict'):
         """Returns the lines of the specified file that match the ``pattern``.
@@ -423,15 +316,13 @@ class OperatingSystem(object):
         If more complex pattern matching is needed, it is possible to use
         `Get File` in combination with String library keywords like `Get
         Lines Matching Regexp`.
-
-        ``encoding_errors`` argument is new in Robot Framework 2.8.5.
         """
         pattern = '*%s*' % pattern
         path = self._absnorm(path)
         lines = []
         total_lines = 0
-        self._link("Reading file '%s'", path)
-        with codecs.open(path, encoding=encoding, errors=encoding_errors) as f:
+        self._link("Reading file '%s'.", path)
+        with io.open(path, encoding=encoding, errors=encoding_errors) as f:
             for line in f.readlines():
                 total_lines += 1
                 line = line.rstrip('\r\n')
@@ -447,7 +338,8 @@ class OperatingSystem(object):
         just use `Get File` and the built-in keyword `Log` with the desired
         level.
 
-        ``encoding_errors`` argument is new in Robot Framework 2.8.5.
+        See `Get File` for more information about ``encoding`` and
+        ``encoding_errors`` arguments.
         """
         content = self.get_file(path, encoding, encoding_errors)
         self._info(content)
@@ -463,9 +355,9 @@ class OperatingSystem(object):
         The default error message can be overridden with the ``msg`` argument.
         """
         path = self._absnorm(path)
-        if not glob.glob(path):
-            self._fail(msg, "Path '%s' does not match any file or directory" % path)
-        self._link("Path '%s' exists", path)
+        if not self._glob(path):
+            self._fail(msg, "Path '%s' does not exist." % path)
+        self._link("Path '%s' exists.", path)
 
     def should_not_exist(self, path, msg=None):
         """Fails if the given path (file or directory) exists.
@@ -475,17 +367,21 @@ class OperatingSystem(object):
         The default error message can be overridden with the ``msg`` argument.
         """
         path = self._absnorm(path)
-        matches = glob.glob(path)
-        if not matches:
-            self._link("Path '%s' does not exist", path)
-            return
-        if not msg:
-            if self._is_pattern_path(path):
-                matches.sort()
-                msg = "Path '%s' matches %s" % (path, seq2str(matches))
-            else:
-                msg = "Path '%s' exists" % path
-        raise AssertionError(msg)
+        matches = self._glob(path)
+        if matches:
+            self._fail(msg, self._get_matches_error('Path', path, matches))
+        self._link("Path '%s' does not exist.", path)
+
+    def _glob(self, path):
+        return glob.glob(path) if not os.path.exists(path) else [path]
+
+    def _get_matches_error(self, what, path, matches):
+        if not self._is_glob_path(path):
+            return "%s '%s' exists." % (what, path)
+        return "%s '%s' matches %s." % (what, path, seq2str(sorted(matches)))
+
+    def _is_glob_path(self, path):
+        return '*' in path or '?' in path or ('[' in path and ']' in path)
 
     def file_should_exist(self, path, msg=None):
         """Fails unless the given ``path`` points to an existing file.
@@ -495,10 +391,10 @@ class OperatingSystem(object):
         The default error message can be overridden with the ``msg`` argument.
         """
         path = self._absnorm(path)
-        matches = [p for p in glob.glob(path) if os.path.isfile(p)]
+        matches = [p for p in self._glob(path) if os.path.isfile(p)]
         if not matches:
-            self._fail(msg, "Path '%s' does not match any file" % path)
-        self._link("File '%s' exists", path)
+            self._fail(msg, "File '%s' does not exist." % path)
+        self._link("File '%s' exists.", path)
 
     def file_should_not_exist(self, path, msg=None):
         """Fails if the given path points to an existing file.
@@ -508,18 +404,10 @@ class OperatingSystem(object):
         The default error message can be overridden with the ``msg`` argument.
         """
         path = self._absnorm(path)
-        matches = [p for p in glob.glob(path) if os.path.isfile(p)]
-        if not matches:
-            self._link("File '%s' does not exist", path)
-            return
-        if not msg:
-            if self._is_pattern_path(path):
-                matches.sort()
-                name = len(matches) == 1 and 'file' or 'files'
-                msg = "Path '%s' matches %s %s" % (path, name, seq2str(matches))
-            else:
-                msg = "File '%s' exists" % path
-        raise AssertionError(msg)
+        matches = [p for p in self._glob(path) if os.path.isfile(p)]
+        if matches:
+            self._fail(msg, self._get_matches_error('File', path, matches))
+        self._link("File '%s' does not exist.", path)
 
     def directory_should_exist(self, path, msg=None):
         """Fails unless the given path points to an existing directory.
@@ -529,10 +417,10 @@ class OperatingSystem(object):
         The default error message can be overridden with the ``msg`` argument.
         """
         path = self._absnorm(path)
-        matches = [p for p in glob.glob(path) if os.path.isdir(p)]
+        matches = [p for p in self._glob(path) if os.path.isdir(p)]
         if not matches:
-            self._fail(msg, "Path '%s' does not match any directory" % path)
-        self._link("Directory '%s' exists", path)
+            self._fail(msg, "Directory '%s' does not exist." % path)
+        self._link("Directory '%s' exists.", path)
 
     def directory_should_not_exist(self, path, msg=None):
         """Fails if the given path points to an existing file.
@@ -542,21 +430,10 @@ class OperatingSystem(object):
         The default error message can be overridden with the ``msg`` argument.
         """
         path = self._absnorm(path)
-        matches = [p for p in glob.glob(path) if os.path.isdir(p)]
-        if not matches:
-            self._link("Directory '%s' does not exist", path)
-            return
-        if not msg:
-            if self._is_pattern_path(path):
-                matches.sort()
-                name = len(matches) == 1 and 'directory' or 'directories'
-                msg = "Path '%s' matches %s %s" % (path, name, seq2str(matches))
-            else:
-                msg = "Directory '%s' exists" % path
-        raise AssertionError(msg)
-
-    def _is_pattern_path(self, path):
-        return '*' in path or '?' in path or ('[' in path and ']' in path)
+        matches = [p for p in self._glob(path) if os.path.isdir(p)]
+        if matches:
+            self._fail(msg, self._get_matches_error('Directory', path, matches))
+        self._link("Directory '%s' does not exist.", path)
 
     # Waiting file/dir to appear/disappear
 
@@ -579,12 +456,12 @@ class OperatingSystem(object):
         path = self._absnorm(path)
         timeout = timestr_to_secs(timeout)
         maxtime = time.time() + timeout
-        while glob.glob(path):
-            time.sleep(0.1)
+        while self._glob(path):
             if timeout >= 0 and time.time() > maxtime:
-                raise AssertionError("'%s' was not removed in %s"
-                                     % (path, secs_to_timestr(timeout)))
-        self._link("'%s' was removed", path)
+                self._fail("'%s' was not removed in %s."
+                           % (path, secs_to_timestr(timeout)))
+            time.sleep(0.1)
+        self._link("'%s' was removed.", path)
 
     def wait_until_created(self, path, timeout='1 minute'):
         """Waits until the given file or directory is created.
@@ -605,12 +482,12 @@ class OperatingSystem(object):
         path = self._absnorm(path)
         timeout = timestr_to_secs(timeout)
         maxtime = time.time() + timeout
-        while not glob.glob(path):
-            time.sleep(0.1)
+        while not self._glob(path):
             if timeout >= 0 and time.time() > maxtime:
-                raise AssertionError("'%s' was not created in %s"
-                                     % (path, secs_to_timestr(timeout)))
-        self._link("'%s' was created", path)
+                self._fail("'%s' was not created in %s."
+                           % (path, secs_to_timestr(timeout)))
+            time.sleep(0.1)
+        self._link("'%s' was created.", path)
 
     # Dir/file empty
 
@@ -622,10 +499,8 @@ class OperatingSystem(object):
         path = self._absnorm(path)
         items = self._list_dir(path)
         if items:
-            if not msg:
-                msg = "Directory '%s' is not empty. Contents: %s" \
-                        % (path, seq2str(items, lastsep=', '))
-            raise AssertionError(msg)
+            self._fail(msg, "Directory '%s' is not empty. Contents: %s."
+                            % (path, seq2str(items, lastsep=', ')))
         self._link("Directory '%s' is empty.", path)
 
     def directory_should_not_be_empty(self, path, msg=None):
@@ -634,12 +509,11 @@ class OperatingSystem(object):
         The default error message can be overridden with the ``msg`` argument.
         """
         path = self._absnorm(path)
-        count = len(self._list_dir(path))
-        if count == 0:
+        items = self._list_dir(path)
+        if not items:
             self._fail(msg, "Directory '%s' is empty." % path)
-        plural = plural_or_not(count)
-        self._link("Directory '%%s' contains %d item%s." % (count, plural),
-                   path)
+        self._link("Directory '%%s' contains %d item%s."
+                   % (len(items), plural_or_not(items)), path)
 
     def file_should_be_empty(self, path, msg=None):
         """Fails unless the specified file is empty.
@@ -648,11 +522,12 @@ class OperatingSystem(object):
         """
         path = self._absnorm(path)
         if not os.path.isfile(path):
-            raise AssertionError("File '%s' does not exist" % path)
+            self._error("File '%s' does not exist." % path)
         size = os.stat(path).st_size
         if size > 0:
-            self._fail(msg, "File '%s' is not empty. Size: %d bytes" % (path, size))
-        self._link("File '%s' is empty", path)
+            self._fail(msg,
+                       "File '%s' is not empty. Size: %d bytes." % (path, size))
+        self._link("File '%s' is empty.", path)
 
     def file_should_not_be_empty(self, path, msg=None):
         """Fails if the specified directory is empty.
@@ -661,43 +536,64 @@ class OperatingSystem(object):
         """
         path = self._absnorm(path)
         if not os.path.isfile(path):
-            raise AssertionError("File '%s' does not exist" % path)
+            self._error("File '%s' does not exist." % path)
         size = os.stat(path).st_size
         if size == 0:
             self._fail(msg, "File '%s' is empty." % path)
-        self._link("File '%%s' contains %d bytes" % size, path)
+        self._link("File '%%s' contains %d bytes." % size, path)
 
     # Creating and removing files and directory
 
     def create_file(self, path, content='', encoding='UTF-8'):
         """Creates a file with the given content and encoding.
 
-        If the directory where to create file does not exist it, and possible
-        intermediate missing directories, are created.
+        If the directory for the file does not exist, it is created, along
+        with missing intermediate directories.
+
+        See `Get File` for more information about possible ``encoding`` values,
+        including special values ``SYSTEM`` and ``CONSOLE``.
 
         Examples:
         | Create File | ${dir}/example.txt | Hello, world!      |         |
-        | Create File | ${path}            | Hyv\\xe4 esimerkki | latin-1 |
+        | Create File | ${path}            | Hyv\\xe4 esimerkki | Latin-1 |
+        | Create File | /tmp/foo.txt       | ${content}         | SYSTEM  |
 
         Use `Append To File` if you want to append to an existing file
         and `Create Binary File` if you need to write bytes without encoding.
         `File Should Not Exist` can be used to avoid overwriting existing
         files.
+
+        The support for ``SYSTEM`` and ``CONSOLE`` encodings is new in Robot
+        Framework 3.0.
         """
-        path = self._write_to_file(path, content, encoding)
-        self._link("Created file '%s'", path)
+        path = self._write_to_file(path, content, self._map_encoding(encoding))
+        self._link("Created file '%s'.", path)
+
+    def _write_to_file(self, path, content, encoding=None, mode='w'):
+        path = self._absnorm(path)
+        parent = os.path.dirname(path)
+        if not os.path.exists(parent):
+            os.makedirs(parent)
+        # io.open() only accepts Unicode, not byte-strings, in text mode.
+        # We expect possible byte-strings to be all ASCII.
+        if PY2 and isinstance(content, str) and 'b' not in mode:
+            content = unicode(content)
+        with io.open(path, mode, encoding=encoding) as f:
+            f.write(content)
+        return path
 
     def create_binary_file(self, path, content):
         """Creates a binary file with the given content.
 
         If content is given as a Unicode string, it is first converted to bytes
         character by character. All characters with ordinal below 256 can be
-        used and are converted to bytes with same values.
+        used and are converted to bytes with same values. Using characters
+        with higher ordinal is an error.
 
         Byte strings, and possible other types, are written to the file as is.
 
-        If the directory where to create file does not exist it, and possible
-        intermediate missing directories, are created.
+        If the directory for the file does not exist, it is created, along
+        with missing intermediate directories.
 
         Examples:
         | Create Binary File | ${dir}/example.png | ${image content}     |
@@ -706,33 +602,20 @@ class OperatingSystem(object):
         Use `Create File` if you want to create a text file using a certain
         encoding. `File Should Not Exist` can be used to avoid overwriting
         existing files.
-
-        New in Robot Framework 2.8.5.
         """
         if is_unicode(content):
-            content = ''.join(chr(ord(c)) for c in content)
-        path = self._write_to_file(path, content)
-        self._link("Created binary file '%s'", path)
+            content = bytes(bytearray(ord(c) for c in content))
+        path = self._write_to_file(path, content, mode='wb')
+        self._link("Created binary file '%s'.", path)
 
     def append_to_file(self, path, content, encoding='UTF-8'):
-        """Appends the given contend to the specified file.
+        """Appends the given content to the specified file.
 
         If the file does not exists, this keyword works exactly the same
         way as `Create File`.
         """
         path = self._write_to_file(path, content, encoding, mode='a')
-        self._link("Appended to file '%s'", path)
-
-    def _write_to_file(self, path, content, encoding=None, mode='w'):
-        path = self._absnorm(path)
-        parent = os.path.dirname(path)
-        if not os.path.exists(parent):
-            os.makedirs(parent)
-        if encoding:
-            content = content.encode(encoding)
-        with open(path, mode+'b') as f:
-            f.write(content)
-        return path
+        self._link("Appended to file '%s'.", path)
 
     def remove_file(self, path):
         """Removes a file with the given path.
@@ -745,14 +628,14 @@ class OperatingSystem(object):
         If the path is a pattern, all files matching it are removed.
         """
         path = self._absnorm(path)
-        matches = glob.glob(path)
+        matches = self._glob(path)
         if not matches:
-            self._link("File '%s' does not exist", path)
+            self._link("File '%s' does not exist.", path)
         for match in matches:
             if not os.path.isfile(match):
-                raise RuntimeError("Path '%s' is not a file" % match)
+                self._error("Path '%s' is not a file." % match)
             os.remove(match)
-            self._link("Removed file '%s'", match)
+            self._link("Removed file '%s'.", match)
 
     def remove_files(self, *paths):
         """Uses `Remove File` to remove multiple files one-by-one.
@@ -764,31 +647,35 @@ class OperatingSystem(object):
             self.remove_file(path)
 
     def empty_directory(self, path):
-        """Deletes all the content (incl. subdirectories) from the given directory."""
+        """Deletes all the content from the given directory.
+
+        Deletes both files and sub-directories, but the specified directory
+        itself if not removed. Use `Remove Directory` if you want to remove
+        the whole directory.
+        """
         path = self._absnorm(path)
-        items = [os.path.join(path, item) for item in self._list_dir(path)]
-        for item in items:
+        for item in self._list_dir(path, absolute=True):
             if os.path.isdir(item):
                 shutil.rmtree(item)
             else:
                 os.remove(item)
-        self._link("Emptied directory '%s'", path)
+        self._link("Emptied directory '%s'.", path)
 
     def create_directory(self, path):
         """Creates the specified directory.
 
         Also possible intermediate directories are created. Passes if the
-        directory already exists, and fails if the path points to a regular
-        file.
+        directory already exists, but fails if the path exists and is not
+        a directory.
         """
         path = self._absnorm(path)
         if os.path.isdir(path):
-            self._link("Directory '%s' already exists", path )
-            return
-        if os.path.exists(path):
-            raise RuntimeError("Path '%s' already exists but is not a directory" % path)
-        os.makedirs(path)
-        self._link("Created directory '%s'", path)
+            self._link("Directory '%s' already exists.", path )
+        elif os.path.exists(path):
+            self._error("Path '%s' is not a directory." % path)
+        else:
+            os.makedirs(path)
+            self._link("Created directory '%s'.", path)
 
     def remove_directory(self, path, recursive=False):
         """Removes the directory pointed to by the given ``path``.
@@ -802,26 +689,26 @@ class OperatingSystem(object):
         """
         path = self._absnorm(path)
         if not os.path.exists(path):
-            self._link("Directory '%s' does not exist", path)
-            return
-        if os.path.isfile(path):
-            raise RuntimeError("Path '%s' is not a directory" % path)
-        if is_truthy(recursive):
-            shutil.rmtree(path)
+            self._link("Directory '%s' does not exist.", path)
+        elif not os.path.isdir(path):
+            self._error("Path '%s' is not a directory." % path)
         else:
-            msg = "Directory '%s' is not empty." % path
-            self.directory_should_be_empty(path, msg)
-            os.rmdir(path)
-        self._link("Removed directory '%s'", path)
+            if is_truthy(recursive):
+                shutil.rmtree(path)
+            else:
+                self.directory_should_be_empty(
+                    path, "Directory '%s' is not empty." % path)
+                os.rmdir(path)
+            self._link("Removed directory '%s'.", path)
 
     # Moving and copying files and directories
 
     def copy_file(self, source, destination):
         """Copies the source file into the destination.
 
-        Source must be an existing file. Starting from Robot Framework 2.8.4,
-        it can be given as a glob pattern (see `Pattern matching`) that matches
-        exactly one file. How the destination is interpreted is explained below.
+        Source must be a path to an existing file or a glob pattern (see
+        `Pattern matching`) that matches exactly one file. How the
+        destination is interpreted is explained below.
 
         1) If the destination is an existing file, the source file is copied
         over it.
@@ -839,15 +726,93 @@ class OperatingSystem(object):
         separator, it is considered a file. If the path to the file does not
         exist, it is created.
 
+        The resulting destination path is returned since Robot Framework 2.9.2.
+
         See also `Copy Files`, `Move File`, and `Move Files`.
         """
-        source, destination = self._copy_file(source, destination)
-        self._link("Copied file from '%s' to '%s'", source, destination)
+        source, destination = \
+            self._prepare_copy_and_move_file(source, destination)
+        if not self._are_source_and_destination_same_file(source, destination):
+            source, destination = self._atomic_copy(source, destination)
+            self._link("Copied file from '%s' to '%s'.", source, destination)
+        return destination
+
+    def _prepare_copy_and_move_file(self, source, destination):
+        source = self._normalize_copy_and_move_source(source)
+        destination = self._normalize_copy_and_move_destination(destination)
+        if os.path.isdir(destination):
+            destination = os.path.join(destination, os.path.basename(source))
+        return source, destination
+
+    def _normalize_copy_and_move_source(self, source):
+        source = self._absnorm(source)
+        sources = self._glob(source)
+        if len(sources) > 1:
+            self._error("Multiple matches with source pattern '%s'." % source)
+        if sources:
+            source = sources[0]
+        if not os.path.exists(source):
+            self._error("Source file '%s' does not exist." % source)
+        if not os.path.isfile(source):
+            self._error("Source file '%s' is not a regular file." % source)
+        return source
+
+    def _normalize_copy_and_move_destination(self, destination):
+        is_dir = os.path.isdir(destination) or destination.endswith(('/', '\\'))
+        destination = self._absnorm(destination)
+        directory = destination if is_dir else os.path.dirname(destination)
+        self._ensure_destination_directory_exists(directory)
+        return destination
+
+    def _ensure_destination_directory_exists(self, path):
+        if not os.path.exists(path):
+            os.makedirs(path)
+        elif not os.path.isdir(path):
+            self._error("Destination '%s' exists and is not a directory." % path)
+
+    def _are_source_and_destination_same_file(self, source, destination):
+        if self._force_normalize(source) == self._force_normalize(destination):
+            self._link("Source '%s' and destination '%s' point to the same "
+                       "file.", source, destination)
+            return True
+        return False
+
+    def _force_normalize(self, path):
+        # TODO: Should normalize_path also support link normalization?
+        # TODO: Should we handle dos paths like 'exampl~1.txt'?
+        return os.path.realpath(normpath(path, case_normalize=True))
+
+    def _atomic_copy(self, source, destination):
+        """Copy file atomically (or at least try to).
+
+        This method tries to ensure that a file copy operation will not fail
+        if the destination file is removed during copy operation. The problem
+        is that copying a file is typically not an atomic operation.
+
+        Luckily moving files is atomic in almost every platform, assuming files
+        are on the same filesystem, and we can use that as a workaround:
+        - First move the source to a temporary directory that is ensured to
+          be on the same filesystem as the destination.
+        - Move the temporary file over the real destination.
+
+        See also https://github.com/robotframework/robotframework/issues/1502
+        """
+        temp_directory = tempfile.mkdtemp(dir=os.path.dirname(destination))
+        temp_file = os.path.join(temp_directory, os.path.basename(source))
+        try:
+            shutil.copy(source, temp_file)
+            if os.path.exists(destination):
+                os.remove(destination)
+            shutil.move(temp_file, destination)
+        finally:
+            shutil.rmtree(temp_directory)
+        return source, destination
 
     def move_file(self, source, destination):
         """Moves the source file into the destination.
 
         Arguments have exactly same semantics as with `Copy File` keyword.
+        Destination file path is returned since Robot Framework 2.9.2.
 
         If the source and destination are on the same filesystem, rename
         operation is used. Otherwise file is copied to the destination
@@ -855,9 +820,12 @@ class OperatingSystem(object):
 
         See also `Move Files`, `Copy File`, and `Copy Files`.
         """
-        source, destination, _ = self._prepare_for_move_or_copy(source, destination)
-        shutil.move(source, destination)
-        self._link("Moved file from '%s' to '%s'", source, destination)
+        source, destination = \
+            self._prepare_copy_and_move_file(source, destination)
+        if not self._are_source_and_destination_same_file(destination, source):
+            shutil.move(source, destination)
+            self._link("Moved file from '%s' to '%s'.", source, destination)
+        return destination
 
     def copy_files(self, *sources_and_destination):
         """Copies specified files to the target directory.
@@ -874,12 +842,25 @@ class OperatingSystem(object):
         | Copy Files | ${dir}/file-*.txt | ${dir2}          |         |
 
         See also `Copy File`, `Move File`, and `Move Files`.
-
-        New in Robot Framework 2.8.4.
         """
-        source_files, dest_dir = self._parse_sources_and_destination(sources_and_destination)
-        for source in source_files:
-            self.copy_file(source, dest_dir)
+        sources, destination \
+            = self._prepare_copy_and_move_files(sources_and_destination)
+        for source in sources:
+            self.copy_file(source, destination)
+
+    def _prepare_copy_and_move_files(self, items):
+        if len(items) < 2:
+            self._error('Must contain destination and at least one source.')
+        sources = self._glob_files(items[:-1])
+        destination = self._absnorm(items[-1])
+        self._ensure_destination_directory_exists(destination)
+        return sources, destination
+
+    def _glob_files(self, patterns):
+        files = []
+        for pattern in patterns:
+            files.extend(self._glob(self._absnorm(pattern)))
+        return files
 
     def move_files(self, *sources_and_destination):
         """Moves specified files to the target directory.
@@ -887,91 +868,11 @@ class OperatingSystem(object):
         Arguments have exactly same semantics as with `Copy Files` keyword.
 
         See also `Move File`, `Copy File`, and `Copy Files`.
-
-        New in Robot Framework 2.8.4.
         """
-        source_files, dest_dir = self._parse_sources_and_destination(sources_and_destination)
-        for source in source_files:
-            self.move_file(source, dest_dir)
-
-    def _parse_sources_and_destination(self, items):
-        if len(items) < 2:
-            raise RuntimeError("Must contain destination and at least one source")
-        sources, destination = items[:-1], items[-1]
-        self._ensure_destination_directory(destination)
-        return self._glob_files(sources), destination
-
-    def _normalize_dest(self, dest):
-        dest = dest.replace('/', os.sep)
-        dest_is_dir = dest.endswith(os.sep) or os.path.isdir(dest)
-        dest = self._absnorm(dest)
-        return dest, dest_is_dir
-
-    def _ensure_destination_directory(self, destination):
-        destination, _ = self._normalize_dest(destination)
-        if not os.path.exists(destination):
-            os.makedirs(destination)
-        elif not os.path.isdir(destination):
-            raise RuntimeError("Destination '%s' exists and is not a directory" % destination)
-
-    def _glob_files(self, patterns):
-        files = []
-        for pattern in patterns:
-            files.extend(glob.glob(self._absnorm(pattern)))
-        return files
-
-    def _prepare_for_move_or_copy(self, source, dest):
-        source, dest, dest_is_dir = self._normalize_source_and_dest(source, dest)
-        self._verify_that_source_is_a_file(source)
-        parent = self._ensure_directory_exists(dest, dest_is_dir)
-        self._ensure_dest_file_does_not_exist(source, dest, dest_is_dir)
-        return source, dest, parent
-
-    def _ensure_dest_file_does_not_exist(self, source, dest, dest_is_dir):
-        if dest_is_dir:
-            dest = os.path.join(dest, os.path.basename(source))
-        if os.path.isfile(dest):
-            os.remove(dest)
-
-    def _copy_file(self, source, dest):
-        source, dest, parent = self._prepare_for_move_or_copy(source, dest)
-        return self._atomic_copy(source, dest, parent)
-
-    def _normalize_source_and_dest(self, source, dest):
-        sources = self._glob_files([source])
-        if len(sources) > 1:
-            raise RuntimeError("Multiple matches with source pattern '%s'" % source)
-        source = sources[0] if sources else source
-        dest, dest_is_dir = self._normalize_dest(dest)
-        return source, dest, dest_is_dir
-
-    def _verify_that_source_is_a_file(self, source):
-        if not os.path.exists(source):
-            raise RuntimeError("Source file '%s' does not exist" % source)
-        if not os.path.isfile(source):
-            raise RuntimeError("Source file '%s' is not a regular file" % source)
-
-    def _ensure_directory_exists(self, dest, dest_is_dir):
-        parent = dest if dest_is_dir else os.path.dirname(dest)
-        if not os.path.exists(dest) and not os.path.exists(parent):
-            os.makedirs(parent)
-        return parent
-
-    def _atomic_copy(self, source, destination, destination_parent):
-        # This method tries to ensure that a file copy operation will not fail if the destination file is removed during
-        # copy operation.
-        # This has been an issue for at least some of the users that had a mechanism that polled and removed
-        # the destination - their test cases sometimes failed because the copy file failed.
-        # This is done by first copying the source to a temporary directory on the same drive as the destination is
-        # and then moving (that is almost always in every platform an atomic operation) that temporary file to
-        # the destination.
-        # See http://code.google.com/p/robotframework/issues/detail?id=1502 for details
-        temp_directory = tempfile.mkdtemp(dir=destination_parent) # Temporary directory can be atomically created
-        temp_file = os.path.join(temp_directory, os.path.basename(source))
-        shutil.copy(source, temp_file)
-        shutil.move(temp_file, destination)
-        os.rmdir(temp_directory)
-        return source, destination
+        sources, destination \
+            = self._prepare_copy_and_move_files(sources_and_destination)
+        for source in sources:
+            self.move_file(source, destination)
 
     def copy_directory(self, source, destination):
         """Copies the source directory into the destination.
@@ -980,8 +881,33 @@ class OperatingSystem(object):
         the destination directory and the possible missing intermediate
         directories are created.
         """
-        source, destination = self._copy_dir(source, destination)
-        self._link("Copied directory from '%s' to '%s'", source, destination)
+        source, destination \
+            = self._prepare_copy_and_move_directory(source, destination)
+        try:
+            shutil.copytree(source, destination)
+        except shutil.Error:
+            # https://github.com/robotframework/robotframework/issues/2321
+            if not (WINDOWS and JYTHON):
+                raise
+        self._link("Copied directory from '%s' to '%s'.", source, destination)
+
+    def _prepare_copy_and_move_directory(self, source, destination):
+        source = self._absnorm(source)
+        destination = self._absnorm(destination)
+        if not os.path.exists(source):
+            self._error("Source '%s' does not exist." % source)
+        if not os.path.isdir(source):
+            self._error("Source '%s' is not a directory." % source)
+        if os.path.exists(destination) and not os.path.isdir(destination):
+            self._error("Destination '%s' is not a directory." % destination)
+        if os.path.exists(destination):
+            base = os.path.basename(source)
+            destination = os.path.join(destination, base)
+        else:
+            parent = os.path.dirname(destination)
+            if not os.path.exists(parent):
+                os.makedirs(parent)
+        return source, destination
 
     def move_directory(self, source, destination):
         """Moves the source directory into a destination.
@@ -990,32 +916,10 @@ class OperatingSystem(object):
         ``destination`` arguments have exactly same semantics as with
         that keyword.
         """
-        source, destination = self._prepare_copy_or_move_dir(source, destination)
+        source, destination \
+            = self._prepare_copy_and_move_directory(source, destination)
         shutil.move(source, destination)
-        self._link("Moved directory from '%s' to '%s'", source, destination)
-
-    def _copy_dir(self, source, dest):
-        source, dest = self._prepare_copy_or_move_dir(source, dest)
-        shutil.copytree(source, dest)
-        return source, dest
-
-    def _prepare_copy_or_move_dir(self, source, dest):
-        source = self._absnorm(source)
-        dest = self._absnorm(dest)
-        if not os.path.exists(source):
-            raise RuntimeError("Source directory '%s' does not exist" % source)
-        if not os.path.isdir(source):
-            raise RuntimeError("Source directory '%s' is not a directory" % source)
-        if os.path.exists(dest) and not os.path.isdir(dest):
-            raise RuntimeError("Destination '%s' exists but is not a directory" % dest)
-        if os.path.exists(dest):
-            base = os.path.basename(source)
-            dest = os.path.join(dest, base)
-        else:
-            parent = os.path.dirname(dest)
-            if not os.path.exists(parent):
-                os.makedirs(parent)
-        return source, dest
+        self._link("Moved directory from '%s' to '%s'.", source, destination)
 
     # Environment Variables
 
@@ -1025,26 +929,26 @@ class OperatingSystem(object):
         If no such environment variable is set, returns the default value, if
         given. Otherwise fails the test case.
 
-        Starting from Robot Framework 2.7, returned variables are automatically
-        decoded to Unicode using the system encoding.
+        Returned variables are automatically decoded to Unicode using
+        the system encoding.
 
         Note that you can also access environment variables directly using
         the variable syntax ``%{ENV_VAR_NAME}``.
         """
         value = get_env_var(name, default)
         if value is None:
-            raise RuntimeError("Environment variable '%s' does not exist" % name)
+            self._error("Environment variable '%s' does not exist." % name)
         return value
 
     def set_environment_variable(self, name, value):
         """Sets an environment variable to a specified value.
 
-        Values are converted to strings automatically. Starting from Robot
-        Framework 2.7, set variables are automatically encoded using the system
-        encoding.
+        Values are converted to strings automatically. Set variables are
+        automatically encoded using the system encoding.
         """
         set_env_var(name, value)
-        self._info("Environment variable '%s' set to value '%s'" % (name, value))
+        self._info("Environment variable '%s' set to value '%s'."
+                   % (name, value))
 
     def append_to_environment_variable(self, name, *values, **config):
         """Appends given ``values`` to environment variable ``name``.
@@ -1066,8 +970,6 @@ class OperatingSystem(object):
         | Should Be Equal                | %{NAME2} | first  |                 |
         | Append To Environment Variable | NAME2    | second | separator=-     |
         | Should Be Equal                | %{NAME2} | first-second             |
-
-        New in Robot Framework 2.8.4.
         """
         sentinel = object()
         initial = self.get_environment_variable(name, sentinel)
@@ -1076,8 +978,8 @@ class OperatingSystem(object):
         separator = config.pop('separator', os.pathsep)
         if config:
             config = ['='.join(i) for i in sorted(config.items())]
-            raise RuntimeError('Configuration %s not accepted.'
-                               % seq2str(config, lastsep=' or '))
+            self._error('Configuration %s not accepted.'
+                        % seq2str(config, lastsep=' or '))
         self.set_environment_variable(name, separator.join(values))
 
     def remove_environment_variable(self, *names):
@@ -1085,15 +987,15 @@ class OperatingSystem(object):
 
         Does nothing if the environment variable is not set.
 
-        Starting from Robot Framework 2.7, it is possible to remove multiple
-        variables by passing them to this keyword as separate arguments.
+        It is possible to remove multiple variables by passing them to this
+        keyword as separate arguments.
         """
         for name in names:
             value = del_env_var(name)
             if value:
-                self._info("Environment variable '%s' deleted" % name)
+                self._info("Environment variable '%s' deleted." % name)
             else:
-                self._info("Environment variable '%s' does not exist" % name)
+                self._info("Environment variable '%s' does not exist." % name)
 
     def environment_variable_should_be_set(self, name, msg=None):
         """Fails if the specified environment variable is not set.
@@ -1102,8 +1004,8 @@ class OperatingSystem(object):
         """
         value = get_env_var(name)
         if not value:
-            self._fail(msg, "Environment variable '%s' is not set" % name)
-        self._info("Environment variable '%s' is set to '%s'" % (name, value))
+            self._fail(msg, "Environment variable '%s' is not set." % name)
+        self._info("Environment variable '%s' is set to '%s'." % (name, value))
 
     def environment_variable_should_not_be_set(self, name, msg=None):
         """Fails if the specified environment variable is set.
@@ -1112,8 +1014,9 @@ class OperatingSystem(object):
         """
         value = get_env_var(name)
         if value:
-            self._fail(msg, "Environment variable '%s' is set to '%s'" % (name, value))
-        self._info("Environment variable '%s' is not set" % name)
+            self._fail(msg, "Environment variable '%s' is set to '%s'."
+                            % (name, value))
+        self._info("Environment variable '%s' is not set." % name)
 
     def get_environment_variables(self):
         """Returns currently available environment variables as a dictionary.
@@ -1121,8 +1024,6 @@ class OperatingSystem(object):
         Both keys and values are decoded to Unicode using the system encoding.
         Altering the returned dictionary has no effect on the actual environment
         variables.
-
-        New in Robot Framework 2.7.
         """
         return get_env_vars()
 
@@ -1131,13 +1032,11 @@ class OperatingSystem(object):
 
         Environment variables are also returned the same way as with
         `Get Environment Variables` keyword.
-
-        New in Robot Framework 2.7.
         """
-        vars = get_env_vars()
-        for name, value in sorted(vars.items(), key=lambda item: item[0].lower()):
-            self._log('%s = %s' % (name, value), level)
-        return vars
+        variables = get_env_vars()
+        for name in sorted(variables, key=lambda item: item.lower()):
+            self._log('%s = %s' % (name, variables[name]), level)
+        return variables
 
     # Path
 
@@ -1171,9 +1070,9 @@ class OperatingSystem(object):
         See `Join Path` for more information.
 
         Examples:
-        | @{p1} = | Join Path | base     | example       | other |          |
-        | @{p2} = | Join Path | /my/base | /example      | other |          |
-        | @{p3} = | Join Path | my/base  | example/path/ | other | one/more |
+        | @{p1} = | Join Paths | base     | example       | other |          |
+        | @{p2} = | Join Paths | /my/base | /example      | other |          |
+        | @{p3} = | Join Paths | my/base  | example/path/ | other | one/more |
         =>
         - @{p1} = ['base/example', 'base/other']
         - @{p2} = ['/example', '/my/base/other']
@@ -1181,23 +1080,38 @@ class OperatingSystem(object):
         """
         return [self.join_path(base, path) for path in paths]
 
-    def normalize_path(self, path):
+    def normalize_path(self, path, case_normalize=False):
         """Normalizes the given path.
 
+        - Collapses redundant separators and up-level references.
+        - Converts ``/`` to ``\\`` on Windows.
+        - Replaces initial ``~`` or ``~user`` by that user's home directory.
+          The latter is not supported on Jython.
+        - If ``case_normalize`` is given a true value (see `Boolean arguments`)
+          on Windows, converts the path to all lowercase. New in Robot
+          Framework 3.1.
+
         Examples:
-        | ${path} = | Normalize Path | abc        |
-        | ${p2} =   | Normalize Path | abc/       |
-        | ${p3} =   | Normalize Path | abc/../def |
-        | ${p4} =   | Normalize Path | abc/./def  |
-        | ${p5} =   | Normalize Path | abc//def   |
+        | ${path1} = | Normalize Path | abc/           |
+        | ${path2} = | Normalize Path | abc/../def     |
+        | ${path3} = | Normalize Path | abc/./def//ghi |
+        | ${path4} = | Normalize Path | ~robot/stuff   |
         =>
-        - ${path} = 'abc'
-        - ${p2} = 'abc'
-        - ${p3} = 'def'
-        - ${p4} = 'abc/def'
-        - ${p5} = 'abc/def'
+        - ${path1} = 'abc'
+        - ${path2} = 'def'
+        - ${path3} = 'abc/def/ghi'
+        - ${path4} = '/home/robot/stuff'
+
+        On Windows result would use ``\\`` instead of ``/`` and home directory
+        would be different.
         """
         path = os.path.normpath(os.path.expanduser(path.replace('/', os.sep)))
+        # os.path.normcase doesn't normalize on OSX which also, by default,
+        # has case-insensitive file system. Our robot.utils.normpath would
+        # do that, but it's not certain would that, or other things that the
+        # utility do, desirable.
+        if case_normalize:
+            path = os.path.normcase(path)
         return path or '.'
 
     def split_path(self, path):
@@ -1255,14 +1169,14 @@ class OperatingSystem(object):
             path = path2
         else:
             trailing_dots = ''
-        basepath, ext = os.path.splitext(path)
-        if ext.startswith('.'):
-            ext = ext[1:]
-        if ext:
-            ext += trailing_dots
+        basepath, extension = os.path.splitext(path)
+        if extension.startswith('.'):
+            extension = extension[1:]
+        if extension:
+            extension += trailing_dots
         else:
             basepath += trailing_dots
-        return basepath, ext
+        return basepath, extension
 
     # Misc
 
@@ -1303,10 +1217,9 @@ class OperatingSystem(object):
         """
         path = self._absnorm(path)
         if not os.path.exists(path):
-            raise RuntimeError("Getting modified time of '%s' failed: "
-                               "Path does not exist" % path)
+            self._error("Path '%s' does not exist." % path)
         mtime = get_time(format, os.stat(path).st_mtime)
-        self._link("Last modified time of '%%s' is %s" % mtime, path)
+        self._link("Last modified time of '%%s' is %s." % mtime, path)
         return mtime
 
     def set_modified_time(self, path, mtime):
@@ -1315,7 +1228,8 @@ class OperatingSystem(object):
         Changes the modification and access times of the given file to
         the value determined by ``mtime``. The time can be given in
         different formats described below. Note that all checks
-        involving strings are case-insensitive.
+        involving strings are case-insensitive. Modified time can only
+        be set to regular files.
 
         1) If ``mtime`` is a number, or a string that can be converted
            to a number, it is interpreted as seconds since the UNIX
@@ -1327,12 +1241,10 @@ class OperatingSystem(object):
            ``YYYYMMDD hhmmss``.
 
         3) If ``mtime`` is equal to ``NOW``, the current local time is used.
-           This time is got using Python's ``time.time()`` function.
 
         4) If ``mtime`` is equal to ``UTC``, the current time in
            [http://en.wikipedia.org/wiki/Coordinated_Universal_Time|UTC]
-           is used. This time is got using ``time.time() + time.altzone``
-           in Python.
+           is used.
 
         5) If ``mtime`` is in the format like ``NOW - 1 day`` or ``UTC + 1
            hour 30 min``, the current local/UTC time plus/minus the time
@@ -1345,32 +1257,26 @@ class OperatingSystem(object):
         | Set Modified Time | /path/file | NOW                | # The local time of execution |
         | Set Modified Time | /path/file | NOW - 1 day        | # 1 day subtracted from the local time |
         | Set Modified Time | /path/file | UTC + 1h 2min 3s   | # 1h 2min 3s added to the UTC time |
-
-        Support for UTC time is a new feature in Robot Framework 2.7.5.
         """
+        mtime = parse_time(mtime)
         path = self._absnorm(path)
-        try:
-            if not os.path.exists(path):
-                raise ValueError('File does not exist')
-            if not os.path.isfile(path):
-                raise ValueError('Modified time can only be set to regular files')
-            mtime = parse_time(mtime)
-        except ValueError as err:
-            raise RuntimeError("Setting modified time of '%s' failed: %s"
-                               % (path, unicode(err)))
+        if not os.path.exists(path):
+            self._error("File '%s' does not exist." % path)
+        if not os.path.isfile(path):
+            self._error("Path '%s' is not a regular file." % path)
         os.utime(path, (mtime, mtime))
         time.sleep(0.1)  # Give os some time to really set these times
-        tstamp = secs_to_timestamp(mtime, ('-',' ',':'))
-        self._link("Set modified time of '%%s' to %s" % tstamp, path)
+        tstamp = secs_to_timestamp(mtime, seps=('-', ' ', ':'))
+        self._link("Set modified time of '%%s' to %s." % tstamp, path)
 
     def get_file_size(self, path):
-        """Returns and logs file size as an integer in bytes"""
+        """Returns and logs file size as an integer in bytes."""
         path = self._absnorm(path)
         if not os.path.isfile(path):
-            raise RuntimeError("File '%s' does not exist." % path)
+            self._error("File '%s' does not exist." % path)
         size = os.stat(path).st_size
         plural = plural_or_not(size)
-        self._link("Size of file '%%s' is %d byte%s" % (size, plural), path)
+        self._link("Size of file '%%s' is %d byte%s." % (size, plural), path)
         return size
 
     def list_directory(self, path, pattern=None, absolute=False):
@@ -1396,19 +1302,23 @@ class OperatingSystem(object):
         | ${count} = | Count Files In Directory | ${CURDIR} | ??? |
         """
         items = self._list_dir(path, pattern, absolute)
-        self._info('%d item%s:\n%s' % (len(items), plural_or_not(items), '\n'.join(items)))
+        self._info('%d item%s:\n%s' % (len(items), plural_or_not(items),
+                                       '\n'.join(items)))
         return items
 
     def list_files_in_directory(self, path, pattern=None, absolute=False):
-        """A wrapper for `List Directory` that returns only files."""
+        """Wrapper for `List Directory` that returns only files."""
         files = self._list_files_in_dir(path, pattern, absolute)
-        self._info('%d file%s:\n%s' % (len(files), plural_or_not(files), '\n'.join(files)))
+        self._info('%d file%s:\n%s' % (len(files), plural_or_not(files),
+                                       '\n'.join(files)))
         return files
 
     def list_directories_in_directory(self, path, pattern=None, absolute=False):
-        """A wrapper for `List Directory` that returns only directories."""
+        """Wrapper for `List Directory` that returns only directories."""
         dirs = self._list_dirs_in_dir(path, pattern, absolute)
-        self._info('%d director%s:\n%s' % (len(dirs), 'y' if len(dirs) == 1 else 'ies', '\n'.join(dirs)))
+        self._info('%d director%s:\n%s' % (len(dirs),
+                                           'y' if len(dirs) == 1 else 'ies',
+                                           '\n'.join(dirs)))
         return dirs
 
     def count_items_in_directory(self, path, pattern=None):
@@ -1423,13 +1333,13 @@ class OperatingSystem(object):
         return count
 
     def count_files_in_directory(self, path, pattern=None):
-        """A wrapper for `Count Items In Directory` returning only file count."""
+        """Wrapper for `Count Items In Directory` returning only file count."""
         count = len(self._list_files_in_dir(path, pattern))
         self._info("%s file%s." % (count, plural_or_not(count)))
         return count
 
     def count_directories_in_directory(self, path, pattern=None):
-        """A wrapper for `Count Items In Directory` returning only directory count."""
+        """Wrapper for `Count Items In Directory` returning only directory count."""
         count = len(self._list_dirs_in_dir(path, pattern))
         self._info("%s director%s." % (count, 'y' if count == 1 else 'ies'))
         return count
@@ -1438,14 +1348,14 @@ class OperatingSystem(object):
         path = self._absnorm(path)
         self._link("Listing contents of directory '%s'.", path)
         if not os.path.isdir(path):
-            raise RuntimeError("Directory '%s' does not exist" % path)
+            self._error("Directory '%s' does not exist." % path)
         # result is already unicode but unic also handles NFC normalization
         items = sorted(unic(item) for item in os.listdir(path))
         if pattern:
             items = [i for i in items if fnmatch.fnmatchcase(i, pattern)]
         if is_truthy(absolute):
             path = os.path.normpath(path)
-            items = [os.path.join(path,item) for item in items]
+            items = [os.path.join(path, item) for item in items]
         return items
 
     def _list_files_in_dir(self, path, pattern=None, absolute=False):
@@ -1467,17 +1377,17 @@ class OperatingSystem(object):
         """
         path = self._absnorm(path)
         if os.path.isdir(path):
-            raise RuntimeError("Cannot touch '%s' because it is a directory" % path)
+            self._error("Cannot touch '%s' because it is a directory." % path)
         if not os.path.exists(os.path.dirname(path)):
-            raise RuntimeError("Cannot touch '%s' because its parent directory "
-                            "does not exist" % path)
+            self._error("Cannot touch '%s' because its parent directory does "
+                        "not exist." % path)
         if os.path.exists(path):
             mtime = round(time.time())
             os.utime(path, (mtime, mtime))
-            self._link("Touched existing file '%s'", path)
+            self._link("Touched existing file '%s'.", path)
         else:
             open(path, 'w').close()
-            self._link("Touched new file '%s'", path)
+            self._link("Touched new file '%s'.", path)
 
     def _absnorm(self, path):
         path = self.normalize_path(path)
@@ -1486,8 +1396,11 @@ class OperatingSystem(object):
         except ValueError:  # http://ironpython.codeplex.com/workitem/29489
             return path
 
-    def _fail(self, error, default):
-        raise AssertionError(error or default)
+    def _fail(self, *messages):
+        raise AssertionError(next(msg for msg in messages if msg))
+
+    def _error(self, msg):
+        raise RuntimeError(msg)
 
     def _info(self, msg):
         self._log(msg, 'INFO')
@@ -1500,10 +1413,7 @@ class OperatingSystem(object):
         self._log(msg, 'WARN')
 
     def _log(self, msg, level):
-        if logger:
-            logger.write(msg, level)
-        else:
-            print '*%s* %s' % (level, msg)
+        logger.write(msg, level)
 
 
 class _Process:
@@ -1531,7 +1441,7 @@ class _Process:
         #   In Jython return code can be between '-255' - '255'
         #   In Python return code must be converted with 'rc >> 8' and it is
         #   between 0-255 after conversion
-        if os.sep == '\\' or sys.platform.startswith('java'):
+        if WINDOWS or JYTHON:
             return rc % 256
         return rc >> 8
 
@@ -1544,7 +1454,7 @@ class _Process:
         return self._encode_to_file_system(command)
 
     def _encode_to_file_system(self, string):
-        enc = sys.getfilesystemencoding()
+        enc = sys.getfilesystemencoding() if PY2 else None
         return string.encode(enc) if enc else string
 
     def _process_output(self, output):
@@ -1552,28 +1462,4 @@ class _Process:
             output = output.replace('\r\n', '\n')
         if output.endswith('\n'):
             output = output[:-1]
-        return decode_output(output, force=True)
-
-
-class _Process2(_Process):
-
-    def __init__(self, command, input_):
-        self._command = self._process_command(command)
-        p = subprocess.Popen(self._command, shell=True, stdin=subprocess.PIPE,
-                             stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
-                             close_fds=os.sep=='/')
-        stdin, self.stdout = p.stdin, p.stdout
-        if input_:
-            stdin.write(input_)
-        stdin.close()
-        self.closed = False
-
-    def read(self):
-        if self.closed:
-            raise RuntimeError('Cannot read from a closed process')
-        return self._process_output(self.stdout.read())
-
-    def close(self):
-        if not self.closed:
-            self.stdout.close()
-            self.closed = True
+        return console_decode(output, force=True)
