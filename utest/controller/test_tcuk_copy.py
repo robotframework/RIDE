@@ -1,3 +1,18 @@
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
 import time
 import unittest
 
@@ -5,7 +20,7 @@ from robotide.robotapi import TestCaseFile
 from robotide.controller.filecontrollers import TestCaseFileController
 
 from resources import COMPLEX_SUITE_PATH
-from nose.tools import assert_equals, assert_true
+from nose.tools import assert_equal, assert_true
 
 
 class TestCaseAndUserKeywordCopyingTest(unittest.TestCase):
@@ -15,21 +30,21 @@ class TestCaseAndUserKeywordCopyingTest(unittest.TestCase):
     def test_test_case_copy(self):
         test = self.controller.tests[0]
         copy = test.copy('New Name')
-        assert_equals(copy.name, 'New Name')
+        assert_equal(copy.name, 'New Name')
         for orig, copied in zip(test.settings, copy.settings):
-            assert_equals(orig.value, copied.value)
+            assert_equal(orig.value, copied.value)
             assert_true(copied is not orig)
-        assert_equals(test.steps, copy.steps)
+        assert_equal(test.steps, copy.steps)
         assert_true(test.steps is not copy.steps)
 
     def test_keyword_copy(self):
         test = self.controller.keywords[0]
         copy = test.copy('New Name')
-        assert_equals(copy.name, 'New Name')
+        assert_equal(copy.name, 'New Name')
         for orig, copied in zip(test.settings, copy.settings):
-            assert_equals(orig.value, copied.value)
+            assert_equal(orig.value, copied.value)
             assert_true(copied is not orig)
-        assert_equals(test.steps, copy.steps)
+        assert_equal(test.steps, copy.steps)
         assert_true(test.steps is not copy.steps)
 
     def test_test_copy_performance(self):

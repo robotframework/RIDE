@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,10 +13,11 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import sys
+from inspect import cleandoc
 
 from robotide.lib.robot.errors import DataError
-from robotide.lib.robot import utils
+from robotide.lib.robot.utils import (JAVA_VERSION, normalize, split_tags_from_doc,
+                         printable_name)
 
 from .model import LibraryDoc, KeywordDoc
 
@@ -36,26 +38,28 @@ class JavaDocBuilder(object):
 
     def _get_doc(self, doc):
         text = doc.getRawCommentText()
-        return '\n'.join(line.strip() for line in text.splitlines())
+        return cleandoc(text).rstrip()
 
     def _get_version(self, doc):
         return self._get_attr(doc, 'VERSION')
 
     def _get_scope(self, doc):
-        return self._get_attr(doc, 'SCOPE', default='TESTCASE', upper=True)
+        scope = self._get_attr(doc, 'SCOPE', upper=True)
+        return {'TESTSUITE': 'test suite',
+                'GLOBAL': 'global'}.get(scope, 'test suite')
 
     def _get_doc_format(self, doc):
         return self._get_attr(doc, 'DOC_FORMAT', upper=True)
 
-    def _get_attr(self, doc, name, default='', upper=False):
+    def _get_attr(self, doc, name, upper=False):
         name = 'ROBOT_LIBRARY_' + name
         for field in doc.fields():
             if field.name() == name and field.isPublic():
                 value = field.constantValue()
                 if upper:
-                    value = utils.normalize(value, ignore='_').upper()
+                    value = normalize(value, ignore='_').upper()
                 return value
-        return default
+        return ''
 
     def _initializers(self, doc):
         inits = [self._keyword_doc(init) for init in doc.constructors()]
@@ -67,9 +71,9 @@ class JavaDocBuilder(object):
         return [self._keyword_doc(m) for m in doc.methods()]
 
     def _keyword_doc(self, method):
-        doc, tags = utils.split_tags_from_doc(self._get_doc(method))
+        doc, tags = split_tags_from_doc(self._get_doc(method))
         return KeywordDoc(
-            name=utils.printable_name(method.name(), code_style=True),
+            name=printable_name(method.name(), code_style=True),
             args=self._get_keyword_arguments(method),
             doc=doc,
             tags=tags
@@ -115,7 +119,7 @@ def ClassDoc(path):
     jdoctool = JavadocTool.make0(context)
     filter = ModifierFilter(PUBLIC)
     java_names = List.of(path)
-    if sys.platform[4:7] < '1.8':  # API changed in Java 8
+    if JAVA_VERSION < (1, 8):  # API changed in Java 8
         root = jdoctool.getRootDocImpl('en', 'utf-8', filter, java_names,
                                        List.nil(), False, List.nil(),
                                        List.nil(), False, False, True)

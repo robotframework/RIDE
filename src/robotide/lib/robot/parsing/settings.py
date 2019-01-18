@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,11 +13,12 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robotide.lib.robot.utils import is_string
+from robotide.lib.robot.utils import is_string, py2to3, unicode
 
 from .comments import Comment
 
 
+@py2to3
 class Setting(object):
 
     def __init__(self, setting_name, parent=None, comment=None):
@@ -45,17 +47,15 @@ class Setting(object):
 
     def populate(self, value, comment=None):
         """Mainly used at parsing time, later attributes can be set directly."""
-        if self._populated:
-            self._using_setting_multiple_times_is_deprecated()
-        self._populate(value)
-        self._set_comment(comment)
-        self._populated = True
-
-    def _using_setting_multiple_times_is_deprecated(self):
-        msg = "Using %s setting multiple times is deprecated."
-        if self.setting_name not in ['[Arguments]', '[Return]']:
-            msg += " Use '...' syntax for line continuation instead."
-        self.report_invalid_syntax(msg % self.setting_name, 'WARN')
+        if not self._populated:
+            self._populate(value)
+            self._set_comment(comment)
+            self._populated = True
+        else:
+            self._set_initial_value()
+            self._set_comment(None)
+            self.report_invalid_syntax("Setting '%s' used multiple times."
+                                       % self.setting_name, 'ERROR')
 
     def _populate(self, value):
         self.value = value
@@ -196,6 +196,12 @@ class Timeout(Setting):
             self.value = value[0] if value else ''
             value = value[1:]
         self.message = self._concat_string_with_value(self.message, value)
+        # TODO: Remove custom timeout message support in RF 3.2.
+        if value and self.parent:
+            self.parent.report_invalid_syntax(
+                'Using custom timeout messages is deprecated since Robot '
+                'Framework 3.0.1 and will be removed in future versions. '
+                "Message that was used is '%s'." % self.message, level='WARN')
 
     def is_set(self):
         return self.value is not None
@@ -278,23 +284,32 @@ class _Import(Setting):
     def _data_as_list(self):
         return [self.type, self.name] + self.args
 
+    def report_invalid_syntax(self, message, level='ERROR', parent=None):
+        parent = parent or getattr(self, 'parent', None)
+        if parent:
+            parent.report_invalid_syntax(message, level)
+        else:
+            from robotide.lib.robot.api import logger
+            logger.write(message, level)
+
 
 class Library(_Import):
 
     def __init__(self, parent, name, args=None, alias=None, comment=None):
         if args and not alias:
-            args, alias = self._split_alias(args)
+            args, alias = self._split_possible_alias(args)
         _Import.__init__(self, parent, name, args, alias, comment)
 
-    def _split_alias(self, args):
-        if len(args) >= 2 and is_string(args[-2]) \
-                and args[-2].upper() == 'WITH NAME':
+    def _split_possible_alias(self, args):
+        if len(args) > 1 and args[-2] == 'WITH NAME':
             return args[:-2], args[-1]
         return args, None
 
     def _data_as_list(self):
-        alias = ['WITH NAME', self.alias] if self.alias else []
-        return ['Library', self.name] + self.args + alias
+        data = ['Library', self.name] + self.args
+        if self.alias:
+            data += ['WITH NAME', self.alias]
+        return data
 
 
 class Resource(_Import):

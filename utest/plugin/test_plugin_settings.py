@@ -1,3 +1,18 @@
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
 import tempfile
 import unittest
 import os
@@ -16,25 +31,25 @@ class TestPluginSettings(TestSettingsHelper):
             os.remove(self._settings_path)
 
     def test_setting_default_settings_when_no_settings_exist(self):
-        self.assertEquals(self._create_plugin().foo, 'bar')
+        self.assertEqual(self._create_plugin().foo, 'bar')
 
     def test_set_default_settings_when_settings_exist(self):
         app = self._create_app()
         app.settings['Plugins'].add_section('MyPlug', foo='zip')
-        self.assertEquals(Plugin(app, name='MyPlug').foo, 'zip')
+        self.assertEqual(Plugin(app, name='MyPlug').foo, 'zip')
 
     def test_save_setting_with_override(self):
         p = self._create_plugin()
         p.save_setting('foo', 'new')
-        self.assertEquals(p.foo, 'new')
+        self.assertEqual(p.foo, 'new')
 
     def test_save_setting_without_override(self):
         p = self._create_plugin()
         p.save_setting('foo', 'new', override=False)
-        self.assertEquals(p.foo, 'bar')
+        self.assertEqual(p.foo, 'bar')
 
     def test_direct_attribute_access_with_existing_setting(self):
-        self.assertEquals(self._create_plugin().foo, 'bar')
+        self.assertEqual(self._create_plugin().foo, 'bar')
 
     def test_direct_attribute_access_with_non_existing_setting(self):
         try:

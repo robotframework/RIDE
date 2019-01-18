@@ -33,9 +33,11 @@ window.model = (function () {
             for (var i in suites)
                 tests = tests.concat(suites[i].searchTestsInSuite(pattern, matcher));
             return tests;
-        }
+        };
         suite.searchTestsByTag = function (tag) {
             return suite.searchTests(function (test) {
+                if (tag.info == "critical" || tag.info == "non-critical")
+                    return containsTagPattern(test.tags, tag.label);
                 if (tag.combined)
                     return containsTagPattern(test.tags, tag.combined);
                 return containsTag(test.tags, tag.label);
@@ -255,9 +257,6 @@ window.stats = (function () {
         var stat = statElem(data);
         stat.fullName = stat.label;
         stat.formatParentName = function () { return util.formatParentName(stat); };
-        // compatibility with RF 2.5 outputs
-        if (!stat.name)
-            stat.name = stat.label.split('.').pop();
         return stat;
     }
 

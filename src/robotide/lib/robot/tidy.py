@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -28,6 +29,20 @@ This module also provides :class:`Tidy` class and :func:`tidy_cli` function
 that can be used programmatically. Other code is for internal usage.
 """
 
+import os
+import sys
+
+# Allows running as a script. __name__ check needed with multiprocessing:
+# https://github.com/robotframework/robotframework/issues/1137
+if 'robot' not in sys.modules and __name__ == '__main__':
+    import pythonpathsetter
+
+from robotide.lib.robot.errors import DataError
+from robotide.lib.robot.parsing import (ResourceFile, TestDataDirectory, TestCaseFile,
+                           disable_curdir_processing)
+from robotide.lib.robot.utils import Application, binary_file_writer, file_writer, PY2
+
+
 USAGE = """robot.tidy -- Robot Framework test data clean-up tool
 
 Version:  <VERSION>
@@ -39,8 +54,8 @@ Usage:  python -m robot.tidy [options] inputfile
 
 Tidy tool can be used to clean up and change format of Robot Framework test
 data files. The output is written into the standard output stream by default,
-but an optional output file can be given starting from Robot Framework 2.7.5.
-Files can also be modified in-place using --inplace or --recursive options.
+but an optional output file can be given as well. Files can also be modified
+in-place using --inplace or --recursive options.
 
 Options
 =======
@@ -49,50 +64,55 @@ Options
                  (or removed, if the format is changed). When this option is
                  used, it is possible to give multiple input files.
                  Examples:
-                   python -m robot.tidy --inplace tests.html
-                   python -m robot.tidy --inplace --format txt *.html
+                   python -m robot.tidy --inplace tests.robot
+                   python -m robot.tidy --inplace --format robot *.html
  -r --recursive  Process given directory recursively. Files in the directory
                  are processed in-place similarly as when --inplace option
                  is used.
  -f --format txt|html|tsv|robot
                  Output file format. If omitted, the format of the input
                  file is used.
- -p --usepipes   Use pipe (`|`) as a cell separator in the txt format.
+ -p --usepipes   Use pipe ('|') as a cell separator in the plain text format.
  -s --spacecount number
-                 The number of spaces between cells in the txt format.
-                 New in Robot Framework 2.7.3.
+                 The number of spaces between cells in the plain text format.
+                 Default is 4.
  -l --lineseparator native|windows|unix
                  Line separator to use in outputs. The default is 'native'.
                  native:  use operating system's native line separators
                  windows: use Windows line separators (CRLF)
                  unix:    use Unix line separators (LF)
-                 New in Robot Framework 2.7.6.
  -h -? --help    Show this help.
 
 Cleaning up the test data
 =========================
 
-Test case files created with HTML editors or written by hand can be normalized
-using Tidy. Tidy always writes consistent headers, consistent order for
-settings, and consistent amount of whitespace between cells and tables.
+Test case files can be normalized using Tidy. Tidy always writes consistent
+headers, consistent order for settings, and consistent amount of whitespace
+between sections and cells.
 
 Examples:
-  python -m robot.tidy messed_up_tests.html cleaned_tests.html
-  python -m robot.tidy --inplace tests.txt
+  python -m robot.tidy messed_up_tests.robot cleaned_up_tests.robot
+  python -m robot.tidy --inplace tests.robot
+  python -m robot.tidy --recursive path/to/tests
 
 Changing the test data format
 =============================
 
-Robot Framework supports test data in HTML, TSV and TXT formats, and Tidy
-makes changing between the formats trivial. Input format is always determined
-based on the extension of the input file. Output format is got from the
-extension of the output file, when used, and can also be set using the --format
-option.
+Robot Framework supports test data in various formats, but nowadays the
+plain text format with the '.robot' extension is the most commonly used.
+Tidy makes it easy to convert data from one format to another. This is
+especially useful if there is a need to convert tests in deprecated HTML
+format to other formats.
+
+Input format is always determined based on the extension of the input file.
+If output file is given, the output format is got from its extension, and
+when using --inplace or --recursive, it is possible to specify the desired
+format using the --format option.
 
 Examples:
-  python -m robot.tidy tests.html tests.tsv
-  python -m robot.tidy --format tsv --inplace tests.html
-  python -m robot.tidy --format txt --recursive mytests
+  python -m robot.tidy tests.html tests.robot
+  python -m robot.tidy --format robot --inplace tests.html
+  python -m robot.tidy --format robot --recursive path/to/tests
 
 Output encoding
 ===============
@@ -110,20 +130,6 @@ can also be run as a script like `python path/robot/tidy.py`.
 For more information about Tidy and other built-in tools, see
 http://robotframework.org/robotframework/#built-in-tools.
 """
-
-import os
-import sys
-from StringIO import StringIO
-
-# Allows running as a script. __name__ check needed with multiprocessing:
-# http://code.google.com/p/robotframework/issues/detail?id=1137
-if 'robot' not in sys.modules and __name__ == '__main__':
-    import pythonpathsetter
-
-from robotide.lib.robot.errors import DataError
-from robotide.lib.robot.parsing import (ResourceFile, TestDataDirectory, TestCaseFile,
-                           disable_curdir_processing)
-from robotide.lib.robot.utils import Application
 
 
 class Tidy(object):
@@ -150,13 +156,19 @@ class Tidy(object):
         Use :func:`inplace` to tidy files in-place.
         """
         data = self._parse_data(path)
-        outfile = open(output, 'wb') if output else StringIO()
-        try:
-            self._save_file(data, outfile)
+        with self._get_writer(path, output) as writer:
+            self._save_file(data, writer)
             if not output:
-                return outfile.getvalue().replace('\r\n', '\n').decode('UTF-8')
-        finally:
-            outfile.close()
+                return writer.getvalue().replace('\r\n', '\n')
+
+    def _get_writer(self, inpath, outpath):
+        if PY2 and self._is_tsv(inpath):
+            return binary_file_writer(outpath)
+        return file_writer(outpath, newline=self._options['line_separator'])
+
+    def _is_tsv(self, path):
+        format = self._options['format'] or os.path.splitext(path)[1][1:]
+        return format.upper() == 'TSV'
 
     def inplace(self, *paths):
         """Tidy file(s) in-place.

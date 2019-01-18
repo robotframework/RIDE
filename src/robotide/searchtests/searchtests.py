@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -14,14 +15,19 @@
 
 import wx
 
+from functools import (total_ordering, cmp_to_key)
 from robotide import robotapi
 from robotide.action import ActionInfo
 from robotide.pluginapi import Plugin
 from robotide.publish import RideOpenTagSearch
 from robotide.searchtests.dialogsearchtests import TestsDialog
 from robotide.widgets import ImageProvider
+from robotide.utils import PY3
+if PY3:
+    from robotide.utils import unicode
 
 
+@total_ordering
 class TestSearchPlugin(Plugin):
     """A plugin for searching tests based on name, tags and documentation"""
     HEADER = 'Search Tests'
@@ -92,7 +98,8 @@ class TestSearchPlugin(Plugin):
         if not current_suite:
             return []
         result = self._search(matcher, current_suite)
-        return sorted(result, cmp=lambda x, y: cmp(x[1], y[1]))
+        return sorted(result, key=cmp_to_key(lambda x, y:
+                                             self.m_cmp(x[1], y[1])))
 
     def _search(self, matcher, data):
         for test in data.tests:
@@ -105,6 +112,19 @@ class TestSearchPlugin(Plugin):
 
     def disable(self):
         self.unregister_actions()
+
+    @staticmethod
+    def m_cmp(a, b):
+        return (a > b) - (a < b)
+
+    def __eq__(self, other):
+        return self.name.lower() == other.name.lower()
+
+    def __hash__(self):
+        return hash(repr(self))
+
+    def __lt__(self, other):
+        return self.name.lower() < other.name.lower()
 
 
 class TagSearchMatcher(object):
@@ -161,10 +181,14 @@ class SearchResult(object):
         self.__total_matches = None
         self.__tags = None
 
+    # This is ignored on Python 3
+    """
     def __cmp__(self, other):
+    """
+    def _helper_cmp_(self, other):
         totals, other_totals = self._total_matches(), other._total_matches()
         if totals != other_totals:
-            return cmp(other_totals, totals)
+            return self.m_cmp(other_totals, totals)
         names = self._compare(
             self._is_name_match(), other._is_name_match(),
             self._test.name, other._test.name)
@@ -175,7 +199,7 @@ class SearchResult(object):
             self._tags(), other._tags())
         if tags:
             return tags
-        return cmp(self._test.name, other._test.name)
+        return self.m_cmp(self._test.name, other._test.name)
 
     def _compare(self, my_result, other_result, my_cmp, other_cmp):
         if my_result and not other_result:
@@ -183,7 +207,7 @@ class SearchResult(object):
         if not my_result and other_result:
             return 1
         if my_result and other_result:
-            return cmp(my_cmp, other_cmp)
+            return self.m_cmp(my_cmp, other_cmp)
         return 0
 
     def _total_matches(self):
@@ -211,3 +235,28 @@ class SearchResult(object):
 
     def __repr__(self):
         return self._test.name
+
+    @staticmethod
+    def m_cmp(a, b):
+        return (a > b) - (a < b)
+
+    def __eq__(self, other):
+        return self.__hash__() == other.__hash__()
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
+    def __hash__(self):
+        return hash(repr(self))
+
+    def __lt__(self, other):
+        return self._helper_cmp_(other) == -1
+
+    def __le__(self, other):
+        return self._helper_cmp_(other) <= 0
+
+    def __gt__(self, other):
+        return self._helper_cmp_(other) == 1
+
+    def __ge__(self, other):
+        return self._helper_cmp_(other) >= 0

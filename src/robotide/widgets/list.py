@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -84,7 +85,7 @@ class ListModel(object):
         return ''
 
     def image(self, row):
-        return None
+        return -1
 
     def item_attributes(self, row):
         return None

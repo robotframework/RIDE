@@ -1,4 +1,6 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#!/usr/bin/env python
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,8 +14,15 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robotide.lib.robot import model
 
+import os
+import sys
 
-class Message(model.Message):
-    __slots__ = []
+# Must be protected against reimporting
+# As multiprocessing has an odd requirement
+# and we use multiprocessing
+# http://docs.python.org/library/multiprocessing.html#windows
+if __name__ == '__main__':
+    arg = " ".join(sys.argv[1:]) if len(sys.argv[1:]) > 0 else "-help"
+    py = sys.executable
+    os.system("{} -m robotide.postinstall {}\n".format(py,arg))

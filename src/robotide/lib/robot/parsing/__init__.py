@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -50,7 +51,8 @@ Example
 from .model import TestData, TestCaseFile, TestDataDirectory, ResourceFile
 from . import populators
 
-VALID_EXTENSIONS = tuple(populators.READERS)
+
+TEST_EXTENSIONS = set(populators.READERS)
 
 
 def disable_curdir_processing(method):

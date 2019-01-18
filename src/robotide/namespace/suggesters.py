@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,6 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+from functools import total_ordering
 from robotide import robotapi
 
 
@@ -27,6 +29,7 @@ class SuggestionSource(object):
         return self._plugin.content_assist_values(value) # TODO: Remove old functionality when no more needed
 
 
+@total_ordering
 class _Suggester(object):
 
     def _suggestion(self, name):
@@ -36,18 +39,27 @@ class _Suggester(object):
         s.details = None
         return s
 
+    def __eq__(self, other):
+        return self.name.lower() == other.name.lower()
+
+    def __hash__(self):
+        return hash(repr(self))
+
+    def __gt__(self, other):
+        return self.name.lower() > other.name.lower()
+
 
 class HistorySuggester(_Suggester):
 
     def __init__(self):
-        self._suggestions = []
+        self._suggestions = list()
 
     def get_suggestions(self, name, *args):
         return [s for s in self._suggestions if name is None or name.lower() in s.name.lower()]
 
     def store(self, name):
         self._suggestions += [self._suggestion(name)]
-        self._suggestions.sort()
+        # DEBUG For now remove sorting self._suggestions.sort()
 
 
 class _ImportSuggester(_Suggester):
@@ -62,7 +74,7 @@ class _ImportSuggester(_Suggester):
         return [self._suggestion(n) for n in sorted(suggestion_names) if name in n]
 
     def _get_already_imported(self):
-        return set(imp.name  for imp in self._df_controller.imports)
+        return set(imp.name for imp in self._df_controller.imports)
 
 
 class ResourceSuggester(_ImportSuggester):

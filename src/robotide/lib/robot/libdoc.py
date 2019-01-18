@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -14,7 +15,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-"""Module implementing the command line entry point for the `Libdoc` tool.
+"""Module implementing the command line entry point for the Libdoc tool.
 
 This module can be executed from the command line using the following
 approaches::
@@ -29,6 +30,19 @@ that can be used programmatically. Other code is for internal usage.
 
 Libdoc itself is implemented in the :mod:`~robot.libdocpkg` package.
 """
+
+import sys
+import os
+
+# Allows running as a script. __name__ check needed with multiprocessing:
+# https://github.com/robotframework/robotframework/issues/1137
+if 'robot' not in sys.modules and __name__ == '__main__':
+    import pythonpathsetter
+
+from robotide.lib.robot.utils import Application, seq2str
+from robotide.lib.robot.errors import DataError
+from robotide.lib.robot.libdocpkg import LibraryDocumentation, ConsoleViewer
+
 
 USAGE = """robot.libdoc -- Robot Framework library documentation generator
 
@@ -59,16 +73,12 @@ Options
                           HTML, plain text, and reStructuredText. The default
                           value can be specified in test library source code
                           and the initial default value is `ROBOT`.
-                          New in Robot Framework 2.7.5.
  -n --name newname        Sets the name of the documented library or resource.
  -v --version newversion  Sets the version of the documented library or
                           resource.
  -P --pythonpath path *   Additional locations where to search for libraries
                           and resources.
- -E --escape what:with *  Escapes characters which are problematic in console.
-                          'what' is the name of the character to escape and
-                          'with' is the string to escape it with.
-                          <-------------------ESCAPES------------------------>
+ -E --escape what:with *  Deprecated. Use console escape mechanism instead.
  -h -? --help             Print this help.
 
 Creating documentation
@@ -124,18 +134,6 @@ installed module, but it can also be executed as a script like
 For more information about Libdoc and other built-in tools, see
 http://robotframework.org/robotframework/#built-in-tools.
 """
-
-import sys
-import os
-
-# Allows running as a script. __name__ check needed with multiprocessing:
-# http://code.google.com/p/robotframework/issues/detail?id=1137
-if 'robot' not in sys.modules and __name__ == '__main__':
-    import pythonpathsetter
-
-from robotide.lib.robot.utils import Application, seq2str
-from robotide.lib.robot.errors import DataError
-from robotide.lib.robot.libdocpkg import LibraryDocumentation, ConsoleViewer
 
 
 class LibDoc(Application):
@@ -196,11 +194,26 @@ def libdoc_cli(arguments):
     LibDoc().execute_cli(arguments)
 
 
-def libdoc(library_or_resource, outfile, name='', version='', format=None):
-    """Executes libdoc.
+def libdoc(library_or_resource, outfile, name='', version='', format=None,
+           docformat=None):
+    """Executes Libdoc.
+
+    :param library_or_resource: Name or path of the test library or resource
+        file to be documented.
+    :param outfile: Path path to the file where to write outputs.
+    :param name: Custom name to give to the documented library or resource.
+    :param version: Version to give to the documented library or resource.
+    :param format: Specifies whether to generate HTML or XML output. If this
+        options is not used, the format is got from the extension of
+        the output file. Possible values are ``'HTML'`` and ``'XML'``.
+    :param docformat: Documentation source format. Possible values are
+        ``'ROBOT'``, ``'reST'``, ``'HTML'`` and ``'TEXT'``. The default value
+        can be specified in test library source code and the initial default
+        is ``'ROBOT'``. New in Robot Framework 3.0.3.
 
     Arguments have same semantics as Libdoc command line options with
-    same names.
+    same names. Run ``python -m robot.libdoc --help`` or consult the Libdoc
+    section in the Robot Framework User Guide for more details.
 
     Example::
 
@@ -209,7 +222,7 @@ def libdoc(library_or_resource, outfile, name='', version='', format=None):
         libdoc('MyLibrary.py', 'MyLibraryDoc.html', version='1.0')
     """
     LibDoc().execute(library_or_resource, outfile, name=name, version=version,
-                     format=format)
+                     format=format, docformat=docformat)
 
 
 if __name__ == '__main__':

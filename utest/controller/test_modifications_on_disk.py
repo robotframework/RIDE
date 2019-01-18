@@ -1,12 +1,27 @@
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
 import random
 import unittest
 import os
 import tempfile
 import shutil
-from nose.tools import assert_true, assert_false, assert_equals
+from nose.tools import assert_true, assert_false, assert_equal
 
 from robotide.robotapi import TestCaseFile, TestDataDirectory, ResourceFile
-from robotide.controller.commands import (
+from robotide.controller.ctrlcommands import (
     DeleteResourceAndImports, DeleteFile, SaveFile)
 from robotide.controller.filecontrollers import (
     TestCaseFileController, TestDataDirectoryController,
@@ -76,13 +91,13 @@ class TestModifiedOnDiskWithFileSuite(_DataDependentTest):
         ctrl = TestCaseFileController(
             TestCaseFile(parent=model_parent, source=self._filepath).populate(),
             parent=controller_parent)
-        assert_equals(len(ctrl.tests), 1)
+        assert_equal(len(ctrl.tests), 1)
         open(self._filepath, 'a').write('Second Test  Log  Hello World!\n')
         ctrl.reload()
-        assert_equals(len(ctrl.tests), 2)
-        assert_equals(ctrl.tests[-1].name, 'Second Test')
-        assert_equals(ctrl.parent, controller_parent)
-        assert_equals(ctrl.data.parent, model_parent)
+        assert_equal(len(ctrl.tests), 2)
+        assert_equal(ctrl.tests[-1].name, 'Second Test')
+        assert_equal(ctrl.parent, controller_parent)
+        assert_equal(ctrl.data.parent, model_parent)
 
     def test_overwrite(self):
         ctrl = TestCaseFileController(TestCaseFile(source=self._filepath).populate(),
@@ -102,10 +117,10 @@ class TestModifiedOnDiskWithDirectorySuite(_DataDependentTest):
             parent=controller_parent)
         open(self._init_path, 'a').write('...  ninjaed more documentation')
         ctrl.reload()
-        assert_equals(ctrl.settings[0].value,
+        assert_equal(ctrl.settings[0].value,
                       'Ride unit testing file\\nninjaed more documentation')
-        assert_equals(ctrl.parent, controller_parent)
-        assert_equals(ctrl.data.parent, model_parent)
+        assert_equal(ctrl.parent, controller_parent)
+        assert_equal(ctrl.data.parent, model_parent)
 
     def test_mtime_with_directory_suite(self):
         ctrl = TestDataDirectoryController(TestDataDirectory(source=self._dirpath).populate())
@@ -121,12 +136,12 @@ class TestModifiedOnDiskWithresource(_DataDependentTest):
         controller_parent.children = []
         controller_parent.add_child = controller_parent.children.append
         ctrl = ResourceFileController(ResourceFile(source=self._resource_path).populate(), parent=controller_parent)
-        assert_equals(len(ctrl.keywords), 1)
+        assert_equal(len(ctrl.keywords), 1)
         open(self._resource_path, 'a').write('Ninjaed Keyword  Log  I am taking over!\n')
         ctrl.reload()
-        assert_equals(len(ctrl.keywords), 2)
-        assert_equals(ctrl.keywords[-1].name, 'Ninjaed Keyword')
-        assert_equals(ctrl.parent, controller_parent)
+        assert_equal(len(ctrl.keywords), 2)
+        assert_equal(ctrl.keywords[-1].name, 'Ninjaed Keyword')
+        assert_equal(ctrl.parent, controller_parent)
 
 
 class TestDataFileRemoval(_DataDependentTest):
@@ -198,10 +213,10 @@ class DeleteCommandTest(_DataDependentTest):
         self.assert_import_count(1)
 
     def assert_resource_count(self, resource_count):
-        assert_equals(len(self.project.resources), resource_count)
+        assert_equal(len(self.project.resources), resource_count)
 
     def assert_import_count(self, import_count):
-        assert_equals(len(self.suite.setting_table.imports), import_count)
+        assert_equal(len(self.suite.setting_table.imports), import_count)
 
 
 if __name__ == "__main__":

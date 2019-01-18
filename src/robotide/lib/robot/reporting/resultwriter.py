@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -84,7 +85,7 @@ class ResultWriter(object):
         try:
             writer(path, *args)
         except DataError as err:
-            LOGGER.error(unicode(err))
+            LOGGER.error(err.message)
         except EnvironmentError as err:
             # `err.filename` can be different than `path` at least if reading
             # log/report templates or writing split log fails.
@@ -118,7 +119,10 @@ class Results(object):
             self._result = ExecutionResult(include_keywords=include_keywords,
                                            flattened_keywords=flattened,
                                            merge=self._settings.merge,
+                                           rpa=self._settings.rpa,
                                            *self._sources)
+            if self._settings.rpa is None:
+                self._settings.rpa = self._result.rpa
             self._result.configure(self._settings.status_rc,
                                    self._settings.suite_config,
                                    self._settings.statistics_config)

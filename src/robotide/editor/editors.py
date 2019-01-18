@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -73,7 +74,7 @@ class _RobotTableEditor(EditorPanel):
         if self.title:
             self.sizer.Add(self._create_header(self.title),
                            0, wx.EXPAND | wx.ALL, 5)
-            self.sizer.Add((0, 10))
+            # self.sizer.Add((0, 10))  # DEBUG why this?
         self._editors = []
         self._reset_last_show_tooltip()
         self._populate()
@@ -122,7 +123,10 @@ class _RobotTableEditor(EditorPanel):
 
     def destroy(self):
         self.close()
-        self.Destroy()
+        if wx.VERSION < (3, 0, 3, ''):  # DEBUG wxPhoenix
+            self.Destroy()
+        else:
+            self.DestroyLater()
 
     def _create_header(self, text, readonly=False):
         if readonly:
@@ -146,7 +150,7 @@ class _RobotTableEditor(EditorPanel):
     def _restore_settings_open_status(self):
         if self._should_settings_be_open():
             self._settings.Expand()
-            wx.CallLater(200, self._collabsible_changed)
+            wx.CallAfter(self._collabsible_changed)
         else:
             self._settings.Collapse()
 
@@ -188,7 +192,6 @@ class Settings(wx.CollapsiblePane):
             style=wx.CP_DEFAULT_STYLE | wx.CP_NO_TLW_RESIZE)
         self._sizer = wx.BoxSizer(wx.VERTICAL)
         self._editors = []
-        self.Bind(wx.EVT_SIZE, self._recalc_size)
 
     def Expand(self):
         wx.CollapsiblePane.Expand(self)
@@ -223,16 +226,6 @@ class Settings(wx.CollapsiblePane):
             self._sizer.Add(editor, 0, wx.ALL | wx.EXPAND, self.BORDER)
             self._editors.append(editor)
         self.GetPane().SetSizer(self._sizer)
-
-    def _recalc_size(self, event=None):
-        if self.IsExpanded():
-            expand_button_height = 32  # good guess...
-            height = sum(editor.Size[1] + 2 * self.BORDER
-                         for editor in self._editors)
-            self.SetSize((-1, height + expand_button_height))
-            self._sizer.Layout()
-        if event:
-            event.Skip()
 
     def highlight(self, text, expand=True):
         match = False

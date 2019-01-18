@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -50,8 +51,8 @@ class SpecImporterPlugin(Plugin):
         dlg = wx.FileDialog(self.frame,
                             message='Import Library Spec XML',
                             wildcard=wildcard,
-                            defaultDir=self.model.default_dir,
-                            style=wx.OPEN)
+                            defaultDir=self.model.default_dir)  # DEBUG
+        # , style=wx.OPEN)
         if dlg.ShowModal() == wx.ID_OK:
             path = dlg.GetPath()
         else:

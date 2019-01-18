@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -13,6 +14,7 @@
 #  limitations under the License.
 
 import inspect
+import io
 try:
     import yaml
 except ImportError:
@@ -71,7 +73,7 @@ class YamlImporter(object):
                 for name, value in variables]
 
     def _import(self, path):
-        with open(path) as stream:
+        with io.open(path, encoding='UTF-8') as stream:
             variables = yaml.load(stream)
         if not is_dict_like(variables):
             raise DataError('YAML variable file must be a mapping, got %s.'

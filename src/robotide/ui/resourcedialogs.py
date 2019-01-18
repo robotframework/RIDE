@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -11,11 +12,12 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+
 from robotide.controller.filecontrollers import ResourceFileController
 
 import wx
 
-from robotide.controller.commands import DeleteResourceAndImports, DeleteFile, DeleteFolder, DeleteFolderAndImports
+from robotide.controller.ctrlcommands import DeleteResourceAndImports, DeleteFile, DeleteFolder, DeleteFolderAndImports
 from robotide.usages.commands import FindResourceUsages, FindTestFolderUsages
 from robotide.usages.usagesdialog import ResourceImportListModel, RecursiveResourceImportListModel
 from robotide.widgets import Dialog, VirtualList, VerticalSizer, Label

@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -13,14 +14,16 @@
 #  limitations under the License.
 
 import base64
-import sys
+
+from .platform import JYTHON, PY2
 
 
 def compress_text(text):
-    return base64.b64encode(_compress(text.encode('UTF-8')))
+    result = base64.b64encode(_compress(text.encode('UTF-8')))
+    return result if PY2 else result.decode('ASCII')
 
 
-if not sys.platform.startswith('java'):
+if not JYTHON:
 
     import zlib
 

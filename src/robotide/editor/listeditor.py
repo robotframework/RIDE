@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -14,7 +15,7 @@
 
 import wx
 from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
-from robotide.controller.commands import MoveUp, MoveDown, DeleteItem
+from robotide.controller.ctrlcommands import MoveUp, MoveDown, DeleteItem
 
 from robotide.utils import RideEventHandler
 from robotide.widgets import PopupMenu, PopupMenuItems, ButtonWithHandler, Font
@@ -140,8 +141,13 @@ class ListEditorBase(wx.Panel):
         return False
 
 
-class ListEditor(ListEditorBase, RideEventHandler): pass
+# Metaclass fix from http://code.activestate.com/recipes/204197-solving-the-metaclass-conflict/
+from robotide.utils.noconflict import classmaker
 
+
+class ListEditor(ListEditorBase, RideEventHandler):
+    __metaclass__ = classmaker()
+    pass
 
 class AutoWidthColumnList(wx.ListCtrl, ListCtrlAutoWidthMixin):
 
@@ -164,15 +170,21 @@ class AutoWidthColumnList(wx.ListCtrl, ListCtrlAutoWidthMixin):
     def _insert_data(self, data):
         for row, item in enumerate(data):
             rowdata = self._parent.get_column_values(item)
-            self.InsertStringItem(row, rowdata[0])
-            for i in range(1, len(rowdata)):
-                data = rowdata[i] is not None and rowdata[i] or ''
-                self.SetStringItem(row, i, data)
+            if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
+                self.InsertItem(row, rowdata[0])
+                for i in range(1, len(rowdata)):
+                    data = rowdata[i] is not None and rowdata[i] or ''
+                    self.SetItem(row, i, data)
+            else:
+                self.InsertStringItem(row, rowdata[0])
+                for i in range(1, len(rowdata)):
+                    data = rowdata[i] is not None and rowdata[i] or ''
+                    self.SetStringItem(row, i, data)
             self._add_style(row, item)
 
     def _set_column_widths(self):
-        min_width = self._parent.Parent.plugin.global_settings['list col min width']
-        max_width = self._parent.Parent.plugin.global_settings['list col max width']
+        min_width = self._parent.Parent.plugin.global_settings.get('list col min width', 50)
+        max_width = self._parent.Parent.plugin.global_settings.get('list col max width', 120)
         for i in range(self.ColumnCount):
             self.SetColumnWidth(i, -1)
             if self.GetColumnWidth(i) < min_width:
