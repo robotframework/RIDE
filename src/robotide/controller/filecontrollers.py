@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -13,9 +14,15 @@
 #  limitations under the License.
 
 import os
+import sys
+import stat
 from itertools import chain
 import shutil
-import commands
+import robotide.controller.ctrlcommands
+try:
+    import subprocess32 as subprocess
+except ImportError:
+    import subprocess
 from robotide.controller.dataloader import ExcludedDirectory, TestData
 
 from robotide.publish import (RideDataFileRemoved, RideInitFileRemoved,
@@ -35,6 +42,9 @@ from .settingcontrollers import (DocumentationController, FixtureController,
 from .tablecontrollers import (VariableTableController, TestCaseTableController,
         KeywordTableController, ImportSettingsController,
         MetadataListController, TestCaseController)
+from robotide.utils import PY3
+if PY3:
+    from robotide.utils import basestring
 
 
 def _get_controller(project, data, parent):
@@ -261,9 +271,60 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
         old_file = self.filename
         self.data.source = os.path.join(self.directory, '%s.%s' % (basename, self.get_format()))
         self.filename = self.data.source
-        self.execute(commands.SaveFile())
+        self.execute(robotide.controller.ctrlcommands.SaveFile())
         if old_file != self.filename:
             self.remove_from_filesystem(old_file)
+    
+    def open_filemanager(self, path=None):
+        # tested on Win7 x64
+        path = path or self.filename
+        if os.path.exists(path):
+            if sys.platform=='win32':
+                os.startfile('"{}"'.format(os.path.dirname(path)), 'explore')
+    
+    def remove_readonly(self, path=None):
+            path = path or self.filename
+            os.chmod(path, stat.S_IWRITE)
+
+    def open_filemanager(self, path=None):
+        # tested on Win7 x64
+        path = path or self.filename
+        if os.path.exists(path):
+            if sys.platform=='win32':
+                #  There was encoding errors if directory had unicode chars
+                # TODO test on all OS directory names with accented chars, for example 'ccedilla'
+                os.startfile(r"%s" % os.path.dirname(path), 'explore')
+            elif sys.platform.startswith('linux'):
+                # how to detect which explorer is used?
+                # nautilus, dolphin, konqueror
+                # TODO check if explorer exits
+                # TODO get prefered explorer from preferences
+                try:
+                    subprocess.Popen(["nautilus", "{}".format(
+                        os.path.dirname(path))])
+                except OSError or FileNotFoundError:
+                    try:
+                        subprocess.Popen(
+                            ["dolphin", "{}".format(os.path.dirname(path))])
+                    except  OSError or FileNotFoundError:
+                        try:
+                            subprocess.Popen(
+                               ["konqueror", "{}".format(
+                                   os.path.dirname(path))])
+                        except  OSError or FileNotFoundError:
+                            print("Could not launch explorer. Tried nautilus, "
+                                  "dolphin and konqueror.")
+            else:
+                try:
+                    subprocess.Popen(["finder", "{}".format(
+                        os.path.dirname(path))])
+                except OSError or FileNotFoundError:
+                    subprocess.Popen(["open", "{}".format(
+                        os.path.dirname(path))])
+
+    def remove_readonly(self, path=None):
+            path = path or self.filename
+            os.chmod(path, stat.S_IWRITE)
 
     def remove_from_filesystem(self, path=None):
         path = path or self.filename
@@ -608,7 +669,6 @@ class TestCaseFileController(_FileSystemElement, _DataController):
 
     def find_controller_by_longname(self, longname, node_testname = None):
         return self.find_controller_by_names(longname.split("."), node_testname)
-
 
     def find_controller_by_names(self, names, node_testname = None):
         names = '.'.join(names)

@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -18,9 +19,10 @@ import subprocess
 import time
 import signal as signal_module
 
-from robotide.lib.robot.utils import (ConnectionCache, abspath, encode_to_system,
-                         decode_output, is_truthy, secs_to_timestr,
-                         timestr_to_secs, IRONPYTHON, JYTHON)
+from robotide.lib.robot.utils import (ConnectionCache, abspath, cmdline2list, console_decode,
+                         is_list_like, is_truthy, NormalizedDict, py2to3,
+                         secs_to_timestr, system_decode, system_encode,
+                         timestr_to_secs, IRONPYTHON, JYTHON, WINDOWS)
 from robotide.lib.robot.version import get_version
 from robotide.lib.robot.api import logger
 
@@ -29,9 +31,9 @@ class Process(object):
     """Robot Framework test library for running processes.
 
     This library utilizes Python's
-    [http://docs.python.org/2/library/subprocess.html|subprocess]
+    [http://docs.python.org/library/subprocess.html|subprocess]
     module and its
-    [http://docs.python.org/2/library/subprocess.html#subprocess.Popen|Popen]
+    [http://docs.python.org/library/subprocess.html#popen-constructor|Popen]
     class.
 
     The library has following main usages:
@@ -42,8 +44,6 @@ class Process(object):
     - Waiting started process to complete using `Wait For Process` or
       stopping them with `Terminate Process` or `Terminate All Processes`.
 
-    This library is new in Robot Framework 2.8.
-
     == Table of contents ==
 
     - `Specifying command and arguments`
@@ -51,7 +51,6 @@ class Process(object):
     - `Active process`
     - `Result object`
     - `Boolean arguments`
-    - `Using with OperatingSystem library`
     - `Example`
     - `Shortcuts`
     - `Keywords`
@@ -75,8 +74,7 @@ class Process(object):
     | `Run Process` | java | -jar | ${jars}${/}example.jar | --option | value |
     | `Run Process` | prog.py "one arg" && tool.sh | shell=yes | cwd=${tools} |
 
-    Starting from Robot Framework 2.8.6, possible non-string arguments are
-    converted to strings automatically.
+    Possible non-string arguments are converted to strings automatically.
 
     = Process configuration =
 
@@ -87,12 +85,13 @@ class Process(object):
     listed below and discussed further in sections afterwards.
 
     |  = Name =  |                  = Explanation =                      |
-    | shell      | Specifies whether to run the command in shell or not  |
+    | shell      | Specifies whether to run the command in shell or not. |
     | cwd        | Specifies the working directory.                      |
     | env        | Specifies environment variables given to the process. |
     | env:<name> | Overrides the named environment variable(s) only.     |
     | stdout     | Path of a file where to write standard output.        |
     | stderr     | Path of a file where to write standard error.         |
+    | output_encoding | Encoding to use when reading command outputs.    |
     | alias      | Alias given to the process.                           |
 
     Note that because ``**configuration`` is passed using ``name=value`` syntax,
@@ -103,13 +102,17 @@ class Process(object):
     == Running processes in shell ==
 
     The ``shell`` argument specifies whether to run the process in a shell or
-    not. By default shell is not used, which means that shell specific
-    commands, like ``copy`` and ``dir`` on Windows, are not available.
+    not. By default shell is not used, which means that shell specific commands,
+    like ``copy`` and ``dir`` on Windows, are not available. You can, however,
+    run shell scripts and batch files without using a shell.
 
     Giving the ``shell`` argument any non-false value, such as ``shell=True``,
     changes the program to be executed in a shell. It allows using the shell
     capabilities, but can also make the process invocation operating system
-    dependent.
+    dependent. Having a shell between the actually started process and this
+    library can also interfere communication with the process such as stopping
+    it and reading its outputs. Because of these problems, it is recommended
+    to use the shell only when absolutely necessary.
 
     When using a shell it is possible to give the whole command to execute
     as a single string. See `Specifying command and arguments` section for
@@ -165,7 +168,9 @@ class Process(object):
     the standard output by using ``stderr=STDOUT``.
 
     Regardless are outputs redirected to files or not, they are accessible
-    through the `result object` returned when the process ends.
+    through the `result object` returned when the process ends. Commands are
+    expected to write outputs using the console encoding, but `output encoding`
+    can be configured using the ``output_encoding`` argument if needed.
 
     Examples:
     | ${result} = | `Run Process` | program | stdout=${TEMPDIR}/stdout.txt | stderr=${TEMPDIR}/stderr.txt |
@@ -175,6 +180,29 @@ class Process(object):
 
     Note that the created output files are not automatically removed after
     the test run. The user is responsible to remove them if needed.
+
+    == Output encoding ==
+
+    Executed commands are, by default, expected to write outputs to the
+    `standard output and error streams` using the encoding used by the
+    system console. If the command uses some other encoding, that can be
+    configured using the ``output_encoding`` argument. This is especially
+    useful on Windows where the console uses a different encoding than rest
+    of the system, and many commands use the general system encoding instead
+    of the console encoding.
+
+    The value used with the ``output_encoding`` argument must be a valid
+    encoding and must match the encoding actually used by the command. As a
+    convenience, it is possible to use strings ``CONSOLE`` and ``SYSTEM``
+    to specify that the console or system encoding is used, respectively.
+    If produced outputs use different encoding then configured, values got
+    through the `result object` will be invalid.
+
+    Examples:
+    | `Start Process` | program | output_encoding=UTF-8 |
+    | `Run Process`   | program | stdout=${path} | output_encoding=SYSTEM |
+
+    The support to set output encoding is new in Robot Framework 3.0.
 
     == Alias ==
 
@@ -226,11 +254,10 @@ class Process(object):
 
     Some keywords accept arguments that are handled as Boolean values true or
     false. If such an argument is given as a string, it is considered false if
-    it is either empty or case-insensitively equal to ``false`` or ``no``.
-    Other strings are considered true regardless their value, and other
-    argument types are tested using same
-    [http://docs.python.org/2/library/stdtypes.html#truth-value-testing|rules
-    as in Python].
+    it is an empty string or equal to ``FALSE``, ``NONE``, ``NO``, ``OFF`` or
+    ``0``, case-insensitively. Other strings are considered true regardless
+    their value, and other argument types are tested using the same
+    [http://docs.python.org/library/stdtypes.html#truth|rules as in Python].
 
     True examples:
     | `Terminate Process` | kill=True     | # Strings are generally true.    |
@@ -244,26 +271,8 @@ class Process(object):
     | `Terminate Process` | kill=${EMPTY} | # Empty string is false.       |
     | `Terminate Process` | kill=${FALSE} | # Python ``False`` is false.   |
 
-    Note that prior to Robot Framework 2.8 all non-empty strings, including
-    ``false``, were considered true. Additionally, ``no`` is considered false
-    only in Robot Framework 2.9 and newer.
-
-    = Using with OperatingSystem library =
-
-    The OperatingSystem library also contains keywords for running processes.
-    They are not as flexible as the keywords provided by this library, and
-    thus not recommended to be used anymore. They may eventually even be
-    deprecated.
-
-    There is a name collision because both of these libraries have
-    `Start Process` and `Switch Process` keywords. This is handled so that
-    if both libraries are imported, the keywords in the Process library are
-    used by default. If there is a need to use the OperatingSystem variants,
-    it is possible to use `OperatingSystem.Start Process` syntax or use
-    the BuiltIn keyword `Set Library Search Order` to change the priority.
-
-    Other keywords in the OperatingSystem library can be used freely with
-    keywords in the Process library.
+    Considering string ``NONE`` false is new in Robot Framework 3.0.3 and
+    considering also ``OFF`` and ``0`` false is new in Robot Framework 3.1.
 
     = Example =
 
@@ -319,9 +328,6 @@ class Process(object):
         | ${result} = | Run Process | java -Dname\\=value Example | shell=True | cwd=${EXAMPLE} |
 
         This keyword does not change the `active process`.
-
-        ``timeout`` and ``on_timeout`` arguments are new in Robot Framework
-        2.8.4.
         """
         current = self._processes.current
         timeout = configuration.pop('timeout', None)
@@ -340,30 +346,24 @@ class Process(object):
         for related examples.
 
         Makes the started process new `active process`. Returns an identifier
-        that can be used as a handle to active the started process if needed.
+        that can be used as a handle to activate the started process if needed.
 
-        Starting from Robot Framework 2.8.5, processes are started so that
-        they create a new process group. This allows sending signals to and
-        terminating also possible child processes. This is not supported by
-        Jython in general nor by Python versions prior to 2.7 on Windows.
+        Processes are started so that they create a new process group. This
+        allows sending signals to and terminating also possible child
+        processes. This is not supported on Jython.
         """
-        config = ProcessConfig(**configuration)
-        executable_command = self._cmd(command, arguments, config.shell)
-        logger.info('Starting process:\n%s' % executable_command)
-        logger.debug('Process configuration:\n%s' % config)
-        process = subprocess.Popen(executable_command, **config.full_config)
-        self._results[process] = ExecutionResult(process,
-                                                 config.stdout_stream,
-                                                 config.stderr_stream)
-        return self._processes.register(process, alias=config.alias)
+        conf = ProcessConfiguration(**configuration)
+        command = conf.get_command(command, list(arguments))
+        self._log_start(command, conf)
+        process = subprocess.Popen(command, **conf.popen_config)
+        self._results[process] = ExecutionResult(process, **conf.result_config)
+        return self._processes.register(process, alias=conf.alias)
 
-    def _cmd(self, command, args, use_shell):
-        command = [encode_to_system(item) for item in [command] + list(args)]
-        if not use_shell:
-            return command
-        if args:
-            return subprocess.list2cmdline(command)
-        return command[0]
+    def _log_start(self, command, config):
+        if is_list_like(command):
+            command = self.join_command_line(command)
+        logger.info(u'Starting process:\n%s' % system_decode(command))
+        logger.debug(u'Process configuration:\n%s' % config)
 
     def is_process_running(self, handle=None):
         """Checks is the process running or not.
@@ -439,8 +439,6 @@ class Process(object):
         | ${result} =                 | Wait For Process | timeout=1min 30s | on_timeout=kill |
         | Process Should Be Stopped   |                  |                  |
         | Should Be Equal As Integers | ${result.rc}     | -9               |
-
-        ``timeout`` and ``on_timeout`` are new in Robot Framework 2.8.2.
         """
         process = self._processes[handle]
         logger.info('Waiting for process to complete.')
@@ -496,17 +494,11 @@ class Process(object):
         | Terminate Process           | myproc            | kill=true |
 
         Limitations:
-        - Graceful termination is not supported on Windows by Jython nor by
-          Python versions prior to 2.7. Process is killed instead.
-        - Stopping the whole process group is not supported by Jython at all
-          nor by Python versions prior to 2.7 on Windows.
+        - Graceful termination is not supported on Windows when using Jython.
+          Process is killed instead.
+        - Stopping the whole process group is not supported when using Jython.
         - On Windows forceful kill only stops the main process, not possible
           child processes.
-
-        Automatically killing the process if termination fails as well as
-        returning a result object are new features in Robot Framework 2.8.2.
-        Terminating also possible child processes, including using
-        ``CTRL_BREAK_EVENT`` on Windows, is new in Robot Framework 2.8.5.
         """
         process = self._processes[handle]
         if not hasattr(process, 'terminate'):
@@ -591,9 +583,6 @@ class Process(object):
         To send the signal to the whole process group, ``group`` argument can
         be set to any true value (see `Boolean arguments`). This is not
         supported by Jython, however.
-
-        New in Robot Framework 2.8.2. Support for ``group`` argument is new
-        in Robot Framework 2.8.5.
         """
         if os.sep == '\\':
             raise RuntimeError('This keyword does not work on Windows.')
@@ -678,8 +667,6 @@ class Process(object):
         over the remote library interface. The remote interface does not
         support returning the whole result object, but individual attributes
         can be returned without problems.
-
-        New in Robot Framework 2.8.2.
         """
         result = self._results[self._processes[handle]]
         if result.rc is None:
@@ -721,14 +708,52 @@ class Process(object):
             time.sleep(min(0.1, timeout))
         return stopped()
 
+    def split_command_line(self, args, escaping=False):
+        """Splits command line string into a list of arguments.
+
+        String is split from spaces, but argument surrounded in quotes may
+        contain spaces in them. If ``escaping`` is given a true value, then
+        backslash is treated as an escape character. It can escape unquoted
+        spaces, quotes inside quotes, and so on, but it also requires using
+        double backslashes when using Windows paths.
+
+        Examples:
+        | @{cmd} = | Split Command Line | --option "value with spaces" |
+        | Should Be True | $cmd == ['--option', 'value with spaces'] |
+
+        New in Robot Framework 2.9.2.
+        """
+        return cmdline2list(args, escaping=escaping)
+
+    def join_command_line(self, *args):
+        """Joins arguments into one command line string.
+
+        In resulting command line string arguments are delimited with a space,
+        arguments containing spaces are surrounded with quotes, and possible
+        quotes are escaped with a backslash.
+
+        If this keyword is given only one argument and that is a list like
+        object, then the values of that list are joined instead.
+
+        Example:
+        | ${cmd} = | Join Command Line | --option | value with spaces |
+        | Should Be Equal | ${cmd} | --option "value with spaces" |
+
+        New in Robot Framework 2.9.2.
+        """
+        if len(args) == 1 and is_list_like(args[0]):
+            args = args[0]
+        return subprocess.list2cmdline(args)
+
 
 class ExecutionResult(object):
 
-    def __init__(self, process, stdout, stderr, rc=None):
+    def __init__(self, process, stdout, stderr, rc=None, output_encoding=None):
         self._process = process
         self.stdout_path = self._get_path(stdout)
         self.stderr_path = self._get_path(stderr)
         self.rc = rc
+        self._output_encoding = output_encoding
         self._stdout = None
         self._stderr = None
         self._custom_streams = [stream for stream in (stdout, stderr)
@@ -760,24 +785,27 @@ class ExecutionResult(object):
 
     def _read_stream(self, stream_path, stream):
         if stream_path:
-            stream = open(stream_path, 'r')
+            stream = open(stream_path, 'rb')
         elif not self._is_open(stream):
             return ''
         try:
-            return self._format_output(stream.read())
+            content = stream.read()
         except IOError:  # http://bugs.jython.org/issue2218
             return ''
         finally:
             if stream_path:
                 stream.close()
+        return self._format_output(content)
 
     def _is_open(self, stream):
         return stream and not stream.closed
 
     def _format_output(self, output):
+        output = console_decode(output, self._output_encoding, force=True)
+        output = output.replace('\r\n', '\n')
         if output.endswith('\n'):
             output = output[:-1]
-        return decode_output(output, force=True)
+        return output
 
     def close_streams(self):
         standard_streams = self._get_and_read_standard_streams(self._process)
@@ -797,15 +825,17 @@ class ExecutionResult(object):
         return '<result object with rc %d>' % self.rc
 
 
-class ProcessConfig(object):
+@py2to3
+class ProcessConfiguration(object):
 
     def __init__(self, cwd=None, shell=False, stdout=None, stderr=None,
-                 alias=None, env=None, **rest):
+                 output_encoding='CONSOLE', alias=None, env=None, **rest):
         self.cwd = self._get_cwd(cwd)
         self.stdout_stream = self._new_stream(stdout)
         self.stderr_stream = self._get_stderr(stderr, stdout, self.stdout_stream)
         self.shell = is_truthy(shell)
         self.alias = alias
+        self.output_encoding = output_encoding
         self.env = self._construct_env(env, rest)
 
     def _get_cwd(self, cwd):
@@ -827,27 +857,50 @@ class ProcessConfig(object):
         return self._new_stream(stderr)
 
     def _construct_env(self, env, extra):
+        env = self._get_initial_env(env, extra)
+        if env is None:
+            return None
+        if WINDOWS:
+            env = NormalizedDict(env, spaceless=False)
+        self._add_to_env(env, extra)
+        if WINDOWS:
+            env = dict((key.upper(), env[key]) for key in env)
+        return env
+
+    def _get_initial_env(self, env, extra):
         if env:
-            env = dict((encode_to_system(k), encode_to_system(v))
-                       for k, v in env.items())
+            return dict((system_encode(k), system_encode(env[k])) for k in env)
+        if extra:
+            return os.environ.copy()
+        return None
+
+    def _add_to_env(self, env, extra):
         for key in extra:
             if not key.startswith('env:'):
                 raise RuntimeError("Keyword argument '%s' is not supported by "
                                    "this keyword." % key)
-            if env is None:
-                env = os.environ.copy()
-            env[encode_to_system(key[4:])] = encode_to_system(extra[key])
-        return env
+            env[system_encode(key[4:])] = system_encode(extra[key])
+
+    def get_command(self, command, arguments):
+        command = [system_encode(item) for item in [command] + arguments]
+        if not self.shell:
+            return command
+        if arguments:
+            return subprocess.list2cmdline(command)
+        return command[0]
 
     @property
-    def full_config(self):
+    def popen_config(self):
         config = {'stdout': self.stdout_stream,
                   'stderr': self.stderr_stream,
                   'stdin': subprocess.PIPE,
                   'shell': self.shell,
                   'cwd': self.cwd,
-                  'env': self.env,
-                  'universal_newlines': True}
+                  'env': self.env}
+        # Close file descriptors regardless the Python version:
+        # https://github.com/robotframework/robotframework/issues/2794
+        if not WINDOWS:
+            config['close_fds'] = True
         if not JYTHON:
             self._add_process_group_config(config)
         return config
@@ -858,12 +911,24 @@ class ProcessConfig(object):
         if hasattr(subprocess, 'CREATE_NEW_PROCESS_GROUP'):
             config['creationflags'] = subprocess.CREATE_NEW_PROCESS_GROUP
 
-    def __str__(self):
-        return encode_to_system("""\
-cwd = %s
-stdout_stream = %s
-stderr_stream = %s
-shell = %r
-alias = %s
-env = %r""" % (self.cwd, self.stdout_stream, self.stderr_stream,
-               self.shell, self.alias, self.env))
+    @property
+    def result_config(self):
+        return {'stdout': self.stdout_stream,
+                'stderr': self.stderr_stream,
+                'output_encoding': self.output_encoding}
+
+    def __unicode__(self):
+        return """\
+cwd:     %s
+shell:   %s
+stdout:  %s
+stderr:  %s
+alias:   %s
+env:     %s""" % (self.cwd, self.shell, self._stream_name(self.stdout_stream),
+                  self._stream_name(self.stderr_stream), self.alias, self.env)
+
+    def _stream_name(self, stream):
+        if hasattr(stream, 'name'):
+            return stream.name
+        return {subprocess.PIPE: 'PIPE',
+                subprocess.STDOUT: 'STDOUT'}.get(stream, stream)

@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -23,6 +24,6 @@ class Font(object):
     underlined = property(lambda self: self._get_font(underlined=True))
 
     def _get_font(self, scale=0, family=wx.FONTFAMILY_DEFAULT, underlined=False):
-        size = wx.SystemSettings.GetFont(wx.SYS_SYSTEM_FONT).GetPointSize()
-        return wx.Font(size + scale, family, wx.FONTWEIGHT_NORMAL,
-                       wx.FONTSTYLE_NORMAL, underline=underlined)
+        size = wx.SystemSettings.GetFont(wx.SYS_SYSTEM_FONT).GetPointSize() + scale
+        return wx.Font( size, family, wx.FONTSTYLE_NORMAL,
+                        wx.FONTWEIGHT_NORMAL, underline=underlined)  # DEBUG wxPhoenix

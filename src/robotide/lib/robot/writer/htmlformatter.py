@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -14,7 +15,7 @@
 
 import re
 
-from robotide.lib.robot import utils
+from robotide.lib.robot.utils import attribute_escape, html_escape
 
 from .formatters import _DataFileFormatter
 
@@ -85,7 +86,7 @@ class HtmlCell(object):
 
     def __init__(self, content='', attributes=None, tag='td', escape=True):
         if escape:
-            content = utils.html_escape(content)
+            content = html_escape(content)
         self.content = self._replace_newlines(content)
         self.attributes = attributes or {}
         self.tag = tag
@@ -112,8 +113,8 @@ class AnchorNameCell(HtmlCell):
                           {'class': 'name'}, escape=False)
 
     def _link_from_name(self, name, type_):
-        return '<a name="%s_%s">%s</a>' % (type_, utils.attribute_escape(name),
-                                           utils.html_escape(name))
+        return '<a name="%s_%s">%s</a>' % (type_, attribute_escape(name),
+                                           html_escape(name))
 
 
 class DocumentationCell(HtmlCell):

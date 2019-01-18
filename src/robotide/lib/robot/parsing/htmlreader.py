@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,8 +13,18 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from HTMLParser import HTMLParser
-from htmlentitydefs import entitydefs
+from robotide.lib.robot.output import LOGGER
+from robotide.lib.robot.utils import PY2
+
+if PY2:
+    from htmlentitydefs import entitydefs
+    from HTMLParser import HTMLParser
+
+else:
+    from html.entities import entitydefs
+    from html.parser import HTMLParser
+
+    unichr = chr
 
 
 NON_BREAKING_SPACE = u'\xA0'
@@ -38,7 +49,7 @@ class HtmlReader(HTMLParser):
                           'br_start'    : self.br_start,
                           'meta_start'  : self.meta_start}
 
-    def read(self, htmlfile, populator):
+    def read(self, htmlfile, populator, path=None):
         self.populator = populator
         self.state = self.IGNORE
         self.current_row = None
@@ -49,7 +60,10 @@ class HtmlReader(HTMLParser):
         # if the same instance of our HtmlParser is reused. Currently it's
         # used only once so there's no problem.
         self.close()
-        self.populator.eof()
+        if self.populator.eof():
+            LOGGER.warn("Using test data in HTML format is deprecated. "
+                        "Convert '%s' to plain text format."
+                        % (path or htmlfile.name))
 
     def _decode(self, line):
         return line.decode(self._encoding)
@@ -84,7 +98,9 @@ class HtmlReader(HTMLParser):
             return '&'+name+';'
         if value.startswith('&#'):
             return unichr(int(value[2:-1]))
-        return value.decode('ISO-8859-1')
+        if PY2:
+            return value.decode('ISO-8859-1')
+        return value
 
     def handle_charref(self, number):
         value = self._handle_charref(number)

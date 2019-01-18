@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -22,22 +23,23 @@ from .loggerhelper import IsLogged
 
 class XmlLogger(ResultVisitor):
 
-    def __init__(self, path, log_level='TRACE', generator='Robot'):
+    def __init__(self, path, log_level='TRACE', rpa=False, generator='Robot'):
         self._log_message_is_logged = IsLogged(log_level)
         self._error_message_is_logged = IsLogged('WARN')
-        self._writer = self._get_writer(path, generator)
+        self._writer = self._get_writer(path, rpa, generator)
         self._errors = []
 
-    def _get_writer(self, path, generator):
+    def _get_writer(self, path, rpa, generator):
         if not path:
             return NullMarkupWriter()
         try:
-            writer = XmlWriter(path, encoding='UTF-8', write_empty=False)
+            writer = XmlWriter(path, write_empty=False)
         except EnvironmentError as err:
             raise DataError("Opening output file '%s' failed: %s" %
                             (path, err.strerror))
         writer.start('robot', {'generator': get_full_version(generator),
-                               'generated': get_timestamp()})
+                               'generated': get_timestamp(),
+                               'rpa': 'true' if rpa else 'false'})
         return writer
 
     def close(self):
@@ -69,8 +71,6 @@ class XmlLogger(ResultVisitor):
         attrs = {'name': kw.kwname, 'library': kw.libname}
         if kw.type != 'kw':
             attrs['type'] = kw.type
-        if kw.timeout:
-            attrs['timeout'] = unicode(kw.timeout)
         self._writer.start('kw', attrs)
         self._write_list('tags', 'tag', [unic(t) for t in kw.tags])
         self._writer.element('doc', kw.doc)
@@ -78,18 +78,19 @@ class XmlLogger(ResultVisitor):
         self._write_list('assign', 'var', kw.assign)
 
     def end_keyword(self, kw):
+        if kw.timeout:
+            self._writer.element('timeout', attrs={'value': unic(kw.timeout)})
         self._write_status(kw)
         self._writer.end('kw')
 
     def start_test(self, test):
-        attrs = {'id': test.id, 'name': test.name}
-        if test.timeout:
-            attrs['timeout'] = unicode(test.timeout)
-        self._writer.start('test', attrs)
+        self._writer.start('test', {'id': test.id, 'name': test.name})
 
     def end_test(self, test):
         self._writer.element('doc', test.doc)
         self._write_list('tags', 'tag', test.tags)
+        if test.timeout:
+            self._writer.element('timeout', attrs={'value': unic(test.timeout)})
         self._write_status(test, {'critical': 'yes' if test.critical else 'no'})
         self._writer.end('test')
 

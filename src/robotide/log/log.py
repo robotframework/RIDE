@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -38,7 +39,7 @@ class LogPlugin(Plugin):
             'log_to_file': True
         })
         self._log = []
-        self._window = None
+        self._panel = None
         self._path = os.path.join(
             tempfile.gettempdir(), '{}-ride.log'.format(uuid.uuid4()))
         self._outfile = None
@@ -57,6 +58,7 @@ class LogPlugin(Plugin):
                 os.remove(fname)
             except OSError or IOError as e:
                 sys.stderr.write("{}".format(e))
+                pass
 
     @property
     def _logfile(self):
@@ -71,8 +73,8 @@ class LogPlugin(Plugin):
     def disable(self):
         self.unsubscribe_all()
         self.unregister_actions()
-        if self._window:
-            self._window.close(self.notebook)
+        if self._panel:
+            self._panel.close(self.notebook)
 
     def _create_menu(self):
         self.unregister_actions()
@@ -81,10 +83,10 @@ class LogPlugin(Plugin):
 
     def _log_message(self, log_event):
         self._log.append(log_event)
-        if self._window:
-            self._window.update_log()
+        if self._panel:
+            self._panel.update_log()
         if self.log_to_console:
-            print _message_to_string(log_event)
+            print("".format(_message_to_string(log_event))) # >> sys.stdout, _message_to_string(log_event)
         if self.log_to_file:
             self._logfile.write(_message_to_string(log_event))
         if log_event.notify_user:
@@ -93,43 +95,52 @@ class LogPlugin(Plugin):
                                padding=10, font_size=font_size).Show()
 
     def OnViewLog(self, event):
-        if not self._window:
-            self._window = _LogWindow(self.notebook, self._log)
-            self._window.update_log()
-            self.register_shortcut('CtrlCmd-C', lambda e: self._window.Copy())
+        if not self._panel:
+            self._panel = _LogWindow(self.notebook, self._log)
+            self._panel.update_log()
+            self.register_shortcut('CtrlCmd-C', lambda e: self._panel.Copy())
             self.register_shortcut(
-                'CtrlCmd-A', lambda e: self._window.SelectAll())
+                 'CtrlCmd-A', lambda e: self._panel.SelectAll())
         else:
-            self.notebook.show_tab(self._window)
+            self.notebook.show_tab(self._panel)
 
 
-class _LogWindow(wx.TextCtrl):
+class _LogWindow(wx.Panel):
 
     def __init__(self, notebook, log):
-        wx.TextCtrl.__init__(
-            self, notebook, style=wx.TE_READONLY | wx.TE_MULTILINE)
+        wx.Panel.__init__(self, notebook)
+        self._output = wx.TextCtrl(self, style=wx.TE_READONLY | wx.TE_MULTILINE)
         self._log = log
-        self._create_ui()
         self._add_to_notebook(notebook)
         self.SetFont(widgets.Font().fixed_log)
+        self.Bind(wx.EVT_SIZE, self.OnSize)
 
     def _create_ui(self):
-        sizer = wx.BoxSizer(wx.VERTICAL)
-        sizer.Add(self)
-        self.SetSizer(sizer)
+        self.SetSizer(widgets.VerticalSizer())
+        self.Sizer.add_expanding(self._output)
 
     def _add_to_notebook(self, notebook):
-        notebook.add_tab(self, 'Log', allow_closing=True)
+        notebook.add_tab(self, 'RIDE Log', allow_closing=True)
         notebook.show_tab(self)
+        self._output.SetSize(self.Size)
 
     def close(self, notebook):
         notebook.delete_tab(self)
 
     def update_log(self):
-        self.SetValue(self._decode_log(self._log))
+        self._output.SetValue(self._decode_log(self._log))
 
     def _decode_log(self, log):
         result = ''
         for msg in log:
             result += _message_to_string(msg)
         return result
+
+    def OnSize(self, evt):
+        self._output.SetSize(self.Size)
+
+    def Copy(self):
+        pass
+
+    def SelectAll(self):
+        pass

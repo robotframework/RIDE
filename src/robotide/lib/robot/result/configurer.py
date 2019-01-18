@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -23,7 +24,7 @@ class SuiteConfigurer(model.SuiteConfigurer):
     :meth:`~robot.result.testsuite.TestSuite.remove_keywords`,
     :meth:`~robot.result.testsuite.TestSuite.filter_messages` and
     :meth:`~robot.result.testsuite.TestSuite.set_criticality` methods
-    and sets it's start and end time based on the given named parameters.
+    and sets its start and end time based on the given named parameters.
 
     ``base_config`` is forwarded to
     :class:`robot.model.SuiteConfigurer <robot.model.configurer.SuiteConfigurer>`

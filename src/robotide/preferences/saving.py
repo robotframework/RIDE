@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -24,7 +25,7 @@ class SavingPreferences(widgets.PreferencesPanel):
     def __init__(self, settings, *args, **kwargs):
         super(SavingPreferences, self).__init__(*args, **kwargs)
         self._settings = settings
-        self.SetSizer(wx.FlexGridSizer(rows=7, cols=2))
+        self.SetSizer(wx.FlexGridSizer(cols=2))
         for editor in self._create_editors(settings):
             self._add_editor(editor)
 

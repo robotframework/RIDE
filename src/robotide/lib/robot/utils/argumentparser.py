@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -15,6 +16,7 @@
 import getopt     # optparse was not supported by Jython 2.2
 import os
 import re
+import shlex
 import sys
 import glob
 import string
@@ -24,9 +26,10 @@ from robotide.lib.robot.errors import DataError, Information, FrameworkError
 from robotide.lib.robot.version import get_full_version
 
 from .misc import plural_or_not
-from .encoding import decode_output, decode_from_system
+from .encoding import console_decode, system_decode
+from .platform import PY2
 from .utf8reader import Utf8Reader
-from .robottypes import is_integer, is_list_like, is_string
+from .robottypes import is_falsy, is_integer, is_list_like, is_string, is_unicode
 
 
 ESCAPES = dict(
@@ -36,6 +39,24 @@ ESCAPES = dict(
     percent = '%', at      = '@', exclam = '!', paren1 = '(', paren2 = ')',
     square1 = '[', square2 = ']', curly1 = '{', curly2 = '}', bslash = '\\'
 )
+
+
+def cmdline2list(args, escaping=False):
+    if PY2 and is_unicode(args):
+        args = args.encode('UTF-8')
+        decode = lambda item: item.decode('UTF-8')
+    else:
+        decode = lambda item: item
+    lexer = shlex.shlex(args, posix=True)
+    if is_falsy(escaping):
+        lexer.escape = ''
+    lexer.escapedquotes = '"\''
+    lexer.commenters = ''
+    lexer.whitespace_split = True
+    try:
+        return [decode(token) for token in lexer]
+    except ValueError as err:
+        raise ValueError("Parsing '%s' failed: %s" % (args, err))
 
 
 class ArgumentParser(object):
@@ -122,17 +143,26 @@ class ArgumentParser(object):
         amount of horizontal space as <---ESCAPES--->. Both help and version
         are wrapped to Information exception.
         """
-        if self._env_options:
-            args = os.getenv(self._env_options, '').split() + list(args)
-        args = [decode_from_system(a) for a in args]
+        args = self._get_env_options() + list(args)
+        args = [system_decode(a) for a in args]
         if self._auto_argumentfile:
             args = self._process_possible_argfile(args)
         opts, args = self._parse_args(args)
+        if self._auto_argumentfile and opts.get('argumentfile'):
+            raise DataError("Using '--argumentfile' option in shortened format "
+                            "like '--argumentf' is not supported.")
         opts, args = self._handle_special_options(opts, args)
         self._arg_limit_validator(args)
         if self._validator:
             opts, args = self._validator(opts, args)
         return opts, args
+
+    def _get_env_options(self):
+        if self._env_options:
+            options = os.getenv(self._env_options)
+            if options:
+                return cmdline2list(options)
+        return []
 
     def _handle_special_options(self, opts, args):
         if self._auto_escape and opts.get('escape'):
@@ -169,6 +199,10 @@ class ArgumentParser(object):
         return '%s=%s' % (opt.lower(), value)
 
     def _unescape_opts_and_args(self, opts, args):
+        from robotide.lib.robot.output import LOGGER
+        with LOGGER.cache_only:
+            LOGGER.warn("Option '--escape' is deprecated. Use console escape "
+                        "mechanism instead.")
         try:
             escape_strings = opts['escape']
         except KeyError:
@@ -313,7 +347,7 @@ class ArgumentParser(object):
             if drive:
                 ret.append(drive)
                 drive = ''
-            if len(item) == 1 and item in string.letters:
+            if len(item) == 1 and item in string.ascii_letters:
                 drive = item
             else:
                 ret.append(item)
@@ -351,11 +385,11 @@ class ArgLimitValidator(object):
 
     def _parse_arg_limits(self, arg_limits):
         if arg_limits is None:
-            return 0, sys.maxint
+            return 0, sys.maxsize
         if is_integer(arg_limits):
             return arg_limits, arg_limits
         if len(arg_limits) == 1:
-            return arg_limits[0], sys.maxint
+            return arg_limits[0], sys.maxsize
         return arg_limits[0], arg_limits[1]
 
     def __call__(self, args):
@@ -366,7 +400,7 @@ class ArgLimitValidator(object):
         min_end = plural_or_not(min_args)
         if min_args == max_args:
             expectation = "%d argument%s" % (min_args, min_end)
-        elif max_args != sys.maxint:
+        elif max_args != sys.maxsize:
             expectation = "%d to %d arguments" % (min_args, max_args)
         else:
             expectation = "at least %d argument%s" % (min_args, min_end)
@@ -390,11 +424,12 @@ class ArgFileParser(object):
         for opt in self._options:
             start = opt + '=' if opt.startswith('--') else opt
             for index, arg in enumerate(args):
+                normalized_arg = arg.lower() if opt.startswith('--') else arg
                 # Handles `--argumentfile foo` and `-A foo`
-                if arg == opt and index + 1 < len(args):
+                if normalized_arg == opt and index + 1 < len(args):
                     return args[index+1], slice(index, index+2)
                 # Handles `--argumentfile=foo` and `-Afoo`
-                if arg.startswith(start):
+                if normalized_arg.startswith(start):
                     return arg[len(start):], slice(index, index+1)
         return None, -1
 
@@ -414,7 +449,7 @@ class ArgFileParser(object):
                             % (path, err))
 
     def _read_from_stdin(self):
-        return decode_output(sys.__stdin__.read())
+        return console_decode(sys.__stdin__.read())
 
     def _process_file(self, content):
         args = []

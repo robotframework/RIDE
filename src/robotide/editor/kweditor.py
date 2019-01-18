@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -15,8 +16,15 @@
 import wx
 from wx import grid
 
+if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
+    from wx.grid import GridCellEditor
+    # import sys
+    # sys.setrecursionlimit(200)  # with 150 crashes at edit cell
+else:
+    from wx.grid import PyGridCellEditor as GridCellEditor
+
 from robotide.context import IS_MAC
-from robotide.controller.commands import ChangeCellValue, ClearArea,\
+from robotide.controller.ctrlcommands import ChangeCellValue, ClearArea,\
     PasteArea, DeleteRows, AddRows, CommentRows, InsertCells, DeleteCells,\
     UncommentRows, Undo, Redo, RenameKeywordOccurrences, ExtractKeyword,\
     AddKeywordFromCells, MoveRowsUp, MoveRowsDown, ExtractScalar, ExtractList,\
@@ -36,22 +44,38 @@ from .editordialogs import UserKeywordNameDialog, ScalarVariableDialog,\
     ListVariableDialog
 from .contentassist import ExpandingContentAssistTextCtrl
 from .gridcolorizer import Colorizer
+from robotide.utils import PY3
+if PY3:
+    from robotide.utils import basestring, unicode, unichr
 
 _DEFAULT_FONT_SIZE = 11
 
 
 def requires_focus(function):
     def _row_header_selected_on_linux(self):
-        return self.FindFocus() is None
+        # print("DEBUG: _row_header_selected_on_linux: %s has focus %s\n" % (self.FindFocus(), self.has_focus()))
+        return self.FindFocus() is None #  or isinstance(GridEditor)
 
     def decorated_function(self, *args):
-        if self.has_focus() or self.IsCellEditControlShown() or \
+        # if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
+        #     _iscelleditcontrolshown = self.IsCellEditControlEnabled()
+        # else:
+        #     _iscelleditcontrolshown = self.IsCellEditControlShown()
+        _iscelleditcontrolshown = self.IsCellEditControlShown()
+        # print("DEBUG: decorated: iscelleditshown = %s focus =%s rowheaderselected=%s\n" % (_iscelleditcontrolshown, self.has_focus(), _row_header_selected_on_linux(self)))
+        if self.has_focus() or _iscelleditcontrolshown or \
            _row_header_selected_on_linux(self):
             function(self, *args)
+
     return decorated_function
 
 
+# Metaclass fix from http://code.activestate.com/recipes/204197-solving-the-metaclass-conflict/
+from robotide.utils.noconflict import classmaker
+
+
 class KeywordEditor(GridEditor, RideEventHandler):
+    __metaclass__ = classmaker()
     _no_cell = (-1, -1)
     _popup_menu_shown = False
     dirty = property(lambda self: self._controller.dirty)
@@ -59,7 +83,8 @@ class KeywordEditor(GridEditor, RideEventHandler):
     _popup_items = [
         'Create Keyword', 'Extract Keyword', 'Extract Variable',
         'Rename Keyword', 'Find Where Used', '---', 'Make Variable\tCtrl-1',
-        'Make List Variable\tCtrl-2', '---', 'Go to Definition\tCtrl-B', '---'
+        'Make List Variable\tCtrl-2', 'Make Dict Variable\tCtrl-5', '---',
+        'Go to Definition\tCtrl-B', '---'
     ] + GridEditor._popup_items
 
     def __init__(self, parent, controller, tree):
@@ -83,6 +108,9 @@ class KeywordEditor(GridEditor, RideEventHandler):
         self._write_steps(self._controller)
         self._tree = tree
         self._has_been_clicked = False
+        self._counter = 0  # Workaround for double delete actions
+        self._dcells = None  # Workaround for double delete actions
+        self._icells = None  # Workaround for double insert actions
         PUBLISHER.subscribe(self._data_changed, RideItemStepsChanged)
         PUBLISHER.subscribe(self.OnSettingsChanged, RideSettingsChanged)
 
@@ -103,7 +131,8 @@ class KeywordEditor(GridEditor, RideEventHandler):
     def _configure_grid(self):
         self.SetRowLabelSize(25)
         self.SetColLabelSize(0)
-        self.SetDefaultColSize(self.settings['col size'])
+        self.SetDefaultColSize(self.settings['col size'],
+                               resizeExistingCols=True)
         self.SetDefaultCellOverflow(False)
         self.SetDefaultEditor(
             ContentAssistCellEditor(self._plugin, self._controller))
@@ -132,7 +161,13 @@ class KeywordEditor(GridEditor, RideEventHandler):
         self.Bind(wx.EVT_KILL_FOCUS, self.OnKillFocus)
 
     def get_tooltip_content(self):
-        if self.IsCellEditControlShown() or self._popup_menu_shown:
+        """ Fixed on 4.0.0a3
+        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
+            _iscelleditcontrolshown = self.IsCellEditControlEnabled()
+        else:
+        """
+        _iscelleditcontrolshown = self.IsCellEditControlShown()
+        if _iscelleditcontrolshown or self._popup_menu_shown:
             return ''
         cell = self.cell_under_cursor
         cell_info = self._controller.get_cell_info(cell.Row, cell.Col)
@@ -214,26 +249,51 @@ class KeywordEditor(GridEditor, RideEventHandler):
         self.ClearSelection()
         self._skip_except_on_mac(event)
 
-    def _skip_except_on_mac(self, event):
+    def _skip_except_on_mac(self, event):  # TODO Do we still need this?
         if event is not None and not IS_MAC:
+            # print("DEBUG skip!")
             event.Skip()
 
     def OnInsertCells(self, event=None):
+        # TODO remove below workaround for double actions
+        if self._counter == 1:
+            if self._icells == (self.selection.topleft, self.selection.bottomright):
+                self._counter = 0
+                self._icells = None
+                return
+        else:
+            self._counter = 1
+
+        self._icells = (self.selection.topleft,
+                        self.selection.bottomright)
         self._execute(InsertCells(self.selection.topleft,
                                   self.selection.bottomright))
         self._skip_except_on_mac(event)
 
     def OnDeleteCells(self, event=None):
+        # TODO remove below workaround for double actions
+        if self._counter == 1:
+            if self._dcells == (self.selection.topleft, self.selection.bottomright):
+                self._counter = 0
+                self._dcells = None
+                return
+        else:
+            self._counter = 1
+
+        self._dcells = (self.selection.topleft,
+                        self.selection.bottomright)
+        # print("DEBUG kweditor delete cells %s, %s " % (self.selection.topleft,
+        #                          self.selection.bottomright))
         self._execute(DeleteCells(self.selection.topleft,
                                   self.selection.bottomright))
         self._skip_except_on_mac(event)
 
-    @requires_focus
+    #DEBUG @requires_focus
     def OnCommentRows(self, event=None):
         self._execute(CommentRows(self.selection.rows()))
         self._skip_except_on_mac(event)
 
-    @requires_focus
+    #DEBUG @requires_focus
     def OnUncommentRows(self, event=None):
         self._execute(UncommentRows(self.selection.rows()))
         self._skip_except_on_mac(event)
@@ -314,35 +374,48 @@ class KeywordEditor(GridEditor, RideEventHandler):
     def get_selected_datafile_controller(self):
         return self._controller.datafile_controller
 
-    @requires_focus
+    #DEBUG @requires_focus
     def OnCopy(self, event=None):
+        # print("DEBUG: OnCopy called event %s\n" % str(event))
         self.copy()
 
-    @requires_focus
+    #DEBUG @requires_focus
     def OnCut(self, event=None):
         self._clipboard_handler.cut()
         self.OnDelete(event)
 
     def OnDelete(self, event=None):
-        if self.IsCellEditControlShown():
+        """ Fixed on 4.0.0a3
+        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
+            _iscelleditcontrolshown = self.IsCellEditControlEnabled()
+        else:
+        """
+        _iscelleditcontrolshown = self.IsCellEditControlShown()
+        if _iscelleditcontrolshown:  # TODO Review if still needed
             # On Windows, Delete key does not work in TextCtrl automatically
             self.delete()
         elif self.has_focus():
             self._execute(ClearArea(self.selection.topleft,
                                     self.selection.bottomright))
 
-    @requires_focus
+    #DEBUG    @requires_focus
     def OnPaste(self, event=None):
         self._execute_clipboard_command(PasteArea)
 
     def _execute_clipboard_command(self, command_class):
-        if not self.IsCellEditControlShown():
+        """ Fixed on 4.0.0a3
+        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
+            _iscelleditcontrolshown = self.IsCellEditControlEnabled()
+        else:
+        """
+        _iscelleditcontrolshown = self.IsCellEditControlShown()
+        if not _iscelleditcontrolshown:
             data = self._clipboard_handler.clipboard_content()
             if data:
                 data = [[data]] if isinstance(data, basestring) else data
                 self._execute(command_class(self.selection.topleft, data))
 
-    @requires_focus
+    #DEBUG @requires_focus
     def OnInsert(self, event=None):
         self._execute_clipboard_command(InsertArea)
 
@@ -351,14 +424,20 @@ class KeywordEditor(GridEditor, RideEventHandler):
         self.ClearSelection()
         self._skip_except_on_mac(event)
 
-    @requires_focus
+    #DEBUG @requires_focus
     def OnUndo(self, event=None):
-        if not self.IsCellEditControlShown():
+        """ Fixed on 4.0.0a3
+        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
+            _iscelleditcontrolshown = self.IsCellEditControlEnabled()
+        else:
+        """
+        _iscelleditcontrolshown = self.IsCellEditControlShown()
+        if not _iscelleditcontrolshown:
             self._execute(Undo())
         else:
             self.GetCellEditor(*self.selection.cell).Reset()
 
-    @requires_focus
+    #DEBUG @requires_focus
     def OnRedo(self, event=None):
         self._execute(Redo())
 
@@ -374,15 +453,27 @@ class KeywordEditor(GridEditor, RideEventHandler):
 
     def save(self):
         self._tooltips.hide()
-        if self.IsCellEditControlShown():
+        """ Fixed on 4.0.0a3
+        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
+            _iscelleditcontrolshown = self.IsCellEditControlEnabled()
+        else:
+        """
+        _iscelleditcontrolshown = self.IsCellEditControlShown()
+        if _iscelleditcontrolshown:
             cell_editor = self.GetCellEditor(*self.selection.cell)
             cell_editor.EndEdit(self.selection.topleft.row,
                                 self.selection.topleft.col, self)
 
     def show_content_assist(self):
-        if self.IsCellEditControlShown():
+        """ Fixed on 4.0.0a3
+        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
+            _iscelleditcontrolshown = self.IsCellEditControlEnabled()
+        else:
+        """
+        _iscelleditcontrolshown = self.IsCellEditControlShown()
+        if _iscelleditcontrolshown:
             self.GetCellEditor(*self.selection.cell).show_content_assist(
-                self.selection.topleft.row)
+                self.selection.cell)  # DEBUG self.selection.topleft.row)
 
     def refresh_datafile(self, item, event):
         self._tree.refresh_datafile(item, event)
@@ -402,9 +493,27 @@ class KeywordEditor(GridEditor, RideEventHandler):
         self.MoveCursorDown(event.ShiftDown())
 
     def OnKeyDown(self, event):
+        """ Fixed on 4.0.0a3
+        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
+            _iscelleditcontrolshown = self.IsCellEditControlEnabled()
+        else:
+        """
+        _iscelleditcontrolshown = self.IsCellEditControlShown()
+
         keycode, control_down = event.GetKeyCode(), event.CmdDown()
-        if keycode == wx.WXK_CONTROL:
+        event.Skip()  # DEBUG seen this skip as soon as possible
+        if keycode == ord('M') and \
+            (control_down or event.AltDown()):  #  keycode == wx.WXK_CONTROL
             self._show_cell_information()
+        elif keycode == ord('C') and control_down:
+            # print("DEBUG: captured Control-C\n")
+            self.OnCopy(event)
+        elif keycode == ord('X') and control_down:
+            self.OnCut(event)
+        elif keycode == ord('V') and control_down:
+            self.OnPaste(event)
+        elif keycode == ord('Z') and control_down:
+            self.OnUndo(event)
         elif keycode == ord('A') and control_down:
             self.OnSelectAll(event)
         elif event.AltDown() and keycode in [wx.WXK_DOWN, wx.WXK_UP]:
@@ -414,13 +523,18 @@ class KeywordEditor(GridEditor, RideEventHandler):
         elif keycode == wx.WXK_WINDOWS_MENU:
             self.OnCellRightClick(event)
         elif keycode in [wx.WXK_RETURN, wx.WXK_BACK]:
-            self._move_grid_cursor(event, keycode)
-        elif control_down and keycode == wx.WXK_SPACE:
+            if not _iscelleditcontrolshown:
+                self._move_grid_cursor(event, keycode)
+            else:
+                self.save()
+        elif (control_down or event.AltDown()) and \
+                keycode == wx.WXK_SPACE:  # Avoid Mac CMD
             self._open_cell_editor_with_content_assist()
         elif control_down and not event.AltDown() and \
-                keycode in (ord('1'), ord('2')):
+                keycode in (ord('1'), ord('2'), ord('5')):
             self._open_cell_editor_and_execute_variable_creator(
-                list_variable=(keycode == ord('2')))
+                list_variable=(keycode == ord('2')),
+                dict_variable=(keycode == ord('5')))
         elif control_down and event.ShiftDown() and keycode == ord('I'):
             self.OnInsertCells()
         elif control_down and event.ShiftDown() and keycode == ord('D'):
@@ -428,8 +542,8 @@ class KeywordEditor(GridEditor, RideEventHandler):
         elif control_down and keycode == ord('B'):
             self._navigate_to_matching_user_keyword(
                 self.GetGridCursorRow(), self.GetGridCursorCol())
-        else:
-            event.Skip()
+        # else:
+        #    event.Skip()
 
     def OnGoToDefinition(self, event):
         self._navigate_to_matching_user_keyword(
@@ -493,9 +607,10 @@ work.</li>
             self.MoveCursorLeft(event.ShiftDown())
 
     def OnKeyUp(self, event):
+        event.Skip()  # DEBUG seen this skip as soon as possible
         self._tooltips.hide()
         self._hide_link_if_necessary()
-        event.Skip()
+        #  event.Skip()
 
     def _open_cell_editor_with_content_assist(self):
         if not self.IsCellEditControlEnabled():
@@ -504,15 +619,17 @@ work.</li>
         celleditor = self.GetCellEditor(self.GetGridCursorCol(), row)
         celleditor.Show(True)
         wx.CallAfter(celleditor.show_content_assist)
+        # print("DEBUG: Called content assist %s\n" % self._show_cell_information())
 
     def _open_cell_editor_and_execute_variable_creator(
-            self, list_variable=False):
+            self, list_variable=False, dict_variable=False):
         if not self.IsCellEditControlEnabled():
             self.EnableCellEditControl()
         row = self.GetGridCursorRow()
         celleditor = self.GetCellEditor(self.GetGridCursorCol(), row)
         celleditor.Show(True)
-        wx.CallAfter(celleditor.execute_variable_creator, list_variable)
+        wx.CallAfter(celleditor.execute_variable_creator, list_variable,
+                     dict_variable)
 
     def OnMakeVariable(self, event):
         self._open_cell_editor_and_execute_variable_creator(
@@ -520,6 +637,9 @@ work.</li>
 
     def OnMakeListVariable(self, event):
         self._open_cell_editor_and_execute_variable_creator(list_variable=True)
+
+    def OnMakeDictVariable(self, event):
+        self._open_cell_editor_and_execute_variable_creator(dict_variable=True)
 
     def OnCellRightClick(self, event):
         self._tooltips.hide()
@@ -532,7 +652,9 @@ work.</li>
 
     def OnCellLeftClick(self, event):
         self._tooltips.hide()
-        if event.ControlDown() or event.CmdDown():
+        # if event.GetModifiers() == wx.MOD_CONTROL:
+        #  or event.CmdDown(): # DEBUG wxPhoenix
+        if event.ControlDown():
             if self._navigate_to_matching_user_keyword(event.Row, event.Col):
                 return
         if not self._has_been_clicked:
@@ -571,7 +693,7 @@ work.</li>
             return
         try:
             self._execute(AddKeywordFromCells(cells))
-        except ValueError, err:
+        except ValueError as err:
             wx.MessageBox(unicode(err))
 
     def _data_cells_from_current_row(self):
@@ -658,19 +780,23 @@ work.</li>
                 old_name, new_name, RenameProgressObserver(self.GetParent())))
 
 
-class ContentAssistCellEditor(grid.PyGridCellEditor):
+class ContentAssistCellEditor(GridCellEditor):  # DEBUG wxPhoenix PyGridCellEdi
 
     def __init__(self, plugin, controller):
-        grid.PyGridCellEditor.__init__(self)
+        GridCellEditor.__init__(self)
         self._plugin = plugin
         self._controller = controller
         self._grid = None
+        self._original_value = None
+        self._value = None
+        self._tc = None
+        self._counter = 0
 
     def show_content_assist(self, args=None):
         self._tc.show_content_assist()
 
-    def execute_variable_creator(self, list_variable=False):
-        self._tc.execute_variable_creator(list_variable)
+    def execute_variable_creator(self, list_variable=False, dict_variable=False):
+        self._tc.execute_variable_creator(list_variable, dict_variable)
 
     def Create(self, parent, id, evthandler):
         self._tc = ExpandingContentAssistTextCtrl(
@@ -680,26 +806,54 @@ class ContentAssistCellEditor(grid.PyGridCellEditor):
             self._tc.PushEventHandler(evthandler)
 
     def SetSize(self, rect):
-        self._tc.SetDimensions(rect.x, rect.y, rect.width + 2, rect.height + 2,
-                               wx.SIZE_ALLOW_MINUS_ONE)
+        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
+            self._tc.SetSize(rect.x, rect.y, rect.width + 2, rect.height + 2,
+                             wx.SIZE_ALLOW_MINUS_ONE)
+        else:
+            self._tc.SetDimensions(rect.x, rect.y, rect.width + 2, rect.height
+                                   + 2, wx.SIZE_ALLOW_MINUS_ONE)
 
     def SetHeight(self, height):
         self._height = height
 
     def BeginEdit(self, row, col, grid):
+        self._counter = 0
         self._tc.SetSize((-1, self._height))
         self._tc.set_row(row)
         self._original_value = grid.GetCellValue(row, col)
         self._grid = grid
-        self.StartingClick()
+        self._tc.SetInsertionPointEnd()
+        self._tc.SetFocus()
+        # For this example, select the text   # DEBUG nov_2017
+        self._tc.SetSelection(0, self._tc.GetLastPosition())
 
     def EndEdit(self, row, col, grid, *ignored):
         value = self._get_value()
         if value != self._original_value:
-            grid.cell_value_edited(row, col, value)
-        self._tc.hide()
-        grid.SetFocus()
-        return True
+            if wx.VERSION >= (3, 0, 2, ''):  # DEBUG wxPhoenix
+                self._value = value
+                return value  # DEBUG wxPhoenix True
+            else:
+                self._grid.cell_value_edited(row, col, value)
+                return True  # DEBUG wxPhoenix True
+        else:
+            # DEBUG wxPhoenix
+            self._tc.hide()
+            grid.SetFocus()
+            if wx.VERSION >= (3, 0, 2, ''):  # DEBUG wxPhoenix
+                return None
+            else:
+                return None   # DEBUG
+
+    def ApplyEdit(self, row, col, grid):
+        val = self._tc.GetValue()
+        grid.GetTable().SetValue(row, col, val) # update the table
+
+        self._original_value = ''
+        self._tc.SetValue('')
+        if wx.VERSION >= (3, 0, 2, ''):  # DEBUG wxPhoenix
+            if self._value or val == '':
+                self._grid.cell_value_edited(row, col, self._value)
 
     def _get_value(self):
         suggestion = self._tc.content_assist_value()
@@ -711,10 +865,13 @@ class ContentAssistCellEditor(grid.PyGridCellEditor):
 
     def StartingKey(self, event):
         key = event.GetKeyCode()
-        if key is wx.WXK_DELETE or key > 255:
+        event.Skip()  # DEBUG seen this skip as soon as possible
+        if key == wx.WXK_DELETE or key > 255:
             self._grid.HideCellEditControl()
-            return
-        self._tc.SetValue(unichr(key))
+        elif key == wx.WXK_BACK:
+            self._tc.SetValue(self._original_value)
+        else:
+            self._tc.SetValue(unichr(key))
         self._tc.SetFocus()
         self._tc.SetInsertionPointEnd()
 
@@ -735,8 +892,6 @@ class ChooseUsageSearchStringDialog(wx.Dialog):
         self.caption = "Please select what you want to check for usage"
         variables = set(variablematcher.find_variable_basenames(cellvalue))
         self.choices = [(False, cellvalue)] + [(True, v) for v in variables]
-        # Bug in wx.RadioBox never shows the '&' even if '&&'
-        # See https://github.com/wxWidgets/Phoenix/issues/39
         self.choices_string = ["Complete cell content"] + \
                               ["Variable " + var.replace("&", "&&") for var
                                in variables]

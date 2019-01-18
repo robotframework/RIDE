@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -68,7 +69,7 @@ class ReleaseNotes(object):
 WELCOME_TEXT = """
 <h2>Welcome to use RIDE version %s</h2>
 
-<p>Thank you for using the Robot Framework IDE (RIDE).</p>
+<p>Thank you for using the <a href="https://robotframework.org/">Robot Framework</a> IDE (RIDE).</p>
 
 <p>Visit RIDE on the web:</p>
 
@@ -77,7 +78,7 @@ WELCOME_TEXT = """
       RIDE project page on github</a></li>
   <li><a href="https://github.com/robotframework/RIDE/wiki/Installation-Instructions">
       Installation instructions</a></li>
-  <li><a href="https://github.com/robotframework/RIDE/wiki/Release-notes">
+  <li><a href="https://github.com/robotframework/RIDE/releases">
       Release notes</a></li>
 </ul>
 """ % VERSION
@@ -86,7 +87,7 @@ WELCOME_TEXT = """
 # Release notes are updated automatically by package.py script whenever
 # a numbered distribution is created.
 RELEASE_NOTES = """
-<h2>Release notes for 1.5.2.1</h2>
+<h2>Release notes for 1.7.3rc1</h2>
 <table border="1">
 <tr>
 <td><p><b>ID</b></p></td>
@@ -94,12 +95,6 @@ RELEASE_NOTES = """
 <td><p><b>Priority</b></p></td>
 <td><p><b>Summary</b></p></td>
 </tr>
-<tr>
-<td><a href="http://github.com/robotframework/RIDE/issues/1577">Issue 1577</a></td>
-<td>bug</td>
-<td>critical</td>
-<td>RIDE 1.5.2 does not work with wxPython 2.8.12.1</td>
-</tr>
 </table>
-<p>Altogether 1 issues.</p>
+<p>Altogether 0 issues.</p>
 """

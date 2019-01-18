@@ -1,5 +1,20 @@
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
 import unittest
-from nose.tools import assert_equals, assert_true
+from nose.tools import assert_equal, assert_true
 
 from robotide.ui.keywordsearch import _KeywordData, _SearchCriteria,\
     ALL_KEYWORDS, ALL_USER_KEYWORDS, ALL_LIBRARY_KEYWORDS, _SortOrder
@@ -75,7 +90,7 @@ class TestSearchCriteria(unittest.TestCase):
     def _test_criteria(self, expected, pattern, search_doc, keyword,
                        source_filter=ALL_KEYWORDS):
         criteria = _SearchCriteria(pattern, search_doc, source_filter)
-        assert_equals(criteria.matches(keyword), expected)
+        assert_equal(criteria.matches(keyword), expected)
 
 
 class TestKeyWordData(unittest.TestCase):
@@ -89,7 +104,7 @@ class TestKeyWordData(unittest.TestCase):
                                       'get bar',
                                       'get bar2',
                                       'Get File']):
-            assert_equals(kw_data[index].name, name)
+            assert_equal(kw_data[index].name, name)
 
     def test_sort_by_name(self):
         order = _SortOrder()
@@ -101,7 +116,7 @@ class TestKeyWordData(unittest.TestCase):
                                       'Get File',
                                       'Should Be Equal',
                                       'User Keyword']):
-            assert_equals(kw_data[index].name, name)
+            assert_equal(kw_data[index].name, name)
 
     def test_sort_by_name_reversed(self):
         order = _SortOrder()
@@ -114,7 +129,7 @@ class TestKeyWordData(unittest.TestCase):
                                       'get bar',
                                       'BarBar',
                                       'Bar']):
-            assert_equals(kw_data[index].name, name)
+            assert_equal(kw_data[index].name, name)
 
     def test_sort_by_source(self):
         order = _SortOrder()
@@ -127,7 +142,7 @@ class TestKeyWordData(unittest.TestCase):
                                       'User Keyword',
                                       'get bar',
                                       'get bar2']):
-            assert_equals(kw_data[index].name, name)
+            assert_equal(kw_data[index].name, name)
 
     def test_sort_by_source_reversed(self):
         order = _SortOrder()
@@ -141,7 +156,7 @@ class TestKeyWordData(unittest.TestCase):
                                       'Bar',
                                       'BarBar',
                                       'Should Be Equal']):
-            assert_equals(kw_data[index].name, name)
+            assert_equal(kw_data[index].name, name)
 
 
 if __name__ == "__main__":

@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -17,8 +18,8 @@ from robotide.lib.robot.output.xmllogger import XmlLogger
 
 class OutputWriter(XmlLogger):
 
-    def __init__(self, output):
-        XmlLogger.__init__(self, output, generator='Rebot')
+    def __init__(self, output, rpa=False):
+        XmlLogger.__init__(self, output, rpa=rpa, generator='Rebot')
 
     def start_message(self, msg):
         self._write_message(msg)
