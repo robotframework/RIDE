@@ -47,12 +47,14 @@ support those).
 
 For testing purposes, users can select which version to use, by creating the
 file ``wx.pth`` containing the directory name of the wxPython to use. That 
-directory must contain the two wxPython directories (moved into):
+directory must contain the two wxPython directories (moved into)::
+
     ls  -cF /usr/lib/python2.7/site-packages/wx-4.0.4
     wxPython-4.0.4.dist-info/
     wx/    
  
 Example::
+
     type C:\\Python27\\Lib\\site-packages\\wx.pth
     # 
     wx-2.8-msw-unicode
@@ -90,9 +92,13 @@ Unit tests are in `utest` directory. They can be executed with::
 There is also a shell script (requiring customization for your environment).
 It allows to run the test files stopping when errors are found.
 Example::
+
     ./test_all.sh 3 utest/namespace   # to test with python3 and namespace dir
-or
+
+or::
+
     ./test_all.sh                     # all utests with default python2
+
 
 Contributing
 ============
@@ -134,21 +140,27 @@ Releasing
   > invoke version 1.xx
 
 * Release notes in markdown format can be created with::
+
   > invoke release_notes
+
+* Prepare source package::
 
   > invoke sdist --upload
   > git commit -am 'Version 1.xx'
   > git tag 1.xx
   > git push --tags
 
-Creating distributions (borrowed from <https://github.com/robotframework/robotframework/BUILD.rst>`_)
+
+Creating distributions
 ----------------------
+
+(borrowed from https://github.com/robotframework/robotframework/blob/master/BUILD.rst)
 
 1. Checkout the earlier created tag if necessary::
 
       git checkout v$VERSION
 
-   This isn't necessary if continuing right after tagging_.
+   This isn't necessary if continuing right after `tagging <https://github.com/robotframework/robotframework/blob/master/BUILD.rst#tagging>`_.
 
 2. Cleanup (again). This removes temporary files as well as ``build`` and
    ``dist`` directories::
@@ -191,8 +203,7 @@ The migrator is currenlty (10.8.2012) located at preferences/settings.py/Setting
 
 The mechanism works in the following way:
  * Settings have a settings_version attribute that should be updated when a new migration is needed
- * the SettingsMigrator.migrate method should be updated so that it will also do the new migration
- * You only need to add a migration from the previous version to current (the migrate method will handle all the older versions -
-so only the last configuration delta is needed)
+ * The SettingsMigrator.migrate method should be updated so that it will also do the new migration
+ * You only need to add a migration from the previous version to current (the migrate method will handle all the older versions - so only the last configuration delta is needed)
 
 Hope this helps when persistent things change a lot.
