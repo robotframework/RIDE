@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+
 #  Copyright 2008-2015 Nokia Networks
 #  Copyright 2016-     Robot Framework Foundation
 #
@@ -20,6 +21,7 @@ from os.path import join, exists
 import re
 import shutil
 import tempfile
+
 try:
     from StringIO import StringIO
 except ImportError:  # py3
@@ -31,7 +33,6 @@ except ImportError:  # py3
 
 try:
     from invoke import task, run, __version_info__ as invoke_version
-
     if invoke_version < (0, 13):
         raise ImportError
 except ImportError:
@@ -56,8 +57,7 @@ with open("src/robotide/version.py") as f:
 
 FINAL_RELEASE = bool(re.match('^(\d*\.){1,2}\d*$', VERSION))
 wxPythonDownloadUrl = \
-    "http://sourceforge.net/projects/wxpython/files/wxPython/2.8.12.1/"
-
+    "https://wxpython.org/"
 
 # Developemnt tasks
 @task
@@ -66,7 +66,6 @@ def devel(ctx, args=''):
     _set_development_path()
     from robotide import main
     main(*args.split(','))
-
 
 @task
 def test(ctx, test_filter=''):
@@ -81,7 +80,6 @@ def test(ctx, test_filter=''):
                      argv=['', '--m=^test_'] + additional_args)
     assert result is True
 
-
 @task
 def deps(ctx, upgrade=False):
     """Fetch and install development dependencies."""
@@ -91,12 +89,10 @@ def deps(ctx, upgrade=False):
     else:
         ctx.run(cmd)
 
-
 @task
 def clean(ctx):
     """Clean bytecode files and remove `dist` and `build` directories."""
     _clean()
-
 
 @task
 def update_robot(ctx, version=''):
@@ -135,7 +131,6 @@ def update_robot(ctx, version=''):
     _log('Updated bundled Robot Framework to version {}/{}'.format(
         target, rf_commit_hash))
 
-
 @task
 def generate_big_project(ctx, install=False, upgrade=False, args=''):
     """Generate big test data project to help perf testing."""
@@ -159,7 +154,6 @@ def generate_big_project(ctx, install=False, upgrade=False, args=''):
         _log("Error: Did not find 'rfgen' script or installation")
         _log("Use 'invoke generate_big_project --install'")
 
-
 @task
 def random_test(ctx):
     """Use rtest go_find_bugs.py to randomly test RIDE API."""
@@ -172,7 +166,6 @@ def random_test(ctx):
         assert main(dir)
     finally:
         shutil.rmtree(dir, ignore_errors=True)
-
 
 # Installation and distribution tasks
 @task
@@ -199,12 +192,10 @@ VERSION = '%s'
 """ % version)
     _log('Set version to %s' % version)
 
-
 @task
 def register(ctx):
     """Register current version to Python package index."""
     _run_setup(ctx, 'register')
-
 
 @task
 def install(ctx):
@@ -215,14 +206,12 @@ def install(ctx):
         _log("""No wxPython installation detected!
 
 Please install wxPython before running RIDE.
-You can download wxPython 2.8.12.1 from {}
+You can download wxPython from {}
 """.format(wxPythonDownloadUrl))
     _run_setup(ctx, 'install')
 
-
 def _run_setup(ctx, cmd):
     ctx.run('python setup.py {}'.format(cmd))
-
 
 def release_notes_plugin(ctx):
     changes = _download_and_format_issues()
@@ -231,7 +220,6 @@ def release_notes_plugin(ctx):
     content = ctx.open(plugin_path).read().rsplit('RELEASE_NOTES =', 1)[0]
     content += 'RELEASE_NOTES = """\n%s"""\n' % changes
     ctx.open(plugin_path, 'w').write(content)
-
 
 @task(pre=[clean],
       help={
@@ -243,7 +231,6 @@ def sdist(ctx, release_notes=True, upload=False):
     _run_setup(ctx, 'sdist{}'.format('' if not upload else ' upload'))
     _after_distribution()
 
-
 @task(pre=[clean])
 def wininst(ctx):
     """Creates Windows installer with bundled dependencies."""
@@ -252,7 +239,6 @@ def wininst(ctx):
 
     _run_setup(ctx, 'bdist_wininst')
     _after_distribution()
-
 
 @task
 def release_notes(ctx):
@@ -285,23 +271,18 @@ def _clean(keep_dist=False):
     if exists(BUILD_DIR):
         shutil.rmtree(BUILD_DIR)
 
-
 def _remove_bytecode_files():
     for d in SOURCE_DIR, TEST_DIR:
         _remove_files_matching(d, '.*\.pyc')
-
 
 def _remove_files_matching(directory, pattern):
     for root, dirs, files in os.walk(directory):
         for file in filter(lambda x: re.match(pattern, x), files):
             os.remove(join(root, file))
 
-
 def _set_development_path():
     sys.path.insert(0, TEST_DIR)
     sys.path.insert(0, SOURCE_DIR)
-
-
 
 def _run_sed_on_matching_files(ctx, pattern, sed_expression):
     try:
@@ -310,14 +291,11 @@ def _run_sed_on_matching_files(ctx, pattern, sed_expression):
     except Exception:
         pass
 
-
-
 def _after_distribution():
     _log('Created:')
     for path in os.listdir(DIST_DIR):
         _log(os.path.abspath(os.path.join(DIST_DIR, path)))
     _clean(keep_dist=True)
-
 
 def _download_and_format_issues():
     try:
@@ -348,7 +326,6 @@ def _download_and_format_issues():
     writer.element('p', 'Altogether %d issues.' % len(issues))
     return writer.output.getvalue()
 
-
 def _get_issues():
     import getpass
     from github3 import login
@@ -366,7 +343,6 @@ def _get_issues():
     issues.sort(cmp=_issue_sorter)
     return issues
 
-
 def _issue_sorter(i1, i2):
     prio_mapping = {
         'critical': 0,
@@ -377,18 +353,15 @@ def _issue_sorter(i1, i2):
     prio1, prio2 = _find_priority(i1), _find_priority(i2)
     return cmp(prio_mapping[prio1], prio_mapping[prio2])
 
-
 def _find_type(issue):
     type_labels = [l.name for l in issue.iter_labels()
                    if l.name in ['enhancement', 'bug', 'task']]
     return type_labels[0] if type_labels else 'Unknown type'
 
-
 def _find_priority(issue):
     prio_labels = [l.name for l in issue.iter_labels()
                    if l.name.startswith('prio')]
     return prio_labels[0][5:] if prio_labels else 'Unknown priority'
-
 
 def _get_milestone(repo, milestone_title):
     existing_milestones = list(repo.iter_milestones())
@@ -396,7 +369,6 @@ def _get_milestone(repo, milestone_title):
     if milestone:
         return milestone[0].number
     return None
-
 
 def _log(msg):
     print(msg)
