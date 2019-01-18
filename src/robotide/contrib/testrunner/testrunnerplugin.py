@@ -291,6 +291,10 @@ class TestRunnerPlugin(Plugin):
         """Called when the user clicks the "Run" button"""
         if not self._can_start_running_tests():
             return
+        #if no tests are selected warn the user, issue #1622
+        if not self.tests_selected():
+            if not self.ask_user_to_run_anyway():
+                return
         self._initialize_ui_for_running()
         command = self._create_command()
         self._output("command: %s\n" % command)  # DEBUG encode
@@ -362,6 +366,16 @@ class TestRunnerPlugin(Plugin):
         ret = wx.MessageBox("""There are unsaved modifications.
         Do you want to save all changes and run the tests?""",
                             "Unsaved Modifications",
+                            wx.ICON_QUESTION | wx.YES_NO)
+        return ret == wx.YES
+
+    def tests_selected(self):
+        return len(self._names_to_run) != 0
+
+    def ask_user_to_run_anyway(self):
+        ret = wx.MessageBox('No tests selected. \n'
+                            'Continue anyway?',
+                            'No tests selected',
                             wx.ICON_QUESTION | wx.YES_NO)
         return ret == wx.YES
 
