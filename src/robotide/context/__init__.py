@@ -160,6 +160,10 @@ SHORTCUT_KEYS = '''\
         <td>Help for cell content</td>
     </tr>
     <tr>
+        <td>CtrlCmd-Shift-J</td>
+        <td>Pop-up JSON Editor</td>
+    </tr>
+    <tr>
         <td>CtrlCmd-I</td>
         <td>Insert row(s)</td>
     </tr>

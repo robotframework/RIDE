@@ -294,6 +294,7 @@ class TestRunnerPlugin(Plugin):
         #if no tests are selected warn the user, issue #1622
         if not self.tests_selected():
             if not self.ask_user_to_run_anyway():
+                # In Linux NO runs dialog 4 times
                 return
         self._initialize_ui_for_running()
         command = self._create_command()
