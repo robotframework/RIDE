@@ -54,7 +54,6 @@ class _PopupWindowBase(object):
         dlg = HtmlDialog(self._detached_title, self._current_details)
         dlg.SetPosition((wx.GetMouseState().x, wx.GetMouseState().y))
         dlg.Show()
-        #  if IS_WINDOWS:   # DEBUG Should be for all
         event.Skip()
 
     def show_at(self, position):
