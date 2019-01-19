@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -15,7 +16,7 @@
 from itertools import chain
 
 from robotide.lib.robot.model import Tags
-from robotide.lib.robot.utils import setter
+from robotide.lib.robot.utils import getshortdoc, Sortable, setter
 
 from .writer import LibdocWriter
 from .output import LibdocOutput
@@ -36,12 +37,6 @@ class LibraryDoc(object):
         self.keywords = []
 
     @setter
-    def scope(self, scope):
-        return {'TESTCASE': 'test case',
-                'TESTSUITE': 'test suite',
-                'GLOBAL': 'global'}.get(scope, scope)
-
-    @setter
     def doc_format(self, format):
         return format or 'ROBOT'
 
@@ -58,7 +53,7 @@ class LibraryDoc(object):
             LibdocWriter(format).write(self, outfile)
 
 
-class KeywordDoc(object):
+class KeywordDoc(Sortable):
 
     def __init__(self, name='', args=(), doc='', tags=()):
         self.name = name
@@ -68,7 +63,8 @@ class KeywordDoc(object):
 
     @property
     def shortdoc(self):
-        return self.doc.splitlines()[0] if self.doc else ''
+        return getshortdoc(self.doc)
 
-    def __cmp__(self, other):
-        return cmp(self.name.lower(), other.name.lower())
+    @property
+    def _sort_key(self):
+        return self.name.lower()

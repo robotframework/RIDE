@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -314,9 +315,11 @@ class KeywordTableController(_MacroTable):
         return self._table.keywords
 
     def _notify_creation(self, name, ctrl):
+        # print("DEBUG notify_creation %s" % name)
         RideUserKeywordAdded(datafile=self.datafile, name=name, item=ctrl).publish()
 
     def _notify_removal(self, item):
+        # print("DEBUG notify_removal %s" % item.name)
         RideUserKeywordRemoved(datafile=self.datafile, name=item.name, item=item).publish()
 
     def new(self, name, argstr=''):

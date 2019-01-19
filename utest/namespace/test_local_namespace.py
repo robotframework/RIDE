@@ -1,6 +1,21 @@
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
 import unittest
 import datafilereader
-from nose.tools import assert_equals, assert_false, assert_true
+from nose.tools import assert_equal, assert_false, assert_true
 
 
 class TestLocalNamespace(unittest.TestCase):
@@ -9,7 +24,7 @@ class TestLocalNamespace(unittest.TestCase):
         self._project = datafilereader.construct_project(datafilereader.SIMPLE_PROJECT)
         self._test = datafilereader.get_ctrl_by_name('Test Case', self._project.datafiles[0].tests)
         self._keyword = datafilereader.get_ctrl_by_name('Keyword', self._project.datafiles[0].keywords)
-        print self._keyword
+        print(self._keyword)
 
     def tearDown(self):
         self._project.close()
@@ -63,7 +78,7 @@ class TestLocalNamespace(unittest.TestCase):
 
     def _verify_suggestions_on_row(self, row, start='${', contains=None, does_not_contain=None):
         suggestion_names = [suggestion.name for suggestion in self._keyword.get_local_namespace_for_row(row).get_suggestions(start)]
-        self.assertEquals(len(suggestion_names), len(set(suggestion_names)))
+        self.assertEqual(len(suggestion_names), len(set(suggestion_names)))
         if contains:
             for name in contains:
                 if name not in suggestion_names:

@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -15,7 +16,7 @@
 import wx
 import wx.grid
 
-from popupwindow import HtmlPopupWindow
+from .popupwindow import HtmlPopupWindow
 
 
 class GridToolTips(object):
@@ -25,9 +26,14 @@ class GridToolTips(object):
         self._information_popup = HtmlPopupWindow(grid, (450, 300))
         self._grid = grid
         self._tooltip_timer = wx.Timer(grid.GetGridWindow())
+        grid.GetGridWindow().Bind(wx.EVT_WINDOW_DESTROY, self.OnGridDestroy)
         grid.GetGridWindow().Bind(wx.EVT_MOTION, self.OnMouseMotion)
         grid.GetGridWindow().Bind(wx.EVT_TIMER, self.OnShowToolTip)
         grid.Bind(wx.grid.EVT_GRID_EDITOR_HIDDEN, self.OnGridEditorHidden)
+
+    def OnGridDestroy(self, event):
+        self._tooltip_timer.Stop()
+        event.Skip()
 
     def OnMouseMotion(self, event):
         self._hide_tooltip()
@@ -49,7 +55,10 @@ class GridToolTips(object):
         if window is None:
             return False
         rect = window.GetTopLevelParent().GetScreenRect()
-        return rect.Inside(wx.GetMousePosition())
+        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
+            return rect.Contains(wx.GetMousePosition())
+        else:
+            return rect.Inside(wx.GetMousePosition())
 
     def OnGridEditorHidden(self, event):
         cell = event.Row, event.Col

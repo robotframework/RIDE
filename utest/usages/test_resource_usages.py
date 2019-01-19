@@ -1,6 +1,21 @@
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
 import unittest
 import datafilereader
-from nose.tools import assert_equals
+from nose.tools import assert_equal
 from robotide.usages.commands import FindResourceUsages
 
 
@@ -20,8 +35,8 @@ class ResourceUsageTests(unittest.TestCase):
         cls.ctrl.close()
 
     def test_resource_import_knows_imported_resource_controller(self):
-        assert_equals(self.resu, self.ts1.imports[0].get_imported_controller())
-        assert_equals(self.resu, self.ts2.imports[0].get_imported_controller())
+        assert_equal(self.resu, self.ts1.imports[0].get_imported_controller())
+        assert_equal(self.resu, self.ts2.imports[0].get_imported_controller())
 
     def test_resource_usages_finding(self):
         usages = list(self.resu.execute(FindResourceUsages()))
@@ -30,7 +45,7 @@ class ResourceUsageTests(unittest.TestCase):
         self._verify_that_contains(self.ts2, usages)
 
     def _verify_length(self, expected, usages):
-        assert_equals(len(usages), expected)
+        assert_equal(len(usages), expected)
 
     def _verify_that_contains(self, item, usages):
         for u in usages:
@@ -48,7 +63,7 @@ class ResourceUsageTests(unittest.TestCase):
 
     def test_none_existing_import(self):
         imp = self.ts1.imports.add_resource('this_does_not_exists.txt')
-        assert_equals(imp.get_imported_controller(), None)
+        assert_equal(imp.get_imported_controller(), None)
 
 if __name__ == '__main__':
     unittest.main()

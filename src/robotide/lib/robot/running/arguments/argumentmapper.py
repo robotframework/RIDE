@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -13,59 +14,68 @@
 #  limitations under the License.
 
 from robotide.lib.robot.errors import DataError
-from robotide.lib.robot.utils import DotDict
 
 
 class ArgumentMapper(object):
 
     def __init__(self, argspec):
+        """:type argspec: :py:class:`robot.running.arguments.ArgumentSpec`"""
         self._argspec = argspec
 
-    def map(self, positional, named, variables=None, prune_trailing_defaults=False):
-        template = KeywordCallTemplate(self._argspec, variables)
+    def map(self, positional, named, replace_defaults=True):
+        template = KeywordCallTemplate(self._argspec)
         template.fill_positional(positional)
         template.fill_named(named)
-        if prune_trailing_defaults:
-            template.prune_trailing_defaults()
-        template.fill_defaults()
+        if replace_defaults:
+            template.replace_defaults()
         return template.args, template.kwargs
 
 
 class KeywordCallTemplate(object):
 
-    def __init__(self, argspec, variables):
-        defaults = argspec.defaults
-        if variables:
-            defaults = variables.replace_list(defaults)
-        self._positional = argspec.positional
-        self._supports_kwargs = bool(argspec.kwargs)
-        self._supports_named = argspec.supports_named
-        self.args = [None] * argspec.minargs + [Default(d) for d in defaults]
-        self.kwargs = DotDict()
+    def __init__(self, argspec):
+        """:type argspec: :py:class:`robot.running.arguments.ArgumentSpec`"""
+        self._argspec = argspec
+        self.args = [None if arg not in argspec.defaults
+                     else DefaultValue(argspec.defaults[arg])
+                     for arg in argspec.positional]
+        self.kwargs = []
 
     def fill_positional(self, positional):
         self.args[:len(positional)] = positional
 
     def fill_named(self, named):
-        for name, value in named.items():
-            if name in self._positional and self._supports_named:
-                index = self._positional.index(name)
+        spec = self._argspec
+        for name, value in named:
+            if name in spec.positional and spec.supports_named:
+                index = spec.positional.index(name)
                 self.args[index] = value
-            elif self._supports_kwargs:
-                self.kwargs[name] = value
+            elif spec.kwargs or name in spec.kwonlyargs:
+                self.kwargs.append((name, value))
             else:
                 raise DataError("Non-existing named argument '%s'." % name)
+        named_names = {name for name, _ in named}
+        for name in spec.kwonlyargs:
+            if name not in named_names:
+                value = DefaultValue(spec.defaults[name])
+                self.kwargs.append((name, value))
 
-    def prune_trailing_defaults(self):
-        while self.args and isinstance(self.args[-1], Default):
+    def replace_defaults(self):
+        is_default = lambda arg: isinstance(arg, DefaultValue)
+        while self.args and is_default(self.args[-1]):
             self.args.pop()
-
-    def fill_defaults(self):
-        self.args = [arg if not isinstance(arg, Default) else arg.value
-                     for arg in self.args]
+        self.args = [a if not is_default(a) else a.value for a in self.args]
+        self.kwargs = [(n, v) for n, v in self.kwargs if not is_default(v)]
 
 
-class Default(object):
+class DefaultValue(object):
 
     def __init__(self, value):
         self.value = value
+
+    def resolve(self, variables):
+        try:
+            return variables.replace_scalar(self.value)
+        except DataError as err:
+            raise DataError('Resolving argument default values failed: %s'
+                            % err.message)

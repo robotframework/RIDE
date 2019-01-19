@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -15,16 +16,22 @@
 import os
 
 from robotide.lib.robot.errors import DataError
-from robotide.lib.robot.parsing import VALID_EXTENSIONS as RESOURCE_EXTENSIONS
-from robotide.lib.robot.utils import JYTHON
+from robotide.lib.robot.parsing import TEST_EXTENSIONS
+from robotide.lib.robot.utils import JYTHON, JAVA_VERSION
 
 from .robotbuilder import LibraryDocBuilder, ResourceDocBuilder
 from .specbuilder import SpecDocBuilder
 if JYTHON:
-    from .javabuilder import JavaDocBuilder
+    if JAVA_VERSION < (1, 9):
+        from .javabuilder import JavaDocBuilder
+    else:
+        from .java9builder import JavaDocBuilder
 else:
     def JavaDocBuilder():
         raise DataError('Documenting Java test libraries requires Jython.')
+
+
+RESOURCE_EXTENSIONS = (TEST_EXTENSIONS | {'resource'})
 
 
 def DocumentationBuilder(library_or_resource):

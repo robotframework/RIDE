@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -281,9 +282,15 @@ class ReviewDialog(wx.Frame):
 
     def add_result_unused_keyword(self, index, keyword):
         keyword_info = keyword.info
-        self._unused_kw_list.InsertStringItem(index, keyword_info.name)
+        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
+            self._unused_kw_list.InsertItem(index, keyword_info.name)
+        else:
+            self._unused_kw_list.InsertStringItem(index, keyword_info.name)
         filename = os.path.basename(keyword_info.item.source)
-        self._unused_kw_list.SetStringItem(index, 1, filename)
+        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
+            self._unused_kw_list.SetItem(index, 1, filename)
+        else:
+            self._unused_kw_list.SetStringItem(index, 1, filename)
         self._unused_kw_list.SetItemData(index, index)
         self._unused_kw_list.SetClientData(index, keyword)
 
@@ -447,7 +454,7 @@ class ResultListCtrl(wx.ListCtrl, listmix.CheckListCtrlMixin, listmix.ListCtrlAu
         if self._dlg:
             self._dlg.item_in_kw_list_checked()
         else:
-            print "No dialog set"
+            print("No dialog set")
 
     def get_next_checked_item(self):
         for i in range(self.GetItemCount()):
@@ -477,7 +484,7 @@ class ResultListCtrl(wx.ListCtrl, listmix.CheckListCtrlMixin, listmix.ListCtrlAu
         self._clientData.clear()
 
     def print_data(self):
-        print self._clientData
+        print(self._clientData)
 
 class MyCollapsiblePane(wx.CollapsiblePane):
 

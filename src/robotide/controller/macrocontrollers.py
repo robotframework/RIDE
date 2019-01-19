@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -23,14 +24,17 @@ from robotide.controller.arguments import parse_arguments_to_var_dict
 from robotide.controller.basecontroller import WithUndoRedoStacks
 from robotide.namespace.local_namespace import LocalNamespace
 from robotide.publish.messages import RideItemStepsChanged, RideItemNameChanged,\
-    RideItemSettingsChanged
+    RideItemSettingsChanged, RideUserKeywordRemoved  # DEBUG
 from robotide.controller.stepcontrollers import ForLoopStepController,\
     StepController, IntendedStepController
 from robotide.spec.iteminfo import ResourceUserKeywordInfo, \
     TestCaseUserKeywordInfo
 from robotide.controller.tags import Tag
 from robotide import robotapi
-from robotide.utils import variablematcher
+from robotide.utils import is_unicode, variablematcher
+from robotide.utils import PY3
+if PY3:
+    from robotide.utils import basestring
 
 
 KEYWORD_NAME_FIELD = 'Keyword Name'
@@ -47,7 +51,7 @@ class ItemNameController(object):
         self._item = item
 
     def contains_keyword(self, name):
-        if isinstance(name, basestring):
+        if isinstance(name, basestring) or is_unicode(name):
             return self._item.name == name
         return name.match(self._item.name)
 
@@ -179,6 +183,7 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         return self.datafile_controller.is_library_keyword(value)
 
     def delete(self):
+        print("DEBUG _WithStepsController delete this is parent %s" % self._parent)
         self.datafile_controller.unregister_namespace_updates(
             self._clear_cached_steps)
         return self._parent.delete(self)
@@ -259,7 +264,8 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         extracted_steps = self.steps[rem_start:rem_end + 1]
         return self._convert_controller_to_steps(extracted_steps)
 
-    def _convert_controller_to_steps(self, step_controllers):
+    @staticmethod
+    def _convert_controller_to_steps(step_controllers):
         return [robotapi.Step(s.as_list()) for s in step_controllers]
 
     def _replace_steps_with_kw(self, name, step_range):
@@ -282,6 +288,11 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
     def notify_name_changed(self):
         self.update_namespace()
         self._notify(RideItemNameChanged)
+
+    def notify_keyword_removed(self):  # DEBUG
+        self.update_namespace()
+        self._notify(RideUserKeywordRemoved)
+        self.notify_steps_changed()
 
     def notify_settings_changed(self):
         self.update_namespace()
@@ -310,6 +321,9 @@ class TestCaseController(_WithStepsController):
         if other.__class__ != self.__class__:
             return False
         return self._test == other._test
+
+    def __hash__(self):
+        return hash(repr(self))
 
     @property
     def longname(self):
@@ -361,7 +375,8 @@ class TestCaseController(_WithStepsController):
     def validate_keyword_name(self, name):
         return self.datafile_controller.validate_keyword_name(name)
 
-    def get_local_variables(self):
+    @staticmethod
+    def get_local_variables():
         return {}
 
     def has_template(self):
@@ -394,6 +409,9 @@ class UserKeywordController(_WithStepsController):
         if other.__class__ != self.__class__:
             return False
         return self._kw == other._kw
+
+    def __hash__(self):
+        return hash(repr(self))
 
     @property
     def info(self):

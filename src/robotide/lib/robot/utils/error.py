@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,22 +13,21 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import os
 import re
 import sys
 import traceback
 
 from robotide.lib.robot.errors import RobotError
 
-from .platform import JYTHON
+from .platform import JYTHON, RERAISED_EXCEPTIONS
 from .unic import unic
 
 
-EXCLUDE_ROBOT_TRACES = True    # Exclude internal traceback by default or not.
-RERAISED_EXCEPTIONS = (KeyboardInterrupt, SystemExit, MemoryError)
+EXCLUDE_ROBOT_TRACES = not os.getenv('ROBOT_INTERNAL_TRACES')
 if JYTHON:
     from java.io import StringWriter, PrintWriter
     from java.lang import Throwable, OutOfMemoryError
-    RERAISED_EXCEPTIONS += (OutOfMemoryError,)
 else:
     Throwable = ()
 
@@ -44,18 +44,18 @@ def get_error_message():
 
 def get_error_details(exclude_robot_traces=EXCLUDE_ROBOT_TRACES):
     """Returns error message and details of the last occurred exception."""
-    details = ErrorDetails(exclude_robot_traces)
+    details = ErrorDetails(exclude_robot_traces=exclude_robot_traces)
     return details.message, details.traceback
 
 
-def ErrorDetails(exclude_robot_traces=EXCLUDE_ROBOT_TRACES):
+def ErrorDetails(exc_info=None, exclude_robot_traces=EXCLUDE_ROBOT_TRACES):
     """This factory returns an object that wraps the last occurred exception
 
     It has attributes `message`, `traceback` and `error`, where `message`
     contains type and message of the original error, `traceback` contains the
     traceback/stack trace and `error` contains the original error instance.
     """
-    exc_type, exc_value, exc_traceback = sys.exc_info()
+    exc_type, exc_value, exc_traceback = exc_info or sys.exc_info()
     if exc_type in RERAISED_EXCEPTIONS:
         raise exc_value
     details = PythonErrorDetails \
@@ -123,15 +123,8 @@ class _ErrorDetails(object):
 class PythonErrorDetails(_ErrorDetails):
 
     def _get_message(self):
-        # If exception is a "string exception" without a message exc_value is None
-        if self.error is None:
-            return unic(self._exc_type)
         name = self._get_name(self._exc_type)
-        try:
-            msg = unicode(self.error)
-        except UnicodeError:  # Happens if message is Unicode and version < 2.6
-            msg = ' '.join(unic(a) for a in self.error.args)
-        return self._format_message(name, msg)
+        return self._format_message(name, unic(self.error))
 
     def _get_details(self):
         if isinstance(self.error, RobotError):

@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,13 +13,18 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+from __future__ import absolute_import
+
+import os
 import re
 from fnmatch import fnmatchcase
 from random import randint
 from string import ascii_lowercase, ascii_uppercase, digits
 
+
 from robotide.lib.robot.api import logger
-from robotide.lib.robot.utils import is_bytes, is_string, is_truthy, is_unicode, lower, unic
+from robotide.lib.robot.utils import (is_bytes, is_string, is_truthy, is_unicode, lower,
+                         unic, Utf8Reader, PY3)
 from robotide.lib.robot.version import get_version
 
 
@@ -54,8 +60,6 @@ class String(object):
         | ${str2} = | Convert To Lowercase | 1A2c3D |
         | Should Be Equal | ${str1} | abc |
         | Should Be Equal | ${str2} | 1a2c3d |
-
-        New in Robot Framework 2.8.6.
         """
         # Custom `lower` needed due to IronPython bug. See its code and
         # comments for more details.
@@ -69,8 +73,6 @@ class String(object):
         | ${str2} = | Convert To Uppercase | 1a2C3d |
         | Should Be Equal | ${str1} | ABC |
         | Should Be Equal | ${str2} | 1A2C3D |
-
-        New in Robot Framework 2.8.6.
         """
         return string.upper()
 
@@ -94,10 +96,8 @@ class String(object):
         on character or integer sequences. Use `Decode Bytes To String` if you
         need to convert byte strings to Unicode strings and `Convert To String`
         in ``BuiltIn`` if you need to convert arbitrary objects to Unicode.
-
-        New in Robot Framework 2.7.7.
         """
-        return string.encode(encoding, errors)
+        return bytes(string.encode(encoding, errors))
 
     def decode_bytes_to_string(self, bytes, encoding, errors='strict'):
         """Decodes the given ``bytes`` to a Unicode string using the given ``encoding``.
@@ -118,10 +118,42 @@ class String(object):
         Use `Encode String To Bytes` if you need to convert Unicode strings to
         byte strings, and `Convert To String` in ``BuiltIn`` if you need to
         convert arbitrary objects to Unicode strings.
-
-        New in Robot Framework 2.7.7.
         """
+        if PY3 and is_unicode(bytes):
+            raise TypeError('Can not decode strings on Python 3.')
         return bytes.decode(encoding, errors)
+
+    def format_string(self, template, *positional, **named):
+        """Formats a ``template`` using the given ``positional`` and ``named`` arguments.
+
+        The template can be either be a string or an absolute path to
+        an existing file. In the latter case the file is read and its contents
+        are used as the template. If the template file contains non-ASCII
+        characters, it must be encoded using UTF-8.
+
+        The template is formatted using Python's
+        [https://docs.python.org/library/string.html#format-string-syntax|format
+        string syntax]. Placeholders are marked using ``{}`` with possible
+        field name and format specification inside. Literal curly braces
+        can be inserted by doubling them like `{{` and `}}`.
+
+        Examples:
+        | ${to} = | Format String | To: {} <{}>                    | ${user}      | ${email} |
+        | ${to} = | Format String | To: {name} <{email}>           | name=${name} | email=${email} |
+        | ${to} = | Format String | To: {user.name} <{user.email}> | user=${user} |
+        | ${xx} = | Format String | {:*^30}                        | centered     |
+        | ${yy} = | Format String | {0:{width}{base}}              | ${42}        | base=X | width=10 |
+        | ${zz} = | Format String | ${CURDIR}/template.txt         | positional   | named=value |
+
+        New in Robot Framework 3.1.
+        """
+        if os.path.isabs(template) and os.path.isfile(template):
+            template = template.replace('/', os.sep)
+            logger.info('Reading template from file <a href="%s">%s</a>.'
+                        % (template, template), html=True)
+            with Utf8Reader(template) as reader:
+                template = reader.read()
+        return template.format(*positional, **named)
 
     def get_line_count(self, string):
         """Returns and logs the number of lines in the given string."""
@@ -181,8 +213,9 @@ class String(object):
 
         The match is case-sensitive by default, but giving ``case_insensitive``
         a true value makes it case-insensitive. The value is considered true
-        if it is a non-empty string that is not equal to ``false`` or ``no``.
-        If the value is not a string, its truth value is got directly in Python.
+        if it is a non-empty string that is not equal to ``false``, ``none`` or
+        ``no``. If the value is not a string, its truth value is got directly
+        in Python. Considering ``none`` false is new in RF 3.0.3.
 
         Lines are returned as one string catenated back together with
         newlines. Possible trailing newline is never returned. The
@@ -215,8 +248,9 @@ class String(object):
 
         The match is case-sensitive by default, but giving ``case_insensitive``
         a true value makes it case-insensitive. The value is considered true
-        if it is a non-empty string that is not equal to ``false`` or ``no``.
-        If the value is not a string, its truth value is got directly in Python.
+        if it is a non-empty string that is not equal to ``false``, ``none`` or
+        ``no``. If the value is not a string, its truth value is got directly
+        in Python. Considering ``none`` false is new in RF 3.0.3.
 
         Lines are returned as one string catenated back together with
         newlines. Possible trailing newline is never returned. The
@@ -246,9 +280,10 @@ class String(object):
 
         By default lines match only if they match the pattern fully, but
         partial matching can be enabled by giving the ``partial_match``
-        argument a true value. The value is considered true if it is a
-        non-empty string that is not equal to ``false`` or ``no``. If the
-        value is not a string, its truth value is got directly in Python.
+        argument a true value. The value is considered true
+        if it is a non-empty string that is not equal to ``false``, ``none`` or
+        ``no``. If the value is not a string, its truth value is got directly
+        in Python. Considering ``none`` false is new in RF 3.0.3.
 
         If the pattern is empty, it matches only empty lines by default.
         When partial matching is enabled, empty pattern matches all lines.
@@ -385,8 +420,6 @@ class String(object):
         | Should Be Equal | ${str}        | Robot Frame     |
         | ${str} =        | Remove String | Robot Framework | o | bt |
         | Should Be Equal | ${str}        | R Framewrk      |
-
-        New in Robot Framework 2.8.2.
         """
         for removable in removables:
             string = self.replace_string(string, removable, '')
@@ -401,8 +434,6 @@ class String(object):
         about the regular expression syntax. That keyword can also be
         used if there is a need to remove only a certain number of
         occurrences.
-
-        New in Robot Framework 2.8.2.
         """
         for pattern in patterns:
             string = self.replace_string_using_regexp(string, pattern, '')
@@ -453,8 +484,6 @@ class String(object):
 
         Example:
         | @{characters} = | Split String To Characters | ${string} |
-
-        New in Robot Framework 2.7.
         """
         return list(string)
 
@@ -507,7 +536,7 @@ class String(object):
                             ('[NUMBERS]', digits)]:
             chars = chars.replace(name, value)
         maxi = len(chars) - 1
-        return ''.join(chars[randint(0, maxi)] for _ in xrange(length))
+        return ''.join(chars[randint(0, maxi)] for _ in range(length))
 
     def get_substring(self, string, start, end=None):
         """Returns a substring from ``start`` index to ``end`` index.
@@ -527,12 +556,52 @@ class String(object):
         end = self._convert_to_index(end, 'end')
         return string[start:end]
 
+    def strip_string(self, string, mode='both', characters=None):
+        """Remove leading and/or trailing whitespaces from the given string.
+
+        ``mode`` is either ``left`` to remove leading characters, ``right`` to
+        remove trailing characters, ``both`` (default) to remove the
+        characters from both sides of the string or ``none`` to return the
+        unmodified string.
+
+        If the optional ``characters`` is given, it must be a string and the
+        characters in the string will be stripped in the string. Please note,
+        that this is not a substring to be removed but a list of characters,
+        see the example below.
+
+        Examples:
+        | ${stripped}=  | Strip String | ${SPACE}Hello${SPACE} | |
+        | Should Be Equal | ${stripped} | Hello | |
+        | ${stripped}=  | Strip String | ${SPACE}Hello${SPACE} | mode=left |
+        | Should Be Equal | ${stripped} | Hello${SPACE} | |
+        | ${stripped}=  | Strip String | aabaHelloeee | characters=abe |
+        | Should Be Equal | ${stripped} | Hello | |
+
+        New in Robot Framework 3.0.
+        """
+        try:
+            method = {'BOTH': string.strip,
+                      'LEFT': string.lstrip,
+                      'RIGHT': string.rstrip,
+                      'NONE': lambda characters: string}[mode.upper()]
+        except KeyError:
+            raise ValueError("Invalid mode '%s'." % mode)
+        return method(characters)
+
     def should_be_string(self, item, msg=None):
         """Fails if the given ``item`` is not a string.
 
-        This keyword passes regardless is the ``item`` is a Unicode string or
-        a byte string. Use `Should Be Unicode String` or `Should Be Byte
-        String` if you want to restrict the string type.
+        With Python 2, except with IronPython, this keyword passes regardless
+        is the ``item`` a Unicode string or a byte string. Use `Should Be
+        Unicode String` or `Should Be Byte String` if you want to restrict
+        the string type. Notice that with Python 2, except with IronPython,
+        ``'string'`` creates a byte string and ``u'unicode'`` must be used to
+        create a Unicode string.
+
+        With Python 3 and IronPython, this keyword passes if the string is
+        a Unicode string but fails if it is bytes. Notice that with both
+        Python 3 and IronPython, ``'string'`` creates a Unicode string, and
+        ``b'bytes'`` must be used to create a byte string.
 
         The default error message can be overridden with the optional
         ``msg`` argument.
@@ -542,6 +611,9 @@ class String(object):
 
     def should_not_be_string(self, item, msg=None):
         """Fails if the given ``item`` is a string.
+
+        See `Should Be String` for more details about Unicode strings and byte
+        strings.
 
         The default error message can be overridden with the optional
         ``msg`` argument.
@@ -554,12 +626,11 @@ class String(object):
 
         Use `Should Be Byte String` if you want to verify the ``item`` is a
         byte string, or `Should Be String` if both Unicode and byte strings
-        are fine.
+        are fine. See `Should Be String` for more details about Unicode
+        strings and byte strings.
 
         The default error message can be overridden with the optional
         ``msg`` argument.
-
-        New in Robot Framework 2.7.7.
         """
         if not is_unicode(item):
             self._fail(msg, "'%s' is not a Unicode string.", item)
@@ -569,12 +640,11 @@ class String(object):
 
         Use `Should Be Unicode String` if you want to verify the ``item`` is a
         Unicode string, or `Should Be String` if both Unicode and byte strings
-        are fine.
+        are fine. See `Should Be String` for more details about Unicode strings
+        and byte strings.
 
         The default error message can be overridden with the optional
         ``msg`` argument.
-
-        New in Robot Framework 2.7.7.
         """
         if not is_bytes(item):
             self._fail(msg, "'%s' is not a byte string.", item)

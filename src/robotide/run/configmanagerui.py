@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -19,20 +20,20 @@ from robotide.editor.listeditor import AutoWidthColumnList, ListEditorBase
 from robotide.widgets import Dialog, HelpLabel
 
 
-_CONFIG_HELP = '\n\n'.join([ txt for txt in
-'''The specified command string will be split from whitespaces into a command
+_CONFIG_HELP = """The specified command string will be split from whitespaces into a command
 and its arguments. If either the command or any of the arguments require
-internal spaces, they must be written as '<SPACE>'.'''.replace('\n', ' '),
-'''The command will be executed in the system directly without opening a shell.
+internal spaces, they must be written as '<SPACE>'.\n
+The command will be executed in the system directly without opening a shell.
 This means that shell commands and extensions are not available. For example,
 in Windows batch files to execute must contain the '.bat' extension and 'dir'
-command does not work.'''.replace('\n', ' '),
-'''Examples:
-    pybot.bat --include smoke C:\\my_tests
+command does not work.\n
+Examples:
+    robot.bat --include smoke C:\\my_tests
     svn update /home/robot
-    C:\\Program<SPACE>Files\\App\\prg.exe argument<SPACE>with<SPACE>space''',
-'''Run configurations are stored in the RIDE settings file.'''
-])
+    C:\\Program<SPACE>Files\\App\\prg.exe argument<SPACE>with<SPACE>space,
+Run configurations are stored in the RIDE settings file.
+"""
+
 
 
 class ConfigManagerDialog(Dialog):
@@ -151,7 +152,10 @@ class _TextEditListCtrl(AutoWidthColumnList, TextEditMixin):
 
     def new_item(self):
         self._new_item_creation = True
-        self.InsertStringItem(self.ItemCount, '')
+        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
+            self.InsertItem(self.ItemCount, '')
+        else:
+            self.InsertStringItem(self.ItemCount, '')
         self.Select(self.ItemCount-1, True)
         self.open_editor(self.last_index)
 

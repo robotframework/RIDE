@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+from __future__ import print_function
+
 from os.path import abspath, dirname, normpath, join
 import os
 import sys
@@ -13,13 +15,15 @@ SRC = normpath(join(BASEDIR, '..', '..', '..'))
 
 sys.path.insert(0, SRC)
 
-from robotide.lib import robot
+from robotide.lib.robot import run
 from robotide.lib.robot.conf.settings import RebotSettings
 from robotide.lib.robot.reporting.resultwriter import Results
 from robotide.lib.robot.reporting.jswriter import JsResultWriter
+from robotide.lib.robot.utils import file_writer
+
 
 def run_robot(testdata, outxml):
-    robot.run(testdata, loglevel='DEBUG', log='NONE', report='NONE', output=outxml)
+    run(testdata, loglevel='DEBUG', output=outxml, log=None, report=None)
 
 
 def create_jsdata(outxml, target):
@@ -49,11 +53,11 @@ def create_jsdata(outxml, target):
               'defaultLevel': 'DEBUG',
               'reportURL': 'report.html',
               'background': {'fail': 'DeepPink'}}
-    with open(target, 'wb') as output:
+    with file_writer(target) as output:
         writer = JsResultWriter(output, start_block='', end_block='')
         writer.write(result, config)
-    print 'Log:    ', normpath(join(BASEDIR, '..', 'rebot', 'log.html'))
-    print 'Report: ', normpath(join(BASEDIR, '..', 'rebot', 'report.html'))
+    print('Log:    ', normpath(join(BASEDIR, '..', 'rebot', 'log.html')))
+    print('Report: ', normpath(join(BASEDIR, '..', 'rebot', 'report.html')))
 
 
 if __name__ == '__main__':

@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -81,7 +82,7 @@ class RideEventHandler(object):
         ret = wx.MessageBox('\n'.join(msg_lines), 'File Changed On Disk',
                             style=wx.YES_NO|wx.ICON_WARNING)
         if ret == wx.NO:
-            from robotide.controller.commands import SaveFile
+            from robotide.controller.ctrlcommands import SaveFile
             ctrl.execute(SaveFile())
             return True
         if ret == wx.YES:

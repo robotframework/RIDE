@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,13 +13,14 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robotide.lib.robot.utils import (elapsed_time_to_string, html_escape, normalize,
-                         is_string)
+from robotide.lib.robot.utils import (Sortable, elapsed_time_to_string, html_escape,
+                         is_string, normalize, py2to3, unicode)
 
-from .tags import TagPatterns
+from .tags import TagPattern
 
 
-class Stat(object):
+@py2to3
+class Stat(Sortable):
     """Generic statistic object used for storing all the statistic values."""
 
     def __init__(self, name):
@@ -39,9 +41,9 @@ class Stat(object):
         self._norm_name = normalize(name, ignore='_')
 
     def get_attributes(self, include_label=False, include_elapsed=False,
-                       exclude_empty=False, values_as_strings=False,
+                       exclude_empty=True, values_as_strings=False,
                        html_escape=False):
-        attrs =  {'pass': self.passed, 'fail': self.failed}
+        attrs = {'pass': self.passed, 'fail': self.failed}
         attrs.update(self._get_custom_attrs())
         if include_label:
             attrs['label'] = self.name
@@ -49,9 +51,10 @@ class Stat(object):
             attrs['elapsed'] = elapsed_time_to_string(self.elapsed,
                                                       include_millis=False)
         if exclude_empty:
-            attrs = dict((k, v) for k, v in attrs.items() if v != '')
+            attrs = dict((k, v) for k, v in attrs.items() if v not in ('', None))
         if values_as_strings:
-            attrs = dict((k, unicode(v)) for k, v in attrs.items())
+            attrs = dict((k, unicode(v if v is not None else ''))
+                         for k, v in attrs.items())
         if html_escape:
             attrs = dict((k, self._html_escape(v)) for k, v in attrs.items())
         return attrs
@@ -79,8 +82,9 @@ class Stat(object):
     def _update_elapsed(self, test):
         self.elapsed += test.elapsedtime
 
-    def __cmp__(self, other):
-        return cmp(self._norm_name, other._norm_name)
+    @property
+    def _sort_key(self):
+        return self._norm_name
 
     def __nonzero__(self):
         return not self.failed
@@ -91,13 +95,11 @@ class Stat(object):
 
 class TotalStat(Stat):
     """Stores statistic values for a test run."""
-    #: Always string `total`
     type = 'total'
 
 
 class SuiteStat(Stat):
     """Stores statistics values for a single suite."""
-    #: Always string `suite`
     type = 'suite'
 
     def __init__(self, suite):
@@ -122,11 +124,10 @@ class SuiteStat(Stat):
 
 class TagStat(Stat):
     """Stores statistic values for a single tag."""
-    #: Always string `tag`.
     type = 'tag'
 
     def __init__(self, name, doc='', links=None, critical=False,
-                 non_critical=False, combined=''):
+                 non_critical=False, combined=None):
         Stat.__init__(self, name)
         #: Documentation of tag as a string.
         self.doc = doc
@@ -137,8 +138,7 @@ class TagStat(Stat):
         self.critical = critical
         #: ``True`` if tag is considered non-critical, ``False`` otherwise.
         self.non_critical = non_critical
-        #: Pattern as a string if the tag is combined,
-        #: an empty string otherwise.
+        #: Pattern as a string if the tag is combined, ``None`` otherwise.
         self.combined = combined
 
     @property
@@ -162,18 +162,31 @@ class TagStat(Stat):
     def _get_links_as_string(self):
         return ':::'.join('%s:%s' % (title, url) for url, title in self.links)
 
-    def __cmp__(self, other):
-        return cmp(other.critical, self.critical) \
-            or cmp(other.non_critical, self.non_critical) \
-            or cmp(bool(other.combined), bool(self.combined)) \
-            or Stat.__cmp__(self, other)
+    @property
+    def _sort_key(self):
+        return (not self.critical,
+                not self.non_critical,
+                not self.combined,
+                self._norm_name)
 
 
 class CombinedTagStat(TagStat):
 
     def __init__(self, pattern, name=None, doc='', links=None):
         TagStat.__init__(self, name or pattern, doc, links, combined=pattern)
-        self._matcher = TagPatterns(pattern)
+        self.pattern = TagPattern(pattern)
 
     def match(self, tags):
-        return self._matcher.match(tags)
+        return self.pattern.match(tags)
+
+
+class CriticalTagStat(TagStat):
+
+    def __init__(self, tag_pattern, name=None, critical=True, doc='',
+                 links=None):
+        TagStat.__init__(self, name or unicode(tag_pattern), doc, links,
+                         critical=critical, non_critical=not critical)
+        self.pattern = tag_pattern
+
+    def match(self, tags):
+        return self.pattern.match(tags)

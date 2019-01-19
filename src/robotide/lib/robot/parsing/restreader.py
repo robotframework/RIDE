@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,10 +13,10 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from cStringIO import StringIO
+from io import BytesIO
 
 from .htmlreader import HtmlReader
-from .txtreader import TxtReader
+from .robotreader import RobotReader
 
 
 def RestReader():
@@ -27,22 +28,25 @@ def RestReader():
         def read(self, rstfile, rawdata):
             doctree = publish_doctree(
                 rstfile.read(), source_path=rstfile.name,
-                settings_overrides={'input_encoding': 'UTF-8'})
+                settings_overrides={
+                    'input_encoding': 'UTF-8',
+                    'report_level': 4
+                })
             store = RobotDataStorage(doctree)
             if store.has_data():
-                return self._read_text(store.get_data(), rawdata)
-            return self._read_html(doctree, rawdata)
+                return self._read_text(store.get_data(), rawdata, rstfile.name)
+            return self._read_html(doctree, rawdata, rstfile.name)
 
-        def _read_text(self, data, rawdata):
-            txtfile = StringIO(data.encode('UTF-8'))
-            return TxtReader().read(txtfile, rawdata)
+        def _read_text(self, data, rawdata, path):
+            robotfile = BytesIO(data.encode('UTF-8'))
+            return RobotReader().read(robotfile, rawdata, path)
 
-        def _read_html(self, doctree, rawdata):
-            htmlfile = StringIO()
+        def _read_html(self, doctree, rawdata, path):
+            htmlfile = BytesIO()
             htmlfile.write(publish_from_doctree(
                 doctree, writer_name='html',
                 settings_overrides={'output_encoding': 'UTF-8'}))
             htmlfile.seek(0)
-            return HtmlReader().read(htmlfile, rawdata)
+            return HtmlReader().read(htmlfile, rawdata, path)
 
     return RestReader()

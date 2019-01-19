@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -11,7 +12,6 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-
 
 import wx
 
@@ -74,13 +74,14 @@ class TestCaseEditor(_RobotTableEditor):
         self.kweditor.OnInsertCells()
 
     def delete_cells(self):
+        # print("DEBUG macro delete cells ")
         self.kweditor.OnDeleteCells()
 
     def insert_rows(self):
-        self.kweditor.OnInsertRows()
+        self.kweditor.OnInsertRows(None)  # DEBUG python 3
 
     def delete_rows(self):
-        self.kweditor.OnDeleteRows()
+        self.kweditor.OnDeleteRows(None)  # DEBUG python 3
 
     def delete(self):
         self.kweditor.OnDelete()
