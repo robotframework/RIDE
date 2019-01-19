@@ -37,7 +37,7 @@ from robotide.usages.UsageRunner import Usages, VariableUsages
 from robotide.ui.progress import RenameProgressObserver
 from robotide import robotapi, utils
 from robotide.utils import RideEventHandler, variablematcher
-from robotide.widgets import PopupMenu, PopupMenuItems
+from robotide.widgets import Dialog, PopupMenu, PopupMenuItems
 
 from .gridbase import GridEditor
 from .tooltips import GridToolTips
@@ -83,10 +83,10 @@ class KeywordEditor(GridEditor, RideEventHandler):
     update_value = lambda *args: None
     _popup_items = [
         'Create Keyword', 'Extract Keyword', 'Extract Variable',
-        'Rename Keyword', 'Find Where Used', '---', 'Make Variable\tCtrl-1',
-        'Make List Variable\tCtrl-2', 'Make Dict Variable\tCtrl-5', '---',
-        'Go to Definition\tCtrl-B', '---'
-    ] + GridEditor._popup_items + ['Json Edit\tCtrl-Shift-J']
+        'Rename Keyword', 'Find Where Used', 'JSON Editor\tCtrl-Shift-J',
+        '---', 'Make Variable\tCtrl-1', 'Make List Variable\tCtrl-2',
+        'Make Dict Variable\tCtrl-5', '---', 'Go to Definition\tCtrl-B', '---'
+    ] + GridEditor._popup_items
 
     def __init__(self, parent, controller, tree):
         GridEditor.__init__(
@@ -539,7 +539,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
         elif control_down and event.ShiftDown() and keycode == ord('I'):
             self.OnInsertCells()
         elif control_down and event.ShiftDown() and keycode == ord('J'):
-            self.OnJsonEdit()
+            self.OnJsonEditor(event)
         elif control_down and event.ShiftDown() and keycode == ord('D'):
             self.OnDeleteCells()
         elif control_down and keycode == ord('B'):
@@ -783,27 +783,50 @@ work.</li>
                 old_name, new_name, RenameProgressObserver(self.GetParent())))
     
     # Add one new Dialog to edit pretty json String
-    def OnJsonEdit(self, event):
-        diaglog = wx.Dialog(self, title='JSON Editor', size=(500, 500))
-        okBtn = wx.Button(diaglog, wx.ID_OK, "Save", pos=(415, 5))
-        cnlBtn = wx.Button(diaglog, wx.ID_CANCEL, "Cancel", pos=(415, 30))
-        richText = wx.TextCtrl(diaglog, wx.ID_ANY,
-                            "If supported by the native control, this is reversed, and this is a different font.",
+    def OnJsonEditor(self, event=None):
+        if event:
+            event.Skip()
+        dialog = Dialog()
+        dialog.SetTitle('JSON Editor')
+        dialog.SetExtraStyle(wx.RESIZE_BORDER)
+        dialog.SetSizer(wx.BoxSizer(wx.HORIZONTAL))
+        okBtn = wx.Button(dialog, wx.ID_OK, "Save")
+        cnlBtn = wx.Button(dialog, wx.ID_CANCEL, "Cancel")
+        richText = wx.TextCtrl(dialog, wx.ID_ANY, "If supported by the native "
+                                                  "control, this is reversed, "
+                                                  "and this is a different "
+                                                  "font.",
                             size=(400, 475), style=wx.HSCROLL | wx.TE_MULTILINE)
+        dialog.Sizer.Add(richText, flag=wx.GROW, proportion=1)
+        dialog.Sizer.Add(okBtn, flag=wx.ALIGN_RIGHT | wx.ALL)
+        dialog.Sizer.Add(cnlBtn, flag=wx.ALL)
         # Get cell value of parent grid
         if self.is_json(self._current_cell_value()):
             jsonStr = json.loads(self._current_cell_value())
             richText.SetValue(json.dumps(jsonStr, indent=4, ensure_ascii=False))
         else:
             richText.SetValue(self._current_cell_value())
-            
-        # If click Save, then save the value in richText into the original grid cell, and clear all indent.
-        if diaglog.ShowModal() == wx.ID_OK:
-            strJson = json.loads(richText.GetValue())
-            self.cell_value_edited(self.selection.cell[0], self.selection.cell[1], json.dumps(strJson, ensure_ascii=False))
-        else:
-            pass
-    
+        dialog.SetSize((650, 550))
+        # If click Save, then save the value in richText into the original
+        # grid cell, and clear all indent.
+        if dialog.ShowModal() == wx.ID_OK:
+            try:
+                strJson = json.loads(richText.GetValue())
+                self.cell_value_edited(self.selection.cell[0],
+                                       self.selection.cell[1], json.dumps(strJson,
+                                       ensure_ascii=False))
+            except ValueError or json.JSONDecodeError as e:
+                res = wx.MessageDialog(dialog,
+                                       "Error in JSON: {}\n\n"
+                                       "Save anyway?".format(e),
+                                       "Validation Error!", wx.YES_NO).ShowModal()
+                if res == wx.ID_YES:
+                    self.cell_value_edited(self.selection.cell[0],
+                                           self.selection.cell[1],
+                                           richText.GetValue())
+                else:
+                    pass
+
     # If the jsonStr is json format, then return True
     def is_json(self, jsonStr):
         try:
