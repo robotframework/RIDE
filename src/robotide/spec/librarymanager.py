@@ -87,7 +87,7 @@ class LibraryManager(Thread):
             return get_import_result(path, library_args)
         except Exception as err:
             try:
-                print 'FAILED', library_name, err
+                print('FAILED', library_name, err)
             except IOError:
                 pass
             kws = self._spec_initializer.init_from_spec(library_name)
