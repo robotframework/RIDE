@@ -11,19 +11,30 @@ Tommi Asiala
 
 
 Other contributors:
+Alexander Klose
 Andreas Brain
+Andrey Gavrilin
 Bjørn Forsman
 Bryan Oakley
 Charandeep S. Matta
 Ferenc Züllich
 Florian Heine
+Guillermo Zapata
 Hale
 Hélio Guilherme
+Jakov Peric
 Karol Szuster
 Kevin Ormbrek
+Leeuwen
+Petr Hudeček
 Timothy Alexander
-@tuds
-@goodwillcoding
-@synsun
 @2Eagle2
+@bale836
+@fzuellich
+@ghost
+@goodwillcoding
+@JediMaster93
+@scathaig
 @StefaniGit
+@synsun
+@tuds
