@@ -24,8 +24,10 @@ import tempfile
 
 try:
     from StringIO import StringIO
+    PY3 = False
 except ImportError:  # py3
     from io import StringIO
+    PY3 = True
 try:
     import urllib2
 except ImportError:  # py3
@@ -330,7 +332,10 @@ def _get_issues():
     import getpass
     from github3 import login
     milestone = re.split('[ab-]', VERSION)[0]
-    username = raw_input('Enter GitHub username for downloading issues: ')
+    if not PY3:
+        username = raw_input('Enter GitHub username for downloading issues: ')
+    else:
+        username = input('Enter GitHub username for downloading issues: ')
     password = getpass.getpass(
         'Github password for {user}: '.format(user=username))
     gh = login(username, password=password)
