@@ -344,7 +344,7 @@ def _get_issues():
     if milestone_number is None:
         _log('milestone not found')
         sys.exit(1)
-    issues = list(repo.iter_issues(milestone=milestone_number, state='closed'))
+    issues = list(repo.issues(milestone=milestone_number, state='closed'))
     issues.sort(cmp=_issue_sorter)
     return issues
 
@@ -359,17 +359,17 @@ def _issue_sorter(i1, i2):
     return cmp(prio_mapping[prio1], prio_mapping[prio2])
 
 def _find_type(issue):
-    type_labels = [l.name for l in issue.iter_labels()
+    type_labels = [l.name for l in issue.labels()
                    if l.name in ['enhancement', 'bug', 'task']]
     return type_labels[0] if type_labels else 'Unknown type'
 
 def _find_priority(issue):
-    prio_labels = [l.name for l in issue.iter_labels()
+    prio_labels = [l.name for l in issue.labels()
                    if l.name.startswith('prio')]
     return prio_labels[0][5:] if prio_labels else 'Unknown priority'
 
 def _get_milestone(repo, milestone_title):
-    existing_milestones = list(repo.iter_milestones())
+    existing_milestones = list(repo.milestones())
     milestone = [m for m in existing_milestones if m.title == milestone_title]
     if milestone:
         return milestone[0].number
