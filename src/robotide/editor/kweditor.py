@@ -16,6 +16,7 @@
 import wx
 from wx import grid
 import json
+from robotide.context import IS_MAC
 
 if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
     from wx.grid import GridCellEditor
@@ -788,7 +789,8 @@ work.</li>
             event.Skip()
         dialog = Dialog()
         dialog.SetTitle('JSON Editor')
-        dialog.SetExtraStyle(wx.RESIZE_BORDER)
+        if not IS_MAC:
+            dialog.SetExtraStyle(wx.RESIZE_BORDER)
         dialog.SetSizer(wx.BoxSizer(wx.HORIZONTAL))
         okBtn = wx.Button(dialog, wx.ID_OK, "Save")
         cnlBtn = wx.Button(dialog, wx.ID_CANCEL, "Cancel")
