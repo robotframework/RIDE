@@ -104,9 +104,6 @@ def _run(inpath=None, updatecheck=True, debug_console=False):
     except ImportError:
         _show_old_wxpython_warning_if_needed()
         raise
-    if PY3:
-        print("Thank you for helping developing and testing RIDE on Python 3 and wxPython 4")
-        # raise NotImplementedError
     if inpath:
         inpath = inpath
         # if not isinstance(inpath[0], unicode):
