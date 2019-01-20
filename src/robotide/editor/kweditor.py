@@ -788,7 +788,6 @@ work.</li>
             event.Skip()
         dialog = Dialog()
         dialog.SetTitle('JSON Editor')
-        dialog.SetExtraStyle(wx.RESIZE_BORDER)
         dialog.SetSizer(wx.BoxSizer(wx.HORIZONTAL))
         okBtn = wx.Button(dialog, wx.ID_OK, "Save")
         cnlBtn = wx.Button(dialog, wx.ID_CANCEL, "Cancel")
