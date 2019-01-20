@@ -21,6 +21,67 @@ from os.path import join, exists
 import re
 import shutil
 import tempfile
+from pathlib import Path
+from urllib.request import urlretrieve
+import tarfile
+import zipfile
+
+assert Path.cwd().resolve() == Path(__file__).resolve().parent
+sys.path.insert(0, 'src')
+
+from invoke import Exit, task
+from rellu import initialize_labels, ReleaseNotesGenerator, Version
+from rellu.tasks import clean
+
+
+REPOSITORY = 'robotframework/RIDE'
+VERSION_PATH = Path('src/robotide/version.py')
+VERSION_PATTERN = "VERSION = '(.*)'"
+RELEASE_NOTES_PATH = Path('doc/releasenotes/ride-{version}.rst')
+RELEASE_NOTES_TITLE = 'Robot Framework IDE {version}'
+RELEASE_NOTES_INTRO = '''
+`RIDE (Robot Framework IDE)`_ {version} is a new release with **UPDATE** enhancements
+and bug fixes. It contains some updates for `Robot Framework`_ version 3.1.1.
+**MORE intro stuff...**
+
+**REMOVE reference to tracker if release notes contain all issues.**
+All issues targeted for RIDE {version.milestone} can be found
+from the `issue tracker milestone`_.
+
+Questions and comments related to the release can be sent to the
+`robotframework-users`_ mailing list or to the channel #ride on 
+`Robot Framework Slack`_, and possible bugs submitted to the `issue tracker`_.
+
+**REMOVE ``--pre`` from the next command with final releases.**
+If you have pip_ installed, just run
+
+::
+
+   pip install --pre --upgrade robotframework-ride
+
+to install the latest available release or use
+
+::
+
+   pip install robotframework-ride=={version}
+
+to install exactly this version. Alternatively you can download the source
+distribution from PyPI_ and install it manually. For more details and other
+installation approaches, see the `installation instructions`_.
+
+RIDE {version} was released on {date}.
+
+.. _RIDE (Robot Framework IDE): https://github.com/robotframework/RIDE/
+.. _Robot Framework: http://robotframework.org
+.. _pip: http://pip-installer.org
+.. _PyPI: https://pypi.python.org/pypi/robotframework-ride
+.. _issue tracker milestone: https://github.com/robotframework/RIDE/issues?q=milestone%3A{version.milestone}
+.. _issue tracker: https://github.com/robotframework/RIDE/issues
+.. _robotframework-users: http://groups.google.com/group/robotframework-users
+.. _Robot Framework Slack: https://robotframework-slack-invite.herokuapp.com
+.. _installation instructions: ../../INSTALL.rst
+'''
+
 
 try:
     from StringIO import StringIO
@@ -242,6 +303,7 @@ def wininst(ctx):
     _run_setup(ctx, 'bdist_wininst')
     _after_distribution()
 
+'''
 @task
 def release_notes(ctx):
     """Download and format issues in markdown format."""
@@ -252,6 +314,32 @@ def release_notes(ctx):
         parts = ('#{}'.format(i.number), _find_type(i), _find_priority(i),
                  i.title)
         _log(' | '.join(parts))
+'''
+
+@task
+def release_notes(ctx, version=None, username=None, password=None, write=False):
+    """Generate release notes based on issues in the issue tracker.
+
+    Args:
+        version:  Generate release notes for this version. If not given,
+                  generated them for the current version.
+        username: GitHub username.
+        password: GitHub password.
+        write:    When set to True, write release notes to a file overwriting
+                  possible existing file. Otherwise just print them to the
+                  terminal.
+
+    Username and password can also be specified using ``GITHUB_USERNAME`` and
+    ``GITHUB_PASSWORD`` environment variable, respectively. If they aren't
+    specified at all, communication with GitHub is anonymous and typically
+    pretty slow.
+    """
+    version = Version(version, VERSION_PATH, VERSION_PATTERN)
+    file = RELEASE_NOTES_PATH if write else sys.stdout
+    generator = ReleaseNotesGenerator(REPOSITORY, RELEASE_NOTES_TITLE,
+                                      RELEASE_NOTES_INTRO)
+    generator.generate(version, username, password, file)
+
 
 @task
 def tags_test(ctx):
@@ -345,7 +433,7 @@ def _get_issues():
         _log('milestone not found')
         sys.exit(1)
     issues = list(repo.issues(milestone=milestone_number, state='closed'))
-    issues.sort(cmp=_issue_sorter)
+    # issues.sort(cmp=_issue_sorter)
     return issues
 
 def _issue_sorter(i1, i2):
@@ -353,15 +441,16 @@ def _issue_sorter(i1, i2):
         'critical': 0,
         'high': 1,
         'medium': 2,
-        'low': 3
+        'low': 3,
+        'none':50
     }
     prio1, prio2 = _find_priority(i1), _find_priority(i2)
     return cmp(prio_mapping[prio1], prio_mapping[prio2])
 
 def _find_type(issue):
     type_labels = [l.name for l in issue.labels()
-                   if l.name in ['enhancement', 'bug', 'task']]
-    return type_labels[0] if type_labels else 'Unknown type'
+                   if l.name in ['enhancement', 'bug', 'task', 'none']]
+    return type_labels[0] if type_labels else 'none'  # 'Unknown type'
 
 def _find_priority(issue):
     prio_labels = [l.name for l in issue.labels()

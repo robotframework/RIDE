@@ -2,6 +2,7 @@ setuptools
 nose
 mockito
 invoke
+rellu
 # Include also normal project requirements.
 -r requirements.txt
 
