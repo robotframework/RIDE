@@ -47,6 +47,9 @@ Programming Language :: Python
 Topic :: Software Development :: Testing
 """.strip().splitlines()
 
+with open(join(ROOT_DIR, 'requirements.txt')) as f:
+    REQUIREMENTS = f.read().splitlines()
+
 # This solution is found at http://stackoverflow.com/a/26490820/5889853
 from setuptools.command.install import install
 import os
@@ -72,6 +75,7 @@ setup(
     author_email='robotframework@gmail.com',
     url='https://github.com/robotframework/RIDE/',
     download_url='https://pypi.python.org/pypi/robotframework-ride',
+    install_requires = REQUIREMENTS,
     package_dir={'': SOURCE_DIR},
     packages=find_packages(SOURCE_DIR),
     package_data=package_data,
