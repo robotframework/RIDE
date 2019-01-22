@@ -80,5 +80,5 @@ setup(
     options={'install': {'force': True}},
     scripts=['src/bin/ride.py', 'src/bin/ride_postinstall.py'],
     cmdclass={'install': CustomInstallCommand},
-    requires=['Pygments', 'wxPython']
+    requires=['Pygments', 'wxPython', 'PyPubSub']
 )
