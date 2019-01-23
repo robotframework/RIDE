@@ -53,7 +53,7 @@ to install (or upgrade) the latest available release or use
 
 ::
 
-   pip install robotframework-ride==1.7.3
+   pip install robotframework-ride==1.7.3.1
 
 to install exactly this version. Alternatively you can download the source
 distribution from PyPI_ and install it manually. You may want to see the
