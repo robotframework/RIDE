@@ -59,6 +59,15 @@ to install exactly this version. Alternatively you can download the source
 distribution from PyPI_ and install it manually. You may want to see the
 document `BUILD.rest`_ for other details.
 
+**NOTE:** The installation process mentioned above is only working smoothly on Windows.
+        For other operating systems is better to do a two step install, with:
+        
+::
+
+   pip install -U -r https://raw.githubusercontent.com/robotframework/RIDE/master/requirements.txt
+   pip install -U robotframework-ride
+
+
 RIDE 1.7.3.1 was released on Wednesday January 23, 2019.
 
 .. _RIDE (Robot Framework IDE): https://github.com/robotframework/RIDE/
