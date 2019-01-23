@@ -155,6 +155,12 @@ class PybotProfile(BaseProfile):
         result = None
         try:
             with TemporaryFile(mode="at") as out:
+                result = call(["robot",
+                               "--version"], stdout=out)
+            if result == 251:
+                return "robot"
+
+            with TemporaryFile(mode="at") as out:
                 result = call(["robot.bat" if os.name == "nt" else "robot",
                                "--version"], stdout=out)
             if result == 251:
