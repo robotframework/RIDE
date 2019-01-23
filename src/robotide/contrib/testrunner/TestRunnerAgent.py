@@ -71,9 +71,10 @@ import platform
 import sys
 import socket
 import threading
-from robotide.utils import PY2, PY3
 
 PLATFORM = platform.python_implementation()
+PY2 = sys.version_info[0] == 2
+PY3 = not PY2
 
 try:
     import SocketServer
