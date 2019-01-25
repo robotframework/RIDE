@@ -136,7 +136,7 @@ def converttypes(data, prefer_str=True):
     """
     if PY2:
         return data
-    enc = sys.stdout.encoding or "utf-8"
+    enc = sys.stdout and sys.stdout.encoding or "utf-8"
     data_type = type(data)
 
     if data_type == bytes:
