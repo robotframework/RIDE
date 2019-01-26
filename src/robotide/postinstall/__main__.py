@@ -192,14 +192,14 @@ def _create_desktop_shortcut_windows(frame=None):
             if not _askyesno("Setup", "Create desktop shortcut?", frame):
                 sys.stderr.write("Users can create a Desktop shortcut to RIDE "
                                  "with:\n%s -m robotide.postinstall -install\n"
-                                 % sys.executable)
+                                 % sys.executable.replace('python.exe', 'pythonw.exe'))
                 return False
         import pythoncom
         shortcut = pythoncom.CoCreateInstance(shell.CLSID_ShellLink, None,
                                               pythoncom.CLSCTX_INPROC_SERVER,
                                               shell.IID_IShellLink)
         command_args = " -c \"from robotide import main; main()\""
-        shortcut.SetPath(sys.executable)
+        shortcut.SetPath(sys.executable.replace('python.exe', 'pythonw.exe'))
         shortcut.SetArguments(command_args)
         shortcut.SetDescription("Robot Framework testdata editor")
         shortcut.SetIconLocation(icon, 0)
