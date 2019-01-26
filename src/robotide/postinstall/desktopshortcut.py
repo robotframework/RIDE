@@ -54,8 +54,8 @@ class ShortcutPlugin(Plugin):
     def OnViewShortcutCreate(self, event):
         if not self._window:
             self._window = _ShortcutCreateWindow(self.notebook)
-        # else:
-        #    self.notebook.show_tab(self._window)
+        else:
+            self.notebook.show_tab(self._window)
         self._window.call_creator()
         # self.disable()
 
@@ -63,7 +63,7 @@ class ShortcutPlugin(Plugin):
 class _ShortcutCreateWindow(wx.TextCtrl):
     def __init__(self, notebook):
         wx.TextCtrl.__init__(
-            self, notebook, style=wx.TE_READONLY | wx.TE_MULTILINE)
+            self, notebook, style=wx.TE_MULTILINE)  # DEBUG wx.TE_READONLY |
         self._create_ui()
         self._add_to_notebook(notebook)
         self.SetFont(widgets.Font().fixed_log)
