@@ -474,7 +474,7 @@ class StreamReaderThread(object):
                 # .decode(utils.SYSTEM_ENCODING, 'replace')
                 # .decode('UTF-8','ignore')
                 result += encoding.console_decode(self._queue.get_nowait(),
-                                                  'latin1' if IS_WINDOWS
+                                                  'mbcs' if IS_WINDOWS
                                                   else 'UTF-8')
                 # ,'replace')  # 'latin1' .decode(utils.SYSTEM_ENCODING,
                 # 'replace')  # .decode('UTF-8','ignore')
