@@ -1,3 +1,8 @@
-include setup.py
-include tasks.py
-recursive-include src *.png *.gif *.ico *.cfg *.html
+include *.bmp
+include *.py
+include *.rest
+include *.sh
+include *.txt
+recursive-include src *.css *.js *.py *.robot *.txt *.png *.gif *.ico *.cfg *.html
+recursive-include doc *.rst
+recursive-include rtest *.py *.txt
