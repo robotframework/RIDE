@@ -275,6 +275,16 @@ class RideFrame(wx.Frame, RideEventHandler):
         # MaximizeButton(True).MinimizeButton(True))
         self.actions.register_actions(
             ActionInfoCollection(_menudata, self, self.tree))
+        ###### File explorer pane
+        self.filemgr = wx.GenericDirCtrl(self, -1, size=(200, 225),
+                                         style=wx.DIRCTRL_3D_INTERNAL |
+                                               wx.DIRCTRL_MULTIPLE)
+        self.filemgr.SetMinSize(wx.Size(120, 200))
+        self._mgr.AddPane(self.filemgr,
+                          aui.AuiPaneInfo().Name("file_manager").
+                          Caption("Files").LeftDockable(True).
+                          CloseButton(True))
+
         mb.take_menu_bar_into_use()
         #### self.splitter.SetMinimumPaneSize(100)
         #### self.splitter.SplitVertically(self.tree, self.notebook, 300)
@@ -282,7 +292,6 @@ class RideFrame(wx.Frame, RideEventHandler):
         self.SetIcons(ImageProvider().PROGICONS)
         # tell the manager to "commit" all the changes just made
         self._mgr.Update()
-
 
     def testToolbar(self):
 
@@ -406,6 +415,9 @@ class RideFrame(wx.Frame, RideEventHandler):
 
     def _populate_tree(self):
         self.tree.populate(self._controller)
+        if self._controller.data.directory:
+            self.filemgr.SetPath(self._controller.data.directory)
+            self.filemgr.ExpandPath(self._controller.data.directory)
 
     def OnOpenTestSuite(self, event):
         if not self.check_unsaved_modifications():
