@@ -68,12 +68,13 @@ from robotide.pluginapi import Plugin, ActionInfo
 from robotide.widgets import Label, ImageProvider
 from robotide.robotapi import LOG_LEVELS
 from robotide.utils import robottime, is_unicode, PY2, PY3
+from sys import getfilesystemencoding
 try:
     from robotide.lib.robot.utils import encoding
 except ImportError:
     encoding = None
 if encoding:
-    encoding = encoding.SYSTEM_ENCODING  # CONSOLE_ENCODING
+    encoding.CONSOLE_ENCODING = getfilesystemencoding()
 
 if PY3:
     from robotide.utils import unicode
@@ -300,9 +301,9 @@ class TestRunnerPlugin(Plugin):
         command = self._create_command()
         self._output("command: %s\n" % command)  # DEBUG encode
         try:
-            if PY2:
-                command = bytes(command)  # .encode(encoding))
-                # TODO This does not work if for example -i Áçãú
+            # if PY2:
+            #    command = bytes(command)  # .encode(encoding))
+            #    # TODO This does not work if for example -i Áçãú
             # self._output("DEBUG: starting command %s\n" % command)
             # DEBUG encode
             self._test_runner.run_command(
@@ -312,7 +313,7 @@ class TestRunnerPlugin(Plugin):
             self._set_running()
             self._progress_bar.Start()
         except Exception as e:
-            # self._output("DEBUG: Except block test_runner.run_command\n")
+            self._output("DEBUG: Except block test_runner.run_command\n")
             self._set_stopped()
             error, log_message = self.get_current_profile().format_error(
                 unicode(e), None)
@@ -488,8 +489,8 @@ class TestRunnerPlugin(Plugin):
         """
         result = []
         for arg in argv:
-            if PY2 and is_unicode(arg):
-                arg = arg.encode("utf-8")
+            # if PY2 and is_unicode(arg):
+            #    arg = arg.encode("utf-8")
             if "'" in arg or " " in arg or "&" in arg:
                 # for windows, if there are spaces we need to use
                 # double quotes. Single quotes cause problems
@@ -520,15 +521,15 @@ class TestRunnerPlugin(Plugin):
         textctrl.SetReadOnly(False)
         try:
             if PY2:
-                textctrl.AppendText(string.encode('utf-8'))
+                textctrl.AppendText(string.encode(encoding.CONSOLE_ENCODING))  # DEBUG 'utf-8'))
             else:
                 textctrl.AppendText(str(string))  # DEBUG
         except UnicodeDecodeError as e:
             # I'm not sure why I sometimes get this, and I don't know what I
             # can do other than to ignore it.
             textctrl.AppendText(string)
-            # print("DEBUG UnicodeDecodeError appendtext string=%s\n" % string)
-            # pass
+            print("DEBUG UnicodeDecodeError appendtext string=%s\n" % string)
+            pass
             #  raise  # DEBUG
 
         new_text_end = textctrl.GetLength()

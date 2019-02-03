@@ -91,7 +91,7 @@ try:
     from robot.running import EXECUTION_CONTEXTS
     from robot.running.signalhandler import STOP_SIGNAL_MONITOR
     from robot.utils import encoding
-    from robot.utils.encoding import CONSOLE_ENCODING
+    from robot.utils.encoding import SYSTEM_ENCODING
 except ImportError:
     encoding = None
     # print("TestRunnerAgent: Maybe you did not
@@ -130,7 +130,7 @@ HOST = "localhost"
 # DEBUG This was working in Linux always!
 #if encoding:
 #    encoding.OUTPUT_ENCODING = 'UTF-8'
-print("DEBUG: TestRunnerAgent encoding %s\n" % CONSOLE_ENCODING )
+print("DEBUG: TestRunnerAgent encoding %s\n" % SYSTEM_ENCODING )
 
 
 def _is_logged(level):
