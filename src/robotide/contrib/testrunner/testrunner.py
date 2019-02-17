@@ -64,6 +64,19 @@ if encoding:
 ATEXIT_LOCK = threading.RLock()
 
 
+# Solution from https://stackoverflow.com/questions/10009753/python-dealing-with-mixed-encoding-files
+def mixed_decoder(unicodeError):
+    errStr = unicodeError[1]
+    errLen = unicodeError.end - unicodeError.start
+    nextPosition = unicodeError.start + errLen
+    errHex = errStr[unicodeError.start:unicodeError.end].encode('hex')
+    # return u'?', nextPosition
+    return u'%s' % errHex, nextPosition  # Comment this line out to get a question mark
+
+
+codecs.register_error("mixed", mixed_decoder)
+
+
 class TestRunner(object):
 
     def __init__(self, project):
@@ -276,8 +289,17 @@ class TestRunner(object):
 
     @staticmethod
     def _write_argfile(argfile, args):
-        f = codecs.open(argfile, "w", "utf-8")
-        f.write("\n".join(args))
+        # f = codecs.open(argfile, "w", "utf-8")
+
+        print("DEBUG: write args %s ENCODING %s" % (args, encoding.CONSOLE_ENCODING))
+        if PY2:
+            f = codecs.open(argfile, "wb", "utf-8")
+            for item in args:
+                enc_arg = codecs.decode(item, "utf-8", "mixed")
+                f.write(enc_arg + "\n")
+        else:
+            f = codecs.open(argfile, "w", "utf-8")
+            f.write("\n".join(args))
         f.close()
 
     def get_output_and_errors(self, profile):
