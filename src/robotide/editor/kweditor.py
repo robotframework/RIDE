@@ -876,6 +876,7 @@ class ContentAssistCellEditor(GridCellEditor):  # DEBUG wxPhoenix PyGridCellEdi
         self._tc.SetSize((-1, self._height))
         self._tc.set_row(row)
         self._original_value = grid.GetCellValue(row, col)
+        self._tc.SetValue(self._original_value)
         self._grid = grid
         self._tc.SetInsertionPointEnd()
         self._tc.SetFocus()
