@@ -99,9 +99,9 @@ class _ContentAssistTextCtrlBase(object):
             event.Skip()
             return
         if self.gherkin_prefix:
-            value = self.gherkin_prefix + self._popup.get_value() or ""
+            value = self.gherkin_prefix + self._popup.get_value() or self.GetValue()
         else:
-            value =self._popup.get_value() or ""
+            value = self._popup.get_value() or self.GetValue()
         if set_value and value:
             self.SetValue(value)
             self.SetInsertionPoint(len(value))  # DEBUG was self.Value
@@ -386,6 +386,9 @@ class ContentAssistPopup(object):
         self._selection = selection
         self._list.Select(self._selection)
         self._list.EnsureVisible(self._selection)
+        value = self.get_value()
+        if value:
+            self._parent.SetValue(value)
 
     def hide(self):
         self._selection = -1
