@@ -73,8 +73,8 @@ try:
     from robotide.lib.robot.utils import encoding
 except ImportError:
     encoding = None
-if encoding:
-    encoding.CONSOLE_ENCODING = getfilesystemencoding()
+# if encoding:
+#     encoding.CONSOLE_ENCODING = getfilesystemencoding()
 
 if PY3:
     from robotide.utils import unicode
@@ -315,8 +315,7 @@ class TestRunnerPlugin(Plugin):
         except Exception as e:
             self._output("DEBUG: Except block test_runner.run_command\n")
             self._set_stopped()
-            error, log_message = self.get_current_profile().format_error(
-                unicode(e), None)
+            error, log_message = self.get_current_profile().format_error(str(e), None)  # DEBUUG unicode(e)
             self._output(error)
             if log_message:
                 log_message.publish()
@@ -490,7 +489,7 @@ class TestRunnerPlugin(Plugin):
         result = []
         for arg in argv:
             # if PY2 and is_unicode(arg):
-            #    arg = arg.encode("utf-8")
+            #    arg = arg.encode(encoding.OUTPUT_ENCODING)  # DEBUG "utf-8")
             if "'" in arg or " " in arg or "&" in arg:
                 # for windows, if there are spaces we need to use
                 # double quotes. Single quotes cause problems
@@ -521,14 +520,15 @@ class TestRunnerPlugin(Plugin):
         textctrl.SetReadOnly(False)
         try:
             if PY2:
-                textctrl.AppendText(string.encode(encoding.CONSOLE_ENCODING))  # DEBUG 'utf-8'))
+                # textctrl.AppendText(string.encode(encoding.OUTPUT_ENCODING)) # DEBUG encoding.CONSOLE_ENCODING))  # DEBUG 'utf-8'))
+                textctrl.AppendText(string.encode('utf-8'))  # encoding.SYSTEM_ENCODING))
             else:
                 textctrl.AppendText(str(string))  # DEBUG
         except UnicodeDecodeError as e:
             # I'm not sure why I sometimes get this, and I don't know what I
             # can do other than to ignore it.
-            textctrl.AppendText(string)
-            print("DEBUG UnicodeDecodeError appendtext string=%s\n" % string)
+            textctrl.AppendTextRaw(bytes(string))  # DEBUG .encode('utf-8'))
+            # print("DEBUG UnicodeDecodeError appendtext string=%s\n" % string)
             pass
             #  raise  # DEBUG
 
@@ -771,6 +771,7 @@ class TestRunnerPlugin(Plugin):
         face = font.GetFaceName()
         size = font.GetPointSize()
         textctrl.SetFont(font)
+        # textctrl.StyleSetFontEncoding(wx.stc.STC_STYLE_DEFAULT, wx.FONTENCODING_SYSTEM)  # DEBUG Chinese wx.FONTENCODING_CP936)
         textctrl.StyleSetSpec(wx.stc.STC_STYLE_DEFAULT, "face:%s,size:%d" %
                               (face, size))
         textctrl.StyleSetSpec(STYLE_STDERR, "fore:#b22222")  # firebrick
@@ -787,8 +788,8 @@ class TestRunnerPlugin(Plugin):
         out.SetMarginWidth(3, 0)
 
     def _create_font(self):
-        font=wx.SystemSettings.GetFont(wx.SYS_ANSI_FIXED_FONT)
-        if not font.IsFixedWidth():
+        font=wx.SystemSettings.GetFont(wx.SYS_ANSI_FIXED_FONT)  # DEBUG ) .SYS_OEM_FIXED_FONT)SYS_SYSTEM_FONT SYS_ANSI_FIXED_FONT
+        if font.IsFixedWidth() and font.GetPointSize() > 11:  # DEBUG was not
             # fixed width fonts are typically a little bigger than their
             # variable width peers so subtract one from the point size.
             font = wx.Font(font.GetPointSize()-1, wx.FONTFAMILY_MODERN,

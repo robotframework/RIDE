@@ -213,8 +213,8 @@ class TestRunner(object):
 
     def run_command(self, command, cwd):
         self._pid_to_kill = None
-        self._process = Process(cwd)
-        # print("DEBUG: run_command command: %s\nCWD: %s\n" % (command, cwd))
+        self._process = Process(cwd.encode('mbcs'))  # DEBUG .encode('mbcs')) # 'utf-8'))
+        print("DEBUG: run_command command: %s\nCWD: %s\n" % (command,cwd))
         self._process.run_command(command)
 
     def get_command(self, profile, pythonpath, console_width, names_to_run):
@@ -291,12 +291,16 @@ class TestRunner(object):
     def _write_argfile(argfile, args):
         # f = codecs.open(argfile, "w", "utf-8")
 
-        print("DEBUG: write args %s ENCODING %s" % (args, encoding.CONSOLE_ENCODING))
+        # print("DEBUG: write args %s ENCODING %s" % (args, encoding.CONSOLE_ENCODING))
         if PY2:
-            f = codecs.open(argfile, "wb", "utf-8")
+            f = codecs.open(argfile, "wb")  # "utf-8")  # DEBUG encoding.OUTPUT_ENCODING
             for item in args:
-                enc_arg = codecs.decode(item, "utf-8", "mixed")
-                f.write(enc_arg + "\n")
+                # if is_unicode(item):
+                #    print("DEBUG: write argfile encoded: %s" % item)
+                #enc_arg = codecs.encode(item, encoding.CONSOLE_ENCODING)  #, "mixed")  # "utf-8", "mixed") encoding.SYSTEM_ENCODING
+                enc_arg = item.encode("utf-8")
+                f.write(enc_arg+"\n")
+                # print("DEBUG: wrote item %s" % enc_arg)
         else:
             f = codecs.open(argfile, "w", "utf-8")
             f.write("\n".join(args))
@@ -333,7 +337,7 @@ class Process(object):
                         stdout=subprocess.PIPE,
                         stderr=subprocess.PIPE,
                         stdin=subprocess.PIPE,
-                        cwd=self._cwd.encode(utils.SYSTEM_ENCODING))
+                        cwd=self._cwd.encode(encoding.OUTPUT_ENCODING)) # DEBUG utils.SYSTEM_ENCODING))
         if IS_WINDOWS:
             startupinfo = subprocess.STARTUPINFO()
             try:
@@ -345,8 +349,8 @@ class Process(object):
         else:
             subprocess_args['preexec_fn'] = os.setsid
             subprocess_args['shell'] = True
-        self._process = subprocess.Popen(command.encode(utils.SYSTEM_ENCODING),
-                                         **subprocess_args)
+        self._process = subprocess.Popen(command.encode(encoding.OUTPUT_ENCODING),
+                                         **subprocess_args) # DEBUG utils.SYSTEM_ENCODING)
         self._process.stdin.close()
         self._output_stream = StreamReaderThread(self._process.stdout)
         self._error_stream = StreamReaderThread(self._process.stderr)
