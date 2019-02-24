@@ -130,7 +130,7 @@ HOST = "localhost"
 # DEBUG This was working in Linux always!
 #if encoding:
 #    encoding.OUTPUT_ENCODING = 'UTF-8'
-print("DEBUG: TestRunnerAgent encoding %s\n" % SYSTEM_ENCODING )
+# print("DEBUG: TestRunnerAgent encoding %s\n" % SYSTEM_ENCODING )
 
 
 def _is_logged(level):

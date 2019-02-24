@@ -313,9 +313,9 @@ class TestRunnerPlugin(Plugin):
             self._set_running()
             self._progress_bar.Start()
         except Exception as e:
-            self._output("DEBUG: Except block test_runner.run_command\n")
+            # self._output("DEBUG: Except block test_runner.run_command\n")
             self._set_stopped()
-            error, log_message = self.get_current_profile().format_error(str(e), None)  # DEBUUG unicode(e)
+            error, log_message = self.get_current_profile().format_error(str(e), None)  # DEBUG unicode(e)
             self._output(error)
             if log_message:
                 log_message.publish()
