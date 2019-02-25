@@ -91,6 +91,7 @@ try:
     from robot.running import EXECUTION_CONTEXTS
     from robot.running.signalhandler import STOP_SIGNAL_MONITOR
     from robot.utils import encoding
+    from robot.utils.encoding import SYSTEM_ENCODING
 except ImportError:
     encoding = None
     # print("TestRunnerAgent: Maybe you did not
@@ -126,9 +127,10 @@ HOST = "localhost"
 # Setting Output encoding to UTF-8 and ignoring the platform specs
 # RIDE will expect UTF-8
 # Set output encoding to UTF-8 for piped output streams
-if encoding:
-    encoding.OUTPUT_ENCODING = 'UTF-8'
-# print("DEBUG: TestRunnerAgent encoding %s\n" % encoding.OUTPUT_ENCODING )
+# DEBUG This was working in Linux always!
+#if encoding:
+#    encoding.OUTPUT_ENCODING = 'UTF-8'
+# print("DEBUG: TestRunnerAgent encoding %s\n" % SYSTEM_ENCODING )
 
 
 def _is_logged(level):
@@ -294,7 +296,7 @@ class RobotDebugger(object):
     @staticmethod
     def is_breakpoint(name, attrs):
         return name == 'BuiltIn.Comment' and\
-               str(attrs['args'][0]).upper().startswith('PAUSE')
+               str(attrs['args'][0]).upper().startswith(u"PAUSE")
 
     def pause(self):
         self._resume.clear()
