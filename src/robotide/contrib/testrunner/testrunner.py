@@ -213,8 +213,11 @@ class TestRunner(object):
 
     def run_command(self, command, cwd):
         self._pid_to_kill = None
-        self._process = Process(cwd.encode(encoding.OUTPUT_ENCODING))
-        # print("DEBUG: run_command command: %s\nCWD: %s\n" % (command,cwd))
+        if IS_WINDOWS:
+            self._process = Process(cwd)  # .encode(encoding.SYSTEM_ENCODING))
+        else:
+            self._process = Process(cwd.encode(encoding.OUTPUT_ENCODING))
+        # print("DEBUG: run_command command: %s\nCWD: %s\n" % (command, cwd))
         self._process.run_command(command)
 
     def get_command(self, profile, pythonpath, console_width, names_to_run):
@@ -346,8 +349,10 @@ class Process(object):
         else:
             subprocess_args['preexec_fn'] = os.setsid
             subprocess_args['shell'] = True
-        self._process = subprocess.Popen(command.encode(encoding.OUTPUT_ENCODING),
-                                         **subprocess_args)
+        if IS_WINDOWS:
+            self._process = subprocess.Popen(command, **subprocess_args)
+        else:
+            self._process = subprocess.Popen(command.encode(encoding.OUTPUT_ENCODING), **subprocess_args)
         self._process.stdin.close()
         self._output_stream = StreamReaderThread(self._process.stdout)
         self._error_stream = StreamReaderThread(self._process.stderr)

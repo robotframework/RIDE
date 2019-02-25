@@ -301,13 +301,12 @@ class TestRunnerPlugin(Plugin):
         command = self._create_command()
         self._output("command: %s\n" % command)  # DEBUG encode
         try:
-            # if PY2:
-            #    command = bytes(command)  # .encode(encoding))
-            #    # TODO This does not work if for example -i Áçãú
-            # self._output("DEBUG: starting command %s\n" % command)
-            # DEBUG encode
-            self._test_runner.run_command(
-                command, self._get_current_working_dir())
+            if PY2 and IS_WINDOWS:
+                cwd = self._get_current_working_dir()  # DEBUG It fails if a directory has chinese or latin symbols
+                cwd = cwd.encode(encoding.SYSTEM_ENCODING)
+                self._test_runner.run_command(command, cwd)
+            else:
+                self._test_runner.run_command(command, self._get_current_working_dir())
             # self._output("DEBUG: Passed test_runner.run_command\n")
             self._process_timer.Start(41)  # roughly 24fps
             self._set_running()
