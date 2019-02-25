@@ -58,10 +58,23 @@ try:
 except ImportError:
     encoding = None
 # DEBUG we are forcing UTF-8
-# if encoding:
-#     encoding.OUTPUT_ENCODING = 'UTF-8'
+if encoding:
+    encoding.OUTPUT_ENCODING = sys.getfilesystemencoding()  # 'UTF-8'
 
 ATEXIT_LOCK = threading.RLock()
+
+
+# Solution from https://stackoverflow.com/questions/10009753/python-dealing-with-mixed-encoding-files
+def mixed_decoder(unicodeError):
+    errStr = unicodeError[1]
+    errLen = unicodeError.end - unicodeError.start
+    nextPosition = unicodeError.start + errLen
+    errHex = errStr[unicodeError.start:unicodeError.end].encode('hex')
+    # return u'?', nextPosition
+    return u'%s' % errHex, nextPosition  # Comment this line out to get a question mark
+
+
+codecs.register_error("mixed", mixed_decoder)
 
 
 class TestRunner(object):
@@ -200,7 +213,10 @@ class TestRunner(object):
 
     def run_command(self, command, cwd):
         self._pid_to_kill = None
-        self._process = Process(cwd)
+        if IS_WINDOWS:
+            self._process = Process(cwd)  # .encode(encoding.SYSTEM_ENCODING))
+        else:
+            self._process = Process(cwd.encode(encoding.OUTPUT_ENCODING))
         # print("DEBUG: run_command command: %s\nCWD: %s\n" % (command, cwd))
         self._process.run_command(command)
 
@@ -276,32 +292,17 @@ class TestRunner(object):
 
     @staticmethod
     def _write_argfile(argfile, args):
-        m_args = list()
-        f = codecs.open(argfile, "wb")  # , "utf-8")
         if PY2:
-            # if IS_WINDOWS:
-            #    m_args = [unicode(item,"utf-8") for item in args]
-            # else:
-            #  DEBUG
-            # m_args = args
+            f = codecs.open(argfile, "wb")
             for item in args:
                 if is_unicode(item):
-                    m_args.append(item.encode("utf-8"))  # .decode("utf-8"))
+                    enc_arg = item.encode(encoding.OUTPUT_ENCODING)
                 else:
-                    m_args.append(bytes(item))
-            # DEBUG m_args = [item.decode("utf-8") for item in args]
-            # print("DEBUG: write_args: %s\n" % m_args)
+                    enc_arg = item
+                f.write(enc_arg+"\n")
         else:
-            m_args = [str(x) for x in args]  # .encode("utf-8","surrogate")
-        # print("DEBUG: write_args: %s\n" % m_args)
-        # data = r"\n".join(m_args)
-        if PY2:
-            data = b"\n".join(m_args)
-            f.write(bytes(data))  # DEBUG .decode("utf-8") .encode("utf-8")
-        else:
-            data = "\n".join(m_args)
-            f.write(bytes(data.encode("utf-8",
-                                      "surrogate")))
+            f = codecs.open(argfile, "w", "utf-8")
+            f.write("\n".join(args))
         f.close()
 
     def get_output_and_errors(self, profile):
@@ -331,13 +332,12 @@ class Process(object):
     def run_command(self, command):
         # We need to supply stdin for subprocess, because otherways in pythonw
         # subprocess will try using sys.stdin which causes an error in windows
-        subprocess_args = dict(bufsize=0, stdout=subprocess.PIPE,
-                               stderr=subprocess.PIPE, stdin=subprocess.PIPE,
-                               cwd=self._cwd)
-        # DEBUG .encode(encoding.OUTPUT_ENCODING))
-        # DEBUG was encoding.OUTPUT_ENCODING)
-        # DEBUG cwd=self._cwd.encode(utils.SYSTEM_ENCODING))
-
+        # print("DEBUG: enter run_command %s dir %s" % (command, self._cwd))
+        subprocess_args = dict(bufsize=0,
+                        stdout=subprocess.PIPE,
+                        stderr=subprocess.PIPE,
+                        stdin=subprocess.PIPE,
+                        cwd=self._cwd)
         if IS_WINDOWS:
             startupinfo = subprocess.STARTUPINFO()
             try:
@@ -349,16 +349,10 @@ class Process(object):
         else:
             subprocess_args['preexec_fn'] = os.setsid
             subprocess_args['shell'] = True
-        # DEBUG self._process = subprocess.Popen(command.encode(
-        #                                        utils.SYSTEM_ENCODING),
-        #                                        **subprocess_args)
-        # print("DEBUG: run_command calling Subprocess: %s\nCommand:
-        # %s\n" % (subprocess_args,str(command.encode(
-        #                              encoding.OUTPUT_ENCODING))))
-        self._process = subprocess.Popen(command, **subprocess_args)
-        # DEBUG was .encode(encoding.OUTPUT_ENCODING) .OUTPUT_ENCODING
-        # print("DEBUG: run_command Called Subprocess_args: %s\n" %
-        # subprocess_args)
+        if IS_WINDOWS:
+            self._process = subprocess.Popen(command, **subprocess_args)
+        else:
+            self._process = subprocess.Popen(command.encode(encoding.OUTPUT_ENCODING), **subprocess_args)
         self._process.stdin.close()
         self._output_stream = StreamReaderThread(self._process.stdout)
         self._error_stream = StreamReaderThread(self._process.stderr)
@@ -410,7 +404,10 @@ class Process(object):
         try:
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             sock.connect((host, self._port))
-            sock.send(bytes(data.encode("utf-8")))
+            if PY2:
+                sock.send(data)
+            else:
+                sock.send(bytes(data, encoding.SYSTEM_ENCODING))
         finally:
             sock.close()
 
@@ -470,17 +467,12 @@ class StreamReaderThread(object):
             myqueuerng = range(self._queue.qsize())
         for _ in myqueuerng:
             try:
-                # DEBUG result += self._queue.get_nowait()
-                # .decode(utils.SYSTEM_ENCODING, 'replace')
-                # .decode('UTF-8','ignore')
                 result += encoding.console_decode(self._queue.get_nowait(),
-                                                  'latin1' if IS_WINDOWS
+                                                  encoding.OUTPUT_ENCODING if IS_WINDOWS
                                                   else 'UTF-8')
-                # ,'replace')  # 'latin1' .decode(utils.SYSTEM_ENCODING,
-                # 'replace')  # .decode('UTF-8','ignore')
             except Empty:
                 pass
-        return result  # DEBUG .decode('UTF-8', 'ignore')
+        return result
 
 
 # The following two classes implement a small line-buffered socket
