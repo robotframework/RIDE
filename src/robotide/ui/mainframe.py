@@ -415,9 +415,13 @@ class RideFrame(wx.Frame, RideEventHandler):
 
     def _populate_tree(self):
         self.tree.populate(self._controller)
-        if self._controller.data.directory:
-            self.filemgr.SetPath(self._controller.data.directory)
-            self.filemgr.ExpandPath(self._controller.data.directory)
+        if len(self._controller.data.directory) > 1:
+            self.filemgr.SelectPath(self._controller.data.source)
+            try:
+                self.filemgr.ExpandPath(self._controller.data.source)
+            except Exception:
+                pass
+            self.filemgr.Update()
 
     def OnOpenTestSuite(self, event):
         if not self.check_unsaved_modifications():
