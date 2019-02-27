@@ -189,7 +189,7 @@ class _NameBuilder(object):
 
     def _accelerator_is_free(self, char):
         char = char.upper()
-        if char not in self._accelerators and char != ' ':
+        if char not in self._accelerators and char != u' ':
             self._accelerators.append(char)
             return True
         return False
