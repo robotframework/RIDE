@@ -42,7 +42,12 @@ class GridToolTips(object):
 
     def OnMouseMotion(self, event):
         self._hide_tooltip()
-        self._start_tooltip_timer()
+        if event.CmdDown():
+            self._tooltip_timer.Stop()
+            self._grid.show_cell_information()
+        else:
+            self._information_popup.hide()
+            self._start_tooltip_timer()
         event.Skip()
 
     def _start_tooltip_timer(self):

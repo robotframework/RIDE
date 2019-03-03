@@ -502,10 +502,11 @@ class KeywordEditor(GridEditor, RideEventHandler):
         _iscelleditcontrolshown = self.IsCellEditControlShown()
 
         keycode, control_down = event.GetKeyCode(), event.CmdDown()
-        event.Skip()  # DEBUG seen this skip as soon as possible
-        if keycode == ord('M') and \
-            (control_down or event.AltDown()):  #  keycode == wx.WXK_CONTROL
-            self._show_cell_information()
+        print("DEBUG: key pressed " + str(keycode) + " + " +  str(control_down))
+        # event.Skip()  # DEBUG seen this skip as soon as possible
+        if keycode == wx.WXK_CONTROL or \
+                (keycode == ord('M') and (control_down or event.AltDown())):  #  keycode == wx.WXK_CONTROL
+            self.show_cell_information()
         elif keycode == ord('C') and control_down:
             # print("DEBUG: captured Control-C\n")
             self.OnCopy(event)
@@ -545,14 +546,14 @@ class KeywordEditor(GridEditor, RideEventHandler):
         elif control_down and keycode == ord('B'):
             self._navigate_to_matching_user_keyword(
                 self.GetGridCursorRow(), self.GetGridCursorCol())
-        # else:
-        #    event.Skip()
+        else:
+           event.Skip()
 
     def OnGoToDefinition(self, event):
         self._navigate_to_matching_user_keyword(
             self.GetGridCursorRow(), self.GetGridCursorCol())
 
-    def _show_cell_information(self):
+    def show_cell_information(self):
         cell = self.cell_under_cursor
         value = self._cell_value(cell)
         if value:
