@@ -502,7 +502,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
         _iscelleditcontrolshown = self.IsCellEditControlShown()
 
         keycode, control_down = event.GetKeyCode(), event.CmdDown()
-        print("DEBUG: key pressed " + str(keycode) + " + " +  str(control_down))
+        # print("DEBUG: key pressed " + str(keycode) + " + " +  str(control_down))
         # event.Skip()  # DEBUG seen this skip as soon as possible
         if keycode == wx.WXK_CONTROL or \
                 (keycode == ord('M') and (control_down or event.AltDown())):  #  keycode == wx.WXK_CONTROL
