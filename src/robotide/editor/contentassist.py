@@ -51,9 +51,9 @@ class _ContentAssistTextCtrlBase(object):
         keycode, control_down = event.GetKeyCode(), event.CmdDown()
         # print("DEBUG:  before processing" + str(keycode) + " + " +  str(control_down))
         # Ctrl-Space handling needed for dialogs # DEBUG add Ctrl-m
-        if (control_down or event.AltDown()) and keycode in (wx.WXK_SPACE, ord('m')):
-            self.show_content_assist()
-            return
+        # if (control_down or event.AltDown()) and keycode in (wx.WXK_SPACE, ord('m')):
+        #     self.show_content_assist()
+        #     return
         if keycode in [wx.WXK_UP, wx.WXK_DOWN, wx.WXK_PAGEUP, wx.WXK_PAGEDOWN]\
                 and self._popup.is_shown():
             self._popup.select_and_scroll(keycode)
