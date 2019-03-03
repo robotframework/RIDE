@@ -49,8 +49,7 @@ class _ContentAssistTextCtrlBase(object):
     def OnChar(self, event):
         # TODO: This might benefit from some cleanup
         keycode, control_down = event.GetKeyCode(), event.CmdDown()
-        event.Skip()  # DEBUG do it as soon we do not need it
-        # print("DEBUG: Onchar before processing")
+        # print("DEBUG:  before processing" + str(keycode) + " + " +  str(control_down))
         # Ctrl-Space handling needed for dialogs # DEBUG add Ctrl-m
         if (control_down or event.AltDown()) and keycode in (wx.WXK_SPACE, ord('m')):
             self.show_content_assist()
@@ -68,13 +67,14 @@ class _ContentAssistTextCtrlBase(object):
             self._popup.hide()
             return
         elif self._popup.is_shown() and keycode < 256:
-            self._populate_content_assist(event)
+            wx.CallAfter(self._populate_content_assist)
+            event.Skip()
         elif keycode in (ord('1'), ord('2'), ord('5')) and event.ControlDown() and not \
                 event.AltDown():
             self.execute_variable_creator(list_variable=(keycode == ord('2')),
                                           dict_variable=(keycode == ord('5')))
-        # print("DEBUG: Onchar before leaving")
-        # event.Skip() # DEBUG Move up
+        else:
+            event.Skip()
 
     def execute_variable_creator(self, list_variable=False, dict_variable=False):
         from_, to_ = self.GetSelection()
@@ -121,19 +121,8 @@ class _ContentAssistTextCtrlBase(object):
         if self._populate_content_assist():
             self._show_content_assist()
 
-    def _populate_content_assist(self, event=None):
+    def _populate_content_assist(self):
         value = self.GetValue()
-        if event is not None:
-            if event.GetKeyCode() == wx.WXK_BACK:
-                value = value[:-1]
-            elif event.GetKeyCode() == wx.WXK_DELETE:
-                pos = self.GetInsertionPoint()
-                value = value[:pos] + value[pos + 1:]
-            elif event.GetKeyCode() == wx.WXK_ESCAPE:
-                self.hide()
-                return False
-            else:
-                value += unichr(event.GetRawKeyCode())
         (self.gherkin_prefix, value) = self._remove_bdd_prefix(value)
         return self._popup.content_assist_for(value, row=self._row)
 
