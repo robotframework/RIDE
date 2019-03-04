@@ -216,12 +216,13 @@ class TestRunnerPlugin(Plugin):
         self.unsubscribe_all()
         self.unregister_actions()
 
-    def OnClose(self, evt):
+    def OnClose(self, event):
         """Shut down the running services and processes"""
         self._test_runner.kill_process()
         if self._process_timer:
             self._process_timer.Stop()
         self._test_runner.shutdown_server()
+        event.Skip()
 
     def OnAutoSaveCheckbox(self, evt):
         """Called when the user clicks on the "Auto Save" checkbox"""
