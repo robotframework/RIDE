@@ -520,8 +520,10 @@ class KeywordEditor(GridEditor, RideEventHandler):
             self.OnSelectAll(event)
         elif event.AltDown() and keycode in [wx.WXK_DOWN, wx.WXK_UP]:
             self._move_rows(keycode)
+            event.Skip()
         elif event.AltDown() and keycode == wx.WXK_RETURN:
             self._move_cursor_down(event)
+            event.Skip()
         elif keycode == wx.WXK_WINDOWS_MENU:
             self.OnCellRightClick(event)
         elif keycode in [wx.WXK_RETURN, wx.WXK_BACK]:
@@ -529,6 +531,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
                 self._move_grid_cursor(event, keycode)
             else:
                 self.save()
+            event.Skip()
         elif (control_down or event.AltDown()) and \
                 keycode == wx.WXK_SPACE:  # Avoid Mac CMD
             self._open_cell_editor_with_content_assist()
