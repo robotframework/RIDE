@@ -75,7 +75,7 @@ wildcard = "All files (*.*)|*.*|"                \
            "Python source (*.py)|*.py|"         \
            "Robot Framework (*.robot)|*.robot|" \
            "Robot Framework (*.txt)|*.txt|" \
-           "YAML file (*.yml)|*.yml"
+           "YAML file (*.yaml)|*.yaml"
 
 
 
@@ -600,9 +600,10 @@ def isUTF8Strict(data):
                 return False
         return True
 
+
 class DemoCodePanel(wx.Panel):
     """Panel for the 'Demo Code' tab"""
-    def __init__(self, parent, mainFrame):
+    def __init__(self, parent, mainFrame, path=None):
         self.log = sys.stdout  # From FileDialog
         wx.Panel.__init__(self, parent, size=(1,1))
         #if 'wxMSW' in wx.PlatformInfo:
@@ -648,6 +649,8 @@ class DemoCodePanel(wx.Panel):
 
         self.box.Fit(self)
         self.SetSizer(self.box)
+        if path:
+            self.LoadFile(path)
 
     # # Loads a demo from a DemoModules object
     # def LoadDemo(self, demoModules):
@@ -658,6 +661,15 @@ class DemoCodePanel(wx.Panel):
     #         demoModules.SetActive(modOriginal)
     #     self.radioButtons[demoModules.GetActiveID()].Enable(True)
     #     self.ActiveModuleChanged()
+
+    def LoadFile(self, path):
+        # Open
+        f = open(path, "rb")
+        try:
+            source = f.read()
+        finally:
+            f.close()
+        self.LoadDemoSource(source)
 
     def ActiveModuleChanged(self):
         self.LoadDemoSource(self.demoModules.GetSource())
@@ -778,7 +790,7 @@ class DemoCodePanel(wx.Panel):
 
     def OnButton(self, evt):
         #self.log.WriteText("CWD: %s\n" % os.getcwd())
-        self.log.write("CWD: %s\n" % os.getcwd())
+        # self.log.write("CWD: %s\n" % os.getcwd())
 
         # Create the dialog. In this case the current directory is forced as the starting
         # directory for the dialog, and no default file name is forced. This can easilly
@@ -817,11 +829,11 @@ class DemoCodePanel(wx.Panel):
             finally:
                 f.close()
 
-            self.log.write('%s\n' % source)
+            # self.log.write('%s\n' % source)
             self.LoadDemoSource(source)  # Just the last file
         # Compare this with the debug above; did we change working dirs?
         # self.log.WriteText("CWD: %s\n" % os.getcwd())
-        self.log.write("CWD: %s\n" % os.getcwd())
+        # self.log.write("CWD: %s\n" % os.getcwd())
 
         # Destroy the dialog. Don't do this until you are done with it!
         # BAD things can happen otherwise!
@@ -829,7 +841,7 @@ class DemoCodePanel(wx.Panel):
 
     def OnButton2(self, evt):
         #self.log.WriteText("CWD: %s\n" % os.getcwd())
-        self.log.write("CWD: %s\n" % os.getcwd())
+        # self.log.write("CWD: %s\n" % os.getcwd())
 
         # Create the dialog. In this case the current directory is forced as the starting
         # directory for the dialog, and no default file name is forced. This can easilly
@@ -852,7 +864,7 @@ class DemoCodePanel(wx.Panel):
         if dlg.ShowModal() == wx.ID_OK:
             path = dlg.GetPath()
             # self.log.WriteText('You selected "%s"' % path)
-            self.log.write('You selected "%s"\n' % path)
+            # self.log.write('You selected "%s"\n' % path)
 
             # Normally, at this point you would save your data using the file and path
             # data that the user provided to you, but since we didn't actually start
@@ -871,7 +883,7 @@ class DemoCodePanel(wx.Panel):
         # Note that the current working dir didn't change. This is good since
         # that's the way we set it up.
         # self.log.WriteText("CWD: %s\n" % os.getcwd())
-        self.log.write("CWD: %s\n" % os.getcwd())
+        # self.log.write("CWD: %s\n" % os.getcwd())
 
         # Destroy the dialog. Don't do this until you are done with it!
         # BAD things can happen otherwise!
@@ -959,6 +971,14 @@ def GetConfig():
 
 _platformNames = ["wxMSW", "wxGTK", "wxMac"]
 
+
+def main(filepath):
+    __name__ = 'Editor'
+    app = wx.App()
+    frame = wx.Frame(None)
+    panel = DemoCodePanel(frame, None, filepath)
+    frame.Show(True)
+    app.MainLoop()
 # ----------------------------------------------------------------------------
 # ----------------------------------------------------------------------------
 # ----------------------------------------------------------------------------
@@ -967,11 +987,8 @@ _platformNames = ["wxMSW", "wxGTK", "wxMac"]
 if __name__ == '__main__' and __package__ is None:
     from os import sys, path
     sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
-    __name__ = 'Editor'
-    app = wx.App()
-    frame = wx.Frame(None)
-    panel = DemoCodePanel(frame, None)
-    frame.Show(True)
-    app.MainLoop()
-
+    path = None
+    if sys.argv[1]:
+        path = sys.argv[1]
+    main(path)
 # ----------------------------------------------------------------------------

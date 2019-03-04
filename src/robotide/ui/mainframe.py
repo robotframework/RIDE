@@ -171,6 +171,7 @@ class RideFrame(wx.Frame, RideEventHandler):
         self.Bind(wx.EVT_SIZE, self.OnSize)
         self.Bind(wx.EVT_MOVE, self.OnMove)
         self.Bind(wx.EVT_MAXIMIZE, self.OnMaximize)
+        self.Bind(wx.EVT_DIRCTRL_FILEACTIVATED, self.OnOpenFile)
         self._subscribe_messages()
         #print("DEBUG: Call register_tools, actions: %s" % self.actions.__repr__())
         if PY2:
@@ -277,8 +278,7 @@ class RideFrame(wx.Frame, RideEventHandler):
             ActionInfoCollection(_menudata, self, self.tree))
         ###### File explorer pane
         self.filemgr = wx.GenericDirCtrl(self, -1, size=(200, 225),
-                                         style=wx.DIRCTRL_3D_INTERNAL |
-                                               wx.DIRCTRL_MULTIPLE)
+                                         style=wx.DIRCTRL_3D_INTERNAL)
         self.filemgr.SetMinSize(wx.Size(120, 200))
         self._mgr.AddPane(self.filemgr,
                           aui.AuiPaneInfo().Name("file_manager").
@@ -422,6 +422,25 @@ class RideFrame(wx.Frame, RideEventHandler):
             except Exception:
                 pass
             self.filemgr.Update()
+
+    def OnOpenFile(self, event):
+        # EVT_DIRCTRL_FILEACTIVATED
+        from os.path import splitext
+        robottypes = self._application.settings.get('robot types', ['robot',
+                                                                    'txt',
+                                                                    'tsv',
+                                                                    'html'])
+        path = self.filemgr.GetFilePath()
+        ext = splitext(path)
+        ext = ext[1].replace('.', '')
+        # print("DEBUG: path %s ext %s" % (path, ext))
+        if ext in robottypes:
+            if not self.check_unsaved_modifications():
+                return
+            self.open_suite(path)
+        else:
+            from robotide.editor import customsourceeditor
+            customsourceeditor.main(path)
 
     def OnOpenTestSuite(self, event):
         if not self.check_unsaved_modifications():
