@@ -17,6 +17,7 @@ import wx
 from wx import grid
 
 from robotide.widgets import PopupCreator, PopupMenuItems
+from robotide.editor.cellrenderer import CellRenderer
 from robotide.context import IS_WINDOWS
 from .clipboard import ClipboardHandler
 
@@ -34,7 +35,7 @@ class GridEditor(grid.Grid):
         grid.Grid.__init__(self, parent)
         self._bind_to_events()
         self.selection = _GridSelection(self)
-        self.SetDefaultRenderer(grid.GridCellAutoWrapStringRenderer())
+        self.SetDefaultRenderer(CellRenderer(settings["col size"], settings["max col size"], settings["auto size cols"]))
         self._clipboard_handler = ClipboardHandler(self)
         self._history = _GridState()
         self.CreateGrid(num_rows, num_cols)
@@ -45,6 +46,7 @@ class GridEditor(grid.Grid):
         self.Bind(grid.EVT_GRID_SELECT_CELL, self.OnSelectCell)
         self.Bind(grid.EVT_GRID_RANGE_SELECT, self.OnRangeSelect)
         self.Bind(grid.EVT_GRID_CELL_RIGHT_CLICK, self.OnCellRightClick)
+        self.Bind(grid.EVT_GRID_CMD_COL_SIZE, self.OnCellColSizeChanged)
 
     def register_context_menu_hook(self, callable):
         self._popup_creator.add_hook(callable)
@@ -157,13 +159,15 @@ class GridEditor(grid.Grid):
             self._write_data(prev_data, update_history=False)
 
     def _write_data(self, data, update_history=True):
+        self.BeginBatch()
         for row_index, row_data in enumerate(data):
             for col_index, cell_value in enumerate(row_data):
                 self.write_cell(row_index, col_index, cell_value, update_history)
         self.AutoSizeColumns()
         self.AutoSizeRows()
-        if self.settings is not None and self.settings['auto size cols']:
-            self._auto_size_columns()
+        self.EndBatch()
+        # if self.settings is not None and self.settings['auto size cols']:
+        #     self._auto_size_columns()
 
     def _auto_size_columns(self):
         """Adjust column width based on content
@@ -194,7 +198,7 @@ class GridEditor(grid.Grid):
             self.SelectBlock(self.selection.topleft.row, self.selection.topleft.col,self.selection.bottomright.row, self.selection.bottomright.col, addToSelected=True)
         else:
             self.selection.set_from_single_selection(event)
-        self.AutoSizeRows()
+        # self.AutoSizeRows()
         event.Skip()
 
     def OnRangeSelect(self, event):
@@ -220,6 +224,11 @@ class GridEditor(grid.Grid):
                 self.selection.set_from_single_selection(event)
         self._popup_creator.show(self, PopupMenuItems(self, self._popup_items),
                                  self.get_selected_content())
+
+    def OnCellColSizeChanged(self, event):
+        self.ForceRefresh()
+        self.AutoSizeRows()
+        event.Skip()
 
     # TODO This code is overriden at fieldeditors
     def OnInsertCells(self, event):
