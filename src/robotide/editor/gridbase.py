@@ -17,7 +17,6 @@ import wx
 from wx import grid
 
 from robotide.widgets import PopupCreator, PopupMenuItems
-from robotide.editor.cellrenderer import CellRenderer
 from robotide.context import IS_WINDOWS
 from .clipboard import ClipboardHandler
 
@@ -30,17 +29,14 @@ class GridEditor(grid.Grid):
         'Select All\tCtrl-A', '---', 'Cut\tCtrl-X', 'Copy\tCtrl-C',
         'Paste\tCtrl-V', 'Insert\tCtrl-Shift-V', '---', 'Delete\tDel']
 
-    def __init__(self, parent, num_rows, num_cols, popup_creator=None,
-                 settings=None):
+    def __init__(self, parent, num_rows, num_cols, popup_creator=None):
         grid.Grid.__init__(self, parent)
         self._bind_to_events()
         self.selection = _GridSelection(self)
-        self.SetDefaultRenderer(CellRenderer(settings["col size"], settings["max col size"], settings["auto size cols"]))
         self._clipboard_handler = ClipboardHandler(self)
         self._history = _GridState()
         self.CreateGrid(num_rows, num_cols)
         self._popup_creator = popup_creator or PopupCreator()
-        self.settings = settings
 
     def _bind_to_events(self):
         self.Bind(grid.EVT_GRID_SELECT_CELL, self.OnSelectCell)
@@ -166,32 +162,6 @@ class GridEditor(grid.Grid):
         self.AutoSizeColumns()
         self.AutoSizeRows()
         self.EndBatch()
-        # if self.settings is not None and self.settings['auto size cols']:
-        #     self._auto_size_columns()
-
-    def _auto_size_columns(self):
-        """Adjust column width based on content
-
-        The width will be between values `col size` and `max col size`
-        These can be changed in user preferences.
-        """
-        for col in range(self.NumberCols):
-            # GetTextExtent seems to be quite slow, so filter out any cells
-            # whose content most likely fits anway. This can of course fail
-            # with large enough font sizes.
-            values = [self.GetCellValue(r, col) for r in range(self.NumberRows)
-                      if len(self.GetCellValue(r, col)) > 20]
-            if not values:
-                continue
-            # Add five pixels, because GetTextExtent does not take
-            # cell border into account
-            content_sizes = [wx.ScreenDC().GetTextExtent(v)[0] + 5
-                             for v in values]
-            content_width = min(max(content_sizes),
-                                self.settings['max col size'])
-            width = max(content_width, self.settings['col size'])
-            if width != self.GetColSize(col):
-                self.SetColSize(col, width)
 
     def OnSelectCell(self, event):
         if self._is_whole_row_selection():
