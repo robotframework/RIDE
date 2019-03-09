@@ -16,6 +16,7 @@
 import wx
 from wx import grid
 import json
+from robotide.editor.cellrenderer import CellRenderer
 
 if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
     from wx.grid import GridCellEditor
@@ -92,8 +93,9 @@ class KeywordEditor(GridEditor, RideEventHandler):
         GridEditor.__init__(
             self, parent, len(controller.steps) + 5,
             max((controller.max_columns + 1), 5),
-            parent.plugin._grid_popup_creator,
-            parent.plugin.global_settings['Grid'])
+            parent.plugin._grid_popup_creator)
+
+        self.settings = parent.plugin.global_settings['Grid']
         self._parent = parent
         self._plugin = parent.plugin
         self._cell_selected = False
@@ -130,13 +132,17 @@ class KeywordEditor(GridEditor, RideEventHandler):
             self._updating_namespace = False
 
     def _configure_grid(self):
+        col_size = self.settings["col size"]
+        max_col_size = self.settings["max col size"]
+        auto_col_size = self.settings["auto size cols"]
+
+        self.SetDefaultRenderer(CellRenderer(col_size, max_col_size, auto_col_size))
         self.SetRowLabelSize(25)
         self.SetColLabelSize(0)
-        self.SetDefaultColSize(self.settings['col size'],
-                               resizeExistingCols=True)
+        self.SetDefaultColSize(col_size, resizeExistingCols=True)
         self.SetDefaultCellOverflow(False)
-        self.SetDefaultEditor(
-            ContentAssistCellEditor(self._plugin, self._controller))
+
+        self.SetDefaultEditor(ContentAssistCellEditor(self._plugin, self._controller))
         self._set_fonts()
 
     def _set_fonts(self, update_cells=False):
