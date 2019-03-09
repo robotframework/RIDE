@@ -34,6 +34,10 @@ class CellRenderer(wx.grid.GridCellRenderer):
         grid.DrawTextRectangle(dc, text, rect, hAlign, vAlign)
 
     def GetBestSize(self, grid, attr, dc, row, col):
+        """The width will be between values `col size` and `max col size`
+        These can be changed in user preferences.
+        """
+
         text = grid.GetCellValue(row, col)
         dc.SetFont(attr.GetFont())
 
@@ -43,7 +47,7 @@ class CellRenderer(wx.grid.GridCellRenderer):
         if self.auto_fit:
             if col_width < self.max_width:
                 col_width = self.max_width
-                margin = 2
+                margin = 2  # get border width into account when submitting optimal col size
 
         text = wordwrap.wordwrap(text, col_width, dc, breakLongWords=False, margin=margin)
         w, h = dc.GetMultiLineTextExtent(text)
@@ -56,50 +60,3 @@ class CellRenderer(wx.grid.GridCellRenderer):
     def Clone(self):  # real signature unknown; restored from __doc__
         """ Clone(self) -> GridCellRenderer """
         return CellRenderer
-
-
-class GridEditorTest(wx.grid.Grid):
-    def __init__(self, parent, log):
-        wx.grid.Grid.__init__(self, parent, -1)
-        self.log = log
-
-        self.CreateGrid(10, 3)
-
-        # Somebody changed the grid so the type registry takes precedence
-        # over the default attribute set for editors and renderers, so we
-        # have to set null handlers for the type registry before the
-        # default editor will get used otherwise...
-        #self.RegisterDataType(wx.GRID_VALUE_STRING, None, None)
-        #self.SetDefaultEditor(MyCellEditor(self.log))
-
-        # Or we could just do it like this:
-        #self.RegisterDataType(wx.GRID_VALUE_STRING,
-        #                      wx.GridCellStringRenderer(),
-        #                      MyCellEditor(self.log))
-
-        # but for this example, we'll just set the custom editor on one cell
-        self.SetDefaultRenderer(CellRenderer(100, 150, True))
-        self.SetCellValue(1, 0, "11")
-
-
-        self.SetColSize(0, 150)
-        self.SetColSize(1, 150)
-        self.SetColSize(2, 75)
-
-
-#---------------------------------------------------------------------------
-
-class TestFrame(wx.Frame):
-    def __init__(self, parent, log):
-        wx.Frame.__init__(self, parent, -1, "Custom Grid Cell Editor Test",
-                         size=(640,480))
-        grid = GridEditorTest(self, log)
-
-#---------------------------------------------------------------------------
-
-if __name__ == '__main__':
-    import sys
-    app = wx.App(False)
-    frame = TestFrame(None, sys.stdout)
-    frame.Show(True)
-    app.MainLoop()
