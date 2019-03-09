@@ -204,6 +204,7 @@ class _EditorGrid(GridEditor):
         self.SetColLabelSize(0)
         self.SetRowLabelSize(0)
         self.SetDefaultColSize(175)
+        self.SetDefaultRenderer(wx.grid.GridCellAutoWrapStringRenderer())
 
     def _bind_actions(self):
         bind_keys_to_evt_menu(self, self._get_bind_keys())
@@ -218,10 +219,12 @@ class _EditorGrid(GridEditor):
                 (wx.ACCEL_NORMAL, wx.WXK_DELETE, self.OnDelete)]
 
     def _write_content(self, value):
+        self.BeginBatch()
         self.ClearGrid()
         for index, item in enumerate(value):
             row, col = divmod(index, self.NumberCols)
             self.write_cell(row, col, item, False)
+        self.EndBatch()
         self.AutoSizeRows()
 
     def get_value(self):
