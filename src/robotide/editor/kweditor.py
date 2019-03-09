@@ -502,10 +502,11 @@ class KeywordEditor(GridEditor, RideEventHandler):
         _iscelleditcontrolshown = self.IsCellEditControlShown()
 
         keycode, control_down = event.GetKeyCode(), event.CmdDown()
-        event.Skip()  # DEBUG seen this skip as soon as possible
-        if keycode == ord('M') and \
-            (control_down or event.AltDown()):  #  keycode == wx.WXK_CONTROL
-            self._show_cell_information()
+        # print("DEBUG: key pressed " + str(keycode) + " + " +  str(control_down))
+        # event.Skip()  # DEBUG seen this skip as soon as possible
+        if keycode == wx.WXK_CONTROL or \
+                (keycode == ord('M') and (control_down or event.AltDown())):  #  keycode == wx.WXK_CONTROL
+            self.show_cell_information()
         elif keycode == ord('C') and control_down:
             # print("DEBUG: captured Control-C\n")
             self.OnCopy(event)
@@ -519,8 +520,10 @@ class KeywordEditor(GridEditor, RideEventHandler):
             self.OnSelectAll(event)
         elif event.AltDown() and keycode in [wx.WXK_DOWN, wx.WXK_UP]:
             self._move_rows(keycode)
+            event.Skip()
         elif event.AltDown() and keycode == wx.WXK_RETURN:
             self._move_cursor_down(event)
+            event.Skip()
         elif keycode == wx.WXK_WINDOWS_MENU:
             self.OnCellRightClick(event)
         elif keycode in [wx.WXK_RETURN, wx.WXK_BACK]:
@@ -528,6 +531,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
                 self._move_grid_cursor(event, keycode)
             else:
                 self.save()
+            event.Skip()
         elif (control_down or event.AltDown()) and \
                 keycode == wx.WXK_SPACE:  # Avoid Mac CMD
             self._open_cell_editor_with_content_assist()
@@ -545,14 +549,14 @@ class KeywordEditor(GridEditor, RideEventHandler):
         elif control_down and keycode == ord('B'):
             self._navigate_to_matching_user_keyword(
                 self.GetGridCursorRow(), self.GetGridCursorCol())
-        # else:
-        #    event.Skip()
+        else:
+           event.Skip()
 
     def OnGoToDefinition(self, event):
         self._navigate_to_matching_user_keyword(
             self.GetGridCursorRow(), self.GetGridCursorCol())
 
-    def _show_cell_information(self):
+    def show_cell_information(self):
         cell = self.cell_under_cursor
         value = self._cell_value(cell)
         if value:
@@ -876,6 +880,7 @@ class ContentAssistCellEditor(GridCellEditor):  # DEBUG wxPhoenix PyGridCellEdi
         self._tc.SetSize((-1, self._height))
         self._tc.set_row(row)
         self._original_value = grid.GetCellValue(row, col)
+        self._tc.SetValue(self._original_value)
         self._grid = grid
         self._tc.SetInsertionPointEnd()
         self._tc.SetFocus()
