@@ -39,21 +39,32 @@ class CellRenderer(wx.grid.GridCellRenderer):
         """
 
         text = grid.GetCellValue(row, col)
-        dc.SetFont(attr.GetFont())
+        _font = attr.GetFont()
+        dc.SetFont(_font)
 
         col_width = grid.GetColSize(col)
         margin = 0
-
+        w, h = _font.GetPixelSize()
+        w_sz = w * len(text) if len(
+            text) > 0 else self.default_width
         if self.auto_fit:
-            if col_width < self.max_width:
-                col_width = self.max_width
-                margin = 2  # get border width into account when submitting optimal col size
+            # if col_width > self.max_width:
+            col_width = self.max_width
+            margin = 2  # get border width into account when submitting optimal col size
+        else:
+            #if col_width > self.default_width:
+            w = min(w_sz, self.default_width)
+            return wx.Size(w, h)
+
+        if w_sz < self.max_width:
+            return wx.Size(w_sz, h)
 
         text = wordwrap.wordwrap(text, col_width, dc, breakLongWords=False, margin=margin)
         w, h = dc.GetMultiLineTextExtent(text)
 
-        if self.auto_fit:
-            w = w if w >= self.default_width else self.default_width
+        # if self.auto_fit:
+            # w = w if w <= self.max_width else self.max_width
+        w = max(w, min(w_sz, self.default_width, self.max_width))
 
         return wx.Size(w, h)
 
