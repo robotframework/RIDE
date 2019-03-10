@@ -1,3 +1,17 @@
+#  Copyright 2019-     Robot Framework Foundation
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
 from wx.lib import wordwrap
 import wx.grid
 
@@ -37,34 +51,40 @@ class CellRenderer(wx.grid.GridCellRenderer):
         """The width will be between values `col size` and `max col size`
         These can be changed in user preferences.
         """
-
         text = grid.GetCellValue(row, col)
+
         _font = attr.GetFont()
         dc.SetFont(_font)
 
         col_width = grid.GetColSize(col)
-        margin = 0
+        margin = 2  # get border width into account when submitting optimal col size
+        # margin = 0
         w, h = _font.GetPixelSize()
-        w_sz = w * len(text) if len(
-            text) > 0 else self.default_width
-        if self.auto_fit:
-            # if col_width > self.max_width:
-            col_width = self.max_width
-            margin = 2  # get border width into account when submitting optimal col size
+        if len(text) > 0:
+            w_sz = w * len(text)
         else:
-            #if col_width > self.default_width:
-            w = min(w_sz, self.default_width)
-            return wx.Size(w, h)
+            return wx.Size( self.default_width, h)
 
-        if w_sz < self.max_width:
-            return wx.Size(w_sz, h)
+        if self.auto_fit:
+            col_width = min(w_sz, col_width)
+            if col_width > self.max_width:
+                col_width = self.max_width
+        else:
+            col_width = min(w_sz, self.default_width)
 
         text = wordwrap.wordwrap(text, col_width, dc, breakLongWords=False, margin=margin)
         w, h = dc.GetMultiLineTextExtent(text)
-
-        # if self.auto_fit:
+        # if w_sz <= self.default_width:
+        #    return wx.Size(w_sz, h)
+        if self.auto_fit:
             # w = w if w <= self.max_width else self.max_width
-        w = max(w, min(w_sz, self.default_width, self.max_width))
+            if w_sz > self.max_width:
+                w_sz = self.max_width
+            w = max(w, w_sz)
+        else:
+            return wx.Size(self.default_width, h)
+            #if col_width > self.default_width:
+            # w = max(w, w_sz, self.default_width)
 
         return wx.Size(w, h)
 

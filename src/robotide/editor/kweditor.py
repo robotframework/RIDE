@@ -145,7 +145,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
         self.SetRowLabelSize(wx.grid.GRID_AUTOSIZE)
         self.SetColLabelSize(0)
         self.SetDefaultColSize(col_size, resizeExistingCols=True)
-        self.SetDefaultCellOverflow(True)  # DEBUG
+        self.SetDefaultCellOverflow(False)  # DEBUG
 
     def _configure_grid(self):
         self._set_cells()
