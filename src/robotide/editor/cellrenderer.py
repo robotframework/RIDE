@@ -23,11 +23,12 @@ class CellRenderer(wx.grid.GridCellRenderer):
     This class may be used to format string data in a cell.
     """
 
-    def __init__(self, default_width, max_width, auto_fit):
+    def __init__(self, default_width, max_width, auto_fit, word_wrap=True):
         wx.grid.GridCellRenderer.__init__(self)
         self.default_width = default_width
         self.max_width = max_width
         self.auto_fit = auto_fit
+        self.word_wrap = word_wrap
 
     def Draw(self, grid, attr, dc, rect, row, col, isSelected):
         text = grid.GetCellValue(row, col)
@@ -57,13 +58,13 @@ class CellRenderer(wx.grid.GridCellRenderer):
         dc.SetFont(_font)
 
         col_width = grid.GetColSize(col)
-        margin = 2  # get border width into account when submitting optimal col size
-        # margin = 0
+        # margin = 2  # get border width into account when submitting optimal col size
+        margin = 0
         w, h = _font.GetPixelSize()
         if len(text) > 0:
-            w_sz = w * len(text)
+            w_sz = w * len(text) + 2 * w
         else:
-            return wx.Size( self.default_width, h)
+            return wx.Size(2 * w, h)  # self.default_width
 
         if self.auto_fit:
             col_width = min(w_sz, col_width)
@@ -72,20 +73,18 @@ class CellRenderer(wx.grid.GridCellRenderer):
         else:
             col_width = min(w_sz, self.default_width)
 
-        text = wordwrap.wordwrap(text, col_width, dc, breakLongWords=False, margin=margin)
-        w, h = dc.GetMultiLineTextExtent(text)
-        # if w_sz <= self.default_width:
-        #    return wx.Size(w_sz, h)
+        if self.word_wrap:
+            text = wordwrap.wordwrap(text, col_width, dc, breakLongWords=False,
+                                     margin=margin)
+            w, h = dc.GetMultiLineTextExtent(text)
+        else:
+            w = col_width
         if self.auto_fit:
-            # w = w if w <= self.max_width else self.max_width
             if w_sz > self.max_width:
                 w_sz = self.max_width
             w = max(w, w_sz)
         else:
             return wx.Size(self.default_width, h)
-            #if col_width > self.default_width:
-            # w = max(w, w_sz, self.default_width)
-
         return wx.Size(w, h)
 
     def Clone(self):  # real signature unknown; restored from __doc__

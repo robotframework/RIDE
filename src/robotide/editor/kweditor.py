@@ -136,15 +136,18 @@ class KeywordEditor(GridEditor, RideEventHandler):
             self._updating_namespace = False
 
     def _set_cells(self):
-        col_size = self.settings["col size"]
-        max_col_size = self.settings["max col size"]
-        auto_col_size = self.settings["auto size cols"]
+        col_size = self.settings.get("col size", 175)
+        max_col_size = self.settings.get("max col size", 380)
+        auto_col_size = self.settings.get("auto size cols", True)
+        word_wrap = self.settings.get("word wrap", True)
 
         self.SetDefaultRenderer(
-            CellRenderer(col_size, max_col_size, auto_col_size))
+            CellRenderer(col_size, max_col_size, auto_col_size, word_wrap))
         self.SetRowLabelSize(wx.grid.GRID_AUTOSIZE)
         self.SetColLabelSize(0)
         self.SetDefaultColSize(col_size, resizeExistingCols=True)
+        if word_wrap:
+            self.SetDefaultRowSize(wx.grid.GRID_AUTOSIZE)
         self.SetDefaultCellOverflow(False)  # DEBUG
 
     def _configure_grid(self):

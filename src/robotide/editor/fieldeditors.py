@@ -203,7 +203,7 @@ class _EditorGrid(GridEditor):
     def _set_default_sizes(self):
         self.SetColLabelSize(wx.grid.GRID_AUTOSIZE)
         self.SetRowLabelSize(wx.grid.GRID_AUTOSIZE)
-        self.SetDefaultColSize(175)
+        self.SetDefaultColSize(20)
         self.SetDefaultRenderer(wx.grid.GridCellAutoWrapStringRenderer())
 
     def _bind_actions(self):
