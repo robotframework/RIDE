@@ -140,6 +140,8 @@ class GridEditorPreferences(EditorPreferences):
             self, settings, 'auto size cols', 'Auto size columns'))
         sizer.Add(self._label_for('Max column size\n(applies when auto size is on)'))
         sizer.Add(self._number_editor(settings, 'max col size'))
+        sizer.AddMany(widgets.boolean_editor(
+            self, settings, 'word wrap', 'Word wrap and auto size rows'))
         return sizer
 
     def _label_for(self, name):
