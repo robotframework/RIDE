@@ -152,6 +152,8 @@ class Project(_BaseController, WithNamespace):
         if datafile:
             return datafile
         load_observer.error("Invalid data file '%s'." % path)
+        e = UserWarning("Invalid data file")
+        return e
 
     def _load_datafile(self, path, load_observer):
         datafile = self._loader.load_datafile(path, load_observer)
