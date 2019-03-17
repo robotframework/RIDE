@@ -57,8 +57,9 @@ class _PopupWindowBase(object):
         event.Skip()
 
     def show_at(self, position):
-        if not self.IsShown():
+        if self.GetPosition() != position:
             self.SetPosition(position)
+        if not self.IsShown():
             self.Show()
 
     def hide(self, event=None):

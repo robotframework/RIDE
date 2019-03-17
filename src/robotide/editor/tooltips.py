@@ -27,6 +27,7 @@ class GridToolTips(object):
         self._grid = grid
         self._tooltip_timer = wx.Timer(grid.GetGridWindow())
         grid.GetGridWindow().Bind(wx.EVT_WINDOW_DESTROY, self.OnGridDestroy)
+        grid.GetGridWindow().Bind(wx.EVT_KILL_FOCUS, self.OnGridFocusLost)
         grid.GetGridWindow().Bind(wx.EVT_MOTION, self.OnMouseMotion)
         grid.GetGridWindow().Bind(wx.EVT_TIMER, self.OnShowToolTip)
         grid.Bind(wx.grid.EVT_GRID_EDITOR_HIDDEN, self.OnGridEditorHidden)
@@ -35,9 +36,18 @@ class GridToolTips(object):
         self._tooltip_timer.Stop()
         event.Skip()
 
+    def OnGridFocusLost(self, event):
+        self._tooltip_timer.Stop()
+        event.Skip()
+
     def OnMouseMotion(self, event):
         self._hide_tooltip()
-        self._start_tooltip_timer()
+        if event.CmdDown():
+            self._tooltip_timer.Stop()
+            self._grid.show_cell_information()
+        else:
+            self._information_popup.hide()
+            self._start_tooltip_timer()
         event.Skip()
 
     def _start_tooltip_timer(self):
