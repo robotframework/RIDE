@@ -437,10 +437,13 @@ class RideFrame(wx.Frame, RideEventHandler):
         if ext in robottypes:
             if not self.check_unsaved_modifications():
                 return
-            self.open_suite(path)
-        else:
-            from robotide.editor import customsourceeditor
-            customsourceeditor.main(path)
+            try:
+                self.open_suite(path)
+                return
+            except UserWarning as e:
+                pass
+        from robotide.editor import customsourceeditor
+        customsourceeditor.main(path)
 
     def OnOpenTestSuite(self, event):
         if not self.check_unsaved_modifications():
@@ -448,7 +451,13 @@ class RideFrame(wx.Frame, RideEventHandler):
         path = RobotFilePathDialog(
             self, self._controller, self._application.settings).execute()
         if path:
-            self.open_suite(path)
+            try:
+                self.open_suite(path)
+                return
+            except UserWarning as e:
+                pass
+            from robotide.editor import customsourceeditor
+            customsourceeditor.main(path)
 
     def check_unsaved_modifications(self):
         if self.has_unsaved_changes():
@@ -460,7 +469,9 @@ class RideFrame(wx.Frame, RideEventHandler):
 
     def open_suite(self, path):
         self._controller.update_default_dir(path)
-        self._controller.load_datafile(path, LoadProgressObserver(self))
+        err = self._controller.load_datafile(path, LoadProgressObserver(self))
+        if isinstance(err, UserWarning):
+            raise err
         self._populate_tree()
 
     def refresh_datafile(self, item, event):
