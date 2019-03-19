@@ -140,6 +140,8 @@ class GridEditorPreferences(EditorPreferences):
             self, settings, 'auto size cols', 'Auto size columns'))
         sizer.Add(self._label_for('Max column size\n(applies when auto size is on)'))
         sizer.Add(self._number_editor(settings, 'max col size'))
+        sizer.AddMany(widgets.boolean_editor(
+            self, settings, 'word wrap', 'Word wrap and auto size rows'))
         return sizer
 
     def _label_for(self, name):
@@ -148,14 +150,16 @@ class GridEditorPreferences(EditorPreferences):
 
     def _number_editor(self, settings, name):
         initial_value = settings[name]
-        editor = NumCtrl(self, value=initial_value)
+        editor = NumCtrl(self, value=initial_value, integerWidth=3, allowNone=True)
         editor.Bind(wx.EVT_TEXT, lambda evt: self._set_value(editor, name))
         return editor
 
     def _set_value(self, editor, name):
         # Guard against dead object
         if editor:
-            self._settings.set(name, int(editor.GetValue()))
+            value = editor.GetValue()
+            if value is not None:
+                self._settings.set(name, int(value))
 
     def create_colors_sizer(self):
         colors_sizer = wx.GridBagSizer()

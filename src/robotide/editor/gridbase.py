@@ -29,22 +29,20 @@ class GridEditor(grid.Grid):
         'Select All\tCtrl-A', '---', 'Cut\tCtrl-X', 'Copy\tCtrl-C',
         'Paste\tCtrl-V', 'Insert\tCtrl-Shift-V', '---', 'Delete\tDel']
 
-    def __init__(self, parent, num_rows, num_cols, popup_creator=None,
-                 settings=None):
+    def __init__(self, parent, num_rows, num_cols, popup_creator=None):
         grid.Grid.__init__(self, parent)
         self._bind_to_events()
         self.selection = _GridSelection(self)
-        self.SetDefaultRenderer(grid.GridCellAutoWrapStringRenderer())
         self._clipboard_handler = ClipboardHandler(self)
         self._history = _GridState()
         self.CreateGrid(num_rows, num_cols)
         self._popup_creator = popup_creator or PopupCreator()
-        self.settings = settings
 
     def _bind_to_events(self):
         self.Bind(grid.EVT_GRID_SELECT_CELL, self.OnSelectCell)
         self.Bind(grid.EVT_GRID_RANGE_SELECT, self.OnRangeSelect)
         self.Bind(grid.EVT_GRID_CELL_RIGHT_CLICK, self.OnCellRightClick)
+        self.Bind(grid.EVT_GRID_CMD_COL_SIZE, self.OnCellColSizeChanged)
 
     def register_context_menu_hook(self, callable):
         self._popup_creator.add_hook(callable)
@@ -157,44 +155,20 @@ class GridEditor(grid.Grid):
             self._write_data(prev_data, update_history=False)
 
     def _write_data(self, data, update_history=True):
+        self.BeginBatch()
         for row_index, row_data in enumerate(data):
             for col_index, cell_value in enumerate(row_data):
                 self.write_cell(row_index, col_index, cell_value, update_history)
         self.AutoSizeColumns()
         self.AutoSizeRows()
-        if self.settings is not None and self.settings['auto size cols']:
-            self._auto_size_columns()
-
-    def _auto_size_columns(self):
-        """Adjust column width based on content
-
-        The width will be between values `col size` and `max col size`
-        These can be changed in user preferences.
-        """
-        for col in range(self.NumberCols):
-            # GetTextExtent seems to be quite slow, so filter out any cells
-            # whose content most likely fits anway. This can of course fail
-            # with large enough font sizes.
-            values = [self.GetCellValue(r, col) for r in range(self.NumberRows)
-                      if len(self.GetCellValue(r, col)) > 20]
-            if not values:
-                continue
-            # Add five pixels, because GetTextExtent does not take
-            # cell border into account
-            content_sizes = [wx.ScreenDC().GetTextExtent(v)[0] + 5
-                             for v in values]
-            content_width = min(max(content_sizes),
-                                self.settings['max col size'])
-            width = max(content_width, self.settings['col size'])
-            if width != self.GetColSize(col):
-                self.SetColSize(col, width)
+        self.EndBatch()
 
     def OnSelectCell(self, event):
         if self._is_whole_row_selection():
             self.SelectBlock(self.selection.topleft.row, self.selection.topleft.col,self.selection.bottomright.row, self.selection.bottomright.col, addToSelected=True)
         else:
             self.selection.set_from_single_selection(event)
-        self.AutoSizeRows()
+        # self.AutoSizeRows()
         event.Skip()
 
     def OnRangeSelect(self, event):
@@ -220,6 +194,11 @@ class GridEditor(grid.Grid):
                 self.selection.set_from_single_selection(event)
         self._popup_creator.show(self, PopupMenuItems(self, self._popup_items),
                                  self.get_selected_content())
+
+    def OnCellColSizeChanged(self, event):
+        self.ForceRefresh()
+        self.AutoSizeRows()
+        event.Skip()
 
     # TODO This code is overriden at fieldeditors
     def OnInsertCells(self, event):
