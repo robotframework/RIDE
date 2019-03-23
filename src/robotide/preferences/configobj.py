@@ -17,20 +17,30 @@
 # Comments, suggestions and bug reports welcome.
 #
 # Note! All TO DOs and FIX MEs removed from the original source, by RIDE-project
+#  Copyright 2010-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
 
 from __future__ import generators
 
 import sys
 import os
 import re
-from robotide.utils import basestring, unicode, converttypes
-
-if sys.version_info[0] == 2:
-    PYTHON2 = True
-    PYTHON3 = False
-elif sys.version_info[0] == 3:
-    PYTHON2 = False
-    PYTHON3 = True
+from robotide.utils import converttypes
+from robotide.utils import PY2, PY3
+if PY3:
+    from robotide.utils import basestring, unicode
 
 compiler = None
 try:
@@ -371,11 +381,11 @@ class InterpolationEngine(object):
             This is similar to a depth-first-search algorithm.
             """
             # Have we been here already?
-            if PYTHON2:
+            if PY2:
                 if backtrail.has_key((key, section.name)):
                     # Yes - infinite loop detected
                     raise InterpolationLoopError(key)
-            elif PYTHON3:
+            elif PY3:
                 if (key, section.name) in backtrail:
                     # Yes - infinite loop detected
                     raise InterpolationLoopError(key)
@@ -558,10 +568,10 @@ class Section(dict):
         self._initialise()
         # we do this explicitly so that __setitem__ is used properly
         # (rather than just passing to ``dict.__init__``)
-        if PYTHON2:
+        if PY2:
             for entry, value in indict.iteritems():
                 self[entry] = value
-        elif PYTHON3:
+        elif PY3:
             for entry, value in indict.items():
                 self[entry] = value
 
@@ -626,7 +636,7 @@ class Section(dict):
             raise ValueError('The key "%s" is not a string.' % key)
 
         # add the comment
-        if PYTHON2:
+        if PY2:
             if not self.comments.has_key(key):
                 self.comments[key] = []
                 self.inline_comments[key] = ''
@@ -666,7 +676,7 @@ class Section(dict):
                     else:
                         raise TypeError('Value is not a string "%s".' % value)
                 dict.__setitem__(self, key, value)
-        elif PYTHON3:
+        elif PY3:
             if key not in self.comments:
                 self.comments[key] = []
                 self.inline_comments[key] = ''
@@ -1271,9 +1281,9 @@ class ConfigObj(Section):
                     # this is a good test that the filename specified
                     # isn't impossible - like on a non-existent device
                     h = open(infile, 'w+b')
-                    if PYTHON2:
+                    if PY2:
                         h.write('#')
-                    elif PYTHON3:
+                    elif PY3:
                         h.write('#'.encode('UTF-8'))
                     h.close()
                     # print("DEBUG: configobj created empty _load filepath %s", h.name)
@@ -1472,7 +1482,7 @@ class ConfigObj(Section):
 
         # DEBUG Just ignore BOM if using Python 3
         # TODO fix code for Python 3
-        # if not PYTHON3:
+        # if not PY3:
         # print("DEBUG: entering no enconding defined")
         # No encoding specified - so we need to check for UTF8/UTF16
         for BOM, (encoding, final_encoding) in BOMS.items():
@@ -1576,7 +1586,7 @@ class ConfigObj(Section):
             line = infile[cur_index]
             sline = line.strip()
             # print("DEBUG: _parser init cycles: line[%d]= %s\n", (cur_index,sline))
-            # DEBUG if PYTHON3: ('#'.encode('UTF-8'))
+            # DEBUG if PY3: ('#'.encode('UTF-8'))
             # do we have anything on the line ?
             if not sline or sline.startswith('#'): # .encode('UTF-8')):
                 reset_comment = False
@@ -1626,12 +1636,12 @@ class ConfigObj(Section):
                                        NestingError, infile, cur_index)
 
                 sect_name = self._unquote(sect_name)
-                if PYTHON2:
+                if PY2:
                     if parent.has_key(sect_name):
                         self._handle_error('Duplicate section name at line %s.',
                                            DuplicateError, infile, cur_index)
                         continue
-                elif PYTHON3:
+                elif PY3:
                     if sect_name in parent:
                         self._handle_error('Duplicate section name at line %s.',
                                            DuplicateError, infile, cur_index)
@@ -1716,13 +1726,13 @@ class ConfigObj(Section):
                             continue
                 #
                 key = self._unquote(key)
-                if PYTHON2:
+                if PY2:
                     if this_section.has_key(key):
                         self._handle_error(
                             'Duplicate keyword name at line %s.',
                             DuplicateError, infile, cur_index)
                         continue
-                elif PYTHON3:
+                elif PY3:
                     if key in this_section:
                         self._handle_error(
                             'Duplicate keyword name at line %s.',
@@ -2123,16 +2133,16 @@ class ConfigObj(Section):
         if not output.endswith(newline):
             output += newline
         if outfile is not None:
-            if PYTHON2:
+            if PY2:
                 outfile.write(unicode(output))  # DEBUG
-            elif PYTHON3:
+            elif PY3:
                 outfile.write(output.encode('UTF-8'))
             outfile.close()
         else:
             h = open(self.filename, 'wb')
-            if PYTHON2:
+            if PY2:
                 h.write(unicode(output))  # DEBUG
-            elif PYTHON3:
+            elif PY3:
                 h.write(output.encode('UTF-8'))
             h.close()
 

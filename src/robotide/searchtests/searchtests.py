@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -21,7 +22,9 @@ from robotide.pluginapi import Plugin
 from robotide.publish import RideOpenTagSearch
 from robotide.searchtests.dialogsearchtests import TestsDialog
 from robotide.widgets import ImageProvider
-from robotide.utils import unicode
+from robotide.utils import PY3
+if PY3:
+    from robotide.utils import unicode
 
 
 @total_ordering

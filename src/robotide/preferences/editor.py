@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -40,7 +41,7 @@ TREE_THRESHOLD = 5
 class PreferenceEditor(wx.Dialog):
     """A dialog for showing the preference panels"""
     def __init__(self, parent, title, preferences, style="auto"):
-        wx.Dialog.__init__(self, parent, wx.ID_ANY, title, size=(800, 600),
+        wx.Dialog.__init__(self, parent, wx.ID_ANY, title, size=(800, 620),
                            style=wx.RESIZE_BORDER | wx.DEFAULT_DIALOG_STYLE)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
         self._current_panel = None

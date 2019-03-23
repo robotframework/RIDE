@@ -1,3 +1,18 @@
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
 import unittest
 import sys
 import os
@@ -22,7 +37,7 @@ class TestLibrarySpec(unittest.TestCase):
         assert_equal(len(kws), 3)
         exp_doc = 'This is kw documentation.\n\nThis is more docs.'
         self._assert_keyword(kws[0], 'Normal Keyword', exp_doc,
-                             exp_doc.splitlines()[0], '[ foo ]')
+                             exp_doc.splitlines()[0], 'ROBOT', '[ foo ]')
         self._assert_keyword(kws[1], 'Attributeless Keyword')
         self._assert_keyword(kws[2], 'Multiarg Keyword',
                              args='[ arg1 | arg2=default value | *args ]')
@@ -32,14 +47,15 @@ class TestLibrarySpec(unittest.TestCase):
         assert_equal(len(kws), 3)
         exp_doc = 'This is kw documentation.\n\nThis is more docs.'
         self._assert_keyword(kws[0], 'Normal Keyword', exp_doc,
-                             exp_doc.splitlines()[0], '[ foo ]')
+                             exp_doc.splitlines()[0], 'ROBOT', '[ foo ]')
         self._assert_keyword(kws[1], 'Attributeless Keyword')
         self._assert_keyword(kws[2], 'Multiarg Keyword',
                              args='[ arg1 | arg2=default value | *args ]')
 
-    def _assert_keyword(self, kw, name, doc='', shortdoc='', args='[  ]'):
+    def _assert_keyword(self, kw, name, doc='', shortdoc='', doc_format="ROBOT", args='[  ]'):
         assert_equal(kw.name, name)
         assert_equal(kw.doc, doc, repr(kw.doc))
+        assert_equal(kw.doc_format, doc_format)
         assert_equal(kw.shortdoc, shortdoc)
         if args:
             assert_equal(kw.args, args)

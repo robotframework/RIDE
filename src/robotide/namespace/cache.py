@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -16,14 +17,9 @@ import os
 import time
 import sys
 from robotide.robotapi import normpath
-from robotide.utils import unicode
-
-if sys.version_info[0] == 2:
-    PYTHON2 = True
-    PYTHON3 = False
-elif sys.version_info[0] == 3:
-    PYTHON2 = False
-    PYTHON3 = True
+from robotide.utils import PY2, PY3
+if PY3:
+    from robotide.utils import unicode
 
 
 class LibraryCache(object):
@@ -80,11 +76,11 @@ class LibraryCache(object):
     def get_library_keywords(self, name, args=None, alias=None):
         args_with_alias = self._alias_to_args(alias, args)
         key = self._key(name, args_with_alias)
-        if PYTHON2:
+        if PY2:
             if not self._library_keywords.has_key(key):
                 self._library_keywords[key] = \
                     [k.with_alias(alias) for k in self._get_library(name, args)]
-        elif PYTHON3:
+        elif PY3:
             if not key in self._library_keywords:
                 self._library_keywords[key] = \
                     [k.with_alias(alias) for k in

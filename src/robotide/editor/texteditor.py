@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -26,10 +27,13 @@ from robotide.context import IS_WINDOWS, IS_MAC
 from robotide.controller.ctrlcommands import SetDataFile
 from robotide.publish.messages import RideMessage
 from robotide.utils import PY2
+from robotide.namespace.suggesters import (SuggestionSource,
+                                           BuiltInLibrariesSuggester)
 from robotide.widgets import VerticalSizer, HorizontalSizer, ButtonWithHandler
-from robotide.pluginapi import Plugin, RideSaving, TreeAwarePluginMixin,\
-    RideTreeSelection, RideNotebookTabChanging, RideDataChanged,\
-    RideOpenSuite, RideDataChangedToDirty
+from robotide.pluginapi import (Plugin, RideSaving, TreeAwarePluginMixin,
+                                RideTreeSelection, RideNotebookTabChanging,
+                                RideDataChanged, RideOpenSuite,
+                                RideDataChangedToDirty)
 from robotide.widgets import TextField, Label, HtmlDialog
 
 if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
@@ -37,10 +41,13 @@ if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
 else:
     from wx import HyperlinkCtrl, EVT_HYPERLINK
 
-try:
-    from . import robotframeworklexer
-except Exception as e:
-    robotframeworklexer = None
+try:  # import installed version first
+    import robotframeworklexer
+except ImportError:
+    try:  # then import local version
+        from . import robotframeworklexer
+    except ImportError:  # Pygments is not installed
+        robotframeworklexer = None
 
 
 class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
@@ -87,6 +94,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         self.register_shortcut('CtrlCmd-F', lambda e: self._editor._search_field.SetFocus())
         self.register_shortcut('CtrlCmd-G', lambda e: self._editor.OnFind(e))
         self.register_shortcut('CtrlCmd-Shift-G', lambda e: self._editor.OnFindBackwards(e))
+        self.register_shortcut('CtrlCmd-Space', lambda e: focused(self._editor.OnContentAssist(e)))
 
     def disable(self):
         self.remove_self_from_tree_aware_plugins()
@@ -114,7 +122,8 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
                 self._editor.reset()
             if self._editor.dirty:
                 self._apply_txt_changes_to_model()
-            self._refresh_timer.Start(500, True) # For performance reasons only run after all the data changes
+            self._refresh_timer.Start(500, True)
+            # For performance reasons only run after all the data changes
 
     def _on_timer(self, event):
         self._open_tree_selection_in_editor()
@@ -127,11 +136,14 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
     def OnTreeSelection(self, message):
         self._editor.store_position()
         if self.is_focused():
-            next_datafile_controller = message.item and message.item.datafile_controller
+            next_datafile_controller = message.item and\
+                                       message.item.datafile_controller
             if self._editor.dirty:
                 if not self._apply_txt_changes_to_model():
-                    if self._editor.datafile_controller != next_datafile_controller:
-                        self.tree.select_controller_node(self._editor.datafile_controller)
+                    if self._editor.datafile_controller !=\
+                            next_datafile_controller:
+                        self.tree.select_controller_node(
+                            self._editor.datafile_controller)
                     return
             if next_datafile_controller:
                 self._open_data_for_controller(next_datafile_controller)
@@ -152,12 +164,22 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
             self._open()
             self._editor.set_editor_caret_position()
         elif message.oldtab == self.title:
+            # print("DEBUG: OnTabChange move to another from Text Editor.")
+            # event.Skip()
             self._editor.remove_and_store_state()
+
+    def OnTabChanged(self, event):
+        self._show_editor()
+
+    def OnTabChanging(self, message):
+        if 'Edit' in message.oldtab:
+            self._editor.save()
 
     def _apply_txt_changes_to_model(self):
         if not self._editor.save():
             return False
         self._editor.reset()
+        self._editor.set_editor_caret_position()
         return True
 
     def is_focused(self):
@@ -263,7 +285,8 @@ class DataFileWrapper(object): # TODO: bad class name
     def _txt_data(self, data):
         output = StringIO()
         data.save(output=output, format='txt',
-                  txt_separating_spaces=self._settings.get('txt number of spaces', 4))
+                  txt_separating_spaces=self._settings.get(
+                      'txt number of spaces', 4))
         return output.getvalue()  # DEBUG .decode('utf-8')
 
 
@@ -291,11 +314,13 @@ class SourceEditor(wx.Panel):
         self._parent.add_tab(self, title, allow_closing=False)
 
     def _create_editor_toolbar(self):
-        # needs extra container, since we might add helper text about syntax colorization
+        # needs extra container, since we might add helper
+        # text about syntax colorization
         self.editor_toolbar = HorizontalSizer()
         default_components = HorizontalSizer()
         default_components.add_with_padding(
-            ButtonWithHandler(self, 'Apply Changes', handler=lambda e: self.save()))
+            ButtonWithHandler(self, 'Apply Changes', handler=lambda
+                e: self.save()))
         self._create_search(default_components)
         self.editor_toolbar.add_expanding(default_components)
         self.Sizer.add_expanding(self.editor_toolbar, propotion=0)
@@ -405,9 +430,29 @@ class SourceEditor(wx.Panel):
         else:
             self._search_field_notification.SetLabel('No matches found.')
 
+    def OnContentAssist(self, event):
+        # print("DEBUG: Content assist called Focused: %s" % self.is_focused())
+        if not self.is_focused():
+            return
+        #  if wx.Window.FindFocus() is self._editor:
+        selected = self._editor.get_selected_or_near_text()
+        sugs = [s.name for s in self._suggestions.get_suggestions(
+            selected or '')]
+        if sugs:
+            caretpos = self._editor.AutoCompPosStart()
+            self._editor.AutoCompSetDropRestOfWord(True)
+            self._editor.AutoCompSetSeparator(ord(';'))
+            self._editor.AutoCompShow(0, ";".join(sugs))
+        event.Skip()
+
     def open(self, data):
         self.reset()
         self._data = data
+        try:
+            self._suggestions = SuggestionSource(None, data._data.tests[0])
+        except IndexError:  # It is a new project, no content yet
+            self._suggestions = SuggestionSource(None,
+                                                 BuiltInLibrariesSuggester())
         if not self._editor:
             self._stored_text = self._data.content
         else:
@@ -427,7 +472,7 @@ class SourceEditor(wx.Panel):
     def save(self, *args):
         if self.dirty:
             if not self._data_validator.validate_and_update(self._data,
-                                                     self._editor.utf8_text):
+                                                            self._editor.utf8_text):
                 return False
         return True
 
@@ -462,8 +507,8 @@ class SourceEditor(wx.Panel):
         if self._editor:
             self.store_position()
             self._stored_text = self._editor.GetText()
-            self._editor.Destroy()
-            self._editor = None
+            # self._editor.Destroy()  # DEBUG Pressing F8 would crash
+            # self._editor = None
 
     def _create_editor_text_control(self, text=None):
         self._editor = RobotDataEditor(self)
@@ -522,6 +567,30 @@ class RobotDataEditor(stc.StyledTextCtrl):
 
     def OnStyle(self, event):
         self.stylizer.stylize()
+
+    def get_selected_or_near_text(self):
+        # First get selected text
+        selected = self.GetSelectedText()
+        self.SetInsertionPoint(self.GetInsertionPoint() - len(selected))
+        if selected:
+            return selected
+        # Next get text on the left
+        self.SetSelectionEnd(self.GetInsertionPoint())
+        self.WordLeftEndExtend()
+        selected = self.GetSelectedText()
+        select = selected.strip()
+        self.SetInsertionPoint(self.GetInsertionPoint() + len(selected)
+                               - len(select))
+        if select and len(select) > 0:
+            return select
+        # Finally get text on the right
+        self.SetSelectionStart(self.GetInsertionPoint())
+        self.WordRightEndExtend()
+        selected = self.GetSelectedText()
+        select = selected.strip()
+        self.SetInsertionPoint(self.GetInsertionPoint() - len(select))
+        if select and len(select) > 0:
+            return select
 
 
 class FromStringIOPopulator(robotapi.FromFilePopulator):

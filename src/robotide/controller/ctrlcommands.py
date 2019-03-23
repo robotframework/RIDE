@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -21,7 +22,10 @@ from robotide.namespace.embeddedargs import EmbeddedArgsHandler
 from robotide.publish.messages import RideSelectResource, RideFileNameChanged, RideSaving, RideSaved, RideSaveAll, RideExcludesChanged
 from robotide.namespace.namespace import _VariableStash
 
-from robotide.utils import basestring, overrides, variablematcher
+from robotide.utils import PY3
+if PY3:
+    from robotide.utils import basestring
+from robotide.utils import overrides, variablematcher
 from robotide.controller.filecontrollers import ResourceFileController
 from robotide.controller.macrocontrollers import KeywordNameController, ForLoopStepController, TestCaseController
 from robotide.controller.settingcontrollers import _SettingController, VariableController
@@ -901,11 +905,11 @@ class RemoveMacro(_ReversibleCommand):
         self._item = item
 
     def _execute(self, context):
-        print("DEBUG enter RemoveMacro %s" % self._item)
+        # print("DEBUG enter RemoveMacro %s" % self._item)
         # self._item.notify_keyword_removed()  # DEBUG
         # self._item.notify_value_changed()
         myobj = self._item.delete()
-        print("DEBUG exit RemoveMacro %s returned %s" % (self._item, myobj))
+        # print("DEBUG exit RemoveMacro %s returned %s" % (self._item, myobj))
 
     def _get_undo_command(self):
         return RecreateMacro(self._item)

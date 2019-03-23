@@ -16,7 +16,7 @@
 from itertools import chain
 
 from robotide.lib.robot.model import Tags
-from robotide.lib.robot.utils import Sortable, setter
+from robotide.lib.robot.utils import getshortdoc, Sortable, setter
 
 from .writer import LibdocWriter
 from .output import LibdocOutput
@@ -63,7 +63,7 @@ class KeywordDoc(Sortable):
 
     @property
     def shortdoc(self):
-        return self.doc.splitlines()[0] if self.doc else ''
+        return getshortdoc(self.doc)
 
     @property
     def _sort_key(self):

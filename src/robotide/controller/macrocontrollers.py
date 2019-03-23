@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -30,7 +31,10 @@ from robotide.spec.iteminfo import ResourceUserKeywordInfo, \
     TestCaseUserKeywordInfo
 from robotide.controller.tags import Tag
 from robotide import robotapi
-from robotide.utils import basestring, is_unicode, variablematcher
+from robotide.utils import is_unicode, variablematcher
+from robotide.utils import PY3
+if PY3:
+    from robotide.utils import basestring
 
 
 KEYWORD_NAME_FIELD = 'Keyword Name'

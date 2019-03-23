@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -151,12 +152,16 @@ SHORTCUT_KEYS = '''\
         <th><b>What it does</b></th>
     </tr>
     <tr>
-        <td>Ctrl-Space</td>
+        <td>Ctrl-Space or Alt-Space</td>
         <td>Suggestions and auto completion</td>
     </tr>
     <tr>
         <td>CtrlCmd-M</td>
         <td>Help for cell content</td>
+    </tr>
+    <tr>
+        <td>CtrlCmd-Shift-J</td>
+        <td>Pop-up JSON Editor</td>
     </tr>
     <tr>
         <td>CtrlCmd-I</td>
@@ -197,6 +202,10 @@ SHORTCUT_KEYS = '''\
     <tr>
         <td>CtrlCmd-4</td>
         <td>Uncomment row(s)</td>
+    </tr>
+    <tr>
+        <td>CtrlCmd-5</td>
+        <td>Make dictionary variable body</td>
     </tr>
     <tr>
         <td>Alt-Up</td>
@@ -282,6 +291,10 @@ SHORTCUT_KEYS = '''\
     <tr align="left">
         <th><b>Shortcut</b></th>
         <th><b>What it does</b></th>
+    </tr>
+    <tr>
+        <td>Ctrl-Space or Alt-Space</td>
+        <td>Suggestions and auto completion</td>
     </tr>
     <tr>
         <td>CtrlCmd-F</td>

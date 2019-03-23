@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -27,7 +28,10 @@ from .robotdata import NewTestCaseFile, NewTestDataDirectory
 from robotide.spec.librarydatabase import DATABASE_FILE
 from robotide.spec.librarymanager import LibraryManager
 from robotide.spec.xmlreaders import SpecInitializer
-from robotide.utils import overrides, unicode
+from robotide.utils import overrides
+from robotide.utils import PY3
+if PY3:
+    from robotide.utils import unicode
 
 
 class Project(_BaseController, WithNamespace):
@@ -148,6 +152,8 @@ class Project(_BaseController, WithNamespace):
         if datafile:
             return datafile
         load_observer.error("Invalid data file '%s'." % path)
+        e = UserWarning("Invalid data file")
+        return e
 
     def _load_datafile(self, path, load_observer):
         datafile = self._loader.load_datafile(path, load_observer)
@@ -347,7 +353,7 @@ class Backup(object):
         self._backup = self._get_backup_name(self._path)
 
     def _get_backup_name(self, path):
-        if not os.path.isfile(path):
+        if path is None or not os.path.isfile(path):
             return None
         self._backup_dir = tempfile.mkdtemp(dir=os.path.dirname(path))
         return os.path.join(self._backup_dir, os.path.basename(path))

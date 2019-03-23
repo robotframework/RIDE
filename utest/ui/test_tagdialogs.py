@@ -1,13 +1,19 @@
-import unittest
-import mockito
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
 
-import sys
-if sys.version_info[0] == 2:
-    PYTHON2 = True
-    PYTHON3 = False
-elif sys.version_info[0] == 3:
-    PYTHON2 = False
-    PYTHON3 = True
+import unittest
 
 from functools import total_ordering
 from robotide.ui.tagdialogs import ViewAllTagsDialog
@@ -17,8 +23,8 @@ from robotide.robotapi import (TestDataDirectory, TestCaseFile, ResourceFile,
 from nose.tools import assert_equal
 from robotide.spec.librarymanager import LibraryManager
 from robotide.ui.images import TreeImageList
-from robotide.ui.mainframe import ActionRegisterer
-from robotide.ui.actiontriggers import MenuBar, ToolBar, ShortcutRegistry
+from robotide.ui.mainframe import ActionRegisterer, ToolBar
+from robotide.ui.actiontriggers import MenuBar, ShortcutRegistry
 from robotide.preferences import RideSettings
 # TODO make sure it does not use real user settings file (it get damaged)
 from robotide.ui.notebook import NoteBook
@@ -26,10 +32,12 @@ from robotide.ui.notebook import NoteBook
 from robotide.application import Project
 from robotide.controller.filecontrollers import (TestDataDirectoryController,
                                                  ResourceFileController)
-from robotide.utils import unicode
 from robotide import utils
 from resources import PYAPP_REFERENCE, FakeSettings, FakeApplication
 # import utest.resources
+from robotide.utils import PY2, PY3
+if PY3:
+    from robotide.utils import unicode
 
 from robotide.ui import tree as st
 from robotide.ui import treenodehandlers as th
@@ -46,6 +54,7 @@ Tree.get_active_datafile = lambda self: None
 Tree._select = lambda self, node: self.SelectItem(node)
 # wx needs to imported last so that robotide can select correct wx version.
 import wx
+from wx.lib.agw.aui import AuiManager
 
 
 """
@@ -103,9 +112,9 @@ class _SortableD(utils.NormalizedDict):
 
     def iteritems(self):
         """Returns an iterator over the (key,data) items of the tags"""
-        if PYTHON2:
+        if PY2:
             return self._keys.iteritems()
-        elif PYTHON3:
+        elif PY3:
             return self._keys.items()
 
 
@@ -200,7 +209,7 @@ class _BaseSuiteTreeTest(unittest.TestCase):
         settings = FakeSettings()
         self.app = wx.App()
         self.frame = wx.Frame(None)
-        self.frame.tree = Tree(self.frame, ActionRegisterer(
+        self.frame.tree = Tree(self.frame, ActionRegisterer(AuiManager(self.frame),
             MenuBar(self.frame), ToolBar(self.frame),
             ShortcutRegistry(self.frame)), settings)
         self.frame.Show()
@@ -250,12 +259,12 @@ class _BaseSuiteTreeTest(unittest.TestCase):
         count = 0
         for i in suite.testcase_table.tests:
             newtag = ""
-            if PYTHON2:
+            if PY2:
                 for key, test in self._tags_list.iteritems():
                     newtag += key + "    " if count in test else ""
                     if len(newtag):
                         setattr(i.tags, 'tags', "{0}".format(newtag))
-            elif PYTHON3:
+            elif PY3:
                 for key, test in self._tags_list.items():
                     newtag += key + "    " if count in test else ""
                     if len(newtag):

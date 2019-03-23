@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -32,7 +33,6 @@ release. The most stable, and best documented, module is `robotide.pluginapi`.
 import sys
 import os
 from string import Template
-from robotide.utils import basestring, unicode
 
 errorMessageTemplate = Template("""$reason
 You need to install wxPython 2.8.12.1 with unicode support to run RIDE.
@@ -57,8 +57,9 @@ if "ansi" in wx.PlatformInfo:
         reason="wxPython with ansi encoding is not supported"))
     sys.exit(1)
 
-PY2 = sys.version_info[0] == 2
-PY3 = not PY2
+from robotide.utils import PY2, PY3
+if PY3:
+    from robotide.utils import basestring, unicode
 
 # Insert bundled robot to path before anything else
 sys.path.append(os.path.join(os.path.dirname(__file__), 'spec'))
@@ -103,9 +104,6 @@ def _run(inpath=None, updatecheck=True, debug_console=False):
     except ImportError:
         _show_old_wxpython_warning_if_needed()
         raise
-    if PY3:
-        print("Thank you for helping developing and testing RIDE on Python 3 and wxPython 4")
-        # raise NotImplementedError
     if inpath:
         inpath = inpath
         # if not isinstance(inpath[0], unicode):

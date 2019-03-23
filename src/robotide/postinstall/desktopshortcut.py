@@ -1,4 +1,5 @@
-#  TODO: Copyright 2016 Robot Framework Organization
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -53,16 +54,16 @@ class ShortcutPlugin(Plugin):
     def OnViewShortcutCreate(self, event):
         if not self._window:
             self._window = _ShortcutCreateWindow(self.notebook)
-        # else:
-        #    self.notebook.show_tab(self._window)
+        else:
+            self.notebook.show_tab(self._window)
         self._window.call_creator()
-        self.disable()
+        # self.disable()
 
 
 class _ShortcutCreateWindow(wx.TextCtrl):
     def __init__(self, notebook):
         wx.TextCtrl.__init__(
-            self, notebook, style=wx.TE_READONLY | wx.TE_MULTILINE)
+            self, notebook, style=wx.TE_MULTILINE)  # DEBUG wx.TE_READONLY |
         self._create_ui()
         self._add_to_notebook(notebook)
         self.SetFont(widgets.Font().fixed_log)

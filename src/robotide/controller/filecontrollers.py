@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -34,13 +35,16 @@ from robotide import utils
 from .basecontroller import WithUndoRedoStacks, _BaseController, WithNamespace, ControllerWithParent
 from .macrocontrollers import UserKeywordController
 from .robotdata import NewTestCaseFile, NewTestDataDirectory
-from robotide.utils import overrides, basestring
+from robotide.utils import overrides
 from .settingcontrollers import (DocumentationController, FixtureController,
         TimeoutController, TemplateController, DefaultTagsController,
         ForceTagsController)
 from .tablecontrollers import (VariableTableController, TestCaseTableController,
         KeywordTableController, ImportSettingsController,
         MetadataListController, TestCaseController)
+from robotide.utils import PY3
+if PY3:
+    from robotide.utils import basestring
 
 
 def _get_controller(project, data, parent):
@@ -311,8 +315,12 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
                             print("Could not launch explorer. Tried nautilus, "
                                   "dolphin and konqueror.")
             else:
-                subprocess.Popen(["finder", "{}".format(
-                    os.path.dirname(path))])
+                try:
+                    subprocess.Popen(["finder", "{}".format(
+                        os.path.dirname(path))])
+                except OSError or FileNotFoundError:
+                    subprocess.Popen(["open", "{}".format(
+                        os.path.dirname(path))])
 
     def remove_readonly(self, path=None):
             path = path or self.filename
@@ -661,7 +669,6 @@ class TestCaseFileController(_FileSystemElement, _DataController):
 
     def find_controller_by_longname(self, longname, node_testname = None):
         return self.find_controller_by_names(longname.split("."), node_testname)
-
 
     def find_controller_by_names(self, names, node_testname = None):
         names = '.'.join(names)

@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -14,7 +15,9 @@
 
 from robotide import robotapi
 from robotide.spec.iteminfo import LibraryKeywordInfo
-from robotide.utils import unicode
+from robotide.utils import PY3
+if PY3:
+    from robotide.utils import unicode
 
 
 def get_import_result(path, args):
@@ -23,6 +26,7 @@ def get_import_result(path, args):
         LibraryKeywordInfo(
             kw.name,
             kw.doc,
+            lib.doc_format,
             kw.library.name,
             _parse_args(kw.arguments)
         ) for kw in lib.handlers]

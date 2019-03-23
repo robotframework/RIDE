@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -28,16 +29,16 @@ from robotide.lib.robot.utils import printable_name, normalize, eq, ET, \
 from .eventhandler import RideEventHandler
 from .printing import Printing
 
-try:
-    from past.types import basestring, unicode, unichr
-except ImportError:  # pip install future
-    basestring = str
-    unicode = str
-    unichr = chr
-
-
 PY2 = sys.version_info[0] == 2
 PY3 = not PY2
+
+if PY3:
+    try:  # This was redefining in PY2 when future was not installed
+        from past.types import basestring, unicode, unichr
+    except ImportError:  # pip install future
+        basestring = str
+        unicode = str
+        unichr = chr
 
 
 def html_format(text):
@@ -135,7 +136,7 @@ def converttypes(data, prefer_str=True):
     """
     if PY2:
         return data
-    enc = sys.stdout.encoding or "utf-8"
+    enc = sys.stdout and sys.stdout.encoding or "utf-8"
     data_type = type(data)
 
     if data_type == bytes:

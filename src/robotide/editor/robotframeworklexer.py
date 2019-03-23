@@ -17,10 +17,10 @@ import re
 try:
     from pygments.lexer import Lexer
     from pygments.token import Token
-except Exception:
-    raise(ImportError)
+except ImportError:
+    raise
 
-from robotide.utils import unicode, is_string, py2to3
+from robotide.utils import is_string, py2to3
 
 HEADING = Token.Generic.Heading
 SETTING = Token.Keyword.Namespace

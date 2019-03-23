@@ -1,3 +1,18 @@
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
 import unittest
 
 from robotide.robotapi import (TestDataDirectory, TestCaseFile, ResourceFile,
@@ -10,8 +25,8 @@ from robotide.application import Project
 from robotide.controller.filecontrollers import (TestDataDirectoryController,
                                                  ResourceFileController)
 
-from robotide.ui.actiontriggers import MenuBar, ToolBar, ShortcutRegistry
-from robotide.ui.mainframe import ActionRegisterer
+from robotide.ui.actiontriggers import MenuBar, ShortcutRegistry
+from robotide.ui.mainframe import ActionRegisterer, ToolBar 
 from resources import PYAPP_REFERENCE, FakeSettings
 
 from robotide.ui import tree as st
@@ -29,6 +44,7 @@ Tree.get_active_datafile = lambda self: None
 Tree._select = lambda self, node: self.SelectItem(node)
 # wx needs to imported last so that robotide can select correct wx version.
 import wx
+from wx.lib.agw.aui import AuiManager
 
 
 class _FakeMainFrame(wx.Frame):
@@ -63,7 +79,7 @@ class _BaseSuiteTreeTest(unittest.TestCase):
     def setUp(self):
         frame = _FakeMainFrame(None)
         self._model = self._create_model()
-        self._tree = Tree(frame, ActionRegisterer(
+        self._tree = Tree(frame, ActionRegisterer(AuiManager(frame),
             MenuBar(frame), ToolBar(frame), ShortcutRegistry(frame)))
         images = TreeImageList()
         self._tree._images = images

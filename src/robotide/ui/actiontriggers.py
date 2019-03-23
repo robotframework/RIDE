@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -13,8 +14,11 @@
 #  limitations under the License.
 
 import wx
+import wx.lib.agw.aui as aui
 
 from robotide.context import IS_WINDOWS, IS_MAC
+
+ID_CustomizeToolbar = wx.ID_HIGHEST + 1
 
 
 class MenuBar(object):
@@ -185,7 +189,7 @@ class _NameBuilder(object):
 
     def _accelerator_is_free(self, char):
         char = char.upper()
-        if char not in self._accelerators and char != ' ':
+        if char not in self._accelerators and char != u' ':
             self._accelerators.append(char)
             return True
         return False
@@ -237,69 +241,6 @@ class SeparatorMenuItem(_MenuItem):
 
     def set_enabled(self):
         pass
-
-
-class ToolBar(object):
-
-    def __init__(self, frame):
-        self._frame = frame
-        self._wx_toolbar = wx.ToolBar(frame)
-        self._wx_toolbar.SetToolBitmapSize((16, 16))
-        self._frame.SetToolBar(self._wx_toolbar)
-        self._buttons = []
-        self._search_handlers = {}
-        self._current_description = None
-
-    def register(self, action):
-        if action.has_icon():
-            button = self._get_existing_button(action)
-            if not button:
-                button = self._create_button(action)
-            button.register(action)
-
-
-    def _get_existing_button(self, action):
-        for button in self._buttons:
-            if button.icon == action.icon:
-                return button
-        return None
-
-    def enabled_status_changed(self, id, action):
-        self._wx_toolbar.EnableTool(id, action.is_active())
-
-    def _create_button(self, action):
-        button = ToolBarButton(self._frame, self, action)
-        name = self._format_button_tooltip(action)
-        self.MyAddTool(self._wx_toolbar, button.id, label=name,
-                       bitmap=action.icon, shortHelp=name, longHelp=action.doc)
-        self._wx_toolbar.Realize()
-        self._buttons.append(button)
-        return button
-
-    def MyAddTool(self, obj, toolid, label, bitmap, bmpDisabled=wx.NullBitmap,
-                  kind=wx.ITEM_NORMAL, shortHelp="", longHelp=""):
-        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
-            obj.AddTool(toolid, label, bitmap, bmpDisabled, kind,
-                        shortHelp, longHelp)
-        else:
-            obj.AddLabelTool(toolid, label, bitmap, shortHelp=shortHelp,
-                             longHelp=longHelp)
-
-    def _format_button_tooltip(self, action):
-        tooltip = action.name.replace('&', '')
-        if action.shortcut and action.shortcut.value:
-            tooltip = '%s    (%s)' % (tooltip, action.shortcut.value)
-        return tooltip
-
-    def remove_toolbar_button(self, button):
-        self._buttons.remove(button)
-        self._wx_toolbar.RemoveTool(button.id)
-        self._wx_toolbar.Realize()
-
-    def register_search_handler(self, description, handler, icon, default=False):
-        if default:
-            self._current_description = description
-        self._search_handlers[description] = _RideSearchMenuItem(handler, icon)
 
 
 class _RideSearchMenuItem(object):

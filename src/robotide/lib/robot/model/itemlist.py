@@ -13,11 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robotide.lib.robot.utils import py2to3, PY3
-
-
-if PY3:
-    unicode = str
+from robotide.lib.robot.utils import py2to3, unicode
 
 
 @py2to3

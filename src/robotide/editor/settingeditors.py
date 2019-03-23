@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -20,7 +21,7 @@ from robotide.controller.ctrlcommands import UpdateVariable, UpdateDocumentation
 from robotide.editor.listeditor import ListEditorBase
 from robotide.publish.messages import RideImportSetting,\
     RideOpenVariableDialog, RideExecuteSpecXmlImport, RideSaving
-from robotide.utils import basestring, overrides
+from robotide.utils import overrides
 from robotide.widgets import ButtonWithHandler, Label, HtmlWindow, PopupMenu,\
     PopupMenuItems, HtmlDialog
 from robotide.publish import PUBLISHER
@@ -35,7 +36,9 @@ from .editordialogs import EditorDialog, DocumentationDialog, MetadataDialog,\
 from .listeditor import ListEditor
 from .popupwindow import HtmlPopupWindow
 from .tags import TagsDisplay
-
+from robotide.utils import PY3
+if PY3:
+    from robotide.utils import basestring
 
 # Metaclass fix from http://code.activestate.com/recipes/204197-solving-the-metaclass-conflict/
 from robotide.utils.noconflict import classmaker
@@ -77,6 +80,7 @@ class SettingEditor(wx.Panel, utils.RideEventHandler):
         display = self._value_display_control()
         display.Bind(wx.EVT_ENTER_WINDOW, self.OnEnterWindow)
         display.Bind(wx.EVT_LEAVE_WINDOW, self.OnLeaveWindow)
+        display.Bind(wx.EVT_WINDOW_DESTROY, self.OnWindowDestroy)
         display.Bind(wx.EVT_MOTION, self.OnDisplayMotion)
         return display
 
@@ -136,8 +140,13 @@ class SettingEditor(wx.Panel, utils.RideEventHandler):
         return wx.GetTopLevelParent(self.FindFocus()) == \
             wx.GetTopLevelParent(self)
 
+    def OnWindowDestroy(self, event):
+        self._stop_popup_timer()
+        event.Skip()
+
     def OnLeaveWindow(self, event):
         self._stop_popup_timer()
+        event.Skip()
 
     def OnPopupTimer(self, event):
         _tooltipallowed = False

@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -122,7 +123,10 @@ class _RobotTableEditor(EditorPanel):
 
     def destroy(self):
         self.close()
-        self.Destroy()
+        if wx.VERSION < (3, 0, 3, ''):  # DEBUG wxPhoenix
+            self.Destroy()
+        else:
+            self.DestroyLater()
 
     def _create_header(self, text, readonly=False):
         if readonly:
@@ -146,7 +150,7 @@ class _RobotTableEditor(EditorPanel):
     def _restore_settings_open_status(self):
         if self._should_settings_be_open():
             self._settings.Expand()
-            wx.CallLater(200, self._collabsible_changed)
+            wx.CallAfter(self._collabsible_changed)
         else:
             self._settings.Collapse()
 

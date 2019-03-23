@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -22,7 +23,9 @@ from robotide.publish import RideOpenTagSearch
 from robotide.ui.treenodehandlers import ResourceRootHandler, \
     ResourceFileHandler
 from robotide.widgets import ButtonWithHandler, PopupMenuItems
-from robotide.utils import basestring, unicode
+from robotide.utils import PY3
+if PY3:
+    from robotide.utils import unicode
 
 class ViewAllTagsDialog(wx.Frame, listmix.ColumnSorterMixin):
 
@@ -164,8 +167,9 @@ class ViewAllTagsDialog(wx.Frame, listmix.ColumnSorterMixin):
 
         isreversed = (self.sort_state[1] != 1)
         self.total_test_cases = len(self._test_cases)
+
         self._results = sorted(unique_tags.items(),
-                               key=lambda item: item[0].lower,
+                               key=lambda item: item[0].lower(),
                                reverse=isreversed)
 
     def GetListCtrl(self):

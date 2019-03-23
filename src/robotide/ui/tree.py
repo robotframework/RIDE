@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -243,12 +244,12 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
             obj = self
             rect = (node.GetX()+20, node.GetY())  # Overlaps robot icon
             self._animctrl = AnimationCtrl(obj, -1, ani, rect)
-            # self._animctrl.Reparent()
             self._animctrl.SetBackgroundColour(obj.GetBackgroundColour())
             try:
-                node.SetWindow(self._animctrl, False)
+                self.SetItemWindow(node,self._animctrl, False)
             except TypeError:  # DEBUG In case wxPython devel not ready
-                node.SetWindow(self._animctrl)
+                self.SetItemWindow(node,self._animctrl)
+
             self._animctrl.Play()
         # Make visible the running or paused test
         self.EnsureVisible(node)
@@ -499,7 +500,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
         self.add_keyword(parent, controller)
 
     def delete_node(self, node):
-        print("DEBUG at delete_node %s" % (repr(node)))
+        # print("DEBUG at delete_node %s" % (repr(node)))
         if node is None:
             return
         parent = self.GetItemParent(node)

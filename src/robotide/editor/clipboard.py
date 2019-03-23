@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -15,7 +16,9 @@
 import os
 import wx
 from robotide.context import IS_WINDOWS
-from robotide.utils import basestring
+from robotide.utils import PY3
+if PY3:
+    from robotide.utils import basestring
 
 
 class _ClipboardHandler(object):

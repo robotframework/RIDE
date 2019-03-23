@@ -1,10 +1,11 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
 #  You may obtain a copy of the License at
 #
-#      http://www.apache.org:licenses/LICENSE-2.0
+#      http://www.apache.org/licenses/LICENSE-2.0
 #
 #  Unless required by applicable law or agreed to in writing, software
 #  distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,6 +16,7 @@
 import os
 import sys
 import wx
+
 from contextlib import contextmanager
 
 from robotide.namespace import Namespace
@@ -55,6 +57,7 @@ class RIDE(wx.App):
         self._plugin_loader = PluginLoader(self, self._get_plugin_dirs(),
                                            coreplugins.get_core_plugins())
         self._plugin_loader.enable_plugins()
+        self.frame.Show()
         self.editor = self._get_editor()
         self._load_data()
         self.frame.tree.populate(self.model)

@@ -1,5 +1,9 @@
 # Copyright 2010 Orbitz WorldWide
 #
+# Ammended by Helio Guilherme <helioxentric@gmail.com>
+# Copyright 2011-2015 Nokia Networks
+# Copyright 2016-     Robot Framework Foundation
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -12,7 +16,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-'''runProfiles.py
+"""runProfiles.py
 
 This module contains profiles for running robot tests via the
 runnerPlugin.
@@ -21,7 +25,7 @@ Each class that is a subclass as BaseProfile will appear in a
 drop-down list within the plugin. The chosen profile will be used to
 build up a command that will be passed in the tests to run as well as
 any additional arguments.
-'''
+"""
 
 import wx
 from wx.lib.filebrowsebutton import FileBrowseButton
@@ -31,12 +35,14 @@ from robotide import pluginapi
 from robotide.widgets import Label
 from robotide.robotapi import DataError, Information
 from robotide.utils import (overrides, SYSTEM_ENCODING, ArgumentParser,
-                            unicode, is_unicode, PY3)
+                            is_unicode, PY3)
 from robotide.contrib.testrunner.usages import USAGE
+if PY3:
+    from robotide.utils import unicode
 
 
 class BaseProfile(object):
-    '''Base class for all test runner profiles
+    """Base class for all test runner profiles
 
     At a minimum each profile must set the name attribute, which is
     how the profile will appear in the dropdown list.
@@ -46,42 +52,43 @@ class BaseProfile(object):
 
     This class (BaseProfile) will _not_ appear as one of the choices.
     Think of it as an abstract class, if Python 2.5 had such a thing.
-    '''
+    """
 
     # this will be set to the plugin instance at runtime
     plugin = None
     default_settings = {}
 
     def __init__(self, plugin):
-        '''plugin is required so that the profiles can save their settings'''
+        """plugin is required so that the profiles can save their settings"""
         self.plugin = plugin
 
     def get_toolbar(self, parent):
-        '''Returns a panel with toolbar controls for this profile'''
+        """Returns a panel with toolbar controls for this profile"""
         return wx.Panel(parent, wx.ID_ANY)
 
     def delete_pressed(self):
-        '''Handle delete key pressing'''
+        """Handle delete key pressing"""
         pass
 
     def get_custom_args(self):
-        '''Return a list of arguments unique to this profile.
+        """Return a list of arguments unique to this profile.
 
         Returned arguments are in format accepted by Robot Framework's argument
         file.
-        '''
+        """
         return []
 
     def get_command_prefix(self):
-        '''Returns a command and any special arguments for this profile'''
-        return ["robot.bat" if os.name == "nt" else "robot"]
+        """Returns a command and any special arguments for this profile"""
+        # return ["robot.bat" if os.name == "nt" else "robot"]
+        return ["robot"]
 
     def set_setting(self, name, value):
-        '''Sets a plugin setting
+        """Sets a plugin setting
 
         setting is automatically prefixed with profile's name and it can be
         accessed with direct attribute access. See also __getattr__.
-        '''
+        """
         self.plugin.save_setting(self._get_setting_name(name), value, delay=2)
 
     def format_error(self, error, returncode):
@@ -120,10 +127,10 @@ installation instructions.
 
 
 class PybotProfile(BaseProfile):
-    '''A runner profile which uses robot
+    """A runner profile which uses robot
 
     It is assumed that robot is on the path
-    '''
+    """
     name = "robot"
     default_settings = {"arguments": "",
                         "include_tags": "",
@@ -136,14 +143,41 @@ class PybotProfile(BaseProfile):
         self._toolbar = None
 
     def get_command_prefix(self):
-        '''Returns a command and any special arguments for this profile'''
+        """Returns a command and any special arguments for this profile"""
         return [self.get_command()] + self._get_arguments()
 
     def _get_arguments(self):
         return self.arguments.split()
 
-    def get_command(self):
-        return "robot.bat" if os.name == "nt" else "robot"
+    def get_command(self):  # TODO Test on Windows
+        from subprocess import call
+        from tempfile import TemporaryFile
+        result = None
+        try:
+            with TemporaryFile(mode="at") as out:
+                result = call(["robot",
+                               "--version"], stdout=out)
+            if result == 251:
+                return "robot"
+
+            with TemporaryFile(mode="at") as out:
+                result = call(["robot.bat" if os.name == "nt" else "robot",
+                               "--version"], stdout=out)
+            if result == 251:
+                return "robot.bat" if os.name == "nt" else "robot"
+        except OSError:
+            result = "no robot"
+            try:
+                with TemporaryFile(mode="at") as out:
+                    result = call(["pybot.bat" if os.name == "nt" else "pybot",
+                                   "--version"], stdout=out)
+                if result == 251:
+                    return "pybot.bat" if os.name == "nt" else "pybot"
+            except OSError:
+                result = "no pybot"
+        #finally:
+        #    print("DEBUG runprofiles get_command: %s" % result)
+        return result
 
     def get_custom_args(self):
         args = []
@@ -214,7 +248,7 @@ class PybotProfile(BaseProfile):
         return panel
 
     def TagsPanel(self, parent):
-        '''Create a panel to input include/exclude tags'''
+        """Create a panel to input include/exclude tags"""
         panel = wx.Panel(parent, wx.ID_ANY)
         include_cb = self._create_checkbox(panel, self.apply_include_tags,
                                            "Only run tests with these tags")
@@ -252,7 +286,8 @@ class PybotProfile(BaseProfile):
 
     def _validate_arguments(self, args):
         # assert type(args) is unicode
-        # print("DEBUG: runprofiles: type(args)=%s is_unicode(args)=%s" % (type(args), is_unicode(args)))
+        # print("DEBUG: runprofiles: type(args)=%s
+        # is_unicode(args)=%s" % (type(args), is_unicode(args)))
         invalid_message = self._get_invalid_message(args)
         self._arguments.SetBackgroundColour(
             'red' if invalid_message else 'white')
@@ -260,7 +295,8 @@ class PybotProfile(BaseProfile):
             'white' if invalid_message else 'black')
         # DEBUG wxPhoenix  self._arguments.SetToolTipString
         if not bool(invalid_message):
-            invalid_message = 'Arguments for the test run. Arguments are space separated list.'
+            invalid_message = "Arguments for the test run." \
+                              " Arguments are space separated list."
         self.MySetToolTip(self._arguments, invalid_message)
 
     def MySetToolTip(self, obj, tip):
@@ -272,13 +308,14 @@ class PybotProfile(BaseProfile):
     def _get_invalid_message(self, args):
         invalid = None
         try:
-            # print("DEBUG: runprofiles get inv msg: %s\nraw: %s\n" % (bytes(args), args) )
+            # print("DEBUG: runprofiles get inv msg: %s\n
+            # raw: %s\n" % (bytes(args), args) )
             if PY3:
                 args = args.encode(SYSTEM_ENCODING)  # DEBUG SYSTEM_ENCODING
             _, invalid = ArgumentParser(USAGE).parse_args(args.split())
         except Information:
             return 'Does not execute - help or version option given'
-        except (DataError, Exception) as e:  # DEBUG  not being caught DataError?
+        except (DataError, Exception) as e:  # DEBUG not caught DataError?
             return e.message
         if bool(invalid):
             return 'Unknown option(s): '+' '.join(invalid)
@@ -298,13 +335,14 @@ class PybotProfile(BaseProfile):
 
 
 class CustomScriptProfile(PybotProfile):
-    '''A runner profile which uses script given by the user'''
+    """A runner profile which uses script given by the user"""
 
     name = "custom script"
     default_settings = dict(PybotProfile.default_settings, runner_script="")
 
     def get_command(self):
-        # strip the starting and ending spaces to ensure /bin/sh finding the executable file
+        # strip the starting and ending spaces to ensure
+        # /bin/sh finding the executable file
         return self.runner_script.strip()
 
     def get_cwd(self):

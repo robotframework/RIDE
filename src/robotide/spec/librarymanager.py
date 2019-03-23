@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -24,7 +25,9 @@ from robotide.publish import RideLogException, RideLogMessage
 from robotide.spec.librarydatabase import LibraryDatabase
 from robotide.spec.libraryfetcher import get_import_result
 from robotide.spec.xmlreaders import get_path, SpecInitializer
-from robotide.utils import unicode
+from robotide.utils import PY3
+if PY3:
+    from robotide.utils import unicode
 
 class LibraryManager(Thread):
 
@@ -83,7 +86,10 @@ class LibraryManager(Thread):
                 library_name.replace('/', os.sep), os.path.abspath('.'))
             return get_import_result(path, library_args)
         except Exception as err:
-            print('FAILED', library_name, err)
+            try:
+                print('FAILED', library_name, err)
+            except IOError:
+                pass
             kws = self._spec_initializer.init_from_spec(library_name)
             if not kws:
                 msg = 'Importing test library "%s" failed' % library_name
@@ -152,6 +158,8 @@ class LibraryManager(Thread):
                 return True
             if k1.doc != k2.doc:
                 return True
+            # if k1.doc_format != k2.doc_format:
+            #     return True
             if k1.arguments != k2.arguments:
                 return True
             if k1.source != k2.source:

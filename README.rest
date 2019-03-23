@@ -3,8 +3,14 @@ RIDE
 
 RIDE is a development environment for Robot Framework test cases.
 
-*NEW* Join RIDE discussion in Robot Framework Slack: https://robotframework.slack.com
-(signup page: https://robotframework-slack.herokuapp.com)
+*NEW* Join our #ride channel in Robot Framework Slack: https://robotframework.slack.com
+(signup page: https://robotframework-slack-invite.herokuapp.com/)
+
+See the `release notes`_ for version 1.7.3.1
+==========================================
+
+
+(the information below is outdated)
 
   * Downloads_
   * Usage instructions and some tips and tricks can be found from the Wiki_
@@ -29,3 +35,4 @@ A very simple demo
 .. _issue tracker: https://github.com/robotframework/RIDE/issues
 .. _BUILD: https://github.com/robotframework/RIDE/blob/master/BUILD.rest
 .. _mailing list: http://groups.google.com/group/robotframework-users/
+.. _release notes: https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-1.7.3.1.rst

@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -13,6 +14,9 @@
 #  limitations under the License.
 
 import wx
+import wx.lib.agw.aui as aui
+from wx import Icon
+from wx.lib.agw.aui import aui_switcherdialog as ASD
 
 from robotide.action import ActionInfoCollection, ActionFactory, SeparatorInfo
 from robotide.context import ABOUT_RIDE, SHORTCUT_KEYS
@@ -25,7 +29,8 @@ from robotide.utils import RideEventHandler, PY2
 from robotide.widgets import Dialog, ImageProvider, HtmlWindow
 from robotide.preferences import PreferenceEditor
 
-from .actiontriggers import MenuBar, ToolBar, ShortcutRegistry
+from .actiontriggers import ( MenuBar, ToolBarButton, ShortcutRegistry,
+                              _RideSearchMenuItem)
 from .filedialogs import (NewProjectDialog, InitFileFormatDialog)
 from .review import ReviewDialog
 from .pluginmanager import PluginManager
@@ -62,19 +67,97 @@ ART_FOLDER_OPEN
 !About | Information about RIDE
 """
 
+ID_CustomizeToolbar = wx.ID_HIGHEST + 1
+ID_SampleItem = ID_CustomizeToolbar + 1
 
 # Metaclass fix from http://code.activestate.com/recipes/
 # 204197-solving-the-metaclass-conflict/
 from robotide.utils.noconflict import classmaker
+
+### DEBUG some testing
+# -- SizeReportCtrl --
+# (a utility control that always reports it's client size)
+
+
+class SizeReportCtrl(wx.Control):
+
+    def __init__(self, parent, id=wx.ID_ANY, pos=wx.DefaultPosition,
+                size=wx.DefaultSize, mgr=None):
+
+        wx.Control.__init__(self, parent, id, pos, size, style=wx.NO_BORDER)
+        self._mgr = mgr
+
+        self.Bind(wx.EVT_PAINT, self.OnPaint)
+        self.Bind(wx.EVT_ERASE_BACKGROUND, self.OnEraseBackground)
+        self.Bind(wx.EVT_SIZE, self.OnSize)
+
+    def OnPaint(self, event):
+
+        dc = wx.PaintDC(self)
+        size = self.GetClientSize()
+
+        s = "Size: %d x %d"%(size.x, size.y)
+
+        dc.SetFont(wx.NORMAL_FONT)
+        w, height = dc.GetTextExtent(s)
+        height += 3
+        dc.SetBrush(wx.WHITE_BRUSH)
+        dc.SetPen(wx.WHITE_PEN)
+        dc.DrawRectangle(0, 0, size.x, size.y)
+        dc.SetPen(wx.LIGHT_GREY_PEN)
+        dc.DrawLine(0, 0, size.x, size.y)
+        dc.DrawLine(0, size.y, size.x, 0)
+        dc.DrawText(s, (size.x-w)/2, (size.y-height*5)/2)
+
+        if self._mgr:
+
+            pi = self._mgr.GetPane(self)
+
+            s = "Layer: %d"%pi.dock_layer
+            w, h = dc.GetTextExtent(s)
+            dc.DrawText(s, (size.x-w)/2, ((size.y-(height*5))/2)+(height*1))
+
+            s = "Dock: %d Row: %d"%(pi.dock_direction, pi.dock_row)
+            w, h = dc.GetTextExtent(s)
+            dc.DrawText(s, (size.x-w)/2, ((size.y-(height*5))/2)+(height*2))
+
+            s = "Position: %d"%pi.dock_pos
+            w, h = dc.GetTextExtent(s)
+            dc.DrawText(s, (size.x-w)/2, ((size.y-(height*5))/2)+(height*3))
+
+            s = "Proportion: %d"%pi.dock_proportion
+            w, h = dc.GetTextExtent(s)
+            dc.DrawText(s, (size.x-w)/2, ((size.y-(height*5))/2)+(height*4))
+
+    def OnEraseBackground(self, event):
+
+        pass
+
+    def OnSize(self, event):
+
+        self.Refresh()
 
 
 class RideFrame(wx.Frame, RideEventHandler):
     __metaclass__ = classmaker()
 
     def __init__(self, application, controller):
-        wx.Frame.__init__(self, parent=None, title='RIDE',
+        size = application.settings.get('mainframe size', (1100, 700))
+        wx.Frame.__init__(self, parent=None, id = wx.ID_ANY, title='RIDE',
                           pos=application.settings.get('mainframe position', (50, 30)),
-                          size=application.settings.get('mainframe size', (1100, 700)))
+                          size=size,
+                          style=wx.DEFAULT_FRAME_STYLE | wx.SUNKEN_BORDER)
+
+        self._mgr = aui.AuiManager()
+
+        # tell AuiManager to manage this frame
+        self._mgr.SetManagedWindow(self)
+
+        # set frame icon
+        # self.SetIcon(Icon('widgets/robot.ico')) # Maybe is not needed
+        # self.SetMinSize(size)
+        self.SetMinSize(wx.Size(400, 300))
+
         self.ensure_on_screen()
         if application.settings.get('mainframe maximized', False):
             self.Maximize()
@@ -88,9 +171,8 @@ class RideFrame(wx.Frame, RideEventHandler):
         self.Bind(wx.EVT_SIZE, self.OnSize)
         self.Bind(wx.EVT_MOVE, self.OnMove)
         self.Bind(wx.EVT_MAXIMIZE, self.OnMaximize)
+        self.Bind(wx.EVT_DIRCTRL_FILEACTIVATED, self.OnOpenFile)
         self._subscribe_messages()
-        # print("DEBUG: Call Show")
-        self.Show()
         #print("DEBUG: Call register_tools, actions: %s" % self.actions.__repr__())
         if PY2:
             wx.CallLater(100, self.actions.register_tools)  # DEBUG
@@ -130,20 +212,133 @@ class RideFrame(wx.Frame, RideEventHandler):
                       style=wx.ICON_ERROR)
 
     def _init_ui(self):
-        splitter = wx.SplitterWindow(self, style=wx.SP_LIVE_UPDATE)
-        self.notebook = NoteBook(splitter, self._application)
+        # self._mgr.AddPane(wx.Panel(self), aui.AuiPaneInfo().CenterPane())
+        ##### self.splitter = wx.SplitterWindow(self, style=wx.SP_LIVE_UPDATE)
+        # self._mgr.AddPane(wx.Panel(self), aui.AuiPaneInfo().CenterPane())
+        # set up default notebook style
+        self._notebook_style = aui.AUI_NB_DEFAULT_STYLE |\
+                               aui.AUI_NB_TAB_EXTERNAL_MOVE | wx.NO_BORDER
+        # TODO self._notebook_theme = 0 (allow to select themes for notebooks)
+        # self.notebook = NoteBook(self.splitter, self._application,
+        #                         self._notebook_style)
+        self.notebook = NoteBook(self, self._application,
+                                 self._notebook_style)
+        self._mgr.AddPane(self.notebook,
+                          aui.AuiPaneInfo().Name("notebook_editors").
+                          CenterPane().PaneBorder(False))
+        ################ Test
+        # self._mgr.AddPane(self.CreateTextCtrl(),
+        #                   aui.AuiPaneInfo().Name("text_content").
+        #                   CenterPane().Hide().MinimizeButton(True))
+        #
+        # self._mgr.AddPane(self.CreateHTMLCtrl(),
+        #                   aui.AuiPaneInfo().Name("html_content").
+        #                   CenterPane().Hide().MinimizeButton(True))
+        #
+        # self._mgr.AddPane(self.CreateNotebook(),
+        #                   aui.AuiPaneInfo().Name("notebook_content").
+        #                   CenterPane().PaneBorder(False))
+        ####################
+        # self._mgr.AddPane(self.CreateSizeReportCtrl(), aui.AuiPaneInfo().
+        #                   Name("test1").Caption(
+        #     "Pane Caption").Top().MinimizeButton(True))
+
         mb = MenuBar(self)
         self.toolbar = ToolBar(self)
-        self.actions = ActionRegisterer(mb, self.toolbar,
+        self.toolbar.SetMinSize(wx.Size(100, 60))
+        # self.SetToolBar(self.toolbar.GetToolBar())
+        self._mgr.AddPane(self.toolbar, aui.AuiPaneInfo().Name("maintoolbar").
+                          ToolbarPane().Top())
+        self.actions = ActionRegisterer(self._mgr, mb, self.toolbar,
                                         ShortcutRegistry(self))
-        self.tree = Tree(splitter, self.actions, self._application.settings)
+        """
+        ##### Test
+        tb3 = self.testToolbar()
+
+        self._mgr.AddPane(tb3,
+                          aui.AuiPaneInfo().Name("tb3").Caption("Toolbar 3").
+                          ToolbarPane().Top().Row(1).Position(1))
+        
+        ##### End Test
+        """
+        # self._mgr.AddPane(self.CreateTreeControl(),
+        #                  aui.AuiPaneInfo().Name("tree_content").
+        #                  CenterPane().Hide().MinimizeButton(True))
+        ###### self.tree = Tree(self.splitter, self.actions, self._application.settings)
+        self.tree = Tree(self, self.actions,
+                         self._application.settings)
+        #self.tree.SetMinSize(wx.Size(100, 200))
+        self.tree.SetMinSize(wx.Size(120, 200))
+        self._mgr.AddPane(self.tree,
+                          aui.AuiPaneInfo().Name("tree_content").
+                          Caption("Test Suites").LeftDockable(True).
+                          CloseButton(False))
+        # MaximizeButton(True).MinimizeButton(True))
         self.actions.register_actions(
             ActionInfoCollection(_menudata, self, self.tree))
+        ###### File explorer pane
+        self.filemgr = wx.GenericDirCtrl(self, -1, size=(200, 225),
+                                         style=wx.DIRCTRL_3D_INTERNAL)
+        self.filemgr.SetMinSize(wx.Size(120, 200))
+        self._mgr.AddPane(self.filemgr,
+                          aui.AuiPaneInfo().Name("file_manager").
+                          Caption("Files").LeftDockable(True).
+                          CloseButton(True))
+
         mb.take_menu_bar_into_use()
-        splitter.SetMinimumPaneSize(100)
-        splitter.SplitVertically(self.tree, self.notebook, 300)
+        #### self.splitter.SetMinimumPaneSize(100)
+        #### self.splitter.SplitVertically(self.tree, self.notebook, 300)
         self.CreateStatusBar()
         self.SetIcons(ImageProvider().PROGICONS)
+        # tell the manager to "commit" all the changes just made
+        self._mgr.Update()
+
+    def testToolbar(self):
+
+        #### More testing
+        prepend_items, append_items = [], []
+        item = aui.AuiToolBarItem()
+
+        item.SetKind(wx.ITEM_SEPARATOR)
+        append_items.append(item)
+
+        item = aui.AuiToolBarItem()
+        item.SetKind(wx.ITEM_NORMAL)
+        item.SetId(ID_CustomizeToolbar)
+        item.SetLabel("Customize...")
+        append_items.append(item)
+
+        tb3 = aui.AuiToolBar(self, -1, wx.DefaultPosition, wx.DefaultSize,
+                             agwStyle=aui.AUI_TB_DEFAULT_STYLE | aui.AUI_TB_OVERFLOW)
+        tb3.SetToolBitmapSize(wx.Size(16, 16))
+        tb3_bmp1 = wx.ArtProvider.GetBitmap(wx.ART_FOLDER, wx.ART_OTHER,
+                                            wx.Size(16, 16))
+        tb3.AddSimpleTool(ID_SampleItem + 16, "Check 1", tb3_bmp1, "Check 1",
+                          aui.ITEM_CHECK)
+        tb3.AddSimpleTool(ID_SampleItem + 17, "Check 2", tb3_bmp1, "Check 2",
+                          aui.ITEM_CHECK)
+        tb3.AddSimpleTool(ID_SampleItem + 18, "Check 3", tb3_bmp1, "Check 3",
+                          aui.ITEM_CHECK)
+        tb3.AddSimpleTool(ID_SampleItem + 19, "Check 4", tb3_bmp1, "Check 4",
+                          aui.ITEM_CHECK)
+        tb3.AddSeparator()
+        tb3.AddSimpleTool(ID_SampleItem + 20, "Radio 1", tb3_bmp1, "Radio 1",
+                          aui.ITEM_RADIO)
+        tb3.AddSimpleTool(ID_SampleItem + 21, "Radio 2", tb3_bmp1, "Radio 2",
+                          aui.ITEM_RADIO)
+        tb3.AddSimpleTool(ID_SampleItem + 22, "Radio 3", tb3_bmp1, "Radio 3",
+                          aui.ITEM_RADIO)
+        tb3.AddSeparator()
+        tb3.AddSimpleTool(ID_SampleItem + 23, "Radio 1 (Group 2)", tb3_bmp1,
+                          "Radio 1 (Group 2)", aui.ITEM_RADIO)
+        tb3.AddSimpleTool(ID_SampleItem + 24, "Radio 2 (Group 2)", tb3_bmp1,
+                          "Radio 2 (Group 2)", aui.ITEM_RADIO)
+        tb3.AddSimpleTool(ID_SampleItem + 25, "Radio 3 (Group 2)", tb3_bmp1,
+                          "Radio 3 (Group 2)", aui.ITEM_RADIO)
+
+        tb3.SetCustomOverflowItems(prepend_items, append_items)
+        tb3.Realize()
+        return tb3
 
     def get_selected_datafile(self):
         return self.tree.get_selected_datafile()
@@ -155,6 +350,8 @@ class RideFrame(wx.Frame, RideEventHandler):
         if self._allowed_to_exit():
             PUBLISHER.unsubscribe(self._set_label, RideTreeSelection)
             RideClosing().publish()
+            # deinitialize the frame manager
+            self._mgr.UnInit()
             self.Destroy()
         else:
             wx.CloseEvent.Veto(event)
@@ -218,6 +415,35 @@ class RideFrame(wx.Frame, RideEventHandler):
 
     def _populate_tree(self):
         self.tree.populate(self._controller)
+        if len(self._controller.data.directory) > 1:
+            self.filemgr.SelectPath(self._controller.data.source)
+            try:
+                self.filemgr.ExpandPath(self._controller.data.source)
+            except Exception:
+                pass
+            self.filemgr.Update()
+
+    def OnOpenFile(self, event):
+        # EVT_DIRCTRL_FILEACTIVATED
+        from os.path import splitext
+        robottypes = self._application.settings.get('robot types', ['robot',
+                                                                    'txt',
+                                                                    'tsv',
+                                                                    'html'])
+        path = self.filemgr.GetFilePath()
+        ext = splitext(path)
+        ext = ext[1].replace('.', '')
+        # print("DEBUG: path %s ext %s" % (path, ext))
+        if ext in robottypes:
+            if not self.check_unsaved_modifications():
+                return
+            try:
+                self.open_suite(path)
+                return
+            except UserWarning as e:
+                pass
+        from robotide.editor import customsourceeditor
+        customsourceeditor.main(path)
 
     def OnOpenTestSuite(self, event):
         if not self.check_unsaved_modifications():
@@ -225,7 +451,13 @@ class RideFrame(wx.Frame, RideEventHandler):
         path = RobotFilePathDialog(
             self, self._controller, self._application.settings).execute()
         if path:
-            self.open_suite(path)
+            try:
+                self.open_suite(path)
+                return
+            except UserWarning as e:
+                pass
+            from robotide.editor import customsourceeditor
+            customsourceeditor.main(path)
 
     def check_unsaved_modifications(self):
         if self.has_unsaved_changes():
@@ -237,7 +469,9 @@ class RideFrame(wx.Frame, RideEventHandler):
 
     def open_suite(self, path):
         self._controller.update_default_dir(path)
-        self._controller.load_datafile(path, LoadProgressObserver(self))
+        err = self._controller.load_datafile(path, LoadProgressObserver(self))
+        if isinstance(err, UserWarning):
+            raise err
         self._populate_tree()
 
     def refresh_datafile(self, item, event):
@@ -364,16 +598,111 @@ class RideFrame(wx.Frame, RideEventHandler):
         self.SetPosition(position)
         self.SetSize(size)
 
+    # DEBUG just some testing
+    def CreateSizeReportCtrl(self, width=80, height=80):
+
+        ctrl = SizeReportCtrl(self, -1, wx.DefaultPosition, wx.Size(width, height), self._mgr)
+        return ctrl
+
+
+# Code moved from actiontriggers
+class ToolBar(aui.AuiToolBar):
+
+    def __init__(self, frame):
+        aui.AuiToolBar.__init__(self, frame)
+        # prepare a few custom overflow elements for the toolbars' overflow buttons
+        prepend_items, append_items = [], []
+        item = aui.AuiToolBarItem()
+
+        item.SetKind(wx.ITEM_SEPARATOR)
+        append_items.append(item)
+
+        item = aui.AuiToolBarItem()
+        item.SetKind(wx.ITEM_NORMAL)
+        item.SetId(ID_CustomizeToolbar)
+        item.SetLabel("Customize...")
+        append_items.append(item)
+
+        self._frame = frame
+        # DEBUG If we attach to frame it won't be detachable, and overlaps
+        # If self, buttons are not shown
+        self.tb = aui.AuiToolBar(self, -1, wx.DefaultPosition,
+                            wx.DefaultSize,
+                            agwStyle=aui.AUI_TB_DEFAULT_STYLE | aui.AUI_TB_OVERFLOW)
+        self.tb.SetToolBitmapSize(wx.Size(16, 16))
+        self._buttons = []
+        self._search_handlers = {}
+        self._current_description = None
+        self.tb.SetCustomOverflowItems(prepend_items, append_items)
+        self.tb.Realize()
+
+    def register(self, action):
+        if action.has_icon():
+            button = self._get_existing_button(action)
+            if not button:
+                button = self._create_button(action)
+            button.register(action)
+
+    def _get_existing_button(self, action):
+        for button in self._buttons:
+            if button.icon == action.icon:
+                return button
+        return None
+
+    def enabled_status_changed(self, id, action):
+        self.EnableTool(id, action.is_active())
+
+    def _create_button(self, action):
+        button = ToolBarButton(self._frame, self, action)
+        name = self._format_button_tooltip(action)
+        self.MyAddTool(self, button.id, label=name,
+                       bitmap=action.icon, shortHelp=name,
+                       longHelp=action.doc)
+        self.Realize()
+        self._buttons.append(button)
+        return button
+
+    def MyAddTool(self, obj, toolid, label, bitmap,
+                  bmpDisabled=wx.NullBitmap,
+                  kind=wx.ITEM_NORMAL, shortHelp="", longHelp=""):
+        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
+            obj.AddTool(toolid, label, bitmap, bmpDisabled, kind,
+                        shortHelp, longHelp)
+        else:  # DEBUG Was AddLabelTool for non AUI version
+            obj.AddTool(tool_id=toolid, label=label, bitmap=bitmap,
+                        disabled_bitmap=bmpDisabled, kind=wx.ITEM_NORMAL,
+                        short_help_string=shortHelp,
+                        long_help_string=longHelp, client_data=None)
+
+    def _format_button_tooltip(self, action):
+        tooltip = action.name.replace('&', '')
+        if action.shortcut and action.shortcut.value:
+            tooltip = '%s    (%s)' % (tooltip, action.shortcut.value)
+        return tooltip
+
+    def remove_toolbar_button(self, button):
+        self._buttons.remove(button)
+        # self._wx_toolbar.RemoveTool(button.id)
+        self.DeleteTool(button.id)
+        self.Realize()
+
+    def register_search_handler(self, description, handler, icon,
+                                default=False):
+        if default:
+            self._current_description = description
+        self._search_handlers[description] = _RideSearchMenuItem(handler, icon)
+
 
 class ActionRegisterer(object):
 
-    def __init__(self, menubar, toolbar, shortcut_registry):
+    def __init__(self, aui_mgr, menubar, toolbar, shortcut_registry):
+        self._aui_mgr = aui_mgr
         self._menubar = menubar
         self._toolbar = toolbar
         self._shortcut_registry = shortcut_registry
         self._tools_items = dict()
 
-    def register_action(self, action_info):
+    def register_action(self, action_info, update_aui=True):
         menubar_can_be_registered = True
         action = ActionFactory(action_info)
         self._shortcut_registry.register(action)
@@ -384,6 +713,9 @@ class ActionRegisterer(object):
         if menubar_can_be_registered:
             self._menubar.register(action)
         self._toolbar.register(action)
+        if update_aui:
+            # tell the manager to "commit" all the changes just made
+            self._aui_mgr.Update()
         return action
 
     def register_tools(self):
@@ -402,7 +734,9 @@ class ActionRegisterer(object):
         for action in actions:
             if not isinstance(action, SeparatorInfo):  # DEBUG
                 # print("DEBUG: action=%s" % action.name)
-                self.register_action(action)
+                self.register_action(action, update_aui=False)
+        # tell the manager to "commit" all the changes just made
+        self._aui_mgr.Update()
 
     def register_shortcut(self, action_info):
         action = ActionFactory(action_info)

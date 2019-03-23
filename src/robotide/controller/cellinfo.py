@@ -1,4 +1,5 @@
-#  Copyright 2008-2015 Nokia Solutions and Networks
+#  Copyright 2008-2015 Nokia Networks
+#  Copyright 2016-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,7 +13,11 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robotide.utils import highlightmatcher, html_escape, unicode
+from robotide.utils import highlightmatcher, html_escape
+from robotide.utils import PY3
+if PY3:
+    from robotide.utils import unicode
+
 
 class CellInfo(object):
 

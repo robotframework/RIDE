@@ -1,9 +1,8 @@
-# setuptools is required by mock(ito?)
-wxPython
 setuptools
 nose
 mockito
 invoke
-Pygments
-Pypubsub
-robotframework
+rellu
+# Include also normal project requirements.
+-r requirements.txt
+

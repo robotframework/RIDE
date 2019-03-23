@@ -1,8 +1,8 @@
 wxPython
-# Pygments # You will not see text syntax highlighted in Text Editor
-robotframework
-# Pypubsub 4.0.0 does not support Python 2.7
-# Pypubsub # Uncomment this one if your are on Python 3+ and delete next line
-Pypubsub==3.3.0 # You will see deprecation warning
 # Only for Windows to have a shortcut created (install before RIDE)
-#Pywin32
+Pywin32; sys_platform == 'win32'
+Pygments # This enables syntax highlighted in Text Editor
+robotframeworklexer # Updates lexer to newer RF 3.1.1
+robotframework
+Pypubsub==3.3.0 ; python_version <= '2.7'
+Pypubsub ; python_version > '2.7'
