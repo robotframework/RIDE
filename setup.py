@@ -22,34 +22,10 @@ from setuptools import setup, find_packages
 
 ROOT_DIR = dirname(abspath(__file__))
 SOURCE_DIR = 'src'
-REQUIREMENTS = []
+REQUIREMENTS = ['wxPython']
 
-#Windows specific requirements
 if sys.platform == 'win32':
-    with open(join(ROOT_DIR, 'requirements_win32.txt')) as f:
-        REQ_WIN = f.read().splitlines()
-
-    for idx in range(0, len(REQ_WIN)):
-        if REQ_WIN[idx].startswith('#') or REQ_WIN[idx].startswith('-r'):
-            continue
-        else:
-            REQUIREMENTS.append(REQ_WIN[idx])
-
-# Common requirements
-with open(join(ROOT_DIR, 'requirements.txt')) as f:
-    REQ_COMMON = f.read().splitlines()
-
-for idx in range(0, len(REQ_COMMON)):
-    if REQ_COMMON[idx].startswith('#') or REQ_COMMON[idx].startswith('-r'):
-        continue
-    else:
-        REQUIREMENTS.append(REQ_COMMON[idx])
-
-for idx in range(0, len(REQUIREMENTS)):
-    if (REQUIREMENTS[idx].find(';') != -1):
-        REQUIREMENTS[idx] = REQUIREMENTS[idx][0:REQUIREMENTS[idx].find(';')].strip()
-    if (REQUIREMENTS[idx].find('#') != -1):
-        REQUIREMENTS[idx] = REQUIREMENTS[idx][0:REQUIREMENTS[idx].find('#')].strip()
+    REQUIREMENTS.append('Pywin32')
 
 version_file = join(ROOT_DIR, 'src', 'robotide', 'version.py')
 exec(compile(open(version_file).read(), version_file, 'exec'))
@@ -78,6 +54,7 @@ Topic :: Software Development :: Testing
 # This solution is found at http://stackoverflow.com/a/26490820/5889853
 from setuptools.command.install import install
 import os
+import sys
 
 
 class CustomInstallCommand(install):
@@ -85,7 +62,7 @@ class CustomInstallCommand(install):
     def run(self):
         install.run(self)
         _ = sys.stderr.write("Creating Desktop Shortcut to RIDE...\n")
-        os.system("ride_postinstall.py -install")
+        os.system(sys.executable + " -m robotide.postinstall -install")
 
 setup(
     name='robotframework-ride',

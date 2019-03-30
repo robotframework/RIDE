@@ -1,4 +1,0 @@
-# Only for Windows to have a shortcut created (install before RIDE)
-Pywin32; sys_platform == 'win32'
-# Include also normal project requirements.
--r requirements.txt
