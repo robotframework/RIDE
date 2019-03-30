@@ -171,6 +171,7 @@ class RideFrame(wx.Frame, RideEventHandler):
         self.Bind(wx.EVT_SIZE, self.OnSize)
         self.Bind(wx.EVT_MOVE, self.OnMove)
         self.Bind(wx.EVT_MAXIMIZE, self.OnMaximize)
+        self.Bind(wx.EVT_DIRCTRL_FILEACTIVATED, self.OnOpenFile)
         self._subscribe_messages()
         #print("DEBUG: Call register_tools, actions: %s" % self.actions.__repr__())
         if PY2:
@@ -275,6 +276,15 @@ class RideFrame(wx.Frame, RideEventHandler):
         # MaximizeButton(True).MinimizeButton(True))
         self.actions.register_actions(
             ActionInfoCollection(_menudata, self, self.tree))
+        ###### File explorer pane
+        self.filemgr = wx.GenericDirCtrl(self, -1, size=(200, 225),
+                                         style=wx.DIRCTRL_3D_INTERNAL)
+        self.filemgr.SetMinSize(wx.Size(120, 200))
+        self._mgr.AddPane(self.filemgr,
+                          aui.AuiPaneInfo().Name("file_manager").
+                          Caption("Files").LeftDockable(True).
+                          CloseButton(True))
+
         mb.take_menu_bar_into_use()
         #### self.splitter.SetMinimumPaneSize(100)
         #### self.splitter.SplitVertically(self.tree, self.notebook, 300)
@@ -282,7 +292,6 @@ class RideFrame(wx.Frame, RideEventHandler):
         self.SetIcons(ImageProvider().PROGICONS)
         # tell the manager to "commit" all the changes just made
         self._mgr.Update()
-
 
     def testToolbar(self):
 
@@ -406,6 +415,35 @@ class RideFrame(wx.Frame, RideEventHandler):
 
     def _populate_tree(self):
         self.tree.populate(self._controller)
+        if len(self._controller.data.directory) > 1:
+            self.filemgr.SelectPath(self._controller.data.source)
+            try:
+                self.filemgr.ExpandPath(self._controller.data.source)
+            except Exception:
+                pass
+            self.filemgr.Update()
+
+    def OnOpenFile(self, event):
+        # EVT_DIRCTRL_FILEACTIVATED
+        from os.path import splitext
+        robottypes = self._application.settings.get('robot types', ['robot',
+                                                                    'txt',
+                                                                    'tsv',
+                                                                    'html'])
+        path = self.filemgr.GetFilePath()
+        ext = splitext(path)
+        ext = ext[1].replace('.', '')
+        # print("DEBUG: path %s ext %s" % (path, ext))
+        if ext in robottypes:
+            if not self.check_unsaved_modifications():
+                return
+            try:
+                self.open_suite(path)
+                return
+            except UserWarning as e:
+                pass
+        from robotide.editor import customsourceeditor
+        customsourceeditor.main(path)
 
     def OnOpenTestSuite(self, event):
         if not self.check_unsaved_modifications():
@@ -413,7 +451,13 @@ class RideFrame(wx.Frame, RideEventHandler):
         path = RobotFilePathDialog(
             self, self._controller, self._application.settings).execute()
         if path:
-            self.open_suite(path)
+            try:
+                self.open_suite(path)
+                return
+            except UserWarning as e:
+                pass
+            from robotide.editor import customsourceeditor
+            customsourceeditor.main(path)
 
     def check_unsaved_modifications(self):
         if self.has_unsaved_changes():
@@ -425,7 +469,9 @@ class RideFrame(wx.Frame, RideEventHandler):
 
     def open_suite(self, path):
         self._controller.update_default_dir(path)
-        self._controller.load_datafile(path, LoadProgressObserver(self))
+        err = self._controller.load_datafile(path, LoadProgressObserver(self))
+        if isinstance(err, UserWarning):
+            raise err
         self._populate_tree()
 
     def refresh_datafile(self, item, event):

@@ -31,9 +31,9 @@ import wx.stc as stc
 
 # ----------------------------------------------------------------------
 
-demoText = """\
+CodeText = """\
 ## This version of the editor has been set up to edit Python source
-## code.  Here is a copy of wxPython/demo/Main.py to play with.
+## code.  Here is a copy of wxPython/Code/Main.py to play with.
 
 
 """
@@ -42,32 +42,31 @@ demoText = """\
 
 
 if wx.Platform == '__WXMSW__':
-    faces = { 'times': 'Times New Roman',
-              'mono' : 'Courier New',
-              'helv' : 'Arial',
-              'other': 'Comic Sans MS',
-              'size' : 10,
-              'size2': 8,
+    faces = {'times': 'Times New Roman',
+             'mono': 'Courier New',
+             'helv': 'Arial',
+             'other': 'Comic Sans MS',
+             'size': 10,
+             'size2': 8,
              }
 elif wx.Platform == '__WXMAC__':
-    faces = { 'times': 'Times New Roman',
-              'mono' : 'Monaco',
-              'helv' : 'Arial',
-              'other': 'Comic Sans MS',
-              'size' : 12,
-              'size2': 10,
+    faces = {'times': 'Times New Roman',
+             'mono': 'Monaco',
+             'helv': 'Arial',
+             'other': 'Comic Sans MS',
+             'size': 12,
+             'size2': 10,
              }
 else:
-    faces = { 'times': 'Times',
-              'mono' : 'Courier',
-              'helv' : 'Helvetica',
-              'other': 'new century schoolbook',
-              'size' : 12,
-              'size2': 10,
+    faces = {'times': 'Times',
+             'mono': 'Courier',
+             'helv': 'Helvetica',
+             'other': 'new century schoolbook',
+             'size': 12,
+             'size2': 10,
              }
 
-#---------------------------------------------------------------------------
-
+# ---------------------------------------------------------------------------
 # This is how you pre-establish a file filter so that the dialog
 # only shows the extension(s) you want it to.
 wildcard = "All files (*.*)|*.*|"                \
@@ -75,11 +74,9 @@ wildcard = "All files (*.*)|*.*|"                \
            "Python source (*.py)|*.py|"         \
            "Robot Framework (*.robot)|*.robot|" \
            "Robot Framework (*.txt)|*.txt|" \
-           "YAML file (*.yml)|*.yml"
-
-
-
+           "YAML file (*.yaml)|*.yaml"
 # ----------------------------------------------------------------------
+
 
 class PythonSTC(stc.StyledTextCtrl):
 
@@ -386,7 +383,7 @@ class PythonSTC(stc.StyledTextCtrl):
 # ----------------------------------------------------------------------
 
 
-class DemoCodeEditor(PythonSTC):
+class SourceCodeEditor(PythonSTC):
     def __init__(self, parent, style=wx.BORDER_NONE):
         PythonSTC.__init__(self, parent, -1, style=style)
         self.SetUpEditor()
@@ -443,7 +440,7 @@ class DemoCodeEditor(PythonSTC):
 
     def SetUpEditor(self):
         """
-        This method carries out the work of setting up the demo editor.
+        This method carries out the work of setting up the Code editor.
         It's seperate so as not to clutter up the init code.
         """
         import keyword
@@ -452,7 +449,7 @@ class DemoCodeEditor(PythonSTC):
         self.SetKeyWords(0, " ".join(keyword.kwlist))
 
         # Enable folding
-        self.SetProperty("fold", "1" )
+        self.SetProperty("fold", "1")
 
         # Highlight tab/space mixing (shouldn't be any)
         self.SetProperty("tab.timmy.whinge.level", "1")
@@ -466,13 +463,14 @@ class DemoCodeEditor(PythonSTC):
         self.SetMarginWidth(1, 40)
 
         # Indentation and tab stuff
-        self.SetIndent(4)               # Proscribed indent size for wx
-        self.SetIndentationGuides(True) # Show indent guides
-        self.SetBackSpaceUnIndents(True)# Backspace unindents rather than delete 1 space
-        self.SetTabIndents(True)        # Tab key indents
-        self.SetTabWidth(4)             # Proscribed tab size for wx
-        self.SetUseTabs(False)          # Use spaces rather than tabs, or
-                                        # TabTimmy will complain!
+        self.SetIndent(4)                 # Proscribed indent size for wx
+        self.SetIndentationGuides(True)   # Show indent guides
+        self.SetBackSpaceUnIndents(True)  # Backspace unindents rather than
+                                          # delete 1 space
+        self.SetTabIndents(True)          # Tab key indents
+        self.SetTabWidth(4)               # Proscribed tab size for wx
+        self.SetUseTabs(False)            # Use spaces rather than tabs, or
+                                          # TabTimmy will complain!
         # White space
         self.SetViewWhiteSpace(False)   # Don't view white space
 
@@ -491,38 +489,19 @@ class DemoCodeEditor(PythonSTC):
         self.SetMarginSensitive(2, True)
         self.SetMarginWidth(2, 12)
 
-        """ DEBUG Let's use the ones in PythonSTC
-        # and now set up the fold markers
-        self.MarkerDefine(stc.STC_MARKNUM_FOLDEREND,     stc.STC_MARK_BOXPLUSCONNECTED,  "white", "black")
-        self.MarkerDefine(stc.STC_MARKNUM_FOLDEROPENMID, stc.STC_MARK_BOXMINUSCONNECTED, "white", "black")
-        self.MarkerDefine(stc.STC_MARKNUM_FOLDERMIDTAIL, stc.STC_MARK_TCORNER,  "white", "black")
-        self.MarkerDefine(stc.STC_MARKNUM_FOLDERTAIL,    stc.STC_MARK_LCORNER,  "white", "black")
-        self.MarkerDefine(stc.STC_MARKNUM_FOLDERSUB,     stc.STC_MARK_VLINE,    "white", "black")
-        self.MarkerDefine(stc.STC_MARKNUM_FOLDER,        stc.STC_MARK_BOXPLUS,  "white", "black")
-        self.MarkerDefine(stc.STC_MARKNUM_FOLDEROPEN,    stc.STC_MARK_BOXMINUS, "white", "black")
-        
-            # Like a flattened tree control using square headers
-            self.MarkerDefine(stc.STC_MARKNUM_FOLDEROPEN,    stc.STC_MARK_BOXMINUS,          "white", "#808080")
-            self.MarkerDefine(stc.STC_MARKNUM_FOLDER,        stc.STC_MARK_BOXPLUS,           "white", "#808080")
-            self.MarkerDefine(stc.STC_MARKNUM_FOLDERSUB,     stc.STC_MARK_VLINE,             "white", "#808080")
-            self.MarkerDefine(stc.STC_MARKNUM_FOLDERTAIL,    stc.STC_MARK_LCORNER,           "white", "#808080")
-            self.MarkerDefine(stc.STC_MARKNUM_FOLDEREND,     stc.STC_MARK_BOXPLUSCONNECTED,  "white", "#808080")
-            self.MarkerDefine(stc.STC_MARKNUM_FOLDEROPENMID, stc.STC_MARK_BOXMINUSCONNECTED, "white", "#808080")
-            self.MarkerDefine(stc.STC_MARKNUM_FOLDERMIDTAIL, stc.STC_MARK_TCORNER,           "white", "#808080")
-        """
         # Global default style
         if wx.Platform == '__WXMSW__':
             print("DEBUG: Setup on Windows")
             self.StyleSetSpec(stc.STC_STYLE_DEFAULT,
                               'fore:#000000,back:#FFFFFF,face:Space Mono')  # Courier New')
         elif wx.Platform == '__WXMAC__':
-            print("DEBUG: Setup on Mac")
+            # print("DEBUG: Setup on Mac")
             # TODO: if this looks fine on Linux too, remove the Mac-specific case
             # and use this whenever OS != MSW.
             self.StyleSetSpec(stc.STC_STYLE_DEFAULT,
                               'fore:#000000,back:#FFFFFF,face:Monaco')
         else:
-            print("DEBUG: Setup on Linux")
+            # print("DEBUG: Setup on Linux")
             defsize = wx.SystemSettings.GetFont(wx.SYS_ANSI_FIXED_FONT).GetPointSize()
             self.StyleSetSpec(stc.STC_STYLE_DEFAULT,
                               'fore:#000000,back:#FFFFFF,face:Hack,size:%d'%defsize)  # Courier, Space Mono, Source Pro Mono,
@@ -600,16 +579,14 @@ def isUTF8Strict(data):
                 return False
         return True
 
-class DemoCodePanel(wx.Panel):
-    """Panel for the 'Demo Code' tab"""
-    def __init__(self, parent, mainFrame):
+
+class CodeEditorPanel(wx.Panel):
+    """Panel for the 'Code Editor' tab"""
+    def __init__(self, parent, mainFrame, path=None):
         self.log = sys.stdout  # From FileDialog
         wx.Panel.__init__(self, parent, size=(1,1))
-        #if 'wxMSW' in wx.PlatformInfo:
-        #    # print("DEBUG: Panel Hide on Windows")
-        #    # self.Hide()
         self.mainFrame = mainFrame
-        self.editor = DemoCodeEditor(self)
+        self.editor = SourceCodeEditor(self)
         self.editor.RegisterModifiedEvent(self.OnCodeModified)
 
         self.btnSave = wx.Button(self, -1, "Save Changes")
@@ -625,8 +602,9 @@ class DemoCodePanel(wx.Panel):
         self.btnSaveAs = wx.Button(self, -1, "Save as...")
         self.btnSaveAs.Bind(wx.EVT_BUTTON, self.OnButton2)
 
-        self.radioButtons = { modOriginal: wx.RadioButton(self, -1, "Original", style = wx.RB_GROUP),
-                              modModified: wx.RadioButton(self, -1, "Modified") }
+        self.radioButtons = {modOriginal: wx.RadioButton(self, -1, "Original",
+                                                         style = wx.RB_GROUP),
+                             modModified: wx.RadioButton(self, -1, "Modified")}
 
         self.controlBox = wx.BoxSizer(wx.HORIZONTAL)
         self.controlBox.Add(wx.StaticText(self, -1, "Active Version:"), 0,
@@ -648,25 +626,26 @@ class DemoCodePanel(wx.Panel):
 
         self.box.Fit(self)
         self.SetSizer(self.box)
+        if path:
+            self.LoadFile(path)
 
-    # # Loads a demo from a DemoModules object
-    # def LoadDemo(self, demoModules):
-    #     self.demoModules = demoModules
-    #     if (modDefault == modModified) and demoModules.Exists(modModified):
-    #         demoModules.SetActive(modModified)
-    #     else:
-    #         demoModules.SetActive(modOriginal)
-    #     self.radioButtons[demoModules.GetActiveID()].Enable(True)
-    #     self.ActiveModuleChanged()
+    def LoadFile(self, path):
+        # Open
+        f = open(path, "rb")
+        try:
+            source = f.read()
+        finally:
+            f.close()
+        self.LoadSource(source)
 
     def ActiveModuleChanged(self):
-        self.LoadDemoSource(self.demoModules.GetSource())
+        self.LoadSource(self.CodeModules.GetSource())
         self.UpdateControlState()
         self.mainFrame.pnl.Freeze()
         self.ReloadDemo()
         self.mainFrame.pnl.Thaw()
 
-    def LoadDemoSource(self, source):
+    def LoadSource(self, source):
         self.editor.Clear()
         self.editor.SetTextRaw(source)  # DEBUG SetValue
         self.JumpToLine(0)
@@ -679,7 +658,7 @@ class DemoCodePanel(wx.Panel):
             self.editor.SelectLine(line)
 
     def UpdateControlState(self):
-        active = self.demoModules.GetActiveID()
+        active = self.CodeModules.GetActiveID()
         # Update the radio/restore buttons
         for moduleID in self.radioButtons:
             btn = self.radioButtons[moduleID]
@@ -688,7 +667,7 @@ class DemoCodePanel(wx.Panel):
             else:
                 btn.SetValue(False)
 
-            if self.demoModules.Exists(moduleID):
+            if self.CodeModules.Exists(moduleID):
                 btn.Enable(True)
                 if moduleID == modModified:
                     self.btnRestore.Enable(True)
@@ -700,13 +679,13 @@ class DemoCodePanel(wx.Panel):
     def OnRadioButton(self, event):
         radioSelected = event.GetEventObject()
         modSelected = radioSelected.modID
-        if modSelected != self.demoModules.GetActiveID():
-            busy = wx.BusyInfo("Reloading demo module...")
-            self.demoModules.SetActive(modSelected)
+        if modSelected != self.CodeModules.GetActiveID():
+            busy = wx.BusyInfo("Reloading Code module...")
+            self.CodeModules.SetActive(modSelected)
             self.ActiveModuleChanged()
 
     def ReloadDemo(self):
-        if self.demoModules.name != __name__:
+        if self.CodeModules.name != __name__:
             self.mainFrame.RunModule()
 
     def OnCodeModified(self, event):
@@ -730,11 +709,11 @@ class DemoCodePanel(wx.Panel):
         if isUTF8Strict(source):
             try:
                 f.write(source)
-                print("DEBUG: Saved as Unicode")
+                # print("DEBUG: Saved as Unicode")
             finally:
                 f.close()
         else:
-            print("DEBUG: there were problems with source not being Unicode.")
+            # print("DEBUG: there were problems with source not being Unicode.")
             # Attempt to isolate the problematic bytes
             bsource = bytearray(source)
             try:
@@ -760,17 +739,17 @@ class DemoCodePanel(wx.Panel):
             # finally:
             #     f.close()
 
-        # busy = wx.BusyInfo("Reloading demo module...")
-        # self.demoModules.LoadFromFile(modModified, modifiedFilename)
+        # busy = wx.BusyInfo("Reloading Code module...")
+        # self.CodeModules.LoadFromFile(modModified, modifiedFilename)
         #self.ActiveModuleChanged()
 
         #self.mainFrame.SetTreeModified(True)
 
     def OnRestore(self, event): # Handles the "Delete Modified" button
-        modifiedFilename = GetModifiedFilename(self.demoModules.name)
-        self.demoModules.Delete(modModified)
+        modifiedFilename = GetModifiedFilename(self.CodeModules.name)
+        self.CodeModules.Delete(modModified)
         os.unlink(modifiedFilename) # Delete the modified copy
-        busy = wx.BusyInfo("Reloading demo module...")
+        busy = wx.BusyInfo("Reloading Code module...")
 
         self.ActiveModuleChanged()
 
@@ -778,7 +757,7 @@ class DemoCodePanel(wx.Panel):
 
     def OnButton(self, evt):
         #self.log.WriteText("CWD: %s\n" % os.getcwd())
-        self.log.write("CWD: %s\n" % os.getcwd())
+        # self.log.write("CWD: %s\n" % os.getcwd())
 
         # Create the dialog. In this case the current directory is forced as the starting
         # directory for the dialog, and no default file name is forced. This can easilly
@@ -804,12 +783,12 @@ class DemoCodePanel(wx.Panel):
             paths = dlg.GetPaths()
 
             # self.log.WriteText('You selected %d files:' % len(paths))
-            self.log.write('You selected %d files:' % len(paths))
+            # DEBUG self.log.write('You selected %d files:' % len(paths))
 
-            for path in paths:
+            #for path in paths:
                 # self.log.WriteText('           %s\n' % path)
-                self.log.write('           %s\n' % path)
-
+            #    self.log.write('           %s\n' % path)
+            path = paths[-1]  # just get the last one
             # Open
             f = open(path, "rb")
             try:
@@ -817,11 +796,11 @@ class DemoCodePanel(wx.Panel):
             finally:
                 f.close()
 
-            self.log.write('%s\n' % source)
-            self.LoadDemoSource(source)  # Just the last file
+            # self.log.write('%s\n' % source)
+            self.LoadSource(source)  # Just the last file
         # Compare this with the debug above; did we change working dirs?
         # self.log.WriteText("CWD: %s\n" % os.getcwd())
-        self.log.write("CWD: %s\n" % os.getcwd())
+        # self.log.write("CWD: %s\n" % os.getcwd())
 
         # Destroy the dialog. Don't do this until you are done with it!
         # BAD things can happen otherwise!
@@ -829,7 +808,7 @@ class DemoCodePanel(wx.Panel):
 
     def OnButton2(self, evt):
         #self.log.WriteText("CWD: %s\n" % os.getcwd())
-        self.log.write("CWD: %s\n" % os.getcwd())
+        # self.log.write("CWD: %s\n" % os.getcwd())
 
         # Create the dialog. In this case the current directory is forced as the starting
         # directory for the dialog, and no default file name is forced. This can easilly
@@ -852,7 +831,7 @@ class DemoCodePanel(wx.Panel):
         if dlg.ShowModal() == wx.ID_OK:
             path = dlg.GetPath()
             # self.log.WriteText('You selected "%s"' % path)
-            self.log.write('You selected "%s"\n' % path)
+            # self.log.write('You selected "%s"\n' % path)
 
             # Normally, at this point you would save your data using the file and path
             # data that the user provided to you, but since we didn't actually start
@@ -871,7 +850,7 @@ class DemoCodePanel(wx.Panel):
         # Note that the current working dir didn't change. This is good since
         # that's the way we set it up.
         # self.log.WriteText("CWD: %s\n" % os.getcwd())
-        self.log.write("CWD: %s\n" % os.getcwd())
+        # self.log.write("CWD: %s\n" % os.getcwd())
 
         # Destroy the dialog. Don't do this until you are done with it!
         # BAD things can happen otherwise!
@@ -899,7 +878,7 @@ def GetDataDir():
 
 def GetModifiedDirectory():
     """
-    Returns the directory where modified versions of the demo files
+    Returns the directory where modified versions of the Code files
     are stored
     """
     return os.path.join(GetDataDir(), "modified")
@@ -907,7 +886,7 @@ def GetModifiedDirectory():
 
 def GetModifiedFilename(name):
     """
-    Returns the filename of the modified version of the specified demo
+    Returns the filename of the modified version of the specified Code
     """
     if not name.endswith(".py"):
         name = name + ".py"
@@ -916,7 +895,7 @@ def GetModifiedFilename(name):
 
 def GetOriginalFilename(name):
     """
-    Returns the filename of the original version of the specified demo
+    Returns the filename of the original version of the specified Code
     """
     if not name.endswith(".py"):
         name = name + ".py"
@@ -926,7 +905,7 @@ def GetOriginalFilename(name):
 
     originalDir = os.getcwd()
     listDir = os.listdir(originalDir)
-    # Loop over the content of the demo directory
+    # Loop over the content of the Code directory
     for item in listDir:
         if not os.path.isdir(item):
             # Not a directory, continue
@@ -941,7 +920,7 @@ def GetOriginalFilename(name):
 
 
 def DoesModifiedExist(name):
-    """Returns whether the specified demo has a modified copy"""
+    """Returns whether the specified Code has a modified copy"""
     if os.path.exists(GetModifiedFilename(name)):
         return True
     else:
@@ -959,6 +938,14 @@ def GetConfig():
 
 _platformNames = ["wxMSW", "wxGTK", "wxMac"]
 
+
+def main(filepath, frame=None):
+    __name__ = 'Editor'
+    app = wx.App()
+    frame = wx.Frame(None)
+    panel = CodeEditorPanel(frame, None, filepath)
+    frame.Show(True)
+    app.MainLoop()
 # ----------------------------------------------------------------------------
 # ----------------------------------------------------------------------------
 # ----------------------------------------------------------------------------
@@ -967,11 +954,12 @@ _platformNames = ["wxMSW", "wxGTK", "wxMac"]
 if __name__ == '__main__' and __package__ is None:
     from os import sys, path
     sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
-    __name__ = 'Editor'
-    app = wx.App()
-    frame = wx.Frame(None)
-    panel = DemoCodePanel(frame, None)
-    frame.Show(True)
-    app.MainLoop()
-
+    path = None
+    try:
+        if sys.argv[1]:
+            path = sys.argv[1]
+    except IndexError:
+        pass
+    finally:
+        main(path)
 # ----------------------------------------------------------------------------
