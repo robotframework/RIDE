@@ -61,12 +61,12 @@ class CellRenderer(wx.grid.GridCellRenderer):
         # margin = 2  # get border width into account when submitting optimal col size
         margin = 0
         w, h = _font.GetPixelSize()
-        h = max( h, 12) # Probably h==0 on MSW, w==0 means width auto
-        w = max( w, 12)
+        h = max(h, 8) # Probably h==0 on MSW, w==0 means width auto
+        w = max(w, 8)
         if len(text) > 0:
-            w_sz = w * len(text) + 2 * w
+            w_sz = w * len(text)  # + 2 * w
         else:
-            return wx.Size(2 * w, h)  # self.default_width
+            return wx.Size(w, h)  # self.default_width
 
         if self.auto_fit:
             col_width = min(w_sz, col_width)
@@ -79,8 +79,8 @@ class CellRenderer(wx.grid.GridCellRenderer):
             text = wordwrap.wordwrap(text, col_width, dc, breakLongWords=False,
                                      margin=margin)
             w, h = dc.GetMultiLineTextExtent(text)
-            h = max( h, 12) # Probably h==0 on MSW, w==0 means width auto
-            w = max( w, 12)
+            h = max(h, 8) # Probably h==0 on MSW, w==0 means width auto
+            w = max(w, 8)
         else:
             w = col_width
         if self.auto_fit:
