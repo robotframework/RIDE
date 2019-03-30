@@ -295,7 +295,7 @@ class TestRunner(object):
             f = codecs.open(argfile, "wb")
             for item in args:
                 if is_unicode(item):
-                    enc_arg = item.encode(encoding.OUTPUT_ENCODING)
+                    enc_arg = item.encode(encoding.CONSOLE_ENCODING)  # DEBUG .OUTPUT_ENCODING)
                 else:
                     enc_arg = item
                 f.write(enc_arg+"\n")
