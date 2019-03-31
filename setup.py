@@ -24,6 +24,7 @@ ROOT_DIR = dirname(abspath(__file__))
 SOURCE_DIR = 'src'
 REQUIREMENTS = ['wxPython']
 
+#Windows specific requirements
 if sys.platform == 'win32':
     REQUIREMENTS.append('Pywin32')
 
