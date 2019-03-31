@@ -1,3 +1,4 @@
+
 #  Copyright 2019-     Robot Framework Foundation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
@@ -57,35 +58,29 @@ class CellRenderer(wx.grid.GridCellRenderer):
         _font = attr.GetFont()
         dc.SetFont(_font)
 
-        col_width = grid.GetColSize(col)
-        # margin = 2  # get border width into account when submitting optimal col size
-        margin = 0
-        w, h = _font.GetPixelSize()
-        if len(text) > 0:
-            w_sz = w * len(text) + 2 * w
-        else:
-            return wx.Size(2 * w, h)  # self.default_width
+        if len(text) == 0:
+            return dc.GetTextExtent("__")  # self.default_width
 
-        if self.auto_fit:
-            col_width = min(w_sz, col_width)
-            if col_width > self.max_width:
-                col_width = self.max_width
-        else:
-            col_width = min(w_sz, self.default_width)
+        w, h = dc.GetTextExtent(text + "__")
 
         if self.word_wrap:
-            text = wordwrap.wordwrap(text, col_width, dc, breakLongWords=False,
-                                     margin=margin)
+            if self.auto_fit:
+                col_width = min(w, self.max_width)
+                suggest_width = grid.GetColSize(col)
+            else:
+                col_width = self.default_width
+                suggest_width = col_width
+            text = wordwrap.wordwrap(text, suggest_width, dc, breakLongWords=False)
             w, h = dc.GetMultiLineTextExtent(text)
+            row_height = h
         else:
-            w = col_width
-        if self.auto_fit:
-            if w_sz > self.max_width:
-                w_sz = self.max_width
-            w = max(w, w_sz)
-        else:
-            return wx.Size(self.default_width, h)
-        return wx.Size(w, h)
+            row_height = h
+            if self.auto_fit:
+                col_width = min(w, self.max_width)
+            else:
+                col_width = min(w, grid.GetColSize(col))
+
+        return wx.Size(col_width, row_height)
 
     def Clone(self):  # real signature unknown; restored from __doc__
         """ Clone(self) -> GridCellRenderer """
