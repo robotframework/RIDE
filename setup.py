@@ -24,6 +24,9 @@ ROOT_DIR = dirname(abspath(__file__))
 SOURCE_DIR = 'src'
 REQUIREMENTS = ['wxPython']
 
+if sys.platform == 'win32':
+    REQUIREMENTS.append('Pywin32')
+
 version_file = join(ROOT_DIR, 'src', 'robotide', 'version.py')
 exec(compile(open(version_file).read(), version_file, 'exec'))
 
