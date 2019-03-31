@@ -295,8 +295,9 @@ class RobotDebugger(object):
 
     @staticmethod
     def is_breakpoint(name, attrs):
-        return name == 'BuiltIn.Comment' and\
-               str(attrs['args'][0]).upper().startswith(u"PAUSE")
+        if len(attrs['args']) > 0:
+            return name == 'BuiltIn.Comment' and \
+                   str(attrs['args'][0]).upper().startswith(u"PAUSE")
 
     def pause(self):
         self._resume.clear()
