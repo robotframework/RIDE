@@ -24,6 +24,7 @@ ROOT_DIR = dirname(abspath(__file__))
 SOURCE_DIR = 'src'
 REQUIREMENTS = ['wxPython']
 
+#Windows specific requirements
 if sys.platform == 'win32':
     REQUIREMENTS.append('Pywin32')
 
@@ -62,7 +63,9 @@ class CustomInstallCommand(install):
     def run(self):
         install.run(self)
         _ = sys.stderr.write("Creating Desktop Shortcut to RIDE...\n")
-        os.system(sys.executable + " -m robotide.postinstall -install")
+        postinstaller_file = join(ROOT_DIR, 'src', 'robotide', 'postinstall', '__main__.py')
+        command = sys.executable + " " +postinstaller_file + " -install"
+        os.system(command)
 
 setup(
     name='robotframework-ride',
