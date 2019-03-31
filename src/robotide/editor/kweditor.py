@@ -113,6 +113,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
         self._marked_cell = None
         self._make_bindings()
         self._write_steps(self._controller)
+        self.autosize()
         self._tree = tree
         self._has_been_clicked = False
         self._counter = 0  # Workaround for double delete actions
@@ -146,6 +147,10 @@ class KeywordEditor(GridEditor, RideEventHandler):
         self.SetRowLabelSize(wx.grid.GRID_AUTOSIZE)
         self.SetColLabelSize(0)
         self.SetDefaultColSize(col_size, resizeExistingCols=True)
+        if auto_col_size:
+            self.Bind(grid.EVT_GRID_CMD_COL_SIZE, self.OnCellColSizeChanged)
+        else:
+            self.Unbind(grid.EVT_GRID_CMD_COL_SIZE)
         if word_wrap:
             self.SetDefaultRowSize(wx.grid.GRID_AUTOSIZE)
         self.SetDefaultCellOverflow(False)  # DEBUG
@@ -195,15 +200,15 @@ class KeywordEditor(GridEditor, RideEventHandler):
         '''Redraw the colors if the color settings are modified'''
         section, setting = data.keys
         if section == 'Grid':
-            if 'text' in setting or 'background' in setting:
-                self._colorize_grid()
-            elif 'font' in setting:
+            if 'font' in setting:
                 self._set_fonts(update_cells=True)
             elif ('col size' in setting
                   or 'max col size' in setting
-                  or 'auto size cols' in setting):
+                  or 'auto size cols' in setting
+                  or 'word wrap' in setting):
                 self._set_cells()
-                self.ForceRefresh()
+            self._colorize_grid()
+            self.autosize()
 
     def OnSelectCell(self, event):
         self._cell_selected = True
@@ -375,7 +380,11 @@ class KeywordEditor(GridEditor, RideEventHandler):
             self._parent.highlight(selection_content, expand=False)
 
     def highlight(self, text, expand=True):
-        self._colorizer.colorize(text)
+        wx.CallAfter(self._colorizer.colorize, text)
+
+    def autosize(self):
+        wx.CallAfter(self.AutoSizeColumns, False)
+        wx.CallAfter(self.AutoSizeRows, False)
 
     def _get_single_selection_content_or_none_on_first_call(self):
         if self._cell_selected:
@@ -529,8 +538,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
         # print("DEBUG: key pressed " + str(keycode) + " + " +  str(control_down))
         # event.Skip()  # DEBUG seen this skip as soon as possible
         if keycode == wx.WXK_CONTROL or \
-                (keycode == ord('M') and (
-                        control_down or event.AltDown())):  # keycode == wx.WXK_CONTROL
+                (keycode == ord('M') and (control_down or event.AltDown())):  #  keycode == wx.WXK_CONTROL
             self.show_cell_information()
         elif keycode == ord('C') and control_down:
             # print("DEBUG: captured Control-C\n")
@@ -548,14 +556,13 @@ class KeywordEditor(GridEditor, RideEventHandler):
             event.Skip()
         elif event.AltDown() and keycode == wx.WXK_RETURN:
             self._move_cursor_down(event)
-            # event.Skip()  #DEBUG was moving down 2 rows
+            event.Skip()
         elif keycode == wx.WXK_WINDOWS_MENU:
             self.OnCellRightClick(event)
         elif keycode in [wx.WXK_RETURN, wx.WXK_BACK]:
             if _iscelleditcontrolshown:
                 self.save()
-                # event.Skip()  #DEBUG was moving left and down with RETURN
-            self._move_grid_cursor(event, keycode)
+            event.Skip()
         elif (control_down or event.AltDown()) and \
                 keycode == wx.WXK_SPACE:  # Avoid Mac CMD
             self._open_cell_editor_with_content_assist()
@@ -680,6 +687,10 @@ work.</li>
 
     def OnSelectAll(self, event):
         self.SelectAll()
+
+    def OnCellColSizeChanged(self, event):
+        wx.CallAfter(self.AutoSizeRows, False)
+        event.Skip()
 
     def OnCellLeftClick(self, event):
         self._tooltips.hide()
