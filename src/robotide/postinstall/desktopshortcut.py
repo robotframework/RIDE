@@ -52,33 +52,8 @@ class ShortcutPlugin(Plugin):
                                         position=85))
 
     def OnViewShortcutCreate(self, event):
-        if not self._window:
-            self._window = _ShortcutCreateWindow(self.notebook)
-        else:
-            self.notebook.show_tab(self._window)
-        self._window.call_creator()
+        self.call_creator(self.notebook)
         # self.disable()
 
-
-class _ShortcutCreateWindow(wx.TextCtrl):
-    def __init__(self, notebook):
-        wx.TextCtrl.__init__(
-            self, notebook, style=wx.TE_MULTILINE)  # DEBUG wx.TE_READONLY |
-        self._create_ui()
-        self._add_to_notebook(notebook)
-        self.SetFont(widgets.Font().fixed_log)
-
-    def _create_ui(self):
-        sizer = wx.BoxSizer(wx.VERTICAL)
-        sizer.Add(self)
-        self.SetSizer(sizer)
-
-    def _add_to_notebook(self, notebook):
-        notebook.add_tab(self, 'Create RIDE Desktop Shortcut',
-                         allow_closing=True)
-
-    def close(self, notebook):
-        notebook.delete_tab(self)
-
-    def call_creator(self):
-        return postinstall.caller(self.GetParent(), sys.platform.lower())
+    def call_creator(self, notebook):
+        return postinstall.caller(notebook.GetParent(), sys.platform.lower())
