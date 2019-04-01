@@ -146,7 +146,7 @@ class KeywordEditor(GridEditor, RideEventHandler):
             CellRenderer(col_size, max_col_size, auto_col_size, word_wrap))
         self.SetRowLabelSize(wx.grid.GRID_AUTOSIZE)
         self.SetColLabelSize(0)
-        self.SetDefaultColSize(col_size, resizeExistingCols=True)
+        self.SetDefaultColSize(wx.grid.GRID_AUTOSIZE, resizeExistingCols=True)
         if auto_col_size:
             self.Bind(grid.EVT_GRID_CMD_COL_SIZE, self.OnCellColSizeChanged)
         else:
@@ -404,6 +404,8 @@ class KeywordEditor(GridEditor, RideEventHandler):
 
     def cell_value_edited(self, row, col, value):
         self._execute(ChangeCellValue(row, col, value))
+        wx.CallAfter(self.AutoSizeColumn, col, False)
+        wx.CallAfter(self.AutoSizeRow, row, False)
 
     def get_selected_datafile_controller(self):
         return self._controller.datafile_controller
