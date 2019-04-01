@@ -68,7 +68,7 @@ class CellRenderer(wx.grid.GridCellRenderer):
                 col_width = min(w, self.max_width)
                 suggest_width = grid.GetColSize(col)
             else:
-                col_width = self.default_width
+                col_width = min(self.default_width, w)
                 suggest_width = col_width
             text = wordwrap.wordwrap(text, suggest_width, dc, breakLongWords=False)
             w, h = dc.GetMultiLineTextExtent(text)
@@ -80,6 +80,8 @@ class CellRenderer(wx.grid.GridCellRenderer):
             else:
                 col_width = min(w, grid.GetColSize(col))
 
+        # do not shrink col size (subtract col margin which is 10 pixels )
+        col_width = max(grid.GetColSize(col)-10, col_width)
         return wx.Size(col_width, row_height)
 
     def Clone(self):  # real signature unknown; restored from __doc__
