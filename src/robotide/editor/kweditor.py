@@ -146,11 +146,16 @@ class KeywordEditor(GridEditor, RideEventHandler):
             CellRenderer(col_size, max_col_size, auto_col_size, word_wrap))
         self.SetRowLabelSize(wx.grid.GRID_AUTOSIZE)
         self.SetColLabelSize(0)
-        self.SetDefaultColSize(wx.grid.GRID_AUTOSIZE, resizeExistingCols=True)
+        if not auto_col_size and not word_wrap:
+            self.SetDefaultColSize(col_size, resizeExistingCols=True)
+        else:
+            self.SetDefaultColSize(wx.grid.GRID_AUTOSIZE, resizeExistingCols=True)
+
         if auto_col_size:
             self.Bind(grid.EVT_GRID_CMD_COL_SIZE, self.OnCellColSizeChanged)
         else:
             self.Unbind(grid.EVT_GRID_CMD_COL_SIZE)
+
         if word_wrap:
             self.SetDefaultRowSize(wx.grid.GRID_AUTOSIZE)
         self.SetDefaultCellOverflow(False)  # DEBUG
@@ -558,13 +563,14 @@ class KeywordEditor(GridEditor, RideEventHandler):
             event.Skip()
         elif event.AltDown() and keycode == wx.WXK_RETURN:
             self._move_cursor_down(event)
-            event.Skip()
+            # event.Skip()
         elif keycode == wx.WXK_WINDOWS_MENU:
             self.OnCellRightClick(event)
         elif keycode in [wx.WXK_RETURN, wx.WXK_BACK]:
             if _iscelleditcontrolshown:
                 self.save()
-            event.Skip()
+            self._move_grid_cursor(event, keycode)
+            # event.Skip()
         elif (control_down or event.AltDown()) and \
                 keycode == wx.WXK_SPACE:  # Avoid Mac CMD
             self._open_cell_editor_with_content_assist()
