@@ -34,7 +34,7 @@ class CellRenderer(wx.grid.GridCellRenderer):
     def Draw(self, grid, attr, dc, rect, row, col, isSelected):
         text = grid.GetCellValue(row, col)
         dc.SetFont(attr.GetFont())
-        text = wordwrap.wordwrap(text, grid.GetColSize(col), dc, breakLongWords=False)
+        text = wordwrap.wordwrap(text, grid.GetColSize(col) + 10, dc, breakLongWords=False)
         hAlign, vAlign = attr.GetAlignment()
         if isSelected:
             bg = grid.GetSelectionBackground()
@@ -61,16 +61,14 @@ class CellRenderer(wx.grid.GridCellRenderer):
         if len(text) == 0:
             return dc.GetTextExtent("  ")  # self.default_width
 
-        # the margin for wordwrap is two widest characters in text + space (W is wide enough)
-        w, h = dc.GetTextExtent(text + "W W")
+        w, h = dc.GetTextExtent(text)
 
         if self.word_wrap:
             if self.auto_fit:
                 col_width = min(w, self.max_width)
-                suggest_width = grid.GetColSize(col)
             else:
                 col_width = min(self.default_width, w)
-                suggest_width = col_width
+            suggest_width = grid.GetColSize(col) + dc.GetTextExtent("w")[0]
             text = wordwrap.wordwrap(text, suggest_width, dc, breakLongWords=False)
             w, h = dc.GetMultiLineTextExtent(text)
             row_height = h
@@ -79,10 +77,10 @@ class CellRenderer(wx.grid.GridCellRenderer):
             if self.auto_fit:
                 col_width = min(w, self.max_width)
             else:
-                col_width = min(w, grid.GetColSize(col))
+                col_width = grid.GetColSize(col)
 
         # do not shrink col size (subtract col margin which is 10 pixels )
-        col_width = max(grid.GetColSize(col)-10, col_width)
+        col_width = max(grid.GetColSize(col) - 10, col_width)
         return wx.Size(col_width, row_height)
 
     def Clone(self):  # real signature unknown; restored from __doc__
