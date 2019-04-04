@@ -31,10 +31,42 @@ class CellRenderer(wx.grid.GridCellRenderer):
         self.auto_fit = auto_fit
         self.word_wrap = word_wrap
 
+    def _wordwrap(self, text, width, dc, breakLongWords=True, margin=0):
+        ''' modification of ofiginal wordwrap function without extra space'''
+        wrapped_lines = []
+        text = text.split('\n')
+        for line in text:
+            pte = dc.GetPartialTextExtents(line)
+            wid = (width - (2 * margin + 1) * dc.GetTextExtent(' ')[0])
+            idx = 0
+            start = 0
+            startIdx = 0
+            spcIdx = -1
+            while idx < len(pte):
+                # remember the last seen space
+                if line[idx] == ' ':
+                    spcIdx = idx
+
+                # have we reached the max width?
+                if pte[idx] - start > wid and (spcIdx != -1 or breakLongWords):
+                    if spcIdx != -1:
+                        idx = min(spcIdx + 1, len(pte) - 1)
+                    wrapped_lines.append(' ' * margin + line[startIdx: idx] + ' ' * margin)
+                    start = pte[idx]
+                    startIdx = idx
+                    spcIdx = -1
+
+                idx += 1
+
+            wrapped_lines.append(' ' * margin + line[startIdx: idx] + ' ' * margin)
+
+        return '\n'.join(wrapped_lines)
+
     def Draw(self, grid, attr, dc, rect, row, col, isSelected):
         text = grid.GetCellValue(row, col)
         dc.SetFont(attr.GetFont())
-        text = wordwrap.wordwrap(text, grid.GetColSize(col) + 10, dc, breakLongWords=False)
+        suggest_width = grid.GetColSize(col)
+        text = self._wordwrap(text, suggest_width, dc, breakLongWords=False)
         hAlign, vAlign = attr.GetAlignment()
         if isSelected:
             bg = grid.GetSelectionBackground()
@@ -67,9 +99,9 @@ class CellRenderer(wx.grid.GridCellRenderer):
             if self.auto_fit:
                 col_width = min(w, self.max_width)
             else:
-                col_width = min(self.default_width, w)
-            suggest_width = grid.GetColSize(col) + dc.GetTextExtent("w")[0]
-            text = wordwrap.wordwrap(text, suggest_width, dc, breakLongWords=False)
+                col_width = min(w, self.default_width)
+            suggest_width = grid.GetColSize(col)
+            text = self._wordwrap(text, suggest_width, dc, breakLongWords=False)
             w, h = dc.GetMultiLineTextExtent(text)
             row_height = h
         else:
