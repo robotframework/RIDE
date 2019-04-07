@@ -93,23 +93,20 @@ class CellRenderer(wx.grid.GridCellRenderer):
             return dc.GetTextExtent("  ")  # self.default_width
 
         w, h = dc.GetTextExtent(text)
-
-        if self.word_wrap:
         if self.auto_fit:
-                col_width = min(w, self.max_width)
+            col_width = min(w, self.max_width)
         else:
-                col_width = min(w, self.default_width)
-            suggest_width = grid.GetColSize(col)
+            col_width = min(w, self.default_width)
+        row_height = h
+        if self.word_wrap:
+            suggest_width = max(grid.GetColSize(col), col_width)
             text = self._wordwrap(text, suggest_width, dc, breakLongWords=False)
             w, h = dc.GetMultiLineTextExtent(text)
             row_height = h
-        else:
-            row_height = h
-        if self.auto_fit:
-                col_width = min(w, self.max_width)
-        else:
-                col_width = grid.GetColSize(col)
-
+            if self.auto_fit:
+                col_width = min(w, col_width)
+            else:
+                col_width = min(w, self.default_width)
         # do not shrink col size (subtract col margin which is 10 pixels )
         col_width = max(grid.GetColSize(col) - 10, col_width)
         return wx.Size(col_width, row_height)
