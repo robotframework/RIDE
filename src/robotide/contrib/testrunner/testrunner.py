@@ -63,7 +63,6 @@ if encoding:
 
 ATEXIT_LOCK = threading.RLock()
 
-
 # Solution from https://stackoverflow.com/questions/10009753/python-dealing-with-mixed-encoding-files
 def mixed_decoder(unicodeError):
     errStr = unicodeError[1]
@@ -296,7 +295,7 @@ class TestRunner(object):
             f = codecs.open(argfile, "wb")
             for item in args:
                 if is_unicode(item):
-                    enc_arg = item.encode(encoding.OUTPUT_ENCODING)
+                    enc_arg = item.encode(encoding.CONSOLE_ENCODING)  # DEBUG .OUTPUT_ENCODING)
                 else:
                     enc_arg = item
                 f.write(enc_arg+"\n")

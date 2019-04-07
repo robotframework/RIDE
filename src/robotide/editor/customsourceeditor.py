@@ -491,7 +491,7 @@ class SourceCodeEditor(PythonSTC):
 
         # Global default style
         if wx.Platform == '__WXMSW__':
-            print("DEBUG: Setup on Windows")
+            # print("DEBUG: Setup on Windows")
             self.StyleSetSpec(stc.STC_STYLE_DEFAULT,
                               'fore:#000000,back:#FFFFFF,face:Space Mono')  # Courier New')
         elif wx.Platform == '__WXMAC__':
@@ -584,16 +584,17 @@ class CodeEditorPanel(wx.Panel):
     """Panel for the 'Code Editor' tab"""
     def __init__(self, parent, mainFrame, path=None):
         self.log = sys.stdout  # From FileDialog
+        self.path = path
         wx.Panel.__init__(self, parent, size=(1,1))
         self.mainFrame = mainFrame
         self.editor = SourceCodeEditor(self)
         self.editor.RegisterModifiedEvent(self.OnCodeModified)
 
         self.btnSave = wx.Button(self, -1, "Save Changes")
-        self.btnRestore = wx.Button(self, -1, "Delete Modified")
+        # self.btnRestore = wx.Button(self, -1, "Delete Modified")
         self.btnSave.Enable(False)
         self.btnSave.Bind(wx.EVT_BUTTON, self.OnSave)
-        self.btnRestore.Bind(wx.EVT_BUTTON, self.OnRestore)
+        # self.btnRestore.Bind(wx.EVT_BUTTON, self.OnRestore)
 
         # From FileDialog
         self.btnOpen = wx.Button(self, -1, "Open...")
@@ -615,7 +616,7 @@ class CodeEditorPanel(wx.Panel):
             radioButton.Bind(wx.EVT_RADIOBUTTON, self.OnRadioButton)
 
         self.controlBox.Add(self.btnSave, 0, wx.RIGHT, 5)
-        self.controlBox.Add(self.btnRestore, 0, wx.RIGHT, 5)
+        # self.controlBox.Add(self.btnRestore, 0, wx.RIGHT, 5)
         self.controlBox.Add(self.btnOpen, 0, wx.RIGHT, 5)
         self.controlBox.Add(self.btnSaveAs, 0)
 
@@ -626,8 +627,9 @@ class CodeEditorPanel(wx.Panel):
 
         self.box.Fit(self)
         self.SetSizer(self.box)
-        if path:
-            self.LoadFile(path)
+        if self.path:
+            # print("DEBUG: path is init = %s" % self.path)
+            self.LoadFile(self.path)
 
     def LoadFile(self, path):
         # Open
@@ -691,19 +693,26 @@ class CodeEditorPanel(wx.Panel):
     def OnCodeModified(self, event):
         self.btnSave.Enable(self.editor.IsModified())
 
-    def OnSave(self, modifiedFilename):
-        if os.path.isfile(modifiedFilename):
-            overwriteMsg = "You are about to overwrite an existing file\n" + \
-                           "Do you want to continue?"
-            dlg = wx.MessageDialog(self, overwriteMsg, "Editor Writer",
-                                   wx.YES_NO | wx.NO_DEFAULT| wx.ICON_EXCLAMATION)
-            result = dlg.ShowModal()
-            if result == wx.ID_NO:
-                return
-            dlg.Destroy()
+    def OnSave(self, event, path=None):
+        if self.path is None:
+            self.path = "noname"
+            self.OnButton2(event)
+            return
+        # print("DEBUG: OnSave path is init = %s passado %s" % (self.path, path))
+        if path:
+            if path != self.path and os.path.isfile(path):
+                overwriteMsg = "You are about to overwrite an existing file\n" + \
+                               "Do you want to continue?"
+                dlg = wx.MessageDialog(self, overwriteMsg, "Editor Writer",
+                                       wx.YES_NO | wx.NO_DEFAULT| wx.ICON_EXCLAMATION)
+                result = dlg.ShowModal()
+                if result == wx.ID_NO:
+                    return
+                dlg.Destroy()
+            self.path = path
 
         # Save
-        f = open(modifiedFilename, "wb")
+        f = open(self.path, "wb")
         source = self.editor.GetTextRaw()
         # print("DEBUG: Test is Unicode %s",isUTF8Strict(source))
         if isUTF8Strict(source):
@@ -723,23 +732,8 @@ class CodeEditorPanel(wx.Panel):
                     f.write(''.join(data))
             finally:
                 f.close()
-            # idx = 0
-            # while source[idx]:
-            #     try:
-            #         s = bytes(source[idx:-1].encoding('UTF-8'))
-            #         bsource.append(s)
-            #         idx += len(s)
-            #     except:
-            #         print("DEBUG: index=%d" % idx)
-            #         idx += 1
-            #         bsource.append(source[idx])
-            # try:
-            #     f.write(bsource)
-            #     print("DEBUG: Saved bytes")
-            # finally:
-            #     f.close()
 
-        # busy = wx.BusyInfo("Reloading Code module...")
+    # busy = wx.BusyInfo("Reloading Code module...")
         # self.CodeModules.LoadFromFile(modModified, modifiedFilename)
         #self.ActiveModuleChanged()
 
@@ -766,9 +760,13 @@ class CodeEditorPanel(wx.Panel):
         #
         # Finally, if the directory is changed in the process of getting files, this
         # dialog is set up to change the current working directory to the path chosen.
+        if self.path:
+            cwd = os.path.dirname(self.path)
+        else:
+            cwd = os.getcwd()
         dlg = wx.FileDialog(
             self, message="Choose a file",
-            defaultDir=os.getcwd(),
+            defaultDir=cwd,
             defaultFile="",
             wildcard=wildcard,
             style=wx.FD_OPEN |
@@ -796,6 +794,8 @@ class CodeEditorPanel(wx.Panel):
             finally:
                 f.close()
 
+            # store the new path
+            self.path = path
             # self.log.write('%s\n' % source)
             self.LoadSource(source)  # Just the last file
         # Compare this with the debug above; did we change working dirs?
@@ -817,9 +817,16 @@ class CodeEditorPanel(wx.Panel):
         # Unlike the 'open dialog' example found elsewhere, this example does NOT
         # force the current working directory to change if the user chooses a different
         # directory than the one initially set.
+        fname = ""
+        if self.path:
+            cwd = os.path.dirname(self.path)
+            fname = os.path.basename(self.path)
+        else:
+            cwd = os.getcwd()
+            self.path = "noname"
         dlg = wx.FileDialog(
-            self, message="Save file as ...", defaultDir=os.getcwd(),
-            defaultFile="", wildcard=wildcard, style=wx.FD_SAVE
+            self, message="Save file as ...", defaultDir=cwd,
+            defaultFile=fname, wildcard=wildcard, style=wx.FD_SAVE
             )  # | wx.FD_OVERWRITE_PROMPT
 
         # This sets the default filter that the user will initially see. Otherwise,
@@ -846,7 +853,9 @@ class CodeEditorPanel(wx.Panel):
             #
             # You might want to add some error checking :-)
             #
-            self.OnSave(path)
+            # store the new path
+            # self.path = path
+            self.OnSave(evt, path)
         # Note that the current working dir didn't change. This is good since
         # that's the way we set it up.
         # self.log.WriteText("CWD: %s\n" % os.getcwd())

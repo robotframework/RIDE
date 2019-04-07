@@ -488,8 +488,9 @@ class TestRunnerPlugin(Plugin):
         """
         result = []
         for arg in argv:
-            # if PY2 and is_unicode(arg):
-            #    arg = arg.encode(encoding.OUTPUT_ENCODING)  # DEBUG "utf-8")
+            if PY2 and is_unicode(arg):
+                arg = arg.encode(encoding.CONSOLE_ENCODING)  # DEBUG "utf-8")
+                # print("DEBUG: PY2 unicode args %s" % arg)
             if "'" in arg or " " in arg or "&" in arg:
                 # for windows, if there are spaces we need to use
                 # double quotes. Single quotes cause problems
@@ -521,14 +522,20 @@ class TestRunnerPlugin(Plugin):
         try:
             if PY2:
                 # textctrl.AppendText(string.encode(encoding.OUTPUT_ENCODING)) # DEBUG encoding.CONSOLE_ENCODING))  # DEBUG 'utf-8'))
-                textctrl.AppendText(string.encode('utf-8'))  # encoding.SYSTEM_ENCODING))
+                textctrl.AppendText(string.encode(encoding.SYSTEM_ENCODING))  # encoding.SYSTEM_ENCODING)) 'utf-8'
             else:
                 textctrl.AppendText(str(string))  # DEBUG
         except UnicodeDecodeError as e:
             # I'm not sure why I sometimes get this, and I don't know what I
             # can do other than to ignore it.
             textctrl.AppendTextRaw(bytes(string))  # DEBUG .encode('utf-8'))
-            # print("DEBUG UnicodeDecodeError appendtext string=%s\n" % string)
+            # print(r"DEBUG UnicodeDecodeError appendtext string=%s\n" % string)
+            pass
+        except UnicodeEncodeError as e:
+            # I'm not sure why I sometimes get this, and I don't know what I
+            # can do other than to ignore it.
+            textctrl.AppendText(string.encode('utf-8'))  # DEBUG .encode('utf-8'))
+            # print(r"DEBUG UnicodeDecodeError appendtext string=%s\n" % string)
             pass
             #  raise  # DEBUG
 

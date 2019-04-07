@@ -38,6 +38,7 @@ class _ContentAssistTextCtrlBase(object):
         self.Bind(wx.EVT_KEY_DOWN, self.OnChar)
         self.Bind(wx.EVT_KILL_FOCUS, self.OnFocusLost)
         self.Bind(wx.EVT_MOVE, self.OnFocusLost)
+        self.Bind(wx.EVT_WINDOW_DESTROY, self.OnDestroy)
         self._showing_content_assist = False
         self._row = None
         self.gherkin_prefix = ''  # Store gherkin prefix from input to add \
@@ -91,8 +92,8 @@ class _ContentAssistTextCtrlBase(object):
         return value[:from_]+symbol+'{'+value[from_:to_]+'}'+value[to_:]
 
     def OnFocusLost(self, event, set_value=True):
+        event.Skip()
         if not self._popup.is_shown():
-            event.Skip()
             return
         if self.gherkin_prefix:
             value = self.gherkin_prefix + self._popup.get_value() or self.GetValue()
@@ -104,7 +105,12 @@ class _ContentAssistTextCtrlBase(object):
         else:
             self.Clear()
         self.hide()
-        event.Skip()
+
+    def OnDestroy(self, event):
+        # all pushed eventHandlers need to be popped before close
+        # the last event handler is window object itself - do not pop itself
+        while self.GetEventHandler() is not self:
+            self.PopEventHandler()
 
     def reset(self):
         self._popup.reset()
