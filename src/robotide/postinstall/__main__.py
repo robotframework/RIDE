@@ -45,7 +45,7 @@ def verify_install():
                          "or pip install wxPython")
         return False
     else:
-        sys.stderr.write("wxPython is installed.\n%s" % version())
+        sys.stderr.write("wxPython is installed.\n%s\n" % version())
         return True
 
 
