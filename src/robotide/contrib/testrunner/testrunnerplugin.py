@@ -302,9 +302,10 @@ class TestRunnerPlugin(Plugin):
         command = self._create_command()
         self._output("command: %s\n" % command)  # DEBUG encode
         try:
-            if PY2 and IS_WINDOWS:
+            if PY2:  # and IS_WINDOWS:
                 cwd = self._get_current_working_dir()  # DEBUG It fails if a directory has chinese or latin symbols
                 cwd = cwd.encode(encoding.SYSTEM_ENCODING)
+                # print("DEBUG: encoded cwd: %s" % cwd)
                 self._test_runner.run_command(command, cwd)
             else:
                 self._test_runner.run_command(command, self._get_current_working_dir())
@@ -313,7 +314,7 @@ class TestRunnerPlugin(Plugin):
             self._set_running()
             self._progress_bar.Start()
         except Exception as e:
-            # self._output("DEBUG: Except block test_runner.run_command\n")
+            self._output("DEBUG: Except block test_runner.run_command\n")
             self._set_stopped()
             error, log_message = self.get_current_profile().format_error(str(e), None)  # DEBUG unicode(e)
             self._output(error)

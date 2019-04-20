@@ -52,25 +52,32 @@ from robotide.robotapi import LOG_LEVELS
 from robotide.context import IS_WINDOWS
 from robotide.contrib.testrunner import TestRunnerAgent
 from robotide.controller.testexecutionresults import TestExecutionResults
-from robotide.utils import PY2, is_unicode # , unicode
+from robotide.utils import PY2, is_unicode
 try:
     from robotide.lib.robot.utils import encoding
 except ImportError:
-    encoding = None
+    from robotide.lib.robot.utils.encodingsniffer import (get_console_encoding,
+                                                          get_system_encoding)
+    CONSOLE_ENCODING = get_console_encoding()
+    SYSTEM_ENCODING = get_system_encoding()
+    encoding = {'CONSOLE': CONSOLE_ENCODING,
+                'SYSTEM': SYSTEM_ENCODING}
+
 # DEBUG we are forcing UTF-8
-if encoding:
-    encoding.OUTPUT_ENCODING = sys.getfilesystemencoding()  # 'UTF-8'
+encoding.OUTPUT_ENCODING = sys.getfilesystemencoding()  # 'UTF-8'
 
 ATEXIT_LOCK = threading.RLock()
 
-# Solution from https://stackoverflow.com/questions/10009753/python-dealing-with-mixed-encoding-files
-def mixed_decoder(unicodeError):
-    errStr = unicodeError[1]
-    errLen = unicodeError.end - unicodeError.start
-    nextPosition = unicodeError.start + errLen
-    errHex = errStr[unicodeError.start:unicodeError.end].encode('hex')
-    # return u'?', nextPosition
-    return u'%s' % errHex, nextPosition  # Comment this line out to get a question mark
+
+# Solution from https://stackoverflow.com/questions/10009753/
+# python-dealing-with-mixed-encoding-files
+def mixed_decoder(unicode_error):
+    err_str = unicode_error[1]
+    err_len = unicode_error.end - unicode_error.start
+    next_position = unicode_error.start + err_len
+    err_hex = err_str[unicode_error.start:unicode_error.end].encode('hex')
+    # Alternative, return u'?', next_position
+    return u'%s' % err_hex, next_position  # Comment this line out to get a ?
 
 
 codecs.register_error("mixed", mixed_decoder)
@@ -212,10 +219,7 @@ class TestRunner(object):
 
     def run_command(self, command, cwd):
         self._pid_to_kill = None
-        if IS_WINDOWS:
-            self._process = Process(cwd)  # .encode(encoding.SYSTEM_ENCODING))
-        else:
-            self._process = Process(cwd.encode(encoding.OUTPUT_ENCODING))
+        self._process = Process(cwd)  # .encode(encoding.SYSTEM_ENCODING))
         # print("DEBUG: run_command command: %s\nCWD: %s\n" % (command, cwd))
         self._process.run_command(command)
 
@@ -348,10 +352,7 @@ class Process(object):
         else:
             subprocess_args['preexec_fn'] = os.setsid
             subprocess_args['shell'] = True
-        if IS_WINDOWS:
-            self._process = subprocess.Popen(command, **subprocess_args)
-        else:
-            self._process = subprocess.Popen(command.encode(encoding.OUTPUT_ENCODING), **subprocess_args)
+        self._process = subprocess.Popen(command, **subprocess_args)
         self._process.stdin.close()
         self._output_stream = StreamReaderThread(self._process.stdout)
         self._error_stream = StreamReaderThread(self._process.stderr)
