@@ -72,9 +72,21 @@ from sys import getfilesystemencoding
 try:
     from robotide.lib.robot.utils import encoding
 except ImportError:
-    encoding = None
+    # encoding = None
 # if encoding:
 #     encoding.CONSOLE_ENCODING = getfilesystemencoding()
+    from robotide.lib.robot.utils.encodingsniffer import (get_console_encoding,
+                                                          get_system_encoding)
+    CONSOLE_ENCODING = get_console_encoding()
+    SYSTEM_ENCODING = get_system_encoding()
+    encoding = {'CONSOLE': CONSOLE_ENCODING,
+                'SYSTEM': SYSTEM_ENCODING}
+
+# DEBUG we are forcing UTF-8
+if IS_WINDOWS:
+    encoding.OUTPUT_ENCODING = 'mbcs'
+else:
+    encoding.OUTPUT_ENCODING = getfilesystemencoding()  # 'UTF-8'
 
 if PY3:
     from robotide.utils import unicode
@@ -314,7 +326,7 @@ class TestRunnerPlugin(Plugin):
             self._set_running()
             self._progress_bar.Start()
         except Exception as e:
-            self._output("DEBUG: Except block test_runner.run_command\n")
+            # self._output("DEBUG: Except block test_runner.run_command\n")
             self._set_stopped()
             error, log_message = self.get_current_profile().format_error(str(e), None)  # DEBUG unicode(e)
             self._output(error)
@@ -470,8 +482,12 @@ class TestRunnerPlugin(Plugin):
         if self.message_log and not self._messages_log_texts.empty():
             texts = []
             while not self._messages_log_texts.empty():
-                texts += [self._messages_log_texts.get()]
+                if PY2:
+                    texts += [self._messages_log_texts.get().encode('utf-8')]   # DEBUG
+                else:
+                    texts += [self._messages_log_texts.get()]
             self._AppendText(self.message_log, '\n'+'\n'.join(texts))
+
 
     def GetLastOutputChar(self):
         """Return the last character in the output window"""
@@ -490,7 +506,7 @@ class TestRunnerPlugin(Plugin):
         result = []
         for arg in argv:
             if PY2 and is_unicode(arg):
-                arg = arg.encode(encoding.CONSOLE_ENCODING)  # DEBUG "utf-8")
+                arg = arg.encode(encoding.OUTPUT_ENCODING)  # DEBUG "utf-8") CONSOLE_ENCODING
                 # print("DEBUG: PY2 unicode args %s" % arg)
             if "'" in arg or " " in arg or "&" in arg:
                 # for windows, if there are spaces we need to use
@@ -521,15 +537,20 @@ class TestRunnerPlugin(Plugin):
 
         textctrl.SetReadOnly(False)
         try:
-            if PY2:
-                # textctrl.AppendText(string.encode(encoding.OUTPUT_ENCODING)) # DEBUG encoding.CONSOLE_ENCODING))  # DEBUG 'utf-8'))
-                textctrl.AppendText(string.encode(encoding.SYSTEM_ENCODING))  # encoding.SYSTEM_ENCODING)) 'utf-8'
-            else:
-                textctrl.AppendText(str(string))  # DEBUG
+            # if PY2:
+            textctrl.AppendText(string.encode(encoding.OUTPUT_ENCODING))  # encoding.SYSTEM_ENCODING)) 'utf-8'
+            #else:
+            #    textctrl.AppendText(str(string))  # DEBUG
         except UnicodeDecodeError as e:
             # I'm not sure why I sometimes get this, and I don't know what I
             # can do other than to ignore it.
-            textctrl.AppendTextRaw(bytes(string))  # DEBUG .encode('utf-8'))
+            if PY2:
+                if is_unicode(string):
+                    textctrl.AppendTextRaw(bytes(string.encode('utf-8')))
+                else:
+                    textctrl.AppendTextRaw(string)
+            else:
+                textctrl.AppendTextRaw(bytes(string, encoding.OUTPUT_ENCODING))  # DEBUG .encode('utf-8'))
             # print(r"DEBUG UnicodeDecodeError appendtext string=%s\n" % string)
             pass
         except UnicodeEncodeError as e:

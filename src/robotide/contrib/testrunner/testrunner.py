@@ -64,7 +64,11 @@ except ImportError:
                 'SYSTEM': SYSTEM_ENCODING}
 
 # DEBUG we are forcing UTF-8
-encoding.OUTPUT_ENCODING = sys.getfilesystemencoding()  # 'UTF-8'
+if IS_WINDOWS:
+    encoding.OUTPUT_ENCODING = 'mbcs'
+else:
+    encoding.OUTPUT_ENCODING = sys.getfilesystemencoding()  # 'UTF-8'
+# print("DEBUG: console %s system %s output %s" % (encoding.CONSOLE_ENCODING, encoding.SYSTEM_ENCODING, encoding.OUTPUT_ENCODING))
 
 ATEXIT_LOCK = threading.RLock()
 
@@ -295,14 +299,23 @@ class TestRunner(object):
 
     @staticmethod
     def _write_argfile(argfile, args):
-        if PY2:
-            f = codecs.open(argfile, "wb")
+        if PY2 or IS_WINDOWS:
+            f = codecs.open(argfile, "wb") #, encoding=encoding.OUTPUT_ENCODING)
             for item in args:
                 if is_unicode(item):
-                    enc_arg = item.encode(encoding.CONSOLE_ENCODING)  # DEBUG .OUTPUT_ENCODING)
+                    enc_arg = item.encode('utf-8') # encoding.OUTPUT_ENCODING)  # DEBUG CONSOLE_ENCODING
                 else:
                     enc_arg = item
-                f.write(enc_arg+"\n")
+                try:
+                    f.write(enc_arg) #.encode(encoding.OUTPUT_ENCODING))
+                    f.write("\n".encode(encoding.OUTPUT_ENCODING))
+                except UnicodeError:
+                    if PY2:
+                        f.write(bytes(item))
+                    else:
+                        f.write(bytes(item, 'utf-8'))
+                    f.write(b"\n")
+                    # print("DEBUG: unicodedecodeerror when writting arg file")
         else:
             f = codecs.open(argfile, "w", "utf-8")
             f.write("\n".join(args))
@@ -407,7 +420,9 @@ class Process(object):
             if PY2:
                 sock.send(data)
             else:
-                sock.send(bytes(data, encoding.SYSTEM_ENCODING))
+                sock.send(bytes(data, encoding.OUTPUT_ENCODING)) #DEBUG SYSTEM_ENCODING
+        except Exception:
+            print(r"DEBUG: Exception at send socket %s" % data)
         finally:
             sock.close()
 
