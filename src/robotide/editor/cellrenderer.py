@@ -30,10 +30,42 @@ class CellRenderer(wx.grid.GridCellRenderer):
         self.auto_fit = auto_fit
         self.word_wrap = word_wrap
 
+    def _wordwrap(self, text, width, dc, breakLongWords=True, margin=0):
+        ''' modification of ofiginal wordwrap function without extra space'''
+        wrapped_lines = []
+        text = text.split('\n')
+        for line in text:
+            pte = dc.GetPartialTextExtents(line)
+            wid = (width - (2 * margin + 1) * dc.GetTextExtent(' ')[0])
+            idx = 0
+            start = 0
+            startIdx = 0
+            spcIdx = -1
+            while idx < len(pte):
+                # remember the last seen space
+                if line[idx] == ' ':
+                    spcIdx = idx
+
+                # have we reached the max width?
+                if pte[idx] - start > wid and (spcIdx != -1 or breakLongWords):
+                    if spcIdx != -1:
+                        idx = min(spcIdx + 1, len(pte) - 1)
+                    wrapped_lines.append(' ' * margin + line[startIdx: idx] + ' ' * margin)
+                    start = pte[idx]
+                    startIdx = idx
+                    spcIdx = -1
+
+                idx += 1
+
+            wrapped_lines.append(' ' * margin + line[startIdx: idx] + ' ' * margin)
+
+        return '\n'.join(wrapped_lines)
+
     def Draw(self, grid, attr, dc, rect, row, col, isSelected):
         text = grid.GetCellValue(row, col)
         dc.SetFont(attr.GetFont())
-        text = wordwrap.wordwrap(text, grid.GetColSize(col), dc, breakLongWords=False)
+        suggest_width = grid.GetColSize(col)
+        text = self._wordwrap(text, suggest_width, dc, breakLongWords=False)
         hAlign, vAlign = attr.GetAlignment()
         if isSelected:
             bg = grid.GetSelectionBackground()
@@ -57,35 +89,27 @@ class CellRenderer(wx.grid.GridCellRenderer):
         _font = attr.GetFont()
         dc.SetFont(_font)
 
-        col_width = grid.GetColSize(col)
-        # margin = 2  # get border width into account when submitting optimal col size
-        margin = 0
-        w, h = _font.GetPixelSize()
-        if len(text) > 0:
-            w_sz = w * len(text) + 2 * w
-        else:
-            return wx.Size(2 * w, h)  # self.default_width
+        if len(text) == 0:
+            return dc.GetTextExtent("  ")  # self.default_width
 
+        w, h = dc.GetTextExtent(text)
         if self.auto_fit:
-            col_width = min(w_sz, col_width)
-            if col_width > self.max_width:
-                col_width = self.max_width
+            col_width = min(w, self.max_width)
         else:
-            col_width = min(w_sz, self.default_width)
-
+            col_width = min(w, self.default_width)
+        row_height = h
         if self.word_wrap:
-            text = wordwrap.wordwrap(text, col_width, dc, breakLongWords=False,
-                                     margin=margin)
+            suggest_width = max(grid.GetColSize(col), col_width)
+            text = self._wordwrap(text, suggest_width, dc, breakLongWords=False)
             w, h = dc.GetMultiLineTextExtent(text)
-        else:
-            w = col_width
-        if self.auto_fit:
-            if w_sz > self.max_width:
-                w_sz = self.max_width
-            w = max(w, w_sz)
-        else:
-            return wx.Size(self.default_width, h)
-        return wx.Size(w, h)
+            row_height = h
+            if self.auto_fit:
+                col_width = min(w, col_width)
+            else:
+                col_width = min(w, self.default_width)
+        # do not shrink col size (subtract col margin which is 10 pixels )
+        col_width = max(grid.GetColSize(col) - 10, col_width)
+        return wx.Size(col_width, row_height)
 
     def Clone(self):  # real signature unknown; restored from __doc__
         """ Clone(self) -> GridCellRenderer """

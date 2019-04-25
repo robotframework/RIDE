@@ -42,7 +42,6 @@ class GridEditor(grid.Grid):
         self.Bind(grid.EVT_GRID_SELECT_CELL, self.OnSelectCell)
         self.Bind(grid.EVT_GRID_RANGE_SELECT, self.OnRangeSelect)
         self.Bind(grid.EVT_GRID_CELL_RIGHT_CLICK, self.OnCellRightClick)
-        self.Bind(grid.EVT_GRID_CMD_COL_SIZE, self.OnCellColSizeChanged)
 
     def register_context_menu_hook(self, callable):
         self._popup_creator.add_hook(callable)
@@ -159,8 +158,8 @@ class GridEditor(grid.Grid):
         for row_index, row_data in enumerate(data):
             for col_index, cell_value in enumerate(row_data):
                 self.write_cell(row_index, col_index, cell_value, update_history)
-        self.AutoSizeColumns()
-        self.AutoSizeRows()
+        # self.AutoSizeColumns()
+        # self.AutoSizeRows()
         self.EndBatch()
 
     def OnSelectCell(self, event):
@@ -194,11 +193,6 @@ class GridEditor(grid.Grid):
                 self.selection.set_from_single_selection(event)
         self._popup_creator.show(self, PopupMenuItems(self, self._popup_items),
                                  self.get_selected_content())
-
-    def OnCellColSizeChanged(self, event):
-        self.ForceRefresh()
-        self.AutoSizeRows()
-        event.Skip()
 
     # TODO This code is overriden at fieldeditors
     def OnInsertCells(self, event):
