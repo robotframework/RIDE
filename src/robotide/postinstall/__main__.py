@@ -225,7 +225,7 @@ def caller(frame, platform):
     global option_q
     global option_f
     option_q = None
-    option_f = True
+    option_f = frame is not None
     # We don't verify install because called from RIDE
     return create_desktop_shortcut(platform, frame)
 

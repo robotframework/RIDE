@@ -87,7 +87,7 @@ setup(
     # Robot Framework package data is not included, but RIDE does not need it.
     # Always install everything, since we may be switching between versions
     options={'install': {'force': True}},
-    scripts=['src/bin/ride.py'],
+    scripts=['src/bin/ride.py', 'src/bin/ride_postinstall.py'],
     cmdclass={'install': CustomInstallCommand},
     requires=['Pygments', 'wxPython', 'PyPubSub']
 )
