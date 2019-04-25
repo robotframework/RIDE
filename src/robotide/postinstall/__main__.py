@@ -169,7 +169,7 @@ def _create_desktop_shortcut_mac(frame=None):
         roboticon = "/Library/Python/{0}/site-packages/robotide/widgets/robot."
         "png".format(sys.version[:3])  # TODO: Find a way to change shortcut icon
         with open(link, "w+") as shortcut:
-            shortcut.write("#!/usr/bin/sh\n%s -m robotide.__init__ $* &\n" %
+            shortcut.write("#!/bin/sh\n%s -m robotide.__init__ $* &\n" %
                            sys.executable)
         uid = pwd.getpwnam(user).pw_uid
         os.chown(link, uid, -1)  # groupid == -1 means keep unchanged
