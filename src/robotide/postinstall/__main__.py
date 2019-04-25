@@ -156,8 +156,12 @@ def _create_desktop_shortcut_mac(frame=None):
     import os
     import subprocess
     import pwd
-    user = subprocess.check_output(['logname']).strip()
-    link = os.path.join("/Users", user, "Desktop", "RIDE")
+    if PY2:
+        user = unicode(subprocess.check_output(['logname']).strip())
+    else:
+        user = str(subprocess.check_output(['logname']).strip(),
+                   encoding='utf-8')
+    link = os.path.join("/Users", user, "Desktop", "RIDE.command")
     if not exists(link) or option_f:
         if not option_q and not option_f:
             if not _askyesno("Setup", "Create desktop shortcut?", frame):
@@ -225,7 +229,7 @@ def caller(frame, platform):
     global option_q
     global option_f
     option_q = None
-    option_f = True
+    option_f = frame is not None
     # We don't verify install because called from RIDE
     return create_desktop_shortcut(platform, frame)
 

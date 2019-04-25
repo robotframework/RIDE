@@ -17,12 +17,11 @@
 
 import os
 import sys
+from robotide.postinstall import __main__ as postinstall
 
 # Must be protected against reimporting
 # As multiprocessing has an odd requirement
 # and we use multiprocessing
 # http://docs.python.org/library/multiprocessing.html#windows
 if __name__ == '__main__':
-    arg = " ".join(sys.argv[1:]) if len(sys.argv[1:]) > 0 else "-help"
-    py = sys.executable
-    os.system("{} -m robotide.postinstall {}\n".format(py,arg))
+    postinstall.caller(None, sys.platform.lower())
