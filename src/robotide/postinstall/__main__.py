@@ -156,7 +156,11 @@ def _create_desktop_shortcut_mac(frame=None):
     import os
     import subprocess
     import pwd
-    user = subprocess.check_output(['logname']).strip()
+    if PY2:
+        user = unicode(subprocess.check_output(['logname']).strip())
+    else:
+        user = str(subprocess.check_output(['logname']).strip(),
+                   encoding='utf-8')
     link = os.path.join("/Users", user, "Desktop", "RIDE.command")
     if not exists(link) or option_f:
         if not option_q and not option_f:
