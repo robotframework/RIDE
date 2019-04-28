@@ -84,7 +84,7 @@ def mixed_decoder(unicode_error):
     return u'%s' % err_hex, next_position  # Comment this line out to get a ?
 
 
-codecs.register_error("mixed", mixed_decoder)
+# codecs.register_error("mixed", mixed_decoder)
 
 
 class TestRunner(object):
@@ -421,8 +421,8 @@ class Process(object):
                 sock.send(data)
             else:
                 sock.send(bytes(data, encoding.OUTPUT_ENCODING)) #DEBUG SYSTEM_ENCODING
-        except Exception:
-            print(r"DEBUG: Exception at send socket %s" % data)
+        # except Exception:
+        #     print(r"DEBUG: Exception at send socket %s" % data)
         finally:
             sock.close()
 
