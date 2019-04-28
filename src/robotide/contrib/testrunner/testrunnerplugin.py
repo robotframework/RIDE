@@ -81,7 +81,7 @@ encoding = {'CONSOLE': CONSOLE_ENCODING,
             'SYSTEM': SYSTEM_ENCODING,
             'OUTPUT': OUTPUT_ENCODING}
 
-#print("DEBUG: TestRunnerPlugin encoding=%s" % encoding)
+# print("DEBUG: TestRunnerPlugin encoding=%s" % encoding)
 
 ID_RUN = wx.NewId()
 ID_RUNDEBUG = wx.NewId()
@@ -307,7 +307,7 @@ class TestRunnerPlugin(Plugin):
         else:
             self._output("command: %s\n" % command, enc=False)  # DEBUG on Py3 it not shows correct if tags with latin chars
         try:
-            if PY2:  # and IS_WINDOWS:
+            if PY2 and IS_WINDOWS:
                 cwd = self._get_current_working_dir()  # DEBUG It fails if a directory has chinese or latin symbols
                 cwd = cwd.encode(encoding['OUTPUT']) # DEBUG SYSTEM_ENCODING
                 # print("DEBUG: encoded cwd: %s" % cwd)
