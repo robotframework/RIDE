@@ -237,8 +237,12 @@ class PybotProfile(BaseProfile):
     def ArgumentsPanel(self, parent):
         panel = wx.Panel(parent, wx.ID_ANY)
         label = Label(panel, label="Arguments: ")
-        self._arguments = wx.TextCtrl(
-            panel, wx.ID_ANY, size=(-1, -1), value=self.arguments)
+        try:
+            self._arguments = wx.TextCtrl(
+                panel, wx.ID_ANY, size=(-1, -1), value=self.arguments)
+        except UnicodeDecodeError:
+            self._arguments = wx.TextCtrl(
+                panel, wx.ID_ANY, size=(-1, -1), value="removed due unicode_error (delete this)")
         # DEBUG wxPhoenix SetToolTipString
         self.MySetToolTip(self._arguments,
                           "Arguments for the test run. Arguments are space separated list.")
