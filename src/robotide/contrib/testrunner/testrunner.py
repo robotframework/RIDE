@@ -52,28 +52,39 @@ from robotide.robotapi import LOG_LEVELS
 from robotide.context import IS_WINDOWS
 from robotide.contrib.testrunner import TestRunnerAgent
 from robotide.controller.testexecutionresults import TestExecutionResults
-from robotide.utils import PY2, is_unicode # , unicode
+from robotide.utils import PY2, is_unicode
 try:
     from robotide.lib.robot.utils import encoding
 except ImportError:
-    encoding = None
+    from robotide.lib.robot.utils.encodingsniffer import (get_console_encoding,
+                                                          get_system_encoding)
+    CONSOLE_ENCODING = get_console_encoding()
+    SYSTEM_ENCODING = get_system_encoding()
+    encoding = {'CONSOLE': CONSOLE_ENCODING,
+                'SYSTEM': SYSTEM_ENCODING}
+
 # DEBUG we are forcing UTF-8
-if encoding:
+if IS_WINDOWS:
+    encoding.OUTPUT_ENCODING = 'mbcs'
+else:
     encoding.OUTPUT_ENCODING = sys.getfilesystemencoding()  # 'UTF-8'
+# print("DEBUG: console %s system %s output %s" % (encoding.CONSOLE_ENCODING, encoding.SYSTEM_ENCODING, encoding.OUTPUT_ENCODING))
 
 ATEXIT_LOCK = threading.RLock()
 
-# Solution from https://stackoverflow.com/questions/10009753/python-dealing-with-mixed-encoding-files
-def mixed_decoder(unicodeError):
-    errStr = unicodeError[1]
-    errLen = unicodeError.end - unicodeError.start
-    nextPosition = unicodeError.start + errLen
-    errHex = errStr[unicodeError.start:unicodeError.end].encode('hex')
-    # return u'?', nextPosition
-    return u'%s' % errHex, nextPosition  # Comment this line out to get a question mark
+
+# Solution from https://stackoverflow.com/questions/10009753/
+# python-dealing-with-mixed-encoding-files
+def mixed_decoder(unicode_error):
+    err_str = unicode_error[1]
+    err_len = unicode_error.end - unicode_error.start
+    next_position = unicode_error.start + err_len
+    err_hex = err_str[unicode_error.start:unicode_error.end].encode('hex')
+    # Alternative, return u'?', next_position
+    return u'%s' % err_hex, next_position  # Comment this line out to get a ?
 
 
-codecs.register_error("mixed", mixed_decoder)
+# codecs.register_error("mixed", mixed_decoder)
 
 
 class TestRunner(object):
@@ -212,10 +223,7 @@ class TestRunner(object):
 
     def run_command(self, command, cwd):
         self._pid_to_kill = None
-        if IS_WINDOWS:
-            self._process = Process(cwd)  # .encode(encoding.SYSTEM_ENCODING))
-        else:
-            self._process = Process(cwd.encode(encoding.OUTPUT_ENCODING))
+        self._process = Process(cwd)  # .encode(encoding.SYSTEM_ENCODING))
         # print("DEBUG: run_command command: %s\nCWD: %s\n" % (command, cwd))
         self._process.run_command(command)
 
@@ -291,14 +299,23 @@ class TestRunner(object):
 
     @staticmethod
     def _write_argfile(argfile, args):
-        if PY2:
-            f = codecs.open(argfile, "wb")
+        if PY2 or IS_WINDOWS:
+            f = codecs.open(argfile, "wb") #, encoding=encoding.OUTPUT_ENCODING)
             for item in args:
                 if is_unicode(item):
-                    enc_arg = item.encode(encoding.CONSOLE_ENCODING)  # DEBUG .OUTPUT_ENCODING)
+                    enc_arg = item.encode('utf-8') # encoding.OUTPUT_ENCODING)  # DEBUG CONSOLE_ENCODING
                 else:
                     enc_arg = item
-                f.write(enc_arg+"\n")
+                try:
+                    f.write(enc_arg) #.encode(encoding.OUTPUT_ENCODING))
+                    f.write("\n".encode(encoding.OUTPUT_ENCODING))
+                except UnicodeError:
+                    if PY2:
+                        f.write(bytes(item))
+                    else:
+                        f.write(bytes(item, 'utf-8'))
+                    f.write(b"\n")
+                    # print("DEBUG: unicodedecodeerror when writting arg file")
         else:
             f = codecs.open(argfile, "w", "utf-8")
             f.write("\n".join(args))
@@ -348,10 +365,7 @@ class Process(object):
         else:
             subprocess_args['preexec_fn'] = os.setsid
             subprocess_args['shell'] = True
-        if IS_WINDOWS:
-            self._process = subprocess.Popen(command, **subprocess_args)
-        else:
-            self._process = subprocess.Popen(command.encode(encoding.OUTPUT_ENCODING), **subprocess_args)
+        self._process = subprocess.Popen(command, **subprocess_args)
         self._process.stdin.close()
         self._output_stream = StreamReaderThread(self._process.stdout)
         self._error_stream = StreamReaderThread(self._process.stderr)
@@ -406,7 +420,9 @@ class Process(object):
             if PY2:
                 sock.send(data)
             else:
-                sock.send(bytes(data, encoding.SYSTEM_ENCODING))
+                sock.send(bytes(data, encoding.OUTPUT_ENCODING)) #DEBUG SYSTEM_ENCODING
+        # except Exception:
+        #     print(r"DEBUG: Exception at send socket %s" % data)
         finally:
             sock.close()
 

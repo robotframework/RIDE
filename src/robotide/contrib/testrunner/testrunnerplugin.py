@@ -67,19 +67,21 @@ from robotide.publish.messages import RideTestSelectedForRunningChanged
 from robotide.pluginapi import Plugin, ActionInfo
 from robotide.widgets import Label, ImageProvider
 from robotide.robotapi import LOG_LEVELS
-from robotide.utils import robottime, is_unicode, PY2, PY3
+from robotide.utils import robottime, is_unicode, PY2
 from sys import getfilesystemencoding
-try:
-    from robotide.lib.robot.utils import encoding
-except ImportError:
-    encoding = None
-# if encoding:
-#     encoding.CONSOLE_ENCODING = getfilesystemencoding()
+from robotide.lib.robot.utils.encodingsniffer import (get_console_encoding,
+                                                      get_system_encoding)
+CONSOLE_ENCODING = get_console_encoding()
+if PY2 and IS_WINDOWS:
+    SYSTEM_ENCODING = 'mbcs'
+else:
+    SYSTEM_ENCODING = get_system_encoding()
+OUTPUT_ENCODING = getfilesystemencoding()
+encoding = {'CONSOLE': CONSOLE_ENCODING,
+            'SYSTEM': SYSTEM_ENCODING,
+            'OUTPUT': OUTPUT_ENCODING}
 
-if PY3:
-    from robotide.utils import unicode
-
-# print("DEBUG: TestRunnerPlugin encoding=%s" % encoding)
+#print("DEBUG: TestRunnerPlugin encoding=%s" % encoding)
 
 ID_RUN = wx.NewId()
 ID_RUNDEBUG = wx.NewId()
@@ -300,12 +302,16 @@ class TestRunnerPlugin(Plugin):
                 return
         self._initialize_ui_for_running()
         command = self._create_command()
-        self._output("command: %s\n" % command)  # DEBUG encode
+        if PY2:
+            self._output("command: %s\n" % command)  # DEBUG encode
+        else:
+            self._output("command: %s\n" % command, enc=False)  # DEBUG on Py3 it not shows correct if tags with latin chars
         try:
-            if PY2 and IS_WINDOWS:
+            if PY2:  # and IS_WINDOWS:
                 cwd = self._get_current_working_dir()  # DEBUG It fails if a directory has chinese or latin symbols
-                cwd = cwd.encode(encoding.SYSTEM_ENCODING)
-                self._test_runner.run_command(command, cwd)
+                cwd = cwd.encode(encoding['OUTPUT']) # DEBUG SYSTEM_ENCODING
+                # print("DEBUG: encoded cwd: %s" % cwd)
+                self._test_runner.run_command(command.encode(encoding['OUTPUT']), cwd)  # --include Áçãoµ
             else:
                 self._test_runner.run_command(command, self._get_current_working_dir())
             # self._output("DEBUG: Passed test_runner.run_command\n")
@@ -489,7 +495,7 @@ class TestRunnerPlugin(Plugin):
         result = []
         for arg in argv:
             if PY2 and is_unicode(arg):
-                arg = arg.encode(encoding.CONSOLE_ENCODING)  # DEBUG "utf-8")
+                arg = arg.encode(encoding['SYSTEM'])  # DEBUG "utf-8") CONSOLE_ENCODING
                 # print("DEBUG: PY2 unicode args %s" % arg)
             if "'" in arg or " " in arg or "&" in arg:
                 # for windows, if there are spaces we need to use
@@ -508,7 +514,7 @@ class TestRunnerPlugin(Plugin):
             self._reload_model()
         self.show_tab(self.panel)
 
-    def _AppendText(self, textctrl, string, source="stdout"):
+    def _AppendText(self, textctrl, string, source="stdout", enc=True):
         if not self.panel or not textctrl:
             return
         textctrl.update_scroll_width(string)
@@ -520,15 +526,21 @@ class TestRunnerPlugin(Plugin):
 
         textctrl.SetReadOnly(False)
         try:
-            if PY2:
-                # textctrl.AppendText(string.encode(encoding.OUTPUT_ENCODING)) # DEBUG encoding.CONSOLE_ENCODING))  # DEBUG 'utf-8'))
-                textctrl.AppendText(string.encode(encoding.SYSTEM_ENCODING))  # encoding.SYSTEM_ENCODING)) 'utf-8'
+            if enc:
+                textctrl.AppendText(string.encode(encoding['SYSTEM']))
             else:
-                textctrl.AppendText(str(string))  # DEBUG
+                textctrl.AppendText(string)
+            # print("DEBUG _AppendText Printed OK")
         except UnicodeDecodeError as e:
             # I'm not sure why I sometimes get this, and I don't know what I
             # can do other than to ignore it.
-            textctrl.AppendTextRaw(bytes(string))  # DEBUG .encode('utf-8'))
+            if PY2:
+                if is_unicode(string):
+                    textctrl.AppendTextRaw(bytes(string.encode('utf-8')))
+                else:
+                    textctrl.AppendTextRaw(string)
+            else:
+                textctrl.AppendTextRaw(bytes(string, encoding['SYSTEM']))  # DEBUG .encode('utf-8'))
             # print(r"DEBUG UnicodeDecodeError appendtext string=%s\n" % string)
             pass
         except UnicodeEncodeError as e:
@@ -580,9 +592,9 @@ class TestRunnerPlugin(Plugin):
         self.config_panel = panel
         return panel
 
-    def _output(self, string, source="stdout"):
+    def _output(self, string, source="stdout", enc=True):
         """Put output to the text control"""
-        self._AppendText(self.out, string, source)
+        self._AppendText(self.out, string, source, enc)
 
     def _build_runner_toolbar(self):
         toolbar = wx.ToolBar(self.panel, wx.ID_ANY,
@@ -778,7 +790,7 @@ class TestRunnerPlugin(Plugin):
         face = font.GetFaceName()
         size = font.GetPointSize()
         textctrl.SetFont(font)
-        # textctrl.StyleSetFontEncoding(wx.stc.STC_STYLE_DEFAULT, wx.FONTENCODING_SYSTEM)  # DEBUG Chinese wx.FONTENCODING_CP936)
+        # textctrl.StyleSetFontEncoding(wx.stc.STC_STYLE_DEFAULT, wx.FONTENCODING_CP936)  # DEBUG Chinese wx.) wx.FONTENCODING_SYSTEM
         textctrl.StyleSetSpec(wx.stc.STC_STYLE_DEFAULT, "face:%s,size:%d" %
                               (face, size))
         textctrl.StyleSetSpec(STYLE_STDERR, "fore:#b22222")  # firebrick

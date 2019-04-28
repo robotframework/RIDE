@@ -94,10 +94,10 @@ try:
     from robot.utils.encoding import SYSTEM_ENCODING
 except ImportError:
     encoding = None
-    # print("TestRunnerAgent: Maybe you did not
-    # installed RIDE under this Python?")  # DEBUG
+    # print("TestRunnerAgent: Maybe you did not installed RIDE under this Python?")  # DEBUG
     raise     # DEBUG
 
+# print("DEBUG: console %s system %s" % (encoding.CONSOLE_ENCODING, encoding.SYSTEM_ENCODING))
 
 if sys.hexversion > 0x2060000:
     import json

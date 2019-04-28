@@ -37,9 +37,12 @@ from robotide.robotapi import DataError, Information
 from robotide.utils import (overrides, SYSTEM_ENCODING, ArgumentParser,
                             is_unicode, PY3)
 from robotide.contrib.testrunner.usages import USAGE
+from sys import getfilesystemencoding
+
 if PY3:
     from robotide.utils import unicode
 
+OUTPUT_ENCODING = getfilesystemencoding()
 
 class BaseProfile(object):
     """Base class for all test runner profiles
@@ -254,10 +257,18 @@ class PybotProfile(BaseProfile):
                                            "Only run tests with these tags")
         exclude_cb = self._create_checkbox(panel, self.apply_exclude_tags,
                                            "Skip tests with these tags")
-        self._include_tags = wx.TextCtrl(panel, wx.ID_ANY, size=(150, -1),
-                                         value=self.include_tags)
-        self._exclude_tags = wx.TextCtrl(panel, wx.ID_ANY, size=(150, -1),
-                                         value=self.exclude_tags)
+        try:
+            self._include_tags = wx.TextCtrl(panel, wx.ID_ANY, size=(150, -1),
+                                             value=self.include_tags)
+        except UnicodeError:
+            self._include_tags = wx.TextCtrl(panel, wx.ID_ANY, size=(150, -1),
+                                             value="unicode_error")
+        try:
+            self._exclude_tags = wx.TextCtrl(panel, wx.ID_ANY, size=(150, -1),
+                                             value=self.exclude_tags)
+        except UnicodeError:
+            self._exclude_tags = wx.TextCtrl(panel, wx.ID_ANY, size=(150, -1),
+                                             value="unicode_error")
 
         panel.Bind(wx.EVT_CHECKBOX, self.OnIncludeCheckbox, include_cb)
         panel.Bind(wx.EVT_CHECKBOX, self.OnExcludeCheckbox, exclude_cb)
@@ -308,11 +319,12 @@ class PybotProfile(BaseProfile):
     def _get_invalid_message(self, args):
         invalid = None
         try:
-            # print("DEBUG: runprofiles get inv msg: %s\n
+            # print("DEBUG: runprofiles get inv msg: %s\n" % args)
             # raw: %s\n" % (bytes(args), args) )
-            if PY3:
-                args = args.encode(SYSTEM_ENCODING)  # DEBUG SYSTEM_ENCODING
+            #if PY3:
+            #    args = args.encode(SYSTEM_ENCODING)  # DEBUG SYSTEM_ENCODING
             _, invalid = ArgumentParser(USAGE).parse_args(args.split())
+            # print("DEBUG: runprofiles get inv msg: %s\n" % args)
         except Information:
             return 'Does not execute - help or version option given'
         except (DataError, Exception) as e:  # DEBUG not caught DataError?
