@@ -45,6 +45,7 @@ class TagsDisplay(wx.Panel):
     def build(self):
         if not (self._tag_boxes and self._tag_boxes[-1].add_new):
             self.add_new_tag_tagbox(rebuild=False)
+        self._sizer.SetSizeHints(self)
         parent_sizer = self.GetParent().GetSizer()
         if parent_sizer:
             parent_sizer.Layout()
