@@ -39,9 +39,12 @@ VERSION_PATTERN = "VERSION = '(.*)'"
 RELEASE_NOTES_PATH = Path('doc/releasenotes/ride-{version}.rst')
 RELEASE_NOTES_TITLE = 'Robot Framework IDE {version}'
 RELEASE_NOTES_INTRO = '''
-`RIDE (Robot Framework IDE)`_ {version} is a new release with **UPDATE** enhancements
-and bug fixes. It contains some updates for `Robot Framework`_ version 3.1.1.
+`RIDE (Robot Framework IDE)`_ {version} is a new release with major enhancements
+and bug fixes. This version {version} includes fixes for installer and new File explorer.
+The reference for valid arguments is  `Robot Framework`_ version 3.1.1.
 **MORE intro stuff...**
+
+**THIS IS THE LAST RELEASE SUPPORTING PYTHON 2.7**
 
 **REMOVE reference to tracker if release notes contain all issues.**
 All issues targeted for RIDE {version.milestone} can be found

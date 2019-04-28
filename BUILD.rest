@@ -45,6 +45,8 @@ RIDE on Python 2.7 still runs with any version of those Classic or wxPhoenix.
 On Python 3.6+, only wxPhoenix is supported (and in the future we will only
 support those).
 
+**VERSION 1.7.4 IS THE LAST RELEASE SUPPORTING PYTHON 2.7 AND WXPYTHON <4.0.4**
+
 For testing purposes, users can select which version to use, by creating the
 file ``wx.pth`` containing the directory name of the wxPython to use. That 
 directory must contain the two wxPython directories (moved into)::
