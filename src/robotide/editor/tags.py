@@ -190,7 +190,7 @@ class TagBox(wx.TextCtrl):
     def OnKillFocus(self, event):
         self._update_value()
         if 'linux' not in platform:
-        	event.Skip() # Can't skip on Linux as this causes crash
+            event.Skip() # Can't skip on Linux as this causes crash
 
     def _update_value(self):
         self._properties.change_value(self.value)
