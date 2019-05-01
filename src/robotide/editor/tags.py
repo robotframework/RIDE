@@ -171,8 +171,6 @@ class TagBox(wx.TextCtrl):
                 self._cancel_editing()
             elif event.GetKeyCode() == wx.WXK_RETURN:
                 self._update_value()
-                # FIXME: Is this needed?
-                return # Crashes RIDE on Linux if event.Skip is called
             elif event.GetKeyCode() == wx.WXK_DELETE:
                 self.SetValue('')
         event.Skip()
