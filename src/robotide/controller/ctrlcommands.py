@@ -905,11 +905,7 @@ class RemoveMacro(_ReversibleCommand):
         self._item = item
 
     def _execute(self, context):
-        # print("DEBUG enter RemoveMacro %s" % self._item)
-        # self._item.notify_keyword_removed()  # DEBUG
-        # self._item.notify_value_changed()
-        myobj = self._item.delete()
-        # print("DEBUG exit RemoveMacro %s returned %s" % (self._item, myobj))
+        self._item.delete()
 
     def _get_undo_command(self):
         return RecreateMacro(self._item)
