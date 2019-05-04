@@ -24,15 +24,23 @@ from robotide.controller.ctrlcommands import ChangeTag
 from robotide.controller.tags import ForcedTag, DefaultTag, Tag
 from sys import platform
 
-class TagsDisplay(wx.Panel):
+class TagsDisplay(wx.lib.scrolledpanel.ScrolledPanel):
 
     def __init__(self, parent, controller):
-        wx.Panel.__init__(self, parent, wx.ID_ANY)
+        wx.lib.scrolledpanel.ScrolledPanel.__init__(self, parent, -1, style = wx.VSCROLL)
         self._controller = controller
-        self._sizer = HorizontalFlowSizer()
-        self._sizer.SetMinSize((0, 20))
+        self._sizer = wx.WrapSizer()
         self._tag_boxes = []
+        self.SetAutoLayout(1)
+        self.SetupScrolling(scroll_x=False, rate_y=25, scrollIntoView=False)
         self.SetSizer(self._sizer)
+        self.Bind(wx.EVT_SIZE, self.OnSize)
+
+    def OnSize(self, event):
+        size = self.GetSize()
+        vsize = self.GetVirtualSize()
+        self.SetVirtualSize((size[0], vsize[1]))
+        event.Skip()
 
     def add_tag(self, tag):
         self._add_tagbox(Properties(tag, self._controller))
@@ -46,7 +54,7 @@ class TagsDisplay(wx.Panel):
         if not (self._tag_boxes and self._tag_boxes[-1].add_new):
             self.add_new_tag_tagbox(rebuild=False)
             self._remove_empty_tagboxes()
-        self._sizer.SetSizeHints(self)
+        #self._sizer.SetSizeHints(self)
         parent_sizer = self.GetParent().GetSizer()
         if parent_sizer:
             parent_sizer.Layout()
