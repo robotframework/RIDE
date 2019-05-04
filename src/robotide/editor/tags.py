@@ -30,7 +30,6 @@ class TagsDisplay(wx.Panel):
         wx.Panel.__init__(self, parent, wx.ID_ANY)
         self._controller = controller
         self._sizer = HorizontalFlowSizer()
-        self._sizer.SetMinSize((0, 20))
         self._tag_boxes = []
         self.SetSizer(self._sizer)
 
@@ -45,7 +44,6 @@ class TagsDisplay(wx.Panel):
     def build(self):
         if not (self._tag_boxes and self._tag_boxes[-1].add_new):
             self.add_new_tag_tagbox(rebuild=False)
-            self._remove_empty_tagboxes()
         self._sizer.SetSizeHints(self)
         parent_sizer = self.GetParent().GetSizer()
         if parent_sizer:
@@ -153,7 +151,7 @@ class TagBox(wx.TextCtrl):
 
     def _get_size(self):
         size = self.GetTextExtent(self.value)
-        return wx.Size(max(size[0]+13, 75), max(size[1]+3, 25))
+        return wx.Size(max(size[0]+10, 70), max(size[1]+3, 25))
 
     def _colorize(self):
         self.SetForegroundColour(self._properties.foreground_color)
@@ -171,6 +169,8 @@ class TagBox(wx.TextCtrl):
                 self._cancel_editing()
             elif event.GetKeyCode() == wx.WXK_RETURN:
                 self._update_value()
+                # FIXME: Is this needed?
+                return # Crashes RIDE on Linux if event.Skip is called
             elif event.GetKeyCode() == wx.WXK_DELETE:
                 self.SetValue('')
         event.Skip()
