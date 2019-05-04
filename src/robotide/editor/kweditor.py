@@ -558,6 +558,10 @@ class KeywordEditor(GridEditor, RideEventHandler):
             self.OnUndo(event)
         elif keycode == ord('A') and control_down:
             self.OnSelectAll(event)
+        elif keycode == ord('F') and control_down:
+            # print("DEBUG: captured Control-F\n")
+            if not self.has_focus():
+                self.SetFocus()  # DEBUG Avoiding Search field on Text Edit
         elif event.AltDown() and keycode in [wx.WXK_DOWN, wx.WXK_UP]:
             self._move_rows(keycode)
             event.Skip()

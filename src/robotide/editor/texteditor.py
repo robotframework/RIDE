@@ -383,6 +383,9 @@ class SourceEditor(wx.Panel):
             self._positions[self.datafile_controller] = self._editor.GetCurrentPos()
 
     def set_editor_caret_position(self):
+        if not self.is_focused():  # DEBUG was typing text when at Grid Editor
+            # print("DEBUG: Text Edit avoid set caret pos")
+            return
         position = self._positions.get(self.datafile_controller, None)
         # print("DEBUG: Called set caret position=%s" % position)
         if position:
@@ -534,6 +537,10 @@ class SourceEditor(wx.Panel):
         self._editor.set_text(self._data.content)
 
     def OnEditorKey(self, event):
+        #print("DEBUG: Text Edit enter keypress")
+        if not self.is_focused():  # DEBUG was typing text when at Grid Editor
+            # print("DEBUG: Text Edit skip keypress")
+            return
         if not self.dirty and self._editor.GetModify():
             self._mark_file_dirty()
         event.Skip()
