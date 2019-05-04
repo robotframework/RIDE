@@ -403,6 +403,15 @@ class SourceEditor(wx.Panel):
 
     def OnFind(self, event):
         if self._editor:
+            text = self._editor.GetSelectedText()
+            # print("DEBUG: Find text:%s" % text)
+            if len(text)>0 and text.lower() != self._search_field.GetValue().lower():
+                self._search_field.SelectAll()
+                self._search_field.Clear()
+                self._search_field.Update()
+                self._search_field.SetValue(text)
+                self._search_field.SelectAll()
+                self._search_field.Update()
             self._find()
 
     def OnFindBackwards(self, event):
@@ -428,7 +437,9 @@ class SourceEditor(wx.Panel):
 
     def _show_search_results(self, position, txt):
         if position != -1:
+            self._editor.SetCurrentPos(position)
             self._editor.SetSelection(position, position + len(txt))
+            self._editor.ScrollToLine(self._editor.GetCurrentLine())
             self._search_field_notification.SetLabel('')
         else:
             self._search_field_notification.SetLabel('No matches found.')
