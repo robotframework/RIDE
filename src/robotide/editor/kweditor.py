@@ -931,7 +931,7 @@ class ContentAssistCellEditor(GridCellEditor):  # DEBUG wxPhoenix PyGridCellEdi
         self._tc.SetValue(self._original_value)
         self._grid = grid
         self._tc.SetInsertionPointEnd()
-        self._tc.SetFocus()
+        # self._tc.SetFocus()  # On Win 10 this breaks cell text selection
         # For this example, select the text   # DEBUG nov_2017
         self._tc.SetSelection(0, self._tc.GetLastPosition())
 
