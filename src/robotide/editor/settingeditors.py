@@ -327,14 +327,7 @@ class TagsEditor(SettingEditor):
     def __init__(self, parent, controller, plugin, tree):
         SettingEditor.__init__(self, parent, controller, plugin, tree)
         self.plugin.subscribe(self._saving, RideSaving)
-        self.Bind(wx.EVT_SIZE, self.OnSize)
-
-    def OnSize(self, event):
-        size = self._tags_display.GetSize()
-        vsize = self._tags_display.GetVirtualSize()
-        new_height = 45 if size[0] < vsize[0] else 25
-        self.SetSizeHints(-1, new_height)
-        event.Skip()
+        self.SetSizeHints(-1, 45)
 
     def _saving(self, message):
         self._tags_display.saving()
@@ -343,7 +336,6 @@ class TagsEditor(SettingEditor):
         self._tags_display = TagsDisplay(self, self._controller)
         self._tags_display.Bind(wx.EVT_LEFT_UP, self.OnLeftUp)
         self._tags_display.Bind(wx.EVT_KEY_DOWN, self.OnKey)
-        self._tags_display.Bind(wx.EVT_SIZE, self.OnSize)
         return self._tags_display
 
     def contains(self, text):

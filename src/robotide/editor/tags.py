@@ -27,7 +27,7 @@ from sys import platform
 class TagsDisplay(wx.lib.scrolledpanel.ScrolledPanel):
 
     def __init__(self, parent, controller):
-        wx.lib.scrolledpanel.ScrolledPanel.__init__(self, parent, -1, style=wx.BORDER_SIMPLE | wx.HSCROLL)
+        wx.lib.scrolledpanel.ScrolledPanel.__init__(self, parent, -1, style=wx.BORDER_SIMPLE | wx.HSCROLL | wx.ALWAYS_SHOW_SB)
         self._controller = controller
         self._sizer = wx.BoxSizer()
         self._tag_boxes = []
