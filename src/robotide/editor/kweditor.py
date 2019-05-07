@@ -935,9 +935,9 @@ class ContentAssistCellEditor(GridCellEditor):  # DEBUG wxPhoenix PyGridCellEdi
         self._tc.SetValue(self._original_value)
         self._grid = grid
         self._tc.SetInsertionPointEnd()
-        self._tc.SetFocus()
+        # self._tc.SetFocus()
         # For this example, select the text   # DEBUG nov_2017
-        self._tc.SetSelection(0, self._tc.GetLastPosition())
+        # self._tc.SetSelection(0, self._tc.GetLastPosition())
 
     def EndEdit(self, row, col, grid, *ignored):
         value = self._get_value()
