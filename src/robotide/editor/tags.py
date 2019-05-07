@@ -27,20 +27,13 @@ from sys import platform
 class TagsDisplay(wx.lib.scrolledpanel.ScrolledPanel):
 
     def __init__(self, parent, controller):
-        wx.lib.scrolledpanel.ScrolledPanel.__init__(self, parent, -1, style = wx.VSCROLL)
+        wx.lib.scrolledpanel.ScrolledPanel.__init__(self, parent, -1, style=wx.BORDER_SIMPLE | wx.HSCROLL)
         self._controller = controller
-        self._sizer = wx.WrapSizer()
+        self._sizer = wx.BoxSizer()
         self._tag_boxes = []
         self.SetAutoLayout(1)
-        self.SetupScrolling(scroll_x=False, rate_y=25, scrollIntoView=False)
+        self.SetupScrolling(scroll_y=False, scrollToTop=False, scrollIntoView=False)
         self.SetSizer(self._sizer)
-        self.Bind(wx.EVT_SIZE, self.OnSize)
-
-    def OnSize(self, event):
-        size = self.GetSize()
-        vsize = self.GetVirtualSize()
-        self.SetVirtualSize((size[0], vsize[1]))
-        event.Skip()
 
     def add_tag(self, tag):
         self._add_tagbox(Properties(tag, self._controller))
@@ -54,7 +47,6 @@ class TagsDisplay(wx.lib.scrolledpanel.ScrolledPanel):
         if not (self._tag_boxes and self._tag_boxes[-1].add_new):
             self.add_new_tag_tagbox(rebuild=False)
             self._remove_empty_tagboxes()
-        #self._sizer.SetSizeHints(self)
         parent_sizer = self.GetParent().GetSizer()
         if parent_sizer:
             parent_sizer.Layout()
