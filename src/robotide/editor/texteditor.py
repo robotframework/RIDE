@@ -383,6 +383,9 @@ class SourceEditor(wx.Panel):
             self._positions[self.datafile_controller] = self._editor.GetCurrentPos()
 
     def set_editor_caret_position(self):
+        if not self.is_focused():  # DEBUG was typing text when at Grid Editor
+            # print("DEBUG: Text Edit avoid set caret pos")
+            return
         position = self._positions.get(self.datafile_controller, None)
         # print("DEBUG: Called set caret position=%s" % position)
         if position:
@@ -400,6 +403,15 @@ class SourceEditor(wx.Panel):
 
     def OnFind(self, event):
         if self._editor:
+            text = self._editor.GetSelectedText()
+            # print("DEBUG: Find text:%s" % text)
+            if len(text)>0 and text.lower() != self._search_field.GetValue().lower():
+                self._search_field.SelectAll()
+                self._search_field.Clear()
+                self._search_field.Update()
+                self._search_field.SetValue(text)
+                self._search_field.SelectAll()
+                self._search_field.Update()
             self._find()
 
     def OnFindBackwards(self, event):
@@ -425,7 +437,9 @@ class SourceEditor(wx.Panel):
 
     def _show_search_results(self, position, txt):
         if position != -1:
+            self._editor.SetCurrentPos(position)
             self._editor.SetSelection(position, position + len(txt))
+            self._editor.ScrollToLine(self._editor.GetCurrentLine())
             self._search_field_notification.SetLabel('')
         else:
             self._search_field_notification.SetLabel('No matches found.')
@@ -534,6 +548,10 @@ class SourceEditor(wx.Panel):
         self._editor.set_text(self._data.content)
 
     def OnEditorKey(self, event):
+        #print("DEBUG: Text Edit enter keypress")
+        if not self.is_focused():  # DEBUG was typing text when at Grid Editor
+            # print("DEBUG: Text Edit skip keypress")
+            return
         if not self.dirty and self._editor.GetModify():
             self._mark_file_dirty()
         event.Skip()
