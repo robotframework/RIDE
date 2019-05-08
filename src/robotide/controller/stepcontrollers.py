@@ -311,12 +311,12 @@ class StepController(_BaseController):
 
     def shift_left(self, from_column):
         cells = self.as_list()
-        comment = self._get_comment(cells)
+        # DEBUG No need to not delete comment = self._get_comment(cells)
         if len(cells) > from_column:
-            if comment:
-                cells.pop()
+            # if comment: # DEBUG No need to not delete comment
+            #    cells.pop()
             cells = cells[:from_column] + cells[from_column + 1:]
-            self._recreate(cells, comment)
+            self._recreate(cells) #, comment) # DEBUG No need to not delete
 
     def insert_before(self, new_step):
         steps = self.parent.get_raw_steps()
