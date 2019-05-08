@@ -234,9 +234,17 @@ class Settings(wx.CollapsiblePane):
         total_height = 0
         if self.IsExpanded():
             for editor in self._editors:
-                height = editor.Size[1]
+                height = editor.BestSize[1]
                 if isinstance(editor, TagsEditor):
                     height = min(height, editor._tags_display.get_height())
+
+                    psize = editor._tags_display.GetChildren()[-1].GetPosition()[1]
+
+
+                    print (height, psize)
+                    if len(editor._tags_display.GetChildren()) * 25 == height:
+                        height = psize
+                    
                 total_height += 25 if height < 25 else height
                 total_height += 2 * self.BORDER + 1
         self.SetSizeHints(-1, total_height + expand_button_height)
