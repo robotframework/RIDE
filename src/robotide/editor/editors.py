@@ -233,14 +233,7 @@ class Settings(wx.CollapsiblePane):
         total_height = 0
         if self.IsExpanded():
             for editor in self._editors:
-                height = editor.BestSize[1]
-                # Change Panel size if TagsEditor's scrollbar
-                # is going to become hidden or unhidden
-                if isinstance(editor, TagsEditor):
-                    size = editor._tags_display.GetSize()
-                    vsize = editor._tags_display.GetVirtualSize()
-                    height = size[1] if size[0] < vsize[0] else 25
-                total_height += height
+                total_height += editor.BestSize[1]
                 total_height += 2 * self.BORDER + 1
         self.SetSizeHints(-1, total_height + expand_button_height)
         if event:
