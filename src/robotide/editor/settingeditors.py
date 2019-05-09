@@ -327,7 +327,6 @@ class TagsEditor(SettingEditor):
     def __init__(self, parent, controller, plugin, tree):
         SettingEditor.__init__(self, parent, controller, plugin, tree)
         self.plugin.subscribe(self._saving, RideSaving)
-        self.SetSizeHints(-1, 45)
 
     def _saving(self, message):
         self._tags_display.saving()
