@@ -13,26 +13,22 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-# Configure wx version to allow running test app in __main__
-if __name__ == '__main__':
-    import robotide as _
-
 import wx
 
-from robotide.editor.flowsizer import HorizontalFlowSizer
 from robotide.controller.ctrlcommands import ChangeTag
-from robotide.controller.tags import ForcedTag, DefaultTag, Tag
+from robotide.controller.tags import ForcedTag, DefaultTag
 from sys import platform
+
 
 class TagsDisplay(wx.lib.scrolledpanel.ScrolledPanel):
 
     def __init__(self, parent, controller):
-        wx.lib.scrolledpanel.ScrolledPanel.__init__(self, parent, -1, style=wx.BORDER_SIMPLE | wx.HSCROLL)
+        wx.lib.scrolledpanel.ScrolledPanel.__init__(self, parent, -1, style=wx.HSCROLL)
         self._controller = controller
         self._sizer = wx.BoxSizer()
         self._tag_boxes = []
         self.SetAutoLayout(1)
-        self.SetupScrolling(scroll_y=False, scrollToTop=False, scrollIntoView=False)
+        self.SetupScrolling(scroll_y=False, scrollIntoView=False)
         self.SetSizer(self._sizer)
 
     def add_tag(self, tag):
@@ -66,7 +62,7 @@ class TagsDisplay(wx.lib.scrolledpanel.ScrolledPanel):
         if not self._tag_boxes:
             self._add_tags(list(controller))
         else:
-            #in GTK you can have focus in a dead object
+            # in GTK you can have focus in a dead object
             #  .. this causes Segmentation Faults
             # Thus instead of clearing old values and adding new ones
             # modify the ones that exist
@@ -189,7 +185,7 @@ class TagBox(wx.TextCtrl):
     def OnKillFocus(self, event):
         self._update_value()
         if 'linux' not in platform:
-            event.Skip() # Can't skip on Linux as this causes crash
+            event.Skip()  # Can't skip on Linux as this causes crash
 
     def _update_value(self):
         self._properties.change_value(self.value)
@@ -274,44 +270,3 @@ class DefaultTagBoxProperties(_TagBoxProperties):
     foreground_color = '#666666'
     background_color = '#D3D3D3'
     enabled = False
-
-# Debug
-import sys
-import traceback
-
-def _show_error():
-    message = ''.join(traceback.format_exception(*sys.exc_info()))
-    dialog = wx.MessageDialog(None, message, 'Error!', wx.OK|wx.ICON_ERROR)
-    dialog.ShowModal()
-
-
-if __name__ == '__main__':
-    class MyFrame(wx.Frame):
-        def __init__(self, parent, id, title):
-            wx.Frame.__init__(self, parent, id, title)
-
-    class MyMenuApp( wx.App):
-        def OnInit(self):
-            frame = MyFrame(None , -1, 'Frame Window Demo')
-            sz = wx.BoxSizer(wx.HORIZONTAL)
-            from robotide.controller.basecontroller import _BaseController
-            my_controller = _BaseController()
-            display = TagsDisplay(frame, None)
-            # display.add_tag(ForcedTag('forced'))  # , False)
-            # display.add_tag(DefaultTag('default'))  #, False)
-            print("Added tag")
-            for name in ['foo', 'bar', 'foobo', 'jee', 'huu', 'asb', 'sdfajkd', 'Sprint-1']:
-                display.add_tag(Tag(name, 0, my_controller))  # , True)
-            # display.add_tag(Tag(''))  #, False)
-            display.build()
-            sz.Add(display, 0, wx.GROW|wx.ALL, 5)
-            frame.Show(True)
-            self.SetTopWindow(frame)
-            return True
-    # Debug
-    try:
-        # Run program
-        app=MyMenuApp(0)
-        app.MainLoop()
-    except:
-        _show_error()
