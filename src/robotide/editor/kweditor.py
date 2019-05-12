@@ -558,6 +558,10 @@ class KeywordEditor(GridEditor, RideEventHandler):
             self.OnUndo(event)
         elif keycode == ord('A') and control_down:
             self.OnSelectAll(event)
+        elif keycode == ord('F') and control_down:
+            # print("DEBUG: captured Control-F\n")
+            if not self.has_focus():
+                self.SetFocus()  # DEBUG Avoiding Search field on Text Edit
         elif event.AltDown() and keycode in [wx.WXK_DOWN, wx.WXK_UP]:
             self._move_rows(keycode)
             event.Skip()
@@ -933,7 +937,7 @@ class ContentAssistCellEditor(GridCellEditor):  # DEBUG wxPhoenix PyGridCellEdi
         self._tc.SetInsertionPointEnd()
         # self._tc.SetFocus()  # On Win 10 this breaks cell text selection
         # For this example, select the text   # DEBUG nov_2017
-        self._tc.SetSelection(0, self._tc.GetLastPosition())
+        # self._tc.SetSelection(0, self._tc.GetLastPosition())
 
     def EndEdit(self, row, col, grid, *ignored):
         value = self._get_value()

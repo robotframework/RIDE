@@ -18,7 +18,7 @@ import wx
 import wx.lib.mixins.listctrl as listmix
 
 from robotide import utils
-from robotide.controller.ctrlcommands import ChangeTag, DeleteTag
+from robotide.controller.ctrlcommands import ChangeTag
 from robotide.publish import RideOpenTagSearch
 from robotide.ui.treenodehandlers import ResourceRootHandler, \
     ResourceFileHandler
@@ -235,7 +235,7 @@ class ViewAllTagsDialog(wx.Frame, listmix.ColumnSorterMixin):
         tags_to_rename = self._tags[tag_name.lower()]
         name = wx.GetTextFromUser(
             message="Renaming tag '%s'." % tag_name, default_value=tag_name,
-            caption='Rename')
+            caption='Rename').strip()
         if name:
             for tag in tags_to_rename:
                 tag.controller.execute(ChangeTag(tag, name))
@@ -247,12 +247,12 @@ class ViewAllTagsDialog(wx.Frame, listmix.ColumnSorterMixin):
         if self._index == -1:
             return
         tests, tag_name = self._tags_list.get_tag(self._index)
-        tags_to_delete = self._tags[tag_name]
+        tags_to_delete = self._tags[tag_name.lower()]
         if wx.MessageBox(
             "Delete a tag '%s' ?" % tag_name, caption='Confirm',
                 style=wx.YES_NO | wx.ICON_QUESTION) == wx.YES:
             for tag in tags_to_delete:
-                tag.execute(DeleteTag())
+                tag.controller.execute(ChangeTag(tag, ''))
             self._execute()
             for tag_name, tests in self._results:
                 self.tree.DeselectTests(tests)

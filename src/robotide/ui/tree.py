@@ -470,9 +470,10 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
 
     def _leaf_item_removed(self, message):
         node = self._controller.find_node_by_controller(message.item)
-        parent_node = self._get_datafile_node(message.datafile)  # DEBUG
-        self._test_selection_controller.select(message.item, False)
-        self._controller.mark_node_dirty(parent_node) # DEBUG
+        parent_node = self._get_datafile_node(message.datafile)
+        # DEBUG The below call causes not calling delete_node
+        # self._test_selection_controller.select(message.item, False)
+        self._controller.mark_node_dirty(parent_node)
         self.delete_node(node)
 
     def _test_added(self, message):
@@ -864,8 +865,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
         target = self._controller.get_handler(target)
         if target and target.accepts_drag(dragged):
             dragged.controller.execute(MoveTo(target.controller))
-        else:
-            self.Refresh()
+        self.Refresh()  # DEBUG Always refresh
 
     def IsValidDragItem(self, item):
         return self._controller.get_handler(item).is_draggable
