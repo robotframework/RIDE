@@ -99,11 +99,13 @@ class TextEditorPreferences(EditorPreferences):
             ('gherkin', 'Gherkin keyword foreground'),
             ('heading', 'Heading foreground'),
             ('import', 'Import foreground'),
+            ('variable', 'Variable foreground'),
+            ('tc_kw_name', 'Keyword definition foreground'),
             ('separator', 'Separator'),
             ('setting', 'Setting foreground'),
             ('syntax', 'Syntax characters'),
-            ('tc_kw_name', 'Keyword definition foreground'),
-            ('variable', 'Variable foreground'),
+            ('whitespace', 'Whitespace foreground'),
+            ('background', 'Text background'),
         ):
             if column == 4:
                 column = 0
@@ -214,3 +216,36 @@ class GridEditorPreferences(EditorPreferences):
             colors_sizer.Add(lbl, (row, 1),
                              flag=wx.ALIGN_CENTER_VERTICAL | wx.LEFT, border=4)
             row += 1
+
+
+class TestRunnerPreferences(EditorPreferences):
+    location = ("Test Runner",)
+    title = "Test Runner Settings"
+    name = "Test Run"
+
+    def __init__(self, settings, *args, **kwargs):
+        super(TestRunnerPreferences, self).__init__(
+            settings[self.name], *args, **kwargs)
+
+    def create_colors_sizer(self):
+        container = wx.GridBagSizer()
+        row = 0
+        for settings_key, label_text in (
+            ('text string', 'Text foreground'),
+            ('text background', 'Text background'),
+        ):
+            label = wx.StaticText(self, wx.ID_ANY, label_text)
+            button = widgets.PreferencesColorPicker(
+                self, wx.ID_ANY, self._settings, settings_key)
+            container.Add(button, (row, 0),
+                          flag=wx.ALL | wx.ALIGN_CENTER_VERTICAL, border=4)
+            self._color_pickers.append(button)
+            container.Add(label, (row, 1),
+                          flag=wx.ALIGN_CENTER_VERTICAL | wx.LEFT, border=8)
+            row += 1
+        return container
+
+    def OnReset(self, event):
+        defaults = self._read_defaults()
+        for picker in self._color_pickers:
+            picker.SetColour(defaults[picker.key])
