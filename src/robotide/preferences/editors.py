@@ -26,8 +26,7 @@ class EditorPreferences(widgets.PreferencesPanel):
     def __init__(self, settings, *args, **kwargs):
         super(EditorPreferences, self).__init__(*args, **kwargs)
         self._settings = settings
-        # N.B. There really ought to be a "reset colors to defaults"
-        # button, in case the user gets things hopelessly mixed up
+        self._color_pickers = []
 
         # what would make this UI much more usable is if there were a
         # preview window in the dialog that showed all the colors. I
@@ -36,10 +35,34 @@ class EditorPreferences(widgets.PreferencesPanel):
 
         font_editor = self._create_font_editor()
         colors_sizer = self.create_colors_sizer()
-        main_sizer = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
+        main_sizer = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
+        reset = wx.Button(self, wx.ID_ANY, 'Reset colors to default')
         main_sizer.Add(font_editor)
         main_sizer.Add(colors_sizer)
+        main_sizer.Add(reset)
         self.SetSizer(main_sizer)
+        self.Bind(wx.EVT_BUTTON, self.OnReset)
+
+    def OnReset(self, event):
+        defaults = self._read_defaults()
+        for picker in self._color_pickers:
+            picker.SetColour(defaults[picker.key])
+
+    def _read_defaults(self):
+        settings = [s.strip() for s in open(self._get_path(), 'r').readlines()]
+        start_index = settings.index('[%s]' % self.name) + 1
+        defaults = {}
+        for line in settings[start_index:]:
+            if line.startswith('['):
+                break
+            if not line:
+                continue
+            key, value = [s.strip().strip('\'') for s in line.split("=")]
+            defaults[key] = value
+        return defaults
+
+    def _get_path(self):
+        return join(dirname(abspath(__file__)), 'settings.cfg')
 
     def _create_font_editor(self):
         f = widgets.IntegerChoiceEditor(
@@ -59,28 +82,28 @@ class EditorPreferences(widgets.PreferencesPanel):
 class TextEditorPreferences(EditorPreferences):
     location = ("Text Editor",)
     title = "Text Editor Settings"
+    name = "Text Edit"
 
     def __init__(self, settings, *args, **kwargs):
-        self._color_pickers = []  # must be before super class constructor call
         super(TextEditorPreferences, self).__init__(
-            settings['Text Edit'], *args, **kwargs)
+            settings[self.name], *args, **kwargs)
 
     def create_colors_sizer(self):
         container = wx.GridBagSizer()
         column = 0
         row = 0
         for settings_key, label_text in (
-            ('argument',  'Argument foreground'),
+            ('argument', 'Argument foreground'),
             ('comment', 'Comment foreground'),
-            ('error',  'Error foreground'),
+            ('error', 'Error foreground'),
             ('gherkin', 'Gherkin keyword foreground'),
             ('heading', 'Heading foreground'),
             ('import', 'Import foreground'),
             ('separator', 'Separator'),
-            ('setting',  'Setting foreground'),
+            ('setting', 'Setting foreground'),
             ('syntax', 'Syntax characters'),
             ('tc_kw_name', 'Keyword definition foreground'),
-            ('variable',  'Variable foreground'),
+            ('variable', 'Variable foreground'),
         ):
             if column == 4:
                 column = 0
@@ -93,11 +116,8 @@ class TextEditorPreferences(EditorPreferences):
             self._color_pickers.append(button)
             column += 1
             container.Add(label, (row, column),
-                          flag=wx.ALIGN_CENTER_VERTICAL | wx.LEFT, border=4)
+                          flag=wx.ALIGN_CENTER_VERTICAL | wx.LEFT, border=8)
             column += 1
-        reset = wx.Button(self, wx.ID_ANY, 'Reset colors to default')
-        self.Bind(wx.EVT_BUTTON, self.OnReset)
-        container.Add(reset, (row + 1, 0))
         return container
 
     def OnReset(self, event):
@@ -105,30 +125,15 @@ class TextEditorPreferences(EditorPreferences):
         for picker in self._color_pickers:
             picker.SetColour(defaults[picker.key])
 
-    def _read_defaults(self):
-        settings = [s.strip() for s in open(self._get_path(), 'r').readlines()]
-        start_index = settings.index('[Text Edit]') + 1
-        defaults = {}
-        for line in settings[start_index:]:
-            if line.startswith('['):
-                break
-            if not line:
-                continue
-            key, value = [s.strip().strip('\'') for s in line.split("=")]
-            defaults[key] = value
-        return defaults
-
-    def _get_path(self):
-        return join(dirname(abspath(__file__)), 'settings.cfg')
-
 
 class GridEditorPreferences(EditorPreferences):
     location = ("Grid Editor",)
     title = "Grid Editor Settings"
+    name = "Grid"
 
     def __init__(self, settings, *args, **kwargs):
         super(GridEditorPreferences, self).__init__(
-            settings['Grid'], *args, **kwargs)
+            settings[self.name], *args, **kwargs)
         self.Sizer.Add(self._create_grid_config_editor())
 
     def _create_grid_config_editor(self):
@@ -172,17 +177,19 @@ class GridEditorPreferences(EditorPreferences):
         for key, label in (
             ('text user keyword', 'User Keyword Foreground'),
             ('text library keyword', 'Library Keyword Foreground'),
-            ('text commented', 'Comments Foreground'),
             ('text variable', 'Variable Foreground'),
+            ('text unknown variable', 'Unknown Variable Foreground'),
+            ('text commented', 'Comments Foreground'),
             ('text string', 'Default Foreground'),
             ('text empty', 'Empty Foreground'),
         ):
             lbl = wx.StaticText(self, wx.ID_ANY, label)
             btn = widgets.PreferencesColorPicker(
                 self, wx.ID_ANY, self._settings, key)
-            colors_sizer.Add(btn, (row, 0),
+            self._color_pickers.append(btn)
+            colors_sizer.Add(btn, (row, 2),
                              flag=wx.ALL | wx.ALIGN_CENTER_VERTICAL, border=4)
-            colors_sizer.Add(lbl, (row, 1),
+            colors_sizer.Add(lbl, (row, 3),
                              flag=wx.ALIGN_CENTER_VERTICAL | wx.LEFT, border=4)
             row += 1
 
@@ -201,8 +208,9 @@ class GridEditorPreferences(EditorPreferences):
             lbl = wx.StaticText(self, wx.ID_ANY, label)
             btn = widgets.PreferencesColorPicker(
                 self, wx.ID_ANY, self._settings, key)
-            colors_sizer.Add(btn, (row, 2),
+            self._color_pickers.append(btn)
+            colors_sizer.Add(btn, (row, 0),
                              flag=wx.ALL | wx.ALIGN_CENTER_VERTICAL, border=4)
-            colors_sizer.Add(lbl, (row, 3),
+            colors_sizer.Add(lbl, (row, 1),
                              flag=wx.ALIGN_CENTER_VERTICAL | wx.LEFT, border=4)
             row += 1
