@@ -212,8 +212,8 @@ class KeywordEditor(GridEditor, RideEventHandler):
                   or 'auto size cols' in setting
                   or 'word wrap' in setting):
                 self._set_cells()
+                self.autosize()
             self._colorize_grid()
-            self.autosize()
 
     def OnSelectCell(self, event):
         self._cell_selected = True
@@ -385,7 +385,9 @@ class KeywordEditor(GridEditor, RideEventHandler):
             self._parent.highlight(selection_content, expand=False)
 
     def highlight(self, text, expand=True):
-        wx.CallAfter(self._colorizer.colorize, text)
+        # Below CallAfter was causing C++ assertions(objects not found)
+        # When calling Preferences Grid Colors change
+        wx.CallLater(100, self._colorizer.colorize, text)
 
     def autosize(self):
         wx.CallAfter(self.AutoSizeColumns, False)
