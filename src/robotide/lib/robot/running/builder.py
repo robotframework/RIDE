@@ -136,7 +136,7 @@ class TestSuiteBuilder(object):
             return
         # HTML files cause deprecation warning that cannot be avoided with
         # --extension at parsing time. No need for double warning.
-        if ext not in ('robot', 'html', 'htm', 'xhtml'):
+        if ext not in ('robot', 'resource', 'html', 'htm', 'xhtml'):
             LOGGER.warn("Automatically parsing other than '*.robot' files is "
                         "deprecated. Convert '%s' to '*.robot' format or use "
                         "'--extension' to explicitly configure which files to "

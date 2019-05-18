@@ -31,6 +31,8 @@ DirBrowseButton.createLabel = lambda self:\
 
 class _CreationDialog(Dialog):
 
+    formats = ["ROBOT", "TXT", "TSV", "HTML"]
+
     def __init__(self, default_dir, title):
         sizer = self._init_dialog(title)
         label_sizer = wx.BoxSizer(wx.VERTICAL)
@@ -40,6 +42,7 @@ class _CreationDialog(Dialog):
         self._path_display = self._create_path_display(
             label_sizer, default_dir)
         radio_group_sizer = wx.BoxSizer(wx.VERTICAL)
+        self._formats = self.formats
         self._type_chooser = self._create_type_chooser(radio_group_sizer)
         self._format_chooser = self._create_format_chooser(radio_group_sizer)
         edit_sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -77,14 +80,13 @@ class _CreationDialog(Dialog):
         return self._create_radiobuttons(sizer, "Type", ["File", "Directory"])
 
     def _create_format_chooser(self, sizer, callback=True):
-        return self._create_radiobuttons(
-            sizer, "Format", ["ROBOT", "TXT", "TSV", "HTML"], callback)
+        return self._create_radiobuttons(sizer, "Format", self.formats, callback)
 
     def _create_radiobuttons(self, sizer, label, choices, callback=True):
-        radios = wx.RadioBox(self, label=label, choices=choices)
+        radios = wx.RadioBox(self, label=label, choices=choices, majorDimension=4)
         if callback:
             self.Bind(wx.EVT_RADIOBOX, self.OnPathChanged, radios)
-        sizer.Add(radios, flag=wx.ALIGN_LEFT | wx.ALL, border=5)
+        sizer.Add(radios, flag=wx.ALIGN_LEFT | wx.RA_SPECIFY_ROWS | wx.ALL, border=5)
         return radios
 
     def _create_parent_chooser(self, sizer, default_dir):
@@ -217,8 +219,12 @@ class _FileFormatDialog(_CreationDialog):
         sizer = self._init_dialog("Set Data Format")
         self._controller = controller
         self._create_help(sizer)
+        self.formats = self._formats
+        old_format = (controller.get_format() or "TXT").upper()
+        if old_format in self._formats:
+            self.formats.remove(old_format)
         self._chooser = self._create_format_chooser(sizer, callback=False)
-        self._chooser.SetStringSelection(controller.get_format() or "TXT")
+        self._chooser.SetStringSelection(old_format)
         self._recursive = self._create_recursion_selector(sizer)
         self._finalize_dialog(sizer)
 
