@@ -17,6 +17,7 @@ import os
 import wx
 from wx.lib.filebrowsebutton import DirBrowseButton
 
+from robotide.controller.filecontrollers import ResourceFileController
 from robotide.controller.ctrlcommands import CreateNewResource,\
     AddTestDataDirectory, AddTestCaseFile, CreateNewDirectoryProject,\
     CreateNewFileProject, SetFileFormat, SetFileFormatRecuresively
@@ -36,13 +37,13 @@ class _CreationDialog(Dialog):
     def __init__(self, default_dir, title):
         sizer = self._init_dialog(title)
         label_sizer = wx.BoxSizer(wx.VERTICAL)
+        self._title = title
         self._name_editor = self._create_name_editor(label_sizer)
         self._parent_chooser = self._create_parent_chooser(
             label_sizer, default_dir)
         self._path_display = self._create_path_display(
             label_sizer, default_dir)
         radio_group_sizer = wx.BoxSizer(wx.VERTICAL)
-        self._formats = self.formats
         self._type_chooser = self._create_type_chooser(radio_group_sizer)
         self._format_chooser = self._create_format_chooser(radio_group_sizer)
         edit_sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -80,7 +81,12 @@ class _CreationDialog(Dialog):
         return self._create_radiobuttons(sizer, "Type", ["File", "Directory"])
 
     def _create_format_chooser(self, sizer, callback=True):
-        return self._create_radiobuttons(sizer, "Format", self.formats, callback)
+        formats = list(self.formats)
+        if (hasattr(self, '_controller') and
+            isinstance(self._controller, ResourceFileController)) or\
+                (hasattr(self, '_title') and self._title == "New Resource File"):
+                formats += ["RESOURCE"]
+        return self._create_radiobuttons(sizer, "Format", formats, callback)
 
     def _create_radiobuttons(self, sizer, label, choices, callback=True):
         radios = wx.RadioBox(self, label=label, choices=choices, majorDimension=4)
@@ -219,12 +225,8 @@ class _FileFormatDialog(_CreationDialog):
         sizer = self._init_dialog("Set Data Format")
         self._controller = controller
         self._create_help(sizer)
-        self.formats = self._formats
-        old_format = (controller.get_format() or "TXT").upper()
-        if old_format in self._formats:
-            self.formats.remove(old_format)
         self._chooser = self._create_format_chooser(sizer, callback=False)
-        self._chooser.SetStringSelection(old_format)
+        self._chooser.SetStringSelection(controller.get_format() or "TXT")
         self._recursive = self._create_recursion_selector(sizer)
         self._finalize_dialog(sizer)
 
