@@ -104,7 +104,6 @@ class TextEditorPreferences(EditorPreferences):
             ('separator', 'Separator'),
             ('setting', 'Setting foreground'),
             ('syntax', 'Syntax characters'),
-            ('whitespace', 'Whitespace foreground'),
             ('background', 'Text background'),
         ):
             if column == 4:
