@@ -22,7 +22,6 @@ import wx
 from robotide.editor.flowsizer import HorizontalFlowSizer
 from robotide.controller.ctrlcommands import ChangeTag, ClearSetting
 from robotide.controller.tags import ForcedTag, DefaultTag, Tag
-from sys import platform
 
 class TagsDisplay(wx.Panel):
 
@@ -194,8 +193,10 @@ class TagBox(wx.TextCtrl):
 
     def OnKillFocus(self, event):
         self._update_value()
-        if 'linux' not in platform:
-            event.Skip() # Can't skip on Linux as this causes crash
+        # Send skip event only if tagbox is empty and about to be destroyed
+        # On some platforms this event is sent too late and causes crash
+        if self.value != '':
+            event.Skip()
 
     def _update_value(self):
         self._properties.change_value(self.value)

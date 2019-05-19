@@ -132,6 +132,7 @@ class VariableNameEditor(ValueEditor):
 
     def OnFocus(self, event):
         wx.CallAfter(self.SetSelection, event.GetEventObject())
+        event.Skip()
 
     def SetSelection(self, event):
         self._editor.SetSelection(2, len(self._editor.Value) - 1)
