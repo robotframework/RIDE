@@ -641,6 +641,7 @@ class RobotStylizer(object):
 
     def _set_styles(self):
         color_settings = self.settings.get_without_default('Text Edit')
+        background = color_settings.get('background', '#FFFFFF')
         styles = {
             robotframeworklexer.ARGUMENT: {
                 'fore': color_settings.get('argument', '#bb8844')
@@ -685,7 +686,8 @@ class RobotStylizer(object):
         self.tokens = {}
         for index, token in enumerate(styles):
             self.tokens[token] = index
-            self.editor.StyleSetSpec(index, self._get_style_string(**styles[token]))
+            self.editor.StyleSetSpec(index, self._get_style_string(back=background, **styles[token]))
+        self.editor.StyleSetBackground(wx.stc.STC_STYLE_DEFAULT, background)
         self.editor.Refresh()
 
     def _get_word_and_length(self, current_position):
