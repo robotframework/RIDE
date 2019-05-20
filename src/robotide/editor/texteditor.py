@@ -25,7 +25,7 @@ from wx import stc
 from robotide import robotapi
 from robotide.context import IS_WINDOWS, IS_MAC
 from robotide.controller.ctrlcommands import SetDataFile
-from robotide.publish import (RideSettingsChanged, PUBLISHER)
+from robotide.publish import RideSettingsChanged, PUBLISHER
 from robotide.publish.messages import RideMessage
 from robotide.utils import PY2
 from robotide.namespace.suggesters import (SuggestionSource,

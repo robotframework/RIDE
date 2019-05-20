@@ -229,19 +229,24 @@ class TestRunnerPreferences(EditorPreferences):
     def create_colors_sizer(self):
         container = wx.GridBagSizer()
         row = 0
+        column = 0
         for settings_key, label_text in (
-            ('text string', 'Text foreground'),
-            ('text background', 'Text background'),
+            ('foreground', 'Text foreground'),
+            ('background', 'Text background'),
         ):
+            if column == 4:
+                column = 0
+                row += 1
             label = wx.StaticText(self, wx.ID_ANY, label_text)
             button = widgets.PreferencesColorPicker(
                 self, wx.ID_ANY, self._settings, settings_key)
-            container.Add(button, (row, 0),
+            container.Add(button, (row, column),
                           flag=wx.ALL | wx.ALIGN_CENTER_VERTICAL, border=4)
             self._color_pickers.append(button)
-            container.Add(label, (row, 1),
+            column += 1
+            container.Add(label, (row, column),
                           flag=wx.ALIGN_CENTER_VERTICAL | wx.LEFT, border=8)
-            row += 1
+            column += 1
         return container
 
     def OnReset(self, event):

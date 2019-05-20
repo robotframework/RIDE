@@ -63,6 +63,7 @@ from robotide.action.shortcut import localize_shortcuts
 from robotide.context import IS_WINDOWS, IS_MAC
 from robotide.contrib.testrunner import TestRunner
 from robotide.contrib.testrunner import runprofiles
+from robotide.publish import RideSettingsChanged, PUBLISHER
 from robotide.publish.messages import RideTestSelectedForRunningChanged
 from robotide.pluginapi import Plugin, ActionInfo
 from robotide.widgets import Label, ImageProvider
@@ -80,6 +81,14 @@ OUTPUT_ENCODING = getfilesystemencoding()
 encoding = {'CONSOLE': CONSOLE_ENCODING,
             'SYSTEM': SYSTEM_ENCODING,
             'OUTPUT': OUTPUT_ENCODING}
+
+try:  # import installed version first
+    import robotframeworklexer
+except ImportError:
+    try:  # then import local version
+        from . import robotframeworklexer
+    except ImportError:  # Pygments is not installed
+        robotframeworklexer = None
 
 # print("DEBUG: TestRunnerPlugin encoding=%s" % encoding)
 
@@ -1013,6 +1022,8 @@ class OutputStyledTextCtrl(wx.stc.StyledTextCtrl):
     def __init__(self, parent):
         wx.stc.StyledTextCtrl.__init__(self, parent, wx.ID_ANY,
                                        style=wx.SUNKEN_BORDER)
+        self.SetLexer(wx.stc.STC_LEX_CONTAINER)
+        self.stylizer = RobotStylizer(self, parent.GetParent().GetParent()._app.settings)
         self._max_row_len = 0
 
     def update_scroll_width(self, string):
@@ -1028,6 +1039,50 @@ class OutputStyledTextCtrl(wx.stc.StyledTextCtrl):
             # print("DEBUG: UnicodeDecodeError at update scroll,
             # testrunnerplugin, string is %s\n" % string)
             pass
+
+
+class RobotStylizer(object):
+    def __init__(self, editor, settings):
+        self.editor = editor
+        self.lexer = None
+        self.settings = settings
+        if robotframeworklexer:
+            self.lexer = robotframeworklexer.RobotFrameworkLexer()
+            self._set_styles()
+        PUBLISHER.subscribe(self.OnSettingsChanged, RideSettingsChanged)
+
+    def OnSettingsChanged(self, data):
+        '''Redraw the colors if the color settings are modified'''
+        section, setting = data.keys
+        if section == 'Test Run':
+            self._set_styles()
+
+    def _font_size(self):
+        return self.settings['Test Run'].get('font size', 10)
+
+    def _set_styles(self):
+        color_settings = self.settings.get_without_default('Test Run')
+        background = color_settings.get('background', 'white')
+        styles = {
+            robotframeworklexer.ERROR: {
+                'fore': color_settings.get('foreground', 'red')
+            },
+        }
+        self.tokens = {}
+        for index, token in enumerate(styles):
+            self.tokens[token] = index
+            self.editor.StyleSetSpec(index, self._get_style_string(back=background, **styles[token]))
+        self.editor.StyleSetBackground(wx.stc.STC_STYLE_DEFAULT, background)
+        self.editor.Refresh()
+
+    def _get_word_and_length(self, current_position):
+        word = self.editor.GetTextRange(current_position, self.editor.WordEndPosition(current_position, False))
+        return word, len(word)
+
+    def _get_style_string(self, back='white', fore='black', face='Courier', bold='', underline=''):
+        settings = locals()
+        settings.update(size=self._font_size())
+        return ','.join('%s:%s' % (name, value) for name, value in settings.items() if value)
 
 
 # stole this off the internet. Nifty.
