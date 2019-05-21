@@ -34,7 +34,7 @@ class SavingPreferences(widgets.PreferencesPanel):
             widgets.StringChoiceEditor(settings,
                 'default file format',
                 'Default file format:',
-                ('txt', 'tsv', 'html', 'robot')
+                ('txt', 'tsv', 'html', 'robot', 'resource')
             ),
             widgets.StringChoiceEditor(settings,
                 'txt format separator',
