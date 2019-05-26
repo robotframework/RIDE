@@ -82,14 +82,6 @@ encoding = {'CONSOLE': CONSOLE_ENCODING,
             'SYSTEM': SYSTEM_ENCODING,
             'OUTPUT': OUTPUT_ENCODING}
 
-try:  # import installed version first
-    import robotframeworklexer
-except ImportError:
-    try:  # then import local version
-        from . import robotframeworklexer
-    except ImportError:  # Pygments is not installed
-        robotframeworklexer = None
-
 # print("DEBUG: TestRunnerPlugin encoding=%s" % encoding)
 
 ID_RUN = wx.NewId()
@@ -1022,8 +1014,7 @@ class OutputStyledTextCtrl(wx.stc.StyledTextCtrl):
     def __init__(self, parent):
         wx.stc.StyledTextCtrl.__init__(self, parent, wx.ID_ANY,
                                        style=wx.SUNKEN_BORDER)
-        self.SetLexer(wx.stc.STC_LEX_CONTAINER)
-        self.stylizer = RobotStylizer(self, parent.GetParent().GetParent()._app.settings)
+        self.stylizer = OutputStylizer(self, parent.GetParent().GetParent()._app.settings)
         self._max_row_len = 0
 
     def update_scroll_width(self, string):
@@ -1041,14 +1032,12 @@ class OutputStyledTextCtrl(wx.stc.StyledTextCtrl):
             pass
 
 
-class RobotStylizer(object):
+class OutputStylizer(object):
     def __init__(self, editor, settings):
         self.editor = editor
         self.lexer = None
         self.settings = settings
-        if robotframeworklexer:
-            self.lexer = robotframeworklexer.RobotFrameworkLexer()
-            self._set_styles()
+        self._set_styles()
         PUBLISHER.subscribe(self.OnSettingsChanged, RideSettingsChanged)
 
     def OnSettingsChanged(self, data):
@@ -1062,35 +1051,27 @@ class RobotStylizer(object):
 
     def _set_styles(self):
         color_settings = self.settings.get_without_default('Test Run')
+        foreground = color_settings.get('foreground', 'black')
         background = color_settings.get('background', 'white')
-        styles = {
-            robotframeworklexer.ERROR: {
-                'fore': color_settings.get('foreground', 'red')
-            },
-        }
-        self.tokens = {}
-        for index, token in enumerate(styles):
-            self.tokens[token] = index
-            self.editor.StyleSetSpec(index, self._get_style_string(back=background, **styles[token]))
+        for index in range(8):
+            self.editor.StyleSetSpec(index,
+                                     self._get_style_string(fore=foreground,
+                                                            back=background))
         self.editor.StyleSetBackground(wx.stc.STC_STYLE_DEFAULT, background)
         self.editor.Refresh()
 
-    def _get_word_and_length(self, current_position):
-        word = self.editor.GetTextRange(current_position, self.editor.WordEndPosition(current_position, False))
-        return word, len(word)
-
-    def _get_style_string(self, back='white', fore='black', face='Courier', bold='', underline=''):
+    def _get_style_string(self, back='white', fore='black', face='Fixedsys'):
         settings = locals()
         settings.update(size=self._font_size())
-        return ','.join('%s:%s' % (name, value) for name, value in settings.items() if value)
+        return ','.join('%s:%s' % (name, value)
+                        for name, value in settings.items() if value)
 
 
 # stole this off the internet. Nifty.
 def secondsToString(t):
     """Convert a number of seconds to a string of the form HH:MM:SS"""
     return "%d:%02d:%02d" % \
-        reduce(lambda ll,b : divmod(ll[0],b) + ll[1:],
-            [(t,),60, 60])
+        reduce(lambda ll, b: divmod(ll[0], b) + ll[1:], [(t,), 60, 60])
 
 
 Robot = PyEmbeddedImage(
