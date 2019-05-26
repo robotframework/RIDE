@@ -142,6 +142,7 @@ class DocToHtml(object):
     def _get_formatter(self, doc_format):
         try:
             return {'ROBOT': html_format,
+                    'RESOURCE': html_format,
                     'TEXT': self._format_text,
                     'HTML': self._format_html,
                     'REST': self._format_rest}[doc_format]

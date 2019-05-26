@@ -274,14 +274,7 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
         self.execute(robotide.controller.ctrlcommands.SaveFile())
         if old_file != self.filename:
             self.remove_from_filesystem(old_file)
-    
-    def open_filemanager(self, path=None):
-        # tested on Win7 x64
-        path = path or self.filename
-        if os.path.exists(path):
-            if sys.platform=='win32':
-                os.startfile('"{}"'.format(os.path.dirname(path)), 'explore')
-    
+
     def remove_readonly(self, path=None):
             path = path or self.filename
             os.chmod(path, stat.S_IWRITE)
@@ -290,7 +283,7 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
         # tested on Win7 x64
         path = path or self.filename
         if os.path.exists(path):
-            if sys.platform=='win32':
+            if sys.platform == 'win32':
                 #  There was encoding errors if directory had unicode chars
                 # TODO test on all OS directory names with accented chars, for example 'ccedilla'
                 os.startfile(r"%s" % os.path.dirname(path), 'explore')
@@ -306,12 +299,12 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
                     try:
                         subprocess.Popen(
                             ["dolphin", "{}".format(os.path.dirname(path))])
-                    except  OSError or FileNotFoundError:
+                    except OSError or FileNotFoundError:
                         try:
                             subprocess.Popen(
                                ["konqueror", "{}".format(
                                    os.path.dirname(path))])
-                        except  OSError or FileNotFoundError:
+                        except OSError or FileNotFoundError:
                             print("Could not launch explorer. Tried nautilus, "
                                   "dolphin and konqueror.")
             else:
@@ -321,10 +314,6 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
                 except OSError or FileNotFoundError:
                     subprocess.Popen(["open", "{}".format(
                         os.path.dirname(path))])
-
-    def remove_readonly(self, path=None):
-            path = path or self.filename
-            os.chmod(path, stat.S_IWRITE)
 
     def remove_from_filesystem(self, path=None):
         path = path or self.filename
