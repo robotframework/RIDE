@@ -25,6 +25,7 @@ from wx import stc
 from robotide import robotapi
 from robotide.context import IS_WINDOWS, IS_MAC
 from robotide.controller.ctrlcommands import SetDataFile
+from robotide.publish import (RideSettingsChanged, PUBLISHER)
 from robotide.publish.messages import RideMessage
 from robotide.utils import PY2
 from robotide.namespace.suggesters import (SuggestionSource,
@@ -453,7 +454,7 @@ class SourceEditor(wx.Panel):
         sugs = [s.name for s in self._suggestions.get_suggestions(
             selected or '')]
         if sugs:
-            caretpos = self._editor.AutoCompPosStart()
+            # caretpos = self._editor.AutoCompPosStart() # Never used :(
             self._editor.AutoCompSetDropRestOfWord(True)
             self._editor.AutoCompSetSeparator(ord(';'))
             self._editor.AutoCompShow(0, ";".join(sugs))
@@ -567,7 +568,7 @@ class RobotDataEditor(stc.StyledTextCtrl):
     def __init__(self, parent):
         stc.StyledTextCtrl.__init__(self, parent)
         self.SetMarginType(0, stc.STC_MARGIN_NUMBER)
-        self.SetMarginWidth(0, self.TextWidth(stc.STC_STYLE_LINENUMBER,'1234'))
+        self.SetMarginWidth(0, self.TextWidth(stc.STC_STYLE_LINENUMBER, '1234'))
         self.SetReadOnly(True)
         self.SetLexer(stc.STC_LEX_CONTAINER)
         self.Bind(stc.EVT_STC_STYLENEEDED, self.OnStyle)
@@ -622,18 +623,27 @@ class RobotStylizer(object):
         self.editor = editor
         self.lexer = None
         self.settings = settings
-        self.font_size = settings['Text Edit'].get('font size', 10)
         if robotframeworklexer:
             self.lexer = robotframeworklexer.RobotFrameworkLexer()
             self._set_styles()
         else:
             self.editor.GetParent().create_syntax_colorization_help()
+        PUBLISHER.subscribe(self.OnSettingsChanged, RideSettingsChanged)
+
+    def OnSettingsChanged(self, data):
+        '''Redraw the colors if the color settings are modified'''
+        section, setting = data.keys
+        if section == 'Text Edit':
+            self._set_styles()
+
+    def _font_size(self):
+        return self.settings['Text Edit'].get('font size', 10)
 
     def _set_styles(self):
         color_settings = self.settings.get_without_default('Text Edit')
         styles = {
             robotframeworklexer.ARGUMENT: {
-                'fore': color_settings.get('argument','#bb8844')
+                'fore': color_settings.get('argument', '#bb8844')
             },
             robotframeworklexer.COMMENT: {
                 'fore': color_settings.get('comment', 'black')
@@ -676,6 +686,7 @@ class RobotStylizer(object):
         for index, token in enumerate(styles):
             self.tokens[token] = index
             self.editor.StyleSetSpec(index, self._get_style_string(**styles[token]))
+        self.editor.Refresh()
 
     def _get_word_and_length(self, current_position):
         word = self.editor.GetTextRange(current_position, self.editor.WordEndPosition(current_position, False))
@@ -683,7 +694,7 @@ class RobotStylizer(object):
 
     def _get_style_string(self, back='#FFFFFF', face='Courier', fore='#000000', bold='', underline=''):
         settings = locals()
-        settings.update(size=self.font_size)
+        settings.update(size=self._font_size())
         return ','.join('%s:%s' % (name, value) for name, value in settings.items() if value)
 
     def stylize(self):

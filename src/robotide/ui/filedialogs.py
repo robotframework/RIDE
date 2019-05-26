@@ -17,6 +17,7 @@ import os
 import wx
 from wx.lib.filebrowsebutton import DirBrowseButton
 
+from robotide.controller.filecontrollers import ResourceFileController
 from robotide.controller.ctrlcommands import CreateNewResource,\
     AddTestDataDirectory, AddTestCaseFile, CreateNewDirectoryProject,\
     CreateNewFileProject, SetFileFormat, SetFileFormatRecuresively
@@ -31,9 +32,12 @@ DirBrowseButton.createLabel = lambda self:\
 
 class _CreationDialog(Dialog):
 
+    formats = ["ROBOT", "TXT", "TSV", "HTML"]
+
     def __init__(self, default_dir, title):
         sizer = self._init_dialog(title)
         label_sizer = wx.BoxSizer(wx.VERTICAL)
+        self._title = title
         self._name_editor = self._create_name_editor(label_sizer)
         self._parent_chooser = self._create_parent_chooser(
             label_sizer, default_dir)
@@ -77,14 +81,18 @@ class _CreationDialog(Dialog):
         return self._create_radiobuttons(sizer, "Type", ["File", "Directory"])
 
     def _create_format_chooser(self, sizer, callback=True):
-        return self._create_radiobuttons(
-            sizer, "Format", ["ROBOT", "TXT", "TSV", "HTML"], callback)
+        formats = list(self.formats)
+        if (hasattr(self, '_controller') and
+            isinstance(self._controller, ResourceFileController)) or\
+                (hasattr(self, '_title') and self._title == "New Resource File"):
+                formats += ["RESOURCE"]
+        return self._create_radiobuttons(sizer, "Format", formats, callback)
 
     def _create_radiobuttons(self, sizer, label, choices, callback=True):
-        radios = wx.RadioBox(self, label=label, choices=choices)
+        radios = wx.RadioBox(self, label=label, choices=choices, majorDimension=4)
         if callback:
             self.Bind(wx.EVT_RADIOBOX, self.OnPathChanged, radios)
-        sizer.Add(radios, flag=wx.ALIGN_LEFT | wx.ALL, border=5)
+        sizer.Add(radios, flag=wx.ALIGN_LEFT | wx.RA_SPECIFY_ROWS | wx.ALL, border=5)
         return radios
 
     def _create_parent_chooser(self, sizer, default_dir):

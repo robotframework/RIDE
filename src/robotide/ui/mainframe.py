@@ -427,6 +427,7 @@ class RideFrame(wx.Frame, RideEventHandler):
         # EVT_DIRCTRL_FILEACTIVATED
         from os.path import splitext
         robottypes = self._application.settings.get('robot types', ['robot',
+                                                                    'resource'
                                                                     'txt',
                                                                     'tsv',
                                                                     'html'])
