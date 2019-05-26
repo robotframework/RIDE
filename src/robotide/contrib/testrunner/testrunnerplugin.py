@@ -96,6 +96,7 @@ ID_SHOW_LOG = wx.NewId()
 ID_AUTOSAVE = wx.NewId()
 ID_PAUSE_ON_FAILURE = wx.NewId()
 ID_SHOW_MESSAGE_LOG = wx.NewId()
+STYLE_DEFAULT = 0
 STYLE_STDERR = 2
 
 
@@ -787,14 +788,7 @@ class TestRunnerPlugin(Plugin):
 
     def _create_output_textctrl(self):
         textctrl = OutputStyledTextCtrl(self._right_panel)
-        font = self._create_font()
-        face = font.GetFaceName()
-        size = font.GetPointSize()
-        textctrl.SetFont(font)
         # textctrl.StyleSetFontEncoding(wx.stc.STC_STYLE_DEFAULT, wx.FONTENCODING_CP936)  # DEBUG Chinese wx.) wx.FONTENCODING_SYSTEM
-        textctrl.StyleSetSpec(wx.stc.STC_STYLE_DEFAULT, "face:%s,size:%d" %
-                              (face, size))
-        textctrl.StyleSetSpec(STYLE_STDERR, "fore:#b22222")  # firebrick
         textctrl.SetScrollWidth(100)
         self._set_margins(textctrl)
         textctrl.SetReadOnly(True)
@@ -806,15 +800,6 @@ class TestRunnerPlugin(Plugin):
         out.SetMarginWidth(1, 0)
         out.SetMarginWidth(2, 0)
         out.SetMarginWidth(3, 0)
-
-    def _create_font(self):
-        font=wx.SystemSettings.GetFont(wx.SYS_ANSI_FIXED_FONT)  # DEBUG ) .SYS_OEM_FIXED_FONT)SYS_SYSTEM_FONT SYS_ANSI_FIXED_FONT
-        if font.IsFixedWidth() and font.GetPointSize() > 11:  # DEBUG was not
-            # fixed width fonts are typically a little bigger than their
-            # variable width peers so subtract one from the point size.
-            font = wx.Font(font.GetPointSize()-1, wx.FONTFAMILY_MODERN,
-                           wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL)
-        return font
 
     def _post_result(self, event, *args):
         """Endpoint of the listener interface
@@ -1035,7 +1020,6 @@ class OutputStyledTextCtrl(wx.stc.StyledTextCtrl):
 class OutputStylizer(object):
     def __init__(self, editor, settings):
         self.editor = editor
-        self.lexer = None
         self.settings = settings
         self._set_styles()
         PUBLISHER.subscribe(self.OnSettingsChanged, RideSettingsChanged)
@@ -1049,20 +1033,26 @@ class OutputStylizer(object):
     def _font_size(self):
         return self.settings['Test Run'].get('font size', 10)
 
+    def _font_face(self):
+        return self.settings['Test Run'].get('font face', 'Courier')
+
     def _set_styles(self):
         color_settings = self.settings.get_without_default('Test Run')
-        foreground = color_settings.get('foreground', 'black')
         background = color_settings.get('background', 'white')
-        for index in range(8):
-            self.editor.StyleSetSpec(index,
-                                     self._get_style_string(fore=foreground,
-                                                            back=background))
+        default_style = self._get_style_string(
+            fore=color_settings.get('foreground', 'black'), back=background)
+        error_style = self._get_style_string(
+            fore=color_settings.get('error', '#b22222'), back=background)
+        self.editor.StyleSetSpec(STYLE_DEFAULT, default_style)
+        self.editor.StyleSetSpec(STYLE_STDERR, error_style)
+        self.editor.StyleSetSpec(7, error_style)
         self.editor.StyleSetBackground(wx.stc.STC_STYLE_DEFAULT, background)
         self.editor.Refresh()
 
-    def _get_style_string(self, back='white', fore='black', face='Fixedsys'):
+    def _get_style_string(self, back='white', fore='black', bold=''):
         settings = locals()
         settings.update(size=self._font_size())
+        settings.update(face=self._font_face())
         return ','.join('%s:%s' % (name, value)
                         for name, value in settings.items() if value)
 

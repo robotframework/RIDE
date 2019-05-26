@@ -62,7 +62,7 @@ class PreferencesComboBox(wx.ComboBox):
             IntegerPreferenceComboBox.
         """
         if choices:
-            return wx.Size(max(max(len(str(s)) for s in choices)*18, 72), 20)
+            return wx.Size(max(max(len(str(s)) for s in choices)*9, 72), 20)
         return wx.DefaultSize
 
     def OnSelect(self, event):

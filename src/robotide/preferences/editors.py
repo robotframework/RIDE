@@ -27,6 +27,7 @@ class EditorPreferences(widgets.PreferencesPanel):
         super(EditorPreferences, self).__init__(*args, **kwargs)
         self._settings = settings
         self._color_pickers = []
+        self._font_faces = self._read_fonts()
 
         # what would make this UI much more usable is if there were a
         # preview window in the dialog that showed all the colors. I
@@ -68,12 +69,26 @@ class EditorPreferences(widgets.PreferencesPanel):
         f = widgets.IntegerChoiceEditor(
             self._settings, 'font size', 'Font Size',
             [str(i) for i in range(8, 16)])
-        sizer = wx.FlexGridSizer(rows=2, cols=2, vgap=10, hgap=30)
+        sizer = wx.FlexGridSizer(rows=3, cols=2, vgap=10, hgap=30)
         sizer.AddMany([f.label(self), f.chooser(self)])
         if 'fixed font' in self._settings:
             sizer.AddMany(widgets.boolean_editor(
                 self, self._settings, 'fixed font', 'Use fixed width font'))
+        if 'font face' in self._settings:
+            s = widgets.StringChoiceEditor(
+                self._settings, 'font face', 'Font Face',
+                self._font_faces)
+            sizer.AddMany([s.label(self), s.chooser(self)])
+            self._font_faces
         return sizer
+
+    def _read_fonts(self):
+        f = wx.FontEnumerator()
+        f.EnumerateFacenames()
+        names = f.GetFacenames(fixedWidthOnly=True)
+        names = [n for n in names if not n.startswith('@')]
+        names.sort()
+        return names
 
     def create_colors_sizer(self):
         raise NotImplementedError('Implement me')
@@ -233,6 +248,7 @@ class TestRunnerPreferences(EditorPreferences):
         for settings_key, label_text in (
             ('foreground', 'Text foreground'),
             ('background', 'Text background'),
+            ('error', 'Error foreground'),
         ):
             if column == 4:
                 column = 0
