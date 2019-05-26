@@ -47,7 +47,7 @@ class HorizontalFlowSizer(Sizer):
         Sizer.__init__(self)
         self._frozen       = False
         self._needed_size  = None
-        self._height = 0
+        self._height       = 0
 
     def CalcMin(self):
         """
@@ -60,17 +60,20 @@ class HorizontalFlowSizer(Sizer):
         Layout the contents of the sizer based on the sizer's current size
         and position.
         """
-        x0, y0 = self.GetPosition()
-        dx, dy = self.GetSize()
-        dy = self._height or dy
+        x0, y0 = self.GetPosition()  # (0,0)
+        dx, dy = self.GetSize()      # editor size
+
         if self._is_error_width(dx):
             dx = HorizontalFlowSizer._DEFAUL_WIDTH
         else:
             HorizontalFlowSizer._DEFAUL_WIDTH = dx
+
+        dy = self._height or dy
         x_border = x0 + dx
         x, y = x0, y0
         mdy = sdy = 0
         cur_max = 0
+
         for item in self.GetChildren():
             idx, idy = item.CalcMin()
             expand  = item.GetFlag() & wx.EXPAND
@@ -86,10 +89,10 @@ class HorizontalFlowSizer(Sizer):
                 if x == x0:
                     idx = 0
             item.SetDimension(wx.Point(x, y), wx.Size(idx, idy))
-            item.Show(True)
             x += idx
             mdy = max(mdy, idy)
         newheight = y + mdy + sdy - y0
+
         if newheight != self._height:
             self._height = newheight
             # Enforce that the parent window recalculates needed height

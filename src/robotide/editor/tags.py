@@ -30,7 +30,6 @@ class TagsDisplay(wx.Panel):
         wx.Panel.__init__(self, parent, wx.ID_ANY)
         self._controller = controller
         self._sizer = HorizontalFlowSizer()
-        self._sizer.SetMinSize((0, 20))
         self._tag_boxes = []
         self.SetSizer(self._sizer)
 

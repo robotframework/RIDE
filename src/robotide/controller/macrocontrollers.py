@@ -356,9 +356,9 @@ class TestCaseController(_WithStepsController):
             self.documentation,
             FixtureController(self, self._test.setup),
             FixtureController(self, self._test.teardown),
-            self.tags,
             TimeoutController(self, self._test.timeout),
-            TemplateController(self, self._test.template)
+            TemplateController(self, self._test.template),
+            self.tags
         ]
 
     @property
