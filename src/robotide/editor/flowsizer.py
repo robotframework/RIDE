@@ -93,7 +93,9 @@ class HorizontalFlowSizer(Sizer):
             mdy = max(mdy, idy)
         newheight = y + mdy + sdy - y0
 
-        if newheight != self._height:
+        children = len(self.GetChildren()) * 25
+        if newheight != self._height and\
+                (newheight != children or self._height == 0):
             self._height = newheight
             # Enforce that the parent window recalculates needed height
             self._send_resize_event()
