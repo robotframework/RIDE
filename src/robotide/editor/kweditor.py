@@ -77,7 +77,7 @@ def requires_focus(function):
 from robotide.utils.noconflict import classmaker
 
 
-class KeywordEditor(GridEditor, RideEventHandler):
+class KeywordEditor(GridEditor, RideEventHandler, metaclass=classmaker()):
     __metaclass__ = classmaker()
     _no_cell = (-1, -1)
     _popup_menu_shown = False

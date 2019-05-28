@@ -34,7 +34,7 @@ class eventhandlertype(type):
         return type.__new__(cls, name, bases, dict)
 
 
-class RideEventHandler(object):
+class RideEventHandler(object, metaclass=eventhandlertype):
     __metaclass__ = eventhandlertype
     _SHOWING_MODIFIED_ON_DISK_CONTROLLERS_ = set()
     _SHOWING_REMOVED_ON_DISK_CONTROLLERS_ = set()

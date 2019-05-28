@@ -15,6 +15,7 @@
 
 # Metaclass fix from http://code.activestate.com/recipes/204197-solving-the-metaclass-conflict/
 
+from robotide.utils import PY3
 import inspect, types
 try:
     import __builtin__
@@ -33,7 +34,10 @@ def skip_redundant(iterable, skipset=None):
 
 
 def remove_redundant(metaclasses):
-    skipset = set([types.ClassType])
+    if PY3:
+        skipset = set([type(types)])
+    else:
+        skipset = set([types.ClassType])
     for meta in metaclasses: # determines the metaclasses to be skipped
         skipset.update(inspect.getmro(meta)[1:])
     return tuple(skip_redundant(metaclasses, skipset))

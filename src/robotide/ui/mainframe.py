@@ -138,7 +138,7 @@ class SizeReportCtrl(wx.Control):
         self.Refresh()
 
 
-class RideFrame(wx.Frame, RideEventHandler):
+class RideFrame(wx.Frame, RideEventHandler, metaclass=classmaker()):
     __metaclass__ = classmaker()
 
     def __init__(self, application, controller):
