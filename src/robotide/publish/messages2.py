@@ -18,6 +18,7 @@ import inspect
 import sys
 import traceback
 
+from robotide.utils import unicode
 from robotide import utils
 
 from robotide.publish import messagetype
