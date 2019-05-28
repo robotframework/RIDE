@@ -183,10 +183,11 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         return self.datafile_controller.is_library_keyword(value)
 
     def delete(self):
-        print("DEBUG _WithStepsController delete this is parent %s" % self._parent)
+        # print("DEBUG _WithStepsController delete this is parent %s\nThis is self %s" % (self._parent, self))
         self.datafile_controller.unregister_namespace_updates(
             self._clear_cached_steps)
-        return self._parent.delete(self)
+        self._parent.delete(self)
+        self.notify_keyword_removed()
 
     def rename(self, new_name):
         self.data.name = new_name.strip()
@@ -291,7 +292,8 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
 
     def notify_keyword_removed(self):  # DEBUG
         self.update_namespace()
-        self._notify(RideUserKeywordRemoved)
+        RideUserKeywordRemoved(datafile=self.datafile, name=self.name,
+                               item=self).publish
         self.notify_steps_changed()
 
     def notify_settings_changed(self):

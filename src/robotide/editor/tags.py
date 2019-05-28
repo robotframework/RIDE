@@ -15,7 +15,7 @@
 
 import wx
 
-from robotide.controller.ctrlcommands import ChangeTag
+from robotide.controller.ctrlcommands import ChangeTag, ClearSetting
 from robotide.controller.tags import ForcedTag, DefaultTag
 from sys import platform
 
@@ -86,6 +86,11 @@ class TagsDisplay(wx.lib.scrolledpanel.ScrolledPanel):
         for tb in self._tag_boxes[:]:
             if tb.value == '':
                 self._destroy_tagbox(tb)
+                if self._modifiable_tags_count() == 0:
+                    self._controller.execute(ClearSetting())
+
+    def _modifiable_tags_count(self):
+        return sum(1 for tb in self._tag_boxes[:] if tb._properties.modifiable)
 
     def _set_tags(self, tags, tagboxes, controller):
         if not tags:
