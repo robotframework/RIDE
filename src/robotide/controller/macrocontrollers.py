@@ -433,11 +433,11 @@ class UserKeywordController(_WithStepsController):
     def settings(self):
         result = [
             DocumentationController(self, self._kw.doc),
-            TagsController(self, self._kw.tags),
             ArgumentsController(self, self._kw.args),
             self.teardown,
             ReturnValueController(self, self._kw.return_),
-            TimeoutController(self, self._kw.timeout)
+            TimeoutController(self, self._kw.timeout),
+            TagsController(self, self._kw.tags),
         ]
         return result
 
