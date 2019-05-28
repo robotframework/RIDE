@@ -23,6 +23,7 @@ except ImportError:
     from wx import Colour
     TREETEXTCOLOUR = Colour(0xA9, 0xA9, 0xA9)  # wxPython 3.0.2
 
+from robotide.lib.robot.utils.compat import with_metaclass
 from robotide.controller.ui.treecontroller import TreeController, \
     TestSelectionController
 from robotide.context import IS_WINDOWS
@@ -67,10 +68,9 @@ if IS_WINDOWS:
 from robotide.utils.noconflict import classmaker
 
 
-class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl,
-           utils.RideEventHandler, metaclass=classmaker()):
-    __metaclass__ = classmaker()
-
+class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
+                          customtreectrl.CustomTreeCtrl,
+                          utils.RideEventHandler)):
     _RESOURCES_NODE_LABEL = 'External Resources'
 
     def __init__(self, parent, action_registerer, settings=None):

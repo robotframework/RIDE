@@ -22,9 +22,10 @@ from robotide import utils
 
 from robotide.publish import messagetype
 from robotide.publish import publisher
+from robotide.lib.robot.utils.compat import with_metaclass
 
 
-class RideMessage(object, metaclass=messagetype.messagetype):
+class RideMessage(with_metaclass(messagetype.messagetype, object)):
     """Base class for all messages sent by RIDE.
 
     :CVariables:
