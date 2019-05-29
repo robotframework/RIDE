@@ -21,13 +21,13 @@ from robotide.controller.ctrlcommands import UpdateVariable, UpdateDocumentation
 from robotide.editor.listeditor import ListEditorBase
 from robotide.publish.messages import RideImportSetting,\
     RideOpenVariableDialog, RideExecuteSpecXmlImport, RideSaving
-from robotide.utils import overrides
+from robotide.utils import overrides, PY3
 from robotide.widgets import ButtonWithHandler, Label, HtmlWindow, PopupMenu,\
     PopupMenuItems, HtmlDialog
 from robotide.publish import PUBLISHER
 from robotide import utils
 from robotide.utils.highlightmatcher import highlight_matcher
-
+from robotide.lib.robot.utils.compat import with_metaclass
 from .formatters import ListToStringFormatter
 from .gridcolorizer import ColorizationSettings
 from .editordialogs import EditorDialog, DocumentationDialog, MetadataDialog,\
@@ -36,7 +36,6 @@ from .editordialogs import EditorDialog, DocumentationDialog, MetadataDialog,\
 from .listeditor import ListEditor
 from .popupwindow import HtmlPopupWindow
 from .tags import TagsDisplay
-from robotide.utils import PY3
 if PY3:
     from robotide.utils import basestring
 
@@ -44,8 +43,7 @@ if PY3:
 from robotide.utils.noconflict import classmaker
 
 
-class SettingEditor(wx.Panel, utils.RideEventHandler):
-    __metaclass__ = classmaker()
+class SettingEditor(with_metaclass(classmaker(), wx.Panel, utils.RideEventHandler)):
 
     def __init__(self, parent, controller, plugin, tree):
         wx.Panel.__init__(self, parent)

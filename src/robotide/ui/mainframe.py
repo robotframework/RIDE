@@ -17,7 +17,7 @@ import wx
 import wx.lib.agw.aui as aui
 from wx import Icon
 from wx.lib.agw.aui import aui_switcherdialog as ASD
-
+from robotide.lib.robot.utils.compat import with_metaclass
 from robotide.action import ActionInfoCollection, ActionFactory, SeparatorInfo
 from robotide.context import ABOUT_RIDE, SHORTCUT_KEYS
 from robotide.controller.ctrlcommands import SaveFile, SaveAll
@@ -138,8 +138,7 @@ class SizeReportCtrl(wx.Control):
         self.Refresh()
 
 
-class RideFrame(wx.Frame, RideEventHandler):
-    __metaclass__ = classmaker()
+class RideFrame(with_metaclass(classmaker(), wx.Frame, RideEventHandler)):
 
     def __init__(self, application, controller):
         size = application.settings.get('mainframe size', (1100, 700))

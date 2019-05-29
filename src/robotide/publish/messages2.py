@@ -13,18 +13,19 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-
 import inspect
 import sys
 import traceback
+
 
 from robotide import utils
 
 from robotide.publish import messagetype
 from robotide.publish import publisher
+from robotide.lib.robot.utils.compat import with_metaclass
 
 
-class RideMessage(object):
+class RideMessage(with_metaclass(messagetype.messagetype, object)):
     """Base class for all messages sent by RIDE.
 
     :CVariables:
@@ -38,7 +39,7 @@ class RideMessage(object):
         Names of attributes this message provides. These must be given as
         keyword arguments to `__init__` when an instance is created.
     """
-    __metaclass__ = messagetype.messagetype
+
     topic = None  #  DEBUG None
     data = []
 
