@@ -13,24 +13,22 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-# Configure wx version to allow running test app in __main__
-if __name__ == '__main__':
-    import robotide as _
-
 import wx
 
-from robotide.editor.flowsizer import HorizontalFlowSizer
 from robotide.controller.ctrlcommands import ChangeTag, ClearSetting
-from robotide.controller.tags import ForcedTag, DefaultTag, Tag
+from robotide.controller.tags import ForcedTag, DefaultTag
+from sys import platform
 
-class TagsDisplay(wx.Panel):
+
+class TagsDisplay(wx.lib.scrolledpanel.ScrolledPanel):
 
     def __init__(self, parent, controller):
-        wx.Panel.__init__(self, parent, wx.ID_ANY)
+        wx.lib.scrolledpanel.ScrolledPanel.__init__(self, parent, -1, style=wx.HSCROLL)
         self._controller = controller
-        self._sizer = HorizontalFlowSizer()
-        self._sizer.SetMinSize((0, 20))
+        self._sizer = wx.BoxSizer()
         self._tag_boxes = []
+        self.SetAutoLayout(1)
+        self.SetupScrolling(scroll_y=False, scrollIntoView=False)
         self.SetSizer(self._sizer)
 
     def add_tag(self, tag):
@@ -44,7 +42,7 @@ class TagsDisplay(wx.Panel):
     def build(self):
         if not (self._tag_boxes and self._tag_boxes[-1].add_new):
             self.add_new_tag_tagbox(rebuild=False)
-        self._sizer.SetSizeHints(self)
+            self._remove_empty_tagboxes()
         parent_sizer = self.GetParent().GetSizer()
         if parent_sizer:
             parent_sizer.Layout()
@@ -64,7 +62,7 @@ class TagsDisplay(wx.Panel):
         if not self._tag_boxes:
             self._add_tags(list(controller))
         else:
-            #in GTK you can have focus in a dead object
+            # in GTK you can have focus in a dead object
             #  .. this causes Segmentation Faults
             # Thus instead of clearing old values and adding new ones
             # modify the ones that exist
@@ -156,7 +154,7 @@ class TagBox(wx.TextCtrl):
 
     def _get_size(self):
         size = self.GetTextExtent(self.value)
-        return wx.Size(max(size[0]+10, 70), max(size[1]+3, 25))
+        return wx.Size(max(size[0]+13, 75), max(size[1]+3, 25))
 
     def _colorize(self):
         self.SetForegroundColour(self._properties.foreground_color)
@@ -174,8 +172,6 @@ class TagBox(wx.TextCtrl):
                 self._cancel_editing()
             elif event.GetKeyCode() == wx.WXK_RETURN:
                 self._update_value()
-                # FIXME: Is this needed?
-                return # Crashes RIDE on Linux if event.Skip is called
             elif event.GetKeyCode() == wx.WXK_DELETE:
                 self.SetValue('')
         event.Skip()
@@ -193,10 +189,8 @@ class TagBox(wx.TextCtrl):
 
     def OnKillFocus(self, event):
         self._update_value()
-        # Send skip event only if tagbox is empty and about to be destroyed
-        # On some platforms this event is sent too late and causes crash
-        if self.value != '':
-            event.Skip()
+        if 'linux' not in platform:
+            event.Skip()  # Can't skip on Linux as this causes crash
 
     def _update_value(self):
         self._properties.change_value(self.value)
@@ -281,44 +275,3 @@ class DefaultTagBoxProperties(_TagBoxProperties):
     foreground_color = '#666666'
     background_color = '#D3D3D3'
     enabled = False
-
-# Debug
-import sys
-import traceback
-
-def _show_error():
-    message = ''.join(traceback.format_exception(*sys.exc_info()))
-    dialog = wx.MessageDialog(None, message, 'Error!', wx.OK|wx.ICON_ERROR)
-    dialog.ShowModal()
-
-
-if __name__ == '__main__':
-    class MyFrame(wx.Frame):
-        def __init__(self, parent, id, title):
-            wx.Frame.__init__(self, parent, id, title)
-
-    class MyMenuApp( wx.App):
-        def OnInit(self):
-            frame = MyFrame(None , -1, 'Frame Window Demo')
-            sz = wx.BoxSizer(wx.HORIZONTAL)
-            from robotide.controller.basecontroller import _BaseController
-            my_controller = _BaseController()
-            display = TagsDisplay(frame, None)
-            # display.add_tag(ForcedTag('forced'))  # , False)
-            # display.add_tag(DefaultTag('default'))  #, False)
-            print("Added tag")
-            for name in ['foo', 'bar', 'foobo', 'jee', 'huu', 'asb', 'sdfajkd', 'Sprint-1']:
-                display.add_tag(Tag(name, 0, my_controller))  # , True)
-            # display.add_tag(Tag(''))  #, False)
-            display.build()
-            sz.Add(display, 0, wx.GROW|wx.ALL, 5)
-            frame.Show(True)
-            self.SetTopWindow(frame)
-            return True
-    # Debug
-    try:
-        # Run program
-        app=MyMenuApp(0)
-        app.MainLoop()
-    except:
-        _show_error()
