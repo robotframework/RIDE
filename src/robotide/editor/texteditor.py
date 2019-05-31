@@ -25,7 +25,7 @@ from wx import stc
 from robotide import robotapi
 from robotide.context import IS_WINDOWS, IS_MAC
 from robotide.controller.ctrlcommands import SetDataFile
-from robotide.publish import (RideSettingsChanged, PUBLISHER)
+from robotide.publish import RideSettingsChanged, PUBLISHER
 from robotide.publish.messages import RideMessage
 from robotide.utils import PY2
 from robotide.namespace.suggesters import (SuggestionSource,
@@ -639,8 +639,12 @@ class RobotStylizer(object):
     def _font_size(self):
         return self.settings['Text Edit'].get('font size', 10)
 
+    def _font_face(self):
+        return self.settings['Text Edit'].get('font face', 'Courier')
+
     def _set_styles(self):
         color_settings = self.settings.get_without_default('Text Edit')
+        background = color_settings.get('background', '#FFFFFF')
         styles = {
             robotframeworklexer.ARGUMENT: {
                 'fore': color_settings.get('argument', '#bb8844')
@@ -685,17 +689,25 @@ class RobotStylizer(object):
         self.tokens = {}
         for index, token in enumerate(styles):
             self.tokens[token] = index
-            self.editor.StyleSetSpec(index, self._get_style_string(**styles[token]))
+            self.editor.StyleSetSpec(index,
+                                     self._get_style_string(back=background,
+                                                            **styles[token]))
+        self.editor.StyleSetBackground(wx.stc.STC_STYLE_DEFAULT, background)
         self.editor.Refresh()
 
     def _get_word_and_length(self, current_position):
-        word = self.editor.GetTextRange(current_position, self.editor.WordEndPosition(current_position, False))
+        word = self.editor.GetTextRange(current_position,
+                                        self.editor.WordEndPosition(
+                                            current_position,
+                                            False))
         return word, len(word)
 
-    def _get_style_string(self, back='#FFFFFF', face='Courier', fore='#000000', bold='', underline=''):
+    def _get_style_string(self, back='#FFFFFF', fore='#000000', bold='', underline=''):
         settings = locals()
         settings.update(size=self._font_size())
-        return ','.join('%s:%s' % (name, value) for name, value in settings.items() if value)
+        settings.update(face=self._font_face())
+        return ','.join('%s:%s' % (name, value)
+                        for name, value in settings.items() if value)
 
     def stylize(self):
         if not self.lexer:
