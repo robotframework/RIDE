@@ -47,6 +47,7 @@ from .editordialogs import UserKeywordNameDialog, ScalarVariableDialog, \
 from .contentassist import ExpandingContentAssistTextCtrl
 from .gridcolorizer import Colorizer
 from robotide.utils import PY3
+from robotide.lib.robot.utils.compat import with_metaclass
 
 if PY3:
     from robotide.utils import basestring, unicode, unichr
@@ -77,8 +78,7 @@ def requires_focus(function):
 from robotide.utils.noconflict import classmaker
 
 
-class KeywordEditor(GridEditor, RideEventHandler):
-    __metaclass__ = classmaker()
+class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
     _no_cell = (-1, -1)
     _popup_menu_shown = False
     dirty = property(lambda self: self._controller.dirty)

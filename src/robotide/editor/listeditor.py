@@ -14,9 +14,9 @@
 #  limitations under the License.
 
 import wx
+from robotide.lib.robot.utils.compat import with_metaclass
 from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
 from robotide.controller.ctrlcommands import MoveUp, MoveDown, DeleteItem
-
 from robotide.utils import RideEventHandler
 from robotide.widgets import PopupMenu, PopupMenuItems, ButtonWithHandler, Font
 from robotide.context import ctrl_or_cmd, bind_keys_to_evt_menu, IS_WINDOWS
@@ -145,8 +145,7 @@ class ListEditorBase(wx.Panel):
 from robotide.utils.noconflict import classmaker
 
 
-class ListEditor(ListEditorBase, RideEventHandler):
-    __metaclass__ = classmaker()
+class ListEditor(with_metaclass(classmaker(), ListEditorBase, RideEventHandler)):
     pass
 
 class AutoWidthColumnList(wx.ListCtrl, ListCtrlAutoWidthMixin):

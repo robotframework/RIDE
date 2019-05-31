@@ -19,7 +19,8 @@ from .widgets import PreferencesPanel, PreferencesComboBox,\
     PreferencesColorPicker
 from .imports import ImportPreferences
 from .saving import SavingPreferences
-from .editors import GridEditorPreferences, TextEditorPreferences
+from .editors import GridEditorPreferences, TextEditorPreferences,\
+    TestRunnerPreferences
 from .excludes import ExcludePreferences
 
 
@@ -47,4 +48,5 @@ class Preferences(object):
         self.add(ImportPreferences)
         self.add(GridEditorPreferences)
         self.add(TextEditorPreferences)
+        self.add(TestRunnerPreferences)
         self.add(ExcludePreferences)

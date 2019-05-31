@@ -356,9 +356,9 @@ class TestCaseController(_WithStepsController):
             self.documentation,
             FixtureController(self, self._test.setup),
             FixtureController(self, self._test.teardown),
-            self.tags,
             TimeoutController(self, self._test.timeout),
-            TemplateController(self, self._test.template)
+            TemplateController(self, self._test.template),
+            self.tags
         ]
 
     @property
@@ -435,11 +435,11 @@ class UserKeywordController(_WithStepsController):
     def settings(self):
         result = [
             DocumentationController(self, self._kw.doc),
-            TagsController(self, self._kw.tags),
             ArgumentsController(self, self._kw.args),
             self.teardown,
             ReturnValueController(self, self._kw.return_),
-            TimeoutController(self, self._kw.timeout)
+            TimeoutController(self, self._kw.timeout),
+            TagsController(self, self._kw.tags),
         ]
         return result
 

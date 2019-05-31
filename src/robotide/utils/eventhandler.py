@@ -14,7 +14,7 @@
 #  limitations under the License.
 
 import wx
-
+from robotide.lib.robot.utils.compat import with_metaclass
 
 class eventhandlertype(type):
     def __new__(cls, name, bases, dict):
@@ -34,8 +34,7 @@ class eventhandlertype(type):
         return type.__new__(cls, name, bases, dict)
 
 
-class RideEventHandler(object):
-    __metaclass__ = eventhandlertype
+class RideEventHandler(with_metaclass(eventhandlertype, object)):
     _SHOWING_MODIFIED_ON_DISK_CONTROLLERS_ = set()
     _SHOWING_REMOVED_ON_DISK_CONTROLLERS_ = set()
 
