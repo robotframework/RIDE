@@ -24,9 +24,10 @@ STEP1_KEYWORD = 'Step 1'
 STEP1 = '  '+STEP1_KEYWORD+'  arg'
 STEP2 = '  Step 2  a1  a2  a3'
 STEP_WITH_COMMENT = '  Foo  # this is a comment'
-FOR_LOOP_HEADER = '  : FOR  ${i}  IN  1  2  3'
+FOR_LOOP_HEADER = '  FOR  ${i}  IN  1  2  3'
 FOR_LOOP_STEP1 = '    Log  ${i}'
 FOR_LOOP_STEP2 = '    No Operation'
+FOR_LOOP_END = '  END'
 STEP_AFTER_FOR_LOOP = '  Step bar'
 
 BASE_DATA = [TEST_NAME,
@@ -36,9 +37,9 @@ BASE_DATA = [TEST_NAME,
              FOR_LOOP_HEADER,
              FOR_LOOP_STEP1,
              FOR_LOOP_STEP2,
+             FOR_LOOP_END,
              STEP_AFTER_FOR_LOOP,
-             '  ${variable}=  some value'
-]
+             '  ${variable}=  some value']
 
 
 class _FakeProject(WithNamespace):
