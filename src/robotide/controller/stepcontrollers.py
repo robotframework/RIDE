@@ -368,7 +368,7 @@ class StepController(_BaseController):
     def _get_comment(self, cells):
         if not cells:
             return None
-        return cells[-1][2:].strip() if cells[-1].startswith('#') else None
+        return cells[-1][2:].strip() if cells[-1].startswith('# ') else None
 
     def _recreate(self, cells, comment=None):
         if self._is_partial_for_loop_step(cells):
