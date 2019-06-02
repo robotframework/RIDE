@@ -42,10 +42,6 @@ class BaseNameValidator(object):
             if len(self._new_basename.strip()) == 0:
                 RideInputValidationError(message=ERROR_EMPTY_FILENAME).publish()
                 return False
-            try:
-                open(name,"w").close()
-            finally:
-                os.remove(name)
             return True
         except (IOError, OSError):
             RideInputValidationError(message=ERROR_ILLEGAL_CHARACTERS).publish()
