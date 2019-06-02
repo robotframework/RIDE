@@ -164,6 +164,7 @@ class ContentType:
     COMMENTED = 'COMMENTED'
     STRING = 'STRING'
     EMPTY = 'EMPTY'
+    END = 'END'
 
 
 class CellType:

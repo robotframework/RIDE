@@ -278,12 +278,59 @@ class LibraryKeywordInfo(_KeywordInfo):
         if isinstance(other, str):   # DEBUG
            return self.name.lower() == other.name.lower()  # and self.__hash__ == other.__hash__
 
-
     def __hash__(self):
         return hash(repr(self))  # self.name)  #
 
     def __lt__(self, other):
         return self.name.lower() < other.name.lower()
+
+    def _name(self, item):
+        return self._item_name
+
+
+@total_ordering
+class BlockKeywordInfo(_KeywordInfo):
+    """ Special Info for FOR and END, documentation"""
+    _type = 'test library'
+    _library_alias = None
+    item = None
+
+    def __init__(self, name, doc, doc_format='ROBOT', library_name='BuiltIn',
+                 *args):
+        self._item_name = name
+        self.doc = doc.strip()
+        self._item_library_name = library_name
+        self.doc_format = doc_format
+        self._args = args
+        ItemInfo.__init__(self, self._item_name, library_name, None)
+        self.shortdoc = self.doc.splitlines()[0] if self.doc else ''
+
+    def with_alias(self, alias):
+        self._library_alias = alias
+        self.source = self._source(self.item)
+        return self
+
+    def _source(self, item):
+        if self._library_alias:
+            return self._library_alias
+        return self._item_library_name
+
+    @property
+    def arguments(self):
+        return self._args
+
+    def is_library_keyword(self):
+        return True
+
+    def __eq__(self, other):
+        if isinstance(other, str):   # DEBUG
+           return self.name == other.name  # must match Capital case
+
+    def __hash__(self):
+        return hash(repr(self))  # self.name)  #
+
+    def __lt__(self, other):
+        return self.name < other.name
 
     def _name(self, item):
         return self._item_name
@@ -376,6 +423,7 @@ class ResourceUserKeywordInfo(_UserKeywordInfo):
 
 PRIORITIES = {ItemInfo: 50,
               LibraryKeywordInfo: 40,
+              BlockKeywordInfo: 35,
               ResourceUserKeywordInfo: 30,
               TestCaseUserKeywordInfo: 20,
               VariableInfo: 10,
