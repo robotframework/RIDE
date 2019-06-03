@@ -196,7 +196,8 @@ class TestCellInfo(unittest.TestCase):
 
     def test_for_loop_in_header(self):
         forlooped_case = self.keyword3
-        self._verify_cell_info(0, 0, ContentType.STRING, CellType.MANDATORY, forlooped_case)
+        # DEBUG changed FOR to BlockKeywordLibrary
+        self._verify_cell_info(0, 0, ContentType.LIBRARY_KEYWORD, CellType.MANDATORY, forlooped_case)
         self._verify_cell_info(0, 1, ContentType.VARIABLE, CellType.ASSIGN, forlooped_case)
         self._verify_cell_info(0, 2, ContentType.STRING, CellType.MANDATORY, forlooped_case)
         self._verify_cell_info(0, 3, ContentType.STRING, CellType.OPTIONAL, forlooped_case)

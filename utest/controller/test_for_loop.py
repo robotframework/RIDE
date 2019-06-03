@@ -176,7 +176,7 @@ class TestForLoop(unittest.TestCase):
         test.execute(ChangeCellValue(0, 2, '# comment'))  #idented comments del
         self.assertEqual(test.steps[0].as_list(), ['FOR', '', '# comment'])
         test.execute(DeleteCell(0, 0))
-        self.assertEqual(test.steps[0].as_list(), ['# comment'])
+        self.assertEqual(test.steps[0].as_list(), ['', '# comment'])
 
     def test_move_for_loop_over_another_for_loop(self):
         loop_1 = 'FOR  ${i}  IN  1  2  3  4'.split('  ')

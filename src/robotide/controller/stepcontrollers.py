@@ -348,6 +348,8 @@ class StepController(_BaseController):
 
     def move_up(self):
         previous_step = self.parent.step(self._index() - 1)
+        if 'END' in self._step.name:
+            print("DEBUG: MoveUP %s" % self._step.name)
         self.remove()
         previous_step.insert_before(self._step)
 
