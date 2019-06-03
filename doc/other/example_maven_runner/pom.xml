@@ -43,11 +43,4 @@
 			</build>
 		</profile>
 	</profiles>
-	<dependencies>
-		<dependency>
-			<groupId>com.github.hi-fi</groupId>
-			<artifactId>robotframework-seleniumlibrary</artifactId>
-			<version>3.141.59.2</version>
-		</dependency>
-	</dependencies>
-</project>
+
