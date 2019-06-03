@@ -348,6 +348,8 @@ class StepController(_BaseController):
 
     def move_up(self):
         previous_step = self.parent.step(self._index() - 1)
+        if 'END' in self._step.name:
+            print("DEBUG: MoveUP %s" % self._step.name)
         self.remove()
         previous_step.insert_before(self._step)
 
@@ -392,10 +394,12 @@ class StepController(_BaseController):
                           or cells[0] == 'FOR')
 
     def _is_intended_step(self, cells):
+        print("DEBUG: idented step cells[0] == 'END' %s" % cells[0:-1])
         return cells and not cells[0].strip() and cells[0] != 'END' and \
             any(c.strip() for c in cells) and self._index() > 0
 
     def _recreate_as_partial_for_loop(self, cells, comment):
+        print("DEBUG: recreate cells[0] == 'END' %s" % cells[0:-1])
         index = self._index()
         self.parent.replace_step(index, PartialForLoop(
             cells[1:], first_cell=cells[0], comment=comment))
