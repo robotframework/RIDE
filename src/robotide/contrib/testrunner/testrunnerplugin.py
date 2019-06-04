@@ -216,11 +216,12 @@ class TestRunnerPlugin(Plugin):
     def OnSettingsChanged(self, data):
         '''Updates settings'''
         section, setting = data.keys
-        print("DEBUG: enter OnSettingsChanged section %s" % (section))
+        # print("DEBUG: enter OnSettingsChanged section %s" % (section))
         if section == 'Test Run':  # DEBUG temporarily we have two sections
-            print("DEBUG: setting.get('confirm run')= %s " % setting['confirm run'])
-            self.defaults.setdefault('confirm run', setting['confirm run'])
-            self.save_setting('confirm run', setting['confirm run'])
+            # print("DEBUG: setting.get('confirm run')= %s " % setting)
+            # print("DEBUG: new data= %s old %s new %s" % (data.keys, data.old, data.new))
+            self.defaults.setdefault(setting, data.new)
+            self.save_setting(setting, data.new)
 
     def OnTestSelectedForRunningChanged(self, message):
         self._names_to_run = message.tests
