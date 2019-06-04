@@ -240,6 +240,17 @@ class TestRunnerPreferences(EditorPreferences):
     def __init__(self, settings, *args, **kwargs):
         super(TestRunnerPreferences, self).__init__(
             settings[self.name], *args, **kwargs)
+        self.Sizer.Add(self._create_test_runner_config_editor())
+
+    def _create_test_runner_config_editor(self):
+        self._settings.get('confirm run', True)
+        settings = self._settings
+        sizer = wx.FlexGridSizer(rows=2, cols=2, vgap=10, hgap=10)
+
+        sizer.AddMany(widgets.boolean_editor(
+            self, settings, 'confirm run', 'Asks for confirmation to run all'
+                                           ' tests if none selected '))
+        return sizer
 
     def create_colors_sizer(self):
         container = wx.GridBagSizer()
