@@ -49,9 +49,10 @@ class EditorPreferences(widgets.PreferencesPanel):
         for picker in self._color_pickers:
             picker.SetColour(defaults[picker.key])
 
-    def _read_defaults(self):
+    def _read_defaults(self, plugin=False):
         settings = [s.strip() for s in open(self._get_path(), 'r').readlines()]
-        start_index = settings.index('[%s]' % self.name) + 1
+        name = ('[[%s]]' if plugin else '[%s]') % self.name
+        start_index = settings.index(name) + 1
         defaults = {}
         for line in settings[start_index:]:
             if line.startswith('['):
@@ -235,11 +236,11 @@ class GridEditorPreferences(EditorPreferences):
 class TestRunnerPreferences(EditorPreferences):
     location = ("Test Runner",)
     title = "Test Runner Settings"
-    name = "Test Run"
+    name = "Test Runner"
 
     def __init__(self, settings, *args, **kwargs):
         super(TestRunnerPreferences, self).__init__(
-            settings[self.name], *args, **kwargs)
+            settings['Plugins'][self.name], *args, **kwargs)
         self.Sizer.Add(self._create_test_runner_config_editor())
 
     def _create_test_runner_config_editor(self):
@@ -277,6 +278,6 @@ class TestRunnerPreferences(EditorPreferences):
         return container
 
     def OnReset(self, event):
-        defaults = self._read_defaults()
+        defaults = self._read_defaults(plugin=True)
         for picker in self._color_pickers:
             picker.SetColour(defaults[picker.key])
