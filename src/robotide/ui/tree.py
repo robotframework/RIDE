@@ -972,7 +972,7 @@ class TreeLabelEditListener(object):
 
     def _stop_editing(self):
         control = self._tree.GetEditControl()
-        if control:
+        if control and wx.Window.FindFocus():
             control.StopEditing()
 
     def OnDelete(self, event):
