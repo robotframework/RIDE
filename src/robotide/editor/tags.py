@@ -17,6 +17,7 @@ import wx
 
 from robotide.controller.ctrlcommands import ChangeTag, ClearSetting
 from robotide.controller.tags import ForcedTag, DefaultTag
+from robotide.context import IS_WINDOWS
 from sys import platform
 
 
@@ -154,7 +155,8 @@ class TagBox(wx.TextCtrl):
 
     def _get_size(self):
         size = self.GetTextExtent(self.value)
-        return wx.Size(max(size[0]+13, 75), max(size[1]+3, 25))
+        offset = 13 if IS_WINDOWS else 26  # On GTK3 labels are bigger
+        return wx.Size(max(size[0]+offset, 75), max(size[1]+3, 25))
 
     def _colorize(self):
         self.SetForegroundColour(self._properties.foreground_color)
