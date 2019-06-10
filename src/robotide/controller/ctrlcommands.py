@@ -1138,6 +1138,7 @@ class MoveRowsUp(_StepsChangingCommand):
         return [self._rows]
 
     def change_steps(self, context):
+        print("DEBUG: MoveUp len=%d context[-1] %s" %(len(context.steps), context.steps[-1].as_list()))
         if len(self._rows) == 0 or self._last_row > len(context.steps) - 1 or \
                 self._first_row == 0:
             return False

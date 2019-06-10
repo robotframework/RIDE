@@ -469,16 +469,21 @@ class ForLoopCases(TestCaseCommandTest):
 class RowMovingTest(TestCaseCommandTest):
 
     def test_row_up(self):
-        print("DEBUG: before moving up data:")
+        print("DEBUG: before moving up test data:")
         for idx in range(0,len(self._data)):
             print("%s" % (self._data[idx]))
         result = self._exec(MoveRowsUp([1]))
         assert_true(result)
         print("DEBUG: after moving up data:")
         for idx in range(0, len(self._data)):
-            print("%s" % (self._steps[idx].as_list()))
+            try:
+                print("%s" % (self._steps[idx].as_list()))
+            except Exception:
+                break
         self._assert_step_order(STEP2, STEP1)
-        result.addFailure(self, "Abort")
+        print("DEBUG: after moving up test data:")
+        for idx in range(0, len(self._data)):
+            print("%s" % (self._data[idx]))
 
     def test_first_row_up_does_nothing(self):
         result = self._exec(MoveRowsUp([0]))
