@@ -36,6 +36,7 @@ from robotide.pluginapi import (Plugin, RideSaving, TreeAwarePluginMixin,
                                 RideDataChanged, RideOpenSuite,
                                 RideDataChangedToDirty)
 from robotide.widgets import TextField, Label, HtmlDialog
+from robotide.preferences.editors import read_fonts
 
 if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
     from wx.adv import HyperlinkCtrl, EVT_HYPERLINK
@@ -623,6 +624,7 @@ class RobotStylizer(object):
         self.editor = editor
         self.lexer = None
         self.settings = settings
+        self._ensure_default_font_is_valid()
         if robotframeworklexer:
             self.lexer = robotframeworklexer.RobotFrameworkLexer()
             self._set_styles()
@@ -640,7 +642,7 @@ class RobotStylizer(object):
         return self.settings['Text Edit'].get('font size', 10)
 
     def _font_face(self):
-        return self.settings['Text Edit'].get('font face', 'Courier')
+        return self.settings['Text Edit'].get('font face', 'Courier New')
 
     def _set_styles(self):
         color_settings = self.settings.get_without_default('Text Edit')
@@ -708,6 +710,14 @@ class RobotStylizer(object):
         settings.update(face=self._font_face())
         return ','.join('%s:%s' % (name, value)
                         for name, value in settings.items() if value)
+
+    def _ensure_default_font_is_valid(self):
+        '''Checks if default font is installed'''
+        default_font = self._font_face()
+        installed_fonts = read_fonts()
+        if default_font not in installed_fonts:
+            sys_font = wx.SystemSettings.GetFont(wx.SYS_ANSI_FIXED_FONT)
+            self.settings['Text Edit']['font face'] = sys_font.GetFaceName()
 
     def stylize(self):
         if not self.lexer:
