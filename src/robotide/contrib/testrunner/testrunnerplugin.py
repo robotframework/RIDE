@@ -69,6 +69,7 @@ from robotide.pluginapi import Plugin, ActionInfo
 from robotide.widgets import Label, ImageProvider
 from robotide.robotapi import LOG_LEVELS
 from robotide.utils import robottime, is_unicode, PY2
+from robotide.preferences.editors import read_fonts
 from sys import getfilesystemencoding
 from robotide.lib.robot.utils.encodingsniffer import (get_console_encoding,
                                                       get_system_encoding)
@@ -117,7 +118,7 @@ class TestRunnerPlugin(Plugin):
                      ('pybot', 'pybot' + ('.bat' if os.name == 'nt' else '')),
                      ('robot 3.1', 'robot')],
                 "font size": 10,
-                "font face": 'Courier',
+                "font face": 'Courier New',
                 "foreground": 'black',
                 "background": 'white',
                 "error": 'red'}
@@ -1039,7 +1040,8 @@ class OutputStyledTextCtrl(wx.stc.StyledTextCtrl):
 class OutputStylizer(object):
     def __init__(self, editor, settings):
         self.editor = editor
-        self.settings = settings
+        self.settings = settings._config_obj['Plugins']['Test Runner']
+        self._ensure_default_font_is_valid()
         self._set_styles()
         PUBLISHER.subscribe(self.OnSettingsChanged, RideSettingsChanged)
 
@@ -1051,17 +1053,15 @@ class OutputStylizer(object):
 
     def _set_styles(self):
         '''Sets plugin styles'''
-        settings = self.settings._config_obj['Plugins']['Test Runner']
-
-        background = settings.get('background', 'white')
-        font_face = settings.get('font face', 'Courier New')
-        font_size = settings.get('font size', 10)
+        background = self.settings.get('background', 'white')
+        font_size = self.settings.get('font size', 10)
+        font_face = self.settings.get('font face', 'Courier New')
 
         default_style = self._get_style_string(
-            fore=settings.get('foreground', 'black'), back=background,
+            fore=self.settings.get('foreground', 'black'), back=background,
             size=font_size, face=font_face)
         error_style = self._get_style_string(
-            fore=settings.get('error', 'red'), back=background,
+            fore=self.settings.get('error', 'red'), back=background,
             size=font_size, face=font_face)
 
         self.editor.StyleSetSpec(STYLE_DEFAULT, default_style)
@@ -1073,6 +1073,14 @@ class OutputStylizer(object):
     def _get_style_string(self, back, fore, size, face):
         return ','.join('%s:%s' % (name, value)
                         for name, value in locals().items() if value)
+
+    def _ensure_default_font_is_valid(self):
+        '''Checks if default font is installed'''
+        default_font = self.settings.get('font face')
+        installed_fonts = read_fonts()
+        if default_font not in installed_fonts:
+            sys_font = wx.SystemSettings.GetFont(wx.SYS_ANSI_FIXED_FONT)
+            self.settings['font face'] = sys_font.GetFaceName()
 
 
 # stole this off the internet. Nifty.

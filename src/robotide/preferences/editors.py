@@ -21,13 +21,23 @@ from robotide.preferences import widgets
 from robotide.widgets import Label
 
 
+def read_fonts():
+    '''Returns list with fixed width fonts'''
+    f = wx.FontEnumerator()
+    f.EnumerateFacenames()
+    names = f.GetFacenames(fixedWidthOnly=True)
+    names = [n for n in names if not n.startswith('@')]
+    names.sort()
+    return names
+
+
 class EditorPreferences(widgets.PreferencesPanel):
 
     def __init__(self, settings, *args, **kwargs):
         super(EditorPreferences, self).__init__(*args, **kwargs)
         self._settings = settings
         self._color_pickers = []
-        self._font_faces = self._read_fonts()
+        self._font_faces = read_fonts()
 
         # what would make this UI much more usable is if there were a
         # preview window in the dialog that showed all the colors. I
@@ -80,16 +90,7 @@ class EditorPreferences(widgets.PreferencesPanel):
                 self._settings, 'font face', 'Font Face',
                 self._font_faces)
             sizer.AddMany([s.label(self), s.chooser(self)])
-            self._font_faces
         return sizer
-
-    def _read_fonts(self):
-        f = wx.FontEnumerator()
-        f.EnumerateFacenames()
-        names = f.GetFacenames(fixedWidthOnly=True)
-        names = [n for n in names if not n.startswith('@')]
-        names.sort()
-        return names
 
     def create_colors_sizer(self):
         raise NotImplementedError('Implement me')
