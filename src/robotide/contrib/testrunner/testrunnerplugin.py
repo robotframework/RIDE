@@ -69,6 +69,7 @@ from robotide.pluginapi import Plugin, ActionInfo
 from robotide.widgets import Label, ImageProvider
 from robotide.robotapi import LOG_LEVELS
 from robotide.utils import robottime, is_unicode, PY2
+from robotide.preferences.editors import ReadFonts
 from sys import getfilesystemencoding
 from robotide.lib.robot.utils.encodingsniffer import (get_console_encoding,
                                                       get_system_encoding)
@@ -115,7 +116,13 @@ class TestRunnerPlugin(Plugin):
                 "runprofiles":
                     [('jybot', 'jybot' + ('.bat' if os.name == 'nt' else '')),
                      ('pybot', 'pybot' + ('.bat' if os.name == 'nt' else '')),
-                     ('robot 3.1', 'robot')]}
+                     ('robot 3.1', 'robot')],
+                "font size": 10,
+                "font face": 'Courier New',
+                "foreground": 'black',
+                "background": 'white',
+                "error": 'red'}
+
     report_regex = re.compile("^Report: {2}(.*\.html)$", re.MULTILINE)
     log_regex = re.compile("^Log: {5}(.*\.html)$", re.MULTILINE)
     title = "Run"
@@ -1033,41 +1040,46 @@ class OutputStyledTextCtrl(wx.stc.StyledTextCtrl):
 class OutputStylizer(object):
     def __init__(self, editor, settings):
         self.editor = editor
-        self.settings = settings
+        self.settings = settings._config_obj['Plugins']['Test Runner']
+        self._ensure_default_font_is_valid()
         self._set_styles()
         PUBLISHER.subscribe(self.OnSettingsChanged, RideSettingsChanged)
 
     def OnSettingsChanged(self, data):
-        '''Redraw the colors if the color settings are modified'''
+        '''Redraw colors and font if settings are modified'''
         section, setting = data.keys
-        if section == 'Test Run':
+        if section == 'Test Runner':
             self._set_styles()
 
-    def _font_size(self):
-        return self.settings['Test Run'].get('font size', 10)
-
-    def _font_face(self):
-        return self.settings['Test Run'].get('font face', 'Courier')
-
     def _set_styles(self):
-        color_settings = self.settings.get_without_default('Test Run')
-        background = color_settings.get('background', 'white')
+        '''Sets plugin styles'''
+        background = self.settings.get('background', 'white')
+        font_size = self.settings.get('font size', 10)
+        font_face = self.settings.get('font face', 'Courier New')
+
         default_style = self._get_style_string(
-            fore=color_settings.get('foreground', 'black'), back=background)
+            fore=self.settings.get('foreground', 'black'), back=background,
+            size=font_size, face=font_face)
         error_style = self._get_style_string(
-            fore=color_settings.get('error', '#b22222'), back=background)
+            fore=self.settings.get('error', 'red'), back=background,
+            size=font_size, face=font_face)
+
         self.editor.StyleSetSpec(STYLE_DEFAULT, default_style)
         self.editor.StyleSetSpec(STYLE_STDERR, error_style)
         self.editor.StyleSetSpec(7, error_style)
         self.editor.StyleSetBackground(wx.stc.STC_STYLE_DEFAULT, background)
         self.editor.Refresh()
 
-    def _get_style_string(self, back='white', fore='black', bold=''):
-        settings = locals()
-        settings.update(size=self._font_size())
-        settings.update(face=self._font_face())
+    def _get_style_string(self, back, fore, size, face):
         return ','.join('%s:%s' % (name, value)
-                        for name, value in settings.items() if value)
+                        for name, value in locals().items() if value)
+
+    def _ensure_default_font_is_valid(self):
+        '''Checks if default font is installed'''
+        default_font = self.settings.get('font face')
+        if default_font not in ReadFonts():
+            sys_font = wx.SystemSettings.GetFont(wx.SYS_ANSI_FIXED_FONT)
+            self.settings['font face'] = sys_font.GetFaceName()
 
 
 # stole this off the internet. Nifty.
