@@ -19,9 +19,20 @@ from os.path import abspath, dirname, join
 
 from robotide.preferences import widgets
 from robotide.widgets import Label
+from robotide.utils import PY3
+
+if PY3:
+    from functools import lru_cache
+else:
+    # On PY2, cache function is not built-in
+    def lru_cache(*args, **kwargs):
+        def inner(func):
+            return func
+        return inner
 
 
-def read_fonts():
+@lru_cache(maxsize=2)
+def ReadFonts():
     '''Returns list with fixed width fonts'''
     f = wx.FontEnumerator()
     f.EnumerateFacenames()
@@ -37,7 +48,6 @@ class EditorPreferences(widgets.PreferencesPanel):
         super(EditorPreferences, self).__init__(*args, **kwargs)
         self._settings = settings
         self._color_pickers = []
-        self._font_faces = read_fonts()
 
         # what would make this UI much more usable is if there were a
         # preview window in the dialog that showed all the colors. I
@@ -87,8 +97,7 @@ class EditorPreferences(widgets.PreferencesPanel):
                 self, self._settings, 'fixed font', 'Use fixed width font'))
         if 'font face' in self._settings:
             s = widgets.StringChoiceEditor(
-                self._settings, 'font face', 'Font Face',
-                self._font_faces)
+                self._settings, 'font face', 'Font Face', ReadFonts())
             sizer.AddMany([s.label(self), s.chooser(self)])
         return sizer
 

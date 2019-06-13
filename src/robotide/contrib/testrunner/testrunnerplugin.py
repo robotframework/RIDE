@@ -69,7 +69,7 @@ from robotide.pluginapi import Plugin, ActionInfo
 from robotide.widgets import Label, ImageProvider
 from robotide.robotapi import LOG_LEVELS
 from robotide.utils import robottime, is_unicode, PY2
-from robotide.preferences.editors import read_fonts
+from robotide.preferences.editors import ReadFonts
 from sys import getfilesystemencoding
 from robotide.lib.robot.utils.encodingsniffer import (get_console_encoding,
                                                       get_system_encoding)
@@ -1077,8 +1077,7 @@ class OutputStylizer(object):
     def _ensure_default_font_is_valid(self):
         '''Checks if default font is installed'''
         default_font = self.settings.get('font face')
-        installed_fonts = read_fonts()
-        if default_font not in installed_fonts:
+        if default_font not in ReadFonts():
             sys_font = wx.SystemSettings.GetFont(wx.SYS_ANSI_FIXED_FONT)
             self.settings['font face'] = sys_font.GetFaceName()
 
