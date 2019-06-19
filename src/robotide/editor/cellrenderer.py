@@ -31,7 +31,7 @@ class CellRenderer(wx.grid.GridCellRenderer):
         self.word_wrap = word_wrap
 
     def _wordwrap(self, text, width, dc, breakLongWords=True, margin=0):
-        ''' modification of ofiginal wordwrap function without extra space'''
+        ''' modification of original wordwrap function without extra space'''
         wrapped_lines = []
         text = text.split('\n')
         for line in text:
@@ -88,9 +88,6 @@ class CellRenderer(wx.grid.GridCellRenderer):
 
         _font = attr.GetFont()
         dc.SetFont(_font)
-
-        if len(text) == 0:
-            return dc.GetTextExtent("  ")  # self.default_width
 
         w, h = dc.GetTextExtent(text)
         if self.auto_fit:

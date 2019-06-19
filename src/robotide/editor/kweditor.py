@@ -146,7 +146,7 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
             CellRenderer(col_size, max_col_size, auto_col_size, word_wrap))
         self.SetRowLabelSize(wx.grid.GRID_AUTOSIZE)
         self.SetColLabelSize(0)
-        if not auto_col_size and not word_wrap:
+        if not auto_col_size:
             self.SetDefaultColSize(col_size, resizeExistingCols=True)
         else:
             self.SetDefaultColSize(wx.grid.GRID_AUTOSIZE, resizeExistingCols=True)
