@@ -136,6 +136,10 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
         finally:
             self._updating_namespace = False
 
+    def _resize_columns(self):
+        if self.settings.get("auto size cols", True):
+            self.AutoSizeColumns(False)
+
     def _set_cells(self):
         col_size = self.settings.get("col size", 175)
         max_col_size = self.settings.get("max col size", 380)
@@ -146,10 +150,12 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
             CellRenderer(col_size, max_col_size, auto_col_size, word_wrap))
         self.SetRowLabelSize(wx.grid.GRID_AUTOSIZE)
         self.SetColLabelSize(0)
-        if not auto_col_size:
-            self.SetDefaultColSize(col_size, resizeExistingCols=True)
-        else:
+
+        if auto_col_size:
             self.SetDefaultColSize(wx.grid.GRID_AUTOSIZE, resizeExistingCols=True)
+        else:
+            self.SetDefaultColSize(col_size, resizeExistingCols=True)
+            self.SetColMinimalAcceptableWidth(col_size)
 
         if auto_col_size:
             self.Bind(grid.EVT_GRID_CMD_COL_SIZE, self.OnCellColSizeChanged)
@@ -280,6 +286,7 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
     def OnInsertRows(self, event):
         self._execute(AddRows(self.selection.rows()))
         self.ClearSelection()
+        self._resize_columns()
         self._skip_except_on_mac(event)
 
     def _skip_except_on_mac(self, event):  # TODO Do we still need this?
@@ -302,13 +309,14 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
                         self.selection.bottomright)
         self._execute(InsertCells(self.selection.topleft,
                                   self.selection.bottomright))
+        self._resize_columns()
         self._skip_except_on_mac(event)
 
     def OnDeleteCells(self, event=None):
         # TODO remove below workaround for double actions
         if self._counter == 1:
-            if self._dcells == (
-            self.selection.topleft, self.selection.bottomright):
+            if self._dcells == (self.selection.topleft,
+                                self.selection.bottomright):
                 self._counter = 0
                 self._dcells = None
                 return
@@ -321,16 +329,19 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
         #                          self.selection.bottomright))
         self._execute(DeleteCells(self.selection.topleft,
                                   self.selection.bottomright))
+        self._resize_columns()
         self._skip_except_on_mac(event)
 
     # DEBUG @requires_focus
     def OnCommentRows(self, event=None):
         self._execute(CommentRows(self.selection.rows()))
+        self._resize_columns()
         self._skip_except_on_mac(event)
 
     # DEBUG @requires_focus
     def OnUncommentRows(self, event=None):
         self._execute(UncommentRows(self.selection.rows()))
+        self._resize_columns()
         self._skip_except_on_mac(event)
 
     def OnMoveRowsUp(self, event=None):
@@ -343,6 +354,7 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
         rows = self.selection.rows()
         if self._execute(command(rows)):
             wx.CallAfter(self._select_rows, [r + change for r in rows])
+        self._resize_columns()
 
     def _select_rows(self, rows):
         self.ClearSelection()
@@ -440,10 +452,12 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
         elif self.has_focus():
             self._execute(ClearArea(self.selection.topleft,
                                     self.selection.bottomright))
+        self._resize_columns()
 
     # DEBUG    @requires_focus
     def OnPaste(self, event=None):
         self._execute_clipboard_command(PasteArea)
+        self._resize_columns()
 
     def _execute_clipboard_command(self, command_class):
         """ Fixed on 4.0.0a3
@@ -461,10 +475,12 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
     # DEBUG @requires_focus
     def OnInsert(self, event=None):
         self._execute_clipboard_command(InsertArea)
+        self._resize_columns()
 
     def OnDeleteRows(self, event):
         self._execute(DeleteRows(self.selection.rows()))
         self.ClearSelection()
+        self._resize_columns()
         self._skip_except_on_mac(event)
 
     # DEBUG @requires_focus
@@ -479,10 +495,12 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
             self._execute(Undo())
         else:
             self.GetCellEditor(*self.selection.cell).Reset()
+        self._resize_columns()
 
     # DEBUG @requires_focus
     def OnRedo(self, event=None):
         self._execute(Redo())
+        self._resize_columns()
 
     def close(self):
         self._colorizer.close()
@@ -776,6 +794,7 @@ work.</li>
             self._extract_scalar(cells[0])
         elif min(row for row, _ in cells) == max(row for row, _ in cells):
             self._extract_list(cells)
+        self._resize_columns()
 
     def OnFindWhereUsed(self, event):
         is_variable, searchstring = self._get_is_variable_and_searchstring()
