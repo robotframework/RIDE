@@ -144,9 +144,9 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
             self.AutoSizeRows(False)
 
     def _set_cells(self):
-        col_size = self.settings.get("col size", 175)
-        max_col_size = self.settings.get("max col size", 380)
-        auto_col_size = self.settings.get("auto size cols", True)
+        col_size = self.settings.get("col size", 150)
+        max_col_size = self.settings.get("max col size", 450)
+        auto_col_size = self.settings.get("auto size cols", False)
         word_wrap = self.settings.get("word wrap", True)
 
         self.SetDefaultRenderer(
