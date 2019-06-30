@@ -137,7 +137,7 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
         finally:
             self._updating_namespace = False
 
-    def _resize_grid(self):
+    def _resize_grid(self, event=None):
         if self.settings.get("auto size cols", True):
             self.AutoSizeColumns(False)
         if self.settings.get("word wrap", True):
