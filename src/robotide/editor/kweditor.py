@@ -221,7 +221,7 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
                   or 'auto size cols' in setting
                   or 'word wrap' in setting):
                 self._set_cells()
-                self.autosize()
+            self.autosize()
             self._colorize_grid()
 
     def OnSelectCell(self, event):
