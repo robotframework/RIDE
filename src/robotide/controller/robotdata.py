@@ -20,6 +20,7 @@ from robotide import robotapi
 
 def NewTestCaseFile(path):
     datafile = robotapi.TestCaseFile(source=path)
+    datafile.start_table(['Test Cases'])
     _create_missing_directories(datafile.directory)
     return datafile
 
