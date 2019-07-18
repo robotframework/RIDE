@@ -116,6 +116,11 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
         self.set_datafile(data)
         self.dirty = False
         self.children = self._children(data)
+        # Filename needs to be set when creating a new datafile
+        if hasattr(self.data, 'initfile'):
+            self.filename = self.data.initfile
+        else:
+            self.filename = self.data.source
 
     def set_datafile(self, datafile):
         self.data = datafile
