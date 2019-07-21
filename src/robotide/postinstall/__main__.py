@@ -139,7 +139,7 @@ def _create_desktop_shortcut_linux(frame=None):
             if not _askyesno("Setup", "Create desktop shortcut?", frame):
                 return False
         roboticon = os.path.dirname(os.path.realpath(__file__)).\
-            replace("postinstall", "widgets/robot.png")
+            replace("postinstall", "widgets/robot.ico")
         with open(link, "w+") as shortcut:
             shortcut.write("#!/usr/bin/env xdg-open\n[Desktop Entry]\nExec="
                            "%s -m robotide.__init__\nComment=A Robot Framework"

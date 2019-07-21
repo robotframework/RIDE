@@ -13,6 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import os
 import wx
 import wx.lib.agw.aui as aui
 from wx import Icon
@@ -162,6 +163,10 @@ class RideFrame(with_metaclass(classmaker(), wx.Frame, RideEventHandler)):
             self.Maximize()
         self._application = application
         self._controller = controller
+        self.favicon = Icon(os.path.join(os.path.dirname(__file__), "..",
+                                         "widgets","robot.ico"),
+                            wx.BITMAP_TYPE_ICO, 256, 256)
+        self.SetIcon(self.favicon)
         self._init_ui()
         self._plugin_manager = PluginManager(self.notebook)
         self._review_dialog = None
@@ -215,7 +220,7 @@ class RideFrame(with_metaclass(classmaker(), wx.Frame, RideEventHandler)):
         ##### self.splitter = wx.SplitterWindow(self, style=wx.SP_LIVE_UPDATE)
         # self._mgr.AddPane(wx.Panel(self), aui.AuiPaneInfo().CenterPane())
         # set up default notebook style
-        self._notebook_style = aui.AUI_NB_DEFAULT_STYLE |\
+        self._notebook_style = aui.AUI_NB_DEFAULT_STYLE | \
                                aui.AUI_NB_TAB_EXTERNAL_MOVE | wx.NO_BORDER
         # TODO self._notebook_theme = 0 (allow to select themes for notebooks)
         # self.notebook = NoteBook(self.splitter, self._application,
@@ -569,8 +574,8 @@ class RideFrame(with_metaclass(classmaker(), wx.Frame, RideEventHandler)):
     def _refresh(self):
         self._controller.update_namespace()
 
-# This code is copied from http://wiki.wxpython.org/EnsureFrameIsOnScreen,
-# and adapted to fit our code style.
+    # This code is copied from http://wiki.wxpython.org/EnsureFrameIsOnScreen,
+    # and adapted to fit our code style.
     def ensure_on_screen(self):
         try:
             display_id = wx.Display.GetFromWindow(self)
