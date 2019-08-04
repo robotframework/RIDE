@@ -724,30 +724,19 @@ class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
         if node.IsOk():
             self._render_children(node)
 
-    # TODO: Remove method if CustomTreeItem defines it
+    # This exists because CustomTreeItem does not remove animations
     def OnTreeItemCollapsing(self, event):
-        item = event.GetItem()  # On large trees this is slow when item is root
-        self._for_all_running_tests(item, lambda t: self._hideanimation(t))
+        item = event.GetItem()
+        if self._is_test_node(item):
+            self._hide_item(item)
+        for child in item.GetChildren():
+            self._hide_item(child)
+        event.Skip()
 
-    def _hideanimation(self, item):
+    def _hide_item(self, item):
         itemwindow = item.GetWindow()
         if itemwindow:
             itemwindow.Hide()
-
-    def _for_all_running_tests(self, item, func):
-        if not self.HasAGWFlag(customtreectrl.TR_HIDE_ROOT) or \
-                item != self.GetRootItem():
-            if isinstance(item.GetData(), ResourceRootHandler or
-                                          ResourceFileHandler):
-                return
-
-            if not self.IsExpanded(item):
-                return
-            if self._is_test_node(item):
-                func(item)
-
-        for child in item.GetChildren():
-            self._for_all_tests(child, func)
 
     def SelectAllTests(self, item):
         self._for_all_tests(item, lambda t: self.CheckItem(t))
