@@ -395,7 +395,8 @@ class StepController(_BaseController):
                           or cells[0] == 'FOR')
 
     def _is_intended_step(self, cells):
-        print("DEBUG: idented step cells[0] == 'END' %s" % cells[0:-1])
+        if cells[0] == 'END':
+            print("DEBUG: idented step cells[0] == 'END' %s" % cells[0:-1])
         return cells and not cells[0].strip() and cells[0] != 'END' and \
             any(c.strip() for c in cells) and self._index() > 0
 

@@ -761,7 +761,9 @@ class Step(object):
 
     def __init__(self, content, comment=None):
         self.assign = self._get_assign(content)
+        # print("DEBUG RFLib init Step: content %s" % content[:])
         self.name = content.pop(0) if content else None
+        # print("DEBUG RFLib init Step: self.name %s" % self.name)
         self.args = content
         self.comment = Comment(comment)
 
@@ -781,11 +783,13 @@ class Step(object):
         return True
 
     def as_list(self, indent=False, include_comment=True):
+        # print("DEBUG RFLib Model Step: self.name %s" % self.name )
         kw = [self.name] if self.name is not None else []
         comments = self.comment.as_list() if include_comment else []
         data = self.assign + kw + self.args + comments
         if indent:
             data.insert(0, '')
+        # print("DEBUG RFLib Model Step: data %s" % data)
         return data
 
 

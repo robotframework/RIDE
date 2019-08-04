@@ -68,7 +68,7 @@ class TestCaseCommandTest(unittest.TestCase, _FakeProject):
         return [m for m in self._get_macros() if m.name == name][0]
 
     def _data_row(self, line):
-        return self._data.index(line)-1
+        return self._data.index(line)  # DEBUG was -1
 
     def _data_step_as_list(self, step_data):
         return step_data.split('  ')[1:]

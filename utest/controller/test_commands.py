@@ -403,6 +403,17 @@ class TestCaseEditingTest(TestCaseCommandTest):
         assert_equal(self._steps[row].as_list(),
                       ['', 'Comment'] + self._data_step_as_list(FOR_LOOP_STEP1)[1:])
 
+    def test_commenting_for_loop_end(self):
+        row = self._data_row(FOR_LOOP_END)
+        print("DEBUG: data %s" % self._data[:])
+        print("DEBUG: row %s value: %s" %( row, self._data[row]) )
+        self._exec(CommentRows([row]))
+        for idx in range(0, len(self._steps)):
+            print("DEBUG: After comment steps_loop %s" % self._steps[idx].as_list())
+        print("DEBUG: After comment data %s" % self._data_step_as_list(FOR_LOOP_END)[:])
+        assert_equal(self._steps[row].as_list(),
+                      ['Comment'] + self._data_step_as_list(FOR_LOOP_END)[:])
+
     def test_uncommenting_single_row(self):
         self._exec(CommentRows([0]))
         self._exec(UncommentRows([0]))
