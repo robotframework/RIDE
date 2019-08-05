@@ -727,16 +727,16 @@ class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
     # This exists because CustomTreeItem does not remove animations
     def OnTreeItemCollapsing(self, event):
         item = event.GetItem()
-        if self._is_test_node(item):
-            self._hide_item(item)
-        for child in item.GetChildren():
-            self._hide_item(child)
+        self._hide_item(item)
         event.Skip()
 
     def _hide_item(self, item):
-        itemwindow = item.GetWindow()
-        if itemwindow:
-            itemwindow.Hide()
+        for item in item.GetChildren():
+            itemwindow = item.GetWindow()
+            if itemwindow:
+                itemwindow.Hide()
+            if self.ItemHasChildren(item):
+                self._hide_item(item)
 
     def SelectAllTests(self, item):
         self._for_all_tests(item, lambda t: self.CheckItem(t))
