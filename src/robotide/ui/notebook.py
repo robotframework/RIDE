@@ -14,10 +14,8 @@
 #  limitations under the License.
 
 try:
-    # from wx.lib.agw import flatnotebook as fnb
     import wx.lib.agw.aui as aui
 except ImportError:
-    # from wx.lib import flatnotebook as fnb
     import wx.lib.aui as aui
 
 from wx import (Point, Size)
@@ -25,7 +23,6 @@ from wx import (Point, Size)
 from robotide.publish import RideNotebookTabChanging, RideNotebookTabChanged
 
 
-#class NoteBook(fnb.FlatNotebook):
 class NoteBook(aui.AuiNotebook):
 
     def __init__(self, parent, app, style):
