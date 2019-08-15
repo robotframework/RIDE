@@ -175,7 +175,10 @@ class RideFrame(with_metaclass(classmaker(), wx.Frame, RideEventHandler)):
         self.Bind(wx.EVT_SIZE, self.OnSize)
         self.Bind(wx.EVT_MOVE, self.OnMove)
         self.Bind(wx.EVT_MAXIMIZE, self.OnMaximize)
-        self.Bind(wx.EVT_DIRCTRL_FILEACTIVATED, self.OnOpenFile)
+        # self.Bind(wx.EVT_LEFT_DCLICK, self.OnKey)
+        if wx.VERSION >= (2, 9, 5, ''):  # DEBUG wxPhoenix
+            self.Bind(wx.EVT_DIRCTRL_FILEACTIVATED, self.OnOpenFile)
+            self.Bind(wx.EVT_DIRCTRL_SELECTIONCHANGED, self.OnOpenFile)
         self._subscribe_messages()
         #print("DEBUG: Call register_tools, actions: %s" % self.actions.__repr__())
         if PY2:
@@ -281,13 +284,15 @@ class RideFrame(with_metaclass(classmaker(), wx.Frame, RideEventHandler)):
         self.actions.register_actions(
             ActionInfoCollection(_menudata, self, self.tree))
         ###### File explorer pane
-        self.filemgr = wx.GenericDirCtrl(self, -1, size=(200, 225),
-                                         style=wx.DIRCTRL_3D_INTERNAL)
-        self.filemgr.SetMinSize(wx.Size(120, 200))
-        self._mgr.AddPane(self.filemgr,
-                          aui.AuiPaneInfo().Name("file_manager").
-                          Caption("Files").LeftDockable(True).
-                          CloseButton(True))
+        if wx.VERSION >= (2, 9, 5, ''):  # DEBUG wxPhoenix
+            self.filemgr = wx.GenericDirCtrl(self, -1, size=(200, 225),
+                                             style=wx.DIRCTRL_3D_INTERNAL)
+            self.filemgr.SetMinSize(wx.Size(120, 200))
+            # wx.CallAfter(self.filemgr.SetPath(self.tree.get_selected_datafile()))
+            self._mgr.AddPane(self.filemgr,
+                              aui.AuiPaneInfo().Name("file_manager").
+                              Caption("Files").LeftDockable(True).
+                              CloseButton(True))
 
         mb.take_menu_bar_into_use()
         #### self.splitter.SetMinimumPaneSize(100)
@@ -427,7 +432,18 @@ class RideFrame(with_metaclass(classmaker(), wx.Frame, RideEventHandler)):
                 pass
             self.filemgr.Update()
 
+    def OnKey(self, event):
+        wnd = wx.GetActiveWindow()
+        print("DEBUG: OnKey keypress wnd=%s" % self.GetName())
+        # keycode, control_down = event.GetKeyCode(), event.CmdDown()
+        # print("DEBUG: OnKey Control down wnd=%s key =%s" % (repr(wnd), keycode))
+        # if control_down:
+        print("DEBUG: OnKey Control down wnd=%s" % repr(wnd))
+        event.Skip()
+
     def OnOpenFile(self, event):
+        if not self.filemgr:
+            return
         # EVT_DIRCTRL_FILEACTIVATED
         from os.path import splitext
         robottypes = self._application.settings.get('robot types', ['robot',
@@ -436,17 +452,22 @@ class RideFrame(with_metaclass(classmaker(), wx.Frame, RideEventHandler)):
                                                                     'tsv',
                                                                     'html'])
         path = self.filemgr.GetFilePath()
-        ext = splitext(path)
-        ext = ext[1].replace('.', '')
-        # print("DEBUG: path %s ext %s" % (path, ext))
-        if ext in robottypes:
+        ext = ''
+        if len(path) > 0:
+            ext = splitext(path)
+            ext = ext[1].replace('.', '')
+            # print("DEBUG: path %s ext %s" % (path, ext))
+        else:
+            path = self.filemgr.GetPath()
             if not self.check_unsaved_modifications():
                 return
-            try:
-                self.open_suite(path)
+            self.open_suite(path)  # It is a directory, do not edit
+            return
+        if len(ext) > 0 and ext in robottypes:
+            if not self.check_unsaved_modifications():
                 return
-            except UserWarning as e:
-                pass
+            if self.open_suite(path):
+                return
         from robotide.editor import customsourceeditor
         customsourceeditor.main(path)
 
@@ -456,11 +477,8 @@ class RideFrame(with_metaclass(classmaker(), wx.Frame, RideEventHandler)):
         path = RobotFilePathDialog(
             self, self._controller, self._application.settings).execute()
         if path:
-            try:
-                self.open_suite(path)
+            if self.open_suite(path):
                 return
-            except UserWarning as e:
-                pass
             from robotide.editor import customsourceeditor
             customsourceeditor.main(path)
 
@@ -474,13 +492,19 @@ class RideFrame(with_metaclass(classmaker(), wx.Frame, RideEventHandler)):
 
     def open_suite(self, path):
         self._controller.update_default_dir(path)
-        err = self._controller.load_datafile(path, LoadProgressObserver(self))
-        if isinstance(err, UserWarning):
-            raise err
+        try:
+            err = self._controller.load_datafile(path, LoadProgressObserver(self))
+        finally:
+            if isinstance(err, UserWarning):
+                # raise err  # Just leave message in Parser Log
+                return False
         self._populate_tree()
+        return True
 
     def refresh_datafile(self, item, event):
         self.tree.refresh_datafile(item, event)
+        if self.filemgr:
+            self.filemgr.ReCreateTree()
 
     def OnOpenDirectory(self, event):
         if self.check_unsaved_modifications():
