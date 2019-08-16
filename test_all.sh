@@ -13,7 +13,8 @@ then
          PY=2.7
     elif [ $1 -eq 3 ]
     then
-         PY=3.6
+         # PY=3.6
+         PY=3.7
     else
         DIR="$1"
     fi

@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.robotframework</groupId>
+	<version>1.0</version>
+	<artifactId>robot-tests</artifactId>
+	<name>robot-tests</name>
+	<url>http://maven.apache.org</url>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<browser>firefox</browser>
+	</properties>
+	<profiles>
+		<profile>
+			<id>run-tests-with-ride</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.robotframework</groupId>
+						<artifactId>robotframework-maven-plugin</artifactId>
+						<version>1.5.1</version>
+						<executions>
+							<execution>
+								<phase>integration-test</phase>
+								<goals>
+									<goal>acceptance-test</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<argumentFile>${ride.argumentFile}</argumentFile>
+							<listener>${ride.listener}</listener>
+							<testCasesDirectory>${ride.testCasesDirectory}</testCasesDirectory>
+							<!-- Python library location-->
+							<extraPathDirectories>
+								<extraPathDirectory>${project.basedir}/src/test/resources/libraries</extraPathDirectory>
+							</extraPathDirectories>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+	<dependencies>
+		<dependency>
+			<groupId>com.github.hi-fi</groupId>
+			<artifactId>robotframework-seleniumlibrary</artifactId>
+			<version>3.141.59.2</version>
+		</dependency>
+	</dependencies>
+</project>

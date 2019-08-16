@@ -109,6 +109,7 @@ class TestRunnerPlugin(Plugin):
     """A plugin for running tests from within RIDE"""
     defaults = {"auto_save": False,
                 "show_message_log": True,
+                "confirm run": True,
                 "profile": "robot",
                 "sash_position": 200,
                 "runprofiles":
@@ -210,6 +211,17 @@ class TestRunnerPlugin(Plugin):
     def _subscribe_to_events(self):
         self.subscribe(self.OnTestSelectedForRunningChanged,
                        RideTestSelectedForRunningChanged)
+        self.subscribe(self.OnSettingsChanged, RideSettingsChanged)
+
+    def OnSettingsChanged(self, data):
+        '''Updates settings'''
+        section, setting = data.keys
+        # print("DEBUG: enter OnSettingsChanged section %s" % (section))
+        if section == 'Test Run':  # DEBUG temporarily we have two sections
+            # print("DEBUG: setting.get('confirm run')= %s " % setting)
+            # print("DEBUG: new data= %s old %s new %s" % (data.keys, data.old, data.new))
+            self.defaults.setdefault(setting, data.new)
+            self.save_setting(setting, data.new)
 
     def OnTestSelectedForRunningChanged(self, message):
         self._names_to_run = message.tests
@@ -298,10 +310,11 @@ class TestRunnerPlugin(Plugin):
         if not self._can_start_running_tests():
             return
         #if no tests are selected warn the user, issue #1622
-        if not self.tests_selected():
-            if not self.ask_user_to_run_anyway():
-                # In Linux NO runs dialog 4 times
-                return
+        if self.__getattr__('confirm run'):
+            if not self.tests_selected():
+                if not self.ask_user_to_run_anyway():
+                    # In Linux NO runs dialog 4 times
+                    return
         self._initialize_ui_for_running()
         command = self._create_command()
         if PY2:

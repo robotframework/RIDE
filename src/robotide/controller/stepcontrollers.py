@@ -348,7 +348,8 @@ class StepController(_BaseController):
 
     def move_up(self):
         previous_step = self.parent.step(self._index() - 1)
-        if 'END' in self._step.name:
+        print("DEBUG: MoveUP previous step= %s current step %s" % (previous_step.as_list(), self._step.as_list()))
+        if self._step.name == 'END':
             print("DEBUG: MoveUP %s" % self._step.name)
         self.remove()
         previous_step.insert_before(self._step)
@@ -394,10 +395,13 @@ class StepController(_BaseController):
                           or cells[0] == 'FOR')
 
     def _is_intended_step(self, cells):
+        if cells[0] == 'END':
+            print("DEBUG: idented step cells[0] == 'END' %s" % cells[0:-1])
         return cells and not cells[0].strip() and cells[0] != 'END' and \
             any(c.strip() for c in cells) and self._index() > 0
 
     def _recreate_as_partial_for_loop(self, cells, comment):
+        print("DEBUG: recreate cells[0] == 'END' %s" % cells[0:-1])
         index = self._index()
         self.parent.replace_step(index, PartialForLoop(
             cells[1:], first_cell=cells[0], comment=comment))
@@ -534,10 +538,14 @@ class ForLoopStepController(StepController):
 
     def _recreate_complete_for_loop_header(self, cells):
         steps = self.get_raw_steps()
+        for index in range(0,len(steps)):
+            print("DEBUG: _recreate %s" % steps[index].as_list())
         try:
             self._step.__init__(cells[1:])
         except TypeError:  # New RF 3.1 syntax
             self._step.__init__(self.parent, cells[1:])
+            for index in range(1, len(cells)):
+                print("DEBUG: _recreate cells %s" % cells[index])
         self.set_raw_steps(steps)
 
     def _recreate_partial_for_loop_header(self, cells, comment):

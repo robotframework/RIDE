@@ -219,7 +219,10 @@ class TestCellInfo(unittest.TestCase):
     def test_for_loop_in_range_header(self):
         forlooped_case = self.keyword3
         in_range_header_index = 4
-        self._verify_cell_info(in_range_header_index, 0, ContentType.STRING, CellType.MANDATORY, forlooped_case)
+        # self._verify_cell_info(in_range_header_index, 0, ContentType.STRING, CellType.MANDATORY, forlooped_case)
+        # Because FOR and END now have documentation
+        self._verify_cell_info(in_range_header_index, 0, ContentType.LIBRARY_KEYWORD,
+                               CellType.MANDATORY, forlooped_case)
         self._verify_cell_info(in_range_header_index, 1, ContentType.VARIABLE, CellType.ASSIGN, forlooped_case)
         self._verify_cell_info(in_range_header_index, 2, ContentType.STRING, CellType.MANDATORY, forlooped_case)
         self._verify_cell_info(in_range_header_index, 3, ContentType.STRING, CellType.MANDATORY, forlooped_case)
