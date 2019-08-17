@@ -175,10 +175,9 @@ class RideFrame(with_metaclass(classmaker(), wx.Frame, RideEventHandler)):
         self.Bind(wx.EVT_SIZE, self.OnSize)
         self.Bind(wx.EVT_MOVE, self.OnMove)
         self.Bind(wx.EVT_MAXIMIZE, self.OnMaximize)
-        # self.Bind(wx.EVT_LEFT_DCLICK, self.OnKey)
         if wx.VERSION >= (2, 9, 5, ''):  # DEBUG wxPhoenix
             self.Bind(wx.EVT_DIRCTRL_FILEACTIVATED, self.OnOpenFile)
-            self.Bind(wx.EVT_DIRCTRL_SELECTIONCHANGED, self.OnOpenFile)
+            self.Bind(wx.EVT_TREE_ITEM_RIGHT_CLICK, self.OnMenuOpenFile)
         self._subscribe_messages()
         #print("DEBUG: Call register_tools, actions: %s" % self.actions.__repr__())
         if PY2:
@@ -432,15 +431,6 @@ class RideFrame(with_metaclass(classmaker(), wx.Frame, RideEventHandler)):
                 pass
             self.filemgr.Update()
 
-    def OnKey(self, event):
-        wnd = wx.GetActiveWindow()
-        print("DEBUG: OnKey keypress wnd=%s" % self.GetName())
-        # keycode, control_down = event.GetKeyCode(), event.CmdDown()
-        # print("DEBUG: OnKey Control down wnd=%s key =%s" % (repr(wnd), keycode))
-        # if control_down:
-        print("DEBUG: OnKey Control down wnd=%s" % repr(wnd))
-        event.Skip()
-
     def OnOpenFile(self, event):
         if not self.filemgr:
             return
@@ -457,12 +447,6 @@ class RideFrame(with_metaclass(classmaker(), wx.Frame, RideEventHandler)):
             ext = splitext(path)
             ext = ext[1].replace('.', '')
             # print("DEBUG: path %s ext %s" % (path, ext))
-        else:
-            path = self.filemgr.GetPath()
-            if not self.check_unsaved_modifications():
-                return
-            self.open_suite(path)  # It is a directory, do not edit
-            return
         if len(ext) > 0 and ext in robottypes:
             if not self.check_unsaved_modifications():
                 return
@@ -470,6 +454,20 @@ class RideFrame(with_metaclass(classmaker(), wx.Frame, RideEventHandler)):
                 return
         from robotide.editor import customsourceeditor
         customsourceeditor.main(path)
+
+    def OnMenuOpenFile(self, event):
+        if not self.filemgr:
+            return
+        # TODO: Use widgets/popupmenu tools
+        path = self.filemgr.GetFilePath()
+        if len(path) > 0:
+            self.OnOpenFile(event)
+        else:
+            path = self.filemgr.GetPath()
+            if not self.check_unsaved_modifications():
+                return
+            self.open_suite(path)  # It is a directory, do not edit
+        event.Skip()
 
     def OnOpenTestSuite(self, event):
         if not self.check_unsaved_modifications():
