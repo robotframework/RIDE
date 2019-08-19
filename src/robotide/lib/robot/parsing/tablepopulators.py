@@ -204,8 +204,9 @@ class _TestCaseUserKeywordPopulator(Populator):
             self._comment_cache.consume_with(self._populate_comment_row)
         else:
             self._comment_cache.consume_with(self._populator.add)
-        if not ending_for_loop:
-            self._populator.add(row)
+        # if not ending_for_loop:  # END was being omitted
+        #    print("DEBUG: handle_data_row %s" % row.all)
+        self._populator.add(row)
 
     def _end_for_loop(self):
         if self._populating_for_loop():

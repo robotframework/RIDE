@@ -112,8 +112,6 @@ class _Command(object):
     modifying = True
 
     def execute(self, context):
-        # print("DEBUG: _Command.execute %s" % repr(context))
-        # return context.execute()
         raise NotImplementedError(self.__class__)  # DEBUG
 
     def __str__(self):
@@ -963,7 +961,6 @@ class ChangeCellValue(_StepsChangingCommand):
     def _validate_postcondition(self, context):
         value = self._step(context).get_value(self._col).strip()
         should_be = self._value.strip()
-        # print("DEBUG ctrlcommands Validate postconditions value=%s should_be=%s " % (value, should_be))
         if value == should_be:
             return True
         return self._col == 0 and\
@@ -1138,7 +1135,6 @@ class MoveRowsUp(_StepsChangingCommand):
         return [self._rows]
 
     def change_steps(self, context):
-        print("DEBUG: MoveUp len=%d context[-1] %s" %(len(context.steps), context.steps[-1].as_list()))
         if len(self._rows) == 0 or self._last_row > len(context.steps) - 1 or \
                 self._first_row == 0:
             return False
@@ -1171,8 +1167,6 @@ class MoveRowsDown(_StepsChangingCommand):
     def change_steps(self, context):
         if len(self._rows) == 0 or self._last_row >= len(context.steps) - 1:
             return False
-        print("DEBUG: MoveDown len=%d context[-1] %s" % (
-        len(context.steps), context.steps[-1].as_list()))
         number_of_steps_before = len(context.steps)
         for row in reversed(self._rows):
             context.move_step_down(row)
@@ -1301,8 +1295,6 @@ def InsertCells(top_left, bottom_right):
 def DeleteCells(top_left, bottom_right):
     row_s, col_s = top_left
     row_e, col_e = bottom_right
-    # print("DEBUG ctrlcommands delete cells (%d, %d), (%d, %d) " % (row_s, col_s,
-    #                                               row_e, col_e))
     return StepsChangingCompositeCommand(
         *[DeleteCell(row, col_s)
           for row in range(row_s, row_e + 1)

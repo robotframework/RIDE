@@ -94,6 +94,8 @@ class _TooltipMessage(object):
             CellType.OPTIONAL: self._optional,
             CellType.MUST_BE_EMPTY: self._must_be_empty,
             CellType.UNKNOWN: self._unknown,
+            CellType.END: self._keyword,
+            CellType.FOR: self._keyword
         }
         return (handlers[cell.cell_type](cell) + message).strip()
 
@@ -158,13 +160,14 @@ class CellPosition(object):
 class ContentType:
     USER_KEYWORD = 'USER_KEYWORD'
     LIBRARY_KEYWORD = 'LIBRARY_KEYWORD'
-    KEYWORDS = (USER_KEYWORD, LIBRARY_KEYWORD)
+    END = 'END'
+    FOR = 'FOR'
+    KEYWORDS = (USER_KEYWORD, LIBRARY_KEYWORD, END, FOR)
     VARIABLE = 'VARIABLE'
     UNKNOWN_VARIABLE = 'UNKNOWN_VARIABLE'
     COMMENTED = 'COMMENTED'
     STRING = 'STRING'
     EMPTY = 'EMPTY'
-    END = 'END'
 
 
 class CellType:
@@ -174,3 +177,5 @@ class CellType:
     OPTIONAL = 'OPTIONAL'
     MUST_BE_EMPTY = 'MUST_BE_EMPTY'
     UNKNOWN = 'UNKNOWN'
+    FOR = 'KEYWORD'
+    END = 'KEYWORD'

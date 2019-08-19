@@ -104,11 +104,7 @@ class LibraryCache(object):
         kws = []
         for keywords_in_library in self._default_libraries.values():
             kws.extend(keywords_in_library)
-        print("DEBUG: Cache default_kws")
-        #for value in kws:
-        #    print(value)
         # DEBUG fake FOR and END
-        print(type(kws), len(kws))
         obj1 = BlockKeywordInfo('FOR', 'To create loops. See `BuiltIn` docs.')
         kws.append(obj1)
         obj2 = BlockKeywordInfo('END', 'Ends a `FOR` loop block. See `BuiltIn.FOR` docs.')
