@@ -322,6 +322,11 @@ class StepController(_BaseController):
     def insert_before(self, new_step):
         steps = self.parent.get_raw_steps()
         index = steps.index(self._step)
+        #if steps[index].as_list().is_idented():
+        #    new_step.shift_right()
+        if index > 0:
+            print("DEBUG: insert before parent %s" % steps[index-1].as_list())
+        print("DEBUG: insert before %s" % new_step.as_list())
         self.parent.set_raw_steps(steps[:index] + [new_step] + steps[index:])
 
     def insert_after(self, new_step):
@@ -391,8 +396,8 @@ class StepController(_BaseController):
                           or cells[0] == 'FOR')
 
     def _is_intended_step(self, cells):
-        return cells and not cells[0].strip() and cells[0] != 'END' and \
-            any(c.strip() for c in cells) and self._index() > 0
+        return cells and not cells[0].strip() and (cells[0] == 'END') and \
+               any(c.strip() for c in cells) and self._index() > 0
 
     def _recreate_as_partial_for_loop(self, cells, comment):
         index = self._index()
@@ -442,7 +447,9 @@ class ForLoopStepController(StepController):
         return self._step.vars
 
     def move_up(self):
+        print("DEBUG: enter loop move up %s" % self._step.as_list())
         previous_step = self.parent.step(self._index() - 1)
+        print("DEBUG: FOR loop move_up %s" % previous_step)
         if isinstance(previous_step, ForLoopStepController):
             self._swap_forloop_headers(previous_step)
         else:
