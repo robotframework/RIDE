@@ -242,7 +242,7 @@ class TestCaseEditingTest(TestCaseCommandTest):
         row_after_for_loop = self._data_row(STEP_AFTER_FOR_LOOP)
         self._exec(DeleteRow(row_after_for_loop))
         self._exec(DeleteRow(row_after_for_loop))
-        assert_equal(self._steps[-1].as_list(), ['', 'No Operation'])
+        assert_equal(self._steps[-1].as_list(), ['END'])
         self._exec(InsertCell(0,0))
         self._verify_step(0, '', ['Step 1', 'arg'])
 
