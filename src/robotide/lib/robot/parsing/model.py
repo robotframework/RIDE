@@ -594,6 +594,12 @@ class TestCase(_WithSteps, _WithSettings):
         self.teardown = Fixture('[Teardown]', self)
         self.timeout = Timeout('[Timeout]', self)
         self.steps = []
+        if name == '...':
+            self.report_invalid_syntax(
+                "Using '...' as test case name is deprecated. It will be "
+                "considered line continuation in Robot Framework 3.2.",
+                level='WARN'
+            )
 
     _setters = {'Documentation': lambda s: s.doc.populate,
                 'Template': lambda s: s.template.populate,
@@ -665,6 +671,12 @@ class UserKeyword(TestCase):
         self.teardown = Fixture('[Teardown]', self)
         self.tags = Tags('[Tags]', self)
         self.steps = []
+        if name == '...':
+            self.report_invalid_syntax(
+                "Using '...' as keyword name is deprecated. It will be "
+                "considered line continuation in Robot Framework 3.2.",
+                level='WARN'
+            )
 
     _setters = {'Documentation': lambda s: s.doc.populate,
                 'Arguments': lambda s: s.args.populate,
@@ -736,8 +748,7 @@ class ForLoop(_WithSteps):
 
     def as_list(self, indent=False, include_comment=True):
         comments = self.comment.as_list() if include_comment else []
-        # TODO: Return 'FOR' in RF 3.2.
-        return [': FOR'] + self.vars + [self.flavor] + self.items + comments
+        return ['FOR'] + self.vars + [self.flavor] + self.items + comments
 
     def __iter__(self):
         return iter(self.steps)
@@ -750,7 +761,9 @@ class Step(object):
 
     def __init__(self, content, comment=None):
         self.assign = self._get_assign(content)
+        # print("DEBUG RFLib init Step: content %s" % content[:])
         self.name = content.pop(0) if content else None
+        # print("DEBUG RFLib init Step: self.name %s" % self.name)
         self.args = content
         self.comment = Comment(comment)
 
@@ -770,11 +783,13 @@ class Step(object):
         return True
 
     def as_list(self, indent=False, include_comment=True):
+        # print("DEBUG RFLib Model Step: self.name %s" % self.name )
         kw = [self.name] if self.name is not None else []
         comments = self.comment.as_list() if include_comment else []
         data = self.assign + kw + self.args + comments
         if indent:
             data.insert(0, '')
+        # print("DEBUG RFLib Model Step: data %s" % data)
         return data
 
 

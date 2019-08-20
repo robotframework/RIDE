@@ -155,7 +155,6 @@ class StepController(_BaseController):
             return CellContent(ContentType.COMMENTED, value)
         last_none_empty = self._get_last_none_empty_col_idx()
         if isinstance(last_none_empty, int) and last_none_empty < col:
-            # DEBUG if self._get_last_none_empty_col_idx() < col:
             return CellContent(ContentType.EMPTY, value)
         if variablematcher.is_variable(value):
             if self._is_unknow_variable(value, position):
@@ -169,6 +168,8 @@ class StepController(_BaseController):
             return CellContent(
                 ContentType.LIBRARY_KEYWORD, value,
                 self.get_keyword_info(value).source)
+        if col == 0 and value == 'END':
+            return CellContent(ContentType.END, value)
         return CellContent(ContentType.STRING, value)
 
     def _is_unknow_variable(self, value, position):
@@ -361,7 +362,7 @@ class StepController(_BaseController):
         non_empty_cells = [cell for cell
                            in self._step.as_list() if cell.strip() != '']
         return len(non_empty_cells) == 1 and \
-            non_empty_cells[0].startswith('# ')
+            non_empty_cells[0].startswith('#')
 
     def _get_comment(self, cells):
         if not cells:
@@ -390,8 +391,8 @@ class StepController(_BaseController):
                           or cells[0] == 'FOR')
 
     def _is_intended_step(self, cells):
-        return cells and not cells[0].strip() and \
-            any(c.strip() for c in cells) and self._index() > 0
+        return cells and not cells[0].strip() and (cells[0] == 'END') and \
+               any(c.strip() for c in cells) and self._index() > 0
 
     def _recreate_as_partial_for_loop(self, cells, comment):
         index = self._index()
@@ -415,14 +416,13 @@ class StepController(_BaseController):
 
 class PartialForLoop(robotapi.ForLoop):
 
-    def __init__(self, cells, first_cell=':FOR', comment=None):
+    def __init__(self, cells, first_cell='FOR', comment=None):
         self._cells = cells
         self._first_cell = first_cell
         try:
             robotapi.ForLoop.__init__(self, cells, comment)
         except TypeError:  # New RF 3.1 syntax
             robotapi.ForLoop.__init__(self, self.parent, cells, comment)
-
 
     def as_list(self, indent=False, include_comment=False):
         return [self._first_cell] + self._cells + self.comment.as_list()
@@ -539,7 +539,7 @@ class ForLoopStepController(StepController):
 
     def _recreate_partial_for_loop_header(self, cells, comment):
         if not cells or (cells[0].replace(' ', '').upper() != ':FOR'
-                         or cells[0] != 'FOR'):
+                         and cells[0].replace(' ', '') != 'FOR'):
             self._replace_with_new_cells(cells)
         else:
             steps = self.get_raw_steps()

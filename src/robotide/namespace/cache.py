@@ -17,6 +17,7 @@ import os
 import time
 import sys
 from robotide.robotapi import normpath
+from robotide.spec.iteminfo import BlockKeywordInfo
 from robotide.utils import PY2, PY3
 if PY3:
     from robotide.utils import unicode
@@ -103,6 +104,13 @@ class LibraryCache(object):
         kws = []
         for keywords_in_library in self._default_libraries.values():
             kws.extend(keywords_in_library)
+        # DEBUG fake FOR and END
+        obj1 = BlockKeywordInfo('FOR', 'To create loops. See `BuiltIn` docs.')
+        kws.append(obj1)
+        obj2 = BlockKeywordInfo('END', 'Ends a `FOR` loop block. See `BuiltIn.FOR` docs.')
+        kws.append(obj2)
+        obj3 = BlockKeywordInfo(': FOR', '*DEPRECATED*\nSee `BuiltIn.FOR` docs.')
+        kws.append(obj3)
         return kws
 
     def _get_default_libraries(self):

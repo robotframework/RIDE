@@ -112,8 +112,6 @@ class _Command(object):
     modifying = True
 
     def execute(self, context):
-        # print("DEBUG: _Command.execute %s" % repr(context))
-        # return context.execute()
         raise NotImplementedError(self.__class__)  # DEBUG
 
     def __str__(self):
@@ -957,8 +955,7 @@ class ChangeCellValue(_StepsChangingCommand):
             self._row, self._col, step.get_value(self._col))
         step.change(self._col, self._value)
         self._step(context).remove_empty_columns_from_end()
-        assert self._validate_postcondition(context), \
-            'Should have correct value after change'
+        assert self._validate_postcondition(context),'Should have correct value after change'
         return True
 
     def _validate_postcondition(self, context):
@@ -966,9 +963,13 @@ class ChangeCellValue(_StepsChangingCommand):
         should_be = self._value.strip()
         if value == should_be:
             return True
-        return self._col == 0 and \
-            value.replace(' ', '').upper() == ':FOR' and \
-            should_be.replace(' ', '').upper() == ':FOR'
+        return self._col == 0 and\
+               (value.replace(' ', '') == 'FOR' and
+                should_be.replace(' ', '') == 'FOR') or\
+               (value.replace(' ', '') == 'FOR' and
+                should_be.replace(' ', '').upper() == ':FOR') or\
+               (value.replace(' ', '') == 'END' and
+                should_be.replace(' ', '') == 'END')
 
     def _get_undo_command(self):
         return self._undo_command
@@ -1139,7 +1140,15 @@ class MoveRowsUp(_StepsChangingCommand):
             return False
         number_of_steps_before = len(context.steps)
         for row in self._rows:
+            keep_indent = (context.steps[row].as_list()[0] == 'END' and
+                           context.steps[row - 1].as_list()[0] == '')
+            new_indent = (context.steps[row - 1].as_list()[0] == 'END')
             context.move_step_up(row)
+            if keep_indent:
+                context.steps[row].shift_left(0)
+                context.steps[row - 1].shift_left(0)  # DEBUG: END needs to be shifted too
+            if new_indent:
+                context.steps[row - 1].shift_right(0)
         assert len(context.steps) == number_of_steps_before
         return True
 
@@ -1168,7 +1177,10 @@ class MoveRowsDown(_StepsChangingCommand):
             return False
         number_of_steps_before = len(context.steps)
         for row in reversed(self._rows):
+            keep_indent = (context.steps[row].as_list()[0] == 'END' and context.steps[row-1].as_list()[0] == '')
             context.move_step_down(row)
+            if keep_indent:
+                context.steps[row].shift_right(0)
         assert len(context.steps) == number_of_steps_before
         return True
 
@@ -1294,8 +1306,6 @@ def InsertCells(top_left, bottom_right):
 def DeleteCells(top_left, bottom_right):
     row_s, col_s = top_left
     row_e, col_e = bottom_right
-    # print("DEBUG ctrlcommands delete cells (%d, %d), (%d, %d) " % (row_s, col_s,
-    #                                               row_e, col_e))
     return StepsChangingCompositeCommand(
         *[DeleteCell(row, col_s)
           for row in range(row_s, row_e + 1)

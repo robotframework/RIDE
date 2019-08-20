@@ -36,7 +36,7 @@ do
         do
 		# printf "$j\n"
                 # bypass file that is passing with invoke test
-                if [ "$j" = "$a/test_resourcefactory.py" ]
+                if [ "$j" = "$a/test_DEBUG_resourcefactory.py" ]
                 then
                         b=`true`
                 else 

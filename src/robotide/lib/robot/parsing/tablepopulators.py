@@ -204,8 +204,9 @@ class _TestCaseUserKeywordPopulator(Populator):
             self._comment_cache.consume_with(self._populate_comment_row)
         else:
             self._comment_cache.consume_with(self._populator.add)
-        if not ending_for_loop:
-            self._populator.add(row)
+        # if not ending_for_loop:  # END was being omitted
+        #    print("DEBUG: handle_data_row %s" % row.all)
+        self._populator.add(row)
 
     def _end_for_loop(self):
         if self._populating_for_loop():
@@ -267,8 +268,19 @@ class _PropertyPopulator(Populator):
         self._comments.add(row)
 
     def _add(self, row):
+        if row.cells == ['...']:
+            self._deprecate_continuation_without_values()
         self._value.extend(row.tail if not self._data_added else row.data)
         self._data_added = True
+
+    def _deprecate_continuation_without_values(self):
+        location = self._get_deprecation_location()
+        message = ("%sIgnoring lines with only continuation marker '...' is "
+                   "deprecated." % ('In %s: ' % location if location else ''))
+        self._setter.__self__.report_invalid_syntax(message, level='WARN')
+
+    def _get_deprecation_location(self):
+        return ''
 
 
 class VariablePopulator(_PropertyPopulator):
@@ -280,11 +292,17 @@ class VariablePopulator(_PropertyPopulator):
     def populate(self):
         self._setter(self._name, self._value, self._comments.value)
 
+    def _get_deprecation_location(self):
+        return "'Variables' section"
+
 
 class SettingPopulator(_PropertyPopulator):
 
     def populate(self):
         self._setter(self._value, self._comments.value)
+
+    def _get_deprecation_location(self):
+        return "'%s' setting" % self._setter.__self__.setting_name
 
 
 class DocumentationPopulator(_PropertyPopulator):
@@ -340,8 +358,10 @@ class MetadataPopulator(DocumentationPopulator):
 class StepPopulator(_PropertyPopulator):
 
     def _add(self, row):
+        if row.cells == ['...']:
+            self._deprecate_continuation_without_values()
         self._value.extend(row.data)
 
     def populate(self):
-        if self._value or self._comments:
+        if self._value or self._comments.value:
             self._setter(self._value, self._comments.value)
