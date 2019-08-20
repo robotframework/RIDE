@@ -1,14 +1,14 @@
 =========================
-Robot Framework IDE 1.7.4a1
+Robot Framework IDE 1.7.4b1
 =========================
 
 
 .. default-role:: code
 
 
-`RIDE (Robot Framework IDE)`_ 1.7.4a1 is a new release with major enhancements
-and bug fixes. This version 1.7.4a1 includes fixes for installer and new File explorer.
-The reference for valid arguments is `Robot Framework`_ version 3.1.1.
+`RIDE (Robot Framework IDE)`_ 1.7.4b1 is a new release with major enhancements
+and bug fixes. This version 1.7.4b1 includes fixes for installer and new File explorer.
+The reference for valid arguments is `Robot Framework`_ version 3.1.2.
 
 **THIS IS THE LAST RELEASE SUPPORTING PYTHON 2.7**
 
@@ -23,9 +23,9 @@ If you have pip_ installed, just run
 
 ::
 
-   pip install --pre --upgrade robotframework-ride==1.7.4a1
+   pip install --pre --upgrade robotframework-ride==1.7.4b1
 
-to install this **ALPHA** release, 
+to install this **BETA** release, 
 and for the **final** release use
 
 ::
@@ -40,7 +40,7 @@ to install exactly the **final** version. Alternatively you can download the sou
 distribution from PyPI_ and install it manually. For more details and other
 installation approaches, see the `installation instructions`_.
 
-RIDE 1.7.4a1 was released on Sunday April 28, 2019.
+RIDE 1.7.4b1 was released on Wednesday August 28, 2019.
 
 .. _RIDE (Robot Framework IDE): https://github.com/robotframework/RIDE/
 .. _Robot Framework: http://robotframework.org
