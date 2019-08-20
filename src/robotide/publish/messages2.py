@@ -130,6 +130,25 @@ class RideLogException(RideLog):
             timestamp=utils.get_timestamp(), exception=exception)
 
 
+class RideParserLogMessage(RideMessage):
+    """This class represents a general purpose log message.
+
+    This message may used to inform parser errors and to provide
+    some kind of debugging information.
+    """
+    data = ['message', 'level', 'timestamp', 'notify_user']
+
+    def __init__(self, message, level='', notify_user=False):
+        """Initializes a RIDE log message.
+
+        The log ``level`` has default value ``WARN`` and the ``timestamp``
+        is generated automatically.
+        """
+        RideMessage.__init__(
+            self, message=message, level=level,
+            timestamp=utils.get_timestamp(), notify_user=notify_user)
+
+
 class RideInputValidationError(RideMessage):
     """Sent whenever user input is invalid."""
     data = ['message']

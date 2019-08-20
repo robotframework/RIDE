@@ -22,6 +22,7 @@ ERROR_EMPTY_FILENAME = "Empty filename"
 ERROR_NEWLINES_IN_THE_FILENAME = "Newlines in the filename"
 ERROR_FILE_ALREADY_EXISTS = "File %s already exists"
 
+
 class BaseNameValidator(object):
 
     def __init__(self, new_basename):
@@ -31,10 +32,10 @@ class BaseNameValidator(object):
         # Try-except is needed to check if file can be created if named like this, using open()
         # http://code.google.com/p/robotframework-ride/issues/detail?id=1111
         try:
-            name = '%s.%s' % (self._new_basename, context.get_format())
-            filename = os.path.join(context.directory, name)
-            if self._file_exists(filename):
-                RideInputValidationError(message=ERROR_FILE_ALREADY_EXISTS % filename).publish()
+            fileName = '%s.%s' % (self._new_basename, context.get_format())
+            filePath = os.path.join(context.directory, fileName)
+            if self._file_exists(filePath):
+                RideInputValidationError(message=ERROR_FILE_ALREADY_EXISTS % filePath).publish()
                 return False
             if '\\n' in self._new_basename or '\n' in self._new_basename:
                 RideInputValidationError(message=ERROR_NEWLINES_IN_THE_FILENAME).publish()
@@ -43,9 +44,9 @@ class BaseNameValidator(object):
                 RideInputValidationError(message=ERROR_EMPTY_FILENAME).publish()
                 return False
             try:
-                open(name,"w").close()
+                open(filePath, "w").close()
             finally:
-                os.remove(name)
+                os.remove(filePath)  # If file creation failed, then this will trigger validation error
             return True
         except (IOError, OSError):
             RideInputValidationError(message=ERROR_ILLEGAL_CHARACTERS).publish()

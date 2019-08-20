@@ -18,6 +18,7 @@ import sys
 import re
 
 from robotide.widgets import Dialog
+from robotide.publish import RideParserLogMessage
 
 
 class Logger(object):
@@ -30,13 +31,20 @@ class Logger(object):
     def report_parsing_errors(self):
         errors = [m[0] for m in self._messages]
         if errors:
-            # Warnings from robot.variables.Variables.set_from_variable_table
+            errors = set(errors)
+            msg = '\n'.join(self._format_parsing_error_line(line) for line in errors)
+            # print("DEBUG: logger: %s" % msg)
+            self._messages = []
+            RideParserLogMessage(msg, level='PARSER').publish()
+            # Warnings from robot.variables.Variables.set_from_variable_tablems
             # are present multiple times, issue 486.
+            """
             errors = set(errors)
             dlg = ParsingErrorDialog('\n'.join(self._format_parsing_error_line(line)
                                                for line in errors))
             dlg.ShowModal()
-            dlg.Destroy()
+            dlg.Destroy() 
+            """
         self._messages = []
 
     def _format_parsing_error_line(self, line):

@@ -19,6 +19,27 @@ from os.path import abspath, dirname, join
 
 from robotide.preferences import widgets
 from robotide.widgets import Label
+from robotide.utils import PY3
+
+if PY3:
+    from functools import lru_cache
+else:
+    # On PY2, cache function is not built-in
+    def lru_cache(*args, **kwargs):
+        def inner(func):
+            return func
+        return inner
+
+
+@lru_cache(maxsize=2)
+def ReadFonts():
+    '''Returns list with fixed width fonts'''
+    f = wx.FontEnumerator()
+    f.EnumerateFacenames()
+    names = f.GetFacenames(fixedWidthOnly=True)
+    names = [n for n in names if not n.startswith('@')]
+    names.sort()
+    return names
 
 
 class EditorPreferences(widgets.PreferencesPanel):
@@ -27,7 +48,6 @@ class EditorPreferences(widgets.PreferencesPanel):
         super(EditorPreferences, self).__init__(*args, **kwargs)
         self._settings = settings
         self._color_pickers = []
-        self._font_faces = self._read_fonts()
 
         # what would make this UI much more usable is if there were a
         # preview window in the dialog that showed all the colors. I
@@ -49,9 +69,10 @@ class EditorPreferences(widgets.PreferencesPanel):
         for picker in self._color_pickers:
             picker.SetColour(defaults[picker.key])
 
-    def _read_defaults(self):
+    def _read_defaults(self, plugin=False):
         settings = [s.strip() for s in open(self._get_path(), 'r').readlines()]
-        start_index = settings.index('[%s]' % self.name) + 1
+        name = ('[[%s]]' if plugin else '[%s]') % self.name
+        start_index = settings.index(name) + 1
         defaults = {}
         for line in settings[start_index:]:
             if line.startswith('['):
@@ -76,19 +97,9 @@ class EditorPreferences(widgets.PreferencesPanel):
                 self, self._settings, 'fixed font', 'Use fixed width font'))
         if 'font face' in self._settings:
             s = widgets.StringChoiceEditor(
-                self._settings, 'font face', 'Font Face',
-                self._font_faces)
+                self._settings, 'font face', 'Font Face', ReadFonts())
             sizer.AddMany([s.label(self), s.chooser(self)])
-            self._font_faces
         return sizer
-
-    def _read_fonts(self):
-        f = wx.FontEnumerator()
-        f.EnumerateFacenames()
-        names = f.GetFacenames(fixedWidthOnly=True)
-        names = [n for n in names if not n.startswith('@')]
-        names.sort()
-        return names
 
     def create_colors_sizer(self):
         raise NotImplementedError('Implement me')
@@ -235,11 +246,11 @@ class GridEditorPreferences(EditorPreferences):
 class TestRunnerPreferences(EditorPreferences):
     location = ("Test Runner",)
     title = "Test Runner Settings"
-    name = "Test Run"
+    name = "Test Runner"
 
     def __init__(self, settings, *args, **kwargs):
         super(TestRunnerPreferences, self).__init__(
-            settings[self.name], *args, **kwargs)
+            settings['Plugins'][self.name], *args, **kwargs)
         self.Sizer.Add(self._create_test_runner_config_editor())
 
     def _create_test_runner_config_editor(self):
@@ -277,6 +288,6 @@ class TestRunnerPreferences(EditorPreferences):
         return container
 
     def OnReset(self, event):
-        defaults = self._read_defaults()
+        defaults = self._read_defaults(plugin=True)
         for picker in self._color_pickers:
             picker.SetColour(defaults[picker.key])
