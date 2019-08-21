@@ -927,7 +927,8 @@ class ContentAssistCellEditor(GridCellEditor):  # DEBUG wxPhoenix PyGridCellEdi
         self._counter = 0
 
     def show_content_assist(self, args=None):
-        self._tc.show_content_assist()
+        if self._tc:
+            self._tc.show_content_assist()
 
     def execute_variable_creator(self, list_variable=False,
                                  dict_variable=False):
@@ -957,11 +958,11 @@ class ContentAssistCellEditor(GridCellEditor):  # DEBUG wxPhoenix PyGridCellEdi
         self._tc.set_row(row)
         self._original_value = grid.GetCellValue(row, col)
         self._tc.SetValue(self._original_value)
-        self._grid = grid
-        self._tc.SetInsertionPointEnd()
-        # self._tc.SetFocus()  # On Win 10 this breaks cell text selection
+        self._tc.SetFocus()  # On Win 10 this breaks cell text selection
         # For this example, select the text   # DEBUG nov_2017
-        # self._tc.SetSelection(0, self._tc.GetLastPosition())
+        self._tc.SetSelection(0, self._tc.GetLastPosition())
+        self._tc.SetInsertionPointEnd()
+        self._grid = grid
 
     def EndEdit(self, row, col, grid, *ignored):
         value = self._get_value()
@@ -1015,6 +1016,7 @@ class ContentAssistCellEditor(GridCellEditor):  # DEBUG wxPhoenix PyGridCellEdi
     def StartingClick(self):
         self._tc.SetValue(self._original_value)
         self._tc.SelectAll()
+        # print("DEBUG: kwedit SwtFocus on cell")
         self._tc.SetFocus()
 
     def Clone(self):
