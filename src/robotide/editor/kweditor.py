@@ -25,7 +25,7 @@ if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
 else:
     from wx.grid import PyGridCellEditor as GridCellEditor
 
-from robotide.context import IS_MAC
+from robotide.context import IS_MAC, IS_WINDOWS
 from robotide.controller.ctrlcommands import ChangeCellValue, ClearArea, \
     PasteArea, DeleteRows, AddRows, CommentRows, InsertCells, DeleteCells, \
     UncommentRows, Undo, Redo, RenameKeywordOccurrences, ExtractKeyword, \
@@ -301,7 +301,7 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
         # TODO remove below workaround for double actions
         if self._counter == 1:
             if self._icells == (
-            self.selection.topleft, self.selection.bottomright):
+                    self.selection.topleft, self.selection.bottomright):
                 self._counter = 0
                 self._icells = None
                 return
@@ -565,11 +565,17 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
         _iscelleditcontrolshown = self.IsCellEditControlShown()
 
         keycode, control_down = event.GetKeyCode(), event.CmdDown()
-        # print("DEBUG: key pressed " + str(keycode) + " + " +  str(control_down))
+        print("DEBUG: key pressed " + str(keycode) + " + " + str(control_down))
         # event.Skip()  # DEBUG seen this skip as soon as possible
-        if keycode == wx.WXK_CONTROL or \
-                (keycode == ord('M') and (control_down or event.AltDown())):  #  keycode == wx.WXK_CONTROL
+        if keycode != wx.WXK_SPACE and control_down or event.AltDown():  # keycode == wx.WXK_CONTROL
+            print("DEBUG: kwedit control or alt  wx.WXK_SPACE is %d" % wx.WXK_SPACE)
             self.show_cell_information()
+            # event.Skip()
+        if keycode == wx.WXK_SPACE and (control_down or event.AltDown()):  # Avoid Mac CMD
+            print("DEBUG: kwedit control+space")
+            # self.show_content_assist()
+            self._open_cell_editor_with_content_assist()
+            # event.Skip()
         elif keycode == ord('C') and control_down:
             # print("DEBUG: captured Control-C\n")
             self.OnCopy(event)
@@ -598,9 +604,6 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
                 self.save()
             self._move_grid_cursor(event, keycode)
             # event.Skip()
-        elif (control_down or event.AltDown()) and \
-                keycode == wx.WXK_SPACE:  # Avoid Mac CMD
-            self._open_cell_editor_with_content_assist()
         elif control_down and not event.AltDown() and \
                 keycode in (ord('1'), ord('2'), ord('5')):
             self._open_cell_editor_and_execute_variable_creator(
@@ -686,13 +689,20 @@ work.</li>
         #  event.Skip()
 
     def _open_cell_editor_with_content_assist(self):
+        print("DEBUG: Open cell editor with content assist:")
+        #position = self._tc.GetLastPosition()
+        #print("DEBUG: Open cell editor with content assist: getlastpos: %s" % position)
         if not self.IsCellEditControlEnabled():
             self.EnableCellEditControl()
-        row = self.GetGridCursorRow()
-        celleditor = self.GetCellEditor(self.GetGridCursorCol(), row)
-        celleditor.Show(True)
-        wx.CallAfter(celleditor.show_content_assist)
-        # print("DEBUG: Called content assist %s\n" % self._show_cell_information())
+        # if self.IsCellEditControlShown():
+        wx.CallAfter(self.show_content_assist)
+        print("DEBUG: Called content assist")
+        # row = self.GetGridCursorRow()
+        # celleditor = self.GetCellEditor(self.GetGridCursorCol(), row)
+        # celleditor.Show(True)
+        # DEBUG wx.CallAfter(
+        #celleditor.show_content_assist()
+        #print("DEBUG: Called content assist")
 
     def _open_cell_editor_and_execute_variable_creator(
             self, list_variable=False, dict_variable=False):
@@ -958,10 +968,11 @@ class ContentAssistCellEditor(GridCellEditor):  # DEBUG wxPhoenix PyGridCellEdi
         self._tc.set_row(row)
         self._original_value = grid.GetCellValue(row, col)
         self._tc.SetValue(self._original_value)
+        #if not IS_WINDOWS:
         self._tc.SetFocus()  # On Win 10 this breaks cell text selection
         # For this example, select the text   # DEBUG nov_2017
-        self._tc.SetSelection(0, self._tc.GetLastPosition())
-        self._tc.SetInsertionPointEnd()
+        # self._tc.SetInsertionPointEnd()
+        # self._tc.SetSelection(0, self._tc.GetLastPosition())
         self._grid = grid
 
     def EndEdit(self, row, col, grid, *ignored):
@@ -1012,12 +1023,15 @@ class ContentAssistCellEditor(GridCellEditor):  # DEBUG wxPhoenix PyGridCellEdi
             self._tc.SetValue(unichr(key))
         self._tc.SetFocus()
         self._tc.SetInsertionPointEnd()
+        self._tc.SelectAll()
+        self._tc.SetSelection(0, self._tc.GetLastPosition())
 
     def StartingClick(self):
         self._tc.SetValue(self._original_value)
         self._tc.SelectAll()
         # print("DEBUG: kwedit SwtFocus on cell")
         self._tc.SetFocus()
+        self._tc.SetSelection(0, self._tc.GetLastPosition())
 
     def Clone(self):
         return ContentAssistCellEditor()
