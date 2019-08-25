@@ -50,13 +50,10 @@ class _ContentAssistTextCtrlBase(object):
     def OnChar(self, event):
         # TODO: This might benefit from some cleanup
         keycode, control_down = event.GetKeyCode(), event.CmdDown()
-        print("DEBUG: BASE CONTENT ASSIST before processing" + str(keycode) + " + " +  str(control_down))
+        # print("DEBUG:  before processing" + str(keycode) + " + " +  str(control_down))
         # Ctrl-Space handling needed for dialogs # DEBUG add Ctrl-m
         if (control_down or event.AltDown()) and keycode in (wx.WXK_SPACE, ord('m')):
             self.show_content_assist()
-        elif keycode == wx.WXK_SPACE and (control_down or event.AltDown()) and not self._popup.is_shown():
-            self.show_content_assist()
-            # event.Skip()
         elif keycode in [wx.WXK_UP, wx.WXK_DOWN, wx.WXK_PAGEUP, wx.WXK_PAGEDOWN]\
                 and self._popup.is_shown():
             self._popup.select_and_scroll(keycode)

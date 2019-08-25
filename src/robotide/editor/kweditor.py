@@ -17,6 +17,7 @@ import wx
 from wx import grid
 import json
 from robotide.editor.cellrenderer import CellRenderer
+from robotide import context
 
 if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
     from wx.grid import GridCellEditor
@@ -565,17 +566,12 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
         _iscelleditcontrolshown = self.IsCellEditControlShown()
 
         keycode, control_down = event.GetKeyCode(), event.CmdDown()
-        print("DEBUG: key pressed " + str(keycode) + " + " + str(control_down))
+        # print("DEBUG: key pressed " + str(keycode) + " + " +  str(control_down))
         # event.Skip()  # DEBUG seen this skip as soon as possible
         if keycode != wx.WXK_SPACE and control_down or event.AltDown():  # keycode == wx.WXK_CONTROL
-            print("DEBUG: kwedit control or alt  wx.WXK_SPACE is %d" % wx.WXK_SPACE)
             self.show_cell_information()
-            # event.Skip()
         if keycode == wx.WXK_SPACE and (control_down or event.AltDown()):  # Avoid Mac CMD
-            print("DEBUG: kwedit control+space")
-            # self.show_content_assist()
             self._open_cell_editor_with_content_assist()
-            # event.Skip()
         elif keycode == ord('C') and control_down:
             # print("DEBUG: captured Control-C\n")
             self.OnCopy(event)
@@ -689,20 +685,12 @@ work.</li>
         #  event.Skip()
 
     def _open_cell_editor_with_content_assist(self):
-        print("DEBUG: Open cell editor with content assist:")
-        #position = self._tc.GetLastPosition()
-        #print("DEBUG: Open cell editor with content assist: getlastpos: %s" % position)
         if not self.IsCellEditControlEnabled():
             self.EnableCellEditControl()
-        # if self.IsCellEditControlShown():
-        wx.CallAfter(self.show_content_assist)
-        print("DEBUG: Called content assist")
-        # row = self.GetGridCursorRow()
-        # celleditor = self.GetCellEditor(self.GetGridCursorCol(), row)
-        # celleditor.Show(True)
-        # DEBUG wx.CallAfter(
-        #celleditor.show_content_assist()
-        #print("DEBUG: Called content assist")
+        row = self.GetGridCursorRow()
+        celleditor = self.GetCellEditor(self.GetGridCursorCol(), row)
+        celleditor.Show(True)
+        wx.CallAfter(celleditor.show_content_assist)
 
     def _open_cell_editor_and_execute_variable_creator(
             self, list_variable=False, dict_variable=False):
@@ -965,15 +953,16 @@ class ContentAssistCellEditor(GridCellEditor):  # DEBUG wxPhoenix PyGridCellEdi
     def BeginEdit(self, row, col, grid):
         self._counter = 0
         self._tc.SetSize((-1, self._height))
+        self._tc.SetBackgroundColour(context.POPUP_BACKGROUND)  # DEBUG: We are now in Edit mode
         self._tc.set_row(row)
         self._original_value = grid.GetCellValue(row, col)
         self._tc.SetValue(self._original_value)
-        #if not IS_WINDOWS:
-        self._tc.SetFocus()  # On Win 10 this breaks cell text selection
-        # For this example, select the text   # DEBUG nov_2017
-        # self._tc.SetInsertionPointEnd()
-        # self._tc.SetSelection(0, self._tc.GetLastPosition())
         self._grid = grid
+        self._tc.SetInsertionPointEnd()
+        if not IS_WINDOWS:
+            self._tc.SetFocus()  # On Win 10 this breaks cell text selection
+        # For this example, select the text   # DEBUG nov_2017
+        # self._tc.SetSelection(0, self._tc.GetLastPosition())
 
     def EndEdit(self, row, col, grid, *ignored):
         value = self._get_value()
@@ -1001,8 +990,11 @@ class ContentAssistCellEditor(GridCellEditor):  # DEBUG wxPhoenix PyGridCellEdi
         self._original_value = ''
         self._tc.SetValue('')
         if wx.VERSION >= (3, 0, 2, ''):  # DEBUG wxPhoenix
-            if self._value or val == '':
+            if self._value and val != '':  # DEBUG Fix #1967 crash when click other cell
                 self._grid.cell_value_edited(row, col, self._value)
+            else:
+                self._tc.hide()
+
 
     def _get_value(self):
         suggestion = self._tc.content_assist_value()
@@ -1023,15 +1015,11 @@ class ContentAssistCellEditor(GridCellEditor):  # DEBUG wxPhoenix PyGridCellEdi
             self._tc.SetValue(unichr(key))
         self._tc.SetFocus()
         self._tc.SetInsertionPointEnd()
-        self._tc.SelectAll()
-        self._tc.SetSelection(0, self._tc.GetLastPosition())
 
     def StartingClick(self):
         self._tc.SetValue(self._original_value)
         self._tc.SelectAll()
-        # print("DEBUG: kwedit SwtFocus on cell")
         self._tc.SetFocus()
-        self._tc.SetSelection(0, self._tc.GetLastPosition())
 
     def Clone(self):
         return ContentAssistCellEditor()
