@@ -39,20 +39,22 @@ wxPython
 Version 2.8.12.1 of wxPython__ was the last for the 2 series.
 Together with version 3.0.2, they are called the wxPython Classic.
 
-The current version of wxPython is 4.0.4 and was called wxPhoenix.
+The current version of wxPython is 4.0.6 and was called wxPhoenix.
 
 RIDE on Python 2.7 still runs with any version of those Classic or wxPhoenix.
 On Python 3.6+, only wxPhoenix is supported (and in the future we will only
 support those).
 
-**VERSION 1.7.4 IS THE LAST RELEASE SUPPORTING PYTHON 2.7 AND WXPYTHON <4.0.4**
+**VERSION 1.7.4 IS THE LAST RELEASE SUPPORTING PYTHON 2.7 AND WXPYTHON <3.0.3**
+
+**wxPython will be updated to current version 4.0.6**
 
 For testing purposes, users can select which version to use, by creating the
 file ``wx.pth`` containing the directory name of the wxPython to use. That 
 directory must contain the two wxPython directories (moved into)::
 
-    ls  -cF /usr/lib/python2.7/site-packages/wx-4.0.4
-    wxPython-4.0.4.dist-info/
+    ls  -cF /usr/lib/python2.7/site-packages/wx-4.0.6
+    wxPython-4.0.6.dist-info/
     wx/    
  
 Example::
@@ -64,6 +66,7 @@ Example::
     # wx-4.0.2
     # wx-4.0.3
     # wx-4.0.4
+    # wx-4.0.6
 
 
 It is highly recommended, if you want to program with wxPython to download and
@@ -143,7 +146,7 @@ Releasing
 
 * Release notes in markdown format can be created with::
 
-  > invoke release_notes
+  > invoke release-notes
 
 * Prepare source package::
 
