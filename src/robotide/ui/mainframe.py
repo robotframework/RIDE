@@ -175,7 +175,7 @@ class RideFrame(with_metaclass(classmaker(), wx.Frame, RideEventHandler)):
         self.Bind(wx.EVT_SIZE, self.OnSize)
         self.Bind(wx.EVT_MOVE, self.OnMove)
         self.Bind(wx.EVT_MAXIMIZE, self.OnMaximize)
-        if wx.VERSION >= (2, 9, 5, ''):  # DEBUG wxPhoenix
+        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
             self.Bind(wx.EVT_DIRCTRL_FILEACTIVATED, self.OnOpenFile)
             self.Bind(wx.EVT_TREE_ITEM_RIGHT_CLICK, self.OnMenuOpenFile)
         self._subscribe_messages()
@@ -283,7 +283,7 @@ class RideFrame(with_metaclass(classmaker(), wx.Frame, RideEventHandler)):
         self.actions.register_actions(
             ActionInfoCollection(_menudata, self, self.tree))
         ###### File explorer pane
-        if wx.VERSION >= (2, 9, 5, ''):  # DEBUG wxPhoenix
+        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
             self.filemgr = wx.GenericDirCtrl(self, -1, size=(200, 225),
                                              style=wx.DIRCTRL_3D_INTERNAL)
             self.filemgr.SetMinSize(wx.Size(120, 200))
