@@ -1,6 +1,6 @@
-=========================
+===========================
 Robot Framework IDE 1.7.4b1
-=========================
+===========================
 
 
 .. default-role:: code
@@ -11,6 +11,10 @@ and bug fixes. This version 1.7.4b1 includes fixes for installer and new File ex
 The reference for valid arguments is `Robot Framework`_ version 3.1.2.
 
 **THIS IS THE LAST RELEASE SUPPORTING PYTHON 2.7**
+
+**wxPython will be updated to current version 4.0.6**
+
+*Linux users are advised to install first wxPython from .whl package at* `wxPython.org`_.
 
 All issues targeted for **final** RIDE v1.7.4 can be found
 from the `issue tracker milestone`_.
@@ -50,7 +54,8 @@ RIDE 1.7.4b1 was released on Wednesday August 28, 2019.
 .. _issue tracker: https://github.com/robotframework/RIDE/issues
 .. _robotframework-users: http://groups.google.com/group/robotframework-users
 .. _Robot Framework Slack: https://robotframework-slack-invite.herokuapp.com
-.. _installation instructions: ../../INSTALL.rst
+.. _installation instructions: ../../BUILD.rst
+.. _wxPython.org: https://extras.wxpython.org/wxPython4/extras/linux/gtk3/
 
 
 .. contents::
@@ -58,7 +63,7 @@ RIDE 1.7.4b1 was released on Wednesday August 28, 2019.
    :local:
 
 Full list of **expected** fixes and enhancements (**will be updated until final version**)
-=========================================
+==========================================================================================
 
 .. list-table::
     :header-rows: 1
