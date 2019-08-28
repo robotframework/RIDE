@@ -36,7 +36,10 @@ def ReadFonts():
     '''Returns list with fixed width fonts'''
     f = wx.FontEnumerator()
     f.EnumerateFacenames()
-    names = f.GetFacenames(fixedWidthOnly=True)
+    if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
+        names = f.GetFacenames(fixedWidthOnly=True)
+    else:
+        names = f.GetFacenames()
     names = [n for n in names if not n.startswith('@')]
     names.sort()
     return names
