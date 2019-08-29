@@ -23,11 +23,13 @@ Questions and comments related to the release can be sent to the
 `robotframework-users`_ mailing list or to the channel #ride on 
 `Robot Framework Slack`_, and possible bugs submitted to the `issue tracker`_.
 
+See the `FAQ`_ for important info about `: FOR` changes.
+
 If you have pip_ installed, just run
 
 ::
 
-   pip install --pre --upgrade robotframework-ride==1.7.4b1
+   pip install --upgrade robotframework-ride==1.7.4b1
 
 to install this **BETA** release, 
 and for the **final** release use
@@ -44,7 +46,23 @@ to install exactly the **final** version. Alternatively you can download the sou
 distribution from PyPI_ and install it manually. For more details and other
 installation approaches, see the `installation instructions`_.
 
-RIDE 1.7.4b1 was released on Wednesday August 28, 2019.
+A possible way to start RIDE is:
+
+::
+
+    python -m robotide.__init__
+    
+::
+
+You can then go to `Tools>Create RIDE Desktop Shortcut`, or run the shortcut creation script with:
+
+::
+
+    python -m robotide.postinstall -install
+
+::
+
+RIDE 1.7.4b1 was released on Wednesday August 29, 2019.
 
 .. _RIDE (Robot Framework IDE): https://github.com/robotframework/RIDE/
 .. _Robot Framework: http://robotframework.org
@@ -56,6 +74,7 @@ RIDE 1.7.4b1 was released on Wednesday August 28, 2019.
 .. _Robot Framework Slack: https://robotframework-slack-invite.herokuapp.com
 .. _installation instructions: ../../BUILD.rst
 .. _wxPython.org: https://extras.wxpython.org/wxPython4/extras/linux/gtk3/
+.. _FAQ: https://github.com/robotframework/RIDE/wiki/F.A.Q.
 
 
 .. contents::
