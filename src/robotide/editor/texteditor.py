@@ -494,9 +494,10 @@ class SourceEditor(wx.Panel):
         return True
 
     def delete(self):
-        if self._editor.GetSelectionStart() == self._editor.GetSelectionEnd():
-            self._editor.CharRight()
-        self._editor.DeleteBack()
+        if IS_WINDOWS:
+            if self._editor.GetSelectionStart() == self._editor.GetSelectionEnd():
+                self._editor.CharRight()
+            self._editor.DeleteBack()
 
     def cut(self):
         self._editor.Cut()
