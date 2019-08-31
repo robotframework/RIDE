@@ -93,6 +93,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
             self.register_shortcut('CtrlCmd-V', focused(lambda e: self._editor.paste()))
         self.register_shortcut('CtrlCmd-Z', focused(lambda e: self._editor.undo()))
         self.register_shortcut('CtrlCmd-Y', focused(lambda e: self._editor.redo()))
+        self.register_shortcut('Del', focused(lambda e: self._editor.delete()))
         self.register_shortcut('CtrlCmd-F', lambda e: self._editor._search_field.SetFocus())
         self.register_shortcut('CtrlCmd-G', lambda e: self._editor.OnFind(e))
         self.register_shortcut('CtrlCmd-Shift-G', lambda e: self._editor.OnFindBackwards(e))
@@ -491,6 +492,12 @@ class SourceEditor(wx.Panel):
                                                             self._editor.utf8_text):
                 return False
         return True
+
+    def delete(self):
+        if IS_WINDOWS:
+            if self._editor.GetSelectionStart() == self._editor.GetSelectionEnd():
+                self._editor.CharRight()
+            self._editor.DeleteBack()
 
     def cut(self):
         self._editor.Cut()
