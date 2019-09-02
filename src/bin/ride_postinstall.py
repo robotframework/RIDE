@@ -25,3 +25,4 @@ from robotide.postinstall import __main__ as postinstall
 # http://docs.python.org/library/multiprocessing.html#windows
 if __name__ == '__main__':
     postinstall.caller(None, sys.platform.lower())
+

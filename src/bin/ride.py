@@ -26,3 +26,4 @@ from robotide import main
 # http://docs.python.org/library/multiprocessing.html#windows
 if __name__ == '__main__':
     main(*sys.argv[1:])
+
