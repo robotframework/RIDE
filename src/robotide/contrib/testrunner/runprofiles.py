@@ -301,8 +301,7 @@ class PybotProfile(BaseProfile):
 
     def _validate_arguments(self, args):
         # assert type(args) is unicode
-        # print("DEBUG: runprofiles: type(args)=%s
-        # is_unicode(args)=%s" % (type(args), is_unicode(args)))
+        print("DEBUG: runprofiles: args=%s is_unicode(args)=%s" % (args, is_unicode(args)))
         invalid_message = self._get_invalid_message(args)
         self._arguments.SetBackgroundColour(
             'red' if invalid_message else 'white')
@@ -324,6 +323,13 @@ class PybotProfile(BaseProfile):
         invalid = None
         try:
             # print("DEBUG: runprofiles get inv msg: %s\n" % args)
+            clean_args = args.split("`")  # Shell commands
+            for idx, item in enumerate(clean_args):
+                clean_args[idx] = item.strip()
+                if clean_args[idx][0] != '-':  # Not option, then is argument
+                    clean_args[idx] = 'arg'
+            args = " ".join(clean_args)
+            # print("DEBUG: runprofiles join args: %s\n" % args)
             # raw: %s\n" % (bytes(args), args) )
             #if PY3:
             #    args = args.encode(SYSTEM_ENCODING)  # DEBUG SYSTEM_ENCODING
