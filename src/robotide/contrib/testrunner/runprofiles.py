@@ -36,6 +36,7 @@ from robotide.widgets import Label
 from robotide.robotapi import DataError, Information
 from robotide.utils import (overrides, SYSTEM_ENCODING, ArgumentParser,
                             is_unicode, PY3)
+from robotide.context import IS_WINDOWS
 from robotide.contrib.testrunner.usages import USAGE
 from sys import getfilesystemencoding
 
@@ -150,7 +151,19 @@ class PybotProfile(BaseProfile):
         return [self.get_command()] + self._get_arguments()
 
     def _get_arguments(self):
+        if IS_WINDOWS:
+            self._parse_windows_command()
         return self.arguments.split()
+
+    def _parse_windows_command(self):
+        from subprocess import Popen, PIPE
+        try:
+            p = Popen(['echo', self.arguments], stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=True)
+            output, _ = p.communicate()
+            output = str(output).lstrip("b\'").strip()
+            self.arguments = output.replace('"', '').replace('\'', '').replace('\\r\\n', '')
+        except IOError:
+            pass
 
     def get_command(self):  # TODO Test on Windows
         from subprocess import call
@@ -301,7 +314,7 @@ class PybotProfile(BaseProfile):
 
     def _validate_arguments(self, args):
         # assert type(args) is unicode
-        print("DEBUG: runprofiles: args=%s is_unicode(args)=%s" % (args, is_unicode(args)))
+        # print("DEBUG: runprofiles: args=%s is_unicode(args)=%s" % (args, is_unicode(args)))
         invalid_message = self._get_invalid_message(args)
         self._arguments.SetBackgroundColour(
             'red' if invalid_message else 'white')
@@ -321,6 +334,8 @@ class PybotProfile(BaseProfile):
 
     def _get_invalid_message(self, args):
         invalid = None
+        if not args:
+            return None
         try:
             # print("DEBUG: runprofiles get inv msg: %s\n" % args)
             clean_args = args.split("`")  # Shell commands
