@@ -48,7 +48,7 @@ class WritingContext(object):
     html_format = 'html'
     tsv_format = 'tsv'
     robot_format = 'robot'
-    txt_column_count = 8
+    txt_column_count = 18
     html_column_count = 5
     tsv_column_count = 8
     _formats = [txt_format, html_format, tsv_format, robot_format]
