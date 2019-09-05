@@ -113,7 +113,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         datafile_controller = self.tree.get_selected_datafile_controller()
         if datafile_controller:
             self._open_data_for_controller(datafile_controller)
-        self.show_tab(self._editor)
+            self.show_tab(self._editor)
 
     def OnSaving(self, message):
         if self.is_focused():

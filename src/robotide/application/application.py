@@ -84,10 +84,12 @@ class RIDE(wx.App):
 
     def _get_editor(self):
         from robotide.editor import EditorPlugin
+        from robotide.editor.texteditor import TextEditorPlugin
         for pl in self._plugin_loader.plugins:
             maybe_editor = pl._plugin
-            if isinstance(maybe_editor, EditorPlugin):
-                maybe_editor.show()
+            if (isinstance(maybe_editor, EditorPlugin) or
+                isinstance(maybe_editor, TextEditorPlugin)) and \
+                maybe_editor.__getattr__("_enabled"):
                 return maybe_editor
 
     def _load_data(self):
@@ -95,13 +97,6 @@ class RIDE(wx.App):
         if path:
             observer = LoadProgressObserver(self.frame)
             self._controller.load_data(path, observer)
-        """
-        if path:
-            with self.active_event_loop():
-                # observer = LoadProgressObserver(self.frame)
-                observer = None  # Avoid crash in Windows with wxPython 3
-                self._controller.load_data(path, observer)
-        """
 
     def _find_robot_installation(self):
         output = utils.run_python_command(

@@ -130,7 +130,7 @@ class _PluginEnablationCheckBox(wx.CheckBox):
         except Exception as err:
             self.SetValue(False)
             self.Enable(False)
-            msg = 'Failed to %s plugin %s:\n%s' % (method.__name__,
+            msg = 'Failed to %s plugin %s:\n%s\n\nYou should restart RIDE now!' % (method.__name__,
                                                    self._plugin.name, err)
             self._plugin.error = err
             self._plugin.doc = msg
