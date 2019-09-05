@@ -301,10 +301,13 @@ class SourceEditor(wx.Panel):
         self._data_validator = data_validator
         self._data_validator.set_editor(self)
         self._parent = parent
+        self._tab_size = self._parent._app.settings.get(
+                      'txt number of spaces', 4)
         self._create_ui(title)
         self._data = None
         self._dirty = False
         self._positions = {}
+        PUBLISHER.subscribe(self.OnSettingsChanged, RideSettingsChanged)
 
     def is_focused(self):
         foc = wx.Window.FindFocus()
@@ -535,6 +538,7 @@ class SourceEditor(wx.Panel):
         if text is not None:
             self._editor.set_text(text)
         self._editor.Bind(wx.EVT_KEY_UP, self.OnEditorKey)
+        self._editor.Bind(wx.EVT_KEY_DOWN, self.OnKeyDown)
         self._editor.Bind(wx.EVT_KILL_FOCUS, self.LeaveFocus)
         self._editor.Bind(wx.EVT_SET_FOCUS, self.GetFocus)
         # TODO Add here binding for keyword help
@@ -559,6 +563,29 @@ class SourceEditor(wx.Panel):
         if not self.dirty and self._editor.GetModify():
             self._mark_file_dirty()
         event.Skip()
+
+    def OnKeyDown(self, event):
+        if not self.is_focused():
+            return
+        # Process Tab key
+        if event.GetKeyCode() == wx.WXK_TAB and not event.CmdDown() and not event.ShiftDown():
+            spaces = ' ' * self._tab_size
+            self._editor.WriteText(spaces)
+        elif event.GetKeyCode() == wx.WXK_TAB and event.ShiftDown():
+            pos = self._editor.GetCurrentPos()
+            self._editor.SetCurrentPos(max(0, pos - self._tab_size))
+            if not event.CmdDown(): # No text selection
+                pos = self._editor.GetCurrentPos()
+                self._editor.SetSelection(pos, pos)
+        else:
+            event.Skip()
+
+    def OnSettingsChanged(self, data):
+        """Update tab size if txt spaces size setting is modified"""
+        _, setting = data.keys
+        if setting == 'txt number of spaces':
+            self._tab_size = self._parent._app.settings.get(
+                      'txt number of spaces', 4)
 
     def _mark_file_dirty(self):
         if self._data:
