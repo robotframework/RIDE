@@ -76,10 +76,11 @@ class EditorPlugin(Plugin, TreeAwarePluginMixin):
 
     def disable(self):
         self.remove_self_from_tree_aware_plugins()
-        self.unregister_actions()
         self.unsubscribe_all()
         self.delete_tab(self._tab)
+        wx.CallLater(500, self.unregister_actions())
         self._tab = None
+        self._editor = None
 
     def is_focused(self):
         return self.tab_is_visible(self._tab)
