@@ -123,8 +123,8 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         if self._should_process_data_changed_message(message):
             if isinstance(message, RideOpenSuite):
                 self._editor.reset()
-            if self._editor.dirty:
-                self._apply_txt_changes_to_model()
+            if self._editor.dirty and not self._apply_txt_changes_to_model():
+                return
             self._refresh_timer.Start(500, True)
             # For performance reasons only run after all the data changes
 
@@ -141,13 +141,12 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         if self.is_focused():
             next_datafile_controller = message.item and\
                                        message.item.datafile_controller
-            if self._editor.dirty:
-                if not self._apply_txt_changes_to_model():
-                    if self._editor.datafile_controller !=\
-                            next_datafile_controller:
-                        self.tree.select_controller_node(
-                            self._editor.datafile_controller)
-                    return
+            if self._editor.dirty and not self._apply_txt_changes_to_model():
+                if self._editor.datafile_controller !=\
+                        next_datafile_controller:
+                    self.tree.select_controller_node(
+                        self._editor.datafile_controller)
+                return
             if next_datafile_controller:
                 self._open_data_for_controller(next_datafile_controller)
                 self._editor.set_editor_caret_position()
@@ -202,14 +201,13 @@ class DataValidationHandler(object):
     def validate_and_update(self, data, text):
         m_text = text.decode("utf-8")
         if not self._sanity_check(data, m_text):
-            # print("DEBUG: _handle_sanity_check_failure")
-            self._handle_sanity_check_failure()
-            return False
-        else:
-            self._editor.reset()
-            # print("DEBUG: updating type %s" % type(m_text))
-            data.update_from(m_text)
-            return True
+            handled = self._handle_sanity_check_failure()
+            if not handled:
+                return False
+        self._editor.reset()
+        # print("DEBUG: updating type %s" % type(m_text))
+        data.update_from(m_text)
+        return True
 
     def _sanity_check(self, data, text):
         formatted_text = data.format_text(text)
@@ -228,7 +226,7 @@ class DataValidationHandler(object):
         if self._last_answer == wx.ID_NO and \
         time() - self._last_answer_time <= 0.2:
             self._editor._mark_file_dirty()
-            return
+            return False
         # TODO: use widgets.Dialog
         id = wx.MessageDialog(self._editor,
                               'ERROR: Data sanity check failed!\n'
@@ -237,10 +235,12 @@ class DataValidationHandler(object):
                               style=wx.YES|wx.NO).ShowModal()
         self._last_answer = id
         self._last_answer_time = time()
-        if id == wx.ID_NO:
-            self._editor._mark_file_dirty()
-        else:
+        if id == wx.ID_YES:
             self._editor._revert()
+            return True
+        else:
+            self._editor._mark_file_dirty()
+        return False
 
 
 class DataFileWrapper(object): # TODO: bad class name
@@ -490,10 +490,9 @@ class SourceEditor(wx.Panel):
         self._dirty = False
 
     def save(self, *args):
-        if self.dirty:
-            if not self._data_validator.validate_and_update(self._data,
-                                                            self._editor.utf8_text):
-                return False
+        if self.dirty and not self._data_validator.validate_and_update(
+                self._data, self._editor.utf8_text):
+            return False
         return True
 
     def delete(self):
