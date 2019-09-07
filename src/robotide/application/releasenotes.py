@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 #  Copyright 2008-2015 Nokia Networks
 #  Copyright 2016-     Robot Framework Foundation
 #
