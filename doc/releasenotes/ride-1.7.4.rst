@@ -9,7 +9,6 @@ Robot Framework IDE 1.7.4b2
 `RIDE (Robot Framework IDE)`_ 1.7.4b2 is a new release with major enhancements
 and bug fixes. This version 1.7.4b2 includes fixes for installer, Font Type selection, Text Editor improvements and new File explorer.
 The reference for valid arguments is `Robot Framework`_ version 3.1.2.
-**MORE intro stuff...**
 
 * This is the **last version supporting Python 2.7**.
 * A new File Explorer allows to open supported file types in RIDE, or other types in a basic code editor. To open a file you must double-click on it (project folders open with right-click). If it is a supported file format but not with the correct structure (for example a resource file), an error message is shown, and then opens in code editor.
@@ -29,22 +28,22 @@ The reference for valid arguments is `Robot Framework`_ version 3.1.2.
   - On some Linuxes (Fedora, for example), when you click No in some Dialog boxes, there is the repetition of those Dialogs
 
 (and more for you to find out ;) )
+
 **THIS IS THE LAST RELEASE SUPPORTING PYTHON 2.7**
 
 **wxPython will be updated to current version 4.0.6**
 
 *Linux users are advised to install first wxPython from .whl package at* `wxPython.org`_.
 
-
-**REMOVE reference to tracker if release notes contain all issues.**
-All issues targeted for RIDE v1.7.4 can be found
+All issues targeted for **final** RIDE v1.7.4 can be found
 from the `issue tracker milestone`_.
 
 Questions and comments related to the release can be sent to the
 `robotframework-users`_ mailing list or to the channel #ride on 
 `Robot Framework Slack`_, and possible bugs submitted to the `issue tracker`_.
 
-**REMOVE ``--pre`` from the next command with final releases.**
+See the `FAQ`_ for important info about `: FOR` changes.
+
 If you have pip_ installed, just run
 
 ::
@@ -97,8 +96,8 @@ RIDE 1.7.4b2 was released on Saturday September 7, 2019.
    :depth: 2
    :local:
 
-Full list of fixes and enhancements
-===================================
+Full list of **expected** fixes and enhancements (**will be updated until final version**)
+==========================================================================================
 
 .. list-table::
     :header-rows: 1
