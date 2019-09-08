@@ -506,12 +506,16 @@ class StreamHandler(object):
         #       of the StreamHandler class (treating pickle and json the same)
         write_list = []
         if _JSONAVAIL:
-            write_list.append('J')
-            s = self._json_encoder(obj)
-            write_list.extend([str(len(s)), '|', s])
-        else:
-            write_list.append('P')
+            try:
+                s = self._json_encoder(obj)
+                write_list.append('J')
+                write_list.extend([str(len(s)), '|', s])
+            except:
+                # Probably just failed to JSON-encode an object; try pickle.
+                pass
+        if not write_list:
             s = pickle.dumps(obj, pickle.HIGHEST_PROTOCOL)
+            write_list.append('P')
             write_list.extend([str(len(s)), '|', s])
         if PY2:
             self.fp.write(''.join(write_list))
