@@ -23,7 +23,8 @@ from robotide.utils import PY3
 if PY3:
     from robotide.utils import unicode
 
-testlibpath = os.path.join(os.path.dirname(__file__), '..', 'resources', 'robotdata', 'lib_with_doc_format')
+testlibpath = os.path.join(os.path.dirname(__file__), '..', 'resources',
+                           'robotdata', 'lib_with_doc_format')
 sys.path.append(testlibpath)
 
 class TestLibraryDatabase(unittest.TestCase):
