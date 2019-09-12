@@ -20,6 +20,7 @@ from robotide.preferences.settings import SETTINGS_DIRECTORY
 from robotide.spec.iteminfo import LibraryKeywordInfo
 from robotide.utils import system_decode
 from robotide.utils import PY3
+
 if PY3:
     from robotide.utils import unicode
 
@@ -37,7 +38,9 @@ CREATE TABLE keywords (name TEXT,
                        FOREIGN KEY(library) REFERENCES libraries(id));
 """
 
-DATABASE_FILE = os.path.join(system_decode(SETTINGS_DIRECTORY), 'librarykeywords.db')
+DATABASE_FILE = os.path.join(system_decode(SETTINGS_DIRECTORY),
+                             'librarykeywords.db')
+
 
 def _create_database():
     print('Creating librarykeywords database to "%s"' % DATABASE_FILE)
@@ -47,13 +50,17 @@ def _create_database():
     connection.commit()
     connection.close()
 
+
 def _validate_database():
     connection = sqlite3.connect(DATABASE_FILE)
     try:
-        connection.execute('select id, name, doc_format, arguments, last_updated from libraries')
-        connection.execute('select name, doc, arguments, library_name, library from keywords')
+        connection.execute('select id, name, doc_format, arguments,'
+                           ' last_updated from libraries')
+        connection.execute('select name, doc, arguments, library_name,'
+                           ' library from keywords')
     finally:
         connection.close()
+
 
 def initialize_database():
     if not os.path.exists(SETTINGS_DIRECTORY):
@@ -64,10 +71,15 @@ def initialize_database():
         try:
             _validate_database()
         except sqlite3.DatabaseError as err:
-            print('error during database validation "%s"' % err)
             print('removing database "%s"' % DATABASE_FILE)
-            os.remove(DATABASE_FILE)
+            print('error during database validation "%s"' % err)
+            try:
+                os.remove(DATABASE_FILE)
+            except Exception as err:
+                print('failed to remove database "%s"' % DATABASE_FILE)
+                raise err
             _create_database()
+
 
 class LibraryDatabase(object):
 
@@ -84,36 +96,51 @@ class LibraryDatabase(object):
     def close(self):
         self._connection.close()
 
-    def insert_library_keywords(self, library_name, library_arguments, keywords):
+    def insert_library_keywords(self, library_name, library_arguments,
+                                keywords):
         library_doc_format = "ROBOT"
         if len(keywords) > 0:
             library_doc_format = keywords[0].doc_format
-            #if any(x.doc_format != library_doc_format for x in keywords):
-            #    print("debug: keywords doc format not consistent within library")
+            # if any(x.doc_format != library_doc_format for x in keywords):
+            #    print("debug: keywords doc format not
+            #    consistent within library")
 
         cur = self._cursor()
-        old_versions = cur.execute('select id from libraries where name = ?  and arguments = ?', (library_name, unicode(library_arguments))).fetchall()
+        old_versions = cur.execute('select id from libraries where name = ?  '
+                                   'and arguments = ?',
+                                   (library_name,
+                                    unicode(library_arguments))).fetchall()
         cur.executemany('delete from keywords where library = ?', old_versions)
         cur.executemany('delete from libraries where id = ?', old_versions)
-        lib = self._insert_library(library_name, library_doc_format, library_arguments, cur)
-        keyword_values = [[kw.name, kw.doc, u' | '.join(kw.arguments), kw.source, lib[0]] for kw in keywords if kw is not None]
+        lib = self._insert_library(library_name, library_doc_format,
+                                   library_arguments, cur)
+        keyword_values = [[kw.name, kw.doc, u' | '.join(kw.arguments),
+                           kw.source,
+                           lib[0]] for kw in keywords if kw is not None]
         self._insert_library_keywords(keyword_values, cur)
         self._connection.commit()
 
     def update_library_timestamp(self, name, arguments, milliseconds=None):
-        self._cursor().execute('update libraries set last_updated = ? where name = ? and arguments = ?', (milliseconds or time.time(), name, unicode(arguments)))
+        self._cursor().execute('update libraries set last_updated = ?'
+                               ' where name = ? and arguments = ?',
+                               (milliseconds or time.time(), name,
+                                unicode(arguments)))
         self._connection.commit()
 
     def fetch_library_keywords(self, library_name, library_arguments):
         lib = self._fetch_lib(library_name, library_arguments, self._cursor())
         if lib is None:
             return []
-        return [LibraryKeywordInfo(name, doc, lib[2], library_name, arguments.split(u' | ') if arguments else [])
+        return [LibraryKeywordInfo(name, doc, lib[2], library_name,
+                                   arguments.split(u' | ') if arguments else [])
                 for name, doc, arguments, library_name in
-                self._connection.execute('select name, doc, arguments, library_name from keywords where library = ?', [lib[0]])]
+                self._connection.execute('select name, doc, arguments,'
+                                         ' library_name from keywords where'
+                                         ' library = ?', [lib[0]])]
 
     def library_exists(self, library_name, library_arguments):
-        return self._fetch_lib(library_name, library_arguments, self._cursor()) is not None
+        return self._fetch_lib(library_name, library_arguments,
+                               self._cursor()) is not None
 
     def get_library_last_updated(self, library_name, library_arguments):
         lib = self._fetch_lib(library_name, library_arguments, self._cursor())
@@ -122,12 +149,17 @@ class LibraryDatabase(object):
         return lib[4]
 
     def _insert_library(self, name, doc_format, arguments, cursor):
-        cursor.execute('insert into libraries values (null, ?, ?, ?, ?)', (name, doc_format, unicode(arguments), time.time()))
+        cursor.execute('insert into libraries values (null, ?, ?, ?, ?)',
+                       (name, doc_format, unicode(arguments), time.time()))
         return self._fetch_lib(name, arguments, cursor)
 
     def _fetch_lib(self, name, arguments, cursor):
-        t = cursor.execute('select max(last_updated) from libraries where name = ?  and arguments = ?', (name, unicode(arguments))).fetchone()[0]
-        return cursor.execute('select * from libraries where name = ?  and arguments = ? and last_updated = ?', (name, unicode(arguments), t)).fetchone()
+        t = cursor.execute('select max(last_updated) from libraries where name'
+                           ' = ?  and arguments = ?',
+                           (name, unicode(arguments))).fetchone()[0]
+        return cursor.execute('select * from libraries where name = ?'
+                              '  and arguments = ? and last_updated = ?',
+                              (name, unicode(arguments), t)).fetchone()
 
     def _insert_library_keywords(self, data, cursor):
         cursor.executemany('insert into keywords values (?, ?, ?, ?, ?)', data)

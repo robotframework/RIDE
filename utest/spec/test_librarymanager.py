@@ -22,6 +22,7 @@ from resources import DATAPATH
 
 sys.path.append(os.path.join(DATAPATH, 'libs'))
 
+
 class TestLibraryManager(unittest.TestCase):
 
     def setUp(self):
@@ -67,6 +68,7 @@ class TestLibraryManager(unittest.TestCase):
 
     def _callback(self, keywords):
         self._keywords = keywords
+
 
 if __name__ == '__main__':
     unittest.main()
