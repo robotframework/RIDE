@@ -465,7 +465,7 @@ class SourceEditor(wx.Panel):
             self._editor.AutoCompSetDropRestOfWord(True)
             self._editor.AutoCompSetSeparator(ord(';'))
             self._editor.AutoCompShow(0, ";".join(sugs))
-        event.Skip()
+        # event.Skip()
 
     def open(self, data):
         self.reset()
