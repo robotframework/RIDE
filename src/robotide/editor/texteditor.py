@@ -76,8 +76,9 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         self.subscribe(self.OnTreeSelection, RideTreeSelection)
         self.subscribe(self.OnDataChanged, RideMessage)
         self.subscribe(self.OnTabChange, RideNotebookTabChanging)
-        self._register_shortcuts()
-        self._open()
+        if self._editor.is_focused():
+            self._register_shortcuts()
+            self._open()
 
     def _register_shortcuts(self):
         def focused(func):
@@ -163,12 +164,13 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
 
     def OnTabChange(self, message):
         if message.newtab == self.title:
+            self._register_shortcuts()
             self._open()
             self._editor.set_editor_caret_position()
         elif message.oldtab == self.title:
             # print("DEBUG: OnTabChange move to another from Text Editor.")
-            # event.Skip()
             self._editor.remove_and_store_state()
+            self.unregister_actions()
 
     def OnTabChanged(self, event):
         self._show_editor()

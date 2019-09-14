@@ -568,9 +568,9 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
         keycode, control_down = event.GetKeyCode(), event.CmdDown()
         # print("DEBUG: key pressed " + str(keycode) + " + " +  str(control_down))
         # event.Skip()  # DEBUG seen this skip as soon as possible
-        if keycode != wx.WXK_SPACE and control_down or event.AltDown():  # keycode == wx.WXK_CONTROL
+        if keycode != wx.WXK_SPACE and (control_down or event.AltDown()):  # keycode == wx.WXK_CONTROL
             self.show_cell_information()
-        if keycode == wx.WXK_SPACE and (control_down or event.AltDown()):  # Avoid Mac CMD
+        elif keycode == wx.WXK_SPACE and (control_down or event.AltDown()):  # Avoid Mac CMD
             self._open_cell_editor_with_content_assist()
         elif keycode == ord('C') and control_down:
             # print("DEBUG: captured Control-C\n")
