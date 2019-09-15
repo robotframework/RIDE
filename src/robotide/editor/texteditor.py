@@ -390,13 +390,14 @@ class SourceEditor(wx.Panel):
     def store_position(self):
         if self._editor:
             self._positions[self.datafile_controller] = self._editor.GetCurrentPos()
+            print("DEBUG: Called store caret position=%s" % self._positions[self.datafile_controller])
 
     def set_editor_caret_position(self):
         if not self.is_focused():  # DEBUG was typing text when at Grid Editor
             # print("DEBUG: Text Edit avoid set caret pos")
             return
         position = self._positions.get(self.datafile_controller, None)
-        # print("DEBUG: Called set caret position=%s" % position)
+        print("DEBUG: Called set caret position=%s" % position)
         if position:
             self._editor.SetFocus()
             self._editor.SetCurrentPos(position)
@@ -493,6 +494,7 @@ class SourceEditor(wx.Panel):
         self._dirty = False
 
     def save(self, *args):
+        self.store_position()
         if self.dirty and not self._data_validator.validate_and_update(
                 self._data, self._editor.utf8_text):
             return False
@@ -522,9 +524,11 @@ class SourceEditor(wx.Panel):
 
     def undo(self):
         self._editor.Undo()
+        self.store_position()
 
     def redo(self):
         self._editor.Redo()
+        self.store_position()
 
     def remove_and_store_state(self):
         if self._editor:
@@ -546,11 +550,13 @@ class SourceEditor(wx.Panel):
         # TODO Add here binding for keyword help
 
     def LeaveFocus(self, event):
+        self.store_position()
         self._editor.SetCaretPeriod(0)
         # self.save()
 
     def GetFocus(self, event):
         self._editor.SetCaretPeriod(500)
+        self.set_editor_caret_position()
         event.Skip()
 
     def _revert(self):
