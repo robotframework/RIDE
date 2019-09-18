@@ -233,6 +233,7 @@ class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
             self._animctrl.Animation.Destroy()
             self._animctrl.Destroy()
             self._animctrl = None
+            self.DeleteItemWindow(node)
         if wx.VERSION >= (3, 0, 3, '') and img_index in (RUNNING_IMAGE_INDEX, PAUSED_IMAGE_INDEX):
             from wx.adv import Animation, AnimationCtrl
             import os
