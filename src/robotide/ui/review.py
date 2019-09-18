@@ -378,7 +378,7 @@ class ReviewRunner(object):
 
     def _is_unused(self, keyword):
         try:
-            self._controller.execute(FindUsages(keyword.name, keyword_info=keyword.info)).next()
+            next(self._controller.execute(FindUsages(keyword.name, keyword_info=keyword.info)))
             return False
         except StopIteration:
             return True
