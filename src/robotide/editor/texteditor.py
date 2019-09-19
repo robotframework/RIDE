@@ -171,6 +171,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
             # print("DEBUG: OnTabChange move to another from Text Editor.")
             self._editor.remove_and_store_state()
             self.unregister_actions()
+            self._editor_component.save()
 
     def OnTabChanged(self, event):
         self._show_editor()
