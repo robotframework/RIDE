@@ -115,6 +115,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         if datafile_controller:
             self._open_data_for_controller(datafile_controller)
             self.show_tab(self._editor)
+            self.store_position()
 
     def OnSaving(self, message):
         if self.is_focused():
@@ -124,6 +125,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         if self._should_process_data_changed_message(message):
             if isinstance(message, RideOpenSuite):
                 self._editor.reset()
+                self._editor.set_editor_caret_position()
             if self._editor.dirty and not self._apply_txt_changes_to_model():
                 return
             self._refresh_timer.Start(500, True)
@@ -138,7 +140,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
                not isinstance(message, RideDataChangedToDirty)
 
     def OnTreeSelection(self, message):
-        self._editor.store_position()
+        # self._editor.store_position()
         if self.is_focused():
             next_datafile_controller = message.item and\
                                        message.item.datafile_controller
@@ -147,16 +149,18 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
                         next_datafile_controller:
                     self.tree.select_controller_node(
                         self._editor.datafile_controller)
+                self._editor.set_editor_caret_position()
                 return
             if next_datafile_controller:
                 self._open_data_for_controller(next_datafile_controller)
-                self._editor.set_editor_caret_position()
+            self._editor.set_editor_caret_position()
 
     def _open_tree_selection_in_editor(self):
         datafile_controller = self.tree.get_selected_datafile_controller()
         if datafile_controller:
             self._editor.open(DataFileWrapper(datafile_controller,
                                               self.global_settings))
+        self._editor.set_editor_caret_position()
 
     def _open_data_for_controller(self, datafile_controller):
         self._editor.selected(DataFileWrapper(datafile_controller,
@@ -208,8 +212,10 @@ class DataValidationHandler(object):
             if not handled:
                 return False
         self._editor.reset()
-        # print("DEBUG: updating type %s" % type(m_text))
+        print("DEBUG: updating text")  # %s" % (self._editor.GetCurrentPos()))
         data.update_from(m_text)
+        print("DEBUG: AFTER updating text")
+        # %s" % (self._editor.GetCurrentPos()))
         return True
 
     def _sanity_check(self, data, text):
@@ -387,21 +393,23 @@ class SourceEditor(wx.Panel):
         """
         HtmlDialog("Getting syntax colorization", content).Show()
 
-    def store_position(self):
+    def store_position(self, force=False):
         if self._editor:
-            self._positions[self.datafile_controller] = self._editor.GetCurrentPos()
-            print("DEBUG: Called store caret position=%s" % self._positions[self.datafile_controller])
+            cur_pos = self._editor.GetCurrentPos()
+            if cur_pos > 0:  # Cheating because it always go to zero
+                self._positions[self.datafile_controller.name] = cur_pos
+            print("DEBUG: Called store caret self.datafile_controller.name=%s position=%s" % (self.datafile_controller.name, self._positions[self.datafile_controller.name]))
 
     def set_editor_caret_position(self):
         if not self.is_focused():  # DEBUG was typing text when at Grid Editor
             # print("DEBUG: Text Edit avoid set caret pos")
             return
-        position = self._positions.get(self.datafile_controller, None)
-        print("DEBUG: Called set caret position=%s" % position)
-        if position:
-            self._editor.SetFocus()
-            self._editor.SetCurrentPos(position)
-            self._editor.SetSelection(position, position)
+        position = self._positions.get(self.datafile_controller.name, 0)
+        # print("DEBUG: Called set caret position=%s" % position)
+        self._editor.SetFocus()
+        self._editor.SetCurrentPos(position)
+        self._editor.SetSelection(position, position)
+        self._editor.Update()
 
     @property
     def dirty(self):
@@ -498,6 +506,7 @@ class SourceEditor(wx.Panel):
         if self.dirty and not self._data_validator.validate_and_update(
                 self._data, self._editor.utf8_text):
             return False
+        self.set_editor_caret_position()
         return True
 
     def delete(self):
