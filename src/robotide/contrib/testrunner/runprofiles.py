@@ -162,7 +162,8 @@ class PybotProfile(BaseProfile):
             output, _ = p.communicate()
             output = str(output).lstrip("b\'").strip()
             self.arguments = output.replace('"', '').replace('\'', '').replace('\\r\\n', '')
-        except IOError:
+        except IOError as e:
+            # print("DEBUG: parser_win_comm IOError: %s" % e)
             pass
 
     def get_command(self):  # TODO Test on Windows
@@ -311,6 +312,7 @@ class PybotProfile(BaseProfile):
         args = self._arguments.GetValue()
         self._validate_arguments(args or u'')
         self.set_setting("arguments", args)
+        self.arguments = args
 
     def _validate_arguments(self, args):
         # assert type(args) is unicode
