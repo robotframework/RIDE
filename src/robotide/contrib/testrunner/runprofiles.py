@@ -158,16 +158,12 @@ class PybotProfile(BaseProfile):
     def _parse_windows_command(self):
         from subprocess import Popen, PIPE
         try:
-            print("DEBUG: parser_win_comm Entering: %s" % self.arguments)
             p = Popen(['echo', self.arguments], stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=True)
             output, _ = p.communicate()
-            print("DEBUG: parser_win_comm From OS: %s" % output)
             output = str(output).lstrip("b\'").strip()
-            print("DEBUG: parser_win_comm After strip: %s" % output)
             self.arguments = output.replace('"', '').replace('\'', '').replace('\\r\\n', '')
-            print("DEBUG: parser_win_comm final returning: %s" % self.arguments)
         except IOError as e:
-            print("DEBUG: parser_win_comm IOError: %s" % e)
+            # print("DEBUG: parser_win_comm IOError: %s" % e)
             pass
 
     def get_command(self):  # TODO Test on Windows
@@ -316,6 +312,7 @@ class PybotProfile(BaseProfile):
         args = self._arguments.GetValue()
         self._validate_arguments(args or u'')
         self.set_setting("arguments", args)
+        self.arguments = args
 
     def _validate_arguments(self, args):
         # assert type(args) is unicode
