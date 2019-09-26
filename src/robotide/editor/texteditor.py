@@ -133,6 +133,8 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
 
     def _on_timer(self, event):
         self._open_tree_selection_in_editor()
+        # DEBUG
+        self._editor.set_editor_caret_position()
         event.Skip()
 
     def _should_process_data_changed_message(self, message):
@@ -215,6 +217,7 @@ class DataValidationHandler(object):
         print("DEBUG: updating text")  # %s" % (self._editor.GetCurrentPos()))
         data.update_from(m_text)
         print("DEBUG: AFTER updating text")
+        self._editor.set_editor_caret_position()
         # %s" % (self._editor.GetCurrentPos()))
         return True
 
@@ -315,7 +318,7 @@ class SourceEditor(wx.Panel):
         self._create_ui(title)
         self._data = None
         self._dirty = False
-        self._positions = {}
+        self._position = None
         PUBLISHER.subscribe(self.OnSettingsChanged, RideSettingsChanged)
 
     def is_focused(self):
@@ -396,20 +399,28 @@ class SourceEditor(wx.Panel):
     def store_position(self, force=False):
         if self._editor:
             cur_pos = self._editor.GetCurrentPos()
+            ins_pos = self._editor.GetInsertionPoint()
             if cur_pos > 0:  # Cheating because it always go to zero
-                self._positions[self.datafile_controller.name] = cur_pos
-            print("DEBUG: Called store caret self.datafile_controller.name=%s position=%s" % (self.datafile_controller.name, self._positions[self.datafile_controller.name]))
+                # self._positions[self.datafile_controller.name] = cur_pos
+                self._position = cur_pos
+                self._editor.SetAnchor(self._editor.GetCurrentPos())
+            print("DEBUG: Called store caret self.datafile_controller.name=%s position=%s, ins_po=%s" % (self.datafile_controller.name, self._position, ins_pos))
 
     def set_editor_caret_position(self):
         if not self.is_focused():  # DEBUG was typing text when at Grid Editor
             # print("DEBUG: Text Edit avoid set caret pos")
             return
-        position = self._positions.get(self.datafile_controller.name, 0)
-        # print("DEBUG: Called set caret position=%s" % position)
+        # position = self._positions.get(self.datafile_controller.name, 0)
+        position = self._position
         self._editor.SetFocus()
         self._editor.SetCurrentPos(position)
         self._editor.SetSelection(position, position)
-        self._editor.Update()
+        self._editor.SetAnchor(position)
+        # ins_pos = self._editor.GetInsertionPoint()
+        _, linewithcursor = self._editor.GetCurLine()
+        print("DEBUG: Called set caret position=%s line %s" % (position, linewithcursor,) )
+        # self._editor.Update()
+        self._editor.ScrollToLine(linewithcursor)
 
     @property
     def dirty(self):
@@ -467,6 +478,8 @@ class SourceEditor(wx.Panel):
         if not self.is_focused():
             return
         #  if wx.Window.FindFocus() is self._editor:
+        self.store_position()
+        # self._editor.SetAnchor(self._editor.GetCurrentPos())
         selected = self._editor.get_selected_or_near_text()
         sugs = [s.name for s in self._suggestions.get_suggestions(
             selected or '')]
@@ -506,7 +519,7 @@ class SourceEditor(wx.Panel):
         if self.dirty and not self._data_validator.validate_and_update(
                 self._data, self._editor.utf8_text):
             return False
-        self.set_editor_caret_position()
+        self.GetFocus(None)  # DEBUG
         return True
 
     def delete(self):
@@ -565,8 +578,10 @@ class SourceEditor(wx.Panel):
 
     def GetFocus(self, event):
         self._editor.SetCaretPeriod(500)
-        self.set_editor_caret_position()
-        event.Skip()
+        if self._position:
+            self.set_editor_caret_position()
+        if event:
+            event.Skip()
 
     def _revert(self):
         self.reset()
@@ -591,6 +606,7 @@ class SourceEditor(wx.Panel):
         elif event.GetKeyCode() == wx.WXK_TAB and event.ShiftDown():
             pos = self._editor.GetCurrentPos()
             self._editor.SetCurrentPos(max(0, pos - self._tab_size))
+            self.store_position()
             if not event.CmdDown(): # No text selection
                 pos = self._editor.GetCurrentPos()
                 self._editor.SetSelection(pos, pos)
