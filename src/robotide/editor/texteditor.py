@@ -66,8 +66,8 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
             self._editor_component = SourceEditor(self.notebook,
                                                   self.title,
                                                   DataValidationHandler(self))
-            self._refresh_timer = wx.Timer(self._editor_component)
-            self._editor_component.Bind(wx.EVT_TIMER, self._on_timer)
+            # DEBUG self._refresh_timer = wx.Timer(self._editor_component)
+            # DEBUG self._editor_component.Bind(wx.EVT_TIMER, self._on_timer)
         return self._editor_component
 
     def enable(self):
@@ -131,11 +131,11 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
             self._refresh_timer.Start(500, True)
             # For performance reasons only run after all the data changes
 
-    def _on_timer(self, event):
-        self._open_tree_selection_in_editor()
-        # DEBUG
-        self._editor.set_editor_caret_position()
-        event.Skip()
+    # def _on_timer(self, event):
+    #     self._open_tree_selection_in_editor()
+    #     # DEBUG
+    #     self._editor.set_editor_caret_position()
+    #     event.Skip()
 
     def _should_process_data_changed_message(self, message):
         return isinstance(message, RideDataChanged) and \
@@ -157,12 +157,12 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
                 self._open_data_for_controller(next_datafile_controller)
             self._editor.set_editor_caret_position()
 
-    def _open_tree_selection_in_editor(self):
-        datafile_controller = self.tree.get_selected_datafile_controller()
-        if datafile_controller:
-            self._editor.open(DataFileWrapper(datafile_controller,
-                                              self.global_settings))
-        self._editor.set_editor_caret_position()
+    # def _open_tree_selection_in_editor(self):
+    #     datafile_controller = self.tree.get_selected_datafile_controller()
+    #     if datafile_controller:
+    #         self._editor.open(DataFileWrapper(datafile_controller,
+    #                                           self.global_settings))
+    #     self._editor.set_editor_caret_position()
 
     def _open_data_for_controller(self, datafile_controller):
         self._editor.selected(DataFileWrapper(datafile_controller,
@@ -407,11 +407,13 @@ class SourceEditor(wx.Panel):
             print("DEBUG: Called store caret self.datafile_controller.name=%s position=%s, ins_po=%s" % (self.datafile_controller.name, self._position, ins_pos))
 
     def set_editor_caret_position(self):
-        if not self.is_focused():  # DEBUG was typing text when at Grid Editor
-            # print("DEBUG: Text Edit avoid set caret pos")
-            return
-        # position = self._positions.get(self.datafile_controller.name, 0)
         position = self._position
+        self._editor.GotoPos(position)
+        # if not self.is_focused():  # DEBUG was typing text when at Grid Editor
+        #     print("DEBUG: Text Edit avoid set caret pos")
+        #     return
+        # position = self._positions.get(self.datafile_controller.name, 0)
+        self.SetFocus()
         self._editor.SetFocus()
         self._editor.SetCurrentPos(position)
         self._editor.SetSelection(position, position)
@@ -569,17 +571,23 @@ class SourceEditor(wx.Panel):
         self._editor.Bind(wx.EVT_KEY_DOWN, self.OnKeyDown)
         self._editor.Bind(wx.EVT_KILL_FOCUS, self.LeaveFocus)
         self._editor.Bind(wx.EVT_SET_FOCUS, self.GetFocus)
+        # self._editor.Bind(wx.EVT_CHILD_FOCUS, self.GetFocus)
         # TODO Add here binding for keyword help
 
     def LeaveFocus(self, event):
+        self._editor.AcceptsFocusFromKeyboard()
         self.store_position()
         self._editor.SetCaretPeriod(0)
         # self.save()
 
     def GetFocus(self, event):
+        self._editor.AcceptsFocusFromKeyboard()
         self._editor.SetCaretPeriod(500)
         if self._position:
             self.set_editor_caret_position()
+            innerfocus = self._editor.GetSTCFocus()
+            print(
+                "DEBUG: Get Focus: %s STCfocus is: %s" % (self.is_focused(), innerfocus))
         if event:
             event.Skip()
 
