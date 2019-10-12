@@ -114,12 +114,20 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         datafile_controller = self.tree.get_selected_datafile_controller()
         if datafile_controller:
             self._open_data_for_controller(datafile_controller)
-            self.show_tab(self._editor)
+            # self.show_tab(self._editor)
             self.store_position()
 
     def OnSaving(self, message):
+        print("DEBUG: Text Edit onsave enter")
         if self.is_focused():
+            print("DEBUG: Text Edit onsave is with focus")
             self._editor.save()
+            self._editor.GetFocus()
+            print("DEBUG: Text Edit onsave leave with focus")
+        else:
+            print("DEBUG: Text Edit ENTER onsave from other Editor")
+            self._open()  # Was saved from other Editor
+            print("DEBUG: Text Edit onsave from other Editor")
 
     def OnDataChanged(self, message):
         if self._should_process_data_changed_message(message):
@@ -421,8 +429,9 @@ class SourceEditor(wx.Panel):
         # ins_pos = self._editor.GetInsertionPoint()
         _, linewithcursor = self._editor.GetCurLine()
         print("DEBUG: Called set caret position=%s line %s" % (position, linewithcursor,) )
-        # self._editor.Update()
         self._editor.ScrollToLine(linewithcursor)
+        self._editor.GetCaret()
+        self._editor.Update()
 
     @property
     def dirty(self):
@@ -567,8 +576,8 @@ class SourceEditor(wx.Panel):
         self.Sizer.Layout()
         if text is not None:
             self._editor.set_text(text)
-        self._editor.Bind(wx.EVT_KEY_UP, self.OnEditorKey)
         self._editor.Bind(wx.EVT_KEY_DOWN, self.OnKeyDown)
+        self._editor.Bind(wx.EVT_KEY_UP, self.OnEditorKey)
         self._editor.Bind(wx.EVT_KILL_FOCUS, self.LeaveFocus)
         self._editor.Bind(wx.EVT_SET_FOCUS, self.GetFocus)
         # self._editor.Bind(wx.EVT_CHILD_FOCUS, self.GetFocus)
@@ -581,6 +590,7 @@ class SourceEditor(wx.Panel):
         # self.save()
 
     def GetFocus(self, event):
+        self._editor.SetFocus()
         self._editor.AcceptsFocusFromKeyboard()
         self._editor.SetCaretPeriod(500)
         if self._position:
@@ -598,26 +608,31 @@ class SourceEditor(wx.Panel):
     def OnEditorKey(self, event):
         #print("DEBUG: Text Edit enter keypress")
         if not self.is_focused():  # DEBUG was typing text when at Grid Editor
-            # print("DEBUG: Text Edit skip keypress")
+            print("DEBUG: Text Edit skip keypress")
             return
         if not self.dirty and self._editor.GetModify():
+            print("DEBUG: Text Edit keyup Marked Dirty")
             self._mark_file_dirty()
         event.Skip()
 
     def OnKeyDown(self, event):
         if not self.is_focused():
-            return
+            self.GetFocus(None)
+            # DEBUG return
         # Process Tab key
-        if event.GetKeyCode() == wx.WXK_TAB and not event.CmdDown() and not event.ShiftDown():
+        if event.GetKeyCode() == wx.WXK_TAB and not event.ControlDown() and not event.ShiftDown():
             spaces = ' ' * self._tab_size
             self._editor.WriteText(spaces)
         elif event.GetKeyCode() == wx.WXK_TAB and event.ShiftDown():
             pos = self._editor.GetCurrentPos()
             self._editor.SetCurrentPos(max(0, pos - self._tab_size))
             self.store_position()
-            if not event.CmdDown(): # No text selection
+            if not event.ControlDown(): # No text selection
                 pos = self._editor.GetCurrentPos()
                 self._editor.SetSelection(pos, pos)
+        elif event.GetKeyCode() == wx.WXK_SPACE and event.ControlDown():  # Process Ctrl-Space on MacOS too
+            self.OnContentAssist()
+            print("DEBUG: Text Edit called ContentAssist")
         else:
             event.Skip()
 
