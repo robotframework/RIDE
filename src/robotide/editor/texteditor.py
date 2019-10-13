@@ -164,6 +164,8 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
             if next_datafile_controller:
                 self._open_data_for_controller(next_datafile_controller)
             self._editor.set_editor_caret_position()
+        else:
+            self._editor.GetFocus()
 
     # def _open_tree_selection_in_editor(self):
     #     datafile_controller = self.tree.get_selected_datafile_controller()
@@ -421,16 +423,16 @@ class SourceEditor(wx.Panel):
         #     print("DEBUG: Text Edit avoid set caret pos")
         #     return
         # position = self._positions.get(self.datafile_controller.name, 0)
-        self.SetFocus()
+        # self.SetFocus()
         self._editor.SetFocus()
         self._editor.SetCurrentPos(position)
         self._editor.SetSelection(position, position)
         self._editor.SetAnchor(position)
         # ins_pos = self._editor.GetInsertionPoint()
-        _, linewithcursor = self._editor.GetCurLine()
+        linewithcursor = self._editor.GetCurrentLine()
         print("DEBUG: Called set caret position=%s line %s" % (position, linewithcursor,) )
         self._editor.ScrollToLine(linewithcursor)
-        self._editor.GetCaret()
+        self._editor.Refresh()
         self._editor.Update()
 
     @property
