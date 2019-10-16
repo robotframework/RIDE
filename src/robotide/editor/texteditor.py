@@ -99,6 +99,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         self.register_shortcut('CtrlCmd-G', lambda e: self._editor.OnFind(e))
         self.register_shortcut('CtrlCmd-Shift-G', lambda e: self._editor.OnFindBackwards(e))
         self.register_shortcut('Ctrl-Space', lambda e: focused(self._editor.OnContentAssist(e)))
+        self.register_shortcut('CtrlCmd-Space', lambda e: focused(self._editor.OnContentAssist(e)))
         self.register_shortcut('Alt-Space', lambda e: focused(self._editor.OnContentAssist(e)))
 
     def disable(self):
@@ -119,16 +120,16 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
             self.store_position()
 
     def OnSaving(self, message):
-        print("DEBUG: Text Edit onsave enter")
+        # print("DEBUG: Text Edit onsave enter")
         if self.is_focused():
-            print("DEBUG: Text Edit onsave is with focus")
+            # print("DEBUG: Text Edit onsave is with focus")
             self._editor.save()
             self._editor.GetFocus(None)
-            print("DEBUG: Text Edit onsave leave with focus")
+            # print("DEBUG: Text Edit onsave leave with focus")
         else:
-            print("DEBUG: Text Edit ENTER onsave from other Editor")
+            # print("DEBUG: Text Edit ENTER onsave from other Editor")
             self._open()  # Was saved from other Editor
-            print("DEBUG: Text Edit onsave from other Editor")
+            # print("DEBUG: Text Edit onsave from other Editor")
 
     def OnDataChanged(self, message):
         if self._should_process_data_changed_message(message):
@@ -141,9 +142,9 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
             # For performance reasons only run after all the data changes
 
     def _on_timer(self, event):
+        self._editor.store_position()
         self._open_tree_selection_in_editor()
-        # DEBUG
-        self._editor.set_editor_caret_position()
+        # DEBUG self._editor.set_editor_caret_position()
         event.Skip()
 
     def _should_process_data_changed_message(self, message):
@@ -151,7 +152,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
                not isinstance(message, RideDataChangedToDirty)
 
     def OnTreeSelection(self, message):
-        # self._editor.store_position()
+        self._editor.store_position()
         if self.is_focused():
             next_datafile_controller = message.item and\
                                        message.item.datafile_controller
@@ -226,9 +227,9 @@ class DataValidationHandler(object):
             if not handled:
                 return False
         self._editor.reset()
-        print("DEBUG: updating text")  # %s" % (self._editor.GetCurrentPos()))
+        # print("DEBUG: updating text")  # %s" % (self._editor.GetCurrentPos()))
         data.update_from(m_text)
-        print("DEBUG: AFTER updating text")
+        # print("DEBUG: AFTER updating text")
         self._editor.set_editor_caret_position()
         # %s" % (self._editor.GetCurrentPos()))
         return True
@@ -409,7 +410,7 @@ class SourceEditor(wx.Panel):
         HtmlDialog("Getting syntax colorization", content).Show()
 
     def store_position(self, force=False):
-        if self._editor:
+        if self._editor and self.datafile_controller:
             cur_pos = self._editor.GetCurrentPos()
             ins_pos = self._editor.GetInsertionPoint()
             if cur_pos > 0:  # Cheating because it always go to zero
@@ -417,24 +418,24 @@ class SourceEditor(wx.Panel):
                 self._position = cur_pos
                 # self._editor.SetAnchor(self._editor.GetCurrentPos())
                 self._editor.GotoPos(self._position)
-            print("DEBUG: Called store caret self.datafile_controller.name=%s position=%s, ins_po=%s" % (self.datafile_controller.name, self._position, ins_pos))
+            # print("DEBUG: Called store caret self.datafile_controller.name=%s position=%s, ins_po=%s" % (self.datafile_controller.name, self._position, ins_pos))
 
     def set_editor_caret_position(self):
         if not self.is_focused():  # DEBUG was typing text when at Grid Editor
-            print("DEBUG: Text Edit avoid set caret pos")
+            # print("DEBUG: Text Edit avoid set caret pos")
             return
         # position = self._positions.get(self.datafile_controller.name, 0)
         # self.SetFocus()
         position = self._position
         if position:
-            self._editor.GotoPos(position)
             self._editor.SetFocus()
             self._editor.SetCurrentPos(position)
             self._editor.SetSelection(position, position)
             self._editor.SetAnchor(position)
+            self._editor.GotoPos(position)
             # ins_pos = self._editor.GetInsertionPoint()
             linewithcursor = self._editor.GetCurrentLine()
-            print("DEBUG: Called set caret position=%s line %s" % (position, linewithcursor,) )
+            # print("DEBUG: Called set caret position=%s line %s" % (position, linewithcursor,) )
             self._editor.ScrollToLine(linewithcursor)
             self._editor.Refresh()
             self._editor.Update()
@@ -602,8 +603,7 @@ class SourceEditor(wx.Panel):
         if self._position:
             self.set_editor_caret_position()
             innerfocus = self._editor.GetSTCFocus()
-            print(
-                "DEBUG: Get Focus: %s STCfocus is: %s" % (self.is_focused(), innerfocus))
+            # print("DEBUG: Get Focus: %s STCfocus is: %s" % (self.is_focused(), innerfocus))
         if event:
             event.Skip()
 
@@ -614,10 +614,10 @@ class SourceEditor(wx.Panel):
     def OnEditorKey(self, event):
         #print("DEBUG: Text Edit enter keypress")
         if not self.is_focused():  # DEBUG was typing text when at Grid Editor
-            print("DEBUG: Text Edit skip keypress")
+            # print("DEBUG: Text Edit skip keypress")
             return
         if not self.dirty and self._editor.GetModify():
-            print("DEBUG: Text Edit keyup Marked Dirty")
+            # print("DEBUG: Text Edit keyup Marked Dirty")
             self._mark_file_dirty()
         event.Skip()
 
