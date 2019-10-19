@@ -19,7 +19,7 @@ import os
 import re
 
 from robotide.namespace.embeddedargs import EmbeddedArgsHandler
-from robotide.publish.messages import RideSelectResource, RideFileNameChanged, RideSaving, RideSaved, RideSaveAll, RideExcludesChanged
+from robotide.publish.messages import RideSelectResource, RideFileNameChanged, RideTestNameChanged, RideSaving, RideSaved, RideSaveAll, RideExcludesChanged
 from robotide.namespace.namespace import _VariableStash
 
 from robotide.utils import PY3
@@ -360,8 +360,11 @@ class RenameTest(_ReversibleCommand):
         return (self._new_name)
 
     def _execute(self, context):
+        old_name  = context.name
         context.test_name.rename(self._new_name)
         context.test_name.notify_value_changed()
+        RideTestNameChanged(item=context.test_name._item,
+                            old_name=old_name).publish()
 
     def _get_undo_command(self):
         return self

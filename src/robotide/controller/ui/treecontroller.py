@@ -14,11 +14,13 @@
 #  limitations under the License.
 
 import wx
+import os
 from robotide.action.actioninfo import ActionInfoCollection, ActionInfo
 from robotide.context import IS_WINDOWS, ctrl_or_cmd, bind_keys_to_evt_menu
 from robotide.controller.ctrlcommands import ChangeTag
 from robotide.controller.tags import Tag, DefaultTag
-from robotide.publish import RideTestSelectedForRunningChanged, PUBLISHER, RideNewProject, RideOpenSuite
+from robotide.controller.filecontrollers import TestCaseFileController
+from robotide.publish import PUBLISHER, RideTestSelectedForRunningChanged, RideTestNameChanged, RideFileNameChanged, RideNewProject, RideOpenSuite
 from robotide.widgets import Dialog
 from robotide import utils
 
@@ -174,6 +176,27 @@ class TestSelectionController(object):
 
     def __init__(self):
         self._tests = {}
+        self._subscribe()
+
+    def _subscribe(self):
+        PUBLISHER.subscribe(self._test_name_changed, RideTestNameChanged)
+        PUBLISHER.subscribe(self._suite_name_changed, RideFileNameChanged)
+
+    def _test_name_changed(self, message):
+        longname = message.item.longname
+        path, new_name = longname.rsplit('.', 1)
+        old_name = path + '.' + message.old_name
+        self._tests[longname] = new_name
+        del self._tests[old_name]
+
+    def _suite_name_changed(self, message):
+        df = message.datafile
+        if isinstance(df, TestCaseFileController):
+            filename = os.path.splitext(os.path.basename(message.old_filename))[0]
+            old_name = df.longname[:-len(df.name)] + filename
+            for test in self._tests:
+                if test.lower().startswith(old_name.lower()):
+                    del self._tests[test]
 
     def is_empty(self):
         return not bool(self._tests)
