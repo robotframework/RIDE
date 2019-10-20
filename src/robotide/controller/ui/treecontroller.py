@@ -20,7 +20,7 @@ from robotide.context import IS_WINDOWS, ctrl_or_cmd, bind_keys_to_evt_menu
 from robotide.controller.ctrlcommands import ChangeTag
 from robotide.controller.tags import Tag, DefaultTag
 from robotide.controller.filecontrollers import TestCaseFileController
-from robotide.publish import PUBLISHER, RideTestSelectedForRunningChanged, RideTestNameChanged, RideFileNameChanged, RideNewProject, RideOpenSuite
+from robotide.publish import PUBLISHER, RideTestSelectedForRunningChanged, RideItemNameChanged, RideFileNameChanged, RideNewProject, RideOpenSuite
 from robotide.widgets import Dialog
 from robotide import utils
 
@@ -179,15 +179,16 @@ class TestSelectionController(object):
         self._subscribe()
 
     def _subscribe(self):
-        PUBLISHER.subscribe(self._test_name_changed, RideTestNameChanged)
+        PUBLISHER.subscribe(self._test_name_changed, RideItemNameChanged)
         PUBLISHER.subscribe(self._suite_name_changed, RideFileNameChanged)
 
     def _test_name_changed(self, message):
         longname = message.item.longname
         path, new_name = longname.rsplit('.', 1)
-        old_name = path + '.' + message.old_name
-        self._tests[longname] = new_name
-        del self._tests[old_name]
+        if message.old_name:
+            old_name = path + '.' + message.old_name
+            self._tests[longname] = new_name
+            del self._tests[old_name]
 
     def _suite_name_changed(self, message):
         df = message.datafile

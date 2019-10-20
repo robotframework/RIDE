@@ -291,11 +291,6 @@ class RideFileNameChanged(RideDataChanged):
     data = ['datafile', 'old_filename']
 
 
-class RideTestNameChanged(RideDataChanged):
-    """Sent after test case is renamed"""
-    data = ['item', 'old_name']
-
-
 class RideDataFileRemoved(RideDataChanged):
     data = ['path', 'datafile']
 
@@ -397,7 +392,7 @@ class RideItemStepsChanged(RideItem):
 
 class RideItemNameChanged(RideItem):
     """"""
-    pass
+    data = ['item', 'old_name']
 
 
 class RideItemSettingsChanged(RideItem):
