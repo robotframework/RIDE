@@ -428,7 +428,7 @@ class SourceEditor(wx.Panel):
             self._find(forward=False)
 
     def _find(self, forward=True):
-        txt = self._search_field.GetValue()
+        txt = self._search_field.GetValue().encode('utf-8')
         position = self._find_text_position(forward, txt)
         self._show_search_results(position, txt)
 
