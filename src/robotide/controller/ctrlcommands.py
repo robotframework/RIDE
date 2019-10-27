@@ -360,8 +360,9 @@ class RenameTest(_ReversibleCommand):
         return (self._new_name)
 
     def _execute(self, context):
+        old_name  = context.name
         context.test_name.rename(self._new_name)
-        context.test_name.notify_value_changed()
+        context.test_name._item.notify_name_changed(old_name)
 
     def _get_undo_command(self):
         return self
