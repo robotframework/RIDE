@@ -322,11 +322,29 @@ class StepController(_BaseController):
     def insert_before(self, new_step):
         steps = self.parent.get_raw_steps()
         index = steps.index(self._step)
+        if self._is_end_step(new_step.as_list()):
+            if self._is_intended_step(steps[index].as_list()):
+                self.parent.step(index).shift_left(1)  # DEBUG Hard coded!
+                steps = self.parent.get_raw_steps()
+        elif not self._is_intended_step(new_step.as_list()) and self._is_intended_step(steps[index].as_list()):
+            new_step.shift_right(1)  # DEBUG Hard coded!
         self.parent.set_raw_steps(steps[:index] + [new_step] + steps[index:])
 
     def insert_after(self, new_step):
         steps = self.parent.get_raw_steps()
         index = steps.index(self._step) + 1
+        print("DEBUG: Insert after len steps=%d index=%d" % (len(steps), index-1))
+        if self._is_end_step(new_step.as_list()):
+            if not self._is_intended_step(steps[index-1].as_list()):
+                self.parent.step(index-1).shift_right(1)  # DEBUG Hard coded!
+                steps = self.parent.get_raw_steps()
+                # cells = cells[:from_column] + [''] + cells[from_column:]
+        elif self._is_intended_step(steps[index-1].as_list()):
+            if not self._is_intended_step(new_step.as_list()):
+                new_step.shift_right(1)  # DEBUG Hard coded!
+        else:
+            if self._is_intended_step(new_step.as_list()):
+                new_step.shift_left(1)  # DEBUG Hard coded!
         self.parent.set_raw_steps(steps[:index] + [new_step] + steps[index:])
 
     def remove_empty_columns_from_end(self):
@@ -391,8 +409,11 @@ class StepController(_BaseController):
                           or cells[0] == 'FOR')
 
     def _is_intended_step(self, cells):
-        return cells and not cells[0].strip() and (cells[0] == 'END') and \
-               any(c.strip() for c in cells) and self._index() > 0
+        return cells and not cells[0].strip() and not self._is_end_step(cells)\
+               and any(c.strip() for c in cells) and self._index() > 0
+
+    def _is_end_step(self, cells):
+        return cells and cells[0] == 'END'
 
     def _recreate_as_partial_for_loop(self, cells, comment):
         index = self._index()
