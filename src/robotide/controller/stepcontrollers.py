@@ -315,9 +315,9 @@ class StepController(_BaseController):
         # DEBUG No need to not delete comment = self._get_comment(cells)
         if len(cells) > from_column:
             # if comment: # DEBUG No need to not delete comment
-            #    cells.pop()
+            # cells.pop()
             cells = cells[:from_column] + cells[from_column + 1:]
-            self._recreate(cells) #, comment) # DEBUG No need to not delete
+            self._recreate(cells)  #, comment) # DEBUG No need to not delete
 
     def insert_before(self, new_step):
         steps = self.parent.get_raw_steps()
@@ -327,7 +327,8 @@ class StepController(_BaseController):
                 self.parent.step(index).shift_left(1)  # DEBUG Hard coded!
                 steps = self.parent.get_raw_steps()
         elif not self._is_intended_step(new_step.as_list()) and self._is_intended_step(steps[index].as_list()):
-            new_step.shift_right(1)  # DEBUG Hard coded!
+            if isinstance(new_step, StepController):
+                new_step.shift_right(1)  # DEBUG Hard coded!
         self.parent.set_raw_steps(steps[:index] + [new_step] + steps[index:])
 
     def insert_after(self, new_step):
@@ -341,10 +342,10 @@ class StepController(_BaseController):
                 # cells = cells[:from_column] + [''] + cells[from_column:]
         elif self._is_intended_step(steps[index-1].as_list()):
             if not self._is_intended_step(new_step.as_list()):
-                new_step.shift_right(1)  # DEBUG Hard coded!
+                new_step.shift_right(0)  # DEBUG Hard coded!
         else:
             if self._is_intended_step(new_step.as_list()):
-                new_step.shift_left(1)  # DEBUG Hard coded!
+                new_step.shift_left(0)  # DEBUG Hard coded!
         self.parent.set_raw_steps(steps[:index] + [new_step] + steps[index:])
 
     def remove_empty_columns_from_end(self):
@@ -385,7 +386,7 @@ class StepController(_BaseController):
     def _get_comment(self, cells):
         if not cells:
             return None
-        return cells[-1][2:].strip() if cells[-1].startswith('# ') else None
+        return cells[-1][2:].strip() if cells[-1].startswith('#') else None
 
     def _recreate(self, cells, comment=None):
         if self._is_partial_for_loop_step(cells):

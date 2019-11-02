@@ -1178,9 +1178,21 @@ class MoveRowsDown(_StepsChangingCommand):
         number_of_steps_before = len(context.steps)
         for row in reversed(self._rows):
             keep_indent = (context.steps[row].as_list()[0] == 'END' and context.steps[row-1].as_list()[0] == '')
+            remove_indent = (context.steps[row].as_list()[0] == 'FOR' and context.steps[row+1].as_list()[1] == '')
+            if context.steps[row].as_list()[0] == 'FOR':
+                print("DEBUG: MoveDown FOR %s\n step after: %s\n flag %s" % (context.steps[row].as_list(), context.steps[row+1].as_list(), remove_indent))
+            if context.steps[row].as_list()[0] == 'END':
+                print("DEBUG: MoveDown END %s\n step before: %s\n flag %s" % (context.steps[row].as_list(), context.steps[row-1].as_list(), keep_indent))
             context.move_step_down(row)
             if keep_indent:
+                print("DEBUG: MoveDown HERE SHOULD ADD IDENT")
+                print("DEBUG: MoveDown row %s" % (context.steps[row].as_list()))
                 context.steps[row].shift_right(0)
+                print("DEBUG: MoveDown row after shift %s" % (context.steps[row].as_list()))
+            if remove_indent:
+                print("DEBUG: MoveDown HERE SHOULD REMOVE IDENT")
+                print("DEBUG: MoveDown row %s" % (context.steps[row].as_list()))
+                context.steps[row].shift_left(0)
         assert len(context.steps) == number_of_steps_before
         return True
 
