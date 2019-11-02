@@ -326,26 +326,22 @@ class StepController(_BaseController):
             if self._is_intended_step(steps[index].as_list()):
                 self.parent.step(index).shift_left(1)  # DEBUG Hard coded!
                 steps = self.parent.get_raw_steps()
-        elif not self._is_intended_step(new_step.as_list()) and self._is_intended_step(steps[index].as_list()):
-            if isinstance(new_step, StepController):
-                new_step.shift_right(1)  # DEBUG Hard coded!
+        elif not self._is_intended_step(new_step.as_list()) and\
+                self._is_intended_step(steps[index].as_list()) and\
+                isinstance(new_step, StepController):
+            new_step.shift_right(1)  # DEBUG Hard coded!
         self.parent.set_raw_steps(steps[:index] + [new_step] + steps[index:])
 
     def insert_after(self, new_step):
         steps = self.parent.get_raw_steps()
         index = steps.index(self._step) + 1
-        print("DEBUG: Insert after len steps=%d index=%d" % (len(steps), index-1))
-        if self._is_end_step(new_step.as_list()):
-            if not self._is_intended_step(steps[index-1].as_list()):
-                self.parent.step(index-1).shift_right(1)  # DEBUG Hard coded!
-                steps = self.parent.get_raw_steps()
-                # cells = cells[:from_column] + [''] + cells[from_column:]
-        elif self._is_intended_step(steps[index-1].as_list()):
-            if not self._is_intended_step(new_step.as_list()):
-                new_step.shift_right(0)  # DEBUG Hard coded!
-        else:
-            if self._is_intended_step(new_step.as_list()):
-                new_step.shift_left(0)  # DEBUG Hard coded!
+        if not self._is_end_step(new_step.as_list()):
+            if self._is_intended_step(steps[index-1].as_list()):
+                if not self._is_intended_step(new_step.as_list()):
+                    new_step.shift_right(0)  # DEBUG Hard coded!
+            else:
+                if self._is_intended_step(new_step.as_list()) and isinstance(new_step, StepController):
+                    new_step.shift_left(1)  # DEBUG Hard coded!
         self.parent.set_raw_steps(steps[:index] + [new_step] + steps[index:])
 
     def remove_empty_columns_from_end(self):
@@ -386,7 +382,7 @@ class StepController(_BaseController):
     def _get_comment(self, cells):
         if not cells:
             return None
-        return cells[-1][2:].strip() if cells[-1].startswith('#') else None
+        return cells[-1][2:].strip() if cells[-1].startswith('# ') else None
 
     def _recreate(self, cells, comment=None):
         if self._is_partial_for_loop_step(cells):
@@ -414,7 +410,7 @@ class StepController(_BaseController):
                and any(c.strip() for c in cells) and self._index() > 0
 
     def _is_end_step(self, cells):
-        return cells and cells[0] == 'END'
+        return cells and ('END' in cells)  #cells[0] == 'END' # TODO Improve check
 
     def _recreate_as_partial_for_loop(self, cells, comment):
         index = self._index()

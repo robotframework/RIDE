@@ -166,10 +166,12 @@ class TestForLoop(unittest.TestCase):
 
     def test_adding_comment(self):
         test = self.project.datafiles[1].tests[14]
-        test.execute(ChangeCellValue(1, 2, '# comment'))
-        self.assertEqual(test.steps[1].as_list(), ['', 'No Operation', '# comment'])
-        test.execute(ChangeCellValue(1, 2, '##comment'))
-        self.assertEqual(test.steps[1].as_list(), ['', 'No Operation', '##comment'])
+        test.execute(ChangeCellValue(1, 2, '#UnChanged comment'))
+        self.assertEqual(test.steps[1].as_list(), ['', 'No Operation', '#UnChanged comment'])
+        test.execute(ChangeCellValue(1, 2, '# comment UnChanged'))
+        self.assertEqual(test.steps[1].as_list(), ['', 'No Operation', '# comment UnChanged'])
+        test.execute(ChangeCellValue(1, 2, '##comment UnChanged'))
+        self.assertEqual(test.steps[1].as_list(), ['', 'No Operation', '##comment UnChanged'])
 
     def test_comment_is_preserved_when_shifting_row_to_left_and_back(self):
         test = self.project.datafiles[1].tests[15]
