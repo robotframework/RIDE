@@ -112,7 +112,7 @@ class _Command(object):
     modifying = True
 
     def execute(self, context):
-        raise NotImplementedError(self.__class__)  # DEBUG
+        raise NotImplementedError(self.__class__)
 
     def __str__(self):
         return '%s(%s)' % (self.__class__.__name__, self._params_str())
@@ -1141,13 +1141,17 @@ class MoveRowsUp(_StepsChangingCommand):
             return False
         number_of_steps_before = len(context.steps)
         for row in self._rows:
-            keep_indent = (context.steps[row].as_list()[0] == 'END' and
-                           context.steps[row - 1].as_list()[0] == '')
-            new_indent = (context.steps[row - 1].as_list()[0] == 'END')
+            keep_indent = (context.steps[row].as_list()[0] == 'END' and  context.steps[row - 1].as_list()[0] == '')
+            avoid_ident = (context.steps[row].as_list()[0] == 'FOR' and  context.steps[row - 1].as_list()[0] == 'END')
+            new_indent = (context.steps[row - 1].as_list()[0] == 'END' and
+                           context.steps[row].as_list()[0] != 'FOR')
             context.move_step_up(row)
-            if keep_indent:
+            if avoid_ident:  # Special case FOR going up END
                 context.steps[row].shift_left(0)
-                context.steps[row - 1].shift_left(0)  # DEBUG: END needs to be shifted too
+            if keep_indent:
+                if not avoid_ident:
+                    context.steps[row].shift_left(0)
+                context.steps[row - 1].shift_left(0)  # END needs to be shifted too
             if new_indent:
                 context.steps[row - 1].shift_right(0)
         assert len(context.steps) == number_of_steps_before
@@ -1178,10 +1182,27 @@ class MoveRowsDown(_StepsChangingCommand):
             return False
         number_of_steps_before = len(context.steps)
         for row in reversed(self._rows):
-            keep_indent = (context.steps[row].as_list()[0] == 'END' and context.steps[row-1].as_list()[0] == '')
+            avoid_indent = False
+            try:
+                keep_indent = (context.steps[row].as_list()[0] == 'END' and context.steps[row-1].as_list()[0] == '')
+                if context.steps[row].as_list()[0] == 'END' and context.steps[row+1].as_list()[0] == 'FOR':
+                    keep_indent = False
+                    avoid_indent = True  # Special case for END going after FOR
+            except IndexError:
+                keep_indent = False
+            try:
+                remove_indent = (context.steps[row].as_list()[0] == 'FOR' and context.steps[row+1].as_list()[1] == '')
+            except IndexError:
+                remove_indent = False
+            if context.steps[row-1].as_list()[0] == 'FOR' and context.steps[row].as_list()[0] != '':  # Special case move after For
+                keep_indent = True
             context.move_step_down(row)
+            if avoid_indent and context.steps[row+1].as_list()[1] == 'END':
+                context.steps[row+1].shift_left(0)
             if keep_indent:
                 context.steps[row].shift_right(0)
+            if remove_indent:
+                context.steps[row].shift_left(0)
         assert len(context.steps) == number_of_steps_before
         return True
 

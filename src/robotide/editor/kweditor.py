@@ -234,6 +234,8 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
     def OnKillFocus(self, event):
         self._tooltips.hide()
         self._hide_link_if_necessary()
+        self.save()
+        event.Skip()
 
     def _execute(self, command):
         return self._controller.execute(command)
@@ -565,10 +567,10 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
         """
         _iscelleditcontrolshown = self.IsCellEditControlShown()
 
-        keycode, control_down = event.GetKeyCode(), event.CmdDown()
+        keycode, control_down = event.GetKeyCode(), event.ControlDown()
         # print("DEBUG: key pressed " + str(keycode) + " + " +  str(control_down))
         # event.Skip()  # DEBUG seen this skip as soon as possible
-        if keycode != wx.WXK_SPACE and (control_down or event.AltDown()):  # keycode == wx.WXK_CONTROL
+        if keycode != wx.WXK_SPACE and control_down:  # keycode == wx.WXK_CONTROL  or event.AltDown()
             self.show_cell_information()
         elif keycode == wx.WXK_SPACE and (control_down or event.AltDown()):  # Avoid Mac CMD
             self._open_cell_editor_with_content_assist()
@@ -994,7 +996,6 @@ class ContentAssistCellEditor(GridCellEditor):  # DEBUG wxPhoenix PyGridCellEdi
                 self._grid.cell_value_edited(row, col, self._value)
             else:
                 self._tc.hide()
-
 
     def _get_value(self):
         suggestion = self._tc.content_assist_value()
