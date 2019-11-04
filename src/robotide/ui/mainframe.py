@@ -148,6 +148,10 @@ class RideFrame(with_metaclass(classmaker(), wx.Frame, RideEventHandler)):
                           size=size,
                           style=wx.DEFAULT_FRAME_STYLE | wx.SUNKEN_BORDER)
 
+        # set Left to Right direction (while we don't have localization)
+        self.SetLayoutDirection(wx.Layout_LeftToRight)
+        # self.SetLayoutDirection(wx.Layout_RightToLeft)
+
         self._mgr = aui.AuiManager()
 
         # tell AuiManager to manage this frame
