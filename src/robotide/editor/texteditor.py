@@ -412,7 +412,7 @@ class SourceEditor(wx.Panel):
     def store_position(self, force=False):
         if self._editor and self.datafile_controller:
             cur_pos = self._editor.GetCurrentPos()
-            ins_pos = self._editor.GetInsertionPoint()
+            # ins_pos = self._editor.GetInsertionPoint()
             if cur_pos > 0:  # Cheating because it always go to zero
                 # self._positions[self.datafile_controller.name] = cur_pos
                 self._position = cur_pos
@@ -421,18 +421,12 @@ class SourceEditor(wx.Panel):
             # print("DEBUG: Called store caret self.datafile_controller.name=%s position=%s, ins_po=%s" % (self.datafile_controller.name, self._position, ins_pos))
 
     def set_editor_caret_position(self):
-        if not self.is_focused():  # DEBUG was typing text when at Grid Editor
-            # print("DEBUG: Text Edit avoid set caret pos")
-            return
-        # position = self._positions.get(self.datafile_controller.name, 0)
-        # self.SetFocus()
-        position = self._position
-        if position:
-            self._editor.SetFocus()
-            self._editor.SetCurrentPos(position)
-            self._editor.SetSelection(position, position)
-            self._editor.SetAnchor(position)
-            self._editor.GotoPos(position)
+        self._editor.SetFocus()
+        if self._position:
+            self._editor.SetCurrentPos(self._position)
+            self._editor.SetSelection(self._position, self._position)
+            self._editor.SetAnchor(self._position)
+            self._editor.GotoPos(self._position)
             # ins_pos = self._editor.GetInsertionPoint()
             linewithcursor = self._editor.GetCurrentLine()
             # print("DEBUG: Called set caret position=%s line %s" % (position, linewithcursor,) )
@@ -602,7 +596,7 @@ class SourceEditor(wx.Panel):
         self._editor.SetCaretPeriod(500)
         if self._position:
             self.set_editor_caret_position()
-            innerfocus = self._editor.GetSTCFocus()
+            # innerfocus = self._editor.GetSTCFocus()
             # print("DEBUG: Get Focus: %s STCfocus is: %s" % (self.is_focused(), innerfocus))
         if event:
             event.Skip()
