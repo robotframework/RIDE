@@ -428,9 +428,9 @@ class SourceEditor(wx.Panel):
             self._editor.SetAnchor(self._position)
             self._editor.GotoPos(self._position)
             # ins_pos = self._editor.GetInsertionPoint()
-            linewithcursor = self._editor.GetCurrentLine()
+            # linewithcursor = self._editor.GetCurrentLine()
             # print("DEBUG: Called set caret position=%s line %s" % (position, linewithcursor,) )
-            self._editor.ScrollToLine(linewithcursor)
+            # self._editor.ScrollToLine(linewithcursor)
             self._editor.Refresh()
             self._editor.Update()
 
