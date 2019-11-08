@@ -576,6 +576,327 @@ class RowMovingTest(TestCaseCommandTest):
                                 FOR_LOOP_STEP2[2:],
                                 STEP_AFTER_FOR_LOOP)
 
+    def test_move_up_and_down_step_in_for_loop(self):
+        def str_step(row):
+            sep = '  '
+            for idx in range(1, len(row)):
+                if row[idx] == '':
+                    row[idx] = sep
+            st = sep.join(row)
+            return st
+        self._exec(MoveRowsUp([self._data_row(STEP_AFTER_FOR_LOOP)]))
+        self._exec(MoveRowsDown([self._data_row(FOR_LOOP_STEP1)]))
+        self._assert_step_order(STEP1,
+                                STEP2,
+                                STEP_WITH_COMMENT,
+                                FOR_LOOP_HEADER,
+                                FOR_LOOP_STEP2,
+                                FOR_LOOP_STEP1,
+                                '  ' + STEP_AFTER_FOR_LOOP,
+                                FOR_LOOP_END)
+        # print("after assert1")
+        for row in range(0, len(self._steps)):
+            self._data[row+1] = str_step(self._steps[row].as_list())
+            # print("%s" % self._data[row+1])
+
+        self._exec(MoveRowsUp([self._data_row(STEP_AFTER_FOR_LOOP)]))
+        self._assert_step_order(STEP1,
+                                STEP2,
+                                STEP_WITH_COMMENT,
+                                FOR_LOOP_HEADER,
+                                FOR_LOOP_STEP2,
+                                '  ' + STEP_AFTER_FOR_LOOP,
+                                FOR_LOOP_STEP1,
+                                FOR_LOOP_END)
+        # print("after assert2")
+        for row in range(0, len(self._steps)):
+            self._data[row+1] = str_step(self._steps[row].as_list())
+            # print("%s" % self._data[row+1])
+
+        self._exec(MoveRowsUp([self._data_row(STEP_AFTER_FOR_LOOP)]))
+        self._assert_step_order(STEP1,
+                                STEP2,
+                                STEP_WITH_COMMENT,
+                                FOR_LOOP_HEADER,
+                                '  ' + STEP_AFTER_FOR_LOOP,
+                                FOR_LOOP_STEP2,
+                                FOR_LOOP_STEP1,
+                                FOR_LOOP_END)
+        # print("after assert3")
+        for row in range(0, len(self._steps)):
+            self._data[row+1] = str_step(self._steps[row].as_list())
+            # print("%s" % self._data[row+1])
+
+        self._exec(MoveRowsUp([self._data_row(STEP_AFTER_FOR_LOOP)]))
+        self._assert_step_order(STEP1,
+                                STEP2,
+                                STEP_WITH_COMMENT,
+                                STEP_AFTER_FOR_LOOP,
+                                FOR_LOOP_HEADER,
+                                FOR_LOOP_STEP2,
+                                FOR_LOOP_STEP1,
+                                FOR_LOOP_END)
+        # print("after assert4")
+        for row in range(0, len(self._steps)):
+            self._data[row+1] = str_step(self._steps[row].as_list())
+            # print("%s" % self._data[row+1])
+
+        self._exec(MoveRowsDown([self._data_row(STEP_AFTER_FOR_LOOP[2:])]))
+        self._exec(MoveRowsDown([self._data_row(FOR_LOOP_STEP1[2:])]))
+        self._assert_step_order(STEP1,
+                                STEP2,
+                                STEP_WITH_COMMENT,
+                                FOR_LOOP_HEADER,
+                                '  ' + STEP_AFTER_FOR_LOOP,
+                                FOR_LOOP_STEP2,
+                                FOR_LOOP_END,
+                                FOR_LOOP_STEP1[2:]
+                                )
+        # print("after assert5")
+        for row in range(0, len(self._steps)):
+            self._data[row+1] = str_step(self._steps[row].as_list())
+        #     print("%s" % self._data[row+1])
+        # for row in range(0, len(self._steps)):
+        #     print("%s" % self._steps[row])   # Show types
+
+        self._exec(MoveRowsUp([self._data_row(FOR_LOOP_HEADER[2:])]))
+        self._exec(MoveRowsUp([self._data_row(FOR_LOOP_END[2:])]))
+        self._assert_step_order(STEP1,
+                                STEP2,
+                                FOR_LOOP_HEADER,
+                                '  ' + STEP_WITH_COMMENT,
+                                '  ' + STEP_AFTER_FOR_LOOP,
+                                FOR_LOOP_END,
+                                FOR_LOOP_STEP2[2:],
+                                FOR_LOOP_STEP1[2:]
+                                )
+        # print("after assert6")
+        for row in range(0, len(self._steps)):
+            self._data[row+1] = str_step(self._steps[row].as_list())
+        #     print("%s" % self._data[row+1])
+
+        self._exec(MoveRowsUp([self._data_row(STEP1[2:])]))
+        self._exec(MoveRowsUp([self._data_row(STEP2[2:])]))
+        self._exec(MoveRowsUp([self._data_row(FOR_LOOP_END[2:])]))
+        self._assert_step_order(STEP2,
+                                STEP1,
+                                FOR_LOOP_HEADER,
+                                '  ' + STEP_WITH_COMMENT,
+                                FOR_LOOP_END,
+                                STEP_AFTER_FOR_LOOP,
+                                FOR_LOOP_STEP2[2:],
+                                FOR_LOOP_STEP1[2:]
+                                )
+        # print("after assert7")
+        for row in range(0, len(self._steps)):
+            self._data[row + 1] = str_step(self._steps[row].as_list())
+        #     print("%s" % self._data[row + 1])
+
+        self._exec(MoveRowsDown([self._data_row(STEP2[2:])]))
+        self._exec(MoveRowsDown([self._data_row(FOR_LOOP_END[2:])]))
+        self._exec(MoveRowsDown([self._data_row(FOR_LOOP_HEADER[2:])]))
+        self._assert_step_order(STEP1,
+                                STEP2,
+                                STEP_WITH_COMMENT,
+                                FOR_LOOP_HEADER,
+                                '  ' + STEP_AFTER_FOR_LOOP,
+                                FOR_LOOP_END,
+                                FOR_LOOP_STEP2[2:],
+                                FOR_LOOP_STEP1[2:]
+                                )
+        # print("after assert8")
+        # for row in range(0, len(self._steps)):
+        #     self._data[row + 1] = str_step(self._steps[row].as_list())
+        #     print("%s" % self._data[row + 1])
+
+    def test_move_down_for_loop_header_after_end(self):
+        def str_step(row):
+            sep = '  '
+            for idx in range(1, len(row)):
+                if row[idx] == '':
+                    row[idx] = sep
+            st = sep.join(row)
+            return st
+        self._exec(MoveRowsDown([self._data_row(FOR_LOOP_HEADER)]))
+
+        # print("DEBUG: after move loop 1")
+        for row in range(0, len(self._steps)):
+            self._data[row + 1] = str_step(self._steps[row].as_list())
+        #    print("%s" % self._data[row + 1])
+        self._assert_step_order(STEP1,
+                                STEP2,
+                                STEP_WITH_COMMENT,
+                                FOR_LOOP_STEP1[2:],
+                                FOR_LOOP_HEADER,
+                                FOR_LOOP_STEP2,
+                                FOR_LOOP_END,
+                                STEP_AFTER_FOR_LOOP)
+        # print("DEBUG: after move loop 1 assertion")
+        for row in range(0, len(self._steps)):
+            self._data[row + 1] = str_step(self._steps[row].as_list())
+        #    print("%s" % self._data[row + 1])
+
+        self._exec(MoveRowsDown([self._data_row(FOR_LOOP_HEADER[2:])]))
+        #print("DEBUG: after move loop before END")
+        for row in range(0, len(self._steps)):
+            self._data[row + 1] = str_step(self._steps[row].as_list())
+        #    print("%s" % self._data[row + 1])
+        self._assert_step_order(STEP1,
+                                STEP2,
+                                STEP_WITH_COMMENT,
+                                FOR_LOOP_STEP1[2:],
+                                FOR_LOOP_STEP2[2:],
+                                FOR_LOOP_HEADER,
+                                FOR_LOOP_END,
+                                STEP_AFTER_FOR_LOOP)
+
+        # print("DEBUG: after move loop 2 assertion")
+        for row in range(0, len(self._steps)):
+            self._data[row + 1] = str_step(self._steps[row].as_list())
+        #    print("%s" % self._data[row + 1])
+
+        self._exec(MoveRowsDown([self._data_row(FOR_LOOP_HEADER[2:])]))
+        # print("DEBUG: after move loop after END")
+        # for row in range(0, len(self._steps)):
+        #     self._data[row + 1] = str_step(self._steps[row].as_list())
+        #     print("%s" % self._data[row + 1])
+        self._assert_step_order(STEP1,
+                                STEP2,
+                                STEP_WITH_COMMENT,
+                                FOR_LOOP_STEP1[2:],
+                                FOR_LOOP_STEP2[2:],
+                                FOR_LOOP_END,
+                                FOR_LOOP_HEADER,
+                                STEP_AFTER_FOR_LOOP)
+
+    def test_move_down_end_after_loop_header(self):
+        def str_step(row):
+            sep = '  '
+            for idx in range(1, len(row)):
+                if row[idx] == '':
+                    row[idx] = sep
+            st = sep.join(row)
+            return st
+        self._exec(MoveRowsDown([self._data_row(FOR_LOOP_HEADER)]))
+        self._exec(MoveRowsUp([self._data_row(FOR_LOOP_END)]))
+        # print("DEBUG: after move loop end 1")
+        for row in range(0, len(self._steps)):
+            self._data[row + 1] = str_step(self._steps[row].as_list())
+        #    print("%s" % self._data[row + 1])
+        self._assert_step_order(STEP1,
+                                STEP2,
+                                STEP_WITH_COMMENT,
+                                FOR_LOOP_STEP1[2:],
+                                FOR_LOOP_HEADER,
+                                FOR_LOOP_END,
+                                FOR_LOOP_STEP2[2:],
+                                STEP_AFTER_FOR_LOOP)
+        # print("DEBUG: after move loop end 1 assertion")
+        for row in range(0, len(self._steps)):
+            self._data[row + 1] = str_step(self._steps[row].as_list())
+        #    print("%s" % self._data[row + 1])
+
+        self._exec(MoveRowsUp([self._data_row(FOR_LOOP_END[2:])]))
+        # print("DEBUG: after move loop end 2")
+        for row in range(0, len(self._steps)):
+            self._data[row + 1] = str_step(self._steps[row].as_list())
+        #    print("%s" % self._data[row + 1])
+        self._assert_step_order(STEP1,
+                                STEP2,
+                                STEP_WITH_COMMENT,
+                                FOR_LOOP_STEP1[2:],
+                                FOR_LOOP_END,
+                                FOR_LOOP_HEADER,
+                                FOR_LOOP_STEP2[2:],
+                                STEP_AFTER_FOR_LOOP)
+        # print("DEBUG: after move loop end 2 assertion")
+        for row in range(0, len(self._steps)):
+            self._data[row + 1] = str_step(self._steps[row].as_list())
+        #    print("%s" % self._data[row + 1])
+
+        # Actual test
+        self._exec(MoveRowsDown([self._data_row(FOR_LOOP_END[2:])]))
+        # print("DEBUG: after move loop end test")
+        for row in range(0, len(self._steps)):
+            self._data[row + 1] = str_step(self._steps[row].as_list())
+        #    print("%s" % self._data[row + 1])
+        self._assert_step_order(STEP1,
+                                STEP2,
+                                STEP_WITH_COMMENT,
+                                FOR_LOOP_STEP1[2:],
+                                FOR_LOOP_HEADER,
+                                FOR_LOOP_END,
+                                FOR_LOOP_STEP2[2:],
+                                STEP_AFTER_FOR_LOOP)
+        # print("DEBUG: after move loop end test assertion")
+        for row in range(0, len(self._steps)):
+            self._data[row + 1] = str_step(self._steps[row].as_list())
+        #    print("%s" % self._data[row + 1])
+
+    def test_move_up_loop_header_after_end(self):
+        def str_step(row):
+            sep = '  '
+            for idx in range(1, len(row)):
+                if row[idx] == '':
+                    row[idx] = sep
+            st = sep.join(row)
+            return st
+        self._exec(MoveRowsDown([self._data_row(FOR_LOOP_HEADER)]))
+        self._exec(MoveRowsUp([self._data_row(FOR_LOOP_END)]))
+        # print("DEBUG: after move for end 1")
+        for row in range(0, len(self._steps)):
+            self._data[row + 1] = str_step(self._steps[row].as_list())
+        #    print("%s" % self._data[row + 1])
+        self._assert_step_order(STEP1,
+                                STEP2,
+                                STEP_WITH_COMMENT,
+                                FOR_LOOP_STEP1[2:],
+                                FOR_LOOP_HEADER,
+                                FOR_LOOP_END,
+                                FOR_LOOP_STEP2[2:],
+                                STEP_AFTER_FOR_LOOP)
+        # print("DEBUG: after move loop for 1 assertion")
+        for row in range(0, len(self._steps)):
+            self._data[row + 1] = str_step(self._steps[row].as_list())
+        #    print("%s" % self._data[row + 1])
+
+        self._exec(MoveRowsUp([self._data_row(FOR_LOOP_END[2:])]))
+        # print("DEBUG: after move loop for 2")
+        for row in range(0, len(self._steps)):
+            self._data[row + 1] = str_step(self._steps[row].as_list())
+        #    print("%s" % self._data[row + 1])
+        self._assert_step_order(STEP1,
+                                STEP2,
+                                STEP_WITH_COMMENT,
+                                FOR_LOOP_STEP1[2:],
+                                FOR_LOOP_END,
+                                FOR_LOOP_HEADER,
+                                FOR_LOOP_STEP2[2:],
+                                STEP_AFTER_FOR_LOOP)
+        # print("DEBUG: after move loop for 2 assertion")
+        for row in range(0, len(self._steps)):
+            self._data[row + 1] = str_step(self._steps[row].as_list())
+        #    print("%s" % self._data[row + 1])
+
+        # Actual test
+        self._exec(MoveRowsUp([self._data_row(FOR_LOOP_HEADER[2:])]))
+        # print("DEBUG: after move loop for test")
+        for row in range(0, len(self._steps)):
+            self._data[row + 1] = str_step(self._steps[row].as_list())
+        #    print("%s" % self._data[row + 1])
+        self._assert_step_order(STEP1,
+                                STEP2,
+                                STEP_WITH_COMMENT,
+                                FOR_LOOP_STEP1[2:],
+                                FOR_LOOP_HEADER,
+                                FOR_LOOP_END,
+                                FOR_LOOP_STEP2[2:],
+                                STEP_AFTER_FOR_LOOP)
+        # print("DEBUG: after move loop for test assertion")
+        for row in range(0, len(self._steps)):
+            self._data[row + 1] = str_step(self._steps[row].as_list())
+        #    print("%s" % self._data[row + 1])
+
     def test_undo_row_up(self):
         self._exec(MoveRowsUp([1]))
         self._exec(Undo())
@@ -606,7 +927,7 @@ class RowMovingTest(TestCaseCommandTest):
     def _assert_step_order(self, *steps):
         for idx, step in enumerate(steps):
             assert_equal(self._steps[idx].as_list(),
-                          self._data_step_as_list(step))
+                         self._data_step_as_list(step))
         assert_true(self._ctrl.dirty)
 
 
