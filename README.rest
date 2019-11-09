@@ -7,9 +7,16 @@ RIDE is a development environment for Robot Framework test cases.
 (signup page: https://robotframework-slack-invite.herokuapp.com/)
 
 See the `release notes`_ for version 1.7.4
+
+**Attention, this new version will break old style `:FOR`, and you have to change to `FOR/END` blocks.**
+
+**See the FAQ at Wiki**
+
 ==========================================
 
 **THIS IS THE LAST RELEASE SUPPORTING PYTHON 2.7**
+
+**Attention, don't install RIDE on Python 3.8 (wait for version 2.0)**
 
 (the information below is outdated)
 
