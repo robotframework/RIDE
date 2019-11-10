@@ -117,7 +117,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         if datafile_controller:
             self._open_data_for_controller(datafile_controller)
             # self.show_tab(self._editor)
-            self.store_position()
+            self._editor.store_position()
 
     def OnSaving(self, message):
         # print("DEBUG: Text Edit onsave enter")
@@ -326,17 +326,24 @@ class SourceEditor(wx.Panel):
         self._data_validator = data_validator
         self._data_validator.set_editor(self)
         self._parent = parent
+        self._title = title
         self._tab_size = self._parent._app.settings.get(
                       'txt number of spaces', 4)
         self._create_ui(title)
         self._data = None
         self._dirty = False
         self._position = None
+        self._tab_open = None
         PUBLISHER.subscribe(self.OnSettingsChanged, RideSettingsChanged)
+        PUBLISHER.subscribe(self.OnTabChange, RideNotebookTabChanging)
 
     def is_focused(self):
-        foc = wx.Window.FindFocus()
-        return any(elem == foc for elem in [self]+list(self.GetChildren()))
+        # foc = wx.Window.FindFocus()
+        # return any(elem == foc for elem in [self]+list(self.GetChildren()))
+        return self._tab_open == self._title
+
+    def OnTabChange(self, message):
+        self._tab_open = message.newtab
 
     def _create_ui(self, title):
         self.SetSizer(VerticalSizer())
@@ -421,12 +428,17 @@ class SourceEditor(wx.Panel):
             # print("DEBUG: Called store caret self.datafile_controller.name=%s position=%s, ins_po=%s" % (self.datafile_controller.name, self._position, ins_pos))
 
     def set_editor_caret_position(self):
+        if not self.is_focused():  # DEBUG was typing text when at Grid Editor
+            # print("DEBUG: Text Edit avoid set caret pos")
+            return
+        # position = self._positions.get(self.datafile_controller.name, 0)
+        position = self._position
         self._editor.SetFocus()
-        if self._position:
-            self._editor.SetCurrentPos(self._position)
-            self._editor.SetSelection(self._position, self._position)
-            self._editor.SetAnchor(self._position)
-            self._editor.GotoPos(self._position)
+        if position:
+            self._editor.SetCurrentPos(position)
+            self._editor.SetSelection(position, position)
+            self._editor.SetAnchor(position)
+            self._editor.GotoPos(position)
             # ins_pos = self._editor.GetInsertionPoint()
             # linewithcursor = self._editor.GetCurrentLine()
             # print("DEBUG: Called set caret position=%s line %s" % (position, linewithcursor,) )
