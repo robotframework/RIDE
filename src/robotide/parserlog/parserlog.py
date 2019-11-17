@@ -125,7 +125,6 @@ class _LogWindow(wx.Panel):
 
     def _add_to_notebook(self, notebook):
         notebook.add_tab(self, 'Parser Log', allow_closing=True)
-        notebook.show_tab(self)
         self._output.SetSize(self.Size)
 
     def close(self, notebook):
