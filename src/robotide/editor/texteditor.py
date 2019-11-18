@@ -379,7 +379,7 @@ class SourceEditor(wx.Panel):
         label = Label(self, label="Syntax colorization disabled due to missing requirements.")
         link = HyperlinkCtrl(self, -1, label="Get help", url="")
         link.Bind(EVT_HYPERLINK, self.show_help_dialog)
-        flags = wx.ALIGN_CENTER_VERTICAL|wx.ALIGN_RIGHT
+        flags = wx.ALIGN_CENTER_VERTICAL | wx.ALIGN_RIGHT
         syntax_colorization_help_sizer = wx.BoxSizer(wx.VERTICAL)
         syntax_colorization_help_sizer.AddMany([
             (label, 0, flags),
@@ -724,9 +724,9 @@ class RobotStylizer(object):
         self._ensure_default_font_is_valid()
         if robotframeworklexer:
             self.lexer = robotframeworklexer.RobotFrameworkLexer()
-            self._set_styles()
         else:
             self.editor.GetParent().create_syntax_colorization_help()
+        self._set_styles()
         PUBLISHER.subscribe(self.OnSettingsChanged, RideSettingsChanged)
 
     def OnSettingsChanged(self, data):
@@ -744,53 +744,58 @@ class RobotStylizer(object):
     def _set_styles(self):
         color_settings = self.settings.get_without_default('Text Edit')
         background = color_settings.get('background', '#FFFFFF')
-        styles = {
-            robotframeworklexer.ARGUMENT: {
-                'fore': color_settings.get('argument', '#bb8844')
-            },
-            robotframeworklexer.COMMENT: {
-                'fore': color_settings.get('comment', 'black')
-            },
-            robotframeworklexer.ERROR: {
-                'fore': color_settings.get('error', 'black')
-            },
-            robotframeworklexer.GHERKIN: {
-                'fore': color_settings.get('gherkin', 'black')
-            },
-            robotframeworklexer.HEADING: {
-                'fore': color_settings.get('heading', '#999999'),
-                'bold': 'true'
-            },
-            robotframeworklexer.IMPORT: {
-                'fore': color_settings.get('import', '#555555')
-            },
-            robotframeworklexer.KEYWORD: {
-                'fore': color_settings.get('keyword', '#990000'),
-                'bold': 'true'
-            },
-            robotframeworklexer.SEPARATOR: {
-                'fore': color_settings.get('separator', 'black')
-            },
-            robotframeworklexer.SETTING: {
-                'fore': color_settings.get('setting', 'black'),
-                'bold': 'true'
-            },
-            robotframeworklexer.SYNTAX: {
-                'fore': color_settings.get('syntax', 'black')
-            },
-            robotframeworklexer.TC_KW_NAME: {
-                'fore': color_settings.get('tc_kw_name', '#aaaaaa')
-            },
-            robotframeworklexer.VARIABLE: {
-                'fore': color_settings.get('variable', '#008080')
+        if robotframeworklexer:
+            styles = {
+                robotframeworklexer.ARGUMENT: {
+                    'fore': color_settings.get('argument', '#bb8844')
+                },
+                robotframeworklexer.COMMENT: {
+                    'fore': color_settings.get('comment', 'black')
+                },
+                robotframeworklexer.ERROR: {
+                    'fore': color_settings.get('error', 'black')
+                },
+                robotframeworklexer.GHERKIN: {
+                    'fore': color_settings.get('gherkin', 'black')
+                },
+                robotframeworklexer.HEADING: {
+                    'fore': color_settings.get('heading', '#999999'),
+                    'bold': 'true'
+                },
+                robotframeworklexer.IMPORT: {
+                    'fore': color_settings.get('import', '#555555')
+                },
+                robotframeworklexer.KEYWORD: {
+                    'fore': color_settings.get('keyword', '#990000'),
+                    'bold': 'true'
+                },
+                robotframeworklexer.SEPARATOR: {
+                    'fore': color_settings.get('separator', 'black')
+                },
+                robotframeworklexer.SETTING: {
+                    'fore': color_settings.get('setting', 'black'),
+                    'bold': 'true'
+                },
+                robotframeworklexer.SYNTAX: {
+                    'fore': color_settings.get('syntax', 'black')
+                },
+                robotframeworklexer.TC_KW_NAME: {
+                    'fore': color_settings.get('tc_kw_name', '#aaaaaa')
+                },
+                robotframeworklexer.VARIABLE: {
+                    'fore': color_settings.get('variable', '#008080')
+                }
             }
-        }
-        self.tokens = {}
-        for index, token in enumerate(styles):
-            self.tokens[token] = index
-            self.editor.StyleSetSpec(index,
-                                     self._get_style_string(back=background,
-                                                            **styles[token]))
+            self.tokens = {}
+            for index, token in enumerate(styles):
+                self.tokens[token] = index
+                self.editor.StyleSetSpec(index,
+                                         self._get_style_string(back=background,
+                                                                **styles[token]))
+        else:
+            foreground = color_settings.get('setting', 'black')
+            self.editor.StyleSetSpec(0, self._get_style_string(back=background,
+                                                               fore=foreground))
         self.editor.StyleSetBackground(wx.stc.STC_STYLE_DEFAULT, background)
         self.editor.Refresh()
 
