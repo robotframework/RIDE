@@ -360,8 +360,7 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
         # TODO remove below workaround for double actions
         # This was only happening on MacOS
         if self._counter == 1:
-            # if self._icells == self.selection.rows():
-            if True:
+            if self._icells == self.selection.rows() and IS_MAC:
                 print("DEBUG: _row_move decision counter=%s " % self._counter)
                 self._counter = 0
                 self._icells = None
