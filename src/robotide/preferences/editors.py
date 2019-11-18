@@ -21,6 +21,14 @@ from robotide.preferences import widgets
 from robotide.widgets import Label
 from robotide.utils import PY3
 
+try:  # import installed version first
+    import robotframeworklexer
+except ImportError:
+    try:  # then import local version
+        from . import robotframeworklexer
+    except ImportError:  # Pygments is not installed
+        robotframeworklexer = None
+
 if PY3:
     from functools import lru_cache
 else:
@@ -121,20 +129,28 @@ class TextEditorPreferences(EditorPreferences):
         container = wx.GridBagSizer()
         column = 0
         row = 0
-        for settings_key, label_text in (
-            ('argument', 'Argument foreground'),
-            ('comment', 'Comment foreground'),
-            ('error', 'Error foreground'),
-            ('gherkin', 'Gherkin keyword foreground'),
-            ('heading', 'Heading foreground'),
-            ('import', 'Import foreground'),
-            ('variable', 'Variable foreground'),
-            ('tc_kw_name', 'Keyword definition foreground'),
-            ('separator', 'Separator'),
-            ('setting', 'Setting foreground'),
-            ('syntax', 'Syntax characters'),
-            ('background', 'Text background'),
-        ):
+        if robotframeworklexer:
+            settings = (
+                        ('argument', 'Argument foreground'),
+                        ('comment', 'Comment foreground'),
+                        ('error', 'Error foreground'),
+                        ('gherkin', 'Gherkin keyword foreground'),
+                        ('heading', 'Heading foreground'),
+                        ('import', 'Import foreground'),
+                        ('variable', 'Variable foreground'),
+                        ('tc_kw_name', 'Keyword definition foreground'),
+                        ('separator', 'Separator'),
+                        ('setting', 'Setting foreground'),
+                        ('syntax', 'Syntax characters'),
+                        ('background', 'Text background'),
+                       )
+        else:
+            settings = (
+                        ('setting', 'Text foreground'),
+                        ('background', 'Text background'),
+                       )
+
+        for settings_key, label_text in settings:
             if column == 4:
                 column = 0
                 row += 1
