@@ -662,14 +662,15 @@ class SourceEditor(wx.Panel):
 
 
 class RobotDataEditor(stc.StyledTextCtrl):
+    margin = 1
 
     def __init__(self, parent):
         stc.StyledTextCtrl.__init__(self, parent)
-        self.SetMarginType(0, stc.STC_MARGIN_NUMBER)
-        self.SetMarginWidth(0, self.TextWidth(stc.STC_STYLE_LINENUMBER, '1234'))
-        self.SetReadOnly(True)
+        self.SetMarginType(self.margin, stc.STC_MARGIN_NUMBER)
         self.SetLexer(stc.STC_LEX_CONTAINER)
+        self.SetReadOnly(True)
         self.Bind(stc.EVT_STC_STYLENEEDED, self.OnStyle)
+        self.Bind(stc.EVT_STC_ZOOM, self.OnZoom)
         self.stylizer = RobotStylizer(self, parent._parent._app.settings)
 
     def set_text(self, text):
@@ -677,6 +678,7 @@ class RobotDataEditor(stc.StyledTextCtrl):
         self.SetText(text)
         self.stylizer.stylize()
         self.EmptyUndoBuffer()
+        self.SetMarginWidth(self.margin, self.calc_margin_width())
 
     @property
     def utf8_text(self):
@@ -684,6 +686,14 @@ class RobotDataEditor(stc.StyledTextCtrl):
 
     def OnStyle(self, event):
         self.stylizer.stylize()
+
+    def OnZoom(self, event):
+        self.SetMarginWidth(self.margin, self.calc_margin_width())
+
+    def calc_margin_width(self):
+        style = stc.STC_STYLE_LINENUMBER
+        width = self.TextWidth(style, str(self.GetLineCount()))
+        return width + self.TextWidth(style, "12")  # return with offset
 
     def get_selected_or_near_text(self):
         # First get selected text
