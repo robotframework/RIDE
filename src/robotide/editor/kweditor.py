@@ -357,19 +357,18 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
         self._row_move(MoveRowsDown, 1)
 
     def _row_move(self, command, change):
-        # TODO remove below workaround for double actions
-        # This was only happening on MacOS
+        # Workaround for double actions, see issue #2048
         if self._counter == 1:
-            if self._icells == self.selection.rows() and IS_MAC:
-                print("DEBUG: _row_move decision counter=%s " % self._counter)
+            if IS_MAC:
+                row=self.GetGridCursorRow() + change
+                col=self.GetGridCursorCol()
+                if row >= 0:
+                    self.SetGridCursor(row, col)
                 self._counter = 0
-                self._icells = None
                 return
         else:
             self._counter += 1
-
-        print("DEBUG: _row_move counter=%s " % self._counter)
-        self._icells = rows = self.selection.rows()
+        rows = self.selection.rows()
         if self._execute(command(rows)):
             wx.CallAfter(self._select_rows, [r + change for r in rows])
         self._resize_grid()
@@ -602,10 +601,9 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
             if not self.has_focus():
                 self.SetFocus()  # DEBUG Avoiding Search field on Text Edit
         elif event.AltDown() and keycode in [wx.WXK_DOWN, wx.WXK_UP]:
-            # self._counter = 0
-            print("DEBUG: Alt-Move %s" % self._counter)
+            # print("DEBUG: Alt-Move %s" % self._counter)
+            self._skip_except_on_mac(event)
             self._move_rows(keycode)
-            event.Skip()
         elif event.AltDown() and keycode == wx.WXK_RETURN:
             self._move_cursor_down(event)
             # event.Skip()
