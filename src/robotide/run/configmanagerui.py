@@ -40,6 +40,8 @@ class ConfigManagerDialog(Dialog):
 
     def __init__(self, configs, plugin):
         Dialog.__init__(self, title='Manage Run Configurations')
+        # set Left to Right direction (while we don't have localization)
+        self.SetLayoutDirection(wx.Layout_LeftToRight)
         self.plugin = plugin
         self._create_ui(configs)
 

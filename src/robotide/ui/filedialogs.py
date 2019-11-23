@@ -55,6 +55,8 @@ class _CreationDialog(Dialog):
 
     def _init_dialog(self, title):
         Dialog.__init__(self, title)
+        # set Left to Right direction (while we don't have localization)
+        self.SetLayoutDirection(wx.Layout_LeftToRight)
         return wx.BoxSizer(wx.VERTICAL)
 
     def _finalize_dialog(self, sizer):

@@ -233,6 +233,8 @@ The following shell-style wildcards are supported:
 
     def __init__(self):
         Dialog.__init__(self, title='Help: excludes')
+        # set Left to Right direction (while we don't have localization)
+        self.SetLayoutDirection(wx.Layout_LeftToRight)
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(HtmlWindow(self, (800, 600), self.help),
                   1,

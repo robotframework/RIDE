@@ -30,6 +30,8 @@ class ReviewDialog(wx.Frame):
 
     def __init__(self, controller, frame):
         wx.Frame.__init__(self, frame, title="Search unused keywords", style=wx.SYSTEM_MENU|wx.CAPTION|wx.CLOSE_BOX|wx.CLIP_CHILDREN|wx.FRAME_FLOAT_ON_PARENT)
+        # set Left to Right direction (while we don't have localization)
+        self.SetLayoutDirection(wx.Layout_LeftToRight)
         self.index = 0
         self.frame = frame
         self._search_model = ResultModel()
