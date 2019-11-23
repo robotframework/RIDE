@@ -94,6 +94,8 @@ class UpdateDialog(wx.Dialog):
     def __init__(self, version, url, settings):
         self._settings = settings
         wx.Dialog.__init__(self, None, -1, "Update available")
+        # set Left to Right direction (while we don't have localization)
+        self.SetLayoutDirection(wx.Layout_LeftToRight)
         sizer = wx.BoxSizer(orient=wx.VERTICAL)
         hwin = HtmlWindow(self, -1, size=(400,200))
         hwin.SetPage('New version %s available from <a href="%s">%s</a>' % (version, url, url))

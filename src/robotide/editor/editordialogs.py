@@ -40,6 +40,8 @@ class _Dialog(Dialog):
     def __init__(self, controller, item=None, plugin=None):
         # TODO: Get rid of item, everything should be in controller
         Dialog.__init__(self, self._title)
+        # set Left to Right direction (while we don't have localization)
+        self.SetLayoutDirection(wx.Layout_LeftToRight)
         self.SetExtraStyle(wx.WS_EX_VALIDATE_RECURSIVELY)
         self._controller = controller
         self.plugin = plugin

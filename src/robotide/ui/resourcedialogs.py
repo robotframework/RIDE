@@ -29,6 +29,8 @@ class _UsageDialog(Dialog):
 
     def __init__(self, usages, title, checkbox_label, model=ResourceImportListModel):
         Dialog.__init__(self, title, size=(self._width, self._height))
+        # set Left to Right direction (while we don't have localization)
+        self.SetLayoutDirection(wx.Layout_LeftToRight)
         self._sizer = VerticalSizer()
         self._create_controls(usages, checkbox_label, model)
         self._create_horizontal_line(self._sizer)

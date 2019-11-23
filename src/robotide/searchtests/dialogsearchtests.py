@@ -34,6 +34,8 @@ class TestsDialog(Dialog):
         self._selection_listeners = []
         title = "Search Tests"
         Dialog.__init__(self, title=title, size=(750, 400))
+        # set Left to Right direction (while we don't have localization)
+        self.SetLayoutDirection(wx.Layout_LeftToRight)
         self.SetSizer(VerticalSizer())
         self.Sizer.Add(self._create_notebook(), 1, wx.ALL | wx.EXPAND | wx.ALIGN_LEFT, 3)
 
