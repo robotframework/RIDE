@@ -103,6 +103,11 @@ class EditorPreferences(widgets.PreferencesPanel):
             [str(i) for i in range(8, 16)])
         sizer = wx.FlexGridSizer(rows=3, cols=2, vgap=10, hgap=30)
         sizer.AddMany([f.label(self), f.chooser(self)])
+        if 'zoom factor' in self._settings:
+            z = widgets.IntegerChoiceEditor(
+                self._settings, 'zoom factor', 'Zoom Factor',
+                [str(i) for i in range(-10, 21, 2)])
+            sizer.AddMany([z.label(self), z.chooser(self)])
         if 'fixed font' in self._settings:
             sizer.AddMany(widgets.boolean_editor(
                 self, self._settings, 'fixed font', 'Use fixed width font'))

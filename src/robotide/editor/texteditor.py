@@ -693,7 +693,7 @@ class RobotDataEditor(stc.StyledTextCtrl):
     def calc_margin_width(self):
         style = stc.STC_STYLE_LINENUMBER
         width = self.TextWidth(style, str(self.GetLineCount()))
-        return width + self.TextWidth(style, "12")  # return with offset
+        return width + self.TextWidth(style, "1")
 
     def get_selected_or_near_text(self):
         # First get selected text
@@ -751,6 +751,9 @@ class RobotStylizer(object):
     def _font_face(self):
         return self.settings['Text Edit'].get('font face', 'Courier New')
 
+    def _zoom_factor(self):
+        return self.settings['Text Edit'].get('zoom factor', 0)
+
     def _set_styles(self):
         color_settings = self.settings.get_without_default('Text Edit')
         background = color_settings.get('background', '#FFFFFF')
@@ -807,6 +810,7 @@ class RobotStylizer(object):
             self.editor.StyleSetSpec(0, self._get_style_string(back=background,
                                                                fore=foreground))
         self.editor.StyleSetBackground(wx.stc.STC_STYLE_DEFAULT, background)
+        self.editor.SetZoom(self._zoom_factor())
         self.editor.Refresh()
 
     def _get_word_and_length(self, current_position):
