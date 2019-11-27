@@ -41,7 +41,7 @@ class CellRenderer(wx.grid.GridCellRenderer):
             start = 0
             startIdx = 0
             spcIdx = -1
-            while idx < len(pte):
+            while idx < len(line):
                 # remember the last seen space
                 if line[idx] == ' ':
                     spcIdx = idx
