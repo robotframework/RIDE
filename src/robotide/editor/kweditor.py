@@ -180,8 +180,12 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
         font_size = self.settings.get('font size', _DEFAULT_FONT_SIZE)
         font_family = wx.FONTFAMILY_MODERN if self.settings['fixed font'] \
             else wx.FONTFAMILY_DEFAULT
-        font = wx.Font(font_size, font_family, wx.FONTSTYLE_NORMAL,
-                       wx.FONTWEIGHT_NORMAL)
+        font_face = self.settings.get('font face', None)
+        if font_face is None:
+            font = wx.Font(font_size, font_family, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL)
+            self.settings.set('font face', font.GetFaceName())
+        else:
+            font = wx.Font(font_size, font_family, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, font_face)
         self.SetDefaultCellFont(font)
         for row in range(self.NumberRows):
             for col in range(self.NumberCols):
