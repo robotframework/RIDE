@@ -40,12 +40,12 @@ else:
 
 
 @lru_cache(maxsize=2)
-def ReadFonts():
+def ReadFonts(fixed=False):
     '''Returns list with fixed width fonts'''
     f = wx.FontEnumerator()
     f.EnumerateFacenames()
     if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
-        names = f.GetFacenames(fixedWidthOnly=True)
+        names = f.GetFacenames(fixedWidthOnly=fixed)
     else:
         names = f.GetFacenames()
     names = [n for n in names if not n.startswith('@')]
@@ -103,12 +103,13 @@ class EditorPreferences(widgets.PreferencesPanel):
             [str(i) for i in range(8, 16)])
         sizer = wx.FlexGridSizer(rows=3, cols=2, vgap=10, hgap=30)
         sizer.AddMany([f.label(self), f.chooser(self)])
+        fixed_font = False
         if 'fixed font' in self._settings:
             sizer.AddMany(widgets.boolean_editor(
                 self, self._settings, 'fixed font', 'Use fixed width font'))
+            fixed_font = self._settings['fixed font']
         if 'font face' in self._settings:
-            s = widgets.StringChoiceEditor(
-                self._settings, 'font face', 'Font Face', ReadFonts())
+            s = widgets.StringChoiceEditor(self._settings, 'font face', 'Font Face', ReadFonts(fixed_font))
             sizer.AddMany([s.label(self), s.chooser(self)])
         return sizer
 
