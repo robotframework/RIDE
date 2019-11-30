@@ -19,12 +19,6 @@ import uuid
 import atexit
 import glob
 import sys
-try:
-    from wx.lib.agw.aui.auibook import AuiNotebook as auib
-except ImportError:
-    from wx.lib.aui import AuiNotebook as auib
-    # print("DEBUG: ParserLog failed Import")
-    # auib = None
 
 from robotide.pluginapi import Plugin, ActionInfo, RideParserLogMessage
 from robotide import widgets
@@ -53,7 +47,6 @@ class ParserLogPlugin(Plugin):
 
     def _close(self):
         if self._outfile is not None:
-            self._outfile.flush()
             self._outfile.close()
 
     def _remove_old_log_files(self):
@@ -68,7 +61,7 @@ class ParserLogPlugin(Plugin):
     @property
     def _logfile(self):
         if self._outfile is None:
-            self._outfile = open(self._path, 'w')
+            self._outfile = open(self._path, 'w', encoding='utf8')
         return self._outfile
 
     def enable(self):
@@ -94,6 +87,7 @@ class ParserLogPlugin(Plugin):
             print("".format(_message_to_string(log_event))) # >> sys.stdout, _message_to_string(log_event)
         if self.log_to_file:
             self._logfile.write(_message_to_string(log_event))
+            self._outfile.flush()
         if log_event.notify_user:
             font_size = 13 if context.IS_MAC else -1
             widgets.HtmlDialog(log_event.level, log_event.message,
@@ -125,7 +119,6 @@ class _LogWindow(wx.Panel):
 
     def _add_to_notebook(self, notebook):
         notebook.add_tab(self, 'Parser Log', allow_closing=True)
-        notebook.show_tab(self)
         self._output.SetSize(self.Size)
 
     def close(self, notebook):
