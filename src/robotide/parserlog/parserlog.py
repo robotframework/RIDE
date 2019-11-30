@@ -92,9 +92,9 @@ class ParserLogPlugin(Plugin):
             font_size = 13 if context.IS_MAC else -1
             widgets.HtmlDialog(log_event.level, log_event.message,
                                padding=10, font_size=font_size).Show()
-        self.OnViewLog(log_event)
+        self.OnViewLog(log_event, show_tab=False)
 
-    def OnViewLog(self, event):
+    def OnViewLog(self, event, show_tab=True):
         if not self._panel:
             self._panel = _LogWindow(self.notebook, self._log)
             self.notebook.SetPageTextColour(self.notebook.GetPageCount()-1, wx.Colour(255, 165, 0))
@@ -102,7 +102,7 @@ class ParserLogPlugin(Plugin):
             self.register_shortcut('CtrlCmd-C', lambda e: self._panel.Copy())
             self.register_shortcut(
                  'CtrlCmd-A', lambda e: self._panel.SelectAll())
-        else:
+        if show_tab:
             self.notebook.show_tab(self._panel)
 
 
@@ -119,7 +119,6 @@ class _LogWindow(wx.Panel):
 
     def _add_to_notebook(self, notebook):
         notebook.add_tab(self, 'Parser Log', allow_closing=True)
-        notebook.show_tab(self)
         self._output.SetSize(self.Size)
 
     def close(self, notebook):
