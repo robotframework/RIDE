@@ -26,7 +26,7 @@ from robotide import context
 
 
 def _message_to_string(msg):
-    return '%s [%s]: %s\n\n' % (msg.timestamp, msg.level, msg.message)
+    return '%s [%s]: %s\n\n' % (msg.timestamp, msg.level, msg.message.replace('\n\t', ''))
 
 
 class ParserLogPlugin(Plugin):
@@ -119,6 +119,7 @@ class _LogWindow(wx.Panel):
 
     def _add_to_notebook(self, notebook):
         notebook.add_tab(self, 'Parser Log', allow_closing=True)
+        notebook.show_tab(self)
         self._output.SetSize(self.Size)
 
     def close(self, notebook):
