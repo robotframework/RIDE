@@ -26,7 +26,7 @@ from robotide import context
 
 
 def _message_to_string(msg):
-    return '%s [%s]: %s\n\n' % (msg.timestamp, msg.level, msg.message)
+    return '%s [%s]: %s\n\n' % (msg.timestamp, msg.level, msg.message.replace('\n\t', ''))
 
 
 class ParserLogPlugin(Plugin):
