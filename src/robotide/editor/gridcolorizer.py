@@ -34,17 +34,21 @@ class Colorizer(object):
 
     def colorize(self, selection_content):
         self._current_task_id += 1
-        self._coloring_task(selection_content)
+        if self._timer is None:
+            self._timer = wx.CallLater(1, self._coloring_task, self._current_task_id, selection_content)
+        else:
+            self._timer.Restart(50, self._current_task_id, selection_content)
 
-    def _coloring_task(self, selection_content, row=0, col=0):
-        if self._grid:  # For example move from RIDE Log tab to Grid
-            if row >= self._grid.NumberRows:
-                self._grid.ForceRefresh()
-            elif col < self._grid.NumberCols:
-                self._colorize_cell(row, col, selection_content)
-                self._coloring_task(selection_content, row, col+1)
-            else:
-                self._coloring_task(selection_content, row+1, 0)
+    def _coloring_task(self, task_index, selection_content, row=0, col=0):
+        if task_index != self._current_task_id or self._grid is None:
+            return
+        if row >= self._grid.NumberRows:
+            self._grid.ForceRefresh()
+        elif col < self._grid.NumberCols:
+            self._colorize_cell(row, col, selection_content)
+            wx.CallAfter(self._coloring_task, task_index, selection_content, row, col+1)
+        else:
+            self._coloring_task(task_index, selection_content, row+1, 0)
 
     def _colorize_cell(self, row, col, selection_content):
         cell_info = self._controller.get_cell_info(row, col)
