@@ -88,5 +88,7 @@ class ParsingErrorDialog(Dialog):
     def __init__(self, message):
         Dialog.__init__(self, title='Parsing errors', size=(700, 400),
                         style=wx.DEFAULT_FRAME_STYLE)
+        # set Left to Right direction (while we don't have localization)
+        self.SetLayoutDirection(wx.Layout_LeftToRight)
         area = wx.TextCtrl(self, size=(700,400), style=wx.TE_MULTILINE|wx.TE_DONTWRAP|wx.TE_READONLY)
         area.SetValue(message)

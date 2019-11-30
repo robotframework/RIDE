@@ -33,6 +33,8 @@ class ViewAllTagsDialog(wx.Frame, listmix.ColumnSorterMixin):
         style = wx.SYSTEM_MENU | wx.CAPTION | wx.CLOSE_BOX | wx.CLIP_CHILDREN\
             | wx.FRAME_FLOAT_ON_PARENT
         wx.Frame.__init__(self, frame, title="View all tags", style=style)
+        # set Left to Right direction (while we don't have localization)
+        self.SetLayoutDirection(wx.Layout_LeftToRight)
         self.frame = frame
         self.tree = self.frame.tree
         self._controller = controller

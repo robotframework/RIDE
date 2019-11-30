@@ -48,7 +48,6 @@ class LogPlugin(Plugin):
 
     def _close(self):
         if self._outfile is not None:
-            self._outfile.flush()
             self._outfile.close()
 
     def _remove_old_log_files(self):
@@ -63,7 +62,7 @@ class LogPlugin(Plugin):
     @property
     def _logfile(self):
         if self._outfile is None:
-            self._outfile = open(self._path, 'w')
+            self._outfile = open(self._path, 'w', encoding='utf8')
         return self._outfile
 
     def enable(self):
@@ -89,6 +88,7 @@ class LogPlugin(Plugin):
             print("".format(_message_to_string(log_event))) # >> sys.stdout, _message_to_string(log_event)
         if self.log_to_file:
             self._logfile.write(_message_to_string(log_event))
+            self._outfile.flush()
         if log_event.notify_user:
             font_size = 13 if context.IS_MAC else -1
             widgets.HtmlDialog(log_event.level, log_event.message,

@@ -43,6 +43,8 @@ class PreferenceEditor(wx.Dialog):
     def __init__(self, parent, title, preferences, style="auto"):
         wx.Dialog.__init__(self, parent, wx.ID_ANY, title, size=(850, 660),
                            style=wx.RESIZE_BORDER | wx.DEFAULT_DIALOG_STYLE)
+        # set Left to Right direction (while we don't have localization)
+        self.SetLayoutDirection(wx.Layout_LeftToRight)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
         self._current_panel = None
         self._panels = []

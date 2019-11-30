@@ -34,6 +34,8 @@ class TestsDialog(Dialog):
         self._selection_listeners = []
         title = "Search Tests"
         Dialog.__init__(self, title=title, size=(750, 400))
+        # set Left to Right direction (while we don't have localization)
+        self.SetLayoutDirection(wx.Layout_LeftToRight)
         self.SetSizer(VerticalSizer())
         self.Sizer.Add(self._create_notebook(), 1, wx.ALL | wx.EXPAND | wx.ALIGN_LEFT, 3)
 
@@ -160,6 +162,7 @@ class TestsDialog(Dialog):
         line1.Add(add_to_selection_button)
         panel.Sizer.Add(line1, 0, wx.ALL, 3)
         panel.Sizer.Add(self._add_info_text(panel, "Find matches by test name, documentation and/or tag."), 0, wx.ALL, 3)
+        panel.Sizer.Layout()
 
     def _horizontal_sizer(self):
         return wx.BoxSizer(wx.HORIZONTAL)
@@ -175,8 +178,9 @@ class TestsDialog(Dialog):
         sizer.Add(self._search_control, 0, wx.ALL, 3)
 
     def _select_text_search_result(self, idx):
-        for listener in self._selection_listeners:
-            listener(self.tests[idx])
+        if idx != -1:
+            for listener in self._selection_listeners:
+                listener(self.tests[idx])
 
     def _select_tag_search_result(self, idx):
         for listener in self._selection_listeners:

@@ -180,8 +180,12 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
         font_size = self.settings.get('font size', _DEFAULT_FONT_SIZE)
         font_family = wx.FONTFAMILY_MODERN if self.settings['fixed font'] \
             else wx.FONTFAMILY_DEFAULT
-        font = wx.Font(font_size, font_family, wx.FONTSTYLE_NORMAL,
-                       wx.FONTWEIGHT_NORMAL)
+        font_face = self.settings.get('font face', None)
+        if font_face is None:
+            font = wx.Font(font_size, font_family, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL)
+            self.settings.set('font face', font.GetFaceName())
+        else:
+            font = wx.Font(font_size, font_family, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, font_face)
         self.SetDefaultCellFont(font)
         for row in range(self.NumberRows):
             for col in range(self.NumberCols):
@@ -357,6 +361,17 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
         self._row_move(MoveRowsDown, 1)
 
     def _row_move(self, command, change):
+        # Workaround for double actions, see issue #2048
+        if self._counter == 1:
+            if IS_MAC:
+                row=self.GetGridCursorRow() + change
+                col=self.GetGridCursorCol()
+                if row >= 0:
+                    self.SetGridCursor(row, col)
+                self._counter = 0
+                return
+        else:
+            self._counter += 1
         rows = self.selection.rows()
         if self._execute(command(rows)):
             wx.CallAfter(self._select_rows, [r + change for r in rows])
@@ -590,8 +605,9 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
             if not self.has_focus():
                 self.SetFocus()  # DEBUG Avoiding Search field on Text Edit
         elif event.AltDown() and keycode in [wx.WXK_DOWN, wx.WXK_UP]:
+            # print("DEBUG: Alt-Move %s" % self._counter)
+            self._skip_except_on_mac(event)
             self._move_rows(keycode)
-            event.Skip()
         elif event.AltDown() and keycode == wx.WXK_RETURN:
             self._move_cursor_down(event)
             # event.Skip()

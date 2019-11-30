@@ -109,6 +109,8 @@ class MacRidePopupWindow(wx.MiniFrame, _PopupWindowBase):
     def __init__(self, parent, size, detachable=True, autohide=False):
         wx.MiniFrame.__init__(self, parent, style=wx.SIMPLE_BORDER
                                                   |wx.RESIZE_BORDER)
+        # set Left to Right direction (while we don't have localization)
+        self.SetLayoutDirection(wx.Layout_LeftToRight)
         _PopupWindowBase.__init__(self, size, detachable, autohide)
         self.hide()
 

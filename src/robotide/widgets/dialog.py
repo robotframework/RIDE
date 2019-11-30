@@ -30,6 +30,8 @@ class Dialog(wx.Dialog):
         else:
             style = style or (wx.DEFAULT_DIALOG_STYLE | wx.THICK_FRAME)
             wx.Dialog.__init__(self, parent, title=title, size=size, style=style)
+        # set Left to Right direction (while we don't have localization)
+        self.SetLayoutDirection(wx.Layout_LeftToRight)
         # print(
         #    "DEBUG: Created detached dialog, did it work in Windows?")
         # wx.Dialog.__init__(self, parent, title=title, size=size, style=style)
@@ -60,6 +62,8 @@ class HtmlDialog(Dialog):
 
     def __init__(self, title, content, padding=0, font_size=-1):
         Dialog.__init__(self, title)
+        # set Left to Right direction (while we don't have localization)
+        self.SetLayoutDirection(wx.Layout_LeftToRight)
         szr = sizers.VerticalSizer()
         html = htmlwindow.HtmlWindow(self, text=content)
         html.SetStandardFonts(size=font_size)

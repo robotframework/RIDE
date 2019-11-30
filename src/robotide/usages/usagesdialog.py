@@ -27,6 +27,8 @@ class UsagesDialog(Dialog):
         self._selection_listeners = []
         title = "'%s'" % (name)
         Dialog.__init__(self, title=title, size=(650, 400))
+        # set Left to Right direction (while we don't have localization)
+        self.SetLayoutDirection(wx.Layout_LeftToRight)
         self.SetSizer(VerticalSizer())
         self._add_view_components()
         self.usages = usages or UsagesListModel([])

@@ -779,6 +779,8 @@ class AboutDialog(Dialog):
 
     def __init__(self):
         Dialog.__init__(self, title='RIDE')
+        # set Left to Right direction (while we don't have localization)
+        self.SetLayoutDirection(wx.Layout_LeftToRight)
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(HtmlWindow(self, (450, 200), ABOUT_RIDE), 1, flag=wx.EXPAND)
         self.SetSizerAndFit(sizer)
@@ -791,6 +793,8 @@ class ShortcutKeysDialog(Dialog):
 
     def __init__(self):
         Dialog.__init__(self, title="Shortcut keys for RIDE")
+        # set Left to Right direction (while we don't have localization)
+        self.SetLayoutDirection(wx.Layout_LeftToRight)
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         sizer.Add(HtmlWindow(self, (350, 400),
                              self._get_platform_specific_shortcut_keys()), 1,
