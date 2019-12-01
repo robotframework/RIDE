@@ -158,10 +158,12 @@ class PybotProfile(BaseProfile):
     def _parse_windows_command(self):
         from subprocess import Popen, PIPE
         try:
+            # print("DEBUG: parser_win_comm Enter arguments: %s" % self.arguments)
             p = Popen(['echo', self.arguments], stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=True)
             output, _ = p.communicate()
             output = str(output).lstrip("b\'").strip()
-            self.arguments = output.replace('"', '').replace('\'', '').replace('\\r\\n', '')
+            self.arguments = output.replace('"', '').replace('\'', '').replace('\\\\', '\\').replace('\\r\\n', '')
+            # print("DEBUG: parser_win_comm Parsed arguments: %s" % self.arguments)
         except IOError as e:
             # print("DEBUG: parser_win_comm IOError: %s" % e)
             pass
