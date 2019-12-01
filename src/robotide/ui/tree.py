@@ -58,8 +58,7 @@ if wx.VERSION >= (2, 8, 11, ''): # wx.VERSION_STRING >= '2.8.11.0':
         customtreectrl.TR_EDIT_LABELS
 
 if wx.VERSION >= (3, 0, 3, ''):
-    _TREE_ARGS['agwStyle'] |= customtreectrl.TR_ELLIPSIZE_LONG_ITEMS | \
-        customtreectrl.TR_TOOLTIP_ON_LONG_ITEMS
+    _TREE_ARGS['agwStyle'] |= customtreectrl.TR_TOOLTIP_ON_LONG_ITEMS
 
 if IS_WINDOWS:
     _TREE_ARGS['style'] |= wx.TR_EDIT_LABELS
