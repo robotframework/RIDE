@@ -19,11 +19,13 @@ import uuid
 import atexit
 import glob
 import sys
+import io
 
 from robotide.pluginapi import Plugin, ActionInfo, RideParserLogMessage
 from robotide import widgets
 from robotide import context
-
+from robotide.context import IS_WINDOWS
+from robotide.utils import PY2
 
 def _message_to_string(msg):
     return '%s [%s]: %s\n\n' % (msg.timestamp, msg.level, msg.message.replace('\n\t', ''))
@@ -61,7 +63,10 @@ class ParserLogPlugin(Plugin):
     @property
     def _logfile(self):
         if self._outfile is None:
-            self._outfile = open(self._path, 'w', encoding='utf8')
+            if PY2:
+                self._outfile = io.open(self._path, 'w', encoding='utf8')
+            else:
+                self._outfile = open(self._path, 'w', encoding='utf8')
         return self._outfile
 
     def enable(self):
