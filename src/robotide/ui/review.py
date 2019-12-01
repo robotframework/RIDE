@@ -53,7 +53,9 @@ class ReviewDialog(wx.Frame):
 
     def _build_header(self):
         label_introduction = wx.StaticText(self,
-                                           label='This dialog helps you finding unused keywords within your opened project.\nIf you want, you can restrict the search to a set of files with the filter.')
+                                           label='This dialog helps you finding unused keywords within your opened proj'
+                                                 'ect.\nIf you want, you can restrict the search to a set of files with'
+                                                 ' the filter.')
         label_filter_is = wx.StaticText(self, label='Filter is')
         self.label_filter_status = wx.StaticText(self, label='inactive')
         header_sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -85,7 +87,7 @@ class ReviewDialog(wx.Frame):
                                         label="Mode",
                                         choices=["exclude", "include"])
         self._filter_test_button = wx.Button(self._filter_pane.GetPane(),
-                                             wx.ID_ANY, 'Test the filter')
+                                             wx.ID_INFO, label="Test the filter")
         filter_box_sizer = wx.BoxSizer(wx.HORIZONTAL)
         filter_box_sizer.SetSizeHints(self._filter_pane.GetPane())
         filter_source_sizer = wx.StaticBoxSizer(filter_source_box, wx.VERTICAL)
@@ -98,17 +100,10 @@ class ReviewDialog(wx.Frame):
         filter_options.Add(self._filter_mode, 0, wx.ALL | wx.EXPAND, 3)
         filter_input_sizer = wx.BoxSizer(wx.VERTICAL)
         filter_input_sizer.SetMinSize((600, -1))
-        filter_input_sizer.AddSpacer(10)
+        filter_input_sizer.Add(self._filter_info, 0, wx.ALL | wx.ALIGN_LEFT, 3)
         filter_input_sizer.Add(self._filter_input, 0, wx.ALL | wx.EXPAND, 3)
-        filter_input_sizer.Add(self._filter_regex_switch, 0,
-                               wx.ALL | wx.ALIGN_RIGHT, 3)
-        filter_input_sizer.Add(self._filter_info, 0, wx.ALL | wx.EXPAND, 3)
-        filter_input_sizer.AddStretchSpacer(1)
-        filter_controls = wx.BoxSizer(wx.HORIZONTAL)
-        filter_controls.AddStretchSpacer(1)
-        filter_controls.Add(self._filter_test_button, 0,
-                            wx.ALL | wx.ALIGN_BOTTOM | wx.ALIGN_RIGHT, 3)
-        filter_input_sizer.Add(filter_controls, 0, wx.ALL | wx.EXPAND, 3)
+        filter_input_sizer.Add(self._filter_regex_switch, 0, wx.ALL | wx.ALIGN_RIGHT, 3)
+        filter_input_sizer.Add(self._filter_test_button, 0, wx.ALL | wx.ALIGN_CENTER, 3)
         filter_box_sizer.Add(filter_options, 0, wx.ALL | wx.EXPAND, 3)
         filter_box_sizer.Add(filter_input_sizer, 0, wx.ALL | wx.EXPAND, 3)
         self._filter_pane.GetPane().SetSizer(filter_box_sizer)
@@ -157,7 +152,7 @@ class ReviewDialog(wx.Frame):
         self.Bind(wx.EVT_BUTTON, self.OnDeletemarkedkeywords, self._delete_button)
         self.Bind(wx.EVT_BUTTON, self.OnShowfilestobesearched, self._filter_test_button)
         self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.OnResultSelected, self._unused_kw_list)
-        self.Bind(wx.EVT_CHECKBOX, self._upate_filter_regex, self._filter_regex_switch)
+        self.Bind(wx.EVT_CHECKBOX, self._update_filter_regex, self._filter_regex_switch)
         self.Bind(wx.EVT_COLLAPSIBLEPANE_CHANGED, self._toggle_filter_active, self._filter_pane)
 
     def _set_default_values(self):
@@ -187,13 +182,13 @@ class ReviewDialog(wx.Frame):
         self._runner.set_filter_mode(event.GetInt() == 0)
 
     def _update_filter_source_testcases(self, event):
-        self._runner.set_filter_source_testcases(event.Checked())
+        self._runner.set_filter_source_testcases(self._filter_source_testcases.IsChecked())
 
     def _update_filter_source_resources(self, event):
-        self._runner.set_filter_source_resources(event.Checked())
+        self._runner.set_filter_source_resources(self._filter_source_resources.IsChecked())
 
-    def _upate_filter_regex(self, event):
-        self._runner.set_filter_use_regex(event.Checked())
+    def _update_filter_regex(self, event):
+        self._runner.set_filter_use_regex(self._filter_regex_switch.IsChecked())
 
     def _toggle_filter_active(self, event):
         if event.GetCollapsed():
