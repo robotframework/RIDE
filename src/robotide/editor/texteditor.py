@@ -666,12 +666,13 @@ class RobotDataEditor(stc.StyledTextCtrl):
 
     def __init__(self, parent):
         stc.StyledTextCtrl.__init__(self, parent)
+        self._settings = parent._parent._app.settings
         self.SetMarginType(self.margin, stc.STC_MARGIN_NUMBER)
         self.SetLexer(stc.STC_LEX_CONTAINER)
         self.SetReadOnly(True)
         self.Bind(stc.EVT_STC_STYLENEEDED, self.OnStyle)
         self.Bind(stc.EVT_STC_ZOOM, self.OnZoom)
-        self.stylizer = RobotStylizer(self, parent._parent._app.settings)
+        self.stylizer = RobotStylizer(self, self._settings)
 
     def set_text(self, text):
         self.SetReadOnly(False)
@@ -689,6 +690,13 @@ class RobotDataEditor(stc.StyledTextCtrl):
 
     def OnZoom(self, event):
         self.SetMarginWidth(self.margin, self.calc_margin_width())
+        self._set_zoom()
+
+    def _set_zoom(self):
+        new = self.GetZoom()
+        old = self._settings['Text Edit'].get('zoom factor', 0)
+        if new != old:
+            self._settings['Text Edit'].set('zoom factor', new)
 
     def calc_margin_width(self):
         style = stc.STC_STYLE_LINENUMBER
