@@ -105,9 +105,8 @@ class EditorPreferences(widgets.PreferencesPanel):
         sizer.AddMany([f.label(self), f.chooser(self)])
         fixed_font = False
         if 'zoom factor' in self._settings:
-            z = widgets.IntegerChoiceEditor(
-                self._settings, 'zoom factor', 'Zoom Factor',
-                [str(i) for i in range(-10, 21, 2)])
+            z = widgets.SpinChoiceEditor(
+                self._settings, 'zoom factor', 'Zoom Factor', (-10, 20))
             sizer.AddMany([z.label(self), z.chooser(self)])
         if 'fixed font' in self._settings:
             sizer.AddMany(widgets.boolean_editor(
