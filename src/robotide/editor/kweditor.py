@@ -66,6 +66,8 @@ def requires_focus(function):
         #     _iscelleditcontrolshown = self.IsCellEditControlEnabled()
         # else:
         #     _iscelleditcontrolshown = self.IsCellEditControlShown()
+        if not self.has_focus():
+            return
         _iscelleditcontrolshown = self.IsCellEditControlShown()
         # print("DEBUG: decorated: iscelleditshown = %s focus =%s rowheaderselected=%s\n" % (_iscelleditcontrolshown, self.has_focus(), _row_header_selected_on_linux(self)))
         if self.has_focus() or _iscelleditcontrolshown or \
@@ -138,6 +140,7 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
         finally:
             self._updating_namespace = False
 
+    @requires_focus
     def _resize_grid(self, event=None):
         if self.settings.get("auto size cols", True):
             self.AutoSizeColumns(False)
