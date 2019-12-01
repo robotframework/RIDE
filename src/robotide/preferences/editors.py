@@ -104,6 +104,10 @@ class EditorPreferences(widgets.PreferencesPanel):
         sizer = wx.FlexGridSizer(rows=3, cols=2, vgap=10, hgap=30)
         sizer.AddMany([f.label(self), f.chooser(self)])
         fixed_font = False
+        if 'zoom factor' in self._settings:
+            z = widgets.SpinChoiceEditor(
+                self._settings, 'zoom factor', 'Zoom Factor', (-10, 20))
+            sizer.AddMany([z.label(self), z.chooser(self)])
         if 'fixed font' in self._settings:
             sizer.AddMany(widgets.boolean_editor(
                 self, self._settings, 'fixed font', 'Use fixed width font'))

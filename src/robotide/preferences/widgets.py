@@ -85,6 +85,38 @@ class IntegerPreferenceComboBox(PreferencesComboBox):
         self.settings[self.key] = int(value)
 
 
+class PreferencesSpinControl(wx.SpinCtrl):
+    """A spin control tied to a specific setting. Saves value to disk after edit."""
+    def __init__(self, parent, id, settings, key, choices):
+        self.settings = settings
+        self.key = key
+        super(PreferencesSpinControl, self).__init__(parent, id,
+            initial=self._get_value(), size=self._get_size(choices[-1]))
+        self.SetRange(*choices)
+        self.Bind(wx.EVT_SPINCTRL, self.OnChange)
+        self.Bind(wx.EVT_TEXT, self.OnChange)
+
+    def _get_value(self):
+        return self.settings[self.key]
+
+    def _get_size(self, max_value):
+        """ In Linux with GTK3 wxPython 4, there was not enough spacing.
+            The value 72 is there for 2 digits numeric lists, for
+            IntegerPreferenceComboBox.
+        """
+        fact = 9 if IS_WINDOWS else 18  # On GTK3 labels are bigger
+        if max_value:
+            return wx.Size(max(len(str(max_value))*fact, 72), 20)
+        return wx.DefaultSize
+
+    def OnChange(self, event):
+        self._set_value(event.GetEventObject().GetValue())
+        self.settings.save()
+
+    def _set_value(self, value):
+        self.settings[self.key] = value
+
+
 class PreferencesColorPicker(wx.ColourPickerCtrl):
     """A colored button that opens a color picker dialog"""
     def __init__(self, parent, id, settings, key):
@@ -138,6 +170,10 @@ class StringChoiceEditor(_ChoiceEditor):
 
 class IntegerChoiceEditor(_ChoiceEditor):
     _editor_class = IntegerPreferenceComboBox
+
+
+class SpinChoiceEditor(_ChoiceEditor):
+    _editor_class = PreferencesSpinControl
 
 
 def boolean_editor(parent, settings, name, label, help=''):

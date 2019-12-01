@@ -662,21 +662,24 @@ class SourceEditor(wx.Panel):
 
 
 class RobotDataEditor(stc.StyledTextCtrl):
+    margin = 1
 
     def __init__(self, parent):
         stc.StyledTextCtrl.__init__(self, parent)
-        self.SetMarginType(0, stc.STC_MARGIN_NUMBER)
-        self.SetMarginWidth(0, self.TextWidth(stc.STC_STYLE_LINENUMBER, '1234'))
-        self.SetReadOnly(True)
+        self._settings = parent._parent._app.settings
+        self.SetMarginType(self.margin, stc.STC_MARGIN_NUMBER)
         self.SetLexer(stc.STC_LEX_CONTAINER)
+        self.SetReadOnly(True)
         self.Bind(stc.EVT_STC_STYLENEEDED, self.OnStyle)
-        self.stylizer = RobotStylizer(self, parent._parent._app.settings)
+        self.Bind(stc.EVT_STC_ZOOM, self.OnZoom)
+        self.stylizer = RobotStylizer(self, self._settings)
 
     def set_text(self, text):
         self.SetReadOnly(False)
         self.SetText(text)
         self.stylizer.stylize()
         self.EmptyUndoBuffer()
+        self.SetMarginWidth(self.margin, self.calc_margin_width())
 
     @property
     def utf8_text(self):
@@ -684,6 +687,21 @@ class RobotDataEditor(stc.StyledTextCtrl):
 
     def OnStyle(self, event):
         self.stylizer.stylize()
+
+    def OnZoom(self, event):
+        self.SetMarginWidth(self.margin, self.calc_margin_width())
+        self._set_zoom()
+
+    def _set_zoom(self):
+        new = self.GetZoom()
+        old = self._settings['Text Edit'].get('zoom factor', 0)
+        if new != old:
+            self._settings['Text Edit'].set('zoom factor', new)
+
+    def calc_margin_width(self):
+        style = stc.STC_STYLE_LINENUMBER
+        width = self.TextWidth(style, str(self.GetLineCount()))
+        return width + self.TextWidth(style, "1")
 
     def get_selected_or_near_text(self):
         # First get selected text
@@ -741,6 +759,9 @@ class RobotStylizer(object):
     def _font_face(self):
         return self.settings['Text Edit'].get('font face', 'Courier New')
 
+    def _zoom_factor(self):
+        return self.settings['Text Edit'].get('zoom factor', 0)
+
     def _set_styles(self):
         color_settings = self.settings.get_without_default('Text Edit')
         background = color_settings.get('background', '#FFFFFF')
@@ -797,6 +818,7 @@ class RobotStylizer(object):
             self.editor.StyleSetSpec(0, self._get_style_string(back=background,
                                                                fore=foreground))
         self.editor.StyleSetBackground(wx.stc.STC_STYLE_DEFAULT, background)
+        self.editor.SetZoom(self._zoom_factor())
         self.editor.Refresh()
 
     def _get_word_and_length(self, current_position):

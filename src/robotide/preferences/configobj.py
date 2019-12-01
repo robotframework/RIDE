@@ -233,6 +233,9 @@ class Builder(object):
         # print("DEBUG: build_Num v=%s \n" % compiler.literal_eval(o))
         return compiler.literal_eval(o)
 
+    def build_UnaryOp(self, o):
+        return compiler.literal_eval(o)
+
     def build_NameConstant(self, o):
         return self.build_Name(o)
 
@@ -1710,10 +1713,10 @@ class ConfigObj(Section):
                             # print("DEBUG: _parser exception at unrepr? error: %s\n", str(e))
                             if isinstance(e, UnknownType):
                                 msg = 'Unknown name or type in value at line %s.'
-                            # else:
-                            #    msg = 'Parse error in value at line %s.'
-                            #self._handle_error(msg, UnreprError, infile,
-                            #    cur_index)
+                            else:
+                                msg = 'Parse error in value at line %s.'
+                            print(str(UnreprError), msg % cur_index)
+                            #self._handle_error(msg, UnreprError, infile,cur_index)
                             continue
                     else:
                         # extract comment and lists
