@@ -20,6 +20,7 @@ import uuid
 import atexit
 import glob
 import sys
+import io
 
 from robotide.pluginapi import Plugin, ActionInfo, RideLog
 from robotide import widgets
@@ -62,7 +63,7 @@ class LogPlugin(Plugin):
     @property
     def _logfile(self):
         if self._outfile is None:
-            self._outfile = open(self._path, 'w', encoding='utf8')
+            self._outfile = io.open(self._path, 'w', encoding='utf8')
         return self._outfile
 
     def enable(self):
