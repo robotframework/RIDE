@@ -547,31 +547,14 @@ class TestRunnerPlugin(Plugin):
                           textctrl.LinesOnScreen() - 1
 
         textctrl.SetReadOnly(False)
-        try:
-            if enc:
-                textctrl.AppendText(string.encode(encoding['SYSTEM']))
+
+        if enc:
+            if is_unicode(string):
+                textctrl.AppendTextRaw(bytes(string.encode('UTF-8')))
             else:
-                textctrl.AppendText(string)
-            # print("DEBUG _AppendText Printed OK")
-        except UnicodeDecodeError as e:
-            # I'm not sure why I sometimes get this, and I don't know what I
-            # can do other than to ignore it.
-            if PY2:
-                if is_unicode(string):
-                    textctrl.AppendTextRaw(bytes(string.encode('utf-8')))
-                else:
-                    textctrl.AppendTextRaw(string)
-            else:
-                textctrl.AppendTextRaw(bytes(string, encoding['SYSTEM']))  # DEBUG .encode('utf-8'))
-            # print(r"DEBUG UnicodeDecodeError appendtext string=%s\n" % string)
-            pass
-        except UnicodeEncodeError as e:
-            # I'm not sure why I sometimes get this, and I don't know what I
-            # can do other than to ignore it.
-            textctrl.AppendText(string.encode('utf-8'))  # DEBUG .encode('utf-8'))
-            # print(r"DEBUG UnicodeDecodeError appendtext string=%s\n" % string)
-            pass
-            #  raise  # DEBUG
+                textctrl.AppendTextRaw(string)
+        else:
+            textctrl.AppendText(string)
 
         new_text_end = textctrl.GetLength()
 
