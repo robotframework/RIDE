@@ -3,6 +3,7 @@ nose
 mockito
 invoke
 rellu
+memory-profiler
 # Include also normal project requirements.
 -r requirements.txt
 
