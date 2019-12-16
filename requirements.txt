@@ -6,3 +6,4 @@ robotframeworklexer # Updates lexer to newer RF 3.1.1
 robotframework
 Pypubsub==3.3.0 ; python_version <= '2.7'
 Pypubsub ; python_version > '2.7'
+memory-profiler
