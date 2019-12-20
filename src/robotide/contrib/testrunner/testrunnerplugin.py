@@ -46,7 +46,6 @@ You can safely manually remove these directories, except for the one
 being used for a currently running test.
 """
 import datetime
-# import gc as garbagecollect
 import time
 import os
 import psutil
@@ -72,7 +71,7 @@ from robotide.widgets import Label, ImageProvider
 from robotide.robotapi import LOG_LEVELS
 from robotide.utils import robottime, is_unicode, PY2
 from robotide.preferences.editors import ReadFonts
-from sys import getfilesystemencoding, getsizeof
+from sys import getfilesystemencoding
 from robotide.lib.robot.utils.encodingsniffer import (get_console_encoding,
                                                       get_system_encoding)
 CONSOLE_ENCODING = get_console_encoding()
@@ -279,6 +278,11 @@ class TestRunnerPlugin(Plugin):
         self.message_log.Destroy()
         self.message_log = None
         self._right_panel.GetSizer().Layout()
+
+    def _recreate_message_log(self):
+        self.show_log_messages_checkbox.SetValue(False)
+        self._reset_memory_calc()
+        self.show_log_messages_checkbox.SetValue(True)
 
     def _reset_memory_calc(self):
         self._initmemory = self._process.memory_info()[0]
@@ -523,9 +527,8 @@ class TestRunnerPlugin(Plugin):
                                       "memory, stopping for now..."
                     self._AppendTextMessageLog(self.message_log,
                                                '\n' + self._maxmemmsg,
-                                               source="stderr" )
-            # print("DEBUG: Memory is %d  Limit is %d" % (self._process.memory_info()[0], self._limitmemory))
-            # garbagecollect.collect()  # DEBUG attempt to release memory
+                                               source="stderr")
+                    self._recreate_message_log()
 
     def GetLastOutputChar(self):
         """Return the last character in the output window"""
