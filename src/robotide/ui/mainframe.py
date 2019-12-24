@@ -62,8 +62,9 @@ ART_FOLDER_OPEN
 
 [Help]
 !Shortcut keys | RIDE shortcut keys
-!User Guide | RIDE User Guide
-!Report a Problem | Open browser to the RIDE issue tracker
+!User Guide | Robot Framework User Guide
+!Wiki | RIDE User Guide (Wiki)
+!Report a Problem | Open browser to SEARCH on the RIDE issue tracker
 !Release notes | Shows release notes
 !About | Information about RIDE
 """
@@ -588,11 +589,16 @@ class RideFrame(with_metaclass(classmaker(), wx.Frame, RideEventHandler)):
 
     def OnReportaProblem(self, event):
         wx.LaunchDefaultBrowser("https://github.com/robotframework/RIDE/issues"
+                                "?utf8=%E2%9C%93&q=is%3Aissue+%22search"
+                                "%20your%20problem%22"
                                 )
 
     def OnUserGuide(self, event):
         wx.LaunchDefaultBrowser("http://robotframework.org/robotframework/"
                                 "#user-guide")
+
+    def OnWiki(self, event):
+        wx.LaunchDefaultBrowser("https://github.com/robotframework/RIDE/wiki")
 
     def _has_data(self):
         return self._controller.data is not None
@@ -782,7 +788,7 @@ class AboutDialog(Dialog):
         # set Left to Right direction (while we don't have localization)
         self.SetLayoutDirection(wx.Layout_LeftToRight)
         sizer = wx.BoxSizer(wx.VERTICAL)
-        sizer.Add(HtmlWindow(self, (450, 200), ABOUT_RIDE), 1, flag=wx.EXPAND)
+        sizer.Add(HtmlWindow(self, (650, 200), ABOUT_RIDE), 1, flag=wx.EXPAND)
         self.SetSizerAndFit(sizer)
 
     def OnKey(self, *args):

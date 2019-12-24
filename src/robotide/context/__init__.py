@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 #  Copyright 2008-2015 Nokia Networks
 #  Copyright 2016-     Robot Framework Foundation
 #
@@ -52,8 +53,10 @@ ABOUT_RIDE = '''<h3>RIDE -- Robot Framework Test Data Editor</h3>
 <p>RIDE %s running on Python %s.</p>
 <p>RIDE is a test data editor for <a href="http://robotframework.org">Robot Framework</a>.
 For more information, see project pages at
-<a href="http://github.com/robotframework/RIDE">http://github.com/robotframework/RIDE</a>.</p>
+<a href="https://github.com/robotframework/RIDE">https://github.com/robotframework/RIDE</a>.</p>
 <p>Some of the icons are from <a href="http://www.famfamfam.com/lab/icons/silk/">Silk Icons</a>.</p>
+<p><br/><br/><a href="https://github.com/HelioGuilherme66">Hélio Guilherme</a> the maintainer of the project thanks the original authors and all users and collaborators.<br/>
+A very special thanks to <b><a href="https://github.com/Nyral">Nyral</a></b> the most commited in helping RIDE development and maintenance.</p>
 ''' % (VERSION, pyversion)
 
 
