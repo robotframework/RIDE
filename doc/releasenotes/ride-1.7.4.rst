@@ -1,15 +1,14 @@
-=========================
-Robot Framework IDE 1.7.4
-=========================
+============================
+Robot Framework IDE 1.7.4rc1
+============================
 
 
 .. default-role:: code
 
 
-`RIDE (Robot Framework IDE)`_ 1.7.4 is a new release with major enhancements
-and bug fixes. This version 1.7.4 includes fixes for installer, Font Type selection, Text Editor improvements and new File explorer.
+`RIDE (Robot Framework IDE)`_ 1.7.4rc1 is a new release with major enhancements
+and bug fixes. This version 1.7.4rc1 includes fixes for installer, Font Type selection, Text Editor improvements and new File explorer.
 The reference for valid arguments is `Robot Framework`_ version 3.1.2.
-**MORE intro stuff...**
 
 * This is the **last version supporting Python 2.7**.
 * A new File Explorer allows to open supported file types in RIDE, or other types in a basic code editor. To open a file you must double-click on it (project folders open with right-click after being highlighted with left-click). If it is a supported file format but not with the correct structure (for example a resource file), an error message is shown, and then opens in code editor.
@@ -34,8 +33,7 @@ The reference for valid arguments is `Robot Framework`_ version 3.1.2.
 *Linux users are advised to install first wxPython from .whl package at* `wxPython.org`_.
 
 
-**REMOVE reference to tracker if release notes contain all issues.**
-All issues targeted for RIDE v1.7.4 can be found
+All issues targeted for RIDE v1.7.4rc1 can be found
 from the `issue tracker milestone`_.
 
 Questions and comments related to the release can be sent to the
@@ -76,7 +74,7 @@ You can then go to `Tools>Create RIDE Desktop Shortcut`, or run the shortcut cre
 
     python -m robotide.postinstall -install
 
-RIDE 1.7.4 was released on Tuesday December 24, 2019.
+RIDE 1.7.4rc1 was released on Tuesday December 24, 2019.
 
 .. _RIDE (Robot Framework IDE): https://github.com/robotframework/RIDE/
 .. _Robot Framework: http://robotframework.org
