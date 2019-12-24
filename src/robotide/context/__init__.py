@@ -156,7 +156,7 @@ SHORTCUT_KEYS = '''\
         <td>Suggestions and auto completion</td>
     </tr>
     <tr>
-        <td>CtrlCmd-M</td>
+        <td>Ctrl</td>
         <td>Help for cell content</td>
     </tr>
     <tr>
@@ -297,6 +297,22 @@ SHORTCUT_KEYS = '''\
         <td>Suggestions and auto completion</td>
     </tr>
     <tr>
+        <td>Ctrl-T</td>
+        <td>Swap current row up</td>
+    </tr>
+    <tr>
+        <td>Tab</td>
+        <td>Inserts the defined number of spaces</td>
+    </tr>
+    <tr>
+        <td>Shift-Tab</td>
+        <td>Moves cursor to the left the defined number of spaces</td>
+    </tr>
+    <tr>
+        <td>Ctrl-MouseWheel Roll</td>
+        <td>Increases or Decreases font size (Zoom +/-)</td>
+    </tr>
+    <tr>
         <td>CtrlCmd-F</td>
         <td>Find in text</td>
     </tr>
@@ -336,6 +352,10 @@ SHORTCUT_KEYS = '''\
     <tr>
         <td>CtrlCmd-R</td>
         <td>Show HTML report</td>
+    </tr>
+    <tr>
+        <td>Ctrl-MouseWheel Roll</td>
+        <td>Increases or Decreases font size (Zoom +/-)</td>
     </tr>
 </table>
 '''
