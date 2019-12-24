@@ -45,26 +45,24 @@ The reference for valid arguments is `Robot Framework`_ version 3.1.2.
 **MORE intro stuff...**
 
 * This is the **last version supporting Python 2.7**.
-* A new File Explorer allows to open supported file types in RIDE, or other types in a basic code editor. To open a file you must double-click on it (project folders open with right-click). If it is a supported file format but not with the correct structure (for example a resource file), an error message is shown, and then opens in code editor.
+* A new File Explorer allows to open supported file types in RIDE, or other types in a basic code editor. To open a file you must double-click on it (project folders open with right-click after being highlighted with left-click). If it is a supported file format but not with the correct structure (for example a resource file), an error message is shown, and then opens in code editor.
 * On Grid Editor, the cells can be autoajusting with wordwrap. There is a new checkbox in `Tools>Preferences>Grid Editor`.
-* Font Type selection is available for Text Editor and Run panels.
+* Font Type selection is available for all Editors and Run panels.
+* Zoom in and zoom out is possible on Text Editor and Run panels.
 * Pressing the Ctrl on the Grid Editor, when over a keyword it will show its documentation (that can be detached with mouse click).
 * There are some important changes, or known issues:
 
-  - On Windows to call autocomplete in Grid Editor, you have to use Ctrl-Alt-Space, (or keep using Ctrl-Space after disabling Text Editor)
+  - On MacOS to call autocomplete in Grid and Text Editors, you have to use Alt-Space (not Command-Space)
 
-  - On MacOS to call autocomplete in Grid Editor, you have to use Alt-Space
-
-  - On Linux to call autocomplete in Grid Editor, you have to use Ctrl-Space
+  - On Linux and Windows to call autocomplete in Grid and Text Editors, you have to use Ctrl-Space
 
   - On Text Editor the TAB key adds the defined number of spaces. With Shift moves to the left, and together with Control selects text.
 
-  - On some Linuxes (Fedora, for example), when you click No in some Dialog boxes, there is the repetition of those Dialogs
+  - On Text Editor the **: FOR** loop structure must use Robot Framework 3.1.2 syntax, i.e. **FOR** and **END**. The only solution to disable this, is to disable Text Editor Plugin.
 
-(and more for you to find out ;) )
 **THIS IS THE LAST RELEASE SUPPORTING PYTHON 2.7**
 
-**wxPython will be updated to current version 4.0.6**
+**wxPython will be updated to current version 4.0.7post2**
 
 *Linux users are advised to install first wxPython from .whl package at* `wxPython.org`_.
 
@@ -82,9 +80,9 @@ If you have pip_ installed, just run
 
 ::
 
-   pip install --upgrade robotframework-ride==1.7.4b2
+   pip install --upgrade robotframework-ride==1.7.4rc1
 
-to install this **BETA** release, and for the **final** release use
+to install this **RELEASE CANDIDATE** release, and for the **final** release use
 
 ::
 
