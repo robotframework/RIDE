@@ -19,16 +19,16 @@
 import wx, wx.html
 from robotide.utils.versioncomparator import cmp_versions
 from robotide.widgets.button import ButtonWithHandler
+from robotide.utils import PY2
 
 import time
-try:
+
+if PY2:
     import urllib2
-except ImportError:  # py3
-    import urllib as urllib2
-try:
     import xmlrpclib
-except ImportError:  # py3
-    import xmlrpc
+else:  # py3
+    import urllib.request as urllib2
+    import xmlrpc.client as xmlrpclib
 import robotide.version as version
 
 _CHECK_FOR_UPDATES_SETTING = 'check for updates'
@@ -75,8 +75,13 @@ class UpdateNotifierController(object):
         return self._get_response(('robotframework-ride', version), 'release_data')['download_url']
 
     def _get_response(self, params, method):
-        req = urllib2.Request('https://pypi.python.org/pypi', xmlrpclib.dumps(params, method), {'Content-Type':'text/xml'})
-        return xmlrpclib.loads(urllib2.urlopen(req, timeout=1).read())[0][0]
+        xmlparm = xmlrpclib.dumps(params, method)
+        req = urllib2.Request('https://pypi.python.org/pypi',
+                              xmlparm.encode('utf-8'),
+                              {'Content-Type':'text/xml'})
+        data = urllib2.urlopen(req, timeout=1).read()
+        xml = xmlrpclib.loads(data)[0][0]
+        return xml
 
 
 class HtmlWindow(wx.html.HtmlWindow):
@@ -97,8 +102,12 @@ class UpdateDialog(wx.Dialog):
         # set Left to Right direction (while we don't have localization)
         self.SetLayoutDirection(wx.Layout_LeftToRight)
         sizer = wx.BoxSizer(orient=wx.VERTICAL)
+        if PY2 and cmp_versions(UpdateNotifierController.VERSION, '1.7.4') == -1:
+            obsolete = '<br/><h1><b>You will need to upgrade your Python version!</b></h1>'
+        else:
+            obsolete = ''
         hwin = HtmlWindow(self, -1, size=(400,200))
-        hwin.SetPage('New version %s available from <a href="%s">%s</a>' % (version, url, url))
+        hwin.SetPage('New version %s available from <a href="%s">%s</a>%s' % (version, url, url, obsolete))
         irep = hwin.GetInternalRepresentation()
         hwin.SetSize((irep.GetWidth()+25, irep.GetHeight()+20))
         sizer.Add(hwin)
