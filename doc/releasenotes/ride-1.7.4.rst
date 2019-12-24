@@ -40,7 +40,6 @@ Questions and comments related to the release can be sent to the
 `robotframework-users`_ mailing list or to the channel #ride on 
 `Robot Framework Slack`_, and possible bugs submitted to the `issue tracker`_.
 
-**REMOVE ``--pre`` from the next command with final releases.**
 If you have pip_ installed, just run
 
 ::
