@@ -1,13 +1,13 @@
-============================
-Robot Framework IDE 1.7.4rc1
-============================
+=========================
+Robot Framework IDE 1.7.4
+=========================
 
 
 .. default-role:: code
 
 
-`RIDE (Robot Framework IDE)`_ 1.7.4rc1 is a new release with major enhancements
-and bug fixes. This version 1.7.4rc1 includes fixes for installer, Font Type selection, Text Editor improvements and new File explorer.
+`RIDE (Robot Framework IDE)`_ 1.7.4 is a new release with major enhancements
+and bug fixes. This version 1.7.4 includes fixes for installer, Font Type selection, Text Editor improvements and new File explorer.
 The reference for valid arguments is `Robot Framework`_ version 3.1.2.
 
 * This is the **last version supporting Python 2.7**.
@@ -33,7 +33,7 @@ The reference for valid arguments is `Robot Framework`_ version 3.1.2.
 *Linux users are advised to install first wxPython from .whl package at* `wxPython.org`_.
 
 
-All issues targeted for RIDE v1.7.4rc1 can be found
+All issues targeted for RIDE v1.7.4 can be found
 from the `issue tracker milestone`_.
 
 Questions and comments related to the release can be sent to the
@@ -44,9 +44,9 @@ If you have pip_ installed, just run
 
 ::
 
-   pip install --upgrade robotframework-ride==1.7.4rc1
+   pip install --upgrade robotframework-ride==1.7.4
 
-to install this **RELEASE CANDIDATE** release, and for the **final** release use
+to upgrade to the **final** release, or
 
 ::
 
@@ -56,7 +56,7 @@ to install this **RELEASE CANDIDATE** release, and for the **final** release use
 
    pip install robotframework-ride==1.7.4
 
-to install exactly the **final** version. Alternatively you can download the source
+to install exactly the **final** version for a first time. Alternatively you can download the source
 distribution from PyPI_ and install it manually. For more details and other
 installation approaches, see the `installation instructions`_.
 See the `FAQ`_ for important info about `: FOR` changes.
@@ -73,7 +73,7 @@ You can then go to `Tools>Create RIDE Desktop Shortcut`, or run the shortcut cre
 
     python -m robotide.postinstall -install
 
-RIDE 1.7.4rc1 was released on Tuesday December 24, 2019.
+RIDE 1.7.4 was released on Tuesday December 24, 2019.
 
 .. _RIDE (Robot Framework IDE): https://github.com/robotframework/RIDE/
 .. _Robot Framework: http://robotframework.org
