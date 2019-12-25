@@ -83,7 +83,7 @@ RIDE 1.7.4 was released on Tuesday December 24, 2019.
 .. _issue tracker: https://github.com/robotframework/RIDE/issues
 .. _robotframework-users: http://groups.google.com/group/robotframework-users
 .. _Robot Framework Slack: https://robotframework-slack-invite.herokuapp.com
-.. _installation instructions: ../../INSTALL.rst
+.. _installation instructions: https://github.com/robotframework/RIDE/wiki/Installation-Instructions
 .. _wxPython.org: https://extras.wxpython.org/wxPython4/extras/linux/gtk3/
 .. _FAQ: https://github.com/robotframework/RIDE/wiki/F.A.Q.
 
