@@ -578,65 +578,57 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
         self.MoveCursorDown(event.ShiftDown())
 
     def OnKeyDown(self, event):
-        """ Fixed on 4.0.0a3
-        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
-            _iscelleditcontrolshown = self.IsCellEditControlEnabled()
+        keycode = event.GetKeyCode()
+
+        if event.ControlDown():
+            if event.ShiftDown():
+                if keycode == ord('I'):
+                    self.OnInsertCells()
+                elif keycode == ord('J'):
+                    self.OnJsonEditor(event)
+                elif keycode == ord('D'):
+                    self.OnDeleteCells()
+            else:
+                if keycode == wx.WXK_SPACE:
+                    self._open_cell_editor_with_content_assist()
+                elif keycode == ord('C'):
+                    self.OnCopy(event)
+                elif keycode == ord('X'):
+                    self.OnCut(event)
+                elif keycode == ord('V'):
+                    self.OnPaste(event)
+                elif keycode == ord('Z'):
+                    self.OnUndo(event)
+                elif keycode == ord('A'):
+                    self.OnSelectAll(event)
+                elif keycode == ord('B'):
+                    self._navigate_to_matching_user_keyword(
+                        self.GetGridCursorRow(), self.GetGridCursorCol())
+                elif keycode == ord('F'):
+                    if not self.has_focus():
+                        self.SetFocus() # Avoiding Search field on Text Edit
+                elif keycode in (ord('1'), ord('2'), ord('5')):
+                    self._open_cell_editor_and_execute_variable_creator(
+                        list_variable=(keycode == ord('2')),
+                        dict_variable=(keycode == ord('5')))
+                else:
+                    self.show_cell_information()
+        elif event.AltDown():
+            if keycode == wx.WXK_SPACE:
+                self._open_cell_editor_with_content_assist() # Mac CMD
+            elif keycode in [wx.WXK_DOWN, wx.WXK_UP]:
+                self._skip_except_on_mac(event)
+                self._move_rows(keycode)
+            elif keycode == wx.WXK_RETURN:
+                self._move_cursor_down(event)
         else:
-        """
-        _iscelleditcontrolshown = self.IsCellEditControlShown()
-
-        keycode, control_down = event.GetKeyCode(), event.ControlDown()
-        # print("DEBUG: key pressed " + str(keycode) + " + " +  str(control_down))
-
-        if keycode == wx.WXK_SPACE and (control_down or event.AltDown()):  # Avoid Mac CMD
-            self._open_cell_editor_with_content_assist()
-        elif keycode == ord('C') and control_down:
-            # print("DEBUG: captured Control-C\n")
-            self.OnCopy(event)
-        elif keycode == ord('X') and control_down:
-            self.OnCut(event)
-        elif keycode == ord('V') and control_down:
-            self.OnPaste(event)
-        elif keycode == ord('Z') and control_down:
-            self.OnUndo(event)
-        elif keycode == ord('A') and control_down:
-            self.OnSelectAll(event)
-        elif keycode == ord('F') and control_down:
-            # print("DEBUG: captured Control-F\n")
-            if not self.has_focus():
-                self.SetFocus()  # DEBUG Avoiding Search field on Text Edit
-        elif event.AltDown() and keycode in [wx.WXK_DOWN, wx.WXK_UP]:
-            # print("DEBUG: Alt-Move %s" % self._counter)
-            self._skip_except_on_mac(event)
-            self._move_rows(keycode)
-        elif event.AltDown() and keycode == wx.WXK_RETURN:
-            self._move_cursor_down(event)
-            # event.Skip()
-        elif keycode == wx.WXK_WINDOWS_MENU:
-            self.OnCellRightClick(event)
-        elif keycode in [wx.WXK_RETURN, wx.WXK_BACK]:
-            if _iscelleditcontrolshown:
+            if keycode == wx.WXK_WINDOWS_MENU:
+                self.OnCellRightClick(event)
+            elif keycode in [wx.WXK_RETURN, wx.WXK_BACK]:
                 self.save()
-            self._move_grid_cursor(event, keycode)
-            # event.Skip()
-        elif control_down and not event.AltDown() and \
-                keycode in (ord('1'), ord('2'), ord('5')):
-            self._open_cell_editor_and_execute_variable_creator(
-                list_variable=(keycode == ord('2')),
-                dict_variable=(keycode == ord('5')))
-        elif control_down and event.ShiftDown() and keycode == ord('I'):
-            self.OnInsertCells()
-        elif control_down and event.ShiftDown() and keycode == ord('J'):
-            self.OnJsonEditor(event)
-        elif control_down and event.ShiftDown() and keycode == ord('D'):
-            self.OnDeleteCells()
-        elif control_down and keycode == ord('B'):
-            self._navigate_to_matching_user_keyword(
-                self.GetGridCursorRow(), self.GetGridCursorCol())
-        elif keycode != wx.WXK_SPACE and control_down:
-            self.show_cell_information()
-        else:
-            event.Skip()
+                self._move_grid_cursor(event, keycode)
+            else:
+                event.Skip()
 
     def OnGoToDefinition(self, event):
         self._navigate_to_matching_user_keyword(
