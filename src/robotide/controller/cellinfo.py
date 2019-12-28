@@ -71,7 +71,7 @@ class _TooltipMessage(object):
 
     TOO_MANY_ARGUMENTS = "Too many arguments"
     KEYWORD_NOT_FOUND = \
-        "Keyword not found! For possible corrections press <Ctrl-M>"
+        "Keyword not found! For possible corrections press <Ctrl>"
     VARIABLE_ASSIGMENT = "Variable assignment"
     UNKNOWN_VARIABLE = "\n\nUnknown variable"
 
@@ -79,7 +79,7 @@ class _TooltipMessage(object):
     OPTIONAL_ARGUMENT = "Optional argument:  %s"
     MISSING_ARGUMENT = "Missing argument:  %s"
 
-    KEYWORD = "Keyword from:  %s\n\nPress <Ctrl-M> for details"
+    KEYWORD = "Keyword from:  %s\n\nPress <Ctrl> for details"
 
     def __init__(self, cell):
         self.message = self._get_message(cell)
