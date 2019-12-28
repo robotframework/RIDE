@@ -59,3 +59,8 @@ class Test(unittest.TestCase):
         for arg in ["${a}=default | ${a2}",
                     "${a} | ${b}=default | ${c}"]:
             assert_equal(self.validate(arg), self.validation_error)
+
+
+if __name__ == '__main__':
+    unittest.main()
+

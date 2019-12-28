@@ -54,3 +54,8 @@ class TestContentAssistHook(unittest.TestCase):
             if val.name == name:
                 return
         raise AssertionError()
+
+
+if __name__ == '__main__':
+    unittest.main()
+

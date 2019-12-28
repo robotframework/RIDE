@@ -177,3 +177,7 @@ class TestTestSelectionController(unittest.TestCase):
             suite_controller, suite.testcase_table)
         test = TestCase(parent=lambda: 0, name=name)
         return TestCaseController(parent, test)
+
+
+if __name__ == "__main__":
+    unittest.main()

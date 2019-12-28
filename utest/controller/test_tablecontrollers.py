@@ -85,3 +85,8 @@ class LibraryImportListOperationsTest(unittest.TestCase):
     def test_move_down(self):
         self.ctrl.move_down(0)
         self.assertEqual([self._lib2.name, self._lib1.name], [l.name for l in self.ctrl])
+
+
+if __name__ == '__main__':
+    unittest.main()
+

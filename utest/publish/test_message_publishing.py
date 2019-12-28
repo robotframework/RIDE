@@ -101,3 +101,8 @@ class TestPublisher(unittest.TestCase):
     def _broken_listener(self, data):
         self._msg = data
         raise RuntimeError(data)
+
+
+if __name__ == '__main__':
+    unittest.main()
+

@@ -77,3 +77,8 @@ class TestSettingsHelper(unittest.TestCase):
             # print("DEBUG: settings utils_READ SETTINGS_errored path %s" % path)
             print(self._read_settings_file_content())
             raise
+
+
+if __name__ == '__main__':
+    unittest.main()
+

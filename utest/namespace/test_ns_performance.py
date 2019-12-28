@@ -106,3 +106,7 @@ class TestNamespacePerformance(unittest.TestCase):
         finally:
             library_manager.stop()
 
+
+if __name__ == '__main__':
+    unittest.main()
+

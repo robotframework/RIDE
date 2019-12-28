@@ -41,3 +41,8 @@ class NewDataFileTest(unittest.TestCase):
         assert_equal(ctrl.name, 'Mynew Tcf')
         assert_true(os.path.isdir(dirname))
         os.rmdir(dirname)
+
+
+if __name__ == '__main__':
+    unittest.main()
+

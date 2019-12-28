@@ -62,3 +62,7 @@ class TestEditorProvide(unittest.TestCase):
         self.p.set_active_editor(TestObject, TestEditor2)
         assert_equal(self.p.get_editor(TestObject), TestEditor2)
 
+
+if __name__ == '__main__':
+    unittest.main()
+

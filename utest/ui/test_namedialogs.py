@@ -48,3 +48,8 @@ class UserKeywordNameDialogTest(unittest.TestCase):
         kw_ctrl = file_controller().create_keyword('Keyword it is')
         dlg = UserKeywordNameDialog(kw_ctrl)
         assert_equal(dlg.get_args(), '')
+
+
+if __name__ == '__main__':
+    unittest.main()
+

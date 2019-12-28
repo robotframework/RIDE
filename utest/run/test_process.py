@@ -41,3 +41,8 @@ class TestProcess(unittest.TestCase):
         proc = Process(command)
         proc.start()
         return proc
+
+
+if __name__ == '__main__':
+    unittest.main()
+
