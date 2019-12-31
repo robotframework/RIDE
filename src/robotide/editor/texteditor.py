@@ -154,11 +154,10 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
     def OnTreeSelection(self, message):
         self._editor.store_position()
         if self.is_focused():
-            next_datafile_controller = message.item and\
-                                       message.item.datafile_controller
+            self._set_read_only(message)
+            next_datafile_controller = message.item and message.item.datafile_controller
             if self._editor.dirty and not self._apply_txt_changes_to_model():
-                if self._editor.datafile_controller !=\
-                        next_datafile_controller:
+                if self._editor.datafile_controller != next_datafile_controller:
                     self.tree.select_controller_node(
                         self._editor.datafile_controller)
                 self._editor.set_editor_caret_position()
@@ -169,22 +168,30 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         else:
             self._editor.GetFocus(None)
 
+    def _set_read_only(self, message):
+        if not isinstance(message, bool):
+            self._editor._editor.readonly = not message.item.datafile_controller.is_modifiable()
+        self._editor._editor.SetReadOnly(self._editor._editor.readonly)
+        self._editor._editor.stylizer._set_styles(self._editor._editor.readonly)
+        self._editor._editor.Update()
+
     def _open_tree_selection_in_editor(self):
         datafile_controller = self.tree.get_selected_datafile_controller()
         if datafile_controller:
-            self._editor.open(DataFileWrapper(datafile_controller,
-                                              self.global_settings))
+            self._editor.open(DataFileWrapper(datafile_controller, self.global_settings))
+            self._editor._editor.readonly = not datafile_controller.is_modifiable()
         self._editor.set_editor_caret_position()
 
     def _open_data_for_controller(self, datafile_controller):
-        self._editor.selected(DataFileWrapper(datafile_controller,
-                                              self.global_settings))
+        self._editor.selected(DataFileWrapper(datafile_controller, self.global_settings))
+        self._editor._editor.readonly = not datafile_controller.is_modifiable()
 
     def OnTabChange(self, message):
         if message.newtab == self.title:
             self._register_shortcuts()
             self._open()
             self._editor.set_editor_caret_position()
+            self._set_read_only(self._editor._editor.readonly)
         elif message.oldtab == self.title:
             # print("DEBUG: OnTabChange move to another from Text Editor.")
             self._editor.remove_and_store_state()
@@ -664,18 +671,19 @@ class SourceEditor(wx.Panel):
 class RobotDataEditor(stc.StyledTextCtrl):
     margin = 1
 
-    def __init__(self, parent):
+    def __init__(self, parent, readonly=False):
         stc.StyledTextCtrl.__init__(self, parent)
         self._settings = parent._parent._app.settings
+        self.readonly=readonly
         self.SetMarginType(self.margin, stc.STC_MARGIN_NUMBER)
         self.SetLexer(stc.STC_LEX_CONTAINER)
         self.SetReadOnly(True)
         self.Bind(stc.EVT_STC_STYLENEEDED, self.OnStyle)
         self.Bind(stc.EVT_STC_ZOOM, self.OnZoom)
-        self.stylizer = RobotStylizer(self, self._settings)
+        self.stylizer = RobotStylizer(self, self._settings, self.readonly)
 
     def set_text(self, text):
-        self.SetReadOnly(False)
+        self.SetReadOnly(self.readonly)
         self.SetText(text)
         self.stylizer.stylize()
         self.EmptyUndoBuffer()
@@ -735,23 +743,24 @@ class FromStringIOPopulator(robotapi.FromFilePopulator):
 
 
 class RobotStylizer(object):
-    def __init__(self, editor, settings):
+    def __init__(self, editor, settings, readonly=False):
         self.editor = editor
         self.lexer = None
         self.settings = settings
+        self._readonly = readonly
         self._ensure_default_font_is_valid()
         if robotframeworklexer:
             self.lexer = robotframeworklexer.RobotFrameworkLexer()
         else:
             self.editor.GetParent().create_syntax_colorization_help()
-        self._set_styles()
+        self._set_styles(self._readonly)
         PUBLISHER.subscribe(self.OnSettingsChanged, RideSettingsChanged)
 
     def OnSettingsChanged(self, data):
         '''Redraw the colors if the color settings are modified'''
         section, setting = data.keys
         if section == 'Text Edit':
-            self._set_styles()
+            self._set_styles(self._readonly)  # TODO: When on read-only file changing background color ignores flag
 
     def _font_size(self):
         return self.settings['Text Edit'].get('font size', 10)
@@ -762,9 +771,17 @@ class RobotStylizer(object):
     def _zoom_factor(self):
         return self.settings['Text Edit'].get('zoom factor', 0)
 
-    def _set_styles(self):
+    def _set_styles(self, readonly=False):
         color_settings = self.settings.get_without_default('Text Edit')
         background = color_settings.get('background', '#FFFFFF')
+        if readonly:
+            h = background.lstrip('#')
+            bkg = tuple(int(h[i:i + 2], 16) for i in (0, 2, 4))
+            if bkg >= (180, 180, 180):
+                bkg = (bkg[0]-80, bkg[1]-80, bkg[2]-80)
+            else:
+                bkg = (bkg[0]+180, bkg[1]+180, bkg[2]+180)
+            background = '#%02X%02X%02X' % bkg
         if robotframeworklexer:
             styles = {
                 robotframeworklexer.ARGUMENT: {
