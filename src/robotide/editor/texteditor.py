@@ -154,7 +154,6 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
     def OnTreeSelection(self, message):
         self._editor.store_position()
         if self.is_focused():
-            self._set_read_only(message)
             next_datafile_controller = message.item and message.item.datafile_controller
             if self._editor.dirty and not self._apply_txt_changes_to_model():
                 if self._editor.datafile_controller != next_datafile_controller:
@@ -164,6 +163,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
                 return
             if next_datafile_controller:
                 self._open_data_for_controller(next_datafile_controller)
+            self._set_read_only(message)
             self._editor.set_editor_caret_position()
         else:
             self._editor.GetFocus(None)
@@ -776,11 +776,19 @@ class RobotStylizer(object):
         background = color_settings.get('background', '#FFFFFF')
         if readonly:
             h = background.lstrip('#')
-            bkg = tuple(int(h[i:i + 2], 16) for i in (0, 2, 4))
-            if bkg >= (180, 180, 180):
-                bkg = (bkg[0]-80, bkg[1]-80, bkg[2]-80)
+            if h.upper() == background.upper():
+                from wx import ColourDatabase
+                cdb = ColourDatabase()
+                bkng = cdb.Find(h.upper())
+                bkg = (bkng[0], bkng[1], bkng[2])
             else:
-                bkg = (bkg[0]+180, bkg[1]+180, bkg[2]+180)
+                bkg = tuple(int(h[i:i + 2], 16) for i in (0, 2, 4))
+            if bkg >= (180, 180, 180):
+                bkg = (max(160, bkg[0]-80), max(160, bkg[1]-80),
+                       max(160, bkg[2]-80))
+            else:
+                bkg = (min(255, bkg[0]+180), min(255, bkg[1]+180),
+                       min(255, bkg[2]+180))
             background = '#%02X%02X%02X' % bkg
         if robotframeworklexer:
             styles = {
