@@ -683,7 +683,7 @@ class RobotDataEditor(stc.StyledTextCtrl):
         self.stylizer = RobotStylizer(self, self._settings, self.readonly)
 
     def set_text(self, text):
-        self.SetReadOnly(self.readonly)
+        self.SetReadOnly(False)
         self.SetText(text)
         self.stylizer.stylize()
         self.EmptyUndoBuffer()
