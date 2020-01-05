@@ -406,7 +406,7 @@ class ResourceUserKeywordInfo(_UserKeywordInfo):
 
     @property
     def longname(self):
-        return self.item.parent.parent.name + '.' + self.name
+        return self.item.parent.parent.rawname + '.' + self.name
 
     def __eq__(self, other):
         if isinstance(other, self.__class__):
