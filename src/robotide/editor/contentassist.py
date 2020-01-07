@@ -185,8 +185,6 @@ class ContentAssistFileButton(_ContentAssistTextCtrlBase, FileBrowseButton):
         self._browsed = False
         _ContentAssistTextCtrlBase.__init__(self, suggestion_source)
 
-    # TODO Re-enable ContentAssist for Library and Resources
-    # DEBUG With this commented, at least we can type Libraries and Resources on Windows
     def Bind(self, *args):
         # print("DEBUG: Bind ContentAssistFileButton: %s\n" % args.__repr__())
         self.textControl.Bind(*args)
@@ -205,6 +203,15 @@ class ContentAssistFileButton(_ContentAssistTextCtrlBase, FileBrowseButton):
         self._browsed = True
         FileBrowseButton.OnBrowse(self, evt)
         self._browsed = False
+
+    def OnDestroy(self, event):
+        # all pushed eventHandlers need to be popped before close
+        # the last event handler is window object itself - do not pop itself
+        try:
+            while self.GetEventHandler() is not self:
+                self.PopEventHandler()
+        except RuntimeError:
+            pass
 
     def OnFileChanged(self, evt):
         if self._browsed:
