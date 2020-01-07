@@ -20,7 +20,7 @@
 					<plugin>
 						<groupId>org.robotframework</groupId>
 						<artifactId>robotframework-maven-plugin</artifactId>
-						<version>1.5.2</version>
+						<version>1.6.0</version>
 						<executions>
 							<execution>
 								<phase>integration-test</phase>
