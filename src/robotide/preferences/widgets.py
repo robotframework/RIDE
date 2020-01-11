@@ -18,6 +18,7 @@ import textwrap
 
 from robotide.widgets import HelpLabel, Label, TextField
 from robotide.context import IS_WINDOWS
+from robotide.utils import PY2
 
 
 class PreferencesPanel(wx.Panel):
@@ -64,6 +65,8 @@ class PreferencesComboBox(wx.ComboBox):
         """
         fact = 9 if IS_WINDOWS else 18  # On GTK3 labels are bigger
         if choices:
+            if PY2:
+                return wx.Size(max(max(len(unicode(s)) for s in choices) * fact, 72), 20)
             return wx.Size(max(max(len(str(s)) for s in choices)*fact, 72), 20)
         return wx.DefaultSize
 
