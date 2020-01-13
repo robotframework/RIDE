@@ -90,8 +90,8 @@ class LogPlugin(Plugin):
         self._log.append(log_event)
         if self._panel:
             self._panel.update_log()
-     
-        if self.log_to_console:       print("".format(_message_to_string(log_event))) # >> sys.stdout, _message_to_string(log_event)
+        if self.log_to_console:
+            print("".format(_message_to_string(log_event))) # >> sys.stdout, _message_to_string(log_event)
         if self.log_to_file:
             self._logfile.write(_message_to_string(log_event))
             self._outfile.flush()
@@ -106,7 +106,6 @@ class LogPlugin(Plugin):
             self._panel.update_log()
         else:
             self.notebook.show_tab(self._panel)
-        print(self.is_focused())
         if self.is_focused():
             self._register_shortcuts()
 
@@ -163,4 +162,4 @@ class _LogWindow(wx.Panel):
         pass
 
     def SelectAll(self):
-        pass
+        self._output.SetSelection(-1, -1)

@@ -111,14 +111,12 @@ class ParserLogPlugin(Plugin):
         if message.newtab == self.title:
             self._register_shortcuts()
         elif message.oldtab == self.title:
-            print('self.unregister_actions()')
             self.unregister_actions()
 
     def is_focused(self):
         return self.notebook.current_page_title == self.title
 
     def _register_shortcuts(self):
-        print('self._register_shortcuts()')
         self.register_shortcut('CtrlCmd-C', lambda e: self._panel.Copy())
         self.register_shortcut('CtrlCmd-A', lambda e: self._panel.SelectAll())
 
@@ -162,4 +160,4 @@ class _LogWindow(wx.Panel):
         pass
 
     def SelectAll(self):
-        pass
+        self._output.SetSelection(-1, -1)
