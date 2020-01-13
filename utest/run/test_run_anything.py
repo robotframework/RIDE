@@ -85,3 +85,8 @@ class TestRunAnything(unittest.TestCase):
     def _sleep_and_log_output(self, amount):
         time.sleep(amount)
         self.runner.OnTimer()
+
+
+if __name__ == '__main__':
+    unittest.main()
+

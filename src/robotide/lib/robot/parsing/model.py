@@ -122,6 +122,11 @@ class _TestData(object):
     def name(self):
         return self._format_name(self._get_basename()) if self.source else None
 
+    @property
+    def rawname(self):
+        return self._get_basename() if self.source else None
+        # To be used on resource prefixed suggestions
+
     def _get_basename(self):
         return os.path.splitext(os.path.basename(self.source))[0]
 

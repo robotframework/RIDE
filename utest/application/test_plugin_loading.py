@@ -91,3 +91,8 @@ class TestPluginLoader(unittest.TestCase):
             if p.name == name:
                 return p
         return None
+
+
+if __name__ == '__main__':
+    unittest.main()
+

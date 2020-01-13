@@ -42,3 +42,8 @@ if not IS_WINDOWS:
             clipb.set_contents(content)
             assert_equal(clipb._get_contents(),
                           expected.replace('\n', os.linesep))
+
+
+if __name__ == '__main__':
+    unittest.main()
+

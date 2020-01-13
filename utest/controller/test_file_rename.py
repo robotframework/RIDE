@@ -108,3 +108,8 @@ class TestRenameTestCaseFile(unittest.TestCase):
         self.ctrl.save = save
         self.ctrl.remove_from_filesystem = remove_from_filesystem
         return self.ctrl
+
+
+if __name__ == '__main__':
+    unittest.main()
+

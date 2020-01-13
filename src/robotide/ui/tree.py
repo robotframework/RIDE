@@ -13,6 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import os
 import wx
 from wx.lib.agw import customtreectrl
 from wx.lib.mixins import treemixin
@@ -94,6 +95,7 @@ class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
         self._clear_tree_data()
         self._editor = None
         self._execution_results = None
+        self._resources = []
         self.SetBackgroundColour('white')  # TODO get background color from def
         if not hasattr(self, 'OnCancelEdit'):
             self.OnCancelEdit = self._on_cancel_edit
@@ -279,6 +281,7 @@ class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
         self._root = self.AddRoot('')
         self._resource_root = self._create_resource_root()
         self._datafile_nodes = []
+        self._resources = []
 
     def _create_resource_root(self):
         return self._create_node(self._root, self._RESOURCES_NODE_LABEL,
@@ -335,6 +338,8 @@ class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
 
     def _render_datafile(self, parent_node, controller, index=None):
         node = self._create_node_with_handler(parent_node, controller, index)
+        if not node:
+            return None
         if controller.dirty:
             self._controller.mark_node_dirty(node)
         self._datafile_nodes.append(node)
@@ -344,7 +349,21 @@ class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
             self._render_datafile(node, child)
         return node
 
+    def _normalize(self, path):
+        return os.path.normcase(os.path.normpath(os.path.abspath(path)))
+
     def _create_node_with_handler(self, parent_node, controller, index=None):
+        if IS_WINDOWS and isinstance(controller, ResourceFileController):
+            resourcefile = self._normalize(controller.filename)
+            pname = parent_node.GetText()
+            self._resources.append((pname,resourcefile))
+            if IS_WINDOWS:
+                count = 0
+                for (p, r) in self._resources:
+                    if (p, r) == (pname, resourcefile):
+                        count += 1
+                if count > 3:
+                    return None
         handler_class = action_handler_class(controller)
         with_checkbox = (handler_class == TestCaseHandler and
                          self._checkboxes_for_tests)
@@ -355,8 +374,7 @@ class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
                                  index,
                                  with_checkbox=with_checkbox)
 
-        if isinstance(controller, ResourceFileController):
-            if not controller.is_used():
+        if isinstance(controller, ResourceFileController) and not controller.is_used():
                 self.SetItemTextColour(node, TREETEXTCOLOUR)  # wxPython3 hack
         action_handler = handler_class(
             controller, self, node, self._controller.settings)
@@ -365,8 +383,7 @@ class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
         # if we have a TestCase node we have to make sure that
         # we retain the checked state
         if (handler_class == TestCaseHandler and self._checkboxes_for_tests) \
-                and self._test_selection_controller.is_test_selected(
-                    controller):
+                and self._test_selection_controller.is_test_selected(controller):
             self.CheckItem(node, True)
         if controller.is_excluded():
             self._set_item_excluded(node)

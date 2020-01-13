@@ -602,3 +602,8 @@ class RenameOccurrenceTest(unittest.TestCase):
     def _add_step(self, keyword):
         self.test_ctrl.execute(ChangeCellValue(100, 100, keyword))
         self._steps_have_changed = False
+
+
+if __name__ == '__main__':
+    unittest.main()
+

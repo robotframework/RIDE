@@ -117,3 +117,8 @@ class TestCaseNameValidationTest(_MacroNameValidationTest, unittest.TestCase):
     table_ctrl_class = TestCaseTableController
     ctrl_class = TestCaseController
     validator_class = TestCaseNameValidator
+
+
+if __name__ == '__main__':
+    unittest.main()
+

@@ -210,3 +210,8 @@ class TestResourceFormatChange(_UnitTestsWithWorkingResourceImports):
         assert_equal(imp.name, import_name)
         assert_equal(self.res_controller.filename, os.path.abspath(resource_path))
         self._verify_import_reference(imp_is_resolved)
+
+
+if __name__ == '__main__':
+    unittest.main()
+

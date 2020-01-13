@@ -123,3 +123,8 @@ class TestSpecInitializer(unittest.TestCase):
         self.assertFalse(specinitializer.initialized_from_pythonpath)
         self.assertTrue(specinitializer.initialized_from_xml_directory)
         self.assertEqual(specinitializer.directory, 'my_dir')
+
+
+if __name__ == '__main__':
+    unittest.main()
+

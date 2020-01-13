@@ -145,3 +145,8 @@ class UserKeywordControllerTest(_BaseWithSteps):
 
     def test_copy_content(self):
         self._test_copy_content()
+
+
+if __name__ == '__main__':
+    unittest.main()
+

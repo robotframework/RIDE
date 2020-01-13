@@ -112,3 +112,8 @@ class TestResourceImport(unittest.TestCase):
     def _check_cells(self, keyword_content_type, value_cell_type):
         assert_equal(self.test.get_cell_info(0,0).content_type, keyword_content_type)
         assert_equal(self.test.get_cell_info(0,1).cell_type, value_cell_type)
+
+
+if __name__ == '__main__':
+    unittest.main()
+

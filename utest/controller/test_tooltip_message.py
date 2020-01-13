@@ -41,7 +41,7 @@ class TestCellTooltip(unittest.TestCase):
         msg = TipMessage(cell)
         assert_true(msg)
         assert_equal(str(msg),
-                      html_escape(_TooltipMessage.KEYWORD % 'my_source'))
+                      html_escape(_TooltipMessage.KEYWORD % 'my_source').replace('\n', '<br />'))
 
     def test_for_loop_start(self):
         cell = CellInfo(CellContent(ContentType.STRING, ':FOR'),
