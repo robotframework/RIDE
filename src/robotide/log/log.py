@@ -22,7 +22,7 @@ import glob
 import sys
 import io
 
-from robotide.pluginapi import Plugin, ActionInfo, RideLog, RideNotebookTabChanging
+from robotide.pluginapi import Plugin, ActionInfo, RideLog
 from robotide import widgets
 from robotide import context
 from robotide.utils import PY2
@@ -36,7 +36,6 @@ def _message_to_string(msg):
 
 class LogPlugin(Plugin):
     """Viewer for internal log messages."""
-    title = 'RIDE Log'
 
     def __init__(self, app):
         Plugin.__init__(self, app, default_settings={
@@ -73,7 +72,6 @@ class LogPlugin(Plugin):
     def enable(self):
         self._create_menu()
         self.subscribe(self._log_message, RideLog)
-        self.subscribe(self.OnTabChange, RideNotebookTabChanging)
 
     def disable(self):
         self.unsubscribe_all()
@@ -106,30 +104,15 @@ class LogPlugin(Plugin):
             self._panel.update_log()
         else:
             self.notebook.show_tab(self._panel)
-        if self.is_focused():
-            self._register_shortcuts()
-
-    def OnTabChange(self, message):
-        if message.newtab == self.title:
-            self._register_shortcuts()
-        elif message.oldtab == self.title:
-            self.unregister_actions()
-
-    def is_focused(self):
-        return self.notebook.current_page_title == self.title
-
-    def _register_shortcuts(self):
-        self.register_shortcut('CtrlCmd-C', lambda e: self._panel.Copy())
-        self.register_shortcut('CtrlCmd-A', lambda e: self._panel.SelectAll())
 
 
 class _LogWindow(wx.Panel):
 
-    def __init__(self, notebook, log, title='RIDE Log'):
+    def __init__(self, notebook, log):
         wx.Panel.__init__(self, notebook)
         self._output = wx.TextCtrl(self, style=wx.TE_READONLY | wx.TE_MULTILINE)
+        self._output.Bind(wx.EVT_KEY_DOWN, self.OnKeyDown)
         self._log = log
-        self._title = title
         self._add_to_notebook(notebook)
         self.SetFont(widgets.Font().fixed_log)
         self.Bind(wx.EVT_SIZE, self.OnSize)
@@ -139,7 +122,7 @@ class _LogWindow(wx.Panel):
         self.Sizer.add_expanding(self._output)
 
     def _add_to_notebook(self, notebook):
-        notebook.add_tab(self, self._title, allow_closing=True)
+        notebook.add_tab(self, 'RIDE Log', allow_closing=True)
         notebook.show_tab(self)
         self._output.SetSize(self.Size)
 
@@ -158,8 +141,19 @@ class _LogWindow(wx.Panel):
     def OnSize(self, evt):
         self._output.SetSize(self.Size)
 
+    def OnKeyDown(self, event):
+        keycode = event.GetKeyCode()
+
+        if event.ControlDown():
+            if keycode == ord('C'):
+                self.Copy()
+            elif keycode == ord('A'):
+                self.SelectAll()
+        else:
+            event.Skip()
+
     def Copy(self):
-        pass
+        self._output.Copy()
 
     def SelectAll(self):
         self._output.SetSelection(-1, -1)
