@@ -35,24 +35,23 @@ import os
 from string import Template
 
 errorMessageTemplate = Template("""$reason
-You need to install wxPython 2.8.12.1 with unicode support to run RIDE.
-wxPython 2.8.12.1 can be downloaded from http://sourceforge.net/projects/wxpyt\
-hon/files/wxPython/2.8.12.1/
-This version will run also on wxPython 3.0.2, download from https://sourceforg\
-e.net/projects/wxpython/files/wxPython/3.0.2.0/""")
+RIDE depends on wx (wxPython). Historically, the last supported version was 2.8.12.1 with unicode support.\
+At the time of this release the current wxPython version is 4.0.7.post2.\
+You can install with 'pip install wxPython' on most operating systems, or find the \
+the download link from https://wxPython.org/""")
 
 try:
     import wx
     import wx.lib.inspection
 except ImportError as e:
     if "no appropriate 64-bit architecture" in e.message.lower() and \
-       sys.platform == 'darwin':
+       sys.platform == 'darwin':  # TODO: This was for MacOS pre 8.0, remove for version 2.
         print("python should be executed in 32-bit mode with wxPython on OSX.")
     else:
         print(errorMessageTemplate.substitute(reason="wxPython not found."))
     sys.exit(1)
 
-if "ansi" in wx.PlatformInfo:
+if "ansi" in wx.PlatformInfo:  # TODO: This was for classic wxPython, remove for version 2.
     print(errorMessageTemplate.substitute(
         reason="wxPython with ansi encoding is not supported"))
     sys.exit(1)
@@ -121,21 +120,14 @@ def _run(inpath=None, updatecheck=True, debug_console=False):
 
 
 def _show_old_wxpython_warning_if_needed(parent=None):
-    if wx.VERSION <(2, 8, 12, 1, ''):
+    if wx.VERSION <=(2, 8, 12, 1, ''):  # TODO: This was for classic wxPython, remove for version 2.
         title = "Please upgrade your wxPython installation"
-        message = ("RIDE officially supports wxPython 2.8.12.1. Your current "
+        message = ("RIDE needs modifications to work on wxPython 2.8.12.1. Your current "
                    "version is %s."
                    "\n"
-                   "Older wxPython versions are known to miss some features "
-                   "used by RIDE. wxPython 2.8.12.1 packages can be found from"
-                   " http://sourceforge.net/projects/wxpython/files/wxPython/"
-                   "2.8.12.1/.\n"
-                   "This version will run also on wxPython 3.0.2, download "
-                   "from http://sourceforge.net/projects/wxpython/files/wxPyth"
-                   "on/3.0.2.0/."
-                   "\n"
-                   "This version runs with wxPython 4 under Python 2.7 or 3.x. See "
-                   "http://wxpython.org/ for downloads and instructions."
+                   "This version runs with wxPython 4 under Python 2.7, 3.6 or 3.7."
+                   "At the time of this release the current wxPython version is 4.0.7.post2. See "
+                   "https://wxPython.org/ for downloads and instructions."
                    % wx.VERSION_STRING)
         style = wx.ICON_EXCLAMATION
         if not parent:
