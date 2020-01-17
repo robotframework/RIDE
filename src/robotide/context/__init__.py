@@ -159,7 +159,7 @@ SHORTCUT_KEYS = '''\
         <td>Suggestions and auto completion</td>
     </tr>
     <tr>
-        <td>Ctrl</td>
+        <td>CtrlCmd</td>
         <td>Help for cell content</td>
     </tr>
     <tr>
@@ -300,7 +300,7 @@ SHORTCUT_KEYS = '''\
         <td>Suggestions and auto completion</td>
     </tr>
     <tr>
-        <td>Ctrl-T</td>
+        <td>CtrlCmd-T</td>
         <td>Swap current row up</td>
     </tr>
     <tr>
