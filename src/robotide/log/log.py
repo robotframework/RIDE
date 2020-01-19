@@ -102,6 +102,7 @@ class LogPlugin(Plugin):
         if not self._panel:
             self._panel = _LogWindow(self.notebook, self._log)
             self._panel.update_log()
+            self.register_shortcut('CtrlCmd-C', lambda e: self._panel.Copy())
         else:
             self.notebook.show_tab(self._panel)
 
@@ -144,16 +145,13 @@ class _LogWindow(wx.Panel):
     def OnKeyDown(self, event):
         keycode = event.GetKeyCode()
 
-        if event.ControlDown():
-            if keycode == ord('C'):
-                self.Copy()
-            elif keycode == ord('A'):
-                self.SelectAll()
+        if event.ControlDown() and keycode == ord('A'):
+            self.SelectAll()
         else:
             event.Skip()
 
     def Copy(self):
-        self._output.Copy()
+        pass
 
     def SelectAll(self):
         self._output.SetSelection(-1, -1)
