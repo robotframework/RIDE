@@ -197,18 +197,9 @@ def update_robot(ctx, version=''):
     ctx.run('cp -r ../robotframework/src/robot src/robotide/lib/')
     # Prevent .pyc matching grep expressions
     _clean()
-    # `import robot` -> `from robotide.lib import robot`
-    # Removed in v3.0.3 
-    #_run_sed_on_matching_files(ctx, 
-    #    'import robot',
-    #    's/import robot/from robotide.lib import robot/')
-
-    # `from robot.pkg import stuff` -> `from robotide.lib.robot.pkg import stuff`
     _run_sed_on_matching_files(ctx, 
         'from robot\..* import',
         's/from robot\./from robotide.lib.robot./')
-    # `from robot import stuff` -> `from robotide.lib.robot import stuff`
-    # Reintroduced in v3.1a1
     _run_sed_on_matching_files(ctx, 
         'from robot import',
         's/from robot import/from robotide.lib.robot import/')
