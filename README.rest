@@ -3,12 +3,13 @@ RIDE
 
 RIDE is a development environment for Robot Framework test cases.
 
-*Instant Communication* Join our #ride channel in Robot Framework Slack: https://robotframework.slack.com
+**Instant Communication** Join our #ride channel in Robot Framework Slack: https://robotframework.slack.com
 (signup page: https://robotframework-slack-invite.herokuapp.com/)
 
-**Welcome to the development version of RIDE - next release will be version 2.0
+**Welcome to the development version of RIDE - next release will be version 2.0**
+---------------------------------------------------------------------------------
 
-If you are looking for the latest released version, you can get the source code from *releases* or from branch *release/1.7.4.1*
+If you are looking for the latest released version, you can get the source code from **releases** or from branch **release/1.7.4.1**
 See the `release notes`_ for latest release version 1.7.4.1.
 
 **Version 1.7.4.1 was the last release supporting Python 2.7**
@@ -16,19 +17,17 @@ See the `release notes`_ for latest release version 1.7.4.1.
 
 **Attention, this new version will break old style `:FOR`, and you have to change to `FOR/END` blocks.**
 
+**Attention, don't install RIDE on Python 3.8 (wait for release of version 2.0)**
+
 **See the FAQ at Wiki**
 
 ==========================================
 
-**Attention, don't install RIDE on Python 3.8 (wait for release of version 2.0)**
-
-(the information below is outdated)
-
-  * Downloads_
-  * Usage instructions and some tips and tricks can be found from the Wiki_
-  * Bug report/enhancement request? Use the `issue tracker`_.
-  * Any questions? Do not hesitate to use the `mailing list`_.
-  * Development information is in `BUILD`_ file.
+* Downloads_
+* Usage instructions and some tips and tricks can be found from the Wiki_
+* Bug report/enhancement request? Use the `issue tracker`_.
+* Any questions? Do not hesitate to use the `mailing list`_.
+* Development information is in `BUILD`_ file.
 
 
 .. _Downloads: https://pypi.python.org/pypi/robotframework-ride
