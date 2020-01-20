@@ -93,8 +93,8 @@ RELEASE_NOTES = """
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.14: http://docutils.sourceforge.net/" />
-<title>Robot Framework IDE 1.7.4</title>
+<meta name="generator" content="Docutils 0.15.2: http://docutils.sourceforge.net/" />
+<title>Robot Framework IDE 1.7.4.1</title>
 <style type="text/css">
 
 /*
@@ -450,46 +450,34 @@ ul.auto-toc {
 </style>
 </head>
 <body>
-<div class="document" id="robot-framework-ide-1-7-4">
-<h1 class="title">Robot Framework IDE 1.7.4</h1>
+<div class="document" id="robot-framework-ide-1-7-4-1">
+<h1 class="title">Robot Framework IDE 1.7.4.1</h1>
 
-<p><a class="reference external" href="https://github.com/robotframework/RIDE/">RIDE (Robot Framework IDE)</a> 1.7.4 is a new release with major enhancements
-and bug fixes. This version 1.7.4 includes fixes for installer, Font Type selection, Text Editor improvements and new File explorer.
+<p><a class="reference external" href="https://github.com/robotframework/RIDE/">RIDE (Robot Framework IDE)</a> 1.7.4.1 is a new release with bug fixes. This version 1.7.4.1 includes fixes for documentation, duplicate resources on tree, resources import with directory prefix, select all in Grid Editor, and more.
 The reference for valid arguments is <a class="reference external" href="http://robotframework.org">Robot Framework</a> version 3.1.2.</p>
 <ul class="simple">
-<li>This is the <strong>last version supporting Python 2.7</strong>.</li>
-<li>A new File Explorer allows to open supported file types in RIDE, or other types in a basic code editor. To open a file you must double-click on it (project folders open with right-click after being highlighted with left-click). If it is a supported file format but not with the correct structure (for example a resource file), an error message is shown, and then opens in code editor.</li>
-<li>On Grid Editor, the cells can be autoajusting with wordwrap. There is a new checkbox in <code>Tools&gt;Preferences&gt;Grid Editor</code>.</li>
-<li>Font Type selection is available for all Editors and Run panels.</li>
-<li>Zoom in and zoom out is possible on Text Editor and Run panels.</li>
-<li>Pressing the Ctrl on the Grid Editor, when over a keyword it will show its documentation (that can be detached with mouse click).</li>
-<li>There are some important changes, or known issues:<ul>
-<li>On MacOS to call autocomplete in Grid and Text Editors, you have to use Alt-Space (not Command-Space)</li>
-<li>On Linux and Windows to call autocomplete in Grid and Text Editors, you have to use Ctrl-Space</li>
-<li>On Text Editor the TAB key adds the defined number of spaces. With Shift moves to the left, and together with Control selects text.</li>
-<li>On Text Editor the <strong>: FOR</strong> loop structure must use Robot Framework 3.1.2 syntax, i.e. <strong>FOR</strong> and <strong>END</strong>. The only solution to disable this, is to disable Text Editor Plugin.</li>
-</ul>
-</li>
+<li>See the <a class="reference external" href="https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-1.7.4.rst">release_notes</a> for version 1.7.4 with the major changes on that version.</li>
 </ul>
 <p><strong>THIS IS THE LAST RELEASE SUPPORTING PYTHON 2.7</strong></p>
 <p><strong>wxPython will be updated to current version 4.0.7post2</strong></p>
 <p><em>Linux users are advised to install first wxPython from .whl package at</em> <a class="reference external" href="https://extras.wxpython.org/wxPython4/extras/linux/gtk3/">wxPython.org</a>.</p>
-<p>All issues targeted for RIDE v1.7.4 can be found from the <a class="reference external" href="https://github.com/robotframework/RIDE/issues?q=milestone%3Av1.7.4">issue tracker milestone</a>.</p>
+<p>All issues targeted for RIDE v1.7.4.1 can be found
+from the <a class="reference external" href="https://github.com/robotframework/RIDE/issues?q=milestone%3Av1.7.4.1">issue tracker milestone</a>.</p>
 <p>Questions and comments related to the release can be sent to the
 <a class="reference external" href="http://groups.google.com/group/robotframework-users">robotframework-users</a> mailing list or to the channel #ride on
 <a class="reference external" href="https://robotframework-slack-invite.herokuapp.com">Robot Framework Slack</a>, and possible bugs submitted to the <a class="reference external" href="https://github.com/robotframework/RIDE/issues">issue tracker</a>.</p>
 <p>If you have <a class="reference external" href="http://pip-installer.org">pip</a> installed, just run</p>
 <pre class="literal-block">
-pip install --upgrade robotframework-ride==1.7.4
+pip install --upgrade robotframework-ride==1.7.4.1
 </pre>
-<p>to install this <strong>final</strong> release, or</p>
+<p>to upgrade to this <strong>final</strong> release, or</p>
 <pre class="literal-block">
 pip install --upgrade robotframework-ride
 </pre>
 <pre class="literal-block">
-pip install robotframework-ride==1.7.4
+pip install robotframework-ride==1.7.4.1
 </pre>
-<p>to install exactly the <strong>final</strong> version for a first time. Alternatively you can download the source
+<p>to install exactly this <strong>final</strong> version for a first time. Alternatively you can download the source
 distribution from <a class="reference external" href="https://pypi.python.org/pypi/robotframework-ride">PyPI</a> and install it manually. For more details and other
 installation approaches, see the <a class="reference external" href="https://github.com/robotframework/RIDE/wiki/Installation-Instructions">installation instructions</a>.
 See the <a class="reference external" href="https://github.com/robotframework/RIDE/wiki/F.A.Q.">FAQ</a> for important info about <code>: FOR</code> changes.</p>
@@ -501,9 +489,8 @@ python -m robotide.__init__
 <pre class="literal-block">
 python -m robotide.postinstall -install
 </pre>
-<p>RIDE 1.7.4 was released on Tuesday December 24, 2019.</p>
+<p>RIDE 1.7.4.1 was released on Monday January 20, 2020.</p>
 </div>
 </body>
 </html>
-
 """
