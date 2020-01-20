@@ -10,7 +10,7 @@ Robot Framework IDE 1.7.4
 and bug fixes. This version 1.7.4 includes fixes for installer, Font Type selection, Text Editor improvements and new File explorer.
 The reference for valid arguments is `Robot Framework`_ version 3.1.2.
 
-* This is the **last version supporting Python 2.7**.
+* This was planned to be the **last version supporting Python 2.7**.
 * A new File Explorer allows to open supported file types in RIDE, or other types in a basic code editor. To open a file you must double-click on it (project folders open with right-click after being highlighted with left-click). If it is a supported file format but not with the correct structure (for example a resource file), an error message is shown, and then opens in code editor.
 * On Grid Editor, the cells can be autoajusting with wordwrap. There is a new checkbox in `Tools>Preferences>Grid Editor`.
 * Font Type selection is available for all Editors and Run panels.
@@ -25,8 +25,6 @@ The reference for valid arguments is `Robot Framework`_ version 3.1.2.
   - On Text Editor the TAB key adds the defined number of spaces. With Shift moves to the left, and together with Control selects text.
 
   - On Text Editor the **: FOR** loop structure must use Robot Framework 3.1.2 syntax, i.e. **FOR** and **END**. The only solution to disable this, is to disable Text Editor Plugin.
-
-**THIS IS THE LAST RELEASE SUPPORTING PYTHON 2.7**
 
 **wxPython will be updated to current version 4.0.7post2**
 
