@@ -22,13 +22,9 @@ import re
 import shutil
 import tempfile
 
-try:
-    from pathlib import Path
-    from rellu import ReleaseNotesGenerator, Version
-    assert Path.cwd().resolve() == Path(__file__).resolve().parent
-except ImportError:  # We are at Python 2.7
-    Path = os.path.normpath
-    pass
+from pathlib import Path
+from rellu import ReleaseNotesGenerator, Version
+assert Path.cwd().resolve() == Path(__file__).resolve().parent
 
 sys.path.insert(0, 'src')
 
@@ -40,16 +36,12 @@ RELEASE_NOTES_PATH = Path('doc/releasenotes/ride-{version}.rst')
 RELEASE_NOTES_TITLE = 'Robot Framework IDE {version}'
 RELEASE_NOTES_INTRO = '''
 `RIDE (Robot Framework IDE)`_ {version} is a new release with major enhancements
-and bug fixes. This version {version} includes fixes for installer, Font Type selection, Text Editor improvements and new File explorer.
+and bug fixes. This version {version} includes removal of Python 2.7 support.
 The reference for valid arguments is `Robot Framework`_ version 3.1.2.
 **MORE intro stuff...**
 
-* This is the **last version supporting Python 2.7**.
-* A new File Explorer allows to open supported file types in RIDE, or other types in a basic code editor. To open a file you must double-click on it (project folders open with right-click after being highlighted with left-click). If it is a supported file format but not with the correct structure (for example a resource file), an error message is shown, and then opens in code editor.
-* On Grid Editor, the cells can be autoajusting with wordwrap. There is a new checkbox in `Tools>Preferences>Grid Editor`.
-* Font Type selection is available for all Editors and Run panels.
-* Zoom in and zoom out is possible on Text Editor and Run panels.
-* Pressing the Ctrl on the Grid Editor, when over a keyword it will show its documentation (that can be detached with mouse click).
+* This is the **first version without support for Python 2.7**.
+* The last version with support for Python 2.7 was **1.7.4.1**.
 * There are some important changes, or known issues:
 
   - On MacOS to call autocomplete in Grid and Text Editors, you have to use Alt-Space (not Command-Space)
@@ -59,8 +51,6 @@ The reference for valid arguments is `Robot Framework`_ version 3.1.2.
   - On Text Editor the TAB key adds the defined number of spaces. With Shift moves to the left, and together with Control selects text.
 
   - On Text Editor the **: FOR** loop structure must use Robot Framework 3.1.2 syntax, i.e. **FOR** and **END**. The only solution to disable this, is to disable Text Editor Plugin.
-
-**THIS IS THE LAST RELEASE SUPPORTING PYTHON 2.7**
 
 **wxPython will be updated to current version 4.0.7post2**
 
@@ -80,9 +70,9 @@ If you have pip_ installed, just run
 
 ::
 
-   pip install --upgrade robotframework-ride==1.7.4rc1
+   pip install --pre --upgrade robotframework-ride==2.0b1
 
-to install this **RELEASE CANDIDATE** release, and for the **final** release use
+to install this **BETA** release, and for the **final** release use
 
 ::
 
@@ -124,24 +114,10 @@ RIDE {version} was released on {date}.
 .. _FAQ: https://github.com/robotframework/RIDE/wiki/F.A.Q.
 '''
 
+from io import StringIO
+import urllib
 
-try:
-    from StringIO import StringIO
-    PY3 = False
-except ImportError:  # py3
-    from io import StringIO
-    PY3 = True
-try:
-    import urllib2
-except ImportError:  # py3
-    import urllib as urllib2
-
-try:
-    from invoke import task, run, __version_info__ as invoke_version
-    if invoke_version < (0, 13):
-        raise ImportError
-except ImportError:
-    sys.exit('invoke 0.13 or newer required. See BUILD.rest for details.')
+from invoke import task, run
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 SOURCE_DIR = join(ROOT_DIR, 'src')
@@ -221,18 +197,9 @@ def update_robot(ctx, version=''):
     ctx.run('cp -r ../robotframework/src/robot src/robotide/lib/')
     # Prevent .pyc matching grep expressions
     _clean()
-    # `import robot` -> `from robotide.lib import robot`
-    # Removed in v3.0.3 
-    #_run_sed_on_matching_files(ctx, 
-    #    'import robot',
-    #    's/import robot/from robotide.lib import robot/')
-
-    # `from robot.pkg import stuff` -> `from robotide.lib.robot.pkg import stuff`
     _run_sed_on_matching_files(ctx, 
         'from robot\..* import',
         's/from robot\./from robotide.lib.robot./')
-    # `from robot import stuff` -> `from robotide.lib.robot import stuff`
-    # Reintroduced in v3.1a1
     _run_sed_on_matching_files(ctx, 
         'from robot import',
         's/from robot import/from robotide.lib.robot import/')
@@ -251,7 +218,7 @@ def generate_big_project(ctx, install=False, upgrade=False, args=''):
             "https://raw.github.com/robotframework/Generator/master/rfgen.py"
         _log("Installing/upgrading rfgen.py from github.")
         f = open('rfgen.py', 'wb')
-        f.write(urllib2.urlopen(rfgen_url).read())
+        f.write(urllib.urlopen(rfgen_url).read())
         f.close()
         _log("Done.")
 
@@ -352,28 +319,6 @@ def sdist(ctx, release_notes=True, upload=False):
     _after_distribution()
 
 
-@task(pre=[clean])
-def wininst(ctx):
-    """Creates Windows installer with bundled dependencies."""
-    if os.sep != '\\':
-        sys.exit('Windows installers may only be created in Windows')
-
-    _run_setup(ctx, 'bdist_wininst')
-    _after_distribution()
-
-'''
-@task
-def release_notes(ctx):
-    """Download and format issues in markdown format."""
-    issues = _get_issues()
-    _log("""ID  | Type | Priority | Summary
---- | ---- | -------- | ------- """)
-    for i in issues:
-        parts = ('#{}'.format(i.number), _find_type(i), _find_priority(i),
-                 i.title)
-        _log(' | '.join(parts))
-'''
-
 @task
 def release_notes(ctx, version=None, username=None, password=None, write=False):
     """Generate release notes based on issues in the issue tracker.
@@ -392,8 +337,6 @@ def release_notes(ctx, version=None, username=None, password=None, write=False):
     specified at all, communication with GitHub is anonymous and typically
     pretty slow.
     """
-    if not PY3:
-        raise NotImplementedError('This task depends on "rellu" with Python 3')
     version = Version(version, VERSION_PATH, VERSION_PATTERN)
     file = RELEASE_NOTES_PATH if write else sys.stdout
     generator = ReleaseNotesGenerator(REPOSITORY, RELEASE_NOTES_TITLE,
@@ -488,10 +431,7 @@ def _get_issues():
     import getpass
     from github3 import login
     milestone = re.split('[ab-]', VERSION)[0]
-    if not PY3:
-        username = raw_input('Enter GitHub username for downloading issues: ')
-    else:
-        username = input('Enter GitHub username for downloading issues: ')
+    username = input('Enter GitHub username for downloading issues: ')
     password = getpass.getpass(
         'Github password for {user}: '.format(user=username))
     gh = login(username, password=password)
