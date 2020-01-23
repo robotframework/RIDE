@@ -19,12 +19,7 @@ import wx
 class _BoxSizer(wx.BoxSizer):
 
     def __init__(self):
-        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
-            wx.BoxSizer.__init__(self, self.orient)
-        else:
-            wx.BoxSizer.__init__(self, self.direction)
-
-
+        wx.BoxSizer.__init__(self, self.orientation)
 
     def add(self, component, proportion=0, flag=0):
         self.Add(component, proportion=proportion, flag=flag)
@@ -38,11 +33,11 @@ class _BoxSizer(wx.BoxSizer):
 
 
 class VerticalSizer(_BoxSizer):
-    orient = direction = wx.VERTICAL
+    orientation = wx.VERTICAL
 
 
 class HorizontalSizer(_BoxSizer):
-    orient = direction = wx.HORIZONTAL
+    orientation = wx.HORIZONTAL
 
     def add_to_end(self, component):
         self.Add(component, flag=wx.ALIGN_RIGHT)
