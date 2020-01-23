@@ -35,7 +35,6 @@ Run configurations are stored in the RIDE settings file.
 """
 
 
-
 class ConfigManagerDialog(Dialog):
 
     def __init__(self, configs, plugin):
@@ -154,10 +153,7 @@ class _TextEditListCtrl(AutoWidthColumnList, TextEditMixin):
 
     def new_item(self):
         self._new_item_creation = True
-        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
-            self.InsertItem(self.ItemCount, '')
-        else:
-            self.InsertStringItem(self.ItemCount, '')
+        self.InsertItem(self.ItemCount, '')
         self.Select(self.ItemCount-1, True)
         self.open_editor(self.last_index)
 
