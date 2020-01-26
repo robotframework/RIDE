@@ -34,14 +34,11 @@ import os
 from robotide import pluginapi
 from robotide.widgets import Label
 from robotide.robotapi import DataError, Information
-from robotide.utils import (overrides, SYSTEM_ENCODING, ArgumentParser,
-                            is_unicode, PY3)
+from robotide.utils import overrides, ArgumentParser
 from robotide.context import IS_WINDOWS
 from robotide.contrib.testrunner.usages import USAGE
 from sys import getfilesystemencoding
 
-if PY3:
-    from robotide.utils import unicode
 
 OUTPUT_ENCODING = getfilesystemencoding()
 
@@ -84,7 +81,6 @@ class BaseProfile(object):
 
     def get_command_prefix(self):
         """Returns a command and any special arguments for this profile"""
-        # return ["robot.bat" if os.name == "nt" else "robot"]
         return ["robot"]
 
     def set_setting(self, name, value):
@@ -158,17 +154,15 @@ class PybotProfile(BaseProfile):
     def _parse_windows_command(self):
         from subprocess import Popen, PIPE
         try:
-            # print("DEBUG: parser_win_comm Enter arguments: %s" % self.arguments)
             p = Popen(['echo', self.arguments], stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=True)
             output, _ = p.communicate()
             output = str(output).lstrip("b\'").strip()
             self.arguments = output.replace('"', '').replace('\'', '').replace('\\\\', '\\').replace('\\r\\n', '')
-            # print("DEBUG: parser_win_comm Parsed arguments: %s" % self.arguments)
         except IOError as e:
             # print("DEBUG: parser_win_comm IOError: %s" % e)
             pass
 
-    def get_command(self):  # TODO Test on Windows
+    def get_command(self):
         from subprocess import call
         from tempfile import TemporaryFile
         result = None
@@ -194,8 +188,6 @@ class PybotProfile(BaseProfile):
                     return "pybot.bat" if os.name == "nt" else "pybot"
             except OSError:
                 result = "no pybot"
-        #finally:
-        #    print("DEBUG runprofiles get_command: %s" % result)
         return result
 
     def get_custom_args(self):
@@ -259,9 +251,8 @@ class PybotProfile(BaseProfile):
         except UnicodeDecodeError:
             self._arguments = wx.TextCtrl(
                 panel, wx.ID_ANY, size=(-1, -1), value="removed due unicode_error (delete this)")
-        # DEBUG wxPhoenix SetToolTipString
-        self.MySetToolTip(self._arguments,
-                          "Arguments for the test run. Arguments are space separated list.")
+        self._arguments.SetToolTip("Arguments for the test run. "
+                                   "Arguments are space separated list.")
         self._arguments.Bind(wx.EVT_TEXT, self.OnArgumentsChanged)
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         sizer.Add(label, 0, wx.ALL | wx.EXPAND)
@@ -317,43 +308,25 @@ class PybotProfile(BaseProfile):
         self.arguments = args
 
     def _validate_arguments(self, args):
-        # assert type(args) is unicode
-        # print("DEBUG: runprofiles: args=%s is_unicode(args)=%s" % (args, is_unicode(args)))
         invalid_message = self._get_invalid_message(args)
-        self._arguments.SetBackgroundColour(
-            'red' if invalid_message else 'white')
-        self._arguments.SetForegroundColour(
-            'white' if invalid_message else 'black')
-        # DEBUG wxPhoenix  self._arguments.SetToolTipString
+        self._arguments.SetBackgroundColour('red' if invalid_message else 'white')
+        self._arguments.SetForegroundColour('white' if invalid_message else 'black')
         if not bool(invalid_message):
-            invalid_message = "Arguments for the test run." \
-                              " Arguments are space separated list."
-        self.MySetToolTip(self._arguments, invalid_message)
-
-    def MySetToolTip(self, obj, tip):
-        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
-            obj.SetToolTip(tip)
-        else:
-            obj.SetToolTipString(tip)
+            invalid_message = "Arguments for the test run. Arguments are space separated list."
+        self._arguments.SetToolTip(invalid_message)
 
     def _get_invalid_message(self, args):
         invalid = None
         if not args:
             return None
         try:
-            # print("DEBUG: runprofiles get inv msg: %s\n" % args)
             clean_args = args.split("`")  # Shell commands
             for idx, item in enumerate(clean_args):
                 clean_args[idx] = item.strip()
                 if clean_args[idx][0] != '-':  # Not option, then is argument
                     clean_args[idx] = 'arg'
             args = " ".join(clean_args)
-            # print("DEBUG: runprofiles join args: %s\n" % args)
-            # raw: %s\n" % (bytes(args), args) )
-            #if PY3:
-            #    args = args.encode(SYSTEM_ENCODING)  # DEBUG SYSTEM_ENCODING
             _, invalid = ArgumentParser(USAGE).parse_args(args.split())
-            # print("DEBUG: runprofiles get inv msg: %s\n" % args)
         except Information:
             return 'Does not execute - help or version option given'
         except (DataError, Exception) as e:  # DEBUG not caught DataError?
