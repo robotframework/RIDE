@@ -15,15 +15,10 @@
 
 import wx
 from wx.lib.scrolledpanel import ScrolledPanel
-
 from robotide.context import LOG
 from robotide.publish import RideLogException
 from robotide.widgets import Label
-
-if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
-    from wx.adv import HyperlinkCtrl
-else:
-    from wx import HyperlinkCtrl
+from wx.adv import HyperlinkCtrl
 
 
 class PluginManager(object):
@@ -48,8 +43,8 @@ class _PluginPanel(wx.Panel):
     def __init__(self, notebook, plugins, activation_callback):
         wx.Panel.__init__(self, notebook)
         sizer = wx.BoxSizer(wx.VERTICAL)
-        sizer.Add(self._create_header(), 0, flag=wx.EXPAND | wx.LEFT | wx.RIGHT | wx.TOP,
-                  border=16)
+        sizer.Add(self._create_header(), 0, flag=wx.EXPAND | wx.LEFT |
+                                                 wx.RIGHT | wx.TOP, border=16)
         sizer.Add(self._create_info_text(), 0,
                   flag=wx.EXPAND | wx.LEFT | wx.RIGHT, border=16)
         sizer.Add(self._create_line(), 0, flag=wx.EXPAND | wx.LEFT | wx.RIGHT)
@@ -60,10 +55,7 @@ class _PluginPanel(wx.Panel):
     def _create_header(self):
         header_panel = wx.Panel(self, wx.ID_ANY)
         header = Label(header_panel, wx.ID_ANY, "Installed Plugins")
-        if wx.VERSION >= (4, 0, 0, ''):  # DEBUG wxPhoenix
-            header.SetFont(wx.Font(wx.FontInfo(14).Family(wx.FONTFAMILY_SWISS).Bold()))
-        else:
-            header.SetFont(wx.Font(14, wx.SWISS, wx.NORMAL, wx.BOLD))
+        header.SetFont(wx.Font(wx.FontInfo(14).Family(wx.FONTFAMILY_SWISS).Bold()))
         return header
 
     def _create_line(self):
@@ -87,19 +79,14 @@ class _PluginPanel(wx.Panel):
 
     def _create_info_text(self):
         info = wx.StaticText(self, wx.ID_ANY,
-                             "Info. Enabling and disabling plugins might \
-require RIDE restart for menus to work.")
-        if wx.VERSION >= (4, 0, 0, ''):  # DEBUG wxPhoenix
-            info.SetFont(wx.Font(wx.FontInfo(12).Family(wx.FONTFAMILY_SWISS).Bold(False)))
-        else:
-            info.SetFont(wx.Font(12, wx.SWISS, wx.NORMAL, wx.FONTWEIGHT_NORMAL))
+                             "Info. Enabling and disabling plugins might"
+                             " require RIDE restart "
+                             "for menus to work.")
+        info.SetFont(wx.Font(wx.FontInfo(12).Family(wx.FONTFAMILY_SWISS).Bold(False)))
         return info
 
     def _create_label(self, parent, text):
-        if wx.VERSION >= (3, 0, 2, 0, ''):
-            boldFont = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT)
-        else:
-            boldFont = wx.SystemSettings_GetFont(wx.SYS_DEFAULT_GUI_FONT)
+        boldFont = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT)
         boldFont.SetWeight(wx.FONTWEIGHT_BOLD)
         label = Label(parent, wx.ID_ANY, text)
         label.SetFont(boldFont)
@@ -131,12 +118,12 @@ class _PluginEnablationCheckBox(wx.CheckBox):
             self.SetValue(False)
             self.Enable(False)
             msg = 'Failed to %s plugin %s:\n%s\n\nYou should restart RIDE now!' % (method.__name__,
-                                                   self._plugin.name, err)
+                                                                                   self._plugin.name,
+                                                                                   err)
             self._plugin.error = err
             self._plugin.doc = msg
             LOG.error(msg)
-            RideLogException(message=msg, exception=err,
-                             level='ERROR').publish()
+            RideLogException(message=msg, exception=err, level='ERROR').publish()
 
 
 class _PluginRow(wx.Panel):

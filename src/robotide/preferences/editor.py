@@ -113,21 +113,14 @@ class PreferenceEditor(wx.Dialog):
         # try to access dead objects.
         if self._closing:
             return
-
-        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
-            instance_or_class = self._tree.GetItemData(event.GetItem())
-        else:
-            instance_or_class = self._tree.GetItemPyData(event.GetItem())
+        instance_or_class = self._tree.GetItemData(event.GetItem())
         if isinstance(instance_or_class, wx.Panel):
             panel = instance_or_class
         else:
             # not an instance, assume it's a class
             panel = self._container.AddPanel(instance_or_class, self._settings)
             self._panels.append(panel)
-            if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
-                self._tree.SetItemData(event.GetItem(), panel)
-            else:
-                self._tree.SetItemPyData(event.GetItem(), panel)
+            self._tree.SetItemData(event.GetItem(), panel)
         self._container.ShowPanel(panel)
 
     def _populate_tree(self, panels):
@@ -143,10 +136,7 @@ class PreferenceEditor(wx.Dialog):
                 # make it not a tuple (eg: ("Plugins")). This fixes that.
                 location = (location,)
             item = self._get_item(location)
-            if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
-                self._tree.SetItemData(item, panel_class)
-            else:
-                self._tree.SetItemPyData(item, panel_class)
+            self._tree.SetItemData(item, panel_class)
         self._tree.ExpandAll()
 
     def _get_item(self, location):
@@ -192,14 +182,12 @@ class PanelContainer(wx.Panel):
 
         self._current_panel = None
         self.title = wx.StaticText(self, label="Your message here")
-        # self.panels_container = wx.Panel(self)
         self.panels_container = ScrolledPanel(self, wx.ID_ANY, style=wx.TAB_TRAVERSAL)
         self.panels_container.SetupScrolling()
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(self.title, 0, wx.TOP|wx.LEFT|wx.EXPAND, 4)
         sizer.Add(wx.StaticLine(self), 0, wx.EXPAND|wx.TOP|wx.BOTTOM, 4)
         sizer.Add(self.panels_container,1, wx.EXPAND)
-        # sizer.Add(self._create_body(), 1, flag=wx.EXPAND | wx.ALL, border=16)
         self.SetSizer(sizer)
         self.panels_container.SetSizer(wx.BoxSizer(wx.VERTICAL))
 

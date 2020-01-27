@@ -57,8 +57,6 @@ if "ansi" in wx.PlatformInfo:  # TODO: This was for classic wxPython, remove for
     sys.exit(1)
 
 from robotide.utils import PY2, PY3
-if PY3:
-    from robotide.utils import basestring, unicode
 
 # Insert bundled robot to path before anything else
 sys.path.append(os.path.join(os.path.dirname(__file__), 'spec'))
@@ -103,13 +101,8 @@ def _run(inpath=None, updatecheck=True, debug_console=False):
     except ImportError:
         _show_old_wxpython_warning_if_needed()
         raise
-    if inpath:
-        inpath = inpath
-        # if not isinstance(inpath[0], unicode):
-        #     for i in range(len(inpath)):
-        #         inpath[i] = inpath[i].decode(sys.getfilesystemencoding())
     ride = RIDE(inpath, updatecheck)
-    if wx.VERSION <= (2, 8, 12, 1, ''):
+    if wx.VERSION <= (4, 0, 4, '', ''):
         _show_old_wxpython_warning_if_needed(ride.frame)
     else:
         wx.CallAfter(_show_old_wxpython_warning_if_needed, ride.frame)
@@ -120,12 +113,11 @@ def _run(inpath=None, updatecheck=True, debug_console=False):
 
 
 def _show_old_wxpython_warning_if_needed(parent=None):
-    if wx.VERSION <=(2, 8, 12, 1, ''):  # TODO: This was for classic wxPython, remove for version 2.
+    if wx.VERSION <=(4, 0, 4, '', ''):
         title = "Please upgrade your wxPython installation"
-        message = ("RIDE needs modifications to work on wxPython 2.8.12.1. Your current "
+        message = ("RIDE needs a newer wxPython version. Your current "
                    "version is %s."
                    "\n"
-                   "This version runs with wxPython 4 under Python 2.7, 3.6 or 3.7."
                    "At the time of this release the current wxPython version is 4.0.7.post2. See "
                    "https://wxPython.org/ for downloads and instructions."
                    % wx.VERSION_STRING)

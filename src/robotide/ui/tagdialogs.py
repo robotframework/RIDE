@@ -20,18 +20,14 @@ import wx.lib.mixins.listctrl as listmix
 from robotide import utils
 from robotide.controller.ctrlcommands import ChangeTag
 from robotide.publish import RideOpenTagSearch
-from robotide.ui.treenodehandlers import ResourceRootHandler, \
-    ResourceFileHandler
 from robotide.widgets import ButtonWithHandler, PopupMenuItems
-from robotide.utils import PY3
-if PY3:
-    from robotide.utils import unicode
+
 
 class ViewAllTagsDialog(wx.Frame, listmix.ColumnSorterMixin):
 
     def __init__(self, controller, frame):
-        style = wx.SYSTEM_MENU | wx.CAPTION | wx.CLOSE_BOX | wx.CLIP_CHILDREN\
-            | wx.FRAME_FLOAT_ON_PARENT
+        style = wx.SYSTEM_MENU | wx.CAPTION | wx.CLOSE_BOX | wx.CLIP_CHILDREN | \
+                wx.FRAME_FLOAT_ON_PARENT
         wx.Frame.__init__(self, frame, title="View all tags", style=style)
         # set Left to Right direction (while we don't have localization)
         self.SetLayoutDirection(wx.Layout_LeftToRight)
@@ -156,10 +152,10 @@ class ViewAllTagsDialog(wx.Frame, listmix.ColumnSorterMixin):
         for test in self.frame._controller.all_testcases():
             self._test_cases.append(test)
             for tag in test.tags:
-                if tag.is_empty() or len(unicode(tag).strip()) == 0:
+                if tag.is_empty() or len(str(tag).strip()) == 0:
                     continue
                 else:
-                    tag_name = unicode(tag)
+                    tag_name = str(tag)
                 if tag_name in unique_tags:
                     unique_tags[tag_name].append(test)
                     self._tags[tag_name].append(tag)
@@ -331,12 +327,8 @@ class TagsListCtrl(wx.ListCtrl, listmix.CheckListCtrlMixin,
         model_index = wx.NewId()
         position = self.GetItemCount()
         self._clientData[model_index] = tag_to_tests
-        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
-            self.InsertItem(position, unicode(tag_to_tests[1]))
-            self.SetItem(position, 1, str(len(tag_to_tests[0])))
-        else:
-            self.InsertStringItem(position, unicode(tag_to_tests[1]))
-            self.SetStringItem(position, 1, str(len(tag_to_tests[0])))
+        self.InsertItem(position, str(tag_to_tests[1]))
+        self.SetItem(position, 1, str(len(tag_to_tests[0])))
         # associate the model with the GUI
         self.SetItemData(position, model_index)
         return model_index

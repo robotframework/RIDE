@@ -26,8 +26,7 @@ from robotide.widgets import Label, Dialog
 from robotide.validators import NonEmptyValidator, NewSuitePathValidator,\
     SuiteFileNameValidator
 # This hack needed to set same label width as with other labels
-DirBrowseButton.createLabel = lambda self:\
-    Label(self, size=(110, -1), label=self.labelText)
+DirBrowseButton.createLabel = lambda self: Label(self, size=(110, -1), label=self.labelText)
 
 
 class _CreationDialog(Dialog):
@@ -276,16 +275,12 @@ class RobotFilePathDialog(wx.FileDialog):
 
     def __init__(self, window, controller, settings):
         self._controller = controller
-        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
-            style = wx.FD_OPEN
-        else:
-            style = wx.OPEN
-        wx.FileDialog.__init__(
-            self, window, style=style, wildcard=self._get_wildcard(settings),
-            defaultDir=self._controller.default_dir, message="Open")
+        style = wx.FD_OPEN
+        wx.FileDialog.__init__(self, window, style=style, wildcard=self._get_wildcard(settings),
+                               defaultDir=self._controller.default_dir, message="Open")
 
     def _get_wildcard(self, settings):
-        fileTypes = [
+        filetypes = [
             ("robot", "Robot data (*.robot)|*.robot"),
             ("txt", "Robot data (*.txt)|*.txt"),
             ("all", "All files|*.*")
@@ -293,8 +288,8 @@ class RobotFilePathDialog(wx.FileDialog):
         default_format = settings.get("default file format", "robot")
         if default_format not in ["robot", "txt"]:
             default_format = "all"
-        first = [ft for ft in fileTypes if ft[0] == default_format]
-        rest = [ft for ft in fileTypes if ft[0] != default_format]
+        first = [ft for ft in filetypes if ft[0] == default_format]
+        rest = [ft for ft in filetypes if ft[0] != default_format]
         return '|'.join(ft[1] for ft in first + rest)
 
     def execute(self):

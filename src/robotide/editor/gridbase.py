@@ -101,10 +101,6 @@ class GridEditor(grid.Grid):
 
     def delete(self):
         self._update_history()
-        # if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
-        #     _iscelleditcontrolshown = self.IsCellEditControlEnabled()
-        # else:
-        #     _iscelleditcontrolshown = self.IsCellEditControlShown()
         _iscelleditcontrolshown = self.IsCellEditControlShown()
         if _iscelleditcontrolshown:
             if IS_WINDOWS:
@@ -158,16 +154,15 @@ class GridEditor(grid.Grid):
         for row_index, row_data in enumerate(data):
             for col_index, cell_value in enumerate(row_data):
                 self.write_cell(row_index, col_index, cell_value, update_history)
-        # self.AutoSizeColumns()
-        # self.AutoSizeRows()
         self.EndBatch()
 
     def OnSelectCell(self, event):
         if self._is_whole_row_selection():
-            self.SelectBlock(self.selection.topleft.row, self.selection.topleft.col,self.selection.bottomright.row, self.selection.bottomright.col, addToSelected=True)
+            self.SelectBlock(self.selection.topleft.row, self.selection.topleft.col,
+                             self.selection.bottomright.row, self.selection.bottomright.col,
+                             addToSelected=True)
         else:
             self.selection.set_from_single_selection(event)
-        # self.AutoSizeRows()
         event.Skip()
 
     def OnRangeSelect(self, event):
@@ -183,7 +178,8 @@ class GridEditor(grid.Grid):
             self._ensure_selected_row_is_visible(event.BottomRow)
 
     def _ensure_selected_row_is_visible(self, bottom_row):
-        if not self.IsVisible(bottom_row , 0) and bottom_row < self.NumberRows and self._is_whole_row_selection():
+        if not self.IsVisible(bottom_row , 0) and bottom_row < self.NumberRows and \
+                self._is_whole_row_selection():
             self.MakeCellVisible(bottom_row, 0)
 
     def OnCellRightClick(self, event):

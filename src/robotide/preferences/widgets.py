@@ -15,7 +15,6 @@
 
 import wx
 import textwrap
-
 from robotide.widgets import HelpLabel, Label, TextField
 from robotide.context import IS_WINDOWS
 from robotide.utils import PY2
@@ -65,8 +64,6 @@ class PreferencesComboBox(wx.ComboBox):
         """
         fact = 9 if IS_WINDOWS else 18  # On GTK3 labels are bigger
         if choices:
-            if PY2:
-                return wx.Size(max(max(len(unicode(s)) for s in choices) * fact, 72), 20)
             return wx.Size(max(max(len(str(s)) for s in choices)*fact, 72), 20)
         return wx.DefaultSize
 
@@ -126,11 +123,7 @@ class PreferencesColorPicker(wx.ColourPickerCtrl):
         self.settings = settings
         self.key = key
         value = settings[key]
-        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
-            super(PreferencesColorPicker, self).__init__(parent, id,
-                                                         colour=value)
-        else:
-            super(PreferencesColorPicker, self).__init__(parent, id, col=value)
+        super(PreferencesColorPicker, self).__init__(parent, id, colour=value)
         self.Bind(wx.EVT_COLOURPICKER_CHANGED, self.OnPickColor)
 
     def OnPickColor(self, event):
@@ -189,16 +182,15 @@ def _create_checkbox_editor(parent, settings, name, help):
     initial_value = settings.get(name, "")
     editor = wx.CheckBox(parent)
     editor.SetValue(initial_value)
-    editor.Bind(wx.EVT_CHECKBOX,
-                lambda evt: settings.set(name, editor.GetValue()))
-    MySetToolTip(editor, help)
+    editor.Bind(wx.EVT_CHECKBOX, lambda evt: settings.set(name, editor.GetValue()))
+    editor.SetToolTip(help)
     return editor
 
 
 def comma_separated_value_editor(parent, settings, name, label, help=''):
     initial_value = ', '.join(settings.get(name, ""))
     editor = TextField(parent, initial_value)
-    MySetToolTip(editor, help)
+    editor.SetToolTip(help)
 
     def set_value():
         new_value = [token.strip() for token in editor.GetValue().split(',')
@@ -207,10 +199,3 @@ def comma_separated_value_editor(parent, settings, name, label, help=''):
     editor.Bind(wx.EVT_KILL_FOCUS, lambda evt: set_value())
 
     return Label(parent, label=label), editor
-
-
-def MySetToolTip(obj, tip):
-    if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
-        obj.SetToolTip(tip)
-    else:
-        obj.SetToolTipString(tip)
