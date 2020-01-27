@@ -92,17 +92,9 @@ def _create_desktop_shortcut_linux(frame=None):
     desktop = {"de": "Desktop", "en": "Desktop", "es": "Escritorio",
                "fi": r"Työpöytä", "fr": "Bureau", "it": "Scrivania",
                "pt": r"Área de Trabalho"}
-    if PY2:
-        user = unicode(subprocess.check_output(['logname']).strip())
-    else:
-        user = str(subprocess.check_output(['logname']).strip(),
-                   encoding='utf-8')
-    # print("DEBUG: user is %s value %s" % (type(user), user))
+    user = str(subprocess.check_output(['logname']).strip(), encoding='utf-8')
     try:
         ndesktop = desktop[DEFAULT_LANGUAGE[0][:2]]
-        if PY2:
-            ndesktop = ndesktop.decode('utf-8')
-        # print("DEBUG: ndesktop is %s" % type(ndesktop))
         directory = os.path.join("/home", user, ndesktop)
         defaultdir = os.path.join("/home", user, "Desktop")
         if not exists(directory):
@@ -116,7 +108,7 @@ def _create_desktop_shortcut_linux(frame=None):
                                               frame=frame)
                 else:
                     directory = None
-    except KeyError as kerr:
+    except KeyError:
         if not option_q:
             directory = _askdirectory(title="Locate Desktop Directory",
                                       initialdir=os.path.join(
@@ -128,9 +120,6 @@ def _create_desktop_shortcut_linux(frame=None):
         sys.stderr.write("Desktop shortcut creation aborted!\n")
         return False
     try:
-        if PY2:
-            directory.decode('utf-8')
-        # print("DEBUG: directory is %s" % directory)
         link = join(directory, "RIDE.desktop")
     except UnicodeError:
         link = join(directory.encode('utf-8'), "RIDE.desktop")
@@ -156,11 +145,7 @@ def _create_desktop_shortcut_mac(frame=None):
     import os
     import subprocess
     import pwd
-    if PY2:
-        user = unicode(subprocess.check_output(['logname']).strip())
-    else:
-        user = str(subprocess.check_output(['logname']).strip(),
-                   encoding='utf-8')
+    user = str(subprocess.check_output(['logname']).strip(), encoding='utf-8')
     link = os.path.join("/Users", user, "Desktop", "RIDE.command")
     if not exists(link) or option_f:
         if not option_q and not option_f:

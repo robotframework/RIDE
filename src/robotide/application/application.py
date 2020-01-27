@@ -14,11 +14,8 @@
 #  limitations under the License.
 
 import os
-import sys
 import wx
-
 from contextlib import contextmanager
-
 from robotide.namespace import Namespace
 from robotide.controller import Project
 from robotide.spec import librarydatabase
@@ -31,8 +28,7 @@ from robotide.preferences import Preferences, RideSettings
 from robotide.application.pluginloader import PluginLoader
 from robotide.application.editorprovider import EditorProvider
 from robotide.application.releasenotes import ReleaseNotes
-from robotide.application.updatenotifier import UpdateNotifierController, \
-    UpdateDialog
+from robotide.application.updatenotifier import UpdateNotifierController, UpdateDialog
 from robotide import utils
 
 
@@ -104,22 +100,11 @@ class RIDE(wx.App):
     def _find_robot_installation(self):
         output = utils.run_python_command(
             ['import robot; print(robot.__file__ + \", \" + robot.__version__)'])
-        if utils.PY2:
-            robot_found = "ImportError" not in output and output
-        else:
-            robot_found = b"ModuleNotFoundError" not in output and output
+        robot_found = b"ModuleNotFoundError" not in output and output
         if robot_found:
-            # print("DEBUG: output: %s  strip: %s" % (output, output.strip().split(b", ")))
             rf_file, rf_version = output.strip().split(b", ")
-            if utils.PY2:
-                publish.RideLogMessage(
-                    "Found Robot Framework version %s from %s." % (
-                        rf_version, os.path.dirname(rf_file))).publish()
-            else:
-                publish.RideLogMessage(
-                    "Found Robot Framework version %s from %s." % (
-                        str(rf_version, 'utf-8'),
-                        str(os.path.dirname(rf_file), 'utf-8'))).publish()
+            publish.RideLogMessage("Found Robot Framework version %s from %s." % (
+                str(rf_version, 'utf-8'), str(os.path.dirname(rf_file), 'utf-8'))).publish()
             return rf_version
         else:
             publish.RideLogMessage(
@@ -142,11 +127,11 @@ class RIDE(wx.App):
         return self._plugin_loader.plugins
 
     def register_preference_panel(self, panel_class):
-        '''Add the given panel class to the list of known preference panels'''
+        """Add the given panel class to the list of known preference panels"""
         self.preferences.add(panel_class)
 
     def unregister_preference_panel(self, panel_class):
-        '''Remove the given panel class from the known preference panels'''
+        """Remove the given panel class from the known preference panels"""
         self.preferences.remove(panel_class)
 
     def register_editor(self, object_class, editor_class, activate):

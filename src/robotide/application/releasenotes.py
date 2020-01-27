@@ -16,7 +16,6 @@
 
 import wx
 from wx.lib.ClickableHtmlWindow import PyClickableHtmlWindow
-
 from robotide.version import VERSION
 from robotide.pluginapi import ActionInfo
 
@@ -37,8 +36,9 @@ class ReleaseNotes(object):
         self.enable()
 
     def enable(self):
-        self.application.frame.actions.register_action(ActionInfo('Help', 'Release Notes', self.show,
-                                        doc='Show the release notes'))
+        self.application.frame.actions.register_action(ActionInfo('Help', 'Release Notes',
+                                                                  self.show,
+                                                                  doc='Show the release notes'))
         self.show_if_updated()
 
     def show_if_updated(self):
