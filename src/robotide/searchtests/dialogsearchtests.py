@@ -20,7 +20,6 @@ from robotide.utils import overrides
 from robotide.widgets import (Dialog, VerticalSizer, VirtualList, Label,
                               HelpLabel, ImageProvider, ButtonWithHandler)
 from robotide.widgets.list import ListModel
-from robotide.utils import unicode
 
 
 class TestsDialog(Dialog):
@@ -259,7 +258,7 @@ class _TestSearchListModel(ListModel):
         if col == 0:
             return test.name
         if col == 1:
-            return u', '.join(unicode(t) for t in test.tags)
+            return u', '.join(str(t) for t in test.tags)
         return test.datafile_controller.longname
 
     @staticmethod

@@ -28,10 +28,6 @@ from robotide.lib.robot.utils import printable_name, normalize, eq, ET, \
 from .eventhandler import RideEventHandler
 from .printing import Printing
 
-basestring = str
-unicode = str
-unichr = chr
-
 
 def html_format(text):
     return robotide.lib.robot.utils.html_format(text)

@@ -15,10 +15,8 @@
 
 import os
 import time
-import sys
 from robotide.robotapi import normpath
 from robotide.spec.iteminfo import BlockKeywordInfo
-from robotide.utils import unicode
 
 
 class LibraryCache(object):
@@ -70,7 +68,7 @@ class LibraryCache(object):
             library_database.close()
 
     def _key(self, name, args):
-        return name, unicode(tuple(args or ''))
+        return name, str(tuple(args or ''))
 
     def get_library_keywords(self, name, args=None, alias=None):
         args_with_alias = self._alias_to_args(alias, args)

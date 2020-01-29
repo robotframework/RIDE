@@ -16,13 +16,11 @@
 import re
 
 from robotide import robotapi, utils
-from robotide.utils import is_unicode, variablematcher
+from robotide.utils import variablematcher
 from robotide.controller.basecontroller import _BaseController
 from robotide.controller.cellinfo import (CellPosition, CellType, CellInfo,
                                           CellContent, ContentType)
 from robotide.namespace.local_namespace import LocalNamespace
-from robotide.utils import basestring
-
 
 class StepController(_BaseController):
 
@@ -218,7 +216,7 @@ class StepController(_BaseController):
                    for item in [self.keyword or ''] + self.args)
 
     def _kw_name_match(self, item, expected):
-        if isinstance(expected, basestring) or is_unicode(expected):
+        if isinstance(expected, str):
             return utils.eq(item, expected) or (
                 self._GIVEN_WHEN_THEN_MATCHER.match(item) and
                 utils.eq(

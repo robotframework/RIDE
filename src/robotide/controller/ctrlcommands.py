@@ -22,7 +22,6 @@ from robotide.namespace.embeddedargs import EmbeddedArgsHandler
 from robotide.publish.messages import (RideSelectResource, RideFileNameChanged, RideSaving,
                                        RideSaved, RideSaveAll, RideExcludesChanged)
 from robotide.namespace.namespace import _VariableStash
-from robotide.utils import basestring
 from robotide.utils import overrides, variablematcher
 from robotide.controller.filecontrollers import ResourceFileController
 from robotide.controller.macrocontrollers import (KeywordNameController, ForLoopStepController,
@@ -120,7 +119,7 @@ class _Command(object):
         return ', '.join(self._format_param(p) for p in self._params())
 
     def _format_param(self, param):
-        if isinstance(param, basestring):
+        if isinstance(param, str):
             return '"%s"' % param
         return str(param)
 

@@ -14,9 +14,6 @@
 #  limitations under the License.
 
 from robotide import robotapi
-from robotide.utils import PY3
-if PY3:
-    from robotide.utils import basestring, unicode
 
 # NOTE! This is in own module to reduce the number of dependencies as this is executed in another process
 
@@ -32,8 +29,8 @@ def import_varfile(varfile_path, args):
 
 # Must be picklable
 def _format_value(value):
-    if isinstance(value, basestring):
+    if isinstance(value, str):
         return value
     if isinstance(value, list):
-        return u'[ %s ]' % u' | '.join(unicode(v) for v in value)
-    return unicode(value)
+        return u'[ %s ]' % u' | '.join(str(v) for v in value)
+    return str(value)

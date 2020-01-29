@@ -34,11 +34,9 @@
 
 from __future__ import generators
 
-import sys
 import os
 import re
 from robotide.utils import converttypes
-from robotide.utils import basestring, unicode
 
 compiler = None
 try:
@@ -599,7 +597,7 @@ class Section(dict):
     def __getitem__(self, key):
         """Fetch the item and do string interpolation."""
         val = dict.__getitem__(self, key)
-        if self.main.interpolation and isinstance(val, basestring):
+        if self.main.interpolation and isinstance(val, str):
             return self._interpolate(key, val)
         return val
 
@@ -617,7 +615,7 @@ class Section(dict):
         ``unrepr`` must be set when setting a value to a dictionary, without
         creating a new sub-section.
         """
-        if not isinstance(key, basestring):
+        if not isinstance(key, str):
             raise ValueError('The key "%s" is not a string.' % key)
 
         # add the comment
@@ -651,11 +649,11 @@ class Section(dict):
             if key not in self:
                 self.scalars.append(key)
             if not self.main.stringify:
-                if isinstance(value, basestring):
+                if isinstance(value, str):
                     pass
                 elif isinstance(value, (list, tuple)):
                     for entry in value:
-                        if not isinstance(entry, basestring):
+                        if not isinstance(entry, str):
                             raise TypeError('Value is not a string "%s".' % entry)
                 else:
                     raise TypeError('Value is not a string "%s".' % value)
@@ -699,7 +697,7 @@ class Section(dict):
             del self.comments[key]
             del self.inline_comments[key]
             self.sections.remove(key)
-        if self.main.interpolation and isinstance(val, basestring):
+        if self.main.interpolation and isinstance(val, str):
             return self._interpolate(key, val)
         return val
 
@@ -973,7 +971,7 @@ class Section(dict):
             return False
         else:
             try:
-                if not isinstance(val, basestring):
+                if not isinstance(val, str):
                     raise KeyError()
                 else:
                     return self.main._bools[val.lower()]
@@ -1204,7 +1202,7 @@ class ConfigObj(Section):
         self._load(infile, configspec)
 
     def _load(self, infile, configspec):
-        if isinstance(infile, basestring):
+        if isinstance(infile, str):
             self.filename = infile
             if os.path.isfile(self.filename):
                 # print("DEBUG: configobj is path _load filepath %s", self.filename)
@@ -1437,7 +1435,7 @@ class ConfigObj(Section):
                     else:
                         infile = newline
                     # UTF8 - don't decode
-                    if isinstance(infile, basestring):
+                    if isinstance(infile, str):
                         # print("DEBUG: returning lines enconding UTF-8, w BOM")
                         return infile.splitlines(True)
                     else:
@@ -1448,7 +1446,7 @@ class ConfigObj(Section):
                 return self._decode(infile, encoding)
 
         # No BOM discovered and no encoding specified, just return
-        if isinstance(infile, basestring):
+        if isinstance(infile, str):
             # infile read from a file will be a single string
             # print("DEBUG: returning str from list no enconding, no BOM")
             return infile.splitlines(True)
@@ -1471,12 +1469,12 @@ class ConfigObj(Section):
 
         if is a string, it also needs converting to a list.
         """
-        if isinstance(infile, basestring):
+        if isinstance(infile, str):
             # can't be unicode
             # NOTE: Could raise a ``UnicodeDecodeError``
             return infile.decode(encoding).splitlines(True)
         for i, line in enumerate(infile):
-            if not isinstance(line, unicode):
+            if not isinstance(line, str):
                 # NOTE: The isinstance test here handles mixed lists of unicode/string
                 # NOTE: But the decode will break on any non-string values
                 # NOTE: Or could raise a ``UnicodeDecodeError``
@@ -1496,7 +1494,7 @@ class ConfigObj(Section):
         Used by ``stringify`` within validate, to turn non-string values
         into strings.
         """
-        if not isinstance(value, basestring):
+        if not isinstance(value, str):
             return str(value)
         else:
             return value
@@ -1747,7 +1745,7 @@ class ConfigObj(Section):
                 return self._quote(value[0], multiline=False) + ','
             return ', '.join([self._quote(val, multiline=False)
                 for val in value])
-        if not isinstance(value, basestring):
+        if not isinstance(value, str):
             if self.stringify:
                 value = str(value)
             else:
@@ -2272,7 +2270,7 @@ class ConfigObj(Section):
         This method raises a ``ReloadError`` if the ConfigObj doesn't have
         a filename attribute pointing to a file.
         """
-        if not isinstance(self.filename, basestring):
+        if not isinstance(self.filename, str):
             raise ReloadError()
 
         filename = self.filename

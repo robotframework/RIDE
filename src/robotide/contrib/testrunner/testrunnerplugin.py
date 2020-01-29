@@ -65,7 +65,7 @@ from robotide.publish.messages import RideTestSelectedForRunningChanged
 from robotide.pluginapi import Plugin, ActionInfo
 from robotide.widgets import Label, ImageProvider
 from robotide.robotapi import LOG_LEVELS
-from robotide.utils import robottime, is_unicode
+from robotide.utils import robottime
 from robotide.preferences.editors import ReadFonts
 from sys import getfilesystemencoding
 from robotide.lib.robot.utils.encodingsniffer import (get_console_encoding,

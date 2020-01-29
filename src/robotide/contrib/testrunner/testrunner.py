@@ -47,7 +47,7 @@ from robotide.robotapi import LOG_LEVELS
 from robotide.context import IS_WINDOWS
 from robotide.contrib.testrunner import TestRunnerAgent
 from robotide.controller.testexecutionresults import TestExecutionResults
-from robotide.utils import is_unicode
+
 try:
     from robotide.lib.robot.utils import encoding
 except ImportError:
@@ -291,7 +291,7 @@ class TestRunner(object):
         if IS_WINDOWS:
             f = codecs.open(argfile, "wb")
             for item in args:
-                if is_unicode(item):
+                if isinstance(item, str):
                     enc_arg = item.encode('utf-8')
                 else:
                     enc_arg = item

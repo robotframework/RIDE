@@ -42,7 +42,6 @@ from .settingcontrollers import (DocumentationController, FixtureController,
 from .tablecontrollers import (VariableTableController, TestCaseTableController,
         KeywordTableController, ImportSettingsController,
         MetadataListController, TestCaseController)
-from robotide.utils import basestring
 
 
 def _get_controller(project, data, parent):
@@ -368,7 +367,7 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
 
     def __init__(self, data, project=None, parent=None):
         dir_ = data.directory
-        dir_ = os.path.abspath(dir_) if isinstance(dir_, basestring) else dir_
+        dir_ = os.path.abspath(dir_) if isinstance(dir_, str) else dir_
         _FileSystemElement.__init__(self, self._filename(data), dir_)
         _DataController.__init__(self, data, project, parent)
         self._dir_controllers = {}

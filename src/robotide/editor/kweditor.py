@@ -41,7 +41,7 @@ from .editordialogs import UserKeywordNameDialog, ScalarVariableDialog, \
 from .contentassist import ExpandingContentAssistTextCtrl
 from .gridcolorizer import Colorizer
 from robotide.lib.robot.utils.compat import with_metaclass
-from robotide.utils import basestring, unicode, unichr
+
 # Metaclass fix from http://code.activestate.com/recipes/204197-solving-the-metaclass-conflict/
 from robotide.utils.noconflict import classmaker
 
@@ -455,7 +455,7 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
         if not _iscelleditcontrolshown:
             data = self._clipboard_handler.clipboard_content()
             if data:
-                data = [[data]] if isinstance(data, basestring) else data
+                data = [[data]] if isinstance(data, str) else data
                 self._execute(command_class(self.selection.topleft, data))
 
     # DEBUG @requires_focus
@@ -726,7 +726,7 @@ work.</li>
         try:
             self._execute(AddKeywordFromCells(cells))
         except ValueError as err:
-            wx.MessageBox(unicode(err))
+            wx.MessageBox(str(err))
 
     def _data_cells_from_current_row(self):
         currow, curcol = self.selection.cell
@@ -950,7 +950,7 @@ class ContentAssistCellEditor(GridCellEditor):
         elif key == wx.WXK_BACK:
             self._tc.SetValue(self._original_value)
         else:
-            self._tc.SetValue(unichr(key))
+            self._tc.SetValue(str(key))
         self._tc.SetFocus()
         self._tc.SetInsertionPointEnd()
 

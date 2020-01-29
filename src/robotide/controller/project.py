@@ -29,7 +29,6 @@ from robotide.spec.librarydatabase import DATABASE_FILE
 from robotide.spec.librarymanager import LibraryManager
 from robotide.spec.xmlreaders import SpecInitializer
 from robotide.utils import overrides
-from robotide.utils import unicode
 
 
 class Project(_BaseController, WithNamespace):
@@ -339,7 +338,7 @@ class Serializer(object):
 
     def _cache_error(self, data, error):
         self._errors.append("Error in serializing '%s':\n%s"
-                            % (data.data.source, unicode(error)))
+                            % (data.data.source, str(error)))
 
     def _log_errors(self):
         if self._errors:

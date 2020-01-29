@@ -34,7 +34,6 @@ from robotide.controller.filecontrollers import (TestDataDirectoryController,
                                                  ResourceFileController)
 from robotide import utils
 from resources import PYAPP_REFERENCE, FakeSettings, FakeApplication
-from robotide.utils import unicode
 
 from robotide.ui import tree as st
 from robotide.ui import treenodehandlers as th
@@ -131,10 +130,10 @@ class _ViewAllTagsDialog(ViewAllTagsDialog):
             for test in i.testcase_table.tests:
                 try:
                     for tag in getattr(test.tags, 'tags').split("    "):
-                        if tag is None or len(unicode(tag).strip()) == 0:
+                        if tag is None or len(str(tag).strip()) == 0:
                             continue
                         else:
-                            tag_name = unicode(tag)
+                            tag_name = str(tag)
                         if tag_name in unique_tags:
                             unique_tags[tag_name].append(test)
                         else:
@@ -223,7 +222,7 @@ class _BaseSuiteTreeTest(unittest.TestCase):
     def tearDown(self):
         PUBLISHER.unsubscribe_all()
         wx.CallAfter(wx.Exit)
-        self.app.MainLoop()  # What is this doing here????
+        # self.app.MainLoop()  # What is this doing here????
 
     def _create_model(self):
         suite = self._create_directory_suite('/top_suite')
