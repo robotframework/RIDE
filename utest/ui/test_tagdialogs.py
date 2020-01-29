@@ -34,10 +34,7 @@ from robotide.controller.filecontrollers import (TestDataDirectoryController,
                                                  ResourceFileController)
 from robotide import utils
 from resources import PYAPP_REFERENCE, FakeSettings, FakeApplication
-# import utest.resources
-from robotide.utils import PY2, PY3
-if PY3:
-    from robotide.utils import unicode
+from robotide.utils import unicode
 
 from robotide.ui import tree as st
 from robotide.ui import treenodehandlers as th
@@ -112,10 +109,7 @@ class _SortableD(utils.NormalizedDict):
 
     def iteritems(self):
         """Returns an iterator over the (key,data) items of the tags"""
-        if PY2:
-            return self._keys.iteritems()
-        elif PY3:
-            return self._keys.items()
+        return self._keys.items()
 
 
 class _ViewAllTagsDialog(ViewAllTagsDialog):
@@ -229,7 +223,7 @@ class _BaseSuiteTreeTest(unittest.TestCase):
     def tearDown(self):
         PUBLISHER.unsubscribe_all()
         wx.CallAfter(wx.Exit)
-        self.app.MainLoop()
+        self.app.MainLoop()  # What is this doing here????
 
     def _create_model(self):
         suite = self._create_directory_suite('/top_suite')
@@ -259,16 +253,10 @@ class _BaseSuiteTreeTest(unittest.TestCase):
         count = 0
         for i in suite.testcase_table.tests:
             newtag = ""
-            if PY2:
-                for key, test in self._tags_list.iteritems():
-                    newtag += key + "    " if count in test else ""
-                    if len(newtag):
-                        setattr(i.tags, 'tags', "{0}".format(newtag))
-            elif PY3:
-                for key, test in self._tags_list.items():
-                    newtag += key + "    " if count in test else ""
-                    if len(newtag):
-                        setattr(i.tags, 'tags', "{0}".format(newtag))
+            for key, test in self._tags_list.items():
+                newtag += key + "    " if count in test else ""
+                if len(newtag):
+                    setattr(i.tags, 'tags', "{0}".format(newtag))
             count += 1
         return suite
 

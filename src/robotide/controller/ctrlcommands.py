@@ -19,15 +19,14 @@ import os
 import re
 
 from robotide.namespace.embeddedargs import EmbeddedArgsHandler
-from robotide.publish.messages import RideSelectResource, RideFileNameChanged, RideSaving, RideSaved, RideSaveAll, RideExcludesChanged
+from robotide.publish.messages import (RideSelectResource, RideFileNameChanged, RideSaving,
+                                       RideSaved, RideSaveAll, RideExcludesChanged)
 from robotide.namespace.namespace import _VariableStash
-
-from robotide.utils import PY3
-if PY3:
-    from robotide.utils import basestring
+from robotide.utils import basestring
 from robotide.utils import overrides, variablematcher
 from robotide.controller.filecontrollers import ResourceFileController
-from robotide.controller.macrocontrollers import KeywordNameController, ForLoopStepController, TestCaseController
+from robotide.controller.macrocontrollers import (KeywordNameController, ForLoopStepController,
+                                                  TestCaseController)
 from robotide.controller.settingcontrollers import _SettingController, VariableController
 from robotide.controller.tablecontrollers import VariableTableController
 from robotide.controller.validators import BaseNameValidator
@@ -203,8 +202,7 @@ class Undo(_Command):
 
     def execute(self, context):
         if not context.is_undo_empty():
-            result = context.pop_from_undo()._execute_without_redo_clear(
-                context)
+            result = context.pop_from_undo()._execute_without_redo_clear(context)
             redo_command = context.pop_from_undo()
             context.push_to_redo(redo_command)
             return result
@@ -260,7 +258,7 @@ class _StepsChangingCommand(_ReversibleCommand):
         return False
 
     def change_steps(self, context):
-        '''Return True if steps changed, False otherwise'''
+        """Return True if steps changed, False otherwise"""
         raise NotImplementedError(self.__class__.__name__)
 
     def _step(self, context):
@@ -357,7 +355,7 @@ class RenameTest(_ReversibleCommand):
         self._new_name = new_name
 
     def _params(self):
-        return (self._new_name)
+        return self._new_name
 
     def _execute(self, context):
         old_name  = context.name
@@ -488,17 +486,20 @@ class DeleteFile(_Command):
         context.remove_from_filesystem()
         context.remove()
 
+
 class OpenContainingFolder(_Command):
     modifying  = False
 
     def execute(self, context):
         context.open_filemanager()
 
+
 class RemoveReadOnly(_Command):
     
     def execute(self, context):
         context.remove_readonly()
-        
+
+
 class DeleteFolder(_Command):
 
     def execute(self, context):
@@ -1009,7 +1010,7 @@ class Purify(_Command):
         while True:
             if len(context.steps) <= i:
                 break
-            # Steps can changes during this operation
+            # Steps can change during this operation
             # this is why index based iteration - step reference can be stale
             step = context.steps[i]
             step.remove_empty_columns_from_end()
@@ -1064,10 +1065,10 @@ class DeleteCell(_StepsChangingCommand):
 class _RowChangingCommand(_StepsChangingCommand):
 
     def __init__(self, row):
-        '''Command that will operate on a given logical `row` of test/user keyword.
+        """Command that will operate on a given logical `row` of test/user keyword.
 
         Giving -1 as `row` means that operation is done on the last row.
-        '''
+        """
         self._row = row
 
     def change_steps(self, context):
@@ -1141,10 +1142,12 @@ class MoveRowsUp(_StepsChangingCommand):
             return False
         number_of_steps_before = len(context.steps)
         for row in self._rows:
-            keep_indent = (context.steps[row].as_list()[0] == 'END' and  context.steps[row - 1].as_list()[0] == '')
-            avoid_ident = (context.steps[row].as_list()[0] == 'FOR' and  context.steps[row - 1].as_list()[0] == 'END')
+            keep_indent = (context.steps[row].as_list()[0] == 'END' and
+                           context.steps[row - 1].as_list()[0] == '')
+            avoid_ident = (context.steps[row].as_list()[0] == 'FOR' and
+                           context.steps[row - 1].as_list()[0] == 'END')
             new_indent = (context.steps[row - 1].as_list()[0] == 'END' and
-                           context.steps[row].as_list()[0] != 'FOR')
+                          context.steps[row].as_list()[0] != 'FOR')
             context.move_step_up(row)
             if avoid_ident:  # Special case FOR going up END
                 context.steps[row].shift_left(0)
@@ -1184,17 +1187,21 @@ class MoveRowsDown(_StepsChangingCommand):
         for row in reversed(self._rows):
             avoid_indent = False
             try:
-                keep_indent = (context.steps[row].as_list()[0] == 'END' and context.steps[row-1].as_list()[0] == '')
-                if context.steps[row].as_list()[0] == 'END' and context.steps[row+1].as_list()[0] == 'FOR':
+                keep_indent = (context.steps[row].as_list()[0] == 'END' and
+                               context.steps[row-1].as_list()[0] == '')
+                if context.steps[row].as_list()[0] == 'END' and\
+                        context.steps[row+1].as_list()[0] == 'FOR':
                     keep_indent = False
                     avoid_indent = True  # Special case for END going after FOR
             except IndexError:
                 keep_indent = False
             try:
-                remove_indent = (context.steps[row].as_list()[0] == 'FOR' and context.steps[row+1].as_list()[1] == '')
+                remove_indent = (context.steps[row].as_list()[0] == 'FOR' and
+                                 context.steps[row+1].as_list()[1] == '')
             except IndexError:
                 remove_indent = False
-            if context.steps[row-1].as_list()[0] == 'FOR' and context.steps[row].as_list()[0] != '':  # Special case move after For
+            if context.steps[row-1].as_list()[0] == 'FOR' and\
+                    context.steps[row].as_list()[0] != '':  # Special case move after For
                 keep_indent = True
             context.move_step_down(row)
             if avoid_indent and context.steps[row+1].as_list()[1] == 'END':

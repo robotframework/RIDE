@@ -18,9 +18,7 @@ import time
 import sys
 from robotide.robotapi import normpath
 from robotide.spec.iteminfo import BlockKeywordInfo
-from robotide.utils import PY2, PY3
-if PY3:
-    from robotide.utils import unicode
+from robotide.utils import unicode
 
 
 class LibraryCache(object):
@@ -77,15 +75,9 @@ class LibraryCache(object):
     def get_library_keywords(self, name, args=None, alias=None):
         args_with_alias = self._alias_to_args(alias, args)
         key = self._key(name, args_with_alias)
-        if PY2:
-            if not self._library_keywords.has_key(key):
-                self._library_keywords[key] = \
-                    [k.with_alias(alias) for k in self._get_library(name, args)]
-        elif PY3:
-            if not key in self._library_keywords:
-                self._library_keywords[key] = \
-                    [k.with_alias(alias) for k in
-                     self._get_library(name, args)]
+        if not key in self._library_keywords:
+            self._library_keywords[key] = [k.with_alias(alias) for k in
+                                           self._get_library(name, args)]
 
         return self._library_keywords[key]
 

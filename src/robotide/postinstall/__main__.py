@@ -18,7 +18,6 @@
 
 import sys
 from os.path import exists, join
-from robotide.utils import PY2
 
 __doc__ = """
 Usage: python ride_postinstall.py [options] <-install|-remove>
@@ -35,7 +34,7 @@ Usage: python ride_postinstall.py [options] <-install|-remove>
 def verify_install():
     try:
         from wx import version
-    except ImportError as err:
+    except ImportError:
         sys.stderr.write("No wxPython installation detected!"
                          "\n"
                          "Please ensure that you have wxPython installed "

@@ -19,20 +19,14 @@
 import wx, wx.html
 from robotide.utils.versioncomparator import cmp_versions
 from robotide.widgets.button import ButtonWithHandler
-from robotide.utils import PY2
 
 import time
-
-if PY2:
-    import urllib2
-    import xmlrpclib
-else:  # py3
-    import urllib.request as urllib2
-    import xmlrpc.client as xmlrpclib
+import urllib.request as urllib2
+import xmlrpc.client as xmlrpclib
 import robotide.version as version
 
-_CHECK_FOR_UPDATES_SETTING = 'check for updates'
-_LAST_UPDATE_CHECK_SETTING = 'last update check'
+_CHECK_FOR_UPDATES_SETTING = "check for updates"
+_LAST_UPDATE_CHECK_SETTING = "last update check"
 
 class UpdateNotifierController(object):
 
@@ -102,19 +96,16 @@ class UpdateDialog(wx.Dialog):
         # set Left to Right direction (while we don't have localization)
         self.SetLayoutDirection(wx.Layout_LeftToRight)
         sizer = wx.BoxSizer(orient=wx.VERTICAL)
-        if PY2 and cmp_versions(UpdateNotifierController.VERSION, '1.7.4') == -1:
-            obsolete = '<br/><h1><b>You will need to upgrade your Python version!</b></h1>'
-        else:
-            obsolete = ''
         hwin = HtmlWindow(self, -1, size=(400,200))
-        hwin.SetPage('New version %s available from <a href="%s">%s</a>%s' % (version, url, url, obsolete))
+        hwin.SetPage('New version %s available from <a href="%s">%s</a>' % (version, url, url))
         irep = hwin.GetInternalRepresentation()
         hwin.SetSize((irep.GetWidth()+25, irep.GetHeight()+20))
         sizer.Add(hwin)
-        checkbox = wx.CheckBox(self, -1, label='I\'m using another method for RIDE updates\n and do not need automatic update checks')
+        checkbox = wx.CheckBox(self, -1, label="I\'m using another method for RIDE updates\n and "
+                                               "do not need automatic update checks")
         checkbox.Bind(wx.EVT_CHECKBOX, handler=self.OnCheckboxChange)
         sizer.Add(checkbox)
-        button = ButtonWithHandler(self, label='remind me later', handler=self.OnRemindMeLater)
+        button = ButtonWithHandler(self, label="remind me later", handler=self.OnRemindMeLater)
         sizer.Add(button)
         self.SetSizer(sizer)
         self.CentreOnParent(wx.BOTH)

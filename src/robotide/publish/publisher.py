@@ -13,9 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robotide.utils import PY3
-if PY3:
-    from robotide.utils import basestring, unicode
+from robotide.utils import basestring, unicode
 
 try:
     from pubsub import Publisher
@@ -82,8 +80,6 @@ class _ListenerWrapper(object):
         WxPublisher.subscribe(self, self.topic)
 
     def _get_topic(self, topic):
-        # DEBUG RecursionError on python 3
-        # print("DEBUG: topic(%s) is %s" % (topic, type(topic)))
         if not isinstance(topic, basestring):
             topic = topic.topic
         return topic.lower()

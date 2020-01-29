@@ -52,10 +52,7 @@ import re
 import wx
 import wx.stc
 from functools import reduce
-try:
-    from Queue import Queue
-except ImportError: # Python 3
-    from queue import Queue
+from queue import Queue
 from wx.lib.embeddedimage import PyEmbeddedImage
 
 
@@ -68,7 +65,7 @@ from robotide.publish.messages import RideTestSelectedForRunningChanged
 from robotide.pluginapi import Plugin, ActionInfo
 from robotide.widgets import Label, ImageProvider
 from robotide.robotapi import LOG_LEVELS
-from robotide.utils import robottime, is_unicode, PY2
+from robotide.utils import robottime, is_unicode
 from robotide.preferences.editors import ReadFonts
 from sys import getfilesystemencoding
 from robotide.lib.robot.utils.encodingsniffer import (get_console_encoding,
@@ -125,7 +122,7 @@ class TestRunnerPlugin(Plugin):
     def __init__(self, application=None):
         Plugin.__init__(self, application, initially_enabled=True,
                         default_settings=self.defaults)
-        self.version = "3.01"
+        self.version = "3.1"
         self.metadata = {
             "url":
             "https://github.com/robotframework/RIDE/wiki/Test-Runner-Plugin"}
@@ -215,9 +212,9 @@ class TestRunnerPlugin(Plugin):
         self.subscribe(self.OnSettingsChanged, RideSettingsChanged)
 
     def OnSettingsChanged(self, data):
-        '''Updates settings'''
+        """Updates settings"""
         section, setting = data.keys
-        if section == 'Test Run':  # DEBUG temporarily we have two sections
+        if section == "Test Run":  # DEBUG temporarily we have two sections
             self.defaults.setdefault(setting, data.new)
             self.save_setting(setting, data.new)
 
@@ -494,9 +491,6 @@ class TestRunnerPlugin(Plugin):
         """
         result = []
         for arg in argv:
-            if PY2 and is_unicode(arg):
-                arg = arg.encode(encoding['SYSTEM'])  # DEBUG "utf-8") CONSOLE_ENCODING
-                # print("DEBUG: PY2 unicode args %s" % arg)
             if "'" in arg or " " in arg or "&" in arg:
                 # for windows, if there are spaces we need to use
                 # double quotes. Single quotes cause problems
@@ -505,7 +499,7 @@ class TestRunnerPlugin(Plugin):
                 result.append("'%s'" % arg)
             else:
                 result.append(arg)
-        return " ".join(result)  # DEBUG added bytes
+        return " ".join(result)
 
     def _show_notebook_tab(self):
         """Show the Run notebook tab"""
@@ -529,11 +523,11 @@ class TestRunnerPlugin(Plugin):
                 textctrl.AppendText(string.encode(encoding['SYSTEM']))
             else:
                 textctrl.AppendText(string)
-        except UnicodeDecodeError as e:
+        except UnicodeDecodeError:
             # I'm not sure why I sometimes get this, and I don't know what I
             # can do other than to ignore it.
-            textctrl.AppendTextRaw(bytes(string, encoding['SYSTEM']))  # DEBUG .encode('utf-8'))
-        except UnicodeEncodeError as e:
+            textctrl.AppendTextRaw(bytes(string, encoding['SYSTEM']))
+        except UnicodeEncodeError:
             # I'm not sure why I sometimes get this, and I don't know what I
             # can do other than to ignore it.
             textctrl.AppendText(string.encode('utf-8'))
@@ -553,10 +547,7 @@ class TestRunnerPlugin(Plugin):
         # robot wants to know a fixed size for output, so calculate the
         # width of the window based on average width of a character. A
         # little is subtracted just to make sure there's a little margin
-        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
-            out_width, _ = self.out.GetSize()
-        else:
-            out_width, _ = self.out.GetSizeTuple()
+        out_width, _ = self.out.GetSize()
         char_width = self.out.GetCharWidth()
         return str(int(out_width/char_width)-10)
 
@@ -610,7 +601,6 @@ class TestRunnerPlugin(Plugin):
         toolbar.Realize()
         self._bind_runner_toolbar_events(toolbar)
         return toolbar
-
 
     def _bind_runner_toolbar_events(self, toolbar):
         for event, callback, id in ((wx.EVT_TOOL, self.OnRun, ID_RUN),
@@ -756,7 +746,8 @@ class TestRunnerPlugin(Plugin):
 
     def _create_output_textctrl(self):
         textctrl = OutputStyledTextCtrl(self._right_panel)
-        # textctrl.StyleSetFontEncoding(wx.stc.STC_STYLE_DEFAULT, wx.FONTENCODING_CP936)  # DEBUG Chinese wx.) wx.FONTENCODING_SYSTEM
+        # textctrl.StyleSetFontEncoding(wx.stc.STC_STYLE_DEFAULT, wx.FONTENCODING_CP936)
+        # DEBUG Chinese wx.) wx.FONTENCODING_SYSTEM
         textctrl.SetScrollWidth(100)
         self._set_margins(textctrl)
         textctrl.SetReadOnly(True)
@@ -980,8 +971,6 @@ class OutputStyledTextCtrl(wx.stc.StyledTextCtrl):
             if self.GetScrollWidth() < width + 50:
                 self.SetScrollWidth(width + 50)
         except UnicodeDecodeError:
-            # print("DEBUG: UnicodeDecodeError at update scroll,
-            # testrunnerplugin, string is %s\n" % string)
             pass
 
 
@@ -994,13 +983,13 @@ class OutputStylizer(object):
         PUBLISHER.subscribe(self.OnSettingsChanged, RideSettingsChanged)
 
     def OnSettingsChanged(self, data):
-        '''Redraw colors and font if settings are modified'''
+        """Redraw colors and font if settings are modified"""
         section, setting = data.keys
         if section == 'Test Runner':
             self._set_styles()
 
     def _set_styles(self):
-        '''Sets plugin styles'''
+        """Sets plugin styles"""
         background = self.settings.get('background', 'white')
         font_size = self.settings.get('font size', 10)
         font_face = self.settings.get('font face', 'Courier New')

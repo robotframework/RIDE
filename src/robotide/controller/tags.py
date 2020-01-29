@@ -14,9 +14,7 @@
 #  limitations under the License.
 
 from robotide.controller.basecontroller import _BaseController
-from robotide.utils import PY3
-if PY3:
-    from robotide.utils import unicode
+from robotide.utils import unicode
 
 
 class Tag(_BaseController):

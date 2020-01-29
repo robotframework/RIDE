@@ -32,9 +32,7 @@ from robotide.spec.iteminfo import ResourceUserKeywordInfo, \
 from robotide.controller.tags import Tag
 from robotide import robotapi
 from robotide.utils import is_unicode, variablematcher
-from robotide.utils import PY3
-if PY3:
-    from robotide.utils import basestring
+from robotide.utils import basestring
 
 
 KEYWORD_NAME_FIELD = 'Keyword Name'
@@ -183,7 +181,6 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         return self.datafile_controller.is_library_keyword(value)
 
     def delete(self):
-        # print("DEBUG _WithStepsController delete this is parent %s\nThis is self %s" % (self._parent, self))
         self.datafile_controller.unregister_namespace_updates(
             self._clear_cached_steps)
         self._parent.delete(self)
@@ -291,10 +288,9 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         self.mark_dirty()
         RideItemNameChanged(item=self, old_name=old_name).publish()
 
-    def notify_keyword_removed(self):  # DEBUG
+    def notify_keyword_removed(self):
         self.update_namespace()
-        RideUserKeywordRemoved(datafile=self.datafile, name=self.name,
-                               item=self).publish
+        RideUserKeywordRemoved(datafile=self.datafile, name=self.name, item=self).publish()
         self.notify_steps_changed()
 
     def notify_settings_changed(self):

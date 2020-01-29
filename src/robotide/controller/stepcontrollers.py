@@ -21,9 +21,7 @@ from robotide.controller.basecontroller import _BaseController
 from robotide.controller.cellinfo import (CellPosition, CellType, CellInfo,
                                           CellContent, ContentType)
 from robotide.namespace.local_namespace import LocalNamespace
-from robotide.utils import PY3
-if PY3:
-    from robotide.utils import basestring
+from robotide.utils import basestring
 
 
 class StepController(_BaseController):
@@ -410,7 +408,7 @@ class StepController(_BaseController):
                and any(c.strip() for c in cells) and self._index() > 0
 
     def _is_end_step(self, cells):
-        return cells and ('END' in cells)  #cells[0] == 'END' # TODO Improve check
+        return cells and ('END' in cells)  # cells[0] == 'END' # TODO Improve check
 
     def _recreate_as_partial_for_loop(self, cells, comment):
         index = self._index()

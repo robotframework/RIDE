@@ -25,20 +25,12 @@ from robotide.lib.robot.utils import printable_name, normalize, eq, ET, \
     unic, asserts, unescape, html_escape, attribute_escape, robottime,\
     get_timestamp, Matcher, is_list_like, is_dict_like, system_decode,\
     ArgumentParser, get_error_details, is_unicode, is_string, py2to3
-
 from .eventhandler import RideEventHandler
 from .printing import Printing
 
-PY2 = sys.version_info[0] == 2
-PY3 = not PY2
-
-if PY3:
-    try:  # This was redefining in PY2 when future was not installed
-        from past.types import basestring, unicode, unichr
-    except ImportError:  # pip install future
-        basestring = str
-        unicode = str
-        unichr = chr
+basestring = str
+unicode = str
+unichr = chr
 
 
 def html_format(text):
@@ -118,15 +110,12 @@ def is_same_drive(path1, path2):
 
 def run_python_command(command, mode='c'):
     cmd = [sys.executable, '-{0}'.format(mode)] + command
-    # TODO Let the user select with robot to use
-    # print("DEBUG: app init detecting robot with cmd: %s" % cmd)
+    # TODO Let the user select which robot to use
     process = subprocess.Popen(
         cmd,
         stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE)  # DEBUG STDOUT PIPE
+        stderr=subprocess.PIPE)
     output, _ = process.communicate()
-    # if output:
-    #    print("DEBUG: run_python result: %s" % output)
     return output
 
 
@@ -134,8 +123,6 @@ def converttypes(data, prefer_str=True):
     """
     Convert all types from Python2 to Python3
     """
-    if PY2:
-        return data
     enc = sys.stdout and sys.stdout.encoding or "utf-8"
     data_type = type(data)
 

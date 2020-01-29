@@ -15,9 +15,7 @@
 
 from robotide.action.shortcut import localize_shortcuts
 from robotide.utils import highlightmatcher, html_escape
-from robotide.utils import PY3
-if PY3:
-    from robotide.utils import unicode
+from robotide.utils import unicode
 
 CTRL_LABEL = localize_shortcuts('CtrlCmd')
 
