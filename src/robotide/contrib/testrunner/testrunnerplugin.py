@@ -77,18 +77,18 @@ encoding = {'CONSOLE': CONSOLE_ENCODING,
             'SYSTEM': SYSTEM_ENCODING,
             'OUTPUT': OUTPUT_ENCODING}
 
-ID_RUN = wx.NewId()
-ID_RUNDEBUG = wx.NewId()
-ID_STOP = wx.NewId()
-ID_PAUSE = wx.NewId()
-ID_CONTINUE = wx.NewId()
-ID_STEP_NEXT = wx.NewId()
-ID_STEP_OVER = wx.NewId()
-ID_SHOW_REPORT = wx.NewId()
-ID_SHOW_LOG = wx.NewId()
-ID_AUTOSAVE = wx.NewId()
-ID_PAUSE_ON_FAILURE = wx.NewId()
-ID_SHOW_MESSAGE_LOG = wx.NewId()
+ID_RUN = wx.NewIdRef()
+ID_RUNDEBUG = wx.NewIdRef()
+ID_STOP = wx.NewIdRef()
+ID_PAUSE = wx.NewIdRef()
+ID_CONTINUE = wx.NewIdRef()
+ID_STEP_NEXT = wx.NewIdRef()
+ID_STEP_OVER = wx.NewIdRef()
+ID_SHOW_REPORT = wx.NewIdRef()
+ID_SHOW_LOG = wx.NewIdRef()
+ID_AUTOSAVE = wx.NewIdRef()
+ID_PAUSE_ON_FAILURE = wx.NewIdRef()
+ID_SHOW_MESSAGE_LOG = wx.NewIdRef()
 STYLE_DEFAULT = 0
 STYLE_STDERR = 2
 
