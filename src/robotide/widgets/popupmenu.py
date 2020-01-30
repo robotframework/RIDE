@@ -59,7 +59,7 @@ class PopupMenu(wx.Menu):
         self.Destroy()
 
     def _add_item(self, parent, item):
-        id_ = wx.NewId()
+        id_ = wx.NewIdRef()
         self.Append(id_, item.name)
         parent.Bind(wx.EVT_MENU, item.callable, id=id_)
 

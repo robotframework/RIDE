@@ -307,7 +307,7 @@ class ActionDelegator(object):
     def __init__(self, frame, shortcut=None):
         self._frame = frame
         self.shortcut = shortcut
-        self.id = wx.NewId()
+        self.id = wx.NewIdRef()
         self._actions = []
 
     def add(self, action):
