@@ -95,7 +95,7 @@ class ArgumentsValidator(_AbstractValidator):
         elif robotapi.is_dict_var(arg):
             return ArgumentTypes.DICT
         else:
-            raise ValueError(arg)  # py3
+            raise ValueError(arg)
 
     def _validate_argument_order(self, types):
         prev = ArgumentTypes.SCALAR

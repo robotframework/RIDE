@@ -19,10 +19,6 @@ import time
 from robotide.preferences.settings import SETTINGS_DIRECTORY
 from robotide.spec.iteminfo import LibraryKeywordInfo
 from robotide.utils import system_decode
-from robotide.utils import PY3
-
-if PY3:
-    from robotide.utils import unicode
 
 CREATION_SCRIPT = """\
 CREATE TABLE libraries (id INTEGER PRIMARY KEY,
@@ -109,7 +105,7 @@ class LibraryDatabase(object):
         old_versions = cur.execute('select id from libraries where name = ?  '
                                    'and arguments = ?',
                                    (library_name,
-                                    unicode(library_arguments))).fetchall()
+                                    str(library_arguments))).fetchall()
         cur.executemany('delete from keywords where library = ?', old_versions)
         cur.executemany('delete from libraries where id = ?', old_versions)
         lib = self._insert_library(library_name, library_doc_format,
@@ -124,7 +120,7 @@ class LibraryDatabase(object):
         self._cursor().execute('update libraries set last_updated = ?'
                                ' where name = ? and arguments = ?',
                                (milliseconds or time.time(), name,
-                                unicode(arguments)))
+                                str(arguments)))
         self._connection.commit()
 
     def fetch_library_keywords(self, library_name, library_arguments):
@@ -150,16 +146,16 @@ class LibraryDatabase(object):
 
     def _insert_library(self, name, doc_format, arguments, cursor):
         cursor.execute('insert into libraries values (null, ?, ?, ?, ?)',
-                       (name, doc_format, unicode(arguments), time.time()))
+                       (name, doc_format, str(arguments), time.time()))
         return self._fetch_lib(name, arguments, cursor)
 
     def _fetch_lib(self, name, arguments, cursor):
         t = cursor.execute('select max(last_updated) from libraries where name'
                            ' = ?  and arguments = ?',
-                           (name, unicode(arguments))).fetchone()[0]
+                           (name, str(arguments))).fetchone()[0]
         return cursor.execute('select * from libraries where name = ?'
                               '  and arguments = ? and last_updated = ?',
-                              (name, unicode(arguments), t)).fetchone()
+                              (name, str(arguments), t)).fetchone()
 
     def _insert_library_keywords(self, data, cursor):
         cursor.executemany('insert into keywords values (?, ?, ?, ?, ?)', data)

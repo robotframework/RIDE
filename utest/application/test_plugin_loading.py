@@ -34,11 +34,7 @@ robotide.context.LOG = LOGGER
 
 from robotide.application.pluginloader import PluginLoader
 from robotide.log import LogPlugin
-
-try:
-    from resources import FakeApplication, FakeSettings
-except ImportError:  # py3
-    from utest.resources import FakeApplication, FakeSettings
+from utest.resources import FakeApplication, FakeSettings
 
 robotide.application.pluginconnector.SETTINGS = FakeSettings()
 

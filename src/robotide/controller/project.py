@@ -29,9 +29,6 @@ from robotide.spec.librarydatabase import DATABASE_FILE
 from robotide.spec.librarymanager import LibraryManager
 from robotide.spec.xmlreaders import SpecInitializer
 from robotide.utils import overrides
-from robotide.utils import PY3
-if PY3:
-    from robotide.utils import unicode
 
 
 class Project(_BaseController, WithNamespace):
@@ -112,7 +109,8 @@ class Project(_BaseController, WithNamespace):
     def _new_project(self, datafile):
         self.update_default_dir(datafile.directory)
         self._controller = DataController(datafile, self)
-        self._resource_file_controller_factory = ResourceFileControllerFactory(self._namespace, self)
+        self._resource_file_controller_factory = ResourceFileControllerFactory(self._namespace,
+                                                                               self)
         RideNewProject(path=datafile.source, datafile=datafile).publish()
 
     def new_resource(self, path, parent=None):
@@ -131,7 +129,7 @@ class Project(_BaseController, WithNamespace):
             return
         try:
             load_observer.error("Given file '%s' is not a valid Robot Framework "
-                            "test case or resource file." % path)
+                                "test case or resource file." % path)
         except AttributeError:  # DEBUG
             pass
 
@@ -174,7 +172,8 @@ class Project(_BaseController, WithNamespace):
         self._controller = DataController(datafile, self)
         new_resource_controllers = []
         for r in resources:
-            self._create_resource_controller(r, resource_created_callback=lambda controller: new_resource_controllers.append(controller))
+            self._create_resource_controller(r, resource_created_callback=lambda controller:
+                                             new_resource_controllers.append(controller))
         for controller in new_resource_controllers:
             self._inform_resource_created(controller)
 
@@ -192,7 +191,8 @@ class Project(_BaseController, WithNamespace):
         load_observer.finish()
         return ctrl
 
-    def _create_resource_controller(self, parsed_resource, parent=None, resource_created_callback=None):
+    def _create_resource_controller(self, parsed_resource, parent=None,
+                                    resource_created_callback=None):
         old = self._resource_file_controller_factory.find(parsed_resource)
         if old:
             return old
@@ -216,7 +216,8 @@ class Project(_BaseController, WithNamespace):
         self.external_resources.sort(key=lambda resource: resource.name.lower())
 
     def get_all_keywords(self):
-        return self.get_all_keywords_from(ctrl.datafile for ctrl in self.datafiles if ctrl.datafile)
+        return self.get_all_keywords_from(ctrl.datafile for ctrl in self.datafiles if
+                                          ctrl.datafile)
 
     def all_testcases(self):
         for df in self._suites():
@@ -337,7 +338,7 @@ class Serializer(object):
 
     def _cache_error(self, data, error):
         self._errors.append("Error in serializing '%s':\n%s"
-                            % (data.data.source, unicode(error)))
+                            % (data.data.source, str(error)))
 
     def _log_errors(self):
         if self._errors:

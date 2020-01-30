@@ -18,8 +18,6 @@ import os
 from functools import total_ordering
 from robotide.lib.robot.libdocpkg.htmlwriter import DocToHtml
 from robotide import utils
-if utils.PY3:
-    from robotide.utils import unicode
 
 
 class ItemInfo(object):
@@ -86,7 +84,7 @@ class VariableInfo(ItemInfo):
         self._value = value
 
     def _source_name(self, source):
-        return unicode(os.path.basename(source)) if source else ''
+        return os.path.basename(source) if source else ''
 
     def name_matches(self, pattern):
         normalized = utils.normalize(self._undecorate(pattern))
@@ -118,7 +116,7 @@ class VariableInfo(ItemInfo):
                 '<tr><td><i>Name:</i></td><td>%s</td></tr>'
                 '<tr><td><i>Source:</i></td><td>%s</td></tr>'
                 '<tr><td valign=top><i>Value:</i></td><td>%s</td></tr>'
-                '</table>') % (self.name, self._original_source, unicode(value))
+                '</table>') % (self.name, self._original_source, str(value))
 
     def __eq__(self, other):
         return self.name.lower() == other.name.lower()
@@ -339,7 +337,7 @@ class BlockKeywordInfo(_KeywordInfo):
 class _UserKeywordInfo(_KeywordInfo):
 
     def _source(self, item):
-        return unicode(os.path.basename(item.source)) if item.source else ''
+        return os.path.basename(item.source) if item.source else ''
 
     def _doc(self, item):
         return utils.unescape(item.doc.value)

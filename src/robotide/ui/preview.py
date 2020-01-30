@@ -17,7 +17,7 @@
 import wx.html
 try:
     from StringIO import StringIO
-except ImportError:  # py3
+except ImportError:  # py3 <=3.6
     from io import StringIO
 
 from robotide.pluginapi import Plugin, ActionInfo, TreeAwarePluginMixin

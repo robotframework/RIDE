@@ -26,7 +26,7 @@ from robotide.publish import RideSaveAll, RideClosing, RideSaved, PUBLISHER,\
     RideInputValidationError, RideTreeSelection, RideModificationPrevented
 from robotide.ui.tagdialogs import ViewAllTagsDialog
 from robotide.ui.filedialogs import RobotFilePathDialog
-from robotide.utils import RideEventHandler, PY2
+from robotide.utils import RideEventHandler
 from robotide.widgets import Dialog, ImageProvider, HtmlWindow
 from robotide.preferences import PreferenceEditor
 

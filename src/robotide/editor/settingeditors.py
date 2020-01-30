@@ -36,7 +36,6 @@ from .editordialogs import EditorDialog, DocumentationDialog, MetadataDialog,\
 from .listeditor import ListEditor
 from .popupwindow import HtmlPopupWindow
 from .tags import TagsDisplay
-from robotide.utils import basestring
 
 # Metaclass fix from http://code.activestate.com/recipes/204197-solving-the-metaclass-conflict/
 from robotide.utils.noconflict import classmaker
@@ -393,7 +392,7 @@ class VariablesListEditor(_AbstractListEditor):
 
     def get_column_values(self, item):
         return [item.name, item.value
-                if isinstance(item.value, basestring)
+                if isinstance(item.value, str)
                 else ' | '.join(item.value),
                 ListToStringFormatter(item.comment).value]
 

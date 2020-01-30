@@ -23,9 +23,7 @@ from robotide.publish.messages import RideImportSettingChanged,\
 from robotide import robotapi, utils
 from .tags import Tag, ForcedTag, DefaultTag
 from .basecontroller import ControllerWithParent
-from robotide.utils import PY2, PY3, overrides, variablematcher
-if PY3:
-    from robotide.utils import basestring, unicode
+from robotide.utils import overrides, variablematcher
 
 
 class _SettingController(ControllerWithParent):
@@ -68,10 +66,7 @@ class _SettingController(ControllerWithParent):
         return ''
 
     def contains_keyword(self, name):
-        if PY2:
-            istring = isinstance(name, basestring) or isinstance(name, unicode)
-        elif PY3:
-            istring = isinstance(name, basestring)
+        istring = isinstance(name, str)
         matcher = name.match if not istring else lambda i: utils.eq(i, name)
         return self._contains_keyword(matcher)
 
@@ -412,7 +407,7 @@ class VariableController(_SettingController):
         return self.parent.index(self)
 
     def set_value(self, name, value):
-        if isinstance(value, basestring) or isinstance(value, unicode):
+        if isinstance(value, str):
             value = [value]
         self._var.name = name
         self._var.value = value

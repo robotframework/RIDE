@@ -43,20 +43,9 @@ the download link from https://wxPython.org/""")
 try:
     import wx
     import wx.lib.inspection
-except ImportError as e:
-    if "no appropriate 64-bit architecture" in e.message.lower() and \
-       sys.platform == 'darwin':  # TODO: This was for MacOS pre 8.0, remove for version 2.
-        print("python should be executed in 32-bit mode with wxPython on OSX.")
-    else:
-        print(errorMessageTemplate.substitute(reason="wxPython not found."))
+except ImportError:
+    print(errorMessageTemplate.substitute(reason="wxPython not found."))
     sys.exit(1)
-
-if "ansi" in wx.PlatformInfo:  # TODO: This was for classic wxPython, remove for version 2.
-    print(errorMessageTemplate.substitute(
-        reason="wxPython with ansi encoding is not supported"))
-    sys.exit(1)
-
-from robotide.utils import PY2, PY3
 
 # Insert bundled robot to path before anything else
 sys.path.append(os.path.join(os.path.dirname(__file__), 'spec'))

@@ -15,10 +15,7 @@
 
 import unittest
 import time
-try:
-    import urllib2
-except ImportError:  # py3
-    import urllib as urllib2
+import urllib as urllib2
 
 from robotide.application.updatenotifier import UpdateNotifierController
 
