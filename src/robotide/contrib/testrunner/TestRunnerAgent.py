@@ -67,22 +67,18 @@ refactored to call an XMLRPC server.
 
 import copy
 import os
+import pickle
 import platform
 import sys
 import socket
 import threading
 
 PLATFORM = platform.python_implementation()
-PY2 = sys.version_info[0] == 2
-PY3 = not PY2
 
 try:
-    import SocketServer
-except ImportError:  #py3
-    try:
-        import socketserver as SocketServer
-    except ImportError as e:
-        raise e
+    import socketserver as SocketServer
+except ImportError as e:
+    raise e
 
 try:
     # to find robot (we use provided lib)
@@ -94,33 +90,18 @@ try:
     from robot.utils.encoding import SYSTEM_ENCODING
 except ImportError:
     encoding = None
-    # print("TestRunnerAgent: Maybe you did not installed RIDE under this Python?")  # DEBUG
-    raise     # DEBUG
+    raise
 
-# print("DEBUG: console %s system %s" % (encoding.CONSOLE_ENCODING, encoding.SYSTEM_ENCODING))
-
-if sys.hexversion > 0x2060000:
+try:
     import json
     _JSONAVAIL = True
-else:
-    try:
-        import simplejson as json
-        _JSONAVAIL = True
-    except ImportError:
-        _JSONAVAIL = False
-
-try:
-    import cPickle as pickle
-except ImportError:  # py3
-    import pickle as pickle
-
-try:
-    from cStringIO import StringIO
 except ImportError:
-    try:
-        from StringIO import StringIO
-    except ImportError:  # py3
-        from io import StringIO
+    _JSONAVAIL = False
+
+try:
+    from StringIO import StringIO
+except ImportError:  # py3 <=3.6
+    from io import StringIO
 
 HOST = "localhost"
 
@@ -486,8 +467,7 @@ class StreamHandler(object):
         else:
             def json_not_impl(dummy):
                 raise NotImplementedError(
-                    'Python version < 2.6 and simplejson not installed. Please'
-                    ' install simplejson.')
+                    'Python should include json. Please check your Python installation.')
             self._json_decoder = staticmethod(json_not_impl)
             self._json_encoder = staticmethod(json_not_impl)
         self.fp = fp
@@ -517,11 +497,7 @@ class StreamHandler(object):
             s = pickle.dumps(obj, pickle.HIGHEST_PROTOCOL)
             write_list.append('P')
             write_list.extend([str(len(s)), '|', s])
-        if PY2:
-            self.fp.write(''.join(write_list))
-        elif PY3:
-            self.fp.write(bytes(''.join(write_list), "UTF-8"))
-        # self.fp.flush()
+        self.fp.write(bytes(''.join(write_list), "UTF-8"))
 
     def load(self):
         """

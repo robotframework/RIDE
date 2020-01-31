@@ -25,12 +25,9 @@ import io
 from robotide.pluginapi import Plugin, ActionInfo, RideLog
 from robotide import widgets
 from robotide import context
-from robotide.utils import PY2
 
 
 def _message_to_string(msg):
-    if PY2:
-        return unicode('%s [%s]: %s\n\n' % (msg.timestamp, msg.level, msg.message))
     return '%s [%s]: %s\n\n' % (msg.timestamp, msg.level, msg.message)
 
 

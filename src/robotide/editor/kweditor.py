@@ -18,14 +18,7 @@ from wx import grid
 import json
 from robotide.editor.cellrenderer import CellRenderer
 from robotide import context
-
-if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
-    from wx.grid import GridCellEditor
-    # import sys
-    # sys.setrecursionlimit(200)  # with 150 crashes at edit cell
-else:
-    from wx.grid import PyGridCellEditor as GridCellEditor
-
+from wx.grid import GridCellEditor
 from robotide.context import IS_MAC, IS_WINDOWS
 from robotide.controller.ctrlcommands import ChangeCellValue, ClearArea, \
     PasteArea, DeleteRows, AddRows, CommentRows, InsertCells, DeleteCells, \
@@ -47,38 +40,26 @@ from .editordialogs import UserKeywordNameDialog, ScalarVariableDialog, \
     ListVariableDialog
 from .contentassist import ExpandingContentAssistTextCtrl
 from .gridcolorizer import Colorizer
-from robotide.utils import PY3
 from robotide.lib.robot.utils.compat import with_metaclass
 
-if PY3:
-    from robotide.utils import basestring, unicode, unichr
+# Metaclass fix from http://code.activestate.com/recipes/204197-solving-the-metaclass-conflict/
+from robotide.utils.noconflict import classmaker
 
 _DEFAULT_FONT_SIZE = 11
 
 
 def requires_focus(function):
     def _row_header_selected_on_linux(self):
-        # print("DEBUG: _row_header_selected_on_linux: %s has focus %s\n" % (self.FindFocus(), self.has_focus()))
-        return self.FindFocus() is None  # or isinstance(GridEditor)
+        return self.FindFocus() is None
 
     def decorated_function(self, *args):
-        # if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
-        #     _iscelleditcontrolshown = self.IsCellEditControlEnabled()
-        # else:
-        #     _iscelleditcontrolshown = self.IsCellEditControlShown()
         if not self.has_focus():
             return
         _iscelleditcontrolshown = self.IsCellEditControlShown()
-        # print("DEBUG: decorated: iscelleditshown = %s focus =%s rowheaderselected=%s\n" % (_iscelleditcontrolshown, self.has_focus(), _row_header_selected_on_linux(self)))
-        if self.has_focus() or _iscelleditcontrolshown or \
-                _row_header_selected_on_linux(self):
+        if self.has_focus() or _iscelleditcontrolshown or _row_header_selected_on_linux(self):
             function(self, *args)
 
     return decorated_function
-
-
-# Metaclass fix from http://code.activestate.com/recipes/204197-solving-the-metaclass-conflict/
-from robotide.utils.noconflict import classmaker
 
 
 class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
@@ -206,11 +187,6 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
         self.Bind(wx.EVT_KILL_FOCUS, self.OnKillFocus)
 
     def get_tooltip_content(self):
-        """ Fixed on 4.0.0a3
-        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
-            _iscelleditcontrolshown = self.IsCellEditControlEnabled()
-        else:
-        """
         _iscelleditcontrolshown = self.IsCellEditControlShown()
         if _iscelleditcontrolshown or self._popup_menu_shown:
             return ''
@@ -336,12 +312,8 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
         else:
             self._counter = 1
 
-        self._dcells = (self.selection.topleft,
-                        self.selection.bottomright)
-        # print("DEBUG kweditor delete cells %s, %s " % (self.selection.topleft,
-        #                          self.selection.bottomright))
-        self._execute(DeleteCells(self.selection.topleft,
-                                  self.selection.bottomright))
+        self._dcells = (self.selection.topleft, self.selection.bottomright)
+        self._execute(DeleteCells(self.selection.topleft, self.selection.bottomright))
         self._resize_grid()
         self._skip_except_on_mac(event)
 
@@ -464,11 +436,6 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
         self.OnDelete(event)
 
     def OnDelete(self, event=None):
-        """ Fixed on 4.0.0a3
-        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
-            _iscelleditcontrolshown = self.IsCellEditControlEnabled()
-        else:
-        """
         _iscelleditcontrolshown = self.IsCellEditControlShown()
         if _iscelleditcontrolshown:  # TODO Review if still needed
             # On Windows, Delete key does not work in TextCtrl automatically
@@ -484,16 +451,11 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
         self._resize_grid()
 
     def _execute_clipboard_command(self, command_class):
-        """ Fixed on 4.0.0a3
-        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
-            _iscelleditcontrolshown = self.IsCellEditControlEnabled()
-        else:
-        """
         _iscelleditcontrolshown = self.IsCellEditControlShown()
         if not _iscelleditcontrolshown:
             data = self._clipboard_handler.clipboard_content()
             if data:
-                data = [[data]] if isinstance(data, basestring) else data
+                data = [[data]] if isinstance(data, str) else data
                 self._execute(command_class(self.selection.topleft, data))
 
     # DEBUG @requires_focus
@@ -509,11 +471,6 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
 
     # DEBUG @requires_focus
     def OnUndo(self, event=None):
-        """ Fixed on 4.0.0a3
-        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
-            _iscelleditcontrolshown = self.IsCellEditControlEnabled()
-        else:
-        """
         _iscelleditcontrolshown = self.IsCellEditControlShown()
         if not _iscelleditcontrolshown:
             self._execute(Undo())
@@ -538,11 +495,6 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
 
     def save(self):
         self._tooltips.hide()
-        """ Fixed on 4.0.0a3
-        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
-            _iscelleditcontrolshown = self.IsCellEditControlEnabled()
-        else:
-        """
         _iscelleditcontrolshown = self.IsCellEditControlShown()
         if _iscelleditcontrolshown:
             cell_editor = self.GetCellEditor(*self.selection.cell)
@@ -550,15 +502,9 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
                                 self.selection.topleft.col, self)
 
     def show_content_assist(self):
-        """ Fixed on 4.0.0a3
-        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
-            _iscelleditcontrolshown = self.IsCellEditControlEnabled()
-        else:
-        """
         _iscelleditcontrolshown = self.IsCellEditControlShown()
         if _iscelleditcontrolshown:
-            self.GetCellEditor(*self.selection.cell).show_content_assist(
-                self.selection.cell)  # DEBUG self.selection.topleft.row)
+            self.GetCellEditor(*self.selection.cell).show_content_assist(self.selection.cell)
 
     def refresh_datafile(self, item, event):
         self._tree.refresh_datafile(item, event)
@@ -740,8 +686,6 @@ work.</li>
 
     def OnCellLeftClick(self, event):
         self._tooltips.hide()
-        # if event.GetModifiers() == wx.MOD_CONTROL:
-        #  or event.CmdDown(): # DEBUG wxPhoenix
         if event.ControlDown():
             if self._navigate_to_matching_user_keyword(event.Row, event.Col):
                 return
@@ -782,7 +726,7 @@ work.</li>
         try:
             self._execute(AddKeywordFromCells(cells))
         except ValueError as err:
-            wx.MessageBox(unicode(err))
+            wx.MessageBox(str(err))
 
     def _data_cells_from_current_row(self):
         currow, curcol = self.selection.cell
@@ -925,7 +869,7 @@ work.</li>
         return True
 
 
-class ContentAssistCellEditor(GridCellEditor):  # DEBUG wxPhoenix PyGridCellEdi
+class ContentAssistCellEditor(GridCellEditor):
 
     def __init__(self, plugin, controller):
         GridCellEditor.__init__(self)
@@ -953,12 +897,7 @@ class ContentAssistCellEditor(GridCellEditor):  # DEBUG wxPhoenix PyGridCellEdi
             self._tc.PushEventHandler(evthandler)
 
     def SetSize(self, rect):
-        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
-            self._tc.SetSize(rect.x, rect.y, rect.width + 2, rect.height + 2,
-                             wx.SIZE_ALLOW_MINUS_ONE)
-        else:
-            self._tc.SetDimensions(rect.x, rect.y, rect.width + 2, rect.height
-                                   + 2, wx.SIZE_ALLOW_MINUS_ONE)
+        self._tc.SetSize(rect.x, rect.y, rect.width + 2, rect.height + 2, wx.SIZE_ALLOW_MINUS_ONE)
 
     def SetHeight(self, height):
         self._height = height
@@ -980,21 +919,11 @@ class ContentAssistCellEditor(GridCellEditor):  # DEBUG wxPhoenix PyGridCellEdi
     def EndEdit(self, row, col, grid, *ignored):
         value = self._get_value()
         if value != self._original_value:
-            if wx.VERSION >= (3, 0, 2, ''):  # DEBUG wxPhoenix
-                self._value = value
-                return value  # DEBUG wxPhoenix True
-            else:
-                self._grid.cell_value_edited(row, col, value)
-                return True  # DEBUG wxPhoenix True
+            self._value = value
+            return value
         else:
-            # DEBUG wxPhoenix
             self._tc.hide()
             grid.SetFocus()
-        """    if wx.VERSION >= (3, 0, 2, ''):  # DEBUG wxPhoenix
-                return None
-            else:
-                return None   # DEBUG
-        """
 
     def ApplyEdit(self, row, col, grid):
         val = self._tc.GetValue()
@@ -1002,11 +931,8 @@ class ContentAssistCellEditor(GridCellEditor):  # DEBUG wxPhoenix PyGridCellEdi
 
         self._original_value = ''
         self._tc.SetValue('')
-        if wx.VERSION >= (3, 0, 2, ''):  # DEBUG wxPhoenix
-            if self._value and val != '':  # DEBUG Fix #1967 crash when click other cell
-                self._grid.cell_value_edited(row, col, self._value)
-            else:
-                self._tc.hide()
+        if self._value and val != '':  # DEBUG Fix #1967 crash when click other cell
+            self._grid.cell_value_edited(row, col, self._value)
 
     def _get_value(self):
         suggestion = self._tc.content_assist_value()
@@ -1024,7 +950,7 @@ class ContentAssistCellEditor(GridCellEditor):  # DEBUG wxPhoenix PyGridCellEdi
         elif key == wx.WXK_BACK:
             self._tc.SetValue(self._original_value)
         else:
-            self._tc.SetValue(unichr(key))
+            self._tc.SetValue(str(key))
         self._tc.SetFocus()
         self._tc.SetInsertionPointEnd()
 

@@ -13,10 +13,6 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robotide.utils import PY3
-if PY3:
-    from robotide.utils import basestring, unicode
-
 try:
     from pubsub import Publisher
     WxPublisher = Publisher()
@@ -82,9 +78,7 @@ class _ListenerWrapper(object):
         WxPublisher.subscribe(self, self.topic)
 
     def _get_topic(self, topic):
-        # DEBUG RecursionError on python 3
-        # print("DEBUG: topic(%s) is %s" % (topic, type(topic)))
-        if not isinstance(topic, basestring):
+        if not isinstance(topic, str):
             topic = topic.topic
         return topic.lower()
 
@@ -105,8 +99,8 @@ class _ListenerWrapper(object):
             # Prevent infinite recursion if RideLogMessage listener is broken,
             if not isinstance(data, RideLogException):
                 RideLogException(message='Error in listener: %s\n' \
-                                         'While handling %s' % (unicode(err),
-                                                                unicode(data)),
+                                         'While handling %s' % (str(err),
+                                                                str(data)),
                                  exception=err, level='ERROR').publish()
 
 

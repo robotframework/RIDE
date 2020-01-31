@@ -14,7 +14,6 @@
 #  limitations under the License.
 
 import wx
-
 from robotide.controller.ctrlcommands import ChangeTag, ClearSetting
 from robotide.controller.tags import ForcedTag, DefaultTag
 from robotide.context import IS_WINDOWS
@@ -138,19 +137,12 @@ class TagBox(wx.TextCtrl):
 
     def _apply_properties(self):
         self.SetValue(self._properties.text)
-        # DEBUG wxPhoenix  self.SetToolTipString(self._properties.tooltip)
-        self.MySetToolTip(self, self._properties.tooltip)
+        self.SetToolTip(self._properties.tooltip)
         self.SetEditable(self._properties.enabled)
         size = self._get_size()
         self.SetMaxSize(size)
         self.SetMinSize(size)
         self._colorize()
-
-    def MySetToolTip(self, obj, tip):
-        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
-            obj.SetToolTip(tip)
-        else:
-            obj.SetToolTipString(tip)
 
     def _get_size(self):
         size = self.GetTextExtent(self.value)

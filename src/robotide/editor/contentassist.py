@@ -18,15 +18,10 @@ from os.path import relpath, dirname, isdir
 import wx
 from wx.lib.expando import ExpandoTextCtrl
 from wx.lib.filebrowsebutton import FileBrowseButton
-
 from robotide import context, utils
 from robotide.namespace.suggesters import SuggestionSource
 from robotide.spec.iteminfo import VariableInfo
 from .popupwindow import RidePopupWindow, HtmlPopupWindow
-from robotide.utils import PY3
-if PY3:
-    from robotide.utils import unichr
-
 
 _PREFERRED_POPUP_SIZE = (400, 200)
 
@@ -50,7 +45,6 @@ class _ContentAssistTextCtrlBase(object):
     def OnChar(self, event):
         # TODO: This might benefit from some cleanup
         keycode, control_down = event.GetKeyCode(), event.CmdDown()
-        # print("DEBUG:  before processing" + str(keycode) + " + " +  str(control_down))
         # Ctrl-Space handling needed for dialogs # DEBUG add Ctrl-m
         if (control_down or event.AltDown()) and keycode in (wx.WXK_SPACE, ord('m')):
             self.show_content_assist()
@@ -131,16 +125,12 @@ class _ContentAssistTextCtrlBase(object):
     def _remove_bdd_prefix(self, name):
         for match in ['given ', 'when ', 'then ', 'and ', 'but ']:
             if name.lower().startswith(match):
-                return (name[:len(match)], name[len(match):])
-        return ('', name)
+                return name[:len(match)], name[len(match):]
+        return '', name
 
     def _show_content_assist(self):
-        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
-            _, height = self.GetSize()
-            x, y = self.ClientToScreen((0, 0))
-        else:
-            height = self.GetSizeTuple()[1]
-            x, y = self.ClientToScreenXY(0, 0)
+        _, height = self.GetSize()
+        x, y = self.ClientToScreen((0, 0))
         self._popup.show(x, y, height)
 
     def content_assist_value(self):
@@ -161,9 +151,7 @@ class ExpandingContentAssistTextCtrl(_ContentAssistTextCtrlBase,
     def __init__(self, parent, plugin, controller):
         ExpandoTextCtrl.__init__(self, parent, size=wx.DefaultSize,
                                  style=wx.WANTS_CHARS)
-        _ContentAssistTextCtrlBase.__init__(self,
-                                            SuggestionSource(plugin,
-                                                             controller))
+        _ContentAssistTextCtrlBase.__init__(self, SuggestionSource(plugin, controller))
 
 
 class ContentAssistTextCtrl(_ContentAssistTextCtrlBase, wx.TextCtrl):
@@ -186,7 +174,6 @@ class ContentAssistFileButton(_ContentAssistTextCtrlBase, FileBrowseButton):
         _ContentAssistTextCtrlBase.__init__(self, suggestion_source)
 
     def Bind(self, *args):
-        # print("DEBUG: Bind ContentAssistFileButton: %s\n" % args.__repr__())
         self.textControl.Bind(*args)
 
     def SetInsertionPoint(self, pos):
@@ -218,7 +205,6 @@ class ContentAssistFileButton(_ContentAssistTextCtrlBase, FileBrowseButton):
             self._browsed = False
             self.SetValue(self._relative_path(self.GetValue()))
             self._parent.setFocusToOK()
-        # print("DEBUG: FileBrowseButton: %s\n" % evt.GetString())
 
     def SelectAll(self):
         self.textControl.SelectAll()
@@ -298,10 +284,6 @@ class ContentAssistPopup(object):
                                        self.OnListItemSelected,
                                        self.OnListItemActivated)
         self._suggestions = Suggestions(suggestion_source)
-        # TODO Add detach popup from list with mouse drag or key
-        # self._details_popup.Bind(wx.EVT_MIDDLE_DOWN, self.OnDetach)
-        # self._main_popup.Bind(wx.EVT_MIDDLE_DOWN, self.OnDetach)
-        # self._list.Bind(wx.EVT_MIDDLE_DOWN, self.OnDetach)
 
     def reset(self):
         self._selection = -1
@@ -405,12 +387,6 @@ class ContentAssistPopup(object):
         elif self._details_popup.IsShown():
             self._details_popup.Show(False)
 
-    # def OnDetach(self, event):  # DEBUG Attempt to activate detach on Windows and wxPython >3.0.3
-    #     print("DEBUG Contentassist Called Detach")
-    #     if not self._details_popup.IsShown():
-    #         return
-    #     self._details_popup._detach(event)
-
 
 class ContentAssistList(wx.ListCtrl):
 
@@ -427,12 +403,8 @@ class ContentAssistList(wx.ListCtrl):
     def populate(self, data):
         self.ClearAll()
         self.InsertColumn(0, '', width=self.Size[0])
-        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
-            for row, item in enumerate(data):
-                self.InsertItem(row, item)
-        else:
-            for row, item in enumerate(data):
-                self.InsertStringItem(row, item)
+        for row, item in enumerate(data):
+            self.InsertItem(row, item)
         self.Select(0)
 
     def get_text(self, index):

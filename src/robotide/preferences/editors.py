@@ -19,7 +19,6 @@ from os.path import abspath, dirname, join
 
 from robotide.preferences import widgets
 from robotide.widgets import Label
-from robotide.utils import PY3
 
 try:  # import installed version first
     import robotframeworklexer
@@ -29,25 +28,14 @@ except ImportError:
     except ImportError:  # Pygments is not installed
         robotframeworklexer = None
 
-if PY3:
-    from functools import lru_cache
-else:
-    # On PY2, cache function is not built-in
-    def lru_cache(*args, **kwargs):
-        def inner(func):
-            return func
-        return inner
-
+from functools import lru_cache
 
 @lru_cache(maxsize=2)
 def ReadFonts(fixed=False):
-    '''Returns list with fixed width fonts'''
+    """Returns list with fixed width fonts"""
     f = wx.FontEnumerator()
     f.EnumerateFacenames()
-    if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
-        names = f.GetFacenames(fixedWidthOnly=fixed)
-    else:
-        names = f.GetFacenames()
+    names = f.GetFacenames(fixedWidthOnly=fixed)
     names = [n for n in names if not n.startswith('@')]
     names.sort()
     return names

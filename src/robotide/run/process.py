@@ -17,9 +17,6 @@ import os
 import time
 import tempfile
 import subprocess
-from robotide.utils import PY3
-if PY3:
-    from robotide.utils import basestring
 
 
 class Process(object):
@@ -33,7 +30,7 @@ class Process(object):
         self._out_fd = None
 
     def _parse_command(self, command):
-        if isinstance(command, basestring):
+        if isinstance(command, str):
             return [val.replace('<SPACE>', ' ') for val in command.split()]
         return command
 

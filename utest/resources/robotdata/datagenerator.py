@@ -66,20 +66,14 @@ TEST_CASE_TEMPLATE=\
 
 
 def generate_tests(number_of_tests, number_of_keywords):
-    try:
-        mytests = xrange(number_of_tests)
-    except NameError:  # py3
-        mytests = range(number_of_tests)
+    mytests = range(number_of_tests)
     return '\n'.join(TEST_CASE_TEMPLATE.replace('%TEST_ID%', str(test_id))\
                       .replace('%KW_ID%', str(randint(0,number_of_keywords-1)))\
                       for test_id in mytests)
 
 
 def generate_keywords(number_of_keywords):
-    try:
-        mykeywords = xrange(number_of_keywords)
-    except NameError:  # py3
-        mykeywords = range(number_of_keywords)
+    mykeywords = range(number_of_keywords)
     return '\n'.join(KEYWORD_TEMPLATE.replace('%KW_ID%', str(i)) for i in mykeywords)
 
 
@@ -94,10 +88,7 @@ def generate_resource(number_of_keywords):
 
 def generate(directory, suites, tests, keywords):
     os.mkdir(directory)
-    try:
-        mysuites = xrange(suites)
-    except NameError:  # py3
-        mysuites = range(suites)
+    mysuites = range(suites)
     for suite_index in mysuites:
         f = open(os.path.join('.', directory, 'suite%s.txt' % suite_index), 'w')
         f.write(generate_suite(tests, keywords))

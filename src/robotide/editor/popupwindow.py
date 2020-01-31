@@ -14,7 +14,6 @@
 #  limitations under the License.
 
 import wx
-
 from robotide.context import POPUP_BACKGROUND, IS_WINDOWS
 from robotide.widgets import VerticalSizer, HtmlWindow, HtmlDialog
 
@@ -31,10 +30,7 @@ class _PopupWindowBase(object):
         self.SetSize(size)
 
     def _create_ui(self, size):
-        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
-            panel = wx.MiniFrame(self)  # DEBUG wx.Panel would not detach on wxPython 4
-        else:
-            panel = wx.Panel(self)
+        panel = wx.MiniFrame(self)
         panel.SetBackgroundColour(POPUP_BACKGROUND)
         szr = VerticalSizer()
         self._details = HtmlWindow(self, size=size)
@@ -44,12 +40,10 @@ class _PopupWindowBase(object):
         return panel
 
     def _set_detachable(self):
-        # print("DEBUG: PopupWindow at Binding mouse on help")
         self._details.Bind(wx.EVT_LEFT_UP, self._detach)
-        self._details.Bind(wx.EVT_LEFT_DCLICK, self._detach) # DEBUG add double-click
+        self._details.Bind(wx.EVT_LEFT_DCLICK, self._detach)  # DEBUG add double-click
 
     def _detach(self, event):
-        # print("DEBUG: PopupWindow at detached call")
         self.hide()
         dlg = HtmlDialog(self._detached_title, self._current_details)
         dlg.SetPosition((wx.GetMouseState().x, wx.GetMouseState().y))
@@ -75,8 +69,7 @@ class _PopupWindowBase(object):
 
     def set_content(self, content, title=None):
         color = ''.join(hex(item)[2:] for item in POPUP_BACKGROUND)
-        self._current_details = '<body bgcolor=#%s>%s</body>' % \
-            (color, content)
+        self._current_details = '<body bgcolor=#%s>%s</body>' % (color, content)
         self._details.SetPage(self._current_details)
         self._detached_title = title
 
@@ -85,8 +78,7 @@ class RidePopupWindow(wx.PopupWindow, _PopupWindowBase):
 
     def __init__(self, parent, size):
         wx.PopupWindow.__init__(self, parent,
-                                flags=wx.CAPTION|wx.RESIZE_BORDER|
-                                      wx.DEFAULT_FRAME_STYLE)
+                                flags=wx.CAPTION | wx.RESIZE_BORDER | wx.DEFAULT_FRAME_STYLE)
         self.SetSize(size)
 
     def _set_auto_hiding(self):
@@ -100,7 +92,6 @@ class HtmlPopupWindow(RidePopupWindow):
     def __init__(self, parent, size, detachable=True, autohide=False):
         RidePopupWindow.__init__(self, parent, size)
         _PopupWindowBase.__init__(self, size, detachable, autohide)
-        # print("DEBUG: HtmlPopupWindow we must make it border in Windows to be detached")
 
 
 # TODO: See if we need to have Mac specific window

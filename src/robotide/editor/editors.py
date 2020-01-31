@@ -14,7 +14,6 @@
 #  limitations under the License.
 
 import wx
-
 from robotide import robotapi, context
 from robotide.controller.settingcontrollers import (
     DocumentationController, VariableController, TagsController)
@@ -123,10 +122,7 @@ class _RobotTableEditor(EditorPanel):
 
     def destroy(self):
         self.close()
-        if wx.VERSION < (3, 0, 3, ''):  # DEBUG wxPhoenix
-            self.Destroy()
-        else:
-            self.DestroyLater()
+        self.DestroyLater()
 
     def _create_header(self, text, readonly=False):
         if readonly:
@@ -142,8 +138,7 @@ class _RobotTableEditor(EditorPanel):
 
     def _create_settings(self):
         settings = Settings(self)
-        settings.Bind(
-            wx.EVT_COLLAPSIBLEPANE_CHANGED, self._collabsible_changed)
+        settings.Bind(wx.EVT_COLLAPSIBLEPANE_CHANGED, self._collabsible_changed)
         settings.build(self.controller.settings, self.plugin, self._tree)
         return settings
 
@@ -162,7 +157,7 @@ class _RobotTableEditor(EditorPanel):
             event.Skip()
 
     def highlight_cell(self, obj, row, column):
-        '''Highlight the given object at the given row and column'''
+        """Highlight the given object at the given row and column"""
         if isinstance(obj, robotapi.Setting):
             setting_editor = self._get_settings_editor(obj)
             if setting_editor and hasattr(setting_editor, "highlight"):
@@ -171,7 +166,7 @@ class _RobotTableEditor(EditorPanel):
             self.kweditor.select(row, column)
 
     def _get_settings_editor(self, setting):
-        '''Return the settings editor for the given setting object'''
+        """Return the settings editor for the given setting object"""
         for child in self.GetChildren():
             if isinstance(child, SettingEditor):
                 if child._item == setting:
@@ -275,8 +270,7 @@ class _FileEditor(_RobotTableEditor):
         header = self._create_header(
             datafile.name, not self.controller.is_modifiable())
         self.sizer.Add(header, 0, wx.EXPAND | wx.ALL, 5)
-        self.sizer.Add(self._create_source_label(datafile.source),
-                       0, wx.EXPAND | wx.ALL, 1)
+        self.sizer.Add(self._create_source_label(datafile.source), 0, wx.EXPAND | wx.ALL, 1)
         self.sizer.Add((0, 10))
         self._add_settings()
         self._add_import_settings()
@@ -285,9 +279,8 @@ class _FileEditor(_RobotTableEditor):
     def _create_source_label(self, source):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         sizer.Add((5, 0))
-        sizer.Add(Label(self, label='Source',
-                        size=(context.SETTING_LABEL_WIDTH,
-                              context.SETTING_ROW_HEIGTH)))
+        sizer.Add(Label(self, label='Source', size=(context.SETTING_LABEL_WIDTH,
+                                                    context.SETTING_ROW_HEIGTH)))
         self._source = wx.TextCtrl(self, style=wx.TE_READONLY | wx.NO_BORDER)
         self._source.SetBackgroundColour(self.BackgroundColour)
         self._source.SetValue(source)
@@ -296,20 +289,17 @@ class _FileEditor(_RobotTableEditor):
         return sizer
 
     def _add_import_settings(self):
-        import_editor = ImportSettingListEditor(
-            self, self._tree, self.controller.imports)
+        import_editor = ImportSettingListEditor(self, self._tree, self.controller.imports)
         self.sizer.Add(import_editor, 1, wx.EXPAND)
         self._editors.append(import_editor)
 
     def _add_variable_table(self):
-        self._var_editor = VariablesListEditor(
-            self, self._tree, self.controller.variables)
+        self._var_editor = VariablesListEditor(self, self._tree, self.controller.variables)
         self.sizer.Add(self._var_editor, 1, wx.EXPAND)
         self._editors.append(self._var_editor)
 
     def close(self):
-        self.plugin.unsubscribe(
-            self._update_source_and_name, RideFileNameChanged)
+        self.plugin.unsubscribe(self._update_source_and_name, RideFileNameChanged)
         for editor in self._editors:
             editor.close()
         self._editors = []
@@ -353,8 +343,7 @@ class TestCaseFileEditor(_FileEditor):
         self._add_metadata()
 
     def _add_metadata(self):
-        metadata_editor = MetadataListEditor(
-            self, self._tree, self.controller.metadata)
+        metadata_editor = MetadataListEditor(self, self._tree, self.controller.metadata)
         self.sizer.Add(metadata_editor, 1, wx.EXPAND)
         self._editors.append(metadata_editor)
 

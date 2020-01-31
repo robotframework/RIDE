@@ -17,12 +17,9 @@ import os
 import wx
 from wx.lib.agw import customtreectrl
 from wx.lib.mixins import treemixin
-try:
-    from wx import ColorRGB as Colour
-    TREETEXTCOLOUR = Colour(0xA9A9A9)  # wxPython 2.8.12
-except ImportError:
-    from wx import Colour
-    TREETEXTCOLOUR = Colour(0xA9, 0xA9, 0xA9)  # wxPython 3.0.2
+from wx import Colour
+
+TREETEXTCOLOUR = Colour(0xA9, 0xA9, 0xA9)
 
 from robotide.lib.robot.utils.compat import with_metaclass
 from robotide.controller.ui.treecontroller import TreeController, \
@@ -46,26 +43,18 @@ from robotide.publish import PUBLISHER, RideTreeSelection, RideFileNameChanged,\
 from robotide.controller.ctrlcommands import MoveTo
 from robotide.widgets import PopupCreator
 from robotide import utils
-
-from .treenodehandlers import ResourceRootHandler, action_handler_class,\
-    ResourceFileHandler
+from .treenodehandlers import ResourceRootHandler, action_handler_class, ResourceFileHandler
 from .images import TreeImageList
+# Metaclass fix from http://code.activestate.com/recipes/204197-solving-the-metaclass-conflict/
+from robotide.utils.noconflict import classmaker
 
 _TREE_ARGS = {'style': wx.TR_DEFAULT_STYLE}
-
-if wx.VERSION >= (2, 8, 11, ''): # wx.VERSION_STRING >= '2.8.11.0':
-    _TREE_ARGS['agwStyle'] = \
-        customtreectrl.TR_DEFAULT_STYLE | customtreectrl.TR_HIDE_ROOT | \
-        customtreectrl.TR_EDIT_LABELS
-
-if wx.VERSION >= (3, 0, 3, ''):
-    _TREE_ARGS['agwStyle'] |= customtreectrl.TR_TOOLTIP_ON_LONG_ITEMS
+_TREE_ARGS['agwStyle'] = customtreectrl.TR_DEFAULT_STYLE | customtreectrl.TR_HIDE_ROOT | \
+                         customtreectrl.TR_EDIT_LABELS
+_TREE_ARGS['agwStyle'] |= customtreectrl.TR_TOOLTIP_ON_LONG_ITEMS
 
 if IS_WINDOWS:
     _TREE_ARGS['style'] |= wx.TR_EDIT_LABELS
-
-# Metaclass fix from http://code.activestate.com/recipes/204197-solving-the-metaclass-conflict/
-from robotide.utils.noconflict import classmaker
 
 
 class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
@@ -186,7 +175,6 @@ class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
         self._remove_datafile_node(tree)
 
     def _set_item_excluded(self, node):
-        # self.SetItemTextColour(node, 'gray')  # Fixing issue #22
         self.SetItemTextColour(node, wx.TheColourDatabase.Find("GRAY"))
         self.SetItemItalic(node, True)
         self.SetItemText(node, "%s (excluded)" % self.GetItemText(node))
@@ -228,14 +216,13 @@ class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
         img_index = self._get_icon_index_for(controller)
         # Always set the static icon
         self.SetItemImage(node, img_index)
-        # print("DEBUG setIcon img_index=%d" % (img_index))
-        if wx.VERSION >= (3, 0, 3, '') and self._animctrl:
+        if self._animctrl:
             self._animctrl.Stop()
             self._animctrl.Animation.Destroy()
             self._animctrl.Destroy()
             self._animctrl = None
             self.DeleteItemWindow(node)
-        if wx.VERSION >= (3, 0, 3, '') and img_index in (RUNNING_IMAGE_INDEX, PAUSED_IMAGE_INDEX):
+        if img_index in (RUNNING_IMAGE_INDEX, PAUSED_IMAGE_INDEX):
             from wx.adv import Animation, AnimationCtrl
             import os
             _BASE = os.path.join(os.path.dirname(__file__), '..', 'widgets')
@@ -248,11 +235,7 @@ class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
             rect = (node.GetX()+20, node.GetY())  # Overlaps robot icon
             self._animctrl = AnimationCtrl(obj, -1, ani, rect)
             self._animctrl.SetBackgroundColour(obj.GetBackgroundColour())
-            try:
-                self.SetItemWindow(node,self._animctrl, False)
-            except TypeError:  # DEBUG In case wxPython devel not ready
-                self.SetItemWindow(node,self._animctrl)
-
+            self.SetItemWindow(node, self._animctrl, False)
             self._animctrl.Play()
         # Make visible the running or paused test
         self.EnsureVisible(node)
@@ -365,19 +348,12 @@ class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
                 if count > 3:
                     return None
         handler_class = action_handler_class(controller)
-        with_checkbox = (handler_class == TestCaseHandler and
-                         self._checkboxes_for_tests)
-
-        node = self._create_node(parent_node,
-                                 controller.display_name,
-                                 self._images[controller],
-                                 index,
-                                 with_checkbox=with_checkbox)
-
+        with_checkbox = (handler_class == TestCaseHandler and self._checkboxes_for_tests)
+        node = self._create_node(parent_node, controller.display_name, self._images[controller],
+                                 index, with_checkbox=with_checkbox)
         if isinstance(controller, ResourceFileController) and not controller.is_used():
                 self.SetItemTextColour(node, TREETEXTCOLOUR)  # wxPython3 hack
-        action_handler = handler_class(
-            controller, self, node, self._controller.settings)
+        action_handler = handler_class(controller, self, node, self._controller.settings)
         self.SetPyData(node, action_handler)
 
         # if we have a TestCase node we have to make sure that
@@ -414,8 +390,7 @@ class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
         return [v for v in handler.variables if v.has_data()] + \
                list(handler.tests) + list(handler.keywords)
 
-    def _create_node(self, parent_node, label, img, index=None,
-                     with_checkbox=False):
+    def _create_node(self, parent_node, label, img, index=None, with_checkbox=False):
         node = self._wx_node(parent_node, index, label, with_checkbox)
         self.SetItemImage(node, img.normal, wx.TreeItemIcon_Normal)
         self.SetItemImage(node, img.expanded, wx.TreeItemIcon_Expanded)
@@ -519,7 +494,6 @@ class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
         self.add_keyword(parent, controller)
 
     def delete_node(self, node):
-        # print("DEBUG at delete_node %s" % (repr(node)))
         if node is None:
             return
         parent = self.GetItemParent(node)
@@ -542,10 +516,10 @@ class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
                 self.SetItemText(node, text[1:])
 
     def select_node_by_data(self, controller):
-        '''Find and select the tree item associated with the given controller.
+        """Find and select the tree item associated with the given controller.
 
         Controller can be any of the controllers that are represented in the
-        tree.'''
+        tree."""
         parent_node = self._get_datafile_node(controller.datafile)
         if not parent_node:
             return None
@@ -628,8 +602,7 @@ class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
         selection = self.GetItemPyData(currently_selected).controller
         controller = self._controller.get_handler(first).controller
         self.Delete(first)
-        self._create_node_with_handler(
-            self.GetItemParent(second), controller, second)
+        self._create_node_with_handler(self.GetItemParent(second), controller, second)
         self.select_node_by_data(selection)
 
     def _refresh_datafile_when_file_set(self, controller):

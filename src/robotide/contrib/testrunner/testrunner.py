@@ -28,10 +28,8 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-try:
-    import SocketServer
-except ImportError:  # py3
-    import socketserver as SocketServer
+
+import socketserver as SocketServer
 import atexit
 import codecs
 import os
@@ -42,17 +40,14 @@ import tempfile
 import threading
 import signal
 import sys
-try:
-    from Queue import Empty, Queue
-except ImportError:  # py3
-    from queue import Empty, Queue
+from queue import Empty, Queue
 
 from robotide import utils
 from robotide.robotapi import LOG_LEVELS
 from robotide.context import IS_WINDOWS
 from robotide.contrib.testrunner import TestRunnerAgent
 from robotide.controller.testexecutionresults import TestExecutionResults
-from robotide.utils import PY2, is_unicode
+
 try:
     from robotide.lib.robot.utils import encoding
 except ImportError:
@@ -63,12 +58,10 @@ except ImportError:
     encoding = {'CONSOLE': CONSOLE_ENCODING,
                 'SYSTEM': SYSTEM_ENCODING}
 
-# DEBUG we are forcing UTF-8
 if IS_WINDOWS:
     encoding.OUTPUT_ENCODING = 'mbcs'
 else:
     encoding.OUTPUT_ENCODING = sys.getfilesystemencoding()  # 'UTF-8'
-# print("DEBUG: console %s system %s output %s" % (encoding.CONSOLE_ENCODING, encoding.SYSTEM_ENCODING, encoding.OUTPUT_ENCODING))
 
 ATEXIT_LOCK = threading.RLock()
 
@@ -143,7 +136,6 @@ class TestRunner(object):
         self.port = self._server.server_address[1]
 
     def _result_handler(self, event, *args):
-        # print("DEBUG: testrunner event %s" % event)
         if event == 'pid':
             self._pid_to_kill = int(args[0])
         if event == 'port' and self._process:
@@ -157,12 +149,10 @@ class TestRunner(object):
             self._pause_testname = testname
 
         if event == 'continue':
-            # print("DEBUG: testrunner resume %s" % self._results.RUNNING)
             self._results.set_running(self._get_test_controller(
                 self._pause_longname, self._pause_testname))
 
         if event == 'paused':
-            # print("DEBUG: testrunner pause %s" % self._results.PAUSED)
             self._results.set_paused(self._get_test_controller(
                 self._pause_longname, self._pause_testname))
         if event == 'end_test':
@@ -223,8 +213,7 @@ class TestRunner(object):
 
     def run_command(self, command, cwd):
         self._pid_to_kill = None
-        self._process = Process(cwd)  # .encode(encoding.SYSTEM_ENCODING))
-        # print("DEBUG: run_command command: %s\nCWD: %s\n" % (command, cwd))
+        self._process = Process(cwd)
         self._process.run_command(command)
 
     def get_command(self, profile, pythonpath, console_width, names_to_run):
@@ -299,23 +288,19 @@ class TestRunner(object):
 
     @staticmethod
     def _write_argfile(argfile, args):
-        if PY2 or IS_WINDOWS:
-            f = codecs.open(argfile, "wb") #, encoding=encoding.OUTPUT_ENCODING)
+        if IS_WINDOWS:
+            f = codecs.open(argfile, "wb")
             for item in args:
-                if is_unicode(item):
-                    enc_arg = item.encode('utf-8') # encoding.OUTPUT_ENCODING)  # DEBUG CONSOLE_ENCODING
+                if isinstance(item, str):
+                    enc_arg = item.encode('utf-8')
                 else:
                     enc_arg = item
                 try:
-                    f.write(enc_arg) #.encode(encoding.OUTPUT_ENCODING))
+                    f.write(enc_arg)
                     f.write("\n".encode(encoding.OUTPUT_ENCODING))
                 except UnicodeError:
-                    if PY2:
-                        f.write(bytes(item))
-                    else:
-                        f.write(bytes(item, 'utf-8'))
+                    f.write(bytes(item, 'utf-8'))
                     f.write(b"\n")
-                    # print("DEBUG: unicodedecodeerror when writting arg file")
         else:
             f = codecs.open(argfile, "w", "utf-8")
             f.write("\n".join(args))
@@ -410,17 +395,14 @@ class Process(object):
         if self._port is None:
             return  # Silent failure..
         sock = None
-        if IS_WINDOWS:  # TODO Verify on Linux
+        if IS_WINDOWS:
             host = '127.0.0.1'
         else:
             host = 'localhost'
         try:
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             sock.connect((host, self._port))
-            if PY2:
-                sock.send(data)
-            else:
-                sock.send(bytes(data, encoding.OUTPUT_ENCODING)) #DEBUG SYSTEM_ENCODING
+            sock.send(bytes(data, encoding.OUTPUT_ENCODING))
         # except Exception:
         #     print(r"DEBUG: Exception at send socket %s" % data)
         finally:
@@ -447,12 +429,7 @@ class Process(object):
     def _kill(self, pid):
         if pid:
             try:
-                if os.name == 'nt' and sys.version_info < (2, 7):
-                    import ctypes
-                    ctypes.windll.kernel32.TerminateProcess(
-                        int(self._process._handle), -1)
-                else:
-                    os.kill(pid, signal.SIGINT)
+                os.kill(pid, signal.SIGINT)
             except OSError:
                 pass
 
@@ -476,10 +453,7 @@ class StreamReaderThread(object):
 
     def pop(self):
         result = ""
-        try:
-            myqueuerng = xrange(self._queue.qsize())
-        except NameError:  # py3
-            myqueuerng = range(self._queue.qsize())
+        myqueuerng = range(self._queue.qsize())
         for _ in myqueuerng:
             try:
                 result += encoding.console_decode(self._queue.get_nowait(),

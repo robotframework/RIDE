@@ -21,7 +21,7 @@ from robotide.controller.ctrlcommands import UpdateVariable, UpdateDocumentation
 from robotide.editor.listeditor import ListEditorBase
 from robotide.publish.messages import RideImportSetting,\
     RideOpenVariableDialog, RideExecuteSpecXmlImport, RideSaving
-from robotide.utils import overrides, PY3
+from robotide.utils import overrides
 from robotide.widgets import ButtonWithHandler, Label, HtmlWindow, PopupMenu,\
     PopupMenuItems, HtmlDialog
 from robotide.publish import PUBLISHER
@@ -36,8 +36,6 @@ from .editordialogs import EditorDialog, DocumentationDialog, MetadataDialog,\
 from .listeditor import ListEditor
 from .popupwindow import HtmlPopupWindow
 from .tags import TagsDisplay
-if PY3:
-    from robotide.utils import basestring
 
 # Metaclass fix from http://code.activestate.com/recipes/204197-solving-the-metaclass-conflict/
 from robotide.utils.noconflict import classmaker
@@ -108,14 +106,14 @@ class SettingEditor(with_metaclass(classmaker(), wx.Panel, utils.RideEventHandle
     def OnEdit(self, event=None):
         self._hide_tooltip()
         self._editing = True
-        dlg = self._crete_editor_dialog()
+        dlg = self._create_editor_dialog()
         if dlg.ShowModal() == wx.ID_OK:
             self._set_value(dlg.get_value(), dlg.get_comment())
             self._update_and_notify()
         dlg.Destroy()
         self._editing = False
 
-    def _crete_editor_dialog(self):
+    def _create_editor_dialog(self):
         dlg_class = EditorDialog(self._controller)
         return dlg_class(self._datafile, self._controller, self.plugin)
 
@@ -151,9 +149,8 @@ class SettingEditor(with_metaclass(classmaker(), wx.Panel, utils.RideEventHandle
     def OnPopupTimer(self, event):
         _tooltipallowed = False
         # TODO This prevents tool tip for ex. Template edit field in wxPhoenix
-        try:  # DEBUG wxPhoenix
-             _tooltipallowed = self.Parent.tooltip_allowed(self._tooltip)
-            #_tooltipallowed = self._get_tooltip()
+        try:
+            _tooltipallowed = self.Parent.tooltip_allowed(self._tooltip)
         except AttributeError:
             # print("DEBUG: There was an attempt to show a Tool Tip.\n")
             pass
@@ -302,7 +299,7 @@ class DocumentationEditor(SettingEditor):
     def _get_details_for_tooltip(self):
         return self._controller.visible_value, None
 
-    def _crete_editor_dialog(self):
+    def _create_editor_dialog(self):
         return DocumentationDialog(self._datafile,
                                    self._controller.editable_value)
 
@@ -395,7 +392,7 @@ class VariablesListEditor(_AbstractListEditor):
 
     def get_column_values(self, item):
         return [item.name, item.value
-                if isinstance(item.value, basestring)
+                if isinstance(item.value, str)
                 else ' | '.join(item.value),
                 ListToStringFormatter(item.comment).value]
 

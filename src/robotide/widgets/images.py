@@ -70,17 +70,10 @@ class ImageProvider(object):
     def _get_img_path(self, name):
         return os.path.join(self._BASE, name)
 
-    def _img_from_art_provider(self, source):  # wxPhoenix
+    def _img_from_art_provider(self, source):
         return wx.ArtProvider.GetBitmap(source, wx.ART_OTHER, self._size)
 
     def _load_prog_icons(self):
         icons = wx.IconBundle()
-        self.MyAddIcon(icons, self._get_img_path('robot.ico'),
-                          wx.BITMAP_TYPE_ANY)
+        icons.AddIcon(self._get_img_path('robot.ico'), wx.BITMAP_TYPE_ANY)
         return icons
-
-    def MyAddIcon(self, obj, filename, type=wx.BITMAP_TYPE_ANY):
-        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
-            obj.AddIcon(filename, type)
-        else:
-            obj.AddIconFromFile(filename, type) # DEBUG wxPython 3.0.2

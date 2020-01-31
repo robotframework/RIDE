@@ -26,11 +26,7 @@
 #  limitations under the License.
 
 import wx
-
-if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
-    from wx import Sizer  # wxPhoenix
-else:
-    from wx import PySizer as Sizer
+from wx import Sizer
 
 
 class HorizontalFlowSizer(Sizer):
@@ -41,9 +37,9 @@ class HorizontalFlowSizer(Sizer):
     _DEFAUL_WIDTH = 200
 
     def __init__(self):
-        '''
+        """
         Initializes the object:
-        '''
+        """
         Sizer.__init__(self)
         self._frozen       = False
         self._needed_size  = None

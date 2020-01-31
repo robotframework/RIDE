@@ -14,22 +14,16 @@
 #  limitations under the License.
 
 from time import time
-try:
-    from StringIO import StringIO
-except ImportError:  # py3
-    from io import StringIO, BytesIO
+from io import StringIO, BytesIO
 import string
 import wx
 from wx import stc
-
 from robotide import robotapi
 from robotide.context import IS_WINDOWS, IS_MAC
 from robotide.controller.ctrlcommands import SetDataFile
 from robotide.publish import RideSettingsChanged, PUBLISHER
 from robotide.publish.messages import RideMessage
-from robotide.utils import PY2
-from robotide.namespace.suggesters import (SuggestionSource,
-                                           BuiltInLibrariesSuggester)
+from robotide.namespace.suggesters import SuggestionSource, BuiltInLibrariesSuggester
 from robotide.widgets import VerticalSizer, HorizontalSizer, ButtonWithHandler
 from robotide.pluginapi import (Plugin, RideSaving, TreeAwarePluginMixin,
                                 RideTreeSelection, RideNotebookTabChanging,
@@ -37,12 +31,7 @@ from robotide.pluginapi import (Plugin, RideSaving, TreeAwarePluginMixin,
                                 RideDataChangedToDirty)
 from robotide.widgets import TextField, Label, HtmlDialog
 from robotide.preferences.editors import ReadFonts
-
-
-if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
-    from wx.adv import HyperlinkCtrl, EVT_HYPERLINK
-else:
-    from wx import HyperlinkCtrl, EVT_HYPERLINK
+from wx.adv import HyperlinkCtrl, EVT_HYPERLINK
 
 try:  # import installed version first
     import robotframeworklexer
@@ -116,20 +105,14 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         datafile_controller = self.tree.get_selected_datafile_controller()
         if datafile_controller:
             self._open_data_for_controller(datafile_controller)
-            # self.show_tab(self._editor)
             self._editor.store_position()
 
     def OnSaving(self, message):
-        # print("DEBUG: Text Edit onsave enter")
         if self.is_focused():
-            # print("DEBUG: Text Edit onsave is with focus")
             self._editor.save()
             self._editor.GetFocus(None)
-            # print("DEBUG: Text Edit onsave leave with focus")
         else:
-            # print("DEBUG: Text Edit ENTER onsave from other Editor")
             self._open()  # Was saved from other Editor
-            # print("DEBUG: Text Edit onsave from other Editor")
 
     def OnDataChanged(self, message):
         if self._should_process_data_changed_message(message):
@@ -144,7 +127,6 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
     def _on_timer(self, event):
         self._editor.store_position()
         self._open_tree_selection_in_editor()
-        # DEBUG self._editor.set_editor_caret_position()
         event.Skip()
 
     def _should_process_data_changed_message(self, message):
@@ -157,8 +139,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
             next_datafile_controller = message.item and message.item.datafile_controller
             if self._editor.dirty and not self._apply_txt_changes_to_model():
                 if self._editor.datafile_controller != next_datafile_controller:
-                    self.tree.select_controller_node(
-                        self._editor.datafile_controller)
+                    self.tree.select_controller_node(self._editor.datafile_controller)
                 self._editor.set_editor_caret_position()
                 return
             if next_datafile_controller:
@@ -193,7 +174,6 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
             self._editor.set_editor_caret_position()
             self._set_read_only(self._editor._editor.readonly)
         elif message.oldtab == self.title:
-            # print("DEBUG: OnTabChange move to another from Text Editor.")
             self._editor.remove_and_store_state()
             self.unregister_actions()
             self._editor_component.save()
@@ -213,7 +193,6 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         return True
 
     def is_focused(self):
-        # print("DEBUG: self.notebook.current_page_title %s == self.title %s" % (self.notebook.current_page_title, self.title))
         return self.notebook.current_page_title == self.title
 
 
@@ -234,11 +213,8 @@ class DataValidationHandler(object):
             if not handled:
                 return False
         self._editor.reset()
-        # print("DEBUG: updating text")  # %s" % (self._editor.GetCurrentPos()))
         data.update_from(m_text)
-        # print("DEBUG: AFTER updating text")
         self._editor.set_editor_caret_position()
-        # %s" % (self._editor.GetCurrentPos()))
         return True
 
     def _sanity_check(self, data, text):
@@ -250,7 +226,6 @@ class DataValidationHandler(object):
     def _normalize(self, text):
         for item in tuple(string.whitespace) + ('...', '*'):
             if item in text:
-                # print("DEBUG: _normaliz item %s txt %s" % (item, text))
                 text = text.replace(item, '')
         return text
 
@@ -290,10 +265,7 @@ class DataFileWrapper(object): # TODO: bad class name
         self._data.execute(SetDataFile(self._create_target_from(content)))
 
     def _create_target_from(self, content):
-        if PY2:
-            src = StringIO(content.encode("utf-8"))
-        else:   # DEBUG because Apply Changes
-            src = BytesIO(content.encode("utf-8"))
+        src = BytesIO(content.encode("utf-8"))
         target = self._create_target()
         FromStringIOPopulator(target).populate(src)
         return target
@@ -426,19 +398,13 @@ class SourceEditor(wx.Panel):
     def store_position(self, force=False):
         if self._editor and self.datafile_controller:
             cur_pos = self._editor.GetCurrentPos()
-            # ins_pos = self._editor.GetInsertionPoint()
             if cur_pos > 0:  # Cheating because it always go to zero
-                # self._positions[self.datafile_controller.name] = cur_pos
                 self._position = cur_pos
-                # self._editor.SetAnchor(self._editor.GetCurrentPos())
                 self._editor.GotoPos(self._position)
-            # print("DEBUG: Called store caret self.datafile_controller.name=%s position=%s, ins_po=%s" % (self.datafile_controller.name, self._position, ins_pos))
 
     def set_editor_caret_position(self):
         if not self.is_focused():  # DEBUG was typing text when at Grid Editor
-            # print("DEBUG: Text Edit avoid set caret pos")
             return
-        # position = self._positions.get(self.datafile_controller.name, 0)
         position = self._position
         self._editor.SetFocus()
         if position:
@@ -446,10 +412,6 @@ class SourceEditor(wx.Panel):
             self._editor.SetSelection(position, position)
             self._editor.SetAnchor(position)
             self._editor.GotoPos(position)
-            # ins_pos = self._editor.GetInsertionPoint()
-            # linewithcursor = self._editor.GetCurrentLine()
-            # print("DEBUG: Called set caret position=%s line %s" % (position, linewithcursor,) )
-            # self._editor.ScrollToLine(linewithcursor)
             self._editor.Refresh()
             self._editor.Update()
 
@@ -464,7 +426,6 @@ class SourceEditor(wx.Panel):
     def OnFind(self, event):
         if self._editor:
             text = self._editor.GetSelectedText()
-            # print("DEBUG: Find text:%s" % text)
             if len(text)>0 and text.lower() != self._search_field.GetValue().lower():
                 self._search_field.SelectAll()
                 self._search_field.Clear()
@@ -505,21 +466,16 @@ class SourceEditor(wx.Panel):
             self._search_field_notification.SetLabel('No matches found.')
 
     def OnContentAssist(self, event):
-        # print("DEBUG: Content assist called Focused: %s" % self.is_focused())
         if not self.is_focused():
             return
-        #  if wx.Window.FindFocus() is self._editor:
         self.store_position()
-        # self._editor.SetAnchor(self._editor.GetCurrentPos())
         selected = self._editor.get_selected_or_near_text()
         sugs = [s.name for s in self._suggestions.get_suggestions(
             selected or '')]
         if sugs:
-            # caretpos = self._editor.AutoCompPosStart() # Never used :(
             self._editor.AutoCompSetDropRestOfWord(True)
             self._editor.AutoCompSetSeparator(ord(';'))
             self._editor.AutoCompShow(0, ";".join(sugs))
-        # event.Skip()
 
     def open(self, data):
         self.reset()
@@ -550,7 +506,7 @@ class SourceEditor(wx.Panel):
         if self.dirty and not self._data_validator.validate_and_update(
                 self._data, self._editor.utf8_text):
             return False
-        self.GetFocus(None)  # DEBUG
+        self.GetFocus(None)
         return True
 
     def delete(self):
@@ -587,8 +543,6 @@ class SourceEditor(wx.Panel):
         if self._editor:
             self.store_position()
             self._stored_text = self._editor.GetText()
-            # self._editor.Destroy()  # DEBUG Pressing F8 would crash
-            # self._editor = None
 
     def _create_editor_text_control(self, text=None):
         self._editor = RobotDataEditor(self)
@@ -600,14 +554,12 @@ class SourceEditor(wx.Panel):
         self._editor.Bind(wx.EVT_KEY_UP, self.OnEditorKey)
         self._editor.Bind(wx.EVT_KILL_FOCUS, self.LeaveFocus)
         self._editor.Bind(wx.EVT_SET_FOCUS, self.GetFocus)
-        # self._editor.Bind(wx.EVT_CHILD_FOCUS, self.GetFocus)
         # TODO Add here binding for keyword help
 
     def LeaveFocus(self, event):
         self._editor.AcceptsFocusFromKeyboard()
         self.store_position()
         self._editor.SetCaretPeriod(0)
-        # self.save()
 
     def GetFocus(self, event):
         self._editor.SetFocus()
@@ -615,8 +567,6 @@ class SourceEditor(wx.Panel):
         self._editor.SetCaretPeriod(500)
         if self._position:
             self.set_editor_caret_position()
-            # innerfocus = self._editor.GetSTCFocus()
-            # print("DEBUG: Get Focus: %s STCfocus is: %s" % (self.is_focused(), innerfocus))
         if event:
             event.Skip()
 
@@ -625,20 +575,15 @@ class SourceEditor(wx.Panel):
         self._editor.set_text(self._data.content)
 
     def OnEditorKey(self, event):
-        #print("DEBUG: Text Edit enter keypress")
         if not self.is_focused():  # DEBUG was typing text when at Grid Editor
-            # print("DEBUG: Text Edit skip keypress")
             return
         if not self.dirty and self._editor.GetModify():
-            # print("DEBUG: Text Edit keyup Marked Dirty")
             self._mark_file_dirty()
         event.Skip()
 
     def OnKeyDown(self, event):
         if not self.is_focused():
             self.GetFocus(None)
-            # DEBUG return
-        # Process Tab key
         if event.GetKeyCode() == wx.WXK_TAB and not event.ControlDown() and not event.ShiftDown():
             spaces = ' ' * self._tab_size
             self._editor.WriteText(spaces)
@@ -649,9 +594,6 @@ class SourceEditor(wx.Panel):
             if not event.ControlDown(): # No text selection
                 pos = self._editor.GetCurrentPos()
                 self._editor.SetSelection(pos, pos)
-        # elif event.GetKeyCode() == wx.WXK_SPACE and event.ControlDown():  # Process Ctrl-Space on MacOS too
-        #    self.OnContentAssist()
-        #    print("DEBUG: Text Edit called ContentAssist")
         else:
             event.Skip()
 
@@ -659,8 +601,7 @@ class SourceEditor(wx.Panel):
         """Update tab size if txt spaces size setting is modified"""
         _, setting = data.keys
         if setting == 'txt number of spaces':
-            self._tab_size = self._parent._app.settings.get(
-                      'txt number of spaces', 4)
+            self._tab_size = self._parent._app.settings.get('txt number of spaces', 4)
 
     def _mark_file_dirty(self):
         if self._data:
@@ -874,7 +815,6 @@ class RobotStylizer(object):
         shift = 0
         for position, token, value in self.lexer.get_tokens_unprocessed(self.editor.GetText()):
             self.editor.StartStyling(position+shift, 31)
-            # DEBUG Solution for non-utf-8 like emojii, 'surrogateescape')
             try:
                 self.editor.SetStyling(len(value.encode('utf-8')), self.tokens[token])
                 shift += len(value.encode('utf-8'))-len(value)

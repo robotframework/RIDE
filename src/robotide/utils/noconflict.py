@@ -15,14 +15,10 @@
 
 # Metaclass fix from http://code.activestate.com/recipes/204197-solving-the-metaclass-conflict/
 
-from robotide.utils import PY3
 import inspect, types
-try:
-    import __builtin__
-except ImportError:  # py3
-    import builtins
 
 ############## preliminary: two utility functions #####################
+
 
 def skip_redundant(iterable, skipset=None):
     "Redundant items are repeated items or items in the original skipset."
@@ -34,10 +30,7 @@ def skip_redundant(iterable, skipset=None):
 
 
 def remove_redundant(metaclasses):
-    if PY3:
-        skipset = set([type(types)])
-    else:
-        skipset = set([types.ClassType])
+    skipset = {type(types)}
     for meta in metaclasses: # determines the metaclasses to be skipped
         skipset.update(inspect.getmro(meta)[1:])
     return tuple(skip_redundant(metaclasses, skipset))
@@ -46,7 +39,9 @@ def remove_redundant(metaclasses):
 ## now the core of the module: two mutually recursive functions ##
 ##################################################################
 
+
 memoized_metaclasses_map = {}
+
 
 def get_noconflict_metaclass(bases, left_metas, right_metas):
     """Not intended to be used outside of this module, unless you know
@@ -71,6 +66,7 @@ def get_noconflict_metaclass(bases, left_metas, right_metas):
         meta = classmaker()(metaname, needed_metas, {})
     memoized_metaclasses_map[needed_metas] = meta
     return meta
+
 
 def classmaker(left_metas=(), right_metas=()):
     def make_class(name, bases, adict):
