@@ -90,12 +90,14 @@ class IntegerPreferenceComboBox(PreferencesComboBox):
 
 class PreferencesSpinControl(wx.SpinCtrl):
     """A spin control tied to a specific setting. Saves value to disk after edit."""
+
     def __init__(self, parent, id, settings, key, choices):
         self.settings = settings
         self.key = key
-        super(PreferencesSpinControl, self).__init__(parent, id,
-            initial=self._get_value(), size=self._get_size(choices[-1]))
+        super(PreferencesSpinControl, self).__init__(parent, id, 
+            size=self._get_size(choices[-1]))
         self.SetRange(*choices)
+        self.SetValue(self._get_value())
         self.Bind(wx.EVT_SPINCTRL, self.OnChange)
         self.Bind(wx.EVT_TEXT, self.OnChange)
 
