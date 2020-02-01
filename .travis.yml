@@ -10,7 +10,7 @@ before_install:
 install:
   - pip install -r requirements.txt
   - pip install -r requirements-dev.txt
-  - pip install .
+  - travis_wait 30 pip install .
 matrix:
   include:
     - python: "3.6"
