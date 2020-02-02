@@ -17,6 +17,18 @@
 
 
 import sys
+try:
+    import wx
+except ImportError:
+    sys.stderr.write("No wxPython installation detected!"
+                     "\n"
+                     "Please ensure that you have wxPython installed "
+                     "before running RIDE. "
+                     "You can obtain wxPython from "
+                     "https://wxpython.org/pages/downloads/\n"
+                     "or pip install wxPython")
+    exit(-1)
+
 from os.path import exists, join
 
 __doc__ = """
@@ -48,18 +60,72 @@ def verify_install():
         return True
 
 
+class MessageDialog(wx.Dialog):
+    def __init__(self, message, title, ttl=10):
+        wx.Dialog.__init__(self, None, -1, title,size=(300, 200))
+        self.CenterOnScreen(wx.BOTH)
+        self.timeToLive = ttl
+
+        std_btn_sizer = self.CreateStdDialogButtonSizer(wx.YES_NO)
+        st_msg = wx.StaticText(self, -1, message)
+        self.settimetolivemsg = wx.StaticText(self, -1, 'Closing this dialog box in %ds...' % self.timeToLive)
+
+        vbox = wx.BoxSizer(wx.VERTICAL)
+        vbox.Add(st_msg, 1, wx.ALIGN_CENTER|wx.TOP, 10)
+        vbox.Add(self.settimetolivemsg, 1, wx.ALIGN_CENTER | wx.TOP, 10)
+        vbox.Add(std_btn_sizer, 1, wx.ALIGN_CENTER | wx.TOP, 10)
+        self.SetSizer(vbox)
+        self.SetAffirmativeId(wx.ID_YES)
+
+        self.timer = wx.Timer(self)
+        self.timer.Start(1000)  # Generate a timer event every second
+        self.Bind(wx.EVT_CLOSE, self.OnClose)
+        self.Bind(wx.EVT_TIMER, self.onTimer, self.timer)
+        self.Bind(wx.EVT_BUTTON, self.OnCancel, id=wx.ID_CANCEL)
+        self.Bind(wx.EVT_BUTTON, self.OnNo, id=wx.ID_NO)
+        self.Bind(wx.EVT_CHAR_HOOK, self.OnKeyPressed)
+
+    def OnKeyPressed(self, event):
+        key_code = event.GetKeyCode()
+        if key_code == wx.WXK_ESCAPE:
+            self.Destroy()
+            return False
+        event.Skip()
+
+    def OnCancel(self, evt):
+        self.Destroy()
+        return False
+
+    def OnClose(self, evt):
+        self.Destroy()
+        return False
+
+    def OnNo(self, evt):
+        self.Destroy()
+        return wx.ID_NO
+
+    def onTimer(self, evt):
+        self.timeToLive -= 1
+        self.settimetolivemsg.SetLabel('Closing this dialog box in %ds...' % self.timeToLive)
+
+        if self.timeToLive == 0:
+            self.timer.Stop()
+            self.Destroy()
+            return False
+
+
 def _askyesno(title, message, frame=None):
-    import wx
     if frame is None:
         _ = wx.App()
         parent = wx.Frame(None, size=(0, 0))
     else:
         parent = wx.Frame(frame, size=(0, 0))
     parent.CenterOnScreen()
-    dlg = wx.MessageDialog(parent, message, title, wx.YES_NO |
-                           wx.ICON_QUESTION)
+    dlg = MessageDialog(message, title, ttl=8)
     result = dlg.ShowModal() == wx.ID_YES
-    dlg.Destroy()
+    print("Result %s" % result)
+    if dlg:
+        dlg.Destroy()
     parent.Destroy()
     return result
 
@@ -180,7 +246,7 @@ def _create_desktop_shortcut_windows(frame=None):
             if not _askyesno("Setup", "Create desktop shortcut?", frame):
                 sys.stderr.write("Users can create a Desktop shortcut to RIDE "
                                  "with:\n%s -m robotide.postinstall -install\n"
-                                 % sys.executable.replace('python.exe', 'pythonw.exe'))
+                                 % sys.executable)
                 return False
         import pythoncom
         shortcut = pythoncom.CoCreateInstance(shell.CLSID_ShellLink, None,

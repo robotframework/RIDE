@@ -15,7 +15,6 @@
 #  limitations under the License.
 
 
-import os
 import sys
 from robotide.postinstall import __main__ as postinstall
 
