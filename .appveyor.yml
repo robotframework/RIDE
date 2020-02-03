@@ -62,9 +62,6 @@ build: off
 # scripts that run after cloning repository
 install:
   - cmd: pip install tox
-  - cmd: pip install -r requirements.txt
-  - cmd: pip install -r requirements-dev.txt
-  - cmd: pip install .
 
 #---------------------------------#
 #       tests configuration       #
