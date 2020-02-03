@@ -51,8 +51,17 @@ matrix:
     - platform: x64
       configuration: Release
 
+environment:
+  matrix:
+  - TOXENV: py36
+  - TOXENV: py37
+  - TOXENV: py38
+
+build: off
+
 # scripts that run after cloning repository
 install:
+  - cmd: pip install tox
   - cmd: pip install -r requirements.txt
   - cmd: pip install -r requirements-dev.txt
   - cmd: pip install .
@@ -63,4 +72,5 @@ install:
 
 # to run your custom scripts instead of automatic tests
 test_script:
-  - cmd: invoke test
+  - tox
+
