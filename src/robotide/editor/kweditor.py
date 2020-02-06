@@ -573,6 +573,9 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
             elif keycode in [wx.WXK_RETURN, wx.WXK_BACK]:
                 self.save()
                 self._move_grid_cursor(event, keycode)
+            elif keycode == wx.WXK_F2:
+                celleditor = self._open_cell_editor()
+                celleditor._tc.SetFocus()
             else:
                 event.Skip()
 
@@ -643,23 +646,21 @@ work.</li>
         self._hide_link_if_necessary()
         #  event.Skip()
 
-    def _open_cell_editor_with_content_assist(self):
+    def _open_cell_editor(self):
         if not self.IsCellEditControlEnabled():
             self.EnableCellEditControl()
         row = self.GetGridCursorRow()
         celleditor = self.GetCellEditor(self.GetGridCursorCol(), row)
         celleditor.Show(True)
-        wx.CallAfter(celleditor.show_content_assist)
+        return celleditor
+
+    def _open_cell_editor_with_content_assist(self):
+        wx.CallAfter(self._open_cell_editor().show_content_assist)
 
     def _open_cell_editor_and_execute_variable_creator(
             self, list_variable=False, dict_variable=False):
-        if not self.IsCellEditControlEnabled():
-            self.EnableCellEditControl()
-        row = self.GetGridCursorRow()
-        celleditor = self.GetCellEditor(self.GetGridCursorCol(), row)
-        celleditor.Show(True)
-        wx.CallAfter(celleditor.execute_variable_creator, list_variable,
-                     dict_variable)
+        wx.CallAfter(self._open_cell_editor().execute_variable_creator,
+                     list_variable, dict_variable)
 
     def OnMakeVariable(self, event):
         self._open_cell_editor_and_execute_variable_creator(
