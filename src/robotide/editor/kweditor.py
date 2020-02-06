@@ -573,9 +573,6 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
             elif keycode in [wx.WXK_RETURN, wx.WXK_BACK]:
                 self.save()
                 self._move_grid_cursor(event, keycode)
-            elif keycode == wx.WXK_F2:
-                celleditor = self._open_cell_editor()
-                celleditor._tc.SetFocus()
             else:
                 event.Skip()
 
@@ -910,12 +907,9 @@ class ContentAssistCellEditor(GridCellEditor):
         self._tc.set_row(row)
         self._original_value = grid.GetCellValue(row, col)
         self._tc.SetValue(self._original_value)
+        self._tc.SetSelection(0, self._tc.GetLastPosition())
+        self._tc.SetFocus()
         self._grid = grid
-        self._tc.SetInsertionPointEnd()
-        if not IS_WINDOWS:
-            self._tc.SetFocus()  # On Win 10 this breaks cell text selection
-        # For this example, select the text   # DEBUG nov_2017
-        # self._tc.SetSelection(0, self._tc.GetLastPosition())
 
     def EndEdit(self, row, col, grid, *ignored):
         value = self._get_value()
@@ -951,14 +945,9 @@ class ContentAssistCellEditor(GridCellEditor):
         elif key == wx.WXK_BACK:
             self._tc.SetValue(self._original_value)
         else:
-            self._tc.SetValue(str(key))
+            self._tc.SetValue(chr(key))
         self._tc.SetFocus()
         self._tc.SetInsertionPointEnd()
-
-    def StartingClick(self):
-        self._tc.SetValue(self._original_value)
-        self._tc.SelectAll()
-        self._tc.SetFocus()
 
     def Clone(self):
         return ContentAssistCellEditor()
