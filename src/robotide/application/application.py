@@ -15,7 +15,11 @@
 
 import os
 import wx
+import locale
+locale.setlocale(locale.LC_ALL, 'C')
+
 from contextlib import contextmanager
+
 from robotide.namespace import Namespace
 from robotide.controller import Project
 from robotide.spec import librarydatabase
