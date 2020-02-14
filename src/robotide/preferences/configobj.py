@@ -2117,6 +2117,7 @@ class ConfigObj(Section):
                                          self.default_encoding or
                                          'utf-8')  # DEBUG was 'ascii'
 
+
         if self.BOM and ((self.encoding is None) or match_utf8(self.encoding)):
             # Add the UTF8 BOM
             output_bytes = BOM_UTF8 + output_bytes
