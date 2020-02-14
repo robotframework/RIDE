@@ -36,8 +36,8 @@ def initialize_settings(path, dest_file_name=None):
         os.makedirs(SETTINGS_DIRECTORY)
     (path, error) = _copy_or_migrate_user_settings(
         SETTINGS_DIRECTORY, path, dest_file_name)
-    # if error: # DEBUG This does not work on unitests :(
-    #    raise ConfigurationError(error)
+    if error:
+        raise ConfigurationError(error)
     return path
 
 

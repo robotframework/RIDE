@@ -2115,7 +2115,8 @@ class ConfigObj(Section):
         else:
             output_bytes = output.encode(self.encoding or
                                          self.default_encoding or
-                                         'ascii')
+                                         'utf-8')  # DEBUG was 'ascii'
+
 
         if self.BOM and ((self.encoding is None) or match_utf8(self.encoding)):
             # Add the UTF8 BOM
