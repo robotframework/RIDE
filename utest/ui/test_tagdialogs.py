@@ -222,7 +222,7 @@ class _BaseSuiteTreeTest(unittest.TestCase):
     def tearDown(self):
         PUBLISHER.unsubscribe_all()
         wx.CallAfter(wx.Exit)
-        # self.app.MainLoop()  # What is this doing here????
+        self.app.MainLoop()  # With this here, there is no Segmentation fault
 
     def _create_model(self):
         suite = self._create_directory_suite('/top_suite')
