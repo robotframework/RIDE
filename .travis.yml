@@ -9,7 +9,7 @@ before_install:
   - python3 -m pip install $WXPACK
 install:
   - python3 -m pip install -r requirements-dev.txt
-  - python3 -m pip install .
+  # - python3 -m pip install .
 matrix:
   include:
     - python: "3.6"
