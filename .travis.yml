@@ -6,11 +6,11 @@ before_install:
   - sudo apt-get install python-pyatspi libsdl2-dev
   # In normal circunstances we would just do "pip install wxPython"
   #- pip install https://wxpython.org/Phoenix/snapshot-builds/linux/gtk3/ubuntu-14.04/wxPython-4.0.0a3.dev3059+4a5c5d9-cp27-cp27mu-linux_x86_64.whl
-  - sudo python3 -m pip install $WXPACK
+  - python3 -m pip install $WXPACK
 install:
-  - sudo python3 -m pip install -r requirements.txt
-  - sudo python3 -m pip install -r requirements-dev.txt
-  - sudo python3 -m pip install .
+  - python3 -m pip install -r requirements.txt
+  - python3 -m pip install -r requirements-dev.txt
+  # - python3 -m pip install .
 matrix:
   include:
     - python: "3.6"
