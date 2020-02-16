@@ -950,7 +950,7 @@ class ContentAssistCellEditor(GridCellEditor):
         elif key == wx.WXK_BACK:
             self._tc.SetValue(self._original_value)
         else:
-            self._tc.SetValue(str(key))
+            self._tc.SetValue(chr(key))
         self._tc.SetFocus()
         self._tc.SetInsertionPointEnd()
 
