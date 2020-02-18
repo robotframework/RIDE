@@ -140,6 +140,7 @@ class PybotProfile(BaseProfile):
 
     def __init__(self, plugin):
         BaseProfile.__init__(self, plugin)
+        self._defined_arguments = self.arguments
         self._toolbar = None
 
     def get_command_prefix(self):
@@ -149,7 +150,7 @@ class PybotProfile(BaseProfile):
     def _get_arguments(self):
         if IS_WINDOWS:
             self._parse_windows_command()
-        return self.arguments.split()
+        return self._defined_arguments.split()
 
     def _parse_windows_command(self):
         from subprocess import Popen, PIPE
@@ -157,7 +158,7 @@ class PybotProfile(BaseProfile):
             p = Popen(['echo', self.arguments], stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=True)
             output, _ = p.communicate()
             output = str(output).lstrip("b\'").strip()
-            self.arguments = output.replace('"', '').replace('\'', '').replace('\\\\', '\\').replace('\\r\\n', '')
+            self._defined_arguments = output.replace('"', '').replace('\'', '').replace('\\\\', '\\').replace('\\r\\n', '')
         except IOError as e:
             # print("DEBUG: parser_win_comm IOError: %s" % e)
             pass
@@ -305,7 +306,7 @@ class PybotProfile(BaseProfile):
         args = self._arguments.GetValue()
         self._validate_arguments(args or u'')
         self.set_setting("arguments", args)
-        self.arguments = args
+        self._defined_arguments = self.arguments = args
 
     def _validate_arguments(self, args):
         invalid_message = self._get_invalid_message(args)
