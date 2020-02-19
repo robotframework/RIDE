@@ -51,8 +51,8 @@ class ProcessUnicodeTestCase(unittest.TestCase):
         '2 critical tests, 1 passed, 1 failed\n2 tests total, 1 passed, 1 failed\n'
         '==============================================================================\n'),
         msg=repr(output))
-        # Because of deprecation messages in RF 3.1, from Equal to RegexpMatches
-        self.assertRegexpMatches(errors.replace('\r', ''), u'.*\[ WARN \] this passes\n')
+        # Because of deprecation messages in RF 3.1, from Equal to Regex
+        self.assertRegex(errors.replace('\r', ''), u'.*\[ WARN \] this passes\n')
 
     def _run_small_test(self):
         p = Process(datafilereader.SMALL_TEST_PATH)
