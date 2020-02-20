@@ -49,7 +49,7 @@ class TestRenameTestCaseFile(unittest.TestCase):
     def _file_name_changed(self, message):
         self._message = message.datafile
 
-    @unittest.skip("ERRORS with RF 3.1")
+    ### @unittest.skip("ERRORS with RF 3.1")
     def test_rename_changes_basename_but_keeps_extension(self):
         RenameFile('quux').execute(self._create_controller())
         assert_equal(self._error_message, None)
@@ -89,7 +89,7 @@ class TestRenameTestCaseFile(unittest.TestCase):
         RenameFile("ashdjashdhjasd\nasdads").execute(self._create_controller())
         assert_equal(self._error_message, ERROR_NEWLINES_IN_THE_FILENAME)
 
-    @unittest.skip("ERRORS with RF 3.1")
+    ### @unittest.skip("ERRORS with RF 3.1")
     def test_rename_already_existing_error(self):
         rename_command = RenameFile("jup")
         rename_command._validator._file_exists = lambda *_: True
