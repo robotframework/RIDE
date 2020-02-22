@@ -19,6 +19,13 @@ See the `release notes`_ for latest release version 1.7.4.1.
 
 **Attention, don't install RIDE on Python 3.8 (wait for release of version 2.0)**
 
+**Or you can install from development, where running on Python 3.8 is supported (since February 2020)**
+
+
+Install with:
+
+``pip install -U https://github.com/robotframework/RIDE/archive/master.zip``
+
 **See the FAQ at Wiki**
 
 ==========================================
