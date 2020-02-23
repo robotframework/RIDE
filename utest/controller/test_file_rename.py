@@ -49,14 +49,12 @@ class TestRenameTestCaseFile(unittest.TestCase):
     def _file_name_changed(self, message):
         self._message = message.datafile
 
-    ### @unittest.skip("ERRORS with RF 3.1")
     def test_rename_changes_basename_but_keeps_extension(self):
         RenameFile('quux').execute(self._create_controller())
         assert_equal(self._error_message, None)
         assert_equal(self.ctrl.filename, 'quux.txt')
         assert_equal(self.ctrl.data.source, self.ctrl.filename)
 
-    ### @unittest.skip("ERRORS with RF 3.1")
     def test_rename_preserves_directory_path(self):
         RenameFile('quux').execute(self._create_controller('foo/bar.html'))
         assert_equal(self._error_message, None)
@@ -77,9 +75,9 @@ class TestRenameTestCaseFile(unittest.TestCase):
         assert_equal(self._error_message, None)
         assert_equal(self._message, self.ctrl)
 
-    @unittest.skip("ERRORS with RF 3.1.2")
+    @unittest.skip("Cannot provoke ERROR on Linux")  # Can't produce errors on Linux
     def test_rename_illegal_character_error(self):
-        RenameFile("dsk\d\j$''lkfd\{sjflk$'\'fdslkjl\[\]suite....").execute(
+        RenameFile("dsk\dన\j$''lkfd\{sjflk$'\'fdslkjl\[\]suite....").execute(
             self._create_controller())
         assert_equal(self._error_message, ERROR_ILLEGAL_CHARACTERS)
 
