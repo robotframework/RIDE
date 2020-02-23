@@ -56,7 +56,7 @@ class TestRenameTestCaseFile(unittest.TestCase):
         assert_equal(self.ctrl.filename, 'quux.txt')
         assert_equal(self.ctrl.data.source, self.ctrl.filename)
 
-    @unittest.skip("ERRORS with RF 3.1")
+    ### @unittest.skip("ERRORS with RF 3.1")
     def test_rename_preserves_directory_path(self):
         RenameFile('quux').execute(self._create_controller('foo/bar.html'))
         assert_equal(self._error_message, None)
@@ -77,8 +77,10 @@ class TestRenameTestCaseFile(unittest.TestCase):
         assert_equal(self._error_message, None)
         assert_equal(self._message, self.ctrl)
 
+    @unittest.skip("ERRORS with RF 3.1.2")
     def test_rename_illegal_character_error(self):
-        RenameFile("dsk\//\sdfj$''lkfdsjflk$'\'fdslkjlsuite....").execute(self._create_controller())
+        RenameFile("dsk\d\j$''lkfd\{sjflk$'\'fdslkjl\[\]suite....").execute(
+            self._create_controller())
         assert_equal(self._error_message, ERROR_ILLEGAL_CHARACTERS)
 
     def test_rename_empty_name_error(self):
@@ -89,7 +91,6 @@ class TestRenameTestCaseFile(unittest.TestCase):
         RenameFile("ashdjashdhjasd\nasdads").execute(self._create_controller())
         assert_equal(self._error_message, ERROR_NEWLINES_IN_THE_FILENAME)
 
-    ### @unittest.skip("ERRORS with RF 3.1")
     def test_rename_already_existing_error(self):
         rename_command = RenameFile("jup")
         rename_command._validator._file_exists = lambda *_: True
