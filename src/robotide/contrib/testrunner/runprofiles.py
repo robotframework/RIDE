@@ -330,8 +330,8 @@ class PybotProfile(BaseProfile):
             _, invalid = ArgumentParser(USAGE).parse_args(args.split())
         except Information:
             return 'Does not execute - help or version option given'
-        except (DataError, Exception) as e:  # DEBUG not caught DataError?
-            return e.message
+        except Exception as e:
+            raise DataError(e.message)
         if bool(invalid):
             return 'Unknown option(s): '+' '.join(invalid)
         return None

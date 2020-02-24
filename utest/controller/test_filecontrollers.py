@@ -96,11 +96,9 @@ class TestCaseFileControllerTest(unittest.TestCase):
     def test_has_format(self):
         assert_true(self.ctrl.has_format())
 
-    @unittest.skip("ERRORS with RF 3.1")
     def test_get_format(self):
         assert_equal(self.ctrl.get_format(), 'html')
 
-    @unittest.skip("ERRORS with RF 3.1")
     def test_source(self):
         assert_equal(self.ctrl.filename, self.SOURCE_HTML)
 
@@ -110,7 +108,6 @@ class TestCaseFileControllerTest(unittest.TestCase):
         self.ctrl.parent.longname = 'Parent'
         assert_equal(self.ctrl.longname, 'Parent.Test.Cases')
 
-    @unittest.skip("ERRORS with RF 3.1")
     def test_set_format(self):
         self.ctrl.set_format('txt')
         assert_equal(self.ctrl.filename, self.SOURCE_TXT)
@@ -138,7 +135,6 @@ class TestCaseFileControllerTest(unittest.TestCase):
 
 
 class TestResourceFileControllerTest(unittest.TestCase):
-
 
     def setUp(self):
         self.project = datafilereader.construct_project(datafilereader.SIMPLE_TEST_SUITE_PATH)
@@ -218,7 +214,6 @@ class TestDataDirectoryControllerTest(unittest.TestCase):
         ctrl.parent.longname = 'Parent'
         assert_equal(ctrl.longname, 'Parent.Source')
 
-    @unittest.skip("ERRORS with RF 3.1")
     def test_adding_test_case_file(self):
         new_data = TestDataDirectoryController(self.data).\
                     new_test_case_file(self.TEST_CASE_FILE_PATH)
@@ -261,6 +256,7 @@ class TestDataDirectoryControllerTest(unittest.TestCase):
         project._settings = lambda:0
         project._settings.excludes = lambda:0
         self.called = False
+
         def update_excludes(new_excludes):
             self.assertEqual(len(new_excludes), 1)
             self.assertTrue(new_excludes[0].endswith('source'))
