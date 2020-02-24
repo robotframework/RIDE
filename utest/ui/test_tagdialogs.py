@@ -170,8 +170,9 @@ class _ViewAllTagsDialog(ViewAllTagsDialog):
                               reverse=isreversed)
 
     def show_dialog(self):
-        print("DEBUG: Unique tags {0}\n".format(self.unique_tags))
-        print("DEBUG: _tags_list {0}\n".format(self.itemDataMap))
+        # print("DEBUG: Unique tags {0}\n".format(self.unique_tags))
+        # print("DEBUG: _tags_list {0}\n".format(self.itemDataMap))
+        pass
 
     def ShowDialog(self):
         self._tagsdialog._search_for_tags()
@@ -290,7 +291,7 @@ class TestSortTags(_BaseSuiteTreeTest):
         dref = list(j for i, j in self._tagsdialog.itemDataMap)
         # print("cref = {0}\ndref = {1}\n".format(cref, dref))
         assert_equal(dref, cref)
-        self._tagsdialog.show_dialog()
+        # self._tagsdialog.show_dialog()
 
     def test_sort_tags_descending_count(self):
         self._tagsdialog.sort_state = (1, 1)
@@ -310,7 +311,7 @@ class TestSortTags(_BaseSuiteTreeTest):
         dref = list(j for i, j in self._tagsdialog.itemDataMap)
         # print("cref = {0}\ndref = {1}\n".format(cref, dref))
         assert_equal(dref, cref)
-        self._tagsdialog.show_dialog()
+        # self._tagsdialog.show_dialog()
 
     def test_sort_tags_ascending_value(self):
         self._tagsdialog.sort_state = (0, 0)
@@ -333,7 +334,7 @@ class TestSortTags(_BaseSuiteTreeTest):
         dref = list(i for i, j in self._tagsdialog.itemDataMap)
         # print("tref = {0}\ndref = {1}\n".format(tref, dref))
         assert_equal(dref, tref)
-        self._tagsdialog.show_dialog()
+        # self._tagsdialog.show_dialog()
 
     def test_sort_tags_descending_value(self):
         self._tagsdialog.sort_state = (0, 1)
@@ -357,7 +358,7 @@ class TestSortTags(_BaseSuiteTreeTest):
         dref = list(i for i, j in self._tagsdialog.itemDataMap)
         # print("tref = {0}\ndref = {1}\n".format(tref, dref))
         assert_equal(dref, tref)
-        self._tagsdialog.show_dialog()
+        # self._tagsdialog.show_dialog()
 
 if __name__ == '__main__':
     unittest.main()

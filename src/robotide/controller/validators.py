@@ -43,10 +43,23 @@ class BaseNameValidator(object):
             if len(self._new_basename.strip()) == 0:
                 RideInputValidationError(message=ERROR_EMPTY_FILENAME).publish()
                 return False
+            createdDir = False
             try:
+                import pathlib
+                if pathlib.PurePath(filePath).parent != pathlib.PurePath('.'):
+                    #  print("DEBUG: Creating dirs %s", pathlib.PurePath(filePath).parent)
+                    pathlib.Path(pathlib.PurePath(filePath).parent).mkdir(parents=False,
+                                                                          exist_ok=True)
+                    createdDir = True
+                #  print("DEBUG: Creating file %s", filePath)
                 open(filePath, "w").close()
             finally:
-                os.remove(filePath)  # If file creation failed, then this will trigger validation error
+                try:
+                    os.remove(filePath)  # If file creation failed, then this will trigger validation error
+                    if createdDir:
+                        os.rmdir(pathlib.PurePath(filePath).parent)
+                except Exception:
+                    pass
             return True
         except (IOError, OSError):
             RideInputValidationError(message=ERROR_ILLEGAL_CHARACTERS).publish()

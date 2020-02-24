@@ -37,14 +37,17 @@ from resources.mocks import FakeSettings
 def create_test_data(path, filepath, resourcepath, initpath):
     if not os.path.exists(path):
         os.mkdir(path)
-    open(filepath, 'w').write('''\
+    with open(filepath, 'w') as file:
+        file.write('''\
 *Settings*
 Resource  resource.txt
 *Test Cases*
 Ride Unit Test  No Operation
 ''')
-    open(resourcepath, 'w').write('*Keywords*\nUnit Test Keyword  No Operation\n')
-    open(initpath, 'w').write('''\
+    with open(resourcepath, 'w') as resource:
+        resource.write('*Keywords*\nUnit Test Keyword  No Operation\n')
+    with open(initpath, 'w') as settings:
+        settings.write('''\
 *Settings*
 Documentation  Ride unit testing file
 ''')
@@ -82,7 +85,8 @@ class TestModifiedOnDiskWithFileSuite(_DataDependentTest):
     def test_size_change(self):
         os.utime(self._filepath, None)
         ctrl = TestCaseFileController(TestCaseFile(source=self._filepath).populate())
-        open(self._filepath, 'a').write('#Ninja edit\n')
+        with open(self._filepath, 'a') as file:
+            file.write('#Ninja edit\n')
         assert_true(ctrl.has_been_modified_on_disk())
 
     def test_reload(self):
@@ -92,7 +96,8 @@ class TestModifiedOnDiskWithFileSuite(_DataDependentTest):
             TestCaseFile(parent=model_parent, source=self._filepath).populate(),
             parent=controller_parent)
         assert_equal(len(ctrl.tests), 1)
-        open(self._filepath, 'a').write('Second Test  Log  Hello World!\n')
+        with open(self._filepath, 'a') as file:
+            file.write('Second Test  Log  Hello World!\n')
         ctrl.reload()
         assert_equal(len(ctrl.tests), 2)
         assert_equal(ctrl.tests[-1].name, 'Second Test')
@@ -115,7 +120,8 @@ class TestModifiedOnDiskWithDirectorySuite(_DataDependentTest):
         controller_parent = object()
         ctrl = TestDataDirectoryController(TestDataDirectory(source=self._dirpath, parent=model_parent).populate(),
             parent=controller_parent)
-        open(self._init_path, 'a').write('...  ninjaed more documentation')
+        with open(self._init_path, 'a') as file:
+            file.write('...  ninjaed more documentation')
         ctrl.reload()
         assert_equal(ctrl.settings[0].value,
                       'Ride unit testing file\\nninjaed more documentation')
@@ -137,7 +143,8 @@ class TestModifiedOnDiskWithresource(_DataDependentTest):
         controller_parent.add_child = controller_parent.children.append
         ctrl = ResourceFileController(ResourceFile(source=self._resource_path).populate(), parent=controller_parent)
         assert_equal(len(ctrl.keywords), 1)
-        open(self._resource_path, 'a').write('Ninjaed Keyword  Log  I am taking over!\n')
+        with open(self._resource_path, 'a') as fp:
+            fp.write('Ninjaed Keyword  Log  I am taking over!\n')
         ctrl.reload()
         assert_equal(len(ctrl.keywords), 2)
         assert_equal(ctrl.keywords[-1].name, 'Ninjaed Keyword')
@@ -185,7 +192,8 @@ class TestDataFileRemoval(_DataDependentTest):
         project._controller = TestDataDirectoryController(TestDataDirectory(source=self._dirpath).populate(), project)
         os.remove(self._init_path)
         project.data.remove()
-        open(self._init_path, 'w').write('*Settings*\nDocumentation  Ride unit testing file\n')
+        with open(self._init_path, 'w') as initfile:
+            initfile.write('*Settings*\nDocumentation  Ride unit testing file\n')
         assert_true(project.data.has_format() is False, project.data.data.initfile)
 
 
