@@ -643,23 +643,21 @@ work.</li>
         self._hide_link_if_necessary()
         #  event.Skip()
 
-    def _open_cell_editor_with_content_assist(self):
+    def _open_cell_editor(self):
         if not self.IsCellEditControlEnabled():
             self.EnableCellEditControl()
         row = self.GetGridCursorRow()
         celleditor = self.GetCellEditor(self.GetGridCursorCol(), row)
         celleditor.Show(True)
-        wx.CallAfter(celleditor.show_content_assist)
+        return celleditor
+
+    def _open_cell_editor_with_content_assist(self):
+        wx.CallAfter(self._open_cell_editor().show_content_assist)
 
     def _open_cell_editor_and_execute_variable_creator(
             self, list_variable=False, dict_variable=False):
-        if not self.IsCellEditControlEnabled():
-            self.EnableCellEditControl()
-        row = self.GetGridCursorRow()
-        celleditor = self.GetCellEditor(self.GetGridCursorCol(), row)
-        celleditor.Show(True)
-        wx.CallAfter(celleditor.execute_variable_creator, list_variable,
-                     dict_variable)
+        wx.CallAfter(self._open_cell_editor().execute_variable_creator,
+                     list_variable, dict_variable)
 
     def OnMakeVariable(self, event):
         self._open_cell_editor_and_execute_variable_creator(
@@ -909,12 +907,9 @@ class ContentAssistCellEditor(GridCellEditor):
         self._tc.set_row(row)
         self._original_value = grid.GetCellValue(row, col)
         self._tc.SetValue(self._original_value)
+        self._tc.SetSelection(0, self._tc.GetLastPosition())
+        self._tc.SetFocus()
         self._grid = grid
-        self._tc.SetInsertionPointEnd()
-        if not IS_WINDOWS:
-            self._tc.SetFocus()  # On Win 10 this breaks cell text selection
-        # For this example, select the text   # DEBUG nov_2017
-        # self._tc.SetSelection(0, self._tc.GetLastPosition())
 
     def EndEdit(self, row, col, grid, *ignored):
         value = self._get_value()
@@ -953,11 +948,6 @@ class ContentAssistCellEditor(GridCellEditor):
             self._tc.SetValue(chr(key))
         self._tc.SetFocus()
         self._tc.SetInsertionPointEnd()
-
-    def StartingClick(self):
-        self._tc.SetValue(self._original_value)
-        self._tc.SelectAll()
-        self._tc.SetFocus()
 
     def Clone(self):
         return ContentAssistCellEditor()
