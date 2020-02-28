@@ -47,9 +47,11 @@ class Plugin(object):
         Specifies should the plugin be enabled when first loaded.
         Set in `__init__`.
     """
-
+    """ This is now defined in treeplugin
+    """
     tree = property(lambda self: self.__frame.tree,
                     doc='Provides access to the suite and resource tree')
+    # tree = None
     menubar = property(lambda self: self.__frame.GetMenuBar(),
                        doc='Provides access to the application menubar')
     toolbar = property(lambda self: self.__frame.GetToolBar(),
@@ -282,6 +284,8 @@ class Plugin(object):
         :rtype:
             `InitFile`, `TestCaseFile` or `ResourceFile`
         """
+        if not self.tree:
+            return
         return self.tree.get_selected_datafile()
 
     def save_selected_datafile(self):
@@ -309,6 +313,8 @@ class Plugin(object):
         :rtype:
             `InitFile`, `TestCaseFile`, `ResourceFile`, `TestCase` or `UserKeyword`
         """
+        if not self.tree:
+            return
         return self.tree.get_selected_item()
 
     def content_assist_values(self, value=''):
@@ -322,6 +328,8 @@ class Plugin(object):
 
     def select_user_keyword_node(self, uk):
         """Selects node containing the given ``uk`` in the tree."""
+        if not self.tree:
+            return
         self.tree.select_user_keyword_node(uk)
 
     def get_keyword(self, name):
@@ -435,9 +443,13 @@ class Plugin(object):
 
     def highlight_cell(self, tcuk, obj=None, row=-1, column=-1):
         '''Highlight a specific row/column of a test case or user keyword'''
+        if not self.tree:
+            return
         self.tree.select_node_by_data(tcuk)
         self.__app.editor.highlight_cell(obj, row, column)
 
     def highlight(self, data, text):
         '''Highlight a specific text of a given data's editor'''
+        if not self.tree:
+            return
         self.tree.highlight(data, text)

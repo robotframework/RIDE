@@ -41,6 +41,7 @@ from robotide.publish import PUBLISHER, RideTreeSelection, RideFileNameChanged,\
     RideVariableMovedUp, RideVariableMovedDown, RideVariableUpdated,\
     RideOpenResource, RideSuiteAdded, RideSelectResource, RideDataFileSet
 from robotide.controller.ctrlcommands import MoveTo
+from robotide.pluginapi import Plugin, ActionInfo
 from robotide.widgets import PopupCreator
 from robotide import utils
 from .treenodehandlers import ResourceRootHandler, action_handler_class, ResourceFileHandler
@@ -55,6 +56,62 @@ _TREE_ARGS['agwStyle'] |= customtreectrl.TR_TOOLTIP_ON_LONG_ITEMS
 
 if IS_WINDOWS:
     _TREE_ARGS['style'] |= wx.TR_EDIT_LABELS
+
+
+class TreePlugin(Plugin, wx.Frame):
+    """Provides tree view for Project Files """
+    datafile = property(lambda self: self.get_selected_datafile())
+
+    def __init__(self, application):
+        Plugin.__init__(self, application)
+        self._parent = None
+        """
+        self._action_registerer = action_registerer
+        self.tree = parent.tree
+        """
+        # parent, action_registerer, , default_settings={'collapsed':True}
+    def register_frame(self, parent=None):
+        if parent:
+            self._parent = parent
+            print(f"DEBUG: TreePlugin frame {self._parent.GetTitle()}")
+
+    def enable(self):
+        self.register_action(ActionInfo('Tools','View Test Suites Explorer', self.OnShowTree,
+                                        shortcut='F12',
+                                        doc='Show Test Suites Explorer Tree panel',
+                                        position=36))
+        self.subscribe(self.OnTreeSelection, RideTreeSelection)
+        # self.subscribe(self.OnTabChanged, RideNotebookTabChanged)
+        # self.subscribe(self._update_preview, RideTestCaseAdded)
+        # self.subscribe(self._update_preview, RideUserKeywordAdded)
+        # self.add_self_as_tree_aware_plugin()
+
+    def disable(self):
+        # self.remove_self_from_tree_aware_plugins()
+        self.unsubscribe_all()
+        self.unregister_actions()
+        # self.delete_tab(self._panel)
+        # self.tree = None
+
+    def is_focused(self):
+        return self.tab_is_visible(self.tree)
+
+    def OnShowTree(self, event):
+        if not self.tree:
+            self.tree = Tree(self, self._action_registerer, self._application.settings)
+        # self.show_tab(self._panel)
+        self._update_tree()
+
+    def OnTreeSelection(self, event):
+        if self.is_focused():
+            self.tree.tree_node_selected(event.item)
+
+    def OnTabChanged(self, event):
+        self._update_tree()
+
+    def _update_tree(self, event=None):
+        if self.is_focused():
+            self.tree._refresh_view()
 
 
 class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,

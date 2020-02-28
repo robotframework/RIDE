@@ -18,6 +18,7 @@ def get_core_plugins():
     from robotide.recentfiles import RecentFilesPlugin
     from robotide.ui.preview import PreviewPlugin
     from robotide.ui.keywordsearch import KeywordSearch
+    from robotide.ui.treeplugin import TreePlugin  # TreePlugin,
     from robotide.editor import EditorPlugin
     from robotide.editor.texteditor import TextEditorPlugin
     from robotide.log import LogPlugin
@@ -28,4 +29,4 @@ def get_core_plugins():
 
     return [RunAnything, RecentFilesPlugin, PreviewPlugin, SpecImporterPlugin,
             EditorPlugin, TextEditorPlugin, KeywordSearch, LogPlugin,
-            TestSearchPlugin, ShortcutPlugin, ParserLogPlugin]
+            TestSearchPlugin, ShortcutPlugin, ParserLogPlugin, TreePlugin]

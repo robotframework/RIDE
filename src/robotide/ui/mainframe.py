@@ -36,7 +36,7 @@ from .filedialogs import (NewProjectDialog, InitFileFormatDialog)
 from .review import ReviewDialog
 from .pluginmanager import PluginManager
 from robotide.action.shortcut import localize_shortcuts
-from .tree import Tree
+from robotide.ui.treeplugin import Tree
 from .notebook import NoteBook
 from .progress import LoadProgressObserver
 
@@ -146,8 +146,7 @@ class RideFrame(with_metaclass(classmaker(), wx.Frame, RideEventHandler)):
         size = application.settings.get('mainframe size', (1100, 700))
         wx.Frame.__init__(self, parent=None, id = wx.ID_ANY, title='RIDE',
                           pos=application.settings.get('mainframe position', (50, 30)),
-                          size=size,
-                          style=wx.DEFAULT_FRAME_STYLE | wx.SUNKEN_BORDER)
+                          size=size, style=wx.DEFAULT_FRAME_STYLE | wx.SUNKEN_BORDER)
 
         # set Left to Right direction (while we don't have localization)
         self.SetLayoutDirection(wx.Layout_LeftToRight)
@@ -176,6 +175,8 @@ class RideFrame(with_metaclass(classmaker(), wx.Frame, RideEventHandler)):
         self._plugin_manager = PluginManager(self.notebook)
         self._review_dialog = None
         self._view_all_tags_dialog = None
+         #, self, self.actions,
+        # self._application.settings)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
         self.Bind(wx.EVT_SIZE, self.OnSize)
         self.Bind(wx.EVT_MOVE, self.OnMove)
@@ -271,8 +272,7 @@ class RideFrame(with_metaclass(classmaker(), wx.Frame, RideEventHandler)):
         #                  aui.AuiPaneInfo().Name("tree_content").
         #                  CenterPane().Hide().MinimizeButton(True))
         ###### self.tree = Tree(self.splitter, self.actions, self._application.settings)
-        self.tree = Tree(self, self.actions,
-                         self._application.settings)
+        self.tree = Tree(self, self.actions, self._application.settings)
         #self.tree.SetMinSize(wx.Size(100, 200))
         self.tree.SetMinSize(wx.Size(120, 200))
         self._mgr.AddPane(self.tree,

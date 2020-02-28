@@ -33,6 +33,7 @@ from robotide.application.pluginloader import PluginLoader
 from robotide.application.editorprovider import EditorProvider
 from robotide.application.releasenotes import ReleaseNotes
 from robotide.application.updatenotifier import UpdateNotifierController, UpdateDialog
+from robotide.ui.treeplugin import TreePlugin
 from robotide import utils
 
 
@@ -60,6 +61,8 @@ class RIDE(wx.App):
         self._plugin_loader = PluginLoader(self, self._get_plugin_dirs(),
                                            coreplugins.get_core_plugins())
         self._plugin_loader.enable_plugins()
+        self.treeplugin = TreePlugin(self)
+        self.treeplugin.register_frame(self.frame)
         self.frame.Show()
         self.editor = self._get_editor()
         self._load_data()
