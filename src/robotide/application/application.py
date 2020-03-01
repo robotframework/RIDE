@@ -34,6 +34,7 @@ from robotide.application.editorprovider import EditorProvider
 from robotide.application.releasenotes import ReleaseNotes
 from robotide.application.updatenotifier import UpdateNotifierController, UpdateDialog
 from robotide.ui.treeplugin import TreePlugin
+from robotide.ui.fileexplorerplugin import FileExplorerPlugin
 from robotide import utils
 
 
@@ -63,9 +64,13 @@ class RIDE(wx.App):
         self._plugin_loader.enable_plugins()
         self.treeplugin = TreePlugin(self)
         self.treeplugin.register_frame(self.frame)
+        self.fileexplorerplugin = FileExplorerPlugin(self, self._controller)
+        self.fileexplorerplugin.register_frame(self.frame)
         self.frame.Show()
         if not self.treeplugin.opened:
             self.treeplugin.close_tree()
+        if not self.fileexplorerplugin.opened:
+            self.fileexplorerplugin.close_tree()
         self.editor = self._get_editor()
         self._load_data()
         self.treeplugin.populate(self.model)
@@ -76,6 +81,7 @@ class RIDE(wx.App):
             UpdateNotifierController(
                 self.settings).notify_update_if_needed(UpdateDialog)
         wx.CallLater(200, ReleaseNotes(self).bring_to_front)
+        wx.CallLater(200, self.fileexplorerplugin._update_tree)
         return True
 
     def _publish_system_info(self):
