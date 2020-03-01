@@ -64,10 +64,12 @@ class RIDE(wx.App):
         self.treeplugin = TreePlugin(self)
         self.treeplugin.register_frame(self.frame)
         self.frame.Show()
+        if not self.treeplugin.opened:
+            self.treeplugin.close_tree()
         self.editor = self._get_editor()
         self._load_data()
-        self.frame.tree.populate(self.model)
-        self.frame.tree.set_editor(self.editor)
+        self.treeplugin.populate(self.model)
+        self.treeplugin.set_editor(self.editor)
         self._find_robot_installation()
         self._publish_system_info()
         if self._updatecheck:

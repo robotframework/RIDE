@@ -18,6 +18,7 @@ import wx
 from wx.lib.agw import customtreectrl
 from wx.lib.mixins import treemixin
 from wx import Colour
+from wx.lib.agw.aui import GetManager
 
 TREETEXTCOLOUR = Colour(0xA9, 0xA9, 0xA9)
 
@@ -58,13 +59,19 @@ if IS_WINDOWS:
     _TREE_ARGS['style'] |= wx.TR_EDIT_LABELS
 
 
-class TreePlugin(Plugin, wx.Frame):
-    """Provides tree view for Project Files """
+class TreePlugin(Plugin):
+    """Provides a tree view for Test Suites """
     datafile = property(lambda self: self.get_selected_datafile())
+    defaults = {"opened": True,
+                "docked": True
+                }
 
     def __init__(self, application):
-        Plugin.__init__(self, application)
+        Plugin.__init__(self, application, default_settings=self.defaults)
+        self.settings = application.settings._config_obj['Plugins']['Tree']
         self._parent = None
+        self._tree = self.tree
+        self._mgr = GetManager(self._tree)
         """
         self._action_registerer = action_registerer
         self.tree = parent.tree
@@ -73,45 +80,80 @@ class TreePlugin(Plugin, wx.Frame):
     def register_frame(self, parent=None):
         if parent:
             self._parent = parent
-            print(f"DEBUG: TreePlugin frame {self._parent.GetTitle()}")
+            self._mgr.AddPane(self._tree,
+                              wx.lib.agw.aui.AuiPaneInfo().Name("tree_content").
+                              Caption("Test Suites").LeftDockable(True).
+                              CloseButton(True))
+            self._mgr.Update()
+            # print(f"DEBUG: TreePlugin frame {self._parent.GetTitle()} tree {self._tree.GetName()}")
 
     def enable(self):
-        self.register_action(ActionInfo('Tools','View Test Suites Explorer', self.OnShowTree,
+        self.register_action(ActionInfo('View','View Test Suites Explorer', self.OnShowTree,
                                         shortcut='F12',
-                                        doc='Show Test Suites Explorer Tree panel',
-                                        position=36))
+                                        doc='Show Test Suites tree panel',
+                                        position=1))
         self.subscribe(self.OnTreeSelection, RideTreeSelection)
+        # self.save_setting('opened', True)
+        if self.opened:
+            self.OnShowTree(None)
+        # print(f"DEBUG: TreePlugin end enable  tree focused? {self.is_focused()}")
         # self.subscribe(self.OnTabChanged, RideNotebookTabChanged)
         # self.subscribe(self._update_preview, RideTestCaseAdded)
         # self.subscribe(self._update_preview, RideUserKeywordAdded)
         # self.add_self_as_tree_aware_plugin()
 
+    def close_tree(self):
+        self._mgr.DetachPane(self._tree)
+        self._tree.Hide()
+        self._mgr.Update()
+        self.save_setting('opened', False)
+        # print(f"DEBUG: TreePlugin Called close")
+
     def disable(self):
-        # self.remove_self_from_tree_aware_plugins()
+        self.close_tree()
+        # self.save_setting('opened', False)
         self.unsubscribe_all()
         self.unregister_actions()
-        # self.delete_tab(self._panel)
-        # self.tree = None
 
     def is_focused(self):
-        return self.tab_is_visible(self.tree)
+        return self._tree.HasFocus()
+
+    def populate(self, model):
+        self._tree.populate(model)
+
+    def set_editor(self, editor):
+        self._tree.set_editor(editor)
 
     def OnShowTree(self, event):
-        if not self.tree:
-            self.tree = Tree(self, self._action_registerer, self._application.settings)
-        # self.show_tab(self._panel)
+        if not self._parent:
+            self._parent = self.frame
+        if not self._tree:  # This is not needed because tree is always created
+            self._tree = Tree(self, self._parent.actions, self._parent._application.settings)
+            print(f"DEBUG: TreePlugin Show created tree {self._tree.GetName()}")
+
+        self._pane = self._mgr.GetPane(self._tree)
+        self._tree.Show(True)
+        self._mgr.DetachPane(self._tree)
+        # self._mgr.Update()
+        self._mgr.AddPane(self._tree,
+                          wx.lib.agw.aui.AuiPaneInfo().Name("tree_content").
+                          Caption("Test Suites").LeftDockable(True).
+                          CloseButton(True))
+        self._tree.Raise()
+        self._mgr.Update()
+        self.save_setting('opened', True)
         self._update_tree()
 
     def OnTreeSelection(self, event):
-        if self.is_focused():
-            self.tree.tree_node_selected(event.item)
+        if self._tree.is_focused():
+            self._tree.tree_node_selected(event.item)
 
     def OnTabChanged(self, event):
         self._update_tree()
 
     def _update_tree(self, event=None):
-        if self.is_focused():
-            self.tree._refresh_view()
+        # if self._tree.is_focused():
+        self._tree._refresh_view()
 
 
 class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
@@ -169,6 +211,7 @@ class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
         self.Bind(wx.EVT_TREE_ITEM_ACTIVATED, self.OnItemActivated)
         self.Bind(customtreectrl.EVT_TREE_ITEM_CHECKED, self.OnTreeItemChecked)
         self.Bind(wx.EVT_TREE_ITEM_COLLAPSING, self.OnTreeItemCollapsing)
+        self.Bind(wx.EVT_CLOSE, self.OnClose)
 
     def OnDoubleClick(self, event):
         item, pos = self.HitTest(self.ScreenToClient(wx.GetMousePosition()))
@@ -861,6 +904,10 @@ class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
             self.CheckItem(t, checked=is_checked)
 
         self._for_all_tests(item, func)
+
+    def OnClose(self, event):
+        print("DEBUG: Tree OnClose hidding")
+        self.Hide()
 
     def OnTreeItemChecked(self, event):
         node = event.GetItem()

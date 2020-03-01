@@ -54,6 +54,8 @@ ART_FOLDER_OPEN
 ---
 !E&xit | Exit RIDE | Ctrlcmd-Q
 
+[View]
+
 [Tools]
 !Search Unused Keywords | | | | POSITION-54
 !Manage Plugins | | | | POSITION-81
@@ -268,18 +270,10 @@ class RideFrame(with_metaclass(classmaker(), wx.Frame, RideEventHandler)):
         
         ##### End Test
         """
-        # self._mgr.AddPane(self.CreateTreeControl(),
-        #                  aui.AuiPaneInfo().Name("tree_content").
-        #                  CenterPane().Hide().MinimizeButton(True))
-        ###### self.tree = Tree(self.splitter, self.actions, self._application.settings)
+        # Tree is always created here
         self.tree = Tree(self, self.actions, self._application.settings)
-        #self.tree.SetMinSize(wx.Size(100, 200))
         self.tree.SetMinSize(wx.Size(120, 200))
-        self._mgr.AddPane(self.tree,
-                          aui.AuiPaneInfo().Name("tree_content").
-                          Caption("Test Suites").LeftDockable(True).
-                          CloseButton(False))
-        # MaximizeButton(True).MinimizeButton(True))
+        # TreePlugin will manage showing the Tree
         self.actions.register_actions(
             ActionInfoCollection(_menudata, self, self.tree))
         ###### File explorer pane
