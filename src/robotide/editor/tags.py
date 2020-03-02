@@ -188,7 +188,7 @@ class TagBox(wx.TextCtrl):
         self._update_value()
         # Send skip event only if tagbox is empty and about to be destroyed
         # On some platforms this event is sent too late and causes crash
-        if self.value != '':
+        if self and self.value != '':
             event.Skip()
 
     def _update_value(self):
@@ -237,7 +237,7 @@ class _TagBoxProperties(object):
         return self.enabled
 
     def change_value(self, value):
-        if self.modifiable and value != self.text:
+        if self.modifiable and (value != self.text or self.text == ''):
             self._tag.controller.execute(ChangeTag(self._tag, value))
 
     def activate(self, tagbox):
