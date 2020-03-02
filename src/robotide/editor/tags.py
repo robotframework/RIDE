@@ -167,7 +167,11 @@ class TagBox(wx.TextCtrl):
                 self._update_value()
             elif event.GetKeyCode() == wx.WXK_DELETE:
                 self.SetValue('')
-        event.Skip()
+
+        if event.GetKeyCode() != wx.WXK_RETURN:
+            # Don't send skip event if enter key is pressed
+            # On some platforms this event is sent too late and causes crash
+            event.Skip()
 
     def _cancel_editing(self):
         self.SetValue(self._properties.text)
