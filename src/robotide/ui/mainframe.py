@@ -17,7 +17,6 @@ import os
 import wx
 import wx.lib.agw.aui as aui
 from wx import Icon
-from wx.lib.agw.aui import aui_switcherdialog as ASD
 from robotide.lib.robot.utils.compat import with_metaclass
 from robotide.action import ActionInfoCollection, ActionFactory, SeparatorInfo
 from robotide.context import ABOUT_RIDE, SHORTCUT_KEYS
@@ -342,6 +341,8 @@ class RideFrame(with_metaclass(classmaker(), wx.Frame, RideEventHandler)):
         if self._allowed_to_exit():
             PUBLISHER.unsubscribe(self._set_label, RideTreeSelection)
             RideClosing().publish()
+            perspective=self._mgr.SavePerspective()
+            self._application.settings.set('AUI Perspective', perspective)
             # deinitialize the frame manager
             self._mgr.UnInit()
             self.Destroy()
