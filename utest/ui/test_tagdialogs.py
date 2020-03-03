@@ -35,7 +35,7 @@ from robotide.controller.filecontrollers import (TestDataDirectoryController,
 from robotide import utils
 from resources import PYAPP_REFERENCE, FakeSettings, FakeApplication
 
-from robotide.ui import tree as st
+from robotide.ui import treeplugin as st
 from robotide.ui import treenodehandlers as th
 from robotide.publish import PUBLISHER
 from robotide.namespace.namespace import Namespace
@@ -43,7 +43,7 @@ th.FakeDirectorySuiteHandler = th.FakeUserKeywordHandler = \
     th.FakeSuiteHandler = th.FakeTestCaseHandler = \
     th.FakeResourceHandler = th.TestDataDirectoryHandler
 st.Editor = lambda *args: _FakeEditor()
-from robotide.ui.tree import Tree
+from robotide.ui.treeplugin import Tree
 Tree._show_correct_editor = lambda self, x: None
 Tree.get_active_datafile = lambda self: None
 # CallAfter does not work in unit tests

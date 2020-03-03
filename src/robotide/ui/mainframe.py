@@ -36,7 +36,7 @@ from .filedialogs import (NewProjectDialog, InitFileFormatDialog)
 from .review import ReviewDialog
 from .pluginmanager import PluginManager
 from robotide.action.shortcut import localize_shortcuts
-from .tree import Tree
+from robotide.ui.treeplugin import Tree
 from .notebook import NoteBook
 from .progress import LoadProgressObserver
 
@@ -53,6 +53,8 @@ ART_FOLDER_OPEN
 !Save &All | Save all changes | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS
 ---
 !E&xit | Exit RIDE | Ctrlcmd-Q
+
+[View]
 
 [Tools]
 !Search Unused Keywords | | | | POSITION-54
@@ -146,8 +148,7 @@ class RideFrame(with_metaclass(classmaker(), wx.Frame, RideEventHandler)):
         size = application.settings.get('mainframe size', (1100, 700))
         wx.Frame.__init__(self, parent=None, id = wx.ID_ANY, title='RIDE',
                           pos=application.settings.get('mainframe position', (50, 30)),
-                          size=size,
-                          style=wx.DEFAULT_FRAME_STYLE | wx.SUNKEN_BORDER)
+                          size=size, style=wx.DEFAULT_FRAME_STYLE | wx.SUNKEN_BORDER)
 
         # set Left to Right direction (while we don't have localization)
         self.SetLayoutDirection(wx.Layout_LeftToRight)
@@ -176,6 +177,8 @@ class RideFrame(with_metaclass(classmaker(), wx.Frame, RideEventHandler)):
         self._plugin_manager = PluginManager(self.notebook)
         self._review_dialog = None
         self._view_all_tags_dialog = None
+         #, self, self.actions,
+        # self._application.settings)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
         self.Bind(wx.EVT_SIZE, self.OnSize)
         self.Bind(wx.EVT_MOVE, self.OnMove)
@@ -267,19 +270,10 @@ class RideFrame(with_metaclass(classmaker(), wx.Frame, RideEventHandler)):
         
         ##### End Test
         """
-        # self._mgr.AddPane(self.CreateTreeControl(),
-        #                  aui.AuiPaneInfo().Name("tree_content").
-        #                  CenterPane().Hide().MinimizeButton(True))
-        ###### self.tree = Tree(self.splitter, self.actions, self._application.settings)
-        self.tree = Tree(self, self.actions,
-                         self._application.settings)
-        #self.tree.SetMinSize(wx.Size(100, 200))
+        # Tree is always created here
+        self.tree = Tree(self, self.actions, self._application.settings)
         self.tree.SetMinSize(wx.Size(120, 200))
-        self._mgr.AddPane(self.tree,
-                          aui.AuiPaneInfo().Name("tree_content").
-                          Caption("Test Suites").LeftDockable(True).
-                          CloseButton(False))
-        # MaximizeButton(True).MinimizeButton(True))
+        # TreePlugin will manage showing the Tree
         self.actions.register_actions(
             ActionInfoCollection(_menudata, self, self.tree))
         ###### File explorer pane
