@@ -47,11 +47,10 @@ class Plugin(object):
         Specifies should the plugin be enabled when first loaded.
         Set in `__init__`.
     """
-    """ This is now defined in treeplugin
-    """
     tree = property(lambda self: self.__frame.tree,
                     doc='Provides access to the suite and resource tree')
-    # tree = None
+    filemgr = property(lambda self: self.__frame.filemgr,
+                    doc='Provides access to the files and folders explorer')
     menubar = property(lambda self: self.__frame.GetMenuBar(),
                        doc='Provides access to the application menubar')
     toolbar = property(lambda self: self.__frame.GetToolBar(),

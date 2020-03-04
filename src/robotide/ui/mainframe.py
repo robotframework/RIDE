@@ -37,6 +37,7 @@ from .review import ReviewDialog
 from .pluginmanager import PluginManager
 from robotide.action.shortcut import localize_shortcuts
 from robotide.ui.treeplugin import Tree
+from robotide.ui.fileexplorerplugin import FileExplorer
 from .notebook import NoteBook
 from .progress import LoadProgressObserver
 
@@ -53,8 +54,6 @@ ART_FOLDER_OPEN
 !Save &All | Save all changes | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS
 ---
 !E&xit | Exit RIDE | Ctrlcmd-Q
-
-[View]
 
 [Tools]
 !Search Unused Keywords | | | | POSITION-54
@@ -276,19 +275,11 @@ class RideFrame(with_metaclass(classmaker(), wx.Frame, RideEventHandler)):
         # TreePlugin will manage showing the Tree
         self.actions.register_actions(
             ActionInfoCollection(_menudata, self, self.tree))
-        ###### File explorer pane
-        self.filemgr = wx.GenericDirCtrl(self, -1, size=(200, 225),
-                                         style=wx.DIRCTRL_3D_INTERNAL)
+        ###### File explorer panel is always created here
+        self.filemgr = FileExplorer(self, self._controller)
         self.filemgr.SetMinSize(wx.Size(120, 200))
-        # wx.CallAfter(self.filemgr.SetPath(self.tree.get_selected_datafile()))
-        self._mgr.AddPane(self.filemgr,
-                          aui.AuiPaneInfo().Name("file_manager").
-                          Caption("Files").LeftDockable(True).
-                          CloseButton(True))
 
         mb.take_menu_bar_into_use()
-        #### self.splitter.SetMinimumPaneSize(100)
-        #### self.splitter.SplitVertically(self.tree, self.notebook, 300)
         self.CreateStatusBar()
         self.SetIcons(ImageProvider().PROGICONS)
         # tell the manager to "commit" all the changes just made
@@ -403,13 +394,7 @@ class RideFrame(with_metaclass(classmaker(), wx.Frame, RideEventHandler)):
 
     def _populate_tree(self):
         self.tree.populate(self._controller)
-        if len(self._controller.data.directory) > 1:
-            self.filemgr.SelectPath(self._controller.data.source)
-            try:
-                self.filemgr.ExpandPath(self._controller.data.source)
-            except Exception:
-                pass
-            self.filemgr.Update()
+        self.filemgr.update_tree()
 
     def OnOpenFile(self, event):
         if not self.filemgr:
@@ -528,8 +513,7 @@ class RideFrame(with_metaclass(classmaker(), wx.Frame, RideEventHandler)):
 
     def OnViewAllTags(self, event):
         if self._view_all_tags_dialog is None:
-            self._view_all_tags_dialog = ViewAllTagsDialog(self._controller,
-                                                           self)
+            self._view_all_tags_dialog = ViewAllTagsDialog(self._controller, self)
         self._view_all_tags_dialog.show_dialog()
 
     def OnSearchUnusedKeywords(self, event):
