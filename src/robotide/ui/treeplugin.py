@@ -80,7 +80,7 @@ class TreePlugin(Plugin):
     def register_frame(self, parent=None):
         if parent:
             self._parent = parent
-            self._mgr.AddPane(self._tree,
+            self._mgr.InsertPane(self._tree,
                               wx.lib.agw.aui.AuiPaneInfo().Name("tree_content").
                               Caption("Test Suites").LeftDockable(True).
                               CloseButton(True))

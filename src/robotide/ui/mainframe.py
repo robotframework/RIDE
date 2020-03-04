@@ -349,6 +349,8 @@ class RideFrame(with_metaclass(classmaker(), wx.Frame, RideEventHandler)):
 
     def OnClose(self, event):
         if self._allowed_to_exit():
+            perspective = self._mgr.SavePerspective()
+            self._application.settings.set('AUI Perspective', perspective)
             PUBLISHER.unsubscribe(self._set_label, RideTreeSelection)
             RideClosing().publish()
             # deinitialize the frame manager

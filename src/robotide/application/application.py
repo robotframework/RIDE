@@ -72,6 +72,10 @@ class RIDE(wx.App):
         self.treeplugin.set_editor(self.editor)
         self._find_robot_installation()
         self._publish_system_info()
+        perspective = self.settings.get('AUI Perspective', None)
+        if perspective:
+            self.frame._mgr.LoadPerspective(perspective, True)
+            print("DEBUG: LoadPerspective")
         if self._updatecheck:
             UpdateNotifierController(
                 self.settings).notify_update_if_needed(UpdateDialog)
