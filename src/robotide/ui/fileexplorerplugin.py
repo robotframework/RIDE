@@ -37,12 +37,11 @@ class FileExplorerPlugin(Plugin):
     def register_frame(self, parent=None):
         if parent:
             self._parent = parent
-            self._mgr.AddPane(self._filemgr,
+            self._mgr.InsertPane(self._filemgr,
                               wx.lib.agw.aui.AuiPaneInfo().Name("file_manager").
                               Caption("Files").LeftDockable(True).
                               CloseButton(True))
             self._mgr.Update()
-            # print(f"DEBUG: FileExplorerPlugin frame {self._parent.GetTitle()} tree {self._filemgr.GetName()}")
 
     def enable(self):
         self.register_action(ActionInfo('View','View File Explorer', self.OnShowFileExplorer,
@@ -58,7 +57,6 @@ class FileExplorerPlugin(Plugin):
         self._filemgr.Hide()
         self._mgr.Update()
         self.save_setting('opened', False)
-        # print(f"DEBUG: TreePlugin Called close")
 
     def disable(self):
         self.close_tree()
@@ -74,12 +72,10 @@ class FileExplorerPlugin(Plugin):
             self._parent = self.frame
         if not self._filemgr:  # This is not needed because file explorer is always created
             self._filemgr = FileExplorer(self._parent, self._controller)
-            print(f"DEBUG: FileExplorerPlugin Show created tree {self._filemgr.GetName()}")
 
         self._pane = self._mgr.GetPane(self._filemgr)
         self._filemgr.Show(True)
         self._mgr.DetachPane(self._filemgr)
-        # self._mgr.Update()
         self._mgr.AddPane(self.filemgr,
                           wx.lib.agw.aui.AuiPaneInfo().Name("file_manager").
                           Caption("Files").LeftDockable(True).
@@ -92,7 +88,6 @@ class FileExplorerPlugin(Plugin):
     def _update_tree(self):
         if not self._filemgr:
             return
-        # print("DEBUG: FileExplorerPlugin called _update_tree")
         self._filemgr.update_tree()
 
 

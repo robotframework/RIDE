@@ -17,7 +17,6 @@ import os
 import wx
 import wx.lib.agw.aui as aui
 from wx import Icon
-from wx.lib.agw.aui import aui_switcherdialog as ASD
 from robotide.lib.robot.utils.compat import with_metaclass
 from robotide.action import ActionInfoCollection, ActionFactory, SeparatorInfo
 from robotide.context import ABOUT_RIDE, SHORTCUT_KEYS
@@ -30,8 +29,7 @@ from robotide.utils import RideEventHandler
 from robotide.widgets import Dialog, ImageProvider, HtmlWindow
 from robotide.preferences import PreferenceEditor
 
-from .actiontriggers import ( MenuBar, ToolBarButton, ShortcutRegistry,
-                              _RideSearchMenuItem)
+from .actiontriggers import (MenuBar, ToolBarButton, ShortcutRegistry, _RideSearchMenuItem)
 from .filedialogs import (NewProjectDialog, InitFileFormatDialog)
 from .review import ReviewDialog
 from .pluginmanager import PluginManager
@@ -273,8 +271,7 @@ class RideFrame(with_metaclass(classmaker(), wx.Frame, RideEventHandler)):
         self.tree = Tree(self, self.actions, self._application.settings)
         self.tree.SetMinSize(wx.Size(120, 200))
         # TreePlugin will manage showing the Tree
-        self.actions.register_actions(
-            ActionInfoCollection(_menudata, self, self.tree))
+        self.actions.register_actions(ActionInfoCollection(_menudata, self, self.tree))
         ###### File explorer panel is always created here
         self.filemgr = FileExplorer(self, self._controller)
         self.filemgr.SetMinSize(wx.Size(120, 200))

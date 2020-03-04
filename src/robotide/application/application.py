@@ -80,10 +80,8 @@ class RIDE(wx.App):
         perspective = self.settings.get('AUI Perspective', None)
         if perspective:
             self.frame._mgr.LoadPerspective(perspective, True)
-            print("DEBUG: LoadPerspective")
         if self._updatecheck:
-            UpdateNotifierController(
-                self.settings).notify_update_if_needed(UpdateDialog)
+            UpdateNotifierController(self.settings).notify_update_if_needed(UpdateDialog)
         wx.CallLater(200, ReleaseNotes(self).bring_to_front)
         wx.CallLater(200, self.fileexplorerplugin._update_tree)
         return True
