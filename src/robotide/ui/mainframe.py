@@ -17,7 +17,6 @@ import os
 import wx
 import wx.lib.agw.aui as aui
 from wx import Icon
-from wx.lib.agw.aui import aui_switcherdialog as ASD
 from robotide.lib.robot.utils.compat import with_metaclass
 from robotide.action import ActionInfoCollection, ActionFactory, SeparatorInfo
 from robotide.context import ABOUT_RIDE, SHORTCUT_KEYS
@@ -30,13 +29,13 @@ from robotide.utils import RideEventHandler
 from robotide.widgets import Dialog, ImageProvider, HtmlWindow
 from robotide.preferences import PreferenceEditor
 
-from .actiontriggers import ( MenuBar, ToolBarButton, ShortcutRegistry,
-                              _RideSearchMenuItem)
+from .actiontriggers import (MenuBar, ToolBarButton, ShortcutRegistry, _RideSearchMenuItem)
 from .filedialogs import (NewProjectDialog, InitFileFormatDialog)
 from .review import ReviewDialog
 from .pluginmanager import PluginManager
 from robotide.action.shortcut import localize_shortcuts
-from .tree import Tree
+from robotide.ui.treeplugin import Tree
+from robotide.ui.fileexplorerplugin import FileExplorer
 from .notebook import NoteBook
 from .progress import LoadProgressObserver
 
@@ -146,8 +145,7 @@ class RideFrame(with_metaclass(classmaker(), wx.Frame, RideEventHandler)):
         size = application.settings.get('mainframe size', (1100, 700))
         wx.Frame.__init__(self, parent=None, id = wx.ID_ANY, title='RIDE',
                           pos=application.settings.get('mainframe position', (50, 30)),
-                          size=size,
-                          style=wx.DEFAULT_FRAME_STYLE | wx.SUNKEN_BORDER)
+                          size=size, style=wx.DEFAULT_FRAME_STYLE | wx.SUNKEN_BORDER)
 
         # set Left to Right direction (while we don't have localization)
         self.SetLayoutDirection(wx.Layout_LeftToRight)
@@ -176,6 +174,8 @@ class RideFrame(with_metaclass(classmaker(), wx.Frame, RideEventHandler)):
         self._plugin_manager = PluginManager(self.notebook)
         self._review_dialog = None
         self._view_all_tags_dialog = None
+         #, self, self.actions,
+        # self._application.settings)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
         self.Bind(wx.EVT_SIZE, self.OnSize)
         self.Bind(wx.EVT_MOVE, self.OnMove)
@@ -267,34 +267,16 @@ class RideFrame(with_metaclass(classmaker(), wx.Frame, RideEventHandler)):
         
         ##### End Test
         """
-        # self._mgr.AddPane(self.CreateTreeControl(),
-        #                  aui.AuiPaneInfo().Name("tree_content").
-        #                  CenterPane().Hide().MinimizeButton(True))
-        ###### self.tree = Tree(self.splitter, self.actions, self._application.settings)
-        self.tree = Tree(self, self.actions,
-                         self._application.settings)
-        #self.tree.SetMinSize(wx.Size(100, 200))
+        # Tree is always created here
+        self.tree = Tree(self, self.actions, self._application.settings)
         self.tree.SetMinSize(wx.Size(120, 200))
-        self._mgr.AddPane(self.tree,
-                          aui.AuiPaneInfo().Name("tree_content").
-                          Caption("Test Suites").LeftDockable(True).
-                          CloseButton(False))
-        # MaximizeButton(True).MinimizeButton(True))
-        self.actions.register_actions(
-            ActionInfoCollection(_menudata, self, self.tree))
-        ###### File explorer pane
-        self.filemgr = wx.GenericDirCtrl(self, -1, size=(200, 225),
-                                         style=wx.DIRCTRL_3D_INTERNAL)
+        # TreePlugin will manage showing the Tree
+        self.actions.register_actions(ActionInfoCollection(_menudata, self, self.tree))
+        ###### File explorer panel is always created here
+        self.filemgr = FileExplorer(self, self._controller)
         self.filemgr.SetMinSize(wx.Size(120, 200))
-        # wx.CallAfter(self.filemgr.SetPath(self.tree.get_selected_datafile()))
-        self._mgr.AddPane(self.filemgr,
-                          aui.AuiPaneInfo().Name("file_manager").
-                          Caption("Files").LeftDockable(True).
-                          CloseButton(True))
 
         mb.take_menu_bar_into_use()
-        #### self.splitter.SetMinimumPaneSize(100)
-        #### self.splitter.SplitVertically(self.tree, self.notebook, 300)
         self.CreateStatusBar()
         self.SetIcons(ImageProvider().PROGICONS)
         # tell the manager to "commit" all the changes just made
@@ -355,6 +337,8 @@ class RideFrame(with_metaclass(classmaker(), wx.Frame, RideEventHandler)):
 
     def OnClose(self, event):
         if self._allowed_to_exit():
+            perspective = self._mgr.SavePerspective()
+            self._application.settings.set('AUI Perspective', perspective)
             PUBLISHER.unsubscribe(self._set_label, RideTreeSelection)
             RideClosing().publish()
             # deinitialize the frame manager
@@ -407,13 +391,7 @@ class RideFrame(with_metaclass(classmaker(), wx.Frame, RideEventHandler)):
 
     def _populate_tree(self):
         self.tree.populate(self._controller)
-        if len(self._controller.data.directory) > 1:
-            self.filemgr.SelectPath(self._controller.data.source)
-            try:
-                self.filemgr.ExpandPath(self._controller.data.source)
-            except Exception:
-                pass
-            self.filemgr.Update()
+        self.filemgr.update_tree()
 
     def OnOpenFile(self, event):
         if not self.filemgr:
@@ -532,8 +510,7 @@ class RideFrame(with_metaclass(classmaker(), wx.Frame, RideEventHandler)):
 
     def OnViewAllTags(self, event):
         if self._view_all_tags_dialog is None:
-            self._view_all_tags_dialog = ViewAllTagsDialog(self._controller,
-                                                           self)
+            self._view_all_tags_dialog = ViewAllTagsDialog(self._controller, self)
         self._view_all_tags_dialog.show_dialog()
 
     def OnSearchUnusedKeywords(self, event):
