@@ -51,7 +51,7 @@ class TestKeywordInfo(unittest.TestCase):
         kw = lib.handlers['testlib_keyword_with_args']
         kw_info = LibraryKeywordInfo(kw.name, kw.doc, lib.doc_format, kw.library.name, libraryfetcher._parse_args(kw.arguments))
         assert_in_details(kw_info, 'TestLib',
-                          '[ arg1 | arg2=arg2 | *args ]')
+                          '[ arg1 | arg2=default value | *args ]')
 
     def test_uk_arguments_parsing(self):
         uk = UserKeyword(_FakeTestCaseFile(), 'My User keyword')
