@@ -84,6 +84,7 @@ setup(
     package_dir={'': SOURCE_DIR},
     packages=find_packages(SOURCE_DIR),
     package_data=package_data,
+    python_requires='>=3.6',
     # Robot Framework package data is not included, but RIDE does not need it.
     # Always install everything, since we may be switching between versions
     options={'install': {'force': True}},
