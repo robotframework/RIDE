@@ -52,19 +52,12 @@ matrix:
       configuration: Release
 
 environment:
-  APPDATA: C:\Users\appveyor\AppData\Local\Temp\
-
   matrix:
   - TOXENV: py36
   - TOXENV: py37
   - TOXENV: py38
 
-# build: off
-build_script:
-- cmd: >-
-    set APPDATA=C:\Users\appveyor\AppData\Local\Temp\
-
-    python -m invoke test
+build: off
 
 # scripts that run after cloning repository
 install:
@@ -75,7 +68,5 @@ install:
 #---------------------------------#
 
 # to run your custom scripts instead of automatic tests
-#test_script:
-#  - tox
-
-test: off
+test_script:
+  - tox
