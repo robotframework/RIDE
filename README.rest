@@ -28,6 +28,11 @@ Install with:
 
 **See the FAQ at Wiki**
 
+Unit testing statuses:
+----------------------
+
+Linux (py36, py37): image:https://travis-ci.com/robotframework/RIDE.svg?branch=master  Windows (py36, py37, py38):  image:https://ci.appveyor.com/api/projects/status/github/HelioGuilherme66/RIDE?branch=master&svg=true
+
 ==========================================
 
 * Downloads_
