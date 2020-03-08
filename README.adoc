@@ -1,0 +1,43 @@
+= RIDE
+ifdef::env-github[:outfilesuffix: .adoc]
+
+RIDE is a development environment for Robot Framework test cases.
+
+**Instant Communication**
+Join our **#ride** channel in Robot Framework Slack: https://robotframework.slack.com
+(signup page: https://robotframework-slack-invite.herokuapp.com/)
+
+== **Welcome to the development version of RIDE - next release will be version 2.0**
+
+If you are looking for the latest released version, you can get the source code from **https://github.com/robotframework/RIDE/releases[releases]** or from branch **https://github.com/robotframework/RIDE/tree/release/1.7.4.1[release/1.7.4.1]**
+See the https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-1.7.4.1.rst[release notes] for latest release version 1.7.4.1.
+
+**Version 1.7.4.1 was the last release supporting Python 2.7**
+
+
+**Attention, this new version will break old style `:FOR`, and you have to change to `FOR/END` blocks.**
+
+**Attention, don't install RIDE on Python 3.8 (wait for release of version 2.0)**
+
+**Or you can install from development, where running on Python 3.8 is supported (since February 2020)**
+
+Install with:
+[source, shell]
+pip install -U https://github.com/robotframework/RIDE/archive/master.zip
+
+**See the https://github.com/robotframework/RIDE/wiki/F%2eA%2eQ%2e[FAQ] at https://github.com/robotframework/RIDE/wiki[Wiki]**
+
+
+
+== Unit testing statuses:
+Linux (py36, py37): image:https://travis-ci.com/robotframework/RIDE.svg?branch=master[Unit Tests, link=https://travis-ci.com/robotframework/RIDE]
+Windows (py36, py37, py38): image:https://ci.appveyor.com/api/projects/status/github/HelioGuilherme66/RIDE?branch=master&svg=true[Unit Tests, link=https://ci.appveyor.com/project/HelioGuilherme66/ride]
+
+'''
+
+* https://pypi.python.org/pypi/robotframework-ride[Downloads at PyPi]
+* Statistics at https://pypistats.org/packages/robotframework-ride[PyPi Stats] and https://libraries.io/pypi/robotframework-ride[Libraries.io]
+* Usage instructions and some tips and tricks can be found from the https://github.com/robotframework/RIDE/wiki[Wiki]
+* Bug report/enhancement request? Use the https://github.com/robotframework/RIDE/issues[issue tracker]
+* Any questions? Do not hesitate to use the https://groups.google.com/group/robotframework-users/[mailing list]
+* Development information is in https://github.com/robotframework/RIDE/blob/master/BUILD.rest[BUILD] file
