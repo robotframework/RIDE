@@ -31,6 +31,7 @@ class _ContentAssistTextCtrlBase(object):
     def __init__(self, suggestion_source):
         self._popup = ContentAssistPopup(self, suggestion_source)
         self.Bind(wx.EVT_KEY_DOWN, self.OnChar)
+        self.Bind(wx.EVT_CHAR, self.OnChar)
         self.Bind(wx.EVT_KILL_FOCUS, self.OnFocusLost)
         self.Bind(wx.EVT_MOVE, self.OnFocusLost)
         self.Bind(wx.EVT_WINDOW_DESTROY, self.OnDestroy)
@@ -44,9 +45,9 @@ class _ContentAssistTextCtrlBase(object):
 
     def OnChar(self, event):
         # TODO: This might benefit from some cleanup
-        keycode, control_down = event.GetKeyCode(), event.CmdDown()
+        keycode, control_down =  event.GetUnicodeKey(), event.CmdDown()
         # Ctrl-Space handling needed for dialogs # DEBUG add Ctrl-m
-        if (control_down or event.AltDown()) and keycode in (wx.WXK_SPACE, ord('m')):
+        if (control_down or event.AltDown()) and keycode in [wx.WXK_SPACE, ord('m')]:
             self.show_content_assist()
         elif keycode in [wx.WXK_UP, wx.WXK_DOWN, wx.WXK_PAGEUP, wx.WXK_PAGEDOWN]\
                 and self._popup.is_shown():
@@ -64,6 +65,8 @@ class _ContentAssistTextCtrlBase(object):
                 event.AltDown():
             self.execute_variable_creator(list_variable=(keycode == ord('2')),
                                           dict_variable=(keycode == ord('5')))
+        elif chr(keycode) in ['[', '{', '(', "'", '\"', '`']:
+            self.execute_enclose_text(chr(keycode))
         else:
             event.Skip()
 
@@ -84,6 +87,25 @@ class _ContentAssistTextCtrlBase(object):
 
     def _variable_creator_value(self, value, symbol, from_, to_):
         return value[:from_]+symbol+'{'+value[from_:to_]+'}'+value[to_:]
+
+    def execute_enclose_text(self, keycode):
+        from_, to_ = self.GetSelection()
+        self.SetValue(self._enclose_text(self.Value, keycode, from_, to_))
+        if from_ == to_:
+            self.SetInsertionPoint(from_ + 2)
+        else:
+            self.SetSelection(from_ + 1, to_ + 1)
+
+    def _enclose_text(self, value, open_symbol, from_, to_):
+        if open_symbol == '[':
+            close_symbol = ']'
+        elif open_symbol == '{':
+            close_symbol = '}'
+        elif open_symbol == '(':
+            close_symbol = ')'
+        else:
+            close_symbol = open_symbol
+        return value[:from_]+open_symbol+value[from_:to_]+close_symbol+value[to_:]
 
     def OnFocusLost(self, event, set_value=True):
         event.Skip()

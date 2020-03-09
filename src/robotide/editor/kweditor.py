@@ -179,6 +179,7 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
     def _make_bindings(self):
         self.Bind(grid.EVT_GRID_EDITOR_SHOWN, self.OnEditor)
         self.Bind(wx.EVT_KEY_DOWN, self.OnKeyDown)
+        self.Bind(wx.EVT_CHAR, self.OnKeyDown)
         self.Bind(wx.EVT_KEY_UP, self.OnKeyUp)
         self.Bind(grid.EVT_GRID_CELL_LEFT_CLICK, self.OnCellLeftClick)
         self.Bind(grid.EVT_GRID_CELL_LEFT_DCLICK, self.OnCellLeftDClick)
@@ -524,7 +525,13 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
         self.MoveCursorDown(event.ShiftDown())
 
     def OnKeyDown(self, event):
-        keycode = event.GetKeyCode()
+        keycode = event.GetUnicodeKey()
+
+        keychar = event.GetRawKeyCode()
+        # print(f"DEBUG: Key is {chr(keycode)} code {keychar}")
+        if chr(keycode) in ['[', '{', '(', "'", '\"', '`']:
+            self._open_cell_editor().execute_enclose_text(chr(keycode))
+            return
 
         if event.ControlDown():
             if event.ShiftDown():
@@ -560,6 +567,7 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
                 else:
                     self.show_cell_information()
         elif event.AltDown():
+            print(f"DEBUG: Alt Key pressed is {chr(keycode)}")
             if keycode == wx.WXK_SPACE:
                 self._open_cell_editor_with_content_assist() # Mac CMD
             elif keycode in [wx.WXK_DOWN, wx.WXK_UP]:
@@ -567,6 +575,8 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
                 self._move_rows(keycode)
             elif keycode == wx.WXK_RETURN:
                 self._move_cursor_down(event)
+            else:
+                event.Skip()
         else:
             if keycode == wx.WXK_WINDOWS_MENU:
                 self.OnCellRightClick(event)
@@ -886,6 +896,9 @@ class ContentAssistCellEditor(GridCellEditor):
     def execute_variable_creator(self, list_variable=False,
                                  dict_variable=False):
         self._tc.execute_variable_creator(list_variable, dict_variable)
+
+    def execute_enclose_text(self, keycode):
+        self._tc.execute_enclose_text(keycode)
 
     def Create(self, parent, id, evthandler):
         self._tc = ExpandingContentAssistTextCtrl(
