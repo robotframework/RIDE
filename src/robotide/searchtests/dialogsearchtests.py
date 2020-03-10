@@ -84,7 +84,7 @@ class TestsDialog(Dialog):
         include_line = self._horizontal_sizer()
         include_line.Add(Label(panel, label='Include', size=(80, -1)))
         self._tags_to_include_text = wx.TextCtrl(panel, value='', size=(400, -1),
-                                                 style=wx.TE_PROCESS_ENTER)
+                                                 style=wx.TE_PROCESS_ENTER|wx.TE_NOHIDESEL)
         self._tags_to_include_text.Bind(wx.EVT_TEXT_ENTER, self.OnSearchTags)
         include_line.Add(self._tags_to_include_text)
         return include_line
@@ -101,7 +101,7 @@ class TestsDialog(Dialog):
         exclude_line = self._horizontal_sizer()
         exclude_line.Add(Label(panel, label='Exclude', size=(80, -1)))
         self._tags_to_exclude_text = wx.TextCtrl(panel, value='', size=(400, -1),
-                                                 style=wx.TE_PROCESS_ENTER)
+                                                 style=wx.TE_PROCESS_ENTER|wx.TE_NOHIDESEL)
         self._tags_to_exclude_text.Bind(wx.EVT_TEXT_ENTER, self.OnSearchTags)
         exclude_line.Add(self._tags_to_exclude_text)
         return exclude_line

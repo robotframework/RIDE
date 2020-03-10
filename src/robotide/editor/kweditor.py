@@ -834,7 +834,7 @@ work.</li>
                                                   "and this is a different "
                                                   "font.",
                                size=(400, 475),
-                               style=wx.HSCROLL | wx.TE_MULTILINE)
+                               style=wx.HSCROLL | wx.TE_MULTILINE | wx.TE_NOHIDESEL)
         dialog.Sizer.Add(richText, flag=wx.GROW, proportion=1)
         dialog.Sizer.Add(okBtn, flag=wx.ALIGN_RIGHT | wx.ALL)
         dialog.Sizer.Add(cnlBtn, flag=wx.ALL)

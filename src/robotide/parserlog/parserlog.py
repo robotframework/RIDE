@@ -109,7 +109,7 @@ class _LogWindow(wx.Panel):
 
     def __init__(self, notebook, log):
         wx.Panel.__init__(self, notebook)
-        self._output = wx.TextCtrl(self, style=wx.TE_READONLY | wx.TE_MULTILINE)
+        self._output = wx.TextCtrl(self, style=wx.TE_READONLY | wx.TE_MULTILINE | wx.TE_NOHIDESEL)
         self._output.Bind(wx.EVT_KEY_DOWN, self.OnKeyDown)
         self._log = log
         self._notebook = notebook

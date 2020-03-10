@@ -119,7 +119,7 @@ class TagsDisplay(wx.lib.scrolledpanel.ScrolledPanel):
 class TagBox(wx.TextCtrl):
 
     def __init__(self, parent, properties):
-        wx.TextCtrl.__init__(self, parent, wx.ID_ANY, '', style=wx.TE_CENTER)
+        wx.TextCtrl.__init__(self, parent, wx.ID_ANY, '', style=wx.TE_CENTER|wx.TE_NOHIDESEL)
         self._bind()
         self.set_properties(properties)
 
