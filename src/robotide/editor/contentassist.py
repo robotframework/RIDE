@@ -83,6 +83,7 @@ class _ContentAssistTextCtrlBase(object):
         if from_ == to_:
             self.SetInsertionPoint(from_ + 2)
         else:
+            self.SetInsertionPoint(to_ + 3)
             self.SetSelection(from_ + 2, to_ + 2)
 
     def _variable_creator_value(self, value, symbol, from_, to_):
@@ -92,8 +93,9 @@ class _ContentAssistTextCtrlBase(object):
         from_, to_ = self.GetSelection()
         self.SetValue(self._enclose_text(self.Value, keycode, from_, to_))
         if from_ == to_:
-            self.SetInsertionPoint(from_ + 2)
+            self.SetInsertionPoint(from_ + 1)
         else:
+            self.SetInsertionPoint(to_ + 2)
             self.SetSelection(from_ + 1, to_ + 1)
 
     def _enclose_text(self, value, open_symbol, from_, to_):
@@ -172,14 +174,14 @@ class ExpandingContentAssistTextCtrl(_ContentAssistTextCtrlBase,
 
     def __init__(self, parent, plugin, controller):
         ExpandoTextCtrl.__init__(self, parent, size=wx.DefaultSize,
-                                 style=wx.WANTS_CHARS)
+                                 style=wx.WANTS_CHARS|wx.TE_NOHIDESEL)
         _ContentAssistTextCtrlBase.__init__(self, SuggestionSource(plugin, controller))
 
 
 class ContentAssistTextCtrl(_ContentAssistTextCtrlBase, wx.TextCtrl):
 
     def __init__(self, parent, suggestion_source, size=wx.DefaultSize):
-        wx.TextCtrl.__init__(self, parent, size=size, style=wx.WANTS_CHARS)
+        wx.TextCtrl.__init__(self, parent, size=size, style=wx.WANTS_CHARS|wx.TE_NOHIDESEL)
         _ContentAssistTextCtrlBase.__init__(self, suggestion_source)
 
 
