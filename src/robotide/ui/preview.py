@@ -192,7 +192,7 @@ class HtmlView(wx.html.HtmlWindow):
 class TxtView(wx.TextCtrl):
 
     def __init__(self, parent):
-        wx.TextCtrl.__init__(self, parent, style=wx.TE_MULTILINE)
+        wx.TextCtrl.__init__(self, parent, style=wx.TE_MULTILINE|wx.TE_NOHIDESEL)
         self.SetEditable(False)
         self.SetFont(Font().fixed)
 

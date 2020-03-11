@@ -225,7 +225,7 @@ class SettingValueDisplay(wx.TextCtrl):
     def __init__(self, parent):
         wx.TextCtrl.__init__(
             self, parent, size=(-1, context.SETTING_ROW_HEIGTH),
-            style=wx.TE_RICH | wx.TE_MULTILINE)
+            style=wx.TE_RICH | wx.TE_MULTILINE | wx.TE_NOHIDESEL)
         self.SetEditable(False)
         self._colour_provider = ColorizationSettings(
             parent.plugin.global_settings['Grid'])

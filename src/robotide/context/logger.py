@@ -90,5 +90,5 @@ class ParsingErrorDialog(Dialog):
                         style=wx.DEFAULT_FRAME_STYLE)
         # set Left to Right direction (while we don't have localization)
         self.SetLayoutDirection(wx.Layout_LeftToRight)
-        area = wx.TextCtrl(self, size=(700,400), style=wx.TE_MULTILINE|wx.TE_DONTWRAP|wx.TE_READONLY)
+        area = wx.TextCtrl(self, size=(700,400), style=wx.TE_MULTILINE|wx.TE_DONTWRAP|wx.TE_READONLY|wx.TE_NOHIDESEL)
         area.SetValue(message)

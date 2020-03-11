@@ -318,7 +318,7 @@ class MultiLineEditor(ValueEditor):
     _sizer_flags_for_editor = wx.ALL | wx.EXPAND
 
     def _get_text_ctrl(self):
-        return wx.TextCtrl(self, style=wx.TE_MULTILINE, size=(600, 400))
+        return wx.TextCtrl(self, style=wx.TE_MULTILINE|wx.TE_NOHIDESEL, size=(600, 400))
 
 
 class ContentAssistEditor(ValueEditor):

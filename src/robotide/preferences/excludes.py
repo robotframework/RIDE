@@ -118,7 +118,7 @@ class ExcludePreferences(PreferencesPanel):
 
     def _add_text_box(self, sizer):
         self._text_box = wx.TextCtrl(self,
-            style=wx.TE_MULTILINE,
+            style=wx.TE_MULTILINE|wx.TE_NOHIDESEL,
             size=wx.Size(570, 100),
             value=self._settings.excludes.get_excludes())
         sizer.Add(self._text_box, proportion=wx.EXPAND)
