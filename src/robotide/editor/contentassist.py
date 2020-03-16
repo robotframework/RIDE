@@ -185,6 +185,13 @@ class ContentAssistTextCtrl(_ContentAssistTextCtrlBase, wx.TextCtrl):
         _ContentAssistTextCtrlBase.__init__(self, suggestion_source)
 
 
+class ContentAssistTextEditor(_ContentAssistTextCtrlBase, wx.TextCtrl):
+
+    def __init__(self, parent, suggestion_source, pos, size=wx.DefaultSize):
+        wx.TextCtrl.__init__(self, parent, -1, "", pos, size=size, style=wx.WANTS_CHARS|wx.BORDER_NONE|wx.WS_EX_TRANSIENT|wx.TE_PROCESS_ENTER|wx.TE_NOHIDESEL)
+        _ContentAssistTextCtrlBase.__init__(self, suggestion_source)
+
+
 class ContentAssistFileButton(_ContentAssistTextCtrlBase, FileBrowseButton):
 
     def __init__(self, parent, suggestion_source, label, controller,
