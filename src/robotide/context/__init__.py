@@ -328,6 +328,26 @@ SHORTCUT_KEYS = '''\
         <td>Find previous search result</td>
     </tr>
     <tr>
+        <td>CtrlCmd-1</td>
+        <td>Make scalar variable body</td>
+    </tr>
+    <tr>
+        <td>CtrlCmd-2</td>
+        <td>Make list variable body</td>
+    </tr>
+    <tr>
+        <td>CtrlCmd-3</td>
+        <td>Comment row(s)</td>
+    </tr>
+    <tr>
+        <td>CtrlCmd-4</td>
+        <td>Uncomment row(s)</td>
+    </tr>
+    <tr>
+        <td>CtrlCmd-5</td>
+        <td>Make dictionary variable body</td>
+    </tr>
+    <tr>
         <td>Enter</td>
         <td>When focus is in the search field, find next search result</td>
     </tr>
