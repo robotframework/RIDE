@@ -659,9 +659,10 @@ class SourceEditor(wx.Panel):
         spaces = ' ' * self._tab_size
         comment = 'Comment' + spaces
         cpos = cursor + len(comment)
-        if len(line) > 0:
+        lenline = len(line)
+        if lenline > 0:
             idx = 0
-            while line[idx] == ' ':
+            while idx<lenline and line[idx] == ' ':
                 idx += 1
             self._editor.InsertText(cursor - pos + idx, comment)
             self._editor.SetCurrentPos(cpos)
@@ -670,6 +671,7 @@ class SourceEditor(wx.Panel):
             self._editor.InsertText(cursor, comment)
             self._editor.SetCurrentPos(cpos)
             self._editor.SetSelection(cpos, cpos)
+        self.store_position()
 
     def execute_uncomment(self, event):
         cursor = self._editor.GetCurrentPos()
@@ -677,14 +679,16 @@ class SourceEditor(wx.Panel):
         spaces = ' ' * self._tab_size
         comment = 'Comment' + spaces
         cpos = cursor - len(comment)
-        if len(line) > 0:
+        lenline = len(line)
+        if lenline > 0:
             idx = 0
-            while line[idx] == ' ':
+            while idx<lenline and line[idx] == ' ':
                 idx += 1
             if (line[idx:len(comment) + idx]).lower() == comment.lower():
                 self._editor.DeleteRange(cursor - pos + idx, len(comment))
                 self._editor.SetCurrentPos(cpos)
                 self._editor.SetSelection(cpos, cpos)
+        self.store_position()
 
     def OnSettingsChanged(self, data):
         """Update tab size if txt spaces size setting is modified"""
