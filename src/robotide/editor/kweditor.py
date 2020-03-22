@@ -528,7 +528,8 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
         keycode = event.GetUnicodeKey()
 
         keychar = event.GetRawKeyCode()
-        # print(f"DEBUG: Key is {chr(keycode)} code {keychar}")
+        if chr(keychar) in ['[', '{', '(', "'", '\"', '`']:
+            self._open_cell_editor().execute_enclose_text(chr(keychar))
         if chr(keycode) in ['[', '{', '(', "'", '\"', '`']:
             self._open_cell_editor().execute_enclose_text(chr(keycode))
             return
@@ -567,9 +568,9 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
                 else:
                     self.show_cell_information()
         elif event.AltDown():
-            print(f"DEBUG: Alt Key pressed is {chr(keycode)}")
+            # print(f"DEBUG: Alt Key pressed is {chr(keycode)}")
             if keycode == wx.WXK_SPACE:
-                self._open_cell_editor_with_content_assist() # Mac CMD
+                self._open_cell_editor_with_content_assist()  # Mac CMD
             elif keycode in [wx.WXK_DOWN, wx.WXK_UP]:
                 self._skip_except_on_mac(event)
                 self._move_rows(keycode)

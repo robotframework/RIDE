@@ -46,6 +46,7 @@ class _ContentAssistTextCtrlBase(object):
     def OnChar(self, event):
         # TODO: This might benefit from some cleanup
         keycode, control_down =  event.GetUnicodeKey(), event.CmdDown()
+        keychar = event.GetRawKeyCode()
         # Ctrl-Space handling needed for dialogs # DEBUG add Ctrl-m
         if (control_down or event.AltDown()) and keycode in [wx.WXK_SPACE, ord('m')]:
             self.show_content_assist()
@@ -65,8 +66,8 @@ class _ContentAssistTextCtrlBase(object):
                 event.AltDown():
             self.execute_variable_creator(list_variable=(keycode == ord('2')),
                                           dict_variable=(keycode == ord('5')))
-        elif chr(keycode) in ['[', '{', '(', "'", '\"', '`']:
-            self.execute_enclose_text(chr(keycode))
+        elif chr(keychar) in ['[', '{', '(', "'", '\"', '`']:
+            self.execute_enclose_text(chr(keychar))
         else:
             event.Skip()
 
