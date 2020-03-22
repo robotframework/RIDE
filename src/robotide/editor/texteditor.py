@@ -555,7 +555,7 @@ class SourceEditor(wx.Panel):
         if text is not None:
             self._editor.set_text(text)
         self._editor.Bind(wx.EVT_KEY_DOWN, self.OnKeyDown)
-        self._editor.Bind(wx.EVT_CHAR, self.OnKeyDown)
+        self._editor.Bind(wx.EVT_CHAR, self.OnChar)
         self._editor.Bind(wx.EVT_KEY_UP, self.OnEditorKey)
         self._editor.Bind(wx.EVT_KILL_FOCUS, self.LeaveFocus)
         self._editor.Bind(wx.EVT_SET_FOCUS, self.GetFocus)
@@ -603,8 +603,17 @@ class SourceEditor(wx.Panel):
         elif keycode in (ord('1'), ord('2'), ord('5')) and event.ControlDown():
             self.execute_variable_creator(list_variable=(keycode == ord('2')),
                                           dict_variable=(keycode == ord('5')))
-        elif chr(keycode) in ['[', '{', '(', "'", '\"', '`']:
+        else:
+            event.Skip()
+
+    def OnChar(self, event):
+        if not self.is_focused():
+            return
+        keycode = event.GetUnicodeKey()
+        if chr(keycode) in ['[', '{', '(', "'", '\"', '`']:
+            # self.store_position()
             self.execute_enclose_text(chr(keycode))
+            self.store_position()
         else:
             event.Skip()
 
@@ -632,17 +641,22 @@ class SourceEditor(wx.Panel):
 
     def execute_enclose_text(self, keycode):
         from_, to_ = self._editor.GetSelection()
-        self._editor.SetValue(self._enclose_text(self._editor.Value, keycode, from_, to_))
-        if from_ == to_:
-            self._editor.SetInsertionPoint(from_ + 1)
+        text = self._editor.SelectedText
+        size = len(bytes(text, encoding='utf-8'))
+        to_ = from_ + size
+        if size == 0:
+            self._editor.SetInsertionPoint(to_)
+            self._editor.InsertText(from_, self._enclose_text(keycode))
             pos = self._editor.GetCurrentPos()
-            self._editor.SetSelection(pos, pos)
+            self._editor.SetSelection(pos + 1, pos + 1)
         else:
-            self._editor.SetInsertionPoint(to_ + 2)
-            self._editor.SetSelection(from_ + 1, to_ + 1)
+            self._editor.DeleteRange(from_, size)
+            self._editor.SetInsertionPoint(from_)
+            self._editor.ReplaceSelection(self._enclose_text(keycode, text))
+            self._editor.SetSelection(from_ + 1, from_ + size + 1)
 
     @staticmethod
-    def _enclose_text(value, open_symbol, from_, to_):
+    def _enclose_text(open_symbol, value=''):
         if open_symbol == '[':
             close_symbol = ']'
         elif open_symbol == '{':
@@ -651,7 +665,7 @@ class SourceEditor(wx.Panel):
             close_symbol = ')'
         else:
             close_symbol = open_symbol
-        return value[:from_]+open_symbol+value[from_:to_]+close_symbol+value[to_:]
+        return open_symbol+value+close_symbol
 
     def execute_comment(self, event):
         cursor = self._editor.GetCurrentPos()
@@ -665,12 +679,10 @@ class SourceEditor(wx.Panel):
             while idx<lenline and line[idx] == ' ':
                 idx += 1
             self._editor.InsertText(cursor - pos + idx, comment)
-            self._editor.SetCurrentPos(cpos)
-            self._editor.SetSelection(cpos, cpos)
         else:
             self._editor.InsertText(cursor, comment)
-            self._editor.SetCurrentPos(cpos)
-            self._editor.SetSelection(cpos, cpos)
+        self._editor.SetCurrentPos(cpos)
+        self._editor.SetSelection(cpos, cpos)
         self.store_position()
 
     def execute_uncomment(self, event):
@@ -688,7 +700,7 @@ class SourceEditor(wx.Panel):
                 self._editor.DeleteRange(cursor - pos + idx, len(comment))
                 self._editor.SetCurrentPos(cpos)
                 self._editor.SetSelection(cpos, cpos)
-        self.store_position()
+                self.store_position()
 
     def OnSettingsChanged(self, data):
         """Update tab size if txt spaces size setting is modified"""
