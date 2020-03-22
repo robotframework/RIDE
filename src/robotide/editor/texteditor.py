@@ -603,6 +603,7 @@ class SourceEditor(wx.Panel):
         elif keycode in (ord('1'), ord('2'), ord('5')) and event.ControlDown():
             self.execute_variable_creator(list_variable=(keycode == ord('2')),
                                           dict_variable=(keycode == ord('5')))
+            self.store_position()
         else:
             event.Skip()
 
@@ -611,7 +612,6 @@ class SourceEditor(wx.Panel):
             return
         keycode = event.GetUnicodeKey()
         if chr(keycode) in ['[', '{', '(', "'", '\"', '`']:
-            # self.store_position()
             self.execute_enclose_text(chr(keycode))
             self.store_position()
         else:
@@ -619,25 +619,28 @@ class SourceEditor(wx.Panel):
 
     def execute_variable_creator(self, list_variable=False, dict_variable=False):
         from_, to_ = self._editor.GetSelection()
+        text = self._editor.SelectedText
+        size = len(bytes(text, encoding='utf-8'))
+        to_ = from_ + size
         if list_variable:
             symbol = '@'
         elif dict_variable:
             symbol = '&'
         else:
             symbol = '$'
-        self._editor.SetValue(self._variable_creator_value(
-            self._editor.Value, symbol, from_, to_))
-        if from_ == to_:
+        if size == 0:
+            self._editor.SetInsertionPoint(to_)
+            self._editor.InsertText(from_, self._variable_creator_value(symbol))
             self._editor.SetInsertionPoint(from_ + 2)
-            pos = self._editor.GetCurrentPos()
-            self._editor.SetSelection(pos, pos)
         else:
-            self._editor.SetInsertionPoint(to_ + 3)
-            self._editor.SetSelection(from_ + 2, to_ + 2)
+            self._editor.DeleteRange(from_, size)
+            self._editor.SetInsertionPoint(from_)
+            self._editor.ReplaceSelection(self._variable_creator_value(symbol, text))
+            self._editor.SetSelection(from_ + 2, from_ + size + 2)
 
     @staticmethod
-    def _variable_creator_value(value, symbol, from_, to_):
-        return value[:from_]+symbol+'{'+value[from_:to_]+'}'+value[to_:]
+    def _variable_creator_value(symbol, value=''):
+        return symbol + '{' + value + '}'
 
     def execute_enclose_text(self, keycode):
         from_, to_ = self._editor.GetSelection()
