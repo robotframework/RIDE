@@ -145,7 +145,7 @@ class TreePlugin(Plugin):
         self._update_tree()
 
     def OnTreeSelection(self, event):
-        if self._tree.is_focused():
+        if self.is_focused():
             self._tree.tree_node_selected(event.item)
 
     def OnTabChanged(self, event):
