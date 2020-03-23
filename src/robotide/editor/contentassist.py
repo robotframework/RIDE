@@ -66,7 +66,7 @@ class _ContentAssistTextCtrlBase(object):
                 event.AltDown():
             self.execute_variable_creator(list_variable=(keycode == ord('2')),
                                           dict_variable=(keycode == ord('5')))
-        elif chr(keychar) in ['[', '{', '(', "'", '\"', '`']:
+        elif chr(keycode) == chr(keychar) and chr(keychar) in ['[', '{', '(', "'", '\"', '`']:
             self.execute_enclose_text(chr(keychar))
         else:
             event.Skip()
