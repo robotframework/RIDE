@@ -179,7 +179,7 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
     def _make_bindings(self):
         self.Bind(grid.EVT_GRID_EDITOR_SHOWN, self.OnEditor)
         self.Bind(wx.EVT_KEY_DOWN, self.OnKeyDown)
-        self.Bind(wx.EVT_CHAR, self.OnKeyDown)
+        self.Bind(wx.EVT_CHAR, self.OnChar)
         self.Bind(wx.EVT_KEY_UP, self.OnKeyUp)
         self.Bind(grid.EVT_GRID_CELL_LEFT_CLICK, self.OnCellLeftClick)
         self.Bind(grid.EVT_GRID_CELL_LEFT_DCLICK, self.OnCellLeftDClick)
@@ -526,14 +526,7 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
 
     def OnKeyDown(self, event):
         keycode = event.GetUnicodeKey()
-
-        keychar = event.GetRawKeyCode()
-        if chr(keychar) in ['[', '{', '(', "'", '\"', '`']:
-            self._open_cell_editor().execute_enclose_text(chr(keychar))
-        if chr(keycode) in ['[', '{', '(', "'", '\"', '`']:
-            self._open_cell_editor().execute_enclose_text(chr(keycode))
-            return
-
+        #print(f"DEBUG: KeyCODE chr{chr(keycode)} value{keycode}")
         if event.ControlDown():
             if event.ShiftDown():
                 if keycode == ord('I'):
@@ -568,7 +561,6 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
                 else:
                     self.show_cell_information()
         elif event.AltDown():
-            # print(f"DEBUG: Alt Key pressed is {chr(keycode)}")
             if keycode == wx.WXK_SPACE:
                 self._open_cell_editor_with_content_assist()  # Mac CMD
             elif keycode in [wx.WXK_DOWN, wx.WXK_UP]:
@@ -586,6 +578,13 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
                 self._move_grid_cursor(event, keycode)
             else:
                 event.Skip()
+
+    def OnChar(self, event):
+        keychar = event.GetKeyCode()
+        if chr(keychar) in ['[', '{', '(', "'", '\"', '`']:
+            self._open_cell_editor().execute_enclose_text(chr(keychar))
+        else:
+            event.Skip()
 
     def OnGoToDefinition(self, event):
         self._navigate_to_matching_user_keyword(
