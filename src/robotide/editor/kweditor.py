@@ -527,8 +527,8 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
     def OnKeyDown(self, event):
         keycode = event.GetUnicodeKey()
         specialkcode = event.GetKeyCode()
-        print(f"DEBUG: KeyCODE chr{chr(keycode)} value{keycode} uchr{chr(specialkcode)} uvalu"
-              f"e{specialkcode}")
+        # print(f"DEBUG: KeyCODE chr{chr(keycode)} value{keycode} uchr{chr(specialkcode)} uvalu"
+        #      f"e{specialkcode}")
         if event.ControlDown():
             if event.ShiftDown():
                 if keycode == ord('I'):

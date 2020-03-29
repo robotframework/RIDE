@@ -21,6 +21,7 @@ from wx.lib.filebrowsebutton import FileBrowseButton
 from robotide import context, utils
 from robotide.namespace.suggesters import SuggestionSource
 from robotide.spec.iteminfo import VariableInfo
+from sys import platform
 from .popupwindow import RidePopupWindow, HtmlPopupWindow
 
 _PREFERRED_POPUP_SIZE = (400, 200)
@@ -75,9 +76,11 @@ class _ContentAssistTextCtrlBase(object):
             event.Skip()
             return
         if chr(keycode) == chr(keychar) and chr(keychar) in ['[', '{', '(', "'", '\"', '`']:
-            # TODO don't call from here
-            #  self.execute_enclose_text(chr(keychar))
-            event.Skip()
+            # TODO fix recursion error in Linux
+            if platform.lower().startswith('linux'):
+                event.Skip()
+            else:
+                self.execute_enclose_text(chr(keychar))
         else:
             event.Skip()
 
@@ -101,8 +104,8 @@ class _ContentAssistTextCtrlBase(object):
         return value[:from_]+symbol+'{'+value[from_:to_]+'}'+value[to_:]
 
     def execute_enclose_text(self, keycode):
-        print(f"DEBUG: enclose at contentassist {self}")
-        # TODO move this code to kweditor and fix when in cell editor
+        # print(f"DEBUG: enclose at contentassist {self}")
+        # TODO move this code to kweditor and fix when in cell editor in Linux
         from_, to_ = self.GetSelection()
         self.SetValue(self._enclose_text(self.Value, keycode, from_, to_))
         elem = self
