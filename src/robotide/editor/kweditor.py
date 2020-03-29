@@ -526,7 +526,9 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
 
     def OnKeyDown(self, event):
         keycode = event.GetUnicodeKey()
-        #print(f"DEBUG: KeyCODE chr{chr(keycode)} value{keycode}")
+        specialkcode = event.GetKeyCode()
+        print(f"DEBUG: KeyCODE chr{chr(keycode)} value{keycode} uchr{chr(specialkcode)} uvalu"
+              f"e{specialkcode}")
         if event.ControlDown():
             if event.ShiftDown():
                 if keycode == ord('I'):
@@ -563,19 +565,19 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
         elif event.AltDown():
             if keycode == wx.WXK_SPACE:
                 self._open_cell_editor_with_content_assist()  # Mac CMD
-            elif keycode in [wx.WXK_DOWN, wx.WXK_UP]:
+            elif specialkcode in [wx.WXK_DOWN, wx.WXK_UP]:
                 self._skip_except_on_mac(event)
-                self._move_rows(keycode)
-            elif keycode == wx.WXK_RETURN:
+                self._move_rows(specialkcode)
+            elif specialkcode == wx.WXK_RETURN:
                 self._move_cursor_down(event)
             else:
                 event.Skip()
         else:
-            if keycode == wx.WXK_WINDOWS_MENU:
+            if specialkcode == wx.WXK_WINDOWS_MENU:
                 self.OnCellRightClick(event)
-            elif keycode in [wx.WXK_RETURN, wx.WXK_BACK]:
+            elif specialkcode in [wx.WXK_RETURN, wx.WXK_BACK]:
                 self.save()
-                self._move_grid_cursor(event, keycode)
+                self._move_grid_cursor(event, specialkcode)
             else:
                 event.Skip()
 

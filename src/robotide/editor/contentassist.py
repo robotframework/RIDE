@@ -30,7 +30,7 @@ class _ContentAssistTextCtrlBase(object):
 
     def __init__(self, suggestion_source):
         self._popup = ContentAssistPopup(self, suggestion_source)
-        self.Bind(wx.EVT_KEY_DOWN, self.OnChar)
+        self.Bind(wx.EVT_KEY_DOWN, self.OnKeyDown)
         self.Bind(wx.EVT_CHAR, self.OnChar)
         self.Bind(wx.EVT_KILL_FOCUS, self.OnFocusLost)
         self.Bind(wx.EVT_MOVE, self.OnFocusLost)
@@ -43,31 +43,41 @@ class _ContentAssistTextCtrlBase(object):
     def set_row(self, row):
         self._row = row
 
-    def OnChar(self, event):
+    def OnKeyDown(self, event):
         # TODO: This might benefit from some cleanup
-        keycode, control_down =  event.GetUnicodeKey(), event.CmdDown()
-        keychar = event.GetRawKeyCode()
+        keycode, control_down =  event.GetKeyCode(), event.CmdDown()
         # Ctrl-Space handling needed for dialogs # DEBUG add Ctrl-m
         if (control_down or event.AltDown()) and keycode in [wx.WXK_SPACE, ord('m')]:
             self.show_content_assist()
-        elif keycode in [wx.WXK_UP, wx.WXK_DOWN, wx.WXK_PAGEUP, wx.WXK_PAGEDOWN]\
-                and self._popup.is_shown():
-            self._popup.select_and_scroll(keycode)
         elif keycode == wx.WXK_RETURN and self._popup.is_shown():
             self.OnFocusLost(event)
         elif keycode == wx.WXK_TAB:
             self.OnFocusLost(event, False)
         elif keycode == wx.WXK_ESCAPE and self._popup.is_shown():
             self._popup.hide()
-        elif self._popup.is_shown() and keycode < 256:
-            wx.CallAfter(self._populate_content_assist)
-            event.Skip()
+        elif keycode in [wx.WXK_UP, wx.WXK_DOWN, wx.WXK_PAGEUP, wx.WXK_PAGEDOWN] \
+                and self._popup.is_shown():
+            self._popup.select_and_scroll(keycode)
         elif keycode in (ord('1'), ord('2'), ord('5')) and event.ControlDown() and not \
                 event.AltDown():
             self.execute_variable_creator(list_variable=(keycode == ord('2')),
                                           dict_variable=(keycode == ord('5')))
-        elif chr(keycode) == chr(keychar) and chr(keychar) in ['[', '{', '(', "'", '\"', '`']:
-            self.execute_enclose_text(chr(keychar))
+        elif self._popup.is_shown() and keycode < 256:
+            wx.CallAfter(self._populate_content_assist)
+            event.Skip()
+        else:
+            event.Skip()
+
+    def OnChar(self, event):
+        keychar = event.GetUnicodeKey()
+        keycode = event.GetRawKeyCode()
+        if keychar == wx.WXK_NONE:
+            event.Skip()
+            return
+        if chr(keycode) == chr(keychar) and chr(keychar) in ['[', '{', '(', "'", '\"', '`']:
+            # TODO don't call from here
+            #  self.execute_enclose_text(chr(keychar))
+            event.Skip()
         else:
             event.Skip()
 
@@ -91,13 +101,16 @@ class _ContentAssistTextCtrlBase(object):
         return value[:from_]+symbol+'{'+value[from_:to_]+'}'+value[to_:]
 
     def execute_enclose_text(self, keycode):
+        print(f"DEBUG: enclose at contentassist {self}")
+        # TODO move this code to kweditor and fix when in cell editor
         from_, to_ = self.GetSelection()
         self.SetValue(self._enclose_text(self.Value, keycode, from_, to_))
+        elem = self
         if from_ == to_:
-            self.SetInsertionPoint(from_ + 1)
+            elem.SetInsertionPoint(from_ + 1)
         else:
-            self.SetInsertionPoint(to_ + 2)
-            self.SetSelection(from_ + 1, to_ + 1)
+            elem.SetInsertionPoint(to_ + 2)
+            elem.SetSelection(from_ + 1, to_ + 1)
 
     def _enclose_text(self, value, open_symbol, from_, to_):
         if open_symbol == '[':
