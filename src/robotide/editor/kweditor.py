@@ -41,6 +41,7 @@ from .editordialogs import UserKeywordNameDialog, ScalarVariableDialog, \
 from .contentassist import ExpandingContentAssistTextCtrl
 from .gridcolorizer import Colorizer
 from robotide.lib.robot.utils.compat import with_metaclass
+from sys import platform
 
 # Metaclass fix from http://code.activestate.com/recipes/204197-solving-the-metaclass-conflict/
 from robotide.utils.noconflict import classmaker
@@ -527,6 +528,8 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
     def OnKeyDown(self, event):
         keycode = event.GetUnicodeKey()
         specialkcode = event.GetKeyCode()
+        if platform.lower().startswith('linux'):
+            event.Skip()  # DEBUG Only with this gets to OnChar when in Linux
         # print(f"DEBUG: KeyCODE chr{chr(keycode)} value{keycode} uchr{chr(specialkcode)} uvalu"
         #      f"e{specialkcode}")
         if event.ControlDown():
@@ -582,8 +585,10 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
                 event.Skip()
 
     def OnChar(self, event):
-        keychar = event.GetKeyCode()
-        if chr(keychar) in ['[', '{', '(', "'", '\"', '`']:
+        # keychar = event.GetKeyCode()
+        keychar = event.GetUnicodeKey()
+        #print(f"DEBUG: OmChar at kweditor {keychar} {chr(keychar)}")
+        if keychar in [ord('['), ord('{'), ord('('), ord("'"), ord('\"'), ord('`')]:
             self._open_cell_editor().execute_enclose_text(chr(keychar))
         else:
             event.Skip()

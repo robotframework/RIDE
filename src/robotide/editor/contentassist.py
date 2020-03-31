@@ -47,6 +47,8 @@ class _ContentAssistTextCtrlBase(object):
     def OnKeyDown(self, event):
         # TODO: This might benefit from some cleanup
         keycode, control_down =  event.GetKeyCode(), event.CmdDown()
+        if platform.lower().startswith('linux'):
+            event.Skip()  # DEBUG Only with this gets to OnChar when in Linux
         # Ctrl-Space handling needed for dialogs # DEBUG add Ctrl-m
         if (control_down or event.AltDown()) and keycode in [wx.WXK_SPACE, ord('m')]:
             self.show_content_assist()
@@ -71,11 +73,11 @@ class _ContentAssistTextCtrlBase(object):
 
     def OnChar(self, event):
         keychar = event.GetUnicodeKey()
-        keycode = event.GetRawKeyCode()
+        # print(f"DEBUG: OmChar at contentassist {chr(keychar)} {keychar}")
         if keychar == wx.WXK_NONE:
             event.Skip()
             return
-        if chr(keycode) == chr(keychar) and chr(keychar) in ['[', '{', '(', "'", '\"', '`']:
+        if keychar in [ord('['), ord('{'), ord('('), ord("'"), ord('\"'), ord('`')]:
             # TODO fix recursion error in Linux
             if platform.lower().startswith('linux'):
                 event.Skip()
@@ -104,7 +106,6 @@ class _ContentAssistTextCtrlBase(object):
         return value[:from_]+symbol+'{'+value[from_:to_]+'}'+value[to_:]
 
     def execute_enclose_text(self, keycode):
-        # print(f"DEBUG: enclose at contentassist {self}")
         # TODO move this code to kweditor and fix when in cell editor in Linux
         from_, to_ = self.GetSelection()
         self.SetValue(self._enclose_text(self.Value, keycode, from_, to_))
