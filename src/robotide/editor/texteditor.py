@@ -315,6 +315,7 @@ class SourceEditor(wx.Panel):
         self._data = None
         self._dirty = False
         self._position = None
+        self._showing_list = False
         self._tab_open = None
         # self._autocomplete = None
         PUBLISHER.subscribe(self.OnSettingsChanged, RideSettingsChanged)
@@ -470,6 +471,7 @@ class SourceEditor(wx.Panel):
             self._search_field_notification.SetLabel('No matches found.')
 
     def OnContentAssist(self, event):
+        self._showing_list = False
         if not self.is_focused():
             return
         self.store_position()
@@ -480,6 +482,7 @@ class SourceEditor(wx.Panel):
             self._editor.AutoCompSetDropRestOfWord(True)
             self._editor.AutoCompSetSeparator(ord(';'))
             self._editor.AutoCompShow(0, ";".join(sugs))
+            self._showing_list = True
 
     def open(self, data):
         self.reset()
@@ -501,6 +504,38 @@ class SourceEditor(wx.Panel):
         if self._data == data:
             return
         self.open(data)
+
+    def auto_ident(self):
+        if not self.is_focused():
+            return
+        line, _ = self._editor.GetCurLine()
+        lenline = len(line)
+        linenum = self._editor.GetCurrentLine()
+        if lenline > 0:
+            idx = 0
+            while idx<lenline and line[idx] == ' ':
+                idx += 1
+            tsize = idx // self._tab_size
+            if 3 < idx < lenline and line.strip().startswith("FOR"):
+                tsize += 1
+            elif linenum > 0 and tsize == 0:  # Advance if first task/test case or keyword
+                prevline = self._editor.GetLine(linenum-1).lower()
+                if prevline.startswith("**") and not ("variables" in prevline
+                or "settings" in prevline):
+                    tsize = 1
+            self._editor.NewLine()
+            while tsize > 0:
+                self.write_ident()
+                tsize -= 1
+        else:
+            self._editor.NewLine()
+        pos = self._editor.GetCurrentLine()
+        self._editor.SetCurrentPos(self._editor.GetLineEndPosition(pos))
+        self.store_position()
+
+    def write_ident(self):
+        spaces = ' ' * self._tab_size
+        self._editor.WriteText(spaces)
 
     def reset(self):
         self._dirty = False
@@ -591,8 +626,7 @@ class SourceEditor(wx.Panel):
             self.GetFocus(None)
         keycode = event.GetUnicodeKey()
         if event.GetKeyCode() == wx.WXK_TAB and not event.ControlDown() and not event.ShiftDown():
-            spaces = ' ' * self._tab_size
-            self._editor.WriteText(spaces)
+            self.write_ident()
         elif event.GetKeyCode() == wx.WXK_TAB and event.ShiftDown():
             pos = self._editor.GetCurrentPos()
             self._editor.SetCurrentPos(max(0, pos - self._tab_size))
@@ -600,6 +634,12 @@ class SourceEditor(wx.Panel):
             if not event.ControlDown(): # No text selection
                 pos = self._editor.GetCurrentPos()
                 self._editor.SetSelection(pos, pos)
+        elif event.GetKeyCode() in [ wx.WXK_RETURN, wx.WXK_NUMPAD_ENTER ]:
+            if not self._showing_list:
+                self.auto_ident()
+            else:
+                self._showing_list = False
+                event.Skip()
         elif keycode in (ord('1'), ord('2'), ord('5')) and event.ControlDown():
             self.execute_variable_creator(list_variable=(keycode == ord('2')),
                                           dict_variable=(keycode == ord('5')))
