@@ -508,10 +508,9 @@ class SourceEditor(wx.Panel):
     def auto_ident(self):
         if not self.is_focused():
             return
-        cursor = self._editor.GetCurrentPos()
-        line, pos = self._editor.GetCurLine()
-        cpos = 0
+        line, _ = self._editor.GetCurLine()
         lenline = len(line)
+        linenum = self._editor.GetCurrentLine()
         if lenline > 0:
             idx = 0
             while idx<lenline and line[idx] == ' ':
@@ -519,16 +518,19 @@ class SourceEditor(wx.Panel):
             tsize = idx // self._tab_size
             if 3 < idx < lenline and line.strip().startswith("FOR"):
                 tsize += 1
-            cpos = tsize * self._tab_size
+            elif linenum > 0 and tsize == 0:  # Advance if first task/test case or keyword
+                prevline = self._editor.GetLine(linenum-1).lower()
+                if prevline.startswith("**") and not ("variables" in prevline
+                or "settings" in prevline):
+                    tsize = 1
             self._editor.NewLine()
             while tsize > 0:
                 self.write_ident()
                 tsize -= 1
-            self._editor.SetCurrentPos(cursor + cpos)
-            pos = self._editor.GetCurrentLine()
-            self._editor.SetCurrentPos(self._editor.GetLineEndPosition(pos))
         else:
             self._editor.NewLine()
+        pos = self._editor.GetCurrentLine()
+        self._editor.SetCurrentPos(self._editor.GetLineEndPosition(pos))
         self.store_position()
 
     def write_ident(self):
