@@ -527,8 +527,6 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
     def OnKeyDown(self, event):
         keycode = event.GetUnicodeKey()
         specialkcode = event.GetKeyCode()
-        # print(f"DEBUG: KeyCODE chr{chr(keycode)} value{keycode} uchr{chr(specialkcode)} uvalu"
-        #      f"e{specialkcode}")
         if event.ControlDown():
             if event.ShiftDown():
                 if keycode == ord('I'):
@@ -578,12 +576,18 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
             elif specialkcode in [wx.WXK_RETURN, wx.WXK_BACK]:
                 self.save()
                 self._move_grid_cursor(event, specialkcode)
+            elif specialkcode == wx.WXK_F2:
+                self._open_cell_editor()
             else:
                 event.Skip()
+        if specialkcode != wx.WXK_RETURN:
+            event.Skip()
 
     def OnChar(self, event):
-        keychar = event.GetKeyCode()
-        if chr(keychar) in ['[', '{', '(', "'", '\"', '`']:
+        keychar = event.GetUnicodeKey()
+        if keychar < ord(' '):
+            return
+        if keychar in [ord('['), ord('{'), ord('('), ord("'"), ord('\"'), ord('`')]:
             self._open_cell_editor().execute_enclose_text(chr(keychar))
         else:
             event.Skip()
