@@ -41,7 +41,6 @@ from .editordialogs import UserKeywordNameDialog, ScalarVariableDialog, \
 from .contentassist import ExpandingContentAssistTextCtrl
 from .gridcolorizer import Colorizer
 from robotide.lib.robot.utils.compat import with_metaclass
-from sys import platform
 
 # Metaclass fix from http://code.activestate.com/recipes/204197-solving-the-metaclass-conflict/
 from robotide.utils.noconflict import classmaker
@@ -528,7 +527,6 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
     def OnKeyDown(self, event):
         keycode = event.GetUnicodeKey()
         specialkcode = event.GetKeyCode()
-        event.Skip()
         if event.ControlDown():
             if event.ShiftDown():
                 if keycode == ord('I'):
@@ -578,12 +576,16 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
             elif specialkcode in [wx.WXK_RETURN, wx.WXK_BACK]:
                 self.save()
                 self._move_grid_cursor(event, specialkcode)
+            elif specialkcode == wx.WXK_F2:
+                self._open_cell_editor()
             else:
                 event.Skip()
+        if specialkcode != wx.WXK_RETURN:
+            event.Skip()
 
     def OnChar(self, event):
         keychar = event.GetUnicodeKey()
-        if keychar == 0:
+        if keychar < ord(' '):
             return
         if keychar in [ord('['), ord('{'), ord('('), ord("'"), ord('\"'), ord('`')]:
             self._open_cell_editor().execute_enclose_text(chr(keychar))
