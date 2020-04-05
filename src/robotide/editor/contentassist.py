@@ -46,9 +46,7 @@ class _ContentAssistTextCtrlBase(object):
 
     def OnKeyDown(self, event):
         # TODO: This might benefit from some cleanup
-        keycode, control_down =  event.GetKeyCode(), event.CmdDown()
-        if platform.lower().startswith('linux'):
-            event.Skip()  # DEBUG Only with this gets to OnChar when in Linux
+        keycode, control_down = event.GetKeyCode(), event.CmdDown()
         # Ctrl-Space handling needed for dialogs # DEBUG add Ctrl-m
         if (control_down or event.AltDown()) and keycode in [wx.WXK_SPACE, ord('m')]:
             self.show_content_assist()
