@@ -48,7 +48,7 @@ _menudata = """
 !Open &Directory | Open directory containing datafiles | Shift-Ctrlcmd-O | \
 ART_FOLDER_OPEN
 ---
-&Save | Save selected datafile | Ctrlcmd-S | ART_FILE_SAVE
+!&Save | Save selected datafile | Ctrlcmd-S | ART_FILE_SAVE
 !Save &All | Save all changes | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS
 ---
 !E&xit | Exit RIDE | Ctrlcmd-Q
