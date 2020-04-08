@@ -533,6 +533,21 @@ class SourceEditor(wx.Panel):
         self._editor.SetCurrentPos(self._editor.GetLineEndPosition(pos))
         self.store_position()
 
+    def indent_block(self):
+        lcount = self._editor.GetLineCount()
+        line = self._editor.GetCurrentLine()
+        pos = self._editor.GetCurrentPos()
+        ini = self._editor.GetLineSelStartPosition(line)
+        end = line
+        islast = (end < lcount)
+        while not islast and self._editor.GetLineSelEndPosition(end + 1) != \
+                stc.STC_INVALID_POSITION:
+            end += 1
+            islast = (end < lcount)
+
+        print(f"DEBUG: Indent block with selection {self._editor.GetSelection()} line{line}, "
+              f"pos{pos}  ini{ini}, end{end}")
+
     def write_ident(self):
         spaces = ' ' * self._tab_size
         self._editor.WriteText(spaces)
@@ -617,7 +632,8 @@ class SourceEditor(wx.Panel):
     def OnEditorKey(self, event):
         if not self.is_focused():  # DEBUG was typing text when at Grid Editor
             return
-        if not self.dirty and self._editor.GetModify():
+        keycode = event.GetKeyCode()
+        if (keycode >= ord(' ')) and not self.dirty and self._editor.GetModify():
             self._mark_file_dirty()
         event.Skip()
 
@@ -626,7 +642,11 @@ class SourceEditor(wx.Panel):
             self.GetFocus(None)
         keycode = event.GetUnicodeKey()
         if event.GetKeyCode() == wx.WXK_TAB and not event.ControlDown() and not event.ShiftDown():
-            self.write_ident()
+            selected = self._editor.GetSelection()
+            if selected[0] == selected[1]:
+                self.write_ident()
+            else:
+                self.indent_block()
         elif event.GetKeyCode() == wx.WXK_TAB and event.ShiftDown():
             pos = self._editor.GetCurrentPos()
             self._editor.SetCurrentPos(max(0, pos - self._tab_size))
