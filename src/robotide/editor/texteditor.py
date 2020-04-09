@@ -533,20 +533,73 @@ class SourceEditor(wx.Panel):
         self._editor.SetCurrentPos(self._editor.GetLineEndPosition(pos))
         self.store_position()
 
-    def indent_block(self):
-        lcount = self._editor.GetLineCount()
-        line = self._editor.GetCurrentLine()
-        pos = self._editor.GetCurrentPos()
-        ini = self._editor.GetLineSelStartPosition(line)
-        end = line
-        islast = (end < lcount)
-        while not islast and self._editor.GetLineSelEndPosition(end + 1) != \
-                stc.STC_INVALID_POSITION:
-            end += 1
-            islast = (end < lcount)
+    def deindent_block(self):
+        start, end = self._editor.GetSelection()
+        caret = self._editor.GetCurrentPos()
+        ini_line = self._editor.LineFromPosition(start)
+        end_line = self._editor.LineFromPosition(end)
+        count = 0
+        self._editor.SelectNone()
+        line = ini_line
+        inconsistent = False
+        self._editor.BeginUndoAction()
+        while line <= end_line:
+            inconsistent = False
+            pos = self._editor.PositionFromLine(line)
+            self._editor.SetCurrentPos(pos)
+            self._editor.SetSelection(pos, pos)
+            self._editor.SetInsertionPoint(pos)
+            content = self._editor.GetRange(pos, pos + self._tab_size)
+            if content == (' ' * self._tab_size):
+                self._editor.DeleteRange(pos, self._tab_size)
+                count += 1
+                line += 1
+            else:
+                inconsistent = True
+                break
+        self._editor.EndUndoAction()
+        if inconsistent:
+            self._editor.Undo()
+            return
+        new_start = max(0, start - self._tab_size)
+        new_end = max(0, end - (count * self._tab_size))
+        if caret == start:
+            ini = new_start
+            fini = new_end
+        else:
+            ini = new_end
+            fini = new_start
+        self._editor.SetSelection(new_start, new_end)
+        self._editor.SetCurrentPos(ini)
+        self._editor.SetAnchor(fini)
 
-        print(f"DEBUG: Indent block with selection {self._editor.GetSelection()} line{line}, "
-              f"pos{pos}  ini{ini}, end{end}")
+    def indent_block(self):
+        start, end = self._editor.GetSelection()
+        caret = self._editor.GetCurrentPos()
+        ini_line = self._editor.LineFromPosition(start)
+        end_line = self._editor.LineFromPosition(end)
+        count = 0
+        self._editor.SelectNone()
+        line = ini_line
+        while line <= end_line:
+            pos = self._editor.PositionFromLine(line)
+            self._editor.SetCurrentPos(pos)
+            self._editor.SetSelection(pos, pos)
+            self._editor.SetInsertionPoint(pos)
+            self.write_ident()
+            count += 1
+            line += 1
+        new_start = start + self._tab_size
+        new_end = end + (count * self._tab_size)
+        if caret == start:
+            ini = new_start
+            fini = new_end
+        else:
+            ini = new_end
+            fini = new_start
+        self._editor.SetSelection(new_start, new_end)
+        self._editor.SetCurrentPos(ini)
+        self._editor.SetAnchor(fini)
 
     def write_ident(self):
         spaces = ' ' * self._tab_size
@@ -648,12 +701,16 @@ class SourceEditor(wx.Panel):
             else:
                 self.indent_block()
         elif event.GetKeyCode() == wx.WXK_TAB and event.ShiftDown():
-            pos = self._editor.GetCurrentPos()
-            self._editor.SetCurrentPos(max(0, pos - self._tab_size))
-            self.store_position()
-            if not event.ControlDown(): # No text selection
+            selected = self._editor.GetSelection()
+            if selected[0] == selected[1]:
                 pos = self._editor.GetCurrentPos()
-                self._editor.SetSelection(pos, pos)
+                self._editor.SetCurrentPos(max(0, pos - self._tab_size))
+                self.store_position()
+                if not event.ControlDown(): # No text selection
+                    pos = self._editor.GetCurrentPos()
+                    self._editor.SetSelection(pos, pos)
+            else:
+                self.deindent_block()
         elif event.GetKeyCode() in [ wx.WXK_RETURN, wx.WXK_NUMPAD_ENTER ]:
             if not self._showing_list:
                 self.auto_ident()
