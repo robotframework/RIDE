@@ -34,8 +34,8 @@ from .filedialogs import (NewProjectDialog, InitFileFormatDialog)
 from .review import ReviewDialog
 from .pluginmanager import PluginManager
 from robotide.action.shortcut import localize_shortcuts
-from robotide.ui.treeplugin import Tree
-from robotide.ui.fileexplorerplugin import FileExplorer
+from .treeplugin import Tree
+from .fileexplorerplugin import FileExplorer
 from .notebook import NoteBook
 from .progress import LoadProgressObserver
 
