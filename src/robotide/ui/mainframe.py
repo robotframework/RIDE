@@ -44,8 +44,8 @@ _menudata = """
 !&New Project | Create a new top level suite | Ctrlcmd-N
 ---
 !&Open Test Suite | Open file containing tests | Ctrlcmd-O | ART_FILE_OPEN
-!Open &Directory | Open directory containing datafiles | Shift-Ctrlcmd-O | \
-ART_FOLDER_OPEN
+!Open &Directory | Open directory containing datafiles | Shift-Ctrlcmd-O | ART_FOLDER_OPEN
+!Open &File | Open file in Code Editor | Ctrlcmd-F | ART_FOLDER_OPEN
 ---
 !&Save | Save selected datafile | Ctrlcmd-S | ART_FILE_SAVE
 !Save &All | Save all changes | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS

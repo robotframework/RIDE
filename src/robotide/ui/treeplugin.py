@@ -92,7 +92,7 @@ class TreePlugin(Plugin):
                      Caption("Test Suites").LeftDockable(True).CloseButton(True))
 
             self._mgr.Update()
-            # print(f"DEBUG: TreePlugin frame {self._parent.GetTitle()} tree {self._tree.GetName()}")
+            print(f"DEBUG: TreePlugin frame {self._parent.GetTitle()} tree {self._tree.GetName()}")
 
     def enable(self):
         self.register_action(ActionInfo('View','View Test Suites Explorer', self.OnShowTree,
