@@ -64,8 +64,10 @@ class ConfigManagerDialog(Dialog):
 
     def _create_line(self):
         line = wx.StaticLine(self, size=(20, -1), style=wx.LI_HORIZONTAL)
-        self.Sizer.Add(line, border=5,
-                       flag=wx.GROW | wx.ALIGN_CENTER_VERTICAL | wx.RIGHT | wx.TOP)
+        if wx.VERSION < (4, 1, 0):
+            self.Sizer.Add(line, border=5, flag=wx.GROW | wx.ALIGN_CENTER_VERTICAL | wx.RIGHT | wx.TOP)
+        else:
+            self.Sizer.Add(line, border=5, flag=wx.GROW | wx.RIGHT | wx.TOP)
 
     def _create_buttons(self):
         self.Sizer.Add(self.CreateStdDialogButtonSizer(wx.OK | wx.CANCEL),

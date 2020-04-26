@@ -31,6 +31,7 @@ class FileExplorerPlugin(Plugin):
         self.settings = application.settings._config_obj['Plugins']['File Explorer']
         self._parent = None
         self._filemgr = self.filemgr
+        self._filemgr.SetThemeEnabled(True)
         self._mgr = GetManager(self._filemgr)
         self._controller = controller
 
@@ -96,6 +97,7 @@ class FileExplorer(wx.GenericDirCtrl):
     def __init__(self, parent, controller=None):
         wx.GenericDirCtrl.__init__(self, parent, id=-1, size=(200, 225), style=wx.DIRCTRL_3D_INTERNAL)
         self._controller = controller
+        self.SetThemeEnabled(True)
 
     def update_tree(self):
         if isinstance(self._controller, Project):

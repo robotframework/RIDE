@@ -66,8 +66,10 @@ class ReviewDialog(wx.Frame):
         header_sizer.AddStretchSpacer(1)
         header_sizer.Add(label_filter_is, 0,
                          wx.LEFT | wx.TOP | wx.BOTTOM | wx.ALIGN_BOTTOM, 3)
-        header_sizer.Add(self.label_filter_status, 0,
-                         wx.ALL | wx.ALIGN_BOTTOM | wx.ALIGN_RIGHT, 3)
+        if wx.VERSION < (4, 1, 0):
+            header_sizer.Add(self.label_filter_status, 0, wx.ALL | wx.ALIGN_BOTTOM | wx.ALIGN_RIGHT, 3)
+        else:
+            header_sizer.Add(self.label_filter_status, 0, wx.ALL | wx.ALIGN_BOTTOM, 3)
         self.Sizer.Add(header_sizer, 0, wx.ALL | wx.EXPAND, 3)
 
     def _build_filter(self):
@@ -131,8 +133,10 @@ class ReviewDialog(wx.Frame):
         sizer_unused_kw.Add(self._unused_kw_list, 1, wx.ALL | wx.EXPAND, 3)
         unused_kw_controls = wx.BoxSizer(wx.HORIZONTAL)
         unused_kw_controls.AddStretchSpacer(1)
-        unused_kw_controls.Add(self._delete_button, 0, wx.ALL | wx.ALIGN_RIGHT,
-                               3)
+        if wx.VERSION < (4, 1, 0):
+            unused_kw_controls.Add(self._delete_button, 0, wx.ALL | wx.ALIGN_RIGHT, 3)
+        else:
+            unused_kw_controls.Add(self._delete_button, 0, wx.ALL, 3)
         sizer_unused_kw.Add(unused_kw_controls, 0, wx.ALL | wx.EXPAND, 3)
         self._notebook.AddPage(panel_unused_kw, "Unused Keywords")
 

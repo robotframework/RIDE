@@ -534,7 +534,10 @@ class TestRunnerPlugin(Plugin):
 
         new_text_end = textctrl.GetLength()
 
-        textctrl.StartStyling(new_text_start, 0x1f)
+        if wx.VERSION < (4, 1, 0):
+            textctrl.StartStyling(new_text_start, 0x1f)
+        else:
+            textctrl.StartStyling(new_text_start)
         if source == "stderr":
             textctrl.SetStyling(new_text_end-new_text_start, STYLE_STDERR)
 
