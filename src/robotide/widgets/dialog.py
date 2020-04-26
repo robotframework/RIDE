@@ -35,9 +35,10 @@ class Dialog(wx.Dialog):
 
     def _create_horizontal_line(self, sizer):
         line = wx.StaticLine(self, size=(20, -1), style=wx.LI_HORIZONTAL)
-        sizer.Add(
-            line, border=5,
-            flag=wx.GROW | wx.ALIGN_CENTER_VERTICAL | wx.RIGHT | wx.TOP)
+        if wx.VERSION < (4, 1, 0):
+            sizer.Add(line, border=5, flag=wx.GROW | wx.ALIGN_CENTER_VERTICAL | wx.RIGHT | wx.TOP)
+        else:
+            sizer.Add(line, border=5, flag=wx.GROW | wx.RIGHT | wx.TOP)
 
     def execute(self):
         retval = None

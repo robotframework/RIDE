@@ -70,7 +70,10 @@ class _CreationDialog(Dialog):
         name_editor = wx.TextCtrl(self)
         name_editor.SetValidator(NonEmptyValidator("Name"))
         self.Bind(wx.EVT_TEXT, self.OnPathChanged, name_editor)
-        disp_sizer.Add(name_editor, 1, wx.ALIGN_CENTRE | wx.ALL | wx.EXPAND, 3)
+        if wx.VERSION < (4, 1, 0):
+            disp_sizer.Add(name_editor, 1, wx.ALIGN_CENTRE | wx.ALL | wx.EXPAND, 3)
+        else:
+            disp_sizer.Add(name_editor, 1, wx.ALL | wx.EXPAND, 3)
         sizer.Add(disp_sizer, 1, wx.EXPAND)
         return name_editor
 
