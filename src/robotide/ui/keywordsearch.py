@@ -379,7 +379,10 @@ class _KeywordList(wx.ListCtrl, ListCtrlAutoWidthMixin):
         self.SetColumnWidth(0, 250)
 
     def _create_link_attribute(self):
-        attr = wx.ListItemAttr()
+        if wx.VERSION < (4, 1, 0):
+            attr = wx.ListItemAttr()
+        else:
+            attr = wx.ItemAttr()
         attr.SetTextColour(wx.BLUE)
         attr.SetFont(Font().underlined)
         return attr

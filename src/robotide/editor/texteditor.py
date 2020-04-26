@@ -1039,7 +1039,10 @@ class RobotStylizer(object):
         self.editor.ConvertEOLs(2)
         shift = 0
         for position, token, value in self.lexer.get_tokens_unprocessed(self.editor.GetText()):
-            self.editor.StartStyling(position+shift, 31)
+            if wx.VERSION < (4, 1, 0):
+                self.editor.StartStyling(position+shift, 31)
+            else:
+                self.editor.StartStyling(position + shift)
             try:
                 self.editor.SetStyling(len(value.encode('utf-8')), self.tokens[token])
                 shift += len(value.encode('utf-8'))-len(value)

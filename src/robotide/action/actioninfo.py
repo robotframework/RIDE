@@ -296,4 +296,6 @@ class _InsertionPoint(object):
         return None
 
     def _get_menu_item_name(self, item):
-        return self._shortcut_remover.split(item.GetLabel())[0]
+        if wx.VERSION < (4,1,0):
+            return self._shortcut_remover.split(item.GetLabel())[0]
+        return self._shortcut_remover.split(item.GetItemLabel())[0]

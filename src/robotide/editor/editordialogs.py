@@ -64,7 +64,10 @@ class _Dialog(Dialog):
 
     def _create_line(self):
         line = wx.StaticLine(self, size=(20,-1), style=wx.LI_HORIZONTAL)
-        self._sizer.Add(line, 0, wx.GROW|wx.ALIGN_CENTER_VERTICAL|wx.RIGHT|wx.TOP, 5)
+        if wx.VERSION < (4, 1, 0):
+            self._sizer.Add(line, 0, wx.GROW | wx.ALIGN_CENTER_VERTICAL | wx.RIGHT | wx.TOP, 5)
+        else:
+            self._sizer.Add(line, 0, wx.GROW | wx.RIGHT | wx.TOP, 5)
 
     def _create_help(self):
         self._sizer.Add(HelpLabel(self, label=get_help(self._title)),
