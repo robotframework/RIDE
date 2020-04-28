@@ -93,8 +93,8 @@ RELEASE_NOTES = """
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.15.2: http://docutils.sourceforge.net/" />
-<title>Robot Framework IDE 1.7.4.1</title>
+<meta name="generator" content="Docutils 0.16: http://docutils.sourceforge.net/" />
+<title>Robot Framework IDE 1.7.4.2</title>
 <style type="text/css">
 
 /*
@@ -450,16 +450,20 @@ ul.auto-toc {
 </style>
 </head>
 <body>
-<div class="document" id="robot-framework-ide-1-7-4-1">
-<h1 class="title">Robot Framework IDE 1.7.4.1</h1>
+<div class="document" id="robot-framework-ide-1-7-4-2">
+<h1 class="title">Robot Framework IDE 1.7.4.2</h1>
 
-<p><a class="reference external" href="https://github.com/robotframework/RIDE/">RIDE (Robot Framework IDE)</a> 1.7.4.1 is a new release with bug fixes. This version 1.7.4.1 includes fixes for documentation, duplicate resources on tree, resources import with directory prefix, select all in Grid Editor, and more.
+<p><a class="reference external" href="https://github.com/robotframework/RIDE/">RIDE (Robot Framework IDE)</a> 1.7.4.2 is a maintenance fix for version 1.7.4.1, due to latest upgrade of wxPython to version 4.1.0.</p>
+<p>The only change on this version is making the wxPython version locked up to 4.0.7.post2.
+There are no backported fixes, to Python 2.7 from Python 3.7.</p>
+<p>This version 1.7.4.2 and 1.7.4.1 includes fixes for documentation, duplicate resources on tree, resources import with directory prefix, select all in Grid Editor, and more.
 The reference for valid arguments is <a class="reference external" href="http://robotframework.org">Robot Framework</a> version 3.1.2.</p>
 <ul class="simple">
 <li>See the <a class="reference external" href="https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-1.7.4.rst">release_notes</a> for version 1.7.4 with the major changes on that version.</li>
 </ul>
 <p><strong>THIS IS THE LAST RELEASE SUPPORTING PYTHON 2.7</strong></p>
-<p><strong>wxPython will be updated to current version 4.0.7post2</strong></p>
+<p><strong>Supported versions are PYTHON 2.7, 3.6 and 3.7</strong></p>
+<p><strong>wxPython version 4.0.7.post2 is the maximum supported for this version</strong></p>
 <p><em>Linux users are advised to install first wxPython from .whl package at</em> <a class="reference external" href="https://extras.wxpython.org/wxPython4/extras/linux/gtk3/">wxPython.org</a>.</p>
 <p>All issues targeted for RIDE v1.7.4.1 can be found
 from the <a class="reference external" href="https://github.com/robotframework/RIDE/issues?q=milestone%3Av1.7.4.1">issue tracker milestone</a>.</p>
@@ -468,14 +472,14 @@ from the <a class="reference external" href="https://github.com/robotframework/R
 <a class="reference external" href="https://robotframework-slack-invite.herokuapp.com">Robot Framework Slack</a>, and possible bugs submitted to the <a class="reference external" href="https://github.com/robotframework/RIDE/issues">issue tracker</a>.</p>
 <p>If you have <a class="reference external" href="http://pip-installer.org">pip</a> installed, just run</p>
 <pre class="literal-block">
-pip install --upgrade robotframework-ride==1.7.4.1
+pip install --upgrade robotframework-ride==1.7.4.2
 </pre>
 <p>to upgrade to this <strong>final</strong> release, or</p>
 <pre class="literal-block">
 pip install --upgrade robotframework-ride
 </pre>
 <pre class="literal-block">
-pip install robotframework-ride==1.7.4.1
+pip install robotframework-ride==1.7.4.2
 </pre>
 <p>to install exactly this <strong>final</strong> version for a first time. Alternatively you can download the source
 distribution from <a class="reference external" href="https://pypi.python.org/pypi/robotframework-ride">PyPI</a> and install it manually. For more details and other
@@ -489,7 +493,7 @@ python -m robotide.__init__
 <pre class="literal-block">
 python -m robotide.postinstall -install
 </pre>
-<p>RIDE 1.7.4.1 was released on Monday January 20, 2020.</p>
+<p>RIDE 1.7.4.2 was released on Tuesday April 28, 2020.</p>
 </div>
 </body>
 </html>

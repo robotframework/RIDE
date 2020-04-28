@@ -102,7 +102,7 @@ class UpdateDialog(wx.Dialog):
         # set Left to Right direction (while we don't have localization)
         self.SetLayoutDirection(wx.Layout_LeftToRight)
         sizer = wx.BoxSizer(orient=wx.VERTICAL)
-        if PY2 and cmp_versions(UpdateNotifierController.VERSION, '1.7.4') == -1:
+        if PY2 and cmp_versions(UpdateNotifierController.VERSION, '2.0') == -1:
             obsolete = '<br/><h1><b>You will need to upgrade your Python version!</b></h1>'
         else:
             obsolete = ''
