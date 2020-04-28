@@ -22,7 +22,7 @@ from setuptools import setup, find_packages
 
 ROOT_DIR = dirname(abspath(__file__))
 SOURCE_DIR = 'src'
-REQUIREMENTS = ['wxPython', 'PyPubSub', 'Pygments']
+REQUIREMENTS = ['wxPython<=4.0.7.post2', 'PyPubSub', 'Pygments']
 
 #Windows specific requirements
 if sys.platform == 'win32':
