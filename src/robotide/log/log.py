@@ -57,7 +57,7 @@ class LogPlugin(Plugin):
             try:
                 os.remove(fname)
             except OSError or IOError as e:
-                sys.stderr.write("{}".format(e))
+                sys.stderr.buffer.write(e)
                 pass
 
     @property
