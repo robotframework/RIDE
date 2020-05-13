@@ -55,8 +55,9 @@ class ParserLogPlugin(Plugin):
                 os.path.join(tempfile.gettempdir(), '*-ride_parser.log')):
             try:
                 os.remove(fname)
-            except OSError or IOError as e:
-                sys.stderr.buffer.write(e)
+            except OSError or IOError or PermissionError as e:
+                sys.stderr.write(f"Removing old *-ride_parser.log files failed with: {repr(e)}\n")
+            finally:
                 pass
 
     @property
