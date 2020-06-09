@@ -16,6 +16,7 @@
 import os
 import wx
 from wx.lib.agw import customtreectrl
+from wx.lib.agw.customtreectrl import GenericTreeItem
 from wx.lib.mixins import treemixin
 from wx import Colour
 from wx.lib.agw.aui import GetManager
@@ -27,14 +28,15 @@ from robotide.controller.ui.treecontroller import TreeController, \
     TestSelectionController
 from robotide.context import IS_WINDOWS
 from robotide.action.actioninfo import ActionInfo
-from robotide.controller.filecontrollers import ResourceFileController
+from robotide.controller.filecontrollers import ResourceFileController, TestDataDirectoryController, \
+    TestCaseFileController
 from robotide.publish.messages import RideTestRunning, RideTestPaused, \
     RideTestPassed, RideTestFailed, RideTestExecutionStarted, \
     RideImportSetting, RideExcludesChanged, RideIncludesChanged, \
     RideOpenSuite, RideNewProject
 from robotide.ui.images import RUNNING_IMAGE_INDEX, PASSED_IMAGE_INDEX, \
     FAILED_IMAGE_INDEX, PAUSED_IMAGE_INDEX, ROBOT_IMAGE_INDEX
-from robotide.ui.treenodehandlers import TestCaseHandler
+from robotide.ui.treenodehandlers import TestCaseHandler, TestDataDirectoryHandler, TestCaseFileHandler
 from robotide.publish import PUBLISHER, RideTreeSelection, RideFileNameChanged,\
     RideItem, RideUserKeywordAdded, RideTestCaseAdded, RideUserKeywordRemoved,\
     RideTestCaseRemoved, RideDataFileRemoved, RideDataChangedToDirty,\
@@ -828,8 +830,25 @@ class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
             if self.ItemHasChildren(item):
                 self._hide_item(item)
 
-    def SelectAllTests(self, item):
-        self._for_all_tests(item, lambda t: self.CheckItem(t))
+    def SelectAllTests(self, item: GenericTreeItem, selected=True):
+        """
+        Select tests for execution
+        :param item: The node of the graphical tree where the user triggered the action from
+        :param selected: Whether we want to select or un-select for execution
+        :return: Nothing
+        """
+        data = item.GetData()
+        if isinstance(data, TestDataDirectoryHandler):
+            item_controller: TestDataDirectoryController = data.tests.parent
+        elif isinstance(data, TestCaseFileHandler):
+            item_controller: TestCaseFileController = data.controller
+        else:
+            raise Exception("Unexpected type of handler: " + str(data))
+
+        test_controllers = item_controller.retrieve_test_controllers()
+
+        for tc in test_controllers:
+            self._test_selection_controller.select(tc,selected)
 
     def SelectTests(self, tests):
         def foo(t):
@@ -851,6 +870,10 @@ class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
                 self._expand_or_collapse_nodes(child, callback)
 
     def _for_all_tests(self, item, func):
+        """
+        BEWARE: this method causes the creation of ALL the GenericTreeItem and TreeNodeHandler of the project tree!
+        Please avoid.
+        """
         item_was_expanded = self.IsExpanded(item)
         if not self.HasAGWFlag(customtreectrl.TR_HIDE_ROOT) or \
                 item != self.GetRootItem():
@@ -969,7 +992,7 @@ class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
         node = self._controller.find_node_by_controller(controller)
         if node:
             self.SetItemText(node, data.item.name)
-            self._test_selection_controller.send_selection_changed_message()
+            self._test_selection_controller.send_selection_changed_message(None, None) #Whyyyyyy???
         if controller.dirty:
             self._controller.mark_node_dirty(
                 self._get_datafile_node(controller.datafile))

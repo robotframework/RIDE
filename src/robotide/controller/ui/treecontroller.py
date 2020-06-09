@@ -18,6 +18,7 @@ import os
 from robotide.action.actioninfo import ActionInfoCollection, ActionInfo
 from robotide.context import IS_WINDOWS, ctrl_or_cmd, bind_keys_to_evt_menu
 from robotide.controller.ctrlcommands import ChangeTag
+from robotide.controller.macrocontrollers import TestCaseController
 from robotide.controller.tags import Tag, DefaultTag
 from robotide.controller.filecontrollers import TestCaseFileController
 from robotide.publish import PUBLISHER, RideTestSelectedForRunningChanged, RideItemNameChanged, RideFileNameChanged, RideNewProject, RideOpenSuite
@@ -60,7 +61,7 @@ class TreeController(object):
             self._test_selection.add_tag(name)
 
     def OnClearSelected(self, event):
-        self._tree.DeselectAllTests(self._tree._root)
+        self._test_selection.clear_all()
 
     def OnGoForward(self, event):
         node = self._history.forward()
@@ -205,24 +206,27 @@ class TestSelectionController(object):
     def is_test_selected(self, test):
         return test.longname in self._tests.keys()
 
-    def clear_all(self, message=None):
+    def clear_all(self):
+        prev_tests = self._tests
         self._tests = {}
-        self.send_selection_changed_message()
+        for test in prev_tests.values():
+            self.send_selection_changed_message(test,False)
 
     def unselect_all(self, tests):
         for test in tests:
             self.select(test, False)
 
-    def select(self, test, selected=True):
+    def select(self, test: TestCaseController, selected=True):
         if selected:
             self._tests[test.longname] = test
         elif self.is_test_selected(test):
             del self._tests[test.longname]
-        self.send_selection_changed_message()
+        self.send_selection_changed_message(test,selected)
 
-    def send_selection_changed_message(self):
+    def send_selection_changed_message(self, changed_test, changed_selection):
         RideTestSelectedForRunningChanged(tests=set([(t.datafile_controller.longname, t.longname)
-                                                     for t in self._tests.values()])).publish()
+                                                     for t in self._tests.values()]),
+                                          change_test_controller=changed_test, change_selected=changed_selection).publish()
 
     def add_tag(self, name):
         for test in self._tests.values():

@@ -626,6 +626,13 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
         self.parent.children[index] = result
         return result
 
+    def retrieve_test_controllers(self):
+        controllers: list[TestCaseController] = []
+        for child in self.children:
+            if isinstance(child,TestCaseFileController) or isinstance(child,TestDataDirectoryController):
+                controllers += child.retrieve_test_controllers()
+        return controllers
+
 
 class DirtyRobotDataException(Exception):
     """
@@ -705,6 +712,11 @@ class TestCaseFileController(_FileSystemElement, _DataController):
     def get_template(self):
         return self.data.setting_table.test_template
 
+    def retrieve_test_controllers(self) :
+        controllers = []
+        for test_ctrl in iter(self.tests):
+            controllers.append(test_ctrl)
+        return controllers
 
 class ResourceFileControllerFactory(object):
 
