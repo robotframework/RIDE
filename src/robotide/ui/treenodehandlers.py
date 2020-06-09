@@ -488,7 +488,7 @@ class TestCaseFileHandler(_FileHandlerThanCanBeRenamed, TestDataHandler):
 
     @overrides(_FileHandlerThanCanBeRenamed)
     def _rename_ok_handler(self):
-        self._tree.DeselectAllTests(self._node)
+        self._tree.SelectAllTests(self._node,False)
 
 
 class _TestOrUserKeywordHandler(_CanBeRenamed, _ActionHandler):

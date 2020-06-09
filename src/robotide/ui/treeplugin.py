@@ -904,9 +904,6 @@ class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
     def _is_test_node(self, node):
         return node.GetType() == 1
 
-    def DeselectAllTests(self, item):
-        self._for_all_tests(item, lambda t: self.CheckItem(t, checked=False))
-
     def DeselectTests(self, tests):
         def foo(t):
             if self.GetPyData(t).controller in tests:
