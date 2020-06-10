@@ -88,7 +88,7 @@ class _ActionHandler(wx.Window):
     _label_open_folder =  'Open Containing Folder'
 
     def __init__(self, controller, tree, node, settings):
-        wx.Window.__init__(self, tree)
+        wx.Window.__init__(self, tree.GetParent())
         self.controller = controller
         self._tree = tree
         self._node = node
