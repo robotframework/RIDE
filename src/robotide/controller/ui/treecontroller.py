@@ -177,6 +177,7 @@ class TestSelectionController(object):
 
     def __init__(self):
         self._tests = {}
+        self._tests_for_event = set()
         self._subscribe()
 
     def _subscribe(self):
@@ -209,6 +210,7 @@ class TestSelectionController(object):
     def clear_all(self):
         prev_tests = self._tests
         self._tests = {}
+        self._tests_for_event = set()
         for test in prev_tests.values():
             self.send_selection_changed_message(test,False)
 
@@ -219,13 +221,14 @@ class TestSelectionController(object):
     def select(self, test: TestCaseController, selected=True):
         if selected:
             self._tests[test.longname] = test
+            self._tests_for_event.add((test.datafile_controller.longname,test.longname))
         elif self.is_test_selected(test):
             del self._tests[test.longname]
+            self._tests_for_event.remove((test.datafile_controller.longname, test.longname))
         self.send_selection_changed_message(test,selected)
 
     def send_selection_changed_message(self, changed_test, changed_selection):
-        RideTestSelectedForRunningChanged(tests=set([(t.datafile_controller.longname, t.longname)
-                                                     for t in self._tests.values()]),
+        RideTestSelectedForRunningChanged(tests=self._tests_for_event,
                                           change_test_controller=changed_test, change_selected=changed_selection).publish()
 
     def add_tag(self, name):
