@@ -215,8 +215,11 @@ class TestSelectionController(object):
             self.send_selection_changed_message(test,False)
 
     def unselect_all(self, tests):
+        self.select_all(tests,selected=False)
+
+    def select_all(self, tests,selected=True):
         for test in tests:
-            self.select(test, False)
+            self.select(test, selected)
 
     def select(self, test: TestCaseController, selected=True):
         if selected:
@@ -225,9 +228,10 @@ class TestSelectionController(object):
         elif self.is_test_selected(test):
             del self._tests[test.longname]
             self._tests_for_event.remove((test.datafile_controller.longname, test.longname))
-        self.send_selection_changed_message(test,selected)
+        self.send_selection_changed_message(test, selected)
 
     def send_selection_changed_message(self, changed_test, changed_selection):
+        # Shouldn't be this a private method?
         RideTestSelectedForRunningChanged(tests=self._tests_for_event,
                                           change_test_controller=changed_test, change_selected=changed_selection).publish()
 

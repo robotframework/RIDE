@@ -851,10 +851,7 @@ class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
             self._test_selection_controller.select(tc,selected)
 
     def SelectTests(self, tests):
-        def foo(t):
-            if self.GetPyData(t).controller in tests:
-                self.CheckItem(t)
-        self._for_all_tests(self._root, foo)
+            self._test_selection_controller.select_all(tests)
 
     def ExpandAllSubNodes(self, item):
         self._expand_or_collapse_nodes(item, self.Expand)
