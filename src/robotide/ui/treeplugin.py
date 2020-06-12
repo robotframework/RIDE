@@ -21,6 +21,8 @@ from wx.lib.mixins import treemixin
 from wx import Colour
 from wx.lib.agw.aui import GetManager
 
+from ..controller.macrocontrollers import TestCaseController
+
 TREETEXTCOLOUR = Colour(0xA9, 0xA9, 0xA9)
 
 from robotide.lib.robot.utils.compat import with_metaclass
@@ -309,6 +311,13 @@ class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
         self._images.set_execution_results(message.results)
 
     def _test_result(self, message):
+        test: TestCaseController = message.item
+        if message.topic == 'ride.test.passed':
+            test.run_passed = True
+        elif message.topic == 'ride.test.failed':
+            test.run_passed = False
+        else:
+            test.run_passed = None
         wx.CallAfter(self._set_icon_from_execution_results, message.item)
 
     def _set_icon_from_execution_results(self, controller):
@@ -837,6 +846,12 @@ class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
         :param selected: Whether we want to select or un-select for execution
         :return: Nothing
         """
+        test_controllers = self.retrieveTestCaseControllers(item)
+
+        for tc in test_controllers:
+            self._test_selection_controller.select(tc,selected)
+
+    def retrieveTestCaseControllers(self, item: GenericTreeItem):
         data = item.GetData()
         if isinstance(data, TestDataDirectoryHandler):
             item_controller: TestDataDirectoryController = data.tests.parent
@@ -844,11 +859,8 @@ class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
             item_controller: TestCaseFileController = data.controller
         else:
             raise Exception("Unexpected type of handler: " + str(data))
-
         test_controllers = item_controller.retrieve_test_controllers()
-
-        for tc in test_controllers:
-            self._test_selection_controller.select(tc,selected)
+        return test_controllers
 
     def SelectTests(self, tests):
             self._test_selection_controller.select_all(tests)
@@ -866,32 +878,6 @@ class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
             for child in item.GetChildren():
                 self._expand_or_collapse_nodes(child, callback)
 
-    def _for_all_tests(self, item, func):
-        """
-        BEWARE: this method causes the creation of ALL the GenericTreeItem and TreeNodeHandler of the project tree!
-        Please avoid.
-        """
-        item_was_expanded = self.IsExpanded(item)
-        if not self.HasAGWFlag(customtreectrl.TR_HIDE_ROOT) or \
-                item != self.GetRootItem():
-            if isinstance(item.GetData(), ResourceRootHandler or
-               ResourceFileHandler):
-                return
-
-            is_item_expanded = self.IsExpanded(item)
-            if not is_item_expanded:
-                self.Expand(item)
-            if self._is_test_node(item):
-                func(item)
-            if not self.IsExpanded(item):
-                return
-
-        for child in item.GetChildren():
-            self._for_all_tests(child, func)
-
-        if not item_was_expanded:
-            self.Collapse(item)
-
     def _for_all_drawn_tests(self, item, func):
         if self._is_test_node(item):
             func(item)
@@ -905,19 +891,16 @@ class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
         self._test_selection_controller.unselect_all(tests)
 
     def SelectFailedTests(self, item):
-        def func(t):
-            # FIXME: This information should be in domain model!
-            is_checked = self.GetItemImage(t) == FAILED_IMAGE_INDEX
-            self.CheckItem(t, checked=is_checked)
-
-        self._for_all_tests(item, func)
+        test_controllers = filter(
+            lambda ctrl: ctrl.run_passed == False,
+            self.retrieveTestCaseControllers(item))
+        self._test_selection_controller.select_all(test_controllers)
 
     def SelectPassedTests(self, item):
-        def func(t):
-            is_checked = self.GetItemImage(t) == PASSED_IMAGE_INDEX
-            self.CheckItem(t, checked=is_checked)
-
-        self._for_all_tests(item, func)
+        test_controllers = filter(
+            lambda ctrl: ctrl.run_passed == True,
+            self.retrieveTestCaseControllers(item))
+        self._test_selection_controller.select_all(test_controllers)
 
     def OnClose(self, event):
         print("DEBUG: Tree OnClose hidding")
