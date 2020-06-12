@@ -902,10 +902,7 @@ class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
         return node.GetType() == 1
 
     def DeselectTests(self, tests):
-        def foo(t):
-            if self.GetPyData(t).controller in tests:
-                self.CheckItem(t, checked=False)
-        self._for_all_tests(self._root, foo)
+        self._test_selection_controller.unselect_all(tests)
 
     def SelectFailedTests(self, item):
         def func(t):
