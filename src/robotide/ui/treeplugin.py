@@ -847,9 +847,7 @@ class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
         :return: Nothing
         """
         test_controllers = self.retrieveTestCaseControllers(item)
-
-        for tc in test_controllers:
-            self._test_selection_controller.select(tc,selected)
+        self._test_selection_controller.select_all(test_controllers,selected)
 
     def retrieveTestCaseControllers(self, item: GenericTreeItem):
         data = item.GetData()
@@ -907,8 +905,8 @@ class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
         self.Hide()
 
     def OnTreeItemChecked(self, event):
-        node = event.GetItem()
-        handler = self._controller.get_handler(node=node)
+        node: GenericTreeItem = event.GetItem()
+        handler: TestCaseHandler = self._controller.get_handler(node=node)
         self._test_selection_controller.select(
             handler.controller, node.IsChecked())
 
@@ -966,7 +964,7 @@ class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
         node = self._controller.find_node_by_controller(controller)
         if node:
             self.SetItemText(node, data.item.name)
-            self._test_selection_controller.send_selection_changed_message(None, None) #Whyyyyyy???
+            self._test_selection_controller.send_selection_changed_message() #Whyyyyyy???
         if controller.dirty:
             self._controller.mark_node_dirty(
                 self._get_datafile_node(controller.datafile))
