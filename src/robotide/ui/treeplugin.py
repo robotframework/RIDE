@@ -969,13 +969,6 @@ class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
         if node:
             self.SetItemText(node, data.item.name)
 
-            """
-            This is a porkaround: selected tests are referenced by name.
-            When a test changes its name, that must also change in the test selection
-            references.
-            """
-            self._test_selection_controller.send_selection_changed_message()
-
         if controller.dirty:
             self._controller.mark_node_dirty(
                 self._get_datafile_node(controller.datafile))

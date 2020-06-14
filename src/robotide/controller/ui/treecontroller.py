@@ -176,43 +176,18 @@ class _History(object):
 class TestSelectionController(object):
 
     def __init__(self):
-        self._tests = {}
-        self._tests_for_event = set()
-        self._subscribe()
-
-    def _subscribe(self):
-        PUBLISHER.subscribe(self._test_name_changed, RideItemNameChanged)
-        PUBLISHER.subscribe(self._suite_name_changed, RideFileNameChanged)
-
-    def _test_name_changed(self, message):
-        longname = message.item.longname
-        path, new_name = longname.rsplit('.', 1)
-        if message.old_name:
-            old_name = path + '.' + message.old_name
-            self._tests[longname] = new_name
-            del self._tests[old_name]
-
-    def _suite_name_changed(self, message):
-        df = message.datafile
-        if isinstance(df, TestCaseFileController):
-            filename = os.path.splitext(os.path.basename(message.old_filename))[0]
-            old_name = df.longname[:-len(df.name)] + filename
-            for test in self._tests:
-                if test.lower().startswith(old_name.lower()):
-                    del self._tests[test]
+        self._tests: {TestCaseController} = set()
 
     def is_empty(self):
         return not bool(self._tests)
 
     def is_test_selected(self, test):
-        return test.longname in self._tests.keys()
+        return test in self._tests
 
     def clear_all(self):
         prev_tests = self._tests
-        self._tests = {}
-        self._tests_for_event = set()
-        for test in prev_tests.values():
-            self.send_selection_changed_message()
+        self._tests = set()
+        self._send_selection_changed_message()
 
     def unselect_all(self, tests):
         self.select_all(tests, selected=False)
@@ -220,21 +195,19 @@ class TestSelectionController(object):
     def select_all(self, tests, selected=True):
         for test in tests:
             self.select(test, selected, notifySelection=False)
-        self.send_selection_changed_message()
+        self._send_selection_changed_message()
 
-    def select(self, test: TestCaseController, selected=True,notifySelection=True):
+    def select(self, test: TestCaseController, selected=True, notifySelection=True):
         if selected:
-            self._tests[test.longname] = test
-            self._tests_for_event.add((test.datafile_controller.longname,test.longname))
+            self._tests.add(test)
         elif self.is_test_selected(test):
-            del self._tests[test.longname]
-            self._tests_for_event.remove((test.datafile_controller.longname, test.longname))
+            self._tests.remove(test)
         if notifySelection:
-            self.send_selection_changed_message()
+            self._send_selection_changed_message()
 
-    def send_selection_changed_message(self):
+    def _send_selection_changed_message(self):
         # Shouldn't be this a private method?
-        RideTestSelectedForRunningChanged(tests=self._tests_for_event).publish()
+        RideTestSelectedForRunningChanged(tests=self._tests).publish()
 
     def add_tag(self, name):
         for test in self._tests.values():

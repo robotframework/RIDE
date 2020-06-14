@@ -526,7 +526,6 @@ class _TestOrUserKeywordHandler(_CanBeRenamed, _ActionHandler):
 class TestCaseHandler(_TestOrUserKeywordHandler):
     def __init__(self, controller, tree, node, settings):
         _TestOrUserKeywordHandler.__init__(self, controller, tree, node, settings)
-        self._test_tuple = (controller.datafile_controller.longname,controller.longname)
         PUBLISHER.subscribe(self.test_selection_changed, RideTestSelectedForRunningChanged,
                             key=self)  # TODO: unsubscribe when the object is destroyed!
 
@@ -540,7 +539,7 @@ class TestCaseHandler(_TestOrUserKeywordHandler):
         return RenameTest(new_name)
 
     def test_selection_changed(self, message: RideTestSelectedForRunningChanged):
-        if self._test_tuple in message.tests:
+        if self.controller in message.tests:
             if not self.node.GetValue():
                 self._tree.CheckItem(self.node, checked=True)
         else:
