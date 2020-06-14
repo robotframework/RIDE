@@ -542,10 +542,10 @@ class TestCaseHandler(_TestOrUserKeywordHandler):
     def test_selection_changed(self, message: RideTestSelectedForRunningChanged):
         if self._test_tuple in message.tests:
             if not self.node.GetValue():
-                wx.CallAfter(self._tree.CheckItem, self.node, checked=True)
+                self._tree.CheckItem(self.node, checked=True)
         else:
             if self.node.GetValue():
-                wx.CallAfter(self._tree.CheckItem, self.node, checked=False)
+                self._tree.CheckItem(self.node, checked=False)
 
 class UserKeywordHandler(_TestOrUserKeywordHandler):
     is_user_keyword = True

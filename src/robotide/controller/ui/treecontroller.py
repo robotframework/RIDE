@@ -215,11 +215,11 @@ class TestSelectionController(object):
             self.send_selection_changed_message()
 
     def unselect_all(self, tests):
-        self.select_all(tests,selected=False)
+        self.select_all(tests, selected=False)
 
-    def select_all(self, tests,selected=True):
+    def select_all(self, tests, selected=True):
         for test in tests:
-            self.select(test, selected,notifySelection=False)
+            self.select(test, selected, notifySelection=False)
         self.send_selection_changed_message()
 
     def select(self, test: TestCaseController, selected=True,notifySelection=True):

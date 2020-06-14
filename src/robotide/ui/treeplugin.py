@@ -889,15 +889,19 @@ class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
         self._test_selection_controller.unselect_all(tests)
 
     def SelectFailedTests(self, item):
+        all_controllers = self.retrieveTestCaseControllers(item)
         test_controllers = filter(
             lambda ctrl: ctrl.run_passed == False,
-            self.retrieveTestCaseControllers(item))
+            all_controllers)
+        self._test_selection_controller.unselect_all(all_controllers)
         self._test_selection_controller.select_all(test_controllers)
 
     def SelectPassedTests(self, item):
+        all_controllers = self.retrieveTestCaseControllers(item)
         test_controllers = filter(
             lambda ctrl: ctrl.run_passed == True,
-            self.retrieveTestCaseControllers(item))
+            all_controllers)
+        self._test_selection_controller.unselect_all(all_controllers)
         self._test_selection_controller.select_all(test_controllers)
 
     def OnClose(self, event):
@@ -964,7 +968,14 @@ class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
         node = self._controller.find_node_by_controller(controller)
         if node:
             self.SetItemText(node, data.item.name)
-            self._test_selection_controller.send_selection_changed_message() #Whyyyyyy???
+
+            """
+            This is a porkaround: selected tests are referenced by name.
+            When a test changes its name, that must also change in the test selection
+            references.
+            """
+            self._test_selection_controller.send_selection_changed_message()
+
         if controller.dirty:
             self._controller.mark_node_dirty(
                 self._get_datafile_node(controller.datafile))
