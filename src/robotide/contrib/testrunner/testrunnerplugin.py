@@ -381,7 +381,7 @@ class TestRunnerPlugin(Plugin):
         return ret == wx.YES
 
     def _tests_selected(self):
-        return len(self._names_to_run) != 0
+        return len(self._selected_tests) != 0
 
     def ask_user_to_run_anyway(self):
         ret = wx.MessageBox('No tests selected. \n'
