@@ -210,7 +210,7 @@ class TestSelectionController(object):
         RideTestSelectedForRunningChanged(tests=self._tests).publish()
 
     def add_tag(self, name):
-        for test in self._tests.values():
+        for test in self._tests:
             self._add_tag_to_test(name, test)
 
     def _add_tag_to_test(self, name, test):
