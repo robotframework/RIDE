@@ -196,12 +196,15 @@ class TestSelectionController(object):
             self.select(test, selected, notifySelection=False)
         self._send_selection_changed_message()
 
-    def select(self, test: TestCaseController, selected=True, notifySelection=True):
-        if selected:
+    def select(self, test: TestCaseController, doSelect=True, notifySelection=True):
+        changed = False
+        if doSelect and not self.is_test_selected(test):
             self._tests.add(test)
-        elif self.is_test_selected(test):
+            changed = True
+        elif not doSelect and self.is_test_selected(test):
             self._tests.remove(test)
-        if notifySelection:
+            changed = True
+        if notifySelection and changed:
             self._send_selection_changed_message()
 
     def _send_selection_changed_message(self):
