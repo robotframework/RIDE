@@ -206,8 +206,8 @@ class TestSelectionController(object):
             self._send_selection_changed_message()
 
     def _send_selection_changed_message(self):
-        # Shouldn't be this a private method?
-        RideTestSelectedForRunningChanged(tests=self._tests).publish()
+        message = RideTestSelectedForRunningChanged(tests=self._tests)
+        wx.CallAfter(message.publish)
 
     def add_tag(self, name):
         for test in self._tests:
