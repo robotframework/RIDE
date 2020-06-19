@@ -185,7 +185,6 @@ class TestSelectionController(object):
         return test in self._tests
 
     def clear_all(self):
-        prev_tests = self._tests
         self._tests = set()
         self._send_selection_changed_message()
 
