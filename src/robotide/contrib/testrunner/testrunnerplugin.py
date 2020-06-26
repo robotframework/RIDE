@@ -60,6 +60,7 @@ from robotide.action.shortcut import localize_shortcuts
 from robotide.context import IS_WINDOWS, IS_MAC
 from robotide.contrib.testrunner import TestRunner
 from robotide.contrib.testrunner import runprofiles
+from robotide.controller.macrocontrollers import TestCaseController
 from robotide.publish import RideSettingsChanged, PUBLISHER
 from robotide.publish.messages import RideTestSelectedForRunningChanged
 from robotide.pluginapi import Plugin, ActionInfo
@@ -136,7 +137,11 @@ class TestRunnerPlugin(Plugin):
         self._test_runner = TestRunner(application.model)
         self._register_shortcuts()
         self._min_log_level_number = LOG_LEVELS['INFO']
-        self._names_to_run = set()
+        self._selected_tests: {TestCaseController} = set()
+
+    @property
+    def _names_to_run(self):
+        return list(map(lambda ctrl: (ctrl.datafile_controller.longname, ctrl.longname), self._selected_tests))
 
     def _register_shortcuts(self):
         self.register_shortcut('CtrlCmd-C', self._copy_from_out)
@@ -219,7 +224,7 @@ class TestRunnerPlugin(Plugin):
             self.save_setting(setting, data.new)
 
     def OnTestSelectedForRunningChanged(self, message):
-        self._names_to_run = message.tests
+        self._selected_tests = message.tests
 
     def disable(self):
         self._remove_from_notebook()
@@ -305,7 +310,7 @@ class TestRunnerPlugin(Plugin):
         if not self._can_start_running_tests():
             return
         if self.__getattr__('confirm run'):
-            if not self.tests_selected():
+            if not self._tests_selected():
                 if not self.ask_user_to_run_anyway():
                     # In Linux NO runs dialog 4 times
                     return
@@ -375,8 +380,8 @@ class TestRunnerPlugin(Plugin):
                             wx.ICON_QUESTION | wx.YES_NO)
         return ret == wx.YES
 
-    def tests_selected(self):
-        return len(self._names_to_run) != 0
+    def _tests_selected(self):
+        return len(self._selected_tests) != 0
 
     def ask_user_to_run_anyway(self):
         ret = wx.MessageBox('No tests selected. \n'

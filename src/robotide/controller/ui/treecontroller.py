@@ -18,6 +18,7 @@ import os
 from robotide.action.actioninfo import ActionInfoCollection, ActionInfo
 from robotide.context import IS_WINDOWS, ctrl_or_cmd, bind_keys_to_evt_menu
 from robotide.controller.ctrlcommands import ChangeTag
+from robotide.controller.macrocontrollers import TestCaseController
 from robotide.controller.tags import Tag, DefaultTag
 from robotide.controller.filecontrollers import TestCaseFileController
 from robotide.publish import PUBLISHER, RideTestSelectedForRunningChanged, RideItemNameChanged, RideFileNameChanged, RideNewProject, RideOpenSuite
@@ -60,7 +61,7 @@ class TreeController(object):
             self._test_selection.add_tag(name)
 
     def OnClearSelected(self, event):
-        self._tree.DeselectAllTests(self._tree._root)
+        self._test_selection.clear_all()
 
     def OnGoForward(self, event):
         node = self._history.forward()
@@ -175,57 +176,43 @@ class _History(object):
 class TestSelectionController(object):
 
     def __init__(self):
-        self._tests = {}
-        self._subscribe()
-
-    def _subscribe(self):
-        PUBLISHER.subscribe(self._test_name_changed, RideItemNameChanged)
-        PUBLISHER.subscribe(self._suite_name_changed, RideFileNameChanged)
-
-    def _test_name_changed(self, message):
-        longname = message.item.longname
-        path, new_name = longname.rsplit('.', 1)
-        if message.old_name:
-            old_name = path + '.' + message.old_name
-            self._tests[longname] = new_name
-            del self._tests[old_name]
-
-    def _suite_name_changed(self, message):
-        df = message.datafile
-        if isinstance(df, TestCaseFileController):
-            filename = os.path.splitext(os.path.basename(message.old_filename))[0]
-            old_name = df.longname[:-len(df.name)] + filename
-            for test in self._tests:
-                if test.lower().startswith(old_name.lower()):
-                    del self._tests[test]
+        self._tests: {TestCaseController} = set()
 
     def is_empty(self):
         return not bool(self._tests)
 
     def is_test_selected(self, test):
-        return test.longname in self._tests.keys()
+        return test in self._tests
 
-    def clear_all(self, message=None):
-        self._tests = {}
-        self.send_selection_changed_message()
+    def clear_all(self):
+        self._tests = set()
+        self._send_selection_changed_message()
 
     def unselect_all(self, tests):
+        self.select_all(tests, selected=False)
+
+    def select_all(self, tests, selected=True):
         for test in tests:
-            self.select(test, False)
+            self.select(test, selected, notifySelection=False)
+        self._send_selection_changed_message()
 
-    def select(self, test, selected=True):
-        if selected:
-            self._tests[test.longname] = test
-        elif self.is_test_selected(test):
-            del self._tests[test.longname]
-        self.send_selection_changed_message()
+    def select(self, test: TestCaseController, doSelect=True, notifySelection=True):
+        changed = False
+        if doSelect and not self.is_test_selected(test):
+            self._tests.add(test)
+            changed = True
+        elif not doSelect and self.is_test_selected(test):
+            self._tests.remove(test)
+            changed = True
+        if notifySelection and changed:
+            self._send_selection_changed_message()
 
-    def send_selection_changed_message(self):
-        RideTestSelectedForRunningChanged(tests=set([(t.datafile_controller.longname, t.longname)
-                                                     for t in self._tests.values()])).publish()
+    def _send_selection_changed_message(self):
+        message = RideTestSelectedForRunningChanged(tests=self._tests)
+        wx.CallAfter(message.publish)
 
     def add_tag(self, name):
-        for test in self._tests.values():
+        for test in self._tests:
             self._add_tag_to_test(name, test)
 
     def _add_tag_to_test(self, name, test):
