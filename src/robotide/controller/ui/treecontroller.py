@@ -184,7 +184,8 @@ class TestSelectionController(object):
     def is_test_selected(self, test):
         return test in self._tests
 
-    def clear_all(self):
+    def clear_all(self, dummy=None):
+        # print(f"DEBUG: TestSelectionController at clear_all 2nd arg={dummy}")
         self._tests = set()
         self._send_selection_changed_message()
 
