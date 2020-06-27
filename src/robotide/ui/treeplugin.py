@@ -697,6 +697,10 @@ class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
         handler = self._controller.get_handler(selection)
         return handler and handler.controller or None
 
+    def tree_node_selected(self, node):
+        # print(f"DEBUG: TreePlugin tree node selected {str(node)}")
+        pass
+
     def move_up(self, node):
         prev = self.GetPrevSibling(node)
         if prev.IsOk():
