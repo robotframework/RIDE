@@ -3,22 +3,14 @@
 export PYTHONPATH=/home/helio/github/RIDE/utest/:$PYTHONPATH
 export PYTHONPATH=/home/helio/github/RIDE/src/:$PYTHONPATH
 
-#export PYTHONROOT=/usr/local/bin
 export PYTHONROOT=/usr/bin
 
 if [ $# -ge 1 ]
 then
-    if [ $1 -eq 2 ]
-    then
-         PY=2.7
-    elif [ $1 -eq 3 ]
-    then
-         PY=3.7
-    else
-        DIR="$1"
-    fi
+      PY=3.7
+      DIR="$1"
 else
-    PY=2
+    PY=3
     DIR="utest"
 fi
 

@@ -14,3 +14,5 @@
 #  limitations under the License.
 
 from .progress import LoadProgressObserver
+from .treeplugin import Tree
+from .fileexplorerplugin import FileExplorer

@@ -34,12 +34,8 @@ from robotide.controller.filecontrollers import (TestDataDirectoryController,
                                                  ResourceFileController)
 from robotide import utils
 from resources import PYAPP_REFERENCE, FakeSettings, FakeApplication
-# import utest.resources
-from robotide.utils import PY2, PY3
-if PY3:
-    from robotide.utils import unicode
 
-from robotide.ui import tree as st
+from robotide.ui import treeplugin as st
 from robotide.ui import treenodehandlers as th
 from robotide.publish import PUBLISHER
 from robotide.namespace.namespace import Namespace
@@ -47,7 +43,7 @@ th.FakeDirectorySuiteHandler = th.FakeUserKeywordHandler = \
     th.FakeSuiteHandler = th.FakeTestCaseHandler = \
     th.FakeResourceHandler = th.TestDataDirectoryHandler
 st.Editor = lambda *args: _FakeEditor()
-from robotide.ui.tree import Tree
+from robotide.ui.treeplugin import Tree
 Tree._show_correct_editor = lambda self, x: None
 Tree.get_active_datafile = lambda self: None
 # CallAfter does not work in unit tests
@@ -112,10 +108,7 @@ class _SortableD(utils.NormalizedDict):
 
     def iteritems(self):
         """Returns an iterator over the (key,data) items of the tags"""
-        if PY2:
-            return self._keys.iteritems()
-        elif PY3:
-            return self._keys.items()
+        return self._keys.items()
 
 
 class _ViewAllTagsDialog(ViewAllTagsDialog):
@@ -137,10 +130,10 @@ class _ViewAllTagsDialog(ViewAllTagsDialog):
             for test in i.testcase_table.tests:
                 try:
                     for tag in getattr(test.tags, 'tags').split("    "):
-                        if tag is None or len(unicode(tag).strip()) == 0:
+                        if tag is None or len(str(tag).strip()) == 0:
                             continue
                         else:
-                            tag_name = unicode(tag)
+                            tag_name = str(tag)
                         if tag_name in unique_tags:
                             unique_tags[tag_name].append(test)
                         else:
@@ -177,8 +170,9 @@ class _ViewAllTagsDialog(ViewAllTagsDialog):
                               reverse=isreversed)
 
     def show_dialog(self):
-        print("DEBUG: Unique tags {0}\n".format(self.unique_tags))
-        print("DEBUG: _tags_list {0}\n".format(self.itemDataMap))
+        # print("DEBUG: Unique tags {0}\n".format(self.unique_tags))
+        # print("DEBUG: _tags_list {0}\n".format(self.itemDataMap))
+        pass
 
     def ShowDialog(self):
         self._tagsdialog._search_for_tags()
@@ -229,7 +223,7 @@ class _BaseSuiteTreeTest(unittest.TestCase):
     def tearDown(self):
         PUBLISHER.unsubscribe_all()
         wx.CallAfter(wx.Exit)
-        self.app.MainLoop()
+        self.app.MainLoop()  # With this here, there is no Segmentation fault
 
     def _create_model(self):
         suite = self._create_directory_suite('/top_suite')
@@ -259,16 +253,10 @@ class _BaseSuiteTreeTest(unittest.TestCase):
         count = 0
         for i in suite.testcase_table.tests:
             newtag = ""
-            if PY2:
-                for key, test in self._tags_list.iteritems():
-                    newtag += key + "    " if count in test else ""
-                    if len(newtag):
-                        setattr(i.tags, 'tags', "{0}".format(newtag))
-            elif PY3:
-                for key, test in self._tags_list.items():
-                    newtag += key + "    " if count in test else ""
-                    if len(newtag):
-                        setattr(i.tags, 'tags', "{0}".format(newtag))
+            for key, test in self._tags_list.items():
+                newtag += key + "    " if count in test else ""
+                if len(newtag):
+                    setattr(i.tags, 'tags', "{0}".format(newtag))
             count += 1
         return suite
 
@@ -303,7 +291,7 @@ class TestSortTags(_BaseSuiteTreeTest):
         dref = list(j for i, j in self._tagsdialog.itemDataMap)
         # print("cref = {0}\ndref = {1}\n".format(cref, dref))
         assert_equal(dref, cref)
-        self._tagsdialog.show_dialog()
+        # self._tagsdialog.show_dialog()
 
     def test_sort_tags_descending_count(self):
         self._tagsdialog.sort_state = (1, 1)
@@ -323,7 +311,7 @@ class TestSortTags(_BaseSuiteTreeTest):
         dref = list(j for i, j in self._tagsdialog.itemDataMap)
         # print("cref = {0}\ndref = {1}\n".format(cref, dref))
         assert_equal(dref, cref)
-        self._tagsdialog.show_dialog()
+        # self._tagsdialog.show_dialog()
 
     def test_sort_tags_ascending_value(self):
         self._tagsdialog.sort_state = (0, 0)
@@ -346,7 +334,7 @@ class TestSortTags(_BaseSuiteTreeTest):
         dref = list(i for i, j in self._tagsdialog.itemDataMap)
         # print("tref = {0}\ndref = {1}\n".format(tref, dref))
         assert_equal(dref, tref)
-        self._tagsdialog.show_dialog()
+        # self._tagsdialog.show_dialog()
 
     def test_sort_tags_descending_value(self):
         self._tagsdialog.sort_state = (0, 1)
@@ -370,7 +358,7 @@ class TestSortTags(_BaseSuiteTreeTest):
         dref = list(i for i, j in self._tagsdialog.itemDataMap)
         # print("tref = {0}\ndref = {1}\n".format(tref, dref))
         assert_equal(dref, tref)
-        self._tagsdialog.show_dialog()
+        # self._tagsdialog.show_dialog()
 
 if __name__ == '__main__':
     unittest.main()

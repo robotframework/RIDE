@@ -23,13 +23,16 @@ from robotide.ui.searchdots import DottedSearch
 from robotide.widgets import ButtonWithHandler, Label
 from robotide.spec.iteminfo import LibraryKeywordInfo
 from robotide.usages.commands import FindUsages
-from robotide.controller.filecontrollers import TestCaseFileController, ResourceFileController, TestDataDirectoryController
+from robotide.controller.filecontrollers import (TestCaseFileController, ResourceFileController,
+                                                 TestDataDirectoryController)
 from threading import Thread
 
 class ReviewDialog(wx.Frame):
 
     def __init__(self, controller, frame):
-        wx.Frame.__init__(self, frame, title="Search unused keywords", style=wx.SYSTEM_MENU|wx.CAPTION|wx.CLOSE_BOX|wx.CLIP_CHILDREN|wx.FRAME_FLOAT_ON_PARENT)
+        wx.Frame.__init__(self, frame, title="Search unused keywords",
+                          style=wx.SYSTEM_MENU | wx.CAPTION | wx.CLOSE_BOX | wx.CLIP_CHILDREN |
+                          wx.FRAME_FLOAT_ON_PARENT)
         # set Left to Right direction (while we don't have localization)
         self.SetLayoutDirection(wx.Layout_LeftToRight)
         self.index = 0
@@ -52,10 +55,10 @@ class ReviewDialog(wx.Frame):
         self._build_controls()
 
     def _build_header(self):
-        label_introduction = wx.StaticText(self,
-                                           label='This dialog helps you finding unused keywords within your opened proj'
-                                                 'ect.\nIf you want, you can restrict the search to a set of files with'
-                                                 ' the filter.')
+        label_introduction = wx.StaticText(self, label="This dialog helps you finding unused "
+                                                       "keywords within your opened project.\nIf "
+                                                       "you want, you can restrict the search to "
+                                                       "a set of files with the filter.")
         label_filter_is = wx.StaticText(self, label='Filter is')
         self.label_filter_status = wx.StaticText(self, label='inactive')
         header_sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -63,8 +66,10 @@ class ReviewDialog(wx.Frame):
         header_sizer.AddStretchSpacer(1)
         header_sizer.Add(label_filter_is, 0,
                          wx.LEFT | wx.TOP | wx.BOTTOM | wx.ALIGN_BOTTOM, 3)
-        header_sizer.Add(self.label_filter_status, 0,
-                         wx.ALL | wx.ALIGN_BOTTOM | wx.ALIGN_RIGHT, 3)
+        if wx.VERSION < (4, 1, 0):
+            header_sizer.Add(self.label_filter_status, 0, wx.ALL | wx.ALIGN_BOTTOM | wx.ALIGN_RIGHT, 3)
+        else:
+            header_sizer.Add(self.label_filter_status, 0, wx.ALL | wx.ALIGN_BOTTOM, 3)
         self.Sizer.Add(header_sizer, 0, wx.ALL | wx.EXPAND, 3)
 
     def _build_filter(self):
@@ -75,7 +80,11 @@ class ReviewDialog(wx.Frame):
         self._filter_regex_switch = wx.CheckBox(self._filter_pane.GetPane(),
                                                 wx.ID_ANY, label="Use RegEx")
         self._filter_info = wx.StaticText(self._filter_pane.GetPane(),
-                                          label='Here you can define one or more strings separated by comma (e.g. common,abc,123).\nThe filter matches if at least one string is part of the filename.\nIf you don\'t enter any strings, all opened files are included')
+                                          label="Here you can define one or more strings separated"
+                                                " by comma (e.g. common,abc,123).\nThe filter "
+                                                "matches if at least one string is part of "
+                                                "the filename.\nIf you don\'t enter any strings, "
+                                                "all opened files are included")
         filter_source_box = wx.StaticBox(self._filter_pane.GetPane(), label="Search")
         self._filter_source_testcases = wx.CheckBox(self._filter_pane.GetPane(),
                                                     wx.ID_ANY,
@@ -124,8 +133,10 @@ class ReviewDialog(wx.Frame):
         sizer_unused_kw.Add(self._unused_kw_list, 1, wx.ALL | wx.EXPAND, 3)
         unused_kw_controls = wx.BoxSizer(wx.HORIZONTAL)
         unused_kw_controls.AddStretchSpacer(1)
-        unused_kw_controls.Add(self._delete_button, 0, wx.ALL | wx.ALIGN_RIGHT,
-                               3)
+        if wx.VERSION < (4, 1, 0):
+            unused_kw_controls.Add(self._delete_button, 0, wx.ALL | wx.ALIGN_RIGHT, 3)
+        else:
+            unused_kw_controls.Add(self._delete_button, 0, wx.ALL, 3)
         sizer_unused_kw.Add(unused_kw_controls, 0, wx.ALL | wx.EXPAND, 3)
         self._notebook.AddPage(panel_unused_kw, "Unused Keywords")
 
@@ -147,8 +158,10 @@ class ReviewDialog(wx.Frame):
         self.Bind(wx.EVT_CLOSE, self._close_dialog)
         self.Bind(wx.EVT_TEXT, self._update_filter, self._filter_input)
         self.Bind(wx.EVT_RADIOBOX, self._update_filter_mode, self._filter_mode)
-        self.Bind(wx.EVT_CHECKBOX, self._update_filter_source_testcases, self._filter_source_testcases)
-        self.Bind(wx.EVT_CHECKBOX, self._update_filter_source_resources, self._filter_source_resources)
+        self.Bind(wx.EVT_CHECKBOX, self._update_filter_source_testcases,
+                  self._filter_source_testcases)
+        self.Bind(wx.EVT_CHECKBOX, self._update_filter_source_resources,
+                  self._filter_source_resources)
         self.Bind(wx.EVT_BUTTON, self.OnDeletemarkedkeywords, self._delete_button)
         self.Bind(wx.EVT_BUTTON, self.OnShowfilestobesearched, self._filter_test_button)
         self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.OnResultSelected, self._unused_kw_list)
@@ -235,8 +248,9 @@ class ReviewDialog(wx.Frame):
             string_list = "(None)"
         else:
             string_list = "\n".join(df.name for df in df_list)
-        message = "Keywords of the following files will be included in the search:\n\n" + string_list
-        wx.MessageDialog(self, message=message, caption="Included files", style=wx.OK|wx.ICON_INFORMATION).ShowModal()
+        message = "Keywords of the following files will be included in the search:\n\n"+string_list
+        wx.MessageDialog(self, message=message, caption="Included files",
+                         style=wx.OK | wx.ICON_INFORMATION).ShowModal()
 
     def OnResultSelected(self, event):
         self.frame.tree.select_node_by_data(self._unused_kw_list.GetClientData(event.GetData()))
@@ -279,15 +293,9 @@ class ReviewDialog(wx.Frame):
 
     def add_result_unused_keyword(self, index, keyword):
         keyword_info = keyword.info
-        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
-            self._unused_kw_list.InsertItem(index, keyword_info.name)
-        else:
-            self._unused_kw_list.InsertStringItem(index, keyword_info.name)
+        self._unused_kw_list.InsertItem(index, keyword_info.name)
         filename = os.path.basename(keyword_info.item.source)
-        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
-            self._unused_kw_list.SetItem(index, 1, filename)
-        else:
-            self._unused_kw_list.SetStringItem(index, 1, filename)
+        self._unused_kw_list.SetItem(index, 1, filename)
         self._unused_kw_list.SetItemData(index, index)
         self._unused_kw_list.SetClientData(index, keyword)
 
@@ -309,7 +317,8 @@ class ReviewDialog(wx.Frame):
         self._dots.stop()
         self._search_model.end_search()
         self._update_notebook_text('Unused Keywords (%d)' % (self._unused_kw_list.GetItemCount()))
-        self.update_status("Search finished - Found %d Unused Keywords" % (self._unused_kw_list.GetItemCount()))
+        self.update_status("Search finished - Found %d Unused Keywords" %
+                           (self._unused_kw_list.GetItemCount()))
         self._unused_kw_list.Enable()
         self._abort_button.Disable()
         self._filter_pane.Enable()
@@ -359,7 +368,7 @@ class ReviewRunner(object):
         self._model.status = 'listing datafiles'
         for df in self._get_datafile_list():
             libname = os.path.basename(df.source).rsplit('.', 1)[0]
-            self._model.status = 'searching from '+libname
+            self._model.status = 'searching from ' + str(libname)
             for keyword in df.keywords:
                 time.sleep(0) # GIVE SPACE TO OTHER THREADS -- Thread.yield in Java
                 self._model.status = "%s.%s" % (libname, keyword.name)

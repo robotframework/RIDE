@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 #  Copyright 2008-2015 Nokia Networks
 #  Copyright 2016-     Robot Framework Foundation
 #
@@ -52,8 +53,10 @@ ABOUT_RIDE = '''<h3>RIDE -- Robot Framework Test Data Editor</h3>
 <p>RIDE %s running on Python %s.</p>
 <p>RIDE is a test data editor for <a href="http://robotframework.org">Robot Framework</a>.
 For more information, see project pages at
-<a href="http://github.com/robotframework/RIDE">http://github.com/robotframework/RIDE</a>.</p>
+<a href="https://github.com/robotframework/RIDE">https://github.com/robotframework/RIDE</a>.</p>
 <p>Some of the icons are from <a href="http://www.famfamfam.com/lab/icons/silk/">Silk Icons</a>.</p>
+<p><br/><br/><a href="https://github.com/HelioGuilherme66">Hélio Guilherme</a> the maintainer of the project thanks the original authors and all users and collaborators.<br/>
+A very special thanks to <b><a href="https://github.com/Nyral">Nyral</a></b> the most commited in helping RIDE development and maintenance.</p>
 ''' % (VERSION, pyversion)
 
 
@@ -66,7 +69,7 @@ def ctrl_or_cmd():
 def bind_keys_to_evt_menu(target, actions):
     accelrators = []
     for accel, keycode, handler in actions:
-        id = wx.NewId()
+        id = wx.NewIdRef()
         target.Bind(wx.EVT_MENU, handler, id=id)
         accelrators.append((accel, keycode, id))
     target.SetAcceleratorTable(wx.AcceleratorTable(accelrators))
@@ -156,7 +159,7 @@ SHORTCUT_KEYS = '''\
         <td>Suggestions and auto completion</td>
     </tr>
     <tr>
-        <td>CtrlCmd-M</td>
+        <td>CtrlCmd</td>
         <td>Help for cell content</td>
     </tr>
     <tr>
@@ -297,6 +300,22 @@ SHORTCUT_KEYS = '''\
         <td>Suggestions and auto completion</td>
     </tr>
     <tr>
+        <td>CtrlCmd-T</td>
+        <td>Swap current row up</td>
+    </tr>
+    <tr>
+        <td>Tab</td>
+        <td>Inserts the defined number of spaces</td>
+    </tr>
+    <tr>
+        <td>Shift-Tab</td>
+        <td>Moves cursor to the left the defined number of spaces</td>
+    </tr>
+    <tr>
+        <td>Ctrl-MouseWheel Roll</td>
+        <td>Increases or Decreases font size (Zoom +/-)</td>
+    </tr>
+    <tr>
         <td>CtrlCmd-F</td>
         <td>Find in text</td>
     </tr>
@@ -307,6 +326,26 @@ SHORTCUT_KEYS = '''\
     <tr>
         <td>Shift-CtrlCmd-G</td>
         <td>Find previous search result</td>
+    </tr>
+    <tr>
+        <td>CtrlCmd-1</td>
+        <td>Make scalar variable body</td>
+    </tr>
+    <tr>
+        <td>CtrlCmd-2</td>
+        <td>Make list variable body</td>
+    </tr>
+    <tr>
+        <td>CtrlCmd-3</td>
+        <td>Comment row(s)</td>
+    </tr>
+    <tr>
+        <td>CtrlCmd-4</td>
+        <td>Uncomment row(s)</td>
+    </tr>
+    <tr>
+        <td>CtrlCmd-5</td>
+        <td>Make dictionary variable body</td>
     </tr>
     <tr>
         <td>Enter</td>
@@ -336,6 +375,10 @@ SHORTCUT_KEYS = '''\
     <tr>
         <td>CtrlCmd-R</td>
         <td>Show HTML report</td>
+    </tr>
+    <tr>
+        <td>Ctrl-MouseWheel Roll</td>
+        <td>Increases or Decreases font size (Zoom +/-)</td>
     </tr>
 </table>
 '''

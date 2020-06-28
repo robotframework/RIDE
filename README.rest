@@ -3,44 +3,48 @@ RIDE
 
 RIDE is a development environment for Robot Framework test cases.
 
-*NEW* Join our #ride channel in Robot Framework Slack: https://robotframework.slack.com
+**Instant Communication** Join our #ride channel in Robot Framework Slack: https://robotframework.slack.com
 (signup page: https://robotframework-slack-invite.herokuapp.com/)
 
-See the `release notes`_ for version 1.7.4
+**Welcome to the development version of RIDE - next release will be version 2.0**
+---------------------------------------------------------------------------------
+
+If you are looking for the latest released version, you can get the source code from **releases** or from branch **release/1.7.4.1**
+See the `release notes`_ for latest release version 1.7.4.1.
+
+**Version 1.7.4.1 was the last release supporting Python 2.7**
+
 
 **Attention, this new version will break old style `:FOR`, and you have to change to `FOR/END` blocks.**
 
+**Attention, don't install RIDE on Python 3.8 (wait for release of version 2.0)**
+
+**Or you can install from development, where running on Python 3.8 is supported (since February 2020)**
+
+
+Install with:
+
+``pip install -U https://github.com/robotframework/RIDE/archive/master.zip``
+
 **See the FAQ at Wiki**
+
+Unit testing statuses:
+----------------------
+
+Linux (py36, py37): image:https://travis-ci.com/robotframework/RIDE.svg?branch=master  Windows (py36, py37, py38):  image:https://ci.appveyor.com/api/projects/status/github/HelioGuilherme66/RIDE?branch=master&svg=true
 
 ==========================================
 
-**THIS IS THE LAST RELEASE SUPPORTING PYTHON 2.7**
+* Downloads_
+* Usage instructions and some tips and tricks can be found from the Wiki_
+* Bug report/enhancement request? Use the `issue tracker`_.
+* Any questions? Do not hesitate to use the `mailing list`_.
+* Development information is in `BUILD`_ file.
 
-**Attention, don't install RIDE on Python 3.8 (wait for version 2.0)**
-
-(the information below is outdated)
-
-  * Downloads_
-  * Usage instructions and some tips and tricks can be found from the Wiki_
-  * Bug report/enhancement request? Use the `issue tracker`_.
-  * Any questions? Do not hesitate to use the `mailing list`_.
-  * Development information is in `BUILD`_ file.
-
-Installation
-============
-
-.. image:: http://img.youtube.com/vi/zpenQJcrBNg/sddefault.jpg
-   :target: https://www.youtube.com/watch?feature=player_embedded&v=zpenQJcrBNg
-
-A very simple demo
-==================
-
-.. image:: http://img.youtube.com/vi/6F_xGKdoN1E/sddefault.jpg
-   :target: https://www.youtube.com/watch?feature=player_embedded&v=6F_xGKdoN1E
 
 .. _Downloads: https://pypi.python.org/pypi/robotframework-ride
 .. _Wiki: https://github.com/robotframework/RIDE/wiki
 .. _issue tracker: https://github.com/robotframework/RIDE/issues
 .. _BUILD: https://github.com/robotframework/RIDE/blob/master/BUILD.rest
 .. _mailing list: http://groups.google.com/group/robotframework-users/
-.. _release notes: https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-1.7.4.rst
+.. _release notes: https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-1.7.4.1.rst

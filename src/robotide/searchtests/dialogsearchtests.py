@@ -20,9 +20,6 @@ from robotide.utils import overrides
 from robotide.widgets import (Dialog, VerticalSizer, VirtualList, Label,
                               HelpLabel, ImageProvider, ButtonWithHandler)
 from robotide.widgets.list import ListModel
-from robotide.utils import PY3
-if PY3:
-    from robotide.utils import unicode
 
 
 class TestsDialog(Dialog):
@@ -72,7 +69,9 @@ class TestsDialog(Dialog):
         controls_sizer.Add(self._create_tag_search_button(panel), 0, wx.ALL | wx.EXPAND, 3)
         controls_sizer.Add(self._create_add_to_selected_button(panel), 0, wx.ALL | wx.EXPAND, 3)
         panel.Sizer.Add(controls_sizer)
-        panel.Sizer.Add(self._add_info_text(panel, "Find matches using tag patterns. See RF User Guide or 'robot --help' for more information."), 0, wx.ALL, 3)
+        panel.Sizer.Add(self._add_info_text(panel, "Find matches using tag patterns. See RF User "
+                                                   "Guide or 'robot --help' for more information.")
+                        , 0, wx.ALL, 3)
         self._tags_results = _TestSearchListModel([])
         self._tags_list = VirtualList(panel, ['Test', 'Tags', 'Source'], self._tags_results)
         self._tags_list.add_selection_listener(self._select_tag_search_result)
@@ -84,7 +83,8 @@ class TestsDialog(Dialog):
     def _create_include_line(self, panel):
         include_line = self._horizontal_sizer()
         include_line.Add(Label(panel, label='Include', size=(80, -1)))
-        self._tags_to_include_text = wx.TextCtrl(panel, value='', size=(400, -1), style=wx.TE_PROCESS_ENTER)
+        self._tags_to_include_text = wx.TextCtrl(panel, value='', size=(400, -1),
+                                                 style=wx.TE_PROCESS_ENTER|wx.TE_NOHIDESEL)
         self._tags_to_include_text.Bind(wx.EVT_TEXT_ENTER, self.OnSearchTags)
         include_line.Add(self._tags_to_include_text)
         return include_line
@@ -100,7 +100,8 @@ class TestsDialog(Dialog):
     def _create_exclude_line(self, panel):
         exclude_line = self._horizontal_sizer()
         exclude_line.Add(Label(panel, label='Exclude', size=(80, -1)))
-        self._tags_to_exclude_text = wx.TextCtrl(panel, value='', size=(400, -1), style=wx.TE_PROCESS_ENTER)
+        self._tags_to_exclude_text = wx.TextCtrl(panel, value='', size=(400, -1),
+                                                 style=wx.TE_PROCESS_ENTER|wx.TE_NOHIDESEL)
         self._tags_to_exclude_text.Bind(wx.EVT_TEXT_ENTER, self.OnSearchTags)
         exclude_line.Add(self._tags_to_exclude_text)
         return exclude_line
@@ -111,7 +112,8 @@ class TestsDialog(Dialog):
         return button
 
     def OnSearchTags(self, event):
-        self._tag_search_handler(self._tags_to_include_text.GetValue(), self._tags_to_exclude_text.GetValue())
+        self._tag_search_handler(self._tags_to_include_text.GetValue(),
+                                 self._tags_to_exclude_text.GetValue())
 
     def _create_add_to_selected_button(self, panel):
         button = wx.Button(panel, label='Add all to selected')
@@ -161,7 +163,8 @@ class TestsDialog(Dialog):
         add_to_selection_button.Bind(wx.EVT_BUTTON, self.OnAddToSelected)
         line1.Add(add_to_selection_button)
         panel.Sizer.Add(line1, 0, wx.ALL, 3)
-        panel.Sizer.Add(self._add_info_text(panel, "Find matches by test name, documentation and/or tag."), 0, wx.ALL, 3)
+        panel.Sizer.Add(self._add_info_text(panel, "Find matches by test name, "
+                                                   "documentation and/or tag."), 0, wx.ALL, 3)
         panel.Sizer.Layout()
 
     def _horizontal_sizer(self):
@@ -171,7 +174,8 @@ class TestsDialog(Dialog):
         return wx.BoxSizer(wx.VERTICAL)
 
     def _add_pattern_filter(self, sizer, parent):
-        self._search_control = wx.SearchCtrl(parent, value='', size=(200,-1), style=wx.TE_PROCESS_ENTER)
+        self._search_control = wx.SearchCtrl(parent, value='', size=(200,-1),
+                                             style=wx.TE_PROCESS_ENTER)
         self._search_control.SetDescriptiveText('Search term')
         wrapped = lambda event: self._fuzzy_search_handler(self._search_control.GetValue())
         self._search_control.Bind(wx.EVT_TEXT_ENTER, wrapped)
@@ -254,7 +258,7 @@ class _TestSearchListModel(ListModel):
         if col == 0:
             return test.name
         if col == 1:
-            return u', '.join(unicode(t) for t in test.tags)
+            return u', '.join(str(t) for t in test.tags)
         return test.datafile_controller.longname
 
     @staticmethod

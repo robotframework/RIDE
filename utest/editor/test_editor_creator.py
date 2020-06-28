@@ -124,3 +124,8 @@ class EditorCreatorTest(unittest.TestCase):
 
     def _datafile_controller(self):
         return DataController(NewTestCaseFile(DATAPATH), None)
+
+
+if __name__ == '__main__':
+    unittest.main()
+

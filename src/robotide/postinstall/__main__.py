@@ -17,8 +17,19 @@
 
 
 import sys
+try:
+    import wx
+except ImportError:
+    sys.stderr.write("No wxPython installation detected!"
+                     "\n"
+                     "Please ensure that you have wxPython installed "
+                     "before running RIDE. "
+                     "You can obtain wxPython from "
+                     "https://wxpython.org/pages/downloads/\n"
+                     "or pip install wxPython")
+    exit(-1)
+
 from os.path import exists, join
-from robotide.utils import PY2
 
 __doc__ = """
 Usage: python ride_postinstall.py [options] <-install|-remove>
@@ -35,7 +46,7 @@ Usage: python ride_postinstall.py [options] <-install|-remove>
 def verify_install():
     try:
         from wx import version
-    except ImportError as err:
+    except ImportError:
         sys.stderr.write("No wxPython installation detected!"
                          "\n"
                          "Please ensure that you have wxPython installed "
@@ -49,18 +60,72 @@ def verify_install():
         return True
 
 
+class MessageDialog(wx.Dialog):
+    def __init__(self, message, title, ttl=10):
+        wx.Dialog.__init__(self, None, -1, title,size=(300, 200))
+        self.CenterOnScreen(wx.BOTH)
+        self.timeToLive = ttl
+
+        std_btn_sizer = self.CreateStdDialogButtonSizer(wx.YES_NO)
+        st_msg = wx.StaticText(self, -1, message)
+        self.settimetolivemsg = wx.StaticText(self, -1, 'Closing this dialog box in %ds...' % self.timeToLive)
+
+        vbox = wx.BoxSizer(wx.VERTICAL)
+        vbox.Add(st_msg, 1, wx.ALIGN_CENTER|wx.TOP, 10)
+        vbox.Add(self.settimetolivemsg, 1, wx.ALIGN_CENTER | wx.TOP, 10)
+        vbox.Add(std_btn_sizer, 1, wx.ALIGN_CENTER | wx.TOP, 10)
+        self.SetSizer(vbox)
+        self.SetAffirmativeId(wx.ID_YES)
+
+        self.timer = wx.Timer(self)
+        self.timer.Start(1000)  # Generate a timer event every second
+        self.Bind(wx.EVT_CLOSE, self.OnClose)
+        self.Bind(wx.EVT_TIMER, self.onTimer, self.timer)
+        self.Bind(wx.EVT_BUTTON, self.OnCancel, id=wx.ID_CANCEL)
+        self.Bind(wx.EVT_BUTTON, self.OnNo, id=wx.ID_NO)
+        self.Bind(wx.EVT_CHAR_HOOK, self.OnKeyPressed)
+
+    def OnKeyPressed(self, event):
+        key_code = event.GetKeyCode()
+        if key_code == wx.WXK_ESCAPE:
+            self.Destroy()
+            return False
+        event.Skip()
+
+    def OnCancel(self, evt):
+        self.Destroy()
+        return False
+
+    def OnClose(self, evt):
+        self.Destroy()
+        return False
+
+    def OnNo(self, evt):
+        self.Destroy()
+        return wx.ID_NO
+
+    def onTimer(self, evt):
+        self.timeToLive -= 1
+        self.settimetolivemsg.SetLabel('Closing this dialog box in %ds...' % self.timeToLive)
+
+        if self.timeToLive == 0:
+            self.timer.Stop()
+            self.Destroy()
+            return False
+
+
 def _askyesno(title, message, frame=None):
-    import wx
     if frame is None:
         _ = wx.App()
         parent = wx.Frame(None, size=(0, 0))
     else:
         parent = wx.Frame(frame, size=(0, 0))
     parent.CenterOnScreen()
-    dlg = wx.MessageDialog(parent, message, title, wx.YES_NO |
-                           wx.ICON_QUESTION)
+    dlg = MessageDialog(message, title, ttl=8)
     result = dlg.ShowModal() == wx.ID_YES
-    dlg.Destroy()
+    print("Result %s" % result)
+    if dlg:
+        dlg.Destroy()
     parent.Destroy()
     return result
 
@@ -92,17 +157,9 @@ def _create_desktop_shortcut_linux(frame=None):
     desktop = {"de": "Desktop", "en": "Desktop", "es": "Escritorio",
                "fi": r"Työpöytä", "fr": "Bureau", "it": "Scrivania",
                "pt": r"Área de Trabalho"}
-    if PY2:
-        user = unicode(subprocess.check_output(['logname']).strip())
-    else:
-        user = str(subprocess.check_output(['logname']).strip(),
-                   encoding='utf-8')
-    # print("DEBUG: user is %s value %s" % (type(user), user))
+    user = str(subprocess.check_output(['logname']).strip(), encoding='utf-8')
     try:
         ndesktop = desktop[DEFAULT_LANGUAGE[0][:2]]
-        if PY2:
-            ndesktop = ndesktop.decode('utf-8')
-        # print("DEBUG: ndesktop is %s" % type(ndesktop))
         directory = os.path.join("/home", user, ndesktop)
         defaultdir = os.path.join("/home", user, "Desktop")
         if not exists(directory):
@@ -116,7 +173,7 @@ def _create_desktop_shortcut_linux(frame=None):
                                               frame=frame)
                 else:
                     directory = None
-    except KeyError as kerr:
+    except KeyError:
         if not option_q:
             directory = _askdirectory(title="Locate Desktop Directory",
                                       initialdir=os.path.join(
@@ -128,9 +185,6 @@ def _create_desktop_shortcut_linux(frame=None):
         sys.stderr.write("Desktop shortcut creation aborted!\n")
         return False
     try:
-        if PY2:
-            directory.decode('utf-8')
-        # print("DEBUG: directory is %s" % directory)
         link = join(directory, "RIDE.desktop")
     except UnicodeError:
         link = join(directory.encode('utf-8'), "RIDE.desktop")
@@ -156,11 +210,7 @@ def _create_desktop_shortcut_mac(frame=None):
     import os
     import subprocess
     import pwd
-    if PY2:
-        user = unicode(subprocess.check_output(['logname']).strip())
-    else:
-        user = str(subprocess.check_output(['logname']).strip(),
-                   encoding='utf-8')
+    user = str(subprocess.check_output(['logname']).strip(), encoding='utf-8')
     link = os.path.join("/Users", user, "Desktop", "RIDE.command")
     if not exists(link) or option_f:
         if not option_q and not option_f:
@@ -196,7 +246,7 @@ def _create_desktop_shortcut_windows(frame=None):
             if not _askyesno("Setup", "Create desktop shortcut?", frame):
                 sys.stderr.write("Users can create a Desktop shortcut to RIDE "
                                  "with:\n%s -m robotide.postinstall -install\n"
-                                 % sys.executable.replace('python.exe', 'pythonw.exe'))
+                                 % sys.executable)
                 return False
         import pythoncom
         shortcut = pythoncom.CoCreateInstance(shell.CLSID_ShellLink, None,

@@ -17,7 +17,7 @@
 import wx.html
 try:
     from StringIO import StringIO
-except ImportError:  # py3
+except ImportError:  # py3 <=3.6
     from io import StringIO
 
 from robotide.pluginapi import Plugin, ActionInfo, TreeAwarePluginMixin
@@ -88,7 +88,10 @@ class PreviewPanel(wx.Panel):
         self._printing = Printing(self)
         box = wx.BoxSizer(wx.HORIZONTAL)
         box.Add(self._chooser())
-        box.Add(self._print_button(), 1, wx.ALIGN_CENTER_VERTICAL | wx.EXPAND)
+        if wx.VERSION < (4, 1, 0):
+            box.Add(self._print_button(), 1, wx.ALIGN_CENTER_VERTICAL | wx.EXPAND)
+        else:
+            box.Add(self._print_button(), 1, wx.EXPAND)
         self.Sizer.Add(box)
         notebook.AddPage(self, "Preview")
 
@@ -192,7 +195,7 @@ class HtmlView(wx.html.HtmlWindow):
 class TxtView(wx.TextCtrl):
 
     def __init__(self, parent):
-        wx.TextCtrl.__init__(self, parent, style=wx.TE_MULTILINE)
+        wx.TextCtrl.__init__(self, parent, style=wx.TE_MULTILINE|wx.TE_NOHIDESEL)
         self.SetEditable(False)
         self.SetFont(Font().fixed)
 

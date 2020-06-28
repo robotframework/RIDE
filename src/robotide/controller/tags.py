@@ -14,9 +14,6 @@
 #  limitations under the License.
 
 from robotide.controller.basecontroller import _BaseController
-from robotide.utils import PY3
-if PY3:
-    from robotide.utils import unicode
 
 
 class Tag(_BaseController):
@@ -46,7 +43,7 @@ class Tag(_BaseController):
         return mapping[self.__class__]
 
     def delete(self):
-        self.controller.remove(unicode(self.name))
+        self.controller.remove(str(self.name))
         if type(self) is Tag and len(self.controller._tags.value) == 0:
             if len(self.controller.parent.default_tags.value) > 0:
                 self.controller.set_value("")

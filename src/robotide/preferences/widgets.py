@@ -15,7 +15,6 @@
 
 import wx
 import textwrap
-
 from robotide.widgets import HelpLabel, Label, TextField
 from robotide.context import IS_WINDOWS
 
@@ -87,12 +86,14 @@ class IntegerPreferenceComboBox(PreferencesComboBox):
 
 class PreferencesSpinControl(wx.SpinCtrl):
     """A spin control tied to a specific setting. Saves value to disk after edit."""
+
     def __init__(self, parent, id, settings, key, choices):
         self.settings = settings
         self.key = key
-        super(PreferencesSpinControl, self).__init__(parent, id,
-            initial=self._get_value(), size=self._get_size(choices[-1]))
+        super(PreferencesSpinControl, self).__init__(parent, id, 
+            size=self._get_size(choices[-1]))
         self.SetRange(*choices)
+        self.SetValue(self._get_value())
         self.Bind(wx.EVT_SPINCTRL, self.OnChange)
         self.Bind(wx.EVT_TEXT, self.OnChange)
 
@@ -123,11 +124,7 @@ class PreferencesColorPicker(wx.ColourPickerCtrl):
         self.settings = settings
         self.key = key
         value = settings[key]
-        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
-            super(PreferencesColorPicker, self).__init__(parent, id,
-                                                         colour=value)
-        else:
-            super(PreferencesColorPicker, self).__init__(parent, id, col=value)
+        super(PreferencesColorPicker, self).__init__(parent, id, colour=value)
         self.Bind(wx.EVT_COLOURPICKER_CHANGED, self.OnPickColor)
 
     def OnPickColor(self, event):
@@ -186,16 +183,15 @@ def _create_checkbox_editor(parent, settings, name, help):
     initial_value = settings.get(name, "")
     editor = wx.CheckBox(parent)
     editor.SetValue(initial_value)
-    editor.Bind(wx.EVT_CHECKBOX,
-                lambda evt: settings.set(name, editor.GetValue()))
-    MySetToolTip(editor, help)
+    editor.Bind(wx.EVT_CHECKBOX, lambda evt: settings.set(name, editor.GetValue()))
+    editor.SetToolTip(help)
     return editor
 
 
 def comma_separated_value_editor(parent, settings, name, label, help=''):
     initial_value = ', '.join(settings.get(name, ""))
     editor = TextField(parent, initial_value)
-    MySetToolTip(editor, help)
+    editor.SetToolTip(help)
 
     def set_value():
         new_value = [token.strip() for token in editor.GetValue().split(',')
@@ -204,10 +200,3 @@ def comma_separated_value_editor(parent, settings, name, label, help=''):
     editor.Bind(wx.EVT_KILL_FOCUS, lambda evt: set_value())
 
     return Label(parent, label=label), editor
-
-
-def MySetToolTip(obj, tip):
-    if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
-        obj.SetToolTip(tip)
-    else:
-        obj.SetToolTipString(tip)

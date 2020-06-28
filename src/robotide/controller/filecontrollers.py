@@ -42,9 +42,6 @@ from .settingcontrollers import (DocumentationController, FixtureController,
 from .tablecontrollers import (VariableTableController, TestCaseTableController,
         KeywordTableController, ImportSettingsController,
         MetadataListController, TestCaseController)
-from robotide.utils import PY3
-if PY3:
-    from robotide.utils import basestring
 
 
 def _get_controller(project, data, parent):
@@ -295,7 +292,7 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
             elif sys.platform.startswith('linux'):
                 # how to detect which explorer is used?
                 # nautilus, dolphin, konqueror
-                # TODO check if explorer exits
+                # TODO check if explorer exists
                 # TODO get prefered explorer from preferences
                 try:
                     subprocess.Popen(["nautilus", "{}".format(
@@ -370,7 +367,7 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
 
     def __init__(self, data, project=None, parent=None):
         dir_ = data.directory
-        dir_ = os.path.abspath(dir_) if isinstance(dir_, basestring) else dir_
+        dir_ = os.path.abspath(dir_) if isinstance(dir_, str) else dir_
         _FileSystemElement.__init__(self, self._filename(data), dir_)
         _DataController.__init__(self, data, project, parent)
         self._dir_controllers = {}
@@ -458,7 +455,8 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
         return dc
 
     def _is_valid_resource(self, resource):
-        return resource and (resource.setting_table or resource.variable_table or resource.keyword_table or os.stat(resource.source)[6]==0)
+        return resource and (resource.setting_table or resource.variable_table or
+                             resource.keyword_table or os.stat(resource.source)[6] == 0)
 
     def _resource_controller(self, resource):
         resource_control =  self._resource_file_controller_factory.create(resource)
@@ -603,7 +601,8 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
             if not dirname:
                 continue
             target_dir = os.path.join(target.directory, dirname)
-            dir_ctrl = TestDataDirectoryController(TestDataDirectory(source=target_dir), self._project, self)
+            dir_ctrl = TestDataDirectoryController(TestDataDirectory(source=target_dir),
+                                                   self._project, self)
             target._dir_controllers[target.directory] = dir_ctrl
             target.add_child(dir_ctrl)
             if target_dir == res_dir:
@@ -626,6 +625,13 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
         result = ExcludedDirectoryController(self.data, self._project, self.parent)
         self.parent.children[index] = result
         return result
+
+    def retrieve_test_controllers(self):
+        controllers: list[TestCaseController] = []
+        for child in self.children:
+            if isinstance(child,TestCaseFileController) or isinstance(child,TestDataDirectoryController):
+                controllers += child.retrieve_test_controllers()
+        return controllers
 
 
 class DirtyRobotDataException(Exception):
@@ -706,6 +712,11 @@ class TestCaseFileController(_FileSystemElement, _DataController):
     def get_template(self):
         return self.data.setting_table.test_template
 
+    def retrieve_test_controllers(self) :
+        controllers = []
+        for test_ctrl in iter(self.tests):
+            controllers.append(test_ctrl)
+        return controllers
 
 class ResourceFileControllerFactory(object):
 
@@ -773,7 +784,8 @@ class ResourceFileController(_FileSystemElement, _DataController):
 
     def _unresolve_all_if_none_existing(self):
         if not self.exists() and self._resource_file_controller_factory:
-            self._resource_file_controller_factory.set_all_resource_imports_unresolved() # Some import may have referred to this none existing resource
+            self._resource_file_controller_factory.set_all_resource_imports_unresolved()
+            # Some import may have referred to this none existing resource
 
     def _find_parent_for(self, project, source):
         if not project:
@@ -806,7 +818,8 @@ class ResourceFileController(_FileSystemElement, _DataController):
     def set_basename_and_modify_imports(self, basename):
         old = self.filename
         self._modify_file_name(lambda: _DataController.set_basename(self, basename),
-                               lambda imp: imp.change_name(os.path.basename(old), os.path.basename(self.filename)))
+                               lambda imp: imp.change_name(os.path.basename(old),
+                                                           os.path.basename(self.filename)))
 
     def remove_static_imports_to_this(self):
         name = os.path.basename(self.filename)
@@ -835,7 +848,8 @@ class ResourceFileController(_FileSystemElement, _DataController):
         return None
 
     def reload(self):
-        self.__init__(ResourceFile(source=self.filename).populate(), self._project, parent=self.parent)
+        self.__init__(ResourceFile(source=self.filename).populate(), self._project,
+                      parent=self.parent)
 
     def remove(self):
         self._project.remove_resource(self)
@@ -882,6 +896,7 @@ class ResourceFileController(_FileSystemElement, _DataController):
 
     def remove_child(self, controller):
         pass
+
 
 class ExcludedDirectoryController(_FileSystemElement, ControllerWithParent, WithNamespace):
 

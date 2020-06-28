@@ -13,10 +13,10 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+from robotide.action.shortcut import localize_shortcuts
 from robotide.utils import highlightmatcher, html_escape
-from robotide.utils import PY3
-if PY3:
-    from robotide.utils import unicode
+
+CTRL_LABEL = localize_shortcuts('CtrlCmd')
 
 
 class CellInfo(object):
@@ -64,14 +64,14 @@ def TipMessage(cell):
         return ''
     tip = _TooltipMessage(cell) if not cell.for_loop \
         else _ForLoopTooltipMessage(cell)
-    return html_escape(unicode(tip))
+    return html_escape(str(tip)).replace('\n', '<br />')
 
 
 class _TooltipMessage(object):
 
     TOO_MANY_ARGUMENTS = "Too many arguments"
     KEYWORD_NOT_FOUND = \
-        "Keyword not found! For possible corrections press <Ctrl-M>"
+        "Keyword not found! For possible corrections press <%s>" % CTRL_LABEL
     VARIABLE_ASSIGMENT = "Variable assignment"
     UNKNOWN_VARIABLE = "\n\nUnknown variable"
 
@@ -79,7 +79,7 @@ class _TooltipMessage(object):
     OPTIONAL_ARGUMENT = "Optional argument:  %s"
     MISSING_ARGUMENT = "Missing argument:  %s"
 
-    KEYWORD = "Keyword from:  %s\n\nPress <Ctrl-M> for details"
+    KEYWORD = "Keyword from:  %s\n\n" + ("Press <%s> for details" % CTRL_LABEL)
 
     def __init__(self, cell):
         self.message = self._get_message(cell)

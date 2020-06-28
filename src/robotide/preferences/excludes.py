@@ -18,11 +18,7 @@ from fnmatch import fnmatch
 import os
 import wx
 
-if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
-    from wx.adv import HyperlinkCtrl, EVT_HYPERLINK
-else:
-    from wx import HyperlinkCtrl, EVT_HYPERLINK
-
+from wx.adv import HyperlinkCtrl, EVT_HYPERLINK
 from robotide.widgets import Dialog, HtmlWindow
 from .widgets import PreferencesPanel
 
@@ -117,13 +113,12 @@ class ExcludePreferences(PreferencesPanel):
         self.SetSizer(sizer)
 
     def _add_help_dialog(self, sizer):
-        # DEBUG wxPhoenix
         sizer.Add(HyperlinkCtrl(self, wx.ID_ANY, '', 'Need help?'))
         self.Bind(EVT_HYPERLINK, self.OnHelp)
 
     def _add_text_box(self, sizer):
         self._text_box = wx.TextCtrl(self,
-            style=wx.TE_MULTILINE,
+            style=wx.TE_MULTILINE|wx.TE_NOHIDESEL,
             size=wx.Size(570, 100),
             value=self._settings.excludes.get_excludes())
         sizer.Add(self._text_box, proportion=wx.EXPAND)
@@ -140,7 +135,8 @@ class ExcludePreferences(PreferencesPanel):
     def OnSave(self, event):
         text = self._text_box.GetValue()
         self._settings.excludes.write_excludes(set(text.split('\n')))
-        save_label = 'Saved at %s. Reload the project for changes to take an effect.' % datetime.now().strftime('%H:%M:%S')
+        save_label = 'Saved at %s. Reload the project for changes to take an effect.' %\
+                     datetime.now().strftime('%H:%M:%S')
         self._status_label.SetLabel(save_label)
 
     def OnHelp(self, event):

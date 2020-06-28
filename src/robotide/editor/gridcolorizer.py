@@ -16,8 +16,9 @@ from robotide.controller.cellinfo import CellType
 import wx
 # this import fails in HUDSON
 # from wxPython._gdi import wxFONTWEIGHT_BOLD, wxFONTWEIGHT_NORMAL
-wxFONTWEIGHT_BOLD = 92
-wxFONTWEIGHT_NORMAL = 90
+# wxFONTWEIGHT_BOLD = 92
+# wxFONTWEIGHT_NORMAL = 90
+# DEBUG using wx.FONTWEIGHT_BOLD, wx.FONTWEIGHT_NORMAL
 
 
 class Colorizer(object):
@@ -80,8 +81,8 @@ class Colorizer(object):
 
     def _get_weight(self, cell_info):
         if cell_info.cell_type == CellType.KEYWORD:
-            return wxFONTWEIGHT_BOLD
-        return wxFONTWEIGHT_NORMAL
+            return wx.FONTWEIGHT_BOLD
+        return wx.FONTWEIGHT_NORMAL
 
 
 class ColorizationSettings(object):
@@ -109,4 +110,4 @@ class ColorizationSettings(object):
         return self.get_background_color('error')
 
     def _get(self, name):
-        return self._settings[name.lower().replace('_',' ')]
+        return self._settings[name.lower().replace('_', ' ')]

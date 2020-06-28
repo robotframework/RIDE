@@ -14,7 +14,6 @@
 #  limitations under the License.
 
 import wx
-
 from robotide.controller.ctrlcommands import ChangeTag, ClearSetting
 from robotide.controller.tags import ForcedTag, DefaultTag
 from robotide.context import IS_WINDOWS
@@ -120,7 +119,7 @@ class TagsDisplay(wx.lib.scrolledpanel.ScrolledPanel):
 class TagBox(wx.TextCtrl):
 
     def __init__(self, parent, properties):
-        wx.TextCtrl.__init__(self, parent, wx.ID_ANY, '', style=wx.TE_CENTER)
+        wx.TextCtrl.__init__(self, parent, wx.ID_ANY, '', style=wx.TE_CENTER|wx.TE_NOHIDESEL)
         self._bind()
         self.set_properties(properties)
 
@@ -138,19 +137,12 @@ class TagBox(wx.TextCtrl):
 
     def _apply_properties(self):
         self.SetValue(self._properties.text)
-        # DEBUG wxPhoenix  self.SetToolTipString(self._properties.tooltip)
-        self.MySetToolTip(self, self._properties.tooltip)
+        self.SetToolTip(self._properties.tooltip)
         self.SetEditable(self._properties.enabled)
         size = self._get_size()
         self.SetMaxSize(size)
         self.SetMinSize(size)
         self._colorize()
-
-    def MySetToolTip(self, obj, tip):
-        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
-            obj.SetToolTip(tip)
-        else:
-            obj.SetToolTipString(tip)
 
     def _get_size(self):
         size = self.GetTextExtent(self.value)
@@ -175,7 +167,11 @@ class TagBox(wx.TextCtrl):
                 self._update_value()
             elif event.GetKeyCode() == wx.WXK_DELETE:
                 self.SetValue('')
-        event.Skip()
+
+        if event.GetKeyCode() != wx.WXK_RETURN:
+            # Don't send skip event if enter key is pressed
+            # On some platforms this event is sent too late and causes crash
+            event.Skip()
 
     def _cancel_editing(self):
         self.SetValue(self._properties.text)
@@ -192,7 +188,7 @@ class TagBox(wx.TextCtrl):
         self._update_value()
         # Send skip event only if tagbox is empty and about to be destroyed
         # On some platforms this event is sent too late and causes crash
-        if self.value != '':
+        if self and self.value != '':
             event.Skip()
 
     def _update_value(self):
@@ -241,7 +237,7 @@ class _TagBoxProperties(object):
         return self.enabled
 
     def change_value(self, value):
-        if self.modifiable and value != self.text:
+        if self.modifiable and (value != self.text or self.text == ''):
             self._tag.controller.execute(ChangeTag(self._tag, value))
 
     def activate(self, tagbox):

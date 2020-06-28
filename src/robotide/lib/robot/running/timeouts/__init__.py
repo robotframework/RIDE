@@ -16,7 +16,7 @@
 import time
 
 from robotide.lib.robot.utils import (Sortable, py2to3, secs_to_timestr, timestr_to_secs,
-                         IRONPYTHON, JYTHON, WINDOWS)
+                                      IRONPYTHON, JYTHON, WINDOWS)
 from robotide.lib.robot.errors import TimeoutError, DataError, FrameworkError
 
 if JYTHON:

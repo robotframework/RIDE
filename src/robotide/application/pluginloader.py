@@ -13,19 +13,13 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import os
+import importlib
+import importlib.util
 import inspect
+import os
 from robotide.context import LOG
 from robotide.pluginapi import Plugin
 from .pluginconnector import PluginFactory
-
-from robotide.utils import PY2
-if PY2:
-    import imp  # Deprecated in Python 3.3
-else:
-    import importlib
-    import importlib.util
-    import sys
 
 
 class PluginLoader(object):
@@ -34,7 +28,6 @@ class PluginLoader(object):
         self._load_errors = []
         self.plugins = [ PluginFactory(application, cls) for cls in
                          standard_classes + self._find_classes(load_dirs) ]
-        # print("DEBUG: PluginLoader plugins:%s" % self.plugins)
         if self._load_errors:
             LOG.error('\n\n'.join(self._load_errors))
 
@@ -46,9 +39,7 @@ class PluginLoader(object):
         classes = []
         for path in self._find_python_files(load_dirs):
             for cls in self._import_classes(path):
-                # print("DEBUG: _find_classes cls:%s" % cls)
                 if self._is_plugin_class(path, cls):
-                    # print("DEBUG: _find_classes Plugin:%s" % cls)
                     classes.append(cls)
         return classes
 
@@ -73,53 +64,18 @@ class PluginLoader(object):
                     files.extend(self._find_python_files([full_path]))
         return files
 
-    def _import_cls2(self, path):
+    def _import_classes(self, path):
         dirpath, filename = os.path.split(path)
         modulename = os.path.splitext(filename)[0]
-        try:
-            file, imppath, description = imp.find_module(modulename, [dirpath])
-        except ImportError:
-            return []
-        try:
-            try:
-                module = imp.load_module(modulename, file, imppath,
-                                         description)
-            except Exception as err:
-                self._load_errors.append("Importing plugin module '%s' failed:\n%s"
-                                         % (path, err))
-                return []
-        finally:
-            if file:
-                file.close()
-        return [ cls for _, cls in
-                 inspect.getmembers(module, predicate=inspect.isclass) ]
-
-    def _import_cls3(self, path):
-        dirpath, filename = os.path.split(path)
-        modulename = os.path.splitext(filename)[0]
-        # print("DEBUG: import_class dir:%s file:%s module:%s path:%s" % (dirpath, filename, modulename, path))
-        # spec = None
-        # file, imppath, description = importlib.find_module(modulename, [dirpath])
-
         spec = importlib.util.spec_from_file_location(modulename, path)
-        #spec = importlib.util.find_spec(modulename, dirpath)
         if spec is None:
-            # print("DEBUG: import_class spec is None: %s" % modulename)
             return []
         try:
             m_module = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(m_module)
-            #module = importlib.load_module(modulename, file, imppath,
-            #                         description)
         except Exception as err:
-                self._load_errors.append("Importing plugin module '%s' failed:\n%s"
-                                         % (path, err))
-                return []
+            self._load_errors.append("Importing plugin module '%s' failed:\n%s"
+                                     % (path, err))
+            return []
         return [cls for _, cls in
                 inspect.getmembers(m_module, predicate=inspect.isclass)]
-
-    def _import_classes(self, path):
-        if PY2:
-            return self._import_cls2(path)
-        else:
-            return self._import_cls3(path)

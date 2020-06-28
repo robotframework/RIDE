@@ -14,26 +14,28 @@
 #  limitations under the License.
 
 import os
-import sys
 import wx
+import locale
+locale.setlocale(locale.LC_ALL, 'C')
 
 from contextlib import contextmanager
 
-from robotide.namespace import Namespace
-from robotide.controller import Project
-from robotide.spec import librarydatabase
-from robotide.ui import LoadProgressObserver
-from robotide.ui.mainframe import RideFrame
-from robotide import publish
-from robotide import context, contrib
-from robotide.context import coreplugins
-from robotide.preferences import Preferences, RideSettings
-from robotide.application.pluginloader import PluginLoader
-from robotide.application.editorprovider import EditorProvider
-from robotide.application.releasenotes import ReleaseNotes
-from robotide.application.updatenotifier import UpdateNotifierController, \
-    UpdateDialog
-from robotide import utils
+from ..namespace import Namespace
+from ..controller import Project
+from ..spec import librarydatabase
+from ..ui import LoadProgressObserver
+from ..ui.mainframe import RideFrame
+from .. import publish
+from .. import context, contrib
+from ..context import coreplugins
+from ..preferences import Preferences, RideSettings
+from ..application.pluginloader import PluginLoader
+from ..application.editorprovider import EditorProvider
+from ..application.releasenotes import ReleaseNotes
+from ..application.updatenotifier import UpdateNotifierController, UpdateDialog
+from ..ui.treeplugin import TreePlugin
+from ..ui.fileexplorerplugin import FileExplorerPlugin
+from .. import utils
 
 
 class RIDE(wx.App):
@@ -60,17 +62,30 @@ class RIDE(wx.App):
         self._plugin_loader = PluginLoader(self, self._get_plugin_dirs(),
                                            coreplugins.get_core_plugins())
         self._plugin_loader.enable_plugins()
+        perspective = self.settings.get('AUI Perspective', None)
+        if perspective:
+            self.frame._mgr.LoadPerspective(perspective, True)
+        self.treeplugin = TreePlugin(self)
+        if self.treeplugin.settings['_enabled']:
+            self.treeplugin.register_frame(self.frame)
+        self.fileexplorerplugin = FileExplorerPlugin(self, self._controller)
+        if self.fileexplorerplugin.settings['_enabled']:
+            self.fileexplorerplugin.register_frame(self.frame)
         self.frame.Show()
+        if not self.treeplugin.opened:
+            self.treeplugin.close_tree()
+        if not self.fileexplorerplugin.opened:
+            self.fileexplorerplugin.close_tree()
         self.editor = self._get_editor()
         self._load_data()
-        self.frame.tree.populate(self.model)
-        self.frame.tree.set_editor(self.editor)
+        self.treeplugin.populate(self.model)
+        self.treeplugin.set_editor(self.editor)
         self._find_robot_installation()
         self._publish_system_info()
         if self._updatecheck:
-            UpdateNotifierController(
-                self.settings).notify_update_if_needed(UpdateDialog)
+            UpdateNotifierController(self.settings).notify_update_if_needed(UpdateDialog)
         wx.CallLater(200, ReleaseNotes(self).bring_to_front)
+        wx.CallLater(200, self.fileexplorerplugin._update_tree)
         return True
 
     def _publish_system_info(self):
@@ -86,8 +101,8 @@ class RIDE(wx.App):
                 contrib.CONTRIB_PATH]
 
     def _get_editor(self):
-        from robotide.editor import EditorPlugin
-        from robotide.editor.texteditor import TextEditorPlugin
+        from ..editor import EditorPlugin
+        from ..editor.texteditor import TextEditorPlugin
         for pl in self._plugin_loader.plugins:
             maybe_editor = pl._plugin
             if (isinstance(maybe_editor, EditorPlugin) or
@@ -104,22 +119,11 @@ class RIDE(wx.App):
     def _find_robot_installation(self):
         output = utils.run_python_command(
             ['import robot; print(robot.__file__ + \", \" + robot.__version__)'])
-        if utils.PY2:
-            robot_found = "ImportError" not in output and output
-        else:
-            robot_found = b"ModuleNotFoundError" not in output and output
+        robot_found = b"ModuleNotFoundError" not in output and output
         if robot_found:
-            # print("DEBUG: output: %s  strip: %s" % (output, output.strip().split(b", ")))
             rf_file, rf_version = output.strip().split(b", ")
-            if utils.PY2:
-                publish.RideLogMessage(
-                    "Found Robot Framework version %s from %s." % (
-                        rf_version, os.path.dirname(rf_file))).publish()
-            else:
-                publish.RideLogMessage(
-                    "Found Robot Framework version %s from %s." % (
-                        str(rf_version, 'utf-8'),
-                        str(os.path.dirname(rf_file), 'utf-8'))).publish()
+            publish.RideLogMessage("Found Robot Framework version %s from %s." % (
+                str(rf_version, 'utf-8'), str(os.path.dirname(rf_file), 'utf-8'))).publish()
             return rf_version
         else:
             publish.RideLogMessage(
@@ -133,7 +137,7 @@ class RIDE(wx.App):
         return recent.recent_files[0]
 
     def _get_recentfiles_plugin(self):
-        from robotide.recentfiles import RecentFilesPlugin
+        from ..recentfiles import RecentFilesPlugin
         for pl in self.get_plugins():
             if isinstance(pl._plugin, RecentFilesPlugin):
                 return pl._plugin
@@ -142,11 +146,11 @@ class RIDE(wx.App):
         return self._plugin_loader.plugins
 
     def register_preference_panel(self, panel_class):
-        '''Add the given panel class to the list of known preference panels'''
+        """Add the given panel class to the list of known preference panels"""
         self.preferences.add(panel_class)
 
     def unregister_preference_panel(self, panel_class):
-        '''Remove the given panel class from the known preference panels'''
+        """Remove the given panel class from the known preference panels"""
         self.preferences.remove(panel_class)
 
     def register_editor(self, object_class, editor_class, activate):

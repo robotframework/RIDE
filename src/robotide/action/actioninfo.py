@@ -18,9 +18,6 @@ import re
 
 from .shortcut import Shortcut
 from robotide.widgets import ImageProvider
-from robotide.utils import PY3
-if PY3:
-    from robotide.utils import basestring
 
 
 def ActionInfoCollection(data, event_handler, container=None):
@@ -116,17 +113,16 @@ def ActionInfoCollection(data, event_handler, container=None):
         elif row.startswith('[') and row.endswith(']'):
             menu = row[1:-1].strip()
         else:
-            actions.append(_create_action_info(event_handler, menu, container,
-                                               row))
+            actions.append(_create_action_info(event_handler, menu, container, row))
     return actions
 
 
 def _create_action_info(eventhandler, menu, container, row):
     if row.startswith('---'):
         return SeparatorInfo(menu)
-    tokens = [ t.strip() for t in row.split('|') ]
+    tokens = [t.strip() for t in row.split('|')]
     tokens += [''] * (5-len(tokens))
-    name, doc, shortcut, icon, position =  tokens
+    name, doc, shortcut, icon, position = tokens
     if name.startswith('!'):
         name = name[1:]
         container = None
@@ -134,20 +130,22 @@ def _create_action_info(eventhandler, menu, container, row):
     action = getattr(eventhandler, eventhandler_name)
     return ActionInfo(menu, name, action, container, shortcut, icon, doc, position)
 
+
 def _get_eventhandler_name_and_parsed_name(name):
     eventhandler_name, name = _parse_shortcuts_from_name(name)
-    return ('On%s' % eventhandler_name.replace(' ', '').replace('&', '') ,
-            name)
+    return 'On%s' % eventhandler_name.replace(' ', '').replace('&', ''), name
+
 
 def _parse_shortcuts_from_name(name):
     if '(' in name:
         eventhandler_name, shortcuts = name.split('(', 1)
         shortcuts = shortcuts.split(')')[0]
         elements = shortcuts.split(' or ')
-        name = '%s (%s)' % (eventhandler_name,
-                            ' or '.join(Shortcut(e).printable for e in elements))
+        name = '%s (%s)' % (eventhandler_name, ' or '.join(Shortcut(e).printable for e in
+                                                           elements))
         return eventhandler_name, name
     return name, name
+
 
 class MenuInfo(object):
     """Base class for `ActionInfo` and `SeparatorInfo`."""
@@ -239,7 +237,7 @@ class ActionInfo(MenuInfo):
     def _get_icon(self):
         if not self._icon_source:
             return None
-        if isinstance(self._icon_source, basestring):
+        if isinstance(self._icon_source, str):
             if self._icon_source.startswith("CUSTOM_"):
                 return ImageProvider().get_image_by_name(self._icon_source[len("CUSTOM_"):])
             return wx.ArtProvider.GetBitmap(getattr(wx, self._icon_source),
@@ -298,4 +296,6 @@ class _InsertionPoint(object):
         return None
 
     def _get_menu_item_name(self, item):
-        return self._shortcut_remover.split(item.GetLabel())[0]
+        if wx.VERSION < (4,1,0):
+            return self._shortcut_remover.split(item.GetLabel())[0]
+        return self._shortcut_remover.split(item.GetItemLabel())[0]

@@ -44,7 +44,6 @@ class TestForLoop(unittest.TestCase):
         test.execute(Undo())
         self.assertEqual(test.get_cell_info(1,1).cell_type, CellType.KEYWORD)
 
-    ####@unittest.skip("ERRORS with RF 3.1")
     def test_adding_new_for_loop(self):
         test2 = self.project.datafiles[1].tests[1]
         test2.execute(ChangeCellValue(0, 0, 'FOR'))
@@ -81,27 +80,19 @@ class TestForLoop(unittest.TestCase):
         self._steps_are_not_in_for_loop(test, 3)
         self._steps_first_cells_are_empty(test, 1, 2)
 
-    @unittest.skip("ERRORS with RF 3.1.2")
     def test_modify_step_so_that_it_becomes_part_of_for_loop_at_first_position(self):
         test = self.project.datafiles[1].tests[3]
         test.execute(InsertCell(1, 0))
         self._steps_are_in_for_loop(test, 1, 2, 3)
 
-    @unittest.skip("ERRORS with RF 3.1.2")
     def test_modify_step_so_that_it_becomes_part_of_for_loop_at_middle_position(self):
         test = self.project.datafiles[1].tests[2]
         test.execute(InsertCell(2, 0))
         self._steps_are_in_for_loop(test, 1, 2, 3)
 
-    @unittest.skip("ERRORS with RF 3.1.2")
     def test_modify_step_so_that_it_becomes_part_of_for_loop_at_last_position(self):
         test = self.project.datafiles[1].tests[4]
-        # for index, step in enumerate(test.steps):
-        #     print("DEBUG: test steps: %d %s" % (index, step.as_list()))
-        # self._steps_are_not_in_for_loop(test, 3)
         test.execute(InsertCell(3, 0))
-        # for index, step in enumerate(test.steps):
-        #    print("DEBUG: test steps: %d %s" % (index, step.as_list()))
         self._steps_are_in_for_loop(test, 1, 2, 3)
 
     def test_modify_last_step_so_that_it_should_be_empty_and_not_part_of_for_loop(self):
@@ -145,7 +136,6 @@ class TestForLoop(unittest.TestCase):
         self.assertEqual(test.steps[0].as_list(), ['FOR', '${i}', 'IN RANGE', '100'])
         self.assertEqual(type(test.steps[0]), ForLoopStepController)
 
-    @unittest.skip("ERRORS with RF 3.1.2")
     def test_for_loop_creation_and_steps(self):
         test = self.project.datafiles[1].tests[11]
         test.execute(ChangeCellValue(0, 0, 'FOR'))
@@ -157,7 +147,6 @@ class TestForLoop(unittest.TestCase):
         test.execute(DeleteCell(0,0))
         self.assertEqual(type(test.steps[0]), StepController)
 
-    ######@unittest.skip("ERRORS with RF 3.1")
     def test_for_loop_change_and_purify(self):
         test = self.project.datafiles[1].tests[13]
         test.execute(ChangeCellValue(1, 2, ''))
@@ -184,7 +173,6 @@ class TestForLoop(unittest.TestCase):
         test.execute(InsertCell(1,0))
         self.assertEqual(test.steps[1].as_list(), ['', 'Kw1', '# comment'])
 
-    #####@unittest.skip("ERRORS with RF 3.1")
     def test_new_for_loop_with_existing_comment(self):
         test = self.project.datafiles[1].tests[16]
         test.execute(ChangeCellValue(0, 0, 'FOR'))

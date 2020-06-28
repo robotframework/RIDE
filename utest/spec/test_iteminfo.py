@@ -35,6 +35,7 @@ class _FakeTestCaseFile(object):
 class _FakeResourceFile(object):
     source = '/path/to/my/resource.html'
     name = 'resource'
+    rawname = 'resource'
 
 def assert_in_details(kw_info, *expecteds):
     details = kw_info.details
@@ -44,13 +45,12 @@ def assert_in_details(kw_info, *expecteds):
 
 class TestKeywordInfo(unittest.TestCase):
 
-    @unittest.skip("ERRORS with RF 3.1")
     def test_libkw_arguments_parsing(self):
         libname = 'TestLib'
         lib = TestLibrary(libname)
         kw = lib.handlers['testlib_keyword_with_args']
         kw_info = LibraryKeywordInfo(kw.name, kw.doc, lib.doc_format, kw.library.name, libraryfetcher._parse_args(kw.arguments))
-        assert_in_details(kw_info, 'Testlib',
+        assert_in_details(kw_info, 'TestLib',
                           '[ arg1 | arg2=default value | *args ]')
 
     def test_uk_arguments_parsing(self):

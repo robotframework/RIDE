@@ -1,58 +1,28 @@
 # configobj.py
 # A config file reader/writer that supports nested sections in config files.
-# Copyright (C) 2005-2009 Michael Foord, Nicola Larosa
-# E-mail: fuzzyman AT voidspace DOT org DOT uk
-#         nico AT tekNico DOT net
+# Copyright (C) 2005-2014:
+# (name) : (email)
+# Michael Foord: fuzzyman AT voidspace DOT org DOT uk
+# Nicola Larosa: nico AT tekNico DOT net
+# Rob Dennis: rdennis AT gmail DOT com
+# Eli Courtwright: eli AT courtwright DOT org
 
-# ConfigObj 4
-# http://www.voidspace.org.uk/python/configobj.html
+# This software is licensed under the terms of the BSD license.
+# http://opensource.org/licenses/BSD-3-Clause
 
-# Released subject to the BSD License
-# Please see http://www.voidspace.org.uk/python/license.shtml
+# ConfigObj 5 - main repository for documentation and issue tracking:
+# https://github.com/DiffSK/configobj
 
-# Scripts maintained at http://www.voidspace.org.uk/python/index.shtml
-# For information about bugfixes, updates and support, please join the
-# ConfigObj mailing list:
-# http://lists.sourceforge.net/lists/listinfo/configobj-develop
-# Comments, suggestions and bug reports welcome.
-#
-# Note! All TO DOs and FIX MEs removed from the original source, by RIDE-project
-#  Copyright 2010-2015 Nokia Networks
-#  Copyright 2016-     Robot Framework Foundation
-#
-#  Licensed under the Apache License, Version 2.0 (the "License");
-#  you may not use this file except in compliance with the License.
-#  You may obtain a copy of the License at
-#
-#      http://www.apache.org/licenses/LICENSE-2.0
-#
-#  Unless required by applicable law or agreed to in writing, software
-#  distributed under the License is distributed on an "AS IS" BASIS,
-#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-#  See the License for the specific language governing permissions and
-#  limitations under the License.
-
-from __future__ import generators
-
-import sys
 import os
 import re
-from robotide.utils import converttypes
-from robotide.utils import PY2, PY3
-if PY3:
-    from robotide.utils import basestring, unicode
-
-compiler = None
-try:
-    # import py_compile as compiler # compiler
-    import ast as compiler  # DEBUG    import compiler
-except ImportError:
-    # for IronPython
-    pass
-
+import sys
 
 from codecs import BOM_UTF8, BOM_UTF16, BOM_UTF16_BE, BOM_UTF16_LE
 
+import six
+
+# imported lazily to avoid startup performance hit if it isn't used
+compiler = None
 
 # A dictionary mapping BOM to
 # the encoding to decode with, and what to set the
@@ -64,6 +34,8 @@ BOMS = {
     BOM_UTF16: ('utf_16', 'utf_16'),
     }
 # All legal variants of the BOM codecs.
+# TODO: the list of aliases is not meant to be exhaustive, is there a
+#   better way ?
 BOM_LIST = {
     'utf_16': 'utf_16',
     'u16': 'utf_16',
@@ -107,14 +79,7 @@ tdquot = "'''%s'''"
 # Sentinel for use in getattr calls to replace hasattr
 MISSING = object()
 
-__version__ = '4.6.0'
-
-__revision__ = '$Id: configobj.py 156 2006-01-31 14:57:08Z fuzzyman $'
-
-__docformat__ = "restructuredtext en"
-
 __all__ = (
-    '__version__',
     'DEFAULT_INDENT_TYPE',
     'DEFAULT_INTERPOLATION',
     'ConfigObjError',
@@ -131,8 +96,8 @@ __all__ = (
     'ReloadError',
     'UnreprError',
     'UnknownType',
-    '__docformat__',
     'flatten_errors',
+    'get_extra_values'
 )
 
 DEFAULT_INTERPOLATION = 'configparser'
@@ -155,20 +120,17 @@ OPTION_DEFAULTS = {
     'write_empty_values': False,
 }
 
+# this could be replaced if six is used for compatibility, or there are no
+# more assertions about items being a string
 
-# TODO Remove DEBUG info
+
 def getObj(s):
-    x = "a=" + s
-    try:
-        p = compiler.parse(x)
-    except (ValueError, SyntaxError) as e:
-        # print("DEBUG: parser getObj Error %s\n" % str(e))
-        raise  #ValueError
-    y = list()
-    for i in compiler.walk(p):
-        y.append(i)
-    # print("DEBUG: parser getObj y= %s v=%s " % (y[3].__class__.__name__, compiler.literal_eval(y[3])))
-    return y[3:-1]
+    global compiler
+    if compiler is None:
+        import compiler
+    s = "a=" + s
+    p = compiler.parse(s)
+    return p.getChildren()[1].getChildren()[0].getChildren()[1]
 
 
 class UnknownType(Exception):
@@ -176,76 +138,41 @@ class UnknownType(Exception):
 
 
 class Builder(object):
-
+    
     def build(self, o):
-        # print("DEBUG build name: %s class name %s " % ('build_' + o[0].__class__.__name__.strip(), o[0].__class__.__name__ ))
-        if o.__class__.__name__ == 'Tuple':
-            m = getattr(self, 'build_Tuple')  # DEBUG Tuple
-            return m(o[0])
-        m = getattr(self, ('build_' + o[0].__class__.__name__.strip()))
-        # print("DEBUG: m=%s M object=%s  " % (m, m(o[0])))
         if m is None:
-            raise UnknownType(o.__class__.__name__.strip())
-        return m(o[0])
-
+            raise UnknownType(o.__class__.__name__)
+        return m(o)
+    
     def build_List(self, o):
-        # print("DEBUG: build_List v=%s " % compiler.literal_eval(o))
-        return compiler.literal_eval(o)
-
+        return list(map(self.build, o.getChildren()))
+    
     def build_Const(self, o):
-        # return o.value
-        return compiler.literal_eval(o)
-
-    # TODO Update to AST code
+        return o.value
+    
     def build_Dict(self, o):
         d = {}
         i = iter(map(self.build, o.getChildren()))
         for el in i:
             d[el] = next(i)
         return d
-
+    
     def build_Tuple(self, o):
-        # print("DEBUG: build_Tuple o=%s *******************************" % o)
-        m_tuple = list()
-        for node in compiler.iter_child_nodes(o):
-            try:
-                if node.__class__.__name__ not in ['List', 'Load', 'Tuple']:
-                    # print("DEBUG: build_Tuple class=%s **" % node.__class__.__name__)
-                    v = compiler.literal_eval(node)
-                    # print("DEBUG: build_Tuple v=%s **" % v)
-                    m_tuple.append(v)
-            except ValueError:
-                m_tuple.pop()
-                pass
-        # print("DEBUG: node in Tuple n=%s " % m_tuple)
-        # print("DEBUG: build_Tuple v=%s " % compiler.dump(o, annotate_fields=False))
-        return tuple(m_tuple)
-
+        return tuple(self.build_List(o))
+    
     def build_Name(self, o):
-        try:
-            name = compiler.literal_eval(o)
-            # print("DEBUG: build_Name v=%s \n" % name)
-        except ValueError:
-            raise UnknownType('Name')
-        return name
-
-    def build_Num(self, o):
-        # print("DEBUG: build_Num v=%s \n" % compiler.literal_eval(o))
-        return compiler.literal_eval(o)
-
-    def build_UnaryOp(self, o):
-        return compiler.literal_eval(o)
-
-    def build_NameConstant(self, o):
-        return self.build_Name(o)
-
-    def build_Str(self, o):
-        # print("DEBUG: build_Str v=%s \n" % compiler.literal_eval(o))
-        return compiler.literal_eval(o)
-
-    # TODO Update to AST code
+        if o.name == 'None':
+            return None
+        if o.name == 'True':
+            return True
+        if o.name == 'False':
+            return False
+        
+        # An undefined Name
+        raise UnknownType('Undefined Name')
+    
     def build_Add(self, o):
-        real, imag = map(self.build_Const, o.getChildren())
+        real, imag = list(map(self.build_Const, o.getChildren()))
         try:
             real = float(real)
         except TypeError:
@@ -253,17 +180,14 @@ class Builder(object):
         if not isinstance(imag, complex) or imag.real != 0.0:
             raise UnknownType('Add')
         return real+imag
-
-    # TODO Update to AST code
+    
     def build_Getattr(self, o):
         parent = self.build(o.expr)
         return getattr(parent, o.attrname)
-
-    # TODO Update to AST code
+    
     def build_UnarySub(self, o):
         return -self.build_Const(o.getChildren()[0])
-
-    # TODO Update to AST code
+    
     def build_UnaryAdd(self, o):
         return self.build_Const(o.getChildren()[0])
 
@@ -273,9 +197,11 @@ _builder = Builder()
 
 def unrepr(s):
     if not s:
-        # print("DEBUG return s from unrepr %s\n" % s)
         return s
-    return _builder.build(getObj(s))
+    
+    # this is supposed to be safe
+    import ast
+    return ast.literal_eval(s)
 
 
 class ConfigObjError(SyntaxError):
@@ -346,15 +272,14 @@ class RepeatSectionError(ConfigObjError):
 
 class MissingInterpolationOption(InterpolationError):
     """A value specified for interpolation was missing."""
-
     def __init__(self, option):
-        InterpolationError.__init__(
-            self,
-            'missing option "%s" in interpolation.' % option)
+        msg = 'missing option "%s" in interpolation.' % option
+        InterpolationError.__init__(self, msg)
 
 
 class UnreprError(ConfigObjError):
     """An error parsing in unrepr mode."""
+
 
 
 class InterpolationEngine(object):
@@ -367,12 +292,18 @@ class InterpolationEngine(object):
 
     # compiled regexp to use in self.interpolate()
     _KEYCRE = re.compile(r"%\(([^)]*)\)s")
+    _cookie = '%'
 
     def __init__(self, section):
         # the Section instance that "owns" this engine
         self.section = section
 
+
     def interpolate(self, key, value):
+        # short-cut
+        if not self._cookie in value:
+            return value
+        
         def recursive_interpolate(key, value, section, backtrail):
             """The function that does the actual work.
 
@@ -384,14 +315,9 @@ class InterpolationEngine(object):
             This is similar to a depth-first-search algorithm.
             """
             # Have we been here already?
-            if PY2:
-                if backtrail.has_key((key, section.name)):
-                    # Yes - infinite loop detected
-                    raise InterpolationLoopError(key)
-            elif PY3:
-                if (key, section.name) in backtrail:
-                    # Yes - infinite loop detected
-                    raise InterpolationLoopError(key)
+            if (key, section.name) in backtrail:
+                # Yes - infinite loop detected
+                raise InterpolationLoopError(key)
             # Place a marker on our backtrail so we won't come back here again
             backtrail[(key, section.name)] = 1
 
@@ -425,6 +351,7 @@ class InterpolationEngine(object):
         value = recursive_interpolate(key, value, self.section, {})
         return value
 
+
     def _fetch(self, key):
         """Helper function to fetch values from owning section.
 
@@ -439,11 +366,11 @@ class InterpolationEngine(object):
         while True:
             # try the current section first
             val = current_section.get(key)
-            if val is not None:
+            if val is not None and not isinstance(val, Section):
                 break
             # try "DEFAULT" next
             val = current_section.get('DEFAULT', {}).get(key)
-            if val is not None:
+            if val is not None and not isinstance(val, Section):
                 break
             # move up to parent and try again
             # top-level's parent is itself
@@ -457,6 +384,7 @@ class InterpolationEngine(object):
         if val is None:
             raise MissingInterpolationOption(key)
         return val, current_section
+
 
     def _parse_match(self, match):
         """Implementation-dependent helper function.
@@ -475,10 +403,12 @@ class InterpolationEngine(object):
         (e.g., if we interpolated "$$" and returned "$").
         """
         raise NotImplementedError()
+    
 
 
 class ConfigParserInterpolation(InterpolationEngine):
     """Behaves like ConfigParser."""
+    _cookie = '%'
     _KEYCRE = re.compile(r"%\(([^)]*)\)s")
 
     def _parse_match(self, match):
@@ -487,8 +417,10 @@ class ConfigParserInterpolation(InterpolationEngine):
         return key, value, section
 
 
+
 class TemplateInterpolation(InterpolationEngine):
     """Behaves like string.Template."""
+    _cookie = '$'
     _delimiter = '$'
     _KEYCRE = re.compile(r"""
         \$(?:
@@ -520,27 +452,27 @@ interpolation_engines = {
 
 def __newobj__(cls, *args):
     # Hack for pickle
-    return cls.__new__(cls, *args)
-
+    return cls.__new__(cls, *args) 
 
 class Section(dict):
     """
     A dictionary-like object that represents a section in a config file.
-
+    
     It does string interpolation if the 'interpolation' attribute
     of the 'main' object is set to True.
-
+    
     Interpolation is tried first from this object, then from the 'DEFAULT'
     section of this object, next from the parent and its 'DEFAULT' section,
     and so on until the main object is reached.
-
+    
     A Section will behave like an ordered dictionary - following the
     order of the ``scalars`` and ``sections`` attributes.
     You can use this to change the order of members.
-
+    
     Iteration follows the order: scalars, then sections.
     """
 
+    
     def __setstate__(self, state):
         dict.update(self, state[0])
         self.__dict__.update(state[1])
@@ -548,7 +480,8 @@ class Section(dict):
     def __reduce__(self):
         state = (dict(self), self.__dict__)
         return (__newobj__, (self.__class__,), state)
-
+    
+    
     def __init__(self, parent, depth, main, indict=None, name=None):
         """
         * parent is the section above
@@ -571,13 +504,10 @@ class Section(dict):
         self._initialise()
         # we do this explicitly so that __setitem__ is used properly
         # (rather than just passing to ``dict.__init__``)
-        if PY2:
-            for entry, value in indict.iteritems():
-                self[entry] = value
-        elif PY3:
-            for entry, value in indict.items():
-                self[entry] = value
-
+        for entry, value in indict.items():
+            self[entry] = value
+            
+            
     def _initialise(self):
         # the sequence of scalar values in this Section
         self.scalars = []
@@ -591,6 +521,9 @@ class Section(dict):
         # for defaults
         self.defaults = []
         self.default_values = {}
+        self.extra_values = []
+        self._created = False
+
 
     def _interpolate(self, key, value):
         try:
@@ -614,111 +547,82 @@ class Section(dict):
         # let the engine do the actual work
         return engine.interpolate(key, value)
 
+
     def __getitem__(self, key):
         """Fetch the item and do string interpolation."""
         val = dict.__getitem__(self, key)
-        if self.main.interpolation and isinstance(val, basestring):
-            return self._interpolate(key, val)
+        if self.main.interpolation: 
+            if isinstance(val, six.string_types):
+                return self._interpolate(key, val)
+            if isinstance(val, list):
+                def _check(entry):
+                    if isinstance(entry, six.string_types):
+                        return self._interpolate(key, entry)
+                    return entry
+                new = [_check(entry) for entry in val]
+                if new != val:
+                    return new
         return val
+
 
     def __setitem__(self, key, value, unrepr=False):
         """
         Correctly set a value.
-
+        
         Making dictionary values Section instances.
         (We have to special case 'Section' instances - which are also dicts)
-
+        
         Keys must be strings.
         Values need only be strings (or lists of strings) if
         ``main.stringify`` is set.
-
+        
         ``unrepr`` must be set when setting a value to a dictionary, without
         creating a new sub-section.
         """
-        if not isinstance(key, basestring):
+        if not isinstance(key, six.string_types):
             raise ValueError('The key "%s" is not a string.' % key)
-
+        
         # add the comment
-        if PY2:
-            if not self.comments.has_key(key):
-                self.comments[key] = []
-                self.inline_comments[key] = ''
-            # remove the entry from defaults
-            if key in self.defaults:
-                self.defaults.remove(key)
-            #
-            if isinstance(value, Section):
-                if not self.has_key(key):
-                    self.sections.append(key)
-                dict.__setitem__(self, key, value)
-            elif isinstance(value, dict) and not unrepr:
-                # First create the new depth level,
-                # then create the section
-                if not self.has_key(key):
-                    self.sections.append(key)
-                new_depth = self.depth + 1
-                dict.__setitem__(
+        if key not in self.comments:
+            self.comments[key] = []
+            self.inline_comments[key] = ''
+        # remove the entry from defaults
+        if key in self.defaults:
+            self.defaults.remove(key)
+        #
+        if isinstance(value, Section):
+            if key not in self:
+                self.sections.append(key)
+            dict.__setitem__(self, key, value)
+        elif isinstance(value, dict) and not unrepr:
+            # First create the new depth level,
+            # then create the section
+            if key not in self:
+                self.sections.append(key)
+            new_depth = self.depth + 1
+            dict.__setitem__(
+                self,
+                key,
+                Section(
                     self,
-                    key,
-                    Section(
-                        self,
-                        new_depth,
-                        self.main,
-                        indict=value,
-                        name=key))
-            else:
-                if not self.has_key(key):
-                    self.scalars.append(key)
-                if not self.main.stringify:
-                    if isinstance(value, basestring):
-                        pass
-                    elif isinstance(value, (list, tuple)):
-                        for entry in value:
-                            if not isinstance(entry, basestring):
-                                raise TypeError('Value is not a string "%s".' % entry)
-                    else:
-                        raise TypeError('Value is not a string "%s".' % value)
-                dict.__setitem__(self, key, value)
-        elif PY3:
-            if key not in self.comments:
-                self.comments[key] = []
-                self.inline_comments[key] = ''
-            # remove the entry from defaults
-            if key in self.defaults:
-                self.defaults.remove(key)
-            #
-            if isinstance(value, Section):
-                if key not in self:
-                    self.sections.append(key)
-                dict.__setitem__(self, key, value)
-            elif isinstance(value, dict) and not unrepr:
-                # First create the new depth level,
-                # then create the section
-                if key not in self:
-                    self.sections.append(key)
-                new_depth = self.depth + 1
-                dict.__setitem__(
-                    self,
-                    key,
-                    Section(
-                        self,
-                        new_depth,
-                        self.main,
-                        indict=value,
-                        name=key))
-            else:
-                if key not in self:
-                    self.scalars.append(key)
-                if not self.main.stringify:
-                    if isinstance(value, basestring):
-                        pass
-                    elif isinstance(value, (list, tuple)):
-                        for entry in value:
-                            if not isinstance(entry, basestring):
-                                raise TypeError('Value is not a string "%s".' % entry)
-                    else:
-                        raise TypeError('Value is not a string "%s".' % value)
-                dict.__setitem__(self, key, value)
+                    new_depth,
+                    self.main,
+                    indict=value,
+                    name=key))
+        else:
+            if key not in self:
+                self.scalars.append(key)
+            if not self.main.stringify:
+                if isinstance(value, six.string_types):
+                    pass
+                elif isinstance(value, (list, tuple)):
+                    for entry in value:
+                        if not isinstance(entry, six.string_types):
+                            raise TypeError('Value is not a string "%s".' % entry)
+                else:
+                    raise TypeError('Value is not a string "%s".' % value)
+            dict.__setitem__(self, key, value)
+
 
     def __delitem__(self, key):
         """Remove items from the sequence when deleting."""
@@ -730,12 +634,14 @@ class Section(dict):
         del self.comments[key]
         del self.inline_comments[key]
 
+
     def get(self, key, default=None):
         """A version of ``get`` that doesn't bypass string interpolation."""
         try:
             return self[key]
         except KeyError:
             return default
+
 
     def update(self, indict):
         """
@@ -744,23 +650,22 @@ class Section(dict):
         for entry in indict:
             self[entry] = indict[entry]
 
-    def pop(self, key, *args):
+
+    def pop(self, key, default=MISSING):
         """
         'D.pop(k[,d]) -> v, remove specified key and return the corresponding value.
         If key is not found, d is returned if given, otherwise KeyError is raised'
         """
-        val = dict.pop(self, key, *args)
-        if key in self.scalars:
-            del self.comments[key]
-            del self.inline_comments[key]
-            self.scalars.remove(key)
-        elif key in self.sections:
-            del self.comments[key]
-            del self.inline_comments[key]
-            self.sections.remove(key)
-        if self.main.interpolation and isinstance(val, basestring):
-            return self._interpolate(key, val)
+        try:
+            val = self[key]
+        except KeyError:
+            if default is MISSING:
+                raise
+            val = default
+        else:
+            del self[key]
         return val
+
 
     def popitem(self):
         """Pops the first (key,val)"""
@@ -768,15 +673,16 @@ class Section(dict):
         if not sequence:
             raise KeyError(": 'popitem(): dictionary is empty'")
         key = sequence[0]
-        val = self[key]
+        val =  self[key]
         del self[key]
         return key, val
+
 
     def clear(self):
         """
         A version of clear that also affects scalars/sections
         Also clears comments and configspec.
-
+        
         Leaves other attributes alone :
             depth/main/parent are not affected
         """
@@ -786,6 +692,9 @@ class Section(dict):
         self.comments = {}
         self.inline_comments = {}
         self.configspec = None
+        self.defaults = []
+        self.extra_values = []
+
 
     def setdefault(self, key, default=None):
         """A version of setdefault that sets sequence if appropriate."""
@@ -795,21 +704,26 @@ class Section(dict):
             self[key] = default
             return self[key]
 
+
     def items(self):
         """D.items() -> list of D's (key, value) pairs, as 2-tuples"""
-        return zip((self.scalars + self.sections), self.values())
+        return list(zip((self.scalars + self.sections), list(self.values())))
+
 
     def keys(self):
         """D.keys() -> list of D's keys"""
         return (self.scalars + self.sections)
 
+
     def values(self):
         """D.values() -> list of D's values"""
         return [self[key] for key in (self.scalars + self.sections)]
 
+
     def iteritems(self):
         """D.iteritems() -> an iterator over the (key, value) items of D"""
-        return iter(self.items())
+        return iter(list(self.items()))
+
 
     def iterkeys(self):
         """D.iterkeys() -> an iterator over the keys of D"""
@@ -817,27 +731,35 @@ class Section(dict):
 
     __iter__ = iterkeys
 
+
     def itervalues(self):
         """D.itervalues() -> an iterator over the values of D"""
-        return iter(self.values())
+        return iter(list(self.values()))
+
 
     def __repr__(self):
         """x.__repr__() <==> repr(x)"""
-        return '{%s}' % ', '.join([('%s: %s' % (repr(key), repr(self[key])))
-                                   for key in (self.scalars + self.sections)])
+        def _getval(key):
+            try:
+                return self[key]
+            except MissingInterpolationOption:
+                return dict.__getitem__(self, key)
+        return '{%s}' % ', '.join([('%s: %s' % (repr(key), repr(_getval(key))))
+            for key in (self.scalars + self.sections)])
 
     __str__ = __repr__
     __str__.__doc__ = "x.__str__() <==> str(x)"
+
 
     # Extra methods - not in a normal dictionary
 
     def dict(self):
         """
         Return a deepcopy of self as a dictionary.
-
+        
         All members that are ``Section`` instances are recursively turned to
         ordinary dictionaries - by calling their ``dict`` method.
-
+        
         >>> n = a.dict()
         >>> n == a
         1
@@ -858,10 +780,11 @@ class Section(dict):
             newdict[entry] = this_entry
         return newdict
 
+
     def merge(self, indict):
         """
         A recursive update - useful for merging config files.
-
+        
         >>> a = '''[section1]
         ...     option1 = True
         ...     [[subsection]]
@@ -877,20 +800,21 @@ class Section(dict):
         >>> c2
         ConfigObj({'section1': {'option1': 'False', 'subsection': {'more_options': 'False'}}})
         """
-        for key, val in indict.items():
+        for key, val in list(indict.items()):
             if (key in self and isinstance(self[key], dict) and
-                    isinstance(val, dict)):
+                                isinstance(val, dict)):
                 self[key].merge(val)
-            else:
+            else:   
                 self[key] = val
+
 
     def rename(self, oldkey, newkey):
         """
         Change a keyname to another, without changing position in sequence.
-
+        
         Implemented so that transformations can be made on keys,
         as well as on values. (used by encode and decode)
-
+        
         Also renames comments.
         """
         if oldkey in self.scalars:
@@ -913,34 +837,35 @@ class Section(dict):
         self.comments[newkey] = comm
         self.inline_comments[newkey] = inline_comment
 
+
     def walk(self, function, raise_errors=True,
-             call_on_sections=False, **keywargs):
+            call_on_sections=False, **keywargs):
         """
         Walk every member and call a function on the keyword and value.
-
+        
         Return a dictionary of the return values
-
+        
         If the function raises an exception, raise the errror
         unless ``raise_errors=False``, in which case set the return value to
         ``False``.
-
+        
         Any unrecognised keyword arguments you pass to walk, will be pased on
         to the function you pass in.
-
+        
         Note: if ``call_on_sections`` is ``True`` then - on encountering a
         subsection, *first* the function is called for the *whole* subsection,
         and then recurses into it's members. This means your function must be
         able to handle strings, dictionaries and lists. This allows you
         to change the key of subsections as well as for ordinary members. The
         return value when called on the whole subsection has to be discarded.
-
+        
         See  the encode and decode methods for examples, including functions.
-
+        
         .. admonition:: caution
-
+        
             You can use ``walk`` to transform the names of members of a section
             but you mustn't add or delete members.
-
+        
         >>> config = '''[XXXXsection]
         ... XXXXkey = XXXXvalue'''.splitlines()
         >>> cfg = ConfigObj(config)
@@ -997,22 +922,23 @@ class Section(dict):
                 **keywargs)
         return out
 
+
     def as_bool(self, key):
         """
         Accepts a key as input. The corresponding value must be a string or
         the objects (``True`` or 1) or (``False`` or 0). We allow 0 and 1 to
         retain compatibility with Python 2.2.
-
-        If the string is one of  ``True``, ``On``, ``Yes``, or ``1`` it returns
+        
+        If the string is one of  ``True``, ``On``, ``Yes``, or ``1`` it returns 
         ``True``.
-
-        If the string is one of  ``False``, ``Off``, ``No``, or ``0`` it returns
+        
+        If the string is one of  ``False``, ``Off``, ``No``, or ``0`` it returns 
         ``False``.
-
+        
         ``as_bool`` is not case sensitive.
-
+        
         Any other input will raise a ``ValueError``.
-
+        
         >>> a = ConfigObj()
         >>> a['a'] = 'fish'
         >>> a.as_bool('a')
@@ -1032,20 +958,22 @@ class Section(dict):
             return False
         else:
             try:
-                if not isinstance(val, basestring):
+                if not isinstance(val, six.string_types):
+                    # TODO: Why do we raise a KeyError here?
                     raise KeyError()
                 else:
                     return self.main._bools[val.lower()]
             except KeyError:
                 raise ValueError('Value "%s" is neither True nor False' % val)
 
+
     def as_int(self, key):
         """
         A convenience method which coerces the specified value to an integer.
-
+        
         If the value is an invalid literal for ``int``, a ``ValueError`` will
         be raised.
-
+        
         >>> a = ConfigObj()
         >>> a['a'] = 'fish'
         >>> a.as_int('a')
@@ -1061,32 +989,34 @@ class Section(dict):
         """
         return int(self[key])
 
+
     def as_float(self, key):
         """
         A convenience method which coerces the specified value to a float.
-
+        
         If the value is an invalid literal for ``float``, a ``ValueError`` will
         be raised.
-
+        
         >>> a = ConfigObj()
         >>> a['a'] = 'fish'
-        >>> a.as_float('a')
+        >>> a.as_float('a')  #doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
         ValueError: invalid literal for float(): fish
         >>> a['b'] = '1'
         >>> a.as_float('b')
         1.0
         >>> a['b'] = '3.2'
-        >>> a.as_float('b')
-        3.2000000000000002
+        >>> a.as_float('b')  #doctest: +ELLIPSIS
+        3.2...
         """
         return float(self[key])
-
+    
+    
     def as_list(self, key):
         """
         A convenience method which fetches the specified value, guaranteeing
         that it is a list.
-
+        
         >>> a = ConfigObj()
         >>> a['a'] = 1
         >>> a.as_list('a')
@@ -1102,14 +1032,15 @@ class Section(dict):
         if isinstance(result, (tuple, list)):
             return list(result)
         return [result]
+        
 
     def restore_default(self, key):
         """
         Restore (and return) default value for the specified key.
-
+        
         This method will only work for a ConfigObj that was created
         with a configspec and has been validated.
-
+        
         If there is no default value for this key, ``KeyError`` is raised.
         """
         default = self.default_values[key]
@@ -1118,19 +1049,20 @@ class Section(dict):
             self.defaults.append(key)
         return default
 
+    
     def restore_defaults(self):
         """
         Recursively restore default values to all members
         that have them.
-
+        
         This method will only work for a ConfigObj that was created
         with a configspec and has been validated.
-
+        
         It doesn't delete or modify entries without default values.
         """
         for key in self.default_values:
             self.restore_default(key)
-
+            
         for section in self.sections:
             self[section].restore_defaults()
 
@@ -1148,22 +1080,26 @@ class ConfigObj(Section):
         \s*=\s*                 # divider
         (.*)                    # value (including list values and comments)
         $   # line end
-        ''', re.VERBOSE)
+        ''',
+        re.VERBOSE)
 
     _sectionmarker = re.compile(r'''^
         (\s*)                     # 1: indentation
         ((?:\[\s*)+)              # 2: section marker open
         (                         # 3: section name open
-            (?:\"\s*\S.*?\s*\")|    # at least one non-space with double quotes
-            (?:\'\s*\S.*?\s*\')|    # at least one non-space with single quotes
-            (?:[^\'\"\s].*?)        # at least one non-space unquoted
+            (?:"\s*\S.*?\s*")|    # at least one non-space with double quotes
+            (?:'\s*\S.*?\s*')|    # at least one non-space with single quotes
+            (?:[^'"\s].*?)        # at least one non-space unquoted
         )                         # section name close
         ((?:\s*\])+)              # 4: section marker close
         \s*(\#.*)?                # 5: optional comment
-        $''', re.VERBOSE)
+        $''',
+        re.VERBOSE)
 
     # this regexp pulls list values out as a single string
     # or single values and comments
+    # FIXME: this regex adds a '' to the end of comma terminated lists
+    #   workaround in ``_handle_value``
     _valueexp = re.compile(r'''^
         (?:
             (?:
@@ -1187,17 +1123,19 @@ class ConfigObj(Section):
             (,)             # alternatively a single comma - empty list
         )
         \s*(\#.*)?          # optional comment
-        $''', re.VERBOSE)
+        $''',
+        re.VERBOSE)
 
     # use findall to get the members of a list value
     _listvalueexp = re.compile(r'''
         (
             (?:".*?")|          # double quotes
             (?:'.*?')|          # single quotes
-            (?:[^'",\#].*?)       # unquoted
+            (?:[^'",\#]?.*?)       # unquoted
         )
         \s*,\s*                 # comma
-        ''', re.VERBOSE)
+        ''',
+        re.VERBOSE)
 
     # this regexp is used for the value
     # when lists are switched off
@@ -1209,7 +1147,8 @@ class ConfigObj(Section):
             (?:)                # Empty value
         )
         \s*(\#.*)?              # optional comment
-        $''', re.VERBOSE)
+        $''',
+        re.VERBOSE)
 
     # regexes for finding triple quoted values on one line
     _single_line_single = re.compile(r"^'''(.*?)'''\s*(#.*)?$")
@@ -1230,51 +1169,71 @@ class ConfigObj(Section):
         'true': True, 'false': False,
         }
 
-    def __init__(self, infile=None, options=None, _inspec=False, **kwargs):
+
+    def __init__(self, infile=None, options=None, configspec=None, encoding=None,
+                 interpolation=True, raise_errors=False, list_values=True,
+                 create_empty=False, file_error=False, stringify=True,
+                 indent_type=None, default_encoding=None, unrepr=False,
+                 write_empty_values=False, _inspec=False):
         """
         Parse a config file or create a config file object.
-
-        ``ConfigObj(infile=None, options=None, **kwargs)``
+        
+        ``ConfigObj(infile=None, configspec=None, encoding=None,
+                    interpolation=True, raise_errors=False, list_values=True,
+                    create_empty=False, file_error=False, stringify=True,
+                    indent_type=None, default_encoding=None, unrepr=False,
+                    write_empty_values=False, _inspec=False)``
         """
         self._inspec = _inspec
         # init the superclass
         Section.__init__(self, self, 0, self)
-
+        
         infile = infile or []
-        options = dict(options or {})
+        
+        _options = {'configspec': configspec,
+                    'encoding': encoding, 'interpolation': interpolation,
+                    'raise_errors': raise_errors, 'list_values': list_values,
+                    'create_empty': create_empty, 'file_error': file_error,
+                    'stringify': stringify, 'indent_type': indent_type,
+                    'default_encoding': default_encoding, 'unrepr': unrepr,
+                    'write_empty_values': write_empty_values}
 
-        # keyword arguments take precedence over an options dictionary
-        options.update(kwargs)
+        if options is None:
+            options = _options
+        else:
+            import warnings
+            warnings.warn('Passing in an options dictionary to ConfigObj() is '
+                          'deprecated. Use **options instead.',
+                          DeprecationWarning, stacklevel=2)
+            
+            # TODO: check the values too.
+            for entry in options:
+                if entry not in OPTION_DEFAULTS:
+                    raise TypeError('Unrecognised option "%s".' % entry)
+            for entry, value in list(OPTION_DEFAULTS.items()):
+                if entry not in options:
+                    options[entry] = value
+                keyword_value = _options[entry]
+                if value != keyword_value:
+                    options[entry] = keyword_value
+        
+        # XXXX this ignores an explicit list_values = True in combination
+        # with _inspec. The user should *never* do that anyway, but still...
         if _inspec:
             options['list_values'] = False
-
-        defaults = OPTION_DEFAULTS.copy()
-        for entry in options:
-            if entry not in defaults:
-                raise TypeError('Unrecognised option "%s".' % entry)
-
-        # Add any explicit options to the defaults
-        defaults.update(options)
-        self._initialise(defaults)
-        configspec = defaults['configspec']
+        
+        self._initialise(options)
+        configspec = options['configspec']
         self._original_configspec = configspec
-        # print("DEBUG: configobj defaults %s\n", defaults)
-        # print("DEBUG: configobj init_load filepath %s\n", infile)
         self._load(infile, configspec)
-
+        
+        
     def _load(self, infile, configspec):
-        if isinstance(infile, basestring):
+        if isinstance(infile, six.string_types):
             self.filename = infile
-            if os.path.isfile(self.filename):
-                # print("DEBUG: configobj is path _load filepath %s", self.filename)
-                try:
-                    h = open(self.filename, 'rb')
-                    infile = h.read() or []
-                    h.close()
-                    # print("DEBUG: configobj is path _load content %s", infile)
-                except IOError:
-                    raise IOError(
-                        'Config file not found: "%s".' % self.filename)
+            if os.path.isfile(infile):
+                with open(infile, 'rb') as h:
+                    content = h.readlines() or []
             elif self.file_error:
                 # raise an error if the file doesn't exist
                 raise IOError('Config file not found: "%s".' % self.filename)
@@ -1283,57 +1242,54 @@ class ConfigObj(Section):
                 if self.create_empty:
                     # this is a good test that the filename specified
                     # isn't impossible - like on a non-existent device
-                    h = open(infile, 'w+b')
-                    if PY2:
-                        h.write('#')
-                    elif PY3:
-                        h.write('#'.encode('UTF-8'))
-                    h.close()
-                    # print("DEBUG: configobj created empty _load filepath %s", h.name)
-                infile = []
-
+                    with open(infile, 'w') as h:
+                        h.write('')
+                content = []
+                
         elif isinstance(infile, (list, tuple)):
-            infile = list(infile)
-
+            content = list(infile)
+            
         elif isinstance(infile, dict):
             # initialise self
             # the Section class handles creating subsections
             if isinstance(infile, ConfigObj):
                 # get a copy of our ConfigObj
-                infile = infile.dict()
-
-            for entry in infile:
-                self[entry] = infile[entry]
+                def set_section(in_section, this_section):
+                    for entry in in_section.scalars:
+                        this_section[entry] = in_section[entry]
+                    for section in in_section.sections:
+                        this_section[section] = {}
+                        set_section(in_section[section], this_section[section])
+                set_section(infile, self)
+                
+            else:
+                for entry in infile:
+                    self[entry] = infile[entry]
             del self._errors
-
+            
             if configspec is not None:
                 self._handle_configspec(configspec)
             else:
                 self.configspec = None
             return
-
+        
         elif getattr(infile, 'read', MISSING) is not MISSING:
             # This supports file like objects
-            infile = infile.read() or []
+            content = infile.read() or []
             # needs splitting into lines - but needs doing *after* decoding
             # in case it's not an 8 bit encoding
         else:
             raise TypeError('infile must be a filename, file like object, or list of lines.')
 
-        # print("DEBUG: configobj cleaning infile BOM %s", infile)
-        if infile:
+        if content:
             # don't do it for the empty ConfigObj
-            infile = self._handle_bom(infile)
+            content = self._handle_bom(content)
             # infile is now *always* a list
             #
-            # if isinstance(infile, bytes):  # DEBUG This is when Python 3
-            #     print("DEBUG: infile is bytes")
-            #     infile = infile.decode()
-            #     infile.split('\n')
             # Set the newlines attribute (first line ending it finds)
             # and strip trailing '\n' or '\r' from lines
-            for line in infile:  # DEBUG
-                if (not line) or (line[-1] not in ('\r', '\n', '\r\n')):
+            for line in content:
+                if (not line) or (line[-1] not in ('\r', '\n')):
                     continue
                 for end in ('\r\n', '\n', '\r'):
                     if line.endswith(end):
@@ -1341,17 +1297,12 @@ class ConfigObj(Section):
                         break
                 break
 
-            infile = [line.rstrip(self.newlines) for line in infile]
-
-        infile = converttypes(infile)
-        # print("DEBUG: configobj before parsing %s\n" % infile)
-        # print("DEBUG: Before parsing Errors are: %s", self._errors)
-        self._parse(infile)
-        # print("DEBUG: configobj parsed infile keys %s" % self.keys())
-        # print("DEBUG: Errors are: %s", self._errors)
-        # print("DEBUG: ############################### BY PASS ERROR PARSER!!!!!!!!")
+        assert all(isinstance(line, six.string_types) for line in content), repr(content)
+        content = [line.rstrip('\r\n') for line in content]
+            
+        self._parse(content)
         # if we had any errors, now is the time to raise them
-        if self._errors:  # and False:
+        if self._errors:
             info = "at line %s." % self._errors[0].line_number
             if len(self._errors) > 1:
                 msg = "Parsing failed with several errors.\nFirst error %s" % info
@@ -1366,18 +1317,17 @@ class ConfigObj(Section):
             raise error
         # delete private attributes
         del self._errors
-
+        
         if configspec is None:
             self.configspec = None
         else:
             self._handle_configspec(configspec)
-
-        # print("DEBUG: configobj items from _load %s" % self.items())
-
+    
+    
     def _initialise(self, options=None):
         if options is None:
             options = OPTION_DEFAULTS
-
+            
         # initialise a few variables
         self.filename = None
         self._errors = []
@@ -1394,63 +1344,79 @@ class ConfigObj(Section):
         self.newlines = None
         self.write_empty_values = options['write_empty_values']
         self.unrepr = options['unrepr']
-
+        
         self.initial_comment = []
         self.final_comment = []
         self.configspec = None
-
+        
         if self._inspec:
             self.list_values = False
-
+        
         # Clear section attributes as well
         Section._initialise(self)
-
+        
+        
     def __repr__(self):
-        return ('ConfigObj({%s})' %
-                ', '.join([('%s: %s' % (repr(key), repr(self[key]))) for key in
-                           (self.scalars + self.sections)]))
-
+        def _getval(key):
+            try:
+                return self[key]
+            except MissingInterpolationOption:
+                return dict.__getitem__(self, key)
+        return ('ConfigObj({%s})' % 
+                ', '.join([('%s: %s' % (repr(key), repr(_getval(key)))) 
+                for key in (self.scalars + self.sections)]))
+    
+    
     def _handle_bom(self, infile):
         """
         Handle any BOM, and decode if necessary.
-
+        
         If an encoding is specified, that *must* be used - but the BOM should
         still be removed (and the BOM attribute set).
-
+        
         (If the encoding is wrongly specified, then a BOM for an alternative
         encoding won't be discovered or removed.)
-
+        
         If an encoding is not specified, UTF8 or UTF16 BOM will be detected and
         removed. The BOM attribute will be set. UTF16 will be decoded to
         unicode.
-
+        
         NOTE: This method must not be called with an empty ``infile``.
-
+        
         Specifying the *wrong* encoding is likely to cause a
         ``UnicodeDecodeError``.
-
+        
         ``infile`` must always be returned as a list of lines, but may be
         passed in as a single string.
         """
+
         if ((self.encoding is not None) and
             (self.encoding.lower() not in BOM_LIST)):
             # No need to check for a BOM
             # the encoding specified doesn't have one
             # just decode
-            # print("DEBUG: returning from no enconding defined")
             return self._decode(infile, self.encoding)
-
+        
         if isinstance(infile, (list, tuple)):
             line = infile[0]
         else:
             line = infile
+
+        if isinstance(line, six.text_type):
+            # it's already decoded and there's no need to do anything
+            # else, just use the _decode utility method to handle
+            # listifying appropriately
+            return self._decode(infile, self.encoding)
+
         if self.encoding is not None:
             # encoding explicitly supplied
             # And it could have an associated BOM
+            # TODO: if encoding is just UTF16 - we ought to check for both
+            # TODO: big endian and little endian versions.
             enc = BOM_LIST[self.encoding.lower()]
             if enc == 'utf_16':
                 # For UTF16 we try big endian and little endian
-                for BOM, (encoding, final_encoding) in BOMS.items():
+                for BOM, (encoding, final_encoding) in list(BOMS.items()):
                     if not final_encoding:
                         # skip UTF8
                         continue
@@ -1458,38 +1424,31 @@ class ConfigObj(Section):
                         ### BOM discovered
                         ##self.BOM = True
                         # Don't need to remove BOM
-                        # print("DEBUG: returning from enconding UTF-16")
                         return self._decode(infile, encoding)
-
+                    
                 # If we get this far, will *probably* raise a DecodeError
                 # As it doesn't appear to start with a BOM
-                # print("DEBUG: returning from enconding UTF-16, no BOM")
                 return self._decode(infile, self.encoding)
-
+            
             # Must be UTF8
             BOM = BOM_SET[enc]
             if not line.startswith(BOM):
-                # print("DEBUG: returning from enconding UTF-8, no BOM")
                 return self._decode(infile, self.encoding)
-
+            
             newline = line[len(BOM):]
-
+            
             # BOM removed
             if isinstance(infile, (list, tuple)):
                 infile[0] = newline
             else:
                 infile = newline
             self.BOM = True
-            # print("DEBUG: returning from enconding UTF-8, removed BOM")
             return self._decode(infile, self.encoding)
-
-        # DEBUG Just ignore BOM if using Python 3
-        # TODO fix code for Python 3
-        # if not PY3:
-        # print("DEBUG: entering no enconding defined")
+        
         # No encoding specified - so we need to check for UTF8/UTF16
-        for BOM, (encoding, final_encoding) in BOMS.items():
-            if not line.startswith(BOM):
+        for BOM, (encoding, final_encoding) in list(BOMS.items()):
+            if not isinstance(line, six.binary_type) or not line.startswith(BOM):
+                # didn't specify a BOM, or it's not a bytestring
                 continue
             else:
                 # BOM discovered
@@ -1503,129 +1462,135 @@ class ConfigObj(Section):
                         infile[0] = newline
                     else:
                         infile = newline
-                    # UTF8 - don't decode
-                    if isinstance(infile, basestring):
-                        # print("DEBUG: returning lines enconding UTF-8, w BOM")
+                    # UTF-8
+                    if isinstance(infile, six.text_type):
                         return infile.splitlines(True)
+                    elif isinstance(infile, six.binary_type):
+                        return infile.decode('utf-8').splitlines(True)
                     else:
-                        # print("DEBUG: returning str enconding UTF-8, w BOM")
-                        return infile
+                        return self._decode(infile, 'utf-8')
                 # UTF16 - have to decode
-                # print("DEBUG: returning from enconding UTF-16, w BOM")
                 return self._decode(infile, encoding)
+            
 
-        # No BOM discovered and no encoding specified, just return
-        if isinstance(infile, basestring):
-            # infile read from a file will be a single string
-            # print("DEBUG: returning str from list no enconding, no BOM")
-            return infile.splitlines(True)
-        if isinstance(infile, bytes):  # DEBUG Python 3
-            infile.decode()
-            return infile.splitlines(True)
-        # print("DEBUG: returning str from no enconding, no BOM, type %s" % type(infile))
-        return infile
+        if six.PY2 and isinstance(line, str):
+            # don't actually do any decoding, since we're on python 2 and
+            # returning a bytestring is fine
+            return self._decode(infile, None)
+        # No BOM discovered and no encoding specified, default to UTF-8
+        if isinstance(infile, six.binary_type):
+            return infile.decode('utf-8').splitlines(True)
+        else:
+            return self._decode(infile, 'utf-8')
+
 
     def _a_to_u(self, aString):
         """Decode ASCII strings to unicode if a self.encoding is specified."""
-        if self.encoding:
-            return aString.decode('ascii')
+        if isinstance(aString, six.binary_type) and self.encoding:
+            return aString.decode(self.encoding)
         else:
             return aString
+
 
     def _decode(self, infile, encoding):
         """
         Decode infile to unicode. Using the specified encoding.
-
+        
         if is a string, it also needs converting to a list.
         """
-        if isinstance(infile, basestring):
-            # can't be unicode
+        if isinstance(infile, six.string_types):
+            return infile.splitlines(True)
+        if isinstance(infile, six.binary_type):
             # NOTE: Could raise a ``UnicodeDecodeError``
-            return infile.decode(encoding).splitlines(True)
-        for i, line in enumerate(infile):
-            if not isinstance(line, unicode):
-                # NOTE: The isinstance test here handles mixed lists of unicode/string
-                # NOTE: But the decode will break on any non-string values
-                # NOTE: Or could raise a ``UnicodeDecodeError``
-                infile[i] = line.decode(encoding)
+            if encoding:
+                return infile.decode(encoding).splitlines(True)
+            else:
+                return infile.splitlines(True)
+
+        if encoding:
+            for i, line in enumerate(infile):
+                if isinstance(line, six.binary_type):
+                    # NOTE: The isinstance test here handles mixed lists of unicode/string
+                    # NOTE: But the decode will break on any non-string values
+                    # NOTE: Or could raise a ``UnicodeDecodeError``
+                    infile[i] = line.decode(encoding)
         return infile
+
 
     def _decode_element(self, line):
         """Decode element to unicode if necessary."""
-        if not self.encoding:
-            return line
-        if isinstance(line, str) and self.default_encoding:
+        if isinstance(line, six.binary_type) and self.default_encoding:
             return line.decode(self.default_encoding)
-        return line
+        else:
+            return line
 
+
+    # TODO: this may need to be modified
     def _str(self, value):
         """
         Used by ``stringify`` within validate, to turn non-string values
         into strings.
         """
-        if not isinstance(value, basestring):
+        if not isinstance(value, six.string_types):
+            # intentially 'str' because it's just whatever the "normal"
+            # string type is for the python version we're dealing with
             return str(value)
         else:
             return value
+
 
     def _parse(self, infile):
         """Actually parse the config file."""
         temp_list_values = self.list_values
         if self.unrepr:
             self.list_values = False
-
-        # print("DEBUG: _parser self.list_values: %s\n", self.list_values)
+            
         comment_list = []
         done_start = False
         this_section = self
         maxline = len(infile) - 1
         cur_index = -1
         reset_comment = False
-
+        
         while cur_index < maxline:
             if reset_comment:
                 comment_list = []
             cur_index += 1
             line = infile[cur_index]
             sline = line.strip()
-            # print("DEBUG: _parser init cycles: line[%d]= %s\n", (cur_index,sline))
-            # DEBUG if PY3: ('#'.encode('UTF-8'))
             # do we have anything on the line ?
-            if not sline or sline.startswith('#'): # .encode('UTF-8')):
+            if not sline or sline.startswith('#'):
                 reset_comment = False
                 comment_list.append(line)
                 continue
-
+            
             if not done_start:
                 # preserve initial comment
                 self.initial_comment = comment_list
                 comment_list = []
                 done_start = True
-
+                
             reset_comment = True
             # first we check if it's a section marker
-            mat = self._sectionmarker.match(str(line))
-            # print("<<<<<<<<\nDEBUG: _parser section mat: %s\n" % (mat))
+            mat = self._sectionmarker.match(line)
             if mat is not None:
                 # is a section line
                 (indent, sect_open, sect_name, sect_close, comment) = mat.groups()
-                # print("========\nDEBUG: _parser SECTION: %s>%s>%s>%s>%s\n" %
-                #      (indent, sect_open, sect_name, sect_close, comment))
                 if indent and (self.indent_type is None):
                     self.indent_type = indent
                 cur_depth = sect_open.count('[')
                 if cur_depth != sect_close.count(']'):
-                    self._handle_error("Cannot compute the section depth at line %s.",
+                    self._handle_error("Cannot compute the section depth",
                                        NestingError, infile, cur_index)
                     continue
-
+                
                 if cur_depth < this_section.depth:
                     # the new section is dropping back to a previous level
                     try:
                         parent = self._match_depth(this_section,
                                                    cur_depth).parent
                     except SyntaxError:
-                        self._handle_error("Cannot compute nesting level at line %s.",
+                        self._handle_error("Cannot compute nesting level",
                                            NestingError, infile, cur_index)
                         continue
                 elif cur_depth == this_section.depth:
@@ -1635,21 +1600,16 @@ class ConfigObj(Section):
                     # the new section is a child the current section
                     parent = this_section
                 else:
-                    self._handle_error("Section too nested at line %s.",
+                    self._handle_error("Section too nested",
                                        NestingError, infile, cur_index)
-
+                    continue
+                    
                 sect_name = self._unquote(sect_name)
-                if PY2:
-                    if parent.has_key(sect_name):
-                        self._handle_error('Duplicate section name at line %s.',
-                                           DuplicateError, infile, cur_index)
-                        continue
-                elif PY3:
-                    if sect_name in parent:
-                        self._handle_error('Duplicate section name at line %s.',
-                                           DuplicateError, infile, cur_index)
-                        continue
-
+                if sect_name in parent:
+                    self._handle_error('Duplicate section name',
+                                       DuplicateError, infile, cur_index)
+                    continue
+                
                 # create the new section
                 this_section = Section(
                     parent,
@@ -1663,30 +1623,25 @@ class ConfigObj(Section):
             #
             # it's not a section marker,
             # so it should be a valid ``key = value`` line
-            mat = self._keyword.match(str(line))
+            mat = self._keyword.match(line)
             if mat is None:
-                # it neither matched as a keyword
-                # or a section marker
                 self._handle_error(
-                    'Invalid line at line "%s".',
+                    'Invalid line ({0!r}) (matched as neither section nor keyword)'.format(line),
                     ParseError, infile, cur_index)
             else:
                 # is a keyword value
                 # value will include any inline comment
                 (indent, key, value) = mat.groups()
-                # print("<<<<<<<<\nDEBUG: _parser keyword mat: %s\n" % (mat))
                 if indent and (self.indent_type is None):
                     self.indent_type = indent
                 # check for a multiline value
                 if value[:3] in ['"""', "'''"]:
-                    # print("DEBUG: _parser multiline value: %s\n" % value)
                     try:
-                        (value, comment, cur_index) = self._multiline(
+                        value, comment, cur_index = self._multiline(
                             value, infile, cur_index, maxline)
-                    except SyntaxError as s:
-                        # print("DEBUG: _parser multiline value Syntaxerror: %s\n", str(s))
+                    except SyntaxError:
                         self._handle_error(
-                            'Parse error in value at line %s.',
+                            'Parse error in multiline value',
                             ParseError, infile, cur_index)
                         continue
                     else:
@@ -1696,27 +1651,24 @@ class ConfigObj(Section):
                                 value = unrepr(value)
                             except Exception as e:
                                 if type(e) == UnknownType:
-                                    msg = 'Unknown name or type in value at line %s.'
+                                    msg = 'Unknown name or type in value'
                                 else:
-                                    msg = 'Parse error in value at line %s.'
+                                    msg = 'Parse error from unrepr-ing multiline value'
                                 self._handle_error(msg, UnreprError, infile,
                                     cur_index)
                                 continue
                 else:
-                    # print("DEBUG: _parser not multiline value: %s\n", value)
                     if self.unrepr:
                         comment = ''
                         try:
-                            # print("DEBUG: _parser before unrepr? value: %s\n", value)
                             value = unrepr(value)
-                        except Exception as e: #  Exception as e:
-                            # print("DEBUG: _parser exception at unrepr? error: %s\n", str(e))
+                        except Exception as e:
                             if isinstance(e, UnknownType):
-                                msg = 'Unknown name or type in value at line %s.'
+                                msg = 'Unknown name or type in value'
                             else:
-                                msg = 'Parse error in value at line %s.'
-                            print(str(UnreprError), msg % cur_index)
-                            #self._handle_error(msg, UnreprError, infile,cur_index)
+                                msg = 'Parse error from unrepr-ing value'
+                            self._handle_error(msg, UnreprError, infile,
+                                cur_index)
                             continue
                     else:
                         # extract comment and lists
@@ -1724,23 +1676,16 @@ class ConfigObj(Section):
                             (value, comment) = self._handle_value(value)
                         except SyntaxError:
                             self._handle_error(
-                                'Parse error in value at line %s.',
+                                'Parse error in value',
                                 ParseError, infile, cur_index)
                             continue
                 #
                 key = self._unquote(key)
-                if PY2:
-                    if this_section.has_key(key):
-                        self._handle_error(
-                            'Duplicate keyword name at line %s.',
-                            DuplicateError, infile, cur_index)
-                        continue
-                elif PY3:
-                    if key in this_section:
-                        self._handle_error(
-                            'Duplicate keyword name at line %s.',
-                            DuplicateError, infile, cur_index)
-                        continue
+                if key in this_section:
+                    self._handle_error(
+                        'Duplicate keyword name',
+                        DuplicateError, infile, cur_index)
+                    continue
                 # add the key.
                 # we set unrepr because if we have got this far we will never
                 # be creating a new section
@@ -1760,11 +1705,12 @@ class ConfigObj(Section):
             self.final_comment = comment_list
         self.list_values = temp_list_values
 
+
     def _match_depth(self, sect, depth):
         """
         Given a section and a depth level, walk back through the sections
         parents to see if the depth level matches a previous section.
-
+        
         Return a reference to the right section,
         or raise a SyntaxError.
         """
@@ -1778,16 +1724,17 @@ class ConfigObj(Section):
         # shouldn't get here
         raise SyntaxError()
 
+
     def _handle_error(self, text, ErrorClass, infile, cur_index):
         """
         Handle an error according to the error settings.
-
+        
         Either raise the error or store it.
         The error will have occured at ``cur_index``
         """
         line = infile[cur_index]
         cur_index += 1
-        message = text % cur_index
+        message = '{0} at line {1}.'.format(text, cur_index)
         error = ErrorClass(message, cur_index, line)
         if self.raise_errors:
             # raise the error - parsing stops here
@@ -1796,28 +1743,33 @@ class ConfigObj(Section):
         # reraise when parsing has finished
         self._errors.append(error)
 
+
     def _unquote(self, value):
         """Return an unquoted version of a value"""
+        if not value:
+            # should only happen during parsing of lists
+            raise SyntaxError
         if (value[0] == value[-1]) and (value[0] in ('"', "'")):
             value = value[1:-1]
         return value
 
+
     def _quote(self, value, multiline=True):
         """
         Return a safely quoted version of a value.
-
+        
         Raise a ConfigObjError if the value cannot be safely quoted.
         If multiline is ``True`` (default) then use triple quotes
         if necessary.
-
+        
         * Don't quote values that don't need it.
         * Recursively quote members of a list and return a comma joined list.
         * Multiline is ``False`` for lists.
         * Obey list syntax for empty and single member lists.
-
+        
         If ``list_values=False`` then the value is only quoted if it contains
         a ``\\n`` (is multiline) or '#'.
-
+        
         If ``write_empty_values`` is set, and the value is an empty string, it
         won't be quoted.
         """
@@ -1825,7 +1777,7 @@ class ConfigObj(Section):
             # Only if multiline is set, so that it is used for values not
             # keys, and not values that are part of a list
             return ''
-
+        
         if multiline and isinstance(value, (list, tuple)):
             if not value:
                 return ','
@@ -1833,20 +1785,22 @@ class ConfigObj(Section):
                 return self._quote(value[0], multiline=False) + ','
             return ', '.join([self._quote(val, multiline=False)
                 for val in value])
-        if not isinstance(value, basestring):
+        if not isinstance(value, six.string_types):
             if self.stringify:
+                # intentially 'str' because it's just whatever the "normal"
+                # string type is for the python version we're dealing with
                 value = str(value)
             else:
                 raise TypeError('Value "%s" is not a string.' % value)
 
         if not value:
             return '""'
-
+        
         no_lists_no_quotes = not self.list_values and '\n' not in value and '#' not in value
         need_triple = multiline and ((("'" in value) and ('"' in value)) or ('\n' in value ))
         hash_triple_quote = multiline and not need_triple and ("'" in value) and ('"' in value) and ('#' in value)
         check_for_single = (no_lists_no_quotes or not need_triple) and not hash_triple_quote
-
+        
         if check_for_single:
             if not self.list_values:
                 # we don't quote if ``list_values=False``
@@ -1864,12 +1818,13 @@ class ConfigObj(Section):
         else:
             # if value has '\n' or "'" *and* '"', it will need triple quotes
             quot = self._get_triple_quote(value)
-
+        
         if quot == noquot and '#' in value and self.list_values:
             quot = self._get_single_quote(value)
-
+                
         return quot % value
-
+    
+    
     def _get_single_quote(self, value):
         if ("'" in value) and ('"' in value):
             raise ConfigObjError('Value "%s" cannot be safely quoted.' % value)
@@ -1878,15 +1833,17 @@ class ConfigObj(Section):
         else:
             quot = dquot
         return quot
-
+    
+    
     def _get_triple_quote(self, value):
         if (value.find('"""') != -1) and (value.find("'''") != -1):
             raise ConfigObjError('Value "%s" cannot be safely quoted.' % value)
         if value.find('"""') == -1:
             quot = tdquot
         else:
-            quot = tsquot
+            quot = tsquot 
         return quot
+
 
     def _handle_value(self, value):
         """
@@ -1921,6 +1878,8 @@ class ConfigObj(Section):
         if single is not None:
             # handle empty values
             if list_values and not single:
+                # FIXME: the '' is a workaround because our regex now matches
+                #   '' at the end of a list if it has a trailing comma
                 single = None
             else:
                 single = single or '""'
@@ -1933,6 +1892,7 @@ class ConfigObj(Section):
         if single is not None:
             the_list += [single]
         return (the_list, comment)
+
 
     def _multiline(self, value, infile, cur_index, maxline):
         """Extract the value, where we are in a multiline situation."""
@@ -1968,8 +1928,11 @@ class ConfigObj(Section):
         (value, comment) = mat.groups()
         return (newvalue + value, comment, cur_index)
 
+
     def _handle_configspec(self, configspec):
         """Parse the configspec."""
+        # FIXME: Should we check that the configspec was created with the 
+        #        correct settings ? (i.e. ``list_values=False``)
         if not isinstance(configspec, ConfigObj):
             try:
                 configspec = ConfigObj(configspec,
@@ -1977,12 +1940,16 @@ class ConfigObj(Section):
                                        file_error=True,
                                        _inspec=True)
             except ConfigObjError as e:
+                # FIXME: Should these errors have a reference
+                #        to the already parsed ConfigObj ?
                 raise ConfigspecError('Parsing configspec failed: %s' % e)
             except IOError as e:
                 raise IOError('Reading configspec failed: %s' % e)
-
+        
         self.configspec = configspec
+            
 
+        
     def _set_configspec(self, section, copy):
         """
         Called by validate. Handles setting the configspec on subsections
@@ -1994,20 +1961,22 @@ class ConfigObj(Section):
             for entry in section.sections:
                 if entry not in configspec:
                     section[entry].configspec = many
-
+                    
         for entry in configspec.sections:
             if entry == '__many__':
                 continue
             if entry not in section:
                 section[entry] = {}
+                section[entry]._created = True
                 if copy:
                     # copy comments
                     section.comments[entry] = configspec.comments.get(entry, [])
                     section.inline_comments[entry] = configspec.inline_comments.get(entry, '')
-
+                
             # Could be a scalar when we expect a section
             if isinstance(section[entry], Section):
                 section[entry].configspec = configspec[entry]
+                        
 
     def _write_line(self, indent_string, entry, this_entry, comment):
         """Write an individual line, for the write method"""
@@ -2022,6 +1991,7 @@ class ConfigObj(Section):
                                val,
                                self._decode_element(comment))
 
+
     def _write_marker(self, indent_string, depth, entry, comment):
         """Write a section marker line"""
         return '%s%s%s%s%s' % (indent_string,
@@ -2029,6 +1999,7 @@ class ConfigObj(Section):
                                self._quote(self._decode_element(entry), multiline=False),
                                self._a_to_u(']' * depth),
                                self._decode_element(comment))
+
 
     def _handle_comment(self, comment):
         """Deal with a comment."""
@@ -2039,23 +2010,28 @@ class ConfigObj(Section):
             start += self._a_to_u(' # ')
         return (start + comment)
 
+
     # Public methods
 
     def write(self, outfile=None, section=None):
         """
         Write the current ConfigObj as a file
-
+        
+        tekNico: FIXME: use StringIO instead of real files
+        
         >>> filename = a.filename
         >>> a.filename = 'test.ini'
         >>> a.write()
         >>> a.filename = filename
         >>> a == ConfigObj('test.ini', raise_errors=True)
         1
+        >>> import os
+        >>> os.remove('test.ini')
         """
         if self.indent_type is None:
             # this can be true if initialised from a dictionary
             self.indent_type = DEFAULT_INDENT_TYPE
-
+            
         out = []
         cs = self._a_to_u('#')
         csp = self._a_to_u('# ')
@@ -2069,7 +2045,7 @@ class ConfigObj(Section):
                 if stripped_line and not stripped_line.startswith(cs):
                     line = csp + line
                 out.append(line)
-
+                
         indent_string = self.indent_type * section.depth
         for entry in (section.scalars + section.sections):
             if entry in section.defaults:
@@ -2082,8 +2058,8 @@ class ConfigObj(Section):
                 out.append(indent_string + comment_line)
             this_entry = section[entry]
             comment = self._handle_comment(section.inline_comments[entry])
-
-            if isinstance(this_entry, dict):
+            
+            if isinstance(this_entry, Section):
                 # a section
                 out.append(self._write_marker(
                     indent_string,
@@ -2097,7 +2073,7 @@ class ConfigObj(Section):
                     entry,
                     this_entry,
                     comment))
-
+                
         if section is self:
             for line in self.final_comment:
                 line = self._decode_element(line)
@@ -2106,10 +2082,10 @@ class ConfigObj(Section):
                     line = csp + line
                 out.append(line)
             self.interpolation = int_val
-
+            
         if section is not self:
             return out
-
+        
         if (self.filename is None) and (outfile is None):
             # output a list of lines
             # might need to encode
@@ -2123,64 +2099,67 @@ class ConfigObj(Section):
                     out.append('')
                 out[0] = BOM_UTF8 + out[0]
             return out
-
+        
         # Turn the list to a string, joined with correct newlines
         newline = self.newlines or os.linesep
+        if (getattr(outfile, 'mode', None) is not None and outfile.mode == 'w'
+            and sys.platform == 'win32' and newline == '\r\n'):
+            # Windows specific hack to avoid writing '\r\r\n'
+            newline = '\n'
         output = self._a_to_u(newline).join(out)
-        if self.encoding:
-            output = output.encode(self.encoding)
-        if self.BOM and ((self.encoding is None) or match_utf8(self.encoding)):
-            # Add the UTF8 BOM
-            output = BOM_UTF8 + output
-
         if not output.endswith(newline):
             output += newline
-        if outfile is not None:
-            if PY2:
-                outfile.write(unicode(output))  # DEBUG
-            elif PY3:
-                outfile.write(output.encode('UTF-8'))
-            outfile.close()
+
+        if isinstance(output, six.binary_type):
+            output_bytes = output
         else:
-            h = open(self.filename, 'wb')
-            if PY2:
-                h.write(unicode(output))  # DEBUG
-            elif PY3:
-                h.write(output.encode('UTF-8'))
-            h.close()
+            output_bytes = output.encode(self.encoding or
+                                         self.default_encoding or
+                                         'utf-8')  # DEBUG was 'ascii'
+
+
+        if self.BOM and ((self.encoding is None) or match_utf8(self.encoding)):
+            # Add the UTF8 BOM
+            output_bytes = BOM_UTF8 + output_bytes
+
+        if outfile is not None:
+            outfile.write(output_bytes)
+        else:
+            with open(self.filename, 'wb') as h:
+                h.write(output_bytes)
 
     def validate(self, validator, preserve_errors=False, copy=False,
                  section=None):
         """
         Test the ConfigObj against a configspec.
-
+        
         It uses the ``validator`` object from *validate.py*.
-
+        
         To run ``validate`` on the current ConfigObj, call: ::
-
+        
             test = config.validate(validator)
-
+        
         (Normally having previously passed in the configspec when the ConfigObj
         was created - you can dynamically assign a dictionary of checks to the
         ``configspec`` attribute of a section though).
-
+        
         It returns ``True`` if everything passes, or a dictionary of
         pass/fails (True/False). If every member of a subsection passes, it
         will just have the value ``True``. (It also returns ``False`` if all
         members fail).
-
+        
         In addition, it converts the values from strings to their native
         types if their checks pass (and ``stringify`` is set).
-
+        
         If ``preserve_errors`` is ``True`` (``False`` is default) then instead
         of a marking a fail with a ``False``, it will preserve the actual
         exception object. This can contain info about the reason for failure.
         For example the ``VdtValueTooSmallError`` indicates that the value
         supplied was too small. If a value (or section) is missing it will
         still be marked as ``False``.
-
+        
         You must have the validate module to use ``preserve_errors=True``.
-
+        
         You can then use the ``flatten_errors`` function to turn your nested
         results dictionary into a flattened list of failures - useful for
         displaying meaningful error messages.
@@ -2191,9 +2170,9 @@ class ConfigObj(Section):
             if preserve_errors:
                 # We do this once to remove a top level dependency on the validate module
                 # Which makes importing configobj faster
-                from validate import VdtMissingValue  #@UnresolvedImport
+                from validate import VdtMissingValue
                 self._vdtMissingValue = VdtMissingValue
-
+                
             section = self
 
             if copy:
@@ -2203,12 +2182,23 @@ class ConfigObj(Section):
                 section.BOM = section.configspec.BOM
                 section.newlines = section.configspec.newlines
                 section.indent_type = section.configspec.indent_type
-
+            
         #
+        # section.default_values.clear() #??
         configspec = section.configspec
         self._set_configspec(section, copy)
 
+        
         def validate_entry(entry, spec, val, missing, ret_true, ret_false):
+            section.default_values.pop(entry, None)
+                
+            try:
+                section.default_values[entry] = validator.get_default_value(configspec[entry])
+            except (KeyError, AttributeError, validator.baseErrorClass):
+                # No default, bad default or validator has no 'get_default_value'
+                # (e.g. SimpleVal)
+                pass
+            
             try:
                 check = validator.check(spec,
                                         val,
@@ -2223,21 +2213,6 @@ class ConfigObj(Section):
                     ret_false = False
                 ret_true = False
             else:
-                try:
-                    section.default_values.pop(entry, None)
-                except AttributeError:
-                    # For Python 2.2 compatibility
-                    try:
-                        del section.default_values[entry]
-                    except KeyError:
-                        pass
-
-                try:
-                    section.default_values[entry] = validator.get_default_value(configspec[entry])
-                except (KeyError, AttributeError):
-                    # No default or validator has no 'get_default_value' (e.g. SimpleVal)
-                    pass
-
                 ret_false = False
                 out[entry] = True
                 if self.stringify or missing:
@@ -2257,27 +2232,26 @@ class ConfigObj(Section):
                 if not copy and missing and entry not in section.defaults:
                     section.defaults.append(entry)
             return ret_true, ret_false
-
+        
         #
         out = {}
         ret_true = True
         ret_false = True
-
+        
         unvalidated = [k for k in section.scalars if k not in configspec]
-        incorrect_sections = [k for k in configspec.sections if k in section.scalars]
+        incorrect_sections = [k for k in configspec.sections if k in section.scalars]        
         incorrect_scalars = [k for k in configspec.scalars if k in section.sections]
-
+        
         for entry in configspec.scalars:
             if entry in ('__many__', '___many___'):
                 # reserved names
                 continue
-
             if (not entry in section.scalars) or (entry in section.defaults):
                 # missing entries
                 # or entries from defaults
                 missing = True
                 val = None
-                if copy and not entry in section.scalars:
+                if copy and entry not in section.scalars:
                     # copy comments
                     section.comments[entry] = (
                         configspec.comments.get(entry, []))
@@ -2287,21 +2261,22 @@ class ConfigObj(Section):
             else:
                 missing = False
                 val = section[entry]
-
-            ret_true, ret_false = validate_entry(entry, configspec[entry], val,
+            
+            ret_true, ret_false = validate_entry(entry, configspec[entry], val, 
                                                  missing, ret_true, ret_false)
-
+        
         many = None
         if '__many__' in configspec.scalars:
             many = configspec['__many__']
         elif '___many___' in configspec.scalars:
             many = configspec['___many___']
-
+        
         if many is not None:
             for entry in unvalidated:
                 val = section[entry]
                 ret_true, ret_false = validate_entry(entry, many, val, False,
                                                      ret_true, ret_false)
+            unvalidated = []
 
         for entry in incorrect_scalars:
             ret_true = False
@@ -2319,13 +2294,15 @@ class ConfigObj(Section):
                 ret_false = False
                 msg = 'Section %r was provided as a single value' % entry
                 out[entry] = validator.baseErrorClass(msg)
-
+                
         # Missing sections will have been created as empty ones when the
         # configspec was read.
         for entry in section.sections:
+            # FIXME: this means DEFAULT is not copied in copy mode
             if section is self and entry == 'DEFAULT':
                 continue
             if section[entry].configspec is None:
+                unvalidated.append(entry)
                 continue
             if copy:
                 section.comments[entry] = configspec.comments.get(entry, [])
@@ -2338,30 +2315,45 @@ class ConfigObj(Section):
                 ret_false = False
             else:
                 ret_true = False
-                ret_false = False
+        
+        section.extra_values = unvalidated
+        if preserve_errors and not section._created:
+            # If the section wasn't created (i.e. it wasn't missing)
+            # then we can't return False, we need to preserve errors
+            ret_false = False
         #
+        if ret_false and preserve_errors and out:
+            # If we are preserving errors, but all
+            # the failures are from missing sections / values
+            # then we can return False. Otherwise there is a
+            # real failure that we need to preserve.
+            ret_false = not any(out.values())
         if ret_true:
             return True
         elif ret_false:
             return False
         return out
 
+
     def reset(self):
         """Clear ConfigObj instance and restore to 'freshly created' state."""
         self.clear()
         self._initialise()
+        # FIXME: Should be done by '_initialise', but ConfigObj constructor (and reload)
+        #        requires an empty dictionary
         self.configspec = None
         # Just to be sure ;-)
         self._original_configspec = None
-
+        
+        
     def reload(self):
         """
         Reload a ConfigObj from file.
-
+        
         This method raises a ``ReloadError`` if the ConfigObj doesn't have
         a filename attribute pointing to a file.
         """
-        if not isinstance(self.filename, basestring):
+        if not isinstance(self.filename, six.string_types):
             raise ReloadError()
 
         filename = self.filename
@@ -2370,30 +2362,31 @@ class ConfigObj(Section):
             if entry == 'configspec':
                 continue
             current_options[entry] = getattr(self, entry)
-
+            
         configspec = self._original_configspec
         current_options['configspec'] = configspec
-
+            
         self.clear()
         self._initialise(current_options)
         self._load(filename, configspec)
+        
 
 
 class SimpleVal(object):
     """
     A simple validator.
     Can be used to check that all members expected are present.
-
+    
     To use it, provide a configspec with all your members in (the value given
     will be ignored). Pass an instance of ``SimpleVal`` to the ``validate``
     method of your ``ConfigObj``. ``validate`` will return ``True`` if all
     members are present, or a dictionary with True/False meaning
     present/missing. (Whole missing sections will be replaced with ``False``)
     """
-
+    
     def __init__(self):
         self.baseErrorClass = ConfigObjError
-
+    
     def check(self, check, member, missing=False):
         """A dummy check method, always returns the value unchanged."""
         if missing:
@@ -2401,116 +2394,50 @@ class SimpleVal(object):
         return member
 
 
-# Check / processing functions for options
 def flatten_errors(cfg, res, levels=None, results=None):
     """
     An example function that will turn a nested dictionary of results
     (as returned by ``ConfigObj.validate``) into a flat list.
-
+    
     ``cfg`` is the ConfigObj instance being checked, ``res`` is the results
     dictionary returned by ``validate``.
-
+    
     (This is a recursive function, so you shouldn't use the ``levels`` or
     ``results`` arguments - they are used by the function.)
-
-    Returns a list of keys that failed. Each member of the list is a tuple :
-
-    ::
-
+    
+    Returns a list of keys that failed. Each member of the list is a tuple::
+    
         ([list of sections...], key, result)
-
+    
     If ``validate`` was called with ``preserve_errors=False`` (the default)
     then ``result`` will always be ``False``.
 
     *list of sections* is a flattened list of sections that the key was found
     in.
-
+    
     If the section was missing (or a section was expected and a scalar provided
     - or vice-versa) then key will be ``None``.
-
+    
     If the value (or section) was missing then ``result`` will be ``False``.
-
+    
     If ``validate`` was called with ``preserve_errors=True`` and a value
     was present, but failed the check, then ``result`` will be the exception
     object returned. You can use this as a string that describes the failure.
-
+    
     For example *The value "3" is of the wrong type*.
-
-    >>> import validate
-    >>> vtor = validate.Validator()
-    >>> my_ini = '''
-    ...     option1 = True
-    ...     [section1]
-    ...     option1 = True
-    ...     [section2]
-    ...     another_option = Probably
-    ...     [section3]
-    ...     another_option = True
-    ...     [[section3b]]
-    ...     value = 3
-    ...     value2 = a
-    ...     value3 = 11
-    ...     '''
-    >>> my_cfg = '''
-    ...     option1 = boolean()
-    ...     option2 = boolean()
-    ...     option3 = boolean(default=Bad_value)
-    ...     [section1]
-    ...     option1 = boolean()
-    ...     option2 = boolean()
-    ...     option3 = boolean(default=Bad_value)
-    ...     [section2]
-    ...     another_option = boolean()
-    ...     [section3]
-    ...     another_option = boolean()
-    ...     [[section3b]]
-    ...     value = integer
-    ...     value2 = integer
-    ...     value3 = integer(0, 10)
-    ...         [[[section3b-sub]]]
-    ...         value = string
-    ...     [section4]
-    ...     another_option = boolean()
-    ...     '''
-    >>> cs = my_cfg.split('\\n')
-    >>> ini = my_ini.split('\\n')
-    >>> cfg = ConfigObj(ini, configspec=cs)
-    >>> res = cfg.validate(vtor, preserve_errors=True)
-    >>> errors = []
-    >>> for entry in flatten_errors(cfg, res):
-    ...     section_list, key, error = entry
-    ...     section_list.insert(0, '[root]')
-    ...     if key is not None:
-    ...        section_list.append(key)
-    ...     else:
-    ...         section_list.append('[missing]')
-    ...     section_string = ', '.join(section_list)
-    ...     errors.append((section_string, ' = ', error))
-    >>> errors.sort()
-    >>> for entry in errors:
-    ...     print(entry[0], entry[1], (entry[2] or 0))
-    [root], option2  =  0
-    [root], option3  =  the value "Bad_value" is of the wrong type.
-    [root], section1, option2  =  0
-    [root], section1, option3  =  the value "Bad_value" is of the wrong type.
-    [root], section2, another_option  =  the value "Probably" is of the wrong type.
-    [root], section3, section3b, section3b-sub, [missing]  =  0
-    [root], section3, section3b, value2  =  the value "a" is of the wrong type.
-    [root], section3, section3b, value3  =  the value "11" is too big.
-    [root], section4, [missing]  =  0
     """
     if levels is None:
         # first time called
         levels = []
         results = []
-    if res is True:
-        return results
-    if res is False or isinstance(res, Exception):
+    if res == True:
+        return sorted(results)
+    if res == False or isinstance(res, Exception):
         results.append((levels[:], None, res))
         if levels:
             levels.pop()
-        return results
-    for (key, val) in res.items():
+        return sorted(results)
+    for (key, val) in list(res.items()):
         if val == True:
             continue
         if isinstance(cfg.get(key), dict):
@@ -2524,7 +2451,33 @@ def flatten_errors(cfg, res, levels=None, results=None):
     if levels:
         levels.pop()
     #
-    return results
+    return sorted(results)
+
+
+def get_extra_values(conf, _prepend=()):
+    """
+    Find all the values and sections not in the configspec from a validated
+    ConfigObj.
+    
+    ``get_extra_values`` returns a list of tuples where each tuple represents
+    either an extra section, or an extra value.
+    
+    The tuples contain two values, a tuple representing the section the value 
+    is in and the name of the extra values. For extra values in the top level
+    section the first member will be an empty tuple. For values in the 'foo'
+    section the first member will be ``('foo',)``. For members in the 'bar'
+    subsection of the 'foo' section the first member will be ``('foo', 'bar')``.
+    
+    NOTE: If you call ``get_extra_values`` on a ConfigObj instance that hasn't
+    been validated it will return an empty list.
+    """
+    out = []
+    
+    out.extend([(_prepend, name) for name in conf.extra_values])
+    for name in conf.sections:
+        if name not in conf.extra_values:
+            out.extend(get_extra_values(conf[name], _prepend + (name,)))
+    return out
 
 
 """*A programming language is a medium of expression.* - Paul Graham"""

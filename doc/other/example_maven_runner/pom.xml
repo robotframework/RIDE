@@ -20,7 +20,7 @@
 					<plugin>
 						<groupId>org.robotframework</groupId>
 						<artifactId>robotframework-maven-plugin</artifactId>
-						<version>1.5.1</version>
+						<version>1.6.0</version>
 						<executions>
 							<execution>
 								<phase>integration-test</phase>
@@ -47,7 +47,7 @@
 		<dependency>
 			<groupId>com.github.hi-fi</groupId>
 			<artifactId>robotframework-seleniumlibrary</artifactId>
-			<version>3.141.59.2</version>
+			<version>3.141.59.26535</version>
 		</dependency>
 	</dependencies>
 </project>

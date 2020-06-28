@@ -55,8 +55,9 @@ class ParserLogPlugin(Plugin):
                 os.path.join(tempfile.gettempdir(), '*-ride_parser.log')):
             try:
                 os.remove(fname)
-            except OSError or IOError as e:
-                sys.stderr.write("{}".format(e))
+            except OSError or IOError or PermissionError as e:
+                sys.stderr.write(f"Removing old *-ride_parser.log files failed with: {repr(e)}\n")
+            finally:
                 pass
 
     @property
@@ -101,8 +102,6 @@ class ParserLogPlugin(Plugin):
             self.notebook.SetPageTextColour(self.notebook.GetPageCount()-1, wx.Colour(255, 165, 0))
             self._panel.update_log()
             self.register_shortcut('CtrlCmd-C', lambda e: self._panel.Copy())
-            self.register_shortcut(
-                 'CtrlCmd-A', lambda e: self._panel.SelectAll())
         if show_tab:
             self.notebook.show_tab(self._panel)
 
@@ -111,7 +110,8 @@ class _LogWindow(wx.Panel):
 
     def __init__(self, notebook, log):
         wx.Panel.__init__(self, notebook)
-        self._output = wx.TextCtrl(self, style=wx.TE_READONLY | wx.TE_MULTILINE)
+        self._output = wx.TextCtrl(self, style=wx.TE_READONLY | wx.TE_MULTILINE | wx.TE_NOHIDESEL)
+        self._output.Bind(wx.EVT_KEY_DOWN, self.OnKeyDown)
         self._log = log
         self._notebook = notebook
         self._add_to_notebook(notebook)
@@ -141,8 +141,16 @@ class _LogWindow(wx.Panel):
     def OnSize(self, evt):
         self._output.SetSize(self.Size)
 
+    def OnKeyDown(self, event):
+        keycode = event.GetKeyCode()
+
+        if event.ControlDown() and keycode == ord('A'):
+            self.SelectAll()
+        else:
+            event.Skip()
+
     def Copy(self):
         pass
 
     def SelectAll(self):
-        pass
+        self._output.SetSelection(-1, -1)

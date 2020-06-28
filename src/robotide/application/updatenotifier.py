@@ -21,18 +21,12 @@ from robotide.utils.versioncomparator import cmp_versions
 from robotide.widgets.button import ButtonWithHandler
 
 import time
-try:
-    import urllib2
-except ImportError:  # py3
-    import urllib as urllib2
-try:
-    import xmlrpclib
-except ImportError:  # py3
-    import xmlrpc
+import urllib.request as urllib2
+import xmlrpc.client as xmlrpclib
 import robotide.version as version
 
-_CHECK_FOR_UPDATES_SETTING = 'check for updates'
-_LAST_UPDATE_CHECK_SETTING = 'last update check'
+_CHECK_FOR_UPDATES_SETTING = "check for updates"
+_LAST_UPDATE_CHECK_SETTING = "last update check"
 
 class UpdateNotifierController(object):
 
@@ -75,8 +69,13 @@ class UpdateNotifierController(object):
         return self._get_response(('robotframework-ride', version), 'release_data')['download_url']
 
     def _get_response(self, params, method):
-        req = urllib2.Request('https://pypi.python.org/pypi', xmlrpclib.dumps(params, method), {'Content-Type':'text/xml'})
-        return xmlrpclib.loads(urllib2.urlopen(req, timeout=1).read())[0][0]
+        xmlparm = xmlrpclib.dumps(params, method)
+        req = urllib2.Request('https://pypi.python.org/pypi',
+                              xmlparm.encode('utf-8'),
+                              {'Content-Type':'text/xml'})
+        data = urllib2.urlopen(req, timeout=1).read()
+        xml = xmlrpclib.loads(data)[0][0]
+        return xml
 
 
 class HtmlWindow(wx.html.HtmlWindow):
@@ -102,10 +101,11 @@ class UpdateDialog(wx.Dialog):
         irep = hwin.GetInternalRepresentation()
         hwin.SetSize((irep.GetWidth()+25, irep.GetHeight()+20))
         sizer.Add(hwin)
-        checkbox = wx.CheckBox(self, -1, label='I\'m using another method for RIDE updates\n and do not need automatic update checks')
+        checkbox = wx.CheckBox(self, -1, label="I\'m using another method for RIDE updates\n and "
+                                               "do not need automatic update checks")
         checkbox.Bind(wx.EVT_CHECKBOX, handler=self.OnCheckboxChange)
         sizer.Add(checkbox)
-        button = ButtonWithHandler(self, label='remind me later', handler=self.OnRemindMeLater)
+        button = ButtonWithHandler(self, label="remind me later", handler=self.OnRemindMeLater)
         sizer.Add(button)
         self.SetSizer(sizer)
         self.CentreOnParent(wx.BOTH)

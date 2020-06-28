@@ -20,5 +20,5 @@ class TextField(wx.TextCtrl):
 
     def __init__(self, parent, initial_value, process_enters=False):
         flags = wx.TE_PROCESS_ENTER|wx.TE_LEFT if process_enters else wx.TE_LEFT
-        wx.TextCtrl.__init__(self, parent, style=flags)
+        wx.TextCtrl.__init__(self, parent, style=flags|wx.TE_NOHIDESEL)
         self.SetValue(initial_value)

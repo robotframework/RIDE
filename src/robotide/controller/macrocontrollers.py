@@ -31,10 +31,7 @@ from robotide.spec.iteminfo import ResourceUserKeywordInfo, \
     TestCaseUserKeywordInfo
 from robotide.controller.tags import Tag
 from robotide import robotapi
-from robotide.utils import is_unicode, variablematcher
-from robotide.utils import PY3
-if PY3:
-    from robotide.utils import basestring
+from robotide.utils import variablematcher
 
 
 KEYWORD_NAME_FIELD = 'Keyword Name'
@@ -51,7 +48,7 @@ class ItemNameController(object):
         self._item = item
 
     def contains_keyword(self, name):
-        if isinstance(name, basestring) or is_unicode(name):
+        if isinstance(name, str):
             return self._item.name == name
         return name.match(self._item.name)
 
@@ -183,7 +180,6 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         return self.datafile_controller.is_library_keyword(value)
 
     def delete(self):
-        # print("DEBUG _WithStepsController delete this is parent %s\nThis is self %s" % (self._parent, self))
         self.datafile_controller.unregister_namespace_updates(
             self._clear_cached_steps)
         self._parent.delete(self)
@@ -291,10 +287,9 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         self.mark_dirty()
         RideItemNameChanged(item=self, old_name=old_name).publish()
 
-    def notify_keyword_removed(self):  # DEBUG
+    def notify_keyword_removed(self):
         self.update_namespace()
-        RideUserKeywordRemoved(datafile=self.datafile, name=self.name,
-                               item=self).publish
+        RideUserKeywordRemoved(datafile=self.datafile, name=self.name, item=self).publish()
         self.notify_steps_changed()
 
     def notify_settings_changed(self):
@@ -317,6 +312,7 @@ class TestCaseController(_WithStepsController):
 
     def _init(self, test):
         self._test = test
+        self._run_passed = None
 
     def __eq__(self, other):
         if self is other:
@@ -394,6 +390,18 @@ class TestCaseController(_WithStepsController):
             return template
         return self.datafile_controller.get_template()
 
+    @property
+    def run_passed(self):
+        return self._run_passed
+
+    @run_passed.setter
+    def run_passed(self,value):
+        if value == True:
+            self._run_passed = True # Test execution passed
+        elif value == False:
+            self._run_passed = False # Test execution failed
+        else:
+            self._run_passed = None # Test did not run
 
 class UserKeywordController(_WithStepsController):
     _populator = robotapi.UserKeywordPopulator

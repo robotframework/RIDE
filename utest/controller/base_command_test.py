@@ -108,3 +108,8 @@ class TestCaseCommandTest(unittest.TestCase, _FakeProject):
 
     def _verify_step_number_change(self, change):
         assert_equal(len(self._steps), self._orig_number_of_steps + change)
+
+
+if __name__ == '__main__':
+    unittest.main()
+

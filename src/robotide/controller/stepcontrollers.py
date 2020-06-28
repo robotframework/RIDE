@@ -16,15 +16,11 @@
 import re
 
 from robotide import robotapi, utils
-from robotide.utils import is_unicode, variablematcher
+from robotide.utils import variablematcher
 from robotide.controller.basecontroller import _BaseController
 from robotide.controller.cellinfo import (CellPosition, CellType, CellInfo,
                                           CellContent, ContentType)
 from robotide.namespace.local_namespace import LocalNamespace
-from robotide.utils import PY3
-if PY3:
-    from robotide.utils import basestring
-
 
 class StepController(_BaseController):
 
@@ -220,7 +216,7 @@ class StepController(_BaseController):
                    for item in [self.keyword or ''] + self.args)
 
     def _kw_name_match(self, item, expected):
-        if isinstance(expected, basestring) or is_unicode(expected):
+        if isinstance(expected, str):
             return utils.eq(item, expected) or (
                 self._GIVEN_WHEN_THEN_MATCHER.match(item) and
                 utils.eq(
@@ -410,7 +406,7 @@ class StepController(_BaseController):
                and any(c.strip() for c in cells) and self._index() > 0
 
     def _is_end_step(self, cells):
-        return cells and ('END' in cells)  #cells[0] == 'END' # TODO Improve check
+        return cells and ('END' in cells)  # cells[0] == 'END' # TODO Improve check
 
     def _recreate_as_partial_for_loop(self, cells, comment):
         index = self._index()

@@ -96,3 +96,8 @@ class TestExcludes(unittest.TestCase):
 
 def _join(*args):
     return os.path.join(*args) + sep
+
+
+if __name__ == '__main__':
+    unittest.main()
+

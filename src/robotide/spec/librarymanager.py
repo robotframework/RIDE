@@ -14,10 +14,7 @@
 #  limitations under the License.
 
 from sqlite3 import OperationalError
-try:
-    import Queue
-except ImportError:  # py3
-    import queue as Queue
+import queue as Queue
 import os
 from threading import Thread
 
@@ -25,9 +22,7 @@ from robotide.publish import RideLogException, RideLogMessage
 from robotide.spec.librarydatabase import LibraryDatabase
 from robotide.spec.libraryfetcher import get_import_result
 from robotide.spec.xmlreaders import get_path, SpecInitializer
-from robotide.utils import PY3
-if PY3:
-    from robotide.utils import unicode
+
 
 class LibraryManager(Thread):
 
@@ -139,7 +134,7 @@ class LibraryManager(Thread):
             return result_queue.get(timeout=5)
         except Queue.Empty as e:
             RideLogMessage(u'Failed to read keywords from library db: {}'
-                           .format(unicode(e))).publish()
+                           .format(str(e))).publish()
             return []
 
     def create_database(self):

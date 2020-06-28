@@ -82,3 +82,9 @@ class MacroEditorTest(unittest.TestCase):
             assert_true(getattr(kw_mock, kw_method).has_been_called(),
                         'Should have called "%s" when calling "%s"' %
                         (kw_method, method))
+
+
+if __name__ == '__main__':
+    app = wx.App()
+    unittest.main()
+

@@ -44,7 +44,7 @@ class Namespace(object):
         self._settings = settings
         self._library_manager = None
         self._content_assist_hooks = []
-        self._update_listeners = set() # list()  # DEBUG py3 set()
+        self._update_listeners = set()
         self._init_caches()
         self._set_pythonpath()
         PUBLISHER.subscribe(self._setting_changed, RideSettingsChanged)

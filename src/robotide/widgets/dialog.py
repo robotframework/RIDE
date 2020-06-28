@@ -23,18 +23,10 @@ class Dialog(wx.Dialog):
     def __init__(self, title='', parent=None, size=None, style=None):
         parent = parent or wx.GetTopLevelWindows()[0]
         size = size or (-1, -1)
-        # wx.THICK_FRAME allows resizing
-        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
-            style = style or (wx.DEFAULT_DIALOG_STYLE | wx.RESIZE_BORDER)
-            wx.MiniFrame.__init__(self, parent, title=title, size=size, style=style) # style=wx.SIMPLE_BORDER)
-        else:
-            style = style or (wx.DEFAULT_DIALOG_STYLE | wx.THICK_FRAME)
-            wx.Dialog.__init__(self, parent, title=title, size=size, style=style)
+        style = style or (wx.DEFAULT_DIALOG_STYLE | wx.RESIZE_BORDER)
+        wx.MiniFrame.__init__(self, parent, title=title, size=size, style=style)
         # set Left to Right direction (while we don't have localization)
         self.SetLayoutDirection(wx.Layout_LeftToRight)
-        # print(
-        #    "DEBUG: Created detached dialog, did it work in Windows?")
-        # wx.Dialog.__init__(self, parent, title=title, size=size, style=style)
         self.CenterOnParent()
 
     def _create_buttons(self, sizer):
@@ -43,9 +35,10 @@ class Dialog(wx.Dialog):
 
     def _create_horizontal_line(self, sizer):
         line = wx.StaticLine(self, size=(20, -1), style=wx.LI_HORIZONTAL)
-        sizer.Add(
-            line, border=5,
-            flag=wx.GROW | wx.ALIGN_CENTER_VERTICAL | wx.RIGHT | wx.TOP)
+        if wx.VERSION < (4, 1, 0):
+            sizer.Add(line, border=5, flag=wx.GROW | wx.ALIGN_CENTER_VERTICAL | wx.RIGHT | wx.TOP)
+        else:
+            sizer.Add(line, border=5, flag=wx.GROW | wx.RIGHT | wx.TOP)
 
     def execute(self):
         retval = None

@@ -61,3 +61,7 @@ class RunConfigurationsTest(unittest.TestCase):
         assert_equal(config.command, exp_cmd)
         assert_equal(config.doc, exp_doc)
 
+
+if __name__ == '__main__':
+    unittest.main()
+

@@ -15,9 +15,6 @@
 
 from robotide import robotapi
 from robotide.spec.iteminfo import LibraryKeywordInfo
-from robotide.utils import PY3
-if PY3:
-    from robotide.utils import unicode
 
 
 def get_import_result(path, args):
@@ -40,7 +37,7 @@ def _parse_args(args):
     if args.defaults:
         for i, value in enumerate(args.defaults):
             index = len(args.positional) - len(args.defaults) + i
-            parsed[index] = parsed[index] + '=' + unicode(value)
+            parsed[index] = parsed[index] + '=' + str(args.defaults[value])  # DEBUG str(value)
     if args.varargs:
         parsed.append('*%s' % args.varargs)
     if args.kwargs:

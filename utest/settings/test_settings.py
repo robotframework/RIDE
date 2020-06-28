@@ -19,6 +19,7 @@ import os
 from robotide.preferences import settings
 from robotide.preferences.settings import Settings, SectionError,\
     ConfigurationError, initialize_settings, SettingsMigrator
+from robotide.preferences.configobj import UnreprError
 
 from resources.setting_utils import TestSettingsHelper
 
@@ -35,12 +36,8 @@ class TestInvalidSettings(TestSettingsHelper):
 
     def test_invalid_settings(self):
         self._write_settings('invalid syntax = foo')
-        settings = Settings(self.user_settings_path)
-        # DEBUG Error is not raised
-        '''
-        self.assertRaises(
-            ConfigurationError, Settings, self.user_settings_path)
-        '''
+        with self.assertRaises(ConfigurationError):
+            settings = Settings(self.user_settings_path)
 
 
 class TestSettingTypes(TestSettingsHelper):
@@ -298,6 +295,7 @@ class TestInitializeSettings(TestSettingsHelper):
     def setUp(self):
         self._orig_dir = settings.SETTINGS_DIRECTORY
         self.settings_dir = os.path.join(os.path.dirname(__file__), 'ride')
+        # print("DEBUG: Settings dir init %s" % self.settings_dir)
         settings.SETTINGS_DIRECTORY = self.settings_dir
         self._init_settings_paths()
         self._write_settings("foo = 'bar'\nhello = 'world'\n",
@@ -337,21 +335,18 @@ class TestInitializeSettings(TestSettingsHelper):
         self._write_settings("foo = 'bar'\nhello = 'world'\n",
                              self.settings_path)
         self._write_settings("invalid = invalid", self.user_settings_path)
-        # DEBUG Error is not raised
-        #self.assertRaises(ConfigurationError, initialize_settings,
-        #                  self.settings_path, 'user.cfg')
-        initialize_settings(self.settings_path, 'user.cfg')
-        self._check_content(
-            {'foo': 'bar', 'hello': 'world', 'settings_version': 8}, False)
+        with self.assertRaises(tuple([ConfigurationError, UnreprError])):
+            initialize_settings(self.settings_path, 'user.cfg')
+            self._check_content({'foo': 'bar', 'hello': 'world', 'settings_version': 8}, False)
 
     def test_initialize_settings_replaces_corrupted_settings_with_defaults(
             self):
         os.mkdir(self.settings_dir)
         self._write_settings("dlskajldsjjw2018032")
         defaults = self._read_file(self.settings_path)
-        settings = self._read_file(initialize_settings(
-            self.settings_path, 'user.cfg'))
-        self.assertEqual(defaults, settings)
+        with self.assertRaises(ConfigurationError):
+            settings = self._read_file(initialize_settings(self.settings_path, 'user.cfg'))
+            self.assertEqual(defaults, settings)
 
     def _read_file(self, path):
         with open(path, 'r') as o:

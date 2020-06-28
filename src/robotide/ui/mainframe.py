@@ -17,7 +17,6 @@ import os
 import wx
 import wx.lib.agw.aui as aui
 from wx import Icon
-from wx.lib.agw.aui import aui_switcherdialog as ASD
 from robotide.lib.robot.utils.compat import with_metaclass
 from robotide.action import ActionInfoCollection, ActionFactory, SeparatorInfo
 from robotide.context import ABOUT_RIDE, SHORTCUT_KEYS
@@ -26,17 +25,17 @@ from robotide.publish import RideSaveAll, RideClosing, RideSaved, PUBLISHER,\
     RideInputValidationError, RideTreeSelection, RideModificationPrevented
 from robotide.ui.tagdialogs import ViewAllTagsDialog
 from robotide.ui.filedialogs import RobotFilePathDialog
-from robotide.utils import RideEventHandler, PY2
+from robotide.utils import RideEventHandler
 from robotide.widgets import Dialog, ImageProvider, HtmlWindow
 from robotide.preferences import PreferenceEditor
 
-from .actiontriggers import ( MenuBar, ToolBarButton, ShortcutRegistry,
-                              _RideSearchMenuItem)
+from .actiontriggers import (MenuBar, ToolBarButton, ShortcutRegistry, _RideSearchMenuItem)
 from .filedialogs import (NewProjectDialog, InitFileFormatDialog)
 from .review import ReviewDialog
 from .pluginmanager import PluginManager
 from robotide.action.shortcut import localize_shortcuts
-from .tree import Tree
+from .treeplugin import Tree
+from .fileexplorerplugin import FileExplorer
 from .notebook import NoteBook
 from .progress import LoadProgressObserver
 
@@ -49,7 +48,7 @@ _menudata = """
 !Open &Directory | Open directory containing datafiles | Shift-Ctrlcmd-O | \
 ART_FOLDER_OPEN
 ---
-&Save | Save selected datafile | Ctrlcmd-S | ART_FILE_SAVE
+!&Save | Save selected datafile | Ctrlcmd-S | ART_FILE_SAVE
 !Save &All | Save all changes | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS
 ---
 !E&xit | Exit RIDE | Ctrlcmd-Q
@@ -62,8 +61,9 @@ ART_FOLDER_OPEN
 
 [Help]
 !Shortcut keys | RIDE shortcut keys
-!User Guide | RIDE User Guide
-!Report a Problem | Open browser to the RIDE issue tracker
+!User Guide | Robot Framework User Guide
+!Wiki | RIDE User Guide (Wiki)
+!Report a Problem | Open browser to SEARCH on the RIDE issue tracker
 !Release notes | Shows release notes
 !About | Information about RIDE
 """
@@ -145,8 +145,7 @@ class RideFrame(with_metaclass(classmaker(), wx.Frame, RideEventHandler)):
         size = application.settings.get('mainframe size', (1100, 700))
         wx.Frame.__init__(self, parent=None, id = wx.ID_ANY, title='RIDE',
                           pos=application.settings.get('mainframe position', (50, 30)),
-                          size=size,
-                          style=wx.DEFAULT_FRAME_STYLE | wx.SUNKEN_BORDER)
+                          size=size, style=wx.DEFAULT_FRAME_STYLE | wx.SUNKEN_BORDER)
 
         # set Left to Right direction (while we don't have localization)
         self.SetLayoutDirection(wx.Layout_LeftToRight)
@@ -170,24 +169,21 @@ class RideFrame(with_metaclass(classmaker(), wx.Frame, RideEventHandler)):
         self.favicon = Icon(os.path.join(os.path.dirname(__file__), "..",
                                          "widgets","robot.ico"),
                             wx.BITMAP_TYPE_ICO, 256, 256)
-        self.SetIcon(self.favicon)
+        self.SetIcon(self.favicon)  #TODO use SetIcons for all sizes
         self._init_ui()
         self._plugin_manager = PluginManager(self.notebook)
         self._review_dialog = None
         self._view_all_tags_dialog = None
+         #, self, self.actions,
+        # self._application.settings)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
         self.Bind(wx.EVT_SIZE, self.OnSize)
         self.Bind(wx.EVT_MOVE, self.OnMove)
         self.Bind(wx.EVT_MAXIMIZE, self.OnMaximize)
-        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
-            self.Bind(wx.EVT_DIRCTRL_FILEACTIVATED, self.OnOpenFile)
-            self.Bind(wx.EVT_TREE_ITEM_RIGHT_CLICK, self.OnMenuOpenFile)
+        self.Bind(wx.EVT_DIRCTRL_FILEACTIVATED, self.OnOpenFile)
+        self.Bind(wx.EVT_TREE_ITEM_RIGHT_CLICK, self.OnMenuOpenFile)
         self._subscribe_messages()
-        #print("DEBUG: Call register_tools, actions: %s" % self.actions.__repr__())
-        if PY2:
-            wx.CallLater(100, self.actions.register_tools)  # DEBUG
-        else:
-            wx.CallAfter(self.actions.register_tools)  # DEBUG
+        wx.CallAfter(self.actions.register_tools)  # DEBUG
 
     def _subscribe_messages(self):
         for listener, topic in [
@@ -271,35 +267,16 @@ class RideFrame(with_metaclass(classmaker(), wx.Frame, RideEventHandler)):
         
         ##### End Test
         """
-        # self._mgr.AddPane(self.CreateTreeControl(),
-        #                  aui.AuiPaneInfo().Name("tree_content").
-        #                  CenterPane().Hide().MinimizeButton(True))
-        ###### self.tree = Tree(self.splitter, self.actions, self._application.settings)
-        self.tree = Tree(self, self.actions,
-                         self._application.settings)
-        #self.tree.SetMinSize(wx.Size(100, 200))
+        # Tree is always created here
+        self.tree = Tree(self, self.actions, self._application.settings)
         self.tree.SetMinSize(wx.Size(120, 200))
-        self._mgr.AddPane(self.tree,
-                          aui.AuiPaneInfo().Name("tree_content").
-                          Caption("Test Suites").LeftDockable(True).
-                          CloseButton(False))
-        # MaximizeButton(True).MinimizeButton(True))
-        self.actions.register_actions(
-            ActionInfoCollection(_menudata, self, self.tree))
-        ###### File explorer pane
-        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
-            self.filemgr = wx.GenericDirCtrl(self, -1, size=(200, 225),
-                                             style=wx.DIRCTRL_3D_INTERNAL)
-            self.filemgr.SetMinSize(wx.Size(120, 200))
-            # wx.CallAfter(self.filemgr.SetPath(self.tree.get_selected_datafile()))
-            self._mgr.AddPane(self.filemgr,
-                              aui.AuiPaneInfo().Name("file_manager").
-                              Caption("Files").LeftDockable(True).
-                              CloseButton(True))
+        # TreePlugin will manage showing the Tree
+        self.actions.register_actions(ActionInfoCollection(_menudata, self, self.tree))
+        ###### File explorer panel is always created here
+        self.filemgr = FileExplorer(self, self._controller)
+        self.filemgr.SetMinSize(wx.Size(120, 200))
 
         mb.take_menu_bar_into_use()
-        #### self.splitter.SetMinimumPaneSize(100)
-        #### self.splitter.SplitVertically(self.tree, self.notebook, 300)
         self.CreateStatusBar()
         self.SetIcons(ImageProvider().PROGICONS)
         # tell the manager to "commit" all the changes just made
@@ -360,6 +337,8 @@ class RideFrame(with_metaclass(classmaker(), wx.Frame, RideEventHandler)):
 
     def OnClose(self, event):
         if self._allowed_to_exit():
+            perspective = self._mgr.SavePerspective()
+            self._application.settings.set('AUI Perspective', perspective)
             PUBLISHER.unsubscribe(self._set_label, RideTreeSelection)
             RideClosing().publish()
             # deinitialize the frame manager
@@ -371,18 +350,15 @@ class RideFrame(with_metaclass(classmaker(), wx.Frame, RideEventHandler)):
     def OnSize(self, event):
         if not self.IsMaximized():
             self._application.settings['mainframe maximized'] = False
-            self._application.settings['mainframe size'] = self.MyGetSize()
-            # DEBUG wxPhoenix .GetSizeTuple()
+            self._application.settings['mainframe size'] = self.DoGetSize()
         event.Skip()
 
     def OnMove(self, event):
         # When the window is Iconized, a move event is also raised, but we
         # don't want to update the position in the settings file
         if not self.IsIconized() and not self.IsMaximized():
-            # DEBUG wxPhoenix writes wx.Point(50, 30) instead of just (50, 30)
-            self._application.settings['mainframe position'] = \
-                self.MyGetPosition()
-            # DEBUG wxPhoenix self.GetPositionTuple()
+            self._application.settings['mainframe position'] =\
+                self.DoGetPosition()
         event.Skip()
 
     def OnMaximize(self, event):
@@ -391,18 +367,6 @@ class RideFrame(with_metaclass(classmaker(), wx.Frame, RideEventHandler)):
 
     def OnReleasenotes(self, event):
         pass
-
-    def MyGetSize(self):
-        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
-            return self.DoGetSize()
-        else:
-            return self.GetSizeTuple()
-
-    def MyGetPosition(self):
-        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
-            return self.DoGetPosition()
-        else:
-            return self.GetPositionTuple()
 
     def _allowed_to_exit(self):
         if self.has_unsaved_changes():
@@ -427,13 +391,7 @@ class RideFrame(with_metaclass(classmaker(), wx.Frame, RideEventHandler)):
 
     def _populate_tree(self):
         self.tree.populate(self._controller)
-        if len(self._controller.data.directory) > 1:
-            self.filemgr.SelectPath(self._controller.data.source)
-            try:
-                self.filemgr.ExpandPath(self._controller.data.source)
-            except Exception:
-                pass
-            self.filemgr.Update()
+        self.filemgr.update_tree()
 
     def OnOpenFile(self, event):
         if not self.filemgr:
@@ -510,15 +468,9 @@ class RideFrame(with_metaclass(classmaker(), wx.Frame, RideEventHandler)):
 
     def OnOpenDirectory(self, event):
         if self.check_unsaved_modifications():
-            if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
-                path = wx.DirSelector(message="Choose a directory containing "
-                                              "Robot files",
-                                      default_path=self._controller.default_dir
-                                      )
-            else:
-                path = wx.DirSelector(message="Choose a directory containing "
-                                              "Robot files",
-                                      defaultPath=self._controller.default_dir)
+            path = wx.DirSelector(message="Choose a directory containing Robot"
+                                          " files",
+                                  default_path=self._controller.default_dir)
             if path:
                 self.open_suite(path)
 
@@ -558,8 +510,7 @@ class RideFrame(with_metaclass(classmaker(), wx.Frame, RideEventHandler)):
 
     def OnViewAllTags(self, event):
         if self._view_all_tags_dialog is None:
-            self._view_all_tags_dialog = ViewAllTagsDialog(self._controller,
-                                                           self)
+            self._view_all_tags_dialog = ViewAllTagsDialog(self._controller, self)
         self._view_all_tags_dialog.show_dialog()
 
     def OnSearchUnusedKeywords(self, event):
@@ -588,11 +539,16 @@ class RideFrame(with_metaclass(classmaker(), wx.Frame, RideEventHandler)):
 
     def OnReportaProblem(self, event):
         wx.LaunchDefaultBrowser("https://github.com/robotframework/RIDE/issues"
+                                "?utf8=%E2%9C%93&q=is%3Aissue+%22search"
+                                "%20your%20problem%22"
                                 )
 
     def OnUserGuide(self, event):
         wx.LaunchDefaultBrowser("http://robotframework.org/robotframework/"
                                 "#user-guide")
+
+    def OnWiki(self, event):
+        wx.LaunchDefaultBrowser("https://github.com/robotframework/RIDE/wiki")
 
     def _has_data(self):
         return self._controller.data is not None
@@ -686,24 +642,11 @@ class ToolBar(aui.AuiToolBar):
     def _create_button(self, action):
         button = ToolBarButton(self._frame, self, action)
         name = self._format_button_tooltip(action)
-        self.MyAddTool(self, button.id, label=name,
-                       bitmap=action.icon, shortHelp=name,
-                       longHelp=action.doc)
+        self.AddTool(button.id, name, action.icon, wx.NullBitmap,
+                     wx.ITEM_NORMAL, name, action.doc)
         self.Realize()
         self._buttons.append(button)
         return button
-
-    def MyAddTool(self, obj, toolid, label, bitmap,
-                  bmpDisabled=wx.NullBitmap,
-                  kind=wx.ITEM_NORMAL, shortHelp="", longHelp=""):
-        if wx.VERSION >= (3, 0, 3, ''):  # DEBUG wxPhoenix
-            obj.AddTool(toolid, label, bitmap, bmpDisabled, kind,
-                        shortHelp, longHelp)
-        else:  # DEBUG Was AddLabelTool for non AUI version
-            obj.AddTool(tool_id=toolid, label=label, bitmap=bitmap,
-                        disabled_bitmap=bmpDisabled, kind=wx.ITEM_NORMAL,
-                        short_help_string=shortHelp,
-                        long_help_string=longHelp, client_data=None)
 
     def _format_button_tooltip(self, action):
         tooltip = action.name.replace('&', '')
@@ -713,7 +656,6 @@ class ToolBar(aui.AuiToolBar):
 
     def remove_toolbar_button(self, button):
         self._buttons.remove(button)
-        # self._wx_toolbar.RemoveTool(button.id)
         self.DeleteTool(button.id)
         self.Realize()
 
@@ -782,7 +724,7 @@ class AboutDialog(Dialog):
         # set Left to Right direction (while we don't have localization)
         self.SetLayoutDirection(wx.Layout_LeftToRight)
         sizer = wx.BoxSizer(wx.VERTICAL)
-        sizer.Add(HtmlWindow(self, (450, 200), ABOUT_RIDE), 1, flag=wx.EXPAND)
+        sizer.Add(HtmlWindow(self, (650, 200), ABOUT_RIDE), 1, flag=wx.EXPAND)
         self.SetSizerAndFit(sizer)
 
     def OnKey(self, *args):
