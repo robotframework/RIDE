@@ -513,7 +513,7 @@ class TestRunnerPlugin(Plugin):
                     self._AppendTextMessageLog(self.message_log,
                                                '\n' + self._maxmemmsg,
                                                source="stderr")
-                    self._recreate_message_log()
+                    # self._recreate_message_log()  # DEBUG
 
     def GetLastOutputChar(self):
         """Return the last character in the output window"""
@@ -531,9 +531,7 @@ class TestRunnerPlugin(Plugin):
         """
         result = []
         for arg in argv:
-            if PY2 and is_unicode(arg):
-                arg = arg.encode(encoding['SYSTEM'])  # DEBUG "utf-8") CONSOLE_ENCODING
-                # print("DEBUG: PY2 unicode args %s" % arg)
+            # arg = arg.encode(encoding['SYSTEM'])
             if "'" in arg or " " in arg or "&" in arg:
                 # for windows, if there are spaces we need to use
                 # double quotes. Single quotes cause problems
@@ -588,7 +586,7 @@ class TestRunnerPlugin(Plugin):
             textctrl.SetStyling(new_text_end-new_text_start, STYLE_STDERR)
 
         textctrl.SetReadOnly(True)
-        if lastVisibleLine >= linecount-4:
+        if last_visible_line >= linecount-4:
             linecount = textctrl.GetLineCount()
             textctrl.ScrollToLine(linecount)
 
@@ -599,23 +597,17 @@ class TestRunnerPlugin(Plugin):
         # we need this information to decide whether to autoscroll or not
         new_text_start = textctrl.GetLength()
         linecount = textctrl.GetLineCount()
-        lastVisibleLine = textctrl.GetFirstVisibleLine() + \
+        last_visible_line = textctrl.GetFirstVisibleLine() + \
                           textctrl.LinesOnScreen() - 1
 
         textctrl.SetReadOnly(False)
         try:
             if enc:
-                textctrl.AppendText(string.encode(encoding['SYSTEM']))
+                textctrl.AppendText(string.encode(encoding['OUTPUT']))
             else:
                 textctrl.AppendText(string)
         except UnicodeDecodeError as e:
-            if PY2:
-                if is_unicode(string):
-                    textctrl.AppendTextRaw(bytes(string.encode('utf-8')))
-                else:
-                    textctrl.AppendTextRaw(string)
-            else:
-                textctrl.AppendTextRaw(bytes(string, encoding['SYSTEM']))
+            textctrl.AppendTextRaw(string.encode(encoding['SYSTEM']))
         except UnicodeEncodeError as e:
             textctrl.AppendText(string.encode('utf-8'))  # DEBUG .encode('utf-8'))
 
@@ -626,7 +618,7 @@ class TestRunnerPlugin(Plugin):
             textctrl.SetStyling(new_text_end-new_text_start, STYLE_STDERR)
 
         textctrl.SetReadOnly(True)
-        if lastVisibleLine >= linecount-4:
+        if last_visible_line >= linecount-4:
             linecount = textctrl.GetLineCount()
             textctrl.ScrollToLine(linecount)
 
