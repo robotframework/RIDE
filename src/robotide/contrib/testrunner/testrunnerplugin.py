@@ -48,6 +48,7 @@ being used for a currently running test.
 import datetime
 import time
 import os
+import psutil
 import re
 import wx
 import wx.stc
@@ -66,7 +67,7 @@ from robotide.publish.messages import RideTestSelectedForRunningChanged
 from robotide.pluginapi import Plugin, ActionInfo
 from robotide.widgets import Label, ImageProvider
 from robotide.robotapi import LOG_LEVELS
-from robotide.utils import robottime, is_unicode
+from robotide.utils import robottime
 from robotide.preferences.editors import ReadFonts
 from sys import getfilesystemencoding
 from robotide.lib.robot.utils.encodingsniffer import (get_console_encoding,
@@ -138,6 +139,10 @@ class TestRunnerPlugin(Plugin):
         self._register_shortcuts()
         self._min_log_level_number = LOG_LEVELS['INFO']
         self._selected_tests: {TestCaseController} = set()
+        self._process = psutil.Process()
+        self._initmemory = None
+        self._limitmemory = None  # This will be +80%
+        self._maxmemmsg = None
 
     @property
     def _names_to_run(self):
@@ -267,29 +272,44 @@ class TestRunnerPlugin(Plugin):
         self.message_log = None
         self._right_panel.GetSizer().Layout()
 
+    def _recreate_message_log(self):
+        self.show_log_messages_checkbox.SetValue(False)
+        self._reset_memory_calc()
+        self.show_log_messages_checkbox.SetValue(True)
+
+    def _reset_memory_calc(self):
+        self._initmemory = self._process.memory_info()[0]
+        self._limitmemory = self._initmemory * 1.80
+        self._maxmemmsg = None
+
     def OnStop(self, event):
         """Called when the user clicks the "Stop" button
 
         This sends a SIGINT to the running process, with the
         same effect as typing control-c when running from the
         command line."""
+        self._reset_memory_calc()
         self._AppendText(self.out, '[ SENDING STOP SIGNAL ]\n',
                          source='stderr')
         self._test_runner.send_stop_signal()
 
     def OnPause(self, event):
+        self._reset_memory_calc()
         self._AppendText(self.out, '[ SENDING PAUSE SIGNAL ]\n')
         self._test_runner.send_pause_signal()
 
     def OnContinue(self, event):
+        self._reset_memory_calc()
         self._AppendText(self.out, '[ SENDING CONTINUE SIGNAL ]\n')
         self._test_runner.send_continue_signal()
 
     def OnStepNext(self, event):
+        self._reset_memory_calc()
         self._AppendText(self.out, '[ SENDING STEP NEXT SIGNAL ]\n')
         self._test_runner.send_step_next_signal()
 
     def OnStepOver(self, event):
+        self._reset_memory_calc()
         self._AppendText(self.out, '[ SENDING STEP OVER SIGNAL ]\n')
         self._test_runner.send_step_over_signal()
 
@@ -314,13 +334,13 @@ class TestRunnerPlugin(Plugin):
                 if not self.ask_user_to_run_anyway():
                     # In Linux NO runs dialog 4 times
                     return
+        self._reset_memory_calc()
         self._initialize_ui_for_running()
         command = self._create_command()
         # DEBUG on Py3 it not shows correct if tags with latin chars
         self._output("command: %s\n" % command, enc=False)
         try:
             self._test_runner.run_command(command, self._get_current_working_dir())
-            # self._output("DEBUG: Passed test_runner.run_command\n")
             self._process_timer.Start(41)  # roughly 24fps
             self._set_running()
             self._progress_bar.Start()
@@ -476,10 +496,19 @@ class TestRunnerPlugin(Plugin):
                 self._output("\n", source="stdout")
             self._output(err_buffer, source="stderr")
         if self.message_log and not self._messages_log_texts.empty():
-            texts = []
-            while not self._messages_log_texts.empty():
-                texts += [self._messages_log_texts.get()]
-            self._AppendText(self.message_log, '\n'+'\n'.join(texts))
+            if self._process.memory_info()[0] <= self._limitmemory:
+                texts = []
+                while not self._messages_log_texts.empty():
+                    texts += [self._messages_log_texts.get()]
+                self._AppendTextMessageLog(self.message_log, '\n'+'\n'.join(texts))
+            else:
+                if not self._maxmemmsg:
+                    self._maxmemmsg = "Messages log exceeded 80% of process " \
+                                      "memory, stopping for now..."
+                    self._AppendTextMessageLog(self.message_log,
+                                               '\n' + self._maxmemmsg,
+                                               source="stderr")
+                    # self._recreate_message_log()  # DEBUG
 
     def GetLastOutputChar(self):
         """Return the last character in the output window"""
@@ -497,15 +526,11 @@ class TestRunnerPlugin(Plugin):
         """
         result = []
         for arg in argv:
-            print(f"DEBUG: testrunnerplugin format command arg={arg}")
-            #if is_unicode(arg):
-            #    arg = arg.encode(encoding['SYSTEM'])  # DEBUG "utf-8") CONSOLE_ENCODING
-            #    print(f"DEBUG: testrunnerplugin format command: unicode arg {str(arg)}")
             if "'" in arg or " " in arg or "&" in arg:
                 # for windows, if there are spaces we need to use
                 # double quotes. Single quotes cause problems
                 result.append('"%s"' % arg)
-            elif '"' in str(arg):
+            elif '"' in arg:
                 result.append("'%s'" % arg)
             else:
                 result.append(arg)
@@ -518,6 +543,9 @@ class TestRunnerPlugin(Plugin):
             self._reload_model()
         self.show_tab(self.panel)
 
+    # from memory_profiler import profile as mprofile
+
+    # @mprofile
     def _AppendText(self, textctrl, string, source="stdout", enc=True):
         if not self.panel or not textctrl:
             return
@@ -531,9 +559,9 @@ class TestRunnerPlugin(Plugin):
         try:
             if enc:
                 if source == "stdout":
-                    textctrl.AppendTextRaw(string.encode(encoding['OUTPUT']))  # string.encode('UTF-8'))  # DEBUG removed bytes
+                    textctrl.AppendText(string.encode(encoding['OUTPUT']))  # string.encode('UTF-8'))  # DEBUG removed bytes
                 else:
-                    textctrl.AppendTextRaw(string.encode(encoding['SYSTEM']))  # string.encode('UTF-8'))  # DEBUG removed bytes
+                    textctrl.AppendText(string.encode(encoding['SYSTEM']))  # string.encode('UTF-8'))  # DEBUG removed bytes
                 # print(f"DEBUG: testrunnerplugin AppendText enc True {string.encode(encoding['SYSTEM'])}")
             else:
                 textctrl.AppendText(string)
@@ -552,6 +580,38 @@ class TestRunnerPlugin(Plugin):
             textctrl.StartStyling(new_text_start, 0x1f)
         else:
             textctrl.StartStyling(new_text_start)
+        if source == "stderr":
+            textctrl.SetStyling(new_text_end-new_text_start, STYLE_STDERR)
+
+        textctrl.SetReadOnly(True)
+        if last_visible_line >= linecount-4:
+            linecount = textctrl.GetLineCount()
+            textctrl.ScrollToLine(linecount)
+
+    def _AppendTextMessageLog(self, textctrl, string, source="stdout", enc=True):
+        if not self.panel or not textctrl:
+            return
+        textctrl.update_scroll_width(string)
+        # we need this information to decide whether to autoscroll or not
+        new_text_start = textctrl.GetLength()
+        linecount = textctrl.GetLineCount()
+        last_visible_line = textctrl.GetFirstVisibleLine() + \
+                          textctrl.LinesOnScreen() - 1
+
+        textctrl.SetReadOnly(False)
+        try:
+            if enc:
+                textctrl.AppendText(string.encode(encoding['OUTPUT']))
+            else:
+                textctrl.AppendText(string)
+        except UnicodeDecodeError as e:
+            textctrl.AppendTextRaw(string.encode(encoding['SYSTEM']))
+        except UnicodeEncodeError as e:
+            textctrl.AppendText(string.encode('utf-8'))  # DEBUG .encode('utf-8'))
+
+        new_text_end = textctrl.GetLength()
+
+        textctrl.StartStyling(new_text_start, 0x1f)
         if source == "stderr":
             textctrl.SetStyling(new_text_end-new_text_start, STYLE_STDERR)
 
