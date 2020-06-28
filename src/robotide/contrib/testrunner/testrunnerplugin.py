@@ -66,7 +66,7 @@ from robotide.publish.messages import RideTestSelectedForRunningChanged
 from robotide.pluginapi import Plugin, ActionInfo
 from robotide.widgets import Label, ImageProvider
 from robotide.robotapi import LOG_LEVELS
-from robotide.utils import robottime, is_unicode, PY2
+from robotide.utils import robottime, is_unicode
 from robotide.preferences.editors import ReadFonts
 from sys import getfilesystemencoding
 from robotide.lib.robot.utils.encodingsniffer import (get_console_encoding,
@@ -319,13 +319,7 @@ class TestRunnerPlugin(Plugin):
         # DEBUG on Py3 it not shows correct if tags with latin chars
         self._output("command: %s\n" % command, enc=False)
         try:
-            if IS_WINDOWS:
-                cwd = self._get_current_working_dir()  # DEBUG It fails if a directory has chinese or latin symbols
-                cwd = cwd.encode(encoding['OUTPUT']) # DEBUG SYSTEM_ENCODING
-                # print("DEBUG: encoded cwd: %s" % cwd)
-                self._test_runner.run_command(command.encode(encoding['OUTPUT']), cwd)  # --include Áçãoµ
-            else:
-                self._test_runner.run_command(command, self._get_current_working_dir())
+            self._test_runner.run_command(command, self._get_current_working_dir())
             # self._output("DEBUG: Passed test_runner.run_command\n")
             self._process_timer.Start(41)  # roughly 24fps
             self._set_running()
@@ -503,13 +497,15 @@ class TestRunnerPlugin(Plugin):
         """
         result = []
         for arg in argv:
-            if is_unicode(arg):
-                arg = arg.encode(encoding['SYSTEM'])  # DEBUG "utf-8") CONSOLE_ENCODING
+            print(f"DEBUG: testrunnerplugin format command arg={arg}")
+            #if is_unicode(arg):
+            #    arg = arg.encode(encoding['SYSTEM'])  # DEBUG "utf-8") CONSOLE_ENCODING
+            #    print(f"DEBUG: testrunnerplugin format command: unicode arg {str(arg)}")
             if "'" in arg or " " in arg or "&" in arg:
                 # for windows, if there are spaces we need to use
                 # double quotes. Single quotes cause problems
                 result.append('"%s"' % arg)
-            elif '"' in arg:
+            elif '"' in str(arg):
                 result.append("'%s'" % arg)
             else:
                 result.append(arg)
@@ -533,14 +529,18 @@ class TestRunnerPlugin(Plugin):
 
         textctrl.SetReadOnly(False)
         try:
-            if enc and is_unicode(string):
-                textctrl.AppendTextRaw(bytes(string.encode('UTF-8')))
+            if enc:
+                if source == "stdout":
+                    textctrl.AppendTextRaw(string.encode(encoding['OUTPUT']))  # string.encode('UTF-8'))  # DEBUG removed bytes
+                else:
+                    textctrl.AppendTextRaw(string.encode(encoding['SYSTEM']))  # string.encode('UTF-8'))  # DEBUG removed bytes
+                # print(f"DEBUG: testrunnerplugin AppendText enc True {string.encode(encoding['SYSTEM'])}")
             else:
                 textctrl.AppendText(string)
         except UnicodeDecodeError as e:
             # I'm not sure why I sometimes get this, and I don't know what I
             # can do other than to ignore it.
-            textctrl.AppendTextRaw(bytes(string, encoding['SYSTEM']))
+            textctrl.AppendTextRaw(string.encode(encoding['SYSTEM']))  # DEBUG removed bytes
         except UnicodeEncodeError as e:
             # I'm not sure why I sometimes get this, and I don't know what I
             # can do other than to ignore it.
@@ -811,16 +811,16 @@ class TestRunnerPlugin(Plugin):
             self._append_to_message_log('<< CONTINUE >>')
 
     def _handle_start_test(self, args):
-        longname = args[1]['longname']
-        self._append_to_message_log('Starting test: %s' % longname)
+        longname = args[1]['longname'].encode('utf-8')
+        self._append_to_message_log(f"Starting test: {longname.decode(encoding['OUTPUT'], 'backslashreplace')}")
 
     def _append_to_message_log(self, text):
         if self.show_message_log:
             self._messages_log_texts.put(text)
 
     def _handle_end_test(self, args):
-        longname = args[1]['longname']
-        self._append_to_message_log('Ending test:   %s\n' % longname)
+        longname = args[1]['longname'].encode('utf-8')
+        self._append_to_message_log(f"Ending test: {longname.decode(encoding['OUTPUT'], 'backslashreplace')}\n")
         if args[1]['status'] == 'PASS':
             self._progress_bar.add_pass()
         else:
