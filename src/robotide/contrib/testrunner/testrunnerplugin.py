@@ -233,7 +233,7 @@ class TestRunnerPlugin(Plugin):
             self.save_setting(setting, data.new)
 
     def OnTestSelectedForRunningChanged(self, message):
-        self._names_to_run = message.tests
+        self._selected_tests = message.tests
 
     def disable(self):
         self._remove_from_notebook()
