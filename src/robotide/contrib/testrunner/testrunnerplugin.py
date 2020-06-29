@@ -608,7 +608,7 @@ class TestRunnerPlugin(Plugin):
         textctrl.SetReadOnly(False)
         try:
             if enc:
-                textctrl.AppendText(string.encode(encoding['SYSTEM']))
+                textctrl.AppendText(string.encode(encoding['OUTPUT']))
             else:
                 textctrl.AppendText(string)
         except UnicodeDecodeError as e:
