@@ -168,6 +168,7 @@ class TestRunnerPlugin(Plugin):
             return
         if self.message_log.GetSTCFocus():
             self.message_log.Copy()
+            return
 
     def enable(self):
         self.tree.set_checkboxes_for_tests()
@@ -222,14 +223,17 @@ class TestRunnerPlugin(Plugin):
         self.subscribe(self.OnSettingsChanged, RideSettingsChanged)
 
     def OnSettingsChanged(self, data):
-        """Updates settings"""
+        '''Updates settings'''
         section, setting = data.keys
-        if section == "Test Run":  # DEBUG temporarily we have two sections
+        # print("DEBUG: enter OnSettingsChanged section %s" % (section))
+        if section == 'Test Run':  # DEBUG temporarily we have two sections
+            # print("DEBUG: setting.get('confirm run')= %s " % setting)
+            # print("DEBUG: new data= %s old %s new %s" % (data.keys, data.old, data.new))
             self.defaults.setdefault(setting, data.new)
             self.save_setting(setting, data.new)
 
     def OnTestSelectedForRunningChanged(self, message):
-        self._selected_tests = message.tests
+        self._names_to_run = message.tests
 
     def disable(self):
         self._remove_from_notebook()
@@ -345,6 +349,7 @@ class TestRunnerPlugin(Plugin):
             self._set_running()
             self._progress_bar.Start()
         except Exception as e:
+            # self._output("DEBUG: Except block test_runner.run_command\n")
             self._set_stopped()
             error, log_message = self.get_current_profile().format_error(str(e), None)
             self._output(error)
@@ -526,6 +531,7 @@ class TestRunnerPlugin(Plugin):
         """
         result = []
         for arg in argv:
+            # arg = arg.encode(encoding['SYSTEM'])
             if "'" in arg or " " in arg or "&" in arg:
                 # for windows, if there are spaces we need to use
                 # double quotes. Single quotes cause problems
@@ -601,9 +607,12 @@ class TestRunnerPlugin(Plugin):
 
         textctrl.SetReadOnly(False)
         try:
-            textctrl.AppendText(string.encode(encoding['SYSTEM']))
+            if enc:
+                textctrl.AppendText(string.encode(encoding['SYSTEM']))
+            else:
+                textctrl.AppendText(string)
         except UnicodeDecodeError as e:
-            textctrl.AppendText(string.encode(encoding['OUTPUT']))
+            textctrl.AppendTextRaw(string.encode(encoding['SYSTEM']))
         except UnicodeEncodeError as e:
             textctrl.AppendText(string.encode('utf-8'))  # DEBUG .encode('utf-8'))
 
