@@ -564,17 +564,22 @@ class TestRunnerPlugin(Plugin):
         textctrl.SetReadOnly(False)
         try:
             if enc:
-                textctrl.AppendText(string.encode(encoding['SYSTEM']))
+                if IS_WINDOWS:
+                    textctrl.AppendText(string.encode('mbcs'))
+                else:
+                    textctrl.AppendText(string.encode(encoding['SYSTEM']))  # string.encode('UTF-8'))  # DEBUG removed bytes
             else:
-                textctrl.AppendText(string)
-        except UnicodeDecodeError:
+                textctrl.AppendText(string.encode(encoding['OUTPUT']))
+        except UnicodeDecodeError as e:
             # I'm not sure why I sometimes get this, and I don't know what I
             # can do other than to ignore it.
-            textctrl.AppendTextRaw(bytes(string, encoding['SYSTEM']))
-        except UnicodeEncodeError:
+            # print(f"DEBUG: Console print UnicodeDecodeError string is {string}")
+            textctrl.AppendTextRaw(string)  # DEBUG removed bytes
+        except UnicodeEncodeError as e:
             # I'm not sure why I sometimes get this, and I don't know what I
             # can do other than to ignore it.
-            textctrl.AppendText(string.encode('utf-8'))
+            # print(f"DEBUG: Console print UnicodeEncodeError string is {string}")
+            textctrl.AppendTextRaw(string.encode(encoding['CONSOLE']))  # .encode('mbcs'))
 
         new_text_end = textctrl.GetLength()
 
@@ -603,7 +608,7 @@ class TestRunnerPlugin(Plugin):
         textctrl.SetReadOnly(False)
         try:
             if enc:
-                textctrl.AppendText(string.encode(encoding['OUTPUT']))
+                textctrl.AppendText(string.encode(encoding['SYSTEM']))
             else:
                 textctrl.AppendText(string)
         except UnicodeDecodeError as e:
@@ -873,16 +878,16 @@ class TestRunnerPlugin(Plugin):
             self._append_to_message_log('<< CONTINUE >>')
 
     def _handle_start_test(self, args):
-        longname = args[1]['longname']
-        self._append_to_message_log('Starting test: %s' % longname)
+        longname = args[1]['longname'].encode('utf-8')
+        self._append_to_message_log(f"Starting test: {longname.decode(encoding['OUTPUT'], 'backslashreplace')}")
 
     def _append_to_message_log(self, text):
         if self.show_message_log:
             self._messages_log_texts.put(text)
 
     def _handle_end_test(self, args):
-        longname = args[1]['longname']
-        self._append_to_message_log('Ending test:   %s\n' % longname)
+        longname = args[1]['longname'].encode('utf-8')
+        self._append_to_message_log(f"Ending test: {longname.decode(encoding['OUTPUT'], 'backslashreplace')}\n")
         if args[1]['status'] == 'PASS':
             self._progress_bar.add_pass()
         else:
