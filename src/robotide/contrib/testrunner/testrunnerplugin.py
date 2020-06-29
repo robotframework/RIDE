@@ -558,21 +558,22 @@ class TestRunnerPlugin(Plugin):
         textctrl.SetReadOnly(False)
         try:
             if enc:
-                if source == "stdout":
-                    textctrl.AppendText(string.encode(encoding['OUTPUT']))  # string.encode('UTF-8'))  # DEBUG removed bytes
+                if IS_WINDOWS:
+                    textctrl.AppendText(string.encode('mbcs'))
                 else:
                     textctrl.AppendText(string.encode(encoding['SYSTEM']))  # string.encode('UTF-8'))  # DEBUG removed bytes
-                # print(f"DEBUG: testrunnerplugin AppendText enc True {string.encode(encoding['SYSTEM'])}")
             else:
-                textctrl.AppendText(string)
+                textctrl.AppendText(string.encode(encoding['OUTPUT']))
         except UnicodeDecodeError as e:
             # I'm not sure why I sometimes get this, and I don't know what I
             # can do other than to ignore it.
-            textctrl.AppendTextRaw(string.encode(encoding['SYSTEM']))  # DEBUG removed bytes
+            # print(f"DEBUG: Console print UnicodeDecodeError string is {string}")
+            textctrl.AppendTextRaw(string)  # DEBUG removed bytes
         except UnicodeEncodeError as e:
             # I'm not sure why I sometimes get this, and I don't know what I
             # can do other than to ignore it.
-            textctrl.AppendText(string.encode('utf-8'))
+            # print(f"DEBUG: Console print UnicodeEncodeError string is {string}")
+            textctrl.AppendTextRaw(string.encode(encoding['CONSOLE']))  # .encode('mbcs'))
 
         new_text_end = textctrl.GetLength()
 
@@ -600,12 +601,9 @@ class TestRunnerPlugin(Plugin):
 
         textctrl.SetReadOnly(False)
         try:
-            if enc:
-                textctrl.AppendText(string.encode(encoding['OUTPUT']))
-            else:
-                textctrl.AppendText(string)
+            textctrl.AppendText(string.encode(encoding['SYSTEM']))
         except UnicodeDecodeError as e:
-            textctrl.AppendTextRaw(string.encode(encoding['SYSTEM']))
+            textctrl.AppendText(string.encode(encoding['OUTPUT']))
         except UnicodeEncodeError as e:
             textctrl.AppendText(string.encode('utf-8'))  # DEBUG .encode('utf-8'))
 
