@@ -5,4 +5,3 @@ Pygments # This enables syntax highlighted in Text Editor
 robotframeworklexer # Updates lexer to newer RF 3.1.1
 robotframework
 Pypubsub
-psutil

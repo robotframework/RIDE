@@ -142,9 +142,8 @@ class TestTestSelectionController(unittest.TestCase):
         self.assertFalse(self._tsc.is_empty())
 
     def test_test_selection_is_empty_after_removing_same_test_from_there_even_when_it_is_not_the_same_object(self):
-        test = self._create_test()
-        self._tsc.select(test)
-        self._tsc.select(test, False)
+        self._tsc.select(self._create_test())
+        self._tsc.select(self._create_test(), False)
         self.assertTrue(self._tsc.is_empty())
 
     def test_is_test_selected(self):

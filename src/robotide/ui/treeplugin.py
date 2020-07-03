@@ -16,12 +16,9 @@
 import os
 import wx
 from wx.lib.agw import customtreectrl
-from wx.lib.agw.customtreectrl import GenericTreeItem
 from wx.lib.mixins import treemixin
 from wx import Colour
 from wx.lib.agw.aui import GetManager
-
-from ..controller.macrocontrollers import TestCaseController
 
 TREETEXTCOLOUR = Colour(0xA9, 0xA9, 0xA9)
 
@@ -30,15 +27,14 @@ from robotide.controller.ui.treecontroller import TreeController, \
     TestSelectionController
 from robotide.context import IS_WINDOWS
 from robotide.action.actioninfo import ActionInfo
-from robotide.controller.filecontrollers import ResourceFileController, TestDataDirectoryController, \
-    TestCaseFileController
+from robotide.controller.filecontrollers import ResourceFileController
 from robotide.publish.messages import RideTestRunning, RideTestPaused, \
     RideTestPassed, RideTestFailed, RideTestExecutionStarted, \
     RideImportSetting, RideExcludesChanged, RideIncludesChanged, \
     RideOpenSuite, RideNewProject
 from robotide.ui.images import RUNNING_IMAGE_INDEX, PASSED_IMAGE_INDEX, \
     FAILED_IMAGE_INDEX, PAUSED_IMAGE_INDEX, ROBOT_IMAGE_INDEX
-from robotide.ui.treenodehandlers import TestCaseHandler, TestDataDirectoryHandler, TestCaseFileHandler
+from robotide.ui.treenodehandlers import TestCaseHandler
 from robotide.publish import PUBLISHER, RideTreeSelection, RideFileNameChanged,\
     RideItem, RideUserKeywordAdded, RideTestCaseAdded, RideUserKeywordRemoved,\
     RideTestCaseRemoved, RideDataFileRemoved, RideDataChangedToDirty,\
@@ -311,13 +307,6 @@ class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
         self._images.set_execution_results(message.results)
 
     def _test_result(self, message):
-        test: TestCaseController = message.item
-        if message.topic == 'ride.test.passed':
-            test.run_passed = True
-        elif message.topic == 'ride.test.failed':
-            test.run_passed = False
-        else:
-            test.run_passed = None
         wx.CallAfter(self._set_icon_from_execution_results, message.item)
 
     def _set_icon_from_execution_results(self, controller):
@@ -697,10 +686,6 @@ class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
         handler = self._controller.get_handler(selection)
         return handler and handler.controller or None
 
-    def tree_node_selected(self, node):
-        # print(f"DEBUG: TreePlugin tree node selected {str(node)}")
-        pass
-
     def move_up(self, node):
         prev = self.GetPrevSibling(node)
         if prev.IsOk():
@@ -843,29 +828,14 @@ class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
             if self.ItemHasChildren(item):
                 self._hide_item(item)
 
-    def SelectAllTests(self, item: GenericTreeItem, selected=True):
-        """
-        Select tests for execution
-        :param item: The node of the graphical tree where the user triggered the action from
-        :param selected: Whether we want to select or un-select for execution
-        :return: Nothing
-        """
-        test_controllers = self.retrieveTestCaseControllers(item)
-        self._test_selection_controller.select_all(test_controllers,selected)
-
-    def retrieveTestCaseControllers(self, item: GenericTreeItem):
-        data = item.GetData()
-        if isinstance(data, TestDataDirectoryHandler):
-            item_controller: TestDataDirectoryController = data.tests.parent
-        elif isinstance(data, TestCaseFileHandler):
-            item_controller: TestCaseFileController = data.controller
-        else:
-            raise Exception("Unexpected type of handler: " + str(data))
-        test_controllers = item_controller.retrieve_test_controllers()
-        return test_controllers
+    def SelectAllTests(self, item):
+        self._for_all_tests(item, lambda t: self.CheckItem(t))
 
     def SelectTests(self, tests):
-            self._test_selection_controller.select_all(tests)
+        def foo(t):
+            if self.GetPyData(t).controller in tests:
+                self.CheckItem(t)
+        self._for_all_tests(self._root, foo)
 
     def ExpandAllSubNodes(self, item):
         self._expand_or_collapse_nodes(item, self.Expand)
@@ -880,6 +850,28 @@ class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
             for child in item.GetChildren():
                 self._expand_or_collapse_nodes(child, callback)
 
+    def _for_all_tests(self, item, func):
+        item_was_expanded = self.IsExpanded(item)
+        if not self.HasAGWFlag(customtreectrl.TR_HIDE_ROOT) or \
+                item != self.GetRootItem():
+            if isinstance(item.GetData(), ResourceRootHandler or
+               ResourceFileHandler):
+                return
+
+            is_item_expanded = self.IsExpanded(item)
+            if not is_item_expanded:
+                self.Expand(item)
+            if self._is_test_node(item):
+                func(item)
+            if not self.IsExpanded(item):
+                return
+
+        for child in item.GetChildren():
+            self._for_all_tests(child, func)
+
+        if not item_was_expanded:
+            self.Collapse(item)
+
     def _for_all_drawn_tests(self, item, func):
         if self._is_test_node(item):
             func(item)
@@ -889,32 +881,37 @@ class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
     def _is_test_node(self, node):
         return node.GetType() == 1
 
+    def DeselectAllTests(self, item):
+        self._for_all_tests(item, lambda t: self.CheckItem(t, checked=False))
+
     def DeselectTests(self, tests):
-        self._test_selection_controller.unselect_all(tests)
+        def foo(t):
+            if self.GetPyData(t).controller in tests:
+                self.CheckItem(t, checked=False)
+        self._for_all_tests(self._root, foo)
 
     def SelectFailedTests(self, item):
-        all_controllers = self.retrieveTestCaseControllers(item)
-        test_controllers = filter(
-            lambda ctrl: ctrl.run_passed == False,
-            all_controllers)
-        self._test_selection_controller.unselect_all(all_controllers)
-        self._test_selection_controller.select_all(test_controllers)
+        def func(t):
+            # FIXME: This information should be in domain model!
+            is_checked = self.GetItemImage(t) == FAILED_IMAGE_INDEX
+            self.CheckItem(t, checked=is_checked)
+
+        self._for_all_tests(item, func)
 
     def SelectPassedTests(self, item):
-        all_controllers = self.retrieveTestCaseControllers(item)
-        test_controllers = filter(
-            lambda ctrl: ctrl.run_passed == True,
-            all_controllers)
-        self._test_selection_controller.unselect_all(all_controllers)
-        self._test_selection_controller.select_all(test_controllers)
+        def func(t):
+            is_checked = self.GetItemImage(t) == PASSED_IMAGE_INDEX
+            self.CheckItem(t, checked=is_checked)
+
+        self._for_all_tests(item, func)
 
     def OnClose(self, event):
         print("DEBUG: Tree OnClose hidding")
         self.Hide()
 
     def OnTreeItemChecked(self, event):
-        node: GenericTreeItem = event.GetItem()
-        handler: TestCaseHandler = self._controller.get_handler(node=node)
+        node = event.GetItem()
+        handler = self._controller.get_handler(node=node)
         self._test_selection_controller.select(
             handler.controller, node.IsChecked())
 
@@ -972,7 +969,7 @@ class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
         node = self._controller.find_node_by_controller(controller)
         if node:
             self.SetItemText(node, data.item.name)
-
+            self._test_selection_controller.send_selection_changed_message()
         if controller.dirty:
             self._controller.mark_node_dirty(
                 self._get_datafile_node(controller.datafile))

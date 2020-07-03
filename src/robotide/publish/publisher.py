@@ -94,7 +94,6 @@ class _ListenerWrapper(object):
     def __call__(self, data):
         from .messages import RideLogException
         try:
-            # print(f"DEBUG: Publisher  Listerner data is {str(data)}")
             self.listener(data)
         except Exception as err:
             # Prevent infinite recursion if RideLogMessage listener is broken,
