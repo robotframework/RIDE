@@ -170,10 +170,11 @@ def comma_separated_value_editor(parent, settings, name, label, help=''):
     editor = TextField(parent, initial_value)
     editor.SetToolTip(help)
 
-    def set_value():
+    def set_value(evt):
         new_value = [token.strip() for token in editor.GetValue().split(',')
                      if token.strip()]
         settings.set(name, new_value)
-    editor.Bind(wx.EVT_KILL_FOCUS, lambda evt: set_value())
+        evt.Skip()
+    editor.Bind(wx.EVT_KILL_FOCUS, lambda evt: set_value(evt))
 
     return Label(parent, label=label), editor
