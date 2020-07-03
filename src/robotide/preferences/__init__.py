@@ -35,9 +35,9 @@ class Preferences(object):
     def preference_panels(self):
         return self._preference_panels
 
-    def add(self, prefrence_ui):
-        if prefrence_ui not in self._preference_panels:
-            self._preference_panels.append(prefrence_ui)
+    def add(self, preference_ui):
+        if preference_ui not in self._preference_panels:
+            self._preference_panels.append(preference_ui)
 
     def remove(self, panel_class):
         if panel_class in self._preference_panels:
