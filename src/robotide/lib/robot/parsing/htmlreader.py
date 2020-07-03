@@ -12,7 +12,7 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-
+import re
 from robotide.lib.robot.output import LOGGER
 from robotide.lib.robot.utils import PY2
 
@@ -54,13 +54,20 @@ class HtmlReader(HTMLParser):
         self.state = self.IGNORE
         self.current_row = None
         self.current_cell = None
+
+        report_html_pattern = b'<meta content="Robot Framework .*" name="Generator">'
+
+        is_report_html = False
         for line in htmlfile.readlines():
             self.feed(self._decode(line))
+            if re.match(report_html_pattern, line):
+                is_report_html = True
         # Calling close is required by the HTMLParser but may cause problems
         # if the same instance of our HtmlParser is reused. Currently it's
         # used only once so there's no problem.
         self.close()
-        if self.populator.eof():
+        if self.populator.eof() and not is_report_html:
+            # Only warn when the html file is not report html
             LOGGER.warn("Using test data in HTML format is deprecated. "
                         "Convert '%s' to plain text format."
                         % (path or htmlfile.name))

@@ -48,6 +48,7 @@ being used for a currently running test.
 import datetime
 import time
 import os
+import psutil
 import re
 import wx
 import wx.stc
@@ -60,6 +61,7 @@ from robotide.action.shortcut import localize_shortcuts
 from robotide.context import IS_WINDOWS, IS_MAC
 from robotide.contrib.testrunner import TestRunner
 from robotide.contrib.testrunner import runprofiles
+from robotide.controller.macrocontrollers import TestCaseController
 from robotide.publish import RideSettingsChanged, PUBLISHER
 from robotide.publish.messages import RideTestSelectedForRunningChanged
 from robotide.pluginapi import Plugin, ActionInfo
@@ -136,7 +138,15 @@ class TestRunnerPlugin(Plugin):
         self._test_runner = TestRunner(application.model)
         self._register_shortcuts()
         self._min_log_level_number = LOG_LEVELS['INFO']
-        self._names_to_run = set()
+        self._selected_tests: {TestCaseController} = set()
+        self._process = psutil.Process()
+        self._initmemory = None
+        self._limitmemory = None  # This will be +80%
+        self._maxmemmsg = None
+
+    @property
+    def _names_to_run(self):
+        return list(map(lambda ctrl: (ctrl.datafile_controller.longname, ctrl.longname), self._selected_tests))
 
     def _register_shortcuts(self):
         self.register_shortcut('CtrlCmd-C', self._copy_from_out)
@@ -158,6 +168,7 @@ class TestRunnerPlugin(Plugin):
             return
         if self.message_log.GetSTCFocus():
             self.message_log.Copy()
+            return
 
     def enable(self):
         self.tree.set_checkboxes_for_tests()
@@ -212,14 +223,17 @@ class TestRunnerPlugin(Plugin):
         self.subscribe(self.OnSettingsChanged, RideSettingsChanged)
 
     def OnSettingsChanged(self, data):
-        """Updates settings"""
+        '''Updates settings'''
         section, setting = data.keys
-        if section == "Test Run":  # DEBUG temporarily we have two sections
+        # print("DEBUG: enter OnSettingsChanged section %s" % (section))
+        if section == 'Test Run':  # DEBUG temporarily we have two sections
+            # print("DEBUG: setting.get('confirm run')= %s " % setting)
+            # print("DEBUG: new data= %s old %s new %s" % (data.keys, data.old, data.new))
             self.defaults.setdefault(setting, data.new)
             self.save_setting(setting, data.new)
 
     def OnTestSelectedForRunningChanged(self, message):
-        self._names_to_run = message.tests
+        self._selected_tests = message.tests
 
     def disable(self):
         self._remove_from_notebook()
@@ -262,29 +276,44 @@ class TestRunnerPlugin(Plugin):
         self.message_log = None
         self._right_panel.GetSizer().Layout()
 
+    def _recreate_message_log(self):
+        self.show_log_messages_checkbox.SetValue(False)
+        self._reset_memory_calc()
+        self.show_log_messages_checkbox.SetValue(True)
+
+    def _reset_memory_calc(self):
+        self._initmemory = self._process.memory_info()[0]
+        self._limitmemory = self._initmemory * 1.80
+        self._maxmemmsg = None
+
     def OnStop(self, event):
         """Called when the user clicks the "Stop" button
 
         This sends a SIGINT to the running process, with the
         same effect as typing control-c when running from the
         command line."""
+        self._reset_memory_calc()
         self._AppendText(self.out, '[ SENDING STOP SIGNAL ]\n',
                          source='stderr')
         self._test_runner.send_stop_signal()
 
     def OnPause(self, event):
+        self._reset_memory_calc()
         self._AppendText(self.out, '[ SENDING PAUSE SIGNAL ]\n')
         self._test_runner.send_pause_signal()
 
     def OnContinue(self, event):
+        self._reset_memory_calc()
         self._AppendText(self.out, '[ SENDING CONTINUE SIGNAL ]\n')
         self._test_runner.send_continue_signal()
 
     def OnStepNext(self, event):
+        self._reset_memory_calc()
         self._AppendText(self.out, '[ SENDING STEP NEXT SIGNAL ]\n')
         self._test_runner.send_step_next_signal()
 
     def OnStepOver(self, event):
+        self._reset_memory_calc()
         self._AppendText(self.out, '[ SENDING STEP OVER SIGNAL ]\n')
         self._test_runner.send_step_over_signal()
 
@@ -305,10 +334,11 @@ class TestRunnerPlugin(Plugin):
         if not self._can_start_running_tests():
             return
         if self.__getattr__('confirm run'):
-            if not self.tests_selected():
+            if not self._tests_selected():
                 if not self.ask_user_to_run_anyway():
                     # In Linux NO runs dialog 4 times
                     return
+        self._reset_memory_calc()
         self._initialize_ui_for_running()
         command = self._create_command()
         # DEBUG on Py3 it not shows correct if tags with latin chars
@@ -319,6 +349,7 @@ class TestRunnerPlugin(Plugin):
             self._set_running()
             self._progress_bar.Start()
         except Exception as e:
+            # self._output("DEBUG: Except block test_runner.run_command\n")
             self._set_stopped()
             error, log_message = self.get_current_profile().format_error(str(e), None)
             self._output(error)
@@ -375,8 +406,8 @@ class TestRunnerPlugin(Plugin):
                             wx.ICON_QUESTION | wx.YES_NO)
         return ret == wx.YES
 
-    def tests_selected(self):
-        return len(self._names_to_run) != 0
+    def _tests_selected(self):
+        return len(self._selected_tests) != 0
 
     def ask_user_to_run_anyway(self):
         ret = wx.MessageBox('No tests selected. \n'
@@ -470,10 +501,19 @@ class TestRunnerPlugin(Plugin):
                 self._output("\n", source="stdout")
             self._output(err_buffer, source="stderr")
         if self.message_log and not self._messages_log_texts.empty():
-            texts = []
-            while not self._messages_log_texts.empty():
-                texts += [self._messages_log_texts.get()]
-            self._AppendText(self.message_log, '\n'+'\n'.join(texts))
+            if self._process.memory_info()[0] <= self._limitmemory:
+                texts = []
+                while not self._messages_log_texts.empty():
+                    texts += [self._messages_log_texts.get()]
+                self._AppendTextMessageLog(self.message_log, '\n'+'\n'.join(texts))
+            else:
+                if not self._maxmemmsg:
+                    self._maxmemmsg = "Messages log exceeded 80% of process " \
+                                      "memory, stopping for now..."
+                    self._AppendTextMessageLog(self.message_log,
+                                               '\n' + self._maxmemmsg,
+                                               source="stderr")
+                    # self._recreate_message_log()  # DEBUG
 
     def GetLastOutputChar(self):
         """Return the last character in the output window"""
@@ -491,6 +531,7 @@ class TestRunnerPlugin(Plugin):
         """
         result = []
         for arg in argv:
+            # arg = arg.encode(encoding['SYSTEM'])
             if "'" in arg or " " in arg or "&" in arg:
                 # for windows, if there are spaces we need to use
                 # double quotes. Single quotes cause problems
@@ -508,6 +549,9 @@ class TestRunnerPlugin(Plugin):
             self._reload_model()
         self.show_tab(self.panel)
 
+    # from memory_profiler import profile as mprofile
+
+    # @mprofile
     def _AppendText(self, textctrl, string, source="stdout", enc=True):
         if not self.panel or not textctrl:
             return
@@ -520,17 +564,22 @@ class TestRunnerPlugin(Plugin):
         textctrl.SetReadOnly(False)
         try:
             if enc:
-                textctrl.AppendText(string.encode(encoding['SYSTEM']))
+                if IS_WINDOWS:
+                    textctrl.AppendText(string.encode('mbcs'))
+                else:
+                    textctrl.AppendText(string.encode(encoding['SYSTEM']))  # string.encode('UTF-8'))  # DEBUG removed bytes
             else:
-                textctrl.AppendText(string)
-        except UnicodeDecodeError:
+                textctrl.AppendText(string.encode(encoding['OUTPUT']))
+        except UnicodeDecodeError as e:
             # I'm not sure why I sometimes get this, and I don't know what I
             # can do other than to ignore it.
-            textctrl.AppendTextRaw(bytes(string, encoding['SYSTEM']))
-        except UnicodeEncodeError:
+            # print(f"DEBUG: Console print UnicodeDecodeError string is {string}")
+            textctrl.AppendTextRaw(string)  # DEBUG removed bytes
+        except UnicodeEncodeError as e:
             # I'm not sure why I sometimes get this, and I don't know what I
             # can do other than to ignore it.
-            textctrl.AppendText(string.encode('utf-8'))
+            # print(f"DEBUG: Console print UnicodeEncodeError string is {string}")
+            textctrl.AppendTextRaw(string.encode(encoding['CONSOLE']))  # .encode('mbcs'))
 
         new_text_end = textctrl.GetLength()
 
@@ -538,6 +587,38 @@ class TestRunnerPlugin(Plugin):
             textctrl.StartStyling(new_text_start, 0x1f)
         else:
             textctrl.StartStyling(new_text_start)
+        if source == "stderr":
+            textctrl.SetStyling(new_text_end-new_text_start, STYLE_STDERR)
+
+        textctrl.SetReadOnly(True)
+        if last_visible_line >= linecount-4:
+            linecount = textctrl.GetLineCount()
+            textctrl.ScrollToLine(linecount)
+
+    def _AppendTextMessageLog(self, textctrl, string, source="stdout", enc=True):
+        if not self.panel or not textctrl:
+            return
+        textctrl.update_scroll_width(string)
+        # we need this information to decide whether to autoscroll or not
+        new_text_start = textctrl.GetLength()
+        linecount = textctrl.GetLineCount()
+        last_visible_line = textctrl.GetFirstVisibleLine() + \
+                          textctrl.LinesOnScreen() - 1
+
+        textctrl.SetReadOnly(False)
+        try:
+            if enc:
+                textctrl.AppendText(string.encode(encoding['OUTPUT']))
+            else:
+                textctrl.AppendText(string)
+        except UnicodeDecodeError as e:
+            textctrl.AppendTextRaw(string.encode(encoding['SYSTEM']))
+        except UnicodeEncodeError as e:
+            textctrl.AppendText(string.encode('utf-8'))  # DEBUG .encode('utf-8'))
+
+        new_text_end = textctrl.GetLength()
+
+        textctrl.StartStyling(new_text_start, 0x1f)
         if source == "stderr":
             textctrl.SetStyling(new_text_end-new_text_start, STYLE_STDERR)
 
@@ -797,16 +878,16 @@ class TestRunnerPlugin(Plugin):
             self._append_to_message_log('<< CONTINUE >>')
 
     def _handle_start_test(self, args):
-        longname = args[1]['longname']
-        self._append_to_message_log('Starting test: %s' % longname)
+        longname = args[1]['longname'].encode('utf-8')
+        self._append_to_message_log(f"Starting test: {longname.decode(encoding['OUTPUT'], 'backslashreplace')}")
 
     def _append_to_message_log(self, text):
         if self.show_message_log:
             self._messages_log_texts.put(text)
 
     def _handle_end_test(self, args):
-        longname = args[1]['longname']
-        self._append_to_message_log('Ending test:   %s\n' % longname)
+        longname = args[1]['longname'].encode('utf-8')
+        self._append_to_message_log(f"Ending test: {longname.decode(encoding['OUTPUT'], 'backslashreplace')}\n")
         if args[1]['status'] == 'PASS':
             self._progress_bar.add_pass()
         else:
