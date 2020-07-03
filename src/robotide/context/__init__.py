@@ -29,6 +29,7 @@ ROBOT_LOGGER.register_logger(LOG)
 
 IS_WINDOWS = os.sep == '\\'
 IS_MAC = sys.platform == 'darwin'
+IS_LINUX = sys.platform == 'linux'
 WX_VERSION = wx.VERSION_STRING
 
 if IS_WINDOWS:

@@ -16,6 +16,7 @@
 import wx
 import textwrap
 from robotide.widgets import HelpLabel, Label, TextField
+from robotide.context import IS_LINUX
 
 
 class PreferencesPanel(wx.Panel):
@@ -48,11 +49,22 @@ class PreferencesComboBox(wx.ComboBox):
         self.settings = settings
         self.key = key
         super(PreferencesComboBox, self).__init__(parent, id, self._get_value(),
+                                                  size=self._get_size(choices),
                                                   choices=choices, style=wx.CB_READONLY)
         self.Bind(wx.EVT_COMBOBOX, self.OnSelect)
 
     def _get_value(self):
         return self.settings[self.key]
+
+    def _get_size(self, choices=[]):
+        """ In Linux with GTK3 wxPython 4, there was not enough spacing.
+            The value 72 is there for 2 digits numeric lists, for
+            IntegerPreferenceComboBox.
+            This issue only occurs in Linux, for Mac and Windows using default size.
+        """
+        if IS_LINUX and choices:
+            return wx.Size(max(max(len(str(s)) for s in choices) * 9, 144), 20)
+        return wx.DefaultSize
 
     def OnSelect(self, event):
         self._set_value(str(event.GetEventObject().GetValue()))
@@ -78,7 +90,8 @@ class PreferencesSpinControl(wx.SpinCtrl):
     def __init__(self, parent, id, settings, key, choices):
         self.settings = settings
         self.key = key
-        super(PreferencesSpinControl, self).__init__(parent, id)
+        super(PreferencesSpinControl, self).__init__(parent, id,
+            size=self._get_size(choices[-1]))
         self.SetRange(*choices)
         self.SetValue(self._get_value())
         self.Bind(wx.EVT_SPINCTRL, self.OnChange)
@@ -86,6 +99,16 @@ class PreferencesSpinControl(wx.SpinCtrl):
 
     def _get_value(self):
         return self.settings[self.key]
+
+    def _get_size(self, max_value):
+        """ In Linux with GTK3 wxPython 4, there was not enough spacing.
+            The value 72 is there for 2 digits numeric lists, for
+            IntegerPreferenceComboBox.
+            This issue only occurs in Linux, for Mac and Windows using default size.
+        """
+        if IS_LINUX and max_value:
+            return wx.Size(max(len(str(max_value)) * 9, 144), 20)
+        return wx.DefaultSize
 
     def OnChange(self, event):
         self._set_value(event.GetEventObject().GetValue())
