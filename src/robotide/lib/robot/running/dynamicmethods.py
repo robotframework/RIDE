@@ -14,8 +14,7 @@
 #  limitations under the License.
 
 from robotide.lib.robot.errors import DataError
-from robotide.lib.robot.utils import (get_error_message, is_java_method, is_bytes,
-                         is_unicode, py2to3)
+from robotide.lib.robot.utils import (get_error_message, is_java_method, is_bytes, is_unicode, is_tuple, py2to3)
 
 from .arguments import JavaArgumentParser, PythonArgumentParser
 
@@ -62,6 +61,8 @@ class _DynamicMethod(object):
             return value
         if is_bytes(value):
             return value.decode('UTF-8')
+        if is_tuple(value):
+            return f"{value[0]}={value[1]}"
         raise DataError('Return value must be string.')
 
     def _to_list_of_strings(self, value):
