@@ -16,7 +16,7 @@
 import wx
 import textwrap
 from robotide.widgets import HelpLabel, Label, TextField
-from robotide.context import IS_WINDOWS
+from robotide.context import IS_LINUX
 
 
 class PreferencesPanel(wx.Panel):
@@ -50,7 +50,7 @@ class PreferencesComboBox(wx.ComboBox):
         self.key = key
         super(PreferencesComboBox, self).__init__(parent, id, self._get_value(),
                                                   size=self._get_size(choices),
-                                                  choices=choices)
+                                                  choices=choices, style=wx.CB_READONLY)
         self.Bind(wx.EVT_COMBOBOX, self.OnSelect)
 
     def _get_value(self):
@@ -60,10 +60,10 @@ class PreferencesComboBox(wx.ComboBox):
         """ In Linux with GTK3 wxPython 4, there was not enough spacing.
             The value 72 is there for 2 digits numeric lists, for
             IntegerPreferenceComboBox.
+            This issue only occurs in Linux, for Mac and Windows using default size.
         """
-        fact = 9 if IS_WINDOWS else 18  # On GTK3 labels are bigger
-        if choices:
-            return wx.Size(max(max(len(str(s)) for s in choices)*fact, 72), 20)
+        if IS_LINUX and choices:
+            return wx.Size(max(max(len(str(s)) for s in choices) * 9, 144), 20)
         return wx.DefaultSize
 
     def OnSelect(self, event):
@@ -90,7 +90,7 @@ class PreferencesSpinControl(wx.SpinCtrl):
     def __init__(self, parent, id, settings, key, choices):
         self.settings = settings
         self.key = key
-        super(PreferencesSpinControl, self).__init__(parent, id, 
+        super(PreferencesSpinControl, self).__init__(parent, id,
             size=self._get_size(choices[-1]))
         self.SetRange(*choices)
         self.SetValue(self._get_value())
@@ -104,10 +104,10 @@ class PreferencesSpinControl(wx.SpinCtrl):
         """ In Linux with GTK3 wxPython 4, there was not enough spacing.
             The value 72 is there for 2 digits numeric lists, for
             IntegerPreferenceComboBox.
+            This issue only occurs in Linux, for Mac and Windows using default size.
         """
-        fact = 9 if IS_WINDOWS else 18  # On GTK3 labels are bigger
-        if max_value:
-            return wx.Size(max(len(str(max_value))*fact, 72), 20)
+        if IS_LINUX and max_value:
+            return wx.Size(max(len(str(max_value)) * 9, 144), 20)
         return wx.DefaultSize
 
     def OnChange(self, event):
@@ -193,10 +193,11 @@ def comma_separated_value_editor(parent, settings, name, label, help=''):
     editor = TextField(parent, initial_value)
     editor.SetToolTip(help)
 
-    def set_value():
+    def set_value(evt):
         new_value = [token.strip() for token in editor.GetValue().split(',')
                      if token.strip()]
         settings.set(name, new_value)
-    editor.Bind(wx.EVT_KILL_FOCUS, lambda evt: set_value())
+        evt.Skip()
+    editor.Bind(wx.EVT_KILL_FOCUS, lambda evt: set_value(evt))
 
     return Label(parent, label=label), editor
