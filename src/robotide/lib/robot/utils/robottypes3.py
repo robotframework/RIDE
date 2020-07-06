@@ -39,6 +39,10 @@ def is_unicode(item):
     return isinstance(item, str)
 
 
+def is_tuple(item):
+    return isinstance(item, tuple)
+
+
 def is_list_like(item):
     if isinstance(item, (str, bytes, bytearray, UserString, IOBase)):
         return False
