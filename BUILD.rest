@@ -39,13 +39,14 @@ wxPython
 Version 2.8.12.1 of wxPython__ was the last for the 2 series.
 Together with version 3.0.2, they are called the wxPython Classic.
 
-The current version of wxPython is 4.0.7.post2 and was called wxPhoenix.
+The current recommended version of wxPython is 4.0.7.post2 and was called wxPhoenix.
+RIDE is not fully compatible with newest wxPython 4.1.
 
 RIDE on Python 2.7 still runs with any version of those Classic or wxPhoenix.
 On Python 3.6+, only wxPhoenix is supported (and in the future we will only
 support those).
 
-**VERSION 1.7.4.1 IS THE LAST RELEASE SUPPORTING PYTHON 2.7 AND WXPYTHON <3.0.3**
+**VERSION 1.7.4.2 IS THE LAST RELEASE SUPPORTING PYTHON 2.7 AND WXPYTHON <3.0.3**
 
 **wxPython will be updated to current version 4.0.7.post2**
 
@@ -71,7 +72,7 @@ Example::
 
 
 It is highly recommended, if you want to program with wxPython to download and
-run its ``demo``.
+run its ``demo``. We need your programming skils on this project, talk with Hélio Guilherme.
 
 __ https://wxpython.org
 
@@ -99,12 +100,7 @@ There is also a shell script (requiring customization for your environment).
 It allows to run the test files stopping when errors are found.
 Example::
 
-    ./test_all.sh 3 utest/namespace   # to test with python3 and namespace dir
-
-or::
-
-    ./test_all.sh                     # all utests with default python2
-
+    ./test_all.sh utest/namespace   # to test with python3 and namespace dir
 
 Contributing
 ============
@@ -194,7 +190,7 @@ Creating distributions
       pip install --pre --upgrade robotframework-ride
 
 
-* Announce on usergroup, robot homepage, slack, and twitter
+* Announce on usergroup, robot homepage, forum, slack, and twitter
 
 
 Settings migration
