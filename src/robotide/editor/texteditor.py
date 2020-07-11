@@ -279,6 +279,9 @@ class DataFileWrapper(object): # TODO: bad class name
     def mark_data_dirty(self):
         self._data.mark_dirty()
 
+    def mark_data_pristine(self):
+        self._data.unmark_dirty()
+
     def _create_target(self):
         data = self._data.data
         target_class = type(data)
@@ -313,7 +316,7 @@ class SourceEditor(wx.Panel):
                       'txt number of spaces', 4)
         self._create_ui(title)
         self._data = None
-        self._dirty = False
+        self._dirty = 0  # 0 is False and 1 is True, when changed on this editor
         self._position = None
         self._showing_list = False
         self._tab_open = None
@@ -606,13 +609,14 @@ class SourceEditor(wx.Panel):
         self._editor.WriteText(spaces)
 
     def reset(self):
-        self._dirty = False
+        self._dirty = 0
 
     def save(self, *args):
         self.store_position()
         if self.dirty and not self._data_validator.validate_and_update(
                 self._data, self._editor.utf8_text):
             return False
+        self.reset()
         self.GetFocus(None)
         return True
 
@@ -621,9 +625,11 @@ class SourceEditor(wx.Panel):
             if self._editor.GetSelectionStart() == self._editor.GetSelectionEnd():
                 self._editor.CharRight()
             self._editor.DeleteBack()
+        self._mark_file_dirty(self._editor.GetModify())
 
     def cut(self):
         self._editor.Cut()
+        self._mark_file_dirty(self._editor.GetModify())
 
     def copy(self):
         self._editor.Copy()
@@ -634,6 +640,7 @@ class SourceEditor(wx.Panel):
             self._editor.Paste()
         elif focus == self._search_field:
             self._search_field.Paste()
+        self._mark_file_dirty(self._editor.GetModify())
 
     def select_all(self):
         self._editor.SelectAll()
@@ -641,10 +648,12 @@ class SourceEditor(wx.Panel):
     def undo(self):
         self._editor.Undo()
         self.store_position()
+        self._mark_file_dirty(self._editor.GetModify())
 
     def redo(self):
         self._editor.Redo()
         self.store_position()
+        self._mark_file_dirty(self._editor.GetModify())
 
     def remove_and_store_state(self):
         if self._editor:
@@ -685,9 +694,8 @@ class SourceEditor(wx.Panel):
     def OnEditorKey(self, event):
         if not self.is_focused():  # DEBUG was typing text when at Grid Editor
             return
-        keycode = event.GetKeyCode()
-        if (keycode >= ord(' ')) and not self.dirty and self._editor.GetModify():
-            self._mark_file_dirty()
+        # DEBUG keycode = event.GetKeyCode(); if (keycode >= ord(' ')) and
+        self._mark_file_dirty(self._editor.GetModify())
         event.Skip()
 
     def OnKeyDown(self, event):
@@ -828,10 +836,14 @@ class SourceEditor(wx.Panel):
         if setting == 'txt number of spaces':
             self._tab_size = self._parent._app.settings.get('txt number of spaces', 4)
 
-    def _mark_file_dirty(self):
+    def _mark_file_dirty(self, dirty=True):
         if self._data:
-            self._dirty = True
-            self._data.mark_data_dirty()
+            if dirty:
+                self._data.mark_data_dirty()
+                self._dirty = 1
+            elif self._dirty == 1:
+                self._data.mark_data_pristine()
+                self._dirty = 0
 
 
 class RobotDataEditor(stc.StyledTextCtrl):
