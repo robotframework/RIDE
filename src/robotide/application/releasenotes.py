@@ -107,10 +107,12 @@ The reference for valid arguments is <a class="reference external" href="http://
 <li>This is the <strong>first version without support for Python 2.7</strong>.</li>
 <li>The last version with support for Python 2.7 was <strong>1.7.4.2</strong>.</li>
 <li>There are some important changes, or known issues:<ul>
-<li>On MacOS to call autocomplete in Grid and Text Editors, you have to use Alt-Space (not Command-Space)</li>
-<li>On Linux and Windows to call autocomplete in Grid and Text Editors, you have to use Ctrl-Space</li>
+<li>On MacOS to call autocomplete in Grid and Text Editors, you have to use Alt-Space (not Command-Space).</li>
+<li>On Linux and Windows to call autocomplete in Grid and Text Editors, you have to use Ctrl-Space.</li>
 <li>On Text Editor the TAB key adds the defined number of spaces. With Shift moves to the left, and together with Control selects text.</li>
 <li>On Text Editor the <strong>: FOR</strong> loop structure must use Robot Framework 3.1.2 syntax, i.e. <strong>FOR</strong> and <strong>END</strong>. The only solution to disable this, is to disable Text Editor Plugin.</li>
+<li>On Grid Editor and Linux the auto enclose is only working on cell selection, but not on cell content edit.</li>
+<li>On Text Editor when Saving with Ctrl-S, you must do this twice :(.</li>
 </ul>
 </li>
 </ul>
