@@ -54,11 +54,16 @@ The reference for valid arguments is <a class="reference external" href="http://
 </ul>
 </li>
 </ul>
-<p><strong>New Features</strong></p>
+<p><strong>New Features and Fixes Highlights</strong></p>
 <ul>
 <li>Auto enclose text in {{}}, [], "", ''</li>
 <li>Auto indent in Text Editor</li>
 <li>Block indent in Text Editor (TAB on block of selected text)</li>
+<li>Ctrl-number with number, 1-5 also working on Text Editor:<ol><li>create scalar variable</li><li>create list variable</li>
+<li>Comment line</li><li>Uncomment line</li><li>create dictionary variable</li></ol></li>
+<li>Persistance of the position and state of detached panels, File Explorer and Test Suites</li>
+<li>File Explorer and Test Suites panels are now Plugins and can be disabled or enabled and made Visible with F11 and F12</li>
+<li>File Explorer now shows selected file when RIDE starts</li>
 </ul>
 <p>Please note, that the features and fixes are not yet closed. This pre-release is being done because it has important fixes.
 </p>
