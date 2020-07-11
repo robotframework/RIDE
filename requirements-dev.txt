@@ -2,7 +2,8 @@ setuptools
 nose
 mockito
 invoke
-rellu
+# rellu
+github3.py
 memory-profiler
 # Include also normal project requirements.
 -r requirements.txt
