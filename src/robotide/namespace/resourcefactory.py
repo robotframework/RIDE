@@ -92,7 +92,7 @@ class ResourceFactory(object):
         r = robotapi.ResourceFile(path)
         if os.stat(path)[6] != 0 and report_status:
             return r.populate()
-        robotapi.FromFilePopulator(r).populate(r.source)
+        robotapi.FromFilePopulator(r).populate(r.source, resource=True)
         return r
 
     def _normalize(self, path):
