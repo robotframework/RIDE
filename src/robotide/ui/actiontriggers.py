@@ -131,8 +131,8 @@ class _Menu(object):
         return '%s' % get_name(action.name)
 
     def _create_menu_item(self, action):
-        name_with_accerelator = self._get_name(action, build_new=True)
-        menu_item = MenuItem(self._frame, self, name_with_accerelator)
+        name_with_accelerator = self._get_name(action, build_new=True)
+        menu_item = MenuItem(self._frame, self, name_with_accelerator)
         pos = action.get_insertion_index(self.wx_menu)
         wx_menu_item = self.wx_menu.Insert(pos, menu_item.id,
                                            menu_item.name, action.doc)
@@ -282,15 +282,15 @@ class ShortcutRegistry(object):
                                                  action.shortcut))
             delegator.add(action)
             action.register(self)
-            self._update_accerelator_table()
+            self._update_accelerator_table()
 
     def unregister(self, action):
         key = action.get_shortcut()
         if self._actions[key].remove(action):
             del(self._actions[key])
-        self._update_accerelator_table()
+        self._update_accelerator_table()
 
-    def _update_accerelator_table(self):
+    def _update_accelerator_table(self):
         accelerators = []
         for delegator in self._actions.values():
             try:

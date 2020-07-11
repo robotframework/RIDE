@@ -22,7 +22,7 @@ from robotide.action import ActionInfoCollection, ActionFactory, SeparatorInfo
 from robotide.context import ABOUT_RIDE, SHORTCUT_KEYS
 from robotide.controller.ctrlcommands import SaveFile, SaveAll
 from robotide.publish import RideSaveAll, RideClosing, RideSaved, PUBLISHER,\
-    RideInputValidationError, RideTreeSelection, RideModificationPrevented
+    RideInputValidationError, RideTreeSelection, RideModificationPrevented, RideBeforeSaving
 from robotide.ui.tagdialogs import ViewAllTagsDialog
 from robotide.ui.filedialogs import RobotFilePathDialog
 from robotide.utils import RideEventHandler
@@ -475,9 +475,11 @@ class RideFrame(with_metaclass(classmaker(), wx.Frame, RideEventHandler)):
                 self.open_suite(path)
 
     def OnSave(self, event):
+        RideBeforeSaving().publish()
         self.save()
 
     def OnSaveAll(self, event):
+        RideBeforeSaving().publish()
         self.save_all()
 
     def save_all(self):

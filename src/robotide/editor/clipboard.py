@@ -15,7 +15,7 @@
 
 import os
 import wx
-from robotide.context import IS_WINDOWS
+from robotide.context import IS_WINDOWS, IS_MAC
 
 
 class _ClipboardHandler(object):
@@ -100,13 +100,20 @@ class _WindowsClipboardHandler(_ClipboardHandler):
         if self._edit_control_shown():
             self._get_edit_control().Cut()
         else:
-            _ClipboardHandler.copy(self)
+            _ClipboardHandler.cut(self)
 
     def _paste_to_cell_editor(self):
         self._get_edit_control().Paste()
 
+    def paste(self):
+        if self._edit_control_shown():
+            self._paste_to_cell_editor()
+        else:
+            _ClipboardHandler.paste(self)
 
-ClipboardHandler = IS_WINDOWS and _WindowsClipboardHandler or _ClipboardHandler
+
+# for now mac clipboard handler is the same with windows
+ClipboardHandler = _WindowsClipboardHandler if IS_WINDOWS or IS_MAC else _ClipboardHandler
 
 
 class _GridClipboard(object):

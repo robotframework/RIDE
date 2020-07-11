@@ -27,7 +27,7 @@ from robotide.controller.ctrlcommands import ChangeCellValue, ClearArea, \
     InsertArea
 from robotide.controller.cellinfo import TipMessage, ContentType, CellType
 from robotide.publish import (RideItemStepsChanged, RideSaved,
-                              RideSettingsChanged, PUBLISHER)
+                              RideSettingsChanged, PUBLISHER, RideBeforeSaving)
 from robotide.usages.UsageRunner import Usages, VariableUsages
 from robotide.ui.progress import RenameProgressObserver
 from robotide import robotapi, utils
@@ -103,6 +103,7 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
         self._counter = 0  # Workaround for double delete actions
         self._dcells = None  # Workaround for double delete actions
         self._icells = None  # Workaround for double insert actions
+        PUBLISHER.subscribe(self._before_saving, RideBeforeSaving)
         PUBLISHER.subscribe(self._data_changed, RideItemStepsChanged)
         PUBLISHER.subscribe(self.OnSettingsChanged, RideSettingsChanged)
         PUBLISHER.subscribe(self._resize_grid, RideSaved)
@@ -361,6 +362,14 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
     def OnMotion(self, event):
         pass
 
+    def _before_saving(self, data):
+        if self.IsCellEditControlShown():
+            # Fix: cannot save modifications in edit mode
+            # Exit edit mode before saving
+            self.HideCellEditControl()
+            self.SaveEditControlValue()
+            self.SetFocus()
+
     def _data_changed(self, data):
         if self._controller == data.item:
             self._write_steps(data.item)
@@ -437,18 +446,16 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
         self.OnDelete(event)
 
     def OnDelete(self, event=None):
-        _iscelleditcontrolshown = self.IsCellEditControlShown()
-        if _iscelleditcontrolshown:  # TODO Review if still needed
-            # On Windows, Delete key does not work in TextCtrl automatically
-            self.delete()
-        elif self.has_focus():
-            self._execute(ClearArea(self.selection.topleft,
-                                    self.selection.bottomright))
+        self._execute(ClearArea(self.selection.topleft,
+                                self.selection.bottomright))
         self._resize_grid()
 
     # DEBUG    @requires_focus
     def OnPaste(self, event=None):
-        self._execute_clipboard_command(PasteArea)
+        if self.IsCellEditControlShown():
+            self.paste()
+        else:
+            self._execute_clipboard_command(PasteArea)
         self._resize_grid()
 
     def _execute_clipboard_command(self, command_class):
@@ -487,6 +494,7 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
     def close(self):
         self._colorizer.close()
         self.save()
+        PUBLISHER.unsubscribe(self._before_saving, RideBeforeSaving)
         PUBLISHER.unsubscribe(self._data_changed, RideItemStepsChanged)
         if self._namespace_updated:
             # Prevent re-entry to unregister method
@@ -942,11 +950,11 @@ class ContentAssistCellEditor(GridCellEditor):
     def ApplyEdit(self, row, col, grid):
         val = self._tc.GetValue()
         grid.GetTable().SetValue(row, col, val)  # update the table
-
         self._original_value = ''
         self._tc.SetValue('')
-        if self._value and val != '':  # DEBUG Fix #1967 crash when click other cell
-            self._grid.cell_value_edited(row, col, self._value)
+        # if self._value and val != '':  # DEBUG Fix #1967 crash when click other cell
+        # this will cause deleting all text in edit mode not working
+        self._grid.cell_value_edited(row, col, self._value)
 
     def _get_value(self):
         suggestion = self._tc.content_assist_value()

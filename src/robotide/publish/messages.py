@@ -237,6 +237,11 @@ class RideSaving(RideMessage):
     data = ['path', 'datafile']
 
 
+class RideBeforeSaving(RideMessage):
+    """Sent before files are going to be saved."""
+    pass
+
+
 class RideSaved(RideMessage):
     """Sent after the file has been actually saved to disk."""
     data = ['path']
