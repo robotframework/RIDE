@@ -39,11 +39,11 @@ class RideEventHandler(with_metaclass(eventhandlertype, object)):
     _SHOWING_REMOVED_ON_DISK_CONTROLLERS_ = set()
 
     def _can_be_edited(self, event):
-        ctrl = self.get_selected_datafile_controller()
-        if ctrl and ctrl.has_been_removed_from_disk():
-            return self._show_removed_from_disk_warning(ctrl, event)
-        if ctrl and ctrl.has_been_modified_on_disk():
-            return self._show_modified_on_disk_warning(ctrl, event)
+        # ctrl = self.get_selected_datafile_controller()
+        # if ctrl and ctrl.has_been_removed_from_disk():
+        #     return self._show_removed_from_disk_warning(ctrl, event)
+        # if ctrl and ctrl.has_been_modified_on_disk():
+        #     return self._show_modified_on_disk_warning(ctrl, event)
         return True
 
     def _show_removed_from_disk_warning(self, ctrl, event):
@@ -90,3 +90,37 @@ class RideEventHandler(with_metaclass(eventhandlertype, object)):
 
     def get_selected_datafile_controller(self):
         raise NotImplementedError(self.__class__.__name__)
+
+
+class _RideFSWatcherHandler:
+
+    def __init__(self):
+        self._fs_watcher = None
+        self._is_workspace_dirty = False
+
+    def create_fs_watcher(self):
+        if self._fs_watcher:
+            return
+        self._fs_watcher = wx.FileSystemWatcher()
+        self._fs_watcher.Bind(wx.EVT_FSWATCHER, self._on_fs_event)
+
+    def start_listening(self, path):
+        self.stop_listening()
+        self._fs_watcher.AddTree(path)
+
+    def stop_listening(self):
+        self._is_workspace_dirty = False
+        self._fs_watcher.RemoveAll()
+
+    def is_workspace_dirty(self):
+        return self._is_workspace_dirty
+
+    def is_watcher_created(self):
+        return self._fs_watcher is not None
+
+    def _on_fs_event(self, event):
+        # skip access / attribute event
+        self._is_workspace_dirty = True
+
+
+RideFSWatcherHandler = _RideFSWatcherHandler()

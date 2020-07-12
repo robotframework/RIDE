@@ -41,8 +41,8 @@ from .. import utils
 class RIDE(wx.App):
 
     def __init__(self, path=None, updatecheck=True):
-        self._initial_path = path
         self._updatecheck = updatecheck
+        self.workspace_path = path
         context.APP = self
         wx.App.__init__(self, redirect=False)
 
@@ -111,10 +111,10 @@ class RIDE(wx.App):
                 return maybe_editor
 
     def _load_data(self):
-        path = self._initial_path or self._get_latest_path()
-        if path:
+        self.workspace_path = self.workspace_path or self._get_latest_path()
+        if self.workspace_path:
             observer = LoadProgressObserver(self.frame)
-            self._controller.load_data(path, observer)
+            self._controller.load_data(self.workspace_path, observer)
 
     def _find_robot_installation(self):
         output = utils.run_python_command(
@@ -178,3 +178,6 @@ class RIDE(wx.App):
         wx.EventLoop.SetActive(loop)
         yield
         del loop
+
+    def OnEventLoopEnter(self, loop):
+        utils.RideFSWatcherHandler.create_fs_watcher()

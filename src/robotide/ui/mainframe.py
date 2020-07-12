@@ -21,11 +21,12 @@ from robotide.lib.robot.utils.compat import with_metaclass
 from robotide.action import ActionInfoCollection, ActionFactory, SeparatorInfo
 from robotide.context import ABOUT_RIDE, SHORTCUT_KEYS
 from robotide.controller.ctrlcommands import SaveFile, SaveAll
+from robotide.controller.filecontrollers import TestDataDirectoryController
 from robotide.publish import RideSaveAll, RideClosing, RideSaved, PUBLISHER,\
     RideInputValidationError, RideTreeSelection, RideModificationPrevented, RideBeforeSaving
 from robotide.ui.tagdialogs import ViewAllTagsDialog
 from robotide.ui.filedialogs import RobotFilePathDialog
-from robotide.utils import RideEventHandler
+from robotide.utils import RideEventHandler, RideFSWatcherHandler
 from robotide.widgets import Dialog, ImageProvider, HtmlWindow
 from robotide.preferences import PreferenceEditor
 
@@ -182,6 +183,7 @@ class RideFrame(with_metaclass(classmaker(), wx.Frame, RideEventHandler)):
         self.Bind(wx.EVT_MAXIMIZE, self.OnMaximize)
         self.Bind(wx.EVT_DIRCTRL_FILEACTIVATED, self.OnOpenFile)
         self.Bind(wx.EVT_TREE_ITEM_RIGHT_CLICK, self.OnMenuOpenFile)
+        self.Bind(wx.EVT_ACTIVATE, self.OnActivate)
         self._subscribe_messages()
         wx.CallAfter(self.actions.register_tools)  # DEBUG
 
@@ -592,6 +594,33 @@ class RideFrame(with_metaclass(classmaker(), wx.Frame, RideEventHandler)):
 
         ctrl = SizeReportCtrl(self, -1, wx.DefaultPosition, wx.Size(width, height), self._mgr)
         return ctrl
+
+    def OnActivate(self, event):
+        if RideFSWatcherHandler.is_watcher_created():
+            if event.GetActive():
+                if RideFSWatcherHandler.is_workspace_dirty():
+                    self._show_confirm_reload_popup()
+                RideFSWatcherHandler.stop_listening()
+            else:
+                RideFSWatcherHandler.start_listening(self._application.workspace_path)
+        event.Skip()
+
+    def _show_confirm_reload_popup(self):
+        msg = ['Workspace modifications detected on the file system.',
+               'Do you want to reload the workspace?',
+               'Answering <No> will overwrite the changes on disk.']
+        if self.get_selected_datafile_controller().dirty:
+            msg.insert(2, 'Answering <Yes> will discard unsaved changes.')
+        ret = wx.MessageBox('\n'.join(msg), 'Files Changed On Disk',
+                            style=wx.YES_NO | wx.ICON_WARNING)
+        confirmed = ret == wx.YES
+        if confirmed:
+            wx.CallLater(100, self.open_suite, self._application.workspace_path)
+        else:
+            for _ in self._controller.datafiles:
+                if _.exists():
+                    _.mark_dirty()
+            self.save_all()
 
 
 # Code moved from actiontriggers
