@@ -63,7 +63,7 @@ The reference for valid arguments is <a class="reference external" href="http://
 <li>Block indent in Text Editor (TAB on block of selected text)</li>
 <li>Ctrl-number with number, 1-5 also working on Text Editor:<ol><li>create scalar variable</li><li>create list variable</li>
 <li>Comment line</li><li>Uncomment line</li><li>create dictionary variable</li></ol></li>
-<li>Persistance of the position and state of detached panels, File Explorer and Test Suites</li>
+<li>Persistence of the position and state of detached panels, File Explorer and Test Suites</li>
 <li>File Explorer and Test Suites panels are now Plugins and can be disabled or enabled and made Visible with F11 and F12</li>
 <li>File Explorer now shows selected file when RIDE starts</li>
 </ul>
