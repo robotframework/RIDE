@@ -617,6 +617,9 @@ class RideFrame(wx.Frame):
         else:
             for _ in self._controller.datafiles:
                 if _.has_been_modified_on_disk() or _.has_been_removed_from_disk():
+                    if not os.path.exists(_.directory):
+                        # sub folder is removed, create new one before saving
+                        os.makedirs(_.directory)
                     _.mark_dirty()
             self.save_all()
 
