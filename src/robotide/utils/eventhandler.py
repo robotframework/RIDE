@@ -15,16 +15,9 @@
 
 import wx
 import os
-from robotide.context import IS_WINDOWS
 
 
 class _RideFSWatcherHandler:
-
-    _TYPE_ATTRIBUTE = 32
-    _TYPE_CREATE = 1
-    _TYPE_DELETE = 2
-    _TYPE_RENAME = 4
-    _TYPE_MODIFY = 8
 
     def __init__(self):
         self._fs_watcher = None
@@ -75,19 +68,14 @@ class _RideFSWatcherHandler:
         previous_path = event.GetPath()
         change_type = event.GetChangeType()
 
-        # TODO skip access / attribute event
-
-        if change_type == _RideFSWatcherHandler._TYPE_ATTRIBUTE:
-            return False
-
-        elif change_type in (_RideFSWatcherHandler._TYPE_CREATE,
-                             _RideFSWatcherHandler._TYPE_MODIFY):
+        if change_type in (wx.FSW_EVENT_CREATE,
+                           wx.FSW_EVENT_MODIFY):
             if os.path.isdir(previous_path):
                 return True
             elif os.path.isfile(previous_path):
                 return self._is_valid_file_format(previous_path)
 
-        elif change_type == _RideFSWatcherHandler._TYPE_DELETE:
+        elif change_type == wx.FSW_EVENT_DELETE:
             if previous_path == self._watched_path:
                 # workspace root folder / suite file is deleted
                 self._watched_path = None
@@ -98,7 +86,7 @@ class _RideFSWatcherHandler:
             else:
                 return self._is_valid_file_format(previous_path)
 
-        elif change_type == _RideFSWatcherHandler._TYPE_RENAME:
+        elif change_type == wx.FSW_EVENT_RENAME:
             if previous_path == self._watched_path:
                 # workspace root folder / suite file is renamed
                 self._watched_path = new_path
