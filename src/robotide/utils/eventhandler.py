@@ -68,8 +68,7 @@ class _RideFSWatcherHandler:
         previous_path = event.GetPath()
         change_type = event.GetChangeType()
 
-        if change_type in (wx.FSW_EVENT_CREATE,
-                           wx.FSW_EVENT_MODIFY):
+        if change_type == wx.FSW_EVENT_CREATE:
             if os.path.isdir(previous_path):
                 return True
             elif os.path.isfile(previous_path):

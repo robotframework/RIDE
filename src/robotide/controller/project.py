@@ -298,7 +298,8 @@ class Project(_BaseController, WithNamespace):
     def is_project_changed_from_disk(self):
         for data_file in self.datafiles:
             if isinstance(data_file, TestDataDirectoryController):
-                return not os.path.exists(data_file.directory)
+                if not os.path.exists(data_file.directory):
+                    return True
             else:
                 if data_file.has_been_modified_on_disk() or \
                         data_file.has_been_removed_from_disk():

@@ -608,12 +608,12 @@ class RideFrame(wx.Frame):
             # 2. path is a suite file
             new_path = RideFSWatcherHandler.get_workspace_new_path()
             if new_path and os.path.exists(new_path):
-                wx.CallLater(100, self.open_suite, new_path)
+                wx.CallAfter(self.open_suite, new_path)
             else:
                 # in case workspace is totally removed
                 # ask user to open new directory
                 # TODO add some notification msg to users
-                self.OnOpenDirectory(event)
+                wx.CallAfter(self.OnOpenDirectory, event)
         else:
             for _ in self._controller.datafiles:
                 if _.has_been_modified_on_disk() or _.has_been_removed_from_disk():
