@@ -24,22 +24,26 @@ class _RideFSWatcherHandler:
     _TYPE_CREATE = 1
     _TYPE_DELETE = 2
     _TYPE_RENAME = 4
+    _TYPE_MODIFY = 8
 
     def __init__(self):
         self._fs_watcher = None
         self._is_workspace_dirty = False
         self._watched_path = None
 
-    def create_fs_watcher(self):
+    def create_fs_watcher(self, path):
         if self._fs_watcher:
             return
+        self._watched_path = path
         self._fs_watcher = wx.FileSystemWatcher()
         self._fs_watcher.Bind(wx.EVT_FSWATCHER, self._on_fs_event)
 
     def start_listening(self, path):
         self.stop_listening()
-        path = os.path.join(path, '')
+        if not os.path.exists(path):
+            return
         if os.path.isdir(path):
+            path = os.path.join(path, '')
             self._fs_watcher.AddTree(path)
         else:
             self._fs_watcher.Add(path)
@@ -48,14 +52,13 @@ class _RideFSWatcherHandler:
     def stop_listening(self):
         self._is_workspace_dirty = False
         self._fs_watcher.RemoveAll()
+        self._watched_path = None
 
     def is_workspace_dirty(self):
-        if not self._is_workspace_dirty and IS_WINDOWS:
-            # in windows, rename workspace root folder cannot be detected
-            # use this workaround if watched path not exists
-            if self._watched_path and not os.path.exists(self._watched_path):
-                self._is_workspace_dirty = True
-        return self._is_workspace_dirty
+        if self._watched_path:
+            return self._is_workspace_dirty
+        else:
+            return True
 
     def is_watcher_created(self):
         return self._fs_watcher is not None
@@ -64,30 +67,55 @@ class _RideFSWatcherHandler:
         return self._watched_path
 
     def _on_fs_event(self, event):
-        # TODO skip access / attribute event
+        if self._is_mark_dirty_needed(event):
+            self._is_workspace_dirty = True
+
+    def _is_mark_dirty_needed(self, event):
         new_path = event.GetNewPath()
         previous_path = event.GetPath()
         change_type = event.GetChangeType()
 
+        # TODO skip access / attribute event
+
         if change_type == _RideFSWatcherHandler._TYPE_ATTRIBUTE:
-            return
+            return False
 
-        if os.path.isdir(previous_path) or os.path.isdir(new_path):
-            self._is_workspace_dirty = True
-            return
+        elif change_type in (_RideFSWatcherHandler._TYPE_CREATE,
+                             _RideFSWatcherHandler._TYPE_MODIFY):
+            if os.path.isdir(previous_path):
+                return True
+            elif os.path.isfile(previous_path):
+                return self._is_valid_file_format(previous_path)
 
-        if previous_path.endswith(os.sep) and change_type == _RideFSWatcherHandler._TYPE_DELETE:
-            # folder is deleted:
-            self._is_workspace_dirty = True
+        elif change_type == _RideFSWatcherHandler._TYPE_DELETE:
             if previous_path == self._watched_path:
-                # current workspace root folder has been removed
+                # workspace root folder / suite file is deleted
                 self._watched_path = None
-            return
+                return True
 
+            if previous_path.endswith(os.sep):
+                return True
+            else:
+                return self._is_valid_file_format(previous_path)
+
+        elif change_type == _RideFSWatcherHandler._TYPE_RENAME:
+            if previous_path == self._watched_path:
+                # workspace root folder / suite file is renamed
+                self._watched_path = new_path
+                return True
+
+            if os.path.isdir(new_path):
+                return True
+            elif os.path.isfile(new_path):
+                return self._is_valid_file_format(new_path)
+        else:
+            return False
+
+    @staticmethod
+    def _is_valid_file_format(file_path):
         # only watch files with certain extensions
         suffixes = ('.robot', '.txt', '.resource', '.tsv')
-        if os.path.splitext(previous_path)[-1].lower() in suffixes:
-            self._is_workspace_dirty = True
+        return os.path.splitext(file_path)[-1].lower() in suffixes
 
 
 RideFSWatcherHandler = _RideFSWatcherHandler()

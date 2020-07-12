@@ -181,7 +181,8 @@ class RIDE(wx.App):
         del loop
 
     def OnEventLoopEnter(self, loop):
-        RideFSWatcherHandler.create_fs_watcher()
+        if loop and wx.EventLoopBase.IsMain(loop):
+            RideFSWatcherHandler.create_fs_watcher(self.workspace_path)
 
     def OnAppActivate(self, event):
         if RideFSWatcherHandler.is_watcher_created():
