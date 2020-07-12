@@ -15,7 +15,7 @@
 
 import wx
 import os
-
+from robotide.context import IS_WINDOWS
 
 class _RideFSWatcherHandler:
 
@@ -49,6 +49,11 @@ class _RideFSWatcherHandler:
         self._fs_watcher.RemoveAll()
 
     def is_workspace_dirty(self):
+        if self._is_workspace_dirty and IS_WINDOWS:
+            # for windows, rename workspace cannot be detected
+            # use this workaround if watched path not exists
+            if not os.path.exists(self._watched_path):
+                self._is_workspace_dirty = False
         return self._is_workspace_dirty
 
     def is_watcher_created(self):
