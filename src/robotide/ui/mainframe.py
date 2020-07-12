@@ -17,16 +17,14 @@ import os
 import wx
 import wx.lib.agw.aui as aui
 from wx import Icon
-from robotide.lib.robot.utils.compat import with_metaclass
 from robotide.action import ActionInfoCollection, ActionFactory, SeparatorInfo
 from robotide.context import ABOUT_RIDE, SHORTCUT_KEYS
 from robotide.controller.ctrlcommands import SaveFile, SaveAll
-from robotide.controller.filecontrollers import TestDataDirectoryController
 from robotide.publish import RideSaveAll, RideClosing, RideSaved, PUBLISHER,\
     RideInputValidationError, RideTreeSelection, RideModificationPrevented, RideBeforeSaving
 from robotide.ui.tagdialogs import ViewAllTagsDialog
 from robotide.ui.filedialogs import RobotFilePathDialog
-from robotide.utils import RideEventHandler, RideFSWatcherHandler
+from robotide.utils import RideFSWatcherHandler
 from robotide.widgets import Dialog, ImageProvider, HtmlWindow
 from robotide.preferences import PreferenceEditor
 
@@ -72,9 +70,6 @@ ART_FOLDER_OPEN
 ID_CustomizeToolbar = wx.ID_HIGHEST + 1
 ID_SampleItem = ID_CustomizeToolbar + 1
 
-# Metaclass fix from http://code.activestate.com/recipes/
-# 204197-solving-the-metaclass-conflict/
-from robotide.utils.noconflict import classmaker
 
 ### DEBUG some testing
 # -- SizeReportCtrl --
@@ -140,7 +135,7 @@ class SizeReportCtrl(wx.Control):
         self.Refresh()
 
 
-class RideFrame(with_metaclass(classmaker(), wx.Frame, RideEventHandler)):
+class RideFrame(wx.Frame):
 
     def __init__(self, application, controller):
         size = application.settings.get('mainframe size', (1100, 700))
@@ -454,6 +449,9 @@ class RideFrame(with_metaclass(classmaker(), wx.Frame, RideEventHandler)):
 
     def open_suite(self, path):
         self._controller.update_default_dir(path)
+        # self._controller.default_dir will only save dir path
+        # need to save path to self._application.workspace_path too
+        self._application.workspace_path = path
         try:
             err = self._controller.load_datafile(path, LoadProgressObserver(self))
         finally:
@@ -599,13 +597,13 @@ class RideFrame(with_metaclass(classmaker(), wx.Frame, RideEventHandler)):
         if RideFSWatcherHandler.is_watcher_created():
             if event.GetActive():
                 if RideFSWatcherHandler.is_workspace_dirty():
-                    self._show_confirm_reload_popup()
+                    self._show_confirm_reload_popup(event)
                 RideFSWatcherHandler.stop_listening()
             else:
                 RideFSWatcherHandler.start_listening(self._application.workspace_path)
         event.Skip()
 
-    def _show_confirm_reload_popup(self):
+    def _show_confirm_reload_popup(self, event):
         msg = ['Workspace modifications detected on the file system.',
                'Do you want to reload the workspace?',
                'Answering <No> will overwrite the changes on disk.']
@@ -615,10 +613,21 @@ class RideFrame(with_metaclass(classmaker(), wx.Frame, RideEventHandler)):
                             style=wx.YES_NO | wx.ICON_WARNING)
         confirmed = ret == wx.YES
         if confirmed:
-            wx.CallLater(100, self.open_suite, self._application.workspace_path)
+            # workspace_path should update after open dictionary/suite
+            # There're two scenarios:
+            # 1. path is a dictionary
+            # 2. path is a suite file
+            new_path = RideFSWatcherHandler.get_workspace_new_path()
+            if new_path and os.path.exists(new_path):
+                wx.CallLater(100, self.open_suite, new_path)
+            else:
+                # in case workspace is totally removed
+                # ask user to open new directory
+                # TODO add some notification msg to users
+                self.OnOpenDirectory(event)
         else:
             for _ in self._controller.datafiles:
-                if _.exists():
+                if _.has_been_modified_on_disk() or _.has_been_removed_from_disk():
                     _.mark_dirty()
             self.save_all()
 

@@ -30,8 +30,8 @@ from robotide.publish import (RideItemStepsChanged, RideSaved,
                               RideSettingsChanged, PUBLISHER, RideBeforeSaving)
 from robotide.usages.UsageRunner import Usages, VariableUsages
 from robotide.ui.progress import RenameProgressObserver
-from robotide import robotapi, utils
-from robotide.utils import RideEventHandler, variablematcher
+from robotide import robotapi
+from robotide.utils import variablematcher
 from robotide.widgets import Dialog, PopupMenu, PopupMenuItems
 
 from .gridbase import GridEditor
@@ -40,10 +40,7 @@ from .editordialogs import UserKeywordNameDialog, ScalarVariableDialog, \
     ListVariableDialog
 from .contentassist import ExpandingContentAssistTextCtrl
 from .gridcolorizer import Colorizer
-from robotide.lib.robot.utils.compat import with_metaclass
 
-# Metaclass fix from http://code.activestate.com/recipes/204197-solving-the-metaclass-conflict/
-from robotide.utils.noconflict import classmaker
 
 _DEFAULT_FONT_SIZE = 11
 
@@ -62,7 +59,7 @@ def requires_focus(function):
     return decorated_function
 
 
-class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
+class KeywordEditor(GridEditor):
     _no_cell = (-1, -1)
     _popup_menu_shown = False
     dirty = property(lambda self: self._controller.dirty)

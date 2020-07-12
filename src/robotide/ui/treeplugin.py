@@ -25,11 +25,9 @@ from ..controller.macrocontrollers import TestCaseController
 
 TREETEXTCOLOUR = Colour(0xA9, 0xA9, 0xA9)
 
-from robotide.lib.robot.utils.compat import with_metaclass
 from robotide.controller.ui.treecontroller import TreeController, \
     TestSelectionController
 from robotide.context import IS_WINDOWS
-from robotide.action.actioninfo import ActionInfo
 from robotide.controller.filecontrollers import ResourceFileController, TestDataDirectoryController, \
     TestCaseFileController
 from robotide.publish.messages import RideTestRunning, RideTestPaused, \
@@ -51,8 +49,7 @@ from robotide.widgets import PopupCreator
 from robotide import utils
 from .treenodehandlers import ResourceRootHandler, action_handler_class, ResourceFileHandler
 from .images import TreeImageList
-# Metaclass fix from http://code.activestate.com/recipes/204197-solving-the-metaclass-conflict/
-from robotide.utils.noconflict import classmaker
+
 
 _TREE_ARGS = {'style': wx.TR_DEFAULT_STYLE}
 _TREE_ARGS['agwStyle'] = customtreectrl.TR_DEFAULT_STYLE | customtreectrl.TR_HIDE_ROOT | \
@@ -160,9 +157,7 @@ class TreePlugin(Plugin):
         self._tree._refresh_view()
 
 
-class Tree(with_metaclass(classmaker(), treemixin.DragAndDrop,
-                          customtreectrl.CustomTreeCtrl,
-                          utils.RideEventHandler)):
+class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl):
     _RESOURCES_NODE_LABEL = 'External Resources'
 
     def __init__(self, parent, action_registerer, settings=None):
