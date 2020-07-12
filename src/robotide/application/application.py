@@ -35,7 +35,7 @@ from ..application.releasenotes import ReleaseNotes
 from ..application.updatenotifier import UpdateNotifierController, UpdateDialog
 from ..ui.treeplugin import TreePlugin
 from ..ui.fileexplorerplugin import FileExplorerPlugin
-from .. import utils
+from ..utils import RideFSWatcherHandler, run_python_command
 
 
 class RIDE(wx.App):
@@ -86,6 +86,7 @@ class RIDE(wx.App):
             UpdateNotifierController(self.settings).notify_update_if_needed(UpdateDialog)
         wx.CallLater(200, ReleaseNotes(self).bring_to_front)
         wx.CallLater(200, self.fileexplorerplugin._update_tree)
+        self.Bind(wx.EVT_ACTIVATE_APP, self.OnAppActivate)
         return True
 
     def _publish_system_info(self):
@@ -117,7 +118,7 @@ class RIDE(wx.App):
             self._controller.load_data(self.workspace_path, observer)
 
     def _find_robot_installation(self):
-        output = utils.run_python_command(
+        output = run_python_command(
             ['import robot; print(robot.__file__ + \", \" + robot.__version__)'])
         robot_found = b"ModuleNotFoundError" not in output and output
         if robot_found:
@@ -180,4 +181,14 @@ class RIDE(wx.App):
         del loop
 
     def OnEventLoopEnter(self, loop):
-        utils.RideFSWatcherHandler.create_fs_watcher()
+        RideFSWatcherHandler.create_fs_watcher()
+
+    def OnAppActivate(self, event):
+        if RideFSWatcherHandler.is_watcher_created():
+            if event.GetActive():
+                if RideFSWatcherHandler.is_workspace_dirty():
+                    self.frame.show_confirm_reload_dlg(event)
+                RideFSWatcherHandler.stop_listening()
+            else:
+                RideFSWatcherHandler.start_listening(self.workspace_path)
+        event.Skip()

@@ -17,6 +17,7 @@ import wx
 import os
 from robotide.context import IS_WINDOWS
 
+
 class _RideFSWatcherHandler:
 
     _TYPE_ATTRIBUTE = 32
@@ -49,11 +50,11 @@ class _RideFSWatcherHandler:
         self._fs_watcher.RemoveAll()
 
     def is_workspace_dirty(self):
-        if self._is_workspace_dirty and IS_WINDOWS:
-            # for windows, rename workspace cannot be detected
+        if not self._is_workspace_dirty and IS_WINDOWS:
+            # in windows, rename workspace root folder cannot be detected
             # use this workaround if watched path not exists
-            if not os.path.exists(self._watched_path):
-                self._is_workspace_dirty = False
+            if self._watched_path and not os.path.exists(self._watched_path):
+                self._is_workspace_dirty = True
         return self._is_workspace_dirty
 
     def is_watcher_created(self):
@@ -79,7 +80,7 @@ class _RideFSWatcherHandler:
             # folder is deleted:
             self._is_workspace_dirty = True
             if previous_path == self._watched_path:
-                # current workspace folder has been removed
+                # current workspace root folder has been removed
                 self._watched_path = None
             return
 

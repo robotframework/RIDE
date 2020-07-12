@@ -178,7 +178,6 @@ class RideFrame(wx.Frame):
         self.Bind(wx.EVT_MAXIMIZE, self.OnMaximize)
         self.Bind(wx.EVT_DIRCTRL_FILEACTIVATED, self.OnOpenFile)
         self.Bind(wx.EVT_TREE_ITEM_RIGHT_CLICK, self.OnMenuOpenFile)
-        self.Bind(wx.EVT_ACTIVATE, self.OnActivate)
         self._subscribe_messages()
         wx.CallAfter(self.actions.register_tools)  # DEBUG
 
@@ -593,17 +592,7 @@ class RideFrame(wx.Frame):
         ctrl = SizeReportCtrl(self, -1, wx.DefaultPosition, wx.Size(width, height), self._mgr)
         return ctrl
 
-    def OnActivate(self, event):
-        if RideFSWatcherHandler.is_watcher_created():
-            if event.GetActive():
-                if RideFSWatcherHandler.is_workspace_dirty():
-                    self._show_confirm_reload_popup(event)
-                RideFSWatcherHandler.stop_listening()
-            else:
-                RideFSWatcherHandler.start_listening(self._application.workspace_path)
-        event.Skip()
-
-    def _show_confirm_reload_popup(self, event):
+    def show_confirm_reload_dlg(self, event):
         msg = ['Workspace modifications detected on the file system.',
                'Do you want to reload the workspace?',
                'Answering <No> will overwrite the changes on disk.']
