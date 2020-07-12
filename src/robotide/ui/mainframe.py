@@ -596,7 +596,7 @@ class RideFrame(wx.Frame):
         msg = ['Workspace modifications detected on the file system.',
                'Do you want to reload the workspace?',
                'Answering <No> will overwrite the changes on disk.']
-        if self.get_selected_datafile_controller().dirty:
+        if self._controller.is_dirty():
             msg.insert(2, 'Answering <Yes> will discard unsaved changes.')
         ret = wx.MessageBox('\n'.join(msg), 'Files Changed On Disk',
                             style=wx.YES_NO | wx.ICON_WARNING)

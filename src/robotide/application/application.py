@@ -187,7 +187,8 @@ class RIDE(wx.App):
     def OnAppActivate(self, event):
         if RideFSWatcherHandler.is_watcher_created():
             if event.GetActive():
-                if RideFSWatcherHandler.is_workspace_dirty():
+                if self._controller.is_project_changed_from_disk() or \
+                        RideFSWatcherHandler.is_workspace_dirty():
                     self.frame.show_confirm_reload_dlg(event)
                 RideFSWatcherHandler.stop_listening()
             else:

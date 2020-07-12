@@ -295,6 +295,13 @@ class Project(_BaseController, WithNamespace):
         if resource:
             return self._create_resource_controller(resource)
 
+    def is_project_changed_from_disk(self):
+        for data_file in self.datafiles:
+            if data_file.has_been_modified_on_disk() or \
+                    data_file.has_been_removed_from_disk():
+                return True
+        return False
+
 
 class Serializer(object):
 
