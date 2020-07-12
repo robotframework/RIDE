@@ -23,7 +23,7 @@ from robotide.publish.messages import RideOpenSuite, RideNewProject, RideFileNam
 
 from .basecontroller import WithNamespace, _BaseController
 from .dataloader import DataLoader
-from .filecontrollers import DataController, ResourceFileControllerFactory
+from .filecontrollers import DataController, ResourceFileControllerFactory, TestDataDirectoryController
 from .robotdata import NewTestCaseFile, NewTestDataDirectory
 from robotide.spec.librarydatabase import DATABASE_FILE
 from robotide.spec.librarymanager import LibraryManager
@@ -297,9 +297,12 @@ class Project(_BaseController, WithNamespace):
 
     def is_project_changed_from_disk(self):
         for data_file in self.datafiles:
-            if data_file.has_been_modified_on_disk() or \
-                    data_file.has_been_removed_from_disk():
-                return True
+            if isinstance(data_file, TestDataDirectoryController):
+                return os.path.exists(data_file.directory)
+            else:
+                if data_file.has_been_modified_on_disk() or \
+                        data_file.has_been_removed_from_disk():
+                    return True
         return False
 
 
