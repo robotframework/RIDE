@@ -1,51 +1,44 @@
 ifdef::env-github[:outfilesuffix: .adoc]
 
-# Changelog
+= Changelog
 
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
-and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
+The format is based on http://keepachangelog.com/en/1.0.0/[Keep a Changelog]
+and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioning].
 
-## [Unreleased]
+== https://github.com/robotframework/RIDE[Unreleased]
 
-## [2.0b1] - 2020-07-20
-
-### Added
+=== Added
 
 - None
 
-### Removed
+=== Removed
 
 - None
 
-### Changed
+=== Changed
 
 - None
 
-### Fixed
+=== Fixed
 
 - None
 
-## [1.7.4.2] - 2020-01-20
+== https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-1.7.4.2.rst[1.7.4.2] - 2020-01-20
 
-### Added
+=== Added
 
 - wxPython version locked up to 4.0.7.post2.
 
-### Removed
+=== Removed
 
 - None
 
-### Changed
+=== Changed
 
 - None
 
-### Fixed
+=== Fixed
 
 - None
-
-
-[Unreleased]: https://github.com/robotframework/RIDE
-[2.0b1]: https://github.com/robotframework/RIDE
-[1.7.4.2]: https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-1.7.4.2.rst
