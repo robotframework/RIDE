@@ -36,10 +36,10 @@ class _RideFSWatcherHandler:
         if not os.path.exists(path):
             return
         if os.path.isdir(path):
+            # only watch folders
+            # MSW do not support watch single file
             path = os.path.join(path, '')
             self._fs_watcher.AddTree(path)
-        else:
-            self._fs_watcher.Add(path)
         self._watched_path = path
 
     def stop_listening(self):
