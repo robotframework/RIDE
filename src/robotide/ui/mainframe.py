@@ -602,9 +602,9 @@ class RideFrame(wx.Frame):
                             style=wx.YES_NO | wx.ICON_WARNING)
         confirmed = ret == wx.YES
         if confirmed:
-            # workspace_path should update after open dictionary/suite
+            # workspace_path should update after open directory/suite
             # There're two scenarios:
-            # 1. path is a dictionary
+            # 1. path is a directory
             # 2. path is a suite file
             new_path = RideFSWatcherHandler.get_workspace_new_path()
             if new_path and os.path.exists(new_path):
