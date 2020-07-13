@@ -1,0 +1,85 @@
+ifdef::env-github[:outfilesuffix: .adoc]
+
+= Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on http://keepachangelog.com/en/1.0.0/[Keep a Changelog]
+and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioning].
+
+== https://github.com/robotframework/RIDE[Unreleased]
+
+=== Added
+
+- Added CHANGELOG.adoc
+- Added ignoring log.html and report.html on reporting HTML test suites
+- Added conditions for wxPython versions equal or higher than 4.1.0
+- Added indent and de-indent with TAB for blocks of text
+- Added auto indent in Text Editor
+- Added enclosing text in Text Editor or selected text with certain symbols
+- Added enclosing text in Grid Editor or selected text with certain symbols
+- Added 8s timer to shortcut creation dialog on install
+- Added process memory limit on Messages Log
+
+=== Removed
+
+- Python 2.7 support
+- wxPython/wxPhoenix version conditioning
+
+=== Changed
+
+- Improved error and removal of old log files
+- Changed icon background to white
+- Made Project Tree and File Explorer panels, Plugins.
+- wx.NewId() to wx.NewIdRef()
+- Separated AppendText for Messages Log
+
+=== Fixed
+
+- Fixed not saving file after deleting text in Text Editor
+- Fixed elements sizing on Preferences panel
+- Fixed tree selection, because of wrong variable name
+- Fixed encodings on Windows
+- Fixed bugs on Grid Editor
+- Fixed error message on RIDE Log about missing clear_all
+- Fixed tree nodes problems
+- Fixed severe RIDE freeze when selecting all test cases in large test suites
+- Fixed activation of RIDE Log plugin
+- Fixed missing keywords documentation for dynamic libraries (i.e. SeleniumLibrary 4.4.0)
+- Fixed not possible to create new project
+- Fixed missing Save menu option
+- Fixed sounding a beep and no selection when pressing down arrow in keywords help list
+- Fixed output log showing garbled code when the name of the test case contains Chinese
+- Fixed default arguments help
+- Fixed crash when deleting tags
+- Fixed cursor position when creating variables with CTRL-1,2,5
+- Fixed pressing F2 in Grid Editor on MacOS started editor on Project Tree
+- Fixed reprocessing of %date% %time% variables on Windows
+- Fixed not editing cells with F2 and keeping focus
+- Fixed keywords arguments help
+- Fixed Python 3.8 incompatibility
+- Fixed showing Resource files with extension .resource in Tree when not used
+- Fixed RIDE not starting
+- Fixed errors at start due to setlocale()
+- Fixed Settings editor
+- Fixed blank Edit screen
+- Fixed Runner arguments parsing
+- Fixed Runner Log window Chinese and Latin encoding chars on Windows
+
+== https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-1.7.4.2.rst[1.7.4.2] - 2020-01-20
+
+=== Added
+
+- wxPython version locked up to 4.0.7.post2.
+
+=== Removed
+
+- None
+
+=== Changed
+
+- None
+
+=== Fixed
+
+- None
