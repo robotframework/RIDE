@@ -186,7 +186,6 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
         self.Bind(grid.EVT_GRID_CELL_LEFT_DCLICK, self.OnCellLeftDClick)
         self.Bind(grid.EVT_GRID_LABEL_RIGHT_CLICK, self.OnLabelRightClick)
         self.Bind(grid.EVT_GRID_LABEL_LEFT_CLICK, self.OnLabelLeftClick)
-        self.Bind(wx.EVT_KILL_FOCUS, self.OnKillFocus)
 
     def get_tooltip_content(self):
         _iscelleditcontrolshown = self.IsCellEditControlShown()
@@ -214,12 +213,6 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
         self._cell_selected = True
         GridEditor.OnSelectCell(self, event)
         self._colorize_grid()
-        event.Skip()
-
-    def OnKillFocus(self, event):
-        self._tooltips.hide()
-        self._hide_link_if_necessary()
-        self.save()
         event.Skip()
 
     def _execute(self, command):
