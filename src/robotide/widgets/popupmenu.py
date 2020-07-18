@@ -54,14 +54,14 @@ class PopupMenu(wx.Menu):
             if item.is_separator():
                 self.AppendSeparator()
             else:
-                self._add_item(parent, item)
+                self._add_item(item)
         parent.PopupMenu(self)
         self.Destroy()
 
-    def _add_item(self, parent, item):
+    def _add_item(self, item):
         id_ = wx.NewIdRef()
         self.Append(id_, item.name)
-        parent.Bind(wx.EVT_MENU, item.callable, id=id_)
+        self.Bind(wx.EVT_MENU, item.callable, id=id_)
 
 
 class PopupMenuItems(object):
