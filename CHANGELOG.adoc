@@ -28,6 +28,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Changed
 
+- Improved filesystem changes detection, with a confirmation dialog to reload workspace
 - Changed dependency on wx.Window on tree panel
 - Improved error and removal of old log files
 - Changed icon background to white
