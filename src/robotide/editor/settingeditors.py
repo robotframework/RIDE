@@ -27,7 +27,6 @@ from robotide.widgets import ButtonWithHandler, Label, HtmlWindow, PopupMenu,\
 from robotide.publish import PUBLISHER
 from robotide import utils
 from robotide.utils.highlightmatcher import highlight_matcher
-from robotide.lib.robot.utils.compat import with_metaclass
 from .formatters import ListToStringFormatter
 from .gridcolorizer import ColorizationSettings
 from .editordialogs import EditorDialog, DocumentationDialog, MetadataDialog,\
@@ -37,11 +36,8 @@ from .listeditor import ListEditor
 from .popupwindow import HtmlPopupWindow
 from .tags import TagsDisplay
 
-# Metaclass fix from http://code.activestate.com/recipes/204197-solving-the-metaclass-conflict/
-from robotide.utils.noconflict import classmaker
 
-
-class SettingEditor(with_metaclass(classmaker(), wx.Panel, utils.RideEventHandler)):
+class SettingEditor(wx.Panel):
 
     def __init__(self, parent, controller, plugin, tree):
         wx.Panel.__init__(self, parent)
