@@ -219,7 +219,6 @@ class KeywordEditor(with_metaclass(classmaker(), GridEditor, RideEventHandler)):
     def OnKillFocus(self, event):
         self._tooltips.hide()
         self._hide_link_if_necessary()
-        self.save()
         event.Skip()
 
     def _execute(self, command):
