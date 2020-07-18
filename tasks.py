@@ -72,9 +72,9 @@ The reference for valid arguments is <a class="reference external" href="http://
 <p><strong>wxPython will be updated to version 4.0.7post2</strong></p>
 <p><strong>wxPython version 4.1, is not recommended to be used with RIDE.</strong></p>
 <p><em>Linux users are advised to install first wxPython from .whl package at</em> <a class="reference external" href="https://extras.wxpython.org/wxPython4/extras/linux/gtk3/">wxPython.org</a>.</p>
-<!-- <p><strong>REMOVE reference to tracker if release notes contain all issues.</strong>-->
+<!-- <p><strong>REMOVE reference to tracker if release notes contain all issues.</strong></p>-->
 
-All issues targeted for RIDE {milestone} can be found
+<p>All issues targeted for RIDE {milestone} can be found
 from the <a class="reference external" href="https://github.com/robotframework/RIDE/issues?q=milestone%3A{milestone}">issue tracker milestone</a>.</p>
 <p>Questions and comments related to the release can be sent to the
 <a class="reference external" href="http://groups.google.com/group/robotframework-users">robotframework-users</a> mailing list, to the <a class="reference external" href="https://forum.robotframework.org/c/tools/ride/21">RIDE topic on Robot Framework Forum</a> or to the channel #ride on
