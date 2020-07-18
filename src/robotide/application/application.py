@@ -35,14 +35,14 @@ from ..application.releasenotes import ReleaseNotes
 from ..application.updatenotifier import UpdateNotifierController, UpdateDialog
 from ..ui.treeplugin import TreePlugin
 from ..ui.fileexplorerplugin import FileExplorerPlugin
-from .. import utils
+from ..utils import RideFSWatcherHandler, run_python_command
 
 
 class RIDE(wx.App):
 
     def __init__(self, path=None, updatecheck=True):
-        self._initial_path = path
         self._updatecheck = updatecheck
+        self.workspace_path = path
         context.APP = self
         wx.App.__init__(self, redirect=False)
 
@@ -86,6 +86,7 @@ class RIDE(wx.App):
             UpdateNotifierController(self.settings).notify_update_if_needed(UpdateDialog)
         wx.CallLater(200, ReleaseNotes(self).bring_to_front)
         wx.CallLater(200, self.fileexplorerplugin._update_tree)
+        self.Bind(wx.EVT_ACTIVATE_APP, self.OnAppActivate)
         return True
 
     def _publish_system_info(self):
@@ -111,13 +112,13 @@ class RIDE(wx.App):
                 return maybe_editor
 
     def _load_data(self):
-        path = self._initial_path or self._get_latest_path()
-        if path:
+        self.workspace_path = self.workspace_path or self._get_latest_path()
+        if self.workspace_path:
             observer = LoadProgressObserver(self.frame)
-            self._controller.load_data(path, observer)
+            self._controller.load_data(self.workspace_path, observer)
 
     def _find_robot_installation(self):
-        output = utils.run_python_command(
+        output = run_python_command(
             ['import robot; print(robot.__file__ + \", \" + robot.__version__)'])
         robot_found = b"ModuleNotFoundError" not in output and output
         if robot_found:
@@ -178,3 +179,18 @@ class RIDE(wx.App):
         wx.EventLoop.SetActive(loop)
         yield
         del loop
+
+    def OnEventLoopEnter(self, loop):
+        if loop and wx.EventLoopBase.IsMain(loop):
+            RideFSWatcherHandler.create_fs_watcher(self.workspace_path)
+
+    def OnAppActivate(self, event):
+        if RideFSWatcherHandler.is_watcher_created():
+            if event.GetActive():
+                if self._controller.is_project_changed_from_disk() or \
+                        RideFSWatcherHandler.is_workspace_dirty():
+                    self.frame.show_confirm_reload_dlg(event)
+                RideFSWatcherHandler.stop_listening()
+            else:
+                RideFSWatcherHandler.start_listening(self.workspace_path)
+        event.Skip()

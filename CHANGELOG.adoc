@@ -28,6 +28,8 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Changed
 
+- Improved filesystem changes detection, with a confirmation dialog to reload workspace
+- Changed dependency on wx.Window on tree panel
 - Improved error and removal of old log files
 - Changed icon background to white
 - Made Project Tree and File Explorer panels, Plugins.
@@ -36,6 +38,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Fixed
 
+- Fixed editing cells in Grid Editor on wxPython 4.1
 - Fixed not saving file after deleting text in Text Editor
 - Fixed elements sizing on Preferences panel
 - Fixed tree selection, because of wrong variable name
