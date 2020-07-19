@@ -36,11 +36,12 @@ This version v2.0b1 includes removal of Python 2.7 support. The reference for va
 Please note, that the features and fixes are not yet closed. This pre-release is being done because it has important fixes.
 
 **The recommended wxPython version is, 4.0.7post2**
+
 **wxPython version 4.1 may reveal some problems with RIDE.**
 
 *Linux users are advised to install first wxPython from .whl package at* `wxPython.org`_.
 
-All issues targeted for RIDE {version.milestone} can be found
+All issues targeted for RIDE v2.0 can be found
 from the `issue tracker milestone`_.
 
 Questions and comments related to the release can be sent to the
@@ -87,7 +88,7 @@ RIDE v2.0b1 was released on 19/07/2020.
 .. _Robot Framework: http://robotframework.org
 .. _pip: http://pip-installer.org
 .. _PyPI: https://pypi.python.org/pypi/robotframework-ride
-.. _issue tracker milestone: https://github.com/robotframework/RIDE/issues?q=milestone%3A{version.milestone}
+.. _issue tracker milestone: https://github.com/robotframework/RIDE/issues?q=milestone%3Av2.0
 .. _issue tracker: https://github.com/robotframework/RIDE/issues
 .. _robotframework-users: http://groups.google.com/group/robotframework-users
 .. _Robot Framework Forum: https://forum.robotframework.org/c/tools/ride/
