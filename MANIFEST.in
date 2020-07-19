@@ -3,6 +3,7 @@ include *.py
 include *.rest
 include *.sh
 include *.txt
+include *.adoc
 recursive-include src *.css *.js *.py *.robot *.txt *.png *.gif *.ico *.cfg *.html
 recursive-include doc *.rst
 recursive-include rtest *.py *.txt
