@@ -132,9 +132,9 @@ The reference for valid arguments is <a class="reference external" href="http://
 <p><strong>wxPython will be updated to version 4.0.7post2</strong></p>
 <p><strong>wxPython version 4.1, is not recommended to be used with RIDE.</strong></p>
 <p><em>Linux users are advised to install first wxPython from .whl package at</em> <a class="reference external" href="https://extras.wxpython.org/wxPython4/extras/linux/gtk3/">wxPython.org</a>.</p>
-<!-- <p><strong>REMOVE reference to tracker if release notes contain all issues.</strong>-->
+<!-- <p><strong>REMOVE reference to tracker if release notes contain all issues.</strong></p>-->
 
-All issues targeted for RIDE {milestone} can be found
+<p>All issues targeted for RIDE {milestone} can be found
 from the <a class="reference external" href="https://github.com/robotframework/RIDE/issues?q=milestone%3A{milestone}">issue tracker milestone</a>.</p>
 <p>Questions and comments related to the release can be sent to the
 <a class="reference external" href="http://groups.google.com/group/robotframework-users">robotframework-users</a> mailing list, to the <a class="reference external" href="https://forum.robotframework.org/c/tools/ride/21">RIDE topic on Robot Framework Forum</a> or to the channel #ride on
@@ -175,6 +175,48 @@ python -m robotide.postinstall -install
 <td><p><b>Summary</b></p></td>
 </tr>
 <tr>
+<td><a href="http://github.com/robotframework/RIDE/issues/2237">Issue 2237</a></td>
+<td>enhancement</td>
+<td>Unknown priority</td>
+<td>Fix win10 system freeze when loading large project</td>
+</tr>
+<tr>
+<td><a href="http://github.com/robotframework/RIDE/issues/2236">Issue 2236</a></td>
+<td>enhancement</td>
+<td>Unknown priority</td>
+<td>Fix cannot edit grid cell with wxPython 4.1.0</td>
+</tr>
+<tr>
+<td><a href="http://github.com/robotframework/RIDE/issues/2234">Issue 2234</a></td>
+<td>none</td>
+<td>Unknown priority</td>
+<td>Added Changelog</td>
+</tr>
+<tr>
+<td><a href="http://github.com/robotframework/RIDE/issues/2232">Issue 2232</a></td>
+<td>enhancement</td>
+<td>Unknown priority</td>
+<td>Redesign RideEventHandler and file system monitoring feature</td>
+</tr>
+<tr>
+<td><a href="http://github.com/robotframework/RIDE/issues/2230">Issue 2230</a></td>
+<td>enhancement</td>
+<td>Unknown priority</td>
+<td>Fix delete save txt</td>
+</tr>
+<tr>
+<td><a href="http://github.com/robotframework/RIDE/issues/2229">Issue 2229</a></td>
+<td>bug</td>
+<td>high</td>
+<td>Cannot delete and save text in text editor</td>
+</tr>
+<tr>
+<td><a href="http://github.com/robotframework/RIDE/issues/2223">Issue 2223</a></td>
+<td>enhancement</td>
+<td>Unknown priority</td>
+<td>Fixed issue#2108:</td>
+</tr>
+<tr>
 <td><a href="http://github.com/robotframework/RIDE/issues/2221">Issue 2221</a></td>
 <td>enhancement</td>
 <td>high</td>
@@ -197,6 +239,12 @@ python -m robotide.postinstall -install
 <td>enhancement</td>
 <td>Unknown priority</td>
 <td>Nyral/fix encodings</td>
+</tr>
+<tr>
+<td><a href="http://github.com/robotframework/RIDE/issues/2216">Issue 2216</a></td>
+<td>enhancement</td>
+<td>Unknown priority</td>
+<td>Bugs fixing on editor grid</td>
 </tr>
 <tr>
 <td><a href="http://github.com/robotframework/RIDE/issues/2215">Issue 2215</a></td>
@@ -223,6 +271,12 @@ python -m robotide.postinstall -install
 <td>Fix for 1668: Given a large test suite, selecting all tests from the root of tree, freezes RIDE for some time</td>
 </tr>
 <tr>
+<td><a href="http://github.com/robotframework/RIDE/issues/2205">Issue 2205</a></td>
+<td>enhancement</td>
+<td>Unknown priority</td>
+<td>Update treenodehandlers.py to prevent freeze ups</td>
+</tr>
+<tr>
 <td><a href="http://github.com/robotframework/RIDE/issues/2199">Issue 2199</a></td>
 <td>none</td>
 <td>Unknown priority</td>
@@ -245,6 +299,12 @@ python -m robotide.postinstall -install
 <td>bug</td>
 <td>high</td>
 <td>Keywords not highlighted and no suggestion for them in RIDE</td>
+</tr>
+<tr>
+<td><a href="http://github.com/robotframework/RIDE/issues/2189">Issue 2189</a></td>
+<td>bug</td>
+<td>high</td>
+<td>Problems with input in Grid Editor after wxPython 4.1 upgrade.</td>
 </tr>
 <tr>
 <td><a href="http://github.com/robotframework/RIDE/issues/2186">Issue 2186</a></td>
@@ -323,6 +383,12 @@ python -m robotide.postinstall -install
 <td>enhancement</td>
 <td>Unknown priority</td>
 <td>Fix keys in Grid Editor, [ and {{ still don't trigger</td>
+</tr>
+<tr>
+<td><a href="http://github.com/robotframework/RIDE/issues/2166">Issue 2166</a></td>
+<td>none</td>
+<td>Unknown priority</td>
+<td>Keep a CHANGELOG.adoc file</td>
 </tr>
 <tr>
 <td><a href="http://github.com/robotframework/RIDE/issues/2165">Issue 2165</a></td>
@@ -469,6 +535,12 @@ python -m robotide.postinstall -install
 <td>Cleanup of wxPython/wxPhoenix version conditioning</td>
 </tr>
 <tr>
+<td><a href="http://github.com/robotframework/RIDE/issues/2108">Issue 2108</a></td>
+<td>bug</td>
+<td>medium</td>
+<td>Resource files with extension .resource are not shown in Tree if not used</td>
+</tr>
+<tr>
 <td><a href="http://github.com/robotframework/RIDE/issues/2098">Issue 2098</a></td>
 <td>none</td>
 <td>Unknown priority</td>
@@ -511,6 +583,24 @@ python -m robotide.postinstall -install
 <td>Ride EDIT screen is blank</td>
 </tr>
 <tr>
+<td><a href="http://github.com/robotframework/RIDE/issues/1944">Issue 1944</a></td>
+<td>enhancement</td>
+<td>low</td>
+<td>"Make scalar/list variable body" shortcuts(ctrl+1, ctrl+2) cursor position</td>
+</tr>
+<tr>
+<td><a href="http://github.com/robotframework/RIDE/issues/1930">Issue 1930</a></td>
+<td>bug</td>
+<td>medium</td>
+<td>Editors need refresh when files modified outside of RIDE by external editors</td>
+</tr>
+<tr>
+<td><a href="http://github.com/robotframework/RIDE/issues/1843">Issue 1843</a></td>
+<td>enhancement</td>
+<td>high</td>
+<td>System freezes on Windows 10</td>
+</tr>
+<tr>
 <td><a href="http://github.com/robotframework/RIDE/issues/1576">Issue 1576</a></td>
 <td>bug</td>
 <td>Unknown priority</td>
@@ -523,5 +613,5 @@ python -m robotide.postinstall -install
 <td>Support wxPython3</td>
 </tr>
 </table>
-<p>Altogether 58 issues.</p>
+<p>Altogether 73 issues.</p>
 """

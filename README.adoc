@@ -17,9 +17,9 @@ See the https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride
 
 **Attention, this new version will break old style `:FOR`, and you have to change to `FOR/END` blocks.**
 
-**Attention, don't install RIDE on Python 3.8 (wait for release of version 2.0)**
+**Attention, some problems have been detected when using wxPython 4.1.**
 
-**Or you can install from development, where running on Python 3.8 is supported (since February 2020)**
+**The pre-release and current development, supports Python 3.8 (since February 2020).**
 
 Install with:
 [source, shell]
