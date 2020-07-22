@@ -484,6 +484,19 @@ class TestRunnerPlugin(Plugin):
 
     def OnTimer(self, evt):
         """Get process output"""
+        if self.message_log and not self._messages_log_texts.empty():
+            if self._process.memory_info()[0] <= self._limitmemory:
+                texts = []
+                while not self._messages_log_texts.empty():
+                    texts += [self._messages_log_texts.get()]
+                self._AppendTextMessageLog(self.message_log, '\n' + '\n'.join(texts))
+            else:
+                if not self._maxmemmsg:
+                    self._maxmemmsg = "Messages log exceeded 80% of process " \
+                                      "memory, stopping for now..."
+                    self._AppendTextMessageLog(self.message_log,
+                                               '\n' + self._maxmemmsg,
+                                               source="stderr")
         if not self._test_runner.is_running():
             self.OnProcessEnded(None)
             return
@@ -500,20 +513,6 @@ class TestRunnerPlugin(Plugin):
                 # the previous character isn't a newline.
                 self._output("\n", source="stdout")
             self._output(err_buffer, source="stderr")
-        if self.message_log and not self._messages_log_texts.empty():
-            if self._process.memory_info()[0] <= self._limitmemory:
-                texts = []
-                while not self._messages_log_texts.empty():
-                    texts += [self._messages_log_texts.get()]
-                self._AppendTextMessageLog(self.message_log, '\n'+'\n'.join(texts))
-            else:
-                if not self._maxmemmsg:
-                    self._maxmemmsg = "Messages log exceeded 80% of process " \
-                                      "memory, stopping for now..."
-                    self._AppendTextMessageLog(self.message_log,
-                                               '\n' + self._maxmemmsg,
-                                               source="stderr")
-                    # self._recreate_message_log()  # DEBUG
 
     def GetLastOutputChar(self):
         """Return the last character in the output window"""
