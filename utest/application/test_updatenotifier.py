@@ -40,10 +40,10 @@ class UpdateNotifierTestCase(unittest.TestCase):
         ctrl = UpdateNotifierController(settings)
         ctrl.VERSION = current
         ctrl._get_newest_version = lambda: new
-        ctrl._get_download_url   = lambda v: url if v == new else None
+        ctrl._get_download_url = lambda v: url if v == new else None
         return ctrl
 
-    def _settings(self, check_for_updates=True, last_update_check=time.time()-60*60*24*7):
+    def _settings(self, check_for_updates=True, last_update_check=time.time() - 60 * 60 * 24 * 7 - 1):
         return {'check for updates': check_for_updates,
                 'last update check': last_update_check}
 
@@ -67,7 +67,7 @@ class UpdateNotifierTestCase(unittest.TestCase):
         self.assertTrue(settings['last update check'] > time.time() - 1)
 
     def test_last_update_done_less_than_a_week_ago(self):
-        original_time = time.time()-60*60*24*3
+        original_time = time.time() - 60 * 60 * 24 * 3
         settings = self._settings(last_update_check=original_time)
         ctrl = UpdateNotifierController(settings)
         ctrl.notify_update_if_needed(self._callback)
@@ -110,8 +110,10 @@ class UpdateNotifierTestCase(unittest.TestCase):
     def test_checking_timeouts(self):
         settings = self._settings()
         ctrl = UpdateNotifierController(settings)
+
         def throwTimeoutError():
             raise urllib2.URLError('timeout')
+
         ctrl._get_newest_version = throwTimeoutError
         ctrl.notify_update_if_needed(self._callback)
         self.assertTrue(settings['last update check'] > time.time() - 1)
@@ -122,8 +124,10 @@ class UpdateNotifierTestCase(unittest.TestCase):
         ctrl = UpdateNotifierController(settings)
         ctrl.VERSION = '0'
         ctrl._get_newest_version = lambda: '1'
+
         def throwTimeoutError(*args):
             raise urllib2.URLError('timeout')
+
         ctrl._get_download_url = throwTimeoutError
         ctrl.notify_update_if_needed(self._callback)
         self.assertTrue(settings['last update check'] > time.time() - 1)
@@ -144,6 +148,7 @@ class UpdateNotifierTestCase(unittest.TestCase):
         self.assertTrue(settings['last update check'] > time.time() - 1)
         self.assertTrue(settings['check for updates'])
         self.assertFalse(self._callback_called)
+
 
 if __name__ == '__main__':
     unittest.main()
