@@ -454,14 +454,13 @@ class TestRunnerPlugin(Plugin):
         self._output(output)
         self._read_report_and_log_from_stdout_if_needed()
         if len(errors) > 0:
-            self._output("unexpected error: " + errors)
+            self._output(errors, source="stderr")
         if self._process_timer:
             self._process_timer.Stop()
         self._set_stopped()
         self._progress_bar.Stop()
-        now = datetime.datetime.now()
-        self._output("\ntest finished %s" %
-                     robottime.format_time(now.timetuple()))
+        self._output("\nTest finished {}".format(robottime.format_time(
+            datetime.datetime.now().timetuple())))
         self._test_runner.command_ended()
         if log_message:
             log_message.publish()
