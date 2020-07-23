@@ -14,7 +14,6 @@
 #  limitations under the License.
 
 import wx
-from copy import deepcopy
 from robotide import utils
 from robotide.action.actioninfo import ActionInfoCollection, ActionInfo
 from robotide.context import IS_WINDOWS, ctrl_or_cmd, bind_keys_to_evt_menu
