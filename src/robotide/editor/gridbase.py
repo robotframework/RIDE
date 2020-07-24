@@ -153,6 +153,7 @@ class GridEditor(grid.Grid):
         self.BeginBatch()
         for row_index, row_data in enumerate(data):
             for col_index, cell_value in enumerate(row_data):
+                cell_value = cell_value.replace('${\\n}', '\n')
                 self.write_cell(row_index, col_index, cell_value, update_history)
         self.EndBatch()
 

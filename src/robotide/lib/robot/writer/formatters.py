@@ -61,7 +61,7 @@ class _DataFileFormatter(object):
 
     def _escape_consecutive_whitespace(self, row):
         return [self._whitespace.sub(self._whitespace_escaper,
-                                     cell.replace('\n', ' ')) for cell in row]
+                                     cell.replace('\n', '${\\n}')) for cell in row]
 
     def _whitespace_escaper(self, match):
         return '\\'.join(match.group(0))
