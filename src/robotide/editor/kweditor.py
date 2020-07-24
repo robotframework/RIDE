@@ -567,24 +567,23 @@ class KeywordEditor(GridEditor):
             if keycode == wx.WXK_SPACE:
                 self._open_cell_editor_with_content_assist()  # Mac CMD
             elif specialkcode in [wx.WXK_DOWN, wx.WXK_UP]:
-                self._skip_except_on_mac(event)
                 self._move_rows(specialkcode)
             elif specialkcode == wx.WXK_RETURN:
-                self._move_cursor_down(event)
-            else:
-                event.Skip()
+                event.GetEventObject().WriteText('\n')
+                return
         else:
             if specialkcode == wx.WXK_WINDOWS_MENU:
                 self.OnCellRightClick(event)
-            elif specialkcode in [wx.WXK_RETURN, wx.WXK_BACK]:
-                self.save()
-                self._move_grid_cursor(event, specialkcode)
+            elif specialkcode == wx.WXK_BACK:
+                self.OnDelete(event)
+                return
+            elif specialkcode == wx.WXK_RETURN:
+                if not self.IsCellEditControlShown():
+                    self._open_cell_editor()
+                    return
             elif specialkcode == wx.WXK_F2:
                 self._open_cell_editor()
-            else:
-                event.Skip()
-        if specialkcode != wx.WXK_RETURN:
-            event.Skip()
+        event.Skip()
 
     def OnChar(self, event):
         keychar = event.GetUnicodeKey()
