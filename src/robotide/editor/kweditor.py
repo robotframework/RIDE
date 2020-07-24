@@ -180,7 +180,6 @@ class KeywordEditor(GridEditor):
         self.Bind(wx.EVT_CHAR, self.OnChar)
         self.Bind(wx.EVT_KEY_UP, self.OnKeyUp)
         self.Bind(grid.EVT_GRID_CELL_LEFT_CLICK, self.OnCellLeftClick)
-        self.Bind(grid.EVT_GRID_CELL_LEFT_DCLICK, self.OnCellLeftDClick)
         self.Bind(grid.EVT_GRID_LABEL_RIGHT_CLICK, self.OnLabelRightClick)
         self.Bind(grid.EVT_GRID_LABEL_LEFT_CLICK, self.OnLabelLeftClick)
         self.Bind(wx.EVT_KILL_FOCUS, self.OnKillFocus)
@@ -711,11 +710,6 @@ work.</li>
             self.SetGridCursor(event.Row, event.Col)
             self._has_been_clicked = True
         else:
-            event.Skip()
-
-    def OnCellLeftDClick(self, event):
-        self._tooltips.hide()
-        if not self._navigate_to_matching_user_keyword(event.Row, event.Col):
             event.Skip()
 
     def _navigate_to_matching_user_keyword(self, row, col):
