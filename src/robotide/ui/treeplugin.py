@@ -78,13 +78,19 @@ class TreePlugin(Plugin):
         self.tree = parent.tree
         """
         # parent, action_registerer, , default_settings={'collapsed':True}
+
     def register_frame(self, parent=None):
         if parent:
             self._parent = parent
-            self._mgr.InsertPane(self._tree,
-                              wx.lib.agw.aui.AuiPaneInfo().Name("tree_content").
-                              Caption("Test Suites").LeftDockable(True).
-                              CloseButton(True))
+
+            if self._mgr.GetPane("tree_content") in self._mgr._panes:
+                register = self._mgr.InsertPane
+            else:
+                register = self._mgr.AddPane
+
+            register(self._tree, wx.lib.agw.aui.AuiPaneInfo().Name("tree_content").
+                     Caption("Test Suites").LeftDockable(True).CloseButton(True))
+
             self._mgr.Update()
             # print(f"DEBUG: TreePlugin frame {self._parent.GetTitle()} tree {self._tree.GetName()}")
 
