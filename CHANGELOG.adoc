@@ -11,6 +11,24 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Added
 
+- None
+
+=== Removed
+
+- None
+
+=== Changed
+
+- None
+
+=== Fixed
+
+- Fixed error occurring when deleting test cases on Tree
+
+== https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.0b1.rst[2.0b1] - 2020-07-26
+
+=== Added
+
 - Added CHANGELOG.adoc
 - Added ignoring log.html and report.html on reporting HTML test suites
 - Added conditions for wxPython versions equal or higher than 4.1.0
