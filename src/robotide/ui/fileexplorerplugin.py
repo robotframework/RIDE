@@ -38,10 +38,15 @@ class FileExplorerPlugin(Plugin):
     def register_frame(self, parent=None):
         if parent:
             self._parent = parent
-            self._mgr.InsertPane(self._filemgr,
-                              wx.lib.agw.aui.AuiPaneInfo().Name("file_manager").
-                              Caption("Files").LeftDockable(True).
-                              CloseButton(True))
+
+            if self._mgr.GetPane("file_manager") in self._mgr._panes:
+                register = self._mgr.InsertPane
+            else:
+                register = self._mgr.AddPane
+
+            register(self._filemgr, wx.lib.agw.aui.AuiPaneInfo().Name("file_manager").
+                     Caption("Files").LeftDockable(True).CloseButton(True))
+
             self._mgr.Update()
 
     def enable(self):
