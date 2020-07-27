@@ -575,15 +575,16 @@ class KeywordEditor(GridEditor):
             if specialkcode == wx.WXK_WINDOWS_MENU:
                 self.OnCellRightClick(event)
             elif specialkcode == wx.WXK_BACK:
-                self.OnDelete(event)
-                return
+                self._move_grid_cursor(event, specialkcode)
             elif specialkcode == wx.WXK_RETURN:
-                if not self.IsCellEditControlShown():
+                if self.IsCellEditControlShown():
+                    self._move_grid_cursor(event, specialkcode)
+                else:
                     self._open_cell_editor()
-                    return
             elif specialkcode == wx.WXK_F2:
                 self._open_cell_editor()
-        event.Skip()
+        if specialkcode != wx.WXK_RETURN:
+            event.Skip()
 
     def OnChar(self, event):
         keychar = event.GetUnicodeKey()
