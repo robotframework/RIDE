@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 import wx
+import re
 from wx import grid
 
 from robotide.widgets import PopupCreator, PopupMenuItems
@@ -53,6 +54,8 @@ class GridEditor(grid.Grid):
         if update_history:
             self._update_history()
         self._expand_if_necessary(row, col)
+        # escape \n to support multi lines display in grid cells
+        value = re.sub(r"(?<!\\)\\n", '\n', value)
         self.SetCellValue(row, col, value)
 
     def _expand_if_necessary(self, row, col):
@@ -153,7 +156,6 @@ class GridEditor(grid.Grid):
         self.BeginBatch()
         for row_index, row_data in enumerate(data):
             for col_index, cell_value in enumerate(row_data):
-                cell_value = cell_value.replace('${\\n}', '\n')
                 self.write_cell(row_index, col_index, cell_value, update_history)
         self.EndBatch()
 
