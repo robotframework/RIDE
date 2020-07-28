@@ -569,7 +569,10 @@ class KeywordEditor(GridEditor):
             elif specialkcode in [wx.WXK_DOWN, wx.WXK_UP]:
                 self._move_rows(specialkcode)
             elif specialkcode == wx.WXK_RETURN:
-                event.GetEventObject().WriteText('\n')
+                if self.IsCellEditControlShown():
+                    event.GetEventObject().WriteText('\n')
+                else:
+                    self._move_cursor_down(event)
                 return
         else:
             if specialkcode == wx.WXK_WINDOWS_MENU:
