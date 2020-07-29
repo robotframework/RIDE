@@ -179,6 +179,7 @@ class KeywordEditor(GridEditor):
         self.Bind(wx.EVT_KEY_DOWN, self.OnKeyDown)
         self.Bind(wx.EVT_CHAR, self.OnChar)
         self.Bind(wx.EVT_KEY_UP, self.OnKeyUp)
+        self.GetGridWindow().Bind(wx.EVT_MOTION, self.OnMotion)
         self.Bind(grid.EVT_GRID_CELL_LEFT_CLICK, self.OnCellLeftClick)
         self.Bind(grid.EVT_GRID_CELL_LEFT_DCLICK, self.OnCellLeftDClick)
         self.Bind(grid.EVT_GRID_LABEL_RIGHT_CLICK, self.OnLabelRightClick)
@@ -356,7 +357,10 @@ class KeywordEditor(GridEditor):
             self.SelectRow(r, True)
 
     def OnMotion(self, event):
-        pass
+        if IS_MAC:
+            if self.IsCellEditControlShown():
+                return
+        event.Skip()
 
     def _before_saving(self, data):
         if self.IsCellEditControlShown():
