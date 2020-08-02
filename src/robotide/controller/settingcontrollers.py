@@ -14,8 +14,8 @@
 #  limitations under the License.
 
 import re
-import sys
 from itertools import chain
+from os import linesep
 
 from robotide.publish.messages import RideImportSettingChanged,\
     RideImportSettingRemoved, RideVariableUpdated, RideItemSettingsChanged, \
@@ -116,9 +116,10 @@ class _SettingController(ControllerWithParent):
 
 
 class DocumentationController(_SettingController):
-    newline_regexps = (re.compile(r'(\\+)r\\n'),
-                       re.compile(r'(\\+)n'),
-                       re.compile(r'(\\+)r'))
+    _regexps = (re.compile(r'(\\+)r\\n'),
+                re.compile(r'(\\+)n'),
+                re.compile(r'(\\+)r'),
+                re.compile(r'(\\+) '))
 
     def _init(self, doc):
         self._doc = doc
@@ -132,7 +133,7 @@ class DocumentationController(_SettingController):
         return False
 
     def _get_editable_value(self):
-        return self._unescape_newlines_and_handle_escapes(self.value)
+        return self._unescape_newlines_and_whitespaces(self.value)
 
     def _set_editable_value(self, value):
         self.set_value(self._escape_newlines_and_leading_hash(value))
@@ -143,15 +144,24 @@ class DocumentationController(_SettingController):
     def visible_value(self):
         return utils.html_format(utils.unescape(self.value))
 
-    def _unescape_newlines_and_handle_escapes(self, item):
-        for regexp in self.newline_regexps:
-            item = regexp.sub(self._newline_replacer, item)
+    def _unescape_newlines_and_whitespaces(self, item):
+        for regexp in self._regexps:
+            if regexp.pattern.endswith(' '):
+                item = regexp.sub(self._whitespace_replacer, item)
+            else:
+                item = regexp.sub(self._newline_replacer, item)
         return item
 
+    def _whitespace_replacer(self, match):
+        return self._replacer(' ', match)
+
     def _newline_replacer(self, match):
-        blashes = len(match.group(1))
-        if blashes % 2 == 1:
-            return '\\' * (blashes - 1) + '\n'
+        return self._replacer(linesep, match)
+
+    def _replacer(self, char, match):
+        slashes = len(match.group(1))
+        if slashes % 2 == 1:
+            return '\\' * (slashes - 1) + char
         return match.group()
 
     def _escape_newlines_and_leading_hash(self, item):

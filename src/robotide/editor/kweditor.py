@@ -19,6 +19,7 @@ import json
 from robotide.editor.cellrenderer import CellRenderer
 from robotide import context
 from wx.grid import GridCellEditor
+from robotide.context import IS_MAC
 from os import linesep
 from robotide.controller.ctrlcommands import ChangeCellValue, ClearArea, \
     PasteArea, DeleteRows, AddRows, CommentRows, InsertCells, DeleteCells, \
