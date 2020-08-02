@@ -19,7 +19,7 @@ import json
 from robotide.editor.cellrenderer import CellRenderer
 from robotide import context
 from wx.grid import GridCellEditor
-from robotide.context import IS_MAC, IS_WINDOWS
+from os import linesep
 from robotide.controller.ctrlcommands import ChangeCellValue, ClearArea, \
     PasteArea, DeleteRows, AddRows, CommentRows, InsertCells, DeleteCells, \
     UncommentRows, Undo, Redo, RenameKeywordOccurrences, ExtractKeyword, \
@@ -528,8 +528,7 @@ class KeywordEditor(GridEditor):
         self.MoveCursorDown(event.ShiftDown())
 
     def OnKeyDown(self, event):
-        keycode = event.GetUnicodeKey()
-        specialkcode = event.GetKeyCode()
+        keycode = event.GetUnicodeKey() or event.GetKeyCode()
         if event.ControlDown():
             if event.ShiftDown():
                 if keycode == ord('I'):
@@ -541,6 +540,7 @@ class KeywordEditor(GridEditor):
             else:
                 if keycode == wx.WXK_SPACE:
                     self._open_cell_editor_with_content_assist()
+                    return  # event must not be skipped in this case
                 elif keycode == ord('C'):
                     self.OnCopy(event)
                 elif keycode == ord('X'):
@@ -556,7 +556,7 @@ class KeywordEditor(GridEditor):
                         self.GetGridCursorRow(), self.GetGridCursorCol())
                 elif keycode == ord('F'):
                     if not self.has_focus():
-                        self.SetFocus() # Avoiding Search field on Text Edit
+                        self.SetFocus()  # Avoiding Search field on Text Edit
                 elif keycode in (ord('1'), ord('2'), ord('5')):
                     self._open_cell_editor_and_execute_variable_creator(
                         list_variable=(keycode == ord('2')),
@@ -566,27 +566,26 @@ class KeywordEditor(GridEditor):
         elif event.AltDown():
             if keycode == wx.WXK_SPACE:
                 self._open_cell_editor_with_content_assist()  # Mac CMD
-            elif specialkcode in [wx.WXK_DOWN, wx.WXK_UP]:
-                self._move_rows(specialkcode)
-            elif specialkcode == wx.WXK_RETURN:
+            elif keycode in [wx.WXK_DOWN, wx.WXK_UP]:
+                self._move_rows(keycode)
+            elif keycode == wx.WXK_RETURN:
                 if self.IsCellEditControlShown():
-                    event.GetEventObject().WriteText('\n')
+                    event.GetEventObject().WriteText(linesep)
                 else:
                     self._move_cursor_down(event)
-                return
+                return  # event must not be skipped in this case
         else:
-            if specialkcode == wx.WXK_WINDOWS_MENU:
+            if keycode == wx.WXK_WINDOWS_MENU:
                 self.OnCellRightClick(event)
-            elif specialkcode == wx.WXK_BACK:
-                self._move_grid_cursor(event, specialkcode)
-                return
-            elif specialkcode == wx.WXK_RETURN:
+            elif keycode == wx.WXK_BACK:
+                self._move_grid_cursor(event, keycode)
+            elif keycode == wx.WXK_RETURN:
                 if self.IsCellEditControlShown():
-                    self._move_grid_cursor(event, specialkcode)
+                    self._move_grid_cursor(event, keycode)
                 else:
                     self._open_cell_editor()
-                return
-            elif specialkcode == wx.WXK_F2:
+                return  # event must not be skipped in this case
+            elif keycode == wx.WXK_F2:
                 self._open_cell_editor()
         event.Skip()
 
