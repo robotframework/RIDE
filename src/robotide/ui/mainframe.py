@@ -16,11 +16,11 @@
 import os
 import wx
 import wx.lib.agw.aui as aui
-from wx import Icon
+from wx.adv import TaskBarIcon, TBI_DOCK
 from robotide.action import ActionInfoCollection, ActionFactory, SeparatorInfo
-from robotide.context import ABOUT_RIDE, SHORTCUT_KEYS
+from robotide.context import ABOUT_RIDE, SHORTCUT_KEYS, IS_WINDOWS, IS_LINUX
 from robotide.controller.ctrlcommands import SaveFile, SaveAll
-from robotide.publish import RideSaveAll, RideClosing, RideSaved, PUBLISHER,\
+from robotide.publish import RideSaveAll, RideClosing, RideSaved, PUBLISHER, \
     RideInputValidationError, RideTreeSelection, RideModificationPrevented, RideBeforeSaving
 from robotide.ui.tagdialogs import ViewAllTagsDialog
 from robotide.ui.filedialogs import RobotFilePathDialog
@@ -152,9 +152,6 @@ class RideFrame(wx.Frame):
         # tell AuiManager to manage this frame
         self._mgr.SetManagedWindow(self)
 
-        # set frame icon
-        # self.SetIcon(Icon('widgets/robot.ico')) # Maybe is not needed
-        # self.SetMinSize(size)
         self.SetMinSize(wx.Size(400, 300))
 
         self.ensure_on_screen()
@@ -162,16 +159,12 @@ class RideFrame(wx.Frame):
             self.Maximize()
         self._application = application
         self._controller = controller
-        self.favicon = Icon(os.path.join(os.path.dirname(__file__), "..",
-                                         "widgets","robot.ico"),
-                            wx.BITMAP_TYPE_ICO, 256, 256)
-        self.SetIcon(self.favicon)  #TODO use SetIcons for all sizes
+        self._image_provider = ImageProvider()
         self._init_ui()
+        self._task_bar_icon = RIDETaskBarIcon(self._image_provider)
         self._plugin_manager = PluginManager(self.notebook)
         self._review_dialog = None
         self._view_all_tags_dialog = None
-         #, self, self.actions,
-        # self._application.settings)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
         self.Bind(wx.EVT_SIZE, self.OnSize)
         self.Bind(wx.EVT_MOVE, self.OnMove)
@@ -274,7 +267,8 @@ class RideFrame(wx.Frame):
 
         mb.take_menu_bar_into_use()
         self.CreateStatusBar()
-        self.SetIcons(ImageProvider().PROGICONS)
+        # set main frame icon
+        self.SetIcons(self._image_provider.PROGICONS)
         # tell the manager to "commit" all the changes just made
         self._mgr.Update()
 
@@ -339,6 +333,7 @@ class RideFrame(wx.Frame):
             RideClosing().publish()
             # deinitialize the frame manager
             self._mgr.UnInit()
+            self._task_bar_icon.Destroy()
             self.Destroy()
         else:
             wx.CloseEvent.Veto(event)
@@ -780,3 +775,21 @@ class ShortcutKeysDialog(Dialog):
 
     def _get_platform_specific_shortcut_keys(self):
         return localize_shortcuts(SHORTCUT_KEYS)
+
+
+class RIDETaskBarIcon(TaskBarIcon):
+
+    def __init__(self, img_provider):
+        TaskBarIcon.__init__(self, TBI_DOCK)
+        self._img_provider = img_provider
+        self.SetIcon(self._make_icon(), "RIDE")
+
+    def _make_icon(self):
+        img_path = self._img_provider.get_img_path('robot.ico')
+        img = wx.Image(img_path, wx.BITMAP_TYPE_ICO)
+        if IS_WINDOWS:
+            img = img.Scale(16, 16)
+        elif IS_LINUX:
+            img = img.Scale(22, 22)
+        icon = wx.Icon(img.ConvertToBitmap())
+        return icon
