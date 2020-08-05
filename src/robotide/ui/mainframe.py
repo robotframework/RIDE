@@ -18,7 +18,7 @@ import wx
 import wx.lib.agw.aui as aui
 from wx.adv import TaskBarIcon, TBI_DOCK
 from robotide.action import ActionInfoCollection, ActionFactory, SeparatorInfo
-from robotide.context import ABOUT_RIDE, SHORTCUT_KEYS, IS_WINDOWS, IS_LINUX
+from robotide.context import ABOUT_RIDE, SHORTCUT_KEYS, IS_MAC
 from robotide.controller.ctrlcommands import SaveFile, SaveAll
 from robotide.publish import RideSaveAll, RideClosing, RideSaved, PUBLISHER, \
     RideInputValidationError, RideTreeSelection, RideModificationPrevented, RideBeforeSaving
@@ -782,14 +782,6 @@ class RIDETaskBarIcon(TaskBarIcon):
     def __init__(self, img_provider):
         TaskBarIcon.__init__(self, TBI_DOCK)
         self._img_provider = img_provider
-        self.SetIcon(self._make_icon(), "RIDE")
-
-    def _make_icon(self):
-        img_path = self._img_provider.get_img_path('robot.ico')
-        img = wx.Image(img_path, wx.BITMAP_TYPE_ICO)
-        if IS_WINDOWS:
-            img = img.Scale(16, 16)
-        elif IS_LINUX:
-            img = img.Scale(22, 22)
-        icon = wx.Icon(img.ConvertToBitmap())
-        return icon
+        if IS_MAC:
+            # only use in mac to display RIDE app icon in dock
+            self.SetIcon(wx.Icon(self._img_provider.RIDE_ICON), "RIDE")
