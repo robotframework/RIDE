@@ -1,2 +1,0 @@
-#!/bin/sh
-/Library/Frameworks/Python.framework/Versions/3.7/bin/ride.py $*
