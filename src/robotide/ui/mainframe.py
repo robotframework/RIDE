@@ -339,9 +339,8 @@ class RideFrame(wx.Frame):
             wx.CloseEvent.Veto(event)
 
     def OnSize(self, event):
-        if not self.IsMaximized():
-            self._application.settings['mainframe maximized'] = False
-            self._application.settings['mainframe size'] = self.DoGetSize()
+        self._application.settings['mainframe maximized'] = self.IsMaximized()
+        self._application.settings['mainframe size'] = self.DoGetSize()
         event.Skip()
 
     def OnMove(self, event):
