@@ -31,6 +31,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Fixed
 
+- Fixed Del key in Text Editor, was not deleting text
 - Fixed duplicated but empty Text Editor tab when Text Editor is the only active editor Plugin
 - Fixed RIDE startup crash when Tree or File Explorer plugins use opened=False setting
 - Fixed error occurring when deleting test cases on Tree

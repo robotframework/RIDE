@@ -483,8 +483,8 @@ class SourceEditor(wx.Panel):
 
     def OnContentAssist(self, event):
         self._showing_list = False
-        if not self.is_focused():
-            return
+        #if not self.is_focused():
+        #    return
         self.store_position()
         selected = self._editor.get_selected_or_near_text()
         sugs = [s.name for s in self._suggestions.get_suggestions(
@@ -525,8 +525,8 @@ class SourceEditor(wx.Panel):
         self.open(data)
 
     def auto_ident(self):
-        if not self.is_focused():
-            return
+        # if not self.is_focused():
+        #    return
         line, _ = self._editor.GetCurLine()
         lenline = len(line)
         linenum = self._editor.GetCurrentLine()
@@ -709,14 +709,22 @@ class SourceEditor(wx.Panel):
 
     def OnEditorKey(self, event):
         if not self.is_focused():  # DEBUG was typing text when at Grid Editor
-            return
-        # DEBUG keycode = event.GetKeyCode(); if (keycode >= ord(' ')) and
+            self.GetFocus(event)
+        keycode = event.GetKeyCode()
+        if keycode == wx.WXK_DELETE:
+            selected = self._editor.GetSelection()
+            if selected[0] == selected[1]:
+                pos = self._editor.GetInsertionPoint()
+                if pos != self._editor.GetLastPosition():
+                    self._editor.DeleteRange(selected[0], 0)
+            else:
+                self._editor.DeleteRange(selected[0], selected[1] - selected[0] - 1 )
         self._mark_file_dirty(self._editor.GetModify())
         event.Skip()
 
     def OnKeyDown(self, event):
         if not self.is_focused():
-            self.GetFocus(None)
+            self.GetFocus(event)
         keycode = event.GetUnicodeKey()
         if event.GetKeyCode() == wx.WXK_TAB and not event.ControlDown() and not event.ShiftDown():
             selected = self._editor.GetSelection()
@@ -730,7 +738,7 @@ class SourceEditor(wx.Panel):
                 pos = self._editor.GetCurrentPos()
                 self._editor.SetCurrentPos(max(0, pos - self._tab_size))
                 self.store_position()
-                if not event.ControlDown(): # No text selection
+                if not event.ControlDown():  # No text selection
                     pos = self._editor.GetCurrentPos()
                     self._editor.SetSelection(pos, pos)
             else:
@@ -750,7 +758,7 @@ class SourceEditor(wx.Panel):
 
     def OnChar(self, event):
         if not self.is_focused():
-            return
+            self.GetFocus(None)
         keycode = event.GetUnicodeKey()
         if chr(keycode) in ['[', '{', '(', "'", '\"', '`']:
             self.execute_enclose_text(chr(keycode))
