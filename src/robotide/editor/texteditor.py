@@ -33,6 +33,7 @@ from robotide.widgets import TextField, Label, HtmlDialog
 from robotide.preferences.editors import ReadFonts
 from wx.adv import HyperlinkCtrl, EVT_HYPERLINK
 from .contentassist import ContentAssistTextEditor
+from robotide.controller.filecontrollers import ResourceFileController
 
 try:  # import installed version first
     import robotframeworklexer
@@ -52,7 +53,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
 
     @property
     def _editor(self):
-        if not self._editor_component:
+        if self._editor_component is None:
             self._editor_component = SourceEditor(self.notebook,
                                                   self.title,
                                                   DataValidationHandler(self))
@@ -333,10 +334,17 @@ class SourceEditor(wx.Panel):
         self._tab_open = message.newtab
 
     def _create_ui(self, title):
-        self.SetSizer(VerticalSizer())
-        self._create_editor_toolbar()
-        self._create_editor_text_control()
-        self._parent.add_tab(self, title, allow_closing=False)
+        cnt = self._parent.GetPageCount()
+        if cnt >= 0:
+            editor_created = False
+            while cnt > 0 and not editor_created:
+                cnt -= 1
+                editor_created = self._parent.GetPageText(cnt) == self._title  # TODO: Later we can adjust for several Text Editor tabs
+            if not editor_created:
+                self.SetSizer(VerticalSizer())
+                self._create_editor_toolbar()
+                self._create_editor_text_control()
+                self._parent.add_tab(self, title, allow_closing=False)
 
     def _create_editor_toolbar(self):
         # needs extra container, since we might add helper
@@ -488,11 +496,19 @@ class SourceEditor(wx.Panel):
             self._showing_list = True
 
     def open(self, data):
+        print(f"DEBUG: Textedit enter open")
         self.reset()
         self._data = data
+        print(f"DEBUG: Textedit in open before getting SuggestionSource {self._data._data}\n Type data is {type(self._data._data)}")
         try:
-            self._suggestions = SuggestionSource(None, data._data.tests[0])
+            if isinstance(self._data._data, ResourceFileController):
+                print(f"DEBUG: Textedit in before getting to RESOURCE")
+                self._suggestions = SuggestionSource(None, self._data._data)
+            else:
+                self._suggestions = SuggestionSource(None, self._data._data.tests[0])
+            print(f"DEBUG: Textedit in open After getting SuggestionSource")
         except IndexError:  # It is a new project, no content yet
+            print(f"DEBUG: Textedit in open Exception SuggestionSource")
             self._suggestions = SuggestionSource(None,
                                                  BuiltInLibrariesSuggester())
         if not self._editor:
