@@ -28,6 +28,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Changed
 
+- On MacOS, grid editor cell will not lose focus under edit mode when mouse is moving outside of the cell's boundary
 - Improved filesystem changes detection, with a confirmation dialog to reload workspace
 - Changed dependency on wx.Window on tree panel
 - Improved error and removal of old log files
@@ -38,6 +39,10 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Fixed
 
+- Fixed case will be selected invisibly after modified from Text Editor
+- Fixed some of log messages' log level is incorrect sometimes
+- Fixed some of log messages is missing sometimes
+- Fixed smart quotes replace in Grid Editor on MacOS
 - Fixed editing cells in Grid Editor on wxPython 4.1
 - Fixed not saving file after deleting text in Text Editor
 - Fixed elements sizing on Preferences panel
