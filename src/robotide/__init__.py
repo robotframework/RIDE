@@ -52,7 +52,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), 'spec'))
 sys.path.append(os.path.join(os.path.dirname(__file__), 'lib'))
 
 
-def main(args):
+def main(*args):
     noupdatecheck, debug_console, inpath = _parse_args(args)
     if len(args) > 3 or '--help' in args:
         print(__doc__)
@@ -120,4 +120,4 @@ def _show_old_wxpython_warning_if_needed(parent=None):
 
 
 if __name__ == '__main__':
-    main(sys.argv[1:])
+    main(*sys.argv[1:])
