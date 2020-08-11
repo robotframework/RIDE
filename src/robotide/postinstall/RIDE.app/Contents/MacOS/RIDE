@@ -1,0 +1,2 @@
+#!/bin/sh
+/usr/local/bin/python3 -m robotide.__init__ $* &> /dev/null &
