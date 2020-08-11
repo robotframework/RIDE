@@ -944,7 +944,7 @@ class ChangeCellValue(_StepsChangingCommand):
     def __init__(self, row, col, value):
         self._row = row
         self._col = col
-        self._value = value
+        self._value = value.replace('\n', '\\n')
 
     def change_steps(self, context):
         steps = context.steps

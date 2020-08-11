@@ -25,6 +25,11 @@ Install with:
 [source, shell]
 pip install -U https://github.com/robotframework/RIDE/archive/master.zip
 
+Install current Beta version (2.0b1) with:
+[source, shell]
+pip install -U --pre robotframework-ride
+
+
 **See the https://github.com/robotframework/RIDE/wiki/F%2eA%2eQ%2e[FAQ] at https://github.com/robotframework/RIDE/wiki[Wiki]**
 
 
