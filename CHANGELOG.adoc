@@ -36,6 +36,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Fixed
 
+- Fixed incorrect arguments parsing when launching RIDE with command ``python -m robotide.\\__init__``
 - Fixed RIDE startup crash when Tree or File Explorer plugins use opened=False setting
 - Fixed error occurring when deleting test cases on Tree
 
