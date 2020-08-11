@@ -11,6 +11,37 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Added
 
+- Added multiline view in Grid Editor
+    * When editing, \n would be converted to newline, \\n will remain as is.
+    * When editing, Alt-Enter is the same as \n, converted immediately.
+    * When editing, Ctrl-Up and Ctrl-Down move cursor to start and end of multiline respectively.
+    * When editing, Ctrl-Home and Ctrl-End move cursor to start and end of cell content respectively.
+- Added Del key to clear Grid Editor cell content when in navigation mode (clear like doing Ctrl-X)
+
+=== Removed
+
+- Removed moving to keyword/variable definition when doing Double-Click in grid cell
+
+=== Changed
+- On MacOS, grid cell will not lose focus anymore when mouse is moving outside of the cell's boundary
+- Changed moving to keyword definition to be with Ctrl-Click (keep Ctrl-B action)
+    * To edit cell use F2 or Double-Click
+- Changed Enter button in navigation mode to start editing cell, and to move to right cell when in edit mode
+
+
+=== Fixed
+- Fixed case will be selected invisibly after being modified from Text Editor
+- Fixed some of log messages' log level are incorrect sometimes
+- Fixed some of log messages are missing sometimes
+- Fixed smart quotes replace in Grid Editor on MacOS
+- Fixed incorrect arguments parsing when launching RIDE with command ``python -m robotide.\\__init__``
+- Fixed RIDE startup crash when Tree or File Explorer plugins use opened=False setting
+- Fixed error occurring when deleting test cases on Tree
+
+== https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.0b1.rst[2.0b1] - 2020-07-26
+
+=== Added
+
 - Added CHANGELOG.adoc
 - Added ignoring log.html and report.html on reporting HTML test suites
 - Added conditions for wxPython versions equal or higher than 4.1.0
@@ -28,7 +59,6 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Changed
 
-- On MacOS, grid editor cell will not lose focus under edit mode when mouse is moving outside of the cell's boundary
 - Improved filesystem changes detection, with a confirmation dialog to reload workspace
 - Changed dependency on wx.Window on tree panel
 - Improved error and removal of old log files
@@ -39,10 +69,6 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Fixed
 
-- Fixed case will be selected invisibly after modified from Text Editor
-- Fixed some of log messages' log level is incorrect sometimes
-- Fixed some of log messages is missing sometimes
-- Fixed smart quotes replace in Grid Editor on MacOS
 - Fixed editing cells in Grid Editor on wxPython 4.1
 - Fixed not saving file after deleting text in Text Editor
 - Fixed elements sizing on Preferences panel
