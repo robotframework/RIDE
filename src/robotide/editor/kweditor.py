@@ -179,8 +179,8 @@ class KeywordEditor(GridEditor):
         self.Bind(wx.EVT_KEY_DOWN, self.OnKeyDown)
         self.Bind(wx.EVT_CHAR, self.OnChar)
         self.Bind(wx.EVT_KEY_UP, self.OnKeyUp)
+        self.GetGridWindow().Bind(wx.EVT_MOTION, self.OnMotion)
         self.Bind(grid.EVT_GRID_CELL_LEFT_CLICK, self.OnCellLeftClick)
-        self.Bind(grid.EVT_GRID_CELL_LEFT_DCLICK, self.OnCellLeftDClick)
         self.Bind(grid.EVT_GRID_LABEL_RIGHT_CLICK, self.OnLabelRightClick)
         self.Bind(grid.EVT_GRID_LABEL_LEFT_CLICK, self.OnLabelLeftClick)
         self.Bind(wx.EVT_KILL_FOCUS, self.OnKillFocus)
@@ -356,7 +356,10 @@ class KeywordEditor(GridEditor):
             self.SelectRow(r, True)
 
     def OnMotion(self, event):
-        pass
+        if IS_MAC:
+            if self.IsCellEditControlShown():
+                return
+        event.Skip()
 
     def _before_saving(self, data):
         if self.IsCellEditControlShown():
@@ -568,24 +571,28 @@ class KeywordEditor(GridEditor):
             if keycode == wx.WXK_SPACE:
                 self._open_cell_editor_with_content_assist()  # Mac CMD
             elif specialkcode in [wx.WXK_DOWN, wx.WXK_UP]:
-                self._skip_except_on_mac(event)
                 self._move_rows(specialkcode)
             elif specialkcode == wx.WXK_RETURN:
-                self._move_cursor_down(event)
-            else:
-                event.Skip()
+                if self.IsCellEditControlShown():
+                    event.GetEventObject().WriteText('\n')
+                else:
+                    self._move_cursor_down(event)
+                return
         else:
             if specialkcode == wx.WXK_WINDOWS_MENU:
                 self.OnCellRightClick(event)
-            elif specialkcode in [wx.WXK_RETURN, wx.WXK_BACK]:
-                self.save()
+            elif specialkcode == wx.WXK_BACK:
                 self._move_grid_cursor(event, specialkcode)
+                return
+            elif specialkcode == wx.WXK_RETURN:
+                if self.IsCellEditControlShown():
+                    self._move_grid_cursor(event, specialkcode)
+                else:
+                    self._open_cell_editor()
+                return
             elif specialkcode == wx.WXK_F2:
                 self._open_cell_editor()
-            else:
-                event.Skip()
-        if specialkcode != wx.WXK_RETURN:
-            event.Skip()
+        event.Skip()
 
     def OnChar(self, event):
         keychar = event.GetUnicodeKey()
@@ -711,11 +718,6 @@ work.</li>
             self.SetGridCursor(event.Row, event.Col)
             self._has_been_clicked = True
         else:
-            event.Skip()
-
-    def OnCellLeftDClick(self, event):
-        self._tooltips.hide()
-        if not self._navigate_to_matching_user_keyword(event.Row, event.Col):
             event.Skip()
 
     def _navigate_to_matching_user_keyword(self, row, col):

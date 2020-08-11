@@ -120,4 +120,4 @@ def _show_old_wxpython_warning_if_needed(parent=None):
 
 
 if __name__ == '__main__':
-    main(sys.argv[1:])
+    main(*sys.argv[1:])
