@@ -42,11 +42,11 @@ from ..editor import customsourceeditor
 
 _menudata = """
 [File]
-!&New Project | Create a new top level suite | Ctrlcmd-N
+!&New Project | Create a new top level suite | Ctrlcmd-N | ART_NEW
 ---
 !&Open Test Suite | Open file containing tests | Ctrlcmd-O | ART_FILE_OPEN
 !Open &Directory | Open directory containing datafiles | Shift-Ctrlcmd-O | ART_FOLDER_OPEN
-!Open External File | Open file in Code Editor | | ART_FOLDER_OPEN
+!Open External File | Open file in Code Editor | | ART_NORMAL_FILE
 ---
 !&Save | Save selected datafile | Ctrlcmd-S | ART_FILE_SAVE
 !Save &All | Save all changes | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS
@@ -171,7 +171,7 @@ class RideFrame(wx.Frame):
         self._plugin_manager = PluginManager(self.notebook)
         self._review_dialog = None
         self._view_all_tags_dialog = None
-        self._curdir = None
+        self._current_external_dir = None
          #, self, self.actions,
         # self._application.settings)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
@@ -429,16 +429,16 @@ class RideFrame(wx.Frame):
         event.Skip()
 
     def OnOpenExternalFile(self, event):
-        if not self._curdir:
+        if not self._current_external_dir:
             curdir = self._controller.default_dir
         else:
-            curdir = self._curdir
+            curdir = self._current_external_dir
         fdlg = wx.FileDialog(self, defaultDir=curdir, style=wx.FD_OPEN | wx.FD_FILE_MUST_EXIST)
         if fdlg.ShowModal() == wx.ID_CANCEL:
             return
         path = fdlg.GetPath()
         try:
-            self._curdir = os.path.dirname(path)
+            self._current_external_dir = os.path.dirname(path)
             customsourceeditor.main(path)
         except IOError:
             wx.LogError(f"Cannot open file {path}")
