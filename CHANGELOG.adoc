@@ -65,6 +65,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Fixed
 
+- Fixed incorrect arguments parsing when launching RIDE with command `python -m robotide.\\__init__`
 - Fixed editing cells in Grid Editor on wxPython 4.1
 - Fixed not saving file after deleting text in Text Editor
 - Fixed elements sizing on Preferences panel
