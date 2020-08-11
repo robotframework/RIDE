@@ -13,9 +13,9 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import os
-from os.path import relpath, dirname, isdir
 import wx
+from robotide.context import IS_MAC
+from os.path import relpath, dirname, isdir
 from wx.lib.expando import ExpandoTextCtrl
 from wx.lib.filebrowsebutton import FileBrowseButton
 from robotide import context, utils
@@ -40,6 +40,8 @@ class _ContentAssistTextCtrlBase(object):
         self._row = None
         self.gherkin_prefix = ''  # Store gherkin prefix from input to add \
         # later after search is performed
+        if IS_MAC:
+            self.OSXDisableAllSmartSubstitutions()
 
     def set_row(self, row):
         self._row = row
