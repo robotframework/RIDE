@@ -23,6 +23,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 - Removed moving to keyword/variable definition when doing Double-Click in grid cell
 
 === Changed
+
 - On MacOS, grid cell will not lose focus anymore when mouse is moving outside of the cell's boundary
 - Changed moving to keyword definition to be with Ctrl-Click (keep Ctrl-B action)
     * To edit cell use F2 or Double-Click
@@ -30,6 +31,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 
 === Fixed
+
 - Fixed case will be selected invisibly after being modified from Text Editor
 - Fixed some of log messages' log level are incorrect sometimes
 - Fixed some of log messages are missing sometimes
