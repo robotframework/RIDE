@@ -221,21 +221,14 @@ class ContentAssistFileButton(_ContentAssistTextCtrlBase, FileBrowseButton):
         self._controller = controller
         self._browsed = False
         _ContentAssistTextCtrlBase.__init__(self, suggestion_source)
-
+        
     def Bind(self, *args):
         self.textControl.Bind(*args)
 
-    def SetInsertionPoint(self, pos):
-        self.textControl.SetInsertionPoint(pos)
+    def __getattr__(self, item):
+        return getattr(self.textControl, item)
 
-    @property
-    def Value(self):
-        return self.textControl.Value
-
-    def AppendText(self, *args):
-        return self.textControl.AppendText(*args)
-
-    def OnBrowse(self, evt):
+    def OnBrowse(self, evt=None):
         self._browsed = True
         FileBrowseButton.OnBrowse(self, evt)
         self._browsed = False
@@ -254,9 +247,6 @@ class ContentAssistFileButton(_ContentAssistTextCtrlBase, FileBrowseButton):
             self._browsed = False
             self.SetValue(self._relative_path(self.GetValue()))
             self._parent.setFocusToOK()
-
-    def SelectAll(self):
-        self.textControl.SelectAll()
 
     def _relative_path(self, value):
         src = self._controller.datafile.source
