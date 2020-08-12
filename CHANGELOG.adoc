@@ -11,6 +11,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Added
 
+- Added RIDE application dock icon on MacOS
 - Added an Open External File menu option, to open file in Code Editor
 - Added multiline view in Grid Editor
     * When editing, \n would be converted to newline, \\n will remain as is.
@@ -33,6 +34,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Fixed
 
+- Fixed incorrect app windows size configuration after maximizing
 - Fixed case will be selected invisibly after being modified from Text Editor
 - Fixed some of log messages' log level are incorrect sometimes
 - Fixed some of log messages are missing sometimes
