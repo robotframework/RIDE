@@ -11,6 +11,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Added
 
+- Added an Open External File menu option, to open file in Code Editor
 - Added multiline view in Grid Editor
     * When editing, \n would be converted to newline, \\n will remain as is.
     * When editing, Alt-Enter is the same as \n, converted immediately.
@@ -24,6 +25,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Changed
 
+- On MacOS, grid cell will not lose focus anymore when mouse is moving outside of the cell's boundary
 - Changed moving to keyword definition to be with Ctrl-Click (keep Ctrl-B action)
     * To edit cell use F2 or Double-Click
 - Changed Enter button in navigation mode to start editing cell, and to move to right cell when in edit mode
@@ -31,6 +33,11 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Fixed
 
+- Fixed case will be selected invisibly after being modified from Text Editor
+- Fixed some of log messages' log level are incorrect sometimes
+- Fixed some of log messages are missing sometimes
+- Fixed smart quotes replace in Grid Editor on MacOS
+- Fixed incorrect arguments parsing when launching RIDE with command ``python -m robotide.\\__init__``
 - Fixed RIDE startup crash when Tree or File Explorer plugins use opened=False setting
 - Fixed error occurring when deleting test cases on Tree
 
@@ -113,3 +120,4 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 === Fixed
 
 - None
+

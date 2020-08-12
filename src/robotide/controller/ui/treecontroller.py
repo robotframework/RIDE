@@ -14,16 +14,13 @@
 #  limitations under the License.
 
 import wx
-import os
+from robotide import utils
 from robotide.action.actioninfo import ActionInfoCollection, ActionInfo
 from robotide.context import IS_WINDOWS, ctrl_or_cmd, bind_keys_to_evt_menu
 from robotide.controller.ctrlcommands import ChangeTag
 from robotide.controller.macrocontrollers import TestCaseController
 from robotide.controller.tags import Tag, DefaultTag
-from robotide.controller.filecontrollers import TestCaseFileController
-from robotide.publish import PUBLISHER, RideTestSelectedForRunningChanged, RideItemNameChanged, RideFileNameChanged, RideNewProject, RideOpenSuite
-from robotide.widgets import Dialog
-from robotide import utils
+from robotide.publish import RideTestSelectedForRunningChanged
 
 tree_actions ="""
 [Navigate]
@@ -207,6 +204,15 @@ class TestSelectionController(object):
             changed = True
         if notifySelection and changed:
             self._send_selection_changed_message()
+
+    def remove_invalid_cases_selection(self, cases_file_controller):
+        invalid_cases = list()
+        for test in self._tests:
+            if test.datafile_controller == cases_file_controller:
+                invalid_cases.append(test)
+        for _ in invalid_cases:
+            self._tests.remove(_)
+        self._send_selection_changed_message()
 
     def _send_selection_changed_message(self):
         message = RideTestSelectedForRunningChanged(tests=self._tests)
