@@ -87,6 +87,9 @@ class FileExplorerPlugin(Plugin):
                           Caption("Files").LeftDockable(True).
                           CloseButton(True))
         self._filemgr.Raise()
+        self._filemgr.SetBackgroundStyle(wx.BG_STYLE_SYSTEM)
+        self._filemgr.SetBackgroundColour('white')  # TODO get background color from def
+        self._filemgr.Refresh()
         self._mgr.Update()
         self.save_setting('opened', True)
         self._update_tree()
@@ -103,6 +106,9 @@ class FileExplorer(wx.GenericDirCtrl):
         wx.GenericDirCtrl.__init__(self, parent, id=-1, size=(200, 225), style=wx.DIRCTRL_3D_INTERNAL)
         self._controller = controller
         self.SetThemeEnabled(True)
+        self.SetBackgroundStyle(wx.BG_STYLE_SYSTEM)
+        self.SetBackgroundColour('white')  # TODO get background color from def
+        self.Refresh()
 
     def update_tree(self):
         if isinstance(self._controller, Project):
@@ -113,4 +119,5 @@ class FileExplorer(wx.GenericDirCtrl):
                     self.ExpandPath(self._controller.data.source)
                 except Exception:
                     pass
+                self.Refresh()
                 self.Update()

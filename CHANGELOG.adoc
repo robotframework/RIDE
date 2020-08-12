@@ -11,6 +11,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Added
 
+- Added an Open External File menu option, to open file in Code Editor
 - Added multiline view in Grid Editor
     * When editing, \n would be converted to newline, \\n will remain as is.
     * When editing, Alt-Enter is the same as \n, converted immediately.
@@ -119,3 +120,4 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 === Fixed
 
 - None
+
