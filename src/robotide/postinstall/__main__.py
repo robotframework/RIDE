@@ -220,8 +220,16 @@ def _create_desktop_shortcut_mac(frame=None):
                 return False
         app_script = os.path.join(ride_app_module_path, 'Contents', 'MacOS', 'RIDE')
         with open(app_script, 'w+') as shortcut:
-            shortcut.write("#!/bin/sh\n{} -m robotide.__init__ $* &> /dev/null &\n".format(sys.executable))
+            shortcut.write("#!/bin/sh\nPAL=$PATH\nfor i in `cat /etc/paths`\n    do\n        PAL=\"$PAL:$i\"\n"
+                           "    done\nPATH=$PAL\nexport $PATH\n{} -m robotide.__init__ $* 2>"
+                           " /dev/null &\n".format(sys.executable))
         shutil.copytree(ride_app_module_path, ride_app_pc_path)
+        userdesktoplink = os.path.expanduser('~') + '/Desktop/' + ride_app_name
+        if not exists(userdesktoplink):
+            try:
+                os.symlink(ride_app_pc_path, userdesktoplink)
+            except Exception:
+                pass
 
 
 def _create_desktop_shortcut_windows(frame=None):
