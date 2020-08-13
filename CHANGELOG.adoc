@@ -33,6 +33,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Fixed
 
+- Fixed ${CURDIR} & ${EXECDIR} cannot be recognized in import settings
 - Fixed case will be selected invisibly after being modified from Text Editor
 - Fixed some of log messages' log level are incorrect sometimes
 - Fixed some of log messages are missing sometimes
