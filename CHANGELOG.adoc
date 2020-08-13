@@ -11,6 +11,11 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Added
 
+- Added RIDE.app to install in Applicatons on MacOS
+    * Not ready yet, because it cannot run ``robot``. This is because is calling by shell command.
+    * For now it is static. Points to a 3.7 Python installation.
+    * Users should edit the command in MacOS/RIDE to the correct path
+    * Users can associate files .robot to open with RIDE (but opens last file edited)
 - Added an Open External File menu option, to open file in Code Editor
 - Added multiline view in Grid Editor
     * When editing, \n would be converted to newline, \\n will remain as is.

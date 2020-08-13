@@ -208,22 +208,20 @@ def _create_desktop_shortcut_linux(frame=None):
 
 def _create_desktop_shortcut_mac(frame=None):
     import os
-    import subprocess
-    import pwd
-    user = str(subprocess.check_output(['logname']).strip(), encoding='utf-8')
-    link = os.path.join("/Users", user, "Desktop", "RIDE.command")
-    if not exists(link) or option_f:
+    import shutil
+    ride_app_name = 'RIDE.app'
+    application_path = '/Applications'
+    ride_app_pc_path = os.path.join(application_path, ride_app_name)
+    ride_app_module_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), ride_app_name)
+
+    if not exists(ride_app_pc_path) or option_f:
         if not option_q and not option_f:
-            if not _askyesno("Setup", "Create desktop shortcut?", frame):
+            if not _askyesno("Setup", "Create application shortcut?", frame):
                 return False
-        roboticon = "/Library/Python/{0}/site-packages/robotide/widgets/robot."
-        "png".format(sys.version[:3])  # TODO: Find a way to change shortcut icon
-        with open(link, "w+") as shortcut:
-            shortcut.write("#!/bin/sh\n%s -m robotide.__init__ $* &\n" %
-                           sys.executable)
-        uid = pwd.getpwnam(user).pw_uid
-        os.chown(link, uid, -1)  # groupid == -1 means keep unchanged
-        os.chmod(link, 0o744)
+        app_script = os.path.join(ride_app_module_path, 'Contents', 'MacOS', 'RIDE')
+        with open(app_script, 'w+') as shortcut:
+            shortcut.write("#!/bin/sh\n{} -m robotide.__init__ $* &> /dev/null &\n".format(sys.executable))
+        shutil.copytree(ride_app_module_path, ride_app_pc_path)
 
 
 def _create_desktop_shortcut_windows(frame=None):
