@@ -77,6 +77,7 @@ class Project(_BaseController, WithNamespace):
         default_dir = path if os.path.isdir(path) else os.path.dirname(path)
         self._settings.set('default directory', default_dir)
         self._name_space.update_exec_dir_global_var(default_dir)
+        self._name_space.update_cur_dir_global_var(default_dir)
 
     # TODO: in all other controllers data returns a robot data model object.
     @property

@@ -543,6 +543,8 @@ class ResourceImportController(_ImportController):
 
     @overrides(_ImportController)
     def has_error(self):
+        # un-resolve before checking import errors
+        self.unresolve()
         return self.get_imported_controller() is None
 
     @overrides(_ImportController)
