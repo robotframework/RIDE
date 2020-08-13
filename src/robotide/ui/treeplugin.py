@@ -821,11 +821,25 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl):
         self._controller.add_to_history(node)
         handler = self._controller.get_handler(node)
         if handler and handler.item:
+            self._update_data_file_namespace(node)
             RideTreeSelection(
                 node=node,
                 item=handler.controller,
                 silent=self._silent_mode).publish()
         self.SetFocus()
+
+    def _update_data_file_namespace(self, node):
+        while True:
+            if not node:
+                return
+            handler = self._controller.get_handler(node)
+            if hasattr(handler.controller, 'get_namespace'):
+                data_file_ns = handler.controller.get_namespace()
+                cur_dir = handler.controller.directory
+                data_file_ns.update_cur_dir_global_var(cur_dir)
+                return
+            else:
+                node = node.GetParent()
 
     def OnTreeItemExpanding(self, event):
         node = event.GetItem()

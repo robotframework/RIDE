@@ -54,7 +54,7 @@ class Namespace(object):
             self._settings, self.update, self._library_manager)
         self._resource_factory = ResourceFactory(self._settings)
         self._retriever = DatafileRetriever(self._lib_cache,
-                                            self._resource_factory)
+                                            self._resource_factory, self)
         self._context_factory = _RetrieverContextFactory()
 
     def _set_pythonpath(self):
@@ -400,7 +400,8 @@ class _VariableStash(object):
 
 
 class DatafileRetriever(object):
-    def __init__(self, lib_cache, resource_factory):
+    def __init__(self, lib_cache, resource_factory, namespace):
+        self._namespace = namespace
         self._lib_cache = lib_cache
         self._resource_factory = resource_factory
         self.keyword_cache = ExpiringCache()
@@ -459,6 +460,8 @@ class DatafileRetriever(object):
         return kws
 
     def _lib_kw_getter(self, imp, ctx):
+        # update cur dir for recursive import
+        self._namespace.update_cur_dir_global_var(imp.directory)
         name = ctx.replace_variables(imp.name)
         name = self._convert_to_absolute_path(name, imp)
         args = [ctx.replace_variables(a) for a in imp.args]
