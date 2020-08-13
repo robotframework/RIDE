@@ -114,6 +114,7 @@ class RIDE(wx.App):
     def _load_data(self):
         self.workspace_path = self.workspace_path or self._get_latest_path()
         if self.workspace_path:
+            self._controller.update_default_dir(self.workspace_path)
             observer = LoadProgressObserver(self.frame)
             self._controller.load_data(self.workspace_path, observer)
 

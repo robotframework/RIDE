@@ -77,6 +77,14 @@ class Namespace(object):
                     sys.path.remove(p)
             self._set_pythonpath()
 
+    def update_exec_dir_global_var(self, exec_dir):
+        _VariableStash.global_variables['${EXECDIR}'] = exec_dir
+        self._context_factory.reload_context_global_vars()
+
+    def update_cur_dir_global_var(self, cur_dir):
+        _VariableStash.global_variables['${CURDIR}'] = cur_dir
+        self._context_factory.reload_context_global_vars()
+
     def set_library_manager(self, library_manager):
         self._library_manager = library_manager
         self._lib_cache.set_library_manager(library_manager)
@@ -238,6 +246,10 @@ class _RetrieverContextFactory(object):
             self._context_cache[datafile] = ctx
         return self._context_cache[datafile]
 
+    def reload_context_global_vars(self):
+        for retrieve_context in self._context_cache.values():
+            retrieve_context.vars.load_builtin_global_vars()
+
 
 class RetrieverContext(object):
     def __init__(self):
@@ -275,7 +287,7 @@ class _VariableStash(object):
         '${KEYWORD_STATUS}': '',
         '${LOG_FILE}': '',
         '${LOG_LEVEL}': '',
-        '${\\n}': '',
+        '${\\n}': os.linesep,
         '${None}': None,
         '${null}': None,
         '${OUTPUT_DIR}': '',
@@ -291,7 +303,6 @@ class _VariableStash(object):
         '${SUITE_NAME}': '',
         '${SUITE_SOURCE}': '',
         '${SUITE_STATUS}': '',
-        # '${SUMMARY_FILE}': '',
         '${TEMPDIR}': os.path.normpath(tempfile.gettempdir()),
         '${TEST_DOCUMENTATION}': '',
         '${TEST_MESSAGE}': '',
@@ -306,6 +317,9 @@ class _VariableStash(object):
     def __init__(self):
         self._vars = robotapi.RobotVariables()
         self._sources = {}
+        self.load_builtin_global_vars()
+
+    def load_builtin_global_vars(self):
         if PYTHON2:
             for k, v in self.global_variables.iteritems():
                 self.set(k, v, 'built-in')

@@ -457,6 +457,7 @@ class ImportSettingListEditor(_AbstractListEditor):
 
     def __init__(self, parent, tree, controller):
         self._import_failed_shown = False
+        parent.controller.get_namespace().update_cur_dir_global_var(controller.datafile.directory)
         _AbstractListEditor.__init__(self, parent, tree, controller)
 
     @overrides(ListEditorBase)
