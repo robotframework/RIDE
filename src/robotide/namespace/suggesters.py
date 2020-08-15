@@ -25,7 +25,10 @@ class SuggestionSource(object):
 
     def get_suggestions(self, value, row=None):
         if self._controller:
-            return self._controller.get_local_namespace_for_row(row).get_suggestions(value)
+            try:
+                return self._controller.get_local_namespace_for_row(row).get_suggestions(value)
+            except AttributeError:
+                return self._controller.get_local_namespace.get_suggestions(value)
         return self._plugin.content_assist_values(value) # TODO: Remove old functionality when no more needed
 
 
