@@ -214,22 +214,24 @@ def _create_desktop_shortcut_mac(frame=None):
     ride_app_pc_path = os.path.join(application_path, ride_app_name)
     ride_app_module_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), ride_app_name)
 
-    if not exists(ride_app_pc_path) or option_f:
-        if not option_q and not option_f:
-            if not _askyesno("Setup", "Create application shortcut?", frame):
-                return False
-        app_script = os.path.join(ride_app_module_path, 'Contents', 'MacOS', 'RIDE')
-        with open(app_script, 'w+') as shortcut:
-            shortcut.write("#!/bin/sh\nPAL=$PATH\nfor i in `cat /etc/paths`\n    do\n        PAL=\"$PAL:$i\"\n"
-                           "    done\nPATH=$PAL\nexport $PATH\n{} -m robotide.__init__ $* 2>"
-                           " /dev/null &\n".format(sys.executable))
+    if not option_q and not option_f and not _askyesno("Setup", "Create application shortcut?", frame):
+        return False
+    app_script = os.path.join(ride_app_module_path, 'Contents', 'MacOS', 'RIDE')
+    with open(app_script, 'w+') as shortcut:
+        shortcut.write("#!/bin/sh\nPAL=$PATH\nfor i in `cat /etc/paths`\n    do\n        PAL=\"$PAL:$i\"\n"
+                       "    done\nPATH=$PAL\nexport $PATH\n{} -m robotide.__init__ $* 2>"
+                       " /dev/null &\n".format(sys.executable))
+    if not exists(ride_app_pc_path):
         shutil.copytree(ride_app_module_path, ride_app_pc_path)
-        userdesktoplink = os.path.expanduser('~') + '/Desktop/' + ride_app_name
-        if not exists(userdesktoplink):
-            try:
-                os.symlink(ride_app_pc_path, userdesktoplink)
-            except Exception:
-                pass
+    elif option_f:
+        shutil.rmtree(ride_app_pc_path, True)
+        shutil.copytree(ride_app_module_path, ride_app_pc_path)
+    userdesktoplink = os.path.expanduser('~') + '/Desktop/' + ride_app_name
+    if not exists(userdesktoplink) or option_f:
+        try:
+            os.symlink(ride_app_pc_path, userdesktoplink)
+        except Exception:
+            pass
 
 
 def _create_desktop_shortcut_windows(frame=None):
