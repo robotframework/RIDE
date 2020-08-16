@@ -11,6 +11,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Added
 
+- Added selection of keyword suggestion with TAB key on Text Editor
 - Added multiline view in Grid Editor
     * When editing, \n would be converted to newline, \\n will remain as is.
     * When editing, Alt-Enter is the same as \n, converted immediately.
@@ -31,6 +32,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Fixed
 
+- Fixed missing keyword suggestions on Resource files in Text Editor
 - Fixed Del key in Text Editor, was not deleting text
 - Fixed duplicated but empty Text Editor tab when Text Editor is the only active editor Plugin
 - Fixed incorrect arguments parsing when launching RIDE with command ``python -m robotide.\\__init__``

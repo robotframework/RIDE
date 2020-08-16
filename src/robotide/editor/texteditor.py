@@ -86,7 +86,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
             self.register_shortcut('CtrlCmd-V', focused(lambda e: self._editor.paste()))
         self.register_shortcut('CtrlCmd-Z', focused(lambda e: self._editor.undo()))
         self.register_shortcut('CtrlCmd-Y', focused(lambda e: self._editor.redo()))
-        self.register_shortcut('Del', focused(lambda e: self._editor.delete()))
+        # self.register_shortcut('Del', focused(lambda e: self._editor.delete()))
         self.register_shortcut('CtrlCmd-3', focused(lambda e: self._editor.execute_comment(e)))
         self.register_shortcut('CtrlCmd-4', focused(lambda e: self._editor.execute_uncomment(e)))
         self.register_shortcut('CtrlCmd-F', lambda e: self._editor._search_field.SetFocus())
@@ -526,7 +526,7 @@ class SourceEditor(wx.Panel):
         # print(f"DEBUG: Textedit in open before getting SuggestionSource {self._data._data}\n Type data is {type(self._data._data)}")
         try:
             if isinstance(self._data._data, ResourceFileController):
-                from robotide.namespace import Namespace
+                # from robotide.namespace import Namespace
                 # self._namespace = Namespace(self._editor._settings)
                 # self._namespace.get_resource(self._data._data.source)
                 self._controller_for_context = DummyController(self._data._data, self._data._data)
@@ -537,8 +537,9 @@ class SourceEditor(wx.Panel):
             # print(f"DEBUG: Textedit in open After getting SuggestionSource")
         except IndexError:  # It is a new project, no content yet
             # print(f"DEBUG: Textedit in open Exception SuggestionSource")
-            self._suggestions = SuggestionSource(None,
-                                                 BuiltInLibrariesSuggester())
+            self._controller_for_context = DummyController(self._data._data, self._data._data)
+            self._suggestions = SuggestionSource(None, self._controller_for_context)
+            # self._suggestions = SuggestionSource(None, BuiltInLibrariesSuggester())
         if not self._editor:
             self._stored_text = self._data.content
         else:
@@ -664,12 +665,16 @@ class SourceEditor(wx.Panel):
         self.GetFocus(None)
         return True
 
+    """
+    # DEBUG Code not in use
     def delete(self):
         if IS_WINDOWS:
+            # print(f"DEBUG: Delete called")
             if self._editor.GetSelectionStart() == self._editor.GetSelectionEnd():
                 self._editor.CharRight()
             self._editor.DeleteBack()
         self._mark_file_dirty(self._editor.GetModify())
+    """
 
     def cut(self):
         self._editor.Cut()
@@ -736,25 +741,37 @@ class SourceEditor(wx.Panel):
         self._editor.set_text(self._data.content)
 
     def OnEditorKey(self, event):
-        if not self.is_focused():  # DEBUG was typing text when at Grid Editor
-            self.GetFocus(event)
+        # if not self.is_focused():  # DEBUG was typing text when at Grid Editor
+        #    self.GetFocus(event)
+        #    print(f"DEBUG: EditorKey Got Focus")
         keycode = event.GetKeyCode()
-        if keycode == wx.WXK_DELETE:
+        if keycode == wx.WXK_DELETE:  # DEBUG on Windows we only get here, single Text Editor
             selected = self._editor.GetSelection()
             if selected[0] == selected[1]:
                 pos = self._editor.GetInsertionPoint()
                 if pos != self._editor.GetLastPosition():
-                    self._editor.DeleteRange(selected[0], 0)
+                    self._editor.DeleteRange(selected[0], 1)
             else:
-                self._editor.DeleteRange(selected[0], selected[1] - selected[0] - 1 )
+                self._editor.DeleteRange(selected[0], selected[1] - selected[0])
         self._mark_file_dirty(self._editor.GetModify())
+        if keycode in [wx.WXK_RETURN, wx.WXK_NUMPAD_ENTER]:
+            # print(f"DEBUG: Enter released {keycode}")
+            return
         event.Skip()
 
     def OnKeyDown(self, event):
-        if not self.is_focused():
-            self.GetFocus(event)
+        # if not self.is_focused():
+        #    self.GetFocus(event)
+        #    print(f"DEBUG: KeyDown Got Focus")
         keycode = event.GetUnicodeKey()
+        if event.GetKeyCode() == wx.WXK_DELETE:
+            # print(f"DEBUG: Delete pressed {event.GetKeyCode()}")  # Code never reached on Windows
+            return
         if event.GetKeyCode() == wx.WXK_TAB and not event.ControlDown() and not event.ShiftDown():
+            if self._showing_list:  # Allows to use Tab for keyword selection
+                self._showing_list = False
+                event.Skip()
+                return
             selected = self._editor.GetSelection()
             if selected[0] == selected[1]:
                 self.write_ident()
@@ -908,6 +925,8 @@ class RobotDataEditor(stc.StyledTextCtrl):
         self.SetMarginType(self.margin, stc.STC_MARGIN_NUMBER)
         self.SetLexer(stc.STC_LEX_CONTAINER)
         self.SetReadOnly(True)
+        self.SetUseTabs(False)
+        self.SetTabWidth(parent._tab_size)
         self.Bind(stc.EVT_STC_STYLENEEDED, self.OnStyle)
         self.Bind(stc.EVT_STC_ZOOM, self.OnZoom)
         self.stylizer = RobotStylizer(self, self._settings, self.readonly)
