@@ -37,15 +37,16 @@ from .treeplugin import Tree
 from .fileexplorerplugin import FileExplorer
 from .notebook import NoteBook
 from .progress import LoadProgressObserver
+from ..editor import customsourceeditor
 
 
 _menudata = """
 [File]
-!&New Project | Create a new top level suite | Ctrlcmd-N
+!&New Project | Create a new top level suite | Ctrlcmd-N | ART_NEW
 ---
 !&Open Test Suite | Open file containing tests | Ctrlcmd-O | ART_FILE_OPEN
-!Open &Directory | Open directory containing datafiles | Shift-Ctrlcmd-O | \
-ART_FOLDER_OPEN
+!Open &Directory | Open directory containing datafiles | Shift-Ctrlcmd-O | ART_FOLDER_OPEN
+!Open External File | Open file in Code Editor | | ART_NORMAL_FILE
 ---
 !&Save | Save selected datafile | Ctrlcmd-S | ART_FILE_SAVE
 !Save &All | Save all changes | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS
@@ -170,6 +171,7 @@ class RideFrame(wx.Frame):
         self._plugin_manager = PluginManager(self.notebook)
         self._review_dialog = None
         self._view_all_tags_dialog = None
+        self._current_external_dir = None
          #, self, self.actions,
         # self._application.settings)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
@@ -410,7 +412,6 @@ class RideFrame(wx.Frame):
                 return
             if self.open_suite(path):
                 return
-        from robotide.editor import customsourceeditor
         customsourceeditor.main(path)
 
     def OnMenuOpenFile(self, event):
@@ -427,6 +428,22 @@ class RideFrame(wx.Frame):
             self.open_suite(path)  # It is a directory, do not edit
         event.Skip()
 
+    def OnOpenExternalFile(self, event):
+        if not self._current_external_dir:
+            curdir = self._controller.default_dir
+        else:
+            curdir = self._current_external_dir
+        fdlg = wx.FileDialog(self, defaultDir=curdir, style=wx.FD_OPEN | wx.FD_FILE_MUST_EXIST)
+        if fdlg.ShowModal() == wx.ID_CANCEL:
+            return
+        path = fdlg.GetPath()
+        try:
+            self._current_external_dir = os.path.dirname(path)
+            customsourceeditor.main(path)
+        except IOError:
+            wx.LogError(f"Cannot open file {path}")
+
+
     def OnOpenTestSuite(self, event):
         if not self.check_unsaved_modifications():
             return
@@ -435,7 +452,6 @@ class RideFrame(wx.Frame):
         if path:
             if self.open_suite(path):
                 return
-            from robotide.editor import customsourceeditor
             customsourceeditor.main(path)
 
     def check_unsaved_modifications(self):

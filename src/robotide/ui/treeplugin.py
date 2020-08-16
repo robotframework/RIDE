@@ -722,6 +722,8 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl):
         self.select_node_by_data(selection)
 
     def _refresh_datafile_when_file_set(self, controller):
+        # remove invalid cases selection when data file is changed in text editor
+        self._test_selection_controller.remove_invalid_cases_selection(controller)
         # Prevent tab selections based on tree item selected events
         self._start_silent_mode()
         current = self.get_selected_datafile_controller()

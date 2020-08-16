@@ -454,14 +454,13 @@ class TestRunnerPlugin(Plugin):
         self._output(output)
         self._read_report_and_log_from_stdout_if_needed()
         if len(errors) > 0:
-            self._output("unexpected error: " + errors)
+            self._output(errors, source="stderr")
         if self._process_timer:
             self._process_timer.Stop()
         self._set_stopped()
         self._progress_bar.Stop()
-        now = datetime.datetime.now()
-        self._output("\ntest finished %s" %
-                     robottime.format_time(now.timetuple()))
+        self._output("\nTest finished {}".format(robottime.format_time(
+            datetime.datetime.now().timetuple())))
         self._test_runner.command_ended()
         if log_message:
             log_message.publish()
@@ -484,6 +483,19 @@ class TestRunnerPlugin(Plugin):
 
     def OnTimer(self, evt):
         """Get process output"""
+        if self.message_log and not self._messages_log_texts.empty():
+            if self._process.memory_info()[0] <= self._limitmemory:
+                texts = []
+                while not self._messages_log_texts.empty():
+                    texts += [self._messages_log_texts.get()]
+                self._AppendTextMessageLog(self.message_log, '\n' + '\n'.join(texts))
+            else:
+                if not self._maxmemmsg:
+                    self._maxmemmsg = "Messages log exceeded 80% of process " \
+                                      "memory, stopping for now..."
+                    self._AppendTextMessageLog(self.message_log,
+                                               '\n' + self._maxmemmsg,
+                                               source="stderr")
         if not self._test_runner.is_running():
             self.OnProcessEnded(None)
             return
@@ -500,20 +512,6 @@ class TestRunnerPlugin(Plugin):
                 # the previous character isn't a newline.
                 self._output("\n", source="stdout")
             self._output(err_buffer, source="stderr")
-        if self.message_log and not self._messages_log_texts.empty():
-            if self._process.memory_info()[0] <= self._limitmemory:
-                texts = []
-                while not self._messages_log_texts.empty():
-                    texts += [self._messages_log_texts.get()]
-                self._AppendTextMessageLog(self.message_log, '\n'+'\n'.join(texts))
-            else:
-                if not self._maxmemmsg:
-                    self._maxmemmsg = "Messages log exceeded 80% of process " \
-                                      "memory, stopping for now..."
-                    self._AppendTextMessageLog(self.message_log,
-                                               '\n' + self._maxmemmsg,
-                                               source="stderr")
-                    # self._recreate_message_log()  # DEBUG
 
     def GetLastOutputChar(self):
         """Return the last character in the output window"""
