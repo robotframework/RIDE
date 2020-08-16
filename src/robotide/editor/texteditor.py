@@ -34,6 +34,7 @@ from robotide.preferences.editors import ReadFonts
 from wx.adv import HyperlinkCtrl, EVT_HYPERLINK
 from .contentassist import ContentAssistTextEditor
 from robotide.controller.filecontrollers import ResourceFileController
+from robotide.controller.macrocontrollers import _WithStepsController
 
 try:  # import installed version first
     import robotframeworklexer
@@ -200,6 +201,28 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         return self.notebook.current_page_title == self.title
 
 
+class DummyController(_WithStepsController):
+
+    _populator = robotapi.UserKeywordPopulator
+    filename = ""
+
+    def _init(self, data=None):
+        self._data = data
+
+    def get_local_variables(self):
+        return {}
+
+    def __eq__(self, other):
+        if self is other:
+            return True
+        if other.__class__ != self.__class__:
+            return False
+        return self._data == other._data
+
+    def __hash__(self):
+        return hash(repr(self))
+
+
 class DataValidationHandler(object):
 
     def __init__(self, plugin):
@@ -322,6 +345,7 @@ class SourceEditor(wx.Panel):
         self._showing_list = False
         self._tab_open = None
         # self._autocomplete = None
+        self._controller_for_context = None
         PUBLISHER.subscribe(self.OnSettingsChanged, RideSettingsChanged)
         PUBLISHER.subscribe(self.OnTabChange, RideNotebookTabChanging)
 
@@ -496,19 +520,23 @@ class SourceEditor(wx.Panel):
             self._showing_list = True
 
     def open(self, data):
-        print(f"DEBUG: Textedit enter open")
+        # print(f"DEBUG: Textedit enter open")
         self.reset()
         self._data = data
-        print(f"DEBUG: Textedit in open before getting SuggestionSource {self._data._data}\n Type data is {type(self._data._data)}")
+        # print(f"DEBUG: Textedit in open before getting SuggestionSource {self._data._data}\n Type data is {type(self._data._data)}")
         try:
             if isinstance(self._data._data, ResourceFileController):
-                print(f"DEBUG: Textedit in before getting to RESOURCE")
-                self._suggestions = SuggestionSource(None, self._data._data)
+                from robotide.namespace import Namespace
+                # self._namespace = Namespace(self._editor._settings)
+                # self._namespace.get_resource(self._data._data.source)
+                self._controller_for_context = DummyController(self._data._data, self._data._data)
+                # print(f"DEBUG: Textedit in before getting to RESOURCE")
+                self._suggestions = SuggestionSource(None,self._controller_for_context)
             else:
                 self._suggestions = SuggestionSource(None, self._data._data.tests[0])
-            print(f"DEBUG: Textedit in open After getting SuggestionSource")
+            # print(f"DEBUG: Textedit in open After getting SuggestionSource")
         except IndexError:  # It is a new project, no content yet
-            print(f"DEBUG: Textedit in open Exception SuggestionSource")
+            # print(f"DEBUG: Textedit in open Exception SuggestionSource")
             self._suggestions = SuggestionSource(None,
                                                  BuiltInLibrariesSuggester())
         if not self._editor:
