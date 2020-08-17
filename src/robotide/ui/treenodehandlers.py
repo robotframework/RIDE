@@ -601,9 +601,9 @@ class ResourceRootHandler(_ActionHandler):
 
     def OnAddResource(self, event):
         path = RobotFilePathDialog(
-            self._tree, self.controller, self._settings).execute()
+            self._tree.GetParent(), self.controller, self._settings).execute()
         if path:
-            self.controller.load_resource(path, LoadProgressObserver(self))
+            self.controller.load_resource(path, LoadProgressObserver(self._tree.GetParent()))
 
 
 class ExcludedDirectoryHandler(TestDataDirectoryHandler):

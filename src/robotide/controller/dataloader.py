@@ -32,6 +32,10 @@ class DataLoader(object):
     def load_initfile(self, path, load_observer):
         return self._load(_InitFileLoader(path), load_observer)
 
+    def load_resource_file(self, datafile, load_observer):
+        return self._load(_ResourceLoader(
+            datafile, self._namespace.get_resource), load_observer)
+
     def resources_for(self, datafile, load_observer):
         return self._load(_ResourceLoader(
             datafile, self._namespace.get_resources), load_observer)

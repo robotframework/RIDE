@@ -37,6 +37,8 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Fixed
 
+- Fixed errors raised when adding external resources
+- Fixed progress dialog is missing when adding external resources
 - Fixed missing keyword suggestions on Resource files in Text Editor
 - Fixed Del key in Text Editor, was not deleting text
 - Fixed duplicated but empty Text Editor tab when Text Editor is the only active editor Plugin
