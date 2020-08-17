@@ -62,7 +62,7 @@ def verify_install():
 
 class MessageDialog(wx.Dialog):
     def __init__(self, message, title, ttl=10):
-        wx.Dialog.__init__(self, None, -1, title,size=(300, 200))
+        wx.Dialog.__init__(self, None, -1, title, size=(300, 200))
         self.CenterOnScreen(wx.BOTH)
         self.timeToLive = ttl
 
@@ -71,8 +71,8 @@ class MessageDialog(wx.Dialog):
         self.settimetolivemsg = wx.StaticText(self, -1, 'Closing this dialog box in %ds...' % self.timeToLive)
 
         vbox = wx.BoxSizer(wx.VERTICAL)
-        vbox.Add(st_msg, 1, wx.ALIGN_CENTER|wx.TOP, 10)
-        vbox.Add(self.settimetolivemsg, 1, wx.ALIGN_CENTER | wx.TOP, 10)
+        vbox.Add(st_msg, 0, wx.ALIGN_CENTER | wx.TOP, 40)
+        vbox.Add(self.settimetolivemsg, 0, wx.ALIGN_CENTER | wx.TOP, 10)
         vbox.Add(std_btn_sizer, 1, wx.ALIGN_CENTER | wx.TOP, 10)
         self.SetSizer(vbox)
         self.SetAffirmativeId(wx.ID_YES)
@@ -88,21 +88,17 @@ class MessageDialog(wx.Dialog):
     def OnKeyPressed(self, event):
         key_code = event.GetKeyCode()
         if key_code == wx.WXK_ESCAPE:
-            self.Destroy()
-            return False
+            self.EndModal(wx.ID_NO)
         event.Skip()
 
     def OnCancel(self, evt):
-        self.Destroy()
-        return False
+        self.EndModal(wx.ID_NO)
 
     def OnClose(self, evt):
-        self.Destroy()
-        return False
+        self.EndModal(wx.ID_NO)
 
     def OnNo(self, evt):
-        self.Destroy()
-        return wx.ID_NO
+        self.EndModal(wx.ID_NO)
 
     def onTimer(self, evt):
         self.timeToLive -= 1
@@ -110,8 +106,7 @@ class MessageDialog(wx.Dialog):
 
         if self.timeToLive == 0:
             self.timer.Stop()
-            self.Destroy()
-            return False
+            self.EndModal(wx.ID_NO)
 
 
 def _askyesno(title, message, frame=None):
@@ -214,7 +209,7 @@ def _create_desktop_shortcut_mac(frame=None):
     application_path = '/Applications'
     ride_app_pc_path = os.path.join(application_path, ride_app_name)
     ride_app_module_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), ride_app_name)
-
+    
     if not option_q and not option_f and not _askyesno("Setup", "Create application shortcut?", frame):
         return False
     app_script = os.path.join(ride_app_module_path, 'Contents', 'MacOS', 'RIDE')
