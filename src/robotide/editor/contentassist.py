@@ -221,7 +221,7 @@ class ContentAssistFileButton(_ContentAssistTextCtrlBase, FileBrowseButton):
         self._controller = controller
         self._browsed = False
         _ContentAssistTextCtrlBase.__init__(self, suggestion_source)
-        
+
     def Bind(self, *args):
         self.textControl.Bind(*args)
 
