@@ -428,7 +428,8 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl):
         if self._resource_root:
             self.Expand(self._resource_root)
         if self._datafile_nodes:
-            self.SelectItem(self._datafile_nodes[0])
+            # this line will cause RideDataFileSet is triggered for tree refreshing and memory leak
+            # self.SelectItem(self._datafile_nodes[0])
             self._expand_and_render_children(self._datafile_nodes[0])
 
     def _render_datafile(self, parent_node, controller, index=None):
