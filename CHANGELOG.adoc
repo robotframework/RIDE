@@ -12,6 +12,10 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 === Added
 
 - Added RIDE application dock icon on MacOS
+- Added selection of keyword suggestion with TAB key on Text Editor
+- Added RIDE.app to install in Applications on MacOS
+    * Also creates a symbolic link to RIDE.app on user's Desktop
+    * Users will need to edit ``/etc/paths`` to include paths for ``robot`` and other commands like ``chromedriver``, etc
 - Added an Open External File menu option, to open file in Code Editor
 - Added multiline view in Grid Editor
     * When editing, \n would be converted to newline, \\n will remain as is.
@@ -35,6 +39,11 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 === Fixed
 
 - Fixed incorrect app windows size configuration after maximizing
+- Fixed errors raised when adding external resources
+- Fixed progress dialog is missing when adding external resources
+- Fixed missing keyword suggestions on Resource files in Text Editor
+- Fixed Del key in Text Editor, was not deleting text
+- Fixed duplicated but empty Text Editor tab when Text Editor is the only active editor Plugin
 - Fixed case will be selected invisibly after being modified from Text Editor
 - Fixed some of log messages' log level are incorrect sometimes
 - Fixed some of log messages are missing sometimes
