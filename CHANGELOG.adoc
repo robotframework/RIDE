@@ -11,6 +11,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Added
 
+- Added RIDE application dock icon on MacOS
 - Added selection of keyword suggestion with TAB key on Text Editor
 - Added RIDE.app to install in Applications on MacOS
     * Also creates a symbolic link to RIDE.app on user's Desktop
@@ -37,6 +38,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Fixed
 
+- Fixed incorrect app windows size configuration after maximizing
 - Fixed errors raised when adding external resources
 - Fixed progress dialog is missing when adding external resources
 - Fixed missing keyword suggestions on Resource files in Text Editor
