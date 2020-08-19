@@ -140,7 +140,7 @@ class RideFrame(wx.Frame):
 
     def __init__(self, application, controller):
         size = application.settings.get('mainframe size', (1100, 700))
-        wx.Frame.__init__(self, parent=None, id = wx.ID_ANY, title='RIDE',
+        wx.Frame.__init__(self, parent=None, id=wx.ID_ANY, title='RIDE',
                           pos=application.settings.get('mainframe position', (50, 30)),
                           size=size, style=wx.DEFAULT_FRAME_STYLE | wx.SUNKEN_BORDER)
 
@@ -341,8 +341,13 @@ class RideFrame(wx.Frame):
             wx.CloseEvent.Veto(event)
 
     def OnSize(self, event):
-        self._application.settings['mainframe maximized'] = self.IsMaximized()
-        self._application.settings['mainframe size'] = self.DoGetSize()
+        size = self.DoGetSize()
+        is_full_screen_mode = size == wx.DisplaySize()
+        self._application.settings['mainframe maximized'] = self.IsMaximized() or is_full_screen_mode
+        if not is_full_screen_mode:
+            self._application.settings['mainframe size'] = size
+        self._application.settings['mainframe position'] = \
+            self.DoGetPosition()
         event.Skip()
 
     def OnMove(self, event):
