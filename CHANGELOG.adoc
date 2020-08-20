@@ -38,6 +38,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Fixed
 
+- Fixed RIDE desktop shortcut creation when installing by Administrator on Windows
 - Fixed location of icon on Linux RIDE.desktop
 - Fixed incorrect app windows size configuration after maximizing
 - Fixed errors raised when adding external resources
