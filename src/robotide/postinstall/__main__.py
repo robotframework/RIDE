@@ -251,9 +251,10 @@ def _create_desktop_shortcut_windows(frame=None):
         return False
     desktop = shell.SHGetFolderPath(0, shellcon.CSIDL_DESKTOP, None, 0)
     link = os.path.join(desktop, 'RIDE.lnk')
+    public_link = os.path.join(os.getenv('PUBLIC'), 'Desktop', 'RIDE.lnk')
     icon = os.path.join(sys.prefix, 'Lib', 'site-packages', 'robotide',
                         'widgets', 'robot.ico')
-    if not exists(link) or option_f:
+    if not (exists(public_link) or exists(link)) or option_f:
         if not option_q and not option_f:
             if not _askyesno("Setup", "Create desktop shortcut?", frame):
                 sys.stderr.write("Users can create a Desktop shortcut to RIDE "
@@ -270,7 +271,12 @@ def _create_desktop_shortcut_windows(frame=None):
         shortcut.SetDescription("Robot Framework testdata editor")
         shortcut.SetIconLocation(icon, 0)
         persist_file = shortcut.QueryInterface(pythoncom.IID_IPersistFile)
-        persist_file.Save(link, 0)
+        from pywintypes import com_error
+        try:
+            persist_file.Save(public_link, 0)
+            sys.stderr.write(f"Desktop shortcut created for all users.")
+        except com_error:
+            persist_file.Save(link, 0)
 
 
 def create_desktop_shortcut(platform, frame=None):
