@@ -31,7 +31,7 @@
 	<key>CFBundleHelpTOCFile</key>
 	<string>index.html</string>
 	<key>CFBundleIconFile</key>
-	<string>RIDEEditor.icns</string>
+	<string>RIDEEditorCropped.icns</string>
 	<key>CFBundleIdentifier</key>
 	<string>org.robotframework.ride</string>
 	<key>CFBundleInfoDictionaryVersion</key>
