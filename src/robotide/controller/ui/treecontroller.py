@@ -68,6 +68,9 @@ class TreeController(object):
     def add_to_history(self, node):
         self._history.change(node)
 
+    def clear_history(self):
+        self._history.clear()
+
     def mark_controller_dirty(self, controller):
         if not controller.dirty:
             return
@@ -168,6 +171,10 @@ class _History(object):
 
     def top(self):
         return self._back and self._back[-1] or None
+
+    def clear(self):
+        self._back.clear()
+        self._forward.clear()
 
 
 class TestSelectionController(object):

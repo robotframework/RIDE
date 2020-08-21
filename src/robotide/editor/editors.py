@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 import wx
+import weakref
 from robotide import robotapi, context
 from robotide.controller.settingcontrollers import (
     DocumentationController, VariableController, TagsController)
@@ -53,7 +54,7 @@ class EditorPanel(wx.Panel):
     def __init__(self, plugin, parent, controller, tree):
         wx.Panel.__init__(self, parent)
         self.plugin = plugin
-        self.controller = controller
+        self.controller = weakref.proxy(controller)
         self._tree = tree
 
     def tree_item_selected(self, item):

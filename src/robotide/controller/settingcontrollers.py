@@ -14,7 +14,7 @@
 #  limitations under the License.
 
 import re
-import sys
+import weakref
 from itertools import chain
 
 from robotide.publish.messages import RideImportSettingChanged,\
@@ -28,8 +28,8 @@ from robotide.utils import overrides, variablematcher
 
 class _SettingController(ControllerWithParent):
     def __init__(self, parent_controller, data):
-        self._parent = parent_controller
-        self._data = data
+        self._parent = weakref.proxy(parent_controller)
+        self._data = weakref.proxy(data)
         self.label = self._label(self._data)
         self._init(self._data)
 

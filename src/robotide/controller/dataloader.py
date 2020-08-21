@@ -115,6 +115,9 @@ class TestDataDirectoryWithExcludes(robotapi.TestDataDirectory):
         else:
             self.children.append(ExcludedDirectory(self, path))
 
+    def __del__(self):
+        print('del TestDataDirectoryWithExcludes {}'.format(self))
+
 
 def TestData(source, parent=None, settings=None):
     """Parses a file or directory to a corresponding model object.
