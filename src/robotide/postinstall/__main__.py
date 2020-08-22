@@ -144,10 +144,12 @@ def _askdirectory(title, initialdir, frame=None):
 
 
 def _create_desktop_shortcut_linux(frame=None):
-    import os
+    from os.path import expanduser
+    from os import environ, chmod, chown
     import subprocess
     import pwd
-    DEFAULT_LANGUAGE = os.environ.get('LANG', '').split(':')
+    import sysconfig
+    DEFAULT_LANGUAGE = environ.get('LANG', '').split(':')
     # TODO: Add more languages
     desktop = {"de": "Desktop", "en": "Desktop", "es": "Escritorio",
                "fi": r"Työpöytä", "fr": "Bureau", "it": "Scrivania",
@@ -155,24 +157,22 @@ def _create_desktop_shortcut_linux(frame=None):
     user = str(subprocess.check_output(['logname']).strip(), encoding='utf-8')
     try:
         ndesktop = desktop[DEFAULT_LANGUAGE[0][:2]]
-        directory = os.path.join("/home", user, ndesktop)
-        defaultdir = os.path.join("/home", user, "Desktop")
+        directory = join("/home", user, ndesktop)
+        defaultdir = join("/home", user, "Desktop")
         if not exists(directory):
             if exists(defaultdir):
                 directory = defaultdir
             else:
                 if not option_q:
                     directory = _askdirectory(title="Locate Desktop Directory",
-                                              initialdir=os.path.join(
-                                                  os.path.expanduser('~')),
+                                              initialdir=join(expanduser('~')),
                                               frame=frame)
                 else:
                     directory = None
     except KeyError:
         if not option_q:
             directory = _askdirectory(title="Locate Desktop Directory",
-                                      initialdir=os.path.join(
-                                          os.path.expanduser('~')),
+                                      initialdir=join(expanduser('~')),
                                       frame=frame)
         else:
             directory = None
@@ -187,18 +187,25 @@ def _create_desktop_shortcut_linux(frame=None):
         if not option_q and not option_f:
             if not _askyesno("Setup", "Create desktop shortcut?", frame):
                 return False
-        roboticon = os.path.dirname(os.path.realpath(__file__)).\
-            replace("postinstall", "widgets/robot.ico")
+        roboticon = join(sysconfig.get_paths()["purelib"], "robotide", "widgets", "robot.ico")
+        if not exists(roboticon):
+            try:
+                import robotide as _
+                roboticon = join(_.__path__[0], "widgets", "robot.ico")
+            except ImportError:
+                pass
+            if not exists(roboticon):
+                roboticon = join("FIXME: find correct path to: .../site-packages/", "robotide", "widgets", "robot.ico")
         with open(link, "w+") as shortcut:
-            shortcut.write("#!/usr/bin/env xdg-open\n[Desktop Entry]\nExec="
-                           "%s -m robotide.__init__\nComment=A Robot Framework"
-                           " IDE\nGenericName=RIDE\n" % sys.executable)
-            shortcut.write("Icon={0}\n".format(roboticon))
-            shortcut.write("Name=RIDE\nStartupNotify=true\nTerminal=false\n"
+            shortcut.write(f"#!/usr/bin/env xdg-open\n[Desktop Entry]\n"
+                           f"Exec={sys.executable} -m robotide.__init__\n"
+                           f"Comment=A Robot Framework IDE\nGenericName=RIDE\n"
+                           f"Icon={roboticon}\n"
+                           f"Name=RIDE\nStartupNotify=true\nTerminal=false\n"
                            "Type=Application\nX-KDE-SubstituteUID=false\n")
             uid = pwd.getpwnam(user).pw_uid
-            os.chown(link, uid, -1)  # groupid == -1 means keep unchanged
-            os.chmod(link, 0o744)
+            chown(link, uid, -1)  # groupid == -1 means keep unchanged
+            chmod(link, 0o744)
 
 
 def _create_desktop_shortcut_mac(frame=None):
@@ -244,9 +251,10 @@ def _create_desktop_shortcut_windows(frame=None):
         return False
     desktop = shell.SHGetFolderPath(0, shellcon.CSIDL_DESKTOP, None, 0)
     link = os.path.join(desktop, 'RIDE.lnk')
+    public_link = os.path.join(os.getenv('PUBLIC'), 'Desktop', 'RIDE.lnk')
     icon = os.path.join(sys.prefix, 'Lib', 'site-packages', 'robotide',
                         'widgets', 'robot.ico')
-    if not exists(link) or option_f:
+    if not (exists(public_link) or exists(link)) or option_f:
         if not option_q and not option_f:
             if not _askyesno("Setup", "Create desktop shortcut?", frame):
                 sys.stderr.write("Users can create a Desktop shortcut to RIDE "
@@ -263,7 +271,12 @@ def _create_desktop_shortcut_windows(frame=None):
         shortcut.SetDescription("Robot Framework testdata editor")
         shortcut.SetIconLocation(icon, 0)
         persist_file = shortcut.QueryInterface(pythoncom.IID_IPersistFile)
-        persist_file.Save(link, 0)
+        from pywintypes import com_error
+        try:
+            persist_file.Save(public_link, 0)
+            sys.stderr.write(f"Desktop shortcut created for all users.")
+        except com_error:
+            persist_file.Save(link, 0)
 
 
 def create_desktop_shortcut(platform, frame=None):
