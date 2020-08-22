@@ -106,6 +106,10 @@ class TestDataDirectoryWithExcludes(robotapi.TestDataDirectory):
     def __init__(self, parent, source, settings):
         self._settings = settings
         robotapi.TestDataDirectory.__init__(self, parent, source)
+        print('created {} {}'.format(self, id(self)))
+
+    def __del__(self):
+        print('del {} {}'.format(self, id(self)))
 
     def add_child(self, path, include_suites, extensions=None,
                   warn_on_skipped=False):
