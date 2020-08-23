@@ -136,6 +136,8 @@ class _Menu(object):
         pos = action.get_insertion_index(self.wx_menu)
         wx_menu_item = self.wx_menu.Insert(pos, menu_item.id,
                                            menu_item.name, action.doc)
+        if action.icon:
+            wx_menu_item.SetBitmap(action.icon)
         menu_item.set_wx_menu_item(wx_menu_item)
         return menu_item
 
