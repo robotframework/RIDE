@@ -138,7 +138,6 @@ class _Menu(object):
                                            menu_item.name, action.doc)
         if action.icon:
             wx_menu_item.SetBitmap(action.icon)
-            # print(f"DEBUG: _create_menu_item repr icon {repr(wx_menu_item.GetBackgroundColour())}")
         menu_item.set_wx_menu_item(wx_menu_item)
         return menu_item
 
