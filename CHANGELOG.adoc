@@ -11,7 +11,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Added
 
-- Added menu icons (visibible on most operating systems)
+- Added menu icons (visible on most operating systems)
 - Added RIDE application dock icon on MacOS
 - Added selection of keyword suggestion with TAB key on Text Editor
 - Added RIDE.app to install in Applications on MacOS
