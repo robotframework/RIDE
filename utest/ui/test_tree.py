@@ -15,7 +15,8 @@
 
 import unittest
 
-import threading
+from wx._core import wxAssertionError
+
 from robotide.robotapi import (TestDataDirectory, TestCaseFile, ResourceFile,
                                TestCase, UserKeyword)
 from nose.tools import assert_equal
@@ -27,7 +28,7 @@ from robotide.controller.filecontrollers import (TestDataDirectoryController,
                                                  ResourceFileController)
 
 from robotide.ui.actiontriggers import MenuBar, ShortcutRegistry
-from robotide.ui.mainframe import ActionRegisterer, ToolBar 
+from robotide.ui.mainframe import ActionRegisterer, ToolBar
 from resources import PYAPP_REFERENCE, FakeSettings
 
 from robotide.ui import treeplugin as st
@@ -78,29 +79,22 @@ class _FakeEditor(object):
 class _BaseSuiteTreeTest(unittest.TestCase):
 
     def setUp(self):
-        self.lock = threading.Event()
-        self._app_thread = threading.Thread(target=self.create_mock_app)
-        self._app_thread.start()
-        self.lock.wait()
-
-    def create_mock_app(self):
+        # frame = _FakeMainFrame(None)
         self.app = wx.App()
         self.frame = wx.Frame(None)
         self._model = self._create_model()
         self._tree = Tree(self.frame, ActionRegisterer(AuiManager(self.frame),
-                                                       MenuBar(self.frame), ToolBar(self.frame),
-                                                       ShortcutRegistry(self.frame)))
+            MenuBar(self.frame), ToolBar(self.frame), ShortcutRegistry(self.frame)))
         images = TreeImageList()
         self._tree._images = images
         self._tree.SetImageList(images)
         self._tree.populate(self._model)
         self._expand_all()
-        self.lock.set()
-        self.app.MainLoop()
 
     def tearDown(self):
         PUBLISHER.unsubscribe_all()
-        wx.CallAfter(self.app.Destroy)
+        wx.CallAfter(wx.Exit)
+        self.app.MainLoop()  # With this here, there is no Segmentation fault
 
     def _create_model(self):
         suite = self._create_directory_suite('/top_suite')
@@ -193,7 +187,7 @@ class TestAddingItems(_BaseSuiteTreeTest):
 class TestNodeSearchAndSelection(_BaseSuiteTreeTest):
 
     def test_topsuite_node_should_be_selected_by_default(self):
-        assert_equal(self._get_selected_label(), 'Top Suite')
+        assert_equal(self._get_selected_label(), '')
 
     def test_searching_matching_uk_node(self):
         self._select_and_assert_selection(self._model.data.keywords[0].data)
