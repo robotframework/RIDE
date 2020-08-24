@@ -15,8 +15,7 @@
 
 import unittest
 
-from wx._core import wxAssertionError
-
+import threading
 from robotide.robotapi import (TestDataDirectory, TestCaseFile, ResourceFile,
                                TestCase, UserKeyword)
 from nose.tools import assert_equal
@@ -79,22 +78,29 @@ class _FakeEditor(object):
 class _BaseSuiteTreeTest(unittest.TestCase):
 
     def setUp(self):
-        # frame = _FakeMainFrame(None)
+        self.lock = threading.Event()
+        self._app_thread = threading.Thread(target=self.create_mock_app)
+        self._app_thread.start()
+        self.lock.wait()
+
+    def create_mock_app(self):
         self.app = wx.App()
         self.frame = wx.Frame(None)
         self._model = self._create_model()
         self._tree = Tree(self.frame, ActionRegisterer(AuiManager(self.frame),
-            MenuBar(self.frame), ToolBar(self.frame), ShortcutRegistry(self.frame)))
+                                                       MenuBar(self.frame), ToolBar(self.frame),
+                                                       ShortcutRegistry(self.frame)))
         images = TreeImageList()
         self._tree._images = images
         self._tree.SetImageList(images)
         self._tree.populate(self._model)
         self._expand_all()
+        self.lock.set()
+        self.app.MainLoop()
 
     def tearDown(self):
         PUBLISHER.unsubscribe_all()
-        wx.CallAfter(wx.Exit)
-        self.app.MainLoop()  # With this here, there is no Segmentation fault
+        wx.CallAfter(self.app.Destroy)
 
     def _create_model(self):
         suite = self._create_directory_suite('/top_suite')
