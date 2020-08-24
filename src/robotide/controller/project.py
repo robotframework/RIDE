@@ -16,6 +16,7 @@
 import os
 import shutil
 import tempfile
+
 from robotide.context import LOG
 from robotide.controller.ctrlcommands import NullObserver, SaveFile
 from robotide.publish.messages import RideOpenSuite, RideNewProject, RideFileNameChanged

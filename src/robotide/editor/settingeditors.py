@@ -14,7 +14,6 @@
 #  limitations under the License.
 
 import wx
-import weakref
 from robotide import context
 from robotide.controller.ctrlcommands import UpdateVariable, UpdateDocumentation,\
     SetValues, AddLibrary, AddResource, AddVariablesFileImport, ClearSetting
@@ -41,9 +40,9 @@ class SettingEditor(wx.Panel):
 
     def __init__(self, parent, controller, plugin, tree):
         wx.Panel.__init__(self, parent)
-        self._controller = weakref.proxy(controller)
+        self._controller = controller
         self.plugin = plugin
-        self._datafile = self._controller.datafile
+        self._datafile = controller.datafile
         self._create_controls()
         self._tree = tree
         self._editing = False
