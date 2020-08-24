@@ -1,0 +1,9 @@
+#!/bin/sh
+PAL=$PATH
+for i in `cat /etc/paths`
+    do
+        PAL="$PAL:$i"
+    done
+PATH=$PAL
+export $PATH
+/usr/bin/python3 -m robotide.__init__ $* 2> /dev/null &

@@ -187,7 +187,7 @@ class Project(_BaseController, WithNamespace):
         load_observer.error("Invalid resource file '%s'." % path)
 
     def _load_resource(self, path, load_observer):
-        resource = self._namespace.get_resource(path)
+        resource = self._loader.load_resource_file(path, load_observer)
         if not resource:
             return None
         ctrl = self._create_resource_controller(resource)

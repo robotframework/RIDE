@@ -186,7 +186,7 @@ class RIDE(wx.App):
             RideFSWatcherHandler.create_fs_watcher(self.workspace_path)
 
     def OnAppActivate(self, event):
-        if RideFSWatcherHandler.is_watcher_created():
+        if self.workspace_path is not None and RideFSWatcherHandler.is_watcher_created():
             if event.GetActive():
                 if self._controller.is_project_changed_from_disk() or \
                         RideFSWatcherHandler.is_workspace_dirty():
