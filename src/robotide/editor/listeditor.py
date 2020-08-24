@@ -14,7 +14,6 @@
 #  limitations under the License.
 
 import wx
-import weakref
 from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
 from robotide.controller.ctrlcommands import MoveUp, MoveDown, DeleteItem
 from robotide.widgets import PopupMenu, PopupMenuItems, ButtonWithHandler, Font
@@ -27,7 +26,7 @@ class ListEditorBase(wx.Panel):
 
     def __init__(self, parent, columns, controller):
         wx.Panel.__init__(self, parent)
-        self._controller = weakref.proxy(controller)
+        self._controller = controller
         self._selection = wx.NOT_FOUND
         self._create_ui(columns, controller)
         self._make_bindings()

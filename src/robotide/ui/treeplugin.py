@@ -429,7 +429,6 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl):
         if self._resource_root:
             self.Expand(self._resource_root)
         if self._datafile_nodes:
-            # this line will cause RideDataFileSet is triggered for tree refreshing and memory leak
             self._expand_and_render_children(self._datafile_nodes[0])
             wx.CallAfter(self.SelectItem, self._datafile_nodes[0])
 

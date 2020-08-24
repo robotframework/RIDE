@@ -119,9 +119,6 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
         else:
             self.filename = self.data.source
 
-    def __del__(self):
-        print('del _DataController {}'.format(self))
-
     def set_datafile(self, datafile):
         self.data = datafile
         self._variables_table_controller = None

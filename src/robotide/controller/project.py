@@ -16,7 +16,6 @@
 import os
 import shutil
 import tempfile
-import weakref
 from robotide.context import LOG
 from robotide.controller.ctrlcommands import NullObserver, SaveFile
 from robotide.publish.messages import RideOpenSuite, RideNewProject, RideFileNameChanged
@@ -162,7 +161,6 @@ class Project(_BaseController, WithNamespace):
 
     def _populate_from_datafile(self, path, datafile, load_observer):
         self.__init__(self._namespace, self._settings, library_manager=self._library_manager)
-        datafile = weakref.proxy(datafile)
         resources = self._loader.resources_for(datafile, load_observer)
         self._create_controllers(datafile, resources)
         RideOpenSuite(path=path, datafile=self._controller).publish()

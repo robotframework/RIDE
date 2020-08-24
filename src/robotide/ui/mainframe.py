@@ -473,12 +473,6 @@ class RideFrame(wx.Frame):
                 # raise err  # Just leave message in Parser Log
                 return False
         self._populate_tree()
-        import gc
-        gc.collect()
-        import objgraph
-        print('---------------------------------------')
-        for _ in objgraph.by_type('TestDataDirectoryWithExcludes'):
-            print(_)
         return True
 
     def refresh_datafile(self, item, event):

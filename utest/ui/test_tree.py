@@ -187,7 +187,7 @@ class TestAddingItems(_BaseSuiteTreeTest):
 class TestNodeSearchAndSelection(_BaseSuiteTreeTest):
 
     def test_topsuite_node_should_be_selected_by_default(self):
-        assert_equal(self._get_selected_label(), '')
+        assert_equal(self._get_selected_label(), 'Top Suite')
 
     def test_searching_matching_uk_node(self):
         self._select_and_assert_selection(self._model.data.keywords[0].data)
