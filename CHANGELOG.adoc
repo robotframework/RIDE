@@ -11,6 +11,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Added
 
+- Added RIDE application dock icon on MacOS
 - Added selection of keyword suggestion with TAB key on Text Editor
 - Added RIDE.app to install in Applications on MacOS
     * Also creates a symbolic link to RIDE.app on user's Desktop
@@ -29,7 +30,6 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Changed
 
-- After loading workspace, the tree root item will not be selected anymore
 - On MacOS, grid cell will not lose focus anymore when mouse is moving outside of the cell's boundary
 - Changed moving to keyword definition to be with Ctrl-Click (keep Ctrl-B action)
     * To edit cell use F2 or Double-Click
@@ -39,6 +39,9 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 === Fixed
 
 - Fixed memory leak when reloading workspace
+- Fixed RIDE desktop shortcut creation when installing by Administrator on Windows
+- Fixed location of icon on Linux RIDE.desktop
+- Fixed incorrect app windows size configuration after maximizing
 - Fixed errors raised when adding external resources
 - Fixed progress dialog is missing when adding external resources
 - Fixed missing keyword suggestions on Resource files in Text Editor

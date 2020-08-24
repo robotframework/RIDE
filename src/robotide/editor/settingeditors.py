@@ -380,7 +380,7 @@ class VariablesListEditor(_AbstractListEditor):
             self._update_vars, 'ride.variable.updated', key=self)
         PUBLISHER.subscribe(
             self._update_vars, 'ride.variable.removed', key=self)
-        PUBLISHER.subscribe(self._open_variable_dialog, RideOpenVariableDialog)
+        PUBLISHER.subscribe(self._open_variable_dialog, RideOpenVariableDialog, key=self)
         _AbstractListEditor.__init__(self, parent, tree, controller)
 
     def _update_vars(self, event):
