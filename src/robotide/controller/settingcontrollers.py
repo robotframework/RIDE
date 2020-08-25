@@ -14,7 +14,6 @@
 #  limitations under the License.
 
 import re
-import sys
 from itertools import chain
 
 from robotide.publish.messages import RideImportSettingChanged,\

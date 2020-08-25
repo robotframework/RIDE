@@ -28,7 +28,7 @@ from robotide.controller.filecontrollers import (TestDataDirectoryController,
                                                  ResourceFileController)
 
 from robotide.ui.actiontriggers import MenuBar, ShortcutRegistry
-from robotide.ui.mainframe import ActionRegisterer, ToolBar 
+from robotide.ui.mainframe import ActionRegisterer, ToolBar
 from resources import PYAPP_REFERENCE, FakeSettings
 
 from robotide.ui import treeplugin as st
@@ -173,7 +173,8 @@ class TestAddingItems(_BaseSuiteTreeTest):
 
     def test_adding_user_keyword(self):
         suite = self._model.data
-        suite.create_keyword('New Fake UK')
+        kw = suite.create_keyword('New Fake UK')
+        self._tree.add_keyword(self._get_node(suite.name), kw)
         assert_equal(self._get_selected_label(), 'New Fake UK')
 
     def test_adding_test(self):
@@ -186,7 +187,7 @@ class TestAddingItems(_BaseSuiteTreeTest):
 class TestNodeSearchAndSelection(_BaseSuiteTreeTest):
 
     def test_topsuite_node_should_be_selected_by_default(self):
-        assert_equal(self._get_selected_label(), 'Top Suite')
+        assert_equal(self._get_selected_label(), '')
 
     def test_searching_matching_uk_node(self):
         self._select_and_assert_selection(self._model.data.keywords[0].data)

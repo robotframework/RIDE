@@ -14,7 +14,6 @@
 #  limitations under the License.
 
 import wx
-
 from robotide import context
 from robotide.controller.ctrlcommands import UpdateVariable, UpdateDocumentation,\
     SetValues, AddLibrary, AddResource, AddVariablesFileImport, ClearSetting
@@ -380,7 +379,7 @@ class VariablesListEditor(_AbstractListEditor):
             self._update_vars, 'ride.variable.updated', key=self)
         PUBLISHER.subscribe(
             self._update_vars, 'ride.variable.removed', key=self)
-        PUBLISHER.subscribe(self._open_variable_dialog, RideOpenVariableDialog)
+        PUBLISHER.subscribe(self._open_variable_dialog, RideOpenVariableDialog, key=self)
         _AbstractListEditor.__init__(self, parent, tree, controller)
 
     def _update_vars(self, event):
