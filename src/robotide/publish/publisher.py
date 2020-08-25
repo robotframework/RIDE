@@ -13,10 +13,11 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from pubsub import pub, utils
+from pubsub import pub
+from types import MethodType
 
 
-class Publisher(object):
+class _Publisher(object):
 
     def __init__(self):
         self._publisher = pub.getDefaultPublisher()
@@ -30,11 +31,16 @@ class Publisher(object):
         self._publisher.subscribe(listener, topic)
 
     def unsubscribe(self, listener, topic):
-        self.unsubscribe(listener, topic)
+        self._publisher.unsubscribe(listener, topic)
 
-    def unsubscribe_all(self, key=None):
-        utils.printTreeDocs()
+    def unsubscribe_all(self, obj):
+        def _listener_filter(listener):
+            _callable = listener.getCallable()
+            if isinstance(_callable, MethodType):
+                if _callable.__self__ is obj:
+                    return True
+        self._publisher.unsubAll(listenerFilter=_listener_filter)
 
 
 """Global `Publisher` instance for subscribing to and unsubscribing from messages."""
-PUBLISHER = Publisher()
+PUBLISHER = _Publisher()
