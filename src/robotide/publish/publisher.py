@@ -13,96 +13,27 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-try:
-    from pubsub import Publisher
-    WxPublisher = Publisher()
-except ImportError:
-    from pubsub import pub
-    WxPublisher = pub.getDefaultPublisher()
+from pubsub import pub, utils
 
 
 class Publisher(object):
 
     def __init__(self):
-        self._listeners = {}
+        self._publisher = pub.getDefaultPublisher()
 
     def publish(self, topic, data):
-        self._sendMessage(topic, data)
+        self._publisher.sendMessage(topic, message=data)
 
-    def subscribe(self, listener, topic, key=None):
-        """Start to listen to messages with the specified ``topic``.
-
-        The ``topic`` can be either a message class or a dot separated topic
-        string, and the ``listener`` must be a callable accepting a message
-        instance. See the generic documentation of the `robotide.publish`
-        module for more details.
-
-        The ``key`` is used for keeping a reference of the listener so that
-        all listeners with the same key can be unsubscribed at once using
-        ``unsubscribe_all``.
-        """
-        wrapper = _ListenerWrapper(listener, topic)
-        self._listeners.setdefault(key, []).append(wrapper)
-
-    def _sendMessage(self, topic, data):
-        current_wrappers = self._listeners.values()
-        for wrappers in list(current_wrappers):  # DEBUG
-            for wrapper in wrappers:
-                if wrapper.listens(topic):
-                    wrapper(data)
-
-    def unsubscribe(self, listener, topic, key=None):
-        """Stop listening for messages with the specified ``topic``.
-
-        The ``topic``, the ``listener``, and the ``key`` must match the
-        values passed to `subscribe` earlier.
-        """
-        for wrapper in self._listeners[key]:
-            if wrapper.wraps(listener, topic):
-                wrapper.unsubscribe()
-                self._listeners[key].remove(wrapper)
-                break
-
-    def unsubscribe_all(self, key=None):
-        """Unsubscribe all listeners registered with the given ``key``"""
-        for wrapper in self._listeners[key]:
-            wrapper.unsubscribe()
-        del self._listeners[key]
-
-
-class _ListenerWrapper(object):
-
-    def __init__(self, listener, topic):
-        self.listener = listener
-        self.topic = self._get_topic(topic)
-        WxPublisher.subscribe(self, self.topic)
-
-    def _get_topic(self, topic):
+    def subscribe(self, listener, topic):
         if not isinstance(topic, str):
             topic = topic.topic
-        return topic.lower()
+        self._publisher.subscribe(listener, topic)
 
-    def wraps(self, listener, topic):
-        return self.listener == listener and self.topic == self._get_topic(topic)
+    def unsubscribe(self, listener, topic):
+        self.unsubscribe(listener, topic)
 
-    def listens(self, topic):
-        return self._get_topic(topic).startswith(self.topic)
-
-    def unsubscribe(self):
-        WxPublisher.unsubscribe(self, self.topic)
-
-    def __call__(self, data):
-        from .messages import RideLogException
-        try:
-            # print(f"DEBUG: Publisher  Listerner data is {str(data)}")
-            self.listener(data)
-        except Exception as err:
-            # Prevent infinite recursion if RideLogMessage listener is broken,
-            if not isinstance(data, RideLogException):
-                RideLogException(message='Error in listener: %s\n' \
-                                         'While handling %s' % (str(err),
-                                                                str(data)),
-                                 exception=err, level='ERROR').publish()
+    def unsubscribe_all(self, key=None):
+        utils.printTreeDocs()
 
 
 """Global `Publisher` instance for subscribing to and unsubscribing from messages."""
