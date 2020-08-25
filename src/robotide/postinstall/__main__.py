@@ -211,6 +211,7 @@ def _create_desktop_shortcut_linux(frame=None):
 def _create_desktop_shortcut_mac(frame=None):
     import os
     import shutil
+    import subprocess
     ride_app_name = 'RIDE.app'
     application_path = '/Applications'
     ride_app_pc_path = os.path.join(application_path, ride_app_name)
@@ -227,8 +228,8 @@ def _create_desktop_shortcut_mac(frame=None):
         if exists(ride_app_pc_path):
             shutil.rmtree(ride_app_pc_path, True)
         shutil.copytree(ride_app_module_path, ride_app_pc_path)
-        user_desktop_link = os.path.join(os.path.expanduser('~'), 'Desktop', ride_app_name)
-
+        user = str(subprocess.check_output(['logname']).strip(), encoding='utf-8')
+        user_desktop_link = '/Users/' + user + '/Desktop/' + ride_app_name
         if exists(user_desktop_link):
             os.remove(user_desktop_link)
         try:
