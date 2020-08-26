@@ -19,7 +19,7 @@ from nose.tools import assert_equal, assert_raises, assert_true
 
 from robotide.publish.messages import (RideMessage, RideLogMessage,
                                        RideLogException)
-from robotide.publish.publisher import Publisher
+from robotide.publish.publisher import PUBLISHER
 
 
 class RideTestMessage(RideMessage):
@@ -40,7 +40,7 @@ class TestMessage(unittest.TestCase):
         assert_equal(RideMessage().topic, 'ride')
         assert_equal(RideTestMessage().topic, 'my.topic')
         assert_equal(RideTestMessageWithLongName().topic,
-                      'ride.test.message.with.long.name')
+                     'ride.test.message.with.long.name')
 
     def test_all_attributes_given(self):
         msg = RideTestMessageWithAttrs(foo='bar', bar='quux')
@@ -78,31 +78,169 @@ class TestRideLogMessage(unittest.TestCase):
             assert_true(msg.timestamp.startswith('20'))
 
 
+def _common_listener(message):
+    TestPublisher.cls_msg = message
+    TestPublisher.cls_msgs.append(message)
+
+
+class DummyClass:
+
+    def __init__(self):
+        PUBLISHER.subscribe(self._dummy_listener, RideTestMessageWithAttrs)
+
+    def _dummy_listener(self, message):
+        TestPublisher.cls_msg = message
+        TestPublisher.cls_msgs.append(message)
+
+
 class TestPublisher(unittest.TestCase):
+    cls_msg = ''
+    cls_msgs = list()
 
     def setUp(self):
         self._msg = ''
+        self.dummy_obj = None
+        TestPublisher.cls_msg = ''
+        TestPublisher.cls_msgs.clear()
+
+    def tearDown(self):
+        PUBLISHER.unsubscribe_all(self)
 
     def test_publishing_string_message(self):
-        pub = Publisher()
-        pub.subscribe(self._listener, 'test.message')
-        pub.publish('test.message', 'content')
+        PUBLISHER.subscribe(self._listener, 'test.message1')
+        PUBLISHER.publish('test.message1', 'content')
         assert_equal(self._msg, 'content')
+
+    def test_publishing_ride_message(self):
+        PUBLISHER.subscribe(self._listener, RideTestMessageWithAttrs)
+        PUBLISHER.publish(RideTestMessageWithAttrs, 'content3')
+        assert_equal(self._msg, 'content3')
+
+    def test_publishing_ride_message2(self):
+        PUBLISHER.subscribe(self._listener, RideTestMessageWithAttrs)
+        msg_obj = RideTestMessageWithAttrs(foo='one', bar='two')
+        msg_obj.publish()
+        assert_equal(self._msg, msg_obj)
+
+    def test_publishing_common_listener(self):
+        PUBLISHER.subscribe(_common_listener, RideTestMessageWithAttrs)
+        msg_obj = RideTestMessageWithAttrs(foo='one', bar='two')
+        msg_obj.publish()
+        PUBLISHER.unsubscribe(_common_listener, RideTestMessageWithAttrs)
+        assert_equal(TestPublisher.cls_msg, msg_obj)
+
+    def test_unsubscribe_ride_message(self):
+        PUBLISHER.subscribe(self._listener, RideTestMessageWithAttrs)
+        PUBLISHER.unsubscribe(self._listener, RideTestMessageWithAttrs)
+        msg_obj = RideTestMessageWithAttrs(foo='one', bar='two')
+        msg_obj.publish()
+        assert_equal(self._msg, '')
+
+    def test_subscribe_multi_listeners(self):
+        PUBLISHER.subscribe(self._listener, RideTestMessageWithAttrs)
+        PUBLISHER.subscribe(self._broken_listener, RideTestMessageWithAttrs)
+        PUBLISHER.subscribe(self._static_listener, RideTestMessageWithAttrs)
+        PUBLISHER.subscribe(self._class_listener, RideTestMessageWithAttrs)
+        msg_obj = RideTestMessageWithAttrs(foo='one', bar='two')
+        msg_obj.publish()
+        assert_equal(len(TestPublisher.cls_msgs), 4)
+
+    def test_subscribe_multi_listeners2(self):
+        PUBLISHER.subscribe(self._listener, RideTestMessageWithAttrs)
+        PUBLISHER.subscribe(self._broken_listener, RideTestMessage)
+        PUBLISHER.subscribe(self._static_listener, RideTestMessageWithAttrs)
+        PUBLISHER.subscribe(self._class_listener, RideTestMessageWithAttrs)
+        msg_obj = RideTestMessageWithAttrs(foo='one', bar='two')
+        msg_obj.publish()
+        msg_obj.publish()
+        assert_equal(len(TestPublisher.cls_msgs), 3 * 2)
+
+    def test_unsubscribe_all(self):
+        PUBLISHER.subscribe(self._listener, RideTestMessageWithAttrs)
+        PUBLISHER.subscribe(self._broken_listener, RideTestMessageWithAttrs)
+        PUBLISHER.subscribe(self._static_listener, RideTestMessageWithAttrs)
+        PUBLISHER.subscribe(self._class_listener, RideTestMessageWithAttrs)
+        msg_obj = RideTestMessageWithAttrs(foo='one', bar='two')
+        msg_obj.publish()
+        assert_equal(len(TestPublisher.cls_msgs), 4)
+        PUBLISHER.unsubscribe_all(self)
+        msg_obj.publish()
+        assert_equal(len(TestPublisher.cls_msgs), 4)
+
+    def test_unsubscribe_all2(self):
+        PUBLISHER.subscribe(self._listener, RideTestMessageWithAttrs)
+        PUBLISHER.subscribe(self._broken_listener, RideTestMessageWithAttrs)
+        PUBLISHER.subscribe(self._static_listener, RideTestMessageWithAttrs)
+        PUBLISHER.subscribe(self._class_listener, RideTestMessageWithAttrs)
+        self.dummy_obj = DummyClass()
+        msg_obj = RideTestMessageWithAttrs(foo='one', bar='two')
+        msg_obj.publish()
+        assert_equal(len(TestPublisher.cls_msgs), 5)
+        PUBLISHER.unsubscribe_all(self)
+        msg_obj.publish()
+        assert_equal(len(TestPublisher.cls_msgs), 6)
+
+    def test_unsubscribe_all3(self):
+        PUBLISHER.subscribe(self._listener, RideTestMessageWithAttrs)
+        PUBLISHER.subscribe(self._broken_listener, RideTestMessageWithAttrs)
+        PUBLISHER.subscribe(self._static_listener, RideTestMessageWithAttrs)
+        PUBLISHER.subscribe(self._class_listener, RideTestMessageWithAttrs)
+        self.dummy_obj = DummyClass()
+        msg_obj = RideTestMessageWithAttrs(foo='one', bar='two')
+        msg_obj.publish()
+        assert_equal(len(TestPublisher.cls_msgs), 5)
+        PUBLISHER.unsubscribe_all(self.dummy_obj)
+        PUBLISHER.unsubscribe_all(self)
+        msg_obj.publish()
+        assert_equal(len(TestPublisher.cls_msgs), 5)
+
+    def test_subscribe_obj_weak_ref(self):
+        self.dummy_obj = DummyClass()
+        del self.dummy_obj
+        assert_equal(hasattr(self, 'dummy_obj'), False)
+
+    def test_unsubscribe_string_message(self):
+        PUBLISHER.subscribe(self._listener, 'RideTestMessageWithAttrs')
+        PUBLISHER.unsubscribe(self._listener, 'RideTestMessageWithAttrs')
+        PUBLISHER.publish('RideTestMessageWithAttrs', 'test')
+        assert_equal(self._msg, '')
+
+    def test_subscribe_static_method(self):
+        PUBLISHER.subscribe(self._static_listener, RideTestMessageWithAttrs)
+        msg_obj = RideTestMessageWithAttrs(foo='one', bar='two')
+        msg_obj.publish()
+        assert_equal(TestPublisher.cls_msg, msg_obj)
+
+    def test_subscribe_class_method(self):
+        PUBLISHER.subscribe(self._class_listener, RideTestMessageWithAttrs)
+        msg_obj = RideTestMessageWithAttrs(foo='one', bar='two')
+        msg_obj.publish()
+        assert_equal(TestPublisher.cls_msg, msg_obj)
 
     def test_broken_string_message_listener(self):
-        pub = Publisher()
-        pub.subscribe(self._broken_listener, 'test.message')
-        pub.publish('test.message', 'content')
-        assert_equal(self._msg, 'content')
+        PUBLISHER.subscribe(self._broken_listener, 'test.message2')
+        PUBLISHER.publish('test.message2', 'content2')
+        assert_equal(self._msg, 'content2')
 
-    def _listener(self, data):
-        self._msg = data
+    def _listener(self, message):
+        self._msg = message
+        TestPublisher.cls_msgs.append(message)
 
-    def _broken_listener(self, data):
-        self._msg = data
-        raise RuntimeError(data)
+    def _broken_listener(self, message):
+        self._msg = message
+        TestPublisher.cls_msgs.append(message)
+        raise RuntimeError(message)
+
+    @staticmethod
+    def _static_listener(message):
+        TestPublisher.cls_msg = message
+        TestPublisher.cls_msgs.append(message)
+
+    @classmethod
+    def _class_listener(cls, message):
+        cls.cls_msg = message
+        TestPublisher.cls_msgs.append(message)
 
 
 if __name__ == '__main__':
     unittest.main()
-
