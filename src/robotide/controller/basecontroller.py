@@ -77,6 +77,9 @@ class WithNamespace(object):
     def _set_namespace(self, namespace):
         self._namespace = namespace
 
+    def get_namespace(self):
+        return self._namespace
+
     def update_namespace(self):
         if not self._namespace:
             return

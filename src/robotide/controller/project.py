@@ -37,13 +37,14 @@ class Project(_BaseController, WithNamespace):
         self._library_manager = self._construct_library_manager(library_manager, settings)
         if not self._library_manager.is_alive():
             self._library_manager.start()
-        self._set_namespace(namespace)
+        self._name_space = namespace
+        self._set_namespace(self._name_space)
         self._settings = settings
-        self._loader = DataLoader(namespace, settings)
+        self._loader = DataLoader(self._name_space, settings)
         self._controller = None
         self.name = None
         self.external_resources = []
-        self._resource_file_controller_factory = ResourceFileControllerFactory(namespace, self)
+        self._resource_file_controller_factory = ResourceFileControllerFactory(self._name_space, self)
         self._serializer = Serializer(settings, LOG)
 
     def _construct_library_manager(self, library_manager, settings):
@@ -75,6 +76,8 @@ class Project(_BaseController, WithNamespace):
     def update_default_dir(self, path):
         default_dir = path if os.path.isdir(path) else os.path.dirname(path)
         self._settings.set('default directory', default_dir)
+        self._name_space.update_exec_dir_global_var(default_dir)
+        self._name_space.update_cur_dir_global_var(default_dir)
 
     # TODO: in all other controllers data returns a robot data model object.
     @property

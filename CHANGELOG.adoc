@@ -39,6 +39,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Fixed
 
+- Fixed ${CURDIR} & ${EXECDIR} cannot be recognized in import settings
 - Fixed memory leak when reloading workspace
 - Fixed RIDE desktop shortcut creation when installing by Administrator on Windows
 - Fixed location of icon on Linux RIDE.desktop
