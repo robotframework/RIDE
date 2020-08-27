@@ -445,9 +445,11 @@ class KeywordEditor(GridEditor):
         self.OnDelete(event)
 
     def OnDelete(self, event=None):
-        self._execute(ClearArea(self.selection.topleft,
-                                self.selection.bottomright))
-        self._resize_grid()
+        _iscelleditcontrolshown = self.IsCellEditControlShown()
+        if not _iscelleditcontrolshown:
+            self._execute(ClearArea(self.selection.topleft,
+                                    self.selection.bottomright))
+            self._resize_grid()
 
     # DEBUG    @requires_focus
     def OnPaste(self, event=None):
@@ -458,8 +460,7 @@ class KeywordEditor(GridEditor):
         self._resize_grid()
 
     def _execute_clipboard_command(self, command_class):
-        _iscelleditcontrolshown = self.IsCellEditControlShown()
-        if not _iscelleditcontrolshown:
+        if not self.IsCellEditControlShown():
             data = self._clipboard_handler.clipboard_content()
             if data:
                 data = [[data]] if isinstance(data, str) else data
@@ -966,6 +967,7 @@ class ContentAssistCellEditor(GridCellEditor):
         key = event.GetKeyCode()
         event.Skip()  # DEBUG seen this skip as soon as possible
         if key == wx.WXK_DELETE or key > 255:
+            # print(f"DEBUG: Delete key at ContentAssist key {key}")
             self._grid.HideCellEditControl()
         elif key == wx.WXK_BACK:
             self._tc.SetValue(self._original_value)
