@@ -73,7 +73,7 @@ class _ContentAssistTextCtrlBase(object):
 
     def OnChar(self, event):
         keychar = event.GetUnicodeKey()
-        # print(f"DEBUG: OmChar at contentassist {chr(keychar)} {keychar}")
+        # print(f"DEBUG: OnChar at contentassist {chr(keychar)} {keychar}")
         if keychar == wx.WXK_NONE:
             event.Skip()
             return
