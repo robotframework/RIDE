@@ -52,8 +52,7 @@ def requires_focus(function):
     def decorated_function(self, *args):
         if not self.has_focus():
             return
-        _iscelleditcontrolshown = self.IsCellEditControlShown()
-        if self.has_focus() or _iscelleditcontrolshown or _row_header_selected_on_linux(self):
+        if self.has_focus() or self.IsCellEditControlShown() or _row_header_selected_on_linux(self):
             function(self, *args)
 
     return decorated_function
@@ -186,8 +185,7 @@ class KeywordEditor(GridEditor):
         self.Bind(wx.EVT_KILL_FOCUS, self.OnKillFocus)
 
     def get_tooltip_content(self):
-        _iscelleditcontrolshown = self.IsCellEditControlShown()
-        if _iscelleditcontrolshown or self._popup_menu_shown:
+        if self.IsCellEditControlShown() or self._popup_menu_shown:
             return ''
         cell = self.cell_under_cursor
         cell_info = self._controller.get_cell_info(cell.Row, cell.Col)
@@ -445,8 +443,7 @@ class KeywordEditor(GridEditor):
         self.OnDelete(event)
 
     def OnDelete(self, event=None):
-        _iscelleditcontrolshown = self.IsCellEditControlShown()
-        if not _iscelleditcontrolshown:
+        if not self.IsCellEditControlShown():
             self._execute(ClearArea(self.selection.topleft,
                                     self.selection.bottomright))
             self._resize_grid()
@@ -479,8 +476,7 @@ class KeywordEditor(GridEditor):
 
     # DEBUG @requires_focus
     def OnUndo(self, event=None):
-        _iscelleditcontrolshown = self.IsCellEditControlShown()
-        if not _iscelleditcontrolshown:
+        if not self.IsCellEditControlShown():
             self._execute(Undo())
         else:
             self.GetCellEditor(*self.selection.cell).Reset()
@@ -504,15 +500,13 @@ class KeywordEditor(GridEditor):
 
     def save(self):
         self._tooltips.hide()
-        _iscelleditcontrolshown = self.IsCellEditControlShown()
-        if _iscelleditcontrolshown:
+        if self.IsCellEditControlShown():
             cell_editor = self.GetCellEditor(*self.selection.cell)
             cell_editor.EndEdit(self.selection.topleft.row,
                                 self.selection.topleft.col, self)
 
     def show_content_assist(self):
-        _iscelleditcontrolshown = self.IsCellEditControlShown()
-        if _iscelleditcontrolshown:
+        if self.IsCellEditControlShown():
             self.GetCellEditor(*self.selection.cell).show_content_assist(self.selection.cell)
 
     def refresh_datafile(self, item, event):
