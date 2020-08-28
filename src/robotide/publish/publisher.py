@@ -80,7 +80,7 @@ class ListenerExceptionHandler(pub.IListenerExcHandler):
     def __call__(self, listenerID: str, topicObj: pub.Topic):
         from .messages import RideLogException
         topic_name = topicObj.getName()
-        if topic_name != RideLogException:
+        if topic_name != RideLogException.topic():
             error_msg = 'Error in listener: {}, topic: {}'.format(listenerID, topic_name)
             LOG.error(error_msg)
             RideLogException(message=error_msg,
