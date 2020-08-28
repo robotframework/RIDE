@@ -91,6 +91,7 @@ class KeywordSearch(Plugin):
 
     def disable(self):
         self.unregister_actions()
+        self.unsubscribe_all()
 
 class _SearchCriteria(object):
 

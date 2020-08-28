@@ -48,7 +48,7 @@ class SettingEditor(wx.Panel):
         self._create_controls()
         self._tree = tree
         self._editing = False
-        self.plugin.subscribe(self.ps_on_update_value, RideImportSetting)
+        self.plugin.subscribe(self._ps_on_update_value, RideImportSetting)
 
     def _create_controls(self):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -192,7 +192,7 @@ class SettingEditor(wx.Panel):
         self._controller.execute(ClearSetting())
         self._update_and_notify()
 
-    def ps_on_update_value(self, message):
+    def _ps_on_update_value(self, message):
         self.update_value()
 
     def update_value(self):
@@ -208,7 +208,7 @@ class SettingEditor(wx.Panel):
 
     def close(self):
         self._controller = None
-        self.plugin.unsubscribe(self.ps_on_update_value, RideImportSetting)
+        self.plugin.unsubscribe(self._ps_on_update_value, RideImportSetting)
 
     def highlight(self, text):
         return self._value_display.highlight(text)
