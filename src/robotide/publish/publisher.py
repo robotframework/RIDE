@@ -15,30 +15,44 @@
 
 import inspect
 from pubsub import pub
+from typing import Type, Callable
+from robotide.publish.messages import RideMessage
+from robotide.context import LOG
 
 
-class _Publisher(object):
+class _Publisher:
 
     def __init__(self):
         self._publisher = pub.getDefaultPublisher()
         self._publisher.setListenerExcHandler(ListenerExceptionHandler())
 
     @staticmethod
-    def _get_topic(topic):
-        if not isinstance(topic, str):
-            topic = topic.topic
-        return topic
+    def _get_topic(topic_cls: Type[RideMessage]) -> str:
+        if inspect.isclass(topic_cls) and issubclass(topic_cls, RideMessage):
+            return topic_cls.topic()
+        raise TypeError('Expected topic type {}, actual {}.'.format(RideMessage, topic_cls))
 
-    def publish(self, topic, data):
-        self._publisher.sendMessage(self._get_topic(topic), message=data)
+    @staticmethod
+    def _validate_listener(listener: Callable):
+        sig = inspect.signature(listener)
+        params = sig.parameters
+        error_msg = 'only 1 required param (message) is expected.'
+        assert len(params) == 1, 'Too many listener params, ' + error_msg
+        assert str(list(params.values())[0]) == 'message', 'Invalid listener param, ' + error_msg
 
-    def subscribe(self, listener, topic):
+    def subscribe(self, listener: Callable, topic: Type[RideMessage]):
+        """ The listener's param signature must be (message) """
+        self._validate_listener(listener)
         self._publisher.subscribe(listener, self._get_topic(topic))
 
-    def unsubscribe(self, listener, topic):
+    def publish(self, topic: Type[RideMessage], message):
+        """ All subscribed listeners' param signatures have been guaranteed """
+        self._publisher.sendMessage(self._get_topic(topic), message=message)
+
+    def unsubscribe(self, listener: Callable, topic: Type[RideMessage]):
         self._publisher.unsubscribe(listener, self._get_topic(topic))
 
-    def unsubscribe_all(self, obj):
+    def unsubscribe_all(self, obj=None):
         """ If the given object's:
 
             1. object method
@@ -46,6 +60,8 @@ class _Publisher(object):
             3. class function
 
             is subscribed into PUBLISHER, call this method to unsubscribe all its topics.
+
+            Unsubscribe all topics when input is None.
         """
 
         def _listener_filter(listener):
@@ -55,6 +71,7 @@ class _Publisher(object):
             if _callable in functions or _callable in methods:
                 return True
 
+        _listener_filter = _listener_filter if obj is not None else None
         self._publisher.unsubAll(listenerFilter=_listener_filter)
 
 
@@ -65,9 +82,10 @@ class ListenerExceptionHandler(pub.IListenerExcHandler):
         topic_name = topicObj.getName()
         if topic_name != RideLogException:
             error_msg = 'Error in listener: {}, topic: {}'.format(listenerID, topic_name)
+            LOG.error(error_msg)
             RideLogException(message=error_msg,
                              exception=None, level='ERROR').publish()
 
 
-"""Global `Publisher` instance for subscribing to and unsubscribing from messages."""
+"""Global `Publisher` instance for subscribing to and unsubscribing from RideMessages."""
 PUBLISHER = _Publisher()
