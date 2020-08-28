@@ -39,6 +39,9 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Fixed
 
+- Fixed Del key was clearing cell content on Grid Editor
+- Fixed ${CURDIR} & ${EXECDIR} cannot be recognized in import settings
+- Fixed memory leak when reloading workspace
 - Fixed RIDE desktop shortcut creation when installing by Administrator on Windows
 - Fixed location of icon on Linux RIDE.desktop
 - Fixed incorrect app windows size configuration after maximizing

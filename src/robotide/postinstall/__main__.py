@@ -216,24 +216,24 @@ def _create_desktop_shortcut_mac(frame=None):
     application_path = '/Applications'
     ride_app_pc_path = os.path.join(application_path, ride_app_name)
     ride_app_module_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), ride_app_name)
-    
-    if not option_q and not option_f and not _askyesno("Setup", "Create application shortcut?", frame):
-        return False
-    app_script = os.path.join(ride_app_module_path, 'Contents', 'MacOS', 'RIDE')
-    with open(app_script, 'w+') as shortcut:
-        shortcut.write("#!/bin/sh\nPAL=$PATH\nfor i in `cat /etc/paths`\n    do\n        PAL=\"$PAL:$i\"\n"
-                       "    done\nPATH=$PAL\nexport $PATH\n{} -m robotide.__init__ $* 2>"
-                       " /dev/null &\n".format(sys.executable))
-    if not exists(ride_app_pc_path):
+
+    if not exists(ride_app_pc_path) or option_f:
+        if not option_q and not option_f and not _askyesno("Setup", "Create application shortcut?", frame):
+            return False
+        app_script = os.path.join(ride_app_module_path, 'Contents', 'MacOS', 'RIDE')
+        with open(app_script, 'w+') as shortcut:
+            shortcut.write("#!/bin/sh\nPAL=$PATH\nfor i in `cat /etc/paths`\n    do\n        PAL=\"$PAL:$i\"\n"
+                           "    done\nPATH=$PAL\nexport $PATH\n{} -m robotide.__init__ $* 2>"
+                           " /dev/null &\n".format(sys.executable))
+        if exists(ride_app_pc_path):
+            shutil.rmtree(ride_app_pc_path, True)
         shutil.copytree(ride_app_module_path, ride_app_pc_path)
-    elif option_f:
-        shutil.rmtree(ride_app_pc_path, True)
-        shutil.copytree(ride_app_module_path, ride_app_pc_path)
-    user = str(subprocess.check_output(['logname']).strip(), encoding='utf-8')
-    userdesktoplink = '/Users/' + user + '/Desktop/' + ride_app_name
-    if not exists(userdesktoplink) or option_f:
+        user = str(subprocess.check_output(['logname']).strip(), encoding='utf-8')
+        user_desktop_link = '/Users/' + user + '/Desktop/' + ride_app_name
+        if exists(user_desktop_link):
+            os.remove(user_desktop_link)
         try:
-            os.symlink(ride_app_pc_path, userdesktoplink)
+            os.symlink(ride_app_pc_path, user_desktop_link)
         except Exception:
             pass
 

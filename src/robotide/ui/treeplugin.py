@@ -377,6 +377,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl):
         self._resource_root = self._create_resource_root()
         self._datafile_nodes = []
         self._resources = []
+        self._controller.clear_history()
 
     def _create_resource_root(self):
         return self._create_node(self._root, self._RESOURCES_NODE_LABEL,
@@ -428,8 +429,8 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl):
         if self._resource_root:
             self.Expand(self._resource_root)
         if self._datafile_nodes:
-            self.SelectItem(self._datafile_nodes[0])
             self._expand_and_render_children(self._datafile_nodes[0])
+            wx.CallAfter(self.SelectItem, self._datafile_nodes[0])
 
     def _render_datafile(self, parent_node, controller, index=None):
         node = self._create_node_with_handler(parent_node, controller, index)
@@ -821,11 +822,25 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl):
         self._controller.add_to_history(node)
         handler = self._controller.get_handler(node)
         if handler and handler.item:
+            self._update_data_file_namespace(node)
             RideTreeSelection(
                 node=node,
                 item=handler.controller,
                 silent=self._silent_mode).publish()
         self.SetFocus()
+
+    def _update_data_file_namespace(self, node):
+        while True:
+            if not node:
+                return
+            handler = self._controller.get_handler(node)
+            if hasattr(handler.controller, 'get_namespace'):
+                data_file_ns = handler.controller.get_namespace()
+                cur_dir = handler.controller.directory
+                data_file_ns.update_cur_dir_global_var(cur_dir)
+                return
+            else:
+                node = node.GetParent()
 
     def OnTreeItemExpanding(self, event):
         node = event.GetItem()
