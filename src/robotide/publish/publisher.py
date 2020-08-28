@@ -17,7 +17,6 @@ import inspect
 from pubsub import pub
 from typing import Type, Callable
 from robotide.publish.messages import RideMessage
-from robotide.context import LOG
 
 
 class _Publisher:
@@ -79,6 +78,7 @@ class ListenerExceptionHandler(pub.IListenerExcHandler):
 
     def __call__(self, listenerID: str, topicObj: pub.Topic):
         from .messages import RideLogException
+        from robotide.context import LOG
         topic_name = topicObj.getName()
         if topic_name != RideLogException.topic():
             error_msg = 'Error in listener: {}, topic: {}'.format(listenerID, topic_name)

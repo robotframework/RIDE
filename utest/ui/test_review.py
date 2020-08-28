@@ -17,6 +17,7 @@ import unittest
 import datafilereader
 from nose.tools import assert_true
 from robotide.ui.review import ReviewRunner
+from robotide.publish import PUBLISHER
 
 
 class TestReview(unittest.TestCase):
@@ -28,6 +29,7 @@ class TestReview(unittest.TestCase):
 
     def tearDown(self):
         self.project.close()
+        PUBLISHER.unsubscribe_all()
 
     def test_filter(self):
         assert_true(self.helper(

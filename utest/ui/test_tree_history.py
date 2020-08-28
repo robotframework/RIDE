@@ -116,5 +116,6 @@ class TestForward(unittest.TestCase):
         for state in states:
             assert_equal(self.history.forward(), state)
 
+
 if __name__ == '__main__':
     unittest.main()
