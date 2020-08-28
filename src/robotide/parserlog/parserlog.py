@@ -81,7 +81,8 @@ class ParserLogPlugin(Plugin):
         self.register_action(ActionInfo(
             'Tools', 'View Parser Log', self.OnViewLog, position=83))
 
-    def _log_message(self, log_event):
+    def _log_message(self, message):
+        log_event = message
         self._log.append(log_event)
         if self._panel:
             self._panel.update_log()

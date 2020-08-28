@@ -63,14 +63,14 @@ class PreviewPlugin(Plugin, TreeAwarePluginMixin):
         self.show_tab(self._panel)
         self._update_preview()
 
-    def OnTreeSelection(self, event):
+    def OnTreeSelection(self, message):
         if self.is_focused():
-            self._panel.tree_node_selected(event.item)
+            self._panel.tree_node_selected(message.item)
 
-    def OnTabChanged(self, event):
-        self._update_preview()
+    def OnTabChanged(self, message):
+        self._update_preview(None)
 
-    def _update_preview(self, event=None):
+    def _update_preview(self, message):
         if self.is_focused() and self.datafile:
             self._panel.update_preview()
 

@@ -899,9 +899,9 @@ class SourceEditor(wx.Panel):
                 self._editor.SetSelection(cpos, cpos)
                 self.store_position()
 
-    def OnSettingsChanged(self, data):
+    def OnSettingsChanged(self, message):
         """Update tab size if txt spaces size setting is modified"""
-        _, setting = data.keys
+        _, setting = message.keys
         if setting == 'txt number of spaces':
             self._tab_size = self._parent._app.settings.get('txt number of spaces', 4)
 
@@ -1005,9 +1005,9 @@ class RobotStylizer(object):
         self._set_styles(self._readonly)
         PUBLISHER.subscribe(self.OnSettingsChanged, RideSettingsChanged)
 
-    def OnSettingsChanged(self, data):
+    def OnSettingsChanged(self, message):
         '''Redraw the colors if the color settings are modified'''
-        section, setting = data.keys
+        section, setting = message.keys
         if section == 'Text Edit':
             self._set_styles(self._readonly)  # TODO: When on read-only file changing background color ignores flag
 

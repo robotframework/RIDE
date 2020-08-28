@@ -88,8 +88,8 @@ class _RobotTableEditor(EditorPanel):
         self.plugin.global_settings[self._settings_open_id] = \
             self._settings.IsExpanded()
 
-    def _settings_changed(self, data):
-        if data.item == self.controller:
+    def _settings_changed(self, message):
+        if message.item == self.controller:
             for editor in self._editors:
                 editor.update_value()
 
