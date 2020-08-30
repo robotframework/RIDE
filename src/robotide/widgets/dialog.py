@@ -15,7 +15,8 @@
 
 import wx
 
-from robotide.widgets import htmlwindow, sizers
+from . import htmlwindow, sizers
+from wx import Colour
 
 
 class Dialog(wx.Dialog):
@@ -27,6 +28,10 @@ class Dialog(wx.Dialog):
         wx.MiniFrame.__init__(self, parent, title=title, size=size, style=style)
         # set Left to Right direction (while we don't have localization)
         self.SetLayoutDirection(wx.Layout_LeftToRight)
+        self.SetBackgroundColour(Colour(200, 222, 40))
+        self.SetOwnBackgroundColour(Colour(200, 222, 40))
+        self.SetForegroundColour(Colour(7, 0, 70))
+        self.SetOwnForegroundColour(Colour(7, 0, 70))
         self.CenterOnParent()
 
     def _create_buttons(self, sizer):
@@ -60,6 +65,10 @@ class HtmlDialog(Dialog):
         szr = sizers.VerticalSizer()
         html = htmlwindow.HtmlWindow(self, text=content)
         html.SetStandardFonts(size=font_size)
+        self.SetBackgroundColour(Colour(200, 222, 40))
+        self.SetOwnBackgroundColour(Colour(200, 222, 40))
+        self.SetForegroundColour(Colour(7, 0, 70))
+        self.SetOwnForegroundColour(Colour(7, 0, 70))
         szr.add_expanding(html, padding=padding)
         self.SetSizer(szr)
 
