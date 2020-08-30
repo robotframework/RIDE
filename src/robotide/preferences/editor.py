@@ -32,6 +32,7 @@ dialog.
 
 import wx
 from wx.lib.scrolledpanel import ScrolledPanel
+from wx import Colour
 
 # any more than TREE_THRESHOLD panels when style is "auto" forces
 # the UI into showing a hierarchical tree
@@ -45,6 +46,10 @@ class PreferenceEditor(wx.Dialog):
                            style=wx.RESIZE_BORDER | wx.DEFAULT_DIALOG_STYLE)
         # set Left to Right direction (while we don't have localization)
         self.SetLayoutDirection(wx.Layout_LeftToRight)
+        self.SetBackgroundColour(Colour(200, 222, 40))
+        self.SetOwnBackgroundColour(Colour(200, 222, 40))
+        self.SetForegroundColour(Colour(50, 0, 70))
+        self.SetOwnForegroundColour(Colour(50, 0, 70))
         self.Bind(wx.EVT_CLOSE, self.OnClose)
         self._current_panel = None
         self._panels = []
@@ -65,6 +70,10 @@ class PreferenceEditor(wx.Dialog):
             self._sw.SplitVertically(self._tree, self._container, 210)
             sizer = wx.BoxSizer(wx.VERTICAL)
             sizer.Add(self._sw, 1, wx.EXPAND)
+            self._tree.SetBackgroundColour(Colour(200, 222, 40))
+            self._tree.SetOwnBackgroundColour(Colour(200, 222, 40))
+            self._tree.SetForegroundColour(Colour(50, 0, 70))
+            self._tree.SetOwnForegroundColour(Colour(50, 0, 70))
             self._tree.Bind(wx.EVT_TREE_SEL_CHANGED, self.OnTreeSelection)
             self._populate_tree(panels)
             self._tree.SelectItem(self._tree.GetFirstChild(self._tree.GetRootItem())[0])

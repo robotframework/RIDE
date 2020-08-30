@@ -17,22 +17,23 @@ import os
 import wx
 import wx.lib.agw.aui as aui
 from wx.adv import TaskBarIcon, TBI_DOCK
-from robotide.action import ActionInfoCollection, ActionFactory, SeparatorInfo
-from robotide.context import ABOUT_RIDE, SHORTCUT_KEYS, IS_MAC
-from robotide.controller.ctrlcommands import SaveFile, SaveAll
-from robotide.publish import RideSaveAll, RideClosing, RideSaved, PUBLISHER, \
+from wx import Colour
+from ..action import ActionInfoCollection, ActionFactory, SeparatorInfo
+from ..context import ABOUT_RIDE, SHORTCUT_KEYS, IS_MAC
+from ..controller.ctrlcommands import SaveFile, SaveAll
+from ..publish import RideSaveAll, RideClosing, RideSaved, PUBLISHER, \
     RideInputValidationError, RideTreeSelection, RideModificationPrevented, RideBeforeSaving
-from robotide.ui.tagdialogs import ViewAllTagsDialog
-from robotide.ui.filedialogs import RobotFilePathDialog
-from robotide.utils import RideFSWatcherHandler
-from robotide.widgets import Dialog, ImageProvider, HtmlWindow
-from robotide.preferences import PreferenceEditor
+from ..ui.tagdialogs import ViewAllTagsDialog
+from ..ui.filedialogs import RobotFilePathDialog
+from ..utils import RideFSWatcherHandler
+from ..widgets import Dialog, ImageProvider, HtmlWindow
+from ..preferences import PreferenceEditor
 
 from .actiontriggers import (MenuBar, ToolBarButton, ShortcutRegistry, _RideSearchMenuItem)
 from .filedialogs import (NewProjectDialog, InitFileFormatDialog)
 from .review import ReviewDialog
 from .pluginmanager import PluginManager
-from robotide.action.shortcut import localize_shortcuts
+from ..action.shortcut import localize_shortcuts
 from .treeplugin import Tree
 from .fileexplorerplugin import FileExplorer
 from .notebook import NoteBook
@@ -147,6 +148,12 @@ class RideFrame(wx.Frame):
         # set Left to Right direction (while we don't have localization)
         self.SetLayoutDirection(wx.Layout_LeftToRight)
         # self.SetLayoutDirection(wx.Layout_RightToLeft)
+        self.SetBackgroundColour(Colour(200, 222, 40))
+        self.SetOwnBackgroundColour(Colour(200, 222, 40))
+        self.SetForegroundColour(Colour(7, 0, 70))
+        self.SetOwnForegroundColour(Colour(7, 0, 70))
+        self.UseBackgroundColour()
+        self.UseForegroundColour()
 
         self._mgr = aui.AuiManager()
 
@@ -212,6 +219,10 @@ class RideFrame(wx.Frame):
         # self._mgr.AddPane(wx.Panel(self), aui.AuiPaneInfo().CenterPane())
         ##### self.splitter = wx.SplitterWindow(self, style=wx.SP_LIVE_UPDATE)
         # self._mgr.AddPane(wx.Panel(self), aui.AuiPaneInfo().CenterPane())
+        self.SetBackgroundColour(Colour(200, 222, 40))
+        self.SetOwnBackgroundColour(Colour(200, 222, 40))
+        self.SetForegroundColour(Colour(7, 0, 70))
+        self.SetOwnForegroundColour(Colour(7, 0, 70))
         # set up default notebook style
         self._notebook_style = aui.AUI_NB_DEFAULT_STYLE | \
                                aui.AUI_NB_TAB_EXTERNAL_MOVE | wx.NO_BORDER
@@ -243,6 +254,10 @@ class RideFrame(wx.Frame):
         mb = MenuBar(self)
         self.toolbar = ToolBar(self)
         self.toolbar.SetMinSize(wx.Size(100, 60))
+        self.toolbar.SetBackgroundColour(Colour(200, 222, 40))
+        self.toolbar.SetOwnBackgroundColour(Colour(200, 222, 40))
+        self.toolbar.SetForegroundColour(Colour(7, 0, 70))
+        self.toolbar.SetOwnForegroundColour(Colour(7, 0, 70))
         # self.SetToolBar(self.toolbar.GetToolBar())
         self._mgr.AddPane(self.toolbar, aui.AuiPaneInfo().Name("maintoolbar").
                           ToolbarPane().Top())
@@ -667,6 +682,11 @@ class ToolBar(aui.AuiToolBar):
         self._buttons = []
         self._search_handlers = {}
         self._current_description = None
+        self.SetMinSize(wx.Size(100, 60))
+        self.SetBackgroundColour(Colour(200, 222, 40))
+        self.SetOwnBackgroundColour(Colour(200, 222, 40))
+        self.SetForegroundColour(Colour(7, 0, 70))
+        self.SetOwnForegroundColour(Colour(7, 0, 70))
         self.tb.SetCustomOverflowItems(prepend_items, append_items)
         self.tb.Realize()
 
@@ -773,6 +793,11 @@ class AboutDialog(Dialog):
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(HtmlWindow(self, (650, 200), ABOUT_RIDE), 1, flag=wx.EXPAND)
         self.SetSizerAndFit(sizer)
+        self.SetBackgroundColour(Colour(200, 222, 40))
+        self.SetOwnBackgroundColour(Colour(200, 222, 40))
+        self.SetForegroundColour(Colour(7, 0, 70))
+        self.SetOwnForegroundColour(Colour(7, 0, 70))
+        self.Refresh(True)
 
     def OnKey(self, *args):
         pass
@@ -788,6 +813,10 @@ class ShortcutKeysDialog(Dialog):
         sizer.Add(HtmlWindow(self, (350, 400),
                              self._get_platform_specific_shortcut_keys()), 1,
                   flag=wx.EXPAND)
+        self.SetBackgroundColour(Colour(200, 222, 40))
+        self.SetOwnBackgroundColour(Colour(200, 222, 40))
+        self.SetForegroundColour(Colour(7, 0, 70))
+        self.SetOwnForegroundColour(Colour(7, 0, 70))
         self.SetSizerAndFit(sizer)
 
     def OnKey(self, *args):

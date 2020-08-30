@@ -15,7 +15,6 @@
 
 import wx
 
-
 class PopupCreator(object):
 
     def __init__(self):
