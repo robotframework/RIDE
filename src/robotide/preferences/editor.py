@@ -238,7 +238,7 @@ class PanelContainer(wx.Panel):
         sizer = self.panels_container.GetSizer()
         item = sizer.GetItem(panel)
         title = getattr(panel, "title", panel.location[-1])
-        self.SetTitle(title)
+        self.title.SetLabel(title)
         font = self.title.GetFont()
         font.SetFaceName(self.settings['font face'])
         font.SetPointSize(self.settings['font size'])
