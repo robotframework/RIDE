@@ -16,8 +16,9 @@
 
 import wx
 from wx.lib.ClickableHtmlWindow import PyClickableHtmlWindow
-from robotide.version import VERSION
-from robotide.pluginapi import ActionInfo
+from wx import Colour
+from ..version import VERSION
+from ..pluginapi import ActionInfo
 
 
 class ReleaseNotes(object):
@@ -30,7 +31,7 @@ class ReleaseNotes(object):
 
     def __init__(self, application):
         self.application = application
-        settings =  application.settings
+        settings = application.settings
         self.version_shown = settings.get('version_shown', '')
         self._view = None
         self.enable()
@@ -60,6 +61,10 @@ class ReleaseNotes(object):
         panel = wx.Panel(self.application.frame.notebook)
         html_win = PyClickableHtmlWindow(panel, -1)
         html_win.SetStandardFonts()
+        html_win.SetBackgroundColour(Colour(200, 222, 40))
+        html_win.SetOwnBackgroundColour(Colour(200, 222, 40))
+        html_win.SetForegroundColour(Colour(7, 0, 70))
+        html_win.SetOwnForegroundColour(Colour(7, 0, 70))
         html_win.SetPage(WELCOME_TEXT + RELEASE_NOTES)
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(html_win, 1, wx.EXPAND|wx.ALL, border=8)

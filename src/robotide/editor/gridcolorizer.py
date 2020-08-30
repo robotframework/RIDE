@@ -14,6 +14,7 @@
 #  limitations under the License.
 from robotide.controller.cellinfo import CellType
 import wx
+from wx import Colour
 # this import fails in HUDSON
 # from wxPython._gdi import wxFONTWEIGHT_BOLD, wxFONTWEIGHT_NORMAL
 # wxFONTWEIGHT_BOLD = 92
@@ -87,8 +88,8 @@ class Colorizer(object):
 
 class ColorizationSettings(object):
 
-    DEFAULT_TEXT = 'black'
-    DEFAULT_BACKGROUND = 'white'
+    DEFAULT_TEXT = Colour(7, 0, 70)  # 'black'
+    DEFAULT_BACKGROUND = Colour(200, 222, 40)  # 'white'
 
     def __init__(self, settings=None):
         self._settings = settings
