@@ -65,10 +65,8 @@ class HtmlDialog(Dialog):
         szr = sizers.VerticalSizer()
         html = htmlwindow.HtmlWindow(self, text=content)
         html.SetStandardFonts(size=font_size)
-        html.SetBackgroundColour(Colour(200, 222, 40))
-        html.SetOwnBackgroundColour(Colour(200, 222, 40))
+        html.SetBackgroundColour(Colour(htmlwindow.HTML_BACKGROUND))
         html.SetForegroundColour(Colour(7, 0, 70))
-        html.SetOwnForegroundColour(Colour(7, 0, 70))
         szr.add_expanding(html, padding=padding)
         self.SetSizer(szr)
 

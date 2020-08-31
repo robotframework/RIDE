@@ -13,7 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robotide.publish.messages import RideModificationPrevented
+from ..publish.messages import RideModificationPrevented
 
 
 class _BaseController(object):

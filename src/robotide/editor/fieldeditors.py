@@ -16,13 +16,14 @@
 import wx
 import wx.grid
 
-from robotide.context import ctrl_or_cmd, bind_keys_to_evt_menu
-from robotide.editor.contentassist import ContentAssistFileButton
-from robotide.namespace.suggesters import SuggestionSource
-from robotide.widgets import Label
+from ..context import ctrl_or_cmd, bind_keys_to_evt_menu
+from ..editor.contentassist import ContentAssistFileButton
+from ..namespace.suggesters import SuggestionSource
+from ..widgets import Label
 
 from .contentassist import ContentAssistTextCtrl
 from .gridbase import GridEditor
+from wx import Colour
 
 
 class ValueEditor(wx.Panel):
@@ -47,6 +48,10 @@ class ValueEditor(wx.Panel):
                       self._sizer_flags_for_label, 5)
         self._editor = self._get_text_ctrl()
         # self._editor.SetDefaultStyle(wx.TextAttr(wx.TEXT_ATTR_CHARACTER))
+        self._editor.SetBackgroundColour(Colour(200, 222, 40))
+        self._editor.SetOwnBackgroundColour(Colour(200, 222, 40))
+        self._editor.SetForegroundColour(Colour(7, 0, 70))
+        self._editor.SetOwnForegroundColour(Colour(7, 0, 70))
         self._editor.AppendText(value)
         sizer.Add(self._editor, 1, self._sizer_flags_for_editor, 3)
         self._sizer.Add(sizer, 1, wx.EXPAND)
@@ -197,6 +202,10 @@ class _EditorGrid(GridEditor):
     def __init__(self, parent, value, num_cols):
         num_rows = len(value) / num_cols + 2
         GridEditor.__init__(self, parent, num_rows, num_cols)
+        self.SetBackgroundColour(Colour(200, 222, 40))
+        self.SetOwnBackgroundColour(Colour(200, 222, 40))
+        self.SetForegroundColour(Colour(7, 0, 70))
+        self.SetOwnForegroundColour(Colour(7, 0, 70))
         self._set_default_sizes()
         self._bind_actions()
         self._write_content(value)
@@ -294,7 +303,7 @@ class _EditorGrid(GridEditor):
         self.SelectAll()
 
     def resize_columns(self, width):
-        print("DEBUG: Called resize coluumns, width=%d" % width)
+        # print("DEBUG: Called resize coluumns, width=%d" % width)
         self.SetDefaultColSize(max(width / self.NumberCols, 100), True)
 
     def set_number_of_columns(self, columns):
@@ -318,7 +327,12 @@ class MultiLineEditor(ValueEditor):
     _sizer_flags_for_editor = wx.ALL | wx.EXPAND
 
     def _get_text_ctrl(self):
-        return wx.TextCtrl(self, style=wx.TE_MULTILINE|wx.TE_NOHIDESEL, size=(600, 400))
+        editor = wx.TextCtrl(self, style=wx.TE_MULTILINE|wx.TE_NOHIDESEL, size=(600, 400))
+        editor.SetBackgroundColour(Colour(200, 222, 40))
+        editor.SetOwnBackgroundColour(Colour(200, 222, 40))
+        editor.SetForegroundColour(Colour(7, 0, 70))
+        editor.SetOwnForegroundColour(Colour(7, 0, 70))
+        return editor
 
 
 class ContentAssistEditor(ValueEditor):

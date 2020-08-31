@@ -14,17 +14,18 @@
 #  limitations under the License.
 
 import wx
-from robotide import robotapi, context
-from robotide.controller.settingcontrollers import (
+from .. import robotapi, context
+from ..controller.settingcontrollers import (
     DocumentationController, VariableController, TagsController)
-from robotide.usages.UsageRunner import ResourceFileUsages
-from robotide.publish import (
+from ..usages.UsageRunner import ResourceFileUsages
+from ..publish import (
     RideItemSettingsChanged, RideInitFileRemoved, RideFileNameChanged)
-from robotide.widgets import (
+from ..widgets import (
     ButtonWithHandler, Label, HeaderLabel, HorizontalSizer, HtmlWindow)
 from .settingeditors import (
     DocumentationEditor, SettingEditor, TagsEditor,
     ImportSettingListEditor, VariablesListEditor, MetadataListEditor)
+from wx import Colour
 
 
 class WelcomePage(HtmlWindow):
@@ -52,6 +53,10 @@ class EditorPanel(wx.Panel):
 
     def __init__(self, plugin, parent, controller, tree):
         wx.Panel.__init__(self, parent)
+        self.SetBackgroundColour(Colour(200, 222, 40))
+        self.SetOwnBackgroundColour(Colour(200, 222, 40))
+        self.SetForegroundColour(Colour(7, 0, 70))
+        self.SetOwnForegroundColour(Colour(7, 0, 70))
         self.plugin = plugin
         self.controller = controller
         self._tree = tree
@@ -185,6 +190,10 @@ class Settings(wx.CollapsiblePane):
         wx.CollapsiblePane.__init__(
             self, parent, wx.ID_ANY, 'Settings',
             style=wx.CP_DEFAULT_STYLE | wx.CP_NO_TLW_RESIZE)
+        self.SetBackgroundColour(Colour(200, 222, 40))
+        self.SetOwnBackgroundColour(Colour(200, 222, 40))
+        self.SetForegroundColour(Colour(7, 0, 70))
+        self.SetOwnForegroundColour(Colour(7, 0, 70))
         self._sizer = wx.BoxSizer(wx.VERTICAL)
         self._editors = []
         self.Bind(wx.EVT_SIZE, self._recalc_size)
@@ -194,6 +203,10 @@ class Settings(wx.CollapsiblePane):
 
     def GetPane(self):
         pane = wx.CollapsiblePane.GetPane(self)
+        pane.SetBackgroundColour(Colour(200, 222, 40))
+        pane.SetOwnBackgroundColour(Colour(200, 222, 40))
+        pane.SetForegroundColour(Colour(7, 0, 70))
+        pane.SetOwnForegroundColour(Colour(7, 0, 70))
         pane.tooltip_allowed = self.GetParent().tooltip_allowed
         return pane
 
@@ -219,8 +232,13 @@ class Settings(wx.CollapsiblePane):
     def build(self, settings, plugin, tree):
         for setting in settings:
             editor = self.create_editor_for(setting, plugin, tree)
+            editor.SetBackgroundColour(Colour(200, 222, 40))
+            editor.SetOwnBackgroundColour(Colour(200, 222, 40))
+            editor.SetForegroundColour(Colour(7, 0, 70))
+            editor.SetOwnForegroundColour(Colour(7, 0, 70))
             self._sizer.Add(editor, 0, wx.ALL | wx.EXPAND, self.BORDER)
             self._editors.append(editor)
+            editor.Refresh()
         self.GetPane().SetSizer(self._sizer)
 
     def _recalc_size(self, event=None):
@@ -282,7 +300,10 @@ class _FileEditor(_RobotTableEditor):
         sizer.Add(Label(self, label='Source', size=(context.SETTING_LABEL_WIDTH,
                                                     context.SETTING_ROW_HEIGTH)))
         self._source = wx.TextCtrl(self, style=wx.TE_READONLY | wx.NO_BORDER)
-        self._source.SetBackgroundColour(self.BackgroundColour)
+        self._source.SetBackgroundColour(Colour(200, 222, 40))  # self.BackgroundColour
+        self._source.SetOwnBackgroundColour(Colour(200, 222, 40))
+        self._source.SetForegroundColour(Colour(7, 0, 70))
+        self._source.SetOwnForegroundColour(Colour(7, 0, 70))
         self._source.SetValue(source)
         self._source.SetMaxSize(wx.Size(-1, context.SETTING_ROW_HEIGTH))
         sizer.Add(self._source, 1, wx.EXPAND)

@@ -15,10 +15,10 @@
 
 import wx
 from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
-from robotide.controller.ctrlcommands import MoveUp, MoveDown, DeleteItem
-from robotide.widgets import PopupMenu, PopupMenuItems, ButtonWithHandler, Font
-from robotide.context import ctrl_or_cmd, bind_keys_to_evt_menu, IS_WINDOWS
-
+from ..controller.ctrlcommands import MoveUp, MoveDown, DeleteItem
+from ..widgets import PopupMenu, PopupMenuItems, ButtonWithHandler, Font
+from ..context import ctrl_or_cmd, bind_keys_to_evt_menu, IS_WINDOWS
+from wx import Colour
 
 class ListEditorBase(wx.Panel):
     _menu = ['Edit', 'Move Up\tCtrl-Up', 'Move Down\tCtrl-Down', '---', 'Delete']
@@ -26,6 +26,10 @@ class ListEditorBase(wx.Panel):
 
     def __init__(self, parent, columns, controller):
         wx.Panel.__init__(self, parent)
+        self.SetBackgroundColour(Colour(200, 222, 40))
+        self.SetOwnBackgroundColour(Colour(200, 222, 40))
+        self.SetForegroundColour(Colour(7, 0, 70))
+        self.SetOwnForegroundColour(Colour(7, 0, 70))
         self._controller = controller
         self._selection = wx.NOT_FOUND
         self._create_ui(columns, controller)
@@ -35,6 +39,10 @@ class ListEditorBase(wx.Panel):
     def _create_ui(self, columns, data):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         self._list = self._create_list(columns, data)
+        if wx.VERSION >= (4, 1, 0):
+            # DEBUG: This is supposed to work on Windows, but it is not
+            self._list.SetHeaderAttr(wx.ItemAttr(colText=Colour(7, 0, 70), colBack=Colour(200, 222, 40),
+                                                 font=self._list.GetFont()))
         sizer.Add(self._list, 1, wx.EXPAND)
         sizer.Add((5,0))
         sizer.Add(self._create_buttons())
@@ -149,6 +157,10 @@ class AutoWidthColumnList(wx.ListCtrl, ListCtrlAutoWidthMixin):
         wx.ListCtrl.__init__(self, parent,
                              style=wx.LC_REPORT|wx.NO_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES)
         ListCtrlAutoWidthMixin.__init__(self)
+        self.SetBackgroundColour(Colour(200, 222, 40))
+        self.SetOwnBackgroundColour(Colour(200, 222, 40))
+        self.SetForegroundColour(Colour(7, 0, 70))
+        self.SetOwnForegroundColour(Colour(7, 0, 70))
         self._parent = parent
         self.populate(columns, data or [])
 
@@ -198,6 +210,8 @@ class AutoWidthColumnList(wx.ListCtrl, ListCtrlAutoWidthMixin):
             list_item.SetFont(font)
         if colour:
             list_item.SetTextColour(colour)
+        else:
+            list_item.SetTextColour(Colour(7, 0, 70))
         self.SetItem(list_item)
 
     def _underlined_font(self):
