@@ -41,6 +41,10 @@ class SettingEditor(wx.Panel):
 
     def __init__(self, parent, controller, plugin, tree):
         wx.Panel.__init__(self, parent)
+        self.SetBackgroundColour(Colour(200, 222, 40))
+        self.SetOwnBackgroundColour(Colour(200, 222, 40))
+        self.SetForegroundColour(Colour(7, 0, 70))
+        self.SetOwnForegroundColour(Colour(7, 0, 70))
         self._controller = controller
         self.plugin = plugin
         self._datafile = controller.datafile
@@ -287,17 +291,12 @@ class DocumentationEditor(SettingEditor):
 
     def _value_display_control(self):
         ctrl = HtmlWindow(self, (-1, 100))
-        ctrl.SetHTMLBackgroundColour(Colour(200, 222, 40))
-        ctrl.SetBackgroundColour(Colour(200, 222, 40))
-        ctrl.SetOwnBackgroundColour(Colour(200, 222, 40))
-        ctrl.SetForegroundColour(Colour(7, 0, 70))
-        ctrl.SetOwnForegroundColour(Colour(7, 0, 70))
         ctrl.Bind(wx.EVT_LEFT_DOWN, self.OnEdit)
         return ctrl
 
     def update_value(self, event=None):
         if self._controller:
-            self._value_display.SetPage(self._controller.visible_value)
+            self._value_display.set_content(self._controller.visible_value)
 
     def _get_tooltip(self):
         return HtmlPopupWindow(self, (500, 350), detachable=False)

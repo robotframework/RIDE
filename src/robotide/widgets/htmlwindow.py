@@ -17,6 +17,9 @@ import webbrowser
 import wx
 from wx import html, Colour
 
+#TODO: Make this colour configurable
+HTML_BACKGROUND = (240, 242, 80)  # (200, 222, 40)
+
 
 class HtmlWindow(html.HtmlWindow):
 
@@ -25,14 +28,16 @@ class HtmlWindow(html.HtmlWindow):
         self.SetBorders(2)
         self.SetStandardFonts(size=9)
         if text:
-            self.SetPage(text)
-        self.SetHTMLBackgroundColour(Colour(200, 222, 40))
-        self.SetBackgroundColour(Colour(200, 222, 40))
-        self.SetOwnBackgroundColour(Colour(200, 222, 40))
+            self.set_content(text)
+        self.SetHTMLBackgroundColour(Colour(HTML_BACKGROUND))
         self.SetForegroundColour(Colour(7, 0, 70))
-        self.SetOwnForegroundColour(Colour(7, 0, 70))
         self.Refresh(True)
         self.Bind(wx.EVT_KEY_DOWN, self.OnKeyDown)
+
+    def set_content(self, content):
+        color = ''.join(hex(item)[2:] for item in HTML_BACKGROUND)
+        _content = '<body bgcolor=#%s>%s</body>' % (color, content)
+        self.SetPage(_content)
 
     def OnKeyDown(self, event):
         if self._is_copy(event):
