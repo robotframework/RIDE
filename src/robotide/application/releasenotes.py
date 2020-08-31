@@ -19,6 +19,7 @@ from wx.lib.ClickableHtmlWindow import PyClickableHtmlWindow
 from wx import Colour
 from ..version import VERSION
 from ..pluginapi import ActionInfo
+from ..widgets.htmlwindow import HTML_BACKGROUND
 
 
 class ReleaseNotes(object):
@@ -61,15 +62,19 @@ class ReleaseNotes(object):
         panel = wx.Panel(self.application.frame.notebook)
         html_win = PyClickableHtmlWindow(panel, -1)
         html_win.SetStandardFonts()
-        html_win.SetBackgroundColour(Colour(200, 222, 40))
-        html_win.SetOwnBackgroundColour(Colour(200, 222, 40))
-        html_win.SetForegroundColour(Colour(7, 0, 70))
+        panel.SetBackgroundColour(Colour(200, 222, 40))
+        panel.SetForegroundColour(Colour(7, 0, 70))
         html_win.SetOwnForegroundColour(Colour(7, 0, 70))
-        html_win.SetPage(WELCOME_TEXT + RELEASE_NOTES)
+        self.set_content(html_win, WELCOME_TEXT + RELEASE_NOTES)
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(html_win, 1, wx.EXPAND|wx.ALL, border=8)
         panel.SetSizer(sizer)
         return panel
+
+    def set_content(self, html_win, content):
+        color = ''.join(hex(item)[2:] for item in HTML_BACKGROUND)
+        _content = '<body bgcolor=#%s>%s</body>' % (color, content)
+        html_win.SetPage(_content)
 
 
 import time, os, re
