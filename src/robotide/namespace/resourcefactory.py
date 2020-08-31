@@ -14,8 +14,7 @@
 #  limitations under the License.
 
 import os
-import sys
-
+from robotide.context import IS_FS_CASE_SENSITIVE
 from robotide import utils, robotapi
 
 
@@ -96,4 +95,8 @@ class ResourceFactory(object):
         return r
 
     def _normalize(self, path):
-        return os.path.normcase(os.path.normpath(os.path.abspath(path)))
+        path = os.path.normcase(os.path.normpath(os.path.abspath(path)))
+        if not IS_FS_CASE_SENSITIVE:
+            return path.lower()
+        else:
+            return path

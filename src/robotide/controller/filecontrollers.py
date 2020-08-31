@@ -863,7 +863,7 @@ class ResourceFileController(_FileSystemElement, _DataController):
 
     def notify_opened(self):
         RideOpenResource(path=self.filename, datafile=self).publish()
-        for _import in [ imp for imp in self.imports if imp.is_resource ]:
+        for _import in [imp for imp in self.imports if imp.is_resource]:
             _import.import_loaded_or_modified()
 
     def is_used(self):
