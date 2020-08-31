@@ -24,13 +24,13 @@ class HtmlWindow(html.HtmlWindow):
         html.HtmlWindow.__init__(self, parent, size=size)
         self.SetBorders(2)
         self.SetStandardFonts(size=9)
+        if text:
+            self.SetPage(text)
         self.SetHTMLBackgroundColour(Colour(200, 222, 40))
         self.SetBackgroundColour(Colour(200, 222, 40))
         self.SetOwnBackgroundColour(Colour(200, 222, 40))
         self.SetForegroundColour(Colour(7, 0, 70))
         self.SetOwnForegroundColour(Colour(7, 0, 70))
-        if text:
-            self.SetPage(text)
         self.Refresh(True)
         self.Bind(wx.EVT_KEY_DOWN, self.OnKeyDown)
 
