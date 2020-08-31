@@ -176,6 +176,10 @@ class ListValueEditor(ValueEditor):
         combo.SetToolTip(wx.ToolTip("Number of columns that are shown in this "
                                     "editor. Selected value is stored and used"
                                     " globally."))
+        combo.SetBackgroundColour(Colour(200, 222, 40))
+        combo.SetOwnBackgroundColour(Colour(200, 222, 40))
+        combo.SetForegroundColour(Colour(7, 0, 70))
+        combo.SetOwnForegroundColour(Colour(7, 0, 70))
         self.Bind(wx.EVT_COMBOBOX, self.OnColumns, source=combo)
         sizer.Add(combo)
         return sizer
@@ -209,6 +213,7 @@ class _EditorGrid(GridEditor):
         self._set_default_sizes()
         self._bind_actions()
         self._write_content(value)
+        self._colorize()
 
     def _set_default_sizes(self):
         self.SetColLabelSize(wx.grid.GRID_AUTOSIZE)
@@ -236,6 +241,13 @@ class _EditorGrid(GridEditor):
             self.write_cell(row, col, item, False)
         self.EndBatch()
         self.AutoSizeRows()
+
+    def _colorize(self):
+        for row in range(self.NumberRows):
+            for col in range(self.NumberCols):
+                self.SetCellBackgroundColour(row, col, Colour(200, 222, 40))
+                self.SetCellTextColour(row, col, Colour(7, 0, 70))
+        self.Refresh(True)
 
     def get_value(self):
         value = []
