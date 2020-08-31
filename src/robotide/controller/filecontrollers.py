@@ -459,7 +459,7 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
                              resource.keyword_table or os.stat(resource.source)[6] == 0)
 
     def _resource_controller(self, resource):
-        resource_control =  self._resource_file_controller_factory.create(resource)
+        resource_control = self._resource_file_controller_factory.create(resource)
         resource_control.parent = self
         return resource_control
 
