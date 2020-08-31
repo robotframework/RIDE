@@ -72,6 +72,10 @@ class TreePlugin(Plugin):
         self.settings = application.settings._config_obj['Plugins']['Tree']
         self._parent = None
         self._tree = self.tree
+        self._tree.SetBackgroundColour(Colour(200, 222, 40))
+        self._tree.SetOwnBackgroundColour(Colour(200, 222, 40))
+        self._tree.SetForegroundColour(Colour(7, 0, 70))
+        self._tree.SetOwnForegroundColour(Colour(7, 0, 70))
         self._mgr = GetManager(self._tree)
         """
         self._action_registerer = action_registerer

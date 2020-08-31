@@ -14,25 +14,25 @@
 #  limitations under the License.
 
 import wx
-from wx import grid
+from wx import grid, Colour
 import json
-from robotide.editor.cellrenderer import CellRenderer
-from robotide import context
+from ..editor.cellrenderer import CellRenderer
+from .. import context
 from wx.grid import GridCellEditor
-from robotide.context import IS_MAC, IS_WINDOWS
-from robotide.controller.ctrlcommands import ChangeCellValue, ClearArea, \
+from ..context import IS_MAC, IS_WINDOWS
+from ..controller.ctrlcommands import ChangeCellValue, ClearArea, \
     PasteArea, DeleteRows, AddRows, CommentRows, InsertCells, DeleteCells, \
     UncommentRows, Undo, Redo, RenameKeywordOccurrences, ExtractKeyword, \
     AddKeywordFromCells, MoveRowsUp, MoveRowsDown, ExtractScalar, ExtractList, \
     InsertArea
-from robotide.controller.cellinfo import TipMessage, ContentType, CellType
-from robotide.publish import (RideItemStepsChanged, RideSaved,
+from ..controller.cellinfo import TipMessage, ContentType, CellType
+from ..publish import (RideItemStepsChanged, RideSaved,
                               RideSettingsChanged, PUBLISHER, RideBeforeSaving)
-from robotide.usages.UsageRunner import Usages, VariableUsages
-from robotide.ui.progress import RenameProgressObserver
-from robotide import robotapi
-from robotide.utils import variablematcher
-from robotide.widgets import Dialog, PopupMenu, PopupMenuItems
+from ..usages.UsageRunner import Usages, VariableUsages
+from ..ui.progress import RenameProgressObserver
+from .. import robotapi
+from ..utils import variablematcher
+from ..widgets import Dialog, PopupMenu, PopupMenuItems
 
 from .gridbase import GridEditor
 from .tooltips import GridToolTips
@@ -99,6 +99,12 @@ class KeywordEditor(GridEditor):
         self._counter = 0  # Workaround for double delete actions
         self._dcells = None  # Workaround for double delete actions
         self._icells = None  # Workaround for double insert actions
+        self.SetBackgroundColour(Colour(200, 222, 40))
+        self.SetOwnBackgroundColour(Colour(200, 222, 40))
+        self.SetForegroundColour(Colour(7, 0, 70))
+        self.SetOwnForegroundColour(Colour(7, 0, 70))
+        self.InheritAttributes()
+        self.Refresh()
         PUBLISHER.subscribe(self._before_saving, RideBeforeSaving)
         PUBLISHER.subscribe(self._data_changed, RideItemStepsChanged)
         PUBLISHER.subscribe(self.OnSettingsChanged, RideSettingsChanged)
@@ -834,6 +840,10 @@ work.</li>
         dialog = Dialog()
         dialog.SetTitle('JSON Editor')
         dialog.SetSizer(wx.BoxSizer(wx.HORIZONTAL))
+        dialog.SetBackgroundColour(Colour(200, 222, 40))
+        dialog.SetOwnBackgroundColour(Colour(200, 222, 40))
+        dialog.SetForegroundColour(Colour(7, 0, 70))
+        dialog.SetOwnForegroundColour(Colour(7, 0, 70))
         okBtn = wx.Button(dialog, wx.ID_OK, "Save")
         cnlBtn = wx.Button(dialog, wx.ID_CANCEL, "Cancel")
         richText = wx.TextCtrl(dialog, wx.ID_ANY, "If supported by the native "
@@ -842,8 +852,12 @@ work.</li>
                                                   "font.",
                                size=(400, 475),
                                style=wx.HSCROLL | wx.TE_MULTILINE | wx.TE_NOHIDESEL)
+        richText.SetBackgroundColour(Colour(200, 222, 40))
+        richText.SetOwnBackgroundColour(Colour(200, 222, 40))
+        richText.SetForegroundColour(Colour(7, 0, 70))
+        richText.SetOwnForegroundColour(Colour(7, 0, 70))
         dialog.Sizer.Add(richText, flag=wx.GROW, proportion=1)
-        dialog.Sizer.Add(okBtn, flag=wx.ALIGN_RIGHT | wx.ALL)
+        dialog.Sizer.Add(okBtn, flag=wx.ALL)
         dialog.Sizer.Add(cnlBtn, flag=wx.ALL)
         # Get cell value of parent grid
         if self.is_json(self._current_cell_value()):
@@ -862,12 +876,19 @@ work.</li>
                                        self.selection.cell[1],
                                        json.dumps(strJson,
                                                   ensure_ascii=False))
-            except ValueError or json.JSONDecodeError as e:
+            except (ValueError, json.JSONDecodeError) as e:
                 res = wx.MessageDialog(dialog,
                                        "Error in JSON: {}\n\n"
                                        "Save anyway?".format(e),
                                        "Validation Error!",
-                                       wx.YES_NO).ShowModal()
+                                       wx.YES_NO)
+                res.InheritAttributes()
+                res.SetBackgroundColour(Colour(200, 222, 40))
+                res.SetOwnBackgroundColour(Colour(200, 222, 40))
+                res.SetForegroundColour(Colour(7, 0, 70))
+                res.SetOwnForegroundColour(Colour(7, 0, 70))
+                res.Refresh(True)
+                res.ShowModal()
                 if res == wx.ID_YES:
                     self.cell_value_edited(self.selection.cell[0],
                                            self.selection.cell[1],

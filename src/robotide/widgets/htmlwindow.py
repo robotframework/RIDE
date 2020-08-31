@@ -31,6 +31,7 @@ class HtmlWindow(html.HtmlWindow):
         self.SetOwnForegroundColour(Colour(7, 0, 70))
         if text:
             self.SetPage(text)
+        self.Refresh(True)
         self.Bind(wx.EVT_KEY_DOWN, self.OnKeyDown)
 
     def OnKeyDown(self, event):

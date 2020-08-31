@@ -16,9 +16,10 @@
 import wx
 from wx.lib.masked import NumCtrl
 from os.path import abspath, dirname, join
+from wx import Colour
 
-from robotide.preferences import widgets
-from robotide.widgets import Label
+from . import widgets
+from .widgets import Label
 
 try:  # import installed version first
     import robotframeworklexer
@@ -195,6 +196,10 @@ class GridEditorPreferences(EditorPreferences):
     def _number_editor(self, settings, name):
         initial_value = settings[name]
         editor = NumCtrl(self, value=initial_value, integerWidth=3, allowNone=True)
+        editor.SetBackgroundColour(Colour(200, 222, 40))
+        editor.SetOwnBackgroundColour(Colour(200, 222, 40))
+        editor.SetForegroundColour(Colour(7, 0, 70))
+        editor.SetOwnForegroundColour(Colour(7, 0, 70))
         editor.Bind(wx.EVT_TEXT, lambda evt: self._set_value(editor, name))
         return editor
 

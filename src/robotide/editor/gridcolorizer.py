@@ -12,7 +12,7 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-from robotide.controller.cellinfo import CellType
+from ..controller.cellinfo import CellType
 import wx
 from wx import Colour
 # this import fails in HUDSON
