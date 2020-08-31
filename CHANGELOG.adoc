@@ -11,6 +11,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Added
 
+- Added background colour globally on panels and dialogs
 - Added menu option to ``Move Up`` and ``Move Down`` variables in Tree
 - Added menu option to ``Sort Variables`` in resources from Tree 
 - Added menu option to ``Sort Tests`` and ``Sort Variables` in suites from Tree
@@ -31,6 +32,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Removed
 
+- Removed alignment flag on grid cell JSON Editor (Ctrl-Shift-J)
 - Removed moving to keyword/variable definition when doing Double-Click in grid cell
 
 === Changed

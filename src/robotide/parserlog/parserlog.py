@@ -21,9 +21,10 @@ import glob
 import sys
 import io
 
-from robotide.pluginapi import Plugin, ActionInfo, RideParserLogMessage
-from robotide import widgets
-from robotide import context
+from ..pluginapi import Plugin, ActionInfo, RideParserLogMessage
+from .. import widgets
+from .. import context
+from wx import Colour
 
 
 def _message_to_string(msg):
@@ -111,6 +112,10 @@ class _LogWindow(wx.Panel):
     def __init__(self, notebook, log):
         wx.Panel.__init__(self, notebook)
         self._output = wx.TextCtrl(self, style=wx.TE_READONLY | wx.TE_MULTILINE | wx.TE_NOHIDESEL)
+        self._output.SetBackgroundColour(Colour(200, 222, 40))
+        self._output.SetOwnBackgroundColour(Colour(200, 222, 40))
+        self._output.SetForegroundColour(Colour(7, 0, 70))
+        self._output.SetOwnForegroundColour(Colour(7, 0, 70))
         self._output.Bind(wx.EVT_KEY_DOWN, self.OnKeyDown)
         self._log = log
         self._notebook = notebook

@@ -14,8 +14,8 @@
 #  limitations under the License.
 
 import wx
-from robotide.context import POPUP_BACKGROUND, IS_WINDOWS
-from robotide.widgets import VerticalSizer, HtmlWindow, HtmlDialog
+from ..context import POPUP_BACKGROUND, IS_WINDOWS
+from ..widgets import VerticalSizer, HtmlWindow, HtmlDialog
 
 
 class _PopupWindowBase(object):

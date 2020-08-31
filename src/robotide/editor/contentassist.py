@@ -23,6 +23,7 @@ from robotide.namespace.suggesters import SuggestionSource
 from robotide.spec.iteminfo import VariableInfo
 from sys import platform
 from .popupwindow import RidePopupWindow, HtmlPopupWindow
+from wx import Colour
 
 _PREFERRED_POPUP_SIZE = (400, 200)
 
@@ -194,6 +195,10 @@ class ExpandingContentAssistTextCtrl(_ContentAssistTextCtrlBase,
         ExpandoTextCtrl.__init__(self, parent, size=wx.DefaultSize,
                                  style=wx.WANTS_CHARS|wx.TE_NOHIDESEL)
         _ContentAssistTextCtrlBase.__init__(self, SuggestionSource(plugin, controller))
+        self.SetBackgroundColour(Colour(200, 222, 40))
+        self.SetOwnBackgroundColour(Colour(200, 222, 40))
+        self.SetForegroundColour(Colour(7, 0, 70))
+        self.SetOwnForegroundColour(Colour(7, 0, 70))
 
 
 class ContentAssistTextCtrl(_ContentAssistTextCtrlBase, wx.TextCtrl):
@@ -201,6 +206,10 @@ class ContentAssistTextCtrl(_ContentAssistTextCtrlBase, wx.TextCtrl):
     def __init__(self, parent, suggestion_source, size=wx.DefaultSize):
         wx.TextCtrl.__init__(self, parent, size=size, style=wx.WANTS_CHARS|wx.TE_NOHIDESEL)
         _ContentAssistTextCtrlBase.__init__(self, suggestion_source)
+        self.SetBackgroundColour(Colour(200, 222, 40))
+        self.SetOwnBackgroundColour(Colour(200, 222, 40))
+        self.SetForegroundColour(Colour(7, 0, 70))
+        self.SetOwnForegroundColour(Colour(7, 0, 70))
 
 
 class ContentAssistTextEditor(_ContentAssistTextCtrlBase, wx.TextCtrl):
@@ -208,6 +217,10 @@ class ContentAssistTextEditor(_ContentAssistTextCtrlBase, wx.TextCtrl):
     def __init__(self, parent, suggestion_source, pos, size=wx.DefaultSize):
         wx.TextCtrl.__init__(self, parent, -1, "", pos, size=size, style=wx.WANTS_CHARS|wx.BORDER_NONE|wx.WS_EX_TRANSIENT|wx.TE_PROCESS_ENTER|wx.TE_NOHIDESEL)
         _ContentAssistTextCtrlBase.__init__(self, suggestion_source)
+        self.SetBackgroundColour(Colour(200, 222, 40))
+        self.SetOwnBackgroundColour(Colour(200, 222, 40))
+        self.SetForegroundColour(Colour(7, 0, 70))
+        self.SetOwnForegroundColour(Colour(7, 0, 70))
 
 
 class ContentAssistFileButton(_ContentAssistTextCtrlBase, FileBrowseButton):
@@ -221,6 +234,10 @@ class ContentAssistFileButton(_ContentAssistTextCtrlBase, FileBrowseButton):
         self._controller = controller
         self._browsed = False
         _ContentAssistTextCtrlBase.__init__(self, suggestion_source)
+        self.SetBackgroundColour(Colour(200, 222, 40))
+        self.SetOwnBackgroundColour(Colour(200, 222, 40))
+        self.SetForegroundColour(Colour(7, 0, 70))
+        self.SetOwnForegroundColour(Colour(7, 0, 70))
 
     def Bind(self, *args):
         self.textControl.Bind(*args)

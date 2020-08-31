@@ -152,8 +152,6 @@ class RideFrame(wx.Frame):
         self.SetOwnBackgroundColour(Colour(200, 222, 40))
         self.SetForegroundColour(Colour(7, 0, 70))
         self.SetOwnForegroundColour(Colour(7, 0, 70))
-        self.UseBackgroundColour()
-        self.UseForegroundColour()
 
         self._mgr = aui.AuiManager()
 
