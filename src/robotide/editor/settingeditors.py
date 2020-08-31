@@ -295,6 +295,11 @@ class DocumentationEditor(SettingEditor):
 
     def _value_display_control(self):
         ctrl = HtmlWindow(self, (-1, 100))
+        ctrl.SetHTMLBackgroundColour(Colour(200, 222, 40))
+        ctrl.SetBackgroundColour(Colour(200, 222, 40))
+        ctrl.SetOwnBackgroundColour(Colour(200, 222, 40))
+        ctrl.SetForegroundColour(Colour(7, 0, 70))
+        ctrl.SetOwnForegroundColour(Colour(7, 0, 70))
         ctrl.Bind(wx.EVT_LEFT_DOWN, self.OnEdit)
         return ctrl
 
