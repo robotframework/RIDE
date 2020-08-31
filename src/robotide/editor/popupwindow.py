@@ -33,7 +33,7 @@ class _PopupWindowBase(object):
     def _create_ui(self, size):
         panel = wx.MiniFrame(self)
         #TODO: Make this colour dependent on colours cycle or by Library
-        panel.SetBackgroundColour(Colour(200, 222, 40))  # POPUP_BACKGROUND
+        panel.SetBackgroundColour(POPUP_BACKGROUND)
         szr = VerticalSizer()
         self._details = HtmlWindow(self, size=size)
         szr.add_expanding(self._details)
