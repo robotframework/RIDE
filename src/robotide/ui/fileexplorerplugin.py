@@ -15,8 +15,9 @@
 import wx
 from wx.lib.agw import customtreectrl
 from wx.lib.agw.aui import GetManager
-from robotide.pluginapi import Plugin, ActionInfo
-from robotide.controller import Project
+from ..pluginapi import Plugin, ActionInfo
+from ..controller import Project
+from wx import Colour
 
 
 class FileExplorerPlugin(Plugin):
@@ -31,7 +32,7 @@ class FileExplorerPlugin(Plugin):
         self.settings = application.settings._config_obj['Plugins']['File Explorer']
         self._parent = None
         self._filemgr = self.filemgr
-        self._filemgr.SetThemeEnabled(True)
+        # self._filemgr.SetThemeEnabled(True)
         self._mgr = GetManager(self._filemgr)
         self._controller = controller
 
@@ -86,10 +87,13 @@ class FileExplorerPlugin(Plugin):
                           wx.lib.agw.aui.AuiPaneInfo().Name("file_manager").
                           Caption("Files").LeftDockable(True).
                           CloseButton(True))
-        self._filemgr.Raise()
-        self._filemgr.SetBackgroundStyle(wx.BG_STYLE_SYSTEM)
-        self._filemgr.SetBackgroundColour('white')  # TODO get background color from def
+        # self._filemgr.SetBackgroundStyle(wx.BG_STYLE_SYSTEM)
+        self._filemgr.SetBackgroundColour(Colour(200, 222, 40))
+        self._filemgr.SetOwnBackgroundColour(Colour(200, 222, 40))
+        self._filemgr.SetForegroundColour(Colour(7, 0, 70))
+        self._filemgr.SetOwnForegroundColour(Colour(7, 0, 70))
         self._filemgr.Refresh()
+        self._filemgr.Raise()
         self._mgr.Update()
         self.save_setting('opened', True)
         self._update_tree()
@@ -105,9 +109,13 @@ class FileExplorer(wx.GenericDirCtrl):
     def __init__(self, parent, controller=None):
         wx.GenericDirCtrl.__init__(self, parent, id=-1, size=(200, 225), style=wx.DIRCTRL_3D_INTERNAL)
         self._controller = controller
-        self.SetThemeEnabled(True)
-        self.SetBackgroundStyle(wx.BG_STYLE_SYSTEM)
-        self.SetBackgroundColour('white')  # TODO get background color from def
+        # self.SetThemeEnabled(True)
+        # self.SetBackgroundStyle(wx.BG_STYLE_SYSTEM)
+        # self.SetBackgroundColour('white')  # TODO get background color from def
+        self.SetBackgroundColour(Colour(200, 222, 40))
+        self.SetOwnBackgroundColour(Colour(200, 222, 40))
+        self.SetForegroundColour(Colour(7, 0, 70))
+        self.SetOwnForegroundColour(Colour(7, 0, 70))
         self.Refresh()
 
     def update_tree(self):

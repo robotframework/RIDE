@@ -15,11 +15,15 @@
 
 import wx
 import re
+<<<<<<< HEAD
 from wx import grid
 from os import linesep
+=======
+from wx import grid, Colour
+>>>>>>> 41e9d1b7... More backgrounds. Missing HTMLpanels, settings fields, File explorer
 
-from robotide.widgets import PopupCreator, PopupMenuItems
-from robotide.context import IS_WINDOWS
+from ..widgets import PopupCreator, PopupMenuItems
+from ..context import IS_WINDOWS
 from .clipboard import ClipboardHandler
 
 
@@ -37,6 +41,10 @@ class GridEditor(grid.Grid):
 
     def __init__(self, parent, num_rows, num_cols, popup_creator=None):
         grid.Grid.__init__(self, parent)
+        self.SetBackgroundColour(Colour(200, 222, 40))
+        self.SetOwnBackgroundColour(Colour(200, 222, 40))
+        self.SetForegroundColour(Colour(7, 0, 70))
+        self.SetOwnForegroundColour(Colour(7, 0, 70))
         self._bind_to_events()
         self.selection = _GridSelection(self)
         self._clipboard_handler = ClipboardHandler(self)

@@ -15,7 +15,6 @@
 from wx.lib import wordwrap
 import wx.grid
 
-
 class CellRenderer(wx.grid.GridCellRenderer):
     """
     GridCellAutoWrapStringRenderer()

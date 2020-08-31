@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 import wx
+from wx import Colour
 
 
 class TextField(wx.TextCtrl):
@@ -21,4 +22,8 @@ class TextField(wx.TextCtrl):
     def __init__(self, parent, initial_value, process_enters=False):
         flags = wx.TE_PROCESS_ENTER|wx.TE_LEFT if process_enters else wx.TE_LEFT
         wx.TextCtrl.__init__(self, parent, style=flags|wx.TE_NOHIDESEL)
+        self.SetBackgroundColour(Colour(200, 222, 40))
+        self.SetOwnBackgroundColour(Colour(200, 222, 40))
+        self.SetForegroundColour(Colour(7, 0, 70))
+        self.SetOwnForegroundColour(Colour(7, 0, 70))
         self.SetValue(initial_value)

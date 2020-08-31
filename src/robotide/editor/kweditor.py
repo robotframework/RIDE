@@ -14,26 +14,25 @@
 #  limitations under the License.
 
 import wx
-from wx import grid
+from wx import grid, Colour
 import json
-from robotide.editor.cellrenderer import CellRenderer
-from robotide import context
+from ..editor.cellrenderer import CellRenderer
+from .. import context
 from wx.grid import GridCellEditor
-from robotide.context import IS_MAC
-from os import linesep
-from robotide.controller.ctrlcommands import ChangeCellValue, ClearArea, \
+from ..context import IS_MAC, IS_WINDOWS
+from ..controller.ctrlcommands import ChangeCellValue, ClearArea, \
     PasteArea, DeleteRows, AddRows, CommentRows, InsertCells, DeleteCells, \
     UncommentRows, Undo, Redo, RenameKeywordOccurrences, ExtractKeyword, \
     AddKeywordFromCells, MoveRowsUp, MoveRowsDown, ExtractScalar, ExtractList, \
     InsertArea
-from robotide.controller.cellinfo import TipMessage, ContentType, CellType
-from robotide.publish import (RideItemStepsChanged, RideSaved,
+from ..controller.cellinfo import TipMessage, ContentType, CellType
+from ..publish import (RideItemStepsChanged, RideSaved,
                               RideSettingsChanged, PUBLISHER, RideBeforeSaving)
-from robotide.usages.UsageRunner import Usages, VariableUsages
-from robotide.ui.progress import RenameProgressObserver
-from robotide import robotapi
-from robotide.utils import variablematcher
-from robotide.widgets import Dialog, PopupMenu, PopupMenuItems
+from ..usages.UsageRunner import Usages, VariableUsages
+from ..ui.progress import RenameProgressObserver
+from .. import robotapi
+from ..utils import variablematcher
+from ..widgets import Dialog, PopupMenu, PopupMenuItems
 
 from .gridbase import GridEditor
 from .tooltips import GridToolTips
@@ -100,6 +99,12 @@ class KeywordEditor(GridEditor):
         self._counter = 0  # Workaround for double delete actions
         self._dcells = None  # Workaround for double delete actions
         self._icells = None  # Workaround for double insert actions
+        self.SetBackgroundColour(Colour(200, 222, 40))
+        self.SetOwnBackgroundColour(Colour(200, 222, 40))
+        self.SetForegroundColour(Colour(7, 0, 70))
+        self.SetOwnForegroundColour(Colour(7, 0, 70))
+        self.InheritAttributes()
+        self.Refresh()
         PUBLISHER.subscribe(self._before_saving, RideBeforeSaving)
         PUBLISHER.subscribe(self._data_changed, RideItemStepsChanged)
         PUBLISHER.subscribe(self.OnSettingsChanged, RideSettingsChanged)
@@ -528,7 +533,8 @@ class KeywordEditor(GridEditor):
         self.MoveCursorDown(event.ShiftDown())
 
     def OnKeyDown(self, event):
-        keycode = event.GetUnicodeKey() or event.GetKeyCode()
+        keycode = event.GetUnicodeKey()
+        specialkcode = event.GetKeyCode()
         if event.ControlDown():
             if event.ShiftDown():
                 if keycode == ord('I'):
@@ -540,7 +546,6 @@ class KeywordEditor(GridEditor):
             else:
                 if keycode == wx.WXK_SPACE:
                     self._open_cell_editor_with_content_assist()
-                    return  # event must not be skipped in this case
                 elif keycode == ord('C'):
                     self.OnCopy(event)
                 elif keycode == ord('X'):
@@ -556,7 +561,7 @@ class KeywordEditor(GridEditor):
                         self.GetGridCursorRow(), self.GetGridCursorCol())
                 elif keycode == ord('F'):
                     if not self.has_focus():
-                        self.SetFocus()  # Avoiding Search field on Text Edit
+                        self.SetFocus() # Avoiding Search field on Text Edit
                 elif keycode in (ord('1'), ord('2'), ord('5')):
                     self._open_cell_editor_and_execute_variable_creator(
                         list_variable=(keycode == ord('2')),
@@ -566,26 +571,27 @@ class KeywordEditor(GridEditor):
         elif event.AltDown():
             if keycode == wx.WXK_SPACE:
                 self._open_cell_editor_with_content_assist()  # Mac CMD
-            elif keycode in [wx.WXK_DOWN, wx.WXK_UP]:
-                self._move_rows(keycode)
-            elif keycode == wx.WXK_RETURN:
+            elif specialkcode in [wx.WXK_DOWN, wx.WXK_UP]:
+                self._move_rows(specialkcode)
+            elif specialkcode == wx.WXK_RETURN:
                 if self.IsCellEditControlShown():
-                    event.GetEventObject().WriteText(linesep)
+                    event.GetEventObject().WriteText('\n')
                 else:
                     self._move_cursor_down(event)
-                return  # event must not be skipped in this case
+                return
         else:
-            if keycode == wx.WXK_WINDOWS_MENU:
+            if specialkcode == wx.WXK_WINDOWS_MENU:
                 self.OnCellRightClick(event)
-            elif keycode == wx.WXK_BACK:
-                self._move_grid_cursor(event, keycode)
-            elif keycode == wx.WXK_RETURN:
+            elif specialkcode == wx.WXK_BACK:
+                self._move_grid_cursor(event, specialkcode)
+                return
+            elif specialkcode == wx.WXK_RETURN:
                 if self.IsCellEditControlShown():
-                    self._move_grid_cursor(event, keycode)
+                    self._move_grid_cursor(event, specialkcode)
                 else:
                     self._open_cell_editor()
-                return  # event must not be skipped in this case
-            elif keycode == wx.WXK_F2:
+                return
+            elif specialkcode == wx.WXK_F2:
                 self._open_cell_editor()
         event.Skip()
 
@@ -834,6 +840,10 @@ work.</li>
         dialog = Dialog()
         dialog.SetTitle('JSON Editor')
         dialog.SetSizer(wx.BoxSizer(wx.HORIZONTAL))
+        dialog.SetBackgroundColour(Colour(200, 222, 40))
+        dialog.SetOwnBackgroundColour(Colour(200, 222, 40))
+        dialog.SetForegroundColour(Colour(7, 0, 70))
+        dialog.SetOwnForegroundColour(Colour(7, 0, 70))
         okBtn = wx.Button(dialog, wx.ID_OK, "Save")
         cnlBtn = wx.Button(dialog, wx.ID_CANCEL, "Cancel")
         richText = wx.TextCtrl(dialog, wx.ID_ANY, "If supported by the native "
@@ -842,8 +852,12 @@ work.</li>
                                                   "font.",
                                size=(400, 475),
                                style=wx.HSCROLL | wx.TE_MULTILINE | wx.TE_NOHIDESEL)
+        richText.SetBackgroundColour(Colour(200, 222, 40))
+        richText.SetOwnBackgroundColour(Colour(200, 222, 40))
+        richText.SetForegroundColour(Colour(7, 0, 70))
+        richText.SetOwnForegroundColour(Colour(7, 0, 70))
         dialog.Sizer.Add(richText, flag=wx.GROW, proportion=1)
-        dialog.Sizer.Add(okBtn, flag=wx.ALIGN_RIGHT | wx.ALL)
+        dialog.Sizer.Add(okBtn, flag=wx.ALL)
         dialog.Sizer.Add(cnlBtn, flag=wx.ALL)
         # Get cell value of parent grid
         if self.is_json(self._current_cell_value()):
@@ -862,12 +876,19 @@ work.</li>
                                        self.selection.cell[1],
                                        json.dumps(strJson,
                                                   ensure_ascii=False))
-            except ValueError or json.JSONDecodeError as e:
+            except (ValueError, json.JSONDecodeError) as e:
                 res = wx.MessageDialog(dialog,
                                        "Error in JSON: {}\n\n"
                                        "Save anyway?".format(e),
                                        "Validation Error!",
-                                       wx.YES_NO).ShowModal()
+                                       wx.YES_NO)
+                res.InheritAttributes()
+                res.SetBackgroundColour(Colour(200, 222, 40))
+                res.SetOwnBackgroundColour(Colour(200, 222, 40))
+                res.SetForegroundColour(Colour(7, 0, 70))
+                res.SetOwnForegroundColour(Colour(7, 0, 70))
+                res.Refresh(True)
+                res.ShowModal()
                 if res == wx.ID_YES:
                     self.cell_value_edited(self.selection.cell[0],
                                            self.selection.cell[1],
