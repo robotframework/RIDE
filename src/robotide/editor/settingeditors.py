@@ -14,18 +14,18 @@
 #  limitations under the License.
 
 import wx
-from robotide import context
-from robotide.controller.ctrlcommands import UpdateVariable, UpdateDocumentation,\
+from .. import context
+from ..controller.ctrlcommands import UpdateVariable, UpdateDocumentation,\
     SetValues, AddLibrary, AddResource, AddVariablesFileImport, ClearSetting
-from robotide.editor.listeditor import ListEditorBase
-from robotide.publish.messages import RideImportSetting,\
+from ..editor.listeditor import ListEditorBase
+from ..publish.messages import RideImportSetting,\
     RideOpenVariableDialog, RideExecuteSpecXmlImport, RideSaving
-from robotide.utils import overrides
-from robotide.widgets import ButtonWithHandler, Label, HtmlWindow, PopupMenu,\
+from ..utils import overrides
+from ..widgets import ButtonWithHandler, Label, HtmlWindow, PopupMenu,\
     PopupMenuItems, HtmlDialog
-from robotide.publish import PUBLISHER
-from robotide import utils
-from robotide.utils.highlightmatcher import highlight_matcher
+from ..publish import PUBLISHER
+from .. import utils
+from ..utils.highlightmatcher import highlight_matcher
 from .formatters import ListToStringFormatter
 from .gridcolorizer import ColorizationSettings
 from .editordialogs import EditorDialog, DocumentationDialog, MetadataDialog,\
@@ -34,6 +34,7 @@ from .editordialogs import EditorDialog, DocumentationDialog, MetadataDialog,\
 from .listeditor import ListEditor
 from .popupwindow import HtmlPopupWindow
 from .tags import TagsDisplay
+from wx import Colour
 
 
 class SettingEditor(wx.Panel):
@@ -221,6 +222,10 @@ class SettingValueDisplay(wx.TextCtrl):
         wx.TextCtrl.__init__(
             self, parent, size=(-1, context.SETTING_ROW_HEIGTH),
             style=wx.TE_RICH | wx.TE_MULTILINE | wx.TE_NOHIDESEL)
+        self.SetBackgroundColour(Colour(200, 222, 40))
+        self.SetOwnBackgroundColour(Colour(200, 222, 40))
+        self.SetForegroundColour(Colour(7, 0, 70))
+        self.SetOwnForegroundColour(Colour(7, 0, 70))
         self.SetEditable(False)
         self._colour_provider = ColorizationSettings(
             parent.plugin.global_settings['Grid'])
@@ -246,16 +251,17 @@ class SettingValueDisplay(wx.TextCtrl):
 
     def _get_background_colour(self, match=None):
         if self._value is None:
-            return 'light grey'
+            return Colour(100, 122, 40)  # 'light grey'
         if match is not None and self.contains(match):
             return self._colour_provider.get_highlight_color()
-        return 'white'
+        return Colour(200, 222, 40)  # 'white'
 
     def _colorize_possible_user_keyword(self):
         if not self._is_user_keyword:
             return
         font = self.GetFont()
         font.SetUnderlined(True)
+        # TODO: Get proper colour from settings
         self.SetStyle(0, len(self._keyword_name),
                       wx.TextAttr('blue', self._get_background_colour(), font))
 
@@ -281,6 +287,11 @@ class DocumentationEditor(SettingEditor):
 
     def _value_display_control(self):
         ctrl = HtmlWindow(self, (-1, 100))
+        ctrl.SetHTMLBackgroundColour(Colour(200, 222, 40))
+        ctrl.SetBackgroundColour(Colour(200, 222, 40))
+        ctrl.SetOwnBackgroundColour(Colour(200, 222, 40))
+        ctrl.SetForegroundColour(Colour(7, 0, 70))
+        ctrl.SetOwnForegroundColour(Colour(7, 0, 70))
         ctrl.Bind(wx.EVT_LEFT_DOWN, self.OnEdit)
         return ctrl
 
