@@ -818,7 +818,8 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl):
             if hasattr(handler.controller, 'get_namespace'):
                 data_file_ns = handler.controller.get_namespace()
                 cur_dir = handler.controller.directory
-                data_file_ns.update_cur_dir_global_var(cur_dir)
+                if data_file_ns:
+                    data_file_ns.update_cur_dir_global_var(cur_dir)
                 return
             else:
                 node = node.GetParent()
