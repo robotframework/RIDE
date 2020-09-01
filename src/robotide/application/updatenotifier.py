@@ -16,17 +16,20 @@
 # Configure wx version to allow running test app in __main__
 
 
-import wx, wx.html
-from robotide.utils.versioncomparator import cmp_versions
-from robotide.widgets.button import ButtonWithHandler
+import wx
+from ..utils.versioncomparator import cmp_versions
+from ..widgets.button import ButtonWithHandler
+from ..widgets import htmlwindow
 
 import time
 import urllib.request as urllib2
 import xmlrpc.client as xmlrpclib
-import robotide.version as version
+from .. import version
+from wx import Colour
 
 _CHECK_FOR_UPDATES_SETTING = "check for updates"
 _LAST_UPDATE_CHECK_SETTING = "last update check"
+
 
 class UpdateNotifierController(object):
 
@@ -78,9 +81,9 @@ class UpdateNotifierController(object):
         return xml
 
 
-class HtmlWindow(wx.html.HtmlWindow):
-    def __init__(self, parent, id, size=(600,400)):
-        wx.html.HtmlWindow.__init__(self,parent, id, size=size)
+class HtmlWindow(htmlwindow.HtmlWindow):
+    def __init__(self, parent, size=(600,400)):
+        htmlwindow.HtmlWindow.__init__(self, parent, size)
         if "gtk2" or "gtk3" in wx.PlatformInfo:
             self.SetStandardFonts()
 
@@ -95,9 +98,11 @@ class UpdateDialog(wx.Dialog):
         wx.Dialog.__init__(self, None, -1, "Update available")
         # set Left to Right direction (while we don't have localization)
         self.SetLayoutDirection(wx.Layout_LeftToRight)
+        self.SetBackgroundColour(Colour(200, 222, 40))
+        self.SetForegroundColour(Colour(7, 0, 70))
         sizer = wx.BoxSizer(orient=wx.VERTICAL)
-        hwin = HtmlWindow(self, -1, size=(400,200))
-        hwin.SetPage('New version %s available from <a href="%s">%s</a>' % (version, url, url))
+        hwin = HtmlWindow(self, size=(400,200))
+        hwin.set_content('New version %s available from <a href="%s">%s</a>' % (version, url, url))
         irep = hwin.GetInternalRepresentation()
         hwin.SetSize((irep.GetWidth()+25, irep.GetHeight()+20))
         sizer.Add(hwin)

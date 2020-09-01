@@ -1002,6 +1002,8 @@ class ChooseUsageSearchStringDialog(wx.Dialog):
     def __init__(self, cellvalue):
         wx.Dialog.__init__(self, None, wx.ID_ANY, "Find Where Used",
                            style=wx.DEFAULT_DIALOG_STYLE)
+        self.SetBackgroundColour(Colour(200, 222, 40))
+        self.SetForegroundColour(Colour(7, 0, 70))
         self.caption = "Please select what you want to check for usage"
         variables = set(variablematcher.find_variable_basenames(cellvalue))
         self.choices = [(False, cellvalue)] + [(True, v) for v in variables]

@@ -17,24 +17,24 @@ from time import time
 from io import StringIO, BytesIO
 import string
 import wx
-from wx import stc
-from robotide import robotapi
-from robotide.context import IS_WINDOWS, IS_MAC
-from robotide.controller.ctrlcommands import SetDataFile
-from robotide.publish import RideSettingsChanged, PUBLISHER
-from robotide.publish.messages import RideMessage
-from robotide.namespace.suggesters import SuggestionSource, BuiltInLibrariesSuggester
-from robotide.widgets import VerticalSizer, HorizontalSizer, ButtonWithHandler
-from robotide.pluginapi import (Plugin, RideSaving, TreeAwarePluginMixin,
+from wx import stc, Colour
+from .. import robotapi
+from ..context import IS_WINDOWS, IS_MAC
+from ..controller.ctrlcommands import SetDataFile
+from ..publish import RideSettingsChanged, PUBLISHER
+from ..publish.messages import RideMessage
+from ..namespace.suggesters import SuggestionSource, BuiltInLibrariesSuggester
+from ..widgets import VerticalSizer, HorizontalSizer, ButtonWithHandler
+from ..pluginapi import (Plugin, RideSaving, TreeAwarePluginMixin,
                                 RideTreeSelection, RideNotebookTabChanging,
                                 RideDataChanged, RideOpenSuite,
                                 RideDataChangedToDirty)
-from robotide.widgets import TextField, Label, HtmlDialog
-from robotide.preferences.editors import ReadFonts
+from ..widgets import TextField, Label, HtmlDialog
+from ..preferences.editors import ReadFonts
 from wx.adv import HyperlinkCtrl, EVT_HYPERLINK
 from .contentassist import ContentAssistTextEditor
-from robotide.controller.filecontrollers import ResourceFileController
-from robotide.controller.macrocontrollers import _WithStepsController
+from ..controller.filecontrollers import ResourceFileController
+from ..controller.macrocontrollers import _WithStepsController
 
 try:  # import installed version first
     import robotframeworklexer
@@ -262,11 +262,18 @@ class DataValidationHandler(object):
             self._editor._mark_file_dirty()
             return False
         # TODO: use widgets.Dialog
-        id = wx.MessageDialog(self._editor,
+        dlg = wx.MessageDialog(self._editor,
                               'ERROR: Data sanity check failed!\n'
                               'Reset changes?',
                               'Can not apply changes from Txt Editor',
-                              style=wx.YES|wx.NO).ShowModal()
+                              style=wx.YES|wx.NO)
+        dlg.InheritAttributes()
+        dlg.SetBackgroundColour(Colour(200, 222, 40))
+        dlg.SetOwnBackgroundColour(Colour(200, 222, 40))
+        dlg.SetForegroundColour(Colour(7, 0, 70))
+        dlg.SetOwnForegroundColour(Colour(7, 0, 70))
+        dlg.Refresh(True)
+        id = dlg.ShowModal()
         self._last_answer = id
         self._last_answer_time = time()
         if id == wx.ID_YES:
