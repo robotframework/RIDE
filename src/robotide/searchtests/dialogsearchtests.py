@@ -16,10 +16,11 @@
 import wx
 
 from functools import (total_ordering, cmp_to_key)
-from robotide.utils import overrides
-from robotide.widgets import (Dialog, VerticalSizer, VirtualList, Label,
-                              HelpLabel, ImageProvider, ButtonWithHandler)
-from robotide.widgets.list import ListModel
+from ..utils import overrides
+from ..widgets import (Dialog, VerticalSizer, VirtualList, Label,
+                       HelpLabel, ImageProvider, ButtonWithHandler)
+from ..widgets.list import ListModel
+from wx import Colour
 
 
 class TestsDialog(Dialog):
@@ -33,11 +34,19 @@ class TestsDialog(Dialog):
         Dialog.__init__(self, title=title, size=(750, 400))
         # set Left to Right direction (while we don't have localization)
         self.SetLayoutDirection(wx.Layout_LeftToRight)
+        self.SetBackgroundColour(Colour(200, 222, 40))
+        self.SetOwnBackgroundColour(Colour(200, 222, 40))
+        self.SetForegroundColour(Colour(7, 0, 70))
+        self.SetOwnForegroundColour(Colour(7, 0, 70))
         self.SetSizer(VerticalSizer())
         self.Sizer.Add(self._create_notebook(), 1, wx.ALL | wx.EXPAND | wx.ALIGN_LEFT, 3)
 
     def _create_notebook(self):
         self._notebook = wx.Notebook(self, wx.ID_ANY, style=wx.NB_TOP)
+        self._notebook.SetBackgroundColour(Colour(200, 222, 40))
+        self._notebook.SetOwnBackgroundColour(Colour(200, 222, 40))
+        self._notebook.SetForegroundColour(Colour(7, 0, 70))
+        self._notebook.SetOwnForegroundColour(Colour(7, 0, 70))
         self._notebook.AddPage(self._text_search_panel(), 'Search')
         self._notebook.AddPage(self._tag_pattern_search_panel(), 'Tag Search')
         return self._notebook
