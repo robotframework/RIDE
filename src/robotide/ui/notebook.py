@@ -14,9 +14,9 @@
 #  limitations under the License.
 
 try:
-    import wx.lib.agw.aui as aui
+    import wx.lib.agw.aui.auibook as aui
 except ImportError:
-    import wx.lib.aui as aui
+    import wx.lib.agw.aui as aui
 
 from wx import (Point, Size)
 from wx import Colour
