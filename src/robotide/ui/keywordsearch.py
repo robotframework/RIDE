@@ -18,14 +18,13 @@ import os.path
 
 from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
 from functools import (total_ordering, cmp_to_key)
-from robotide.controller.filecontrollers import (ResourceFileController,
-                                                 TestCaseFileController)
-from robotide.pluginapi import (Plugin, ActionInfo, RideOpenSuite,
-        RideOpenResource, RideImportSetting, RideUserKeyword, RideNewProject)
-from robotide.usages.UsageRunner import Usages
-from robotide import utils
-from robotide.widgets import (PopupMenuItem, ButtonWithHandler, Label, Font,
-        HtmlWindow, ImageProvider)
+from ..controller.filecontrollers import ResourceFileController, TestCaseFileController
+from ..pluginapi import (Plugin, ActionInfo, RideOpenSuite,
+                         RideOpenResource, RideImportSetting, RideUserKeyword, RideNewProject)
+from ..usages.UsageRunner import Usages
+from .. import utils
+from ..widgets import PopupMenuItem, ButtonWithHandler, Label, Font, HtmlWindow, ImageProvider
+from wx import Colour
 
 ALL_KEYWORDS = '<all keywords>'
 ALL_USER_KEYWORDS = '<all user keywords>'
@@ -132,7 +131,11 @@ class KeywordSearchDialog(wx.Frame):
         self._make_bindings()
         self._sort_order = _SortOrder()
         self._last_selected_kw = None
-        self.SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_3DFACE))
+        # self.SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_3DFACE))
+        self.SetBackgroundColour(Colour(200, 222, 40))
+        self.SetOwnBackgroundColour(Colour(200, 222, 40))
+        self.SetForegroundColour(Colour(7, 0, 70))
+        self.SetOwnForegroundColour(Colour(7, 0, 70))
         self.CenterOnParent()
 
     def _create_components(self):
@@ -162,6 +165,10 @@ class KeywordSearchDialog(wx.Frame):
 
     def _add_doc_filter(self, sizer):
         self._use_doc = wx.CheckBox(self, label='Search documentation')
+        self._use_doc.SetBackgroundColour(Colour(200, 222, 40))
+        self._use_doc.SetOwnBackgroundColour(Colour(200, 222, 40))
+        self._use_doc.SetForegroundColour(Colour(7, 0, 70))
+        self._use_doc.SetOwnForegroundColour(Colour(7, 0, 70))
         self._use_doc.SetValue(True)
         sizer.Add(self._use_doc)
 
@@ -169,6 +176,10 @@ class KeywordSearchDialog(wx.Frame):
         sizer.Add(Label(self, label='Source: '))
         self._source_filter = wx.ComboBox(self, value=ALL_KEYWORDS, size=(300, -1),
                                           choices=self._get_sources(), style=wx.CB_READONLY)
+        self._source_filter.SetBackgroundColour(Colour(200, 222, 40))
+        self._source_filter.SetOwnBackgroundColour(Colour(200, 222, 40))
+        self._source_filter.SetForegroundColour(Colour(7, 0, 70))
+        self._source_filter.SetOwnForegroundColour(Colour(7, 0, 70))
         sizer.Add(self._source_filter)
 
     def _get_sources(self):
@@ -268,7 +279,7 @@ class KeywordSearchDialog(wx.Frame):
 
     def _update_details(self):
         if self._last_selected_kw in self._keywords:
-            self._details.SetPage(self._last_selected_kw.details)
+            self._details.set_content(self._last_selected_kw.details)
             self._find_usages_button.Enable()
         else:
             self._details.clear()
@@ -368,6 +379,10 @@ class _KeywordList(wx.ListCtrl, ListCtrlAutoWidthMixin):
         style = wx.LC_REPORT|wx.NO_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VIRTUAL
         wx.ListCtrl.__init__(self, parent, style=style)
         ListCtrlAutoWidthMixin.__init__(self)
+        self.SetBackgroundColour(Colour(200, 222, 40))
+        self.SetOwnBackgroundColour(Colour(200, 222, 40))
+        self.SetForegroundColour(Colour(7, 0, 70))
+        self.SetOwnForegroundColour(Colour(7, 0, 70))
         self._plugin = plugin
         self._create_headers()
         self._link_attribute = self._create_link_attribute()
