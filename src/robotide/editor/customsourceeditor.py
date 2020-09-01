@@ -714,6 +714,8 @@ class CodeEditorPanel(wx.Panel):
                                "Do you want to continue?"
                 dlg = wx.MessageDialog(self, overwriteMsg, "Editor Writer",
                                        wx.YES_NO | wx.NO_DEFAULT| wx.ICON_EXCLAMATION)
+                dlg.SetBackgroundColour(Colour(200, 222, 40))
+                dlg.SetForegroundColour(Colour(7, 0, 70))
                 result = dlg.ShowModal()
                 if result == wx.ID_NO:
                     return

@@ -18,13 +18,14 @@ import wx
 import wx.lib.mixins.listctrl as listmix
 import time
 import re
-from robotide.context import IS_MAC
-from robotide.ui.searchdots import DottedSearch
-from robotide.widgets import ButtonWithHandler, Label
-from robotide.spec.iteminfo import LibraryKeywordInfo
-from robotide.usages.commands import FindUsages
-from robotide.controller.filecontrollers import (TestCaseFileController, ResourceFileController,
-                                                 TestDataDirectoryController)
+from ..context import IS_MAC
+from ..ui.searchdots import DottedSearch
+from ..widgets import ButtonWithHandler, Label
+from ..spec.iteminfo import LibraryKeywordInfo
+from ..usages.commands import FindUsages
+from ..controller.filecontrollers import (TestCaseFileController, ResourceFileController,
+                                          TestDataDirectoryController)
+from wx import Colour
 from threading import Thread
 
 class ReviewDialog(wx.Frame):
@@ -249,8 +250,13 @@ class ReviewDialog(wx.Frame):
         else:
             string_list = "\n".join(df.name for df in df_list)
         message = "Keywords of the following files will be included in the search:\n\n"+string_list
-        wx.MessageDialog(self, message=message, caption="Included files",
-                         style=wx.OK | wx.ICON_INFORMATION).ShowModal()
+        dlg = wx.MessageDialog(self, message=message, caption="Included files",
+                         style=wx.OK | wx.ICON_INFORMATION)
+        dlg.SetBackgroundColour(Colour(200, 222, 40))
+        dlg.SetOwnBackgroundColour(Colour(200, 222, 40))
+        dlg.SetForegroundColour(Colour(7, 0, 70))
+        dlg.SetOwnForegroundColour(Colour(7, 0, 70))
+        dlg.ShowModal()
 
     def OnResultSelected(self, event):
         self.frame.tree.select_node_by_data(self._unused_kw_list.GetClientData(event.GetData()))
