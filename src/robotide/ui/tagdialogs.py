@@ -17,10 +17,11 @@ import re
 import wx
 import wx.lib.mixins.listctrl as listmix
 
-from robotide import utils
-from robotide.controller.ctrlcommands import ChangeTag
-from robotide.publish import RideOpenTagSearch
-from robotide.widgets import ButtonWithHandler, PopupMenuItems
+from .. import utils
+from ..controller.ctrlcommands import ChangeTag
+from ..publish import RideOpenTagSearch
+from ..widgets import ButtonWithHandler, PopupMenuItems
+from wx import Colour
 
 
 class ViewAllTagsDialog(wx.Frame, listmix.ColumnSorterMixin):
@@ -54,8 +55,11 @@ class ViewAllTagsDialog(wx.Frame, listmix.ColumnSorterMixin):
         parent_x, parent_y = self.frame.GetPosition()
         parent_size_x, parent_size_y = self.frame.tree.GetSize()
         self.SetPosition((parent_x + parent_size_x + 50, parent_y + 50))
-        self.SetBackgroundColour(
-            wx.SystemSettings.GetColour(wx.SYS_COLOUR_3DFACE))
+        # self.SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_3DFACE))
+        self.SetBackgroundColour(Colour(200, 222, 40))
+        self.SetOwnBackgroundColour(Colour(200, 222, 40))
+        self.SetForegroundColour(Colour(7, 0, 70))
+        self.SetOwnForegroundColour(Colour(7, 0, 70))
         self.SetSizer(wx.BoxSizer(wx.VERTICAL))
         self._build_notebook()
         self._build_tag_lister()
@@ -95,12 +99,17 @@ class ViewAllTagsDialog(wx.Frame, listmix.ColumnSorterMixin):
 
     def _build_notebook(self):
         self._notebook = wx.Notebook(self, wx.ID_ANY, style=wx.NB_TOP)
+        self._notebook.SetBackgroundColour(Colour(200, 222, 40))
+        self._notebook.SetOwnBackgroundColour(Colour(200, 222, 40))
+        self._notebook.SetForegroundColour(Colour(7, 0, 70))
+        self._notebook.SetOwnForegroundColour(Colour(7, 0, 70))
         self.Sizer.Add(self._notebook, 1, wx.ALL | wx.EXPAND, 3)
 
     def _make_bindings(self):
         self.Bind(wx.EVT_CLOSE, self._close_dialog)
         self._tags_list.Bind(wx.EVT_LIST_ITEM_RIGHT_CLICK, self.OnRightClick)
         self._tags_list.Bind(wx.EVT_LIST_COL_CLICK, self.OnColClick)
+        self._tags_list.Bind(wx.EVT_LIST_ITEM_SELECTED, self.OnSelectItem)
 
     def _tag_name_for_sort(self, tag_name):
         return [part if index % 2 == 0 else int(part) for index, part in
@@ -214,6 +223,11 @@ class ViewAllTagsDialog(wx.Frame, listmix.ColumnSorterMixin):
         self.tree._popup_creator.show(self, PopupMenuItems(self, menu_items),
                                       self._controller)
 
+    def OnSelectItem(self, event):
+        self._index = event.GetIndex()
+        print(f"DEBUG: OnSelectItem tags idx {self._index} flag {not self._tags_list.IsChecked(self._index)} ")
+        self._tags_list.CheckItem(self._index, not self._tags_list.IsChecked(self._index))
+
     def OnShowTestsWithThisTag(self, event):
         if self._index == -1:
             return
@@ -281,11 +295,17 @@ class TagsListCtrl(wx.ListCtrl, listmix.CheckListCtrlMixin,
         wx.ListCtrl.__init__(self, parent=parent, style=style)
         listmix.CheckListCtrlMixin.__init__(self)
         listmix.ListCtrlAutoWidthMixin.__init__(self)
+        self.SetBackgroundColour(Colour(200, 222, 40))
+        self.SetOwnBackgroundColour(Colour(200, 222, 40))
+        self.SetForegroundColour(Colour(7, 0, 70))
+        self.SetOwnForegroundColour(Colour(7, 0, 70))
         self.setResizeColumn(2)
         self._clientData = {}
 
     def OnCheckItem(self, index, flag):
+        print(f"DEBUG: OnCheckItem tags idx {index} flag {flag} ")
         if self._dlg:
+            print(f"DEBUG: OnCheckItem _dlg exists call  item_in_kw_list_checked")
             self._dlg.item_in_kw_list_checked(index, flag)
 
     def get_checked_items(self):
@@ -364,4 +384,8 @@ class TagsListCtrl(wx.ListCtrl, listmix.CheckListCtrlMixin,
 
     def CheckAll(self):
         for i in range(self.GetItemCount()):
-            self.CheckItem(i)
+            if wx.VERSION >= (4, 1, 0):
+                print(f"DEBUG: CheckAll tags")
+                self.CheckItem(i, True)
+            else:
+                self.CheckItem(i)
