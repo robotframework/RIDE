@@ -14,9 +14,6 @@
 #  limitations under the License.
 
 import unittest
-
-from wx._core import wxAssertionError
-
 from robotide.robotapi import (TestDataDirectory, TestCaseFile, ResourceFile,
                                TestCase, UserKeyword)
 from nose.tools import assert_equal
@@ -79,12 +76,13 @@ class _FakeEditor(object):
 class _BaseSuiteTreeTest(unittest.TestCase):
 
     def setUp(self):
-        # frame = _FakeMainFrame(None)
         self.app = wx.App()
         self.frame = wx.Frame(None)
         self._model = self._create_model()
         self._tree = Tree(self.frame, ActionRegisterer(AuiManager(self.frame),
-            MenuBar(self.frame), ToolBar(self.frame), ShortcutRegistry(self.frame)))
+                                                       MenuBar(self.frame),
+                                                       ToolBar(self.frame),
+                                                       ShortcutRegistry(self.frame)))
         images = TreeImageList()
         self._tree._images = images
         self._tree.SetImageList(images)
@@ -93,7 +91,7 @@ class _BaseSuiteTreeTest(unittest.TestCase):
 
     def tearDown(self):
         PUBLISHER.unsubscribe_all()
-        wx.CallAfter(wx.Exit)
+        wx.CallAfter(self.frame.Close)
         self.app.MainLoop()  # With this here, there is no Segmentation fault
 
     def _create_model(self):
@@ -168,6 +166,7 @@ class TestPopulating(_BaseSuiteTreeTest):
         for name in children[1:]:
             item, cookie = self._tree.GetNextChild(parent, cookie)
             assert_equal(self._tree.GetItemText(item), name)
+
 
 class TestAddingItems(_BaseSuiteTreeTest):
 

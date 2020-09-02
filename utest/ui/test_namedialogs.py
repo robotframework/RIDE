@@ -15,13 +15,11 @@
 
 import unittest
 from nose.tools import assert_equal
-
 from robotide.controller.filecontrollers import TestCaseFileController
 from robotide.editor.editordialogs import (
     TestCaseNameDialog, UserKeywordNameDialog)
 from robotide.robotapi import TestCaseFile
-
-from resources import PYAPP_REFERENCE, wx
+# from resources import PYAPP_REFERENCE, wx
 
 
 def file_controller():
@@ -29,7 +27,7 @@ def file_controller():
 
 
 class TestNameDialogTest(unittest.TestCase):
-    _frame = wx.Frame(None)
+    # _frame = wx.Frame(None)
 
     def test_creation(self):
         test_ctrl = file_controller().create_test('A test')
@@ -37,7 +35,7 @@ class TestNameDialogTest(unittest.TestCase):
         assert_equal(dlg.get_name(), '')
 
 
-class UserKeywordNameDialogTest(unittest.TestCase):
+class TestUserKeywordNameDialog(unittest.TestCase):
 
     def test_creation(self):
         kw_ctrl = file_controller().create_keyword('Keyword it is')
@@ -52,4 +50,3 @@ class UserKeywordNameDialogTest(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-
