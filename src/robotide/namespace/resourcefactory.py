@@ -110,6 +110,5 @@ class ResourceFactory(object):
                         for name in files:
                             real_path_with_correct_case = os.path.join(root, name)
                             if real_path_with_correct_case.lower() == path.lower():
-                                path = real_path_with_correct_case
-                                break
+                                return real_path_with_correct_case
         return path
