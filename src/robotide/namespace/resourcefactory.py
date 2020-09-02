@@ -106,10 +106,10 @@ class ResourceFactory(object):
                 if workspace_path and os.path.exists(workspace_path):
                     if os.path.isfile(workspace_path):
                         workspace_path = os.path.dirname(workspace_path)
-                for root, dirs, files in os.walk(workspace_path):
-                    for name in files:
-                        real_path_with_correct_case = os.path.join(root, name)
-                        if real_path_with_correct_case.lower() == path.lower():
-                            path = real_path_with_correct_case
-                            break
+                    for root, dirs, files in os.walk(workspace_path):
+                        for name in files:
+                            real_path_with_correct_case = os.path.join(root, name)
+                            if real_path_with_correct_case.lower() == path.lower():
+                                path = real_path_with_correct_case
+                                break
         return path
