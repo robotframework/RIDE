@@ -26,11 +26,10 @@ from robotide.controller.tablecontrollers import TestCaseController
 from robotide.controller.ctrlcommands import AddTestCaseFile, AddTestDataDirectory,\
     SortKeywords, Undo, Redo
 from robotide.publish import PUBLISHER
-from robotide.publish.messages import RideDataChangedToDirty,\
-RideDataDirtyCleared
+from robotide.publish.messages import RideDataChangedToDirty, RideDataDirtyCleared
 
-from resources import SUITEPATH
-import datafilereader
+from utest.resources import SUITEPATH
+from utest.resources import datafilereader
 
 
 class TestMarkUnMarkDirty(unittest.TestCase):

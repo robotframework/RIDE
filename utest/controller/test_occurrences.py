@@ -15,8 +15,8 @@ from robotide.publish.messages import RideItemStepsChanged,\
 from robotide.namespace.namespace import Namespace
 from robotide.spec.librarymanager import LibraryManager
 from robotide.usages.commands import FindUsages
-from resources import FakeSettings
-import datafilereader
+from utest.resources import FakeSettings
+from utest.resources import datafilereader
 
 
 STEP1_KEYWORD = 'Log'

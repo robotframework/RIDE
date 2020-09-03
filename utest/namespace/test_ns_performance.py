@@ -15,13 +15,11 @@
 
 import time
 import unittest
-
 from nose.tools import assert_true
 from robotide.namespace import Namespace
 from robotide.controller import Project
-
-from resources import MessageRecordingLoadObserver, FakeSettings
-from datafilereader import TESTCASEFILE_WITH_EVERYTHING, KW1000_TESTCASEFILE,\
+from utest.resources import MessageRecordingLoadObserver, FakeSettings
+from utest.resources.datafilereader import TESTCASEFILE_WITH_EVERYTHING, KW1000_TESTCASEFILE,\
     KW2000_TESTCASEFILE, KW3000_TESTCASEFILE, KW4000_TESTCASEFILE
 from robotide.spec.librarymanager import LibraryManager
 

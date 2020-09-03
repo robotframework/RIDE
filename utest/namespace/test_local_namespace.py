@@ -14,8 +14,8 @@
 #  limitations under the License.
 
 import unittest
-import datafilereader
-from nose.tools import assert_equal, assert_false, assert_true
+from utest.resources import datafilereader
+from nose.tools import assert_false, assert_true
 
 
 class TestLocalNamespace(unittest.TestCase):

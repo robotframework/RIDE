@@ -357,9 +357,10 @@ class UserKeywordNameDialog(_Dialog):
 
     def _get_editors(self, uk):
         value = uk.name if uk else ''
+        args_value = ' | '.join(uk.args.value) if uk else ''
         return [ValueEditor(self, value, 'Name',
                             UserKeywordNameValidator(self._controller)),
-                ArgumentEditor(self, '', 'Arguments', ArgumentsValidator())]
+                ArgumentEditor(self, args_value, 'Arguments', ArgumentsValidator())]
 
     def get_name(self):
         return _Dialog.get_value(self)[0]

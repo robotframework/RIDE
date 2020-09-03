@@ -15,7 +15,7 @@
 
 import os
 import unittest
-import datafilereader
+from utest.resources import datafilereader
 
 from robotide.controller.ctrlcommands import AddKeyword, ChangeCellValue,\
     CreateNewResource, SaveFile

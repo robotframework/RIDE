@@ -14,7 +14,7 @@
 #  limitations under the License.
 
 import unittest
-import datafilereader
+from utest.resources import datafilereader
 from robotide.controller.ctrlcommands import ChangeCellValue, DeleteRows, AddKeyword,\
     Undo, PasteArea
 from nose.tools import assert_equal, assert_true, assert_false,\

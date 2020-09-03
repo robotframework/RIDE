@@ -18,7 +18,7 @@ import unittest
 import sys
 from robotide.spec.libraryfetcher import get_import_result
 from robotide.spec.librarymanager import LibraryManager
-from resources import DATAPATH
+from utest.resources import DATAPATH
 
 sys.path.append(os.path.join(DATAPATH, 'libs'))
 

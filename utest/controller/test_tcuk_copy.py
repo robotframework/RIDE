@@ -19,7 +19,7 @@ import unittest
 from robotide.robotapi import TestCaseFile
 from robotide.controller.filecontrollers import TestCaseFileController
 
-from resources import COMPLEX_SUITE_PATH
+from utest.resources import COMPLEX_SUITE_PATH
 from nose.tools import assert_equal, assert_true
 
 

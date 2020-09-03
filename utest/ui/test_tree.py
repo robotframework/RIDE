@@ -13,6 +13,8 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import wx
+from wx.lib.agw.aui import AuiManager
 import unittest
 from robotide.robotapi import (TestDataDirectory, TestCaseFile, ResourceFile,
                                TestCase, UserKeyword)
@@ -26,24 +28,22 @@ from robotide.controller.filecontrollers import (TestDataDirectoryController,
 
 from robotide.ui.actiontriggers import MenuBar, ShortcutRegistry
 from robotide.ui.mainframe import ActionRegisterer, ToolBar
-from resources import PYAPP_REFERENCE, FakeSettings
-
+from utest.resources import FakeSettings
 from robotide.ui import treeplugin as st
 from robotide.ui import treenodehandlers as th
 from robotide.publish import PUBLISHER
 from robotide.namespace.namespace import Namespace
+from robotide.ui.treeplugin import Tree
+
+
 th.FakeDirectorySuiteHandler = th.FakeUserKeywordHandler = \
     th.FakeSuiteHandler = th.FakeTestCaseHandler = \
     th.FakeResourceHandler = th.TestDataDirectoryHandler
 st.Editor = lambda *args: _FakeEditor()
-from robotide.ui.treeplugin import Tree
 Tree._show_correct_editor = lambda self, x: None
 Tree.get_active_datafile = lambda self: None
-# CallAfter does not work in unit tests
-Tree._select = lambda self, node: self.SelectItem(node)
-# wx needs to imported last so that robotide can select correct wx version.
-import wx
-from wx.lib.agw.aui import AuiManager
+Tree._select = lambda self, node: self.SelectItem(node)\
+
 
 
 class _FakeMainFrame(wx.Frame):
@@ -69,10 +69,6 @@ class _FakeImage(object):
                                                  (16, 16)))
 
 
-class _FakeEditor(object):
-    view = close = lambda *args: None
-
-
 class _BaseSuiteTreeTest(unittest.TestCase):
 
     def setUp(self):
@@ -92,7 +88,9 @@ class _BaseSuiteTreeTest(unittest.TestCase):
     def tearDown(self):
         PUBLISHER.unsubscribe_all()
         wx.CallAfter(self.frame.Close)
+        wx.CallAfter(self.app.ExitMainLoop)
         self.app.MainLoop()  # With this here, there is no Segmentation fault
+        self.app = None
 
     def _create_model(self):
         suite = self._create_directory_suite('/top_suite')

@@ -24,6 +24,7 @@ from robotide.controller.tablecontrollers import TestCaseTableController
 from robotide.controller.tags import Tag
 from robotide.controller.ui.treecontroller import TreeController, _History, \
     TestSelectionController
+from utest.resources import UIUnitTestBase
 
 
 class ActionRegistererMock(object):
@@ -129,9 +130,10 @@ class TestNavigationHistory(_BaseTreeControllerTest, unittest.TestCase):
             self._go_forward_and_return_selection(), expected_selection)
 
 
-class TestTestSelectionController(unittest.TestCase):
+class TestTestSelectionController(UIUnitTestBase):
 
     def setUp(self):
+        super().setUp()
         self._tsc = TestSelectionController()
 
     def test_test_selection_is_empty_by_default(self):

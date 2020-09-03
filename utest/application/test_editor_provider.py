@@ -21,7 +21,11 @@ from robotide.application.editorprovider import EditorProvider
 
 
 class TestObject(object): pass
+
+
 class TestEditor(object): pass
+
+
 class TestEditor2(object): pass
 
 
@@ -65,4 +69,3 @@ class TestEditorProvide(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-

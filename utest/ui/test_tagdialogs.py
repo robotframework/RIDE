@@ -14,43 +14,36 @@
 #  limitations under the License.
 
 import unittest
-
+import wx
+from wx.lib.agw.aui import AuiManager
 from functools import total_ordering
 from robotide.ui.tagdialogs import ViewAllTagsDialog
 
 from robotide.robotapi import (TestDataDirectory, TestCaseFile, ResourceFile,
-                               TestCase, UserKeyword, robotide)
+                               TestCase, UserKeyword)
 from nose.tools import assert_equal
 from robotide.spec.librarymanager import LibraryManager
-from robotide.ui.images import TreeImageList
 from robotide.ui.mainframe import ActionRegisterer, ToolBar
 from robotide.ui.actiontriggers import MenuBar, ShortcutRegistry
-from robotide.preferences import RideSettings
-# TODO make sure it does not use real user settings file (it get damaged)
-from robotide.ui.notebook import NoteBook
-
 from robotide.application import Project
 from robotide.controller.filecontrollers import (TestDataDirectoryController,
                                                  ResourceFileController)
 from robotide import utils
-from resources import PYAPP_REFERENCE, FakeSettings, FakeApplication
-
+from utest.resources import FakeSettings, FakeEditor
 from robotide.ui import treeplugin as st
 from robotide.ui import treenodehandlers as th
 from robotide.publish import PUBLISHER
+from robotide.ui.treeplugin import Tree
 from robotide.namespace.namespace import Namespace
+
 th.FakeDirectorySuiteHandler = th.FakeUserKeywordHandler = \
     th.FakeSuiteHandler = th.FakeTestCaseHandler = \
     th.FakeResourceHandler = th.TestDataDirectoryHandler
-st.Editor = lambda *args: _FakeEditor()
-from robotide.ui.treeplugin import Tree
+st.Editor = lambda *args: FakeEditor()
 Tree._show_correct_editor = lambda self, x: None
 Tree.get_active_datafile = lambda self: None
-# CallAfter does not work in unit tests
 Tree._select = lambda self, node: self.SelectItem(node)
-# wx needs to imported last so that robotide can select correct wx version.
-import wx
-from wx.lib.agw.aui import AuiManager
+
 
 
 """
@@ -85,14 +78,11 @@ class _SortableD(utils.NormalizedDict):
                                                     spaceless)
         super(utils.NormalizedDict)
 
-    # def __eq__(self, other):
-    #     return self.name.lower() == other.name.lower()
     def __hash__(self):
         return hash(repr(self))
 
     def __lt__(self, other):
         return self._keys[0].lower() < other._keys[0].lower()
-        return   # self.name.lower() < other.name.lower()
 
     def __repr__(self):
         return self.__str__()
@@ -359,6 +349,7 @@ class TestSortTags(_BaseSuiteTreeTest):
         # print("tref = {0}\ndref = {1}\n".format(tref, dref))
         assert_equal(dref, tref)
         # self._tagsdialog.show_dialog()
+
 
 if __name__ == '__main__':
     unittest.main()
