@@ -508,8 +508,12 @@ class _TestOrUserKeywordHandler(_CanBeRenamed, _ActionHandler):
     accepts_drag = lambda *args: False
     is_draggable = True
     _actions = [
-        _ActionHandler._label_copy_macro, 'Move Up\tCtrl-Up',
-        'Move Down\tCtrl-Down', _ActionHandler._label_rename, '---', 'Delete'
+        _ActionHandler._label_copy_macro,
+        'Move Up\tCtrl-Up',
+        'Move Down\tCtrl-Down',
+        _ActionHandler._label_rename,
+        '---',
+        'Delete'
     ]
 
     def remove(self):
@@ -584,7 +588,13 @@ class VariableHandler(_CanBeRenamed, _ActionHandler):
     is_draggable = True
     is_variable = True
     OnMoveUp = OnMoveDown = lambda *args: None
-    _actions = [_ActionHandler._label_rename, 'Delete']
+    _actions = [
+        'Move Up\tCtrl-Up',
+        'Move Down\tCtrl-Down',
+        _ActionHandler._label_rename,
+        '---',
+        'Delete'
+    ]
 
     @overrides(_ActionHandler)
     def double_clicked(self):
@@ -598,6 +608,14 @@ class VariableHandler(_CanBeRenamed, _ActionHandler):
 
     def rename(self, new_name):
         self.controller.execute(UpdateVariableName(new_name))
+
+    def OnMoveUp(self, event):
+        if self.controller.move_up():
+            self._tree.move_up(self._node)
+
+    def OnMoveDown(self, event):
+        if self.controller.move_down():
+            self._tree.move_down(self._node)
 
     @property
     def index(self):

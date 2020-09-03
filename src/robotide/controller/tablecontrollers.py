@@ -100,6 +100,8 @@ class VariableTableController(_TableController, _WithListOperations):
         return self._table.variables
 
     def move_up(self, index):
+        if index == 0:
+            return False
         ctrl = self[index]
         _WithListOperations.move_up(self, index)
         other = self[index]
@@ -107,6 +109,8 @@ class VariableTableController(_TableController, _WithListOperations):
         RideVariableMovedUp(item=ctrl, other=other).publish()
 
     def move_down(self, index):
+        if index + 1 == len(self._items):
+            return False
         ctrl = self[index]
         _WithListOperations.move_down(self, index)
         other = self[index]
