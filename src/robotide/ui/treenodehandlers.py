@@ -18,8 +18,8 @@ import wx
 from robotide.controller.ctrlcommands import (
     RenameKeywordOccurrences, RemoveMacro, AddKeyword, AddTestCase, RenameTest,
     CopyMacroAs, AddVariable, UpdateVariableName, RenameFile, DeleteItem,
-    RenameResourceFile, DeleteFile, SortKeywords, Include, Exclude, OpenContainingFolder,
-    RemoveReadOnly)
+    RenameResourceFile, DeleteFile, SortTests, SortKeywords, SortVariables, Include, Exclude,
+    OpenContainingFolder, RemoveReadOnly)
 from robotide.controller.settingcontrollers import VariableController
 from robotide.controller.macrocontrollers import (
     TestCaseController, UserKeywordController)
@@ -64,7 +64,9 @@ class _ActionHandler:
     _label_add_directory = 'New Directory'
     _label_new_test_case = 'New Test Case\tCtrl-Shift-T'
     _label_new_user_keyword = 'New User Keyword\tCtrl-Shift-K'
+    _label_sort_tests = 'Sort Tests'
     _label_sort_keywords = 'Sort Keywords'
+    _label_sort_variables = 'Sort Variables'
     _label_new_scalar = 'New Scalar\tCtrl-Shift-V'
     _label_new_list_variable = 'New List Variable\tCtrl-Shift-L'
     _label_new_dict_variable = 'New Dictionary Variable'
@@ -246,9 +248,17 @@ class TestDataHandler(_ActionHandler):
     def rename(self, new_name):
         return False
 
+    def OnSortTests(self, event):
+        """Sorts the keywords inside the treenode"""
+        self.controller.execute(SortTests())
+
     def OnSortKeywords(self, event):
         """Sorts the keywords inside the treenode"""
         self.controller.execute(SortKeywords())
+
+    def OnSortVariables(self, event):
+        """Sorts the keywords inside the treenode"""
+        self.controller.execute(SortVariables())
 
     @property
     def can_be_rendered(self):
@@ -396,9 +406,11 @@ class ResourceFileHandler(_FileHandlerThanCanBeRenamed, TestDataHandler):
                 '---',
                 _ActionHandler._label_rename,
                 _ActionHandler._label_change_format,
-                _ActionHandler._label_sort_keywords,
                 _ActionHandler._label_find_usages,
                 _ActionHandler._label_delete,
+                '---',
+                _ActionHandler._label_sort_keywords,
+                _ActionHandler._label_sort_variables,
                 '---',
                 _ActionHandler._label_remove_readonly,
                 _ActionHandler._label_open_folder
@@ -443,8 +455,11 @@ class TestCaseFileHandler(_FileHandlerThanCanBeRenamed, TestDataHandler):
                 '---',
                 _ActionHandler._label_rename,
                 _ActionHandler._label_change_format,
-                _ActionHandler._label_sort_keywords,
                 _ActionHandler._label_delete,
+                '---',
+                _ActionHandler._label_sort_tests,
+                _ActionHandler._label_sort_keywords,
+                _ActionHandler._label_sort_variables,
                 '---',
                 _ActionHandler._label_select_all,
                 _ActionHandler._label_deselect_all,
