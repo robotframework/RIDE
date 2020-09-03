@@ -504,10 +504,6 @@ class SourceEditor(wx.Panel):
         return position
 
     def _show_search_results(self, position, txt):
-        # if text is found start end end of the found text is returned but we do need just starting position which is the first value
-        if type(position) is tuple:
-            position = position[0]
-
         if position != -1:
             self._editor.SetCurrentPos(position)
             self._editor.SetSelection(position, position + len(txt))
