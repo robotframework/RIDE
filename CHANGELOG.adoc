@@ -37,6 +37,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Changed
 
+- Changed minimum number of rows and columns, because blank cells would not have correct colour
 - Modified robot passed and failed icons to be easier to differentiate
 - When searching in Text Editor by using Ctrl-G the search is done from the begining of text
 - On MacOS, grid cell will not lose focus anymore when mouse is moving outside of the cell's boundary
