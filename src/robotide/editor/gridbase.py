@@ -28,7 +28,7 @@ from .clipboard import ClipboardHandler
 
 
 class GridEditor(grid.Grid):
-    _col_add_threshold = 1
+    _col_add_threshold = 10
     _popup_items = [
         'Insert Cells\tCtrl-Shift-I', 'Delete Cells\tCtrl-Shift-D',
         'Insert Rows\tCtrl-I', 'Delete Rows\tCtrl-D', '---',
@@ -92,10 +92,11 @@ class GridEditor(grid.Grid):
         return match.group()
 
     def _expand_if_necessary(self, row, col):
-        while row >= self.NumberRows - 1:
+        # Changed col and row fill because of blank spacing not changing color
+        while self.NumberRows <= max(row, 25):
             self.AppendRows(1)
-        while col >= self.NumberCols - self._col_add_threshold:
-            self.AppendCols(1)
+        while self.NumberCols <= max(col, 40):
+            self.AppendCols(self._col_add_threshold)
 
     def has_focus(self):
         return self.FindFocus() == self
