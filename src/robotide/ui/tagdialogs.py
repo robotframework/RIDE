@@ -225,7 +225,6 @@ class ViewAllTagsDialog(wx.Frame, listmix.ColumnSorterMixin):
 
     def OnSelectItem(self, event):
         self._index = event.GetIndex()
-        print(f"DEBUG: OnSelectItem tags idx {self._index} flag {not self._tags_list.IsChecked(self._index)} ")
         self._tags_list.CheckItem(self._index, not self._tags_list.IsChecked(self._index))
 
     def OnShowTestsWithThisTag(self, event):
@@ -303,9 +302,7 @@ class TagsListCtrl(wx.ListCtrl, listmix.CheckListCtrlMixin,
         self._clientData = {}
 
     def OnCheckItem(self, index, flag):
-        print(f"DEBUG: OnCheckItem tags idx {index} flag {flag} ")
         if self._dlg:
-            print(f"DEBUG: OnCheckItem _dlg exists call  item_in_kw_list_checked")
             self._dlg.item_in_kw_list_checked(index, flag)
 
     def get_checked_items(self):
