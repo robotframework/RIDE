@@ -249,7 +249,7 @@ class TestDataHandler(_ActionHandler):
         return False
 
     def OnSortTests(self, event):
-        """Sorts the keywords inside the treenode"""
+        """Sorts the tests inside the treenode"""
         self.controller.execute(SortTests())
 
     def OnSortKeywords(self, event):
@@ -257,7 +257,7 @@ class TestDataHandler(_ActionHandler):
         self.controller.execute(SortKeywords())
 
     def OnSortVariables(self, event):
-        """Sorts the keywords inside the treenode"""
+        """Sorts the variables inside the treenode"""
         self.controller.execute(SortVariables())
 
     @property
