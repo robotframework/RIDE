@@ -26,8 +26,8 @@ from ..controller.ctrlcommands import ChangeCellValue, ClearArea, \
     AddKeywordFromCells, MoveRowsUp, MoveRowsDown, ExtractScalar, ExtractList, \
     InsertArea
 from ..controller.cellinfo import TipMessage, ContentType, CellType
-from ..publish import (RideItemStepsChanged, RideSaved,
-                              RideSettingsChanged, PUBLISHER, RideBeforeSaving)
+from ..publish import (RideItemStepsChanged, RideSaved, RideSettingsChanged,
+                       PUBLISHER, RideBeforeSaving)
 from ..usages.UsageRunner import Usages, VariableUsages
 from ..ui.progress import RenameProgressObserver
 from .. import robotapi
@@ -36,11 +36,10 @@ from ..widgets import Dialog, PopupMenu, PopupMenuItems
 
 from .gridbase import GridEditor
 from .tooltips import GridToolTips
-from .editordialogs import UserKeywordNameDialog, ScalarVariableDialog, \
-    ListVariableDialog
+from .editordialogs import UserKeywordNameDialog, ScalarVariableDialog, ListVariableDialog
 from .contentassist import ExpandingContentAssistTextCtrl
 from .gridcolorizer import Colorizer
-
+from ..pluginapi import Plugin
 
 _DEFAULT_FONT_SIZE = 11
 
@@ -58,7 +57,7 @@ def requires_focus(function):
     return decorated_function
 
 
-class KeywordEditor(GridEditor):
+class KeywordEditor(GridEditor, Plugin):
     _no_cell = (-1, -1)
     _popup_menu_shown = False
     dirty = property(lambda self: self._controller.dirty)
@@ -159,6 +158,8 @@ class KeywordEditor(GridEditor):
         if word_wrap:
             self.SetDefaultRowSize(wx.grid.GRID_AUTOSIZE)
         self.SetDefaultCellOverflow(False)  # DEBUG
+        self.autosize()
+        self._colorize_grid()
 
     def _configure_grid(self):
         self._set_cells()
@@ -211,6 +212,7 @@ class KeywordEditor(GridEditor):
                   or 'auto size cols' in setting
                   or 'word wrap' in setting):
                 self._set_cells()
+                return
             self.autosize()
             self._colorize_grid()
 
