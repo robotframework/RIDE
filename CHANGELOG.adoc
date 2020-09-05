@@ -11,6 +11,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Added
 
+- Added General settings to Preferences, to change Font Size and Face, and colours
 - Added background colour globally on panels and dialogs
 - Added menu option to ``Move Up`` and ``Move Down`` variables in Tree
 - Added menu option to ``Sort Variables`` in resources from Tree 

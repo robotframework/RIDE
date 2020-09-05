@@ -18,8 +18,9 @@ import sys
 import os
 import wx
 import tempfile
-from robotide.version import VERSION
-from robotide.robotapi import ROBOT_LOGGER
+
+from ..version import VERSION
+from ..robotapi import ROBOT_LOGGER
 from . import logger
 
 APP = None

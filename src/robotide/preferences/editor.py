@@ -33,6 +33,7 @@ dialog.
 import wx
 from wx.lib.scrolledpanel import ScrolledPanel
 from wx import Colour
+from . import RideSettings
 
 # any more than TREE_THRESHOLD panels when style is "auto" forces
 # the UI into showing a hierarchical tree
@@ -46,14 +47,19 @@ class PreferenceEditor(wx.Dialog):
                            style=wx.RESIZE_BORDER | wx.DEFAULT_DIALOG_STYLE)
         # set Left to Right direction (while we don't have localization)
         self.SetLayoutDirection(wx.Layout_LeftToRight)
-        self.SetBackgroundColour(Colour(200, 222, 40))
-        self.SetOwnBackgroundColour(Colour(200, 222, 40))
-        self.SetForegroundColour(Colour(50, 0, 70))
-        self.SetOwnForegroundColour(Colour(50, 0, 70))
         self.Bind(wx.EVT_CLOSE, self.OnClose)
         self._current_panel = None
         self._panels = []
         self._settings = preferences.settings
+        self._general_settings = self._settings['General']
+        self.font = self.GetFont()
+        self.font.SetFaceName(self._general_settings['font face'])
+        self.font.SetPointSize(self._general_settings['font size'])
+        self.SetFont(self.font)
+        self.SetBackgroundColour(Colour(self._general_settings['background']))
+        self.SetOwnBackgroundColour(Colour(self._general_settings['background']))
+        self.SetForegroundColour(Colour(self._general_settings['foreground']))
+        self.SetOwnForegroundColour(Colour(self._general_settings['foreground']))
         self._closing = False
 
         panels = preferences.preference_panels
@@ -70,10 +76,11 @@ class PreferenceEditor(wx.Dialog):
             self._sw.SplitVertically(self._tree, self._container, 210)
             sizer = wx.BoxSizer(wx.VERTICAL)
             sizer.Add(self._sw, 1, wx.EXPAND)
-            self._tree.SetBackgroundColour(Colour(200, 222, 40))
-            self._tree.SetOwnBackgroundColour(Colour(200, 222, 40))
-            self._tree.SetForegroundColour(Colour(50, 0, 70))
-            self._tree.SetOwnForegroundColour(Colour(50, 0, 70))
+            self._tree.SetFont(self.font)
+            self._tree.SetBackgroundColour(Colour(self._general_settings['background']))
+            self._tree.SetOwnBackgroundColour(Colour(self._general_settings['background']))
+            self._tree.SetForegroundColour(Colour(self._general_settings['foreground']))
+            self._tree.SetOwnForegroundColour(Colour(self._general_settings['foreground']))
             self._tree.Bind(wx.EVT_TREE_SEL_CHANGED, self.OnTreeSelection)
             self._populate_tree(panels)
             self._tree.SelectItem(self._tree.GetFirstChild(self._tree.GetRootItem())[0])
@@ -190,6 +197,8 @@ class PanelContainer(wx.Panel):
         super(PanelContainer, self).__init__(*args, **kwargs)
 
         self._current_panel = None
+        self._settings = RideSettings()
+        self.settings = self._settings['General']
         self.title = wx.StaticText(self, label="Your message here")
         self.panels_container = ScrolledPanel(self, wx.ID_ANY, style=wx.TAB_TRAVERSAL)
         self.panels_container.SetupScrolling()
@@ -201,9 +210,14 @@ class PanelContainer(wx.Panel):
         self.panels_container.SetSizer(wx.BoxSizer(wx.VERTICAL))
 
         font = self.title.GetFont()
-        font.SetPointSize(font.GetPointSize()+2)
+        font.SetFaceName(self.settings['font face'])
+        font.SetPointSize(self.settings['font size'])
+        font.MakeLarger()
         self.title.SetFont(font)
-        self.title.SetForegroundColour("#000000")
+        self.title.SetForegroundColour(self.settings['foreground'])
+        self.title.SetBackgroundColour(self.settings['background'])
+        self.SetForegroundColour(self.settings['foreground'])
+        self.SetBackgroundColour(self.settings['background'])
 
     def AddPanel(self, panel_class, settings):
         """Add a panel to the dialog"""
@@ -216,11 +230,23 @@ class PanelContainer(wx.Panel):
         if self._current_panel is not None:
             self._current_panel.Hide()
         self._current_panel = panel
+        self.SetForegroundColour(self.settings['foreground'])
+        self.SetBackgroundColour(self.settings['background'])
+        panel.SetForegroundColour(self.settings['foreground'])
+        panel.SetBackgroundColour(self.settings['background'])
         panel.Show()
         sizer = self.panels_container.GetSizer()
         item = sizer.GetItem(panel)
         title = getattr(panel, "title", panel.location[-1])
-        self.title.SetLabel(title)
+        self.SetTitle(title)
+        font = self.title.GetFont()
+        font.SetFaceName(self.settings['font face'])
+        font.SetPointSize(self.settings['font size'])
+        self.SetFont(font)
+        font.MakeLarger()
+        self.title.SetFont(font)
+        self.title.SetForegroundColour(self.settings['foreground'])
+        self.title.SetBackgroundColour(self.settings['background'])
         if item is None:
             sizer.Add(panel, 1, wx.EXPAND)
         sizer.Layout()
