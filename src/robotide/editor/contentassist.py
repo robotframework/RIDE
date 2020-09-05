@@ -234,10 +234,10 @@ class ContentAssistFileButton(_ContentAssistTextCtrlBase, FileBrowseButton):
         self._controller = controller
         self._browsed = False
         _ContentAssistTextCtrlBase.__init__(self, suggestion_source)
-        self.SetBackgroundColour(Colour(200, 222, 40))
-        self.SetOwnBackgroundColour(Colour(200, 222, 40))
-        self.SetForegroundColour(Colour(7, 0, 70))
-        self.SetOwnForegroundColour(Colour(7, 0, 70))
+        self.SetBackgroundColour(Colour(context.POPUP_BACKGROUND))
+        self.SetOwnBackgroundColour(Colour(context.POPUP_BACKGROUND))
+        self.SetForegroundColour(Colour(context.POPUP_FOREGROUND))
+        self.SetOwnForegroundColour(Colour(context.POPUP_FOREGROUND))
 
     def Bind(self, *args):
         self.textControl.Bind(*args)
@@ -453,6 +453,7 @@ class ContentAssistList(wx.ListCtrl):
         self._activation_callback = activation_callback
         self.SetSize(parent.GetSize())
         self.SetBackgroundColour(context.POPUP_BACKGROUND)
+        self.SetForegroundColour(context.POPUP_FOREGROUND)
         self.Bind(wx.EVT_LIST_ITEM_SELECTED, selection_callback)
         self.Bind(wx.EVT_LIST_ITEM_ACTIVATED, activation_callback)
 
