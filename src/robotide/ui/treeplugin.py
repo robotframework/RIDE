@@ -840,6 +840,8 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl):
             handler = self._controller.get_handler(node)
             if hasattr(handler.controller, 'get_namespace'):
                 data_file_ns = handler.controller.get_namespace()
+                if not data_file_ns:
+                    return
                 cur_dir = handler.controller.directory
                 data_file_ns.update_cur_dir_global_var(cur_dir)
                 return
