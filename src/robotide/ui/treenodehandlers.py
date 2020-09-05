@@ -64,9 +64,9 @@ class _ActionHandler:
     _label_add_directory = 'New Directory'
     _label_new_test_case = 'New Test Case\tCtrl-Shift-T'
     _label_new_user_keyword = 'New User Keyword\tCtrl-Shift-K'
+    _label_sort_variables = 'Sort Variables'
     _label_sort_tests = 'Sort Tests'
     _label_sort_keywords = 'Sort Keywords'
-    _label_sort_variables = 'Sort Variables'
     _label_new_scalar = 'New Scalar\tCtrl-Shift-V'
     _label_new_list_variable = 'New List Variable\tCtrl-Shift-L'
     _label_new_dict_variable = 'New Dictionary Variable'
@@ -409,8 +409,8 @@ class ResourceFileHandler(_FileHandlerThanCanBeRenamed, TestDataHandler):
                 _ActionHandler._label_find_usages,
                 _ActionHandler._label_delete,
                 '---',
-                _ActionHandler._label_sort_keywords,
                 _ActionHandler._label_sort_variables,
+                _ActionHandler._label_sort_keywords,
                 '---',
                 _ActionHandler._label_remove_readonly,
                 _ActionHandler._label_open_folder
@@ -457,9 +457,9 @@ class TestCaseFileHandler(_FileHandlerThanCanBeRenamed, TestDataHandler):
                 _ActionHandler._label_change_format,
                 _ActionHandler._label_delete,
                 '---',
+                _ActionHandler._label_sort_variables,
                 _ActionHandler._label_sort_tests,
                 _ActionHandler._label_sort_keywords,
-                _ActionHandler._label_sort_variables,
                 '---',
                 _ActionHandler._label_select_all,
                 _ActionHandler._label_deselect_all,
