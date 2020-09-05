@@ -22,6 +22,7 @@ from .saving import SavingPreferences
 from .editors import GridEditorPreferences, TextEditorPreferences,\
     TestRunnerPreferences
 from .excludes import ExcludePreferences
+from .general import DefaultPreferences
 
 
 class Preferences(object):
@@ -44,6 +45,7 @@ class Preferences(object):
             self._preference_panels.remove(panel_class)
 
     def _add_builtin_preferences(self):
+        self.add(DefaultPreferences)
         self.add(SavingPreferences)
         self.add(ImportPreferences)
         self.add(GridEditorPreferences)

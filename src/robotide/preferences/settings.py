@@ -296,7 +296,6 @@ class SettingsMigrator(object):
                 'Could not open settings file "%s" for writing' % path)
 
 
-
 class SectionError(Exception):
     """Used when section is tried to replace with normal value or vice versa."""
 
