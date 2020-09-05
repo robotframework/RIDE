@@ -15,8 +15,8 @@
 
 import wx
 import re
-from wx import grid, Colour
 from os import linesep
+from wx import grid, Colour
 
 from ..widgets import PopupCreator, PopupMenuItems
 from ..context import IS_WINDOWS
