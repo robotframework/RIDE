@@ -255,7 +255,7 @@ class SettingValueDisplay(wx.TextCtrl):
 
     def _get_background_colour(self, match=None):
         if self._value is None:
-            return Colour(100, 122, 40)  # 'light grey'
+            return Colour(context.POPUP_BACKGROUND)  # 100, 122, 40  # 'light grey'
         if match is not None and self.contains(match):
             return self._colour_provider.get_highlight_color()
         return Colour(200, 222, 40)  # 'white'

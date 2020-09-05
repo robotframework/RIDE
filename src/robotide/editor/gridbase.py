@@ -15,12 +15,8 @@
 
 import wx
 import re
-<<<<<<< HEAD
-from wx import grid
 from os import linesep
-=======
 from wx import grid, Colour
->>>>>>> 41e9d1b7... More backgrounds. Missing HTMLpanels, settings fields, File explorer
 
 from ..widgets import PopupCreator, PopupMenuItems
 from ..context import IS_WINDOWS
