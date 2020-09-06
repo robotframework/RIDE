@@ -944,7 +944,7 @@ class ChangeCellValue(_StepsChangingCommand):
     def __init__(self, row, col, value):
         self._row = row
         self._col = col
-        self._value = value.replace('\n', '\\n')
+        self._value = self._escape_newlines(value)
 
     def change_steps(self, context):
         steps = context.steps
@@ -958,6 +958,11 @@ class ChangeCellValue(_StepsChangingCommand):
         self._step(context).remove_empty_columns_from_end()
         assert self._validate_postcondition(context),'Should have correct value after change'
         return True
+
+    def _escape_newlines(self, item):
+        for newline in ('\r\n', '\n', '\r'):
+            item = item.replace(newline, '\\n')
+        return item
 
     def _validate_postcondition(self, context):
         value = self._step(context).get_value(self._col).strip()

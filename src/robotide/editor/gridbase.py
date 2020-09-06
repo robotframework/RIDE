@@ -15,6 +15,7 @@
 
 import wx
 import re
+from os import linesep
 from wx import grid, Colour
 
 from ..widgets import PopupCreator, PopupMenuItems
@@ -29,6 +30,10 @@ class GridEditor(grid.Grid):
         'Insert Rows\tCtrl-I', 'Delete Rows\tCtrl-D', '---',
         'Select All\tCtrl-A', '---', 'Cut\tCtrl-X', 'Copy\tCtrl-C',
         'Paste\tCtrl-V', 'Insert\tCtrl-Shift-V', '---', 'Delete\tDel']
+    _regexps = (re.compile(r'(\\+)r\\n'),
+                re.compile(r'(\\+)n'),
+                re.compile(r'(\\+)r'),
+                re.compile(r'(\\+) '))
 
     def __init__(self, parent, num_rows, num_cols, popup_creator=None):
         grid.Grid.__init__(self, parent)
@@ -58,9 +63,29 @@ class GridEditor(grid.Grid):
         if update_history:
             self._update_history()
         self._expand_if_necessary(row, col)
-        # escape \n to support multi lines display in grid cells
-        value = re.sub(r"(?<!\\)\\n", '\n', value)
+        # unescape \n to support multi lines display in grid cells
+        value = self._unescape_newlines_and_whitespaces(value)
         self.SetCellValue(row, col, value)
+
+    def _unescape_newlines_and_whitespaces(self, item):
+        for regexp in self._regexps:
+            if regexp.pattern.endswith(' '):
+                item = regexp.sub(self._whitespace_replacer, item)
+            else:
+                item = regexp.sub(self._newline_replacer, item)
+        return item
+
+    def _whitespace_replacer(self, match):
+        return self._replacer(' ', match)
+
+    def _newline_replacer(self, match):
+        return self._replacer(linesep, match)
+
+    def _replacer(self, char, match):
+        slashes = len(match.group(1))
+        if slashes % 2 == 1:
+            return '\\' * (slashes - 1) + char
+        return match.group()
 
     def _expand_if_necessary(self, row, col):
         # Changed col and row fill because of blank spacing not changing color
