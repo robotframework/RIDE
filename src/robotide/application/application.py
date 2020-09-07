@@ -16,6 +16,7 @@
 import os
 import wx
 import locale
+
 locale.setlocale(locale.LC_ALL, 'C')
 
 from contextlib import contextmanager
@@ -87,7 +88,36 @@ class RIDE(wx.App):
         wx.CallLater(200, ReleaseNotes(self).bring_to_front)
         wx.CallLater(200, self.fileexplorerplugin._update_tree)
         self.Bind(wx.EVT_ACTIVATE_APP, self.OnAppActivate)
+        self.Bind(wx.EVT_UPDATE_UI, self.SetGlobalColour)
         return True
+
+    def SetGlobalColour(self, event):
+        app = wx.App.Get()
+        _root = app.GetTopWindow()
+        all_windows = list()
+
+        def _iterate_all_windows(root):
+            if hasattr(root, 'GetChildren'):
+                children = root.GetChildren()
+                if children:
+                    for c in children:
+                        _iterate_all_windows(c)
+            all_windows.append(root)
+
+        _iterate_all_windows(_root)
+
+        for w in all_windows:
+            if hasattr(w, 'SetBackgroundColour'):
+                w.SetBackgroundColour(wx.Colour(44, 134, 179))
+
+            if hasattr(w, 'SetOwnBackgroundColour'):
+                w.SetOwnBackgroundColour(wx.Colour(44, 134, 179))
+
+            if hasattr(w, 'SetForegroundColour'):
+                w.SetForegroundColour(wx.Colour(7, 0, 70))
+
+            if hasattr(w, 'SetOwnForegroundColour'):
+                w.SetOwnForegroundColour(wx.Colour(7, 0, 70))
 
     def _publish_system_info(self):
         publish.RideLogMessage(context.SYSTEM_INFO).publish()
