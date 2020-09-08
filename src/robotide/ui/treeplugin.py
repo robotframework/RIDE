@@ -22,13 +22,12 @@ from wx.lib.agw.aui import GetManager
 from wx.lib.agw.customtreectrl import GenericTreeItem
 from wx.lib.mixins import treemixin
 
-from ..controller.macrocontrollers import TestCaseController
-
 TREETEXTCOLOUR = Colour(0xA9, 0xA9, 0xA9)
 
-from ..controller.ui.treecontroller import TreeController, TestSelectionController
+# from ..controller.ui.treecontroller import TreeController, TestSelectionController
+
 from ..context import IS_WINDOWS
-from ..controller.filecontrollers import ResourceFileController, TestDataDirectoryController, TestCaseFileController
+# from ..controller.filecontrollers import ResourceFileController, TestDataDirectoryController, TestCaseFileController
 from ..publish.messages import (RideTestRunning, RideTestPaused, RideTestPassed, RideTestFailed,
                                 RideTestExecutionStarted, RideImportSetting, RideExcludesChanged, RideIncludesChanged,
                                 RideOpenSuite, RideNewProject)
@@ -169,6 +168,8 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl):
     _RESOURCES_NODE_LABEL = 'External Resources'
 
     def __init__(self, parent, action_registerer, settings=None):
+        from ..controller.ui.treecontroller import TreeController
+
         self._checkboxes_for_tests = False
         self._test_selection_controller = \
             self._create_test_selection_controller()
@@ -196,6 +197,8 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl):
             self.OnCancelEdit = self._on_cancel_edit
 
     def _create_test_selection_controller(self):
+        from ..controller.ui.treecontroller import TestSelectionController
+
         tsc = TestSelectionController()
         PUBLISHER.subscribe(tsc.clear_all, RideOpenSuite)
         PUBLISHER.subscribe(tsc.clear_all, RideNewProject)
@@ -314,6 +317,8 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl):
         self._images.set_execution_results(message.results)
 
     def _test_result(self, message):
+        from ..controller.macrocontrollers import TestCaseController
+
         test: TestCaseController = message.item
         if message.topic == 'ride.test.passed':
             test.run_passed = True
@@ -451,6 +456,8 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl):
         return os.path.normcase(os.path.normpath(os.path.abspath(path)))
 
     def _create_node_with_handler(self, parent_node, controller, index=None):
+        from ..controller.filecontrollers import ResourceFileController
+
         if IS_WINDOWS and isinstance(controller, ResourceFileController):
             resourcefile = self._normalize(controller.filename)
             pname = parent_node.GetText()
@@ -876,6 +883,8 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl):
         self._test_selection_controller.select_all(test_controllers,selected)
 
     def retrieveTestCaseControllers(self, item: GenericTreeItem):
+        from ..controller.filecontrollers import TestDataDirectoryController, TestCaseFileController
+
         data = item.GetData()
         if isinstance(data, TestDataDirectoryHandler):
             item_controller: TestDataDirectoryController = data.tests.parent

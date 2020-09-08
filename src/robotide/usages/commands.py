@@ -15,16 +15,18 @@
 
 import os
 
-from ..controller.ctrlcommands import FindOccurrences, _Command, FindVariableOccurrences
-from ..controller.macrocontrollers import KeywordNameController
+from ..controller import ctrlcommands
+# import FindOccurrences, _Command, FindVariableOccurrences
+from ..controller import macrocontrollers
+# import KeywordNameController
 
 
-class FindUsages(FindOccurrences):
+class FindUsages(ctrlcommands.FindOccurrences):
 
     def execute(self, context):
         prev = None
-        for occ in FindOccurrences.execute(self, context):
-            if isinstance(occ.item, KeywordNameController):
+        for occ in ctrlcommands.FindOccurrences.execute(self, context):
+            if isinstance(occ.item, macrocontrollers.KeywordNameController):
                 continue
             if prev == occ:
                 prev.count += 1
@@ -36,11 +38,11 @@ class FindUsages(FindOccurrences):
             yield prev
 
 
-class FindVariableUsages(FindVariableOccurrences):
+class FindVariableUsages(ctrlcommands.FindVariableOccurrences):
     
     def execute(self, context):
         prev = None
-        for occ in FindVariableOccurrences.execute(self, context):
+        for occ in ctrlcommands.FindVariableOccurrences.execute(self, context):
             if prev == occ:
                 prev.count += 1
             else:
@@ -51,14 +53,14 @@ class FindVariableUsages(FindVariableOccurrences):
             yield prev
 
 
-class FindResourceUsages(_Command):
+class FindResourceUsages(ctrlcommands._Command):
 
     def execute(self, context):
         for imp in context.get_where_used():
             yield ResourceUsage(context, imp)
 
 
-class FindTestFolderUsages(_Command):
+class FindTestFolderUsages(ctrlcommands._Command):
 
     def execute(self, context):
         for imp in context.get_where_used():

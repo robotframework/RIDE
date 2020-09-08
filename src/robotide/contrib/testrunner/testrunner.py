@@ -29,24 +29,24 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import socketserver as SocketServer
 import atexit
 import codecs
 import os
 import shutil
-import signal
 import socket
-import socketserver as SocketServer
 import subprocess
-import sys
 import tempfile
 import threading
+import signal
+import sys
 from queue import Empty, Queue
 
 from robotide import utils
+from robotide.robotapi import LOG_LEVELS
 from robotide.context import IS_WINDOWS
 from robotide.contrib.testrunner import TestRunnerAgent
 from robotide.controller.testexecutionresults import TestExecutionResults
-from robotide.robotapi import LOG_LEVELS
 
 try:
     from robotide.lib.robot.utils import encoding

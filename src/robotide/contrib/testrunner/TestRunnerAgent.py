@@ -69,8 +69,8 @@ import copy
 import os
 import pickle
 import platform
-import socket
 import sys
+import socket
 import threading
 
 PLATFORM = platform.python_implementation()

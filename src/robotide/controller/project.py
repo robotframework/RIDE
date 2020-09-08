@@ -24,8 +24,8 @@ from .robotdata import NewTestCaseFile, NewTestDataDirectory
 from ..context import LOG
 from ..controller.ctrlcommands import NullObserver, SaveFile
 from ..publish.messages import RideOpenSuite, RideNewProject, RideFileNameChanged
-from ..spec.librarydatabase import DATABASE_FILE
-from ..spec.librarymanager import LibraryManager
+from .. import spec
+# from ..spec.librarymanager import LibraryManager
 from ..spec.xmlreaders import SpecInitializer
 from ..utils import overrides
 
@@ -49,7 +49,7 @@ class Project(_BaseController, WithNamespace):
     @staticmethod
     def _construct_library_manager(library_manager, settings):
         return library_manager or \
-            LibraryManager(DATABASE_FILE, SpecInitializer(settings.get('library xml directories', [])[:]))
+            spec.LibraryManager(spec.DATABASE_FILE, SpecInitializer(settings.get('library xml directories', [])[:]))
 
     def __del__(self):
         if self._library_manager:

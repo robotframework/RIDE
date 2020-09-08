@@ -20,14 +20,11 @@ import shutil
 from robotide.robotapi import TestCase, TestCaseFile, TestDataDirectory
 from nose.tools import (assert_equal, assert_true, assert_false)
 
-from robotide.controller.filecontrollers import TestCaseFileController, \
-    TestDataDirectoryController, _FileSystemElement
-from robotide.controller.tablecontrollers import TestCaseController
-from robotide.controller.ctrlcommands import AddTestCaseFile, AddTestDataDirectory,\
-    SortKeywords, Undo, Redo
+from robotide.controller.filecontrollers import TestCaseFileController, TestDataDirectoryController, _FileSystemElement
+from robotide.controller.macrocontrollers import TestCaseController
+from robotide.controller.ctrlcommands import AddTestCaseFile, AddTestDataDirectory, SortKeywords, Undo, Redo
 from robotide.publish import PUBLISHER
-from robotide.publish.messages import RideDataChangedToDirty,\
-RideDataDirtyCleared
+from robotide.publish.messages import RideDataChangedToDirty, RideDataDirtyCleared
 
 from resources import SUITEPATH
 import datafilereader

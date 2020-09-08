@@ -24,9 +24,8 @@ from itertools import chain
 from .. import robotapi, utils
 from ..publish import PUBLISHER, RideSettingsChanged, RideLogMessage
 from ..robotapi import VariableFileSetter
-from robotide.spec.iteminfo import TestCaseUserKeywordInfo,\
-    ResourceUserKeywordInfo, VariableInfo, _UserKeywordInfo, ArgumentInfo
-
+from ..spec.iteminfo import (TestCaseUserKeywordInfo, ResourceUserKeywordInfo, VariableInfo, _UserKeywordInfo,
+                             ArgumentInfo)
 from .cache import LibraryCache, ExpiringCache
 from .resourcefactory import ResourceFactory
 from .embeddedargs import EmbeddedArgsHandler

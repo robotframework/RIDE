@@ -14,7 +14,7 @@
 #  limitations under the License.
 
 from robotide.preferences.settings import Settings
-from robotide.preferences.excludes import Excludes
+from robotide.preferences.excludes_class import Excludes
 from robotide.publish import PUBLISHER
 
 

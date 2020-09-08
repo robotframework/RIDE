@@ -28,6 +28,7 @@ class CommandCreator(TestRunner):
     def _write_argfile(self, argfile, args):
         self.arguments = args
 
+
 class CommandCreationTestCase(unittest.TestCase):
 
     def test_command(self):
@@ -61,7 +62,6 @@ class CommandCreationTestCase(unittest.TestCase):
         self._min_log_level_setting_test(['prefix'], 'INFO')
         self._min_log_level_setting_test(['-L', 'obscure'], 'INFO')
         self._min_log_level_setting_test(['--loglevel', 'WARN:TRACE'], 'WARN')
-
 
     def _min_log_level_setting_test(self, command_as_list, expected_level):
         creator = CommandCreator(None)

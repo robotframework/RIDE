@@ -15,13 +15,18 @@
 
 import wx
 
-from ..controller.ctrlcommands import (RenameKeywordOccurrences, RemoveMacro, AddKeyword, AddTestCase, RenameTest,
-                                       CopyMacroAs, AddVariable, UpdateVariableName, RenameFile, RenameResourceFile,
-                                       DeleteFile, SortKeywords, Include, Exclude, OpenContainingFolder, RemoveReadOnly)
-from ..controller.filecontrollers import (TestDataDirectoryController, ResourceFileController, TestCaseFileController,
-                                          ExcludedDirectoryController, DirtyRobotDataException)
-from ..controller.macrocontrollers import TestCaseController, UserKeywordController
-from ..controller.settingcontrollers import VariableController
+from ..controller import ctrlcommands
+# import (RenameKeywordOccurrences, RemoveMacro, AddKeyword, AddTestCase, RenameTest,
+#         CopyMacroAs, AddVariable, UpdateVariableName, RenameFile, RenameResourceFile,
+#         DeleteFile, SortKeywords, Include, Exclude, OpenContainingFolder, RemoveReadOnly)
+
+from ..controller import filecontrollers
+# import (TestDataDirectoryController, ResourceFileController, TestCaseFileController,
+#         ExcludedDirectoryController, DirtyRobotDataException)
+from ..controller import macrocontrollers
+# import TestCaseController, UserKeywordController
+from ..controller import settingcontrollers
+# import VariableController
 from ..editor.editordialogs import (TestCaseNameDialog, UserKeywordNameDialog, ScalarVariableDialog, ListVariableDialog,
                                     CopyUserKeywordDialog, DictionaryVariableDialog)
 from ..publish import RideOpenVariableDialog, RideTestSelectedForRunningChanged, PUBLISHER
@@ -38,13 +43,13 @@ from .resourcedialogs import ResourceRenameDialog, ResourceDeleteDialog
 
 def action_handler_class(controller):
     return {
-        TestDataDirectoryController: TestDataDirectoryHandler,
-        ResourceFileController: ResourceFileHandler,
-        TestCaseFileController: TestCaseFileHandler,
-        TestCaseController: TestCaseHandler,
-        UserKeywordController: UserKeywordHandler,
-        VariableController: VariableHandler,
-        ExcludedDirectoryController: ExcludedDirectoryHandler
+        filecontrollers.TestDataDirectoryController: TestDataDirectoryHandler,
+        filecontrollers.ResourceFileController: ResourceFileHandler,
+        filecontrollers.TestCaseFileController: TestCaseFileHandler,
+        macrocontrollers.TestCaseController: TestCaseHandler,
+        macrocontrollers.UserKeywordController: UserKeywordHandler,
+        settingcontrollers.VariableController: VariableHandler,
+        filecontrollers.ExcludedDirectoryController: ExcludedDirectoryHandler
     }[controller.__class__]
 
 
@@ -239,7 +244,7 @@ class TestDataHandler(_ActionHandler):
 
     def OnSortKeywords(self, event):
         """Sorts the keywords inside the treenode"""
-        self.controller.execute(SortKeywords())
+        self.controller.execute(ctrlcommands.SortKeywords())
 
     @property
     def can_be_rendered(self):
@@ -260,7 +265,7 @@ class TestDataHandler(_ActionHandler):
     def OnNewUserKeyword(self, event):
         dlg = UserKeywordNameDialog(self.controller)
         if dlg.ShowModal() == wx.ID_OK:
-            self.controller.execute(AddKeyword(dlg.get_name(), dlg.get_args()))
+            self.controller.execute(ctrlcommands.AddKeyword(dlg.get_name(), dlg.get_args()))
         dlg.Destroy()
 
     def OnNewScalar(self, event):
@@ -281,7 +286,7 @@ class TestDataHandler(_ActionHandler):
         if dlg.ShowModal() == wx.ID_OK:
             name, value = dlg.get_value()
             comment = dlg.get_comment()
-            self.controller.execute(AddVariable(name, value, comment))
+            self.controller.execute(ctrlcommands.AddVariable(name, value, comment))
 
     @property
     def _var_controller(self):
@@ -341,8 +346,8 @@ class TestDataDirectoryHandler(TestDataHandler):
 
     def OnExclude(self, event):
         try:
-            self.controller.execute(Exclude())
-        except DirtyRobotDataException:
+            self.controller.execute(ctrlcommands.Exclude())
+        except filecontrollers.DirtyRobotDataException:
             wx.MessageBox('Directory contains unsaved data!\n'
                           'You must save data before excluding.')
 
@@ -400,11 +405,11 @@ class ResourceFileHandler(_FileHandlerThanCanBeRenamed, TestDataHandler):
         def returnTrue():
             return True
         self.controller.is_modifiable = returnTrue
-        self.controller.execute(RemoveReadOnly())
+        self.controller.execute(ctrlcommands.RemoveReadOnly())
         
     def OnOpenContainingFolder(self, event):
 
-        self.controller.execute(OpenContainingFolder())
+        self.controller.execute(ctrlcommands.OpenContainingFolder())
 
     def OnFindUsages(self, event):
         ResourceFileUsages(self.controller, self._tree.highlight).show()
@@ -417,7 +422,7 @@ class ResourceFileHandler(_FileHandlerThanCanBeRenamed, TestDataHandler):
 
     @overrides(_FileHandlerThanCanBeRenamed)
     def _rename_command(self, label):
-        return RenameResourceFile(
+        return ctrlcommands.RenameResourceFile(
             label, self._check_should_rename_static_imports)
 
     def _check_should_rename_static_imports(self):
@@ -451,29 +456,29 @@ class TestCaseFileHandler(_FileHandlerThanCanBeRenamed, TestDataHandler):
         def returnTrue():
             return True
         self.controller.is_modifiable = returnTrue
-        self.controller.execute(RemoveReadOnly())
+        self.controller.execute(ctrlcommands.RemoveReadOnly())
         
     def OnOpenContainingFolder(self, event):
 
-        self.controller.execute(OpenContainingFolder())
+        self.controller.execute(ctrlcommands.OpenContainingFolder())
 
     def OnNewTestCase(self, event):
         dlg = TestCaseNameDialog(self.controller)
         if dlg.ShowModal() == wx.ID_OK:
-            self.controller.execute(AddTestCase(dlg.get_name()))
+            self.controller.execute(ctrlcommands.AddTestCase(dlg.get_name()))
         dlg.Destroy()
 
     def OnDelete(self, event):
         if wx.MessageBox('Delete test case file', caption='Confirm',
                          style=wx.YES_NO | wx.ICON_QUESTION) == wx.YES:
-            self.controller.execute(DeleteFile())
+            self.controller.execute(ctrlcommands.DeleteFile())
 
     def OnSafeDelete(self, event):
         return self.OnDelete(event)
 
     @overrides(_FileHandlerThanCanBeRenamed)
     def _rename_command(self, label):
-        return RenameFile(label)
+        return ctrlcommands.RenameFile(label)
 
     @overrides(_FileHandlerThanCanBeRenamed)
     def _rename_ok_handler(self):
@@ -497,7 +502,7 @@ class _TestOrUserKeywordHandler(_CanBeRenamed, _ActionHandler):
     def OnCopy(self, event):
         dlg = self._copy_name_dialog_class(self.controller, self.item)
         if dlg.ShowModal() == wx.ID_OK:
-            self.controller.execute(CopyMacroAs(dlg.get_name()))
+            self.controller.execute(ctrlcommands.CopyMacroAs(dlg.get_name()))
         dlg.Destroy()
 
     def OnMoveUp(self, event):
@@ -509,7 +514,7 @@ class _TestOrUserKeywordHandler(_CanBeRenamed, _ActionHandler):
             self._tree.move_down(self._node)
 
     def OnDelete(self, event):
-        self.controller.execute(RemoveMacro(self.controller))
+        self.controller.execute(ctrlcommands.RemoveMacro(self.controller))
 
 
 class TestCaseHandler(_TestOrUserKeywordHandler):
@@ -525,7 +530,7 @@ class TestCaseHandler(_TestOrUserKeywordHandler):
         self._tree.add_test(parent_node, copied)
 
     def _create_rename_command(self, new_name):
-        return RenameTest(new_name)
+        return ctrlcommands.RenameTest(new_name)
 
     def test_selection_changed(self, message: RideTestSelectedForRunningChanged):
         if self.controller in message.tests:
@@ -547,7 +552,7 @@ class UserKeywordHandler(_TestOrUserKeywordHandler):
         self._tree.add_keyword(parent_node, copied)
 
     def _create_rename_command(self, new_name):
-        return RenameKeywordOccurrences(
+        return ctrlcommands.RenameKeywordOccurrences(
             self.controller.name, new_name,
             RenameProgressObserver(self._tree.GetParent()),
             self.controller.info)
@@ -574,7 +579,7 @@ class VariableHandler(_CanBeRenamed, _ActionHandler):
         self.controller.delete()
 
     def rename(self, new_name):
-        self.controller.execute(UpdateVariableName(new_name))
+        self.controller.execute(ctrlcommands.UpdateVariableName(new_name))
 
     @property
     def index(self):
@@ -607,4 +612,4 @@ class ExcludedDirectoryHandler(TestDataDirectoryHandler):
         self._actions = [_ActionHandler._label_include]
 
     def OnInclude(self, event):
-        self.controller.execute(Include())
+        self.controller.execute(ctrlcommands.Include())

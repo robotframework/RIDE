@@ -18,8 +18,10 @@ from threading import Thread
 
 import wx
 
-from .commands import FindUsages, FindResourceUsages, FindVariableUsages
-from .usagesdialog import UsagesDialog, UsagesDialogWithUserKwNavigation, ResourceImportUsageDialog
+from robotide.usages import commands
+# import FindUsages, FindResourceUsages, FindVariableUsages
+from . import usagesdialog
+# import UsagesDialog, UsagesDialogWithUserKwNavigation, ResourceImportUsageDialog
 
 
 class Usages(object):
@@ -35,8 +37,8 @@ class Usages(object):
 
     def _usages_dialog(self):
         if self._controller.name == self._name:
-            return UsagesDialogWithUserKwNavigation(self._name, self._highlight, self._controller)
-        return UsagesDialog(self._name)
+            return usagesdialog.UsagesDialogWithUserKwNavigation(self._name, self._highlight, self._controller)
+        return usagesdialog.UsagesDialog(self._name)
 
     def show(self):
         self._dlg.add_selection_listener(self._highlight)
@@ -54,7 +56,7 @@ class Usages(object):
         wx.CallAfter(self._end_search)
 
     def _find_usages(self):
-        return self._controller.execute(FindUsages(self._name, self._kw_info))
+        return self._controller.execute(commands.FindUsages(self._name, self._kw_info))
 
     def _begin_search(self):
         if not self._dialog_closed:
@@ -79,15 +81,13 @@ class ResourceFileUsages(Usages):
         Usages.__init__(self, controller, highlight)
 
     def _usages_dialog(self):
-        return ResourceImportUsageDialog(self._controller.display_name,
-                                         self._highlight,
-                                         self._controller)
+        return usagesdialog.ResourceImportUsageDialog(self._controller.display_name, self._highlight, self._controller)
 
     def _find_usages(self):
-        return self._controller.execute(FindResourceUsages())
+        return self._controller.execute(commands.FindResourceUsages())
 
 
 class VariableUsages(Usages):
 
     def _find_usages(self):
-        return self._controller.execute(FindVariableUsages(self._name))
+        return self._controller.execute(commands.FindVariableUsages(self._name))

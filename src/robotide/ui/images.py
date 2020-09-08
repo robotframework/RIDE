@@ -17,10 +17,13 @@ import os
 
 import wx
 
-from ..controller.filecontrollers import (TestDataDirectoryController, TestCaseFileController,
-                                                 ResourceFileController, ExcludedDirectoryController)
-from ..controller.macrocontrollers import TestCaseController, UserKeywordController
-from ..controller.settingcontrollers import VariableController
+from ..controller import filecontrollers
+from ..controller import macrocontrollers
+from ..controller import settingcontrollers
+
+#(TestDataDirectoryController, TestCaseFileController, ResourceFileController, ExcludedDirectoryController)
+# from ..controller.macrocontrollers import TestCaseController, UserKeywordController
+# from ..controller.settingcontrollers import VariableController
 
 _SIZE = (16, 16)
 _BASE = os.path.join(os.path.dirname(__file__), '..', 'widgets')
@@ -38,18 +41,18 @@ class TreeImageList(wx.ImageList):
         wx.ImageList.__init__(self, *_SIZE)
         self._execution_results = None
         self._images = {
-            TestDataDirectoryController: _TreeImage(self, 'folder.png'),
+            filecontrollers.TestDataDirectoryController: _TreeImage(self, 'folder.png'),
             'resource directory': _TreeImage(self, 'folder_wrench.png'),
-            TestCaseFileController: _TreeImage(self, 'page_white.png'),
-            TestCaseController: _TreeImage(self, 'robot.png'),
-            UserKeywordController: _TreeImage(self, 'cog.png'),
-            ResourceFileController: _TreeImage(self, 'page_white_gear.png'),
-            VariableController: _TreeImage(self, 'dollar.png'),
+            filecontrollers.TestCaseFileController: _TreeImage(self, 'page_white.png'),
+            macrocontrollers.TestCaseController: _TreeImage(self, 'robot.png'),
+            macrocontrollers.UserKeywordController: _TreeImage(self, 'cog.png'),
+            filecontrollers.ResourceFileController: _TreeImage(self, 'page_white_gear.png'),
+            settingcontrollers.VariableController: _TreeImage(self, 'dollar.png'),
             'running': _TreeImage(self, 'robot-running.gif'),
             'passed': _TreeImage(self, 'robot_passed.png'),
             'failed': _TreeImage(self, 'robot_failed.png'),
             'paused': _TreeImage(self, 'robot-pause.gif'),
-            ExcludedDirectoryController: _TreeImage(self, 'folder_excluded.png')
+            filecontrollers.ExcludedDirectoryController: _TreeImage(self, 'folder_excluded.png')
         }
 # 'running': _TreeImage(self, 'robot_running.png'),
     @property
@@ -60,7 +63,7 @@ class TreeImageList(wx.ImageList):
         self._execution_results = results
 
     def __getitem__(self, controller):
-        if controller.__class__ == TestCaseController:
+        if controller.__class__ == macrocontrollers.TestCaseController:
             if self._execution_results:
                 if self._execution_results.is_paused(controller):
                     return self._images['paused']
@@ -70,7 +73,7 @@ class TreeImageList(wx.ImageList):
                     return self._images['passed']
                 if self._execution_results.has_failed(controller):
                     return self._images['failed']
-        elif controller.__class__ == TestDataDirectoryController:
+        elif controller.__class__ == filecontrollers.TestDataDirectoryController:
             if not controller.contains_tests():
                 return self._images['resource directory']
         return self._images[controller.__class__]

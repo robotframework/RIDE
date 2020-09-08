@@ -15,3 +15,5 @@
 
 from .application import RIDE
 from .debugconsole import *
+from ..controller import Project
+from .editorprovider import EditorProvider

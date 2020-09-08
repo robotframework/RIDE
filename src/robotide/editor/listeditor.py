@@ -18,7 +18,8 @@ from wx import Colour
 from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
 
 from ..context import ctrl_or_cmd, bind_keys_to_evt_menu, IS_WINDOWS
-from ..controller.ctrlcommands import MoveUp, MoveDown, DeleteItem
+from ..controller import ctrlcommands
+# import MoveUp, MoveDown, DeleteItem
 from ..widgets import PopupMenu, PopupMenuItems, ButtonWithHandler, Font
 
 
@@ -98,14 +99,14 @@ class ListEditorBase(wx.Panel):
     def OnMoveUp(self, event):
         if self._selection < 1:
             return
-        self._controller.execute(MoveUp(self._selection))
+        self._controller.execute(ctrlcommands.MoveUp(self._selection))
         self.update_data()
         self._list.Select(self._selection-1, True)
 
     def OnMoveDown(self, event):
         if self._selection == self._list.GetItemCount() - 1 or not self.is_selected:
             return
-        self._controller.execute(MoveDown(self._selection))
+        self._controller.execute(ctrlcommands.MoveDown(self._selection))
         self.update_data()
         self._list.Select(self._selection+1, True)
 
@@ -122,7 +123,7 @@ class ListEditorBase(wx.Panel):
             self._list.SetColumnWidth(i, widths[i])
 
     def _delete_selected(self):
-        self._controller.execute(DeleteItem(self._selection))
+        self._controller.execute(ctrlcommands.DeleteItem(self._selection))
         self._calculate_selection()
         self.update_data()
 

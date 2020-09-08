@@ -19,13 +19,13 @@ import stat
 import sys
 from itertools import chain
 
-from ..controller import ctrlcommands
+from . import ctrlcommands
 
 try:
     import subprocess32 as subprocess
 except ImportError:
     import subprocess
-from ..controller.dataloader import ExcludedDirectory, TestData
+from .dataloader import ExcludedDirectory, TestData
 from ..publish import (RideDataFileRemoved, RideInitFileRemoved, RideDataChangedToDirty, RideDataDirtyCleared,
                        RideSuiteAdded, RideItemSettingsChanged)
 from ..publish.messages import RideDataFileSet, RideOpenResource
@@ -33,13 +33,13 @@ from ..robotapi import TestDataDirectory, TestCaseFile, ResourceFile
 from .. import utils
 
 from .basecontroller import WithUndoRedoStacks, _BaseController, WithNamespace, ControllerWithParent
-from .macrocontrollers import UserKeywordController
 from .robotdata import NewTestCaseFile, NewTestDataDirectory
-from robotide.utils import overrides
+from ..utils import overrides
 from .settingcontrollers import (DocumentationController, FixtureController, TimeoutController, TemplateController,
                                  DefaultTagsController, ForceTagsController)
 from .tablecontrollers import (VariableTableController, TestCaseTableController, KeywordTableController,
-                               ImportSettingsController, MetadataListController, TestCaseController)
+                               ImportSettingsController, MetadataListController)
+from .macrocontrollers import TestCaseController, UserKeywordController
 
 
 def _get_controller(project, data, parent):
