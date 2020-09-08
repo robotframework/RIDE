@@ -27,18 +27,18 @@ from .popupwindow import RidePopupWindow, HtmlPopupWindow
 _PREFERRED_POPUP_SIZE = (400, 200)
 
 
-class _ContentAssistTextCtrlBase(object):
+class _ContentAssistTextCtrlBase(wx.TextCtrl):
 
-    def __init__(self, suggestion_source):
+    def __init__(self, suggestion_source, **kw):
+        super().__init__(**kw)
         self._popup = ContentAssistPopup(self, suggestion_source)
         self.Bind(wx.EVT_KEY_DOWN, self.OnKeyDown)
         self.Bind(wx.EVT_CHAR, self.OnChar)
         self.Bind(wx.EVT_KILL_FOCUS, self.OnFocusLost)
-        self.Bind(wx.EVT_MOVE, self.OnFocusLost)
-        self.Bind(wx.EVT_WINDOW_DESTROY, self.OnDestroy)
         self._showing_content_assist = False
         self._row = None
-        self.gherkin_prefix = ''  # Store gherkin prefix from input to add \
+        self.gherkin_prefix = ''
+        # Store gherkin prefix from input to add \
         # later after search is performed
         if IS_MAC:
             self.OSXDisableAllSmartSubstitutions()
@@ -48,9 +48,9 @@ class _ContentAssistTextCtrlBase(object):
 
     def OnKeyDown(self, event):
         # TODO: This might benefit from some cleanup
-        keycode, control_down = event.GetKeyCode(), event.CmdDown()
+        keycode, control_down, alt_down = event.GetKeyCode(), event.CmdDown(), event.AltDown()
         # Ctrl-Space handling needed for dialogs # DEBUG add Ctrl-m
-        if (control_down or event.AltDown()) and keycode in [wx.WXK_SPACE, ord('m')]:
+        if (control_down or alt_down) and keycode in [wx.WXK_SPACE, ord('m')]:
             self.show_content_assist()
         elif keycode == wx.WXK_RETURN and self._popup.is_shown():
             self.OnFocusLost(event)
@@ -61,8 +61,8 @@ class _ContentAssistTextCtrlBase(object):
         elif keycode in [wx.WXK_UP, wx.WXK_DOWN, wx.WXK_PAGEUP, wx.WXK_PAGEDOWN] \
                 and self._popup.is_shown():
             self._popup.select_and_scroll(keycode)
-        elif keycode in (ord('1'), ord('2'), ord('5')) and event.ControlDown() and not \
-                event.AltDown():
+        elif keycode in (ord('1'), ord('2'), ord('5')) and control_down and not \
+                alt_down:
             self.execute_variable_creator(list_variable=(keycode == ord('2')),
                                           dict_variable=(keycode == ord('5')))
         elif self._popup.is_shown() and keycode < 256:
@@ -73,7 +73,6 @@ class _ContentAssistTextCtrlBase(object):
 
     def OnChar(self, event):
         keychar = event.GetUnicodeKey()
-        # print(f"DEBUG: OnChar at contentassist {chr(keychar)} {keychar}")
         if keychar == wx.WXK_NONE:
             event.Skip()
             return
@@ -103,7 +102,7 @@ class _ContentAssistTextCtrlBase(object):
             self.SetSelection(from_ + 2, to_ + 2)
 
     def _variable_creator_value(self, value, symbol, from_, to_):
-        return value[:from_]+symbol+'{'+value[from_:to_]+'}'+value[to_:]
+        return value[:from_] + symbol + '{' + value[from_:to_] + '}' + value[to_:]
 
     def execute_enclose_text(self, keycode):
         # TODO move this code to kweditor and fix when in cell editor in Linux
@@ -125,7 +124,7 @@ class _ContentAssistTextCtrlBase(object):
             close_symbol = ')'
         else:
             close_symbol = open_symbol
-        return value[:from_]+open_symbol+value[from_:to_]+close_symbol+value[to_:]
+        return value[:from_] + open_symbol + value[from_:to_] + close_symbol + value[to_:]
 
     def OnFocusLost(self, event, set_value=True):
         event.Skip()
@@ -142,11 +141,12 @@ class _ContentAssistTextCtrlBase(object):
             self.Clear()
         self.hide()
 
-    def OnDestroy(self, event):
+    def pop_event_handlers(self):
         # all pushed eventHandlers need to be popped before close
         # the last event handler is window object itself - do not pop itself
-        while self.GetEventHandler() is not self:
-            self.PopEventHandler()
+        if self:
+            while self.GetEventHandler() is not self:
+                self.PopEventHandler()
 
     def reset(self):
         self._popup.reset()
@@ -187,43 +187,56 @@ class _ContentAssistTextCtrlBase(object):
         self._showing_content_assist = False
 
 
-class ExpandingContentAssistTextCtrl(_ContentAssistTextCtrlBase,
-                                     ExpandoTextCtrl):
+class ExpandingContentAssistTextCtrl(_ContentAssistTextCtrlBase, ExpandoTextCtrl):
 
     def __init__(self, parent, plugin, controller):
-        ExpandoTextCtrl.__init__(self, parent, size=wx.DefaultSize,
-                                 style=wx.WANTS_CHARS|wx.TE_NOHIDESEL)
-        _ContentAssistTextCtrlBase.__init__(self, SuggestionSource(plugin, controller))
+
+        """ According to class MRO, super().__init__ in  _ContentAssistTextCtrlBase will init ExpandoTextCtrl
+        instance """
+
+        _ContentAssistTextCtrlBase.__init__(self, SuggestionSource(plugin, controller),
+                                            parent=parent, size=wx.DefaultSize,
+                                            style=wx.WANTS_CHARS | wx.TE_NOHIDESEL)
 
 
-class ContentAssistTextCtrl(_ContentAssistTextCtrlBase, wx.TextCtrl):
+class ContentAssistTextCtrl(_ContentAssistTextCtrlBase):
 
     def __init__(self, parent, suggestion_source, size=wx.DefaultSize):
-        wx.TextCtrl.__init__(self, parent, size=size, style=wx.WANTS_CHARS|wx.TE_NOHIDESEL)
-        _ContentAssistTextCtrlBase.__init__(self, suggestion_source)
+        super().__init__(suggestion_source, parent=parent,
+                         size=size, style=wx.WANTS_CHARS | wx.TE_NOHIDESEL)
 
 
-class ContentAssistTextEditor(_ContentAssistTextCtrlBase, wx.TextCtrl):
+class ContentAssistTextEditor(_ContentAssistTextCtrlBase):
 
     def __init__(self, parent, suggestion_source, pos, size=wx.DefaultSize):
-        wx.TextCtrl.__init__(self, parent, -1, "", pos, size=size, style=wx.WANTS_CHARS|wx.BORDER_NONE|wx.WS_EX_TRANSIENT|wx.TE_PROCESS_ENTER|wx.TE_NOHIDESEL)
-        _ContentAssistTextCtrlBase.__init__(self, suggestion_source)
+        super().__init__(suggestion_source,
+                         parent=parent, id=-1, value="", pos=pos, size=size,
+                         style=wx.WANTS_CHARS | wx.BORDER_NONE | wx.WS_EX_TRANSIENT | wx.TE_PROCESS_ENTER |
+                         wx.TE_NOHIDESEL)
 
 
-class ContentAssistFileButton(_ContentAssistTextCtrlBase, FileBrowseButton):
+class ContentAssistFileButton(FileBrowseButton):
 
-    def __init__(self, parent, suggestion_source, label, controller,
-                 size=wx.DefaultSize):
+    def __init__(self, parent, suggestion_source, label, controller, size=wx.DefaultSize):
+        self.suggestion_source = suggestion_source
         FileBrowseButton.__init__(self, parent, labelText=label,
                                   size=size, fileMask="*",
                                   changeCallback=self.OnFileChanged)
         self._parent = parent
         self._controller = controller
         self._browsed = False
-        _ContentAssistTextCtrlBase.__init__(self, suggestion_source)
 
     def Bind(self, *args):
         self.textControl.Bind(*args)
+
+    def createTextControl(self):
+        """Create the text control"""
+        textControl = _ContentAssistTextCtrlBase(parent=self, id=-1, suggestion_source=self.suggestion_source)
+        textControl.SetToolTip(self.toolTip)
+        if self.changeCallback:
+            textControl.Bind(wx.EVT_TEXT, self.OnChanged)
+            textControl.Bind(wx.EVT_COMBOBOX, self.OnChanged)
+        return textControl
 
     def __getattr__(self, item):
         return getattr(self.textControl, item)
@@ -232,15 +245,6 @@ class ContentAssistFileButton(_ContentAssistTextCtrlBase, FileBrowseButton):
         self._browsed = True
         FileBrowseButton.OnBrowse(self, evt)
         self._browsed = False
-
-    def OnDestroy(self, event):
-        # all pushed eventHandlers need to be popped before close
-        # the last event handler is window object itself - do not pop itself
-        try:
-            while self.GetEventHandler() is not self:
-                self.PopEventHandler()
-        except RuntimeError:
-            pass
 
     def OnFileChanged(self, evt):
         if self._browsed:
@@ -254,7 +258,7 @@ class ContentAssistFileButton(_ContentAssistTextCtrlBase, FileBrowseButton):
             path = relpath(value, src if isdir(src) else dirname(src))
         else:
             path = value
-        return path.replace('\\', '/') if context.IS_WINDOWS else\
+        return path.replace('\\', '/') if context.IS_WINDOWS else \
             path.replace('\\', '\\\\')
 
 
@@ -319,9 +323,9 @@ class ContentAssistPopup(object):
         self._main_popup = RidePopupWindow(parent, _PREFERRED_POPUP_SIZE)
         self._details_popup = HtmlPopupWindow(parent, _PREFERRED_POPUP_SIZE)
         self._selection = -1
-        self._list = ContentAssistList(self._main_popup,
-                                       self.OnListItemSelected,
-                                       self.OnListItemActivated)
+        self._list: ContentAssistList = ContentAssistList(self._main_popup,
+                                                          self.OnListItemSelected,
+                                                          self.OnListItemActivated)
         self._suggestions = Suggestions(suggestion_source)
 
     def reset(self):
@@ -391,10 +395,10 @@ class ContentAssistPopup(object):
             else:
                 self._select_and_scroll(self._list.GetItemCount() - 1)
         elif keycode == wx.WXK_PAGEDOWN:
-            if self._list.ItemCount - self._selection > 14:
+            if self._list.GetItemCount() - self._selection > 14:
                 self._select_and_scroll(self._selection + 14)
             else:
-                self._select_and_scroll(self._list.ItemCount - 1)
+                self._select_and_scroll(self._list.GetItemCount() - 1)
         elif keycode == wx.WXK_PAGEUP:
             if self._selection > 14:
                 self._select_and_scroll(self._selection - 14)

@@ -42,7 +42,6 @@ from .editordialogs import UserKeywordNameDialog, ScalarVariableDialog, \
 from .contentassist import ExpandingContentAssistTextCtrl
 from .gridcolorizer import Colorizer
 
-
 _DEFAULT_FONT_SIZE = 11
 
 
@@ -63,7 +62,7 @@ class KeywordEditor(GridEditor):
     _no_cell = (-1, -1)
     _popup_menu_shown = False
     dirty = property(lambda self: self._controller.dirty)
-    update_value = lambda *args: None
+
     _popup_items = [
                        'Create Keyword', 'Extract Keyword', 'Extract Variable',
                        'Rename Keyword', 'Find Where Used',
@@ -86,7 +85,7 @@ class KeywordEditor(GridEditor):
         self._cell_selected = False
         self._colorizer = Colorizer(self, controller)
         self._controller = controller
-        self._configure_grid()
+        self.cell_editor = self._configure_grid()
         self._updating_namespace = False
         self._controller.datafile_controller.register_for_namespace_updates(
             self._namespace_updated)
@@ -154,9 +153,10 @@ class KeywordEditor(GridEditor):
 
     def _configure_grid(self):
         self._set_cells()
-        self.SetDefaultEditor(
-            ContentAssistCellEditor(self._plugin, self._controller))
+        cell_editor = ContentAssistCellEditor(self._plugin, self._controller)
+        self.SetDefaultEditor(cell_editor)
         self._set_fonts()
+        return cell_editor
 
     def _set_fonts(self, update_cells=False):
         font_size = self.settings.get('font size', _DEFAULT_FONT_SIZE)
@@ -177,13 +177,13 @@ class KeywordEditor(GridEditor):
     def _make_bindings(self):
         self.Bind(grid.EVT_GRID_EDITOR_SHOWN, self.OnEditor)
         self.Bind(wx.EVT_KEY_DOWN, self.OnKeyDown)
-        self.Bind(wx.EVT_CHAR, self.OnChar)
         self.Bind(wx.EVT_KEY_UP, self.OnKeyUp)
-        self.GetGridWindow().Bind(wx.EVT_MOTION, self.OnMotion)
         self.Bind(grid.EVT_GRID_CELL_LEFT_CLICK, self.OnCellLeftClick)
         self.Bind(grid.EVT_GRID_LABEL_RIGHT_CLICK, self.OnLabelRightClick)
         self.Bind(grid.EVT_GRID_LABEL_LEFT_CLICK, self.OnLabelLeftClick)
         self.Bind(wx.EVT_KILL_FOCUS, self.OnKillFocus)
+        if IS_MAC:
+            self.GetGridWindow().Bind(wx.EVT_MOTION, self.OnMotion)
 
     def get_tooltip_content(self):
         if self.IsCellEditControlShown() or self._popup_menu_shown:
@@ -193,7 +193,7 @@ class KeywordEditor(GridEditor):
         return TipMessage(cell_info)
 
     def OnSettingsChanged(self, data):
-        '''Redraw the colors if the color settings are modified'''
+        """Redraw the colors if the color settings are modified"""
         section, setting = data.keys
         if section == 'Grid':
             if 'font' in setting:
@@ -336,8 +336,8 @@ class KeywordEditor(GridEditor):
         # Workaround for double actions, see issue #2048
         if self._counter == 1:
             if IS_MAC:
-                row=self.GetGridCursorRow() + change
-                col=self.GetGridCursorCol()
+                row = self.GetGridCursorRow() + change
+                col = self.GetGridCursorCol()
                 if row >= 0:
                     self.SetGridCursor(row, col)
                 self._counter = 0
@@ -355,9 +355,9 @@ class KeywordEditor(GridEditor):
             self.SelectRow(r, True)
 
     def OnMotion(self, event):
-        if IS_MAC:
-            if self.IsCellEditControlShown():
-                return
+        """ workaround for assistant popup will disappear when using mouse in MacOS """
+        if self.IsCellEditControlShown():
+            return
         event.Skip()
 
     def _before_saving(self, data):
@@ -498,6 +498,8 @@ class KeywordEditor(GridEditor):
             self._controller.datafile_controller.unregister_namespace_updates(
                 self._namespace_updated)
         self._namespace_updated = None
+        # self.GetDefaultEditor() cannot get the correct cell editor, why?
+        self.cell_editor.Destroy()
 
     def save(self):
         self._tooltips.hide()
@@ -564,8 +566,9 @@ class KeywordEditor(GridEditor):
                 else:
                     self.show_cell_information()
         elif event.AltDown():
+            # Mac Option key(⌥)
             if keycode == wx.WXK_SPACE:
-                self._open_cell_editor_with_content_assist()  # Mac CMD
+                self._open_cell_editor_with_content_assist()
             elif keycode in [wx.WXK_DOWN, wx.WXK_UP]:
                 self._move_rows(keycode)
             elif keycode == wx.WXK_RETURN:
@@ -588,15 +591,6 @@ class KeywordEditor(GridEditor):
             elif keycode == wx.WXK_F2:
                 self._open_cell_editor()
         event.Skip()
-
-    def OnChar(self, event):
-        keychar = event.GetUnicodeKey()
-        if keychar < ord(' '):
-            return
-        if keychar in [ord('['), ord('{'), ord('('), ord("'"), ord('\"'), ord('`')]:
-            self._open_cell_editor().execute_enclose_text(chr(keychar))
-        else:
-            event.Skip()
 
     def OnGoToDefinition(self, event):
         self._navigate_to_matching_user_keyword(
@@ -663,7 +657,6 @@ work.</li>
         event.Skip()  # DEBUG seen this skip as soon as possible
         self._tooltips.hide()
         self._hide_link_if_necessary()
-        #  event.Skip()
 
     def _open_cell_editor(self):
         if not self.IsCellEditControlEnabled():
@@ -907,12 +900,17 @@ class ContentAssistCellEditor(GridCellEditor):
     def execute_enclose_text(self, keycode):
         self._tc.execute_enclose_text(keycode)
 
-    def Create(self, parent, id, evthandler):
+    def Create(self, parent, id, evtHandler):
         self._tc = ExpandingContentAssistTextCtrl(
             parent, self._plugin, self._controller)
         self.SetControl(self._tc)
-        if evthandler:
-            self._tc.PushEventHandler(evthandler)
+        if evtHandler:
+            self._tc.PushEventHandler(evtHandler)
+
+    def Destroy(self):
+        if self._tc:
+            self._tc.pop_event_handlers()
+            self._tc.Destroy()
 
     def SetSize(self, rect):
         self._tc.SetSize(rect.x, rect.y, rect.width + 2, rect.height + 2, wx.SIZE_ALLOW_MINUS_ONE)
@@ -969,9 +967,6 @@ class ContentAssistCellEditor(GridCellEditor):
             self._tc.SetValue(chr(key))
         self._tc.SetFocus()
         self._tc.SetInsertionPointEnd()
-
-    def Clone(self):
-        return ContentAssistCellEditor()
 
 
 class ChooseUsageSearchStringDialog(wx.Dialog):
