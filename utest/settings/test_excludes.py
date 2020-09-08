@@ -17,7 +17,7 @@ import os
 from os.path import sep
 import tempfile
 import unittest
-from robotide.preferences.excludes import Excludes
+from robotide.preferences.excludes_class import Excludes
 
 class TestExcludes(unittest.TestCase):
 

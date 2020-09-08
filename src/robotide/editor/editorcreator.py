@@ -18,7 +18,8 @@ from .. import robotapi
 from .. import controller
 # from ..controller import Project
 from ..controller.dataloader import TestDataDirectoryWithExcludes
-from ..controller.filecontrollers import ExcludedDirectoryController
+from ..controller import filecontrollers
+# import ExcludedDirectoryController
 from ..controller.settingcontrollers import VariableController
 from .editors import (InitFileEditor, TestCaseFileEditor, WelcomePage, ResourceFileEditor)
 from .macroeditors import TestCaseEditor, UserKeywordEditor
@@ -72,7 +73,7 @@ class EditorCreator(object):
     def _invalid(_controller):
         return not _controller or _controller.data is None or \
                isinstance(_controller, controller.Project) or \
-               isinstance(_controller, ExcludedDirectoryController)
+               isinstance(_controller, filecontrollers.ExcludedDirectoryController)
 
     def _should_use_old_editor(self, _controller):
         return self._editor and \

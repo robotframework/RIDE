@@ -17,7 +17,8 @@ import wx
 from wx import Colour
 
 from ..context import IS_WINDOWS
-from ..controller.ctrlcommands import ChangeTag, ClearSetting
+from ..controller import ctrlcommands
+# import ChangeTag, ClearSetting
 from ..controller.tags import ForcedTag, DefaultTag
 
 
@@ -88,7 +89,7 @@ class TagsDisplay(wx.lib.scrolledpanel.ScrolledPanel):
             if tb.value == '':
                 self._destroy_tagbox(tb)
                 if self._modifiable_tags_count() == 0:
-                    self._controller.execute(ClearSetting())
+                    self._controller.execute(ctrlcommands.ClearSetting())
 
     def _modifiable_tags_count(self):
         return sum(1 for tb in self._tag_boxes[:] if tb._properties.modifiable)
@@ -245,7 +246,7 @@ class _TagBoxProperties(object):
 
     def change_value(self, value):
         if self.modifiable and (value != self.text or self.text == ''):
-            self._tag.controller.execute(ChangeTag(self._tag, value))
+            self._tag.controller.execute(ctrlcommands.ChangeTag(self._tag, value))
 
     def activate(self, tagbox):
         pass

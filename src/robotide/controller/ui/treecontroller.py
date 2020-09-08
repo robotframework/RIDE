@@ -18,8 +18,8 @@ import wx
 from robotide import utils
 from robotide.action.actioninfo import ActionInfoCollection, ActionInfo
 from robotide.context import IS_WINDOWS, ctrl_or_cmd, bind_keys_to_evt_menu
-from robotide.controller.ctrlcommands import ChangeTag
-from robotide.controller.macrocontrollers import TestCaseController
+from ..macrocontrollers import TestCaseController
+from robotide.controller import ctrlcommands
 from robotide.controller.tags import Tag, DefaultTag
 from robotide.publish import RideTestSelectedForRunningChanged
 
@@ -242,4 +242,4 @@ class TestSelectionController(object):
                 self._add_tag(test, tag.name)
 
     def _add_tag(self, test, name):
-        test.tags.execute(ChangeTag(Tag(None), name))
+        test.tags.execute(ctrlcommands.ChangeTag(Tag(None), name))

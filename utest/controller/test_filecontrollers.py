@@ -178,6 +178,8 @@ class TestResourceFileControllerTest(unittest.TestCase):
         assert_equal(self.ctrl.display_name, datafilereader.SIMPLE_TEST_SUITE_RESOURCE_FILE)
 
     def test_sort_and_restore_keywords(self):
+        resource_ctrl = self._get_ctrl_by_name(datafilereader.SIMPLE_TEST_SUITE_RESOURCE_NAME)
+
         # Capture keyword list before sorting
         original_keywords = self.ctrl.get_keyword_names()
         list_for_undo_comparison = original_keywords[:]

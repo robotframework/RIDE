@@ -26,9 +26,10 @@ from ..controller.macrocontrollers import TestCaseController
 
 TREETEXTCOLOUR = Colour(0xA9, 0xA9, 0xA9)
 
-from ..controller.ui.treecontroller import TreeController, TestSelectionController
+# from ..controller.ui.treecontroller import TreeController, TestSelectionController
+
 from ..context import IS_WINDOWS
-from ..controller.filecontrollers import ResourceFileController, TestDataDirectoryController, TestCaseFileController
+# from ..controller.filecontrollers import ResourceFileController, TestDataDirectoryController, TestCaseFileController
 from ..publish.messages import (RideTestRunning, RideTestPaused, RideTestPassed, RideTestFailed,
                                 RideTestExecutionStarted, RideImportSetting, RideExcludesChanged, RideIncludesChanged,
                                 RideOpenSuite, RideNewProject)
@@ -169,6 +170,8 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl):
     _RESOURCES_NODE_LABEL = 'External Resources'
 
     def __init__(self, parent, action_registerer, settings=None):
+        from ..controller.ui.treecontroller import TreeController
+
         self._checkboxes_for_tests = False
         self._test_selection_controller = \
             self._create_test_selection_controller()
@@ -190,11 +193,14 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl):
         self._clear_tree_data()
         self._editor = None
         self._execution_results = None
+        self._resources = []
         self.SetBackgroundColour('white')  # TODO get background color from def
         if not hasattr(self, 'OnCancelEdit'):
             self.OnCancelEdit = self._on_cancel_edit
 
     def _create_test_selection_controller(self):
+        from ..controller.ui.treecontroller import TestSelectionController
+
         tsc = TestSelectionController()
         PUBLISHER.subscribe(tsc.clear_all, RideOpenSuite)
         PUBLISHER.subscribe(tsc.clear_all, RideNewProject)
@@ -313,6 +319,8 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl):
         self._images.set_execution_results(message.results)
 
     def _test_result(self, message):
+        from ..controller.macrocontrollers import TestCaseController
+
         test: TestCaseController = message.item
         if message.topic == 'ride.test.passed':
             test.run_passed = True
@@ -377,6 +385,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl):
         self._root = self.AddRoot('')
         self._resource_root = self._create_resource_root()
         self._datafile_nodes = []
+        self._resources = []
         self._controller.clear_history()
 
     def _create_resource_root(self):
@@ -398,6 +407,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl):
         if self._controller.find_node_by_controller(ctrl):
             return
 
+        parent = None
         if ctrl.parent:
             parent = self._get_dir_node(ctrl.parent)
         else:
@@ -433,6 +443,8 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl):
 
     def _render_datafile(self, parent_node, controller, index=None):
         node = self._create_node_with_handler(parent_node, controller, index)
+        if not node:
+            return None
         if controller.dirty:
             self._controller.mark_node_dirty(node)
         self._datafile_nodes.append(node)
@@ -442,7 +454,23 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl):
             self._render_datafile(node, child)
         return node
 
+    def _normalize(self, path):
+        return os.path.normcase(os.path.normpath(os.path.abspath(path)))
+
     def _create_node_with_handler(self, parent_node, controller, index=None):
+        from ..controller.filecontrollers import ResourceFileController
+
+        if IS_WINDOWS and isinstance(controller, ResourceFileController):
+            resourcefile = self._normalize(controller.filename)
+            pname = parent_node.GetText()
+            self._resources.append((pname,resourcefile))
+            if IS_WINDOWS:
+                count = 0
+                for (p, r) in self._resources:
+                    if (p, r) == (pname, resourcefile):
+                        count += 1
+                if count > 3:
+                    return None
         handler_class = action_handler_class(controller)
         with_checkbox = (handler_class == TestCaseHandler and self._checkboxes_for_tests)
         node = self._create_node(parent_node, controller.display_name, self._images[controller],
@@ -858,6 +886,8 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl):
         self._test_selection_controller.select_all(test_controllers,selected)
 
     def retrieveTestCaseControllers(self, item: GenericTreeItem):
+        from ..controller.filecontrollers import TestDataDirectoryController, TestCaseFileController
+
         data = item.GetData()
         if isinstance(data, TestDataDirectoryHandler):
             item_controller: TestDataDirectoryController = data.tests.parent

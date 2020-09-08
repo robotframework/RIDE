@@ -19,7 +19,8 @@ import subprocess
 import sys
 
 from ..lib.robot.utils import (printable_name, html_escape, html_format, normalize, eq, unescape, get_error_details,
-                               robottime, is_string, get_timestamp)
+                               robottime, is_string, get_timestamp, is_dict_like, is_list_like, Matcher, normpath,
+                               timestr_to_secs, NormalizedDict, secs_to_timestr)
 from .eventhandler import RideFSWatcherHandler
 from .printing import Printing
 

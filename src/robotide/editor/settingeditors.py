@@ -26,8 +26,8 @@ from .popupwindow import HtmlPopupWindow
 from .tags import TagsDisplay
 from .. import context
 from .. import utils
-from ..controller.ctrlcommands import UpdateVariable, UpdateDocumentation, \
-    SetValues, AddLibrary, AddResource, AddVariablesFileImport, ClearSetting
+from ..controller import ctrlcommands
+# import UpdateVariable, UpdateDocumentation, SetValues, AddLibrary, AddResource, AddVariablesFileImport, ClearSetting
 from ..editor.listeditor import ListEditorBase
 from ..publish import PUBLISHER
 from ..publish.messages import RideImportSetting, \
@@ -131,7 +131,7 @@ class SettingEditor(wx.Panel):
         return dlg_class(self._datafile, self._controller, self.plugin)
 
     def _set_value(self, value_list, comment):
-        self._controller.execute(SetValues(value_list, comment))
+        self._controller.execute(ctrlcommands.SetValues(value_list, comment))
 
     def _hide_tooltip(self):
         self._stop_popup_timer()
@@ -205,7 +205,7 @@ class SettingEditor(wx.Panel):
         self.update_value()
 
     def OnClear(self, event):
-        self._controller.execute(ClearSetting())
+        self._controller.execute(ctrlcommands.ClearSetting())
         self._update_and_notify()
 
     def _ps_on_update_value(self, message):
@@ -326,7 +326,7 @@ class DocumentationEditor(SettingEditor):
 
     def _set_value(self, value_list, comment):
         if value_list:
-            self._controller.execute(UpdateDocumentation(value_list[0]))
+            self._controller.execute(ctrlcommands.UpdateDocumentation(value_list[0]))
 
     def contains(self, text):
         return False
@@ -468,7 +468,7 @@ class VariablesListEditor(_AbstractListEditor):
         if dlg:  # DEBUG robot accepts % variable definition
             if dlg.ShowModal() == wx.ID_OK:
                 name, value = dlg.get_value()
-                var.execute(UpdateVariable(name, value, dlg.get_comment()))
+                var.execute(ctrlcommands.UpdateVariable(name, value, dlg.get_comment()))
                 self.update_data()
             dlg.Destroy()
 
@@ -530,24 +530,24 @@ class ImportSettingListEditor(_AbstractListEditor):
         setting = self._get_setting()
         self._show_import_editor_dialog(
             EditorDialog(setting),
-            lambda v, c: setting.execute(SetValues(v, c)),
+            lambda v, c: setting.execute(ctrlcommands.SetValues(v, c)),
             setting, on_empty=self._delete_selected)
 
     def OnLibrary(self, event):
         self._show_import_editor_dialog(
             LibraryDialog,
-            lambda v, c: self._controller.execute(AddLibrary(v, c)))
+            lambda v, c: self._controller.execute(ctrlcommands.AddLibrary(v, c)))
 
     def OnResource(self, event):
         self._show_import_editor_dialog(
             ResourceDialog,
-            lambda v, c: self._controller.execute(AddResource(v, c)))
+            lambda v, c: self._controller.execute(ctrlcommands.AddResource(v, c)))
 
     def OnVariables(self, event):
         self._show_import_editor_dialog(
             VariablesDialog,
             lambda v, c:
-                self._controller.execute(AddVariablesFileImport(v, c)))
+                self._controller.execute(ctrlcommands.AddVariablesFileImport(v, c)))
 
     def OnImportFailedHelp(self, event):
         if self._import_failed_shown:

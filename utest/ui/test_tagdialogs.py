@@ -19,7 +19,7 @@ from functools import total_ordering
 from robotide.ui.tagdialogs import ViewAllTagsDialog
 
 from robotide.robotapi import (TestDataDirectory, TestCaseFile, ResourceFile,
-                               TestCase, UserKeyword, robotide)
+                               TestCase, UserKeyword)
 from nose.tools import assert_equal
 from robotide.spec.librarymanager import LibraryManager
 from robotide.ui.images import TreeImageList

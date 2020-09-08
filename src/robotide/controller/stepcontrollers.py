@@ -16,8 +16,8 @@
 import re
 
 from .. import robotapi, utils
-from ..controller.basecontroller import _BaseController
-from ..controller.cellinfo import (CellPosition, CellType, CellInfo, CellContent, ContentType)
+from .basecontroller import _BaseController
+from .cellinfo import (CellPosition, CellType, CellInfo, CellContent, ContentType)
 from ..namespace.local_namespace import LocalNamespace
 from ..utils import variablematcher
 
