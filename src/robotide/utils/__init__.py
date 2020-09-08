@@ -13,16 +13,24 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import inspect
 import os
-import subprocess
 import sys
+import inspect
+import subprocess
 
-from ..lib.robot.utils import (printable_name, html_escape, html_format, normalize, eq, unescape, get_error_details,
-                               robottime, is_string, get_timestamp, is_dict_like, is_list_like, Matcher, normpath,
-                               timestr_to_secs, NormalizedDict, secs_to_timestr)
+import robotide.lib.robot.utils
+from robotide.lib.robot.utils.encoding import SYSTEM_ENCODING
+from robotide.lib.robot.utils import printable_name, normalize, eq, ET, \
+    HtmlWriter, NormalizedDict, timestr_to_secs, secs_to_timestr, normpath,\
+    unic, asserts, unescape, html_escape, attribute_escape, robottime,\
+    get_timestamp, Matcher, is_list_like, is_dict_like, system_decode,\
+    ArgumentParser, get_error_details, is_unicode, is_string, py2to3
 from .eventhandler import RideFSWatcherHandler
 from .printing import Printing
+
+
+def html_format(text):
+    return robotide.lib.robot.utils.html_format(text)
 
 
 def name_from_class(item, drop=None):
