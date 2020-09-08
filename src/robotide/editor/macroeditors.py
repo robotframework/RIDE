@@ -46,7 +46,6 @@ class TestCaseEditor(_RobotTableEditor):
         for editor in self._editors:
             editor.close()
         _RobotTableEditor.close(self)
-        self.kweditor.close()
         self.plugin.unsubscribe(self._name_changed, RideItemNameChanged)
 
     def save(self):

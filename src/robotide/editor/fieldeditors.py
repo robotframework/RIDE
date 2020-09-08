@@ -331,4 +331,3 @@ class ContentAssistEditor(ValueEditor):
 
     def _get_text_ctrl(self):
         return ContentAssistTextCtrl(self, self._suggestion_source)
-        #DEBUG size, (500, -1))

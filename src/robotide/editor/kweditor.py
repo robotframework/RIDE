@@ -907,12 +907,12 @@ class ContentAssistCellEditor(GridCellEditor):
     def execute_enclose_text(self, keycode):
         self._tc.execute_enclose_text(keycode)
 
-    def Create(self, parent, id, evthandler):
+    def Create(self, parent, id, evtHandler):
         self._tc = ExpandingContentAssistTextCtrl(
             parent, self._plugin, self._controller)
         self.SetControl(self._tc)
-        if evthandler:
-            self._tc.PushEventHandler(evthandler)
+        if evtHandler:
+            self._tc.PushEventHandler(evtHandler)
 
     def SetSize(self, rect):
         self._tc.SetSize(rect.x, rect.y, rect.width + 2, rect.height + 2, wx.SIZE_ALLOW_MINUS_ONE)
@@ -932,6 +932,7 @@ class ContentAssistCellEditor(GridCellEditor):
         self._grid = grid
 
     def EndEdit(self, row, col, grid, *ignored):
+        self._tc.pop_event_handlers()
         value = self._get_value()
         if value != self._original_value:
             self._value = value
@@ -969,9 +970,6 @@ class ContentAssistCellEditor(GridCellEditor):
             self._tc.SetValue(chr(key))
         self._tc.SetFocus()
         self._tc.SetInsertionPointEnd()
-
-    def Clone(self):
-        return ContentAssistCellEditor()
 
 
 class ChooseUsageSearchStringDialog(wx.Dialog):
