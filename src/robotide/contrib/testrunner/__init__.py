@@ -14,6 +14,5 @@
 #  limitations under the License.
 
 from . import runprofiles
-from .usages import USAGE
-from .testrunner import TestRunner
 from .TestRunnerAgent import TestRunnerAgent
+from .testrunner import TestRunner

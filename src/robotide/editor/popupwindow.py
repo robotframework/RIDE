@@ -14,9 +14,9 @@
 #  limitations under the License.
 
 import wx
+
 from ..context import POPUP_BACKGROUND, IS_WINDOWS
 from ..widgets import VerticalSizer, HtmlWindow, HtmlDialog
-from wx import Colour
 
 
 class _PopupWindowBase(object):

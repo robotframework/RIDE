@@ -13,13 +13,16 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import wx
-from wx.lib.masked import NumCtrl
 from os.path import abspath, dirname, join
-from wx import Colour
 
-from . import widgets
-from .widgets import Label
+import wx
+from wx import Colour
+from wx.lib.masked import NumCtrl
+
+# from .. import widgets
+from ..ui.preferences_dialogs import (PreferencesPanel, SpinChoiceEditor, IntegerChoiceEditor, boolean_editor,
+                                      StringChoiceEditor, PreferencesColorPicker)
+from ..widgets import Label
 
 try:  # import installed version first
     import robotframeworklexer
@@ -42,7 +45,7 @@ def ReadFonts(fixed=False):
     return names
 
 
-class EditorPreferences(widgets.PreferencesPanel):
+class EditorPreferences(PreferencesPanel):
 
     def __init__(self, settings, *args, **kwargs):
         super(EditorPreferences, self).__init__(*args, **kwargs)
@@ -87,22 +90,22 @@ class EditorPreferences(widgets.PreferencesPanel):
         return join(dirname(abspath(__file__)), 'settings.cfg')
 
     def _create_font_editor(self):
-        f = widgets.IntegerChoiceEditor(
+        f = IntegerChoiceEditor(
             self._settings, 'font size', 'Font Size',
             [str(i) for i in range(8, 16)])
         sizer = wx.FlexGridSizer(rows=3, cols=2, vgap=10, hgap=30)
         sizer.AddMany([f.label(self), f.chooser(self)])
         fixed_font = False
         if 'zoom factor' in self._settings:
-            z = widgets.SpinChoiceEditor(
+            z = SpinChoiceEditor(
                 self._settings, 'zoom factor', 'Zoom Factor', (-10, 20))
             sizer.AddMany([z.label(self), z.chooser(self)])
         if 'fixed font' in self._settings:
-            sizer.AddMany(widgets.boolean_editor(
+            sizer.AddMany(boolean_editor(
                 self, self._settings, 'fixed font', 'Use fixed width font'))
             fixed_font = self._settings['fixed font']
         if 'font face' in self._settings:
-            s = widgets.StringChoiceEditor(self._settings, 'font face', 'Font Face', ReadFonts(fixed_font))
+            s = StringChoiceEditor(self._settings, 'font face', 'Font Face', ReadFonts(fixed_font))
             sizer.AddMany([s.label(self), s.chooser(self)])
         return sizer
 
@@ -149,7 +152,7 @@ class TextEditorPreferences(EditorPreferences):
                 column = 0
                 row += 1
             label = wx.StaticText(self, wx.ID_ANY, label_text)
-            button = widgets.PreferencesColorPicker(
+            button = PreferencesColorPicker(
                 self, wx.ID_ANY, self._settings, settings_key)
             container.Add(button, (row, column),
                           flag=wx.ALL | wx.ALIGN_CENTER_VERTICAL, border=4)
@@ -181,11 +184,11 @@ class GridEditorPreferences(EditorPreferences):
         sizer = wx.FlexGridSizer(rows=6, cols=2, vgap=10, hgap=10)
         sizer.Add(self._label_for('Default column size'))
         sizer.Add(self._number_editor(settings, 'col size'))
-        sizer.AddMany(widgets.boolean_editor(
+        sizer.AddMany(boolean_editor(
             self, settings, 'auto size cols', 'Auto size columns'))
         sizer.Add(self._label_for('Max column size\n(applies when auto size is on)'))
         sizer.Add(self._number_editor(settings, 'max col size'))
-        sizer.AddMany(widgets.boolean_editor(
+        sizer.AddMany(boolean_editor(
             self, settings, 'word wrap', 'Word wrap and auto size rows'))
         return sizer
 
@@ -228,7 +231,7 @@ class GridEditorPreferences(EditorPreferences):
             ('text empty', 'Empty Foreground'),
         ):
             lbl = wx.StaticText(self, wx.ID_ANY, label)
-            btn = widgets.PreferencesColorPicker(
+            btn = PreferencesColorPicker(
                 self, wx.ID_ANY, self._settings, key)
             self._color_pickers.append(btn)
             colors_sizer.Add(btn, (row, 2),
@@ -250,7 +253,7 @@ class GridEditorPreferences(EditorPreferences):
             ('background highlight', 'Highlight Background')
         ):
             lbl = wx.StaticText(self, wx.ID_ANY, label)
-            btn = widgets.PreferencesColorPicker(
+            btn = PreferencesColorPicker(
                 self, wx.ID_ANY, self._settings, key)
             self._color_pickers.append(btn)
             colors_sizer.Add(btn, (row, 0),
@@ -275,7 +278,7 @@ class TestRunnerPreferences(EditorPreferences):
         settings = self._settings
         sizer = wx.FlexGridSizer(rows=2, cols=2, vgap=10, hgap=10)
 
-        sizer.AddMany(widgets.boolean_editor(
+        sizer.AddMany(boolean_editor(
             self, settings, 'confirm run', 'Asks for confirmation to run all'
                                            ' tests if none selected '))
         return sizer
@@ -293,7 +296,7 @@ class TestRunnerPreferences(EditorPreferences):
                 column = 0
                 row += 1
             label = wx.StaticText(self, wx.ID_ANY, label_text)
-            button = widgets.PreferencesColorPicker(
+            button = PreferencesColorPicker(
                 self, wx.ID_ANY, self._settings, settings_key)
             container.Add(button, (row, column),
                           flag=wx.ALL | wx.ALIGN_CENTER_VERTICAL, border=4)

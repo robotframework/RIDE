@@ -14,11 +14,13 @@
 #  limitations under the License.
 
 import wx
+from wx import Colour
 from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
+
+from ..context import ctrl_or_cmd, bind_keys_to_evt_menu, IS_WINDOWS
 from ..controller.ctrlcommands import MoveUp, MoveDown, DeleteItem
 from ..widgets import PopupMenu, PopupMenuItems, ButtonWithHandler, Font
-from ..context import ctrl_or_cmd, bind_keys_to_evt_menu, IS_WINDOWS
-from wx import Colour
+
 
 class ListEditorBase(wx.Panel):
     _menu = ['Edit', 'Move Up\tCtrl-Up', 'Move Down\tCtrl-Down', '---', 'Delete']

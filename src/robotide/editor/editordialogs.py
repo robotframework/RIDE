@@ -15,31 +15,27 @@
 
 import wx
 
-from robotide.namespace.suggesters import ResourceSuggester, \
-    LibrariesSuggester, HistorySuggester
-from robotide.validators import ScalarVariableNameValidator, \
-    ListVariableNameValidator, TimeoutValidator, ArgumentsValidator, \
-    TestCaseNameValidator, UserKeywordNameValidator, \
-    DictionaryVariableNameValidator
-from robotide import utils
-from robotide.widgets import HelpLabel, Dialog
-
-from .fieldeditors import ValueEditor, ListValueEditor, MultiLineEditor,\
-    ContentAssistEditor, VariableNameEditor, ArgumentEditor, FileNameEditor
-from .formatters import ListToStringFormatter
+from .. import utils
+from ..namespace.suggesters import ResourceSuggester, LibrariesSuggester, HistorySuggester
+from ..validators import (ScalarVariableNameValidator, ListVariableNameValidator, TimeoutValidator, ArgumentsValidator,
+                          TestCaseNameValidator, UserKeywordNameValidator, DictionaryVariableNameValidator)
+from ..widgets import HelpLabel, RIDEDialog
 from .dialoghelps import get_help
+from .fieldeditors import (ValueEditor, ListValueEditor, MultiLineEditor, ContentAssistEditor, VariableNameEditor,
+                           ArgumentEditor, FileNameEditor)
+from .formatters import ListToStringFormatter
 
 
 def EditorDialog(obj):
     return globals()[obj.label.replace(' ', '') + 'Dialog']
 
 
-class _Dialog(Dialog):
+class _Dialog(RIDEDialog):
     _title = property(lambda self: utils.name_from_class(self, drop='Dialog'))
 
     def __init__(self, controller, item=None, plugin=None):
         # TODO: Get rid of item, everything should be in controller
-        Dialog.__init__(self, self._title)
+        RIDEDialog.__init__(self, self._title)
         # set Left to Right direction (while we don't have localization)
         self.SetLayoutDirection(wx.Layout_LeftToRight)
         self.SetExtraStyle(wx.WS_EX_VALIDATE_RECURSIVELY)
@@ -171,7 +167,8 @@ class ResourceDialog(_Dialog):
 
     def _get_editors(self, item):
         name = item and item.name or ''
-        return [FileNameEditor(self, name, 'Path', self._controller, suggestion_source=ResourceSuggester(self._controller))]
+        return [FileNameEditor(self, name, 'Path', self._controller,
+                               suggestion_source=ResourceSuggester(self._controller))]
 
     def _execute(self):
         pass

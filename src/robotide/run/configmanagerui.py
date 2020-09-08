@@ -14,12 +14,11 @@
 #  limitations under the License.
 
 import wx
+from wx import Colour
 from wx.lib.mixins.listctrl import TextEditMixin
 
 from ..editor.listeditor import AutoWidthColumnList, ListEditorBase
-from ..widgets import Dialog, HelpLabel
-from wx import Colour
-
+from ..widgets import RIDEDialog, HelpLabel
 
 _CONFIG_HELP = """The specified command string will be split from whitespaces into a command
 and its arguments. If either the command or any of the arguments require
@@ -36,10 +35,10 @@ Run configurations are stored in the RIDE settings file.
 """
 
 
-class ConfigManagerDialog(Dialog):
+class ConfigManagerDialog(RIDEDialog):
 
     def __init__(self, configs, plugin):
-        Dialog.__init__(self, title='Manage Run Configurations')
+        RIDEDialog.__init__(self, title='Manage Run Configurations')
         # set Left to Right direction (while we don't have localization)
         self.SetBackgroundColour(Colour(200, 222, 40))
         self.SetOwnBackgroundColour(Colour(200, 222, 40))

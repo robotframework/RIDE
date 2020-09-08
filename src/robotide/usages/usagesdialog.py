@@ -13,20 +13,20 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robotide.ui.searchdots import DottedSearch
-
-from robotide.widgets import (Dialog, VirtualList, VerticalSizer, ImageList,
-                              ImageProvider, ButtonWithHandler)
 import wx
-from robotide.widgets.list import ListModel
 
-class UsagesDialog(Dialog):
+from ..ui.searchdots import DottedSearch
+from ..widgets import RIDEDialog, VirtualList, VerticalSizer, ImageList, ImageProvider, ButtonWithHandler
+from ..widgets.list import ListModel
+
+
+class UsagesDialog(RIDEDialog):
 
     def __init__(self, name, usages=None):
         self._name = name
         self._selection_listeners = []
         title = "'%s'" % (name)
-        Dialog.__init__(self, title=title, size=(650, 400))
+        RIDEDialog.__init__(self, title=title, size=(650, 400))
         # set Left to Right direction (while we don't have localization)
         self.SetLayoutDirection(wx.Layout_LeftToRight)
         self.SetSizer(VerticalSizer())

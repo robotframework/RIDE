@@ -14,12 +14,13 @@
 #  limitations under the License.
 
 import wx
+from wx import Colour
+from wx.adv import HyperlinkCtrl
 from wx.lib.scrolledpanel import ScrolledPanel
+
 from ..context import LOG
 from ..publish import RideLogException
 from ..widgets import Label
-from wx.adv import HyperlinkCtrl
-from wx import Colour
 
 
 class PluginManager(object):

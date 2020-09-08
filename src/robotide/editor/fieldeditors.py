@@ -15,15 +15,14 @@
 
 import wx
 import wx.grid
+from wx import Colour
 
+from .contentassist import ContentAssistTextCtrl
+from .gridbase import GridEditor
 from ..context import ctrl_or_cmd, bind_keys_to_evt_menu
 from ..editor.contentassist import ContentAssistFileButton
 from ..namespace.suggesters import SuggestionSource
 from ..widgets import Label
-
-from .contentassist import ContentAssistTextCtrl
-from .gridbase import GridEditor
-from wx import Colour
 
 
 class ValueEditor(wx.Panel):

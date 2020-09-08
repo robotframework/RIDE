@@ -12,19 +12,22 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import wx
-import os
-import tempfile
-import uuid
 import atexit
 import glob
-import sys
 import io
+import os
+import sys
+import tempfile
+import uuid
 
-from ..pluginapi import Plugin, ActionInfo, RideParserLogMessage
-from .. import widgets
-from .. import context
+import wx
 from wx import Colour
+
+from .. import context
+from .. import widgets
+from ..pluginapi import Plugin
+from ..action import ActionInfo
+from ..publish.messages import RideParserLogMessage
 
 
 def _message_to_string(msg):

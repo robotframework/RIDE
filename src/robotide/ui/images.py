@@ -14,11 +14,13 @@
 #  limitations under the License.
 
 import os
-import wx
-from robotide.controller.settingcontrollers import VariableController
-from robotide.controller.macrocontrollers import TestCaseController, UserKeywordController
-from robotide.controller.filecontrollers import TestDataDirectoryController, TestCaseFileController, ResourceFileController, ExcludedDirectoryController
 
+import wx
+
+from ..controller.filecontrollers import (TestDataDirectoryController, TestCaseFileController,
+                                                 ResourceFileController, ExcludedDirectoryController)
+from ..controller.macrocontrollers import TestCaseController, UserKeywordController
+from ..controller.settingcontrollers import VariableController
 
 _SIZE = (16, 16)
 _BASE = os.path.join(os.path.dirname(__file__), '..', 'widgets')

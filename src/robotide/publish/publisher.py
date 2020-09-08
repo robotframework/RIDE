@@ -13,12 +13,8 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-try:
-    from pubsub import Publisher
-    WxPublisher = Publisher()
-except ImportError:
-    from pubsub import pub
-    WxPublisher = pub.getDefaultPublisher()
+from pubsub import pub
+WxPublisher = pub.getDefaultPublisher()
 
 
 class Publisher(object):

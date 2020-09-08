@@ -13,22 +13,21 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from itertools import chain
-import time
 import os
 import re
+import time
+from itertools import chain
 
-from robotide.namespace.embeddedargs import EmbeddedArgsHandler
-from robotide.publish.messages import (RideSelectResource, RideFileNameChanged, RideSaving,
-                                       RideSaved, RideSaveAll, RideExcludesChanged)
-from robotide.namespace.namespace import _VariableStash
-from robotide.utils import overrides, variablematcher
-from robotide.controller.filecontrollers import ResourceFileController
-from robotide.controller.macrocontrollers import (KeywordNameController, ForLoopStepController,
-                                                  TestCaseController)
-from robotide.controller.settingcontrollers import _SettingController, VariableController
-from robotide.controller.tablecontrollers import VariableTableController
-from robotide.controller.validators import BaseNameValidator
+from .filecontrollers import ResourceFileController
+from .macrocontrollers import KeywordNameController, ForLoopStepController, TestCaseController
+from .settingcontrollers import _SettingController, VariableController
+from .tablecontrollers import VariableTableController
+from .validators import BaseNameValidator
+from ..namespace.embeddedargs import EmbeddedArgsHandler
+from ..namespace.namespace import _VariableStash
+from ..publish.messages import (RideSelectResource, RideFileNameChanged, RideSaving, RideSaved, RideSaveAll,
+                                RideExcludesChanged)
+from ..utils import overrides, variablematcher
 
 
 class Occurrence(object):

@@ -16,7 +16,6 @@
 import wx
 
 from .font import Font
-from wx import Colour
 
 
 class Label(wx.StaticText):

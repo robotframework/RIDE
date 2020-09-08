@@ -17,14 +17,13 @@ import inspect
 import sys
 import traceback
 
-from robotide import utils
+from .. import utils
+from ..lib.robot.utils.compat import with_metaclass
+from . import messagetype
+from . import publisher
 
-from robotide.publish import messagetype
-from robotide.publish import publisher
-from robotide.lib.robot.utils.compat import with_metaclass
 
-
-class RideMessage(with_metaclass(messagetype.messagetype, object)):
+class RideMessage(with_metaclass(messagetype.MessageType, object)):
     """Base class for all messages sent by RIDE.
 
     :CVariables:

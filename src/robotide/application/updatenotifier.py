@@ -16,16 +16,17 @@
 # Configure wx version to allow running test app in __main__
 
 
-import wx
-from ..utils.versioncomparator import cmp_versions
-from ..widgets.button import ButtonWithHandler
-from ..widgets import htmlwindow
-
 import time
 import urllib.request as urllib2
 import xmlrpc.client as xmlrpclib
-from .. import version
+
+import wx
 from wx import Colour
+
+from .. import version
+from ..utils.versioncomparator import cmp_versions
+from ..widgets.button import ButtonWithHandler
+from ..widgets.htmlwnd import HtmlWindow
 
 _CHECK_FOR_UPDATES_SETTING = "check for updates"
 _LAST_UPDATE_CHECK_SETTING = "last update check"
@@ -81,9 +82,9 @@ class UpdateNotifierController(object):
         return xml
 
 
-class HtmlWindow(htmlwindow.HtmlWindow):
+class LocalHtmlWindow(HtmlWindow):
     def __init__(self, parent, size=(600,400)):
-        htmlwindow.HtmlWindow.__init__(self, parent, size)
+        HtmlWindow.__init__(self, parent, size)
         if "gtk2" or "gtk3" in wx.PlatformInfo:
             self.SetStandardFonts()
 
@@ -101,7 +102,7 @@ class UpdateDialog(wx.Dialog):
         self.SetBackgroundColour(Colour(200, 222, 40))
         self.SetForegroundColour(Colour(7, 0, 70))
         sizer = wx.BoxSizer(orient=wx.VERTICAL)
-        hwin = HtmlWindow(self, size=(400,200))
+        hwin = LocalHtmlWindow(self, size=(400, 200))
         hwin.set_content('New version %s available from <a href="%s">%s</a>' % (version, url, url))
         irep = hwin.GetInternalRepresentation()
         hwin.SetSize((irep.GetWidth()+25, irep.GetHeight()+20))

@@ -46,32 +46,34 @@ You can safely manually remove these directories, except for the one
 being used for a currently running test.
 """
 import datetime
-import time
 import os
-import psutil
 import re
-import wx
-import wx.stc
+import time
 from functools import reduce
 from queue import Queue
-from wx.lib.embeddedimage import PyEmbeddedImage
+from sys import getfilesystemencoding
 
+import psutil
+import wx
+import wx.stc
+from wx.lib.embeddedimage import PyEmbeddedImage
 
 from robotide.action.shortcut import localize_shortcuts
 from robotide.context import IS_WINDOWS, IS_MAC
 from robotide.contrib.testrunner import TestRunner
 from robotide.contrib.testrunner import runprofiles
 from robotide.controller.macrocontrollers import TestCaseController
-from robotide.publish import RideSettingsChanged, PUBLISHER
-from robotide.publish.messages import RideTestSelectedForRunningChanged
-from robotide.pluginapi import Plugin, ActionInfo
-from robotide.widgets import Label, ImageProvider
-from robotide.robotapi import LOG_LEVELS
-from robotide.utils import robottime
-from robotide.preferences.editors import ReadFonts
-from sys import getfilesystemencoding
 from robotide.lib.robot.utils.encodingsniffer import (get_console_encoding,
                                                       get_system_encoding)
+from robotide.pluginapi import Plugin
+from robotide.action import ActionInfo
+from robotide.preferences.editors import ReadFonts
+from robotide.publish import RideSettingsChanged, PUBLISHER
+from robotide.publish.messages import RideTestSelectedForRunningChanged
+from robotide.robotapi import LOG_LEVELS
+from robotide.utils import robottime
+from robotide.widgets import Label, ImageProvider
+
 CONSOLE_ENCODING = get_console_encoding()
 SYSTEM_ENCODING = get_system_encoding()
 OUTPUT_ENCODING = getfilesystemencoding()

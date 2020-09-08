@@ -13,10 +13,10 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robotide import utils
+from .. import utils
 
 
-class messagetype(type):
+class MessageType(type):
 
     def __new__(cls, name, bases, dct):
         if not dct.get('topic'):

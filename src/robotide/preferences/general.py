@@ -12,14 +12,14 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import wx
-
+from functools import lru_cache
 from os.path import abspath, dirname, join
 
-from . import widgets
-from ..publish import RideSettingsChanged, PUBLISHER
+import wx
 
-from functools import lru_cache
+from ..ui.preferences_dialogs import (boolean_editor, PreferencesPanel, IntegerChoiceEditor, SpinChoiceEditor,
+                                      StringChoiceEditor, PreferencesColorPicker)
+from ..publish import RideSettingsChanged, PUBLISHER
 
 
 @lru_cache(maxsize=2)
@@ -33,7 +33,7 @@ def read_fonts(fixed=False):
     return names
 
 
-class GeneralPreferences(widgets.PreferencesPanel):
+class GeneralPreferences(PreferencesPanel):
 
     def __init__(self, settings, *args, **kwargs):
         super(GeneralPreferences, self).__init__(*args, **kwargs)
@@ -78,22 +78,22 @@ class GeneralPreferences(widgets.PreferencesPanel):
         return join(dirname(abspath(__file__)), 'settings.cfg')
 
     def _create_font_editor(self):
-        f = widgets.IntegerChoiceEditor(
+        f = IntegerChoiceEditor(
             self._settings, 'font size', 'Font Size',
             [str(i) for i in range(8, 16)])
         sizer = wx.FlexGridSizer(rows=3, cols=2, vgap=10, hgap=30)
         sizer.AddMany([f.label(self), f.chooser(self)])
         fixed_font = False
         if 'zoom factor' in self._settings:
-            z = widgets.SpinChoiceEditor(
+            z = SpinChoiceEditor(
                 self._settings, 'zoom factor', 'Zoom Factor', (-10, 20))
             sizer.AddMany([z.label(self), z.chooser(self)])
         if 'fixed font' in self._settings:
-            sizer.AddMany(widgets.boolean_editor(
+            sizer.AddMany(boolean_editor(
                 self, self._settings, 'fixed font', 'Use fixed width font'))
             fixed_font = self._settings['fixed font']
         if 'font face' in self._settings:
-            s = widgets.StringChoiceEditor(self._settings, 'font face', 'Font Face', read_fonts(fixed_font))
+            s = StringChoiceEditor(self._settings, 'font face', 'Font Face', read_fonts(fixed_font))
             sizer.AddMany([s.label(self), s.chooser(self)])
         return sizer
 
@@ -125,7 +125,7 @@ class DefaultPreferences(GeneralPreferences):
                 column = 0
                 row += 1
             label = wx.StaticText(self, wx.ID_ANY, label_text)
-            button = widgets.PreferencesColorPicker(
+            button = PreferencesColorPicker(
                 self, wx.ID_ANY, self._settings, settings_key)
             container.Add(button, (row, column),
                           flag=wx.ALL | wx.ALIGN_CENTER_VERTICAL, border=4)

@@ -14,32 +14,33 @@
 #  limitations under the License.
 
 import os
+
 import wx
 import wx.lib.agw.aui as aui
-from wx.adv import TaskBarIcon, TBI_DOCK
 from wx import Colour
-from ..action import ActionInfoCollection, ActionFactory, SeparatorInfo
-from ..context import ABOUT_RIDE, SHORTCUT_KEYS, IS_MAC
-from ..controller.ctrlcommands import SaveFile, SaveAll
-from ..publish import RideSaveAll, RideClosing, RideSaved, PUBLISHER, \
-    RideInputValidationError, RideTreeSelection, RideModificationPrevented, RideBeforeSaving
-from ..ui.tagdialogs import ViewAllTagsDialog
-from ..ui.filedialogs import RobotFilePathDialog
-from ..utils import RideFSWatcherHandler
-from ..widgets import Dialog, ImageProvider, HtmlWindow
-from ..preferences import PreferenceEditor
+from wx.adv import TaskBarIcon, TBI_DOCK
 
 from .actiontriggers import (MenuBar, ToolBarButton, ShortcutRegistry, _RideSearchMenuItem)
 from .filedialogs import (NewProjectDialog, InitFileFormatDialog)
-from .review import ReviewDialog
-from .pluginmanager import PluginManager
-from ..action.shortcut import localize_shortcuts
-from .treeplugin import Tree
 from .fileexplorerplugin import FileExplorer
 from .notebook import NoteBook
+from .pluginmanager import PluginManager
 from .progress import LoadProgressObserver
+from .review import ReviewDialog
+from .treeplugin import Tree
+from ..action import ActionInfoCollection, ActionFactory, SeparatorInfo
+from ..action.shortcut import localize_shortcuts
+from ..context import ABOUT_RIDE, SHORTCUT_KEYS, IS_MAC
+from ..controller.ctrlcommands import SaveFile, SaveAll
 from ..editor import customsourceeditor
-
+from ..preferences import PreferenceEditor
+from ..preferences.settings import RideSettings, _Section
+from ..publish import (RideSaveAll, RideClosing, RideSaved, PUBLISHER, RideInputValidationError, RideTreeSelection,
+                       RideModificationPrevented, RideBeforeSaving, RideSettingsChanged)
+from ..ui.filedialogs import RobotFilePathDialog
+from ..ui.tagdialogs import ViewAllTagsDialog
+from ..utils import RideFSWatcherHandler
+from ..widgets import RIDEDialog, ImageProvider, HtmlWindow
 
 _menudata = """
 [File]
@@ -73,15 +74,14 @@ ID_CustomizeToolbar = wx.ID_HIGHEST + 1
 ID_SampleItem = ID_CustomizeToolbar + 1
 
 
-### DEBUG some testing
+# -- DEBUG some testing
 # -- SizeReportCtrl --
 # (a utility control that always reports it's client size)
 
 
 class SizeReportCtrl(wx.Control):
 
-    def __init__(self, parent, id=wx.ID_ANY, pos=wx.DefaultPosition,
-                size=wx.DefaultSize, mgr=None):
+    def __init__(self, parent, id=wx.ID_ANY, pos=wx.DefaultPosition, size=wx.DefaultSize, mgr=None):
 
         wx.Control.__init__(self, parent, id, pos, size, style=wx.NO_BORDER)
         self._mgr = mgr
@@ -95,7 +95,7 @@ class SizeReportCtrl(wx.Control):
         dc = wx.PaintDC(self)
         size = self.GetClientSize()
 
-        s = "Size: %d x %d"%(size.x, size.y)
+        s = "Size: %d x %d" % (size.x, size.y)
 
         dc.SetFont(wx.NORMAL_FONT)
         w, height = dc.GetTextExtent(s)
@@ -112,28 +112,26 @@ class SizeReportCtrl(wx.Control):
 
             pi = self._mgr.GetPane(self)
 
-            s = "Layer: %d"%pi.dock_layer
+            s = "Layer: %d" % pi.dock_layer
             w, h = dc.GetTextExtent(s)
             dc.DrawText(s, (size.x-w)/2, ((size.y-(height*5))/2)+(height*1))
 
-            s = "Dock: %d Row: %d"%(pi.dock_direction, pi.dock_row)
+            s = "Dock: %d Row: %d" % (pi.dock_direction, pi.dock_row)
             w, h = dc.GetTextExtent(s)
             dc.DrawText(s, (size.x-w)/2, ((size.y-(height*5))/2)+(height*2))
 
-            s = "Position: %d"%pi.dock_pos
+            s = "Position: %d" % pi.dock_pos
             w, h = dc.GetTextExtent(s)
             dc.DrawText(s, (size.x-w)/2, ((size.y-(height*5))/2)+(height*3))
 
-            s = "Proportion: %d"%pi.dock_proportion
+            s = "Proportion: %d" % pi.dock_proportion
             w, h = dc.GetTextExtent(s)
             dc.DrawText(s, (size.x-w)/2, ((size.y-(height*5))/2)+(height*4))
 
     def OnEraseBackground(self, event):
-
         pass
 
     def OnSize(self, event):
-
         self.Refresh()
 
 
@@ -141,9 +139,10 @@ class RideFrame(wx.Frame):
 
     def __init__(self, application, controller):
         size = application.settings.get('mainframe size', (1100, 700))
+        # DEBUG self.general_settings = application.settings['General']
         wx.Frame.__init__(self, parent=None, id=wx.ID_ANY, title='RIDE',
                           pos=application.settings.get('mainframe position', (50, 30)),
-                          size=size, style=wx.DEFAULT_FRAME_STYLE | wx.SUNKEN_BORDER)
+                          size=size, style=wx.DEFAULT_FRAME_STYLE | wx.SUNKEN_BORDER | wx.BORDER_THEME)
 
         # set Left to Right direction (while we don't have localization)
         self.SetLayoutDirection(wx.Layout_LeftToRight)
@@ -176,6 +175,7 @@ class RideFrame(wx.Frame):
         self.Bind(wx.EVT_TREE_ITEM_RIGHT_CLICK, self.OnMenuOpenFile)
         self._subscribe_messages()
         wx.CallAfter(self.actions.register_tools)  # DEBUG
+        # DEBUG wx.CallAfter(self.OnSettingsChanged, self.general_settings)
 
     def _subscribe_messages(self):
         for listener, topic in [
@@ -183,8 +183,8 @@ class RideFrame(wx.Frame):
             (lambda msg: self.SetStatusText('Saved all files'), RideSaveAll),
             (self._set_label, RideTreeSelection),
             (self._show_validation_error, RideInputValidationError),
-            (self._show_modification_prevented_error,
-             RideModificationPrevented)
+            (self._show_modification_prevented_error, RideModificationPrevented),
+            (self.OnSettingsChanged, RideSettingsChanged)
         ]:
             PUBLISHER.subscribe(listener, topic)
 
@@ -204,19 +204,13 @@ class RideFrame(wx.Frame):
         wx.MessageBox(message.message, 'Validation Error', style=wx.ICON_ERROR)
 
     def _show_modification_prevented_error(self, message):
-        wx.MessageBox("\"%s\" is read only" %
-                      message.controller.datafile_controller.filename,
-                      "Modification prevented",
+        wx.MessageBox("\"%s\" is read only" % message.controller.datafile_controller.filename, "Modification prevented",
                       style=wx.ICON_ERROR)
 
     def _init_ui(self):
         # self._mgr.AddPane(wx.Panel(self), aui.AuiPaneInfo().CenterPane())
-        ##### self.splitter = wx.SplitterWindow(self, style=wx.SP_LIVE_UPDATE)
+        # #### self.splitter = wx.SplitterWindow(self, style=wx.SP_LIVE_UPDATE)
         # self._mgr.AddPane(wx.Panel(self), aui.AuiPaneInfo().CenterPane())
-        self.SetBackgroundColour(Colour(200, 222, 40))
-        self.SetOwnBackgroundColour(Colour(200, 222, 40))
-        self.SetForegroundColour(Colour(7, 0, 70))
-        self.SetOwnForegroundColour(Colour(7, 0, 70))
         # set up default notebook style
         self._notebook_style = aui.AUI_NB_DEFAULT_STYLE | \
                                aui.AUI_NB_TAB_EXTERNAL_MOVE | wx.NO_BORDER
@@ -228,7 +222,7 @@ class RideFrame(wx.Frame):
         self._mgr.AddPane(self.notebook,
                           aui.AuiPaneInfo().Name("notebook_editors").
                           CenterPane().PaneBorder(False))
-        ################ Test
+        # ############### Test
         # self._mgr.AddPane(self.CreateTextCtrl(),
         #                   aui.AuiPaneInfo().Name("text_content").
         #                   CenterPane().Hide().MinimizeButton(True))
@@ -240,7 +234,7 @@ class RideFrame(wx.Frame):
         # self._mgr.AddPane(self.CreateNotebook(),
         #                   aui.AuiPaneInfo().Name("notebook_content").
         #                   CenterPane().PaneBorder(False))
-        ####################
+        # ###################
         # self._mgr.AddPane(self.CreateSizeReportCtrl(), aui.AuiPaneInfo().
         #                   Name("test1").Caption(
         #     "Pane Caption").Top().MinimizeButton(True))
@@ -272,7 +266,7 @@ class RideFrame(wx.Frame):
         self.tree.SetMinSize(wx.Size(120, 200))
         # TreePlugin will manage showing the Tree
         self.actions.register_actions(ActionInfoCollection(_menudata, self, self.tree))
-        ###### File explorer panel is always created here
+        # ##### File explorer panel is always created here
         self.filemgr = FileExplorer(self, self._controller)
         self.filemgr.SetMinSize(wx.Size(120, 200))
 
@@ -285,7 +279,7 @@ class RideFrame(wx.Frame):
 
     def testToolbar(self):
 
-        #### More testing
+        # ### More testing
         prepend_items, append_items = [], []
         item = aui.AuiToolBarItem()
 
@@ -350,21 +344,28 @@ class RideFrame(wx.Frame):
             wx.CloseEvent.Veto(event)
 
     def OnSize(self, event):
-        size = self.DoGetSize()
+        if wx.VERSION >= (4, 1, 0):
+            size = self.DoGetSize()
+        else:
+            size = tuple(self.GetSize())
         is_full_screen_mode = size == wx.DisplaySize()
         self._application.settings['mainframe maximized'] = self.IsMaximized() or is_full_screen_mode
         if not is_full_screen_mode:
             self._application.settings['mainframe size'] = size
-        self._application.settings['mainframe position'] = \
-            self.DoGetPosition()
+        if wx.VERSION >= (4, 1, 0):
+            self._application.settings['mainframe position'] = self.DoGetPosition()
+        else:
+            self._application.settings['mainframe position'] = tuple(self.GetPosition())
         event.Skip()
 
     def OnMove(self, event):
         # When the window is Iconized, a move event is also raised, but we
         # don't want to update the position in the settings file
         if not self.IsIconized() and not self.IsMaximized():
-            self._application.settings['mainframe position'] =\
-                self.DoGetPosition()
+            if wx.VERSION >= (4, 1, 0):
+                self._application.settings['mainframe position'] = self.DoGetPosition()
+            else:
+                self._application.settings['mainframe position'] = tuple(self.GetPosition())
         event.Skip()
 
     def OnMaximize(self, event):
@@ -451,7 +452,6 @@ class RideFrame(wx.Frame):
         except IOError:
             wx.LogError(f"Cannot open file {path}")
 
-
     def OnOpenTestSuite(self, event):
         if not self.check_unsaved_modifications():
             return
@@ -475,6 +475,7 @@ class RideFrame(wx.Frame):
         # self._controller.default_dir will only save dir path
         # need to save path to self._application.workspace_path too
         self._application.workspace_path = path
+        err = None
         try:
             err = self._controller.load_datafile(path, LoadProgressObserver(self))
         finally:
@@ -553,26 +554,31 @@ class RideFrame(wx.Frame):
         dlg.ShowModal()
         dlg.Destroy()
 
-    def OnAbout(self, event):
+    @staticmethod
+    def OnAbout(event):
         dlg = AboutDialog()
         dlg.ShowModal()
         dlg.Destroy()
 
-    def OnShortcutkeys(self, event):
+    @staticmethod
+    def OnShortcutkeys(event):
         dialog = ShortcutKeysDialog()
         dialog.Show()
 
-    def OnReportaProblem(self, event):
+    @staticmethod
+    def OnReportaProblem(event):
         wx.LaunchDefaultBrowser("https://github.com/robotframework/RIDE/issues"
                                 "?utf8=%E2%9C%93&q=is%3Aissue+%22search"
                                 "%20your%20problem%22"
                                 )
 
-    def OnUserGuide(self, event):
+    @staticmethod
+    def OnUserGuide(event):
         wx.LaunchDefaultBrowser("http://robotframework.org/robotframework/"
                                 "#user-guide")
 
-    def OnWiki(self, event):
+    @staticmethod
+    def OnWiki(event):
         wx.LaunchDefaultBrowser("https://github.com/robotframework/RIDE/wiki")
 
     def _has_data(self):
@@ -646,6 +652,36 @@ class RideFrame(wx.Frame):
                         os.makedirs(_.directory)
                     _.mark_dirty()
             self.save_all()
+
+    def OnSettingsChanged(self, data):
+        """Redraw the colors if the color settings are modified"""
+        # section, setting = data.keys
+        print(f"DEBUG: OnSettingsChanged enter {type(data)}")
+        if isinstance(data, _Section):
+            ndata= data
+            print(f"DEBUG: OnSettingsChanged in Section {type(ndata)}")
+            for key, value in data:
+                print(f"DEBUG: OnSettingsChanged in key {key} value {value}")
+            background = data.get_without_default('background')
+            foreground = data.get_without_default('foreground')
+            print(f"DEBUG: OnSettings section: {data._is_section('General')} background {background}"
+                  f" foreground {foreground}")
+            if data._is_section('General'):
+                _settings = RideSettings()
+                _general_settings = _settings['General']
+                children = self.GetChildren()
+                for child in children:
+                    child.SetBackgroundColour(Colour(_general_settings['background']))
+                    child.SetOwnBackgroundColour(Colour(_general_settings['background']))
+                    child.SetForegroundColour(Colour(_general_settings['foreground']))
+                    child.SetOwnForegroundColour(Colour(_general_settings['foreground']))
+                    font = child.GetFont()
+                    font.SetFaceName(_general_settings['font face'])
+                    font.SetPointSize(_general_settings['font size'])
+                    child.SetFont(font)
+                    child.Refresh(True)
+                    print(f"DEBUG: OnSettingsChanged child {type(child)}")
+            print(f"DEBUG: OnSettingsChanged not General")
 
 
 # Code moved from actiontriggers
@@ -778,39 +814,36 @@ class ActionRegisterer(object):
         return action
 
 
-class AboutDialog(Dialog):
+class AboutDialog(RIDEDialog):
 
     def __init__(self):
-        Dialog.__init__(self, title='RIDE')
+        RIDEDialog.__init__(self, title='RIDE')
         # set Left to Right direction (while we don't have localization)
         self.SetLayoutDirection(wx.Layout_LeftToRight)
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(HtmlWindow(self, (650, 200), ABOUT_RIDE), 1, flag=wx.EXPAND)
         self.SetSizerAndFit(sizer)
-        self.SetBackgroundColour(Colour(200, 222, 40))
-        self.SetOwnBackgroundColour(Colour(200, 222, 40))
-        self.SetForegroundColour(Colour(7, 0, 70))
-        self.SetOwnForegroundColour(Colour(7, 0, 70))
-        self.Refresh(True)
 
     def OnKey(self, *args):
         pass
 
 
-class ShortcutKeysDialog(Dialog):
+class ShortcutKeysDialog(RIDEDialog):
 
     def __init__(self):
-        Dialog.__init__(self, title="Shortcut keys for RIDE")
+        RIDEDialog.__init__(self, title="Shortcut keys for RIDE")
         # set Left to Right direction (while we don't have localization)
         self.SetLayoutDirection(wx.Layout_LeftToRight)
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         sizer.Add(HtmlWindow(self, (350, 400),
                              self._get_platform_specific_shortcut_keys()), 1,
                   flag=wx.EXPAND)
+        """
         self.SetBackgroundColour(Colour(200, 222, 40))
         self.SetOwnBackgroundColour(Colour(200, 222, 40))
         self.SetForegroundColour(Colour(7, 0, 70))
         self.SetOwnForegroundColour(Colour(7, 0, 70))
+        """
         self.SetSizerAndFit(sizer)
 
     def OnKey(self, *args):

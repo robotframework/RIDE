@@ -15,8 +15,8 @@
 
 import os
 
-from robotide.controller.ctrlcommands import FindOccurrences, _Command, FindVariableOccurrences
-from robotide.controller.macrocontrollers import KeywordNameController
+from ..controller.ctrlcommands import FindOccurrences, _Command, FindVariableOccurrences
+from ..controller.macrocontrollers import KeywordNameController
 
 
 class FindUsages(FindOccurrences):

@@ -14,34 +14,32 @@
 #  limitations under the License.
 
 import os
-import sys
-import stat
-from itertools import chain
 import shutil
-import robotide.controller.ctrlcommands
+import stat
+import sys
+from itertools import chain
+
+from ..controller import ctrlcommands
+
 try:
     import subprocess32 as subprocess
 except ImportError:
     import subprocess
-from robotide.controller.dataloader import ExcludedDirectory, TestData
-
-from robotide.publish import (RideDataFileRemoved, RideInitFileRemoved,
-        RideDataChangedToDirty, RideDataDirtyCleared, RideSuiteAdded,
-        RideItemSettingsChanged)
-from robotide.publish.messages import RideDataFileSet, RideOpenResource
-from robotide.robotapi import TestDataDirectory, TestCaseFile, ResourceFile
-from robotide import utils
+from ..controller.dataloader import ExcludedDirectory, TestData
+from ..publish import (RideDataFileRemoved, RideInitFileRemoved, RideDataChangedToDirty, RideDataDirtyCleared,
+                       RideSuiteAdded, RideItemSettingsChanged)
+from ..publish.messages import RideDataFileSet, RideOpenResource
+from ..robotapi import TestDataDirectory, TestCaseFile, ResourceFile
+from .. import utils
 
 from .basecontroller import WithUndoRedoStacks, _BaseController, WithNamespace, ControllerWithParent
 from .macrocontrollers import UserKeywordController
 from .robotdata import NewTestCaseFile, NewTestDataDirectory
 from robotide.utils import overrides
-from .settingcontrollers import (DocumentationController, FixtureController,
-        TimeoutController, TemplateController, DefaultTagsController,
-        ForceTagsController)
-from .tablecontrollers import (VariableTableController, TestCaseTableController,
-        KeywordTableController, ImportSettingsController,
-        MetadataListController, TestCaseController)
+from .settingcontrollers import (DocumentationController, FixtureController, TimeoutController, TemplateController,
+                                 DefaultTagsController, ForceTagsController)
+from .tablecontrollers import (VariableTableController, TestCaseTableController, KeywordTableController,
+                               ImportSettingsController, MetadataListController, TestCaseController)
 
 
 def _get_controller(project, data, parent):
@@ -158,15 +156,13 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
     @property
     def variables(self):
         if self._variables_table_controller is None:
-            self._variables_table_controller = \
-                    VariableTableController(self, self.data.variable_table)
+            self._variables_table_controller = VariableTableController(self, self.data.variable_table)
         return self._variables_table_controller
 
     @property
     def tests(self):
         if self._testcase_table_controller is None:
-            self._testcase_table_controller = \
-                    TestCaseTableController(self, self.data.testcase_table)
+            self._testcase_table_controller = TestCaseTableController(self, self.data.testcase_table)
         return self._testcase_table_controller
 
     @property
@@ -185,8 +181,7 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
     @property
     def keywords(self):
         if self._keywords_table_controller is None:
-            self._keywords_table_controller = \
-                    KeywordTableController(self, self.data.keyword_table)
+            self._keywords_table_controller = KeywordTableController(self, self.data.keyword_table)
         return self._keywords_table_controller
 
     @property
@@ -273,7 +268,7 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
         old_file = self.filename
         self.data.source = os.path.join(self.directory, '%s.%s' % (basename, self.get_format()))
         self.filename = self.data.source
-        self.execute(robotide.controller.ctrlcommands.SaveFile())
+        self.execute(ctrlcommands.SaveFile())
         if old_file != self.filename:
             self.remove_from_filesystem(old_file)
 

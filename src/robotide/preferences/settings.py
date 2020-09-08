@@ -15,20 +15,11 @@
 
 import os
 import shutil
-import sys
 
-if sys.version_info[0] == 2:
-    PYTHON2 = True
-    PYTHON3 = False
-elif sys.version_info[0] == 3:
-    PYTHON2 = False
-    PYTHON3 = True
-
-from robotide.context import SETTINGS_DIRECTORY, LIBRARY_XML_DIRECTORY
-from robotide.preferences.configobj import ConfigObj, ConfigObjError,\
-    Section, UnreprError
-from robotide.preferences import excludes
-from robotide.publish import RideSettingsChanged
+from ..context import SETTINGS_DIRECTORY, LIBRARY_XML_DIRECTORY
+from .configobj import ConfigObj, ConfigObjError, Section, UnreprError
+from .excludes_class import Excludes
+from ..publish import RideSettingsChanged
 
 
 def initialize_settings(path, dest_file_name=None):
@@ -83,7 +74,7 @@ class SettingsMigrator(object):
         # print("DEBUG: Settings migrator 1: %s\ndefault_path %s" % (self._default_settings.__repr__(), default_path))
         try:
             self._old_settings = ConfigObj(user_path, unrepr=True)
-        except UnreprError as err: # DEBUG errored file
+        except UnreprError as err:  # DEBUG errored file
             # print("DEBUG: Settings migrator ERROR -------- %s path %s" %
             #      (self._old_settings.__repr__(), user_path))
             raise ConfigurationError("Invalid config file '%s': %s" %
@@ -153,10 +144,7 @@ class SettingsMigrator(object):
                 old = f.read()
             new = '\n'.join(d for d in old.split('\n') if os.path.isdir(d))+'\n'
             with open(old_excludes, 'wb') as f:
-                if PYTHON2:
-                    f.write(new)
-                elif PYTHON3:
-                    f.write(new.encode('UTF-8'))
+                f.write(new.encode('UTF-8'))
         settings[self.SETTINGS_VERSION] = 3
 
     def migrate_from_3_to_4(self, settings):
@@ -204,11 +192,9 @@ class SettingsMigrator(object):
         if installed_rf_libs:
             del settings['use installed robot libraries']
             for name in [
-                'BuiltIn', 'Collections', 'DateTime', 'Dialogs', 'Easter',
-                'OperatingSystem', 'Process', 'Remote',
-                'Screenshot', 'String', 'Telnet', 'XML']:
-                lib_xml_path = os.path.join(LIBRARY_XML_DIRECTORY,
-                                            '{}.xml'.format(name))
+                         'BuiltIn', 'Collections', 'DateTime', 'Dialogs', 'Easter', 'OperatingSystem', 'Process',
+                         'Remote', 'Screenshot', 'String', 'Telnet', 'XML']:
+                lib_xml_path = os.path.join(LIBRARY_XML_DIRECTORY, '{}.xml'.format(name))
                 if os.path.exists(lib_xml_path):
                     os.remove(lib_xml_path)
         settings[self.SETTINGS_VERSION] = 8
@@ -284,13 +270,11 @@ class SettingsMigrator(object):
                 settings[section][keyname] = value
                 del settings[section][keyname_old]
 
-    def _write_merged_settings(self, settings, path):
+    @staticmethod
+    def _write_merged_settings(settings, path):
         try:
-            with open(path, 'wb') as outfile: # DEBUG used to be 'wb'
-                if PYTHON2:
-                    settings.write(outfile)
-                elif PYTHON3:  # DEBUG
-                    settings.write(outfile) # DEBUG .encoding('UTF-8')
+            with open(path, 'wb') as outfile:  # DEBUG used to be 'wb'
+                settings.write(outfile)  # DEBUG .encoding('UTF-8')
         except IOError:
             raise RuntimeError(
                 'Could not open settings file "%s" for writing' % path)
@@ -331,10 +315,7 @@ class _Section(object):
 
     def iteritems(self):
         """Returns an iterator over the (key,value) items of the section"""
-        if PYTHON2:
-            return self._config_obj.iteritems()
-        elif PYTHON3:
-            return self._config_obj.items()
+        return self._config_obj.items()
 
     def has_setting(self, name):
         return name in self._config_obj
@@ -416,7 +397,7 @@ class Settings(_Section):
             _Section.__init__(self, ConfigObj(user_path, unrepr=True))
         except UnreprError as error:
             raise ConfigurationError(error)
-        self.excludes = excludes.Excludes(SETTINGS_DIRECTORY)
+        self.excludes = Excludes(SETTINGS_DIRECTORY)
 
     def save(self):
         self._config_obj.write()

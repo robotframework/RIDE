@@ -14,27 +14,28 @@
 #  limitations under the License.
 
 import wx
-from .. import context
-from ..controller.ctrlcommands import UpdateVariable, UpdateDocumentation,\
-    SetValues, AddLibrary, AddResource, AddVariablesFileImport, ClearSetting
-from ..editor.listeditor import ListEditorBase
-from ..publish.messages import RideImportSetting,\
-    RideOpenVariableDialog, RideExecuteSpecXmlImport, RideSaving
-from ..utils import overrides
-from ..widgets import ButtonWithHandler, Label, HtmlWindow, PopupMenu,\
-    PopupMenuItems, HtmlDialog
-from ..publish import PUBLISHER
-from .. import utils
-from ..utils.highlightmatcher import highlight_matcher
+from wx import Colour
+
+from .editordialogs import EditorDialog, DocumentationDialog, MetadataDialog, \
+    ScalarVariableDialog, ListVariableDialog, DictionaryVariableDialog, LibraryDialog, \
+    ResourceDialog, VariablesDialog
 from .formatters import ListToStringFormatter
 from .gridcolorizer import ColorizationSettings
-from .editordialogs import EditorDialog, DocumentationDialog, MetadataDialog,\
-    ScalarVariableDialog, ListVariableDialog, DictionaryVariableDialog, LibraryDialog,\
-    ResourceDialog, VariablesDialog
 from .listeditor import ListEditor
 from .popupwindow import HtmlPopupWindow
 from .tags import TagsDisplay
-from wx import Colour
+from .. import context
+from .. import utils
+from ..controller.ctrlcommands import UpdateVariable, UpdateDocumentation, \
+    SetValues, AddLibrary, AddResource, AddVariablesFileImport, ClearSetting
+from ..editor.listeditor import ListEditorBase
+from ..publish import PUBLISHER
+from ..publish.messages import RideImportSetting, \
+    RideOpenVariableDialog, RideExecuteSpecXmlImport, RideSaving
+from ..utils import overrides
+from ..utils.highlightmatcher import highlight_matcher
+from ..widgets import ButtonWithHandler, Label, HtmlWindow, PopupMenu, \
+    PopupMenuItems, HtmlDialog
 
 
 class SettingEditor(wx.Panel):

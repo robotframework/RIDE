@@ -14,19 +14,22 @@
 #  limitations under the License.
 
 import os
+import re
+import time
+from threading import Thread
+
 import wx
 import wx.lib.mixins.listctrl as listmix
-import time
-import re
+from wx import Colour
+
 from ..context import IS_MAC
-from ..ui.searchdots import DottedSearch
-from ..widgets import ButtonWithHandler, Label
-from ..spec.iteminfo import LibraryKeywordInfo
-from ..usages.commands import FindUsages
 from ..controller.filecontrollers import (TestCaseFileController, ResourceFileController,
                                           TestDataDirectoryController)
-from wx import Colour
-from threading import Thread
+from ..spec.iteminfo import LibraryKeywordInfo
+from ..ui.searchdots import DottedSearch
+from ..usages.commands import FindUsages
+from ..widgets import ButtonWithHandler, Label
+
 
 class ReviewDialog(wx.Frame):
 

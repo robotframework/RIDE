@@ -14,39 +14,37 @@
 #  limitations under the License.
 
 import os
+
 import wx
+from wx import Colour
 from wx.lib.agw import customtreectrl
+from wx.lib.agw.aui import GetManager
 from wx.lib.agw.customtreectrl import GenericTreeItem
 from wx.lib.mixins import treemixin
-from wx import Colour
-from wx.lib.agw.aui import GetManager
 
 from ..controller.macrocontrollers import TestCaseController
 
 TREETEXTCOLOUR = Colour(0xA9, 0xA9, 0xA9)
 
-from robotide.controller.ui.treecontroller import TreeController, \
-    TestSelectionController
-from robotide.context import IS_WINDOWS
-from robotide.controller.filecontrollers import ResourceFileController, TestDataDirectoryController, \
-    TestCaseFileController
-from robotide.publish.messages import RideTestRunning, RideTestPaused, \
-    RideTestPassed, RideTestFailed, RideTestExecutionStarted, \
-    RideImportSetting, RideExcludesChanged, RideIncludesChanged, \
-    RideOpenSuite, RideNewProject
-from robotide.ui.images import RUNNING_IMAGE_INDEX, PASSED_IMAGE_INDEX, \
-    FAILED_IMAGE_INDEX, PAUSED_IMAGE_INDEX, ROBOT_IMAGE_INDEX
-from robotide.ui.treenodehandlers import TestCaseHandler, TestDataDirectoryHandler, TestCaseFileHandler
-from robotide.publish import PUBLISHER, RideTreeSelection, RideFileNameChanged,\
-    RideItem, RideUserKeywordAdded, RideTestCaseAdded, RideUserKeywordRemoved,\
-    RideTestCaseRemoved, RideDataFileRemoved, RideDataChangedToDirty,\
-    RideDataDirtyCleared, RideVariableRemoved, RideVariableAdded,\
-    RideVariableMovedUp, RideVariableMovedDown, RideVariableUpdated,\
-    RideOpenResource, RideSuiteAdded, RideSelectResource, RideDataFileSet
-from robotide.controller.ctrlcommands import MoveTo
-from robotide.pluginapi import Plugin, ActionInfo
-from robotide.widgets import PopupCreator
-from robotide import utils
+from ..controller.ui.treecontroller import TreeController, TestSelectionController
+from ..context import IS_WINDOWS
+from ..controller.filecontrollers import ResourceFileController, TestDataDirectoryController, TestCaseFileController
+from ..publish.messages import (RideTestRunning, RideTestPaused, RideTestPassed, RideTestFailed,
+                                RideTestExecutionStarted, RideImportSetting, RideExcludesChanged, RideIncludesChanged,
+                                RideOpenSuite, RideNewProject)
+from ..ui.images import (RUNNING_IMAGE_INDEX, PASSED_IMAGE_INDEX, FAILED_IMAGE_INDEX, PAUSED_IMAGE_INDEX,
+                         ROBOT_IMAGE_INDEX)
+from ..ui.treenodehandlers import TestCaseHandler, TestDataDirectoryHandler, TestCaseFileHandler
+from ..publish import (PUBLISHER, RideTreeSelection, RideFileNameChanged, RideItem, RideUserKeywordAdded,
+                       RideTestCaseAdded, RideUserKeywordRemoved, RideTestCaseRemoved, RideDataFileRemoved,
+                       RideDataChangedToDirty, RideDataDirtyCleared, RideVariableRemoved, RideVariableAdded,
+                       RideVariableMovedUp, RideVariableMovedDown, RideVariableUpdated, RideOpenResource,
+                       RideSuiteAdded, RideSelectResource, RideDataFileSet)
+from ..controller.ctrlcommands import MoveTo
+from ..pluginapi import Plugin
+from ..action import ActionInfo
+from ..widgets import PopupCreator
+from .. import utils
 from .treenodehandlers import ResourceRootHandler, action_handler_class, ResourceFileHandler
 from .images import TreeImageList
 

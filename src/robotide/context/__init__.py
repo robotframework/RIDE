@@ -14,13 +14,14 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import sys
 import os
+import sys
+
 import wx
 
-from ..version import VERSION
-from ..robotapi import ROBOT_LOGGER
 from . import logger
+from ..robotapi import ROBOT_LOGGER
+from ..version import VERSION
 
 APP = None
 LOG = logger.Logger()
@@ -45,7 +46,7 @@ if not os.path.isdir(LIBRARY_XML_DIRECTORY):
 SETTING_EDITOR_WIDTH = 450
 SETTING_LABEL_WIDTH = 150
 SETTING_ROW_HEIGTH = 25
-#TODO: Make this colour configurable
+# TODO: Make this colour configurable
 POPUP_BACKGROUND = (240, 242, 80)  # (255, 255, 187)
 POPUP_FOREGROUND = (40, 40, 0)  # (255, 255, 187)
 
@@ -58,8 +59,10 @@ ABOUT_RIDE = '''<h3>RIDE -- Robot Framework Test Data Editor</h3>
 For more information, see project pages at
 <a href="https://github.com/robotframework/RIDE">https://github.com/robotframework/RIDE</a>.</p>
 <p>Some of the icons are from <a href="http://www.famfamfam.com/lab/icons/silk/">Silk Icons</a>.</p>
-<p><br/><br/><a href="https://github.com/HelioGuilherme66">Hélio Guilherme</a> the maintainer of the project thanks the original authors and all users and collaborators.<br/>
-A very special thanks to <b><a href="https://github.com/Nyral">Nyral</a></b> and <b><a href="https://github.com/jnhyperion">Johnny.H</a></b> the most commited in helping RIDE development and maintenance.</p>
+<p><br/><br/><a href="https://github.com/HelioGuilherme66">Hélio Guilherme</a> the maintainer of the project thanks the 
+original authors and all users and collaborators.<br/>
+A very special thanks to <b><a href="https://github.com/Nyral">Nyral</a></b> and <b><a href="https://github.com/jnhyperi
+on">Johnny.H</a></b> the most commited in helping RIDE development and maintenance.</p>
 ''' % (VERSION, pyversion)
 
 
@@ -72,9 +75,9 @@ def ctrl_or_cmd():
 def bind_keys_to_evt_menu(target, actions):
     accelrators = []
     for accel, keycode, handler in actions:
-        id = wx.NewIdRef()
-        target.Bind(wx.EVT_MENU, handler, id=id)
-        accelrators.append((accel, keycode, id))
+        _id = wx.NewIdRef()
+        target.Bind(wx.EVT_MENU, handler, id=_id)
+        accelrators.append((accel, keycode, _id))
     target.SetAcceleratorTable(wx.AcceleratorTable(accelrators))
 
 

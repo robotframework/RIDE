@@ -14,21 +14,20 @@
 #  limitations under the License.
 
 
-from robotide.controller import Project
-from robotide.controller.dataloader import TestDataDirectoryWithExcludes
-from robotide.controller.filecontrollers import ExcludedDirectoryController
-from robotide.controller.settingcontrollers import VariableController
-from robotide import robotapi
-
-from .editors import (
-    InitFileEditor, TestCaseFileEditor, WelcomePage, ResourceFileEditor)
+from .. import robotapi
+from .. import controller
+# from ..controller import Project
+from ..controller.dataloader import TestDataDirectoryWithExcludes
+from ..controller.filecontrollers import ExcludedDirectoryController
+from ..controller.settingcontrollers import VariableController
+from .editors import (InitFileEditor, TestCaseFileEditor, WelcomePage, ResourceFileEditor)
 from .macroeditors import TestCaseEditor, UserKeywordEditor
 
 
-def VariableEditorChooser(plugin, parent, controller, tree):
-    controller = controller.datafile_controller
-    editor_class = plugin.get_editor(controller.data.__class__)
-    return editor_class(plugin, parent, controller, tree)
+def VariableEditorChooser(plugin, parent, _controller, tree):
+    _controller = _controller.datafile_controller
+    editor_class = plugin.get_editor(_controller.data.__class__)
+    return editor_class(plugin, parent, _controller, tree)
 
 
 class EditorCreator(object):
@@ -54,8 +53,8 @@ class EditorCreator(object):
         return self._editor
 
     def _create_editor(self, editor_panel, plugin, tree):
-        controller = plugin.get_selected_item()
-        if self._invalid(controller):
+        _controller = plugin.get_selected_item()
+        if self._invalid(_controller):
             # http://code.google.com/p/robotframework-ride/issues/detail?id=1092
             if self._editor and tree and (not tree._datafile_nodes or
                                           self._only_resource_files(tree)):
@@ -65,27 +64,29 @@ class EditorCreator(object):
             if self._editor:
                 return self._editor
             return WelcomePage(editor_panel)
-        if self._should_use_old_editor(controller):
+        if self._should_use_old_editor(_controller):
             return self._editor
-        return self._create_new_editor(controller, editor_panel, plugin, tree)
+        return self._create_new_editor(_controller, editor_panel, plugin, tree)
 
-    def _invalid(self, controller):
-        return not controller or controller.data is None or \
-            isinstance(controller, Project) or \
-            isinstance(controller, ExcludedDirectoryController)
+    @staticmethod
+    def _invalid(_controller):
+        return not _controller or _controller.data is None or \
+               isinstance(_controller, controller.Project) or \
+               isinstance(_controller, ExcludedDirectoryController)
 
-    def _should_use_old_editor(self, controller):
+    def _should_use_old_editor(self, _controller):
         return self._editor and \
-            isinstance(controller, VariableController) and \
-            controller.datafile_controller is self._editor.controller
+            isinstance(_controller, VariableController) and \
+            _controller.datafile_controller is self._editor.controller
 
-    def _create_new_editor(self, controller, editor_panel, plugin, tree):
-        editor_class = plugin.get_editor(controller.data.__class__)
+    def _create_new_editor(self, _controller, editor_panel, plugin, tree):
+        editor_class = plugin.get_editor(_controller.data.__class__)
         if self._editor:
             self._editor.destroy()
         editor_panel.Show(False)
-        return editor_class(plugin, editor_panel, controller, tree)
+        return editor_class(plugin, editor_panel, _controller, tree)
 
-    def _only_resource_files(self, tree):
+    @staticmethod
+    def _only_resource_files(tree):
         return all([tree.node_is_resource_file(node)
                     for node in tree._datafile_nodes])

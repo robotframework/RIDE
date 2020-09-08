@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 import wx
+
 from robotide import utils
 from robotide.action.actioninfo import ActionInfoCollection, ActionInfo
 from robotide.context import IS_WINDOWS, ctrl_or_cmd, bind_keys_to_evt_menu
@@ -22,7 +23,7 @@ from robotide.controller.macrocontrollers import TestCaseController
 from robotide.controller.tags import Tag, DefaultTag
 from robotide.publish import RideTestSelectedForRunningChanged
 
-tree_actions ="""
+tree_actions = """
 [Navigate]
 !Go &Back | Go back to previous location in tree | Alt-%s | ART_GO_BACK
 !Go &Forward | Go forward to next location in tree | Alt-%s | ART_GO_FORWARD
@@ -42,8 +43,10 @@ class TreeController(object):
     def register_tree_actions(self):
         actions = ActionInfoCollection(tree_actions, self, self._tree)
         self._action_registerer.register_actions(actions)
-        self._action_registerer.register_action(ActionInfo(menu_name='Edit', name='Add Tag to selected', action=self.OnAddTagToSelected))
-        self._action_registerer.register_action(ActionInfo(menu_name='Edit', name='Clear Selected', action=self.OnClearSelected))
+        self._action_registerer.register_action(ActionInfo(menu_name='Edit', name='Add Tag to selected',
+                                                           action=self.OnAddTagToSelected))
+        self._action_registerer.register_action(ActionInfo(menu_name='Edit', name='Clear Selected',
+                                                           action=self.OnClearSelected))
 
     def OnGoBack(self, event):
         node = self._history.back()
@@ -81,7 +84,7 @@ class TreeController(object):
     def mark_node_dirty(self, node):
         text = self._tree.GetItemText(node)
         if not text.startswith('*'):
-             self._tree.SetItemText(node, '*' + text)
+            self._tree.SetItemText(node, '*' + text)
 
     def find_node_by_controller(self, controller):
         def match_handler(n):

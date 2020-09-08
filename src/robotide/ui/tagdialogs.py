@@ -14,14 +14,15 @@
 #  limitations under the License.
 
 import re
+
 import wx
 import wx.lib.mixins.listctrl as listmix
+from wx import Colour
 
 from .. import utils
 from ..controller.ctrlcommands import ChangeTag
 from ..publish import RideOpenTagSearch
 from ..widgets import ButtonWithHandler, PopupMenuItems
-from wx import Colour
 
 
 class ViewAllTagsDialog(wx.Frame, listmix.ColumnSorterMixin):

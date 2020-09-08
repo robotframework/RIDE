@@ -27,20 +27,22 @@ build up a command that will be passed in the tests to run as well as
 any additional arguments.
 """
 
-import wx
-from wx.lib.filebrowsebutton import FileBrowseButton
 import os
-
-from robotide import pluginapi
-from robotide.widgets import Label
-from robotide.robotapi import DataError, Information
-from robotide.utils import overrides, ArgumentParser
-from robotide.context import IS_WINDOWS
-from robotide.contrib.testrunner.usages import USAGE
 from sys import getfilesystemencoding
 
+import wx
+from wx.lib.filebrowsebutton import FileBrowseButton
+
+from robotide import pluginapi
+from robotide.context import IS_WINDOWS
+from robotide.contrib.testrunner.usages import USAGE
+from robotide.lib.robot.errors import DataError, Information
+from robotide.utils import overrides
+from robotide.lib.robot.utils.argumentparser import ArgumentParser
+from robotide.widgets import Label
 
 OUTPUT_ENCODING = getfilesystemencoding()
+
 
 class BaseProfile(object):
     """Base class for all test runner profiles

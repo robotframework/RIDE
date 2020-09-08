@@ -13,12 +13,13 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import wx
-import sys
 import re
+import sys
 
-from robotide.widgets import Dialog
-from robotide.publish import RideParserLogMessage
+import wx
+
+from ..publish import RideParserLogMessage
+from ..widgets import RIDEDialog
 
 
 class Logger(object):
@@ -83,11 +84,11 @@ class Logger(object):
             sys.stderr.write('%s: %s\n' % (level, msg))
 
 
-class ParsingErrorDialog(Dialog):
+class ParsingErrorDialog(RIDEDialog):
 
     def __init__(self, message):
-        Dialog.__init__(self, title='Parsing errors', size=(700, 400),
-                        style=wx.DEFAULT_FRAME_STYLE)
+        RIDEDialog.__init__(self, title='Parsing errors', size=(700, 400),
+                            style=wx.DEFAULT_FRAME_STYLE)
         # set Left to Right direction (while we don't have localization)
         self.SetLayoutDirection(wx.Layout_LeftToRight)
         area = wx.TextCtrl(self, size=(700,400), style=wx.TE_MULTILINE|wx.TE_DONTWRAP|wx.TE_READONLY|wx.TE_NOHIDESEL)

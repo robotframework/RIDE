@@ -14,17 +14,14 @@
 #  limitations under the License.
 
 import wx
+from wx import Colour
 
+from .editorcreator import EditorCreator
+from ..pluginapi import (Plugin, ActionInfoCollection, TreeAwarePluginMixin)
+from ..publish import (RideTreeSelection, RideNotebookTabChanging, RideNotebookTabChanged, RideSaving)
 from ..publish.messages import RideDataFileRemoved
-from ..pluginapi import (
-    Plugin, ActionInfoCollection, TreeAwarePluginMixin)
-from ..publish import (
-    RideTreeSelection, RideNotebookTabChanging, RideNotebookTabChanged,
-    RideSaving)
 from ..utils import overrides
 from ..widgets import PopupCreator
-from .editorcreator import EditorCreator
-from wx import Colour
 
 _EDIT = """
 [Edit]

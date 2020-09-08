@@ -128,7 +128,6 @@ settings may look something like this::
     _enabled = False
 """
 
-from robotide.action import ActionInfoCollection, ActionInfo, SeparatorInfo
-from robotide.publish.messages import *
+from ..action import ActionInfoCollection
 from .plugin import Plugin
 from .tree_aware_plugin_mixin import TreeAwarePluginMixin

@@ -14,18 +14,19 @@
 #  limitations under the License.
 
 import wx
-from .. import robotapi, context
-from ..controller.settingcontrollers import (
-    DocumentationController, VariableController, TagsController)
-from ..usages.UsageRunner import ResourceFileUsages
-from ..publish import (
-    RideItemSettingsChanged, RideInitFileRemoved, RideFileNameChanged)
-from ..widgets import (
-    ButtonWithHandler, Label, HeaderLabel, HorizontalSizer, HtmlWindow)
+from wx import Colour
+
 from .settingeditors import (
     DocumentationEditor, SettingEditor, TagsEditor,
     ImportSettingListEditor, VariablesListEditor, MetadataListEditor)
-from wx import Colour
+from .. import robotapi, context
+from ..controller.settingcontrollers import (
+    DocumentationController, VariableController, TagsController)
+from ..publish import (
+    RideItemSettingsChanged, RideInitFileRemoved, RideFileNameChanged)
+from ..usages.UsageRunner import ResourceFileUsages
+from ..widgets import (
+    ButtonWithHandler, Label, HeaderLabel, HorizontalSizer, HtmlWindow)
 
 
 class WelcomePage(HtmlWindow):
