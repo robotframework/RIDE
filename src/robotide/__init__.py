@@ -30,8 +30,8 @@ RIDE's API is still evolving while the project is moving towards the 1.0
 release. The most stable, and best documented, module is `robotide.pluginapi`.
 """
 
-import sys
 import os
+import sys
 from string import Template
 
 errorMessageTemplate = Template("""$reason
@@ -60,7 +60,7 @@ def main(*args):
         sys.exit()
     if '--version' in args:
         try:
-            from robotide import version
+            from . import version
         except ImportError:
             print("Error getting RIDE version!")
             sys.exit(1)

@@ -14,22 +14,23 @@
 #  limitations under the License.
 
 import os
+
 import wx
 from wx.lib.filebrowsebutton import DirBrowseButton
 
-from robotide.controller.filecontrollers import ResourceFileController
-from robotide.controller.ctrlcommands import CreateNewResource,\
-    AddTestDataDirectory, AddTestCaseFile, CreateNewDirectoryProject,\
-    CreateNewFileProject, SetFileFormat, SetFileFormatRecuresively
-from robotide.utils import overrides
-from robotide.widgets import Label, Dialog
-from robotide.validators import NonEmptyValidator, NewSuitePathValidator,\
-    SuiteFileNameValidator
+from ..controller.ctrlcommands import (CreateNewResource, AddTestDataDirectory, AddTestCaseFile,
+                                       CreateNewDirectoryProject, CreateNewFileProject, SetFileFormat,
+                                       SetFileFormatRecuresively)
+from ..controller.filecontrollers import ResourceFileController
+from ..utils import overrides
+from ..validators import NonEmptyValidator, NewSuitePathValidator, SuiteFileNameValidator
+from ..widgets import Label, RIDEDialog
+
 # This hack needed to set same label width as with other labels
 DirBrowseButton.createLabel = lambda self: Label(self, size=(110, -1), label=self.labelText)
 
 
-class _CreationDialog(Dialog):
+class _CreationDialog(RIDEDialog):
 
     formats = ["ROBOT", "TXT", "TSV", "HTML"]
 
@@ -53,7 +54,7 @@ class _CreationDialog(Dialog):
         self._name_editor.SetFocus()
 
     def _init_dialog(self, title):
-        Dialog.__init__(self, title)
+        RIDEDialog.__init__(self, title)
         # set Left to Right direction (while we don't have localization)
         self.SetLayoutDirection(wx.Layout_LeftToRight)
         return wx.BoxSizer(wx.VERTICAL)

@@ -14,10 +14,10 @@
 #  limitations under the License.
 
 import os
-
 from functools import total_ordering
-from robotide.lib.robot.libdocpkg.htmlwriter import DocToHtml
-from robotide import utils
+
+from .. import utils
+from ..lib.robot.libdocpkg.htmlwriter import DocToHtml
 
 
 class ItemInfo(object):

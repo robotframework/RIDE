@@ -13,11 +13,13 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import wx
 import textwrap
-from robotide.widgets import HelpLabel, Label, TextField
-from robotide.context import IS_LINUX
+
+import wx
 from wx import Colour
+
+from ..context import IS_LINUX
+from ..widgets import HelpLabel, Label, TextField
 
 
 class PreferencesPanel(wx.Panel):

@@ -13,22 +13,20 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robotide.controller.filecontrollers import ResourceFileController
-
 import wx
 
-from robotide.controller.ctrlcommands import DeleteResourceAndImports, DeleteFile, DeleteFolder, DeleteFolderAndImports
-from robotide.usages.commands import FindResourceUsages, FindTestFolderUsages
-from robotide.usages.usagesdialog import ResourceImportListModel, RecursiveResourceImportListModel
-from robotide.widgets import Dialog, VirtualList, VerticalSizer, Label
+from ..controller.ctrlcommands import DeleteResourceAndImports, DeleteFile, DeleteFolder, DeleteFolderAndImports
+from ..usages.commands import FindResourceUsages, FindTestFolderUsages
+from ..usages.usagesdialog import ResourceImportListModel, RecursiveResourceImportListModel
+from ..widgets import RIDEDialog, VirtualList, VerticalSizer, Label
 
 
-class _UsageDialog(Dialog):
+class _UsageDialog(RIDEDialog):
     _width = 650
     _height = 250
 
     def __init__(self, usages, title, checkbox_label, model=ResourceImportListModel):
-        Dialog.__init__(self, title, size=(self._width, self._height))
+        RIDEDialog.__init__(self, title, size=(self._width, self._height))
         # set Left to Right direction (while we don't have localization)
         self.SetLayoutDirection(wx.Layout_LeftToRight)
         self._sizer = VerticalSizer()
@@ -109,7 +107,8 @@ class FolderDeleteDialog(object):
         checkbox_label = 'Also delete resource imports'
 
         usages = list(controller.execute(FindTestFolderUsages()))
-        self._delete_confirmed, self._delete_usage = _UsageDialog(usages, title, checkbox_label, RecursiveResourceImportListModel).show()
+        self._delete_confirmed, self._delete_usage = _UsageDialog(usages, title, checkbox_label,
+                                                                  RecursiveResourceImportListModel).show()
 
     def execute(self):
         if self._delete_confirmed:

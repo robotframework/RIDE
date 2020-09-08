@@ -14,11 +14,13 @@
 #  limitations under the License.
 
 import os.path
+
 import wx
 
-from robotide.publish import RideOpenSuite, RideFileNameChanged
-from robotide.pluginapi import Plugin, ActionInfo, SeparatorInfo
-from robotide.publish.messages import RideNewProject, RideSaved
+from ..pluginapi import Plugin
+from ..action import ActionInfo, SeparatorInfo
+from ..publish import RideOpenSuite, RideFileNameChanged
+from ..publish.messages import RideNewProject, RideSaved
 
 
 def normalize_path(path):

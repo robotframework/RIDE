@@ -14,9 +14,10 @@
 #  limitations under the License.
 
 import os
+
 import wx
-from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
 from wx import Colour
+from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
 
 IS_WINDOWS = os.sep == '\\'
 

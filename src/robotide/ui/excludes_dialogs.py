@@ -14,87 +14,14 @@
 #  limitations under the License.
 
 from datetime import datetime
-from fnmatch import fnmatch
-import os
+
 import wx
-
-from wx.adv import HyperlinkCtrl, EVT_HYPERLINK
-from robotide.widgets import Dialog, HtmlWindow
-from .widgets import PreferencesPanel
 from wx import Colour
+from wx.adv import HyperlinkCtrl, EVT_HYPERLINK
 
-
-class Excludes():
-
-    def __init__(self, directory):
-        self._settings_directory = directory
-        self._exclude_file_path = os.path.join(self._settings_directory, 'excludes')
-
-    def get_excludes(self, separator='\n'):
-        return separator.join(self._get_excludes())
-
-    def _get_excludes(self):
-        with self._get_exclude_file('r') as exclude_file:
-            if not exclude_file:
-                return set()
-            return set(exclude_file.read().split())
-
-    def remove_path(self, path):
-        path = self._normalize(path)
-        excludes = self._get_excludes()
-        self.write_excludes(set([e for e in excludes if e != path]))
-
-    def write_excludes(self, excludes):
-        excludes = [self._normalize(e) for e in excludes]
-        with self._get_exclude_file(read_write='w') as exclude_file:
-            for exclude in excludes:
-                if not exclude:
-                    continue
-                exclude_file.write("%s\n" % exclude)
-        # print("DEBUG:real excluded self._get_excludes()=%s\n" % self._get_excludes())
-
-    def update_excludes(self, new_excludes):
-        excludes = self._get_excludes()
-        self.write_excludes(excludes.union(new_excludes))
-        # print("DEBUG: Excludes, excluded, union %s, %s, %s\n" % (excludes, new_excludes, excludes.union(new_excludes)))
-
-    def _get_exclude_file(self, read_write):
-        if not os.path.exists(self._exclude_file_path) and read_write.startswith('r'):
-            if not os.path.isdir(self._settings_directory):
-                os.makedirs(self._settings_directory)
-            return open(self._exclude_file_path, 'w+')
-        if os.path.isdir(self._exclude_file_path):
-            raise NameError('"%s" is a directory, not file' % self._exclude_file_path)
-        try:
-            return open(self._exclude_file_path, read_write)
-        except IOError as e:
-            raise e #TODO FIXME
-
-    def contains(self, path, excludes=None):
-        if not path:
-            return False
-        excludes = excludes or self._get_excludes()
-        if len(excludes) < 1:
-            return False
-        path = self._normalize(path)
-        excludes = [self._normalize(e) for e in excludes]
-        # print("DEBUG: excludes contains %s path %s\n"
-        #      "any: %s\n" % (excludes[0], path, any(self._match(path, e) for e in excludes)) )
-        return any(self._match(path, e) for e in excludes)
-
-    def _match(self, path, e):
-        return fnmatch(path, e) or path.startswith(e)
-
-    def _normalize(self, path):
-        if not (path or path.strip()):
-            return None
-        path = os.path.normcase(os.path.normpath(path))
-        ext = os.path.splitext(path)[1]
-        if not ext and not path.endswith(('*', '?', ']')):
-            path += os.sep
-            if '*' in path or '?' in path or ']' in path:
-                path += '*'
-        return path
+# from ..widgets.htmlwindow import HtmlWindow
+from .preferences_dialogs import PreferencesPanel
+from ..widgets import RIDEDialog, HtmlWindow
 
 
 class ExcludePreferences(PreferencesPanel):
@@ -149,7 +76,7 @@ class ExcludePreferences(PreferencesPanel):
         dialog.Show()
 
 
-class ExcludeHelpDialog(Dialog):
+class ExcludeHelpDialog(RIDEDialog):
     help = """<font size="5">
 <h1>Excludes</h1>
 <p>
@@ -233,7 +160,7 @@ The following shell-style wildcards are supported:
 </font>"""
 
     def __init__(self):
-        Dialog.__init__(self, title='Help: excludes')
+        RIDEDialog.__init__(self, title='Help: excludes')
         # set Left to Right direction (while we don't have localization)
         self.SetLayoutDirection(wx.Layout_LeftToRight)
         sizer = wx.BoxSizer(wx.VERTICAL)

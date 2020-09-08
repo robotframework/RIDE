@@ -13,33 +13,34 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import json
+
 import wx
 from wx import grid, Colour
-import json
-from ..editor.cellrenderer import CellRenderer
-from .. import context
 from wx.grid import GridCellEditor
-from ..context import IS_MAC, IS_WINDOWS
+
+from .contentassist import ExpandingContentAssistTextCtrl
+from .editordialogs import UserKeywordNameDialog, ScalarVariableDialog, ListVariableDialog
+from .gridbase import GridEditor
+from .gridcolorizer import Colorizer
+from .tooltips import GridToolTips
+from .. import context
+from .. import robotapi
+from ..context import IS_MAC
+from ..controller.cellinfo import TipMessage, ContentType, CellType
 from ..controller.ctrlcommands import ChangeCellValue, ClearArea, \
     PasteArea, DeleteRows, AddRows, CommentRows, InsertCells, DeleteCells, \
     UncommentRows, Undo, Redo, RenameKeywordOccurrences, ExtractKeyword, \
     AddKeywordFromCells, MoveRowsUp, MoveRowsDown, ExtractScalar, ExtractList, \
     InsertArea
-from ..controller.cellinfo import TipMessage, ContentType, CellType
+from ..editor.cellrenderer import CellRenderer
+from ..pluginapi import Plugin
 from ..publish import (RideItemStepsChanged, RideSaved, RideSettingsChanged,
                        PUBLISHER, RideBeforeSaving)
-from ..usages.UsageRunner import Usages, VariableUsages
 from ..ui.progress import RenameProgressObserver
-from .. import robotapi
+from ..usages.UsageRunner import Usages, VariableUsages
 from ..utils import variablematcher
-from ..widgets import Dialog, PopupMenu, PopupMenuItems
-
-from .gridbase import GridEditor
-from .tooltips import GridToolTips
-from .editordialogs import UserKeywordNameDialog, ScalarVariableDialog, ListVariableDialog
-from .contentassist import ExpandingContentAssistTextCtrl
-from .gridcolorizer import Colorizer
-from ..pluginapi import Plugin
+from ..widgets import RIDEDialog, PopupMenu, PopupMenuItems
 
 _DEFAULT_FONT_SIZE = 11
 
@@ -841,7 +842,7 @@ work.</li>
     def OnJsonEditor(self, event=None):
         if event:
             event.Skip()
-        dialog = Dialog()
+        dialog = RIDEDialog()
         dialog.SetTitle('JSON Editor')
         dialog.SetSizer(wx.BoxSizer(wx.HORIZONTAL))
         dialog.SetBackgroundColour(Colour(200, 222, 40))

@@ -13,11 +13,13 @@
 #  limitations under the License.
 
 import wx
+from wx import Colour
 from wx.lib.agw import customtreectrl
 from wx.lib.agw.aui import GetManager
-from ..pluginapi import Plugin, ActionInfo
-from ..controller import Project
-from wx import Colour
+
+from ..controller.project import Project
+from ..pluginapi import Plugin
+from ..pluginapi.plugin import ActionInfo
 
 
 class FileExplorerPlugin(Plugin):

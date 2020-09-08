@@ -14,14 +14,14 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import sys
 import os
-import wx
+import sys
 import tempfile
+import wx
 
-from ..version import VERSION
-from ..robotapi import ROBOT_LOGGER
 from . import logger
+from ..robotapi import ROBOT_LOGGER
+from ..version import VERSION
 
 APP = None
 LOG = logger.Logger()
@@ -81,9 +81,9 @@ def ctrl_or_cmd():
 def bind_keys_to_evt_menu(target, actions):
     accelrators = []
     for accel, keycode, handler in actions:
-        id = wx.NewIdRef()
-        target.Bind(wx.EVT_MENU, handler, id=id)
-        accelrators.append((accel, keycode, id))
+        _id = wx.NewIdRef()
+        target.Bind(wx.EVT_MENU, handler, id=_id)
+        accelrators.append((accel, keycode, _id))
     target.SetAcceleratorTable(wx.AcceleratorTable(accelrators))
 
 

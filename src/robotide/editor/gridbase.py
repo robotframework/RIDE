@@ -13,14 +13,15 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import wx
 import re
 from os import linesep
+
+import wx
 from wx import grid, Colour
 
-from ..widgets import PopupCreator, PopupMenuItems
-from ..context import IS_WINDOWS
 from .clipboard import ClipboardHandler
+from ..context import IS_WINDOWS
+from ..widgets import PopupCreator, PopupMenuItems
 
 
 class GridEditor(grid.Grid):

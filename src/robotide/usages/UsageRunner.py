@@ -13,11 +13,14 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robotide.usages.commands import FindUsages, FindResourceUsages, FindVariableUsages
-from robotide.usages.usagesdialog import UsagesDialog, UsagesDialogWithUserKwNavigation, ResourceImportUsageDialog
-from threading import Thread
-import wx
 import time
+from threading import Thread
+
+import wx
+
+from .commands import FindUsages, FindResourceUsages, FindVariableUsages
+from .usagesdialog import UsagesDialog, UsagesDialogWithUserKwNavigation, ResourceImportUsageDialog
+
 
 class Usages(object):
 
@@ -44,8 +47,9 @@ class Usages(object):
     def _run(self):
         wx.CallAfter(self._begin_search)
         for usage in self._find_usages():
-            time.sleep(0) # GIVE SPACE TO OTHER THREADS -- Thread.yield in Java
-            if self._dialog_closed: return
+            time.sleep(0)  # GIVE SPACE TO OTHER THREADS -- Thread.yield in Java
+            if self._dialog_closed:
+                return
             wx.CallAfter(self._add_usage, usage)
         wx.CallAfter(self._end_search)
 

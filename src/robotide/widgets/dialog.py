@@ -13,13 +13,74 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import webbrowser
+
 import wx
+from wx import html, Colour
 
 from . import htmlwindow, sizers
 from wx import Colour
 
+# TODO: Make this colour configurable
+# HTML_BACKGROUND = (240, 242, 80)  # (200, 222, 40)
+# _settings = RideSettings()
+# general_settings = _settings['General']
+# HTML_BACKGROUND = general_settings['background help']
+# Workaround for circular import
+HTML_BACKGROUND = (240, 242, 80)
+HTML_FOREGROUND = (7, 0, 70)
+general_settings = {'background help': HTML_BACKGROUND, 'foreground help': HTML_FOREGROUND,
+                    'font face': '', 'font size': 11}
 
-class Dialog(wx.Dialog):
+
+class HtmlWindow(html.HtmlWindow):
+
+    def __init__(self, parent, size=wx.DefaultSize, text=None):
+        html.HtmlWindow.__init__(self, parent, size=size)
+        self.SetBorders(2)
+        self.SetStandardFonts(size=9)
+        if text:
+            self.set_content(text)
+        self.SetHTMLBackgroundColour(Colour(general_settings['background help']))
+        self.SetForegroundColour(Colour(general_settings['foreground help']))
+        self.font = self.GetFont()
+        self.font.SetFaceName(general_settings['font face'])
+        self.font.SetPointSize(general_settings['font size'])
+        self.SetFont(self.font)
+        self.Refresh(True)
+        self.Bind(wx.EVT_KEY_DOWN, self.OnKeyDown)
+
+    def set_content(self, content):
+        color = ''.join(hex(item)[2:] for item in general_settings['background help'])
+        _content = '<body bgcolor=#%s>%s</body>' % (color, content)
+        self.SetPage(_content)
+
+    def OnKeyDown(self, event):
+        if self._is_copy(event):
+            self._add_selection_to_clipboard()
+        self.Parent.OnKey(event)
+        event.Skip()
+
+    @staticmethod
+    def _is_copy(event):
+        return event.GetKeyCode() == ord('C') and event.CmdDown()
+
+    def _add_selection_to_clipboard(self):
+        wx.TheClipboard.Open()
+        wx.TheClipboard.SetData(wx.TextDataObject(self.SelectionToText()))
+        wx.TheClipboard.Close()
+
+    def OnLinkClicked(self, link):
+        webbrowser.open(link.Href)
+
+    def close(self):
+        self.Show(False)
+
+    def clear(self):
+        self.SetPage('')
+
+
+class RIDEDialog(wx.Dialog):
 
     def __init__(self, title='', parent=None, size=None, style=None):
         parent = parent or wx.GetTopLevelWindows()[0]
@@ -56,24 +117,18 @@ class Dialog(wx.Dialog):
         raise NotImplementedError(self.__class__.__name__)
 
 
-class HtmlDialog(Dialog):
+class HtmlDialog(RIDEDialog):
 
     def __init__(self, title, content, padding=0, font_size=-1):
-        Dialog.__init__(self, title)
+        RIDEDialog.__init__(self, title)
         # set Left to Right direction (while we don't have localization)
         self.SetLayoutDirection(wx.Layout_LeftToRight)
         szr = sizers.VerticalSizer()
-        html = htmlwindow.HtmlWindow(self, text=content)
-        html.SetStandardFonts(size=font_size)
-        html.SetOwnBackgroundColour(Colour(200, 222, 40))
-        self.SetBackgroundColour(Colour(200, 222, 40))
-        self.SetOwnBackgroundColour(Colour(200, 222, 40))
-        self.SetForegroundColour(Colour(7, 0, 70))
-        self.SetOwnForegroundColour(Colour(7, 0, 70))
-        html.SetBackgroundColour(Colour(htmlwindow.HTML_BACKGROUND))
-        html.SetForegroundColour(Colour(7, 0, 70))
-        html.SetOwnForegroundColour(Colour(7, 0, 70))
-        szr.add_expanding(html, padding=padding)
+        html_wnd = HtmlWindow(self, text=content)
+        html_wnd.SetStandardFonts(size=font_size)
+        html_wnd.SetBackgroundColour(Colour(HTML_BACKGROUND))
+        html_wnd.SetForegroundColour(Colour(7, 0, 70))
+        szr.add_expanding(html_wnd, padding=padding)
         self.SetSizer(szr)
 
     def OnKey(self, event):

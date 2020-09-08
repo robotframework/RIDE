@@ -14,7 +14,8 @@
 #  limitations under the License.
 
 import re
-from robotide import utils
+
+from .. import utils
 
 _VAR_BODY = r'([^\}]|\\\})*'
 _SCALAR_VARIABLE_MATCHER = re.compile(r'\$\{'+_VAR_BODY+'\}')

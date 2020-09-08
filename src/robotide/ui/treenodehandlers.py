@@ -15,32 +15,26 @@
 
 import wx
 
-from robotide.controller.ctrlcommands import (
-    RenameKeywordOccurrences, RemoveMacro, AddKeyword, AddTestCase, RenameTest,
-    CopyMacroAs, AddVariable, UpdateVariableName, RenameFile, DeleteItem,
-    RenameResourceFile, DeleteFile, SortTests, SortKeywords, SortVariables, Include, Exclude,
-    OpenContainingFolder, RemoveReadOnly)
-from robotide.controller.settingcontrollers import VariableController
-from robotide.controller.macrocontrollers import (
-    TestCaseController, UserKeywordController)
-from robotide.controller.filecontrollers import (
-    TestDataDirectoryController, ResourceFileController,
-    TestCaseFileController, ExcludedDirectoryController,
-    DirtyRobotDataException)
-from robotide.editor.editordialogs import (
-    TestCaseNameDialog, UserKeywordNameDialog, ScalarVariableDialog,
-    ListVariableDialog, CopyUserKeywordDialog, DictionaryVariableDialog)
-from robotide.publish import RideOpenVariableDialog, RideTestSelectedForRunningChanged, PUBLISHER
-from robotide.ui.progress import LoadProgressObserver
-from robotide.usages.UsageRunner import Usages, ResourceFileUsages
-from .filedialogs import (
-    AddSuiteDialog, AddDirectoryDialog, ChangeFormatDialog, NewResourceDialog,
-    RobotFilePathDialog)
-from robotide.utils import overrides
-from robotide.widgets import PopupMenuItems
+from ..controller.ctrlcommands import (RenameKeywordOccurrences, RemoveMacro, AddKeyword, AddTestCase, RenameTest,
+                                       CopyMacroAs, AddVariable, UpdateVariableName, RenameFile, RenameResourceFile,
+                                       DeleteFile, SortKeywords, Include, Exclude, OpenContainingFolder, RemoveReadOnly)
+from ..controller.filecontrollers import (TestDataDirectoryController, ResourceFileController, TestCaseFileController,
+                                          ExcludedDirectoryController, DirtyRobotDataException)
+from ..controller.macrocontrollers import TestCaseController, UserKeywordController
+from ..controller.settingcontrollers import VariableController
+from ..editor.editordialogs import (TestCaseNameDialog, UserKeywordNameDialog, ScalarVariableDialog, ListVariableDialog,
+                                    CopyUserKeywordDialog, DictionaryVariableDialog)
+from ..publish import RideOpenVariableDialog, RideTestSelectedForRunningChanged, PUBLISHER
+from ..ui.progress import LoadProgressObserver
+from ..ui.resourcedialogs import FolderDeleteDialog
+from ..usages.UsageRunner import Usages, ResourceFileUsages
+from ..utils import overrides
+from ..widgets import PopupMenuItems
+from .filedialogs import (AddSuiteDialog, AddDirectoryDialog, ChangeFormatDialog, NewResourceDialog,
+                          RobotFilePathDialog)
 from .progress import RenameProgressObserver
 from .resourcedialogs import ResourceRenameDialog, ResourceDeleteDialog
-from robotide.ui.resourcedialogs import FolderDeleteDialog
+from ..ui.resourcedialogs import FolderDeleteDialog
 
 
 def action_handler_class(controller):
@@ -220,9 +214,8 @@ class DirectoryHandler(_ActionHandler):
 
 
 class TestDataHandler(_ActionHandler):
-    accepts_drag = lambda self, dragged: \
-        (isinstance(dragged, UserKeywordHandler) or
-         isinstance(dragged, VariableHandler))
+    accepts_drag = lambda self, dragged: (isinstance(dragged, UserKeywordHandler) or
+                                          isinstance(dragged, VariableHandler))
 
     is_draggable = False
     is_test_suite = True
@@ -406,6 +399,7 @@ class ResourceFileHandler(_FileHandlerThanCanBeRenamed, TestDataHandler):
                 '---',
                 _ActionHandler._label_rename,
                 _ActionHandler._label_change_format,
+                _ActionHandler._label_sort_keywords,
                 _ActionHandler._label_find_usages,
                 _ActionHandler._label_delete,
                 '---',
@@ -455,6 +449,7 @@ class TestCaseFileHandler(_FileHandlerThanCanBeRenamed, TestDataHandler):
                 '---',
                 _ActionHandler._label_rename,
                 _ActionHandler._label_change_format,
+                _ActionHandler._label_sort_keywords,
                 _ActionHandler._label_delete,
                 '---',
                 _ActionHandler._label_sort_variables,

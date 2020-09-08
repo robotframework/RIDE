@@ -15,11 +15,12 @@
 #  limitations under the License.
 
 import wx
-from wx.lib.ClickableHtmlWindow import PyClickableHtmlWindow
 from wx import Colour
+from wx.lib.ClickableHtmlWindow import PyClickableHtmlWindow
+
+from ..action import ActionInfo
 from ..version import VERSION
-from ..pluginapi import ActionInfo
-from ..widgets.htmlwindow import HTML_BACKGROUND
+from ..widgets.htmlwnd import HTML_BACKGROUND
 
 
 class ReleaseNotes(object):

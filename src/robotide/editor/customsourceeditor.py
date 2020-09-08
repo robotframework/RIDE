@@ -17,12 +17,15 @@
 # limitations under the License.
 
 from __future__ import absolute_import
+
 #
 # from StyledTextCtrl_2 import PythonSTC
 # -----------------------------------------------------------------
 # Define Python style
 import keyword
-import os, sys
+import os
+import sys
+
 import wx
 import wx.stc as stc
 from wx import Colour

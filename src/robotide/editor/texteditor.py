@@ -13,28 +13,28 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from time import time
-from io import StringIO, BytesIO
 import string
+from io import StringIO, BytesIO
+from time import time
+
 import wx
 from wx import stc, Colour
+from wx.adv import HyperlinkCtrl, EVT_HYPERLINK
+
 from .. import robotapi
 from ..context import IS_WINDOWS, IS_MAC
 from ..controller.ctrlcommands import SetDataFile
-from ..publish import RideSettingsChanged, PUBLISHER
-from ..publish.messages import RideMessage
-from ..namespace.suggesters import SuggestionSource, BuiltInLibrariesSuggester
-from ..widgets import VerticalSizer, HorizontalSizer, ButtonWithHandler
-from ..pluginapi import (Plugin, RideSaving, TreeAwarePluginMixin,
-                                RideTreeSelection, RideNotebookTabChanging,
-                                RideDataChanged, RideOpenSuite,
-                                RideDataChangedToDirty)
-from ..widgets import TextField, Label, HtmlDialog
-from ..preferences.editors import ReadFonts
-from wx.adv import HyperlinkCtrl, EVT_HYPERLINK
-from .contentassist import ContentAssistTextEditor
 from ..controller.filecontrollers import ResourceFileController
 from ..controller.macrocontrollers import _WithStepsController
+from ..namespace.suggesters import SuggestionSource
+from ..pluginapi import Plugin, TreeAwarePluginMixin
+from ..publish.messages import (RideSaving, RideTreeSelection, RideNotebookTabChanging, RideDataChanged, RideOpenSuite,
+                                RideDataChangedToDirty)
+from ..preferences.editors import ReadFonts
+from ..publish import RideSettingsChanged, PUBLISHER
+from ..publish.messages import RideMessage
+from ..widgets import TextField, Label, HtmlDialog
+from ..widgets import VerticalSizer, HorizontalSizer, ButtonWithHandler
 
 try:  # import installed version first
     import robotframeworklexer
@@ -544,9 +544,6 @@ class SourceEditor(wx.Panel):
         # print(f"DEBUG: Textedit in open before getting SuggestionSource {self._data._data}\n Type data is {type(self._data._data)}")
         try:
             if isinstance(self._data._data, ResourceFileController):
-                # from robotide.namespace import Namespace
-                # self._namespace = Namespace(self._editor._settings)
-                # self._namespace.get_resource(self._data._data.source)
                 self._controller_for_context = DummyController(self._data._data, self._data._data)
                 # print(f"DEBUG: Textedit in before getting to RESOURCE")
                 self._suggestions = SuggestionSource(None,self._controller_for_context)
@@ -1003,10 +1000,10 @@ class RobotDataEditor(stc.StyledTextCtrl):
             return select
 
 
-class FromStringIOPopulator(robotapi.FromFilePopulator):
+class FromStringIOPopulator(robotapi.populators.FromFilePopulator):
 
     def populate(self, content):
-        robotapi.TxtReader().read(content, self)
+        robotapi.RobotReader().read(content, self)
 
 
 class RobotStylizer(object):

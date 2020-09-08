@@ -31,9 +31,10 @@ dialog.
 """
 
 import wx
-from wx.lib.scrolledpanel import ScrolledPanel
 from wx import Colour
-from . import RideSettings
+from wx.lib.scrolledpanel import ScrolledPanel
+
+from .settings import RideSettings
 
 # any more than TREE_THRESHOLD panels when style is "auto" forces
 # the UI into showing a hierarchical tree

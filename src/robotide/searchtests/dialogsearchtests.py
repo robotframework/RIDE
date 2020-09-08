@@ -13,17 +13,18 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import wx
-
 from functools import (total_ordering, cmp_to_key)
-from ..utils import overrides
-from ..widgets import (Dialog, VerticalSizer, VirtualList, Label,
-                       HelpLabel, ImageProvider, ButtonWithHandler)
-from ..widgets.list import ListModel
+
+import wx
 from wx import Colour
 
+from ..utils import overrides
+from ..widgets import (RIDEDialog, VerticalSizer, VirtualList, Label,
+                       HelpLabel, ImageProvider)
+from ..widgets.list import ListModel
 
-class TestsDialog(Dialog):
+
+class TestsDialog(RIDEDialog):
 
     def __init__(self, fuzzy_search_handler, tag_search_handler, add_to_selected_handler):
         self._fuzzy_search_handler = fuzzy_search_handler
@@ -31,7 +32,7 @@ class TestsDialog(Dialog):
         self._add_to_selected_handler = add_to_selected_handler
         self._selection_listeners = []
         title = "Search Tests"
-        Dialog.__init__(self, title=title, size=(750, 400))
+        RIDEDialog.__init__(self, title=title, size=(750, 400))
         # set Left to Right direction (while we don't have localization)
         self.SetLayoutDirection(wx.Layout_LeftToRight)
         self.SetBackgroundColour(Colour(200, 222, 40))

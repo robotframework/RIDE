@@ -14,12 +14,11 @@
 #  limitations under the License.
 
 from .button import ButtonWithHandler
-from .dialog import Dialog, HtmlDialog
+from .dialog import RIDEDialog, HtmlDialog, HtmlWindow, HTML_BACKGROUND
 from .font import Font
-from .htmlwindow import HtmlWindow
 from .images import ImageList, ImageProvider
-from .popupmenu import PopupCreator, PopupMenu, PopupMenuItem, PopupMenuItems
 from .label import Label, HeaderLabel, HelpLabel
 from .list import VirtualList
+from .popupmenu import PopupCreator, PopupMenu, PopupMenuItem, PopupMenuItems
 from .sizers import VerticalSizer, HorizontalSizer
 from .text import TextField

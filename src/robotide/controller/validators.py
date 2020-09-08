@@ -15,7 +15,7 @@
 
 import os
 
-from robotide.publish.messages import RideInputValidationError
+from ..publish.messages import RideInputValidationError
 
 ERROR_ILLEGAL_CHARACTERS = "Filename contains illegal characters"
 ERROR_EMPTY_FILENAME = "Empty filename"

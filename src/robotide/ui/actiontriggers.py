@@ -14,7 +14,8 @@
 #  limitations under the License.
 
 import wx
-from robotide.context import IS_WINDOWS, IS_MAC
+
+from ..context import IS_WINDOWS, IS_MAC
 
 ID_CustomizeToolbar = wx.ID_HIGHEST + 1
 

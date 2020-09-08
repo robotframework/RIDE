@@ -12,9 +12,12 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-from ..controller.cellinfo import CellType
 import wx
 from wx import Colour
+
+from ..controller.cellinfo import CellType
+
+
 # this import fails in HUDSON
 # from wxPython._gdi import wxFONTWEIGHT_BOLD, wxFONTWEIGHT_NORMAL
 # wxFONTWEIGHT_BOLD = 92

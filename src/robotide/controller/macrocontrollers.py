@@ -13,26 +13,21 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from itertools import chain
 import os
+from itertools import chain
 
-from robotide.controller.basecontroller import ControllerWithParent
-from robotide.controller.settingcontrollers import DocumentationController,\
-    FixtureController, TagsController, TimeoutController,\
-    TemplateController, ArgumentsController, ReturnValueController
-from robotide.controller.arguments import parse_arguments_to_var_dict
-from robotide.controller.basecontroller import WithUndoRedoStacks
-from robotide.namespace.local_namespace import LocalNamespace
-from robotide.publish.messages import RideItemStepsChanged, RideItemNameChanged,\
-    RideItemSettingsChanged, RideUserKeywordRemoved  # DEBUG
-from robotide.controller.stepcontrollers import ForLoopStepController,\
-    StepController, IntendedStepController
-from robotide.spec.iteminfo import ResourceUserKeywordInfo, \
-    TestCaseUserKeywordInfo
-from robotide.controller.tags import Tag
-from robotide import robotapi
-from robotide.utils import variablematcher
-
+from .. import robotapi
+from .arguments import parse_arguments_to_var_dict
+from .basecontroller import ControllerWithParent, WithUndoRedoStacks
+from .settingcontrollers import (DocumentationController, FixtureController, TagsController, TimeoutController,
+                                 TemplateController, ArgumentsController, ReturnValueController)
+from .stepcontrollers import ForLoopStepController, StepController, IntendedStepController
+from .tags import Tag
+from ..namespace.local_namespace import LocalNamespace
+from ..publish.messages import (RideItemStepsChanged, RideItemNameChanged, RideItemSettingsChanged,
+                                RideUserKeywordRemoved)
+from ..spec.iteminfo import ResourceUserKeywordInfo, TestCaseUserKeywordInfo
+from ..utils import variablematcher
 
 KEYWORD_NAME_FIELD = 'Keyword Name'
 TESTCASE_NAME_FIELD = 'Test Case Name'
@@ -404,6 +399,7 @@ class TestCaseController(_WithStepsController):
             self._run_passed = False # Test execution failed
         else:
             self._run_passed = None # Test did not run
+
 
 class UserKeywordController(_WithStepsController):
     _populator = robotapi.UserKeywordPopulator

@@ -18,10 +18,9 @@ try:
 except ImportError:
     import wx.lib.agw.aui as aui
 
-from wx import (Point, Size)
 from wx import Colour
 
-from robotide.publish import RideNotebookTabChanging, RideNotebookTabChanged
+from ..publish import RideNotebookTabChanging, RideNotebookTabChanged
 
 
 class NoteBook(aui.AuiNotebook):

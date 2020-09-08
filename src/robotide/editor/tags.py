@@ -14,10 +14,11 @@
 #  limitations under the License.
 
 import wx
+from wx import Colour
+
+from ..context import IS_WINDOWS
 from ..controller.ctrlcommands import ChangeTag, ClearSetting
 from ..controller.tags import ForcedTag, DefaultTag
-from ..context import IS_WINDOWS
-from wx import Colour
 
 
 class TagsDisplay(wx.lib.scrolledpanel.ScrolledPanel):

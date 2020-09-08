@@ -16,7 +16,7 @@
 import inspect
 import sys
 import traceback
-from robotide import utils
+from .. import utils
 
 
 class RideMessage:

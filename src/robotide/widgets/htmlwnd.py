@@ -14,11 +14,17 @@
 #  limitations under the License.
 
 import webbrowser
+
 import wx
 from wx import html, Colour
 
+from ..preferences.settings import RideSettings
+
 #TODO: Make this colour configurable
-HTML_BACKGROUND = (240, 242, 80)  # (200, 222, 40)
+# HTML_BACKGROUND = (240, 242, 80)  # (200, 222, 40)
+_settings = RideSettings()
+general_settings = _settings['General']
+HTML_BACKGROUND = general_settings['background help']
 
 
 class HtmlWindow(html.HtmlWindow):
@@ -32,13 +38,17 @@ class HtmlWindow(html.HtmlWindow):
         self.SetOwnForegroundColour(Colour(7, 0, 70))
         if text:
             self.set_content(text)
-        self.SetHTMLBackgroundColour(Colour(HTML_BACKGROUND))
-        self.SetForegroundColour(Colour(7, 0, 70))
+        self.SetHTMLBackgroundColour(Colour(general_settings['background help']))
+        self.SetForegroundColour(Colour(general_settings['foreground help']))
+        self.font = self.GetFont()
+        self.font.SetFaceName(general_settings['font face'])
+        self.font.SetPointSize(general_settings['font size'])
+        self.SetFont(self.font)
         self.Refresh(True)
         self.Bind(wx.EVT_KEY_DOWN, self.OnKeyDown)
 
     def set_content(self, content):
-        color = ''.join(hex(item)[2:] for item in HTML_BACKGROUND)
+        color = ''.join(hex(item)[2:] for item in general_settings['background help'])
         _content = '<body bgcolor=#%s>%s</body>' % (color, content)
         self.SetPage(_content)
 

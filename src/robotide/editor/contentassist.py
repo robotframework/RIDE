@@ -13,17 +13,19 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import wx
-from robotide.context import IS_MAC
 from os.path import relpath, dirname, isdir
+from sys import platform
+
+import wx
+from wx import Colour
 from wx.lib.expando import ExpandoTextCtrl
 from wx.lib.filebrowsebutton import FileBrowseButton
-from robotide import context, utils
-from robotide.namespace.suggesters import SuggestionSource
-from robotide.spec.iteminfo import VariableInfo
-from sys import platform
+
+from .. import context, utils
+from ..context import IS_MAC
+from ..namespace.suggesters import SuggestionSource
+from ..spec.iteminfo import VariableInfo
 from .popupwindow import RidePopupWindow, HtmlPopupWindow
-from wx import Colour
 
 _PREFERRED_POPUP_SIZE = (400, 200)
 

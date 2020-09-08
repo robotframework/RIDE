@@ -13,18 +13,20 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import wx
 import os.path
+from functools import (cmp_to_key)
 
-from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
-from functools import (total_ordering, cmp_to_key)
-from ..controller.filecontrollers import ResourceFileController, TestCaseFileController
-from ..pluginapi import (Plugin, ActionInfo, RideOpenSuite,
-                         RideOpenResource, RideImportSetting, RideUserKeyword, RideNewProject)
-from ..usages.UsageRunner import Usages
-from .. import utils
-from ..widgets import PopupMenuItem, ButtonWithHandler, Label, Font, HtmlWindow, ImageProvider
+import wx
 from wx import Colour
+from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
+
+from .. import utils
+from ..controller.filecontrollers import ResourceFileController, TestCaseFileController
+from ..pluginapi import Plugin
+from ..action import ActionInfo
+from ..publish.messages import RideOpenSuite, RideOpenResource, RideImportSetting, RideUserKeyword, RideNewProject
+from ..usages.UsageRunner import Usages
+from ..widgets import PopupMenuItem, ButtonWithHandler, Label, Font, HtmlWindow, ImageProvider
 
 ALL_KEYWORDS = '<all keywords>'
 ALL_USER_KEYWORDS = '<all user keywords>'

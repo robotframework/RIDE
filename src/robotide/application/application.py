@@ -13,9 +13,11 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import os
-import wx
 import locale
+import os
+
+import wx
+
 locale.setlocale(locale.LC_ALL, 'C')
 
 from contextlib import contextmanager
