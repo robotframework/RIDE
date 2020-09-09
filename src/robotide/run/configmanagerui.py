@@ -40,10 +40,12 @@ class ConfigManagerDialog(RIDEDialog):
     def __init__(self, configs, plugin):
         RIDEDialog.__init__(self, title='Manage Run Configurations')
         # set Left to Right direction (while we don't have localization)
+        """
         self.SetBackgroundColour(Colour(200, 222, 40))
         self.SetOwnBackgroundColour(Colour(200, 222, 40))
         self.SetForegroundColour(Colour(7, 0, 70))
         self.SetOwnForegroundColour(Colour(7, 0, 70))
+        """
         self.SetLayoutDirection(wx.Layout_LeftToRight)
         self.plugin = plugin
         self._create_ui(configs)
@@ -130,10 +132,12 @@ class _TextEditListCtrl(AutoWidthColumnList, TextEditMixin):
     def __init__(self, parent, columns, data):
         AutoWidthColumnList.__init__(self, parent, columns, data)
         TextEditMixin.__init__(self)
+        """
         self.SetBackgroundColour(Colour(200, 222, 40))
         self.SetOwnBackgroundColour(Colour(200, 222, 40))
         self.SetForegroundColour(Colour(7, 0, 70))
         self.SetOwnForegroundColour(Colour(7, 0, 70))
+        """
         self._set_command_column_width()
         self.col_locs = self._calculate_col_locs()
         self._new_item_creation = False

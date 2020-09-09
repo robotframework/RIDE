@@ -89,10 +89,12 @@ class RIDEDialog(wx.Dialog):
         wx.MiniFrame.__init__(self, parent, title=title, size=size, style=style)
         # set Left to Right direction (while we don't have localization)
         self.SetLayoutDirection(wx.Layout_LeftToRight)
+        """
         self.SetBackgroundColour(Colour(200, 222, 40))
         self.SetOwnBackgroundColour(Colour(200, 222, 40))
         self.SetForegroundColour(Colour(7, 0, 70))
         self.SetOwnForegroundColour(Colour(7, 0, 70))
+        """
         self.CenterOnParent()
 
     def _create_buttons(self, sizer):
@@ -126,8 +128,10 @@ class HtmlDialog(RIDEDialog):
         szr = sizers.VerticalSizer()
         html_wnd = HtmlWindow(self, text=content)
         html_wnd.SetStandardFonts(size=font_size)
+        """
         html_wnd.SetBackgroundColour(Colour(HTML_BACKGROUND))
         html_wnd.SetForegroundColour(Colour(7, 0, 70))
+        """
         szr.add_expanding(html_wnd, padding=padding)
         self.SetSizer(szr)
 

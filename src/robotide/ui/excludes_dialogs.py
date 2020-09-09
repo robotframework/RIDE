@@ -49,10 +49,12 @@ class ExcludePreferences(PreferencesPanel):
             style=wx.TE_MULTILINE|wx.TE_NOHIDESEL,
             size=wx.Size(570, 100),
             value=self._settings.excludes.get_excludes())
+        """
         self._text_box.SetBackgroundColour(Colour(200, 222, 40))
         self._text_box.SetOwnBackgroundColour(Colour(200, 222, 40))
         self._text_box.SetForegroundColour(Colour(7, 0, 70))
         self._text_box.SetOwnForegroundColour(Colour(7, 0, 70))
+        """
         sizer.Add(self._text_box, proportion=wx.EXPAND)
 
     def _add_button_and_status(self, sizer):
@@ -164,10 +166,12 @@ The following shell-style wildcards are supported:
         # set Left to Right direction (while we don't have localization)
         self.SetLayoutDirection(wx.Layout_LeftToRight)
         sizer = wx.BoxSizer(wx.VERTICAL)
+        """
         self.SetBackgroundColour(Colour(200, 222, 40))
         self.SetOwnBackgroundColour(Colour(200, 222, 40))
         self.SetForegroundColour(Colour(7, 0, 70))
         self.SetOwnForegroundColour(Colour(7, 0, 70))
+        """
         sizer.Add(HtmlWindow(self, (800, 600), self.help),
                   1,
                   flag=wx.EXPAND)

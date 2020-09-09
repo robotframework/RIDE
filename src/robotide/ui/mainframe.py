@@ -184,7 +184,7 @@ class RideFrame(wx.Frame):
             (self._set_label, RideTreeSelection),
             (self._show_validation_error, RideInputValidationError),
             (self._show_modification_prevented_error, RideModificationPrevented),
-            (self.OnSettingsChanged, RideSettingsChanged)
+            # (self.OnSettingsChanged, RideSettingsChanged)
         ]:
             PUBLISHER.subscribe(listener, topic)
 
@@ -242,10 +242,12 @@ class RideFrame(wx.Frame):
         mb = MenuBar(self)
         self.toolbar = ToolBar(self)
         self.toolbar.SetMinSize(wx.Size(100, 60))
+        """
         self.toolbar.SetBackgroundColour(Colour(200, 222, 40))
         self.toolbar.SetOwnBackgroundColour(Colour(200, 222, 40))
         self.toolbar.SetForegroundColour(Colour(7, 0, 70))
         self.toolbar.SetOwnForegroundColour(Colour(7, 0, 70))
+        """
         # self.SetToolBar(self.toolbar.GetToolBar())
         self._mgr.AddPane(self.toolbar, aui.AuiPaneInfo().Name("maintoolbar").
                           ToolbarPane().Top())
@@ -713,10 +715,12 @@ class ToolBar(aui.AuiToolBar):
         self._search_handlers = {}
         self._current_description = None
         self.SetMinSize(wx.Size(100, 60))
+        """
         self.SetBackgroundColour(Colour(200, 222, 40))
         self.SetOwnBackgroundColour(Colour(200, 222, 40))
         self.SetForegroundColour(Colour(7, 0, 70))
         self.SetOwnForegroundColour(Colour(7, 0, 70))
+        """
         self.tb.SetCustomOverflowItems(prepend_items, append_items)
         self.tb.Realize()
 

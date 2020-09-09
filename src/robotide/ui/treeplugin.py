@@ -71,10 +71,12 @@ class TreePlugin(Plugin):
         self.settings = application.settings._config_obj['Plugins']['Tree']
         self._parent = None
         self._tree = self.tree
+        """
         self._tree.SetBackgroundColour(Colour(200, 222, 40))
         self._tree.SetOwnBackgroundColour(Colour(200, 222, 40))
         self._tree.SetForegroundColour(Colour(7, 0, 70))
         self._tree.SetOwnForegroundColour(Colour(7, 0, 70))
+        """
         self._mgr = GetManager(self._tree)
         """
         self._action_registerer = action_registerer
@@ -194,7 +196,9 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl):
         self._editor = None
         self._execution_results = None
         self._resources = []
+        """
         self.SetBackgroundColour('white')  # TODO get background color from def
+        """
         if not hasattr(self, 'OnCancelEdit'):
             self.OnCancelEdit = self._on_cancel_edit
 
@@ -355,7 +359,10 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl):
             obj = self
             rect = (node.GetX()+20, node.GetY())  # Overlaps robot icon
             self._animctrl = AnimationCtrl(obj, -1, ani, rect)
+            """
             self._animctrl.SetBackgroundColour(obj.GetBackgroundColour())
+            """
+            self._animctrl.SetBackgroundColour('white')
             self.SetItemWindow(node, self._animctrl, False)
             self._animctrl.Play()
         # Make visible the running or paused test

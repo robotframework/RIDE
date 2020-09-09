@@ -84,10 +84,12 @@ class FileExplorerPlugin(Plugin):
 
         self._pane = self._mgr.GetPane(self._filemgr)
         self._filetreectrl = self._filemgr.GetTreeCtrl()
+        """
         self._filetreectrl.SetBackgroundColour(Colour(200, 222, 40))
         self._filetreectrl.SetOwnBackgroundColour(Colour(200, 222, 40))
         self._filetreectrl.SetForegroundColour(Colour(7, 0, 70))
         self._filetreectrl.SetOwnForegroundColour(Colour(7, 0, 70))
+        """
         self._filemgr.Show(True)
         self._mgr.DetachPane(self._filemgr)
         self._mgr.AddPane(self.filemgr,

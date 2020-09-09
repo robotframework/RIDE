@@ -51,10 +51,12 @@ class ReviewDialog(wx.Frame):
     def _build_ui(self):
         self.SetSize((800,600))
         # self.SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_3DFACE))
+        """
         self.SetBackgroundColour(Colour(200, 222, 40))
         self.SetOwnBackgroundColour(Colour(200, 222, 40))
         self.SetForegroundColour(Colour(7, 0, 70))
         self.SetOwnForegroundColour(Colour(7, 0, 70))
+        """
         self.SetSizer(wx.BoxSizer(wx.VERTICAL))
         self._build_header()
         self._build_filter()
@@ -160,10 +162,12 @@ class ReviewDialog(wx.Frame):
 
     def _build_notebook(self):
         self._notebook = wx.Notebook(self, wx.ID_ANY, style=wx.NB_TOP)
+        """
         self._notebook.SetBackgroundColour(Colour(200, 222, 40))
         self._notebook.SetOwnBackgroundColour(Colour(200, 222, 40))
         self._notebook.SetForegroundColour(Colour(7, 0, 70))
         self._notebook.SetOwnForegroundColour(Colour(7, 0, 70))
+        """
         self.Sizer.Add(self._notebook, 1, wx.ALL | wx.EXPAND, 3)
 
     def _make_bindings(self):
@@ -263,10 +267,12 @@ class ReviewDialog(wx.Frame):
         message = "Keywords of the following files will be included in the search:\n\n"+string_list
         dlg = wx.MessageDialog(self, message=message, caption="Included files",
                          style=wx.OK | wx.ICON_INFORMATION)
+        """
         dlg.SetBackgroundColour(Colour(200, 222, 40))
         dlg.SetOwnBackgroundColour(Colour(200, 222, 40))
         dlg.SetForegroundColour(Colour(7, 0, 70))
         dlg.SetOwnForegroundColour(Colour(7, 0, 70))
+        """
         dlg.ShowModal()
 
     def OnResultSelected(self, event):
@@ -467,10 +473,12 @@ class ResultListCtrl(wx.ListCtrl, listmix.CheckListCtrlMixin, listmix.ListCtrlAu
         wx.ListCtrl.__init__(self, parent=parent, style=style)
         listmix.CheckListCtrlMixin.__init__(self)
         listmix.ListCtrlAutoWidthMixin.__init__(self)
+        """
         self.SetBackgroundColour(Colour(200, 222, 40))
         self.SetOwnBackgroundColour(Colour(200, 222, 40))
         self.SetForegroundColour(Colour(7, 0, 70))
         self.SetOwnForegroundColour(Colour(7, 0, 70))
+        """
         self.setResizeColumn(2)
         self._clientData = {}
 
@@ -518,10 +526,12 @@ class MyCollapsiblePane(wx.CollapsiblePane):
 
     def __init__(self, parent, *args, **kwargs):
         wx.CollapsiblePane.__init__(self, parent, *args, **kwargs)
+        """
         self.SetBackgroundColour(Colour(200, 222, 40))
         self.SetOwnBackgroundColour(Colour(200, 222, 40))
         self.SetForegroundColour(Colour(7, 0, 70))
         self.SetOwnForegroundColour(Colour(7, 0, 70))
+        """
         self.Bind(wx.EVT_SIZE, self._recalc_size)
 
     def _recalc_size(self, event=None):
