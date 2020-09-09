@@ -171,7 +171,6 @@ class TestTestSelectionController(unittest.TestCase):
         self._tsc.select(test)
         self.assertTrue(self._tsc.is_test_selected(test))
 
-    @unittest.skip("Claims no wx.App created yet")
     def test_adding_tag_to_selected_tests(self):
         tests = [self._create_test('test%d' % i) for i in range(10)]
         for t in tests:
@@ -180,7 +179,6 @@ class TestTestSelectionController(unittest.TestCase):
         for t in tests:
             self.assertEqual([tag.name for tag in t.tags], ['foo'])
 
-    @unittest.skip("Claims no wx.App created yet")
     def test_adding_a_tag_to_test_with_a_default_tag(self):
         test = self._create_test()
         test.datafile_controller.default_tags.execute(
