@@ -123,7 +123,9 @@ class _CreationDialog(RIDEDialog):
         disp = wx.TextCtrl(self, value=value)
         disp.SetSizeHints(self.GetTextExtent(value)[0]+100, -1)
         disp.SetEditable(False)
+        """
         disp.SetBackgroundColour("grey")
+        """
         if validator:
             disp.SetValidator(validator)
         disp_sizer.Add(disp, 1, wx.ALL | wx.EXPAND, 3)

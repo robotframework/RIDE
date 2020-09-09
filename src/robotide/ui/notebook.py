@@ -31,10 +31,12 @@ class NoteBook(aui.AuiNotebook):
         # style = fnb.FNB_NODRAG|fnb.FNB_HIDE_ON_SINGLE_TAB|fnb.FNB_VC8
         # fnb.FlatNotebook.__init__(self, parent, style=style)
         aui.AuiNotebook.__init__(self, parent, agwStyle=self._notebook_style)
+        """
         self.SetBackgroundColour(Colour(200, 222, 40))
         self.SetOwnBackgroundColour(Colour(200, 222, 40))
         self.SetForegroundColour(Colour(7, 0, 70))
         self.SetOwnForegroundColour(Colour(7, 0, 70))
+        """
         self.Bind(aui.EVT_AUINOTEBOOK_PAGE_CLOSE, self.OnTabClosing)
         self.Bind(aui.EVT_AUINOTEBOOK_PAGE_CHANGING, self.OnTabChanging)
         self.Bind(aui.EVT_AUINOTEBOOK_PAGE_CHANGED, self.OnTabChanged)

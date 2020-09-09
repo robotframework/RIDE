@@ -95,6 +95,18 @@ class RIDE(wx.App):
         app = wx.App.Get()
         _root = app.GetTopWindow()
         all_windows = list()
+        general = self.settings.get('General', None)
+        # print(f"DEBUG: Application General {general['background']}")
+        background = general['background']
+        foreground = general['foreground']
+        background_help = general['background help']
+        foreground_text = general['foreground text']
+        font_size = general['font size']
+        font_face = general['font face']
+        font = _root.GetFont()
+        font.SetFaceName(font_face)
+        font.SetPointSize(font_size)
+        _root.SetFont(font)
 
         def _iterate_all_windows(root):
             if hasattr(root, 'GetChildren'):
@@ -107,17 +119,26 @@ class RIDE(wx.App):
         _iterate_all_windows(_root)
 
         for w in all_windows:
-            if hasattr(w, 'SetBackgroundColour'):
-                w.SetBackgroundColour(wx.Colour(44, 134, 179))
+            if hasattr(w, 'SetHTMLBackgroundColour'):
+                w.SetHTMLBackgroundColour(wx.Colour(background_help))
+                w.SetForegroundColour(wx.Colour(foreground_text))  # 7, 0, 70))
+            elif hasattr(w, 'SetBackgroundColour'):
+                w.SetBackgroundColour(wx.Colour(background))  # 44, 134, 179))
 
-            if hasattr(w, 'SetOwnBackgroundColour'):
-                w.SetOwnBackgroundColour(wx.Colour(44, 134, 179))
+                if hasattr(w, 'SetOwnBackgroundColour'):
+                    w.SetOwnBackgroundColour(wx.Colour(background))  # 44, 134, 179))
 
-            if hasattr(w, 'SetForegroundColour'):
-                w.SetForegroundColour(wx.Colour(7, 0, 70))
+                if hasattr(w, 'SetForegroundColour'):
+                    w.SetForegroundColour(wx.Colour(foreground))  # 7, 0, 70))
 
-            if hasattr(w, 'SetOwnForegroundColour'):
-                w.SetOwnForegroundColour(wx.Colour(7, 0, 70))
+                if hasattr(w, 'SetOwnForegroundColour'):
+                    w.SetOwnForegroundColour(wx.Colour(foreground))  # 7, 0, 70))
+
+            if hasattr(w, 'SetFont'):
+                w.SetFont(font)
+
+           # w.Refresh()
+        _root.Refresh(True)
 
     def _publish_system_info(self):
         publish.RideLogMessage(context.SYSTEM_INFO).publish()

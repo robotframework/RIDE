@@ -117,8 +117,10 @@ def _show_old_wxpython_warning_if_needed(parent=None):
             parent = wx.Frame(None, size=(0, 0))
         sys.stderr.write("{0}\n{1}\n".format(title, message))
         dlg = wx.MessageDialog(parent, message=message, caption=title, style=style)
+        """
         dlg.SetBackgroundColour(Colour(200, 222, 40))
         dlg.SetForegroundColour(Colour(7, 0, 70))
+        """
         dlg.ShowModal()
 
 

@@ -199,10 +199,12 @@ class GridEditorPreferences(EditorPreferences):
     def _number_editor(self, settings, name):
         initial_value = settings[name]
         editor = NumCtrl(self, value=initial_value, integerWidth=3, allowNone=True)
+        """
         editor.SetBackgroundColour(Colour(200, 222, 40))
         editor.SetOwnBackgroundColour(Colour(200, 222, 40))
         editor.SetForegroundColour(Colour(7, 0, 70))
         editor.SetOwnForegroundColour(Colour(7, 0, 70))
+        """
         editor.Bind(wx.EVT_TEXT, lambda evt: self._set_value(editor, name))
         return editor
 

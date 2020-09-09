@@ -44,10 +44,12 @@ class _PluginPanel(wx.Panel):
 
     def __init__(self, notebook, plugins, activation_callback):
         wx.Panel.__init__(self, notebook)
+        """
         self.SetBackgroundColour(Colour(200, 222, 40))
         self.SetOwnBackgroundColour(Colour(200, 222, 40))
         self.SetForegroundColour(Colour(7, 0, 70))
         self.SetOwnForegroundColour(Colour(7, 0, 70))
+        """
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(self._create_header(), 0, flag=wx.EXPAND | wx.LEFT |
                                                  wx.RIGHT | wx.TOP, border=16)
@@ -69,10 +71,12 @@ class _PluginPanel(wx.Panel):
 
     def _create_body(self, plugins, activation_callback):
         panel = ScrolledPanel(self, wx.ID_ANY, style=wx.TAB_TRAVERSAL)
+        """
         panel.SetBackgroundColour(Colour(200, 222, 40))
         panel.SetOwnBackgroundColour(Colour(200, 222, 40))
         panel.SetForegroundColour(Colour(7, 0, 70))
         panel.SetOwnForegroundColour(Colour(7, 0, 70))
+        """
         panel.SetupScrolling()
         sizer = wx.FlexGridSizer(0, 2, hgap=8, vgap=8)
         sizer.AddGrowableCol(1, 1)

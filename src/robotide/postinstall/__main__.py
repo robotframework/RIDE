@@ -77,8 +77,10 @@ class MessageDialog(wx.Dialog):
         vbox.Add(std_btn_sizer, 1, wx.ALIGN_CENTER | wx.TOP, 10)
         self.SetSizer(vbox)
         self.SetAffirmativeId(wx.ID_YES)
+        """
         self.SetBackgroundColour(Colour(200, 222, 40))
         self.SetForegroundColour(Colour(7, 0, 70))
+        """
 
         self.timer = wx.Timer(self)
         self.timer.Start(1000)  # Generate a timer event every second
