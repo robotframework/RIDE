@@ -35,10 +35,10 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
         self.Bind(wx.EVT_KEY_DOWN, self.OnKeyDown)
         self.Bind(wx.EVT_CHAR, self.OnChar)
         self.Bind(wx.EVT_KILL_FOCUS, self.OnFocusLost)
-        self.Bind(wx.EVT_MOVE, self.OnFocusLost)
         self._showing_content_assist = False
         self._row = None
-        self.gherkin_prefix = ''  # Store gherkin prefix from input to add \
+        self.gherkin_prefix = ''
+        # Store gherkin prefix from input to add \
         # later after search is performed
         if IS_MAC:
             self.OSXDisableAllSmartSubstitutions()
@@ -48,9 +48,9 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
 
     def OnKeyDown(self, event):
         # TODO: This might benefit from some cleanup
-        keycode, control_down = event.GetKeyCode(), event.CmdDown()
+        keycode, control_down, alt_down = event.GetKeyCode(), event.CmdDown(), event.AltDown()
         # Ctrl-Space handling needed for dialogs # DEBUG add Ctrl-m
-        if (control_down or event.AltDown()) and keycode in [wx.WXK_SPACE, ord('m')]:
+        if (control_down or alt_down) and keycode in [wx.WXK_SPACE, ord('m')]:
             self.show_content_assist()
         elif keycode == wx.WXK_RETURN and self._popup.is_shown():
             self.OnFocusLost(event)
@@ -61,8 +61,8 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
         elif keycode in [wx.WXK_UP, wx.WXK_DOWN, wx.WXK_PAGEUP, wx.WXK_PAGEDOWN] \
                 and self._popup.is_shown():
             self._popup.select_and_scroll(keycode)
-        elif keycode in (ord('1'), ord('2'), ord('5')) and event.ControlDown() and not \
-                event.AltDown():
+        elif keycode in (ord('1'), ord('2'), ord('5')) and control_down and not \
+                alt_down:
             self.execute_variable_creator(list_variable=(keycode == ord('2')),
                                           dict_variable=(keycode == ord('5')))
         elif self._popup.is_shown() and keycode < 256:
@@ -73,7 +73,6 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
 
     def OnChar(self, event):
         keychar = event.GetUnicodeKey()
-        # print(f"DEBUG: OnChar at contentassist {chr(keychar)} {keychar}")
         if keychar == wx.WXK_NONE:
             event.Skip()
             return
@@ -188,14 +187,16 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
         self._showing_content_assist = False
 
 
-class ExpandingContentAssistTextCtrl(_ContentAssistTextCtrlBase,
-                                     ExpandoTextCtrl):
+class ExpandingContentAssistTextCtrl(_ContentAssistTextCtrlBase, ExpandoTextCtrl):
 
     def __init__(self, parent, plugin, controller):
-        ExpandoTextCtrl.__init__(self, parent=parent, size=wx.DefaultSize,
-                                 style=wx.WANTS_CHARS | wx.TE_NOHIDESEL)
+
+        """ According to class MRO, super().__init__ in  _ContentAssistTextCtrlBase will init ExpandoTextCtrl
+        instance """
+
         _ContentAssistTextCtrlBase.__init__(self, SuggestionSource(plugin, controller),
-                                            parent=parent)
+                                            parent=parent, size=wx.DefaultSize,
+                                            style=wx.WANTS_CHARS | wx.TE_NOHIDESEL)
 
 
 class ContentAssistTextCtrl(_ContentAssistTextCtrlBase):
@@ -323,8 +324,8 @@ class ContentAssistPopup(object):
         self._details_popup = HtmlPopupWindow(parent, _PREFERRED_POPUP_SIZE)
         self._selection = -1
         self._list: ContentAssistList = ContentAssistList(self._main_popup,
-                                       self.OnListItemSelected,
-                                       self.OnListItemActivated)
+                                                          self.OnListItemSelected,
+                                                          self.OnListItemActivated)
         self._suggestions = Suggestions(suggestion_source)
 
     def reset(self):
