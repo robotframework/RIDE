@@ -61,7 +61,7 @@ class PreviewPlugin(Plugin, TreeAwarePluginMixin):
         if not self._panel:
             self._panel = PreviewPanel(self, self.notebook)
         self.show_tab(self._panel)
-        self._update_preview()
+        self._update_preview(None)
 
     def OnTreeSelection(self, message):
         if self.is_focused():
