@@ -299,14 +299,14 @@ class _FileEditor(_RobotTableEditor):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         sizer.Add((5, 0))
         sizer.Add(Label(self, label='Source', size=(context.SETTING_LABEL_WIDTH,
-                                                    context.SETTING_ROW_HEIGTH)))
+                                                    context.SETTING_ROW_HEIGHT)))
         self._source = wx.TextCtrl(self, style=wx.TE_READONLY | wx.NO_BORDER)
         self._source.SetBackgroundColour(Colour(200, 222, 40))  # self.BackgroundColour
         self._source.SetOwnBackgroundColour(Colour(200, 222, 40))
         self._source.SetForegroundColour(Colour(7, 0, 70))
         self._source.SetOwnForegroundColour(Colour(7, 0, 70))
         self._source.SetValue(source)
-        self._source.SetMaxSize(wx.Size(-1, context.SETTING_ROW_HEIGTH))
+        self._source.SetMaxSize(wx.Size(-1, context.SETTING_ROW_HEIGHT))
         sizer.Add(self._source, 1, wx.EXPAND)
         return sizer
 

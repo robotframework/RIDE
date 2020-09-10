@@ -21,8 +21,9 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
     * Users will need to edit ``/etc/paths`` to include paths for ``robot`` and other commands like ``chromedriver``, etc
 - Added an Open External File menu option, to open file in Code Editor
 - Added multiline view in Grid Editor
-    * When editing, \n would be converted to newline, \\n will remain as is.
-    * When editing, Alt-Enter is the same as \n, converted immediately.
+    * When editing, ``\n`` will be converted to newline, ``\\n`` will remain as is.
+    * When editing, ``\ `` will be converted to whitespace.
+    * When editing, Alt-Enter is the same as ``\n``, converted immediately.
     * When editing, Ctrl-Up and Ctrl-Down move cursor to start and end of multiline respectively.
     * When editing, Ctrl-Home and Ctrl-End move cursor to start and end of cell content respectively.
 - Added Del key to clear Grid Editor cell content when in navigation mode (clear like doing Ctrl-X)
@@ -43,8 +44,11 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Fixed
 
+- Fixed resource file will disappear after saving from Text Editor
+- Fixed duplicated resource file/folder in tree nodes
+- Fixed Ctrl-Space causing entire column to be selected in Grid Editor
 - Fixed Del key was clearing cell content on Grid Editor
-- Fixed ${CURDIR} & ${EXECDIR} cannot be recognized in import settings
+- Fixed ``${CURDIR}`` & ``${EXECDIR}`` cannot be recognized in import settings
 - Fixed memory leak when reloading workspace
 - Fixed RIDE desktop shortcut creation when installing by Administrator on Windows
 - Fixed location of icon on Linux RIDE.desktop
@@ -55,7 +59,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 - Fixed Del key in Text Editor, was not deleting text
 - Fixed duplicated but empty Text Editor tab when Text Editor is the only active editor Plugin
 - Fixed case will be selected invisibly after being modified from Text Editor
-- Fixed some of log messages' log level are incorrect sometimes
+- Fixed some of log messages log level are incorrect sometimes
 - Fixed some of log messages are missing sometimes
 - Fixed smart quotes replace in Grid Editor on MacOS
 - Fixed incorrect arguments parsing when launching RIDE with command ``python -m robotide.\\__init__``

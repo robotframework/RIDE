@@ -454,7 +454,7 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
                              resource.keyword_table or os.stat(resource.source)[6] == 0)
 
     def _resource_controller(self, resource):
-        resource_control =  self._resource_file_controller_factory.create(resource)
+        resource_control = self._resource_file_controller_factory.create(resource)
         resource_control.parent = self
         return resource_control
 
@@ -858,7 +858,7 @@ class ResourceFileController(_FileSystemElement, _DataController):
 
     def notify_opened(self):
         RideOpenResource(path=self.filename, datafile=self).publish()
-        for _import in [ imp for imp in self.imports if imp.is_resource ]:
+        for _import in [imp for imp in self.imports if imp.is_resource]:
             _import.import_loaded_or_modified()
 
     def is_used(self):

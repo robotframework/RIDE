@@ -16,9 +16,8 @@
 
 import os
 import sys
-
+import tempfile
 import wx
-
 from . import logger
 from ..robotapi import ROBOT_LOGGER
 from ..version import VERSION
@@ -45,14 +44,14 @@ if not os.path.isdir(LIBRARY_XML_DIRECTORY):
 
 SETTING_EDITOR_WIDTH = 450
 SETTING_LABEL_WIDTH = 150
-SETTING_ROW_HEIGTH = 25
+SETTING_ROW_HEIGHT = 25
 # TODO: Make this colour configurable
 POPUP_BACKGROUND = (240, 242, 80)  # (255, 255, 187)
 POPUP_FOREGROUND = (40, 40, 0)  # (255, 255, 187)
 
 pyversion = '.'.join(str(v) for v in sys.version_info[:3])
 SYSTEM_INFO = "Started RIDE %s using python version %s with wx version %s in %s." % \
-    (VERSION, pyversion, WX_VERSION, sys.platform)
+              (VERSION, pyversion, WX_VERSION, sys.platform)
 ABOUT_RIDE = '''<h3>RIDE -- Robot Framework Test Data Editor</h3>
 <p>RIDE %s running on Python %s.</p>
 <p>RIDE is a test data editor for <a href="http://robotframework.org">Robot Framework</a>.
@@ -64,6 +63,14 @@ original authors and all users and collaborators.<br/>
 A very special thanks to <b><a href="https://github.com/Nyral">Nyral</a></b> and <b><a href="https://github.com/jnhyperi
 on">Johnny.H</a></b> the most commited in helping RIDE development and maintenance.</p>
 ''' % (VERSION, pyversion)
+
+
+def _is_fs_case_sensitive():
+    with tempfile.NamedTemporaryFile(prefix='TmP') as tmp_file:
+        return not os.path.exists(tmp_file.name.lower())
+
+
+IS_FS_CASE_SENSITIVE = _is_fs_case_sensitive()
 
 
 def ctrl_or_cmd():

@@ -59,7 +59,7 @@ class SettingEditor(wx.Panel):
         sizer.Add((5, 0))
         sizer.Add(Label(
             self, label=self._controller.label,
-            size=(context.SETTING_LABEL_WIDTH, context.SETTING_ROW_HEIGTH)))
+            size=(context.SETTING_LABEL_WIDTH, context.SETTING_ROW_HEIGHT)))
         self._value_display = self._create_value_display()
         self.update_value()
         self._tooltip = self._get_tooltip()
@@ -225,7 +225,7 @@ class SettingValueDisplay(wx.TextCtrl):
 
     def __init__(self, parent):
         wx.TextCtrl.__init__(
-            self, parent, size=(-1, context.SETTING_ROW_HEIGTH),
+            self, parent, size=(-1, context.SETTING_ROW_HEIGHT),
             style=wx.TE_RICH | wx.TE_MULTILINE | wx.TE_NOHIDESEL)
         self.SetBackgroundColour(Colour(200, 222, 40))
         self.SetOwnBackgroundColour(Colour(200, 222, 40))
