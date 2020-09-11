@@ -132,6 +132,8 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
 
     def OnFocusLost(self, event, set_value=True):
         if not self._popup.is_shown():
+            # wxPython 4.0.7 has bug here, must skip the event
+            event.Skip()
             return
         if self.gherkin_prefix:
             value = self.gherkin_prefix + self._popup.get_value() or self.GetValue()
