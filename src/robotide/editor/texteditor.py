@@ -268,10 +268,12 @@ class DataValidationHandler(object):
                               'Can not apply changes from Txt Editor',
                               style=wx.YES|wx.NO)
         dlg.InheritAttributes()
+        """
         dlg.SetBackgroundColour(Colour(200, 222, 40))
         dlg.SetOwnBackgroundColour(Colour(200, 222, 40))
         dlg.SetForegroundColour(Colour(7, 0, 70))
         dlg.SetOwnForegroundColour(Colour(7, 0, 70))
+        """
         dlg.Refresh(True)
         id = dlg.ShowModal()
         self._last_answer = id

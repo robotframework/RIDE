@@ -509,8 +509,10 @@ class SourceCodeEditor(PythonSTC):
             defsize = wx.SystemSettings.GetFont(wx.SYS_ANSI_FIXED_FONT).GetPointSize()
             self.StyleSetSpec(stc.STC_STYLE_DEFAULT,
                               'fore:#000000,back:#FFFFFF,face:Hack,size:%d'%defsize)  # Courier, Space Mono, Source Pro Mono,
+        """
         self.StyleSetBackground(stc.STC_STYLE_DEFAULT, Colour(200, 222, 40))
         self.StyleSetForeground(stc.STC_STYLE_DEFAULT, Colour(7, 0, 70))
+        """
         # Clear styles and revert to default.
         self.StyleClearAll()
 
@@ -555,8 +557,10 @@ class SourceCodeEditor(PythonSTC):
         self.SetCaretForeground("BLUE")
         # Selection background
         # self.SetSelBackground(1, '#66CCFF')
+        """
         self.SetBackgroundColour(Colour(200, 222, 40))
         self.SetForegroundColour(Colour(7, 0, 70))
+        """
 
         self.SetSelBackground(True, wx.SystemSettings.GetColour(wx.SYS_COLOUR_HIGHLIGHT))
         self.SetSelForeground(True, wx.SystemSettings.GetColour(wx.SYS_COLOUR_HIGHLIGHTTEXT))
@@ -597,10 +601,12 @@ class CodeEditorPanel(wx.Panel):
         self.editor = SourceCodeEditor(self)
         self.editor.RegisterModifiedEvent(self.OnCodeModified)
 
+        """
         self.SetBackgroundColour(Colour(200, 222, 40))
         self.SetOwnBackgroundColour(Colour(200, 222, 40))
         self.SetForegroundColour(Colour(7, 0, 70))
         self.SetOwnForegroundColour(Colour(7, 0, 70))
+        """
 
         self.btnSave = wx.Button(self, -1, "Save Changes")
         # self.btnRestore = wx.Button(self, -1, "Delete Modified")

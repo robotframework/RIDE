@@ -114,10 +114,12 @@ class _LogWindow(wx.Panel):
     def __init__(self, notebook, log):
         wx.Panel.__init__(self, notebook)
         self._output = wx.TextCtrl(self, style=wx.TE_READONLY | wx.TE_MULTILINE | wx.TE_NOHIDESEL)
+        """
         self._output.SetBackgroundColour(Colour(200, 222, 40))
         self._output.SetOwnBackgroundColour(Colour(200, 222, 40))
         self._output.SetForegroundColour(Colour(7, 0, 70))
         self._output.SetOwnForegroundColour(Colour(7, 0, 70))
+        """
         self._output.Bind(wx.EVT_KEY_DOWN, self.OnKeyDown)
         self._log = log
         self._add_to_notebook(notebook)
