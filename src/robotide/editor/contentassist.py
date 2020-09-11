@@ -35,6 +35,7 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
         self.Bind(wx.EVT_KEY_DOWN, self.OnKeyDown)
         self.Bind(wx.EVT_CHAR, self.OnChar)
         self.Bind(wx.EVT_KILL_FOCUS, self.OnFocusLost)
+        self.Bind(wx.EVT_WINDOW_DESTROY, self.pop_event_handlers)
         self._showing_content_assist = False
         self._row = None
         self.gherkin_prefix = ''
@@ -73,6 +74,8 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
 
     def OnChar(self, event):
         keychar = event.GetUnicodeKey()
+        # show content assist without shortcut
+        self.show_content_assist()
         if keychar == wx.WXK_NONE:
             event.Skip()
             return
@@ -141,7 +144,7 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
             self.Clear()
         self.hide()
 
-    def pop_event_handlers(self):
+    def pop_event_handlers(self, event):
         # all pushed eventHandlers need to be popped before close
         # the last event handler is window object itself - do not pop itself
         if self:

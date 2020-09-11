@@ -85,7 +85,7 @@ class KeywordEditor(GridEditor):
         self._cell_selected = False
         self._colorizer = Colorizer(self, controller)
         self._controller = controller
-        self.cell_editor = self._configure_grid()
+        self._configure_grid()
         self._updating_namespace = False
         self._controller.datafile_controller.register_for_namespace_updates(
             self._namespace_updated)
@@ -153,10 +153,8 @@ class KeywordEditor(GridEditor):
 
     def _configure_grid(self):
         self._set_cells()
-        cell_editor = ContentAssistCellEditor(self._plugin, self._controller)
-        self.SetDefaultEditor(cell_editor)
+        self.SetDefaultEditor(ContentAssistCellEditor(self._plugin, self._controller))
         self._set_fonts()
-        return cell_editor
 
     def _set_fonts(self, update_cells=False):
         font_size = self.settings.get('font size', _DEFAULT_FONT_SIZE)
@@ -498,8 +496,6 @@ class KeywordEditor(GridEditor):
             self._controller.datafile_controller.unregister_namespace_updates(
                 self._namespace_updated)
         self._namespace_updated = None
-        # self.GetDefaultEditor() cannot get the correct cell editor, why?
-        self.cell_editor.Destroy()
 
     def save(self):
         self._tooltips.hide()
@@ -906,11 +902,6 @@ class ContentAssistCellEditor(GridCellEditor):
         self.SetControl(self._tc)
         if evtHandler:
             self._tc.PushEventHandler(evtHandler)
-
-    def Destroy(self):
-        if self._tc:
-            self._tc.pop_event_handlers()
-            self._tc.Destroy()
 
     def SetSize(self, rect):
         self._tc.SetSize(rect.x, rect.y, rect.width + 2, rect.height + 2, wx.SIZE_ALLOW_MINUS_ONE)
