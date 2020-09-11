@@ -75,7 +75,8 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
     def OnChar(self, event):
         keychar = event.GetUnicodeKey()
         # show content assist without shortcut
-        self.show_content_assist()
+        if keychar != wx.WXK_RETURN:
+            self.show_content_assist()
         if keychar == wx.WXK_NONE:
             event.Skip()
             return
@@ -130,7 +131,6 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
         return value[:from_] + open_symbol + value[from_:to_] + close_symbol + value[to_:]
 
     def OnFocusLost(self, event, set_value=True):
-        event.Skip()
         if not self._popup.is_shown():
             return
         if self.gherkin_prefix:
