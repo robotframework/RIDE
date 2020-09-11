@@ -47,10 +47,12 @@ class ValueEditor(wx.Panel):
                       self._sizer_flags_for_label, 5)
         self._editor = self._get_text_ctrl()
         # self._editor.SetDefaultStyle(wx.TextAttr(wx.TEXT_ATTR_CHARACTER))
+        """
         self._editor.SetBackgroundColour(Colour(200, 222, 40))
         self._editor.SetOwnBackgroundColour(Colour(200, 222, 40))
         self._editor.SetForegroundColour(Colour(7, 0, 70))
         self._editor.SetOwnForegroundColour(Colour(7, 0, 70))
+        """
         self._editor.AppendText(value)
         sizer.Add(self._editor, 1, self._sizer_flags_for_editor, 3)
         self._sizer.Add(sizer, 1, wx.EXPAND)
@@ -175,10 +177,12 @@ class ListValueEditor(ValueEditor):
         combo.SetToolTip(wx.ToolTip("Number of columns that are shown in this "
                                     "editor. Selected value is stored and used"
                                     " globally."))
+        """
         combo.SetBackgroundColour(Colour(200, 222, 40))
         combo.SetOwnBackgroundColour(Colour(200, 222, 40))
         combo.SetForegroundColour(Colour(7, 0, 70))
         combo.SetOwnForegroundColour(Colour(7, 0, 70))
+        """
         self.Bind(wx.EVT_COMBOBOX, self.OnColumns, source=combo)
         sizer.Add(combo)
         return sizer
@@ -205,14 +209,18 @@ class _EditorGrid(GridEditor):
     def __init__(self, parent, value, num_cols):
         num_rows = len(value) / num_cols + 2
         GridEditor.__init__(self, parent, num_rows, num_cols)
+        """
         self.SetBackgroundColour(Colour(200, 222, 40))
         self.SetOwnBackgroundColour(Colour(200, 222, 40))
         self.SetForegroundColour(Colour(7, 0, 70))
         self.SetOwnForegroundColour(Colour(7, 0, 70))
+        """
         self._set_default_sizes()
         self._bind_actions()
         self._write_content(value)
+        """
         self._colorize()
+        """
 
     def _set_default_sizes(self):
         self.SetColLabelSize(wx.grid.GRID_AUTOSIZE)
@@ -242,11 +250,14 @@ class _EditorGrid(GridEditor):
         self.AutoSizeRows()
 
     def _colorize(self):
+        """
         for row in range(self.NumberRows):
             for col in range(self.NumberCols):
                 self.SetCellBackgroundColour(row, col, Colour(200, 222, 40))
                 self.SetCellTextColour(row, col, Colour(7, 0, 70))
         self.Refresh(True)
+        """
+        pass
 
     def get_value(self):
         value = []
@@ -339,10 +350,12 @@ class MultiLineEditor(ValueEditor):
 
     def _get_text_ctrl(self):
         editor = wx.TextCtrl(self, style=wx.TE_MULTILINE|wx.TE_NOHIDESEL, size=(600, 400))
+        """
         editor.SetBackgroundColour(Colour(200, 222, 40))
         editor.SetOwnBackgroundColour(Colour(200, 222, 40))
         editor.SetForegroundColour(Colour(7, 0, 70))
         editor.SetOwnForegroundColour(Colour(7, 0, 70))
+        """
         return editor
 
 

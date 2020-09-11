@@ -63,9 +63,11 @@ class ReleaseNotes(object):
         panel = wx.Panel(self.application.frame.notebook)
         html_win = PyClickableHtmlWindow(panel, -1)
         html_win.SetStandardFonts()
+        """
         panel.SetBackgroundColour(Colour(200, 222, 40))
         panel.SetForegroundColour(Colour(7, 0, 70))
         html_win.SetOwnForegroundColour(Colour(7, 0, 70))
+        """
         self.set_content(html_win, WELCOME_TEXT + RELEASE_NOTES)
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(html_win, 1, wx.EXPAND|wx.ALL, border=8)

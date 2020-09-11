@@ -137,9 +137,6 @@ class RIDE(wx.App):
             if hasattr(w, 'SetFont'):
                 w.SetFont(font)
 
-           # w.Refresh()
-        _root.Refresh(True)
-
     def _publish_system_info(self):
         publish.RideLogMessage(context.SYSTEM_INFO).publish()
 

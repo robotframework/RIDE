@@ -54,10 +54,12 @@ class SettingEditor(wx.Panel):
 
     def __init__(self, parent, controller, plugin, tree):
         wx.Panel.__init__(self, parent)
+        """
         self.SetBackgroundColour(Colour(200, 222, 40))
         self.SetOwnBackgroundColour(Colour(200, 222, 40))
         self.SetForegroundColour(Colour(7, 0, 70))
         self.SetOwnForegroundColour(Colour(7, 0, 70))
+        """
         self._controller = controller
         self.plugin = plugin
         self._datafile = controller.datafile
@@ -242,10 +244,12 @@ class SettingValueDisplay(wx.TextCtrl):
         wx.TextCtrl.__init__(
             self, parent, size=(-1, context.SETTING_ROW_HEIGHT),
             style=wx.TE_RICH | wx.TE_MULTILINE | wx.TE_NOHIDESEL)
+        """
         self.SetBackgroundColour(Colour(200, 222, 40))
         self.SetOwnBackgroundColour(Colour(200, 222, 40))
         self.SetForegroundColour(Colour(7, 0, 70))
         self.SetOwnForegroundColour(Colour(7, 0, 70))
+        """
         self.SetEditable(False)
         self._colour_provider = ColorizationSettings(
             parent.plugin.global_settings['Grid'])
@@ -274,7 +278,7 @@ class SettingValueDisplay(wx.TextCtrl):
             return Colour(context.POPUP_BACKGROUND)  # 100, 122, 40  # 'light grey'
         if match is not None and self.contains(match):
             return self._colour_provider.get_highlight_color()
-        return Colour(200, 222, 40)  # 'white'
+        return 'white'  # Colour(200, 222, 40)
 
     def _colorize_possible_user_keyword(self):
         if not self._is_user_keyword:

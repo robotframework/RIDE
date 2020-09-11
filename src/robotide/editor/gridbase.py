@@ -38,10 +38,12 @@ class GridEditor(grid.Grid):
 
     def __init__(self, parent, num_rows, num_cols, popup_creator=None):
         grid.Grid.__init__(self, parent)
+        """
         self.SetBackgroundColour(Colour(200, 222, 40))
         self.SetOwnBackgroundColour(Colour(200, 222, 40))
         self.SetForegroundColour(Colour(7, 0, 70))
         self.SetOwnForegroundColour(Colour(7, 0, 70))
+        """
         self._bind_to_events()
         self.selection = _GridSelection(self)
         self._clipboard_handler = ClipboardHandler(self)

@@ -123,10 +123,12 @@ class TagBox(wx.TextCtrl):
 
     def __init__(self, parent, properties):
         wx.TextCtrl.__init__(self, parent, wx.ID_ANY, '', style=wx.TE_CENTER|wx.TE_NOHIDESEL)
+        """
         self.SetBackgroundColour(Colour(200, 222, 40))
         self.SetOwnBackgroundColour(Colour(200, 222, 40))
         self.SetForegroundColour(Colour(7, 0, 70))
         self.SetOwnForegroundColour(Colour(7, 0, 70))
+        """
         self._bind()
         self.set_properties(properties)
 
@@ -224,8 +226,8 @@ def Properties(tag, controller):
 
 class _TagBoxProperties(object):
     # TODO: Use colours from settings
-    foreground_color = Colour(7, 0, 70)  # 'black'
-    background_color = Colour(200, 222, 40)  # 'white'
+    foreground_color = 'black'  # Colour(7, 0, 70)  #
+    background_color = 'gray'  # Colour(200, 222, 40) 'white'
     enabled = True
     add_new = False
 
@@ -258,7 +260,7 @@ class TagBoxProperties(_TagBoxProperties):
 
 class AddTagBoxProperties(_TagBoxProperties):
     # TODO: Use colours from settings
-    foreground_color = Colour(200, 222, 40)  # 'gray'
+    foreground_color = 'gray'  # Colour(200, 222, 40)
     text = '<Add New>'
     tooltip = 'Click to add new tag'
     modifiable = False
@@ -276,12 +278,12 @@ class AddTagBoxProperties(_TagBoxProperties):
 class ForcedTagBoxProperties(_TagBoxProperties):
     #TODO: Use colours from settings
     foreground_color = 'red'
-    background_color = Colour(200, 222, 40)  # '#D3D3D3'
+    background_color = '#D3D3D3'  # Colour(200, 222, 40)
     enabled = False
 
 
 class DefaultTagBoxProperties(_TagBoxProperties):
     #TODO: Use colours from settings
     foreground_color = '#666666'
-    background_color = Colour(200, 222, 40)  # '#D3D3D3'
+    background_color = '#D3D3D3'  # Colour(200, 222, 40)
     enabled = False
