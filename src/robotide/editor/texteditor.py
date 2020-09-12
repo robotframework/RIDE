@@ -466,13 +466,20 @@ class SourceEditor(wx.Panel):
     def OnFind(self, event):
         if self._editor:
             text = self._editor.GetSelectedText()
-            if len(text) > 0 and text.lower() != self._search_field.GetValue().lower():
+            if len(text) > 0 and text.lower() != self._search_field.GetValue().lower() and event.GetEventType() == wx.wxEVT_TOOL:
+                # if a search string selected in text and CTRL+G is pressed
+                # put the string into the _search_field
                 self._search_field.SelectAll()
                 self._search_field.Clear()
                 self._search_field.Update()
                 self._search_field.SetValue(text)
                 self._search_field.SelectAll()
                 self._search_field.Update()
+                # and set the start position to the beginning of the editor
+                self._editor.SetAnchor(0)
+                self._editor.SetCurrentPos(0)
+                self._editor.Update()
+
             self._find()
 
     def OnFindBackwards(self, event):
