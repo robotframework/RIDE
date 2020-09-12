@@ -14,12 +14,14 @@
 #  limitations under the License.
 
 import wx
+
 from robotide import context
 from robotide.controller.ctrlcommands import UpdateVariable, UpdateDocumentation,\
     SetValues, AddLibrary, AddResource, AddVariablesFileImport, ClearSetting
 from robotide.editor.listeditor import ListEditorBase
 from robotide.publish.messages import RideImportSetting,\
-    RideOpenVariableDialog, RideExecuteSpecXmlImport, RideSaving
+    RideOpenVariableDialog, RideExecuteSpecXmlImport, RideSaving, \
+    RideVariableUpdated, RideVariableRemoved, RideVariableAdded
 from robotide.utils import overrides
 from robotide.widgets import ButtonWithHandler, Label, HtmlWindow, PopupMenu,\
     PopupMenuItems, HtmlDialog
@@ -46,7 +48,7 @@ class SettingEditor(wx.Panel):
         self._create_controls()
         self._tree = tree
         self._editing = False
-        self.plugin.subscribe(self.update_value, RideImportSetting)
+        self.plugin.subscribe(self._ps_on_update_value, RideImportSetting)
 
     def _create_controls(self):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -190,7 +192,10 @@ class SettingEditor(wx.Panel):
         self._controller.execute(ClearSetting())
         self._update_and_notify()
 
-    def update_value(self, event=None):
+    def _ps_on_update_value(self, message):
+        self.update_value()
+
+    def update_value(self):
         if self._controller is None:
             return
         if self._controller.is_set:
@@ -203,7 +208,7 @@ class SettingEditor(wx.Panel):
 
     def close(self):
         self._controller = None
-        self.plugin.unsubscribe(self.update_value, RideImportSetting)
+        self.plugin.unsubscribe(self._ps_on_update_value, RideImportSetting)
 
     def highlight(self, text):
         return self._value_display.highlight(text)
@@ -284,7 +289,7 @@ class DocumentationEditor(SettingEditor):
         ctrl.Bind(wx.EVT_LEFT_DOWN, self.OnEdit)
         return ctrl
 
-    def update_value(self, event=None):
+    def update_value(self):
         if self._controller:
             self._value_display.SetPage(self._controller.visible_value)
 
@@ -374,15 +379,15 @@ class VariablesListEditor(_AbstractListEditor):
 
     def __init__(self, parent, tree, controller):
         PUBLISHER.subscribe(
-            self._update_vars, 'ride.variable.added', key=self)
+            self._update_vars, RideVariableAdded)
         PUBLISHER.subscribe(
-            self._update_vars, 'ride.variable.updated', key=self)
+            self._update_vars, RideVariableUpdated)
         PUBLISHER.subscribe(
-            self._update_vars, 'ride.variable.removed', key=self)
-        PUBLISHER.subscribe(self._open_variable_dialog, RideOpenVariableDialog, key=self)
+            self._update_vars, RideVariableRemoved)
+        PUBLISHER.subscribe(self._open_variable_dialog, RideOpenVariableDialog)
         _AbstractListEditor.__init__(self, parent, tree, controller)
 
-    def _update_vars(self, event):
+    def _update_vars(self, message):
         ListEditor.update_data(self)
 
     def get_column_values(self, item):
@@ -424,7 +429,7 @@ class VariablesListEditor(_AbstractListEditor):
         self._open_var_dialog(var)
 
     def _open_variable_dialog(self, message):
-        # Prevent opening a dialog if self hase been destroyed
+        # Prevent opening a dialog if self has been destroyed
         if self:
             self._open_var_dialog(message.controller)
 
@@ -447,7 +452,7 @@ class VariablesListEditor(_AbstractListEditor):
             dlg.Destroy()
 
     def close(self):
-        PUBLISHER.unsubscribe_all(key=self)
+        PUBLISHER.unsubscribe_all(self)
 
 
 class ImportSettingListEditor(_AbstractListEditor):

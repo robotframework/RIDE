@@ -413,14 +413,14 @@ class RenameOccurrenceTest(unittest.TestCase):
         for listener, topic in self._listeners_and_topics:
             PUBLISHER.unsubscribe(listener, topic)
 
-    def _steps_changed(self, test):
+    def _steps_changed(self, message):
         self._steps_have_changed = True
 
     def _testcase_settings_changed(self, message):
         if self.test_ctrl == message.item:
             self._testcase_settings_have_changed = True
 
-    def _name_changed(self, data):
+    def _name_changed(self, message):
         self._name_has_changed = True
 
     def _expected_messages(self, steps_have_changed=False,
@@ -452,11 +452,11 @@ class RenameOccurrenceTest(unittest.TestCase):
     def test_notifies_only_after_transaction_complete(self):
         datas_ok = {'steps': False, 'name': False}
 
-        def name_changed_check_that_steps_have_also(data):
+        def name_changed_check_that_steps_have_also(message):
             datas_ok['steps'] = \
                 self.test_ctrl.step(2).keyword == UNUSED_KEYWORD_NAME
 
-        def steps_changed_check_that_name_has_also(data):
+        def steps_changed_check_that_name_has_also(message):
             datas_ok['name'] = any(True for i in
                                    self.test_ctrl.datafile_controller.keywords
                                    if i.name == UNUSED_KEYWORD_NAME)
