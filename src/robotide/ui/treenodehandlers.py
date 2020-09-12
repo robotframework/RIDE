@@ -524,8 +524,7 @@ class _TestOrUserKeywordHandler(_CanBeRenamed, _ActionHandler):
 class TestCaseHandler(_TestOrUserKeywordHandler):
     def __init__(self, controller, tree, node, settings):
         _TestOrUserKeywordHandler.__init__(self, controller, tree, node, settings)
-        PUBLISHER.subscribe(self.test_selection_changed, RideTestSelectedForRunningChanged,
-                            key=self)  # TODO: unsubscribe when the object is destroyed!
+        PUBLISHER.subscribe(self.test_selection_changed, RideTestSelectedForRunningChanged)
 
     _datalist = property(lambda self: self.item.datalist)
     _copy_name_dialog_class = TestCaseNameDialog
@@ -536,13 +535,14 @@ class TestCaseHandler(_TestOrUserKeywordHandler):
     def _create_rename_command(self, new_name):
         return RenameTest(new_name)
 
-    def test_selection_changed(self, message: RideTestSelectedForRunningChanged):
+    def test_selection_changed(self, message):
         if self.controller in message.tests:
             if not self.node.GetValue():
                 self._tree.CheckItem(self.node, checked=True)
         else:
             if self.node.GetValue():
                 self._tree.CheckItem(self.node, checked=False)
+
 
 class UserKeywordHandler(_TestOrUserKeywordHandler):
     is_user_keyword = True

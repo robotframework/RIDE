@@ -504,6 +504,10 @@ class SourceEditor(wx.Panel):
         return position
 
     def _show_search_results(self, position, txt):
+        # if text is found start end end of the found text is returned but we do need just starting position which is the first value
+        if type(position) is tuple:
+            position = position[0]
+
         if position != -1:
             self._editor.SetCurrentPos(position)
             self._editor.SetSelection(position, position + len(txt))
@@ -906,9 +910,9 @@ class SourceEditor(wx.Panel):
                 self._editor.SetSelection(cpos, cpos)
                 self.store_position()
 
-    def OnSettingsChanged(self, data):
+    def OnSettingsChanged(self, message):
         """Update tab size if txt spaces size setting is modified"""
-        _, setting = data.keys
+        _, setting = message.keys
         if setting == 'txt number of spaces':
             self._tab_size = self._parent._app.settings.get('txt number of spaces', 4)
 
@@ -1012,9 +1016,9 @@ class RobotStylizer(object):
         self._set_styles(self._readonly)
         PUBLISHER.subscribe(self.OnSettingsChanged, RideSettingsChanged)
 
-    def OnSettingsChanged(self, data):
+    def OnSettingsChanged(self, message):
         '''Redraw the colors if the color settings are modified'''
-        section, setting = data.keys
+        section, setting = message.keys
         if section == 'Text Edit':
             self._set_styles(self._readonly)  # TODO: When on read-only file changing background color ignores flag
 

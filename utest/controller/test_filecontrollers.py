@@ -52,11 +52,11 @@ class TestMarkUnMarkDirty(unittest.TestCase):
         if os.path.exists('path'):
             shutil.rmtree('path')
 
-    def _changes(self, payload):
-        self._has_unsaved_changes = payload.datafile
+    def _changes(self, message):
+        self._has_unsaved_changes = message.datafile
 
-    def _cleared(self, payload):
-        self._saved = payload.datafile
+    def _cleared(self, message):
+        self._saved = message.datafile
 
     def test_marking_data_dirty_publishes_data_has_changes_message(self):
         self.ctrl.mark_dirty()

@@ -54,10 +54,10 @@ class TestSearchPlugin(Plugin):
             includes, excludes, self._search_results(matcher))
         self._dialog.set_focus_to_default_location()
 
-    def show_tag_search(self, data):
+    def show_tag_search(self, message):
         if self._dialog is None:
             self._create_tests_dialog()
-        self.show_search_for_tag_patterns(data.includes, data.excludes)
+        self.show_search_for_tag_patterns(message.includes, message.excludes)
         self._dialog._select_page(1)
 
     def _create_tests_dialog(self):

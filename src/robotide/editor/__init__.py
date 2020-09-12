@@ -120,7 +120,7 @@ class EditorPlugin(Plugin, TreeAwarePluginMixin):
     def _create_editor(self):
         return self._creator.editor_for(self, self._tab, self.tree)
 
-    def OnTreeItemSelected(self, message=None):
+    def OnTreeItemSelected(self, message):
         self._show_editor()
         if not self.is_focused() and \
            not self.is_focus_on_tree_aware_plugin() and \
@@ -140,7 +140,7 @@ class EditorPlugin(Plugin, TreeAwarePluginMixin):
     def OnOpenEditor(self, event):
         self._show_editor()
 
-    def OnTabChanged(self, event):
+    def OnTabChanged(self, message):
         self._show_editor()
 
     def OnTabChanging(self, message):

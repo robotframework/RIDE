@@ -88,8 +88,8 @@ class _RobotTableEditor(EditorPanel):
         self.plugin.global_settings[self._settings_open_id] = \
             self._settings.IsExpanded()
 
-    def _settings_changed(self, data):
-        if data.item == self.controller:
+    def _settings_changed(self, message):
+        if message.item == self.controller:
             for editor in self._editors:
                 editor.update_value()
 
@@ -280,11 +280,11 @@ class _FileEditor(_RobotTableEditor):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         sizer.Add((5, 0))
         sizer.Add(Label(self, label='Source', size=(context.SETTING_LABEL_WIDTH,
-                                                    context.SETTING_ROW_HEIGTH)))
+                                                    context.SETTING_ROW_HEIGHT)))
         self._source = wx.TextCtrl(self, style=wx.TE_READONLY | wx.NO_BORDER)
         self._source.SetBackgroundColour(self.BackgroundColour)
         self._source.SetValue(source)
-        self._source.SetMaxSize(wx.Size(-1, context.SETTING_ROW_HEIGTH))
+        self._source.SetMaxSize(wx.Size(-1, context.SETTING_ROW_HEIGHT))
         sizer.Add(self._source, 1, wx.EXPAND)
         return sizer
 
