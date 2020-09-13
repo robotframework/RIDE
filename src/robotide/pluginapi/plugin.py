@@ -394,7 +394,7 @@ class Plugin(object):
         certain or all messages.
         """
         for topic in topics:
-            PUBLISHER.subscribe(listener, topic, key=self)
+            PUBLISHER.subscribe(listener, topic)
 
     def unsubscribe(self, listener, *topics):
         """Stops listening to messages with the given ``topics``.
@@ -404,11 +404,11 @@ class Plugin(object):
         match.
         """
         for topic in topics:
-            PUBLISHER.unsubscribe(listener, topic, key=self)
+            PUBLISHER.unsubscribe(listener, topic)
 
     def unsubscribe_all(self):
         """Stops to listen to all messages this plugin has subscribed to."""
-        PUBLISHER.unsubscribe_all(key=self)
+        PUBLISHER.unsubscribe_all(self)
 
     def register_editor(self, item_class, editor_class, activate=True):
         """Register ``editor_class`` as an editor class for model items of type ``item_class``

@@ -82,18 +82,18 @@ class LogPlugin(Plugin):
         self.register_action(ActionInfo(
             'Tools', 'View RIDE Log', self.OnViewLog, position=84))
 
-    def _log_message(self, log_event):
-        self._log.append(log_event)
+    def _log_message(self, message):
+        self._log.append(message)
         if self._panel:
             self._panel.update_log()
         if self.log_to_console:
-            print("".format(_message_to_string(log_event))) # >> sys.stdout, _message_to_string(log_event)
+            print("".format(_message_to_string(message)))  # >> sys.stdout, _message_to_string(message)
         if self.log_to_file:
-            self._logfile.write(_message_to_string(log_event))
+            self._logfile.write(_message_to_string(message))
             self._outfile.flush()
-        if log_event.notify_user:
+        if message.notify_user:
             font_size = 13 if context.IS_MAC else -1
-            widgets.HtmlDialog(log_event.level, log_event.message,
+            widgets.HtmlDialog(message.level, message.message,
                                padding=10, font_size=font_size).Show()
 
     def OnViewLog(self, event):

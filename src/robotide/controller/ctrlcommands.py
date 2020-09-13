@@ -420,6 +420,17 @@ class RenameResourceFile(_Command):
         return validation_result
 
 
+class SortTests(_ReversibleCommand):
+    index_difference = None
+
+    def _execute(self, context):
+        index_difference = context.sort_tests()
+        self._undo_command = RestoreTestOrder(index_difference)
+
+    def _get_undo_command(self):
+        return self._undo_command
+
+
 class SortKeywords(_ReversibleCommand):
     index_difference = None
 
@@ -429,6 +440,29 @@ class SortKeywords(_ReversibleCommand):
 
     def _get_undo_command(self):
         return self._undo_command
+
+
+class SortVariables(_ReversibleCommand):
+    index_difference = None
+
+    def _execute(self, context):
+        index_difference = context.sort_variables()
+        self._undo_command = RestoreVariableOrder(index_difference)
+
+    def _get_undo_command(self):
+        return self._undo_command
+
+
+class RestoreTestOrder(_ReversibleCommand):
+
+    def __init__(self, index_difference):
+        self._index_difference = index_difference
+
+    def _execute(self, context):
+        context.restore_test_order(self._index_difference)
+
+    def _get_undo_command(self):
+        return SortTests()
 
 
 class RestoreKeywordOrder(_ReversibleCommand):
@@ -441,6 +475,18 @@ class RestoreKeywordOrder(_ReversibleCommand):
 
     def _get_undo_command(self):
         return SortKeywords()
+
+
+class RestoreVariableOrder(_ReversibleCommand):
+
+    def __init__(self, index_difference):
+        self._index_difference = index_difference
+
+    def _execute(self, context):
+        context.restore_variable_order(self._index_difference)
+
+    def _get_undo_command(self):
+        return SortVariables()
 
 
 class _ItemCommand(_Command):
@@ -944,7 +990,7 @@ class ChangeCellValue(_StepsChangingCommand):
     def __init__(self, row, col, value):
         self._row = row
         self._col = col
-        self._value = value.replace('\n', '\\n')
+        self._value = self._escape_newlines(value)
 
     def change_steps(self, context):
         steps = context.steps
@@ -958,6 +1004,11 @@ class ChangeCellValue(_StepsChangingCommand):
         self._step(context).remove_empty_columns_from_end()
         assert self._validate_postcondition(context),'Should have correct value after change'
         return True
+
+    def _escape_newlines(self, item):
+        for newline in ('\r\n', '\n', '\r'):
+            item = item.replace(newline, '\\n')
+        return item
 
     def _validate_postcondition(self, context):
         value = self._step(context).get_value(self._col).strip()

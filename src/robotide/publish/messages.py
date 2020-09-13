@@ -16,15 +16,10 @@
 import inspect
 import sys
 import traceback
-
 from robotide import utils
 
-from robotide.publish import messagetype
-from robotide.publish import publisher
-from robotide.lib.robot.utils.compat import with_metaclass
 
-
-class RideMessage(with_metaclass(messagetype.messagetype, object)):
+class RideMessage:
     """Base class for all messages sent by RIDE.
 
     :CVariables:
@@ -39,7 +34,7 @@ class RideMessage(with_metaclass(messagetype.messagetype, object)):
         keyword arguments to `__init__` when an instance is created.
     """
 
-    topic = None  # DEBUG None
+    _topic = None
     data = []
 
     def __init__(self, **kwargs):
@@ -54,6 +49,17 @@ class RideMessage(with_metaclass(messagetype.messagetype, object)):
             raise TypeError('Argument mismatch, expected: %s' % self.data)
         self.__dict__.update(kwargs)
 
+    @classmethod
+    def topic(cls):
+        if not cls._topic:
+            cls_name = cls.__name__
+            if cls_name.endswith('Message'):
+                cls_name = cls_name[:-len('Message')]
+            topic_name = utils.printable_name(cls_name, code_style=True).replace(' ', '.')
+        else:
+            topic_name = cls._topic
+        return topic_name.lower()
+
     def publish(self):
         """Publishes the message.
 
@@ -64,16 +70,8 @@ class RideMessage(with_metaclass(messagetype.messagetype, object)):
         implementation, if any of the listeners raises an exception, subsequent
         listeners will not get the notification.
         """
-        try:
-            self._publish(self)
-        except Exception as err:
-            self._publish(RideLogException(
-                message='Error in publishing message: ' + str(err),
-                exception=err, level='ERROR'))
-            raise # DEBUG on Python3 we have a loop
-
-    def _publish(self, msg):
-        publisher.PUBLISHER.publish(msg.topic, msg)
+        from robotide.publish.publisher import PUBLISHER
+        PUBLISHER.publish(self.__class__, self)
 
 
 class RideLog(RideMessage):
@@ -457,8 +455,12 @@ class RideVariableUpdated(RideDataChanged):
 
 class RideOpenTagSearch(RideMessage):
     """ Sent we when want to open Search Tags)"""
-    data = ['includes','excludes']
+    data = ['includes', 'excludes']
 
 
-__all__ = [ name for name, cls in globals().items()
-            if inspect.isclass(cls) and issubclass(cls, RideMessage) ]
+class RideTreeAwarePluginAdded(RideMessage):
+    data = ['plugin']
+
+
+__all__ = [name for name, cls in globals().items()
+           if inspect.isclass(cls) and issubclass(cls, RideMessage)]

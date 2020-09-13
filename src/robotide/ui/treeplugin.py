@@ -151,9 +151,9 @@ class TreePlugin(Plugin):
         self.save_setting('opened', True)
         self._update_tree()
 
-    def OnTreeSelection(self, event):
+    def OnTreeSelection(self, message):
         if self.is_focused():
-            self._tree.tree_node_selected(event.item)
+            self._tree.tree_node_selected(message.item)
 
     def OnTabChanged(self, event):
         self._update_tree()
@@ -188,7 +188,6 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl):
         self._clear_tree_data()
         self._editor = None
         self._execution_results = None
-        self._resources = []
         self.SetBackgroundColour('white')  # TODO get background color from def
         if not hasattr(self, 'OnCancelEdit'):
             self.OnCancelEdit = self._on_cancel_edit
@@ -376,7 +375,6 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl):
         self._root = self.AddRoot('')
         self._resource_root = self._create_resource_root()
         self._datafile_nodes = []
-        self._resources = []
         self._controller.clear_history()
 
     def _create_resource_root(self):
@@ -398,7 +396,6 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl):
         if self._controller.find_node_by_controller(ctrl):
             return
 
-        parent = None
         if ctrl.parent:
             parent = self._get_dir_node(ctrl.parent)
         else:
@@ -434,8 +431,6 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl):
 
     def _render_datafile(self, parent_node, controller, index=None):
         node = self._create_node_with_handler(parent_node, controller, index)
-        if not node:
-            return None
         if controller.dirty:
             self._controller.mark_node_dirty(node)
         self._datafile_nodes.append(node)
@@ -445,27 +440,13 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl):
             self._render_datafile(node, child)
         return node
 
-    def _normalize(self, path):
-        return os.path.normcase(os.path.normpath(os.path.abspath(path)))
-
     def _create_node_with_handler(self, parent_node, controller, index=None):
-        if IS_WINDOWS and isinstance(controller, ResourceFileController):
-            resourcefile = self._normalize(controller.filename)
-            pname = parent_node.GetText()
-            self._resources.append((pname,resourcefile))
-            if IS_WINDOWS:
-                count = 0
-                for (p, r) in self._resources:
-                    if (p, r) == (pname, resourcefile):
-                        count += 1
-                if count > 3:
-                    return None
         handler_class = action_handler_class(controller)
         with_checkbox = (handler_class == TestCaseHandler and self._checkboxes_for_tests)
         node = self._create_node(parent_node, controller.display_name, self._images[controller],
                                  index, with_checkbox=with_checkbox)
         if isinstance(controller, ResourceFileController) and not controller.is_used():
-                self.SetItemTextColour(node, TREETEXTCOLOUR)  # wxPython3 hack
+            self.SetItemTextColour(node, TREETEXTCOLOUR)  # wxPython3 hack
         action_handler = handler_class(controller, self, node, self._controller.settings)
         self.SetPyData(node, action_handler)
 
@@ -837,7 +818,8 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl):
             if hasattr(handler.controller, 'get_namespace'):
                 data_file_ns = handler.controller.get_namespace()
                 cur_dir = handler.controller.directory
-                data_file_ns.update_cur_dir_global_var(cur_dir)
+                if data_file_ns:
+                    data_file_ns.update_cur_dir_global_var(cur_dir)
                 return
             else:
                 node = node.GetParent()
@@ -985,23 +967,23 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl):
         if handler.is_draggable:
             handler.OnMoveDown(event)
 
-    def _item_changed(self, data):
-        controller = data.item
+    def _item_changed(self, message):
+        controller = message.item
         node = self._controller.find_node_by_controller(controller)
         if node:
-            self.SetItemText(node, data.item.name)
+            self.SetItemText(node, message.item.name)
 
         if controller.dirty:
             self._controller.mark_node_dirty(
                 self._get_datafile_node(controller.datafile))
 
-    def _variable_moved_up(self, data):
-        if self._should_update_variable_positions(data):
-            self._do_action_if_datafile_node_is_expanded(self.move_up, data)
+    def _variable_moved_up(self, message):
+        if self._should_update_variable_positions(message):
+            self._do_action_if_datafile_node_is_expanded(self.move_up, message)
 
-    def _variable_moved_down(self, data):
-        if self._should_update_variable_positions(data):
-            self._do_action_if_datafile_node_is_expanded(self.move_down, data)
+    def _variable_moved_down(self, message):
+        if self._should_update_variable_positions(message):
+            self._do_action_if_datafile_node_is_expanded(self.move_down, message)
 
     def _should_update_variable_positions(self, message):
         return message.item != message.other and message.item.has_data() and \
@@ -1012,8 +994,8 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl):
             node = self._controller.find_node_by_controller(data.item)
             action(node)
 
-    def _variable_updated(self, data):
-        self._item_changed(data)
+    def _variable_updated(self, message):
+        self._item_changed(message)
 
     def highlight(self, data, text):
         self.select_node_by_data(data)

@@ -58,7 +58,7 @@ class TreeController(object):
             self._test_selection.add_tag(name)
 
     def OnClearSelected(self, event):
-        self._test_selection.clear_all()
+        self._test_selection.clear_all(message=None)
 
     def OnGoForward(self, event):
         node = self._history.forward()
@@ -188,8 +188,7 @@ class TestSelectionController(object):
     def is_test_selected(self, test):
         return test in self._tests
 
-    def clear_all(self, dummy=None):
-        # print(f"DEBUG: TestSelectionController at clear_all 2nd arg={dummy}")
+    def clear_all(self, message):
         self._tests = set()
         self._send_selection_changed_message()
 

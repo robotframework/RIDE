@@ -12,12 +12,7 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-
-from robotide.publish.messages import RideMessage
-
-
-class RideTreeAwarePluginAdded(RideMessage):
-    data = ['plugin']
+from robotide.publish.messages import RideTreeAwarePluginAdded
 
 
 class TreeAwarePluginMixin(object):
@@ -60,7 +55,7 @@ class TreeAwarePluginMixin(object):
     def remove_tree_aware_plugin(self, other):
         self._tree_aware_plugins.remove(other)
 
-    def _tree_aware_plugin_added(self, message=None):
+    def _tree_aware_plugin_added(self, message):
         self.add_tree_aware_plugin(message.plugin)
         message.plugin.add_tree_aware_plugin(self)
 

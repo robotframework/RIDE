@@ -14,8 +14,7 @@
 #  limitations under the License.
 
 import os
-import sys
-
+from robotide.context import IS_FS_CASE_SENSITIVE
 from robotide import utils, robotapi
 
 
@@ -76,12 +75,12 @@ class ResourceFactory(object):
     def _get_resource(self, path, report_status):
         normalized = self._normalize(path)
         if self.check_path_from_excludes(
-                path) or self.check_path_from_excludes(normalized):
+                normalized) or self.check_path_from_excludes(normalized):
             return None
         if normalized not in self.cache:
             try:
                 self.cache[normalized] = \
-                    self._load_resource(path, report_status=report_status)
+                    self._load_resource(normalized, report_status=report_status)
             except Exception as e:
                 # print("DEBUG Resource Factory: exception %s" % str(e))
                 self.cache[normalized] = None
@@ -96,4 +95,20 @@ class ResourceFactory(object):
         return r
 
     def _normalize(self, path):
-        return os.path.normcase(os.path.normpath(os.path.abspath(path)))
+        path = os.path.normcase(os.path.normpath(os.path.abspath(path)))
+        if not IS_FS_CASE_SENSITIVE:
+            # if file system is not case sensitive
+            # user input may use different case in path with the real path
+            # replace to the real path
+            from robotide.context import APP
+            if APP:
+                workspace_path = APP.workspace_path
+                if workspace_path and os.path.exists(workspace_path):
+                    if os.path.isfile(workspace_path):
+                        workspace_path = os.path.dirname(workspace_path)
+                    for root, dirs, files in os.walk(workspace_path):
+                        for name in files:
+                            real_path_with_correct_case = os.path.join(root, name)
+                            if real_path_with_correct_case.lower() == path.lower():
+                                return real_path_with_correct_case
+        return path
