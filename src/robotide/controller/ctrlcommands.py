@@ -18,10 +18,10 @@ import re
 import time
 from itertools import chain
 
-from . import filecontrollers
+# from .filecontrollers import ResourceFileController
 # ResourceFileController
-from . import macrocontrollers
-# import KeywordNameController, ForLoopStepController, TestCaseController
+# from . import macrocontrollers
+# from .macrocontrollers import KeywordNameController, ForLoopStepController, TestCaseController
 from . import settingcontrollers
 # import _SettingController, VariableController
 from . import tablecontrollers
@@ -89,13 +89,17 @@ class Occurrence(object):
         return isinstance(self._item, tablecontrollers.VariableTableController)
 
     def _in_kw_name(self):
-        return isinstance(self._item, macrocontrollers.KeywordNameController)
+        from .macrocontrollers import KeywordNameController
+
+        return isinstance(self._item, KeywordNameController)
 
     def _in_steps(self):
         return not (self._in_settings() or self._in_kw_name())
 
     def _in_for_loop(self):
-        return isinstance(self._item.parent, macrocontrollers.ForLoopStepController)
+        from .macrocontrollers import ForLoopStepController
+
+        return isinstance(self._item.parent, ForLoopStepController)
 
     def replace_keyword(self, new_name):
         self._item.replace_keyword(*self._get_replace_values(new_name))
@@ -734,7 +738,9 @@ class FindVariableOccurrences(FindOccurrences):
         yield df.variables
 
     def _items_from_controller(self, ctrl):
-        if isinstance(ctrl, macrocontrollers.TestCaseController):
+        from .macrocontrollers import TestCaseController
+
+        if isinstance(ctrl, TestCaseController):
             return self._items_from_test(ctrl)
         else:
             return self._items_from_keyword(ctrl)
@@ -803,9 +809,11 @@ class FindVariableOccurrences(FindOccurrences):
 
     @staticmethod
     def _get_all_where_used(context):
+        from .filecontrollers import ResourceFileController
+
         files = [context.datafile_controller]
         for f in files:
-            if isinstance(f, filecontrollers.ResourceFileController):
+            if isinstance(f, ResourceFileController):
                 files += [imp.datafile_controller
                           for imp in f.get_where_used()]
         return files

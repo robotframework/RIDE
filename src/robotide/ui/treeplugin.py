@@ -22,7 +22,7 @@ from wx.lib.agw.aui import GetManager
 from wx.lib.agw.customtreectrl import GenericTreeItem
 from wx.lib.mixins import treemixin
 
-from ..controller.macrocontrollers import TestCaseController
+# from ..controller.macrocontrollers import TestCaseController
 
 TREETEXTCOLOUR = Colour(0xA9, 0xA9, 0xA9)
 

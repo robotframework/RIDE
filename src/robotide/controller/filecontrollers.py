@@ -19,8 +19,6 @@ import stat
 import sys
 from itertools import chain
 
-from . import ctrlcommands
-
 try:
     import subprocess32 as subprocess
 except ImportError:
@@ -293,10 +291,12 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
         return False
 
     def set_basename(self, basename):
+        from .ctrlcommands import SaveFile
+
         old_file = self.filename
         self.data.source = os.path.join(self.directory, '%s.%s' % (basename, self.get_format()))
         self.filename = self.data.source
-        self.execute(ctrlcommands.SaveFile())
+        self.execute(SaveFile())
         if old_file != self.filename:
             self.remove_from_filesystem(old_file)
 

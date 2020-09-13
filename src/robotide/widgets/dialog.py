@@ -18,8 +18,7 @@ import webbrowser
 import wx
 from wx import html, Colour
 
-from . import htmlwindow, sizers
-from wx import Colour
+from . import sizers
 
 # TODO: Make this colour configurable
 # HTML_BACKGROUND = (240, 242, 80)  # (200, 222, 40)

@@ -21,7 +21,7 @@ from wx.lib.filebrowsebutton import DirBrowseButton
 from ..controller.ctrlcommands import (CreateNewResource, AddTestDataDirectory, AddTestCaseFile,
                                        CreateNewDirectoryProject, CreateNewFileProject, SetFileFormat,
                                        SetFileFormatRecuresively)
-from ..controller.filecontrollers import ResourceFileController
+# from ..controller.filecontrollers import ResourceFileController
 from ..utils import overrides
 from ..validators import NonEmptyValidator, NewSuitePathValidator, SuiteFileNameValidator
 from ..widgets import Label, RIDEDialog
@@ -86,6 +86,8 @@ class _CreationDialog(RIDEDialog):
         return self._create_radiobuttons(sizer, "Type", ["File", "Directory"])
 
     def _create_format_chooser(self, sizer, callback=True):
+        from ..controller.filecontrollers import ResourceFileController
+
         formats = list(self.formats)
         if (hasattr(self, '_controller') and
             isinstance(self._controller, ResourceFileController)) or\
