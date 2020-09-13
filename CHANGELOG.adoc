@@ -11,9 +11,9 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Added
 
-- Added menu option to `Move Up` and `Move Down` variables in Tree
-- Added menu option to `Sort Variables` in resources from Tree 
-- Added menu option to `Sort Tests` and `Sort Variables` in suites from Tree
+- Added menu option to ``Move Up`` and ``Move Down`` variables in Tree
+- Added menu option to ``Sort Variables`` in resources from Tree 
+- Added menu option to ``Sort Tests`` and ``Sort Variables` in suites from Tree
 - Added menu icons (visible on most operating systems)
 - Added RIDE application dock icon on MacOS
 - Added selection of keyword suggestion with TAB key on Text Editor
@@ -35,6 +35,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Changed
 
+- Modified robot passed and failed icons to be easier to differentiate
 - When searching in Text Editor by using Ctrl-G the search is done from the begining of text
 - On MacOS, grid cell will not lose focus anymore when mouse is moving outside of the cell's boundary
 - Changed moving to keyword definition to be with Ctrl-Click (keep Ctrl-B action)
