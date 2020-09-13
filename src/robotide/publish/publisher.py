@@ -73,10 +73,6 @@ class _Publisher:
         _listener_filter = _listener_filter if obj is not None else None
         self._publisher.unsubAll(listenerFilter=_listener_filter)
 
-    def _get_topic(self, topic):
-        if not isinstance(topic, str):
-            topic = topic.topic
-        return topic.lower()
 
 class ListenerExceptionHandler(pub.IListenerExcHandler):
 
