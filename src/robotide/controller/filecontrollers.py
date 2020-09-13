@@ -233,19 +233,47 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
         else:
             self.variables.add_variable(item.name, item.value, item.comment)
 
+    def sort_tests(self):
+        if self.tests:
+            index_difference = self.tests.sort()
+            self.mark_dirty()
+            RideDataFileSet(item=self).publish()
+            return index_difference
+        return None
+
     def sort_keywords(self):
         if self.keywords:
             index_difference = self.keywords.sort()
             self.mark_dirty()
-            RideDataFileSet(item=self).publish() #TODO: Use a more gentle message
+            RideDataFileSet(item=self).publish()
             return index_difference
         return None
+
+    def sort_variables(self):
+        if self.variables:
+            index_difference = self.variables.sort()
+            self.mark_dirty()
+            RideDataFileSet(item=self).publish()
+            return index_difference
+        return None
+
+    def restore_test_order(self, index_difference):
+        if self.tests and index_difference:
+            self.tests.restore_test_order(index_difference)
+            self.mark_dirty()
+            RideDataFileSet(item=self).publish()
 
     def restore_keyword_order(self, index_difference):
         if self.keywords and index_difference:
             self.keywords.restore_keyword_order(index_difference)
             self.mark_dirty()
-            RideDataFileSet(item=self).publish() #TODO: Use a more gentle message
+            RideDataFileSet(item=self).publish()
+
+    def restore_variable_order(self, index_difference):
+        if self.variables and index_difference:
+            self.variables.restore_variable_order(index_difference)
+            self.mark_dirty()
+            RideDataFileSet(item=self).publish()
 
     def get_keyword_names(self):
         if self.keywords:

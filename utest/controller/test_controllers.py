@@ -45,6 +45,7 @@ class _FakeParent(_FakeProject):
         self.force_tags = ForceTagsController(self, Tags('Force Tags'))
         self.default_tags = DefaultTagsController(self, Tags('Default Tags'))
         self._setting_table = self
+
     def mark_dirty(self):
         self.dirty = True
 
@@ -404,12 +405,34 @@ class VariablesControllerTest(unittest.TestCase):
         self.ctrl = VariableTableController(TestCaseFileController(self.tcf),
                                             self.tcf.variable_table)
 
-    def _add_var(self, name, value):
-        self.tcf.variable_table.add(name, value)
-
     def test_creation(self):
         assert_equal(self.ctrl[0].name, '${foo}')
         assert_equal(self.ctrl[1].name, '@{bar}')
+
+    def test_move_up(self):
+        self.ctrl.move_up(1)
+        assert_true(self.ctrl.dirty)
+        assert_equal(self.ctrl[0].name, '@{bar}')
+        assert_equal(self.ctrl[1].name, '${foo}')
+
+    def test_move_down(self):
+        self.ctrl.move_down(0)
+        assert_true(self.ctrl.dirty)
+        assert_equal(self.ctrl[0].name, '@{bar}')
+        assert_equal(self.ctrl[1].name, '${foo}')
+
+    def test_moving_first_item_up_does_nothing(self):
+        self.ctrl.move_up(0)
+        assert_false(self.ctrl.dirty)
+        assert_equal(self.ctrl[0].name, '${foo}')
+
+    def test_moving_last_item_down_does_nothing(self):
+        self.ctrl.move_down(1)
+        assert_false(self.ctrl.dirty)
+        assert_equal(self.ctrl[1].name, '@{bar}')
+
+    def _add_var(self, name, value):
+        self.tcf.variable_table.add(name, value)
 
     def test_adding_scalar(self):
         self.ctrl.add_variable('${blaa}', 'value')
