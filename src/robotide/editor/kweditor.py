@@ -887,7 +887,7 @@ work.</li>
                                        self.selection.cell[1],
                                        json.dumps(strJson,
                                                   ensure_ascii=False))
-            except ValueError or json.JSONDecodeError as e:
+            except (ValueError, json.JSONDecodeError) as e:
                 res = wx.MessageDialog(dialog,
                                        "Error in JSON: {}\n\n"
                                        "Save anyway?".format(e),

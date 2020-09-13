@@ -19,6 +19,7 @@ import wx
 from wx import html, Colour
 
 from . import sizers
+# from ..preferences import RideSettings
 
 # TODO: Make this colour configurable
 # HTML_BACKGROUND = (240, 242, 80)  # (200, 222, 40)

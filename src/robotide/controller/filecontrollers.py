@@ -18,7 +18,6 @@ import shutil
 import stat
 import sys
 from itertools import chain
-
 try:
     import subprocess32 as subprocess
 except ImportError:

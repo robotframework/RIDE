@@ -16,7 +16,6 @@
 import locale
 import os
 import wx
-
 locale.setlocale(locale.LC_ALL, 'C')
 
 from contextlib import contextmanager

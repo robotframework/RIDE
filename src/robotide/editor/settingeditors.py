@@ -47,7 +47,6 @@ from .editordialogs import EditorDialog, DocumentationDialog, MetadataDialog,\
 from .listeditor import ListEditor
 from .popupwindow import HtmlPopupWindow
 from .tags import TagsDisplay
-from wx import Colour
 
 
 class SettingEditor(wx.Panel):
