@@ -32,9 +32,16 @@ class SpecImporterPlugin(Plugin):
     def enable(self):
         self.register_action(ActionInfo('Tools', self.HEADER,
                                         self.execute_spec_import, position=83))
-        PUBLISHER.subscribe(self.execute_spec_import, RideExecuteSpecXmlImport)
+        PUBLISHER.subscribe(self._ps_on_execute_spec_import, RideExecuteSpecXmlImport)
 
-    def execute_spec_import(self, event=None):
+    def disable(self):
+        self.unsubscribe_all()
+        self.unregister_actions()
+
+    def _ps_on_execute_spec_import(self, message):
+        self.execute_spec_import()
+
+    def execute_spec_import(self):
         path = self._get_path_to_library_spec()
         if self._is_valid_path(path):
             self._store_spec(path)

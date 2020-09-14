@@ -189,7 +189,6 @@ class _ViewAllTagsDialog(ViewAllTagsDialog):
 class _BaseSuiteTreeTest(unittest.TestCase):
 
     def setUp(self):
-        # frame = _FakeMainFrame()
         settings = FakeSettings()
         self.app = wx.App()
         self.frame = wx.Frame(None)

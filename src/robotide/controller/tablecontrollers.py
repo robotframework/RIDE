@@ -62,6 +62,18 @@ class _TableController(ControllerWithParent):
         self._parent = parent_controller
         self._table = table
 
+    def _index_difference(self, original_list, sorted_list):
+        """Determines the difference in sorting order for undo/redo"""
+        index_difference = []
+        for item in original_list:
+            counter = 0
+            for item2 in sorted_list:
+                if item.name == item2.name:
+                    index_difference.append(counter)
+                    break
+                counter += 1
+        return index_difference
+
 
 class VariableTableController(_TableController, _WithListOperations):
 
@@ -88,6 +100,8 @@ class VariableTableController(_TableController, _WithListOperations):
         return self._table.variables
 
     def move_up(self, index):
+        if index == 0:
+            return False
         ctrl = self[index]
         _WithListOperations.move_up(self, index)
         other = self[index]
@@ -95,6 +109,8 @@ class VariableTableController(_TableController, _WithListOperations):
         RideVariableMovedUp(item=ctrl, other=other).publish()
 
     def move_down(self, index):
+        if index + 1 == len(self._items):
+            return False
         ctrl = self[index]
         _WithListOperations.move_down(self, index)
         other = self[index]
@@ -146,6 +162,20 @@ class VariableTableController(_TableController, _WithListOperations):
             vars_as_list += var.as_list()
         return any(variablematcher.value_contains_variable(string, name)
                    for string in vars_as_list)
+
+    def sort(self):
+        """Sorts the variables of the controller by name"""
+        variables_sorted = sorted(self._table.variables, key=lambda variable: variable.name)
+        index_difference = self._index_difference(self._table.variables, variables_sorted)
+        self._table.variables = variables_sorted
+        return index_difference
+
+    def restore_variable_order(self, list):
+        """Restores the old order of the variable list"""
+        variables_temp = []
+        for i in list:
+            variables_temp.append(self._table.variables[i])
+        self._table.variables = variables_temp
 
 
 class _ScalarVarValidator(object):
@@ -305,6 +335,20 @@ class TestCaseTableController(_MacroTable):
     def new(self, name):
         return self._create_new(name)
 
+    def sort(self):
+        """Sorts the tests of the controller by name"""
+        tests_sorted = sorted(self._table.tests, key=lambda testcase: testcase.name)
+        index_difference = self._index_difference(self._table.tests, tests_sorted)
+        self._table.tests = tests_sorted
+        return index_difference
+
+    def restore_test_order(self, list):
+        """Restores the old order of the test list"""
+        tests_temp = []
+        for i in list:
+            tests_temp.append(self._table.tests[i])
+        self._table.tests = tests_temp
+
 
 class KeywordTableController(_MacroTable):
     item_type = 'User keyword'
@@ -334,18 +378,6 @@ class KeywordTableController(_MacroTable):
         keywords_sorted = sorted(self._table.keywords, key=lambda userkeyword: userkeyword.name)
         index_difference = self._index_difference(self._table.keywords, keywords_sorted)
         self._table.keywords = keywords_sorted
-        return index_difference
-
-    def _index_difference(self, original_list, sorted_list):
-        """Determines the difference in sorting order for undo/redo"""
-        index_difference = []
-        for kw in original_list:
-            counter = 0
-            for kw2 in sorted_list:
-                if kw.name == kw2.name:
-                    index_difference.append(counter)
-                    break
-                counter += 1
         return index_difference
 
     def restore_keyword_order(self, list):

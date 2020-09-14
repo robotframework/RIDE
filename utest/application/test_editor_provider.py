@@ -14,7 +14,6 @@
 #  limitations under the License.
 
 import unittest
-
 from nose.tools import assert_equal, assert_raises
 
 from robotide.application.editorprovider import EditorProvider

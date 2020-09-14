@@ -17,6 +17,7 @@ import unittest
 from utest.resources import datafilereader
 from nose.tools import assert_equal
 from robotide.usages.commands import FindResourceUsages
+from robotide.publish import PUBLISHER
 
 
 class ResourceUsageTests(unittest.TestCase):
@@ -25,6 +26,7 @@ class ResourceUsageTests(unittest.TestCase):
     # This is for performance reasons but be warned when you add tests!
     @classmethod
     def setUpClass(cls):
+        PUBLISHER.unsubscribe_all()
         cls.ctrl = datafilereader.construct_project(datafilereader.SIMPLE_TEST_SUITE_PATH)
         cls.ts1 = datafilereader.get_ctrl_by_name('TestSuite1', cls.ctrl.datafiles)
         cls.ts2 = datafilereader.get_ctrl_by_name('TestSuite2', cls.ctrl.datafiles)
@@ -64,6 +66,7 @@ class ResourceUsageTests(unittest.TestCase):
     def test_none_existing_import(self):
         imp = self.ts1.imports.add_resource('this_does_not_exists.txt')
         assert_equal(imp.get_imported_controller(), None)
+
 
 if __name__ == '__main__':
     unittest.main()

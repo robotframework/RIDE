@@ -76,9 +76,9 @@ class TestCaseCommandTest(unittest.TestCase, _FakeProject):
     def _exec(self, command):
         return self._ctrl.execute(command)
 
-    def _test_changed(self, data):
+    def _test_changed(self, message):
         self._number_of_test_changes += 1
-        self._steps = data.item.steps
+        self._steps = message.item.steps
 
     def _verify_step_unchanged(self, step_data):
         row = self._data_row(step_data)

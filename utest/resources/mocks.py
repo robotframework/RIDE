@@ -128,21 +128,21 @@ class _FakeSetting(object):
 
 class PublisherListener(object):
     def __init__(self, topic):
-        PUBLISHER.subscribe(self._listener, topic, self)
+        PUBLISHER.subscribe(self._listener, topic)
         self._topic = topic
         self.data = []
         self.outer_listener = lambda message: 0
 
-    def _listener(self, data):
-        self.data.append(data)
-        self.outer_listener(data)
+    def _listener(self, message):
+        self.data.append(message)
+        self.outer_listener(message)
 
     @property
     def count(self):
         return len(self.data)
 
     def unsubscribe(self):
-        PUBLISHER.unsubscribe(self._listener, self._topic, self)
+        PUBLISHER.unsubscribe(self._listener, self._topic)
 
 
 class FakeEditor(object):

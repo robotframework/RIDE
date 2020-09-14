@@ -28,13 +28,13 @@ class TestRenameTestCaseFile(unittest.TestCase):
     _filenames_to_remove = []
 
     def setUp(self):
-        PUBLISHER.subscribe(self._file_name_changed, RideFileNameChanged, "TestRenameTestCaseFile")
-        PUBLISHER.subscribe(self._file_name_error, RideInputValidationError, "TestRenameTestCaseFile")
+        PUBLISHER.subscribe(self._file_name_changed, RideFileNameChanged)
+        PUBLISHER.subscribe(self._file_name_error, RideInputValidationError)
         self._clean_test_files(["quux.txt","some.txt"])
 
     def tearDown(self):
         self._clean_test_files()
-        PUBLISHER.unsubscribe_all("TestRenameTestCaseFile")
+        PUBLISHER.unsubscribe_all(self)
 
     def _clean_test_files(self, paths = None):
         for filename in paths if paths else self._filenames_to_remove:

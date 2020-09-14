@@ -103,7 +103,7 @@ class KeywordEditor(GridEditor):
         PUBLISHER.subscribe(self._before_saving, RideBeforeSaving)
         PUBLISHER.subscribe(self._data_changed, RideItemStepsChanged)
         PUBLISHER.subscribe(self.OnSettingsChanged, RideSettingsChanged)
-        PUBLISHER.subscribe(self._resize_grid, RideSaved)
+        PUBLISHER.subscribe(self._ps_on_resize_grid, RideSaved)
 
     def _namespace_updated(self):
         if not self._updating_namespace:
@@ -119,8 +119,11 @@ class KeywordEditor(GridEditor):
         finally:
             self._updating_namespace = False
 
+    def _ps_on_resize_grid(self, message):
+        self._resize_grid()
+
     @requires_focus
-    def _resize_grid(self, event=None):
+    def _resize_grid(self):
         if self.settings.get("auto size cols", True):
             self.AutoSizeColumns(False)
         if self.settings.get("word wrap", True):
@@ -192,9 +195,9 @@ class KeywordEditor(GridEditor):
         cell_info = self._controller.get_cell_info(cell.Row, cell.Col)
         return TipMessage(cell_info)
 
-    def OnSettingsChanged(self, data):
-        '''Redraw the colors if the color settings are modified'''
-        section, setting = data.keys
+    def OnSettingsChanged(self, message):
+        """Redraw the colors if the color settings are modified"""
+        section, setting = message.keys
         if section == 'Grid':
             if 'font' in setting:
                 self._set_fonts(update_cells=True)
@@ -360,7 +363,7 @@ class KeywordEditor(GridEditor):
                 return
         event.Skip()
 
-    def _before_saving(self, data):
+    def _before_saving(self, message):
         if self.IsCellEditControlShown():
             # Fix: cannot save modifications in edit mode
             # Exit edit mode before saving
@@ -368,9 +371,9 @@ class KeywordEditor(GridEditor):
             self.SaveEditControlValue()
             self.SetFocus()
 
-    def _data_changed(self, data):
-        if self._controller == data.item:
-            self._write_steps(data.item)
+    def _data_changed(self, message):
+        if self._controller == message.item:
+            self._write_steps(message.item)
 
     def _write_steps(self, controller):
         data = []

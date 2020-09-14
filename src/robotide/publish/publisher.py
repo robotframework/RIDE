@@ -13,97 +13,79 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-try:
-    from pubsub import Publisher
-    WxPublisher = Publisher()
-except ImportError:
-    from pubsub import pub
-    WxPublisher = pub.getDefaultPublisher()
+import inspect
+from pubsub import pub
+from typing import Type, Callable
+from robotide.publish.messages import RideMessage
 
 
-class Publisher(object):
+class _Publisher:
 
     def __init__(self):
-        self._listeners = {}
+        self._publisher = pub.getDefaultPublisher()
+        self._publisher.setListenerExcHandler(ListenerExceptionHandler())
 
-    def publish(self, topic, data):
-        self._sendMessage(topic, data)
+    @staticmethod
+    def _get_topic(topic_cls: Type[RideMessage]) -> str:
+        if inspect.isclass(topic_cls) and issubclass(topic_cls, RideMessage):
+            return topic_cls.topic()
+        raise TypeError('Expected topic type {}, actual {}.'.format(RideMessage, topic_cls))
 
-    def subscribe(self, listener, topic, key=None):
-        """Start to listen to messages with the specified ``topic``.
+    @staticmethod
+    def _validate_listener(listener: Callable):
+        sig = inspect.signature(listener)
+        params = sig.parameters
+        error_msg = 'only 1 required param (message) is expected.'
+        assert len(params) == 1, 'Too many listener params, ' + error_msg
+        assert str(list(params.values())[0]) == 'message', 'Invalid listener param, ' + error_msg
 
-        The ``topic`` can be either a message class or a dot separated topic
-        string, and the ``listener`` must be a callable accepting a message
-        instance. See the generic documentation of the `robotide.publish`
-        module for more details.
+    def subscribe(self, listener: Callable, topic: Type[RideMessage]):
+        """ The listener's param signature must be (message) """
+        self._validate_listener(listener)
+        self._publisher.subscribe(listener, self._get_topic(topic))
 
-        The ``key`` is used for keeping a reference of the listener so that
-        all listeners with the same key can be unsubscribed at once using
-        ``unsubscribe_all``.
+    def publish(self, topic: Type[RideMessage], message):
+        """ All subscribed listeners' param signatures have been guaranteed """
+        self._publisher.sendMessage(self._get_topic(topic), message=message)
+
+    def unsubscribe(self, listener: Callable, topic: Type[RideMessage]):
+        self._publisher.unsubscribe(listener, self._get_topic(topic))
+
+    def unsubscribe_all(self, obj=None):
+        """ If the given object's:
+
+            1. object method
+            2. class static function
+            3. class function
+
+            is subscribed into PUBLISHER, call this method to unsubscribe all its topics.
+
+            Unsubscribe all topics when input is None.
         """
-        wrapper = _ListenerWrapper(listener, topic)
-        self._listeners.setdefault(key, []).append(wrapper)
 
-    def _sendMessage(self, topic, data):
-        current_wrappers = self._listeners.values()
-        for wrappers in list(current_wrappers):  # DEBUG
-            for wrapper in wrappers:
-                if wrapper.listens(topic):
-                    wrapper(data)
+        def _listener_filter(listener):
+            _callable = listener.getCallable()
+            functions = [func for _, func in inspect.getmembers(obj, inspect.isfunction)]
+            methods = [method for _, method in inspect.getmembers(obj, inspect.ismethod)]
+            if _callable in functions or _callable in methods:
+                return True
 
-    def unsubscribe(self, listener, topic, key=None):
-        """Stop listening for messages with the specified ``topic``.
-
-        The ``topic``, the ``listener``, and the ``key`` must match the
-        values passed to `subscribe` earlier.
-        """
-        for wrapper in self._listeners[key]:
-            if wrapper.wraps(listener, topic):
-                wrapper.unsubscribe()
-                self._listeners[key].remove(wrapper)
-                break
-
-    def unsubscribe_all(self, key=None):
-        """Unsubscribe all listeners registered with the given ``key``"""
-        for wrapper in self._listeners[key]:
-            wrapper.unsubscribe()
-        del self._listeners[key]
+        _listener_filter = _listener_filter if obj is not None else None
+        self._publisher.unsubAll(listenerFilter=_listener_filter)
 
 
-class _ListenerWrapper(object):
+class ListenerExceptionHandler(pub.IListenerExcHandler):
 
-    def __init__(self, listener, topic):
-        self.listener = listener
-        self.topic = self._get_topic(topic)
-        WxPublisher.subscribe(self, self.topic)
-
-    def _get_topic(self, topic):
-        if not isinstance(topic, str):
-            topic = topic.topic
-        return topic.lower()
-
-    def wraps(self, listener, topic):
-        return self.listener == listener and self.topic == self._get_topic(topic)
-
-    def listens(self, topic):
-        return self._get_topic(topic).startswith(self.topic)
-
-    def unsubscribe(self):
-        WxPublisher.unsubscribe(self, self.topic)
-
-    def __call__(self, data):
+    def __call__(self, listenerID: str, topicObj: pub.Topic):
         from .messages import RideLogException
-        try:
-            # print(f"DEBUG: Publisher  Listerner data is {str(data)}")
-            self.listener(data)
-        except Exception as err:
-            # Prevent infinite recursion if RideLogMessage listener is broken,
-            if not isinstance(data, RideLogException):
-                RideLogException(message='Error in listener: %s\n' \
-                                         'While handling %s' % (str(err),
-                                                                str(data)),
-                                 exception=err, level='ERROR').publish()
+        from robotide.context import LOG
+        topic_name = topicObj.getName()
+        if topic_name != RideLogException.topic():
+            error_msg = 'Error in listener: {}, topic: {}'.format(listenerID, topic_name)
+            LOG.error(error_msg)
+            RideLogException(message=error_msg,
+                             exception=None, level='ERROR').publish()
 
 
-"""Global `Publisher` instance for subscribing to and unsubscribing from messages."""
-PUBLISHER = Publisher()
+"""Global `Publisher` instance for subscribing to and unsubscribing from RideMessages."""
+PUBLISHER = _Publisher()
