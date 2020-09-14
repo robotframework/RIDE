@@ -41,7 +41,7 @@ TREE_THRESHOLD = 5
 class PreferenceEditor(wx.Dialog):
     """A dialog for showing the preference panels"""
     def __init__(self, parent, title, preferences, style="auto"):
-        wx.Dialog.__init__(self, parent, wx.ID_ANY, title, size=(850, 660),
+        wx.Dialog.__init__(self, parent, wx.ID_ANY, title, size=(850, 700),
                            style=wx.RESIZE_BORDER | wx.DEFAULT_DIALOG_STYLE)
         # set Left to Right direction (while we don't have localization)
         self.SetLayoutDirection(wx.Layout_LeftToRight)

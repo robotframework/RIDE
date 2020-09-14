@@ -186,6 +186,8 @@ class GridEditorPreferences(EditorPreferences):
         sizer.Add(self._number_editor(settings, 'max col size'))
         sizer.AddMany(widgets.boolean_editor(
             self, settings, 'word wrap', 'Word wrap and auto size rows'))
+        sizer.AddMany(widgets.boolean_editor(
+            self, settings, 'disable auto suggestions', 'Only trigger auto suggestions from shortcuts'))
         return sizer
 
     def _label_for(self, name):

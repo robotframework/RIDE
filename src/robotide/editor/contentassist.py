@@ -23,8 +23,12 @@ from robotide.namespace.suggesters import SuggestionSource
 from robotide.spec.iteminfo import VariableInfo
 from sys import platform
 from .popupwindow import RidePopupWindow, HtmlPopupWindow
+from ..publish import PUBLISHER
+from ..publish.messages import RideSettingsChanged
+
 
 _PREFERRED_POPUP_SIZE = (400, 200)
+_AUTO_SUGGESTION_CFG_KEY = "disable auto suggestions"
 
 
 class _ContentAssistTextCtrlBase(wx.TextCtrl):
@@ -43,6 +47,20 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
         # later after search is performed
         if IS_MAC:
             self.OSXDisableAllSmartSubstitutions()
+        self._is_auto_suggestion_disabled = self._get_auto_suggestion_config()
+        PUBLISHER.subscribe(self.OnSettingsChanged, RideSettingsChanged)
+
+    @staticmethod
+    def _get_auto_suggestion_config():
+        settings = wx.GetApp().settings['Grid']
+        return settings.get(_AUTO_SUGGESTION_CFG_KEY, False)
+
+    def OnSettingsChanged(self, message):
+        """Redraw the colors if the color settings are modified"""
+        section, setting = message.keys
+        if section == 'Grid':
+            if _AUTO_SUGGESTION_CFG_KEY in setting:
+                self._is_auto_suggestion_disabled = setting.get(_AUTO_SUGGESTION_CFG_KEY, False)
 
     def set_row(self, row):
         self._row = row
@@ -76,7 +94,8 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
         keychar = event.GetUnicodeKey()
         # show content assist without shortcut
         if keychar != wx.WXK_RETURN:
-            self.show_content_assist()
+            if not self._is_auto_suggestion_disabled:
+                self.show_content_assist()
         if keychar == wx.WXK_NONE:
             event.Skip()
             return
