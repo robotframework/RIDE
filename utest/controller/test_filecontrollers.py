@@ -22,7 +22,7 @@ from nose.tools import (assert_equal, assert_true, assert_false)
 
 from robotide.controller.filecontrollers import TestCaseFileController, \
     TestDataDirectoryController, _FileSystemElement
-from robotide.controller.tablecontrollers import TestCaseController
+from robotide.controller.macrocontrollers import TestCaseController
 from robotide.controller.ctrlcommands import AddTestCaseFile, AddTestDataDirectory,\
     SortKeywords, SortTests, SortVariables, Undo, Redo
 from robotide.publish import PUBLISHER
