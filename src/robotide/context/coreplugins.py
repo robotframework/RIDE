@@ -28,5 +28,5 @@ def get_core_plugins():
     from robotide.spec.specimporter import SpecImporterPlugin
     from robotide.postinstall.desktopshortcut import ShortcutPlugin
 
-    return [RunAnything, RecentFilesPlugin, PreviewPlugin, SpecImporterPlugin, EditorPlugin, TextEditorPlugin,
-            KeywordSearch, LogPlugin, TestSearchPlugin, ShortcutPlugin, ParserLogPlugin, TreePlugin, FileExplorerPlugin]
+    return [LogPlugin, RunAnything, RecentFilesPlugin, PreviewPlugin, SpecImporterPlugin, EditorPlugin, TextEditorPlugin,
+            KeywordSearch, TestSearchPlugin, ShortcutPlugin, ParserLogPlugin, TreePlugin, FileExplorerPlugin]

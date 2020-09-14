@@ -338,10 +338,10 @@ class SourceEditor(wx.Panel):
         self._title = title
         self._tab_size = self._parent._app.settings.get(
                       'txt number of spaces', 4)
+        self._position = None
         self._create_ui(title)
         self._data = None
         self._dirty = 0  # 0 is False and 1 is True, when changed on this editor
-        self._position = None
         self._showing_list = False
         self._tab_open = None
         # self._autocomplete = None
