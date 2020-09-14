@@ -13,6 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import sys
 import inspect
 from pubsub import pub
 from typing import Type, Callable
@@ -81,8 +82,10 @@ class ListenerExceptionHandler(pub.IListenerExcHandler):
         topic_name = topicObj.getName()
         if topic_name != RideLogException.topic():
             error_msg = 'Error in listener: {}, topic: {}'.format(listenerID, topic_name)
-            RideLogException(message=error_msg,
-                             exception=None, level='ERROR').publish()
+            log_message = RideLogException(message=error_msg,
+                                           exception=None, level='ERROR')
+            sys.stderr.write(log_message.__getattribute__('message'))
+            log_message.publish()
 
 
 """Global `Publisher` instance for subscribing to and unsubscribing from RideMessages."""
