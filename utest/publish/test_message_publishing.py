@@ -240,7 +240,7 @@ class TestPublisher(unittest.TestCase):
         PUBLISHER.publish(RideTestMessageWithAttrs, 'test')
         assert_equal(len(TestPublisher.cls_msgs), 4 * 2)
 
-    @patch('robotide.context.LOG.error')
+    @patch('sys.stderr.write')
     def test_subscribe_broken_listener(self, p_log):
         PUBLISHER.subscribe(self._broken_listener, RideTestMessageWithAttrs)
         msg_obj = RideTestMessageWithAttrs(foo='one', bar='two')
@@ -248,7 +248,7 @@ class TestPublisher(unittest.TestCase):
         assert_equal(self._msg, msg_obj)
         p_log.assert_called_once()
 
-    @patch('robotide.context.LOG.error')
+    @patch('sys.stderr.write')
     def test_subscribe_broken_listener_ride_log(self, p_log):
         PUBLISHER.subscribe(self._broken_listener, RideTestMessageWithAttrs)
         PUBLISHER.subscribe(self._listener, RideLogException)
@@ -258,7 +258,7 @@ class TestPublisher(unittest.TestCase):
         assert_true(isinstance(self._msg, RideLogException))
         assert_equal(len(TestPublisher.cls_msgs), 2)
 
-    @patch('robotide.context.LOG.error')
+    @patch('sys.stderr.write')
     def test_subscribe_broken_listener_ride_log_broken(self, p_log):
         PUBLISHER.subscribe(self._broken_listener, RideTestMessageWithAttrs)
         PUBLISHER.subscribe(self._broken_listener, RideLogException)
