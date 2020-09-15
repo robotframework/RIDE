@@ -13,6 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import os
 from robotide.preferences.settings import Settings
 from robotide.preferences.excludes import Excludes
 from robotide.publish import PUBLISHER
@@ -69,7 +70,7 @@ class _FakeUIObject(object):
 
 class FakeSettings(Settings):
     def __init__(self, settings=None):
-        Settings.__init__(self, None)
+        Settings.__init__(self, os.path.join(os.path.dirname(__file__), 'fake.cfg'))
         self.add_section('Plugins')
         self.set('pythonpath', [])
         self.set('auto imports', [])

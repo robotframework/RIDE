@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 import unittest
+from unittest.mock import patch
 from nose.tools import assert_equal, assert_true, assert_raises
 from robotide.publish import RideMessage, RideLog
 from robotide.pluginapi import Plugin
@@ -133,7 +134,8 @@ class TestBrokenMessageListener(unittest.TestCase):
     def tearDown(self):
         self.plugin.disable()
 
-    def test_broken_listener(self):
+    @patch('sys.stderr.write')
+    def test_broken_listener(self, p_stderr):
         self.plugin.subscribe(self.plugin.error_listener, RideLog)
         RideTestMessage().publish()
         assert_true(self.plugin.error.message.startswith(
@@ -141,6 +143,7 @@ class TestBrokenMessageListener(unittest.TestCase):
             'Wrong error message text: ' + self.plugin.error.message)
         assert_equal(self.plugin.error.topic(), 'ride.log.exception')
         assert_equal(self.plugin.error.level, 'ERROR')
+        p_stderr.assert_called_once()
 
     def test_broken_error_listener_does_not_cause_infinite_recusrion(self):
         self.plugin.subscribe(self.plugin.broken_listener, RideLog)
