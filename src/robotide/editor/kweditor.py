@@ -112,6 +112,10 @@ class KeywordEditor(GridEditor):
             wx.CallAfter(
                 wx.CallLater, 200, self._update_based_on_namespace_change)
 
+    def update_value(self):
+        # will be called in _RobotTableEditor._settings_changed
+        pass
+
     def _update_based_on_namespace_change(self):
         try:
             self._colorize_grid()
@@ -492,8 +496,7 @@ class KeywordEditor(GridEditor):
     def close(self):
         self._colorizer.close()
         self.save()
-        PUBLISHER.unsubscribe(self._before_saving, RideBeforeSaving)
-        PUBLISHER.unsubscribe(self._data_changed, RideItemStepsChanged)
+        PUBLISHER.unsubscribe_all(self)
         if self._namespace_updated:
             # Prevent re-entry to unregister method
             self._controller.datafile_controller.unregister_namespace_updates(

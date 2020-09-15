@@ -56,11 +56,11 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
         return settings.get(_AUTO_SUGGESTION_CFG_KEY, False)
 
     def OnSettingsChanged(self, message):
-        """Redraw the colors if the color settings are modified"""
+        """Update auto suggestion settings from PUBLISHER message"""
         section, setting = message.keys
         if section == 'Grid':
             if _AUTO_SUGGESTION_CFG_KEY in setting:
-                self._is_auto_suggestion_disabled = setting.get(_AUTO_SUGGESTION_CFG_KEY, False)
+                self._is_auto_suggestion_disabled = message.new
 
     def set_row(self, row):
         self._row = row
