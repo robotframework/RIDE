@@ -13,6 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+
 class FakePlugin(object):
     def __init__(self, editors, item):
         self._editors = editors

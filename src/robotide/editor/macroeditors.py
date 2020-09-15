@@ -38,9 +38,9 @@ class TestCaseEditor(_RobotTableEditor):
         self.sizer.Add(self.kweditor, 1, wx.EXPAND | wx.ALL, 2)
         self._editors.append(self.kweditor)
 
-    def _name_changed(self, data):
-        if data.item == self.controller:
-            self.header.SetLabel(data.item.name)
+    def _name_changed(self, message):
+        if message.item == self.controller:
+            self.header.SetLabel(message.item.name)
 
     def close(self):
         for editor in self._editors:

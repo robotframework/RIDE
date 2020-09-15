@@ -178,8 +178,8 @@ class RideFrame(wx.Frame):
 
     def _subscribe_messages(self):
         for listener, topic in [
-            (lambda msg: self.SetStatusText('Saved %s' % msg.path), RideSaved),
-            (lambda msg: self.SetStatusText('Saved all files'), RideSaveAll),
+            (lambda message: self.SetStatusText('Saved %s' % message.path), RideSaved),
+            (lambda message: self.SetStatusText('Saved all files'), RideSaveAll),
             (self._set_label, RideTreeSelection),
             (self._show_validation_error, RideInputValidationError),
             (self._show_modification_prevented_error,

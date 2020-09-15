@@ -18,8 +18,8 @@ import wx
 from robotide.controller.ctrlcommands import (
     RenameKeywordOccurrences, RemoveMacro, AddKeyword, AddTestCase, RenameTest,
     CopyMacroAs, AddVariable, UpdateVariableName, RenameFile, DeleteItem,
-    RenameResourceFile, DeleteFile, SortKeywords, Include, Exclude, OpenContainingFolder,
-    RemoveReadOnly)
+    RenameResourceFile, DeleteFile, SortTests, SortKeywords, SortVariables, Include, Exclude,
+    OpenContainingFolder, RemoveReadOnly)
 from robotide.controller.settingcontrollers import VariableController
 from robotide.controller.macrocontrollers import (
     TestCaseController, UserKeywordController)
@@ -64,6 +64,8 @@ class _ActionHandler:
     _label_add_directory = 'New Directory'
     _label_new_test_case = 'New Test Case\tCtrl-Shift-T'
     _label_new_user_keyword = 'New User Keyword\tCtrl-Shift-K'
+    _label_sort_variables = 'Sort Variables'
+    _label_sort_tests = 'Sort Tests'
     _label_sort_keywords = 'Sort Keywords'
     _label_new_scalar = 'New Scalar\tCtrl-Shift-V'
     _label_new_list_variable = 'New List Variable\tCtrl-Shift-L'
@@ -246,9 +248,17 @@ class TestDataHandler(_ActionHandler):
     def rename(self, new_name):
         return False
 
+    def OnSortTests(self, event):
+        """Sorts the tests inside the treenode"""
+        self.controller.execute(SortTests())
+
     def OnSortKeywords(self, event):
         """Sorts the keywords inside the treenode"""
         self.controller.execute(SortKeywords())
+
+    def OnSortVariables(self, event):
+        """Sorts the variables inside the treenode"""
+        self.controller.execute(SortVariables())
 
     @property
     def can_be_rendered(self):
@@ -396,9 +406,11 @@ class ResourceFileHandler(_FileHandlerThanCanBeRenamed, TestDataHandler):
                 '---',
                 _ActionHandler._label_rename,
                 _ActionHandler._label_change_format,
-                _ActionHandler._label_sort_keywords,
                 _ActionHandler._label_find_usages,
                 _ActionHandler._label_delete,
+                '---',
+                _ActionHandler._label_sort_variables,
+                _ActionHandler._label_sort_keywords,
                 '---',
                 _ActionHandler._label_remove_readonly,
                 _ActionHandler._label_open_folder
@@ -443,8 +455,11 @@ class TestCaseFileHandler(_FileHandlerThanCanBeRenamed, TestDataHandler):
                 '---',
                 _ActionHandler._label_rename,
                 _ActionHandler._label_change_format,
-                _ActionHandler._label_sort_keywords,
                 _ActionHandler._label_delete,
+                '---',
+                _ActionHandler._label_sort_variables,
+                _ActionHandler._label_sort_tests,
+                _ActionHandler._label_sort_keywords,
                 '---',
                 _ActionHandler._label_select_all,
                 _ActionHandler._label_deselect_all,
@@ -493,8 +508,12 @@ class _TestOrUserKeywordHandler(_CanBeRenamed, _ActionHandler):
     accepts_drag = lambda *args: False
     is_draggable = True
     _actions = [
-        _ActionHandler._label_copy_macro, 'Move Up\tCtrl-Up',
-        'Move Down\tCtrl-Down', _ActionHandler._label_rename, '---', 'Delete'
+        _ActionHandler._label_copy_macro,
+        'Move Up\tCtrl-Up',
+        'Move Down\tCtrl-Down',
+        _ActionHandler._label_rename,
+        '---',
+        'Delete'
     ]
 
     def remove(self):
@@ -524,8 +543,7 @@ class _TestOrUserKeywordHandler(_CanBeRenamed, _ActionHandler):
 class TestCaseHandler(_TestOrUserKeywordHandler):
     def __init__(self, controller, tree, node, settings):
         _TestOrUserKeywordHandler.__init__(self, controller, tree, node, settings)
-        PUBLISHER.subscribe(self.test_selection_changed, RideTestSelectedForRunningChanged,
-                            key=self)  # TODO: unsubscribe when the object is destroyed!
+        PUBLISHER.subscribe(self.test_selection_changed, RideTestSelectedForRunningChanged)
 
     _datalist = property(lambda self: self.item.datalist)
     _copy_name_dialog_class = TestCaseNameDialog
@@ -536,13 +554,14 @@ class TestCaseHandler(_TestOrUserKeywordHandler):
     def _create_rename_command(self, new_name):
         return RenameTest(new_name)
 
-    def test_selection_changed(self, message: RideTestSelectedForRunningChanged):
+    def test_selection_changed(self, message):
         if self.controller in message.tests:
             if not self.node.GetValue():
                 self._tree.CheckItem(self.node, checked=True)
         else:
             if self.node.GetValue():
                 self._tree.CheckItem(self.node, checked=False)
+
 
 class UserKeywordHandler(_TestOrUserKeywordHandler):
     is_user_keyword = True
@@ -569,7 +588,13 @@ class VariableHandler(_CanBeRenamed, _ActionHandler):
     is_draggable = True
     is_variable = True
     OnMoveUp = OnMoveDown = lambda *args: None
-    _actions = [_ActionHandler._label_rename, 'Delete']
+    _actions = [
+        'Move Up\tCtrl-Up',
+        'Move Down\tCtrl-Down',
+        _ActionHandler._label_rename,
+        '---',
+        'Delete'
+    ]
 
     @overrides(_ActionHandler)
     def double_clicked(self):
@@ -583,6 +608,14 @@ class VariableHandler(_CanBeRenamed, _ActionHandler):
 
     def rename(self, new_name):
         self.controller.execute(UpdateVariableName(new_name))
+
+    def OnMoveUp(self, event):
+        if self.controller.move_up():
+            self._tree.move_up(self._node)
+
+    def OnMoveDown(self, event):
+        if self.controller.move_down():
+            self._tree.move_down(self._node)
 
     @property
     def index(self):

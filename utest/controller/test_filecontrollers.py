@@ -24,10 +24,9 @@ from robotide.controller.filecontrollers import TestCaseFileController, \
     TestDataDirectoryController, _FileSystemElement
 from robotide.controller.tablecontrollers import TestCaseController
 from robotide.controller.ctrlcommands import AddTestCaseFile, AddTestDataDirectory,\
-    SortKeywords, Undo, Redo
+    SortKeywords, SortTests, SortVariables, Undo, Redo
 from robotide.publish import PUBLISHER
-from robotide.publish.messages import RideDataChangedToDirty,\
-RideDataDirtyCleared
+from robotide.publish.messages import RideDataChangedToDirty, RideDataDirtyCleared
 
 from resources import SUITEPATH
 import datafilereader
@@ -52,11 +51,11 @@ class TestMarkUnMarkDirty(unittest.TestCase):
         if os.path.exists('path'):
             shutil.rmtree('path')
 
-    def _changes(self, payload):
-        self._has_unsaved_changes = payload.datafile
+    def _changes(self, message):
+        self._has_unsaved_changes = message.datafile
 
-    def _cleared(self, payload):
-        self._saved = payload.datafile
+    def _cleared(self, message):
+        self._saved = message.datafile
 
     def test_marking_data_dirty_publishes_data_has_changes_message(self):
         self.ctrl.mark_dirty()
@@ -133,44 +132,95 @@ class TestCaseFileControllerTest(unittest.TestCase):
         assert_equal(kw_ctrl.name, 'UK')
         assert_equal(kw_ctrl.data.args.value, ['${a1}', '${a2}'])
 
+    def test_sort_and_restore_tests(self):
+        # Add tests
+        for test in ['Blabla', 'Atest', '2222222', '111111']:
+            new_test = TestCaseController(self.ctrl, TestCase(TestCaseFile(), test))
+            self.ctrl.add_test_or_keyword(new_test)
+
+        # Capture test list before sorting
+        original_tests = self.get_test_names()
+        list_for_undo_comparison = original_tests[:]
+
+        # Sort the list
+        self.ctrl.execute(SortTests())
+        sorted_tests = self.get_test_names()
+        original_tests.sort()
+        assert_equal(original_tests, sorted_tests)
+
+        # Undo sorting
+        self.ctrl.execute(Undo())
+        restored_list = self.get_test_names()
+        assert_equal(restored_list, list_for_undo_comparison)
+
+        # Redo sorting
+        self.ctrl.execute(Redo())
+        keywords_after_redo = self.get_test_names()
+        assert_equal(keywords_after_redo, sorted_tests)
+
+    def get_test_names(self):
+        return [test.name for test in self.ctrl.tests]
+
 
 class TestResourceFileControllerTest(unittest.TestCase):
 
     def setUp(self):
         self.project = datafilereader.construct_project(datafilereader.SIMPLE_TEST_SUITE_PATH)
+        self.ctrl = self._get_ctrl_by_name(datafilereader.SIMPLE_TEST_SUITE_RESOURCE_NAME)
 
     def tearDown(self):
         self.project.close()
 
     def _get_ctrl_by_name(self, name):
-        return datafilereader.get_ctrl_by_name(name , self.project.datafiles)
+        return datafilereader.get_ctrl_by_name(name, self.project.datafiles)
 
     def test_resource_file_display_name_is_file_name_with_extension(self):
-        resource_ctrl = self._get_ctrl_by_name(datafilereader.SIMPLE_TEST_SUITE_RESOURCE_NAME)
-        assert_equal(resource_ctrl.display_name, datafilereader.SIMPLE_TEST_SUITE_RESOURCE_FILE)
+        assert_equal(self.ctrl.display_name, datafilereader.SIMPLE_TEST_SUITE_RESOURCE_FILE)
 
     def test_sort_and_restore_keywords(self):
-        resource_ctrl = self._get_ctrl_by_name(datafilereader.SIMPLE_TEST_SUITE_RESOURCE_NAME)
-
         # Capture keyword list before sorting
-        original_keywords = resource_ctrl.get_keyword_names()
+        original_keywords = self.ctrl.get_keyword_names()
         list_for_undo_comparison = original_keywords[:]
 
         # Sort the list
-        resource_ctrl.execute(SortKeywords())
-        sorted_keywords = resource_ctrl.get_keyword_names()
+        self.ctrl.execute(SortKeywords())
+        sorted_keywords = self.ctrl.get_keyword_names()
         original_keywords.sort()
         assert_equal(original_keywords, sorted_keywords)
 
         # Undo sorting
-        resource_ctrl.execute(Undo())
-        restored_list = resource_ctrl.get_keyword_names()
+        self.ctrl.execute(Undo())
+        restored_list = self.ctrl.get_keyword_names()
         assert_equal(restored_list, list_for_undo_comparison)
 
         # Redo sorting
-        resource_ctrl.execute(Redo())
-        keywords_after_redo = resource_ctrl.get_keyword_names()
+        self.ctrl.execute(Redo())
+        keywords_after_redo = self.ctrl.get_keyword_names()
         assert_equal(keywords_after_redo, sorted_keywords)
+
+    def test_sort_and_restore_variables(self):
+        # Capture test list before sorting
+        original_variables = self.get_variable_names()
+        list_for_undo_comparison = original_variables[:]
+
+        # Sort the list
+        self.ctrl.execute(SortVariables())
+        sorted_variables = self.get_variable_names()
+        original_variables.sort()
+        assert_equal(original_variables, sorted_variables)
+
+        # Undo sorting
+        self.ctrl.execute(Undo())
+        restored_list = self.get_variable_names()
+        assert_equal(restored_list, list_for_undo_comparison)
+
+        # Redo sorting
+        self.ctrl.execute(Redo())
+        variables_after_redo = self.get_variable_names()
+        assert_equal(variables_after_redo, sorted_variables)
+
+    def get_variable_names(self):
+        return [variable.name for variable in self.ctrl.variables]
 
 
 class TestDataDirectoryControllerTest(unittest.TestCase):

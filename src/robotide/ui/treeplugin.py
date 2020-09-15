@@ -151,9 +151,9 @@ class TreePlugin(Plugin):
         self.save_setting('opened', True)
         self._update_tree()
 
-    def OnTreeSelection(self, event):
+    def OnTreeSelection(self, message):
         if self.is_focused():
-            self._tree.tree_node_selected(event.item)
+            self._tree.tree_node_selected(message.item)
 
     def OnTabChanged(self, event):
         self._update_tree()
@@ -967,23 +967,23 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl):
         if handler.is_draggable:
             handler.OnMoveDown(event)
 
-    def _item_changed(self, data):
-        controller = data.item
+    def _item_changed(self, message):
+        controller = message.item
         node = self._controller.find_node_by_controller(controller)
         if node:
-            self.SetItemText(node, data.item.name)
+            self.SetItemText(node, message.item.name)
 
         if controller.dirty:
             self._controller.mark_node_dirty(
                 self._get_datafile_node(controller.datafile))
 
-    def _variable_moved_up(self, data):
-        if self._should_update_variable_positions(data):
-            self._do_action_if_datafile_node_is_expanded(self.move_up, data)
+    def _variable_moved_up(self, message):
+        if self._should_update_variable_positions(message):
+            self._do_action_if_datafile_node_is_expanded(self.move_up, message)
 
-    def _variable_moved_down(self, data):
-        if self._should_update_variable_positions(data):
-            self._do_action_if_datafile_node_is_expanded(self.move_down, data)
+    def _variable_moved_down(self, message):
+        if self._should_update_variable_positions(message):
+            self._do_action_if_datafile_node_is_expanded(self.move_down, message)
 
     def _should_update_variable_positions(self, message):
         return message.item != message.other and message.item.has_data() and \
@@ -994,8 +994,8 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl):
             node = self._controller.find_node_by_controller(data.item)
             action(node)
 
-    def _variable_updated(self, data):
-        self._item_changed(data)
+    def _variable_updated(self, message):
+        self._item_changed(message)
 
     def highlight(self, data, text):
         self.select_node_by_data(data)

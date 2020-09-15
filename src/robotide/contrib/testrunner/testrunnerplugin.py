@@ -222,15 +222,15 @@ class TestRunnerPlugin(Plugin):
                        RideTestSelectedForRunningChanged)
         self.subscribe(self.OnSettingsChanged, RideSettingsChanged)
 
-    def OnSettingsChanged(self, data):
-        '''Updates settings'''
-        section, setting = data.keys
+    def OnSettingsChanged(self, message):
+        """Updates settings"""
+        section, setting = message.keys
         # print("DEBUG: enter OnSettingsChanged section %s" % (section))
         if section == 'Test Run':  # DEBUG temporarily we have two sections
             # print("DEBUG: setting.get('confirm run')= %s " % setting)
             # print("DEBUG: new data= %s old %s new %s" % (data.keys, data.old, data.new))
-            self.defaults.setdefault(setting, data.new)
-            self.save_setting(setting, data.new)
+            self.defaults.setdefault(setting, message.new)
+            self.save_setting(setting, message.new)
 
     def OnTestSelectedForRunningChanged(self, message):
         self._selected_tests = message.tests
@@ -1067,9 +1067,9 @@ class OutputStylizer(object):
         self._set_styles()
         PUBLISHER.subscribe(self.OnSettingsChanged, RideSettingsChanged)
 
-    def OnSettingsChanged(self, data):
+    def OnSettingsChanged(self, message):
         """Redraw colors and font if settings are modified"""
-        section, setting = data.keys
+        section, setting = message.keys
         if section == 'Test Runner':
             self._set_styles()
 

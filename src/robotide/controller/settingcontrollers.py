@@ -442,6 +442,12 @@ class VariableController(_SettingController):
             return self.parent.validate_dict_variable_name(new_name, self)
         return self.parent.validate_list_variable_name(new_name, self)
 
+    def move_up(self):
+        return self._parent.move_up(self.index)
+
+    def move_down(self):
+        return self._parent.move_down(self.index)
+
     def __eq__(self, other):
         if self is other:
             return True

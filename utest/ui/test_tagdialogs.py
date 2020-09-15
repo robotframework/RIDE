@@ -85,14 +85,11 @@ class _SortableD(utils.NormalizedDict):
                                                     spaceless)
         super(utils.NormalizedDict)
 
-    # def __eq__(self, other):
-    #     return self.name.lower() == other.name.lower()
     def __hash__(self):
         return hash(repr(self))
 
     def __lt__(self, other):
         return self._keys[0].lower() < other._keys[0].lower()
-        return   # self.name.lower() < other.name.lower()
 
     def __repr__(self):
         return self.__str__()
@@ -199,7 +196,6 @@ class _ViewAllTagsDialog(ViewAllTagsDialog):
 class _BaseSuiteTreeTest(unittest.TestCase):
 
     def setUp(self):
-        # frame = _FakeMainFrame()
         settings = FakeSettings()
         self.app = wx.App()
         self.frame = wx.Frame(None)
@@ -359,6 +355,7 @@ class TestSortTags(_BaseSuiteTreeTest):
         # print("tref = {0}\ndref = {1}\n".format(tref, dref))
         assert_equal(dref, tref)
         # self._tagsdialog.show_dialog()
+
 
 if __name__ == '__main__':
     unittest.main()
