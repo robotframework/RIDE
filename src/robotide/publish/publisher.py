@@ -13,6 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import sys
 import inspect
 import types
 from pubsub import pub
@@ -79,13 +80,13 @@ class ListenerExceptionHandler(pub.IListenerExcHandler):
 
     def __call__(self, listenerID: str, topicObj: pub.Topic):
         from .messages import RideLogException
-        from robotide.context import LOG
         topic_name = topicObj.getName()
         if topic_name != RideLogException.topic():
             error_msg = 'Error in listener: {}, topic: {}'.format(listenerID, topic_name)
-            LOG.error(error_msg)
-            RideLogException(message=error_msg,
-                             exception=None, level='ERROR').publish()
+            log_message = RideLogException(message=error_msg,
+                                           exception=None, level='ERROR')
+            sys.stderr.write(log_message.__getattribute__('message'))
+            log_message.publish()
 
 
 def _get_members_safely(obj, predicate=None):

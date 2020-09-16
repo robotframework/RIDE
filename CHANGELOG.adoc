@@ -45,6 +45,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Fixed
 
+- Fixed incorrect title in manage plugin settings
 - Fixed search in Text Editor with wxPython 4.1.0
 - Fixed resource file will disappear after saving from Text Editor
 - Fixed duplicated resource file/folder in tree nodes

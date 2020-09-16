@@ -125,7 +125,7 @@ class RideLogException(RideLog):
             message += '\n\nTraceback (most recent call last):\n%s\n%s' % \
                 (str(exception), ''.join(traceback.format_list(tb)))
         RideMessage.__init__(
-            self, message=message, level=level, notify_user=False,
+            self, message=message, level=level, notify_user=notify_user,
             timestamp=utils.get_timestamp(), exception=exception)
 
 
