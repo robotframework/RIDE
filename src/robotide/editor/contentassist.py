@@ -14,7 +14,7 @@
 #  limitations under the License.
 
 import wx
-from robotide.context import IS_MAC
+from robotide.context import IS_MAC, IS_WX_410_OR_HIGHER
 from os.path import relpath, dirname, isdir
 from wx.lib.expando import ExpandoTextCtrl
 from wx.lib.filebrowsebutton import FileBrowseButton
@@ -46,7 +46,8 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
         # Store gherkin prefix from input to add \
         # later after search is performed
         if IS_MAC:
-            self.OSXDisableAllSmartSubstitutions()
+            if IS_WX_410_OR_HIGHER:
+                self.OSXDisableAllSmartSubstitutions()
         self._is_auto_suggestion_disabled = self._get_auto_suggestion_config()
         PUBLISHER.subscribe(self.OnSettingsChanged, RideSettingsChanged)
 
