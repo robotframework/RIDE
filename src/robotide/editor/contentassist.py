@@ -71,10 +71,10 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
         # Ctrl-Space handling needed for dialogs # DEBUG add Ctrl-m
         if (control_down or alt_down) and keycode in [wx.WXK_SPACE, ord('m')]:
             self.show_content_assist()
-        elif keycode == wx.WXK_RETURN and self._popup.is_shown():
-            self.OnFocusLost(event)
+        elif keycode == wx.WXK_RETURN:
+            self.OnFocusLost(event, set_value=True)
         elif keycode == wx.WXK_TAB:
-            self.OnFocusLost(event, False)
+            self.OnFocusLost(event, set_value=False)
         elif keycode == wx.WXK_ESCAPE and self._popup.is_shown():
             self._popup.hide()
         elif keycode in [wx.WXK_UP, wx.WXK_DOWN, wx.WXK_PAGEUP, wx.WXK_PAGEDOWN] \
@@ -149,20 +149,25 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
             close_symbol = open_symbol
         return value[:from_] + open_symbol + value[from_:to_] + close_symbol + value[to_:]
 
-    def OnFocusLost(self, event, set_value=True):
+    def OnFocusLost(self, event=None, set_value=False):
         if not self._popup.is_shown():
             # wxPython 4.0.7 has bug here, must skip the event
-            event.Skip()
+            if event:
+                event.Skip()
             return
         if self.gherkin_prefix:
             value = self.gherkin_prefix + self._popup.get_value() or self.GetValue()
         else:
             value = self._popup.get_value() or self.GetValue()
-        if set_value and value:
+
+        if not set_value:
+            # dismiss suggestions, apply user input directly
+            value = self.GetValue()
+
+        if value:
             self.SetValue(value)
-            self.SetInsertionPoint(len(value))  # DEBUG was self.Value
-        else:
-            self.Clear()
+            self.SetInsertionPoint(len(value))
+
         self.hide()
 
     def pop_event_handlers(self, event):
@@ -443,7 +448,7 @@ class ContentAssistPopup(object):
         self._details_popup.Show(False)
 
     def OnListItemActivated(self, event):
-        self._parent.OnFocusLost(event)
+        self._parent.OnFocusLost(event, set_value=True)
 
     def OnListItemSelected(self, event):
         self._selection = event.GetIndex()

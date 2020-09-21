@@ -586,6 +586,7 @@ class KeywordEditor(GridEditor):
                 self._move_grid_cursor(event, keycode)
             elif keycode == wx.WXK_RETURN:
                 if self.IsCellEditControlShown():
+                    self._open_cell_editor().set_content_assist_value()
                     self._move_grid_cursor(event, keycode)
                 else:
                     self._open_cell_editor()
@@ -893,6 +894,10 @@ class ContentAssistCellEditor(GridCellEditor):
     def show_content_assist(self, args=None):
         if self._tc:
             self._tc.show_content_assist()
+
+    def set_content_assist_value(self):
+        if self._tc:
+            self._tc.OnFocusLost(set_value=True)
 
     def execute_variable_creator(self, list_variable=False,
                                  dict_variable=False):
