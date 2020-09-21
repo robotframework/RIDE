@@ -45,9 +45,8 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
         self.gherkin_prefix = ''
         # Store gherkin prefix from input to add \
         # later after search is performed
-        if IS_MAC:
-            if IS_WX_410_OR_HIGHER:
-                self.OSXDisableAllSmartSubstitutions()
+        if IS_MAC and IS_WX_410_OR_HIGHER:
+            self.OSXDisableAllSmartSubstitutions()
         self._is_auto_suggestion_disabled = self._get_auto_suggestion_config()
         PUBLISHER.subscribe(self.OnSettingsChanged, RideSettingsChanged)
 
