@@ -294,7 +294,7 @@ class _EditorGrid(GridEditor):
         self.SelectAll()
 
     def resize_columns(self, width):
-        print("DEBUG: Called resize coluumns, width=%d" % width)
+        # print("DEBUG: Called resize coluumns, width=%d" % width)
         self.SetDefaultColSize(max(width / self.NumberCols, 100), True)
 
     def set_number_of_columns(self, columns):

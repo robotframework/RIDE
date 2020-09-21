@@ -889,7 +889,6 @@ class ContentAssistCellEditor(GridCellEditor):
         self._original_value = None
         self._value = None
         self._tc = None
-        self._counter = 0
 
     def show_content_assist(self, args=None):
         if self._tc:
@@ -916,7 +915,6 @@ class ContentAssistCellEditor(GridCellEditor):
         self._height = height
 
     def BeginEdit(self, row, col, grid):
-        self._counter = 0
         self._tc.SetSize((-1, self._height))
         self._tc.SetBackgroundColour(context.POPUP_BACKGROUND)  # DEBUG: We are now in Edit mode
         self._tc.set_row(row)
@@ -927,21 +925,17 @@ class ContentAssistCellEditor(GridCellEditor):
         self._grid = grid
 
     def EndEdit(self, row, col, grid, *ignored):
-        value = self._get_value()
-        if value != self._original_value:
-            self._value = value
-            return value
-        else:
-            self._tc.hide()
-            grid.SetFocus()
+        self._value = self._get_value()
+        self._tc.hide()
+        grid.SetFocus()
+        if self._value != self._original_value:
+            return self._value
 
     def ApplyEdit(self, row, col, grid):
         val = self._tc.GetValue()
         grid.GetTable().SetValue(row, col, val)  # update the table
         self._original_value = ''
         self._tc.SetValue('')
-        # if self._value and val != '':  # DEBUG Fix #1967 crash when click other cell
-        # this will cause deleting all text in edit mode not working
         self._grid.cell_value_edited(row, col, self._value)
 
     def _get_value(self):
