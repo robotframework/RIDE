@@ -1,4 +1,7 @@
-wxPython
+# MacOS only support wxPython 4.1.0 and higher version
+wxPython>=4.1.0; sys_platform == 'darwin'
+wxPython>=4.0.7.post2; sys_platform == 'win32'
+wxPython>=4.0.7.post2; sys_platform == 'linux'
 # Only for Windows to have a shortcut created (install before RIDE)
 Pywin32; sys_platform == 'win32'
 Pygments # This enables syntax highlighted in Text Editor
