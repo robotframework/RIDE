@@ -14,21 +14,20 @@
 #  limitations under the License.
 
 import os
-from resources import FakeSettings
+from . import FakeSettings
 from robotide.controller import Project
-from robotide.controller.ctrlcommands import NullObserver
 from robotide.namespace import Namespace
 from robotide.spec.librarymanager import LibraryManager
 
 RESOURCES_DIR = 'resources'
 RESOURCES_HTML = 'resource.html'
-DATAPATH = os.path.join(os.path.abspath(os.path.split(__file__)[0]),
-                        RESOURCES_DIR, 'robotdata')
+DATAPATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'robotdata')
 
 
 def _makepath(*elements):
     elements = [DATAPATH]+list(elements)
     return os.path.normpath(os.path.join(*elements)).replace('\\', '/')
+
 
 ALL_FILES_PATH = _makepath('all_files')
 RESOURCE_PATH = _makepath(RESOURCES_DIR, RESOURCES_HTML)

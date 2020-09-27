@@ -2,18 +2,15 @@ import sys
 import unittest
 from nose.tools import assert_true, assert_false, assert_is_not_none, \
     assert_equal, assert_is_none
-
 from robotide.robotapi import (
     TestCaseFile, Resource, VariableTable, TestDataDirectory)
 from robotide.context import IS_WINDOWS
 from robotide.namespace.namespace import _VariableStash
 from robotide.controller.filecontrollers import DataController
 from robotide.spec.iteminfo import ArgumentInfo, VariableInfo
-from robotide.spec.librarymanager import LibraryManager
 from robotide.utils import normpath
-
-from datafilereader import *
-from resources.mocks import FakeSettings
+from utest.resources.datafilereader import *
+from utest.resources.mocks import FakeSettings
 
 RESOURCES_DIR = 'resources'
 

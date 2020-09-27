@@ -16,11 +16,9 @@
 import tempfile
 import unittest
 import os
-
 from robotide.preferences.settings import Settings
 from robotide.pluginapi import Plugin
-
-from resources import TestSettingsHelper, FakeApplication
+from utest.resources import TestSettingsHelper, FakeApplication
 
 
 class TestPluginSettings(TestSettingsHelper):

@@ -40,5 +40,6 @@ class ArgumentParsingTestCase(unittest.TestCase):
     def test_debugconsole_and_path(self):
         self._assert_args(['--debugconsole', 'dir'], expected_debug_console=True, expected_path='dir')
 
+
 if __name__ == '__main__':
     unittest.main()

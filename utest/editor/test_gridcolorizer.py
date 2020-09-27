@@ -22,9 +22,6 @@ from robotide.controller.cellinfo import CellInfo, ContentType, CellType,\
     CellContent, CellPosition
 from robotide.editor.gridcolorizer import Colorizer
 
-# Needed to be able to create wx components
-from resources import PYAPP_REFERENCE as _
-
 
 class MockGrid(object):
     noop = lambda *args: None

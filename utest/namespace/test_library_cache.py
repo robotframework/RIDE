@@ -18,10 +18,8 @@ import sys
 import os
 from robotide.spec.librarymanager import LibraryManager
 from threading import Thread
-
 from robotide.namespace.cache import LibraryCache
-
-from resources import DATAPATH
+from utest.resources import DATAPATH
 
 sys.path.append(os.path.join(DATAPATH, 'libs'))
 
