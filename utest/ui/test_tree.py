@@ -170,12 +170,14 @@ class TestAddingItems(_BaseSuiteTreeTest):
 
     def test_adding_user_keyword(self):
         suite = self._model.data
+        self._tree.select_node_by_data(suite)
         kw = suite.create_keyword('New Fake UK')
         self._tree.add_keyword(self._get_node(suite.name), kw)
         assert_equal(self._get_selected_label(), 'New Fake UK')
 
     def test_adding_test(self):
         suite = self._model.data.children[0]
+        self._tree.select_node_by_data(suite)
         create_test = suite.create_test('New Fake Test')
         self._tree.add_test(self._get_node(suite.name), create_test)
         assert_equal(self._get_selected_label(), 'New Fake Test')
