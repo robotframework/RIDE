@@ -19,7 +19,7 @@ import os
 
 from nose.tools import assert_equal
 
-from resources import DATAPATH
+from utest.resources import DATAPATH
 from robotide.context import LIBRARY_XML_DIRECTORY
 from robotide.spec.xmlreaders import SpecInitializer
 from robotide.utils import overrides

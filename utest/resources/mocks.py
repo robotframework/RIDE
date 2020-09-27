@@ -14,8 +14,9 @@
 #  limitations under the License.
 
 import os
+import wx
+import unittest
 from robotide.preferences.settings import Settings
-from robotide.preferences.excludes import Excludes
 from robotide.publish import PUBLISHER
 
 
@@ -143,3 +144,18 @@ class PublisherListener(object):
 
     def unsubscribe(self):
         PUBLISHER.unsubscribe(self._listener, self._topic)
+
+
+class FakeEditor(object):
+    view = close = lambda *args: None
+
+
+class UIUnitTestBase(unittest.TestCase):
+
+    def setUp(self):
+        self.app = wx.App()
+
+    def tearDown(self):
+        wx.CallAfter(self.app.ExitMainLoop)
+        self.app.MainLoop()
+        self.app = None

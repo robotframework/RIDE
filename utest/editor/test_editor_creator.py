@@ -38,12 +38,11 @@ try:
 except ImportError:  # Python 3
     from .fakeplugin import FakePlugin
 
-from resources import PYAPP_REFERENCE
-
 
 DATADIR = 'fake'
 DATAPATH = '%s/path' % DATADIR
 TestCaseFileEditor._populate = lambda self: None
+
 
 class EditorCreatorTest(unittest.TestCase):
 

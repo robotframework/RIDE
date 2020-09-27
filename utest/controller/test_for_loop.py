@@ -19,7 +19,7 @@ path = os.path.join(os.path.dirname(__file__), os.pardir)
 sys.path.append(path)
 
 import unittest
-import datafilereader
+from utest.resources import datafilereader
 from robotide.controller.cellinfo import CellType
 from robotide.controller.ctrlcommands import MoveRowsDown, Undo, ChangeCellValue, InsertCell, DeleteCell, Purify, MoveRowsUp
 from robotide.controller.stepcontrollers import ForLoopStepController, IntendedStepController, StepController

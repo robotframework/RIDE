@@ -17,15 +17,13 @@ import os
 import unittest
 
 from nose.tools import assert_equal
-
-# Needed to be able to create wx components
-from resources import PYAPP_REFERENCE as _
 from robotide.context import IS_WINDOWS
 from robotide.editor.clipboard import _GridClipboard
+from utest.resources import UIUnitTestBase
 
 
 if not IS_WINDOWS:
-    class TestGridClipBoard(unittest.TestCase):
+    class TestGridClipBoard(UIUnitTestBase):
 
         def test_with_string_content(self):
             self._test_clipboard('Hello, world!', 'Hello, world!')

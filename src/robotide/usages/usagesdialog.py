@@ -13,12 +13,12 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robotide.ui.searchdots import DottedSearch
 
+import wx
 from robotide.widgets import (Dialog, VirtualList, VerticalSizer, ImageList,
                               ImageProvider, ButtonWithHandler)
-import wx
 from robotide.widgets.list import ListModel
+
 
 class UsagesDialog(Dialog):
 
@@ -41,6 +41,7 @@ class UsagesDialog(Dialog):
         self.usages.add_usage(usage)
 
     def begin_searching(self):
+        from robotide.ui.searchdots import DottedSearch
         self._dots = DottedSearch(self, self._update_searching)
         self._dots.start()
 
