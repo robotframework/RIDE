@@ -52,7 +52,8 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
 
     @staticmethod
     def _get_auto_suggestion_config():
-        settings = wx.GetApp().settings['Grid']
+        from robotide.context import APP
+        settings = APP.settings['Grid']
         return settings.get(_AUTO_SUGGESTION_CFG_KEY, False)
 
     def OnSettingsChanged(self, message):
