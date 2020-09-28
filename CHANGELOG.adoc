@@ -45,6 +45,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Fixed
 
+- Fixed sys.stderr is None errors if RIDE is launched by pythonw.exe
 - Fixed RIDE cannot close properly when Screenshot library is loaded
 - Fixed incorrect title in manage plugin settings
 - Fixed search in Text Editor with wxPython 4.1.0
