@@ -21,8 +21,7 @@ from robotide.namespace import Namespace
 from robotide.spec.iteminfo import ItemInfo
 from robotide.robotapi import TestCaseFile
 from robotide.controller.filecontrollers import DataController
-
-from resources import FakeApplication
+from utest.resources import FakeApplication
 from robotide.spec.librarymanager import LibraryManager
 
 

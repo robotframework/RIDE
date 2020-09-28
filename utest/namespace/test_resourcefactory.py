@@ -16,7 +16,7 @@
 import os
 import unittest
 from robotide.robotapi import _Import
-from resources import FakeSettings
+from utest.resources import FakeSettings
 from robotide.context import IS_WINDOWS
 from robotide.namespace.resourcefactory import ResourceFactory
 

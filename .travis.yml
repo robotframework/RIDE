@@ -3,13 +3,14 @@ dist: bionic
 services:
   - xvfb
 before_install:
-  - sudo apt-get install python-pyatspi libsdl1.2-dev
+  - sudo apt-get install python-pyatspi libsdl1.2-dev libsdl2-2.0-0
   # In normal circunstances we would just do "pip install wxPython"
-  #- pip install https://wxpython.org/Phoenix/snapshot-builds/linux/gtk3/ubuntu-14.04/wxPython-4.0.0a3.dev3059+4a5c5d9-cp27-cp27mu-linux_x86_64.whl
-  - python3 -m pip install $WXPACK
+  # - pip install https://wxpython.org/Phoenix/snapshot-builds/linux/gtk3/ubuntu-14.04/wxPython-4.0.0a3.dev3059+4a5c5d9-cp27-cp27mu-linux_x86_64.whl
+  - pip install $WXPACK
 install:
-  - python3 -m pip install -r requirements-dev.txt
+  - pip install -r requirements-dev.txt
   # - python3 -m pip install .
+  -
 matrix:
   include:
     - python: "3.6"
@@ -18,5 +19,14 @@ matrix:
     - python: "3.7"
       env:
         - WXPACK=https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-18.04/wxPython-4.0.7.post2-cp37-cp37m-linux_x86_64.whl
+    - python: "3.6"
+      env:
+        - WXPACK=https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-18.04/wxPython-4.1.0-cp36-cp36m-linux_x86_64.whl
+    - python: "3.7"
+      env:
+        - WXPACK=https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-18.04/wxPython-4.1.0-cp37-cp37m-linux_x86_64.whl
+    - python: "3.8"
+      env:
+        - WXPACK=https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-18.04/wxPython-4.1.0-cp38-cp38-linux_x86_64.whl
 script:
   - invoke test

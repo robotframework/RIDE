@@ -16,7 +16,7 @@
 import tempfile
 import unittest
 import os
-import datafilereader
+from utest.resources import datafilereader
 from robotide.controller.filecontrollers import TestDataDirectoryController, ExcludedDirectoryController, \
     DirtyRobotDataException
 

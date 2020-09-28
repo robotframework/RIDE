@@ -26,7 +26,7 @@ from nose.tools import (
     assert_is_not_none, assert_true, assert_false, assert_equal,
     assert_is_none)
 
-from resources import (
+from utest.resources import (
     MINIMAL_SUITE_PATH, SUITEPATH, MessageRecordingLoadObserver, FakeSettings)
 from robotide.spec.librarymanager import LibraryManager
 

@@ -18,11 +18,9 @@ import time
 import os
 import sys
 from nose.tools import assert_equal, assert_true
-
 from robotide.run.runanything import RunConfig
 from robotide.run.ui import Runner
-from resources import PYAPP_REFERENCE as _
-
+from utest.resources import UIUnitTestBase
 
 SCRIPT = os.path.join(os.path.dirname(__file__),
                       'process_test_scripts.py').replace(' ', '<SPACE>')
@@ -32,19 +30,23 @@ class _TestableRunner(Runner):
     output = property(lambda self: self._window.output)
     outstr = property(lambda self: self._window.outstr)
     finished = property(lambda self: self._window.finished)
+
     def _get_output_window(self, notebook):
         return _FakeOutputWindow()
 
+
 class _FakeOutputWindow(object):
     outstr = property(lambda self: ''.join(self.output))
+
     def __init__(self):
         self.output = []
+
     def update_output(self, output, finished):
         self.output.append(output)
         self.finished = finished
 
 
-class TestRunAnything(unittest.TestCase):
+class TestRunAnything(UIUnitTestBase):
 
     def test_run(self):
         self.runner = self._create_runner('python %s count_args a b c' % SCRIPT)
@@ -52,7 +54,7 @@ class TestRunAnything(unittest.TestCase):
         assert_true(self.runner.finished)
         assert_equal(self.runner.outstr, '3\n')
 
-    if sys.version_info[:2] >= (2,6):
+    if sys.version_info[:2] >= (2, 6):
         def test_stopping(self):
             self.runner = self._create_runner('python %s output 0.8' % SCRIPT)
             time.sleep(0.3)
@@ -89,4 +91,3 @@ class TestRunAnything(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-

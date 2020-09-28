@@ -14,7 +14,7 @@
 #  limitations under the License.
 
 import unittest
-import datafilereader
+from utest.resources import datafilereader
 from robotide.controller.ctrlcommands import ExtractScalar, ExtractList
 from nose.tools import assert_equal
 
