@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 import re
+import os
 import unittest
 from mockito import mock
 from nose.tools import assert_equal, assert_true, assert_false
@@ -33,8 +34,8 @@ from robotide.publish.messages import (
     RideImportSettingChanged)
 from robotide.controller.tags import Tag
 
-from resources.mocks import PublisherListener
-from controller.base_command_test import _FakeProject
+from utest.resources.mocks import PublisherListener
+from utest.controller.base_command_test import _FakeProject
 
 
 class _FakeParent(_FakeProject):
@@ -71,9 +72,10 @@ class DocumentationControllerTest(unittest.TestCase):
         assert_equal(self.doc.value, 'Doc changed | again')
 
     def test_get_editable_value(self):
+        test_text = 'My doc \n with enters \\\\\n ' \
+                    'and \\t tabs and escapes \\\\n \\\\\\\\r'
         self.doc.value = 'My doc \\n with enters \\\\\\r\\n and \\t tabs and escapes \\\\n \\\\\\\\r'
-        assert_equal(self.ctrl.editable_value, 'My doc \n with enters \\\\\n'
-                                                ' and \\t tabs and escapes \\\\n \\\\\\\\r')
+        assert_equal(self.ctrl.editable_value, test_text.replace('\n', os.linesep))
 
     def test_set_editable_value(self):
         test_text = '''My doc
@@ -81,7 +83,7 @@ class DocumentationControllerTest(unittest.TestCase):
  and \t tabs'''
         self.ctrl.editable_value = test_text
         assert_equal(self.doc.value, 'My doc\\n with enters\\n and \t tabs')
-        assert_equal(self.ctrl.editable_value, test_text)
+        assert_equal(self.ctrl.editable_value, test_text.replace('\n', os.linesep))
 
     def test_set_editable_value_should_escape_leading_hash(self):
         self.ctrl.editable_value = '# Not # Comment'

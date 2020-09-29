@@ -69,9 +69,21 @@ class _FakeUIObject(object):
     actions = property(lambda *args: _FakeActions())
 
 
+_FAKE_CFG_CONTENT = b'''
+auto imports = []
+pythonpath = []
+'''
+
+
 class FakeSettings(Settings):
     def __init__(self, settings=None):
-        Settings.__init__(self, os.path.join(os.path.dirname(__file__), 'fake.cfg'))
+        fake_cfg = os.path.join(os.path.dirname(__file__), 'fake.cfg')
+
+        # make sure fake cfg is clean
+        with open(fake_cfg, 'wb') as f:
+            f.write(_FAKE_CFG_CONTENT)
+
+        Settings.__init__(self, fake_cfg)
         self.add_section('Plugins')
         self.set('pythonpath', [])
         self.set('auto imports', [])
