@@ -124,7 +124,7 @@ class KeywordEditor(GridEditor):
 
     @requires_focus
     def _resize_grid(self):
-        if self.settings.get("auto size cols", True):
+        if self.settings.get("auto size cols", False):
             self.AutoSizeColumns(False)
         if self.settings.get("word wrap", True):
             self.AutoSizeRows(False)
