@@ -337,6 +337,11 @@ class RideFrame(wx.Frame):
             self._mgr.UnInit()
             self._task_bar_icon.Destroy()
             self.Destroy()
+            app = wx.GetApp()
+            if app is not self._application:
+                # other wx app instance created unexpectedly
+                # this will cause RIDE app instance cannot invoke ExitMainLoop properly
+                self._application.ExitMainLoop()
         else:
             wx.CloseEvent.Veto(event)
 
