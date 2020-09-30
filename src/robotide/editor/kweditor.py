@@ -494,8 +494,7 @@ class KeywordEditor(GridEditor):
     def close(self):
         self._colorizer.close()
         self.save()
-        PUBLISHER.unsubscribe(self._before_saving, RideBeforeSaving)
-        PUBLISHER.unsubscribe(self._data_changed, RideItemStepsChanged)
+        PUBLISHER.unsubscribe_all(self)
         if self._namespace_updated:
             # Prevent re-entry to unregister method
             self._controller.datafile_controller.unregister_namespace_updates(
