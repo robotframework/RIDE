@@ -13,6 +13,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 - Added General settings to Preferences, to change Font Size and Face, and colours
 - Added background colour globally on panels and dialogs
+- Added Python 3.8 unit test support in travis CI
 - Added menu option to ``Move Up`` and ``Move Down`` variables in Tree
 - Added menu option to ``Sort Variables`` in resources from Tree 
 - Added menu option to ``Sort Tests`` and ``Sort Variables` in suites from Tree
@@ -49,6 +50,9 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Fixed
 
+- Fixed sys.stderr is None errors if RIDE is launched by pythonw.exe
+- Fixed RIDE cannot close properly when Screenshot library is loaded
+- Fixed incorrect title in manage plugin settings
 - Fixed search in Text Editor with wxPython 4.1.0
 - Fixed resource file will disappear after saving from Text Editor
 - Fixed duplicated resource file/folder in tree nodes

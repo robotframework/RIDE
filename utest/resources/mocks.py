@@ -13,8 +13,11 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import os
+import wx
+import unittest
 from robotide.preferences.settings import Settings
-from robotide.preferences.excludes_class import Excludes
+from robotide.preferences.excludes import Excludes
 from robotide.publish import PUBLISHER
 
 
@@ -67,9 +70,21 @@ class _FakeUIObject(object):
     actions = property(lambda *args: _FakeActions())
 
 
+_FAKE_CFG_CONTENT = b'''
+auto imports = []
+pythonpath = []
+'''
+
+
 class FakeSettings(Settings):
     def __init__(self, settings=None):
-        Settings.__init__(self, None)
+        fake_cfg = os.path.join(os.path.dirname(__file__), 'fake.cfg')
+
+        # make sure fake cfg is clean
+        with open(fake_cfg, 'wb') as f:
+            f.write(_FAKE_CFG_CONTENT)
+
+        Settings.__init__(self, fake_cfg)
         self.add_section('Plugins')
         self.set('pythonpath', [])
         self.set('auto imports', [])
@@ -142,3 +157,18 @@ class PublisherListener(object):
 
     def unsubscribe(self):
         PUBLISHER.unsubscribe(self._listener, self._topic)
+
+
+class FakeEditor(object):
+    view = close = lambda *args: None
+
+
+class UIUnitTestBase(unittest.TestCase):
+
+    def setUp(self):
+        self.app = wx.App()
+
+    def tearDown(self):
+        wx.CallAfter(self.app.ExitMainLoop)
+        self.app.MainLoop()
+        self.app = None

@@ -14,7 +14,7 @@
 #  limitations under the License.
 
 import unittest
-import datafilereader
+from utest.resources import datafilereader
 from nose.tools import assert_true
 from robotide.ui.review import ReviewRunner
 from robotide.publish import PUBLISHER

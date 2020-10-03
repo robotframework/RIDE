@@ -33,8 +33,6 @@ from nose.tools import assert_equal
 
 from robotide.editor.gridbase import GridEditor
 
-from resources import PYAPP_REFERENCE as _ #Needed to be able to create wx components
-
 # wx needs to imported last so that robotide can select correct wx version.
 import wx
 from robotide.context import IS_WINDOWS

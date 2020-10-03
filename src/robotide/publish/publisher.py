@@ -13,7 +13,9 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import sys
 import inspect
+import types
 from pubsub import pub
 from typing import Type, Callable
 from ..publish.messages import RideMessage
@@ -65,8 +67,8 @@ class _Publisher:
 
         def _listener_filter(listener):
             _callable = listener.getCallable()
-            functions = [func for _, func in inspect.getmembers(obj, inspect.isfunction)]
-            methods = [method for _, method in inspect.getmembers(obj, inspect.ismethod)]
+            functions = [func for _, func in _get_members_safely(obj, inspect.isfunction)]
+            methods = [method for _, method in _get_members_safely(obj, inspect.ismethod)]
             if _callable in functions or _callable in methods:
                 return True
 
@@ -78,13 +80,69 @@ class ListenerExceptionHandler(pub.IListenerExcHandler):
 
     def __call__(self, listenerID: str, topicObj: pub.Topic):
         from .messages import RideLogException
-        from ..context import LOG
         topic_name = topicObj.getName()
         if topic_name != RideLogException.topic():
             error_msg = 'Error in listener: {}, topic: {}'.format(listenerID, topic_name)
-            LOG.error(error_msg)
-            RideLogException(message=error_msg,
-                             exception=None, level='ERROR').publish()
+            log_message = RideLogException(message=error_msg,
+                                           exception=None, level='ERROR')
+            sys.stderr.write(log_message.__getattribute__('message'))
+            log_message.publish()
+
+
+def _get_members_safely(obj, predicate=None):
+    """Return all members of an object as (name, value) pairs sorted by name.
+    Optionally, only return members that satisfy a given predicate.
+
+    Copied from inspect.getmembers().
+
+    Added protection logic to bypass unexpected exceptions in object attribute iterations.
+    """
+    if inspect.isclass(obj):
+        mro = (obj,) + inspect.getmro(obj)
+    else:
+        mro = ()
+    results = []
+    processed = set()
+    names = dir(obj)
+    # :dd any DynamicClassAttributes to the list of names if object is a class;
+    # this may result in duplicate entries if, for example, a virtual
+    # attribute with the same name as a DynamicClassAttribute exists
+    try:
+        for base in obj.__bases__:
+            for k, v in base.__dict__.items():
+                if isinstance(v, types.DynamicClassAttribute):
+                    names.append(k)
+    except AttributeError:
+        pass
+    for key in names:
+        # First try to get the value via getattr.  Some descriptors don't
+        # like calling their __get__ (see bug #1785), so fall back to
+        # looking in the __dict__.
+        try:
+            value = getattr(obj, key)
+            # handle the duplicate key
+            if key in processed:
+                raise AttributeError
+        except Exception as e:
+            """ UPDATED HERE: Catch all types of exceptions. """
+            if isinstance(e, AttributeError):
+                """ UPDATED HERE: Use old logic if exception is AttributeError. """
+                for base in mro:
+                    if key in base.__dict__:
+                        value = base.__dict__[key]
+                        break
+                else:
+                    # could be a (currently) missing slot member, or a buggy
+                    # __dir__; discard and move on
+                    continue
+            else:
+                """ UPDATED HERE: Ignore this attribute when other types of exception raised. """
+                continue
+        if not predicate or predicate(value):
+            results.append((key, value))
+        processed.add(key)
+    results.sort(key=lambda pair: pair[0])
+    return results
 
 
 """Global `Publisher` instance for subscribing to and unsubscribing from RideMessages."""

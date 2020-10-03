@@ -54,6 +54,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), 'lib'))
 
 
 def main(*args):
+    _replace_std_for_win()
     noupdatecheck, debug_console, inpath = _parse_args(args)
     if len(args) > 3 or '--help' in args:
         print(__doc__)
@@ -100,6 +101,26 @@ def _run(inpath=None, updatecheck=True, debug_console=False):
         wx.lib.inspection.InspectionTool().Show()
         debugconsole.start(ride)
     ride.MainLoop()
+
+
+def _replace_std_for_win():
+
+    class NullStream:
+        def close(self): pass
+
+        def flush(self): pass
+
+        def write(self, line): pass
+
+        def writelines(self, sequence): pass
+
+    if sys.executable.endswith('pythonw.exe'):
+        # In windows, when launching RIDE with pythonw.exe
+        # sys.stderr and sys.stdout will be None
+        if sys.stderr is None:
+            sys.stderr = NullStream()
+        if sys.stdout is None:
+            sys.stdout = NullStream()
 
 
 def _show_old_wxpython_warning_if_needed(parent=None):

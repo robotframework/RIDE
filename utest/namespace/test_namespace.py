@@ -1,23 +1,25 @@
-import os
 import sys
 import unittest
-from nose.tools import assert_true, assert_false, assert_is_not_none, assert_equal, assert_is_none
+from nose.tools import assert_true, assert_false, assert_is_not_none, \
+    assert_equal, assert_is_none
 
-from robotide.robotapi import TestCaseFile, Resource, VariableTable, TestDataDirectory
+from robotide.robotapi import (
+    TestCaseFile, Resource, VariableTable, TestDataDirectory)
 from robotide.context import IS_WINDOWS
-from robotide.namespace.namespace import Namespace, _VariableStash
+from robotide.namespace.namespace import _VariableStash
 from robotide.controller.filecontrollers import DataController
 from robotide.spec.iteminfo import ArgumentInfo, VariableInfo
 from robotide.spec.librarymanager import LibraryManager
 from robotide.utils import normpath
-
-from datafilereader import *
-from resources.mocks import FakeSettings
+from utest.resources.datafilereader import *
+from utest.resources.mocks import FakeSettings
 
 RESOURCES_DIR = 'resources'
 
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', RESOURCES_DIR, 'robotdata', 'libs'))
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', RESOURCES_DIR, 'robotdata', 'put_into_python_path'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', RESOURCES_DIR,
+                             'robotdata', 'libs'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', RESOURCES_DIR,
+                             'robotdata', 'put_into_python_path'))
 
 OS_LIB = 'OperatingSystem'
 COLLECTIONS_LIB = 'Collections'
@@ -179,11 +181,13 @@ class TestKeywordSuggestions(_DataFileTest):
     def test_xml_library_is_library_keyword(self):
         everything_tcf = TestCaseFile(
             source=TESTCASEFILE_WITH_EVERYTHING).populate()
-        assert_true(self.ns.is_library_keyword(everything_tcf, 'Attributeless Keyword'))
+        assert_true(self.ns.is_library_keyword(
+            everything_tcf, 'Attributeless Keyword'))
 
     def test_variable_path_separator(self):
         sugs = self.ns.get_suggestions_for(
-            self._get_controller(TESTCASEFILE_WITH_EVERYTHING).keywords[0], 'foo')
+            self._get_controller(TESTCASEFILE_WITH_EVERYTHING).keywords[0],
+            'foo')
         self._assert_import_kws(sugs, 'even_more_resources.txt')
 
     def test_keywords_only_once_per_source(self):

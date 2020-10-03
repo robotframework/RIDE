@@ -13,14 +13,13 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+
 import wx
 
-from ..ui.searchdots import DottedSearch
 from ..widgets import RIDEDialog, VirtualList, VerticalSizer, ImageList, ImageProvider, ButtonWithHandler
 from ..widgets.list import ListModel
 
-
-class UsagesDialog(RIDEDialog):
+class UsagesDialog(Dialog):
 
     def __init__(self, name, usages=None):
         self._name = name
@@ -41,6 +40,7 @@ class UsagesDialog(RIDEDialog):
         self.usages.add_usage(usage)
 
     def begin_searching(self):
+        from ..ui.searchdots import DottedSearch
         self._dots = DottedSearch(self, self._update_searching)
         self._dots.start()
 

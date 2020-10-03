@@ -13,6 +13,8 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import wx
+from wx.lib.agw.aui import AuiManager
 import unittest
 from robotide.robotapi import (TestDataDirectory, TestCaseFile, ResourceFile,
                                TestCase, UserKeyword)
@@ -26,26 +28,22 @@ from robotide.controller.filecontrollers import (TestDataDirectoryController,
 
 from robotide.ui.actiontriggers import MenuBar, ShortcutRegistry
 from robotide.ui.mainframe import ActionRegisterer, ToolBar
-from resources import PYAPP_REFERENCE, FakeSettings
-
+from utest.resources import FakeSettings
 from robotide.ui import treeplugin as st
 from robotide.ui import treenodehandlers as th
 from robotide.publish import PUBLISHER
 from robotide.namespace.namespace import Namespace
+from robotide.ui.treeplugin import Tree
+
 
 th.FakeDirectorySuiteHandler = th.FakeUserKeywordHandler = \
     th.FakeSuiteHandler = th.FakeTestCaseHandler = \
     th.FakeResourceHandler = th.TestDataDirectoryHandler
 st.Editor = lambda *args: _FakeEditor()
-from robotide.ui.treeplugin import Tree
-
 Tree._show_correct_editor = lambda self, x: None
 Tree.get_active_datafile = lambda self: None
-# CallAfter does not work in unit tests
-Tree._select = lambda self, node: self.SelectItem(node)
-# wx needs to imported last so that robotide can select correct wx version.
-import wx
-from wx.lib.agw.aui import AuiManager
+Tree._select = lambda self, node: self.SelectItem(node)\
+
 
 
 class _FakeMainFrame(wx.Frame):
@@ -71,10 +69,6 @@ class _FakeImage(object):
                                                  (16, 16)))
 
 
-class _FakeEditor(object):
-    view = close = lambda *args: None
-
-
 class _BaseSuiteTreeTest(unittest.TestCase):
 
     def setUp(self):
@@ -82,7 +76,8 @@ class _BaseSuiteTreeTest(unittest.TestCase):
         self.frame = wx.Frame(None)
         self._model = self._create_model()
         self._tree = Tree(self.frame, ActionRegisterer(AuiManager(self.frame),
-                                                       MenuBar(self.frame), ToolBar(self.frame),
+                                                       MenuBar(self.frame),
+                                                       ToolBar(self.frame),
                                                        ShortcutRegistry(self.frame)))
         images = TreeImageList()
         self._tree._images = images
@@ -92,8 +87,10 @@ class _BaseSuiteTreeTest(unittest.TestCase):
 
     def tearDown(self):
         PUBLISHER.unsubscribe_all()
-        wx.CallAfter(wx.Exit)
+        wx.CallAfter(self.frame.Close)
+        wx.CallAfter(self.app.ExitMainLoop)
         self.app.MainLoop()  # With this here, there is no Segmentation fault
+        self.app = None
 
     def _create_model(self):
         suite = self._create_directory_suite('/top_suite')
@@ -173,12 +170,14 @@ class TestAddingItems(_BaseSuiteTreeTest):
 
     def test_adding_user_keyword(self):
         suite = self._model.data
+        self._tree.select_node_by_data(suite)
         kw = suite.create_keyword('New Fake UK')
         self._tree.add_keyword(self._get_node(suite.name), kw)
         assert_equal(self._get_selected_label(), 'New Fake UK')
 
     def test_adding_test(self):
         suite = self._model.data.children[0]
+        self._tree.select_node_by_data(suite)
         create_test = suite.create_test('New Fake Test')
         self._tree.add_test(self._get_node(suite.name), create_test)
         assert_equal(self._get_selected_label(), 'New Fake Test')

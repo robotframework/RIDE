@@ -153,7 +153,7 @@ def test(ctx, test_filter=''):
     if test_filter:
         additional_args.append(test_filter)
     result = noserun(defaultTest=TEST_DIR,
-                     argv=['', '--m=^test_'] + additional_args)
+                     argv=['', '--m=^test_', '--traverse-namespace'] + additional_args)
     assert result is True
 
 

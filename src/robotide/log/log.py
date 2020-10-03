@@ -91,7 +91,7 @@ class LogPlugin(Plugin):
         if self._panel:
             self._panel.update_log()
         if self.log_to_console:
-            print("".format(_message_to_string(message)))  # >> sys.stdout, _message_to_string(message)
+            print('{}'.format(_message_to_string(message)))
         if self.log_to_file:
             self._logfile.write(_message_to_string(message))
             self._outfile.flush()

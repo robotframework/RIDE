@@ -13,13 +13,9 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-# The following import is needed for wx.select() to work properly
-import robotide as _
 import os
 import sys
-import wx
-
-from .mocks import FakeSettings, FakeApplication, MessageRecordingLoadObserver
+from .mocks import FakeSettings, FakeApplication, MessageRecordingLoadObserver, FakeEditor, UIUnitTestBase
 from .setting_utils import TestSettingsHelper
 
 if os.sep == '\\':
@@ -54,5 +50,3 @@ EXTERNAL_RES_UNSORTED_PATH = os.path.join(
     DATAPATH, 'external_resources_unsorted', 'suite')
 
 PATH_RESOURCE_NAME = 'pathresource.html' if CIF else 'PathResource.html'
-
-PYAPP_REFERENCE = wx.App()

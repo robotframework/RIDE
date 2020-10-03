@@ -61,8 +61,7 @@ class _PluginPanel(wx.Panel):
         self.SetSizer(sizer)
 
     def _create_header(self):
-        header_panel = wx.Panel(self, wx.ID_ANY)
-        header = Label(header_panel, wx.ID_ANY, "Installed Plugins")
+        header = Label(self, wx.ID_ANY, "Installed Plugins\n")
         header.SetFont(wx.Font(wx.FontInfo(14).Family(wx.FONTFAMILY_SWISS).Bold()))
         return header
 
