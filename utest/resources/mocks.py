@@ -17,7 +17,6 @@ import os
 import wx
 import unittest
 from robotide.preferences.settings import Settings
-from robotide.preferences.excludes import Excludes
 from robotide.publish import PUBLISHER
 
 

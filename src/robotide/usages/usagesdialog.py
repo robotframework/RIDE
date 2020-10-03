@@ -19,7 +19,7 @@ import wx
 from ..widgets import RIDEDialog, VirtualList, VerticalSizer, ImageList, ImageProvider, ButtonWithHandler
 from ..widgets.list import ListModel
 
-class UsagesDialog(Dialog):
+class UsagesDialog(RIDEDialog):
 
     def __init__(self, name, usages=None):
         self._name = name
