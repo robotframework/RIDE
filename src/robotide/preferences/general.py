@@ -52,7 +52,7 @@ class GeneralPreferences(PreferencesPanel):
         main_sizer.Add(font_editor)
         main_sizer.Add(colors_sizer)
         main_sizer.Add(reset)
-        self.SetSizer(main_sizer)
+        self.SetSizerAndFit(main_sizer)
         self.Bind(wx.EVT_BUTTON, self.OnReset)
 
     def OnReset(self, event):
@@ -141,13 +141,13 @@ class DefaultPreferences(GeneralPreferences):
         for picker in self._color_pickers:
             picker.SetColour(defaults[picker.key])
 
-    def OnSettingsChanged(self, data):
+    def OnSettingsChanged(self, message):
         """Redraw the colors if the color settings are modified"""
-        section, setting = data.keys
+        section, setting = message.keys
         if section == 'General':
             # print(f"DEBUG: OnSettings got here")
             panel = self.GetParent().GetParent()
-            # print(f"DEBUG: OnSettings panel {panel.GetParent()}")
+            print(f"DEBUG: OnSettings panel {panel.GetParent()}")
             """
             foreground = self._settings.get('foreground', 'black')
             background = self._settings.get('background', 'white')
@@ -155,5 +155,5 @@ class DefaultPreferences(GeneralPreferences):
             panel.settings['background'] = background
             """
             panel.Refresh(True)
-            panel.ShowPanel()
+            # panel.ShowPanel()
             self.Refresh(True)

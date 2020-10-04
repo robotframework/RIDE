@@ -30,12 +30,11 @@ from ..controller import ctrlcommands
 # import UpdateVariable, UpdateDocumentation, SetValues, AddLibrary, AddResource, AddVariablesFileImport, ClearSetting
 from ..editor.listeditor import ListEditorBase
 from ..publish import PUBLISHER
-from ..publish.messages import RideImportSetting, \
-    RideOpenVariableDialog, RideExecuteSpecXmlImport, RideSaving
+from ..publish.messages import (RideImportSetting, RideOpenVariableDialog, RideExecuteSpecXmlImport, RideSaving,
+                                 RideVariableAdded, RideVariableUpdated, RideVariableRemoved)
 from ..utils import overrides
 from ..utils.highlightmatcher import highlight_matcher
-from ..widgets import ButtonWithHandler, Label, HtmlWindow, PopupMenu, \
-    PopupMenuItems, HtmlDialog
+from ..widgets import ButtonWithHandler, Label, HtmlWindow, PopupMenu, PopupMenuItems, HtmlDialog
 from ..publish import PUBLISHER
 from .. import utils
 from ..utils.highlightmatcher import highlight_matcher

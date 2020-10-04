@@ -74,6 +74,8 @@ ID_CustomizeToolbar = wx.ID_HIGHEST + 1
 ID_SampleItem = ID_CustomizeToolbar + 1
 
 
+"""
+
 # -- DEBUG some testing
 # -- SizeReportCtrl --
 # (a utility control that always reports it's client size)
@@ -133,6 +135,7 @@ class SizeReportCtrl(wx.Control):
 
     def OnSize(self, event):
         self.Refresh()
+"""
 
 
 class RideFrame(wx.Frame):
@@ -279,6 +282,7 @@ class RideFrame(wx.Frame):
         # tell the manager to "commit" all the changes just made
         self._mgr.Update()
 
+    """
     def testToolbar(self):
 
         # ### More testing
@@ -325,6 +329,7 @@ class RideFrame(wx.Frame):
         tb3.SetCustomOverflowItems(prepend_items, append_items)
         tb3.Realize()
         return tb3
+    """
 
     def get_selected_datafile(self):
         return self.tree.get_selected_datafile()
@@ -624,10 +629,12 @@ class RideFrame(wx.Frame):
         self.SetSize(size)
 
     # DEBUG just some testing
+    """
     def CreateSizeReportCtrl(self, width=80, height=80):
 
         ctrl = SizeReportCtrl(self, -1, wx.DefaultPosition, wx.Size(width, height), self._mgr)
         return ctrl
+    """
 
     def show_confirm_reload_dlg(self, event):
         msg = ['Workspace modifications detected on the file system.',

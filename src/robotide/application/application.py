@@ -58,6 +58,7 @@ class RIDE(wx.App):
         self.namespace = Namespace(self.settings)
         self._controller = Project(self.namespace, self.settings)
         self.frame = RideFrame(self, self._controller)
+        self.frame.Show()
         self._editor_provider = EditorProvider()
         self._plugin_loader = PluginLoader(self, self._get_plugin_dirs(),
                                            coreplugins.get_core_plugins())
@@ -71,7 +72,6 @@ class RIDE(wx.App):
         self.fileexplorerplugin = FileExplorerPlugin(self, self._controller)
         if self.fileexplorerplugin.settings['_enabled']:
             self.fileexplorerplugin.register_frame(self.frame)
-        self.frame.Show()
         if not self.treeplugin.opened:
             self.treeplugin.close_tree()
         if not self.fileexplorerplugin.opened:
