@@ -118,7 +118,6 @@ class Project(_BaseController, WithNamespace):
 
     def new_resource(self, path, parent=None):
         res = self._namespace.new_resource(path)
-        self.update_default_dir(path)
         resource_controller = self._create_resource_controller(res, parent)
         return resource_controller
 
