@@ -326,9 +326,12 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl):
         from ..controller.macrocontrollers import TestCaseController
 
         test: TestCaseController = message.item
-        if message.topic == 'ride.test.passed':
+        if not test:
+            # test object will be None when running with DataDriver
+            return
+        if isinstance(message, RideTestPassed):
             test.run_passed = True
-        elif message.topic == 'ride.test.failed':
+        elif isinstance(message, RideTestFailed):
             test.run_passed = False
         else:
             test.run_passed = None
@@ -957,7 +960,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl):
         node: GenericTreeItem = event.GetItem()
         handler: TestCaseHandler = self._controller.get_handler(node=node)
         self._test_selection_controller.select(
-            handler.controller, node.IsChecked())
+                handler.controller, node.IsChecked())
 
     def OnItemActivated(self, event):
         node = event.GetItem()
