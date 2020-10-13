@@ -897,7 +897,7 @@ class ContentAssistCellEditor(GridCellEditor):
 
     def set_content_assist_value(self):
         if self._tc:
-            self._tc.OnFocusLost(set_value=True)
+            self._tc.fill_suggestion(set_value=True)
 
     def execute_variable_creator(self, list_variable=False,
                                  dict_variable=False):
@@ -930,13 +930,15 @@ class ContentAssistCellEditor(GridCellEditor):
         self._grid = grid
 
     def EndEdit(self, row, col, grid, *ignored):
+        print(f'EndEdit {grid.FindFocus()}')
         self._value = self._get_value()
-        self._tc.hide()
+        # self._tc.hide()
         grid.SetFocus()
         if self._value != self._original_value:
             return self._value
 
     def ApplyEdit(self, row, col, grid):
+        print(f'ApplyEdit {grid.FindFocus()}')
         val = self._tc.GetValue()
         grid.GetTable().SetValue(row, col, val)  # update the table
         self._original_value = ''

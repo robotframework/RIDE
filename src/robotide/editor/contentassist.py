@@ -38,7 +38,6 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
         self._popup = ContentAssistPopup(self, suggestion_source)
         self.Bind(wx.EVT_KEY_DOWN, self.OnKeyDown)
         self.Bind(wx.EVT_CHAR, self.OnChar)
-        self.Bind(wx.EVT_KILL_FOCUS, self.OnFocusLost)
         self.Bind(wx.EVT_WINDOW_DESTROY, self.pop_event_handlers)
         self._showing_content_assist = False
         self._row = None
@@ -73,9 +72,9 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
         if (control_down or alt_down) and keycode in [wx.WXK_SPACE, ord('m')]:
             self.show_content_assist()
         elif keycode == wx.WXK_RETURN:
-            self.OnFocusLost(event, set_value=True)
+            self.fill_suggestion(set_value=True)
         elif keycode == wx.WXK_TAB:
-            self.OnFocusLost(event, set_value=False)
+            self.fill_suggestion(set_value=False)
         elif keycode == wx.WXK_ESCAPE and self._popup.is_shown():
             self._popup.hide()
         elif keycode in [wx.WXK_UP, wx.WXK_DOWN, wx.WXK_PAGEUP, wx.WXK_PAGEDOWN] \
@@ -150,12 +149,7 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
             close_symbol = open_symbol
         return value[:from_] + open_symbol + value[from_:to_] + close_symbol + value[to_:]
 
-    def OnFocusLost(self, event=None, set_value=False):
-        if not self._popup.is_shown():
-            # wxPython 4.0.7 has bug here, must skip the event
-            if event:
-                event.Skip()
-            return
+    def fill_suggestion(self, set_value=False):
         if self.gherkin_prefix:
             value = self.gherkin_prefix + self._popup.get_value() or self.GetValue()
         else:
@@ -449,7 +443,7 @@ class ContentAssistPopup(object):
         self._details_popup.Show(False)
 
     def OnListItemActivated(self, event):
-        self._parent.OnFocusLost(event, set_value=True)
+        self._parent.fill_suggestion(set_value=True)
 
     def OnListItemSelected(self, event):
         self._selection = event.GetIndex()
@@ -464,6 +458,7 @@ class ContentAssistPopup(object):
 class ContentAssistList(wx.ListCtrl):
 
     def __init__(self, parent, selection_callback, activation_callback=None):
+        self.parent = parent
         style = wx.LC_REPORT | wx.LC_SINGLE_SEL | wx.LC_NO_HEADER
         wx.ListCtrl.__init__(self, parent, style=style)
         self._selection_callback = selection_callback
@@ -471,7 +466,14 @@ class ContentAssistList(wx.ListCtrl):
         self.SetSize(parent.GetSize())
         self.SetBackgroundColour(context.POPUP_BACKGROUND)
         self.Bind(wx.EVT_LIST_ITEM_SELECTED, selection_callback)
-        self.Bind(wx.EVT_LIST_ITEM_ACTIVATED, activation_callback)
+        self.Bind(wx.EVT_LIST_ITEM_FOCUSED, self.activate)
+        self.Bind(wx.EVT_LEFT_DCLICK, activation_callback)
+
+    def activate(self, event):
+        import time
+        wx.CallAfter(self.parent.GetParent().GetParent().SetFocus)
+        wx.CallAfter(self.parent.GetParent().GetParent().GetParent()._open_cell_editor)
+        print(f'{time.time()} activate')
 
     def populate(self, data):
         self.ClearAll()
