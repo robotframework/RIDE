@@ -49,9 +49,9 @@ class ListEditorBase(wx.Panel):
             self._list.SetHeaderAttr(wx.ItemAttr(colText=Colour(7, 0, 70), colBack=Colour(200, 222, 40),
                                                  font=self._list.GetFont()))
         sizer.Add(self._list, 1, wx.EXPAND)
-        sizer.Add((5,0))
+        sizer.Add((5, 0))
         sizer.Add(self._create_buttons())
-        sizer.Add((5,0))
+        sizer.Add((5, 0))
         self.SetSizer(sizer)
         sizer.Layout()
 
@@ -66,7 +66,7 @@ class ListEditorBase(wx.Panel):
 
     def _make_bindings(self):
         self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.OnItemSelected)
-        self.Bind(wx.EVT_LIST_ITEM_DESELECTED , self.OnItemDeselected)
+        self.Bind(wx.EVT_LIST_ITEM_DESELECTED, self.OnItemDeselected)
         self.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self.OnEdit)
         self.Bind(wx.EVT_LIST_ITEM_RIGHT_CLICK, self.OnRightClick)
         if IS_WINDOWS:
@@ -103,14 +103,14 @@ class ListEditorBase(wx.Panel):
             return
         self._controller.execute(ctrlcommands.MoveUp(self._selection))
         self.update_data()
-        self._list.Select(self._selection-1, True)
+        self._list.Select(self._selection - 1, True)
 
     def OnMoveDown(self, event):
         if self._selection == self._list.GetItemCount() - 1 or not self.is_selected:
             return
         self._controller.execute(ctrlcommands.MoveDown(self._selection))
         self.update_data()
-        self._list.Select(self._selection+1, True)
+        self._list.Select(self._selection + 1, True)
 
     def OnDelete(self, event):
         if self.is_selected:
@@ -131,7 +131,7 @@ class ListEditorBase(wx.Panel):
 
     def _calculate_selection(self):
         self._selection = min(self._selection,
-                              sum(1 for _ in self._controller)-1)
+                              sum(1 for _ in self._controller) - 1)
 
     @property
     def is_selected(self):
@@ -160,7 +160,7 @@ class AutoWidthColumnList(wx.ListCtrl, ListCtrlAutoWidthMixin):
 
     def __init__(self, parent, columns, data=None):
         wx.ListCtrl.__init__(self, parent,
-                             style=wx.LC_REPORT|wx.NO_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES)
+                             style=wx.LC_REPORT | wx.NO_BORDER | wx.LC_SINGLE_SEL | wx.LC_HRULES)
         ListCtrlAutoWidthMixin.__init__(self)
         """
         self.SetBackgroundColour(Colour(200, 222, 40))
@@ -232,6 +232,11 @@ class AutoWidthColumnList(wx.ListCtrl, ListCtrlAutoWidthMixin):
         self.select_and_ensure_visibility(index)
 
     def select_and_ensure_visibility(self, index):
+        # make sure index is not out of bound
+        count = self.GetItemCount()
+        if index + 1 > count:
+            # index out of range
+            return
         if index >= 0:
             self.Select(index, on=True)
             self.EnsureVisible(index)
