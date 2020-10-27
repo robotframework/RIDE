@@ -20,7 +20,7 @@ from wx.lib.ClickableHtmlWindow import PyClickableHtmlWindow
 
 from ..action import ActionInfo
 from ..version import VERSION
-from ..widgets.htmlwnd import HTML_BACKGROUND
+# from ..widgets.htmlwnd import HTML_BACKGROUND
 
 
 class ReleaseNotes(object):
@@ -35,6 +35,7 @@ class ReleaseNotes(object):
         self.application = application
         settings = application.settings
         self.version_shown = settings.get('version_shown', '')
+        self.general_settings = settings['General']
         self._view = None
         self.enable()
 
@@ -63,11 +64,12 @@ class ReleaseNotes(object):
         panel = wx.Panel(self.application.frame.notebook)
         html_win = PyClickableHtmlWindow(panel, -1)
         html_win.SetStandardFonts()
+        fgcolor = self.general_settings.get('foreground text', Colour(7, 0, 70))
         """
         panel.SetBackgroundColour(Colour(200, 222, 40))
-        panel.SetForegroundColour(Colour(7, 0, 70))
-        html_win.SetOwnForegroundColour(Colour(7, 0, 70))
         """
+        panel.SetForegroundColour(fgcolor)
+        html_win.SetOwnForegroundColour(fgcolor)
         self.set_content(html_win, WELCOME_TEXT + RELEASE_NOTES)
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(html_win, 1, wx.EXPAND|wx.ALL, border=8)
@@ -75,8 +77,17 @@ class ReleaseNotes(object):
         return panel
 
     def set_content(self, html_win, content):
-        color = ''.join(hex(item)[2:] for item in HTML_BACKGROUND)
-        _content = '<body bgcolor=#%s>%s</body>' % (color, content)
+        bkgcolor = self.general_settings.get('background help', Colour(240, 242, 80))
+        fgcolor = self.general_settings.get('foreground text', Colour(7, 0, 70))
+        print(f"DEBUG: set_content  bkg={bkgcolor} bkg={type(bkgcolor)} fg={fgcolor} fg={type(fgcolor)}")
+        try:
+            # tuple(bkgcolor)
+            bcolor = ''.join(hex(item)[2:] for item in bkgcolor)
+            fcolor = ''.join(hex(item)[2:] for item in fgcolor)
+            _content = '<body "bgcolor=#%s;" "color=#%s;">%s</body>' % (bcolor, fcolor, content)
+            print(f"DEBUG: set_content after  bkg={bcolor} bkg={type(bcolor)} fg={fcolor} fg={type(fcolor)}")
+        except TypeError:
+            _content = '<body bgcolor=%s>%s</body>' % (bkgcolor, content)
         html_win.SetPage(_content)
 
 

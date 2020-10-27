@@ -109,7 +109,7 @@ class KeywordEditor(GridEditor, Plugin):
         self.Refresh()
         PUBLISHER.subscribe(self._before_saving, RideBeforeSaving)
         PUBLISHER.subscribe(self._data_changed, RideItemStepsChanged)
-        PUBLISHER.subscribe(self.OnSettingsChanged, RideSettingsChanged)
+        # PUBLISHER.subscribe(self.OnSettingsChanged, RideSettingsChanged)
         PUBLISHER.subscribe(self._ps_on_resize_grid, RideSaved)
 
     def _namespace_updated(self):
@@ -957,6 +957,7 @@ class ContentAssistCellEditor(GridCellEditor):
         self._counter = 0
         self._tc.SetSize((-1, self._height))
         self._tc.SetBackgroundColour(context.POPUP_BACKGROUND)  # DEBUG: We are now in Edit mode
+        self._tc.SetForegroundColour(context.POPUP_FOREGROUND)
         self._tc.set_row(row)
         self._original_value = grid.GetCellValue(row, col)
         self._tc.SetValue(self._original_value)

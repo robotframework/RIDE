@@ -252,6 +252,10 @@ class RideFrame(wx.Frame):
         self.toolbar.SetOwnForegroundColour(Colour(7, 0, 70))
         """
         # self.SetToolBar(self.toolbar.GetToolBar())
+        mb._frame.SetBackgroundColour(Colour(200, 222, 40))
+        mb._frame.SetOwnBackgroundColour(Colour(200, 222, 40))
+        mb._frame.SetForegroundColour(Colour(7, 0, 70))
+        mb._frame.SetOwnForegroundColour(Colour(7, 0, 70))
         self._mgr.AddPane(self.toolbar, aui.AuiPaneInfo().Name("maintoolbar").
                           ToolbarPane().Top())
         self.actions = ActionRegisterer(self._mgr, mb, self.toolbar,
@@ -281,6 +285,7 @@ class RideFrame(wx.Frame):
         self.SetIcons(self._image_provider.PROGICONS)
         # tell the manager to "commit" all the changes just made
         self._mgr.Update()
+        wx.CallLater(2000, RideSettingsChanged(keys=("General", ''), old='', new='').publish)
 
     """
     def testToolbar(self):
@@ -667,20 +672,20 @@ class RideFrame(wx.Frame):
                     _.mark_dirty()
             self.save_all()
 
-    def OnSettingsChanged(self, data):
+    def OnSettingsChanged(self, message):
         """Redraw the colors if the color settings are modified"""
         # section, setting = data.keys
-        print(f"DEBUG: OnSettingsChanged enter {type(data)}")
-        if isinstance(data, _Section):
-            ndata= data
+        print(f"DEBUG: OnSettingsChanged enter {repr(message)}")
+        if isinstance(message, _Section):
+            ndata= message
             print(f"DEBUG: OnSettingsChanged in Section {type(ndata)}")
-            for key, value in data:
+            for key, value in message:
                 print(f"DEBUG: OnSettingsChanged in key {key} value {value}")
-            background = data.get_without_default('background')
-            foreground = data.get_without_default('foreground')
-            print(f"DEBUG: OnSettings section: {data._is_section('General')} background {background}"
+            background = message.get_without_default('background')
+            foreground = message.get_without_default('foreground')
+            print(f"DEBUG: OnSettings section: {message._is_section('General')} background {background}"
                   f" foreground {foreground}")
-            if data._is_section('General'):
+            if message._is_section('General'):
                 _settings = RideSettings()
                 _general_settings = _settings['General']
                 children = self.GetChildren()

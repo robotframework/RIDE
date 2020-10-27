@@ -71,6 +71,10 @@ class GeneralPreferences(PreferencesPanel):
             if not line:
                 continue
             key, value = [s.strip().strip('\'') for s in line.split("=")]
+            print(f"DEBUG: Preferences General default value type {type(value)} {value}")
+            if len(value) > 0 and value[0] == '(' and value[-1] == ')':
+                from ast import literal_eval as make_tuple
+                value = make_tuple(value)
             defaults[key] = value
         return defaults
 
@@ -108,7 +112,7 @@ class DefaultPreferences(GeneralPreferences):
 
     def __init__(self, settings, *args, **kwargs):
         super(DefaultPreferences, self).__init__(settings[self.name], *args, **kwargs)
-        PUBLISHER.subscribe(self.OnSettingsChanged, RideSettingsChanged)
+        #PUBLISHER.subscribe(self.OnSettingsChanged, RideSettingsChanged)
         # print(f"DEBUG: settings_path {settings.get_path()}")
 
     def create_colors_sizer(self):
@@ -118,6 +122,10 @@ class DefaultPreferences(GeneralPreferences):
         settings = (
                     ('foreground', 'Foreground'),
                     ('background', 'Background'),
+                    ('secondary foreground', 'Secondary Foreground'),
+                    ('secondary background', 'Secondary Background'),
+                    ('foreground text', 'Text Foreground'),
+                    ('background help', 'Help Background')
                     )
 
         for settings_key, label_text in settings:
@@ -144,16 +152,19 @@ class DefaultPreferences(GeneralPreferences):
     def OnSettingsChanged(self, message):
         """Redraw the colors if the color settings are modified"""
         section, setting = message.keys
+        print(f"DEBUG: OnSettings {setting} {section}")
+
         if section == 'General':
             # print(f"DEBUG: OnSettings got here")
             panel = self.GetParent().GetParent()
             print(f"DEBUG: OnSettings panel {panel.GetParent()}")
-            """
+
             foreground = self._settings.get('foreground', 'black')
             background = self._settings.get('background', 'white')
-            panel.settings['foreground'] = foreground
-            panel.settings['background'] = background
-            """
+            # panel.settings['foreground'] = foreground
+            # panel.settings['background'] = background
+
+           # self.GetParent().Destroy()
             panel.Refresh(True)
-            # panel.ShowPanel()
+            panel.ShowPanel()
             self.Refresh(True)

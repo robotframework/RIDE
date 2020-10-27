@@ -197,12 +197,10 @@ class ExpandingContentAssistTextCtrl(_ContentAssistTextCtrlBase,
         ExpandoTextCtrl.__init__(self, parent, size=wx.DefaultSize,
                                  style=wx.WANTS_CHARS|wx.TE_NOHIDESEL)
         _ContentAssistTextCtrlBase.__init__(self, SuggestionSource(plugin, controller))
-        """
-        self.SetBackgroundColour(Colour(200, 222, 40))
-        self.SetOwnBackgroundColour(Colour(200, 222, 40))
-        self.SetForegroundColour(Colour(7, 0, 70))
-        self.SetOwnForegroundColour(Colour(7, 0, 70))
-        """
+        self.SetBackgroundColour(context.POPUP_BACKGROUND)
+        # self.SetOwnBackgroundColour(Colour(200, 222, 40))
+        self.SetForegroundColour(context.POPUP_FOREGROUND)
+        # self.SetOwnForegroundColour(Colour(7, 0, 70))
 
 
 class ContentAssistTextCtrl(_ContentAssistTextCtrlBase, wx.TextCtrl):

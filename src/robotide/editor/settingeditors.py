@@ -52,6 +52,17 @@ class SettingEditor(wx.Panel):
 
     def __init__(self, parent, controller, plugin, tree):
         wx.Panel.__init__(self, parent)
+        from ..preferences import RideSettings
+        _settings = RideSettings()
+        self.general_settings = _settings['General']
+        HTML_BACKGROUND = _settings.get('background help', (240, 242, 80))
+        HTML_FOREGROUND = _settings.get('foreground help', (7, 0, 70))
+        HTML_FONT_FACE = _settings.get('font face', '')
+        HTML_FONT_SIZE = _settings.get('font size', 11)
+        self.SetBackgroundColour(Colour(HTML_BACKGROUND))
+        self.SetOwnBackgroundColour(Colour(HTML_BACKGROUND))
+        self.SetForegroundColour(Colour(HTML_FOREGROUND))
+        self.SetOwnForegroundColour(Colour(HTML_FOREGROUND))
         """
         self.SetBackgroundColour(Colour(200, 222, 40))
         self.SetOwnBackgroundColour(Colour(200, 222, 40))

@@ -156,7 +156,8 @@ class PreferencesColorPicker(wx.ColourPickerCtrl):
     def __init__(self, parent, id, settings, key):
         self.settings = settings
         self.key = key
-        value = settings[key]
+        # print(f"DEBUG: Preferences ColourPicker value type {type(settings[key])}")
+        value = Colour(settings[key])
         super(PreferencesColorPicker, self).__init__(parent, id, colour=value)
         """
         self.SetBackgroundColour(Colour(200, 222, 40))

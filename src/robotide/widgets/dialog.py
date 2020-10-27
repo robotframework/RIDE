@@ -19,40 +19,51 @@ import wx
 from wx import html, Colour
 
 from . import sizers
-# from ..preferences import RideSettings
+
 
 # TODO: Make this colour configurable
-# HTML_BACKGROUND = (240, 242, 80)  # (200, 222, 40)
+#HTML_BACKGROUND = (240, 242, 80)  # (200, 222, 40)
 # _settings = RideSettings()
 # general_settings = _settings['General']
+# HTML_BACKGROUND = _settings.get('background help', HTML_BACKGROUND)
 # HTML_BACKGROUND = general_settings['background help']
 # Workaround for circular import
-HTML_BACKGROUND = (240, 242, 80)
-HTML_FOREGROUND = (7, 0, 70)
-general_settings = {'background help': HTML_BACKGROUND, 'foreground help': HTML_FOREGROUND,
-                    'font face': '', 'font size': 11}
+
+# general_settings = {'background help': HTML_BACKGROUND, 'foreground help': HTML_FOREGROUND,
+#                    'font face': '', 'font size': 11}
 
 
 class HtmlWindow(html.HtmlWindow):
 
     def __init__(self, parent, size=wx.DefaultSize, text=None):
         html.HtmlWindow.__init__(self, parent, size=size)
+        from ..preferences import RideSettings
+        _settings = RideSettings()
+        self.general_settings = _settings['General']
+        HTML_BACKGROUND = _settings.get('background help', (240, 242, 80))
+        HTML_FOREGROUND = _settings.get('foreground text', (7, 0, 70))
+        HTML_FONT_FACE = _settings.get('font face', '')
+        HTML_FONT_SIZE = _settings.get('font size', 11)
         self.SetBorders(2)
         self.SetStandardFonts(size=9)
         if text:
             self.set_content(text)
-        self.SetHTMLBackgroundColour(Colour(general_settings['background help']))
-        self.SetForegroundColour(Colour(general_settings['foreground help']))
+        self.SetHTMLBackgroundColour(Colour(self.general_settings['background help']))
+        self.SetForegroundColour(Colour(self.general_settings['foreground text']))
         self.font = self.GetFont()
-        self.font.SetFaceName(general_settings['font face'])
-        self.font.SetPointSize(general_settings['font size'])
+        self.font.SetFaceName(self.general_settings['font face'])
+        self.font.SetPointSize(self.general_settings['font size'])
         self.SetFont(self.font)
         self.Refresh(True)
         self.Bind(wx.EVT_KEY_DOWN, self.OnKeyDown)
 
     def set_content(self, content):
-        color = ''.join(hex(item)[2:] for item in general_settings['background help'])
-        _content = '<body bgcolor=#%s>%s</body>' % (color, content)
+        bkgcolor = self.general_settings['background help']
+        try:
+            color = ''.join(hex(item)[2:] for item in tuple(bkgcolor))
+            _content = '<body bgcolor=#%s>%s</body>' % (color, content)
+        except TypeError:
+            _content = '<body bgcolor=%s>%s</body>' % (bkgcolor, content)
         self.SetPage(_content)
 
     def OnKeyDown(self, event):

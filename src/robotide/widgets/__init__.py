@@ -14,7 +14,8 @@
 #  limitations under the License.
 
 from .button import ButtonWithHandler
-from .dialog import RIDEDialog, HtmlDialog, HtmlWindow, HTML_BACKGROUND
+from .dialog import RIDEDialog, HtmlDialog, HtmlWindow
+    # , HTML_BACKGROUND
 from .font import Font
 from .images import ImageList, ImageProvider
 from .label import Label, HeaderLabel, HelpLabel
