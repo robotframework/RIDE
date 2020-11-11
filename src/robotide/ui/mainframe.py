@@ -164,6 +164,11 @@ class RideFrame(wx.Frame):
         self._application = application
         self._controller = controller
         self._image_provider = ImageProvider()
+        self.general_settings = application.settings['General']  #.get_without_default('General')
+        self.color_background_help = self.general_settings.get('background help', (240, 242, 80))
+        self.color_foreground_text = self.general_settings.get('foreground text', (7, 0, 70))
+        self.font_face = self.general_settings.get('font face', '')
+        self.font_size = self.general_settings.get('font size', 11)
         self._init_ui()
         self._task_bar_icon = RIDETaskBarIcon(self._image_provider)
         self._plugin_manager = PluginManager(self.notebook)
@@ -215,8 +220,8 @@ class RideFrame(wx.Frame):
         # #### self.splitter = wx.SplitterWindow(self, style=wx.SP_LIVE_UPDATE)
         # self._mgr.AddPane(wx.Panel(self), aui.AuiPaneInfo().CenterPane())
         # set up default notebook style
-        self._notebook_style = aui.AUI_NB_DEFAULT_STYLE | \
-                               aui.AUI_NB_TAB_EXTERNAL_MOVE | wx.NO_BORDER
+        self._notebook_style = aui.AUI_NB_DEFAULT_STYLE | aui.AUI_NB_WINDOWLIST_BUTTON | \
+                               aui.AUI_NB_TAB_EXTERNAL_MOVE | aui.AUI_NB_SUB_NOTEBOOK | aui.AUI_NB_SMART_TABS  #| wx.NO_BORDER
         # TODO self._notebook_theme = 0 (allow to select themes for notebooks)
         # self.notebook = NoteBook(self.splitter, self._application,
         #                         self._notebook_style)
@@ -346,6 +351,8 @@ class RideFrame(wx.Frame):
         if self._allowed_to_exit():
             perspective = self._mgr.SavePerspective()
             self._application.settings.set('AUI Perspective', perspective)
+            nb_perspective = self.notebook.SavePerspective()
+            self._application.settings.set('AUI NB Perspective', nb_perspective)
             PUBLISHER.unsubscribe(self._set_label, RideTreeSelection)
             RideClosing().publish()
             # deinitialize the frame manager
@@ -671,19 +678,19 @@ class RideFrame(wx.Frame):
                         os.makedirs(_.directory)
                     _.mark_dirty()
             self.save_all()
-
+"""
     def OnSettingsChanged(self, message):
-        """Redraw the colors if the color settings are modified"""
+        #TODO: change to doc Redraw the colors if the color settings are modified
         # section, setting = data.keys
-        print(f"DEBUG: OnSettingsChanged enter {repr(message)}")
+        #print(f"DEBUG: OnSettingsChanged enter {repr(message)}")
         if isinstance(message, _Section):
             ndata= message
-            print(f"DEBUG: OnSettingsChanged in Section {type(ndata)}")
+            # print(f"DEBUG: OnSettingsChanged in Section {type(ndata)}")
             for key, value in message:
-                print(f"DEBUG: OnSettingsChanged in key {key} value {value}")
+                # print(f"DEBUG: OnSettingsChanged in key {key} value {value}")
             background = message.get_without_default('background')
             foreground = message.get_without_default('foreground')
-            print(f"DEBUG: OnSettings section: {message._is_section('General')} background {background}"
+            # print(f"DEBUG: OnSettings section: {message._is_section('General')} background {background}"
                   f" foreground {foreground}")
             if message._is_section('General'):
                 _settings = RideSettings()
@@ -699,8 +706,9 @@ class RideFrame(wx.Frame):
                     font.SetPointSize(_general_settings['font size'])
                     child.SetFont(font)
                     child.Refresh(True)
-                    print(f"DEBUG: OnSettingsChanged child {type(child)}")
-            print(f"DEBUG: OnSettingsChanged not General")
+                    # print(f"DEBUG: OnSettingsChanged child {type(child)}")
+            # print(f"DEBUG: OnSettingsChanged not General")
+"""
 
 
 # Code moved from actiontriggers

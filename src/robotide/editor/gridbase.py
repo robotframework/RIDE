@@ -25,7 +25,7 @@ from ..widgets import PopupCreator, PopupMenuItems
 
 
 class GridEditor(grid.Grid):
-    _col_add_threshold = 10
+    _col_add_threshold = 6
     _popup_items = [
         'Insert Cells\tCtrl-Shift-I', 'Delete Cells\tCtrl-Shift-D',
         'Insert Rows\tCtrl-I', 'Delete Rows\tCtrl-D', '---',
@@ -92,9 +92,9 @@ class GridEditor(grid.Grid):
 
     def _expand_if_necessary(self, row, col):
         # Changed col and row fill because of blank spacing not changing color
-        while self.NumberRows <= max(row, 25):
+        while self.NumberRows <= max(row, 20): # DEBUG 25 makes slower rendering
             self.AppendRows(1)
-        while self.NumberCols <= max(col, 40):
+        while self.NumberCols <= max(col, 12): # DEBUG 40 makes slower rendering
             self.AppendCols(self._col_add_threshold)
 
     def has_focus(self):

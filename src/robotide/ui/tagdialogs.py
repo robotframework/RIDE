@@ -389,7 +389,7 @@ class TagsListCtrl(wx.ListCtrl, listmix.CheckListCtrlMixin,
     def CheckAll(self):
         for i in range(self.GetItemCount()):
             if wx.VERSION >= (4, 1, 0):
-                print(f"DEBUG: CheckAll tags")
+                # print(f"DEBUG: CheckAll tags")
                 self.CheckItem(i, True)
             else:
                 self.CheckItem(i)

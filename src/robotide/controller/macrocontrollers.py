@@ -154,7 +154,7 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         self.datafile_controller.update_namespace()
 
     def get_local_namespace(self):
-        print(f"DEBUG: local namespace controller._namespace {self.datafile_controller._namespace}")
+        # print(f"DEBUG: local namespace controller._namespace {self.datafile_controller._namespace}")
         return LocalNamespace(self, self.datafile_controller._namespace)
 
     def get_local_namespace_for_row(self, row):

@@ -82,6 +82,9 @@ class TreePlugin(Plugin):
         self._action_registerer = action_registerer
         self.tree = parent.tree
         """
+        self._model= self.model
+        # self._tree.Bind(wx.EVT_UPDATE_UI, self.OnShowTree)
+        self._tree.Bind(wx.EVT_MOVE, self.OnTabChanged)
         # parent, action_registerer, , default_settings={'collapsed':True}
 
     def register_frame(self, parent=None):
@@ -131,7 +134,10 @@ class TreePlugin(Plugin):
         return self._tree.HasFocus()
 
     def populate(self, model):
-        self._tree.populate(model)
+        if model and model != self._model:
+            self._model = model
+        # print(f"DEBUG: Populating model... {self._model}\n\n")
+        self._tree.populate(self._model)
 
     def set_editor(self, editor):
         self._tree.set_editor(editor)
@@ -143,17 +149,38 @@ class TreePlugin(Plugin):
             self._tree = Tree(self, self._parent.actions, self._parent._application.settings)
             print(f"DEBUG: TreePlugin Show created tree {self._tree.GetName()}")
 
+        # print(f"DEBUG: Tree OnShowTree event {event}")
         self._pane = self._mgr.GetPane(self._tree)
+        HTML_BACKGROUND = self.settings.get('background help', (240, 242, 80))
+        HTML_FOREGROUND = self.settings.get('foreground text', (7, 0, 70))
+        HTML_FONT_FACE = self.settings.get('font face', '')
+        HTML_FONT_SIZE = self.settings.get('font size', 11)
         self._tree.Show(True)
+        self._tree.SetMinSize(wx.Size(200, 225))
         self._mgr.DetachPane(self._tree)
         # self._mgr.Update()
         self._mgr.AddPane(self._tree,
                           wx.lib.agw.aui.AuiPaneInfo().Name("tree_content").
                           Caption("Test Suites").LeftDockable(True).
                           CloseButton(True))
+        self._tree.SetBackgroundStyle(wx.BG_STYLE_SYSTEM)
+        self._tree.SetBackgroundColour(HTML_BACKGROUND)
+        self._tree.SetForegroundColour(HTML_FOREGROUND)
+        """
+        self.font = self._tree.GetFont()
+        # print(f"DEBUG:font {self.font}, face {HTML_FONT_FACE} size {HTML_FONT_SIZE}")
+        if HTML_FONT_FACE is not None:
+            self.font.SetFaceName(HTML_FONT_FACE)
+            self.font.SetPointSize(HTML_FONT_SIZE)
+            self._tree.SetFont(self.font)
+            self._tree.Refresh()
+        """
         self._tree.Raise()
         self._mgr.Update()
         self.save_setting('opened', True)
+        if self._model:
+            self._tree.populate(self._model)
+            # print(f"DEBUG: model {self._model}")
         self._update_tree()
 
     def OnTreeSelection(self, message):
@@ -161,10 +188,15 @@ class TreePlugin(Plugin):
             self._tree.tree_node_selected(message.item)
 
     def OnTabChanged(self, event):
+        # print(f"DEBUG: Called OnTabChanged")
         self._update_tree()
+        # print(f"DEBUG: Called Tree._refresh_view {self._tree.GetParent().GetClassName()}")
 
     def _update_tree(self, event=None):
         # if self._tree.is_focused():
+        #print(f"DEBUG: Populating model... {self._model}\n\n")
+        #self.populate(self._model)
+        self._tree.populate(self._model)
         self._tree._refresh_view()
 
 
@@ -199,6 +231,12 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl):
         """
         self.SetBackgroundColour('white')  # TODO get background color from def
         """
+        self._menu = wx.Menu()
+        self._menu.Append(wx.ID_CLOSE, item="&Close", helpString="Closes panel")
+        self._mb = wx.MenuBar()
+        self._mb.Append(self._menu, "Menu")
+        self.GetParent().SetMenuBar(self._mb)
+        # print(f"DEBUG: Tree tried to add menu to {self.GetParent().__repr__()}")
         if not hasattr(self, 'OnCancelEdit'):
             self.OnCancelEdit = self._on_cancel_edit
 
@@ -445,6 +483,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl):
 
     def _refresh_view(self):
         self.Refresh()
+        # print(f"DEBUG: Called Tree._refresh_view {self.GetParent().GetClassName()}")
         if self._resource_root:
             self.Expand(self._resource_root)
         if self._datafile_nodes:

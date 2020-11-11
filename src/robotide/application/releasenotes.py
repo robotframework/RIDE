@@ -79,13 +79,13 @@ class ReleaseNotes(object):
     def set_content(self, html_win, content):
         bkgcolor = self.general_settings.get('background help', Colour(240, 242, 80))
         fgcolor = self.general_settings.get('foreground text', Colour(7, 0, 70))
-        print(f"DEBUG: set_content  bkg={bkgcolor} bkg={type(bkgcolor)} fg={fgcolor} fg={type(fgcolor)}")
+        # print(f"DEBUG: set_content  bkg={bkgcolor} bkg={type(bkgcolor)} fg={fgcolor} fg={type(fgcolor)}")
         try:
             # tuple(bkgcolor)
             bcolor = ''.join(hex(item)[2:] for item in bkgcolor)
             fcolor = ''.join(hex(item)[2:] for item in fgcolor)
             _content = '<body "bgcolor=#%s;" "color=#%s;">%s</body>' % (bcolor, fcolor, content)
-            print(f"DEBUG: set_content after  bkg={bcolor} bkg={type(bcolor)} fg={fcolor} fg={type(fcolor)}")
+            # print(f"DEBUG: set_content after  bkg={bcolor} bkg={type(bcolor)} fg={fcolor} fg={type(fcolor)}")
         except TypeError:
             _content = '<body bgcolor=%s>%s</body>' % (bkgcolor, content)
         html_win.SetPage(_content)

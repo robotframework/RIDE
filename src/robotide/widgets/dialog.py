@@ -49,6 +49,7 @@ class HtmlWindow(html.HtmlWindow):
         if text:
             self.set_content(text)
         self.SetHTMLBackgroundColour(Colour(self.general_settings['background help']))
+        # print(f"DEBUG: HTML init Dialog color: {Colour(self.general_settings['background help'])}")
         self.SetForegroundColour(Colour(self.general_settings['foreground text']))
         self.font = self.GetFont()
         self.font.SetFaceName(self.general_settings['font face'])
@@ -59,6 +60,7 @@ class HtmlWindow(html.HtmlWindow):
 
     def set_content(self, content):
         bkgcolor = self.general_settings['background help']
+        # print(f"DEBUG: HTML text Dialog color: {bkgcolor}")
         try:
             color = ''.join(hex(item)[2:] for item in tuple(bkgcolor))
             _content = '<body bgcolor=#%s>%s</body>' % (color, content)

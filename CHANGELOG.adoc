@@ -11,6 +11,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Added
 
+- Added perspectives persistance for Notebook panels, Edit, Text Editor and Run
 - Added General settings to Preferences, to change Font Size and Face, and colours
 - Added background colour globally on panels and dialogs
 - Added Python 3.8 unit test support in travis CI

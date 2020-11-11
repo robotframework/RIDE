@@ -69,7 +69,7 @@ class RIDE(wx.App):
         self.namespace = Namespace(self.settings)
         self._controller = Project(self.namespace, self.settings)
         self.frame = RideFrame(self, self._controller)
-        self.frame.Show()
+        ##### DEBUG  self.frame.Show()
         self._editor_provider = EditorProvider()
         self._plugin_loader = PluginLoader(self, self._get_plugin_dirs(),
                                            coreplugins.get_core_plugins())
@@ -77,6 +77,9 @@ class RIDE(wx.App):
         perspective = self.settings.get('AUI Perspective', None)
         if perspective:
             self.frame._mgr.LoadPerspective(perspective, True)
+        nb_perspective = self.settings.get('AUI NB Perspective', None)
+        if nb_perspective:
+            self.frame.notebook.LoadPerspective(nb_perspective)
         self.treeplugin = TreePlugin(self)
         if self.treeplugin.settings['_enabled']:
             self.treeplugin.register_frame(self.frame)
@@ -85,6 +88,8 @@ class RIDE(wx.App):
             self.fileexplorerplugin.register_frame(self.frame)
         if not self.treeplugin.opened:
             self.treeplugin.close_tree()
+        else:
+            wx.CallLater(200, self.treeplugin.populate, self.model)
         if not self.fileexplorerplugin.opened:
             self.fileexplorerplugin.close_tree()
         self.editor = self._get_editor()
@@ -93,6 +98,8 @@ class RIDE(wx.App):
         self.treeplugin.set_editor(self.editor)
         self._find_robot_installation()
         self._publish_system_info()
+        self.frame.Show()    ####### DEBUG DANGER ZONE
+        self.frame._mgr.Update()
         if self._updatecheck:
             UpdateNotifierController(self.settings).notify_update_if_needed(UpdateDialog)
         wx.CallLater(200, ReleaseNotes(self).bring_to_front)
@@ -146,12 +153,13 @@ class RIDE(wx.App):
         elif isinstance(widget, wx.MenuItem):
             widget.SetTextColour(foreground)
             widget.SetBackgroundColour(background)
+            # print(f"DEBUG: Application ApplyTheme wx.MenuItem {type(widget)}")
         else:
             widget.SetBackgroundColour(background)
             widget.SetOwnBackgroundColour(background)
             widget.SetForegroundColour(foreground)
             widget.SetOwnForegroundColour(foreground)
-            print(f"DEBUG: Application ApplyTheme type(widget) {type(widget)}")
+            ###### print(f"DEBUG: Application ApplyTheme not specified type(widget) {type(widget)}")
             # pass
             # raise UnthemableWidgetError()
 
@@ -172,10 +180,6 @@ class RIDE(wx.App):
         app = wx.App.Get()
         _root = app.GetTopWindow()
         theme = self.settings.get('General', None)
-        background = theme['background']
-        foreground = theme['foreground']
-        background_help = theme['background help']
-        foreground_text = theme['foreground text']
         font_size = theme['font size']
         font_face = theme['font face']
         font = _root.GetFont()
@@ -183,11 +187,29 @@ class RIDE(wx.App):
         font.SetPointSize(font_size)
         _root.SetFont(font)
         self._WalkWidgets(_root, theme=theme)
+        if theme['apply to panels'] and self.fileexplorerplugin.settings['_enabled']:
+            self.fileexplorerplugin.settings['background'] = theme['background']
+            self.fileexplorerplugin.settings['foreground'] = theme['foreground']
+            self.fileexplorerplugin.settings['foreground text'] = theme['foreground text']
+            self.fileexplorerplugin.settings['background help'] = theme['background help']
+            self.fileexplorerplugin.settings['font size'] = theme['font size']
+            self.fileexplorerplugin.settings['font face'] = theme['font face']
+            if self.fileexplorerplugin.settings['opened']:
+                self.fileexplorerplugin.OnShowFileExplorer(None)
+        if theme['apply to panels'] and self.treeplugin.settings['_enabled']:
+            self.treeplugin.settings['background'] = theme['background']
+            self.treeplugin.settings['foreground'] = theme['foreground']
+            self.treeplugin.settings['foreground text'] = theme['foreground text']
+            self.treeplugin.settings['background help'] = theme['background help']
+            self.treeplugin.settings['font size'] = theme['font size']
+            self.treeplugin.settings['font face'] = theme['font face']
+            if self.treeplugin.settings['opened']:
+                self.treeplugin.OnShowTree(None)
         """
         all_windows = list()
         general = self.settings.get('General', None)
         # print(f"DEBUG: Application General {general['background']} Type message {type(message)}")
-        print(f"DEBUG: Application General message keys {message.keys} old {message.old} new {message.new}")
+        # print(f"DEBUG: Application General message keys {message.keys} old {message.old} new {message.new}")
         background = general['background']
         foreground = general['foreground']
         background_help = general['background help']

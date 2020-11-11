@@ -35,17 +35,6 @@ from ..publish.messages import (RideImportSetting, RideOpenVariableDialog, RideE
 from ..utils import overrides
 from ..utils.highlightmatcher import highlight_matcher
 from ..widgets import ButtonWithHandler, Label, HtmlWindow, PopupMenu, PopupMenuItems, HtmlDialog
-from ..publish import PUBLISHER
-from .. import utils
-from ..utils.highlightmatcher import highlight_matcher
-from .formatters import ListToStringFormatter
-from .gridcolorizer import ColorizationSettings
-from .editordialogs import EditorDialog, DocumentationDialog, MetadataDialog,\
-    ScalarVariableDialog, ListVariableDialog, DictionaryVariableDialog, LibraryDialog,\
-    ResourceDialog, VariablesDialog
-from .listeditor import ListEditor
-from .popupwindow import HtmlPopupWindow
-from .tags import TagsDisplay
 
 
 class SettingEditor(wx.Panel):
@@ -56,7 +45,7 @@ class SettingEditor(wx.Panel):
         _settings = RideSettings()
         self.general_settings = _settings['General']
         HTML_BACKGROUND = _settings.get('background help', (240, 242, 80))
-        HTML_FOREGROUND = _settings.get('foreground help', (7, 0, 70))
+        HTML_FOREGROUND = _settings.get('foreground text', (7, 0, 70))
         HTML_FONT_FACE = _settings.get('font face', '')
         HTML_FONT_SIZE = _settings.get('font size', 11)
         self.SetBackgroundColour(Colour(HTML_BACKGROUND))
@@ -75,6 +64,11 @@ class SettingEditor(wx.Panel):
         self._create_controls()
         self._tree = tree
         self._editing = False
+        self.font = self._tree.GetFont()
+        self.font.SetFaceName(HTML_FONT_FACE)
+        self.font.SetPointSize(HTML_FONT_SIZE)
+        self._tree.SetFont(self.font)
+        self._tree.Refresh()
         self.plugin.subscribe(self._ps_on_update_value, RideImportSetting)
 
     def _create_controls(self):

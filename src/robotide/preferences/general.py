@@ -19,8 +19,8 @@ import wx
 
 from ..ui.preferences_dialogs import (boolean_editor, PreferencesPanel, IntegerChoiceEditor, SpinChoiceEditor,
                                       StringChoiceEditor, PreferencesColorPicker)
-from ..publish import RideSettingsChanged, PUBLISHER
 
+ID_APPLY_TO_PANEL = wx.NewId()
 
 @lru_cache(maxsize=2)
 def read_fonts(fixed=False):
@@ -39,6 +39,7 @@ class GeneralPreferences(PreferencesPanel):
         super(GeneralPreferences, self).__init__(*args, **kwargs)
         self._settings = settings
         self._color_pickers = []
+        self._apply_to_panels = self._settings.get('apply to panels', False)
 
         # what would make this UI much more usable is if there were a
         # preview window in the dialog that showed all the colors. I
@@ -49,11 +50,21 @@ class GeneralPreferences(PreferencesPanel):
         colors_sizer = self.create_colors_sizer()
         main_sizer = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
         reset = wx.Button(self, wx.ID_ANY, 'Reset colors to default')
+        self.cb_apply_to_panels = wx.CheckBox(self, ID_APPLY_TO_PANEL, label="Apply to Project and File Explorer panels")
+        self.cb_apply_to_panels.Enable()
+        self.cb_apply_to_panels.SetValue(self._apply_to_panels)
         main_sizer.Add(font_editor)
         main_sizer.Add(colors_sizer)
+        main_sizer.Add(self.cb_apply_to_panels)
         main_sizer.Add(reset)
         self.SetSizerAndFit(main_sizer)
         self.Bind(wx.EVT_BUTTON, self.OnReset)
+        self.Bind(wx.EVT_CHECKBOX, self.OnCheckBox, self.cb_apply_to_panels)
+
+    def OnCheckBox(self, event):
+        self._apply_to_panels = event.IsChecked()
+        self._settings.set('apply to panels', self._apply_to_panels)
+        # print(f"DEBUG: Preferences Checkbox set {str(self._apply_to_panels)}")
 
     def OnReset(self, event):
         defaults = self._read_defaults()
@@ -71,7 +82,7 @@ class GeneralPreferences(PreferencesPanel):
             if not line:
                 continue
             key, value = [s.strip().strip('\'') for s in line.split("=")]
-            print(f"DEBUG: Preferences General default value type {type(value)} {value}")
+            # print(f"DEBUG: Preferences General default value type {type(value)} {value}")
             if len(value) > 0 and value[0] == '(' and value[-1] == ')':
                 from ast import literal_eval as make_tuple
                 value = make_tuple(value)
@@ -148,23 +159,3 @@ class DefaultPreferences(GeneralPreferences):
         defaults = self._read_defaults()
         for picker in self._color_pickers:
             picker.SetColour(defaults[picker.key])
-
-    def OnSettingsChanged(self, message):
-        """Redraw the colors if the color settings are modified"""
-        section, setting = message.keys
-        print(f"DEBUG: OnSettings {setting} {section}")
-
-        if section == 'General':
-            # print(f"DEBUG: OnSettings got here")
-            panel = self.GetParent().GetParent()
-            print(f"DEBUG: OnSettings panel {panel.GetParent()}")
-
-            foreground = self._settings.get('foreground', 'black')
-            background = self._settings.get('background', 'white')
-            # panel.settings['foreground'] = foreground
-            # panel.settings['background'] = background
-
-           # self.GetParent().Destroy()
-            panel.Refresh(True)
-            panel.ShowPanel()
-            self.Refresh(True)
