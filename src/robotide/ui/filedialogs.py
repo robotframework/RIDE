@@ -291,10 +291,14 @@ class RobotFilePathDialog(wx.FileDialog):
         filetypes = [
             ("robot", "Robot data (*.robot)|*.robot"),
             ("txt", "Robot data (*.txt)|*.txt"),
+            ("resource", "Robot resource file (*.resource)|*.resource"),
+            ("tsv", "Robot Tab Separated data (*.tsv)|*.tsv"),
+            ("html", "Robot HTML data (pre 3.2.2) (*.html)|*.html"),
             ("all", "All files|*.*")
         ]
         default_format = settings.get("default file format", "robot")
-        if default_format not in ["robot", "txt"]:
+        robottypes = settings.get('robot types', ['robot', 'resource', 'txt', 'tsv', 'html'])
+        if default_format not in robottypes:
             default_format = "all"
         first = [ft for ft in filetypes if ft[0] == default_format]
         rest = [ft for ft in filetypes if ft[0] != default_format]

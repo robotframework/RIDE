@@ -430,7 +430,7 @@ class RideFrame(wx.Frame):
         # EVT_DIRCTRL_FILEACTIVATED
         from os.path import splitext
         robottypes = self._application.settings.get('robot types', ['robot',
-                                                                    'resource'
+                                                                    'resource',
                                                                     'txt',
                                                                     'tsv',
                                                                     'html'])
