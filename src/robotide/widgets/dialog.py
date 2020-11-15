@@ -40,17 +40,17 @@ class HtmlWindow(html.HtmlWindow):
         from ..preferences import RideSettings
         _settings = RideSettings()
         self.general_settings = _settings['General']
-        HTML_BACKGROUND = _settings.get('background help', (240, 242, 80))
-        HTML_FOREGROUND = _settings.get('foreground text', (7, 0, 70))
-        HTML_FONT_FACE = _settings.get('font face', '')
-        HTML_FONT_SIZE = _settings.get('font size', 11)
+        self.color_background_help = self.general_settings['background help']
+        self.color_foreground_text = self.general_settings['foreground text']
+        # HTML_FONT_FACE = _settings.get('font face', '')
+        # HTML_FONT_SIZE = _settings.get('font size', 11)
         self.SetBorders(2)
         self.SetStandardFonts(size=9)
         if text:
             self.set_content(text)
-        self.SetHTMLBackgroundColour(Colour(self.general_settings['background help']))
+        self.SetHTMLBackgroundColour(Colour(self.color_background_help))
         # print(f"DEBUG: HTML init Dialog color: {Colour(self.general_settings['background help'])}")
-        self.SetForegroundColour(Colour(self.general_settings['foreground text']))
+        self.SetForegroundColour(Colour(self.color_foreground_text))
         self.font = self.GetFont()
         self.font.SetFaceName(self.general_settings['font face'])
         self.font.SetPointSize(self.general_settings['font size'])
@@ -59,7 +59,7 @@ class HtmlWindow(html.HtmlWindow):
         self.Bind(wx.EVT_KEY_DOWN, self.OnKeyDown)
 
     def set_content(self, content):
-        bkgcolor = self.general_settings['background help']
+        bkgcolor = self.color_background_help
         # print(f"DEBUG: HTML text Dialog color: {bkgcolor}")
         try:
             color = ''.join(hex(item)[2:] for item in tuple(bkgcolor))
@@ -101,12 +101,21 @@ class RIDEDialog(wx.Dialog):
         wx.Dialog.__init__(self, parent=parent, title=title, size=size, style=style)
         # set Left to Right direction (while we don't have localization)
         self.SetLayoutDirection(wx.Layout_LeftToRight)
-        """
-        self.SetBackgroundColour(Colour(200, 222, 40))
-        self.SetOwnBackgroundColour(Colour(200, 222, 40))
-        self.SetForegroundColour(Colour(7, 0, 70))
-        self.SetOwnForegroundColour(Colour(7, 0, 70))
-        """
+        from ..preferences import RideSettings
+        _settings = RideSettings()
+        self.general_settings = _settings['General']
+        # self.color_background_help = self.general_settings.get('background help', (240, 242, 80))
+        # self.color_foreground_text = self.general_settings.get('foreground text', (7, 0, 70))
+        self.color_background = self.general_settings['background']
+        self.color_foreground = self.general_settings['foreground']
+        self.color_secondary_background = self.general_settings['secondary background']
+        self.color_secondary_foreground = self.general_settings['secondary foreground']
+        self.color_background_help = self.general_settings['background help']
+        self.color_foreground_text = self.general_settings['foreground text']
+        self.SetBackgroundColour(Colour(self.color_background))
+        self.SetOwnBackgroundColour(Colour(self.color_secondary_background))
+        self.SetForegroundColour(Colour(self.color_foreground))
+        self.SetOwnForegroundColour(Colour(self.color_secondary_foreground))
         self.CenterOnParent()
 
     def _create_buttons(self, sizer):

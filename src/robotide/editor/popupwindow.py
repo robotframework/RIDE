@@ -103,8 +103,8 @@ class HtmlPopupWindow(RidePopupWindow):
         from ..preferences import RideSettings
         _settings = RideSettings()
         self.general_settings = _settings['General']
-        self.color_background_help = self.general_settings.get('background help', (240, 242, 80))
-        self.color_foreground_text = self.general_settings.get('foreground text', (7, 0, 70))
+        self.color_background_help = self.general_settings['background help']
+        self.color_foreground_text = self.general_settings['foreground text']
         RidePopupWindow.__init__(self, parent, size)
         _PopupWindowBase.__init__(self, size, detachable, autohide, color_background=self.color_background_help,
                                   color_foreground=self.color_foreground_text)
@@ -121,8 +121,8 @@ class MacRidePopupWindow(wx.MiniFrame, _PopupWindowBase):
         from ..preferences import RideSettings
         _settings = RideSettings()
         self.general_settings = _settings['General']
-        self.color_background_help = self.general_settings.get('background help', (240, 242, 80))
-        self.color_foreground_text = self.general_settings.get('foreground text', (7, 0, 70))
+        self.color_background_help = self.general_settings['background help']
+        self.color_foreground_text = self.general_settings['foreground text']
         _PopupWindowBase.__init__(self, size, detachable, autohide, color_background=self.color_background_help,
                                   color_foreground=self.color_foreground_text)
         self.hide()

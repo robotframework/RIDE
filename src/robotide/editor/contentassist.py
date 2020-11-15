@@ -33,6 +33,15 @@ _PREFERRED_POPUP_SIZE = (400, 200)
 class _ContentAssistTextCtrlBase(object):
 
     def __init__(self, suggestion_source):
+        from ..preferences import RideSettings
+        _settings = RideSettings()
+        self.general_settings = _settings['General']
+        self.color_background = self.general_settings['background']
+        self.color_foreground = self.general_settings['foreground']
+        self.color_secondary_background = self.general_settings['secondary background']
+        self.color_secondary_foreground = self.general_settings['secondary foreground']
+        self.color_background_help = self.general_settings['background help']
+        self.color_foreground_text = self.general_settings['foreground text']
         self._popup = ContentAssistPopup(self, suggestion_source)
         self.Bind(wx.EVT_KEY_DOWN, self.OnKeyDown)
         self.Bind(wx.EVT_CHAR, self.OnChar)
@@ -208,12 +217,10 @@ class ContentAssistTextCtrl(_ContentAssistTextCtrlBase, wx.TextCtrl):
     def __init__(self, parent, suggestion_source, size=wx.DefaultSize):
         wx.TextCtrl.__init__(self, parent, size=size, style=wx.WANTS_CHARS|wx.TE_NOHIDESEL)
         _ContentAssistTextCtrlBase.__init__(self, suggestion_source)
-        """
-        self.SetBackgroundColour(Colour(200, 222, 40))
-        self.SetOwnBackgroundColour(Colour(200, 222, 40))
-        self.SetForegroundColour(Colour(7, 0, 70))
-        self.SetOwnForegroundColour(Colour(7, 0, 70))
-        """
+        self.SetBackgroundColour(Colour(self.color_background_help))
+        self.SetOwnBackgroundColour(Colour(self.color_background_help))
+        self.SetForegroundColour(Colour(self.color_foreground_text))
+        self.SetOwnForegroundColour(Colour(self.color_foreground_text))
 
 
 class ContentAssistTextEditor(_ContentAssistTextCtrlBase, wx.TextCtrl):
@@ -221,6 +228,10 @@ class ContentAssistTextEditor(_ContentAssistTextCtrlBase, wx.TextCtrl):
     def __init__(self, parent, suggestion_source, pos, size=wx.DefaultSize):
         wx.TextCtrl.__init__(self, parent, -1, "", pos, size=size, style=wx.WANTS_CHARS|wx.BORDER_NONE|wx.WS_EX_TRANSIENT|wx.TE_PROCESS_ENTER|wx.TE_NOHIDESEL)
         _ContentAssistTextCtrlBase.__init__(self, suggestion_source)
+        self.SetBackgroundColour(Colour(self.color_background_help))
+        self.SetOwnBackgroundColour(Colour(self.color_background_help))
+        self.SetForegroundColour(Colour(self.color_foreground_text))
+        self.SetOwnForegroundColour(Colour(self.color_foreground_text))
         """
         self.SetBackgroundColour(Colour(200, 222, 40))
         self.SetOwnBackgroundColour(Colour(200, 222, 40))
@@ -456,8 +467,8 @@ class ContentAssistList(wx.ListCtrl):
         from ..preferences import RideSettings
         _settings = RideSettings()
         self.general_settings = _settings['General']
-        self.color_background_help = self.general_settings.get('background help', (240, 242, 80))
-        self.color_foreground_text = self.general_settings.get('foreground text', (7, 0, 70))
+        self.color_background_help = self.general_settings['background help']
+        self.color_foreground_text = self.general_settings['foreground text']
         style = wx.LC_REPORT | wx.LC_SINGLE_SEL | wx.LC_NO_HEADER
         wx.ListCtrl.__init__(self, parent, style=style)
         self._selection_callback = selection_callback

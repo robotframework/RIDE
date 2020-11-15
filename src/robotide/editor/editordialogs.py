@@ -15,6 +15,7 @@
 
 import wx
 
+from wx import Colour
 from .. import utils
 from ..namespace.suggesters import ResourceSuggester, LibrariesSuggester, HistorySuggester
 from ..validators import (ScalarVariableNameValidator, ListVariableNameValidator, TimeoutValidator, ArgumentsValidator,
@@ -71,6 +72,16 @@ class _Dialog(RIDEDialog):
 
     def _create_buttons(self, **kwargs):
         buttons = self.CreateStdDialogButtonSizer(wx.OK|wx.CANCEL)
+        self.SetBackgroundColour(Colour(self.color_background))
+        # self.SetOwnBackgroundColour(Colour(self.color_secondary_background))
+        self.SetForegroundColour(Colour(self.color_foreground))
+        # self.SetOwnForegroundColour(Colour(self.color_secondary_foreground))
+        # TODO: Change colors on buttons
+        """
+        for item in buttons.GetChildren():
+            item.SetBackgroundColour(Colour(self.color_secondary_background))
+            item.SetForegroundColour(Colour(self.color_secondary_foreground))
+        """
         self._sizer.Add(buttons, 0, wx.ALIGN_CENTER|wx.ALL, 5)
 
     def get_value(self):
@@ -157,7 +168,7 @@ class VariablesDialog(LibraryDialog):
         path = item and item.name or ''
         args = item and utils.join_value(item.args) or ''
         return [FileNameEditor(self, path, 'Path', self._controller, suggestion_source=self._history_suggester),
-               ValueEditor(self, args, 'Args')]
+                ValueEditor(self, args, 'Args')]
 
     def _execute(self):
         pass

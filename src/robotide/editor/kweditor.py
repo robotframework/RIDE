@@ -80,6 +80,15 @@ class KeywordEditor(GridEditor, Plugin):
             parent.plugin._grid_popup_creator)
 
         self.settings = parent.plugin.global_settings['Grid']
+        self.general_settings = parent.plugin.global_settings['General']
+        # self.color_background_help = self.general_settings.get('background help', (240, 242, 80))
+        # self.color_foreground_text = self.general_settings.get('foreground text', (7, 0, 70))
+        self.color_background = self.general_settings['background']
+        self.color_foreground = self.general_settings['foreground']
+        self.color_secondary_background = self.general_settings['secondary background']
+        self.color_secondary_foreground = self.general_settings['secondary foreground']
+        self.color_background_help = self.general_settings['background help']
+        self.color_foreground_text = self.general_settings['foreground text']
         self._parent = parent
         self._plugin = parent.plugin
         self._cell_selected = False
@@ -104,6 +113,11 @@ class KeywordEditor(GridEditor, Plugin):
         self.SetOwnBackgroundColour(Colour(200, 222, 40))
         self.SetForegroundColour(Colour(7, 0, 70))
         self.SetOwnForegroundColour(Colour(7, 0, 70))
+
+        self.SetBackgroundColour(Colour(self.color_secondary_background))
+        self.SetOwnBackgroundColour(Colour(self.color_secondary_background))
+        self.SetForegroundColour(Colour(self.color_secondary_foreground))
+        self.SetOwnForegroundColour(Colour(self.color_secondary_foreground))
         """
         self.InheritAttributes()
         self.Refresh()
@@ -920,6 +934,10 @@ work.</li>
 class ContentAssistCellEditor(GridCellEditor):
 
     def __init__(self, plugin, controller):
+        self.settings = plugin.global_settings['Grid']
+        self.general_settings = plugin.global_settings['General']
+        self.color_background_help = self.general_settings['background help']
+        self.color_foreground_text = self.general_settings['foreground text']
         GridCellEditor.__init__(self)
         self._plugin = plugin
         self._controller = controller
@@ -956,8 +974,8 @@ class ContentAssistCellEditor(GridCellEditor):
     def BeginEdit(self, row, col, grid):
         self._counter = 0
         self._tc.SetSize((-1, self._height))
-        self._tc.SetBackgroundColour(context.POPUP_BACKGROUND)  # DEBUG: We are now in Edit mode
-        self._tc.SetForegroundColour(context.POPUP_FOREGROUND)
+        self._tc.SetBackgroundColour(self.color_background_help)  # DEBUG: We are now in Edit mode
+        self._tc.SetForegroundColour(self.color_foreground_text)
         self._tc.set_row(row)
         self._original_value = grid.GetCellValue(row, col)
         self._tc.SetValue(self._original_value)
