@@ -36,7 +36,7 @@ from . import sizers
 class HtmlWindow(html.HtmlWindow):
 
     def __init__(self, parent, size=wx.DefaultSize, text=None):
-        html.HtmlWindow.__init__(self, parent, size=size)
+        html.HtmlWindow.__init__(self, parent, size=size, style=html.HW_DEFAULT_STYLE)
         from ..preferences import RideSettings
         _settings = RideSettings()
         self.general_settings = _settings['General']

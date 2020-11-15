@@ -453,13 +453,18 @@ class ContentAssistPopup(object):
 class ContentAssistList(wx.ListCtrl):
 
     def __init__(self, parent, selection_callback, activation_callback=None):
+        from ..preferences import RideSettings
+        _settings = RideSettings()
+        self.general_settings = _settings['General']
+        self.color_background_help = self.general_settings.get('background help', (240, 242, 80))
+        self.color_foreground_text = self.general_settings.get('foreground text', (7, 0, 70))
         style = wx.LC_REPORT | wx.LC_SINGLE_SEL | wx.LC_NO_HEADER
         wx.ListCtrl.__init__(self, parent, style=style)
         self._selection_callback = selection_callback
         self._activation_callback = activation_callback
         self.SetSize(parent.GetSize())
-        self.SetBackgroundColour(context.POPUP_BACKGROUND)
-        self.SetForegroundColour(context.POPUP_FOREGROUND)
+        self.SetBackgroundColour(self.color_background_help)
+        self.SetForegroundColour(self.color_foreground_text)
         self.Bind(wx.EVT_LIST_ITEM_SELECTED, selection_callback)
         self.Bind(wx.EVT_LIST_ITEM_ACTIVATED, activation_callback)
 

@@ -44,20 +44,18 @@ class SettingEditor(wx.Panel):
         from ..preferences import RideSettings
         _settings = RideSettings()
         self.general_settings = _settings['General']
-        HTML_BACKGROUND = _settings.get('background help', (240, 242, 80))
-        HTML_FOREGROUND = _settings.get('foreground text', (7, 0, 70))
-        HTML_FONT_FACE = _settings.get('font face', '')
-        HTML_FONT_SIZE = _settings.get('font size', 11)
-        self.SetBackgroundColour(Colour(HTML_BACKGROUND))
-        self.SetOwnBackgroundColour(Colour(HTML_BACKGROUND))
-        self.SetForegroundColour(Colour(HTML_FOREGROUND))
-        self.SetOwnForegroundColour(Colour(HTML_FOREGROUND))
-        """
-        self.SetBackgroundColour(Colour(200, 222, 40))
-        self.SetOwnBackgroundColour(Colour(200, 222, 40))
-        self.SetForegroundColour(Colour(7, 0, 70))
-        self.SetOwnForegroundColour(Colour(7, 0, 70))
-        """
+        self.color_background = self.general_settings.get('background', 'light grey')
+        self.color_foreground = self.general_settings.get('foreground', 'black')
+        self.color_secondary_background = self.general_settings.get('secondary background', 'light grey')
+        self.color_secondary_foreground = self.general_settings.get('secondary foreground', 'black')
+        self.color_background_help = self.general_settings.get('background help', (240, 242, 80))
+        self.color_foreground_text = self.general_settings.get('foreground text', (7, 0, 70))
+        self.font_face = self.general_settings.get('font face', '')
+        self.font_size = self.general_settings.get('font size', 11)
+        self.SetBackgroundColour(Colour(self.color_background))
+        self.SetOwnBackgroundColour(Colour(self.color_background))
+        self.SetForegroundColour(Colour(self.color_foreground))
+        self.SetOwnForegroundColour(Colour(self.color_foreground))
         self._controller = controller
         self.plugin = plugin
         self._datafile = controller.datafile
@@ -65,8 +63,8 @@ class SettingEditor(wx.Panel):
         self._tree = tree
         self._editing = False
         self.font = self._tree.GetFont()
-        self.font.SetFaceName(HTML_FONT_FACE)
-        self.font.SetPointSize(HTML_FONT_SIZE)
+        self.font.SetFaceName(self.font_face)
+        self.font.SetPointSize(self.font_size)
         self._tree.SetFont(self.font)
         self._tree.Refresh()
         self.plugin.subscribe(self._ps_on_update_value, RideImportSetting)
@@ -82,13 +80,16 @@ class SettingEditor(wx.Panel):
         self._tooltip = self._get_tooltip()
         sizer.Add(self._value_display, 1, wx.EXPAND)
         self._add_edit(sizer)
-        sizer.Add(ButtonWithHandler(self, 'Clear'))
+        sizer.Add(ButtonWithHandler(self, 'Clear', color_secondary_foreground=self.color_secondary_foreground,
+                                    color_secondary_background=self.color_secondary_background))
         sizer.Layout()
         self.SetSizer(sizer)
 
     def _add_edit(self, sizer):
         sizer.Add(
-            ButtonWithHandler(self, 'Edit'), flag=wx.LEFT | wx.RIGHT, border=5)
+            ButtonWithHandler(self, 'Edit', color_secondary_foreground=self.color_secondary_foreground,
+                                    color_secondary_background=self.color_secondary_background),
+            flag=wx.LEFT | wx.RIGHT, border=5)
 
     def _create_value_display(self):
         display = self._value_display_control()
@@ -253,6 +254,7 @@ class SettingValueDisplay(wx.TextCtrl):
         self.SetForegroundColour(Colour(7, 0, 70))
         self.SetOwnForegroundColour(Colour(7, 0, 70))
         """
+        self.color_secondary_background = parent.color_secondary_background
         self.SetEditable(False)
         self._colour_provider = ColorizationSettings(
             parent.plugin.global_settings['Grid'])
@@ -265,7 +267,10 @@ class SettingValueDisplay(wx.TextCtrl):
     def set_value(self, controller, plugin):
         self._value = controller.display_value
         self._keyword_name = controller.keyword_name
-        self._is_user_keyword = plugin.is_user_keyword(self._keyword_name)
+        try:
+            self._is_user_keyword = plugin.is_user_keyword(self._keyword_name)
+        except AttributeError:
+            self._is_user_keyword = False
         self.SetValue(self._value)
         self._colorize_data()
 
@@ -278,19 +283,19 @@ class SettingValueDisplay(wx.TextCtrl):
 
     def _get_background_colour(self, match=None):
         if self._value is None:
-            return Colour(context.POPUP_BACKGROUND)  # 100, 122, 40  # 'light grey'
+            return Colour(self.color_secondary_background)
         if match is not None and self.contains(match):
             return self._colour_provider.get_highlight_color()
-        return 'white'  # Colour(200, 222, 40)
+        return Colour(self.color_secondary_background)  # 'white'  # Colour(200, 222, 40)
 
     def _colorize_possible_user_keyword(self):
         if not self._is_user_keyword:
             return
         font = self.GetFont()
         font.SetUnderlined(True)
-        # TODO: Get proper colour from settings
+        user_kw_color = self._colour_provider.get_text_color('user keyword')
         self.SetStyle(0, len(self._keyword_name),
-                      wx.TextAttr('blue', self._get_background_colour(), font))
+                      wx.TextAttr(user_kw_color, self._get_background_colour(), font))
 
     def clear(self):
         self.Clear()
@@ -498,7 +503,9 @@ class ImportSettingListEditor(_AbstractListEditor):
             self, label='Add Import', size=wx.Size(120, 20),
             style=wx.ALIGN_CENTER))
         for label in self._buttons:
-            sizer.Add(ButtonWithHandler(self, label, width=120), 0, wx.ALL, 1)
+            sizer.Add(ButtonWithHandler(self, label, width=120,
+                                        color_secondary_foreground=self.color_secondary_foreground,
+                                        color_secondary_background=self.color_secondary_background), 0, wx.ALL, 1)
         return sizer
 
     def OnLeftClick(self, event):

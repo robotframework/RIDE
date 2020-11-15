@@ -29,6 +29,17 @@ class ListEditorBase(wx.Panel):
 
     def __init__(self, parent, columns, controller):
         wx.Panel.__init__(self, parent)
+        from ..preferences import RideSettings
+        _settings = RideSettings()
+        self.general_settings = _settings['General']
+        self.color_background = self.general_settings.get('background', 'light grey')
+        self.color_foreground = self.general_settings.get('foreground', 'black')
+        self.color_secondary_background = self.general_settings.get('secondary background', 'light grey')
+        self.color_secondary_foreground = self.general_settings.get('secondary foreground', 'black')
+        self.color_background_help = self.general_settings.get('background help', (240, 242, 80))
+        self.color_foreground_text = self.general_settings.get('foreground text', (7, 0, 70))
+        self.font_face = self.general_settings.get('font face', '')
+        self.font_size = self.general_settings.get('font size', 11)
         """
         self.SetBackgroundColour(Colour(200, 222, 40))
         self.SetOwnBackgroundColour(Colour(200, 222, 40))
@@ -61,7 +72,9 @@ class ListEditorBase(wx.Panel):
     def _create_buttons(self):
         sizer = wx.BoxSizer(wx.VERTICAL)
         for label in self._buttons:
-            sizer.Add(ButtonWithHandler(self, label, width=120), 0, wx.ALL, 1)
+            sizer.Add(ButtonWithHandler(self, label, width=120,
+                                        color_secondary_foreground=self.color_secondary_foreground,
+                                        color_secondary_background=self.color_secondary_background), 0, wx.ALL, 1)
         return sizer
 
     def _make_bindings(self):
