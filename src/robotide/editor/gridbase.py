@@ -38,17 +38,32 @@ class GridEditor(grid.Grid):
 
     def __init__(self, parent, num_rows, num_cols, popup_creator=None):
         grid.Grid.__init__(self, parent)
-        """
-        self.SetBackgroundColour(Colour(200, 222, 40))
-        self.SetOwnBackgroundColour(Colour(200, 222, 40))
-        self.SetForegroundColour(Colour(7, 0, 70))
-        self.SetOwnForegroundColour(Colour(7, 0, 70))
-        """
+        try:
+            self.settings = parent.plugin.global_settings['Grid']
+            self.general_settings = parent.plugin.global_settings['General']
+        except AttributeError:
+            from ..preferences import RideSettings
+            _settings = RideSettings()
+            self.general_settings = _settings['General']
+            self.settings = _settings['Grid']
+        self.color_background = self.settings['background unknown']
+        self.color_foreground = self.settings['text empty']
+        self.color_background_help = self.general_settings['background help']
+        self.color_foreground_text = self.general_settings['foreground text']
+        self.color_secondary_background = self.general_settings['secondary background']
+        self.color_secondary_foreground = self.general_settings['secondary foreground']
+
         self._bind_to_events()
         self.selection = _GridSelection(self)
         self._clipboard_handler = ClipboardHandler(self)
         self._history = _GridState()
         self.CreateGrid(num_rows, num_cols)
+        self.SetDefaultCellBackgroundColour(Colour(self.color_background))
+        self.SetDefaultCellTextColour(Colour(self.color_foreground))
+        self.GetGridColLabelWindow().SetBackgroundColour(Colour(self.color_secondary_background))
+        self.GetGridColLabelWindow().SetForegroundColour(Colour(self.color_secondary_foreground))
+        self.GetGridRowLabelWindow().SetBackgroundColour(Colour(self.color_secondary_background))
+        self.GetGridRowLabelWindow().SetForegroundColour(Colour(self.color_secondary_foreground))
         self._popup_creator = popup_creator or PopupCreator()
 
     def _bind_to_events(self):

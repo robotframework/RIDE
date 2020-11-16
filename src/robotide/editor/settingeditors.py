@@ -255,6 +255,7 @@ class SettingValueDisplay(wx.TextCtrl):
         self.SetOwnForegroundColour(Colour(7, 0, 70))
         """
         self.color_secondary_background = parent.color_secondary_background
+        self.SetBackgroundColour(Colour(self.color_secondary_background))
         self.SetEditable(False)
         self._colour_provider = ColorizationSettings(
             parent.plugin.global_settings['Grid'])
@@ -318,7 +319,10 @@ class SettingValueDisplay(wx.TextCtrl):
 class DocumentationEditor(SettingEditor):
 
     def _value_display_control(self):
-        ctrl = HtmlWindow(self, (-1, 100))
+        ctrl = HtmlWindow(self, (-1, 100), color_background=self.color_secondary_background,
+                          color_foreground=self.color_secondary_foreground)
+        ctrl.SetBackgroundColour(Colour(self.color_secondary_background))
+        ctrl.SetForegroundColour(Colour(self.color_secondary_foreground))
         ctrl.Bind(wx.EVT_LEFT_DOWN, self.OnEdit)
         return ctrl
 
@@ -384,6 +388,8 @@ class _AbstractListEditor(ListEditor):
 
     def __init__(self, parent, tree, controller):
         ListEditor.__init__(self, parent, self._titles, controller)
+        self.SetBackgroundColour(Colour(self.color_secondary_background))
+        self.SetForegroundColour(Colour(self.color_secondary_foreground))
         self._datafile = controller.datafile
         self._tree = tree
 

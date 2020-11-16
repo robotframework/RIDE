@@ -35,13 +35,13 @@ from . import sizers
 
 class HtmlWindow(html.HtmlWindow):
 
-    def __init__(self, parent, size=wx.DefaultSize, text=None):
+    def __init__(self, parent, size=wx.DefaultSize, text=None, color_background=None, color_foreground=None):
         html.HtmlWindow.__init__(self, parent, size=size, style=html.HW_DEFAULT_STYLE)
         from ..preferences import RideSettings
         _settings = RideSettings()
         self.general_settings = _settings['General']
-        self.color_background_help = self.general_settings['background help']
-        self.color_foreground_text = self.general_settings['foreground text']
+        self.color_background_help = color_background if color_background else self.general_settings['background help']
+        self.color_foreground_text = color_foreground if color_foreground else self.general_settings['foreground text']
         # HTML_FONT_FACE = _settings.get('font face', '')
         # HTML_FONT_SIZE = _settings.get('font size', 11)
         self.SetBorders(2)
@@ -120,6 +120,10 @@ class RIDEDialog(wx.Dialog):
 
     def _create_buttons(self, sizer):
         buttons = self.CreateStdDialogButtonSizer(wx.OK | wx.CANCEL)
+        self.SetBackgroundColour(Colour(self.color_background))
+        # self.SetOwnBackgroundColour(Colour(self.color_secondary_background))
+        self.SetForegroundColour(Colour(self.color_foreground))
+        # self.SetOwnForegroundColour(Colour(self.color_secondary_foreground))
         sizer.Add(buttons, flag=wx.ALIGN_CENTER | wx.ALL, border=5)
 
     def _create_horizontal_line(self, sizer):
@@ -149,10 +153,6 @@ class HtmlDialog(RIDEDialog):
         szr = sizers.VerticalSizer()
         html_wnd = HtmlWindow(self, text=content)
         html_wnd.SetStandardFonts(size=font_size)
-        """
-        html_wnd.SetBackgroundColour(Colour(HTML_BACKGROUND))
-        html_wnd.SetForegroundColour(Colour(7, 0, 70))
-        """
         szr.add_expanding(html_wnd, padding=padding)
         self.SetSizer(szr)
 

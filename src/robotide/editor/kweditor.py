@@ -74,11 +74,6 @@ class KeywordEditor(GridEditor, Plugin):
                    ] + GridEditor._popup_items
 
     def __init__(self, parent, controller, tree):
-        GridEditor.__init__(
-            self, parent, len(controller.steps) + 5,
-            max((controller.max_columns + 1), 5),
-            parent.plugin._grid_popup_creator)
-
         self.settings = parent.plugin.global_settings['Grid']
         self.general_settings = parent.plugin.global_settings['General']
         # self.color_background_help = self.general_settings.get('background help', (240, 242, 80))
@@ -89,6 +84,10 @@ class KeywordEditor(GridEditor, Plugin):
         self.color_secondary_foreground = self.general_settings['secondary foreground']
         self.color_background_help = self.general_settings['background help']
         self.color_foreground_text = self.general_settings['foreground text']
+        GridEditor.__init__(
+            self, parent, len(controller.steps) + 5,
+            max((controller.max_columns + 1), 5),
+            parent.plugin._grid_popup_creator)
         self._parent = parent
         self._plugin = parent.plugin
         self._cell_selected = False
@@ -108,19 +107,16 @@ class KeywordEditor(GridEditor, Plugin):
         self._counter = 0  # Workaround for double delete actions
         self._dcells = None  # Workaround for double delete actions
         self._icells = None  # Workaround for double insert actions
-        """
-        self.SetBackgroundColour(Colour(200, 222, 40))
-        self.SetOwnBackgroundColour(Colour(200, 222, 40))
-        self.SetForegroundColour(Colour(7, 0, 70))
-        self.SetOwnForegroundColour(Colour(7, 0, 70))
+        self.InheritAttributes()
 
+        # TODO: This is ineffective, why?
+        """
         self.SetBackgroundColour(Colour(self.color_secondary_background))
         self.SetOwnBackgroundColour(Colour(self.color_secondary_background))
         self.SetForegroundColour(Colour(self.color_secondary_foreground))
         self.SetOwnForegroundColour(Colour(self.color_secondary_foreground))
         """
-        self.InheritAttributes()
-        self.Refresh()
+        # self.Refresh()
         PUBLISHER.subscribe(self._before_saving, RideBeforeSaving)
         PUBLISHER.subscribe(self._data_changed, RideItemStepsChanged)
         # PUBLISHER.subscribe(self.OnSettingsChanged, RideSettingsChanged)
