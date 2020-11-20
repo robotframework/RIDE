@@ -260,12 +260,12 @@ class RideFrame(wx.Frame):
         """
         # Tree is always created here
         self.tree = Tree(self, self.actions, self._application.settings)
-        self.tree.SetMinSize(wx.Size(120, 200))
+        self.tree.SetMinSize(wx.Size(275, 250))
         # TreePlugin will manage showing the Tree
         self.actions.register_actions(ActionInfoCollection(_menudata, self, self.tree))
         ###### File explorer panel is always created here
         self.filemgr = FileExplorer(self, self._controller)
-        self.filemgr.SetMinSize(wx.Size(120, 200))
+        self.filemgr.SetMinSize(wx.Size(275, 250))
 
         mb.take_menu_bar_into_use()
         self.CreateStatusBar()
