@@ -35,6 +35,15 @@ class ValueEditor(wx.Panel):
         wx.Panel.__init__(self, parent)
         self._label = label
         self._sizer = wx.BoxSizer(wx.VERTICAL)
+        from ..preferences import RideSettings
+        _settings = RideSettings()
+        self.general_settings = _settings['General']
+        self.color_background = self.general_settings['background']
+        self.color_foreground = self.general_settings['foreground']
+        self.color_secondary_background = self.general_settings['secondary background']
+        self.color_secondary_foreground = self.general_settings['secondary foreground']
+        self.color_background_help = self.general_settings['background help']
+        self.color_foreground_text = self.general_settings['foreground text']
         self._create_editor(value, label, settings)
         if validator:
             self.set_validator(validator)
@@ -47,12 +56,10 @@ class ValueEditor(wx.Panel):
                       self._sizer_flags_for_label, 5)
         self._editor = self._get_text_ctrl()
         # self._editor.SetDefaultStyle(wx.TextAttr(wx.TEXT_ATTR_CHARACTER))
-        """
-        self._editor.SetBackgroundColour(Colour(200, 222, 40))
-        self._editor.SetOwnBackgroundColour(Colour(200, 222, 40))
-        self._editor.SetForegroundColour(Colour(7, 0, 70))
-        self._editor.SetOwnForegroundColour(Colour(7, 0, 70))
-        """
+        # self._editor.SetBackgroundColour(Colour(self.color_secondary_background))
+        # self._editor.SetOwnBackgroundColour(Colour(self.color_secondary_background))
+        # self._editor.SetForegroundColour(Colour(self.color_secondary_foreground))
+        # self._editor.SetOwnForegroundColour(Colour(self.color_secondary_foreground))
         self._editor.AppendText(value)
         sizer.Add(self._editor, 1, self._sizer_flags_for_editor, 3)
         self._sizer.Add(sizer, 1, wx.EXPAND)
@@ -60,7 +67,12 @@ class ValueEditor(wx.Panel):
         # print("DEBUG: ValueEditor _create_editor: %s\n" % (self._editor.__repr__()))
 
     def _get_text_ctrl(self):
-        return wx.TextCtrl(self, size=(600, -1))
+        editor = wx.TextCtrl(self, size=(600, -1))
+        editor.SetBackgroundColour(Colour(self.color_secondary_background))
+        editor.SetOwnBackgroundColour(Colour(self.color_secondary_background))
+        editor.SetForegroundColour(Colour(self.color_secondary_foreground))
+        editor.SetOwnForegroundColour(Colour(self.color_secondary_foreground))
+        return editor
 
     def set_validator(self, validator):
         self._editor.SetValidator(validator)
@@ -125,8 +137,11 @@ class FileNameEditor(ValueEditor):
         self._parent.setFocusToOK()
 
     def _get_text_ctrl(self):
-        return ContentAssistFileButton(self, self._suggestion_source, '',
+        filename_ctrl = ContentAssistFileButton(self, self._suggestion_source, '',
                                        self._controller, (500, -1))
+        filename_ctrl.SetBackgroundColour(Colour(self.color_secondary_background))
+        filename_ctrl.SetForegroundColour(Colour(self.color_secondary_foreground))
+        return filename_ctrl
 
 
 class VariableNameEditor(ValueEditor):
@@ -174,17 +189,20 @@ class ListValueEditor(ValueEditor):
         sizer.Add(col_label, 0, wx.ALL, 5)
         combo = wx.ComboBox(self, value=str(cols), size=(60, 25),
                             choices=[str(i) for i in range(1, 11)])
-        combo.SetToolTip(wx.ToolTip("Number of columns that are shown in this "
-                                    "editor. Selected value is stored and used"
-                                    " globally."))
-        """
-        combo.SetBackgroundColour(Colour(200, 222, 40))
-        combo.SetOwnBackgroundColour(Colour(200, 222, 40))
-        combo.SetForegroundColour(Colour(7, 0, 70))
-        combo.SetOwnForegroundColour(Colour(7, 0, 70))
-        """
+        tool_tip = wx.ToolTip("Number of columns that are shown in this editor."
+                              " Selected value is stored and used globally.")
+        combo.SetToolTip(tool_tip)
+        tool_tip.GetWindow().SetBackgroundColour(Colour(self.color_background_help))
+        tool_tip.GetWindow().SetForegroundColour(Colour(self.color_foreground_text))
+        # DEBUG attributes = self.GetClassDefaultAttributes()
+        combo.SetBackgroundColour(Colour(self.color_secondary_background))
+        combo.SetOwnBackgroundColour(Colour(self.color_secondary_background))
+        combo.SetForegroundColour(Colour(self.color_secondary_foreground))
+        combo.SetOwnForegroundColour(Colour(self.color_secondary_foreground))
         self.Bind(wx.EVT_COMBOBOX, self.OnColumns, source=combo)
         sizer.Add(combo)
+        # DEBUG children = self.GetChildren()
+        # print(f"DEBUG: Creating columns size selector: attributes bg ={attributes.colBg}\n children={children}")
         return sizer
 
     def OnColumns(self, event):
@@ -350,6 +368,8 @@ class MultiLineEditor(ValueEditor):
 
     def _get_text_ctrl(self):
         editor = wx.TextCtrl(self, style=wx.TE_MULTILINE|wx.TE_NOHIDESEL, size=(600, 400))
+        editor.SetBackgroundColour(Colour(self.color_secondary_background))
+        editor.SetForegroundColour(Colour(self.color_secondary_foreground))
         """
         editor.SetBackgroundColour(Colour(200, 222, 40))
         editor.SetOwnBackgroundColour(Colour(200, 222, 40))
@@ -368,5 +388,8 @@ class ContentAssistEditor(ValueEditor):
         ValueEditor.__init__(self, parent, value, label, validator, settings)
 
     def _get_text_ctrl(self):
-        return ContentAssistTextCtrl(self, self._suggestion_source)
+        editor_ctrl = ContentAssistTextCtrl(self, self._suggestion_source)
+        editor_ctrl.SetBackgroundColour(Colour(self.color_background_help))
+        editor_ctrl.SetForegroundColour(Colour(self.color_foreground_text))
+        return editor_ctrl
         #DEBUG size, (500, -1))
