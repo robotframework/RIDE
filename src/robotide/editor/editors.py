@@ -54,12 +54,19 @@ class EditorPanel(wx.Panel):
 
     def __init__(self, plugin, parent, controller, tree):
         wx.Panel.__init__(self, parent)
-        """
-        self.SetBackgroundColour(Colour(200, 222, 40))
-        self.SetOwnBackgroundColour(Colour(200, 222, 40))
-        self.SetForegroundColour(Colour(7, 0, 70))
-        self.SetOwnForegroundColour(Colour(7, 0, 70))
-        """
+        from ..preferences import RideSettings
+        _settings = RideSettings()
+        self.general_settings = _settings['General']
+        self.color_background = self.general_settings.get('background', 'light grey')
+        self.color_foreground = self.general_settings.get('foreground', 'black')
+        self.color_secondary_background = self.general_settings.get('secondary background', 'light grey')
+        self.color_secondary_foreground = self.general_settings.get('secondary foreground', 'black')
+        self.color_background_help = self.general_settings.get('background help', (240, 242, 80))
+        self.color_foreground_text = self.general_settings.get('foreground text', (7, 0, 70))
+        self.font_face = self.general_settings.get('font face', '')
+        self.font_size = self.general_settings.get('font size', 11)
+        self.SetBackgroundColour(Colour(self.color_background))
+        self.SetForegroundColour(Colour(self.color_foreground))
         self.plugin = plugin
         self.controller = controller
         self._tree = tree
@@ -156,6 +163,10 @@ class _RobotTableEditor(EditorPanel):
             wx.CallAfter(self._collabsible_changed)
         else:
             self._settings.Collapse()
+            self.GetSizer().Layout()
+            self.Refresh()
+        self.Parent.GetSizer().Layout()
+        self.Parent.Refresh()
 
     def _collabsible_changed(self, event=None):
         self._store_settings_open_status()
@@ -193,12 +204,19 @@ class Settings(wx.CollapsiblePane):
         wx.CollapsiblePane.__init__(
             self, parent, wx.ID_ANY, 'Settings',
             style=wx.CP_DEFAULT_STYLE | wx.CP_NO_TLW_RESIZE)
-        """
-        self.SetBackgroundColour(Colour(200, 222, 40))
-        self.SetOwnBackgroundColour(Colour(200, 222, 40))
-        self.SetForegroundColour(Colour(7, 0, 70))
-        self.SetOwnForegroundColour(Colour(7, 0, 70))
-        """
+        from ..preferences import RideSettings
+        _settings = RideSettings()
+        self.general_settings = _settings['General']
+        self.color_background = self.general_settings.get('background', 'light grey')
+        self.color_foreground = self.general_settings.get('foreground', 'black')
+        self.color_secondary_background = self.general_settings.get('secondary background', 'light grey')
+        self.color_secondary_foreground = self.general_settings.get('secondary foreground', 'black')
+        self.color_background_help = self.general_settings.get('background help', (240, 242, 80))
+        self.color_foreground_text = self.general_settings.get('foreground text', (7, 0, 70))
+        self.font_face = self.general_settings.get('font face', '')
+        self.font_size = self.general_settings.get('font size', 11)
+        self.SetBackgroundColour(Colour(self.color_background))
+        self.SetForegroundColour(Colour(self.color_foreground))
         self._sizer = wx.BoxSizer(wx.VERTICAL)
         self._editors = []
         self.Bind(wx.EVT_SIZE, self._recalc_size)
@@ -309,12 +327,9 @@ class _FileEditor(_RobotTableEditor):
         sizer.Add(Label(self, label='Source', size=(context.SETTING_LABEL_WIDTH,
                                                     context.SETTING_ROW_HEIGHT)))
         self._source = wx.TextCtrl(self, style=wx.TE_READONLY | wx.NO_BORDER)
-        """
-        self._source.SetBackgroundColour(Colour(200, 222, 40))  # self.BackgroundColour
-        self._source.SetOwnBackgroundColour(Colour(200, 222, 40))
-        self._source.SetForegroundColour(Colour(7, 0, 70))
-        self._source.SetOwnForegroundColour(Colour(7, 0, 70))
-        """
+        self._source.SetBackgroundColour(Colour(self.color_background))
+        self._source.SetForegroundColour(Colour(self.color_foreground))
+
         self._source.SetValue(source)
         self._source.SetMaxSize(wx.Size(-1, context.SETTING_ROW_HEIGHT))
         sizer.Add(self._source, 1, wx.EXPAND)
@@ -343,11 +358,12 @@ class _FileEditor(_RobotTableEditor):
 
 class FindUsagesHeader(HorizontalSizer):
 
-    def __init__(self, parent, header, usages_callback):
+    def __init__(self, parent, header, usages_callback, color_foreground, color_background):
         HorizontalSizer.__init__(self)
         self._header = HeaderLabel(parent, header)
         self.add_expanding(self._header)
-        self.add(ButtonWithHandler(parent, 'Find Usages', usages_callback))
+        self.add(ButtonWithHandler(parent, 'Find Usages', usages_callback, color_secondary_foreground=color_foreground,
+                                   color_secondary_background=color_background))
 
     def SetLabel(self, label):
         self._header.SetLabel(label)
@@ -362,7 +378,8 @@ class ResourceFileEditor(_FileEditor):
 
         def cb(event):
             ResourceFileUsages(self.controller, self._tree.highlight).show()
-        self._title_display = FindUsagesHeader(self, text, cb)
+        self._title_display = FindUsagesHeader(self, text, cb, color_foreground=self.color_secondary_foreground,
+                                               color_background=self.color_secondary_background)
         return self._title_display
 
 

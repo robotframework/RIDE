@@ -388,8 +388,6 @@ class _AbstractListEditor(ListEditor):
 
     def __init__(self, parent, tree, controller):
         ListEditor.__init__(self, parent, self._titles, controller)
-        self.SetBackgroundColour(Colour(self.color_secondary_background))
-        self.SetForegroundColour(Colour(self.color_secondary_foreground))
         self._datafile = controller.datafile
         self._tree = tree
 
@@ -501,6 +499,10 @@ class ImportSettingListEditor(_AbstractListEditor):
     def __init__(self, parent, tree, controller):
         self._import_failed_shown = False
         _AbstractListEditor.__init__(self, parent, tree, controller)
+        self.SetBackgroundColour(Colour(self.color_background))
+        self.SetOwnBackgroundColour(Colour(self.color_background))
+        self.SetForegroundColour(Colour(self.color_foreground))
+        self.SetOwnForegroundColour(Colour(self.color_foreground))
 
     @overrides(ListEditorBase)
     def _create_buttons(self):
