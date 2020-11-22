@@ -79,7 +79,7 @@ from robotide.widgets import Label, ImageProvider
 from robotide.robotapi import LOG_LEVELS
 from robotide.utils import robottime
 from robotide.preferences.editors import ReadFonts
-from sys import getfilesystemencoding
+from sys import getfilesystemencoding, platform
 from robotide.lib.robot.utils.encodingsniffer import (get_console_encoding,
                                                       get_system_encoding)
 
@@ -113,11 +113,46 @@ def _RunProfile(name, run_prefix):
                 {'name': name, 'get_command': lambda self: run_prefix})
 
 
+def open_filemanager(path=None):
+    path = path or os.path.curdir
+    path_dir = os.path.dirname(path) if os.path.isfile(path) else path
+    if os.path.exists(path_dir):
+        if platform == 'win32':
+            #  There was encoding errors if directory had unicode chars
+            # TODO test on all OS directory names with accented chars, for example 'ccedilla'
+            os.startfile(r"%s" % path_dir, 'explore')
+        elif platform.startswith('linux'):
+            # how to detect which explorer is used?
+            # nautilus, dolphin, konqueror
+            # TODO check if explorer exists
+            # TODO get prefered explorer from preferences
+            try:
+                subprocess.Popen(["nautilus", "{}".format(path_dir)])
+            except OSError or FileNotFoundError:
+                try:
+                    subprocess.Popen(
+                        ["dolphin", "{}".format(path_dir)])
+                except OSError or FileNotFoundError:
+                    try:
+                        subprocess.Popen(
+                           ["konqueror", "{}".format(path_dir)])
+                    except OSError or FileNotFoundError:
+                        print("Could not launch explorer. Tried nautilus, "
+                              "dolphin and konqueror.")
+        else:
+            try:
+                subprocess.Popen(["finder", "{}".format(path_dir)])
+            except OSError or FileNotFoundError:
+                subprocess.Popen(["open", "{}".format(path_dir)])
+
+
 class TestRunnerPlugin(Plugin):
     """A plugin for running tests from within RIDE"""
     defaults = {"auto_save": False,
                 "confirm run": True,
                 "profile": "robot",
+                "profile_name": "robot",
+                "show_console_log": True,
                 "sash_position": 200,
                 "run_profiles":
                     [('jybot', 'jybot' + ('.bat' if os.name == 'nt' else '')),
@@ -457,7 +492,7 @@ class TestRunnerPlugin(Plugin):
     def OnOpenLogsDirectory(self, evt):
         """Called when the user clicks on the "Open Logs Directory" button"""
         if os.path.exists(self._logs_directory):
-            subprocess.run(['explorer', self._logs_directory])
+            open_filemanager(self._logs_directory)
         else:
             self._notify_user_no_logs_directory()
 
@@ -769,17 +804,12 @@ class TestRunnerPlugin(Plugin):
         self._config_panel = self._build_config_panel(self.panel)
 
         sizer = wx.BoxSizer(wx.VERTICAL)
-        sizer.Add(self._local_toolbar, 0,
-                  wx.EXPAND | wx.LEFT | wx.TOP | wx.RIGHT, 5)
-        sizer.Add(wx.StaticLine(self.panel), 0,
-                  wx.EXPAND | wx.BOTTOM | wx.TOP, 7)
-        sizer.Add(self._runner_toolbar, 0,
-                  wx.EXPAND | wx.ALL, 5)
-        sizer.Add(wx.StaticLine(self.panel), 0,
-                  wx.EXPAND | wx.BOTTOM | wx.TOP, 4)
+        sizer.Add(self._local_toolbar, 0, wx.EXPAND | wx.LEFT | wx.TOP | wx.RIGHT, 5)
+        sizer.Add(wx.StaticLine(self.panel), 0, wx.EXPAND | wx.BOTTOM | wx.TOP, 7)
+        sizer.Add(self._runner_toolbar, 0, wx.EXPAND | wx.ALL, 5)
+        sizer.Add(wx.StaticLine(self.panel), 0, wx.EXPAND | wx.BOTTOM | wx.TOP, 4)
         sizer.Add(self._config_panel, 0, wx.EXPAND, 5)
-        sizer.Add(wx.StaticLine(self.panel), 0,
-                  wx.EXPAND | wx.BOTTOM | wx.TOP, 4)
+        sizer.Add(wx.StaticLine(self.panel), 0, wx.EXPAND | wx.BOTTOM | wx.TOP, 4)
         self._output_panel = self._build_output_panel(self.panel)
         sizer.Add(self._output_panel, 1, wx.EXPAND | wx.TOP, 5)
         self.panel.SetSizer(sizer)
@@ -813,12 +843,8 @@ class TestRunnerPlugin(Plugin):
 
         panel_sizer = wx.BoxSizer(wx.VERTICAL)
         panel_sizer.Add(self._progress_bar, 0, wx.EXPAND)
-        panel_sizer.Add(self._console_log_panel,
-                        int(self.show_console_log),
-                        wx.EXPAND)
-        panel_sizer.Add(self._message_log_panel,
-                        int(self.show_message_log),
-                        wx.EXPAND)
+        panel_sizer.Add(self._console_log_panel, int(self.show_console_log), wx.EXPAND)
+        panel_sizer.Add(self._message_log_panel, int(self.show_message_log), wx.EXPAND)
         panel.SetSizer(panel_sizer)
         return panel
 
