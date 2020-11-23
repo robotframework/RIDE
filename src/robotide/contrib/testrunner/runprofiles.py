@@ -350,7 +350,7 @@ class PybotProfile(BaseProfile):
             "Add timestamp to log names", self.OnTimestampOutputsCheckbox)
         save_logs_cb = self._create_checkbox(
             pane, self.are_saving_logs,
-            "Save Console and Message logs", self.OnSavingLogsCheckbox)
+            "Save Console and Message logs", self.OnSaveLogsCheckbox)
 
         vertical_sizer = wx.BoxSizer(wx.VERTICAL)
         vertical_sizer.Add(horizontal_sizer, 0, wx.EXPAND)
@@ -378,7 +378,7 @@ class PybotProfile(BaseProfile):
     def OnTimestampOutputsCheckbox(self, evt):
         self.set_setting("are_log_names_with_timestamp", evt.IsChecked())
 
-    def OnSavingLogsCheckbox(self, evt):
+    def OnSaveLogsCheckbox(self, evt):
         self.set_setting("are_saving_logs", evt.IsChecked())
 
     def _get_arguments_panel(self, parent):
@@ -451,10 +451,10 @@ class PybotProfile(BaseProfile):
                               collapsible_pane)
         pane = collapsible_pane.GetPane()
         include_cb = self._create_checkbox(pane, self.apply_include_tags,
-                                           "Only run tests with these tags",
+                                           "Only run tests with these tags:",
                                            self.OnIncludeCheckbox)
         exclude_cb = self._create_checkbox(pane, self.apply_exclude_tags,
-                                           "Skip tests with these tags",
+                                           "Skip tests with these tags:",
                                            self.OnExcludeCheckbox)
         self._include_tags_text_ctrl = \
             self._create_text_ctrl(pane, self.include_tags, "unicode_error",
@@ -465,20 +465,16 @@ class PybotProfile(BaseProfile):
                                    self.OnExcludeTagsChanged,
                                    self.apply_exclude_tags)
 
-        # vertical_sizer = wx.BoxSizer(wx.VERTICAL)
-        # vertical_sizer.Add(include_cb, 0, wx.LEFT, 10)
-        # vertical_sizer.Add(self._include_tags_text_ctrl, 0, wx.EXPAND | wx.LEFT | wx.RIGHT, 10)
-        # vertical_sizer.Add(exclude_cb, 0, wx.LEFT | wx.TOP, 10)
-        # vertical_sizer.Add(self._exclude_tags_text_ctrl, 0, wx.EXPAND | wx.LEFT | wx.RIGHT | wx.BOTTOM, 10)
-        # pane.SetSizer(vertical_sizer)
-        # DEBUG No need for so much space for tags, let's use one line
         horizontal_sizer = wx.BoxSizer(wx.HORIZONTAL)
-        horizontal_sizer.Add(include_cb, 0, wx.LEFT, 10)
-        horizontal_sizer.Add(self._include_tags_text_ctrl, 1, wx.LEFT | wx.EXPAND, 10)
-        horizontal_sizer.Add(exclude_cb, 0, wx.LEFT, 10)
-        horizontal_sizer.Add(self._exclude_tags_text_ctrl, 1, wx.LEFT | wx.EXPAND, 10)
-        pane.SetSizer(horizontal_sizer)
-        self._exclude_tags_text_ctrl.Disable()
+        horizontal_sizer.Add(include_cb, 0, wx.ALIGN_CENTER_VERTICAL)
+        horizontal_sizer.Add(self._include_tags_text_ctrl, 1, wx.EXPAND)
+        horizontal_sizer.Add(exclude_cb, 0, wx.ALIGN_CENTER_VERTICAL | wx.LEFT, 10)
+        horizontal_sizer.Add(self._exclude_tags_text_ctrl, 1, wx.EXPAND)
+        # Set Left, Right and Bottom content margins
+        sizer = wx.BoxSizer(wx.HORIZONTAL)
+        sizer.Add(horizontal_sizer, 1, wx.LEFT | wx.RIGHT | wx.BOTTOM, 10)
+        pane.SetSizer(sizer)
+
         return collapsible_pane
 
     def OnCollapsiblePaneChanged(self, evt=None):

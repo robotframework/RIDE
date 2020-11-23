@@ -33,7 +33,6 @@ import inspect
 import os
 
 from robotide.contrib.testrunner import TestRunnerAgent
-from robotide.contrib.testrunner.FileWriter import FileWriter
 try:
     from robotide.lib.robot.utils import encoding
 except ImportError:
@@ -47,7 +46,7 @@ class CommandBuilder:
         self._command_prefix = ''
         self._suite_source = ''
         self._listener = None
-        self._arg_file = None
+        self._arg_file = ''
 
     def set_prefix(self, prefix):
         self._command_prefix = prefix
@@ -59,9 +58,9 @@ class CommandBuilder:
     def set_suite_source(self, suite_source):
         self._suite_source = suite_source
 
-    def add_arg_file(self, arg_file, args):
-        if arg_file and args:
-            self._arg_file = (arg_file, args)
+    def add_arg_file(self, arg_file):
+        if arg_file:
+            self._arg_file = arg_file
 
     def build(self):
         command = []
@@ -69,8 +68,7 @@ class CommandBuilder:
             command.append(self._command_prefix)
 
         if self._arg_file:
-            FileWriter.write(self._arg_file[0], self._arg_file[1], "wb")
-            command.extend(["-A", self._arg_file[0]])
+            command.extend(["-A", self._arg_file])
 
         if self._listener:
             command.extend(["--listener", self._get_listener_to_cmd()])
@@ -81,10 +79,13 @@ class CommandBuilder:
         return self._format_command(command)
 
     def _get_listener_to_cmd(self):
-        path = os.path.abspath(inspect.getfile(TestRunnerAgent))
+        path = self._get_listener_path()
         if path[-1] in ['c', 'o']:
             path = path[:-1]
         return '%s:%s:%s' % (path, self._listener[0], self._listener[1])
+
+    def _get_listener_path(self):
+        return os.path.abspath(inspect.getfile(TestRunnerAgent))
 
     @staticmethod
     def _format_command(args):

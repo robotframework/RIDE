@@ -150,7 +150,6 @@ class TestRunnerPlugin(Plugin):
     """A plugin for running tests from within RIDE"""
     defaults = {"auto_save": False,
                 "confirm run": True,
-                "profile": "robot",
                 "profile_name": "robot",
                 "show_console_log": True,
                 "sash_position": 200,
@@ -384,8 +383,10 @@ class TestRunnerPlugin(Plugin):
 
         command_builder = CommandBuilder()
         command_builder.set_prefix(profile.get_command())
-        arg_file = os.path.join(self._default_output_dir, 'argfile.txt')
-        command_builder.add_arg_file(arg_file, args)
+        if args:
+            arg_file = os.path.join(self._default_output_dir, 'argfile.txt')
+            command_builder.add_arg_file(arg_file)
+            FileWriter.write(arg_file, args, 'wb')
         command_builder.set_listener(self._test_runner.get_listener_port(),
                                      self._pause_on_failure)
         command_builder.set_suite_source(self.model.suite.source)
@@ -842,7 +843,7 @@ class TestRunnerPlugin(Plugin):
                                           self.OnMessageLogPaneChanged)
 
         panel_sizer = wx.BoxSizer(wx.VERTICAL)
-        panel_sizer.Add(self._progress_bar, 0, wx.EXPAND)
+        panel_sizer.Add(self._progress_bar, 0, wx.EXPAND | wx.BOTTOM, 10)
         panel_sizer.Add(self._console_log_panel, int(self.show_console_log), wx.EXPAND)
         panel_sizer.Add(self._message_log_panel, int(self.show_message_log), wx.EXPAND)
         panel.SetSizer(panel_sizer)
