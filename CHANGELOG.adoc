@@ -10,6 +10,8 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Added
 
+- Added on Run tab a button to open the Logs Directory
+- Added on Run tab a group of elements to define Output Directory, Log and Report filenames with suite names or timestamps, and possibility to keep Console and Message logs
 - Added Python 3.8 unit test support in travis CI
 - Added menu option to ``Move Up`` and ``Move Down`` variables in Tree
 - Added menu option to ``Sort Variables`` in resources from Tree 
@@ -35,6 +37,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Changed
 
+- The Arguments, Tests filters (include/exclude), Console and Message logs are now in Expandable/Collapsable groups
 - Modified robot passed and failed icons to be easier to differentiate
 - When searching in Text Editor by using Ctrl-G the search is done from the begining of text
 - On MacOS, grid cell will not lose focus anymore when mouse is moving outside of the cell's boundary

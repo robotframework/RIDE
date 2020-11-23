@@ -14,9 +14,12 @@
 #  limitations under the License.
 
 try:
-    from robotide.lib.robot.run import USAGE
+    from robot.run import USAGE  # First try the installed version
 except ImportError:
-    USAGE = """\
+    try:
+        from robotide.lib.robot.run import USAGE  # Then try the provided version, 3.1.2
+    except ImportError:
+        USAGE = """\
 Robot Framework -- A generic test automation framework
 
 Usage:  robot|jybot|irobot [options] data_sources

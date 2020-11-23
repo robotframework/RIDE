@@ -17,6 +17,7 @@ Andrey Gavrilin
 Bjørn Forsman
 Bryan Oakley
 Charandeep S. Matta
+Dmitriy Pantelin
 Ferenc Züllich
 Florian Heine
 Guillermo Zapata

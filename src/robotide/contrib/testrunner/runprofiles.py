@@ -179,9 +179,9 @@ class PybotProfile(BaseProfile):
         return self._toolbar
 
     def get_toolbar_items(self, parent):
-        return [self._get_log_options_panel(parent),
-                self._get_arguments_panel(parent),
-                self._get_tags_panel(parent)]
+        return [self._get_arguments_panel(parent),
+                self._get_tags_panel(parent),
+                self._get_log_options_panel(parent)]
 
     def enable_toolbar(self):
         if self._toolbar is None:
@@ -350,7 +350,7 @@ class PybotProfile(BaseProfile):
             "Add timestamp to log names", self.OnTimestampOutputsCheckbox)
         save_logs_cb = self._create_checkbox(
             pane, self.are_saving_logs,
-            "Saving Console and Message logs", self.OnSavingLogsCheckbox)
+            "Save Console and Message logs", self.OnSavingLogsCheckbox)
 
         vertical_sizer = wx.BoxSizer(wx.VERTICAL)
         vertical_sizer.Add(horizontal_sizer, 0, wx.EXPAND)
@@ -465,14 +465,19 @@ class PybotProfile(BaseProfile):
                                    self.OnExcludeTagsChanged,
                                    self.apply_exclude_tags)
 
-        vertical_sizer = wx.BoxSizer(wx.VERTICAL)
-        vertical_sizer.Add(include_cb, 0, wx.LEFT, 10)
-        vertical_sizer.Add(self._include_tags_text_ctrl, 0,
-                           wx.EXPAND | wx.LEFT | wx.RIGHT, 10)
-        vertical_sizer.Add(exclude_cb, 0, wx.LEFT | wx.TOP, 10)
-        vertical_sizer.Add(self._exclude_tags_text_ctrl, 0,
-                           wx.EXPAND | wx.LEFT | wx.RIGHT | wx.BOTTOM, 10)
-        pane.SetSizer(vertical_sizer)
+        # vertical_sizer = wx.BoxSizer(wx.VERTICAL)
+        # vertical_sizer.Add(include_cb, 0, wx.LEFT, 10)
+        # vertical_sizer.Add(self._include_tags_text_ctrl, 0, wx.EXPAND | wx.LEFT | wx.RIGHT, 10)
+        # vertical_sizer.Add(exclude_cb, 0, wx.LEFT | wx.TOP, 10)
+        # vertical_sizer.Add(self._exclude_tags_text_ctrl, 0, wx.EXPAND | wx.LEFT | wx.RIGHT | wx.BOTTOM, 10)
+        # pane.SetSizer(vertical_sizer)
+        # DEBUG No need for so much space for tags, let's use one line
+        horizontal_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        horizontal_sizer.Add(include_cb, 0, wx.LEFT, 10)
+        horizontal_sizer.Add(self._include_tags_text_ctrl, 1, wx.LEFT | wx.EXPAND, 10)
+        horizontal_sizer.Add(exclude_cb, 0, wx.LEFT, 10)
+        horizontal_sizer.Add(self._exclude_tags_text_ctrl, 1, wx.LEFT | wx.EXPAND, 10)
+        pane.SetSizer(horizontal_sizer)
         self._exclude_tags_text_ctrl.Disable()
         return collapsible_pane
 
@@ -546,9 +551,9 @@ class CustomScriptProfile(PybotProfile):
     @overrides(PybotProfile)
     def get_toolbar_items(self, parent):
         return [self._get_run_script_panel(parent),
-                self._get_log_options_panel(parent),
                 self._get_arguments_panel(parent),
-                self._get_tags_panel(parent)]
+                self._get_tags_panel(parent),
+                self._get_log_options_panel(parent)]
 
     def _validate_arguments(self, args):
         # Can't say anything about custom script argument validity
