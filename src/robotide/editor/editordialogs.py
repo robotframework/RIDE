@@ -20,7 +20,7 @@ from .. import utils
 from ..namespace.suggesters import ResourceSuggester, LibrariesSuggester, HistorySuggester
 from ..validators import (ScalarVariableNameValidator, ListVariableNameValidator, TimeoutValidator, ArgumentsValidator,
                           TestCaseNameValidator, UserKeywordNameValidator, DictionaryVariableNameValidator)
-from ..widgets import HelpLabel, RIDEDialog
+from ..widgets import HelpLabel, RIDEDialog, ButtonWithHandler
 from .dialoghelps import get_help
 from .fieldeditors import (ValueEditor, ListValueEditor, MultiLineEditor, ContentAssistEditor, VariableNameEditor,
                            ArgumentEditor, FileNameEditor)
@@ -73,15 +73,13 @@ class _Dialog(RIDEDialog):
     def _create_buttons(self, **kwargs):
         buttons = self.CreateStdDialogButtonSizer(wx.OK|wx.CANCEL)
         self.SetBackgroundColour(Colour(self.color_background))
-        # self.SetOwnBackgroundColour(Colour(self.color_secondary_background))
         self.SetForegroundColour(Colour(self.color_foreground))
-        # self.SetOwnForegroundColour(Colour(self.color_secondary_foreground))
-        # TODO: Change colors on buttons
-        """
-        for item in buttons.GetChildren():
-            item.SetBackgroundColour(Colour(self.color_secondary_background))
-            item.SetForegroundColour(Colour(self.color_secondary_foreground))
-        """
+        for item in self.GetChildren():
+            if isinstance(item, (wx.Button, wx.BitmapButton, ButtonWithHandler)):
+                item.SetBackgroundColour(Colour(self.color_secondary_background))
+                item.SetOwnBackgroundColour(Colour(self.color_secondary_background))
+                item.SetForegroundColour(Colour(self.color_secondary_foreground))
+                item.SetOwnForegroundColour(Colour(self.color_secondary_foreground))
         self._sizer.Add(buttons, 0, wx.ALIGN_CENTER|wx.ALL, 5)
 
     def get_value(self):

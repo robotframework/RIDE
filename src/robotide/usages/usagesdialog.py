@@ -16,6 +16,7 @@
 
 import wx
 
+from wx import Colour
 from ..widgets import RIDEDialog, VirtualList, VerticalSizer, ImageList, ImageProvider, ButtonWithHandler
 from ..widgets.list import ListModel
 
@@ -29,10 +30,14 @@ class UsagesDialog(RIDEDialog):
         # set Left to Right direction (while we don't have localization)
         self.SetLayoutDirection(wx.Layout_LeftToRight)
         self.SetSizer(VerticalSizer())
+        self.SetBackgroundColour(Colour(self.color_background))
+        self.SetForegroundColour(Colour(self.color_foreground))
         self._add_view_components()
         self.usages = usages or UsagesListModel([])
         self.usage_list = VirtualList(self, self.usages.headers,
                                       self.usages)
+        self.usage_list.SetBackgroundColour(Colour(self.color_secondary_background))
+        self.usage_list.SetForegroundColour(Colour(self.color_secondary_foreground))
         self.usage_list.add_selection_listener(self._usage_selected)
         self.Sizer.add_expanding(self.usage_list)
 
@@ -71,7 +76,10 @@ class UsagesDialogWithUserKwNavigation(UsagesDialog):
         UsagesDialog.__init__(self, name, usages=usages)
 
     def _add_view_components(self):
-        self.Sizer.Add(ButtonWithHandler(self, 'Go to definition'), 0, wx.ALL, 3)
+        button = ButtonWithHandler(self, 'Go to definition')
+        button.SetBackgroundColour(Colour(self.color_secondary_background))
+        button.SetForegroundColour(Colour(self.color_secondary_foreground))
+        self.Sizer.Add(button, 0, wx.ALL, 3)
 
 
 def ResourceImportUsageDialog(name, highlight, controller):

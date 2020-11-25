@@ -423,7 +423,6 @@ class ResourceFileHandler(_FileHandlerThanCanBeRenamed, TestDataHandler):
         self.controller.execute(ctrlcommands.RemoveReadOnly())
         
     def OnOpenContainingFolder(self, event):
-
         self.controller.execute(ctrlcommands.OpenContainingFolder())
 
     def OnFindUsages(self, event):

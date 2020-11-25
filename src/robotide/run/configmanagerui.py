@@ -18,7 +18,7 @@ from wx import Colour
 from wx.lib.mixins.listctrl import TextEditMixin
 
 from ..editor.listeditor import AutoWidthColumnList, ListEditorBase
-from ..widgets import RIDEDialog, HelpLabel
+from ..widgets import RIDEDialog, HelpLabel, ButtonWithHandler
 
 _CONFIG_HELP = """The specified command string will be split from whitespaces into a command
 and its arguments. If either the command or any of the arguments require
@@ -76,8 +76,16 @@ class ConfigManagerDialog(RIDEDialog):
             self.Sizer.Add(line, border=5, flag=wx.GROW | wx.RIGHT | wx.TOP)
 
     def _create_buttons(self):
-        self.Sizer.Add(self.CreateStdDialogButtonSizer(wx.OK | wx.CANCEL),
-                       flag=wx.ALIGN_CENTER | wx.ALL, border=5)
+        buttons = self.CreateStdDialogButtonSizer(wx.OK|wx.CANCEL)
+        self.SetBackgroundColour(Colour(self.color_background))
+        self.SetForegroundColour(Colour(self.color_foreground))
+        for item in self.GetChildren():
+            if isinstance(item, (wx.Button, wx.BitmapButton, ButtonWithHandler)):
+                item.SetBackgroundColour(Colour(self.color_secondary_background))
+                item.SetOwnBackgroundColour(Colour(self.color_secondary_background))
+                item.SetForegroundColour(Colour(self.color_secondary_foreground))
+                item.SetOwnForegroundColour(Colour(self.color_secondary_foreground))
+        self.Sizer.Add(buttons, flag=wx.ALIGN_CENTER | wx.ALL, border=5)
 
     def get_data(self):
         return self._editor.get_data()

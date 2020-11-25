@@ -18,7 +18,7 @@ import webbrowser
 import wx
 from wx import html, Colour
 
-from . import sizers
+from . import sizers, ButtonWithHandler
 
 
 # TODO: Make this colour configurable
@@ -119,11 +119,15 @@ class RIDEDialog(wx.Dialog):
         self.CenterOnParent()
 
     def _create_buttons(self, sizer):
-        buttons = self.CreateStdDialogButtonSizer(wx.OK | wx.CANCEL)
+        buttons = self.CreateStdDialogButtonSizer(wx.OK|wx.CANCEL)
         self.SetBackgroundColour(Colour(self.color_background))
-        # self.SetOwnBackgroundColour(Colour(self.color_secondary_background))
         self.SetForegroundColour(Colour(self.color_foreground))
-        # self.SetOwnForegroundColour(Colour(self.color_secondary_foreground))
+        for item in self.GetChildren():
+            if isinstance(item, (wx.Button, wx.BitmapButton, ButtonWithHandler)):
+                item.SetBackgroundColour(Colour(self.color_secondary_background))
+                item.SetOwnBackgroundColour(Colour(self.color_secondary_background))
+                item.SetForegroundColour(Colour(self.color_secondary_foreground))
+                item.SetOwnForegroundColour(Colour(self.color_secondary_foreground))
         sizer.Add(buttons, flag=wx.ALIGN_CENTER | wx.ALL, border=5)
 
     def _create_horizontal_line(self, sizer):
