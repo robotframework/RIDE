@@ -66,8 +66,8 @@ from robotide.context import IS_WINDOWS, IS_MAC
 from robotide.contrib.testrunner import TestRunner
 from robotide.contrib.testrunner import runprofiles
 from robotide.contrib.testrunner.ArgsParser import ArgsParser
-from robotide.contrib.testrunner.CommandArgsBuilder import CommandArgsBuilder
-from robotide.contrib.testrunner.CommandBuilder import CommandBuilder
+from robotide.contrib.testrunner.CommandArgs import CommandArgs
+from robotide.contrib.testrunner.Command import Command
 from robotide.contrib.testrunner.FileWriter import FileWriter
 from robotide.contrib.testrunner.SettingsParser import SettingsParser
 from robotide.controller.macrocontrollers import TestCaseController
@@ -351,63 +351,15 @@ class TestRunnerPlugin(Plugin):
 
     def OnRun(self, event):
         """ Called when the user clicks or presses the F8, Run Tests """
-        self._run_tests(lambda: self._create_command())
+        self._run_tests()
 
     def OnRunDebug(self, event):
         """ Called when the user clicks or presses the F9, Run Tests with Debug
             It can still be overwritten in RIDE Arguments line
         """
-        self._run_tests(lambda: self._create_command("DEBUG"))
+        self._run_tests("DEBUG")
 
-    def _create_command(self, log_level="INFO"):
-        profile = self.get_current_profile()
-        args = self._create_command_args(
-            profile.get_command_args(),
-            log_level,
-            self._default_output_dir,
-            self.global_settings.get('pythonpath', None),
-            self._get_console_width(),
-            self._names_to_run
-        )
-
-        self._min_log_level_number = \
-            ArgsParser.get_message_log_level(args)
-
-        self._logs_directory = \
-            ArgsParser.get_output_directory(args, self._default_output_dir)
-
-        console_log_name = \
-            SettingsParser.get_console_log_name(profile.get_settings())
-        self._console_log = '' if not console_log_name \
-            else os.path.join(self._logs_directory, console_log_name)
-
-        command_builder = CommandBuilder()
-        command_builder.set_prefix(profile.get_command())
-        if args:
-            arg_file = os.path.join(self._default_output_dir, 'argfile.txt')
-            command_builder.add_arg_file(arg_file)
-            FileWriter.write(arg_file, args, 'wb')
-        command_builder.set_listener(self._test_runner.get_listener_port(),
-                                     self._pause_on_failure)
-        command_builder.set_suite_source(self.model.suite.source)
-
-        return command_builder.build()
-
-    @staticmethod
-    def _create_command_args(profile_custom_args, log_level, output_dir,
-                             python_path, console_width, tests_to_run):
-        args_builder = CommandArgsBuilder(profile_custom_args)
-
-        args_builder.set_log_level(log_level)
-        args_builder.set_output_directory(output_dir)
-        args_builder.set_python_path(python_path)
-        args_builder.without_console_color()
-        args_builder.set_console_width(console_width)
-        args_builder.set_tests_to_run(tests_to_run)
-
-        return args_builder.build()
-
-    def _run_tests(self, create_command_func):
+    def _run_tests(self, log_level='INFO'):
         if not self._can_start_running_tests():
             return
         if self.__getattr__('confirm run') \
@@ -416,38 +368,84 @@ class TestRunnerPlugin(Plugin):
             # In Linux NO runs dialog 4 times
             return
         self._reset_memory_calc()
+        profile = self.get_current_profile()
+        command_args = self._create_command_args(profile.get_command_args(), log_level)
+        args_file = self._save_command_args_in_file(command_args)
+        command = self._create_command(profile.get_command(), args_file)
+        self._initialize_variables_for_running(profile.get_settings(), command_args)
         self._initialize_ui_for_running()
-        command = create_command_func()
         # DEBUG on Py3 it not shows correct if tags with latin chars
         self._append_to_console_log("command: %s\n" % command, enc=False)
         try:
-            self._test_runner.run_command(command,
-                                          self._get_current_working_dir())
+            self._test_runner.run_command(command, self._get_current_working_dir(profile))
             self._process_timer.Start(41)  # roughly 24fps
             self._set_running()
             self._progress_bar.Start()
         except Exception as e:
             self._set_stopped()
-            error, log_message = self.get_current_profile().format_error(str(e),
-                                                                         None)
+            error, log_message = self.get_current_profile().format_error(str(e), None)
             self._append_to_console_log(error, source='stderr')
             if log_message:
                 log_message.publish()
 
-    def _get_current_working_dir(self):
-        profile = self.get_current_profile()
+    def _create_command_args(self, profile_command_args, log_level='INFO'):
+        return CommandArgs().with_existing_args(profile_command_args) \
+            .with_log_level(log_level) \
+            .with_output_directory(self._default_output_dir) \
+            .with_python_path(self.global_settings.get('pythonpath', None)) \
+            .with_console_width(self._get_console_width()) \
+            .without_console_color() \
+            .with_runnable_tests(self._names_to_run) \
+            .build()
+
+    def _save_command_args_in_file(self, args):
+        arg_file = os.path.join(self._default_output_dir, 'argfile.txt')
+        FileWriter.write(arg_file, args, 'wb')
+        return arg_file
+
+    def _create_command(self, profile_command, args_file):
+        return Command().with_prefix(profile_command) \
+            .with_args_file(args_file) \
+            .with_listener(self._test_runner.get_listener_port(),
+                           self._pause_on_failure) \
+            .with_tests_suite_file(self.model.suite.source) \
+            .build()
+
+    def _initialize_variables_for_running(self, profile_settings, args):
+        self._report_file = self._log_file = None
+        self._log_message_queue = Queue()
+
+        self._min_log_level_number = \
+            ArgsParser.get_message_log_level(args)
+
+        self._logs_directory = \
+            ArgsParser.get_output_directory(args, self._default_output_dir)
+
+        console_log_name = \
+            SettingsParser.get_console_log_name(profile_settings)
+        self._console_log = '' if not console_log_name \
+            else os.path.join(self._logs_directory, console_log_name)
+
+    def _initialize_ui_for_running(self):
+        self._show_notebook_tab()
+        self._clear_log_ctrls()
+        self._local_toolbar.EnableTool(ID_OPEN_LOGS_DIR, False)
+        self._local_toolbar.EnableTool(ID_SHOW_REPORT, False)
+        self._local_toolbar.EnableTool(ID_SHOW_LOG, False)
+
+    def _get_current_working_dir(self, profile):
         if profile.name == runprofiles.CustomScriptProfile.name:
             return profile.get_cwd()
-        if not os.path.isdir(self.model.suite.source):
-            return os.path.dirname(self.model.suite.source)
-        return self.model.suite.source
+        if os.path.isdir(self.model.suite.source):
+            return self.model.suite.source
+        return os.path.dirname(self.model.suite.source)
 
     def _can_start_running_tests(self):
         if self._running or self.model.suite is None:
             return False
-        if not self.is_unsaved_changes():
-            return True
-        if self.auto_save or self._ask_user_to_save_before_running():
+        if not self.is_unsaved_changes() or \
+                self.auto_save or \
+                self._ask_user_to_save_before_running():
             self.save_all_unsaved_changes()
             return True
         return False
@@ -471,24 +469,15 @@ class TestRunnerPlugin(Plugin):
                             wx.ICON_QUESTION | wx.YES_NO)
         return ret == wx.YES
 
-    def _initialize_ui_for_running(self):
-        self._show_notebook_tab()
-        self._clear_log_ctrls()
-        self._local_toolbar.EnableTool(ID_OPEN_LOGS_DIR, False)
-        self._local_toolbar.EnableTool(ID_SHOW_REPORT, False)
-        self._local_toolbar.EnableTool(ID_SHOW_LOG, False)
-        self._report_file = self._log_file = None
-        self._log_message_queue = Queue()
-
     def _clear_log_ctrls(self):
         self._clear_text_ctrl(self._console_log_ctrl)
         self._clear_text_ctrl(self._message_log_ctrl)
 
     @staticmethod
-    def _clear_text_ctrl(textctrl):
-        textctrl.SetReadOnly(False)
-        textctrl.ClearAll()
-        textctrl.SetReadOnly(True)
+    def _clear_text_ctrl(text_ctrl):
+        text_ctrl.SetReadOnly(False)
+        text_ctrl.ClearAll()
+        text_ctrl.SetReadOnly(True)
 
     def OnOpenLogsDirectory(self, evt):
         """Called when the user clicks on the "Open Logs Directory" button"""
@@ -555,7 +544,7 @@ class TestRunnerPlugin(Plugin):
             else:
                 if not self._maxmemmsg:
                     self._maxmemmsg = '\n' + "Messages log exceeded 80% of " \
-                                      "process memory, stopping for now..."
+                                             "process memory, stopping for now..."
                     self._append_to_message_log(self._maxmemmsg, "stderr")
         if not self._test_runner.is_running():
             self.OnProcessEnded(None)
@@ -844,8 +833,8 @@ class TestRunnerPlugin(Plugin):
 
         panel_sizer = wx.BoxSizer(wx.VERTICAL)
         panel_sizer.Add(self._progress_bar, 0, wx.EXPAND | wx.BOTTOM, 10)
-        panel_sizer.Add(self._console_log_panel, int(self.show_console_log), wx.EXPAND)
-        panel_sizer.Add(self._message_log_panel, int(self.show_message_log), wx.EXPAND)
+        panel_sizer.Add(self._console_log_panel, int(self.show_console_log),wx.EXPAND)
+        panel_sizer.Add(self._message_log_panel, int(self.show_message_log),wx.EXPAND)
         panel.SetSizer(panel_sizer)
         return panel
 
