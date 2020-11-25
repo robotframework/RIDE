@@ -152,6 +152,7 @@ class TestRunnerPlugin(Plugin):
                 "confirm run": True,
                 "profile_name": "robot",
                 "show_console_log": True,
+                "show_message_log": False,
                 "sash_position": 200,
                 "run_profiles":
                     [('jybot', 'jybot' + ('.bat' if os.name == 'nt' else '')),
