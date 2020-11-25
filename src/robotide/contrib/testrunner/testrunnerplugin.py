@@ -443,9 +443,9 @@ class TestRunnerPlugin(Plugin):
     def _can_start_running_tests(self):
         if self._running or self.model.suite is None:
             return False
-        if not self.is_unsaved_changes() or \
-                self.auto_save or \
-                self._ask_user_to_save_before_running():
+        if not self.is_unsaved_changes():
+            return True
+        if self.auto_save or self._ask_user_to_save_before_running():
             self.save_all_unsaved_changes()
             return True
         return False
