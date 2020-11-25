@@ -23,7 +23,7 @@ class CommandStub(Command):
         return 'C:\\My Work\\Python\\TestRunnerAgent.py'
 
 
-class CommandBuilderTests(unittest.TestCase):
+class CommandCreationTests(unittest.TestCase):
 
     def test_build_command_default(self):
         command = CommandStub()

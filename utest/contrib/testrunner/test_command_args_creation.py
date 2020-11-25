@@ -18,7 +18,7 @@ import unittest
 from robotide.contrib.testrunner.CommandArgs import CommandArgs
 
 
-class CommandBuilderTests(unittest.TestCase):
+class CommandArgsCreationTests(unittest.TestCase):
 
     def test_build_command_args_default(self):
         args = CommandArgs()
