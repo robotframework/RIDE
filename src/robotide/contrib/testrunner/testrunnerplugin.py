@@ -833,8 +833,8 @@ class TestRunnerPlugin(Plugin):
 
         panel_sizer = wx.BoxSizer(wx.VERTICAL)
         panel_sizer.Add(self._progress_bar, 0, wx.EXPAND | wx.BOTTOM, 10)
-        panel_sizer.Add(self._console_log_panel, int(self.show_console_log),wx.EXPAND)
-        panel_sizer.Add(self._message_log_panel, int(self.show_message_log),wx.EXPAND)
+        panel_sizer.Add(self._console_log_panel, int(self.show_console_log), wx.EXPAND)
+        panel_sizer.Add(self._message_log_panel, int(self.show_message_log), wx.EXPAND)
         panel.SetSizer(panel_sizer)
         return panel
 
