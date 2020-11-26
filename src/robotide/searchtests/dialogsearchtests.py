@@ -32,26 +32,18 @@ class TestsDialog(RIDEDialog):
         self._add_to_selected_handler = add_to_selected_handler
         self._selection_listeners = []
         title = "Search Tests"
-        RIDEDialog.__init__(self, title=title, size=(750, 400))
+        RIDEDialog.__init__(self, title=title, size=(800, 400))
         # set Left to Right direction (while we don't have localization)
         self.SetLayoutDirection(wx.Layout_LeftToRight)
-        """
-        self.SetBackgroundColour(Colour(200, 222, 40))
-        self.SetOwnBackgroundColour(Colour(200, 222, 40))
-        self.SetForegroundColour(Colour(7, 0, 70))
-        self.SetOwnForegroundColour(Colour(7, 0, 70))
-        """
+        self.SetBackgroundColour(Colour(self.color_background))
+        self.SetForegroundColour(Colour(self.color_foreground))
         self.SetSizer(VerticalSizer())
         self.Sizer.Add(self._create_notebook(), 1, wx.ALL | wx.EXPAND | wx.ALIGN_LEFT, 3)
 
     def _create_notebook(self):
         self._notebook = wx.Notebook(self, wx.ID_ANY, style=wx.NB_TOP)
-        """
-        self._notebook.SetBackgroundColour(Colour(200, 222, 40))
-        self._notebook.SetOwnBackgroundColour(Colour(200, 222, 40))
-        self._notebook.SetForegroundColour(Colour(7, 0, 70))
-        self._notebook.SetOwnForegroundColour(Colour(7, 0, 70))
-        """
+        self._notebook.SetBackgroundColour(Colour(self.color_background))
+        self._notebook.SetForegroundColour(Colour(self.color_foreground))
         self._notebook.AddPage(self._text_search_panel(), 'Search')
         self._notebook.AddPage(self._tag_pattern_search_panel(), 'Tag Search')
         return self._notebook
@@ -65,6 +57,8 @@ class TestsDialog(RIDEDialog):
         self._add_search_control(panel)
         self.tests = _TestSearchListModel([])
         self.tests_list = VirtualList(panel, ['Test', 'Tags', 'Source'], self.tests)
+        self.tests_list.SetBackgroundColour(Colour(self.color_secondary_background))
+        self.tests_list.SetForegroundColour(Colour(self.color_secondary_foreground))
         self.tests_list.add_selection_listener(self._select_text_search_result)
         panel.Sizer.add_expanding(self.tests_list)
         self._fuzzy_results_text = wx.StaticText(panel, -1, 'Results: ')
@@ -88,6 +82,8 @@ class TestsDialog(RIDEDialog):
                         , 0, wx.ALL, 3)
         self._tags_results = _TestSearchListModel([])
         self._tags_list = VirtualList(panel, ['Test', 'Tags', 'Source'], self._tags_results)
+        self._tags_list.SetBackgroundColour(Colour(self.color_secondary_background))
+        self._tags_list.SetForegroundColour(Colour(self.color_secondary_foreground))
         self._tags_list.add_selection_listener(self._select_tag_search_result)
         panel.Sizer.add_expanding(self._tags_list)
         self._tags_results_text = wx.StaticText(panel, -1, 'Results: ')
@@ -99,6 +95,8 @@ class TestsDialog(RIDEDialog):
         include_line.Add(Label(panel, label='Include', size=(80, -1)))
         self._tags_to_include_text = wx.TextCtrl(panel, value='', size=(400, -1),
                                                  style=wx.TE_PROCESS_ENTER|wx.TE_NOHIDESEL)
+        self._tags_to_include_text.SetBackgroundColour(Colour(self.color_secondary_background))
+        self._tags_to_include_text.SetForegroundColour(Colour(self.color_secondary_foreground))
         self._tags_to_include_text.Bind(wx.EVT_TEXT_ENTER, self.OnSearchTags)
         include_line.Add(self._tags_to_include_text)
         return include_line
@@ -107,6 +105,8 @@ class TestsDialog(RIDEDialog):
         sizer = self._vertical_sizer()
         img = ImageProvider().SWITCH_FIELDS_ICON
         button = wx.BitmapButton(panel, -1, img, pos=(10, 20))
+        button.SetBackgroundColour(Colour(self.color_secondary_background))
+        button.SetForegroundColour(Colour(self.color_secondary_foreground))
         self.Bind(wx.EVT_BUTTON, self.OnSwitchFields, button)
         sizer.Add(button)
         return sizer
@@ -116,12 +116,16 @@ class TestsDialog(RIDEDialog):
         exclude_line.Add(Label(panel, label='Exclude', size=(80, -1)))
         self._tags_to_exclude_text = wx.TextCtrl(panel, value='', size=(400, -1),
                                                  style=wx.TE_PROCESS_ENTER|wx.TE_NOHIDESEL)
+        self._tags_to_exclude_text.SetBackgroundColour(Colour(self.color_secondary_background))
+        self._tags_to_exclude_text.SetForegroundColour(Colour(self.color_secondary_foreground))
         self._tags_to_exclude_text.Bind(wx.EVT_TEXT_ENTER, self.OnSearchTags)
         exclude_line.Add(self._tags_to_exclude_text)
         return exclude_line
 
     def _create_tag_search_button(self, panel):
         button = wx.Button(panel, label='Search')
+        button.SetBackgroundColour(Colour(self.color_secondary_background))
+        button.SetForegroundColour(Colour(self.color_secondary_foreground))
         button.Bind(wx.EVT_BUTTON, self.OnSearchTags)
         return button
 
@@ -131,6 +135,8 @@ class TestsDialog(RIDEDialog):
 
     def _create_add_to_selected_button(self, panel):
         button = wx.Button(panel, label='Add all to selected')
+        button.SetBackgroundColour(Colour(self.color_secondary_background))
+        button.SetForegroundColour(Colour(self.color_secondary_foreground))
         button.Bind(wx.EVT_BUTTON, self.OnAddToSelected)
         return button
 
@@ -171,11 +177,15 @@ class TestsDialog(RIDEDialog):
         line1 = self._horizontal_sizer()
         self._add_pattern_filter(line1, panel)
         fuzzy_search_button = wx.Button(panel, label='Search')
+        fuzzy_search_button.SetBackgroundColour(Colour(self.color_secondary_background))
+        fuzzy_search_button.SetForegroundColour(Colour(self.color_secondary_foreground))
         fuzzy_search_button.Bind(wx.EVT_BUTTON, self.OnSearchTests)
-        line1.Add(fuzzy_search_button)
+        line1.Add(fuzzy_search_button, 0, wx.ALL | wx.EXPAND, 3)
         add_to_selection_button = wx.Button(panel, label='Add all to selected')
+        add_to_selection_button.SetBackgroundColour(Colour(self.color_secondary_background))
+        add_to_selection_button.SetForegroundColour(Colour(self.color_secondary_foreground))
         add_to_selection_button.Bind(wx.EVT_BUTTON, self.OnAddToSelected)
-        line1.Add(add_to_selection_button)
+        line1.Add(add_to_selection_button, 0, wx.ALL | wx.EXPAND, 3)
         panel.Sizer.Add(line1, 0, wx.ALL, 3)
         panel.Sizer.Add(self._add_info_text(panel, "Find matches by test name, "
                                                    "documentation and/or tag."), 0, wx.ALL, 3)
@@ -190,6 +200,8 @@ class TestsDialog(RIDEDialog):
     def _add_pattern_filter(self, sizer, parent):
         self._search_control = wx.SearchCtrl(parent, value='', size=(200,-1),
                                              style=wx.TE_PROCESS_ENTER)
+        self._search_control.SetBackgroundColour(Colour(self.color_secondary_background))
+        self._search_control.SetForegroundColour(Colour(self.color_secondary_foreground))
         self._search_control.SetDescriptiveText('Search term')
         wrapped = lambda event: self._fuzzy_search_handler(self._search_control.GetValue())
         self._search_control.Bind(wx.EVT_TEXT_ENTER, wrapped)
