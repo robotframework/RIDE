@@ -776,7 +776,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl):
     def _switch_items(self, first, second, currently_selected):
         """Changes the order of given items, first is expected to be directly
         above the second"""
-        selection = self.GetItemPyData(currently_selected).controller
+        selection = self.GetItemData(currently_selected).controller
         controller = self._controller.get_handler(first).controller
         self.Delete(first)
         self._create_node_with_handler(self.GetItemParent(second), controller, second)
@@ -846,7 +846,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl):
 
     def _get_data_controller_node(self, controller):
         for node in self._datafile_nodes:
-            if self.GetItemPyData(node).controller == controller:
+            if self.GetItemData(node).controller == controller:
                 return node
         return None
 
