@@ -16,7 +16,6 @@
 
 import os
 import sys
-import tempfile
 import wx
 
 from . import logger
@@ -64,14 +63,6 @@ original authors and all users and collaborators.<br/>
 A very special thanks to <b><a href="https://github.com/Nyral">Nyral</a></b> and <b><a href="https://github.com/jnhyperi
 on">Johnny.H</a></b> the most commited in helping RIDE development and maintenance.</p>
 ''' % (VERSION, pyversion)
-
-
-def _is_fs_case_sensitive():
-    with tempfile.NamedTemporaryFile(prefix='TmP') as tmp_file:
-        return not os.path.exists(tmp_file.name.lower())
-
-
-IS_FS_CASE_SENSITIVE = _is_fs_case_sensitive()
 
 
 def ctrl_or_cmd():

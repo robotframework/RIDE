@@ -64,7 +64,7 @@ class ProjectTest(unittest.TestCase):
         self._test_listeners([MINIMAL_SUITE_PATH], [])
 
     def _test_listeners(self, suite_paths, resource_paths):
-        resource_paths = [os.path.normcase(_) for _ in resource_paths]
+        #  resource_paths = [os.path.normcase(_) for _ in resource_paths]
         self.assertEqual(self._get_paths(self.suite_listener.data), suite_paths)
         self.assertEqual(self._get_paths(self.resource_listener.data), resource_paths)
 
