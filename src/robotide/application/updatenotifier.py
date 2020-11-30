@@ -25,8 +25,7 @@ from wx import Colour
 
 from .. import version
 from ..utils.versioncomparator import cmp_versions
-from ..widgets.button import ButtonWithHandler
-from ..widgets.htmlwnd import HtmlWindow
+from ..widgets import ButtonWithHandler, HtmlWindow, RIDEDialog
 
 _CHECK_FOR_UPDATES_SETTING = "check for updates"
 _LAST_UPDATE_CHECK_SETTING = "last update check"
@@ -70,6 +69,8 @@ class UpdateNotifierController(object):
         return self._get_response(('robotframework-ride',), 'package_releases')[0]
 
     def _get_download_url(self, version):
+        from time import sleep
+        sleep(1)  # To avoid HTTPTooManyRequests
         return self._get_response(('robotframework-ride', version), 'release_data')['download_url']
 
     def _get_response(self, params, method):
@@ -92,20 +93,20 @@ class LocalHtmlWindow(HtmlWindow):
         wx.LaunchDefaultBrowser(link.GetHref())
 
 
-class UpdateDialog(wx.Dialog):
+class UpdateDialog(RIDEDialog):
 
     def __init__(self, version, url, settings):
         self._settings = settings
-        wx.Dialog.__init__(self, None, -1, "Update available")
+        RIDEDialog.__init__(self, title="Update available", size=(400, 400),
+                            style=wx.DEFAULT_FRAME_STYLE | wx.FRAME_FLOAT_ON_PARENT)
         # set Left to Right direction (while we don't have localization)
         self.SetLayoutDirection(wx.Layout_LeftToRight)
-        """
-        self.SetBackgroundColour(Colour(200, 222, 40))
-        self.SetForegroundColour(Colour(7, 0, 70))
-        """
+        self.SetBackgroundColour(Colour(self.color_background))
+        self.SetForegroundColour(Colour(self.color_foreground))
         sizer = wx.BoxSizer(orient=wx.VERTICAL)
         hwin = LocalHtmlWindow(self, size=(400, 200))
-        hwin.set_content('New version %s available from <a href="%s">%s</a>' % (version, url, url))
+        hwin.set_content(f"New version {version} available from <a href=\"{url}\">{url}</a><br/><br/>"
+                         f"You can update with the command:<br/><b>pip install -U robotframework-ride</b>")
         irep = hwin.GetInternalRepresentation()
         hwin.SetSize((irep.GetWidth()+25, irep.GetHeight()+20))
         sizer.Add(hwin)
@@ -114,6 +115,8 @@ class UpdateDialog(wx.Dialog):
         checkbox.Bind(wx.EVT_CHECKBOX, handler=self.OnCheckboxChange)
         sizer.Add(checkbox)
         button = ButtonWithHandler(self, label="remind me later", handler=self.OnRemindMeLater)
+        button.SetBackgroundColour(Colour(self.color_secondary_background))
+        button.SetForegroundColour(Colour(self.color_secondary_foreground))
         sizer.Add(button)
         self.SetSizer(sizer)
         self.CentreOnParent(wx.BOTH)

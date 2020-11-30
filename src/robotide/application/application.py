@@ -100,12 +100,11 @@ class RIDE(wx.App):
         self._publish_system_info()
         self.frame.Show()    ####### DEBUG DANGER ZONE
         self.frame._mgr.Update()
-        if self._updatecheck:
-            UpdateNotifierController(self.settings).notify_update_if_needed(UpdateDialog)
         wx.CallLater(200, ReleaseNotes(self).bring_to_front)
         wx.CallLater(200, self.fileexplorerplugin._update_tree)
+        if self._updatecheck:
+            wx.CallAfter(UpdateNotifierController(self.settings).notify_update_if_needed, UpdateDialog)
         self.Bind(wx.EVT_ACTIVATE_APP, self.OnAppActivate)
-        # self.Bind(wx.EVT_UPDATE_UI, self.SetGlobalColour)
         PUBLISHER.subscribe(self.SetGlobalColour, RideSettingsChanged)
         return True
 
