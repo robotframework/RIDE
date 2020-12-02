@@ -167,6 +167,8 @@ class RideFrame(wx.Frame):
         self.general_settings = application.settings['General']  #.get_without_default('General')
         self.color_background_help = self.general_settings.get('background help', (240, 242, 80))
         self.color_foreground_text = self.general_settings.get('foreground text', (7, 0, 70))
+        self.color_background = self.general_settings.get_without_default('background')
+        self.color_foreground = self.general_settings.get_without_default('foreground')
         self.font_face = self.general_settings.get('font face', '')
         self.font_size = self.general_settings.get('font size', 11)
         self._init_ui()
@@ -740,12 +742,8 @@ class ToolBar(aui.AuiToolBar):
         self._search_handlers = {}
         self._current_description = None
         self.SetMinSize(wx.Size(100, 60))
-        """
-        self.SetBackgroundColour(Colour(200, 222, 40))
-        self.SetOwnBackgroundColour(Colour(200, 222, 40))
-        self.SetForegroundColour(Colour(7, 0, 70))
-        self.SetOwnForegroundColour(Colour(7, 0, 70))
-        """
+        self.tb.SetBackgroundColour(Colour(self._frame.color_background))
+        self.tb.SetForegroundColour(Colour(self._frame.color_foreground))
         self.tb.SetCustomOverflowItems(prepend_items, append_items)
         self.tb.Realize()
 

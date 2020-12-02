@@ -95,12 +95,13 @@ class HtmlWindow(html.HtmlWindow):
 
 class RIDEDialog(wx.Dialog):
 
-    def __init__(self, title='', parent=None, size=None, style=None):
+    def __init__(self, title='', parent=None, size=None, style=None, message=None):
         size = size or (-1, -1)
         style = style or (wx.DEFAULT_DIALOG_STYLE | wx.RESIZE_BORDER)
         wx.Dialog.__init__(self, parent=parent, title=title, size=size, style=style)
         # set Left to Right direction (while we don't have localization)
         self.SetLayoutDirection(wx.Layout_LeftToRight)
+        self.message = message
         from ..preferences import RideSettings
         _settings = RideSettings()
         self.general_settings = _settings['General']
@@ -113,9 +114,19 @@ class RIDEDialog(wx.Dialog):
         self.color_background_help = self.general_settings['background help']
         self.color_foreground_text = self.general_settings['foreground text']
         self.SetBackgroundColour(Colour(self.color_background))
-        self.SetOwnBackgroundColour(Colour(self.color_secondary_background))
         self.SetForegroundColour(Colour(self.color_foreground))
-        self.SetOwnForegroundColour(Colour(self.color_secondary_foreground))
+        if self.message:
+            sizer = wx.BoxSizer(wx.VERTICAL)
+            self.SetSizer(sizer)
+            content = wx.StaticText(self, -1, self.message)
+            button = wx.Button(self, wx.ID_OK, '', style=style)
+            content.SetBackgroundColour(Colour(self.color_background))
+            content.SetForegroundColour(Colour(self.color_foreground))
+            button.SetBackgroundColour(Colour(self.color_secondary_background))
+            button.SetForegroundColour(Colour(self.color_secondary_foreground))
+            sizer.Add(content, 0, wx.ALL | wx.EXPAND, 3)
+            sizer.Add(wx.StaticText(self, -1, "\n\n"), 0, wx.ALL, 3)
+            sizer.Add(button, 0, wx.ALIGN_CENTER | wx.BOTTOM, 5)
         self.CenterOnParent()
 
     def _create_buttons(self, sizer):
