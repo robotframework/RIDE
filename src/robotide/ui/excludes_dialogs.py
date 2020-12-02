@@ -19,7 +19,6 @@ import wx
 from wx import Colour
 from wx.adv import HyperlinkCtrl, EVT_HYPERLINK
 
-# from ..widgets.htmlwindow import HtmlWindow
 from .preferences_dialogs import PreferencesPanel
 from ..widgets import RIDEDialog, HtmlWindow
 
@@ -31,6 +30,15 @@ class ExcludePreferences(PreferencesPanel):
     def __init__(self, settings, *args, **kwargs):
         super(ExcludePreferences, self).__init__(*args, **kwargs)
         self._settings = settings
+        self._general_settings = self._settings['General']
+        self.font = self.GetFont()
+        self.font.SetFaceName(self._general_settings['font face'])
+        self.font.SetPointSize(self._general_settings['font size'])
+        self.SetFont(self.font)
+        self.SetBackgroundColour(Colour(self._general_settings['background']))
+        self.color_secondary_background = Colour(self._general_settings['secondary background'])
+        self.SetForegroundColour(Colour(self._general_settings['foreground']))
+        self.color_secondary_foreground = Colour(self._general_settings['secondary foreground'])
         self._create_sizer()
 
     def _create_sizer(self):
@@ -41,7 +49,10 @@ class ExcludePreferences(PreferencesPanel):
         self.SetSizer(sizer)
 
     def _add_help_dialog(self, sizer):
-        sizer.Add(HyperlinkCtrl(self, wx.ID_ANY, '', 'Need help?'))
+        need_help = HyperlinkCtrl(self, wx.ID_ANY, '', 'Need help?')
+        need_help.SetBackgroundColour(Colour(self.color_secondary_background))
+        need_help.SetForegroundColour(Colour(self.color_secondary_foreground))
+        sizer.Add(need_help)
         self.Bind(EVT_HYPERLINK, self.OnHelp)
 
     def _add_text_box(self, sizer):
@@ -49,18 +60,17 @@ class ExcludePreferences(PreferencesPanel):
             style=wx.TE_MULTILINE|wx.TE_NOHIDESEL,
             size=wx.Size(570, 100),
             value=self._settings.excludes.get_excludes())
-        """
-        self._text_box.SetBackgroundColour(Colour(200, 222, 40))
-        self._text_box.SetOwnBackgroundColour(Colour(200, 222, 40))
-        self._text_box.SetForegroundColour(Colour(7, 0, 70))
-        self._text_box.SetOwnForegroundColour(Colour(7, 0, 70))
-        """
+        self._text_box.SetBackgroundColour(Colour(self.color_secondary_background))
+        self._text_box.SetForegroundColour(Colour(self.color_secondary_foreground))
         sizer.Add(self._text_box, proportion=wx.EXPAND)
 
     def _add_button_and_status(self, sizer):
         # DEBUG wxPhoenix
         status_and_button_sizer = wx.GridSizer(rows=1, cols=2, vgap=10, hgap=10)
-        status_and_button_sizer.Add(wx.Button(self, id=wx.ID_SAVE))
+        save_button = wx.Button(self, id=wx.ID_SAVE)
+        save_button.SetBackgroundColour(Colour(self.color_secondary_background))
+        save_button.SetForegroundColour(Colour(self.color_secondary_foreground))
+        status_and_button_sizer.Add(save_button)
         self.Bind(wx.EVT_BUTTON, self.OnSave)
         self._status_label = wx.StaticText(self)
         status_and_button_sizer.Add(self._status_label)
@@ -166,12 +176,6 @@ The following shell-style wildcards are supported:
         # set Left to Right direction (while we don't have localization)
         self.SetLayoutDirection(wx.Layout_LeftToRight)
         sizer = wx.BoxSizer(wx.VERTICAL)
-        """
-        self.SetBackgroundColour(Colour(200, 222, 40))
-        self.SetOwnBackgroundColour(Colour(200, 222, 40))
-        self.SetForegroundColour(Colour(7, 0, 70))
-        self.SetOwnForegroundColour(Colour(7, 0, 70))
-        """
         sizer.Add(HtmlWindow(self, (800, 600), self.help),
                   1,
                   flag=wx.EXPAND)

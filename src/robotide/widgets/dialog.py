@@ -57,6 +57,7 @@ class HtmlWindow(html.HtmlWindow):
         self.SetFont(self.font)
         self.Refresh(True)
         self.Bind(wx.EVT_KEY_DOWN, self.OnKeyDown)
+        self.Bind(wx.EVT_CLOSE, self.close)
 
     def set_content(self, content):
         bkgcolor = self.color_background_help
@@ -88,6 +89,7 @@ class HtmlWindow(html.HtmlWindow):
 
     def close(self):
         self.Show(False)
+        self.Destroy()
 
     def clear(self):
         self.SetPage('')

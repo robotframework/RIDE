@@ -573,12 +573,12 @@ class RideFrame(wx.Frame):
     def OnPreferences(self, event):
         dlg = PreferenceEditor(self, "RIDE - Preferences",
                                self._application.preferences, style='tree')
+        # Changed to non-modal, original comment follows:
         # I would prefer that this not be modal, but making it non-
         # modal opens up a can of worms. We don't want to have to deal
         # with settings getting changed out from under us while the
         # dialog is open.
-        dlg.ShowModal()
-        dlg.Destroy()
+        dlg.Show()
 
     @staticmethod
     def OnAbout(event):
