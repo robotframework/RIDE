@@ -41,6 +41,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Changed
 
+- Changed Manage Plugins to be a dialog panel instead of being a notebook tab
 - Added more valid file extensions to Open Test Suite
 - Changed minimum number of rows and columns, because blank cells would not have correct colour
 - The Arguments, Tests filters (include/exclude), Console and Message logs are now in Expandable/Collapsable groups

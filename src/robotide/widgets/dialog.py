@@ -107,8 +107,8 @@ class RIDEDialog(wx.Dialog):
         from ..preferences import RideSettings
         _settings = RideSettings()
         self.general_settings = _settings['General']
-        # self.color_background_help = self.general_settings.get('background help', (240, 242, 80))
-        # self.color_foreground_text = self.general_settings.get('foreground text', (7, 0, 70))
+        self.font_face = self.general_settings['font face']
+        self.font_size = self.general_settings['font size']
         self.color_background = self.general_settings['background']
         self.color_foreground = self.general_settings['foreground']
         self.color_secondary_background = self.general_settings['secondary background']
