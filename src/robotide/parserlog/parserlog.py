@@ -28,7 +28,7 @@ from .. import widgets
 from ..pluginapi import Plugin
 from ..action import ActionInfo
 from ..publish.messages import RideParserLogMessage
-
+from ..widgets import RIDEDialog
 
 def _message_to_string(msg):
     return '%s [%s]: %s\n\n' % (msg.timestamp, msg.level, msg.message.replace('\n\t', ''))
@@ -110,17 +110,14 @@ class ParserLogPlugin(Plugin):
             self.notebook.show_tab(self._panel)
 
 
-class _LogWindow(wx.Panel):
+class _LogWindow(wx.Panel, RIDEDialog):
 
     def __init__(self, notebook, log):
         wx.Panel.__init__(self, notebook)
+        self.dlg = RIDEDialog()
         self._output = wx.TextCtrl(self, style=wx.TE_READONLY | wx.TE_MULTILINE | wx.TE_NOHIDESEL)
-        """
-        self._output.SetBackgroundColour(Colour(200, 222, 40))
-        self._output.SetOwnBackgroundColour(Colour(200, 222, 40))
-        self._output.SetForegroundColour(Colour(7, 0, 70))
-        self._output.SetOwnForegroundColour(Colour(7, 0, 70))
-        """
+        self._output.SetBackgroundColour(Colour(self.dlg.color_background))
+        self._output.SetForegroundColour(Colour(self.dlg.color_foreground))
         self._output.Bind(wx.EVT_KEY_DOWN, self.OnKeyDown)
         self._log = log
         self._notebook = notebook

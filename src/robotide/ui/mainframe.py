@@ -229,6 +229,8 @@ class RideFrame(wx.Frame):
         #                         self._notebook_style)
         self.notebook = NoteBook(self, self._application,
                                  self._notebook_style)
+        self.notebook.SetBackgroundColour(Colour(self.color_background))
+        self.notebook.SetForegroundColour(Colour(self.color_foreground))
         self._mgr.AddPane(self.notebook,
                           aui.AuiPaneInfo().Name("notebook_editors").
                           CenterPane().PaneBorder(False))
@@ -252,17 +254,11 @@ class RideFrame(wx.Frame):
         mb = MenuBar(self)
         self.toolbar = ToolBar(self)
         self.toolbar.SetMinSize(wx.Size(100, 60))
-        """
-        self.toolbar.SetBackgroundColour(Colour(200, 222, 40))
-        self.toolbar.SetOwnBackgroundColour(Colour(200, 222, 40))
-        self.toolbar.SetForegroundColour(Colour(7, 0, 70))
-        self.toolbar.SetOwnForegroundColour(Colour(7, 0, 70))
-        """
+        self.toolbar.SetBackgroundColour(Colour(self.color_background))
+        self.toolbar.SetForegroundColour(Colour(self.color_foreground))
         # self.SetToolBar(self.toolbar.GetToolBar())
-        mb._frame.SetBackgroundColour(Colour(200, 222, 40))
-        mb._frame.SetOwnBackgroundColour(Colour(200, 222, 40))
-        mb._frame.SetForegroundColour(Colour(7, 0, 70))
-        mb._frame.SetOwnForegroundColour(Colour(7, 0, 70))
+        mb._frame.SetBackgroundColour(Colour(self.color_background))
+        mb._frame.SetForegroundColour(Colour(self.color_foreground))
         self._mgr.AddPane(self.toolbar, aui.AuiPaneInfo().Name("maintoolbar").
                           ToolbarPane().Top())
         self.actions = ActionRegisterer(self._mgr, mb, self.toolbar,
@@ -292,7 +288,7 @@ class RideFrame(wx.Frame):
         self.SetIcons(self._image_provider.PROGICONS)
         # tell the manager to "commit" all the changes just made
         self._mgr.Update()
-        wx.CallLater(2000, RideSettingsChanged(keys=("General", ''), old='', new='').publish)
+        # wx.CallLater(2000, RideSettingsChanged(keys=("General", ''), old='', new='').publish)
 
     """
     def testToolbar(self):
@@ -865,12 +861,6 @@ class ShortcutKeysDialog(RIDEDialog):
         sizer.Add(HtmlWindow(self, (350, 400),
                              self._get_platform_specific_shortcut_keys()), 1,
                   flag=wx.EXPAND)
-        """
-        self.SetBackgroundColour(Colour(200, 222, 40))
-        self.SetOwnBackgroundColour(Colour(200, 222, 40))
-        self.SetForegroundColour(Colour(7, 0, 70))
-        self.SetOwnForegroundColour(Colour(7, 0, 70))
-        """
         self.SetSizerAndFit(sizer)
 
     def OnKey(self, *args):

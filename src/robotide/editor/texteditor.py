@@ -34,7 +34,7 @@ from ..preferences.editors import ReadFonts
 from ..publish import RideSettingsChanged, PUBLISHER
 from ..publish.messages import RideMessage
 from ..widgets import TextField, Label, HtmlDialog
-from ..widgets import VerticalSizer, HorizontalSizer, ButtonWithHandler
+from ..widgets import VerticalSizer, HorizontalSizer, ButtonWithHandler, RIDEDialog
 
 try:  # import installed version first
     import robotframeworklexer
@@ -336,10 +336,13 @@ class DataFileWrapper(object): # TODO: bad class name
         return output.getvalue()  # DEBUG .decode('utf-8')
 
 
-class SourceEditor(wx.Panel):
+class SourceEditor(wx.Panel, RIDEDialog):
 
     def __init__(self, parent, title, data_validator):
         wx.Panel.__init__(self, parent)
+        self.dlg = RIDEDialog()
+        self.SetBackgroundColour(Colour(self.dlg.color_background))
+        self.SetForegroundColour(Colour(self.dlg.color_foreground))
         self._syntax_colorization_help_exists = False
         self._data_validator = data_validator
         self._data_validator.set_editor(self)
@@ -384,9 +387,10 @@ class SourceEditor(wx.Panel):
         # text about syntax colorization
         self.editor_toolbar = HorizontalSizer()
         default_components = HorizontalSizer()
-        default_components.add_with_padding(
-            ButtonWithHandler(self, 'Apply Changes', handler=lambda
-                e: self.save()))
+        button = ButtonWithHandler(self, 'Apply Changes', handler=lambda e: self.save())
+        button.SetBackgroundColour(Colour(self.dlg.color_secondary_background))
+        button.SetForegroundColour(Colour(self.dlg.color_secondary_foreground))
+        default_components.add_with_padding(button)
         self._create_search(default_components)
         self.editor_toolbar.add_expanding(default_components)
         self.Sizer.add_expanding(self.editor_toolbar, propotion=0)
@@ -394,10 +398,14 @@ class SourceEditor(wx.Panel):
     def _create_search(self, container_sizer):
         container_sizer.AddSpacer(20)
         self._search_field = TextField(self, '', process_enters=True)
+        self._search_field.SetBackgroundColour(Colour(self.dlg.color_secondary_background))
+        self._search_field.SetForegroundColour(Colour(self.dlg.color_secondary_foreground))
         self._search_field.Bind(wx.EVT_TEXT_ENTER, self.OnFind)
         container_sizer.add_with_padding(self._search_field)
-        container_sizer.add_with_padding(
-            ButtonWithHandler(self, 'Search', handler=self.OnFind))
+        button = ButtonWithHandler(self, 'Search', handler=self.OnFind)
+        button.SetBackgroundColour(Colour(self.dlg.color_secondary_background))
+        button.SetForegroundColour(Colour(self.dlg.color_secondary_foreground))
+        container_sizer.add_with_padding(button)
         self._search_field_notification = Label(self, label='')
         container_sizer.add_with_padding(self._search_field_notification)
 
