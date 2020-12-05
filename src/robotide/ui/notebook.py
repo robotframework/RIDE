@@ -38,9 +38,9 @@ class NoteBook(aui.AuiNotebook):
         self.SetForegroundColour(Colour(7, 0, 70))
         self.SetOwnForegroundColour(Colour(7, 0, 70))
         """
-        self.SetBackgroundColour(parent.color_background_help)
+        # self.SetBackgroundColour(parent.color_background_help)
         # print(f"DEBUG: Notebook  parent.color_background_help {parent.color_background_help}")
-        self.SetForegroundColour(parent.color_foreground_text)
+        # self.SetForegroundColour(parent.color_foreground_text)
         self.Bind(aui.EVT_AUINOTEBOOK_PAGE_CLOSE, self.OnTabClosing)
         self.Bind(aui.EVT_AUINOTEBOOK_PAGE_CHANGING, self.OnTabChanging)
         self.Bind(aui.EVT_AUINOTEBOOK_PAGE_CHANGED, self.OnTabChanged)

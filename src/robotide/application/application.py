@@ -77,9 +77,15 @@ class RIDE(wx.App):
         perspective = self.settings.get('AUI Perspective', None)
         if perspective:
             self.frame._mgr.LoadPerspective(perspective, True)
-        nb_perspective = self.settings.get('AUI NB Perspective', None)
-        if nb_perspective:
-            self.frame.notebook.LoadPerspective(nb_perspective)
+        try:
+            nb_perspective = self.settings.get('AUI NB Perspective', None)
+            if nb_perspective:
+                self.frame.notebook.LoadPerspective(nb_perspective)
+        except Exception as e:
+            print(f"RIDE: There was a problem loading panels position."
+                  f" Please delete the definition 'AUI NB Perspective' in "
+                  f"{os.path.join(context.SETTINGS_DIRECTORY, 'settings.cfg')}")
+            raise e
         self.treeplugin = TreePlugin(self)
         if self.treeplugin.settings['_enabled']:
             self.treeplugin.register_frame(self.frame)

@@ -186,6 +186,8 @@ class ReviewDialog(RIDEDialog):
         self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.OnResultSelected, self._unused_kw_list)
         self.Bind(wx.EVT_CHECKBOX, self._update_filter_regex, self._filter_regex_switch)
         self.Bind(wx.EVT_COLLAPSIBLEPANE_CHANGED, self._toggle_filter_active, self._filter_pane)
+        self.Bind(wx.EVT_LIST_ITEM_CHECKED, self._unused_kw_list.OnCheckItem, self._unused_kw_list)
+        self.Bind(wx.EVT_LIST_ITEM_UNCHECKED, self._unused_kw_list.OnCheckItem, self._unused_kw_list)
 
     def _set_default_values(self):
         check_testcases = True
@@ -276,7 +278,7 @@ class ReviewDialog(RIDEDialog):
 
     def item_in_kw_list_checked(self):
         if self._unused_kw_list.get_number_of_checked_items() > 0:
-            self._delete_button.Enable()
+            self._delete_button.Enable(True)
         else:
             self._delete_button.Disable()
 
@@ -469,7 +471,10 @@ class ResultListCtrl(wx.ListCtrl, listmix.CheckListCtrlMixin, listmix.ListCtrlAu
     def __init__(self, parent, style):
         self.parent = parent
         wx.ListCtrl.__init__(self, parent=parent, style=style)
-        listmix.CheckListCtrlMixin.__init__(self)
+        if wx.VERSION < (4, 1, 0):
+            listmix.CheckListCtrlMixin.__init__(self)
+        else:
+            self.EnableCheckBoxes(True)
         listmix.ListCtrlAutoWidthMixin.__init__(self)
         self.SetBackgroundColour(Colour(self.GetTopLevelParent().color_background))
         self.SetForegroundColour(Colour(self.GetTopLevelParent().color_foreground))
@@ -479,7 +484,7 @@ class ResultListCtrl(wx.ListCtrl, listmix.CheckListCtrlMixin, listmix.ListCtrlAu
     def set_dialog(self, dialog):
         self._dlg = dialog
 
-    def OnCheckItem(self, index, flag):
+    def OnCheckItem(self, event):
         if self._dlg:
             self._dlg.item_in_kw_list_checked()
         else:
@@ -487,7 +492,11 @@ class ResultListCtrl(wx.ListCtrl, listmix.CheckListCtrlMixin, listmix.ListCtrlAu
 
     def get_next_checked_item(self):
         for i in range(self.GetItemCount()):
-            if self.IsChecked(i):
+            if wx.VERSION >= (4, 1, 0):
+                checked = self.IsItemChecked(i)
+            else:
+                checked = self.IsChecked(i)
+            if checked:
                 item = self.GetItem(i)
                 return ([i, self.GetClientData(item.GetData()), item])
         return None
@@ -495,7 +504,11 @@ class ResultListCtrl(wx.ListCtrl, listmix.CheckListCtrlMixin, listmix.ListCtrlAu
     def get_number_of_checked_items(self):
         sum = 0
         for i in range(self.GetItemCount()):
-            if self.IsChecked(i):
+            if wx.VERSION >= (4, 1, 0):
+                checked = self.IsItemChecked(i)
+            else:
+                checked = self.IsChecked(i)
+            if checked:
                 sum += 1
         return sum
 
