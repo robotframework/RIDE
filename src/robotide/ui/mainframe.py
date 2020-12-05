@@ -738,8 +738,8 @@ class ToolBar(aui.AuiToolBar):
         self._search_handlers = {}
         self._current_description = None
         self.SetMinSize(wx.Size(100, 60))
-        self.tb.SetBackgroundColour(Colour(self._frame.color_background))
-        self.tb.SetForegroundColour(Colour(self._frame.color_foreground))
+        # self.tb.SetBackgroundColour(Colour(self._frame.color_background))
+        # self.tb.SetForegroundColour(Colour(self._frame.color_foreground))
         self.tb.SetCustomOverflowItems(prepend_items, append_items)
         self.tb.Realize()
 
