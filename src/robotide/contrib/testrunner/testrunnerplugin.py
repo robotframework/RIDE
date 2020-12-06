@@ -621,7 +621,7 @@ class TestRunnerPlugin(Plugin, RIDEDialog):
             # I'm not sure why I sometimes get this, and I don't know what I
             # can do other than to ignore it.
             # print(f"DEBUG: Console print UnicodeDecodeError string is {string}")
-            text_ctrl.AppendTextRaw(text)  # DEBUG removed bytes
+            text_ctrl.AppendTextRaw(text.encode(encoding['OUTPUT']))  # Suggested on Issue #2339
         except UnicodeEncodeError as e:
             # I'm not sure why I sometimes get this, and I don't know what I
             # can do other than to ignore it.
