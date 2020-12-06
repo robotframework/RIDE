@@ -75,7 +75,7 @@ from robotide.publish import RideSettingsChanged, PUBLISHER
 from robotide.publish.messages import RideTestSelectedForRunningChanged
 from robotide.pluginapi import Plugin, ActionInfo
 from robotide.ui.notebook import NoteBook
-from robotide.widgets import Label, ImageProvider
+from robotide.widgets import Label, ImageProvider, RIDEDialog
 from robotide.robotapi import LOG_LEVELS
 from robotide.utils import robottime
 from robotide.preferences.editors import ReadFonts
@@ -146,7 +146,7 @@ def open_filemanager(path=None):
                 subprocess.Popen(["open", "{}".format(path_dir)])
 
 
-class TestRunnerPlugin(Plugin):
+class TestRunnerPlugin(Plugin, RIDEDialog):
     """A plugin for running tests from within RIDE"""
     defaults = {"auto_save": False,
                 "confirm run": True,
@@ -659,6 +659,8 @@ class TestRunnerPlugin(Plugin):
         toolbar = wx.ToolBar(parent, wx.ID_ANY,
                              style=wx.TB_HORIZONTAL | wx.TB_HORZ_TEXT |
                                    wx.TB_NODIVIDER)
+        toolbar.SetBackgroundColour(self._mysettings.color_background)
+        toolbar.SetForegroundColour(self._mysettings.color_foreground)
         toolbar.AddTool(ID_RUN, "Start", ImageProvider().TOOLBAR_PLAY,
                         wx.NullBitmap, wx.ITEM_NORMAL, shortHelp="Start robot",
                         longHelp="Start running the robot test suite")
@@ -703,7 +705,10 @@ class TestRunnerPlugin(Plugin):
     def _build_local_toolbar(self, parent):
         toolbar = wx.ToolBar(parent, wx.ID_ANY,
                              style=wx.TB_HORIZONTAL | wx.TB_HORZ_TEXT |
-                                   wx.TB_NODIVIDER)
+                                   wx.TB_NODIVIDER | wx.TB_DOCKABLE)
+        print(f"DEBUG: toolbar before {toolbar.UseBackgroundColour()}")
+        toolbar.SetOwnBackgroundColour(self._mysettings.color_background)
+        toolbar.SetOwnForegroundColour(self._mysettings.color_foreground)
         profile_label = Label(toolbar, label="Execution Profile:  ")
         choices = self._test_runner.get_profile_names()
         self.choice = wx.Choice(toolbar, wx.ID_ANY, choices=choices)
@@ -742,8 +747,12 @@ class TestRunnerPlugin(Plugin):
         toolbar.EnableTool(ID_OPEN_LOGS_DIR, False)
         toolbar.EnableTool(ID_SHOW_LOG, False)
         toolbar.EnableTool(ID_SHOW_REPORT, False)
+        for i in toolbar.GetChildren():
+            i.SetBackgroundColour(self._mysettings.color_background)
+            i.SetForegroundColour(self._mysettings.color_foreground)
         toolbar.Realize()
         self._bind_local_toolbar_events(toolbar)
+        print(f"DEBUG: toolbar end {toolbar.UseBackgroundColour()}")
         return toolbar
 
     def _bind_local_toolbar_events(self, toolbar):
@@ -800,6 +809,9 @@ class TestRunnerPlugin(Plugin):
 
     def _add_tab_to_notebook(self):
         self.panel = wx.Panel(self.notebook)
+        self._mysettings = RIDEDialog(parent=self.panel)
+        self.panel.SetBackgroundColour(self._mysettings.color_background)
+        self.panel.SetForegroundColour(self._mysettings.color_foreground)
         self._local_toolbar = self._build_local_toolbar(self.panel)
         self._runner_toolbar = self._build_runner_toolbar(self.panel)
         self._config_panel = self._build_config_panel(self.panel)
@@ -821,17 +833,20 @@ class TestRunnerPlugin(Plugin):
 
         self.add_tab(self.panel, self.title, allow_closing=False)
 
-    @staticmethod
-    def _build_config_panel(parent):
+    def _build_config_panel(self, parent):
         """Builds the configuration panel for this plugin"""
         panel = wx.Panel(parent, wx.ID_ANY,
                          style=wx.BORDER_NONE | wx.TAB_TRAVERSAL)
+        panel.SetBackgroundColour(self._mysettings.color_background)
+        panel.SetForegroundColour(self._mysettings.color_foreground)
         vertical_sizer = wx.BoxSizer(wx.VERTICAL)
         panel.SetSizer(vertical_sizer)
         return panel
 
     def _build_output_panel(self, parent):
         panel = wx.Panel(parent)
+        panel.SetBackgroundColour(self._mysettings.color_background)
+        panel.SetForegroundColour(self._mysettings.color_foreground)
         self._progress_bar = ProgressBar(panel)
         self._console_log_panel, self._console_log_ctrl = \
             self._create_collapsible_pane(panel, 'Console log',
@@ -878,6 +893,8 @@ class TestRunnerPlugin(Plugin):
         collapsible_pane = wx.CollapsiblePane(
             parent, wx.ID_ANY, title,
             style=wx.CP_DEFAULT_STYLE | wx.CP_NO_TLW_RESIZE)
+        collapsible_pane.SetBackgroundColour(self._mysettings.color_background)
+        collapsible_pane.SetForegroundColour(self._mysettings.color_foreground)
         if expand:
             collapsible_pane.Expand()
         collapsible_pane.Bind(wx.EVT_COLLAPSIBLEPANE_CHANGED,
