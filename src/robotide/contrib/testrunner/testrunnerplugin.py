@@ -707,7 +707,7 @@ class TestRunnerPlugin(Plugin, RIDEDialog):
         toolbar = wx.ToolBar(parent, wx.ID_ANY,
                              style=wx.TB_HORIZONTAL | wx.TB_HORZ_TEXT |
                                    wx.TB_NODIVIDER | wx.TB_DOCKABLE)
-        print(f"DEBUG: toolbar before {toolbar.UseBackgroundColour()}")
+        # print(f"DEBUG: toolbar before {toolbar.UseBackgroundColour()}")
         toolbar.SetOwnBackgroundColour(self._mysettings.color_background)
         toolbar.SetOwnForegroundColour(self._mysettings.color_foreground)
         profile_label = Label(toolbar, label="Execution Profile:  ")
@@ -753,7 +753,7 @@ class TestRunnerPlugin(Plugin, RIDEDialog):
             i.SetForegroundColour(self._mysettings.color_foreground)
         toolbar.Realize()
         self._bind_local_toolbar_events(toolbar)
-        print(f"DEBUG: toolbar end {toolbar.UseBackgroundColour()}")
+        # print(f"DEBUG: toolbar end {toolbar.UseBackgroundColour()}")
         return toolbar
 
     def _bind_local_toolbar_events(self, toolbar):
@@ -903,8 +903,11 @@ class TestRunnerPlugin(Plugin, RIDEDialog):
                               collapsible_pane)
 
         pane = collapsible_pane.GetPane()
+        pane.SetBackgroundColour(self._mysettings.color_background)
+        pane.SetForegroundColour(self._mysettings.color_foreground)
         text_ctrl = self._create_text_ctrl(pane)
-
+        text_ctrl.SetBackgroundColour(self._mysettings.color_background)
+        text_ctrl.SetForegroundColour(self._mysettings.color_foreground)
         vertical_sizer = wx.BoxSizer(wx.VERTICAL)
         vertical_sizer.Add(text_ctrl, 1, wx.EXPAND)
         pane.SetSizer(vertical_sizer)
