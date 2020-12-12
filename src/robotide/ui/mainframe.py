@@ -283,7 +283,11 @@ class RideFrame(wx.Frame):
         self.filemgr.SetMinSize(wx.Size(275, 250))
 
         mb.take_menu_bar_into_use()
-        self.CreateStatusBar()
+        self.CreateStatusBar(name="StatusBar")
+        self._status_bar = self.FindWindowByName("StatusBar", self)
+        if self._status_bar:
+            self._status_bar.SetBackgroundColour(Colour(self.color_background))
+            self._status_bar.SetForegroundColour(Colour(self.color_foreground))
         # set main frame icon
         self.SetIcons(self._image_provider.PROGICONS)
         # tell the manager to "commit" all the changes just made
