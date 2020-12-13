@@ -19,8 +19,11 @@ import wx
 
 from ..ui.preferences_dialogs import (boolean_editor, PreferencesPanel, IntegerChoiceEditor, SpinChoiceEditor,
                                       StringChoiceEditor, PreferencesColorPicker)
+from .managesettingsdialog import SaveLoadSettings
 
 ID_APPLY_TO_PANEL = wx.NewId()
+ID_RESET = wx.NewId()
+ID_SAVELOADSETTINGS = wx.NewId()
 
 @lru_cache(maxsize=2)
 def read_fonts(fixed=False):
@@ -48,17 +51,23 @@ class GeneralPreferences(PreferencesPanel):
 
         font_editor = self._create_font_editor()
         colors_sizer = self.create_colors_sizer()
-        main_sizer = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
-        reset = wx.Button(self, wx.ID_ANY, 'Reset colors to default')
+        main_sizer = wx.FlexGridSizer(rows=5, cols=1, vgap=10, hgap=10)
+        buttons_sizer =sizer = wx.BoxSizer(orient=wx.HORIZONTAL)
+        reset = wx.Button(self, ID_RESET, 'Reset colors to default')
+        saveloadsettings = wx.Button(self, ID_SAVELOADSETTINGS, 'Save or Load settings')
         self.cb_apply_to_panels = wx.CheckBox(self, ID_APPLY_TO_PANEL, label="Apply to Project and File Explorer panels")
         self.cb_apply_to_panels.Enable()
         self.cb_apply_to_panels.SetValue(self._apply_to_panels)
         main_sizer.Add(font_editor)
         main_sizer.Add(colors_sizer)
         main_sizer.Add(self.cb_apply_to_panels)
-        main_sizer.Add(reset)
+        buttons_sizer.Add(reset)
+        buttons_sizer.AddSpacer(10)
+        buttons_sizer.Add(saveloadsettings)
+        main_sizer.Add(buttons_sizer)
         self.SetSizerAndFit(main_sizer)
         self.Bind(wx.EVT_BUTTON, self.OnReset)
+        self.Bind(wx.EVT_BUTTON, self.OnSaveLoadSettings)
         self.Bind(wx.EVT_CHECKBOX, self.OnCheckBox, self.cb_apply_to_panels)
 
     def OnCheckBox(self, event):
@@ -67,9 +76,20 @@ class GeneralPreferences(PreferencesPanel):
         # print(f"DEBUG: Preferences Checkbox set {str(self._apply_to_panels)}")
 
     def OnReset(self, event):
+        if event.GetId() != ID_RESET:
+            event.Skip()
+            return
         defaults = self._read_defaults()
         for picker in self._color_pickers:
             picker.SetColour(defaults[picker.key])
+
+    def OnSaveLoadSettings(self, event):
+        if event.GetId() != ID_SAVELOADSETTINGS:
+            event.Skip()
+            return
+        save_settings_dialog = SaveLoadSettings(self, section=self.__class__.__name__)
+        save_settings_dialog.CenterOnParent()
+        save_settings_dialog.Show()
 
     def _read_defaults(self, plugin=False):
         settings = [s.strip() for s in open(self._get_path(), 'r').readlines()]
