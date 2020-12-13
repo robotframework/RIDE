@@ -366,6 +366,7 @@ class RideFrame(wx.Frame):
                 # other wx app instance created unexpectedly
                 # this will cause RIDE app instance cannot invoke ExitMainLoop properly
                 self._application.ExitMainLoop()
+            wx.Exit()
         else:
             wx.CloseEvent.Veto(event)
 
