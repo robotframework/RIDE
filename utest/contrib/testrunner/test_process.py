@@ -33,6 +33,8 @@ class ProcessUnicodeTestCase(unittest.TestCase):
 
     def test_running_robot_test(self):
         output, errors = self._run_small_test()
+        output = output.decode()
+        errors = errors.decode()
         self.assertTrue(output.replace('\r','').startswith(
         '==============================================================================\n'
         'Small Test                                                                    \n'
