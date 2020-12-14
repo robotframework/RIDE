@@ -547,9 +547,6 @@ class TestRunnerPlugin(Plugin):
             self._reload_model()
         self.show_tab(self.panel)
 
-    # from memory_profiler import profile as mprofile
-
-    # @mprofile
     def _AppendText(self, textctrl, string, source="stdout", enc=True):
         if not self.panel or not textctrl:
             return
@@ -560,25 +557,7 @@ class TestRunnerPlugin(Plugin):
         last_visible_line = textctrl.GetFirstVisibleLine() + textctrl.LinesOnScreen() - 1
 
         textctrl.SetReadOnly(False)
-        try:
-            if enc:
-                if IS_WINDOWS:
-                    textctrl.AppendText(string.encode('mbcs'))
-                else:
-                    textctrl.AppendText(string.encode(encoding['SYSTEM']))  # string.encode('UTF-8'))  # DEBUG removed bytes
-            else:
-                textctrl.AppendText(string.encode(encoding['OUTPUT']))
-        except UnicodeDecodeError as e:
-            # I'm not sure why I sometimes get this, and I don't know what I
-            # can do other than to ignore it.
-            # print(f"DEBUG: Console print UnicodeDecodeError string is {string}")
-            textctrl.AppendTextRaw(string)  # DEBUG removed bytes
-        except UnicodeEncodeError as e:
-            # I'm not sure why I sometimes get this, and I don't know what I
-            # can do other than to ignore it.
-            # print(f"DEBUG: Console print UnicodeEncodeError string is {string}")
-            textctrl.AppendTextRaw(string.encode(encoding['CONSOLE']))  # .encode('mbcs'))
-
+        textctrl.AppendText(string)
         new_text_end = textctrl.GetLength()
 
         if wx.VERSION < (4, 1, 0):
@@ -1047,7 +1026,11 @@ class OutputStyledTextCtrl(wx.stc.StyledTextCtrl):
         self._max_row_len = 0
 
     def update_scroll_width(self, string):
-        string_max_len = max(len(s) for s in string.split('\n'))
+        if isinstance(string, bytes):
+            linesep = b'\n'
+        else:
+            linesep = '\n'
+        string_max_len = max(len(s) for s in string.split(linesep))
         if string_max_len <= self._max_row_len:
             return
         self._max_row_len = string_max_len

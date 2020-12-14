@@ -452,13 +452,10 @@ class StreamReaderThread(object):
             self._queue.put(line)
 
     def pop(self):
-        result = ""
-        myqueuerng = range(self._queue.qsize())
-        for _ in myqueuerng:
+        result = b''
+        for _ in range(self._queue.qsize()):
             try:
-                result += encoding.console_decode(self._queue.get_nowait(),
-                                                  encoding.OUTPUT_ENCODING if IS_WINDOWS
-                                                  else 'UTF-8')
+                result += self._queue.get_nowait()
             except Empty:
                 pass
         return result
