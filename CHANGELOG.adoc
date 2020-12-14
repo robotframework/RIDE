@@ -48,6 +48,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Fixed
 
+- Fixed various output console encoding issue in different platforms
 - Fixed sys.stderr is None errors if RIDE is launched by pythonw.exe
 - Fixed RIDE cannot close properly when Screenshot library is loaded
 - Fixed incorrect title in manage plugin settings
