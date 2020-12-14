@@ -312,9 +312,12 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl):
 
     def _test_result(self, message):
         test: TestCaseController = message.item
-        if message.topic == 'ride.test.passed':
+        if not test:
+            # test object will be None when running with DataDriver
+            return
+        if isinstance(message, RideTestPassed):
             test.run_passed = True
-        elif message.topic == 'ride.test.failed':
+        elif isinstance(message, RideTestFailed):
             test.run_passed = False
         else:
             test.run_passed = None
@@ -697,7 +700,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl):
     def _switch_items(self, first, second, currently_selected):
         """Changes the order of given items, first is expected to be directly
         above the second"""
-        selection = self.GetItemPyData(currently_selected).controller
+        selection = self.GetItemData(currently_selected).controller
         controller = self._controller.get_handler(first).controller
         self.Delete(first)
         self._create_node_with_handler(self.GetItemParent(second), controller, second)
@@ -767,7 +770,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl):
 
     def _get_data_controller_node(self, controller):
         for node in self._datafile_nodes:
-            if self.GetItemPyData(node).controller == controller:
+            if self.GetItemData(node).controller == controller:
                 return node
         return None
 
@@ -916,7 +919,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl):
         node: GenericTreeItem = event.GetItem()
         handler: TestCaseHandler = self._controller.get_handler(node=node)
         self._test_selection_controller.select(
-            handler.controller, node.IsChecked())
+                handler.controller, node.IsChecked())
 
     def OnItemActivated(self, event):
         node = event.GetItem()

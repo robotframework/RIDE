@@ -42,8 +42,10 @@ class TreeController(object):
     def register_tree_actions(self):
         actions = ActionInfoCollection(tree_actions, self, self._tree)
         self._action_registerer.register_actions(actions)
-        self._action_registerer.register_action(ActionInfo(menu_name='Edit', name='Add Tag to selected', action=self.OnAddTagToSelected))
-        self._action_registerer.register_action(ActionInfo(menu_name='Edit', name='Clear Selected', action=self.OnClearSelected))
+        self._action_registerer.register_action(ActionInfo(menu_name='Edit', name='Add Tag to selected',
+                                                           action=self.OnAddTagToSelected))
+        self._action_registerer.register_action(ActionInfo(menu_name='Edit', name='Clear Selected',
+                                                           action=self.OnClearSelected))
 
     def OnGoBack(self, event):
         node = self._history.back()
@@ -108,7 +110,7 @@ class TreeController(object):
         return None
 
     def get_handler(self, node=None):
-        return self._tree.GetItemPyData(node or self._tree.GetSelection())
+        return self._tree.GetItemData(node or self._tree.GetSelection())
 
     def bind_keys(self):
         bind_keys_to_evt_menu(self._tree, self._get_bind_keys())

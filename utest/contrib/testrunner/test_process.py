@@ -18,7 +18,6 @@ import time
 from utest.resources import datafilereader
 
 from robotide.contrib.testrunner.testrunner import Process
-from robotide.widgets.list import IS_WINDOWS
 
 
 class ProcessUnicodeTestCase(unittest.TestCase):
