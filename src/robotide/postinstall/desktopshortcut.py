@@ -13,12 +13,10 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import wx
 import atexit
 import sys
 
 from robotide.pluginapi import Plugin, ActionInfo
-from robotide import widgets
 from robotide.postinstall import __main__ as postinstall
 
 
