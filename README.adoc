@@ -21,14 +21,18 @@ See the https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride
 
 **The pre-release and current development, supports Python 3.8 (since February 2020).**
 
+**Attention, we are not testing on Python 3.9, so better use Python 3.6, 3.7 or 3.8.**
+
 Install with:
 [source, shell]
 pip install -U https://github.com/robotframework/RIDE/archive/master.zip
 
 Install current Beta version (2.0b1) with:
 [source, shell]
+pip install psutil
 pip install -U --pre robotframework-ride
 
+**Note: The PsUtil module is required, but missing on 2.0b1 requirements. This is already fixed in current development.**
 
 **See the https://github.com/robotframework/RIDE/wiki/F%2eA%2eQ%2e[FAQ] at https://github.com/robotframework/RIDE/wiki[Wiki]**
 

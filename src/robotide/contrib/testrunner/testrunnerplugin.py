@@ -45,7 +45,12 @@ linux it's /tmp).
 You can safely manually remove these directories, except for the one
 being used for a currently running test.
 """
+import atexit
 import datetime
+import shutil
+import subprocess
+import tempfile
+import threading
 import time
 import os
 import psutil
@@ -56,22 +61,28 @@ from functools import reduce
 from queue import Queue
 from wx.lib.embeddedimage import PyEmbeddedImage
 
-
 from robotide.action.shortcut import localize_shortcuts
 from robotide.context import IS_WINDOWS, IS_MAC
 from robotide.contrib.testrunner import TestRunner
 from robotide.contrib.testrunner import runprofiles
+from robotide.contrib.testrunner.ArgsParser import ArgsParser
+from robotide.contrib.testrunner.CommandArgsBuilder import CommandArgsBuilder
+from robotide.contrib.testrunner.CommandBuilder import CommandBuilder
+from robotide.contrib.testrunner.FileWriter import FileWriter
+from robotide.contrib.testrunner.SettingsParser import SettingsParser
 from robotide.controller.macrocontrollers import TestCaseController
 from robotide.publish import RideSettingsChanged, PUBLISHER
 from robotide.publish.messages import RideTestSelectedForRunningChanged
 from robotide.pluginapi import Plugin, ActionInfo
+from robotide.ui.notebook import NoteBook
 from robotide.widgets import Label, ImageProvider
 from robotide.robotapi import LOG_LEVELS
 from robotide.utils import robottime
 from robotide.preferences.editors import ReadFonts
-from sys import getfilesystemencoding
+from sys import getfilesystemencoding, platform
 from robotide.lib.robot.utils.encodingsniffer import (get_console_encoding,
                                                       get_system_encoding)
+
 CONSOLE_ENCODING = get_console_encoding()
 SYSTEM_ENCODING = get_system_encoding()
 OUTPUT_ENCODING = getfilesystemencoding()
@@ -86,6 +97,7 @@ ID_PAUSE = wx.NewIdRef()
 ID_CONTINUE = wx.NewIdRef()
 ID_STEP_NEXT = wx.NewIdRef()
 ID_STEP_OVER = wx.NewIdRef()
+ID_OPEN_LOGS_DIR = wx.NewId()
 ID_SHOW_REPORT = wx.NewIdRef()
 ID_SHOW_LOG = wx.NewIdRef()
 ID_AUTOSAVE = wx.NewIdRef()
@@ -93,6 +105,7 @@ ID_PAUSE_ON_FAILURE = wx.NewIdRef()
 ID_SHOW_MESSAGE_LOG = wx.NewIdRef()
 STYLE_DEFAULT = 0
 STYLE_STDERR = 2
+ATEXIT_LOCK = threading.RLock()
 
 
 def _RunProfile(name, run_prefix):
@@ -100,14 +113,47 @@ def _RunProfile(name, run_prefix):
                 {'name': name, 'get_command': lambda self: run_prefix})
 
 
+def open_filemanager(path=None):
+    path = path or os.path.curdir
+    path_dir = os.path.dirname(path) if os.path.isfile(path) else path
+    if os.path.exists(path_dir):
+        if platform == 'win32':
+            #  There was encoding errors if directory had unicode chars
+            # TODO test on all OS directory names with accented chars, for example 'ccedilla'
+            os.startfile(r"%s" % path_dir, 'explore')
+        elif platform.startswith('linux'):
+            # how to detect which explorer is used?
+            # nautilus, dolphin, konqueror
+            # TODO check if explorer exists
+            # TODO get prefered explorer from preferences
+            try:
+                subprocess.Popen(["nautilus", "{}".format(path_dir)])
+            except OSError or FileNotFoundError:
+                try:
+                    subprocess.Popen(
+                        ["dolphin", "{}".format(path_dir)])
+                except OSError or FileNotFoundError:
+                    try:
+                        subprocess.Popen(
+                           ["konqueror", "{}".format(path_dir)])
+                    except OSError or FileNotFoundError:
+                        print("Could not launch explorer. Tried nautilus, "
+                              "dolphin and konqueror.")
+        else:
+            try:
+                subprocess.Popen(["finder", "{}".format(path_dir)])
+            except OSError or FileNotFoundError:
+                subprocess.Popen(["open", "{}".format(path_dir)])
+
+
 class TestRunnerPlugin(Plugin):
     """A plugin for running tests from within RIDE"""
     defaults = {"auto_save": False,
-                "show_message_log": True,
                 "confirm run": True,
-                "profile": "robot",
+                "profile_name": "robot",
+                "show_console_log": True,
                 "sash_position": 200,
-                "runprofiles":
+                "run_profiles":
                     [('jybot', 'jybot' + ('.bat' if os.name == 'nt' else '')),
                      ('pybot', 'pybot' + ('.bat' if os.name == 'nt' else '')),
                      ('robot 3.1', 'robot')],
@@ -138,6 +184,7 @@ class TestRunnerPlugin(Plugin):
         self._test_runner = TestRunner(application.model)
         self._register_shortcuts()
         self._min_log_level_number = LOG_LEVELS['INFO']
+        self._pause_on_failure = False
         self._selected_tests: {TestCaseController} = set()
         self._process = psutil.Process()
         self._initmemory = None
@@ -146,10 +193,12 @@ class TestRunnerPlugin(Plugin):
 
     @property
     def _names_to_run(self):
-        return list(map(lambda ctrl: (ctrl.datafile_controller.longname, ctrl.longname), self._selected_tests))
+        return list(
+            map(lambda ctrl: (ctrl.datafile_controller.longname, ctrl.longname),
+                self._selected_tests))
 
     def _register_shortcuts(self):
-        self.register_shortcut('CtrlCmd-C', self._copy_from_out)
+        self.register_shortcut('CtrlCmd-C', self._copy_from_log_ctrls)
         self.register_shortcut('CtrlCmd-L', self.OnShowLog)
         self.register_shortcut('CtrlCmd-R', self.OnShowReport)
         if IS_WINDOWS or IS_MAC:
@@ -160,25 +209,25 @@ class TestRunnerPlugin(Plugin):
             return
         self.get_current_profile().delete_pressed()
 
-    def _copy_from_out(self, event):
+    def _copy_from_log_ctrls(self, event):
         if self.notebook.current_page_title != self.title:
             return
-        if self.out.GetSTCFocus():
-            self.out.Copy()
+        if self._console_log_ctrl.GetSTCFocus():
+            self._console_log_ctrl.Copy()
             return
-        if self.message_log.GetSTCFocus():
-            self.message_log.Copy()
-            return
+        if self._message_log_ctrl.GetSTCFocus():
+            self._message_log_ctrl.Copy()
 
     def enable(self):
         self.tree.set_checkboxes_for_tests()
         self._read_run_profiles()
         self._register_actions()
-        self._build_ui()
-        self.SetProfile(self.profile)
+        self._add_tab_to_notebook()
+        self._init_profile_choice(self.profile_name)
         self._subscribe_to_events()
-        self._test_runner.enable(self._post_result)
+        self._test_runner.enable(self._test_runner_events_handler)
         self._set_stopped()
+        self._create_temporary_directory()
 
     def _register_actions(self):
         run_action_info = ActionInfo("Tools", "Run Tests", self.OnRun, None,
@@ -205,7 +254,7 @@ class TestRunnerPlugin(Plugin):
         # Have to keep reference so that these classes are not garbage collected
         self._profile_classes_from_config = [_RunProfile(name, run_prefix)
                                              for name, run_prefix in
-                                             self.runprofiles]
+                                             self.run_profiles]
 
     def _read_run_profiles_from_classes(self):
         for profile in self._get_all_subclasses(runprofiles.BaseProfile):
@@ -241,6 +290,21 @@ class TestRunnerPlugin(Plugin):
         self.unsubscribe_all()
         self.unregister_actions()
 
+    def _create_temporary_directory(self):
+        self._default_output_dir = tempfile.mkdtemp(".d", "RIDE")
+        atexit.register(self._remove_temporary_directory)
+        # this plugin creates a temporary directory which _should_
+        # get reaped at exit. Sometimes things happen which might
+        # cause it to not get deleted. Maybe this would be a good
+        # place to check for temporary directories that match the
+        # signature and delete them if they are more than a few
+        # days old...
+
+    def _remove_temporary_directory(self):
+        with ATEXIT_LOCK:
+            if os.path.exists(self._default_output_dir):
+                shutil.rmtree(self._default_output_dir)
+
     def OnClose(self, event):
         """Shut down the running services and processes"""
         self._test_runner.kill_process()
@@ -248,38 +312,6 @@ class TestRunnerPlugin(Plugin):
             self._process_timer.Stop()
         self._test_runner.shutdown_server()
         event.Skip()
-
-    def OnAutoSaveCheckbox(self, evt):
-        """Called when the user clicks on the "Auto Save" checkbox"""
-        self.save_setting("auto_save", evt.IsChecked())
-
-    def OnShowHideMessageLog(self, evt):
-        checked = evt.IsChecked()
-        self.save_setting("show_message_log", checked)
-        if checked:
-            self._show_message_log()
-        else:
-            self._hide_message_log()
-
-    def OnPauseOnFailureCheckbox(self, evt):
-        self._test_runner.set_pause_on_failure(evt.IsChecked())
-
-    def _show_message_log(self):
-        self.message_log = self._create_output_textctrl()
-        self._right_panel.GetSizer().Add(self.message_log, 1, wx.EXPAND)
-        self._right_panel.GetSizer().Layout()
-
-    def _hide_message_log(self):
-        self._clear_text(self.message_log)
-        self._right_panel.RemoveChild(self.message_log)
-        self.message_log.Destroy()
-        self.message_log = None
-        self._right_panel.GetSizer().Layout()
-
-    def _recreate_message_log(self):
-        self.show_log_messages_checkbox.SetValue(False)
-        self._reset_memory_calc()
-        self.show_log_messages_checkbox.SetValue(True)
 
     def _reset_memory_calc(self):
         self._initmemory = self._process.memory_info()[0]
@@ -293,93 +325,114 @@ class TestRunnerPlugin(Plugin):
         same effect as typing control-c when running from the
         command line."""
         self._reset_memory_calc()
-        self._AppendText(self.out, '[ SENDING STOP SIGNAL ]\n',
-                         source='stderr')
+        self._append_to_console_log('[ SENDING STOP SIGNAL ]\n',
+                                    source='stderr')
         self._test_runner.send_stop_signal()
 
     def OnPause(self, event):
         self._reset_memory_calc()
-        self._AppendText(self.out, '[ SENDING PAUSE SIGNAL ]\n')
+        self._append_to_console_log('[ SENDING PAUSE SIGNAL ]\n')
         self._test_runner.send_pause_signal()
 
     def OnContinue(self, event):
         self._reset_memory_calc()
-        self._AppendText(self.out, '[ SENDING CONTINUE SIGNAL ]\n')
+        self._append_to_console_log('[ SENDING CONTINUE SIGNAL ]\n')
         self._test_runner.send_continue_signal()
 
     def OnStepNext(self, event):
         self._reset_memory_calc()
-        self._AppendText(self.out, '[ SENDING STEP NEXT SIGNAL ]\n')
+        self._append_to_console_log('[ SENDING STEP NEXT SIGNAL ]\n')
         self._test_runner.send_step_next_signal()
 
     def OnStepOver(self, event):
         self._reset_memory_calc()
-        self._AppendText(self.out, '[ SENDING STEP OVER SIGNAL ]\n')
+        self._append_to_console_log('[ SENDING STEP OVER SIGNAL ]\n')
         self._test_runner.send_step_over_signal()
 
+    def OnRun(self, event):
+        """ Called when the user clicks or presses the F8, Run Tests """
+        self._run_tests(lambda: self._create_command())
+
     def OnRunDebug(self, event):
-        """ Called when the user clicks or presses the F9, Run with Debug
+        """ Called when the user clicks or presses the F9, Run Tests with Debug
             It can still be overwritten in RIDE Arguments line
         """
-        # Save the original function so we can inject "-L Debug"
-        tempfunc = self._create_command
-        self._create_command = self._create_debug_command
-        # Do normal run with
-        self.OnRun(event)
-        # Restore original function
-        self._create_command = tempfunc
+        self._run_tests(lambda: self._create_command("DEBUG"))
 
-    def OnRun(self, event):
-        """Called when the user clicks the "Run" button"""
+    def _create_command(self, log_level="INFO"):
+        profile = self.get_current_profile()
+        args = self._create_command_args(
+            profile.get_command_args(),
+            log_level,
+            self._default_output_dir,
+            self.global_settings.get('pythonpath', None),
+            self._get_console_width(),
+            self._names_to_run
+        )
+
+        self._min_log_level_number = \
+            ArgsParser.get_message_log_level(args)
+
+        self._logs_directory = \
+            ArgsParser.get_output_directory(args, self._default_output_dir)
+
+        console_log_name = \
+            SettingsParser.get_console_log_name(profile.get_settings())
+        self._console_log = '' if not console_log_name \
+            else os.path.join(self._logs_directory, console_log_name)
+
+        command_builder = CommandBuilder()
+        command_builder.set_prefix(profile.get_command())
+        if args:
+            arg_file = os.path.join(self._default_output_dir, 'argfile.txt')
+            command_builder.add_arg_file(arg_file)
+            FileWriter.write(arg_file, args, 'wb')
+        command_builder.set_listener(self._test_runner.get_listener_port(),
+                                     self._pause_on_failure)
+        command_builder.set_suite_source(self.model.suite.source)
+
+        return command_builder.build()
+
+    @staticmethod
+    def _create_command_args(profile_custom_args, log_level, output_dir,
+                             python_path, console_width, tests_to_run):
+        args_builder = CommandArgsBuilder(profile_custom_args)
+
+        args_builder.set_log_level(log_level)
+        args_builder.set_output_directory(output_dir)
+        args_builder.set_python_path(python_path)
+        args_builder.without_console_color()
+        args_builder.set_console_width(console_width)
+        args_builder.set_tests_to_run(tests_to_run)
+
+        return args_builder.build()
+
+    def _run_tests(self, create_command_func):
         if not self._can_start_running_tests():
             return
-        if self.__getattr__('confirm run'):
-            if not self._tests_selected():
-                if not self.ask_user_to_run_anyway():
-                    # In Linux NO runs dialog 4 times
-                    return
+        if self.__getattr__('confirm run') \
+                and not self._tests_selected() \
+                and not self._ask_user_to_run_anyway():
+            # In Linux NO runs dialog 4 times
+            return
         self._reset_memory_calc()
         self._initialize_ui_for_running()
-        command = self._create_command()
+        command = create_command_func()
         # DEBUG on Py3 it not shows correct if tags with latin chars
-        self._output("command: %s\n" % command, enc=False)
+        self._append_to_console_log("command: %s\n" % command, enc=False)
         try:
-            self._test_runner.run_command(command, self._get_current_working_dir())
+            self._test_runner.run_command(command,
+                                          self._get_current_working_dir())
             self._process_timer.Start(41)  # roughly 24fps
             self._set_running()
             self._progress_bar.Start()
         except Exception as e:
-            # self._output("DEBUG: Except block test_runner.run_command\n")
             self._set_stopped()
-            error, log_message = self.get_current_profile().format_error(str(e), None)
-            self._output(error)
+            error, log_message = self.get_current_profile().format_error(str(e),
+                                                                         None)
+            self._append_to_console_log(error, source='stderr')
             if log_message:
                 log_message.publish()
-
-    def _create_command(self):
-        command_as_list = self._test_runner.get_command(
-            self.get_current_profile(),
-            self.global_settings.get('pythonpath', None),
-            self._get_console_width(),
-            self._names_to_run)
-        self._min_log_level_number = \
-            self._test_runner.get_message_log_level(command_as_list)
-        command = self._format_command(command_as_list)
-        return command
-
-    def _create_debug_command(self):
-        command_as_list = self._test_runner.get_command(
-            self.get_current_profile(),
-            self.global_settings.get('pythonpath', None),
-            self._get_console_width(),
-            self._names_to_run)
-        if '-L' not in command_as_list:
-            command_as_list.insert(1, '-L')
-            command_as_list.insert(2, 'DEBUG')
-        self._min_log_level_number = self._test_runner.get_message_log_level(
-            command_as_list)
-        command = self._format_command(command_as_list)
-        return command
 
     def _get_current_working_dir(self):
         profile = self.get_current_profile()
@@ -399,6 +452,7 @@ class TestRunnerPlugin(Plugin):
             return True
         return False
 
+    @staticmethod
     def _ask_user_to_save_before_running(self):
         ret = wx.MessageBox("""There are unsaved modifications.
         Do you want to save all changes and run the tests?""",
@@ -409,7 +463,8 @@ class TestRunnerPlugin(Plugin):
     def _tests_selected(self):
         return len(self._selected_tests) != 0
 
-    def ask_user_to_run_anyway(self):
+    @staticmethod
+    def _ask_user_to_run_anyway():
         ret = wx.MessageBox('No tests selected. \n'
                             'Continue anyway?',
                             'No tests selected',
@@ -418,227 +473,181 @@ class TestRunnerPlugin(Plugin):
 
     def _initialize_ui_for_running(self):
         self._show_notebook_tab()
-        self._clear_output_window()
-        self.local_toolbar.EnableTool(ID_SHOW_REPORT, False)
-        self.local_toolbar.EnableTool(ID_SHOW_LOG, False)
+        self._clear_log_ctrls()
+        self._local_toolbar.EnableTool(ID_OPEN_LOGS_DIR, False)
+        self._local_toolbar.EnableTool(ID_SHOW_REPORT, False)
+        self._local_toolbar.EnableTool(ID_SHOW_LOG, False)
         self._report_file = self._log_file = None
-        self._messages_log_texts = Queue()
+        self._log_message_queue = Queue()
 
-    def _clear_output_window(self):
-        self._clear_text(self.out)
-        if self.message_log:
-            self._clear_text(self.message_log)
+    def _clear_log_ctrls(self):
+        self._clear_text_ctrl(self._console_log_ctrl)
+        self._clear_text_ctrl(self._message_log_ctrl)
 
-    def _clear_text(self, textctrl):
+    @staticmethod
+    def _clear_text_ctrl(textctrl):
         textctrl.SetReadOnly(False)
         textctrl.ClearAll()
         textctrl.SetReadOnly(True)
 
+    def OnOpenLogsDirectory(self, evt):
+        """Called when the user clicks on the "Open Logs Directory" button"""
+        if os.path.exists(self._logs_directory):
+            open_filemanager(self._logs_directory)
+        else:
+            self._notify_user_no_logs_directory()
+
     def OnShowReport(self, evt):
         """Called when the user clicks on the "Report" button"""
         if self._report_file:
-            wx.LaunchDefaultBrowser("file:%s" % os.path.abspath(self._report_file))
+            wx.LaunchDefaultBrowser(
+                "file:%s" % os.path.abspath(self._report_file))
 
     def OnShowLog(self, evt):
         """Called when the user clicks on the "Log" button"""
         if self._log_file:
             wx.LaunchDefaultBrowser("file:%s" % os.path.abspath(self._log_file))
 
-    def OnProfileSelection(self, event):
-        self.save_setting("profile", event.GetString())
-        self.SetProfile(self.profile)
-
     def OnProcessEnded(self, evt):
         output, errors, log_message = self._test_runner.get_output_and_errors(
             self.get_current_profile())
-        self._output(output)
+        self._append_to_console_log(output)
         self._read_report_and_log_from_stdout_if_needed()
         if len(errors) > 0:
-            self._output(errors, source="stderr")
+            self._append_to_console_log(errors, source="stderr")
         if self._process_timer:
             self._process_timer.Stop()
         self._set_stopped()
         self._progress_bar.Stop()
-        self._output("\nTest finished {}".format(robottime.format_time(
-            datetime.datetime.now().timetuple())))
+        now = datetime.datetime.now().timetuple()
+        self._append_to_console_log("\nTest finished {}"
+                                    .format(robottime.format_time(now)))
         self._test_runner.command_ended()
         if log_message:
             log_message.publish()
+        self._local_toolbar.EnableTool(ID_OPEN_LOGS_DIR, True)
 
     def _read_report_and_log_from_stdout_if_needed(self):
-        output = self.out.GetText()
+        output = self._console_log_ctrl.GetText()
         if not self._report_file:
-            self._report_file = self._get_report_or_log(output,
-                                                        self.report_regex)
+            self._report_file = \
+                self._get_report_or_log(output, self.report_regex)
             if self._report_file:
-                self.local_toolbar.EnableTool(ID_SHOW_REPORT, True)
+                self._local_toolbar.EnableTool(ID_SHOW_REPORT, True)
         if not self._log_file:
             self._log_file = self._get_report_or_log(output, self.log_regex)
             if self._log_file:
-                self.local_toolbar.EnableTool(ID_SHOW_LOG, True)
+                self._local_toolbar.EnableTool(ID_SHOW_LOG, True)
 
-    def _get_report_or_log(self, output, regex):
+    @staticmethod
+    def _get_report_or_log(output, regex):
         res = regex.search(output)
         return res.group(1) if res and os.path.isfile(res.group(1)) else None
 
     def OnTimer(self, evt):
         """Get process output"""
-        if self.message_log and not self._messages_log_texts.empty():
+        if not self._log_message_queue.empty():
             if self._process.memory_info()[0] <= self._limitmemory:
                 texts = []
-                while not self._messages_log_texts.empty():
-                    texts += [self._messages_log_texts.get()]
-                self._AppendTextMessageLog(self.message_log, '\n' + '\n'.join(texts))
+                while not self._log_message_queue.empty():
+                    texts += [self._log_message_queue.get()]
+                self._append_to_message_log('\n' + '\n'.join(texts))
             else:
                 if not self._maxmemmsg:
-                    self._maxmemmsg = "Messages log exceeded 80% of process " \
-                                      "memory, stopping for now..."
-                    self._AppendTextMessageLog(self.message_log,
-                                               '\n' + self._maxmemmsg,
-                                               source="stderr")
+                    self._maxmemmsg = '\n' + "Messages log exceeded 80% of " \
+                                      "process memory, stopping for now..."
+                    self._append_to_message_log(self._maxmemmsg, "stderr")
         if not self._test_runner.is_running():
             self.OnProcessEnded(None)
             return
-        out_buffer, err_buffer, log_message =\
+        out_buffer, err_buffer, log_message = \
             self._test_runner.get_output_and_errors(self.get_current_profile())
         if len(out_buffer) > 0:
-            self._output(out_buffer, source="stdout")
+            self._append_to_console_log(out_buffer, source="stdout")
         if len(err_buffer) > 0:
-            if self.GetLastOutputChar() != "\n":
+            if self._get_last_output_char() != "\n":
                 # Robot prints partial lines to stdout to make the
                 # interactive experience better. It all goes to
                 # heck in a handbasket if something shows up on
                 # stderr. So, to fix that we'll add a newline if
                 # the previous character isn't a newline.
-                self._output("\n", source="stdout")
-            self._output(err_buffer, source="stderr")
+                self._append_to_console_log("\n")
+            self._append_to_console_log(err_buffer, source="stderr")
 
-    def GetLastOutputChar(self):
+    def _get_last_output_char(self):
         """Return the last character in the output window"""
-        pos = self.out.PositionBefore(self.out.GetLength())
-        char = self.out.GetCharAt(pos)
+        pos = self._console_log_ctrl.PositionBefore(
+            self._console_log_ctrl.GetLength())
+        char = self._console_log_ctrl.GetCharAt(pos)
         return chr(char)
-
-    def _format_command(self, argv):
-        """Quote a list as if it were a command line command
-
-        This isn't perfect but seems to work for the normal use
-        cases. I'm not entirely sure what the perfect algorithm
-        is since *nix and windows have different quoting
-        behaviors.
-        """
-        result = []
-        for arg in argv:
-            # arg = arg.encode(encoding['SYSTEM'])
-            if "'" in arg or " " in arg or "&" in arg:
-                # for windows, if there are spaces we need to use
-                # double quotes. Single quotes cause problems
-                result.append('"%s"' % arg)
-            elif '"' in arg:
-                result.append("'%s'" % arg)
-            else:
-                result.append(arg)
-        return " ".join(result)
 
     def _show_notebook_tab(self):
         """Show the Run notebook tab"""
         if not self.panel:
-            self._build_notebook_tab()
+            self._add_tab_to_notebook()
             self._reload_model()
         self.show_tab(self.panel)
 
-    # from memory_profiler import profile as mprofile
+    def _append_to_message_log(self, text, source="stdout"):
+        self._append_text(self._message_log_ctrl, text, source)
 
-    # @mprofile
-    def _AppendText(self, textctrl, string, source="stdout", enc=True):
-        if not self.panel or not textctrl:
+    def _append_to_console_log(self, text, source="stdout", enc=True):
+        """Put output to the text control"""
+        self._append_text(self._console_log_ctrl, text, source, enc)
+        if self._console_log:
+            FileWriter.write(self._console_log, [text], "ab", "a")
+
+    def _append_text(self, text_ctrl, text, source="stdout", enc=True):
+        if not self.panel or not text_ctrl:
             return
-        textctrl.update_scroll_width(string)
+        text_ctrl.update_scroll_width(text)
         # we need this information to decide whether to autoscroll or not
-        new_text_start = textctrl.GetLength()
-        linecount = textctrl.GetLineCount()
-        last_visible_line = textctrl.GetFirstVisibleLine() + textctrl.LinesOnScreen() - 1
+        new_text_start = text_ctrl.GetLength()
+        line_count = text_ctrl.GetLineCount()
+        last_visible_line = \
+            text_ctrl.GetFirstVisibleLine() + text_ctrl.LinesOnScreen() - 1
 
-        textctrl.SetReadOnly(False)
+        text_ctrl.SetReadOnly(False)
         try:
             if enc:
                 if IS_WINDOWS:
-                    textctrl.AppendText(string.encode('mbcs'))
+                    text_ctrl.AppendText(text.encode('mbcs'))
                 else:
-                    textctrl.AppendText(string.encode(encoding['SYSTEM']))  # string.encode('UTF-8'))  # DEBUG removed bytes
+                    text_ctrl.AppendText(text.encode(encoding['SYSTEM']))
             else:
-                textctrl.AppendText(string.encode(encoding['OUTPUT']))
+                text_ctrl.AppendText(text.encode(encoding['OUTPUT']))
         except UnicodeDecodeError as e:
             # I'm not sure why I sometimes get this, and I don't know what I
             # can do other than to ignore it.
             # print(f"DEBUG: Console print UnicodeDecodeError string is {string}")
-            textctrl.AppendTextRaw(string)  # DEBUG removed bytes
+            text_ctrl.AppendTextRaw(text)  # DEBUG removed bytes
         except UnicodeEncodeError as e:
             # I'm not sure why I sometimes get this, and I don't know what I
             # can do other than to ignore it.
             # print(f"DEBUG: Console print UnicodeEncodeError string is {string}")
-            textctrl.AppendTextRaw(string.encode(encoding['CONSOLE']))  # .encode('mbcs'))
+            text_ctrl.AppendTextRaw(text.encode(encoding['CONSOLE']))
 
-        new_text_end = textctrl.GetLength()
-
-        if wx.VERSION < (4, 1, 0):
-            textctrl.StartStyling(new_text_start, 0x1f)
-        else:
-            textctrl.StartStyling(new_text_start)
-        if source == "stderr":
-            textctrl.SetStyling(new_text_end-new_text_start, STYLE_STDERR)
-
-        textctrl.SetReadOnly(True)
-        if last_visible_line >= linecount-4:
-            linecount = textctrl.GetLineCount()
-            textctrl.ScrollToLine(linecount)
-
-    def _AppendTextMessageLog(self, textctrl, string, source="stdout", enc=True):
-        if not self.panel or not textctrl:
-            return
-        textctrl.update_scroll_width(string)
-        # we need this information to decide whether to autoscroll or not
-        new_text_start = textctrl.GetLength()
-        linecount = textctrl.GetLineCount()
-        last_visible_line = textctrl.GetFirstVisibleLine() + \
-                          textctrl.LinesOnScreen() - 1
-
-        textctrl.SetReadOnly(False)
-        try:
-            if enc:
-                textctrl.AppendText(string.encode(encoding['OUTPUT']))
-            else:
-                textctrl.AppendText(string)
-        except UnicodeDecodeError as e:
-            textctrl.AppendTextRaw(string.encode(encoding['SYSTEM']))
-        except UnicodeEncodeError as e:
-            textctrl.AppendText(string.encode('utf-8'))  # DEBUG .encode('utf-8'))
-
-        new_text_end = textctrl.GetLength()
+        new_text_end = text_ctrl.GetLength()
 
         if wx.VERSION < (4, 1, 0):
-            textctrl.StartStyling(new_text_start, 0x1f)
+            text_ctrl.StartStyling(new_text_start, 0x1f)
         else:
-            textctrl.StartStyling(new_text_start)
+            text_ctrl.StartStyling(new_text_start)
         if source == "stderr":
-            textctrl.SetStyling(new_text_end-new_text_start, STYLE_STDERR)
+            text_ctrl.SetStyling(new_text_end - new_text_start, STYLE_STDERR)
 
-        textctrl.SetReadOnly(True)
-        if last_visible_line >= linecount-4:
-            linecount = textctrl.GetLineCount()
-            textctrl.ScrollToLine(linecount)
+        text_ctrl.SetReadOnly(True)
+        if last_visible_line >= line_count - 4:
+            line_count = text_ctrl.GetLineCount()
+            text_ctrl.ScrollToLine(line_count)
 
     def _get_console_width(self):
         # robot wants to know a fixed size for output, so calculate the
         # width of the window based on average width of a character. A
         # little is subtracted just to make sure there's a little margin
-        out_width, _ = self.out.GetSize()
-        char_width = self.out.GetCharWidth()
-        return str(int(out_width/char_width)-10)
-
-    def _build_ui(self):
-        """Creates the UI for this plugin"""
-        self._build_notebook_tab()
+        out_width, _ = self._console_log_ctrl.GetSize()
+        char_width = self._console_log_ctrl.GetCharWidth()
+        return str(int(out_width / char_width) - 10)
 
     def _remove_from_notebook(self):
         """Remove the tab for this plugin from the notebook"""
@@ -646,64 +655,55 @@ class TestRunnerPlugin(Plugin):
             self.notebook.allow_closing(self.panel)
             self.notebook.delete_tab(self.panel)
 
-    def _build_config_panel(self, parent):
-        """Builds the configuration panel for this plugin"""
-        panel = wx.Panel(parent, wx.ID_ANY, style=wx.BORDER_NONE |
-                                                  wx.TAB_TRAVERSAL)
-        self.config_sizer = wx.BoxSizer(wx.VERTICAL)
-        panel.SetSizer(self.config_sizer)
-        self.config_panel = panel
-        return panel
-
-    def _output(self, string, source="stdout", enc=True):
-        """Put output to the text control"""
-        self._AppendText(self.out, string, source, enc)
-
-    def _build_runner_toolbar(self):
-        toolbar = wx.ToolBar(self.panel, wx.ID_ANY,
-                             style=wx.TB_HORIZONTAL | wx.TB_HORZ_TEXT)
-        toolbar.AddTool(ID_RUN, "Start", ImageProvider().TOOLBAR_PLAY,wx.NullBitmap,
-                        wx.ITEM_NORMAL, shortHelp="Start robot", longHelp="Start running the "
-                                                                          "robot test suite")
+    def _build_runner_toolbar(self, parent):
+        toolbar = wx.ToolBar(parent, wx.ID_ANY,
+                             style=wx.TB_HORIZONTAL | wx.TB_HORZ_TEXT |
+                                   wx.TB_NODIVIDER)
+        toolbar.AddTool(ID_RUN, "Start", ImageProvider().TOOLBAR_PLAY,
+                        wx.NullBitmap, wx.ITEM_NORMAL, shortHelp="Start robot",
+                        longHelp="Start running the robot test suite")
         toolbar.AddTool(ID_RUNDEBUG, "Debug", getBugIconBitmap(), wx.NullBitmap,
-                        wx.ITEM_NORMAL, shortHelp="Start robot", longHelp="Start running the "
-                                                                          "robot test suite with "
-                                                                          "DEBUG loglevel")
-        toolbar.AddTool(ID_STOP, "Stop", ImageProvider().TOOLBAR_STOP, wx.NullBitmap,
-                        wx.ITEM_NORMAL, shortHelp="Stop a running test", longHelp="Stop a "
-                                                                                  "running test")
-        toolbar.AddTool(ID_PAUSE, "Pause", ImageProvider().TOOLBAR_PAUSE, wx.NullBitmap,
-                        wx.ITEM_NORMAL, shortHelp="Pause test execution", longHelp="Pause test "
-                                                                                   "execution")
-        toolbar.AddTool(ID_CONTINUE, "Continue", ImageProvider().TOOLBAR_CONTINUE, wx.NullBitmap,
-                        wx.ITEM_NORMAL, shortHelp="Continue test execution", longHelp="Continue "
-                                                                                      "test "
-                                                                                      "execution")
-        toolbar.AddTool(ID_STEP_NEXT, "Next", ImageProvider().TOOLBAR_NEXT, wx.NullBitmap,
-                        wx.ITEM_NORMAL, shortHelp="Step next", longHelp="Step next")
-        toolbar.AddTool(ID_STEP_OVER, "Step over", ImageProvider().TOOLBAR_NEXT, wx.NullBitmap,
-                        wx.ITEM_NORMAL, shortHelp="Step over", longHelp="Step over")
+                        wx.ITEM_NORMAL, shortHelp="Start robot",
+                        longHelp="Start running the robot test suite "
+                                 "with DEBUG loglevel")
+        toolbar.AddTool(ID_STOP, "Stop", ImageProvider().TOOLBAR_STOP,
+                        wx.NullBitmap, wx.ITEM_NORMAL,
+                        shortHelp="Stop a running test",
+                        longHelp="Stop a running test")
+        toolbar.AddTool(ID_PAUSE, "Pause", ImageProvider().TOOLBAR_PAUSE,
+                        wx.NullBitmap, wx.ITEM_NORMAL,
+                        shortHelp="Pause test execution",
+                        longHelp="Pause test execution")
+        toolbar.AddTool(ID_CONTINUE, "Continue",
+                        ImageProvider().TOOLBAR_CONTINUE,
+                        wx.NullBitmap, wx.ITEM_NORMAL,
+                        shortHelp="Continue test execution",
+                        longHelp="Continue test execution")
+        toolbar.AddTool(ID_STEP_NEXT, "Next", ImageProvider().TOOLBAR_NEXT,
+                        wx.NullBitmap, wx.ITEM_NORMAL, shortHelp="Step next",
+                        longHelp="Step next")
+        toolbar.AddTool(ID_STEP_OVER, "Step over", ImageProvider().TOOLBAR_NEXT,
+                        wx.NullBitmap, wx.ITEM_NORMAL, shortHelp="Step over",
+                        longHelp="Step over")
         toolbar.Realize()
         self._bind_runner_toolbar_events(toolbar)
         return toolbar
 
     def _bind_runner_toolbar_events(self, toolbar):
-        for event, callback, id in ((wx.EVT_TOOL, self.OnRun, ID_RUN),
-                                    (wx.EVT_TOOL, self.OnRunDebug, ID_RUNDEBUG
-                                     ),
-                                    (wx.EVT_TOOL, self.OnStop, ID_STOP),
-                                    (wx.EVT_TOOL, self.OnPause, ID_PAUSE),
-                                    (wx.EVT_TOOL, self.OnContinue, ID_CONTINUE
-                                     ),
-                                    (wx.EVT_TOOL, self.OnStepNext, ID_STEP_NEXT
-                                     ),
-                                    (wx.EVT_TOOL, self.OnStepOver, ID_STEP_OVER
-                                     )):
+        for event, callback, id in (
+                (wx.EVT_TOOL, self.OnRun, ID_RUN),
+                (wx.EVT_TOOL, self.OnRunDebug, ID_RUNDEBUG),
+                (wx.EVT_TOOL, self.OnStop, ID_STOP),
+                (wx.EVT_TOOL, self.OnPause, ID_PAUSE),
+                (wx.EVT_TOOL, self.OnContinue, ID_CONTINUE),
+                (wx.EVT_TOOL, self.OnStepNext, ID_STEP_NEXT),
+                (wx.EVT_TOOL, self.OnStepOver, ID_STEP_OVER)):
             toolbar.Bind(event, callback, id=id)
 
-    def _build_local_toolbar(self):
-        toolbar = wx.ToolBar(self.panel, wx.ID_ANY,
-                             style=wx.TB_HORIZONTAL | wx.TB_HORZ_TEXT)
+    def _build_local_toolbar(self, parent):
+        toolbar = wx.ToolBar(parent, wx.ID_ANY,
+                             style=wx.TB_HORIZONTAL | wx.TB_HORZ_TEXT |
+                                   wx.TB_NODIVIDER)
         profile_label = Label(toolbar, label="Execution Profile:  ")
         choices = self._test_runner.get_profile_names()
         self.choice = wx.Choice(toolbar, wx.ID_ANY, choices=choices)
@@ -714,138 +714,207 @@ class TestRunnerPlugin(Plugin):
         toolbar.AddSeparator()
         report_image = getReportIconBitmap()
         log_image = getLogIconBitmap()
+        toolbar.AddTool(ID_OPEN_LOGS_DIR, "Open Logs Directory",
+                        ImageProvider().DATADIRIMG,
+                        shortHelp="View All Logs in Explorer")
         toolbar.AddTool(ID_SHOW_REPORT, " Report", report_image,
-                       shortHelp=localize_shortcuts("View Robot Report in "
-                                                    "Browser (CtrlCmd-R)"))
+                        shortHelp=localize_shortcuts("View Robot Report in "
+                                                     "Browser (CtrlCmd-R)"))
         toolbar.AddTool(ID_SHOW_LOG, " Log", log_image,
-                       shortHelp=localize_shortcuts("View Robot Log in"
-                                                    " Browser (CtrlCmd-L)"))
+                        shortHelp=localize_shortcuts("View Robot Log in"
+                                                     " Browser (CtrlCmd-L)"))
         toolbar.AddSeparator()
         # the toolbar API doesn't give us a way to specify padding which
         # is why the label has a couple spaces after the colon. gross,
         # but effective.
-        self.savecb = wx.CheckBox(toolbar, ID_AUTOSAVE, " Autosave  ")
-        self.savecb.SetToolTip(wx.ToolTip("Automatically save all changes "
-                                          "before running"))
-        self.savecb.SetValue(self.auto_save)
-        toolbar.AddControl(self.savecb)
+        self.autosave_cb = \
+            self._create_check_box(toolbar, ID_AUTOSAVE, " Autosave  ",
+                                   self.auto_save, "Automatically save all "
+                                                   "changes before running")
+        toolbar.AddControl(self.autosave_cb)
 
-        self.pause_after_failure_cb = wx.CheckBox(toolbar, ID_PAUSE_ON_FAILURE,
-                                                  " Pause on failure  ")
-        self.pause_after_failure_cb.SetToolTip(wx.ToolTip("Automatically pause"
-                                                          " after failing "
-                                                          "keyword"))
-        self.pause_after_failure_cb.SetValue(False)
-        toolbar.AddControl(self.pause_after_failure_cb)
+        self.pause_on_failure_cb = \
+            self._create_check_box(toolbar, ID_PAUSE_ON_FAILURE,
+                                   " Pause after failure  ", False,
+                                   "Automatically pause after failing keyword")
+        toolbar.AddControl(self.pause_on_failure_cb)
 
-        self.show_log_messages_checkbox = wx.CheckBox(toolbar,
-                                                      ID_SHOW_MESSAGE_LOG,
-                                                      " Show message log  ")
-        self.show_log_messages_checkbox.SetToolTip(wx.ToolTip("Show or hide "
-                                                              "message log"))
-        self.show_log_messages_checkbox.SetValue(self.show_message_log)
-        toolbar.AddControl(self.show_log_messages_checkbox)
+        toolbar.EnableTool(ID_OPEN_LOGS_DIR, False)
         toolbar.EnableTool(ID_SHOW_LOG, False)
         toolbar.EnableTool(ID_SHOW_REPORT, False)
         toolbar.Realize()
-        self._bind_toolbar_events(toolbar)
+        self._bind_local_toolbar_events(toolbar)
         return toolbar
 
-    def _bind_toolbar_events(self, toolbar):
-        for event, callback, id in ((wx.EVT_TOOL, self.OnShowReport,
-                                     ID_SHOW_REPORT), (wx.EVT_TOOL,
-                                                       self.OnShowLog,
-                                                       ID_SHOW_LOG)):
+    def _bind_local_toolbar_events(self, toolbar):
+        for event, callback, id in (
+                (wx.EVT_TOOL, self.OnOpenLogsDirectory, ID_OPEN_LOGS_DIR),
+                (wx.EVT_TOOL, self.OnShowReport, ID_SHOW_REPORT),
+                (wx.EVT_TOOL, self.OnShowLog, ID_SHOW_LOG)):
             toolbar.Bind(event, callback, id=id)
-        toolbar.Bind(wx.EVT_CHECKBOX, self.OnAutoSaveCheckbox, self.savecb)
-        toolbar.Bind(wx.EVT_CHECKBOX, self.OnShowHideMessageLog,
-                     self.show_log_messages_checkbox)
-        toolbar.Bind(wx.EVT_CHECKBOX, self.OnPauseOnFailureCheckbox,
-                     self.pause_after_failure_cb)
-        toolbar.Bind(wx.EVT_CHOICE, self.OnProfileSelection, self.choice)
+
+        for event, handler, source in (
+                (wx.EVT_CHECKBOX, self._on_autosave_cb,
+                 self.autosave_cb),
+                (wx.EVT_CHECKBOX, self._on_pause_on_failure_cb,
+                 self.pause_on_failure_cb),
+                (wx.EVT_CHOICE, self._on_profile_selection, self.choice)):
+            toolbar.Bind(event, handler, source)
+
+    def _on_autosave_cb(self, evt):
+        """Called when the user clicks on the "Auto Save" checkbox"""
+        self.save_setting("auto_save", evt.IsChecked())
+
+    def _on_pause_on_failure_cb(self, evt):
+        self._pause_on_failure = evt.IsChecked()
+        self._test_runner.send_pause_on_failure(evt.IsChecked())
+
+    def _on_profile_selection(self, event):
+        self.save_setting("profile_name", event.GetString())
+        self._set_profile(self.profile_name)
+
+    def _init_profile_choice(self, profile_name):
+        """First installation of the profile to be used to run tests"""
+        items = self.choice.GetItems()
+        if profile_name not in items:
+            return
+        choice_index = items.index(profile_name)
+        self.choice.Select(choice_index)
+        self._set_profile(profile_name)
+
+    def _set_profile(self, profile_name):
+        """Set the profile to be used to run tests"""
+        profile = self._test_runner.get_profile(profile_name)
+        self._profile_toolbar = profile.get_toolbar(self._config_panel)
+
+        if self._profile_toolbar:
+            sizer = self._config_panel.GetSizer()
+            sizer.ShowItems(False)
+            sizer.Clear()
+            sizer.Add(self._profile_toolbar, 0, wx.EXPAND)
+            sizer.ShowItems(True)
+            self._config_panel.Parent.Layout()
 
     def get_current_profile(self):
         return self._test_runner.get_profile(self.choice.GetStringSelection())
 
-    def SetProfile(self, profile):
-        """Set the profile to be used to run tests"""
-        items = self.choice.GetItems()
-        if profile not in items:
-            return
-        choice_index = items.index(profile)
-        self.choice.Select(choice_index)
-        p = self._test_runner.get_profile(profile)
-        for child in self.config_sizer.GetChildren():
-            child.GetWindow().Hide()
-            self.config_sizer.Detach(child.GetWindow())
-        toolbar = p.get_toolbar(self.config_panel)
-
-        if toolbar:
-            self.config_sizer.Add(toolbar, 0, wx.EXPAND)
-            self.config_sizer.ShowItems(True)
-            self.config_sizer.Layout()
-            parent = self.config_panel.Parent
-            parent_sizer = parent.GetSizer()
-            parent_sizer.Layout()
-
-    def _build_notebook_tab(self):
-        panel = wx.Panel(self.notebook)
-        self.panel = panel
-        self.runner_toolbar = self._build_runner_toolbar()
-        self.local_toolbar = self._build_local_toolbar()
-        self.header_panel = wx.Panel(self.panel)
-        self.configPanel = self._build_config_panel(panel)
-        self._right_panel = wx.Panel(self.panel)
-        self.out = self._create_output_textctrl()
-        self.message_log = self._create_output_textctrl() if \
-            self.show_message_log else None
-        self._clear_output_window()
-
-        self._progress_bar = ProgressBar(self._right_panel)
-
-        right_panel_sizer = wx.BoxSizer(wx.VERTICAL)
-        right_panel_sizer.Add(self._progress_bar, 0, wx.EXPAND)
-        right_panel_sizer.Add(self.out, 1, wx.EXPAND)
-        if self.message_log:
-            right_panel_sizer.Add(self.message_log, 1, wx.EXPAND)
-        self._right_panel.SetSizer(right_panel_sizer)
-
-        header_sizer = wx.BoxSizer(wx.HORIZONTAL)
-        self.header_panel.SetSizer(header_sizer)
+    def _add_tab_to_notebook(self):
+        self.panel = wx.Panel(self.notebook)
+        self._local_toolbar = self._build_local_toolbar(self.panel)
+        self._runner_toolbar = self._build_runner_toolbar(self.panel)
+        self._config_panel = self._build_config_panel(self.panel)
 
         sizer = wx.BoxSizer(wx.VERTICAL)
-        sizer.Add(self.local_toolbar, 0, wx.EXPAND)
-        sizer.Add(self.runner_toolbar, 0, wx.EXPAND)
-        sizer.Add(self.configPanel, 0, wx.EXPAND | wx.TOP | wx.RIGHT, 4)
-        sizer.Add(wx.StaticLine(self.panel), 0, wx.EXPAND | wx.BOTTOM|wx.TOP, 2)
-        sizer.Add(self.header_panel, 0, wx.EXPAND | wx.RIGHT, 10)
-        sizer.Add(self._right_panel, 1, wx.EXPAND | wx.RIGHT, 8)
-        panel.SetSizer(sizer)
+        sizer.Add(self._local_toolbar, 0, wx.EXPAND | wx.LEFT | wx.TOP | wx.RIGHT, 5)
+        sizer.Add(wx.StaticLine(self.panel), 0, wx.EXPAND | wx.BOTTOM | wx.TOP, 7)
+        sizer.Add(self._runner_toolbar, 0, wx.EXPAND | wx.ALL, 5)
+        sizer.Add(wx.StaticLine(self.panel), 0, wx.EXPAND | wx.BOTTOM | wx.TOP, 4)
+        sizer.Add(self._config_panel, 0, wx.EXPAND, 5)
+        sizer.Add(wx.StaticLine(self.panel), 0, wx.EXPAND | wx.BOTTOM | wx.TOP, 4)
+        self._output_panel = self._build_output_panel(self.panel)
+        sizer.Add(self._output_panel, 1, wx.EXPAND | wx.TOP, 5)
+        self.panel.SetSizer(sizer)
 
         self._process_timer = wx.Timer(self.panel)
         self.panel.Bind(wx.EVT_TIMER, self.OnTimer)
-
         self.panel.Bind(wx.EVT_WINDOW_DESTROY, self.OnClose)
 
-        self.add_tab(panel, self.title, allow_closing=False)
+        self.add_tab(self.panel, self.title, allow_closing=False)
 
-    def _create_output_textctrl(self):
-        textctrl = OutputStyledTextCtrl(self._right_panel)
-        # textctrl.StyleSetFontEncoding(wx.stc.STC_STYLE_DEFAULT, wx.FONTENCODING_CP936)
-        # DEBUG Chinese wx.) wx.FONTENCODING_SYSTEM
-        textctrl.SetScrollWidth(100)
-        self._set_margins(textctrl)
-        textctrl.SetReadOnly(True)
-        return textctrl
+    @staticmethod
+    def _build_config_panel(parent):
+        """Builds the configuration panel for this plugin"""
+        panel = wx.Panel(parent, wx.ID_ANY,
+                         style=wx.BORDER_NONE | wx.TAB_TRAVERSAL)
+        vertical_sizer = wx.BoxSizer(wx.VERTICAL)
+        panel.SetSizer(vertical_sizer)
+        return panel
 
-    def _set_margins(self, out):
+    def _build_output_panel(self, parent):
+        panel = wx.Panel(parent)
+        self._progress_bar = ProgressBar(panel)
+        self._console_log_panel, self._console_log_ctrl = \
+            self._create_collapsible_pane(panel, 'Console log',
+                                          self.show_console_log,
+                                          self.OnConsoleLogPaneChanged)
+        self._message_log_panel, self._message_log_ctrl = \
+            self._create_collapsible_pane(panel, 'Message log',
+                                          self.show_message_log,
+                                          self.OnMessageLogPaneChanged)
+
+        panel_sizer = wx.BoxSizer(wx.VERTICAL)
+        panel_sizer.Add(self._progress_bar, 0, wx.EXPAND | wx.BOTTOM, 10)
+        panel_sizer.Add(self._console_log_panel, int(self.show_console_log), wx.EXPAND)
+        panel_sizer.Add(self._message_log_panel, int(self.show_message_log), wx.EXPAND)
+        panel.SetSizer(panel_sizer)
+        return panel
+
+    def OnConsoleLogPaneChanged(self, evt):
+        self.save_setting("show_console_log", not evt.Collapsed)
+        self._change_item_proportion(self._output_panel,
+                                     self._console_log_panel,
+                                     int(not evt.Collapsed))
+        self._output_panel.Layout()
+
+    def OnMessageLogPaneChanged(self, evt):
+        self.save_setting("show_message_log", not evt.Collapsed)
+        self._change_item_proportion(self._output_panel,
+                                     self._message_log_panel,
+                                     int(not evt.Collapsed))
+        self._output_panel.Layout()
+
+    @staticmethod
+    def _change_item_proportion(panel, item, proportion):
+        sizer = panel.GetSizer()
+        children = sizer.GetChildren()
+        for itemIndex in range(len(children)):
+            if item == children[itemIndex].Window:
+                sizer.Detach(item)
+                sizer.Insert(itemIndex, item, proportion, wx.EXPAND)
+                return
+
+    def _create_collapsible_pane(self, parent, title, expand,
+                                 pane_changed_handler):
+        collapsible_pane = wx.CollapsiblePane(
+            parent, wx.ID_ANY, title,
+            style=wx.CP_DEFAULT_STYLE | wx.CP_NO_TLW_RESIZE)
+        if expand:
+            collapsible_pane.Expand()
+        collapsible_pane.Bind(wx.EVT_COLLAPSIBLEPANE_CHANGED,
+                              pane_changed_handler,
+                              collapsible_pane)
+
+        pane = collapsible_pane.GetPane()
+        text_ctrl = self._create_text_ctrl(pane)
+
+        vertical_sizer = wx.BoxSizer(wx.VERTICAL)
+        vertical_sizer.Add(text_ctrl, 1, wx.EXPAND)
+        pane.SetSizer(vertical_sizer)
+        return collapsible_pane, text_ctrl
+
+    def _create_text_ctrl(self, parent):
+        text_ctrl = OutputStyledTextCtrl(parent)
+        text_ctrl.SetScrollWidth(100)
+        self._set_margins(text_ctrl)
+        text_ctrl.SetReadOnly(True)
+        return text_ctrl
+
+    @staticmethod
+    def _create_check_box(parent, id, label, value, tooltip):
+        cb = wx.CheckBox(parent, id, label)
+        cb.SetToolTip(wx.ToolTip(tooltip))
+        cb.SetValue(value)
+        return cb
+
+    @staticmethod
+    def _set_margins(out):
         out.SetMarginLeft(10)
         out.SetMarginWidth(0, 0)
         out.SetMarginWidth(1, 0)
         out.SetMarginWidth(2, 0)
         out.SetMarginWidth(3, 0)
 
-    def _post_result(self, event, *args):
+    def _test_runner_events_handler(self, event, *args):
         """Endpoint of the listener interface
 
         This is called via the listener interface. It has an event such as
@@ -859,36 +928,40 @@ class TestRunnerPlugin(Plugin):
             return
         if event == 'start_test':
             self._handle_start_test(args)
+            return
         if event == 'end_test':
             self._handle_end_test(args)
+            return
         if event == 'report_file':
             self._handle_report_file(args)
+            return
         if event == 'log_file':
             self._handle_log_file(args)
+            return
         if event == 'start_keyword':
             self._handle_start_keyword(args)
+            return
         if event == 'end_keyword':
             self._handle_end_keyword()
+            return
         if event == 'log_message':
             self._handle_log_message(args)
+            return
         if event == 'paused':
-            wx.CallAfter(self._set_paused)
-            self._append_to_message_log('<<  PAUSED  >>')
+            self._handle_paused(args)
+            return
         if event == 'continue':
-            wx.CallAfter(self._set_continue)
-            self._append_to_message_log('<< CONTINUE >>')
+            self._handle_continue(args)
 
     def _handle_start_test(self, args):
         longname = args[1]['longname'].encode('utf-8')
-        self._append_to_message_log(f"Starting test: {longname.decode(encoding['OUTPUT'], 'backslashreplace')}")
-
-    def _append_to_message_log(self, text):
-        if self.show_message_log:
-            self._messages_log_texts.put(text)
+        self._log_message_queue.put(
+            f"Starting test: {longname.decode(encoding['OUTPUT'], 'backslashreplace')}")
 
     def _handle_end_test(self, args):
         longname = args[1]['longname'].encode('utf-8')
-        self._append_to_message_log(f"Ending test: {longname.decode(encoding['OUTPUT'], 'backslashreplace')}\n")
+        self._log_message_queue.put(
+            f"Ending test: {longname.decode(encoding['OUTPUT'], 'backslashreplace')}\n")
         if args[1]['status'] == 'PASS':
             self._progress_bar.add_pass()
         else:
@@ -896,11 +969,11 @@ class TestRunnerPlugin(Plugin):
 
     def _handle_report_file(self, args):
         self._report_file = args[0]
-        wx.CallAfter(self.local_toolbar.EnableTool, ID_SHOW_REPORT, True)
+        wx.CallAfter(self._local_toolbar.EnableTool, ID_SHOW_REPORT, True)
 
     def _handle_log_file(self, args):
         self._log_file = args[0]
-        wx.CallAfter(self.local_toolbar.EnableTool, ID_SHOW_LOG, True)
+        wx.CallAfter(self._local_toolbar.EnableTool, ID_SHOW_LOG, True)
 
     def _handle_start_keyword(self, args):
         self._progress_bar.set_current_keyword(args[0])
@@ -910,38 +983,47 @@ class TestRunnerPlugin(Plugin):
 
     def _handle_log_message(self, args):
         a = args[0]
-        if self.show_message_log and LOG_LEVELS[a['level']] >= \
-                self._min_log_level_number:
+        if LOG_LEVELS[a['level']] >= self._min_log_level_number:
             prefix = '%s : %s : ' % (a['timestamp'], a['level'].rjust(5))
             message = a['message']
             if '\n' in message:
-                message = '\n'+message
-            self._messages_log_texts.put(prefix+message)
+                message = '\n' + message
+            self._log_message_queue.put(prefix + message)
+
+    def _handle_paused(self, args):
+        wx.CallAfter(self._set_paused)
+        self._log_message_queue.put('<<  PAUSED  >>')
+
+    def _handle_continue(self, args):
+        wx.CallAfter(self._set_continue)
+        self._log_message_queue.put('<< CONTINUE >>')
 
     def _set_running(self):
         self._run_action.disable()
         self._stop_action.enable()
-        self._enable_toolbar(False, True)
+        self._enable_runner_toolbar(False, True)
+        self.get_current_profile().disable_toolbar()
         self._running = True
         self._test_runner.test_execution_started()
 
     def _set_paused(self):
         self._run_action.disable()
         self._stop_action.enable()
-        self._enable_toolbar(False, False)
+        self._enable_runner_toolbar(False, False)
 
     def _set_continue(self):
         self._run_action.disable()
         self._stop_action.enable()
-        self._enable_toolbar(False, True)
+        self._enable_runner_toolbar(False, True)
 
     def _set_stopped(self):
         self._run_action.enable()
         self._stop_action.disable()
-        self._enable_toolbar(True, False)
+        self._enable_runner_toolbar(True, False)
+        self.get_current_profile().enable_toolbar()
         self._running = False
 
-    def _enable_toolbar(self, run, paused):
+    def _enable_runner_toolbar(self, run, paused):
         stop = not run
         debug = stop and not paused
         for id, enabled in ((ID_RUN, run),
@@ -951,11 +1033,19 @@ class TestRunnerPlugin(Plugin):
                             (ID_CONTINUE, debug),
                             (ID_STEP_NEXT, debug),
                             (ID_STEP_OVER, debug)):
-            self.runner_toolbar.EnableTool(id, enabled)
+            self._runner_toolbar.EnableTool(id, enabled)
+
+    @staticmethod
+    def _notify_user_no_logs_directory():
+        wx.MessageBox("There isn't logs directory. \n"
+                      "Please, run the tests and try again",
+                      "No logs directory",
+                      wx.ICON_INFORMATION | wx.OK)
 
 
 class ProgressBar(wx.Panel):
     """A progress bar for the test runner plugin"""
+
     def __init__(self, parent):
         wx.Panel.__init__(self, parent, wx.ID_ANY)
         self._sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -1013,9 +1103,9 @@ class ProgressBar(wx.Panel):
 
     def _update_message(self):
         """Update the displayed elapsed time, passed and failed counts"""
-        elapsed = time.time()-self._start_time
+        elapsed = time.time() - self._start_time
         message = "elapsed time: %s     pass: %s     fail: %s" % (
-            secondsToString(elapsed), self._pass, self._fail)
+            self._seconds_to_string(elapsed), self._pass, self._fail)
         message += self._get_current_keyword_text()
         self._label.SetLabel(message)
         if self._fail > 0:
@@ -1032,10 +1122,18 @@ class ProgressBar(wx.Panel):
         return '     current keyword: ' + \
                self._fix_size(' -> '.join(self._current_keywords), 50)
 
-    def _fix_size(self, text, max_length):
+    @staticmethod
+    def _fix_size(text, max_length):
         if len(text) <= max_length:
             return text
-        return '...'+text[3-max_length:]
+        return '...' + text[3 - max_length:]
+
+    # stole this off the internet. Nifty.
+    @staticmethod
+    def _seconds_to_string(t):
+        """Convert a number of seconds to a string of the form HH:MM:SS"""
+        return "%d:%02d:%02d" % \
+               reduce(lambda ll, b: divmod(ll[0], b) + ll[1:], [(t,), 60, 60])
 
 
 class OutputStyledTextCtrl(wx.stc.StyledTextCtrl):
@@ -1043,7 +1141,8 @@ class OutputStyledTextCtrl(wx.stc.StyledTextCtrl):
     def __init__(self, parent):
         wx.stc.StyledTextCtrl.__init__(self, parent, wx.ID_ANY,
                                        style=wx.SUNKEN_BORDER)
-        self.stylizer = OutputStylizer(self, parent.GetParent().GetParent()._app.settings)
+        app_settings = self._get_app_settings(parent)
+        self.stylizer = OutputStylizer(self, app_settings)
         self._max_row_len = 0
 
     def update_scroll_width(self, string):
@@ -1057,6 +1156,15 @@ class OutputStyledTextCtrl(wx.stc.StyledTextCtrl):
                 self.SetScrollWidth(width + 50)
         except UnicodeDecodeError:
             pass
+
+    @staticmethod
+    def _get_app_settings(parent):
+        while True:
+            if not parent:
+                raise ValueError('Value does not contain NoteBook as parent')
+            if isinstance(parent, NoteBook):
+                return parent._app.settings
+            parent = parent.GetParent()
 
 
 class OutputStylizer(object):
@@ -1092,23 +1200,17 @@ class OutputStylizer(object):
         self.editor.StyleSetBackground(wx.stc.STC_STYLE_DEFAULT, background)
         self.editor.Refresh()
 
-    def _get_style_string(self, back, fore, size, face):
+    @staticmethod
+    def _get_style_string(back, fore, size, face):
         return ','.join('%s:%s' % (name, value)
                         for name, value in locals().items() if value)
 
     def _ensure_default_font_is_valid(self):
-        '''Checks if default font is installed'''
+        """Checks if default font is installed"""
         default_font = self.settings.get('font face')
         if default_font not in ReadFonts():
             sys_font = wx.SystemSettings.GetFont(wx.SYS_ANSI_FIXED_FONT)
             self.settings['font face'] = sys_font.GetFaceName()
-
-
-# stole this off the internet. Nifty.
-def secondsToString(t):
-    """Convert a number of seconds to a string of the form HH:MM:SS"""
-    return "%d:%02d:%02d" % \
-        reduce(lambda ll, b: divmod(ll[0], b) + ll[1:], [(t,), 60, 60])
 
 
 Robot = PyEmbeddedImage(
@@ -1127,7 +1229,6 @@ Robot = PyEmbeddedImage(
     "hTiCKMFtpsmoLHl7Ga8fRATHEcRRrCxnGBocIR6L8Qu2hlAKJu0L3QAAAABJRU5ErkJggg==")
 getRobotBitmap = Robot.GetBitmap
 
-
 MenuButton = PyEmbeddedImage(
     "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAKxJ"
     "REFUOI3t0jEKg0AUBNAxhmXX9QD2adLnJt7E2luIeB/PkCoQCG5lK8ifdZtNHyQRLGwy5Yd5"
@@ -1135,7 +1236,6 @@ MenuButton = PyEmbeddedImage(
     "Ppjn+ULyqZSyxhiM44hhGEiyXAOStSG1bVuIyMtaq51zJHltmsZtBgCgruuC5N17f+u6brX8"
     "Fdia43dwPPAGncZYbvceeuMAAAAASUVORK5CYII=")
 getMenuButtonBitmap = MenuButton.GetBitmap
-
 
 ProcessStop = PyEmbeddedImage(
     "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0"
