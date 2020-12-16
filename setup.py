@@ -26,7 +26,7 @@ REQUIREMENTS = ['PyPubSub',
                 'Pygments',
                 'psutil',
                 'Pywin32; sys_platform=="win32"',
-                'wxPython==4.1.1']
+                'wxPython']
 
 PACKAGE_DATA = {
     'robotide.preferences': ['settings.cfg'],
