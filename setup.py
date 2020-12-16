@@ -19,7 +19,6 @@ import sys
 from os.path import abspath, join, dirname
 from setuptools import setup, find_packages
 from setuptools.command.install import install
-from src.robotide.version import VERSION
 
 ROOT_DIR = dirname(abspath(__file__))
 SOURCE_DIR = 'src'
@@ -66,9 +65,14 @@ class CustomInstallCommand(install):
         os.system(command)
 
 
+main_ns = dict()
+version_file = join(ROOT_DIR, SOURCE_DIR, 'robotide', 'version.py')
+with open(version_file) as _:
+    exec(_.read(), main_ns)
+
 setup(
     name='robotframework-ride',
-    version=VERSION,
+    version=main_ns['VERSION'],
     description='RIDE :: Robot Framework Test Data Editor',
     long_description=LONG_DESCRIPTION,
     license='Apache License 2.0',
