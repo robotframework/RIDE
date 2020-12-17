@@ -651,6 +651,22 @@ work.</li>
         cell_editor = self._get_cell_editor()
         cell_editor.Show(True)
 
+    def _open_cell_editor_and_execute_variable_creator(self, list_variable=False,
+                                                       dict_variable=False):
+        self.open_cell_editor()
+        cell_editor = self._get_cell_editor()
+        wx.CallAfter(cell_editor.execute_variable_creator,
+                     list_variable, dict_variable)
+
+    def OnMakeVariable(self, event):
+        self._open_cell_editor_and_execute_variable_creator(list_variable=False)
+
+    def OnMakeListVariable(self, event):
+        self._open_cell_editor_and_execute_variable_creator(list_variable=True)
+
+    def OnMakeDictVariable(self, event):
+        self._open_cell_editor_and_execute_variable_creator(dict_variable=True)
+
     def OnCellRightClick(self, event):
         self._tooltips.hide()
         self._popup_menu_shown = True
@@ -858,6 +874,10 @@ class ContentAssistCellEditor(GridCellEditor):
     def update_from_suggestion_list(self):
         if self._tc and self._tc.is_shown():
             self._tc.fill_suggestion()
+
+    def execute_variable_creator(self, list_variable=False,
+                                 dict_variable=False):
+        self._tc.execute_variable_creator(list_variable, dict_variable)
 
     def Create(self, parent, id, evtHandler):
         self._parent = parent
