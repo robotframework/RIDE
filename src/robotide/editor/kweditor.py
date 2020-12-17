@@ -903,10 +903,12 @@ class ContentAssistCellEditor(GridCellEditor):
         self._tc.SetFocus()
         self._grid = grid
 
-    def EndEdit(self, row, col, grid, *ignored):
+    def EndEdit(self, row, col, grid, old_val):
+        new_val = self._tc.GetValue()
         self._tc.dismiss()
         self._parent.SetFocus()
-        return self._tc.GetValue()
+        if new_val != old_val:
+            return self._tc.GetValue()
 
     def ApplyEdit(self, row, col, grid):
         val = self._tc.GetValue()
