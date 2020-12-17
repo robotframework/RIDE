@@ -914,7 +914,6 @@ class ContentAssistCellEditor(GridCellEditor):
         val = self._tc.GetValue()
         grid.GetTable().SetValue(row, col, val)  # update the table
         self._original_value = ''
-        self._tc.SetValue('')
         self._grid.cell_value_edited(row, col, val)
 
     def _get_value(self):
