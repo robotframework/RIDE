@@ -510,10 +510,6 @@ class KeywordEditor(GridEditor):
             cell_editor.EndEdit(self.selection.topleft.row,
                                 self.selection.topleft.col, self)
 
-    def show_content_assist(self):
-        if self.IsCellEditControlShown():
-            self.GetCellEditor(*self.selection.cell).show_content_assist(self.selection.cell)
-
     def refresh_datafile(self, item, event):
         self._tree.refresh_datafile(item, event)
 
@@ -542,10 +538,7 @@ class KeywordEditor(GridEditor):
                 elif keycode == ord('D'):
                     self.OnDeleteCells()
             else:
-                if keycode == wx.WXK_SPACE:
-                    self._open_cell_editor_with_content_assist()
-                    return  # event must not be skipped in this case
-                elif keycode == ord('C'):
+                if keycode == ord('C'):
                     self.OnCopy(event)
                 elif keycode == ord('X'):
                     self.OnCut(event)
@@ -561,17 +554,11 @@ class KeywordEditor(GridEditor):
                 elif keycode == ord('F'):
                     if not self.has_focus():
                         self.SetFocus()  # Avoiding Search field on Text Edit
-                elif keycode in (ord('1'), ord('2'), ord('5')):
-                    self._open_cell_editor_and_execute_variable_creator(
-                        list_variable=(keycode == ord('2')),
-                        dict_variable=(keycode == ord('5')))
                 else:
                     self.show_cell_information()
         elif event.AltDown():
             # Mac Option key(⌥)
-            if keycode == wx.WXK_SPACE:
-                self._open_cell_editor_with_content_assist()
-            elif keycode in [wx.WXK_DOWN, wx.WXK_UP]:
+            if keycode in [wx.WXK_DOWN, wx.WXK_UP]:
                 self._move_rows(keycode)
             elif keycode == wx.WXK_RETURN:
                 if self.IsCellEditControlShown():
@@ -586,7 +573,7 @@ class KeywordEditor(GridEditor):
                 self._move_grid_cursor(event, keycode)
             elif keycode == wx.WXK_RETURN:
                 if self.IsCellEditControlShown():
-                    self._open_cell_editor().set_content_assist_value()
+                    self._get_cell_editor().update_from_suggestion_list()
                     self._move_grid_cursor(event, keycode)
                 else:
                     self._open_cell_editor()
@@ -661,31 +648,15 @@ work.</li>
         self._tooltips.hide()
         self._hide_link_if_necessary()
 
+    def _get_cell_editor(self):
+        row = self.GetGridCursorRow()
+        return self.GetCellEditor(self.GetGridCursorCol(), row)
+
     def _open_cell_editor(self):
         if not self.IsCellEditControlEnabled():
             self.EnableCellEditControl()
-        row = self.GetGridCursorRow()
-        celleditor = self.GetCellEditor(self.GetGridCursorCol(), row)
-        celleditor.Show(True)
-        return celleditor
-
-    def _open_cell_editor_with_content_assist(self):
-        wx.CallAfter(self._open_cell_editor().show_content_assist)
-
-    def _open_cell_editor_and_execute_variable_creator(
-            self, list_variable=False, dict_variable=False):
-        wx.CallAfter(self._open_cell_editor().execute_variable_creator,
-                     list_variable, dict_variable)
-
-    def OnMakeVariable(self, event):
-        self._open_cell_editor_and_execute_variable_creator(
-            list_variable=False)
-
-    def OnMakeListVariable(self, event):
-        self._open_cell_editor_and_execute_variable_creator(list_variable=True)
-
-    def OnMakeDictVariable(self, event):
-        self._open_cell_editor_and_execute_variable_creator(dict_variable=True)
+        cell_editor = self._get_cell_editor()
+        cell_editor.Show(True)
 
     def OnCellRightClick(self, event):
         self._tooltips.hide()
@@ -888,23 +859,11 @@ class ContentAssistCellEditor(GridCellEditor):
         self._controller = controller
         self._grid = None
         self._original_value = None
-        self._value = None
         self._tc = None
 
-    def show_content_assist(self, args=None):
-        if self._tc:
-            self._tc.show_content_assist()
-
-    def set_content_assist_value(self):
-        if self._tc:
-            self._tc.fill_suggestion(set_value=True)
-
-    def execute_variable_creator(self, list_variable=False,
-                                 dict_variable=False):
-        self._tc.execute_variable_creator(list_variable, dict_variable)
-
-    def execute_enclose_text(self, keycode):
-        self._tc.execute_enclose_text(keycode)
+    def update_from_suggestion_list(self, suggestion_first=True):
+        if self._tc and self._tc.is_shown():
+            self._tc.fill_suggestion(suggestion_first)
 
     def Create(self, parent, id, evtHandler):
         self._tc = ExpandingContentAssistTextCtrl(
@@ -930,20 +889,18 @@ class ContentAssistCellEditor(GridCellEditor):
         self._grid = grid
 
     def EndEdit(self, row, col, grid, *ignored):
-        print(f'EndEdit {grid.FindFocus()}')
-        self._value = self._get_value()
-        # self._tc.hide()
-        grid.SetFocus()
-        if self._value != self._original_value:
-            return self._value
+        print('EndEdit')
+        # grid.SetFocus()
+        # wx.CallAfter(self.update_from_suggestion_list, suggestion_first=False)
+        return self._tc.GetValue()
 
     def ApplyEdit(self, row, col, grid):
-        print(f'ApplyEdit {grid.FindFocus()}')
+        print('ApplyEdit')
         val = self._tc.GetValue()
         grid.GetTable().SetValue(row, col, val)  # update the table
         self._original_value = ''
         self._tc.SetValue('')
-        self._grid.cell_value_edited(row, col, self._value)
+        self._grid.cell_value_edited(row, col, val)
 
     def _get_value(self):
         suggestion = self._tc.content_assist_value()

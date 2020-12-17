@@ -48,6 +48,13 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
             self.OSXDisableAllSmartSubstitutions()
         self._is_auto_suggestion_disabled = self._get_auto_suggestion_config()
         PUBLISHER.subscribe(self.OnSettingsChanged, RideSettingsChanged)
+        self.Bind(wx.EVT_SET_FOCUS, self.OnFocusLost)
+        # self.Bind(wx.EVT_MOVE, self.OnFocusLost)
+
+    def OnFocusLost(self, event):
+        event.Skip()
+        print('OnFocusLost')
+        # self.parent.hide()
 
     @staticmethod
     def _get_auto_suggestion_config():
@@ -65,6 +72,9 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
     def set_row(self, row):
         self._row = row
 
+    def is_shown(self):
+        return self._popup.is_shown()
+
     def OnKeyDown(self, event):
         # TODO: This might benefit from some cleanup
         keycode, control_down, alt_down = event.GetKeyCode(), event.CmdDown(), event.AltDown()
@@ -72,19 +82,22 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
         if (control_down or alt_down) and keycode in [wx.WXK_SPACE, ord('m')]:
             self.show_content_assist()
         elif keycode == wx.WXK_RETURN:
+            # not working here
             self.fill_suggestion(set_value=True)
         elif keycode == wx.WXK_TAB:
+            # not working here
             self.fill_suggestion(set_value=False)
-        elif keycode == wx.WXK_ESCAPE and self._popup.is_shown():
+        elif keycode == wx.WXK_ESCAPE and self.is_shown():
+            # not working here
             self._popup.hide()
         elif keycode in [wx.WXK_UP, wx.WXK_DOWN, wx.WXK_PAGEUP, wx.WXK_PAGEDOWN] \
-                and self._popup.is_shown():
+                and self.is_shown():
             self._popup.select_and_scroll(keycode)
         elif keycode in (ord('1'), ord('2'), ord('5')) and control_down and not \
                 alt_down:
             self.execute_variable_creator(list_variable=(keycode == ord('2')),
                                           dict_variable=(keycode == ord('5')))
-        elif self._popup.is_shown() and keycode < 256:
+        elif self.is_shown() and keycode < 256:
             wx.CallAfter(self._populate_content_assist)
             event.Skip()
         else:
@@ -150,6 +163,7 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
         return value[:from_] + open_symbol + value[from_:to_] + close_symbol + value[to_:]
 
     def fill_suggestion(self, set_value=False):
+        print('fill_suggestion')
         if self.gherkin_prefix:
             value = self.gherkin_prefix + self._popup.get_value() or self.GetValue()
         else:
@@ -160,6 +174,7 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
             value = self.GetValue()
 
         if value:
+            self.GetParent().GetParent()._open_cell_editor()
             self.SetValue(value)
             self.SetInsertionPoint(len(value))
 
@@ -384,7 +399,6 @@ class ContentAssistPopup(object):
                                          self._move_y_where_room(ycoord,
                                                                  cell_height)))
         self._main_popup.Show()
-        self._list.SetFocus()
 
     def _move_x_where_room(self, start_x):
         width = _PREFERRED_POPUP_SIZE[0]
@@ -443,9 +457,11 @@ class ContentAssistPopup(object):
         self._details_popup.Show(False)
 
     def OnListItemActivated(self, event):
+        print(f'OnListItemActivated, {self._list.HasFocus()}')
         self._parent.fill_suggestion(set_value=True)
 
     def OnListItemSelected(self, event):
+        print(f'OnListItemSelected, {self._list.HasFocus()}')
         self._selection = event.GetIndex()
         item = self._suggestions.get_item(event.GetText())
         if item.details:
@@ -466,14 +482,7 @@ class ContentAssistList(wx.ListCtrl):
         self.SetSize(parent.GetSize())
         self.SetBackgroundColour(context.POPUP_BACKGROUND)
         self.Bind(wx.EVT_LIST_ITEM_SELECTED, selection_callback)
-        self.Bind(wx.EVT_LIST_ITEM_FOCUSED, self.activate)
-        self.Bind(wx.EVT_LEFT_DCLICK, activation_callback)
-
-    def activate(self, event):
-        import time
-        wx.CallAfter(self.parent.GetParent().GetParent().SetFocus)
-        wx.CallAfter(self.parent.GetParent().GetParent().GetParent()._open_cell_editor)
-        print(f'{time.time()} activate')
+        self.Bind(wx.EVT_LIST_ITEM_ACTIVATED, activation_callback)
 
     def populate(self, data):
         self.ClearAll()
