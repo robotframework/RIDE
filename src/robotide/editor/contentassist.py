@@ -39,7 +39,6 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
         self.Bind(wx.EVT_KEY_DOWN, self.OnKeyDown)
         self.Bind(wx.EVT_CHAR, self.OnChar)
         self.Bind(wx.EVT_WINDOW_DESTROY, self.pop_event_handlers)
-        self._showing_content_assist = False
         self._row = None
         self.gherkin_prefix = ''
         # Store gherkin prefix from input to add \
@@ -48,11 +47,6 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
             self.OSXDisableAllSmartSubstitutions()
         self._is_auto_suggestion_disabled = self._get_auto_suggestion_config()
         PUBLISHER.subscribe(self.OnSettingsChanged, RideSettingsChanged)
-        self.Bind(wx.EVT_MOVE, self.OnMove)
-
-    def OnMove(self, event):
-        event.Skip()
-        print('OnMove')
 
     @staticmethod
     def _get_auto_suggestion_config():
@@ -74,48 +68,53 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
         return self._popup.is_shown()
 
     def OnKeyDown(self, event):
-        keycode, control_down, alt_down = event.GetKeyCode(), event.CmdDown(), event.AltDown()
-        print(keycode)
+        key_code, control_down, alt_down = event.GetKeyCode(), event.CmdDown(), event.AltDown()
         # Ctrl-Space handling needed for dialogs # DEBUG add Ctrl-m
-        if (control_down or alt_down) and keycode in [wx.WXK_SPACE, ord('m')]:
+        if (control_down or alt_down) and key_code in [wx.WXK_SPACE, ord('m')]:
             self.show_content_assist()
+        elif key_code == wx.WXK_BACK:
+            event.Skip()
+            wx.CallAfter(self._show_auto_suggestions_when_enabled)
+
+        # Can not catch the following keyEvent from grid cell
+        elif key_code == wx.WXK_RETURN:
+            # fill suggestion in dialogs when pressing enter
+            self.fill_suggestion()
+            event.Skip()
 
         # Can not catch the following keyEvent at all
-        # elif keycode == wx.WXK_RETURN:
+        # elif key_code == wx.WXK_TAB:
         #     self.fill_suggestion()
-        # elif keycode == wx.WXK_TAB:
-        #     self.fill_suggestion()
-        # elif keycode == wx.WXK_ESCAPE and self.is_shown():
+        # elif key_code == wx.WXK_ESCAPE and self.is_shown():
         #     self._popup.hide()
 
-        elif keycode in [wx.WXK_UP, wx.WXK_DOWN, wx.WXK_PAGEUP, wx.WXK_PAGEDOWN] \
+        elif key_code in [wx.WXK_UP, wx.WXK_DOWN, wx.WXK_PAGEUP, wx.WXK_PAGEDOWN] \
                 and self.is_shown():
-            self._popup.select_and_scroll(keycode)
-        elif keycode in (ord('1'), ord('2'), ord('5')) and control_down and not \
+            self._popup.select_and_scroll(key_code)
+        elif key_code in (ord('1'), ord('2'), ord('5')) and control_down and not \
                 alt_down:
-            self.execute_variable_creator(list_variable=(keycode == ord('2')),
-                                          dict_variable=(keycode == ord('5')))
-        elif self.is_shown() and keycode < 256:
-            wx.CallAfter(self._populate_content_assist)
-            event.Skip()
+            self.execute_variable_creator(list_variable=(key_code == ord('2')),
+                                          dict_variable=(key_code == ord('5')))
         else:
             event.Skip()
 
+    def _show_auto_suggestions_when_enabled(self):
+        if not self._is_auto_suggestion_disabled or self.is_shown():
+            self.show_content_assist()
+
     def OnChar(self, event):
-        keychar = event.GetUnicodeKey()
-        # show content assist without shortcut
-        if keychar != wx.WXK_RETURN:
-            if not self._is_auto_suggestion_disabled:
-                self.show_content_assist()
-        if keychar == wx.WXK_NONE:
+        key_char = event.GetUnicodeKey()
+        if key_char != wx.WXK_RETURN:
+            self._show_auto_suggestions_when_enabled()
+        if key_char == wx.WXK_NONE:
             event.Skip()
             return
-        if keychar in [ord('['), ord('{'), ord('('), ord("'"), ord('\"'), ord('`')]:
+        if key_char in [ord('['), ord('{'), ord('('), ord("'"), ord('\"'), ord('`')]:
             # TODO fix recursion error in Linux
             if platform.lower().startswith('linux'):
                 event.Skip()
             else:
-                self.execute_enclose_text(chr(keychar))
+                self.execute_enclose_text(chr(key_char))
         else:
             event.Skip()
 
@@ -185,16 +184,10 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
 
     def reset(self):
         self._popup.reset()
-        self._showing_content_assist = False
 
     def show_content_assist(self):
-        if self._showing_content_assist:
-            return
-        self._showing_content_assist = True
         if self._populate_content_assist():
             self._show_content_assist()
-        else:
-            self._showing_content_assist = False
 
     def _populate_content_assist(self):
         value = self.GetValue()
@@ -223,13 +216,11 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
         if not self.is_shown():
             return
         self._popup.hide()
-        self._showing_content_assist = False
 
     def dismiss(self):
         if not self.is_shown():
             return
-        if self._popup.dismiss():
-            self._showing_content_assist = False
+        self._popup.dismiss()
 
 
 class ExpandingContentAssistTextCtrl(_ContentAssistTextCtrlBase, ExpandoTextCtrl):
@@ -323,7 +314,7 @@ class Suggestions(object):
         for k, v in self._previous_choices:
             if k == name:
                 return v
-        raise Exception('Item not in choices "%s"' % (name))
+        raise Exception('Item not in choices "%s"' % name)
 
     def _get_choices(self, value, row):
         if self._previous_value and value.startswith(self._previous_value):
@@ -460,9 +451,6 @@ class ContentAssistPopup(object):
     def dismiss(self):
         if not self._list.HasFocus():
             self.hide()
-            return True
-        else:
-            return False
 
     def hide(self):
         self._selection = -1

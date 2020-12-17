@@ -573,6 +573,7 @@ class KeywordEditor(GridEditor):
                 self._move_grid_cursor(event, keycode)
             elif keycode == wx.WXK_RETURN:
                 if self.IsCellEditControlShown():
+                    # fill auto suggestion into cell when pressing enter
                     self._get_cell_editor().update_from_suggestion_list()
                     self._move_grid_cursor(event, keycode)
                 else:
