@@ -37,6 +37,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Changed
 
+- Keywords auto-suggestion in grid editor does not need shortcut anymore, if you want to disable this feature you can config in `Preferences -> Grid Editor -> Only trigger auto suggestions from shortcuts`
 - The Arguments, Tests filters (include/exclude), Console and Message logs are now in Expandable/Collapsable groups
 - Modified robot passed and failed icons to be easier to differentiate
 - When searching in Text Editor by using Ctrl-G the search is done from the begining of text
@@ -48,6 +49,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Fixed
 
+- Fixed RIDE will crash when using third party input method in Mac OS
 - Fixed sys.stderr is None errors if RIDE is launched by pythonw.exe
 - Fixed RIDE cannot close properly when Screenshot library is loaded
 - Fixed incorrect title in manage plugin settings
