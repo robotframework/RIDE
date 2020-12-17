@@ -187,8 +187,6 @@ class KeywordEditor(GridEditor):
         self.Bind(grid.EVT_GRID_LABEL_RIGHT_CLICK, self.OnLabelRightClick)
         self.Bind(grid.EVT_GRID_LABEL_LEFT_CLICK, self.OnLabelLeftClick)
         self.Bind(wx.EVT_KILL_FOCUS, self.OnKillFocus)
-        if IS_MAC:
-            self.GetGridWindow().Bind(wx.EVT_MOTION, self.OnMotion)
 
     def get_tooltip_content(self):
         if self.IsCellEditControlShown() or self._popup_menu_shown:
@@ -358,12 +356,6 @@ class KeywordEditor(GridEditor):
         self.ClearSelection()
         for r in rows:
             self.SelectRow(r, True)
-
-    def OnMotion(self, event):
-        """ workaround for assistant popup will disappear when using mouse in MacOS """
-        if self.IsCellEditControlShown():
-            return
-        event.Skip()
 
     def _before_saving(self, message):
         if self.IsCellEditControlShown():
