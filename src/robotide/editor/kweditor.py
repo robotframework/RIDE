@@ -576,10 +576,10 @@ class KeywordEditor(GridEditor):
                     self._get_cell_editor().update_from_suggestion_list()
                     self._move_grid_cursor(event, keycode)
                 else:
-                    self._open_cell_editor()
+                    self.open_cell_editor()
                 return  # event must not be skipped in this case
             elif keycode == wx.WXK_F2:
-                self._open_cell_editor()
+                self.open_cell_editor()
         event.Skip()
 
     def OnGoToDefinition(self, event):
@@ -652,7 +652,7 @@ work.</li>
         row = self.GetGridCursorRow()
         return self.GetCellEditor(self.GetGridCursorCol(), row)
 
-    def _open_cell_editor(self):
+    def open_cell_editor(self):
         if not self.IsCellEditControlEnabled():
             self.EnableCellEditControl()
         cell_editor = self._get_cell_editor()
@@ -858,16 +858,18 @@ class ContentAssistCellEditor(GridCellEditor):
         self._plugin = plugin
         self._controller = controller
         self._grid = None
+        self._parent = None
         self._original_value = None
         self._tc = None
 
-    def update_from_suggestion_list(self, suggestion_first=True):
+    def update_from_suggestion_list(self):
         if self._tc and self._tc.is_shown():
-            self._tc.fill_suggestion(suggestion_first)
+            self._tc.fill_suggestion()
 
     def Create(self, parent, id, evtHandler):
+        self._parent = parent
         self._tc = ExpandingContentAssistTextCtrl(
-            parent, self._plugin, self._controller)
+            self._parent, self._plugin, self._controller)
         self.SetControl(self._tc)
         if evtHandler:
             self._tc.PushEventHandler(evtHandler)
@@ -889,13 +891,11 @@ class ContentAssistCellEditor(GridCellEditor):
         self._grid = grid
 
     def EndEdit(self, row, col, grid, *ignored):
-        print('EndEdit')
-        # grid.SetFocus()
-        # wx.CallAfter(self.update_from_suggestion_list, suggestion_first=False)
+        self._tc.dismiss()
+        self._parent.SetFocus()
         return self._tc.GetValue()
 
     def ApplyEdit(self, row, col, grid):
-        print('ApplyEdit')
         val = self._tc.GetValue()
         grid.GetTable().SetValue(row, col, val)  # update the table
         self._original_value = ''

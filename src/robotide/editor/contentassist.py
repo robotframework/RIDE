@@ -48,13 +48,11 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
             self.OSXDisableAllSmartSubstitutions()
         self._is_auto_suggestion_disabled = self._get_auto_suggestion_config()
         PUBLISHER.subscribe(self.OnSettingsChanged, RideSettingsChanged)
-        self.Bind(wx.EVT_SET_FOCUS, self.OnFocusLost)
-        # self.Bind(wx.EVT_MOVE, self.OnFocusLost)
+        self.Bind(wx.EVT_MOVE, self.OnMove)
 
-    def OnFocusLost(self, event):
+    def OnMove(self, event):
         event.Skip()
-        print('OnFocusLost')
-        # self.parent.hide()
+        print('OnMove')
 
     @staticmethod
     def _get_auto_suggestion_config():
@@ -76,20 +74,20 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
         return self._popup.is_shown()
 
     def OnKeyDown(self, event):
-        # TODO: This might benefit from some cleanup
         keycode, control_down, alt_down = event.GetKeyCode(), event.CmdDown(), event.AltDown()
+        print(keycode)
         # Ctrl-Space handling needed for dialogs # DEBUG add Ctrl-m
         if (control_down or alt_down) and keycode in [wx.WXK_SPACE, ord('m')]:
             self.show_content_assist()
-        elif keycode == wx.WXK_RETURN:
-            # not working here
-            self.fill_suggestion(set_value=True)
-        elif keycode == wx.WXK_TAB:
-            # not working here
-            self.fill_suggestion(set_value=False)
-        elif keycode == wx.WXK_ESCAPE and self.is_shown():
-            # not working here
-            self._popup.hide()
+
+        # Can not catch the following keyEvent at all
+        # elif keycode == wx.WXK_RETURN:
+        #     self.fill_suggestion()
+        # elif keycode == wx.WXK_TAB:
+        #     self.fill_suggestion()
+        # elif keycode == wx.WXK_ESCAPE and self.is_shown():
+        #     self._popup.hide()
+
         elif keycode in [wx.WXK_UP, wx.WXK_DOWN, wx.WXK_PAGEUP, wx.WXK_PAGEDOWN] \
                 and self.is_shown():
             self._popup.select_and_scroll(keycode)
@@ -162,19 +160,17 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
             close_symbol = open_symbol
         return value[:from_] + open_symbol + value[from_:to_] + close_symbol + value[to_:]
 
-    def fill_suggestion(self, set_value=False):
-        print('fill_suggestion')
+    def fill_suggestion(self):
         if self.gherkin_prefix:
             value = self.gherkin_prefix + self._popup.get_value() or self.GetValue()
         else:
             value = self._popup.get_value() or self.GetValue()
 
-        if not set_value:
-            # dismiss suggestions, apply user input directly
-            value = self.GetValue()
-
         if value:
-            self.GetParent().GetParent()._open_cell_editor()
+            wrapper_view = self.GetParent().GetParent()
+            if hasattr(wrapper_view, 'open_cell_editor'):
+                # in grid cell, need to make sure cell editor is open
+                wrapper_view.open_cell_editor()
             self.SetValue(value)
             self.SetInsertionPoint(len(value))
 
@@ -197,6 +193,8 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
         self._showing_content_assist = True
         if self._populate_content_assist():
             self._show_content_assist()
+        else:
+            self._showing_content_assist = False
 
     def _populate_content_assist(self):
         value = self.GetValue()
@@ -222,8 +220,16 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
             return self.gherkin_prefix + suggestion
 
     def hide(self):
+        if not self.is_shown():
+            return
         self._popup.hide()
         self._showing_content_assist = False
+
+    def dismiss(self):
+        if not self.is_shown():
+            return
+        if self._popup.dismiss():
+            self._showing_content_assist = False
 
 
 class ExpandingContentAssistTextCtrl(_ContentAssistTextCtrlBase, ExpandoTextCtrl):
@@ -451,17 +457,22 @@ class ContentAssistPopup(object):
         if value:
             self._parent.SetValue(value)
 
+    def dismiss(self):
+        if not self._list.HasFocus():
+            self.hide()
+            return True
+        else:
+            return False
+
     def hide(self):
         self._selection = -1
         self._main_popup.Show(False)
         self._details_popup.Show(False)
 
     def OnListItemActivated(self, event):
-        print(f'OnListItemActivated, {self._list.HasFocus()}')
-        self._parent.fill_suggestion(set_value=True)
+        self._parent.fill_suggestion()
 
     def OnListItemSelected(self, event):
-        print(f'OnListItemSelected, {self._list.HasFocus()}')
         self._selection = event.GetIndex()
         item = self._suggestions.get_item(event.GetText())
         if item.details:
