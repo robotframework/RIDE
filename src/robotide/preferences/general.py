@@ -25,6 +25,7 @@ ID_APPLY_TO_PANEL = wx.NewId()
 ID_RESET = wx.NewId()
 ID_SAVELOADSETTINGS = wx.NewId()
 
+
 @lru_cache(maxsize=2)
 def read_fonts(fixed=False):
     """Returns list with fixed width fonts"""
@@ -52,7 +53,7 @@ class GeneralPreferences(PreferencesPanel):
         font_editor = self._create_font_editor()
         colors_sizer = self.create_colors_sizer()
         main_sizer = wx.FlexGridSizer(rows=5, cols=1, vgap=10, hgap=10)
-        buttons_sizer =sizer = wx.BoxSizer(orient=wx.HORIZONTAL)
+        buttons_sizer = wx.BoxSizer(orient=wx.HORIZONTAL)
         reset = wx.Button(self, ID_RESET, 'Reset colors to default')
         saveloadsettings = wx.Button(self, ID_SAVELOADSETTINGS, 'Save or Load settings')
         self.cb_apply_to_panels = wx.CheckBox(self, ID_APPLY_TO_PANEL, label="Apply to Project and File Explorer panels")
@@ -89,7 +90,37 @@ class GeneralPreferences(PreferencesPanel):
             return
         save_settings_dialog = SaveLoadSettings(self, section=self.__class__.__name__)
         save_settings_dialog.CenterOnParent()
-        save_settings_dialog.Show()
+        value = save_settings_dialog.ShowModal()
+        print(f"DEBUG: Value returned by SaveLoadSettings: {value}")
+        if value == -1:
+            self._reload_settings()
+        print(f"DEBUG: OnSaveLoadSettings: Trying to close parent ")
+        self.GetParent().Close()
+
+    def _reload_settings(self):
+        import os
+        from ..context import SETTINGS_DIRECTORY
+        self._default_path = os.path.join(SETTINGS_DIRECTORY, 'settings.cfg')
+        settings = [s.strip() for s in open(self._default_path, 'r').readlines()]
+        name = '[General]'
+        start_index = settings.index(name) + 1
+        defaults = {}
+        for line in settings[start_index:]:
+            if line.startswith('['):
+                break
+            if not line:
+                continue
+            key, value = [s.strip().strip('\'') for s in line.split("=")]
+            print(f"DEBUG: Preferences General default value type {type(value)} {value}")
+            if len(value) > 0 and value[0] == '(' and value[-1] == ')':
+                from ast import literal_eval as make_tuple
+                value = make_tuple(value)
+            defaults[key] = value
+        self._settings = defaults
+
+        for picker in self._color_pickers:
+            picker.SetColour(defaults[picker.key])
+        self.Refresh(True)
 
     def _read_defaults(self, plugin=False):
         settings = [s.strip() for s in open(self._get_path(), 'r').readlines()]

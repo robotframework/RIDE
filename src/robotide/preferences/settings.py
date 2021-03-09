@@ -405,8 +405,11 @@ class Settings(_Section):
 
 class RideSettings(Settings):
 
-    def __init__(self):
-        self._default_path = os.path.join(os.path.dirname(__file__), 'settings.cfg')
+    def __init__(self, path=None):
+        if path:
+            self._default_path = path
+        else:
+            self._default_path = os.path.join(os.path.dirname(__file__), 'settings.cfg')
         # print("DEBUG: RideSettings, default_path %s\n" % self._default_path)
         user_path = initialize_settings(self._default_path)
         Settings.__init__(self, user_path)
