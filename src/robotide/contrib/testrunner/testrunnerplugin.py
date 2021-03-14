@@ -454,7 +454,7 @@ class TestRunnerPlugin(Plugin, RIDEDialog):
         return False
 
     @staticmethod
-    def _ask_user_to_save_before_running(self):
+    def _ask_user_to_save_before_running():
         ret = wx.MessageBox("""There are unsaved modifications.
         Do you want to save all changes and run the tests?""",
                             "Unsaved Modifications",
