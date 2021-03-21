@@ -459,6 +459,8 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
         return data.source and os.path.isdir(data.source) and self._namespace
 
     def _add_directory_children(self, children, path, initfile):
+        if not children:
+            return
         for filename in self._get_unknown_files_in_directory(children, path, initfile):
             if not self._is_robot_ignored_name(filename):
                 self._add_directory_child(children, filename)
