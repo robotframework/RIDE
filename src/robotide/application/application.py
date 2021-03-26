@@ -181,7 +181,9 @@ class RIDE(wx.App):
         widget.Thaw()
 
     def SetGlobalColour(self, message):
-        if message.keys[0] != "General": return
+        if message.keys[0] != "General":
+            return
+        # print(f"DEBUG Application General : Enter SetGlobalColour message= {message.keys[0]}")
         app = wx.App.Get()
         _root = app.GetTopWindow()
         theme = self.settings.get('General', None)
@@ -192,6 +194,7 @@ class RIDE(wx.App):
         font.SetPointSize(font_size)
         _root.SetFont(font)
         self._WalkWidgets(_root, theme=theme)
+        # print(f"DEBUG Application General : SetGlobalColour AppliedWidgets check Filexplorer and Tree")
         if theme['apply to panels'] and self.fileexplorerplugin.settings['_enabled']:
             self.fileexplorerplugin.settings['background'] = theme['background']
             self.fileexplorerplugin.settings['foreground'] = theme['foreground']

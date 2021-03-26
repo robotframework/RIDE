@@ -88,14 +88,15 @@ class GeneralPreferences(PreferencesPanel):
         if event.GetId() != ID_SAVELOADSETTINGS:
             event.Skip()
             return
-        save_settings_dialog = SaveLoadSettings(self, section=self.__class__.__name__)
+        save_settings_dialog = SaveLoadSettings(self, self._settings)  # DEBUG self.__class__.__name__
         save_settings_dialog.CenterOnParent()
         value = save_settings_dialog.ShowModal()
-        print(f"DEBUG: Value returned by SaveLoadSettings: {value}")
-        if value == -1:
-            self._reload_settings()
-        print(f"DEBUG: OnSaveLoadSettings: Trying to close parent ")
-        self.GetParent().Close()
+        # print(f"DEBUG: Value returned by SaveLoadSettings: {value}")
+        # print(f"DEBUG: OnSaveLoadSettings: Trying to close parent ")
+        # Does not look nice but closes Preferences window, so it comes recolored on next call
+        # Only working on first use :(
+        # TODO: Only close window when Loading, not when Saving
+        wx.FindWindowByName("RIDE - Preferences").Close(force=True)
 
     def _reload_settings(self):
         import os
@@ -210,3 +211,4 @@ class DefaultPreferences(GeneralPreferences):
         defaults = self._read_defaults()
         for picker in self._color_pickers:
             picker.SetColour(defaults[picker.key])
+        wx.FindWindowByName("RIDE - Preferences").Close(force=True)

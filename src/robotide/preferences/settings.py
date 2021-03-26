@@ -49,6 +49,7 @@ def _copy_or_migrate_user_settings(settings_dir, source_path, dest_file_name):
     else:
         try:
             SettingsMigrator(source_path, settings_path).migrate()
+            # print(f"DEBUG: settings After migration {source_path} with {settings_path}")
         except ConfigObjError as parsing_error:
             print("WARNING! corrupted configuration file replaced with defaults")
             print(parsing_error)
