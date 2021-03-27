@@ -467,7 +467,11 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
 
     def _is_robot_ignored_name(self, filename):
         base = os.path.basename(filename)
-        return any(base.startswith(c) for c in '_.')
+        robotformat = (".txt", ".robot", ".resource", ".rst", " .rest", ".tsv", ".htm", ".html")
+        nonrobot_file = os.path.isfile(filename) and not base.endswith(robotformat)
+        hidden = base.startswith('.')
+        private = base.startswith('_')
+        return hidden or private or nonrobot_file
 
     def _add_directory_child(self, children, filename):
         if os.path.isdir(filename):
