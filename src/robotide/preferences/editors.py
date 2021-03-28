@@ -23,6 +23,7 @@ from wx.lib.masked import NumCtrl
 from ..ui.preferences_dialogs import (PreferencesPanel, SpinChoiceEditor, IntegerChoiceEditor, boolean_editor,
                                       StringChoiceEditor, PreferencesColorPicker)
 from ..widgets import Label
+from .managesettingsdialog import SaveLoadSettings
 
 try:  # import installed version first
     import robotframeworklexer
@@ -31,6 +32,11 @@ except ImportError:
         from . import robotframeworklexer
     except ImportError:  # Pygments is not installed
         robotframeworklexer = None
+
+ID_SAVELOADSETTINGS = wx.NewId()
+ID_LOAD = 5551
+ID_SAVE = 5552
+ID_CANCEL = -1
 
 from functools import lru_cache
 
@@ -59,13 +65,22 @@ class EditorPreferences(PreferencesPanel):
 
         font_editor = self._create_font_editor()
         colors_sizer = self.create_colors_sizer()
-        main_sizer = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
+        main_sizer = wx.FlexGridSizer(rows=6, cols=1, vgap=10, hgap=10)
+        buttons_sizer = wx.BoxSizer(orient=wx.HORIZONTAL)
         reset = wx.Button(self, wx.ID_ANY, 'Reset colors to default')
+        saveloadsettings = wx.Button(self, ID_SAVELOADSETTINGS, 'Save or Load settings')
         main_sizer.Add(font_editor)
         main_sizer.Add(colors_sizer)
-        main_sizer.Add(reset)
+        buttons_sizer.Add(reset)
+        buttons_sizer.AddSpacer(10)
+        buttons_sizer.Add(saveloadsettings)
+        main_sizer.Add(buttons_sizer)
         self.SetSizer(main_sizer)
         self.Bind(wx.EVT_BUTTON, self.OnReset)
+        self.Bind(wx.EVT_BUTTON, self.OnSaveLoadSettings)
+
+    def OnSaveLoadSettings(self, event):
+        raise NotImplementedError('Implement me')
 
     def OnReset(self, event):
         defaults = self._read_defaults()
@@ -162,6 +177,17 @@ class TextEditorPreferences(EditorPreferences):
                           flag=wx.ALIGN_CENTER_VERTICAL | wx.LEFT, border=8)
             column += 1
         return container
+
+    def OnSaveLoadSettings(self, event):
+        if event.GetId() != ID_SAVELOADSETTINGS:
+            event.Skip()
+            return
+        save_settings_dialog = SaveLoadSettings(self, self._settings)
+        save_settings_dialog.CenterOnParent()
+        value = save_settings_dialog.ShowModal()
+        # print(f"DEBUG: Value returned by SaveLoadSettings: {value}")
+        for picker in self._color_pickers:
+            picker.SetColour(self._settings[picker.key])
 
     def OnReset(self, event):
         defaults = self._read_defaults()
@@ -264,6 +290,17 @@ class GridEditorPreferences(EditorPreferences):
                              flag=wx.ALIGN_CENTER_VERTICAL | wx.LEFT, border=4)
             row += 1
 
+    def OnSaveLoadSettings(self, event):
+        if event.GetId() != ID_SAVELOADSETTINGS:
+            event.Skip()
+            return
+        save_settings_dialog = SaveLoadSettings(self, self._settings)
+        save_settings_dialog.CenterOnParent()
+        value = save_settings_dialog.ShowModal()
+        # print(f"DEBUG: Value returned by SaveLoadSettings: {value}")
+        for picker in self._color_pickers:
+            picker.SetColour(self._settings[picker.key])
+
 
 class TestRunnerPreferences(EditorPreferences):
     location = ("Test Runner",)
@@ -308,6 +345,17 @@ class TestRunnerPreferences(EditorPreferences):
                           flag=wx.ALIGN_CENTER_VERTICAL | wx.LEFT, border=8)
             column += 1
         return container
+
+    def OnSaveLoadSettings(self, event):
+        if event.GetId() != ID_SAVELOADSETTINGS:
+            event.Skip()
+            return
+        save_settings_dialog = SaveLoadSettings(self, self._settings)
+        save_settings_dialog.CenterOnParent()
+        value = save_settings_dialog.ShowModal()
+        # print(f"DEBUG: Value returned by SaveLoadSettings: {value}")
+        for picker in self._color_pickers:
+            picker.SetColour(self._settings[picker.key])
 
     def OnReset(self, event):
         defaults = self._read_defaults(plugin=True)

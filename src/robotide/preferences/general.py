@@ -24,6 +24,9 @@ from .managesettingsdialog import SaveLoadSettings
 ID_APPLY_TO_PANEL = wx.NewId()
 ID_RESET = wx.NewId()
 ID_SAVELOADSETTINGS = wx.NewId()
+ID_LOAD = 5551
+ID_SAVE = 5552
+ID_CANCEL = -1
 
 
 @lru_cache(maxsize=2)
@@ -95,7 +98,7 @@ class GeneralPreferences(PreferencesPanel):
         # print(f"DEBUG: OnSaveLoadSettings: Trying to close parent ")
         # Does not look nice but closes Preferences window, so it comes recolored on next call
         # Only working on first use :(
-        # TODO: Only close window when Loading, not when Saving
+        # TODO: Only close window when Loading, not when Saving (but return is always 5101)
         wx.FindWindowByName("RIDE - Preferences").Close(force=True)
 
     def _reload_settings(self):
@@ -112,7 +115,7 @@ class GeneralPreferences(PreferencesPanel):
             if not line:
                 continue
             key, value = [s.strip().strip('\'') for s in line.split("=")]
-            print(f"DEBUG: Preferences General default value type {type(value)} {value}")
+            # print(f"DEBUG: Preferences General default value type {type(value)} {value}")
             if len(value) > 0 and value[0] == '(' and value[-1] == ')':
                 from ast import literal_eval as make_tuple
                 value = make_tuple(value)

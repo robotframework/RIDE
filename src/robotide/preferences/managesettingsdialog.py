@@ -18,12 +18,12 @@ import wx
 from wx import Colour
 from ..widgets import RIDEDialog, VerticalSizer
 from .configobj import ConfigObj, UnreprError
-from .settings import ConfigurationError, _Section
+from .settings import ConfigurationError, _Section, initialize_settings
 
 from ..context import SETTINGS_DIRECTORY
 
-ID_LOAD= wx.NewId()
-ID_SAVE = wx.NewId()
+ID_LOAD = 5551
+ID_SAVE = 5552
 ID_CANCEL = -1
 
 
@@ -56,6 +56,7 @@ class SaveLoadSettings(RIDEDialog):
         self.SetSizerAndFit(main_sizer)
         self.Bind(wx.EVT_BUTTON, self.OnLoad)
         self.Bind(wx.EVT_BUTTON, self.OnSave)
+        # print(f"DEBUG: SaveLoad init returncode {self.GetReturnCode()}")
 
     def OnLoad(self, event):
         if event.GetId() != ID_LOAD:
@@ -68,6 +69,7 @@ class SaveLoadSettings(RIDEDialog):
             self.SetReturnCode(ID_CANCEL)
             return ID_CANCEL
         file = load_dlg.GetPath()
+        # print(f"DEBUG: SaveLoad returncode {self.GetReturnCode()}")
         if os.path.isfile(file):  # Test validity settings
             # print(f"DEBUG: Selected file is {file}.")
             # print(f"DEBUG: load_and_merge BEFORE: {self._settings['background']}")
@@ -91,10 +93,32 @@ class SaveLoadSettings(RIDEDialog):
             self.SetReturnCode(ID_CANCEL)
             return ID_CANCEL
 
+        with wx.FileDialog(self, message="Save Settings to file", defaultDir=SETTINGS_DIRECTORY,
+                           wildcard="*.cfg", style=wx.FD_SAVE | wx.FD_OVERWRITE_PROMPT) as save_dlg:
+            if save_dlg.ShowModal() == wx.ID_CANCEL:
+                self.SetReturnCode(ID_CANCEL)
+                return ID_CANCEL
+            # print(f"DEBUG: SaveLoad returncode {self.GetReturnCode()}")
+            pathname = save_dlg.GetPath()
+            filename = os.path.basename(pathname)
+            dirname = os.path.dirname(pathname)
+            try:
+                initialize_settings(self._default_path, pathname)
+            except IOError:
+                raise RuntimeError('Could not open settings file "%s" for writing' % pathname)
+        self.SetReturnCode(ID_SAVE)
+        self.Close()
+        return ID_SAVE
+
     def load_and_merge(self, user_path):
         try:
             nnew_settings = ConfigObj(user_path, unrepr=True)
             mysection=nnew_settings.get(self._section)
+            if not mysection:
+                mysection = nnew_settings['Plugins'].get(self._section)
+                if not mysection:
+                    raise ConfigurationError("Error trying to get '%s' from file %s" % (f"[Plugins][{self._section}]",user_path))
+
             for key, value in mysection.items():
                 if self._settings.has_setting(key):
                     if isinstance(value, dict):
@@ -108,11 +132,3 @@ class SaveLoadSettings(RIDEDialog):
             self._settings.save()
         except UnreprError as err:  # DEBUG errored file
             raise ConfigurationError("Invalid config file '%s': %s" % (user_path, err))
-
-    @staticmethod
-    def _write_merged_settings(settings, path):
-        try:
-            with open(path, 'wb') as outfile:  # DEBUG used to be 'wb'
-                settings.write(outfile)  # DEBUG .encoding('UTF-8')
-        except IOError:
-            raise RuntimeError('Could not open settings file "%s" for writing' % path)
