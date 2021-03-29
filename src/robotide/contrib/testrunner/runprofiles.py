@@ -511,26 +511,10 @@ class PybotProfile(BaseProfile, RIDEDialog):
         self._exclude_tags_text_ctrl.Enable(evt.IsChecked())
 
     def OnIncludeTagsChanged(self, evt):
-        self.set_setting("include_tags",
-                         self._include_tags_text_ctrl.GetValue())
+        self.set_setting("include_tags", self._include_tags_text_ctrl.GetValue())
 
     def OnExcludeTagsChanged(self, evt):
-        self.set_setting("exclude_tags",
-                         self._exclude_tags_text_ctrl.GetValue())
-
-    def OnExcludeCheckbox(self, evt):
-        self.set_setting("apply_exclude_tags", evt.IsChecked())
-        self._exclude_tags_text_ctrl.Enable(evt.IsChecked())
-
-    def OnIncludeCheckbox(self, evt):
-        self.set_setting("apply_include_tags", evt.IsChecked())
-        self._include_tags_text_ctrl.Enable(evt.IsChecked())
-
-    def OnIncludeTagsChanged(self, evt):
-        self.set_setting("include_tags", self._include_tags.GetValue())
-
-    def OnExcludeTagsChanged(self, evt):
-        self.set_setting("exclude_tags", self._exclude_tags.GetValue())
+        self.set_setting("exclude_tags", self._exclude_tags_text_ctrl.GetValue())
 
     @staticmethod
     def _create_checkbox(parent, value, title, handler):
