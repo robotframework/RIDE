@@ -83,7 +83,7 @@ class TreePlugin(Plugin):
         self.tree = parent.tree
         """
         self._model= self.model
-        self._tree.Bind(wx.EVT_UPDATE_UI, self.OnShowTree)
+        # self._tree.Bind(wx.EVT_UPDATE_UI, self.OnShowTree)
         self._tree.Bind(wx.EVT_SHOW, self.OnShowTree)
         self._tree.Bind(wx.EVT_MOVE, self.OnTabChanged)
         # parent, action_registerer, , default_settings={'collapsed':True}
