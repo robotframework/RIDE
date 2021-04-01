@@ -44,7 +44,7 @@ Tree._show_correct_editor = lambda self, x: None
 Tree.get_active_datafile = lambda self: None
 Tree._select = lambda self, node: self.SelectItem(node)
 
-
+app = wx.App()
 
 """
 class _FakeMainFrame(wx.Frame):
@@ -212,7 +212,8 @@ class _BaseSuiteTreeTest(unittest.TestCase):
     def tearDown(self):
         PUBLISHER.unsubscribe_all()
         wx.CallAfter(wx.Exit)
-        self.app.MainLoop()  # With this here, there is no Segmentation fault
+        self.app.Destroy()
+        # app.MainLoop()  # With this here, there is no Segmentation fault
 
     def _create_model(self):
         suite = self._create_directory_suite('/top_suite')
@@ -352,3 +353,4 @@ class TestSortTags(_BaseSuiteTreeTest):
 
 if __name__ == '__main__':
     unittest.main()
+    app.Destroy()

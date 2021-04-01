@@ -19,7 +19,6 @@ import tempfile
 
 from .basecontroller import WithNamespace, _BaseController
 from .dataloader import DataLoader
-from .filecontrollers import DataController, ResourceFileControllerFactory, TestDataDirectoryController
 from .robotdata import NewTestCaseFile, NewTestDataDirectory
 from ..context import LOG
 from ..controller.ctrlcommands import NullObserver, SaveFile
@@ -33,6 +32,7 @@ from ..utils import overrides
 class Project(_BaseController, WithNamespace):
 
     def __init__(self, namespace=None, settings=None, library_manager=None):
+        from .filecontrollers import ResourceFileControllerFactory
         self._library_manager = self._construct_library_manager(library_manager, settings)
         if not self._library_manager.is_alive():
             self._library_manager.start()
@@ -109,6 +109,7 @@ class Project(_BaseController, WithNamespace):
         self._new_project(NewTestCaseFile(path))
 
     def _new_project(self, datafile):
+        from .filecontrollers import DataController, ResourceFileControllerFactory
         self.update_default_dir(datafile.directory)
         self._controller = DataController(datafile, self)
         self._resource_file_controller_factory = ResourceFileControllerFactory(self._namespace, self)
@@ -168,6 +169,7 @@ class Project(_BaseController, WithNamespace):
         load_observer.finish()
 
     def _create_controllers(self, datafile, resources):
+        from .filecontrollers import DataController
         self.clear_namespace_update_listeners()
         self._controller = DataController(datafile, self)
         new_resource_controllers = []
@@ -297,6 +299,7 @@ class Project(_BaseController, WithNamespace):
             return self._create_resource_controller(resource)
 
     def is_project_changed_from_disk(self):
+        from .filecontrollers import TestDataDirectoryController
         for data_file in self.datafiles:
             if isinstance(data_file, TestDataDirectoryController):
                 if not os.path.exists(data_file.directory):

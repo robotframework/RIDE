@@ -360,6 +360,7 @@ class RideFrame(wx.Frame):
             # deinitialize the frame manager
             self._mgr.UnInit()
             self._task_bar_icon.Destroy()
+            del self._mgr
             self.Destroy()
             app = wx.GetApp()
             if app is not self._application:

@@ -23,8 +23,6 @@ import wx.lib.mixins.listctrl as listmix
 from wx import Colour
 
 from ..context import IS_MAC
-from ..controller.filecontrollers import (TestCaseFileController, ResourceFileController,
-                                          TestDataDirectoryController)
 from ..spec.iteminfo import LibraryKeywordInfo
 from ..ui.searchdots import DottedSearch
 from ..usages.commands import FindUsages
@@ -427,6 +425,8 @@ class ResultFilter(object):
         self._strings = [s.strip() for s in strings if s.strip()]
 
     def include_file(self, datafile):
+        from ..controller.filecontrollers import (TestCaseFileController, ResourceFileController,
+                                                  TestDataDirectoryController)
         if isinstance(datafile, TestDataDirectoryController):
             return False
         if not self.active:
