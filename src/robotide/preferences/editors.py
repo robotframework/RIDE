@@ -13,12 +13,17 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import wx
-from wx.lib.masked import NumCtrl
 from os.path import abspath, dirname, join
 
-from robotide.preferences import widgets
-from robotide.widgets import Label
+import wx
+from wx import Colour
+from wx.lib.masked import NumCtrl
+
+# from .. import widgets
+from ..ui.preferences_dialogs import (PreferencesPanel, SpinChoiceEditor, IntegerChoiceEditor, boolean_editor,
+                                      StringChoiceEditor, PreferencesColorPicker)
+from ..widgets import Label
+from .managesettingsdialog import SaveLoadSettings
 
 try:  # import installed version first
     import robotframeworklexer
@@ -27,6 +32,11 @@ except ImportError:
         from . import robotframeworklexer
     except ImportError:  # Pygments is not installed
         robotframeworklexer = None
+
+ID_SAVELOADSETTINGS = wx.NewId()
+ID_LOAD = 5551
+ID_SAVE = 5552
+ID_CANCEL = -1
 
 from functools import lru_cache
 
@@ -41,7 +51,7 @@ def ReadFonts(fixed=False):
     return names
 
 
-class EditorPreferences(widgets.PreferencesPanel):
+class EditorPreferences(PreferencesPanel):
 
     def __init__(self, settings, *args, **kwargs):
         super(EditorPreferences, self).__init__(*args, **kwargs)
@@ -55,13 +65,22 @@ class EditorPreferences(widgets.PreferencesPanel):
 
         font_editor = self._create_font_editor()
         colors_sizer = self.create_colors_sizer()
-        main_sizer = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
+        main_sizer = wx.FlexGridSizer(rows=6, cols=1, vgap=10, hgap=10)
+        buttons_sizer = wx.BoxSizer(orient=wx.HORIZONTAL)
         reset = wx.Button(self, wx.ID_ANY, 'Reset colors to default')
+        saveloadsettings = wx.Button(self, ID_SAVELOADSETTINGS, 'Save or Load settings')
         main_sizer.Add(font_editor)
         main_sizer.Add(colors_sizer)
-        main_sizer.Add(reset)
+        buttons_sizer.Add(reset)
+        buttons_sizer.AddSpacer(10)
+        buttons_sizer.Add(saveloadsettings)
+        main_sizer.Add(buttons_sizer)
         self.SetSizer(main_sizer)
         self.Bind(wx.EVT_BUTTON, self.OnReset)
+        self.Bind(wx.EVT_BUTTON, self.OnSaveLoadSettings)
+
+    def OnSaveLoadSettings(self, event):
+        raise NotImplementedError('Implement me')
 
     def OnReset(self, event):
         defaults = self._read_defaults()
@@ -86,22 +105,22 @@ class EditorPreferences(widgets.PreferencesPanel):
         return join(dirname(abspath(__file__)), 'settings.cfg')
 
     def _create_font_editor(self):
-        f = widgets.IntegerChoiceEditor(
+        f = IntegerChoiceEditor(
             self._settings, 'font size', 'Font Size',
             [str(i) for i in range(8, 16)])
         sizer = wx.FlexGridSizer(rows=3, cols=2, vgap=10, hgap=30)
         sizer.AddMany([f.label(self), f.chooser(self)])
         fixed_font = False
         if 'zoom factor' in self._settings:
-            z = widgets.SpinChoiceEditor(
+            z = SpinChoiceEditor(
                 self._settings, 'zoom factor', 'Zoom Factor', (-10, 20))
             sizer.AddMany([z.label(self), z.chooser(self)])
         if 'fixed font' in self._settings:
-            sizer.AddMany(widgets.boolean_editor(
+            sizer.AddMany(boolean_editor(
                 self, self._settings, 'fixed font', 'Use fixed width font'))
             fixed_font = self._settings['fixed font']
         if 'font face' in self._settings:
-            s = widgets.StringChoiceEditor(self._settings, 'font face', 'Font Face', ReadFonts(fixed_font))
+            s = StringChoiceEditor(self._settings, 'font face', 'Font Face', ReadFonts(fixed_font))
             sizer.AddMany([s.label(self), s.chooser(self)])
         return sizer
 
@@ -148,7 +167,7 @@ class TextEditorPreferences(EditorPreferences):
                 column = 0
                 row += 1
             label = wx.StaticText(self, wx.ID_ANY, label_text)
-            button = widgets.PreferencesColorPicker(
+            button = PreferencesColorPicker(
                 self, wx.ID_ANY, self._settings, settings_key)
             container.Add(button, (row, column),
                           flag=wx.ALL | wx.ALIGN_CENTER_VERTICAL, border=4)
@@ -158,6 +177,17 @@ class TextEditorPreferences(EditorPreferences):
                           flag=wx.ALIGN_CENTER_VERTICAL | wx.LEFT, border=8)
             column += 1
         return container
+
+    def OnSaveLoadSettings(self, event):
+        if event.GetId() != ID_SAVELOADSETTINGS:
+            event.Skip()
+            return
+        save_settings_dialog = SaveLoadSettings(self, self._settings)
+        save_settings_dialog.CenterOnParent()
+        value = save_settings_dialog.ShowModal()
+        # print(f"DEBUG: Value returned by SaveLoadSettings: {value}")
+        for picker in self._color_pickers:
+            picker.SetColour(self._settings[picker.key])
 
     def OnReset(self, event):
         defaults = self._read_defaults()
@@ -180,11 +210,11 @@ class GridEditorPreferences(EditorPreferences):
         sizer = wx.FlexGridSizer(rows=6, cols=2, vgap=10, hgap=10)
         sizer.Add(self._label_for('Default column size'))
         sizer.Add(self._number_editor(settings, 'col size'))
-        sizer.AddMany(widgets.boolean_editor(
+        sizer.AddMany(boolean_editor(
             self, settings, 'auto size cols', 'Auto size columns'))
         sizer.Add(self._label_for('Max column size\n(applies when auto size is on)'))
         sizer.Add(self._number_editor(settings, 'max col size'))
-        sizer.AddMany(widgets.boolean_editor(
+        sizer.AddMany(boolean_editor(
             self, settings, 'word wrap', 'Word wrap and auto size rows'))
         return sizer
 
@@ -195,6 +225,12 @@ class GridEditorPreferences(EditorPreferences):
     def _number_editor(self, settings, name):
         initial_value = settings[name]
         editor = NumCtrl(self, value=initial_value, integerWidth=3, allowNone=True)
+        """
+        editor.SetBackgroundColour(Colour(200, 222, 40))
+        editor.SetOwnBackgroundColour(Colour(200, 222, 40))
+        editor.SetForegroundColour(Colour(7, 0, 70))
+        editor.SetOwnForegroundColour(Colour(7, 0, 70))
+        """
         editor.Bind(wx.EVT_TEXT, lambda evt: self._set_value(editor, name))
         return editor
 
@@ -223,7 +259,7 @@ class GridEditorPreferences(EditorPreferences):
             ('text empty', 'Empty Foreground'),
         ):
             lbl = wx.StaticText(self, wx.ID_ANY, label)
-            btn = widgets.PreferencesColorPicker(
+            btn = PreferencesColorPicker(
                 self, wx.ID_ANY, self._settings, key)
             self._color_pickers.append(btn)
             colors_sizer.Add(btn, (row, 2),
@@ -245,7 +281,7 @@ class GridEditorPreferences(EditorPreferences):
             ('background highlight', 'Highlight Background')
         ):
             lbl = wx.StaticText(self, wx.ID_ANY, label)
-            btn = widgets.PreferencesColorPicker(
+            btn = PreferencesColorPicker(
                 self, wx.ID_ANY, self._settings, key)
             self._color_pickers.append(btn)
             colors_sizer.Add(btn, (row, 0),
@@ -253,6 +289,17 @@ class GridEditorPreferences(EditorPreferences):
             colors_sizer.Add(lbl, (row, 1),
                              flag=wx.ALIGN_CENTER_VERTICAL | wx.LEFT, border=4)
             row += 1
+
+    def OnSaveLoadSettings(self, event):
+        if event.GetId() != ID_SAVELOADSETTINGS:
+            event.Skip()
+            return
+        save_settings_dialog = SaveLoadSettings(self, self._settings)
+        save_settings_dialog.CenterOnParent()
+        value = save_settings_dialog.ShowModal()
+        # print(f"DEBUG: Value returned by SaveLoadSettings: {value}")
+        for picker in self._color_pickers:
+            picker.SetColour(self._settings[picker.key])
 
 
 class TestRunnerPreferences(EditorPreferences):
@@ -270,7 +317,7 @@ class TestRunnerPreferences(EditorPreferences):
         settings = self._settings
         sizer = wx.FlexGridSizer(rows=2, cols=2, vgap=10, hgap=10)
 
-        sizer.AddMany(widgets.boolean_editor(
+        sizer.AddMany(boolean_editor(
             self, settings, 'confirm run', 'Asks for confirmation to run all'
                                            ' tests if none selected '))
         return sizer
@@ -288,7 +335,7 @@ class TestRunnerPreferences(EditorPreferences):
                 column = 0
                 row += 1
             label = wx.StaticText(self, wx.ID_ANY, label_text)
-            button = widgets.PreferencesColorPicker(
+            button = PreferencesColorPicker(
                 self, wx.ID_ANY, self._settings, settings_key)
             container.Add(button, (row, column),
                           flag=wx.ALL | wx.ALIGN_CENTER_VERTICAL, border=4)
@@ -298,6 +345,17 @@ class TestRunnerPreferences(EditorPreferences):
                           flag=wx.ALIGN_CENTER_VERTICAL | wx.LEFT, border=8)
             column += 1
         return container
+
+    def OnSaveLoadSettings(self, event):
+        if event.GetId() != ID_SAVELOADSETTINGS:
+            event.Skip()
+            return
+        save_settings_dialog = SaveLoadSettings(self, self._settings)
+        save_settings_dialog.CenterOnParent()
+        value = save_settings_dialog.ShowModal()
+        # print(f"DEBUG: Value returned by SaveLoadSettings: {value}")
+        for picker in self._color_pickers:
+            picker.SetColour(self._settings[picker.key])
 
     def OnReset(self, event):
         defaults = self._read_defaults(plugin=True)

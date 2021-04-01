@@ -14,17 +14,14 @@
 #  limitations under the License.
 
 import wx
+from wx import Colour
 
-from robotide.publish.messages import RideDataFileRemoved
-from robotide.pluginapi import (
-    Plugin, ActionInfoCollection, TreeAwarePluginMixin)
-from robotide.publish import (
-    RideTreeSelection, RideNotebookTabChanging, RideNotebookTabChanged,
-    RideSaving)
-from robotide.utils import overrides
-from robotide.widgets import PopupCreator
 from .editorcreator import EditorCreator
-
+from ..pluginapi import (Plugin, ActionInfoCollection, TreeAwarePluginMixin)
+from ..publish import (RideTreeSelection, RideNotebookTabChanging, RideNotebookTabChanged, RideSaving)
+from ..publish.messages import RideDataFileRemoved
+from ..utils import overrides
+from ..widgets import PopupCreator
 
 _EDIT = """
 [Edit]
@@ -162,6 +159,13 @@ class _EditorTab(wx.Panel):
         self.plugin = plugin
         self.sizer = wx.BoxSizer(wx.VERTICAL)
         self.SetSizer(self.sizer)
+        """
+        self.SetBackgroundColour(Colour(200, 222, 40))
+        self.SetOwnBackgroundColour(Colour(200, 222, 40))
+        self.SetForegroundColour(Colour(7, 0, 70))
+        self.SetOwnForegroundColour(Colour(7, 0, 70))
+        """
+        self.Refresh(True)
         self.editor = None
 
     def show_editor(self, editor):

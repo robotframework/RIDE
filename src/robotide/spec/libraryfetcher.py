@@ -13,8 +13,8 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robotide import robotapi
-from robotide.spec.iteminfo import LibraryKeywordInfo
+from .. import robotapi
+from .iteminfo import LibraryKeywordInfo
 
 
 def get_import_result(path, args):

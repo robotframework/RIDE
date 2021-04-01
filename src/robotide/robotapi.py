@@ -13,35 +13,33 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import robotide.lib.robot.parsing.populators
-robotide.lib.robot.parsing.populators.PROCESS_CURDIR = False
+from .lib.robot.parsing import populators
+populators.PROCESS_CURDIR = False
 
-from robotide.lib.robot.errors import DataError, VariableError, Information
-from robotide.lib.robot.model import TagPatterns
-from robotide.lib.robot.output import LOGGER as ROBOT_LOGGER
-from robotide.lib.robot.output.loggerhelper import LEVELS as LOG_LEVELS
-from robotide.lib.robot.parsing.datarow import DataRow
-from robotide.lib.robot.parsing.model import (
+from .lib.robot.errors import DataError, VariableError, Information
+from .lib.robot.model import TagPatterns
+from .lib.robot.output import LOGGER as ROBOT_LOGGER
+from .lib.robot.output.loggerhelper import LEVELS as LOG_LEVELS
+from .lib.robot.parsing.datarow import DataRow
+from .lib.robot.parsing.model import (
     TestCase, TestDataDirectory, ResourceFile, TestCaseFile, UserKeyword,
     Variable, Step, ForLoop, VariableTable, KeywordTable, TestCaseTable,
     TestCaseFileSettingTable)
-from robotide.lib.robot.parsing.populators import FromFilePopulator
-from robotide.lib.robot.parsing.settings import (
-    Library, Resource, Variables, Comment, _Import, Template,
+from .lib.robot.parsing.populators import FromFilePopulator
+from .lib.robot.parsing.settings import (Library, Resource, Variables, Comment, _Import, Template,
     Fixture, Documentation, Timeout, Tags, Return)
-from robotide.lib.robot.parsing.tablepopulators import (
-    UserKeywordPopulator, TestCasePopulator)
-from robotide.lib.robot.parsing.txtreader import TxtReader
-from robotide.lib.robot.running import TestLibrary, EXECUTION_CONTEXTS
-from robotide.lib.robot.libraries import STDLIBS as STDLIB_NAMES
-from robotide.lib.robot.running.usererrorhandler import UserErrorHandler
-from robotide.lib.robot.running.arguments.embedded import EmbeddedArgumentParser
-from robotide.lib.robot.utils import normpath, NormalizedDict
-from robotide.lib.robot.variables import Variables as RobotVariables
-from robotide.lib.robot.variables import is_scalar_var, is_list_var, is_var, is_dict_var,\
-    VariableSplitter
-from robotide.lib.robot.variables.filesetter import VariableFileSetter
-from robotide.lib.robot.variables.tablesetter import VariableTableReader
-from robotide.lib.robot.version import get_version
+from .lib.robot.parsing.tablepopulators import UserKeywordPopulator, TestCasePopulator
+from .lib.robot.parsing.robotreader import RobotReader
+from .lib.robot.running import TestLibrary, EXECUTION_CONTEXTS
+from .lib.robot.libraries import STDLIBS as STDLIB_NAMES
+from .lib.robot.running.usererrorhandler import UserErrorHandler
+from .lib.robot.running.arguments.embedded import EmbeddedArgumentParser
+from .lib.robot.utils import normpath, NormalizedDict
+from .lib.robot.variables import Variables as RobotVariables
+from .lib.robot.variables import is_scalar_var, is_list_var, is_var, is_dict_var, VariableSplitter
+from .lib.robot.variables.filesetter import VariableFileSetter
+from .lib.robot.variables.tablesetter import VariableTableReader
+from .lib.robot.version import get_version
+
 
 ROBOT_VERSION = get_version()

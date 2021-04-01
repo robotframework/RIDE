@@ -13,15 +13,16 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+from functools import (total_ordering, cmp_to_key)
+
 import wx
 
-from functools import (total_ordering, cmp_to_key)
-from robotide import robotapi
-from robotide.action import ActionInfo
-from robotide.pluginapi import Plugin
-from robotide.publish import RideOpenTagSearch
-from robotide.searchtests.dialogsearchtests import TestsDialog
-from robotide.widgets import ImageProvider
+from .. import robotapi
+from ..action import ActionInfo
+from ..pluginapi import Plugin
+from ..publish import RideOpenTagSearch
+from .dialogsearchtests import TestsDialog
+from ..widgets import ImageProvider
 
 
 @total_ordering

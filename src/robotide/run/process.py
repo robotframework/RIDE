@@ -14,9 +14,9 @@
 #  limitations under the License.
 
 import os
-import time
-import tempfile
 import subprocess
+import tempfile
+import time
 
 
 class Process(object):

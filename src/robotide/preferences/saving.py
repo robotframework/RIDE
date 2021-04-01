@@ -15,10 +15,10 @@
 
 import wx
 
-from robotide.preferences import widgets
+from ..ui.preferences_dialogs import PreferencesPanel, IntegerChoiceEditor, StringChoiceEditor
 
 
-class SavingPreferences(widgets.PreferencesPanel):
+class SavingPreferences(PreferencesPanel):
     location = ('Saving',)
     title = 'Saving Preferences'
 
@@ -31,31 +31,21 @@ class SavingPreferences(widgets.PreferencesPanel):
 
     def _create_editors(self, settings):
         return [
-            widgets.StringChoiceEditor(settings,
-                'default file format',
-                'Default file format:',
-                ('txt', 'tsv', 'html', 'robot', 'resource')
+            StringChoiceEditor(settings, 'default file format', 'Default file format:',
+                               ('txt', 'tsv', 'html', 'robot', 'resource')
             ),
-            widgets.StringChoiceEditor(settings,
-                'txt format separator',
-                'TXT format separator:',
-                ('pipe', 'space')
+            StringChoiceEditor(settings, 'txt format separator', 'TXT format separator:', ('pipe', 'space')
             ),
-            widgets.StringChoiceEditor(settings,
-                'line separator',
-                'Line separator:',
-                ('native', 'CRLF', 'LF'),
-                'Possible values are native (of current OS) CRLF (Windows) and LF (Unixy)'
+            StringChoiceEditor(settings, 'line separator', 'Line separator:',
+                               ('native', 'CRLF', 'LF'),
+                               'Possible values are native (of current OS) CRLF (Windows) and LF (Unixy)'
             ),
-            widgets.IntegerChoiceEditor(settings,
-                'txt number of spaces',
-                'Separating spaces',
-                [str(i) for i in range(2, 11)],
-                'Number of spaces between cells when saving in txt format'
+            IntegerChoiceEditor(settings, 'txt number of spaces', 'Separating spaces',
+                                [str(i) for i in range(2, 11)],
+                                'Number of spaces between cells when saving in txt format'
             )
         ]
 
     def _add_editor(self, editor):
         self.Sizer.AddMany([editor.label(self), (editor.chooser(self),)])
-        self.Sizer.AddMany([(editor.help(self), 0, wx.BOTTOM, 10),
-                            wx.Window(self)])
+        self.Sizer.AddMany([(editor.help(self), 0, wx.BOTTOM, 10), wx.Window(self)])

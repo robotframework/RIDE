@@ -15,7 +15,9 @@
 
 # Metaclass fix from http://code.activestate.com/recipes/204197-solving-the-metaclass-conflict/
 
-import inspect, types
+import inspect
+import types
+
 
 ############## preliminary: two utility functions #####################
 

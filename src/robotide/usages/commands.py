@@ -15,13 +15,18 @@
 
 import os
 
-from robotide.controller.ctrlcommands import FindOccurrences, _Command, FindVariableOccurrences
-from robotide.controller.macrocontrollers import KeywordNameController
+from ..controller.ctrlcommands import FindOccurrences, FindVariableOccurrences, _Command
+# import FindOccurrences, _Command, FindVariableOccurrences
+# from ..controller import macrocontrollers
+# from ..controller.macrocontrollers import KeywordNameController
+# import KeywordNameController
 
 
 class FindUsages(FindOccurrences):
 
     def execute(self, context):
+        from ..controller.macrocontrollers import KeywordNameController
+
         prev = None
         for occ in FindOccurrences.execute(self, context):
             if isinstance(occ.item, KeywordNameController):

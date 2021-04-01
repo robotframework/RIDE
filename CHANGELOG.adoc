@@ -10,6 +10,10 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Added
 
+- Added a dialog to Load or Save settings to .cfg files on Preferences -> General, Grid Editor, Text Editor and Test Runner
+- Added perspectives persistance for Notebook panels, Edit, Text Editor and Run
+- Added General settings to Preferences, to change Font Size and Face, and colours
+- Added background colour globally on panels and dialogs
 - Added on Run tab a button to open the Logs Directory
 - Added on Run tab a group of elements to define Output Directory, Log and Report filenames with suite names or timestamps, and possibility to keep Console and Message logs
 - Added Python 3.8 unit test support in travis CI
@@ -33,10 +37,14 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Removed
 
+- Removed alignment flag on grid cell JSON Editor (Ctrl-Shift-J)
 - Removed moving to keyword/variable definition when doing Double-Click in grid cell
 
 === Changed
 
+- Changed Manage Plugins to be a dialog panel instead of being a notebook tab
+- Added more valid file extensions to Open Test Suite
+- Changed minimum number of rows and columns, because blank cells would not have correct colour
 - The Arguments, Tests filters (include/exclude), Console and Message logs are now in Expandable/Collapsable groups
 - Modified robot passed and failed icons to be easier to differentiate
 - When searching in Text Editor by using Ctrl-G the search is done from the begining of text

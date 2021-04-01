@@ -13,18 +13,19 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import wx
 import re
-from wx import grid
 from os import linesep
 
-from robotide.widgets import PopupCreator, PopupMenuItems
-from robotide.context import IS_WINDOWS
+import wx
+from wx import grid, Colour
+
 from .clipboard import ClipboardHandler
+from ..context import IS_WINDOWS
+from ..widgets import PopupCreator, PopupMenuItems
 
 
 class GridEditor(grid.Grid):
-    _col_add_threshold = 1
+    _col_add_threshold = 6
     _popup_items = [
         'Insert Cells\tCtrl-Shift-I', 'Delete Cells\tCtrl-Shift-D',
         'Insert Rows\tCtrl-I', 'Delete Rows\tCtrl-D', '---',
@@ -37,11 +38,32 @@ class GridEditor(grid.Grid):
 
     def __init__(self, parent, num_rows, num_cols, popup_creator=None):
         grid.Grid.__init__(self, parent)
+        try:
+            self.settings = parent.plugin.global_settings['Grid']
+            self.general_settings = parent.plugin.global_settings['General']
+        except AttributeError:
+            from ..preferences import RideSettings
+            _settings = RideSettings()
+            self.general_settings = _settings['General']
+            self.settings = _settings['Grid']
+        self.color_background = self.settings['background unknown']
+        self.color_foreground = self.settings['text empty']
+        self.color_background_help = self.general_settings['background help']
+        self.color_foreground_text = self.general_settings['foreground text']
+        self.color_secondary_background = self.general_settings['secondary background']
+        self.color_secondary_foreground = self.general_settings['secondary foreground']
+
         self._bind_to_events()
         self.selection = _GridSelection(self)
         self._clipboard_handler = ClipboardHandler(self)
         self._history = _GridState()
         self.CreateGrid(num_rows, num_cols)
+        self.SetDefaultCellBackgroundColour(Colour(self.color_background))
+        self.SetDefaultCellTextColour(Colour(self.color_foreground))
+        self.GetGridColLabelWindow().SetBackgroundColour(Colour(self.color_secondary_background))
+        self.GetGridColLabelWindow().SetForegroundColour(Colour(self.color_secondary_foreground))
+        self.GetGridRowLabelWindow().SetBackgroundColour(Colour(self.color_secondary_background))
+        self.GetGridRowLabelWindow().SetForegroundColour(Colour(self.color_secondary_foreground))
         self._popup_creator = popup_creator or PopupCreator()
 
     def _bind_to_events(self):
@@ -84,10 +106,11 @@ class GridEditor(grid.Grid):
         return match.group()
 
     def _expand_if_necessary(self, row, col):
-        while row >= self.NumberRows - 1:
+        # Changed col and row fill because of blank spacing not changing color
+        while self.NumberRows <= max(row, 20): # DEBUG 25 makes slower rendering
             self.AppendRows(1)
-        while col >= self.NumberCols - self._col_add_threshold:
-            self.AppendCols(1)
+        while self.NumberCols <= max(col, 12): # DEBUG 40 makes slower rendering
+            self.AppendCols(self._col_add_threshold)
 
     def has_focus(self):
         return self.FindFocus() == self

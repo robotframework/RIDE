@@ -364,6 +364,7 @@ def _remove_files_matching(directory, pattern):
 
 
 def _set_development_path():
+    sys.path.insert(0, TEST_DIR+"/controller")
     sys.path.insert(0, TEST_DIR)
     sys.path.insert(0, SOURCE_DIR)
 

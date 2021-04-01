@@ -13,8 +13,8 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robotide.context import LOG
-from robotide import utils
+from .. import utils
+from ..context import LOG
 
 
 def PluginFactory(application, plugin_class):

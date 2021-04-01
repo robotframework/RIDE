@@ -13,15 +13,15 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from sqlite3 import OperationalError
-import queue as Queue
 import os
+import queue as Queue
+from sqlite3 import OperationalError
 from threading import Thread
 
-from robotide.publish import RideLogException, RideLogMessage
-from robotide.spec.librarydatabase import LibraryDatabase
-from robotide.spec.libraryfetcher import get_import_result
-from robotide.spec.xmlreaders import get_path, SpecInitializer
+from ..publish import RideLogException, RideLogMessage
+from ..spec.librarydatabase import LibraryDatabase
+from ..spec.libraryfetcher import get_import_result
+from ..spec.xmlreaders import get_path, SpecInitializer
 
 
 class LibraryManager(Thread):
