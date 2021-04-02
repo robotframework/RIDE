@@ -13,8 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robotide.publish.messages import RideTestExecutionStarted, RideTestPaused,\
-    RideTestPassed, RideTestFailed, RideTestRunning
+from ..publish.messages import RideTestExecutionStarted, RideTestPaused, RideTestPassed, RideTestFailed, RideTestRunning
 
 
 class TestExecutionResults(object):

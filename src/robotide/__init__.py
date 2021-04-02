@@ -30,8 +30,8 @@ RIDE's API is still evolving while the project is moving towards the 1.0
 release. The most stable, and best documented, module is `robotide.pluginapi`.
 """
 
-import sys
 import os
+import sys
 from string import Template
 
 errorMessageTemplate = Template("""$reason
@@ -43,6 +43,7 @@ the download link from https://wxPython.org/""")
 try:
     import wx
     import wx.lib.inspection
+    from wx import Colour
 except ImportError:
     print(errorMessageTemplate.substitute(reason="wxPython not found."))
     sys.exit(1)
@@ -60,7 +61,7 @@ def main(*args):
         sys.exit()
     if '--version' in args:
         try:
-            from robotide import version
+            from . import version
         except ImportError:
             print("Error getting RIDE version!")
             sys.exit(1)
@@ -136,8 +137,12 @@ def _show_old_wxpython_warning_if_needed(parent=None):
             _ = wx.App()
             parent = wx.Frame(None, size=(0, 0))
         sys.stderr.write("{0}\n{1}\n".format(title, message))
-        wx.MessageDialog(parent, message=message, caption=title,
-                         style=style).ShowModal()
+        dlg = wx.MessageDialog(parent, message=message, caption=title, style=style)
+        """
+        dlg.SetBackgroundColour(Colour(200, 222, 40))
+        dlg.SetForegroundColour(Colour(7, 0, 70))
+        """
+        dlg.ShowModal()
 
 
 if __name__ == '__main__':

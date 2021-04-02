@@ -16,7 +16,7 @@
 import os
 import wx
 
-from robotide import robotapi, utils
+from .. import robotapi, utils
 
 
 class _AbstractValidator(wx.Validator):

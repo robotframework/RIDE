@@ -15,8 +15,8 @@
 
 import re
 
-from robotide.robotapi import is_dict_var, is_list_var, is_scalar_var
-from robotide.utils import variablematcher
+from ..robotapi import is_dict_var, is_list_var, is_scalar_var
+from ..utils import variablematcher
 
 default_val_regexp = re.compile(r'([$]\{.*\})\s*=\s*(.*)')
 

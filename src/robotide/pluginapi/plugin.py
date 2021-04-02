@@ -13,12 +13,13 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import wx
 import inspect
-from robotide.action.actioninfo import ActionInfo
 
-from robotide.publish import PUBLISHER
-from robotide import utils
+import wx
+
+from .. import utils
+from ..action.actioninfo import ActionInfo
+from ..publish import PUBLISHER
 
 
 class Plugin(object):

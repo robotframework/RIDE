@@ -24,13 +24,11 @@ from robotide.controller.ctrlcommands import *
 PACKAGE_PARENT = '..'
 SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(),
                                               os.path.expanduser(__file__))))
-sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
-try:
-    from base_command_test import TestCaseCommandTest
-    from controller_creator import *
-except ImportError:  # Python 3
-    from .base_command_test import TestCaseCommandTest
-    from .controller_creator import *
+sys.path.insert(0, os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
+
+from base_command_test import TestCaseCommandTest
+# from .controller_creator import *
+from controller_creator import *
 
 
 class UnmodifyingCommandsTest(unittest.TestCase):

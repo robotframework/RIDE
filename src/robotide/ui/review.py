@@ -14,23 +14,25 @@
 #  limitations under the License.
 
 import os
-import wx
-import wx.lib.mixins.listctrl as listmix
-import time
 import re
-from robotide.context import IS_MAC
-from robotide.ui.searchdots import DottedSearch
-from robotide.widgets import ButtonWithHandler, Label
-from robotide.spec.iteminfo import LibraryKeywordInfo
-from robotide.usages.commands import FindUsages
-from robotide.controller.filecontrollers import (TestCaseFileController, ResourceFileController,
-                                                 TestDataDirectoryController)
+import time
 from threading import Thread
 
-class ReviewDialog(wx.Frame):
+import wx
+import wx.lib.mixins.listctrl as listmix
+from wx import Colour
+
+from ..context import IS_MAC
+from ..spec.iteminfo import LibraryKeywordInfo
+from ..ui.searchdots import DottedSearch
+from ..usages.commands import FindUsages
+from ..widgets import ButtonWithHandler, Label, RIDEDialog
+
+
+class ReviewDialog(RIDEDialog):
 
     def __init__(self, controller, frame):
-        wx.Frame.__init__(self, frame, title="Search unused keywords",
+        RIDEDialog.__init__(self, parent=frame, title="Search unused keywords",
                           style=wx.SYSTEM_MENU | wx.CAPTION | wx.CLOSE_BOX | wx.CLIP_CHILDREN |
                           wx.FRAME_FLOAT_ON_PARENT)
         # set Left to Right direction (while we don't have localization)
@@ -46,7 +48,8 @@ class ReviewDialog(wx.Frame):
 
     def _build_ui(self):
         self.SetSize((800,600))
-        self.SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_3DFACE))
+        self.SetBackgroundColour(Colour(self.color_background))
+        self.SetForegroundColour(Colour(self.color_foreground))
         self.SetSizer(wx.BoxSizer(wx.VERTICAL))
         self._build_header()
         self._build_filter()
@@ -75,6 +78,8 @@ class ReviewDialog(wx.Frame):
     def _build_filter(self):
         self._filter_pane = MyCollapsiblePane(self, label="Filter",
                                               style=wx.CP_DEFAULT_STYLE | wx.CP_NO_TLW_RESIZE)
+        self._filter_pane.SetBackgroundColour(Colour(self.color_background))
+        self._filter_pane.SetForegroundColour(Colour(self.color_foreground))
         self._filter_input = wx.TextCtrl(self._filter_pane.GetPane(),
                                          size=(-1, 20))
         self._filter_regex_switch = wx.CheckBox(self._filter_pane.GetPane(),
@@ -97,6 +102,8 @@ class ReviewDialog(wx.Frame):
                                         choices=["exclude", "include"])
         self._filter_test_button = wx.Button(self._filter_pane.GetPane(),
                                              wx.ID_INFO, label="Test the filter")
+        self._filter_test_button.SetBackgroundColour(Colour(self.color_secondary_background))
+        self._filter_test_button.SetForegroundColour(Colour(self.color_secondary_foreground))
         filter_box_sizer = wx.BoxSizer(wx.HORIZONTAL)
         filter_box_sizer.SetSizeHints(self._filter_pane.GetPane())
         filter_source_sizer = wx.StaticBoxSizer(filter_source_box, wx.VERTICAL)
@@ -128,8 +135,12 @@ class ReviewDialog(wx.Frame):
         self._unused_kw_list.InsertColumn(1, "File", width=250)
         self._unused_kw_list.SetMinSize((650, 250))
         self._unused_kw_list.set_dialog(self)
+        self._unused_kw_list.SetBackgroundColour(Colour(self.color_background))
+        self._unused_kw_list.SetForegroundColour(Colour(self.color_foreground))
         self._delete_button = wx.Button(panel_unused_kw, wx.ID_ANY,
                                         'Delete marked keywords')
+        self._delete_button.SetBackgroundColour(Colour(self.color_secondary_background))
+        self._delete_button.SetForegroundColour(Colour(self.color_secondary_foreground))
         sizer_unused_kw.Add(self._unused_kw_list, 1, wx.ALL | wx.EXPAND, 3)
         unused_kw_controls = wx.BoxSizer(wx.HORIZONTAL)
         unused_kw_controls.AddStretchSpacer(1)
@@ -142,7 +153,11 @@ class ReviewDialog(wx.Frame):
 
     def _build_controls(self):
         self._search_button = ButtonWithHandler(self, 'Search')
+        self._search_button.SetBackgroundColour(Colour(self.color_secondary_background))
+        self._search_button.SetForegroundColour(Colour(self.color_secondary_foreground))
         self._abort_button = ButtonWithHandler(self, 'Abort')
+        self._abort_button.SetBackgroundColour(Colour(self.color_secondary_background))
+        self._abort_button.SetForegroundColour(Colour(self.color_secondary_foreground))
         self._status_label = Label(self, label='')
         controls = wx.BoxSizer(wx.HORIZONTAL)
         controls.Add(self._search_button, 0, wx.ALL, 3)
@@ -152,6 +167,8 @@ class ReviewDialog(wx.Frame):
 
     def _build_notebook(self):
         self._notebook = wx.Notebook(self, wx.ID_ANY, style=wx.NB_TOP)
+        self._notebook.SetBackgroundColour(Colour(self.color_background))
+        self._notebook.SetForegroundColour(Colour(self.color_foreground))
         self.Sizer.Add(self._notebook, 1, wx.ALL | wx.EXPAND, 3)
 
     def _make_bindings(self):
@@ -167,6 +184,8 @@ class ReviewDialog(wx.Frame):
         self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.OnResultSelected, self._unused_kw_list)
         self.Bind(wx.EVT_CHECKBOX, self._update_filter_regex, self._filter_regex_switch)
         self.Bind(wx.EVT_COLLAPSIBLEPANE_CHANGED, self._toggle_filter_active, self._filter_pane)
+        self.Bind(wx.EVT_LIST_ITEM_CHECKED, self._unused_kw_list.OnCheckItem, self._unused_kw_list)
+        self.Bind(wx.EVT_LIST_ITEM_UNCHECKED, self._unused_kw_list.OnCheckItem, self._unused_kw_list)
 
     def _set_default_values(self):
         check_testcases = True
@@ -249,15 +268,15 @@ class ReviewDialog(wx.Frame):
         else:
             string_list = "\n".join(df.name for df in df_list)
         message = "Keywords of the following files will be included in the search:\n\n"+string_list
-        wx.MessageDialog(self, message=message, caption="Included files",
-                         style=wx.OK | wx.ICON_INFORMATION).ShowModal()
+        dlg = RIDEDialog(parent=self, title="Included files", message=message, style=wx.OK | wx.ICON_INFORMATION)
+        dlg.ShowModal()
 
     def OnResultSelected(self, event):
         self.frame.tree.select_node_by_data(self._unused_kw_list.GetClientData(event.GetData()))
 
     def item_in_kw_list_checked(self):
         if self._unused_kw_list.get_number_of_checked_items() > 0:
-            self._delete_button.Enable()
+            self._delete_button.Enable(True)
         else:
             self._delete_button.Disable()
 
@@ -298,6 +317,8 @@ class ReviewDialog(wx.Frame):
         self._unused_kw_list.SetItem(index, 1, filename)
         self._unused_kw_list.SetItemData(index, index)
         self._unused_kw_list.SetClientData(index, keyword)
+        self._unused_kw_list.SetItemBackgroundColour(index, Colour(self.color_secondary_background))
+        self._unused_kw_list.SetItemTextColour(index, Colour(self.color_secondary_foreground))
 
     def _update_unused_keywords(self, dots):
         count_before = self._unused_kw_list.GetItemCount()
@@ -404,6 +425,8 @@ class ResultFilter(object):
         self._strings = [s.strip() for s in strings if s.strip()]
 
     def include_file(self, datafile):
+        from ..controller.filecontrollers import (TestCaseFileController, ResourceFileController,
+                                                  TestDataDirectoryController)
         if isinstance(datafile, TestDataDirectoryController):
             return False
         if not self.active:
@@ -448,15 +471,20 @@ class ResultListCtrl(wx.ListCtrl, listmix.CheckListCtrlMixin, listmix.ListCtrlAu
     def __init__(self, parent, style):
         self.parent = parent
         wx.ListCtrl.__init__(self, parent=parent, style=style)
-        listmix.CheckListCtrlMixin.__init__(self)
+        if wx.VERSION < (4, 1, 0):
+            listmix.CheckListCtrlMixin.__init__(self)
+        else:
+            self.EnableCheckBoxes(True)
         listmix.ListCtrlAutoWidthMixin.__init__(self)
+        self.SetBackgroundColour(Colour(self.GetTopLevelParent().color_background))
+        self.SetForegroundColour(Colour(self.GetTopLevelParent().color_foreground))
         self.setResizeColumn(2)
         self._clientData = {}
 
     def set_dialog(self, dialog):
         self._dlg = dialog
 
-    def OnCheckItem(self, index, flag):
+    def OnCheckItem(self, event):
         if self._dlg:
             self._dlg.item_in_kw_list_checked()
         else:
@@ -464,7 +492,11 @@ class ResultListCtrl(wx.ListCtrl, listmix.CheckListCtrlMixin, listmix.ListCtrlAu
 
     def get_next_checked_item(self):
         for i in range(self.GetItemCount()):
-            if self.IsChecked(i):
+            if wx.VERSION >= (4, 1, 0):
+                checked = self.IsItemChecked(i)
+            else:
+                checked = self.IsChecked(i)
+            if checked:
                 item = self.GetItem(i)
                 return ([i, self.GetClientData(item.GetData()), item])
         return None
@@ -472,7 +504,11 @@ class ResultListCtrl(wx.ListCtrl, listmix.CheckListCtrlMixin, listmix.ListCtrlAu
     def get_number_of_checked_items(self):
         sum = 0
         for i in range(self.GetItemCount()):
-            if self.IsChecked(i):
+            if wx.VERSION >= (4, 1, 0):
+                checked = self.IsItemChecked(i)
+            else:
+                checked = self.IsChecked(i)
+            if checked:
                 sum += 1
         return sum
 
@@ -492,11 +528,19 @@ class ResultListCtrl(wx.ListCtrl, listmix.CheckListCtrlMixin, listmix.ListCtrlAu
     def print_data(self):
         print(self._clientData)
 
+
 class MyCollapsiblePane(wx.CollapsiblePane):
 
     def __init__(self, parent, *args, **kwargs):
         wx.CollapsiblePane.__init__(self, parent, *args, **kwargs)
+        """
+        self.SetBackgroundColour(Colour(200, 222, 40))
+        self.SetOwnBackgroundColour(Colour(200, 222, 40))
+        self.SetForegroundColour(Colour(7, 0, 70))
+        self.SetOwnForegroundColour(Colour(7, 0, 70))
+        """
         self.Bind(wx.EVT_SIZE, self._recalc_size)
+        self.Bind(wx.EVT_COLLAPSIBLEPANE_CHANGED, self.on_change)
 
     def _recalc_size(self, event=None):
         if self.IsExpanded():
@@ -509,4 +553,7 @@ class MyCollapsiblePane(wx.CollapsiblePane):
             event.Skip()
 
     def on_change(self, event):
+        self.Fit()
         self.GetParent().Layout()
+        if event:
+            event.Skip()

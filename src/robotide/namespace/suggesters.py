@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 from functools import total_ordering
+
 from robotide import robotapi
 
 

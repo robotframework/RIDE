@@ -14,10 +14,13 @@
 #  limitations under the License.
 
 import wx
+from wx import Colour
 from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
-from robotide.controller.ctrlcommands import MoveUp, MoveDown, DeleteItem
-from robotide.widgets import PopupMenu, PopupMenuItems, ButtonWithHandler, Font
-from robotide.context import ctrl_or_cmd, bind_keys_to_evt_menu, IS_WINDOWS
+
+from ..context import ctrl_or_cmd, bind_keys_to_evt_menu, IS_WINDOWS
+from ..controller import ctrlcommands
+# import MoveUp, MoveDown, DeleteItem
+from ..widgets import PopupMenu, PopupMenuItems, ButtonWithHandler, Font
 
 
 class ListEditorBase(wx.Panel):
@@ -26,6 +29,19 @@ class ListEditorBase(wx.Panel):
 
     def __init__(self, parent, columns, controller):
         wx.Panel.__init__(self, parent)
+        from ..preferences import RideSettings
+        _settings = RideSettings()
+        self.general_settings = _settings['General']
+        self.color_background = self.general_settings.get('background', 'light grey')
+        self.color_foreground = self.general_settings.get('foreground', 'black')
+        self.color_secondary_background = self.general_settings.get('secondary background', 'light grey')
+        self.color_secondary_foreground = self.general_settings.get('secondary foreground', 'black')
+        self.color_background_help = self.general_settings.get('background help', (240, 242, 80))
+        self.color_foreground_text = self.general_settings.get('foreground text', (7, 0, 70))
+        self.font_face = self.general_settings.get('font face', '')
+        self.font_size = self.general_settings.get('font size', 11)
+        self.SetBackgroundColour(Colour(self.color_background))
+        self.SetForegroundColour(Colour(self.color_foreground))
         self._controller = controller
         self._selection = wx.NOT_FOUND
         self._create_ui(columns, controller)
@@ -35,6 +51,11 @@ class ListEditorBase(wx.Panel):
     def _create_ui(self, columns, data):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         self._list = self._create_list(columns, data)
+        if wx.VERSION >= (4, 1, 0):
+            # DEBUG: This is supposed to work on Windows, but it is not
+            result = self._list.SetHeaderAttr(wx.ItemAttr(colText=self.color_foreground,
+                                                 colBack=self.color_background, font=self._list.GetFont()))
+            # print(f"DEBUG: Change colors of table headers {result}")
         sizer.Add(self._list, 1, wx.EXPAND)
         sizer.Add((5, 0))
         sizer.Add(self._create_buttons())
@@ -43,12 +64,15 @@ class ListEditorBase(wx.Panel):
         sizer.Layout()
 
     def _create_list(self, columns, data):
-        return AutoWidthColumnList(self, columns, data)
+        return AutoWidthColumnList(self, columns, color_foreground=self.color_secondary_foreground,
+                                   color_background=self.color_secondary_background, data=data)
 
     def _create_buttons(self):
         sizer = wx.BoxSizer(wx.VERTICAL)
         for label in self._buttons:
-            sizer.Add(ButtonWithHandler(self, label, width=120), 0, wx.ALL, 1)
+            sizer.Add(ButtonWithHandler(self, label, width=120,
+                                        color_secondary_foreground=self.color_secondary_foreground,
+                                        color_secondary_background=self.color_secondary_background), 0, wx.ALL, 1)
         return sizer
 
     def _make_bindings(self):
@@ -88,14 +112,14 @@ class ListEditorBase(wx.Panel):
     def OnMoveUp(self, event):
         if self._selection < 1:
             return
-        self._controller.execute(MoveUp(self._selection))
+        self._controller.execute(ctrlcommands.MoveUp(self._selection))
         self.update_data()
         self._list.Select(self._selection - 1, True)
 
     def OnMoveDown(self, event):
         if self._selection == self._list.GetItemCount() - 1 or not self.is_selected:
             return
-        self._controller.execute(MoveDown(self._selection))
+        self._controller.execute(ctrlcommands.MoveDown(self._selection))
         self.update_data()
         self._list.Select(self._selection + 1, True)
 
@@ -112,7 +136,7 @@ class ListEditorBase(wx.Panel):
             self._list.SetColumnWidth(i, widths[i])
 
     def _delete_selected(self):
-        self._controller.execute(DeleteItem(self._selection))
+        self._controller.execute(ctrlcommands.DeleteItem(self._selection))
         self._calculate_selection()
         self.update_data()
 
@@ -145,16 +169,26 @@ class ListEditor(ListEditorBase):
 
 class AutoWidthColumnList(wx.ListCtrl, ListCtrlAutoWidthMixin):
 
-    def __init__(self, parent, columns, data=None):
+    def __init__(self, parent, columns, color_foreground='black',
+                 color_background='light grey', data=None):
         wx.ListCtrl.__init__(self, parent,
                              style=wx.LC_REPORT | wx.NO_BORDER | wx.LC_SINGLE_SEL | wx.LC_HRULES)
         ListCtrlAutoWidthMixin.__init__(self)
+        self.color_foreground = color_foreground
+        self.color_background = color_background
+        self.SetBackgroundColour(Colour(color_background))
+        self.SetOwnBackgroundColour(Colour(color_background))
+        self.SetForegroundColour(Colour(color_foreground))
+        self.SetOwnForegroundColour(Colour(color_foreground))
+        # self.EnableAlternateRowColours(True)
         self._parent = parent
         self.populate(columns, data or [])
 
     def populate(self, columns, data):
         for i, name in enumerate(columns):
             self.InsertColumn(i, name)
+            # self.SetForegroundColour(Colour(self.color_foreground))
+            # self.SetBackgroundColour(Colour(self.color_background))
         self.insert_data(data)
 
     def insert_data(self, data):
@@ -198,6 +232,8 @@ class AutoWidthColumnList(wx.ListCtrl, ListCtrlAutoWidthMixin):
             list_item.SetFont(font)
         if colour:
             list_item.SetTextColour(colour)
+        else:
+            list_item.SetTextColour(Colour(7, 0, 70))
         self.SetItem(list_item)
 
     def _underlined_font(self):

@@ -13,15 +13,13 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from .settings import Settings, initialize_settings, RideSettings
 from .editor import PreferenceEditor
-from .widgets import PreferencesPanel, PreferencesComboBox,\
-    PreferencesColorPicker
+from .editors import GridEditorPreferences, TextEditorPreferences, TestRunnerPreferences
+from .general import DefaultPreferences
 from .imports import ImportPreferences
 from .saving import SavingPreferences
-from .editors import GridEditorPreferences, TextEditorPreferences,\
-    TestRunnerPreferences
-from .excludes import ExcludePreferences
+from .settings import Settings, initialize_settings, RideSettings
+from ..ui import ExcludePreferences
 
 
 class Preferences(object):
@@ -44,6 +42,7 @@ class Preferences(object):
             self._preference_panels.remove(panel_class)
 
     def _add_builtin_preferences(self):
+        self.add(DefaultPreferences)
         self.add(SavingPreferences)
         self.add(ImportPreferences)
         self.add(GridEditorPreferences)

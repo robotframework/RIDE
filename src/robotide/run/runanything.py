@@ -14,11 +14,12 @@
 #  limitations under the License.
 
 import wx
-from robotide.controller.basecontroller import _BaseController
 
-from robotide.pluginapi import Plugin, ActionInfo, SeparatorInfo
-from robotide.run.configmanagerui import ConfigManagerDialog
-from robotide.run.ui import Runner
+from ..controller.basecontroller import _BaseController
+from ..pluginapi import Plugin
+from ..action import ActionInfo, SeparatorInfo
+from ..run.configmanagerui import ConfigManagerDialog
+from ..run.ui import Runner
 
 
 class RunAnything(Plugin):

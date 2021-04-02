@@ -13,35 +13,34 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import wx
-from wx import grid
 import json
-from robotide.editor.cellrenderer import CellRenderer
-from robotide import context
+
+import wx
+from wx import grid, Colour
 from wx.grid import GridCellEditor
-from robotide.context import IS_MAC
-from os import linesep
-from robotide.controller.ctrlcommands import ChangeCellValue, ClearArea, \
+
+from .contentassist import ExpandingContentAssistTextCtrl
+from .editordialogs import UserKeywordNameDialog, ScalarVariableDialog, ListVariableDialog
+from .gridbase import GridEditor
+from .gridcolorizer import Colorizer
+from .tooltips import GridToolTips
+from .. import context
+from .. import robotapi
+from ..context import IS_MAC
+from ..controller.cellinfo import TipMessage, ContentType, CellType
+from ..controller.ctrlcommands import ChangeCellValue, ClearArea, \
     PasteArea, DeleteRows, AddRows, CommentRows, InsertCells, DeleteCells, \
     UncommentRows, Undo, Redo, RenameKeywordOccurrences, ExtractKeyword, \
     AddKeywordFromCells, MoveRowsUp, MoveRowsDown, ExtractScalar, ExtractList, \
     InsertArea
-from robotide.controller.cellinfo import TipMessage, ContentType, CellType
-from robotide.publish import (RideItemStepsChanged, RideSaved,
-                              RideSettingsChanged, PUBLISHER, RideBeforeSaving)
-from robotide.usages.UsageRunner import Usages, VariableUsages
-from robotide.ui.progress import RenameProgressObserver
-from robotide import robotapi
-from robotide.utils import variablematcher
-from robotide.widgets import Dialog, PopupMenu, PopupMenuItems
-
-from .gridbase import GridEditor
-from .tooltips import GridToolTips
-from .editordialogs import UserKeywordNameDialog, ScalarVariableDialog, \
-    ListVariableDialog
-from .contentassist import ExpandingContentAssistTextCtrl
-from .gridcolorizer import Colorizer
-
+from ..editor.cellrenderer import CellRenderer
+from ..pluginapi import Plugin
+from ..publish import (RideItemStepsChanged, RideSaved, RideSettingsChanged,
+                       PUBLISHER, RideBeforeSaving)
+from ..ui.progress import RenameProgressObserver
+from ..usages.UsageRunner import Usages, VariableUsages
+from ..utils import variablematcher
+from ..widgets import RIDEDialog, PopupMenu, PopupMenuItems
 
 _DEFAULT_FONT_SIZE = 11
 
@@ -59,7 +58,7 @@ def requires_focus(function):
     return decorated_function
 
 
-class KeywordEditor(GridEditor):
+class KeywordEditor(GridEditor, Plugin):
     _no_cell = (-1, -1)
     _popup_menu_shown = False
     dirty = property(lambda self: self._controller.dirty)
@@ -75,12 +74,20 @@ class KeywordEditor(GridEditor):
                    ] + GridEditor._popup_items
 
     def __init__(self, parent, controller, tree):
+        self.settings = parent.plugin.global_settings['Grid']
+        self.general_settings = parent.plugin.global_settings['General']
+        # self.color_background_help = self.general_settings.get('background help', (240, 242, 80))
+        # self.color_foreground_text = self.general_settings.get('foreground text', (7, 0, 70))
+        self.color_background = self.general_settings['background']
+        self.color_foreground = self.general_settings['foreground']
+        self.color_secondary_background = self.general_settings['secondary background']
+        self.color_secondary_foreground = self.general_settings['secondary foreground']
+        self.color_background_help = self.general_settings['background help']
+        self.color_foreground_text = self.general_settings['foreground text']
         GridEditor.__init__(
             self, parent, len(controller.steps) + 5,
             max((controller.max_columns + 1), 5),
             parent.plugin._grid_popup_creator)
-
-        self.settings = parent.plugin.global_settings['Grid']
         self._parent = parent
         self._plugin = parent.plugin
         self._cell_selected = False
@@ -100,9 +107,19 @@ class KeywordEditor(GridEditor):
         self._counter = 0  # Workaround for double delete actions
         self._dcells = None  # Workaround for double delete actions
         self._icells = None  # Workaround for double insert actions
+        self.InheritAttributes()
+
+        # TODO: This is ineffective, why?
+        """
+        self.SetBackgroundColour(Colour(self.color_secondary_background))
+        self.SetOwnBackgroundColour(Colour(self.color_secondary_background))
+        self.SetForegroundColour(Colour(self.color_secondary_foreground))
+        self.SetOwnForegroundColour(Colour(self.color_secondary_foreground))
+        """
+        # self.Refresh()
         PUBLISHER.subscribe(self._before_saving, RideBeforeSaving)
         PUBLISHER.subscribe(self._data_changed, RideItemStepsChanged)
-        PUBLISHER.subscribe(self.OnSettingsChanged, RideSettingsChanged)
+        # PUBLISHER.subscribe(self.OnSettingsChanged, RideSettingsChanged)
         PUBLISHER.subscribe(self._ps_on_resize_grid, RideSaved)
 
     def _namespace_updated(self):
@@ -154,6 +171,8 @@ class KeywordEditor(GridEditor):
         if word_wrap:
             self.SetDefaultRowSize(wx.grid.GRID_AUTOSIZE)
         self.SetDefaultCellOverflow(False)  # DEBUG
+        self.autosize()
+        self._colorize_grid()
 
     def _configure_grid(self):
         self._set_cells()
@@ -206,6 +225,7 @@ class KeywordEditor(GridEditor):
                   or 'auto size cols' in setting
                   or 'word wrap' in setting):
                 self._set_cells()
+                return
             self.autosize()
             self._colorize_grid()
 
@@ -833,9 +853,15 @@ work.</li>
     def OnJsonEditor(self, event=None):
         if event:
             event.Skip()
-        dialog = Dialog()
+        dialog = RIDEDialog()
         dialog.SetTitle('JSON Editor')
         dialog.SetSizer(wx.BoxSizer(wx.HORIZONTAL))
+        """
+        dialog.SetBackgroundColour(Colour(200, 222, 40))
+        dialog.SetOwnBackgroundColour(Colour(200, 222, 40))
+        dialog.SetForegroundColour(Colour(7, 0, 70))
+        dialog.SetOwnForegroundColour(Colour(7, 0, 70))
+        """
         okBtn = wx.Button(dialog, wx.ID_OK, "Save")
         cnlBtn = wx.Button(dialog, wx.ID_CANCEL, "Cancel")
         richText = wx.TextCtrl(dialog, wx.ID_ANY, "If supported by the native "
@@ -844,8 +870,14 @@ work.</li>
                                                   "font.",
                                size=(400, 475),
                                style=wx.HSCROLL | wx.TE_MULTILINE | wx.TE_NOHIDESEL)
+        """
+        richText.SetBackgroundColour(Colour(200, 222, 40))
+        richText.SetOwnBackgroundColour(Colour(200, 222, 40))
+        richText.SetForegroundColour(Colour(7, 0, 70))
+        richText.SetOwnForegroundColour(Colour(7, 0, 70))
+        """
         dialog.Sizer.Add(richText, flag=wx.GROW, proportion=1)
-        dialog.Sizer.Add(okBtn, flag=wx.ALIGN_RIGHT | wx.ALL)
+        dialog.Sizer.Add(okBtn, flag=wx.ALL)
         dialog.Sizer.Add(cnlBtn, flag=wx.ALL)
         # Get cell value of parent grid
         if self.is_json(self._current_cell_value()):
@@ -864,12 +896,21 @@ work.</li>
                                        self.selection.cell[1],
                                        json.dumps(strJson,
                                                   ensure_ascii=False))
-            except ValueError or json.JSONDecodeError as e:
+            except (ValueError, json.JSONDecodeError) as e:
                 res = wx.MessageDialog(dialog,
                                        "Error in JSON: {}\n\n"
                                        "Save anyway?".format(e),
                                        "Validation Error!",
-                                       wx.YES_NO).ShowModal()
+                                       wx.YES_NO)
+                res.InheritAttributes()
+                """
+                res.SetBackgroundColour(Colour(200, 222, 40))
+                res.SetOwnBackgroundColour(Colour(200, 222, 40))
+                res.SetForegroundColour(Colour(7, 0, 70))
+                res.SetOwnForegroundColour(Colour(7, 0, 70))
+                """
+                res.Refresh(True)
+                res.ShowModal()
                 if res == wx.ID_YES:
                     self.cell_value_edited(self.selection.cell[0],
                                            self.selection.cell[1],
@@ -889,6 +930,10 @@ work.</li>
 class ContentAssistCellEditor(GridCellEditor):
 
     def __init__(self, plugin, controller):
+        self.settings = plugin.global_settings['Grid']
+        self.general_settings = plugin.global_settings['General']
+        self.color_background_help = self.general_settings['background help']
+        self.color_foreground_text = self.general_settings['foreground text']
         GridCellEditor.__init__(self)
         self._plugin = plugin
         self._controller = controller
@@ -925,7 +970,8 @@ class ContentAssistCellEditor(GridCellEditor):
     def BeginEdit(self, row, col, grid):
         self._counter = 0
         self._tc.SetSize((-1, self._height))
-        self._tc.SetBackgroundColour(context.POPUP_BACKGROUND)  # DEBUG: We are now in Edit mode
+        self._tc.SetBackgroundColour(self.color_background_help)  # DEBUG: We are now in Edit mode
+        self._tc.SetForegroundColour(self.color_foreground_text)
         self._tc.set_row(row)
         self._original_value = grid.GetCellValue(row, col)
         self._tc.SetValue(self._original_value)
@@ -981,6 +1027,10 @@ class ChooseUsageSearchStringDialog(wx.Dialog):
     def __init__(self, cellvalue):
         wx.Dialog.__init__(self, None, wx.ID_ANY, "Find Where Used",
                            style=wx.DEFAULT_DIALOG_STYLE)
+        """
+        self.SetBackgroundColour(Colour(200, 222, 40))
+        self.SetForegroundColour(Colour(7, 0, 70))
+        """
         self.caption = "Please select what you want to check for usage"
         variables = set(variablematcher.find_variable_basenames(cellvalue))
         self.choices = [(False, cellvalue)] + [(True, v) for v in variables]

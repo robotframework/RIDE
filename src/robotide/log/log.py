@@ -13,18 +13,23 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import wx
-import os
-import tempfile
-import uuid
 import atexit
 import glob
-import sys
 import io
+import os
+import sys
+import tempfile
+import uuid
 
-from robotide.pluginapi import Plugin, ActionInfo, RideLog
-from robotide import widgets
-from robotide import context
+import wx
+from wx import Colour
+
+from .. import context
+from .. import widgets
+from ..pluginapi import Plugin
+from ..action import ActionInfo
+from ..publish.messages import RideLog
+from ..widgets import RIDEDialog
 
 
 def _message_to_string(msg):
@@ -105,11 +110,14 @@ class LogPlugin(Plugin):
             self.notebook.show_tab(self._panel)
 
 
-class _LogWindow(wx.Panel):
+class _LogWindow(wx.Panel, RIDEDialog):
 
     def __init__(self, notebook, log):
         wx.Panel.__init__(self, notebook)
+        self.dlg = RIDEDialog()
         self._output = wx.TextCtrl(self, style=wx.TE_READONLY | wx.TE_MULTILINE | wx.TE_NOHIDESEL)
+        self._output.SetBackgroundColour(Colour(self.dlg.color_background))
+        self._output.SetForegroundColour(Colour(self.dlg.color_foreground))
         self._output.Bind(wx.EVT_KEY_DOWN, self.OnKeyDown)
         self._log = log
         self._add_to_notebook(notebook)

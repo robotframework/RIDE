@@ -13,8 +13,8 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robotide import utils
-from robotide.utils import variablematcher
+from .. import utils
+from . import variablematcher
 
 
 def highlight_matcher(value, content):
