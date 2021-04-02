@@ -360,42 +360,6 @@ class TestRunnerPlugin(Plugin, RIDEDialog):
         """
         self._run_tests("DEBUG")
 
-    """
-    def _create_command(self, log_level="INFO"):
-        profile = self.get_current_profile()
-        args = self._create_command_args(
-            profile.get_command_args(),
-            log_level,
-            self._default_output_dir,
-            self.global_settings.get('pythonpath', None),
-            self._get_console_width(),
-            self._names_to_run
-        )
-
-        self._min_log_level_number = \
-            ArgsParser.get_message_log_level(args)
-
-        self._logs_directory = \
-            ArgsParser.get_output_directory(args, self._default_output_dir)
-
-        console_log_name = \
-            SettingsParser.get_console_log_name(profile.get_settings())
-        self._console_log = '' if not console_log_name \
-            else os.path.join(self._logs_directory, console_log_name)
-
-        command_builder = CommandBuilder()
-        command_builder.set_prefix(profile.get_command())
-        if args:
-            arg_file = os.path.join(self._default_output_dir, 'argfile.txt')
-            command_builder.add_arg_file(arg_file)
-            FileWriter.write(arg_file, args, 'wb')
-        command_builder.set_listener(self._test_runner.get_listener_port(),
-                                     self._pause_on_failure)
-        command_builder.set_suite_source(self.model.suite.source)
-
-        return command_builder.build()
-    """
-
     def _run_tests(self, log_level='INFO'):
         if not self._can_start_running_tests():
             return
@@ -462,14 +426,6 @@ class TestRunnerPlugin(Plugin, RIDEDialog):
             SettingsParser.get_console_log_name(profile_settings)
         self._console_log = '' if not console_log_name \
             else os.path.join(self._logs_directory, console_log_name)
-    """
-    def _initialize_ui_for_running(self):
-        self._show_notebook_tab()
-        self._clear_log_ctrls()
-        self._local_toolbar.EnableTool(ID_OPEN_LOGS_DIR, False)
-        self._local_toolbar.EnableTool(ID_SHOW_REPORT, False)
-        self._local_toolbar.EnableTool(ID_SHOW_LOG, False)
-    """
 
     def _get_current_working_dir(self, profile):
         if profile.name == runprofiles.CustomScriptProfile.name:
@@ -506,15 +462,6 @@ class TestRunnerPlugin(Plugin, RIDEDialog):
                             'No tests selected',
                             wx.ICON_QUESTION | wx.YES_NO)
         return ret == wx.YES
-
-    def _initialize_ui_for_running(self):
-        self._show_notebook_tab()
-        self._clear_log_ctrls()
-        self._local_toolbar.EnableTool(ID_OPEN_LOGS_DIR, False)
-        self._local_toolbar.EnableTool(ID_SHOW_REPORT, False)
-        self._local_toolbar.EnableTool(ID_SHOW_LOG, False)
-        self._report_file = self._log_file = None
-        self._log_message_queue = Queue()
 
     def _clear_log_ctrls(self):
         self._clear_text_ctrl(self._console_log_ctrl)
@@ -591,7 +538,7 @@ class TestRunnerPlugin(Plugin, RIDEDialog):
             else:
                 if not self._maxmemmsg:
                     self._maxmemmsg = '\n' + "Messages log exceeded 80% of " \
-                                      "process memory, stopping for now..."
+                                             "process memory, stopping for now..."
                     self._append_to_message_log(self._maxmemmsg, "stderr")
         if not self._test_runner.is_running():
             self.OnProcessEnded(None)
