@@ -37,6 +37,7 @@ from ..ui.mainframe import ToolBar
 from ..ui.treeplugin import TreePlugin
 from ..ui.fileexplorerplugin import FileExplorerPlugin
 from ..utils import RideFSWatcherHandler, run_python_command
+from ..lib.robot.utils.encodingsniffer import get_system_encoding
 from ..publish import PUBLISHER
 from ..publish.messages import RideSettingsChanged
 from ..preferences.settings import _Section
@@ -293,9 +294,10 @@ class RIDE(wx.App):
             ['import robot; print(robot.__file__ + \", \" + robot.__version__)'])
         robot_found = b"ModuleNotFoundError" not in output and output
         if robot_found:
+            system_encoding = get_system_encoding()
             rf_file, rf_version = output.strip().split(b", ")
             publish.RideLogMessage("Found Robot Framework version %s from %s." % (
-                str(rf_version, 'utf-8'), str(os.path.dirname(rf_file), 'utf-8'))).publish()
+                str(rf_version, system_encoding), str(os.path.dirname(rf_file), system_encoding))).publish()
             return rf_version
         else:
             publish.RideLogMessage(

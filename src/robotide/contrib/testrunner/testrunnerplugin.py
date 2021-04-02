@@ -376,7 +376,7 @@ class TestRunnerPlugin(Plugin, RIDEDialog):
         self._initialize_variables_for_running(profile.get_settings(), command_args)
         self._initialize_ui_for_running()
         # DEBUG on Py3 it not shows correct if tags with latin chars
-        self._append_to_console_log("command: %s\n" % command, enc=False)
+        self._append_to_console_log("command: %s\n" % command)
         try:
             self._test_runner.run_command(command, self._get_current_working_dir(profile))
             self._process_timer.Start(41)  # roughly 24fps
@@ -462,6 +462,15 @@ class TestRunnerPlugin(Plugin, RIDEDialog):
                             'No tests selected',
                             wx.ICON_QUESTION | wx.YES_NO)
         return ret == wx.YES
+
+    def _initialize_ui_for_running(self):
+        self._show_notebook_tab()
+        self._clear_log_ctrls()
+        self._local_toolbar.EnableTool(ID_OPEN_LOGS_DIR, False)
+        self._local_toolbar.EnableTool(ID_SHOW_REPORT, False)
+        self._local_toolbar.EnableTool(ID_SHOW_LOG, False)
+        self._report_file = self._log_file = None
+        self._log_message_queue = Queue()
 
     def _clear_log_ctrls(self):
         self._clear_text_ctrl(self._console_log_ctrl)
@@ -574,13 +583,14 @@ class TestRunnerPlugin(Plugin, RIDEDialog):
     def _append_to_message_log(self, text, source="stdout"):
         self._append_text(self._message_log_ctrl, text, source)
 
-    def _append_to_console_log(self, text, source="stdout", enc=True):
+    def _append_to_console_log(self, text, source="stdout"):
         """Put output to the text control"""
-        self._append_text(self._console_log_ctrl, text, source, enc)
+        self._append_text(self._console_log_ctrl, text, source)
         if self._console_log:
             FileWriter.write(self._console_log, [text], "ab", "a")
 
-    def _append_text(self, text_ctrl, text, source="stdout", enc=True):
+    def _append_text(self, text_ctrl, text, source="stdout"):
+        # text could be bytes or str
         if not self.panel or not text_ctrl:
             return
         text_ctrl.update_scroll_width(text)
@@ -591,25 +601,7 @@ class TestRunnerPlugin(Plugin, RIDEDialog):
             text_ctrl.GetFirstVisibleLine() + text_ctrl.LinesOnScreen() - 1
 
         text_ctrl.SetReadOnly(False)
-        try:
-            if enc:
-                if IS_WINDOWS:
-                    text_ctrl.AppendText(text.encode('mbcs'))
-                else:
-                    text_ctrl.AppendText(text.encode(encoding['SYSTEM']))
-            else:
-                text_ctrl.AppendText(text.encode(encoding['OUTPUT']))
-        except UnicodeDecodeError as e:
-            # I'm not sure why I sometimes get this, and I don't know what I
-            # can do other than to ignore it.
-            # print(f"DEBUG: Console print UnicodeDecodeError string is {string}")
-            text_ctrl.AppendTextRaw(text.encode(encoding['OUTPUT']))  # Suggested on Issue #2339
-        except UnicodeEncodeError as e:
-            # I'm not sure why I sometimes get this, and I don't know what I
-            # can do other than to ignore it.
-            # print(f"DEBUG: Console print UnicodeEncodeError string is {string}")
-            text_ctrl.AppendTextRaw(text.encode(encoding['CONSOLE']))
-
+        text_ctrl.AppendText(text)
         new_text_end = text_ctrl.GetLength()
 
         if wx.VERSION < (4, 1, 0):
@@ -1147,7 +1139,11 @@ class OutputStyledTextCtrl(wx.stc.StyledTextCtrl):
         self._max_row_len = 0
 
     def update_scroll_width(self, string):
-        string_max_len = max(len(s) for s in string.split('\n'))
+        if isinstance(string, bytes):
+            linesep = b'\n'
+        else:
+            linesep = '\n'
+        string_max_len = max(len(s) for s in string.split(linesep))
         if string_max_len <= self._max_row_len:
             return
         self._max_row_len = string_max_len

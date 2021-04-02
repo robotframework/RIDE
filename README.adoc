@@ -39,7 +39,7 @@ pip install -U --pre robotframework-ride
 
 
 == Unit testing statuses:
-Linux (py36, py37, py38): image:https://travis-ci.com/robotframework/RIDE.svg?branch=master[Unit Tests, link=https://travis-ci.com/robotframework/RIDE]
+Linux (py36, py37, py38, py39): image:https://travis-ci.com/robotframework/RIDE.svg?branch=master[Unit Tests, link=https://travis-ci.com/robotframework/RIDE]
 Windows (py36, py37, py38): image:https://ci.appveyor.com/api/projects/status/github/HelioGuilherme66/RIDE?branch=master&svg=true[Unit Tests, link=https://ci.appveyor.com/project/HelioGuilherme66/ride]
 
 '''
