@@ -75,7 +75,7 @@ class ResourceFactory(object):
 
     def _get_resource(self, path, report_status):
         normalized = self._normalize(path)
-        if self.check_path_from_excludes(normalized):
+        if self.check_path_from_excludes(path) or self.check_path_from_excludes(normalized):
             return None
         if normalized not in self.cache:
             try:
