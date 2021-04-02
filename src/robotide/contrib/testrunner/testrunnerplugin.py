@@ -376,7 +376,7 @@ class TestRunnerPlugin(Plugin, RIDEDialog):
         self._initialize_variables_for_running(profile.get_settings(), command_args)
         self._initialize_ui_for_running()
         # DEBUG on Py3 it not shows correct if tags with latin chars
-        self._append_to_console_log("command: %s\n" % command, enc=False)
+        self._append_to_console_log("command: %s\n" % command)
         try:
             self._test_runner.run_command(command, self._get_current_working_dir(profile))
             self._process_timer.Start(41)  # roughly 24fps
