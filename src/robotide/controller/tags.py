@@ -13,7 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robotide.controller.basecontroller import _BaseController
+from ..controller.basecontroller import _BaseController
 
 
 class Tag(_BaseController):

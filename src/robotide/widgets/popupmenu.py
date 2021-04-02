@@ -14,7 +14,7 @@
 #  limitations under the License.
 
 import wx
-
+from wx import Colour
 
 class PopupCreator(object):
 
@@ -50,6 +50,12 @@ class PopupMenu(wx.Menu):
 
     def __init__(self, parent, menu_items):
         wx.Menu.__init__(self)
+        """
+        parent.SetBackgroundColour(Colour(200, 222, 40))
+        parent.SetOwnBackgroundColour(Colour(200, 222, 40))
+        parent.SetForegroundColour(Colour(7, 0, 70))
+        parent.SetOwnForegroundColour(Colour(7, 0, 70))
+        """
         for item in menu_items:
             if item.is_separator():
                 self.AppendSeparator()

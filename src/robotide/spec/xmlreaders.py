@@ -16,10 +16,10 @@
 import os
 import sys
 
-from robotide import robotapi, utils
-from robotide.utils.versioncomparator import cmp_versions
+from .. import context, robotapi, utils
+from ..utils.versioncomparator import cmp_versions
 from .iteminfo import _XMLKeywordContent
-from robotide import context
+
 
 class SpecInitializer(object):
 

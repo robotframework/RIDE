@@ -13,11 +13,12 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import wx
 import re
 
+import wx
+
+from ..widgets import ImageProvider
 from .shortcut import Shortcut
-from robotide.widgets import ImageProvider
 
 
 def ActionInfoCollection(data, event_handler, container=None):

@@ -15,9 +15,15 @@
 
 import unittest
 import time
+from robot.version import VERSION
 from utest.resources import datafilereader
 
 from robotide.contrib.testrunner.testrunner import Process
+
+if VERSION >= '4.0':
+   console_out = '==============================================================================\nSmall Test                                                                    \n==============================================================================\nSmall Test.Test                                                               \n==============================================================================\nPassing                                                               | PASS |\n------------------------------------------------------------------------------\nFailing                                                               | FAIL |\nthis fails\n------------------------------------------------------------------------------\nSmall Test.Test                                                       | FAIL |\n2 tests, 1 passed, 1 failed\n==============================================================================\nSmall Test                                                            | FAIL |\n2 tests, 1 passed, 1 failed\n==============================================================================\nOutput:  None\n'
+else:
+    console_out = '==============================================================================\nSmall Test                                                                    \n==============================================================================\nSmall Test.Test                                                               \n==============================================================================\nPassing                                                               | PASS |\n------------------------------------------------------------------------------\nFailing                                                               | FAIL |\nthis fails\n------------------------------------------------------------------------------\nSmall Test.Test                                                       | FAIL |\n2 critical tests, 1 passed, 1 failed\n2 tests total, 1 passed, 1 failed\n==============================================================================\nSmall Test                                                            | FAIL |\n2 critical tests, 1 passed, 1 failed\n2 tests total, 1 passed, 1 failed\n==============================================================================\nOutput:  None\n'
 
 
 class ProcessUnicodeTestCase(unittest.TestCase):
@@ -32,24 +38,7 @@ class ProcessUnicodeTestCase(unittest.TestCase):
 
     def test_running_robot_test(self):
         output, errors = self._run_small_test()
-        self.assertTrue(output.replace('\r','').startswith(
-        '==============================================================================\n'
-        'Small Test                                                                    \n'
-        '==============================================================================\n'
-        'Small Test.Test                                                               \n'
-        '==============================================================================\n'
-        'Passing                                                               | PASS |\n'
-        '------------------------------------------------------------------------------\n'
-        'Failing                                                               | FAIL |\n'
-        'this fails\n'
-        '------------------------------------------------------------------------------\n'
-        'Small Test.Test                                                       | FAIL |\n'
-        '2 critical tests, 1 passed, 1 failed\n2 tests total, 1 passed, 1 failed\n'
-        '==============================================================================\n'
-        'Small Test                                                            | FAIL |\n'
-        '2 critical tests, 1 passed, 1 failed\n2 tests total, 1 passed, 1 failed\n'
-        '==============================================================================\n'),
-        msg=repr(output))
+        self.assertTrue(output.replace('\r','').startswith(console_out), msg=repr(output))
         # Because of deprecation messages in RF 3.1, from Equal to Regex
         self.assertRegex(errors.replace('\r', ''), u'.*\[ WARN \] this passes\n')
 

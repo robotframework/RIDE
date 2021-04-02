@@ -14,7 +14,6 @@
 #  limitations under the License.
 
 import os
-from robotide.context import IS_FS_CASE_SENSITIVE
 from robotide import utils, robotapi
 
 
@@ -79,8 +78,7 @@ class ResourceFactory(object):
             return None
         if normalized not in self.cache:
             try:
-                self.cache[normalized] = \
-                    self._load_resource(normalized, report_status=report_status)
+                self.cache[normalized] = self._load_resource(path, report_status=report_status)
             except Exception as e:
                 # print("DEBUG Resource Factory: exception %s" % str(e))
                 self.cache[normalized] = None

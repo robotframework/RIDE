@@ -40,41 +40,45 @@ except ImportError:
     encoding.SYSTEM_ENCODING = get_system_encoding()
 
 
-class CommandBuilder:
-
+class Command:
     def __init__(self):
-        self._command_prefix = ''
-        self._suite_source = ''
+        self._prefix = ''
+        self._tests_suite_file = ''
         self._listener = None
-        self._arg_file = ''
+        self._args_file = ''
 
-    def set_prefix(self, prefix):
-        self._command_prefix = prefix
+    def with_prefix(self, prefix):
+        self._prefix = prefix
+        return self
 
-    def set_listener(self, port, pause_on_failure=False):
+    def with_listener(self, port, pause_on_failure=False):
         if port:
             self._listener = (port, pause_on_failure)
+        else:
+            self._listener = None
+        return self
 
-    def set_suite_source(self, suite_source):
-        self._suite_source = suite_source
+    def with_tests_suite_file(self, tests_suit_file):
+        self._tests_suite_file = tests_suit_file
+        return self
 
-    def add_arg_file(self, arg_file):
-        if arg_file:
-            self._arg_file = arg_file
+    def with_args_file(self, args_file):
+        self._args_file = args_file
+        return self
 
     def build(self):
         command = []
-        if self._command_prefix:
-            command.append(self._command_prefix)
+        if self._prefix:
+            command.append(self._prefix)
 
-        if self._arg_file:
-            command.extend(["-A", self._arg_file])
+        if self._args_file:
+            command.extend(["-A", self._args_file])
 
         if self._listener:
             command.extend(["--listener", self._get_listener_to_cmd()])
 
-        if self._suite_source:
-            command.append(self._suite_source)
+        if self._tests_suite_file:
+            command.append(self._tests_suite_file)
 
         return self._format_command(command)
 

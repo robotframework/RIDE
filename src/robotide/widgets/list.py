@@ -14,7 +14,9 @@
 #  limitations under the License.
 
 import os
+
 import wx
+from wx import Colour
 from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
 
 IS_WINDOWS = os.sep == '\\'
@@ -26,6 +28,12 @@ class VirtualList(wx.ListCtrl, ListCtrlAutoWidthMixin):
     def __init__(self, parent, headers, model):
         wx.ListCtrl.__init__(self, parent, style=self._style)
         ListCtrlAutoWidthMixin.__init__(self)
+        """
+        self.SetBackgroundColour(Colour(200, 222, 40))
+        self.SetOwnBackgroundColour(Colour(200, 222, 40))
+        self.SetForegroundColour(Colour(7, 0, 70))
+        self.SetOwnForegroundColour(Colour(7, 0, 70))
+        """
         self._model = model
         self._selection_listeners = []
         self._create_headers(headers)

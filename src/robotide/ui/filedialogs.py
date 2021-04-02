@@ -14,22 +14,24 @@
 #  limitations under the License.
 
 import os
+
 import wx
+from wx import Colour
 from wx.lib.filebrowsebutton import DirBrowseButton
 
-from robotide.controller.filecontrollers import ResourceFileController
-from robotide.controller.ctrlcommands import CreateNewResource,\
-    AddTestDataDirectory, AddTestCaseFile, CreateNewDirectoryProject,\
-    CreateNewFileProject, SetFileFormat, SetFileFormatRecuresively
-from robotide.utils import overrides
-from robotide.widgets import Label, Dialog
-from robotide.validators import NonEmptyValidator, NewSuitePathValidator,\
-    SuiteFileNameValidator
+from ..controller.ctrlcommands import (CreateNewResource, AddTestDataDirectory, AddTestCaseFile,
+                                       CreateNewDirectoryProject, CreateNewFileProject, SetFileFormat,
+                                       SetFileFormatRecuresively)
+# from ..controller.filecontrollers import ResourceFileController
+from ..utils import overrides
+from ..validators import NonEmptyValidator, NewSuitePathValidator, SuiteFileNameValidator
+from ..widgets import Label, RIDEDialog
+
 # This hack needed to set same label width as with other labels
 DirBrowseButton.createLabel = lambda self: Label(self, size=(110, -1), label=self.labelText)
 
 
-class _CreationDialog(Dialog):
+class _CreationDialog(RIDEDialog):
 
     formats = ["ROBOT", "TXT", "TSV", "HTML"]
 
@@ -53,7 +55,7 @@ class _CreationDialog(Dialog):
         self._name_editor.SetFocus()
 
     def _init_dialog(self, title):
-        Dialog.__init__(self, title)
+        RIDEDialog.__init__(self, title)
         # set Left to Right direction (while we don't have localization)
         self.SetLayoutDirection(wx.Layout_LeftToRight)
         return wx.BoxSizer(wx.VERTICAL)
@@ -69,6 +71,8 @@ class _CreationDialog(Dialog):
         self._add_label(disp_sizer, "Name")
         name_editor = wx.TextCtrl(self)
         name_editor.SetValidator(NonEmptyValidator("Name"))
+        name_editor.SetBackgroundColour(Colour(self.color_secondary_background))
+        name_editor.SetForegroundColour(Colour(self.color_secondary_foreground))
         self.Bind(wx.EVT_TEXT, self.OnPathChanged, name_editor)
         if wx.VERSION < (4, 1, 0):
             disp_sizer.Add(name_editor, 1, wx.ALIGN_CENTRE | wx.ALL | wx.EXPAND, 3)
@@ -85,6 +89,8 @@ class _CreationDialog(Dialog):
         return self._create_radiobuttons(sizer, "Type", ["File", "Directory"])
 
     def _create_format_chooser(self, sizer, callback=True):
+        from ..controller.filecontrollers import ResourceFileController
+
         formats = list(self.formats)
         if (hasattr(self, '_controller') and
             isinstance(self._controller, ResourceFileController)) or\
@@ -94,6 +100,10 @@ class _CreationDialog(Dialog):
 
     def _create_radiobuttons(self, sizer, label, choices, callback=True):
         radios = wx.RadioBox(self, label=label, choices=choices, majorDimension=4)
+        radios.SetBackgroundColour(Colour(self.color_background))
+        radios.SetForegroundColour(Colour(self.color_foreground))
+        # radios.SetOwnBackgroundColour(Colour(self.color_secondary_background))
+        # radios.SetOwnForegroundColour(Colour(self.color_secondary_foreground))
         if callback:
             self.Bind(wx.EVT_RADIOBOX, self.OnPathChanged, radios)
         sizer.Add(radios, flag=wx.ALIGN_LEFT | wx.RA_SPECIFY_ROWS | wx.ALL, border=5)
@@ -105,6 +115,11 @@ class _CreationDialog(Dialog):
                                   startDirectory=default_dir,
                                   size=(600, -1), newDirectory=True,
                                   changeCallback=self.OnPathChanged)
+        browser.SetBackgroundColour(Colour(self.color_background))
+        browser.SetForegroundColour(Colour(self.color_foreground))
+        # TODO: Change colors on buttons and text field
+        # browser.SetOwnBackgroundColour(Colour(self.color_secondary_background))
+        # browser.SetOwnForegroundColour(Colour(self.color_secondary_foreground))
         browser.SetValue(default_dir)
         sizer.Add(browser, 1, wx.EXPAND)
         return browser
@@ -120,9 +135,10 @@ class _CreationDialog(Dialog):
         disp_sizer = wx.BoxSizer(wx.HORIZONTAL)
         self._add_label(disp_sizer, title)
         disp = wx.TextCtrl(self, value=value)
+        disp.SetBackgroundColour(Colour(self.color_background))
+        disp.SetForegroundColour(Colour(self.color_foreground))
         disp.SetSizeHints(self.GetTextExtent(value)[0]+100, -1)
         disp.SetEditable(False)
-        disp.SetBackgroundColour("grey")
         if validator:
             disp.SetValidator(validator)
         disp_sizer.Add(disp, 1, wx.ALL | wx.EXPAND, 3)
@@ -203,6 +219,8 @@ class AddSuiteDialog(_WithImmutableParent, _CreationDialog):
     @overrides(_CreationDialog)
     def _create_name_editor(self, sizer):
         name_editor = _CreationDialog._create_name_editor(self, sizer)
+        name_editor.SetBackgroundColour(Colour(self.color_secondary_background))
+        name_editor.SetForegroundColour(Colour(self.color_secondary_foreground))
         name_editor.SetValidator(
             SuiteFileNameValidator("Name", self._is_dir_type))
         return name_editor
@@ -250,6 +268,8 @@ class ChangeFormatDialog(_FileFormatDialog):
         if not self._controller.is_directory_suite():
             return None
         selector = wx.CheckBox(self, label="Change recursively")
+        selector.SetBackgroundColour(Colour(self.color_secondary_background))
+        selector.SetForegroundColour(Colour(self.color_secondary_foreground))
         selector.SetValue(True)
         sizer.Add(selector, flag=wx.ALL, border=5)
         return selector
@@ -286,10 +306,14 @@ class RobotFilePathDialog(wx.FileDialog):
         filetypes = [
             ("robot", "Robot data (*.robot)|*.robot"),
             ("txt", "Robot data (*.txt)|*.txt"),
+            ("resource", "Robot resource file (*.resource)|*.resource"),
+            ("tsv", "Robot Tab Separated data (*.tsv)|*.tsv"),
+            ("html", "Robot HTML data (pre 3.2.2) (*.html)|*.html"),
             ("all", "All files|*.*")
         ]
         default_format = settings.get("default file format", "robot")
-        if default_format not in ["robot", "txt"]:
+        robottypes = settings.get('robot types', ['robot', 'resource', 'txt', 'tsv', 'html'])
+        if default_format not in robottypes:
             default_format = "all"
         first = [ft for ft in filetypes if ft[0] == default_format]
         rest = [ft for ft in filetypes if ft[0] != default_format]

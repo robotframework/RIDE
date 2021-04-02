@@ -15,7 +15,7 @@
 
 import os
 
-from robotide import robotapi
+from .. import robotapi
 
 
 def NewTestCaseFile(path):

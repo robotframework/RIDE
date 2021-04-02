@@ -37,7 +37,7 @@ from robotide.contrib.testrunner.usages import USAGE
 from robotide.lib.robot.utils import format_time
 from robotide.robotapi import DataError, Information
 from robotide.utils import overrides, ArgumentParser
-from robotide.widgets import ButtonWithHandler, Label
+from robotide.widgets import ButtonWithHandler, Label, RIDEDialog
 from sys import getfilesystemencoding
 from wx.lib.filebrowsebutton import FileBrowseButton
 
@@ -148,7 +148,7 @@ installation instructions.
 """
 
 
-class PybotProfile(BaseProfile):
+class PybotProfile(BaseProfile, RIDEDialog):
     """A runner profile which uses robot
 
     It is assumed that robot is on the path
@@ -172,6 +172,9 @@ class PybotProfile(BaseProfile):
     def get_toolbar(self, parent):
         if self._toolbar is None:
             self._toolbar = wx.Panel(parent, wx.ID_ANY)
+            self._mysettings = RIDEDialog(parent=self._toolbar)
+            self._toolbar.SetBackgroundColour(self._mysettings.color_background)
+            self._toolbar.SetForegroundColour(self._mysettings.color_foreground)
             sizer = wx.BoxSizer(wx.VERTICAL)
             for item in self.get_toolbar_items(self._toolbar):
                 sizer.Add(item, 0, wx.EXPAND)
@@ -329,13 +332,18 @@ class PybotProfile(BaseProfile):
                               self.OnCollapsiblePaneChanged,
                               collapsible_pane)
         pane = collapsible_pane.GetPane()
+        pane.SetBackgroundColour(self._mysettings.color_background)
+        pane.SetForegroundColour(self._mysettings.color_foreground)
         label = Label(pane, label="Output directory: ")
         self._output_directory_text_ctrl = \
             self._create_text_ctrl(pane, self.output_directory,
                                    "removed due unicode_error (delete this)",
                                    self.OnOutputDirectoryChanged)
+        self._output_directory_text_ctrl.SetBackgroundColour(self._mysettings.color_secondary_background)
+        self._output_directory_text_ctrl.SetForegroundColour(self._mysettings.color_secondary_foreground)
         button = ButtonWithHandler(pane, "...", self._handle_select_directory)
-
+        button.SetBackgroundColour(self._mysettings.color_secondary_background)
+        button.SetForegroundColour(self._mysettings.color_secondary_foreground)
         horizontal_sizer = wx.BoxSizer(wx.HORIZONTAL)
         horizontal_sizer.Add(label, 0,
                              wx.ALIGN_CENTER_VERTICAL | wx.LEFT, 10)
@@ -368,6 +376,11 @@ class PybotProfile(BaseProfile):
         path = self._output_directory_text_ctrl.GetValue()
         dlg = wx.DirDialog(None, "Select Logs Directory",
                            path, wx.DD_DEFAULT_STYLE)
+        dlg.SetBackgroundColour(self._mysettings.color_background)
+        dlg.SetForegroundColour(self._mysettings.color_foreground)
+        for item in dlg.GetChildren():  # DEBUG This is not working
+            item.SetBackgroundColour(self._mysettings.color_secondary_background)
+            item.SetForegroundColour(self._mysettings.color_secondary_foreground)
         if dlg.ShowModal() == wx.ID_OK and dlg.Path:
             self._output_directory_text_ctrl.SetValue(dlg.Path)
         dlg.Destroy()
@@ -389,13 +402,16 @@ class PybotProfile(BaseProfile):
                               self.OnCollapsiblePaneChanged,
                               collapsible_pane)
         pane = collapsible_pane.GetPane()
+        pane.SetBackgroundColour(self._mysettings.color_background)
+        pane.SetForegroundColour(self._mysettings.color_foreground)
         self._args_text_ctrl = \
             self._create_text_ctrl(pane, self.arguments,
                                    "removed due unicode_error (delete this)",
                                    self.OnArgumentsChanged)
         self._args_text_ctrl.SetToolTip("Arguments for the test run. "
                                         "Arguments are space separated list.")
-
+        self._args_text_ctrl.SetBackgroundColour(self._mysettings.color_secondary_background)
+        self._args_text_ctrl.SetForegroundColour(self._mysettings.color_secondary_foreground)
         horizontal_sizer = wx.BoxSizer(wx.HORIZONTAL)
         horizontal_sizer.Add(self._args_text_ctrl, 1,
                              wx.EXPAND | wx.LEFT | wx.RIGHT | wx.BOTTOM, 10)
@@ -413,9 +429,9 @@ class PybotProfile(BaseProfile):
     def _validate_arguments(self, args):
         invalid_message = self._get_invalid_message(args)
         self._args_text_ctrl.SetBackgroundColour(
-            'red' if invalid_message else 'white')
+            'red' if invalid_message else self._mysettings.color_secondary_background)
         self._args_text_ctrl.SetForegroundColour(
-            'white' if invalid_message else 'black')
+            'white' if invalid_message else self._mysettings.color_secondary_foreground)
         if not bool(invalid_message):
             invalid_message = "Arguments for the test run. " \
                               "Arguments are space separated list."
@@ -450,6 +466,8 @@ class PybotProfile(BaseProfile):
                               self.OnCollapsiblePaneChanged,
                               collapsible_pane)
         pane = collapsible_pane.GetPane()
+        pane.SetBackgroundColour(self._mysettings.color_background)
+        pane.SetForegroundColour(self._mysettings.color_foreground)
         include_cb = self._create_checkbox(pane, self.apply_include_tags,
                                            "Only run tests with these tags:",
                                            self.OnIncludeCheckbox)
@@ -464,7 +482,10 @@ class PybotProfile(BaseProfile):
             self._create_text_ctrl(pane, self.exclude_tags, "unicode error",
                                    self.OnExcludeTagsChanged,
                                    self.apply_exclude_tags)
-
+        self._include_tags_text_ctrl.SetBackgroundColour(self._mysettings.color_secondary_background)
+        self._include_tags_text_ctrl.SetForegroundColour(self._mysettings.color_secondary_foreground)
+        self._exclude_tags_text_ctrl.SetBackgroundColour(self._mysettings.color_secondary_background)
+        self._exclude_tags_text_ctrl.SetForegroundColour(self._mysettings.color_secondary_foreground)
         horizontal_sizer = wx.BoxSizer(wx.HORIZONTAL)
         horizontal_sizer.Add(include_cb, 0, wx.ALIGN_CENTER_VERTICAL)
         horizontal_sizer.Add(self._include_tags_text_ctrl, 1, wx.EXPAND)
@@ -490,26 +511,10 @@ class PybotProfile(BaseProfile):
         self._exclude_tags_text_ctrl.Enable(evt.IsChecked())
 
     def OnIncludeTagsChanged(self, evt):
-        self.set_setting("include_tags",
-                         self._include_tags_text_ctrl.GetValue())
+        self.set_setting("include_tags", self._include_tags_text_ctrl.GetValue())
 
     def OnExcludeTagsChanged(self, evt):
-        self.set_setting("exclude_tags",
-                         self._exclude_tags_text_ctrl.GetValue())
-
-    def OnExcludeCheckbox(self, evt):
-        self.set_setting("apply_exclude_tags", evt.IsChecked())
-        self._exclude_tags_text_ctrl.Enable(evt.IsChecked())
-
-    def OnIncludeCheckbox(self, evt):
-        self.set_setting("apply_include_tags", evt.IsChecked())
-        self._include_tags_text_ctrl.Enable(evt.IsChecked())
-
-    def OnIncludeTagsChanged(self, evt):
-        self.set_setting("include_tags", self._include_tags.GetValue())
-
-    def OnExcludeTagsChanged(self, evt):
-        self.set_setting("exclude_tags", self._exclude_tags.GetValue())
+        self.set_setting("exclude_tags", self._exclude_tags_text_ctrl.GetValue())
 
     @staticmethod
     def _create_checkbox(parent, value, title, handler):

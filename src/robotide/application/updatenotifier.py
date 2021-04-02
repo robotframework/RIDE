@@ -16,17 +16,20 @@
 # Configure wx version to allow running test app in __main__
 
 
-import wx, wx.html
-from robotide.utils.versioncomparator import cmp_versions
-from robotide.widgets.button import ButtonWithHandler
-
 import time
 import urllib.request as urllib2
 import xmlrpc.client as xmlrpclib
-import robotide.version as version
+
+import wx
+from wx import Colour
+
+from .. import version
+from ..utils.versioncomparator import cmp_versions
+from ..widgets import ButtonWithHandler, HtmlWindow, RIDEDialog
 
 _CHECK_FOR_UPDATES_SETTING = "check for updates"
 _LAST_UPDATE_CHECK_SETTING = "last update check"
+
 
 class UpdateNotifierController(object):
 
@@ -66,6 +69,8 @@ class UpdateNotifierController(object):
         return self._get_response(('robotframework-ride',), 'package_releases')[0]
 
     def _get_download_url(self, version):
+        from time import sleep
+        sleep(1)  # To avoid HTTPTooManyRequests
         return self._get_response(('robotframework-ride', version), 'release_data')['download_url']
 
     def _get_response(self, params, method):
@@ -78,9 +83,9 @@ class UpdateNotifierController(object):
         return xml
 
 
-class HtmlWindow(wx.html.HtmlWindow):
-    def __init__(self, parent, id, size=(600,400)):
-        wx.html.HtmlWindow.__init__(self,parent, id, size=size)
+class LocalHtmlWindow(HtmlWindow):
+    def __init__(self, parent, size=(600,400)):
+        HtmlWindow.__init__(self, parent, size)
         if "gtk2" or "gtk3" in wx.PlatformInfo:
             self.SetStandardFonts()
 
@@ -88,16 +93,20 @@ class HtmlWindow(wx.html.HtmlWindow):
         wx.LaunchDefaultBrowser(link.GetHref())
 
 
-class UpdateDialog(wx.Dialog):
+class UpdateDialog(RIDEDialog):
 
     def __init__(self, version, url, settings):
         self._settings = settings
-        wx.Dialog.__init__(self, None, -1, "Update available")
+        RIDEDialog.__init__(self, title="Update available", size=(400, 400),
+                            style=wx.DEFAULT_FRAME_STYLE | wx.FRAME_FLOAT_ON_PARENT)
         # set Left to Right direction (while we don't have localization)
         self.SetLayoutDirection(wx.Layout_LeftToRight)
+        self.SetBackgroundColour(Colour(self.color_background))
+        self.SetForegroundColour(Colour(self.color_foreground))
         sizer = wx.BoxSizer(orient=wx.VERTICAL)
-        hwin = HtmlWindow(self, -1, size=(400,200))
-        hwin.SetPage('New version %s available from <a href="%s">%s</a>' % (version, url, url))
+        hwin = LocalHtmlWindow(self, size=(400, 200))
+        hwin.set_content(f"New version {version} available from <a href=\"{url}\">{url}</a><br/><br/>"
+                         f"You can update with the command:<br/><b>pip install -U robotframework-ride</b>")
         irep = hwin.GetInternalRepresentation()
         hwin.SetSize((irep.GetWidth()+25, irep.GetHeight()+20))
         sizer.Add(hwin)
@@ -106,6 +115,8 @@ class UpdateDialog(wx.Dialog):
         checkbox.Bind(wx.EVT_CHECKBOX, handler=self.OnCheckboxChange)
         sizer.Add(checkbox)
         button = ButtonWithHandler(self, label="remind me later", handler=self.OnRemindMeLater)
+        button.SetBackgroundColour(Colour(self.color_secondary_background))
+        button.SetForegroundColour(Colour(self.color_secondary_foreground))
         sizer.Add(button)
         self.SetSizer(sizer)
         self.CentreOnParent(wx.BOTH)

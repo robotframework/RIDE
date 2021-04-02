@@ -13,9 +13,9 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import locale
 import os
 import wx
-import locale
 locale.setlocale(locale.LC_ALL, 'C')
 
 from contextlib import contextmanager
@@ -33,9 +33,20 @@ from ..application.pluginloader import PluginLoader
 from ..application.editorprovider import EditorProvider
 from ..application.releasenotes import ReleaseNotes
 from ..application.updatenotifier import UpdateNotifierController, UpdateDialog
+from ..ui.mainframe import ToolBar
 from ..ui.treeplugin import TreePlugin
 from ..ui.fileexplorerplugin import FileExplorerPlugin
 from ..utils import RideFSWatcherHandler, run_python_command
+from ..publish import PUBLISHER
+from ..publish.messages import RideSettingsChanged
+from ..preferences.settings import _Section
+from wx import Colour
+from ..widgets.button import ButtonWithHandler
+
+
+class UnthemableWidgetError(BaseException):
+    def __init__(self):
+        BaseException.__init__(self, 'HELP! I have no clue how to theme this.')
 
 
 class RIDE(wx.App):
@@ -58,6 +69,7 @@ class RIDE(wx.App):
         self.namespace = Namespace(self.settings)
         self._controller = Project(self.namespace, self.settings)
         self.frame = RideFrame(self, self._controller)
+        ##### DEBUG  self.frame.Show()
         self._editor_provider = EditorProvider()
         self._plugin_loader = PluginLoader(self, self._get_plugin_dirs(),
                                            coreplugins.get_core_plugins())
@@ -65,15 +77,25 @@ class RIDE(wx.App):
         perspective = self.settings.get('AUI Perspective', None)
         if perspective:
             self.frame._mgr.LoadPerspective(perspective, True)
+        try:
+            nb_perspective = self.settings.get('AUI NB Perspective', None)
+            if nb_perspective:
+                self.frame.notebook.LoadPerspective(nb_perspective)
+        except Exception as e:
+            print(f"RIDE: There was a problem loading panels position."
+                  f" Please delete the definition 'AUI NB Perspective' in "
+                  f"{os.path.join(context.SETTINGS_DIRECTORY, 'settings.cfg')}")
+            raise e
         self.treeplugin = TreePlugin(self)
         if self.treeplugin.settings['_enabled']:
             self.treeplugin.register_frame(self.frame)
         self.fileexplorerplugin = FileExplorerPlugin(self, self._controller)
         if self.fileexplorerplugin.settings['_enabled']:
             self.fileexplorerplugin.register_frame(self.frame)
-        self.frame.Show()
         if not self.treeplugin.opened:
             self.treeplugin.close_tree()
+        else:
+            wx.CallLater(200, self.treeplugin.populate, self.model)
         if not self.fileexplorerplugin.opened:
             self.fileexplorerplugin.close_tree()
         self.editor = self._get_editor()
@@ -82,12 +104,160 @@ class RIDE(wx.App):
         self.treeplugin.set_editor(self.editor)
         self._find_robot_installation()
         self._publish_system_info()
-        if self._updatecheck:
-            UpdateNotifierController(self.settings).notify_update_if_needed(UpdateDialog)
+        self.frame.Show()    ####### DEBUG DANGER ZONE
+        self.frame._mgr.Update()
         wx.CallLater(200, ReleaseNotes(self).bring_to_front)
         wx.CallLater(200, self.fileexplorerplugin._update_tree)
+        if self._updatecheck:
+            wx.CallAfter(UpdateNotifierController(self.settings).notify_update_if_needed, UpdateDialog)
         self.Bind(wx.EVT_ACTIVATE_APP, self.OnAppActivate)
+        PUBLISHER.subscribe(self.SetGlobalColour, RideSettingsChanged)
         return True
+
+    def _ApplyThemeToWidget(self, widget,
+                            foreColor=wx.BLUE, backColor=wx.LIGHT_GREY, theme={}):
+        background = theme['background']
+        foreground = theme['foreground']
+        secondary_background = theme['secondary background']
+        secondary_foreground = theme['secondary foreground']
+        background_help = theme['background help']
+        foreground_text = theme['foreground text']
+        # font_size = theme['font size']
+        # font_face = theme['font face']
+        if isinstance(widget, wx.lib.agw.aui.auibar.AuiToolBar) or isinstance(widget, ToolBar):
+            auiDefaultToolBarArt = wx.lib.agw.aui.AuiDefaultToolBarArt()
+            auiDefaultToolBarArt.SetDefaultColours(wx.GREEN)
+            widget.SetBackgroundColour(background)
+            widget.SetOwnBackgroundColour(background)
+            widget.SetForegroundColour(foreground)
+            widget.SetOwnForegroundColour(foreground)
+            """
+            widget.SetBackgroundColour(Colour(200, 222, 40))
+            widget.SetOwnBackgroundColour(Colour(200, 222, 40))
+            widget.SetForegroundColour(Colour(7, 0, 70))
+            widget.SetOwnForegroundColour(Colour(7, 0, 70))
+            """
+            # or
+        elif isinstance(widget, wx.Control):
+            if not isinstance(widget, (wx.Button, wx.BitmapButton, ButtonWithHandler)):
+                widget.SetForegroundColour(foreground)  #  or foreColor
+                widget.SetBackgroundColour(background)  # or backColor
+                widget.SetOwnBackgroundColour(background)
+                widget.SetOwnForegroundColour(foreground)
+            else:
+                widget.SetForegroundColour(secondary_foreground)
+                widget.SetBackgroundColour(secondary_background)
+                widget.SetOwnBackgroundColour(secondary_background)
+                widget.SetOwnForegroundColour(secondary_foreground)
+        elif isinstance(widget, (wx.TextCtrl, wx.lib.agw.aui.auibook.TabFrame, wx.lib.agw.aui.auibook.AuiTabCtrl)):
+            widget.SetForegroundColour(foreground_text)  # or foreColor
+            widget.SetBackgroundColour(background_help)  # or backColor
+        elif isinstance(widget, (RideFrame, wx.Panel)):
+            widget.SetForegroundColour(foreground)  # or foreColor
+            widget.SetBackgroundColour(background)  # or foreColor
+        elif isinstance(widget, wx.MenuItem):
+            widget.SetTextColour(foreground)
+            widget.SetBackgroundColour(background)
+            # print(f"DEBUG: Application ApplyTheme wx.MenuItem {type(widget)}")
+        else:
+            widget.SetBackgroundColour(background)
+            widget.SetOwnBackgroundColour(background)
+            widget.SetForegroundColour(foreground)
+            widget.SetOwnForegroundColour(foreground)
+            ###### print(f"DEBUG: Application ApplyTheme not specified type(widget) {type(widget)}")
+            # pass
+            # raise UnthemableWidgetError()
+
+    def _WalkWidgets(self, widget, indent=0, indentLevel=4, theme={}):
+        ## print(' ' * indent + widget.__class__.__name__)
+        widget.Freeze()
+        # print(f"DEBUG Application General : _WalkWidgets background {theme['background']}")
+        self._ApplyThemeToWidget(widget=widget, theme=theme)
+        for child in widget.GetChildren():
+            if (not child.IsTopLevel()):  # or isinstance(child, wx.PopupWindow)):
+                indent += indentLevel
+                self._WalkWidgets(child, indent, indentLevel, theme)
+            indent -= indentLevel
+        widget.Thaw()
+
+    def SetGlobalColour(self, message):
+        if message.keys[0] != "General":
+            return
+        # print(f"DEBUG Application General : Enter SetGlobalColour message= {message.keys[0]}")
+        app = wx.App.Get()
+        _root = app.GetTopWindow()
+        theme = self.settings.get('General', None)
+        font_size = theme['font size']
+        font_face = theme['font face']
+        font = _root.GetFont()
+        font.SetFaceName(font_face)
+        font.SetPointSize(font_size)
+        _root.SetFont(font)
+        self._WalkWidgets(_root, theme=theme)
+        # print(f"DEBUG Application General : SetGlobalColour AppliedWidgets check Filexplorer and Tree")
+        if theme['apply to panels'] and self.fileexplorerplugin.settings['_enabled']:
+            self.fileexplorerplugin.settings['background'] = theme['background']
+            self.fileexplorerplugin.settings['foreground'] = theme['foreground']
+            self.fileexplorerplugin.settings['foreground text'] = theme['foreground text']
+            self.fileexplorerplugin.settings['background help'] = theme['background help']
+            self.fileexplorerplugin.settings['font size'] = theme['font size']
+            self.fileexplorerplugin.settings['font face'] = theme['font face']
+            if self.fileexplorerplugin.settings['opened']:
+                self.fileexplorerplugin.OnShowFileExplorer(None)
+        if theme['apply to panels'] and self.treeplugin.settings['_enabled']:
+            self.treeplugin.settings['background'] = theme['background']
+            self.treeplugin.settings['foreground'] = theme['foreground']
+            self.treeplugin.settings['foreground text'] = theme['foreground text']
+            self.treeplugin.settings['background help'] = theme['background help']
+            self.treeplugin.settings['font size'] = theme['font size']
+            self.treeplugin.settings['font face'] = theme['font face']
+            if self.treeplugin.settings['opened']:
+                self.treeplugin.OnShowTree(None)
+        """
+        all_windows = list()
+        general = self.settings.get('General', None)
+        # print(f"DEBUG: Application General {general['background']} Type message {type(message)}")
+        # print(f"DEBUG: Application General message keys {message.keys} old {message.old} new {message.new}")
+        background = general['background']
+        foreground = general['foreground']
+        background_help = general['background help']
+        foreground_text = general['foreground text']
+        font_size = general['font size']
+        font_face = general['font face']
+        font = _root.GetFont()
+        font.SetFaceName(font_face)
+        font.SetPointSize(font_size)
+        _root.SetFont(font)
+
+        def _iterate_all_windows(root):
+            if hasattr(root, 'GetChildren'):
+                children = root.GetChildren()
+                if children:
+                    for c in children:
+                        _iterate_all_windows(c)
+            all_windows.append(root)
+
+        _iterate_all_windows(_root)
+
+        for w in all_windows:
+            if hasattr(w, 'SetHTMLBackgroundColour'):
+                w.SetHTMLBackgroundColour(wx.Colour(background_help))
+                w.SetForegroundColour(wx.Colour(foreground_text))  # 7, 0, 70))
+            elif hasattr(w, 'SetBackgroundColour'):
+                w.SetBackgroundColour(wx.Colour(background))  # 44, 134, 179))
+
+                # if hasattr(w, 'SetOwnBackgroundColour'):
+                #     w.SetOwnBackgroundColour(wx.Colour(background))  # 44, 134, 179))
+
+                if hasattr(w, 'SetForegroundColour'):
+                    w.SetForegroundColour(wx.Colour(foreground))  # 7, 0, 70))
+
+                # if hasattr(w, 'SetOwnForegroundColour'):
+                #    w.SetOwnForegroundColour(wx.Colour(foreground))  # 7, 0, 70))
+
+            if hasattr(w, 'SetFont'):
+                w.SetFont(font)
+            """
 
     def _publish_system_info(self):
         publish.RideLogMessage(context.SYSTEM_INFO).publish()
