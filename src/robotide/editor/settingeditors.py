@@ -14,40 +14,59 @@
 #  limitations under the License.
 
 import wx
+from wx import Colour
 
-from robotide import context
-from robotide.controller.ctrlcommands import UpdateVariable, UpdateDocumentation,\
-    SetValues, AddLibrary, AddResource, AddVariablesFileImport, ClearSetting
-from robotide.editor.listeditor import ListEditorBase
-from robotide.publish.messages import RideImportSetting,\
-    RideOpenVariableDialog, RideExecuteSpecXmlImport, RideSaving, \
-    RideVariableUpdated, RideVariableRemoved, RideVariableAdded
-from robotide.utils import overrides
-from robotide.widgets import ButtonWithHandler, Label, HtmlWindow, PopupMenu,\
-    PopupMenuItems, HtmlDialog
-from robotide.publish import PUBLISHER
-from robotide import utils
-from robotide.utils.highlightmatcher import highlight_matcher
+from .editordialogs import EditorDialog, DocumentationDialog, MetadataDialog, \
+    ScalarVariableDialog, ListVariableDialog, DictionaryVariableDialog, LibraryDialog, \
+    ResourceDialog, VariablesDialog
 from .formatters import ListToStringFormatter
 from .gridcolorizer import ColorizationSettings
-from .editordialogs import EditorDialog, DocumentationDialog, MetadataDialog,\
-    ScalarVariableDialog, ListVariableDialog, DictionaryVariableDialog, LibraryDialog,\
-    ResourceDialog, VariablesDialog
 from .listeditor import ListEditor
 from .popupwindow import HtmlPopupWindow
 from .tags import TagsDisplay
+from .. import context
+from .. import utils
+from ..controller import ctrlcommands
+# import UpdateVariable, UpdateDocumentation, SetValues, AddLibrary, AddResource, AddVariablesFileImport, ClearSetting
+from ..editor.listeditor import ListEditorBase
+from ..publish import PUBLISHER
+from ..publish.messages import (RideImportSetting, RideOpenVariableDialog, RideExecuteSpecXmlImport, RideSaving,
+                                 RideVariableAdded, RideVariableUpdated, RideVariableRemoved)
+from ..utils import overrides
+from ..utils.highlightmatcher import highlight_matcher
+from ..widgets import ButtonWithHandler, Label, HtmlWindow, PopupMenu, PopupMenuItems, HtmlDialog
 
 
 class SettingEditor(wx.Panel):
 
     def __init__(self, parent, controller, plugin, tree):
         wx.Panel.__init__(self, parent)
+        from ..preferences import RideSettings
+        _settings = RideSettings()
+        self.general_settings = _settings['General']
+        self.color_background = self.general_settings.get('background', 'light grey')
+        self.color_foreground = self.general_settings.get('foreground', 'black')
+        self.color_secondary_background = self.general_settings.get('secondary background', 'light grey')
+        self.color_secondary_foreground = self.general_settings.get('secondary foreground', 'black')
+        self.color_background_help = self.general_settings.get('background help', (240, 242, 80))
+        self.color_foreground_text = self.general_settings.get('foreground text', (7, 0, 70))
+        self.font_face = self.general_settings.get('font face', '')
+        self.font_size = self.general_settings.get('font size', 11)
+        self.SetBackgroundColour(Colour(self.color_background))
+        self.SetOwnBackgroundColour(Colour(self.color_background))
+        self.SetForegroundColour(Colour(self.color_foreground))
+        self.SetOwnForegroundColour(Colour(self.color_foreground))
         self._controller = controller
         self.plugin = plugin
         self._datafile = controller.datafile
         self._create_controls()
         self._tree = tree
         self._editing = False
+        self.font = self._tree.GetFont()
+        self.font.SetFaceName(self.font_face)
+        self.font.SetPointSize(self.font_size)
+        self._tree.SetFont(self.font)
+        self._tree.Refresh()
         self.plugin.subscribe(self._ps_on_update_value, RideImportSetting)
 
     def _create_controls(self):
@@ -61,13 +80,16 @@ class SettingEditor(wx.Panel):
         self._tooltip = self._get_tooltip()
         sizer.Add(self._value_display, 1, wx.EXPAND)
         self._add_edit(sizer)
-        sizer.Add(ButtonWithHandler(self, 'Clear'))
+        sizer.Add(ButtonWithHandler(self, 'Clear', color_secondary_foreground=self.color_secondary_foreground,
+                                    color_secondary_background=self.color_secondary_background))
         sizer.Layout()
         self.SetSizer(sizer)
 
     def _add_edit(self, sizer):
         sizer.Add(
-            ButtonWithHandler(self, 'Edit'), flag=wx.LEFT | wx.RIGHT, border=5)
+            ButtonWithHandler(self, 'Edit', color_secondary_foreground=self.color_secondary_foreground,
+                                    color_secondary_background=self.color_secondary_background),
+            flag=wx.LEFT | wx.RIGHT, border=5)
 
     def _create_value_display(self):
         display = self._value_display_control()
@@ -115,7 +137,7 @@ class SettingEditor(wx.Panel):
         return dlg_class(self._datafile, self._controller, self.plugin)
 
     def _set_value(self, value_list, comment):
-        self._controller.execute(SetValues(value_list, comment))
+        self._controller.execute(ctrlcommands.SetValues(value_list, comment))
 
     def _hide_tooltip(self):
         self._stop_popup_timer()
@@ -189,7 +211,7 @@ class SettingEditor(wx.Panel):
         self.update_value()
 
     def OnClear(self, event):
-        self._controller.execute(ClearSetting())
+        self._controller.execute(ctrlcommands.ClearSetting())
         self._update_and_notify()
 
     def _ps_on_update_value(self, message):
@@ -226,6 +248,14 @@ class SettingValueDisplay(wx.TextCtrl):
         wx.TextCtrl.__init__(
             self, parent, size=(-1, context.SETTING_ROW_HEIGHT),
             style=wx.TE_RICH | wx.TE_MULTILINE | wx.TE_NOHIDESEL)
+        """
+        self.SetBackgroundColour(Colour(200, 222, 40))
+        self.SetOwnBackgroundColour(Colour(200, 222, 40))
+        self.SetForegroundColour(Colour(7, 0, 70))
+        self.SetOwnForegroundColour(Colour(7, 0, 70))
+        """
+        self.color_secondary_background = parent.color_secondary_background
+        self.SetBackgroundColour(Colour(self.color_secondary_background))
         self.SetEditable(False)
         self._colour_provider = ColorizationSettings(
             parent.plugin.global_settings['Grid'])
@@ -238,7 +268,10 @@ class SettingValueDisplay(wx.TextCtrl):
     def set_value(self, controller, plugin):
         self._value = controller.display_value
         self._keyword_name = controller.keyword_name
-        self._is_user_keyword = plugin.is_user_keyword(self._keyword_name)
+        try:
+            self._is_user_keyword = plugin.is_user_keyword(self._keyword_name)
+        except AttributeError:
+            self._is_user_keyword = False
         self.SetValue(self._value)
         self._colorize_data()
 
@@ -251,18 +284,19 @@ class SettingValueDisplay(wx.TextCtrl):
 
     def _get_background_colour(self, match=None):
         if self._value is None:
-            return 'light grey'
+            return Colour(self.color_secondary_background)
         if match is not None and self.contains(match):
             return self._colour_provider.get_highlight_color()
-        return 'white'
+        return Colour(self.color_secondary_background)  # 'white'  # Colour(200, 222, 40)
 
     def _colorize_possible_user_keyword(self):
         if not self._is_user_keyword:
             return
         font = self.GetFont()
         font.SetUnderlined(True)
+        user_kw_color = self._colour_provider.get_text_color('user keyword')
         self.SetStyle(0, len(self._keyword_name),
-                      wx.TextAttr('blue', self._get_background_colour(), font))
+                      wx.TextAttr(user_kw_color, self._get_background_colour(), font))
 
     def clear(self):
         self.Clear()
@@ -285,13 +319,16 @@ class SettingValueDisplay(wx.TextCtrl):
 class DocumentationEditor(SettingEditor):
 
     def _value_display_control(self):
-        ctrl = HtmlWindow(self, (-1, 100))
+        ctrl = HtmlWindow(self, (-1, 100), color_background=self.color_secondary_background,
+                          color_foreground=self.color_secondary_foreground)
+        ctrl.SetBackgroundColour(Colour(self.color_secondary_background))
+        ctrl.SetForegroundColour(Colour(self.color_secondary_foreground))
         ctrl.Bind(wx.EVT_LEFT_DOWN, self.OnEdit)
         return ctrl
 
     def update_value(self):
         if self._controller:
-            self._value_display.SetPage(self._controller.visible_value)
+            self._value_display.set_content(self._controller.visible_value)
 
     def _get_tooltip(self):
         return HtmlPopupWindow(self, (500, 350), detachable=False)
@@ -305,7 +342,7 @@ class DocumentationEditor(SettingEditor):
 
     def _set_value(self, value_list, comment):
         if value_list:
-            self._controller.execute(UpdateDocumentation(value_list[0]))
+            self._controller.execute(ctrlcommands.UpdateDocumentation(value_list[0]))
 
     def contains(self, text):
         return False
@@ -447,7 +484,7 @@ class VariablesListEditor(_AbstractListEditor):
         if dlg:  # DEBUG robot accepts % variable definition
             if dlg.ShowModal() == wx.ID_OK:
                 name, value = dlg.get_value()
-                var.execute(UpdateVariable(name, value, dlg.get_comment()))
+                var.execute(ctrlcommands.UpdateVariable(name, value, dlg.get_comment()))
                 self.update_data()
             dlg.Destroy()
 
@@ -462,6 +499,10 @@ class ImportSettingListEditor(_AbstractListEditor):
     def __init__(self, parent, tree, controller):
         self._import_failed_shown = False
         _AbstractListEditor.__init__(self, parent, tree, controller)
+        self.SetBackgroundColour(Colour(self.color_background))
+        self.SetOwnBackgroundColour(Colour(self.color_background))
+        self.SetForegroundColour(Colour(self.color_foreground))
+        self.SetOwnForegroundColour(Colour(self.color_foreground))
 
     @overrides(ListEditorBase)
     def _create_buttons(self):
@@ -470,7 +511,9 @@ class ImportSettingListEditor(_AbstractListEditor):
             self, label='Add Import', size=wx.Size(120, 20),
             style=wx.ALIGN_CENTER))
         for label in self._buttons:
-            sizer.Add(ButtonWithHandler(self, label, width=120), 0, wx.ALL, 1)
+            sizer.Add(ButtonWithHandler(self, label, width=120,
+                                        color_secondary_foreground=self.color_secondary_foreground,
+                                        color_secondary_background=self.color_secondary_background), 0, wx.ALL, 1)
         return sizer
 
     def OnLeftClick(self, event):
@@ -509,24 +552,24 @@ class ImportSettingListEditor(_AbstractListEditor):
         setting = self._get_setting()
         self._show_import_editor_dialog(
             EditorDialog(setting),
-            lambda v, c: setting.execute(SetValues(v, c)),
+            lambda v, c: setting.execute(ctrlcommands.SetValues(v, c)),
             setting, on_empty=self._delete_selected)
 
     def OnLibrary(self, event):
         self._show_import_editor_dialog(
             LibraryDialog,
-            lambda v, c: self._controller.execute(AddLibrary(v, c)))
+            lambda v, c: self._controller.execute(ctrlcommands.AddLibrary(v, c)))
 
     def OnResource(self, event):
         self._show_import_editor_dialog(
             ResourceDialog,
-            lambda v, c: self._controller.execute(AddResource(v, c)))
+            lambda v, c: self._controller.execute(ctrlcommands.AddResource(v, c)))
 
     def OnVariables(self, event):
         self._show_import_editor_dialog(
             VariablesDialog,
             lambda v, c:
-                self._controller.execute(AddVariablesFileImport(v, c)))
+                self._controller.execute(ctrlcommands.AddVariablesFileImport(v, c)))
 
     def OnImportFailedHelp(self, event):
         if self._import_failed_shown:

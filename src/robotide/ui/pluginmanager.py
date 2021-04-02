@@ -14,34 +14,36 @@
 #  limitations under the License.
 
 import wx
-from wx.lib.scrolledpanel import ScrolledPanel
-from robotide.context import LOG
-from robotide.publish import RideLogException
-from robotide.widgets import Label
+from wx import Colour
 from wx.adv import HyperlinkCtrl
+from wx.lib.scrolledpanel import ScrolledPanel
+
+from ..context import LOG
+from ..publish import RideLogException
+from ..widgets import Label, RIDEDialog
 
 
 class PluginManager(object):
 
     def __init__(self, notebook):
         self._notebook = notebook
-        self._tab = None
+        self._panel = None
 
     def show(self, plugins):
-        if not self._tab:
-            self._tab = _PluginPanel(self._notebook, plugins, self._show_tab)
-            self._notebook.add_tab(self._tab, 'Manage Plugins',
-                                   allow_closing=True)
-        self._show_tab()
+        if not self._panel:
+            self._panel = _PluginPanel(self._notebook.GetParent(), plugins, self._show_panel)
+        self._show_panel()
 
-    def _show_tab(self):
-        self._notebook.show_tab(self._tab)
+    def _show_panel(self):
+        self._panel.Show()
 
 
-class _PluginPanel(wx.Panel):
+class _PluginPanel(RIDEDialog):
 
     def __init__(self, notebook, plugins, activation_callback):
-        wx.Panel.__init__(self, notebook)
+        RIDEDialog.__init__(self, parent=notebook, title="Manage Plugins", size=(800, 600))
+        self.SetBackgroundColour(Colour(self.color_background))
+        self.SetForegroundColour(Colour(self.color_foreground))
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(self._create_header(), 0, flag=wx.EXPAND | wx.LEFT |
                                                  wx.RIGHT | wx.TOP, border=16)
@@ -51,23 +53,30 @@ class _PluginPanel(wx.Panel):
         sizer.Add(self._create_body(plugins, activation_callback), 1,
                   flag=wx.EXPAND | wx.ALL, border=16)
         self.SetSizer(sizer)
+        self.CenterOnParent()
 
     def _create_header(self):
         header = Label(self, wx.ID_ANY, "Installed Plugins\n")
-        header.SetFont(wx.Font(wx.FontInfo(14).Family(wx.FONTFAMILY_SWISS).Bold()))
+        self.font = self.GetFont()
+        self.font.SetPointSize(self.font_size)
+        if self.font_face is None:
+            self.font_face = self.font.GetFaceName()
+        else:
+            self.font.SetFaceName(self.font_face)
+        self.SetFont(self.font)
+        header.SetFont(wx.Font(wx.FontInfo(14 if self.font_size<=11 else self.font_size + 3).Bold()))
         return header
 
     def _create_line(self):
         return wx.StaticLine(self)
 
     def _create_body(self, plugins, activation_callback):
-        panel = ScrolledPanel(self, wx.ID_ANY, style=wx.TAB_TRAVERSAL)
+        panel = ScrolledPanel(self, wx.ID_ANY, style=wx.TAB_TRAVERSAL | wx.SIZE_AUTO)
         panel.SetupScrolling()
         sizer = wx.FlexGridSizer(0, 2, hgap=8, vgap=8)
         sizer.AddGrowableCol(1, 1)
         sizer.Add(self._create_label(panel, 'Enabled'), 0, wx.BOTTOM, border=8)
-        sizer.Add(self._create_label(panel, 'Plugin'), 0, wx.BOTTOM |
-                  wx.EXPAND, border=8)
+        sizer.Add(self._create_label(panel, 'Plugin'), 0, wx.BOTTOM | wx.EXPAND, border=8)
         for plugin in sorted(plugins, key=lambda p: p.name):
             sizer.Add(_PluginEnablationCheckBox(panel, plugin,
                                                 activation_callback),
@@ -85,8 +94,12 @@ class _PluginPanel(wx.Panel):
         return info
 
     def _create_label(self, parent, text):
-        boldFont = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT)
+        boldFont = self.GetFont()
+        # boldFont = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT)
+        if self.font_face:
+            boldFont.SetFaceName(self.font_face)
         boldFont.SetWeight(wx.FONTWEIGHT_BOLD)
+        boldFont.SetPointSize(self.font_size)
         label = Label(parent, wx.ID_ANY, text)
         label.SetFont(boldFont)
         return label

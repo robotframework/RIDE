@@ -9,7 +9,7 @@ before_install:
   - pip install $WXPACK
 install:
   - pip install -r requirements-dev.txt
-  # - python3 -m pip install .
+  - pip install .
   -
 matrix:
   include:
@@ -21,12 +21,15 @@ matrix:
         - WXPACK=https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-18.04/wxPython-4.0.7.post2-cp37-cp37m-linux_x86_64.whl
     - python: "3.6"
       env:
-        - WXPACK=https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-18.04/wxPython-4.1.0-cp36-cp36m-linux_x86_64.whl
+        - WXPACK=https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-18.04/wxPython-4.1.1-cp36-cp36m-linux_x86_64.whl
     - python: "3.7"
       env:
-        - WXPACK=https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-18.04/wxPython-4.1.0-cp37-cp37m-linux_x86_64.whl
+        - WXPACK=https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-18.04/wxPython-4.1.1-cp37-cp37m-linux_x86_64.whl
     - python: "3.8"
       env:
-        - WXPACK=https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-18.04/wxPython-4.1.0-cp38-cp38-linux_x86_64.whl
+        - WXPACK=https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-18.04/wxPython-4.1.1-cp38-cp38-linux_x86_64.whl
+    - python: "3.9"
+      env:
+        - WXPACK=https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-18.04/wxPython-4.1.1-cp39-cp39-linux_x86_64.whl
 script:
   - invoke test

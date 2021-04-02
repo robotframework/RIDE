@@ -53,6 +53,14 @@ class TestKeywordInfo(unittest.TestCase):
         assert_in_details(kw_info, 'TestLib',
                           '[ arg1 | arg2=default value | *args ]')
 
+    def test_libkw_kwonly_arguments_parsing(self):
+        libname = 'TestLib'
+        lib = TestLibrary(libname)
+        kw = lib.handlers['testlib_keyword_with_kwonlyargs']
+        kw_info = LibraryKeywordInfo(kw.name, kw.doc, lib.doc_format, kw.library.name, libraryfetcher._parse_args(kw.arguments))
+        assert_in_details(kw_info, 'TestLib',
+                          '[ arg1 | *args | namedarg1 | namedarg2=default value | **kwargs ]')
+
     def test_uk_arguments_parsing(self):
         uk = UserKeyword(_FakeTestCaseFile(), 'My User keyword')
         uk.args.value = ['${arg1}', '${arg2}=def', '@{varargs}']

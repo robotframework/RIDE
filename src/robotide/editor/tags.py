@@ -14,9 +14,12 @@
 #  limitations under the License.
 
 import wx
-from robotide.controller.ctrlcommands import ChangeTag, ClearSetting
-from robotide.controller.tags import ForcedTag, DefaultTag
-from robotide.context import IS_WINDOWS
+from wx import Colour
+
+from ..context import IS_WINDOWS
+from ..controller import ctrlcommands
+# import ChangeTag, ClearSetting
+from ..controller.tags import ForcedTag, DefaultTag
 
 
 class TagsDisplay(wx.lib.scrolledpanel.ScrolledPanel):
@@ -86,7 +89,7 @@ class TagsDisplay(wx.lib.scrolledpanel.ScrolledPanel):
             if tb.value == '':
                 self._destroy_tagbox(tb)
                 if self._modifiable_tags_count() == 0:
-                    self._controller.execute(ClearSetting())
+                    self._controller.execute(ctrlcommands.ClearSetting())
 
     def _modifiable_tags_count(self):
         return sum(1 for tb in self._tag_boxes[:] if tb._properties.modifiable)
@@ -120,6 +123,12 @@ class TagBox(wx.TextCtrl):
 
     def __init__(self, parent, properties):
         wx.TextCtrl.__init__(self, parent, wx.ID_ANY, '', style=wx.TE_CENTER|wx.TE_NOHIDESEL)
+        """
+        self.SetBackgroundColour(Colour(200, 222, 40))
+        self.SetOwnBackgroundColour(Colour(200, 222, 40))
+        self.SetForegroundColour(Colour(7, 0, 70))
+        self.SetOwnForegroundColour(Colour(7, 0, 70))
+        """
         self._bind()
         self.set_properties(properties)
 
@@ -216,8 +225,9 @@ def Properties(tag, controller):
 
 
 class _TagBoxProperties(object):
-    foreground_color = 'black'
-    background_color = 'white'
+    # TODO: Use colours from settings
+    foreground_color = 'black'  # Colour(7, 0, 70)  #
+    background_color = 'gray'  # Colour(200, 222, 40) 'white'
     enabled = True
     add_new = False
 
@@ -238,7 +248,7 @@ class _TagBoxProperties(object):
 
     def change_value(self, value):
         if self.modifiable and (value != self.text or self.text == ''):
-            self._tag.controller.execute(ChangeTag(self._tag, value))
+            self._tag.controller.execute(ctrlcommands.ChangeTag(self._tag, value))
 
     def activate(self, tagbox):
         pass
@@ -249,7 +259,8 @@ class TagBoxProperties(_TagBoxProperties):
 
 
 class AddTagBoxProperties(_TagBoxProperties):
-    foreground_color = 'gray'
+    # TODO: Use colours from settings
+    foreground_color = 'gray'  # Colour(200, 222, 40)
     text = '<Add New>'
     tooltip = 'Click to add new tag'
     modifiable = False
@@ -265,12 +276,14 @@ class AddTagBoxProperties(_TagBoxProperties):
 
 
 class ForcedTagBoxProperties(_TagBoxProperties):
+    #TODO: Use colours from settings
     foreground_color = 'red'
-    background_color = '#D3D3D3'
+    background_color = '#D3D3D3'  # Colour(200, 222, 40)
     enabled = False
 
 
 class DefaultTagBoxProperties(_TagBoxProperties):
+    #TODO: Use colours from settings
     foreground_color = '#666666'
-    background_color = '#D3D3D3'
+    background_color = '#D3D3D3'  # Colour(200, 222, 40)
     enabled = False

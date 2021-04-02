@@ -13,28 +13,28 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from time import time
-from io import StringIO, BytesIO
 import string
+from io import StringIO, BytesIO
+from time import time
+
 import wx
-from wx import stc
-from robotide import robotapi
-from robotide.context import IS_WINDOWS, IS_MAC
-from robotide.controller.ctrlcommands import SetDataFile
-from robotide.publish import RideSettingsChanged, PUBLISHER
-from robotide.publish.messages import RideMessage
-from robotide.namespace.suggesters import SuggestionSource, BuiltInLibrariesSuggester
-from robotide.widgets import VerticalSizer, HorizontalSizer, ButtonWithHandler
-from robotide.pluginapi import (Plugin, RideSaving, TreeAwarePluginMixin,
-                                RideTreeSelection, RideNotebookTabChanging,
-                                RideDataChanged, RideOpenSuite,
-                                RideDataChangedToDirty)
-from robotide.widgets import TextField, Label, HtmlDialog
-from robotide.preferences.editors import ReadFonts
+from wx import stc, Colour
 from wx.adv import HyperlinkCtrl, EVT_HYPERLINK
-from .contentassist import ContentAssistTextEditor
-from robotide.controller.filecontrollers import ResourceFileController
-from robotide.controller.macrocontrollers import _WithStepsController
+
+from .. import robotapi
+from ..context import IS_WINDOWS, IS_MAC
+from ..controller.ctrlcommands import SetDataFile
+from ..controller.filecontrollers import ResourceFileController
+from ..controller.macrocontrollers import _WithStepsController
+from ..namespace.suggesters import SuggestionSource
+from ..pluginapi import Plugin, TreeAwarePluginMixin
+from ..publish.messages import (RideSaving, RideTreeSelection, RideNotebookTabChanging, RideDataChanged, RideOpenSuite,
+                                RideDataChangedToDirty)
+from ..preferences.editors import ReadFonts
+from ..publish import RideSettingsChanged, PUBLISHER
+from ..publish.messages import RideMessage
+from ..widgets import TextField, Label, HtmlDialog
+from ..widgets import VerticalSizer, HorizontalSizer, ButtonWithHandler, RIDEDialog
 
 try:  # import installed version first
     import robotframeworklexer
@@ -262,11 +262,20 @@ class DataValidationHandler(object):
             self._editor._mark_file_dirty()
             return False
         # TODO: use widgets.Dialog
-        id = wx.MessageDialog(self._editor,
+        dlg = wx.MessageDialog(self._editor,
                               'ERROR: Data sanity check failed!\n'
                               'Reset changes?',
                               'Can not apply changes from Txt Editor',
-                              style=wx.YES|wx.NO).ShowModal()
+                              style=wx.YES|wx.NO)
+        dlg.InheritAttributes()
+        """
+        dlg.SetBackgroundColour(Colour(200, 222, 40))
+        dlg.SetOwnBackgroundColour(Colour(200, 222, 40))
+        dlg.SetForegroundColour(Colour(7, 0, 70))
+        dlg.SetOwnForegroundColour(Colour(7, 0, 70))
+        """
+        dlg.Refresh(True)
+        id = dlg.ShowModal()
         self._last_answer = id
         self._last_answer_time = time()
         if id == wx.ID_YES:
@@ -327,10 +336,13 @@ class DataFileWrapper(object): # TODO: bad class name
         return output.getvalue()  # DEBUG .decode('utf-8')
 
 
-class SourceEditor(wx.Panel):
+class SourceEditor(wx.Panel, RIDEDialog):
 
     def __init__(self, parent, title, data_validator):
         wx.Panel.__init__(self, parent)
+        self.dlg = RIDEDialog()
+        self.SetBackgroundColour(Colour(self.dlg.color_background))
+        self.SetForegroundColour(Colour(self.dlg.color_foreground))
         self._syntax_colorization_help_exists = False
         self._data_validator = data_validator
         self._data_validator.set_editor(self)
@@ -375,9 +387,10 @@ class SourceEditor(wx.Panel):
         # text about syntax colorization
         self.editor_toolbar = HorizontalSizer()
         default_components = HorizontalSizer()
-        default_components.add_with_padding(
-            ButtonWithHandler(self, 'Apply Changes', handler=lambda
-                e: self.save()))
+        button = ButtonWithHandler(self, 'Apply Changes', handler=lambda e: self.save())
+        button.SetBackgroundColour(Colour(self.dlg.color_secondary_background))
+        button.SetForegroundColour(Colour(self.dlg.color_secondary_foreground))
+        default_components.add_with_padding(button)
         self._create_search(default_components)
         self.editor_toolbar.add_expanding(default_components)
         self.Sizer.add_expanding(self.editor_toolbar, propotion=0)
@@ -385,10 +398,14 @@ class SourceEditor(wx.Panel):
     def _create_search(self, container_sizer):
         container_sizer.AddSpacer(20)
         self._search_field = TextField(self, '', process_enters=True)
+        self._search_field.SetBackgroundColour(Colour(self.dlg.color_secondary_background))
+        self._search_field.SetForegroundColour(Colour(self.dlg.color_secondary_foreground))
         self._search_field.Bind(wx.EVT_TEXT_ENTER, self.OnFind)
         container_sizer.add_with_padding(self._search_field)
-        container_sizer.add_with_padding(
-            ButtonWithHandler(self, 'Search', handler=self.OnFind))
+        button = ButtonWithHandler(self, 'Search', handler=self.OnFind)
+        button.SetBackgroundColour(Colour(self.dlg.color_secondary_background))
+        button.SetForegroundColour(Colour(self.dlg.color_secondary_foreground))
+        container_sizer.add_with_padding(button)
         self._search_field_notification = Label(self, label='')
         container_sizer.add_with_padding(self._search_field_notification)
 
@@ -537,9 +554,6 @@ class SourceEditor(wx.Panel):
         # print(f"DEBUG: Textedit in open before getting SuggestionSource {self._data._data}\n Type data is {type(self._data._data)}")
         try:
             if isinstance(self._data._data, ResourceFileController):
-                # from robotide.namespace import Namespace
-                # self._namespace = Namespace(self._editor._settings)
-                # self._namespace.get_resource(self._data._data.source)
                 self._controller_for_context = DummyController(self._data._data, self._data._data)
                 # print(f"DEBUG: Textedit in before getting to RESOURCE")
                 self._suggestions = SuggestionSource(None,self._controller_for_context)
@@ -996,10 +1010,10 @@ class RobotDataEditor(stc.StyledTextCtrl):
             return select
 
 
-class FromStringIOPopulator(robotapi.FromFilePopulator):
+class FromStringIOPopulator(robotapi.populators.FromFilePopulator):
 
     def populate(self, content):
-        robotapi.TxtReader().read(content, self)
+        robotapi.RobotReader().read(content, self)
 
 
 class RobotStylizer(object):

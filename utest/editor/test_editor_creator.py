@@ -43,6 +43,7 @@ DATADIR = 'fake'
 DATAPATH = '%s/path' % DATADIR
 TestCaseFileEditor._populate = lambda self: None
 
+app = wx.App(None)
 
 class EditorCreatorTest(unittest.TestCase):
 
@@ -127,4 +128,3 @@ class EditorCreatorTest(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-

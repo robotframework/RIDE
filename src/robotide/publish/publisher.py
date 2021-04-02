@@ -18,7 +18,7 @@ import inspect
 import types
 from pubsub import pub
 from typing import Type, Callable
-from robotide.publish.messages import RideMessage
+from ..publish.messages import RideMessage
 
 
 class _Publisher:
@@ -39,7 +39,7 @@ class _Publisher:
         params = sig.parameters
         error_msg = 'only 1 required param (message) is expected.'
         assert len(params) == 1, 'Too many listener params, ' + error_msg
-        assert str(list(params.values())[0]) == 'message', 'Invalid listener param, ' + error_msg
+        assert str(list(params.values())[0]) in ['message', 'data'], 'Invalid listener param, ' + error_msg
 
     def subscribe(self, listener: Callable, topic: Type[RideMessage]):
         """ The listener's param signature must be (message) """

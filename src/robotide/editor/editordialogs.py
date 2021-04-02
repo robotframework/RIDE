@@ -15,31 +15,28 @@
 
 import wx
 
-from robotide.namespace.suggesters import ResourceSuggester, \
-    LibrariesSuggester, HistorySuggester
-from robotide.validators import ScalarVariableNameValidator, \
-    ListVariableNameValidator, TimeoutValidator, ArgumentsValidator, \
-    TestCaseNameValidator, UserKeywordNameValidator, \
-    DictionaryVariableNameValidator
-from robotide import utils
-from robotide.widgets import HelpLabel, Dialog
-
-from .fieldeditors import ValueEditor, ListValueEditor, MultiLineEditor,\
-    ContentAssistEditor, VariableNameEditor, ArgumentEditor, FileNameEditor
-from .formatters import ListToStringFormatter
+from wx import Colour
+from .. import utils
+from ..namespace.suggesters import ResourceSuggester, LibrariesSuggester, HistorySuggester
+from ..validators import (ScalarVariableNameValidator, ListVariableNameValidator, TimeoutValidator, ArgumentsValidator,
+                          TestCaseNameValidator, UserKeywordNameValidator, DictionaryVariableNameValidator)
+from ..widgets import HelpLabel, RIDEDialog, ButtonWithHandler
 from .dialoghelps import get_help
+from .fieldeditors import (ValueEditor, ListValueEditor, MultiLineEditor, ContentAssistEditor, VariableNameEditor,
+                           ArgumentEditor, FileNameEditor)
+from .formatters import ListToStringFormatter
 
 
 def EditorDialog(obj):
     return globals()[obj.label.replace(' ', '') + 'Dialog']
 
 
-class _Dialog(Dialog):
+class _Dialog(RIDEDialog):
     _title = property(lambda self: utils.name_from_class(self, drop='Dialog'))
 
     def __init__(self, controller, item=None, plugin=None):
         # TODO: Get rid of item, everything should be in controller
-        Dialog.__init__(self, self._title)
+        RIDEDialog.__init__(self, self._title)
         # set Left to Right direction (while we don't have localization)
         self.SetLayoutDirection(wx.Layout_LeftToRight)
         self.SetExtraStyle(wx.WS_EX_VALIDATE_RECURSIVELY)
@@ -75,6 +72,14 @@ class _Dialog(Dialog):
 
     def _create_buttons(self, **kwargs):
         buttons = self.CreateStdDialogButtonSizer(wx.OK|wx.CANCEL)
+        self.SetBackgroundColour(Colour(self.color_background))
+        self.SetForegroundColour(Colour(self.color_foreground))
+        for item in self.GetChildren():
+            if isinstance(item, (wx.Button, wx.BitmapButton, ButtonWithHandler)):
+                item.SetBackgroundColour(Colour(self.color_secondary_background))
+                item.SetOwnBackgroundColour(Colour(self.color_secondary_background))
+                item.SetForegroundColour(Colour(self.color_secondary_foreground))
+                item.SetOwnForegroundColour(Colour(self.color_secondary_foreground))
         self._sizer.Add(buttons, 0, wx.ALIGN_CENTER|wx.ALL, 5)
 
     def get_value(self):
@@ -161,7 +166,7 @@ class VariablesDialog(LibraryDialog):
         path = item and item.name or ''
         args = item and utils.join_value(item.args) or ''
         return [FileNameEditor(self, path, 'Path', self._controller, suggestion_source=self._history_suggester),
-               ValueEditor(self, args, 'Args')]
+                ValueEditor(self, args, 'Args')]
 
     def _execute(self):
         pass
@@ -171,7 +176,8 @@ class ResourceDialog(_Dialog):
 
     def _get_editors(self, item):
         name = item and item.name or ''
-        return [FileNameEditor(self, name, 'Path', self._controller, suggestion_source=ResourceSuggester(self._controller))]
+        return [FileNameEditor(self, name, 'Path', self._controller,
+                               suggestion_source=ResourceSuggester(self._controller))]
 
     def _execute(self):
         pass

@@ -16,8 +16,9 @@
 import inspect
 import sys
 import traceback
-from robotide import utils
+from .. import utils
 
+from robotide import utils
 
 class RideMessage:
     """Base class for all messages sent by RIDE.

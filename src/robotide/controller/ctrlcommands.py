@@ -13,22 +13,27 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from itertools import chain
-import time
 import os
 import re
+import time
+from itertools import chain
 
-from robotide.namespace.embeddedargs import EmbeddedArgsHandler
-from robotide.publish.messages import (RideSelectResource, RideFileNameChanged, RideSaving,
-                                       RideSaved, RideSaveAll, RideExcludesChanged)
-from robotide.namespace.namespace import _VariableStash
-from robotide.utils import overrides, variablematcher
-from robotide.controller.filecontrollers import ResourceFileController
-from robotide.controller.macrocontrollers import (KeywordNameController, ForLoopStepController,
-                                                  TestCaseController)
-from robotide.controller.settingcontrollers import _SettingController, VariableController
-from robotide.controller.tablecontrollers import VariableTableController
-from robotide.controller.validators import BaseNameValidator
+# from .filecontrollers import ResourceFileController
+# ResourceFileController
+# from . import macrocontrollers
+# from .macrocontrollers import KeywordNameController, ForLoopStepController, TestCaseController
+from . import settingcontrollers
+# import _SettingController, VariableController
+from . import tablecontrollers
+# import VariableTableController
+from . import validators
+# import BaseNameValidator
+from ..namespace.embeddedargs import EmbeddedArgsHandler
+from ..namespace import namespace
+# from ..namespace.namespace import _VariableStash
+from ..publish.messages import (RideSelectResource, RideFileNameChanged, RideSaving, RideSaved, RideSaveAll,
+                                RideExcludesChanged)
+from ..utils import overrides, variablematcher
 
 
 class Occurrence(object):
@@ -78,18 +83,22 @@ class Occurrence(object):
         return 'Steps' if self.count == 1 else 'Steps (%d usages)' % self.count
 
     def _in_settings(self):
-        return isinstance(self._item, _SettingController)
+        return isinstance(self._item, settingcontrollers._SettingController)
 
     def _in_variable_table(self):
-        return isinstance(self._item, VariableTableController)
+        return isinstance(self._item, tablecontrollers.VariableTableController)
 
     def _in_kw_name(self):
+        from .macrocontrollers import KeywordNameController
+
         return isinstance(self._item, KeywordNameController)
 
     def _in_steps(self):
         return not (self._in_settings() or self._in_kw_name())
 
     def _in_for_loop(self):
+        from .macrocontrollers import ForLoopStepController
+
         return isinstance(self._item.parent, ForLoopStepController)
 
     def replace_keyword(self, new_name):
@@ -118,7 +127,8 @@ class _Command(object):
     def _params_str(self):
         return ', '.join(self._format_param(p) for p in self._params())
 
-    def _format_param(self, param):
+    @staticmethod
+    def _format_param(param):
         if isinstance(param, str):
             return '"%s"' % param
         return str(param)
@@ -357,7 +367,7 @@ class RenameTest(_ReversibleCommand):
         return self._new_name
 
     def _execute(self, context):
-        old_name  = context.name
+        old_name = context.name
         context.test_name.rename(self._new_name)
         context.test_name._item.notify_name_changed(old_name)
 
@@ -369,7 +379,7 @@ class RenameFile(_Command):
 
     def __init__(self, new_basename):
         self._new_basename = new_basename
-        self._validator = BaseNameValidator(new_basename)
+        self._validator = validators.BaseNameValidator(new_basename)
 
     def execute(self, context):
         validation_result = self._validator.validate(context)
@@ -404,7 +414,7 @@ class RenameResourceFile(_Command):
         self._should_modify_imports = get_should_modify_imports
 
     def execute(self, context):
-        validation_result = BaseNameValidator(
+        validation_result = validators.BaseNameValidator(
             self._new_basename).validate(context)
         if validation_result:
             old_filename = context.filename
@@ -533,7 +543,7 @@ class DeleteFile(_Command):
 
 
 class OpenContainingFolder(_Command):
-    modifying  = False
+    modifying = False
 
     def execute(self, context):
         context.open_filemanager()
@@ -691,7 +701,8 @@ class FindOccurrences(_Command):
         return chain([kw.keyword_name] if kw.source == self._keyword_source
                      else [], kw.steps, [kw.teardown] if kw.teardown else [])
 
-    def _items_from_test(self, test):
+    @staticmethod
+    def _items_from_test(test):
         return chain(test.settings, test.steps)
 
     def _find_keyword_source(self, datafile_controller):
@@ -707,7 +718,8 @@ class FindOccurrences(_Command):
         return item.contains_keyword(
             self._keyword_regexp or self._keyword_name)
 
-    def _yield_for_other_threads(self):
+    @staticmethod
+    def _yield_for_other_threads():
         # GIL !?#!!!
         # THIS IS TO ENSURE THAT OTHER THREADS WILL GET SOME SPACE ALSO
         time.sleep(0)
@@ -726,6 +738,8 @@ class FindVariableOccurrences(FindOccurrences):
         yield df.variables
 
     def _items_from_controller(self, ctrl):
+        from .macrocontrollers import TestCaseController
+
         if isinstance(ctrl, TestCaseController):
             return self._items_from_test(ctrl)
         else:
@@ -758,22 +772,25 @@ class FindVariableOccurrences(FindOccurrences):
         else:
             return True
 
-    def _is_local_variable(self, name, context):
-        if isinstance(context, VariableController):
+    @staticmethod
+    def _is_local_variable(name, context):
+        if isinstance(context, settingcontrollers.VariableController):
             return False
         return name in context.get_local_variables() or \
             any(step.contains_variable_assignment(name)
                 for step in context.steps)
 
-    def _is_file_variable(self, name, context):
+    @staticmethod
+    def _is_file_variable(name, context):
         return context.datafile_controller.variables.contains_variable(name)
 
     def _is_imported_variable(self, name, context):
         return self._get_source_of_imported_var(name, context) not in \
             [None, context.datafile_controller]
 
-    def _is_builtin_variable(self, name):
-        return name in list(_VariableStash.global_variables.keys())
+    @staticmethod
+    def _is_builtin_variable(name):
+        return name in list(namespace._VariableStash.global_variables.keys())
 
     def _get_source_of_imported_var(self, name, context):
         for df in self._get_all_imported(context):
@@ -781,7 +798,8 @@ class FindVariableOccurrences(FindOccurrences):
                 return df
         return None
 
-    def _get_all_imported(self, context):
+    @staticmethod
+    def _get_all_imported(context):
         files = [context.datafile_controller]
         for f in files:
             files += [imp.get_imported_controller()
@@ -789,7 +807,10 @@ class FindVariableOccurrences(FindOccurrences):
                       imp.get_imported_controller() not in files]
         return files
 
-    def _get_all_where_used(self, context):
+    @staticmethod
+    def _get_all_where_used(context):
+        from .filecontrollers import ResourceFileController
+
         files = [context.datafile_controller]
         for f in files:
             if isinstance(f, ResourceFileController):
@@ -1002,10 +1023,11 @@ class ChangeCellValue(_StepsChangingCommand):
             self._row, self._col, step.get_value(self._col))
         step.change(self._col, self._value)
         self._step(context).remove_empty_columns_from_end()
-        assert self._validate_postcondition(context),'Should have correct value after change'
+        assert self._validate_postcondition(context), 'Should have correct value after change'
         return True
 
-    def _escape_newlines(self, item):
+    @staticmethod
+    def _escape_newlines(item):
         for newline in ('\r\n', '\n', '\r'):
             item = item.replace(newline, '\\n')
         return item

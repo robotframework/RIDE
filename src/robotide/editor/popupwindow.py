@@ -14,14 +14,18 @@
 #  limitations under the License.
 
 import wx
-from robotide.context import POPUP_BACKGROUND, IS_WINDOWS
-from robotide.widgets import VerticalSizer, HtmlWindow, HtmlDialog
+
+from ..context import POPUP_BACKGROUND, POPUP_FOREGROUND, IS_WINDOWS
+from ..widgets import VerticalSizer, HtmlWindow, HtmlDialog
 
 
 class _PopupWindowBase(object):
 
-    def __init__(self, size, detachable=True, autohide=False):
+    def __init__(self, size, detachable=True, autohide=False, color_background=POPUP_BACKGROUND,
+                 color_foreground=POPUP_FOREGROUND):
         # print("DEBUG: PopupWindow at init")
+        self.color_background = color_background
+        self.color_foreground = color_foreground
         self.panel = self._create_ui(size)
         if autohide:
             self._set_auto_hiding()
@@ -31,7 +35,9 @@ class _PopupWindowBase(object):
 
     def _create_ui(self, size):
         panel = wx.MiniFrame(self)
-        panel.SetBackgroundColour(POPUP_BACKGROUND)
+        #TODO: Make this colour dependent on colours cycle or by Library
+        panel.SetBackgroundColour(self.color_background)
+        panel.SetForegroundColour(self.color_foreground)
         szr = VerticalSizer()
         self._details = HtmlWindow(self, size=size)
         szr.add_expanding(self._details)
@@ -68,8 +74,11 @@ class _PopupWindowBase(object):
         return self.Size
 
     def set_content(self, content, title=None):
-        color = ''.join(hex(item)[2:] for item in POPUP_BACKGROUND)
-        self._current_details = '<body bgcolor=#%s>%s</body>' % (color, content)
+        if isinstance(self.color_background, tuple):
+            color = '#' + ''.join(hex(item)[2:] for item in self.color_background)
+        else:
+            color = self.color_background
+        self._current_details = '<body bgcolor=%s>%s</body>' % (color, content)
         self._details.SetPage(self._current_details)
         self._detached_title = title
 
@@ -79,6 +88,7 @@ class RidePopupWindow(wx.PopupWindow, _PopupWindowBase):
     def __init__(self, parent, size):
         wx.PopupWindow.__init__(self, parent,
                                 flags=wx.CAPTION | wx.RESIZE_BORDER | wx.DEFAULT_FRAME_STYLE)
+        # _PopupWindowBase.__init__(self, size, color_background=(40,40,10), color_foreground=(255,120,0))
         self.SetSize(size)
 
     def _set_auto_hiding(self):
@@ -90,8 +100,14 @@ class RidePopupWindow(wx.PopupWindow, _PopupWindowBase):
 class HtmlPopupWindow(RidePopupWindow):
 
     def __init__(self, parent, size, detachable=True, autohide=False):
+        from ..preferences import RideSettings
+        _settings = RideSettings()
+        self.general_settings = _settings['General']
+        self.color_background_help = self.general_settings['background help']
+        self.color_foreground_text = self.general_settings['foreground text']
         RidePopupWindow.__init__(self, parent, size)
-        _PopupWindowBase.__init__(self, size, detachable, autohide)
+        _PopupWindowBase.__init__(self, size, detachable, autohide, color_background=self.color_background_help,
+                                  color_foreground=self.color_foreground_text)
 
 
 # TODO: See if we need to have Mac specific window
@@ -102,7 +118,13 @@ class MacRidePopupWindow(wx.MiniFrame, _PopupWindowBase):
                                                   |wx.RESIZE_BORDER)
         # set Left to Right direction (while we don't have localization)
         self.SetLayoutDirection(wx.Layout_LeftToRight)
-        _PopupWindowBase.__init__(self, size, detachable, autohide)
+        from ..preferences import RideSettings
+        _settings = RideSettings()
+        self.general_settings = _settings['General']
+        self.color_background_help = self.general_settings['background help']
+        self.color_foreground_text = self.general_settings['foreground text']
+        _PopupWindowBase.__init__(self, size, detachable, autohide, color_background=self.color_background_help,
+                                  color_foreground=self.color_foreground_text)
         self.hide()
 
     def _set_auto_hiding(self):

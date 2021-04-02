@@ -13,8 +13,8 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robotide import robotapi
-from robotide.spec.iteminfo import LibraryKeywordInfo
+from .. import robotapi
+from .iteminfo import LibraryKeywordInfo
 
 
 def get_import_result(path, args):
@@ -32,14 +32,12 @@ def get_import_result(path, args):
 
 def _parse_args(args):
     parsed = []
-    if args.positional:
-        parsed.extend(list(args.positional))
-    if args.defaults:
-        for i, value in enumerate(args.defaults):
-            index = len(args.positional) - len(args.defaults) + i
-            parsed[index] = parsed[index] + '=' + str(args.defaults[value])  # DEBUG str(value)
+    for name in args.positional:
+        parsed.append('='.join([name, str(args.defaults[name])]) if name in args.defaults else name)
     if args.varargs:
         parsed.append('*%s' % args.varargs)
+    for name in args.kwonlyargs:
+        parsed.append('='.join([name, str(args.defaults[name])]) if name in args.defaults else name)
     if args.kwargs:
         parsed.append('**%s' % args.kwargs)
     return parsed
