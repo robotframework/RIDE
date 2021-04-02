@@ -23,7 +23,6 @@ class ResourceFactory(object):
     def __init__(self, settings):
         self.cache = {}
         self.python_path_cache = {}
-        self.workspace_path_cache = None
         self._excludes = settings.excludes
         self.check_path_from_excludes = self._excludes.contains
         # print("DEBUG: ResourceFactory init path_excludes %s\n" % self.check_path_from_excludes)
@@ -93,27 +92,4 @@ class ResourceFactory(object):
         return r
 
     def _normalize(self, path):
-        path = os.path.normcase(os.path.normpath(os.path.abspath(path)))
-        if not IS_FS_CASE_SENSITIVE:
-            # if file system is not case sensitive
-            # user input may use different case in path with the real path
-            # replace to the real path
-            if self.workspace_path_cache is None:
-                self._build_workspace_path_cache()
-            if path in self.workspace_path_cache:
-                return self.workspace_path_cache[path]
-        return path
-
-    def _build_workspace_path_cache(self):
-        self.workspace_path_cache = {}
-        from robotide.context import APP
-        if APP:
-            workspace_path = APP.workspace_path
-            if workspace_path and os.path.exists(workspace_path):
-                if os.path.isfile(workspace_path):
-                    workspace_path = os.path.dirname(workspace_path)
-                for root, dirs, files in os.walk(workspace_path):
-                    for name in files:
-                        real_path_with_correct_case = os.path.join(root, name)
-                        norm_path = os.path.normcase(os.path.normpath(os.path.abspath(real_path_with_correct_case)))
-                        self.workspace_path_cache[norm_path] = real_path_with_correct_case
+        return os.path.normcase(os.path.normpath(os.path.abspath(path)))
