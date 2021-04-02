@@ -66,8 +66,8 @@ from robotide.context import IS_WINDOWS, IS_MAC
 from robotide.contrib.testrunner import TestRunner
 from robotide.contrib.testrunner import runprofiles
 from robotide.contrib.testrunner.ArgsParser import ArgsParser
-from robotide.contrib.testrunner.CommandArgsBuilder import CommandArgsBuilder
-from robotide.contrib.testrunner.CommandBuilder import CommandBuilder
+from robotide.contrib.testrunner.CommandArgs import CommandArgs
+from robotide.contrib.testrunner.Command import Command
 from robotide.contrib.testrunner.FileWriter import FileWriter
 from robotide.contrib.testrunner.SettingsParser import SettingsParser
 from robotide.controller.macrocontrollers import TestCaseController
@@ -360,6 +360,7 @@ class TestRunnerPlugin(Plugin, RIDEDialog):
         """
         self._run_tests("DEBUG")
 
+    """
     def _create_command(self, log_level="INFO"):
         profile = self.get_current_profile()
         args = self._create_command_args(
@@ -393,22 +394,9 @@ class TestRunnerPlugin(Plugin, RIDEDialog):
         command_builder.set_suite_source(self.model.suite.source)
 
         return command_builder.build()
+    """
 
-    @staticmethod
-    def _create_command_args(profile_custom_args, log_level, output_dir,
-                             python_path, console_width, tests_to_run):
-        args_builder = CommandArgsBuilder(profile_custom_args)
-
-        args_builder.set_log_level(log_level)
-        args_builder.set_output_directory(output_dir)
-        args_builder.set_python_path(python_path)
-        args_builder.without_console_color()
-        args_builder.set_console_width(console_width)
-        args_builder.set_tests_to_run(tests_to_run)
-
-        return args_builder.build()
-
-    def _run_tests(self, create_command_func):
+    def _run_tests(self, log_level='INFO'):
         if not self._can_start_running_tests():
             return
         if self.__getattr__('confirm run') \
@@ -474,13 +462,14 @@ class TestRunnerPlugin(Plugin, RIDEDialog):
             SettingsParser.get_console_log_name(profile_settings)
         self._console_log = '' if not console_log_name \
             else os.path.join(self._logs_directory, console_log_name)
-
+    """
     def _initialize_ui_for_running(self):
         self._show_notebook_tab()
         self._clear_log_ctrls()
         self._local_toolbar.EnableTool(ID_OPEN_LOGS_DIR, False)
         self._local_toolbar.EnableTool(ID_SHOW_REPORT, False)
         self._local_toolbar.EnableTool(ID_SHOW_LOG, False)
+    """
 
     def _get_current_working_dir(self, profile):
         if profile.name == runprofiles.CustomScriptProfile.name:
@@ -704,8 +693,7 @@ class TestRunnerPlugin(Plugin, RIDEDialog):
 
     def _build_runner_toolbar(self, parent):
         toolbar = wx.ToolBar(parent, wx.ID_ANY,
-                             style=wx.TB_HORIZONTAL | wx.TB_HORZ_TEXT |
-                                   wx.TB_NODIVIDER)
+                             style=wx.TB_HORIZONTAL | wx.TB_HORZ_TEXT | wx.TB_NODIVIDER)
         toolbar.SetBackgroundColour(self._mysettings.color_background)
         toolbar.SetForegroundColour(self._mysettings.color_foreground)
         toolbar.AddTool(ID_RUN, "Start", ImageProvider().TOOLBAR_PLAY,
@@ -751,8 +739,7 @@ class TestRunnerPlugin(Plugin, RIDEDialog):
 
     def _build_local_toolbar(self, parent):
         toolbar = wx.ToolBar(parent, wx.ID_ANY,
-                             style=wx.TB_HORIZONTAL | wx.TB_HORZ_TEXT |
-                                   wx.TB_NODIVIDER | wx.TB_DOCKABLE)
+                             style=wx.TB_HORIZONTAL | wx.TB_HORZ_TEXT | wx.TB_NODIVIDER | wx.TB_DOCKABLE)
         # print(f"DEBUG: toolbar before {toolbar.UseBackgroundColour()}")
         toolbar.SetOwnBackgroundColour(self._mysettings.color_background)
         toolbar.SetOwnForegroundColour(self._mysettings.color_foreground)
