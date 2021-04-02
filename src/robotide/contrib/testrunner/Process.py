@@ -38,7 +38,6 @@ import threading
 
 from queue import Empty, Queue
 from robotide.context import IS_WINDOWS
-from robotide.lib.robot.utils import encoding
 
 OUTPUT_ENCODING = sys.getfilesystemencoding()
 
@@ -177,13 +176,11 @@ class StreamReaderThread(object):
             self._queue.put(line)
 
     def pop(self):
-        result = ""
+        result = b''
         my_queue_rng = range(self._queue.qsize())
         for _ in my_queue_rng:
             try:
-                result += encoding.console_decode(self._queue.get_nowait(),
-                                                  OUTPUT_ENCODING if IS_WINDOWS
-                                                  else 'UTF-8')
+                result += self._queue.get_nowait()
             except Empty:
                 pass
         return result
