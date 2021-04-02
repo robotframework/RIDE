@@ -352,13 +352,13 @@ class TestRunnerPlugin(Plugin, RIDEDialog):
 
     def OnRun(self, event):
         """ Called when the user clicks or presses the F8, Run Tests """
-        self._run_tests(lambda: self._create_command())
+        self._run_tests()
 
     def OnRunDebug(self, event):
         """ Called when the user clicks or presses the F9, Run Tests with Debug
             It can still be overwritten in RIDE Arguments line
         """
-        self._run_tests(lambda: self._create_command("DEBUG"))
+        self._run_tests("DEBUG")
 
     def _create_command(self, log_level="INFO"):
         profile = self.get_current_profile()
@@ -417,31 +417,77 @@ class TestRunnerPlugin(Plugin, RIDEDialog):
             # In Linux NO runs dialog 4 times
             return
         self._reset_memory_calc()
+        profile = self.get_current_profile()
+        command_args = self._create_command_args(profile.get_command_args(), log_level)
+        args_file = self._save_command_args_in_file(command_args)
+        command = self._create_command(profile.get_command(), args_file)
+        self._initialize_variables_for_running(profile.get_settings(), command_args)
         self._initialize_ui_for_running()
-        command = create_command_func()
         # DEBUG on Py3 it not shows correct if tags with latin chars
         self._append_to_console_log("command: %s\n" % command, enc=False)
         try:
-            self._test_runner.run_command(command,
-                                          self._get_current_working_dir())
+            self._test_runner.run_command(command, self._get_current_working_dir(profile))
             self._process_timer.Start(41)  # roughly 24fps
             self._set_running()
             self._progress_bar.Start()
         except Exception as e:
             self._set_stopped()
-            error, log_message = self.get_current_profile().format_error(str(e),
-                                                                         None)
+            error, log_message = self.get_current_profile().format_error(str(e), None)
             self._append_to_console_log(error, source='stderr')
             if log_message:
                 log_message.publish()
 
-    def _get_current_working_dir(self):
-        profile = self.get_current_profile()
+    def _create_command_args(self, profile_command_args, log_level='INFO'):
+        return CommandArgs().with_existing_args(profile_command_args) \
+            .with_log_level(log_level) \
+            .with_output_directory(self._default_output_dir) \
+            .with_python_path(self.global_settings.get('pythonpath', None)) \
+            .with_console_width(self._get_console_width()) \
+            .without_console_color() \
+            .with_runnable_tests(self._names_to_run) \
+            .build()
+
+    def _save_command_args_in_file(self, args):
+        arg_file = os.path.join(self._default_output_dir, 'argfile.txt')
+        FileWriter.write(arg_file, args, 'wb')
+        return arg_file
+
+    def _create_command(self, profile_command, args_file):
+        return Command().with_prefix(profile_command) \
+            .with_args_file(args_file) \
+            .with_listener(self._test_runner.get_listener_port(),
+                           self._pause_on_failure) \
+            .with_tests_suite_file(self.model.suite.source) \
+            .build()
+
+    def _initialize_variables_for_running(self, profile_settings, args):
+        self._report_file = self._log_file = None
+        self._log_message_queue = Queue()
+
+        self._min_log_level_number = \
+            ArgsParser.get_message_log_level(args)
+
+        self._logs_directory = \
+            ArgsParser.get_output_directory(args, self._default_output_dir)
+
+        console_log_name = \
+            SettingsParser.get_console_log_name(profile_settings)
+        self._console_log = '' if not console_log_name \
+            else os.path.join(self._logs_directory, console_log_name)
+
+    def _initialize_ui_for_running(self):
+        self._show_notebook_tab()
+        self._clear_log_ctrls()
+        self._local_toolbar.EnableTool(ID_OPEN_LOGS_DIR, False)
+        self._local_toolbar.EnableTool(ID_SHOW_REPORT, False)
+        self._local_toolbar.EnableTool(ID_SHOW_LOG, False)
+
+    def _get_current_working_dir(self, profile):
         if profile.name == runprofiles.CustomScriptProfile.name:
             return profile.get_cwd()
-        if not os.path.isdir(self.model.suite.source):
-            return os.path.dirname(self.model.suite.source)
-        return self.model.suite.source
+        if os.path.isdir(self.model.suite.source):
+            return self.model.suite.source
+        return os.path.dirname(self.model.suite.source)
 
     def _can_start_running_tests(self):
         if self._running or self.model.suite is None:
@@ -486,10 +532,10 @@ class TestRunnerPlugin(Plugin, RIDEDialog):
         self._clear_text_ctrl(self._message_log_ctrl)
 
     @staticmethod
-    def _clear_text_ctrl(textctrl):
-        textctrl.SetReadOnly(False)
-        textctrl.ClearAll()
-        textctrl.SetReadOnly(True)
+    def _clear_text_ctrl(text_ctrl):
+        text_ctrl.SetReadOnly(False)
+        text_ctrl.ClearAll()
+        text_ctrl.SetReadOnly(True)
 
     def OnOpenLogsDirectory(self, evt):
         """Called when the user clicks on the "Open Logs Directory" button"""
