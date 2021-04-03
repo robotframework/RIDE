@@ -17,23 +17,22 @@ import os
 import shutil
 import tempfile
 
-from robotide.context import LOG
-from robotide.controller.ctrlcommands import NullObserver, SaveFile
-from robotide.publish.messages import RideOpenSuite, RideNewProject, RideFileNameChanged
-
 from .basecontroller import WithNamespace, _BaseController
 from .dataloader import DataLoader
-from .filecontrollers import DataController, ResourceFileControllerFactory, TestDataDirectoryController
 from .robotdata import NewTestCaseFile, NewTestDataDirectory
-from robotide.spec.librarydatabase import DATABASE_FILE
-from robotide.spec.librarymanager import LibraryManager
-from robotide.spec.xmlreaders import SpecInitializer
-from robotide.utils import overrides
+from ..context import LOG
+from ..controller.ctrlcommands import NullObserver, SaveFile
+from ..publish.messages import RideOpenSuite, RideNewProject, RideFileNameChanged
+from .. import spec
+# from ..spec.librarymanager import LibraryManager
+from ..spec.xmlreaders import SpecInitializer
+from ..utils import overrides
 
 
 class Project(_BaseController, WithNamespace):
 
     def __init__(self, namespace=None, settings=None, library_manager=None):
+        from .filecontrollers import ResourceFileControllerFactory
         self._library_manager = self._construct_library_manager(library_manager, settings)
         if not self._library_manager.is_alive():
             self._library_manager.start()
@@ -47,10 +46,10 @@ class Project(_BaseController, WithNamespace):
         self._resource_file_controller_factory = ResourceFileControllerFactory(self._name_space, self)
         self._serializer = Serializer(settings, LOG)
 
-    def _construct_library_manager(self, library_manager, settings):
+    @staticmethod
+    def _construct_library_manager(library_manager, settings):
         return library_manager or \
-            LibraryManager(DATABASE_FILE,
-                SpecInitializer(settings.get('library xml directories', [])[:]))
+            spec.LibraryManager(spec.DATABASE_FILE, SpecInitializer(settings.get('library xml directories', [])[:]))
 
     def __del__(self):
         if self._library_manager:
@@ -110,10 +109,10 @@ class Project(_BaseController, WithNamespace):
         self._new_project(NewTestCaseFile(path))
 
     def _new_project(self, datafile):
+        from .filecontrollers import DataController, ResourceFileControllerFactory
         self.update_default_dir(datafile.directory)
         self._controller = DataController(datafile, self)
-        self._resource_file_controller_factory = ResourceFileControllerFactory(self._namespace,
-                                                                               self)
+        self._resource_file_controller_factory = ResourceFileControllerFactory(self._namespace, self)
         RideNewProject(path=datafile.source, datafile=datafile).publish()
 
     def new_resource(self, path, parent=None):
@@ -170,6 +169,7 @@ class Project(_BaseController, WithNamespace):
         load_observer.finish()
 
     def _create_controllers(self, datafile, resources):
+        from .filecontrollers import DataController
         self.clear_namespace_update_listeners()
         self._controller = DataController(datafile, self)
         new_resource_controllers = []
@@ -204,7 +204,8 @@ class Project(_BaseController, WithNamespace):
         resource_created_callback(controller)
         return controller
 
-    def _inform_resource_created(self, controller):
+    @staticmethod
+    def _inform_resource_created(controller):
         controller.notify_opened()
 
     def insert_into_suite_structure(self, resource):
@@ -231,7 +232,7 @@ class Project(_BaseController, WithNamespace):
             controller_list = [controller]
         else:
             controller_list = self._get_all_dirty_controllers()
-        return [ dc for dc in controller_list if dc.dirty and not dc.has_format() ]
+        return [dc for dc in controller_list if dc.dirty and not dc.has_format()]
 
     def get_root_suite_dir_path(self):
         return self.suite.get_dir_path()
@@ -290,7 +291,7 @@ class Project(_BaseController, WithNamespace):
     def _suites(self):
         if not self.data:
             return []
-        return [df for df in self.data.iter_datafiles() if not df in self.resources]
+        return [df for df in self.data.iter_datafiles() if not (df in self.resources)]
 
     def resource_import_modified(self, path, directory):
         resource = self._namespace.get_resource(path, directory)
@@ -298,6 +299,7 @@ class Project(_BaseController, WithNamespace):
             return self._create_resource_controller(resource)
 
     def is_project_changed_from_disk(self):
+        from .filecontrollers import TestDataDirectoryController
         for data_file in self.datafiles:
             if isinstance(data_file, TestDataDirectoryController):
                 if not os.path.exists(data_file.directory):

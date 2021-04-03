@@ -13,15 +13,18 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import wx
-from robotide.context import IS_MAC, IS_WX_410_OR_HIGHER
 from os.path import relpath, dirname, isdir
+from sys import platform
+
+import wx
+from wx import Colour
 from wx.lib.expando import ExpandoTextCtrl
 from wx.lib.filebrowsebutton import FileBrowseButton
-from robotide import context, utils
-from robotide.namespace.suggesters import SuggestionSource
-from robotide.spec.iteminfo import VariableInfo
-from sys import platform
+
+from .. import context, utils
+from ..context import IS_MAC, IS_WX_410_OR_HIGHER
+from ..namespace.suggesters import SuggestionSource
+from ..spec.iteminfo import VariableInfo
 from .popupwindow import RidePopupWindow, HtmlPopupWindow
 from ..publish import PUBLISHER
 from ..publish.messages import RideSettingsChanged
@@ -35,6 +38,15 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
 
     def __init__(self, suggestion_source, **kw):
         super().__init__(**kw)
+        from ..preferences import RideSettings
+        _settings = RideSettings()
+        self.general_settings = _settings['General']
+        self.color_background = self.general_settings['background']
+        self.color_foreground = self.general_settings['foreground']
+        self.color_secondary_background = self.general_settings['secondary background']
+        self.color_secondary_foreground = self.general_settings['secondary foreground']
+        self.color_background_help = self.general_settings['background help']
+        self.color_foreground_text = self.general_settings['foreground text']
         self._popup = ContentAssistPopup(self, suggestion_source)
         self.Bind(wx.EVT_KEY_DOWN, self.OnKeyDown)
         self.Bind(wx.EVT_CHAR, self.OnChar)
@@ -226,13 +238,16 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
 class ExpandingContentAssistTextCtrl(_ContentAssistTextCtrlBase, ExpandoTextCtrl):
 
     def __init__(self, parent, plugin, controller):
-
         """ According to class MRO, super().__init__ in  _ContentAssistTextCtrlBase will init ExpandoTextCtrl
         instance """
 
         _ContentAssistTextCtrlBase.__init__(self, SuggestionSource(plugin, controller),
                                             parent=parent, size=wx.DefaultSize,
                                             style=wx.WANTS_CHARS | wx.TE_NOHIDESEL)
+        self.SetBackgroundColour(context.POPUP_BACKGROUND)
+        # self.SetOwnBackgroundColour(Colour(200, 222, 40))
+        self.SetForegroundColour(context.POPUP_FOREGROUND)
+        # self.SetOwnForegroundColour(Colour(7, 0, 70)
 
 
 class ContentAssistTextCtrl(_ContentAssistTextCtrlBase):
@@ -240,6 +255,12 @@ class ContentAssistTextCtrl(_ContentAssistTextCtrlBase):
     def __init__(self, parent, suggestion_source, size=wx.DefaultSize):
         super().__init__(suggestion_source, parent=parent,
                          size=size, style=wx.WANTS_CHARS | wx.TE_NOHIDESEL)
+        wx.TextCtrl.__init__(self, parent, size=size, style=wx.WANTS_CHARS|wx.TE_NOHIDESEL)
+        _ContentAssistTextCtrlBase.__init__(self, suggestion_source)
+        self.SetBackgroundColour(Colour(self.color_background_help))
+        self.SetOwnBackgroundColour(Colour(self.color_background_help))
+        self.SetForegroundColour(Colour(self.color_foreground_text))
+        self.SetOwnForegroundColour(Colour(self.color_foreground_text))
 
 
 class ContentAssistTextEditor(_ContentAssistTextCtrlBase):
@@ -249,6 +270,18 @@ class ContentAssistTextEditor(_ContentAssistTextCtrlBase):
                          parent=parent, id=-1, value="", pos=pos, size=size,
                          style=wx.WANTS_CHARS | wx.BORDER_NONE | wx.WS_EX_TRANSIENT | wx.TE_PROCESS_ENTER |
                          wx.TE_NOHIDESEL)
+        wx.TextCtrl.__init__(self, parent, -1, "", pos, size=size, style=wx.WANTS_CHARS|wx.BORDER_NONE|wx.WS_EX_TRANSIENT|wx.TE_PROCESS_ENTER|wx.TE_NOHIDESEL)
+        _ContentAssistTextCtrlBase.__init__(self, suggestion_source)
+        self.SetBackgroundColour(Colour(self.color_background_help))
+        self.SetOwnBackgroundColour(Colour(self.color_background_help))
+        self.SetForegroundColour(Colour(self.color_foreground_text))
+        self.SetOwnForegroundColour(Colour(self.color_foreground_text))
+        """
+        self.SetBackgroundColour(Colour(200, 222, 40))
+        self.SetOwnBackgroundColour(Colour(200, 222, 40))
+        self.SetForegroundColour(Colour(7, 0, 70))
+        self.SetOwnForegroundColour(Colour(7, 0, 70))
+        """
 
 
 class ContentAssistFileButton(FileBrowseButton):
@@ -261,6 +294,12 @@ class ContentAssistFileButton(FileBrowseButton):
         self._parent = parent
         self._controller = controller
         self._browsed = False
+
+        _ContentAssistTextCtrlBase.__init__(self, suggestion_source)
+        self.SetBackgroundColour(Colour(context.POPUP_BACKGROUND))
+        self.SetOwnBackgroundColour(Colour(context.POPUP_BACKGROUND))
+        self.SetForegroundColour(Colour(context.POPUP_FOREGROUND))
+        self.SetOwnForegroundColour(Colour(context.POPUP_FOREGROUND))
 
     def Bind(self, *args):
         self.textControl.Bind(*args)
@@ -474,12 +513,18 @@ class ContentAssistList(wx.ListCtrl):
 
     def __init__(self, parent, selection_callback, activation_callback=None):
         self.parent = parent
+        from ..preferences import RideSettings
+        _settings = RideSettings()
+        self.general_settings = _settings['General']
+        self.color_background_help = self.general_settings['background help']
+        self.color_foreground_text = self.general_settings['foreground text']
         style = wx.LC_REPORT | wx.LC_SINGLE_SEL | wx.LC_NO_HEADER
         wx.ListCtrl.__init__(self, parent, style=style)
         self._selection_callback = selection_callback
         self._activation_callback = activation_callback
         self.SetSize(parent.GetSize())
-        self.SetBackgroundColour(context.POPUP_BACKGROUND)
+        self.SetBackgroundColour(self.color_background_help)
+        self.SetForegroundColour(self.color_foreground_text)
         self.Bind(wx.EVT_LIST_ITEM_SELECTED, selection_callback)
         self.Bind(wx.EVT_LIST_ITEM_ACTIVATED, activation_callback)
 

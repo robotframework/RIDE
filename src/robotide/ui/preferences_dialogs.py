@@ -13,10 +13,13 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import wx
 import textwrap
-from robotide.widgets import HelpLabel, Label, TextField
-from robotide.context import IS_LINUX
+
+import wx
+from wx import Colour
+
+from ..context import IS_LINUX
+from ..widgets import HelpLabel, Label, TextField
 
 
 class PreferencesPanel(wx.Panel):
@@ -27,6 +30,12 @@ class PreferencesPanel(wx.Panel):
     def __init__(self, parent=None, *args, **kwargs):
         self.tree_item = None
         wx.Panel.__init__(self, parent, *args, **kwargs)
+        """
+        self.SetBackgroundColour(Colour(200, 222, 40))
+        self.SetOwnBackgroundColour(Colour(200, 222, 40))
+        self.SetForegroundColour(Colour(7, 0, 70))
+        self.SetOwnForegroundColour(Colour(7, 0, 70))
+        """
 
     def GetTitle(self):
         return getattr(self, "title", self.location[-1])
@@ -35,7 +44,19 @@ class PreferencesPanel(wx.Panel):
         """Creates a simple horizontal separator with title"""
         container = wx.Panel(parent, wx.ID_ANY)
         label = wx.StaticText(container, wx.ID_ANY, label=title)
+        """
+        label.SetBackgroundColour(Colour(200, 222, 40))
+        label.SetOwnBackgroundColour(Colour(200, 222, 40))
+        label.SetForegroundColour(Colour(7, 0, 70))
+        label.SetOwnForegroundColour(Colour(7, 0, 70))
+        """
         sep = wx.StaticLine(container, wx.ID_ANY)
+        """
+        sep.SetBackgroundColour(Colour(200, 222, 40))
+        sep.SetOwnBackgroundColour(Colour(200, 222, 40))
+        sep.SetForegroundColour(Colour(7, 0, 70))
+        sep.SetOwnForegroundColour(Colour(7, 0, 70))
+        """
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(label, 0, wx.EXPAND|wx.TOP, 8)
         sizer.Add(sep, 0, wx.EXPAND|wx.TOP|wx.BOTTOM, 2)
@@ -51,6 +72,12 @@ class PreferencesComboBox(wx.ComboBox):
         super(PreferencesComboBox, self).__init__(parent, id, self._get_value(),
                                                   size=self._get_size(choices),
                                                   choices=choices, style=wx.CB_READONLY)
+        """
+        self.SetBackgroundColour(Colour(200, 222, 40))
+        self.SetOwnBackgroundColour(Colour(200, 222, 40))
+        self.SetForegroundColour(Colour(7, 0, 70))
+        self.SetOwnForegroundColour(Colour(7, 0, 70))
+        """
         self.Bind(wx.EVT_COMBOBOX, self.OnSelect)
 
     def _get_value(self):
@@ -94,6 +121,12 @@ class PreferencesSpinControl(wx.SpinCtrl):
             size=self._get_size(choices[-1]))
         self.SetRange(*choices)
         self.SetValue(self._get_value())
+        """
+        self.SetBackgroundColour(Colour(200, 222, 40))
+        self.SetOwnBackgroundColour(Colour(200, 222, 40))
+        self.SetForegroundColour(Colour(7, 0, 70))
+        self.SetOwnForegroundColour(Colour(7, 0, 70))
+        """
         self.Bind(wx.EVT_SPINCTRL, self.OnChange)
         self.Bind(wx.EVT_TEXT, self.OnChange)
 
@@ -123,8 +156,15 @@ class PreferencesColorPicker(wx.ColourPickerCtrl):
     def __init__(self, parent, id, settings, key):
         self.settings = settings
         self.key = key
-        value = settings[key]
+        # print(f"DEBUG: Preferences ColourPicker value type {type(settings[key])}")
+        value = Colour(settings[key])
         super(PreferencesColorPicker, self).__init__(parent, id, colour=value)
+        """
+        self.SetBackgroundColour(Colour(200, 222, 40))
+        self.SetOwnBackgroundColour(Colour(200, 222, 40))
+        self.SetForegroundColour(Colour(7, 0, 70))
+        self.SetOwnForegroundColour(Colour(7, 0, 70))
+        """
         self.Bind(wx.EVT_COLOURPICKER_CHANGED, self.OnPickColor)
 
     def OnPickColor(self, event):
@@ -175,6 +215,12 @@ class SpinChoiceEditor(_ChoiceEditor):
 
 def boolean_editor(parent, settings, name, label, help=''):
     editor = _create_checkbox_editor(parent, settings, name, help)
+    """
+    editor.SetBackgroundColour(Colour(200, 222, 40))
+    editor.SetOwnBackgroundColour(Colour(200, 222, 40))
+    editor.SetForegroundColour(Colour(7, 0, 70))
+    editor.SetOwnForegroundColour(Colour(7, 0, 70))
+    """
     label = Label(parent, label=label)
     return label, editor
 
@@ -191,6 +237,12 @@ def _create_checkbox_editor(parent, settings, name, help):
 def comma_separated_value_editor(parent, settings, name, label, help=''):
     initial_value = ', '.join(settings.get(name, ""))
     editor = TextField(parent, initial_value)
+    """
+    editor.SetBackgroundColour(Colour(200, 222, 40))
+    editor.SetOwnBackgroundColour(Colour(200, 222, 40))
+    editor.SetForegroundColour(Colour(7, 0, 70))
+    editor.SetOwnForegroundColour(Colour(7, 0, 70))
+    """
     editor.SetToolTip(help)
 
     def set_value(evt):

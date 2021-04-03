@@ -13,10 +13,13 @@
 #  limitations under the License.
 
 import wx
+from wx import Colour
 from wx.lib.agw import customtreectrl
 from wx.lib.agw.aui import GetManager
-from robotide.pluginapi import Plugin, ActionInfo
-from robotide.controller import Project
+
+from ..controller.project import Project
+from ..pluginapi import Plugin
+from ..pluginapi.plugin import ActionInfo
 
 
 class FileExplorerPlugin(Plugin):
@@ -29,7 +32,7 @@ class FileExplorerPlugin(Plugin):
     def __init__(self, application, controller=None):
         Plugin.__init__(self, application, default_settings=self.defaults)
         self.settings = application.settings._config_obj['Plugins']['File Explorer']
-        self._parent = None
+        self._parent = wx.App.Get().GetTopWindow()
         self._filemgr = self.filemgr
         self._filemgr.SetThemeEnabled(True)
         self._mgr = GetManager(self._filemgr)
@@ -75,21 +78,36 @@ class FileExplorerPlugin(Plugin):
 
     def OnShowFileExplorer(self, event):
         if not self._parent:
-            self._parent = self.frame
+            self._parent = wx.App.Get().GetWindow()  # self.frame
         if not self._filemgr:  # This is not needed because file explorer is always created
             self._filemgr = FileExplorer(self._parent, self._controller)
 
         self._pane = self._mgr.GetPane(self._filemgr)
+        HTML_BACKGROUND = self.settings.get('background help', (240, 242, 80))
+        HTML_FOREGROUND = self.settings.get('foreground text', (7, 0, 70))
+        HTML_FONT_FACE = self.settings.get('font face', '')
+        HTML_FONT_SIZE = self.settings.get('font size', 11)
+        self._filetreectrl = self._filemgr.GetTreeCtrl()
         self._filemgr.Show(True)
+        self._filemgr.SetMinSize(wx.Size(200, 225))
         self._mgr.DetachPane(self._filemgr)
         self._mgr.AddPane(self.filemgr,
                           wx.lib.agw.aui.AuiPaneInfo().Name("file_manager").
                           Caption("Files").LeftDockable(True).
                           CloseButton(True))
-        self._filemgr.Raise()
         self._filemgr.SetBackgroundStyle(wx.BG_STYLE_SYSTEM)
-        self._filemgr.SetBackgroundColour('white')  # TODO get background color from def
+        self._filemgr.SetBackgroundColour(HTML_BACKGROUND)
+        self._filemgr.SetForegroundColour(HTML_FOREGROUND)
+        self.font = self._filemgr.GetFont()
+        self.font.SetFaceName(HTML_FONT_FACE)
+        self.font.SetPointSize(HTML_FONT_SIZE)
+        self._filemgr.SetFont(self.font)
         self._filemgr.Refresh()
+        self._filetreectrl.SetBackgroundColour(HTML_BACKGROUND)
+        self._filetreectrl.SetForegroundColour(HTML_FOREGROUND)
+        self._filetreectrl.SetFont(self.font)
+        self._filetreectrl.Refresh()
+        self._filemgr.Raise()
         self._mgr.Update()
         self.save_setting('opened', True)
         self._update_tree()
@@ -106,13 +124,10 @@ class FileExplorer(wx.GenericDirCtrl):
         wx.GenericDirCtrl.__init__(self, parent, id=-1, size=(200, 225), style=wx.DIRCTRL_3D_INTERNAL)
         self._controller = controller
         self.SetThemeEnabled(True)
-        self.SetBackgroundStyle(wx.BG_STYLE_SYSTEM)
-        self.SetBackgroundColour('white')  # TODO get background color from def
         self.Refresh()
 
     def update_tree(self):
         if isinstance(self._controller, Project):
-            # print("DEBUG: FileExplorer called _update_tree")
             if self._controller.data and len(self._controller.data.directory) > 1:
                 self.SelectPath(self._controller.data.source)
                 try:

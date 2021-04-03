@@ -14,11 +14,11 @@
 #  limitations under the License.
 
 import wx
+from wx import Colour
 from wx.lib.mixins.listctrl import TextEditMixin
 
-from robotide.editor.listeditor import AutoWidthColumnList, ListEditorBase
-from robotide.widgets import Dialog, HelpLabel
-
+from ..editor.listeditor import AutoWidthColumnList, ListEditorBase
+from ..widgets import RIDEDialog, HelpLabel, ButtonWithHandler
 
 _CONFIG_HELP = """The specified command string will be split from whitespaces into a command
 and its arguments. If either the command or any of the arguments require
@@ -35,11 +35,17 @@ Run configurations are stored in the RIDE settings file.
 """
 
 
-class ConfigManagerDialog(Dialog):
+class ConfigManagerDialog(RIDEDialog):
 
     def __init__(self, configs, plugin):
-        Dialog.__init__(self, title='Manage Run Configurations')
+        RIDEDialog.__init__(self, title='Manage Run Configurations')
         # set Left to Right direction (while we don't have localization)
+
+        self.SetBackgroundColour(Colour(self.color_background))
+        self.SetOwnBackgroundColour(Colour(self.color_background))
+        self.SetForegroundColour(Colour(self.color_foreground))
+        self.SetOwnForegroundColour(Colour(self.color_foreground))
+
         self.SetLayoutDirection(wx.Layout_LeftToRight)
         self.plugin = plugin
         self._create_ui(configs)
@@ -70,8 +76,16 @@ class ConfigManagerDialog(Dialog):
             self.Sizer.Add(line, border=5, flag=wx.GROW | wx.RIGHT | wx.TOP)
 
     def _create_buttons(self):
-        self.Sizer.Add(self.CreateStdDialogButtonSizer(wx.OK | wx.CANCEL),
-                       flag=wx.ALIGN_CENTER | wx.ALL, border=5)
+        buttons = self.CreateStdDialogButtonSizer(wx.OK|wx.CANCEL)
+        self.SetBackgroundColour(Colour(self.color_background))
+        self.SetForegroundColour(Colour(self.color_foreground))
+        for item in self.GetChildren():
+            if isinstance(item, (wx.Button, wx.BitmapButton, ButtonWithHandler)):
+                item.SetBackgroundColour(Colour(self.color_secondary_background))
+                item.SetOwnBackgroundColour(Colour(self.color_secondary_background))
+                item.SetForegroundColour(Colour(self.color_secondary_foreground))
+                item.SetOwnForegroundColour(Colour(self.color_secondary_foreground))
+        self.Sizer.Add(buttons, flag=wx.ALIGN_CENTER | wx.ALL, border=5)
 
     def get_data(self):
         return self._editor.get_data()
@@ -86,7 +100,8 @@ class _ConfigListEditor(ListEditorBase):
         ListEditorBase.__init__(self, parent, self._columns, configs)
 
     def _create_list(self, columns, data):
-        return _TextEditListCtrl(self, columns, data)
+        return _TextEditListCtrl(self, columns, color_foreground=self.color_secondary_foreground,
+                                 color_background=self.color_secondary_background, data=data)
 
     def get_column_values(self, config):
         return config.name, config.command, config.doc
@@ -123,9 +138,14 @@ class _ConfigListEditor(ListEditorBase):
 class _TextEditListCtrl(AutoWidthColumnList, TextEditMixin):
     last_index = property(lambda self: self.ItemCount - 1)
 
-    def __init__(self, parent, columns, data):
-        AutoWidthColumnList.__init__(self, parent, columns, data)
+    def __init__(self, parent, columns, color_foreground, color_background, data):
+        AutoWidthColumnList.__init__(self, parent, columns, color_foreground=color_foreground,
+                                   color_background=color_background, data=data)
         TextEditMixin.__init__(self)
+
+        self.SetBackgroundColour(Colour(color_background))
+        self.SetForegroundColour(Colour(color_foreground))
+
         self._set_command_column_width()
         self.col_locs = self._calculate_col_locs()
         self._new_item_creation = False

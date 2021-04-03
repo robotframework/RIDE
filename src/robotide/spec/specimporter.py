@@ -17,12 +17,11 @@ import os
 import shutil
 import wx
 
-from robotide import context
-from robotide.action import ActionInfo
-from robotide.pluginapi import Plugin
-from robotide.publish import RideExecuteSpecXmlImport
-from robotide.spec.xmlreaders import get_name_from_xml
-from robotide.publish import PUBLISHER
+from .. import context
+from ..action import ActionInfo
+from ..pluginapi import Plugin
+from ..publish import PUBLISHER, RideExecuteSpecXmlImport
+from .xmlreaders import get_name_from_xml
 
 
 class SpecImporterPlugin(Plugin):

@@ -16,7 +16,6 @@
 import os
 import re
 import sys
-
 from codecs import BOM_UTF8, BOM_UTF16, BOM_UTF16_BE, BOM_UTF16_LE
 
 import six
@@ -403,7 +402,6 @@ class InterpolationEngine(object):
         (e.g., if we interpolated "$$" and returned "$").
         """
         raise NotImplementedError()
-    
 
 
 class ConfigParserInterpolation(InterpolationEngine):
@@ -453,6 +451,7 @@ interpolation_engines = {
 def __newobj__(cls, *args):
     # Hack for pickle
     return cls.__new__(cls, *args) 
+
 
 class Section(dict):
     """
@@ -2370,7 +2369,6 @@ class ConfigObj(Section):
         self._initialise(current_options)
         self._load(filename, configspec)
         
-
 
 class SimpleVal(object):
     """

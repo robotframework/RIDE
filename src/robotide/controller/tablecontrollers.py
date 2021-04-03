@@ -13,18 +13,15 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robotide.publish import RideTestCaseRemoved, RideVariableAdded, \
-    RideVariableRemoved, RideVariableMovedUp, RideVariableMovedDown, \
-    RideUserKeywordRemoved, RideUserKeywordAdded, RideTestCaseAdded
-from robotide.publish.messages import RideItemMovedUp, RideItemMovedDown
-from robotide.robotapi import is_list_var, is_scalar_var, is_dict_var
-from robotide import utils
-
+from .. import utils
+from ..publish import (RideTestCaseRemoved, RideVariableAdded, RideVariableRemoved, RideVariableMovedUp,
+                       RideVariableMovedDown, RideUserKeywordRemoved, RideUserKeywordAdded, RideTestCaseAdded)
+from ..publish.messages import RideItemMovedUp, RideItemMovedDown
+from ..robotapi import is_list_var, is_scalar_var, is_dict_var
+from ..utils import overrides, variablematcher
 from .basecontroller import ControllerWithParent
-from .macrocontrollers import TestCaseController, UserKeywordController
-from robotide.utils import overrides, variablematcher
-from .settingcontrollers import MetadataController, ImportController, \
-    VariableController
+from . import macrocontrollers  # TestCaseController, UserKeywordController
+from .settingcontrollers import MetadataController, ImportController, VariableController
 
 
 class _WithListOperations(object):
@@ -320,7 +317,7 @@ class _MacroTable(_TableController):
 
 class TestCaseTableController(_MacroTable):
     item_type = 'Test case'
-    _controller_class = TestCaseController
+    _controller_class = macrocontrollers.TestCaseController
 
     @property
     def _items(self):
@@ -352,7 +349,7 @@ class TestCaseTableController(_MacroTable):
 
 class KeywordTableController(_MacroTable):
     item_type = 'User keyword'
-    _controller_class = UserKeywordController
+    _controller_class = macrocontrollers.UserKeywordController
 
     @property
     def _items(self):

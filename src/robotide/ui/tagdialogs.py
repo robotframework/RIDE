@@ -14,21 +14,25 @@
 #  limitations under the License.
 
 import re
+
 import wx
 import wx.lib.mixins.listctrl as listmix
+from wx import Colour
 
-from robotide import utils
-from robotide.controller.ctrlcommands import ChangeTag
-from robotide.publish import RideOpenTagSearch
-from robotide.widgets import ButtonWithHandler, PopupMenuItems
+from .. import utils
+from ..controller.ctrlcommands import ChangeTag
+from ..publish import RideOpenTagSearch
+from ..widgets import ButtonWithHandler, PopupMenuItems, RIDEDialog
 
 
-class ViewAllTagsDialog(wx.Frame, listmix.ColumnSorterMixin):
+class ViewAllTagsDialog(RIDEDialog, listmix.ColumnSorterMixin):
 
     def __init__(self, controller, frame):
         style = wx.SYSTEM_MENU | wx.CAPTION | wx.CLOSE_BOX | wx.CLIP_CHILDREN | \
                 wx.FRAME_FLOAT_ON_PARENT
-        wx.Frame.__init__(self, frame, title="View all tags", style=style)
+        RIDEDialog.__init__(self, parent=frame, title="View all tags", size=(500, 400), style=style)
+        self.SetBackgroundColour(Colour(self.color_background))
+        self.SetForegroundColour(Colour(self.color_foreground))
         # set Left to Right direction (while we don't have localization)
         self.SetLayoutDirection(wx.Layout_LeftToRight)
         self.frame = frame
@@ -50,23 +54,32 @@ class ViewAllTagsDialog(wx.Frame, listmix.ColumnSorterMixin):
         listmix.ColumnSorterMixin.__init__(self, 2)
 
     def _build_ui(self):
-        self.SetSize((500, 400))
-        parent_x, parent_y = self.frame.GetPosition()
-        parent_size_x, parent_size_y = self.frame.tree.GetSize()
-        self.SetPosition((parent_x + parent_size_x + 50, parent_y + 50))
-        self.SetBackgroundColour(
-            wx.SystemSettings.GetColour(wx.SYS_COLOUR_3DFACE))
+        # self.SetSize((500, 400))
+        # parent_x, parent_y = self.frame.GetPosition()
+        # parent_size_x, parent_size_y = self.frame.tree.GetSize()
+        # self.SetPosition((parent_x + parent_size_x + 50, parent_y + 50))
+        # self.SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_3DFACE))
+        """
+        self.SetBackgroundColour(Colour(200, 222, 40))
+        self.SetOwnBackgroundColour(Colour(200, 222, 40))
+        self.SetForegroundColour(Colour(7, 0, 70))
+        self.SetOwnForegroundColour(Colour(7, 0, 70))
+        """
         self.SetSizer(wx.BoxSizer(wx.VERTICAL))
         self._build_notebook()
         self._build_tag_lister()
         self._build_controls()
         self._build_footer()
+        self.CenterOnParent()
 
     def _build_tag_lister(self):
         panel_tag_vw = wx.Panel(self._notebook)
+        panel_tag_vw.SetBackgroundColour(Colour(self.color_background))
+        panel_tag_vw.SetForegroundColour(Colour(self.color_foreground))
         sizer_tag_vw = wx.BoxSizer(wx.VERTICAL)
         panel_tag_vw.SetSizer(sizer_tag_vw)
-        self._tags_list = TagsListCtrl(panel_tag_vw, style=wx.LC_REPORT)
+        self._tags_list = TagsListCtrl(panel_tag_vw, style=wx.LC_REPORT, colorBG=self.color_secondary_background,
+                                       colorFG=self.color_secondary_foreground)
         self._tags_list.InsertColumn(0, "Tag", width=200)
         self._tags_list.InsertColumn(1, "Occurrences", width=25,
                                      format=wx.LIST_FORMAT_CENTER)
@@ -81,6 +94,12 @@ class ViewAllTagsDialog(wx.Frame, listmix.ColumnSorterMixin):
             self, 'Included Tag Search')
         self._show_excluded_tests_button = ButtonWithHandler(
             self, 'Excluded Tag Search')
+        self._clear_button.SetBackgroundColour(Colour(self.color_secondary_background))
+        self._clear_button.SetForegroundColour(Colour(self.color_secondary_foreground))
+        self._show_tagged_tests_button.SetBackgroundColour(Colour(self.color_secondary_background))
+        self._show_tagged_tests_button.SetForegroundColour(Colour(self.color_secondary_foreground))
+        self._show_excluded_tests_button.SetBackgroundColour(Colour(self.color_secondary_background))
+        self._show_excluded_tests_button.SetForegroundColour(Colour(self.color_secondary_foreground))
         controls = wx.BoxSizer(wx.HORIZONTAL)
         controls.Add(self._show_tagged_tests_button, 0, wx.ALL, 3)
         controls.Add(self._show_excluded_tests_button, 0, wx.ALL, 3)
@@ -95,12 +114,15 @@ class ViewAllTagsDialog(wx.Frame, listmix.ColumnSorterMixin):
 
     def _build_notebook(self):
         self._notebook = wx.Notebook(self, wx.ID_ANY, style=wx.NB_TOP)
+        self._notebook.SetBackgroundColour(Colour(self.color_background))
+        self._notebook.SetForegroundColour(Colour(self.color_foreground))
         self.Sizer.Add(self._notebook, 1, wx.ALL | wx.EXPAND, 3)
 
     def _make_bindings(self):
         self.Bind(wx.EVT_CLOSE, self._close_dialog)
         self._tags_list.Bind(wx.EVT_LIST_ITEM_RIGHT_CLICK, self.OnRightClick)
         self._tags_list.Bind(wx.EVT_LIST_COL_CLICK, self.OnColClick)
+        self._tags_list.Bind(wx.EVT_LIST_ITEM_SELECTED, self.OnSelectItem)
 
     def _tag_name_for_sort(self, tag_name):
         return [part if index % 2 == 0 else int(part) for index, part in
@@ -214,6 +236,10 @@ class ViewAllTagsDialog(wx.Frame, listmix.ColumnSorterMixin):
         self.tree._popup_creator.show(self, PopupMenuItems(self, menu_items),
                                       self._controller)
 
+    def OnSelectItem(self, event):
+        self._index = event.GetIndex()
+        self._tags_list.CheckItem(self._index, not self._tags_list.IsChecked(self._index))
+
     def OnShowTestsWithThisTag(self, event):
         if self._index == -1:
             return
@@ -231,9 +257,8 @@ class ViewAllTagsDialog(wx.Frame, listmix.ColumnSorterMixin):
             return
         tests, tag_name = self._tags_list.get_tag(self._index)
         tags_to_rename = self._tags[tag_name.lower()]
-        name = wx.GetTextFromUser(
-            message="Renaming tag '%s'." % tag_name, default_value=tag_name,
-            caption='Rename').strip()
+        name = wx.GetTextFromUser(message="Renaming tag '%s'." % tag_name, default_value=tag_name,
+                                  caption='Rename').strip()
         if name:
             for tag in tags_to_rename:
                 tag.controller.execute(ChangeTag(tag, name))
@@ -276,11 +301,17 @@ class ViewAllTagsDialog(wx.Frame, listmix.ColumnSorterMixin):
 
 class TagsListCtrl(wx.ListCtrl, listmix.CheckListCtrlMixin,
                    listmix.ListCtrlAutoWidthMixin):
-    def __init__(self, parent, style):
+    def __init__(self, parent, style, colorBG, colorFG):
         self.parent = parent
         wx.ListCtrl.__init__(self, parent=parent, style=style)
-        listmix.CheckListCtrlMixin.__init__(self)
+        if wx.VERSION < (4, 1, 0):
+            listmix.CheckListCtrlMixin.__init__(self)
         listmix.ListCtrlAutoWidthMixin.__init__(self)
+        if wx.VERSION >= (4, 1, 0):
+            # print(f"DEBUG: CheckAll tags")
+            self.EnableCheckBoxes(True)
+        self.SetBackgroundColour(Colour(colorBG))
+        self.SetForegroundColour(Colour(colorFG))
         self.setResizeColumn(2)
         self._clientData = {}
 
@@ -364,4 +395,8 @@ class TagsListCtrl(wx.ListCtrl, listmix.CheckListCtrlMixin,
 
     def CheckAll(self):
         for i in range(self.GetItemCount()):
-            self.CheckItem(i)
+            if wx.VERSION >= (4, 1, 0):
+                # print(f"DEBUG: CheckAll tags")
+                self.CheckItem(i, True)
+            else:
+                self.CheckItem(i)

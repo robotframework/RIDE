@@ -13,10 +13,11 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import wx
 from functools import total_ordering
-from robotide.context import IS_MAC
 
+import wx
+
+from ..context import IS_MAC
 
 CMD_CHAR = u'\u2318'
 SHIFT_CHAR = u'\u21E7'

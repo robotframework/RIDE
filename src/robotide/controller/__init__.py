@@ -13,8 +13,9 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from .project import Project
-from .ctrlcommands import FindOccurrences, RenameKeywordOccurrences
+# from .ctrlcommands import FindOccurrences, FindVariableOccurrences, _Command, SaveFile
 from .dataloader import DataLoader
 from .filecontrollers import DataController, ResourceFileController
-from .tablecontrollers import UserKeywordController
+from .project import Project
+from .macrocontrollers import TestCaseController, UserKeywordController, KeywordNameController, ForLoopStepController
+from .ui.treecontroller import TreeController, TestSelectionController

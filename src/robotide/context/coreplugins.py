@@ -14,19 +14,19 @@
 #  limitations under the License.
 
 def get_core_plugins():
-    from robotide.run import RunAnything
-    from robotide.recentfiles import RecentFilesPlugin
-    from robotide.ui.preview import PreviewPlugin
-    from robotide.ui.keywordsearch import KeywordSearch
-    from robotide.ui.treeplugin import TreePlugin
-    from robotide.ui.fileexplorerplugin import FileExplorerPlugin
-    from robotide.editor import EditorPlugin
-    from robotide.editor.texteditor import TextEditorPlugin
-    from robotide.log import LogPlugin
-    from robotide.parserlog import ParserLogPlugin
-    from robotide.searchtests.searchtests import TestSearchPlugin
-    from robotide.spec.specimporter import SpecImporterPlugin
-    from robotide.postinstall.desktopshortcut import ShortcutPlugin
+    from ..run import RunAnything
+    from ..recentfiles import RecentFilesPlugin
+    from ..ui.preview import PreviewPlugin
+    from ..ui.keywordsearch import KeywordSearch
+    from ..ui.treeplugin import TreePlugin
+    from ..ui.fileexplorerplugin import FileExplorerPlugin
+    from ..editor import EditorPlugin
+    from ..editor.texteditor import TextEditorPlugin
+    from ..log import LogPlugin
+    from ..parserlog import ParserLogPlugin
+    from ..searchtests.searchtests import TestSearchPlugin
+    from ..spec.specimporter import SpecImporterPlugin
+    from ..postinstall.desktopshortcut import ShortcutPlugin
 
     return [LogPlugin, RunAnything, RecentFilesPlugin, PreviewPlugin, SpecImporterPlugin, EditorPlugin, TextEditorPlugin,
             KeywordSearch, TestSearchPlugin, ShortcutPlugin, ParserLogPlugin, TreePlugin, FileExplorerPlugin]

@@ -13,11 +13,11 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import wx
 import sys
+import wx
 
-from robotide.run.process import Process
-from robotide.widgets import Label, Font
+from .process import Process
+from ..widgets import Label, Font
 
 
 class Runner(wx.EvtHandler):

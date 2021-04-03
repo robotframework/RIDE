@@ -16,8 +16,9 @@
 import atexit
 import sys
 
-from robotide.pluginapi import Plugin, ActionInfo
-from robotide.postinstall import __main__ as postinstall
+from ..pluginapi import Plugin
+from ..action import ActionInfo
+from ..postinstall import __main__ as postinstall
 
 
 class ShortcutPlugin(Plugin):

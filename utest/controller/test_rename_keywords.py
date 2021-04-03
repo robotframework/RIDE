@@ -23,11 +23,8 @@ from nose.tools import assert_true, assert_false, assert_equal
 PACKAGE_PARENT = '..'
 SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(),
                                               os.path.expanduser(__file__))))
-sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
-try:
-    from base_command_test import TestCaseCommandTest
-except ImportError:  # Python 3
-    from .base_command_test import TestCaseCommandTest
+sys.path.insert(0, os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
+from base_command_test import TestCaseCommandTest
 
 
 class TestRenameKeywords(TestCaseCommandTest):

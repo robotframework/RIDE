@@ -14,14 +14,18 @@
 #  limitations under the License.
 
 import wx
-
+from wx import Colour
 
 class ButtonWithHandler(wx.Button):
 
     def __init__(self, parent, label, handler=None, width=-1,
-                 height=25):
+                 height=25, color_secondary_foreground='black', color_secondary_background='light grey'):
         wx.Button.__init__(self, parent, label=label,
                            size=(width, height))
+        self.SetBackgroundColour(Colour(color_secondary_background))
+        self.SetOwnBackgroundColour(Colour(color_secondary_background))
+        self.SetForegroundColour(Colour(color_secondary_foreground))
+        self.SetOwnForegroundColour(Colour(color_secondary_foreground))
         if not handler:
             handler = getattr(parent, 'On'+label.replace(' ', ''))
         parent.Bind(wx.EVT_BUTTON, handler, self)

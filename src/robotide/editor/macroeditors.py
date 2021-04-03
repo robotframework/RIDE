@@ -15,11 +15,10 @@
 
 import wx
 
-from robotide.usages.UsageRunner import Usages
-from robotide.publish.messages import RideItemNameChanged
-
-from .kweditor import KeywordEditor
+from ..publish.messages import RideItemNameChanged
+from ..usages.UsageRunner import Usages
 from .editors import _RobotTableEditor, FindUsagesHeader
+from .kweditor import KeywordEditor
 
 
 class TestCaseEditor(_RobotTableEditor):
@@ -101,4 +100,5 @@ class UserKeywordEditor(TestCaseEditor):
     def _create_header(self, text, readonly=False):
         def cb(event):
             Usages(self.controller, self._tree.highlight).show()
-        return FindUsagesHeader(self, text, cb)
+        return FindUsagesHeader(self, name, cb, color_foreground=self.color_secondary_foreground,
+                                               color_background=self.color_secondary_background)

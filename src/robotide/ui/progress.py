@@ -13,10 +13,11 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import wx
 import time
 
-from robotide import context
+import wx
+
+from .. import context
 
 
 class ProgressObserver(object):

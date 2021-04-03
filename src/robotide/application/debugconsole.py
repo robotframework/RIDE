@@ -14,8 +14,8 @@
 #  limitations under the License.
 
 import sys
-import traceback
 import threading
+import traceback
 
 
 def _print_stacks():
