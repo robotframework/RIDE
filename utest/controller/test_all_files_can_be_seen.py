@@ -35,7 +35,7 @@ class TestAllFiles(unittest.TestCase):
         self._verify_names(all_files, 'Used Resource', 'Unused Resource',
                            'Resource Dir', 'Suite Dir', 'Suite2 Dir')
         resource_dir = self._get_child(all_files, 'Resource Dir')
-        self._verify_names(resource_dir, 'Unused')
+        self._verify_names(resource_dir, *())
         suite_dir = self._get_child(all_files, 'Suite Dir')
         self._verify_names(suite_dir, 'Suite')
 
