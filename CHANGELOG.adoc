@@ -52,6 +52,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 - Changed moving to keyword definition to be with Ctrl-Click (keep Ctrl-B action)
     * To edit cell use F2 or Double-Click
 - Changed Enter button in navigation mode to start editing cell, and to move to right cell when in edit mode
+- Performance improvements for loading large test suites
 
 
 === Fixed

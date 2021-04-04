@@ -557,7 +557,7 @@ class DatafileRetriever(object):
         res = self._collect_each_res_import(datafile, ctx, self._add_resource)
         resources.update(res)
         for child in datafile.children:
-            resources.update(self.get_resources_from(child))
+            resources.update(self._get_resources_recursive(child, ctx))
         return resources
 
     def _add_resource(self, res, ctx, items):
