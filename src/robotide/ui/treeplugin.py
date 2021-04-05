@@ -50,7 +50,7 @@ from .treenodehandlers import ResourceRootHandler, action_handler_class, Resourc
 from .images import TreeImageList
 
 
-_TREE_ARGS = {'style': wx.TR_DEFAULT_STYLE}
+_TREE_ARGS = {'style': wx.HSCROLL|wx.VSCROLL }  #DEBUG wx.TR_DEFAULT_STYLE}
 _TREE_ARGS['agwStyle'] = customtreectrl.TR_DEFAULT_STYLE | customtreectrl.TR_HIDE_ROOT | \
                          customtreectrl.TR_EDIT_LABELS
 _TREE_ARGS['agwStyle'] |= customtreectrl.TR_TOOLTIP_ON_LONG_ITEMS
