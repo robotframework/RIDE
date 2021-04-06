@@ -57,6 +57,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Fixed
 
+- Fixed broken pipe errors when using `--loglevel  DEBUG:INFO`
 - Fixed various output console encoding issue in different platforms
 - Fixed errors when importing libraries with keyword only arguments (i.e. robotframework-requestschecker)
 - Fixed sys.stderr is None errors if RIDE is launched by pythonw.exe
