@@ -38,7 +38,14 @@ class ArgsParser:
     def get_message_log_level(args, default='INFO'):
         level = ArgsParser._get_arg_value('-L', '--loglevel',
                                           args, default)
-        return LOG_LEVELS.get(level.upper(), default)
+        level_list = level.upper().split(':')
+        try:
+            min_level = LOG_LEVELS[level_list[0]] or LOG_LEVELS[default]
+            for i in level_list:
+                min_level = LOG_LEVELS[i] if LOG_LEVELS[i] < min_level else min_level
+            return min_level
+        except KeyError as e:
+            raise TypeError(f"Invalid loglevel: {e}")
 
     @staticmethod
     def get_output_directory(args, default):
