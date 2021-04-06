@@ -30,6 +30,7 @@
 #  limitations under the License.
 
 import codecs
+import os
 
 from robotide.context import IS_WINDOWS
 from sys import getfilesystemencoding
@@ -41,6 +42,8 @@ class FileWriter:
 
     @staticmethod
     def write(file_path, lines, windows_mode, mode='w'):
+        if not os.path.exists(os.path.dirname(file_path)):
+            os.makedirs(os.path.dirname(file_path))
         if IS_WINDOWS:
             f = codecs.open(file_path, mode=windows_mode)
             for item in lines:

@@ -14,8 +14,10 @@
 #  limitations under the License.
 
 import os
+
 import wx
-from robotide.context import IS_WINDOWS, IS_MAC
+
+from ..context import IS_WINDOWS, IS_MAC
 
 
 class _ClipboardHandler(object):

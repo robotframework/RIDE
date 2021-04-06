@@ -15,15 +15,15 @@
 
 import wx
 
-from robotide.preferences import widgets
+from ..ui.preferences_dialogs import PreferencesPanel, comma_separated_value_editor
 
 
-class ImportPreferences(widgets.PreferencesPanel):
-    location = ('Importing')
+class ImportPreferences(PreferencesPanel):
+    location = 'Importing'
     title = 'Library imports and PYTHONPATH'
 
     def __init__(self, parent, settings):
-        super(widgets.PreferencesPanel, self).__init__(parent)
+        super(PreferencesPanel, self).__init__(parent)
         self.SetSizer(wx.FlexGridSizer(rows=4, cols=2, vgap=10, hgap=5))
         self.Sizer.AddGrowableCol(1, proportion=1)
         self._add_settings(settings)
@@ -37,11 +37,10 @@ class ImportPreferences(widgets.PreferencesPanel):
             ('library xml directories', 'Comma separated list of directories '
                                         'containing library spec files.')
         ]
-        for (name, help) in list_settings:
-            self._create_list_setting_editor(settings, name, help)
+        for (name, _help) in list_settings:
+            self._create_list_setting_editor(settings, name, _help)
 
-    def _create_list_setting_editor(self, settings, name, help):
-        label, editor = widgets.comma_separated_value_editor(
-            self, settings, name, name.capitalize(), help)
+    def _create_list_setting_editor(self, settings, name, _help):
+        label, editor = comma_separated_value_editor(self, settings, name, name.capitalize(), _help)
         self.Sizer.Add(label)
         self.Sizer.Add(editor, flag=wx.EXPAND)

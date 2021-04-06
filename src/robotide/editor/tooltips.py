@@ -15,6 +15,7 @@
 
 import wx
 import wx.grid
+
 from .popupwindow import HtmlPopupWindow
 
 

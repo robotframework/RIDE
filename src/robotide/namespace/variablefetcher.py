@@ -13,9 +13,10 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robotide import robotapi
+from .. import robotapi
 
 # NOTE! This is in own module to reduce the number of dependencies as this is executed in another process
+
 
 def import_varfile(varfile_path, args):
     temp = robotapi.RobotVariables()

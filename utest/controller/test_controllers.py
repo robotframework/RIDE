@@ -15,6 +15,7 @@
 
 import re
 import os
+import sys
 import unittest
 from mockito import mock
 from nose.tools import assert_equal, assert_true, assert_false
@@ -35,7 +36,13 @@ from robotide.publish.messages import (
 from robotide.controller.tags import Tag
 
 from utest.resources.mocks import PublisherListener
-from utest.controller.base_command_test import _FakeProject
+# Workaround for relative import in non-module
+# see https://stackoverflow.com/questions/16981921/relative-imports-in-python-3
+PACKAGE_PARENT = '..'
+SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(),
+                                              os.path.expanduser(__file__))))
+sys.path.insert(0, os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
+from base_command_test import _FakeProject
 
 
 class _FakeParent(_FakeProject):

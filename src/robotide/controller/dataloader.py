@@ -16,7 +16,7 @@
 import os
 from threading import Thread
 
-from robotide import robotapi
+from .. import robotapi
 
 
 class DataLoader(object):

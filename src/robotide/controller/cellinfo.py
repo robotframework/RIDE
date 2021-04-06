@@ -13,8 +13,8 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robotide.action.shortcut import localize_shortcuts
-from robotide.utils import highlightmatcher, html_escape
+from ..action.shortcut import localize_shortcuts
+from ..utils import highlightmatcher, html_escape
 
 CTRL_LABEL = localize_shortcuts('CtrlCmd')
 

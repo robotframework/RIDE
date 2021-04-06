@@ -41,6 +41,7 @@ DATA = [['kw1', '', ''],
         ['kw2', 'arg1', ''],
         ['kw3', 'arg1', 'arg2']]
 
+app = wx.App(None)
 
 class _FakeMainFrame(wx.Frame):
     def __init__(self):

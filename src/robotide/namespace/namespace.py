@@ -13,26 +13,19 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import os
-import sys
-import re
 import operator
+import os
+import re
+import sys
 import tempfile
 from itertools import chain
 
-if sys.version_info[0] == 2:
-    PYTHON2 = True
-    PYTHON3 = False
-elif sys.version_info[0] == 3:
-    PYTHON2 = False
-    PYTHON3 = True
 
-from robotide import robotapi, utils
-from robotide.publish import PUBLISHER, RideSettingsChanged, RideLogMessage
-from robotide.robotapi import VariableFileSetter
-from robotide.spec.iteminfo import TestCaseUserKeywordInfo,\
-    ResourceUserKeywordInfo, VariableInfo, _UserKeywordInfo, ArgumentInfo
-
+from .. import robotapi, utils
+from ..publish import PUBLISHER, RideSettingsChanged, RideLogMessage
+from ..robotapi import VariableFileSetter
+from ..spec.iteminfo import (TestCaseUserKeywordInfo, ResourceUserKeywordInfo, VariableInfo, _UserKeywordInfo,
+                             ArgumentInfo)
 from .cache import LibraryCache, ExpiringCache
 from .resourcefactory import ResourceFactory
 from .embeddedargs import EmbeddedArgsHandler
@@ -164,12 +157,8 @@ class Namespace(object):
 
     @staticmethod
     def _add_kw_arg_vars(controller, variables):
-        if PYTHON2:
-            for name, value in controller.get_local_variables().iteritems():
-                variables.set_argument(name, value)
-        elif PYTHON3:
-            for name, value in controller.get_local_variables().items():
-                variables.set_argument(name, value)
+        for name, value in controller.get_local_variables().items():
+            variables.set_argument(name, value)
 
     def _keyword_suggestions(self, datafile, start, ctx):
         start_normalized = utils.normalize(start)
@@ -320,12 +309,8 @@ class _VariableStash(object):
         self.load_builtin_global_vars()
 
     def load_builtin_global_vars(self):
-        if PYTHON2:
-            for k, v in self.global_variables.iteritems():
-                self.set(k, v, 'built-in')
-        elif PYTHON3:
-            for k, v in self.global_variables.items():
-                self.set(k, v, 'built-in')
+        for k, v in self.global_variables.items():
+            self.set(k, v, 'built-in')
 
     def set(self, name, value, source):
         self._vars[name] = value
@@ -572,7 +557,7 @@ class DatafileRetriever(object):
         res = self._collect_each_res_import(datafile, ctx, self._add_resource)
         resources.update(res)
         for child in datafile.children:
-            resources.update(self.get_resources_from(child))
+            resources.update(self._get_resources_recursive(child, ctx))
         return resources
 
     def _add_resource(self, res, ctx, items):

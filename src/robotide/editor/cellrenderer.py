@@ -12,9 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from wx.lib import wordwrap
 import wx.grid
-
 
 class CellRenderer(wx.grid.GridCellRenderer):
     """

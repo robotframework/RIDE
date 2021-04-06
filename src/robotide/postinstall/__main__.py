@@ -19,6 +19,7 @@
 import sys
 try:
     import wx
+    from wx import Colour
 except ImportError:
     sys.stderr.write("No wxPython installation detected!"
                      "\n"
@@ -30,6 +31,7 @@ except ImportError:
     exit(-1)
 
 from os.path import exists, join
+from robotide.widgets import RIDEDialog
 
 __doc__ = """
 Usage: python ride_postinstall.py [options] <-install|-remove>
@@ -60,23 +62,23 @@ def verify_install():
         return True
 
 
-class MessageDialog(wx.Dialog):
-    def __init__(self, message, title, ttl=10):
-        wx.Dialog.__init__(self, None, -1, title, size=(300, 200))
+class MessageDialog(RIDEDialog):
+    def __init__(self, parent, message, title, ttl=10):
+        RIDEDialog.__init__(self, title=title, parent=parent, size=(300, 200))
+
         self.CenterOnScreen(wx.BOTH)
         self.timeToLive = ttl
 
-        std_btn_sizer = self.CreateStdDialogButtonSizer(wx.YES_NO)
         st_msg = wx.StaticText(self, -1, message)
         self.settimetolivemsg = wx.StaticText(self, -1, 'Closing this dialog box in %ds...' % self.timeToLive)
-
         vbox = wx.BoxSizer(wx.VERTICAL)
         vbox.Add(st_msg, 0, wx.ALIGN_CENTER | wx.TOP, 40)
         vbox.Add(self.settimetolivemsg, 0, wx.ALIGN_CENTER | wx.TOP, 10)
-        vbox.Add(std_btn_sizer, 1, wx.ALIGN_CENTER | wx.TOP, 10)
         self.SetSizer(vbox)
-        self.SetAffirmativeId(wx.ID_YES)
-
+        self.SetAffirmativeId(wx.ID_OK)
+        self._create_buttons()
+        self.SetBackgroundColour(Colour(self.color_background))
+        self.SetForegroundColour(Colour(self.color_foreground))
         self.timer = wx.Timer(self)
         self.timer.Start(1000)  # Generate a timer event every second
         self.Bind(wx.EVT_CLOSE, self.OnClose)
@@ -108,6 +110,18 @@ class MessageDialog(wx.Dialog):
             self.timer.Stop()
             self.EndModal(wx.ID_NO)
 
+    def _create_buttons(self):
+        buttons = self.CreateStdDialogButtonSizer(wx.OK|wx.CANCEL)
+        self.SetBackgroundColour(Colour(self.color_background))
+        self.SetForegroundColour(Colour(self.color_foreground))
+        for item in self.GetChildren():
+            if isinstance(item, (wx.Button, wx.BitmapButton)):
+                item.SetBackgroundColour(Colour(self.color_secondary_background))
+                item.SetOwnBackgroundColour(Colour(self.color_secondary_background))
+                item.SetForegroundColour(Colour(self.color_secondary_foreground))
+                item.SetOwnForegroundColour(Colour(self.color_secondary_foreground))
+        self.Sizer.Add(buttons, flag=wx.ALIGN_CENTER | wx.ALL, border=5)
+
 
 def _askyesno(title, message, frame=None):
     if frame is None:
@@ -116,8 +130,8 @@ def _askyesno(title, message, frame=None):
     else:
         parent = wx.Frame(frame, size=(0, 0))
     parent.CenterOnScreen()
-    dlg = MessageDialog(message, title, ttl=8)
-    result = dlg.ShowModal() == wx.ID_YES
+    dlg = MessageDialog(parent, message, title, ttl=8)
+    result = dlg.ShowModal() in [ wx.ID_YES, wx.ID_OK]
     print("Result %s" % result)
     if dlg:
         dlg.Destroy()

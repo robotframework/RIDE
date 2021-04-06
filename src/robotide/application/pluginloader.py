@@ -17,8 +17,9 @@ import importlib
 import importlib.util
 import inspect
 import os
-from robotide.context import LOG
-from robotide.pluginapi import Plugin
+
+from ..context import LOG
+from ..pluginapi import Plugin
 from .pluginconnector import PluginFactory
 
 
@@ -26,8 +27,7 @@ class PluginLoader(object):
 
     def __init__(self, application, load_dirs, standard_classes):
         self._load_errors = []
-        self.plugins = [ PluginFactory(application, cls) for cls in
-                         standard_classes + self._find_classes(load_dirs) ]
+        self.plugins = [PluginFactory(application, cls) for cls in standard_classes + self._find_classes(load_dirs)]
         if self._load_errors:
             LOG.error('\n\n'.join(self._load_errors))
 
