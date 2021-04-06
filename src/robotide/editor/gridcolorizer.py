@@ -91,8 +91,8 @@ class Colorizer(object):
 
 class ColorizationSettings(object):
 
-    DEFAULT_TEXT = 'black'  # Colour('black')  # Colour(7, 0, 70)  # 'black'
-    DEFAULT_BACKGROUND = 'light grey' # Colour('light grey')  # Colour(200, 222, 40)  # 'white'
+    DEFAULT_TEXT = ''  # Colour('black')  # Colour(7, 0, 70)  # 'black'
+    DEFAULT_BACKGROUND = ''  # 'light grey' # Colour('light grey')  # Colour(200, 222, 40)  # 'white'
 
     def __init__(self, settings=None):
         self._settings = settings
