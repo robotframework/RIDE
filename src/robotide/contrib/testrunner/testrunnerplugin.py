@@ -417,7 +417,7 @@ class TestRunnerPlugin(Plugin, RIDEDialog):
         self._log_message_queue = Queue()
 
         self._min_log_level_number = \
-            LOG_LEVELS[ArgsParser.get_message_log_level(args)]
+            ArgsParser.get_message_log_level(args)
 
         self._logs_directory = \
             ArgsParser.get_output_directory(args, self._default_output_dir)
