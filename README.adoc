@@ -3,9 +3,16 @@ ifdef::env-github[:outfilesuffix: .adoc]
 
 RIDE is a development environment for Robot Framework test cases.
 
-**Instant Communication**
+=== Instant Communication ===
+
 Join our **#ride** channel in Robot Framework Slack: https://robotframework.slack.com
 (signup page: https://robotframework-slack-invite.herokuapp.com/)
+
+=== "Support" sites ===
+
+We have a RIDE section topic in https://forum.robotframework.org/c/tools/ride/21[Tools>RIDE].
+
+You can use the tag *robotframework-ide* to search and ask on https://stackoverflow.com/questions/tagged/robotframework-ide[StackOverflow].
 
 == **Welcome to the development version of RIDE - next release will be version 2.0**
 
@@ -17,11 +24,15 @@ See the https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride
 
 **Attention, this new version will break old style `:FOR`, and you have to change to `FOR/END` blocks.**
 
-**Attention, some problems have been detected when using wxPython 4.1.**
+**Attention, some problems have been detected when using wxPython 4.1.1, namely a crash when detaching File Explorer and Project panes.**
 
 **The pre-release and current development, supports Python 3.8 (since February 2020).**
 
-**Attention, we are not testing on Python 3.9, so better use Python 3.6, 3.7 or 3.8.**
+**Attention:**
+
+**It is better to use Python 3.6, 3.7 or 3.8.**
+
+**To use Python 3.9, you should have wxPython 4.1.1, and install from `master` (since April 2021).**
 
 Install with:
 [source, shell]
@@ -48,5 +59,5 @@ Windows (py36, py37, py38): image:https://ci.appveyor.com/api/projects/status/gi
 * Statistics at https://pypistats.org/packages/robotframework-ride[PyPi Stats] and https://libraries.io/pypi/robotframework-ride[Libraries.io]
 * Usage instructions and some tips and tricks can be found from the https://github.com/robotframework/RIDE/wiki[Wiki]
 * Bug report/enhancement request? Use the https://github.com/robotframework/RIDE/issues[issue tracker]
-* Any questions? Do not hesitate to use the https://groups.google.com/group/robotframework-users/[mailing list]
+* Any questions? Do not hesitate to use the https://groups.google.com/group/robotframework-users/[mailing list], or https://forum.robotframework.org/c/tools/ride/21[Robot Framework Forum->Tools>RIDE], or https://stackoverflow.com/questions/tagged/robotframework-ide[StackOverflow].
 * Development information is in https://github.com/robotframework/RIDE/blob/master/BUILD.rest[BUILD] file
