@@ -360,8 +360,10 @@ class RIDE(wx.App):
     def OnAppActivate(self, event):
         if self.workspace_path is not None and RideFSWatcherHandler.is_watcher_created():
             if event.GetActive():
-                if self._controller.is_project_changed_from_disk() or \
-                        RideFSWatcherHandler.is_workspace_dirty():
+                # print(f"DEBUG: OnAppActivate event.GetActive  is_project_changed_from_disk = {self._controller.is_project_changed_from_disk()}")
+                #print(f"DEBUG: OnAppActivate event.GetActive  is_workspace_dirty = {RideFSWatcherHandler.is_workspace_dirty()}")
+                #DEBUG if self._controller.is_project_changed_from_disk() or \
+                if RideFSWatcherHandler.is_workspace_dirty():
                     self.frame.show_confirm_reload_dlg(event)
                 RideFSWatcherHandler.stop_listening()
             else:

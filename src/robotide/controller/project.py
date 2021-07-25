@@ -302,11 +302,14 @@ class Project(_BaseController, WithNamespace):
         from .filecontrollers import TestDataDirectoryController
         for data_file in self.datafiles:
             if isinstance(data_file, TestDataDirectoryController):
+                # print(f"DEBUG: Project is_project_changed_from_disk directory is {data_file.directory}")
                 if not os.path.exists(data_file.directory):
+                    # print(f"DEBUG: Project is_project_changed_from_disk directory TRUE {data_file.directory}")
                     return True
             else:
                 if data_file.has_been_modified_on_disk() or \
                         data_file.has_been_removed_from_disk():
+                    # print(f"DEBUG: Project is_project_changed_from_disk FILE  TRUE {data_file.name}")
                     return True
         return False
 
