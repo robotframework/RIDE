@@ -42,6 +42,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Changed
 
+- Improved filesystem changes detection to be less reactive
 - Keywords auto-suggestion in grid editor does not need shortcut anymore, if you want to disable this feature you can config in `Preferences -> Grid Editor -> Only trigger auto suggestions from shortcuts`
 - Changed Manage Plugins to be a dialog panel instead of being a notebook tab
 - Added more valid file extensions to Open Test Suite
