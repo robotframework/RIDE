@@ -23,12 +23,13 @@ class _RideFSWatcherHandler:
     def __init__(self):
         self._fs_watcher = None
         self._is_workspace_dirty = False
-        self._watched_path = None
+        self._initial_watched_path = None
+        self._watched_path = set()
 
     def create_fs_watcher(self, path):
         if self._fs_watcher:
             return
-        self._watched_path = path
+        self._initial_watched_path = path
         self._fs_watcher = wx.FileSystemWatcher()
         self._fs_watcher.Bind(wx.EVT_FSWATCHER, self._on_fs_event)
         # print(f"DEBUG: FileSystemWatcher create_fs_watcher CREATED")
@@ -39,17 +40,32 @@ class _RideFSWatcherHandler:
             # only watch folders
             # MSW do not support watch single file
             path = os.path.join(path, '')
+            result = self._fs_watcher.AddTree(path)  #, filter="*.r*o*")
+            # print(f"DEBUG: FileSystemWatcher start_listening DIR result is ={result}")
+            # Add all files to the monitoring list
+            from wx import FileSystem
+            fs = FileSystem()
+            fs.ChangePathTo(path, True)
+            file_search = fs.FindFirst("*")
+            while file_search:
+                if self._is_valid_file_format(file_search):
+                    # print(f"DEBUG: FileSystemWatcher start_listening file_search={file_search}")
+                    self._watched_path.add(fs.URLToFileName(file_search))
+                file_search = fs.FindNext()
+            self._watched_path.add(path)
         else:
+            self._watched_path.add(path)  # Here we add the file path
             path = os.path.join(os.path.dirname(path), '')
-        # print(f"DEBUG: FileSystemWatcher start_listening path={path}")
-        self._fs_watcher.AddTree(path)  #, filter="*.r*o*")
-        self._watched_path = path
+            result = self._fs_watcher.Add(path)  # Here we only add the file parent directory
+            # print(f"DEBUG: FileSystemWatcher start_listening FILE result is ={result}")
+        # print(f"DEBUG: FileSystemWatcher start_listening self._watched_path={self._watched_path}")
+
 
     def stop_listening(self):
         # print(f"DEBUG: FileSystemWatcher stop_listening")
         self._is_workspace_dirty = False
         self._fs_watcher.RemoveAll()
-        self._watched_path = None
+        self._watched_path = set()
 
     def is_workspace_dirty(self):
         # print(f"DEBUG: is_workspace_dirty self._watched_path = {self._watched_path}")
@@ -62,7 +78,7 @@ class _RideFSWatcherHandler:
         return self._fs_watcher is not None
 
     def get_workspace_new_path(self):
-        return self._watched_path
+        return self._initial_watched_path  # self._watched_path.pop()  # Returning file or directory name
 
     def _on_fs_event(self, event):
         if self._is_mark_dirty_needed(event):
@@ -73,13 +89,18 @@ class _RideFSWatcherHandler:
         previous_path = event.GetPath()
         change_type = event.GetChangeType()
 
-        if change_type == wx.FSW_EVENT_MODIFY or change_type == wx.FSW_EVENT_ACCESS:
+        if change_type == wx.FSW_EVENT_MODIFY: # DEBUG  or change_type == wx.FSW_EVENT_ACCESS
+            """
             paths = list()
-            count = self._fs_watcher.GetWatchedPaths(paths)
+            count = self._fs_watcher.GetWatchedPaths(paths)  # DEBUG This is always empty
+            print(f"DEBUG: FSW_EVENT_MODIFY count={count} paths={paths}")
             for file in paths:
                 # print(f"DEBUG: FileSystemWatcher count files {count} event wx.FSW_EVENT_MODIFY file = {file}")
                 if file == previous_path:
                     return True
+            """
+            if previous_path in self._watched_path:
+                return True
             return False
 
         if change_type == wx.FSW_EVENT_CREATE:
@@ -88,18 +109,19 @@ class _RideFSWatcherHandler:
             elif os.path.isfile(previous_path):
                 return self._is_valid_file_format(previous_path)
         elif change_type == wx.FSW_EVENT_DELETE:
-            if previous_path == self._watched_path:
+            if previous_path in self._watched_path:
                 # workspace root folder / suite file is deleted
-                self._watched_path = None
+                self._watched_path.remove(previous_path)
                 return True
             if previous_path.endswith(os.sep):
                 return True
             else:
                 return self._is_valid_file_format(previous_path)
         elif change_type == wx.FSW_EVENT_RENAME:
-            if previous_path == self._watched_path:
+            if previous_path in self._watched_path:
                 # workspace root folder / suite file is renamed
-                self._watched_path = new_path
+                self._watched_path.remove(previous_path)
+                self._watched_path.add(new_path)
                 return True
             if os.path.isdir(new_path):
                 return True
