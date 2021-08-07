@@ -20,6 +20,8 @@ import wx
 from ..ui.preferences_dialogs import (boolean_editor, PreferencesPanel, IntegerChoiceEditor, SpinChoiceEditor,
                                       StringChoiceEditor, PreferencesColorPicker)
 from .managesettingsdialog import SaveLoadSettings
+from wx import Colour
+from ..context import IS_WINDOWS
 
 ID_APPLY_TO_PANEL = wx.NewId()
 ID_RESET = wx.NewId()
@@ -55,13 +57,20 @@ class GeneralPreferences(PreferencesPanel):
 
         font_editor = self._create_font_editor()
         colors_sizer = self.create_colors_sizer()
-        main_sizer = wx.FlexGridSizer(rows=5, cols=1, vgap=10, hgap=10)
+        main_sizer = wx.FlexGridSizer(rows=6, cols=1, vgap=10, hgap=10)
         buttons_sizer = wx.BoxSizer(orient=wx.HORIZONTAL)
         reset = wx.Button(self, ID_RESET, 'Reset colors to default')
         saveloadsettings = wx.Button(self, ID_SAVELOADSETTINGS, 'Save or Load settings')
         self.cb_apply_to_panels = wx.CheckBox(self, ID_APPLY_TO_PANEL, label="Apply to Project and File Explorer panels")
         self.cb_apply_to_panels.Enable()
         self.cb_apply_to_panels.SetValue(self._apply_to_panels)
+        if IS_WINDOWS:
+            background_color = Colour("light gray")
+            foreground_color = Colour("black")
+            self.cb_apply_to_panels.SetForegroundColour(foreground_color)
+            self.cb_apply_to_panels.SetBackgroundColour(background_color)
+            self.cb_apply_to_panels.SetOwnBackgroundColour(background_color)
+            self.cb_apply_to_panels.SetOwnForegroundColour(foreground_color)
         main_sizer.Add(font_editor)
         main_sizer.Add(colors_sizer)
         main_sizer.Add(self.cb_apply_to_panels)
@@ -86,6 +95,7 @@ class GeneralPreferences(PreferencesPanel):
         defaults = self._read_defaults()
         for picker in self._color_pickers:
             picker.SetColour(defaults[picker.key])
+        # self.Refresh()
 
     def OnSaveLoadSettings(self, event):
         if event.GetId() != ID_SAVELOADSETTINGS:
@@ -152,19 +162,40 @@ class GeneralPreferences(PreferencesPanel):
             self._settings, 'font size', 'Font Size',
             [str(i) for i in range(8, 16)])
         sizer = wx.FlexGridSizer(rows=3, cols=2, vgap=10, hgap=30)
-        sizer.AddMany([f.label(self), f.chooser(self)])
+        l_size = f.label(self)
+        if IS_WINDOWS:
+            background_color = Colour("light gray")
+            foreground_color = Colour("black")
+            l_size.SetBackgroundColour(background_color)
+            l_size.SetOwnBackgroundColour(background_color)
+            l_size.SetForegroundColour(foreground_color)
+            l_size.SetOwnForegroundColour(foreground_color)
+        sizer.AddMany([l_size, f.chooser(self)])
         fixed_font = False
         if 'zoom factor' in self._settings:
             z = SpinChoiceEditor(
                 self._settings, 'zoom factor', 'Zoom Factor', (-10, 20))
-            sizer.AddMany([z.label(self), z.chooser(self)])
+            l_zoom = z.label(self)
+            if IS_WINDOWS:
+                l_zoom.SetForegroundColour(foreground_color)
+                l_zoom.SetBackgroundColour(background_color)
+                l_zoom.SetOwnBackgroundColour(background_color)
+                l_zoom.SetOwnForegroundColour(foreground_color)
+            sizer.AddMany([l_zoom, z.chooser(self)])
         if 'fixed font' in self._settings:
             sizer.AddMany(boolean_editor(
                 self, self._settings, 'fixed font', 'Use fixed width font'))
             fixed_font = self._settings['fixed font']
         if 'font face' in self._settings:
             s = StringChoiceEditor(self._settings, 'font face', 'Font Face', read_fonts(fixed_font))
-            sizer.AddMany([s.label(self), s.chooser(self)])
+            l_font = s.label(self)
+            if IS_WINDOWS:
+                l_font.SetForegroundColour(foreground_color)
+                l_font.SetBackgroundColour(background_color)
+                l_font.SetOwnBackgroundColour(background_color)
+                l_font.SetOwnForegroundColour(foreground_color)
+            sizer.AddMany([l_font, s.chooser(self)])
+        sizer.Layout()
         return sizer
 
     def create_colors_sizer(self):
@@ -193,12 +224,19 @@ class DefaultPreferences(GeneralPreferences):
                     ('foreground text', 'Text Foreground'),
                     ('background help', 'Help Background')
                     )
-
+        if IS_WINDOWS:
+            background_color = Colour("light gray")
+            foreground_color = Colour("black")
         for settings_key, label_text in settings:
             if column == 4:
                 column = 0
                 row += 1
             label = wx.StaticText(self, wx.ID_ANY, label_text)
+            if IS_WINDOWS:
+                label.SetForegroundColour(foreground_color)
+                label.SetBackgroundColour(background_color)
+                label.SetOwnBackgroundColour(background_color)
+                label.SetOwnForegroundColour(foreground_color)
             button = PreferencesColorPicker(
                 self, wx.ID_ANY, self._settings, settings_key)
             container.Add(button, (row, column),
@@ -214,4 +252,5 @@ class DefaultPreferences(GeneralPreferences):
         defaults = self._read_defaults()
         for picker in self._color_pickers:
             picker.SetColour(defaults[picker.key])
+        # self.Refresh()
         wx.FindWindowByName("RIDE - Preferences").Close(force=True)
