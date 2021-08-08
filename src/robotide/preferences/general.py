@@ -183,8 +183,13 @@ class GeneralPreferences(PreferencesPanel):
                 l_zoom.SetOwnForegroundColour(foreground_color)
             sizer.AddMany([l_zoom, z.chooser(self)])
         if 'fixed font' in self._settings:
-            sizer.AddMany(boolean_editor(
-                self, self._settings, 'fixed font', 'Use fixed width font'))
+            l_ff, editor = boolean_editor(self, self._settings, 'fixed font', 'Use fixed width font')
+            if IS_WINDOWS:
+                l_ff.SetForegroundColour(foreground_color)
+                l_ff.SetBackgroundColour(background_color)
+                l_ff.SetOwnBackgroundColour(background_color)
+                l_ff.SetOwnForegroundColour(foreground_color)
+            sizer.AddMany([l_ff, editor])
             fixed_font = self._settings['fixed font']
         if 'font face' in self._settings:
             s = StringChoiceEditor(self._settings, 'font face', 'Font Face', read_fonts(fixed_font))

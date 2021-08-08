@@ -131,8 +131,13 @@ class EditorPreferences(PreferencesPanel):
                 l_zoom.SetOwnForegroundColour(foreground_color)
             sizer.AddMany([l_zoom, z.chooser(self)])
         if 'fixed font' in self._settings:
-            sizer.AddMany(boolean_editor(
-                self, self._settings, 'fixed font', 'Use fixed width font'))
+            l_ff, editor = boolean_editor(self, self._settings, 'fixed font', 'Use fixed width font')
+            if IS_WINDOWS:
+                l_ff.SetForegroundColour(foreground_color)
+                l_ff.SetBackgroundColour(background_color)
+                l_ff.SetOwnBackgroundColour(background_color)
+                l_ff.SetOwnForegroundColour(foreground_color)
+            sizer.AddMany([l_ff, editor])
             fixed_font = self._settings['fixed font']
         if 'font face' in self._settings:
             s = StringChoiceEditor(self._settings, 'font face', 'Font Face', ReadFonts(fixed_font))
@@ -236,14 +241,38 @@ class GridEditorPreferences(EditorPreferences):
     def _create_grid_config_editor(self):
         settings = self._settings
         sizer = wx.FlexGridSizer(rows=6, cols=2, vgap=10, hgap=10)
-        sizer.Add(self._label_for('Default column size'))
+        l_col_size = self._label_for('Default column size')
+        if IS_WINDOWS:
+            background_color = Colour("light gray")
+            foreground_color = Colour("black")
+            l_col_size.SetForegroundColour(foreground_color)
+            l_col_size.SetBackgroundColour(background_color)
+            l_col_size.SetOwnBackgroundColour(background_color)
+            l_col_size.SetOwnForegroundColour(foreground_color)
+        sizer.Add(l_col_size)
         sizer.Add(self._number_editor(settings, 'col size'))
-        sizer.AddMany(boolean_editor(
-            self, settings, 'auto size cols', 'Auto size columns'))
-        sizer.Add(self._label_for('Max column size\n(applies when auto size is on)'))
+        l_auto_size, editor = boolean_editor(self, settings, 'auto size cols', 'Auto size columns')
+        if IS_WINDOWS:
+            l_auto_size.SetForegroundColour(foreground_color)
+            l_auto_size.SetBackgroundColour(background_color)
+            l_auto_size.SetOwnBackgroundColour(background_color)
+            l_auto_size.SetOwnForegroundColour(foreground_color)
+        sizer.AddMany([l_auto_size, editor])
+        l_max_size = self._label_for('Max column size\n(applies when auto size is on)')
+        if IS_WINDOWS:
+            l_max_size.SetForegroundColour(foreground_color)
+            l_max_size.SetBackgroundColour(background_color)
+            l_max_size.SetOwnBackgroundColour(background_color)
+            l_max_size.SetOwnForegroundColour(foreground_color)
+        sizer.Add(l_max_size)
         sizer.Add(self._number_editor(settings, 'max col size'))
-        sizer.AddMany(boolean_editor(
-            self, settings, 'word wrap', 'Word wrap and auto size rows'))
+        l_word_wrap, editor = boolean_editor(self, settings, 'word wrap', 'Word wrap and auto size rows')
+        if IS_WINDOWS:
+            l_word_wrap.SetForegroundColour(foreground_color)
+            l_word_wrap.SetBackgroundColour(background_color)
+            l_word_wrap.SetOwnBackgroundColour(background_color)
+            l_word_wrap.SetOwnForegroundColour(foreground_color)
+        sizer.AddMany([l_word_wrap, editor])
         return sizer
 
     def _label_for(self, name):
@@ -359,10 +388,16 @@ class TestRunnerPreferences(EditorPreferences):
         self._settings.get('confirm run', True)
         settings = self._settings
         sizer = wx.FlexGridSizer(rows=2, cols=2, vgap=10, hgap=10)
-
-        sizer.AddMany(boolean_editor(
-            self, settings, 'confirm run', 'Asks for confirmation to run all'
-                                           ' tests if none selected '))
+        l_confirm, editor = boolean_editor(self, settings, 'confirm run',
+                                           'Asks for confirmation to run all tests if none selected ')
+        if IS_WINDOWS:
+            background_color = Colour("light gray")
+            foreground_color = Colour("black")
+            l_confirm.SetForegroundColour(foreground_color)
+            l_confirm.SetBackgroundColour(background_color)
+            l_confirm.SetOwnBackgroundColour(background_color)
+            l_confirm.SetOwnForegroundColour(foreground_color)
+        sizer.AddMany([l_confirm, editor])
         return sizer
 
     def create_colors_sizer(self):
