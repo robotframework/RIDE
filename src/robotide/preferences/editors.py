@@ -24,6 +24,7 @@ from ..ui.preferences_dialogs import (PreferencesPanel, SpinChoiceEditor, Intege
                                       StringChoiceEditor, PreferencesColorPicker)
 from ..widgets import Label
 from .managesettingsdialog import SaveLoadSettings
+from ..context import IS_WINDOWS
 
 try:  # import installed version first
     import robotframeworklexer
@@ -109,19 +110,44 @@ class EditorPreferences(PreferencesPanel):
             self._settings, 'font size', 'Font Size',
             [str(i) for i in range(8, 16)])
         sizer = wx.FlexGridSizer(rows=3, cols=2, vgap=10, hgap=30)
-        sizer.AddMany([f.label(self), f.chooser(self)])
+        l_size = f.label(self)
+        if IS_WINDOWS:
+            background_color = Colour("light gray")
+            foreground_color = Colour("black")
+            l_size.SetBackgroundColour(background_color)
+            l_size.SetOwnBackgroundColour(background_color)
+            l_size.SetForegroundColour(foreground_color)
+            l_size.SetOwnForegroundColour(foreground_color)
+        sizer.AddMany([l_size, f.chooser(self)])
         fixed_font = False
         if 'zoom factor' in self._settings:
             z = SpinChoiceEditor(
                 self._settings, 'zoom factor', 'Zoom Factor', (-10, 20))
-            sizer.AddMany([z.label(self), z.chooser(self)])
+            l_zoom = z.label(self)
+            if IS_WINDOWS:
+                l_zoom.SetForegroundColour(foreground_color)
+                l_zoom.SetBackgroundColour(background_color)
+                l_zoom.SetOwnBackgroundColour(background_color)
+                l_zoom.SetOwnForegroundColour(foreground_color)
+            sizer.AddMany([l_zoom, z.chooser(self)])
         if 'fixed font' in self._settings:
-            sizer.AddMany(boolean_editor(
-                self, self._settings, 'fixed font', 'Use fixed width font'))
+            l_ff, editor = boolean_editor(self, self._settings, 'fixed font', 'Use fixed width font')
+            if IS_WINDOWS:
+                l_ff.SetForegroundColour(foreground_color)
+                l_ff.SetBackgroundColour(background_color)
+                l_ff.SetOwnBackgroundColour(background_color)
+                l_ff.SetOwnForegroundColour(foreground_color)
+            sizer.AddMany([l_ff, editor])
             fixed_font = self._settings['fixed font']
         if 'font face' in self._settings:
             s = StringChoiceEditor(self._settings, 'font face', 'Font Face', ReadFonts(fixed_font))
-            sizer.AddMany([s.label(self), s.chooser(self)])
+            l_font = s.label(self)
+            if IS_WINDOWS:
+                l_font.SetForegroundColour(foreground_color)
+                l_font.SetBackgroundColour(background_color)
+                l_font.SetOwnBackgroundColour(background_color)
+                l_font.SetOwnForegroundColour(foreground_color)
+            sizer.AddMany([l_font, s.chooser(self)])
         return sizer
 
     def create_colors_sizer(self):
@@ -161,12 +187,19 @@ class TextEditorPreferences(EditorPreferences):
                         ('setting', 'Text foreground'),
                         ('background', 'Text background'),
                        )
-
+        if IS_WINDOWS:
+            background_color = Colour("light gray")
+            foreground_color = Colour("black")
         for settings_key, label_text in settings:
             if column == 4:
                 column = 0
                 row += 1
             label = wx.StaticText(self, wx.ID_ANY, label_text)
+            if IS_WINDOWS:
+                label.SetForegroundColour(foreground_color)
+                label.SetBackgroundColour(background_color)
+                label.SetOwnBackgroundColour(background_color)
+                label.SetOwnForegroundColour(foreground_color)
             button = PreferencesColorPicker(
                 self, wx.ID_ANY, self._settings, settings_key)
             container.Add(button, (row, column),
@@ -208,14 +241,38 @@ class GridEditorPreferences(EditorPreferences):
     def _create_grid_config_editor(self):
         settings = self._settings
         sizer = wx.FlexGridSizer(rows=6, cols=2, vgap=10, hgap=10)
-        sizer.Add(self._label_for('Default column size'))
+        l_col_size = self._label_for('Default column size')
+        if IS_WINDOWS:
+            background_color = Colour("light gray")
+            foreground_color = Colour("black")
+            l_col_size.SetForegroundColour(foreground_color)
+            l_col_size.SetBackgroundColour(background_color)
+            l_col_size.SetOwnBackgroundColour(background_color)
+            l_col_size.SetOwnForegroundColour(foreground_color)
+        sizer.Add(l_col_size)
         sizer.Add(self._number_editor(settings, 'col size'))
-        sizer.AddMany(boolean_editor(
-            self, settings, 'auto size cols', 'Auto size columns'))
-        sizer.Add(self._label_for('Max column size\n(applies when auto size is on)'))
+        l_auto_size, editor = boolean_editor(self, settings, 'auto size cols', 'Auto size columns')
+        if IS_WINDOWS:
+            l_auto_size.SetForegroundColour(foreground_color)
+            l_auto_size.SetBackgroundColour(background_color)
+            l_auto_size.SetOwnBackgroundColour(background_color)
+            l_auto_size.SetOwnForegroundColour(foreground_color)
+        sizer.AddMany([l_auto_size, editor])
+        l_max_size = self._label_for('Max column size\n(applies when auto size is on)')
+        if IS_WINDOWS:
+            l_max_size.SetForegroundColour(foreground_color)
+            l_max_size.SetBackgroundColour(background_color)
+            l_max_size.SetOwnBackgroundColour(background_color)
+            l_max_size.SetOwnForegroundColour(foreground_color)
+        sizer.Add(l_max_size)
         sizer.Add(self._number_editor(settings, 'max col size'))
-        sizer.AddMany(boolean_editor(
-            self, settings, 'word wrap', 'Word wrap and auto size rows'))
+        l_word_wrap, editor = boolean_editor(self, settings, 'word wrap', 'Word wrap and auto size rows')
+        if IS_WINDOWS:
+            l_word_wrap.SetForegroundColour(foreground_color)
+            l_word_wrap.SetBackgroundColour(background_color)
+            l_word_wrap.SetOwnBackgroundColour(background_color)
+            l_word_wrap.SetOwnForegroundColour(foreground_color)
+        sizer.AddMany([l_word_wrap, editor])
         return sizer
 
     def _label_for(self, name):
@@ -259,6 +316,13 @@ class GridEditorPreferences(EditorPreferences):
             ('text empty', 'Empty Foreground'),
         ):
             lbl = wx.StaticText(self, wx.ID_ANY, label)
+            if IS_WINDOWS:
+                background_color = Colour("light gray")
+                foreground_color = Colour("black")
+                lbl.SetForegroundColour(foreground_color)
+                lbl.SetBackgroundColour(background_color)
+                lbl.SetOwnBackgroundColour(background_color)
+                lbl.SetOwnForegroundColour(foreground_color)
             btn = PreferencesColorPicker(
                 self, wx.ID_ANY, self._settings, key)
             self._color_pickers.append(btn)
@@ -270,6 +334,9 @@ class GridEditorPreferences(EditorPreferences):
 
     def _create_background_pickers(self, colors_sizer):
         row = 0
+        if IS_WINDOWS:
+            background_color = Colour("light gray")
+            foreground_color = Colour("black")
         for key, label in (
             ('background assign', 'Variable Background'),
             ('background keyword', 'Keyword Background'),
@@ -281,6 +348,11 @@ class GridEditorPreferences(EditorPreferences):
             ('background highlight', 'Highlight Background')
         ):
             lbl = wx.StaticText(self, wx.ID_ANY, label)
+            if IS_WINDOWS:
+                lbl.SetForegroundColour(foreground_color)
+                lbl.SetBackgroundColour(background_color)
+                lbl.SetOwnBackgroundColour(background_color)
+                lbl.SetOwnForegroundColour(foreground_color)
             btn = PreferencesColorPicker(
                 self, wx.ID_ANY, self._settings, key)
             self._color_pickers.append(btn)
@@ -316,16 +388,25 @@ class TestRunnerPreferences(EditorPreferences):
         self._settings.get('confirm run', True)
         settings = self._settings
         sizer = wx.FlexGridSizer(rows=2, cols=2, vgap=10, hgap=10)
-
-        sizer.AddMany(boolean_editor(
-            self, settings, 'confirm run', 'Asks for confirmation to run all'
-                                           ' tests if none selected '))
+        l_confirm, editor = boolean_editor(self, settings, 'confirm run',
+                                           'Asks for confirmation to run all tests if none selected ')
+        if IS_WINDOWS:
+            background_color = Colour("light gray")
+            foreground_color = Colour("black")
+            l_confirm.SetForegroundColour(foreground_color)
+            l_confirm.SetBackgroundColour(background_color)
+            l_confirm.SetOwnBackgroundColour(background_color)
+            l_confirm.SetOwnForegroundColour(foreground_color)
+        sizer.AddMany([l_confirm, editor])
         return sizer
 
     def create_colors_sizer(self):
         container = wx.GridBagSizer()
         row = 0
         column = 0
+        if IS_WINDOWS:
+            background_color = Colour("light gray")
+            foreground_color = Colour("black")
         for settings_key, label_text in (
             ('foreground', 'Text foreground'),
             ('background', 'Text background'),
@@ -335,6 +416,11 @@ class TestRunnerPreferences(EditorPreferences):
                 column = 0
                 row += 1
             label = wx.StaticText(self, wx.ID_ANY, label_text)
+            if IS_WINDOWS:
+                label.SetForegroundColour(foreground_color)
+                label.SetBackgroundColour(background_color)
+                label.SetOwnBackgroundColour(background_color)
+                label.SetOwnForegroundColour(foreground_color)
             button = PreferencesColorPicker(
                 self, wx.ID_ANY, self._settings, settings_key)
             container.Add(button, (row, column),

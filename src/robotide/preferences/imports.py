@@ -15,8 +15,9 @@
 
 import wx
 
+from ..context import IS_WINDOWS
 from ..ui.preferences_dialogs import PreferencesPanel, comma_separated_value_editor
-
+from wx import Colour
 
 class ImportPreferences(PreferencesPanel):
     location = 'Importing'
@@ -26,6 +27,8 @@ class ImportPreferences(PreferencesPanel):
         super(PreferencesPanel, self).__init__(parent)
         self.SetSizer(wx.FlexGridSizer(rows=4, cols=2, vgap=10, hgap=5))
         self.Sizer.AddGrowableCol(1, proportion=1)
+        self.background_color = Colour("light gray")
+        self.foreground_color = Colour("black")
         self._add_settings(settings)
 
     def _add_settings(self, settings):
@@ -42,5 +45,10 @@ class ImportPreferences(PreferencesPanel):
 
     def _create_list_setting_editor(self, settings, name, _help):
         label, editor = comma_separated_value_editor(self, settings, name, name.capitalize(), _help)
+        if IS_WINDOWS:
+            label.SetForegroundColour(self.foreground_color)
+            label.SetBackgroundColour(self.background_color)
+            label.SetOwnBackgroundColour(self.background_color)
+            label.SetOwnForegroundColour(self.foreground_color)
         self.Sizer.Add(label)
         self.Sizer.Add(editor, flag=wx.EXPAND)
