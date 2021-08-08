@@ -147,9 +147,10 @@ class TreePlugin(Plugin):
         if not self._parent:
             self._parent = self.frame
         if not self._tree:  # This is not needed because tree is always created
-            print(f"DEBUG: TreePlugin Creating tree  not expected to happen")
-            self._tree = Tree(self, self._parent.actions, self._parent._application.settings)
-            print(f"DEBUG: TreePlugin Show created tree {self._tree.GetName()}")
+            return  # On Windows this code is executed when closing the app, we return now
+            # print(f"DEBUG: TreePlugin Creating tree  not expected to happen")
+            # self._tree = Tree(self, self._parent.actions, self._parent._application.settings)
+            # print(f"DEBUG: TreePlugin Show created tree {self._tree.GetName()}")
 
         # print(f"DEBUG: Tree OnShowTree event {event}")
         self._pane = self._mgr.GetPane(self._tree)
