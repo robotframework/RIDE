@@ -191,11 +191,11 @@ class _ChoiceEditor(object):
         self._help = help
 
     def chooser(self, parent):
-        return self._editor_class(parent, wx.ID_ANY, self._settings,
+        return self._editor_class(parent, wx.NewId(), self._settings,
                                   key=self._setting_name, choices=self._choices)
 
     def label(self, parent):
-        return wx.StaticText(parent, wx.ID_ANY, self._label)
+        return wx.StaticText(parent, wx.NewId(), self._label)
 
     def help(self, parent):
         return HelpLabel(parent, '\n'.join(textwrap.wrap(self._help, 60)))

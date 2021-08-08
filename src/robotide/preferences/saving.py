@@ -15,7 +15,9 @@
 
 import wx
 
+from ..context import IS_WINDOWS
 from ..ui.preferences_dialogs import PreferencesPanel, IntegerChoiceEditor, StringChoiceEditor
+from wx import Colour
 
 
 class SavingPreferences(PreferencesPanel):
@@ -26,6 +28,8 @@ class SavingPreferences(PreferencesPanel):
         super(SavingPreferences, self).__init__(*args, **kwargs)
         self._settings = settings
         self.SetSizer(wx.FlexGridSizer(cols=2))
+        self.background_color = Colour("light gray")
+        self.foreground_color = Colour("black")
         for editor in self._create_editors(settings):
             self._add_editor(editor)
 
@@ -47,5 +51,11 @@ class SavingPreferences(PreferencesPanel):
         ]
 
     def _add_editor(self, editor):
-        self.Sizer.AddMany([editor.label(self), (editor.chooser(self),)])
+        l_editor = editor.label(self)
+        if IS_WINDOWS:
+            l_editor.SetForegroundColour(self.foreground_color)
+            l_editor.SetBackgroundColour(self.background_color)
+            l_editor.SetOwnBackgroundColour(self.background_color)
+            l_editor.SetOwnForegroundColour(self.foreground_color)
+        self.Sizer.AddMany([l_editor, (editor.chooser(self),)])
         self.Sizer.AddMany([(editor.help(self), 0, wx.BOTTOM, 10), wx.Window(self)])
