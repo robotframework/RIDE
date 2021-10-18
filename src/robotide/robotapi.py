@@ -19,7 +19,8 @@ populators.PROCESS_CURDIR = False
 from .lib.robot.errors import DataError, VariableError, Information
 from .lib.robot.model import TagPatterns
 from .lib.robot.output import LOGGER as ROBOT_LOGGER
-from .lib.robot.output.loggerhelper import LEVELS as LOG_LEVELS
+# SEE BELOW
+# from .lib.robot.output.loggerhelper import LEVELS as LOG_LEVELS
 from .lib.robot.parsing.datarow import DataRow
 from .lib.robot.parsing.model import (
     TestCase, TestDataDirectory, ResourceFile, TestCaseFile, UserKeyword,
@@ -43,3 +44,15 @@ from .lib.robot.version import get_version
 
 
 ROBOT_VERSION = get_version()
+
+# Monkey patch LEVELS
+LOG_LEVELS = {
+  'NONE'  : 7,
+  'SKIP'  : 6,
+  'FAIL'  : 5,
+  'ERROR' : 4,
+  'WARN'  : 3,
+  'INFO'  : 2,
+  'DEBUG' : 1,
+  'TRACE' : 0,
+}
