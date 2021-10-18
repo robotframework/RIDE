@@ -51,7 +51,6 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
     def __init__(self, application):
         Plugin.__init__(self, application)
         self._editor_component = None
-        self.reformat = application.settings.get('reformat', False)
 
     @property
     def _editor(self):
@@ -228,7 +227,6 @@ class DataValidationHandler(object):
 
     def __init__(self, plugin):
         self._plugin = plugin
-        self._reformat = plugin.reformat
         self._last_answer = None
         self._last_answer_time = 0
 
@@ -242,11 +240,7 @@ class DataValidationHandler(object):
             if not handled:
                 return False
         self._editor.reset()
-        if self._reformat:
-            data.update_from(m_text)
-        else:
-            print(f"DEBUG: reformat is false content {text.decode('utf-8')}")
-            data.update_from(text.decode("utf-8"))
+        data.update_from(m_text)
         self._editor.set_editor_caret_position()
         return True
 
@@ -595,12 +589,12 @@ class SourceEditor(wx.Panel, RIDEDialog):
             while idx<lenline and line[idx] == ' ':
                 idx += 1
             tsize = idx // self._tab_size
-            if 3 < idx < lenline and (line.strip().startswith("FOR") or line.strip().startswith("IF")
-                                      or line.strip().startswith("ELSE")):
+            if 3 < idx < lenline and line.strip().startswith("FOR"):
                 tsize += 1
             elif linenum > 0 and tsize == 0:  # Advance if first task/test case or keyword
                 prevline = self._editor.GetLine(linenum-1).lower()
-                if prevline.startswith("**") and not ("variables" in prevline or "settings" in prevline):
+                if prevline.startswith("**") and not ("variables" in prevline
+                or "settings" in prevline):
                     tsize = 1
             self._editor.NewLine()
             while tsize > 0:
