@@ -59,6 +59,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Fixed
 
+- Fixed TestRunner crash when test use SIKP keyword
 - Fixed broken pipe errors when using `--loglevel  DEBUG:INFO`
 - Fixed RIDE will crash when using third party input method in Mac OS
 - Fixed various output console encoding issue in different platforms
