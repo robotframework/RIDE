@@ -108,6 +108,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         self._open()
 
     def _open(self):
+        print(f"DEBUG: _open called")
         datafile_controller = self.tree.get_selected_datafile_controller()
         if datafile_controller:
             self._open_data_for_controller(datafile_controller)
@@ -118,11 +119,13 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
             self._editor.save()
             self._editor.GetFocus(None)
         else:
+            print(f"DEBUG: OnSaving open because was saved from other editor {message}")
             self._open()  # Was saved from other Editor
 
     def OnDataChanged(self, message):
         if self._should_process_data_changed_message(message):
             if isinstance(message, RideOpenSuite):
+                print(f"DEBUG: OnDataChanged message {message}")
                 self._editor.reset()
                 self._editor.set_editor_caret_position()
             if self._editor.dirty and not self._apply_txt_changes_to_model():
@@ -164,12 +167,14 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
 
     def _open_tree_selection_in_editor(self):
         datafile_controller = self.tree.get_selected_datafile_controller()
-        if datafile_controller:
+        if datafile_controller and self._editor.datafile_controller != datafile_controller:
+            print(f"DEBUG: _open_tree_selection_in_editor going to open data")
             self._editor.open(DataFileWrapper(datafile_controller, self.global_settings))
             self._editor._editor.readonly = not datafile_controller.is_modifiable()
         self._editor.set_editor_caret_position()
 
     def _open_data_for_controller(self, datafile_controller):
+        print(f"DEBUG: _open_data_for_controller going to open data")
         self._editor.selected(DataFileWrapper(datafile_controller, self.global_settings))
         self._editor._editor.readonly = not datafile_controller.is_modifiable()
 
@@ -178,7 +183,10 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
             self._register_shortcuts()
             self._open()
             self._editor.set_editor_caret_position()
-            self._set_read_only(self._editor._editor.readonly)
+            try:
+                self._set_read_only(self._editor._editor.readonly)
+            except Exception:  # When using only Text Editor exists error in message topic
+                pass
         elif message.oldtab == self.title:
             self._editor.remove_and_store_state()
             self.unregister_actions()
@@ -228,7 +236,6 @@ class DataValidationHandler(object):
 
     def __init__(self, plugin):
         self._plugin = plugin
-        self._reformat = plugin.reformat
         self._last_answer = None
         self._last_answer_time = 0
 
@@ -242,11 +249,7 @@ class DataValidationHandler(object):
             if not handled:
                 return False
         self._editor.reset()
-        if self._reformat:
-            data.update_from(m_text)
-        else:
-            print(f"DEBUG: reformat is false content {text.decode('utf-8')}")
-            data.update_from(text.decode("utf-8"))
+        data.update_from(m_text)
         self._editor.set_editor_caret_position()
         return True
 
@@ -356,6 +359,7 @@ class SourceEditor(wx.Panel, RIDEDialog):
         self._title = title
         self._tab_size = self._parent._app.settings.get(
                       'txt number of spaces', 4)
+        self._reformat = self._parent._app.settings.get('reformat', True)
         self._create_ui(title)
         self._data = None
         self._dirty = 0  # 0 is False and 1 is True, when changed on this editor
@@ -554,7 +558,10 @@ class SourceEditor(wx.Panel, RIDEDialog):
             self._showing_list = True
 
     def open(self, data):
-        # print(f"DEBUG: Textedit enter open")
+        if self._data == data:
+            print(f"DEBUG: Textedit open  return without opening file")
+            return
+        print(f"DEBUG: Textedit enter open type data= {type(data)}")
         self.reset()
         self._data = data
         # print(f"DEBUG: Textedit in open before getting SuggestionSource {self._data._data}\n Type data is {type(self._data._data)}")
@@ -573,6 +580,7 @@ class SourceEditor(wx.Panel, RIDEDialog):
             # self._suggestions = SuggestionSource(None, BuiltInLibrariesSuggester())
         if not self._editor:
             self._stored_text = self._data.content
+            print(f"DEBUG: open not editor yet self._stored_text= {self._stored_text}")
         else:
             self._editor.set_text(self._data.content)
             self.set_editor_caret_position()
@@ -582,6 +590,7 @@ class SourceEditor(wx.Panel, RIDEDialog):
             self._create_editor_text_control(self._stored_text)
         if self._data == data:
             return
+        print(f"DEBUG: selected going to open data")
         self.open(data)
 
     def auto_ident(self):
@@ -689,12 +698,25 @@ class SourceEditor(wx.Panel, RIDEDialog):
 
     def save(self, *args):
         self.store_position()
-        if self.dirty and not self._data_validator.validate_and_update(
-                self._data, self._editor.utf8_text):
-            return False
+        if self.dirty:
+            if self._reformat and not self._data_validator.validate_and_update(self._data, self._editor.utf8_text):
+                return False
+            else:
+                self.direct_save(self._editor.utf8_text)
         self.reset()
         self.GetFocus(None)
         return True
+
+    def direct_save(self, text):
+        print(f"DEBUG: direct_save path={self.datafile_controller.source}")
+        f = open(self.datafile_controller.source, "wb")
+        try:
+            f.write(text)
+            print(f"DEBUG: direct_save Content:\n{text}")
+        except Exception as e:
+            raise e
+        finally:
+            f.close()
 
     """
     # DEBUG Code not in use
@@ -1019,6 +1041,7 @@ class RobotDataEditor(stc.StyledTextCtrl):
 class FromStringIOPopulator(robotapi.populators.FromFilePopulator):
 
     def populate(self, content):
+        print(f"DEBUG: FromStringIOPopulator populate:\n{content}")
         robotapi.RobotReader().read(content, self)
 
 
