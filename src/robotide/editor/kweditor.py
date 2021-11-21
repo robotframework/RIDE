@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 import json
+from json.decoder import JSONDecodeError
 
 import wx
 from wx import grid, Colour
@@ -824,19 +825,13 @@ work.</li>
             self._execute(RenameKeywordOccurrences(
                 old_name, new_name, RenameProgressObserver(self.GetParent())))
 
-    # Add one new Dialog to edit pretty json String
+    # Add one new Dialog to edit pretty json String TODO: use better editor with more functions
     def OnJsonEditor(self, event=None):
         if event:
             event.Skip()
         dialog = RIDEDialog()
         dialog.SetTitle('JSON Editor')
         dialog.SetSizer(wx.BoxSizer(wx.HORIZONTAL))
-        """
-        dialog.SetBackgroundColour(Colour(200, 222, 40))
-        dialog.SetOwnBackgroundColour(Colour(200, 222, 40))
-        dialog.SetForegroundColour(Colour(7, 0, 70))
-        dialog.SetOwnForegroundColour(Colour(7, 0, 70))
-        """
         okBtn = wx.Button(dialog, wx.ID_OK, "Save")
         cnlBtn = wx.Button(dialog, wx.ID_CANCEL, "Cancel")
         richText = wx.TextCtrl(dialog, wx.ID_ANY, "If supported by the native "
@@ -845,12 +840,6 @@ work.</li>
                                                   "font.",
                                size=(400, 475),
                                style=wx.HSCROLL | wx.TE_MULTILINE | wx.TE_NOHIDESEL)
-        """
-        richText.SetBackgroundColour(Colour(200, 222, 40))
-        richText.SetOwnBackgroundColour(Colour(200, 222, 40))
-        richText.SetForegroundColour(Colour(7, 0, 70))
-        richText.SetOwnForegroundColour(Colour(7, 0, 70))
-        """
         dialog.Sizer.Add(richText, flag=wx.GROW, proportion=1)
         dialog.Sizer.Add(okBtn, flag=wx.ALL)
         dialog.Sizer.Add(cnlBtn, flag=wx.ALL)
@@ -865,39 +854,34 @@ work.</li>
         # If click Save, then save the value in richText into the original
         # grid cell, and clear all indent.
         if dialog.ShowModal() == wx.ID_OK:
-            try:
-                strJson = json.loads(richText.GetValue())
-                self.cell_value_edited(self.selection.cell[0],
-                                       self.selection.cell[1],
-                                       json.dumps(strJson,
-                                                  ensure_ascii=False))
-            except (ValueError, json.JSONDecodeError) as e:
-                res = wx.MessageDialog(dialog,
-                                       "Error in JSON: {}\n\n"
-                                       "Save anyway?".format(e),
-                                       "Validation Error!",
-                                       wx.YES_NO)
-                res.InheritAttributes()
-                """
-                res.SetBackgroundColour(Colour(200, 222, 40))
-                res.SetOwnBackgroundColour(Colour(200, 222, 40))
-                res.SetForegroundColour(Colour(7, 0, 70))
-                res.SetOwnForegroundColour(Colour(7, 0, 70))
-                """
-                res.Refresh(True)
-                res.ShowModal()
-                if res == wx.ID_YES:
-                    self.cell_value_edited(self.selection.cell[0],
-                                           self.selection.cell[1],
-                                           richText.GetValue())
-                else:
-                    pass
+            content = richText.GetValue()
+            if self.is_json(content):
+                strJson = json.loads(content)
+                self.cell_value_edited(self.selection.cell[0], self.selection.cell[1],
+                                       json.dumps(strJson, ensure_ascii=False))
+            else:
+                try:
+                    json.loads(content)  # Yes, we need the error
+                except JSONDecodeError as e:
+                        res = wx.MessageDialog(dialog,
+                                               f"Error in JSON: {e}\n\n"
+                                               "Save anyway?",
+                                               "Validation Error!",
+                                               wx.YES_NO)
+                        res.InheritAttributes()
+                        response = res.ShowModal()
+                        if response == wx.ID_YES:
+                            self.cell_value_edited(self.selection.cell[0],
+                                                   self.selection.cell[1],
+                                                   richText.GetValue())
+                        else:
+                            pass
 
     # If the jsonStr is json format, then return True
     def is_json(self, jsonStr):
         try:
             json.loads(jsonStr)
-        except ValueError:
+        except JSONDecodeError:
             return False
         return True
 
