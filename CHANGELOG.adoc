@@ -58,6 +58,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Fixed
 
+- Fixed JSON in cell editor not saving nor validating JSON
 - Fixed TestRunner crash when test use SKIP keyword
 - Fixed broken pipe errors when using `--loglevel  DEBUG:INFO`
 - Fixed various output console encoding issue in different platforms
