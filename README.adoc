@@ -30,9 +30,11 @@ See the https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride
 
 **Attention:**
 
-**It is better to use Python 3.6, 3.7 or 3.8.**
+**It is better to use Python 3.6, 3.7, 3.8 or 3.9.**
 
 **To use Python 3.9, you should have wxPython 4.1.1, and install from `master` (since April 2021).**
+
+**RIDE is not yet tested on Python 3.10.**
 
 Install with:
 [source, shell]
@@ -50,7 +52,7 @@ pip install -U --pre robotframework-ride
 
 
 == Unit testing statuses:
-Linux (py36, py37, py38, py39): image:https://travis-ci.org/robotframework/RIDE.svg?branch=master[Unit Tests, link=https://travis-ci.org/robotframework/RIDE]
+Linux (py36, py37, py38, py39): image:https://api.travis-ci.com/HelioGuilherme66/RIDE.svg?branch=master[Unit Tests, link=https://travis-ci.org/robotframework/RIDE]
 Windows (py36, py37, py38): image:https://ci.appveyor.com/api/projects/status/github/HelioGuilherme66/RIDE?branch=master&svg=true[Unit Tests, link=https://ci.appveyor.com/project/HelioGuilherme66/ride]
 
 '''
