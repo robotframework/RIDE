@@ -18,6 +18,8 @@ import random
 import shutil
 import os
 
+from .model import RIDE
+
 
 class Runner(object):
 

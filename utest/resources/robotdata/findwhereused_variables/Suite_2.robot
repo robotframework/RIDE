@@ -1,5 +1,5 @@
 *** Settings ***
-Resource          Res1.txt
+Resource          Res1.robot
 
 *** Test Cases ***
 Case 4

@@ -27,7 +27,7 @@ class TestResourceImport(unittest.TestCase):
 
     def setUp(self):
         self.res_path = datafilereader.SIMPLE_TEST_SUITE_PATH
-        self.res_name = 'new_resource_for_test_creating_and_importing_resource.txt'
+        self.res_name = 'new_resource_for_test_creating_and_importing_resource.robot'
         self.res_full_name = os.path.join(self.res_path, self.res_name)
         self.new_keyword_name = 'My Keywordian'
         self.ctrl = datafilereader.construct_project(datafilereader.SIMPLE_TEST_SUITE_PATH)

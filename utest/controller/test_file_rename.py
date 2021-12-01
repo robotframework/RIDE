@@ -30,7 +30,7 @@ class TestRenameTestCaseFile(unittest.TestCase):
     def setUp(self):
         PUBLISHER.subscribe(self._file_name_changed, RideFileNameChanged)
         PUBLISHER.subscribe(self._file_name_error, RideInputValidationError)
-        self._clean_test_files(["quux.txt","some.txt"])
+        self._clean_test_files(["quux.robot","some.robot"])
 
     def tearDown(self):
         self._clean_test_files()
@@ -52,7 +52,7 @@ class TestRenameTestCaseFile(unittest.TestCase):
     def test_rename_changes_basename_but_keeps_extension(self):
         RenameFile('quux').execute(self._create_controller())
         assert_equal(self._error_message, None)
-        assert_equal(self.ctrl.filename, 'quux.txt')
+        assert_equal(self.ctrl.filename, 'quux.robot')
         assert_equal(self.ctrl.data.source, self.ctrl.filename)
 
     def test_rename_preserves_directory_path(self):
@@ -93,9 +93,9 @@ class TestRenameTestCaseFile(unittest.TestCase):
         rename_command = RenameFile("jup")
         rename_command._validator._file_exists = lambda *_: True
         rename_command.execute(self._create_controller())
-        assert_equal(self._error_message, ERROR_FILE_ALREADY_EXISTS % "jup.txt")
+        assert_equal(self._error_message, ERROR_FILE_ALREADY_EXISTS % "jup.robot")
 
-    def _create_controller(self, path='some.txt'):
+    def _create_controller(self, path='some.robot'):
         self._filenames_to_remove.append(path)
         self.ctrl = TestCaseFileController(TestCaseFile(source=path))
         self.saved = False

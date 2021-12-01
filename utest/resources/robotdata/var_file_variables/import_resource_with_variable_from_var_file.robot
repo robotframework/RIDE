@@ -1,6 +1,6 @@
 *** Settings ***
 Variables  myvars.py
-Resource  ${FROM MY VAR}/res.txt
+Resource  ${FROM MY VAR}/res.robot
 
 *** Test Cases ***
 Test Case

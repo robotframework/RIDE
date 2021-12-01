@@ -1,6 +1,0 @@
-*** Settings ***
-Resource          subsubdirectory/hello.txt
-
-*** Keywords ***
-kw2
-

@@ -90,9 +90,9 @@ def run_trace(runner, trace):
 
 
 def generate_seed():
-    seed = long(time.time() * 256)
+    seed = int(time.time() * 256)
     if len(sys.argv) == 3:
-        seed = long(sys.argv[2])
+        seed = int(sys.argv[2])
     return seed
 
 

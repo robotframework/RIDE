@@ -40,8 +40,8 @@ class TestFormatChange(unittest.TestCase):
     def test_format_change_to_tsv(self):
         self._test_format_change('tsv')
 
-    def test_format_change_to_robot(self):
-        self._test_format_change('robot')
+    def test_format_change_to_txt(self):
+        self._test_format_change('txt')
 
     def _test_format_change(self, to_format):
         controller = self._get_file_controller(MINIMAL_SUITE_PATH)
@@ -53,14 +53,14 @@ class TestFormatChange(unittest.TestCase):
 
     def test_recursive_format_change(self):
         controller = self._get_file_controller(SUITEPATH)
-        controller.save_with_new_format_recursive('txt')
-        init_file = os.path.join(SUITEPATH,'__init__.txt')
+        controller.save_with_new_format_recursive('robot')
+        init_file = os.path.join(SUITEPATH,'__init__.robot')
         self._assert_serialized(init_file)
-        path_to_sub_init_file = os.path.join(SUITEPATH,'subsuite','__init__.txt')
+        path_to_sub_init_file = os.path.join(SUITEPATH,'subsuite','__init__.robot')
         self._assert_serialized(path_to_sub_init_file)
         path_to_old_sub_init_file = os.path.join(SUITEPATH,'subsuite','__init__.tsv')
         self._assert_removed(path_to_old_sub_init_file)
-        path_to_txt_file = os.path.join(SUITEPATH,'subsuite','test.txt')
+        path_to_txt_file = os.path.join(SUITEPATH,'subsuite','test.robot')
         self._assert_not_serialized(path_to_txt_file)
         self._assert_not_removed(path_to_txt_file)
 
@@ -102,7 +102,7 @@ class _UnitTestsWithWorkingResourceImports(unittest.TestCase):
 
     def _create_data(self, resource_name, resource_import):
         res_path = os.path.abspath(resource_name)
-        tcf = TestCaseFile(source=os.path.abspath('test.txt'))
+        tcf = TestCaseFile(source=os.path.abspath('test.robot'))
         tcf.setting_table.add_resource(resource_import)
         tcf.variable_table.add('${dirname}', os.path.abspath('.').replace('\\', '\\\\'))
         tcf.variable_table.add('${path}', os.path.abspath(resource_name).replace('\\', '\\\\'))
@@ -141,23 +141,23 @@ class _UnitTestsWithWorkingResourceImports(unittest.TestCase):
 class TestResourceFileRename(_UnitTestsWithWorkingResourceImports):
 
     def test_import_is_invalidated_when_resource_file_name_changes(self):
-        self._create_data('resource.txt', '${path}')
+        self._create_data('resource.robot', '${path}')
         self._verify_import_reference_exists()
         self._rename_resource('resu', False)
         self._verify_import_reference_is_not_resolved()
         assert_equal(self.import_setting.name, '${path}')
 
     def test_import_is_modified_when_resource_file_name_changes_and_habaa(self):
-        self._create_data('fooo.txt', 'fooo.txt')
+        self._create_data('fooo.robot', 'fooo.robot')
         self._verify_import_reference_exists()
         self._rename_resource('gooo', True)
         self._verify_import_reference_exists()
-        assert_equal(self.import_setting.name, 'gooo.txt')
+        assert_equal(self.import_setting.name, 'gooo.robot')
 
     """
     # DEBUG test fails with invoke but passes locally
     def test_cancel_execute_when_modify_imports_is_canceled(self):
-        self._create_data('fooo.txt', 'fooo.txt')
+        self._create_data('fooo.robot', 'fooo.robot')
         self._verify_import_reference_exists()
         self._execute_rename_resource('gooo', None)
         # just2delay = os.getpid()  # DEBUG
@@ -167,7 +167,7 @@ class TestResourceFileRename(_UnitTestsWithWorkingResourceImports):
     """
 
     def test_import_is_invalidated_when_resource_file_name_changes_and_hubaa(self):
-        self._create_data('resource.txt', '${path}')
+        self._create_data('resource.robot', '${path}')
         self._verify_import_reference_exists()
         self._rename_resource('resu', True)
         self._verify_import_reference_is_not_resolved()
@@ -187,17 +187,17 @@ class TestResourceFileRename(_UnitTestsWithWorkingResourceImports):
 class TestResourceFormatChange(_UnitTestsWithWorkingResourceImports):
 
     def test_imports_are_updated(self):
-        self._create_data('name.txt', 'name.txt')
+        self._create_data('name.robot', 'name.robot')
         self._change_format('BAR')
         self._assert_format_change('name.bar', 'name.bar')
 
     def test_imports_with_variables_and_path_are_updated(self):
-        self._create_data('name.txt', '${dirname}${/}name.txt')
+        self._create_data('name.robot', '${dirname}${/}name.robot')
         self._change_format('cock')
         self._assert_format_change('${dirname}${/}name.cock', 'name.cock')
 
     def test_imports_with_only_variables(self):
-        self._create_data('res.txt', '${path}')
+        self._create_data('res.robot', '${path}')
         self._change_format('zap')
         self._assert_format_change('${path}', 'res.zap', imp_is_resolved=False)
 

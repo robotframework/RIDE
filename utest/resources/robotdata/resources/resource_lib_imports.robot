@@ -1,4 +1,4 @@
 *** settings ***
 library  Telnet
 library  String
-resource  resource.txt
+resource  resource.robot

@@ -1,6 +1,6 @@
 *** Settings ***
-Resource          Res1.txt
-Resource          foobar.txt
+Resource          Res1.robot
+Resource          foobar.robot
 
 *** Test Cases ***
 Another test case

@@ -1,5 +1,5 @@
 *** Settings ***
-Resource  ../used_resource.txt
+Resource  ../used_resource.robot
 
 *** Test Cases ***
 Some test

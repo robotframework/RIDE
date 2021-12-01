@@ -31,7 +31,7 @@ LIB_NAME_VARIABLE = '${libname}'
 UNRESOLVABLE_VARIABLE = '${unresolvable}'
 UNKNOWN_VARIABLE = '${this var does not exist}'
 EXTENSION_VAR = '${extension}'
-EXTENSION = 'txt'
+EXTENSION = 'robot'
 INVALID_FILE_PATH = '/this/is/invalid.py'
 EXISTING_USER_KEYWORD = 'Should be in keywords Uk'
 COLLIDING_ARGUMENT = '${colliding argument}'
@@ -40,7 +40,7 @@ COLLIDING_CONSTANT = COLLIDING_ARGUMENT.upper()
 
 def _build_test_case_file():
     tcf = TestCaseFile()
-    tcf.source = 'tmp.txt'
+    tcf.source = 'tmp.robot'
     tcf.directory = '/tmp/'
     _add_settings_table(tcf)
     _add_variable_table(tcf)
@@ -143,31 +143,31 @@ class TestKeywordSuggestions(_DataFileTest):
 
     def test_resource_file_keywords(self):
         sugs = self.ns.get_suggestions_for(self.kw, 'Resource Uk')
-        self._assert_import_kws(sugs, RESOURCES_HTML)
+        self._assert_import_kws(sugs, RESOURCES_RESOURCE)
 
     def test_resource_file_keyword_with_longname(self):
         sugs = self.ns.get_suggestions_for(
-            self.kw, RESOURCES_HTML.replace('.html', '') + '.Resource Uk')
-        self._assert_import_kws(sugs, RESOURCES_HTML)
+            self.kw, RESOURCES_RESOURCE.replace('.resource', '') + '.Resource Uk')
+        self._assert_import_kws(sugs, RESOURCES_RESOURCE)
 
     def test_keywords_normalization(self):
         sugs = self.ns.get_suggestions_for(self.kw, 'Reso   Urceuk')
-        self._assert_import_kws(sugs, RESOURCES_HTML)
+        self._assert_import_kws(sugs, RESOURCES_RESOURCE)
 
     def test_uk_from_resource_files_resource_file(self):
         sugs = self.ns.get_suggestions_for(self.kw, 'UK From Text Resource')
-        self._assert_import_kws(sugs, 'resource.txt')
+        self._assert_import_kws(sugs, 'resource.robot')
 
     def test_resource_file_from_variable(self):
         sugs = self.ns.get_suggestions_for(
             self.kw, 'UK From Variable Resource')
-        self._assert_import_kws(sugs, 'resource_with_variables.txt')
+        self._assert_import_kws(sugs, 'resource_with_variables.robot')
 
     def test_resource_file_from_resource_file_with_variable(self):
         sugs = self.ns.get_suggestions_for(
             self.kw, 'UK From Resource from Resource with Variable')
         self._assert_import_kws(
-            sugs, 'resource_from_resource_with_variable.txt')
+            sugs, 'resource_from_resource_with_variable.robot')
 
     def test_library_from_resourcefile_variable(self):
         sugs = self.ns.get_suggestions_for(self.kw, 'Execute Manual')
@@ -188,7 +188,7 @@ class TestKeywordSuggestions(_DataFileTest):
         sugs = self.ns.get_suggestions_for(
             self._get_controller(TESTCASEFILE_WITH_EVERYTHING).keywords[0],
             'foo')
-        self._assert_import_kws(sugs, 'even_more_resources.txt')
+        self._assert_import_kws(sugs, 'even_more_resources.robot')
 
     def test_keywords_only_once_per_source(self):
         sugs = self.ns.get_suggestions_for(self.kw, '')
@@ -215,7 +215,7 @@ class TestKeywordSuggestions(_DataFileTest):
 
     def test_resource_with_variable_in_path(self):
         sugs = self.ns.get_suggestions_for(self.kw, 'Resu UK')
-        self._assert_import_kws(sugs, 'resu.txt')
+        self._assert_import_kws(sugs, 'resu.robot')
 
     def test_scalar_variable_suggestion(self):
         scalar_vars = self.ns.get_suggestions_for(self.kw, '$')
@@ -276,7 +276,7 @@ class TestKeywordSuggestions(_DataFileTest):
         sugs = self.ns.get_suggestions_for(self._get_controller(
             TESTCASEFILE_WITH_RESOURCES_WITH_VARIABLES_FROM_VARIABLE_FILE
             ).tests[0], 'from resource with variable in pa')
-        self._assert_import_kws(sugs, 'res.txt')
+        self._assert_import_kws(sugs, 'res.robot')
 
     def test_vars_from_keyword_arguments(self):
         sugs = self.ns.get_suggestions_for(self.kw, '${keyword argu')
@@ -313,11 +313,11 @@ class TestKeywordSuggestions(_DataFileTest):
 
     def test_variable_sources(self):
         everything_tcf = self._get_controller(TESTCASEFILE_WITH_EVERYTHING)
-        self._check_source(everything_tcf, '${arg}', 'everything.html')
-        self._check_source(everything_tcf, '@{list}', 'everything.html')
+        self._check_source(everything_tcf, '${arg}', 'everything.robot')
+        self._check_source(everything_tcf, '@{list}', 'everything.robot')
         self._check_source(everything_tcf, '${dynamic var}', 'dynamic_varz.py')
         self._check_source(
-            everything_tcf, '${OPERATING SYSTEM}', 'another_resource.html')
+            everything_tcf, '${OPERATING SYSTEM}', 'another_resource.robot')
 
     def test_relative_imports(self):
         relative_tcf = self._get_controller(RELATIVE_IMPORTS)
@@ -341,7 +341,7 @@ class TestKeywordSuggestions(_DataFileTest):
             else:
                 assert_true(s.source.endswith(source.encode('utf-8')),
                             '%s does not end with %s' % (s.source, source))
-            # print("DEBUG: %s TEST endswith %s" % (s.source if isinstance(s.source, str) else str(s.source, 'utf-8'), source))
+            print("DEBUG: %s TEST endswith %s" % (s.source if isinstance(s.source, str) else str(s.source, 'utf-8'), source))
 
     def test_reset(self):
         sugs = self.ns.get_suggestions_for(self.kw, 'generate random')
@@ -390,7 +390,7 @@ class TestKeywordSearch(_DataFileTest):
 
     def test_resource_kws_only_once_through_project(self):
         # print("DEBUG: project path %s\n" % (SIMPLE_TEST_SUITE_PATH))
-        project = construct_project(SIMPLE_TEST_SUITE_PATH+"/TestSuite1.txt")
+        project = construct_project(SIMPLE_TEST_SUITE_PATH+"/TestSuite1.robot")
         # print("DEBUG: project %s key %s\n" % (project.name, project.get_all_keywords))
         all_kws = project.get_all_keywords()
         project.close()
@@ -401,13 +401,13 @@ class TestKeywordSearch(_DataFileTest):
         results = [(kw.name, kw.source)
                    for kw in all_kws if kw.name == "Only From Resource"]
         assert_equal(len(results), 1)
-        # assert_equal(results[0], (u'Only From Resource', u'testdata_resource.txt'))
+        # assert_equal(results[0], (u'Only From Resource', u'testdata_resource.robot'))
         assert_equal(results[0][0], u'Only From Resource')
         # DEBUG was getting bytes on python3
         if isinstance(results[0][1], str):
-            assert_equal(results[0][1], 'testdata_resource.txt')
+            assert_equal(results[0][1], 'testdata_resource.robot')
         else:
-            assert_equal(results[0][1].decode('utf-8'), u'testdata_resource.txt')
+            assert_equal(results[0][1].decode('utf-8'), u'testdata_resource.robot')
 
     def test_find_user_keyword_name_normalized(self):
         assert_is_not_none(self.ns.find_user_keyword(

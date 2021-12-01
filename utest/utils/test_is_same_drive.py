@@ -27,7 +27,7 @@ if IS_WINDOWS:
             self.assertFalse(is_same_drive('x:', 'E:'))
 
         def test_same_drive_with_different_path(self):
-            path1 = os.path.join('x:', 'foo', 'bar.txt')
+            path1 = os.path.join('x:', 'foo', 'bar.robot')
             path2 = os.path.join('x:', 'zoo')
             not_same_drive = os.path.join('y:', 'bb')
             self.assertTrue(is_same_drive(path1, path2))

@@ -24,7 +24,7 @@ from robotide.controller.robotdata import NewTestCaseFile, NewTestDataDirectory
 class NewDataFileTest(unittest.TestCase):
 
     def test_creating_new_datafile(self):
-        ctrl = NewTestCaseFile('./foo.txt')
+        ctrl = NewTestCaseFile('./foo.robot')
         assert_equal(ctrl.name, 'Foo')
 
     def test_creating_directory_data(self):

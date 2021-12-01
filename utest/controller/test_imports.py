@@ -49,7 +49,7 @@ class TestImports(unittest.TestCase):
         self.assertFalse(self._find_by_name(name, data_file).has_error(), 'Import "%s" should have no error' % name)
 
     def test_importing_existing_resource_has_no_error(self):
-        self._has_no_error('res//existing.txt')
+        self._has_no_error('res//existing.robot')
 
     def test_importing_existing_library_from_pythonpath_has_no_error(self):
         self._has_no_error('String')
@@ -58,7 +58,7 @@ class TestImports(unittest.TestCase):
         self._has_no_error('libs//existing.py')
 
     def test_importing_none_existing_resource_has_error(self):
-        self._has_error('res//none_existing.txt')
+        self._has_error('res//none_existing.robot')
 
     def test_importing_none_existing_variable_file_has_error(self):
         self._has_error('vars//none_existing.py')

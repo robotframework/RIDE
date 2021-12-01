@@ -388,8 +388,8 @@ class ImportSettingsControllerTest(unittest.TestCase):
         self._assert_import('MyLib', ['Some', 'argu', 'ments'], 'alias')
 
     def test_adding_resource(self):
-        self.ctrl.add_resource('/a/path/to/file.txt')
-        self._assert_import('/a/path/to/file.txt')
+        self.ctrl.add_resource('/a/path/to/file.robot')
+        self._assert_import('/a/path/to/file.robot')
 
     def test_adding_variables(self):
         self.ctrl.add_variables('varfile.py', 'an arg')

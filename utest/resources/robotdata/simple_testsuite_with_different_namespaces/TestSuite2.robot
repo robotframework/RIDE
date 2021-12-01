@@ -1,6 +1,6 @@
 *** Settings ***
 Documentation  suitedocmatch
-Resource    testdata_resource.txt
+Resource    testdata_resource.robot
 Suite Setup   Run Keyword  Suite Setup Keyword
 Test Teardown  Test Teardown in Setting
 

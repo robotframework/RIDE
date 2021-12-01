@@ -1,6 +1,6 @@
 *** Settings ***
-Resource    testdata_resource.txt
-Resource    ..${/}resources${/}resu.txt
+Resource    testdata_resource.robot
+Resource    ..${/}resources${/}resu.robot
 
 *** Variables ***
 @{Test Suite 1 List}  1  2
