@@ -74,7 +74,7 @@ class TestExcludes(unittest.TestCase):
         self.exclude.update_excludes([_join('foo', '*', 'bar'), _join('*', 'splat')])
         self.assertTrue(self.exclude.contains('foo/baz/bar'))
         self.assertTrue(self.exclude.contains('foo/quu/qux/bar'))
-        self.assertTrue(self.exclude.contains('/corge/splat/doom.txt'))
+        self.assertTrue(self.exclude.contains('/corge/splat/doom.robot'))
 
     def test_question_mark_path_pattern(self):
         self.exclude.update_excludes([_join('foo', '?ar')])

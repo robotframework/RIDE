@@ -1,5 +1,5 @@
 *** Settings ***
-Resource    resources${/}inner_resource.txt
+Resource    resources${/}inner_resource.robot
 
 *** Variables ***
 @{Resource List}  2  34

@@ -64,7 +64,7 @@ class ProjectTest(unittest.TestCase):
         self._test_listeners([MINIMAL_SUITE_PATH], [])
 
     def _test_listeners(self, suite_paths, resource_paths):
-        #  resource_paths = [os.path.normcase(_) for _ in resource_paths]
+        resource_paths = [os.path.normcase(_) for _ in resource_paths]
         self.assertEqual(self._get_paths(self.suite_listener.data), suite_paths)
         self.assertEqual(self._get_paths(self.resource_listener.data), resource_paths)
 
@@ -161,11 +161,11 @@ class ProjectTest(unittest.TestCase):
         self._load(EXTERNAL_RES_UNSORTED_PATH)
         assert_true(self.ctrl.resources != [])
         res_path = os.path.join(os.path.split(EXTERNAL_RES_UNSORTED_PATH)[0], 'external_resources')
-        abc_path = os.path.join(res_path, 'subdirectory2', 'subsubdirectory', 'Abc.txt')
-        bar_path = os.path.join(res_path, 'subdirectory2', 'bar.txt')
-        foo_path = os.path.join(res_path, 'subdirectory', 'Foo.txt')
-        hello_path = os.path.join(res_path, 'subdirectory2', 'subsubdirectory', 'hello.txt')
-        resource_path = os.path.join(res_path, 'subdirectory2', 'Resource.txt')
+        abc_path = os.path.join(res_path, 'subdirectory2', 'subsubdirectory', 'Abc.robot')
+        bar_path = os.path.join(res_path, 'subdirectory2', 'bar.robot')
+        foo_path = os.path.join(res_path, 'subdirectory', 'Foo.robot')
+        hello_path = os.path.join(res_path, 'subdirectory2', 'subsubdirectory', 'hello.robot')
+        resource_path = os.path.join(res_path, 'subdirectory2', 'Resource.robot')
         self.assertEqual(are_used, [True for _ in range(5)])
         self._test_listeners([EXTERNAL_RES_UNSORTED_PATH], [abc_path, bar_path, foo_path, hello_path, resource_path])
 
@@ -211,7 +211,7 @@ class TestResolvingResourceDirectories(unittest.TestCase):
 
     def test_resource_file_outside_of_topsuite_is_an_external_resource(self):
         self._set_data_directory_controller('suite')
-        self._set_resources(j('foo', 'resource.txt'))
+        self._set_resources(j('foo', 'resource.robot'))
         assert_equal(self.project.external_resources, self.project.resources)
 
     def _set_data_directory_controller(self, dir):
@@ -219,41 +219,41 @@ class TestResolvingResourceDirectories(unittest.TestCase):
 
     def test_resource_file_in_own_directory_is_added_to_top_suite(self):
         self._set_data_directory_controller('foo')
-        self._set_resources(j('foo', 'bar', 'quux.txt'))
+        self._set_resources(j('foo', 'bar', 'quux.robot'))
         self._assert_resource_dir_was_created_as_child_of(self.project.data)
         self._assert_resource_dir_contains_resources()
         assert_true(len(self.project.external_resources) == 0)
 
     def test_two_resource_in_same_directory_get_same_parent(self):
         self._set_data_directory_controller('foo')
-        self._set_resources(j('foo', 'bar', 'quux.txt'), j('foo', 'bar', 'zap.txt'))
+        self._set_resources(j('foo', 'bar', 'quux.robot'), j('foo', 'bar', 'zap.robot'))
         self._assert_resource_dir_was_created_as_child_of(self.project.data)
         self._assert_resource_dir_contains_resources()
 
     def test_two_nested_resources_in_same_directory_get_same_parent(self):
         self._set_data_directory_controller('suite')
-        self._set_resources(j('suite', 'foo', 'bar', 'quux.txt'), j('suite', 'foo', 'bar', 'zap.txt'))
+        self._set_resources(j('suite', 'foo', 'bar', 'quux.robot'), j('suite', 'foo', 'bar', 'zap.robot'))
         assert_equal(self.project.data.children[0].children[0].children,
                      self.project.resources)
 
     def test_resource_directory_gets_nearest_possible_parent(self):
         self._set_data_directory_controller('tmp')
         self.project.data.add_child(TestDataDirectoryController(_data_directory(j('tmp', 'some'))))
-        self._set_resources(j('tmp', 'some', 'resoruces', 'res.txt'))
+        self._set_resources(j('tmp', 'some', 'resoruces', 'res.robot'))
         assert_equal(len(self.project.data.children), 1)
         assert_equal(len(self.project.data.children[0].children), 1)
         assert_equal(self.project.data.children[0].children[0].children, [self.project.resources[0]])
 
     def test_nested_resource_directories(self):
         self._set_data_directory_controller('tmp')
-        self._set_resources(j('tmp', 'resoruces', 'res.txt'), j('tmp', 'resoruces', 'more', 'res.txt'))
+        self._set_resources(j('tmp', 'resoruces', 'res.robot'), j('tmp', 'resoruces', 'more', 'res.robot'))
         assert_equal(len(self.project.data.children), 1)
         assert_equal(len(self.project.data.children[0].children), 2)
         assert_equal(self.project.data.children[0].children[1].children, [self.project.resources[1]])
 
     def test_resource_in_nested_directory(self):
         self._set_data_directory_controller('tmp')
-        self._set_resources(j('tmp', 'res', 'ources', 'res.txt'))
+        self._set_resources(j('tmp', 'res', 'ources', 'res.robot'))
         assert_equal(len(self.project.data.children), 1)
         assert_equal(len(self.project.data.children[0].children), 1)
         assert_equal(self.project.data.children[0].children[0].children, [self.project.resources[0]])
@@ -294,7 +294,7 @@ class TestFindingControllers(unittest.TestCase):
         assert_equal(result, subdirectory_controller)
 
     def test_finding_testcase_controller(self):
-        suite_controller = TestCaseFileController(_testcasefile('Suite.txt'))
+        suite_controller = TestCaseFileController(_testcasefile('Suite.robot'))
         test = suite_controller.create_test('Test 1')
         self.project._controller = suite_controller
         result = self.project.find_controller_by_longname('Suite.Test 1', 'Test 1')
@@ -309,9 +309,9 @@ class TestFindingControllers(unittest.TestCase):
 
     def test_finding_correct_testcase_when_two_files_with_same_name_start(self):
         directory_controller = TestDataDirectoryController(_data_directory('t'))
-        suite1_controller = TestCaseFileController(_testcasefile('test.txt'))
+        suite1_controller = TestCaseFileController(_testcasefile('test.robot'))
         test1 = suite1_controller.create_test('A')
-        suite2_controller = TestCaseFileController(_testcasefile('test2.txt'))
+        suite2_controller = TestCaseFileController(_testcasefile('test2.robot'))
         test2 = suite2_controller.create_test('A')
         directory_controller.add_child(suite1_controller)
         directory_controller.add_child(suite2_controller)
@@ -323,9 +323,9 @@ class TestFindingControllers(unittest.TestCase):
 
     def _create_suite_structure_with_two_tests_with_same_name(self):
         directory_controller = TestDataDirectoryController(_data_directory('Ro.ot'))
-        suite1_controller = TestCaseFileController(_testcasefile('Suite.1.txt'))
+        suite1_controller = TestCaseFileController(_testcasefile('Suite.1.robot'))
         test1 = suite1_controller.create_test('Te.st')
-        suite2_controller = TestCaseFileController(_testcasefile('Suite.2.txt'))
+        suite2_controller = TestCaseFileController(_testcasefile('Suite.2.robot'))
         test2 = suite2_controller.create_test('Te.st')
         directory_controller.add_child(suite1_controller)
         directory_controller.add_child(suite2_controller)

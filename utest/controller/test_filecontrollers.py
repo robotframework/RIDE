@@ -81,7 +81,7 @@ class TestMarkUnMarkDirty(unittest.TestCase):
 
 class TestCaseFileControllerTest(unittest.TestCase):
     SOURCE_HTML = os.path.abspath(os.path.join('tmp', '.path.with.dots', 'test.cases.html'))
-    SOURCE_TXT = SOURCE_HTML.replace('.html', '.txt')
+    SOURCE_TXT = SOURCE_HTML.replace('.html', '.robot')
 
     def setUp(self):
         self.ctrl = TestCaseFileController(TestCaseFile(source=self.SOURCE_HTML))
@@ -108,7 +108,7 @@ class TestCaseFileControllerTest(unittest.TestCase):
         assert_equal(self.ctrl.longname, 'Parent.Test.Cases')
 
     def test_set_format(self):
-        self.ctrl.set_format('txt')
+        self.ctrl.set_format('robot')
         assert_equal(self.ctrl.filename, self.SOURCE_TXT)
 
     def test_add_test_or_kw(self):
@@ -226,8 +226,8 @@ class TestResourceFileControllerTest(unittest.TestCase):
 
 
 class TestDataDirectoryControllerTest(unittest.TestCase):
-    TEST_CASE_FILE_PATH = os.path.abspath('path/to/suite.txt')
-    INIT_FILE_PATH = os.path.abspath('path/to/__init__.txt')
+    TEST_CASE_FILE_PATH = os.path.abspath('path/to/suite.robot')
+    INIT_FILE_PATH = os.path.abspath('path/to/__init__.robot')
     DATA_DIRECTORY_NAME = os.path.split(os.path.dirname(INIT_FILE_PATH))[-1].title()
 
     def setUp(self):
@@ -255,9 +255,9 @@ class TestDataDirectoryControllerTest(unittest.TestCase):
     def test_set_format(self):
         ctrl = TestDataDirectoryController(self.data)
         assert_false(ctrl.has_format())
-        ctrl.set_format('txt')
+        ctrl.set_format('robot')
         assert_true(ctrl.has_format())
-        assert_equal(ctrl.source, os.path.abspath(os.path.join('source', '__init__.txt')))
+        assert_equal(ctrl.source, os.path.abspath(os.path.join('source', '__init__.robot')))
 
     def test_longname(self):
         ctrl = TestDataDirectoryController(self.data)
@@ -328,10 +328,11 @@ class DatafileIteratorTest(unittest.TestCase):
             def __init__(self):
                 self.iteration_count = 0
                 self.in_sub_dir = False
+
             def __call__(self, controller):
                 self.iteration_count += 1
                 print(controller.filename)
-                if controller.filename and controller.filename.endswith('test.txt'):
+                if controller.filename and controller.filename.endswith('test.robot'):
                     self.in_sub_dir = True
         check_count_and_sub_dir = Checker()
         [check_count_and_sub_dir(df) for df
@@ -343,10 +344,10 @@ class DatafileIteratorTest(unittest.TestCase):
 class TestRelativePathTo(unittest.TestCase):
 
     def test_relative_path_to(self):
-        fse1 = _FileSystemElement('foo.txt', 'bar')
+        fse1 = _FileSystemElement('foo.robot', 'bar')
         fse2 = _FileSystemElement('zoo.html', 'goo')
         self.assertEqual('../goo/zoo.html', fse1.relative_path_to(fse2))
-        self.assertEqual('../bar/foo.txt', fse2.relative_path_to(fse1))
+        self.assertEqual('../bar/foo.robot', fse2.relative_path_to(fse1))
 
 
 if __name__ == '__main__':

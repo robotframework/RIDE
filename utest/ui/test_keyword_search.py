@@ -22,12 +22,12 @@ from robotide.spec.iteminfo import ItemInfo
 
 test_kws = [ItemInfo(name, source, desc) for name, source, desc in
             [('Should Be Equal', 'BuiltIn', 'Foo'),
-             ('get bar', 'resource.txt', 'getting bar'),
-             ('get bar2', 'resource2.txt', 'getting bar'),
+             ('get bar', 'resource.robot', 'getting bar'),
+             ('get bar2', 'resource2.robot', 'getting bar'),
              ('Get File', 'OperatingSystem', 'Bar'),
              ('Bar', 'OBarsystem', 'Doc'),
              ('BarBar', 'OBarBarSystem', 'Doc'),
-             ('User Keyword', 'resource.html', 'Quuz'), ]
+             ('User Keyword', 'resource.resource', 'Quuz'), ]
             ]
 
 
@@ -39,14 +39,14 @@ class Keyword(object):
         self.doc = doc
 
     def is_user_keyword(self):
-        return self.source.endswith('.txt')
+        return self.source.endswith('.robot')
 
     def is_library_keyword(self):
-        return not self.source.endswith('.txt')
+        return not self.source.endswith('.robot')
 
 
 class TestSearchCriteria(unittest.TestCase):
-    keyword = Keyword('start Da ta end', 'source.txt', 'some dO c here')
+    keyword = Keyword('start Da ta end', 'source.robot', 'some dO c here')
     library_keyword = Keyword('start Da ta end', 'library', 'some dO c here')
 
     def test_defaults(self):
@@ -63,10 +63,10 @@ class TestSearchCriteria(unittest.TestCase):
         self._test_criteria(False, 'doc', False, self.keyword)
 
     def test_exact_source_filter_matches(self):
-        self._test_criteria(True, '', True, self.keyword, 'source.txt')
-        self._test_criteria(True, 'data', True, self.keyword, 'source.txt')
+        self._test_criteria(True, '', True, self.keyword, 'source.robot')
+        self._test_criteria(True, 'data', True, self.keyword, 'source.robot')
         self._test_criteria(
-            False, 'no match', True, self.keyword, 'source.txt')
+            False, 'no match', True, self.keyword, 'source.robot')
 
     def test_exact_source_filter_does_not_match(self):
         self._test_criteria(False, 'doc', True, self.keyword, 'Some')

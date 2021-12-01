@@ -35,7 +35,7 @@ KEYWORD_IN_USERKEYWORD1 = 'Some Keyword'
 EMBEDDED_ARGUMENTS_KEYWORD = "Pick '${fruit}' and '${action}' it"
 
 
-def TestCaseControllerWithSteps(project=None, source='some_suite.txt'):
+def TestCaseControllerWithSteps(project=None, source='some_suite.robot'):
     tcf = TestCaseFile()
     tcf.source = source
     tcf.setting_table.suite_setup.name = 'Suite Setup Kw'
@@ -170,7 +170,7 @@ class TestFindOccurrencesWithFiles(unittest.TestCase):
     def test_ignores_definition_in_base_resource(self):
         self.assert_occurrences(self.resu, 'Keyword In Both Resources', 1)
         occ = _first_occurrence(self.resu, 'Keyword In Both Resources')
-        assert_equal(occ.item.parent.source, 'inner_resource.txt')
+        assert_equal(occ.item.parent.source, 'inner_resource.robot')
 
     def test_rename_resu_occurrence_in_case_of_double_definition(self):
         old_name = 'Keyword In Both Resources'

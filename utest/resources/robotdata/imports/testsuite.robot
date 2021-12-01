@@ -1,6 +1,6 @@
 *** Settings ***
-Resource          res//existing.txt
-Resource          res//none_existing.txt
+Resource          res//existing.robot
+Resource          res//none_existing.robot
 Resource          ${RESU}
 Library           String    # A built in library from PYTHONPATH
 Library           libs//existing.py
@@ -11,7 +11,7 @@ Variables         vars//vars.py
 Variables         vars//none_existing.py
 
 *** Variables ***
-${RESU}           res//with_variable.txt
+${RESU}           res//with_variable.robot
 ${LIB}            XML
 
 *** Test Cases ***

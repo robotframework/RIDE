@@ -53,7 +53,7 @@ def write_results(exectimes, write):
 
 def main():
     exectimes = collect_execution_times(test_modules())
-    with open('testtimes.txt', 'w') as output:
+    with open('testtimes.robot', 'w') as output:
         def write(txt):
             output.write(txt)
             sys.stdout.write(txt)

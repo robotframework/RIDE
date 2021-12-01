@@ -40,7 +40,7 @@ def create_test_data(path, filepath, resourcepath, initpath):
     with open(filepath, 'w') as file:
         file.write('''\
 *Settings*
-Resource  resource.txt
+Resource  resource.robot
 *Test Cases*
 Ride Unit Test  No Operation
 ''')
@@ -65,9 +65,9 @@ class _DataDependentTest(unittest.TestCase):
 
     def setUp(self):
         self._dirpath = os.path.join(tempfile.gettempdir(), 'ride_controller_utest_dir'+str(random.randint(0,100000000)))
-        self._filepath = os.path.join(self._dirpath, 'tests.txt')
-        self._resource_path = os.path.join(self._dirpath, 'resource.txt')
-        self._init_path = os.path.join(self._dirpath, '__init__.txt')
+        self._filepath = os.path.join(self._dirpath, 'tests.robot')
+        self._resource_path = os.path.join(self._dirpath, 'resource.robot')
+        self._init_path = os.path.join(self._dirpath, '__init__.robot')
         create_test_data(self._dirpath, self._filepath, self._resource_path, self._init_path)
 
     def tearDown(self):

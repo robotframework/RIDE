@@ -20,7 +20,7 @@ from robotide.namespace import Namespace
 from robotide.spec.librarymanager import LibraryManager
 
 RESOURCES_DIR = 'resources'
-RESOURCES_HTML = 'resource.html'
+RESOURCES_RESOURCE = 'resource.resource'
 DATAPATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'robotdata')
 
 
@@ -30,24 +30,24 @@ def _makepath(*elements):
 
 
 ALL_FILES_PATH = _makepath('all_files')
-RESOURCE_PATH = _makepath(RESOURCES_DIR, RESOURCES_HTML)
-RESOURCE_LIB_PATH = _makepath(RESOURCES_DIR, 'resource_lib_imports.txt')
-RESOURCE_WITH_VARS = _makepath(RESOURCES_DIR, 'resource_with_variables.txt')
-TESTCASEFILE_WITH_EVERYTHING = _makepath('testsuite', 'everything.html')
-RELATIVE_IMPORTS = _makepath('relative_imports', 'relative.txt')
-LOG_MANY_SUITE = _makepath('logmanysuite', 'log_many.txt')
-KW1000_TESTCASEFILE = _makepath('performance', 'suite_kw1000.txt')
-KW2000_TESTCASEFILE = _makepath('performance', 'suite_kw2000.txt')
-KW3000_TESTCASEFILE = _makepath('performance', 'suite_kw3000.txt')
-KW4000_TESTCASEFILE = _makepath('performance', 'suite_kw4000.txt')
+RESOURCE_PATH = _makepath(RESOURCES_DIR, RESOURCES_RESOURCE)
+RESOURCE_LIB_PATH = _makepath(RESOURCES_DIR, 'resource_lib_imports.robot')
+RESOURCE_WITH_VARS = _makepath(RESOURCES_DIR, 'resource_with_variables.robot')
+TESTCASEFILE_WITH_EVERYTHING = _makepath('testsuite', 'everything.robot')
+RELATIVE_IMPORTS = _makepath('relative_imports', 'relative.robot')
+LOG_MANY_SUITE = _makepath('logmanysuite', 'log_many.robot')
+KW1000_TESTCASEFILE = _makepath('performance', 'suite_kw1000.robot')
+KW2000_TESTCASEFILE = _makepath('performance', 'suite_kw2000.robot')
+KW3000_TESTCASEFILE = _makepath('performance', 'suite_kw3000.robot')
+KW4000_TESTCASEFILE = _makepath('performance', 'suite_kw4000.robot')
 RESOURCE_WITH_VARIABLE_IN_PATH = _makepath(RESOURCES_DIR, 'resu.${extension}')
 LIBRARY_WITH_SPACES_IN_PATH = _makepath('lib with spaces', 'spacelib.py')
 TESTCASEFILE_WITH_RESOURCES_WITH_VARIABLES_FROM_VARIABLE_FILE = \
     _makepath('var_file_variables',
-              'import_resource_with_variable_from_var_file.txt')
+              'import_resource_with_variable_from_var_file.robot')
 
 SIMPLE_TEST_SUITE_RESOURCE_NAME = 'Testdata Resource'
-SIMPLE_TEST_SUITE_RESOURCE_FILE = 'testdata_resource.txt'
+SIMPLE_TEST_SUITE_RESOURCE_FILE = 'testdata_resource.robot'
 SIMPLE_TEST_SUITE_INNER_RESOURCE_DIR = 'Resources Folder'
 SIMPLE_TEST_SUITE_PATH = \
     _makepath('simple_testsuite_with_different_namespaces')
@@ -56,7 +56,7 @@ FOR_LOOP_PATH = _makepath('forloop')
 
 ARGUMENTS_PATH = _makepath('arguments_suite')
 
-SIMPLE_PROJECT = _makepath('simple', 'test.txt')
+SIMPLE_PROJECT = _makepath('simple', 'test.robot')
 
 UNUSED_KEYWORDS_PATH = _makepath('unused_keywords')
 
@@ -68,16 +68,16 @@ IMPORTS = _makepath('imports')
 
 
 def construct_project(datapath, temp_dir_for_excludes=None):
-    # print("DEBUG: construct_project with argpath: %s\n" % datapath)
+    print("DEBUG: construct_project with argpath: %s\n" % datapath)
     settings = FakeSettings({'excludes': temp_dir_for_excludes})
-    #print("DEBUG: construct_project FakeSettings: %s\n" % list(settings.iteritems()))
+    print("DEBUG: construct_project FakeSettings: %s\n" % list(settings.iteritems()))
     library_manager = LibraryManager(':memory:')
     library_manager.create_database()
     project = Project(Namespace(settings), settings, library_manager)
-    # print("DEBUG: construct_project Project: %s\n" % project.display_name)
+    print("DEBUG: construct_project Project: %s\n" % project.display_name)
     project.load_data(datapath)  #, NullObserver())
     # DEBUG
-    # print("DEBUG: Path arg is: %s\n" % datapath)
+    print("DEBUG: Path arg is: %s\n" % datapath)
     return project
 
 

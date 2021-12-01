@@ -231,7 +231,7 @@ class TestCellInfo(unittest.TestCase):
         self._verify_cell_info(in_range_header_index, 6, ContentType.EMPTY, CellType.MUST_BE_EMPTY, forlooped_case)
 
     def test_library_import_add_and_remove(self):
-        self.test.execute(PasteArea((0, 0), [['Get File', 'reaktor.txt']]))
+        self.test.execute(PasteArea((0, 0), [['Get File', 'reaktor.robot']]))
         self._verify_cell_info(0, 0, ContentType.STRING, CellType.KEYWORD)
         self._verify_cell_info(0, 1, ContentType.STRING, CellType.UNKNOWN)
         self.testsuite.imports.add_library('OperatingSystem', [], '')
@@ -260,7 +260,7 @@ class TestCellInfo(unittest.TestCase):
         self._verify_cell_info(0, 0, ContentType.LIBRARY_KEYWORD, CellType.KEYWORD)
 
     def test_library_import_modify(self):
-        self.test.execute(PasteArea((0, 0), [['Get File', 'reaktor.txt']]))
+        self.test.execute(PasteArea((0, 0), [['Get File', 'reaktor.robot']]))
         lib = self.testsuite.imports.add_library('WrongOperatingSystem', [], '')
         self._verify_cell_info(0, 0, ContentType.STRING, CellType.KEYWORD)
         self._verify_cell_info(0, 1, ContentType.STRING, CellType.UNKNOWN)

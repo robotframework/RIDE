@@ -30,10 +30,10 @@ sys.path.append(testlibpath)
 
 
 class _FakeTestCaseFile(object):
-    source = '/path/to/testcase.txt'
+    source = '/path/to/testcase.robot'
 
 class _FakeResourceFile(object):
-    source = '/path/to/my/resource.html'
+    source = '/path/to/my/resource.resource'
     name = 'resource'
     rawname = 'resource'
 
@@ -65,7 +65,7 @@ class TestKeywordInfo(unittest.TestCase):
         uk = UserKeyword(_FakeTestCaseFile(), 'My User keyword')
         uk.args.value = ['${arg1}', '${arg2}=def', '@{varargs}']
         kw_info = TestCaseUserKeywordInfo(uk)
-        exp_source = 'testcase.txt'
+        exp_source = 'testcase.robot'
         exp_args = '[ arg1 | arg2=def | *varargs ]'
         assert_in_details(kw_info, exp_source, exp_args)
 

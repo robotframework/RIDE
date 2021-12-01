@@ -1,6 +1,6 @@
 *** Settings ***
 Documentation   documentation for test suite
-Resource        ../resources/resource.txt
+Resource        ../resources/resource.robot
 
 *** Test Cases ***
 Test Case 1

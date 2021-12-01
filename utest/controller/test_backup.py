@@ -22,7 +22,7 @@ class BackupTestCase(unittest.TestCase):
 
     def setUp(self):
         file_controller = lambda: None
-        file_controller.filename = 'some_filename.txt'
+        file_controller.filename = 'some_filename.robot'
         file_controller.refresh_stat = lambda: None
         self._backupper = _MyBackup(file_controller)
 

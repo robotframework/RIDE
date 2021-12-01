@@ -58,7 +58,7 @@ class RIDE(object):
     def open_suite_file(self):
         if self._skip:
             return
-        self._open(os.path.join(self._path, 'testdir', 'Suite.txt'))
+        self._open(os.path.join(self._path, 'testdir', 'Suite.robot'))
         print('suite = project.data')
         self._suite = self._project.data
         print('test = list(t for t in suite.tests)[0]')
@@ -141,7 +141,7 @@ class RIDE(object):
         pass
 
     def write_cell_data(self):
-        value = self._random.choice(['# something', 'foobar', ': FOR',
+        value = self._random.choice(['# something', 'foobar', 'FOR',
                                      '${var}', 'No Operation', '\\',
                                       'zoo%d' % self._rand(), '${%d}' %
                                      self._rand()])
@@ -150,8 +150,9 @@ class RIDE(object):
 
     def write_for_loop(self):
         self._macro_execute(InsertArea((self._rand_row(), 0),
-                            [[':FOR', '${i}', 'IN', '1', '2', 'foo'],
-                             ['', 'No Operation']]))
+                            [['FOR', '${i}', 'IN', '1', '2', 'foo'],
+                             ['', 'No Operation'],
+                             ['END']]))
 
     def _macro_execute(self, command):
         macro = self._random.choice([c for c in [self._test, self._keyword] if
