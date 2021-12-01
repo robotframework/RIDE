@@ -2805,7 +2805,7 @@ class _Misc(_BuiltInBase):
 
         Examples:
         | Import Resource | ${CURDIR}/resource.txt |
-        | Import Resource | ${CURDIR}/../resources/resource.html |
+        | Import Resource | ${CURDIR}/../resources/resource.resource |
         | Import Resource | found_from_pythonpath.robot |
         """
         try:

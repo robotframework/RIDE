@@ -132,6 +132,7 @@ class Project(_BaseController, WithNamespace):
             load_observer.error("Given file '%s' is not a valid Robot Framework "
                                 "test case or resource file." % path)
         except AttributeError:  # DEBUG
+            print(f"DEBUG: load_data error not valid datafile: {path}")
             pass
 
     def is_excluded(self, source):
@@ -155,9 +156,12 @@ class Project(_BaseController, WithNamespace):
         return e
 
     def _load_datafile(self, path, load_observer):
+        print(f"DEBUG: _load_datafile enter path: {path}")
         datafile = self._loader.load_datafile(path, load_observer)
         if not datafile:
+            print(f"DEBUG: _load_datafile returning None datafile")
             return None
+        print(f"DEBUG: _load_datafile populate: {datafile}")
         self._populate_from_datafile(path, datafile, load_observer)
         return datafile
 
@@ -238,10 +242,14 @@ class Project(_BaseController, WithNamespace):
         return self.suite.get_dir_path()
 
     def is_dirty(self):
+        print(f"DEBUG: is_dirty entering")
         if self.data and self.is_datafile_dirty(self.data):
+            print(f"DEBUG: is_dirty datafile: {self.data}")
             return True
+        print(f"DEBUG: is_dirty testing resources: {self.resources}")
         for res in self.resources:
             if res.dirty:
+                print(f"DEBUG: is_dirty resource: {res}")
                 return True
         return False
 

@@ -21,7 +21,7 @@ import os
 
 SUITE=\
 """*** Settings ***
-Resource    resource.txt
+Resource    resource.robot
 
 *** Test Cases ***
 %TESTCASES%
@@ -90,10 +90,10 @@ def generate(directory, suites, tests, keywords):
     os.mkdir(directory)
     mysuites = range(suites)
     for suite_index in mysuites:
-        f = open(os.path.join('.', directory, 'suite%s.txt' % suite_index), 'w')
+        f = open(os.path.join('.', directory, 'suite%s.robot' % suite_index), 'w')
         f.write(generate_suite(tests, keywords))
         f.close()
-    r = open(os.path.join('.', directory, 'resource.txt'), 'w')
+    r = open(os.path.join('.', directory, 'resource.robot'), 'w')
     r.write(generate_resource(keywords))
     r.close()
 

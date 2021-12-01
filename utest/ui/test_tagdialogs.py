@@ -220,10 +220,10 @@ class _BaseSuiteTreeTest(unittest.TestCase):
 
     def _create_model(self):
         suite = self._create_directory_suite('/top_suite')
-        suite.children = [self._create_file_suite('sub_suite_%d.txt' % i)
+        suite.children = [self._create_file_suite('sub_suite_%d.robot' % i)
                           for i in range(3)]
         res = ResourceFile()
-        res.source = 'resource.txt'
+        res.source = 'resource.robot'
         res.keyword_table.keywords.append(UserKeyword(res, 'Resource Keyword'))
         library_manager = LibraryManager(':memory:')
         library_manager.create_database()

@@ -1,6 +1,6 @@
 *** Settings ***
-Resource          Res1.txt
-Resource          Abc.txt
+Resource          Res1.robot
+Resource          Abc.robot
 
 *** Test Cases ***
 Test case
