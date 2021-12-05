@@ -75,11 +75,13 @@ class TestRenameTestCaseFile(unittest.TestCase):
         assert_equal(self._error_message, None)
         assert_equal(self._message, self.ctrl)
 
+    """
     @unittest.skip("Cannot provoke ERROR on Linux")  # Can't produce errors on Linux
     def test_rename_illegal_character_error(self):
         RenameFile("dsk\dన\j$''lkfd\{sjflk$'\'fdslkjl\[\]suite....").execute(
             self._create_controller())
         assert_equal(self._error_message, ERROR_ILLEGAL_CHARACTERS)
+    """
 
     def test_rename_empty_name_error(self):
         RenameFile("").execute(self._create_controller())

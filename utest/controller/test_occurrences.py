@@ -69,8 +69,9 @@ def _create_testcase(tcf):
                  [USERKEYWORD2_NAME],
                  ["Pick 'apple' and 'peel' it"]]:
         testcase.add_step(step)
-    for_loop = testcase.add_for_loop([': FOR', '${i}', 'IN RANGE', '10'])
+    for_loop = testcase.add_for_loop(['FOR', '${i}', 'IN RANGE', '10'])
     for_loop.add_step(['Log', '${i}'])
+    for_loop.add_step(['END'])
     testcase.setup.name = SETUP_KEYWORD
     testcase.teardown.name = 'Teardown Kw'
     testcase.template.value = TEMPLATE_KEYWORD
@@ -165,12 +166,14 @@ class TestFindOccurrencesWithFiles(unittest.TestCase):
         self.assert_occurrences(self.ts1, 'Log', 1)
         self.assert_occurrences(self.ts2, 'Log', 2)
 
+    """
     # TODO This test fails in Python 3 because of order or returned item
     @unittest.skip("Sometimes FAILS with Python 3")
     def test_ignores_definition_in_base_resource(self):
         self.assert_occurrences(self.resu, 'Keyword In Both Resources', 1)
         occ = _first_occurrence(self.resu, 'Keyword In Both Resources')
         assert_equal(occ.item.parent.source, 'inner_resource.robot')
+    """
 
     def test_rename_resu_occurrence_in_case_of_double_definition(self):
         old_name = 'Keyword In Both Resources'
@@ -292,13 +295,13 @@ class FindOccurrencesTest(unittest.TestCase):
     def test_occurrences_in_user_keywords(self):
         assert_occurrence(self.test_ctrl, KEYWORD_IN_USERKEYWORD1,
                           USERKEYWORD1_NAME, 'Steps')
-    """
+
     # TODO This test fails in Python 3 because can't find User Keyword
     # only fails with invoke, not with test_all.sh
     def test_occurrence_in_user_keyword_name(self):
         assert_occurrence(self.test_ctrl, USERKEYWORD1_NAME,
                           USERKEYWORD1_NAME, KEYWORD_NAME_FIELD)
-    """
+
 
 class FindVariableOccurrencesTest(unittest.TestCase):
 
@@ -500,14 +503,12 @@ class RenameOccurrenceTest(unittest.TestCase):
         assert_equal(self.test_ctrl.steps[1].as_list(), ['Run Keyword',
                                                           UNUSED_KEYWORD_NAME])
 
-    """
     # TODO This test fails in Python 3 because can't find User Keyword
     # only fails with invoke, not with test_all.sh
     def test_user_keyword_rename(self):
         self._rename(USERKEYWORD1_NAME, UNUSED_KEYWORD_NAME,
                      UNUSED_KEYWORD_NAME, KEYWORD_NAME_FIELD)
         self._expected_messages(name_has_changed=True)
-    """
 
     def test_rename_in_test_setup(self):
         self._rename(SETUP_KEYWORD, UNUSED_KEYWORD_NAME, TEST1_NAME, 'Setup')
@@ -549,7 +550,7 @@ class RenameOccurrenceTest(unittest.TestCase):
         self._rename(kw, UNUSED_KEYWORD_NAME, TEST1_NAME, 'Steps')
         self._expected_messages(steps_have_changed=True)
         self.assertEqual(self.test_ctrl.step(100).as_list()[100],
-                          'Given '+UNUSED_KEYWORD_NAME)
+                         'Given '+UNUSED_KEYWORD_NAME)
 
     def test_rename_when_prefixed_keywords(self):
         kw = 'fjsdklhf37849'
@@ -557,7 +558,7 @@ class RenameOccurrenceTest(unittest.TestCase):
         self._rename(kw, UNUSED_KEYWORD_NAME, TEST1_NAME, 'Steps')
         self._expected_messages(steps_have_changed=True)
         self.assertEqual(self.test_ctrl.step(100).as_list()[100],
-                          'wHEn   '+UNUSED_KEYWORD_NAME)
+                         'wHEn   '+UNUSED_KEYWORD_NAME)
 
     def test_rename_then_prefixed_keywords(self):
         kw = 'djkfsekrhnbdxcvzo dsjah'
@@ -565,7 +566,7 @@ class RenameOccurrenceTest(unittest.TestCase):
         self._rename(kw, UNUSED_KEYWORD_NAME, TEST1_NAME, 'Steps')
         self._expected_messages(steps_have_changed=True)
         self.assertEqual(self.test_ctrl.step(100).as_list()[100],
-                          'THen '+UNUSED_KEYWORD_NAME)
+                         'THen '+UNUSED_KEYWORD_NAME)
 
     def test_rename_and_prefixed_keywords(self):
         kw = 'mmxznbfje uiriweyi yr iu fjkdhzxck'
@@ -573,7 +574,7 @@ class RenameOccurrenceTest(unittest.TestCase):
         self._rename(kw, UNUSED_KEYWORD_NAME, TEST1_NAME, 'Steps')
         self._expected_messages(steps_have_changed=True)
         self.assertEqual(self.test_ctrl.step(100).as_list()[100],
-                          'AND '+UNUSED_KEYWORD_NAME)
+                         'AND '+UNUSED_KEYWORD_NAME)
 
     def test_rename_but_prefixed_keywords(self):
         kw = 'sdlmclkds dslcm ldsm sdclmklm'
@@ -581,7 +582,7 @@ class RenameOccurrenceTest(unittest.TestCase):
         self._rename(kw, UNUSED_KEYWORD_NAME, TEST1_NAME, 'Steps')
         self._expected_messages(steps_have_changed=True)
         self.assertEqual(self.test_ctrl.step(100).as_list()[100],
-                          'bUt '+UNUSED_KEYWORD_NAME)
+                         'bUt '+UNUSED_KEYWORD_NAME)
 
     def test_rename_when_keyword_begins_with_prefix(self):
         kw = 'When I say so'
@@ -589,7 +590,7 @@ class RenameOccurrenceTest(unittest.TestCase):
         self._rename(kw, UNUSED_KEYWORD_NAME, TEST1_NAME, 'Steps')
         self._expected_messages(steps_have_changed=True)
         self.assertEqual(self.test_ctrl.step(100).as_list()[100],
-                          UNUSED_KEYWORD_NAME)
+                         UNUSED_KEYWORD_NAME)
 
     def _add_step(self, keyword):
         self.test_ctrl.execute(ChangeCellValue(100, 100, keyword))
