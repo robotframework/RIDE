@@ -164,7 +164,7 @@ class StepController(_BaseController):
             return CellContent(
                 ContentType.LIBRARY_KEYWORD, value,
                 self.get_keyword_info(value).source)
-        if col == 0 and value == 'END':
+        if value == 'END':  # DEBUG Don't consider start column (col == 0 and)
             return CellContent(ContentType.END, value)
         return CellContent(ContentType.STRING, value)
 
