@@ -13,9 +13,15 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import sys
+import os
+import pathlib
 import unittest
-from nose.tools import assert_equal
 
+SCRIPT_DIR = os.path.dirname(pathlib.Path(__file__).parent)
+sys.path.append(SCRIPT_DIR)
+
+from nose.tools import assert_equal
 from robotide.editor.tags import TagsDisplay
 from controller.controller_creator import testcase_controller as tc
 from robotide.controller.tags import Tag

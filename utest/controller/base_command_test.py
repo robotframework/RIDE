@@ -15,6 +15,7 @@
 
 import unittest
 import os
+import pathlib
 import sys
 from nose.tools import assert_equal
 
@@ -24,10 +25,12 @@ PACKAGE_PARENT = '..'
 SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(),
                                               os.path.expanduser(__file__))))
 sys.path.insert(0, os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
+SCRIPT_DIR = os.path.dirname(pathlib.Path(__file__).parent)
+sys.path.insert(0, SCRIPT_DIR)
 
 from robotide.publish import PUBLISHER
 from robotide.publish.messages import RideItemStepsChanged
-from controller_creator import _FakeProject, testcase_controller, BASE_DATA
+from controller.controller_creator import _FakeProject, testcase_controller, BASE_DATA
 
 
 class TestCaseCommandTest(unittest.TestCase, _FakeProject):

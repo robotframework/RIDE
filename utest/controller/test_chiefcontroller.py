@@ -66,7 +66,8 @@ class ProjectTest(unittest.TestCase):
     def _test_listeners(self, suite_paths, resource_paths):
         resource_paths = [os.path.normcase(_) for _ in resource_paths]
         self.assertEqual(self._get_paths(self.suite_listener.data), suite_paths)
-        self.assertEqual(self._get_paths(self.resource_listener.data), resource_paths)
+        listener_resource_paths = [os.path.normcase(_) for _ in self._get_paths(self.resource_listener.data)]
+        self.assertEqual(listener_resource_paths, resource_paths)
 
     def _get_paths(self, data):
         return [item.path for item in data]
