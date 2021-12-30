@@ -5,6 +5,9 @@ invoke
 # rellu
 github3.py
 memory-profiler
+pylint
+pytest
+pytest-cov
 # Include also normal project requirements.
 -r requirements.txt
 

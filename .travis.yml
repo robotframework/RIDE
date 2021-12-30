@@ -31,5 +31,13 @@ matrix:
     - python: "3.9"
       env:
         - WXPACK=https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-18.04/wxPython-4.1.1-cp39-cp39-linux_x86_64.whl
+addons:
+  sonarcloud:
+    organization: "helioguilherme66"
+    token:
+      secure: "aTXdbNM+vG32qQg0HNXN55+OdGI4G7U9XMKth2r10hpdrH566rVW4UP3hnCYOZboI+CHdv9j372dTsmzuxLrezImD6SU7Md6c0aYxeX1PwSZJJIGXcnVZsyqYMddoZEfbtYDvVUWvO8Yn7oY7pv/BSypms9jebgMVF64OM006zi8aHB7UbRRvle7EPOZXlFP3Us4vnyPpRPE8fSGdzoVoGabHJ8RPFbqt4oqwFJAjR94oJ6sQ8ShTBA7B9xNud3vnue8TzYeg18f/98V60kI2rzFhm2fU62DSdkzjhA8WvTCbWEHovPJ369yWMlqm0qS0eAWLugws5gVEm0FwS0Ixa13ppCu72n4I3UgjLxuVI67tWblXntKzdreSrctsdd30XJjCadPqAVqVroVsrRDzW8nBjPC+AqmgQ3ie6Qm+jp7YcYIruQbk1pRn9/Sg+hN7T7kygPsKhfSpMzWg7d7Qcs7azhogStHhZrhUY1831A7+8ZcGpPrk2HBoAeaa+H37KIpcAyJ8wZzsiRAQ4P38lb8/CIk3D6fleZQ27n4W7pYX7hYmpD1BpD12jbn7r/C0VdcLteJQ55o2BA2JRAY9rX+pSJQLcJaGA2o5bnUlZvAUPilE+zXWVSjAoXfjehvmk1z6Nb47elNTPfYxROUqtQL5MjymioQqaX6dF7FxCA="
+
 script:
-  - invoke test
+  - invoke test-ci
+  - sonar-scanner
+
