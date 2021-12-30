@@ -341,6 +341,20 @@ def tags_test(ctx):
     finally:
         pass
 
+@task
+def test_ci(ctx, test_filter=''):
+    """Run unit tests and coverage"""
+
+    test(ctx, test_filter)
+
+    _set_development_path()
+    try:
+        import subprocess
+        p = subprocess.Popen(["pytest", "--cov", "--cov-report=xml", "--cov-report=html", "utest" ])
+        p.communicate('')
+    finally:
+        pass
+
 
 # Helper functions
 

@@ -13,3 +13,6 @@ RIDE.wiki
 rfgen.py
 MANIFEST
 *.iml
+.coverage
+coverage.xml
+
