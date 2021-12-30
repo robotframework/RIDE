@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 import sys
+import pathlib
 import unittest
 from nose.tools import assert_true, assert_false, assert_equal
 from robotide.controller.tags import DefaultTag
@@ -25,6 +26,8 @@ PACKAGE_PARENT = '..'
 SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(),
                                               os.path.expanduser(__file__))))
 sys.path.insert(0, os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
+SCRIPT_DIR = os.path.dirname(pathlib.Path(__file__).parent)
+sys.path.insert(0, SCRIPT_DIR)
 
 from base_command_test import TestCaseCommandTest
 # from .controller_creator import *
