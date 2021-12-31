@@ -24,7 +24,7 @@ PACKAGE_PARENT = '..'
 SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(),
                                               os.path.expanduser(__file__))))
 sys.path.insert(0, os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
-from base_command_test import TestCaseCommandTest
+from .base_command_test import TestCaseCommandTest
 
 
 class TestRenameKeywords(TestCaseCommandTest):
