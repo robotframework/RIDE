@@ -115,6 +115,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
             self._editor.store_position()
 
     def OnSaving(self, message):
+        print(f"DEBUG: OnSaving entering function {message}")
         if self.is_focused():
             self._editor.save()
             self._editor.GetFocus(None)
@@ -268,7 +269,7 @@ class DataValidationHandler(object):
     def _handle_sanity_check_failure(self):
         if self._last_answer == wx.ID_NO and \
         time() - self._last_answer_time <= 0.2:
-            self._editor._mark_file_dirty()
+            # self._editor._mark_file_dirty(True)
             return False
         # TODO: use widgets.Dialog
         dlg = wx.MessageDialog(self._editor,
@@ -283,15 +284,15 @@ class DataValidationHandler(object):
         dlg.SetForegroundColour(Colour(7, 0, 70))
         dlg.SetOwnForegroundColour(Colour(7, 0, 70))
         """
-        dlg.Refresh(True)
+        # dlg.Refresh(True)
         id = dlg.ShowModal()
         self._last_answer = id
         self._last_answer_time = time()
         if id == wx.ID_YES:
             self._editor._revert()
             return True
-        else:
-            self._editor._mark_file_dirty()
+        # else:
+        #    self._editor._mark_file_dirty()
         return False
 
 
@@ -484,7 +485,7 @@ class SourceEditor(wx.Panel, RIDEDialog):
 
     @property
     def dirty(self):
-        return self._dirty
+        return self._dirty == 1
 
     @property
     def datafile_controller(self):
@@ -712,6 +713,7 @@ class SourceEditor(wx.Panel, RIDEDialog):
         f = open(self.datafile_controller.source, "wb")
         try:
             f.write(text)
+            self._mark_file_dirty(False)
             print(f"DEBUG: direct_save Content:\n{text}")
         except Exception as e:
             raise e
@@ -963,7 +965,7 @@ class SourceEditor(wx.Panel, RIDEDialog):
             if dirty:
                 self._data.mark_data_dirty()
                 self._dirty = 1
-            elif self._dirty == 1:
+            else:
                 self._data.mark_data_pristine()
                 self._dirty = 0
 
