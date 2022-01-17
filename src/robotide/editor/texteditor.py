@@ -168,7 +168,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
 
     def _open_tree_selection_in_editor(self):
         datafile_controller = self.tree.get_selected_datafile_controller()
-        if datafile_controller and self._editor.datafile_controller != datafile_controller:
+        if datafile_controller:
             print(f"DEBUG: _open_tree_selection_in_editor going to open data")
             self._editor.open(DataFileWrapper(datafile_controller, self.global_settings))
             self._editor._editor.readonly = not datafile_controller.is_modifiable()
@@ -559,10 +559,7 @@ class SourceEditor(wx.Panel, RIDEDialog):
             self._showing_list = True
 
     def open(self, data):
-        if self._data == data:
-            print(f"DEBUG: Textedit open  return without opening file")
-            return
-        print(f"DEBUG: Textedit enter open type data= {type(data)}")
+        print(f"DEBUG: Textedit enter open")
         self.reset()
         self._data = data
         # print(f"DEBUG: Textedit in open before getting SuggestionSource {self._data._data}\n Type data is {type(self._data._data)}")
@@ -605,13 +602,21 @@ class SourceEditor(wx.Panel, RIDEDialog):
             while idx<lenline and line[idx] == ' ':
                 idx += 1
             tsize = idx // self._tab_size
-            if 3 < idx < lenline and (line.strip().startswith("FOR") or line.strip().startswith("IF")
+            if idx < lenline and (line.strip().startswith("FOR") or line.strip().startswith("IF")
                                       or line.strip().startswith("ELSE")):
                 tsize += 1
             elif linenum > 0 and tsize == 0:  # Advance if first task/test case or keyword
                 prevline = self._editor.GetLine(linenum-1).lower()
                 if prevline.startswith("**") and not ("variables" in prevline or "settings" in prevline):
                     tsize = 1
+                elif prevline.startswith("\n"):
+                    tsize = 1
+            elif line.strip().startswith("END"):
+                pos = self._editor.GetCurrentPos()
+                self._editor.SetCurrentPos(pos)
+                self._editor.SetSelection(pos, pos)
+                self.deindent_block()
+                tsize -= 1
             self._editor.NewLine()
             while tsize > 0:
                 self.write_ident()
