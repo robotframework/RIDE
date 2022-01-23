@@ -27,12 +27,9 @@ from .managesettingsdialog import SaveLoadSettings
 from ..context import IS_WINDOWS
 
 try:  # import installed version first
-    import robotframeworklexer
-except ImportError:
-    try:  # then import local version
-        from . import robotframeworklexer
-    except ImportError:  # Pygments is not installed
-        robotframeworklexer = None
+    from pygments.lexers import robotframework as robotframeworklexer
+except ImportError: # Pygments is not installed
+    robotframeworklexer = None
 
 ID_SAVELOADSETTINGS = wx.NewId()
 ID_LOAD = 5551

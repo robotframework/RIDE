@@ -37,12 +37,9 @@ from ..widgets import TextField, Label, HtmlDialog
 from ..widgets import VerticalSizer, HorizontalSizer, ButtonWithHandler, RIDEDialog
 
 try:  # import installed version first
-    import robotframeworklexer
+    from pygments.lexers import robotframework as robotframeworklexer
 except ImportError:
-    try:  # then import local version
-        from . import robotframeworklexer
-    except ImportError:  # Pygments is not installed
-        robotframeworklexer = None
+    robotframeworklexer = None
 
 
 class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
@@ -562,7 +559,7 @@ class SourceEditor(wx.Panel, RIDEDialog):
         print(f"DEBUG: Textedit enter open")
         self.reset()
         self._data = data
-        # print(f"DEBUG: Textedit in open before getting SuggestionSource {self._data._data}\n Type data is {type(self._data._data)}")
+        print(f"DEBUG: Textedit in open before getting SuggestionSource {self._data._data}\n Type data is {type(self._data._data)}")
         try:
             if isinstance(self._data._data, ResourceFileController):
                 self._controller_for_context = DummyController(self._data._data, self._data._data)
@@ -581,6 +578,7 @@ class SourceEditor(wx.Panel, RIDEDialog):
             print(f"DEBUG: open not editor yet self._stored_text= {self._stored_text}")
         else:
             self._editor.set_text(self._data.content)
+            print(f"DEBUG: open ->existing editor set_text: {self._data.content}")
             self.set_editor_caret_position()
 
     def selected(self, data):
