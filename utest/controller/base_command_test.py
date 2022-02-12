@@ -16,6 +16,7 @@
 import unittest
 import os
 import pathlib
+import shutil
 import sys
 from nose.tools import assert_equal
 
@@ -47,7 +48,7 @@ class TestCaseCommandTest(unittest.TestCase, _FakeProject):
 
     def tearDown(self):
         if os.path.exists('path'):
-            os.removedirs('path')
+            shutil.rmtree('path', ignore_errors=True)
         PUBLISHER.unsubscribe(self._test_changed, RideItemStepsChanged)
 
     def _create_data(self):

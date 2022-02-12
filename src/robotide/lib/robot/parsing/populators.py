@@ -46,6 +46,9 @@ class FromFilePopulator(object):
     _populators = {'setting': SettingTablePopulator,
                    'variable': VariableTablePopulator,
                    'test case': TestTablePopulator,
+                   'test cases': TestTablePopulator,
+                   'task': TestTablePopulator,
+                   'tasks': TestTablePopulator,
                    'keyword': KeywordTablePopulator}
 
     def __init__(self, datafile):
