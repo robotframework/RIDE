@@ -22,7 +22,7 @@ from wx.grid import GridCellEditor
 
 from .contentassist import ExpandingContentAssistTextCtrl
 from .editordialogs import UserKeywordNameDialog, ScalarVariableDialog, ListVariableDialog
-from .gridbase import GridEditor
+from .gridbase import GridEditor, linesep
 from .gridcolorizer import Colorizer
 from .tooltips import GridToolTips
 from .. import context

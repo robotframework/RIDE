@@ -1058,9 +1058,10 @@ class SaveFile(_Command):
     def execute(self, context):
         RideSaving(path=context.filename, datafile=context).publish()
         datafile_controller = context.datafile_controller
-        for macro_controller in chain(
-                datafile_controller.tests, datafile_controller.keywords):
-            macro_controller.execute(Purify())
+        for macro_controller in chain(datafile_controller.tests, datafile_controller.keywords):
+                # print(f"DEBUG: SaveFile OMIT Purify")
+                macro_controller.execute(Purify())
+        # print(f"DEBUG: SaveFile After Purify {context}")
         datafile_controller.save()
         datafile_controller.unmark_dirty()
         RideSaved(path=context.filename).publish()
@@ -1086,8 +1087,9 @@ class Purify(_Command):
             # this is why index based iteration - step reference can be stale
             step = context.steps[i]
             step.remove_empty_columns_from_end()
-            if step.has_only_comment():
-                step.remove_empty_columns_from_beginning()
+            # DEBUG Purify not changing rmpty columns from begining
+            # if step.has_only_comment():
+            #    step.remove_empty_columns_from_beginning()
             i += 1
         context.execute(DeleteRows(context.get_empty_rows()))
         context.notify_steps_changed()

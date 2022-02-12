@@ -24,6 +24,12 @@ class TsvReader(RobotReader):
 
     @classmethod
     def split_row(cls, row):
+        i = 0
+        while i < len(row) and row[i] != ' ':
+            if row[i] == '#':
+                return row
+            else:
+                i += 1
         return [cls._strip_whitespace(cell) for cell in row.split('\t')]
 
     def _check_deprecations(self, cells, path, line_number):

@@ -10,6 +10,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Added
 
+- Added colorization in Text Editor for Tasks
 - Added a dialog to Load or Save settings to .cfg files on Preferences -> General, Grid Editor, Text Editor and Test Runner
 - Added perspectives persistance for Notebook panels, Edit, Text Editor and Run
 - Added General settings to Preferences, to change Font Size and Face, and colours
@@ -37,11 +38,13 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Removed
 
+- Removed `robotframeworklexer` dependency and local copy
 - Removed alignment flag on grid cell JSON Editor (Ctrl-Shift-J)
 - Removed moving to keyword/variable definition when doing Double-Click in grid cell
 
 === Changed
 
+- Improved Text Edit processing of # comments
 - Improved filesystem changes detection to be less reactive
 - Keywords auto-suggestion in grid editor does not need shortcut anymore, if you want to disable this feature you can config in `Preferences -> Grid Editor -> Only trigger auto suggestions from shortcuts`
 - Changed Manage Plugins to be a dialog panel instead of being a notebook tab

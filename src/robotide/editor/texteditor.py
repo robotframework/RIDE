@@ -37,12 +37,9 @@ from ..widgets import TextField, Label, HtmlDialog
 from ..widgets import VerticalSizer, HorizontalSizer, ButtonWithHandler, RIDEDialog
 
 try:  # import installed version first
-    import robotframeworklexer
+    from pygments.lexers import robotframework as robotframeworklexer
 except ImportError:
-    try:  # then import local version
-        from . import robotframeworklexer
-    except ImportError:  # Pygments is not installed
-        robotframeworklexer = None
+    robotframeworklexer = None
 
 
 class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
@@ -51,6 +48,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
     def __init__(self, application):
         Plugin.__init__(self, application)
         self._editor_component = None
+        self.reformat = application.settings.get('reformat', False)
 
     @property
     def _editor(self):
@@ -109,19 +107,24 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
     def _open(self):
         datafile_controller = self.tree.get_selected_datafile_controller()
         if datafile_controller:
+            # print(f"DEBUG: _open called and datafile_controller exist")
             self._open_data_for_controller(datafile_controller)
             self._editor.store_position()
 
     def OnSaving(self, message):
+        # print(f"DEBUG: OnSaving entering function {message}")
         if self.is_focused():
             self._editor.save()
             self._editor.GetFocus(None)
         else:
+            # print(f"DEBUG: OnSaving open because was saved from other editor {message}")
             self._open()  # Was saved from other Editor
 
     def OnDataChanged(self, message):
+        # print(f"DEBUG: OnDataChanged entering function {message}")
         if self._should_process_data_changed_message(message):
             if isinstance(message, RideOpenSuite):
+                # print(f"DEBUG: OnDataChanged message {message}")
                 self._editor.reset()
                 self._editor.set_editor_caret_position()
             if self._editor.dirty and not self._apply_txt_changes_to_model():
@@ -139,6 +142,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
                not isinstance(message, RideDataChangedToDirty)
 
     def OnTreeSelection(self, message):
+        # print(f"DEBUG: OnTreeSelection entering function {message}")
         self._editor.store_position()
         if self.is_focused():
             next_datafile_controller = message.item and message.item.datafile_controller
@@ -164,20 +168,26 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
     def _open_tree_selection_in_editor(self):
         datafile_controller = self.tree.get_selected_datafile_controller()
         if datafile_controller:
+            # print(f"DEBUG: _open_tree_selection_in_editor going to open data")
             self._editor.open(DataFileWrapper(datafile_controller, self.global_settings))
             self._editor._editor.readonly = not datafile_controller.is_modifiable()
         self._editor.set_editor_caret_position()
 
     def _open_data_for_controller(self, datafile_controller):
+        # print(f"DEBUG: _open_data_for_controller going to open data")
         self._editor.selected(DataFileWrapper(datafile_controller, self.global_settings))
         self._editor._editor.readonly = not datafile_controller.is_modifiable()
 
     def OnTabChange(self, message):
+        # print(f"DEBUG: OnTabChange entering function {message}")
         if message.newtab == self.title:
             self._register_shortcuts()
             self._open()
             self._editor.set_editor_caret_position()
-            self._set_read_only(self._editor._editor.readonly)
+            try:
+                self._set_read_only(self._editor._editor.readonly)
+            except Exception:  # When using only Text Editor exists error in message topic
+                pass
         elif message.oldtab == self.title:
             self._editor.remove_and_store_state()
             self.unregister_actions()
@@ -259,7 +269,7 @@ class DataValidationHandler(object):
     def _handle_sanity_check_failure(self):
         if self._last_answer == wx.ID_NO and \
         time() - self._last_answer_time <= 0.2:
-            self._editor._mark_file_dirty()
+            # self._editor._mark_file_dirty(True)
             return False
         # TODO: use widgets.Dialog
         dlg = wx.MessageDialog(self._editor,
@@ -274,15 +284,15 @@ class DataValidationHandler(object):
         dlg.SetForegroundColour(Colour(7, 0, 70))
         dlg.SetOwnForegroundColour(Colour(7, 0, 70))
         """
-        dlg.Refresh(True)
+        # dlg.Refresh(True)
         id = dlg.ShowModal()
         self._last_answer = id
         self._last_answer_time = time()
         if id == wx.ID_YES:
             self._editor._revert()
             return True
-        else:
-            self._editor._mark_file_dirty()
+        # else:
+        #    self._editor._mark_file_dirty()
         return False
 
 
@@ -291,6 +301,7 @@ class DataFileWrapper(object): # TODO: bad class name
     def __init__(self, data, settings):
         self._data = data
         self._settings = settings
+        self._tab_size = self._settings.get('txt number of spaces', 4)
 
     def __eq__(self, other):
         if other is None:
@@ -303,7 +314,8 @@ class DataFileWrapper(object): # TODO: bad class name
     def _create_target_from(self, content):
         src = BytesIO(content.encode("utf-8"))
         target = self._create_target()
-        FromStringIOPopulator(target).populate(src)
+        FromStringIOPopulator(target).populate(src, self._tab_size)
+        # print(f"DEBUG: After populate:\n{target.__reduce__()}")
         return target
 
     def format_text(self, text):
@@ -333,6 +345,7 @@ class DataFileWrapper(object): # TODO: bad class name
         data.save(output=output, format='txt',
                   txt_separating_spaces=self._settings.get(
                       'txt number of spaces', 4))
+        # print(f"DEBUG: In _txt_data returning content {output.getvalue()}")
         return output.getvalue()  # DEBUG .decode('utf-8')
 
 
@@ -350,6 +363,7 @@ class SourceEditor(wx.Panel, RIDEDialog):
         self._title = title
         self._tab_size = self._parent._app.settings.get(
                       'txt number of spaces', 4)
+        self._reformat = self._parent._app.settings.get('reformat', True)
         self._create_ui(title)
         self._data = None
         self._dirty = 0  # 0 is False and 1 is True, when changed on this editor
@@ -474,7 +488,7 @@ class SourceEditor(wx.Panel, RIDEDialog):
 
     @property
     def dirty(self):
-        return self._dirty
+        return self._dirty == 1
 
     @property
     def datafile_controller(self):
@@ -567,8 +581,10 @@ class SourceEditor(wx.Panel, RIDEDialog):
             # self._suggestions = SuggestionSource(None, BuiltInLibrariesSuggester())
         if not self._editor:
             self._stored_text = self._data.content
+            # print(f"DEBUG: open not editor yet self._stored_text= {self._stored_text}")
         else:
             self._editor.set_text(self._data.content)
+            # print(f"DEBUG: open ->existing editor set_text: {self._data.content}")
             self.set_editor_caret_position()
 
     def selected(self, data):
@@ -576,6 +592,7 @@ class SourceEditor(wx.Panel, RIDEDialog):
             self._create_editor_text_control(self._stored_text)
         if self._data == data:
             return
+        # print(f"DEBUG: selected going to open data")
         self.open(data)
 
     def auto_ident(self):
@@ -589,13 +606,21 @@ class SourceEditor(wx.Panel, RIDEDialog):
             while idx<lenline and line[idx] == ' ':
                 idx += 1
             tsize = idx // self._tab_size
-            if 3 < idx < lenline and line.strip().startswith("FOR"):
+            if idx < lenline and (line.strip().startswith("FOR") or line.strip().startswith("IF")
+                                      or line.strip().startswith("ELSE")):
                 tsize += 1
             elif linenum > 0 and tsize == 0:  # Advance if first task/test case or keyword
                 prevline = self._editor.GetLine(linenum-1).lower()
-                if prevline.startswith("**") and not ("variables" in prevline
-                or "settings" in prevline):
+                if prevline.startswith("**") and not ("variables" in prevline or "settings" in prevline):
                     tsize = 1
+                elif prevline.startswith("\n"):
+                    tsize = 1
+            elif line.strip().startswith("END"):
+                pos = self._editor.GetCurrentPos()
+                self._editor.SetCurrentPos(pos)
+                self._editor.SetSelection(pos, pos)
+                self.deindent_block()
+                tsize -= 1
             self._editor.NewLine()
             while tsize > 0:
                 self.write_ident()
@@ -683,12 +708,26 @@ class SourceEditor(wx.Panel, RIDEDialog):
 
     def save(self, *args):
         self.store_position()
-        if self.dirty and not self._data_validator.validate_and_update(
-                self._data, self._editor.utf8_text):
-            return False
+        if self.dirty:
+            if not self._data_validator.validate_and_update(self._data, self._editor.utf8_text):
+                return False
         self.reset()
         self.GetFocus(None)
         return True
+
+    """
+    def direct_save(self, text):
+        print(f"DEBUG: direct_save path={self.datafile_controller.source}")
+        f = open(self.datafile_controller.source, "wb")
+        try:
+            f.write(text)
+            self._mark_file_dirty(False)
+            print(f"DEBUG: direct_save Content:\n{text}")
+        except Exception as e:
+            raise e
+        finally:
+            f.close()
+    """
 
     """
     # DEBUG Code not in use
@@ -935,7 +974,7 @@ class SourceEditor(wx.Panel, RIDEDialog):
             if dirty:
                 self._data.mark_data_dirty()
                 self._dirty = 1
-            elif self._dirty == 1:
+            else:
                 self._data.mark_data_pristine()
                 self._dirty = 0
 
@@ -1012,8 +1051,9 @@ class RobotDataEditor(stc.StyledTextCtrl):
 
 class FromStringIOPopulator(robotapi.populators.FromFilePopulator):
 
-    def populate(self, content):
-        robotapi.RobotReader().read(content, self)
+    def populate(self, content, tab_size):
+        # print(f"DEBUG: FromStringIOPopulator spaces={tab_size} populate:\n{content}")
+        robotapi.RobotReader(spaces=tab_size).read(content, self)
 
 
 class RobotStylizer(object):

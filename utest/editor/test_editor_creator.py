@@ -16,6 +16,7 @@
 import unittest
 import wx
 import os
+import shutil
 import sys
 from mockito import mock
 from nose.tools import assert_equal, assert_true
@@ -54,7 +55,7 @@ class EditorCreatorTest(unittest.TestCase):
 
     def tearDown(self):
         if os.path.exists(DATADIR):
-            os.rmdir(DATADIR)
+            shutil.rmtree(DATADIR, ignore_errors=True)
 
     def _register(self, iclass, eclass):
         self._registered_editors[iclass] = eclass

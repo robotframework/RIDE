@@ -29,9 +29,9 @@ sys.path.insert(0, os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
 SCRIPT_DIR = os.path.dirname(pathlib.Path(__file__).parent)
 sys.path.insert(0, SCRIPT_DIR)
 
-from base_command_test import TestCaseCommandTest
+from .base_command_test import TestCaseCommandTest
 # from .controller_creator import *
-from controller_creator import *
+from .controller_creator import *
 
 
 class UnmodifyingCommandsTest(unittest.TestCase):
@@ -289,11 +289,11 @@ class TestCaseEditingTest(TestCaseCommandTest):
         self._exec(ChangeCellValue(0, 3, 'HELLO'))
         assert_equal(self._steps[0].args, ['arg', '', 'HELLO'])
 
-    def test_only_comment_is_left(self):
+    def test__comment_is_kept_unchanged(self):
         index = self._data_row(STEP_WITH_COMMENT)
         self._exec(ChangeCellValue(index, 0, ''))
         self._exec(Purify())
-        assert_equal(self._steps[index].as_list(), ['# this is a comment'])
+        assert_equal(self._steps[index].as_list(), ['', '# this is a comment'])
 
     def test_comment_is_changed(self):
         index = self._data_row(STEP_WITH_COMMENT)
