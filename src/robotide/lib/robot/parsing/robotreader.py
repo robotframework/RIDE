@@ -24,7 +24,7 @@ NBSP = u'\xa0'
 class RobotReader(object):
 
     def __init__(self, spaces=2):
-        self._space_splitter = re.compile("[ \t\xa0]{"+f"{spaces}"+",}|\t+")
+        self._space_splitter = re.compile(r"[ \t\xa0]{"+f"{spaces}"+"}|\t+")
         self._pipe_splitter = re.compile(u'[ \t\xa0]+\|(?=[ \t\xa0]+)')
         self._pipe_starts = ('|', '| ', '|\t', u'|\xa0')
         self._pipe_ends = (' |', '\t|', u'\xa0|')
@@ -34,9 +34,9 @@ class RobotReader(object):
         # print(f"DEBUG: RobotReader enter read file ({type(file)}) populator {populator} path {path}")
         process = False
         for lineno, line in enumerate(Utf8Reader(file).readlines(), start=1):
-            # print(f"DEBUG: reader before row({lineno}) split: line={line}")
+            print(f"DEBUG: reader before row({lineno}) split: line={line}")
             cells = self.split_row(line.rstrip())
-            # print(f"DEBUG: reader after row split: cells={cells}\n")
+            print(f"DEBUG: reader after row split: cells={cells}\n")
             cells = list(self._check_deprecations(cells, path, lineno))
             if cells and cells[0].strip().startswith('*') and \
                     populator.start_table([c.replace('*', '').strip()
@@ -82,8 +82,23 @@ class RobotReader(object):
             row.append(line[index:])
             # print(f"DEBUG: reader sharp_strip final")
         else:
-            # print(f"DEBUG: reader sharp_strip normal split")
+            #print(f"DEBUG: reader sharp_strip normal split {line}")
+            #test=re.split(r"([ \t\xa0]{2}|\t+)", line)
+            #print(f"DEBUG: reader sharp_strip local re split {test}")
             row = self._space_splitter.split(line)
+            # print(f"DEBUG: reader sharp_strip local split {row}")
+        # Remove empty cells after first non-empty
+        first_non_empty = -1
+        if row:
+            for i, v in enumerate(row):
+                # print(f"DEBUG: reader sharp_strip row[i]={v}")
+                if v != '':
+                    first_non_empty = i
+                    break
+            if first_non_empty != -1:
+                for i in range(len(row)-1, first_non_empty, -1):
+                    if row[i] == '':
+                        row.pop(i)
         # print(f"DEBUG: reader sharp_strip returning row={row}")
         return row
 
@@ -92,7 +107,10 @@ class RobotReader(object):
             row = row[1:-1] if row[-2:] in self._pipe_ends else row[1:]
             return [self._strip_whitespace(cell)
                     for cell in self._pipe_splitter.split(row)]
-        return self.sharp_strip(row)
+        lrow = self.sharp_strip(row)
+        #if lrow:
+        #    return lrow[1:]
+        return lrow
         # print(f"DEBUG: reader split_row before space_splitter: row={row}")
         # return cls._space_splitter.split(row)
 

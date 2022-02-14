@@ -198,7 +198,37 @@ class TestForLoop(unittest.TestCase):
     def test_move_for_loop_header_between_for_loops(self):
         test = self.project.datafiles[1].tests[18]
         test.execute(MoveRowsDown([3]))
-        self.assertEqual(test.steps[4].as_list()[1], '${j}')
+        self.assertEqual(test.steps[4].as_list()[2], '${j}')
+
+    def test_move_for_loop_in_mulitlevels(self):
+        loop_1 = ['', 'FOR', '${loop1}', 'IN RANGE', '1', '19']
+        inside_NO = ['', '', '', 'No Operation']
+        loop_2 = ['', '', '', 'FOR', '${loop2}', 'IN RANGE', '${loop1}', '20']
+        inside_NO_2 = ['', '', '', '', '', 'No Operation']
+        loop_3 = ['', '', '', '', '', 'FOR', '${loop3}', 'IN RANGE', '2', '4']
+        inside_NO_3 = ['', '', '', '', '', '', '', 'No Operation']
+        inside_L3 = ['', '', '', '', '', '', '', 'Log', 'This is loop 3: ${loop3}']
+        inside_E3 = ['', '', '', '', '', 'END']
+        inside_L2 = ['', '', '', '', '', 'Log', 'This is loop 2: ${loop2}']
+        inside_E2 = ['', '', '', 'END']
+        inside_L1 = ['', '', '', 'Log', 'This is loop 1: ${loop1}']
+        inside_LG = ['', '', '', 'Log', 'Generic']
+        inside_E1 = ['', 'END']
+        test = self.project.datafiles[1].tests[19]
+        print("DEBUG: Test 19:")
+        for s in test.steps:
+            print(f"{s.as_list()}")
+        self._verify_steps(test.steps, loop_1, inside_NO, loop_2, inside_NO_2, loop_3, inside_NO_3, inside_L3,
+                           inside_NO_3, inside_E3, inside_NO_2, inside_L2, inside_E2, inside_L1, inside_NO,
+                           inside_LG, inside_E1)
+        """
+        test.execute(MoveRowsUp([2]))
+        self._verify_steps(test.steps, loop_1, loop_2, inside_1, inside_2)
+        test.execute(MoveRowsUp([1]))
+        self._verify_steps(test.steps, loop_2, loop_1, inside_1, inside_2)
+        test.execute(MoveRowsDown([0]))
+        self._verify_steps(test.steps, loop_1, loop_2, inside_1, inside_2)
+        """
 
     def _verify_steps(self, steps, *expected):
         for step, exp in zip(steps, expected):

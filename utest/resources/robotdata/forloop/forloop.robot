@@ -97,3 +97,21 @@ Test 18
     FOR  ${k}  IN  1  2  3  4
     \   No Operation
     \   No Operation
+
+Test 19
+    FOR    ${loop1}    IN RANGE    1    19
+        No Operation
+        FOR    ${loop2}    IN RANGE    ${loop1}    20
+            No Operation
+            FOR    ${loop3}    IN RANGE    2    4
+                No Operation
+                Log    This is loop 3: ${loop3}
+                No Operation
+            END
+            No Operation
+            Log    This is loop 2: ${loop2}
+        END
+        Log    This is loop 1: ${loop1}
+        No Operation
+        Log    Generic
+    END
