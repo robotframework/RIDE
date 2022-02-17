@@ -101,6 +101,7 @@ class FromFilePopulator(object):
         return bool(self._datafile)
 
     def add(self, row):
+        print(f"DEBUG: populators enter row={row}")
         if PROCESS_CURDIR and self._curdir:
             row = self._replace_curdirs_in(row)
         data = DataRow(row, self._datafile.source)
