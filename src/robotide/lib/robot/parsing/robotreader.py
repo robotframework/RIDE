@@ -16,7 +16,7 @@
 import re
 
 from robotide.lib.robot.output import LOGGER
-from robotide.lib.robot.utils import JYTHON, Utf8Reader, prepr
+from robotide.lib.robot.utils import Utf8Reader, prepr
 
 NBSP = u'\xa0'
 
@@ -31,12 +31,9 @@ class RobotReader(object):
 
     def read(self, file, populator, path=None):
         path = path or getattr(file, 'name', '<file-like object>')
-        # print(f"DEBUG: RobotReader enter read file ({type(file)}) populator {populator} path {path}")
         process = False
         for lineno, line in enumerate(Utf8Reader(file).readlines(), start=1):
-            print(f"DEBUG: reader before row({lineno}) split: line={line}")
             cells = self.split_row(line.rstrip())
-            print(f"DEBUG: reader after row split: cells={cells}\n")
             cells = list(self._check_deprecations(cells, path, lineno))
             if cells and cells[0].strip().startswith('*') and \
                     populator.start_table([c.replace('*', '').strip()
@@ -70,28 +67,24 @@ class RobotReader(object):
                 else:
                     start_s_quote = True
             if line[i] == '#' and not start_d_quote and not start_s_quote:
-                index = i
-                break
-            else:
-                i += 1
+                try:
+                    if line[i-1] != '\\' and line[i+1] == ' ':
+                        index = i
+                        break
+                except IndexError:
+                    i += 1
+                    continue
+            i += 1
         if index < len(line):
-            # print(f"DEBUG: reader sharp_strip line {len(line)} index={index} split={line[:(index-1)]}")
             cells = self._space_splitter.split(line[:(index-1)])
-            # print(f"DEBUG: reader sharp_strip cells={cells}")
             row.extend(cells)
             row.append(line[index:])
-            # print(f"DEBUG: reader sharp_strip final")
         else:
-            #print(f"DEBUG: reader sharp_strip normal split {line}")
-            #test=re.split(r"([ \t\xa0]{2}|\t+)", line)
-            #print(f"DEBUG: reader sharp_strip local re split {test}")
             row = self._space_splitter.split(line)
-            # print(f"DEBUG: reader sharp_strip local split {row}")
         # Remove empty cells after first non-empty
         first_non_empty = -1
         if row:
             for i, v in enumerate(row):
-                # print(f"DEBUG: reader sharp_strip row[i]={v}")
                 if v != '':
                     first_non_empty = i
                     break
@@ -99,7 +92,6 @@ class RobotReader(object):
                 for i in range(len(row)-1, first_non_empty, -1):
                     if row[i] == '':
                         row.pop(i)
-        # print(f"DEBUG: reader sharp_strip returning row={row}")
         return row
 
     def split_row(self, row):
@@ -107,12 +99,7 @@ class RobotReader(object):
             row = row[1:-1] if row[-2:] in self._pipe_ends else row[1:]
             return [self._strip_whitespace(cell)
                     for cell in self._pipe_splitter.split(row)]
-        lrow = self.sharp_strip(row)
-        #if lrow:
-        #    return lrow[1:]
-        return lrow
-        # print(f"DEBUG: reader split_row before space_splitter: row={row}")
-        # return cls._space_splitter.split(row)
+        return self.sharp_strip(row)
 
     def _check_deprecations(self, cells, path, line_number):
         for original in cells:
@@ -131,7 +118,8 @@ class RobotReader(object):
     def _strip_whitespace(cls, string):
         return string.strip()
 
-    def _normalize_whitespace(self, string):
+    @staticmethod
+    def _normalize_whitespace(string):
         if string.startswith('#'):
             return string
         return ' '.join(string.split())
