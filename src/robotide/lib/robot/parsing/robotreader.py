@@ -92,6 +92,9 @@ class RobotReader(object):
                 for i in range(len(row)-1, first_non_empty, -1):
                     if row[i] == '':
                         row.pop(i)
+                # Remove initial empty cell
+                if len(row) > 1 and first_non_empty > 1 and row[0] == '':
+                    row.pop(0)
         return row
 
     def split_row(self, row):

@@ -115,6 +115,10 @@ class TestCellInfo(unittest.TestCase):
     def test_celltype_is_unknown_if_dict_var_given(self):
         self.test.execute(ChangeCellValue(0, 0, self.keyword1.name))
         self.test.execute(ChangeCellValue(0, 1, '&{vars}'))
+        # forlooped_case = self.keyword1
+        # print(f"kw_name:{forlooped_case.name}")
+        # for k in forlooped_case.steps:
+        #    print(f"value: {k.as_list()}")
         self._verify_cell_info(0, 0, ContentType.USER_KEYWORD, CellType.KEYWORD)
         self._verify_cell_info(0, 1, ContentType.UNKNOWN_VARIABLE, CellType.UNKNOWN)
         self._verify_cell_info(0, 2, ContentType.EMPTY, CellType.UNKNOWN)
@@ -197,6 +201,13 @@ class TestCellInfo(unittest.TestCase):
     def test_for_loop_in_header(self):
         forlooped_case = self.keyword3
         # DEBUG changed FOR to BlockKeywordLibrary
+        # for st in range(0, 6):
+        #    print(f"\n{forlooped_case.get_cell_info(0, st).cell_type} content: "
+        #          f"{forlooped_case.get_cell_info(0, st).content_type} ")
+        # print(f"kw_name:{forlooped_case.name}")
+        # for k in forlooped_case.steps:
+        #    print(f"value: {k.as_list()}")
+        #print(f"\nDEBUG: cellinfo test_for_loop_in_header: {forlooped_case.get_cell_info(0, 0).cell_type}")
         self._verify_cell_info(0, 0, ContentType.LIBRARY_KEYWORD, CellType.MANDATORY, forlooped_case)
         self._verify_cell_info(0, 1, ContentType.VARIABLE, CellType.ASSIGN, forlooped_case)
         self._verify_cell_info(0, 2, ContentType.STRING, CellType.MANDATORY, forlooped_case)
@@ -206,23 +217,27 @@ class TestCellInfo(unittest.TestCase):
 
     def test_steps_in_for_loop(self):
         forlooped_case = self.keyword3
+        print(f"kw_name:{forlooped_case.name}")
+        for k in forlooped_case.steps:
+            print(f"value: {k.as_list()}")
+        self._verify_cell_info(0, 0, ContentType.LIBRARY_KEYWORD, CellType.MANDATORY, forlooped_case)
         self._verify_cell_info(1, 0, ContentType.EMPTY, CellType.MUST_BE_EMPTY, forlooped_case)
         self._verify_cell_info(1, 1, ContentType.LIBRARY_KEYWORD, CellType.KEYWORD, forlooped_case)
         self._verify_cell_info(1, 2, ContentType.STRING, CellType.MANDATORY, forlooped_case)
         self._verify_cell_info(2, 0, ContentType.EMPTY, CellType.MUST_BE_EMPTY, forlooped_case)
         self._verify_cell_info(2, 1, ContentType.LIBRARY_KEYWORD, CellType.KEYWORD, forlooped_case)
-        self._verify_cell_info(2, 2, ContentType.VARIABLE, CellType.MANDATORY, forlooped_case)
         self._verify_cell_info(3, 0, ContentType.EMPTY, CellType.MUST_BE_EMPTY, forlooped_case)
         self._verify_cell_info(3, 1, ContentType.LIBRARY_KEYWORD, CellType.KEYWORD, forlooped_case)
         self._verify_cell_info(3, 2, ContentType.UNKNOWN_VARIABLE, CellType.MANDATORY, forlooped_case)
+        self._verify_cell_info(4, 0, ContentType.LIBRARY_KEYWORD, CellType.KEYWORD, forlooped_case)
+        self._verify_cell_info(4, 1, ContentType.EMPTY, CellType.MUST_BE_EMPTY, forlooped_case)
 
     def test_for_loop_in_range_header(self):
         forlooped_case = self.keyword3
-        in_range_header_index = 4
+        in_range_header_index = 5
         # self._verify_cell_info(in_range_header_index, 0, ContentType.STRING, CellType.MANDATORY, forlooped_case)
         # Because FOR and END now have documentation
-        self._verify_cell_info(in_range_header_index, 0, ContentType.LIBRARY_KEYWORD,
-                               CellType.MANDATORY, forlooped_case)
+        self._verify_cell_info(in_range_header_index, 0, ContentType.LIBRARY_KEYWORD, CellType.MANDATORY, forlooped_case)
         self._verify_cell_info(in_range_header_index, 1, ContentType.VARIABLE, CellType.ASSIGN, forlooped_case)
         self._verify_cell_info(in_range_header_index, 2, ContentType.STRING, CellType.MANDATORY, forlooped_case)
         self._verify_cell_info(in_range_header_index, 3, ContentType.STRING, CellType.MANDATORY, forlooped_case)
