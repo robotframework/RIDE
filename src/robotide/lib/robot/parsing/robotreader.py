@@ -93,7 +93,7 @@ class RobotReader(object):
                     if row[i] == '':
                         row.pop(i)
                 # Remove initial empty cell
-                if len(row) > 1 and first_non_empty > 1 and row[0] == '':
+                if len(row) > 1 and first_non_empty > 1 and row[0] == '' and row[1] != '':  # don't cancel indentation
                     row.pop(0)
         return row
 

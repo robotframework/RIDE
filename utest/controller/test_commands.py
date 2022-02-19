@@ -29,9 +29,9 @@ sys.path.insert(0, os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
 SCRIPT_DIR = os.path.dirname(pathlib.Path(__file__).parent)
 sys.path.insert(0, SCRIPT_DIR)
 
-from .base_command_test import TestCaseCommandTest
+from base_command_test import TestCaseCommandTest  # .base_command_test
 # from .controller_creator import *
-from .controller_creator import *
+from controller_creator import *
 
 
 class UnmodifyingCommandsTest(unittest.TestCase):

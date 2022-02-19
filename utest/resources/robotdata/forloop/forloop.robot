@@ -1,54 +1,60 @@
 *** Test Cases ***
 Test 0
   FOR  ${i}  IN RANGE  1  10
-  Log  joo
+    Log  joo
+  END
   FOR  ${j}  IN  1  2
-  Log  jee
-  Log  another
-  Log  and another
+    Log  jee
+    Log  another
+    Log  and another
+  END
 
 Test 1
   No Operation
 
 Test 2
   FOR  ${j}  IN  1  2
-  One
+    One
   Two
-  Three
+    Three
 
 Test 3
   FOR  ${j}  IN  1  2
   One
-  Two
-  Three
+    Two
+    Three
 
 Test 4
   FOR  ${j}  IN  1  2
-  One
-  Two
+    One
+    Two
   Three
 
 Test 5
   FOR  ${j}  IN  1  2
-  One
-  Two
-  Three
+    One
+    Two
+    Three
+  END
 
 Test 6
   FOR  ${j}  IN  1  2
-  One
-  Two
-  Three
+    One
+    Two
+    Three
+  END
 
 Test 7
   FOR  ${j}  IN  1  2
-  One
-  Two
-  Three
+    One
+    Two
+    Three
+  END
 
 Test 8
   FOR  ${a}  IN RANGE  100
-  Log  Moi
+    Log  Moi
+  END
   Foo
 
 Test 9
@@ -59,9 +65,9 @@ Test 10
 
 Test 11
   Not For loop
-  One
-  Two
-  Three
+    One
+    Two
+    Three
 
 Test 12
   Foo
@@ -69,16 +75,19 @@ Test 12
 Test 13
   Log  something
   FOR  ${i}  IN  1  2
-  Log  ${i}
+    Log  ${i}
+  END
 
 Test 14
   FOR  ${i}  IN  1  2
-  No Operation
+    No Operation
+  END
 
 Test 15
   FOR  ${kuu}  IN RANGE  100
-  Kw1  # comment
-  Keyword  # comment
+    Kw1  # comment
+    Keyword  # comment
+  END
 
 Test 16
   Foo
@@ -93,27 +102,27 @@ Test 17
 
 Test 18
   FOR  ${i}  IN  1  2  3  4
-  No Operation
-  No Operation
+    No Operation
+    No Operation
   FOR  ${j}  IN  1  2  3  4
   FOR  ${k}  IN  1  2  3  4
-  No Operation
-  No Operation
+    No Operation
+    No Operation
 
 Test 19
   FOR  ${loop1}  IN RANGE  1  19
-  No Operation
-  FOR  ${loop2}  IN RANGE  ${loop1}  20
     No Operation
-    FOR  ${loop3}  IN RANGE  2  4
+    FOR  ${loop2}  IN RANGE  ${loop1}  20
       No Operation
-      Log  This is loop 3: ${loop3}
+      FOR  ${loop3}  IN RANGE  2  4
+        No Operation
+        Log  This is loop 3: ${loop3}
+        No Operation
+      END
       No Operation
+      Log  This is loop 2: ${loop2}
     END
+    Log  This is loop 1: ${loop1}
     No Operation
-    Log  This is loop 2: ${loop2}
-  END
-  Log  This is loop 1: ${loop1}
-  No Operation
-  Log  Generic
+    Log  Generic
   END

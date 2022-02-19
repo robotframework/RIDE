@@ -1217,16 +1217,15 @@ class MoveRowsUp(_StepsChangingCommand):
         number_of_steps_before = len(context.steps)
         print(f"DEBUG: MoveRowsUp START")
         for row in self._rows:
-            print(f"{row}")
-            # {context.steps[row].as_list()}")
+            print(f"{context.steps[row].as_list()}")
         print(f"DEBUG: MoveRowsUp END")
         print(f"DEBUG: MoveRowsUp START")
         for row in context.steps:
             print(f"{row.as_list()}")
         print(f"DEBUG: MoveRowsUp END")
-        print(f"DEBUG: MoveRowsUp number_of_steps_before{number_of_steps_before}  rows: {self._rows}")
+        print(f"DEBUG: MoveRowsUp number_of_steps_before: {number_of_steps_before}  rows: {self._rows}")
         for row in self._rows:
-            print(f"DEBUG: MoveRowsUp loop row: {row}")
+            print(f"DEBUG: MoveRowsUp loop row: {row}\n line to move {context.steps[row].as_list()[0]}")
             keep_indent = (context.steps[row].as_list()[0] == 'END' and
                            context.steps[row - 1].as_list()[0] == '')
             avoid_ident = (context.steps[row].as_list()[0] == 'FOR' and

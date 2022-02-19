@@ -39,10 +39,13 @@ class TestForLoop(unittest.TestCase):
         test = self.project.datafiles[1].tests[0]
         test.execute(MoveRowsDown([0]))
         test.execute(MoveRowsDown([1]))
-        self.assertEqual(test.get_cell_info(1,1).cell_type, CellType.ASSIGN)
+        self.assertEqual(test.get_cell_info(2,0).cell_type, CellType.MANDATORY)
         test.execute(Undo())
         test.execute(Undo())
         self.assertEqual(test.get_cell_info(1,1).cell_type, CellType.KEYWORD)
+        # print("DEBUG: Test 0:")
+        # for s in test.steps:
+        #    print(f"{s.as_list()}")
 
     def test_adding_new_for_loop(self):
         test2 = self.project.datafiles[1].tests[1]
@@ -115,8 +118,8 @@ class TestForLoop(unittest.TestCase):
 
     def test_modifying_step_in_for_loop(self):
         test = self.project.datafiles[1].tests[0]
-        test.execute(ChangeCellValue(3, 1, 'Something again'))
-        self.assertEqual(type(test.step(3)), IntendedStepController)
+        test.execute(ChangeCellValue(4, 1, 'Something again'))
+        self.assertEqual(type(test.step(4)), IntendedStepController)
 
     def test_new_for_loop_old_syntax(self):
         test = self.project.datafiles[1].tests[10]
@@ -182,14 +185,20 @@ class TestForLoop(unittest.TestCase):
         self.assertEqual(test.steps[0].as_list(), ['Foo', '# comment'])
 
     def test_move_for_loop_over_another_for_loop(self):
-        loop_1 = '  FOR  ${i}  IN  1  2  3  4'.split('  ')
-        end_1 = ['', 'END']
-        loop_2 = ['', 'FOR', '${j}', 'IN RANGE', '100']
-        inside_1 = ['', '', '', 'No Operation']
-        inside_2 = ['', '', 'Fail']
+        loop_1 = 'FOR  ${i}  IN  1  2  3  4'.split('  ')
+        end_1 = ['END']
+        loop_2 = ['FOR', '${j}', 'IN RANGE', '100']
+        inside_1 = ['', 'No Operation']
+        inside_2 = ['', 'Fail']
         test = self.project.datafiles[1].tests[17]
+        print("DEBUG: Test 17:")
+        for s in test.steps:
+            print(f"{s.as_list()}")
         self._verify_steps(test.steps, loop_1, inside_1, end_1, loop_2, inside_2, end_1)
         test.execute(MoveRowsUp([3]))
+        print("DEBUG: AFTER MOVE Test 17:")
+        for s in test.steps:
+            print(f"{s.as_list()}")
         test.execute(MoveRowsUp([2]))
         self._verify_steps(test.steps, loop_1, loop_2, inside_1, end_1, inside_2, end_1)
         test.execute(MoveRowsUp([1]))
@@ -200,21 +209,21 @@ class TestForLoop(unittest.TestCase):
     def test_move_for_loop_header_between_for_loops(self):
         test = self.project.datafiles[1].tests[18]
         test.execute(MoveRowsDown([3]))
-        self.assertEqual(test.steps[4].as_list()[2], '${j}')
+        self.assertEqual(test.steps[4].as_list()[1], '${j}')
 
     def test_move_for_loop_in_mulitlevels(self):
         loop_1 = ['FOR', '${loop1}', 'IN RANGE', '1', '19']
-        inside_NO = ['No Operation']
-        loop_2 = ['FOR', '${loop2}', 'IN RANGE', '${loop1}', '20']
-        inside_NO_2 = ['', 'No Operation']
-        loop_3 = ['', 'FOR', '${loop3}', 'IN RANGE', '2', '4']
-        inside_NO_3 = ['', '', 'No Operation']
-        inside_L3 = ['', '', 'Log', 'This is loop 3: ${loop3}']
-        inside_E3 = ['', 'END']
-        inside_L2 = ['', 'Log', 'This is loop 2: ${loop2}']
-        inside_E2 = ['END']
-        inside_L1 = ['Log', 'This is loop 1: ${loop1}']
-        inside_LG = ['Log', 'Generic']
+        inside_NO = ['', 'No Operation']
+        loop_2 = ['', 'FOR', '${loop2}', 'IN RANGE', '${loop1}', '20']
+        inside_NO_2 = ['', '', 'No Operation']
+        loop_3 = ['', '', 'FOR', '${loop3}', 'IN RANGE', '2', '4']
+        inside_NO_3 = ['', '', '', 'No Operation']
+        inside_L3 = ['', '', '', 'Log', 'This is loop 3: ${loop3}']
+        inside_E3 = ['', '', 'END']
+        inside_L2 = ['', '', 'Log', 'This is loop 2: ${loop2}']
+        inside_E2 = ['', 'END']
+        inside_L1 = ['', 'Log', 'This is loop 1: ${loop1}']
+        inside_LG = ['', 'Log', 'Generic']
         inside_E1 = ['END']
         test = self.project.datafiles[1].tests[19]
         print("DEBUG: Test 19:")
