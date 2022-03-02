@@ -178,7 +178,10 @@ class TestForLoop(unittest.TestCase):
 
     def test_new_for_loop_with_existing_comment(self):
         test = self.project.datafiles[1].tests[16]
-        test.execute(ChangeCellValue(0, 0, 'FOR'))
+        # print("DEBUG: Test 16:")
+        # for s in test.steps:
+        #     print(f"{s.as_list()}")
+        test.execute(ChangeCellValue(0, 0, 'FOR', True))
         test.execute(ChangeCellValue(0, 2, '# comment'))  # idented comments del
         self.assertEqual(test.steps[0].as_list(), ['FOR', 'Foo', '# comment'])
         test.execute(DeleteCell(0, 0))
@@ -199,6 +202,7 @@ class TestForLoop(unittest.TestCase):
         print("DEBUG: AFTER MOVE Test 17:")
         for s in test.steps:
             print(f"{s.as_list()}")
+        self._verify_steps(test.steps, loop_1, inside_1, loop_2, end_1, inside_2, end_1)
         test.execute(MoveRowsUp([2]))
         self._verify_steps(test.steps, loop_1, loop_2, inside_1, end_1, inside_2, end_1)
         test.execute(MoveRowsUp([1]))
