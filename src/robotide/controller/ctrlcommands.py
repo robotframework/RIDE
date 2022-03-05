@@ -1114,6 +1114,7 @@ class InsertCell(_StepsChangingCommand):
 
     def change_steps(self, context):
         self._step(context).shift_right(self._col)
+        self._step(context)._recreate(context.steps[self._row].as_list())
         assert self._step(context).get_value(self._col) == '', \
             'Should have an empty value after insert'
         return True
@@ -1261,7 +1262,8 @@ class MoveRowsUp(_StepsChangingCommand):
                 if context.steps[row].as_list()[pre_prev_cell] == '':
                     print(f"DEBUG: MoveRowsUp loop in avoid_ident row going to shift_left:{context.steps[row].as_list()}")
                     context.steps[row].shift_left(pre_prev_cell)
-                    context.steps[row-1].shift_left(pre_prev_cell)
+                    if context.steps[row-1].as_list()[pre_prev_cell] == '':
+                        context.steps[row-1].shift_left(pre_prev_cell)
                 print(f"DEBUG: MoveRowsUp loop in avoid_ident row content after:{context.steps[row].as_list()}")
                 print(f"DEBUG: MoveRowsUp loop in avoid_ident row content after:{context.steps[row-1].as_list()}")
             if keep_indent and not avoid_ident:

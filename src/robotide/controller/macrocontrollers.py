@@ -213,7 +213,6 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         self._has_steps_changed = True
 
     def add_step(self, index, step=None):
-        print(f"DEBUG: enter add_step step={step.as_list()}")
         if step is None:
             step = _empty_step()
         if index == len(self.steps):

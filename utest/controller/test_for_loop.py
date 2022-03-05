@@ -95,7 +95,13 @@ class TestForLoop(unittest.TestCase):
 
     def test_modify_step_so_that_it_becomes_part_of_for_loop_at_last_position(self):
         test = self.project.datafiles[1].tests[4]
+        print(f"\nDEBUG: test_modify_step_so_that_it_becomes_part_of_for_loop_at_last_position before:")
+        for row in test.steps:
+            print("%s" % row.as_list())
         test.execute(InsertCell(3, 0))
+        print(f"\nDEBUG: test_modify_step_so_that_it_becomes_part_of_for_loop_at_last_position after InsertCell:")
+        for row in test.steps:
+            print("%s" % row.as_list())
         self._steps_are_in_for_loop(test, 1, 2, 3)
 
     def test_modify_last_step_so_that_it_should_be_empty_and_not_part_of_for_loop(self):

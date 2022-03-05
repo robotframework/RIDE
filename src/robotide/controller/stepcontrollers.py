@@ -46,6 +46,9 @@ class StepController(_BaseController):
         return self.parent.datafile_controller
 
     def _change_last_empty_to_empty_var(self, args, comment):
+        # print(f"DEBUG: Stepcontroller _change_last_empty_to_empty_var {args}")
+        if not args:
+            return []
         if comment:
             return args
         # DEBUG no longer return var return args[:-1] + ['${EMPTY}'] if args and args[-1] == '' else args
@@ -389,25 +392,21 @@ class StepController(_BaseController):
         return cells[-1][2:].strip() if cells[-1].startswith('# ') else None
 
     def _recreate(self, cells, comment=None):
-        print(f"DEBUG: enter _recreate: {cells}")
+        # print(f"DEBUG: enter _recreate: {cells}")
         if self._is_partial_for_loop_step(cells):
             self._recreate_as_partial_for_loop(cells, comment)
-        else:
-            self._step.__init__(cells, comment)
-        """
         elif self._is_intended_step(cells):
             i = self._index()
             previous_step = self.parent.step(i - 1)
-            print(f"DEBUG: _recreate _is_intended_step: {previous_step.as_list()}")
+            # print(f"DEBUG: _recreate _is_intended_step: {previous_step.as_list()}")
             if type(previous_step) == ForLoopStepController:
                 # print(f"DEBUG: _recreate _is_intended_step before: {previous_step.as_list()}")
                 self._recreate_as_intended_step(previous_step, cells, comment, i)
                 # print(f"DEBUG: _recreate _is_intended_step after: {previous_step.as_list()}")
             elif type(previous_step) == IntendedStepController:
                 self._recreate_as_intended_step(previous_step.parent, cells, comment, i)
-            else:
-                self._step.__init__(cells, comment)
-        """
+        else:
+            self._step.__init__(cells, comment)
 
     def _is_partial_for_loop_step(self, cells):
         return cells and (cells[0].replace(' ', '').upper() == ':FOR'
@@ -619,10 +618,10 @@ class IntendedStepController(StepController):
         return 1
 
     def as_list(self):
-        return [''] + self._step.as_list()
+        return [''] + self._step.as_list()  # DEBUG removed [''] +
 
     def _get_cell_position(self, col):
-        if col == 0:
+        if col < self._keyword_column:
             return CellPosition(CellType.MUST_BE_EMPTY, None)
         return StepController._get_cell_position(self, col - 1)
 
@@ -632,7 +631,7 @@ class IntendedStepController(StepController):
         return LocalNamespace(p, self.datafile_controller._namespace, index)
 
     def _get_content_with_type(self, col, position):
-        if col == 0:
+        if col < self._keyword_column:
             return CellContent(ContentType.EMPTY, None)
         return StepController._get_content_with_type(self, col, position)
 
@@ -644,9 +643,9 @@ class IntendedStepController(StepController):
             self._step.__init__(self._step.as_list()[1:])
 
     def _recreate(self, cells, comment=None):
-        # print(f"DEBUG: enter _recreate IntendedStepController: {cells[:]} self {self._step.as_list()}")
+        print(f"DEBUG: enter _recreate IntendedStepController: {cells[:]} self {self._step.as_list()}")
         if cells == [] or cells[0] == '':
-            self._step.__init__(cells[1:], comment=comment)
+            self._step.__init__(cells[self._keyword_column:], comment=comment)
             if self._step not in self.parent.get_raw_steps():
                 self.parent.add_step(self._step)
         else:

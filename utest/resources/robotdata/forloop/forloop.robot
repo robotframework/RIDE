@@ -29,6 +29,7 @@ Test 4
     One
     Two
   Three
+  END
 
 Test 5
   FOR  ${j}  IN  1  2
