@@ -268,6 +268,7 @@ class StepController(_BaseController):
 
     def change(self, col, new_value):
         cells = self.as_list()
+        # print(f"DEBUG: enter change at StepController: {cells}")
         if col >= len(cells):
             cells = cells + ['' for _ in range(col - len(cells) + 1)]
         cells[col] = new_value
@@ -281,6 +282,7 @@ class StepController(_BaseController):
         self.change(col, new_value)
 
     def comment(self):
+        # print(f"DEBUG: enter comment at StepController: {self._step.as_list()}")
         self.shift_right(0)
         self.change(0, 'Comment')
 
@@ -302,16 +304,19 @@ class StepController(_BaseController):
         return self.keyword.strip().lower() == "comment"
 
     def uncomment(self):
+        # print(f"DEBUG: StepController Enter uncomment: {self._step.as_list()}")
         if self._step.name == 'Comment':
             self.shift_left(0)
 
     def shift_right(self, from_column):
         cells = self.as_list()
         comment = self._get_comment(cells)
+        # print(f"DEBUG: StepController shift_right enter:index:{from_column} {cells} {comment}")
         if len(cells) > from_column:
             if comment:
                 cells.pop()
             cells = cells[:from_column] + [''] + cells[from_column:]
+            # print(f"DEBUG: StepController shift_right before recreate: {cells} {comment}")
             self._recreate(cells, comment)
 
     def shift_left(self, from_column):
@@ -394,18 +399,25 @@ class StepController(_BaseController):
     def _recreate(self, cells, comment=None):
         # print(f"DEBUG: enter _recreate: {cells}")
         if self._is_partial_for_loop_step(cells):
+            # print(f"DEBUG: _recreate _recreate_as_partial_for_loop before: {cells}")
             self._recreate_as_partial_for_loop(cells, comment)
+            # print(f"DEBUG: _recreate _recreate_as_partial_for_loop after: {cells}")
         elif self._is_intended_step(cells):
             i = self._index()
             previous_step = self.parent.step(i - 1)
             # print(f"DEBUG: _recreate _is_intended_step: {previous_step.as_list()}")
             if type(previous_step) == ForLoopStepController:
-                # print(f"DEBUG: _recreate _is_intended_step before: {previous_step.as_list()}")
+                # print(f"DEBUG: _recreate _is_intended_step FOR loop: {previous_step.as_list()}")
                 self._recreate_as_intended_step(previous_step, cells, comment, i)
                 # print(f"DEBUG: _recreate _is_intended_step after: {previous_step.as_list()}")
             elif type(previous_step) == IntendedStepController:
+                # print(f"DEBUG: _recreate _is_intended_step before: {previous_step.as_list()}")
                 self._recreate_as_intended_step(previous_step.parent, cells, comment, i)
+            else:
+                # print(f"DEBUG: _recreate Indented Step init before: {cells} comment {comment}")
+                self._step.__init__(cells, comment)
         else:
+            # print(f"DEBUG: _recreate init before: {cells} comment {comment}")
             self._step.__init__(cells, comment)
 
     def _is_partial_for_loop_step(self, cells):
@@ -549,7 +561,7 @@ class ForLoopStepController(StepController):
         self.get_raw_steps().append(step)
 
     def _recreate(self, cells, comment=None):
-        print(f"DEBUG: enter _recreate ForLoopStepController: {cells}")
+        # print(f"DEBUG: enter _recreate ForLoopStepController: {cells}")
         if not self._represent_valid_for_loop_header(cells):
             self._recreate_partial_for_loop_header(cells, comment)
         else:
@@ -636,6 +648,7 @@ class IntendedStepController(StepController):
         return StepController._get_content_with_type(self, col, position)
 
     def comment(self):
+        # print(f"DEBUG: enter comment IntendedStepController: self {self._step.as_list()}")
         self._step.__init__(['Comment'] + self._step.as_list())
 
     def uncomment(self):
@@ -643,7 +656,7 @@ class IntendedStepController(StepController):
             self._step.__init__(self._step.as_list()[1:])
 
     def _recreate(self, cells, comment=None):
-        print(f"DEBUG: enter _recreate IntendedStepController: {cells[:]} self {self._step.as_list()}")
+        # print(f"DEBUG: enter _recreate IntendedStepController: {cells[:]} self {self._step.as_list()}")
         if cells == [] or cells[0] == '':
             self._step.__init__(cells[self._keyword_column:], comment=comment)
             if self._step not in self.parent.get_raw_steps():

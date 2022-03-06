@@ -1024,13 +1024,13 @@ class ChangeCellValue(_StepsChangingCommand):
         step = self._step(context)
         self._undo_command = ChangeCellValue(
             self._row, self._col, step.get_value(self._col))
-        print(f"DEBUG: change_steps before change from_column: ({self._row}, {self._col}, {self._value}) Line: {step.as_list()}")
+        # print(f"DEBUG: change_steps before change from_column: ({self._row}, {self._col}, {self._value}) Line: {step.as_list()}")
         if self._insert:
             step.insert_value_before(self._col, self._value)
             # print(f"DEBUG: change_steps after insert cell Line: {context.steps[self._row].as_list()}")
         else:
             step.change(self._col, self._value)
-        print(f"DEBUG: change_steps after change from_column: ({self._row}, {self._col}, {self._value}) Line: {context.steps[self._row].as_list()}")
+        # print(f"DEBUG: change_steps after change from_column: ({self._row}, {self._col}, {self._value}) Line: {context.steps[self._row].as_list()}")
         self._step(context).remove_empty_columns_from_end()
         assert self._validate_postcondition(context), 'Should have correct value after change'
         return True
@@ -1196,6 +1196,7 @@ class AddRow(_RowChangingCommand):
 class CommentRow(_RowChangingCommand):
 
     def _change_value(self, context):
+        # print(f"DEBUG: enter CommentRow")
         self._step(context).comment()
         return True
 
@@ -1253,19 +1254,19 @@ class MoveRowsUp(_StepsChangingCommand):
                            context.steps[row - 1].as_list()[pre_prev_cell] == '')
             new_indent = (context.steps[row - 1].as_list()[prev_cell] == 'END' and
                           context.steps[row].as_list()[index] != 'FOR')
-            print(f"DEBUG: MoveRowsUp loop row FLAGS: keep_indent:{keep_indent} avoid_ident:{avoid_ident} new_indent:{new_indent}")
+            # print(f"DEBUG: MoveRowsUp loop row FLAGS: keep_indent:{keep_indent} avoid_ident:{avoid_ident} new_indent:{new_indent}")
             context.move_step_up(row)
-            print(f"DEBUG: MoveRowsUp loop row-1 content after:{context.steps[row-1].as_list()} after(row):{context.steps[row].as_list()}")
+            # print(f"DEBUG: MoveRowsUp loop row-1 content after:{context.steps[row-1].as_list()} after(row):{context.steps[row].as_list()}")
             if avoid_ident:  # Special case FOR going up END
                 # context.steps[row-1].shift_left(0)
                 # context.steps[row].shift_left(0)
                 if context.steps[row].as_list()[pre_prev_cell] == '':
-                    print(f"DEBUG: MoveRowsUp loop in avoid_ident row going to shift_left:{context.steps[row].as_list()}")
+                    # print(f"DEBUG: MoveRowsUp loop in avoid_ident row going to shift_left:{context.steps[row].as_list()}")
                     context.steps[row].shift_left(pre_prev_cell)
                     if context.steps[row-1].as_list()[pre_prev_cell] == '':
                         context.steps[row-1].shift_left(pre_prev_cell)
-                print(f"DEBUG: MoveRowsUp loop in avoid_ident row content after:{context.steps[row].as_list()}")
-                print(f"DEBUG: MoveRowsUp loop in avoid_ident row content after:{context.steps[row-1].as_list()}")
+                # print(f"DEBUG: MoveRowsUp loop in avoid_ident row content after:{context.steps[row].as_list()}")
+                # print(f"DEBUG: MoveRowsUp loop in avoid_ident row content after:{context.steps[row-1].as_list()}")
             if keep_indent and not avoid_ident:
                 # if not avoid_ident:
                 #    context.steps[row].shift_left(0)
@@ -1276,7 +1277,7 @@ class MoveRowsUp(_StepsChangingCommand):
                 #pass
             elif new_indent:
                 context.steps[row - 1].shift_right(0)
-        # # print(f"DEBUG: MoveRowsUp loop row-1 content after:{context.steps[row - 1].as_list()}")
+        # print(f"DEBUG: MoveRowsUp loop row-1 content after:{context.steps[row - 1].as_list()}")
         assert len(context.steps) == number_of_steps_before
         return True
 
