@@ -31,7 +31,7 @@ sys.path.insert(0, SCRIPT_DIR)
 
 from robotide.publish import PUBLISHER
 from robotide.publish.messages import RideItemStepsChanged
-from controller_creator import _FakeProject, testcase_controller, BASE_DATA
+from controller.controller_creator import _FakeProject, testcase_controller, BASE_DATA
 
 
 class TestCaseCommandTest(unittest.TestCase, _FakeProject):

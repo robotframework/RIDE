@@ -22,7 +22,7 @@ from itertools import chain
 # ResourceFileController
 # from . import macrocontrollers
 # from .macrocontrollers import KeywordNameController, ForLoopStepController, TestCaseController
-from mercurial.match import predicatematcher
+# from mercurial.match import predicatematcher
 
 from . import settingcontrollers
 # import _SettingController, VariableController
