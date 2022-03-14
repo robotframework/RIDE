@@ -35,6 +35,7 @@ class StepController(_BaseController):
     def _init(self, parent, step):
         self.parent = parent
         self._step = step
+        # print(f"DEBUG: StepController init self._step.name: {self._step.name if self._step.name else None }")
         self._cell_info_cache = {}
 
     @property
@@ -82,9 +83,9 @@ class StepController(_BaseController):
     def get_cell_info(self, col):
         if col not in self._cell_info_cache:
             position = self._get_cell_position(col)
+            print(f"DEBUG: Stepcontroller get_cell_info position({col}) {position.type} {position.argument_name}")
             content = self._get_content_with_type(col, position)
-            self._cell_info_cache[col] = self._build_cell_info(
-                content, position)
+            self._cell_info_cache[col] = self._build_cell_info(content, position)
         return self._cell_info_cache[col]
 
     @property
@@ -103,14 +104,20 @@ class StepController(_BaseController):
 
     def _get_cell_position(self, col):
         # TODO: refactor
+        print(f"DEBUG: Stepcontroller Enter _get_cell_position {col}")
         if self.parent.has_template():
             return CellPosition(CellType.UNKNOWN, None)
         col -= len(self._step.assign)
+        print(f"DEBUG: Stepcontroller _get_cell_position not in template processing {col}"
+              f" current keyword_column={self._keyword_column} step name: {self._step.name}")
         if col < 0:
             return CellPosition(CellType.ASSIGN, None)
-        if col == 0:
-            return CellPosition(CellType.KEYWORD, None)
         info = self.get_keyword_info(self._step.name)
+        if info:
+            print(f"DEBUG: Stepcontroller _get_cell_position info {info.name if info else None} info.args {info.arguments}")
+        if col == self._keyword_column:
+            print(f"DEBUG: Stepcontroller _get_cell_position return KEYWORD{col} info {info.name if info else None}")
+            return CellPosition(CellType.KEYWORD, None)
         if not info:
             return CellPosition(CellType.UNKNOWN, None)
         args = info.arguments
@@ -121,11 +128,11 @@ class StepController(_BaseController):
             return CellPosition(CellType.OPTIONAL, args[-1])
         if self._has_list_or_dict_var_value_before(col - 1):
             return CellPosition(CellType.UNKNOWN, None)
-        if col > args_amount:
+        if col - self._keyword_column > args_amount:
             return CellPosition(CellType.MUST_BE_EMPTY, None)
-        if col <= self._number_of_mandatory_arguments(args, args_amount):
-            return CellPosition(CellType.MANDATORY, args[col - 1])
-        return CellPosition(CellType.OPTIONAL, args[col - 1])
+        if col - self._keyword_column <= self._number_of_mandatory_arguments(args, args_amount):
+            return CellPosition(CellType.MANDATORY, args[col-self._keyword_column-1])
+        return CellPosition(CellType.OPTIONAL, args[col-1])
 
     def _number_of_mandatory_arguments(self, args, args_amount):
         defaults = [arg for arg in args if '=' in arg]
@@ -151,7 +158,9 @@ class StepController(_BaseController):
 
     def _get_content_with_type(self, col, position):
         value = self.get_value(col)
+        print(f"DEBUG: Stepcontroller _get_content_with_type col {col} value {value}")
         if self._is_commented(col):
+            print(f"DEBUG: Stepcontroller _get_content_with_type _is_commented True")
             return CellContent(ContentType.COMMENTED, value)
         last_none_empty = self._get_last_none_empty_col_idx()
         if isinstance(last_none_empty, int) and last_none_empty < col:
@@ -180,6 +189,7 @@ class StepController(_BaseController):
             return False
         inner_value = value[2:-1]
         modified = re.split(r'\W', inner_value, 1)[0]
+        print(f"\nDEBUG: Stepcontrollers value: {value} inner_value: {inner_value} modified: {modified}")
         return not self._get_local_namespace().has_name(
             '%s{%s}' % (value[0], modified))
 
@@ -268,11 +278,12 @@ class StepController(_BaseController):
 
     def change(self, col, new_value):
         cells = self.as_list()
-        # print(f"DEBUG: enter change at StepController: {cells}")
+        print(f"DEBUG: enter change at StepController: {cells}\n col: {col} new_value: {new_value}")
         if col >= len(cells):
             cells = cells + ['' for _ in range(col - len(cells) + 1)]
         cells[col] = new_value
         comment = self._get_comment(cells)
+        print(f"DEBUG: change at StepController: comment: {comment}")
         if comment:
             cells.pop()
         self._recreate(cells, comment)
@@ -282,11 +293,12 @@ class StepController(_BaseController):
         self.change(col, new_value)
 
     def comment(self):
-        # print(f"DEBUG: enter comment at StepController: {self._step.as_list()}")
+        print(f"DEBUG: enter comment at StepController: {self._step.as_list()}")
         self.shift_right(0)
         self.change(0, 'Comment')
 
     def _is_commented(self, col):
+        print(f"DEBUG: Stepcontroller enter _is_commented col {col}")
         if self._has_comment_keyword():
             return col > self._keyword_column
         for i in range(min(col + 1, len(self.as_list()))):
@@ -294,11 +306,22 @@ class StepController(_BaseController):
                 return True
         return False
 
+    def _first_non_empty_cell(self):
+        print(f"DEBUG: Stepcontroller enter _first_non_empty_cell")
+        cells = self.as_list()
+        # if cells:
+        #    print(f"DEBUG: model _first_non_empty_cell: {cells}")
+        index = 0
+        while index < len(cells) and cells[index] == '':
+            index += 1
+        return index
+
     @property
     def _keyword_column(self):
-        return 0
+        return self._first_non_empty_cell()
 
     def _has_comment_keyword(self):
+        print(f"DEBUG: Stepcontroller enter _has_comment_keyword keyword {self.keyword}")
         if self.keyword is None:
             return False
         return self.keyword.strip().lower() == "comment"
@@ -311,12 +334,12 @@ class StepController(_BaseController):
     def shift_right(self, from_column):
         cells = self.as_list()
         comment = self._get_comment(cells)
-        # print(f"DEBUG: StepController shift_right enter:index:{from_column} {cells} {comment}")
+        print(f"DEBUG: StepController shift_right enter:index:{from_column} {cells} {comment}")
         if len(cells) > from_column:
             if comment:
                 cells.pop()
             cells = cells[:from_column] + [''] + cells[from_column:]
-            # print(f"DEBUG: StepController shift_right before recreate: {cells} {comment}")
+            print(f"DEBUG: StepController shift_right before recreate: {cells} {comment}")
             self._recreate(cells, comment)
 
     def shift_left(self, from_column):
@@ -397,15 +420,15 @@ class StepController(_BaseController):
         return cells[-1][2:].strip() if cells[-1].startswith('# ') else None
 
     def _recreate(self, cells, comment=None):
-        # print(f"DEBUG: enter _recreate: {cells}")
+        print(f"DEBUG: enter _recreate: {cells}")
         if self._is_partial_for_loop_step(cells):
-            # print(f"DEBUG: _recreate _recreate_as_partial_for_loop before: {cells}")
+            print(f"DEBUG: _recreate _recreate_as_partial_for_loop before: {cells}")
             self._recreate_as_partial_for_loop(cells, comment)
             # print(f"DEBUG: _recreate _recreate_as_partial_for_loop after: {cells}")
         elif self._is_intended_step(cells):
             i = self._index()
             previous_step = self.parent.step(i - 1)
-            # print(f"DEBUG: _recreate _is_intended_step: {previous_step.as_list()}")
+            print(f"DEBUG: _recreate _is_intended_step: {previous_step.as_list()}")
             if type(previous_step) == ForLoopStepController:
                 # print(f"DEBUG: _recreate _is_intended_step FOR loop: {previous_step.as_list()}")
                 self._recreate_as_intended_step(previous_step, cells, comment, i)
@@ -417,12 +440,12 @@ class StepController(_BaseController):
                 # print(f"DEBUG: _recreate Indented Step init before: {cells} comment {comment}")
                 self._step.__init__(cells, comment)
         else:
-            # print(f"DEBUG: _recreate init before: {cells} comment {comment}")
+            print(f"DEBUG: _recreate init before: {cells} comment {comment}")
             self._step.__init__(cells, comment)
 
     def _is_partial_for_loop_step(self, cells):
-        return cells and (cells[0].replace(' ', '').upper() == ':FOR'
-                          or cells[0] == 'FOR')
+        return cells and (cells[self._keyword_column].replace(' ', '').upper() == ':FOR'
+                          or cells[self._keyword_column] == 'FOR')
 
     def _is_intended_step(self, cells):
         return cells and not cells[0].strip() and not self._is_end_step(cells)\
@@ -433,12 +456,14 @@ class StepController(_BaseController):
 
     def _recreate_as_partial_for_loop(self, cells, comment):
         index = self._index()
+        print(f"\nDEBUG: Stepcontrollers _recreate_as_partial_for_loop : cells[0]: {cells[0]} cells[1:]: {cells[1:]}")
         self.parent.replace_step(index, PartialForLoop(
             cells[1:], first_cell=cells[0], comment=comment))
         self._recreate_next_step(index)
 
     def _recreate_as_intended_step(self, for_loop_step, cells, comment, index):
         self.remove()
+        print(f"\nDEBUG: Stepcontrollers _recreate_as_intended_step : cells[1:]: {cells[1:]}")
         for_loop_step.add_step(robotapi.Step(cells[1:], comment))
         self._recreate_next_step(index)
 
@@ -561,7 +586,7 @@ class ForLoopStepController(StepController):
         self.get_raw_steps().append(step)
 
     def _recreate(self, cells, comment=None):
-        # print(f"DEBUG: enter _recreate ForLoopStepController: {cells}")
+        print(f"DEBUG: enter _recreate ForLoopStepController: {cells}")
         if not self._represent_valid_for_loop_header(cells):
             self._recreate_partial_for_loop_header(cells, comment)
         else:
@@ -686,7 +711,7 @@ class IntendedStepController(StepController):
     def remove(self):
         self.parent.get_raw_steps().remove(self._step)
 
-    @utils.overrides(StepController)
+    # @utils.overrides(StepController)
     def remove_empty_columns_from_end(self):
         if self._invalid:
             return

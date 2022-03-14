@@ -765,11 +765,20 @@ class ForLoop(_WithSteps):
 class Step(object):
 
     def __init__(self, content, comment=None):
+        # print(f"DEBUG: RFLib Model enter init Step: 1st cell content {content}")
         self.assign = self._get_assign(content)
-        # print("DEBUG RFLib init Step: content %s" % content[:])
-        self.name = content.pop(0) if content else None
+        index = self.first_non_empty_cell(content)
+        self.indent = []
+        for _ in range(0, index):
+            self.indent.append('')
+        # print(f"DEBUG: RFLib Model init Step: indent={self.indent[:]}")
+        self.args = content[index + 1:] if content and index <= len(content) - 1 else []
+        print(f"DEBUG: RFLib Model init Step: 1st cell len(content)={len(content)} index {index} indent={self.indent[:]}")  # 1st cell: {content[index]}")
+        if index < len(content):
+            self.name = content.pop(index) if content else None
+        else:
+            self.name = None
         # print("DEBUG RFLib init Step: self.name %s" % self.name)
-        self.args = content
         self.comment = Comment(comment)
 
     def _get_assign(self, content):
@@ -790,12 +799,31 @@ class Step(object):
     def as_list(self, indent=False, include_comment=True):
         # print("DEBUG RFLib Model Step: self.name %s" % self.name )
         kw = [self.name] if self.name is not None else []
+        # print(f"DEBUG RFLib Model Step: as_list() self.name={self.name} kw={kw}" )
         comments = self.comment.as_list() if include_comment else []
-        data = self.assign + kw + self.args + comments
+        # print(f"DEBUG RFLib Model Step: as_list() self.name={self.name} kw={kw}\n comments={comments} args={self.args}" )
         if indent:
-            data.insert(0, '')
+            self.indent.insert(0, '')
+        data = self.indent + self.assign + kw + self.args + comments
+        # print(f"DEBUG RFLib Model Step: as_list() self.name={self.name} kw={kw}\n comments={comments} data={data}")
         # print("DEBUG RFLib Model Step: data %s" % data)
         return data
+
+    def first_non_empty_cell(self, content):
+        # print(f"DEBUG: model enter _first_non_empty_cell")
+        cells = content
+        # if cells:
+        #    print(f"DEBUG: model _first_non_empty_cell: {cells}")
+        index = 0
+        while index < len(cells) and cells[index] == '':
+            index += 1
+        return index
+
+    def first_empty_cell(self, content):
+        index = self.first_non_empty_cell(content)
+        if index > 0:
+            return index - 1
+        return None
 
 
 class OldStyleSettingAndVariableTableHeaderMatcher(object):

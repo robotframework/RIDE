@@ -401,7 +401,6 @@ class TestCaseController(_WithStepsController):
             self._run_passed = None  # Test did not run
 
 
-
 class UserKeywordController(_WithStepsController):
     _populator = robotapi.UserKeywordPopulator
     _TEARDOWN_NOT_SET = object()
