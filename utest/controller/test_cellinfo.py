@@ -225,14 +225,14 @@ class TestCellInfo(unittest.TestCase):
             print(f"value: {k.as_list()}")
         self._verify_cell_info(0, 0, ContentType.LIBRARY_KEYWORD, CellType.MANDATORY, forlooped_case)
         self._verify_cell_info(1, 0, ContentType.EMPTY, CellType.MUST_BE_EMPTY, forlooped_case)
-        self._verify_cell_info(1, 1, ContentType.LIBRARY_KEYWORD, CellType.MANDATORY, forlooped_case)
-        self._verify_cell_info(1, 2, ContentType.STRING, CellType.KEYWORD, forlooped_case)
+        self._verify_cell_info(1, 1, ContentType.LIBRARY_KEYWORD, CellType.KEYWORD, forlooped_case)
+        self._verify_cell_info(1, 2, ContentType.STRING, CellType.MANDATORY, forlooped_case)
         self._verify_cell_info(2, 0, ContentType.EMPTY, CellType.MUST_BE_EMPTY, forlooped_case)
-        self._verify_cell_info(2, 1, ContentType.LIBRARY_KEYWORD, CellType.MANDATORY, forlooped_case)
+        self._verify_cell_info(2, 1, ContentType.LIBRARY_KEYWORD, CellType.KEYWORD, forlooped_case)
         self._verify_cell_info(3, 0, ContentType.EMPTY, CellType.MUST_BE_EMPTY, forlooped_case)
-        self._verify_cell_info(3, 1, ContentType.LIBRARY_KEYWORD, CellType.MANDATORY, forlooped_case)
+        self._verify_cell_info(3, 1, ContentType.LIBRARY_KEYWORD, CellType.KEYWORD, forlooped_case)
         self._verify_cell_info(3, 2, ContentType.UNKNOWN_VARIABLE, CellType.MANDATORY, forlooped_case)
-        self._verify_cell_info(4, 0, ContentType.LIBRARY_KEYWORD, CellType.MUST_BE_EMPTY, forlooped_case)
+        self._verify_cell_info(4, 0, ContentType.LIBRARY_KEYWORD, CellType.KEYWORD, forlooped_case)
         self._verify_cell_info(4, 1, ContentType.EMPTY, CellType.MUST_BE_EMPTY, forlooped_case)
 
     def test_for_loop_in_range_header(self):
@@ -250,18 +250,18 @@ class TestCellInfo(unittest.TestCase):
 
     def test_library_import_add_and_remove(self):
         self.test.execute(PasteArea((0, 0), [['Get File', 'reaktor.robot']]))
-        self._verify_cell_info(0, 0, ContentType.STRING, CellType.KEYWORD)
+        self._verify_cell_info(0, 0, ContentType.STRING, CellType.UNKNOWN)
         self._verify_cell_info(0, 1, ContentType.STRING, CellType.UNKNOWN)
         self.testsuite.imports.add_library('OperatingSystem', [], '')
         self._verify_cell_info(0, 0, ContentType.LIBRARY_KEYWORD, CellType.KEYWORD)
         self._verify_cell_info(0, 1, ContentType.STRING, CellType.MANDATORY)
         self.testsuite.imports.delete(-1)
-        self._verify_cell_info(0, 0, ContentType.STRING, CellType.KEYWORD)
+        self._verify_cell_info(0, 0, ContentType.STRING, CellType.UNKNOWN)
         self._verify_cell_info(0, 1, ContentType.STRING, CellType.UNKNOWN)
 
     def test_library_import_with_name_and_arguments(self):
         self.test.execute(ChangeCellValue(0,0, 'alias.Onething'))
-        self._verify_cell_info(0, 0, ContentType.STRING, CellType.KEYWORD)
+        self._verify_cell_info(0, 0, ContentType.STRING, CellType.UNKNOWN)
         self.testsuite.imports.add_library('libi.py', 'a | b', 'alias')
         self._verify_cell_info(0, 0, ContentType.LIBRARY_KEYWORD, CellType.KEYWORD)
 
@@ -270,37 +270,37 @@ class TestCellInfo(unittest.TestCase):
         print("DEBUG: test_library_import_with_name_and_one_argument:")
         for s in self.test.steps:
             print(f"{s.as_list()}")
-        self._verify_cell_info(0, 0, ContentType.STRING, CellType.KEYWORD)
+        self._verify_cell_info(0, 0, ContentType.STRING, CellType.UNKNOWN)
         self.testsuite.imports.add_library('libi.py', '1', 'alias2')
         self._verify_cell_info(0, 0, ContentType.LIBRARY_KEYWORD, CellType.KEYWORD)
 
     def test_library_import_with_name(self):
         self.test.execute(ChangeCellValue(0,0, 'alias3.Onething'))
-        self._verify_cell_info(0, 0, ContentType.STRING, CellType.KEYWORD)
+        self._verify_cell_info(0, 0, ContentType.STRING, CellType.UNKNOWN)
         self.testsuite.imports.add_library('libi.py', [], 'alias3')
         self._verify_cell_info(0, 0, ContentType.LIBRARY_KEYWORD, CellType.KEYWORD)
 
     def test_library_import_modify(self):
         self.test.execute(PasteArea((0, 0), [['Get File', 'reaktor.robot']]))
         lib = self.testsuite.imports.add_library('WrongOperatingSystem', [], '')
-        self._verify_cell_info(0, 0, ContentType.STRING, CellType.KEYWORD)
+        self._verify_cell_info(0, 0, ContentType.STRING, CellType.UNKNOWN)
         self._verify_cell_info(0, 1, ContentType.STRING, CellType.UNKNOWN)
         lib.set_value('OperatingSystem', [], '')
         self._verify_cell_info(0, 0, ContentType.LIBRARY_KEYWORD, CellType.KEYWORD)
         self._verify_cell_info(0, 1, ContentType.STRING, CellType.MANDATORY)
         self.testsuite.imports.delete(-1)
-        self._verify_cell_info(0, 0, ContentType.STRING, CellType.KEYWORD)
+        self._verify_cell_info(0, 0, ContentType.STRING, CellType.UNKNOWN)
         self._verify_cell_info(0, 1, ContentType.STRING, CellType.UNKNOWN)
 
     def test_create_and_remove_keyword(self):
         kw_name = 'Super Keyword'
         self.test.execute(ChangeCellValue(0, 0, kw_name))
-        self._verify_cell_info(0, 0, ContentType.STRING, CellType.KEYWORD)
+        self._verify_cell_info(0, 0, ContentType.STRING, CellType.UNKNOWN)
         self.test.execute(AddKeyword(kw_name, '${argh}'))
         self._verify_cell_info(0, 0, ContentType.USER_KEYWORD, CellType.KEYWORD)
         self._verify_cell_info(0, 1, ContentType.EMPTY, CellType.MANDATORY)
         self.test.execute(Undo())
-        self._verify_cell_info(0, 0, ContentType.STRING, CellType.KEYWORD)
+        self._verify_cell_info(0, 0, ContentType.STRING, CellType.UNKNOWN)
         self._verify_cell_info(0, 1, ContentType.EMPTY, CellType.UNKNOWN)
 
     def _verify_string_change(self, row, col, celltype):

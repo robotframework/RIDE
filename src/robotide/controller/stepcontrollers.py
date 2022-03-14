@@ -36,7 +36,7 @@ class StepController(_BaseController):
         self.parent = parent
         self._step = step
         # print(f"DEBUG: StepController init self._step.name: {self._step.name if self._step.name else None }")
-        self._cell_info_cache = {}
+        # self._cell_info_cache = {}
 
     @property
     def display_name(self):
@@ -80,13 +80,25 @@ class StepController(_BaseController):
             return ''
         return values[col]
 
+    """    
     def get_cell_info(self, col):
         if col not in self._cell_info_cache:
             position = self._get_cell_position(col)
             print(f"DEBUG: Stepcontroller get_cell_info position({col}) {position.type} {position.argument_name}")
             content = self._get_content_with_type(col, position)
             self._cell_info_cache[col] = self._build_cell_info(content, position)
+        else:
+            print(f"DEBUG: Stepcontroller get_cell_info position({col}) IN CACHE *******")
         return self._cell_info_cache[col]
+    """
+
+    def get_cell_info(self, col):
+        print(f"DEBUG: Stepcontroller ENTER get_cell_info position({col}) {'W'*col if col == 2 else ''}")
+        position = self._get_cell_position(col)
+        print(f"DEBUG: Stepcontroller get_cell_info position({col}) {position.type} {position.argument_name}")
+        content = self._get_content_with_type(col, position)
+        print(f"DEBUG: Stepcontroller get_cell_info position({col}) content.type={content.type} value={content.value}")
+        return self._build_cell_info(content, position)
 
     @property
     def assignments(self):
@@ -102,43 +114,44 @@ class StepController(_BaseController):
     def _build_cell_info(self, content, position):
         return CellInfo(content, position)
 
-    def _get_cell_position(self, col):
+    def _get_cell_position(self, column):
         # TODO: refactor
-        print(f"DEBUG: Stepcontroller Enter _get_cell_position {col}")
+        print(f"DEBUG: Stepcontroller Enter _get_cell_position {column}")
         if self.parent.has_template():
             return CellPosition(CellType.UNKNOWN, None)
-        col -= len(self._step.assign)
-        print(f"DEBUG: Stepcontroller _get_cell_position not in template processing {col}"
+        column -= len(self._step.assign)
+        print(f"DEBUG: Stepcontroller _get_cell_position not in template processing {column}"
               f" current keyword_column={self._keyword_column} step name: {self._step.name}")
-        if col < 0:
+        if column < 0:
             return CellPosition(CellType.ASSIGN, None)
         info = self.get_keyword_info(self._step.name)
         if info:
             print(f"DEBUG: Stepcontroller _get_cell_position info {info.name if info else None} info.args {info.arguments}")
-        if col == self._keyword_column:
-            print(f"DEBUG: Stepcontroller _get_cell_position return KEYWORD{col} info {info.name if info else None}")
-            return CellPosition(CellType.KEYWORD, None)
         if not info:
             return CellPosition(CellType.UNKNOWN, None)
+        if column == self._keyword_column:
+            print(f"DEBUG: Stepcontroller _get_cell_position return KEYWORD {column} info {info.name if info else None}")
+            return CellPosition(CellType.KEYWORD, None)
         args = info.arguments
         args_amount = len(args)
         if args_amount == 0:
             return CellPosition(CellType.MUST_BE_EMPTY, None)
-        if col >= args_amount and self._last_argument_is_varargs(args):
+        if column >= args_amount and self._last_argument_is_varargs(args):
             return CellPosition(CellType.OPTIONAL, args[-1])
-        if self._has_list_or_dict_var_value_before(col - 1):
+        if self._has_list_or_dict_var_value_before(column - 1):
             return CellPosition(CellType.UNKNOWN, None)
-        if col - self._keyword_column > args_amount:
+        if column - self._keyword_column > args_amount:
             return CellPosition(CellType.MUST_BE_EMPTY, None)
-        if col - self._keyword_column <= self._number_of_mandatory_arguments(args, args_amount):
-            return CellPosition(CellType.MANDATORY, args[col-self._keyword_column-1])
-        return CellPosition(CellType.OPTIONAL, args[col-1])
+        if column - self._keyword_column <= self._number_of_mandatory_arguments(args, args_amount):
+            return CellPosition(CellType.MANDATORY, args[column-self._keyword_column-1])
+        return CellPosition(CellType.OPTIONAL, args[column-1])
 
     def _number_of_mandatory_arguments(self, args, args_amount):
         defaults = [arg for arg in args if '=' in arg]
         n = args_amount - len(defaults)
         if self._last_argument_is_varargs(args):
             n -= 1
+        print(f"DEBUG: Stepcontroller _number_of_mandatory_arguments=={n} args_amount={args_amount} defaults={len(defaults)}")
         return n
 
     def _last_argument_is_varargs(self, args):
@@ -542,6 +555,7 @@ class ForLoopStepController(StepController):
         self._step.steps = steps
 
     def _get_cell_position(self, col):
+        print(f"DEBUG: enter _get_cell_position at ForLoopStepController: col={col}")
         until_range = len(self._step.vars) + 1
         flavor = self._step.flavor
         if col == 0:
@@ -650,17 +664,26 @@ class IntendedStepController(StepController):
 
     _invalid = False
 
+    def _first_non_empty_cell(self):
+        print(f"DEBUG: IntendedStepController enter _first_non_empty_cell")
+        cells = self.as_list()
+        index = 1
+        while index < len(cells) and cells[index] == '':
+            index += 1
+        return index
+
     @property
     def _keyword_column(self):
-        return 1
+        return self._first_non_empty_cell()
 
     def as_list(self):
         return [''] + self._step.as_list()  # DEBUG removed [''] +
 
     def _get_cell_position(self, col):
+        print(f"DEBUG: enter _get_cell_position at IntendedStepController: col={col}")
         if col < self._keyword_column:
             return CellPosition(CellType.MUST_BE_EMPTY, None)
-        return StepController._get_cell_position(self, col - 1)
+        return StepController._get_cell_position(self, col)
 
     def _get_local_namespace(self):
         p = self.parent.parent
