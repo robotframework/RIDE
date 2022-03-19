@@ -7,6 +7,10 @@ before_install:
   # In normal circunstances we would just do "pip install wxPython"
   # - pip install https://wxpython.org/Phoenix/snapshot-builds/linux/gtk3/ubuntu-14.04/wxPython-4.0.0a3.dev3059+4a5c5d9-cp27-cp27mu-linux_x86_64.whl
   - pip install $WXPACK
+  # Fix deprecation of node.js 10 breaking Sonarcloud
+  - curl -sL https://deb.nodesource.com/setup_16.x -o nodesource_setup.sh
+  - sudo bash ./nodesource_setup.sh
+  - sudo apt install nodejs
 install:
   - pip install -r requirements-dev.txt
   - pip install .
