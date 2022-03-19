@@ -29,8 +29,8 @@ sys.path.insert(0, os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
 SCRIPT_DIR = os.path.dirname(pathlib.Path(__file__).parent)
 sys.path.insert(0, SCRIPT_DIR)
 
-from controller.base_command_test import TestCaseCommandTest  # .base_command_test
-from controller.controller_creator import *
+from .base_command_test import TestCaseCommandTest  # .base_command_test
+from .controller_creator import *
 # from controller_creator import *
 
 
@@ -384,11 +384,14 @@ class TestCaseEditingTest(TestCaseCommandTest):
         end_row = self._data_row(FOR_LOOP_STEP2)
         # print(f"DEBUG: test_delete_cells_in_for_loop_and_undo enter:")
         self._exec(DeleteCells((start_row, 1), (end_row, 10)))
-        # for s in self._steps:
-        #    print(f"{s.as_list()}")
+        for s in self._steps:
+            print(f"{s.as_list()}")
         assert_equal(self._steps[start_row].as_list(), [''])
         assert_equal(self._steps[end_row].as_list(), [''])
         self._exec(Undo())
+        # print(f"DEBUG: test_delete_cells_in_for_loop_and_undo AFTER Undo:")
+        # for s in self._steps:
+        #    print(f"{s.as_list()}")
         self._verify_steps_unchanged(FOR_LOOP_STEP1, FOR_LOOP_STEP2)
 
     def test_commenting(self):

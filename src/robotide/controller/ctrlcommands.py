@@ -1030,7 +1030,7 @@ class ChangeCellValue(_StepsChangingCommand):
             # print(f"DEBUG: change_steps after insert cell Line: {context.steps[self._row].as_list()}")
         else:
             step.change(self._col, self._value)
-        # print(f"DEBUG: change_steps after change from_column: ({self._row}, {self._col}, {self._value}) Line: {context.steps[self._row].as_list()}")
+        print(f"DEBUG: change_steps after change from_column: ({self._row}, {self._col}, {self._value}) Line: {context.steps[self._row].as_list()}")
         self._step(context).remove_empty_columns_from_end()
         assert self._validate_postcondition(context), 'Should have correct value after change'
         return True
@@ -1114,9 +1114,9 @@ class InsertCell(_StepsChangingCommand):
 
     def change_steps(self, context):
         self._step(context).shift_right(self._col)
+        # print(f"DEBUG: InsertCell  change_steps row:{self._row} cols:{self._col} row BEFORE _recreate: {context.steps[self._row].as_list()}")
         self._step(context)._recreate(context.steps[self._row].as_list())
-        assert self._step(context).get_value(self._col) == '', \
-            'Should have an empty value after insert'
+        assert self._step(context).get_value(self._col) == '', 'Should have an empty value after insert'
         return True
 
     def _get_undo_command(self):
@@ -1135,7 +1135,7 @@ class DeleteCell(_StepsChangingCommand):
 
     def change_steps(self, context):
         step = self._step(context)
-        print(f"DEBUG: DeleteCell enter change: {step.as_list()}")
+        # print(f"DEBUG: DeleteCell enter change: {step.as_list()}")
         self._undo_command = StepsChangingCompositeCommand(
             InsertCell(self._row, self._col),
             ChangeCellValue(self._row, self._col,
