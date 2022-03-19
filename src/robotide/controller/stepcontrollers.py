@@ -144,7 +144,7 @@ class StepController(_BaseController):
             return CellPosition(CellType.MUST_BE_EMPTY, None)
         if column - self._keyword_column <= self._number_of_mandatory_arguments(args, args_amount):
             return CellPosition(CellType.MANDATORY, args[column-self._keyword_column-1])
-        return CellPosition(CellType.OPTIONAL, args[column-1])
+        return CellPosition(CellType.OPTIONAL, args[-1])
 
     def _number_of_mandatory_arguments(self, args, args_amount):
         defaults = [arg for arg in args if '=' in arg]
@@ -202,7 +202,7 @@ class StepController(_BaseController):
             return False
         inner_value = value[2:-1]
         modified = re.split(r'\W', inner_value, 1)[0]
-        print(f"\nDEBUG: Stepcontrollers value: {value} inner_value: {inner_value} modified: {modified}")
+        # print(f"\nDEBUG: Stepcontrollers value: {value} inner_value: {inner_value} modified: {modified}")
         return not self._get_local_namespace().has_name(
             '%s{%s}' % (value[0], modified))
 
