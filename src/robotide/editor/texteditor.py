@@ -363,7 +363,7 @@ class SourceEditor(wx.Panel, RIDEDialog):
         self._title = title
         self._tab_size = self._parent._app.settings.get(
                       'txt number of spaces', 4)
-        self._reformat = self._parent._app.settings.get('reformat', True)
+        self._reformat = self._parent._app.settings.get('reformat', False)
         self._create_ui(title)
         self._data = None
         self._dirty = 0  # 0 is False and 1 is True, when changed on this editor

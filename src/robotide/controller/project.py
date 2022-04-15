@@ -259,7 +259,7 @@ class Project(_BaseController, WithNamespace):
             return
         old_path = controller.filename
         controller.set_format(format)
-        controller.execute(SaveFile())
+        controller.execute(SaveFile(self._settings.get('reformat')))
         if old_path:
             self._remove_file(old_path)
             RideFileNameChanged(old_filename=old_path,

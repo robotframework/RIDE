@@ -16,7 +16,7 @@
 import wx
 
 from ..context import IS_WINDOWS
-from ..ui.preferences_dialogs import PreferencesPanel, IntegerChoiceEditor, StringChoiceEditor
+from ..ui.preferences_dialogs import PreferencesPanel, IntegerChoiceEditor, StringChoiceEditor, boolean_editor
 from wx import Colour
 
 
@@ -32,22 +32,32 @@ class SavingPreferences(PreferencesPanel):
         self.foreground_color = Colour("black")
         for editor in self._create_editors(settings):
             self._add_editor(editor)
+        l_reformat, editor = boolean_editor(self, settings, 'reformat', 'Reformat?',
+                                            'Should it recalculate identation on Save?')
+        if IS_WINDOWS:
+            l_reformat.SetForegroundColour(self.foreground_color)
+            l_reformat.SetBackgroundColour(self.background_color)
+            l_reformat.SetOwnBackgroundColour(self.background_color)
+            l_reformat.SetOwnForegroundColour(self.foreground_color)
+        self.Sizer.AddMany([l_reformat, editor])
+        self.Sizer.Layout()
+        self.Update()
 
     def _create_editors(self, settings):
         return [
             StringChoiceEditor(settings, 'default file format', 'Default file format:',
                                ('txt', 'tsv', 'html', 'robot', 'resource')
-            ),
+                               ),
             StringChoiceEditor(settings, 'txt format separator', 'TXT format separator:', ('pipe', 'space')
-            ),
+                               ),
             StringChoiceEditor(settings, 'line separator', 'Line separator:',
                                ('native', 'CRLF', 'LF'),
                                'Possible values are native (of current OS) CRLF (Windows) and LF (Unixy)'
-            ),
+                               ),
             IntegerChoiceEditor(settings, 'txt number of spaces', 'Separating spaces',
                                 [str(i) for i in range(2, 11)],
                                 'Number of spaces between cells when saving in txt format'
-            )
+                                )
         ]
 
     def _add_editor(self, editor):
