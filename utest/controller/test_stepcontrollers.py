@@ -33,12 +33,12 @@ class UpdatingArgumentsTest(unittest.TestCase):
     def test_converting_last_empty_cell_with_single_value(self):
         self.assertEqual(
             FakeStep()._change_last_empty_to_empty_var([''], None),
-            [''])
+            ['${EMPTY}'])
 
     def test_converting_last_empty_cell_with_multiple_values(self):
         self.assertEqual(
             FakeStep()._change_last_empty_to_empty_var(['Foo', '', ''], None),
-            ['Foo', '', ''])
+            ['Foo', '', '${EMPTY}'])
 
     def test_converting_last_empty_cell_with_comment(self):
         self.assertEqual(

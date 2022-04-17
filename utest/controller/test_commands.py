@@ -29,8 +29,8 @@ sys.path.insert(0, os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
 SCRIPT_DIR = os.path.dirname(pathlib.Path(__file__).parent)
 sys.path.insert(0, SCRIPT_DIR)
 
-from .base_command_test import TestCaseCommandTest  # .base_command_test
-from .controller_creator import *
+from base_command_test import TestCaseCommandTest  # .base_command_test
+from controller_creator import *
 # from controller_creator import *
 
 
@@ -52,7 +52,7 @@ class FileHandlingCommandsTest(TestCaseCommandTest):
         self._add_empty_step_to_macro()
         other_name = self._ctrl.name + 'foo'
         self._copy_macro_as(other_name)
-        self._exec(SaveFile())
+        self._exec(SaveFile(reformat=True))
         assert_equal(len(self._ctrl.steps), self._orig_number_of_steps+1)
         other = self._get_macro_by_name(other_name)
         assert_equal(len(other.steps), self._orig_number_of_steps+1)
@@ -87,7 +87,7 @@ class MacroCopyingTest(TestCaseCommandTest):
         self._exec(CopyMacroAs(new_name))
         copy = self._get_copy(new_name)
         copy.execute(ChangeCellValue(0, 0, 'Changed Step'))
-        assert_equal(self._ctrl.steps[0].keyword, STEP1_KEYWORD)
+        assert_equal(['']+self._data_step_as_list(self._ctrl.steps[0].keyword), self._data_step_as_list(STEP1_KEYWORD))
         assert_equal(copy.steps[0].keyword, 'Changed Step')
 
     def _get_copy(self,name):
@@ -273,6 +273,7 @@ class TestCaseEditingTest(TestCaseCommandTest):
         self._exec(AddRow(1))
         self._exec(AddRow(2))
         assert_equal(len(self._steps), self._orig_number_of_steps+2)
+        print(f"DEBUG: before Purify {self.debug()}")
         self._exec(Purify())
         assert_equal(len(self._steps), self._orig_number_of_steps)
         self._exec(Undo())
@@ -403,20 +404,23 @@ class TestCaseEditingTest(TestCaseCommandTest):
         for s in self._steps:
             print(f"{s.as_list()}")
         for row_data in [STEP2, STEP_WITH_COMMENT, FOR_LOOP_HEADER, FOR_LOOP_STEP1]:
+            print(f"DEBUG: step-->{self._steps[self._data_row(row_data)].as_list()}")
             assert_equal(self._steps[self._data_row(row_data)].as_list(),
-                          ['Comment'] + self._data_step_as_list(row_data))
+                          ['Comment'] + self._data_step_as_list(row_data)[1:])
 
     def test_commenting_step_in_for_loop(self):
         row = self._data_row(FOR_LOOP_STEP1)
         self._exec(CommentRows([row]))
         assert_equal(self._steps[row].as_list(),
-                      ['', 'Comment'] + self._data_step_as_list(FOR_LOOP_STEP1)[1:])
+                      ['Comment'] + self._data_step_as_list(FOR_LOOP_STEP1)[1:])
 
     def test_commenting_for_loop_end(self):
         row = self._data_row(FOR_LOOP_END)
+        print(f"DEBUG: test_commenting_for_loop_end: original row={BASE_DATA[row+1]}")
         self._exec(CommentRows([row]))
+        print(f"DEBUG: test_commenting_for_loop_end: commented row={self._steps[row].as_list()}")
         assert_equal(self._steps[row].as_list(),
-                      ['Comment'] + self._data_step_as_list(FOR_LOOP_END)[:])
+                      ['Comment'] + self._data_step_as_list(FOR_LOOP_END)[1:])
 
     def test_uncommenting_single_row(self):
         self._exec(CommentRows([0]))
@@ -451,10 +455,10 @@ class TestCaseEditingTest(TestCaseCommandTest):
 
 _TEST_WITH_TWO_FOR_LOOPS = ['Test With Two For Loops',
                             '  FOR  ${i}  IN  1  2',
-                            '    Log  ${i}',
+                            '  Log  ${i}',
                             '  END',
                             '  FOR  ${j}  IN  1  2',
-                            '    Log  ${j}',
+                            '  Log  ${j}',
                             '  END']
 
 
@@ -468,18 +472,18 @@ class ForLoopCases(TestCaseCommandTest):
         self._verify_step(3, '${j}', ['IN', '1', '2'])
 
     def test_remove_first_step_in_for_loop(self):
-        self._exec(DeleteCells((1,1), (1,2)))
+        self._exec(DeleteCells((1,0), (1,2)))
         self._verify_step_unchanged('  FOR  ${i}  IN  1  2')
         self._verify_step(1, '')
         self._verify_step_unchanged('  FOR  ${j}  IN  1  2')
-        self._verify_step_unchanged('    Log  ${j}')
+        self._verify_step_unchanged('  Log  ${j}')
         self._verify_step_unchanged('  END')
 
     def test_remove_end_step_in_for_loop(self):
-        self._exec(DeleteCells((2,0), (2,0)))
+        self._exec(DeleteCells((2,0), (2,1)))
         self._verify_step_unchanged('  FOR  ${i}  IN  1  2')
-        self._verify_step_unchanged('    Log  ${i}')
-        self._verify_step_unchanged('    Log  ${j}')
+        self._verify_step_unchanged('  Log  ${i}')
+        self._verify_step_unchanged('  Log  ${j}')
         self._verify_step_unchanged('  FOR  ${j}  IN  1  2')
 
 
@@ -503,14 +507,14 @@ class RowMovingTest(TestCaseCommandTest):
 
     def test_move_for_loop_header_up(self):
         self._exec(MoveRowsUp([self._data_row(FOR_LOOP_HEADER)]))
-        self._assert_step_order(STEP1,
-                                STEP2,
-                                FOR_LOOP_HEADER,
+        self._assert_step_order('  '+STEP1,
+                                '  '+STEP2,
+                                ''+FOR_LOOP_HEADER,
                                 '  '+STEP_WITH_COMMENT,
                                 FOR_LOOP_STEP1,
                                 FOR_LOOP_STEP2,
-                                FOR_LOOP_END,
-                                STEP_AFTER_FOR_LOOP)
+                                '  '+FOR_LOOP_END,
+                                '  '+STEP_AFTER_FOR_LOOP)
 
     def test_move_step1_in_for_loop_header_up(self):
         self._exec(MoveRowsUp([self._data_row(FOR_LOOP_STEP1)]))
@@ -528,7 +532,7 @@ class RowMovingTest(TestCaseCommandTest):
         self._assert_step_order(STEP1,
                                 STEP2,
                                 FOR_LOOP_HEADER,
-                                '  '+STEP_WITH_COMMENT,
+                                STEP_WITH_COMMENT,
                                 FOR_LOOP_STEP1,
                                 FOR_LOOP_STEP2,
                                 FOR_LOOP_END,
@@ -575,7 +579,7 @@ class RowMovingTest(TestCaseCommandTest):
                                 FOR_LOOP_HEADER,
                                 FOR_LOOP_STEP1,
                                 FOR_LOOP_STEP2,
-                                '  ' + STEP_AFTER_FOR_LOOP,
+                                STEP_AFTER_FOR_LOOP,
                                 FOR_LOOP_END)
 
     def test_move_up_for_loop_end(self):
@@ -943,7 +947,7 @@ class RowMovingTest(TestCaseCommandTest):
 
     def _assert_step_order(self, *steps):
         for idx, step in enumerate(steps):
-            assert_equal(self._steps[idx].as_list(),
+            assert_equal(['']+self._steps[idx].as_list(),
                          self._data_step_as_list(step))
         assert_true(self._ctrl.dirty)
 

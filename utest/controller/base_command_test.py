@@ -41,6 +41,7 @@ class TestCaseCommandTest(unittest.TestCase, _FakeProject):
     def setUp(self):
         self._steps = None
         self._data = self._create_data()
+        print(f"DEBUG: base setup {self._data[:]}")
         self._ctrl = testcase_controller(self, data=self._data)
         PUBLISHER.subscribe(self._test_changed, RideItemStepsChanged)
         self._orig_number_of_steps = len(self._ctrl.steps)
@@ -70,7 +71,7 @@ class TestCaseCommandTest(unittest.TestCase, _FakeProject):
         return self._data.index(line) - 1
 
     def _data_step_as_list(self, step_data):
-        return step_data.split('  ')[1:]
+        return step_data.split('  ')[:]
 
     def _exec(self, command):
         return self._ctrl.execute(command)
@@ -82,7 +83,7 @@ class TestCaseCommandTest(unittest.TestCase, _FakeProject):
     def _verify_step_unchanged(self, step_data):
         row = self._data_row(step_data)
         assert_equal(self._steps[row].as_list(),
-                     self._data_step_as_list(step_data))
+                     self._data_step_as_list(step_data)[1:])
 
     def _verify_steps_unchanged(self, *steps):
         for step in steps:
@@ -100,7 +101,11 @@ class TestCaseCommandTest(unittest.TestCase, _FakeProject):
         assert_equal(self._steps[index].as_list(), [])
 
     def _verify_step(self, index, exp_name, exp_args=[], exp_comment=None):
-        exp = [exp_name] + exp_args
+        if exp_name == '':
+            exp_name = []
+        else:
+            exp_name = [exp_name]
+        exp = exp_name + exp_args
         if exp_comment:
             exp += [exp_comment]
         assert_equal(self._steps[index].as_list(), exp)

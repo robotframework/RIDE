@@ -577,6 +577,7 @@ class Variable(object):
 class _WithSteps(object):
 
     def add_step(self, content, comment=None):
+        # print(f"DEBUG: model.py Enter _WithSteps content={content[:]}")
         self.steps.append(Step(content, comment))
         return self.steps[-1]
 
@@ -764,14 +765,21 @@ class ForLoop(_WithSteps):
 
 class Step(object):
 
+    inner_kw_pos = None
+
     def __init__(self, content, comment=None):
         # print(f"DEBUG: RFLib Model enter init Step: 1st cell content {content}")
         self.assign = self._get_assign(content)
         index = self.first_non_empty_cell(content)
         self.indent = []
+        self.comment = None
+        self.args = []
+        self.name = None
+        if index == -1:
+            return
         for _ in range(0, index):
             self.indent.append('')
-        # print(f"DEBUG: RFLib Model init Step: indent={self.indent[:]}")
+        # print(f"DEBUG: RFLib Model init Step: index={index} inner_kw_pos = {self.inner_kw_pos} indent={self.indent[:]} \ncontent {content}")
         self.args = content[index + 1:] if content and index <= len(content) - 1 else []
         # print(f"DEBUG: RFLib Model init Step: 1st cell len(content)={len(content)} index {index} indent={self.indent[:]}")  # 1st cell: {content[index]}")
         if index < len(content):
@@ -800,13 +808,16 @@ class Step(object):
         # print("DEBUG RFLib Model Step: self.name %s" % self.name )
         kw = [self.name] if self.name is not None else []
         # print(f"DEBUG RFLib Model Step: as_list() self.name={self.name} kw={kw}" )
-        comments = self.comment.as_list() if include_comment else []
+        if self.comment:
+            comments = self.comment.as_list() if include_comment else []
+        else:
+            comments = []
         # print(f"DEBUG RFLib Model Step: as_list() self.name={self.name} kw={kw}\n comments={comments} args={self.args}" )
         if indent:
             self.indent.insert(0, '')
         data = self.indent + self.assign + kw + self.args + comments
         # print(f"DEBUG RFLib Model Step: as_list() self.name={self.name} kw={kw}\n comments={comments} data={data}")
-        # print("DEBUG RFLib Model Step: data %s" % data)
+        print("DEBUG RFLib Model Step: data %s" % data)
         return data
 
     def first_non_empty_cell(self, content):
@@ -817,10 +828,12 @@ class Step(object):
         index = 0
         while index < len(cells) and cells[index] == '':
             index += 1
-        return index
+        if not self.inner_kw_pos:
+            self.inner_kw_pos = index
+        return index if index < len(cells) else index - 1
 
-    def first_empty_cell(self, content):
-        index = self.first_non_empty_cell(content)
+    def first_empty_cell(self):
+        index = self.inner_kw_pos
         if index > 0:
             return index - 1
         return None
