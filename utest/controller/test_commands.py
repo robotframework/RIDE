@@ -52,7 +52,14 @@ class FileHandlingCommandsTest(TestCaseCommandTest):
         self._add_empty_step_to_macro()
         other_name = self._ctrl.name + 'foo'
         self._copy_macro_as(other_name)
+        # print(f"DEBUG: test_file_saving_purifies: before SaveFile")
+        # print(f"DEBUG: test_file_saving_purifies: steps: ")
+        # for i in self._ctrl.steps:
+        #     print(f"{i.as_list()}")
         self._exec(SaveFile(reformat=True))
+        # print(f"DEBUG: test_file_saving_purifies: steps: ")
+        # for i in self._ctrl.steps:
+        #     print(f"{i.as_list()}")
         assert_equal(len(self._ctrl.steps), self._orig_number_of_steps+1)
         other = self._get_macro_by_name(other_name)
         assert_equal(len(other.steps), self._orig_number_of_steps+1)
@@ -221,17 +228,17 @@ class TestCaseEditingTest(TestCaseCommandTest):
     def test_adding_row_last(self):
         self._exec(AddRow(-1))
         assert_equal(len(self._steps), self._orig_number_of_steps+1)
-        assert_equal(self._steps[self._orig_number_of_steps].as_list(), [])
+        assert_equal(self._steps[self._orig_number_of_steps].as_list(), [''])
 
     def test_adding_row_first(self):
         self._exec(AddRow(0))
         assert_equal(len(self._steps), self._orig_number_of_steps+1)
-        assert_equal(self._steps[0].as_list(), [])
+        assert_equal(self._steps[0].as_list(), [''])
 
     def test_adding_row_middle(self):
         self._exec(AddRow(1))
         assert_equal(len(self._steps), self._orig_number_of_steps+1)
-        assert_equal(self._steps[1].as_list(), [])
+        assert_equal(self._steps[1].as_list(), [''])
 
     def test_adding_row_in_for_loop_body(self):
         row_in_for_loop = self._data_row(FOR_LOOP_STEP2)
@@ -245,7 +252,7 @@ class TestCaseEditingTest(TestCaseCommandTest):
         self._exec(DeleteRow(row_after_for_loop))
         assert_equal(self._steps[-1].as_list(), ['END'])
         self._exec(InsertCell(0,0))
-        self._verify_step(0, '', ['Step 1', 'arg'])
+        self._verify_step(0, '', ['', 'Step 1', 'arg'])
 
     def test_add_multiple_rows(self):
         self._exec(AddRows([1,2]))
@@ -418,6 +425,9 @@ class TestCaseEditingTest(TestCaseCommandTest):
         row = self._data_row(FOR_LOOP_END)
         print(f"DEBUG: test_commenting_for_loop_end: original row={BASE_DATA[row+1]}")
         self._exec(CommentRows([row]))
+        print(f"DEBUG: test_commenting_for_loop_end: after CommentRows")
+        # for s in self._steps:
+        #    print(f"{s.as_list()}")
         print(f"DEBUG: test_commenting_for_loop_end: commented row={self._steps[row].as_list()}")
         assert_equal(self._steps[row].as_list(),
                       ['Comment'] + self._data_step_as_list(FOR_LOOP_END)[1:])
@@ -469,7 +479,7 @@ class ForLoopCases(TestCaseCommandTest):
 
     def test_remove_second_for_header(self):
         self._exec(DeleteCells((3,0), (3,0)))
-        self._verify_step(3, '${j}', ['IN', '1', '2'])
+        self._verify_step(3, '${j}', ['IN', '1', '2'], kw=False)
 
     def test_remove_first_step_in_for_loop(self):
         self._exec(DeleteCells((1,0), (1,2)))
@@ -507,21 +517,21 @@ class RowMovingTest(TestCaseCommandTest):
 
     def test_move_for_loop_header_up(self):
         self._exec(MoveRowsUp([self._data_row(FOR_LOOP_HEADER)]))
-        self._assert_step_order('  '+STEP1,
-                                '  '+STEP2,
-                                ''+FOR_LOOP_HEADER,
-                                '  '+STEP_WITH_COMMENT,
+        self._assert_step_order(STEP1,
+                                STEP2,
+                                FOR_LOOP_HEADER,
+                                STEP_WITH_COMMENT,
                                 FOR_LOOP_STEP1,
                                 FOR_LOOP_STEP2,
-                                '  '+FOR_LOOP_END,
-                                '  '+STEP_AFTER_FOR_LOOP)
+                                FOR_LOOP_END,
+                                STEP_AFTER_FOR_LOOP)
 
     def test_move_step1_in_for_loop_header_up(self):
         self._exec(MoveRowsUp([self._data_row(FOR_LOOP_STEP1)]))
         self._assert_step_order(STEP1,
                                 STEP2,
                                 STEP_WITH_COMMENT,
-                                FOR_LOOP_STEP1[2:],
+                                FOR_LOOP_STEP1,
                                 FOR_LOOP_HEADER,
                                 FOR_LOOP_STEP2,
                                 FOR_LOOP_END,
@@ -557,7 +567,7 @@ class RowMovingTest(TestCaseCommandTest):
                                 FOR_LOOP_HEADER,
                                 FOR_LOOP_STEP1,
                                 FOR_LOOP_END,
-                                FOR_LOOP_STEP2[2:],
+                                FOR_LOOP_STEP2,
                                 STEP_AFTER_FOR_LOOP)
 
     def test_move_down_for_loop_header(self):
@@ -565,7 +575,7 @@ class RowMovingTest(TestCaseCommandTest):
         self._assert_step_order(STEP1,
                                 STEP2,
                                 STEP_WITH_COMMENT,
-                                FOR_LOOP_STEP1[2:],
+                                FOR_LOOP_STEP1,
                                 FOR_LOOP_HEADER,
                                 FOR_LOOP_STEP2,
                                 FOR_LOOP_END,
@@ -593,7 +603,7 @@ class RowMovingTest(TestCaseCommandTest):
                                 FOR_LOOP_HEADER,
                                 FOR_LOOP_STEP1,
                                 FOR_LOOP_END,
-                                FOR_LOOP_STEP2[2:],
+                                FOR_LOOP_STEP2,
                                 STEP_AFTER_FOR_LOOP)
 
     def test_move_up_and_down_step_in_for_loop(self):
@@ -604,6 +614,7 @@ class RowMovingTest(TestCaseCommandTest):
                     row[idx] = sep
             st = sep.join(row)
             return st
+        # TODO Break this test into several
         self._exec(MoveRowsUp([self._data_row(STEP_AFTER_FOR_LOOP)]))
         self._exec(MoveRowsDown([self._data_row(FOR_LOOP_STEP1)]))
         # print(f"\nDEBUG: test_move_up_and_down_step_in_for_loop result:")
@@ -613,11 +624,11 @@ class RowMovingTest(TestCaseCommandTest):
                                 STEP2,
                                 STEP_WITH_COMMENT,
                                 FOR_LOOP_HEADER,
-                                FOR_LOOP_STEP2,
+                                '  ' + FOR_LOOP_STEP2,
                                 FOR_LOOP_STEP1,
                                 '  ' + STEP_AFTER_FOR_LOOP,
                                 FOR_LOOP_END)
-        # print("after assert1")
+        print("after assert1")
         for row in range(0, len(self._steps)):
             self._data[row+1] = str_step(self._steps[row].as_list())
             # print("%s" % self._data[row+1])
@@ -626,11 +637,11 @@ class RowMovingTest(TestCaseCommandTest):
                                 STEP2,
                                 STEP_WITH_COMMENT,
                                 FOR_LOOP_HEADER,
-                                FOR_LOOP_STEP2,
+                                '  ' + FOR_LOOP_STEP2,
                                 '  ' + STEP_AFTER_FOR_LOOP,
                                 FOR_LOOP_STEP1,
                                 FOR_LOOP_END)
-        # print("after assert2")
+        print("after assert2")
         for row in range(0, len(self._steps)):
             self._data[row+1] = str_step(self._steps[row].as_list())
             # print("%s" % self._data[row+1])
@@ -643,10 +654,10 @@ class RowMovingTest(TestCaseCommandTest):
                                 STEP_WITH_COMMENT,
                                 FOR_LOOP_HEADER,
                                 '  ' + STEP_AFTER_FOR_LOOP,
-                                FOR_LOOP_STEP2,
+                                '  ' + FOR_LOOP_STEP2,
                                 FOR_LOOP_STEP1,
                                 FOR_LOOP_END)
-        # print("after assert3")
+        print("after assert3")
         for row in range(0, len(self._steps)):
             self._data[row+1] = str_step(self._steps[row].as_list())
             # print("%s" % self._data[row+1])
@@ -654,27 +665,27 @@ class RowMovingTest(TestCaseCommandTest):
         self._assert_step_order(STEP1,
                                 STEP2,
                                 STEP_WITH_COMMENT,
-                                STEP_AFTER_FOR_LOOP,
+                                '  ' + STEP_AFTER_FOR_LOOP,
                                 FOR_LOOP_HEADER,
-                                FOR_LOOP_STEP2,
+                                '  ' + FOR_LOOP_STEP2,
                                 FOR_LOOP_STEP1,
                                 FOR_LOOP_END)
-        # print("after assert4")
+        print("after assert4")
         for row in range(0, len(self._steps)):
             self._data[row+1] = str_step(self._steps[row].as_list())
             # print("%s" % self._data[row+1])
-        self._exec(MoveRowsDown([self._data_row(STEP_AFTER_FOR_LOOP[2:])]))
+        self._exec(MoveRowsDown([self._data_row(STEP_AFTER_FOR_LOOP)]))
         self._exec(MoveRowsDown([self._data_row(FOR_LOOP_STEP1[2:])]))
         self._assert_step_order(STEP1,
                                 STEP2,
                                 STEP_WITH_COMMENT,
                                 FOR_LOOP_HEADER,
                                 '  ' + STEP_AFTER_FOR_LOOP,
-                                FOR_LOOP_STEP2,
+                                '  ' + FOR_LOOP_STEP2,
                                 FOR_LOOP_END,
-                                FOR_LOOP_STEP1[2:]
+                                FOR_LOOP_STEP1
                                 )
-        # print("after assert5")
+        print("after assert5")
         for row in range(0, len(self._steps)):
             self._data[row+1] = str_step(self._steps[row].as_list())
             # print("%s" % self._data[row+1])
@@ -685,13 +696,13 @@ class RowMovingTest(TestCaseCommandTest):
         self._assert_step_order(STEP1,
                                 STEP2,
                                 FOR_LOOP_HEADER,
-                                '  ' + STEP_WITH_COMMENT,
+                                STEP_WITH_COMMENT,
                                 '  ' + STEP_AFTER_FOR_LOOP,
                                 FOR_LOOP_END,
-                                FOR_LOOP_STEP2[2:],
-                                FOR_LOOP_STEP1[2:]
+                                FOR_LOOP_STEP2,
+                                FOR_LOOP_STEP1
                                 )
-        # print("after assert6")
+        print("after assert6")
         for row in range(0, len(self._steps)):
             self._data[row+1] = str_step(self._steps[row].as_list())
             # print("%s" % self._data[row+1])
@@ -701,13 +712,13 @@ class RowMovingTest(TestCaseCommandTest):
         self._assert_step_order(STEP2,
                                 STEP1,
                                 FOR_LOOP_HEADER,
-                                '  ' + STEP_WITH_COMMENT,
+                                STEP_WITH_COMMENT,
                                 FOR_LOOP_END,
                                 STEP_AFTER_FOR_LOOP,
-                                FOR_LOOP_STEP2[2:],
-                                FOR_LOOP_STEP1[2:]
+                                FOR_LOOP_STEP2,
+                                FOR_LOOP_STEP1
                                 )
-        # print("after assert7")
+        print("after assert7")
         for row in range(0, len(self._steps)):
             self._data[row + 1] = str_step(self._steps[row].as_list())
             # print("%s" % self._data[row + 1])
@@ -718,10 +729,10 @@ class RowMovingTest(TestCaseCommandTest):
                                 STEP2,
                                 STEP_WITH_COMMENT,
                                 FOR_LOOP_HEADER,
-                                '  ' + STEP_AFTER_FOR_LOOP,
+                                STEP_AFTER_FOR_LOOP,
                                 FOR_LOOP_END,
-                                FOR_LOOP_STEP2[2:],
-                                FOR_LOOP_STEP1[2:]
+                                FOR_LOOP_STEP2,
+                                FOR_LOOP_STEP1
                                 )
         # print("after assert8")
         # for row in range(0, len(self._steps)):
@@ -740,7 +751,6 @@ class RowMovingTest(TestCaseCommandTest):
             st = sep.join(row)
             return st
         self._exec(MoveRowsDown([self._data_row(FOR_LOOP_HEADER)]))
-
         # print("DEBUG: after move loop 1")
         for row in range(0, len(self._steps)):
             self._data[row + 1] = str_step(self._steps[row].as_list())
@@ -748,7 +758,7 @@ class RowMovingTest(TestCaseCommandTest):
         self._assert_step_order(STEP1,
                                 STEP2,
                                 STEP_WITH_COMMENT,
-                                FOR_LOOP_STEP1[2:],
+                                FOR_LOOP_STEP1,
                                 FOR_LOOP_HEADER,
                                 FOR_LOOP_STEP2,
                                 FOR_LOOP_END,
@@ -757,26 +767,23 @@ class RowMovingTest(TestCaseCommandTest):
         for row in range(0, len(self._steps)):
             self._data[row + 1] = str_step(self._steps[row].as_list())
         #    print("%s" % self._data[row + 1])
-
         self._exec(MoveRowsDown([self._data_row(FOR_LOOP_HEADER[2:])]))
-        #print("DEBUG: after move loop before END")
+        print("DEBUG: after move loop before END")
         for row in range(0, len(self._steps)):
             self._data[row + 1] = str_step(self._steps[row].as_list())
         #    print("%s" % self._data[row + 1])
         self._assert_step_order(STEP1,
                                 STEP2,
                                 STEP_WITH_COMMENT,
-                                FOR_LOOP_STEP1[2:],
-                                FOR_LOOP_STEP2[2:],
+                                FOR_LOOP_STEP1,
+                                FOR_LOOP_STEP2,
                                 FOR_LOOP_HEADER,
                                 FOR_LOOP_END,
                                 STEP_AFTER_FOR_LOOP)
-
         # print("DEBUG: after move loop 2 assertion")
         for row in range(0, len(self._steps)):
             self._data[row + 1] = str_step(self._steps[row].as_list())
         #    print("%s" % self._data[row + 1])
-
         self._exec(MoveRowsDown([self._data_row(FOR_LOOP_HEADER[2:])]))
         # print("DEBUG: after move loop after END")
         # for row in range(0, len(self._steps)):
@@ -808,16 +815,15 @@ class RowMovingTest(TestCaseCommandTest):
         self._assert_step_order(STEP1,
                                 STEP2,
                                 STEP_WITH_COMMENT,
-                                FOR_LOOP_STEP1[2:],
+                                FOR_LOOP_STEP1,
                                 FOR_LOOP_HEADER,
                                 FOR_LOOP_END,
-                                FOR_LOOP_STEP2[2:],
+                                FOR_LOOP_STEP2,
                                 STEP_AFTER_FOR_LOOP)
         # print("DEBUG: after move loop end 1 assertion")
         for row in range(0, len(self._steps)):
             self._data[row + 1] = str_step(self._steps[row].as_list())
         #    print("%s" % self._data[row + 1])
-
         self._exec(MoveRowsUp([self._data_row(FOR_LOOP_END[2:])]))
         # print("DEBUG: after move loop end 2")
         for row in range(0, len(self._steps)):
@@ -826,16 +832,15 @@ class RowMovingTest(TestCaseCommandTest):
         self._assert_step_order(STEP1,
                                 STEP2,
                                 STEP_WITH_COMMENT,
-                                FOR_LOOP_STEP1[2:],
+                                FOR_LOOP_STEP1,
                                 FOR_LOOP_END,
                                 FOR_LOOP_HEADER,
-                                FOR_LOOP_STEP2[2:],
+                                FOR_LOOP_STEP2,
                                 STEP_AFTER_FOR_LOOP)
         # print("DEBUG: after move loop end 2 assertion")
         for row in range(0, len(self._steps)):
             self._data[row + 1] = str_step(self._steps[row].as_list())
         #    print("%s" % self._data[row + 1])
-
         # Actual test
         self._exec(MoveRowsDown([self._data_row(FOR_LOOP_END[2:])]))
         # print("DEBUG: after move loop end test")
@@ -845,10 +850,10 @@ class RowMovingTest(TestCaseCommandTest):
         self._assert_step_order(STEP1,
                                 STEP2,
                                 STEP_WITH_COMMENT,
-                                FOR_LOOP_STEP1[2:],
+                                FOR_LOOP_STEP1,
                                 FOR_LOOP_HEADER,
                                 FOR_LOOP_END,
-                                FOR_LOOP_STEP2[2:],
+                                FOR_LOOP_STEP2,
                                 STEP_AFTER_FOR_LOOP)
         # print("DEBUG: after move loop end test assertion")
         for row in range(0, len(self._steps)):
@@ -872,16 +877,15 @@ class RowMovingTest(TestCaseCommandTest):
         self._assert_step_order(STEP1,
                                 STEP2,
                                 STEP_WITH_COMMENT,
-                                FOR_LOOP_STEP1[2:],
+                                FOR_LOOP_STEP1,
                                 FOR_LOOP_HEADER,
                                 FOR_LOOP_END,
-                                FOR_LOOP_STEP2[2:],
+                                FOR_LOOP_STEP2,
                                 STEP_AFTER_FOR_LOOP)
         # print("DEBUG: after move loop for 1 assertion")
         for row in range(0, len(self._steps)):
             self._data[row + 1] = str_step(self._steps[row].as_list())
         #    print("%s" % self._data[row + 1])
-
         self._exec(MoveRowsUp([self._data_row(FOR_LOOP_END[2:])]))
         # print("DEBUG: after move loop for 2")
         for row in range(0, len(self._steps)):
@@ -890,16 +894,15 @@ class RowMovingTest(TestCaseCommandTest):
         self._assert_step_order(STEP1,
                                 STEP2,
                                 STEP_WITH_COMMENT,
-                                FOR_LOOP_STEP1[2:],
+                                FOR_LOOP_STEP1,
                                 FOR_LOOP_END,
                                 FOR_LOOP_HEADER,
-                                FOR_LOOP_STEP2[2:],
+                                FOR_LOOP_STEP2,
                                 STEP_AFTER_FOR_LOOP)
         # print("DEBUG: after move loop for 2 assertion")
         for row in range(0, len(self._steps)):
             self._data[row + 1] = str_step(self._steps[row].as_list())
         #    print("%s" % self._data[row + 1])
-
         # Actual test
         self._exec(MoveRowsUp([self._data_row(FOR_LOOP_HEADER[2:])]))
         # print("DEBUG: after move loop for test")
@@ -909,10 +912,10 @@ class RowMovingTest(TestCaseCommandTest):
         self._assert_step_order(STEP1,
                                 STEP2,
                                 STEP_WITH_COMMENT,
-                                FOR_LOOP_STEP1[2:],
+                                FOR_LOOP_STEP1,
                                 FOR_LOOP_HEADER,
                                 FOR_LOOP_END,
-                                FOR_LOOP_STEP2[2:],
+                                FOR_LOOP_STEP2,
                                 STEP_AFTER_FOR_LOOP)
         # print("DEBUG: after move loop for test assertion")
         for row in range(0, len(self._steps)):

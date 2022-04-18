@@ -1101,10 +1101,12 @@ class Purify(_Command):
             # this is why index based iteration - step reference can be stale
             step = context.steps[i]
             step.remove_empty_columns_from_end()
+            print(f"DEBUG: Purify after remove_empty_columns_from_end step={step}")
             # DEBUG Purify not changing rmpty columns from begining
             # if step.has_only_comment():
             #    step.remove_empty_columns_from_beginning()
             i += 1
+        print(f"DEBUG: Purify before DeleteRows")
         context.execute(DeleteRows(context.get_empty_rows()))
         context.notify_steps_changed()
 
@@ -1347,8 +1349,10 @@ class MoveRowsDown(_StepsChangingCommand):
                     context.steps[row].as_list()[0] != '':  # Special case move after For
                 keep_indent = True
             context.move_step_down(row)
-            if avoid_indent and context.steps[row+1].as_list()[1] == 'END':
-                context.steps[row+1].shift_left(0)
+            if row+1 < len(context.steps):
+                # print(f"DEBUG: MoveRowsDown len={len(context.steps)} row+1={row+1} cells= {context.steps[row+1].as_list()}")
+                if avoid_indent and context.steps[row+1].as_list()[0] == '':
+                    context.steps[row+1].shift_left(0)
             if keep_indent:
                 context.steps[row].shift_right(0)
             if remove_indent:

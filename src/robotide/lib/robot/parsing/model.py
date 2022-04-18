@@ -720,13 +720,14 @@ class ForLoop(_WithSteps):
     flavors = {'IN', 'IN RANGE', 'IN ZIP', 'IN ENUMERATE'}
     normalized_flavors = NormalizedDict((f, f) for f in flavors)
 
-    def __init__(self, parent, declaration, comment=None):
+    def __init__(self, parent, declaration, comment=None, name='FOR'):
         self.parent = parent
         self.flavor, index = self._get_flavor_and_index(declaration)
         self.vars = declaration[:index]
         self.items = declaration[index+1:]
         self.comment = Comment(comment)
         self.steps = []
+        self.name = name
 
     def _get_flavor_and_index(self, declaration):
         for index, item in enumerate(declaration):
@@ -805,6 +806,7 @@ class Step(object):
         return True
 
     def as_list(self, indent=False, include_comment=True):
+        # print(f"\nDEBUG: RFLib Model Step enter as_list  {self.name}")
         # print("DEBUG RFLib Model Step: self.name %s" % self.name )
         kw = [self.name] if self.name is not None else []
         # print(f"DEBUG RFLib Model Step: as_list() self.name={self.name} kw={kw}" )
@@ -817,7 +819,7 @@ class Step(object):
             self.indent.insert(0, '')
         data = self.indent + self.assign + kw + self.args + comments
         # print(f"DEBUG RFLib Model Step: as_list() self.name={self.name} kw={kw}\n comments={comments} data={data}")
-        print("DEBUG RFLib Model Step: data %s" % data)
+        # print("DEBUG RFLib Model Step: data %s" % data)
         return data
 
     def first_non_empty_cell(self, content):
