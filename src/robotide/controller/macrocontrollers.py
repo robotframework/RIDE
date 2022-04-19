@@ -199,7 +199,7 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
                 if self._is_empty_step(step)]
 
     def _is_empty_step(self, step):
-        return step.as_list() == []
+        return step.as_list() in [[], ['']]
 
     def remove_step(self, index):
         self._remove_step(self.steps[index])

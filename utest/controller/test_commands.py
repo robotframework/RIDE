@@ -228,7 +228,7 @@ class TestCaseEditingTest(TestCaseCommandTest):
     def test_adding_row_last(self):
         self._exec(AddRow(-1))
         assert_equal(len(self._steps), self._orig_number_of_steps+1)
-        assert_equal(self._steps[self._orig_number_of_steps].as_list(), [''])
+        assert_equal(self._steps[self._orig_number_of_steps].as_list(), [])
 
     def test_adding_row_first(self):
         self._exec(AddRow(0))
@@ -465,10 +465,10 @@ class TestCaseEditingTest(TestCaseCommandTest):
 
 _TEST_WITH_TWO_FOR_LOOPS = ['Test With Two For Loops',
                             '  FOR  ${i}  IN  1  2',
-                            '  Log  ${i}',
+                            '    Log  ${i}',
                             '  END',
                             '  FOR  ${j}  IN  1  2',
-                            '  Log  ${j}',
+                            '    Log  ${j}',
                             '  END']
 
 
@@ -479,7 +479,7 @@ class ForLoopCases(TestCaseCommandTest):
 
     def test_remove_second_for_header(self):
         self._exec(DeleteCells((3,0), (3,0)))
-        self._verify_step(3, '${j}', ['IN', '1', '2'], kw=False)
+        self._verify_step(3, '${j}', ['IN', '1', '2'])
 
     def test_remove_first_step_in_for_loop(self):
         self._exec(DeleteCells((1,0), (1,2)))
@@ -792,8 +792,8 @@ class RowMovingTest(TestCaseCommandTest):
         self._assert_step_order(STEP1,
                                 STEP2,
                                 STEP_WITH_COMMENT,
-                                FOR_LOOP_STEP1[2:],
-                                FOR_LOOP_STEP2[2:],
+                                FOR_LOOP_STEP1,
+                                FOR_LOOP_STEP2,
                                 FOR_LOOP_END,
                                 FOR_LOOP_HEADER,
                                 STEP_AFTER_FOR_LOOP)

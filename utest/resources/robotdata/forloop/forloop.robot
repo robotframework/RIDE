@@ -1,12 +1,12 @@
 *** Test Cases ***
 Test 0
   FOR  ${i}  IN RANGE  1  10
-    Log  joo
+      Log  joo
   END
   FOR  ${j}  IN  1  2
-    Log  jee
-    Log  another
-    Log  and another
+      Log  jee
+      Log  another
+      Log  and another
   END
 
 Test 1
@@ -14,41 +14,41 @@ Test 1
 
 Test 2
   FOR  ${j}  IN  1  2
-    One
-  Two
-    Three
+      One
+    Two
+      Three
 
 Test 3
   FOR  ${j}  IN  1  2
-  One
-    Two
-    Three
+    One
+      Two
+      Three
 
 Test 4
   FOR  ${j}  IN  1  2
-    One
-    Two
-  Three
+      One
+      Two
+    Three
   END
 
 Test 5
   FOR  ${j}  IN  1  2
-    One
-    Two
-    Three
+      One
+  Two
+      Three
   END
 
 Test 6
   FOR  ${j}  IN  1  2
-    One
-    Two
-    Three
+      One
+      Two
+      Three
   END
 
 Test 7
   FOR  ${j}  IN  1  2
-    One
-    Two
+      One
+      Two
     Three
   END
 

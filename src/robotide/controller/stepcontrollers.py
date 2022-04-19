@@ -491,6 +491,7 @@ class StepController(_BaseController):
             print(f"DEBUG: _recreate _recreate_as_partial_for_loop before: {cells}")
             self._recreate_as_partial_for_loop(cells, comment)
             # print(f"DEBUG: _recreate _recreate_as_partial_for_loop after: {cells}")
+        
         elif self._is_intended_step(cells):
             i = self._index()
             previous_step = self.parent.step(i - 1)
@@ -522,9 +523,9 @@ class StepController(_BaseController):
         print(f"DEBUG: _recreate init after recalculate: {self._step.as_list()}")
 
     def _is_partial_for_loop_step(self, cells):
-        print(f"DEBUG: _is_partial_for_loop_step : {cells}")
-        return cells and (cells[self._keyword_column-1].replace(' ', '').upper() == ':FOR'
-                          or cells[self._keyword_column-1] == 'FOR')
+        print(f"DEBUG: _is_partial_for_loop_step : {cells} index={self._keyword_column}")
+        return cells and (cells[self._keyword_column].replace(' ', '').upper() == ':FOR'
+                          or cells[self._keyword_column] == 'FOR')
 
     def _is_intended_step(self, cells):
         print(f"DEBUG: _is_intended_step cells {cells}")
@@ -535,9 +536,10 @@ class StepController(_BaseController):
 
     def _recreate_as_partial_for_loop(self, cells, comment):
         index = self._index()
-        print(f"\nDEBUG: Stepcontrollers _recreate_as_partial_for_loop : cells[0]: {cells[0]} cells[1:]: {cells[1:]}")
+        print(f"\nDEBUG: Stepcontrollers _recreate_as_partial_for_loop : cells[0]: {cells[0]}"
+              f" cells[1:]: {cells[1:] if len(cells)>1 else ['']}")
         self.parent.replace_step(index, PartialForLoop(
-            cells[1:], first_cell=cells[0], comment=comment))
+            cells[1:] if len(cells)>1 else [''], first_cell=cells[0], comment=comment))
         self._recreate_next_step(index)
 
     def _recreate_as_intended_step(self, for_loop_step, cells, comment, index):
@@ -558,10 +560,12 @@ class StepController(_BaseController):
 
 class PartialForLoop(robotapi.ForLoop):
 
+    parent = None
+
     def __init__(self, cells, first_cell='FOR', comment=None):
         self._cells = cells
         self._first_cell = first_cell
-        robotapi.ForLoop.__init__(self, self.parent, cells, comment, name='FOR')
+        robotapi.ForLoop.__init__(self, self.parent, cells, comment)
 
     def as_list(self, indent=False, include_comment=False):
         # print(f"\nDEBUG: PartialForLoop enter as_list")

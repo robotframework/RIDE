@@ -720,14 +720,15 @@ class ForLoop(_WithSteps):
     flavors = {'IN', 'IN RANGE', 'IN ZIP', 'IN ENUMERATE'}
     normalized_flavors = NormalizedDict((f, f) for f in flavors)
 
-    def __init__(self, parent, declaration, comment=None, name='FOR'):
+    def __init__(self, parent, declaration, comment=None):
         self.parent = parent
+        if declaration[0] == 'FOR':
+            declaration.pop(0)
         self.flavor, index = self._get_flavor_and_index(declaration)
         self.vars = declaration[:index]
         self.items = declaration[index+1:]
         self.comment = Comment(comment)
         self.steps = []
-        self.name = name
 
     def _get_flavor_and_index(self, declaration):
         for index, item in enumerate(declaration):
@@ -770,8 +771,8 @@ class Step(object):
 
     def __init__(self, content, comment=None):
         # print(f"DEBUG: RFLib Model enter init Step: 1st cell content {content}")
-        self.assign = self._get_assign(content)
         index = self.first_non_empty_cell(content)
+        self.assign = self._get_assign(content)
         self.indent = []
         self.comment = None
         self.args = []
@@ -792,8 +793,11 @@ class Step(object):
 
     def _get_assign(self, content):
         assign = []
-        while content and is_var(content[0].rstrip('= ')):
-            assign.append(content.pop(0))
+        idx = 0
+        while content and is_var(content[idx].rstrip('= ')):
+            assign.append(content.pop(idx))
+            if idx < self.inner_kw_pos:
+                idx += 1
         return assign
 
     def is_comment(self):
