@@ -83,8 +83,10 @@ class TestCaseCommandTest(unittest.TestCase, _FakeProject):
 
     def _verify_step_unchanged(self, step_data):
         row = self._data_row(step_data)
-        assert_equal(self._steps[row].as_list(),
-                     self._data_step_as_list(step_data)[:])
+        step = self._steps[row].as_list()
+        if step and step[0] != '':
+            step = [''] + step
+        assert_equal(step, self._data_step_as_list(step_data)[:])
 
     def _verify_steps_unchanged(self, *steps):
         for step in steps:
@@ -112,7 +114,7 @@ class TestCaseCommandTest(unittest.TestCase, _FakeProject):
         if kw:
             assert_equal(self._steps[index].as_list(), exp)
         else:
-            assert_equal(self._steps[index].as_list(kw=False), exp)  # DEBUG Special case for PartialForLoop
+            assert_equal(self._steps[index].as_list(kw=True), exp)  # DEBUG Special case for PartialForLoop
 
     def _verify_step_number_change(self, change):
         assert_equal(len(self._steps), self._orig_number_of_steps + change)

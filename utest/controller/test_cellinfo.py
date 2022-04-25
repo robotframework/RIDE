@@ -223,15 +223,16 @@ class TestCellInfo(unittest.TestCase):
         print(f"kw_name:{forlooped_case.name}")
         for k in forlooped_case.steps:
             print(f"value: {k.as_list()}")
+        # FIXME
         self._verify_cell_info(0, 0, ContentType.LIBRARY_KEYWORD, CellType.MANDATORY, forlooped_case)
         # self._verify_cell_info(1, 0, ContentType.EMPTY, CellType.MUST_BE_EMPTY, forlooped_case)
-        self._verify_cell_info(1, 0, ContentType.LIBRARY_KEYWORD, CellType.KEYWORD, forlooped_case)
-        self._verify_cell_info(1, 1, ContentType.STRING, CellType.MANDATORY, forlooped_case)
+        self._verify_cell_info(1, 2, ContentType.LIBRARY_KEYWORD, CellType.KEYWORD, forlooped_case)
+        self._verify_cell_info(1, 3, ContentType.STRING, CellType.MANDATORY, forlooped_case)
         # self._verify_cell_info(2, 0, ContentType.EMPTY, CellType.MUST_BE_EMPTY, forlooped_case)
-        self._verify_cell_info(2, 0, ContentType.LIBRARY_KEYWORD, CellType.KEYWORD, forlooped_case)
+        self._verify_cell_info(2, 2, ContentType.LIBRARY_KEYWORD, CellType.KEYWORD, forlooped_case)
         # self._verify_cell_info(3, 0, ContentType.EMPTY, CellType.MUST_BE_EMPTY, forlooped_case)
-        self._verify_cell_info(3, 0, ContentType.LIBRARY_KEYWORD, CellType.KEYWORD, forlooped_case)
-        self._verify_cell_info(3, 1, ContentType.UNKNOWN_VARIABLE, CellType.MANDATORY, forlooped_case)
+        self._verify_cell_info(3, 2, ContentType.LIBRARY_KEYWORD, CellType.KEYWORD, forlooped_case)
+        self._verify_cell_info(3, 3, ContentType.UNKNOWN_VARIABLE, CellType.MANDATORY, forlooped_case)
         self._verify_cell_info(4, 0, ContentType.LIBRARY_KEYWORD, CellType.KEYWORD, forlooped_case)
         self._verify_cell_info(4, 1, ContentType.EMPTY, CellType.MUST_BE_EMPTY, forlooped_case)
 

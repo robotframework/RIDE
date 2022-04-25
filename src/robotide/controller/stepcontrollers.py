@@ -35,6 +35,7 @@ class StepController(_BaseController):
     def _init(self, parent, step):
         self.parent = parent
         self._step = step
+        self.indent = []
         # print(f"DEBUG: StepController init self._step.name: {self._step.name if self._step.name else None }")
         # self._cell_info_cache = {}
 
@@ -326,10 +327,10 @@ class StepController(_BaseController):
         return False
 
     def _first_non_empty_cell(self):
-        # print(f"DEBUG: Stepcontroller enter _first_non_empty_cell")
+        print(f"DEBUG: Stepcontroller enter _first_non_empty_cell")
         cells = self.as_list()
-        # if cells:
-        #     print(f"DEBUG: model _first_non_empty_cell: {cells}")
+        if cells:
+            print(f"DEBUG: Stepcontroller _first_non_empty_cell: {cells}")
         index = 0
         while index < len(cells) and cells[index] == '':
             index += 1
@@ -460,7 +461,7 @@ class StepController(_BaseController):
         self.parent._clear_cached_steps()
 
     def move_up(self):
-        # print(f"DEBUG: StepController ENTER move_up")
+        print(f"DEBUG: StepController ENTER move_up")
         previous_step = self.parent.step(self._index() - 1)
         self.remove()
         previous_step.insert_before(self._step)
@@ -568,15 +569,16 @@ class PartialForLoop(robotapi.ForLoop):
         robotapi.ForLoop.__init__(self, self.parent, cells, comment)
 
     def as_list(self, indent=False, include_comment=False):
-        # print(f"\nDEBUG: PartialForLoop enter as_list")
+        print(f"\nDEBUG: PartialForLoop enter as_list")
         return [self._first_cell] + self._cells + self.comment.as_list()
 
 
 class ForLoopStepController(StepController):
 
     def __init__(self, parent, step):
-        self._init(parent, step)
+        StepController.__init__(self, parent, step)
         self.inner_kw_pos = self._first_non_empty_cell()
+        # self.indent = []
 
     @property
     def name(self):
@@ -670,9 +672,9 @@ class ForLoopStepController(StepController):
         print(f"DEBUG: enter comment ForLoopStepController: self {self.as_list()}")
         print(f"DEBUG: comment ForLoopStepController: keyword_column {self._keyword_column}")
         # kw_column = self._keyword_column
-        self.shift_right(0)
-        self.change(0, 'Comment')
-        # self._replace_with_new_cells(['Comment'] + self.as_list())
+        # self.shift_right(0)
+        # self.change(0, 'Comment')
+        self._replace_with_new_cells(['Comment'] + self.as_list())
 
     def uncomment(self):
         print(f"DEBUG: enter uncomment ForLoopStepController: self {self.as_list()}")
@@ -690,9 +692,14 @@ class ForLoopStepController(StepController):
 
     def _recreate(self, cells, comment=None):
         print(f"DEBUG: enter _recreate ForLoopStepController: {cells}")
-        self._step.__init__(self.parent, cells[:])
-        # TDOD fix identation without adding FOR
-        #
+        print(f"DEBUG: enter _recreate ForLoopStepController initial = {cells[0]}")
+        if cells[self._step.inner_kw_pos] != 'FOR':
+            new_cells = cells[0:]
+            index = self._index()
+            self.parent.replace_step(index, robotapi.Step(new_cells, comment))
+            return
+        else:
+            self._step.__init__(self.parent, cells[self._step.inner_kw_pos:])
         self.recalculate_keyword_column()
         # if not self._represent_valid_for_loop_header(cells):
         #     self._recreate_partial_for_loop_header(cells, comment)
@@ -702,13 +709,13 @@ class ForLoopStepController(StepController):
         # self._recreate_complete_for_loop_header(cells)
 
     def _recreate_complete_for_loop_header(self, cells):
-        print(f"DEBUG: enter _recreate_complete_for_loop_header ForLoopStepController: {cells}")
+        # print(f"DEBUG: enter _recreate_complete_for_loop_header ForLoopStepController: {cells}")
         # steps = self.get_raw_steps()
         self._step.__init__(self.parent, cells[:])
         # self.set_raw_steps(steps)
 
     def _recreate_partial_for_loop_header(self, cells, comment):
-        print(f"DEBUG: enter _recreate_partial_for_loop_header ForLoopStepController: {cells}")
+        # print(f"DEBUG: enter _recreate_partial_for_loop_header ForLoopStepController: {cells}")
         if not cells or (cells[self._keyword_column].replace(' ', '').upper() != ':FOR'
                          and cells[self._keyword_column].replace(' ', '') != 'FOR'):
             self._replace_with_new_cells(cells)
@@ -771,8 +778,13 @@ class IntendedStepController(StepController):
         return self._first_non_empty_cell()
 
     def as_list(self):
-        # print(f"\nDEBUG: IntendedStepController enter as_list")
-        return self._step.as_list()  # DEBUG removed [''] +
+        row = self._step.as_list()
+        # print(f"\nDEBUG: IntendedStepController enter as_list {row[:]}")
+        if not row:
+            return []
+        if row[0] != '':
+            return ['', ''] + row
+        return [''] + row  # DEBUG removed [''] +
 
     def _get_cell_position(self, col):
         # print(f"DEBUG: enter _get_cell_position at IntendedStepController: col={col}")
@@ -808,10 +820,13 @@ class IntendedStepController(StepController):
 
     def _recreate(self, cells, comment=None):
         # TODO refactor
-        # print(f"DEBUG: enter _recreate IntendedStepController: {cells[:]} self {self._step.as_list(indent=True)}")
+        print(f"DEBUG: enter _recreate IntendedStepController: {cells[:]} self {self._step.as_list(indent=True)}")
         if cells == [] or cells[0] == '':
-            print(f"DEBUG: enter _recreate IntendedStepController init INDENTED kw_column {self._keyword_column} ")
-            self._step.__init__(cells[:], comment=comment)
+            for idx in range(0, len(cells)):
+                if cells[idx] != '':
+                    break
+            print(f"DEBUG: enter _recreate IntendedStepController init INDENTED kw_column {idx} ")
+            self._step.__init__(cells[idx:], comment=comment)  # self._keyword_column
             if self._step not in self.parent.get_raw_steps():
                 self.parent.add_step(self._step)
         else:
@@ -819,7 +834,7 @@ class IntendedStepController(StepController):
             self._step.__init__(cells[:], comment=comment)
             if self._step not in self.parent.get_raw_steps():
                 self.parent.add_step(self._step)
-            # self._recreate_as_normal_step(cells, comment)
+            self._recreate_as_normal_step(cells, comment)
             ## self._invalid = True
 
     def _recreate_as_normal_step(self, cells, comment=None):

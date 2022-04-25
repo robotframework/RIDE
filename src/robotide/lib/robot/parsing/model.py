@@ -623,7 +623,7 @@ class TestCase(_WithSteps, _WithSettings):
         return self.parent.directory
 
     def add_for_loop(self, declaration, comment=None):
-        self.steps.append(ForLoop(self, declaration, comment))
+        self.steps.append(ForLoop(self, ['', 'FOR'] + declaration, comment))
         return self.steps[-1]
 
     def end_for_loop(self):
@@ -719,16 +719,26 @@ class ForLoop(_WithSteps):
     """
     flavors = {'IN', 'IN RANGE', 'IN ZIP', 'IN ENUMERATE'}
     normalized_flavors = NormalizedDict((f, f) for f in flavors)
+    inner_kw_pos = None
 
     def __init__(self, parent, declaration, comment=None):
         self.parent = parent
-        if declaration[0] == 'FOR':
-            declaration.pop(0)
+        # if declaration[0] == 'FOR':
+        #    declaration.pop(0)
+        # print(f"\nDEBUG: ForLoop init enter declaration {declaration[:]}")
+        self.indent = []
+        for idx in range(0, len(declaration)-1):
+            if declaration[idx] != '':
+                self.first_kw = declaration[idx]
+                break
+            # self.indent.insert(0, '')
+        self.inner_kw_pos = idx
         self.flavor, index = self._get_flavor_and_index(declaration)
-        self.vars = declaration[:index]
+        self.vars = declaration[self.inner_kw_pos+1:index]
         self.items = declaration[index+1:]
         self.comment = Comment(comment)
         self.steps = []
+        self.args = []
 
     def _get_flavor_and_index(self, declaration):
         for index, item in enumerate(declaration):
@@ -756,7 +766,9 @@ class ForLoop(_WithSteps):
 
     def as_list(self, indent=False, include_comment=True):
         comments = self.comment.as_list() if include_comment else []
-        return ['FOR'] + self.vars + [self.flavor] + self.items + comments
+        # if len(self.indent) == 0:
+        #    self.indent.insert(0, '')  # Always send first indent
+        return self.indent + [self.first_kw] + self.vars + [self.flavor] + self.items + comments
 
     def __iter__(self):
         return iter(self.steps)
@@ -811,7 +823,6 @@ class Step(object):
 
     def as_list(self, indent=False, include_comment=True):
         # print(f"\nDEBUG: RFLib Model Step enter as_list  {self.name}")
-        # print("DEBUG RFLib Model Step: self.name %s" % self.name )
         kw = [self.name] if self.name is not None else []
         # print(f"DEBUG RFLib Model Step: as_list() self.name={self.name} kw={kw}" )
         if self.comment:
@@ -819,6 +830,8 @@ class Step(object):
         else:
             comments = []
         # print(f"DEBUG RFLib Model Step: as_list() self.name={self.name} kw={kw}\n comments={comments} args={self.args}" )
+        #if len(self.indent) == 0:
+        #    self.indent.insert(0, '')  # Always send first indent
         if indent:
             self.indent.insert(0, '')
         data = self.indent + self.assign + kw + self.args + comments
