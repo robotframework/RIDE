@@ -28,11 +28,16 @@ class RobotReader(object):
         self._pipe_splitter = re.compile(u'[ \t\xa0]+\|(?=[ \t\xa0]+)')
         self._pipe_starts = ('|', '| ', '|\t', u'|\xa0')
         self._pipe_ends = (' |', '\t|', u'\xa0|')
+        self._spaces = spaces
+        self._separator_check = False
+        print(f"DEBUG: RFLib RobotReader init spaces={self._spaces}")
 
     def read(self, file, populator, path=None):
         path = path or getattr(file, 'name', '<file-like object>')
         process = False
         for lineno, line in enumerate(Utf8Reader(file).readlines(), start=1):
+            if not self._separator_check:
+                self.check_separator(line)
             cells = self.split_row(line.rstrip())
             cells = list(self._check_deprecations(cells, path, lineno))
             if cells and cells[0].strip().startswith('*') and \
@@ -94,6 +99,7 @@ class RobotReader(object):
                         row.pop(i)
                 # Remove initial empty cell
                 if len(row) > 1 and first_non_empty > 1 and row[0] == '' and row[1] != '':  # don't cancel indentation
+                    print(f"DEBUG: RFLib RobotReader sharp_strip removing initial empty cell first_non_empty={first_non_empty}")
                     row.pop(0)
         return row
 
@@ -126,3 +132,20 @@ class RobotReader(object):
         if string.startswith('#'):
             return string
         return ' '.join(string.split())
+
+    def check_separator(self, line):
+        if not line.startswith('**'):
+            if not self._separator_check and line[:2] in self._pipe_starts:
+                self._separator_check = True
+                # print(f"DEBUG: RFLib RobotReader check_separator PIPE separator")
+                return
+            idx = 0
+            for idx in range(0, len(line)):
+                if line[idx] != ' ':
+                    break
+            if 2 <= idx <= 10:  # This max limit is reasonable
+                self._spaces = idx
+                self._space_splitter = re.compile(r"[ \t\xa0]{" + f"{self._spaces}" + "}|\t+")
+                self._separator_check = True
+                # print(f"DEBUG: RFLib RobotReader check_separator changed spaces={self._spaces}")
+        return

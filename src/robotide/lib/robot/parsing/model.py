@@ -31,7 +31,7 @@ from .settings import (Documentation, Fixture, Timeout, Tags, Metadata,
 
 
 def TestData(parent=None, source=None, include_suites=None,
-             warn_on_skipped='DEPRECATED', extensions=None):
+             warn_on_skipped='DEPRECATED', extensions=None, settings=None):
     """Parses a file or directory to a corresponding model object.
 
     :param parent: Optional parent to be used in creation of the model object.
@@ -47,9 +47,9 @@ def TestData(parent=None, source=None, include_suites=None,
         warnings.warn("Option 'warn_on_skipped' is deprecated and has no "
                       "effect.", DeprecationWarning)
     if os.path.isdir(source):
-        return TestDataDirectory(parent, source).populate(include_suites,
+        return TestDataDirectory(parent, source, settings).populate(include_suites,
                                                           extensions)
-    return TestCaseFile(parent, source).populate()
+    return TestCaseFile(parent, source, settings).populate()
 
 
 class _TestData(object):
@@ -171,16 +171,18 @@ class TestCaseFile(_TestData):
     :param source: path where test data is read from.
     """
 
-    def __init__(self, parent=None, source=None):
+    def __init__(self, parent=None, source=None, settings=None):
         self.directory = os.path.dirname(source) if source else None
         self.setting_table = TestCaseFileSettingTable(self)
         self.variable_table = VariableTable(self)
         self.testcase_table = TestCaseTable(self)
         self.keyword_table = KeywordTable(self)
+        self._settings = settings
+        self._tab_size = self._settings.get('txt number of spaces', 4) if self._settings else 2
         _TestData.__init__(self, parent, source)
 
     def populate(self):
-        FromFilePopulator(self).populate(self.source)
+        FromFilePopulator(self, self._tab_size).populate(self.source)
         self._validate()
         return self
 
@@ -206,16 +208,18 @@ class ResourceFile(_TestData):
     :param source: path where resource file is read from.
     """
 
-    def __init__(self, source=None):
+    def __init__(self, source=None, settings=None):
         self.directory = os.path.dirname(source) if source else None
         self.setting_table = ResourceFileSettingTable(self)
         self.variable_table = VariableTable(self)
         self.testcase_table = TestCaseTable(self)
         self.keyword_table = KeywordTable(self)
+        self._settings = settings
+        self._tab_size = self._settings.get('txt number of spaces', 4) if self._settings else 2
         _TestData.__init__(self, source=source)
 
     def populate(self):
-        FromFilePopulator(self).populate(self.source, resource=True)
+        FromFilePopulator(self, self._tab_size).populate(self.source, resource=True)
         self._report_status()
         return self
 
@@ -246,18 +250,20 @@ class TestDataDirectory(_TestData):
     :param source: path where test data is read from.
     """
 
-    def __init__(self, parent=None, source=None):
+    def __init__(self, parent=None, source=None, settings=None):
         self.directory = source
         self.initfile = None
         self.setting_table = InitFileSettingTable(self)
         self.variable_table = VariableTable(self)
         self.testcase_table = TestCaseTable(self)
         self.keyword_table = KeywordTable(self)
+        self._settings = settings
+        self._tab_size = self._settings.get('txt number of spaces', 4) if self._settings else 2
         _TestData.__init__(self, parent, source)
 
     def populate(self, include_suites=None, extensions=None, recurse=True):
         FromDirectoryPopulator().populate(self.source, self, include_suites,
-                                          extensions, recurse)
+                                          extensions, recurse, self._tab_size)
         self.children = [ch for ch in self.children if ch.has_tests()]
         return self
 
@@ -275,7 +281,7 @@ class TestDataDirectory(_TestData):
         self.children.append(TestData(parent=self,
                                       source=path,
                                       include_suites=include_suites,
-                                      extensions=extensions))
+                                      extensions=extensions, settings=self._settings))
 
     def has_tests(self):
         return any(ch.has_tests() for ch in self.children)
