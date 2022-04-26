@@ -134,7 +134,7 @@ class RobotReader(object):
         return ' '.join(string.split())
 
     def check_separator(self, line):
-        if not line.startswith('**'):
+        if not line.startswith('*'):
             if not self._separator_check and line[:2] in self._pipe_starts:
                 self._separator_check = True
                 # print(f"DEBUG: RFLib RobotReader check_separator PIPE separator")

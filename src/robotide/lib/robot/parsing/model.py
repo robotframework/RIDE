@@ -178,7 +178,7 @@ class TestCaseFile(_TestData):
         self.testcase_table = TestCaseTable(self)
         self.keyword_table = KeywordTable(self)
         self._settings = settings
-        self._tab_size = self._settings.get('txt number of spaces', 4) if self._settings else 2
+        self._tab_size = self._settings.get('txt number of spaces', 2) if self._settings else 2
         _TestData.__init__(self, parent, source)
 
     def populate(self):
@@ -215,7 +215,7 @@ class ResourceFile(_TestData):
         self.testcase_table = TestCaseTable(self)
         self.keyword_table = KeywordTable(self)
         self._settings = settings
-        self._tab_size = self._settings.get('txt number of spaces', 4) if self._settings else 2
+        self._tab_size = self._settings.get('txt number of spaces', 2) if self._settings else 2
         _TestData.__init__(self, source=source)
 
     def populate(self):
@@ -258,7 +258,7 @@ class TestDataDirectory(_TestData):
         self.testcase_table = TestCaseTable(self)
         self.keyword_table = KeywordTable(self)
         self._settings = settings
-        self._tab_size = self._settings.get('txt number of spaces', 4) if self._settings else 2
+        self._tab_size = self._settings.get('txt number of spaces', 2) if self._settings else 2
         _TestData.__init__(self, parent, source)
 
     def populate(self, include_suites=None, extensions=None, recurse=True):

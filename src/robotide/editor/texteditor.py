@@ -301,7 +301,7 @@ class DataFileWrapper(object): # TODO: bad class name
     def __init__(self, data, settings):
         self._data = data
         self._settings = settings
-        self._tab_size = self._settings.get('txt number of spaces', 4) if self._settings else 2
+        self._tab_size = self._settings.get('txt number of spaces', 2) if self._settings else 2
 
     def __eq__(self, other):
         if other is None:
