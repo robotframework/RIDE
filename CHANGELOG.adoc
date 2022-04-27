@@ -10,7 +10,9 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Added
 
-- Added a Reformat option when saving files on Preferences -> Saving.
+- Added documentation and syntax color for IF, ELSE, ELSE IF, WHILE, TRY, EXCEPT, BREAK, CONTINUE
+- Added indentation for nested FOR loops (all OK in Text Editor)
+- Added a Reformat option when saving files on Preferences -> Saving
 - Added colorization in Text Editor for Tasks
 - Added a dialog to Load or Save settings to .cfg files on Preferences -> General, Grid Editor, Text Editor and Test Runner
 - Added perspectives persistance for Notebook panels, Edit, Text Editor and Run
