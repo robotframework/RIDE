@@ -562,7 +562,7 @@ class SourceEditor(wx.Panel, RIDEDialog):
             self._showing_list = True
 
     def open(self, data):
-        # print(f"DEBUG: Textedit enter open")
+        print(f"DEBUG: Textedit enter open")
         self.reset()
         self._data = data
         # print(f"DEBUG: Textedit in open before getting SuggestionSource {self._data._data}\n Type data is {type(self._data._data)}")
@@ -1054,7 +1054,7 @@ class RobotDataEditor(stc.StyledTextCtrl):
 class FromStringIOPopulator(robotapi.populators.FromFilePopulator):
 
     def populate(self, content, tab_size):
-        # print(f"DEBUG: FromStringIOPopulator spaces={tab_size} populate:\n{content}")
+        print(f"DEBUG: FromStringIOPopulator spaces={tab_size} populate:\n{content}")
         robotapi.RobotReader(spaces=tab_size).read(content, self)
 
 

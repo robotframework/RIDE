@@ -107,6 +107,7 @@ class FromFilePopulator(object):
             row = self._replace_curdirs_in(row)
         data = DataRow(row, self._datafile.source)
         if data:
+            print(f"DEBUG: populators add data={data.cells} + {data.comments}")
             self._populator.add(data)
 
     def _replace_curdirs_in(self, row):

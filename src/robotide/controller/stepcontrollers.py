@@ -48,10 +48,11 @@ class StepController(_BaseController):
         return self.parent.datafile_controller
 
     def _change_last_empty_to_empty_var(self, args, comment):
-        if not args:
+        if not args and not comment:
             return []
         if comment:
-            return args
+            print(f"DEBUG: Stepcontroller _change_last_empty_to_empty_var comment block values: {args}  {comment.as_list()}")  # {args[0]}")
+            return args + comment.as_list()
         # print(f"DEBUG: Stepcontroller _change_last_empty_to_empty_var ")  #{args[0]}")
         # DEBUG no longer return var
         return args[:-1] + ['${EMPTY}'] if args and args[-1] == '' else args
@@ -118,7 +119,7 @@ class StepController(_BaseController):
 
     def _get_cell_position(self, column):
         # TODO: refactor
-        print(f"DEBUG: Stepcontroller Enter _get_cell_position {column} keyword_column={self._keyword_column}")
+        ########## print(f"DEBUG: Stepcontroller Enter _get_cell_position {column} keyword_column={self._keyword_column}")
         if self.parent.has_template():
             return CellPosition(CellType.UNKNOWN, None)
         column -= len(self._step.assign)

@@ -188,13 +188,18 @@ class _TestCaseUserKeywordPopulator(Populator):
         self._comment_cache = CommentCache()
 
     def add(self, row):
+        if row:
+            print(f"DEBUG: _TestCaseUserKeywordPopulator enter row {row.cells} {row.comments}")
         if row.is_commented():
-            self._comment_cache.add(row)
+            # self._comment_cache.add(row)
+            print(f"DEBUG: _TestCaseUserKeywordPopulator returning from comment {row.cells} {row.comments}")
+            self._handle_data_row(row)
             return
         if not self._test_or_uk:
             self._test_or_uk = self._test_or_uk_creator(row.head)
         dedented_row = row.dedent()
         if dedented_row:
+            print(f"DEBUG: _TestCaseUserKeywordPopulator processing after dedented {dedented_row.cells} {dedented_row.comments}")
             self._handle_data_row(dedented_row)
 
     def _handle_data_row(self, row):
@@ -209,6 +214,7 @@ class _TestCaseUserKeywordPopulator(Populator):
             self._comment_cache.consume_with(self._populator.add)
         # if not ending_for_loop:  # END was being omitted
         #    print("DEBUG: handle_data_row %s" % row.all)
+        print("DEBUG: handle_data_row %s" % row.all)
         self._populator.add(row)
 
     def _end_for_loop(self):
@@ -224,6 +230,7 @@ class _TestCaseUserKeywordPopulator(Populator):
                 self._populating_for_loop() and row.is_indented())
 
     def _populate_comment_row(self, crow):
+        print("DEBUG: _populate_comment_row ENTER %s" % crow)
         populator = StepPopulator(self._test_or_uk.add_step)
         populator.add(crow)
         populator.populate()
