@@ -25,7 +25,7 @@ class CommentCache(object):
         self._comments.append(comment)
 
     def consume_with(self, function):
-        print(f"DEBUG: CommentCache enter consume_with {self._comments}")
+        # print(f"DEBUG: CommentCache enter consume_with {self._comments}")
         for comment in self._comments:
             function(comment)
         self.__init__()
@@ -51,6 +51,7 @@ class Comment(object):
         if is_string(comment_data):
             comment_data = [comment_data] if comment_data else []
         self._comment = comment_data or []
+        # print(f"DEBUG RFLib Comment input={comment_data} self._comment={self._comment}")
 
     def __len__(self):
         return len(self._comment)

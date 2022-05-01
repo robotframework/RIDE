@@ -583,7 +583,7 @@ class Variable(object):
 class _WithSteps(object):
 
     def add_step(self, content, comment=None):
-        # print(f"DEBUG: model.py Enter _WithSteps content={content[:]}")
+        # print(f"DEBUG: model.py Enter _WithSteps content={content[:]} comment={comment}")
         self.steps.append(Step(content, comment))
         return self.steps[-1]
 
@@ -788,13 +788,13 @@ class Step(object):
     inner_kw_pos = None
 
     def __init__(self, content, comment=None):
-        # print(f"DEBUG: RFLib Model enter init Step: 1st cell content {content}")
         index = self.first_non_empty_cell(content)
+        # print(f"DEBUG: RFLib Model enter init Step: 1st cell content={content} comment={comment} index={index}")
         self.assign = self._get_assign(content)
         self.indent = []
-        self.comment = None
         self.args = []
         self.name = None
+        self.comment = Comment(comment)
         if index == -1:
             return
         for _ in range(0, index):
@@ -807,7 +807,6 @@ class Step(object):
         else:
             self.name = None
         # print("DEBUG RFLib init Step: self.name %s" % self.name)
-        self.comment = Comment(comment)
 
     def _get_assign(self, content):
         assign = []
@@ -830,7 +829,7 @@ class Step(object):
     def as_list(self, indent=False, include_comment=True):
         # print(f"\nDEBUG: RFLib Model Step enter as_list  {self.name}")
         kw = [self.name] if self.name is not None else []
-        # print(f"DEBUG RFLib Model Step: as_list() self.name={self.name} kw={kw}" )
+        # print(f"DEBUG RFLib Model Step: as_list() self.name={self.name} kw={kw} COMMENT={self.comment.as_list()}")
         if self.comment:
             comments = self.comment.as_list() if include_comment else []
         else:

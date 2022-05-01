@@ -30,7 +30,7 @@ class RobotReader(object):
         self._pipe_starts = ('|', '| ', '|\t', u'|\xa0')
         self._pipe_ends = (' |', '\t|', u'\xa0|')
         self._separator_check = False
-        print(f"DEBUG: RFLib RobotReader init spaces={self._spaces}")
+        # print(f"DEBUG: RFLib RobotReader init spaces={self._spaces}")
 
     def read(self, file, populator, path=None):
         path = path or getattr(file, 'name', '<file-like object>')
@@ -73,9 +73,9 @@ class RobotReader(object):
                     start_s_quote = True
             if line[i] == '#' and not start_d_quote and not start_s_quote:
                 try:
-                    if line[i-1] != '\\' and line[i+1] == ' ':
+                    if line[i-1] != '\\' and (line[i+1] == ' ' or line[i+1] == '#'):
                         index = i
-                        print(f"DEBUG: RFLib RobotReader sharp_strip BREAK at # index={index}")
+                        # print(f"DEBUG: RFLib RobotReader sharp_strip BREAK at # index={index}")
                         break
                 except IndexError:
                     i += 1
@@ -87,7 +87,7 @@ class RobotReader(object):
             row.append(line[index:])
         else:
             row = self._space_splitter.split(line)
-        print(f"DEBUG: RFLib RobotReader sharp_strip after cells split index={index} row={row[:]}")
+        # print(f"DEBUG: RFLib RobotReader sharp_strip after cells split index={index} row={row[:]}")
         # Remove empty cells after first non-empty
         first_non_empty = -1
         if row:
@@ -95,17 +95,17 @@ class RobotReader(object):
                 if v != '':
                     first_non_empty = i
                     break
-            print(f"DEBUG: RFLib RobotReader sharp_strip row first_non_empty={first_non_empty}")
+            # print(f"DEBUG: RFLib RobotReader sharp_strip row first_non_empty={first_non_empty}")
             if first_non_empty != -1:
                 for i in range(len(row)-1, first_non_empty, -1):
                     if row[i] == '':
-                        print(f"DEBUG: RFLib RobotReader sharp_strip popping ow i ={i} row[i]={row[i]}")
+                        # print(f"DEBUG: RFLib RobotReader sharp_strip popping ow i ={i} row[i]={row[i]}")
                         row.pop(i)
                 # Remove initial empty cell
                 if len(row) > 1 and first_non_empty > 1 and row[0] == '' and row[1] != '':  # don't cancel indentation
-                    print(f"DEBUG: RFLib RobotReader sharp_strip removing initial empty cell first_non_empty={first_non_empty}")
+                    # print(f"DEBUG: RFLib RobotReader sharp_strip removing initial empty cell first_non_empty={first_non_empty}")
                     row.pop(0)
-        print(f"DEBUG: RFLib RobotReader sharp_strip returning row={row[:]}")
+        # print(f"DEBUG: RFLib RobotReader sharp_strip returning row={row[:]}")
         return row
 
     def split_row(self, row):
@@ -152,5 +152,5 @@ class RobotReader(object):
                 self._spaces = idx
                 self._space_splitter = re.compile(r"[ \t\xa0]{" + f"{self._spaces}" + "}|\t+")
                 self._separator_check = True
-                print(f"DEBUG: RFLib RobotReader check_separator changed spaces={self._spaces}")
+                # print(f"DEBUG: RFLib RobotReader check_separator changed spaces={self._spaces}")
         return
