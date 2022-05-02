@@ -39,16 +39,17 @@ def create_test_data(path, filepath, resourcepath, initpath):
         os.mkdir(path)
     with open(filepath, 'w') as file:
         file.write('''\
-*Settings*
+*** Settings ***
 Resource  resource.robot
-*Test Cases*
-Ride Unit Test  No Operation
+*** Test Cases ***
+Ride Unit Test
+  No Operation
 ''')
     with open(resourcepath, 'w') as resource:
         resource.write('*Keywords*\nUnit Test Keyword  No Operation\n')
     with open(initpath, 'w') as settings:
         settings.write('''\
-*Settings*
+*** Settings ***
 Documentation  Ride unit testing file
 ''')
 
@@ -97,7 +98,7 @@ class TestModifiedOnDiskWithFileSuite(_DataDependentTest):
             parent=controller_parent)
         assert_equal(len(ctrl.tests), 1)
         with open(self._filepath, 'a') as file:
-            file.write('Second Test  Log  Hello World!\n')
+            file.write('Second Test\n  Log  Hello World!\n')
         ctrl.reload()
         assert_equal(len(ctrl.tests), 2)
         assert_equal(ctrl.tests[-1].name, 'Second Test')
@@ -193,7 +194,7 @@ class TestDataFileRemoval(_DataDependentTest):
         os.remove(self._init_path)
         project.data.remove()
         with open(self._init_path, 'w') as initfile:
-            initfile.write('*Settings*\nDocumentation  Ride unit testing file\n')
+            initfile.write('*** Settings ***\nDocumentation  Ride unit testing file\n')
         assert_true(project.data.has_format() is False, project.data.data.initfile)
 
 

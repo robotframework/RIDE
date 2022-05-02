@@ -54,6 +54,7 @@ class _SettingController(ControllerWithParent):
         return ' | ' .join(self._value)
 
     def as_list(self):
+        # print(f"\nDEBUG: _SettingController enter as_list")
         return self._data.as_list()
 
     @property

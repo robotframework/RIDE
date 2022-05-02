@@ -20,8 +20,8 @@ from robotide.controller.filecontrollers import TestCaseFileController,\
     TestDataDirectoryController
 
 TEST_NAME = 'Test With two Steps'
-STEP1_KEYWORD = 'Step 1'
-STEP1 = '  '+STEP1_KEYWORD+'  arg'
+STEP1_KEYWORD = '  Step 1'
+STEP1 = STEP1_KEYWORD+'  arg'
 STEP2 = '  Step 2  a1  a2  a3'
 STEP_WITH_COMMENT = '  Foo  # this is a comment'
 FOR_LOOP_HEADER = '  FOR  ${i}  IN  1  2  3'

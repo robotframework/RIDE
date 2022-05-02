@@ -79,12 +79,13 @@ class _DataLoader(_DataLoaderThread):
 
 class _InitFileLoader(_DataLoaderThread):
 
-    def __init__(self, path):
+    def __init__(self, path, settings=None):
         _DataLoaderThread.__init__(self)
         self._path = path
+        self._settings = settings
 
     def _run(self):
-        result = robotapi.TestDataDirectory(source=os.path.dirname(self._path))
+        result = robotapi.TestDataDirectory(source=os.path.dirname(self._path), settings=self._settings)
         result.initfile = self._path
         robotapi.FromFilePopulator(result).populate(self._path)
         return result
@@ -105,7 +106,7 @@ class TestDataDirectoryWithExcludes(robotapi.TestDataDirectory):
 
     def __init__(self, parent, source, settings):
         self._settings = settings
-        robotapi.TestDataDirectory.__init__(self, parent, source)
+        robotapi.TestDataDirectory.__init__(self, parent, source, settings=self._settings)
 
     def add_child(self, path, include_suites, extensions=None,
                   warn_on_skipped=False):
@@ -130,7 +131,7 @@ def TestData(source, parent=None, settings=None):
         data.populate()
         # print("DEBUG: Dataloader after populate %s  %s\n" % (data._tables, data.name))
         return data
-    return robotapi.TestCaseFile(parent, source).populate()
+    return robotapi.TestCaseFile(parent, source, settings).populate()
 
 
 class ExcludedDirectory(robotapi.TestDataDirectory):

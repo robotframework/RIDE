@@ -31,7 +31,7 @@ from .settings import (Documentation, Fixture, Timeout, Tags, Metadata,
 
 
 def TestData(parent=None, source=None, include_suites=None,
-             warn_on_skipped='DEPRECATED', extensions=None):
+             warn_on_skipped='DEPRECATED', extensions=None, settings=None):
     """Parses a file or directory to a corresponding model object.
 
     :param parent: Optional parent to be used in creation of the model object.
@@ -47,9 +47,9 @@ def TestData(parent=None, source=None, include_suites=None,
         warnings.warn("Option 'warn_on_skipped' is deprecated and has no "
                       "effect.", DeprecationWarning)
     if os.path.isdir(source):
-        return TestDataDirectory(parent, source).populate(include_suites,
+        return TestDataDirectory(parent, source, settings).populate(include_suites,
                                                           extensions)
-    return TestCaseFile(parent, source).populate()
+    return TestCaseFile(parent, source, settings).populate()
 
 
 class _TestData(object):
@@ -171,16 +171,18 @@ class TestCaseFile(_TestData):
     :param source: path where test data is read from.
     """
 
-    def __init__(self, parent=None, source=None):
+    def __init__(self, parent=None, source=None, settings=None):
         self.directory = os.path.dirname(source) if source else None
         self.setting_table = TestCaseFileSettingTable(self)
         self.variable_table = VariableTable(self)
         self.testcase_table = TestCaseTable(self)
         self.keyword_table = KeywordTable(self)
+        self._settings = settings
+        self._tab_size = self._settings.get('txt number of spaces', 2) if self._settings else 2
         _TestData.__init__(self, parent, source)
 
     def populate(self):
-        FromFilePopulator(self).populate(self.source)
+        FromFilePopulator(self, self._tab_size).populate(self.source)
         self._validate()
         return self
 
@@ -206,16 +208,18 @@ class ResourceFile(_TestData):
     :param source: path where resource file is read from.
     """
 
-    def __init__(self, source=None):
+    def __init__(self, source=None, settings=None):
         self.directory = os.path.dirname(source) if source else None
         self.setting_table = ResourceFileSettingTable(self)
         self.variable_table = VariableTable(self)
         self.testcase_table = TestCaseTable(self)
         self.keyword_table = KeywordTable(self)
+        self._settings = settings
+        self._tab_size = self._settings.get('txt number of spaces', 2) if self._settings else 2
         _TestData.__init__(self, source=source)
 
     def populate(self):
-        FromFilePopulator(self).populate(self.source, resource=True)
+        FromFilePopulator(self, self._tab_size).populate(self.source, resource=True)
         self._report_status()
         return self
 
@@ -246,18 +250,20 @@ class TestDataDirectory(_TestData):
     :param source: path where test data is read from.
     """
 
-    def __init__(self, parent=None, source=None):
+    def __init__(self, parent=None, source=None, settings=None):
         self.directory = source
         self.initfile = None
         self.setting_table = InitFileSettingTable(self)
         self.variable_table = VariableTable(self)
         self.testcase_table = TestCaseTable(self)
         self.keyword_table = KeywordTable(self)
+        self._settings = settings
+        self._tab_size = self._settings.get('txt number of spaces', 2) if self._settings else 2
         _TestData.__init__(self, parent, source)
 
     def populate(self, include_suites=None, extensions=None, recurse=True):
         FromDirectoryPopulator().populate(self.source, self, include_suites,
-                                          extensions, recurse)
+                                          extensions, recurse, self._tab_size)
         self.children = [ch for ch in self.children if ch.has_tests()]
         return self
 
@@ -275,7 +281,7 @@ class TestDataDirectory(_TestData):
         self.children.append(TestData(parent=self,
                                       source=path,
                                       include_suites=include_suites,
-                                      extensions=extensions))
+                                      extensions=extensions, settings=self._settings))
 
     def has_tests(self):
         return any(ch.has_tests() for ch in self.children)
@@ -577,6 +583,7 @@ class Variable(object):
 class _WithSteps(object):
 
     def add_step(self, content, comment=None):
+        # print(f"DEBUG: model.py Enter _WithSteps content={content[:]} comment={comment}")
         self.steps.append(Step(content, comment))
         return self.steps[-1]
 
@@ -622,7 +629,7 @@ class TestCase(_WithSteps, _WithSettings):
         return self.parent.directory
 
     def add_for_loop(self, declaration, comment=None):
-        self.steps.append(ForLoop(self, declaration, comment))
+        self.steps.append(ForLoop(self, ['', 'FOR'] + declaration, comment))
         return self.steps[-1]
 
     def end_for_loop(self):
@@ -718,14 +725,26 @@ class ForLoop(_WithSteps):
     """
     flavors = {'IN', 'IN RANGE', 'IN ZIP', 'IN ENUMERATE'}
     normalized_flavors = NormalizedDict((f, f) for f in flavors)
+    inner_kw_pos = None
 
     def __init__(self, parent, declaration, comment=None):
         self.parent = parent
+        # if declaration[0] == 'FOR':
+        #    declaration.pop(0)
+        # print(f"\nDEBUG: ForLoop init enter declaration {declaration[:]}")
+        self.indent = []
+        for idx in range(0, len(declaration)-1):
+            if declaration[idx] != '':
+                self.first_kw = declaration[idx]
+                break
+            # self.indent.insert(0, '')
+        self.inner_kw_pos = idx
         self.flavor, index = self._get_flavor_and_index(declaration)
-        self.vars = declaration[:index]
+        self.vars = declaration[self.inner_kw_pos+1:index]
         self.items = declaration[index+1:]
         self.comment = Comment(comment)
         self.steps = []
+        self.args = []
 
     def _get_flavor_and_index(self, declaration):
         for index, item in enumerate(declaration):
@@ -753,7 +772,9 @@ class ForLoop(_WithSteps):
 
     def as_list(self, indent=False, include_comment=True):
         comments = self.comment.as_list() if include_comment else []
-        return ['FOR'] + self.vars + [self.flavor] + self.items + comments
+        # if len(self.indent) == 0:
+        #    self.indent.insert(0, '')  # Always send first indent
+        return self.indent + [self.first_kw] + self.vars + [self.flavor] + self.items + comments
 
     def __iter__(self):
         return iter(self.steps)
@@ -764,18 +785,36 @@ class ForLoop(_WithSteps):
 
 class Step(object):
 
+    inner_kw_pos = None
+
     def __init__(self, content, comment=None):
+        index = self.first_non_empty_cell(content)
+        # print(f"DEBUG: RFLib Model enter init Step: 1st cell content={content} comment={comment} index={index}")
         self.assign = self._get_assign(content)
-        # print("DEBUG RFLib init Step: content %s" % content[:])
-        self.name = content.pop(0) if content else None
-        # print("DEBUG RFLib init Step: self.name %s" % self.name)
-        self.args = content
+        self.indent = []
+        self.args = []
+        self.name = None
         self.comment = Comment(comment)
+        if index == -1:
+            return
+        for _ in range(0, index):
+            self.indent.append('')
+        # print(f"DEBUG: RFLib Model init Step: index={index} inner_kw_pos = {self.inner_kw_pos} indent={self.indent[:]} \ncontent {content}")
+        self.args = content[index + 1:] if content and index <= len(content) - 1 else []
+        # print(f"DEBUG: RFLib Model init Step: 1st cell len(content)={len(content)} index {index} indent={self.indent[:]}")  # 1st cell: {content[index]}")
+        if index < len(content):
+            self.name = content.pop(index) if content else None
+        else:
+            self.name = None
+        # print("DEBUG RFLib init Step: self.name %s" % self.name)
 
     def _get_assign(self, content):
         assign = []
-        while content and is_var(content[0].rstrip('= ')):
-            assign.append(content.pop(0))
+        idx = 0
+        while content and is_var(content[idx].rstrip('= ')):
+            assign.append(content.pop(idx))
+            if idx < self.inner_kw_pos:
+                idx += 1
         return assign
 
     def is_comment(self):
@@ -788,14 +827,40 @@ class Step(object):
         return True
 
     def as_list(self, indent=False, include_comment=True):
-        # print("DEBUG RFLib Model Step: self.name %s" % self.name )
+        # print(f"\nDEBUG: RFLib Model Step enter as_list  {self.name}")
         kw = [self.name] if self.name is not None else []
-        comments = self.comment.as_list() if include_comment else []
-        data = self.assign + kw + self.args + comments
+        # print(f"DEBUG RFLib Model Step: as_list() self.name={self.name} kw={kw} COMMENT={self.comment.as_list()}")
+        if self.comment:
+            comments = self.comment.as_list() if include_comment else []
+        else:
+            comments = []
+        # print(f"DEBUG RFLib Model Step: as_list() self.name={self.name} kw={kw}\n comments={comments} args={self.args}" )
+        #if len(self.indent) == 0:
+        #    self.indent.insert(0, '')  # Always send first indent
         if indent:
-            data.insert(0, '')
+            self.indent.insert(0, '')
+        data = self.indent + self.assign + kw + self.args + comments
+        # print(f"DEBUG RFLib Model Step: as_list() self.name={self.name} kw={kw}\n comments={comments} data={data}")
         # print("DEBUG RFLib Model Step: data %s" % data)
         return data
+
+    def first_non_empty_cell(self, content):
+        # print(f"DEBUG: model enter _first_non_empty_cell")
+        cells = content
+        # if cells:
+        #    print(f"DEBUG: model _first_non_empty_cell: {cells}")
+        index = 0
+        while index < len(cells) and cells[index] == '':
+            index += 1
+        if not self.inner_kw_pos:
+            self.inner_kw_pos = index
+        return index if index < len(cells) else index - 1
+
+    def first_empty_cell(self):
+        index = self.inner_kw_pos
+        if index > 0:
+            return index - 1
+        return None
 
 
 class OldStyleSettingAndVariableTableHeaderMatcher(object):

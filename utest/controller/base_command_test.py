@@ -41,9 +41,11 @@ class TestCaseCommandTest(unittest.TestCase, _FakeProject):
     def setUp(self):
         self._steps = None
         self._data = self._create_data()
+        print(f"DEBUG: base setup {self._data[:]}")
         self._ctrl = testcase_controller(self, data=self._data)
         PUBLISHER.subscribe(self._test_changed, RideItemStepsChanged)
         self._orig_number_of_steps = len(self._ctrl.steps)
+        print(f"DEBUG: base setup  self._orig_number_of_steps={self._orig_number_of_steps}")
         self._number_of_test_changes = 0
 
     def tearDown(self):
@@ -70,7 +72,7 @@ class TestCaseCommandTest(unittest.TestCase, _FakeProject):
         return self._data.index(line) - 1
 
     def _data_step_as_list(self, step_data):
-        return step_data.split('  ')[1:]
+        return step_data.split('  ')[:]
 
     def _exec(self, command):
         return self._ctrl.execute(command)
@@ -81,8 +83,11 @@ class TestCaseCommandTest(unittest.TestCase, _FakeProject):
 
     def _verify_step_unchanged(self, step_data):
         row = self._data_row(step_data)
-        assert_equal(self._steps[row].as_list(),
-                     self._data_step_as_list(step_data))
+        step = self._steps[row].as_list()
+        # if step and step[0] != '':
+        #    step = [''] + step
+        step = [''] + step
+        assert_equal(step, self._data_step_as_list(step_data)[:])
 
     def _verify_steps_unchanged(self, *steps):
         for step in steps:
@@ -97,13 +102,20 @@ class TestCaseCommandTest(unittest.TestCase, _FakeProject):
                 raise AssertionError('Row "%s" exists' % line)
 
     def _verify_step_is_empty(self, index):
-        assert_equal(self._steps[index].as_list(), [])
+        assert_equal(self._steps[index].as_list(), [''])
 
-    def _verify_step(self, index, exp_name, exp_args=[], exp_comment=None):
-        exp = [exp_name] + exp_args
+    def _verify_step(self, index, exp_name, exp_args=[], exp_comment=None, kw=True):
+        if exp_name == '':
+            exp_name = []
+        else:
+            exp_name = [exp_name]
+        exp = exp_name + exp_args
         if exp_comment:
             exp += [exp_comment]
-        assert_equal(self._steps[index].as_list(), exp)
+        if kw:
+            assert_equal(self._steps[index].as_list(), exp)
+        else:
+            assert_equal(self._steps[index].as_list(kw=True), exp)  # DEBUG Special case for PartialForLoop
 
     def _verify_step_number_change(self, change):
         assert_equal(len(self._steps), self._orig_number_of_steps + change)

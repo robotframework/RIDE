@@ -51,10 +51,11 @@ class FromFilePopulator(object):
                    'tasks': TestTablePopulator,
                    'keyword': KeywordTablePopulator}
 
-    def __init__(self, datafile):
+    def __init__(self, datafile, tab_size=2):
         self._datafile = datafile
         self._populator = NullPopulator()
         self._curdir = self._get_curdir(datafile.directory)
+        self._tab_size = tab_size
 
     def _get_curdir(self, path):
         return path.replace('\\','\\\\') if path else None
@@ -84,7 +85,7 @@ class FromFilePopulator(object):
         if resource and file_format == 'resource':
             file_format = 'robot'
         try:
-            return READERS[file_format]()
+            return READERS[file_format](self._tab_size)
         except KeyError:
             raise DataError("Unsupported file format '%s'." % file_format)
 
@@ -101,11 +102,12 @@ class FromFilePopulator(object):
         return bool(self._datafile)
 
     def add(self, row):
-        print(f"DEBUG: populators enter row={row}")
+        # print(f"DEBUG: populators enter row={row}")
         if PROCESS_CURDIR and self._curdir:
             row = self._replace_curdirs_in(row)
         data = DataRow(row, self._datafile.source)
         if data:
+            # print(f"DEBUG: populators add data={data.cells} + {data.comments}")
             self._populator.add(data)
 
     def _replace_curdirs_in(self, row):
@@ -119,26 +121,26 @@ class FromDirectoryPopulator(object):
     ignored_dirs = ('CVS',)
 
     def populate(self, path, datadir, include_suites=None,
-                 include_extensions=None, recurse=True):
+                 include_extensions=None, recurse=True, tab_size=2):
         LOGGER.info("Parsing directory '%s'." % path)
         include_suites = self._get_include_suites(path, include_suites)
         init_file, children = self._get_children(path, include_extensions,
                                                  include_suites)
         if init_file:
-            self._populate_init_file(datadir, init_file)
+            self._populate_init_file(datadir, init_file, tab_size)
         if recurse:
             self._populate_children(datadir, children, include_extensions,
-                                    include_suites)
+                                    include_suites, tab_size)
 
-    def _populate_init_file(self, datadir, init_file):
+    def _populate_init_file(self, datadir, init_file, tab_size):
         datadir.initfile = init_file
         try:
-            FromFilePopulator(datadir).populate(init_file)
+            FromFilePopulator(datadir, tab_size).populate(init_file)
         except DataError as err:
             LOGGER.error(err.message)
 
     def _populate_children(self, datadir, children, include_extensions,
-                           include_suites):
+                           include_suites, tab_size):
         for child in children:
             try:
                 datadir.add_child(child, include_suites, include_extensions)

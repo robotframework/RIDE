@@ -288,7 +288,9 @@ class LibraryKeywordInfo(_KeywordInfo):
 
 @total_ordering
 class BlockKeywordInfo(_KeywordInfo):
-    """ Special Info for FOR and END, documentation"""
+    """ Special Info for FOR and END, documentation and since 5.0,
+        IF, ELSE, ELSEIF, WHILE, TRY, EXCEPT, BREAK, CONTINUE
+    """
     _type = 'test library'
     _library_alias = None
     item = None

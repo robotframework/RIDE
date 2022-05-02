@@ -164,6 +164,7 @@ class RideFrame(wx.Frame):
         self._application = application
         self._controller = controller
         self._image_provider = ImageProvider()
+        self.reformat = application.settings.get('reformat', False)
         self.general_settings = application.settings['General']  #.get_without_default('General')
         self.color_background_help = self.general_settings.get('background help', (240, 242, 80))
         self.color_foreground_text = self.general_settings.get('foreground text', (7, 0, 70))
@@ -536,7 +537,7 @@ class RideFrame(wx.Frame):
 
     def save_all(self):
         self._show_dialog_for_files_without_format()
-        self._controller.execute(SaveAll())
+        self._controller.execute(SaveAll(self.reformat))
 
     def save(self, controller=None):
         if controller is None:
@@ -545,7 +546,7 @@ class RideFrame(wx.Frame):
             if not controller.has_format():
                 self._show_dialog_for_files_without_format(controller)
             else:
-                controller.execute(SaveFile())
+                controller.execute(SaveFile(self.reformat))
 
     def _show_dialog_for_files_without_format(self, controller=None):
         files_without_format = self._controller.get_files_without_format(
