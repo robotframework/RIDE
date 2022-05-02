@@ -84,8 +84,9 @@ class TestCaseCommandTest(unittest.TestCase, _FakeProject):
     def _verify_step_unchanged(self, step_data):
         row = self._data_row(step_data)
         step = self._steps[row].as_list()
-        if step and step[0] != '':
-            step = [''] + step
+        # if step and step[0] != '':
+        #    step = [''] + step
+        step = [''] + step
         assert_equal(step, self._data_step_as_list(step_data)[:])
 
     def _verify_steps_unchanged(self, *steps):

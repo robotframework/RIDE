@@ -37,12 +37,24 @@ class TestForLoop(unittest.TestCase):
 
     def test_for_loop_move_with_undo_preserves_correct_celltype(self):
         test = self.project.datafiles[1].tests[0]
+        # print("DEBUG: before 0")
+        # for s in test.steps:
+        #     print(f"{s.as_list()}")
         test.execute(MoveRowsDown([0]))
+        # print("DEBUG: after move 0")
+        # for s in test.steps:
+        #     print(f"{s.as_list()}")
         test.execute(MoveRowsDown([1]))
+        # print("DEBUG: after move 1")
+        # for s in test.steps:
+        #     print(f"{s.as_list()}")
         self.assertEqual(test.get_cell_info(2,3).cell_type, CellType.MANDATORY)
         test.execute(Undo())
         test.execute(Undo())
-        self.assertEqual(test.get_cell_info(1,2).cell_type, CellType.KEYWORD)
+        # print("DEBUG: after undos, should be equal to 0")
+        # for s in test.steps:
+        #     print(f"{s.as_list()}")
+        self.assertEqual(test.get_cell_info(1,1).cell_type, CellType.KEYWORD)
         # print("DEBUG: Test 0:")
         # for s in test.steps:
         #    print(f"{s.as_list()}")
@@ -180,24 +192,24 @@ class TestForLoop(unittest.TestCase):
 
     def test_adding_comment(self):
         test = self.project.datafiles[1].tests[14]
-        test.execute(ChangeCellValue(1, 2, '#UnChanged comment'))
-        self.assertEqual(test.steps[1].as_list(), ['', '', '#UnChanged comment'])
+        test.execute(ChangeCellValue(1, 1, '#UnChanged comment'))
+        self.assertEqual(test.steps[1].as_list(), ['', '#UnChanged comment'])
         test.execute(ChangeCellValue(1, 2, '# comment UnChanged'))
-        self.assertEqual(test.steps[1].as_list(), ['', '', '# comment UnChanged'])
+        self.assertEqual(test.steps[1].as_list(), ['', '#UnChanged comment', '# comment UnChanged'])
         test.execute(ChangeCellValue(1, 2, '##comment UnChanged'))
-        self.assertEqual(test.steps[1].as_list(), ['', '', '##comment UnChanged'])
+        self.assertEqual(test.steps[1].as_list(), ['', '#UnChanged comment', '##comment UnChanged'])
 
     def test_comment_is_preserved_when_shifting_row_to_left_and_back(self):
         # FIXME
         test = self.project.datafiles[1].tests[15]
-        test.execute(DeleteCell(2,1))
-        self.assertEqual(test.steps[2].as_list(), ['', '', 'Keyword', '# comment'])
-        test.execute(InsertCell(2,1))
-        self.assertEqual(test.steps[2].as_list(), ['', '', 'Keyword', '# comment'])
-        test.execute(DeleteCell(1,1))
-        self.assertEqual(test.steps[1].as_list(), ['', '', 'Kw1', '# comment'])
-        test.execute(InsertCell(1,1))
-        self.assertEqual(test.steps[1].as_list(), ['', '', 'Kw1', '# comment'])
+        test.execute(DeleteCell(2, 0))
+        self.assertEqual(test.steps[2].as_list(), ['Keyword', '# comment'])
+        test.execute(InsertCell(2, 0))
+        self.assertEqual(test.steps[2].as_list(), ['', 'Keyword', '# comment'])
+        test.execute(InsertCell(1,2))
+        self.assertEqual(test.steps[1].as_list(), ['', 'Kw1', '', '# comment'])
+        test.execute(DeleteCell(1,2))
+        self.assertEqual(test.steps[1].as_list(), ['', 'Kw1', '# comment'])
 
     def test_new_for_loop_with_existing_comment(self):
         test = self.project.datafiles[1].tests[16]
@@ -212,26 +224,26 @@ class TestForLoop(unittest.TestCase):
 
     def test_move_for_loop_over_another_for_loop(self):
         loop_1 = 'FOR  ${i}  IN  1  2  3  4'.split('  ')
-        end_1 = ['', '', 'END']
+        end_1 = ['END']
         loop_2 = ['FOR', '${j}', 'IN RANGE', '100']
-        inside_1 = ['', '', 'No Operation']
-        inside_2 = ['', '', 'Fail']
+        inside_1 = ['', 'No Operation']
+        inside_2 = ['', 'Fail']
         test = self.project.datafiles[1].tests[17]
         print("DEBUG: Test 17:")
         for s in test.steps:
             print(f"{s.as_list()}")
-        self._verify_steps(test.steps, loop_1, inside_1, end_1[2:], loop_2, inside_2, end_1[2:])
+        self._verify_steps(test.steps, loop_1, inside_1, end_1, loop_2, inside_2, end_1)
         test.execute(MoveRowsUp([3]))
         print("DEBUG: AFTER MOVE Test 17:")
         for s in test.steps:
             print(f"{s.as_list()}")
-        self._verify_steps(test.steps, loop_1, inside_1, loop_2, end_1, inside_2, end_1[2:])
+        self._verify_steps(test.steps, loop_1, inside_1, loop_2, end_1, inside_2, end_1)
         test.execute(MoveRowsUp([2]))
-        self._verify_steps(test.steps, loop_1, loop_2, inside_1, end_1, inside_2, end_1[2:])
+        self._verify_steps(test.steps, loop_1, loop_2, inside_1, end_1, inside_2, end_1)
         test.execute(MoveRowsUp([1]))
-        self._verify_steps(test.steps, loop_2, loop_1, inside_1, end_1, inside_2, end_1[2:])
+        self._verify_steps(test.steps, loop_2, loop_1, inside_1, end_1, inside_2, end_1)
         test.execute(MoveRowsDown([0]))
-        self._verify_steps(test.steps, loop_1, loop_2, inside_1, end_1, inside_2, end_1[2:])
+        self._verify_steps(test.steps, loop_1, loop_2, inside_1, end_1, inside_2, end_1)
 
     def test_move_for_loop_header_between_for_loops(self):
         test = self.project.datafiles[1].tests[18]
@@ -241,17 +253,17 @@ class TestForLoop(unittest.TestCase):
     def test_move_for_loop_in_mulitlevels(self):
         # FIXME
         loop_1 = ['FOR', '${loop1}', 'IN RANGE', '1', '19']
-        inside_NO = ['', '', 'No Operation']
-        loop_2 = ['', '', 'FOR', '${loop2}', 'IN RANGE', '${loop1}', '20']
+        inside_NO = ['', 'No Operation']
+        loop_2 = ['', 'FOR', '${loop2}', 'IN RANGE', '${loop1}', '20']
         inside_NO_2 = ['', '', 'No Operation']
         loop_3 = ['', '', 'FOR', '${loop3}', 'IN RANGE', '2', '4']
         inside_NO_3 = ['', '', '', 'No Operation']
         inside_L3 = ['', '', '', 'Log', 'This is loop 3: ${loop3}']
         inside_E3 = ['', '', 'END']
         inside_L2 = ['', '', 'Log', 'This is loop 2: ${loop2}']
-        inside_E2 = ['', '', 'END']
-        inside_L1 = ['', '','Log', 'This is loop 1: ${loop1}']
-        inside_LG = ['', '','Log', 'Generic']
+        inside_E2 = ['', 'END']
+        inside_L1 = ['', 'Log', 'This is loop 1: ${loop1}']
+        inside_LG = ['', 'Log', 'Generic']
         inside_E1 = ['END']
         test = self.project.datafiles[1].tests[19]
         print("DEBUG: Test 19:")
