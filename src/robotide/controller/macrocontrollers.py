@@ -139,6 +139,7 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         self._has_steps_changed = True
 
     def move_step_up(self, index):
+        # print(f"DEBUG: macrocontrollers move_step_up index={index} step={self.step(index).as_list()}")
         self.step(index).move_up()
         self._has_steps_changed = True
 
@@ -199,7 +200,7 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
                 if self._is_empty_step(step)]
 
     def _is_empty_step(self, step):
-        return step.as_list() == []
+        return step.as_list() in [[], ['']]
 
     def remove_step(self, index):
         self._remove_step(self.steps[index])
@@ -399,7 +400,6 @@ class TestCaseController(_WithStepsController):
             self._run_passed = False  # Test execution failed
         else:
             self._run_passed = None  # Test did not run
-
 
 
 class UserKeywordController(_WithStepsController):

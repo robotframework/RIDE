@@ -24,6 +24,7 @@ class DataRow(object):
     def __init__(self, cells, source=None):
         self.source = source
         self.cells, self.comments = self._parse(cells)
+        # print(f"DEBUG: DataRow init cells and comments cells={self.cells} + {self.comments} \n")
 
     def _parse(self, row):
         data = []

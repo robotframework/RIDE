@@ -96,12 +96,31 @@ class LibraryCache(object):
         for keywords_in_library in self._default_libraries.values():
             kws.extend(keywords_in_library)
         # DEBUG fake FOR and END
-        obj1 = BlockKeywordInfo('FOR', 'To create loops. See `BuiltIn` docs.')
+        # obj1 = BlockKeywordInfo('FOR', 'To create loops. See `BuiltIn` (docs)[https://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#for-loops].')
+        obj1 = BlockKeywordInfo('FOR', 'To create loops. Arguments: loop_variables=scalars, selector=one of IN, IN RANGE, IN ENUMERATE, IN ZIP, values=scalars, lists, dictionaries. See `BuiltIn.FOR` docs at\n https://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#for-loops.', 'ROBOT', 'BuiltIn', 'loop_variables', 'selector', '*values')
         kws.append(obj1)
-        obj2 = BlockKeywordInfo('END', 'Ends a `FOR` loop block. See `BuiltIn.FOR` docs.')
+        obj2 = BlockKeywordInfo('END', 'Ends `FOR` loops, `IF/ELSE`, `WHILE` and `TRY/EXCEPT` blocks. See `BuiltIn.FOR` docs at\n https://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#for-loops.')
         kws.append(obj2)
         obj3 = BlockKeywordInfo(': FOR', '*DEPRECATED*\nSee `BuiltIn.FOR` docs.')
         kws.append(obj3)
+        obj4 = BlockKeywordInfo('WHILE', 'To create loops. Arguments: condition=boolean, (optional) limit=counter or time. See `BuiltIn` docs at\n https://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#while-loops.', 'ROBOT', 'BuiltIn', 'condition', '(optional) limit')
+        kws.append(obj4)
+        obj5 = BlockKeywordInfo('BREAK', 'To control loops. See `BuiltIn` docs at\n https://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#loop-control-using-break-and-continue.')
+        kws.append(obj5)
+        obj6 = BlockKeywordInfo('CONTINUE', 'To control loops. See `BuiltIn` docs at\n https://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#loop-control-using-break-and-continue.')
+        kws.append(obj6)
+        obj7 = BlockKeywordInfo('IF', 'To condition blocks of keywords. Arguments: condition=boolean. See `BuiltIn` docs at\n https://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#if-else-syntax.', 'ROBOT', 'BuiltIn', 'condition=boolean')
+        kws.append(obj7)
+        obj8 = BlockKeywordInfo('ELSE', 'To condition blocks of keywords. See `BuiltIn.IF` docs at\n https://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#if-else-syntax.\n Note: See also TRY/EXCEPT.')
+        kws.append(obj8)
+        obj9 = BlockKeywordInfo('ELSE IF', 'To condition blocks of keywords. Arguments: condition=boolean. See `BuiltIn.IF` docs at\n https://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#if-else-syntax.', 'ROBOT', 'BuiltIn', 'condition=boolean')
+        kws.append(obj9)
+        obj10 = BlockKeywordInfo('TRY', 'To prevent test failures based on messages from keywords. See `BuiltIn.TRY` docs at\n https://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#try-except-syntax.')
+        kws.append(obj10)
+        obj11 = BlockKeywordInfo('EXCEPT', 'To prevent test failures based on messages from keywords. Arguments: (optional) message=string, (optional) glob, regex, scalar, (optional) type, glob or error capture setting. See `BuiltIn.TRY` docs at\n https://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#try-except-syntax.', 'ROBOT', 'BuiltIn', '(optional) message=string', '(optional) glob, regex, scalar', '(optional) type, glob or error capture setting')
+        kws.append(obj11)
+        obj12 = BlockKeywordInfo('FINALLY', 'To prevent test failures based on messages from keywords. See `BuiltIn.TRY` docs at\n https://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#try-except-syntax.')
+        kws.append(obj12)
         return kws
 
     def _get_default_libraries(self):

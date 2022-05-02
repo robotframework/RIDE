@@ -69,7 +69,7 @@ IMPORTS = _makepath('imports')
 
 def construct_project(datapath, temp_dir_for_excludes=None):
     print("DEBUG: construct_project with argpath: %s\n" % datapath)
-    settings = FakeSettings({'excludes': temp_dir_for_excludes})
+    settings = FakeSettings({'excludes': temp_dir_for_excludes, 'txt number of spaces': 2})
     print("DEBUG: construct_project FakeSettings: %s\n" % list(settings.iteritems()))
     library_manager = LibraryManager(':memory:')
     library_manager.create_database()

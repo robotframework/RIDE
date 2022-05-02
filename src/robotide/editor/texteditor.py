@@ -301,7 +301,7 @@ class DataFileWrapper(object): # TODO: bad class name
     def __init__(self, data, settings):
         self._data = data
         self._settings = settings
-        self._tab_size = self._settings.get('txt number of spaces', 4)
+        self._tab_size = self._settings.get('txt number of spaces', 2) if self._settings else 2
 
     def __eq__(self, other):
         if other is None:
@@ -363,7 +363,7 @@ class SourceEditor(wx.Panel, RIDEDialog):
         self._title = title
         self._tab_size = self._parent._app.settings.get(
                       'txt number of spaces', 4)
-        self._reformat = self._parent._app.settings.get('reformat', True)
+        self._reformat = self._parent._app.settings.get('reformat', False)
         self._create_ui(title)
         self._data = None
         self._dirty = 0  # 0 is False and 1 is True, when changed on this editor
@@ -609,6 +609,7 @@ class SourceEditor(wx.Panel, RIDEDialog):
             if idx < lenline and (line.strip().startswith("FOR") or line.strip().startswith("IF")
                                       or line.strip().startswith("ELSE")):
                 tsize += 1
+                print(f"DEBUG: SourceEditor auto_indent after block kw tsize={tsize} linenum={linenum}")
             elif linenum > 0 and tsize == 0:  # Advance if first task/test case or keyword
                 prevline = self._editor.GetLine(linenum-1).lower()
                 if prevline.startswith("**") and not ("variables" in prevline or "settings" in prevline):
@@ -621,6 +622,7 @@ class SourceEditor(wx.Panel, RIDEDialog):
                 self._editor.SetSelection(pos, pos)
                 self.deindent_block()
                 tsize -= 1
+                print(f"DEBUG: SourceEditor auto_indent after END block kw tsize={tsize} linenum={linenum}")
             self._editor.NewLine()
             while tsize > 0:
                 self.write_ident()
