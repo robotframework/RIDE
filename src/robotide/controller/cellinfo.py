@@ -93,10 +93,12 @@ class _TooltipMessage(object):
             CellType.MANDATORY: self._mandatory,
             CellType.OPTIONAL: self._optional,
             CellType.MUST_BE_EMPTY: self._must_be_empty,
-            CellType.UNKNOWN: self._unknown,
-            CellType.END: self._keyword,
-            CellType.FOR: self._keyword
+            CellType.UNKNOWN: self._unknown
         }
+        """
+        CellType.END: self._keyword,
+        CellType.FOR: self._keyword
+        """
         return (handlers[cell.cell_type](cell) + message).strip()
 
     def _must_be_empty(self, cell):

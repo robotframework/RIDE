@@ -121,35 +121,52 @@ class StepController(_BaseController):
 
     def _get_cell_position(self, column):
         # TODO: refactor
-        ########## print(f"DEBUG: Stepcontroller Enter _get_cell_position {column} keyword_column={self._keyword_column}")
+        col = column
         if self.parent.has_template():
             return CellPosition(CellType.UNKNOWN, None)
         column -= len(self._step.assign)
         # print(f"DEBUG: Stepcontroller _get_cell_position not in template processing {column}"
         #       f" current keyword_column={self._keyword_column} step name: {self._step.name}")
-        if column < 0:
-            return CellPosition(CellType.ASSIGN, None)
-        info = self.get_keyword_info(self._step.name)
-        # if info:
+        print(f"DEBUG: Stepcontroller Enter _get_cell_position computed column={column} keyword_column={self._keyword_column}\n"
+              f"{self.get_value(col)} original column={col} ")
+        if col == self._keyword_column:
+            info = self.get_keyword_info(self.get_value(col))  # Getting info for the keyword cell
+            if info:
+                print(
+                    f"DEBUG: Stepcontroller _get_cell_position return KEYWORD {col} info {info.name if info else None}")
+                return CellPosition(CellType.KEYWORD, None)
+        else:
+            info = self.get_keyword_info(self.get_value(self._keyword_column))  # Getting info for the argument cell
+        if info:
+            args = info.arguments
+        else:
+            args = []
             # print(f"DEBUG: Stepcontroller _get_cell_position info {info.name if info else None} info.args {info.arguments}")
-        if not info:
+        if not info and not self.is_assigning(self.get_value(col)):
             return CellPosition(CellType.UNKNOWN, None)
-        if column == self._keyword_column:
-            # print(f"DEBUG: Stepcontroller _get_cell_position return KEYWORD {column} info {info.name if info else None}")
+        if column <= self._keyword_column and self.is_assigning(self.get_value(col)):
+            return CellPosition(CellType.ASSIGN, None)
+        # TODO Fix next condition
+        if self.get_keyword_info(self.get_value(col)) and ((self.is_assigning(self.get_value(self._keyword_column)))
+                                                           or (col - 1 > 0 and self.is_assigning(self.get_value(col-1)))):
+            print(
+                f"DEBUG: Stepcontroller _get_cell_position  return KEYWORD {col} last branch")
             return CellPosition(CellType.KEYWORD, None)
-        args = info.arguments
         args_amount = len(args)
         if args_amount == 0:
             return CellPosition(CellType.MUST_BE_EMPTY, None)
-        if column >= args_amount and self._last_argument_is_varargs(args):
+        mandatory_args_amount = self._number_of_mandatory_arguments(args, args_amount)
+        if col >= self._keyword_column + args_amount and self._last_argument_is_varargs(args):
             return CellPosition(CellType.OPTIONAL, args[-1])
-        if self._has_list_or_dict_var_value_before(column - 1):
+        if self._has_list_or_dict_var_value_before(col - 1):
             return CellPosition(CellType.UNKNOWN, None)
-        if column - self._keyword_column > args_amount:
+        if col > self._keyword_column + args_amount:
             return CellPosition(CellType.MUST_BE_EMPTY, None)
-        if column - self._keyword_column <= self._number_of_mandatory_arguments(args, args_amount):
-            return CellPosition(CellType.MANDATORY, args[column-self._keyword_column - 1])
-        return CellPosition(CellType.OPTIONAL, args[-1])
+        if col - self._keyword_column <= mandatory_args_amount:
+            return CellPosition(CellType.MANDATORY, args[col-self._keyword_column - 1])
+        if col - self._keyword_column <= args_amount - mandatory_args_amount + 1:
+            return CellPosition(CellType.OPTIONAL, args[col-self._keyword_column - 1])
+        return CellPosition(CellType.MUST_BE_EMPTY, None)
 
     def _number_of_mandatory_arguments(self, args, args_amount):
         defaults = [arg for arg in args if '=' in arg]
@@ -791,7 +808,7 @@ class IntendedStepController(StepController):
         return [''] + row
 
     def _get_cell_position(self, col):
-        # print(f"DEBUG: enter _get_cell_position at IntendedStepController: col={col}")
+        print(f"DEBUG: enter _get_cell_position at IntendedStepController: col={col}")
         if col < self._keyword_column:
             return CellPosition(CellType.MUST_BE_EMPTY, None)
         return StepController._get_cell_position(self, col)
