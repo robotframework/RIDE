@@ -142,8 +142,11 @@ class TestCellInfo(unittest.TestCase):
     def test_variable_is_known_when_defining_it(self):
         self.test.execute(ChangeCellValue(0, 0, '${var}='))
         self.test.execute(ChangeCellValue(0, 1, 'Set Variable'))
-        self.test.execute(ChangeCellValue(0, 2, '${var}'))
+        self.test.execute(ChangeCellValue(0, 2, '${var1}'))
         self._verify_cell_info(0, 0, ContentType.VARIABLE, CellType.ASSIGN)
+        # print("\nDEBUG: test_variable_is_known_when_defining_it:")
+        # for s in self.test.steps:
+        #     print(f"{s.as_list()}\n")
         self._verify_cell_info(0, 2, ContentType.UNKNOWN_VARIABLE, CellType.OPTIONAL)
 
     def test_known_extended_variable_syntax(self):
@@ -193,6 +196,9 @@ class TestCellInfo(unittest.TestCase):
         self.test.execute(ChangeCellValue(0, 0, '${my cool var}='))
         self._verify_cell_info(0, 0, ContentType.VARIABLE, CellType.ASSIGN)
         self.test.execute(ChangeCellValue(0, 1, 'Set Variable'))
+        # print("\nDEBUG: test_variable_setting:")
+        # for s in self.test.steps:
+        #     print(f"{s.as_list()}\n")
         self._verify_cell_info(0, 1, ContentType.LIBRARY_KEYWORD, CellType.KEYWORD)
         self._verify_string_change(0, 2, CellType.OPTIONAL)
 
@@ -211,7 +217,7 @@ class TestCellInfo(unittest.TestCase):
         #for k in forlooped_case.steps:
         #    print(f"value: {k.as_list()}")
         # print(f"\nDEBUG: cellinfo test_for_loop_in_header: {forlooped_case.get_cell_info(0, 0).cell_type}")
-        self._verify_cell_info(0, 0, ContentType.LIBRARY_KEYWORD, CellType.MANDATORY, forlooped_case)
+        self._verify_cell_info(0, 0, ContentType.LIBRARY_KEYWORD, CellType.KEYWORD, forlooped_case)
         self._verify_cell_info(0, 1, ContentType.VARIABLE, CellType.ASSIGN, forlooped_case)
         self._verify_cell_info(0, 2, ContentType.STRING, CellType.MANDATORY, forlooped_case)
         self._verify_cell_info(0, 3, ContentType.STRING, CellType.OPTIONAL, forlooped_case)
@@ -220,11 +226,10 @@ class TestCellInfo(unittest.TestCase):
 
     def test_steps_in_for_loop(self):
         forlooped_case = self.keyword3
-        print(f"kw_name:{forlooped_case.name}")
-        for k in forlooped_case.steps:
-            print(f"value: {k.as_list()}")
-        # FIXME
-        self._verify_cell_info(0, 0, ContentType.LIBRARY_KEYWORD, CellType.MANDATORY, forlooped_case)
+        # print(f"kw_name:{forlooped_case.name}")
+        # for k in forlooped_case.steps:
+        #     print(f"value: {k.as_list()}")
+        self._verify_cell_info(0, 0, ContentType.LIBRARY_KEYWORD, CellType.KEYWORD, forlooped_case)
         self._verify_cell_info(1, 0, ContentType.EMPTY, CellType.MUST_BE_EMPTY, forlooped_case)
         self._verify_cell_info(1, 1, ContentType.LIBRARY_KEYWORD, CellType.KEYWORD, forlooped_case)
         self._verify_cell_info(1, 2, ContentType.STRING, CellType.MANDATORY, forlooped_case)
@@ -241,7 +246,7 @@ class TestCellInfo(unittest.TestCase):
         in_range_header_index = 5
         # self._verify_cell_info(in_range_header_index, 0, ContentType.STRING, CellType.MANDATORY, forlooped_case)
         # Because FOR and END now have documentation
-        self._verify_cell_info(in_range_header_index, 0, ContentType.LIBRARY_KEYWORD, CellType.MANDATORY, forlooped_case)
+        self._verify_cell_info(in_range_header_index, 0, ContentType.LIBRARY_KEYWORD, CellType.KEYWORD, forlooped_case)
         self._verify_cell_info(in_range_header_index, 1, ContentType.VARIABLE, CellType.ASSIGN, forlooped_case)
         self._verify_cell_info(in_range_header_index, 2, ContentType.STRING, CellType.MANDATORY, forlooped_case)
         self._verify_cell_info(in_range_header_index, 3, ContentType.STRING, CellType.MANDATORY, forlooped_case)
@@ -298,6 +303,9 @@ class TestCellInfo(unittest.TestCase):
         self.test.execute(ChangeCellValue(0, 0, kw_name))
         self._verify_cell_info(0, 0, ContentType.STRING, CellType.UNKNOWN)
         self.test.execute(AddKeyword(kw_name, '${argh}'))
+        print("\nDEBUG: test_variable_setting:")
+        for s in self.test.steps:
+            print(f"{s.as_list()}\n")
         self._verify_cell_info(0, 0, ContentType.USER_KEYWORD, CellType.KEYWORD)
         self._verify_cell_info(0, 1, ContentType.EMPTY, CellType.MANDATORY)
         self.test.execute(Undo())
