@@ -117,7 +117,7 @@ class LibraryCache(object):
         kws.append(obj9)
         obj10 = BlockKeywordInfo('TRY', 'To prevent test failures based on messages from keywords. See `BuiltIn.TRY` docs at\n https://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#try-except-syntax.')
         kws.append(obj10)
-        obj11 = BlockKeywordInfo('EXCEPT', 'To prevent test failures based on messages from keywords. Arguments: (optional) message=string, (optional) glob, regex, scalar, (optional) type, glob or error capture setting. See `BuiltIn.TRY` docs at\n https://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#try-except-syntax.', 'ROBOT', 'BuiltIn', '(string) message=', '(optional) glob=, regex=, scalar=', '(optional) type=, glob= or error capture setting')
+        obj11 = BlockKeywordInfo('EXCEPT', 'To prevent test failures based on messages from keywords.\n\nArguments: (optional) message=string, (optional) glob, regex, scalar, (optional) type, glob or error capture setting.\n\n See `BuiltIn.TRY` docs at\n https://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#try-except-syntax.', 'ROBOT', 'BuiltIn', '*options')
         kws.append(obj11)
         obj12 = BlockKeywordInfo('FINALLY', 'To prevent test failures based on messages from keywords. See `BuiltIn.TRY` docs at\n https://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#try-except-syntax.')
         kws.append(obj12)

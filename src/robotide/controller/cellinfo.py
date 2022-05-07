@@ -62,8 +62,7 @@ class CellInfo(object):
 def TipMessage(cell):
     if not cell:
         return ''
-    tip = _TooltipMessage(cell) if not cell.for_loop \
-        else _ForLoopTooltipMessage(cell)
+    tip = _TooltipMessage(cell)  #if not cell.for_loop else _ForLoopTooltipMessage(cell)
     return html_escape(str(tip)).replace('\n', '<br />')
 
 
@@ -93,12 +92,10 @@ class _TooltipMessage(object):
             CellType.MANDATORY: self._mandatory,
             CellType.OPTIONAL: self._optional,
             CellType.MUST_BE_EMPTY: self._must_be_empty,
-            CellType.UNKNOWN: self._unknown
+            CellType.UNKNOWN: self._unknown,
+            CellType.END: self._keyword,
+            CellType.FOR: self._keyword
         }
-        """
-        CellType.END: self._keyword,
-        CellType.FOR: self._keyword
-        """
         return (handlers[cell.cell_type](cell) + message).strip()
 
     def _must_be_empty(self, cell):
@@ -133,8 +130,8 @@ class _TooltipMessage(object):
     def __str__(self):
         return self.message
 
-
-class _ForLoopTooltipMessage(_TooltipMessage):
+    """
+    class _ForLoopTooltipMessage(_TooltipMessage):
 
     TOO_MANY_ARGUMENTS = "Too many parameters in for loop"
 
@@ -142,6 +139,7 @@ class _ForLoopTooltipMessage(_TooltipMessage):
         if cell.too_many_arguments():
             return self.TOO_MANY_ARGUMENTS
         return ''
+    """
 
 
 class CellContent(object):
