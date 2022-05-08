@@ -682,6 +682,11 @@ work.</li>
         else:
             self.MoveCursorLeft(event.ShiftDown())
 
+    def move_grid_cursor_and_edit(self):
+        # cell = self.cell_under_cursor()
+        # self.MoveCursorRight(False)
+        self._open_cell_editor()
+
     def OnKeyUp(self, event):
         event.Skip()  # DEBUG seen this skip as soon as possible
         self._tooltips.hide()
@@ -697,7 +702,9 @@ work.</li>
         return celleditor
 
     def _open_cell_editor_with_content_assist(self):
+        # print(f"DEBUG: kweditor call _open_cell_editor_with_content_assist")
         wx.CallAfter(self._open_cell_editor().show_content_assist)
+        # wx.CallAfter(self._move_grid_cursor, wx.grid.GridEvent(), wx.WXK_RETURN)
 
     def _open_cell_editor_and_execute_variable_creator(
             self, list_variable=False, dict_variable=False):
@@ -967,6 +974,8 @@ class ContentAssistCellEditor(GridCellEditor):
         value = self._get_value()
         if value != self._original_value:
             self._value = value
+            # print(f"DEBUG: kweditor returning ContentAssistCellEditor.EndEdit {value} and moving right")
+            wx.CallAfter(self._grid.move_grid_cursor_and_edit)
             return value
         else:
             self._tc.hide()
