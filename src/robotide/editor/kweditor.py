@@ -203,7 +203,9 @@ class KeywordEditor(GridEditor, Plugin):
     def _make_bindings(self):
         self.Bind(grid.EVT_GRID_EDITOR_SHOWN, self.OnEditor)
         self.Bind(wx.EVT_KEY_DOWN, self.OnKeyDown)
+        self.Bind(wx.EVT_CHAR, self.OnChar)
         self.Bind(wx.EVT_KEY_UP, self.OnKeyUp)
+        self.GetGridWindow().Bind(wx.EVT_MOTION, self.OnMotion)
         self.Bind(grid.EVT_GRID_CELL_LEFT_CLICK, self.OnCellLeftClick)
         self.Bind(grid.EVT_GRID_LABEL_RIGHT_CLICK, self.OnLabelRightClick)
         self.Bind(grid.EVT_GRID_LABEL_LEFT_CLICK, self.OnLabelLeftClick)
@@ -379,6 +381,12 @@ class KeywordEditor(GridEditor, Plugin):
         for r in rows:
             self.SelectRow(r, True)
 
+    def OnMotion(self, event):
+        if IS_MAC:
+            if self.IsCellEditControlShown():
+                return
+        event.Skip()
+
     def _before_saving(self, message):
         if self.IsCellEditControlShown():
             # Fix: cannot save modifications in edit mode
@@ -524,6 +532,10 @@ class KeywordEditor(GridEditor, Plugin):
             cell_editor.EndEdit(self.selection.topleft.row,
                                 self.selection.topleft.col, self)
 
+    def show_content_assist(self):
+        if self.IsCellEditControlShown():
+            self.GetCellEditor(*self.selection.cell).show_content_assist(self.selection.cell)
+
     def refresh_datafile(self, item, event):
         self._tree.refresh_datafile(item, event)
 
@@ -552,7 +564,10 @@ class KeywordEditor(GridEditor, Plugin):
                 elif keycode == ord('D'):
                     self.OnDeleteCells()
             else:
-                if keycode == ord('C'):
+                if keycode == wx.WXK_SPACE:
+                    self._open_cell_editor_with_content_assist()
+                    return  # event must not be skipped in this case
+                elif keycode == ord('C'):
                     self.OnCopy(event)
                 elif keycode == ord('X'):
                     self.OnCut(event)
@@ -568,11 +583,17 @@ class KeywordEditor(GridEditor, Plugin):
                 elif keycode == ord('F'):
                     if not self.has_focus():
                         self.SetFocus()  # Avoiding Search field on Text Edit
+                elif keycode in (ord('1'), ord('2'), ord('5')):
+                    self._open_cell_editor_and_execute_variable_creator(
+                        list_variable=(keycode == ord('2')),
+                        dict_variable=(keycode == ord('5')))
                 else:
                     self.show_cell_information()
         elif event.AltDown():
+            if keycode == wx.WXK_SPACE:
+                self._open_cell_editor_with_content_assist()  # Mac CMD
+            elif keycode in [wx.WXK_DOWN, wx.WXK_UP]:
             # Mac Option key(⌥)
-            if keycode in [wx.WXK_DOWN, wx.WXK_UP]:
                 self._move_rows(keycode)
             elif keycode == wx.WXK_RETURN:
                 if self.IsCellEditControlShown():
@@ -596,6 +617,15 @@ class KeywordEditor(GridEditor, Plugin):
             elif keycode == wx.WXK_F2:
                 self.open_cell_editor()
         event.Skip()
+
+    def OnChar(self, event):
+        keychar = event.GetUnicodeKey()
+        if keychar < ord(' '):
+            return
+        if keychar in [ord('['), ord('{'), ord('('), ord("'"), ord('\"'), ord('`')]:
+            self._open_cell_editor().execute_enclose_text(chr(keychar))
+        else:
+            event.Skip()
 
     def OnGoToDefinition(self, event):
         self._navigate_to_matching_user_keyword(
@@ -658,10 +688,16 @@ work.</li>
         else:
             self.MoveCursorLeft(event.ShiftDown())
 
+    def move_grid_cursor_and_edit(self):
+        # cell = self.cell_under_cursor()
+        # self.MoveCursorRight(False)
+        self.open_cell_editor()
+
     def OnKeyUp(self, event):
         event.Skip()  # DEBUG seen this skip as soon as possible
         self._tooltips.hide()
         self._hide_link_if_necessary()
+        #  event.Skip()
 
     def _get_cell_editor(self):
         row = self.GetGridCursorRow()
@@ -899,7 +935,13 @@ class ContentAssistCellEditor(GridCellEditor):
         self._grid = None
         self._parent = None
         self._original_value = None
+        self._value = None
         self._tc = None
+        self._counter = 0
+
+    def show_content_assist(self, args=None):
+        if self._tc:
+            self._tc.show_content_assist()
 
     def update_from_suggestion_list(self):
         if self._tc and self._tc.is_shown():
@@ -908,6 +950,10 @@ class ContentAssistCellEditor(GridCellEditor):
     def execute_variable_creator(self, list_variable=False,
                                  dict_variable=False):
         self._tc.execute_variable_creator(list_variable, dict_variable)
+
+    def execute_enclose_text(self, keycode):
+        self._tc.execute_enclose_text(keycode)
+
 
     def Create(self, parent, id, evtHandler):
         self._parent = parent
@@ -924,6 +970,7 @@ class ContentAssistCellEditor(GridCellEditor):
         self._height = height
 
     def BeginEdit(self, row, col, grid):
+        self._counter = 0
         self._tc.SetSize((-1, self._height))
         self._tc.SetBackgroundColour(self.color_background_help)  # DEBUG: We are now in Edit mode
         self._tc.SetForegroundColour(self.color_foreground_text)
