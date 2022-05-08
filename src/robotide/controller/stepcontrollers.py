@@ -85,18 +85,6 @@ class StepController(_BaseController):
             return ''
         return values[col]
 
-    """    
-    def get_cell_info(self, col):
-        if col not in self._cell_info_cache:
-            position = self._get_cell_position(col)
-            print(f"DEBUG: Stepcontroller get_cell_info position({col}) {position.type} {position.argument_name}")
-            content = self._get_content_with_type(col, position)
-            self._cell_info_cache[col] = self._build_cell_info(content, position)
-        else:
-            print(f"DEBUG: Stepcontroller get_cell_info position({col}) IN CACHE *******")
-        return self._cell_info_cache[col]
-    """
-
     def get_cell_info(self, col):
         # print(f"DEBUG: Stepcontroller ENTER get_cell_info position({col}) {'W'*col if col == 2 else ''}")
         position = self._get_cell_position(col)
@@ -386,15 +374,15 @@ class StepController(_BaseController):
             self.shift_left(0)
 
     def shift_right(self, from_column):
-        print(f"DEBUG: StepController shift_right enter:index:{from_column}")
+        # print(f"DEBUG: StepController shift_right enter:index:{from_column}")
         cells = self.as_list()
         comment = self._get_comment(cells)
-        print(f"DEBUG: StepController shift_right enter:index:{from_column} len(cells)={len(cells)} {cells} {comment}")
+        # print(f"DEBUG: StepController shift_right enter:index:{from_column} len(cells)={len(cells)} {cells} {comment}")
         if len(cells) > from_column:
             if comment:
                 cells.pop()
             cells = cells[:from_column] + [''] + cells[from_column:]
-            print(f"DEBUG: StepController shift_right before recreate: {cells} {comment}")
+            # print(f"DEBUG: StepController shift_right before recreate: {cells} {comment}")
             # DEBUG include comment
             self._recreate(cells, comment)
 
@@ -517,40 +505,9 @@ class StepController(_BaseController):
         return cells[-1].strip() if cells[-1].startswith('#') else None
 
     def _recreate(self, cells, comment=None):
-        # print(f"DEBUG: enter _recreate: {cells}")  # self.step={self._step.as_list()}")
-        """
-        if self._is_partial_for_loop_step(cells):
-            print(f"DEBUG: _recreate _recreate_as_partial_for_loop before: {cells}")
-            self._recreate_as_partial_for_loop(cells, comment)
-            # print(f"DEBUG: _recreate _recreate_as_partial_for_loop after: {cells}")
-        
-        elif self._is_intended_step(cells):
-            i = self._index()
-            previous_step = self.parent.step(i - 1)
-            print(f"DEBUG: _recreate _is_intended_step: {previous_step.as_list()}")
-            if type(previous_step) == ForLoopStepController:
-                # print(f"DEBUG: _recreate _is_intended_step FOR loop: {previous_step.as_list()}")
-                self._recreate_as_intended_step(previous_step, cells, comment, i)
-                # print(f"DEBUG: _recreate _is_intended_step after: {previous_step.as_list()}")
-            elif type(previous_step) == IntendedStepController:
-                print(f"DEBUG: _recreate _is_intended_step before: {previous_step.as_list()}")
-                self._recreate_as_intended_step(previous_step.parent, cells, comment, i)
-            else:
-                print(f"DEBUG: _recreate Indented Step init before: {cells} comment {comment}")
-                self._step.__init__(cells, comment)
-                self.recalculate_keyword_column()
-                return
-        """
-        print(f"DEBUG: _recreate init before: {cells} comment {comment}")
-        # self._step.__init__(cells, comment)
-        # i = self._index()
-        # previous_step = self.parent.step(i - 1)
-        # self.remove()
+        # print(f"DEBUG: _recreate init before: {cells} comment {comment}")
         self._step.__init__(cells, comment)
-        # self.insert_before(robotapi.Step(cells, comment))
-        # self.remove()
-        # self._init(previous_step, robotapi.Step(cells, comment))
-        print(f"DEBUG: _recreate init after before recalculate: {self._step.as_list()}")
+        # print(f"DEBUG: _recreate init after before recalculate: {self._step.as_list()}")
         self.recalculate_keyword_column()
         # print(f"DEBUG: _recreate init after recalculate: {self._step.as_list()}")
 
