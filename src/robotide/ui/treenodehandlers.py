@@ -15,17 +15,14 @@
 
 import wx
 
-from ..controller import ctrlcommands
+from ..controller import ctrlcommands, filecontrollers, macrocontrollers, settingcontrollers, SortTests, SortVariables
 # import (RenameKeywordOccurrences, RemoveMacro, AddKeyword, AddTestCase, RenameTest,
 #         CopyMacroAs, AddVariable, UpdateVariableName, RenameFile, RenameResourceFile,
 #         DeleteFile, SortKeywords, Include, Exclude, OpenContainingFolder, RemoveReadOnly)
 
-from ..controller import filecontrollers
 # import (TestDataDirectoryController, ResourceFileController, TestCaseFileController,
 #         ExcludedDirectoryController, DirtyRobotDataException)
-from ..controller import macrocontrollers
 # import TestCaseController, UserKeywordController
-from ..controller import settingcontrollers
 # import VariableController
 from ..editor.editordialogs import (TestCaseNameDialog, UserKeywordNameDialog, ScalarVariableDialog, ListVariableDialog,
                                     CopyUserKeywordDialog, DictionaryVariableDialog)
