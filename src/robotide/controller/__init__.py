@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 # from .ctrlcommands import FindOccurrences, FindVariableOccurrences, _Command, SaveFile
+from .ctrlcommands import SortTests, SortVariables
 from .dataloader import DataLoader
 from .filecontrollers import DataController, ResourceFileController
 from .project import Project
