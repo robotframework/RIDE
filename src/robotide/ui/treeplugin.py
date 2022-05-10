@@ -1024,8 +1024,8 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl):
             handler = self._controller.get_handler(event.GetItem())
 
         if handler:
-            if not self.IsExpanded(handler.node):
-                self.Expand(handler.node)
+            # if not self.IsExpanded(handler.node):
+            #     self.Expand(handler.node)
             handler.show_popup()
 
     def OnNewTestCase(self, event):

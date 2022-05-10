@@ -47,6 +47,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Changed
 
+- Prevent expanding Tests and change selection on Project tree (when right-clicking)
 - Improved Text Edit processing of # comments
 - Improved filesystem changes detection to be less reactive
 - Keywords auto-suggestion in grid editor does not need shortcut anymore, if you want to disable this feature you can config in `Preferences -> Grid Editor -> Only trigger auto suggestions from shortcuts`
@@ -65,6 +66,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Fixed
 
+- Fixed broken sorting Tests and Variables in Project tree (right-click menu)
 - Fixed JSON in cell editor not saving nor validating JSON
 - Fixed TestRunner crash when test use SKIP keyword
 - Fixed broken pipe errors when using `--loglevel  DEBUG:INFO`
