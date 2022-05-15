@@ -35,7 +35,8 @@ class HtmlReader(HTMLParser):
     INITIAL = 1
     PROCESS = 2
 
-    def __init__(self):
+    def __init__(self, spaces=2):
+        self._spaces = spaces
         HTMLParser.__init__(self)
         self._encoding = 'ISO-8859-1'
         self._handlers = {'table_start' : self.table_start,
