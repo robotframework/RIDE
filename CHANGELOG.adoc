@@ -65,6 +65,8 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Fixed
 
+- Fixed error preventing to open old format, HTML test suites:
+    * Yes, we are at RF 5.0.1, but still can open HTML test suites (and then Change to .robot)
 - Fixed broken sorting Tests and Variables in Project tree (right-click menu)
 - Fixed JSON in cell editor not saving nor validating JSON
 - Fixed TestRunner crash when test use SKIP keyword
