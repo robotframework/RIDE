@@ -275,7 +275,29 @@ class PybotProfile(BaseProfile, RIDEDialog):
     def _get_arguments(self):
         if IS_WINDOWS:
             self._parse_windows_command()
-        return self._defined_arguments.split()
+        return self._save_filenames()
+
+    def _save_filenames(self):
+        args = self._defined_arguments
+        import urllib.parse
+        ini = None
+        try:
+            ini = args.index('"')
+        except ValueError:
+            return args.split()
+        end = None
+        try:
+            end = args[ini:].index('"')
+        except ValueError:
+            return args.split()
+        name = args[ini:]
+        name = urllib.parse.quote_plus(name, safe='"')
+        args_list = args[:ini].split() + name.split('"')
+        clean = []
+        for a in args_list:
+            if a != '':
+                clean.append(urllib.parse.unquote_plus(a).strip())
+        return clean
 
     def _parse_windows_command(self):
         from subprocess import Popen, PIPE
@@ -284,7 +306,7 @@ class PybotProfile(BaseProfile, RIDEDialog):
                       stderr=PIPE, shell=True)
             output, _ = p.communicate()
             output = str(output).lstrip("b\'").strip()
-            self._defined_arguments = output.replace('"', '').replace('\'', '')\
+            self._defined_arguments = output.replace('\'', '')\
                 .replace('\\\\', '\\').replace('\\r\\n', '')
         except IOError as e:
             # print("DEBUG: parser_win_comm IOError: %s" % e)
@@ -448,7 +470,7 @@ class PybotProfile(BaseProfile, RIDEDialog):
                 if clean_args[idx][0] != '-':  # Not option, then is argument
                     clean_args[idx] = 'arg'
             args = " ".join(clean_args)
-            _, invalid = ArgumentParser(USAGE).parse_args(args.split())
+            _, invalid = ArgumentParser(USAGE).parse_args(args)  # DEBUG .split())
         except Information:
             return 'Does not execute - help or version option given'
         except Exception as e:
