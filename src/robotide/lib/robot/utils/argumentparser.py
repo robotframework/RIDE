@@ -68,7 +68,7 @@ class ArgumentParser(object):
     (\s\*)?       # optional '*' telling option allowed multiple times (group 5)
     ''', re.VERBOSE)
 
-    _quotes_re = re.compile('.*(\".*\").*')
+    _quotes_re = re.compile('(.*)(\".*\")(.*)?(\".*\")?(.*)?(\".*\")?(.*)?')  # at most three groups with double-quotes
 
     def __init__(self, usage, name=None, version=None, arg_limits=None,
                  validator=None, env_options=None, auto_help=True,
@@ -147,6 +147,7 @@ class ArgumentParser(object):
         """
         args = self._get_env_options() + self._save_filenames(args)
         # args = self._get_env_options() + list(args)
+        print(f"DEBUG: RFlib parse_args after _save_filenames: {args}")
         args = [system_decode(a) for a in args]
         if self._auto_argumentfile:
             args = self._process_possible_argfile(args)
@@ -186,20 +187,56 @@ class ArgumentParser(object):
         return opts, args
 
     def _save_filenames(self, args):
+        res = self._quotes_re.match(args)
+        if not res:
+            return args.strip().strip().split()
+        clean = []
+        for gr in res.groups():
+            if gr is not None and gr != '':
+                second_m = re.split('\"', gr)
+                if len(second_m) > 2:  # the middle element is the content
+                    if second_m[0]:
+                        clean.extend(second_m[0].strip().split())
+                    clean.extend([f"\"{second_m[1]}\""])
+                    if second_m[2]:
+                        clean.extend(second_m[2].strip().split())
+                    print(f"DEBUG: RFlib _save_filenames res.gr split = {clean}\n")
+                else:
+                    clean.extend(second_m[0].strip().split())
+        return clean
+
+    """     variant with recursivity
+    def _save_filenames(self, args):
+        if not args:
+            return []
         import urllib.parse
         res = self._quotes_re.match(args)
         if not res:
-            return args.split()
+            self._arguments.extend(args.split())
+            return []
         ini = args.index('"')
-        end = args[ini:].index('"')
+        end = args[ini+1:].index('"') if ini+1 < len(args) else len(args) - 1
+        leave = end == len(args) - len(args[:ini]) - 1
+        print(f"DEBUG: RFlib _save_filenames recursive call {args} ini={ini} end={end} leave={leave}")
+        rest = []
+        start = args[:ini].split() if ini > 0 else []
+        if start:
+            self._arguments.extend(start)
+        if not leave:
+            rest = args[ini+1+end+1:] if ini+1+end+1 < len(args) else []
         name = args[ini:]
         name = urllib.parse.quote_plus(name, safe='"')
-        args_list = args[:ini].split() + name.split('"')
-        clean = []
+        args_list = name.split('"')
+        print(f"DEBUG: RFlib _save_filenames calculating arg_list rest {args_list[:]}")
         for a in args_list:
             if a != '':
-                clean.append(urllib.parse.unquote_plus(a).strip())
-        return clean
+                self._arguments.append(urllib.parse.unquote_plus(a).strip())
+        if rest:
+            rest = self._save_filenames(args[ini + 1 + end + 1:])
+            print(f"DEBUG: RFlib _save_filenames returning rest {rest}")
+            return rest
+        return []
+        """
 
     def _parse_args(self, args):
         args = [self._lowercase_long_option(a) for a in args]
