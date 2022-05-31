@@ -28,6 +28,7 @@ any additional arguments.
 """
 
 import os
+import re
 import time
 import wx
 
@@ -153,6 +154,8 @@ class PybotProfile(BaseProfile, RIDEDialog):
 
     It is assumed that robot is on the path
     """
+    _quotes_re = re.compile('(.*)(\".*\")(.*)?')
+
     name = "robot"
     default_settings = {"arguments": "",
                         "output_directory": "",
@@ -279,24 +282,32 @@ class PybotProfile(BaseProfile, RIDEDialog):
 
     def _save_filenames(self):
         args = self._defined_arguments
-        import urllib.parse
-        ini = None
-        try:
-            ini = args.index('"')
-        except ValueError:
-            return args.split()
-        end = None
-        try:
-            end = args[ini:].index('"')
-        except ValueError:
-            return args.split()
-        name = args[ini:]
-        name = urllib.parse.quote_plus(name, safe='"')
-        args_list = args[:ini].split() + name.split('"')
+        res = self._quotes_re.match(args)
+        if not res:
+            return args.strip().strip().split()
         clean = []
-        for a in args_list:
-            if a != '':
-                clean.append(urllib.parse.unquote_plus(a).strip())
+        # DEBUG: example args
+        # --xunit "another output file.xml" --variablefile "a test file for variables.py" -v abc:new
+        # --debugfile "debug file.log"
+        for gr in res.groups():
+            if gr is not None and gr != '':
+                second_m = re.split('\"', gr)
+                m = len(second_m)
+                if m > 2:  # the middle element is the content
+                    m = len(second_m)
+                    for idx in range(0, m):
+                        if second_m[idx] and idx % 2 == 0:
+                            clean.extend(second_m[idx].strip().strip().split())
+                        elif second_m[idx] and idx % 2 != 0:
+                            if IS_WINDOWS:  # TODO: Needs better testing
+                                clean.extend([f"\"{second_m[idx]}\""])
+                            else:
+                                clean.extend([f"{second_m[idx]}"])
+                        second_m[idx] = ''
+                else:
+                    for idx in range(0, m):
+                        if second_m[idx]:
+                            clean.extend(second_m[idx].strip().strip().split())
         return clean
 
     def _parse_windows_command(self):
@@ -473,8 +484,8 @@ class PybotProfile(BaseProfile, RIDEDialog):
             _, invalid = ArgumentParser(USAGE).parse_args(args)  # DEBUG .split())
         except Information:
             return 'Does not execute - help or version option given'
-        except Exception as e:
-            raise DataError(e.message)
+        except (DataError, Exception) as e:
+            return e.message  # e.message
         if bool(invalid):
             return f'Unknown option(s): {invalid}'
         return None
