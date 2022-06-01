@@ -154,7 +154,7 @@ class PybotProfile(BaseProfile, RIDEDialog):
 
     It is assumed that robot is on the path
     """
-    _quotes_re = re.compile('(.*)(\".*\")(.*)?')
+    _quotes_re = re.compile('(.*)(\\".*\\")(.*)?')
 
     name = "robot"
     default_settings = {"arguments": "",
@@ -281,7 +281,9 @@ class PybotProfile(BaseProfile, RIDEDialog):
         return self._save_filenames()
 
     def _save_filenames(self):
+        print(f"DEBUG: Run Profiles _save_filenames enter before parsing  self._defined_arguments {self._defined_arguments}")
         args = self._defined_arguments
+        print(f"DEBUG: Run Profiles _save_filenames enter after detecting quotes args {args}")
         res = self._quotes_re.match(args)
         if not res:
             return args.strip().strip().split()
@@ -289,38 +291,79 @@ class PybotProfile(BaseProfile, RIDEDialog):
         # DEBUG: example args
         # --xunit "another output file.xml" --variablefile "a test file for variables.py" -v abc:new
         # --debugfile "debug file.log"
+        print(f"DEBUG: Run Profiles _save_filenames res.groups {res.groups()}")
         for gr in res.groups():
+            line = []
             if gr is not None and gr != '':
                 second_m = re.split('\"', gr)
+                print(f"DEBUG: Run Profiles  _save_filenames second_m = {second_m}")
                 m = len(second_m)
                 if m > 2:  # the middle element is the content
                     m = len(second_m)
                     for idx in range(0, m):
-                        if second_m[idx] and idx % 2 == 0:
-                            clean.extend(second_m[idx].strip().strip().split())
-                        elif second_m[idx] and idx % 2 != 0:
-                            if IS_WINDOWS:  # TODO: Needs better testing
-                                clean.extend([f"\"{second_m[idx]}\""])
-                            else:
-                                clean.extend([f"{second_m[idx]}"])
-                        second_m[idx] = ''
+                        if second_m[idx]:
+                            if idx % 2 == 0:
+                                line.extend(second_m[idx].replace('\\', '').replace('\\"', '"').strip().strip().split())
+                            elif idx % 2 != 0:
+                                if IS_WINDOWS:  # TODO: Needs better testing
+                                    content = second_m[idx].replace('\\', '').replace('\"', '')
+                                    line.append(f"\"{content}\"")
+                                else:
+                                    line.append([f"{second_m[idx]}"])
                 else:
                     for idx in range(0, m):
                         if second_m[idx]:
-                            clean.extend(second_m[idx].strip().strip().split())
+                            line.append(second_m[idx].replace('\\', '').replace('\\"', '"').strip().strip())
+            clean.extend(line)
+        print(f"DEBUG: Run Profiles  _save_filenames returnin clean= {clean}")
         return clean
-
+    """
+        res = self._quotes_re.match(args.strip("\""))
+        if not res:
+            return args.strip().strip().split()
+        clean = []
+        # DEBUG: example args
+        # --xunit "another output file.xml" --variablefile "a test file for variables.py" -v abc:new
+        # --debugfile "debug file.log"
+        print(f"DEBUG: RFlib _save_filenames res.groups {res.groups()}")
+        from robotide.context import IS_WINDOWS
+        for gr in res.groups():
+            line = []
+            if gr is not None and gr != '':
+                second_m = re.split('"', gr)
+                print(f"DEBUG: RFlib _save_filenames second_m = {second_m}")
+                m = len(second_m)
+                if m > 2:  # the middle element is the content
+                    m = len(second_m)
+                    for idx in range(0, m):
+                        if second_m[idx]:
+                            if idx % 2 == 0:
+                                line.extend(second_m[idx].strip().strip().split())
+                            elif idx % 2 != 0:
+                                if IS_WINDOWS:  # TODO: Needs better testing
+                                    line.append(f"\"{second_m[idx]}\"")
+                                else:
+                                    line.append([f"{second_m[idx]}"])
+                else:
+                    for idx in range(0, m):
+                        if second_m[idx]:
+                            line.extend(second_m[idx].strip().strip().split())
+            clean.extend(line)
+            """
     def _parse_windows_command(self):
+        print(f"DEBUG: run_profiles _parse_windows_command: ENTER  self.arguments={self.arguments}")
         from subprocess import Popen, PIPE
         try:
             p = Popen(['echo', self.arguments], stdin=PIPE, stdout=PIPE,
                       stderr=PIPE, shell=True)
             output, _ = p.communicate()
-            output = str(output).lstrip("b\'").strip()
+            output = str(output).lstrip("b\'").lstrip('"').rstrip('"').strip()
+            print(f"DEBUG: run_profiles _parse_windows_command: output ={output}")
             self._defined_arguments = output.replace('\'', '')\
-                .replace('\\\\', '\\').replace('\\r\\n', '')
+                .replace('\\\\', '\\').replace('\\r\\n', '').rstrip('"')
+            print(f"DEBUG: run_profiles _parse_windows_command: success self._defined_arguments={self._defined_arguments}")
         except IOError as e:
-            # print("DEBUG: parser_win_comm IOError: %s" % e)
+            # print(f"DEBUG: run_profiles _parse_windows_command IOError: {e}")
             pass
 
     @staticmethod

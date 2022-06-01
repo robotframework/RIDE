@@ -187,35 +187,63 @@ class ArgumentParser(object):
         return opts, args
 
     def _save_filenames(self, args):
-        res = self._quotes_re.match(args)
+        res = self._quotes_re.match(args.strip("\""))
         if not res:
             return args.strip().strip().split()
         clean = []
         # DEBUG: example args
         # --xunit "another output file.xml" --variablefile "a test file for variables.py" -v abc:new
         # --debugfile "debug file.log"
-        # print(f"DEBUG: RFlib _save_filenames res.groups {res.groups()}")
+        print(f"DEBUG: RFlib _save_filenames res.groups {res.groups()}")
         from robotide.context import IS_WINDOWS
         for gr in res.groups():
+            line = []
             if gr is not None and gr != '':
-                second_m = re.split('\"', gr)
-                # print(f"DEBUG: RFlib _save_filenames second_m = {second_m}")
+                second_m = re.split('"', gr)
+                print(f"DEBUG: RFlib _save_filenames second_m = {second_m}")
                 m = len(second_m)
                 if m > 2:  # the middle element is the content
                     m = len(second_m)
                     for idx in range(0, m):
-                        if second_m[idx] and idx % 2 == 0:
-                            clean.extend(second_m[idx].strip().strip().split())
-                        elif second_m[idx] and idx % 2 != 0:
-                            if IS_WINDOWS:  # TODO: Needs better testing
-                                clean.extend([f"\"{second_m[idx]}\""])
-                            else:
-                                clean.extend([f"{second_m[idx]}"])
-                        second_m[idx] = ''
+                        if second_m[idx]:
+                            if idx % 2 == 0:
+                                line.extend(second_m[idx].strip().strip().split())
+                            elif idx % 2 != 0:
+                                if IS_WINDOWS:  # TODO: Needs better testing
+                                    line.append(f"\"{second_m[idx]}\"")
+                                else:
+                                    line.append([f"{second_m[idx]}"])
                 else:
                     for idx in range(0, m):
                         if second_m[idx]:
-                            clean.extend(second_m[idx].strip().strip().split())
+                            line.extend(second_m[idx].strip().strip().split())
+            clean.extend(line)
+        # print(f"DEBUG: RFlib _save_filenames build line= {line}")
+        """
+        for idx, k in enumerate(line):
+            print(f"DEBUG: RFlib _save_filenames DEBUG loop idx={idx}, k={k}")
+        merge = False
+        content = ''
+        for idx, k in enumerate(line):
+            print(f"DEBUG: RFlib _save_filenames loop idx={idx}, k={k}, content={content}")
+            if k in ['--debugfile', '--variablefile'] and not merge:
+                content = k[:] + " "
+                merge = True
+                print(f"DEBUG: RFlib _save_filenames build content= {content}")
+                continue
+            if merge:
+                content += k[:]
+                print(f"DEBUG: RFlib _save_filenames concat content= {content}")
+                if content:
+                    clean.append(content)
+                    merge = False
+                    print(f"DEBUG: RFlib _save_filenames append content= {content}")
+                    content = ''
+            else:
+                print(f"DEBUG: RFlib _save_filenames line not empty= {k}")
+                clean.append(k)
+        """
+        print(f"DEBUG: RFlib _save_filenames returnin clean= {clean}")
         return clean
 
     def _parse_args(self, args):
