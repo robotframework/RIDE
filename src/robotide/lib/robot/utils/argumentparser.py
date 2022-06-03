@@ -194,6 +194,43 @@ class ArgumentParser(object):
         # DEBUG: example args
         # --xunit "another output file.xml" --variablefile "a test file for variables.py" -v abc:new
         # --debugfile "debug file.log"
+        clean = []
+        # DEBUG: example args
+        # --xunit "another output file.xml" --variablefile "a test file for variables.py" -v abc:new
+        # --debugfile "debug file.log"
+        print(f"DEBUG: RFlib _save_filenames res.groups {res.groups()}")
+        from robotide.context import IS_WINDOWS
+        for gr in res.groups():
+            line = []
+            if gr is not None and gr != '':
+                second_m = re.split('"', gr)
+                # print(f"DEBUG: RFlib _save_filenames second_m = {second_m}")
+                m = len(second_m)
+                if m > 2:  # the middle element is the content
+                    m = len(second_m)
+                    for idx in range(0, m):
+                        if second_m[idx]:
+                            if idx % 2 == 0:
+                                line.extend(second_m[idx].strip().strip().split())
+                            elif idx % 2 != 0:
+                                if IS_WINDOWS:  # TODO: Needs better testing
+                                    line.append(f"{second_m[idx]}")
+                                else:
+                                    line.append([f"{second_m[idx]}"])
+                else:
+                    for idx in range(0, m):
+                        if second_m[idx]:
+                            line.extend(second_m[idx].strip().strip().split())
+            clean.extend(line)
+        # Fix variables
+        print(f"DEBUG: RFlib _save_filenames DEFORE FIX VARIABLES clean= {clean}")
+        for idx, value in enumerate(clean):
+            if value[-1] == ':' and idx + 1 < len(clean):
+                clean[idx] = ''.join([value, clean[idx+1]])
+                clean.pop(idx+1)
+        print(f"DEBUG: RFlib _save_filenames returnin clean= {clean}")
+        return clean
+        """
         print(f"DEBUG: RFlib _save_filenames res.groups {res.groups()}")
         from robotide.context import IS_WINDOWS
         for gr in res.groups():
@@ -220,31 +257,6 @@ class ArgumentParser(object):
             clean.extend(line)
         # print(f"DEBUG: RFlib _save_filenames build line= {line}")
         """
-        for idx, k in enumerate(line):
-            print(f"DEBUG: RFlib _save_filenames DEBUG loop idx={idx}, k={k}")
-        merge = False
-        content = ''
-        for idx, k in enumerate(line):
-            print(f"DEBUG: RFlib _save_filenames loop idx={idx}, k={k}, content={content}")
-            if k in ['--debugfile', '--variablefile'] and not merge:
-                content = k[:] + " "
-                merge = True
-                print(f"DEBUG: RFlib _save_filenames build content= {content}")
-                continue
-            if merge:
-                content += k[:]
-                print(f"DEBUG: RFlib _save_filenames concat content= {content}")
-                if content:
-                    clean.append(content)
-                    merge = False
-                    print(f"DEBUG: RFlib _save_filenames append content= {content}")
-                    content = ''
-            else:
-                print(f"DEBUG: RFlib _save_filenames line not empty= {k}")
-                clean.append(k)
-        """
-        print(f"DEBUG: RFlib _save_filenames returnin clean= {clean}")
-        return clean
 
     def _parse_args(self, args):
         args = [self._lowercase_long_option(a) for a in args]
