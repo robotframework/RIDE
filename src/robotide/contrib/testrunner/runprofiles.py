@@ -291,7 +291,7 @@ class PybotProfile(BaseProfile, RIDEDialog):
         # DEBUG: example args
         # --xunit "another output file.xml" --variablefile "a test file for variables.py" -v abc:new
         # --debugfile "debug file.log"
-        print(f"DEBUG: Run Profiles _save_filenames res.groups {res.groups()}")
+        # print(f"DEBUG: Run Profiles _save_filenames res.groups {res.groups()}")
         for gr in res.groups():
             line = []
             if gr is not None and gr != '':
@@ -320,17 +320,22 @@ class PybotProfile(BaseProfile, RIDEDialog):
             if value[-1] == ':' and idx + 1 < len(clean):
                 clean[idx] = ''.join([value, clean[idx+1]])
                 clean.pop(idx+1)
-        print(f"DEBUG: Run Profiles  _save_filenames returnin clean= {clean}")
+        # print(f"DEBUG: Run Profiles  _save_filenames returnin clean= {clean}")
         return clean
 
     def _parse_windows_command(self):
         # print(f"DEBUG: run_profiles _parse_windows_command: ENTER  self.arguments={self.arguments}")
         from subprocess import Popen, PIPE
         try:
+            from ctypes import cdll
+
+            os_encoding = 'cp' + str(cdll.kernel32.GetConsoleCP())
             p = Popen(['echo', self.arguments], stdin=PIPE, stdout=PIPE,
                       stderr=PIPE, shell=True)
             output, _ = p.communicate()
-            # print(f"DEBUG: run_profiles _parse_windows_command: RAW output ={output}")
+            # print(f"DEBUG: run_profiles _parse_windows_command: RAW output ={output.decode(os_encoding)}")
+            output = output.decode(os_encoding)
+            # print(f"DEBUG: run_profiles _parse_windows_command: RAW_decoded output ={output.decode(sys.getfilesystemencoding())}")
             output = str(output).lstrip("b\'").lstrip('"').replace('\\r\\n', '').replace('\'', '').replace('\\""', '\"').strip()
             # print(f"DEBUG: run_profiles _parse_windows_command: output ={output}")
             even = True
@@ -344,7 +349,7 @@ class PybotProfile(BaseProfile, RIDEDialog):
                 .replace('\\\\', '\\').replace('\\r\\n', '')
             if not even:
                 self._defined_arguments = self._defined_arguments.rstrip('"')
-            print(f"DEBUG: run_profiles _parse_windows_command: success EVEN? {even} self._defined_arguments={self._defined_arguments}")
+            # print(f"DEBUG: run_profiles _parse_windows_command: success EVEN? {even} self._defined_arguments={self._defined_arguments}")
         except IOError as e:
             # print(f"DEBUG: run_profiles _parse_windows_command IOError: {e}")
             pass
@@ -507,6 +512,7 @@ class PybotProfile(BaseProfile, RIDEDialog):
                 if clean_args[idx][0] != '-':  # Not option, then is argument
                     clean_args[idx] = 'arg'
             args = " ".join(clean_args)
+            print(f"DEBUG: run_profiles _get_invalid_message: Check invalid args={args}")
             _, invalid = ArgumentParser(USAGE).parse_args(args)  # DEBUG .split())
         except Information:
             return 'Does not execute - help or version option given'
