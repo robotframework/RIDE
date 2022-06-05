@@ -68,6 +68,8 @@ class ArgumentParser(object):
     (\s\*)?       # optional '*' telling option allowed multiple times (group 5)
     ''', re.VERBOSE)
 
+    _quotes_re = re.compile('(.*)(\".*\")(.*)?')
+
     def __init__(self, usage, name=None, version=None, arg_limits=None,
                  validator=None, env_options=None, auto_help=True,
                  auto_version=True, auto_escape=True, auto_pythonpath=True,
@@ -143,8 +145,12 @@ class ArgumentParser(object):
         amount of horizontal space as <---ESCAPES--->. Both help and version
         are wrapped to Information exception.
         """
-        args = self._get_env_options() + list(args)
+        # print(f"DEBUG: RFlib parse_args ENTER args={args}")
+        args = self._get_env_options() + self._save_filenames(args)
+        # args = self._get_env_options() + list(args)
+        # print(f"DEBUG: RFlib parse_args after _save_filenames: {args}")
         args = [system_decode(a) for a in args]
+        # print(f"DEBUG: RFlib parse_args after system_decode: {args}")
         if self._auto_argumentfile:
             args = self._process_possible_argfile(args)
         opts, args = self._parse_args(args)
@@ -155,6 +161,7 @@ class ArgumentParser(object):
         self._arg_limit_validator(args)
         if self._validator:
             opts, args = self._validator(opts, args)
+        # print(f"DEBUG: RFlib parse_args returning final = opts={opts} args={args}")
         return opts, args
 
     def _get_env_options(self):
@@ -181,6 +188,48 @@ class ArgumentParser(object):
             if auto and opt in opts:
                 opts.pop(opt)
         return opts, args
+
+    def _save_filenames(self, args):
+        res = self._quotes_re.match(args)
+        # print(f"DEBUG: RFlib ENTER _save_filenames res={res}")
+        if not res:
+            return args.strip().strip().split()
+        clean = []
+        # DEBUG: example args
+        # --xunit "another output file.xml" --variablefile "a test file for variables.py" -v abc:new
+        # --debugfile "debug file.log"
+        clean = []
+        # DEBUG: example args
+        # --xunit "another output file.xml" --variablefile "a test file for variables.py" -v abc:new
+        # --debugfile "debug file.log"
+        # print(f"DEBUG: RFlib _save_filenames res.groups {res.groups()}")
+        for gr in res.groups():
+            line = []
+            if gr is not None and gr != '':
+                second_m = re.split('"', gr)
+                # print(f"DEBUG: RFlib _save_filenames second_m = {second_m}")
+                m = len(second_m)
+                if m > 2:  # the middle element is the content
+                    m = len(second_m)
+                    for idx in range(0, m):
+                        if second_m[idx]:
+                            if idx % 2 == 0:
+                                line.extend(second_m[idx].strip().strip().split())
+                            elif idx % 2 != 0:
+                                line.append(f"{second_m[idx]}")
+                else:
+                    for idx in range(0, m):
+                        if second_m[idx]:
+                            line.extend(second_m[idx].strip().strip().split())
+            clean.extend(line)
+        # Fix variables
+        # print(f"DEBUG: RFlib _save_filenames DEFORE FIX VARIABLES clean= {clean}")
+        for idx, value in enumerate(clean):
+            if value[-1] == ':' and idx + 1 < len(clean):
+                clean[idx] = ''.join([value, clean[idx+1]])
+                clean.pop(idx+1)
+        # print(f"DEBUG: RFlib _save_filenames returnin clean= {clean}")
+        return clean
 
     def _parse_args(self, args):
         args = [self._lowercase_long_option(a) for a in args]

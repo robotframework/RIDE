@@ -28,6 +28,7 @@ any additional arguments.
 """
 
 import os
+import re
 import time
 import wx
 
@@ -153,6 +154,8 @@ class PybotProfile(BaseProfile, RIDEDialog):
 
     It is assumed that robot is on the path
     """
+    _quotes_re = re.compile('(.*)(\".*\")(.*)?')
+
     name = "robot"
     default_settings = {"arguments": "",
                         "output_directory": "",
@@ -275,19 +278,105 @@ class PybotProfile(BaseProfile, RIDEDialog):
     def _get_arguments(self):
         if IS_WINDOWS:
             self._parse_windows_command()
-        return self._defined_arguments.split()
+        else:
+            self._parse_posix_command()
+        return self._save_filenames()
+
+    def _save_filenames(self):
+        # print(f"DEBUG: Run Profiles _save_filenames enter before parsing  self._defined_arguments {self._defined_arguments}")
+        args = self._defined_arguments.replace('\\"', '"')
+        # print(f"DEBUG: Run Profiles _save_filenames enter before detecting quotes args {args}")
+        res = self._quotes_re.match(args)
+        if not res:
+            return args.strip().strip().split()
+        clean = []
+        # DEBUG: example args
+        # --xunit "another output file.xml" --variablefile "a test file for variables.py" -v abc:new
+        # --debugfile "debug file.log"
+        # print(f"DEBUG: Run Profiles _save_filenames res.groups {res.groups()}")
+        for gr in res.groups():
+            line = []
+            if gr is not None and gr != '':
+                second_m = re.split('"', gr)
+                # print(f"DEBUG: Run Profiles _save_filenames second_m = {second_m}")
+                m = len(second_m)
+                if m > 2:  # the middle element is the content
+                    m = len(second_m)
+                    for idx in range(0, m):
+                        if second_m[idx]:
+                            if idx % 2 == 0:
+                                line.extend(second_m[idx].strip().strip().split())
+                            elif idx % 2 != 0:
+                                line.append(f"{second_m[idx]}")
+                else:
+                    for idx in range(0, m):
+                        if second_m[idx]:
+                            line.extend(second_m[idx].strip().strip().split())
+            clean.extend(line)
+        # Fix variables
+        # print(f"DEBUG: Run Profiles  _save_filenames DEFORE FIX VARIABLES clean= {clean}")
+        for idx, value in enumerate(clean):
+            if value[-1] == ':' and idx + 1 < len(clean):
+                clean[idx] = ''.join([value, clean[idx+1]])
+                clean.pop(idx+1)
+        # print(f"DEBUG: Run Profiles  _save_filenames returnin clean= {clean}")
+        return clean
 
     def _parse_windows_command(self):
+        # print(f"DEBUG: run_profiles _parse_windows_command: ENTER  self.arguments={self.arguments}")
         from subprocess import Popen, PIPE
         try:
+            from ctypes import cdll
+
+            os_encoding = 'cp' + str(cdll.kernel32.GetConsoleCP())
             p = Popen(['echo', self.arguments], stdin=PIPE, stdout=PIPE,
                       stderr=PIPE, shell=True)
             output, _ = p.communicate()
-            output = str(output).lstrip("b\'").strip()
-            self._defined_arguments = output.replace('"', '').replace('\'', '')\
+            # print(f"DEBUG: run_profiles _parse_windows_command: RAW output ={output.decode(os_encoding)}")
+            output = output.decode(os_encoding)
+            # print(f"DEBUG: run_profiles _parse_windows_command: RAW_decoded output ={output.decode(sys.getfilesystemencoding())}")
+            output = str(output).lstrip("b\'").lstrip('"').replace('\\r\\n', '').replace('\'', '').replace('\\""', '\"').strip()
+            # print(f"DEBUG: run_profiles _parse_windows_command: output ={output}")
+            even = True
+            counter = 0
+            for idx in range(0, len(output)):
+                if output[idx] == '"':
+                    counter += 1
+                    even = counter % 2 == 0
+                # print(f"DEBUG: run_profiles loop({idx} counter:{counter}")
+            self._defined_arguments = output.replace('\'', '')\
                 .replace('\\\\', '\\').replace('\\r\\n', '')
+            if not even:
+                self._defined_arguments = self._defined_arguments.rstrip('"')
+            # print(f"DEBUG: run_profiles _parse_windows_command: success EVEN? {even} self._defined_arguments={self._defined_arguments}")
         except IOError as e:
-            # print("DEBUG: parser_win_comm IOError: %s" % e)
+            # print(f"DEBUG: run_profiles _parse_windows_command IOError: {e}")
+            pass
+
+    def _parse_posix_command(self):
+        # print(f"DEBUG: run_profiles _parse_posix_command: ENTER  self.arguments={self.arguments}")
+        from subprocess import Popen, PIPE
+        try:
+            p = Popen(['echo ' + self.arguments.replace('"', '\\"')], stdin=PIPE, stdout=PIPE,
+                      stderr=PIPE, shell=True)
+            output, _ = p.communicate()
+            # print(f"DEBUG: run_profiles _parse_posix_command: RAW output ={output}")
+            output = str(output).lstrip("b\'").replace('\\n', '').rstrip("\'").strip()
+            # print(f"DEBUG: run_profiles _parse_posix_command: output ={output}")
+            even = True
+            counter = 0
+            for idx in range(0, len(output)):
+                if output[idx] == '"':
+                    counter += 1
+                    even = counter % 2 == 0
+                # print(f"DEBUG: run_profiles loop({idx} counter:{counter}")
+            self._defined_arguments = output.replace('\'', '')\
+                .replace('\\\\', '\\').replace('\\n', '')
+            if not even:
+                self._defined_arguments = self._defined_arguments.rstrip('"')
+            # print(f"DEBUG: run_profiles _parse_posix_command: success EVEN? {even} self._defined_arguments={self._defined_arguments}")
+        except IOError as e:
+            # print(f"DEBUG: run_profiles _parse_posix_command IOError: {e}")
             pass
 
     @staticmethod
@@ -443,16 +532,18 @@ class PybotProfile(BaseProfile, RIDEDialog):
             return None
         try:
             clean_args = args.split("`")  # Shell commands
+            # print(f"DEBUG: run_profiles _get_invalid_message ENTER clean_args= {clean_args}")
             for idx, item in enumerate(clean_args):
                 clean_args[idx] = item.strip()
-                if clean_args[idx][0] != '-':  # Not option, then is argument
+                if clean_args[idx] and clean_args[idx][0] != '-':  # Not option, then is argument
                     clean_args[idx] = 'arg'
             args = " ".join(clean_args)
-            _, invalid = ArgumentParser(USAGE).parse_args(args.split())
+            # print(f"DEBUG: run_profiles _get_invalid_message: Check invalid args={args}")
+            _, invalid = ArgumentParser(USAGE).parse_args(args)  # DEBUG .split())
         except Information:
             return 'Does not execute - help or version option given'
-        except Exception as e:
-            raise DataError(e.message)
+        except (DataError, Exception) as e:
+            return e.message if e.message else e
         if bool(invalid):
             return f'Unknown option(s): {invalid}'
         return None

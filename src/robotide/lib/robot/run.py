@@ -44,8 +44,10 @@ from robotide.lib.robot.reporting import ResultWriter
 from robotide.lib.robot.running import TestSuiteBuilder
 from robotide.lib.robot.utils import Application, unic, text
 
-
-USAGE = """Robot Framework -- A generic automation framework
+try:
+    from robot.run import USAGE
+except ImportError:
+    USAGE = """Robot Framework -- A generic automation framework
 
 Version:  <VERSION>
 
