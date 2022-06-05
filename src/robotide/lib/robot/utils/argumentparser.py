@@ -148,9 +148,9 @@ class ArgumentParser(object):
         # print(f"DEBUG: RFlib parse_args ENTER args={args}")
         args = self._get_env_options() + self._save_filenames(args)
         # args = self._get_env_options() + list(args)
-        print(f"DEBUG: RFlib parse_args after _save_filenames: {args}")
+        # print(f"DEBUG: RFlib parse_args after _save_filenames: {args}")
         args = [system_decode(a) for a in args]
-        print(f"DEBUG: RFlib parse_args after system_decode: {args}")
+        # print(f"DEBUG: RFlib parse_args after system_decode: {args}")
         if self._auto_argumentfile:
             args = self._process_possible_argfile(args)
         opts, args = self._parse_args(args)
@@ -161,7 +161,7 @@ class ArgumentParser(object):
         self._arg_limit_validator(args)
         if self._validator:
             opts, args = self._validator(opts, args)
-        print(f"DEBUG: RFlib parse_args returning final = opts={opts} args={args}")
+        # print(f"DEBUG: RFlib parse_args returning final = opts={opts} args={args}")
         return opts, args
 
     def _get_env_options(self):
@@ -190,7 +190,8 @@ class ArgumentParser(object):
         return opts, args
 
     def _save_filenames(self, args):
-        res = self._quotes_re.match(args.strip("\""))
+        res = self._quotes_re.match(args)
+        # print(f"DEBUG: RFlib ENTER _save_filenames res={res}")
         if not res:
             return args.strip().strip().split()
         clean = []
@@ -206,7 +207,7 @@ class ArgumentParser(object):
             line = []
             if gr is not None and gr != '':
                 second_m = re.split('"', gr)
-                print(f"DEBUG: RFlib _save_filenames second_m = {second_m}")
+                # print(f"DEBUG: RFlib _save_filenames second_m = {second_m}")
                 m = len(second_m)
                 if m > 2:  # the middle element is the content
                     m = len(second_m)
@@ -227,7 +228,7 @@ class ArgumentParser(object):
             if value[-1] == ':' and idx + 1 < len(clean):
                 clean[idx] = ''.join([value, clean[idx+1]])
                 clean.pop(idx+1)
-        print(f"DEBUG: RFlib _save_filenames returnin clean= {clean}")
+        # print(f"DEBUG: RFlib _save_filenames returnin clean= {clean}")
         return clean
 
     def _parse_args(self, args):

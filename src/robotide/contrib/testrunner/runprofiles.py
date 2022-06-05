@@ -278,6 +278,8 @@ class PybotProfile(BaseProfile, RIDEDialog):
     def _get_arguments(self):
         if IS_WINDOWS:
             self._parse_windows_command()
+        else:
+            self._parse_posix_command()
         return self._save_filenames()
 
     def _save_filenames(self):
@@ -349,6 +351,32 @@ class PybotProfile(BaseProfile, RIDEDialog):
             # print(f"DEBUG: run_profiles _parse_windows_command: success EVEN? {even} self._defined_arguments={self._defined_arguments}")
         except IOError as e:
             # print(f"DEBUG: run_profiles _parse_windows_command IOError: {e}")
+            pass
+
+    def _parse_posix_command(self):
+        # print(f"DEBUG: run_profiles _parse_posix_command: ENTER  self.arguments={self.arguments}")
+        from subprocess import Popen, PIPE
+        try:
+            p = Popen(['echo ' + self.arguments.replace('"', '\\"')], stdin=PIPE, stdout=PIPE,
+                      stderr=PIPE, shell=True)
+            output, _ = p.communicate()
+            # print(f"DEBUG: run_profiles _parse_posix_command: RAW output ={output}")
+            output = str(output).lstrip("b\'").replace('\\n', '').rstrip("\'").strip()
+            # print(f"DEBUG: run_profiles _parse_posix_command: output ={output}")
+            even = True
+            counter = 0
+            for idx in range(0, len(output)):
+                if output[idx] == '"':
+                    counter += 1
+                    even = counter % 2 == 0
+                # print(f"DEBUG: run_profiles loop({idx} counter:{counter}")
+            self._defined_arguments = output.replace('\'', '')\
+                .replace('\\\\', '\\').replace('\\n', '')
+            if not even:
+                self._defined_arguments = self._defined_arguments.rstrip('"')
+            # print(f"DEBUG: run_profiles _parse_posix_command: success EVEN? {even} self._defined_arguments={self._defined_arguments}")
+        except IOError as e:
+            # print(f"DEBUG: run_profiles _parse_posix_command IOError: {e}")
             pass
 
     @staticmethod
@@ -504,17 +532,18 @@ class PybotProfile(BaseProfile, RIDEDialog):
             return None
         try:
             clean_args = args.split("`")  # Shell commands
+            # print(f"DEBUG: run_profiles _get_invalid_message ENTER clean_args= {clean_args}")
             for idx, item in enumerate(clean_args):
                 clean_args[idx] = item.strip()
-                if clean_args[idx][0] != '-':  # Not option, then is argument
+                if clean_args[idx] and clean_args[idx][0] != '-':  # Not option, then is argument
                     clean_args[idx] = 'arg'
             args = " ".join(clean_args)
-            print(f"DEBUG: run_profiles _get_invalid_message: Check invalid args={args}")
+            # print(f"DEBUG: run_profiles _get_invalid_message: Check invalid args={args}")
             _, invalid = ArgumentParser(USAGE).parse_args(args)  # DEBUG .split())
         except Information:
             return 'Does not execute - help or version option given'
         except (DataError, Exception) as e:
-            return e.message  # e.message
+            return e.message if e.message else e
         if bool(invalid):
             return f'Unknown option(s): {invalid}'
         return None
