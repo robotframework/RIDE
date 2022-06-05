@@ -559,7 +559,7 @@ class RowMovingTest(TestCaseCommandTest):
         self._assert_step_order(STEP1,
                                 STEP2,
                                 FOR_LOOP_HEADER,
-                                '  ' + STEP_WITH_COMMENT,
+                                '    ' + STEP_WITH_COMMENT,
                                 FOR_LOOP_STEP1,
                                 FOR_LOOP_STEP2,
                                 FOR_LOOP_END,

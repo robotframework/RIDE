@@ -15,7 +15,8 @@
 
 import wx
 
-from ..controller import ctrlcommands, filecontrollers, macrocontrollers, settingcontrollers, SortTests, SortVariables
+from ..controller import ctrlcommands, filecontrollers, macrocontrollers, settingcontrollers
+from ..controller.ctrlcommands import SortTests, SortVariables
 # import (RenameKeywordOccurrences, RemoveMacro, AddKeyword, AddTestCase, RenameTest,
 #         CopyMacroAs, AddVariable, UpdateVariableName, RenameFile, RenameResourceFile,
 #         DeleteFile, SortKeywords, Include, Exclude, OpenContainingFolder, RemoveReadOnly)

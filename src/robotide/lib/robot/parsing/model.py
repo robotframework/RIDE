@@ -583,7 +583,7 @@ class Variable(object):
 class _WithSteps(object):
 
     def add_step(self, content, comment=None):
-        # print(f"DEBUG: model.py Enter _WithSteps content={content[:]} comment={comment}")
+        print(f"DEBUG: model.py Enter _WithSteps content={content[:]} comment={comment}")
         self.steps.append(Step(content, comment))
         return self.steps[-1]
 
@@ -729,16 +729,16 @@ class ForLoop(_WithSteps):
 
     def __init__(self, parent, declaration, comment=None):
         self.parent = parent
-        # if declaration[0] == 'FOR':
-        #    declaration.pop(0)
-        # print(f"\nDEBUG: ForLoop init enter declaration {declaration[:]}")
         self.indent = []
+        isize = idx = 0
         for idx in range(0, len(declaration)-1):
-            if declaration[idx] != '':
+            if self.inner_kw_pos and declaration[idx] == '':
+                isize = self.increase_indent()
+            elif declaration[idx] != '':
                 self.first_kw = declaration[idx]
                 break
-            # self.indent.insert(0, '')
         self.inner_kw_pos = idx
+        print(f"\nDEBUG: ForLoop init indent {isize} self.inner_kw_pos={self.inner_kw_pos}")
         self.flavor, index = self._get_flavor_and_index(declaration)
         self.vars = declaration[self.inner_kw_pos+1:index]
         self.items = declaration[index+1:]
@@ -772,8 +772,7 @@ class ForLoop(_WithSteps):
 
     def as_list(self, indent=False, include_comment=True):
         comments = self.comment.as_list() if include_comment else []
-        # if len(self.indent) == 0:
-        #    self.indent.insert(0, '')  # Always send first indent
+        # print(f"DEBUG: Model ForLoop as_list: indent={self.indent[:]} self.first_kw={self.first_kw}")
         return self.indent + [self.first_kw] + self.vars + [self.flavor] + self.items + comments
 
     def __iter__(self):
@@ -782,6 +781,14 @@ class ForLoop(_WithSteps):
     def is_set(self):
         return True
 
+    def increase_indent(self):
+        self.indent.append('')
+        return len(self.indent)
+
+    def decrease_indent(self):
+        self.indent = self.indent[:-1] if len(self.indent) > 0 else []
+        return len(self.indent)
+
 
 class Step(object):
 
@@ -789,7 +796,7 @@ class Step(object):
 
     def __init__(self, content, comment=None):
         index = self.first_non_empty_cell(content)
-        # print(f"DEBUG: RFLib Model enter init Step: 1st cell content={content} comment={comment} index={index}")
+        print(f"DEBUG: RFLib Model enter init Step: 1st cell content={content} comment={comment} index={index}")
         self.assign = self._get_assign(content)
         self.indent = []
         self.args = []
@@ -861,6 +868,14 @@ class Step(object):
         if index > 0:
             return index - 1
         return None
+
+    def increase_indent(self):
+        self.indent.append('')
+        return len(self.indent)
+
+    def decrease_indent(self):
+        self.indent = self.indent[:-1] if len(self.indent) > 0 else []
+        return len(self.indent)
 
 
 class OldStyleSettingAndVariableTableHeaderMatcher(object):
