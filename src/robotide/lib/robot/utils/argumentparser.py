@@ -202,7 +202,6 @@ class ArgumentParser(object):
         # --xunit "another output file.xml" --variablefile "a test file for variables.py" -v abc:new
         # --debugfile "debug file.log"
         # print(f"DEBUG: RFlib _save_filenames res.groups {res.groups()}")
-        from robotide.context import IS_WINDOWS
         for gr in res.groups():
             line = []
             if gr is not None and gr != '':
@@ -216,10 +215,7 @@ class ArgumentParser(object):
                             if idx % 2 == 0:
                                 line.extend(second_m[idx].strip().strip().split())
                             elif idx % 2 != 0:
-                                if IS_WINDOWS:  # TODO: Needs better testing
-                                    line.append(f"{second_m[idx]}")
-                                else:
-                                    line.append([f"{second_m[idx]}"])
+                                line.append(f"{second_m[idx]}")
                 else:
                     for idx in range(0, m):
                         if second_m[idx]:

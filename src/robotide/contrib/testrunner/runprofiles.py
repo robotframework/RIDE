@@ -305,10 +305,7 @@ class PybotProfile(BaseProfile, RIDEDialog):
                             if idx % 2 == 0:
                                 line.extend(second_m[idx].strip().strip().split())
                             elif idx % 2 != 0:
-                                if IS_WINDOWS:  # TODO: Needs better testing
-                                    line.append(f"{second_m[idx]}")
-                                else:
-                                    line.append([f"{second_m[idx]}"])
+                                line.append(f"{second_m[idx]}")
                 else:
                     for idx in range(0, m):
                         if second_m[idx]:
