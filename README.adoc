@@ -36,17 +36,9 @@ See the https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride
 
 **RIDE is not yet tested on Python 3.10.**
 
-**Broken development version on Window since 5/June/2022**
-
-**Starting from Desktop Shortcut is not working because the stdout window is not appearing. See https://github.com/robotframework/RIDE/issues/2454[this issue]**
-
-Install this version (2.0b2.dev9) with:
+Install current development version with:
 [source, shell]
 pip install -U https://github.com/robotframework/RIDE/archive/master.zip
-
-Install previous stable version (2.0b2.dev8) with:
-[source, shell]
-pip install -U https://github.com/robotframework/RIDE/archive/62432a05a9387e28fe8840e103eb5ee13d162a8b/master.zip
 
 Install current Beta version (2.0b1) with:
 [source, shell]
