@@ -324,16 +324,27 @@ class PybotProfile(BaseProfile, RIDEDialog):
 
     def _parse_windows_command(self):
         # print(f"DEBUG: run_profiles _parse_windows_command: ENTER  self.arguments={self.arguments}")
+        # wx.MessageBox(f"DEBUG: run_profiles _parse_windows_command: ENTER  self.arguments={self.arguments}", "Debug")
         from subprocess import Popen, PIPE
         try:
-            from ctypes import cdll
-
-            os_encoding = 'cp' + str(cdll.kernel32.GetConsoleCP())
             p = Popen(['echo', self.arguments], stdin=PIPE, stdout=PIPE,
                       stderr=PIPE, shell=True)
             output, _ = p.communicate()
-            # print(f"DEBUG: run_profiles _parse_windows_command: RAW output ={output.decode(os_encoding)}")
-            output = output.decode(os_encoding)
+            from ctypes import cdll
+
+            code_page = cdll.kernel32.GetConsoleCP()
+            if code_page == 0:
+                os_encoding = os.getenv('RIDE_ENCODING', OUTPUT_ENCODING)
+            else:
+                os_encoding = 'cp' + str(code_page)
+            # print(f"DEBUG: run_profiles _parse_windows_command: RAW output ={output} codepage={code_page} {os_encoding}")
+            try:
+                output = output.decode(os_encoding)
+            except UnicodeDecodeError:
+                wx.MessageBox(f"An UnicodeDecodeError occurred when processing the Arguments."
+                              f" The encoding used was '{os_encoding}'. You may try to define the environment variable"
+                              f" RIDE_ENCODING with a proper value. Other possibility, is to replace 'pythonw.exe' by 'python.exe'"
+                              f" in the Desktop Shortcut.", "UnicodeDecodeError")
             # print(f"DEBUG: run_profiles _parse_windows_command: RAW_decoded output ={output.decode(sys.getfilesystemencoding())}")
             output = str(output).lstrip("b\'").lstrip('"').replace('\\r\\n', '').replace('\'', '').replace('\\""', '\"').strip()
             # print(f"DEBUG: run_profiles _parse_windows_command: output ={output}")
@@ -543,7 +554,10 @@ class PybotProfile(BaseProfile, RIDEDialog):
         except Information:
             return 'Does not execute - help or version option given'
         except (DataError, Exception) as e:
-            return e.message if e.message else e
+            if e.message:
+                return e.message
+                # raise DataError(e.message)
+            # print(f"DEBUG: Exception at run_profiles _get_invalid_messagee (Not DataError?) {e}")
         if bool(invalid):
             return f'Unknown option(s): {invalid}'
         return None
