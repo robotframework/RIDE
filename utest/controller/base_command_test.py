@@ -39,12 +39,13 @@ class TestCaseCommandTest(unittest.TestCase, _FakeProject):
     resource_file_controller_factory = None
 
     def setUp(self):
-        self._steps = None
+        # self._steps = None
         self._data = self._create_data()
         print(f"DEBUG: base setup {self._data[:]}")
         self._ctrl = testcase_controller(self, data=self._data)
         PUBLISHER.subscribe(self._test_changed, RideItemStepsChanged)
         self._orig_number_of_steps = len(self._ctrl.steps)
+        self._steps = self._ctrl.steps
         print(f"DEBUG: base setup  self._orig_number_of_steps={self._orig_number_of_steps}")
         self._number_of_test_changes = 0
 

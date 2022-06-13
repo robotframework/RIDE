@@ -1137,19 +1137,19 @@ class DeleteCell(_StepsChangingCommand):
     def __init__(self, row, col):
         self._row = row
         self._col = col
-        # print(f"\nDEBUG: DeleteCell init enter coords ({self._row}, {self._col})")
+        print(f"\nDEBUG: DeleteCell init enter coords ({self._row}, {self._col})")
 
     def _params(self):
         return self._row, self._col
 
     def change_steps(self, context):
         step = self._step(context)
-        # print(f"DEBUG: DeleteCell enter change: {step.as_list()}")
+        print(f"DEBUG: DeleteCell enter change: {step.as_list()}")
         self._undo_command = StepsChangingCompositeCommand(
             InsertCell(self._row, self._col),
             ChangeCellValue(self._row, self._col,
                             step.get_value(self._col)))
-        step.shift_left(self._col)
+        step.shift_left(self._col, delete=True)
         return True
 
     def _get_undo_command(self):
@@ -1206,7 +1206,7 @@ class AddRow(_RowChangingCommand):
 class CommentRow(_RowChangingCommand):
 
     def _change_value(self, context):
-        # print(f"DEBUG: enter CommentRow")
+        print(f"DEBUG: enter CommentRow")
         self._step(context).comment()
         return True
 

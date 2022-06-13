@@ -583,7 +583,7 @@ class Variable(object):
 class _WithSteps(object):
 
     def add_step(self, content, comment=None):
-        print(f"DEBUG: model.py Enter _WithSteps content={content[:]} comment={comment}")
+        # print(f"DEBUG: model.py Enter _WithSteps content={content[:]} comment={comment}")
         self.steps.append(Step(content, comment))
         return self.steps[-1]
 
