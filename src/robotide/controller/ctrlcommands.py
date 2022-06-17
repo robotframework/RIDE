@@ -1183,6 +1183,7 @@ class DeleteRow(_RowChangingCommand):
 
     def _change_value(self, context):
         step = context.steps[self._row]
+        print(f"DEBUG: DeleteRow enter change row={self._row}: {step.as_list()}")
         self._undo_command = StepsChangingCompositeCommand(
             AddRow(self._row), PasteArea((self._row, 0), [step.as_list()]))
         context.remove_step(self._row)

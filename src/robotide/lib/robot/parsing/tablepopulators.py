@@ -149,7 +149,7 @@ class ForLoopPopulator(Populator):
 
     def add(self, row):
         # dedented_row = row.dedent()  # DEBUG remove dedent
-        # print(f"DEBUG: Forloop Add row = {row.data}")
+        # print(f"DEBUG: Forloop Add row = {row.data}\ndentented={dedented_row}")
         if not self._loop:
             declaration_ready = self._populate_declaration(row)
             if not declaration_ready:

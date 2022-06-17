@@ -439,6 +439,9 @@ class TestCaseEditingTest(TestCaseCommandTest):
 
     def test_commenting(self):
         self._exec(CommentRows([0]))
+        print(f"DEBUG: test_commenting AFTER CommentRows:")
+        for s in self._steps:
+            print(f"{s.as_list()}")
         self._verify_step(0, 'Comment', ['Step 1', 'arg'])
 
     def test_commenting_many_rows(self):
@@ -507,6 +510,9 @@ class TestCaseEditingTest(TestCaseCommandTest):
 
     def test_uncommenting_does_nothing_if_not_commented(self):
         self._exec(UncommentRows([1,2,3,4,6]))
+        print(f"\nAfter UncommentRows")
+        for row in self._steps:
+            print(f"{row.as_list()}")
         self._verify_steps_unchanged(STEP2, STEP_WITH_COMMENT, FOR_LOOP_HEADER, FOR_LOOP_STEP1, FOR_LOOP_END)
 
     def test_commenting_and_uncommenting_row_with_no_step(self):

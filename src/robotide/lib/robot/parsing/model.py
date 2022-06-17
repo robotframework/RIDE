@@ -742,13 +742,14 @@ class ForLoop(_WithSteps):
                 self.first_kw = declaration[idx]
                 break
         self.inner_kw_pos = idx
+        # print(f"\nDEBUG: ForLoop init indent {isize} self.inner_kw_pos={self.inner_kw_pos}\ndeclaration={declaration[:]}")
+        # compensation for double FOR
+        if declaration[self.inner_kw_pos+1] == declaration[self.inner_kw_pos] == 'FOR':
+            declaration.pop(self.inner_kw_pos+1)
         self.flavor, index = self._get_flavor_and_index(declaration)
         self.vars = declaration[self.inner_kw_pos+1:index]
         self.items = declaration[index+1:]
         self.comment = Comment(comment)
-        # print(f"\nDEBUG: ForLoop init indent {isize} self.inner_kw_pos={self.inner_kw_pos}"
-        #      f"\ndeclaration[inner_kw_posdx]={declaration[self.inner_kw_pos]}"
-        #      f"\nvars={self.vars}\nitens={self.items}\n comments={self.comment}")
         self.steps = []
         self.args = []
 
@@ -862,7 +863,7 @@ class Step(object):
         # print(f"DEBUG: model enter _first_non_empty_cell")
         cells = content
         # if cells:
-        #    print(f"DEBUG: model _first_non_empty_cell: {cells}")
+        #    print(f"DEBUG: model _first_non_empty_cell: {cells[:]}")
         index = 0
         while index < len(cells) and cells[index] == '':
             index += 1
