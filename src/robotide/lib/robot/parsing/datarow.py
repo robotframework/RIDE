@@ -56,10 +56,23 @@ class DataRow(object):
                         "Framework 3.2." % self.source)
 
     def _purge_empty_cells(self, row):
-        while row and not row[-1]:
-            row.pop()
+        # DEBUG Lets not remove empty cells
+        # while row and not row[-1]:
+        #    row.pop()
         # Cells with only a single backslash are considered empty
         return [cell if cell != '\\' else '' for cell in row]
+        # return row
+
+    @property
+    def first_non_empty_cell(self):
+        # print(f"DEBUG: datarow enter _first_non_empty_cell")
+        # if self.cells:
+        #    print(f"DEBUG: datarow _first_non_empty_cell: {self.cells[:]}")
+        index = 0
+        while index < len(self.cells) and self.cells[index] == '':
+            index += 1
+        # print(f"DEBUG: datarow RETURNING  _first_non_empty_cell index ={index}")
+        return index  # if index < len(self.cells) else index - 1
 
     @property
     def first_non_empty_cell(self):
