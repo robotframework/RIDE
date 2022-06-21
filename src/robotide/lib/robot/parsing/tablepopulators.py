@@ -148,7 +148,7 @@ class ForLoopPopulator(Populator):
         self._declaration_comments = []
 
     def add(self, row):
-        dedented_row = row.dedent()  # DEBUG remove dedent
+        # dedented_row = row.dedent()  # DEBUG remove dedent
         # print(f"DEBUG: Forloop Add row = {row.data}")
         if not self._loop:
             declaration_ready = self._populate_declaration(row)
@@ -158,8 +158,8 @@ class ForLoopPopulator(Populator):
         if not row.is_continuing():
             self._populator.populate()
             self._populator = StepPopulator(self._loop.add_step)
-        self._populator.add(dedented_row)  #DEBUG remove dedent
-        #self._populator.add(row)
+        # self._populator.add(dedented_row)  #DEBUG remove dedent
+        self._populator.add(row)
 
     def _populate_declaration(self, row):
         if row.starts_for_loop() or row.is_continuing():

@@ -1033,7 +1033,10 @@ class ChangeCellValue(_StepsChangingCommand):
             step.change(self._col, self._value)
         # print(f"DEBUG: change_steps after change from_column: ({self._row}, {self._col}, {self._value}) Line: {context.steps[self._row].as_list()}")
         self._step(context).remove_empty_columns_from_end()
-        assert self._validate_postcondition(context), 'Should have correct value after change'
+        # value = self._step(context).get_value(self._col).strip()
+        # print(f"DEBUG: change_steps after change from_column: value={value} self.value = {self._value}")
+        # DEGUG: Next validation is not possible to call when the step is Indented
+        # assert self._validate_postcondition(context), 'Should have correct value after change'
         return True
 
     @staticmethod
@@ -1123,7 +1126,8 @@ class InsertCell(_StepsChangingCommand):
 
     def change_steps(self, context):
         self._step(context).shift_right(self._col)
-        # print(f"DEBUG: InsertCell  change_steps row:{self._row} cols:{self._col} row BEFORE _recreate: {context.steps[self._row].as_list()}")
+        print(f"DEBUG: InsertCell  change_steps row:{self._row} cols:{self._col} row BEFORE _recreate: {context.steps[self._row].as_list()}"
+              f"\ntype step={type(self._step(context))}")
         self._step(context)._recreate(context.steps[self._row].as_list())
         assert self._step(context).get_value(self._col) == '', 'Should have an empty value after insert'
         return True

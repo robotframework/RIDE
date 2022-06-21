@@ -311,8 +311,9 @@ class StepController(_BaseController):
         self.change(col, new_value)
 
     def comment(self):
-        # col = self._step.inner_kw_pos
-        col = self._keyword_column
+        col = self._step.inner_kw_pos
+        # col = self._keyword_column if self._keyword_column > 1 else 0
+        print(f"DEBUG: Stepcontrollers COMMENT ENTER: INNER={self._step.inner_kw_pos} cells={self._step.as_list()} \ncol={col}")
         self.insert_value_before(col, 'Comment')
 
     def _is_commented(self, col):
@@ -410,7 +411,8 @@ class StepController(_BaseController):
                     new_step = robotapi.Step([''] + new_step.as_list(indent=True))
             self.parent.set_raw_steps(steps[:index] + [new_step] + steps[index:])
         else:
-            current_indent = self.first_non_empty_cell(new_step.as_list())
+            # DEBUG current_indent = self.first_non_empty_cell(new_step.as_list())
+            current_indent = len(new_step.indent)
             print(f"DEBUG: StepController, new_step.ident={new_step.indent[:]} current_indent:{current_indent}")
             delta_indent = current_indent - len(self._step.indent)
             print(f"DEBUG: StepController, remove indent: delta={delta_indent} {new_step.as_list()}")
@@ -491,11 +493,13 @@ class StepController(_BaseController):
     def _is_end_step(self, cells):
         return cells and ('END' in cells)  # cells[0] == 'END' # TODO Improve check
 
+    """
     def _recreate_as_partial_for_loop(self, cells, comment):
         index = self._index()
         self.parent.replace_step(index, PartialForLoop(
             cells[1:] if len(cells) > 1 else [''], first_cell=cells[0], comment=comment))
         self._recreate_next_step(index)
+    """
 
     def _recreate_as_intended_step(self, for_loop_step, cells, comment, index):
         self.remove()
@@ -518,7 +522,7 @@ class StepController(_BaseController):
         self.indent = self.indent[:-1] if len(self.indent) > 0 else []
         return len(self.indent)
 
-
+"""
 class PartialForLoop(robotapi.ForLoop):
 
     parent = None
@@ -528,10 +532,9 @@ class PartialForLoop(robotapi.ForLoop):
         self._first_cell = first_cell
         robotapi.ForLoop.__init__(self, self.parent, cells, comment)
 
-    """
     def as_list(self, indent=False, include_comment=False):
         return [self._first_cell] + self._cells + [self.comment]
-    """
+"""
 
 
 class ForLoopStepController(StepController):
@@ -663,19 +666,24 @@ class ForLoopStepController(StepController):
     def _recreate(self, cells, comment=None, delete=False):
         print(f"\nDEBUG: ForLoopStepController enter recreate: self._step.inner_kw_pos={self._step.inner_kw_pos} "
               f"self.cells={cells[:]}")
-        if cells[self._step.inner_kw_pos] != 'FOR':
-            new_cells = cells[0:]
+        kw_index = None
+        for idx in range(0, len(cells)):
+            if cells[idx] == '':
+                continue
+            if cells[idx] == 'FOR':
+                kw_index = idx
+            break
+        if kw_index:
+            print(f"\nDEBUG: ForLoopStepController returning recreate_complete_for_loop_header")
+            if comment:
+                self._recreate_complete_for_loop_header(['', cells[:], comment[:]])
+            else:
+                self._recreate_complete_for_loop_header([''] + cells)
+        else:
+            new_cells = cells[:]
             index = self._index()
             self.parent.replace_step(index, robotapi.Step(new_cells, comment))
-            print(f"\nDEBUG: ForLoopStepController returning recreate: index={index}")
-            self.recalculate_keyword_column()
-            return
-        else:
-            # self._step.__init__(self.parent, cells[self._step.inner_kw_pos:])
-            print(f"\nDEBUG: ForLoopStepController recreate before init :cells={cells[:]}")
-            self._step.__init__(self.parent, cells[:])
-            # index = self._index()
-            # self._step = robotapi.ForLoop(self.parent, cells[:], comment)
+            print(f"\nDEBUG: ForLoopStepController returning STEP recreate: index={index}")
         self.recalculate_keyword_column()
 
     def _recreate_complete_for_loop_header(self, cells):

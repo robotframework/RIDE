@@ -56,17 +56,35 @@ class DataRow(object):
                         "Framework 3.2." % self.source)
 
     def _purge_empty_cells(self, row):
-        while row and not row[-1]:
-            row.pop()
+        # DEBUG Lets not remove empty cells
+        # while row and not row[-1]:
+        #    row.pop()
         # Cells with only a single backslash are considered empty
         return [cell if cell != '\\' else '' for cell in row]
+        # return row
+
+    @property
+    def first_non_empty_cell(self):
+        # print(f"DEBUG: datarow enter _first_non_empty_cell")
+        # if self.cells:
+        #    print(f"DEBUG: datarow _first_non_empty_cell: {self.cells[:]}")
+        index = 0
+        while index < len(self.cells) and self.cells[index] == '':
+            index += 1
+        # print(f"DEBUG: datarow RETURNING  _first_non_empty_cell index ={index}")
+        return index  # if index < len(self.cells) else index - 1
 
     @property
     def head(self):
+        # print(f"DEBUG: datarow head={self.cells[:] if self.cells else 'NONE!!!'}")
         return self.cells[0] if self.cells else ''
 
     @property
     def tail(self):
+        # print(f"DEBUG: datarow tail={self.cells[self.first_non_empty_cell:]}")
+        # We want to keep indentation, so we only remove first empty cell
+        # index = 1 if len(self.cells) > 1 else 0
+        # return self.cells[self.first_non_empty_cell:]
         return self.cells[1:]
 
     @property
@@ -81,19 +99,30 @@ class DataRow(object):
         return self.cells
 
     def dedent(self):
+        import inspect
         datarow = DataRow([])
         datarow.cells = self.tail
         datarow.comments = self.comments
+        stack = inspect.stack()
+        the_class = stack[1][0].f_locals["self"].__class__.__name__
+        the_method = stack[1][0].f_code.co_name
+        print("DEBUG: datarow dedent called by {}.{}()".format(the_class, the_method))
+        print(f"DEBUG: datarow dedent={datarow.all[:]}")
         return datarow
 
     def starts_for_loop(self):
-        head = self.head
+        # head = self.head
+        if not self.head:
+            head = self.tail[0]
+        else:
+            head = self.head
         if head.startswith(':'):
             return head.replace(':', '').replace(' ', '').upper() == 'FOR'
         return head == 'FOR'
 
     def starts_test_or_user_keyword_setting(self):
         head = self.head
+        print(f"DEBUG: datarow CALLING starts_test_or_user_keyword_setting head={head}")
         return head and head[0] == '[' and head[-1] == ']'
 
     def test_or_user_keyword_setting_name(self):
@@ -101,6 +130,7 @@ class DataRow(object):
 
     def is_indented(self):
         return self.head == ''
+        # return self.first_non_empty_cell > 0
 
     def is_continuing(self):
         for cell in self.cells:

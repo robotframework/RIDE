@@ -122,7 +122,9 @@ class TestCaseEditingTest(TestCaseCommandTest):
         step_index = self._data_row(FOR_LOOP_STEP1)
         value = 'Foo'
         self._exec(ChangeCellValue(step_index, 0, value))
-        assert_equal(self._steps[step_index].as_list()[0], value)
+        # assert_equal(self._steps[step_index].as_list()[0], value)
+        self.assertEqual(self._steps[step_index].as_list(),
+                         ['', '', value] + self._data_step_as_list(FOR_LOOP_STEP1)[2:])
 
     def test_empty_second_cell_in_for_loop_step(self):
         step_index = self._data_row(FOR_LOOP_STEP1)
@@ -247,7 +249,7 @@ class TestCaseEditingTest(TestCaseCommandTest):
         row_in_for_loop = self._data_row(FOR_LOOP_STEP2)
         self._exec(AddRow(row_in_for_loop))
         assert_equal(len(self._steps), self._orig_number_of_steps+1)
-        assert_equal(self._steps[row_in_for_loop].as_list(), ['', ''])
+        assert_equal(self._steps[row_in_for_loop].as_list(), [''])
 
     def test_inserting_cell_when_for_loop_is_last(self):
         row_after_for_loop = self._data_row(STEP_AFTER_FOR_LOOP)
@@ -390,12 +392,16 @@ class TestCaseEditingTest(TestCaseCommandTest):
 
     def test_inserting_inside_for_step(self):
         self._exec(InsertCell(4,2))
-        # for s in self._steps:
-        #     print(f"{s.as_list()}")
+        print(f"DEBUG: After insert cell, 4,2:")
+        for s in self._steps:
+            print(f"{s.as_list()}")
         self.assertEqual(self._steps[self._data_row(FOR_LOOP_STEP1)].as_list(),
                          self._data_step_as_list(FOR_LOOP_STEP1)[1:3] + ['']
                          + self._data_step_as_list(FOR_LOOP_STEP1)[3:])
         self._exec(InsertCell(4, 3))
+        print(f"DEBUG: After insert cell, 4,3:")
+        for s in self._steps:
+            print(f"{s.as_list()}")
         self.assertEqual(self._steps[self._data_row(FOR_LOOP_STEP1)].as_list(),
                          self._data_step_as_list(FOR_LOOP_STEP1)[1:3] + ['']
                          + [''] + self._data_step_as_list(FOR_LOOP_STEP1)[3:])
@@ -423,13 +429,12 @@ class TestCaseEditingTest(TestCaseCommandTest):
         for s in self._steps:
             print(f"{s.as_list()}")
         # FIXME
-        ####### assert_equal(self._steps[start_row].as_list(), [])
-        ####### assert_equal(self._steps[end_row].as_list(), [])
+        assert_equal(self._steps[start_row].as_list(), [])
+        assert_equal(self._steps[end_row].as_list(), [])
         self._exec(Undo())
         print(f"DEBUG: test_delete_cells_in_for_loop_and_undo AFTER Undo:")
         for s in self._steps:
             print(f"{s.as_list()}")
-        # self._verify_steps_unchanged(FOR_LOOP_STEP1, FOR_LOOP_STEP2)  # FIXME
         self._verify_steps_unchanged(FOR_LOOP_STEP1, FOR_LOOP_STEP2)  # FIXME
 
     def test_commenting(self):
@@ -453,7 +458,7 @@ class TestCaseEditingTest(TestCaseCommandTest):
         # FIXME
         print(f"DEBUG: test_commenting_step_in_for_loop:  Changed={self._steps[row].as_list()}\n"
               f"original={self._data_step_as_list(FOR_LOOP_STEP1)}")
-        assert_equal(self._steps[row].as_list(), ['', '', 'Comment'] + self._data_step_as_list(FOR_LOOP_STEP1)[2:])
+        assert_equal(self._steps[row].as_list(), ['', 'Comment'] + self._data_step_as_list(FOR_LOOP_STEP1)[2:])
 
     def test_commenting_for_loop_end(self):
         row = self._data_row(FOR_LOOP_END)
@@ -471,6 +476,17 @@ class TestCaseEditingTest(TestCaseCommandTest):
         self._exec(UncommentRows([0]))
         assert_equal(self._steps[0].as_list(), self._data_step_as_list(STEP1)[1:])
 
+    def test_commenting_row_with_for(self):
+        print(f"DEBUG: Before CommentRow with FOR")
+        self._exec(CommentRows([3]))
+        print(f"DEBUG: After CommentRow with FOR")
+        for s in self._steps:
+            print(f"{s.as_list()}")
+        assert_equal(self._steps[3].as_list(),
+                     ['Comment'] + self._data_step_as_list(FOR_LOOP_HEADER)[1:])
+        assert_equal(self._steps[4].as_list(),
+                     self._data_step_as_list(FOR_LOOP_STEP1))
+
     def test_uncommenting_rows(self):
         self._exec(CommentRows([1,2,3,4,6]))
         print(f"DEBUG: After CommentRows")
@@ -480,15 +496,14 @@ class TestCaseEditingTest(TestCaseCommandTest):
         print(f"DEBUG: After UncommentRows")
         for s in self._steps:
             print(f"{s.as_list()}")
-        self._verify_steps_unchanged(STEP2, STEP_WITH_COMMENT, FOR_LOOP_HEADER, FOR_LOOP_STEP1, FOR_LOOP_END)
+        self._verify_steps_unchanged(STEP1, STEP2, STEP_WITH_COMMENT, FOR_LOOP_HEADER, FOR_LOOP_STEP1, FOR_LOOP_END)
 
     def test_uncommenting_commented_step_in_for_loop(self):
         row = self._data_row(FOR_LOOP_STEP1)
         self._exec(CommentRows([row]))
         self._exec(UncommentRows([row]))
-        # FIXME
-        # self._verify_step_unchanged(FOR_LOOP_STEP1)
-        assert_equal(self._steps[row].as_list(), self._data_step_as_list(FOR_LOOP_STEP1)[:])
+        self._verify_step_unchanged(FOR_LOOP_STEP1)
+        # assert_equal(self._steps[row].as_list(), self._data_step_as_list(FOR_LOOP_STEP1)[:])
 
     def test_uncommenting_does_nothing_if_not_commented(self):
         self._exec(UncommentRows([1,2,3,4,6]))
@@ -531,16 +546,22 @@ class ForLoopCases(TestCaseCommandTest):
         self._verify_step(1, '')
         # self._verify_step_unchanged('    Log  ${i}')
         self._verify_step_unchanged('  FOR  ${j}  IN  1  2')
-        # self._verify_step_unchanged('    Log  ${j}')
-        self._verify_step(4, '', ['Log', '${j}'])
+        self._verify_step_unchanged('    Log  ${j}')
+        # self._verify_step(4, '', ['Log', '${j}'])
         self._verify_step(5, 'END')
 
     def test_remove_end_step_in_for_loop(self):
         self._exec(DeleteCells((2,0), (2,1)))
+        print(f"Test After DeleteCells:")
+        for el in self._ctrl.steps:
+            print(f"{el.as_list()}")
         self._verify_step_unchanged('  FOR  ${i}  IN  1  2')
-        self._verify_step(1, '', ['Log', '${i}'])
+        # self._verify_step(1, '', ['Log', '${i}'])
+        self._verify_step_unchanged('    Log  ${i}')
+        self._verify_step(2, '')
         self._verify_step_unchanged('  FOR  ${j}  IN  1  2')
-        self._verify_step(4, '', ['Log', '${j}'])
+        # self._verify_step(4, '', ['Log', '${j}'])
+        self._verify_step_unchanged('    Log  ${j}')
         self._verify_step(5, 'END')
         # self._verify_step_unchanged('  END')
 

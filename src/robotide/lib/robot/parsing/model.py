@@ -731,18 +731,24 @@ class ForLoop(_WithSteps):
         self.parent = parent
         self.indent = []
         isize = idx = 0
-        for idx in range(0, len(declaration)-1):
-            if self.inner_kw_pos and declaration[idx] == '':
-                isize = self.increase_indent()
-            elif declaration[idx] != '':
+        print(f"\nDEBUG: ForLoop init ENTER declaration={declaration[:]}")
+        if declaration[0] == '':
+            declaration.pop(0)
+        for idx in range(0, len(declaration)):
+            if declaration[idx] == '':
+                if idx >= 0:
+                    isize = self.increase_indent()
+            else:
                 self.first_kw = declaration[idx]
                 break
         self.inner_kw_pos = idx
-        print(f"\nDEBUG: ForLoop init indent {isize} self.inner_kw_pos={self.inner_kw_pos}")
         self.flavor, index = self._get_flavor_and_index(declaration)
         self.vars = declaration[self.inner_kw_pos+1:index]
         self.items = declaration[index+1:]
         self.comment = Comment(comment)
+        # print(f"\nDEBUG: ForLoop init indent {isize} self.inner_kw_pos={self.inner_kw_pos}"
+        #      f"\ndeclaration[inner_kw_posdx]={declaration[self.inner_kw_pos]}"
+        #      f"\nvars={self.vars}\nitens={self.items}\n comments={self.comment}")
         self.steps = []
         self.args = []
 
@@ -772,7 +778,8 @@ class ForLoop(_WithSteps):
 
     def as_list(self, indent=False, include_comment=True):
         comments = self.comment.as_list() if include_comment else []
-        # print(f"DEBUG: Model ForLoop as_list: indent={self.indent[:]} self.first_kw={self.first_kw}")
+        # print(f"DEBUG: Model ForLoop as_list: indent={self.indent[:]} self.first_kw={self.first_kw}\n"
+        #       f"{self.vars} + {self.flavor} + {self.items} + {comments}")
         return self.indent + [self.first_kw] + self.vars + [self.flavor] + self.items + comments
 
     def __iter__(self):
