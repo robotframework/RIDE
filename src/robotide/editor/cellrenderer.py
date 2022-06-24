@@ -87,8 +87,8 @@ class CellRenderer(wx.grid.GridCellRenderer):
 
         w, h = dc.GetTextExtent('00')  # use 2 digits for size reference
         if self.auto_fit:
-            grid.SetRowMinimalAcceptableHeight(h+h/2)
-            grid.SetColMinimalAcceptableWidth(w+w/2)
+            grid.SetRowMinimalAcceptableHeight(int(h+h/2))
+            grid.SetColMinimalAcceptableWidth(int(w+w/2))
 
         w, h = dc.GetTextExtent(text)
         if self.auto_fit:

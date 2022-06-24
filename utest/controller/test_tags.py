@@ -16,7 +16,6 @@
 import os
 import sys
 import unittest
-from nose.tools import assert_true, assert_false
 
 # Workaround for relative import in non-module
 # see https://stackoverflow.com/questions/16981921/relative-imports-in-python-3
@@ -25,7 +24,10 @@ SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(),
                                               os.path.expanduser(__file__))))
 sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
 
-from controller_creator import testcase_controller
+try:
+    from controller_creator import testcase_controller
+except ModuleNotFoundError:
+    from .controller_creator import testcase_controller
 
 from robotide.controller.tags import Tag, DefaultTag, ForcedTag
 from robotide.controller.ctrlcommands import ChangeTag
@@ -43,13 +45,13 @@ class Test(unittest.TestCase):
     def test_tests_tag_is_shown(self):
         tag = Tag('tag')
         self.tags.add(tag)
-        assert_true(tag in self.tags)
+        assert tag in self.tags
 
     def test_default_from_suite(self):
         tag = DefaultTag('suite tag')
         suite = self._test.datafile_controller
         suite.default_tags.add(tag)
-        assert_true(tag in self.tags)
+        assert tag in self.tags
 
     def test_adding_empty_tag_will_remove_default(self):
         self.test_default_from_suite()
@@ -65,33 +67,33 @@ class Test(unittest.TestCase):
         suite = self._test.datafile_controller
         suite.default_tags.add(tag_to_overwrite)
         self.tags.add(tag)
-        assert_true(tag_to_overwrite not in self.tags)
-        assert_true(tag in self.tags)
+        assert tag_to_overwrite not in self.tags
+        assert tag in self.tags
 
     def test_force_tag_from_suite(self):
         force_tag = ForcedTag('force tag')
         suite = self._test.datafile_controller
         suite.force_tags.add(force_tag)
-        assert_true(force_tag in self.tags)
+        assert force_tag in self.tags
 
     def test_force_tag_from_suites_parent_directory(self):
         force_tag = ForcedTag('forced from directory')
         directory = self._test.datafile_controller.parent
         directory.force_tags.add(force_tag)
-        assert_true(force_tag in self.tags)
+        assert force_tag in self.tags
 
     def test_force_tag_from_suites_parents_parent_directory(self):
         force_tag = ForcedTag('forced from directory')
         directory = self._test.datafile_controller.parent.parent
         directory.force_tags.add(force_tag)
-        assert_true(force_tag in self.tags)
+        assert force_tag in self.tags
 
     def test_changing_tag(self):
         tag = Tag('tag')
         self.tags.add(tag)
         self.tags.execute(ChangeTag(tag, 'foo'))
         self._tag_with_name_exists('foo')
-        assert_false(any(t for t in self.tags if t.name == 'tag'))
+        assert not any(t for t in self.tags if t.name == 'tag')
 
     def test_changing_empty_tag_adds_tag(self):
         name = 'sometag'
@@ -136,13 +138,13 @@ class Test(unittest.TestCase):
         self._verify_number_of_tags(3)
 
     def _verify_number_of_tags(self, number):
-        assert_true(number == sum(1 for _ in self.tags))
+        assert number == sum(1 for _ in self.tags)
 
     def _tag_with_name_exists(self, name):
-        assert_true(any(t for t in self.tags if t.name == name))
+        assert any(t for t in self.tags if t.name == name)
 
     def _tag_with_name_does_not_exists(self, name):
-        assert_false(any(t for t in self.tags if t.name == name))
+        assert not any(t for t in self.tags if t.name == name)
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

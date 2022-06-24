@@ -20,7 +20,6 @@ from robotide.robotapi import TestCaseFile
 from robotide.controller.filecontrollers import TestCaseFileController
 
 from utest.resources import COMPLEX_SUITE_PATH
-from nose.tools import assert_equal, assert_true
 
 
 class TestCaseAndUserKeywordCopyingTest(unittest.TestCase):
@@ -30,22 +29,22 @@ class TestCaseAndUserKeywordCopyingTest(unittest.TestCase):
     def test_test_case_copy(self):
         test = self.controller.tests[0]
         copy = test.copy('New Name')
-        assert_equal(copy.name, 'New Name')
+        assert copy.name == 'New Name'
         for orig, copied in zip(test.settings, copy.settings):
-            assert_equal(orig.value, copied.value)
-            assert_true(copied is not orig)
-        assert_equal(test.steps, copy.steps)
-        assert_true(test.steps is not copy.steps)
+            assert orig.value == copied.value
+            assert copied is not orig
+        assert test.steps == copy.steps
+        assert test.steps is not copy.steps
 
     def test_keyword_copy(self):
         test = self.controller.keywords[0]
         copy = test.copy('New Name')
-        assert_equal(copy.name, 'New Name')
+        assert copy.name == 'New Name'
         for orig, copied in zip(test.settings, copy.settings):
-            assert_equal(orig.value, copied.value)
-            assert_true(copied is not orig)
-        assert_equal(test.steps, copy.steps)
-        assert_true(test.steps is not copy.steps)
+            assert orig.value == copied.value
+            assert copied is not orig
+        assert test.steps == copy.steps
+        assert test.steps is not copy.steps
 
     def test_test_copy_performance(self):
         self._run_copy_test(self.controller.tests[0])

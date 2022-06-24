@@ -1,8 +1,6 @@
 setuptools
-nose
 mockito
 invoke
-# rellu
 github3.py
 memory-profiler
 pylint

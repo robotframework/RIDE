@@ -17,8 +17,6 @@ import unittest
 
 from robotide.validators import ArgumentsValidator
 
-from nose.tools import assert_equal
-
 
 class Test(unittest.TestCase):
     validate = ArgumentsValidator()._validate
@@ -40,25 +38,25 @@ class Test(unittest.TestCase):
                 "${a} | ${b} | @{f} | &{dict}",
                 "${arg}=foo | @{list}"
         ]:
-            assert_equal(self.validate(arg), None, arg)
+            assert self.validate(arg) == None, arg
 
     def test_invalid_arguments_validation(self):
         for arg in ['arg', '@{list}=', '@{list}=fooness']:
-            assert_equal(self.validate(arg),
+            assert (self.validate(arg) ==
                           "Invalid argument syntax '%s'" % arg)
         for arg, err in [("|${a}", ""), ("${a} | ${a2} | invalid", "invalid")]:
-            assert_equal(self.validate(arg),
+            assert (self.validate(arg) ==
                           "Invalid argument syntax '%s'" % err)
 
     def test_list_arg_in_incorrect_position(self):
         for arg in ["@{list} | ${foo}",
                     "&{dict} | @{list}"]:
-            assert_equal(self.validate(arg), self.validation_error, arg)
+            assert self.validate(arg) == self.validation_error, arg
 
     def test_req_arg_after_defaults(self):
         for arg in ["${a}=default | ${a2}",
                     "${a} | ${b}=default | ${c}"]:
-            assert_equal(self.validate(arg), self.validation_error)
+            assert self.validate(arg) == self.validation_error
 
 
 if __name__ == '__main__':

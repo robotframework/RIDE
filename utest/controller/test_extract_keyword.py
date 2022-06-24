@@ -17,7 +17,6 @@ from controller.base_command_test import *
 
 from robotide.controller.ctrlcommands import ExtractKeyword, Undo
 from robotide.publish.messages import RideUserKeywordAdded
-from nose.tools import assert_true
 from controller.controller_creator import FOR_LOOP_HEADER, FOR_LOOP_STEP2,\
     FOR_LOOP_STEP1
 
@@ -38,8 +37,8 @@ class TestExtractKeyword(TestCaseCommandTest):
         self._exec(ExtractKeyword(new_kw_name, '', (0,1)))
         self._verify_step(0, new_kw_name)
         self._verify_step_number_change(-1)
-        assert_true(self._ctrl.dirty)
-        assert_equal(self._new_keyword.name, new_kw_name)
+        assert self._ctrl.dirty
+        assert self._new_keyword.name == new_kw_name
 
     def test_extract_with_for_loop(self):
         new_kw_name = 'New Keyword with For Loop'
@@ -47,8 +46,8 @@ class TestExtractKeyword(TestCaseCommandTest):
             (self._data_row(FOR_LOOP_HEADER),self._data_row(FOR_LOOP_STEP2))))
         self._verify_step(self._data_row(FOR_LOOP_HEADER), new_kw_name)
         self._verify_step_number_change(-2)
-        assert_true(self._ctrl.dirty)
-        assert_equal(self._new_keyword.name, new_kw_name)
+        assert self._ctrl.dirty
+        assert self._new_keyword.name == new_kw_name
 
     def not_implemented_test_undoing_extract(self):
         new_kw_name = 'New Keyword'
@@ -61,9 +60,9 @@ class TestExtractKeyword(TestCaseCommandTest):
         self._exec(ExtractKeyword(new_kw_name, '',
             (self._data_row(FOR_LOOP_STEP1),self._data_row(FOR_LOOP_STEP2))))
         self._verify_step_number_change(-1)
-        assert_true(self._ctrl.dirty)
-        assert_equal(self._new_keyword.name, new_kw_name)
-        assert_equal(self._steps[self._data_row(FOR_LOOP_STEP1)].as_list(), ['', new_kw_name])
+        assert self._ctrl.dirty
+        assert self._new_keyword.name == new_kw_name
+        assert self._steps[self._data_row(FOR_LOOP_STEP1)].as_list() == ['', new_kw_name]
 
 
 if __name__ == "__main__":

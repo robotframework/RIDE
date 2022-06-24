@@ -15,7 +15,6 @@
 
 import time
 import unittest
-from nose.tools import assert_true
 from robotide.namespace import Namespace
 from robotide.controller import Project
 from utest.resources import MessageRecordingLoadObserver, FakeSettings
@@ -37,7 +36,7 @@ class TestNamespacePerformance(unittest.TestCase):
     def _test_keyword_find_performance(self, find_function_name):
         times = 5000
         end_time = self._execute_keyword_find_function_n_times(find_function_name, times)
-        assert_true(end_time < 0.5, 'Checking %d kws took too long: %fs.' % (times, end_time))
+        assert end_time < 0.5, 'Checking %d kws took too long: %fs.' % (times, end_time)
 
     def _FLICKERS_measure_user_keyword_find_performance(self):
         times = 1000
@@ -45,9 +44,8 @@ class TestNamespacePerformance(unittest.TestCase):
         kw2000_result = self._execute_keyword_find_function_n_times('is_user_keyword', times, KW2000_TESTCASEFILE)
         kw3000_result = self._execute_keyword_find_function_n_times('is_user_keyword', times, KW3000_TESTCASEFILE)
         a, b, c = self._calculate_power2_estimate_constants(kw1000_result, kw2000_result, kw3000_result)
-        assert_true(b > c or (c <= 0),
-                    'Possibly o(n*2) or greater growth in user keyword performance measures!\nkw1000 time = %s kw2000 time = %s kw3000 time = %s'\
-                     % (kw1000_result, kw2000_result, kw3000_result))
+        assert b > c or (c <= 0), 'Possibly o(n*2) or greater growth in user keyword performance measures!\nkw1000 time = %s kw2000 time = %s kw3000 time = %s'\
+                     % (kw1000_result, kw2000_result, kw3000_result)
         if c > 0 and (b <= 0 or c / b > self.RELEVANT_B_RELATIVE_TO_C):
             kw4000_result = self._execute_keyword_find_function_n_times('is_user_keyword', times, KW4000_TESTCASEFILE)
             self._verify_that_power2_estimate_overestimates(a, b, c, kw1000_result, kw2000_result, kw3000_result, kw4000_result)
@@ -56,9 +54,8 @@ class TestNamespacePerformance(unittest.TestCase):
         def power2estimate(kw_amount):
             x = kw_amount / 1000
             return a + b * x + c * x**2
-        assert_true(power2estimate(4000) * self.SAFETY_MARGIN > kw4000_result,
-                   'Possibly o(n*2) or greater growth in namespace performance measures!\nkw1000 time = %s kw2000 time = %s kw3000 time = %s kw4000 time = %s'\
-                    % (kw1000_result, kw2000_result, kw3000_result, kw4000_result))
+        assert power2estimate(4000) * self.SAFETY_MARGIN > kw4000_result, 'Possibly o(n*2) or greater growth in namespace performance measures!\nkw1000 time = %s kw2000 time = %s kw3000 time = %s kw4000 time = %s'\
+                    % (kw1000_result, kw2000_result, kw3000_result, kw4000_result)
 
 
     def _calculate_power2_estimate_constants(self, kw1000_result, kw2000_result, kw3000_result):

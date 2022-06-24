@@ -16,7 +16,6 @@
 import sys
 import pathlib
 import unittest
-from nose.tools import assert_true, assert_false, assert_equal
 from robotide.controller.tags import DefaultTag
 from robotide.controller.ctrlcommands import *
 
@@ -29,9 +28,15 @@ sys.path.insert(0, os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
 SCRIPT_DIR = os.path.dirname(pathlib.Path(__file__).parent)
 sys.path.insert(0, SCRIPT_DIR)
 
-from base_command_test import TestCaseCommandTest  # .base_command_test
-from controller_creator import *
-# from controller_creator import *
+try:
+    from base_command_test import TestCaseCommandTest  # .base_command_test
+except ModuleNotFoundError:
+    from .base_command_test import TestCaseCommandTest
+
+try:
+    from controller_creator import *
+except ModuleNotFoundError:
+    from .controller_creator import *
 
 
 class UnmodifyingCommandsTest(unittest.TestCase):
@@ -45,8 +50,8 @@ class FileHandlingCommandsTest(TestCaseCommandTest):
     def test_file_saving(self):
         self._file_saved = False
         self._exec(SaveFile())
-        assert_true(self._file_saved)
-        assert_false(self._ctrl.datafile_controller.dirty)
+        assert self._file_saved
+        assert not self._ctrl.datafile_controller.dirty
 
     def test_file_saving_purifies(self):
         self._add_empty_step_to_macro()
@@ -60,9 +65,9 @@ class FileHandlingCommandsTest(TestCaseCommandTest):
         print(f"DEBUG: test_file_saving_purifies: steps: ")
         for i in self._ctrl.steps:
             print(f"{i.as_list()}")
-        assert_equal(len(self._ctrl.steps), self._orig_number_of_steps-1)  # FIXME
+        assert len(self._ctrl.steps) == self._orig_number_of_steps-1  # FIXME
         other = self._get_macro_by_name(other_name)
-        assert_equal(len(other.steps), self._orig_number_of_steps+1)  # FIXME
+        assert len(other.steps) == self._orig_number_of_steps+1  # FIXME
 
     def test_undo_after_file_save_does_not_break(self):
         self._exec(SaveFile())
@@ -83,10 +88,10 @@ class MacroCopyingTest(TestCaseCommandTest):
         original_macro_number = len(self._get_macros())
         self._exec(CopyMacroAs(new_name))
         macro_names = [m.name for m in self._get_macros()]
-        assert_true(self._ctrl.name in macro_names)
-        assert_true(new_name in macro_names)
-        assert_equal(len(macro_names), original_macro_number+1)
-        assert_equal(len(self._get_macro_by_name(new_name).steps),
+        assert self._ctrl.name in macro_names
+        assert new_name in macro_names
+        assert len(macro_names) == original_macro_number+1
+        assert (len(self._get_macro_by_name(new_name).steps) ==
                       len(self._ctrl.steps))
 
     def test_copy_does_not_change_original(self):
@@ -94,29 +99,29 @@ class MacroCopyingTest(TestCaseCommandTest):
         self._exec(CopyMacroAs(new_name))
         copy = self._get_copy(new_name)
         copy.execute(ChangeCellValue(0, 0, 'Changed Step'))
-        assert_equal(['']+self._data_step_as_list(self._ctrl.steps[0].keyword), self._data_step_as_list(STEP1_KEYWORD))
-        assert_equal(copy.steps[0].keyword, 'Changed Step')
+        assert ['']+self._data_step_as_list(self._ctrl.steps[0].keyword) == self._data_step_as_list(STEP1_KEYWORD)
+        assert copy.steps[0].keyword == 'Changed Step'
 
     def _get_copy(self,name):
         copies = [m for m in self._get_macros() if m.name == name]
-        assert_equal(len(copies), 1)
+        assert len(copies) == 1
         return copies[0]
 
     def test_copy_macro_inherits_default_tag(self):
         suite = self._ctrl.datafile_controller
         tag_name = 'konsukiepre'
         suite.default_tags.add(DefaultTag(tag_name))
-        assert_true(any(True for tag in self._ctrl.tags if tag.name == tag_name))
+        assert any(True for tag in self._ctrl.tags if tag.name == tag_name)
         new_name = self._ctrl.name + '3'
         self._exec(CopyMacroAs(new_name))
-        assert_true(any(True for tag in self._get_copy(new_name).tags if tag.name == tag_name))
+        assert any(True for tag in self._get_copy(new_name).tags if tag.name == tag_name)
 
 
 class TestCaseEditingTest(TestCaseCommandTest):
 
     def test_changing_one_cell(self):
         self._exec(ChangeCellValue(0, 0, 'Changed Step'))
-        assert_equal(self._steps[0].keyword, 'Changed Step')
+        assert self._steps[0].keyword == 'Changed Step'
 
     def test_changing_first_cell_in_for_loop_step(self):
         step_index = self._data_row(FOR_LOOP_STEP1)
@@ -130,42 +135,42 @@ class TestCaseEditingTest(TestCaseCommandTest):
         step_index = self._data_row(FOR_LOOP_STEP1)
         value = ''
         self._exec(ChangeCellValue(step_index, 1, value))
-        assert_equal(self._steps[step_index].as_list()[1], value)
+        assert self._steps[step_index].as_list()[1] == value
 
     def test_undo_redo(self):
         original_cell_value = self._data_step_as_list(STEP1)[1]
         changed_cell_value = 'Changed Step'
         self._exec(ChangeCellValue(0, 0, changed_cell_value))
-        assert_equal(self._steps[0].keyword, changed_cell_value)
+        assert self._steps[0].keyword == changed_cell_value
         self._exec(Undo())
-        assert_equal(self._steps[0].keyword, original_cell_value)
+        assert self._steps[0].keyword == original_cell_value
         self._exec(Redo())
-        assert_equal(self._steps[0].keyword, changed_cell_value)
+        assert self._steps[0].keyword == changed_cell_value
 
     def test_undo_when_nothing_to_undo(self):
         self._exec(Undo())
-        assert_equal(self._number_of_test_changes, 0)
+        assert self._number_of_test_changes == 0
 
     def test_redo_when_nothing_to_redo(self):
         self._exec(Redo())
-        assert_equal(self._number_of_test_changes, 0)
+        assert self._number_of_test_changes == 0
 
     def test_undo_undo_redo_redo(self):
         original_cell_value = self._data_step_as_list(STEP1)[1]
         changed_cell_value_1 = 'Changed Step'
         changed_cell_value_2 = 'Again changed Step'
         self._exec(ChangeCellValue(0, 0, changed_cell_value_1))
-        assert_equal(self._steps[0].keyword, changed_cell_value_1)
+        assert self._steps[0].keyword == changed_cell_value_1
         self._exec(ChangeCellValue(0, 0, changed_cell_value_2))
-        assert_equal(self._steps[0].keyword, changed_cell_value_2)
+        assert self._steps[0].keyword == changed_cell_value_2
         self._exec(Undo())
-        assert_equal(self._steps[0].keyword, changed_cell_value_1)
+        assert self._steps[0].keyword == changed_cell_value_1
         self._exec(Undo())
-        assert_equal(self._steps[0].keyword, original_cell_value)
+        assert self._steps[0].keyword == original_cell_value
         self._exec(Redo())
-        assert_equal(self._steps[0].keyword, changed_cell_value_1)
+        assert self._steps[0].keyword == changed_cell_value_1
         self._exec(Redo())
-        assert_equal(self._steps[0].keyword, changed_cell_value_2)
+        assert self._steps[0].keyword == changed_cell_value_2
 
     def test_redo_does_nothing_after_state_changing_command_that_is_not_undo(self):
         changed_cell_value_1 = 'Changed Step'
@@ -174,40 +179,40 @@ class TestCaseEditingTest(TestCaseCommandTest):
         self._exec(Undo())
         self._exec(ChangeCellValue(0, 0, changed_cell_value_2))
         self._exec(Redo())
-        assert_equal(self._steps[0].keyword, changed_cell_value_2)
+        assert self._steps[0].keyword == changed_cell_value_2
 
     def test_changing_cell_value_after_last_column_adds_empty_columns(self):
         self._exec(ChangeCellValue(0, 2, 'Hello'))
-        assert_equal(self._steps[0].args, ['arg', 'Hello'])
+        assert self._steps[0].args == ['arg', 'Hello']
 
     def test_changing_cell_value_after_last_row_adds_empty_rows(self):
         self._exec(ChangeCellValue(len(self._data)+5, 0, 'Hello'))
-        assert_equal(self._steps[len(self._data)+5].keyword, 'Hello')
+        assert self._steps[len(self._data)+5].keyword == 'Hello'
 
     def test_changing_for_loop_header_value(self):
         self._exec(ChangeCellValue(self._data_row(FOR_LOOP_HEADER), 0, 'Keyword'))
-        assert_equal(self._steps[self._data_row(FOR_LOOP_HEADER)].as_list(),
+        assert (self._steps[self._data_row(FOR_LOOP_HEADER)].as_list() ==
                       ['Keyword'] + self._data_step_as_list(FOR_LOOP_HEADER)[2:])
         # FIXME
         # self._verify_step_unchanged(FOR_LOOP_STEP1)
-        assert_equal(len(self._steps), self._orig_number_of_steps-2)
+        assert len(self._steps) == self._orig_number_of_steps-2
 
     def test_changing_for_loop_header_argument(self):
         self._exec(ChangeCellValue(self._data_row(FOR_LOOP_HEADER), 1, 'Keyword'))
-        assert_equal(self._steps[self._data_row(FOR_LOOP_HEADER)].as_list(),
+        assert (self._steps[self._data_row(FOR_LOOP_HEADER)].as_list() ==
                       ['FOR', 'Keyword'] + self._data_step_as_list(FOR_LOOP_HEADER)[3:])
         # FIXME
         ### self._verify_step_unchanged(FOR_LOOP_STEP1)
-        assert_equal(len(self._steps), self._orig_number_of_steps-2)
+        assert len(self._steps) == self._orig_number_of_steps-2
 
     def test_changing_for_loop_header_in_clause(self):
         self._exec(ChangeCellValue(self._data_row(FOR_LOOP_HEADER), 2, 'Keyword'))
-        assert_equal(self._steps[self._data_row(FOR_LOOP_HEADER)].as_list(),
+        assert (self._steps[self._data_row(FOR_LOOP_HEADER)].as_list() ==
                       ['FOR', '${i}', 'Keyword'] + self._data_step_as_list(FOR_LOOP_HEADER)[4:])
         # FIXME
         # assert_equal(self._steps[self._data_row(FOR_LOOP_STEP1)].as_list(), self._data_step_as_list(FOR_LOOP_STEP1))
-        assert_equal(self._steps[self._data_row(FOR_LOOP_STEP1)].as_list(), self._data_step_as_list(FOR_LOOP_END[2:]))
-        assert_equal(len(self._steps), self._orig_number_of_steps-2)
+        assert self._steps[self._data_row(FOR_LOOP_STEP1)].as_list() == self._data_step_as_list(FOR_LOOP_END[2:])
+        assert len(self._steps) == self._orig_number_of_steps-2
 
     def test_deleting_row(self):
         self._exec(DeleteRow(0))
@@ -217,45 +222,45 @@ class TestCaseEditingTest(TestCaseCommandTest):
     def test_undoing_row_delete(self):
         self._exec(DeleteRow(0))
         self._exec(Undo())
-        assert_equal(len(self._steps), self._orig_number_of_steps)
+        assert len(self._steps) == self._orig_number_of_steps
         self._verify_step(0, 'Step 1', ['arg'])
 
     def test_delete_row_inside_of_for_loop(self):
         self._exec(DeleteRow(self._data_row(FOR_LOOP_STEP1)))
-        assert_equal(len(self._steps), self._orig_number_of_steps-1)
+        assert len(self._steps) == self._orig_number_of_steps-1
         self._verify_row_does_not_exist(FOR_LOOP_STEP1)
 
     def test_delete_for_loop_header_row(self):
         self._exec(DeleteRow(self._data_row(FOR_LOOP_HEADER)))
-        assert_equal(len(self._steps), self._orig_number_of_steps-1)
+        assert len(self._steps) == self._orig_number_of_steps-1
         self._verify_row_does_not_exist(FOR_LOOP_HEADER)
 
     def test_adding_row_last(self):
         self._exec(AddRow(-1))
-        assert_equal(len(self._steps), self._orig_number_of_steps+1)
-        assert_equal(self._steps[self._orig_number_of_steps].as_list(), [])
+        assert len(self._steps) == self._orig_number_of_steps+1
+        assert self._steps[self._orig_number_of_steps].as_list() == []
 
     def test_adding_row_first(self):
         self._exec(AddRow(0))
-        assert_equal(len(self._steps), self._orig_number_of_steps+1)
-        assert_equal(self._steps[0].as_list(), [''])
+        assert len(self._steps) == self._orig_number_of_steps+1
+        assert self._steps[0].as_list() == ['']
 
     def test_adding_row_middle(self):
         self._exec(AddRow(1))
-        assert_equal(len(self._steps), self._orig_number_of_steps+1)
-        assert_equal(self._steps[1].as_list(), [''])
+        assert len(self._steps) == self._orig_number_of_steps+1
+        assert self._steps[1].as_list() == ['']
 
     def test_adding_row_in_for_loop_body(self):
         row_in_for_loop = self._data_row(FOR_LOOP_STEP2)
         self._exec(AddRow(row_in_for_loop))
-        assert_equal(len(self._steps), self._orig_number_of_steps+1)
-        assert_equal(self._steps[row_in_for_loop].as_list(), [''])
+        assert len(self._steps) == self._orig_number_of_steps+1
+        assert self._steps[row_in_for_loop].as_list() == ['']
 
     def test_inserting_cell_when_for_loop_is_last(self):
         row_after_for_loop = self._data_row(STEP_AFTER_FOR_LOOP)
         self._exec(DeleteRow(row_after_for_loop))
         self._exec(DeleteRow(row_after_for_loop))
-        assert_equal(self._steps[-1].as_list(), ['END'])
+        assert self._steps[-1].as_list() == ['END']
         self._exec(InsertCell(0,0))
         self._verify_step(0, '', ['', 'Step 1', 'arg'])
 
@@ -277,39 +282,39 @@ class TestCaseEditingTest(TestCaseCommandTest):
         self._exec(AddRow(-1))
         self._exec(AddRow(1))
         self._exec(AddRow(2))
-        assert_equal(len(self._steps), self._orig_number_of_steps+3)
+        assert len(self._steps) == self._orig_number_of_steps+3
         self._exec(Purify())
-        assert_equal(len(self._steps), self._orig_number_of_steps-2)
+        assert len(self._steps) == self._orig_number_of_steps-2
 
     def test_purify_can_be_undone(self):
         self._exec(AddRow(1))
         self._exec(AddRow(2))
-        assert_equal(len(self._steps), self._orig_number_of_steps+2)
+        assert len(self._steps) == self._orig_number_of_steps+2
         ## print(f"DEBUG: before Purify {self.debug()}")
         print(f"DEBUG: before Purify")
         self._exec(Purify())
-        assert_equal(len(self._steps), self._orig_number_of_steps-2)
+        assert len(self._steps) == self._orig_number_of_steps-2
         self._exec(Undo())
         # FIXME
-        assert_equal(len(self._steps), self._orig_number_of_steps)
+        assert len(self._steps) == self._orig_number_of_steps
 
     def test_purify_removes_rows_with_no_data(self):
         # FIXME
         self._exec(ChangeCellValue(0,0, ''))
         self._exec(ChangeCellValue(0,1, ''))
         self._exec(Purify())
-        assert_equal(len(self._steps), self._orig_number_of_steps-3)
+        assert len(self._steps) == self._orig_number_of_steps-3
 
     def test_can_add_values_to_empty_row(self):
         self._exec(AddRow(-1))
         self._exec(ChangeCellValue(0, 3, 'HELLO'))
-        assert_equal(self._steps[0].args, ['arg', '', 'HELLO'])
+        assert self._steps[0].args == ['arg', '', 'HELLO']
 
     def test__comment_is_kept_unchanged(self):
         index = self._data_row(STEP_WITH_COMMENT)
         self._exec(ChangeCellValue(index, 0, ''))
         self._exec(Purify())
-        assert_equal(self._steps[index].as_list(), ['', '# this is a comment'])
+        assert self._steps[index].as_list() == ['', '# this is a comment']
 
     def test_comment_is_changed(self):
         index = self._data_row(STEP_WITH_COMMENT)
@@ -319,17 +324,17 @@ class TestCaseEditingTest(TestCaseCommandTest):
     def test_cell_value_after_comment_is_changed(self):
         index = self._data_row(STEP_WITH_COMMENT)
         self._exec(ChangeCellValue(index, 2, 'something'))
-        assert_equal(self._steps[index].as_list(), ['Foo', '# this is a comment', 'something'])
+        assert self._steps[index].as_list() == ['Foo', '# this is a comment', 'something']
 
     def test_change_keyword_value_in_indented_step(self):
         index = self._data_row(FOR_LOOP_STEP1)
         self._exec(ChangeCellValue(index, 1, 'Blog'))
-        assert_equal(self._steps[index].keyword, 'Blog')
-        assert_equal(len(self._steps), self._orig_number_of_steps)
+        assert self._steps[index].keyword == 'Blog'
+        assert len(self._steps) == self._orig_number_of_steps
 
     def test_delete_multiple_rows(self):
         self._exec(DeleteRows([2,0]))
-        assert_equal(len(self._steps), self._orig_number_of_steps-2)
+        assert len(self._steps) == self._orig_number_of_steps-2
         self._verify_row_does_not_exist(STEP1)
         self._verify_row_does_not_exist(STEP_WITH_COMMENT)
         self._verify_number_of_test_changes(1)
@@ -429,8 +434,8 @@ class TestCaseEditingTest(TestCaseCommandTest):
         for s in self._steps:
             print(f"{s.as_list()}")
         # FIXME
-        assert_equal(self._steps[start_row].as_list(), [])
-        assert_equal(self._steps[end_row].as_list(), [])
+        assert self._steps[start_row].as_list() == []
+        assert self._steps[end_row].as_list() == []
         self._exec(Undo())
         print(f"DEBUG: test_delete_cells_in_for_loop_and_undo AFTER Undo:")
         for s in self._steps:
@@ -461,7 +466,7 @@ class TestCaseEditingTest(TestCaseCommandTest):
         # FIXME
         print(f"DEBUG: test_commenting_step_in_for_loop:  Changed={self._steps[row].as_list()}\n"
               f"original={self._data_step_as_list(FOR_LOOP_STEP1)}")
-        assert_equal(self._steps[row].as_list(), ['', 'Comment'] + self._data_step_as_list(FOR_LOOP_STEP1)[2:])
+        assert self._steps[row].as_list() == ['', 'Comment'] + self._data_step_as_list(FOR_LOOP_STEP1)[2:]
 
     def test_commenting_for_loop_end(self):
         row = self._data_row(FOR_LOOP_END)
@@ -471,13 +476,13 @@ class TestCaseEditingTest(TestCaseCommandTest):
         # for s in self._steps:
         #    print(f"{s.as_list()}")
         print(f"DEBUG: test_commenting_for_loop_end: commented row={self._steps[row].as_list()}")
-        assert_equal(self._steps[row].as_list(),
+        assert (self._steps[row].as_list() ==
                       ['Comment'] + self._data_step_as_list(FOR_LOOP_END)[1:])
 
     def test_uncommenting_single_row(self):
         self._exec(CommentRows([0]))
         self._exec(UncommentRows([0]))
-        assert_equal(self._steps[0].as_list(), self._data_step_as_list(STEP1)[1:])
+        assert self._steps[0].as_list() == self._data_step_as_list(STEP1)[1:]
 
     def test_commenting_row_with_for(self):
         print(f"DEBUG: Before CommentRow with FOR")
@@ -485,9 +490,9 @@ class TestCaseEditingTest(TestCaseCommandTest):
         print(f"DEBUG: After CommentRow with FOR")
         for s in self._steps:
             print(f"{s.as_list()}")
-        assert_equal(self._steps[3].as_list(),
+        assert (self._steps[3].as_list() ==
                      ['Comment'] + self._data_step_as_list(FOR_LOOP_HEADER)[1:])
-        assert_equal(self._steps[4].as_list(),
+        assert (self._steps[4].as_list() ==
                      self._data_step_as_list(FOR_LOOP_STEP1))
 
     def test_uncommenting_rows(self):
@@ -576,19 +581,19 @@ class RowMovingTest(TestCaseCommandTest):
 
     def test_row_up(self):
         result = self._exec(MoveRowsUp([1]))
-        assert_true(result)
+        assert result
         self._assert_step_order(STEP2, STEP1)
 
     def test_first_row_up_does_nothing(self):
         result = self._exec(MoveRowsUp([0]))
-        assert_true(not result)
-        assert_equal(self._number_of_test_changes, 0)
+        assert not result
+        assert self._number_of_test_changes == 0
         self._exec(Undo())
         self._exec(Redo())
 
     def test_moving_block_containing_first_row_up_does_nothing(self):
         self._exec(MoveRowsUp([0,1,2]))
-        assert_equal(self._number_of_test_changes, 0)
+        assert self._number_of_test_changes == 0
 
     def test_move_for_loop_header_up(self):
         self._exec(MoveRowsUp([self._data_row(FOR_LOOP_HEADER)]))
@@ -637,6 +642,9 @@ class RowMovingTest(TestCaseCommandTest):
 
     def test_move_down_last_step_in_for_loop(self):
         self._exec(MoveRowsDown([self._data_row(FOR_LOOP_STEP2)]))
+        print(f"DEBUG: After MoveRowsDown last step in for loop")
+        for s in self._steps:
+            print(f"{s.as_list()}")
         self._assert_step_order(STEP1,
                                 STEP2,
                                 STEP_WITH_COMMENT,
@@ -1051,9 +1059,9 @@ class RowMovingTest(TestCaseCommandTest):
             row = self._steps[idx].as_list()
             # if row and row[0] != '':
             #    row = [''] + row
-            assert_equal([''] + row,
+            assert ([''] + row ==
                          self._data_step_as_list(step))
-        assert_true(self._ctrl.dirty)
+        assert self._ctrl.dirty
 
 
 if __name__ == "__main__":

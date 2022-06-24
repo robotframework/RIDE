@@ -1,5 +1,4 @@
 import unittest
-from nose.tools import assert_equal, assert_true, assert_false
 
 from robotide.robotapi import TestCaseFile
 from robotide.controller import Project
@@ -81,9 +80,8 @@ def _create_testcase(tcf):
 def assert_occurrence(test_ctrl, kw_name, expected_source, expected_usage):
     occ = _first_occurrence(test_ctrl, kw_name)
     # print("DEBUG: assert_occurrence %s kw_name %s" % (repr(occ.location), kw_name))
-    assert_equal(occ.location, expected_source,
-                  'Occurrence not in the right place')
-    assert_equal(occ.usage, expected_usage, 'Usage not in the right place')
+    assert occ.location == expected_source, 'Occurrence not in the right place'
+    assert occ.usage == expected_usage, 'Usage not in the right place'
 
 
 def assert_variable_occurrence(occurrences, source, usage, count):
@@ -91,7 +89,7 @@ def assert_variable_occurrence(occurrences, source, usage, count):
     for occ in occurrences:
         if occ.location == source and occ.usage == usage:
             times_found += 1
-    assert_equal(times_found, count)
+    assert times_found == count
 
 
 def check_for_variable_occurrences(test_ctrl, name, expected_occurrences):
@@ -100,7 +98,7 @@ def check_for_variable_occurrences(test_ctrl, name, expected_occurrences):
     for source, usage, count in expected_occurrences:
         assert_variable_occurrence(occurrences, source, usage, count)
         processed_occurrences += count
-    assert_equal(processed_occurrences, len(occurrences))
+    assert processed_occurrences == len(occurrences)
 
 
 def _first_occurrence(test_ctrl, kw_name):
@@ -154,9 +152,9 @@ class TestFindOccurrencesWithFiles(unittest.TestCase):
         occ = self.resu.execute(FindOccurrences('My Keyword'))
         # see https://stackoverflow.com/questions/21622193/
         # python-3-2-coroutine-attributeerror-generator-object-has-no-attribute-next
-        assert_true(self.resu.filename.endswith(occ.__next__().item.parent.source))
-        assert_equal(occ.__next__().source, self.ts2.source)
-        assert_equal(occ.__next__().source, self.ts2.source)
+        assert self.resu.filename.endswith(occ.__next__().item.parent.source)
+        assert occ.__next__().source == self.ts2.source
+        assert occ.__next__().source == self.ts2.source
 
     def test_finds_occurrences_that_are_unrecognized(self):
         self.assert_occurrences(self.ts1, 'None Keyword', 2)
@@ -182,7 +180,7 @@ class TestFindOccurrencesWithFiles(unittest.TestCase):
             self.resu.execute(RenameKeywordOccurrences(kw.name, new_name,
                                                        NullObserver(),
                                                        kw.info))
-            assert_equal(kw.name, new_name)
+            assert kw.name == new_name
 
     def test_rename_embedded_arguments_keyword_but_dont_rename_occurrences(
             self):
@@ -238,7 +236,7 @@ class TestFindOccurrencesWithFiles(unittest.TestCase):
         self.assertEqual(list(self.ts2.execute(FindUsages(keyword))), [])
 
     def assert_occurrences(self, ctrl, kw_name, count):
-        assert_equal(sum(1 for _ in ctrl.execute(FindOccurrences(kw_name))),
+        assert (sum(1 for _ in ctrl.execute(FindOccurrences(kw_name))) ==
                      count)
 
 
@@ -251,7 +249,7 @@ class FindOccurrencesTest(unittest.TestCase):
     def test_no_occurrences(self):
         find_occurrences = FindOccurrences('Keyword Name')
         occurrences = self.test_ctrl.execute(find_occurrences)
-        assert_equal([i for i in occurrences], [])
+        assert [i for i in occurrences] == []
 
     def test_occurrences_in_steps(self):
         assert_occurrence(self.test_ctrl, STEP1_KEYWORD, TEST1_NAME, 'Steps')
@@ -429,10 +427,10 @@ class RenameOccurrenceTest(unittest.TestCase):
     def _expected_messages(self, steps_have_changed=False,
                            testcase_settings_have_changed=False,
                            name_has_changed=False):
-        assert_equal(self._steps_have_changed, steps_have_changed)
-        assert_equal(self._testcase_settings_have_changed,
+        assert self._steps_have_changed == steps_have_changed
+        assert (self._testcase_settings_have_changed ==
                       testcase_settings_have_changed)
-        assert_equal(self._name_has_changed, name_has_changed)
+        assert self._name_has_changed == name_has_changed
 
     def _rename(self, original_name, new_name, source, usage):
         self.test_ctrl.execute(RenameKeywordOccurrences(original_name,
@@ -441,16 +439,16 @@ class RenameOccurrenceTest(unittest.TestCase):
         assert_occurrence(self.test_ctrl, new_name, source, usage)
 
     def test_rename_updates_namespace(self):
-        assert_true(self.namespace.is_user_keyword(self.test_ctrl.datafile,
-                                                   USERKEYWORD2_NAME))
-        assert_false(self.namespace.is_user_keyword(self.test_ctrl.datafile,
-                                                    UNUSED_KEYWORD_NAME))
+        assert self.namespace.is_user_keyword(self.test_ctrl.datafile,
+                                                   USERKEYWORD2_NAME)
+        assert not self.namespace.is_user_keyword(self.test_ctrl.datafile,
+                                                    UNUSED_KEYWORD_NAME)
         self._rename(USERKEYWORD2_NAME, UNUSED_KEYWORD_NAME, TEST1_NAME,
                      'Steps')
-        assert_true(self.namespace.is_user_keyword(self.test_ctrl.datafile,
-                                                   UNUSED_KEYWORD_NAME))
-        assert_false(self.namespace.is_user_keyword(self.test_ctrl.datafile,
-                                                    USERKEYWORD2_NAME))
+        assert self.namespace.is_user_keyword(self.test_ctrl.datafile,
+                                                   UNUSED_KEYWORD_NAME)
+        assert not self.namespace.is_user_keyword(self.test_ctrl.datafile,
+                                                    USERKEYWORD2_NAME)
 
     def test_notifies_only_after_transaction_complete(self):
         datas_ok = {'steps': False, 'name': False}
@@ -475,8 +473,8 @@ class RenameOccurrenceTest(unittest.TestCase):
                                   RideItemNameChanged)
             PUBLISHER.unsubscribe(steps_changed_check_that_name_has_also,
                                   RideItemStepsChanged)
-        assert_true(datas_ok['steps'])
-        assert_true(datas_ok['name'])
+        assert datas_ok['steps']
+        assert datas_ok['name']
 
     def test_rename_in_steps(self):
         self._rename(STEP1_KEYWORD, UNUSED_KEYWORD_NAME, TEST1_NAME, 'Steps')
@@ -490,18 +488,18 @@ class RenameOccurrenceTest(unittest.TestCase):
     def test_undo_rename_in_step(self):
         self._rename(STEP1_KEYWORD, UNUSED_KEYWORD_NAME, TEST1_NAME, 'Steps')
         self.test_ctrl.execute(Undo())
-        assert_equal(self.test_ctrl.steps[0].keyword, STEP1_KEYWORD)
+        assert self.test_ctrl.steps[0].keyword == STEP1_KEYWORD
 
     def test_undo_after_renaming_to_something_that_is_already_there(self):
         self._rename(STEP1_KEYWORD, STEP2_ARGUMENT, TEST1_NAME, 'Steps')
         self.test_ctrl.execute(Undo())
-        assert_equal(self.test_ctrl.steps[1].args[0], STEP2_ARGUMENT)
+        assert self.test_ctrl.steps[1].args[0] == STEP2_ARGUMENT
 
     def test_rename_steps_argument(self):
         self._rename(STEP2_ARGUMENT, UNUSED_KEYWORD_NAME, TEST1_NAME, 'Steps')
         self._expected_messages(steps_have_changed=True)
-        assert_equal(self.test_ctrl.steps[1].as_list(), ['Run Keyword',
-                                                          UNUSED_KEYWORD_NAME])
+        assert self.test_ctrl.steps[1].as_list() == ['Run Keyword',
+                                                          UNUSED_KEYWORD_NAME]
 
     # TODO This test fails in Python 3 because can't find User Keyword
     # only fails with invoke, not with test_all.sh

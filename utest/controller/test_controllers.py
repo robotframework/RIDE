@@ -18,7 +18,6 @@ import os
 import sys
 import unittest
 from mockito import mock
-from nose.tools import assert_equal, assert_true, assert_false
 
 from robotide.robotapi import (
     Fixture, Documentation, Timeout, Tags, Return, TestCaseFile)
@@ -42,8 +41,11 @@ PACKAGE_PARENT = '..'
 SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(),
                                               os.path.expanduser(__file__))))
 sys.path.insert(0, os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
-from controller_creator import _FakeProject
 
+try:
+   from controller_creator import _FakeProject
+except ModuleNotFoundError:
+    from .controller_creator import _FakeProject
 
 class _FakeParent(_FakeProject):
     def __init__(self):
@@ -67,57 +69,57 @@ class DocumentationControllerTest(unittest.TestCase):
         self.ctrl = DocumentationController(self.parent, self.doc)
 
     def test_creation(self):
-        assert_equal(self.ctrl.display_value, 'Initial doc')
-        assert_true(self.ctrl.datafile is None)
+        assert self.ctrl.display_value == 'Initial doc'
+        assert self.ctrl.datafile is None
         ctrl = DocumentationController(self.parent, Documentation('[Documentation]'))
-        assert_equal(ctrl.label, 'Documentation')
+        assert ctrl.label == 'Documentation'
 
     def test_setting_value(self):
         self.ctrl.set_value('Doc changed')
-        assert_equal(self.doc.value, 'Doc changed')
+        assert self.doc.value == 'Doc changed'
         self.ctrl.set_value('Doc changed | again')
-        assert_equal(self.doc.value, 'Doc changed | again')
+        assert self.doc.value == 'Doc changed | again'
 
     def test_get_editable_value(self):
         test_text = 'My doc \n with enters \\\\\n ' \
                     'and \\t tabs and escapes \\\\n \\\\\\\\r'
         self.doc.value = 'My doc \\n with enters \\\\\\r\\n and \\t tabs and escapes \\\\n \\\\\\\\r'
-        assert_equal(self.ctrl.editable_value, test_text.replace('\n', os.linesep))
+        assert self.ctrl.editable_value == test_text.replace('\n', os.linesep)
 
     def test_set_editable_value(self):
         test_text = '''My doc
  with enters
  and \t tabs'''
         self.ctrl.editable_value = test_text
-        assert_equal(self.doc.value, 'My doc\\n with enters\\n and \t tabs')
-        assert_equal(self.ctrl.editable_value, test_text.replace('\n', os.linesep))
+        assert self.doc.value == 'My doc\\n with enters\\n and \t tabs'
+        assert self.ctrl.editable_value == test_text.replace('\n', os.linesep)
 
     def test_set_editable_value_should_escape_leading_hash(self):
         self.ctrl.editable_value = '# Not # Comment'
-        assert_equal(self.doc.value, '\\# Not # Comment')
-        assert_equal(self.ctrl.editable_value, '\\# Not # Comment')
+        assert self.doc.value == '\\# Not # Comment'
+        assert self.ctrl.editable_value == '\\# Not # Comment'
 
     def test_get_visible_value(self):
         self.doc.value = 'My doc \\n with enters \\n and \t tabs'
-        assert_equal(self.ctrl.visible_value, '<p>My doc with enters and \t tabs</p>')
+        assert self.ctrl.visible_value == '<p>My doc with enters and \t tabs</p>'
 
     def test_setting_value_informs_parent_controller_about_dirty_model(self):
         self.ctrl.set_value('Blaa')
-        assert_true(self.ctrl.dirty)
+        assert self.ctrl.dirty
 
     def test_set_empty_value(self):
         self.ctrl.set_value('')
-        assert_equal(self.doc.value, '')
-        assert_true(self.ctrl.dirty)
+        assert self.doc.value == ''
+        assert self.ctrl.dirty
 
     def test_same_value(self):
         self.ctrl.set_value('Initial doc')
-        assert_false(self.ctrl.dirty)
+        assert not self.ctrl.dirty
 
     def test_clear(self):
         self.ctrl.clear()
-        assert_equal(self.doc.value, '')
-        assert_true(self.ctrl.dirty)
+        assert self.doc.value == ''
+        assert self.ctrl.dirty
 
 
 class FixtureControllerTest(unittest.TestCase):
@@ -130,50 +132,50 @@ class FixtureControllerTest(unittest.TestCase):
         self.ctrl = FixtureController(self.parent, self.fix)
 
     def test_creation(self):
-        assert_equal(self.ctrl.display_value, 'My Setup | argh | urgh')
-        assert_equal(self.ctrl.label, 'Suite Setup')
-        assert_true(self.ctrl.is_set)
+        assert self.ctrl.display_value == 'My Setup | argh | urgh'
+        assert self.ctrl.label == 'Suite Setup'
+        assert self.ctrl.is_set
 
     def test_value_with_empty_fixture(self):
-        assert_equal(FixtureController(self.parent, Fixture('Teardown')).display_value, '')
+        assert FixtureController(self.parent, Fixture('Teardown')).display_value == ''
 
     def test_setting_value_changes_fixture_state(self):
         self.ctrl.set_value('Blaa')
-        assert_equal(self.fix.name, 'Blaa')
-        assert_equal(self.fix.args, [])
+        assert self.fix.name == 'Blaa'
+        assert self.fix.args == []
         self.ctrl.set_value('Blaa | a')
-        assert_equal(self.fix.name, 'Blaa')
-        assert_equal(self.fix.args, ['a'])
+        assert self.fix.name == 'Blaa'
+        assert self.fix.args == ['a']
 
     def test_whitespace_is_ignored_in_value(self):
         self.ctrl.set_value('Name |   a    |    b      |     c')
-        assert_equal(self.fix.name, 'Name')
-        assert_equal(self.fix.args, ['a', 'b', 'c'])
-        assert_equal(self.ctrl.display_value, 'Name | a | b | c')
+        assert self.fix.name == 'Name'
+        assert self.fix.args == ['a', 'b', 'c']
+        assert self.ctrl.display_value == 'Name | a | b | c'
 
     def test_setting_value_informs_parent_controller_about_dirty_model(self):
         self.ctrl.set_value('Blaa')
-        assert_true(self.ctrl.dirty)
+        assert self.ctrl.dirty
 
     def test_set_empty_value(self):
         self.ctrl.set_value('')
-        assert_equal(self.fix.name, '')
-        assert_equal(self.fix.args, [])
-        assert_true(self.ctrl.dirty)
+        assert self.fix.name == ''
+        assert self.fix.args == []
+        assert self.ctrl.dirty
 
     def test_same_value(self):
         self.ctrl.set_value('My Setup | argh | urgh')
-        assert_false(self.ctrl.dirty)
+        assert not self.ctrl.dirty
 
     def test_setting_comment(self):
         self.ctrl.set_comment(['My comment'])
-        assert_equal(self.ctrl.comment.as_list(), ['# My comment'])
-        assert_true(self.ctrl.dirty)
+        assert self.ctrl.comment.as_list() == ['# My comment']
+        assert self.ctrl.dirty
 
     def test_contains_keyword_with_regexp_with_empty_fixture(self):
         empty_fixture_controller = FixtureController(self.parent, Fixture('Setup'))
         keyword_regexp = re.compile(r'foo.*bar')
-        assert_false(empty_fixture_controller.contains_keyword(keyword_regexp))
+        assert not empty_fixture_controller.contains_keyword(keyword_regexp)
 
 
 class TagsControllerTest(unittest.TestCase):
@@ -185,39 +187,39 @@ class TagsControllerTest(unittest.TestCase):
         self.ctrl = TagsController(self.parent, self.tags)
 
     def test_creation(self):
-        assert_equal(self.ctrl.display_value, 'f1 | f2')
-        assert_true(self.ctrl.is_set)
+        assert self.ctrl.display_value == 'f1 | f2'
+        assert self.ctrl.is_set
 
     def test_value_with_empty_fixture(self):
-        assert_equal(TagsController(self.parent, Tags('Tags')).display_value, '')
+        assert TagsController(self.parent, Tags('Tags')).display_value == ''
 
     def test_setting_value_changes_fixture_state(self):
         self.ctrl.set_value('Blaa')
-        assert_equal(self.tags.value, ['Blaa'])
+        assert self.tags.value == ['Blaa']
         self.ctrl.set_value('a1 | a2 | a3')
-        assert_equal(self.tags.value, ['a1', 'a2', 'a3'])
+        assert self.tags.value == ['a1', 'a2', 'a3']
 
     def test_setting_value_informs_parent_controller_about_dirty_model(self):
         self.ctrl.set_value('Blaa')
-        assert_true(self.ctrl.dirty)
+        assert self.ctrl.dirty
 
     def test_set_empty_value(self):
         self.ctrl.set_value('')
-        assert_equal(self.tags.value, [])
-        assert_true(self.ctrl.dirty)
+        assert self.tags.value == []
+        assert self.ctrl.dirty
 
     def test_same_value(self):
         self.ctrl.set_value('f1 | f2')
-        assert_false(self.ctrl.dirty)
+        assert not self.ctrl.dirty
 
     def test_escaping_pipes_in_value(self):
         self.ctrl.set_value('first \| second')
-        assert_equal(self.tags.value, ['first | second'])
-        assert_equal(self.ctrl.display_value, 'first \| second')
+        assert self.tags.value == ['first | second']
+        assert self.ctrl.display_value == 'first \| second'
 
     def test_adding_tag(self):
         self.ctrl.add(Tag('new tag'))
-        assert_equal(self.tags.value, ['f1', 'f2', 'new tag'])
+        assert self.tags.value == ['f1', 'f2', 'new tag']
 
 
 class TimeoutControllerTest(unittest.TestCase):
@@ -230,41 +232,41 @@ class TimeoutControllerTest(unittest.TestCase):
         self.ctrl = TimeoutController(self.parent, self.to)
 
     def test_creation(self):
-        assert_equal(self.ctrl.display_value, '1 s | message')
-        assert_true(self.ctrl.is_set)
+        assert self.ctrl.display_value == '1 s | message'
+        assert self.ctrl.is_set
 
     def test_value_with_empty_timeout(self):
-        assert_equal(TimeoutController(self.parent,
-                                        Timeout('Timeout')).display_value, '')
+        assert TimeoutController(self.parent,
+                                        Timeout('Timeout')).display_value == ''
 
     def test_setting_value_changes_fixture_state(self):
         self.ctrl.set_value('3 s')
-        assert_equal(self.to.value, '3 s')
-        assert_equal(self.to.message, '')
+        assert self.to.value == '3 s'
+        assert self.to.message == ''
         self.ctrl.set_value('3 s | new message')
-        assert_equal(self.to.value, '3 s')
-        assert_equal(self.to.message, 'new message')
+        assert self.to.value == '3 s'
+        assert self.to.message == 'new message'
 
     def test_setting_value_informs_parent_controller_about_dirty_model(self):
         self.ctrl.set_value('1 min')
-        assert_true(self.ctrl.dirty)
+        assert self.ctrl.dirty
 
     def test_set_empty_value(self):
         self.ctrl.set_value('')
-        assert_equal(self.to.value, '')
-        assert_equal(self.to.message, '')
-        assert_true(self.ctrl.dirty)
+        assert self.to.value == ''
+        assert self.to.message == ''
+        assert self.ctrl.dirty
 
     def test_same_value(self):
         self.ctrl.set_value('1 s | message')
-        assert_false(self.ctrl.dirty)
+        assert not self.ctrl.dirty
 
 
 class ReturnValueControllerTest(unittest.TestCase):
 
     def test_creation(self):
         ctrl = ReturnValueController(_FakeParent(), Return('[Return]'))
-        assert_equal(ctrl.label, 'Return Value')
+        assert ctrl.label == 'Return Value'
 
 
 class ImportControllerTest(unittest.TestCase):
@@ -309,21 +311,21 @@ class ImportControllerTest(unittest.TestCase):
         self._assert_import(2, 'BuiltIn', exp_alias='InBuilt')
 
     def test_display_value(self):
-        assert_equal(self.parent[0].display_value, 'foo | bar')
-        assert_equal(self.parent[1].display_value, '')
-        assert_equal(self.parent[2].display_value, 'WITH NAME | InBuilt')
+        assert self.parent[0].display_value == 'foo | bar'
+        assert self.parent[1].display_value == ''
+        assert self.parent[2].display_value == 'WITH NAME | InBuilt'
 
     def test_editing(self):
         ctrl = ImportController(self.parent, self.parent[1]._import)
         ctrl.set_value('foo')
         self._assert_import(1, 'foo')
-        assert_true(self.parent.dirty)
+        assert self.parent.dirty
 
     def test_editing_with_args(self):
         ctrl = ImportController(self.parent, self.parent[0]._import)
         ctrl.set_value('bar', 'quux')
         self._assert_import(0, 'bar', ['quux'])
-        assert_true(self.parent.dirty)
+        assert self.parent.dirty
         ctrl.set_value('name', 'a1 | a2')
         self._assert_import(0, 'name', ['a1', 'a2'])
 
@@ -359,16 +361,16 @@ class ImportControllerTest(unittest.TestCase):
 
     def _test_listener(self, name, type, listener, index=0):
         data = listener.data[index]
-        assert_equal(data.name, name)
-        assert_equal(data.type, type)
-        assert_equal(data.datafile, self.tcf_ctrl)
-        assert_equal(self.import_listener.data[index].name, name)
+        assert data.name == name
+        assert data.type == type
+        assert data.datafile == self.tcf_ctrl
+        assert self.import_listener.data[index].name == name
 
     def _assert_import(self, index, exp_name, exp_args=[], exp_alias=''):
         item = self.parent[index]
-        assert_equal(item.name, exp_name)
-        assert_equal(item.args, exp_args)
-        assert_equal(item.alias, exp_alias)
+        assert item.name == exp_name
+        assert item.args == exp_args
+        assert item.alias == exp_alias
 
 
 class ImportSettingsControllerTest(unittest.TestCase):
@@ -397,12 +399,12 @@ class ImportSettingsControllerTest(unittest.TestCase):
 
     def _assert_import(self, exp_name, exp_args=[], exp_alias=None):
         imp = self.tcf.setting_table.imports[-1]
-        assert_equal(imp.name, exp_name)
-        assert_equal(imp.args, exp_args)
-        assert_true(self.ctrl.dirty)
+        assert imp.name == exp_name
+        assert imp.args == exp_args
+        assert self.ctrl.dirty
 
     def test_creation(self):
-        assert_true(self.ctrl._items is not None)
+        assert self.ctrl._items is not None
 
 
 class VariablesControllerTest(unittest.TestCase):
@@ -415,37 +417,37 @@ class VariablesControllerTest(unittest.TestCase):
                                             self.tcf.variable_table)
 
     def test_creation(self):
-        assert_equal(self.ctrl[0].name, '${foo}')
-        assert_equal(self.ctrl[1].name, '@{bar}')
+        assert self.ctrl[0].name == '${foo}'
+        assert self.ctrl[1].name == '@{bar}'
 
     def test_move_up(self):
         self.ctrl.move_up(1)
-        assert_true(self.ctrl.dirty)
-        assert_equal(self.ctrl[0].name, '@{bar}')
-        assert_equal(self.ctrl[1].name, '${foo}')
+        assert self.ctrl.dirty
+        assert self.ctrl[0].name == '@{bar}'
+        assert self.ctrl[1].name == '${foo}'
 
     def test_move_down(self):
         self.ctrl.move_down(0)
-        assert_true(self.ctrl.dirty)
-        assert_equal(self.ctrl[0].name, '@{bar}')
-        assert_equal(self.ctrl[1].name, '${foo}')
+        assert self.ctrl.dirty
+        assert self.ctrl[0].name == '@{bar}'
+        assert self.ctrl[1].name == '${foo}'
 
     def test_moving_first_item_up_does_nothing(self):
         self.ctrl.move_up(0)
-        assert_false(self.ctrl.dirty)
-        assert_equal(self.ctrl[0].name, '${foo}')
+        assert not self.ctrl.dirty
+        assert self.ctrl[0].name == '${foo}'
 
     def test_moving_last_item_down_does_nothing(self):
         self.ctrl.move_down(1)
-        assert_false(self.ctrl.dirty)
-        assert_equal(self.ctrl[1].name, '@{bar}')
+        assert not self.ctrl.dirty
+        assert self.ctrl[1].name == '@{bar}'
 
     def _add_var(self, name, value):
         self.tcf.variable_table.add(name, value)
 
     def test_adding_scalar(self):
         self.ctrl.add_variable('${blaa}', 'value')
-        assert_true(self.ctrl.dirty)
+        assert self.ctrl.dirty
         self._assert_var_in_model(2, '${blaa}', ['value'])
 
     def test_editing(self):
@@ -453,15 +455,15 @@ class VariablesControllerTest(unittest.TestCase):
         self._assert_var_in_ctrl(0, '${blaa}', ['quux'])
         self.ctrl[1].set_value('@{listvar}', ['a', 'b', 'c'])
         self._assert_var_in_ctrl(1, '@{listvar}', ['a', 'b', 'c'])
-        assert_true(self.ctrl.dirty)
+        assert self.ctrl.dirty
 
     def _assert_var_in_ctrl(self, index, name, value):
-        assert_equal(self.ctrl[index].name, name)
-        assert_equal(self.ctrl[index].value, value)
+        assert self.ctrl[index].name == name
+        assert self.ctrl[index].value == value
 
     def _assert_var_in_model(self, index, name, value):
-        assert_equal(self.tcf.variable_table.variables[index].name, name)
-        assert_equal(self.tcf.variable_table.variables[index].value, value)
+        assert self.tcf.variable_table.variables[index].name == name
+        assert self.tcf.variable_table.variables[index].value == value
 
 
 class MetadataListControllerTest(unittest.TestCase):
@@ -478,19 +480,19 @@ class MetadataListControllerTest(unittest.TestCase):
     def test_editing(self):
         self.ctrl[0].set_value('New name', 'another value')
         self._assert_meta_in_model(0, 'New name', 'another value')
-        assert_true(self.ctrl[0].dirty)
+        assert self.ctrl[0].dirty
 
     def test_serialization(self):
-        assert_equal(self._get_metadata(0).as_list(),
+        assert (self._get_metadata(0).as_list() ==
                       ['Metadata', 'Meta name', 'Some value'])
 
     def _assert_meta_in_ctrl(self, index, name, value):
-        assert_equal(self.ctrl[index].name, name)
-        assert_equal(self.ctrl[index].value, value)
+        assert self.ctrl[index].name == name
+        assert self.ctrl[index].value == value
 
     def _assert_meta_in_model(self, index, name, value):
-        assert_equal(self._get_metadata(index).name, name)
-        assert_equal(self._get_metadata(index).value, value)
+        assert self._get_metadata(index).name == name
+        assert self._get_metadata(index).value == value
 
     def _get_metadata(self, index):
         return self.tcf.setting_table.metadata[index]
@@ -517,24 +519,24 @@ class WithListOperationsTest(unittest.TestCase):
 
     def test_move_up(self):
         self._list_operations.move_up(1)
-        assert_true(self._list_operations.dirty)
+        assert self._list_operations.dirty
         self._assert_item_in(0, 'bar')
         self._assert_item_in(1, 'foo')
 
     def test_move_down(self):
         self._list_operations.move_down(0)
-        assert_true(self._list_operations.dirty)
+        assert self._list_operations.dirty
         self._assert_item_in(0, 'bar')
         self._assert_item_in(1, 'foo')
 
     def test_moving_first_item_up_does_nothing(self):
         self._list_operations.move_up(0)
-        assert_false(self._list_operations.dirty)
+        assert not self._list_operations.dirty
         self._assert_item_in(0, 'foo')
 
     def test_moving_last_item_down_does_nothing(self):
         self._list_operations.move_down(2)
-        assert_false(self._list_operations.dirty)
+        assert not self._list_operations.dirty
         self._assert_item_in(2, 'quux')
 
     def test_delete(self):
@@ -542,7 +544,7 @@ class WithListOperationsTest(unittest.TestCase):
         self._assert_item_in(0, 'bar')
 
     def _assert_item_in(self, index, name):
-        assert_equal(self._list_operations._items[index], name)
+        assert self._list_operations._items[index] == name
 
 
 if __name__ == "__main__":

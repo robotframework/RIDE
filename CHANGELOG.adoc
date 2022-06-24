@@ -47,6 +47,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Changed
 
+- Unit tests to use ``pytest`` and removed ``nose`` dependency. Support for Python 3.10 at unit test level.
 - Prevent expanding Tests and change selection on Project tree (when right-clicking)
 - Improved Text Edit processing of # comments
 - Improved filesystem changes detection to be less reactive

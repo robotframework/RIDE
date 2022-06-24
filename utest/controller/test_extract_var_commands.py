@@ -16,7 +16,6 @@
 import unittest
 from utest.resources import datafilereader
 from robotide.controller.ctrlcommands import ExtractScalar, ExtractList
-from nose.tools import assert_equal
 
 
 class TestExtractVariableCommands(unittest.TestCase):
@@ -35,10 +34,10 @@ class TestExtractVariableCommands(unittest.TestCase):
         var_value = self.testcase.step(row).as_list()[col]
         var_comment = ['Something about the variable']
         self.testcase.execute(ExtractScalar(var_name, var_value, var_comment, (row, col)))
-        assert_equal(self.testcase.step(row).as_list()[col], var_name)
+        assert self.testcase.step(row).as_list()[col] == var_name
         var = [var for var in self.testcase.datafile_controller.variables if var.name == var_name][0]
-        assert_equal(var.value[0], var_value)
-        assert_equal(var.comment.as_list(), var_comment)
+        assert var.value[0] == var_value
+        assert var.comment.as_list() == var_comment
 
     def test_list_extract(self):
         row = 0
@@ -48,11 +47,11 @@ class TestExtractVariableCommands(unittest.TestCase):
         value_after_list = self.testcase.step(row).as_list()[cols[-1]+1]
         var_comment = ['Comment for my test list']
         self.testcase.execute(ExtractList(var_name, var_value, var_comment, [(row, col) for col in cols]))
-        assert_equal(self.testcase.step(row).as_list()[cols[0]], var_name)
+        assert self.testcase.step(row).as_list()[cols[0]] == var_name
         var = [var for var in self.testcase.datafile_controller.variables if var.name == var_name][0]
-        assert_equal(var.value, var_value)
-        assert_equal(var.comment.as_list(), var_comment)
-        assert_equal(self.testcase.step(row).as_list()[cols[0]+1], value_after_list)
+        assert var.value == var_value
+        assert var.comment.as_list() == var_comment
+        assert self.testcase.step(row).as_list()[cols[0]+1] == value_after_list
 
 
 if __name__ == "__main__":

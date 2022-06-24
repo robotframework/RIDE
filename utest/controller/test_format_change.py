@@ -22,9 +22,6 @@ from robotide.controller import Project
 from robotide.controller.ctrlcommands import RenameResourceFile
 from robotide.controller.filecontrollers import TestCaseFileController
 from robotide.namespace.namespace import Namespace
-from nose.tools import (
-    assert_is_not_none, assert_true, assert_false, assert_equal,
-    assert_is_none)
 
 from utest.resources import (
     MINIMAL_SUITE_PATH, SUITEPATH, MessageRecordingLoadObserver, FakeSettings)
@@ -45,7 +42,7 @@ class TestFormatChange(unittest.TestCase):
 
     def _test_format_change(self, to_format):
         controller = self._get_file_controller(MINIMAL_SUITE_PATH)
-        assert_is_not_none(controller)
+        assert controller is not None
         controller.save_with_new_format(to_format)
         self._assert_removed(MINIMAL_SUITE_PATH)
         path_with_tsv = os.path.splitext(MINIMAL_SUITE_PATH)[0] + '.'+to_format
@@ -69,16 +66,16 @@ class TestFormatChange(unittest.TestCase):
         return self.project._controller
 
     def _assert_serialized(self, path):
-        assert_true(path in self.project.serialized_files)
+        assert path in self.project.serialized_files
 
     def _assert_not_serialized(self, path):
-        assert_false(path in self.project.serialized_files)
+        assert not path in self.project.serialized_files
 
     def _assert_removed(self, path):
-        assert_true(path in self.project.removed_files)
+        assert path in self.project.removed_files
 
     def _assert_not_removed(self, path):
-        assert_false(path in self.project.removed_files)
+        assert not path in self.project.removed_files
 
 
 class ProjectChecker(Project):
@@ -126,7 +123,7 @@ class _UnitTestsWithWorkingResourceImports(unittest.TestCase):
             self._verify_import_reference_is_not_resolved()
 
     def _verify_import_reference_exists(self):
-        assert_equal(self.import_setting.get_imported_controller(),
+        assert (self.import_setting.get_imported_controller() ==
                           self.res_controller)
 
     def _verify_import_reference_is_not_resolved(self):
@@ -135,7 +132,7 @@ class _UnitTestsWithWorkingResourceImports(unittest.TestCase):
             msg = 'Resolved to source %s' % imported_controller.source
         else:
             msg = None
-        assert_is_none(imported_controller, msg)
+        assert imported_controller is None, msg
 
 
 class TestResourceFileRename(_UnitTestsWithWorkingResourceImports):
@@ -145,14 +142,14 @@ class TestResourceFileRename(_UnitTestsWithWorkingResourceImports):
         self._verify_import_reference_exists()
         self._rename_resource('resu', False)
         self._verify_import_reference_is_not_resolved()
-        assert_equal(self.import_setting.name, '${path}')
+        assert self.import_setting.name == '${path}'
 
     def test_import_is_modified_when_resource_file_name_changes_and_habaa(self):
         self._create_data('fooo.robot', 'fooo.robot')
         self._verify_import_reference_exists()
         self._rename_resource('gooo', True)
         self._verify_import_reference_exists()
-        assert_equal(self.import_setting.name, 'gooo.robot')
+        assert self.import_setting.name == 'gooo.robot'
 
     """
     # DEBUG test fails with invoke but passes locally
@@ -171,7 +168,7 @@ class TestResourceFileRename(_UnitTestsWithWorkingResourceImports):
         self._verify_import_reference_exists()
         self._rename_resource('resu', True)
         self._verify_import_reference_is_not_resolved()
-        assert_equal(self.import_setting.name, '${path}')
+        assert self.import_setting.name == '${path}'
 
     def _execute_rename_resource(self, new_basename, boolean_variable):
         self.res_controller.remove_from_filesystem = mock()
@@ -180,8 +177,8 @@ class TestResourceFileRename(_UnitTestsWithWorkingResourceImports):
 
     def _rename_resource(self, new_basename, boolean_variable):
         self._execute_rename_resource(new_basename, boolean_variable)
-        assert_true(self.res_controller.remove_from_filesystem.called)
-        assert_true(self.res_controller.save.called)
+        assert self.res_controller.remove_from_filesystem.called
+        assert self.res_controller.save.called
 
 
 class TestResourceFormatChange(_UnitTestsWithWorkingResourceImports):
@@ -207,8 +204,8 @@ class TestResourceFormatChange(_UnitTestsWithWorkingResourceImports):
     def _assert_format_change(self, import_name, resource_path,
                               imp_is_resolved=True):
         imp = self.import_setting
-        assert_equal(imp.name, import_name)
-        assert_equal(self.res_controller.filename, os.path.abspath(resource_path))
+        assert imp.name == import_name
+        assert self.res_controller.filename == os.path.abspath(resource_path)
         self._verify_import_reference(imp_is_resolved)
 
 

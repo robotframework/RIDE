@@ -16,7 +16,6 @@
 import os
 import unittest
 
-from nose.tools import assert_equal
 from robotide.context import IS_WINDOWS
 from robotide.editor.clipboard import _GridClipboard
 from utest.resources import UIUnitTestBase
@@ -38,7 +37,7 @@ if not IS_WINDOWS:
         def _test_clipboard(self, content, expected=''):
             clipb = _GridClipboard()
             clipb.set_contents(content)
-            assert_equal(clipb._get_contents(),
+            assert (clipb._get_contents() ==
                           expected.replace('\n', os.linesep))
 
 

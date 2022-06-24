@@ -14,7 +14,6 @@
 #  limitations under the License.
 
 import unittest
-from nose.tools import assert_true, assert_false
 
 from robotide.robotapi import TestCase
 from robotide.controller.macrocontrollers import TestCaseController
@@ -42,34 +41,34 @@ class _TestSearchTest(object):
 class TestTestSearchMatcher(_TestSearchTest, unittest.TestCase):
 
     def test_matching_name(self):
-        assert_true(self._match('name', name='name'))
+        assert self._match('name', name='name')
 
     def test_not_matching(self):
-        assert_false(self._match('tERm', name='no match',
-                                 tags=['no match'], doc='no match'))
+        assert not self._match('tERm', name='no match',
+                                 tags=['no match'], doc='no match')
 
     def test_matching_name_partially(self):
-        assert_true(self._match('match', doc='prefix[match]postfix'))
+        assert self._match('match', doc='prefix[match]postfix')
 
     def test_matching_name_is_case_insensitive_in_tags(self):
-        assert_true(self._match('mAtCh', tags=['MATcH']))
+        assert self._match('mAtCh', tags=['MATcH'])
 
     def test_matching_name_is_case_insensitive_in_name(self):
-        assert_true(self._match('mAtCh', name=' MATcH'))
+        assert self._match('mAtCh', name=' MATcH')
 
     def test_matching_name_is_case_insensitive_in_doc(self):
-        assert_true(self._match('mAtCh', doc='Doc MATcHoc'))
+        assert self._match('mAtCh', doc='Doc MATcHoc')
 
     def test_matching_to_documentation(self):
-        assert_true(self._match('docstring', doc='docstring matching!'))
+        assert self._match('docstring', doc='docstring matching!')
 
     def test_matching_to_tag(self):
-        assert_true(self._match('tag', tags=['tag']))
+        assert self._match('tag', tags=['tag'])
 
     def test_multiple_match_terms(self):
-        assert_true(self._match('name tag doc', name='name!',
+        assert self._match('name tag doc', name='name!',
                                 tags=['foo', 'tag', 'bar'],
-                                doc='well doc to you!'))
+                                doc='well doc to you!')
 
 if __name__ == "__main__":
     unittest.main()

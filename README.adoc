@@ -34,13 +34,15 @@ See the https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride
 
 **To use Python 3.9, you should have wxPython 4.1.1, and install from `master` (since April 2021).**
 
-**RIDE is not yet tested on Python 3.10.**
+**RIDE is not fully tested on Python 3.10.**
+
+**24-jun-2022 A preliminary experiment was done on Fedora 36, Python 3.10.5 and wxPython 4.0.7**
 
 Install current development version with:
 [source, shell]
 pip install -U https://github.com/robotframework/RIDE/archive/master.zip
 
-Install current Beta version (2.0b1) with:
+(python < 3.9) Install current Beta version (2.0b1) with:
 [source, shell]
 pip install psutil
 pip install -U --pre robotframework-ride
