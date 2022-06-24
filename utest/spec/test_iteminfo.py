@@ -16,7 +16,6 @@
 import sys
 import os
 import unittest
-from nose.tools import assert_true, assert_equal
 
 from robotide.robotapi import TestLibrary, UserKeyword, KeywordTable
 from robotide.namespace import variablefetcher
@@ -40,7 +39,7 @@ class _FakeResourceFile(object):
 def assert_in_details(kw_info, *expecteds):
     details = kw_info.details
     for e in expecteds:
-        assert_true(e in details, details)
+        assert e in details, details
 
 
 class TestKeywordInfo(unittest.TestCase):
@@ -82,7 +81,7 @@ class TestVariableInfo(unittest.TestCase):
         source = 'source'
         value = True
         info = VariableInfo(name, value, source)
-        assert_equal(info.name, name)
+        assert info.name == name
         assert_in_details(info, source, 'True')
 
     def test_variable_item_info_when_value_none(self):
@@ -90,7 +89,7 @@ class TestVariableInfo(unittest.TestCase):
         source = 'source'
         value = None
         info = VariableInfo(name, value, source)
-        assert_equal(info.name, name)
+        assert info.name == name
         assert_in_details(info, source, '')
 
     def test_list_variable_item_info(self):
@@ -98,7 +97,7 @@ class TestVariableInfo(unittest.TestCase):
         source = 'source'
         value = variablefetcher._format_value([1,2,3])
         info = VariableInfo(name, value, source)
-        assert_equal(info.name, name)
+        assert info.name == name
         assert_in_details(info, source, '[ 1 | 2 | 3 ]')
 
     def test_list_variable_item_info_when_value_none(self):
@@ -106,7 +105,7 @@ class TestVariableInfo(unittest.TestCase):
         source = 'source'
         value = None
         info = VariableInfo(name, value, source)
-        assert_equal(info.name, name)
+        assert info.name == name
         assert_in_details(info, source, '')
 
 if __name__ == "__main__":

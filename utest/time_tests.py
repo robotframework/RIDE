@@ -17,7 +17,7 @@
 import os
 import sys
 import time
-from nose import run
+import pytest
 
 
 def test_modules():
@@ -27,6 +27,7 @@ def test_modules():
             if _is_test_module(fname):
                 yield os.path.join(dirpath, fname)
 
+
 def _is_test_module(fname):
     return fname.startswith('test') and fname.endswith('.py')
 
@@ -35,11 +36,12 @@ def collect_execution_times(test_modules):
     sys.argv.append('--match=^test')
     sys.argv.append('-q')
     for tmodule in test_modules:
-        yield(tmodule, _test_module_execution_time(tmodule))
+        yield tmodule, _test_module_execution_time(tmodule)
+
 
 def _test_module_execution_time(tmodule):
     starttime = time.time()
-    run(defaultTest=tmodule)
+    pytest.main(args=[tmodule])
     return time.time() - starttime
 
 
@@ -51,6 +53,7 @@ def write_results(exectimes, write):
         write('%s%.02f s (%.02f s)\n' % (record[0].ljust(70), record[1], total))
     write('\nTotal test execution time: %.02f seconds\n' % total)
 
+
 def main():
     exectimes = collect_execution_times(test_modules())
     with open('testtimes.robot', 'w') as output:
@@ -58,6 +61,7 @@ def main():
             output.write(txt)
             sys.stdout.write(txt)
         write_results(exectimes, write)
+
 
 if __name__ == '__main__':
     main()

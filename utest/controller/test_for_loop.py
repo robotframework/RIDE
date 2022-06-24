@@ -37,9 +37,10 @@ class TestForLoop(unittest.TestCase):
 
     def test_for_loop_move_with_undo_preserves_correct_celltype(self):
         test = self.project.datafiles[1].tests[0]
-        # print("DEBUG: before 0")
-        # for s in test.steps:
-        #     print(f"{s.as_list()}")
+        print("DEBUG: before 0")
+        for s in test.steps:
+            print(f"{s.as_list()}")
+        self.assertEqual(test.get_cell_info(1, 1).cell_type, CellType.KEYWORD)
         test.execute(MoveRowsDown([0]))
         # print("DEBUG: after move 0")
         # for s in test.steps:
@@ -51,9 +52,9 @@ class TestForLoop(unittest.TestCase):
         self.assertEqual(test.get_cell_info(2,3).cell_type, CellType.MANDATORY)
         test.execute(Undo())
         test.execute(Undo())
-        # print("DEBUG: after undos, should be equal to 0")
-        # for s in test.steps:
-        #     print(f"{s.as_list()}")
+        print("DEBUG: after undos, should be equal to 0")
+        for s in test.steps:
+            print(f"{s.as_list()}")
         self.assertEqual(test.get_cell_info(1,1).cell_type, CellType.KEYWORD)
         # print("DEBUG: Test 0:")
         # for s in test.steps:
@@ -229,21 +230,21 @@ class TestForLoop(unittest.TestCase):
         inside_1 = ['', 'No Operation']
         inside_2 = ['', 'Fail']
         test = self.project.datafiles[1].tests[17]
-        print("DEBUG: Test 17:")
-        for s in test.steps:
-            print(f"{s.as_list()}")
         self._verify_steps(test.steps, loop_1, inside_1, end_1, loop_2, inside_2, end_1)
         test.execute(MoveRowsUp([3]))
-        print("DEBUG: AFTER MOVE Test 17:")
+        self._verify_steps(test.steps, loop_1, inside_1, [''] + loop_2, [''] + end_1, inside_2, end_1)
+        test.execute(MoveRowsUp([2]))
+        self._verify_steps(test.steps, loop_1, [''] + loop_2, [''] + inside_1, [''] + end_1, inside_2, end_1)
+        print("DEBUG: BEFORE Test 17:")
         for s in test.steps:
             print(f"{s.as_list()}")
-        self._verify_steps(test.steps, loop_1, inside_1, loop_2, end_1, inside_2, end_1)
-        test.execute(MoveRowsUp([2]))
-        self._verify_steps(test.steps, loop_1, loop_2, inside_1, end_1, inside_2, end_1)
         test.execute(MoveRowsUp([1]))
-        self._verify_steps(test.steps, loop_2, loop_1, inside_1, end_1, inside_2, end_1)
-        test.execute(MoveRowsDown([0]))
-        self._verify_steps(test.steps, loop_1, loop_2, inside_1, end_1, inside_2, end_1)
+        print("DEBUG: AFTER MOVE Test 17:")
+        for s in test.steps:
+            print(f"#_{s.as_list()}_#{type(s)}")
+        #self._verify_steps(test.steps, loop_2, [''] + loop_1, [''] + inside_1, [''] + end_1, inside_2, end_1)
+        # test.execute(MoveRowsDown([0]))
+        # self._verify_steps(test.steps, loop_1, [''] + loop_2, inside_1, [''] + end_1, inside_2, end_1)
 
     def test_move_for_loop_header_between_for_loops(self):
         test = self.project.datafiles[1].tests[18]
@@ -273,9 +274,14 @@ class TestForLoop(unittest.TestCase):
                            inside_NO_3, inside_E3, inside_NO_2, inside_L2, inside_E2, inside_L1, inside_NO,
                            inside_LG, inside_E1)
         # TODO: Confirm the indentation on Text  and Grid Editors
-        """
         test.execute(MoveRowsUp([2]))
-        self._verify_steps(test.steps, loop_1, loop_2, inside_1, inside_2)
+        print("DEBUG: Test 19: After moveup 2")
+        for s in test.steps:
+            print(f"{s.as_list()}")
+        self._verify_steps(test.steps, loop_1, loop_2, inside_NO_2, inside_NO_2, loop_3, inside_NO_3, inside_L3,
+                           inside_NO_3, inside_E3, inside_NO_2, inside_L2, inside_E2, inside_L1, inside_NO,
+                           inside_LG, inside_E1)
+        """  
         test.execute(MoveRowsUp([1]))
         self._verify_steps(test.steps, loop_2, loop_1, inside_1, inside_2)
         test.execute(MoveRowsDown([0]))
@@ -286,6 +292,7 @@ class TestForLoop(unittest.TestCase):
         for step, exp in zip(steps, expected):
             self.assertEqual(step.as_list(), exp)
         self.assertEqual(len(steps), len(expected), steps)
+
 
 if __name__ == '__main__':
     unittest.main()

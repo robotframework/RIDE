@@ -14,7 +14,6 @@
 #  limitations under the License.
 
 import unittest
-from nose.tools import assert_equal
 
 from robotide.robotapi import TestCase, TestCaseFile
 from robotide.controller.ctrlcommands import ChangeTag
@@ -123,11 +122,11 @@ class TestNavigationHistory(_BaseTreeControllerTest, unittest.TestCase):
         self._go_forward_and_assert_selection('Sub Suite 0 Fake UK 2')
 
     def _go_back_and_assert_selection(self, expected_selection):
-        assert_equal(self._go_back_and_return_selection(), expected_selection)
+        assert self._go_back_and_return_selection() == expected_selection
 
     def _go_forward_and_assert_selection(self, expected_selection):
-        assert_equal(
-            self._go_forward_and_return_selection(), expected_selection)
+        assert (
+            self._go_forward_and_return_selection() == expected_selection)
 
 
 class TestTestSelectionController(UIUnitTestBase):
@@ -168,7 +167,7 @@ class TestTestSelectionController(UIUnitTestBase):
         test = self._create_test()
         test.datafile_controller.default_tags.execute(
             ChangeTag(Tag(None), 'default'))
-        assert_equal([t.name for t in test.tags], ['default'])
+        assert [t.name for t in test.tags] == ['default']
         self._tsc.select(test)
         self._tsc.add_tag('custom')
         self.assertEqual([t.name for t in test.tags], ['default', 'custom'])

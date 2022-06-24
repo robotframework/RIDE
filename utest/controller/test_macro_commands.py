@@ -14,7 +14,6 @@
 #  limitations under the License.
 
 import unittest
-from nose.tools import assert_equal
 
 from robotide.robotapi import TestCaseFile
 from robotide.controller.filecontrollers import TestCaseFileController
@@ -62,28 +61,28 @@ class _TestMacroCommands(object):
     def test_add_keyword_command_with_name(self):
         new_kw_name = 'Floajask'
         self._exec(AddKeyword(new_kw_name))
-        assert_equal(self._new_keyword.name, new_kw_name)
-        assert_equal(self._new_keyword.arguments.value, '')
+        assert self._new_keyword.name == new_kw_name
+        assert self._new_keyword.arguments.value == ''
 
     def test_add_keyword_command_with_step(self):
         new_kw_name = 'Akjskajs'
         self._exec(AddKeywordFromCells([new_kw_name, 'foo', 'bar']))
-        assert_equal(self._new_keyword.name, new_kw_name)
-        assert_equal(self._new_keyword.arguments.value, '${arg1} | ${arg2}')
+        assert self._new_keyword.name == new_kw_name
+        assert self._new_keyword.arguments.value == '${arg1} | ${arg2}'
 
     def test_delete_keyword_command(self):
         new_kw_name = 'Jiihaa'
         self._exec(AddKeyword(new_kw_name))
-        assert_equal(self._new_keyword.name, new_kw_name)
+        assert self._new_keyword.name == new_kw_name
         self._exec(RemoveMacro(self._new_keyword))
-        assert_equal(self._deleted_keyword.name, new_kw_name)
+        assert self._deleted_keyword.name == new_kw_name
 
     def test_add_keyword_undo(self):
         new_kw_name = 'Jiihaa'
         self._exec(AddKeyword(new_kw_name))
-        assert_equal(self._new_keyword.name, new_kw_name)
+        assert self._new_keyword.name == new_kw_name
         self._exec(Undo())
-        assert_equal(self._deleted_keyword.name, new_kw_name)
+        assert self._deleted_keyword.name == new_kw_name
 
     def test_delete_keyword_undo(self):
         new_kw_name = 'Jiihaa'
@@ -91,24 +90,24 @@ class _TestMacroCommands(object):
         self._exec(RemoveMacro(self._new_keyword))
         self._new_keyword = None
         self._exec(Undo())
-        assert_equal(self._new_keyword.name, new_kw_name)
+        assert self._new_keyword.name == new_kw_name
 
     def test_add_test(self):
         new_test_name = 'Kalle'
         self._exec(AddTestCase(new_test_name))
-        assert_equal(self._new_test.name, new_test_name)
+        assert self._new_test.name == new_test_name
 
     def test_remove_test(self):
         test_name = 'Kukka'
         tc = self._exec(AddTestCase(test_name))
         self._exec(RemoveMacro(tc))
-        assert_equal(self._deleted_test.name, test_name)
+        assert self._deleted_test.name == test_name
 
     def test_add_keyword(self):
         new_kw_name = 'Floajask'
         self._exec(AddKeyword(new_kw_name))
-        assert_equal(self._new_keyword.name, new_kw_name)
-        assert_equal(self._new_keyword.arguments.value, '')
+        assert self._new_keyword.name == new_kw_name
+        assert self._new_keyword.arguments.value == ''
 
     def test_add_keyword_with_bdd_given(self):
         self._bdd_test('Given', 'george is a dog')
@@ -116,9 +115,9 @@ class _TestMacroCommands(object):
 
     def _bdd_test(self, prefix, new_kw_name):
         self._exec(AddKeyword(prefix + ' ' + new_kw_name))
-        assert_equal(self._new_keyword.name, self._bdd_name(prefix,
-                                                             new_kw_name))
-        assert_equal(self._new_keyword.arguments.value, '')
+        assert self._new_keyword.name == self._bdd_name(prefix,
+                                                             new_kw_name)
+        assert self._new_keyword.arguments.value == ''
 
     def test_add_keyword_with_bdd_when(self):
         self._bdd_test('When', 'george runs')
@@ -174,7 +173,7 @@ class TestCaseRenameCommandTest(unittest.TestCase):
     def test_(self):
         new_name = 'New name'
         self.ctrl.execute(RenameTest(new_name))
-        assert_equal(self._test.name, new_name)
+        assert self._test.name == new_name
 
 
 if __name__ == "__main__":

@@ -18,7 +18,6 @@ import os
 import shutil
 
 from robotide.robotapi import TestCase, TestCaseFile, TestDataDirectory
-from nose.tools import (assert_equal, assert_true, assert_false)
 
 from robotide.controller.filecontrollers import TestCaseFileController, \
     TestDataDirectoryController, _FileSystemElement
@@ -59,24 +58,24 @@ class TestMarkUnMarkDirty(unittest.TestCase):
 
     def test_marking_data_dirty_publishes_data_has_changes_message(self):
         self.ctrl.mark_dirty()
-        assert_equal(self._has_unsaved_changes, self.ctrl)
+        assert self._has_unsaved_changes == self.ctrl
 
     def test_clearing_dirty_mark_publishes_data_saved_message(self):
         self.ctrl.mark_dirty()
         self.ctrl.unmark_dirty()
-        assert_equal(self._saved, self.ctrl)
+        assert self._saved == self.ctrl
 
     def test_remarking_data_dirty_does_not_publish_data_has_changes_message(self):
         self.ctrl.mark_dirty()
         self._has_unsaved_changes = None
         self.ctrl.mark_dirty()
-        assert_equal(self._has_unsaved_changes, None)
+        assert self._has_unsaved_changes == None
 
     def test_reclearing_dirty_mark_does_not_publish_data_saved_message(self):
         self.ctrl.unmark_dirty()
         self._saved = None
         self.ctrl.unmark_dirty()
-        assert_equal(self._saved, None)
+        assert self._saved == None
 
 
 class TestCaseFileControllerTest(unittest.TestCase):
@@ -88,49 +87,49 @@ class TestCaseFileControllerTest(unittest.TestCase):
 
     def test_creation(self):
         for st in self.ctrl.settings:
-            assert_true(st is not None)
-        assert_equal(len(self.ctrl.settings), 9)
-        assert_false(self.ctrl.dirty)
+            assert st is not None
+        assert len(self.ctrl.settings) == 9
+        assert not self.ctrl.dirty
 
     def test_has_format(self):
-        assert_true(self.ctrl.has_format())
+        assert self.ctrl.has_format()
 
     def test_get_format(self):
-        assert_equal(self.ctrl.get_format(), 'html')
+        assert self.ctrl.get_format() == 'html'
 
     def test_source(self):
-        assert_equal(self.ctrl.filename, self.SOURCE_HTML)
+        assert self.ctrl.filename == self.SOURCE_HTML
 
     def test_longname(self):
-        assert_equal(self.ctrl.longname, 'Test.Cases')
+        assert self.ctrl.longname == 'Test.Cases'
         self.ctrl.parent = lambda:0
         self.ctrl.parent.longname = 'Parent'
-        assert_equal(self.ctrl.longname, 'Parent.Test.Cases')
+        assert self.ctrl.longname == 'Parent.Test.Cases'
 
     def test_set_format(self):
         self.ctrl.set_format('robot')
-        assert_equal(self.ctrl.filename, self.SOURCE_TXT)
+        assert self.ctrl.filename == self.SOURCE_TXT
 
     def test_add_test_or_kw(self):
-        assert_equal(len(self.ctrl.tests), 0)
+        assert len(self.ctrl.tests) == 0
         new_test = TestCaseController(self.ctrl, TestCase(TestCaseFile(), 'New test'))
         self.ctrl.add_test_or_keyword(new_test)
-        assert_equal(len(self.ctrl.tests), 1)
-        assert_true(self.ctrl.tests[0]._test.parent.parent is self.ctrl.datafile)
-        assert_true(self.ctrl.dirty)
+        assert len(self.ctrl.tests) == 1
+        assert self.ctrl.tests[0]._test.parent.parent is self.ctrl.datafile
+        assert self.ctrl.dirty
 
     def test_new_test(self):
         test_ctrl = self.ctrl.create_test('Foo')
-        assert_equal(test_ctrl.name, 'Foo')
+        assert test_ctrl.name == 'Foo'
 
     def test_create_keyword(self):
         kw_ctrl = self.ctrl.create_keyword('An UK')
-        assert_equal(kw_ctrl.name, 'An UK')
+        assert kw_ctrl.name == 'An UK'
 
     def test_create_keyword_with_args(self):
         kw_ctrl = self.ctrl.create_keyword('UK', '${a1} | ${a2}')
-        assert_equal(kw_ctrl.name, 'UK')
-        assert_equal(kw_ctrl.data.args.value, ['${a1}', '${a2}'])
+        assert kw_ctrl.name == 'UK'
+        assert kw_ctrl.data.args.value == ['${a1}', '${a2}']
 
     def test_sort_and_restore_tests(self):
         # Add tests
@@ -146,17 +145,17 @@ class TestCaseFileControllerTest(unittest.TestCase):
         self.ctrl.execute(SortTests())
         sorted_tests = self.get_test_names()
         original_tests.sort()
-        assert_equal(original_tests, sorted_tests)
+        assert original_tests == sorted_tests
 
         # Undo sorting
         self.ctrl.execute(Undo())
         restored_list = self.get_test_names()
-        assert_equal(restored_list, list_for_undo_comparison)
+        assert restored_list == list_for_undo_comparison
 
         # Redo sorting
         self.ctrl.execute(Redo())
         keywords_after_redo = self.get_test_names()
-        assert_equal(keywords_after_redo, sorted_tests)
+        assert keywords_after_redo == sorted_tests
 
     def get_test_names(self):
         return [test.name for test in self.ctrl.tests]
@@ -175,7 +174,7 @@ class TestResourceFileControllerTest(unittest.TestCase):
         return datafilereader.get_ctrl_by_name(name, self.project.datafiles)
 
     def test_resource_file_display_name_is_file_name_with_extension(self):
-        assert_equal(self.ctrl.display_name, datafilereader.SIMPLE_TEST_SUITE_RESOURCE_FILE)
+        assert self.ctrl.display_name == datafilereader.SIMPLE_TEST_SUITE_RESOURCE_FILE
 
     def test_sort_and_restore_keywords(self):
         resource_ctrl = self._get_ctrl_by_name(datafilereader.SIMPLE_TEST_SUITE_RESOURCE_NAME)
@@ -188,17 +187,17 @@ class TestResourceFileControllerTest(unittest.TestCase):
         self.ctrl.execute(SortKeywords())
         sorted_keywords = self.ctrl.get_keyword_names()
         original_keywords.sort()
-        assert_equal(original_keywords, sorted_keywords)
+        assert original_keywords == sorted_keywords
 
         # Undo sorting
         self.ctrl.execute(Undo())
         restored_list = self.ctrl.get_keyword_names()
-        assert_equal(restored_list, list_for_undo_comparison)
+        assert restored_list == list_for_undo_comparison
 
         # Redo sorting
         self.ctrl.execute(Redo())
         keywords_after_redo = self.ctrl.get_keyword_names()
-        assert_equal(keywords_after_redo, sorted_keywords)
+        assert keywords_after_redo == sorted_keywords
 
     def test_sort_and_restore_variables(self):
         # Capture test list before sorting
@@ -209,17 +208,17 @@ class TestResourceFileControllerTest(unittest.TestCase):
         self.ctrl.execute(SortVariables())
         sorted_variables = self.get_variable_names()
         original_variables.sort()
-        assert_equal(original_variables, sorted_variables)
+        assert original_variables == sorted_variables
 
         # Undo sorting
         self.ctrl.execute(Undo())
         restored_list = self.get_variable_names()
-        assert_equal(restored_list, list_for_undo_comparison)
+        assert restored_list == list_for_undo_comparison
 
         # Redo sorting
         self.ctrl.execute(Redo())
         variables_after_redo = self.get_variable_names()
-        assert_equal(variables_after_redo, sorted_variables)
+        assert variables_after_redo == sorted_variables
 
     def get_variable_names(self):
         return [variable.name for variable in self.ctrl.variables]
@@ -236,59 +235,59 @@ class TestDataDirectoryControllerTest(unittest.TestCase):
     def test_creation(self):
         ctrl = TestDataDirectoryController(self.data)
         for st in ctrl.settings:
-            assert_true(st is not None)
-        assert_equal(len(ctrl.settings), 6)
+            assert st is not None
+        assert len(ctrl.settings) == 6
 
     def test_has_format(self):
         ctrl = TestDataDirectoryController(self.data)
-        assert_false(ctrl.has_format())
+        assert not ctrl.has_format()
         ctrl.mark_dirty()
-        assert_false(ctrl.has_format())
+        assert not ctrl.has_format()
         ctrl.data.initfile = os.path.join('source', '__init__.html')
-        assert_true(ctrl.has_format())
+        assert ctrl.has_format()
 
     def test_default_dir_is_source(self):
         self.data.initfile = os.path.join('source', '__init__.html')
         ctrl = TestDataDirectoryController(self.data)
-        assert_true(ctrl.default_dir, os.path.dirname(ctrl.filename))
+        assert ctrl.default_dir, os.path.dirname(ctrl.filename)
 
     def test_set_format(self):
         ctrl = TestDataDirectoryController(self.data)
-        assert_false(ctrl.has_format())
+        assert not ctrl.has_format()
         ctrl.set_format('robot')
-        assert_true(ctrl.has_format())
-        assert_equal(ctrl.source, os.path.abspath(os.path.join('source', '__init__.robot')))
+        assert ctrl.has_format()
+        assert ctrl.source == os.path.abspath(os.path.join('source', '__init__.robot'))
 
     def test_longname(self):
         ctrl = TestDataDirectoryController(self.data)
-        assert_equal(ctrl.longname, 'Source')
+        assert ctrl.longname == 'Source'
         ctrl.parent = lambda:0
         ctrl.parent.longname = 'Parent'
-        assert_equal(ctrl.longname, 'Parent.Source')
+        assert ctrl.longname == 'Parent.Source'
 
     def test_adding_test_case_file(self):
         new_data = TestDataDirectoryController(self.data).\
                     new_test_case_file(self.TEST_CASE_FILE_PATH)
-        assert_true(new_data.dirty)
-        assert_true(isinstance(new_data, TestCaseFileController))
-        assert_equal(new_data.filename, self.TEST_CASE_FILE_PATH)
+        assert new_data.dirty
+        assert isinstance(new_data, TestCaseFileController)
+        assert new_data.filename == self.TEST_CASE_FILE_PATH
 
     def test_adding_test_suite_directory(self):
         new_data = TestDataDirectoryController(self.data).\
                         new_test_data_directory(self.INIT_FILE_PATH)
-        assert_true(isinstance(new_data, TestDataDirectoryController))
-        assert_equal(new_data.name, self.DATA_DIRECTORY_NAME)
-        assert_equal(new_data.filename, self.INIT_FILE_PATH)
+        assert isinstance(new_data, TestDataDirectoryController)
+        assert new_data.name == self.DATA_DIRECTORY_NAME
+        assert new_data.filename == self.INIT_FILE_PATH
 
     def test_adding_test_case_file_using_command(self):
         ctrl = TestDataDirectoryController(self.data)
         suite = ctrl.execute(AddTestCaseFile(self.TEST_CASE_FILE_PATH))
-        assert_equal(suite.data.parent, ctrl.data)
+        assert suite.data.parent == ctrl.data
 
     def test_adding_test_data_directory_using_command(self):
         ctrl = TestDataDirectoryController(self.data)
         suite = ctrl.execute(AddTestDataDirectory(self.INIT_FILE_PATH))
-        assert_equal(suite.data.parent, ctrl.data)
+        assert suite.data.parent == ctrl.data
 
     def test_exclude(self):
         parent = lambda:0
@@ -337,8 +336,8 @@ class DatafileIteratorTest(unittest.TestCase):
         check_count_and_sub_dir = Checker()
         [check_count_and_sub_dir(df) for df
                 in self.directory_controller.iter_datafiles()]
-        assert_true(check_count_and_sub_dir.iteration_count == 5)
-        assert_true(check_count_and_sub_dir.in_sub_dir)
+        assert check_count_and_sub_dir.iteration_count == 5
+        assert check_count_and_sub_dir.in_sub_dir
 
 
 class TestRelativePathTo(unittest.TestCase):

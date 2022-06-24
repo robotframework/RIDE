@@ -15,7 +15,6 @@
 
 import os
 import unittest
-from nose.tools import assert_true, assert_false
 
 import robotide.context
 from robotide import utils
@@ -59,7 +58,7 @@ class TestPluginLoader(unittest.TestCase):
     def test_plugin_loading(self):
         for name in self.expected_plugins:
             self._assert_plugin_loaded(name)
-        assert_false(LOGGER.log)
+        assert not LOGGER.log
 
     def _assert_plugin_loaded(self, name):
         for p in self.loader.plugins:
@@ -69,18 +68,18 @@ class TestPluginLoader(unittest.TestCase):
 
     def test_plugins_are_not_enabled_when_loaded(self):
         for p in self.loader.plugins:
-            assert_false(p.enabled)
+            assert not p.enabled
 
     def test_plugins_can_be_enabled(self):
         self.loader.enable_plugins()
         for p in self.loader.plugins:
-            assert_true(p.enabled, 'Plugin %s was not enabled' % p.name)
+            assert p.enabled, 'Plugin %s was not enabled' % p.name
 
     def test_plugins_can_disable_other_plugins(self):
         self.loader.enable_plugins()
         self._get_plugin_by_name(
             'Example Plugin 2')._plugin.turn_off('Example Plugin 1')
-        assert_false(self._get_plugin_by_name('Example Plugin 1').enabled)
+        assert not self._get_plugin_by_name('Example Plugin 1').enabled
 
     def _get_plugin_by_name(self, name):
         for p in self.loader.plugins:

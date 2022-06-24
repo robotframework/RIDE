@@ -12,8 +12,12 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+try:
+    from collections import Mapping, UserString
+except ImportError:
+    from collections.abc import Mapping  # Python 3.10
+    from collections import UserString
 
-from collections import Mapping, UserString
 from io import IOBase
 
 from .platform import RERAISED_EXCEPTIONS

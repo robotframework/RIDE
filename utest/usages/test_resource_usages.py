@@ -15,7 +15,6 @@
 
 import unittest
 from utest.resources import datafilereader
-from nose.tools import assert_equal
 from robotide.usages.commands import FindResourceUsages
 from robotide.publish import PUBLISHER
 
@@ -37,8 +36,8 @@ class ResourceUsageTests(unittest.TestCase):
         cls.ctrl.close()
 
     def test_resource_import_knows_imported_resource_controller(self):
-        assert_equal(self.resu, self.ts1.imports[0].get_imported_controller())
-        assert_equal(self.resu, self.ts2.imports[0].get_imported_controller())
+        assert self.resu == self.ts1.imports[0].get_imported_controller()
+        assert self.resu == self.ts2.imports[0].get_imported_controller()
 
     def test_resource_usages_finding(self):
         usages = list(self.resu.execute(FindResourceUsages()))
@@ -47,7 +46,7 @@ class ResourceUsageTests(unittest.TestCase):
         self._verify_that_contains(self.ts2, usages)
 
     def _verify_length(self, expected, usages):
-        assert_equal(len(usages), expected)
+        assert len(usages) == expected
 
     def _verify_that_contains(self, item, usages):
         for u in usages:
@@ -65,7 +64,7 @@ class ResourceUsageTests(unittest.TestCase):
 
     def test_none_existing_import(self):
         imp = self.ts1.imports.add_resource('this_does_not_exists.robot')
-        assert_equal(imp.get_imported_controller(), None)
+        assert imp.get_imported_controller() == None
 
 
 if __name__ == '__main__':

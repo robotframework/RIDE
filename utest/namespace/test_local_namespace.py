@@ -15,7 +15,6 @@
 
 import unittest
 from utest.resources import datafilereader
-from nose.tools import assert_false, assert_true
 
 
 class TestLocalNamespace(unittest.TestCase):
@@ -30,35 +29,35 @@ class TestLocalNamespace(unittest.TestCase):
         self._project.close()
 
     def test_macro_controller_has_local_namespace(self):
-        assert_true(self._test.get_local_namespace() is not None)
-        assert_true(self._keyword.get_local_namespace() is not None)
+        assert self._test.get_local_namespace() is not None
+        assert self._keyword.get_local_namespace() is not None
 
     def test_keyword_argument_is_visible_in_keywords_local_namespace(self):
-        assert_true(self._keyword.get_local_namespace().has_name('${argument}'))
+        assert self._keyword.get_local_namespace().has_name('${argument}')
 
     def test_keyword_argument_is_not_visible_in_test_cases_local_namespace(self):
-        assert_false(self._test.get_local_namespace().has_name('${argument}'))
+        assert not self._test.get_local_namespace().has_name('${argument}')
 
     def test_keyword_steps_local_namespace_does_not_contain_local_variables_before_definition(self):
         for i in range(8):
             local_namespace = self._keyword.get_local_namespace_for_row(i)
             if i < 3:
-                assert_false(local_namespace.has_name('${foo}'))
+                assert not local_namespace.has_name('${foo}')
             if i < 5:
-                assert_false(local_namespace.has_name('${bar}'))
+                assert not local_namespace.has_name('${bar}')
             if i < 7:
-                assert_false(local_namespace.has_name('${i}'))
+                assert not local_namespace.has_name('${i}')
 
     def test_keyword_steps_local_namespace_does_contain_local_variables_after_definition(self):
         for i in range(8):
             local_namespace = self._keyword.get_local_namespace_for_row(i)
-            assert_true(local_namespace.has_name('${argument}'))
+            assert local_namespace.has_name('${argument}')
             if i >= 3:
-                assert_true(local_namespace.has_name('${foo}'))
+                assert local_namespace.has_name('${foo}')
             if i >= 5:
-                assert_true(local_namespace.has_name('${bar}'))
+                assert local_namespace.has_name('${bar}')
             if i >= 7:
-                assert_true(local_namespace.has_name('${i}'))
+                assert local_namespace.has_name('${i}')
 
     def test_keyword_steps_suggestions_with_local_variables(self):
         self._verify_suggestions_on_row(0, contains=['${argument}'], does_not_contain=['${foo}', '${bar}', '${i}'])

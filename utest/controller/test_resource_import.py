@@ -19,7 +19,6 @@ from utest.resources import datafilereader
 
 from robotide.controller.ctrlcommands import AddKeyword, ChangeCellValue,\
     CreateNewResource, SaveFile
-from nose.tools import assert_equal
 from robotide.controller.cellinfo import ContentType, CellType
 
 
@@ -52,9 +51,9 @@ class TestResourceImport(unittest.TestCase):
     def test_number_of_resources_is_correct(self):
         original_number_of_resources = len(self.ctrl.resources)
         self._create_resource()
-        assert_equal(original_number_of_resources+1, len(self.ctrl.resources))
+        assert original_number_of_resources+1 == len(self.ctrl.resources)
         self._add_resource_import_to_suite()
-        assert_equal(original_number_of_resources+1, len(self.ctrl.resources))
+        assert original_number_of_resources+1 == len(self.ctrl.resources)
 
     def test_creating_and_importing_resource_file(self):
         self._create_resource()
@@ -110,8 +109,8 @@ class TestResourceImport(unittest.TestCase):
         self._check_cells(ContentType.USER_KEYWORD, CellType.MANDATORY)
 
     def _check_cells(self, keyword_content_type, value_cell_type):
-        assert_equal(self.test.get_cell_info(0,0).content_type, keyword_content_type)
-        assert_equal(self.test.get_cell_info(0,1).cell_type, value_cell_type)
+        assert self.test.get_cell_info(0,0).content_type == keyword_content_type
+        assert self.test.get_cell_info(0,1).cell_type == value_cell_type
 
 
 if __name__ == '__main__':

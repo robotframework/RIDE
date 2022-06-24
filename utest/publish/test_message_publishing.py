@@ -13,9 +13,9 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import pytest
 import unittest
 from unittest.mock import patch
-from nose.tools import assert_equal, assert_raises, assert_true
 from robotide.publish.messages import (RideMessage, RideLogMessage,
                                        RideLogException)
 from robotide.publish.publisher import PUBLISHER
@@ -54,54 +54,56 @@ class RideNoneTopicTestMessage(RideTestMessage):
 class TestMessage(unittest.TestCase):
 
     def test_topic(self):
-        assert_equal(RideMessage.topic(), 'ride')
-        assert_equal(RideTestMessage.topic(), 'my.topic')
-        assert_equal(RideTestMessageWithLongName.topic(),
+        assert RideMessage.topic() == 'ride'
+        assert RideTestMessage.topic() == 'my.topic'
+        assert (RideTestMessageWithLongName.topic() ==
                      'ride.test.message.with.long.name')
 
     def test_sub_topic(self):
-        assert_equal(RideSubTestMessage.topic(), 'my.topic')
-        assert_equal(RideNoneTopicTestMessage.topic(), 'ride.none.topic.test')
-        assert_equal(RideTestMessageWithAttrs.topic(),
+        assert RideSubTestMessage.topic() == 'my.topic'
+        assert RideNoneTopicTestMessage.topic() == 'ride.none.topic.test'
+        assert (RideTestMessageWithAttrs.topic() ==
                      'ride.test.message.with.attrs')
-        assert_equal(RideSubTestMessageWithAttrs.topic(),
+        assert (RideSubTestMessageWithAttrs.topic() ==
                      'my.topic.with.attrs')
 
     def test_all_attributes_given(self):
         msg = RideTestMessageWithAttrs(foo='bar', bar='foo')
-        assert_equal(msg.foo, 'bar')
-        assert_equal(msg.bar, 'foo')
+        assert msg.foo == 'bar'
+        assert msg.bar == 'foo'
 
     def test_all_attributes_override(self):
         msg = RideSubTestMessageWithAttrs(foo='bar', bar='foo', test=None)
-        assert_equal(msg.foo, 'bar')
-        assert_equal(msg.bar, 'foo')
-        assert_equal(msg.test, None)
+        assert msg.foo == 'bar'
+        assert msg.bar == 'foo'
+        assert msg.test == None
 
     def test_all_attributes_inherit(self):
         msg = RideSubTestMessageWithAttrsChild(foo='bar', bar='foo', test=None)
-        assert_equal(msg.foo, 'bar')
-        assert_equal(msg.bar, 'foo')
-        assert_equal(msg.test, None)
+        assert msg.foo == 'bar'
+        assert msg.bar == 'foo'
+        assert msg.test == None
 
     def test_missing_mandatory_attribute(self):
-        assert_raises(TypeError, RideTestMessageWithAttrs, foo='bar')
+        with pytest.raises(TypeError):
+            RideTestMessageWithAttrs(foo='bar')
 
     def test_missing_many_mandatory_attributes(self):
-        assert_raises(TypeError, RideTestMessageWithAttrs)
+        with pytest.raises(TypeError):
+            RideTestMessageWithAttrs()
 
     def test_no_such_attribute_should_fail(self):
-        assert_raises(TypeError, RideTestMessageWithAttrs, foo='', bar='',
-                      quux='camel')
+        with pytest.raises(TypeError):
+            RideTestMessageWithAttrs(foo='', bar='', quux='camel')
 
 
 class TestRideLogMessage(unittest.TestCase):
 
     def test_log_message(self):
         msg = RideLogMessage(message='Some error text', level='ERROR')
-        assert_equal(msg.message, 'Some error text')
-        assert_equal(msg.level, 'ERROR')
-        assert_true(msg.timestamp.startswith('20'))
+        assert msg.message == 'Some error text'
+        assert msg.level == 'ERROR'
+        assert msg.timestamp.startswith('20')
 
     def test_log_exception(self):
         try:
@@ -109,10 +111,10 @@ class TestRideLogMessage(unittest.TestCase):
         except Exception as err:
             msg = RideLogException(
                 message='Some error text', exception=err, level='ERROR')
-            assert_true(msg.message.startswith(
-                'Some error text\n\nTraceback (most recent call last):'))
-            assert_equal(msg.level, 'ERROR')
-            assert_true(msg.timestamp.startswith('20'))
+            assert msg.message.startswith(
+                'Some error text\n\nTraceback (most recent call last):')
+            assert msg.level == 'ERROR'
+            assert msg.timestamp.startswith('20')
 
 
 def _common_listener(message):
@@ -146,70 +148,85 @@ class TestPublisher(unittest.TestCase):
         PUBLISHER._publisher.getTopicMgr().clearTree()
 
     def test_invalid_topic(self):
-        assert_raises(TypeError, PUBLISHER.subscribe, self._listener, 'test.message1')
-        assert_raises(TypeError, PUBLISHER.subscribe, self._listener, TestPublisher)
-        assert_raises(TypeError, PUBLISHER.subscribe, self._listener, None)
-        assert_raises(TypeError, PUBLISHER.subscribe, self._listener, list)
+        with pytest.raises(TypeError):
+            PUBLISHER.subscribe(self._listener, 'test.message1')
+        with pytest.raises(TypeError):
+            PUBLISHER.subscribe(self._listener, TestPublisher)
+        with pytest.raises(TypeError):
+            PUBLISHER.subscribe(self._listener, None)
+        with pytest.raises(TypeError):
+            PUBLISHER.subscribe(self._listener, list)
 
     def test_invalid_listener(self):
-        assert_raises(AssertionError, PUBLISHER.subscribe, self._invalid_listener_empty_arg, RideTestMessage)
-        assert_raises(AssertionError, PUBLISHER.subscribe, self._invalid_listener_long_arg, RideTestMessage)
-        assert_raises(AssertionError, PUBLISHER.subscribe, self._invalid_listener_many_args, RideTestMessage)
-        assert_raises(AssertionError, PUBLISHER.subscribe, self._invalid_listener_non_required_arg, RideTestMessage)
-        assert_raises(AssertionError, PUBLISHER.subscribe, self._invalid_listener_wrong_arg, RideTestMessage)
-        assert_raises(AssertionError, PUBLISHER.subscribe, self._invalid_listener_wrong_arg, 'RideTestMessage')
-        assert_raises(AssertionError, PUBLISHER.subscribe, self._invalid_listener_static, RideTestMessage)
-        assert_raises(AssertionError, PUBLISHER.subscribe, self._invalid_listener_class_method, RideTestMessage)
-        assert_raises(AssertionError, PUBLISHER.subscribe, _invalid_common_listener, RideTestMessage)
+        with pytest.raises(AssertionError):
+            PUBLISHER.subscribe(self._invalid_listener_empty_arg, RideTestMessage)
+        with pytest.raises(AssertionError):
+            PUBLISHER.subscribe(self._invalid_listener_long_arg, RideTestMessage)
+        with pytest.raises(AssertionError):
+            PUBLISHER.subscribe(self._invalid_listener_many_args, RideTestMessage)
+        with pytest.raises(AssertionError):
+            PUBLISHER.subscribe(self._invalid_listener_non_required_arg, RideTestMessage)
+        with pytest.raises(AssertionError):
+            PUBLISHER.subscribe(self._invalid_listener_wrong_arg, RideTestMessage)
+        with pytest.raises(AssertionError):
+            PUBLISHER.subscribe(self._invalid_listener_wrong_arg, 'RideTestMessage')
+        with pytest.raises(AssertionError):
+            PUBLISHER.subscribe(self._invalid_listener_static, RideTestMessage)
+        with pytest.raises(AssertionError):
+            PUBLISHER.subscribe(self._invalid_listener_class_method, RideTestMessage)
+        with pytest.raises(AssertionError):
+            PUBLISHER.subscribe(_invalid_common_listener, RideTestMessage)
 
     def test_publishing_ride_message(self):
         PUBLISHER.subscribe(self._listener, RideMessage)
         PUBLISHER.publish(RideTestMessageWithAttrs, 'content3')
-        assert_equal(self._msg, 'content3')
+        assert self._msg == 'content3'
 
     def test_publishing_invalid_topic(self):
         PUBLISHER.subscribe(self._listener, RideMessage)
-        assert_raises(TypeError, PUBLISHER.publish, 'RideTestMessageWithAttrs', 'content3')
-        assert_equal(self._msg, '')
+        with pytest.raises(TypeError):
+            PUBLISHER.publish('RideTestMessageWithAttrs', 'content3')
+        assert self._msg == ''
 
     def test_publishing_ride_message_from_msg_obj(self):
         PUBLISHER.subscribe(self._listener, RideMessage)
         msg_obj = RideMessage()
         msg_obj.publish()
-        assert_equal(self._msg, msg_obj)
+        assert self._msg == msg_obj
 
     def test_publishing_ride_message_with_args(self):
         PUBLISHER.subscribe(self._listener, RideMessage)
         msg_obj = RideTestMessageWithAttrs(foo='bar', bar='foo')
         msg_obj.publish()
-        assert_equal(self._msg, msg_obj)
-        assert_equal(self._msg.foo, 'bar')
-        assert_equal(self._msg.bar, 'foo')
+        assert self._msg == msg_obj
+        assert self._msg.foo == 'bar'
+        assert self._msg.bar == 'foo'
 
     def test_publishing_common_listener(self):
         PUBLISHER.subscribe(_common_listener, RideTestMessageWithAttrs)
         msg_obj = RideTestMessageWithAttrs(foo='one', bar='two')
         msg_obj.publish()
-        assert_equal(TestPublisher.cls_msg, msg_obj)
+        assert TestPublisher.cls_msg == msg_obj
 
     def test_unsubscribe_ride_message(self):
         PUBLISHER.subscribe(self._listener, RideTestMessageWithAttrs)
         PUBLISHER.unsubscribe(self._listener, RideTestMessageWithAttrs)
         msg_obj = RideTestMessageWithAttrs(foo='one', bar='two')
         msg_obj.publish()
-        assert_equal(self._msg, '')
+        assert self._msg == ''
 
     def test_unsubscribe_ride_message_publish(self):
         PUBLISHER.subscribe(self._listener, RideTestMessageWithAttrs)
         PUBLISHER.unsubscribe(self._listener, RideTestMessageWithAttrs)
         PUBLISHER.publish(RideTestMessageWithAttrs, 'test')
-        assert_equal(self._msg, '')
+        assert self._msg == ''
 
     def test_unsubscribe_invalid_topic(self):
         PUBLISHER.subscribe(self._listener, RideTestMessageWithAttrs)
-        assert_raises(TypeError, PUBLISHER.unsubscribe, self._listener, 'RideTestMessageWithAttrs')
+        with pytest.raises(TypeError):
+            PUBLISHER.unsubscribe(self._listener, 'RideTestMessageWithAttrs')
         PUBLISHER.publish(RideTestMessageWithAttrs, 'test')
-        assert_equal(self._msg, 'test')
+        assert self._msg == 'test'
 
     def test_subscribe_multi_listeners(self):
         PUBLISHER.subscribe(self._listener, RideTestMessageWithAttrs)
@@ -218,7 +235,7 @@ class TestPublisher(unittest.TestCase):
         PUBLISHER.subscribe(self._class_listener, RideTestMessageWithAttrs)
         msg_obj = RideTestMessageWithAttrs(foo='one', bar='two')
         msg_obj.publish()
-        assert_equal(len(TestPublisher.cls_msgs), 4)
+        assert len(TestPublisher.cls_msgs) == 4
 
     def test_subscribe_multi_listeners_publish(self):
         PUBLISHER.subscribe(self._listener, RideTestMessageWithAttrs)
@@ -228,7 +245,7 @@ class TestPublisher(unittest.TestCase):
         msg_obj = RideTestMessageWithAttrs(foo='one', bar='two')
         msg_obj.publish()
         PUBLISHER.publish(RideTestMessageWithAttrs, 'test')
-        assert_equal(len(TestPublisher.cls_msgs), 4 * 2)
+        assert len(TestPublisher.cls_msgs) == 4 * 2
 
     def test_subscribe_multi_listeners_inherit_topic(self):
         PUBLISHER.subscribe(self._listener, RideMessage)
@@ -238,14 +255,14 @@ class TestPublisher(unittest.TestCase):
         msg_obj = RideTestMessageWithAttrs(foo='one', bar='two')
         msg_obj.publish()
         PUBLISHER.publish(RideTestMessageWithAttrs, 'test')
-        assert_equal(len(TestPublisher.cls_msgs), 4 * 2)
+        assert len(TestPublisher.cls_msgs) == 4 * 2
 
     @patch('sys.stderr.write')
     def test_subscribe_broken_listener(self, p_log):
         PUBLISHER.subscribe(self._broken_listener, RideTestMessageWithAttrs)
         msg_obj = RideTestMessageWithAttrs(foo='one', bar='two')
         msg_obj.publish()
-        assert_equal(self._msg, msg_obj)
+        assert self._msg == msg_obj
         p_log.assert_called_once()
 
     @patch('sys.stderr.write')
@@ -255,8 +272,8 @@ class TestPublisher(unittest.TestCase):
         msg_obj = RideTestMessageWithAttrs(foo='one', bar='two')
         msg_obj.publish()
         p_log.assert_called_once()
-        assert_true(isinstance(self._msg, RideLogException))
-        assert_equal(len(TestPublisher.cls_msgs), 2)
+        assert isinstance(self._msg, RideLogException)
+        assert len(TestPublisher.cls_msgs) == 2
 
     @patch('sys.stderr.write')
     def test_subscribe_broken_listener_ride_log_broken(self, p_log):
@@ -265,8 +282,8 @@ class TestPublisher(unittest.TestCase):
         msg_obj = RideTestMessageWithAttrs(foo='one', bar='two')
         msg_obj.publish()
         p_log.assert_called_once()
-        assert_true(isinstance(self._msg, RideLogException))
-        assert_equal(len(TestPublisher.cls_msgs), 2)
+        assert isinstance(self._msg, RideLogException)
+        assert len(TestPublisher.cls_msgs) == 2
 
     def test_unsubscribe_all(self):
         PUBLISHER.subscribe(self._listener, RideTestMessageWithAttrs)
@@ -274,10 +291,10 @@ class TestPublisher(unittest.TestCase):
         PUBLISHER.subscribe(self._class_listener, RideTestMessageWithAttrs)
         msg_obj = RideTestMessageWithAttrs(foo='one', bar='two')
         msg_obj.publish()
-        assert_equal(len(TestPublisher.cls_msgs), 3)
+        assert len(TestPublisher.cls_msgs) == 3
         PUBLISHER.unsubscribe_all(self)
         msg_obj.publish()
-        assert_equal(len(TestPublisher.cls_msgs), 3)
+        assert len(TestPublisher.cls_msgs) == 3
 
     def test_unsubscribe_all_only_input_obj(self):
         PUBLISHER.subscribe(self._listener, RideTestMessageWithAttrs)
@@ -287,10 +304,10 @@ class TestPublisher(unittest.TestCase):
         dummy_obj = DummyClass()
         msg_obj = RideTestMessageWithAttrs(foo='one', bar='two')
         msg_obj.publish()
-        assert_equal(len(TestPublisher.cls_msgs), 5)
+        assert len(TestPublisher.cls_msgs) == 5
         PUBLISHER.unsubscribe_all(self)
         msg_obj.publish()
-        assert_equal(len(TestPublisher.cls_msgs), 7)
+        assert len(TestPublisher.cls_msgs) == 7
 
     def test_unsubscribe_all_exclude_common(self):
         PUBLISHER.subscribe(self._listener, RideTestMessageWithAttrs)
@@ -300,11 +317,11 @@ class TestPublisher(unittest.TestCase):
         dummy_obj = DummyClass()
         msg_obj = RideTestMessageWithAttrs(foo='one', bar='two')
         msg_obj.publish()
-        assert_equal(len(TestPublisher.cls_msgs), 5)
+        assert len(TestPublisher.cls_msgs) == 5
         PUBLISHER.unsubscribe_all(dummy_obj)
         PUBLISHER.unsubscribe_all(self)
         msg_obj.publish()
-        assert_equal(len(TestPublisher.cls_msgs), 6)
+        assert len(TestPublisher.cls_msgs) == 6
 
     def test_unsubscribe_all_invalid_input(self):
         PUBLISHER.subscribe(self._listener, RideTestMessageWithAttrs)
@@ -314,10 +331,10 @@ class TestPublisher(unittest.TestCase):
         dummy_obj = DummyClass()
         msg_obj = RideTestMessageWithAttrs(foo='one', bar='two')
         msg_obj.publish()
-        assert_equal(len(TestPublisher.cls_msgs), 5)
+        assert len(TestPublisher.cls_msgs) == 5
         PUBLISHER.unsubscribe_all('dummy_obj')
         msg_obj.publish()
-        assert_equal(len(TestPublisher.cls_msgs), 5 * 2)
+        assert len(TestPublisher.cls_msgs) == 5 * 2
 
     def test_unsubscribe_all_input_none(self):
         PUBLISHER.subscribe(self._listener, RideTestMessageWithAttrs)
@@ -327,10 +344,10 @@ class TestPublisher(unittest.TestCase):
         dummy_obj = DummyClass()
         msg_obj = RideTestMessageWithAttrs(foo='one', bar='two')
         msg_obj.publish()
-        assert_equal(len(TestPublisher.cls_msgs), 5)
+        assert len(TestPublisher.cls_msgs) == 5
         PUBLISHER.unsubscribe_all()
         msg_obj.publish()
-        assert_equal(len(TestPublisher.cls_msgs), 5)
+        assert len(TestPublisher.cls_msgs) == 5
 
     def test_subscribe_obj_weak_ref(self):
         dummy_obj = DummyClass()
@@ -339,25 +356,25 @@ class TestPublisher(unittest.TestCase):
         dummy_obj = DummyClass()
         msg_obj = RideTestMessageWithAttrs(foo='one', bar='two')
         msg_obj.publish()
-        assert_equal(len(TestPublisher.cls_msgs), 1)
+        assert len(TestPublisher.cls_msgs) == 1
 
     def test_subscribe_static_method(self):
         PUBLISHER.subscribe(self._static_listener, RideTestMessageWithAttrs)
         msg_obj = RideTestMessageWithAttrs(foo='one', bar='two')
         msg_obj.publish()
-        assert_equal(TestPublisher.cls_msg, msg_obj)
+        assert TestPublisher.cls_msg == msg_obj
 
     def test_subscribe_class_method(self):
         PUBLISHER.subscribe(self._class_listener, RideTestMessageWithAttrs)
         msg_obj = RideTestMessageWithAttrs(foo='one', bar='two')
         msg_obj.publish()
-        assert_equal(TestPublisher.cls_msg, msg_obj)
+        assert TestPublisher.cls_msg == msg_obj
 
     def test_subscribe_common_method(self):
         PUBLISHER.subscribe(_common_listener, RideTestMessageWithAttrs)
         msg_obj = RideTestMessageWithAttrs(foo='one', bar='two')
         msg_obj.publish()
-        assert_equal(TestPublisher.cls_msg, msg_obj)
+        assert TestPublisher.cls_msg == msg_obj
 
     def _listener(self, message):
         self._msg = message
