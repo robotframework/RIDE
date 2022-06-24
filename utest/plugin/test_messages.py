@@ -13,9 +13,9 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import pytest
 import unittest
 from unittest.mock import patch
-from nose.tools import assert_equal, assert_true, assert_raises
 from robotide.publish import RideMessage, RideLog
 from robotide.pluginapi import Plugin
 
@@ -42,30 +42,31 @@ class TestSubscribingToEvents(unittest.TestCase):
 
     def test_subscribing_with_class(self):
         RideTestMessage().publish()
-        assert_equal(self.plugin.class_handler_topic, RideTestMessage.topic())
+        assert self.plugin.class_handler_topic == RideTestMessage.topic()
 
     def test_subscribing_with_string(self):
-        assert_raises(TypeError, self.plugin.subscribe, self.plugin.OnTestEventClass, 'ride.test')
+        with pytest.raises(TypeError):
+            self.plugin.subscribe(self.plugin.OnTestEventClass, 'ride.test')
 
     def test_event_with_data(self):
         RideMessageWithData(data_item='Data', more_data=[1, 2, 3]).publish()
-        assert_equal(self.plugin.record['data_item'], 'Data')
-        assert_equal(self.plugin.record['more_data'], [1, 2, 3])
+        assert self.plugin.record['data_item'] == 'Data'
+        assert self.plugin.record['more_data'] == [1, 2, 3]
 
     def test_subscribing_multiple_times(self):
         RideTestMessage().publish()
-        assert_equal(self.plugin.count, 1)
+        assert self.plugin.count == 1
 
     def test_subscribing_to_multiple_topics(self):
         RideMessageWithData(data_item='', more_data={}).publish()
         RideTestMessage().publish()
-        assert_equal(self.plugin.multi_events,
+        assert (self.plugin.multi_events ==
                      ['ride.message.with.data', 'ride.test'])
 
     def test_subscribing_to_hierarchy(self):
         RideTestMessage().publish()
         RideMessageWithData(data_item=None, more_data=[]).publish()
-        assert_equal(self.plugin.hierarchy_events,
+        assert (self.plugin.hierarchy_events ==
                      ['ride.test', 'ride.message.with.data'])
 
 
@@ -82,48 +83,50 @@ class TestUnsubscribingFromEvents(unittest.TestCase):
     def test_unsubscribe_with_class(self):
         self.plugin.unsubscribe(self.plugin.OnTestEventClass, RideTestMessage)
         RideTestMessage().publish()
-        assert_equal(self.plugin.class_handler_topic, None)
+        assert self.plugin.class_handler_topic == None
 
     def test_unsubscribe_with_string(self):
-        assert_raises(TypeError, self.plugin.unsubscribe, self.plugin.OnTestEventClass, 'RideTestMessage')
+        with pytest.raises(TypeError):
+            self.plugin.unsubscribe(self.plugin.OnTestEventClass, 'RideTestMessage')
 
     def test_unsubscribing_multiple_times_subscribed_once(self):
         self.plugin.unsubscribe(self.plugin.counting_handler, RideTestMessage)
         RideTestMessage().publish()
-        assert_equal(self.plugin.count, 0)
+        assert self.plugin.count == 0
 
     def test_unsubscribing_multiple_times_subscribed_all(self):
         for _ in range(5):
             self.plugin.unsubscribe(
                 self.plugin.counting_handler, RideTestMessage)
         RideTestMessage().publish()
-        assert_equal(self.plugin.count, 0)
+        assert self.plugin.count == 0
 
     def test_unsubscribing_from_hierarchy(self):
         self.plugin.unsubscribe(self.plugin.hierarchical_listener, RideMessage)
         RideTestMessage().publish()
         RideMessageWithData(data_item='Data', more_data=[1, 2, 3]).publish()
-        assert_equal(self.plugin.hierarchy_events, [])
+        assert self.plugin.hierarchy_events == []
 
     def test_unsubscribing_from_one_of_the_multiple_topics(self):
         self.plugin.unsubscribe(self.plugin.multiple_events_listening_handler,
                                 RideMessageWithData)
         RideMessageWithData(data_item='data', more_data='').publish()
         RideTestMessage().publish()
-        assert_equal(self.plugin.multi_events, ['ride.test'])
+        assert self.plugin.multi_events == ['ride.test']
 
     def test_unsubscribing_from_not_subscribed_event_will_fail(self):
-        assert_raises(Exception, self.plugin.unsubscribe, self.plugin.OnTestEventClass, UnsubscribedRideTestMessage)
+        with pytest.raises(Exception):
+            self.plugin.unsubscribe(self.plugin.OnTestEventClass, UnsubscribedRideTestMessage)
 
     def test_unsubscribe_all(self):
         self.plugin.unsubscribe_all()
         self._unsubscribe_all = False
         RideTestMessage().publish()
         RideMessageWithData(data_item='Data', more_data=[1, 2, 3]).publish()
-        assert_equal(self.plugin.class_handler_topic, None)
-        assert_equal(self.plugin.record, {})
-        assert_equal(self.plugin.count, 0)
-        assert_equal(self.plugin.hierarchy_events, [])
+        assert self.plugin.class_handler_topic == None
+        assert self.plugin.record == {}
+        assert self.plugin.count == 0
+        assert self.plugin.hierarchy_events == []
 
 
 class TestBrokenMessageListener(unittest.TestCase):
@@ -138,11 +141,10 @@ class TestBrokenMessageListener(unittest.TestCase):
     def test_broken_listener(self, p_stderr):
         self.plugin.subscribe(self.plugin.error_listener, RideLog)
         RideTestMessage().publish()
-        assert_true(self.plugin.error.message.startswith(
-            'Error in listener: BrokenListenerPlugin.broken_listener'),
-            'Wrong error message text: ' + self.plugin.error.message)
-        assert_equal(self.plugin.error.topic(), 'ride.log.exception')
-        assert_equal(self.plugin.error.level, 'ERROR')
+        assert self.plugin.error.message.startswith(
+            'Error in listener: BrokenListenerPlugin.broken_listener'), 'Wrong error message text: ' + self.plugin.error.message
+        assert self.plugin.error.topic() == 'ride.log.exception'
+        assert self.plugin.error.level == 'ERROR'
         p_stderr.assert_called_once()
 
     def test_broken_error_listener_does_not_cause_infinite_recusrion(self):

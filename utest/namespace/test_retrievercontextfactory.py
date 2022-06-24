@@ -14,7 +14,6 @@
 #  limitations under the License.
 
 import unittest
-from nose.tools import assert_equal
 
 from robotide.namespace.namespace import _RetrieverContextFactory
 from robotide.robotapi import ResourceFile
@@ -36,7 +35,7 @@ class RetrieverContextFactoryTest(unittest.TestCase):
                                    '@{zoo}': 'koi'}))
         result = ctx.vars.replace_variables('!${foo}!${bar}!@{zoo}!')
         print(ctx.vars)
-        assert_equal(result, "!moi!hoi!['koi']!")
+        assert result == "!moi!hoi!['koi']!"
 
 if __name__ == '__main__':
     unittest.main()

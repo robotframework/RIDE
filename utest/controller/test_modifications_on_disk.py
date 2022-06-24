@@ -18,7 +18,6 @@ import unittest
 import os
 import tempfile
 import shutil
-from nose.tools import assert_true, assert_false, assert_equal
 
 from robotide.robotapi import TestCaseFile, TestDataDirectory, ResourceFile
 from robotide.controller.ctrlcommands import (
@@ -79,16 +78,16 @@ class TestModifiedOnDiskWithFileSuite(_DataDependentTest):
 
     def test_mtime(self):
         ctrl = TestCaseFileController(TestCaseFile(source=self._filepath).populate())
-        assert_false(ctrl.has_been_modified_on_disk())
+        assert not ctrl.has_been_modified_on_disk()
         os.utime(self._filepath, (1,1))
-        assert_true(ctrl.has_been_modified_on_disk())
+        assert ctrl.has_been_modified_on_disk()
 
     def test_size_change(self):
         os.utime(self._filepath, None)
         ctrl = TestCaseFileController(TestCaseFile(source=self._filepath).populate())
         with open(self._filepath, 'a') as file:
             file.write('#Ninja edit\n')
-        assert_true(ctrl.has_been_modified_on_disk())
+        assert ctrl.has_been_modified_on_disk()
 
     def test_reload(self):
         controller_parent = object()
@@ -96,22 +95,22 @@ class TestModifiedOnDiskWithFileSuite(_DataDependentTest):
         ctrl = TestCaseFileController(
             TestCaseFile(parent=model_parent, source=self._filepath).populate(),
             parent=controller_parent)
-        assert_equal(len(ctrl.tests), 1)
+        assert len(ctrl.tests) == 1
         with open(self._filepath, 'a') as file:
             file.write('Second Test\n  Log  Hello World!\n')
         ctrl.reload()
-        assert_equal(len(ctrl.tests), 2)
-        assert_equal(ctrl.tests[-1].name, 'Second Test')
-        assert_equal(ctrl.parent, controller_parent)
-        assert_equal(ctrl.data.parent, model_parent)
+        assert len(ctrl.tests) == 2
+        assert ctrl.tests[-1].name == 'Second Test'
+        assert ctrl.parent == controller_parent
+        assert ctrl.data.parent == model_parent
 
     def test_overwrite(self):
         ctrl = TestCaseFileController(TestCaseFile(source=self._filepath).populate(),
                                       create_project())
         os.utime(self._filepath, (1,1))
-        assert_true(ctrl.has_been_modified_on_disk())
+        assert ctrl.has_been_modified_on_disk()
         ctrl.execute(SaveFile())
-        assert_false(ctrl.has_been_modified_on_disk())
+        assert not ctrl.has_been_modified_on_disk()
 
 
 class TestModifiedOnDiskWithDirectorySuite(_DataDependentTest):
@@ -124,16 +123,16 @@ class TestModifiedOnDiskWithDirectorySuite(_DataDependentTest):
         with open(self._init_path, 'a') as file:
             file.write('...  ninjaed more documentation')
         ctrl.reload()
-        assert_equal(ctrl.settings[0].value,
+        assert (ctrl.settings[0].value ==
                       'Ride unit testing file\\nninjaed more documentation')
-        assert_equal(ctrl.parent, controller_parent)
-        assert_equal(ctrl.data.parent, model_parent)
+        assert ctrl.parent == controller_parent
+        assert ctrl.data.parent == model_parent
 
     def test_mtime_with_directory_suite(self):
         ctrl = TestDataDirectoryController(TestDataDirectory(source=self._dirpath).populate())
-        assert_false(ctrl.has_been_modified_on_disk())
+        assert not ctrl.has_been_modified_on_disk()
         os.utime(self._init_path, (1,1))
-        assert_true(ctrl.has_been_modified_on_disk())
+        assert ctrl.has_been_modified_on_disk()
 
 
 class TestModifiedOnDiskWithresource(_DataDependentTest):
@@ -143,13 +142,13 @@ class TestModifiedOnDiskWithresource(_DataDependentTest):
         controller_parent.children = []
         controller_parent.add_child = controller_parent.children.append
         ctrl = ResourceFileController(ResourceFile(source=self._resource_path).populate(), parent=controller_parent)
-        assert_equal(len(ctrl.keywords), 1)
+        assert len(ctrl.keywords) == 1
         with open(self._resource_path, 'a') as fp:
             fp.write('Ninjaed Keyword  Log  I am taking over!\n')
         ctrl.reload()
-        assert_equal(len(ctrl.keywords), 2)
-        assert_equal(ctrl.keywords[-1].name, 'Ninjaed Keyword')
-        assert_equal(ctrl.parent, controller_parent)
+        assert len(ctrl.keywords) == 2
+        assert ctrl.keywords[-1].name == 'Ninjaed Keyword'
+        assert ctrl.parent == controller_parent
 
 
 class TestDataFileRemoval(_DataDependentTest):
@@ -171,8 +170,8 @@ class TestDataFileRemoval(_DataDependentTest):
         os.remove(self._filepath)
         ctrl = project.data
         ctrl.remove()
-        assert_true(project.data is None)
-        assert_true(self._removed_datafile is ctrl)
+        assert project.data is None
+        assert self._removed_datafile is ctrl
 
     def test_deleting_file_suite_under_dir_suite(self):
         project = create_project()
@@ -180,13 +179,13 @@ class TestDataFileRemoval(_DataDependentTest):
         original_children_length = len(project.data.children)
         file_suite = project.data.children[0]
         file_suite.remove()
-        assert_true(len(project.data.children) == original_children_length-1, 'Child suite was not removed')
+        assert len(project.data.children) == original_children_length-1, 'Child suite was not removed'
 
     def test_deleting_resource_file(self):
         project = create_project()
         res = project.new_resource(self._resource_path)
         res.remove()
-        assert_true(len(project.resources) == 0, 'Resource was not removed')
+        assert len(project.resources) == 0, 'Resource was not removed'
 
     def test_deleting_init_file(self):
         project = create_project()
@@ -195,7 +194,7 @@ class TestDataFileRemoval(_DataDependentTest):
         project.data.remove()
         with open(self._init_path, 'w') as initfile:
             initfile.write('*** Settings ***\nDocumentation  Ride unit testing file\n')
-        assert_true(project.data.has_format() is False, project.data.data.initfile)
+        assert project.data.has_format() is False, project.data.data.initfile
 
 
 class DeleteCommandTest(_DataDependentTest):
@@ -222,10 +221,10 @@ class DeleteCommandTest(_DataDependentTest):
         self.assert_import_count(1)
 
     def assert_resource_count(self, resource_count):
-        assert_equal(len(self.project.resources), resource_count)
+        assert len(self.project.resources) == resource_count
 
     def assert_import_count(self, import_count):
-        assert_equal(len(self.suite.setting_table.imports), import_count)
+        assert len(self.suite.setting_table.imports) == import_count
 
 
 if __name__ == "__main__":

@@ -17,8 +17,6 @@ import unittest
 from utest.resources import datafilereader
 from robotide.controller.ctrlcommands import ChangeCellValue, DeleteRows, AddKeyword,\
     Undo, PasteArea
-from nose.tools import assert_equal, assert_true, assert_false,\
-    assert_is_none
 from robotide.controller.cellinfo import CellType, ContentType, CellInfo,\
     CellContent, CellPosition
 
@@ -28,38 +26,38 @@ class TestCellInfoErrors(unittest.TestCase):
     def test_empty_mandatory_is_error(self):
         cell = CellInfo(CellContent(ContentType.EMPTY, '', ''),
                         CellPosition(CellType.MANDATORY, None))
-        assert_true(cell.has_error())
-        assert_true(cell.argument_missing())
+        assert cell.has_error()
+        assert cell.argument_missing()
 
     def test_none_empty_mandatory_is_not_error(self):
         cell = CellInfo(CellContent(ContentType.LIBRARY_KEYWORD, '', ''),
                         CellPosition(CellType.MANDATORY, None))
-        assert_false(cell.has_error())
-        assert_false(cell.argument_missing())
+        assert not cell.has_error()
+        assert not cell.argument_missing()
 
     def test_commented_mandatory_is_error(self):
         cell = CellInfo(CellContent(ContentType.COMMENTED, '', ''),
                         CellPosition(CellType.MANDATORY, None))
-        assert_true(cell.has_error())
-        assert_true(cell.argument_missing())
+        assert cell.has_error()
+        assert cell.argument_missing()
 
     def test_none_empty_mandatory_empty_is_error(self):
         cell = CellInfo(CellContent(ContentType.STRING, '', ''),
                         CellPosition(CellType.MUST_BE_EMPTY, None))
-        assert_true(cell.has_error())
-        assert_true(cell.too_many_arguments())
+        assert cell.has_error()
+        assert cell.too_many_arguments()
 
     def test_empty_mandatory_empty_is_not_error(self):
         cell = CellInfo(CellContent(ContentType.EMPTY, '', ''),
                         CellPosition(CellType.MUST_BE_EMPTY, None))
-        assert_false(cell.has_error())
-        assert_false(cell.too_many_arguments())
+        assert not cell.has_error()
+        assert not cell.too_many_arguments()
 
     def test_optional_has_no_error(self):
-        assert_false(CellInfo(CellContent(ContentType.EMPTY, '', ''),
-                              CellPosition(CellType.OPTIONAL, None)).has_error())
-        assert_false(CellInfo(CellContent(ContentType.STRING, '', ''),
-                              CellPosition(CellType.OPTIONAL, None)).has_error())
+        assert not CellInfo(CellContent(ContentType.EMPTY, '', ''),
+                              CellPosition(CellType.OPTIONAL, None)).has_error()
+        assert not CellInfo(CellContent(ContentType.STRING, '', ''),
+                              CellPosition(CellType.OPTIONAL, None)).has_error()
 
 
 class TestCellInfo(unittest.TestCase):
@@ -87,10 +85,10 @@ class TestCellInfo(unittest.TestCase):
         print("DEBUG: test_no_cell_info_if_no_data:")
         for s in self.test.steps:
             print(f"{s.as_list()}")
-        assert_is_none(self.test.get_cell_info(1, 0))
-        assert_is_none(self.test.get_cell_info(1, 1))
-        assert_is_none(self.test.get_cell_info(1, 2))
-        assert_is_none(self.test.get_cell_info(1, 3))
+        assert self.test.get_cell_info(1, 0) is None
+        assert self.test.get_cell_info(1, 1) is None
+        assert self.test.get_cell_info(1, 2) is None
+        assert self.test.get_cell_info(1, 3) is None
 
     def test_keyword_with_mandatory_and_optional_arguments(self):
         self.test.execute(ChangeCellValue(0, 0, self.keyword1.name))
@@ -322,8 +320,8 @@ class TestCellInfo(unittest.TestCase):
             macro = self.test
         cell_info = macro.get_cell_info(row, col)
         print(f"DEBUG:test_cellinfo type cell_type{cell_info.cell_type} content_type{cell_info.content_type}")
-        assert_equal(cell_info.cell_type, celltype)
-        assert_equal(cell_info.content_type, contenttype)
+        assert cell_info.cell_type == celltype
+        assert cell_info.content_type == contenttype
 
 
 if __name__ == "__main__":

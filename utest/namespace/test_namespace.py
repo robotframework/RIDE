@@ -1,7 +1,5 @@
 import sys
 import unittest
-from nose.tools import assert_true, assert_false, assert_is_not_none, \
-    assert_equal, assert_is_none
 
 from robotide.robotapi import (
     TestCaseFile, Resource, VariableTable, TestDataDirectory)
@@ -110,18 +108,18 @@ class TestKeywordSuggestions(_DataFileTest):
         start = 'shOulD'
         # print("DEBUG: %s kw %s\n" % (start, self.kw.__doc__))
         sugs = self.ns.get_suggestions_for(self.kw, start)
-        assert_true(len(sugs) > 0)
+        assert len(sugs) > 0
         for s in sugs:
-            assert_true(s.name.lower().startswith(start.lower()))
+            assert s.name.lower().startswith(start.lower())
 
     def test_getting_suggestions_in_order(self):
         sugs = self.ns.get_suggestions_for(self.kw, 'sHoUlD')
-        assert_true(len(sugs) > 2)
-        assert_equal(sugs, sorted(sugs))
+        assert len(sugs) > 2
+        assert sugs == sorted(sugs)
 
     def test_user_keywords(self):
         sugs = self.ns.get_suggestions_for(self.kw, 'sHoUlD')
-        assert_true(EXISTING_USER_KEYWORD in [s.name for s in sugs])
+        assert EXISTING_USER_KEYWORD in [s.name for s in sugs]
 
     def test_imported_lib_keywords(self):
         sugs = self.ns.get_suggestions_for(self.kw, 'create file')
@@ -181,8 +179,8 @@ class TestKeywordSuggestions(_DataFileTest):
     def test_xml_library_is_library_keyword(self):
         everything_tcf = TestCaseFile(
             source=TESTCASEFILE_WITH_EVERYTHING).populate()
-        assert_true(self.ns.is_library_keyword(
-            everything_tcf, 'Attributeless Keyword'))
+        assert self.ns.is_library_keyword(
+            everything_tcf, 'Attributeless Keyword')
 
     def test_variable_path_separator(self):
         sugs = self.ns.get_suggestions_for(
@@ -196,7 +194,7 @@ class TestKeywordSuggestions(_DataFileTest):
         for kw in sugs:
             if self._not_variable(kw):
                 key = 'kw: %s %s' % (kw.name, kw.source)
-                assert_false(key in kw_set, key)
+                assert not key in kw_set, key
                 kw_set.append(key)
 
     def _not_variable(self, item):
@@ -210,7 +208,7 @@ class TestKeywordSuggestions(_DataFileTest):
         self._test_global_variable(global_vars[-1])
 
     def _test_global_variable(self, variable, expected=None):
-        assert_equal(expected or variable,
+        assert (expected or variable ==
                       self.ns.get_suggestions_for(self.kw, variable)[0].name)
 
     def test_resource_with_variable_in_path(self):
@@ -219,23 +217,21 @@ class TestKeywordSuggestions(_DataFileTest):
 
     def test_scalar_variable_suggestion(self):
         scalar_vars = self.ns.get_suggestions_for(self.kw, '$')
-        assert_true(len(scalar_vars) > 0)
-        assert_true(len(self.ns.get_suggestions_for(
-            self.kw, '${')) == len(scalar_vars))
+        assert len(scalar_vars) > 0
+        assert len(self.ns.get_suggestions_for(
+            self.kw, '${')) == len(scalar_vars)
         sug = self.ns.get_suggestions_for(self.kw, '${lib')
-        assert_true(sug[0].name == LIB_NAME_VARIABLE)
+        assert sug[0].name == LIB_NAME_VARIABLE
 
     def test_list_variable_suggestion(self):
         list_vars = self.ns.get_suggestions_for(self.kw, '@')
-        assert_true(len(list_vars) > 0)
-        assert_true(
-            len(self.ns.get_suggestions_for(self.kw, '@{')) == len(list_vars))
+        assert len(list_vars) > 0
+        assert len(self.ns.get_suggestions_for(self.kw, '@{')) == len(list_vars)
 
     def test_dict_variable_suggestion(self):
         dict_vars = self.ns.get_suggestions_for(self.kw, '&')
-        assert_true(len(dict_vars) > 0)
-        assert_true(
-            len(self.ns.get_suggestions_for(self.kw, '&{')) == len(dict_vars))
+        assert len(dict_vars) > 0
+        assert len(self.ns.get_suggestions_for(self.kw, '&{')) == len(dict_vars)
 
     def test_variable_suggestions_without_varwrapping(self):
         self._test_global_variable('space', '${SPACE}')
@@ -245,7 +241,7 @@ class TestKeywordSuggestions(_DataFileTest):
         sugs = self.ns.get_suggestions_for(
             self._get_controller(TESTCASEFILE_WITH_EVERYTHING).keywords[0],
             '${var_from_file')
-        assert_true(len(sugs) > 0)
+        assert len(sugs) > 0
 
     def _get_controller(self, source):
         return DataController(TestCaseFile(source=source).populate(), None)
@@ -254,7 +250,7 @@ class TestKeywordSuggestions(_DataFileTest):
         sugs = self.ns.get_suggestions_for(
             self._get_controller(TESTCASEFILE_WITH_EVERYTHING).keywords[0],
             'Get ')
-        assert_true(len(sugs) > 0)
+        assert len(sugs) > 0
         for item in sugs:
             if item.name == 'Get Mandatory':
                 return
@@ -264,13 +260,13 @@ class TestKeywordSuggestions(_DataFileTest):
         sugs = self.ns.get_suggestions_for(
             self._get_controller(TESTCASEFILE_WITH_EVERYTHING).keywords[0],
             '${Path RESOURCE var')
-        assert_true(len(sugs) > 0)
+        assert len(sugs) > 0
 
     def test_variable_file_arguments_are_resolved(self):
         sugs = self.ns.get_suggestions_for(
             self._get_controller(TESTCASEFILE_WITH_EVERYTHING).keywords[0],
             '${dyn ')
-        assert_true(len(sugs) > 0)
+        assert len(sugs) > 0
 
     def test_variable_file_variables_are_available_in_resource_imports(self):
         sugs = self.ns.get_suggestions_for(self._get_controller(
@@ -280,10 +276,10 @@ class TestKeywordSuggestions(_DataFileTest):
 
     def test_vars_from_keyword_arguments(self):
         sugs = self.ns.get_suggestions_for(self.kw, '${keyword argu')
-        assert_equal(len(sugs), 2)
+        assert len(sugs) == 2
         sugs = self.ns.get_suggestions_for(
             self.kw, '${keyword argument with defau')
-        assert_equal(len(sugs), 1)
+        assert len(sugs) == 1
         self._check_source(
             self.kw, '${keyword argument with defau', ArgumentInfo.SOURCE)
 
@@ -298,7 +294,7 @@ class TestKeywordSuggestions(_DataFileTest):
                 myflag = (s.source.decode('utf-8') == ArgumentInfo.SOURCE)
             if myflag:
                 break
-        assert_true(myflag)
+        assert myflag
         # assert_true(any(True for s in sugs if s.source.decode('utf-8') == ArgumentInfo.SOURCE))
 
     def test_keyword_arguments_are_suggested_first(self):
@@ -309,7 +305,7 @@ class TestKeywordSuggestions(_DataFileTest):
         sugs = self.ns.get_suggestions_for(self.tcf_ctrl, 'Execute Manual')
         self._assert_import_kws(sugs, 'Dialogs')
         sugs = self.ns.get_suggestions_for(self.tcf_ctrl, '${libna')
-        assert_true(len(sugs) == 1)
+        assert len(sugs) == 1
 
     def test_variable_sources(self):
         everything_tcf = self._get_controller(TESTCASEFILE_WITH_EVERYTHING)
@@ -325,52 +321,48 @@ class TestKeywordSuggestions(_DataFileTest):
 
     def _check_source(self, controller, name, source):
         sugs = self.ns.get_suggestions_for(controller, name)
-        assert_equal(len(sugs), 1)
+        assert len(sugs) == 1
         # assert_equal(str(sugs[0].source), str(source))  # DEBUG was getting bytes on python3
         if isinstance(sugs[0].source, str):
-            assert_equal(sugs[0].source, source)
+            assert sugs[0].source == source
         else:
-            assert_equal(sugs[0].source.decode('utf-8'), source) 
+            assert sugs[0].source.decode('utf-8') == source 
 
     def _assert_import_kws(self, sugs, source):
-        assert_true(len(sugs) > 0)
+        assert len(sugs) > 0
         for s in sugs:
             if isinstance(s.source, str):
-                assert_true(s.source.endswith(source),
-                            '%s does not end with %s' % (s.source, source))
+                assert s.source.endswith(source), '%s does not end with %s' % (s.source, source)
             else:
-                assert_true(s.source.endswith(source.encode('utf-8')),
-                            '%s does not end with %s' % (s.source, source))
+                assert s.source.endswith(source.encode('utf-8')), '%s does not end with %s' % (s.source, source)
             print("DEBUG: %s TEST endswith %s" % (s.source if isinstance(s.source, str) else str(s.source, 'utf-8'), source))
 
     def test_reset(self):
         sugs = self.ns.get_suggestions_for(self.kw, 'generate random')
         sugs2 = self.ns.get_suggestions_for(self.kw, 'generate random')
-        assert_true(sugs[0] is sugs2[0])
+        assert sugs[0] is sugs2[0]
         self.ns.reset_resource_and_library_cache()
         sugs3 = self.ns.get_suggestions_for(self.kw, 'generate random')
-        assert_false(sugs[0] is sugs3[0])
+        assert not sugs[0] is sugs3[0]
 
 
 class TestKeywordSearch(_DataFileTest):
 
     def test_is_library_keyword(self):
-        assert_true(self.ns.is_library_keyword(self.tcf, 'Should Be Equal'))
-        assert_false(self.ns.is_library_keyword(self.tcf, 'kameli'))
-        assert_false(self.ns.is_library_keyword(
-            self.tcf, 'UK From Resource from Resource with Variable'))
+        assert self.ns.is_library_keyword(self.tcf, 'Should Be Equal')
+        assert not self.ns.is_library_keyword(self.tcf, 'kameli')
+        assert not self.ns.is_library_keyword(
+            self.tcf, 'UK From Resource from Resource with Variable')
 
     def test_is_library_keyword_longname(self):
-        assert_true(
-            self.ns.is_library_keyword(self.tcf, 'Builtin.Should Be Equal'))
+        assert self.ns.is_library_keyword(self.tcf, 'Builtin.Should Be Equal')
 
     def test_is_library_keyword_longname_with_alias(self):
-        assert_true(
-            self.ns.is_library_keyword(self.tcf, TELNET_LIB_ALIAS+'.LOGIN'))
+        assert self.ns.is_library_keyword(self.tcf, TELNET_LIB_ALIAS+'.LOGIN')
 
     def test_find_default_keywords(self):
         all_kws = self.ns.get_all_keywords([])
-        assert_is_not_none(all_kws)
+        assert all_kws is not None
         self.assert_in_keywords(all_kws, 'Should Be Equal')
 
     def test_find_suite_keywords(self):
@@ -400,50 +392,47 @@ class TestKeywordSearch(_DataFileTest):
     def _check_resource_keyword_only_once(self, all_kws):
         results = [(kw.name, kw.source)
                    for kw in all_kws if kw.name == "Only From Resource"]
-        assert_equal(len(results), 1)
+        assert len(results) == 1
         # assert_equal(results[0], (u'Only From Resource', u'testdata_resource.robot'))
-        assert_equal(results[0][0], u'Only From Resource')
+        assert results[0][0] == u'Only From Resource'
         # DEBUG was getting bytes on python3
         if isinstance(results[0][1], str):
-            assert_equal(results[0][1], 'testdata_resource.robot')
+            assert results[0][1] == 'testdata_resource.robot'
         else:
-            assert_equal(results[0][1].decode('utf-8'), u'testdata_resource.robot')
+            assert results[0][1].decode('utf-8') == u'testdata_resource.robot'
 
     def test_find_user_keyword_name_normalized(self):
-        assert_is_not_none(self.ns.find_user_keyword(
-            self.tcf, 'UK Fromresource from rESOURCE with variaBLE'))
-        assert_is_none(self.ns.find_user_keyword(self.tcf, 'Copy List'))
+        assert self.ns.find_user_keyword(
+            self.tcf, 'UK Fromresource from rESOURCE with variaBLE') is not None
+        assert self.ns.find_user_keyword(self.tcf, 'Copy List') is None
 
     def test_is_user_keyword(self):
-        assert_true(self.ns.is_user_keyword(
-            self.tcf, 'UKFromResource from ResourcewithVariable'))
-        assert_false(self.ns.is_user_keyword(self.tcf, 'hevoinen'))
-        assert_false(self.ns.is_user_keyword(self.tcf, 'Should Be Equal'))
+        assert self.ns.is_user_keyword(
+            self.tcf, 'UKFromResource from ResourcewithVariable')
+        assert not self.ns.is_user_keyword(self.tcf, 'hevoinen')
+        assert not self.ns.is_user_keyword(self.tcf, 'Should Be Equal')
 
     def test_is_user_keyword_in_resource_file(self):
         everything_tcf = TestCaseFile(
             source=TESTCASEFILE_WITH_EVERYTHING).populate()
-        assert_is_not_none(
-            self.ns.find_user_keyword(everything_tcf, 'Duplicate UK'))
-        assert_true(self.ns.is_user_keyword(everything_tcf, 'Duplicate UK'))
-        assert_is_not_none(
-            self.ns.find_user_keyword(everything_tcf, 'Another Resource UK'))
-        assert_true(
-            self.ns.is_user_keyword(everything_tcf, 'Another Resource UK'))
+        assert self.ns.find_user_keyword(everything_tcf, 'Duplicate UK') is not None
+        assert self.ns.is_user_keyword(everything_tcf, 'Duplicate UK')
+        assert self.ns.find_user_keyword(everything_tcf, 'Another Resource UK') is not None
+        assert self.ns.is_user_keyword(everything_tcf, 'Another Resource UK')
 
     def test_given_when_then_and_aliases(self):
-        assert_is_not_none(self.ns.find_user_keyword(
-            self.tcf, '  Given   UK Fromresource from rESOURCE with variaBLE'))
-        assert_is_not_none(self.ns.find_user_keyword(
-            self.tcf, 'when  UK Fromresource from rESOURCE with variaBLE'))
-        assert_is_not_none(self.ns.find_user_keyword(
-            self.tcf, '  then UK Fromresource from rESOURCE with variaBLE'))
-        assert_is_not_none(self.ns.find_user_keyword(
-            self.tcf, 'AND UK Fromresource from rESOURCE with variaBLE'))
-        assert_is_not_none(self.ns.find_user_keyword(
-            self.tcf, 'but UK Fromresource from rESOURCE with variaBLE'))
-        assert_is_none(self.ns.find_user_keyword(
-            self.tcf, 'given and UK Fromresource from rESOURCE with variaBLE'))
+        assert self.ns.find_user_keyword(
+            self.tcf, '  Given   UK Fromresource from rESOURCE with variaBLE') is not None
+        assert self.ns.find_user_keyword(
+            self.tcf, 'when  UK Fromresource from rESOURCE with variaBLE') is not None
+        assert self.ns.find_user_keyword(
+            self.tcf, '  then UK Fromresource from rESOURCE with variaBLE') is not None
+        assert self.ns.find_user_keyword(
+            self.tcf, 'AND UK Fromresource from rESOURCE with variaBLE') is not None
+        assert self.ns.find_user_keyword(
+            self.tcf, 'but UK Fromresource from rESOURCE with variaBLE') is not None
+        assert self.ns.find_user_keyword(
+            self.tcf, 'given and UK Fromresource from rESOURCE with variaBLE') is None
 
     def assert_in_keywords(self, keywords, *kw_names):
         for kw_name in kw_names:
@@ -457,7 +446,7 @@ class TestKeywordSearch(_DataFileTest):
 class TestVariableStash(unittest.TestCase):
 
     def _variable_stash_contains(self, name, vars):
-        assert_true('${{{0}}}'.format(name) in [v.name for v in vars])
+        assert '${{{0}}}'.format(name) in [v.name for v in vars]
 
     def test_variable_resolving(self):
         vars = _VariableStash()
@@ -466,21 +455,21 @@ class TestVariableStash(unittest.TestCase):
         var_table.add('${var2}', 'bar')
         vars.set_from_variable_table(var_table)
         result = vars.replace_variables('hoo${var1}hii${var2}huu')
-        assert_equal('hoofoohiibarhuu', result)
+        assert 'hoofoohiibarhuu' == result
 
     def test_list_variable_index_resolving(self):
         vars = _VariableStash()
         var_table = VariableTable(ParentMock())
         var_table.add('@{var}', ['foo', 'bar'])
         vars.set_from_variable_table(var_table)
-        assert_equal('Hi, foo!', vars.replace_variables('Hi, @{var}[0]!'))
+        assert 'Hi, foo!' == vars.replace_variables('Hi, @{var}[0]!')
 
     def test_dict_variable_key_resolving(self):
         vars = _VariableStash()
         var_table = VariableTable(ParentMock())
         var_table.add('&{var}', ['foo=bar'])
         vars.set_from_variable_table(var_table)
-        assert_equal('Hi, bar!', vars.replace_variables('Hi, &{var}[foo]!'))
+        assert 'Hi, bar!' == vars.replace_variables('Hi, &{var}[foo]!')
 
     def test_variable_resolving_with_unresolvable_value(self):
         vars = _VariableStash()
@@ -497,27 +486,27 @@ class TestVariableStash(unittest.TestCase):
         self._variable_stash_contains('PREV_TEST_MESSAGE', vars)
 
     def test_global_variable_trues_value_is_replaced_with_true(self):
-        assert_equal(_VariableStash().replace_variables('${True}'), True)
+        assert _VariableStash().replace_variables('${True}') == True
 
     def test_global_variable_falses_value_is_replaced_with_false(self):
-        assert_equal(_VariableStash().replace_variables('${False}'), False)
+        assert _VariableStash().replace_variables('${False}') == False
 
     def test_global_variable_nones_value_is_replaced_with_none(self):
-        assert_equal(_VariableStash().replace_variables('${None}'), None)
+        assert _VariableStash().replace_variables('${None}') == None
 
     def test_global_variable_nulls_value_is_replaced_with_none(self):
-        assert_equal(_VariableStash().replace_variables('${null}'), None)
+        assert _VariableStash().replace_variables('${null}') == None
 
 
 class TestResourceGetter(_DataFileTest):
 
     def test_resource_getter(self):
         resources = self.ns.get_resources(self.tcf)
-        assert_equal(len(resources), 8)
+        assert len(resources) == 8
         paths = []
         for res in resources:
             normalized = normpath(res.source)
-            assert_false(normalized in paths)
+            assert not normalized in paths
             paths.append(normalized)
 
 
@@ -530,15 +519,15 @@ class TestResourceCache(_DataFileTest):
         imp = Resource(None, RESOURCE_PATH)
         first = self._res_cache.get_resource(imp.directory, imp.name)
         second = self._res_cache.get_resource(imp.directory, imp.name)
-        assert_true(first is second)
+        assert first is second
 
     def test_file_with_absolute_path(self):
         imp = Resource(ParentMock(), RESOURCE_PATH)
-        assert_true(self._res_cache.get_resource(imp.directory, imp.name))
+        assert self._res_cache.get_resource(imp.directory, imp.name)
 
     def test_file_with_invalid_path(self):
         imp = Resource(ParentMock(), '${kumikameli}')
-        assert_is_none(self._res_cache.get_resource(imp.directory, imp.name))
+        assert self._res_cache.get_resource(imp.directory, imp.name) is None
 
     if IS_WINDOWS:
         def test_case_sensetive_filenames(self):
@@ -547,7 +536,7 @@ class TestResourceCache(_DataFileTest):
                 imp.directory, imp.name.lower())
             second = self._res_cache.get_resource(
                 imp.directory, imp.name.upper())
-            assert_true(first is second)
+            assert first is second
 
 
 if __name__ == "__main__":

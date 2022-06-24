@@ -14,7 +14,6 @@
 #  limitations under the License.
 
 import unittest
-from nose.tools import assert_equal
 
 from robotide.run.runanything import RunConfigs
 
@@ -26,7 +25,7 @@ class RunConfigurationsTest(unittest.TestCase):
 
     def test_creation_with_no_data(self):
         configs = RunConfigs([])
-        assert_equal(len(configs), 0)
+        assert len(configs) == 0
 
     def test_creation_with_data(self):
         self._assert_config(self._create_configs_with_item()[0], *ITEM)
@@ -51,15 +50,15 @@ class RunConfigurationsTest(unittest.TestCase):
 
     def test_data_to_save(self):
         configs = self._create_configs_with_item()
-        assert_equal(configs.data_to_save(), [ITEM])
+        assert configs.data_to_save() == [ITEM]
 
     def _create_configs_with_item(self):
         return RunConfigs([ITEM])
 
     def _assert_config(self, config, exp_name, exp_cmd, exp_doc):
-        assert_equal(config.name, exp_name)
-        assert_equal(config.command, exp_cmd)
-        assert_equal(config.doc, exp_doc)
+        assert config.name == exp_name
+        assert config.command == exp_cmd
+        assert config.doc == exp_doc
 
 
 if __name__ == '__main__':

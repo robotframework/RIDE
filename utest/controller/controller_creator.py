@@ -61,7 +61,10 @@ def create(data):
     tcf.directory = '/path/to'
     pop = FromFilePopulator(tcf)
     pop.start_table(['Test cases'])
-    for row in [ [cell for cell in line.split('  ')] for line in data]:
+    # for row in [ [cell for cell in line.split('  ')] for line in data]:
+    for line in data:
+        row = line.split('  ')
+        print(f"{row}")
         pop.add(row)
     pop.eof()
     return tcf

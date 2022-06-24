@@ -147,13 +147,15 @@ def devel(ctx, args=''):
 def test(ctx, test_filter=''):
     """Run unit tests."""
     _remove_bytecode_files()
-    from nose import run as noserun
+    # from nose import run as noserun
+    from pytest import main as pytestrun
     _set_development_path()
     additional_args = []
     if test_filter:
         additional_args.append(test_filter)
-    result = noserun(defaultTest=TEST_DIR,
-                     argv=['', '--m=^test_', '--traverse-namespace'] + additional_args)
+    result = pytestrun(args=[TEST_DIR] + additional_args)
+    # result = noserun(defaultTest=TEST_DIR,
+    #                  argv=['', '--m=^test_', '--traverse-namespace'] + additional_args)
     assert result is True
 
 

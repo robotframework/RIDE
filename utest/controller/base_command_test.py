@@ -18,7 +18,6 @@ import os
 import pathlib
 import shutil
 import sys
-from nose.tools import assert_equal
 
 # Workaround for relative import in non-module
 # see https://stackoverflow.com/questions/16981921/relative-imports-in-python-3
@@ -39,12 +38,15 @@ class TestCaseCommandTest(unittest.TestCase, _FakeProject):
     resource_file_controller_factory = None
 
     def setUp(self):
-        self._steps = None
+        # self._steps = None
         self._data = self._create_data()
-        print(f"DEBUG: base setup {self._data[:]}")
         self._ctrl = testcase_controller(self, data=self._data)
         PUBLISHER.subscribe(self._test_changed, RideItemStepsChanged)
         self._orig_number_of_steps = len(self._ctrl.steps)
+        self._steps = self._ctrl.steps
+        print(f"\nBase Data")
+        for row in self._steps:
+            print(f"{row.as_list()}")
         print(f"DEBUG: base setup  self._orig_number_of_steps={self._orig_number_of_steps}")
         self._number_of_test_changes = 0
 
@@ -87,14 +89,14 @@ class TestCaseCommandTest(unittest.TestCase, _FakeProject):
         # if step and step[0] != '':
         #    step = [''] + step
         step = [''] + step
-        assert_equal(step, self._data_step_as_list(step_data)[:])
+        assert step == self._data_step_as_list(step_data)[:]
 
     def _verify_steps_unchanged(self, *steps):
         for step in steps:
             self._verify_step_unchanged(step)
 
     def _verify_number_of_test_changes(self, expected):
-        assert_equal(self._number_of_test_changes, expected)
+        assert self._number_of_test_changes == expected
 
     def _verify_row_does_not_exist(self, line):
         for step in self._steps:
@@ -102,7 +104,7 @@ class TestCaseCommandTest(unittest.TestCase, _FakeProject):
                 raise AssertionError('Row "%s" exists' % line)
 
     def _verify_step_is_empty(self, index):
-        assert_equal(self._steps[index].as_list(), [''])
+        assert self._steps[index].as_list() == ['']
 
     def _verify_step(self, index, exp_name, exp_args=[], exp_comment=None, kw=True):
         if exp_name == '':
@@ -113,12 +115,12 @@ class TestCaseCommandTest(unittest.TestCase, _FakeProject):
         if exp_comment:
             exp += [exp_comment]
         if kw:
-            assert_equal(self._steps[index].as_list(), exp)
+            assert self._steps[index].as_list() == exp
         else:
-            assert_equal(self._steps[index].as_list(kw=True), exp)  # DEBUG Special case for PartialForLoop
+            assert self._steps[index].as_list(kw=True) == exp  # DEBUG Special case for PartialForLoop
 
     def _verify_step_number_change(self, change):
-        assert_equal(len(self._steps), self._orig_number_of_steps + change)
+        assert len(self._steps) == self._orig_number_of_steps + change
 
 
 if __name__ == '__main__':

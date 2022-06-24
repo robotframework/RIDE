@@ -15,7 +15,6 @@
 
 import unittest
 from utest.resources import datafilereader
-from nose.tools import assert_true
 from robotide.ui.review import ReviewRunner
 from robotide.publish import PUBLISHER
 
@@ -32,28 +31,28 @@ class TestReview(unittest.TestCase):
         PUBLISHER.unsubscribe_all()
 
     def test_filter(self):
-        assert_true(self.helper(
+        assert self.helper(
             True, False, False, False, False, "",
-            ["Test suite 1", "Test suite 2", "Res1", "Abc", "Foobar"]))
-        assert_true(self.helper(
+            ["Test suite 1", "Test suite 2", "Res1", "Abc", "Foobar"])
+        assert self.helper(
             True, False, False, False, True, "",
-            ["Test suite 1", "Test suite 2"]))
-        assert_true(self.helper(
-            False, True, False, False, True, "", ["Res1", "Abc", "Foobar"]))
-        assert_true(self.helper(True, True, False, False, True,
-                                "1", ["Test suite 1", "Res1"]))
-        assert_true(self.helper(True, True, True, False, True,
-                                "1,2", ["Abc", "Foobar"]))
-        assert_true(self.helper(True, True, True, True, True,
-                                "^.es.*1$", ["Test suite 2", "Abc", "Foobar"]))
-        assert_true(self.helper(
+            ["Test suite 1", "Test suite 2"])
+        assert self.helper(
+            False, True, False, False, True, "", ["Res1", "Abc", "Foobar"])
+        assert self.helper(True, True, False, False, True,
+                                "1", ["Test suite 1", "Res1"])
+        assert self.helper(True, True, True, False, True,
+                                "1,2", ["Abc", "Foobar"])
+        assert self.helper(True, True, True, True, True,
+                                "^.es.*1$", ["Test suite 2", "Abc", "Foobar"])
+        assert self.helper(
             True, True, False, True, True, ",,",
-            ["Test suite 1", "Test suite 2", "Res1", "Abc", "Foobar"]))
-        assert_true(self.helper(
+            ["Test suite 1", "Test suite 2", "Res1", "Abc", "Foobar"])
+        assert self.helper(
             True, True, False, False, True, ",s,",
-            ["Test suite 1", "Test suite 2", "Res1"]))
-        assert_true(self.helper(True, True, True, True, True,
-                                ".*es,.*o{2}", ["Abc"]))
+            ["Test suite 1", "Test suite 2", "Res1"])
+        assert self.helper(True, True, True, True, True,
+                                ".*es,.*o{2}", ["Abc"])
 
     def helper(self, tcfiles, resfiles, exclude, regex, active, string,
                results):

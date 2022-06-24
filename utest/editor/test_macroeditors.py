@@ -16,7 +16,6 @@
 import unittest
 import wx
 from editor.fakeplugin import FakePlugin
-from nose.tools import assert_true
 from robotide.controller.macrocontrollers import TestCaseController
 from robotide.editor.macroeditors import TestCaseEditor
 
@@ -79,9 +78,7 @@ class MacroEditorTest(unittest.TestCase):
             self.tc_editor.kweditor = kw_mock
             getattr(kw_mock, kw_method).is_to_be_called()
             getattr(self.tc_editor, method)()
-            assert_true(getattr(kw_mock, kw_method).has_been_called(),
-                        'Should have called "%s" when calling "%s"' %
-                        (kw_method, method))
+            assert getattr(kw_mock, kw_method).has_been_called(), f"Should have called \"{kw_method}\" when calling \"{method}\""
 
 
 if __name__ == '__main__':
