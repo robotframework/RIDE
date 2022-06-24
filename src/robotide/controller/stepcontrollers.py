@@ -430,10 +430,12 @@ class StepController(_BaseController):
         if not self._is_end_step(new_step.as_list()):
             if self._is_intended_step(steps[index-1].as_list()):
                 if not self._is_intended_step(new_step.as_list()):
-                    new_step.shift_right(0)  # DEBUG Hard coded!
+                    print(f"DEBUG: StepController, INCREASE insert_after {new_step.as_list()}")
+                    new_step.increase_indent()  # shift_right(0)  # DEBUG Hard coded!
             else:
                 if self._is_intended_step(new_step.as_list()) and isinstance(new_step, StepController):
-                    new_step.shift_left(1)  # DEBUG Hard coded!
+                    print(f"DEBUG: StepController, DECREASE insert_after {new_step.as_list()}")
+                    new_step.decrease_indent()   # shift_left(1)  # DEBUG Hard coded!
         self.parent.set_raw_steps(steps[:index] + [new_step] + steps[index:])
 
     def remove_empty_columns_from_end(self):
@@ -460,6 +462,8 @@ class StepController(_BaseController):
 
     def move_down(self):
         next_step = self.parent.step(self._index() + 1)
+        print(f"DEBUG: StepController, move_down: before remove current_step: {self._step.as_list()}"
+              f"\n next_step={next_step.as_list()}")
         self.remove()
         next_step.insert_after(self._step)
 
