@@ -804,7 +804,7 @@ class Step(object):
 
     def __init__(self, content, comment=None):
         index = self.first_non_empty_cell(content)
-        print(f"DEBUG: RFLib Model enter init Step: 1st cell content={content} comment={comment} index={index}")
+        # print(f"DEBUG: RFLib Model enter init Step: 1st cell content={content} comment={comment} index={index}")
         self.assign = self._get_assign(content)
         self.indent = []
         self.args = []

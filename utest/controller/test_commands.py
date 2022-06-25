@@ -656,6 +656,9 @@ class RowMovingTest(TestCaseCommandTest):
 
     def test_move_down_for_loop_header(self):
         self._exec(MoveRowsDown([self._data_row(FOR_LOOP_HEADER)]))
+        print(f"DEBUG: After MoveRowsDown for loop header")
+        for s in self._steps:
+            print(f"{s.as_list()}")
         self._assert_step_order(STEP1,
                                 STEP2,
                                 STEP_WITH_COMMENT,
@@ -667,7 +670,9 @@ class RowMovingTest(TestCaseCommandTest):
 
     def test_move_down_loop_end(self):
         self._exec(MoveRowsDown([self._data_row(FOR_LOOP_END)]))
-        # FIXME
+        print(f"DEBUG: After MoveRowsDown for loop end")
+        for s in self._steps:
+            print(f"{s.as_list()}")
         self._assert_step_order(STEP1,
                                 STEP2,
                                 STEP_WITH_COMMENT,
@@ -1043,6 +1048,9 @@ class RowMovingTest(TestCaseCommandTest):
 
     def test_move_row_down(self):
         self._exec(MoveRowsDown([0]))
+        print(f"DEBUG: After MoveRowsDown single 0")
+        for s in self._steps:
+            print(f"{s.as_list()}")
         self._assert_step_order(STEP2, STEP1)
 
     def test_undo_move_row_down(self):
@@ -1052,6 +1060,9 @@ class RowMovingTest(TestCaseCommandTest):
 
     def test_move_rows_down(self):
         self._exec(MoveRowsDown([0,1]))
+        print(f"DEBUG: After MoveRowsDown two 0 and 1")
+        for s in self._steps:
+            print(f"{s.as_list()}")
         self._assert_step_order(STEP_WITH_COMMENT, STEP1, STEP2)
 
     def _assert_step_order(self, *steps):
