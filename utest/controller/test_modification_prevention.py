@@ -127,9 +127,11 @@ class ModificationPreventionTestCase(unittest.TestCase):
         self._verify_controller_obeys_datafile_modifiability(TestCaseController)
 
     def test_step_is_modifiable_equals_file_is_modifiable(self):
-        data = lambda:0
-        data.args = []
-        data.comment = None
+        from robotide.lib.robot.parsing.model import Step
+        data = Step('', None)
+        # data = lambda:0
+        # data.args = []
+        # data.comment = None
         self._verify_controller_obeys_datafile_modifiability(StepController, data)
 
     def test_imports_are_modifiable_equals_file_is_modifiable(self):
