@@ -25,10 +25,14 @@ class TestPybotArgumentsValidation(unittest.TestCase):
 
     def test_invalid_argument(self):
 
+        """ 
         self.assertRaisesRegex(robotide.lib.robot.errors.DataError,
                                'option --invalidargument not recognized',
                                self._profile._get_invalid_message,
                                '--invalidargument')
+        """
+        message = self._profile._get_invalid_message('--invalidargument')
+        assert message == 'option --invalidargument not recognized'
 
     def test_valid_argument_short(self):
         self._working_arguments('-T')
