@@ -646,10 +646,16 @@ class ForLoopStepController(StepController):
     def _get_comment(self, cells):
         return None
 
-    """
     def comment(self):
-        self._replace_with_new_cells(['Comment'] + self.as_list())
-    """
+        print(f"\nDEBUG: ForLoopStepController RAW STEPS: {self.get_raw_steps()}")
+        for i in self.get_raw_steps():
+            print(f"\nDEBUG: ForLoopStepController PRINT STEPS: {i.as_list()}")
+        col = self._step.inner_kw_pos
+        header = self.as_list()
+        if col > 0:
+            self._replace_with_new_cells(header[0:col-1] + ['Comment'] + header[col:])
+        else:
+            self._replace_with_new_cells(['Comment'] + header)
 
     """
     def uncomment(self):
@@ -686,6 +692,9 @@ class ForLoopStepController(StepController):
         else:
             new_cells = cells[:]
             index = self._index()
+            print(f"\nDEBUG: ForLoopStepController RAW STEPS: {self.get_raw_steps()}")
+            for i in self.get_raw_steps():
+                print(f"\nDEBUG: ForLoopStepController PRINT STEPS: {i.as_list()}")
             self.parent.replace_step(index, robotapi.Step(new_cells, comment))
             print(f"\nDEBUG: ForLoopStepController returning STEP recreate: index={index}")
         self.recalculate_keyword_column()

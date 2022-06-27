@@ -457,7 +457,7 @@ class TestCaseEditingTest(TestCaseCommandTest):
         self.assertEqual(self._steps[self._data_row(STEP_WITH_COMMENT)].as_list(), ['Comment'] + self._data_step_as_list(STEP_WITH_COMMENT)[1:])
         self.assertEqual(self._steps[self._data_row(FOR_LOOP_HEADER)].as_list(), ['Comment'] + self._data_step_as_list(FOR_LOOP_HEADER)[1:])
         self.assertEqual(self._steps[self._data_row(FOR_LOOP_STEP1)].as_list(),
-                        ['Comment'] + self._data_step_as_list(FOR_LOOP_STEP1)[1:])
+                        ['', 'Comment'] + self._data_step_as_list(FOR_LOOP_STEP1)[2:])
 
     def test_commenting_step_in_for_loop(self):
         row = self._data_row(FOR_LOOP_STEP1)
@@ -493,7 +493,7 @@ class TestCaseEditingTest(TestCaseCommandTest):
         assert (self._steps[3].as_list() ==
                      ['Comment'] + self._data_step_as_list(FOR_LOOP_HEADER)[1:])
         assert (self._steps[4].as_list() ==
-                     self._data_step_as_list(FOR_LOOP_STEP1))
+                     self._data_step_as_list(FOR_LOOP_STEP1)[1:])
 
     def test_uncommenting_rows(self):
         self._exec(CommentRows([1,2,3,4,6]))
