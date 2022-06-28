@@ -293,7 +293,7 @@ class StepController(_BaseController):
     def vars(self):
         return self._step.vars
 
-    def change(self, col, new_value):
+    def change(self, col, new_value, delete=False):
         cells = self.as_list()
         if col >= len(cells):
             cells = cells + ['' for _ in range(col - len(cells) + 1)]
@@ -302,7 +302,7 @@ class StepController(_BaseController):
         if comment:
             cells.pop()
         print(f"\nDEBUG: Stepcontrollers change calling recreate: cells={cells[:]} comment={comment}")
-        self._recreate(cells, comment)
+        self._recreate(cells, comment, delete)
 
     def insert_value_before(self, col, new_value):
         self.shift_right(col)
@@ -337,9 +337,9 @@ class StepController(_BaseController):
         return self._step.inner_kw_pos  # ._first_non_empty_cell()
 
     def recalculate_keyword_column(self):
-        print(f"\nDEBUG: Stepcontrollers Enter recalculate_keyword_column: index={self._step.inner_kw_pos }")
+        # print(f"\nDEBUG: Stepcontrollers Enter recalculate_keyword_column: index={self._step.inner_kw_pos }")
         self._step.inner_kw_pos = self._first_non_empty_cell()
-        print(f"\nDEBUG: Stepcontrollers Leave recalculate_keyword_column: index={self._step.inner_kw_pos}")
+        # print(f"\nDEBUG: Stepcontrollers Leave recalculate_keyword_column: index={self._step.inner_kw_pos}")
 
     def _has_comment_keyword(self):
         if self.keyword is None:
@@ -353,7 +353,7 @@ class StepController(_BaseController):
             self.shift_left(index_of_comment)
             self.recalculate_keyword_column()
 
-    def shift_right(self, from_column):
+    def shift_right(self, from_column, delete=False):
         cells = self.as_list()
         comment = self._get_comment(cells)
         if len(cells) > from_column:
@@ -361,7 +361,7 @@ class StepController(_BaseController):
                 cells.pop()
             cells = cells[:from_column] + [''] + cells[from_column:]
             print(f"\nDEBUG: Stepcontrollers shift_right calling recreate: cells={cells[:]}")
-            self._recreate(cells, comment)
+            self._recreate(cells, comment, delete)
 
     def shift_left(self, from_column, delete=False):
         cells = self.as_list()
@@ -438,11 +438,11 @@ class StepController(_BaseController):
                     new_step.decrease_indent()   # shift_left(1)  # DEBUG Hard coded!
         self.parent.set_raw_steps(steps[:index] + [new_step] + steps[index:])
 
-    def remove_empty_columns_from_end(self):
+    def remove_empty_columns_from_end(self, delete=True):
         cells = self.as_list()
         while cells != [] and cells[-1].strip() == '':
             cells.pop()
-        self._recreate(cells)
+        self._recreate(cells, delete=delete)
 
     def remove_empty_columns_from_beginning(self):
         cells = self._step.as_list()
@@ -674,8 +674,8 @@ class ForLoopStepController(StepController):
         self.get_raw_steps().append(step)
 
     def _recreate(self, cells, comment=None, delete=False):
-        print(f"\nDEBUG: ForLoopStepController enter recreate: self._step.inner_kw_pos={self._step.inner_kw_pos} "
-              f"self.cells={cells[:]}")
+        # print(f"\nDEBUG: ForLoopStepController enter recreate: self._step.inner_kw_pos={self._step.inner_kw_pos} "
+        #       f"self.cells={cells[:]}")
         kw_index = None
         for idx in range(0, len(cells)):
             if cells[idx] == '':
@@ -683,7 +683,7 @@ class ForLoopStepController(StepController):
             if cells[idx] == 'FOR':
                 kw_index = idx
             break
-        if kw_index:
+        if kw_index and not delete:  # Avoid IndentedStep when DeleteCells
             print(f"\nDEBUG: ForLoopStepController returning recreate_complete_for_loop_header")
             if comment:
                 self._recreate_complete_for_loop_header(['', cells[:], comment[:]])
@@ -814,7 +814,7 @@ class IntendedStepController(StepController):
     def _recreate(self, cells, comment=None,  delete=False):
         print(f"DEBUG: IntendedStepController _recreate ENTER cells: {cells} comment: {comment}")
         # idx = 1
-        if cells == [] or cells[0] == '':
+        if (cells == [] or cells[0] == '') and not delete:  # Avoid IndentedStep when DeleteCells
             """"
             if len(cells) > 1 and cells[1] != '':
                 for idx in range(0, len(cells)):
@@ -854,7 +854,7 @@ class IntendedStepController(StepController):
         self.parent.get_raw_steps().remove(self._step)
 
     # @utils.overrides(StepController)
-    def remove_empty_columns_from_end(self):
+    def remove_empty_columns_from_end(self, delete=True):
         if self._invalid:
             return
-        StepController.remove_empty_columns_from_end(self)
+        StepController.remove_empty_columns_from_end(self, delete)

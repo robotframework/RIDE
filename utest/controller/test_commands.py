@@ -126,10 +126,11 @@ class TestCaseEditingTest(TestCaseCommandTest):
     def test_changing_first_cell_in_for_loop_step(self):
         step_index = self._data_row(FOR_LOOP_STEP1)
         value = 'Foo'
-        self._exec(ChangeCellValue(step_index, 0, value))
-        # assert_equal(self._steps[step_index].as_list()[0], value)
+        self._exec(ChangeCellValue(step_index, 1, value, insert=True))
+        # for s in self._steps:
+        #     print(f"{s.as_list()}")
         self.assertEqual(self._steps[step_index].as_list(),
-                         ['', '', value] + self._data_step_as_list(FOR_LOOP_STEP1)[2:])
+                         ['', value] + self._data_step_as_list(FOR_LOOP_STEP1)[2:])
 
     def test_empty_second_cell_in_for_loop_step(self):
         step_index = self._data_row(FOR_LOOP_STEP1)

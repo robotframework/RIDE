@@ -1024,15 +1024,15 @@ class ChangeCellValue(_StepsChangingCommand):
             steps = context.steps
         step = self._step(context)
         self._undo_command = ChangeCellValue(
-            self._row, self._col, step.get_value(self._col))
+            self._row, self._col, step.get_value(self._col), insert=False)
         # print(f"DEBUG: change_steps before change from_column: ({self._row}, {self._col}, {self._value}) Line: {step.as_list()}")
         if self._insert:
             step.insert_value_before(self._col, self._value)
             # print(f"DEBUG: change_steps after insert cell Line: {context.steps[self._row].as_list()}")
         else:
-            step.change(self._col, self._value)
+            step.change(self._col, self._value, not self._insert)
         # print(f"DEBUG: change_steps after change from_column: ({self._row}, {self._col}, {self._value}) Line: {context.steps[self._row].as_list()}")
-        self._step(context).remove_empty_columns_from_end()
+        self._step(context).remove_empty_columns_from_end(not self._insert)
         # value = self._step(context).get_value(self._col).strip()
         # print(f"DEBUG: change_steps after change from_column: value={value} self.value = {self._value}")
         # DEGUG: Next validation is not possible to call when the step is Indented
@@ -1124,11 +1124,12 @@ class InsertCell(_StepsChangingCommand):
     def _params_str(self):
         return '%s, %s' % (self._row, self._col)
 
-    def change_steps(self, context):
-        self._step(context).shift_right(self._col)
-        print(f"DEBUG: InsertCell  change_steps row:{self._row} cols:{self._col} row BEFORE _recreate: {context.steps[self._row].as_list()}"
-              f"\ntype step={type(self._step(context))}")
-        self._step(context)._recreate(context.steps[self._row].as_list())
+    def change_steps(self, context, delete=False):
+        self._step(context).shift_right(self._col, delete=delete)
+        if not delete:
+            print(f"DEBUG: InsertCell  change_steps row:{self._row} cols:{self._col} row BEFORE _recreate: {context.steps[self._row].as_list()}"
+                  f"\ntype step={type(self._step(context))}")
+            self._step(context)._recreate(context.steps[self._row].as_list())
         assert self._step(context).get_value(self._col) == '', 'Should have an empty value after insert'
         return True
 
@@ -1141,7 +1142,7 @@ class DeleteCell(_StepsChangingCommand):
     def __init__(self, row, col):
         self._row = row
         self._col = col
-        print(f"\nDEBUG: DeleteCell init enter coords ({self._row}, {self._col})")
+        # print(f"\nDEBUG: DeleteCell init enter coords ({self._row}, {self._col})")
 
     def _params(self):
         return self._row, self._col
@@ -1152,7 +1153,7 @@ class DeleteCell(_StepsChangingCommand):
         self._undo_command = StepsChangingCompositeCommand(
             InsertCell(self._row, self._col),
             ChangeCellValue(self._row, self._col,
-                            step.get_value(self._col)))
+                            step.get_value(self._col), insert=False))
         step.shift_left(self._col, delete=True)
         return True
 
