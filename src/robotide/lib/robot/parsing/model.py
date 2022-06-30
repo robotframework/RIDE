@@ -731,7 +731,7 @@ class ForLoop(_WithSteps):
         self.parent = parent
         self.indent = []
         isize = idx = 0
-        print(f"\nDEBUG: ForLoop init ENTER declaration={declaration[:]}")
+        # print(f"\nDEBUG: ForLoop init ENTER declaration={declaration[:]}")
         if declaration[0] == '':
             declaration.pop(0)
         for idx in range(0, len(declaration)):
