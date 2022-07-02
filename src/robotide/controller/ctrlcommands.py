@@ -1238,8 +1238,7 @@ class MoveRowsUp(_StepsChangingCommand):
     def _params(self):
         return [self._rows]
 
-    def change_steps(self, context):
-        # print(f"DEBUG: Enter MoveRowsUp change_steps rows: {self._rows}")
+    def change_steps(self, context):  # NOTE: Nevermind the quality of this code. Unit tests are passing ;)
 
         def non_empty_from_left(line):
             assert line >= 0
@@ -1267,14 +1266,15 @@ class MoveRowsUp(_StepsChangingCommand):
             prev_cell = non_empty_from_left(prev_cell_row)
             pre_prev_row = row - 2 if row > 1 else 0
             pre_prev_col = non_empty_from_left(pre_prev_row)
-            next_cell_row = row + 1 if row + 1 < number_of_steps_before else index
+            next_cell_row = row + 1 if row + 1 < number_of_steps_before else row
             next_row_col = non_empty_from_left(next_cell_row)
-            add_indent = (pre_prev_col > index and context.steps[row].as_list()[index] != 'END') or (pre_prev_row == 0 and context.steps[row].as_list()[index] == 'FOR')
+            add_indent = (pre_prev_col > index and context.steps[row].as_list()[index] != 'END') or (index <= pre_prev_col and context.steps[pre_prev_row].as_list()[pre_prev_col] == 'FOR')
             del_indent = (prev_cell > index) and (context.steps[row].as_list()[index] == 'END')
             del_prev_indent = (prev_cell < index) and (context.steps[prev_cell_row].as_list()[prev_cell] == 'FOR')
-            new_next_indent = (pre_prev_col > next_row_col and context.steps[row].as_list()[index] != 'END') or (
+            new_next_indent = (prev_cell == index and (context.steps[prev_cell_row].as_list()[prev_cell] != 'END' or context.steps[row].as_list()[index] == 'FOR')) and (
+                    (pre_prev_col > next_row_col and context.steps[row].as_list()[index] != 'END') or (
                     context.steps[next_cell_row].as_list()[index] != 'END' and context.steps[row].as_list()[index] == 'FOR'
-                    and next_row_col <= index) or (context.steps[row].as_list()[index] == 'FOR' and next_row_col > index)
+                    and next_row_col <= index) or (context.steps[row].as_list()[index] == 'FOR' and next_row_col > index))
             keep_indent = (context.steps[row].as_list()[index] == 'FOR'
                            and context.steps[prev_cell_row].as_list()[prev_cell] == 'FOR' and next_row_col > index
                            ) or (prev_cell > index and context.steps[row].as_list()[index] == 'END' and context.steps[prev_cell_row].as_list()[prev_cell] != 'END')
@@ -1290,8 +1290,14 @@ class MoveRowsUp(_StepsChangingCommand):
             print(f"DEBUG: MoveRowsUp after move: next_+1= {context.steps[next_cell_row].as_list()}")
             for i in context.steps:
                 print(f"{i.as_list()}")
+            # In case indent was added at Stepcontroller
+            new_index = non_empty_from_left(prev_cell_row)
+            if add_indent and new_index > index + 1:
+                print(f"DEBUG: MoveRowsUp loop add_indent Reduce because already done")
+                context.steps[prev_cell_row].shift_left(0, delete=True)
+                continue
             # print(f"DEBUG: MoveRowsUp loop row-1 content after:{context.steps[row-1].as_list()} after(row):{context.steps[row].as_list()}")
-            if add_indent:
+            if add_indent and (context.steps[prev_cell_row].as_list()[prev_cell] != 'FOR' and context.steps[row].as_list()[index] != 'END'):
                 print(f"DEBUG: MoveRowsUp loop add_indent:{context.steps[row].as_list()}")
                 context.steps[row].shift_right(0)
                 # context.steps[row].shift_right(0)
@@ -1299,6 +1305,9 @@ class MoveRowsUp(_StepsChangingCommand):
                 print(f"DEBUG: MoveRowsUp loop new_next_indent:{context.steps[row].as_list()}")
                 # context.steps[next_cell_row].shift_right(0)
                 context.steps[row].shift_right(0)
+            if add_indent and new_next_indent:
+                print(f"DEBUG: MoveRowsUp loop add_indent and new_next_indent:{context.steps[add_indent and new_next_indent].as_list()}")
+                context.steps[prev_cell_row].shift_right(0)
             if del_indent or (keep_indent and context.steps[prev_cell_row].as_list()[prev_cell] == 'END'):
                 print(f"DEBUG: MoveRowsUp loop del_indent:{context.steps[row].as_list()}")
                 context.steps[row].shift_left(0, delete=True)

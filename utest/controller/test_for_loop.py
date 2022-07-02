@@ -231,7 +231,13 @@ class TestForLoop(unittest.TestCase):
         inside_2 = ['', 'Fail']
         test = self.project.datafiles[1].tests[17]
         self._verify_steps(test.steps, loop_1, inside_1, end_1, loop_2, inside_2, end_1)
+        print("DEBUG: BEFORE MOVE UP FOR Test 17:")
+        for s in test.steps:
+            print(f"#_{s.as_list()}_#{type(s)}")
         test.execute(MoveRowsUp([3]))
+        print("DEBUG: AFTER MOVE UP FOR Test 17:")
+        for s in test.steps:
+            print(f"#_{s.as_list()}_#{type(s)}")
         self._verify_steps(test.steps, loop_1, inside_1, [''] + loop_2, [''] + end_1, inside_2, end_1)
         test.execute(MoveRowsUp([2]))
         self._verify_steps(test.steps, loop_1, [''] + loop_2, [''] + inside_1, [''] + end_1, inside_2, end_1)
