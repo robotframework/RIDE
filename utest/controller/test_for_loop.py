@@ -42,9 +42,9 @@ class TestForLoop(unittest.TestCase):
             print(f"{s.as_list()}")
         self.assertEqual(test.get_cell_info(1, 1).cell_type, CellType.KEYWORD)
         test.execute(MoveRowsDown([0]))
-        # print("DEBUG: after move 0")
-        # for s in test.steps:
-        #     print(f"{s.as_list()}")
+        print("DEBUG: after move 0")
+        for s in test.steps:
+            print(f"{s.as_list()}")
         test.execute(MoveRowsDown([1]))
         # print("DEBUG: after move 1")
         # for s in test.steps:
@@ -237,8 +237,9 @@ class TestForLoop(unittest.TestCase):
         test.execute(MoveRowsUp([3]))
         print("DEBUG: AFTER MOVE UP FOR Test 17:")
         for s in test.steps:
-            print(f"#_{s.as_list()}_#{type(s)}")
+            print(f"{s.as_list()}")
         self._verify_steps(test.steps, loop_1, inside_1, [''] + loop_2, [''] + end_1, inside_2, end_1)
+        """
         test.execute(MoveRowsUp([2]))
         self._verify_steps(test.steps, loop_1, [''] + loop_2, [''] + inside_1, [''] + end_1, inside_2, end_1)
         print("DEBUG: BEFORE Test 17:")
@@ -248,6 +249,7 @@ class TestForLoop(unittest.TestCase):
         print("DEBUG: AFTER MOVE Test 17:")
         for s in test.steps:
             print(f"#_{s.as_list()}_#{type(s)}")
+        """
         #self._verify_steps(test.steps, loop_2, [''] + loop_1, [''] + inside_1, [''] + end_1, inside_2, end_1)
         # test.execute(MoveRowsDown([0]))
         # self._verify_steps(test.steps, loop_1, [''] + loop_2, inside_1, [''] + end_1, inside_2, end_1)
@@ -255,7 +257,7 @@ class TestForLoop(unittest.TestCase):
     def test_move_for_loop_header_between_for_loops(self):
         test = self.project.datafiles[1].tests[18]
         test.execute(MoveRowsDown([3]))
-        self.assertEqual(test.steps[4].as_list()[1], '${j}')
+        self.assertEqual(test.steps[4].as_list()[2], '${j}')
 
     def test_move_for_loop_in_mulitlevels(self):
         # FIXME
@@ -297,7 +299,7 @@ class TestForLoop(unittest.TestCase):
     def _verify_steps(self, steps, *expected):
         for step, exp in zip(steps, expected):
             self.assertEqual(step.as_list(), exp)
-        self.assertEqual(len(steps), len(expected), steps)
+        self.assertEqual(len(steps), len(expected))  # , steps)
 
 
 if __name__ == '__main__':
