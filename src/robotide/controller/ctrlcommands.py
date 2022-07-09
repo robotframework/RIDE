@@ -1247,7 +1247,7 @@ class MoveRowsUp(_StepsChangingCommand):
             while index < len(steps) and steps[index] == '':
                 index += 1
             if index == len(steps):
-                print(f"DEBUG: MoveRowsUp non_empty_from_left RETURN -1")
+                # print(f"DEBUG: MoveRowsUp non_empty_from_left RETURN -1")
                 return -1
             return index
 
@@ -1255,10 +1255,10 @@ class MoveRowsUp(_StepsChangingCommand):
                 self._first_row == 0:
             return False
         number_of_steps_before = len(context.steps)
-        print(f"DEBUG: MoveRowsUp START")
-        for s in context.steps:
-            print(f"{s.as_list()}")
-        print(f"DEBUG: MoveRowsUp number_of_steps_before: {number_of_steps_before}  rows: {self._rows}")
+        # print(f"DEBUG: MoveRowsUp START")
+        # for s in context.steps:
+        #     print(f"{s.as_list()}")
+        # print(f"DEBUG: MoveRowsUp number_of_steps_before: {number_of_steps_before}  rows: {self._rows}")
         for row in self._rows:
             # print(f"DEBUG: MoveRowsUp loop row: {row}\n line to move {context.steps[row].as_list()}")
             index = non_empty_from_left(row)
@@ -1281,6 +1281,7 @@ class MoveRowsUp(_StepsChangingCommand):
             keep_indent = (context.steps[row].as_list()[index] == 'FOR'
                            and context.steps[prev_cell_row].as_list()[prev_cell] == 'FOR' and next_row_col > index
                            ) or (prev_cell > index and context.steps[row].as_list()[index] == 'END' and context.steps[prev_cell_row].as_list()[prev_cell] != 'END')
+            """
             print(f"DEBUG: MoveRowsUp loop row({row}) index({index}) {context.steps[row].as_list()[index]} "
                   f"prev_cell({prev_cell}) {context.steps[prev_cell_row].as_list()[prev_cell]}\n"
                   f"next_row({next_row_col}) {context.steps[next_cell_row].as_list()[next_row_col]}\n"
@@ -1288,44 +1289,45 @@ class MoveRowsUp(_StepsChangingCommand):
                   f"add_indent({add_indent}) new_next_indent({new_next_indent}) keep_indent({keep_indent})\n"
                   f"del_indent({del_indent}) del_prev_indent({del_prev_indent})\n")
             print(f"DEBUG: MoveRowsUp before move: next_+1= {context.steps[next_cell_row].as_list()}")
+            """
             context.move_step_up(row)
-            print(f"DEBUG: MoveRowsUp after move_up inside loop")
-            print(f"DEBUG: MoveRowsUp after move: next_+1= {context.steps[next_cell_row].as_list()}")
-            for i in context.steps:
-                print(f"{i.as_list()}")
+            # print(f"DEBUG: MoveRowsUp after move_up inside loop")
+            # print(f"DEBUG: MoveRowsUp after move: next_+1= {context.steps[next_cell_row].as_list()}")
+            # for i in context.steps:
+            #     print(f"{i.as_list()}")
             # In case indent was added at Stepcontroller
             new_index = non_empty_from_left(prev_cell_row)
             if add_indent and new_index > index + 1:
-                print(f"DEBUG: MoveRowsUp loop add_indent Reduce because already done")
+                # print(f"DEBUG: MoveRowsUp loop add_indent Reduce because already done")
                 context.steps[prev_cell_row].shift_left(0, delete=True)
                 continue
             # print(f"DEBUG: MoveRowsUp loop row-1 content after:{context.steps[row-1].as_list()} after(row):{context.steps[row].as_list()}")
             prev_cell = non_empty_from_left(prev_cell_row)
             if add_indent and (context.steps[prev_cell_row].as_list()[prev_cell] != 'FOR' and context.steps[row].as_list()[index] != 'END'):
-                print(f"DEBUG: MoveRowsUp loop add_indent:{context.steps[row].as_list()}")
+                # print(f"DEBUG: MoveRowsUp loop add_indent:{context.steps[row].as_list()}")
                 context.steps[row].shift_right(0)
                 # context.steps[row].shift_right(0)
             if new_next_indent and not keep_indent and not del_indent:
-                print(f"DEBUG: MoveRowsUp loop new_next_indent:{context.steps[row].as_list()}")
+                # print(f"DEBUG: MoveRowsUp loop new_next_indent:{context.steps[row].as_list()}")
                 # context.steps[next_cell_row].shift_right(0)
                 context.steps[row].shift_right(0)
             if add_indent and new_next_indent:
-                print(f"DEBUG: MoveRowsUp loop add_indent and new_next_indent:{context.steps[add_indent and new_next_indent].as_list()}")
+                # print(f"DEBUG: MoveRowsUp loop add_indent and new_next_indent:{context.steps[add_indent and new_next_indent].as_list()}")
                 context.steps[prev_cell_row].shift_right(0)
             if del_indent or (keep_indent and context.steps[prev_cell_row].as_list()[prev_cell] == 'END'):
-                print(f"DEBUG: MoveRowsUp loop del_indent:{context.steps[row].as_list()}")
+                # print(f"DEBUG: MoveRowsUp loop del_indent:{context.steps[row].as_list()}")
                 context.steps[row].shift_left(0, delete=True)
             if del_prev_indent:
-                print(f"DEBUG: MoveRowsUp loop del_prev_indent:{context.steps[prev_cell_row].as_list()}")
+                # print(f"DEBUG: MoveRowsUp loop del_prev_indent:{context.steps[prev_cell_row].as_list()}")
                 context.steps[prev_cell_row].shift_left(0, delete=True)
             if keep_indent and prev_cell > index and len(context.steps[prev_cell_row].as_list()) > prev_cell and context.steps[prev_cell_row].as_list()[prev_cell] == 'END':
-                print(f"DEBUG: MoveRowsUp loop keep_indent and cell was END:{context.steps[prev_cell_row].as_list()}")
+                # print(f"DEBUG: MoveRowsUp loop keep_indent and cell was END:{context.steps[prev_cell_row].as_list()}")
                 context.steps[prev_cell_row].shift_left(0, delete=True)
-        print(f"DEBUG: MoveRowsUp END")
-        for s in context.steps:
-            print(f"{s.as_list()}")
+        # print(f"DEBUG: MoveRowsUp END")
+        # for s in context.steps:
+        #    print(f"{s.as_list()}")
         assert len(context.steps) == number_of_steps_before
-        return True
+        # return True
 
     @property
     def _last_row(self):
