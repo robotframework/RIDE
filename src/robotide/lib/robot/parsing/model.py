@@ -731,7 +731,7 @@ class ForLoop(_WithSteps):
         self.parent = parent
         self.indent = []
         isize = idx = 0
-        print(f"\nDEBUG: ForLoop init ENTER declaration={declaration[:]}")
+        # print(f"\nDEBUG: ForLoop init ENTER declaration={declaration[:]}")
         if declaration[0] == '':
             declaration.pop(0)
         for idx in range(0, len(declaration)):
@@ -804,7 +804,7 @@ class Step(object):
 
     def __init__(self, content, comment=None):
         index = self.first_non_empty_cell(content)
-        print(f"DEBUG: RFLib Model enter init Step: 1st cell content={content} comment={comment} index={index}")
+        # print(f"DEBUG: RFLib Model enter init Step: 1st cell content={content} comment={comment} index={index}")
         self.assign = self._get_assign(content)
         self.indent = []
         self.args = []
