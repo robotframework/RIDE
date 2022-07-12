@@ -1127,8 +1127,8 @@ class InsertCell(_StepsChangingCommand):
     def change_steps(self, context, delete=False):
         self._step(context).shift_right(self._col, delete=delete)
         if not delete:
-            print(f"DEBUG: InsertCell  change_steps row:{self._row} cols:{self._col} row BEFORE _recreate: {context.steps[self._row].as_list()}"
-                  f"\ntype step={type(self._step(context))}")
+            # print(f"DEBUG: InsertCell  change_steps row:{self._row} cols:{self._col} row BEFORE _recreate: {context.steps[self._row].as_list()}"
+            #      f"\ntype step={type(self._step(context))}")
             self._step(context)._recreate(context.steps[self._row].as_list())
         assert self._step(context).get_value(self._col) == '', 'Should have an empty value after insert'
         return True
@@ -1149,7 +1149,7 @@ class DeleteCell(_StepsChangingCommand):
 
     def change_steps(self, context):
         step = self._step(context)
-        print(f"DEBUG: DeleteCell enter change: {step.as_list()}")
+        # print(f"DEBUG: DeleteCell enter change: {step.as_list()}")
         self._undo_command = StepsChangingCompositeCommand(
             InsertCell(self._row, self._col),
             ChangeCellValue(self._row, self._col,
@@ -1184,7 +1184,7 @@ class DeleteRow(_RowChangingCommand):
 
     def _change_value(self, context):
         step = context.steps[self._row]
-        print(f"DEBUG: DeleteRow enter change row={self._row}: {step.as_list()}")
+        # print(f"DEBUG: DeleteRow enter change row={self._row}: {step.as_list()}")
         self._undo_command = StepsChangingCompositeCommand(
             AddRow(self._row), PasteArea((self._row, 0), [step.as_list()]))
         context.remove_step(self._row)
@@ -1212,7 +1212,7 @@ class AddRow(_RowChangingCommand):
 class CommentRow(_RowChangingCommand):
 
     def _change_value(self, context):
-        print(f"DEBUG: enter CommentRow")
+        # print(f"DEBUG: enter CommentRow")
         self._step(context).comment()
         return True
 
@@ -1327,7 +1327,7 @@ class MoveRowsUp(_StepsChangingCommand):
         # for s in context.steps:
         #    print(f"{s.as_list()}")
         assert len(context.steps) == number_of_steps_before
-        # return True
+        return True
 
     @property
     def _last_row(self):
@@ -1370,7 +1370,7 @@ class MoveRowsDown(_StepsChangingCommand):
             if context.steps[row + 1].as_list()[existing_start] == 'END' and not keep_indent:
                 decrease_indent = True
             context.move_step_down(row)
-            print(f"DEBUG: MoveRowsDown after move: {[context.steps[r].as_list() for r in range(len(context.steps))]}")
+            # print(f"DEBUG: MoveRowsDown after move: {[context.steps[r].as_list() for r in range(len(context.steps))]}")
             new_existing_start = context.steps[row]._first_non_empty_cell()
             if decrease_indent:
                 # print(f"DEBUG: MoveRowsDown before decrease row: {row+1} {context.steps[row+1].as_list()}")

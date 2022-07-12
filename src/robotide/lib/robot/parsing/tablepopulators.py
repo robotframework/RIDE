@@ -89,7 +89,7 @@ class _TablePopulator(Populator):
 class SettingTablePopulator(_TablePopulator):
 
     def _get_populator(self, row):
-        setter = self._table.get_setter(row.head)
+        setter = self._table.get_setter(row.head) if row.head else None
         if not setter:
             return NullPopulator()
         if isinstance(setter.__self__, Documentation):
