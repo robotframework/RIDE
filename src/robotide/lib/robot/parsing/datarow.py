@@ -73,6 +73,17 @@ class DataRow(object):
         return index  # if index < len(self.cells) else index - 1
 
     @property
+    def first_non_empty_cell(self):
+        # print(f"DEBUG: datarow enter _first_non_empty_cell")
+        # if self.cells:
+        #    print(f"DEBUG: datarow _first_non_empty_cell: {self.cells[:]}")
+        index = 0
+        while index < len(self.cells) and self.cells[index] == '':
+            index += 1
+        # print(f"DEBUG: datarow RETURNING  _first_non_empty_cell index ={index}")
+        return index  # if index < len(self.cells) else index - 1
+
+    @property
     def head(self):
         # print(f"DEBUG: datarow head={self.cells[:] if self.cells else 'NONE!!!'}")
         return self.cells[0] if self.cells else ''
@@ -104,8 +115,8 @@ class DataRow(object):
         stack = inspect.stack()
         the_class = stack[1][0].f_locals["self"].__class__.__name__
         the_method = stack[1][0].f_code.co_name
-        print("DEBUG: datarow dedent called by {}.{}()".format(the_class, the_method))
-        print(f"DEBUG: datarow dedent={datarow.all[:]}")
+        # print("DEBUG: datarow dedent called by {}.{}()".format(the_class, the_method))
+        # print(f"DEBUG: datarow dedent={datarow.all[:]}")
         return datarow
 
     def starts_for_loop(self):
@@ -120,7 +131,7 @@ class DataRow(object):
 
     def starts_test_or_user_keyword_setting(self):
         head = self.head
-        print(f"DEBUG: datarow CALLING starts_test_or_user_keyword_setting head={head}")
+        # print(f"DEBUG: datarow CALLING starts_test_or_user_keyword_setting head={head}")
         return head and head[0] == '[' and head[-1] == ']'
 
     def test_or_user_keyword_setting_name(self):
