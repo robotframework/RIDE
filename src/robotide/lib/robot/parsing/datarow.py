@@ -56,12 +56,10 @@ class DataRow(object):
                         "Framework 3.2." % self.source)
 
     def _purge_empty_cells(self, row):
-        # DEBUG Lets not remove empty cells
-        # while row and not row[-1]:
-        #    row.pop()
+        while row and not row[-1]:
+            row.pop()
         # Cells with only a single backslash are considered empty
         return [cell if cell != '\\' else '' for cell in row]
-        # return row
 
     @property
     def first_non_empty_cell(self):

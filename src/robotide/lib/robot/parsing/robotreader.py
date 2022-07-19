@@ -25,11 +25,13 @@ class RobotReader(object):
 
     def __init__(self, spaces=2):
         self._spaces = spaces
-        self._space_splitter = re.compile(r"[ \t\xa0]{"+f"{self._spaces}"+"}|\t+")
+        # self._space_splitter = re.compile(r"[ \t\xa0]{"+f"{self._spaces}"+"}|\t+")  # Only change when is cell_section
+        self._space_splitter = re.compile(r"[ \t\xa0]{2}|\t+")
         self._pipe_splitter = re.compile(u'[ \t\xa0]+\|(?=[ \t\xa0]+)')
         self._pipe_starts = ('|', '| ', '|\t', u'|\xa0')
         self._pipe_ends = (' |', '\t|', u'\xa0|')
         self._separator_check = False
+        self._cell_section = False
         # print(f"DEBUG: RFLib RobotReader init spaces={self._spaces}")
 
     def read(self, file, populator, path=None):
@@ -72,8 +74,11 @@ class RobotReader(object):
                 else:
                     start_s_quote = True
             if line[i] == '#' and not start_d_quote and not start_s_quote:
+                if i == 0:
+                    index = 0
+                    break
                 try:
-                    if line[i-1] != '\\' and (line[i+1] == ' ' or line[i+1] == '#'):
+                    if i>0 and line[i-1] != '\\' and (line[i+1] == ' ' or line[i+1] == '#'):
                         index = i
                         # print(f"DEBUG: RFLib RobotReader sharp_strip BREAK at # index={index}")
                         break
@@ -139,6 +144,13 @@ class RobotReader(object):
         return ' '.join(string.split())
 
     def check_separator(self, line):
+        """
+        if line.startswith('*') and not self._cell_section:
+            row = line.strip('*').strip(' ')
+            if row in ['Keyword', 'Keywords', 'Test Case', 'Test Cases', 'Task', 'Tasks', 'Variable', 'Variables']:
+                self._cell_section = True
+                # self._space_splitter = re.compile(r"[ \t\xa0]{" + f"{self._spaces}" + "}|\t+")
+        """
         if not line.startswith('*'):
             if not self._separator_check and line[:2] in self._pipe_starts:
                 self._separator_check = True
