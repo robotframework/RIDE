@@ -46,15 +46,19 @@ class TestForLoop(unittest.TestCase):
         for s in test.steps:
             print(f"{s.as_list()}")
         test.execute(MoveRowsDown([1]))
-        # print("DEBUG: after move 1")
-        # for s in test.steps:
-        #     print(f"{s.as_list()}")
-        self.assertEqual(test.get_cell_info(2,3).cell_type, CellType.OPTIONAL)
-        test.execute(Undo())
-        test.execute(Undo())
-        print("DEBUG: after undos, should be equal to 0")
+        print("DEBUG: after move 1")
         for s in test.steps:
             print(f"{s.as_list()}")
+        self.assertEqual(test.get_cell_info(2,3).cell_type, CellType.OPTIONAL)
+        test.execute(Undo())
+        print("DEBUG: after UNDO move dwn 1")
+        for s in test.steps:
+            print(f"{s.as_list()}")
+        test.execute(Undo())
+        print("DEBUG: after UNDO move dwn 0")
+        for s in test.steps:
+            print(f"{s.as_list()}")
+        print("DEBUG: after undos, should be equal to 0")
         self.assertEqual(test.get_cell_info(1,1).cell_type, CellType.KEYWORD)
         # print("DEBUG: Test 0:")
         # for s in test.steps:

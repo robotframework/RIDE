@@ -366,6 +366,10 @@ class StepController(_BaseController):
     def shift_left(self, from_column, delete=False):
         cells = self.as_list()
         # print(f"DEBUG: shift_left enter cells: {cells} from_column: {from_column}")
+        while not delete and from_column > 0 and cells[from_column] != '':
+            from_column -= 1
+        if not delete and from_column == 0 and cells[from_column] != '':
+            return
         comment = self._get_comment(cells)
         if len(cells) > from_column:
             if comment:
