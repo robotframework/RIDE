@@ -246,8 +246,9 @@ class _TestCaseUserKeywordPopulator(Populator):
             if isinstance(setter.__self__, Documentation):
                 return DocumentationPopulator(setter)
             return SettingPopulator(setter)
-        if row.starts_for_loop():
-            return ForLoopPopulator(self._test_or_uk.add_for_loop)
+        # REMOVE SPECIAL FOR PARSING
+        # if row.starts_for_loop():
+        #    return ForLoopPopulator(self._test_or_uk.add_for_loop)
         return StepPopulator(self._test_or_uk.add_step)
 
     def _setting_setter(self, row):

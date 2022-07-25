@@ -629,7 +629,11 @@ class TestCase(_WithSteps, _WithSettings):
         return self.parent.directory
 
     def add_for_loop(self, declaration, comment=None):
-        self.steps.append(ForLoop(self, ['', 'FOR'] + declaration, comment))
+        # DEBUG
+        #self.steps.append(ForLoop(self, ['FOR'] + declaration, comment=comment))
+        # print(f"DEBUG: Model add_for_loop init={['FOR'] + declaration} comment:{comment}")
+        self.steps.append(Step(['FOR'] + declaration, comment))
+        # : Model add_for_loop return steps:{self.steps[-1].as_list()} comment:{comment}")
         return self.steps[-1]
 
     def end_for_loop(self):
@@ -727,11 +731,11 @@ class ForLoop(_WithSteps):
     normalized_flavors = NormalizedDict((f, f) for f in flavors)
     inner_kw_pos = None
 
-    def __init__(self, parent, declaration, comment=None):
+    def __init__(self, parent, declaration, indentation=[], comment=None):
         self.parent = parent
-        self.indent = []
+        self.indent = indentation if isinstance(indentation, list) else [indentation]
         isize = idx = 0
-        # print(f"\nDEBUG: ForLoop init ENTER declaration={declaration[:]}")
+        print(f"\nDEBUG: ForLoop init ENTER declaration={declaration[:]}")
         if declaration[0] == '':
             declaration.pop(0)
         for idx in range(0, len(declaration)):
@@ -742,7 +746,7 @@ class ForLoop(_WithSteps):
                 self.first_kw = declaration[idx]
                 break
         self.inner_kw_pos = idx
-        # print(f"\nDEBUG: ForLoop init indent {isize} self.inner_kw_pos={self.inner_kw_pos}\ndeclaration={declaration[:]}")
+        print(f"\nDEBUG: ForLoop init indent {isize} self.inner_kw_pos={self.inner_kw_pos}\ndeclaration={declaration[:]}")
         # compensation for double FOR
         if declaration[self.inner_kw_pos+1] == declaration[self.inner_kw_pos] == 'FOR':
             declaration.pop(self.inner_kw_pos+1)
@@ -777,7 +781,7 @@ class ForLoop(_WithSteps):
     def is_for_loop(self):
         return True
 
-    def as_list(self, indent=False, include_comment=True):
+    def as_list(self, indent=True, include_comment=True):
         comments = self.comment.as_list() if include_comment else []
         # print(f"DEBUG: Model ForLoop as_list: indent={self.indent[:]} self.first_kw={self.first_kw}\n"
         #       f"{self.vars} + {self.flavor} + {self.items} + {comments}")
@@ -804,7 +808,7 @@ class Step(object):
 
     def __init__(self, content, comment=None):
         index = self.first_non_empty_cell(content)
-        # print(f"DEBUG: RFLib Model enter init Step: 1st cell content={content} comment={comment} index={index}")
+        # : RFLib Model enter init Step: 1st cell content={content} comment={comment} index={index}")
         self.assign = self._get_assign(content)
         self.indent = []
         self.args = []
@@ -821,14 +825,14 @@ class Step(object):
             self.name = content.pop(index) if content else None
         else:
             self.name = None
-        # print("DEBUG RFLib init Step: self.name %s" % self.name)
+        # print(f"DEBUG RFLib init Step: self.name {self.name}")
 
     def _get_assign(self, content):
         assign = []
         idx = 0
         while content and is_var(content[idx].rstrip('= ')):
             assign.append(content.pop(idx))
-            if idx < self.inner_kw_pos:
+            if idx < self.inner_kw_pos or (self.inner_kw_pos < len(content) and content[self.inner_kw_pos] == 'FOR' and idx < self.inner_kw_pos + 2):
                 idx += 1
         return assign
 
@@ -836,19 +840,20 @@ class Step(object):
         return not (self.assign or self.name or self.args)
 
     def is_for_loop(self):
+        ############### return self.name == 'FOR'
         return False
 
     def is_set(self):
         return True
 
     def as_list(self, indent=False, include_comment=True):
-        # print(f"\nDEBUG: RFLib Model Step enter as_list  {self.name}")
+        # print(f"DEBUG: RFLib Model Step enter as_list  {self.name}")
         kw = [self.name] if self.name is not None else []
-        # print(f"DEBUG RFLib Model Step: as_list() self.name={self.name} kw={kw} COMMENT={self.comment.as_list()}")
         if self.comment:
             comments = self.comment.as_list() if include_comment else []
         else:
             comments = []
+        #  RFLib Model Step: as_list() self.name={self.name} kw={kw} COMMENT={self.comment.as_list()}")
         # print(f"DEBUG RFLib Model Step: as_list() self.name={self.name} kw={kw}\n comments={comments} args={self.args}" )
         #if len(self.indent) == 0:
         #    self.indent.insert(0, '')  # Always send first indent
@@ -856,7 +861,7 @@ class Step(object):
             self.indent.insert(0, '')
         data = self.indent + self.assign + kw + self.args + comments
         # print(f"DEBUG RFLib Model Step: as_list() self.name={self.name} kw={kw}\n comments={comments} data={data}")
-        # print("DEBUG RFLib Model Step: data %s" % data)
+        # print(f"DEBUG RFLib Model Step: data {data}")
         return data
 
     def first_non_empty_cell(self, content):

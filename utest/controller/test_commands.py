@@ -65,9 +65,9 @@ class FileHandlingCommandsTest(TestCaseCommandTest):
         print(f"DEBUG: test_file_saving_purifies: steps: ")
         for i in self._ctrl.steps:
             print(f"{i.as_list()}")
-        assert len(self._ctrl.steps) == self._orig_number_of_steps-1  # FIXME
+        assert len(self._ctrl.steps) == self._orig_number_of_steps + 1
         other = self._get_macro_by_name(other_name)
-        assert len(other.steps) == self._orig_number_of_steps+1  # FIXME
+        assert len(other.steps) == self._orig_number_of_steps + 1
 
     def test_undo_after_file_save_does_not_break(self):
         self._exec(SaveFile())
@@ -194,26 +194,23 @@ class TestCaseEditingTest(TestCaseCommandTest):
         self._exec(ChangeCellValue(self._data_row(FOR_LOOP_HEADER), 0, 'Keyword'))
         assert (self._steps[self._data_row(FOR_LOOP_HEADER)].as_list() ==
                       ['Keyword'] + self._data_step_as_list(FOR_LOOP_HEADER)[2:])
-        # FIXME
-        # self._verify_step_unchanged(FOR_LOOP_STEP1)
-        assert len(self._steps) == self._orig_number_of_steps-2
+        self._verify_step_unchanged(FOR_LOOP_STEP1)
+        assert len(self._steps) == self._orig_number_of_steps
 
     def test_changing_for_loop_header_argument(self):
         self._exec(ChangeCellValue(self._data_row(FOR_LOOP_HEADER), 1, 'Keyword'))
         assert (self._steps[self._data_row(FOR_LOOP_HEADER)].as_list() ==
                       ['FOR', 'Keyword'] + self._data_step_as_list(FOR_LOOP_HEADER)[3:])
-        # FIXME
-        ### self._verify_step_unchanged(FOR_LOOP_STEP1)
-        assert len(self._steps) == self._orig_number_of_steps-2
+        self._verify_step_unchanged(FOR_LOOP_STEP1)
+        assert len(self._steps) == self._orig_number_of_steps
 
     def test_changing_for_loop_header_in_clause(self):
         self._exec(ChangeCellValue(self._data_row(FOR_LOOP_HEADER), 2, 'Keyword'))
         assert (self._steps[self._data_row(FOR_LOOP_HEADER)].as_list() ==
                       ['FOR', '${i}', 'Keyword'] + self._data_step_as_list(FOR_LOOP_HEADER)[4:])
-        # FIXME
-        # assert_equal(self._steps[self._data_row(FOR_LOOP_STEP1)].as_list(), self._data_step_as_list(FOR_LOOP_STEP1))
-        assert self._steps[self._data_row(FOR_LOOP_STEP1)].as_list() == self._data_step_as_list(FOR_LOOP_END[2:])
-        assert len(self._steps) == self._orig_number_of_steps-2
+        assert self._steps[self._data_row(FOR_LOOP_STEP1)].as_list() == self._data_step_as_list(FOR_LOOP_STEP1[2:])
+        # assert self._steps[self._data_row(FOR_LOOP_STEP1)].as_list() == self._data_step_as_list(FOR_LOOP_END[2:])
+        assert len(self._steps) == self._orig_number_of_steps
 
     def test_deleting_row(self):
         self._exec(DeleteRow(0))
@@ -285,26 +282,24 @@ class TestCaseEditingTest(TestCaseCommandTest):
         self._exec(AddRow(2))
         assert len(self._steps) == self._orig_number_of_steps+3
         self._exec(Purify())
-        assert len(self._steps) == self._orig_number_of_steps-2
+        assert len(self._steps) == self._orig_number_of_steps
 
     def test_purify_can_be_undone(self):
         self._exec(AddRow(1))
         self._exec(AddRow(2))
-        assert len(self._steps) == self._orig_number_of_steps+2
+        assert len(self._steps) == self._orig_number_of_steps + 2
         ## print(f"DEBUG: before Purify {self.debug()}")
         print(f"DEBUG: before Purify")
         self._exec(Purify())
-        assert len(self._steps) == self._orig_number_of_steps-2
-        self._exec(Undo())
-        # FIXME
         assert len(self._steps) == self._orig_number_of_steps
+        self._exec(Undo())
+        assert len(self._steps) == self._orig_number_of_steps + 2
 
     def test_purify_removes_rows_with_no_data(self):
-        # FIXME
         self._exec(ChangeCellValue(0,0, ''))
         self._exec(ChangeCellValue(0,1, ''))
         self._exec(Purify())
-        assert len(self._steps) == self._orig_number_of_steps-3
+        assert len(self._steps) == self._orig_number_of_steps - 1
 
     def test_can_add_values_to_empty_row(self):
         self._exec(AddRow(-1))
@@ -955,12 +950,14 @@ class RowMovingTest(TestCaseCommandTest):
             st = sep.join(row)
             return st
         self._exec(MoveRowsDown([self._data_row(FOR_LOOP_HEADER)]))
+        # print("DEBUG: after move down for")
+        # for s in self._steps:
+        #     print(f"{s.as_list()}")
         self._exec(MoveRowsUp([self._data_row(FOR_LOOP_END)]))
         # print("DEBUG: after move for end 1")
         # for row in range(0, len(self._steps)):
         #     self._data[row + 1] = str_step(self._steps[row].as_list())
         #     print("%s" % self._data[row + 1])
-        # FIXME
         self._assert_step_order(STEP1,
                                 STEP2,
                                 STEP_WITH_COMMENT,

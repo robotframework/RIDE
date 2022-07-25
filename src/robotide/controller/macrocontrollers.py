@@ -139,7 +139,7 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         self._has_steps_changed = True
 
     def move_step_up(self, index):
-        print(f"DEBUG: macrocontrollers move_step_up index={index} step={self.step(index).as_list()}")
+        # print(f"DEBUG: macrocontrollers move_step_up index={index} step={self.step(index).as_list()}")
         self.step(index).move_up()
         self._has_steps_changed = True
 

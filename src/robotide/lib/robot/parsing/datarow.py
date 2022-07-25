@@ -23,8 +23,12 @@ class DataRow(object):
 
     def __init__(self, cells, source=None):
         self.source = source
-        self.cells, self.comments = self._parse(cells)
-        # print(f"DEBUG: DataRow init cells and comments cells={self.cells} + {self.comments} \n")
+        if cells:
+            self.cells, self.comments = self._parse(cells)
+            # print(f"DEBUG: DataRow init cells and comments cells={self.cells} + {self.comments} \n")
+        else:
+            self.cells = []
+            self.comments = []
 
     def _parse(self, row):
         data = []
@@ -73,19 +77,9 @@ class DataRow(object):
         return index  # if index < len(self.cells) else index - 1
 
     @property
-    def first_non_empty_cell(self):
-        # print(f"DEBUG: datarow enter _first_non_empty_cell")
-        # if self.cells:
-        #    print(f"DEBUG: datarow _first_non_empty_cell: {self.cells[:]}")
-        index = 0
-        while index < len(self.cells) and self.cells[index] == '':
-            index += 1
-        # print(f"DEBUG: datarow RETURNING  _first_non_empty_cell index ={index}")
-        return index  # if index < len(self.cells) else index - 1
-
-    @property
     def head(self):
         # print(f"DEBUG: datarow head={self.cells[:] if self.cells else 'NONE!!!'}")
+        # return self.cells[self.first_non_empty_cell] if self.cells else ''
         return self.cells[0] if self.cells else ''
 
     @property
@@ -121,10 +115,13 @@ class DataRow(object):
 
     def starts_for_loop(self):
         # head = self.head
+        head = self.cells[self.first_non_empty_cell]
         if not self.head:
-            head = self.tail[0]
-        else:
-            head = self.head
+            self.__setattr__(self.head, head)
+            # print(f"DEBUG: datarow starts_for_loop NEW CALCULATION head={head}")
+        # else:
+        #    head = self.head
+        # print(f"DEBUG: datarow starts_for_loop head={head}")
         if head.startswith(':'):
             return head.replace(':', '').replace(' ', '').upper() == 'FOR'
         return head == 'FOR'
