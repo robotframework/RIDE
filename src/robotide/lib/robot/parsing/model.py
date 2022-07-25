@@ -890,6 +890,9 @@ class Step(object):
         self.indent = self.indent[:-1] if len(self.indent) > 0 else []
         return len(self.indent)
 
+    def add_step(self, content, comment=None):
+        self.__init__(content, comment)
+        return self
 
 class OldStyleSettingAndVariableTableHeaderMatcher(object):
 
