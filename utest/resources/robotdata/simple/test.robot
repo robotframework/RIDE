@@ -11,6 +11,7 @@ Keyword
   Log  ${foo}
   ${bar}=  Set Variable  value2
   Log  ${foo} and ${bar}
-  : FOR  ${i}  IN  1  2  3
+  FOR  ${i}  IN  1  2  3
      Log  ${i}
+  END
   Log  ${i} out

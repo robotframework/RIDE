@@ -103,7 +103,7 @@ class StepController(_BaseController):
     def is_assigning(self, value):
         for assignment in self.assignments:
             if assignment.replace('=', '').strip() == \
-                    value.replace('=', '').strip():
+                    value.replace('=', '').strip() or self._is_for_loop():
                 return True
         if value.strip().endswith('='):
             return True
@@ -131,6 +131,8 @@ class StepController(_BaseController):
         else:
             args = []
         args_amount = len(args)
+        print(f"DEBUG: StepController _get_cell_position step is FOR?"
+              f" {self.get_value(keyword_col) == 'FOR'} is assigning? {self.is_assigning(value_at_col)}")
         if (column <= keyword_col or self.get_value(keyword_col) == "FOR") and self.is_assigning(value_at_col):
             return CellPosition(CellType.ASSIGN, None)
         if col < keyword_col:
@@ -495,6 +497,9 @@ class StepController(_BaseController):
     def _is_partial_for_loop_step(self, cells):
         return cells and (cells[self._keyword_column].replace(' ', '').upper() == ':FOR'
                           or cells[self._keyword_column] == 'FOR')
+
+    def _is_for_loop(self):
+        return self.keyword == 'FOR'
 
     def _is_intended_step(self, cells):
         return cells and not cells[0].strip() and any(c.strip() for c in cells) and self._index() > 0

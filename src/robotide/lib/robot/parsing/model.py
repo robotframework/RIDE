@@ -808,8 +808,9 @@ class Step(object):
 
     def __init__(self, content, comment=None):
         index = self.first_non_empty_cell(content)
-        # : RFLib Model enter init Step: 1st cell content={content} comment={comment} index={index}")
         self.assign = self._get_assign(content)
+        print(f"DEBUG: RFLib Model enter init Step: 1st cell content={content} comment={comment} index={index}"
+              f" assign={self.assign}")
         self.indent = []
         self.args = []
         self.name = None
@@ -831,8 +832,12 @@ class Step(object):
         assign = []
         idx = 0
         while content and is_var(content[idx].rstrip('= ')):
+            print(f"DEBUG RFLib loop _get_assign: idx={idx} {content[idx]}")
             assign.append(content.pop(idx))
-            if idx < self.inner_kw_pos or (self.inner_kw_pos < len(content) and content[self.inner_kw_pos] == 'FOR' and idx < self.inner_kw_pos + 2):
+            if self.inner_kw_pos < len(content) and content[self.inner_kw_pos] == 'FOR' and idx < self.inner_kw_pos + 2:
+                idx += 1
+                print(f"DEBUG RFLib condition is FOR _get_assign: idx={idx} {content[idx]}")
+            elif idx < self.inner_kw_pos:
                 idx += 1
         return assign
 
