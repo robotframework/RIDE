@@ -102,8 +102,7 @@ class StepController(_BaseController):
 
     def is_assigning(self, value):
         for assignment in self.assignments:
-            if assignment.replace('=', '').strip() == \
-                    value.replace('=', '').strip() or self._is_for_loop():
+            if assignment.replace('=', '').strip() == value.replace('=', '').strip():
                 return True
         if value.strip().endswith('='):
             return True

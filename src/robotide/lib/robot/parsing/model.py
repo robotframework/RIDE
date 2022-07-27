@@ -839,7 +839,7 @@ class Step(object):
                     positional = True
                 else:
                     positional = False
-                if self.inner_kw_pos < idx < self.inner_kw_pos + 2 < len(content) and content[self.inner_kw_pos] == 'FOR':
+                if self.inner_kw_pos < idx <= self.inner_kw_pos + 2 < len(content) and content[self.inner_kw_pos] == 'FOR':
                     positional = True
                 if self.inner_kw_pos < idx < len(content) and re_set_var.match(content[self.inner_kw_pos]):
                     positional = True
@@ -871,7 +871,11 @@ class Step(object):
         #    self.indent.insert(0, '')  # Always send first indent
         if indent:
             self.indent.insert(0, '')
-        if self.name == 'FOR':
+        if len(kw) > 0:
+            is_scope_set = re_set_var.match(kw[0])
+        else:
+            is_scope_set = False
+        if self.name == 'FOR' or is_scope_set:
             data = self.indent + kw + self.assign + self.args + comments
         else:
             data = self.indent + self.assign + kw + self.args + comments
