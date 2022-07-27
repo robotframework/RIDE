@@ -15,6 +15,7 @@
 
 import os
 import copy
+import re
 import warnings
 
 from robotide.lib.robot.errors import DataError
@@ -29,6 +30,7 @@ from .settings import (Documentation, Fixture, Timeout, Tags, Metadata,
                        Library, Resource, Variables, Arguments, Return,
                        Template, MetadataList, ImportList)
 
+re_set_var = re.compile(r"(?i)^set[ ](\S.*)+variable$")
 
 def TestData(parent=None, source=None, include_suites=None,
              warn_on_skipped='DEPRECATED', extensions=None, settings=None):
@@ -809,8 +811,8 @@ class Step(object):
     def __init__(self, content, comment=None):
         index = self.first_non_empty_cell(content)
         self.assign = self._get_assign(content)
-        print(f"DEBUG: RFLib Model enter init Step: 1st cell content={content} comment={comment} index={index}"
-              f" assign={self.assign}")
+        # print(f"DEBUG: RFLib Model enter init Step: 1st cell content={content} comment={comment} index={index}"
+        #       f" assign={self.assign}")
         self.indent = []
         self.args = []
         self.name = None
@@ -831,13 +833,18 @@ class Step(object):
     def _get_assign(self, content):
         assign = []
         idx = 0
-        while content and is_var(content[idx].rstrip('= ')):
-            print(f"DEBUG RFLib loop _get_assign: idx={idx} {content[idx]}")
-            assign.append(content.pop(idx))
-            if self.inner_kw_pos < len(content) and content[self.inner_kw_pos] == 'FOR' and idx < self.inner_kw_pos + 2:
-                idx += 1
-                print(f"DEBUG RFLib condition is FOR _get_assign: idx={idx} {content[idx]}")
-            elif idx < self.inner_kw_pos:
+        if content and content != ['']:
+            while idx < len(content):
+                if idx <= self.inner_kw_pos:
+                    positional = True
+                else:
+                    positional = False
+                if self.inner_kw_pos < idx < self.inner_kw_pos + 2 < len(content) and content[self.inner_kw_pos] == 'FOR':
+                    positional = True
+                if self.inner_kw_pos < idx < len(content) and re_set_var.match(content[self.inner_kw_pos]):
+                    positional = True
+                if is_var(content[idx].rstrip('= ')) and positional:
+                    assign.append(content.pop(idx))
                 idx += 1
         return assign
 
@@ -845,7 +852,7 @@ class Step(object):
         return not (self.assign or self.name or self.args)
 
     def is_for_loop(self):
-        ############### return self.name == 'FOR'
+        # TODO: remove steps ForLoop: return self.name == 'FOR'
         return False
 
     def is_set(self):
@@ -864,7 +871,10 @@ class Step(object):
         #    self.indent.insert(0, '')  # Always send first indent
         if indent:
             self.indent.insert(0, '')
-        data = self.indent + self.assign + kw + self.args + comments
+        if self.name == 'FOR':
+            data = self.indent + kw + self.assign + self.args + comments
+        else:
+            data = self.indent + self.assign + kw + self.args + comments
         # print(f"DEBUG RFLib Model Step: as_list() self.name={self.name} kw={kw}\n comments={comments} data={data}")
         # print(f"DEBUG RFLib Model Step: data {data}")
         return data

@@ -49,7 +49,7 @@ class TestForLoop(unittest.TestCase):
         print("DEBUG: after move 1")
         for s in test.steps:
             print(f"{s.as_list()}")
-        self.assertEqual(test.get_cell_info(2,3).cell_type, CellType.OPTIONAL)
+        self.assertEqual(test.get_cell_info(2,3).cell_type, CellType.ASSIGN)
         test.execute(Undo())
         print("DEBUG: after UNDO move dwn 1")
         for s in test.steps:

@@ -146,7 +146,8 @@ class Namespace(object):
     @staticmethod
     def _looks_like_variable(start):
         return len(start) == 1 and start[0] in ['$', '@', '&'] \
-            or (len(start) >= 2 and start[:2] in ['${', '@{', '&{'])
+            or (len(start) >= 2 and start[:2] in ['${', '@{', '&{']) \
+            or len(start) >= 2 and start[0] == '$'
 
     def _variable_suggestions(self, controller, start, ctx):
         self._add_kw_arg_vars(controller, ctx.vars)

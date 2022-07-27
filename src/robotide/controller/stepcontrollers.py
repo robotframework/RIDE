@@ -131,8 +131,8 @@ class StepController(_BaseController):
         else:
             args = []
         args_amount = len(args)
-        print(f"DEBUG: StepController _get_cell_position step is FOR?"
-              f" {self.get_value(keyword_col) == 'FOR'} is assigning? {self.is_assigning(value_at_col)}")
+        # print(f"DEBUG: StepController _get_cell_position step is FOR?"
+        #       f" {self.get_value(keyword_col) == 'FOR'} is assigning? {self.is_assigning(value_at_col)}")
         if (column <= keyword_col or self.get_value(keyword_col) == "FOR") and self.is_assigning(value_at_col):
             return CellPosition(CellType.ASSIGN, None)
         if col < keyword_col:
@@ -303,13 +303,13 @@ class StepController(_BaseController):
         comment = self._get_comment(cells)
         if comment:
             cells.pop()
-        print(f"\nDEBUG: Stepcontrollers change calling recreate: cells={cells[:]} comment={comment}")
+        # print(f"\nDEBUG: Stepcontrollers change calling recreate: cells={cells[:]} comment={comment}")
         self._recreate(cells, comment, delete)
 
     def insert_value_before(self, col, new_value):
         self.shift_right(col)
         cells = self.as_list()
-        print(f"\nDEBUG: Stepcontrollers insert_value_before after shift_right: cells={cells[:]} \ncol={col} inner_kw={self._step.inner_kw_pos}")
+        # print(f"\nDEBUG: Stepcontrollers insert_value_before after shift_right: cells={cells[:]} \ncol={col} inner_kw={self._step.inner_kw_pos}")
         self.change(col, new_value)
 
     def comment(self):

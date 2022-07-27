@@ -997,6 +997,7 @@ class ExtractKeyword(_Command):
 
 
 def ExtractScalar(name, value, comment, cell):
+    print(f"DEBUG: ctrlcommands.py ExtractScalar  name{name} value{value}, comment{comment}, cell{cell}")
     return CompositeCommand(AddVariable(name, value, comment),
                             ChangeCellValue(cell[0], cell[1], name))
 
