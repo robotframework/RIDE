@@ -833,19 +833,26 @@ class Step(object):
     def _get_assign(self, content):
         assign = []
         idx = 0
+        positional = True
         if content and content != ['']:
-            while idx < len(content):
+            while idx < len(content) and positional:
                 if idx <= self.inner_kw_pos:
                     positional = True
                 else:
                     positional = False
-                if self.inner_kw_pos < idx <= self.inner_kw_pos + 2 < len(content) and content[self.inner_kw_pos] == 'FOR':
-                    positional = True
-                if self.inner_kw_pos < idx < len(content) and re_set_var.match(content[self.inner_kw_pos]):
+                if not positional and self.inner_kw_pos < idx <= self.inner_kw_pos + 2 < len(content) and content[self.inner_kw_pos] == 'FOR':
+                    if idx == self.inner_kw_pos + 2 and content[self.inner_kw_pos + 2] == 'IN ENUMERATE':
+                        positional = True
+                    elif idx == self.inner_kw_pos + 1:
+                        positional = True
+                    else:
+                        positional = False
+                if not positional and self.inner_kw_pos < idx <= self.inner_kw_pos + 1 < len(content) and re_set_var.match(content[self.inner_kw_pos]):
                     positional = True
                 if is_var(content[idx].rstrip('= ')) and positional:
                     assign.append(content.pop(idx))
                 idx += 1
+        print(f"DEBUG: RFLib Model _get_assign idx={idx} size of content={len(content)}")
         return assign
 
     def is_comment(self):
@@ -859,7 +866,7 @@ class Step(object):
         return True
 
     def as_list(self, indent=False, include_comment=True):
-        # print(f"DEBUG: RFLib Model Step enter as_list  {self.name}")
+        print(f"DEBUG: RFLib Model Step enter as_list  {self.name}")
         kw = [self.name] if self.name is not None else []
         if self.comment:
             comments = self.comment.as_list() if include_comment else []
@@ -873,14 +880,16 @@ class Step(object):
             self.indent.insert(0, '')
         if len(kw) > 0:
             is_scope_set = re_set_var.match(kw[0])
+            is_scope_set = True if is_scope_set is not None else False
         else:
             is_scope_set = False
         if self.name == 'FOR' or is_scope_set:
             data = self.indent + kw + self.assign + self.args + comments
         else:
             data = self.indent + self.assign + kw + self.args + comments
-        # print(f"DEBUG RFLib Model Step: as_list() self.name={self.name} kw={kw}\n comments={comments} data={data}")
-        # print(f"DEBUG RFLib Model Step: data {data}")
+        print(f"DEBUG RFLib Model Step: as_list() is_scope_set={is_scope_set} self.name={self.name} kw={kw}\n"
+              f" self.assign={self.assign} self.args={self.args} comments={comments}\n"
+              f" data={data}")
         return data
 
     def first_non_empty_cell(self, content):

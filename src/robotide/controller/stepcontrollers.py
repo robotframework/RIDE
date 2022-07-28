@@ -201,7 +201,10 @@ class StepController(_BaseController):
     def _is_unknow_variable(self, value, position):
         if position.type == CellType.ASSIGN:
             return False
-        is_known = self._get_local_namespace().has_name(value)
+        try:
+            is_known = self._get_local_namespace().has_name(value)
+        except AttributeError:
+            return False
         if is_known:
             return False
         inner_value = value[2:-1]
