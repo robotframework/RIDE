@@ -132,7 +132,9 @@ class StepController(_BaseController):
         args_amount = len(args)
         # print(f"DEBUG: StepController _get_cell_position step is FOR?"
         #       f" {self.get_value(keyword_col) == 'FOR'} is assigning? {self.is_assigning(value_at_col)}")
-        if (column <= keyword_col or self.get_value(keyword_col) == "FOR") and self.is_assigning(value_at_col):
+        if column > keyword_col and self.get_value(keyword_col) == "FOR" and self.is_assigning(value_at_col):
+            return CellPosition(CellType.ASSIGN, None)
+        if column <= keyword_col and self.is_assigning(value_at_col):
             return CellPosition(CellType.ASSIGN, None)
         if col < keyword_col:
             return CellPosition(CellType.UNKNOWN, None)
@@ -311,7 +313,8 @@ class StepController(_BaseController):
     def insert_value_before(self, col, new_value):
         self.shift_right(col)
         cells = self.as_list()
-        # print(f"\nDEBUG: Stepcontrollers insert_value_before after shift_right: cells={cells[:]} \ncol={col} inner_kw={self._step.inner_kw_pos}")
+        print(f"\nDEBUG: Stepcontrollers insert_value_before after shift_right: cells={cells[:]} \n"
+              f"col={col} new_value={new_value} inner_kw={self._step.inner_kw_pos}")
         self.change(col, new_value)
 
     def comment(self):
