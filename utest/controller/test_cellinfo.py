@@ -138,13 +138,16 @@ class TestCellInfo(unittest.TestCase):
         self._verify_cell_info(0, 2, ContentType.EMPTY, CellType.MANDATORY)
 
     def test_variable_is_known_when_defining_it(self):
+        # print("DEBUG: Before Change . test_variable_is_known_when_defining_it:")
+        # for s in self.test.steps:
+        #     print(f"{s.as_list()}\n")
         self.test.execute(ChangeCellValue(0, 0, '${var}='))
         self.test.execute(ChangeCellValue(0, 1, 'Set Variable'))
         self.test.execute(ChangeCellValue(0, 2, '${var1}'))
-        self._verify_cell_info(0, 0, ContentType.VARIABLE, CellType.ASSIGN)
         # print("\nDEBUG: test_variable_is_known_when_defining_it:")
         # for s in self.test.steps:
         #     print(f"{s.as_list()}\n")
+        self._verify_cell_info(0, 0, ContentType.VARIABLE, CellType.ASSIGN)
         self._verify_cell_info(0, 2, ContentType.UNKNOWN_VARIABLE, CellType.OPTIONAL)
 
     def test_known_extended_variable_syntax(self):
@@ -224,16 +227,16 @@ class TestCellInfo(unittest.TestCase):
 
     def test_steps_in_for_loop(self):
         forlooped_case = self.keyword3
-        # print(f"kw_name:{forlooped_case.name}")
-        # for k in forlooped_case.steps:
-        #     print(f"value: {k.as_list()}")
+        print(f"kw_name:{forlooped_case.name}")
+        for k in forlooped_case.steps:
+            print(f"value: {k.as_list()}")
         self._verify_cell_info(0, 0, ContentType.LIBRARY_KEYWORD, CellType.KEYWORD, forlooped_case)
-        self._verify_cell_info(1, 0, ContentType.EMPTY, CellType.MUST_BE_EMPTY, forlooped_case)
+        self._verify_cell_info(1, 0, ContentType.STRING, CellType.UNKNOWN, forlooped_case)
         self._verify_cell_info(1, 1, ContentType.LIBRARY_KEYWORD, CellType.KEYWORD, forlooped_case)
         self._verify_cell_info(1, 2, ContentType.STRING, CellType.MANDATORY, forlooped_case)
-        self._verify_cell_info(2, 0, ContentType.EMPTY, CellType.MUST_BE_EMPTY, forlooped_case)
+        self._verify_cell_info(2, 0, ContentType.STRING, CellType.UNKNOWN, forlooped_case)
         self._verify_cell_info(2, 1, ContentType.LIBRARY_KEYWORD, CellType.KEYWORD, forlooped_case)
-        self._verify_cell_info(3, 0, ContentType.EMPTY, CellType.MUST_BE_EMPTY, forlooped_case)
+        self._verify_cell_info(3, 0, ContentType.STRING, CellType.UNKNOWN, forlooped_case)
         self._verify_cell_info(3, 1, ContentType.LIBRARY_KEYWORD, CellType.KEYWORD, forlooped_case)
         self._verify_cell_info(3, 2, ContentType.UNKNOWN_VARIABLE, CellType.MANDATORY, forlooped_case)
         self._verify_cell_info(4, 0, ContentType.LIBRARY_KEYWORD, CellType.KEYWORD, forlooped_case)
@@ -247,10 +250,10 @@ class TestCellInfo(unittest.TestCase):
         self._verify_cell_info(in_range_header_index, 0, ContentType.LIBRARY_KEYWORD, CellType.KEYWORD, forlooped_case)
         self._verify_cell_info(in_range_header_index, 1, ContentType.VARIABLE, CellType.ASSIGN, forlooped_case)
         self._verify_cell_info(in_range_header_index, 2, ContentType.STRING, CellType.MANDATORY, forlooped_case)
-        self._verify_cell_info(in_range_header_index, 3, ContentType.STRING, CellType.MANDATORY, forlooped_case)
+        self._verify_cell_info(in_range_header_index, 3, ContentType.STRING, CellType.OPTIONAL, forlooped_case)
         self._verify_cell_info(in_range_header_index, 4, ContentType.EMPTY, CellType.OPTIONAL, forlooped_case)
         self._verify_cell_info(in_range_header_index, 5, ContentType.EMPTY, CellType.OPTIONAL, forlooped_case)
-        self._verify_cell_info(in_range_header_index, 6, ContentType.EMPTY, CellType.MUST_BE_EMPTY, forlooped_case)
+        self._verify_cell_info(in_range_header_index, 6, ContentType.EMPTY, CellType.OPTIONAL, forlooped_case)
 
     def test_library_import_add_and_remove(self):
         self.test.execute(PasteArea((0, 0), [['Get File', 'reaktor.robot']]))

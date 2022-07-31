@@ -20,12 +20,15 @@ from .splitter import VariableIterator
 
 
 def is_var(string, identifiers='$@&'):
-    if not string or not is_string(string) or len(string) < 4:
+    if not string or not is_string(string) or len(string.strip('${}')) < 1:
         return False
-    if string[0] not in identifiers or string[1] != '{' or string[-1] != '}':
+    if string[0] not in identifiers or (string[0] != '$' and string[1] != '{' and string[-1] != '}'):
         return False
     body = string[2:-1]
-    return '{' not in body and '}' not in body
+    # print(f"DEBUG: is_var body={body}")
+    if string[0] == '$' and string[1] == '{' and string[-1] == '}':
+        return True
+    return '{' not in body and '}' not in body and body == string.strip(f"{identifiers}"+'{}')
 
 
 def is_scalar_var(string):
