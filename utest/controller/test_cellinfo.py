@@ -138,12 +138,15 @@ class TestCellInfo(unittest.TestCase):
         self._verify_cell_info(0, 2, ContentType.EMPTY, CellType.MANDATORY)
 
     def test_variable_is_known_when_defining_it(self):
+        # print("DEBUG: Before Change . test_variable_is_known_when_defining_it:")
+        # for s in self.test.steps:
+        #     print(f"{s.as_list()}\n")
         self.test.execute(ChangeCellValue(0, 0, '${var}='))
         self.test.execute(ChangeCellValue(0, 1, 'Set Variable'))
         self.test.execute(ChangeCellValue(0, 2, '${var1}'))
-        print("\nDEBUG: test_variable_is_known_when_defining_it:")
-        for s in self.test.steps:
-            print(f"{s.as_list()}\n")
+        # print("\nDEBUG: test_variable_is_known_when_defining_it:")
+        # for s in self.test.steps:
+        #     print(f"{s.as_list()}\n")
         self._verify_cell_info(0, 0, ContentType.VARIABLE, CellType.ASSIGN)
         self._verify_cell_info(0, 2, ContentType.UNKNOWN_VARIABLE, CellType.OPTIONAL)
 

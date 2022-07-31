@@ -826,39 +826,50 @@ class Step(object):
         self.args = content[index + 1:] if content and index <= len(content) - 1 else []
         # print(f"DEBUG: RFLib Model init Step: 1st cell len(content)={len(content)} index {index} indent={self.indent[:]}")  # 1st cell: {content[index]}")
         if index < len(content):
-            if is_var(content[index].rstrip('= ')):
-                self.normal_assign = True
             self.name = content.pop(index) if content else None
         else:
             self.name = None
-        # print(f"DEBUG RFLib init Step: self.name {self.name}")
+        # if self.assign:
+        #     print(f"DEBUG RFLib init Step: self.assign {self.assign}")
 
     def _get_assign(self, content):
         assign = []
         idx = 0
         positional = True
         if content and content != ['']:
+            index = self.first_non_empty_cell(content)
+            if index < len(content) and is_var(content[index].rstrip('= ')):
+                self.normal_assign = True
+                # print(f"DEBUG: RFLib Model _get_assign VAR NORMAL (index={index}) inner_kw_pos={self.inner_kw_pos} content={content[:]}")
             while idx < len(content) and positional:
                 if idx <= self.inner_kw_pos:
                     positional = True
                 else:
                     positional = False
-                if not positional and self.inner_kw_pos < idx <= self.inner_kw_pos + 2 < len(content) and content[self.inner_kw_pos] == 'FOR':
-                    if idx == self.inner_kw_pos + 2 and content[self.inner_kw_pos + 2] == 'IN ENUMERATE':
+                if not positional and self.inner_kw_pos < idx <= self.inner_kw_pos + 3 < len(content) and content[self.inner_kw_pos] == 'FOR':
+                    # print(f"DEBUG: RFLib Model _get_assign idx={idx} +1{self.inner_kw_pos + 1}:{idx+1} +2{self.inner_kw_pos + 2}:{idx+2}"
+                    #      f"FOR content1={content[self.inner_kw_pos + 1]}"
+                    #      f" content2={content[self.inner_kw_pos + 2]} size of content={len(content)}")
+                    if idx + 2 < len(content):  # idx < self.inner_kw_pos + 3 and
+                        # print(f"DEBUG: RFLib Model _get_assign FOR idx={idx} second IN ENUMERATE"
+                        #      f" content[idx + 1]={content[idx + 1]} content[idx + 2]={content[idx + 2]}")
+                        if content[idx + 1] == 'IN ENUMERATE' or content[idx + 2] == 'IN ENUMERATE':
+                            positional = True
+                            self.normal_assign = False
+                            # print(f"DEBUG: RFLib Model _get_assign FOR idx={idx} second IN ENUMERATE"
+                            #      f" size of content={len(content)} VALUE={content[idx]}")
+                    if idx == self.inner_kw_pos + 1:
                         positional = True
                         self.normal_assign = False
-                        print(f"DEBUG: RFLib Model _get_assign idx={idx} second IN ENUMERATE size of content={len(content)}")
-                    elif idx == self.inner_kw_pos + 1:
-                        positional = True
-                        self.normal_assign = False
-                        print(f"DEBUG: RFLib Model _get_assign idx={idx} first IN ENUMERATE size of content={len(content)}")
-                    else:
-                        positional = False
+                        # print(f"DEBUG: RFLib Model _get_assign FOR idx={idx} first loop var")
+                    # else:
+                    #    positional = False
                 if not positional and self.inner_kw_pos < idx <= self.inner_kw_pos + 1 < len(content) and re_set_var.match(content[self.inner_kw_pos]):
                     positional = True
                     self.normal_assign = False
                 if is_var(content[idx].rstrip('= ')) and positional:
                     assign.append(content.pop(idx))
+                    idx -= 1  # We need to recheck var in case of IN ENUMERATE
                 idx += 1
         # print(f"DEBUG: RFLib Model _get_assign idx={idx} size of content={len(content)}")
         return assign
@@ -900,12 +911,15 @@ class Step(object):
         if self.name == 'FOR' or commented_assign or is_scope_set:  # We look at args because of Comment
             if commented_assign and (self.args[0] == 'FOR' or is_scope_set):
                 data = self.indent + kw + [self.args[0]] + self.assign + self.args[1:] + comments
+                self.normal_assign = False
             else:
                 data = self.indent + kw + self.assign + self.args + comments  # For example, Comment  Set Variable
+                self.normal_assign = False
         elif self.normal_assign and self.assign:
             data = self.indent + self.assign + kw + self.args + comments
         else:
             data = self.indent + kw + self.assign + self.args + comments
+            self.normal_assign = False
             # print(f" data={data}")  self.normal_assign:
         """print(f"DEBUG RFLib Model Step: as_list() is_scope_set={is_scope_set} self.name={self.name} kw={kw}\n"
               f" self.assign={self.assign} self.args={self.args} comments={comments} "

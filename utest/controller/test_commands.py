@@ -539,8 +539,7 @@ class ForLoopCases(TestCaseCommandTest):
 
     def test_remove_second_for_header(self):
         self._exec(DeleteCells((3,0), (3,0)))
-        # self._verify_step(3, '', ['${j}', 'IN', '1', '2'])  # Due to not being a FOR we move the assign
-        self._verify_step(3, '', ['IN', '${j}', '1', '2'])
+        self._verify_step(3, '', ['${j}', 'IN', '1', '2'])
 
     def test_remove_first_step_in_for_loop(self):
         print(f"Test data:")

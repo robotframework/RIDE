@@ -179,7 +179,7 @@ class StepController(_BaseController):
 
     def _get_content_with_type(self, col, position):
         value = self.get_value(col)
-        print(f"DEBUG: Stepcontroller _get_content_with_type value={value}")
+        # print(f"DEBUG: Stepcontroller _get_content_with_type value={value}")
         if self._is_commented(col):
             return CellContent(ContentType.COMMENTED, value)
         last_none_empty = self._get_last_none_empty_col_idx()
@@ -308,14 +308,14 @@ class StepController(_BaseController):
         comment = self._get_comment(cells)
         if comment:
             cells.pop()
-        print(f"\nDEBUG: Stepcontrollers change calling recreate: cells={cells[:]} comment={comment}")
+        # print(f"\nDEBUG: Stepcontrollers change calling recreate: cells={cells[:]} comment={comment}")
         self._recreate(cells, comment, delete)
 
     def insert_value_before(self, col, new_value):
         self.shift_right(col)
         cells = self.as_list()
-        print(f"\nDEBUG: Stepcontrollers insert_value_before after shift_right: cells={cells[:]} \n"
-              f"col={col} new_value={new_value} inner_kw={self._step.inner_kw_pos}")
+        # print(f"\nDEBUG: Stepcontrollers insert_value_before after shift_right: cells={cells[:]} \n"
+        #      f"col={col} new_value={new_value} inner_kw={self._step.inner_kw_pos}")
         self.change(col, new_value)
 
     def comment(self):
