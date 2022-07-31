@@ -49,14 +49,14 @@ class TestLocalNamespace(unittest.TestCase):
                 assert not local_namespace.has_name('${i}')
 
     def test_keyword_steps_local_namespace_does_contain_local_variables_after_definition(self):
-        for i in range(8):
+        for i in range(9):
             local_namespace = self._keyword.get_local_namespace_for_row(i)
             assert local_namespace.has_name('${argument}')
             if i >= 3:
                 assert local_namespace.has_name('${foo}')
             if i >= 5:
                 assert local_namespace.has_name('${bar}')
-            if i >= 7:
+            if i == 7 or i == 9:
                 assert local_namespace.has_name('${i}')
 
     def test_keyword_steps_suggestions_with_local_variables(self):

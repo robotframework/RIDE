@@ -46,15 +46,19 @@ class TestForLoop(unittest.TestCase):
         for s in test.steps:
             print(f"{s.as_list()}")
         test.execute(MoveRowsDown([1]))
-        # print("DEBUG: after move 1")
-        # for s in test.steps:
-        #     print(f"{s.as_list()}")
-        self.assertEqual(test.get_cell_info(2,3).cell_type, CellType.MANDATORY)
-        test.execute(Undo())
-        test.execute(Undo())
-        print("DEBUG: after undos, should be equal to 0")
+        print("DEBUG: after move 1")
         for s in test.steps:
             print(f"{s.as_list()}")
+        self.assertEqual(test.get_cell_info(2,3).cell_type, CellType.OPTIONAL)
+        test.execute(Undo())
+        print("DEBUG: after UNDO move dwn 1")
+        for s in test.steps:
+            print(f"{s.as_list()}")
+        test.execute(Undo())
+        print("DEBUG: after UNDO move dwn 0")
+        for s in test.steps:
+            print(f"{s.as_list()}")
+        print("DEBUG: after undos, should be equal to 0")
         self.assertEqual(test.get_cell_info(1,1).cell_type, CellType.KEYWORD)
         # print("DEBUG: Test 0:")
         # for s in test.steps:
@@ -72,7 +76,7 @@ class TestForLoop(unittest.TestCase):
     def test_adding_step_to_for_loop(self):
         test = self.project.datafiles[1].tests[0]
         test.execute(ChangeCellValue(4, 2, 'No Operation'))
-        self.assertTrue(isinstance(test.step(4), IntendedStepController),
+        self.assertTrue(isinstance(test.step(4), StepController),
             'wrong type of step type (%s)' % type(test.step(4)))
 
     def test_removing_step_in_middle_from_for_loop(self):
@@ -138,7 +142,7 @@ class TestForLoop(unittest.TestCase):
 
     def _steps_are_in_for_loop(self, macro, *steps):
         for i in steps:
-            self.assertEqual(type(macro.step(i)), IntendedStepController, 'Wrong type in index %d' % i)
+            self.assertEqual(type(macro.step(i)), StepController, 'Wrong type in index %d' % i)
 
     def _steps_are_not_in_for_loop(self, macro, *steps):
         for i in steps:
@@ -147,7 +151,7 @@ class TestForLoop(unittest.TestCase):
     def test_modifying_step_in_for_loop(self):
         test = self.project.datafiles[1].tests[0]
         test.execute(ChangeCellValue(4, 2, 'Something again'))
-        self.assertEqual(type(test.step(4)), IntendedStepController)
+        self.assertEqual(type(test.step(4)), StepController)
 
     def test_new_for_loop_old_syntax(self):
         test = self.project.datafiles[1].tests[10]
@@ -178,7 +182,7 @@ class TestForLoop(unittest.TestCase):
         test.execute(DeleteCell(0,0))
         self.assertEqual(type(test.steps[0]), StepController)
 
-    @unittest.skip("Test is losing forloop step")  # FIXME
+    # @unittest.skip("Test is losing forloop step")  # FIXME
     def test_for_loop_change_and_purify(self):
         test = self.project.datafiles[1].tests[13]
         print("DEBUG: Test 13:")
@@ -223,7 +227,7 @@ class TestForLoop(unittest.TestCase):
         test.execute(DeleteCell(0, 0))
         self.assertEqual(test.steps[0].as_list(), ['Foo', '# comment'])
 
-    @unittest.skip("Test is losing forloop step")  # FIXME see comment
+    # @unittest.skip("Test is losing forloop step")  # FIXME see comment
     def test_move_for_loop_over_another_for_loop(self):
         loop_1 = 'FOR  ${i}  IN  1  2  3  4'.split('  ')
         end_1 = ['END']
@@ -234,7 +238,7 @@ class TestForLoop(unittest.TestCase):
         self._verify_steps(test.steps, loop_1, inside_1, end_1, loop_2, inside_2, end_1)
         print("DEBUG: BEFORE MOVE UP FOR Test 17:")
         for s in test.steps:
-            print(f"#_{s.as_list()}_#{type(s)}")
+            print(f"{s.as_list()}")
         test.execute(MoveRowsUp([3]))
         print("DEBUG: AFTER MOVE UP FOR Test 17:")
         for s in test.steps:

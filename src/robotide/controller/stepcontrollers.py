@@ -102,8 +102,7 @@ class StepController(_BaseController):
 
     def is_assigning(self, value):
         for assignment in self.assignments:
-            if assignment.replace('=', '').strip() == \
-                    value.replace('=', '').strip():
+            if assignment.replace('=', '').strip() == value.replace('=', '').strip():
                 return True
         if value.strip().endswith('='):
             return True
@@ -131,7 +130,11 @@ class StepController(_BaseController):
         else:
             args = []
         args_amount = len(args)
-        if (column <= keyword_col or self.get_value(keyword_col) == "FOR") and self.is_assigning(value_at_col):
+        # print(f"DEBUG: StepController _get_cell_position step is FOR?"
+        #       f" {self.get_value(keyword_col) == 'FOR'} is assigning? {self.is_assigning(value_at_col)}")
+        if column > keyword_col and self.get_value(keyword_col) == "FOR" and self.is_assigning(value_at_col):
+            return CellPosition(CellType.ASSIGN, None)
+        if column <= keyword_col and self.is_assigning(value_at_col):
             return CellPosition(CellType.ASSIGN, None)
         if col < keyword_col:
             return CellPosition(CellType.UNKNOWN, None)
@@ -176,6 +179,7 @@ class StepController(_BaseController):
 
     def _get_content_with_type(self, col, position):
         value = self.get_value(col)
+        # print(f"DEBUG: Stepcontroller _get_content_with_type value={value}")
         if self._is_commented(col):
             return CellContent(ContentType.COMMENTED, value)
         last_none_empty = self._get_last_none_empty_col_idx()
@@ -200,7 +204,10 @@ class StepController(_BaseController):
     def _is_unknow_variable(self, value, position):
         if position.type == CellType.ASSIGN:
             return False
-        is_known = self._get_local_namespace().has_name(value)
+        try:
+            is_known = self._get_local_namespace().has_name(value)
+        except AttributeError:
+            return False
         if is_known:
             return False
         inner_value = value[2:-1]
@@ -301,19 +308,20 @@ class StepController(_BaseController):
         comment = self._get_comment(cells)
         if comment:
             cells.pop()
-        print(f"\nDEBUG: Stepcontrollers change calling recreate: cells={cells[:]} comment={comment}")
+        # print(f"\nDEBUG: Stepcontrollers change calling recreate: cells={cells[:]} comment={comment}")
         self._recreate(cells, comment, delete)
 
     def insert_value_before(self, col, new_value):
         self.shift_right(col)
         cells = self.as_list()
-        print(f"\nDEBUG: Stepcontrollers insert_value_before after shift_right: cells={cells[:]} \ncol={col} inner_kw={self._step.inner_kw_pos}")
+        # print(f"\nDEBUG: Stepcontrollers insert_value_before after shift_right: cells={cells[:]} \n"
+        #      f"col={col} new_value={new_value} inner_kw={self._step.inner_kw_pos}")
         self.change(col, new_value)
 
     def comment(self):
         col = self._step.inner_kw_pos
         # col = self._keyword_column if self._keyword_column > 1 else 0
-        print(f"DEBUG: Stepcontrollers COMMENT ENTER: INNER={self._step.inner_kw_pos} cells={self._step.as_list()} \ncol={col}")
+        # print(f"DEBUG: Stepcontrollers COMMENT ENTER: INNER={self._step.inner_kw_pos} cells={self._step.as_list()} \ncol={col}")
         self.insert_value_before(col, 'Comment')
 
     def _is_commented(self, col):
@@ -360,18 +368,22 @@ class StepController(_BaseController):
             if comment:
                 cells.pop()
             cells = cells[:from_column] + [''] + cells[from_column:]
-            print(f"\nDEBUG: Stepcontrollers shift_right calling recreate: cells={cells[:]}")
+            # print(f"\nDEBUG: Stepcontrollers shift_right calling recreate: cells={cells[:]}")
             self._recreate(cells, comment, delete)
 
     def shift_left(self, from_column, delete=False):
         cells = self.as_list()
-        print(f"DEBUG: shift_left enter cells: {cells} from_column: {from_column}")
+        # print(f"DEBUG: shift_left enter cells: {cells} from_column: {from_column}")
+        while not delete and from_column > 0 and cells[from_column] != '':
+            from_column -= 1
+        if not delete and from_column == 0 and cells[from_column] != '':
+            return
         comment = self._get_comment(cells)
         if len(cells) > from_column:
             if comment:
                 cells.pop()
             cells = cells[:from_column] + cells[from_column + 1:]
-            print(f"DEBUG: shift_left calling recreate cells: {cells} comment: {comment}")
+            # print(f"DEBUG: shift_left calling recreate cells: {cells} comment: {comment}")
             self._recreate(cells, comment, delete=delete)
 
     @staticmethod
@@ -386,21 +398,21 @@ class StepController(_BaseController):
         index = steps.index(self._step)
         if not new_step or not new_step.as_list():
             new_step = robotapi.Step([''])
-        print(f"DEBUG: StepController, insert_before, enter: len(steps)={len(steps)} index: {index} \n"
-              f"new_step: {new_step.as_list()} self._step={self._step.as_list()}")
+        # print(f"DEBUG: StepController, insert_before, enter: len(steps)={len(steps)} index: {index} \n"
+        #      f"new_step: {new_step.as_list()} self._step={self._step.as_list()}")
         if index > 0:
             upper_indent = self.first_non_empty_cell(steps[index-1].as_list())
             current_indent = self.first_non_empty_cell(new_step.as_list())
             delta_indent = upper_indent - current_indent
-            print(f"DEBUG: StepController, insert_before, logic: index: {index} new_step: {new_step.as_list()}\n"
-                  f"upper_indent({upper_indent}) current_indent({current_indent}) "
-                  f"steps[index-1]={steps[index-1].as_list()}")
+            # print(f"DEBUG: StepController, insert_before, logic: index: {index} new_step: {new_step.as_list()}\n"
+            #      f"upper_indent({upper_indent}) current_indent({current_indent}) "
+            #      f"steps[index-1]={steps[index-1].as_list()}")
             if delta_indent > 0:
                 e_list = []
                 for _ in range(1, delta_indent):
                     e_list.append('')
                 new_step = robotapi.Step(e_list + new_step.as_list(indent=True))
-                print(f"DEBUG: StepController, insert_before: new_step: {new_step.as_list()}")
+                # print(f"DEBUG: StepController, insert_before: new_step: {new_step.as_list()}")
             elif delta_indent < 0 and len(new_step.as_list()) > 1:
                 for _ in range(delta_indent, 0):
                     if new_step.as_list()[0] == '':
@@ -413,9 +425,9 @@ class StepController(_BaseController):
         else:
             # DEBUG current_indent = self.first_non_empty_cell(new_step.as_list())
             current_indent = len(new_step.indent)
-            print(f"DEBUG: StepController, new_step.ident={new_step.indent[:]} current_indent:{current_indent}")
+            # print(f"DEBUG: StepController, new_step.ident={new_step.indent[:]} current_indent:{current_indent}")
             delta_indent = current_indent - len(self._step.indent)
-            print(f"DEBUG: StepController, remove indent: delta={delta_indent} {new_step.as_list()}")
+            # print(f"DEBUG: StepController, remove indent: delta={delta_indent} {new_step.as_list()}")
             if delta_indent > 0:
                 for _ in range(0, delta_indent):
                     if new_step.as_list()[0] == '':
@@ -430,11 +442,11 @@ class StepController(_BaseController):
         if not self._is_end_step(new_step.as_list()):
             if self._is_intended_step(steps[index-1].as_list()):
                 if not self._is_intended_step(new_step.as_list()):
-                    print(f"DEBUG: StepController, INCREASE insert_after {new_step.as_list()}")
+                    # print(f"DEBUG: StepController, INCREASE insert_after {new_step.as_list()}")
                     new_step.increase_indent()  # shift_right(0)  # DEBUG Hard coded!
             else:
                 if self._is_intended_step(new_step.as_list()) and isinstance(new_step, StepController):
-                    print(f"DEBUG: StepController, DECREASE insert_after {new_step.as_list()}")
+                    # print(f"DEBUG: StepController, DECREASE insert_after {new_step.as_list()}")
                     new_step.decrease_indent()   # shift_left(1)  # DEBUG Hard coded!
         self.parent.set_raw_steps(steps[:index] + [new_step] + steps[index:])
 
@@ -456,14 +468,15 @@ class StepController(_BaseController):
 
     def move_up(self):
         previous_step = self.parent.step(self._index() - 1)
-        print(f"DEBUG: StepController, move_up: before remove previous_step: {previous_step.as_list()}")
+        # print(f"DEBUG: StepController, move_up: before remove previous_step: {previous_step.as_list()}")
+        # print(f"DEBUG: StepController, move_up: type(self): {type(self)} self={self.as_list()}")
         self.remove()
         previous_step.insert_before(self._step)
 
     def move_down(self):
         next_step = self.parent.step(self._index() + 1)
-        print(f"DEBUG: StepController, move_down: before remove current_step: {self._step.as_list()}"
-              f"\n next_step={next_step.as_list()}")
+        # print(f"DEBUG: StepController, move_down: before remove current_step: {self._step.as_list()}"
+        #      f"\n next_step={next_step.as_list()}")
         self.remove()
         next_step.insert_after(self._step)
 
@@ -482,14 +495,17 @@ class StepController(_BaseController):
         return cells[-1].strip() if cells[-1].startswith('#') else None
 
     def _recreate(self, cells, comment=None, delete=False):
-        print(f"DEBUG: _recreate ENTER cells: {cells} comment: {comment}")
+        # print(f"DEBUG: _recreate ENTER cells: {cells} comment: {comment}")
         self._step.__init__(cells, comment)
-        print(f"\nDEBUG: Stepcontrollers recreated: self._step={self._step.as_list()}")
+        # print(f"DEBUG: Stepcontrollers recreated: self._step={self._step.as_list()}")
         self.recalculate_keyword_column()
 
     def _is_partial_for_loop_step(self, cells):
         return cells and (cells[self._keyword_column].replace(' ', '').upper() == ':FOR'
                           or cells[self._keyword_column] == 'FOR')
+
+    def _is_for_loop(self):
+        return self.keyword == 'FOR'
 
     def _is_intended_step(self, cells):
         return cells and not cells[0].strip() and any(c.strip() for c in cells) and self._index() > 0
@@ -526,6 +542,11 @@ class StepController(_BaseController):
         self.indent = self.indent[:-1] if len(self.indent) > 0 else []
         return len(self.indent)
 
+    @property
+    def steps(self):
+        return [IntendedStepController(self, sub_step)
+                for sub_step in self.get_raw_steps()]
+
 """
 class PartialForLoop(robotapi.ForLoop):
 
@@ -544,7 +565,7 @@ class PartialForLoop(robotapi.ForLoop):
 class ForLoopStepController(StepController):
 
     def __init__(self, parent, step):
-        print(f"DEBUG: ForLoopStepController __init__ step={step} type(parent)={type(parent)}")
+        # print(f"DEBUG: ForLoopStepController __init__ step={step} type(parent)={type(parent)}, name parent={parent.name}")
         StepController.__init__(self, parent, step)
         self.inner_kw_pos = self._first_non_empty_cell()
 
@@ -563,27 +584,27 @@ class ForLoopStepController(StepController):
     """
 
     def move_up(self):
-        print(f"DEBUG: ForLoopStepController move_up Enter")
-        for k in self.parent.get_raw_steps():
-            print(f"DEBUG: ForLoopStepController move_up steps={k.as_list()}")
+        # print(f"DEBUG: ForLoopStepController move_up Enter")
+        # for k in self.parent.get_raw_steps():
+        #    print(f"DEBUG: ForLoopStepController move_up steps={k.as_list()}")
         previous_step = self.parent.step(self._index() - 1)
-        print(f"DEBUG: ForLoopStepController move_up Before decision previous_step={previous_step.as_list()}")
+        # print(f"DEBUG: ForLoopStepController move_up Before decision previous_step={previous_step.as_list()}")
         if isinstance(previous_step, ForLoopStepController):
-            print(f"DEBUG: ForLoopStepController move_up SWAPPING")
+            # print(f"DEBUG: ForLoopStepController move_up SWAPPING")
             self._swap_forloop_headers(previous_step)
         else:
-            print(f"DEBUG: ForLoopStepController move_up {self.steps[:]}")
+            # print(f"DEBUG: ForLoopStepController move_up {self.steps[:]}")
             self.get_raw_steps().insert(0, previous_step._step)
             previous_step.remove()
 
     def _swap_forloop_headers(self, previous_step):
         previous_step._step.steps = self._step.steps
         self._step.steps = []
-        print(f"DEBUG: ForLoopStepController _swap_forloop_headers self._step={self._step.as_list()}")
+        # print(f"DEBUG: ForLoopStepController _swap_forloop_headers self._step={self._step.as_list()}")
         steps = self.parent.get_raw_steps()
         i = steps.index(self._step)
-        for k in steps:
-            print(f"DEBUG: ForLoopStepController _swap_forloop_headers steps={k.as_list()}")
+        # for k in steps:
+        #    print(f"DEBUG: ForLoopStepController _swap_forloop_headers steps={k.as_list()}")
         steps[i - 1] = self._step
         steps[i] = previous_step._step
         self.parent.set_raw_steps(steps)
@@ -812,7 +833,7 @@ class IntendedStepController(StepController):
     """
 
     def _recreate(self, cells, comment=None,  delete=False):
-        print(f"DEBUG: IntendedStepController _recreate ENTER cells: {cells} comment: {comment}")
+        # print(f"DEBUG: IntendedStepController _recreate ENTER cells: {cells} comment: {comment}")
         # idx = 1
         if (cells == [] or cells[0] == '') and not delete:  # Avoid IndentedStep when DeleteCells
             """"
@@ -824,12 +845,12 @@ class IntendedStepController(StepController):
             self._step.__init__(cells[:], comment=comment)
             if self._step not in self.parent.get_raw_steps():
                 self.parent.add_step(self._step)
-            print(f"DEBUG: IntendedStepController _recreated: steps={self._step.as_list()}")
+            # print(f"DEBUG: IntendedStepController _recreated: steps={self._step.as_list()}")
         else:
             self._step.__init__(cells[:], comment=comment)
             if self._step not in self.parent.get_raw_steps():
                 self.parent.add_step(self._step)
-            print(f"DEBUG: IntendedStepController _recreated and will be NORMAL step: steps={self._step.as_list()}")
+            # print(f"DEBUG: IntendedStepController _recreated and will be NORMAL step: steps={self._step.as_list()}")
             if not delete:
                 self._recreate_as_normal_step(cells, comment)
         self.recalculate_keyword_column()

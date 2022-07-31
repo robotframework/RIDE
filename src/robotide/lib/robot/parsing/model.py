@@ -15,6 +15,7 @@
 
 import os
 import copy
+import re
 import warnings
 
 from robotide.lib.robot.errors import DataError
@@ -29,6 +30,7 @@ from .settings import (Documentation, Fixture, Timeout, Tags, Metadata,
                        Library, Resource, Variables, Arguments, Return,
                        Template, MetadataList, ImportList)
 
+re_set_var = re.compile(r"(?i)^set[ ](\S.*)+variable$")
 
 def TestData(parent=None, source=None, include_suites=None,
              warn_on_skipped='DEPRECATED', extensions=None, settings=None):
@@ -629,7 +631,11 @@ class TestCase(_WithSteps, _WithSettings):
         return self.parent.directory
 
     def add_for_loop(self, declaration, comment=None):
-        self.steps.append(ForLoop(self, ['', 'FOR'] + declaration, comment))
+        # DEBUG
+        #self.steps.append(ForLoop(self, ['FOR'] + declaration, comment=comment))
+        # print(f"DEBUG: Model add_for_loop init={['FOR'] + declaration} comment:{comment}")
+        self.steps.append(Step(['FOR'] + declaration, comment))
+        # : Model add_for_loop return steps:{self.steps[-1].as_list()} comment:{comment}")
         return self.steps[-1]
 
     def end_for_loop(self):
@@ -727,11 +733,11 @@ class ForLoop(_WithSteps):
     normalized_flavors = NormalizedDict((f, f) for f in flavors)
     inner_kw_pos = None
 
-    def __init__(self, parent, declaration, comment=None):
+    def __init__(self, parent, declaration, indentation=[], comment=None):
         self.parent = parent
-        self.indent = []
+        self.indent = indentation if isinstance(indentation, list) else [indentation]
         isize = idx = 0
-        # print(f"\nDEBUG: ForLoop init ENTER declaration={declaration[:]}")
+        print(f"\nDEBUG: ForLoop init ENTER declaration={declaration[:]}")
         if declaration[0] == '':
             declaration.pop(0)
         for idx in range(0, len(declaration)):
@@ -742,7 +748,7 @@ class ForLoop(_WithSteps):
                 self.first_kw = declaration[idx]
                 break
         self.inner_kw_pos = idx
-        # print(f"\nDEBUG: ForLoop init indent {isize} self.inner_kw_pos={self.inner_kw_pos}\ndeclaration={declaration[:]}")
+        print(f"\nDEBUG: ForLoop init indent {isize} self.inner_kw_pos={self.inner_kw_pos}\ndeclaration={declaration[:]}")
         # compensation for double FOR
         if declaration[self.inner_kw_pos+1] == declaration[self.inner_kw_pos] == 'FOR':
             declaration.pop(self.inner_kw_pos+1)
@@ -777,7 +783,7 @@ class ForLoop(_WithSteps):
     def is_for_loop(self):
         return True
 
-    def as_list(self, indent=False, include_comment=True):
+    def as_list(self, indent=True, include_comment=True):
         comments = self.comment.as_list() if include_comment else []
         # print(f"DEBUG: Model ForLoop as_list: indent={self.indent[:]} self.first_kw={self.first_kw}\n"
         #       f"{self.vars} + {self.flavor} + {self.items} + {comments}")
@@ -804,8 +810,10 @@ class Step(object):
 
     def __init__(self, content, comment=None):
         index = self.first_non_empty_cell(content)
-        # print(f"DEBUG: RFLib Model enter init Step: 1st cell content={content} comment={comment} index={index}")
+        self.normal_assign = None
         self.assign = self._get_assign(content)
+        # print(f"DEBUG: RFLib Model enter init Step: 1st cell content={content} comment={comment} index={index}"
+        #       f" assign={self.assign} self.normal_assign={self.normal_assign}")
         self.indent = []
         self.args = []
         self.name = None
@@ -821,42 +829,102 @@ class Step(object):
             self.name = content.pop(index) if content else None
         else:
             self.name = None
-        # print("DEBUG RFLib init Step: self.name %s" % self.name)
+        # if self.assign:
+        #     print(f"DEBUG RFLib init Step: self.assign {self.assign}")
 
     def _get_assign(self, content):
         assign = []
         idx = 0
-        while content and is_var(content[idx].rstrip('= ')):
-            assign.append(content.pop(idx))
-            if idx < self.inner_kw_pos:
+        positional = True
+        if content and content != ['']:
+            index = self.first_non_empty_cell(content)
+            if index < len(content) and is_var(content[index].rstrip('= ')):
+                self.normal_assign = True
+                # print(f"DEBUG: RFLib Model _get_assign VAR NORMAL (index={index}) inner_kw_pos={self.inner_kw_pos} content={content[:]}")
+            while idx < len(content) and positional:
+                if idx <= self.inner_kw_pos:
+                    positional = True
+                else:
+                    positional = False
+                if not positional and self.inner_kw_pos < idx <= self.inner_kw_pos + 3 < len(content) and content[self.inner_kw_pos] == 'FOR':
+                    # print(f"DEBUG: RFLib Model _get_assign idx={idx} +1{self.inner_kw_pos + 1}:{idx+1} +2{self.inner_kw_pos + 2}:{idx+2}"
+                    #      f"FOR content1={content[self.inner_kw_pos + 1]}"
+                    #      f" content2={content[self.inner_kw_pos + 2]} size of content={len(content)}")
+                    if idx + 2 < len(content):  # idx < self.inner_kw_pos + 3 and
+                        # print(f"DEBUG: RFLib Model _get_assign FOR idx={idx} second IN ENUMERATE"
+                        #      f" content[idx + 1]={content[idx + 1]} content[idx + 2]={content[idx + 2]}")
+                        if content[idx + 1] == 'IN ENUMERATE' or content[idx + 2] == 'IN ENUMERATE':
+                            positional = True
+                            self.normal_assign = False
+                            # print(f"DEBUG: RFLib Model _get_assign FOR idx={idx} second IN ENUMERATE"
+                            #      f" size of content={len(content)} VALUE={content[idx]}")
+                    if idx == self.inner_kw_pos + 1:
+                        positional = True
+                        self.normal_assign = False
+                        # print(f"DEBUG: RFLib Model _get_assign FOR idx={idx} first loop var")
+                    # else:
+                    #    positional = False
+                if not positional and self.inner_kw_pos < idx <= self.inner_kw_pos + 1 < len(content) and re_set_var.match(content[self.inner_kw_pos]):
+                    positional = True
+                    self.normal_assign = False
+                if is_var(content[idx].rstrip('= ')) and positional:
+                    assign.append(content.pop(idx))
+                    idx -= 1  # We need to recheck var in case of IN ENUMERATE
                 idx += 1
+        # print(f"DEBUG: RFLib Model _get_assign idx={idx} size of content={len(content)}")
         return assign
 
     def is_comment(self):
-        return not (self.assign or self.name or self.args)
+        return self.name.lower() == 'comment' or not (self.assign or self.name or self.args)
 
     def is_for_loop(self):
+        # TODO: remove steps ForLoop: return self.name == 'FOR'
         return False
 
     def is_set(self):
         return True
 
     def as_list(self, indent=False, include_comment=True):
-        # print(f"\nDEBUG: RFLib Model Step enter as_list  {self.name}")
+        data = []
+        # print(f"DEBUG: RFLib Model Step enter as_list  {self.name}")
         kw = [self.name] if self.name is not None else []
-        # print(f"DEBUG RFLib Model Step: as_list() self.name={self.name} kw={kw} COMMENT={self.comment.as_list()}")
         if self.comment:
             comments = self.comment.as_list() if include_comment else []
         else:
             comments = []
+        #  RFLib Model Step: as_list() self.name={self.name} kw={kw} COMMENT={self.comment.as_list()}")
         # print(f"DEBUG RFLib Model Step: as_list() self.name={self.name} kw={kw}\n comments={comments} args={self.args}" )
         #if len(self.indent) == 0:
         #    self.indent.insert(0, '')  # Always send first indent
         if indent:
             self.indent.insert(0, '')
-        data = self.indent + self.assign + kw + self.args + comments
-        # print(f"DEBUG RFLib Model Step: as_list() self.name={self.name} kw={kw}\n comments={comments} data={data}")
-        # print("DEBUG RFLib Model Step: data %s" % data)
+        commented_assign = False
+        if len(kw) > 0:
+            is_scope_set = re_set_var.match(kw[0])
+            is_scope_set = True if is_scope_set is not None else False
+            if self.name.lower() == 'comment':
+                if self.args:
+                    if self.args[0] == 'FOR' or re_set_var.match(self.args[0]):
+                        commented_assign = True
+        else:
+            is_scope_set = False
+        if self.name == 'FOR' or commented_assign or is_scope_set:  # We look at args because of Comment
+            if commented_assign and (self.args[0] == 'FOR' or is_scope_set):
+                data = self.indent + kw + [self.args[0]] + self.assign + self.args[1:] + comments
+                self.normal_assign = False
+            else:
+                data = self.indent + kw + self.assign + self.args + comments  # For example, Comment  Set Variable
+                self.normal_assign = False
+        elif self.normal_assign and self.assign:
+            data = self.indent + self.assign + kw + self.args + comments
+        else:
+            data = self.indent + kw + self.assign + self.args + comments
+            self.normal_assign = False
+            # print(f" data={data}")  self.normal_assign:
+        """print(f"DEBUG RFLib Model Step: as_list() is_scope_set={is_scope_set} self.name={self.name} kw={kw}\n"
+              f" self.assign={self.assign} self.args={self.args} comments={comments} "
+              f"commented_assign={commented_assign} normal_assign={self.normal_assign}"
+              f" data={data}")"""
         return data
 
     def first_non_empty_cell(self, content):
@@ -885,6 +953,9 @@ class Step(object):
         self.indent = self.indent[:-1] if len(self.indent) > 0 else []
         return len(self.indent)
 
+    def add_step(self, content, comment=None):
+        self.__init__(content, comment)
+        return self
 
 class OldStyleSettingAndVariableTableHeaderMatcher(object):
 

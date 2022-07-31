@@ -34,7 +34,7 @@ class LocalMacroNamespace(object):
 
     def has_name(self, value):
         for sug in self._namespace.get_suggestions_for(self._controller, value):
-            if sug.name == value:
+            if sug.name == value or value in sug.assign:
                 return True
         return False
 

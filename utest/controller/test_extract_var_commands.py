@@ -34,6 +34,7 @@ class TestExtractVariableCommands(unittest.TestCase):
         var_value = self.testcase.step(row).as_list()[col]
         var_comment = ['Something about the variable']
         self.testcase.execute(ExtractScalar(var_name, var_value, var_comment, (row, col)))
+        # print(f"DEBUG: test_scalar_extract after extract= row 0= {self.testcase.step(row).as_list()}")
         assert self.testcase.step(row).as_list()[col] == var_name
         var = [var for var in self.testcase.datafile_controller.variables if var.name == var_name][0]
         assert var.value[0] == var_value
