@@ -810,9 +810,10 @@ class Step(object):
 
     def __init__(self, content, comment=None):
         index = self.first_non_empty_cell(content)
+        self.normal_assign = None
         self.assign = self._get_assign(content)
         # print(f"DEBUG: RFLib Model enter init Step: 1st cell content={content} comment={comment} index={index}"
-        #       f" assign={self.assign}")
+        #       f" assign={self.assign} self.normal_assign={self.normal_assign}")
         self.indent = []
         self.args = []
         self.name = None
@@ -825,6 +826,8 @@ class Step(object):
         self.args = content[index + 1:] if content and index <= len(content) - 1 else []
         # print(f"DEBUG: RFLib Model init Step: 1st cell len(content)={len(content)} index {index} indent={self.indent[:]}")  # 1st cell: {content[index]}")
         if index < len(content):
+            if is_var(content[index].rstrip('= ')):
+                self.normal_assign = True
             self.name = content.pop(index) if content else None
         else:
             self.name = None
@@ -843,14 +846,17 @@ class Step(object):
                 if not positional and self.inner_kw_pos < idx <= self.inner_kw_pos + 2 < len(content) and content[self.inner_kw_pos] == 'FOR':
                     if idx == self.inner_kw_pos + 2 and content[self.inner_kw_pos + 2] == 'IN ENUMERATE':
                         positional = True
+                        self.normal_assign = False
                         print(f"DEBUG: RFLib Model _get_assign idx={idx} second IN ENUMERATE size of content={len(content)}")
                     elif idx == self.inner_kw_pos + 1:
                         positional = True
+                        self.normal_assign = False
                         print(f"DEBUG: RFLib Model _get_assign idx={idx} first IN ENUMERATE size of content={len(content)}")
                     else:
                         positional = False
                 if not positional and self.inner_kw_pos < idx <= self.inner_kw_pos + 1 < len(content) and re_set_var.match(content[self.inner_kw_pos]):
                     positional = True
+                    self.normal_assign = False
                 if is_var(content[idx].rstrip('= ')) and positional:
                     assign.append(content.pop(idx))
                 idx += 1
@@ -858,7 +864,7 @@ class Step(object):
         return assign
 
     def is_comment(self):
-        return not (self.assign or self.name or self.args)
+        return self.name.lower() == 'comment' or not (self.assign or self.name or self.args)
 
     def is_for_loop(self):
         # TODO: remove steps ForLoop: return self.name == 'FOR'
@@ -868,6 +874,7 @@ class Step(object):
         return True
 
     def as_list(self, indent=False, include_comment=True):
+        data = []
         # print(f"DEBUG: RFLib Model Step enter as_list  {self.name}")
         kw = [self.name] if self.name is not None else []
         if self.comment:
@@ -880,7 +887,7 @@ class Step(object):
         #    self.indent.insert(0, '')  # Always send first indent
         if indent:
             self.indent.insert(0, '')
-        commented_assign = normal_assign = False
+        commented_assign = False
         if len(kw) > 0:
             is_scope_set = re_set_var.match(kw[0])
             is_scope_set = True if is_scope_set is not None else False
@@ -888,8 +895,6 @@ class Step(object):
                 if self.args:
                     if self.args[0] == 'FOR' or re_set_var.match(self.args[0]):
                         commented_assign = True
-                    elif self.assign:
-                        normal_assign = True
         else:
             is_scope_set = False
         if self.name == 'FOR' or commented_assign or is_scope_set:  # We look at args because of Comment
@@ -897,11 +902,15 @@ class Step(object):
                 data = self.indent + kw + [self.args[0]] + self.assign + self.args[1:] + comments
             else:
                 data = self.indent + kw + self.assign + self.args + comments  # For example, Comment  Set Variable
-        else:
+        elif self.normal_assign and self.assign:
             data = self.indent + self.assign + kw + self.args + comments
-        print(f"DEBUG RFLib Model Step: as_list() is_scope_set={is_scope_set} self.name={self.name} kw={kw}\n"
-              f" self.assign={self.assign} self.args={self.args} comments={comments}\n"
-              f" data={data} commented_assign={commented_assign} normal_assign={normal_assign}")
+        else:
+            data = self.indent + kw + self.assign + self.args + comments
+            # print(f" data={data}")  self.normal_assign:
+        """print(f"DEBUG RFLib Model Step: as_list() is_scope_set={is_scope_set} self.name={self.name} kw={kw}\n"
+              f" self.assign={self.assign} self.args={self.args} comments={comments} "
+              f"commented_assign={commented_assign} normal_assign={self.normal_assign}"
+              f" data={data}")"""
         return data
 
     def first_non_empty_cell(self, content):

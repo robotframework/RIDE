@@ -409,8 +409,8 @@ class TestCaseEditingTest(TestCaseCommandTest):
 
     def test_deleting_inside_for_step(self):
         self._exec(DeleteCell(4,0))
-        # for s in self._steps:
-        #     print(f"{s.as_list()}")
+        for s in self._steps:
+            print(f"{s.as_list()}")
         self.assertEqual(self._steps[self._data_row(FOR_LOOP_STEP1)].as_list(),
                          self._data_step_as_list(FOR_LOOP_STEP1)[2:])
         self._exec(DeleteCell(4, 0))
@@ -539,7 +539,8 @@ class ForLoopCases(TestCaseCommandTest):
 
     def test_remove_second_for_header(self):
         self._exec(DeleteCells((3,0), (3,0)))
-        self._verify_step(3, '', ['${j}', 'IN', '1', '2'])
+        # self._verify_step(3, '', ['${j}', 'IN', '1', '2'])  # Due to not being a FOR we move the assign
+        self._verify_step(3, '', ['IN', '${j}', '1', '2'])
 
     def test_remove_first_step_in_for_loop(self):
         print(f"Test data:")
