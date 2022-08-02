@@ -94,6 +94,8 @@ class StepController(_BaseController):
     def get_cell_info(self, col):
         position = self._get_cell_position(col)
         content = self._get_content_with_type(col, position)
+        if content.type == ContentType.COMMENTED:
+            return self._build_cell_info(content, CellPosition(CellType.OPTIONAL, None))
         return self._build_cell_info(content, position)
 
     @property
@@ -179,7 +181,6 @@ class StepController(_BaseController):
 
     def _get_content_with_type(self, col, position):
         value = self.get_value(col)
-        # print(f"DEBUG: Stepcontroller _get_content_with_type value={value}")
         if self._is_commented(col):
             return CellContent(ContentType.COMMENTED, value)
         last_none_empty = self._get_last_none_empty_col_idx()

@@ -174,7 +174,7 @@ class TestCellInfo(unittest.TestCase):
         self.test.execute(ChangeCellValue(0, 1, '# I have something to say'))
         self.test.execute(ChangeCellValue(0, 2, 'to you my friend'))
         self._verify_cell_info(0, 0, ContentType.USER_KEYWORD, CellType.KEYWORD)
-        self._verify_cell_info(0, 1, ContentType.COMMENTED, CellType.MANDATORY)
+        self._verify_cell_info(0, 1, ContentType.COMMENTED, CellType.OPTIONAL)
         self._verify_cell_info(0, 2, ContentType.COMMENTED, CellType.OPTIONAL)
 
     def test_comment_keyword(self):
@@ -185,6 +185,11 @@ class TestCellInfo(unittest.TestCase):
         self._verify_cell_info(0, 1, ContentType.COMMENTED, CellType.OPTIONAL)
         self._verify_cell_info(0, 2, ContentType.COMMENTED, CellType.OPTIONAL)
         self._verify_cell_info(0, 3, ContentType.COMMENTED, CellType.OPTIONAL)
+        """
+        print(f"DEBUG: Test AFTER test_comment_keyword")
+        for k in self.test.steps:
+            print(f"value: {k.as_list()}")
+        """
 
     def test_keyword_with_varargs(self):
         self.test.execute(ChangeCellValue(0, 0, self.keyword2.name))
@@ -192,6 +197,26 @@ class TestCellInfo(unittest.TestCase):
         self._verify_string_change(0, 1, CellType.OPTIONAL)
         self._verify_string_change(0, 2, CellType.OPTIONAL)
         self._verify_string_change(0, 3, CellType.OPTIONAL)
+
+    def test_comment_keyword_with_varargs(self):
+        self.test.execute(ChangeCellValue(0, 0, self.keyword2.name))
+        """
+        print(f"DEBUG: Test BEFORE test_comment_keyword_with_varargs")
+        for k in self.test.steps:
+            print(f"value: {k.as_list()}")
+        """
+        self.test.step(0).comment()
+        self._verify_cell_info(0, 0, ContentType.LIBRARY_KEYWORD, CellType.KEYWORD)
+        self._verify_cell_info(0, 1, ContentType.COMMENTED, CellType.OPTIONAL)
+        self._verify_cell_info(0, 2, ContentType.COMMENTED, CellType.OPTIONAL)
+        self._verify_cell_info(0, 3, ContentType.COMMENTED, CellType.OPTIONAL)
+        self._verify_cell_info(0, 4, ContentType.COMMENTED, CellType.OPTIONAL)
+        self._verify_cell_info(0, 5, ContentType.COMMENTED, CellType.OPTIONAL)
+        """
+        print(f"DEBUG: Test AFTER test_comment_keyword")
+        for k in self.test.steps:
+            print(f"value: {k.as_list()}")
+        """
 
     def test_variable_setting(self):
         self.test.execute(ChangeCellValue(0, 0, '${my cool var}='))
