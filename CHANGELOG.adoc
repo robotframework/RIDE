@@ -10,6 +10,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Added
 
+- Added multiline comment and uncomment in Text Editor
 - Added support for variables recognition in FOR and Set (*) Variable, where (*) means Test, Task, Global, Suite, etc.
 - Added documentation and syntax color for IF, ELSE, ELSE IF, WHILE, TRY, EXCEPT, BREAK, CONTINUE
 - Added indentation for nested FOR loops
