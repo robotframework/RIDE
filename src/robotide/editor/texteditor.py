@@ -931,39 +931,84 @@ class SourceEditor(wx.Panel, RIDEDialog):
         return open_symbol+value+close_symbol
 
     def execute_comment(self, event):
+        start, end = self._editor.GetSelection()
         cursor = self._editor.GetCurrentPos()
-        line, pos = self._editor.GetCurLine()
+        ini_line = self._editor.LineFromPosition(start)
+        end_line = self._editor.LineFromPosition(end)
         spaces = ' ' * self._tab_size
         comment = 'Comment' + spaces
         cpos = cursor + len(comment)
-        lenline = len(line)
-        if lenline > 0:
-            idx = 0
-            while idx<lenline and line[idx] == ' ':
-                idx += 1
-            self._editor.InsertText(cursor - pos + idx, comment)
+        count = 0
+        self._editor.SelectNone()
+        row = ini_line
+        # print(f"DEBUG: execute_comment Variables: select start={start}, end={end} cursor={cursor}"
+        #      f" ini_line={ini_line} end_line={end_line} positionfromline={self._editor.PositionFromLine(row)}")
+        while row <= end_line:
+            pos = self._editor.PositionFromLine(row)
+            self._editor.SetCurrentPos(pos)
+            self._editor.SetSelection(pos, pos)
+            self._editor.SetInsertionPoint(pos)
+            line = self._editor.GetLine(row)
+            lenline = len(line)
+            # print(f"DEBUG: execute_comment Line={line}: pos={pos}, row={row} lenline={lenline}")
+            if lenline > 0:
+                idx = 0
+                while idx < lenline and line[idx] == ' ':
+                    idx += 1
+                self._editor.InsertText(pos + idx, comment)
+            count += 1
+            row += 1
+        new_start = start
+        new_end = end + (count * len(comment))
+        if cursor == start:
+            ini = new_start
+            fini = new_end
         else:
-            self._editor.InsertText(cursor, comment)
-        self._editor.SetCurrentPos(cpos)
-        self._editor.SetSelection(cpos, cpos)
+            ini = new_end
+            fini = new_start
+        self._editor.SetSelection(new_start, new_end)
+        self._editor.SetCurrentPos(ini)
+        self._editor.SetAnchor(fini)
         self.store_position()
 
     def execute_uncomment(self, event):
+        start, end = self._editor.GetSelection()
         cursor = self._editor.GetCurrentPos()
-        line, pos = self._editor.GetCurLine()
+        ini_line = self._editor.LineFromPosition(start)
+        end_line = self._editor.LineFromPosition(end)
         spaces = ' ' * self._tab_size
         comment = 'Comment' + spaces
         cpos = cursor - len(comment)
-        lenline = len(line)
-        if lenline > 0:
-            idx = 0
-            while idx<lenline and line[idx] == ' ':
-                idx += 1
-            if (line[idx:len(comment) + idx]).lower() == comment.lower():
-                self._editor.DeleteRange(cursor - pos + idx, len(comment))
-                self._editor.SetCurrentPos(cpos)
-                self._editor.SetSelection(cpos, cpos)
-                self.store_position()
+        self._editor.SelectNone()
+        count = 0
+        row = ini_line
+        while row <= end_line:
+            pos = self._editor.PositionFromLine(row)
+            self._editor.SetCurrentPos(pos)
+            self._editor.SetSelection(pos, pos)
+            self._editor.SetInsertionPoint(pos)
+            line = self._editor.GetLine(row)
+            lenline = len(line)
+            if lenline > 0:
+                idx = 0
+                while idx<lenline and line[idx] == ' ':
+                    idx += 1
+                if (line[idx:len(comment) + idx]).lower() == comment.lower():
+                    self._editor.DeleteRange(pos + idx, len(comment))
+            count += 1
+            row += 1
+        new_start = start
+        new_end = end - (count * len(comment))
+        if cursor == start:
+            ini = new_start
+            fini = new_end
+        else:
+            ini = new_end
+            fini = new_start
+        self._editor.SetSelection(new_start, new_end)
+        self._editor.SetCurrentPos(ini)
+        self._editor.SetAnchor(fini)
+        self.store_position()
 
     def OnSettingsChanged(self, message):
         """Update tab size if txt spaces size setting is modified"""
