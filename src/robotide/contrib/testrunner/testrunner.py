@@ -85,7 +85,8 @@ class TestRunner(object):
         self._server = RideListenerServer(RideListenerHandler, handle)
         self._server_thread = threading.Thread(
             target=self._server.serve_forever)
-        self._server_thread.setDaemon(True)
+        # DEPRECATED: self._server_thread.setDaemon(True)
+        self._server_thread.daemon = True
         self._server_thread.start()
         self._port = self._server.server_address[1]
 
