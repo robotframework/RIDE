@@ -39,6 +39,8 @@ _RESOURCE_DIR = os.path.join(DATAPATH, 'resources')
 RELATIVE_PATH_TO_RESOURCE_FILE = os.path.join('resources', 'resource.resource')
 RESOURCE_PATH = os.path.normpath(
     os.path.join(DATAPATH, RELATIVE_PATH_TO_RESOURCE_FILE))
+RESOURCE_PATH1 = os.path.normpath(
+    os.path.join(_RESOURCE_DIR, 'resource.resource'))
 RESOURCE_PATH2 = os.path.normpath(
     os.path.join(_RESOURCE_DIR, 'resource2.robot'))
 RESOURCE_PATH3 = os.path.normpath(

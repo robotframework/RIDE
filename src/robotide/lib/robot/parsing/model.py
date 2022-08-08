@@ -190,6 +190,7 @@ class TestCaseFile(_TestData):
 
     def _validate(self):
         if not self.testcase_table.is_started():
+            # print(f"DEBUG: Model TestCaseFile _validate this is where there are no tests")
             raise NoTestsFound('File has no tests or tasks.')
 
     def has_tests(self):

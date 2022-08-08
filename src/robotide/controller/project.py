@@ -132,7 +132,7 @@ class Project(_BaseController, WithNamespace):
             load_observer.error("Given file '%s' is not a valid Robot Framework "
                                 "test case or resource file." % path)
         except AttributeError:  # DEBUG
-            print(f"DEBUG: load_data error not valid datafile: {path}")
+            # print(f"DEBUG: load_data error not valid datafile: {path}")
             pass
 
     def is_excluded(self, source):
@@ -151,6 +151,11 @@ class Project(_BaseController, WithNamespace):
         datafile = self._load_datafile(path, load_observer)
         if datafile:
             return datafile
+        # Let's see if it is a .robot file valid as .resource
+        if path.endswith((".robot", ".resource")):
+            datafile = self._load_resource(path, load_observer)
+            if datafile:
+                return datafile
         load_observer.error("Invalid data file '%s'." % path)
         e = UserWarning("Invalid data file")
         return e
