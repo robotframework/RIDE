@@ -32,7 +32,7 @@ class LibraryManager(Thread):
         self._messages = Queue.Queue()
         self._spec_initializer = spec_initializer or SpecInitializer()
         Thread.__init__(self)
-        self.setDaemon(True)
+        self.daemon = True
 
     def run(self):
         self._initiate_database_connection()

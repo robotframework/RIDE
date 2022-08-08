@@ -44,6 +44,19 @@ def _get_controller(project, data, parent):
         return TestCaseFileController(data, project, parent)
     if isinstance(data, ExcludedDirectory):
         return ExcludedDirectoryController(data, project, parent)
+    if isinstance(data, ResourceFile):
+        from ..controller.project import Project
+        from ..namespace import Namespace
+        import tempfile
+        if not data.parent:
+            data.parent = Project(Namespace(data._settings), data._settings)
+            content= bytes(f"*** Settings ***\nResource    {data.source}\n\n*** Test Cases ***\nEmpty\n  No Operation\n",
+                           encoding='utf-8')
+            stub = tempfile.NamedTemporaryFile(delete=False)
+            with stub:
+                stub.write(content)
+            data.parent.load_data(stub.name)
+        return TestCaseFileController(data, project, data.parent)  # DEBUG Here we create a dummy Project
     return TestDataDirectoryController(data, project, parent)
 
 
@@ -746,6 +759,7 @@ class TestCaseFileController(_FileSystemElement, _DataController):
             controllers.append(test_ctrl)
         return controllers
 
+
 class ResourceFileControllerFactory(object):
 
     def __init__(self, namespace, project):
@@ -801,7 +815,10 @@ class ResourceFileControllerFactory(object):
 class ResourceFileController(_FileSystemElement, _DataController):
 
     def __init__(self, data, project=None, parent=None, resource_file_controller_factory=None):
-        self._resource_file_controller_factory = resource_file_controller_factory
+        if resource_file_controller_factory:
+            self._resource_file_controller_factory = resource_file_controller_factory
+        else:
+            self._resource_file_controller_factory = ResourceFileControllerFactory(self._namespace, project)
         self._known_imports = set()
         _FileSystemElement.__init__(self, data.source if data else None, data.directory)
         _DataController.__init__(self, data, project,
@@ -897,6 +914,8 @@ class ResourceFileController(_FileSystemElement, _DataController):
     def is_used(self):
         if self._known_imports:
             return True
+        if not self._resource_file_controller_factory:
+            return False
         if self._resource_file_controller_factory.is_all_resource_file_imports_resolved():
             return False
         return any(self._resolve_known_imports())

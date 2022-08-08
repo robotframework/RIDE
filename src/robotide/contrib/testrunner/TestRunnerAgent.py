@@ -152,7 +152,8 @@ class TestRunnerAgent:
         self._killer = RobotKillerServer(self._debugger)
         self._server_thread = threading.Thread(
             target=self._killer.serve_forever)
-        self._server_thread.setDaemon(True)
+        # DEPRECATED: self._server_thread.setDaemon(True)
+        self._server_thread.daemon = True
         self._server_thread.start()
         self._send_server_port(self._killer.server_address[1])
 

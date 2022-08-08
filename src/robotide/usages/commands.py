@@ -59,6 +59,9 @@ class FindVariableUsages(FindVariableOccurrences):
 class FindResourceUsages(_Command):
 
     def execute(self, context):
+        """from ..controller.filecontrollers import TestCaseFileController
+        if isinstance(context, TestCaseFileController):
+            return"""
         for imp in context.get_where_used():
             yield ResourceUsage(context, imp)
 
