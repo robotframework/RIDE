@@ -279,7 +279,14 @@ class ForceTagsController(TagsController):
     def _recursive_gather_from(self, obj, result):
         if obj is None:
             return result
-        force_tags = obj._setting_table.force_tags
+        try:
+            force_tags = obj._setting_table.force_tags
+            # print(f"DEBUG: SettingsController _recursive_gather_from force_tags={force_tags}")
+        except AttributeError:  # In the case of a .resource file, there is no Forced Tags fields
+            # print(f"DEBUG: SettingsController _recursive_gather_from resource AttributeError")
+            # force_tags = dict(value=None)
+            return result
+        # print(f"DEBUG: SettingsController _recursive_gather_from force_tags={force_tags}, obj.parent={obj.parent}")
         return self._recursive_gather_from(
             obj.parent,
             self._gather_from_data(force_tags, obj.force_tags) + result)
@@ -287,6 +294,7 @@ class ForceTagsController(TagsController):
     def _gather_from_data(self, tags, parent):
         if tags.value is None:
             return []
+        # print(f"DEBUG: SettingsController _gather_from_data entry tags={tags.value}")
         return [ForcedTag(t, index, parent)
                 for index, t in enumerate(tags.value)]
 

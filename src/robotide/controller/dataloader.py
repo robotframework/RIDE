@@ -74,6 +74,7 @@ class _DataLoader(_DataLoaderThread):
         self._settings = settings
 
     def _run(self):
+        # print(f"DEBUG: Dataloader returning TestData source={self._path}")
         return TestData(source=self._path, settings=self._settings)
 
 
@@ -131,7 +132,13 @@ def TestData(source, parent=None, settings=None):
         data.populate()
         # print("DEBUG: Dataloader after populate %s  %s\n" % (data._tables, data.name))
         return data
-    return robotapi.TestCaseFile(parent, source, settings).populate()
+    #print("DEBUG: Dataloader returning TestCaseFile")
+    if source.endswith("robot"):
+        datafile = robotapi.TestCaseFile(parent, source, settings).populate()
+    if source.endswith("resource"):
+        datafile = robotapi.ResourceFile(source, settings).populate()
+    # print(f"DEBUG: Dataloader returning TestCaseFile datafile={datafile}, type={type(datafile)}")
+    return datafile
 
 
 class ExcludedDirectory(robotapi.TestDataDirectory):
