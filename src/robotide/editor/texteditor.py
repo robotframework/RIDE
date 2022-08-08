@@ -112,12 +112,12 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
             self._editor.store_position()
 
     def OnSaving(self, message):
-        print(f"DEBUG: OnSaving entering function {message}")
+        # print(f"DEBUG: OnSaving entering function {message}")
         if self.is_focused():
             self._editor.save()
             self._editor.GetFocus(None)
         else:
-            print(f"DEBUG: OnSaving open because was saved from other editor {message}")
+            # print(f"DEBUG: OnSaving open because was saved from other editor {message}")
             self._open()  # Was saved from other Editor
 
     def OnDataChanged(self, message):
@@ -562,10 +562,10 @@ class SourceEditor(wx.Panel, RIDEDialog):
             self._showing_list = True
 
     def open(self, data):
-        print(f"DEBUG: Textedit enter open")
+        # print(f"DEBUG: Textedit enter open")
         self.reset()
         self._data = data
-        print(f"DEBUG: Textedit in open before getting SuggestionSource {self._data._data}\n Type data is {type(self._data._data)}")
+        # print(f"DEBUG: Textedit in open before getting SuggestionSource {self._data._data}\n Type data is {type(self._data._data)}")
         try:
             if isinstance(self._data._data, ResourceFileController):
                 self._controller_for_context = DummyController(self._data._data, self._data._data)
@@ -609,7 +609,7 @@ class SourceEditor(wx.Panel, RIDEDialog):
             if idx < lenline and (line.strip().startswith("FOR") or line.strip().startswith("IF")
                                       or line.strip().startswith("ELSE")):
                 tsize += 1
-                print(f"DEBUG: SourceEditor auto_indent after block kw tsize={tsize} linenum={linenum}")
+                # print(f"DEBUG: SourceEditor auto_indent after block kw tsize={tsize} linenum={linenum}")
             elif linenum > 0 and tsize == 0:  # Advance if first task/test case or keyword
                 prevline = self._editor.GetLine(linenum-1).lower()
                 if prevline.startswith("**") and not ("variables" in prevline or "settings" in prevline):
@@ -622,7 +622,7 @@ class SourceEditor(wx.Panel, RIDEDialog):
                 self._editor.SetSelection(pos, pos)
                 self.deindent_block()
                 tsize -= 1
-                print(f"DEBUG: SourceEditor auto_indent after END block kw tsize={tsize} linenum={linenum}")
+                # print(f"DEBUG: SourceEditor auto_indent after END block kw tsize={tsize} linenum={linenum}")
             self._editor.NewLine()
             while tsize > 0:
                 self.write_ident()
@@ -709,7 +709,7 @@ class SourceEditor(wx.Panel, RIDEDialog):
         self._dirty = 0
 
     def save(self, *args):
-        print(f"DEBUG: enter save path={self.datafile_controller.source}")
+        # print(f"DEBUG: enter save path={self.datafile_controller.source}")
         self.store_position()
         if self.dirty:
             if not self._data_validator.validate_and_update(self._data, self._editor.utf8_text):
