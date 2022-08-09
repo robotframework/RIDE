@@ -353,11 +353,12 @@ class StepController(_BaseController):
     def _has_comment_keyword(self):
         if self.keyword is None:
             return False
-        return self.keyword.strip().lower() == "comment"
+        return self.keyword.strip().lower() == "comment" or self.keyword.strip().lower() == 'builtin.comment'
 
     def uncomment(self):
         index_of_comment = self._first_non_empty_cell()
-        if self._step.as_list()[index_of_comment] == 'Comment':
+        if self._step.as_list()[index_of_comment].lower() == 'comment' or\
+                self._step.as_list()[index_of_comment].lower() == 'builtin.comment':
             self.change(index_of_comment, '')
             self.shift_left(index_of_comment)
             self.recalculate_keyword_column()

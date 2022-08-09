@@ -151,6 +151,7 @@ class Project(_BaseController, WithNamespace):
         datafile = self._load_datafile(path, load_observer)
         if datafile:
             return datafile
+        # print(f"DEBUG: project Before testing Resource load_datafile path={path}")
         # Let's see if it is a .robot file valid as .resource
         if path.endswith((".robot", ".resource")):
             datafile = self._load_resource(path, load_observer)

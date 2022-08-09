@@ -133,9 +133,10 @@ def TestData(source, parent=None, settings=None):
         # print("DEBUG: Dataloader after populate %s  %s\n" % (data._tables, data.name))
         return data
     #print("DEBUG: Dataloader returning TestCaseFile")
-    if source.endswith("robot"):
-        datafile = robotapi.TestCaseFile(parent, source, settings).populate()
-    if source.endswith("resource"):
+    datafile = robotapi.TestCaseFile(parent, source, settings).populate()
+    if datafile:
+        return datafile
+    if source.endswith(("resource", "robot")):
         datafile = robotapi.ResourceFile(source, settings).populate()
     # print(f"DEBUG: Dataloader returning TestCaseFile datafile={datafile}, type={type(datafile)}")
     return datafile
