@@ -979,6 +979,7 @@ class SourceEditor(wx.Panel, RIDEDialog):
         end_line = self._editor.LineFromPosition(end)
         spaces = ' ' * self._tab_size
         comment = 'Comment' + spaces
+        commentlong = 'BuiltIn.Comment' + spaces
         cpos = cursor - len(comment)
         self._editor.SelectNone()
         count = 0
@@ -996,6 +997,8 @@ class SourceEditor(wx.Panel, RIDEDialog):
                     idx += 1
                 if (line[idx:len(comment) + idx]).lower() == comment.lower():
                     self._editor.DeleteRange(pos + idx, len(comment))
+                if (line[idx:len(commentlong) + idx]).lower() == commentlong.lower():
+                    self._editor.DeleteRange(pos + idx, len(commentlong))
             count += 1
             row += 1
         new_start = start
