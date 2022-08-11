@@ -146,7 +146,7 @@ def open_filemanager(path=None):
                 subprocess.Popen(["open", "{}".format(path_dir)])
 
 
-class TestRunnerPlugin(Plugin, RIDEDialog):
+class TestRunnerPlugin(Plugin):
     """A plugin for running tests from within RIDE"""
     defaults = {"auto_save": False,
                 "confirm run": True,

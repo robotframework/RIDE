@@ -121,7 +121,7 @@ class _SearchCriteria(object):
         return utils.normalize(pattern) in utils.normalize(string)
 
 
-class KeywordSearchDialog(wx.Frame, RIDEDialog):
+class KeywordSearchDialog(RIDEDialog):
 
     def __init__(self, parent, searcher):
         RIDEDialog.__init__(self, title="Search Keywords", parent=parent, size=(650, 400),
