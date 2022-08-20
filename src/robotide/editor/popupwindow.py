@@ -18,7 +18,7 @@ from ..context import POPUP_BACKGROUND, POPUP_FOREGROUND, IS_WINDOWS, IS_MAC
 from ..widgets import VerticalSizer, HtmlWindow, HtmlDialog
 
 
-class _PopupWindowBase(object):
+class _PopupWindowBase(wx.Frame):
 
     def __init__(self, size, detachable=True, autohide=False, color_background=POPUP_BACKGROUND,
                  color_foreground=POPUP_FOREGROUND):
@@ -40,8 +40,8 @@ class _PopupWindowBase(object):
         szr = VerticalSizer()
         self._details = HtmlWindow(self, size=size)
         szr.add_expanding(self._details)
-        panel.SetSizer(szr)
-        panel.Fit()
+        # DEBUG: Grid Editor was broken on wxPython 4.2.0 with the SetSizer
+        # panel.SetSizerAndFit(szr)
         return panel
 
     def _set_detachable(self):

@@ -31,7 +31,7 @@ from ..controller import ctrlcommands
 from ..editor.listeditor import ListEditorBase
 from ..publish import PUBLISHER
 from ..publish.messages import (RideImportSetting, RideOpenVariableDialog, RideExecuteSpecXmlImport, RideSaving,
-                                 RideVariableAdded, RideVariableUpdated, RideVariableRemoved)
+                                RideVariableAdded, RideVariableUpdated, RideVariableRemoved)
 from ..utils import overrides
 from ..utils.highlightmatcher import highlight_matcher
 from ..widgets import ButtonWithHandler, Label, HtmlWindow, PopupMenu, PopupMenuItems, HtmlDialog
@@ -109,11 +109,17 @@ class SettingEditor(wx.Panel):
         return HtmlPopupWindow(self, (500, 350))
 
     def OnKey(self, event):
-        self._tooltip.hide()
+        try:
+            self._tooltip.hide()
+        except AttributeError:
+            pass
         event.Skip()
 
     def OnDisplayMotion(self, event):
-        self._tooltip.hide()
+        try:
+            self._tooltip.hide()
+        except AttributeError:
+            pass
 
     def refresh(self, controller):
         self._controller = controller
@@ -141,7 +147,10 @@ class SettingEditor(wx.Panel):
 
     def _hide_tooltip(self):
         self._stop_popup_timer()
-        self._tooltip.hide()
+        try:
+            self._tooltip.hide()
+        except AttributeError:
+            pass
 
     def _stop_popup_timer(self):
         if hasattr(self, 'popup_timer'):
@@ -157,12 +166,18 @@ class SettingEditor(wx.Panel):
 
     def OnWindowDestroy(self, event):
         self._stop_popup_timer()
-        self._tooltip.hide()
+        try:
+            self._tooltip.hide()
+        except AttributeError:
+            pass
         event.Skip()
 
     def OnLeaveWindow(self, event):
         self._stop_popup_timer()
-        self._tooltip.hide()
+        try:
+            self._tooltip.hide()
+        except AttributeError:
+            pass
         event.Skip()
 
     def OnPopupTimer(self, event):
@@ -318,6 +333,10 @@ class SettingValueDisplay(wx.TextCtrl):
 
 class DocumentationEditor(SettingEditor):
 
+    def __init__(self, parent, controller, plugin, tree):
+        # print(f"DEBUG: DocumentationEditor parent={parent} controller={controller}")
+        SettingEditor.__init__(self, parent, controller, plugin, tree)
+
     def _value_display_control(self):
         ctrl = HtmlWindow(self, (-1, 100), color_background=self.color_secondary_background,
                           color_foreground=self.color_secondary_foreground)
@@ -330,11 +349,22 @@ class DocumentationEditor(SettingEditor):
         if self._controller:
             self._value_display.set_content(self._controller.visible_value)
 
+    """
     def _get_tooltip(self):
         return HtmlPopupWindow(self, (500, 350), detachable=False)
 
     def _get_details_for_tooltip(self):
         return self._controller.visible_value, None
+    """
+
+    def OnKey(self, event):
+        event.Skip()
+
+    def OnDisplayMotion(self, event):
+        pass
+
+    def _hide_tooltip(self):
+        pass
 
     def _create_editor_dialog(self):
         return DocumentationDialog(self._datafile,

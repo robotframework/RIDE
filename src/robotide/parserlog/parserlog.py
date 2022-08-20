@@ -110,7 +110,7 @@ class ParserLogPlugin(Plugin):
             self.notebook.show_tab(self._panel)
 
 
-class _LogWindow(wx.Panel, RIDEDialog):
+class _LogWindow(wx.Panel):
 
     def __init__(self, notebook, log):
         wx.Panel.__init__(self, notebook)

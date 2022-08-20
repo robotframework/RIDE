@@ -24,17 +24,18 @@ See the https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride
 
 **Attention, this new version will break old style `:FOR`, and you have to change to `FOR/END` blocks.**
 
-**Attention, some problems have been detected when using wxPython 4.1.1, namely a crash when detaching File Explorer and Project panes.**
+**Attention, some problems have been detected when using wxPython 4.1.1, namely a crash when detaching File Explorer and Project panes.
+This is not happening with wxPython 4.2.0.**
 
 **The pre-release and current development, supports Python 3.8 (since February 2020).**
 
 **Attention:**
 
-**It is better to use Python 3.6, 3.7, 3.8 or 3.9.**
+**It is better to use Python 3.6, 3.7, 3.8 or 3.9 and now 3.10.**
 
 **To use Python 3.9, you should have wxPython 4.1.1, and install from `master` (since April 2021).**
 
-**RIDE is not fully tested on Python 3.10.**
+**Current development version 2.0b2.dev19 (20 August 2022) supports Python 3.10 with wxPython 4.2.0.**
 
 **24-jun-2022 A preliminary experiment was done on Fedora 36, Python 3.10.5 and wxPython 4.0.7**
 
