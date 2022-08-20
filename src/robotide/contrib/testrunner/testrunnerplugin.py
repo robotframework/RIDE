@@ -624,7 +624,7 @@ class TestRunnerPlugin(Plugin):
         # width of the window based on average width of a character. A
         # little is subtracted just to make sure there's a little margin
         out_width, _ = self._console_log_ctrl.GetSize()
-        char_width = self._console_log_ctrl.GetCharWidth()
+        char_width = self.__getattr__("font size")
         return str(int(out_width / char_width) - 10)
 
     def _remove_from_notebook(self):
