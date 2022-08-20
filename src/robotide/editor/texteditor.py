@@ -349,7 +349,7 @@ class DataFileWrapper(object): # TODO: bad class name
         return output.getvalue()  # DEBUG .decode('utf-8')
 
 
-class SourceEditor(wx.Panel, RIDEDialog):
+class SourceEditor(wx.Panel):
 
     def __init__(self, parent, title, data_validator):
         wx.Panel.__init__(self, parent)

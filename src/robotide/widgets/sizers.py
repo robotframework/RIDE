@@ -19,25 +19,36 @@ import wx
 class _BoxSizer(wx.BoxSizer):
 
     def __init__(self):
-        wx.BoxSizer.__init__(self, self.orientation)
+        wx.BoxSizer.__init__(self, orient=self.orientation)
+        # print(f"DEBUG: _BoxSizer __init__ after super init, orientation is {self.orientation}")
 
     def add(self, component, proportion=0, flag=0):
-        self.Add(component, proportion=proportion, flag=flag)
+        # self.Add(component, proportion=proportion, flag=flag)
+        self.Add(component, wx.SizerFlags(proportion).Align(flag))
 
     def add_with_padding(self, component, padding=5):
-        self.Add(component, flag=wx.ALL, border=padding)
+        # self.Add(component, flag=wx.ALL, border=padding)
+        self.Add(component, wx.SizerFlags(0).Border(wx.ALL, padding))
 
     def add_expanding(self, component, propotion=1, padding=0):
-        self.Add(component, proportion=propotion, flag=wx.EXPAND | wx.ALL,
-                 border=padding)
+        # self.Add(component, proportion=propotion, flag=wx.EXPAND | wx.ALL,
+        #         border=)
+        self.Add(component, wx.SizerFlags(propotion).Expand().Border(wx.ALL, padding))
 
 
 class VerticalSizer(_BoxSizer):
-    orientation = wx.VERTICAL
+
+    def __init__(self):
+        self.orientation = wx.VERTICAL
+        _BoxSizer.__init__(self)
 
 
 class HorizontalSizer(_BoxSizer):
-    orientation = wx.HORIZONTAL
+
+    def __init__(self):
+        self.orientation = wx.HORIZONTAL
+        _BoxSizer.__init__(self)
 
     def add_to_end(self, component):
-        self.Add(component, flag=wx.ALIGN_RIGHT)
+        # self.Add(component, flag=wx.ALIGN_RIGHT)
+        self.Add(component, wx.SizerFlags().Align(wx.ALIGN_RIGHT))

@@ -149,7 +149,7 @@ installation instructions.
 """
 
 
-class PybotProfile(BaseProfile, RIDEDialog):
+class PybotProfile(BaseProfile):
     """A runner profile which uses robot
 
     It is assumed that robot is on the path
