@@ -105,6 +105,10 @@ ID_PAUSE_ON_FAILURE = wx.NewIdRef()
 ID_SHOW_MESSAGE_LOG = wx.NewIdRef()
 STYLE_DEFAULT = 0
 STYLE_STDERR = 2
+STYLE_PASS = 1
+STYLE_SKIP = 3
+STYLE_FAIL = 4
+
 ATEXIT_LOCK = threading.RLock()
 
 
@@ -162,7 +166,12 @@ class TestRunnerPlugin(Plugin):
                 "font face": 'Courier New',
                 "foreground": 'black',
                 "background": 'white',
-                "error": 'red'}
+                "error": 'red',
+                "use colors": False,
+                "fail color": 'red',
+                "pass color": 'green',
+                "skip color": 'yellow'
+                }
 
     report_regex = re.compile("^Report: {2}(.*\.html)$", re.MULTILINE)
     log_regex = re.compile("^Log: {5}(.*\.html)$", re.MULTILINE)
@@ -191,6 +200,7 @@ class TestRunnerPlugin(Plugin):
         self._initmemory = None
         self._limitmemory = None  # This will be +80%
         self._maxmemmsg = None
+        self.use_colors = False
 
     @property
     def _names_to_run(self):
@@ -370,7 +380,8 @@ class TestRunnerPlugin(Plugin):
             return
         self._reset_memory_calc()
         profile = self.get_current_profile()
-        command_args = self._create_command_args(profile.get_command_args(), log_level)
+        self.use_colors = self.__getattr__('use colors')
+        command_args = self._create_command_args(profile.get_command_args(), log_level, self.use_colors)
         # wx.MessageBox(f"DEBUG: after _create_command_args {command_args}", "Debug")
         # print(f"DEBUG: testrunnerplugin _run_tests BEFORE _save_command_args_in_file")
         args_file = self._save_command_args_in_file(command_args)
@@ -392,13 +403,13 @@ class TestRunnerPlugin(Plugin):
             if log_message:
                 log_message.publish()
 
-    def _create_command_args(self, profile_command_args, log_level='INFO'):
+    def _create_command_args(self, profile_command_args, log_level='INFO', use_colors=False):
         return CommandArgs().with_existing_args(profile_command_args) \
             .with_log_level(log_level) \
             .with_output_directory(self._default_output_dir) \
             .with_python_path(self.global_settings.get('pythonpath', None)) \
             .with_console_width(self._get_console_width()) \
-            .without_console_color() \
+            .without_console_color(not use_colors) \
             .with_runnable_tests(self._names_to_run) \
             .build()
 
@@ -596,6 +607,9 @@ class TestRunnerPlugin(Plugin):
         # text could be bytes or str
         if not self.panel or not text_ctrl:
             return
+        self._color_map = list()
+        if self.use_colors:
+            text = self.parse_colors(text)
         text_ctrl.update_scroll_width(text)
         # we need this information to decide whether to autoscroll or not
         new_text_start = text_ctrl.GetLength()
@@ -604,6 +618,8 @@ class TestRunnerPlugin(Plugin):
             text_ctrl.GetFirstVisibleLine() + text_ctrl.LinesOnScreen() - 1
 
         text_ctrl.SetReadOnly(False)
+        pos=text_ctrl.GetLastPosition()   # TODO: Process \r with Replace
+        # print(f"DEBUG: _append_text lastposition={pos}")
         text_ctrl.AppendText(text)
         new_text_end = text_ctrl.GetLength()
 
@@ -611,13 +627,83 @@ class TestRunnerPlugin(Plugin):
             text_ctrl.StartStyling(new_text_start, 0x1f)
         else:
             text_ctrl.StartStyling(new_text_start)
-        if source == "stderr":
+        text_ctrl.SetStyling(0, STYLE_DEFAULT)
+        if source == "stderr" and not self.use_colors:
             text_ctrl.SetStyling(new_text_end - new_text_start, STYLE_STDERR)
+
+        if self.use_colors and self._color_map:
+            style = None
+            previous_start = None
+            for item in self._color_map:
+                previous_style = style
+                if item[1] == 'RED':
+                    style = STYLE_FAIL
+                elif item[1] == 'GREEN':
+                    style = STYLE_PASS
+                elif item[1] == 'YELLOW':
+                    style = STYLE_SKIP
+                elif item[1] is None:
+                    style = STYLE_DEFAULT
+                if style:
+                    if wx.VERSION < (4, 1, 0):
+                        text_ctrl.StartStyling(pos + item[0], 0x1f)
+                    else:
+                        text_ctrl.StartStyling(pos + item[0])
+                    previous_start = item[0]
+                if previous_style and style == STYLE_DEFAULT:
+                    text_ctrl.SetStyling(item[0] - previous_start, previous_style)
+            if previous_start and style:
+                text_ctrl.SetStyling(item[0] - previous_start, STYLE_DEFAULT)
 
         text_ctrl.SetReadOnly(True)
         if last_visible_line >= line_count - 4:
             line_count = text_ctrl.GetLineCount()
             text_ctrl.ScrollToLine(line_count)
+
+    def parse_colors(self, txt):
+        # print(f"DEBUG: enter parse_colors {txt}")
+        idx = 0
+        t_size = len(txt)
+        while idx < t_size:
+            # print(f"{str(txt[idx])}")
+            if txt[idx] == 27:  # .startswith('\033[32m'):
+                color = False
+                # print(f"DEBUG: parse_colors got ESC, {txt[idx+1:idx+5]}")
+                if txt[idx + 1:idx+5] == b'[34m':
+                    color = True
+                    self.store_color(idx, 'BLUE')
+                    # print(f"DEBUG: parse_colors got BLUE")
+                if txt[idx + 1:idx+5] == b'[33m':
+                    color = True
+                    self.store_color(idx, 'YELLOW')
+                    # print(f"DEBUG: parse_colors got YELLOW")
+                if txt[idx+1:idx+5] == b'[32m':
+                    color = True
+                    self.store_color(idx, 'GREEN')
+                    # print(f"DEBUG: parse_colors got GREEN")
+                if txt[idx+1:idx+5] == b'[31m':
+                    color = True
+                    self.store_color(idx, 'RED')
+                    # print(f"DEBUG: parse_colors got RED")
+                if txt[idx+1:idx+4] == b'[0m':
+                    # print(f"DEBUG: parse_colors reset to NORMAL")
+                    self.store_color(idx, None)
+                    txt = txt[:idx] + txt[idx+4:]
+                    # idx += 3
+                elif color:
+                    txt = txt[:idx] + txt[idx+5:]
+                    # idx += 4
+                if idx >= len(txt):
+                    break
+            t_size = len(txt)
+            if idx < t_size:
+                idx += 1
+        return txt
+
+    def store_color(self, idx, color):
+        if not self._color_map:
+            self._color_map = list()
+        self._color_map.append((idx, color))
 
     def _get_console_width(self):
         # robot wants to know a fixed size for output, so calculate the
@@ -1186,6 +1272,9 @@ class OutputStylizer(object):
         background = self.settings.get('background', 'white')
         font_size = self.settings.get('font size', 10)
         font_face = self.settings.get('font face', 'Courier New')
+        fail_color = self.settings.get('fail color', 'red')
+        pass_color = self.settings.get('pass color', 'green')
+        skip_color = self.settings.get('skip color', 'yellow')
 
         default_style = self._get_style_string(
             fore=self.settings.get('foreground', 'black'), back=background,
@@ -1193,9 +1282,15 @@ class OutputStylizer(object):
         error_style = self._get_style_string(
             fore=self.settings.get('error', 'red'), back=background,
             size=font_size, face=font_face)
+        fail_style = self._get_style_string(fore=fail_color, back=background, size=font_size, face=font_face)
+        pass_style = self._get_style_string(fore=pass_color, back=background, size=font_size, face=font_face)
+        skip_style = self._get_style_string(fore=skip_color, back=background, size=font_size, face=font_face)
 
         self.editor.StyleSetSpec(STYLE_DEFAULT, default_style)
         self.editor.StyleSetSpec(STYLE_STDERR, error_style)
+        self.editor.StyleSetSpec(STYLE_FAIL, fail_style)
+        self.editor.StyleSetSpec(STYLE_PASS, pass_style)
+        self.editor.StyleSetSpec(STYLE_SKIP, skip_style)
         self.editor.StyleSetSpec(7, error_style)
         self.editor.StyleSetBackground(wx.stc.STC_STYLE_DEFAULT, background)
         self.editor.Refresh()
