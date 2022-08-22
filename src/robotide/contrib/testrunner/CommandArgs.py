@@ -66,8 +66,8 @@ class CommandArgs:
             self._tests_to_run += ['--suite', suite, '--test', test]
         return self
 
-    def without_console_color(self):
-        self._without_console_color = True
+    def without_console_color(self, without_colors=True):
+        self._without_console_color = without_colors
         return self
 
     def with_console_width(self, console_width):
@@ -80,6 +80,9 @@ class CommandArgs:
 
         if self._is_necessary_disable_console_color():
             self._args.extend(['-C', 'off'])
+
+        if self._is_necessary_add_console_color():
+            self._args.extend(['-C', 'on'])
 
         if self._is_necessary_add_console_width():
             self._args.extend(['-W', self._console_width])
@@ -100,6 +103,11 @@ class CommandArgs:
 
     def _is_necessary_disable_console_color(self):
         return self._without_console_color and \
+               '-C' not in self._args and \
+               '--consolecolors' not in self._args
+
+    def _is_necessary_add_console_color(self):
+        return not self._without_console_color and \
                '-C' not in self._args and \
                '--consolecolors' not in self._args
 

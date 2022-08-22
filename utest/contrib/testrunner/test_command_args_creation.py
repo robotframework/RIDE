@@ -21,9 +21,10 @@ from robotide.contrib.testrunner.CommandArgs import CommandArgs
 class CommandArgsCreationTests(unittest.TestCase):
 
     def test_build_command_args_default(self):
-        args = CommandArgs()
+        args = CommandArgs() \
+               .without_console_color(True)  # This is controlled in setting.cfg
         result = args.build()
-        self.assertListEqual(result, [])
+        self.assertListEqual(result, ['-C', 'off'])
 
     def test_build_command_args_full(self):
         tests = [('suite_name_1', 'test_1'),
@@ -74,13 +75,71 @@ class CommandArgsCreationTests(unittest.TestCase):
                               '-W', 12,  # --consolewidth
                               '-C', 'off'])
 
+    def test_build_command_args_add_console_colors_to_existing(self):
+        existing_args = ['--loglevel', 'INFO',
+                         '-P', 'C:\\Python Dir\\python.exe',
+                         '-d', 'C:\\Test',
+                         '-W', 12]  # --consolewidth
+        args = CommandArgs() \
+            .with_existing_args(existing_args) \
+            .with_python_path('C:\\My Python Dir\\my_python.exe') \
+            .with_log_level('DEBUG') \
+            .with_output_directory('C:\\My Work\\Test 1') \
+            .with_console_width(5) \
+            .without_console_color(False)
+
+        result = args.build()
+        self.assertListEqual(result,
+                             ['--loglevel', 'INFO',
+                              '-P', 'C:\\Python Dir\\python.exe',
+                              '-d', 'C:\\Test',
+                              '-W', 12,  # --consolewidth
+                              '-C', 'on'])
+
+    def test_build_command_args_add_console_colors_does_not_override_exiting(self):
+        existing_args = ['--loglevel', 'INFO',
+                         '-P', 'C:\\Python Dir\\python.exe',
+                         '-d', 'C:\\Test',
+                         '-W', 12, # --consolewidth
+                         '--consolecolors', 'auto']
+        args = CommandArgs() \
+            .with_existing_args(existing_args) \
+            .with_python_path('C:\\My Python Dir\\my_python.exe') \
+            .with_log_level('DEBUG') \
+            .with_output_directory('C:\\My Work\\Test 1') \
+            .with_console_width(5) \
+            .without_console_color(False)
+
+        result = args.build()
+        self.assertListEqual(result,
+                             ['--loglevel', 'INFO',
+                              '-P', 'C:\\Python Dir\\python.exe',
+                              '-d', 'C:\\Test',
+                              '-W', 12,  # --consolewidth
+                              '--consolecolors', 'auto'])
+
+    def test_build_command_args_add_console_colors(self):
+        builder = CommandArgs()\
+            .without_console_color(False)
+
+        result = builder.build()
+        self.assertListEqual(result, ['-C', 'on'])
+
+    def test_build_command_remove_console_colors(self):
+        builder = CommandArgs() \
+            .without_console_color(True)
+
+        result = builder.build()
+        self.assertListEqual(result, ['-C', 'off'])
+
     def test_build_command_args_call_some_method_twice(self):
         builder = CommandArgs()\
             .with_log_level('LEVEL_1') \
-            .with_log_level('LEVEL_2')
+            .with_log_level('LEVEL_2') \
+            .without_console_color(True)
 
         result = builder.build()
-        self.assertListEqual(result, ['-L', 'LEVEL_2'])
+        self.assertListEqual(result, ['-C', 'off', '-L', 'LEVEL_2'])
 
 
 if __name__ == '__main__':

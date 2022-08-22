@@ -383,8 +383,11 @@ class TestRunnerPreferences(EditorPreferences):
 
     def _create_test_runner_config_editor(self):
         self._settings.get('confirm run', True)
+        self._settings.get('use colors', False)
         settings = self._settings
-        sizer = wx.FlexGridSizer(rows=2, cols=2, vgap=10, hgap=10)
+        sizer = wx.FlexGridSizer(rows=6, cols=2, vgap=10, hgap=10)
+        l_usecolor, usecolor = boolean_editor(self, settings, 'use colors',
+                                              'Shows console colors set by -C on ')
         l_confirm, editor = boolean_editor(self, settings, 'confirm run',
                                            'Asks for confirmation to run all tests if none selected ')
         if IS_WINDOWS:
@@ -394,6 +397,11 @@ class TestRunnerPreferences(EditorPreferences):
             l_confirm.SetBackgroundColour(background_color)
             l_confirm.SetOwnBackgroundColour(background_color)
             l_confirm.SetOwnForegroundColour(foreground_color)
+            l_usecolor.SetForegroundColour(foreground_color)
+            l_usecolor.SetBackgroundColour(background_color)
+            l_usecolor.SetOwnBackgroundColour(background_color)
+            l_usecolor.SetOwnForegroundColour(foreground_color)
+        sizer.AddMany([l_usecolor, usecolor])
         sizer.AddMany([l_confirm, editor])
         return sizer
 
@@ -408,6 +416,9 @@ class TestRunnerPreferences(EditorPreferences):
             ('foreground', 'Text foreground'),
             ('background', 'Text background'),
             ('error', 'Error foreground'),
+            ('fail color', 'Fail foreground'),
+            ('pass color', 'Pass foreground'),
+            ('skip color', 'Skip foreground'),
         ):
             if column == 4:
                 column = 0
