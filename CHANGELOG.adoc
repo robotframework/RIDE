@@ -10,9 +10,10 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Added
 
+- Added color processing in console log, when using ``-C`` or ``--consolecolors``
 - Added minimal support to open and edit resource files in Grid Editor
 - Added multiline comment and uncomment in Text Editor
-- Added support for variables recognition in FOR and Set (*) Variable, where (*) means Test, Task, Global, Suite, etc.
+- Added support for variables recognition in FOR and Set (\*) Variable, where (\*) means Test, Task, Global, Suite, etc.
 - Added documentation and syntax color for IF, ELSE, ELSE IF, WHILE, TRY, EXCEPT, BREAK, CONTINUE
 - Added indentation for nested FOR loops
 - Added a Reformat option when saving files on Preferences -> Saving
@@ -26,7 +27,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 - Added Python 3.8 unit test support in travis CI
 - Added menu option to ``Move Up`` and ``Move Down`` variables in Tree
 - Added menu option to ``Sort Variables`` in resources from Tree 
-- Added menu option to ``Sort Tests`` and ``Sort Variables` in suites from Tree
+- Added menu option to ``Sort Tests`` and ``Sort Variables`` in suites from Tree
 - Added menu icons (visible on most operating systems)
 - Added RIDE application dock icon on MacOS
 - Added selection of keyword suggestion with TAB key on Text Editor
@@ -44,7 +45,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Removed
 
-- Removed `robotframeworklexer` dependency and local copy
+- Removed ``robotframeworklexer`` dependency and local copy
 - Removed alignment flag on grid cell JSON Editor (Ctrl-Shift-J)
 - Removed moving to keyword/variable definition when doing Double-Click in grid cell
 
@@ -70,13 +71,14 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Fixed
 
+- Fixed console log width to fit visible area, depending on font size
 - Fixed not possible to use filenames/paths with spaces in TestRunner arguments. Use double quotes for space separated values,
 - Fixed error preventing to open old format, HTML test suites:
     * Yes, we are at RF 5.0.1, but still can open HTML test suites (and then Change to .robot)
 - Fixed broken sorting Tests and Variables in Project tree (right-click menu)
 - Fixed JSON in cell editor not saving nor validating JSON
 - Fixed TestRunner crash when test use SKIP keyword
-- Fixed broken pipe errors when using `--loglevel  DEBUG:INFO`
+- Fixed broken pipe errors when using ``--loglevel  DEBUG:INFO``
 - Fixed RIDE will crash when using third party input method in Mac OS
 - Fixed various output console encoding issue in different platforms
 - Fixed errors when importing libraries with keyword only arguments (i.e. robotframework-requestschecker)
