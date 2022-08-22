@@ -168,8 +168,8 @@ class TestRunnerPlugin(Plugin):
                 "background": 'white',
                 "error": 'red',
                 "use colors": False,
-                "fail color": 'red',
-                "pass color": 'green',
+                "fail color": '#FF8E8E',
+                "pass color": '#9FCC9F',
                 "skip color": 'yellow'
                 }
 
@@ -200,7 +200,10 @@ class TestRunnerPlugin(Plugin):
         self._initmemory = None
         self._limitmemory = None  # This will be +80%
         self._maxmemmsg = None
-        self.use_colors = False
+        self.use_colors = self.__getattr__('use colors')
+        self.fail_color = self.__getattr__('fail color')
+        self.pass_color = self.__getattr__('pass color')
+        self.skip_color = self.__getattr__('skip color')
 
     @property
     def _names_to_run(self):
@@ -909,7 +912,7 @@ class TestRunnerPlugin(Plugin):
         panel = wx.Panel(parent)
         panel.SetBackgroundColour(self._mysettings.color_background)
         panel.SetForegroundColour(self._mysettings.color_foreground)
-        self._progress_bar = ProgressBar(panel)
+        self._progress_bar = ProgressBar(panel, self.fail_color, self.pass_color, self.skip_color)
         self._console_log_panel, self._console_log_ctrl = \
             self._create_collapsible_pane(panel, 'Console log',
                                           self.show_console_log,
@@ -1128,7 +1131,7 @@ class TestRunnerPlugin(Plugin):
 class ProgressBar(wx.Panel):
     """A progress bar for the test runner plugin"""
 
-    def __init__(self, parent):
+    def __init__(self, parent, fail_color='#FF8E8E', pass_color="#9FCC9F", skip_color='yellow'):
         wx.Panel.__init__(self, parent, wx.ID_ANY)
         self._sizer = wx.BoxSizer(wx.HORIZONTAL)
         self._gauge = wx.Gauge(self, size=(100, 10))
@@ -1139,6 +1142,9 @@ class ProgressBar(wx.Panel):
         self.SetSizer(self._sizer)
         self._gauge.Hide()
         self._default_colour = parent.GetBackgroundColour()
+        self.fail_color = fail_color
+        self.pass_color = pass_color
+        self.skip_color = skip_color
         self._timer = wx.Timer(self)
         self.Bind(wx.EVT_TIMER, self.OnTimer)
         self._initialize_state()
@@ -1146,6 +1152,7 @@ class ProgressBar(wx.Panel):
     def _initialize_state(self):
         self._pass = 0
         self._fail = 0
+        self._skip = 0
         self._current_keywords = []
 
     def set_current_keyword(self, name):
@@ -1183,17 +1190,23 @@ class ProgressBar(wx.Panel):
         """Add one to the failed count"""
         self._fail += 1
 
+    def add_skip(self):
+        """Add one to the skipped count"""
+        self._skip += 1
+
     def _update_message(self):
         """Update the displayed elapsed time, passed and failed counts"""
         elapsed = time.time() - self._start_time
-        message = "elapsed time: %s     pass: %s     fail: %s" % (
-            self._seconds_to_string(elapsed), self._pass, self._fail)
+        message = "elapsed time: %s     pass: %s     skip: %s     fail: %s" % (
+            self._seconds_to_string(elapsed), self._pass, self._skip, self._fail)
         message += self._get_current_keyword_text()
         self._label.SetLabel(message)
         if self._fail > 0:
-            self.SetBackgroundColour("#FF8E8E")
+            self.SetBackgroundColour(self.fail_color)
+        elif self._skip > 0:
+            self.SetBackgroundColour(self.skip_color)
         elif self._pass > 0:
-            self.SetBackgroundColour("#9FCC9F")
+            self.SetBackgroundColour(self.pass_color)
         # not sure why this is required, but without it the background
         # colors don't look right on Windows
         self.Refresh()
@@ -1272,9 +1285,9 @@ class OutputStylizer(object):
         background = self.settings.get('background', 'white')
         font_size = self.settings.get('font size', 10)
         font_face = self.settings.get('font face', 'Courier New')
-        fail_color = self.settings.get('fail color', 'red')
-        pass_color = self.settings.get('pass color', 'green')
-        skip_color = self.settings.get('skip color', 'yellow')
+        self.fail_color = self.settings.get('fail color', '#FF8E8E')
+        self.pass_color = self.settings.get('pass color', '#9FCC9F')
+        self.skip_color = self.settings.get('skip color', 'yellow')
 
         default_style = self._get_style_string(
             fore=self.settings.get('foreground', 'black'), back=background,
@@ -1282,9 +1295,9 @@ class OutputStylizer(object):
         error_style = self._get_style_string(
             fore=self.settings.get('error', 'red'), back=background,
             size=font_size, face=font_face)
-        fail_style = self._get_style_string(fore=fail_color, back=background, size=font_size, face=font_face)
-        pass_style = self._get_style_string(fore=pass_color, back=background, size=font_size, face=font_face)
-        skip_style = self._get_style_string(fore=skip_color, back=background, size=font_size, face=font_face)
+        fail_style = self._get_style_string(fore=self.fail_color, back=background, size=font_size, face=font_face)
+        pass_style = self._get_style_string(fore=self.pass_color, back=background, size=font_size, face=font_face)
+        skip_style = self._get_style_string(fore=self.skip_color, back=background, size=font_size, face=font_face)
 
         self.editor.StyleSetSpec(STYLE_DEFAULT, default_style)
         self.editor.StyleSetSpec(STYLE_STDERR, error_style)
