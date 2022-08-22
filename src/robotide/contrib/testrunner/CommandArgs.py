@@ -82,7 +82,11 @@ class CommandArgs:
             self._args.extend(['-C', 'off'])
 
         if self._is_necessary_add_console_color():
-            self._args.extend(['-C', 'on'])
+            from sys import platform
+            if platform.endswith('win32'):
+                self._args.extend(['-C', 'ansi'])
+            else:
+                self._args.extend(['-C', 'on'])
 
         if self._is_necessary_add_console_width():
             self._args.extend(['-W', self._console_width])

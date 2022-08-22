@@ -386,8 +386,13 @@ class TestRunnerPreferences(EditorPreferences):
         self._settings.get('use colors', False)
         settings = self._settings
         sizer = wx.FlexGridSizer(rows=6, cols=2, vgap=10, hgap=10)
+        from sys import platform
+        if platform.endswith('win32'):
+            add_colors = "-C ansi"
+        else:
+            add_colors = "-C on"
         l_usecolor, usecolor = boolean_editor(self, settings, 'use colors',
-                                              'Shows console colors set by -C on ')
+                                              f"Shows console colors set by {add_colors} ")
         l_confirm, editor = boolean_editor(self, settings, 'confirm run',
                                            'Asks for confirmation to run all tests if none selected ')
         if IS_WINDOWS:
