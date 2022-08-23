@@ -57,7 +57,7 @@ class GridEditor(grid.Grid):
         self.selection = _GridSelection(self)
         self._clipboard_handler = ClipboardHandler(self)
         self._history = _GridState()
-        self.CreateGrid(num_rows, num_cols)
+        self.CreateGrid(int(num_rows), int(num_cols))
         self.SetDefaultCellBackgroundColour(Colour(self.color_background))
         self.SetDefaultCellTextColour(Colour(self.color_foreground))
         self.GetGridColLabelWindow().SetBackgroundColour(Colour(self.color_secondary_background))

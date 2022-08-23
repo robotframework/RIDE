@@ -51,16 +51,17 @@ class ListEditorBase(wx.Panel):
     def _create_ui(self, columns, data):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         self._list = self._create_list(columns, data)
+        print(f"DEBUG: listeditor _create_ui list={self._list}")
         if wx.VERSION >= (4, 1, 0):
             # DEBUG: This is supposed to work on Windows, but it is not
             result = self._list.SetHeaderAttr(wx.ItemAttr(colText=self.color_foreground,
                                                  colBack=self.color_background, font=self._list.GetFont()))
-            # print(f"DEBUG: Change colors of table headers {result}")
+            print(f"DEBUG: Change colors of table headers {result}")
         sizer.Add(self._list, 1, wx.EXPAND)
         sizer.Add((5, 0))
         sizer.Add(self._create_buttons())
         sizer.Add((5, 0))
-        self.SetSizer(sizer)
+        self.SetSizerAndFit(sizer)
         sizer.Layout()
 
     def _create_list(self, columns, data):
@@ -182,6 +183,7 @@ class AutoWidthColumnList(wx.ListCtrl, ListCtrlAutoWidthMixin):
         self.SetOwnForegroundColour(Colour(color_foreground))
         # self.EnableAlternateRowColours(True)
         self._parent = parent
+        print(f"DEBUG: listeditor AutoWidthColumnList init before populate {parent}")
         self.populate(columns, data or [])
 
     def populate(self, columns, data):
@@ -207,6 +209,8 @@ class AutoWidthColumnList(wx.ListCtrl, ListCtrlAutoWidthMixin):
     def _set_column_widths(self):
         min_width = self._parent.Parent.plugin.global_settings.get('list col min width', 50)
         max_width = self._parent.Parent.plugin.global_settings.get('list col max width', 120)
+        print(f"DEBUG: listeditor AutoWidthColumnList _set_column_widths before ColumnCount min_width={min_width}"
+              f" max_width={max_width}")
         for i in range(self.ColumnCount):
             self.SetColumnWidth(i, -1)
             if self.GetColumnWidth(i) < min_width:

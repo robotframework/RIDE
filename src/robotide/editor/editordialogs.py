@@ -36,6 +36,7 @@ class _Dialog(RIDEDialog):
 
     def __init__(self, controller, item=None, plugin=None):
         # TODO: Get rid of item, everything should be in controller
+        print(f"DEBUG: _Dialog before calling RIDEDialog title={self._title}")
         RIDEDialog.__init__(self, self._title)
         # set Left to Right direction (while we don't have localization)
         self.SetLayoutDirection(wx.Layout_LeftToRight)
@@ -128,6 +129,7 @@ class DictionaryVariableDialog(_Dialog):
         name = var.name if var and var.name else '&{}'
         value = var.value if var and var.value else ''
         validator = DictionaryVariableNameValidator(self._controller, name)
+        print(f"DEBUG: DictionaryVariableDialog name={name} value={value}  validator={validator}")
         return [VariableNameEditor(self, name, 'Name', validator),
                 ListValueEditor(self, value, 'Value',
                                 settings=self.plugin.global_settings)]

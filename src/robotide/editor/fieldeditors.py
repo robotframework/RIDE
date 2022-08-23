@@ -167,6 +167,7 @@ class ListValueEditor(ValueEditor):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         self._settings = settings
         cols = self._settings.get("list variable columns", 4)
+        print(f"DEBUG: ListValueEditor before calling sizer.Add _create_components label={label} cols={cols}")
         sizer.Add(self._create_components(label, cols))
         self._editor = _EditorGrid(self, value, cols)
         sizer.Add(self._editor, 1, self._sizer_flags_for_editor, 3)
@@ -344,7 +345,7 @@ class _EditorGrid(GridEditor):
 
     def resize_columns(self, width):
         # print("DEBUG: Called resize coluumns, width=%d" % width)
-        self.SetDefaultColSize(max(width / self.NumberCols, 100), True)
+        self.SetDefaultColSize(max(int(width / self.NumberCols), 100), True)
 
     def set_number_of_columns(self, columns):
         new_cols = columns - self.NumberCols
