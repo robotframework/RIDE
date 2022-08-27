@@ -506,14 +506,11 @@ class VariablesListEditor(_AbstractListEditor):
         if var_name.startswith('${'):
             dlg = ScalarVariableDialog(self._controller, item=var)
         elif var_name.startswith('@{'):
-            print(f"DEBUG: _open_var_dialog ListVariableDialog var_name={var_name}")
             dlg = ListVariableDialog(self._controller, item=var,
                                      plugin=self.Parent.plugin)
         elif var_name.startswith('&{'):
-            print(f"DEBUG: _open_var_dialog DictionaryVariableDialog var_name={var_name}")
             dlg = DictionaryVariableDialog(self._controller, item=var,
                                            plugin=self.Parent.plugin)
-        print(f"DEBUG: _open_var_dialog obejct dlg to be open modal dlg={dlg}")
         if dlg:  # DEBUG robot accepts % variable definition
             if dlg.ShowModal() == wx.ID_OK:
                 name, value = dlg.get_value()

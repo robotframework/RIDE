@@ -81,6 +81,7 @@ class GridEditor(grid.Grid):
         if update_history:
             self._update_history()
         self._expand_if_necessary(row, col)
+        # TODO: Make below action configurable
         # unescape \n to support multi lines display in grid cells
         value = self._unescape_newlines_and_whitespaces(value)
         self.SetCellValue(row, col, value)
@@ -107,10 +108,11 @@ class GridEditor(grid.Grid):
 
     def _expand_if_necessary(self, row, col):
         # Changed col and row fill because of blank spacing not changing color
-        while self.NumberRows <= max(row, 20): # DEBUG 25 makes slower rendering
+        # print(f"DEBUG: GridEditor ENTER_expand_if_necessary row={row}, col={col}")
+        while self.NumberRows <= max(1, row+1, 10-row): # DEBUG 25 makes slower rendering
             self.AppendRows(1)
-        while self.NumberCols <= max(col, 12): # DEBUG 40 makes slower rendering
-            self.AppendCols(self._col_add_threshold)
+        while self.NumberCols <= max(1, col+1, 10-col): # DEBUG 40 makes slower rendering
+            self.AppendCols(max(1, self._col_add_threshold))  # DEBUG: was infinite when value was 0
 
     def has_focus(self):
         return self.FindFocus() == self

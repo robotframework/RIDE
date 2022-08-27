@@ -167,7 +167,7 @@ class ListValueEditor(ValueEditor):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         self._settings = settings
         cols = self._settings.get("list variable columns", 4)
-        print(f"DEBUG: ListValueEditor before calling sizer.Add _create_components label={label} cols={cols}")
+        # print(f"DEBUG: ListValueEditor before calling sizer.Add _create_components label={label} cols={cols}")
         sizer.Add(self._create_components(label, cols))
         self._editor = _EditorGrid(self, value, cols)
         sizer.Add(self._editor, 1, self._sizer_flags_for_editor, 3)
@@ -223,10 +223,10 @@ class ListValueEditor(ValueEditor):
 
 
 class _EditorGrid(GridEditor):
-    _col_add_threshold = 0
 
     def __init__(self, parent, value, num_cols):
-        num_rows = len(value) / num_cols + 2
+        num_rows = round(len(value) / num_cols + 2)
+        # print(f"DEBUG: _EditorGrid __init__ calc num_rows={num_rows}  num_cols={num_cols}")
         GridEditor.__init__(self, parent, num_rows, num_cols)
         """
         self.SetBackgroundColour(Colour(200, 222, 40))
@@ -237,6 +237,7 @@ class _EditorGrid(GridEditor):
         self._set_default_sizes()
         self._bind_actions()
         self._write_content(value)
+        self.Refresh(True)
         """
         self._colorize()
         """
