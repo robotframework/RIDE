@@ -60,7 +60,7 @@ class ListEditorBase(wx.Panel):
         sizer.Add((5, 0))
         sizer.Add(self._create_buttons())
         sizer.Add((5, 0))
-        self.SetSizer(sizer)
+        self.SetSizerAndFit(sizer)
         sizer.Layout()
 
     def _create_list(self, columns, data):

@@ -89,12 +89,17 @@ class CommandArgsCreationTests(unittest.TestCase):
             .without_console_color(False)
 
         result = args.build()
+        from sys import platform
+        if platform.endswith('win32'):
+            add_colors = ['-C', 'ansi']
+        else:
+            add_colors = ['-C', 'on']
         self.assertListEqual(result,
                              ['--loglevel', 'INFO',
                               '-P', 'C:\\Python Dir\\python.exe',
                               '-d', 'C:\\Test',
-                              '-W', 12,  # --consolewidth
-                              '-C', 'on'])
+                              '-W', 12 # --consolewidth
+                             ] + add_colors)
 
     def test_build_command_args_add_console_colors_does_not_override_exiting(self):
         existing_args = ['--loglevel', 'INFO',
@@ -123,7 +128,12 @@ class CommandArgsCreationTests(unittest.TestCase):
             .without_console_color(False)
 
         result = builder.build()
-        self.assertListEqual(result, ['-C', 'on'])
+        from sys import platform
+        if platform.endswith('win32'):
+            add_colors = ['-C', 'ansi']
+        else:
+            add_colors = ['-C', 'on']
+        self.assertListEqual(result, add_colors)
 
     def test_build_command_remove_console_colors(self):
         builder = CommandArgs() \
