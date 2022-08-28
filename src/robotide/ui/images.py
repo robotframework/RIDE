@@ -33,6 +33,7 @@ RUNNING_IMAGE_INDEX = 7
 PASSED_IMAGE_INDEX = 8
 FAILED_IMAGE_INDEX = 9
 PAUSED_IMAGE_INDEX = 10
+SKIPPED_IMAGE_INDEX = 11
 
 
 class TreeImageList(wx.ImageList):
@@ -52,6 +53,7 @@ class TreeImageList(wx.ImageList):
             'passed': _TreeImage(self, 'robot_passed.png'),
             'failed': _TreeImage(self, 'robot_failed.png'),
             'paused': _TreeImage(self, 'robot-pause.gif'),
+            'skipped': _TreeImage(self, 'robot_skipped.png'),
             filecontrollers.ExcludedDirectoryController: _TreeImage(self, 'folder_excluded.png')
         }
 # 'running': _TreeImage(self, 'robot_running.png'),
@@ -73,6 +75,8 @@ class TreeImageList(wx.ImageList):
                     return self._images['passed']
                 if self._execution_results.has_failed(controller):
                     return self._images['failed']
+                if self._execution_results.has_skipped(controller):
+                    return self._images['skipped']
         elif controller.__class__ == filecontrollers.TestDataDirectoryController:
             if not controller.contains_tests():
                 return self._images['resource directory']
