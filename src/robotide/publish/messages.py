@@ -20,6 +20,7 @@ from .. import utils
 
 from robotide import utils
 
+
 class RideMessage:
     """Base class for all messages sent by RIDE.
 
@@ -205,12 +206,22 @@ class RideTestPaused(RideMessage):
 
 
 class RideTestPassed(RideMessage):
-    """Sent whenever RIDE has executed a test case and it passed."""
+    """Sent whenever RIDE has executed a test case, and it passed."""
     data = ['item']
 
 
 class RideTestFailed(RideMessage):
-    """Sent whenever RIDE has executed a test case and it failed."""
+    """Sent whenever RIDE has executed a test case, and it failed."""
+    data = ['item']
+
+
+class RideTestSkipped(RideMessage):
+    """Sent whenever RIDE has executed a test case, and it was skipped."""
+    data = ['item']
+
+
+class RideTestStopped(RideMessage):
+    """Sent whenever RIDE was executing a test case, and it was stopped or aborted."""
     data = ['item']
 
 

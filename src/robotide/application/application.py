@@ -61,7 +61,7 @@ class RIDE(wx.App):
     def OnInit(self):
         # DEBUG To test RTL
         # self._initial_locale = wx.Locale(wx.LANGUAGE_ARABIC)
-        self._initial_locale = wx.Locale(wx.LANGUAGE_ENGLISH)
+        self._initial_locale = wx.Locale(wx.LANGUAGE_ENGLISH_US)
         # Needed for SetToolTipString to work
         wx.HelpProvider.Set(wx.SimpleHelpProvider())  # TODO adjust to wx versions 
         self.settings = RideSettings()

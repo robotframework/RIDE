@@ -10,6 +10,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Added
 
+- Added skipped tests counter and corresponding colored icon on Project tree
 - Added color processing in console log, when using ``-C`` or ``--consolecolors``
 - Added minimal support to open and edit resource files in Grid Editor
 - Added multiline comment and uncomment in Text Editor
@@ -71,6 +72,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Fixed
 
+- Fixed removal of animation in Project tree when test run is interrupted
 - Fixed console log width to fit visible area, depending on font size
 - Fixed not possible to use filenames/paths with spaces in TestRunner arguments. Use double quotes for space separated values,
 - Fixed error preventing to open old format, HTML test suites:

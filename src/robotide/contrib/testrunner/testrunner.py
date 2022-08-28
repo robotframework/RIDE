@@ -116,6 +116,9 @@ class TestRunner(object):
             if args[1]['status'] == 'PASS':
                 self._results.set_passed(self._get_test_controller(longname,
                                                                    testname))
+            elif args[1]['status'] == 'SKIP':
+                self._results.set_skipped(self._get_test_controller(longname,
+                                                                    testname))
             else:
                 self._results.set_failed(self._get_test_controller(longname,
                                                                    testname))
@@ -181,6 +184,7 @@ class TestRunner(object):
         return self._process and self._process.is_alive()
 
     def command_ended(self):
+        self._results.set_stopped(None)
         self._process = None
 
 

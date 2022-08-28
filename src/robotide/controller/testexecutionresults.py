@@ -13,14 +13,17 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from ..publish.messages import RideTestExecutionStarted, RideTestPaused, RideTestPassed, RideTestFailed, RideTestRunning
+from ..publish.messages import (RideTestExecutionStarted, RideTestPaused, RideTestPassed, RideTestFailed,
+                                RideTestRunning, RideTestSkipped, RideTestStopped)
 
 
 class TestExecutionResults(object):
     RUNNING = 'Running'
+    STOPPED = 'Stopped'
     PASSED = 'Passed'
     FAILED = 'Failed'
     PAUSED = 'Paused'
+    SKIPPED = 'Skipped'
 
     def __init__(self):
         self.clear()
@@ -36,6 +39,11 @@ class TestExecutionResults(object):
         self._results[test] = self.RUNNING
         RideTestRunning(item=test).publish()
 
+    def set_stopped(self, test):
+        if test:
+            self._results[test] = self.STOPPED
+        RideTestStopped(item=test).publish()
+
     def set_passed(self, test):
         self._results[test] = self.PASSED
         RideTestPassed(item=test).publish()
@@ -48,6 +56,10 @@ class TestExecutionResults(object):
         self._results[test] = self.PAUSED
         RideTestPaused(item=test).publish()
 
+    def set_skipped(self, test):
+        self._results[test] = self.SKIPPED
+        RideTestSkipped(item=test).publish()
+
     def is_running(self, test):
         return test in self._results and self._results[test] == self.RUNNING
 
@@ -59,4 +71,7 @@ class TestExecutionResults(object):
 
     def has_failed(self, test):
         return test in self._results and self._results[test] == self.FAILED
+
+    def has_skipped(self, test):
+        return test in self._results and self._results[test] == self.SKIPPED
 

@@ -30,11 +30,11 @@ TREETEXTCOLOUR = Colour(0xA9, 0xA9, 0xA9)
 
 from ..context import IS_WINDOWS
 # from ..controller.filecontrollers import ResourceFileController, TestDataDirectoryController, TestCaseFileController
-from ..publish.messages import (RideTestRunning, RideTestPaused, RideTestPassed, RideTestFailed,
-                                RideTestExecutionStarted, RideImportSetting, RideExcludesChanged, RideIncludesChanged,
+from ..publish.messages import (RideTestRunning, RideTestPaused, RideTestPassed, RideTestFailed, RideTestSkipped,
+                                RideTestExecutionStarted, RideTestStopped, RideImportSetting, RideExcludesChanged, RideIncludesChanged,
                                 RideOpenSuite, RideNewProject)
 from ..ui.images import (RUNNING_IMAGE_INDEX, PASSED_IMAGE_INDEX, FAILED_IMAGE_INDEX, PAUSED_IMAGE_INDEX,
-                         ROBOT_IMAGE_INDEX)
+                         SKIPPED_IMAGE_INDEX, ROBOT_IMAGE_INDEX)
 from ..ui.treenodehandlers import TestCaseHandler, TestDataDirectoryHandler, TestCaseFileHandler
 from ..publish import (PUBLISHER, RideTreeSelection, RideFileNameChanged, RideItem, RideUserKeywordAdded,
                        RideTestCaseAdded, RideUserKeywordRemoved, RideTestCaseRemoved, RideDataFileRemoved,
@@ -319,6 +319,8 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl):
             (self._test_result, RideTestPaused),
             (self._test_result, RideTestPassed),
             (self._test_result, RideTestFailed),
+            (self._test_result, RideTestSkipped),
+            (self._test_result, RideTestStopped),
             (self._handle_import_setting_message, RideImportSetting),
             (self._mark_excludes, RideExcludesChanged),
             (self._mark_excludes, RideIncludesChanged),
@@ -369,10 +371,18 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl):
         test: TestCaseController = message.item
         if not test:
             # test object will be None when running with DataDriver
+            # when runner is interrupted, is also None, so let's stop animation
+            if self._animctrl:
+                self._animctrl.Stop()
+                self._animctrl.Animation.Destroy()
+                self._animctrl.Destroy()
+                self._animctrl = None
             return
         if isinstance(message, RideTestPassed):
             test.run_passed = True
         elif isinstance(message, RideTestFailed):
+            test.run_passed = False
+        elif isinstance(message, RideTestSkipped):
             test.run_passed = False
         else:
             test.run_passed = None
@@ -423,6 +433,8 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl):
             return PASSED_IMAGE_INDEX
         if self._execution_results.has_failed(controller):
             return FAILED_IMAGE_INDEX
+        if self._execution_results.has_skipped(controller):
+            return SKIPPED_IMAGE_INDEX
         return ROBOT_IMAGE_INDEX
 
     def populate(self, model):
