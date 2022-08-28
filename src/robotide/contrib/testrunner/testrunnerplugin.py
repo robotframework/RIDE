@@ -1049,8 +1049,12 @@ class TestRunnerPlugin(Plugin):
             f"Ending test: {longname.decode(encoding['OUTPUT'], 'backslashreplace')}\n")
         if args[1]['status'] == 'PASS':
             self._progress_bar.add_pass()
-        else:
+        elif args[1]['status'] == 'SKIP':
+            self._progress_bar.add_skip()
+        elif args[1]['status'] == 'FAIL':
             self._progress_bar.add_fail()
+        else:
+            self._log_message_queue.put(f"UNKNOWN STATUS: {args[1]['status']}\n")
 
     def _handle_report_file(self, args):
         self._report_file = args[0]
@@ -1142,6 +1146,7 @@ class ProgressBar(wx.Panel):
         self.SetSizer(self._sizer)
         self._gauge.Hide()
         self._default_colour = parent.GetBackgroundColour()
+        self._foreground_colour = parent.GetForegroundColour()
         self.fail_color = fail_color
         self.pass_color = pass_color
         self.skip_color = skip_color
@@ -1175,6 +1180,7 @@ class ProgressBar(wx.Panel):
         self._gauge.Show()
         self._sizer.Layout()
         self.SetBackgroundColour(self._default_colour)
+        self.SetForegroundColour(self._foreground_colour)
         self._timer.Start(50)
 
     def Stop(self):
@@ -1194,6 +1200,17 @@ class ProgressBar(wx.Panel):
         """Add one to the skipped count"""
         self._skip += 1
 
+    def get_visible_color(self, color):
+        color_diff = wx.Colour.GetRGBA(wx.Colour(color)) - wx.Colour.GetRGBA(self._foreground_colour)
+        # print(f"DEBUG: get_visible_color color={wx.Colour.GetRGBA(wx.Colour(color)):0x} default={wx.Colour.GetRGBA(self._foreground_colour):0x}"
+        #       f" color_diff={wx.Colour.GetRGBA(wx.Colour(color_diff)):0x} white={wx.Colour.GetRGBA(wx.Colour('white')):0x}"
+        #       f" black={wx.Colour.GetRGBA(wx.Colour('black')):0x} gray={wx.Colour.GetRGBA(wx.Colour('gray')):0x}")
+        if wx.Colour.GetRGBA(wx.Colour(color)) > wx.Colour.GetRGBA(self._foreground_colour) > wx.Colour.GetRGBA(wx.Colour('gray')):
+            if color_diff > wx.Colour.GetRGBA(wx.Colour('gray')):
+                return wx.Colour(self._foreground_colour)
+        return wx.Colour('black')
+
+
     def _update_message(self):
         """Update the displayed elapsed time, passed and failed counts"""
         elapsed = time.time() - self._start_time
@@ -1202,10 +1219,13 @@ class ProgressBar(wx.Panel):
         message += self._get_current_keyword_text()
         self._label.SetLabel(message)
         if self._fail > 0:
+            self.SetForegroundColour(self.get_visible_color(self.fail_color))
             self.SetBackgroundColour(self.fail_color)
         elif self._skip > 0:
+            self.SetForegroundColour(self.get_visible_color(self.skip_color))
             self.SetBackgroundColour(self.skip_color)
         elif self._pass > 0:
+            self.SetForegroundColour(self.get_visible_color(self.pass_color))
             self.SetBackgroundColour(self.pass_color)
         # not sure why this is required, but without it the background
         # colors don't look right on Windows
