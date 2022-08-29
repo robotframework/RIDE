@@ -64,6 +64,7 @@ class ReleaseNotes(object):
     def show_changelog(self, event=None):
         if not self._dialog:
             self._dialog = HtmlDialog('Offline Change Log', 'Check the online version at https://github.com/robotframework/RIDE/blob/master/CHANGELOG.adoc')
+        self._dialog.SetSize(800, 800)
         self._dialog.html_wnd.LoadFile(os.path.abspath("application/CHANGELOG.html"))
         self._dialog.html_wnd.SetBackgroundColour(self.general_settings['background help'])
         self._dialog.html_wnd.SetForegroundColour(self.general_settings['foreground text'])

@@ -105,8 +105,12 @@ class UpdateDialog(RIDEDialog):
         self.SetForegroundColour(Colour(self.color_foreground))
         sizer = wx.BoxSizer(orient=wx.VERTICAL)
         hwin = LocalHtmlWindow(self, size=(400, 200))
-        hwin.set_content(f"New version {version} available from <a href=\"{url}\">{url}</a><br/><br/>"
-                         f"You can update with the command:<br/><b>pip install -U robotframework-ride</b>")
+        hwin.set_content(f"New version {version} available from <a href=\"{url}\">{url}</a><br/>"
+                         f"See this version <a href=\"https://github.com/robotframework/RIDE/blob/master/doc"
+                         f"/releasenotes/ride-{version}.rst\">Release Notes</a><br/><br/>"
+                         f"You can update with the command:<br/><b>pip install -U robotframework-ride</b>"
+                         f"<br/><br/>See the latest development <a href=\"https://github.com/robotframework/RIDE"
+                         f"/blob/master/CHANGELOG.adoc\">CHANGELOG</a>")
         irep = hwin.GetInternalRepresentation()
         hwin.SetSize((irep.GetWidth()+25, irep.GetHeight()+20))
         sizer.Add(hwin)
