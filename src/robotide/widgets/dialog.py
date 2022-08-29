@@ -168,9 +168,9 @@ class HtmlDialog(RIDEDialog):
         # set Left to Right direction (while we don't have localization)
         self.SetLayoutDirection(wx.Layout_LeftToRight)
         szr = sizers.VerticalSizer()
-        html_wnd = HtmlWindow(self, text=content)
-        html_wnd.SetStandardFonts(size=font_size)
-        szr.add_expanding(html_wnd, padding=padding)
+        self.html_wnd = HtmlWindow(self, text=content)
+        self.html_wnd.SetStandardFonts(size=font_size)
+        szr.add_expanding(self.html_wnd, padding=padding)
         self.SetSizer(szr)
 
     def OnKey(self, event):

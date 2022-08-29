@@ -6,6 +6,8 @@ memory-profiler
 pylint
 pytest
 pytest-cov
+# To make a relase you need asciidoc3 (a2x3)
+# asciidoc3
 # Include also normal project requirements.
 -r requirements.txt
 
