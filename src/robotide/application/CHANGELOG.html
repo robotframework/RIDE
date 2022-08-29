@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>Changelog</title><link rel="stylesheet" type="text/css" href="docbook-xsl.css" /><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot" /></head><body><div xml:lang="en" class="article" lang="en"><div class="titlepage"><div><div><h2 class="title"><a id="idm45568595860432"></a>Changelog</h2></div></div><hr /></div><p>All notable changes to this project will be documented in this file.</p><p>The format is based on <a class="ulink" href="http://keepachangelog.com/en/1.0.0/" target="_top">Keep a Changelog</a>
+and this project adheres to <a class="ulink" href="http://semver.org/spec/v2.0.0.html" target="_top">Semantic Versioning</a>.</p><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_ulink_url_https_github_com_robotframework_ride_unreleased_ulink"></a>1. <a class="ulink" href="https://github.com/robotframework/RIDE" target="_top">Unreleased</a></h2></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_added"></a>1.1. Added</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+Added menu entry at Help → Offline Change Log to view this file on disk
+</li><li class="listitem">
+Added skipped tests counter and corresponding colored icon on Project tree
+</li><li class="listitem">
+Added color processing in console log, when using ``-C`` or ``--consolecolors``
+</li><li class="listitem">
+Added minimal support to open and edit resource files in Grid Editor
+</li><li class="listitem">
+Added multiline comment and uncomment in Text Editor
+</li><li class="listitem">
+Added support for variables recognition in FOR and Set (*) Variable, where (\*) means Test, Task, Global, Suite, etc.
+</li><li class="listitem">
+Added documentation and syntax color for IF, ELSE, ELSE IF, WHILE, TRY, EXCEPT, BREAK, CONTINUE
+</li><li class="listitem">
+Added indentation for nested FOR loops
+</li><li class="listitem">
+Added a Reformat option when saving files on Preferences → Saving
+</li><li class="listitem">
+Added colorization in Text Editor for Tasks
+</li><li class="listitem">
+Added a dialog to Load or Save settings to .cfg files on Preferences → General, Grid Editor, Text Editor and Test Runner
+</li><li class="listitem">
+Added perspectives persistance for Notebook panels, Edit, Text Editor and Run
+</li><li class="listitem">
+Added General settings to Preferences, to change Font Size and Face, and colours
+</li><li class="listitem">
+Added background colour globally on panels and dialogs
+</li><li class="listitem">
+Added on Run tab a button to open the Logs Directory
+</li><li class="listitem">
+Added on Run tab a group of elements to define Output Directory, Log and Report filenames with suite names or timestamps, and possibility to keep Console and Message logs
+</li><li class="listitem">
+Added Python 3.8 unit test support in travis CI
+</li><li class="listitem">
+Added menu option to ``Move Up`` and ``Move Down`` variables in Tree
+</li><li class="listitem">
+Added menu option to ``Sort Variables`` in resources from Tree
+</li><li class="listitem">
+Added menu option to ``Sort Tests`` and ``Sort Variables`` in suites from Tree
+</li><li class="listitem">
+Added menu icons (visible on most operating systems)
+</li><li class="listitem">
+Added RIDE application dock icon on MacOS
+</li><li class="listitem">
+Added selection of keyword suggestion with TAB key on Text Editor
+</li><li class="listitem"><p class="simpara">
+Added RIDE.app to install in Applications on MacOS
+</p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: circle; "><li class="listitem">
+Also creates a symbolic link to RIDE.app on user’s Desktop
+</li><li class="listitem">
+Users will need to edit ``/etc/paths`` to include paths for ``robot`` and other commands like ``chromedriver``, etc
+</li></ul></div></li><li class="listitem">
+Added an Open External File menu option, to open file in Code Editor
+</li><li class="listitem"><p class="simpara">
+Added multiline view in Grid Editor
+</p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: circle; "><li class="listitem">
+When editing, ``\n`` will be converted to newline, ``\\n`` will remain as is.
+</li><li class="listitem">
+When editing, ``\ `` will be converted to whitespace.
+</li><li class="listitem">
+When editing, Alt-Enter is the same as ``\n``, converted immediately.
+</li><li class="listitem">
+When editing, Ctrl-Up and Ctrl-Down move cursor to start and end of multiline respectively.
+</li><li class="listitem">
+When editing, Ctrl-Home and Ctrl-End move cursor to start and end of cell content respectively.
+</li></ul></div></li><li class="listitem">
+Added Del key to clear Grid Editor cell content when in navigation mode (clear like doing Ctrl-X)
+</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_removed"></a>1.2. Removed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+Removed ``robotframeworklexer`` dependency and local copy
+</li><li class="listitem">
+Removed alignment flag on grid cell JSON Editor (Ctrl-Shift-J)
+</li><li class="listitem">
+Removed moving to keyword/variable definition when doing Double-Click in grid cell
+</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_changed"></a>1.3. Changed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+Unit tests to use ``pytest`` and removed ``nose`` dependency. Support for Python 3.10 at unit test level.
+</li><li class="listitem">
+Prevent expanding Tests and change selection on Project tree (when right-clicking)
+</li><li class="listitem">
+Improved Text Edit processing of # comments
+</li><li class="listitem">
+Improved filesystem changes detection to be less reactive
+</li><li class="listitem">
+Changed Manage Plugins to be a dialog panel instead of being a notebook tab
+</li><li class="listitem">
+Added more valid file extensions to Open Test Suite
+</li><li class="listitem">
+Changed minimum number of rows and columns, because blank cells would not have correct colour
+</li><li class="listitem">
+The Arguments, Tests filters (include/exclude), Console and Message logs are now in Expandable/Collapsable groups
+</li><li class="listitem">
+Modified robot passed and failed icons to be easier to differentiate
+</li><li class="listitem">
+When searching in Text Editor by using Ctrl-G the search is done from the begining of text
+</li><li class="listitem">
+On MacOS, grid cell will not lose focus anymore when mouse is moving outside of the cell’s boundary
+</li><li class="listitem"><p class="simpara">
+Changed moving to keyword definition to be with Ctrl-Click (keep Ctrl-B action)
+</p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: circle; "><li class="listitem">
+To edit cell use F2 or Double-Click
+</li></ul></div></li><li class="listitem">
+Changed Enter button in navigation mode to start editing cell, and to move to right cell when in edit mode
+</li><li class="listitem">
+Performance improvements for loading large test suites
+</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_fixed"></a>1.4. Fixed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+Fixed removal of animation in Project tree when test run is interrupted
+</li><li class="listitem">
+Fixed console log width to fit visible area, depending on font size
+</li><li class="listitem">
+Fixed not possible to use filenames/paths with spaces in TestRunner arguments. Use double quotes for space separated values,
+</li><li class="listitem"><p class="simpara">
+Fixed error preventing to open old format, HTML test suites:
+</p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: circle; "><li class="listitem">
+Yes, we are at RF 5.0.1, but still can open HTML test suites (and then Change to .robot)
+</li></ul></div></li><li class="listitem">
+Fixed broken sorting Tests and Variables in Project tree (right-click menu)
+</li><li class="listitem">
+Fixed JSON in cell editor not saving nor validating JSON
+</li><li class="listitem">
+Fixed TestRunner crash when test use SKIP keyword
+</li><li class="listitem">
+Fixed broken pipe errors when using ``--loglevel  DEBUG:INFO``
+</li><li class="listitem">
+Fixed various output console encoding issue in different platforms
+</li><li class="listitem">
+Fixed errors when importing libraries with keyword only arguments (i.e. robotframework-requestschecker)
+</li><li class="listitem">
+Fixed sys.stderr is None errors if RIDE is launched by pythonw.exe
+</li><li class="listitem">
+Fixed RIDE cannot close properly when Screenshot library is loaded
+</li><li class="listitem">
+Fixed incorrect title in manage plugin settings
+</li><li class="listitem">
+Fixed search in Text Editor with wxPython 4.1.0
+</li><li class="listitem">
+Fixed resource file will disappear after saving from Text Editor
+</li><li class="listitem">
+Fixed duplicated resource file/folder in tree nodes
+</li><li class="listitem">
+Fixed Ctrl-Space causing entire column to be selected in Grid Editor
+</li><li class="listitem">
+Fixed Del key was clearing cell content on Grid Editor
+</li><li class="listitem">
+</li><li class="listitem">
+Fixed memory leak when reloading workspace
+</li><li class="listitem">
+Fixed RIDE desktop shortcut creation when installing by Administrator on Windows
+</li><li class="listitem">
+Fixed location of icon on Linux RIDE.desktop
+</li><li class="listitem">
+Fixed incorrect app windows size configuration after maximizing
+</li><li class="listitem">
+Fixed errors raised when adding external resources
+</li><li class="listitem">
+Fixed progress dialog is missing when adding external resources
+</li><li class="listitem">
+Fixed missing keyword suggestions on Resource files in Text Editor
+</li><li class="listitem">
+Fixed Del key in Text Editor, was not deleting text
+</li><li class="listitem">
+Fixed duplicated but empty Text Editor tab when Text Editor is the only active editor Plugin
+</li><li class="listitem">
+Fixed case will be selected invisibly after being modified from Text Editor
+</li><li class="listitem">
+Fixed some of log messages log level are incorrect sometimes
+</li><li class="listitem">
+Fixed some of log messages are missing sometimes
+</li><li class="listitem">
+Fixed smart quotes replace in Grid Editor on MacOS
+</li><li class="listitem">
+Fixed incorrect arguments parsing when launching RIDE with command ``python -m robotide.__init__``
+</li><li class="listitem">
+Fixed RIDE startup crash when Tree or File Explorer plugins use opened=False setting
+</li><li class="listitem">
+Fixed error occurring when deleting test cases on Tree
+</li></ul></div></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_ulink_url_https_github_com_robotframework_ride_blob_master_doc_releasenotes_ride_2_0b1_rst_2_0b1_ulink_2020_07_26"></a>2. <a class="ulink" href="https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.0b1.rst" target="_top">2.0b1</a> - 2020-07-26</h2></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_added_2"></a>2.1. Added</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+Added CHANGELOG.adoc
+</li><li class="listitem">
+Added ignoring log.html and report.html on reporting HTML test suites
+</li><li class="listitem">
+Added conditions for wxPython versions equal or higher than 4.1.0
+</li><li class="listitem">
+Added indent and de-indent with TAB for blocks of text
+</li><li class="listitem">
+Added auto indent in Text Editor
+</li><li class="listitem">
+Added enclosing text in Text Editor or selected text with certain symbols
+</li><li class="listitem">
+Added enclosing text in Grid Editor or selected text with certain symbols
+</li><li class="listitem">
+Added 8s timer to shortcut creation dialog on install
+</li><li class="listitem">
+Added process memory limit on Messages Log
+</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_removed_2"></a>2.2. Removed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+Python 2.7 support
+</li><li class="listitem">
+wxPython/wxPhoenix version conditioning
+</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_changed_2"></a>2.3. Changed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+Improved filesystem changes detection, with a confirmation dialog to reload workspace
+</li><li class="listitem">
+Changed dependency on wx.Window on tree panel
+</li><li class="listitem">
+Improved error and removal of old log files
+</li><li class="listitem">
+Changed icon background to white
+</li><li class="listitem">
+Made Project Tree and File Explorer panels, Plugins.
+</li><li class="listitem">
+wx.NewId() to wx.NewIdRef()
+</li><li class="listitem">
+Separated AppendText for Messages Log
+</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_fixed_2"></a>2.4. Fixed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+Fixed editing cells in Grid Editor on wxPython 4.1
+</li><li class="listitem">
+Fixed not saving file after deleting text in Text Editor
+</li><li class="listitem">
+Fixed elements sizing on Preferences panel
+</li><li class="listitem">
+Fixed tree selection, because of wrong variable name
+</li><li class="listitem">
+Fixed encodings on Windows
+</li><li class="listitem">
+Fixed bugs on Grid Editor
+</li><li class="listitem">
+Fixed error message on RIDE Log about missing clear_all
+</li><li class="listitem">
+Fixed tree nodes problems
+</li><li class="listitem">
+Fixed severe RIDE freeze when selecting all test cases in large test suites
+</li><li class="listitem">
+Fixed activation of RIDE Log plugin
+</li><li class="listitem">
+Fixed missing keywords documentation for dynamic libraries (i.e. SeleniumLibrary 4.4.0)
+</li><li class="listitem">
+Fixed not possible to create new project
+</li><li class="listitem">
+Fixed missing Save menu option
+</li><li class="listitem">
+Fixed sounding a beep and no selection when pressing down arrow in keywords help list
+</li><li class="listitem">
+Fixed output log showing garbled code when the name of the test case contains Chinese
+</li><li class="listitem">
+Fixed default arguments help
+</li><li class="listitem">
+Fixed crash when deleting tags
+</li><li class="listitem">
+Fixed cursor position when creating variables with CTRL-1,2,5
+</li><li class="listitem">
+Fixed pressing F2 in Grid Editor on MacOS started editor on Project Tree
+</li><li class="listitem">
+Fixed reprocessing of %date% %time% variables on Windows
+</li><li class="listitem">
+Fixed not editing cells with F2 and keeping focus
+</li><li class="listitem">
+Fixed keywords arguments help
+</li><li class="listitem">
+Fixed Python 3.8 incompatibility
+</li><li class="listitem">
+Fixed showing Resource files with extension .resource in Tree when not used
+</li><li class="listitem">
+Fixed RIDE not starting
+</li><li class="listitem">
+Fixed errors at start due to setlocale()
+</li><li class="listitem">
+Fixed Settings editor
+</li><li class="listitem">
+Fixed blank Edit screen
+</li><li class="listitem">
+Fixed Runner arguments parsing
+</li><li class="listitem">
+Fixed Runner Log window Chinese and Latin encoding chars on Windows
+</li></ul></div></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_ulink_url_https_github_com_robotframework_ride_blob_master_doc_releasenotes_ride_1_7_4_2_rst_1_7_4_2_ulink_2020_01_20"></a>3. <a class="ulink" href="https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-1.7.4.2.rst" target="_top">1.7.4.2</a> - 2020-01-20</h2></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_added_3"></a>3.1. Added</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+wxPython version locked up to 4.0.7.post2.
+</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_removed_3"></a>3.2. Removed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+None
+</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_changed_3"></a>3.3. Changed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+None
+</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_fixed_3"></a>3.4. Fixed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+None
+</li></ul></div></div></div></div></body></html>

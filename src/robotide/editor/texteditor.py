@@ -166,7 +166,10 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         self._editor._editor.Update()
 
     def _open_tree_selection_in_editor(self):
-        datafile_controller = self.tree.get_selected_datafile_controller()
+        try:
+            datafile_controller = self.tree.get_selected_datafile_controller()
+        except AttributeError:
+            return
         if datafile_controller:
             # print(f"DEBUG: _open_tree_selection_in_editor going to open data")
             self._editor.open(DataFileWrapper(datafile_controller, self.global_settings))
