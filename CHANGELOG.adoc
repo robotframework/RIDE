@@ -10,6 +10,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Added
 
+- Added menu entry at Help -> Offline Change Log to view this file on disk
 - Added skipped tests counter and corresponding colored icon on Project tree
 - Added color processing in console log, when using ``-C`` or ``--consolecolors``
 - Added minimal support to open and edit resource files in Grid Editor
