@@ -17,6 +17,7 @@
 import wx
 from wx import Colour
 from wx.lib.ClickableHtmlWindow import PyClickableHtmlWindow
+from os.path import abspath, join, dirname
 
 from ..action import ActionInfo
 from ..version import VERSION
@@ -65,7 +66,7 @@ class ReleaseNotes(object):
         if not self._dialog:
             self._dialog = HtmlDialog('Offline Change Log', 'Check the online version at https://github.com/robotframework/RIDE/blob/master/CHANGELOG.adoc')
         self._dialog.SetSize(800, 800)
-        self._dialog.html_wnd.LoadFile(os.path.abspath("application/CHANGELOG.html"))
+        self._dialog.html_wnd.LoadFile(join(dirname(abspath(__file__)), "CHANGELOG.html"))
         self._dialog.html_wnd.SetBackgroundColour(self.general_settings['background help'])
         self._dialog.html_wnd.SetForegroundColour(self.general_settings['foreground text'])
         self._dialog.Show()
