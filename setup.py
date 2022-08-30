@@ -32,6 +32,7 @@ PACKAGE_DATA = {
     'robotide.preferences': ['settings.cfg'],
     'robotide.widgets': ['*.png', '*.gif', '*.ico'],
     'robotide.messages': ['*.html'],
+    'robotide.application': ['*.html', '*.css'],
     'robotide.publish.htmlmessages': ['no_robot.html'],
     'robotide.postinstall': ['RIDE.app/Contents/PkgInfo', 'RIDE.app/Contents/Info.plist',
                              'RIDE.app/Contents/MacOS/RIDE', 'RIDE.app/Contents/Resources/*.icns']
