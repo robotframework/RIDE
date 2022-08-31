@@ -135,10 +135,10 @@ class _Menu(object):
         name_with_accelerator = self._get_name(action, build_new=True)
         menu_item = MenuItem(self._frame, self, name_with_accelerator)
         pos = action.get_insertion_index(self.wx_menu)
-        wx_menu_item = self.wx_menu.Insert(pos, menu_item.id,
-                                           menu_item.name, action.doc)
+        wx_menu_item = wx.MenuItem(self.wx_menu, menu_item.id, menu_item.name, action.doc)
         if action.icon:
             wx_menu_item.SetBitmap(action.icon)
+        wx_menu_item = self.wx_menu.Insert(pos, wx_menu_item)
         menu_item.set_wx_menu_item(wx_menu_item)
         return menu_item
 

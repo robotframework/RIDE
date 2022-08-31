@@ -231,6 +231,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl):
         self._editor = None
         self._execution_results = None
         self._resources = []
+        self._right_click = False
         """
         self.SetBackgroundColour('white')  # TODO get background color from def
         """
@@ -264,11 +265,17 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl):
         self.Bind(wx.EVT_LEFT_DCLICK, self.OnDoubleClick)
         self.Bind(wx.EVT_TREE_SEL_CHANGED, self.OnSelChanged)
         self.Bind(wx.EVT_TREE_ITEM_EXPANDING, self.OnTreeItemExpanding)
-        self.Bind(wx.EVT_TREE_ITEM_RIGHT_CLICK, self.OnRightClick)
+        self.Bind(wx.EVT_RIGHT_DOWN, self.OnRightClick)
+        self.Bind(wx.EVT_TREE_SEL_CHANGING, self.OnSelection)
+        # self.Bind(wx.EVT_TREE_ITEM_RIGHT_CLICK, self.OnRightClick)
         self.Bind(wx.EVT_TREE_ITEM_ACTIVATED, self.OnItemActivated)
         self.Bind(customtreectrl.EVT_TREE_ITEM_CHECKED, self.OnTreeItemChecked)
         self.Bind(wx.EVT_TREE_ITEM_COLLAPSING, self.OnTreeItemCollapsing)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
+
+    def OnSelection(self, event):
+        if self._right_click:
+            event.Skip()
 
     def OnDoubleClick(self, event):
         item, pos = self.HitTest(self.ScreenToClient(wx.GetMousePosition()))
@@ -1031,14 +1038,20 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl):
             event.Skip()
 
     def OnRightClick(self, event):
+        if not self._right_click:
+            self._right_click = True
         handler = None
-        if hasattr(event, 'GetItem'):
-            handler = self._controller.get_handler(event.GetItem())
-
+        # if hasattr(event, 'GetItem'):
+            # handler = self._controller.get_handler(event.GetItem())
+        item, pos = self.HitTest(self.ScreenToClient(wx.GetMousePosition()), wx.TREE_HITTEST_ONITEMLABEL)
+        if item:
+            print(f"DEBUG: tree mouse RightClick pos={pos}")
+            handler = self.GetItemData(item)
         if handler:
             # if not self.IsExpanded(handler.node):
             #     self.Expand(handler.node)
             handler.show_popup()
+            self._right_click = False
 
     def OnNewTestCase(self, event):
         handler = self._controller.get_handler()
