@@ -46,12 +46,21 @@ class _RideFSWatcherHandler:
             from wx import FileSystem
             fs = FileSystem()
             fs.ChangePathTo(path, True)
-            file_search = fs.FindFirst("*")
+            # An assertion error happens when chinese chars named directories, so we try to ignore it
+            # wx._core.wxAssertionError: C++ assertion "Assert failure" failed at ../src/common/unichar.cpp(65) in
+            # ToHi8bit(): character cannot be converted to single byte
+            try:
+                file_search = fs.FindFirst("*")
+            except AssertionError:
+                pass
             while file_search:
                 if self._is_valid_file_format(file_search):
                     # print(f"DEBUG: FileSystemWatcher start_listening file_search={file_search}")
                     self._watched_path.add(fs.URLToFileName(file_search))
-                file_search = fs.FindNext()
+                try:
+                    file_search = fs.FindNext()
+                except AssertionError:
+                    pass
             self._watched_path.add(path)
         else:
             self._watched_path.add(path)  # Here we add the file path
