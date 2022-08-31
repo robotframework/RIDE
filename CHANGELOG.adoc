@@ -72,6 +72,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Fixed
 
+- Fixed missing menu icons on Linux (was working on Windows)
 - Fixed removal of animation in Project tree when test run is interrupted
 - Fixed console log width to fit visible area, depending on font size
 - Fixed not possible to use filenames/paths with spaces in TestRunner arguments. Use double quotes for space separated values,
