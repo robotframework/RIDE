@@ -112,7 +112,6 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
             self._editor.store_position()
 
     def OnSaving(self, message):
-        # print(f"DEBUG: OnSaving entering function {message}")
         if self.is_focused():
             self._editor.save()
             self._editor.GetFocus(None)
@@ -491,7 +490,7 @@ class SourceEditor(wx.Panel):
 
     @property
     def dirty(self):
-        return self._dirty == 1
+        return self._dirty == 1 # self._editor.IsModified() and self._dirty == 1
 
     @property
     def datafile_controller(self):
@@ -710,6 +709,7 @@ class SourceEditor(wx.Panel):
 
     def reset(self):
         self._dirty = 0
+        self._mark_file_dirty(False)
 
     def save(self, *args):
         # print(f"DEBUG: enter save path={self.datafile_controller.source}")
@@ -823,10 +823,11 @@ class SourceEditor(wx.Panel):
                     self._editor.DeleteRange(selected[0], 1)
             else:
                 self._editor.DeleteRange(selected[0], selected[1] - selected[0])
-        self._mark_file_dirty(self._editor.GetModify())
         if keycode in [wx.WXK_RETURN, wx.WXK_NUMPAD_ENTER]:
             # print(f"DEBUG: Enter released {keycode}")
             return
+        if self.is_focused():
+            self._mark_file_dirty(self._editor.GetModify())
         event.Skip()
 
     def OnKeyDown(self, event):
