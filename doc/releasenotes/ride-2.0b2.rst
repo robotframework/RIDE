@@ -14,7 +14,7 @@ This version v2.0b2 includes removal of Python 2.7 support. The reference for va
 
 **New Features and Fixes Highlights**
 
-* Auto enclose text in #123;&#125;, [], &quot;&quot;, ''
+* Auto enclose text in {}, [], "", ''
 * Auto indent in Text Editor on new lines
 * Block indent in Text Editor (TAB on block of selected text)
 * Ctrl-number with number, 1-5 also working on Text Editor:
