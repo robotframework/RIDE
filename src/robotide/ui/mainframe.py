@@ -274,14 +274,26 @@ class RideFrame(wx.Frame):
         
         ##### End Test
         """
+        # self.leftpanel = wx.Panel(self, name="left_panel", size = (275, 250))
         # Tree is always created here
         self.tree = Tree(self, self.actions, self._application.settings)
         self.tree.SetMinSize(wx.Size(275, 250))
+        # self.leftpanel.Bind(wx.EVT_SIZE, self.tree.OnSize)
+        # self._mgr.AddPane(self.leftpanel, aui.AuiPaneInfo().Name("left_panel").Caption("left_panel").Left())
+        # DEBUG: Next was already called from application.py
+        self._mgr.AddPane(self.tree,
+                          aui.AuiPaneInfo().Name("tree_content").
+                          LeftDockable())
+        #### self._mgr.GetPane(self.tree).DestroyOnClose()
         # TreePlugin will manage showing the Tree
         self.actions.register_actions(ActionInfoCollection(_menudata, self, self.tree))
         # ##### File explorer panel is always created here
         self.filemgr = FileExplorer(self, self._controller)
         self.filemgr.SetMinSize(wx.Size(275, 250))
+        # DEBUG: Next was already called from application.py
+        self._mgr.AddPane(self.filemgr,
+                          aui.AuiPaneInfo().Name("file_manager").
+                          LeftDockable())
 
         mb.take_menu_bar_into_use()
         self.CreateStatusBar(name="StatusBar")
@@ -882,6 +894,6 @@ class RIDETaskBarIcon(TaskBarIcon):
     def __init__(self, img_provider):
         TaskBarIcon.__init__(self, TBI_DOCK)
         self._img_provider = img_provider
-        if IS_MAC:
-            # only use in mac to display RIDE app icon in dock
-            self.SetIcon(wx.Icon(self._img_provider.RIDE_ICON), "RIDE")
+        # if IS_MAC:
+        #    # only use in mac to display RIDE app icon in dock
+        self.SetIcon(wx.Icon(self._img_provider.RIDE_ICON), "RIDE")

@@ -31,8 +31,8 @@ TREETEXTCOLOUR = Colour(0xA9, 0xA9, 0xA9)
 from ..context import IS_WINDOWS
 # from ..controller.filecontrollers import ResourceFileController, TestDataDirectoryController, TestCaseFileController
 from ..publish.messages import (RideTestRunning, RideTestPaused, RideTestPassed, RideTestFailed, RideTestSkipped,
-                                RideTestExecutionStarted, RideTestStopped, RideImportSetting, RideExcludesChanged, RideIncludesChanged,
-                                RideOpenSuite, RideNewProject)
+                                RideTestExecutionStarted, RideTestStopped, RideImportSetting, RideExcludesChanged,
+                                RideIncludesChanged, RideOpenSuite, RideNewProject)
 from ..ui.images import (RUNNING_IMAGE_INDEX, PASSED_IMAGE_INDEX, FAILED_IMAGE_INDEX, PAUSED_IMAGE_INDEX,
                          SKIPPED_IMAGE_INDEX, ROBOT_IMAGE_INDEX)
 from ..ui.treenodehandlers import TestCaseHandler, TestDataDirectoryHandler, TestCaseFileHandler
@@ -82,16 +82,24 @@ class TreePlugin(Plugin):
         self._action_registerer = action_registerer
         self.tree = parent.tree
         """
+        self.pane_id = self._tree.GetId()
         self._model= self.model
-        # self._tree.Bind(wx.EVT_UPDATE_UI, self.OnShowTree)
+        # self.frame.Bind(wx.EVT_MOVE, self.OnShowTree)
+        # self.frame.Bind(wx.EVT_SHOW, self.OnShowTree)
         self._tree.Bind(wx.EVT_SHOW, self.OnShowTree)
         self._tree.Bind(wx.EVT_MOVE, self.OnTabChanged)
         # parent, action_registerer, , default_settings={'collapsed':True}
+        self._pane = self._mgr.GetPane(self._tree)
+        # print(f"DEBUG: TreePlugin init self.pane_id={self.pane_id} \n"
+        #      f"self._pane = {self._pane}")
 
     def register_frame(self, parent=None):
         if parent:
             self._parent = parent
 
+            # print(f"DEBUG: TreePlugin register_frame lefpanel={self._mgr.GetPane('left_panel')}")
+            # lefpanel = self._mgr.GetPane('left_panel')
+            # self._mgr.DetachPane(lefpanel)
             if self._mgr.GetPane("tree_content") in self._mgr._panes:
                 register = self._mgr.InsertPane
             else:
@@ -110,6 +118,7 @@ class TreePlugin(Plugin):
                                         position=1))
         self.subscribe(self.OnTreeSelection, RideTreeSelection)
         # self.save_setting('opened', True)
+        # TODO: Add toggle checkbox to menu View/Hide Tree
         if self.opened:
             self.OnShowTree(None)
         # print(f"DEBUG: TreePlugin end enable  tree focused? {self.is_focused()}")
@@ -135,7 +144,7 @@ class TreePlugin(Plugin):
         return self._tree.HasFocus()
 
     def populate(self, model):
-        if model and model != self._model:
+        if model:  # DEBUG: Always populate ... and model != self._model:
             self._model = model
         # print(f"DEBUG: Populating model... {self._model}\n\n")
         self._tree.populate(self._model)
@@ -148,24 +157,26 @@ class TreePlugin(Plugin):
             self._parent = self.frame
         if not self._tree:  # This is not needed because tree is always created
             return  # On Windows this code is executed when closing the app, we return now
-            # print(f"DEBUG: TreePlugin Creating tree  not expected to happen")
             # self._tree = Tree(self, self._parent.actions, self._parent._application.settings)
             # print(f"DEBUG: TreePlugin Show created tree {self._tree.GetName()}")
 
-        # print(f"DEBUG: Tree OnShowTree event {event}")
-        self._pane = self._mgr.GetPane(self._tree)
+        # self._pane = self._mgr.GetPane(self._tree)
+        # print(f"DEBUG: Tree OnShowTree event {event} self.pane_id={self.pane_id} \n"
+        #       f"self._pane = {self._pane}")
         HTML_BACKGROUND = self.settings.get('background help', (240, 242, 80))
         HTML_FOREGROUND = self.settings.get('foreground text', (7, 0, 70))
         HTML_FONT_FACE = self.settings.get('font face', '')
         HTML_FONT_SIZE = self.settings.get('font size', 11)
         self._tree.Show(True)
         self._tree.SetMinSize(wx.Size(200, 225))
-        self._mgr.DetachPane(self._tree)
+        # self._mgr.DetachPane(self._tree)
         # self._mgr.Update()
-        self._mgr.AddPane(self._tree,
-                          wx.lib.agw.aui.AuiPaneInfo().Name("tree_content").
-                          Caption("Test Suites").LeftDockable(True).
-                          CloseButton(True))
+        # DEBUG: Let's use own method
+        # self._mgr.AddPane(self._tree,
+        #                   wx.lib.agw.aui.AuiPaneInfo().Name("tree_content").
+        #                   Caption("Test Suites").LeftDockable(True).
+        #                   CloseButton(True))
+        # self.register_frame(self._parent)
         self._tree.SetBackgroundStyle(wx.BG_STYLE_SYSTEM)
         self._tree.SetBackgroundColour(HTML_BACKGROUND)
         self._tree.SetForegroundColour(HTML_FOREGROUND)
@@ -179,12 +190,13 @@ class TreePlugin(Plugin):
             self._tree.Refresh()
         """
         self._tree.Raise()
-        self._mgr.Update()
         self.save_setting('opened', True)
-        if self._model:
-            self._tree.populate(self._model)
-            # print(f"DEBUG: model {self._model}")
+        self._tree.populate(self._model)
+        # if self._model:
+        #    pass
+        # print(f"DEBUG: model {self._model}")
         self._update_tree()
+        self._mgr.Update()
 
     def OnTreeSelection(self, message):
         if self.is_focused():
@@ -201,14 +213,17 @@ class TreePlugin(Plugin):
         #self.populate(self._model)
         self._tree.populate(self._model)
         self._tree._refresh_view()
+        # print(f"DEBUG: Called Tree._update_tree BEFORE Update")
+        self._tree.Update()
 
 
-class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl):
+class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
     _RESOURCES_NODE_LABEL = 'External Resources'
 
     def __init__(self, parent, action_registerer, settings=None):
         from ..controller.ui.treecontroller import TreeController
 
+        # self._panel = wx.Panel.__init__(self, parent)
         self._checkboxes_for_tests = False
         self._test_selection_controller = \
             self._create_test_selection_controller()
@@ -235,12 +250,14 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl):
         """
         self.SetBackgroundColour('white')  # TODO get background color from def
         """
-        self._menu = wx.Menu()
-        self._menu.Append(wx.ID_CLOSE, item="&Close", helpString="Closes panel")
-        self._mb = wx.MenuBar()
-        self._mb.Append(self._menu, "Menu")
-        self.GetParent().SetMenuBar(self._mb)
-        # print(f"DEBUG: Tree tried to add menu to {self.GetParent().__repr__()}")
+        # DEBUG: This menu is not working because is being attached to main frame
+        # self._menu = wx.Menu()
+        # self._menu.Append(wx.ID_CLOSE, item="&Close", helpString="Closes panel")
+        # self._mb = wx.MenuBar()
+        # self._mb.Append(self._menu, "Menu")
+        # self.GetParent().SetMenuBar(self._mb)
+        # print(f"DEBUG: Tree tried to add menu to {self.GetParent().__repr__()}  parent={parent}")
+        self.pane_id = self.GetId()
         if not hasattr(self, 'OnCancelEdit'):
             self.OnCancelEdit = self._on_cancel_edit
 
@@ -272,6 +289,11 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl):
         self.Bind(customtreectrl.EVT_TREE_ITEM_CHECKED, self.OnTreeItemChecked)
         self.Bind(wx.EVT_TREE_ITEM_COLLAPSING, self.OnTreeItemCollapsing)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
+        # print(f"DEBUG: Tree _bind_tree_events return after Bind OnClose")
+
+    def OnSelection(self, event):
+        if self._right_click:
+            event.Skip()
 
     def OnSelection(self, event):
         if self._right_click:
@@ -427,6 +449,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl):
             self.SetItemWindow(node, self._animctrl, False)
             self._animctrl.Play()
         # Make visible the running or paused test
+        self.EnsureVisible(node.GetParent())
         self.EnsureVisible(node)
 
     def _get_icon_index_for(self, controller):
@@ -465,6 +488,8 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl):
     def _populate_model(self, model):
         handler = ResourceRootHandler(model, self, self._resource_root,
                                       self._controller.settings)
+        # print(f"DEBUG: _populate_model model={model} self._resource_root={self._resource_root}"
+        #       f" self._controller.settings={self._controller.settings}")
         self.SetPyData(self._resource_root, handler)
         if model.data:
             self._render_datafile(self._root, model.data, 0)
@@ -504,6 +529,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl):
         self.add_datafile(message.parent, message.suite)
 
     def _refresh_view(self):
+        self.Show()
         self.Refresh()
         # print(f"DEBUG: Called Tree._refresh_view {self.GetParent().GetClassName()}")
         if self._resource_root:
@@ -511,6 +537,8 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl):
         if self._datafile_nodes:
             self._expand_and_render_children(self._datafile_nodes[0])
             wx.CallAfter(self.SelectItem, self._datafile_nodes[0])
+        self.Update()
+        # print(f"DEBUG: Called Tree._refresh_view parent={self.GetParent().GetClassName()} self={self}")
 
     def _render_datafile(self, parent_node, controller, index=None):
         node = self._create_node_with_handler(parent_node, controller, index)
@@ -701,9 +729,11 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl):
         self._controller.mark_controller_dirty(message.datafile)
 
     def _data_undirty(self, message):
+        # print(f"DEBUG: treeplugin _data_undirty calling unset_dirty")
         self.unset_dirty()
 
     def unset_dirty(self):
+        # print(f"DEBUG:treeplugin unset_dirty ENTER")
         for node in self._datafile_nodes:
             text = self.GetItemText(node)
             handler = self._controller.get_handler(node)
@@ -1045,7 +1075,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl):
             # handler = self._controller.get_handler(event.GetItem())
         item, pos = self.HitTest(self.ScreenToClient(wx.GetMousePosition()), wx.TREE_HITTEST_ONITEMLABEL)
         if item:
-            print(f"DEBUG: tree mouse RightClick pos={pos}")
+            # print(f"DEBUG: tree mouse RightClick pos={pos}")
             handler = self.GetItemData(item)
         if handler:
             # if not self.IsExpanded(handler.node):

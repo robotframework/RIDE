@@ -10,11 +10,11 @@ This version v2.0b2 includes removal of Python 2.7 support. The reference for va
   - On Text Editor the TAB key adds the defined number of spaces. With Shift moves to the left, and together with Control selects text.
   - On Text Editor the **: FOR** loop structure must use Robot Framework 3.1.2 syntax, i.e. **FOR** and **END**.
   - On Grid Editor and Linux the auto enclose is only working on cell selection, but not on cell content edit.
-  - On Text Editor when Saving with Ctrl-S, you must do this twice :(.
+  - On Text Editor when Saving the selection os tests in Test Suites (Tree) is cleared.
 
 **New Features and Fixes Highlights**
 
-* Auto enclose text in {}, [], "", ''
+* Auto enclose text in #123;&#125;, [], &quot;&quot;, ''
 * Auto indent in Text Editor on new lines
 * Block indent in Text Editor (TAB on block of selected text)
 * Ctrl-number with number, 1-5 also working on Text Editor:
@@ -87,7 +87,7 @@ You can then go to `Tools>Create RIDE Desktop Shortcut`, or run the shortcut cre
 
     python -m robotide.postinstall -install
 
-RIDE v2.0b2 was released on 01/Sep/2022.
+RIDE v2.0b2 was released on 05/Sep/2022.
 
 .. _RIDE (Robot Framework IDE): https://github.com/robotframework/RIDE/
 .. _Robot Framework: http://robotframework.org
