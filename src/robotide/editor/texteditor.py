@@ -126,6 +126,8 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
                 # print(f"DEBUG: OnDataChanged message {message}")
                 self._editor.reset()
                 self._editor.set_editor_caret_position()
+            if isinstance(message, RideNotebookTabChanging):
+                return
             if self._editor.dirty and not self._apply_txt_changes_to_model():
                 return
             self._refresh_timer.Start(500, True)
@@ -205,6 +207,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
     def _apply_txt_changes_to_model(self):
         if not self._editor.save():
             return False
+        # print(f"DEBUG: texteditor _apply_txt_changes_to_model going to RESET dirty={self._editor.dirty}")
         self._editor.reset()
         self._editor.set_editor_caret_position()
         return True
@@ -327,6 +330,7 @@ class DataFileWrapper(object): # TODO: bad class name
         self._data.mark_dirty()
 
     def mark_data_pristine(self):
+        # print(f"DEBUG: texteditor mark_data_pristine calling unmark_dirty")
         self._data.unmark_dirty()
 
     def _create_target(self):
@@ -708,6 +712,7 @@ class SourceEditor(wx.Panel):
         self._editor.WriteText(spaces)
 
     def reset(self):
+        # print(f"DEBUG: textedit enter RESET calling _mark_file_dirty")
         self._dirty = 0
         self._mark_file_dirty(False)
 
@@ -717,7 +722,8 @@ class SourceEditor(wx.Panel):
         if self.dirty:
             if not self._data_validator.validate_and_update(self._data, self._editor.utf8_text):
                 return False
-        self.reset()
+        # DEBUG: Was resetting when leaving editor
+        # self.reset()
         self.GetFocus(None)
         return True
 
@@ -767,7 +773,8 @@ class SourceEditor(wx.Panel):
     def undo(self):
         self._editor.Undo()
         self.store_position()
-        self._mark_file_dirty(self._editor.GetModify())
+        # print(f"DEBUG: TextEditor calling dirty from Undo self._dirty={self._dirty}")
+        self._mark_file_dirty(self._dirty == 1 and self._editor.GetModify())
 
     def redo(self):
         self._editor.Redo()
@@ -826,7 +833,8 @@ class SourceEditor(wx.Panel):
         if keycode in [wx.WXK_RETURN, wx.WXK_NUMPAD_ENTER]:
             # print(f"DEBUG: Enter released {keycode}")
             return
-        if self.is_focused():
+        if self.is_focused() and keycode != wx.WXK_CONTROL and self._dirty == 0:
+            # print(f"DEBUG: texteditor OnKeyDown calling _mark_file_dirty  event={event}")
             self._mark_file_dirty(self._editor.GetModify())
         event.Skip()
 
@@ -1025,11 +1033,14 @@ class SourceEditor(wx.Panel):
             self._tab_size = self._parent._app.settings.get('txt number of spaces', 4)
 
     def _mark_file_dirty(self, dirty=True):
+        if not self.is_focused():  # DEBUG: Was marking file clean from Grid Editor
+            return
         if self._data:
-            if dirty:
+            if self._dirty == 0 and dirty:
                 self._data.mark_data_dirty()
                 self._dirty = 1
-            else:
+            elif self._dirty == 1:
+                # print(f"DEBUG: texteditor _mark_file_dirty calling mark_data_pristine _dirty={self._dirty}")
                 self._data.mark_data_pristine()
                 self._dirty = 0
 
