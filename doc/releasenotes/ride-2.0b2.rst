@@ -5,6 +5,7 @@ This version v2.0b2 includes removal of Python 2.7 support. The reference for va
 * The last version with support for Python 2.7 was **1.7.4.2**.
 * Support for Python 3.6 up to 3.10 (current version on this date).
 * There are some important changes, or known issues:
+
   - On MacOS to call autocomplete in Grid and Text Editors, you have to use Alt-Space (not Command-Space).
   - On Linux and Windows to call autocomplete in Grid and Text Editors, you have to use Ctrl-Space.
   - On Text Editor the TAB key adds the defined number of spaces. With Shift moves to the left, and together with Control selects text.
