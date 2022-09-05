@@ -150,7 +150,7 @@ This version v2.0b2 includes removal of Python 2.7 support. The reference for va
 <li>On Text Editor the TAB key adds the defined number of spaces. With Shift moves to the left, and together with Control selects text.</li>
 <li>On Text Editor the <strong>: FOR</strong> loop structure must use Robot Framework 3.1.2 syntax, i.e. <strong>FOR</strong> and <strong>END</strong>.</li>
 <li>On Grid Editor and Linux the auto enclose is only working on cell selection, but not on cell content edit.</li>
-<li>On Text Editor when Saving with Ctrl-S, you must do this twice :(.</li>
+<li>On Text Editor when Saving the selection os tests in Test Suites (Tree) is cleared.</li>
 </ul>
 </li>
 </ul>
@@ -211,6 +211,6 @@ python -m robotide.__init__
 <pre class="literal-block">
 python -m robotide.postinstall -install
 </pre>
-<p>RIDE v2.0b2 was released on 01/Sep/2022.</p>
+<p>RIDE v2.0b2 was released on 05/Sep/2022.</p>
 </div>
 """

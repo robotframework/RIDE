@@ -223,6 +223,7 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
         self.refresh_stat()
         if self.dirty:
             self.dirty = False
+            # print(f"DEBUG: filecontrollers unmark_dirty PUBLISH RideDataDirtyCleared")
             RideDataDirtyCleared(datafile=self).publish()
 
     def create_keyword(self, name, argstr=''):

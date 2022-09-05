@@ -95,8 +95,8 @@ class RIDE(wx.App):
             self.fileexplorerplugin.register_frame(self.frame)
         if not self.treeplugin.opened:
             self.treeplugin.close_tree()
-        else:
-            wx.CallLater(200, self.treeplugin.populate, self.model)
+        # else:
+        #     wx.CallLater(200, self.treeplugin.populate, self.model)
         if not self.fileexplorerplugin.opened:
             self.fileexplorerplugin.close_tree()
         self.editor = self._get_editor()
