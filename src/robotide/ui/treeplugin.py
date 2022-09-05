@@ -295,6 +295,10 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
         if self._right_click:
             event.Skip()
 
+    def OnSelection(self, event):
+        if self._right_click:
+            event.Skip()
+
     def OnDoubleClick(self, event):
         item, pos = self.HitTest(self.ScreenToClient(wx.GetMousePosition()))
         if item:
