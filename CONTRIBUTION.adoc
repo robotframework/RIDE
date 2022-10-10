@@ -177,7 +177,9 @@ doc/userguide/README.rst.
 
 === RIDE's Wiki
 
-https://github.com/robotframework/RIDE/wiki[RIDE's Wiki] is the preferred location for the documentation. This is to promote collaboration from users, and hopefully, to have the content easily updated.
+https://github.com/robotframework/RIDE/wiki[RIDE's Wiki] is the preferred 
+location for the documentation. This is to promote collaboration from users, 
+and hopefully, to have the content easily updated.
 
 
 == Tests
@@ -186,7 +188,8 @@ When submitting a pull request with a new feature or a fix, you should
 always include tests for your changes. These tests prove that your
 changes work, help prevent bugs in the future, and help document what
 your changes do. Depending on the change, you may need acceptance tests,
-unit tests or both.
+unit tests or both. Currently RIDE only have unit tests, but proposal for 
+acceptance tests, will be most welcome.
 
 Make sure to run all of the tests before submitting a pull request to be
 sure that your changes do not break anything. If you can, test in
@@ -196,15 +199,13 @@ continuous integration.
 
 === Executing changed code
 
-If you want to manually verify the changes, an easy approach is directly
-running the src/robot/run.py script that is part of Robot Framework
-itself. Alternatively you can use the rundevel.py script that sets some
-command line options and environment variables to ease executing tests
-under the atest/testdata directory. It also automatically creates a
-`+tmp+` directory in the project root and writes all outputs there.
+If you want to manually verify the changes, the command `+invoke devel+` 
+is the preferred method. An additional debugging option, allows to start
+wxPython inspection tool and a Python console, `+invoke devel -a --debugconsole+`.
 
 If you want to install the current code locally, you can do it like
-`+python setup.py install+` as explained in INSTALL.rst. For
+`+python setup.py install+`, or by installing in development mode with 
+`+pip install -e .+` and then start with `+python -m robotide.__init__+`. For
 instructions how to create a distribution that allows installing
 elsewhere see BUILD.rst.
 
