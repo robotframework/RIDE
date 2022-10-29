@@ -86,7 +86,8 @@ class RIDE(wx.App):
             print(f"RIDE: There was a problem loading panels position."
                   f" Please delete the definition 'AUI NB Perspective' in "
                   f"{os.path.join(context.SETTINGS_DIRECTORY, 'settings.cfg')}")
-            raise e
+            if not isinstance(e, IndexError):  # If is with all notebooks disabled, continue
+                raise e
         self.treeplugin = TreePlugin(self)
         if self.treeplugin.settings['_enabled']:
             self.treeplugin.register_frame(self.frame)

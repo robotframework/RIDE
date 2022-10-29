@@ -168,7 +168,7 @@ This version v2.0b2 includes removal of Python 2.7 support. The reference for va
 </ol>
 </li>
 <li>Persistence of the position and state of detached panels, File Explorer and Test Suites</li>
-<li>File Explorer and Test Suites panels are now Plugins and can be disabled or enabled and made Visible with F11 and F12</li>
+<li>File Explorer and Test Suites panels are now Plugins and can be disabled or enabled and made Visible with F11 ( Test Suites with F12, but disabled for now)</li>
 <li>File Explorer now shows selected file when RIDE starts</li>
 <li>Block comment and uncomment on both Grid and Text editors</li>
 <li>Extensive color customization of panel elements via <cite>Tools&gt;Preferences</cite></li>
@@ -211,6 +211,6 @@ python -m robotide.__init__
 <pre class="literal-block">
 python -m robotide.postinstall -install
 </pre>
-<p>RIDE v2.0b2 was released on 05/Sep/2022.</p>
+<p>RIDE v2.0b3 was released on 05/Nov/2022.</p>
 </div>
 """
