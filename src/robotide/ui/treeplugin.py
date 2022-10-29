@@ -106,16 +106,20 @@ class TreePlugin(Plugin):
                 register = self._mgr.AddPane
 
             register(self._tree, wx.lib.agw.aui.AuiPaneInfo().Name("tree_content").
-                     Caption("Test Suites").LeftDockable(True).CloseButton(True))
+                     Caption("Test Suites").LeftDockable(True))  # TODO: restore .CloseButton(True) when restore is fixed
 
             self._mgr.Update()
             # print(f"DEBUG: TreePlugin frame {self._parent.GetTitle()} tree {self._tree.GetName()}")
 
     def enable(self):
+        # DEBUG this does not work, the panel has no tree, when we dock from floating
+        # TODO: Attempt to create Panel and then calling self.OnShowTree
+        """
         self.register_action(ActionInfo('View','View Test Suites Explorer', self.OnShowTree,
                                         shortcut='F12',
                                         doc='Show Test Suites tree panel',
                                         position=1))
+        """
         self.subscribe(self.OnTreeSelection, RideTreeSelection)
         # self.save_setting('opened', True)
         # TODO: Add toggle checkbox to menu View/Hide Tree
@@ -290,10 +294,6 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
         self.Bind(wx.EVT_TREE_ITEM_COLLAPSING, self.OnTreeItemCollapsing)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
         # print(f"DEBUG: Tree _bind_tree_events return after Bind OnClose")
-
-    def OnSelection(self, event):
-        if self._right_click:
-            event.Skip()
 
     def OnSelection(self, event):
         if self._right_click:

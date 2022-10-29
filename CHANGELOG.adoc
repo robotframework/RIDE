@@ -10,6 +10,27 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Added
 
+- None
+
+=== Removed
+
+- None
+
+=== Changed
+
+- Disabled the Close button on the Test Suites explorer
+  This was causing not being possible to restore it, unless editing the settings.cfg file.
+  Other reason was to prevent user to closing it, after detaching the panel, and re-attaching,
+  which has a bug making the Tree not visible.
+
+=== Fixed
+
+- None
+
+== https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.0b2.rst[2.0b2] - 2022-09-05
+
+=== Added
+
 - Added menu entry at Help -> Offline Change Log to view this file on disk
 - Added skipped tests counter and corresponding colored icon on Project tree
 - Added color processing in console log, when using ``-C`` or ``--consolecolors``
