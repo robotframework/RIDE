@@ -166,15 +166,6 @@ details about documentation syntax, generating API docs, etc.
 With new features adequate documentation is as important as the actual
 functionality. Different documentation is needed depending on the issue.
 
-==== Robot Frameworks User Guide
-
-Robot Framework's features are explained in the
-http://robotframework.org/robotframework/#user-guide[User Guide]. It is
-generated using a custom script based on the source in
-http://docutils.sourceforge.net/rst.html[reStructuredText] format. For
-more details about editing and generating it see
-doc/userguide/README.rst.
-
 === RIDE's Wiki
 
 https://github.com/robotframework/RIDE/wiki[RIDE's Wiki] is the preferred 
@@ -185,7 +176,7 @@ and hopefully, to have the content easily updated.
 == Tests
 
 When submitting a pull request with a new feature or a fix, you should
-always include tests for your changes. These tests prove that your
+include unit tests for your changes. These tests prove that your
 changes work, help prevent bugs in the future, and help document what
 your changes do. Depending on the change, you may need acceptance tests,
 unit tests or both. Currently RIDE only have unit tests, but proposal for 
@@ -223,6 +214,13 @@ It allows to run the test files stopping when errors are found.
 Example::
 
     ./test_all.sh utest/namespace   # to test with python3 and namespace dir
+
+=== Acceptance tests
+
+We don't have *yet* acceptance tests, but we really see the need of them. The goal is to have them run
+on any operating system, and using https://rainmanwy.github.io/robotframework-SikuliLibrary/doc/SikuliLibrary.html[SikuliLibrary].
+Please contact us via Slack, if you would like to join this testing group.
+
 
 == Finalizing pull requests
 
