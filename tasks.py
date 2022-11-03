@@ -71,7 +71,7 @@ The reference for valid arguments is <a class="reference external" href="http://
 </ol>
 </li>
 <li>Persistence of the position and state of detached panels, File Explorer and Test Suites</li>
-<li>File Explorer and Test Suites panels are now Plugins and can be disabled or enabled and made Visible with F11 and F12</li>
+<li>File Explorer and Test Suites panels are now Plugins and can be disabled or enabled and made Visible with F11 ( Test Suites with F12, but disabled for now)</li>
 <li>File Explorer now shows selected file when RIDE starts</li>
 <li>Block comment and uncomment on both Grid and Text editors</li>
 <li>Extensive color customization of panel elements via <cite>Tools&gt;Preferences</cite></li>

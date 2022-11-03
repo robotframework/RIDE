@@ -282,8 +282,8 @@ class RideFrame(wx.Frame):
         # self._mgr.AddPane(self.leftpanel, aui.AuiPaneInfo().Name("left_panel").Caption("left_panel").Left())
         # DEBUG: Next was already called from application.py
         self._mgr.AddPane(self.tree,
-                          aui.AuiPaneInfo().Name("tree_content").
-                          LeftDockable())
+                          aui.AuiPaneInfo().Name("tree_content").Caption("Test Suites").CloseButton(False).
+                          LeftDockable())  # TODO: remove .CloseButton(False) when restore is fixed
         #### self._mgr.GetPane(self.tree).DestroyOnClose()
         # TreePlugin will manage showing the Tree
         self.actions.register_actions(ActionInfoCollection(_menudata, self, self.tree))
