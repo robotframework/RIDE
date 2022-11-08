@@ -70,6 +70,7 @@ class Process(object):
             except ImportError:
                 startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
             subprocess_args['startupinfo'] = startupinfo
+            subprocess_args['env'] = dict(os.environ, PYTHONIOENCODING='UTF-8')
         else:
             subprocess_args['preexec_fn'] = os.setsid
             subprocess_args['shell'] = True
