@@ -36,7 +36,7 @@ Some icons courtesy Mark James and provided under a creative commons
 license.  See http://www.famfamfam.com/lab/icons/silk
 
 Note: this plugin creates a temporary directory for use while a test
-is running. This directory is normally removed when RIDE exists. If
+is running. This directory is normally removed when RIDE exits. If
 RIDE is shut down abnormally this directory may not get removed. The
 directories that are created match the pattern RIDE*.d and are in a
 temporary directory appropriate for the platform (for example, on
