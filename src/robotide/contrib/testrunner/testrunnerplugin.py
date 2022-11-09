@@ -603,25 +603,6 @@ class TestRunnerPlugin(Plugin):
     def _append_to_console_log(self, text, source="stdout"):
         """Put output to the text control"""
         
-        # Is there need for decoding (on windows platform this is often the case!)?
-        # Note: if characters are not correctly displayed when running TC on command line they will end up as ? on RIDE console
-        if isinstance(text, (bytes, bytearray)):
-            textlen = len(text)
-            if textlen > 0 and platform == 'win32' and source == 'stdout':
-                try:
-                    import locale
-                    prefencode = locale.getpreferredencoding()
-                    import sys
-                    defencode = sys.getdefaultencoding()
-                    if prefencode != defencode:
-                        #debugtext = 'Debug: start append to console ' + str(textlen) + str(platform) + str(prefencode) + str(defencode) + '<<<<<'
-                        #self._append_text(self._console_log_ctrl, debugtext, source)
-                        #self._append_text(self._message_log_ctrl, 'Debug: console text before decode:' + str(text), source)
-                        text = text.decode(encoding=prefencode, errors='namereplace')
-                        #self._append_text(self._message_log_ctrl, 'Debug: console text after  decode:' + str(text), source)
-                except Exception as e:
-                    text = 'Append to console log decode error: ' + str(e) + ' '
-
         self._append_text(self._console_log_ctrl, text, source)
         if self._console_log:
             FileWriter.write(self._console_log, [text], "ab", "a")
