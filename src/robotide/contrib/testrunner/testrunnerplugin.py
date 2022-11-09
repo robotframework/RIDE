@@ -602,7 +602,6 @@ class TestRunnerPlugin(Plugin):
 
     def _append_to_console_log(self, text, source="stdout"):
         """Put output to the text control"""
-        
         self._append_text(self._console_log_ctrl, text, source)
         if self._console_log:
             FileWriter.write(self._console_log, [text], "ab", "a")
