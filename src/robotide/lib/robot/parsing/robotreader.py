@@ -41,12 +41,13 @@ class RobotReader(object):
             if not self._separator_check:
                 self.check_separator(line.rstrip())
             cells = self.split_row(line.rstrip())
-            cells = list(self._check_deprecations(cells, path, lineno))
+            ####### DEBUG cells = list(self._check_deprecations(cells, path, lineno))
             if cells and cells[0].strip().startswith('*') and \
                     populator.start_table([c.replace('*', '').strip()
                                            for c in cells]):
                 process = True
             elif process:
+                # print(f"DEBUG: robotreader.read original line={line}\nparser={cells}")
                 populator.add(cells)
         return populator.eof()
 
@@ -151,7 +152,7 @@ class RobotReader(object):
                 self._cell_section = True
                 # self._space_splitter = re.compile(r"[ \t\xa0]{" + f"{self._spaces}" + "}|\t+")
         """
-        if not line.startswith('*'):
+        if not line.startswith('*') and not line.startswith('#'):
             if not self._separator_check and line[:2] in self._pipe_starts:
                 self._separator_check = True
                 # print(f"DEBUG: RFLib RobotReader check_separator PIPE separator")
