@@ -32,6 +32,7 @@ from .settings import (Documentation, Fixture, Timeout, Tags, Metadata,
 
 re_set_var = re.compile(r"(?i)^set[ ](\S.*)+variable$")
 
+
 def TestData(parent=None, source=None, include_suites=None,
              warn_on_skipped='DEPRECATED', extensions=None, settings=None):
     """Parses a file or directory to a corresponding model object.
@@ -65,6 +66,7 @@ class _TestData(object):
         self.parent = parent
         self.source = abspath(source) if source else None
         self.children = []
+        self._preamble = []
         self._tables = dict(self._get_tables())
 
     def _get_tables(self):
@@ -82,6 +84,20 @@ class _TestData(object):
             return None
         table.set_header(header_row)
         return table
+
+    def has_preamble(self):
+        return len(self.preamble) > 0
+
+    def add_preamble(self, row):
+        self._preamble.append(row)
+
+    @property
+    def preamble(self):
+        return self._preamble
+
+    @preamble.setter
+    def preamble(self, row):
+        self.add_preamble(row)
 
     def _find_table(self, header_row):
         name = header_row[0] if header_row else ''
@@ -957,6 +973,7 @@ class Step(object):
     def add_step(self, content, comment=None):
         self.__init__(content, comment)
         return self
+
 
 class OldStyleSettingAndVariableTableHeaderMatcher(object):
 

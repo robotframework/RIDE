@@ -249,20 +249,38 @@ class DataValidationHandler(object):
         self._editor = editor
 
     def validate_and_update(self, data, text):
+        # print(f"DEBUG: validate ENTER type(text)={type(text)}")
         m_text = text.decode("utf-8")
         if not self._sanity_check(data, m_text):
             handled = self._handle_sanity_check_failure()
             if not handled:
                 return False
         self._editor.reset()
-        data.update_from(m_text)
+        if self._editor._reformat:
+            data.update_from(m_text)
+        else:
+            data.update_from(m_text)  # TODO: This is the same code as _reformat == True
+                                      # There is no way to update the model without reformatting
+            # TODO this only updates the editor, but not the model, changes in Text Editor are not reflected in Grid or
+            # when saving
+            #  self._editor._editor.set_text(m_text)
+            # print(f"DEBUG: validate Non reformatting:")  # {m_text}")
         self._editor.set_editor_caret_position()
         return True
 
     def _sanity_check(self, data, text):
+        # print(f"DEBUG: _sanity_check ENTER type(text)={type(text)}")
+        # First remove all lines starting with #
+        for line in text.split('\n'):
+            comment = line.strip().startswith('#')
+            # print(f"DEBUG: _sanity_check comment={comment} line={line}")
+            if comment:
+                text = text.replace(line, '')
+        # print(f"DEBUG: _sanity_check cleaned text={text}")
         formatted_text = data.format_text(text)
         c = self._normalize(formatted_text)
         e = self._normalize(text)
+        # print(f"DEBUG: _sanity_check compare c={c}\n e={e}")
         return len(c) == len(e)
 
     def _normalize(self, text):
@@ -314,12 +332,14 @@ class DataFileWrapper(object): # TODO: bad class name
         return self._data == other._data
 
     def update_from(self, content):
+        # print(f"DEBUG: ENTER update_from type self._data={type(self._data)}")
         self._data.execute(SetDataFile(self._create_target_from(content)))
 
     def _create_target_from(self, content):
         src = BytesIO(content.encode("utf-8"))
         target = self._create_target()
         FromStringIOPopulator(target).populate(src, self._tab_size)
+        # print(f"DEBUG: After populate: type target={type(target)}")
         # print(f"DEBUG: After populate:\n{target.__reduce__()}")
         return target
 
@@ -1031,6 +1051,8 @@ class SourceEditor(wx.Panel):
         _, setting = message.keys
         if setting == 'txt number of spaces':
             self._tab_size = self._parent._app.settings.get('txt number of spaces', 4)
+        if setting == 'reformat':
+            self._reformat = self._parent._app.settings.get('reformat', False)
 
     def _mark_file_dirty(self, dirty=True):
         if not self.is_focused():  # DEBUG: Was marking file clean from Grid Editor

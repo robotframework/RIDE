@@ -53,7 +53,7 @@ from .images import TreeImageList
 _TREE_ARGS = {'style': wx.HSCROLL|wx.VSCROLL }  #DEBUG wx.TR_DEFAULT_STYLE}
 _TREE_ARGS['agwStyle'] = customtreectrl.TR_DEFAULT_STYLE | customtreectrl.TR_HIDE_ROOT | \
                          customtreectrl.TR_EDIT_LABELS
-_TREE_ARGS['agwStyle'] |= customtreectrl.TR_TOOLTIP_ON_LONG_ITEMS
+_TREE_ARGS['agwStyle'] |= customtreectrl.TR_TOOLTIP_ON_LONG_ITEMS | customtreectrl.TR_HAS_VARIABLE_ROW_HEIGHT
 
 if IS_WINDOWS:
     _TREE_ARGS['style'] |= wx.TR_EDIT_LABELS
@@ -558,6 +558,8 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
 
     def _create_node_with_handler(self, parent_node, controller, index=None):
         from ..controller.filecontrollers import ResourceFileController
+        if controller.display_name.startswith("#"):  # If it is a comment don't create
+            return None
 
         if IS_WINDOWS and isinstance(controller, ResourceFileController):
             resourcefile = self._normalize(controller.filename)
