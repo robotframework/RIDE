@@ -280,9 +280,11 @@ class _PropertyPopulator(Populator):
         self._data_added = False
 
     def add(self, row):
-        if not row.is_commented():
-            self._add(row)
-        self._comments.add(row)
+        # print(f"DEBUG: tablepopulators add ENTER row={row}")
+        self._add(row)
+        # if not row.is_commented():
+        #     self._add(row)
+        # self._comments.add(row)
 
     def _add(self, row):
         if row.cells == ['...']:
@@ -329,7 +331,9 @@ class DocumentationPopulator(_PropertyPopulator):
         self._setter(self._value, self._comments.value)
 
     def _add(self, row):
-        self._add_to_value(row.dedent().data)
+        # self._add_to_value(row.dedent().data)
+        self._add_to_value(row.data)
+        # self._value.append(row.data)
 
     def _add_to_value(self, data):
         joiner = self._row_joiner()

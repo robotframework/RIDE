@@ -364,16 +364,22 @@ class RideFrame(wx.Frame):
 
     def OnClose(self, event):
         if self._allowed_to_exit():
-            perspective = self._mgr.SavePerspective()
-            self._application.settings.set('AUI Perspective', perspective)
-            nb_perspective = self.notebook.SavePerspective()
-            self._application.settings.set('AUI NB Perspective', nb_perspective)
+            try:
+                perspective = self._mgr.SavePerspective()
+                self._application.settings.set('AUI Perspective', perspective)
+                # deinitialize the frame manager
+                self._mgr.UnInit()
+                del self._mgr
+            except AttributeError:
+                pass
+            try:
+                nb_perspective = self.notebook.SavePerspective()
+                self._application.settings.set('AUI NB Perspective', nb_perspective)
+            except AttributeError:
+                pass
             PUBLISHER.unsubscribe(self._set_label, RideTreeSelection)
             RideClosing().publish()
-            # deinitialize the frame manager
-            self._mgr.UnInit()
             self._task_bar_icon.Destroy()
-            del self._mgr
             self.Destroy()
             app = wx.GetApp()
             if app is not self._application:

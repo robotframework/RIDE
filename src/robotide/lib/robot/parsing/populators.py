@@ -60,12 +60,17 @@ class FromFilePopulator(object):
     def _get_curdir(self, path):
         return path.replace('\\','\\\\') if path else None
 
+    def add_preamble(self, row):
+        self._datafile.add_preamble(row)
+
     def populate(self, path, resource=False):
         LOGGER.info("Parsing file '%s'." % path)
         source = self._open(path)
         try:
+            # print(f"DEBUG: populators populate READER={self._get_reader(path, resource)}")
             self._get_reader(path, resource).read(source, self)
-        except:
+        except Exception:
+            # print(f"DEBUG: populators populate CALLING DATAERROR")
             raise DataError(get_error_message())
         finally:
             source.close()
@@ -77,7 +82,7 @@ class FromFilePopulator(object):
             # IronPython handles BOM incorrectly if not using binary mode:
             # https://ironpython.codeplex.com/workitem/34655
             return open(path, 'rb')
-        except:
+        except Exception:
             raise DataError(get_error_message())
 
     def _get_reader(self, path, resource=False):

@@ -50,6 +50,8 @@ class _DataFileWriter(object):
 
     def write(self, datafile):
         tables = [table for table in datafile if table]
+        if datafile.has_preamble:
+            self._write_preamble(datafile.preamble)
         for table in tables:
             self._write_table(table, is_last=table is tables[-1])
 
@@ -71,6 +73,10 @@ class _DataFileWriter(object):
 
     def _write_row(self, row):
         raise NotImplementedError
+
+    def _write_preamble(self, rows):
+        for line in rows:
+            self._output.write(line)
 
 
 class SpaceSeparatedTxtWriter(_DataFileWriter):

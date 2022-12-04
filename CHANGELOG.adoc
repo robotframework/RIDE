@@ -10,7 +10,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Added
 
-- None
+- Added support for editing .robot and .resource files with content before sections
 
 === Removed
 
