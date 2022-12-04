@@ -18,13 +18,13 @@ import itertools
 
 class RowSplitter(object):
     _comment_mark = '#'
-    _empty_cell_escape = '${EMPTY}'
+    _empty_cell_escape = ''  # '${EMPTY}'
     _line_continuation = '...'
     _setting_table = 'setting'
     _indented_tables = ('test case', 'keyword')
     _split_from = ('ELSE', 'ELSE IF', 'AND')
 
-    def __init__(self, cols=8, split_multiline_doc=True):
+    def __init__(self, cols=8, split_multiline_doc=False):
         self._cols = cols
         self._split_multiline_doc = split_multiline_doc
 

@@ -25,7 +25,7 @@ class CommentCache(object):
         self._comments.append(comment)
 
     def consume_with(self, function):
-        # print(f"DEBUG: CommentCache enter consume_with {self._comments}")
+        print(f"DEBUG: CommentCache enter consume_with {self._comments}")
         for comment in self._comments:
             function(comment)
         self.__init__()
