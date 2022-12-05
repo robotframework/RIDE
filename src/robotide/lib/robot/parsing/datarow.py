@@ -38,10 +38,10 @@ class DataRow(object):
             # print(f"DEBUG: datarow before clean cell={cell}")
             cell = self._collapse_whitespace(cell)
             # print(f"DEBUG: datarow after clean cell={cell}")
-            # if cell and cell[0] == '#' or comments:
-            #     comments.append(cell)
-            # else:
-            data.append(cell)
+            if cell and cell[0] == '#' or comments:
+                comments.append(cell)
+            else:
+                data.append(cell)
         # if self._row_continuation_marker in data and self.source:
         #     self._deprecate_escaped_cells_before_continuation(data)
         # return self._purge_empty_cells(data), comments  # DEBUG don't self._purge_empty_cells(comments)
