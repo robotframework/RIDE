@@ -281,10 +281,10 @@ class _PropertyPopulator(Populator):
 
     def add(self, row):
         # print(f"DEBUG: tablepopulators add ENTER row={row}")
-        self._add(row)
-        # if not row.is_commented():
-        #     self._add(row)
-        # self._comments.add(row)
+        # self._add(row)
+        if not row.is_commented():
+            self._add(row)
+        self._comments.add(row)
 
     def _add(self, row):
         if row.cells == ['...']:
