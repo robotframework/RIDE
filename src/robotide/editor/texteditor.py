@@ -897,6 +897,12 @@ class SourceEditor(wx.Panel):
             self.execute_variable_creator(list_variable=(keycode == ord('2')),
                                           dict_variable=(keycode == ord('5')))
             self.store_position()
+        elif keycode == ord('3') and event.ControlDown() and event.ShiftDown():
+            self.execute_add_text(add_text='# ', on_the_left=True, on_the_right=False)
+            self.store_position()
+        elif keycode == ord('4') and event.ControlDown() and event.ShiftDown():
+            self.execute_remove_text(remove_text='# ', on_the_left=True, on_the_right=False)
+            self.store_position()
         else:
             event.Skip()
 
@@ -962,6 +968,142 @@ class SourceEditor(wx.Panel):
         else:
             close_symbol = open_symbol
         return open_symbol+value+close_symbol
+
+    def execute_add_text(self, add_text='', on_the_left=False, on_the_right=False):
+        from_, to_ = self._editor.GetSelection()
+        text = self._editor.SelectedText
+        size = len(bytes(text, encoding='utf-8'))
+        to_ = from_ + size
+        lenadd = len(add_text)
+        if size == 0:
+            cursor = self._editor.GetCurrentPos()
+            line_no = self._editor.LineFromPosition(cursor)
+            line = self._editor.GetLine(line_no)
+            spaces = ' ' * self._tab_size
+            lenline = len(line)
+            begpos = self._editor.PositionFromLine(line_no)
+            relcurs = cursor - begpos
+            # TODO: Add very complicated way to add on the right
+            if lenline > 0 and lenadd > 0 and on_the_left:
+                idx = self._tab_size
+                addready = False
+                tabskip = True
+                while idx < lenline and idx < relcurs and addready == False:
+                    tabchk = line[idx:idx+self._tab_size]
+                    #print(f"DEBUG: tabchk - " + str(tabchk) + "-" + str(idx) )
+                    if tabchk == spaces:
+                        idx += self._tab_size
+                        #print(f"DEBUG: next tab" )
+                        tabskip = True
+                    elif tabskip == True:
+                        valtot = line[idx:relcurs]
+                        valchk = line[idx:idx+lenadd]
+                        #print(f"DEBUG: valchk - " + str(valchk) + "-" + str(idx) )
+                        #print(f"DEBUG: valtot - " + str(valtot) )
+                        if valchk != add_text:
+                            valtot = self._add_text(add_text, on_the_left, False, valtot)
+                            #print(f"DEBUG: valtot - " + str(valtot) )
+                            addready = True
+                        else:
+                            tabskip = False
+                            idx += 1
+                    else:
+                        idx += 1
+                if addready:
+                    line = line[0:idx] + valtot + line[relcurs:]
+                    #print(f"DEBUG: linn - " + str(line) + "<<<<")
+                    self._editor.SetInsertionPoint(begpos)
+                    self._editor.SetSelection(begpos, begpos + lenline)
+                    self._editor.ReplaceSelection(line)
+                    self._editor.SetSelection(cursor + lenadd, cursor + lenadd)
+        else:
+            self._editor.DeleteRange(from_, size)
+            self._editor.SetInsertionPoint(from_)
+            self._editor.ReplaceSelection(self._add_text(add_text, on_the_left, on_the_right, text))
+            if on_the_left and on_the_right:
+                self._editor.SetSelection(from_ + lenadd, from_ + size + lenadd)
+                return
+            if on_the_left:
+                self._editor.SetSelection(from_ + lenadd, from_ + size + lenadd)
+                return
+            if on_the_right:
+                self._editor.SetSelection(from_, from_ + size)
+                return
+
+    @staticmethod
+    def _add_text(add_text, on_the_left, on_the_right, value=''):
+        if on_the_left:
+            value = add_text+value
+        if on_the_right:
+            value = value+add_text
+        return value
+
+    def execute_remove_text(self, remove_text='', on_the_left=False, on_the_right=False):
+        from_, to_ = self._editor.GetSelection()
+        text = self._editor.SelectedText
+        size = len(bytes(text, encoding='utf-8'))
+        to_ = from_ + size
+        lenrem = len(remove_text)
+        if size == 0:
+            cursor = self._editor.GetCurrentPos()
+            line_no = self._editor.LineFromPosition(cursor)
+            line = self._editor.GetLine(line_no)
+            spaces = ' ' * self._tab_size
+            lenline = len(line)
+            begpos = self._editor.PositionFromLine(line_no)
+            relcurs = cursor - begpos
+            # TODO: Add very complicated way to remove on the right
+            if lenline > 0 and lenrem > 0 and on_the_left:
+                idx = self._tab_size
+                remready = False
+                tabskip = True
+                while idx < lenline and idx < relcurs and remready == False:
+                    tabchk = line[idx:idx+self._tab_size]
+                    #print(f"DEBUG: tabchk - " + str(tabchk) + "-" + str(idx) )
+                    if tabchk == spaces:
+                        idx += self._tab_size
+                        #print(f"DEBUG: next tab" )
+                        tabskip = True
+                    elif tabskip == True:
+                        valtot = line[idx:relcurs]
+                        valchk = line[idx:idx+lenrem]
+                        #print(f"DEBUG: valchk - " + str(valchk) + "-" + str(idx) )
+                        #print(f"DEBUG: valtot - " + str(valtot) )
+                        if valchk == remove_text:
+                            valtot = self._remove_text(valtot, remove_text, on_the_left, False, 0, len(valtot))
+                            #print(f"DEBUG: valtot - " + str(valtot) )
+                            remready = True
+                        else:
+                            tabskip = False
+                            idx += 1
+                    else:
+                        idx += 1
+                if remready:
+                    line = line[0:idx] + valtot + line[relcurs:]
+                    #print(f"DEBUG: linn - " + str(line) + "<<<<")
+                    lennew = len(line)
+                    self._editor.SetInsertionPoint(begpos)
+                    self._editor.SetSelection(begpos, begpos + lenline)
+                    self._editor.ReplaceSelection(line)
+                    self._editor.SetSelection(cursor + lennew - lenline, cursor + lennew - lenline)
+        else:
+            self._editor.DeleteRange(from_, size)
+            self._editor.SetInsertionPoint(from_)
+            valsel = self._remove_text(text, remove_text, on_the_left, on_the_right, from_, to_)
+            self._editor.ReplaceSelection(valsel)
+            lensel = len(valsel)
+            lentxt = len(text)
+            self._editor.SetSelection(from_ + lensel - lentxt, cursor + lensel - lentxt)
+
+    @staticmethod
+    def _remove_text(value, remove_text, on_the_left, on_the_right, from_, to_):
+        if on_the_left and on_the_right:
+            return value[:from_]+value[from_:to_].strip(remove_text)+remove_text+value[to_:]
+        if on_the_left:
+            return value[:from_]+value[from_:to_].lstrip(remove_text)+value[to_:]
+        if on_the_right:
+            return value[:from_]+value[from_:to_].rstrip(remove_text)+value[to_:]
+        return value
 
     def execute_comment(self, event):
         start, end = self._editor.GetSelection()
