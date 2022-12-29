@@ -203,13 +203,13 @@ elsewhere see BUILD.rst.
 
 Unit tests are great for testing internal logic and should be added when
 appropriate. 
-Unit tests are in `utest` directory. They can be executed with::
+Unit tests are in `utest` directory. They can be executed from the main folder with:
 
   invoke test
 
 There is also a shell script (requiring customization for your environment).
 It allows to run the test files stopping when errors are found.
-Example::
+Example:
 
     ./test_all.sh utest/namespace   # to test with python3 and namespace dir
 
