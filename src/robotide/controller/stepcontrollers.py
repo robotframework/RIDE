@@ -353,15 +353,13 @@ class StepController(_BaseController):
         if 0 < len(cells) == index:
             self._step.inner_kw_pos = index - 1
             return
-        print(f"\nDEBUG: Stepcontrollers enter _first_non_empty_cell: index={index} cells={cells[:]}")
+        # print(f"\nDEBUG: Stepcontrollers enter _first_non_empty_cell: index={index} cells={cells[:]}")
         if index < len(cells) and cells[index] == '':
             return
         while index < len(cells) and (len(cells[index]) > 0 and cells[index][0] in ['$', '@', '&', '%']):
-            if index < len(cells):  # or cells[index] == ''
-                print(f"DEBUG: Stepcontrollers recalculate_keyword_column in loop: {cells[index]}")
             index += 1
         self._step.inner_kw_pos = index
-        print(f"\nDEBUG: Stepcontrollers Leave recalculate_keyword_column: index={self._step.inner_kw_pos}")
+        # print(f"\nDEBUG: Stepcontrollers Leave recalculate_keyword_column: index={self._step.inner_kw_pos}")
 
     def _has_comment_keyword(self):
         if self.keyword is None:
@@ -370,7 +368,7 @@ class StepController(_BaseController):
 
     def uncomment(self):
         index_of_comment = self._first_non_empty_cell()
-        print(f"DEBUG: stepcontrollers.py ENTER uncomment index_of_comment={index_of_comment}")
+        # print(f"DEBUG: stepcontrollers.py ENTER uncomment index_of_comment={index_of_comment}")
         if self._step.as_list()[index_of_comment].lower() == 'comment' or\
                 self._step.as_list()[index_of_comment].lower() == 'builtin.comment':
             # self.change(index_of_comment, '')
@@ -512,9 +510,9 @@ class StepController(_BaseController):
         return cells[-1].strip() if cells[-1].startswith('#') else None
 
     def _recreate(self, cells, comment=None, delete=False):
-        print(f"DEBUG: _recreate ENTER cells: {cells} comment: {comment}")
+        # print(f"DEBUG: _recreate ENTER cells: {cells} comment: {comment}")
         self._step.__init__(cells, comment)
-        print(f"DEBUG: Stepcontrollers recreated: self._step={self._step.as_list()}")
+        # print(f"DEBUG: Stepcontrollers recreated: self._step={self._step.as_list()}")
         self.recalculate_keyword_column()
 
     def _is_partial_for_loop_step(self, cells):

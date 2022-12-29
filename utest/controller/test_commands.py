@@ -486,12 +486,27 @@ class TestCaseEditingTest(TestCaseCommandTest):
         self._exec(ChangeCellValue(0, 2, "My Keyword"))
         self._exec(ChangeCellValue(0, 3, "${variable1}"))
         self._exec(ChangeCellValue(0, 4, "${variable2}"))
+        # print(f"DEBUG: test_uncommenting_row_with_variables: initial row={self._steps[0].as_list()}")
         assert self._steps[0].as_list() == ["${var1}", "${var2}=", "My Keyword", "${variable1}", "${variable2}"]
         self._exec(CommentRows([0]))
-        # assert self._steps[0].as_list() == ["Comment", "${var1}", "${var2}=", "My Keyword", "${variable1}", "${variable2}"]
-        #self._exec(UncommentRows([0]))
+        assert self._steps[0].as_list() == ["Comment", "${var1}", "${var2}=", "My Keyword", "${variable1}", "${variable2}"]
+        self._exec(UncommentRows([0]))
         # print(f"DEBUG: test_uncommenting_row_with_variables: commented row={self._steps[0].as_list()}")
-        #assert self._steps[0].as_list() == ["${var1}", "${var2}=", "My Keyword", "${variable1}", "${variable2}"]
+        assert self._steps[0].as_list() == ["${var1}", "${var2}=", "My Keyword", "${variable1}", "${variable2}"]
+
+    def test_uncommenting_row_with_triple_variables(self):
+        self._exec(ChangeCellValue(0, 0, "${var1}"))
+        self._exec(ChangeCellValue(0, 1, "${var2}"))
+        self._exec(ChangeCellValue(0, 2, "${var3}="))
+        self._exec(ChangeCellValue(0, 3, "My Keyword"))
+        self._exec(ChangeCellValue(0, 4, "${variable1}"))
+        # print(f"DEBUG: test_uncommenting_row_with_variables: initial row={self._steps[0].as_list()}")
+        assert self._steps[0].as_list() == ["${var1}", "${var2}", "${var3}=", "My Keyword", "${variable1}"]
+        self._exec(CommentRows([0]))
+        assert self._steps[0].as_list() == ["Comment", "${var1}", "${var2}", "${var3}=", "My Keyword", "${variable1}"]
+        self._exec(UncommentRows([0]))
+        # print(f"DEBUG: test_uncommenting_row_with_variables: commented row={self._steps[0].as_list()}")
+        assert self._steps[0].as_list() == ["${var1}", "${var2}", "${var3}=", "My Keyword", "${variable1}"]
 
     def test_commenting_row_with_for(self):
         print(f"DEBUG: Before CommentRow with FOR")
