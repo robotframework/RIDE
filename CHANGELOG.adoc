@@ -26,6 +26,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Fixed
 
+- Fixed comment and uncomment in Grid Editor when cells contain more than one variables assignement
 - Fixed console log stopping to output certain characters, like chinese and latin
 
 == https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.0b2.rst[2.0b2] - 2022-09-05
