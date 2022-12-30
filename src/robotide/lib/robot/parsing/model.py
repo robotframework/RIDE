@@ -849,15 +849,38 @@ class Step(object):
         # if self.assign:
         #     print(f"DEBUG RFLib init Step: self.assign {self.assign}")
 
+    @staticmethod
+    def is_kind_of_comment(content):
+        return content.lower() in ['comment', 'builtin.comment'] or content.startswith('#')
+
     def _get_assign(self, content):
         assign = []
         idx = 0
         positional = True
         if content and content != ['']:
             index = self.first_non_empty_cell(content)
-            if index < len(content) and is_var(content[index].rstrip('= ')):
+            if index < len(content) and is_var(content[index].rstrip('=')):
                 self.normal_assign = True
+            if 0 <= index < len(content) and self.is_kind_of_comment(content[index]):  # Special case for commented content
+                return []
                 # print(f"DEBUG: RFLib Model _get_assign VAR NORMAL (index={index}) inner_kw_pos={self.inner_kw_pos} content={content[:]}")
+            # first handle non FOR cases
+            idx = 0
+            try:
+                if content[self.inner_kw_pos] != 'FOR':
+                    while idx < len(content):
+                        if is_var(content[idx].rstrip('=')):
+                            assign.append(content.pop(idx))
+                            # if idx < self.inner_kw_pos:
+                            idx -= 1
+                        else:
+                            break
+                        idx += 1
+                    # print(f"DEBUG: RFLib Model _get_assign RETURN assign={assign} size of content={len(content)}")
+                    return assign
+            except IndexError:
+                pass
+            idx = index
             while idx < len(content) and positional:
                 if idx <= self.inner_kw_pos:
                     positional = True
@@ -884,7 +907,7 @@ class Step(object):
                 if not positional and self.inner_kw_pos < idx <= self.inner_kw_pos + 1 < len(content) and re_set_var.match(content[self.inner_kw_pos]):
                     positional = True
                     self.normal_assign = False
-                if is_var(content[idx].rstrip('= ')) and positional:
+                if is_var(content[idx].rstrip('=')) and positional:  # and self.normal_assign:
                     assign.append(content.pop(idx))
                     idx -= 1  # We need to recheck var in case of IN ENUMERATE
                 idx += 1
@@ -902,6 +925,7 @@ class Step(object):
         return True
 
     def as_list(self, indent=False, include_comment=True):
+        # print(f"DEBUG RFLib Model Step: as_list() ENTER assign={self.assign}\n")
         data = []
         # print(f"DEBUG: RFLib Model Step enter as_list  {self.name}")
         kw = [self.name] if self.name is not None else []
@@ -938,10 +962,10 @@ class Step(object):
             data = self.indent + kw + self.assign + self.args + comments
             self.normal_assign = False
             # print(f" data={data}")  self.normal_assign:
-        """print(f"DEBUG RFLib Model Step: as_list() is_scope_set={is_scope_set} self.name={self.name} kw={kw}\n"
-              f" self.assign={self.assign} self.args={self.args} comments={comments} "
-              f"commented_assign={commented_assign} normal_assign={self.normal_assign}"
-              f" data={data}")"""
+        # print(f"DEBUG RFLib Model Step: as_list() is_scope_set={is_scope_set} self.name={self.name} kw={kw}\n"
+        #       f" self.assign={self.assign} self.args={self.args} comments={comments} "
+        #       f"commented_assign={commented_assign} normal_assign={self.normal_assign}"
+        #       f" data={data}")
         return data
 
     def first_non_empty_cell(self, content):

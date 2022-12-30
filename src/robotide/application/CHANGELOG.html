@@ -1,16 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>Changelog</title><link rel="stylesheet" type="text/css" href="docbook-xsl.css" /><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot" /></head><body><div xml:lang="en" class="article" lang="en"><div class="titlepage"><div><div><h2 class="title"><a id="idm45382423843088"></a>Changelog</h2></div></div><hr /></div><p>All notable changes to this project will be documented in this file.</p><p>The format is based on <a class="ulink" href="http://keepachangelog.com/en/1.0.0/" target="_top">Keep a Changelog</a>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>Changelog</title><link rel="stylesheet" type="text/css" href="docbook-xsl.css" /><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot" /></head><body><div xml:lang="en" class="article" lang="en"><div class="titlepage"><div><div><h2 class="title"><a id="idm46561937432624"></a>Changelog</h2></div></div><hr /></div><p>All notable changes to this project will be documented in this file.</p><p>The format is based on <a class="ulink" href="http://keepachangelog.com/en/1.0.0/" target="_top">Keep a Changelog</a>
 and this project adheres to <a class="ulink" href="http://semver.org/spec/v2.0.0.html" target="_top">Semantic Versioning</a>.</p><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_ulink_url_https_github_com_robotframework_ride_unreleased_ulink"></a>1. <a class="ulink" href="https://github.com/robotframework/RIDE" target="_top">Unreleased</a></h2></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_added"></a>1.1. Added</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
-None
+Added commenting/uncommenting of content with ``# ``, by using ``Ctrl-Shift-3`` and ``Ctrl-Shift-4``
+</li><li class="listitem">
+Added support for editing .robot and .resource files with content before sections
 </li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_removed"></a>1.2. Removed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
 None
 </li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_changed"></a>1.3. Changed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+Hiding items in Test Suites explorer with names starting with #
+</li><li class="listitem">
 Disabled the Close button on the Test Suites explorer
   This was causing not being possible to restore it, unless editing the settings.cfg file.
   Other reason was to prevent user to closing it, after detaching the panel, and re-attaching,
   which has a bug making the Tree not visible.
 </li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_fixed"></a>1.4. Fixed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
-None
+Fixed console log stopping to output certain characters, like chinese and latin
 </li></ul></div></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_ulink_url_https_github_com_robotframework_ride_blob_master_doc_releasenotes_ride_2_0b2_rst_2_0b2_ulink_2022_09_05"></a>2. <a class="ulink" href="https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.0b2.rst" target="_top">2.0b2</a> - 2022-09-05</h2></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_added_2"></a>2.1. Added</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
 Added menu entry at Help → Offline Change Log to view this file on disk
 </li><li class="listitem">
@@ -34,7 +38,7 @@ Added colorization in Text Editor for Tasks
 </li><li class="listitem">
 Added a dialog to Load or Save settings to .cfg files on Preferences → General, Grid Editor, Text Editor and Test Runner
 </li><li class="listitem">
-Added perspectives persistance for Notebook panels, Edit, Text Editor and Run
+Added perspectives' persistence for Notebook panels, Edit, Text Editor and Run
 </li><li class="listitem">
 Added General settings to Preferences, to change Font Size and Face, and colours
 </li><li class="listitem">
