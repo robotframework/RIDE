@@ -166,7 +166,8 @@ class _ContentAssistTextCtrlBase(object):
                 elem.SetSelection(from_, to_)
                 return
 
-    def _add_text(self, value, add_text, on_the_left, on_the_right, from_, to_):
+    @staticmethod
+    def _add_text(value, add_text, on_the_left, on_the_right, from_, to_):
         if on_the_left and on_the_right:
             return value[:from_]+add_text+value[from_:to_]+add_text+value[to_:]
         if on_the_left:

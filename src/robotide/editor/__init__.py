@@ -35,7 +35,9 @@ Cu&t | Cut | Ctrlcmd-X
 &Delete | Delete  | Del
 ---
 Comment | Comment selected rows | Ctrlcmd-3
+CommentCells | Comment cells with # | Ctrlcmd-Shift-3
 Uncomment | Uncomment selected rows | Ctrlcmd-4
+UncommentCells | Uncomment cells with # | Ctrlcmd-Shift-4
 ---
 Insert Cells | Insert Cells | Shift-Ctrl-I
 Delete Cells | Delete Cells | Shift-Ctrl-D
@@ -225,6 +227,12 @@ class _EditorTab(wx.Panel):
 
     def OnUncomment(self, event):
         self.editor.uncomment()
+
+    def OnCommentCells(self, event):
+        self.editor.comment_cells()
+
+    def OnUncommentCells(self, event):
+        self.editor.uncomment_cells()
 
     def OnContentAssistance(self, event):
         self.editor.show_content_assist()

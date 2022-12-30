@@ -561,10 +561,12 @@ class KeywordEditor(GridEditor, Plugin):
                     self.OnJsonEditor(event)
                 elif keycode == ord('D'):
                     self.OnDeleteCells()
+                """
                 elif keycode == ord('3'):
-                    self.execute_add_text(add_text='# ', on_the_left=True, on_the_right=False)
+                    self._open_cell_editor_and_execute_add_text(add_text='# ', on_the_left=True, on_the_right=False)
                 elif keycode == ord('4'):
-                    self.execute_remove_text(remove_text='# ', on_the_left=True, on_the_right=False)
+                    self._open_cell_editor_and_execute_remove_text(remove_text='# ', on_the_left=True, on_the_right=False)
+                """
             else:
                 if keycode == wx.WXK_SPACE:
                     self._open_cell_editor_with_content_assist()
