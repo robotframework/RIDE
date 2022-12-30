@@ -50,6 +50,10 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
         self._popup = ContentAssistPopup(self, suggestion_source)
         self.Bind(wx.EVT_KEY_DOWN, self.OnKeyDown)
         self.Bind(wx.EVT_CHAR, self.OnChar)
+        self.Bind(wx.EVT_KILL_FOCUS, self.OnFocusLost)
+        self.Bind(wx.EVT_MOVE, self.OnFocusLost)
+        # self.Bind(wx.EVT_WINDOW_DESTROY, self.OnDestroy)
+        self._showing_content_assist = False
         self.Bind(wx.EVT_WINDOW_DESTROY, self.pop_event_handlers)
         self._row = None
         self.gherkin_prefix = ''
@@ -84,7 +88,27 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
         # Ctrl-Space handling needed for dialogs # DEBUG add Ctrl-m
         if (control_down or alt_down) and key_code in [wx.WXK_SPACE, ord('m')]:
             self.show_content_assist()
-        elif key_code == wx.WXK_BACK:
+        elif keycode == wx.WXK_RETURN and self._popup.is_shown():
+            self.OnFocusLost(event)
+        elif keycode == wx.WXK_TAB:
+            self.OnFocusLost(event, False)
+        elif keycode == wx.WXK_ESCAPE and self._popup.is_shown():
+            self._popup.hide()
+        elif keycode in [wx.WXK_UP, wx.WXK_DOWN, wx.WXK_PAGEUP, wx.WXK_PAGEDOWN] \
+                and self._popup.is_shown():
+            self._popup.select_and_scroll(keycode)
+        elif keycode in (ord('1'), ord('2'), ord('5')) and event.ControlDown() and not \
+                event.AltDown():
+            self.execute_variable_creator(list_variable=(keycode == ord('2')),
+                                          dict_variable=(keycode == ord('5')))
+        elif keycode == ord('3') and event.ControlDown() and event.ShiftDown() \
+                and not event.AltDown():
+            self.execute_add_text(add_text='# ', on_the_left=True, on_the_right=False)
+        elif keycode == ord('4') and event.ControlDown() and event.ShiftDown() \
+                and not event.AltDown():
+            self.execute_remove_text(remove_text='# ', on_the_left=True, on_the_right=False)
+        elif self._popup.is_shown() and keycode < 256:
+            wx.CallAfter(self._populate_content_assist)
             event.Skip()
             wx.CallAfter(self._show_auto_suggestions_when_enabled)
 
@@ -171,6 +195,79 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
             close_symbol = open_symbol
         return value[:from_] + open_symbol + value[from_:to_] + close_symbol + value[to_:]
 
+    def execute_add_text(self, add_text, on_the_left, on_the_right):
+        from_, to_ = self.GetSelection()
+        self.SetValue(self._add_text(self.Value, add_text, on_the_left, on_the_right, from_, to_))
+        lenadd = len(add_text)
+        elem = self
+        if on_the_left:
+            elem.SetInsertionPoint(from_ + lenadd)
+        if from_ != to_:
+            if on_the_left and on_the_right:
+                elem.SetInsertionPoint(to_ + lenadd)
+                elem.SetSelection(from_ + lenadd, to_ + lenadd)
+                return
+            if on_the_left:
+                elem.SetInsertionPoint(to_ + lenadd)
+                elem.SetSelection(from_ + lenadd, to_ + lenadd)
+                return
+            if on_the_right:
+                elem.SetInsertionPoint(to_)
+                elem.SetSelection(from_, to_)
+                return
+
+    @staticmethod
+    def _add_text(value, add_text, on_the_left, on_the_right, from_, to_):
+        if on_the_left and on_the_right:
+            return value[:from_]+add_text+value[from_:to_]+add_text+value[to_:]
+        if on_the_left:
+            return value[:from_]+add_text+value[from_:to_]+value[to_:]
+        if on_the_right:
+            return value[:from_]+value[from_:to_]+add_text+value[to_:]
+        return value
+
+    def execute_remove_text(self, remove_text, on_the_left, on_the_right):
+        from_, to_ = self.GetSelection()
+        lenold = len(self.Value)
+        if on_the_left:
+            self.SetValue(self._remove_text(self.Value, remove_text, True, False, from_, to_))
+        lenone = len(self.Value)
+        if on_the_right:
+            self.SetValue(self._remove_text(self.Value, remove_text, False, True, from_, to_))
+        lentwo = len(self.Value)
+        diffone = lenold - lenone
+        difftwo = lenone - lentwo
+        elem = self
+        if from_ == to_:
+            elem.SetInsertionPoint(from_ - diffone)
+        else:
+            elem.SetInsertionPoint(to_ - diffone - difftwo)
+            elem.SetSelection(from_ - diffone, to_ - diffone - difftwo)
+
+    def _remove_text(self, value, remove_text, on_the_left, on_the_right, from_, to_):
+        if on_the_left and on_the_right:
+            return value[:from_]+value[from_:to_].strip(remove_text)+remove_text+value[to_:]
+        if on_the_left:
+            return value[:from_]+value[from_:to_].lstrip(remove_text)+value[to_:]
+        if on_the_right:
+            return value[:from_]+value[from_:to_].rstrip(remove_text)+value[to_:]
+        return value
+
+    def OnFocusLost(self, event, set_value=True):
+        event.Skip()
+        if not self._popup.is_shown():
+            return
+        if self.gherkin_prefix:
+            value = self.gherkin_prefix + self._popup.get_value() or self.GetValue()
+        else:
+            value = self._popup.get_value() or self.GetValue()
+        if set_value and value:
+            self.SetValue(value)
+            self.SetInsertionPoint(len(value))  # DEBUG was self.Value
+        else:
+            self.Clear()
+        self.hide()
+
     def fill_suggestion(self):
         if self.gherkin_prefix:
             value = self.gherkin_prefix + self._popup.get_value() or self.GetValue()
@@ -194,10 +291,20 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
             while self.GetEventHandler() is not self:
                 self.PopEventHandler()
 
+    def OnDestroy(self, event):
+        # all pushed eventHandlers need to be popped before close
+        # the last event handler is window object itself - do not pop itself
+        while self.GetEventHandler() is not self:
+            self.PopEventHandler()
+
     def reset(self):
         self._popup.reset()
+        self._showing_content_assist = False
 
     def show_content_assist(self):
+        if self._showing_content_assist:
+            return
+        self._showing_content_assist = True
         if self._populate_content_assist():
             self._show_content_assist()
 
@@ -228,6 +335,7 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
         if not self.is_shown():
             return
         self._popup.hide()
+        self._showing_content_assist = False
 
     def dismiss(self):
         if not self.is_shown():
@@ -247,7 +355,7 @@ class ExpandingContentAssistTextCtrl(_ContentAssistTextCtrlBase, ExpandoTextCtrl
         self.SetBackgroundColour(context.POPUP_BACKGROUND)
         # self.SetOwnBackgroundColour(Colour(200, 222, 40))
         self.SetForegroundColour(context.POPUP_FOREGROUND)
-        # self.SetOwnForegroundColour(Colour(7, 0, 70)
+        # self.SetOwnForegroundColour(Colour(7, 0, 70))
 
 
 class ContentAssistTextCtrl(_ContentAssistTextCtrlBase):
@@ -320,6 +428,15 @@ class ContentAssistFileButton(FileBrowseButton):
         self._browsed = True
         FileBrowseButton.OnBrowse(self, evt)
         self._browsed = False
+
+    def OnDestroy(self, event):
+        # all pushed eventHandlers need to be popped before close
+        # the last event handler is window object itself - do not pop itself
+        try:
+            while self.GetEventHandler() is not self:
+                self.PopEventHandler()
+        except RuntimeError:
+            pass
 
     def OnFileChanged(self, evt):
         if self._browsed:
@@ -435,6 +552,7 @@ class ContentAssistPopup(object):
                                          self._move_y_where_room(ycoord,
                                                                  cell_height)))
         self._main_popup.Show()
+        self._list.SetFocus()
 
     def _move_x_where_room(self, start_x):
         width = _PREFERRED_POPUP_SIZE[0]

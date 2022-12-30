@@ -71,7 +71,8 @@ class KeywordEditor(GridEditor, Plugin):
                        '---', 'Make Variable\tCtrl-1',
                        'Make List Variable\tCtrl-2',
                        'Make Dict Variable\tCtrl-5', '---',
-                       'Go to Definition\tCtrl-B', '---'
+                       'Go to Definition\tCtrl-B', '---',
+                       'Comment cell\tCtrl-Shift-3', 'Uncomment cell\tCtrl-Shift-4', '---',
                    ] + GridEditor._popup_items
 
     def __init__(self, parent, controller, tree):
@@ -563,6 +564,12 @@ class KeywordEditor(GridEditor, Plugin):
                     self.OnJsonEditor(event)
                 elif keycode == ord('D'):
                     self.OnDeleteCells()
+                """
+                elif keycode == ord('3'):
+                    self._open_cell_editor_and_execute_add_text(add_text='# ', on_the_left=True, on_the_right=False)
+                elif keycode == ord('4'):
+                    self._open_cell_editor_and_execute_remove_text(remove_text='# ', on_the_left=True, on_the_right=False)
+                """
             else:
                 if keycode == wx.WXK_SPACE:
                     self._open_cell_editor_with_content_assist()
@@ -708,6 +715,12 @@ work.</li>
             self.EnableCellEditControl()
         cell_editor = self._get_cell_editor()
         cell_editor.Show(True)
+        return celleditor
+
+    def _open_cell_editor_with_content_assist(self):
+        # print(f"DEBUG: kweditor call _open_cell_editor_with_content_assist")
+        wx.CallAfter(self._open_cell_editor().show_content_assist)
+        # wx.CallAfter(self._move_grid_cursor, wx.grid.GridEvent(), wx.WXK_RETURN)
 
     def _open_cell_editor_and_execute_variable_creator(self, list_variable=False,
                                                        dict_variable=False):
@@ -724,6 +737,22 @@ work.</li>
 
     def OnMakeDictVariable(self, event):
         self._open_cell_editor_and_execute_variable_creator(dict_variable=True)
+
+    def _open_cell_editor_and_execute_add_text(
+            self, add_text='', on_the_left=False, on_the_right=False):
+        wx.CallAfter(self._open_cell_editor().execute_add_text,
+                     add_text, on_the_left, on_the_right)
+
+    def _open_cell_editor_and_execute_remove_text(
+            self, remove_text='', on_the_left=False, on_the_right=False):
+        wx.CallAfter(self._open_cell_editor().execute_remove_text,
+                     remove_text, on_the_left, on_the_right)
+
+    def OnCommentCell(self, event):
+        self._open_cell_editor_and_execute_add_text(add_text='# ', on_the_left=True, on_the_right=False)
+
+    def OnUncommentCell(self, event):
+        self._open_cell_editor_and_execute_remove_text(remove_text='# ', on_the_left=True, on_the_right=False)
 
     def OnCellRightClick(self, event):
         self._tooltips.hide()
@@ -954,14 +983,19 @@ class ContentAssistCellEditor(GridCellEditor):
     def execute_enclose_text(self, keycode):
         self._tc.execute_enclose_text(keycode)
 
+    def execute_add_text(self, add_text='', on_the_left=False, on_the_right=False):
+        self._tc.execute_add_text(add_text, on_the_left, on_the_right)
 
-    def Create(self, parent, id, evtHandler):
+    def execute_remove_text(self, remove_text='', on_the_left=False, on_the_right=False):
+        self._tc.execute_remove_text(remove_text, on_the_left, on_the_right)
+
+    def Create(self, parent, id, evthandler):
         self._parent = parent
         self._tc = ExpandingContentAssistTextCtrl(
-            self._parent, self._plugin, self._controller)
+            parent, self._plugin, self._controller)
         self.SetControl(self._tc)
-        if evtHandler:
-            self._tc.PushEventHandler(evtHandler)
+        if evthandler:
+            self._tc.PushEventHandler(evthandler)
 
     def SetSize(self, rect):
         self._tc.SetSize(rect.x, rect.y, rect.width + 2, rect.height + 2, wx.SIZE_ALLOW_MINUS_ONE)
@@ -1014,6 +1048,9 @@ class ContentAssistCellEditor(GridCellEditor):
             self._tc.SetValue(chr(key))
         self._tc.SetFocus()
         self._tc.SetInsertionPointEnd()
+
+    def Clone(self):
+        return ContentAssistCellEditor()
 
 
 class ChooseUsageSearchStringDialog(wx.Dialog):

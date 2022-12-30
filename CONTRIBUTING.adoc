@@ -76,9 +76,7 @@ your mind, but you can also look at the link:[issue tracker] to find
 bugs and enhancements submitted by others. The issues vary significantly
 in complexity and difficulty, so you can try to find something that
 matches your skill level and knowledge. There are two specific labels to
-look for when looking for something to contribute:
-
-https://github.com/robotframework/RIDE/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22+
+look for when looking for something to contribute: https://github.com/robotframework/RIDE/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22+[good first issue] or https://github.com/robotframework/RIDE/labels/help_wanted[help wanted]
 
 `good first issue`::
   These issues typically do not require any knowledge of Robot Framework
@@ -205,13 +203,13 @@ elsewhere see BUILD.rst.
 
 Unit tests are great for testing internal logic and should be added when
 appropriate. 
-Unit tests are in `utest` directory. They can be executed with::
+Unit tests are in `utest` directory. They can be executed from the main folder with:
 
   invoke test
 
 There is also a shell script (requiring customization for your environment).
 It allows to run the test files stopping when errors are found.
-Example::
+Example:
 
     ./test_all.sh utest/namespace   # to test with python3 and namespace dir
 

@@ -205,12 +205,16 @@ SHORTCUT_KEYS = '''\
         <td>Make list variable body</td>
     </tr>
     <tr>
-        <td>CtrlCmd-3</td>
-        <td>Comment row(s)</td>
+        <td>CtrlCmd-Shift-3</td>
+        <td>Comment content with #</td>
     </tr>
     <tr>
         <td>CtrlCmd-4</td>
         <td>Uncomment row(s)</td>
+    </tr>
+    <tr>
+        <td>CtrlCmd-Shift-4</td>
+        <td>Uncomment content with #</td>
     </tr>
     <tr>
         <td>CtrlCmd-5</td>
@@ -346,8 +350,16 @@ SHORTCUT_KEYS = '''\
         <td>Comment row(s)</td>
     </tr>
     <tr>
+        <td>CtrlCmd-Shift-3</td>
+        <td>Comment content with #</td>
+    </tr>
+    <tr>
         <td>CtrlCmd-4</td>
         <td>Uncomment row(s)</td>
+    </tr>
+    <tr>
+        <td>CtrlCmd-Shift-4</td>
+        <td>Uncomment content with #</td>
     </tr>
     <tr>
         <td>CtrlCmd-5</td>
