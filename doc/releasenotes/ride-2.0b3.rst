@@ -22,8 +22,8 @@ This version v2.0b3 includes removal of Python 2.7 support. The reference for va
 
   1. create scalar variable
   2. create list variable
-  3. Comment line
-  4. Uncomment line
+  3. Comment line (with Shift comment content with #)
+  4. Uncomment line (with Shift uncomment content with #)
   5. create dictionary variable
 
 * Persistence of the position and state of detached panels, File Explorer and Test Suites
@@ -53,7 +53,7 @@ If you have pip_ installed, just run
 
 ::
 
-   pip install --pre --upgrade robotframework-ride==2.0b2
+   pip install --pre --upgrade robotframework-ride==2.0b3
 
 to install this **BETA** release, and for the **final** release use
 
@@ -73,6 +73,8 @@ If you want to help in the development of RIDE, by reporting issues in current d
 ::
 
   pip install -U https://github.com/robotframework/RIDE/archive/master.zip
+
+Important document for helping with development is the `CONTRIBUTING.adoc_`.
 
 See the `FAQ`_ for important info about `: FOR` changes and other known issues and workarounds.
 
@@ -103,3 +105,4 @@ RIDE v2.0b3 was released on 05/Nov/2022.
 .. _wxPython.org: https://extras.wxpython.org/wxPython4/extras/linux/gtk3/
 .. _FAQ: https://github.com/robotframework/RIDE/wiki/F.A.Q.
 .. _CHANGELOG.adoc: https://github.com/robotframework/RIDE/blob/master/CHANGELOG.adoc
+.. _CONTRIBUTING.adoc: https://github.com/robotframework/RIDE/blob/master/CONTRIBUTING.adoc

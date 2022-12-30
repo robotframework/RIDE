@@ -10,6 +10,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Added
 
+- Added commenting/uncommenting of content with ``# ``, by using ``Ctrl-Shift-3`` and ``Ctrl-Shift-4``
 - Added support for editing .robot and .resource files with content before sections
 
 === Removed
@@ -18,7 +19,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Changed
 
-- Hidding items in Test Suites explorer with names starting with #
+- Hiding items in Test Suites explorer with names starting with #
 - Disabled the Close button on the Test Suites explorer
   This was causing not being possible to restore it, unless editing the settings.cfg file.
   Other reason was to prevent user to closing it, after detaching the panel, and re-attaching,
@@ -44,7 +45,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 - Added a Reformat option when saving files on Preferences -> Saving
 - Added colorization in Text Editor for Tasks
 - Added a dialog to Load or Save settings to .cfg files on Preferences -> General, Grid Editor, Text Editor and Test Runner
-- Added perspectives persistance for Notebook panels, Edit, Text Editor and Run
+- Added perspectives' persistence for Notebook panels, Edit, Text Editor and Run
 - Added General settings to Preferences, to change Font Size and Face, and colours
 - Added background colour globally on panels and dialogs
 - Added on Run tab a button to open the Logs Directory
