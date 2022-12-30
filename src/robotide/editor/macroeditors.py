@@ -91,6 +91,12 @@ class TestCaseEditor(_RobotTableEditor):
     def uncomment(self):
         self.kweditor.OnUncommentRows()
 
+    def comment_cells(self):
+        self.kweditor.OnCommentCell(None)
+
+    def uncomment_cells(self):
+        self.kweditor.OnUncommentCell(None)
+
     def show_content_assist(self):
         self.kweditor.show_content_assist()
 

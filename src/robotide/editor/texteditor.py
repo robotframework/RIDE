@@ -86,7 +86,9 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         self.register_shortcut('CtrlCmd-Y', focused(lambda e: self._editor.redo()))
         # self.register_shortcut('Del', focused(lambda e: self._editor.delete()))
         self.register_shortcut('CtrlCmd-3', focused(lambda e: self._editor.execute_comment(e)))
+        self.register_shortcut('CtrlCmd-Shift-3', focused(lambda e: self._editor.execute_sharp_comment(e)))
         self.register_shortcut('CtrlCmd-4', focused(lambda e: self._editor.execute_uncomment(e)))
+        self.register_shortcut('CtrlCmd-Shift-4', focused(lambda e: self._editor.execute_sharp_uncomment(e)))
         self.register_shortcut('CtrlCmd-F', lambda e: self._editor._search_field.SetFocus())
         self.register_shortcut('CtrlCmd-G', lambda e: self._editor.OnFind(e))
         self.register_shortcut('CtrlCmd-Shift-G', lambda e: self._editor.OnFindBackwards(e))
@@ -897,14 +899,16 @@ class SourceEditor(wx.Panel):
             self.execute_variable_creator(list_variable=(keycode == ord('2')),
                                           dict_variable=(keycode == ord('5')))
             self.store_position()
+        else:
+            event.Skip()
+        """
         elif keycode == ord('3') and event.ControlDown() and event.ShiftDown():
             self.execute_add_text(add_text='# ', on_the_left=True, on_the_right=False)
             self.store_position()
         elif keycode == ord('4') and event.ControlDown() and event.ShiftDown():
             self.execute_remove_text(remove_text='# ', on_the_left=True, on_the_right=False)
             self.store_position()
-        else:
-            event.Skip()
+        """
 
     def OnChar(self, event):
         if not self.is_focused():
@@ -968,142 +972,6 @@ class SourceEditor(wx.Panel):
         else:
             close_symbol = open_symbol
         return open_symbol+value+close_symbol
-
-    def execute_add_text(self, add_text='', on_the_left=False, on_the_right=False):
-        from_, to_ = self._editor.GetSelection()
-        text = self._editor.SelectedText
-        size = len(bytes(text, encoding='utf-8'))
-        to_ = from_ + size
-        lenadd = len(add_text)
-        if size == 0:
-            cursor = self._editor.GetCurrentPos()
-            line_no = self._editor.LineFromPosition(cursor)
-            line = self._editor.GetLine(line_no)
-            spaces = ' ' * self._tab_size
-            lenline = len(line)
-            begpos = self._editor.PositionFromLine(line_no)
-            relcurs = cursor - begpos
-            # TODO: Add very complicated way to add on the right
-            if lenline > 0 and lenadd > 0 and on_the_left:
-                idx = self._tab_size
-                addready = False
-                tabskip = True
-                while idx < lenline and idx < relcurs and addready == False:
-                    tabchk = line[idx:idx+self._tab_size]
-                    #print(f"DEBUG: tabchk - " + str(tabchk) + "-" + str(idx) )
-                    if tabchk == spaces:
-                        idx += self._tab_size
-                        #print(f"DEBUG: next tab" )
-                        tabskip = True
-                    elif tabskip == True:
-                        valtot = line[idx:relcurs]
-                        valchk = line[idx:idx+lenadd]
-                        #print(f"DEBUG: valchk - " + str(valchk) + "-" + str(idx) )
-                        #print(f"DEBUG: valtot - " + str(valtot) )
-                        if valchk != add_text:
-                            valtot = self._add_text(add_text, on_the_left, False, valtot)
-                            #print(f"DEBUG: valtot - " + str(valtot) )
-                            addready = True
-                        else:
-                            tabskip = False
-                            idx += 1
-                    else:
-                        idx += 1
-                if addready:
-                    line = line[0:idx] + valtot + line[relcurs:]
-                    #print(f"DEBUG: linn - " + str(line) + "<<<<")
-                    self._editor.SetInsertionPoint(begpos)
-                    self._editor.SetSelection(begpos, begpos + lenline)
-                    self._editor.ReplaceSelection(line)
-                    self._editor.SetSelection(cursor + lenadd, cursor + lenadd)
-        else:
-            self._editor.DeleteRange(from_, size)
-            self._editor.SetInsertionPoint(from_)
-            self._editor.ReplaceSelection(self._add_text(add_text, on_the_left, on_the_right, text))
-            if on_the_left and on_the_right:
-                self._editor.SetSelection(from_ + lenadd, from_ + size + lenadd)
-                return
-            if on_the_left:
-                self._editor.SetSelection(from_ + lenadd, from_ + size + lenadd)
-                return
-            if on_the_right:
-                self._editor.SetSelection(from_, from_ + size)
-                return
-
-    @staticmethod
-    def _add_text(add_text, on_the_left, on_the_right, value=''):
-        if on_the_left:
-            value = add_text+value
-        if on_the_right:
-            value = value+add_text
-        return value
-
-    def execute_remove_text(self, remove_text='', on_the_left=False, on_the_right=False):
-        from_, to_ = self._editor.GetSelection()
-        text = self._editor.SelectedText
-        size = len(bytes(text, encoding='utf-8'))
-        to_ = from_ + size
-        lenrem = len(remove_text)
-        if size == 0:
-            cursor = self._editor.GetCurrentPos()
-            line_no = self._editor.LineFromPosition(cursor)
-            line = self._editor.GetLine(line_no)
-            spaces = ' ' * self._tab_size
-            lenline = len(line)
-            begpos = self._editor.PositionFromLine(line_no)
-            relcurs = cursor - begpos
-            # TODO: Add very complicated way to remove on the right
-            if lenline > 0 and lenrem > 0 and on_the_left:
-                idx = self._tab_size
-                remready = False
-                tabskip = True
-                while idx < lenline and idx < relcurs and remready == False:
-                    tabchk = line[idx:idx+self._tab_size]
-                    #print(f"DEBUG: tabchk - " + str(tabchk) + "-" + str(idx) )
-                    if tabchk == spaces:
-                        idx += self._tab_size
-                        #print(f"DEBUG: next tab" )
-                        tabskip = True
-                    elif tabskip == True:
-                        valtot = line[idx:relcurs]
-                        valchk = line[idx:idx+lenrem]
-                        #print(f"DEBUG: valchk - " + str(valchk) + "-" + str(idx) )
-                        #print(f"DEBUG: valtot - " + str(valtot) )
-                        if valchk == remove_text:
-                            valtot = self._remove_text(valtot, remove_text, on_the_left, False, 0, len(valtot))
-                            #print(f"DEBUG: valtot - " + str(valtot) )
-                            remready = True
-                        else:
-                            tabskip = False
-                            idx += 1
-                    else:
-                        idx += 1
-                if remready:
-                    line = line[0:idx] + valtot + line[relcurs:]
-                    #print(f"DEBUG: linn - " + str(line) + "<<<<")
-                    lennew = len(line)
-                    self._editor.SetInsertionPoint(begpos)
-                    self._editor.SetSelection(begpos, begpos + lenline)
-                    self._editor.ReplaceSelection(line)
-                    self._editor.SetSelection(cursor + lennew - lenline, cursor + lennew - lenline)
-        else:
-            self._editor.DeleteRange(from_, size)
-            self._editor.SetInsertionPoint(from_)
-            valsel = self._remove_text(text, remove_text, on_the_left, on_the_right, from_, to_)
-            self._editor.ReplaceSelection(valsel)
-            lensel = len(valsel)
-            lentxt = len(text)
-            self._editor.SetSelection(from_ + lensel - lentxt, cursor + lensel - lentxt)
-
-    @staticmethod
-    def _remove_text(value, remove_text, on_the_left, on_the_right, from_, to_):
-        if on_the_left and on_the_right:
-            return value[:from_]+value[from_:to_].strip(remove_text)+remove_text+value[to_:]
-        if on_the_left:
-            return value[:from_]+value[from_:to_].lstrip(remove_text)+value[to_:]
-        if on_the_right:
-            return value[:from_]+value[from_:to_].rstrip(remove_text)+value[to_:]
-        return value
 
     def execute_comment(self, event):
         start, end = self._editor.GetSelection()
@@ -1186,6 +1054,152 @@ class SourceEditor(wx.Panel):
         self._editor.SetSelection(new_start, new_end)
         self._editor.SetCurrentPos(ini)
         self._editor.SetAnchor(fini)
+        self.store_position()
+
+    def execute_sharp_comment(self, event):
+        start, end = self._editor.GetSelection()
+        cursor = self._editor.GetCurrentPos()
+        ini_line = self._editor.LineFromPosition(start)
+        end_line = self._editor.LineFromPosition(end)
+        spaces = ' ' * self._tab_size
+        count = 0
+        maxsize = self._editor.GetLineCount()
+        # If the selection spans on more than one line:
+        if ini_line < end_line:
+            for line in range(ini_line, end_line+1):
+                count += 1
+                if line < maxsize:
+                    self._editor.GotoLine(line)
+                else:
+                    self._editor.GotoLine(maxsize)
+                pos = self._editor.PositionFromLine(line)
+                self._editor.SetCurrentPos(pos)
+                self._editor.SetSelection(pos, pos)
+                self._editor.SetInsertionPoint(pos)
+                row = self._editor.GetLine(line)
+                lenline = len(row)
+                if lenline > 0:
+                    idx = 0
+                    while idx < lenline and row[idx] == ' ':
+                        idx += 1
+                    self._editor.InsertText(pos + idx, '# ')
+        elif start == end:  # On a single row, no selection
+            count += 1
+            pos = self._editor.PositionFromLine(ini_line)
+            row = self._editor.GetLine(ini_line)
+            lenline = len(row)
+            if lenline > 0:
+                idx = 0
+                while idx < lenline and row[idx] == ' ':
+                    idx += 1
+                self._editor.InsertText(pos + idx, '# ')
+        else:  # On a single row, with selection
+            count += 1
+            pos = self._editor.PositionFromLine(ini_line)
+            row = self._editor.GetLine(ini_line)
+            if cursor > pos:
+                idx = cursor - pos
+                while idx >= len(spaces):
+                    if row[idx-len(spaces):idx] != spaces:
+                        idx -= 1
+                    else:
+                        break
+                if idx < len(spaces):
+                    idx = 0
+                self._editor.InsertText(pos + idx, '# ')
+        new_start = start
+        new_end = end + (count * 2)
+        if cursor == start:
+            ini = new_start
+            fini = new_end
+        else:
+            ini = new_end
+            fini = new_start
+        self._editor.SetSelection(new_start, new_end)  # TODO: For some reason the selection is not restored!
+        self._editor.SetCurrentPos(ini)
+        self._editor.SetAnchor(fini)
+        self._editor.SetCurrentPos(cursor + count * 2)
+        self.store_position()
+
+    def execute_sharp_uncomment(self, event):
+        start, end = self._editor.GetSelection()
+        cursor = self._editor.GetCurrentPos()
+        ini_line = self._editor.LineFromPosition(start)
+        end_line = self._editor.LineFromPosition(end)
+        spaces = ' ' * self._tab_size
+        # self._editor.SelectNone()
+        count = 0
+        # self.execute_remove_text(remove_text='# ', on_the_left=True, on_the_right=False)
+        maxsize = self._editor.GetLineCount()
+        # If the selection spans on more than one line:
+        if ini_line < end_line:
+            for line in range(ini_line, end_line+1):
+                pos = self._editor.PositionFromLine(line)
+                row = self._editor.GetLine(line)
+                lenline = len(row)
+                if lenline > 0:
+                    idx = 0
+                    while idx < lenline and row[idx] == ' ':
+                        idx += 1
+                    size = 1
+                    if idx + 1 < lenline and row[idx:idx+1] == '#':
+                        if idx + 2 < lenline and row[idx+1:idx+2] == ' ':
+                            size = 2
+                        self._editor.DeleteRange(pos + idx, size)
+                        count += size
+        elif start == end:  # On a single row, no selection
+            pos = self._editor.PositionFromLine(ini_line)
+            row = self._editor.GetLine(ini_line)
+            lenline = len(row)
+            if lenline > 0:
+                idx = 0
+                while idx < lenline and row[idx] == ' ':
+                    idx += 1
+                while count == 0 and idx < lenline:
+                    size = 1
+                    if idx + 1 < lenline and row[idx:idx + 1] == '#':
+                        if idx + 2 < lenline and row[idx + 1:idx + 2] == ' ':
+                            size = 2
+                        self._editor.DeleteRange(pos + idx, size)
+                        count += size
+                    else:
+                        idx += 1
+        else:  # On a single row, with selection
+            pos = self._editor.PositionFromLine(ini_line)
+            row = self._editor.GetLine(ini_line)
+            lenline = len(row)
+            if cursor > pos:
+                idx = cursor - pos
+                while idx >= len(spaces):
+                    if row[idx-len(spaces):idx] != spaces:
+                        idx -= 1
+                    else:
+                        break
+                if idx < len(spaces):
+                    idx = 0
+                while count == 0 and idx > 0:
+                    size = 1
+                    if idx + 1 < lenline and row[idx:idx + 1] == '#':
+                        if idx + 2 < lenline and row[idx + 1:idx + 2] == ' ':
+                            size = 2
+                        self._editor.DeleteRange(pos + idx, size)
+                        count += size
+                    else:
+                        idx -= 1
+        if count == 0:
+            return
+        new_start = start
+        new_end = end - count
+        if cursor == start:
+            ini = new_start
+            fini = new_end
+        else:
+            ini = new_end
+            fini = new_start
+        self._editor.SetSelection(new_start, new_end)  # TODO: For some reason the selection is not restored!
+        self._editor.SetCurrentPos(ini)
+        self._editor.SetAnchor(fini)
+        self._editor.SetCurrentPos(cursor - count)
         self.store_position()
 
     def OnSettingsChanged(self, message):

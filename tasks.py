@@ -65,8 +65,8 @@ The reference for valid arguments is <a class="reference external" href="http://
 <li>Ctrl-number with number, 1-5 also working on Text Editor:<ol class="arabic">
 <li>create scalar variable</li>
 <li>create list variable</li>
-<li>Comment line</li>
-<li>Uncomment line</li>
+<li>Comment line (with Shift comment content with #)</li>
+<li>Uncomment line (with Shift uncomment content with #)</li>
 <li>create dictionary variable</li>
 </ol>
 </li>
@@ -79,8 +79,7 @@ The reference for valid arguments is <a class="reference external" href="http://
 </ul>
 <p>Please note, that the features and fixes are not yet closed. This pre-release is being done because it has important fixes.
 </p>
-<p><strong>wxPython will be updated to version 4.0.7post2</strong></p>
-<p><strong>wxPython version 4.1, is not recommended to be used with RIDE.</strong></p>
+<p><strong>wxPython will be updated to version 4.1.2</strong></p>
 <p><em>Linux users are advised to install first wxPython from .whl package at</em> <a class="reference external" href="https://extras.wxpython.org/wxPython4/extras/linux/gtk3/">wxPython.org</a>.</p>
 <!-- <p><strong>REMOVE reference to tracker if release notes contain all issues.</strong></p>-->
 
@@ -93,7 +92,7 @@ from the <a class="reference external" href="https://github.com/robotframework/R
 You should see <a class="reference external" href="https://forum.robotframework.org/c/tools/ride/">Robot Framework Forum</a> if your problem is already known.</p>
 <p>If you have <a class="reference external" href="http://pip-installer.org">pip</a> installed, just run</p>
 <pre class="literal-block">
-pip install --pre --upgrade robotframework-ride==2.0b2
+pip install --pre --upgrade robotframework-ride==2.0b3
 </pre>
 <p>to install this <strong>BETA</strong> release, and for the <strong>final</strong> release use</p>
 <pre class="literal-block">
@@ -109,6 +108,7 @@ If you want to help in the development of RIDE, by reporting issues in current d
 <pre class="literal-block">
 pip install -U https://github.com/robotframework/RIDE/archive/master.zip
 </pre>
+<p>Important document for helping with development is the <a class="reference external" href="https://github.com/robotframework/RIDE/blob/master/CONTRIBUTING.adoc">CONTRIBUTING</a>.</p>
 <p>See the <a class="reference external" href="https://github.com/robotframework/RIDE/wiki/F.A.Q.">FAQ</a> for important info about <cite>: FOR</cite> changes and other known issues and workarounds.</p>
 <p>A possible way to start RIDE is:</p>
 <pre class="literal-block">
