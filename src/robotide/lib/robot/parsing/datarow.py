@@ -60,11 +60,14 @@ class DataRow(object):
                         "deprecated. Remove escaping before Robot "
                         "Framework 3.2." % self.source)
 
+    """ DEBUG: This function is not used
     def _purge_empty_cells(self, row):
-        while row and not row[-1]:
-            row.pop()
+        # DEBUG Lets not remove empty cells
+        # while row and not row[-1]:
+        #    row.pop()
         # Cells with only a single backslash are considered empty
         return [cell if cell != '\\' else '' for cell in row]
+    """
 
     @property
     def first_non_empty_cell(self):
@@ -103,13 +106,13 @@ class DataRow(object):
         return self.cells
 
     def dedent(self):
-        import inspect
+        # DEBUG: this is used only for debugging: import inspect
         datarow = DataRow([])
         datarow.cells = self.tail
         datarow.comments = self.comments
-        stack = inspect.stack()
-        the_class = stack[1][0].f_locals["self"].__class__.__name__
-        the_method = stack[1][0].f_code.co_name
+        # stack = inspect.stack()
+        # the_class = stack[1][0].f_locals["self"].__class__.__name__
+        # the_method = stack[1][0].f_code.co_name
         # print("DEBUG: datarow dedent called by {}.{}()".format(the_class, the_method))
         # print(f"DEBUG: datarow dedent={datarow.all[:]}")
         return datarow
