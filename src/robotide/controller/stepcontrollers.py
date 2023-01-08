@@ -29,8 +29,8 @@ class StepController(_BaseController):
 
     def __init__(self, parent, step):
         self._init(parent, step)
-        self._step.args = self._change_last_empty_to_empty_var(
-            self._step.args, self._step.comment)
+        # print(f"DEBUG: StepController After _init type(step):{type(self._step)} values: {self._step}")
+        self._step.args = self._change_last_empty_to_empty_var(self._step.args, self._step.comment)
 
     def _init(self, parent, step):
         self.parent = parent
@@ -42,14 +42,16 @@ class StepController(_BaseController):
             while index < len(self._step) and self._step[index] == '':
                 self.indent.append('')
         #elif isinstance(self._step, robotapi.ForLoop):
-        else:
+        elif isinstance(self._step, robotapi.Step):
             cells = self._step.as_list()
             # print(f"DEBUG: StepController _init step not list: len:{len(cells)} cells:{cells[:]}")
             for index in range(0, len(cells)):
                 if cells[index] == '':
                     self.increase_indent()
-        # else:
-        #    print(f"DEBUG: StepController _init step is not list: {type(self._step)}")
+        else:
+            # print(f"DEBUG: StepController _init step is not list nor Step: {type(self._step)}")
+            self._step.args = self._step.comment= []
+            # raise AttributeError
 
     @property
     def display_name(self):
@@ -334,11 +336,12 @@ class StepController(_BaseController):
         return False
 
     def _first_non_empty_cell(self):
-        cells = self.as_list()
-        # print(f"\nDEBUG: Stepcontrollers enter _first_non_empty_cell: cells={cells[:]}")
-        index = 0
-        while index < len(cells) and cells[index] == '':
-            index += 1
+        # cells = self.as_list()
+        index = self._step.first_non_empty_cell()
+        # index = 0
+        # while index < len(cells) and cells[index] == '':
+        #     index += 1
+        # print(f"\nDEBUG: Stepcontrollers enter _first_non_empty_cell: index1={index1} index={index}")  # cells={cells[:]}")
         return index
 
     @property
@@ -412,15 +415,15 @@ class StepController(_BaseController):
         steps = self.parent.get_raw_steps()
         index = steps.index(self._step)
         if not new_step or not new_step.as_list():
-            new_step = robotapi.Step([''])
+            new_step = robotapi.Step([])
         # print(f"DEBUG: StepController, insert_before, enter: len(steps)={len(steps)} index: {index} \n"
         #      f"new_step: {new_step.as_list()} self._step={self._step.as_list()}")
         if index > 0:
-            upper_indent = self.first_non_empty_cell(steps[index-1].as_list())
-            current_indent = self.first_non_empty_cell(new_step.as_list())
+            upper_indent = steps[index-1].first_non_empty_cell()  # self.first_non_empty_cell(steps[index-1].as_list())
+            current_indent = new_step.first_non_empty_cell()  # self.first_non_empty_cell(new_step.as_list())
             delta_indent = upper_indent - current_indent
             # print(f"DEBUG: StepController, insert_before, logic: index: {index} new_step: {new_step.as_list()}\n"
-            #      f"upper_indent({upper_indent}) current_indent({current_indent}) "
+            #       f"upper_indent({upper_indent}) current_indent({current_indent}) "
             #      f"steps[index-1]={steps[index-1].as_list()}")
             if delta_indent > 0:
                 e_list = []
@@ -561,6 +564,9 @@ class StepController(_BaseController):
     def steps(self):
         return [IntendedStepController(self, sub_step)
                 for sub_step in self.get_raw_steps()]
+
+    def __len__(self):
+        return len(self._step)
 
 """
 class PartialForLoop(robotapi.ForLoop):

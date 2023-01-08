@@ -119,7 +119,7 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
 
     @property
     def max_columns(self):
-        return max(chain((len(step.as_list()) for step in self.steps), [0]))
+        return max(chain((len(step) for step in self.steps), [0]))
 
     def has_template(self):
         return False
@@ -214,6 +214,7 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         self._has_steps_changed = True
 
     def add_step(self, index, step=None):
+        # print(f"\nDEBUG: _WithStepsController enter add_step step={step}")
         if step is None:
             step = _empty_step()
         if index == len(self.steps):
