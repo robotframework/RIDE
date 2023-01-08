@@ -104,7 +104,7 @@ class TestCaseCommandTest(unittest.TestCase, _FakeProject):
                 raise AssertionError('Row "%s" exists' % line)
 
     def _verify_step_is_empty(self, index):
-        assert self._steps[index].as_list() == ['']
+        assert self._steps[index].as_list() == []
 
     def _verify_step(self, index, exp_name, exp_args=[], exp_comment=None, kw=True):
         if exp_name == '':

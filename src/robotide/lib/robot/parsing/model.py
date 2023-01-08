@@ -824,6 +824,12 @@ class ForLoop(_WithSteps):
 class Step(object):
 
     inner_kw_pos = None
+    name = None
+    indent = []
+    assign = []
+    args = []
+    comment = []
+    normal_assign = None
 
     def __init__(self, content, comment=None):
         index = self.first_non_empty_cell(content)
@@ -939,6 +945,7 @@ class Step(object):
         #    self.indent.insert(0, '')  # Always send first indent
         if indent:
             self.indent.insert(0, '')
+        #### return self.indent + self.assign + kw + self.args + comments  # DEBUG: This code is more efficient
         commented_assign = False
         if len(kw) > 0:
             is_scope_set = re_set_var.match(kw[0])
@@ -968,17 +975,25 @@ class Step(object):
         #       f" data={data}")
         return data
 
-    def first_non_empty_cell(self, content):
+    def first_non_empty_cell(self, content=None):
         # print(f"DEBUG: model enter _first_non_empty_cell")
-        cells = content
+        if isinstance(content, Step):
+            size = len(content)
+            cells = content.as_list()
+        elif content:
+            size = len(content)
+            cells = content
+        else:
+            size = len(self)
+            cells = self.as_list()
         # if cells:
         #    print(f"DEBUG: model _first_non_empty_cell: {cells[:]}")
         index = 0
-        while index < len(cells) and cells[index] == '':
+        while index < size and cells[index] == '':
             index += 1
         if not self.inner_kw_pos:
-            self.inner_kw_pos = index
-        return index if index < len(cells) else index - 1
+            self.inner_kw_pos = index if 0 <= index < size else index - 1 if index - 1 > 0 else 0
+        return index if 0 <= index < size else index - 1 if index - 1 > 0 else 0
 
     def first_empty_cell(self):
         index = self.inner_kw_pos
@@ -997,6 +1012,10 @@ class Step(object):
     def add_step(self, content, comment=None):
         self.__init__(content, comment)
         return self
+
+    def __len__(self):
+        kw = [self.name] if self.name is not None else []
+        return len(self.indent) + len(self.assign) + len(kw) + len(self.args) + len(self.comment)
 
 
 class OldStyleSettingAndVariableTableHeaderMatcher(object):
