@@ -416,11 +416,10 @@ class StepController(_BaseController):
     def insert_before(self, new_step):
         steps = self.parent.get_raw_steps()
         index = steps.index(self._step)
-        # print(f"DEBUG: StepController, insert_before, enter: len(steps)={len(steps)} index: {index} \n")
-        if not new_step or not new_step.cells:  #.as_list():
+        if not new_step or not new_step.as_list():
             new_step = robotapi.Step([])
         # print(f"DEBUG: StepController, insert_before, enter: len(steps)={len(steps)} index: {index} \n"
-        #       f"new_step: {new_step.cells[:]} self._step={self._step.cells[:]}")
+        #      f"new_step: {new_step.as_list()} self._step={self._step.as_list()}")
         if index > 0:
             upper_indent = steps[index-1].first_non_empty_cell()  # self.first_non_empty_cell(steps[index-1].as_list())
             current_indent = new_step.first_non_empty_cell()  # self.first_non_empty_cell(new_step.as_list())
@@ -433,7 +432,7 @@ class StepController(_BaseController):
                 for _ in range(1, delta_indent):
                     e_list.append('')
                 new_step = robotapi.Step(e_list + new_step.as_list(indent=True))
-                # print(f"DEBUG: StepController, insert_before: new_step: {new_step.cells[:]}")
+                # print(f"DEBUG: StepController, insert_before: new_step: {new_step.as_list()}")
             elif delta_indent < 0 and len(new_step.as_list()) > 1:
                 for _ in range(delta_indent, 0):
                     if new_step.as_list()[0] == '':
