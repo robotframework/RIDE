@@ -241,12 +241,12 @@ class TestCaseEditingTest(TestCaseCommandTest):
     def test_adding_row_first(self):
         self._exec(AddRow(0))
         assert len(self._steps) == self._orig_number_of_steps+1
-        assert self._steps[0].as_list() == ['']
+        assert self._steps[0].as_list() == []
 
     def test_adding_row_middle(self):
         self._exec(AddRow(1))
         assert len(self._steps) == self._orig_number_of_steps+1
-        assert self._steps[1].as_list() == ['']
+        assert self._steps[1].as_list() == []
 
     def test_adding_row_in_for_loop_body(self):
         row_in_for_loop = self._data_row(FOR_LOOP_STEP2)
