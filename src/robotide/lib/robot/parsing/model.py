@@ -881,6 +881,7 @@ class Step(object):
 
     def _get_assign(self):
         assign = []
+        idx = 0
         positional = True
         cells = self.cells.copy()
         if cells and cells != ['']:
