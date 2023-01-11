@@ -51,6 +51,9 @@ class TestCaseEditor(_RobotTableEditor):
     def save(self):
         self.kweditor.save()
 
+    def movecursordown(self):
+        self.kweditor.OnMoveCursorDown()
+
     def undo(self):
         self.kweditor.OnUndo()
 
@@ -69,6 +72,9 @@ class TestCaseEditor(_RobotTableEditor):
     def insert(self):
         self.kweditor.OnInsert()
 
+    def select_all(self, event):
+        self.kweditor.OnSelectAll(event)
+
     def insert_cells(self):
         self.kweditor.OnInsertCells()
 
@@ -85,17 +91,38 @@ class TestCaseEditor(_RobotTableEditor):
     def delete(self):
         self.kweditor.OnDelete()
 
-    def comment(self):
+    def comment_rows(self):
         self.kweditor.OnCommentRows()
 
-    def uncomment(self):
+    def uncomment_rows(self):
         self.kweditor.OnUncommentRows()
 
+    def move_cursor_down(self):
+        self.kweditor.OnMoveCursorDown()
+
+    def move_rows_up(self):
+        self.kweditor.OnMoveRowsUp()
+
+    def move_rows_down(self):
+        self.kweditor.OnMoveRowsDown()
+
+    def swap_row_up(self):
+        self.kweditor.OnSwapRowUp()
+
     def comment_cells(self):
-        self.kweditor.OnCommentCell(None)
+        self.kweditor.OnCommentCells(None)
 
     def uncomment_cells(self):
-        self.kweditor.OnUncommentCell(None)
+        self.kweditor.OnUncommentCells(None)
+
+    def make_variable(self):
+        self.kweditor.OnMakeVariable(None)
+        
+    def make_list_variable(self):
+        self.kweditor.OnMakeListVariable(None)
+        
+    def make_dict_variable(self):
+        self.kweditor.OnMakeDictVariable(None)
 
     def show_content_assist(self):
         self.kweditor.show_content_assist()
