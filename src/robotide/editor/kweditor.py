@@ -65,14 +65,32 @@ class KeywordEditor(GridEditor, Plugin):
     dirty = property(lambda self: self._controller.dirty)
 
     _popup_items = [
-                       'Create Keyword', 'Extract Keyword', 'Extract Variable',
-                       'Rename Keyword', 'Find Where Used',
-                       'JSON Editor\tCtrl-Shift-J',
-                       '---', 'Make Variable\tCtrl-1',
+                       'Create Keyword',
+                       'Extract Keyword',
+                       'Extract Variable',
+                       'Rename Keyword',
+                       'Find Where Used',
+                       'JSON Editor\tCtrl-Shift-J', 
+                       '---',
+                       'Go to Definition\tCtrl-B',
+                       '---',
+                       'Undo\tCtrl-Z',
+                       'Redo\tCtrl-Y',
+                       '---',
+                       'Make Variable\tCtrl-1',
                        'Make List Variable\tCtrl-2',
-                       'Make Dict Variable\tCtrl-5', '---',
-                       'Go to Definition\tCtrl-B', '---',
-                       'Comment cell\tCtrl-Shift-3', 'Uncomment cell\tCtrl-Shift-4', '---',
+                       'Make Dict Variable\tCtrl-5', 
+                       '---',
+                       'Comment Cells\tCtrl-Shift-3',
+                       'Uncomment Cells\tCtrl-Shift-4',
+                       'Move Cursor Down\tAlt-Enter',
+                       '---',
+                       'Comment Rows\tCtrl-3',
+                       'Uncomment Rows\tCtrl-4',
+                       'Move Rows Up\tAlt-Up',
+                       'Move Rows Down\tAlt-Down',
+                       'Swap Row Up\tCtrl-T', 
+                       '---',
                    ] + GridEditor._popup_items
 
     def __init__(self, parent, controller, tree):
@@ -266,9 +284,18 @@ class KeywordEditor(GridEditor, Plugin):
         if selected_row not in selected_rows:
             self.SelectRow(selected_row, addToSelected=False)
             self.SetGridCursor(event.Row, 0)
-        popupitems = ['Insert Rows\tCtrl-I', 'Delete Rows\tCtrl-D',
-                      'Comment Rows\tCtrl-3', 'Uncomment Rows\tCtrl-4',
-                      'Move Rows Up\tAlt-Up', 'Move Rows Down\tAlt-Down']
+        popupitems = [
+                    'Comment Rows\tCtrl-3', 
+                    'Uncomment Rows\tCtrl-4',
+                    'Move Rows Up\tAlt-Up', 
+                    'Move Rows Down\tAlt-Down',
+                    'Swap Row Up\tCtrl-T',
+                    'Insert Rows\tCtrl-I',
+                    'Delete Rows\tCtrl-D',
+                    '---',
+                    'Comment Cells\tCtrl-Shift-3',
+                    'Uncomment Cells\tCtrl-Shift-4', 
+                    ]
         PopupMenu(self, PopupMenuItems(self, popupitems))
         event.Skip()
 
@@ -296,6 +323,13 @@ class KeywordEditor(GridEditor, Plugin):
 
     def _col_label_left_click(self, event):
         pass
+
+    def OnMoveCursorDown(self, event=None):
+        topL = self.selection.topleft
+        botR = self.selection.bottomright
+        row_s, col_s = topL
+        row_e, col_e = botR
+        self.SetGridCursor(row_s+1, col_s)
 
     def OnInsertRows(self, event):
         self._execute(AddRows(self.selection.rows()))
@@ -355,12 +389,15 @@ class KeywordEditor(GridEditor, Plugin):
         self._skip_except_on_mac(event)
 
     def OnMoveRowsUp(self, event=None):
-        self._row_move(MoveRowsUp, -1)
+        self._row_move(MoveRowsUp, -1, False)
 
     def OnMoveRowsDown(self, event=None):
-        self._row_move(MoveRowsDown, 1)
+        self._row_move(MoveRowsDown, 1, False)
 
-    def _row_move(self, command, change):
+    def OnSwapRowUp(self, event=None):
+        self._row_move(MoveRowsUp, 1, True)
+
+    def _row_move(self, command, change, swap=False):
         # Workaround for double actions, see issue #2048
         if self._counter == 1:
             if IS_MAC:
@@ -374,7 +411,10 @@ class KeywordEditor(GridEditor, Plugin):
             self._counter += 1
         rows = self.selection.rows()
         if self._execute(command(rows)):
-            wx.CallAfter(self._select_rows, [r + change for r in rows])
+            if swap:
+                wx.CallAfter(self._select_rows, [r for r in rows])
+            else:
+                wx.CallAfter(self._select_rows, [r + change for r in rows])
         self._resize_grid()
 
     def _select_rows(self, rows):
@@ -566,9 +606,9 @@ class KeywordEditor(GridEditor, Plugin):
                     self.OnDeleteCells()
                 """
                 elif keycode == ord('3'):
-                    self._open_cell_editor_and_execute_add_text(add_text='# ', on_the_left=True, on_the_right=False)
+                    self._open_cell_editor_and_execute_sharp_comment()
                 elif keycode == ord('4'):
-                    self._open_cell_editor_and_execute_remove_text(remove_text='# ', on_the_left=True, on_the_right=False)
+                    self._open_cell_editor_and_execute_sharp_uncomment()
                 """
             else:
                 if keycode == wx.WXK_SPACE:
@@ -738,21 +778,19 @@ work.</li>
     def OnMakeDictVariable(self, event):
         self._open_cell_editor_and_execute_variable_creator(dict_variable=True)
 
-    def _open_cell_editor_and_execute_add_text(
-            self, add_text='', on_the_left=False, on_the_right=False):
-        wx.CallAfter(self._open_cell_editor().execute_add_text,
-                     add_text, on_the_left, on_the_right)
+    def _open_cell_editor_and_execute_sharp_comment(self):
+        # Meant for a single cell selection!
+        wx.CallAfter(self._open_cell_editor().execute_sharp_comment)
 
-    def _open_cell_editor_and_execute_remove_text(
-            self, remove_text='', on_the_left=False, on_the_right=False):
-        wx.CallAfter(self._open_cell_editor().execute_remove_text,
-                     remove_text, on_the_left, on_the_right)
+    def _open_cell_editor_and_execute_sharp_uncomment(self):
+        # Meant for a single cell selection!
+        wx.CallAfter(self._open_cell_editor().execute_sharp_uncomment)
 
-    def OnCommentCell(self, event):
-        self._open_cell_editor_and_execute_add_text(add_text='# ', on_the_left=True, on_the_right=False)
+    def OnCommentCells(self, event):
+        self._open_cell_editor_and_execute_sharp_comment()
 
-    def OnUncommentCell(self, event):
-        self._open_cell_editor_and_execute_remove_text(remove_text='# ', on_the_left=True, on_the_right=False)
+    def OnUncommentCells(self, event):
+        self._open_cell_editor_and_execute_sharp_uncomment()
 
     def OnCellRightClick(self, event):
         self._tooltips.hide()
@@ -983,11 +1021,11 @@ class ContentAssistCellEditor(GridCellEditor):
     def execute_enclose_text(self, keycode):
         self._tc.execute_enclose_text(keycode)
 
-    def execute_add_text(self, add_text='', on_the_left=False, on_the_right=False):
-        self._tc.execute_add_text(add_text, on_the_left, on_the_right)
+    def execute_sharp_comment(self):
+        self._tc.execute_sharp_comment()
 
-    def execute_remove_text(self, remove_text='', on_the_left=False, on_the_right=False):
-        self._tc.execute_remove_text(remove_text, on_the_left, on_the_right)
+    def execute_sharp_uncomment(self):
+        self._tc.execute_sharp_uncomment()
 
     def Create(self, parent, id, evthandler):
         self._parent = parent

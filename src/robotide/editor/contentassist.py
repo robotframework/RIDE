@@ -195,26 +195,20 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
             close_symbol = open_symbol
         return value[:from_] + open_symbol + value[from_:to_] + close_symbol + value[to_:]
 
-    def execute_add_text(self, add_text, on_the_left, on_the_right):
+    def execute_sharp_comment(self):
+        # Todo: Will only comment the left top cell for a multi cell select block!
         from_, to_ = self.GetSelection()
-        self.SetValue(self._add_text(self.Value, add_text, on_the_left, on_the_right, from_, to_))
+        #print(f"DEBUG: value from/to: " + str(from_) + " " + str(to_))
+        #print(f"DEBUG: value selected: " + self.Value)
+        add_text = '# '
+        self.SetValue(self._add_text(self.Value, add_text, True, False, from_, to_))
         lenadd = len(add_text)
         elem = self
-        if on_the_left:
-            elem.SetInsertionPoint(from_ + lenadd)
+        elem.SetInsertionPoint(from_ + lenadd)
         if from_ != to_:
-            if on_the_left and on_the_right:
-                elem.SetInsertionPoint(to_ + lenadd)
-                elem.SetSelection(from_ + lenadd, to_ + lenadd)
-                return
-            if on_the_left:
-                elem.SetInsertionPoint(to_ + lenadd)
-                elem.SetSelection(from_ + lenadd, to_ + lenadd)
-                return
-            if on_the_right:
-                elem.SetInsertionPoint(to_)
-                elem.SetSelection(from_, to_)
-                return
+            elem.SetInsertionPoint(to_ + lenadd)
+            elem.SetSelection(from_ + lenadd, to_ + lenadd)
+            return
 
     @staticmethod
     def _add_text(value, add_text, on_the_left, on_the_right, from_, to_):
@@ -226,23 +220,19 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
             return value[:from_]+value[from_:to_]+add_text+value[to_:]
         return value
 
-    def execute_remove_text(self, remove_text, on_the_left, on_the_right):
+    def execute_sharp_uncomment(self):
+        # Todo: Will only uncomment the left top cell for a multi cell select block!
         from_, to_ = self.GetSelection()
         lenold = len(self.Value)
-        if on_the_left:
-            self.SetValue(self._remove_text(self.Value, remove_text, True, False, from_, to_))
+        self.SetValue(self._remove_text(self.Value, '# ', True, False, from_, to_))
         lenone = len(self.Value)
-        if on_the_right:
-            self.SetValue(self._remove_text(self.Value, remove_text, False, True, from_, to_))
-        lentwo = len(self.Value)
         diffone = lenold - lenone
-        difftwo = lenone - lentwo
         elem = self
         if from_ == to_:
             elem.SetInsertionPoint(from_ - diffone)
         else:
-            elem.SetInsertionPoint(to_ - diffone - difftwo)
-            elem.SetSelection(from_ - diffone, to_ - diffone - difftwo)
+            elem.SetInsertionPoint(to_ - diffone)
+            elem.SetSelection(from_ - diffone, to_ - diffone)
 
     def _remove_text(self, value, remove_text, on_the_left, on_the_right, from_, to_):
         if on_the_left and on_the_right:

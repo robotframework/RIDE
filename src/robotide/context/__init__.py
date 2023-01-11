@@ -153,8 +153,8 @@ SHORTCUT_KEYS = '''\
         <td>Stop running test suite</td>
     </tr>
 </table>
-<h3>Grid</h3>
 
+<h3>Grid</h3>
 <table>
     <tr align="left">
         <th><b>Shortcut</b></th>
@@ -173,20 +173,8 @@ SHORTCUT_KEYS = '''\
         <td>Pop-up JSON Editor</td>
     </tr>
     <tr>
-        <td>CtrlCmd-I</td>
-        <td>Insert row(s)</td>
-    </tr>
-    <tr>
-        <td>CtrlCmd-D</td>
-        <td>Remove row(s)</td>
-    </tr>
-    <tr>
-        <td>Shift-CtrlCmd-I</td>
-        <td>Insert cell(s)</td>
-    </tr>
-    <tr>
-        <td>Shift-CtrlCmd-D</td>
-        <td>Remove cell(s)</td>
+        <td>CtrlCmd-B</td>
+        <td>Go to Definition</td>
     </tr>
     <tr>
         <td>CtrlCmd-Z</td>
@@ -205,20 +193,28 @@ SHORTCUT_KEYS = '''\
         <td>Make list variable body</td>
     </tr>
     <tr>
+        <td>CtrlCmd-5</td>
+        <td>Make dictionary variable body</td>
+    </tr>
+    <tr>
         <td>CtrlCmd-Shift-3</td>
         <td>Comment content with #</td>
     </tr>
     <tr>
+        <td>CtrlCmd-Shift-4</td>
+        <td>Uncomment content from #</td>
+    </tr>
+    <tr>
+        <td>Alt-Enter</td>
+        <td>Move cursor down</td>
+    </tr>
+    <tr>
+        <td>CtrlCmd-3</td>
+        <td>Comment row(s)</td>
+    </tr>
+    <tr>
         <td>CtrlCmd-4</td>
         <td>Uncomment row(s)</td>
-    </tr>
-    <tr>
-        <td>CtrlCmd-Shift-4</td>
-        <td>Uncomment content with #</td>
-    </tr>
-    <tr>
-        <td>CtrlCmd-5</td>
-        <td>Make dictionary variable body</td>
     </tr>
     <tr>
         <td>Alt-Up</td>
@@ -229,8 +225,24 @@ SHORTCUT_KEYS = '''\
         <td>Move row(s) down</td>
     </tr>
     <tr>
-        <td>Alt-Enter</td>
-        <td>Move cursor down</td>
+        <td>CtrlCmd-T</td>
+        <td>Swap row up</td>
+    </tr>
+    <tr>
+        <td>CtrlCmd-Shift-I</td>
+        <td>Insert cell(s)</td>
+    </tr>
+    <tr>
+        <td>CtrlCmd-Shift--D</td>
+        <td>Delete cell(s)</td>
+    </tr>
+    <tr>
+        <td>CtrlCmd-I</td>
+        <td>Insert row(s)</td>
+    </tr>
+    <tr>
+        <td>CtrlCmd-D</td>
+        <td>Delete row(s)</td>
     </tr>
     <tr>
         <td>CtrlCmd-A</td>
@@ -249,11 +261,11 @@ SHORTCUT_KEYS = '''\
         <td>Paste (does not move cells or rows)</td>
     </tr>
     <tr>
-        <td>Shift-CtrlCmd-V</td>
+        <td>CtrlCmd-Shift-V</td>
         <td>Insert (adds empty rows and pastes data)</td>
     </tr>
     <tr>
-        <td>Delete</td>
+        <td>Del</td>
         <td>Remove cell content</td>
     </tr>
 </table>
