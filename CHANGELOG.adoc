@@ -27,6 +27,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Fixed
 
+. Fixed low performance when opening large projects
 - Fixed comment and uncomment in Grid Editor when cells contain more than one variables assignement
 - Fixed console log stopping to output certain characters, like chinese and latin
 
