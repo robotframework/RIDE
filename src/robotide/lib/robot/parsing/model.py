@@ -830,26 +830,46 @@ class Step(object):
     args = []
     comment = []
     normal_assign = None
+    cells = []
 
     def __init__(self, content, comment=None):
-        index = self.first_non_empty_cell(content)
+        # print(f"DEBUG: RFLib Model enter init Step: ENTER cell content={content} comment={comment}")
+        if isinstance(content, Step):
+            size = len(content)
+            self.cells = content.cells  # .as_list()
+        elif isinstance(content, list):
+            size = len(content)
+            self.cells = content
+        else:
+            size = len(self.cells)  # size = len(self)
+            # cells = self.as_list()
+        if comment:
+            if isinstance(comment, list):
+                self.cells.append(comment[0])
+            elif isinstance(comment, str):
+                self.cells.append(comment)
+        # if self.cells:
+        #     print(f"DEBUG: model _first_non_empty_cell: {self.cells}")
+        index = self.first_non_empty_cell(content)  # Called first to set self.inner_kw_pos
+        self.inner_kw_pos = index
         self.normal_assign = None
-        self.assign = self._get_assign(content)
+        self.assign = self._get_assign()  # self._get_assign(content)
         # print(f"DEBUG: RFLib Model enter init Step: 1st cell content={content} comment={comment} index={index}"
         #       f" assign={self.assign} self.normal_assign={self.normal_assign}")
         self.indent = []
         self.args = []
         self.name = None
         self.comment = Comment(comment)
-        if index == -1:
+        if index < 0:  # This is redundant because index is >= 0
             return
         for _ in range(0, index):
             self.indent.append('')
         # print(f"DEBUG: RFLib Model init Step: index={index} inner_kw_pos = {self.inner_kw_pos} indent={self.indent[:]} \ncontent {content}")
         self.args = content[index + 1:] if content and index <= len(content) - 1 else []
         # print(f"DEBUG: RFLib Model init Step: 1st cell len(content)={len(content)} index {index} indent={self.indent[:]}")  # 1st cell: {content[index]}")
+        # TODO: Create setters for Step.name and Step.args, see stepcontrollers.py replace_keyword
         if index < len(content):
-            self.name = content.pop(index) if content else None
+            self.name = content[index] if content else None
         else:
             self.name = None
         # if self.assign:
@@ -859,24 +879,24 @@ class Step(object):
     def is_kind_of_comment(content):
         return content.lower() in ['comment', 'builtin.comment'] or content.startswith('#')
 
-    def _get_assign(self, content):
+    def _get_assign(self):
         assign = []
-        idx = 0
         positional = True
-        if content and content != ['']:
-            index = self.first_non_empty_cell(content)
-            if index < len(content) and is_var(content[index].rstrip('=')):
+        cells = self.cells.copy()
+        if cells and cells != ['']:
+            index = self.inner_kw_pos  # DEBUG avoiding calling self.first_non_empty_cell(content)
+            if index < len(cells) and is_var(cells[index].rstrip('=')):
                 self.normal_assign = True
-            if 0 <= index < len(content) and self.is_kind_of_comment(content[index]):  # Special case for commented content
+            if 0 <= index < len(cells) and self.is_kind_of_comment(cells[index]):  # Special case for commented content
                 return []
                 # print(f"DEBUG: RFLib Model _get_assign VAR NORMAL (index={index}) inner_kw_pos={self.inner_kw_pos} content={content[:]}")
             # first handle non FOR cases
             idx = 0
             try:
-                if content[self.inner_kw_pos] != 'FOR':
-                    while idx < len(content):
-                        if is_var(content[idx].rstrip('=')):
-                            assign.append(content.pop(idx))
+                if cells[self.inner_kw_pos] != 'FOR':
+                    while idx < len(cells):
+                        if is_var(cells[idx].rstrip('=')):
+                            assign.append(cells.pop(idx))
                             # if idx < self.inner_kw_pos:
                             idx -= 1
                         else:
@@ -887,19 +907,19 @@ class Step(object):
             except IndexError:
                 pass
             idx = index
-            while idx < len(content) and positional:
+            while idx < len(cells) and positional:
                 if idx <= self.inner_kw_pos:
                     positional = True
                 else:
                     positional = False
-                if not positional and self.inner_kw_pos < idx <= self.inner_kw_pos + 3 < len(content) and content[self.inner_kw_pos] == 'FOR':
+                if not positional and self.inner_kw_pos < idx <= self.inner_kw_pos + 3 < len(cells) and cells[self.inner_kw_pos] == 'FOR':
                     # print(f"DEBUG: RFLib Model _get_assign idx={idx} +1{self.inner_kw_pos + 1}:{idx+1} +2{self.inner_kw_pos + 2}:{idx+2}"
                     #      f"FOR content1={content[self.inner_kw_pos + 1]}"
                     #      f" content2={content[self.inner_kw_pos + 2]} size of content={len(content)}")
-                    if idx + 2 < len(content):  # idx < self.inner_kw_pos + 3 and
+                    if idx + 2 < len(cells):  # idx < self.inner_kw_pos + 3 and
                         # print(f"DEBUG: RFLib Model _get_assign FOR idx={idx} second IN ENUMERATE"
                         #      f" content[idx + 1]={content[idx + 1]} content[idx + 2]={content[idx + 2]}")
-                        if content[idx + 1] == 'IN ENUMERATE' or content[idx + 2] == 'IN ENUMERATE':
+                        if cells[idx + 1] == 'IN ENUMERATE' or cells[idx + 2] == 'IN ENUMERATE':
                             positional = True
                             self.normal_assign = False
                             # print(f"DEBUG: RFLib Model _get_assign FOR idx={idx} second IN ENUMERATE"
@@ -910,11 +930,11 @@ class Step(object):
                         # print(f"DEBUG: RFLib Model _get_assign FOR idx={idx} first loop var")
                     # else:
                     #    positional = False
-                if not positional and self.inner_kw_pos < idx <= self.inner_kw_pos + 1 < len(content) and re_set_var.match(content[self.inner_kw_pos]):
+                if not positional and self.inner_kw_pos < idx <= self.inner_kw_pos + 1 < len(cells) and re_set_var.match(cells[self.inner_kw_pos]):
                     positional = True
                     self.normal_assign = False
-                if is_var(content[idx].rstrip('=')) and positional:  # and self.normal_assign:
-                    assign.append(content.pop(idx))
+                if is_var(cells[idx].rstrip('=')) and positional:  # and self.normal_assign:
+                    assign.append(cells.pop(idx))
                     idx -= 1  # We need to recheck var in case of IN ENUMERATE
                 idx += 1
         # print(f"DEBUG: RFLib Model _get_assign idx={idx} size of content={len(content)}")
@@ -931,8 +951,18 @@ class Step(object):
         return True
 
     def as_list(self, indent=False, include_comment=True):
-        # print(f"DEBUG RFLib Model Step: as_list() ENTER assign={self.assign}\n")
-        data = []
+        """
+        import inspect
+        stack = inspect.stack()
+        the_class = stack[1][0].f_locals["self"].__class__.__name__
+        the_method = stack[1][0].f_code.co_name
+        print("DEBUG: RFLib Model Step called by {}.{}()".format(the_class, the_method))
+        """
+        # print(f"DEBUG RFLib Model Step: as_list() ENTER assign={self.assign}\n"
+        #       f"cells={self.cells[:]}")
+        if indent:
+            return [''] + self.cells[:]
+        return self.cells[:]
         # print(f"DEBUG: RFLib Model Step enter as_list  {self.name}")
         kw = [self.name] if self.name is not None else []
         if self.comment:
@@ -944,7 +974,10 @@ class Step(object):
         #if len(self.indent) == 0:
         #    self.indent.insert(0, '')  # Always send first indent
         if indent:
-            self.indent.insert(0, '')
+            self.increase_indent()  # indent.insert(0, '')
+        if self.normal_assign and self.assign:
+            #### print(f"DEBUG RFLib Model Step: FIRST RETURN as_list() self.name={self.name} kw={kw}\n comments={comments} args={self.args}")
+            return self.indent + self.assign + kw + self.args + comments
         #### return self.indent + self.assign + kw + self.args + comments  # DEBUG: This code is more efficient
         commented_assign = False
         if len(kw) > 0:
@@ -958,41 +991,19 @@ class Step(object):
             is_scope_set = False
         if self.name == 'FOR' or commented_assign or is_scope_set:  # We look at args because of Comment
             if commented_assign and (self.args[0] == 'FOR' or is_scope_set):
-                data = self.indent + kw + [self.args[0]] + self.assign + self.args[1:] + comments
                 self.normal_assign = False
-            else:
-                data = self.indent + kw + self.assign + self.args + comments  # For example, Comment  Set Variable
-                self.normal_assign = False
-        elif self.normal_assign and self.assign:
-            data = self.indent + self.assign + kw + self.args + comments
-        else:
-            data = self.indent + kw + self.assign + self.args + comments
-            self.normal_assign = False
-            # print(f" data={data}")  self.normal_assign:
-        # print(f"DEBUG RFLib Model Step: as_list() is_scope_set={is_scope_set} self.name={self.name} kw={kw}\n"
-        #       f" self.assign={self.assign} self.args={self.args} comments={comments} "
-        #       f"commented_assign={commented_assign} normal_assign={self.normal_assign}"
-        #       f" data={data}")
-        return data
+                #### print(f"DEBUG RFLib Model Step: SECOND RETURN as_list() self.name={self.name} kw={kw}\n comments={comments} args={self.args}")
+                return self.indent + kw + [self.args[0]] + self.assign + self.args[1:] + comments
+        self.normal_assign = False
+        ### print(f"DEBUG RFLib Model Step: LAST RETURN as_list() self.name={self.name} kw={kw}\n comments={comments} args={self.args}")
+        return self.indent + kw + self.assign + self.args + comments  # For example, Comment  Set Variable
 
     def first_non_empty_cell(self, content=None):
         # print(f"DEBUG: model enter _first_non_empty_cell")
-        if isinstance(content, Step):
-            size = len(content)
-            cells = content.as_list()
-        elif content:
-            size = len(content)
-            cells = content
-        else:
-            size = len(self)
-            cells = self.as_list()
-        # if cells:
-        #    print(f"DEBUG: model _first_non_empty_cell: {cells[:]}")
+        size = len(self.cells)
         index = 0
-        while index < size and cells[index] == '':
+        while index < size and self.cells[index] == '':
             index += 1
-        if not self.inner_kw_pos:
-            self.inner_kw_pos = index if 0 <= index < size else index - 1 if index - 1 > 0 else 0
         return index if 0 <= index < size else index - 1 if index - 1 > 0 else 0
 
     def first_empty_cell(self):
@@ -1003,10 +1014,12 @@ class Step(object):
 
     def increase_indent(self):
         self.indent.append('')
+        self.cells.insert(0, '')
         return len(self.indent)
 
     def decrease_indent(self):
         self.indent = self.indent[:-1] if len(self.indent) > 0 else []
+        self.cells = self.cells[1:] if len(self.cells) >= 1 and self.cells[0] == '' else self.cells
         return len(self.indent)
 
     def add_step(self, content, comment=None):
@@ -1015,7 +1028,27 @@ class Step(object):
 
     def __len__(self):
         kw = [self.name] if self.name is not None else []
-        return len(self.indent) + len(self.assign) + len(kw) + len(self.args) + len(self.comment)
+        cells_len = len(self.cells)
+        if self.name == 'FOR':
+            seglen = len(self.indent) + len(kw) + len(self.args) + len(self.comment)
+        else:
+            seglen = len(self.indent) + len(self.assign) + len(kw) + len(self.args) + len(self.comment)
+        # Compensation for args==comment
+        if self.args and self.comment and self.args[-1] == self.comment.as_list()[0]:
+            seglen -= 1
+        # Compensation for assign==kw
+        if self.assign and kw and self.assign[0] == kw[0]:
+            seglen -= len(self.assign)  # len assign because assign may also be in args
+        # Compensation for kw==comment
+        if kw and self.comment and kw == self.comment.as_list():
+            seglen -= 1
+        # print(f"DEBUG RFLib Model Step: len indent={len(self.indent)} assign= {len(self.assign)}\n"
+        #      f" assign= {self.assign[:]} kw={len(kw)} KW={kw}"
+        #      f" args={len(self.args)} \n args={self.args[:]} commt={len(self.comment)}"
+        #      f" comment={self.comment.as_list()}")
+        # print(f"DEBUG RFLib Model Step: len computed={seglen} cells_len={cells_len} cells={self.cells}")
+        assert seglen == cells_len
+        return seglen
 
 
 class OldStyleSettingAndVariableTableHeaderMatcher(object):

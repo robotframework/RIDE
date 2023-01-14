@@ -193,21 +193,21 @@ class TestCaseEditingTest(TestCaseCommandTest):
     def test_changing_for_loop_header_value(self):
         self._exec(ChangeCellValue(self._data_row(FOR_LOOP_HEADER), 0, 'Keyword'))
         assert (self._steps[self._data_row(FOR_LOOP_HEADER)].as_list() ==
-                      ['Keyword'] + self._data_step_as_list(FOR_LOOP_HEADER)[2:])
+                ['Keyword'] + self._data_step_as_list(FOR_LOOP_HEADER)[2:])
         self._verify_step_unchanged(FOR_LOOP_STEP1)
         assert len(self._steps) == self._orig_number_of_steps
 
     def test_changing_for_loop_header_argument(self):
         self._exec(ChangeCellValue(self._data_row(FOR_LOOP_HEADER), 1, 'Keyword'))
         assert (self._steps[self._data_row(FOR_LOOP_HEADER)].as_list() ==
-                      ['FOR', 'Keyword'] + self._data_step_as_list(FOR_LOOP_HEADER)[3:])
+                ['FOR', 'Keyword'] + self._data_step_as_list(FOR_LOOP_HEADER)[3:])
         self._verify_step_unchanged(FOR_LOOP_STEP1)
         assert len(self._steps) == self._orig_number_of_steps
 
     def test_changing_for_loop_header_in_clause(self):
         self._exec(ChangeCellValue(self._data_row(FOR_LOOP_HEADER), 2, 'Keyword'))
         assert (self._steps[self._data_row(FOR_LOOP_HEADER)].as_list() ==
-                      ['FOR', '${i}', 'Keyword'] + self._data_step_as_list(FOR_LOOP_HEADER)[4:])
+                ['FOR', '${i}', 'Keyword'] + self._data_step_as_list(FOR_LOOP_HEADER)[4:])
         assert self._steps[self._data_row(FOR_LOOP_STEP1)].as_list() == self._data_step_as_list(FOR_LOOP_STEP1[2:])
         # assert self._steps[self._data_row(FOR_LOOP_STEP1)].as_list() == self._data_step_as_list(FOR_LOOP_END[2:])
         assert len(self._steps) == self._orig_number_of_steps
@@ -356,20 +356,20 @@ class TestCaseEditingTest(TestCaseCommandTest):
 
     def test_paste_area_different_length_rows(self):
         self._exec(PasteArea((0, 0), [['Changed Step 1', '', '', '', '\t'],
-            ['Changed Step 2', '', 'ca2']]))
+                                      ['Changed Step 2', '', 'ca2']]))
         self._verify_step(0, 'Changed Step 1')
         self._verify_step(1, 'Changed Step 2', ['', 'ca2', 'a3'])
 
     def test_insert_area_inserts_cells_before_selected_cell(self):
         self._exec(InsertArea((0, 0), [['Changed Step 1', '', ''],
-                                      ['Changed Step 2', '', 'ca2']]))
+                                       ['Changed Step 2', '', 'ca2']]))
         self._verify_step(0, 'Changed Step 1')
         self._verify_step(1, 'Changed Step 2', ['', 'ca2'])
         self._verify_step(2, 'Step 1', ['arg'])
 
     def test_insert_area_inserts_cells_before_selected_cell_different_length_rows(self):
         self._exec(InsertArea((0, 0), [['Changed Step 1', '', '', '\t'],
-            ['Changed Step 2', '', 'ca2']]))
+                                       ['Changed Step 2', '', 'ca2']]))
         self._verify_step(0, 'Changed Step 1')
         self._verify_step(1, 'Changed Step 2', ['', 'ca2'])
         self._verify_step(2, 'Step 1', ['arg'])
@@ -453,7 +453,7 @@ class TestCaseEditingTest(TestCaseCommandTest):
         self.assertEqual(self._steps[self._data_row(STEP_WITH_COMMENT)].as_list(), ['Comment'] + self._data_step_as_list(STEP_WITH_COMMENT)[1:])
         self.assertEqual(self._steps[self._data_row(FOR_LOOP_HEADER)].as_list(), ['Comment'] + self._data_step_as_list(FOR_LOOP_HEADER)[1:])
         self.assertEqual(self._steps[self._data_row(FOR_LOOP_STEP1)].as_list(),
-                        ['', 'Comment'] + self._data_step_as_list(FOR_LOOP_STEP1)[2:])
+                         ['', 'Comment'] + self._data_step_as_list(FOR_LOOP_STEP1)[2:])
 
     def test_commenting_step_in_for_loop(self):
         row = self._data_row(FOR_LOOP_STEP1)
@@ -473,7 +473,7 @@ class TestCaseEditingTest(TestCaseCommandTest):
         #    print(f"{s.as_list()}")
         print(f"DEBUG: test_commenting_for_loop_end: commented row={self._steps[row].as_list()}")
         assert (self._steps[row].as_list() ==
-                      ['Comment'] + self._data_step_as_list(FOR_LOOP_END)[1:])
+                ['Comment'] + self._data_step_as_list(FOR_LOOP_END)[1:])
 
     def test_uncommenting_single_row(self):
         self._exec(CommentRows([0]))
@@ -495,8 +495,11 @@ class TestCaseEditingTest(TestCaseCommandTest):
         assert self._steps[0].as_list() == ["${var1}", "${var2}=", "My Keyword", "${variable1}", "${variable2}"]
 
     def test_uncommenting_row_with_triple_variables(self):
+        # print(f"DEBUG: test_uncommenting_row_with_variables: ENTER initial row={self._steps[0].as_list()}")
         self._exec(ChangeCellValue(0, 0, "${var1}"))
+        # print(f"DEBUG: test_uncommenting_row_with_variables: AFTER var1 change initial row={self._steps[0].as_list()}")
         self._exec(ChangeCellValue(0, 1, "${var2}"))
+        # print(f"DEBUG: test_uncommenting_row_with_variables: AFTER var2 change initial row={self._steps[0].as_list()}")
         self._exec(ChangeCellValue(0, 2, "${var3}="))
         self._exec(ChangeCellValue(0, 3, "My Keyword"))
         self._exec(ChangeCellValue(0, 4, "${variable1}"))
@@ -515,9 +518,9 @@ class TestCaseEditingTest(TestCaseCommandTest):
         for s in self._steps:
             print(f"{s.as_list()}")
         assert (self._steps[3].as_list() ==
-                     ['Comment'] + self._data_step_as_list(FOR_LOOP_HEADER)[1:])
+                ['Comment'] + self._data_step_as_list(FOR_LOOP_HEADER)[1:])
         assert (self._steps[4].as_list() ==
-                     self._data_step_as_list(FOR_LOOP_STEP1)[1:])
+                self._data_step_as_list(FOR_LOOP_STEP1)[1:])
 
     def test_uncommenting_rows(self):
         self._exec(CommentRows([1,2,3,4,6]))
