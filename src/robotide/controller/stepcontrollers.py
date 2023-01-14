@@ -265,12 +265,14 @@ class StepController(_BaseController):
         return expected.match(item)
 
     def replace_keyword(self, new_name, old_name):
+        # TODO: Create setters for Step.name and Step.args
+        # print(f"DEBUG: Stepcontrollers ENTER replace_keyword new_name={new_name} old_name={old_name}")
         if self._kw_name_match(self.keyword or '', old_name):
-            self._step.name = self._kw_name_replace(
+            self._step.name = self._step.cells[self._step.inner_kw_pos] = self._kw_name_replace(
                 self.keyword, new_name, old_name)
         for index, value in enumerate(self.args):
             if self._kw_name_match(value, old_name):
-                self._step.args[index] = self._kw_name_replace(
+                self._step.args[index] = self._step.cells[self._step.inner_kw_pos + 1 + index] = self._kw_name_replace(
                     value, new_name, old_name)
 
     def _kw_name_replace(self, old_value, new_match, old_match):
@@ -414,10 +416,11 @@ class StepController(_BaseController):
     def insert_before(self, new_step):
         steps = self.parent.get_raw_steps()
         index = steps.index(self._step)
-        if not new_step or not new_step.as_list():
+        # print(f"DEBUG: StepController, insert_before, enter: len(steps)={len(steps)} index: {index} \n")
+        if not new_step or not new_step.cells:  #.as_list():
             new_step = robotapi.Step([])
         # print(f"DEBUG: StepController, insert_before, enter: len(steps)={len(steps)} index: {index} \n"
-        #      f"new_step: {new_step.as_list()} self._step={self._step.as_list()}")
+        #       f"new_step: {new_step.cells[:]} self._step={self._step.cells[:]}")
         if index > 0:
             upper_indent = steps[index-1].first_non_empty_cell()  # self.first_non_empty_cell(steps[index-1].as_list())
             current_indent = new_step.first_non_empty_cell()  # self.first_non_empty_cell(new_step.as_list())
@@ -430,7 +433,7 @@ class StepController(_BaseController):
                 for _ in range(1, delta_indent):
                     e_list.append('')
                 new_step = robotapi.Step(e_list + new_step.as_list(indent=True))
-                # print(f"DEBUG: StepController, insert_before: new_step: {new_step.as_list()}")
+                # print(f"DEBUG: StepController, insert_before: new_step: {new_step.cells[:]}")
             elif delta_indent < 0 and len(new_step.as_list()) > 1:
                 for _ in range(delta_indent, 0):
                     if new_step.as_list()[0] == '':
@@ -510,6 +513,7 @@ class StepController(_BaseController):
     def _get_comment(self, cells):
         if not cells:
             return None
+        # print(f"DEBUG: Stepcontroller _get_comment returning: {cells[-1].strip() if cells[-1].startswith('#') else None}")
         return cells[-1].strip() if cells[-1].startswith('#') else None
 
     def _recreate(self, cells, comment=None, delete=False):

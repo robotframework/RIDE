@@ -51,6 +51,7 @@ class ItemNameController(object):
         return variablematcher.value_contains_variable(self._item.name, name)
 
     def replace_keyword(self, new_name, old_value=None):
+        print(f"DEBUG: macrocontrollers.py replace_keyword new_name={new_name}")
         self._item.rename(new_name)
 
     def rename(self, new_name):
@@ -141,6 +142,8 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
     def move_step_up(self, index):
         # print(f"DEBUG: macrocontrollers move_step_up index={index} step={self.step(index).as_list()}")
         self.step(index).move_up()
+        # print(f"DEBUG: macrocontrollers move_step_up AFTER index-1={index-1} step={self.step(index-1).as_list()}")
+        # print(f"DEBUG: macrocontrollers move_step_up AFTER index={index} step={self.step(index).as_list()}")
         self._has_steps_changed = True
 
     def move_step_down(self, index):
