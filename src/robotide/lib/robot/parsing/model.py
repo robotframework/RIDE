@@ -963,40 +963,6 @@ class Step(object):
         if indent:
             return [''] + self.cells[:]
         return self.cells[:]
-        # print(f"DEBUG: RFLib Model Step enter as_list  {self.name}")
-        kw = [self.name] if self.name is not None else []
-        if self.comment:
-            comments = self.comment.as_list() if include_comment else []
-        else:
-            comments = []
-        #  RFLib Model Step: as_list() self.name={self.name} kw={kw} COMMENT={self.comment.as_list()}")
-        # print(f"DEBUG RFLib Model Step: as_list() self.name={self.name} kw={kw}\n comments={comments} args={self.args}" )
-        #if len(self.indent) == 0:
-        #    self.indent.insert(0, '')  # Always send first indent
-        if indent:
-            self.increase_indent()  # indent.insert(0, '')
-        if self.normal_assign and self.assign:
-            #### print(f"DEBUG RFLib Model Step: FIRST RETURN as_list() self.name={self.name} kw={kw}\n comments={comments} args={self.args}")
-            return self.indent + self.assign + kw + self.args + comments
-        #### return self.indent + self.assign + kw + self.args + comments  # DEBUG: This code is more efficient
-        commented_assign = False
-        if len(kw) > 0:
-            is_scope_set = re_set_var.match(kw[0])
-            is_scope_set = True if is_scope_set is not None else False
-            if self.name.lower() == 'comment':
-                if self.args:
-                    if self.args[0] == 'FOR' or re_set_var.match(self.args[0]):
-                        commented_assign = True
-        else:
-            is_scope_set = False
-        if self.name == 'FOR' or commented_assign or is_scope_set:  # We look at args because of Comment
-            if commented_assign and (self.args[0] == 'FOR' or is_scope_set):
-                self.normal_assign = False
-                #### print(f"DEBUG RFLib Model Step: SECOND RETURN as_list() self.name={self.name} kw={kw}\n comments={comments} args={self.args}")
-                return self.indent + kw + [self.args[0]] + self.assign + self.args[1:] + comments
-        self.normal_assign = False
-        ### print(f"DEBUG RFLib Model Step: LAST RETURN as_list() self.name={self.name} kw={kw}\n comments={comments} args={self.args}")
-        return self.indent + kw + self.assign + self.args + comments  # For example, Comment  Set Variable
 
     def first_non_empty_cell(self, content=None):
         # print(f"DEBUG: model enter _first_non_empty_cell")
