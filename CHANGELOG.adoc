@@ -10,7 +10,18 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Added
 
-- Added commenting/uncommenting of content with ``# ``, by using ``Ctrl-Shift-3`` and ``Ctrl-Shift-4``
+=== Removed
+
+=== Changed
+
+=== Fixed
+
+== https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.0b3.rst[2.0b3] - 2023-01-15
+
+=== Added
+
+- Added swap row up, by using ``Ctrl-T``
+- Added commenting/uncommenting of content with ``\# ``, by using ``Ctrl-Shift-3`` and ``Ctrl-Shift-4``
 - Added support for editing .robot and .resource files with content before sections
 
 === Removed

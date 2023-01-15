@@ -138,7 +138,7 @@ RELEASE_NOTES = f"""
 
 
 <p><a class="reference external" href="https://github.com/robotframework/RIDE/">RIDE (Robot Framework IDE)</a> v2.0b3 is a new release with major enhancements and bug fixes.
-This version v2.0b3 includes removal of Python 2.7 support. The reference for valid arguments is <a class="reference external" href="http://robotframework.org">Robot Framework</a> installed version, which is at this moment 5.0.1. However, internal library is based on version 3.1.2, to keep compatibility with old formats.</p>
+This version v2.0b3 includes removal of Python 2.7 support. The reference for valid arguments is <a class="reference external" href="http://robotframework.org">Robot Framework</a> installed version, which is at this moment 6.0.2. However, internal library is based on version 3.1.2, to keep compatibility with old formats.</p>
 <ul class="simple">
 <li>This is the <strong>first version without support for Python 2.7</strong>.</li>
 <li>The last version with support for Python 2.7 was <strong>1.7.4.2</strong>.</li>
@@ -155,7 +155,7 @@ This version v2.0b3 includes removal of Python 2.7 support. The reference for va
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
-<li>Auto enclose text in &#123; &#125;, [], &quot;&quot;, ''</li>
+<li>Auto enclose text in &#123;&#125;, [], &quot;&quot;, ''</li>
 <li>Auto indent in Text Editor on new lines</li>
 <li>Block indent in Text Editor (TAB on block of selected text)</li>
 <li>Ctrl-number with number, 1-5 also working on Text Editor:<ol class="arabic">
@@ -201,7 +201,7 @@ If you want to help in the development of RIDE, by reporting issues in current d
 <pre class="literal-block">
 pip install -U https://github.com/robotframework/RIDE/archive/master.zip
 </pre>
-<p>Important document for helping with development is the <a class="reference external" href="https://github.com/robotframework/RIDE/blob/master/CONTRIBUTING.adoc">CONTRIBUTING.adoc</a>.</p>
+<p>Important document for helping with development is the <cite>CONTRIBUTING.adoc_</cite>.</p>
 <p>See the <a class="reference external" href="https://github.com/robotframework/RIDE/wiki/F.A.Q.">FAQ</a> for important info about <cite>: FOR</cite> changes and other known issues and workarounds.</p>
 <p>A possible way to start RIDE is:</p>
 <pre class="literal-block">
@@ -211,6 +211,6 @@ python -m robotide.__init__
 <pre class="literal-block">
 python -m robotide.postinstall -install
 </pre>
-<p>RIDE v2.0b3 was released on 07/Jan/2023.</p>
+<p>RIDE v2.0b3 was released on 15/Jan/2023.</p>
 </div>
 """

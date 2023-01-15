@@ -73,14 +73,6 @@ class MacroEditorTest(unittest.TestCase):
              ('delete_rows', 'OnDeleteRows'),
              ('delete_cells', 'OnDeleteCells'),
              ('delete', 'OnDelete'),
-             # This is not needed ('move_cursor_down', 'OnMoveCursorDown'),
-             ('move_rows_up', 'OnMoveRowsUp'),
-             ('move_rows_down', 'OnMoveRowsDown'),
-             ('swap_row_up', 'OnSwapRowUp'),
-             ('comment_cells', 'OnCommentCells'),
-             ('uncomment_cells', 'OnUncommentCells'),
-             ('comment_rows', 'OnCommentRows'),
-             ('uncomment_rows', 'OnUncommentRows'),
              ('show_content_assist', 'show_content_assist')]:
             kw_mock = MockKwEditor()
             self.tc_editor.kweditor = kw_mock

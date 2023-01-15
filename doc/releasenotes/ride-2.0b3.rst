@@ -1,5 +1,5 @@
 `RIDE (Robot Framework IDE)`_ v2.0b3 is a new release with major enhancements and bug fixes.
-This version v2.0b3 includes removal of Python 2.7 support. The reference for valid arguments is `Robot Framework`_ installed version, which is at this moment 5.0.1. However, internal library is based on version 3.1.2, to keep compatibility with old formats.
+This version v2.0b3 includes removal of Python 2.7 support. The reference for valid arguments is `Robot Framework`_ installed version, which is at this moment 6.0.2. However, internal library is based on version 3.1.2, to keep compatibility with old formats.
 
 * This is the **first version without support for Python 2.7**.
 * The last version with support for Python 2.7 was **1.7.4.2**.
@@ -90,7 +90,7 @@ You can then go to `Tools>Create RIDE Desktop Shortcut`, or run the shortcut cre
 
     python -m robotide.postinstall -install
 
-RIDE v2.0b3 was released on 05/Nov/2022.
+RIDE v2.0b3 was released on 15/Jan/2023.
 
 .. _RIDE (Robot Framework IDE): https://github.com/robotframework/RIDE/
 .. _Robot Framework: http://robotframework.org
