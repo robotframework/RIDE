@@ -108,7 +108,7 @@ SHORTCUT_KEYS = '''\
         <td>Open resource</td>
     </tr>
     <tr>
-        <td>Shift-CtrlCmd-R</td>
+        <td>CtrlCmd-Shift-R</td>
         <td>Refresh directory</td>
     </tr>
     <tr>
@@ -116,7 +116,7 @@ SHORTCUT_KEYS = '''\
         <td>New project</td>
     </tr>
     <tr>
-        <td>Shift-CtrlCmd-N</td>
+        <td>CtrlCmd-Shift-N</td>
         <td>New resource</td>
     </tr>
     <tr>
@@ -276,19 +276,19 @@ SHORTCUT_KEYS = '''\
         <th><b>What it does</b></th>
     </tr>
     <tr>
-        <td>Shift-CtrlCmd-T</td>
+        <td>CtrlCmd-Shift-T</td>
         <td>Add new test case</td>
     </tr>
     <tr>
-        <td>Shift-CtrlCmd-K</td>
+        <td>CtrlCmd-Shift-K</td>
         <td>Add new keyword</td>
     </tr>
     <tr>
-        <td>Shift-CtrlCmd-V</td>
+        <td>CtrlCmd-Shift-V</td>
         <td>Add new scalar variable</td>
     </tr>
     <tr>
-        <td>Shift-CtrlCmd-L</td>
+        <td>CtrlCmd-Shift-L</td>
         <td>Add new list variable</td>
     </tr>
     <tr>
@@ -296,7 +296,7 @@ SHORTCUT_KEYS = '''\
         <td>Rename</td>
     </tr>
     <tr>
-        <td>Shift-CtrlCmd-C</td>
+        <td>CtrlCmd-Shift-C</td>
         <td>Clone/Copy selected keyword/test case</td>
     </tr>
     <tr>
@@ -345,7 +345,7 @@ SHORTCUT_KEYS = '''\
         <td>Find next search result</td>
     </tr>
     <tr>
-        <td>Shift-CtrlCmd-G</td>
+        <td>CtrlCmd-Shift-G</td>
         <td>Find previous search result</td>
     </tr>
     <tr>

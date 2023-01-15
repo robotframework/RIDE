@@ -43,8 +43,8 @@ Move Rows Up | Move selected rows up | Alt-Up
 Move Rows Down | Move selected rows down | Alt-Down
 Swap Row Up | Swap selected row with the one above | Ctrlcmd-T
 ---
-Insert Cells | Insert Cells | Shift-Ctrl-I
-Delete Cells | Delete Cells | Shift-Ctrl-D
+Insert Cells | Insert Cells | Ctrlcmd-Shift-I
+Delete Cells | Delete Cells | Ctrlcmd-Shift-D
 Insert Rows | Insert Rows | Ctrlcmd-I
 Delete Rows | Delete Rows | Ctrlcmd-D
 ---
@@ -53,7 +53,7 @@ Select All | Select All | Ctrlcmd-A
 Cu&t | Cut | Ctrlcmd-X
 &Copy | Copy | Ctrlcmd-C
 &Paste | Paste | Ctrlcmd-V
-&Insert | Insert | Shift-Ctrl-V
+&Insert | Insert | Ctrlcmd-Shift-V
 ---
 &Delete | Delete  | Del
 [Tools]
