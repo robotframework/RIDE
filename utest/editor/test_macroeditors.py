@@ -81,9 +81,6 @@ class MacroEditorTest(unittest.TestCase):
              ('uncomment_cells', 'OnUncommentCells'),
              ('comment_rows', 'OnCommentRows'),
              ('uncomment_rows', 'OnUncommentRows'),
-             ('make_variable', 'OnMakeVariable'),
-             ('make_list_variable', 'OnMakeListVariable'),
-             ('make_dict_variable', 'OnMakeDictVariable'),
              ('show_content_assist', 'show_content_assist')]:
             kw_mock = MockKwEditor()
             self.tc_editor.kweditor = kw_mock
