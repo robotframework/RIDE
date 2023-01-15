@@ -70,7 +70,7 @@ class KeywordEditor(GridEditor, Plugin):
                        'Extract Variable',
                        'Rename Keyword',
                        'Find Where Used',
-                       'JSON Editor\tCtrl-Shift-J', 
+                       'JSON Editor\tCtrl-Shift-J',
                        '---',
                        'Go to Definition\tCtrl-B',
                        '---',
@@ -79,7 +79,7 @@ class KeywordEditor(GridEditor, Plugin):
                        '---',
                        'Make Variable\tCtrl-1',
                        'Make List Variable\tCtrl-2',
-                       'Make Dict Variable\tCtrl-5', 
+                       'Make Dict Variable\tCtrl-5',
                        '---',
                        'Comment Cells\tCtrl-Shift-3',
                        'Uncomment Cells\tCtrl-Shift-4',
@@ -89,7 +89,7 @@ class KeywordEditor(GridEditor, Plugin):
                        'Uncomment Rows\tCtrl-4',
                        'Move Rows Up\tAlt-Up',
                        'Move Rows Down\tAlt-Down',
-                       'Swap Row Up\tCtrl-T', 
+                       'Swap Row Up\tCtrl-T',
                        '---',
                    ] + GridEditor._popup_items
 
@@ -285,16 +285,16 @@ class KeywordEditor(GridEditor, Plugin):
             self.SelectRow(selected_row, addToSelected=False)
             self.SetGridCursor(event.Row, 0)
         popupitems = [
-                    'Comment Rows\tCtrl-3', 
+                    'Comment Rows\tCtrl-3',
                     'Uncomment Rows\tCtrl-4',
-                    'Move Rows Up\tAlt-Up', 
+                    'Move Rows Up\tAlt-Up',
                     'Move Rows Down\tAlt-Down',
                     'Swap Row Up\tCtrl-T',
                     'Insert Rows\tCtrl-I',
                     'Delete Rows\tCtrl-D',
                     '---',
                     'Comment Cells\tCtrl-Shift-3',
-                    'Uncomment Cells\tCtrl-Shift-4', 
+                    'Uncomment Cells\tCtrl-Shift-4',
                     ]
         PopupMenu(self, PopupMenuItems(self, popupitems))
         event.Skip()
@@ -325,11 +325,7 @@ class KeywordEditor(GridEditor, Plugin):
         pass
 
     def OnMoveCursorDown(self, event=None):
-        topL = self.selection.topleft
-        botR = self.selection.bottomright
-        row_s, col_s = topL
-        row_e, col_e = botR
-        self.SetGridCursor(row_s+1, col_s)
+        self._move_cursor_down(event)
 
     def OnInsertRows(self, event):
         self._execute(AddRows(self.selection.rows()))
@@ -389,10 +385,10 @@ class KeywordEditor(GridEditor, Plugin):
         self._skip_except_on_mac(event)
 
     def OnMoveRowsUp(self, event=None):
-        self._row_move(MoveRowsUp, -1, False)
+        self._row_move(MoveRowsUp, -1)
 
     def OnMoveRowsDown(self, event=None):
-        self._row_move(MoveRowsDown, 1, False)
+        self._row_move(MoveRowsDown, 1)
 
     def OnSwapRowUp(self, event=None):
         self._row_move(MoveRowsUp, 1, True)
@@ -592,7 +588,14 @@ class KeywordEditor(GridEditor, Plugin):
 
     def _move_cursor_down(self, event):
         self.DisableCellEditControl()
-        self.MoveCursorDown(event.ShiftDown())
+        if event:
+            try:
+                shiftdown = event.ShiftDown()
+            except AttributeError:
+                shiftdown = False
+        else:
+            shiftdown = False
+        self.MoveCursorDown(shiftdown)
 
     def OnKeyDown(self, event):
         keycode = event.GetUnicodeKey() or event.GetKeyCode()
@@ -646,7 +649,7 @@ class KeywordEditor(GridEditor, Plugin):
                 if self.IsCellEditControlShown():
                     event.GetEventObject().WriteText(linesep)
                 else:
-                    self._move_cursor_down(event)
+                   self._move_cursor_down(event)
                 return  # event must not be skipped in this case
         else:
             if keycode == wx.WXK_WINDOWS_MENU:

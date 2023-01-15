@@ -96,8 +96,10 @@ class TestCaseEditor(_RobotTableEditor):
     def uncomment_rows(self):
         self.kweditor.OnUncommentRows()
 
-    def move_cursor_down(self):
-        self.kweditor.OnMoveCursorDown()
+    def move_cursor_down(self, event=None):
+        # self.kweditor.OnMoveCursorDown(event)
+        # Caught by kweditor keyboard events to call Grid. MoveCursorDown
+        pass
 
     def move_rows_up(self):
         self.kweditor.OnMoveRowsUp()
@@ -116,10 +118,10 @@ class TestCaseEditor(_RobotTableEditor):
 
     def make_variable(self):
         self.kweditor.OnMakeVariable(None)
-        
+
     def make_list_variable(self):
         self.kweditor.OnMakeListVariable(None)
-        
+
     def make_dict_variable(self):
         self.kweditor.OnMakeDictVariable(None)
 
