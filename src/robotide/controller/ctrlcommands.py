@@ -1371,6 +1371,7 @@ class MoveRowsDown(_StepsChangingCommand):
             existing_start = context.steps[row+1]._first_non_empty_cell()
             keep_indent = moving_start == existing_start
             decrease_indent = moving_start > existing_start
+            # TODO: Add protection IndexError when moving down on empty lines
             increase_indent = moving_start < existing_start or (context.steps[row].as_list()[moving_start] == 'END' and context.steps[row+1].as_list()[existing_start] != 'FOR')
             prev_decrease_indent = context.steps[row].as_list()[moving_start] == 'FOR' and increase_indent
             if prev_decrease_indent:
