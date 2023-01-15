@@ -50,9 +50,6 @@ class TestCaseEditor(_RobotTableEditor):
     def save(self):
         self.kweditor.save()
 
-    def movecursordown(self):
-        self.kweditor.OnMoveCursorDown()
-
     def undo(self):
         self.kweditor.OnUndo()
 
@@ -117,13 +114,16 @@ class TestCaseEditor(_RobotTableEditor):
         self.kweditor.OnUncommentCells(None)
 
     def make_variable(self):
-        self.kweditor.OnMakeVariable(None)
+        # Caught by kweditor keyboard events
+        pass
 
     def make_list_variable(self):
-        self.kweditor.OnMakeListVariable(None)
+        # Caught by kweditor keyboard events
+        pass
 
     def make_dict_variable(self):
-        self.kweditor.OnMakeDictVariable(None)
+        # Caught by kweditor keyboard events
+        pass
 
     def show_content_assist(self):
         self.kweditor.show_content_assist()
