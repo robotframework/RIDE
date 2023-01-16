@@ -25,37 +25,24 @@ from ..widgets import PopupCreator
 
 _EDIT = """
 [Edit]
----
 &Undo | Undo last modification | Ctrlcmd-Z
 &Redo | Redo modification | Ctrlcmd-Y
 ---
-Make Variable | Make variable | Ctrlcmd-1
-Make List Variable | Make list variable | Ctrlcmd-2
-Make Dict Variable | Make dict variable | Ctrlcmd-5
----
-Comment Cells | Comment selected cells with # | Ctrlcmd-Shift-3
-Uncomment Cells | Uncomment selected cells with # | Ctrlcmd-Shift-4
-Move Cursor Down | Move cursor down | Alt-Enter
+Cu&t | Cut | Ctrlcmd-X
+&Copy | Copy | Ctrlcmd-C
+&Paste | Paste | Ctrlcmd-V
+&Insert | Insert | Shift-Ctrl-V
+&Delete | Delete  | Del
 ---
 Comment Rows | Comment selected rows | Ctrlcmd-3
+CommentCells | Comment cells with # | Ctrlcmd-Shift-3
 Uncomment Rows | Uncomment selected rows | Ctrlcmd-4
-Move Rows Up | Move selected rows up | Alt-Up
-Move Rows Down | Move selected rows down | Alt-Down
-Swap Row Up | Swap selected row with the one above | Ctrlcmd-T
+UncommentCells | Uncomment cells with # | Ctrlcmd-Shift-4
 ---
 Insert Cells | Insert Cells | Ctrlcmd-Shift-I
 Delete Cells | Delete Cells | Ctrlcmd-Shift-D
 Insert Rows | Insert Rows | Ctrlcmd-I
 Delete Rows | Delete Rows | Ctrlcmd-D
----
-Select All | Select All | Ctrlcmd-A
----
-Cu&t | Cut | Ctrlcmd-X
-&Copy | Copy | Ctrlcmd-C
-&Paste | Paste | Ctrlcmd-V
-&Insert | Insert | Ctrlcmd-Shift-V
----
-&Delete | Delete  | Del
 [Tools]
 Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword and variable completions | | | POSITION-70
 """
@@ -216,9 +203,6 @@ class _EditorTab(wx.Panel):
     def OnPaste(self, event):
         self.editor.paste()
 
-    def OnSelectAll(self, event):
-        self.editor.select_all(event)
-
     def OnInsert(self, event):
         self.editor.insert()
 
@@ -244,32 +228,11 @@ class _EditorTab(wx.Panel):
     def OnUncommentRows(self, event):
         self.editor.uncomment_rows()
 
-    def OnMoveRowsUp(self, event):
-        self.editor.move_rows_up()
-
-    def OnMoveRowsDown(self, event):
-        self.editor.move_rows_down()
-
-    def OnSwapRowUp(self, event):
-        self.editor.swap_row_up()
-
-    def OnMoveCursorDown(self, event):
-        self.editor.move_cursor_down()
-
     def OnCommentCells(self, event):
         self.editor.comment_cells()
 
     def OnUncommentCells(self, event):
         self.editor.uncomment_cells()
-
-    def OnMakeVariable(self, event):
-        self.editor.make_variable()
-
-    def OnMakeListVariable(self, event):
-        self.editor.make_list_variable()
-
-    def OnMakeDictVariable(self, event):
-        self.editor.make_dict_variable()
 
     def OnContentAssistance(self, event):
         self.editor.show_content_assist()

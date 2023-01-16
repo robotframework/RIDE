@@ -634,6 +634,8 @@ class KeywordEditor(GridEditor, Plugin):
                     self._open_cell_editor_and_execute_variable_creator(
                         list_variable=(keycode == ord('2')),
                         dict_variable=(keycode == ord('5')))
+                elif keycode == ord('T'):
+                        self._row_move(MoveRowsUp, 1, True)
                 else:
                     self.show_cell_information()
         elif event.AltDown():
@@ -645,7 +647,7 @@ class KeywordEditor(GridEditor, Plugin):
                 if self.IsCellEditControlShown():
                     event.GetEventObject().WriteText(linesep)
                 else:
-                   self._move_cursor_down(event)
+                    self._move_cursor_down(event)
                 return  # event must not be skipped in this case
         else:
             if keycode == wx.WXK_WINDOWS_MENU:
