@@ -85,6 +85,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         self.register_shortcut('CtrlCmd-Z', focused(lambda e: self._editor.undo()))
         self.register_shortcut('CtrlCmd-Y', focused(lambda e: self._editor.redo()))
         # self.register_shortcut('Del', focused(lambda e: self._editor.delete()))
+        self.register_shortcut('CtrlCmd-I', focused(lambda e: self._editor.insert_row(e)))
         self.register_shortcut('CtrlCmd-3', focused(lambda e: self._editor.execute_comment(e)))
         self.register_shortcut('CtrlCmd-Shift-3', focused(lambda e: self._editor.execute_sharp_comment(e)))
         self.register_shortcut('CtrlCmd-4', focused(lambda e: self._editor.execute_uncomment(e)))
@@ -903,10 +904,10 @@ class SourceEditor(wx.Panel):
             event.Skip()
         """
         elif keycode == ord('3') and event.ControlDown() and event.ShiftDown():
-            self.execute_add_text(add_text='# ', on_the_left=True, on_the_right=False)
+            self.execute_sharp_comment()
             self.store_position()
         elif keycode == ord('4') and event.ControlDown() and event.ShiftDown():
-            self.execute_remove_text(remove_text='# ', on_the_left=True, on_the_right=False)
+            self.execute_sharp_uncomment()
             self.store_position()
         """
 
@@ -972,6 +973,21 @@ class SourceEditor(wx.Panel):
         else:
             close_symbol = open_symbol
         return open_symbol+value+close_symbol
+
+    def insert_row(self, event):
+        start, end = self._editor.GetSelection()
+        cursor = self._editor.GetCurrentPos()
+        ini_line = self._editor.LineFromPosition(start)
+        end_line = self._editor.LineFromPosition(end)
+        positionfromline = self._editor.PositionFromLine(ini_line)
+        spaces = ' ' * self._tab_size
+        self._editor.SelectNone()
+        self._editor.InsertText(positionfromline, spaces + '\n')
+        #print(f"DEBUG: insert_row Variables: select start={start}, end={end} cursor={cursor}"
+        #      f" ini_line={ini_line} end_line={end_line} positionfromline={positionfromline}")
+        self._editor.SetCurrentPos(positionfromline + self._tab_size)
+        self._editor.SetAnchor(positionfromline + self._tab_size)
+        self.store_position()
 
     def execute_comment(self, event):
         start, end = self._editor.GetSelection()
@@ -1129,7 +1145,6 @@ class SourceEditor(wx.Panel):
         spaces = ' ' * self._tab_size
         # self._editor.SelectNone()
         count = 0
-        # self.execute_remove_text(remove_text='# ', on_the_left=True, on_the_right=False)
         maxsize = self._editor.GetLineCount()
         # If the selection spans on more than one line:
         if ini_line < end_line:
