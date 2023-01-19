@@ -3,7 +3,7 @@
 #---------------------------------#
 
 # version format
-version: 2.0b1.{build}
+version: 2.0b3.{build}
 
 # branches to build
 branches:
@@ -39,23 +39,23 @@ init:
 clone_folder: c:\projects\RIDE
 
 # fetch repository as zip archive
-shallow_clone: true                 # default is "false"
+shallow_clone: false                 # default is "false"
 
 # set clone depth
 clone_depth: 5                      # clone entire repository history if not defined
 
 # this is how to allow failing jobs in the matrix
 matrix:
-  fast_finish: true     # set this flag to immediately finish build once one of the jobs fails.
+  fast_finish: false     # set this flag to immediately finish build once one of the jobs fails.
   allow_failures:
     - platform: x64
       configuration: Release
 
 environment:
   matrix:
-  - TOXENV: py36
-  - TOXENV: py37
   - TOXENV: py38
+  - TOXENV: py39
+  - TOXENV: py310
 
 build: off
 
