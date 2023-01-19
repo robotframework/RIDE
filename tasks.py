@@ -366,7 +366,7 @@ def test_ci(ctx, test_filter=''):
     _set_development_path()
     try:
         import subprocess
-        p = subprocess.Popen(["pytest", "--cov", "--cov-report=xml", "--cov-report=html", "utest" ])
+        p = subprocess.Popen(["pytest", "-v", "--cov", "--cov-report=xml:.coverage-reports/coverage.xml", "--cov-branch", "utest"])
         p.communicate('')
     finally:
         pass
