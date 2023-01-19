@@ -35,7 +35,7 @@ This is not happening with wxPython 4.2.0.**
 
 **To use Python 3.9, you should have wxPython 4.1.1, and install from `master` (since April 2021).**
 
-**Current development version 2.0b2.dev19 (20 August 2022) supports Python 3.10 with wxPython 4.2.0.**
+**Current development version since 2.0b2.dev19 (20 August 2022) supports Python 3.10 with wxPython 4.2.0.**
 
 **24-jun-2022 A preliminary experiment was done on Fedora 36, Python 3.10.5 and wxPython 4.0.7**
 
@@ -43,12 +43,9 @@ Install current development version with:
 [source, shell]
 pip install -U https://github.com/robotframework/RIDE/archive/master.zip
 
-(python < 3.9) Install current Beta version (2.0b1) with:
+(3.6 < python < 3.11) Install current Beta version (2.0b3) with:
 [source, shell]
-pip install psutil
 pip install -U --pre robotframework-ride
-
-**Note: The PsUtil module is required, but missing on 2.0b1 requirements. This is already fixed in current development.**
 
 **See the https://github.com/robotframework/RIDE/wiki/F%2eA%2eQ%2e[FAQ] at https://github.com/robotframework/RIDE/wiki[Wiki]**
 
