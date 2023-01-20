@@ -53,15 +53,15 @@ matrix:
 
 environment:
   matrix:
+  - TOXENV: py36
+  - TOXENV: py37
   - TOXENV: py38
-  - TOXENV: py39
-  - TOXENV: py310
 
 build: off
 
 # scripts that run after cloning repository
 install:
-  - cmd: pip install tox
+  - cmd: pip install tox wxPython==4.1.1
 
 #---------------------------------#
 #       tests configuration       #
