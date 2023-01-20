@@ -979,14 +979,18 @@ class SourceEditor(wx.Panel):
         cursor = self._editor.GetCurrentPos()
         ini_line = self._editor.LineFromPosition(start)
         end_line = self._editor.LineFromPosition(end)
+        delta = end_line - ini_line
+        column = self._editor.GetLineEndPosition(ini_line)
         positionfromline = self._editor.PositionFromLine(ini_line)
         spaces = ' ' * self._tab_size
         self._editor.SelectNone()
-        self._editor.InsertText(positionfromline, spaces + '\n')
+        self._editor.InsertText(positionfromline, '\n')
+        for nl in range(delta):
+            self._editor.InsertText(positionfromline + nl, '\n')
         #print(f"DEBUG: insert_row Variables: select start={start}, end={end} cursor={cursor}"
         #      f" ini_line={ini_line} end_line={end_line} positionfromline={positionfromline}")
-        self._editor.SetCurrentPos(positionfromline + self._tab_size)
-        self._editor.SetAnchor(positionfromline + self._tab_size)
+        self._editor.SetCurrentPos(positionfromline)
+        self._editor.SetAnchor(positionfromline)
         self.store_position()
 
     def execute_comment(self, event):
