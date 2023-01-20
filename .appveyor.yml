@@ -83,7 +83,7 @@ build: off
 # scripts that run after cloning repository
 install:
   - cmd: pip install tox
-  - cmd: pip install ${WX}
+  - cmd: pip install {WX}
 
 #---------------------------------#
 #       tests configuration       #
