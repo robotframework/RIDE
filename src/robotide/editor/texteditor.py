@@ -85,6 +85,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         self.register_shortcut('CtrlCmd-Z', focused(lambda e: self._editor.undo()))
         self.register_shortcut('CtrlCmd-Y', focused(lambda e: self._editor.redo()))
         # self.register_shortcut('Del', focused(lambda e: self._editor.delete()))
+        self.register_shortcut('Alt-Up', focused(lambda e: self._editor.move_row_up(e)))
         self.register_shortcut('CtrlCmd-3', focused(lambda e: self._editor.execute_comment(e)))
         self.register_shortcut('CtrlCmd-Shift-3', focused(lambda e: self._editor.execute_sharp_comment(e)))
         self.register_shortcut('CtrlCmd-4', focused(lambda e: self._editor.execute_uncomment(e)))
@@ -972,6 +973,31 @@ class SourceEditor(wx.Panel):
         else:
             close_symbol = open_symbol
         return open_symbol+value+close_symbol
+
+    def move_row_up(self, event):
+        start, end = self._editor.GetSelection()
+        cursor = self._editor.GetCurrentPos()
+        ini_line = self._editor.LineFromPosition(start)
+        # selection not on top?
+        if ini_line > 0:
+            end_line = self._editor.LineFromPosition(end)
+            # get the previous row content and length
+            rowabove = self._editor.GetLine(ini_line-1)
+            lenabove = len(rowabove.encode('utf-8'))
+            # get the content of the block rows
+            rowselblock = ''
+            rowcnt = ini_line
+            while rowcnt <= end_line:
+                rowselblock += self._editor.GetLine(rowcnt)
+                rowcnt += 1
+            # add the content of previous row
+            rowselblock += rowabove
+            begpos = self._editor.PositionFromLine(ini_line-1)
+            endpos = self._editor.PositionFromLine(end_line+1)
+            self._editor.Replace(begpos, endpos, rowselblock)
+            self._editor.SetSelection(begpos, endpos-lenabove-1)
+            #print(f"DEBUG: move_row_up Variables: select start={start}, end={end} cursor={cursor}"
+            #    f" ini_line={ini_line} end_line={end_line} begpos={begpos} endpos={endpos} lenabove={lenabove}")
 
     def execute_comment(self, event):
         start, end = self._editor.GetSelection()
