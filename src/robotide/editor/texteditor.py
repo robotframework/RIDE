@@ -702,6 +702,31 @@ class SourceEditor(wx.Panel):
         self._editor.SetCurrentPos(ini)
         self._editor.SetAnchor(fini)
 
+    def indent_line(self, line):
+        if line > 0:
+            pos = self._editor.PositionFromLine(line)
+            text = self._editor.GetLine(line-1)
+            lenline = len(text)
+            if lenline > 0:
+                idx = 0
+                while idx < lenline and text[idx] == ' ':
+                    idx += 1
+                tsize = idx // self._tab_size
+                if idx < lenline and (text.strip().startswith("FOR") or text.strip().startswith("IF")
+                                      or text.strip().startswith("ELSE") or text.strip().startswith("TRY")
+                                      or text.strip().startswith("EXCEPT") or text.strip().startswith("WHILE")):
+                    tsize += 1
+                elif tsize == 0:
+                    text = text.lower()
+                    if text.startswith("**"):
+                        if not ("variables" in text or "settings" in text):
+                            tsize = 1
+                self._editor.SetCurrentPos(pos)
+                self._editor.SetSelection(pos, pos)
+                self._editor.SetInsertionPoint(pos)
+                for _ in range(tsize):
+                    self.write_ident()
+
     def indent_block(self):
         start, end = self._editor.GetSelection()
         caret = self._editor.GetCurrentPos()
@@ -976,21 +1001,18 @@ class SourceEditor(wx.Panel):
 
     def insert_row(self, event):
         start, end = self._editor.GetSelection()
-        cursor = self._editor.GetCurrentPos()
         ini_line = self._editor.LineFromPosition(start)
         end_line = self._editor.LineFromPosition(end)
         delta = end_line - ini_line
-        column = self._editor.GetLineEndPosition(ini_line)
         positionfromline = self._editor.PositionFromLine(ini_line)
-        spaces = ' ' * self._tab_size
         self._editor.SelectNone()
         self._editor.InsertText(positionfromline, '\n')
         for nl in range(delta):
             self._editor.InsertText(positionfromline + nl, '\n')
-        #print(f"DEBUG: insert_row Variables: select start={start}, end={end} cursor={cursor}"
-        #      f" ini_line={ini_line} end_line={end_line} positionfromline={positionfromline}")
         self._editor.SetCurrentPos(positionfromline)
         self._editor.SetAnchor(positionfromline)
+        self._editor.GotoLine(ini_line)
+        self.indent_line(ini_line)
         self.store_position()
 
     def execute_comment(self, event):
