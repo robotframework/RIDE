@@ -85,6 +85,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         self.register_shortcut('CtrlCmd-Z', focused(lambda e: self._editor.undo()))
         self.register_shortcut('CtrlCmd-Y', focused(lambda e: self._editor.redo()))
         # self.register_shortcut('Del', focused(lambda e: self._editor.delete()))
+        self.register_shortcut('CtrlCmd-D', focused(lambda e: self._editor.delete_row(e)))
         self.register_shortcut('CtrlCmd-3', focused(lambda e: self._editor.execute_comment(e)))
         self.register_shortcut('CtrlCmd-Shift-3', focused(lambda e: self._editor.execute_sharp_comment(e)))
         self.register_shortcut('CtrlCmd-4', focused(lambda e: self._editor.execute_uncomment(e)))
@@ -972,6 +973,26 @@ class SourceEditor(wx.Panel):
         else:
             close_symbol = open_symbol
         return open_symbol+value+close_symbol
+
+    def delete_row(self, event):
+        start, end = self._editor.GetSelection()
+        cursor = self._editor.GetCurrentPos()
+        ini_line = self._editor.LineFromPosition(start)
+        end_line = self._editor.LineFromPosition(end)
+        begpos = self._editor.PositionFromLine(ini_line)
+        endpos = self._editor.PositionFromLine(end_line+1)
+        self._editor.SelectNone()
+        self._editor.Remove(begpos, endpos)
+        #print(f"DEBUG: delete_row Variables: select start={start}, end={end} cursor={cursor}"
+        #      f" ini_line={ini_line} end_line={end_line} begpos={begpos} endpos={endpos}")
+        # cursor position when doing block select is always the end of the selection
+        if ini_line != end_line:
+            self._editor.SetCurrentPos(begpos)
+            self._editor.SetAnchor(begpos)
+        else:
+            self._editor.SetCurrentPos(cursor)
+            self._editor.SetAnchor(cursor)
+        self.store_position()
 
     def execute_comment(self, event):
         start, end = self._editor.GetSelection()
