@@ -357,6 +357,10 @@ SHORTCUT_KEYS = '''\
         <td>Make list variable body</td>
     </tr>
     <tr>
+        <td>Alt-Down</td>
+        <td>Move row(s) down</td>
+    </tr>
+    <tr>
         <td>CtrlCmd-3</td>
         <td>Comment row(s)</td>
     </tr>
