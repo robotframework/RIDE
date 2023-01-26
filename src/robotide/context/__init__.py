@@ -373,6 +373,10 @@ SHORTCUT_KEYS = '''\
         <td>Uncomment content with #</td>
     </tr>
     <tr>
+        <td>CtrlCmd-Shift-I</td>
+        <td>Insert cell(s)</td>
+    </tr>
+    <tr>
         <td>CtrlCmd-5</td>
         <td>Make dictionary variable body</td>
     </tr>
