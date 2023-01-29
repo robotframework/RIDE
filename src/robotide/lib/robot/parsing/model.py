@@ -845,7 +845,7 @@ class Step(object):
             # cells = self.as_list()
         if comment:
             if isinstance(comment, list):
-                self.cells.append(comment[0])
+                self.cells.extend(comment)
             elif isinstance(comment, str):
                 self.cells.append(comment)
         # if self.cells:
@@ -994,15 +994,17 @@ class Step(object):
         return self
 
     def __len__(self):
-        kw = [self.name] if self.name is not None else []
+        kw = [self.name] if self.name is not None and self.name[0] != '#' else []
         cells_len = len(self.cells)
         if self.name == 'FOR':
             seglen = len(self.indent) + len(kw) + len(self.args) + len(self.comment)
         else:
             seglen = len(self.indent) + len(self.assign) + len(kw) + len(self.args) + len(self.comment)
         # Compensation for args==comment
-        if self.args and self.comment and self.args[-1] == self.comment.as_list()[0]:
-            seglen -= 1
+        if self.args and self.comment and self.args[-1] == self.comment.as_list()[-1]:
+            seglen -= len(self.args)
+        elif len(self.comment) > 1 and self.args == self.comment.as_list()[1:]:
+            seglen -= len(self.comment)
         # Compensation for assign==kw
         if self.assign and kw and self.assign[0] == kw[0]:
             seglen -= len(self.assign)  # len assign because assign may also be in args
@@ -1010,12 +1012,12 @@ class Step(object):
         if kw and self.comment and kw == self.comment.as_list():
             seglen -= 1
         # print(f"DEBUG RFLib Model Step: len indent={len(self.indent)} assign= {len(self.assign)}\n"
-        #      f" assign= {self.assign[:]} kw={len(kw)} KW={kw}"
-        #      f" args={len(self.args)} \n args={self.args[:]} commt={len(self.comment)}"
-        #      f" comment={self.comment.as_list()}")
+        #       f" assign= {self.assign[:]} kw={len(kw)} KW={kw}"
+        #       f" args={len(self.args)} \n args={self.args[:]} commt={len(self.comment)}"
+        #       f" comment={self.comment.as_list()}")
         # print(f"DEBUG RFLib Model Step: len computed={seglen} cells_len={cells_len} cells={self.cells}")
         assert seglen == cells_len
-        return seglen
+        return cells_len
 
 
 class OldStyleSettingAndVariableTableHeaderMatcher(object):
