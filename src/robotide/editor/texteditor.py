@@ -1166,7 +1166,13 @@ class SourceEditor(wx.Panel):
                     if idx + 1 < lenline and row[idx:idx+1] == '#':
                         if idx + 2 < lenline and row[idx+1:idx+2] == ' ':
                             size = 2
-                        self._editor.DeleteRange(pos + idx, size)
+                        # Here we clean up escaped spaces from Apply
+                        if idx + size < lenline:
+                            newrow = row[idx + size:]
+                            newrow = newrow.replace('\\ ', ' ')
+                            size += len(row[idx:]) - len(newrow) - size
+                            self._editor.DeleteRange(pos + idx, len(newrow) + size)
+                            self._editor.InsertText(pos + idx, newrow)
                         count += size
         elif start == end:  # On a single row, no selection
             pos = self._editor.PositionFromLine(ini_line)
@@ -1181,7 +1187,13 @@ class SourceEditor(wx.Panel):
                     if idx + 1 < lenline and row[idx:idx + 1] == '#':
                         if idx + 2 < lenline and row[idx + 1:idx + 2] == ' ':
                             size = 2
-                        self._editor.DeleteRange(pos + idx, size)
+                        # Here we clean up escaped spaces from Apply
+                        if idx + size < lenline:
+                            newrow = row[idx + size:]
+                            newrow = newrow.replace('\\ ', ' ')
+                            size += len(row[idx:]) - len(newrow) - size
+                            self._editor.DeleteRange(pos + idx, len(newrow) + size)
+                            self._editor.InsertText(pos + idx, newrow )
                         count += size
                     else:
                         idx += 1
@@ -1203,7 +1215,13 @@ class SourceEditor(wx.Panel):
                     if idx + 1 < lenline and row[idx:idx + 1] == '#':
                         if idx + 2 < lenline and row[idx + 1:idx + 2] == ' ':
                             size = 2
-                        self._editor.DeleteRange(pos + idx, size)
+                        # Here we clean up escaped spaces from Apply
+                        if idx + size < lenline:
+                            newrow = row[idx + size:]
+                            newrow = newrow.replace('\\ ', ' ')
+                            size += len(row[idx:]) - len(newrow) - size
+                            self._editor.DeleteRange(pos + idx, len(newrow) + size)
+                            self._editor.InsertText(pos + idx, newrow)
                         count += size
                     else:
                         idx -= 1
@@ -1218,8 +1236,6 @@ class SourceEditor(wx.Panel):
             ini = new_end
             fini = new_start
         self._editor.SetSelection(new_start, new_end)  # TODO: For some reason the selection is not restored!
-        self._editor.SetCurrentPos(ini)
-        self._editor.SetAnchor(fini)
         self._editor.SetCurrentPos(cursor - count)
         self.store_position()
 
