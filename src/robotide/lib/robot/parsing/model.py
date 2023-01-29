@@ -1001,22 +1001,23 @@ class Step(object):
         else:
             seglen = len(self.indent) + len(self.assign) + len(kw) + len(self.args) + len(self.comment)
         # Compensation for args==comment
-        if self.args and self.comment and self.args[-1] == self.comment.as_list()[0] or (
-                len(self.args) > 1 and self.args == self.comment.as_list()[1:]):
+        if self.args and self.comment and self.args[-1] == self.comment.as_list()[-1]:
             seglen -= len(self.args)
+        elif len(self.comment) > 1 and self.args == self.comment.as_list()[1:]:
+            seglen -= len(self.comment)
         # Compensation for assign==kw
         if self.assign and kw and self.assign[0] == kw[0]:
             seglen -= len(self.assign)  # len assign because assign may also be in args
         # Compensation for kw==comment
         if kw and self.comment and kw == self.comment.as_list():
             seglen -= 1
-        print(f"DEBUG RFLib Model Step: len indent={len(self.indent)} assign= {len(self.assign)}\n"
-              f" assign= {self.assign[:]} kw={len(kw)} KW={kw}"
-              f" args={len(self.args)} \n args={self.args[:]} commt={len(self.comment)}"
-              f" comment={self.comment.as_list()}")
-        print(f"DEBUG RFLib Model Step: len computed={seglen} cells_len={cells_len} cells={self.cells}")
+        # print(f"DEBUG RFLib Model Step: len indent={len(self.indent)} assign= {len(self.assign)}\n"
+        #       f" assign= {self.assign[:]} kw={len(kw)} KW={kw}"
+        #       f" args={len(self.args)} \n args={self.args[:]} commt={len(self.comment)}"
+        #       f" comment={self.comment.as_list()}")
+        # print(f"DEBUG RFLib Model Step: len computed={seglen} cells_len={cells_len} cells={self.cells}")
         assert seglen == cells_len
-        return seglen
+        return cells_len
 
 
 class OldStyleSettingAndVariableTableHeaderMatcher(object):
