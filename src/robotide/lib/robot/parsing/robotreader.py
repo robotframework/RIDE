@@ -45,8 +45,8 @@ class RobotReader(object):
             ####### DEBUG cells = list(self._check_deprecations(cells, path, lineno))
             ####### DEBUG Not parsing # before any table
             if line.lstrip().startswith('#'):
-                if cells[0] == '':  # There is an initial empty cell, when #
-                    cells.pop(0)
+                 if cells[0] == '':  # There is an initial empty cell, when #
+                     cells.pop(0)
                 # populator.add(cells)
                 # continue
             if cells and cells[0].strip().startswith('*') and \
