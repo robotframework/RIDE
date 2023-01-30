@@ -76,4 +76,4 @@ install:
 
 # to run your custom scripts instead of automatic tests
 test_script:
-  - tox
+  - pytest -k test_ -v --cov --cov-report=xml --cov-report=html ./utest 
