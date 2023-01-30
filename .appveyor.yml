@@ -67,8 +67,8 @@ build: off
 
 # scripts that run after cloning repository
 install:
-  - python3 --version
-  - ipython3 -c 'import platform; print(f"{platform.processor()}")'
+  - python3.9 --version
+  - python3.9 -c 'import platform; print(f"{platform.processor()}")'
   - python3.9 -m pip install https://files.pythonhosted.org/packages/2c/a8/7027e8ca3ba20dc2ed2acd556e31941cb44097ab87d6f81d646a79de4eab/wxPython-4.1.1-cp39-cp39-macosx_10_10_x86_64.whl
 
 #---------------------------------#
