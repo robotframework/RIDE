@@ -10,6 +10,7 @@ branches:
   # whitelist
   only:
     - master
+    - devops
 
   # blacklist
   except:
