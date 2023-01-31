@@ -43,6 +43,10 @@ Install current development version with:
 [source, shell]
 pip install -U https://github.com/robotframework/RIDE/archive/master.zip
 
+(31 January 2023) To update the current development version, 2.0rc1 you will have to force it because the number is the same as the previous:
+[source, shell] 
+pip install -U --no-cache-dir --force https://github.com/robotframework/RIDE/archive/master.zip
+
 (3.6 < python < 3.11) Install current Beta version (2.0b3) with:
 [source, shell]
 pip install -U --pre robotframework-ride
