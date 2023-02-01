@@ -232,7 +232,7 @@ SHORTCUT_KEYS = '''\
         <td>Insert cell(s)</td>
     </tr>
     <tr>
-        <td>CtrlCmd-Shift--D</td>
+        <td>CtrlCmd-Shift-D</td>
         <td>Delete cell(s)</td>
     </tr>
     <tr>
@@ -363,6 +363,10 @@ SHORTCUT_KEYS = '''\
     <tr>
         <td>Alt-Down</td>
         <td>Move row(s) down</td>
+    </tr>
+    <tr>
+        <td>CtrlCmd-I</td>
+        <td>Insert row(s)</td>
     </tr>
     <tr>
         <td>CtrlCmd-3</td>

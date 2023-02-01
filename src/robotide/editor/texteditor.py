@@ -87,6 +87,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         # self.register_shortcut('Del', focused(lambda e: self._editor.delete()))
         self.register_shortcut('Alt-Up', focused(lambda e: self._editor.move_row_up(e)))
         self.register_shortcut('Alt-Down', focused(lambda e: self._editor.move_row_down(e)))
+        self.register_shortcut('CtrlCmd-I', focused(lambda e: self._editor.insert_row(e)))
         self.register_shortcut('CtrlCmd-3', focused(lambda e: self._editor.execute_comment(e)))
         self.register_shortcut('CtrlCmd-Shift-3', focused(lambda e: self._editor.execute_sharp_comment(e)))
         self.register_shortcut('CtrlCmd-4', focused(lambda e: self._editor.execute_uncomment(e)))
@@ -703,6 +704,31 @@ class SourceEditor(wx.Panel):
         self._editor.SetCurrentPos(ini)
         self._editor.SetAnchor(fini)
 
+    def indent_line(self, line):
+        if line > 0:
+            pos = self._editor.PositionFromLine(line)
+            text = self._editor.GetLine(line-1)
+            lenline = len(text)
+            if lenline > 0:
+                idx = 0
+                while idx < lenline and text[idx] == ' ':
+                    idx += 1
+                tsize = idx // self._tab_size
+                if idx < lenline and (text.strip().startswith("FOR") or text.strip().startswith("IF")
+                                      or text.strip().startswith("ELSE") or text.strip().startswith("TRY")
+                                      or text.strip().startswith("EXCEPT") or text.strip().startswith("WHILE")):
+                    tsize += 1
+                elif tsize == 0:
+                    text = text.lower()
+                    if text.startswith("**"):
+                        if not ("variables" in text or "settings" in text):
+                            tsize = 1
+                self._editor.SetCurrentPos(pos)
+                self._editor.SetSelection(pos, pos)
+                self._editor.SetInsertionPoint(pos)
+                for _ in range(tsize):
+                    self.write_ident()
+
     def indent_block(self):
         start, end = self._editor.GetSelection()
         caret = self._editor.GetCurrentPos()
@@ -905,10 +931,10 @@ class SourceEditor(wx.Panel):
             event.Skip()
         """
         elif keycode == ord('3') and event.ControlDown() and event.ShiftDown():
-            self.execute_add_text(add_text='# ', on_the_left=True, on_the_right=False)
+            self.execute_sharp_comment()
             self.store_position()
         elif keycode == ord('4') and event.ControlDown() and event.ShiftDown():
-            self.execute_remove_text(remove_text='# ', on_the_left=True, on_the_right=False)
+            self.execute_sharp_uncomment()
             self.store_position()
         """
 
@@ -1025,6 +1051,22 @@ class SourceEditor(wx.Panel):
         self._editor.SetSelection(begpos+lenbelow, endpos-1)
         #print(f"DEBUG: move_row_down Variables: select start={start}, end={end} cursor={cursor}"
         #    f" ini_line={ini_line} end_line={end_line} begpos={begpos} endpos={endpos} lenbelow={lenbelow}")
+
+    def insert_row(self, event):
+        start, end = self._editor.GetSelection()
+        ini_line = self._editor.LineFromPosition(start)
+        end_line = self._editor.LineFromPosition(end)
+        delta = end_line - ini_line
+        positionfromline = self._editor.PositionFromLine(ini_line)
+        self._editor.SelectNone()
+        self._editor.InsertText(positionfromline, '\n')
+        for nl in range(delta):
+            self._editor.InsertText(positionfromline + nl, '\n')
+        self._editor.SetCurrentPos(positionfromline)
+        self._editor.SetAnchor(positionfromline)
+        self._editor.GotoLine(ini_line)
+        self.indent_line(ini_line)
+        self.store_position()
 
     def execute_comment(self, event):
         start, end = self._editor.GetSelection()
@@ -1182,7 +1224,6 @@ class SourceEditor(wx.Panel):
         spaces = ' ' * self._tab_size
         # self._editor.SelectNone()
         count = 0
-        # self.execute_remove_text(remove_text='# ', on_the_left=True, on_the_right=False)
         maxsize = self._editor.GetLineCount()
         # If the selection spans on more than one line:
         if ini_line < end_line:

@@ -30,6 +30,7 @@ max_jobs: 1
 #---------------------------------#
 
 # Build worker image (VM template)
+
 image: macos-catalina
 
 # scripts that are called at very beginning, before repo cloning
@@ -52,6 +53,12 @@ matrix:
     - platform: x64
       configuration: Release
 
+# environment:
+  # matrix:
+  # - TOXENV: py36
+  # - TOXENV: py37
+  # - TOXENV: py38
+
 environment:
   matrix:
     - APPVEYOR_BUILD_WORKER_IMAGE: macOS
@@ -66,7 +73,6 @@ install:
   - python3.9 -m pip install -r requirements-dev.txt
   - python3.9 -m pip install -r requirements.txt
   - python3.9 -m pip install .
-
 
 #---------------------------------#
 #       tests configuration       #
