@@ -37,7 +37,7 @@ init:
   - git config --global core.autocrlf input
 
 # clone directory
-# clone_folder: c:\projects\RIDE
+clone_folder: c:\projects\RIDE
 
 # fetch repository as zip archive
 shallow_clone: false                 # default is "false"
@@ -52,14 +52,9 @@ matrix:
     - platform: x64
       configuration: Release
 
-# environment:
-  # matrix:
-  # - TOXENV: py36
-  # - TOXENV: py37
-  # - TOXENV: py38
-
 environment:
   matrix:
+
     - APPVEYOR_BUILD_WORKER_IMAGE: macOS
       TOXENV: py39
 
@@ -72,6 +67,7 @@ install:
   - python3.9 -m pip install -r requirements-dev.txt
   - python3.9 -m pip install -r requirements.txt
   - python3.9 -m pip install .
+
 
 #---------------------------------#
 #       tests configuration       #
