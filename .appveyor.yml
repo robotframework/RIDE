@@ -10,6 +10,7 @@ branches:
   # whitelist
   only:
     - master
+    - devops
 
   # blacklist
   except:
@@ -29,7 +30,8 @@ max_jobs: 1
 #---------------------------------#
 
 # Build worker image (VM template)
-# image: Visual Studio 2015
+
+image: macos-catalina
 
 # scripts that are called at very beginning, before repo cloning
 init:
@@ -59,31 +61,18 @@ matrix:
 
 environment:
   matrix:
-    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
-      TOXENV: py36
-      WX: https://files.pythonhosted.org/packages/cb/3f/59f2206b3bbd198d33811fc632467ee4e7df69c723e8231df829d7adb580/wxPython-4.1.1-cp36-cp36m-win_amd64.whl
-    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
-      TOXENV: py37
-      WX: https://files.pythonhosted.org/packages/47/58/665c49864d21ab49ea0630c5e9b567aaa6bd072b265fc00108b4bda8b51e/wxPython-4.1.1-cp37-cp37m-win_amd64.whl
-    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
-      TOXENV: py38
-      WX: https://files.pythonhosted.org/packages/f2/a9/7ec2a1979cf74d52d0d5f11b0ecc49257d32c7248e495f03b0fefe23d8bd/wxPython-4.1.1-cp38-cp38-win_amd64.whl
-    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
-      TOXENV: py39
-      WX: https://files.pythonhosted.org/packages/6f/d3/155ce684967bba904a9d29c346430a491643d60a23f713fcf2fa981b7855/wxPython-4.1.1-cp39-cp39-win_amd64.whl
-    - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
-      TOXENV: py39
-      WX: https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-18.04/wxPython-4.1.1-cp39-cp39-linux_x86_64.whl
     - APPVEYOR_BUILD_WORKER_IMAGE: macOS
       TOXENV: py39
-      WX: https://files.pythonhosted.org/packages/2c/a8/7027e8ca3ba20dc2ed2acd556e31941cb44097ab87d6f81d646a79de4eab/wxPython-4.1.1-cp39-cp39-macosx_10_10_x86_64.whl
 
 build: off
 
 # scripts that run after cloning repository
 install:
-  - cmd: python -m pip install tox
-  - cmd: python -m pip install $WX
+  - brew install python@3.9
+  - python3.9 -m pip install https://files.pythonhosted.org/packages/2c/a8/7027e8ca3ba20dc2ed2acd556e31941cb44097ab87d6f81d646a79de4eab/wxPython-4.1.1-cp39-cp39-macosx_10_10_x86_64.whl
+  - python3.9 -m pip install -r requirements-dev.txt
+  - python3.9 -m pip install -r requirements.txt
+  - python3.9 -m pip install .
 
 #---------------------------------#
 #       tests configuration       #
@@ -91,4 +80,4 @@ install:
 
 # to run your custom scripts instead of automatic tests
 test_script:
-  - tox
+  - invoke test-ci
