@@ -68,6 +68,7 @@ build: off
 
 # scripts that run after cloning repository
 install:
+  - python3 --version
   - python3 -m pip install https://files.pythonhosted.org/packages/28/9f/26ceeefbe5b24782e7e80642652f18dfdbcc941a7933366c1cfee8ff9c03/wxPython-4.2.0-cp310-cp310-macosx_10_10_universal2.whl
   - python3 -m pip install -r requirements-dev.txt
   - python3 -m pip install -r requirements.txt
