@@ -78,4 +78,4 @@ install:
 
 # to run your custom scripts instead of automatic tests
 test_script:
-  - invoke test-ci
+  - C:\Python310-x64\python -m invoke test-ci
