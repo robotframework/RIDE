@@ -85,7 +85,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         self.register_shortcut('CtrlCmd-Z', focused(lambda e: self._editor.undo()))
         self.register_shortcut('CtrlCmd-Y', focused(lambda e: self._editor.redo()))
         # self.register_shortcut('Del', focused(lambda e: self._editor.delete()))
-        self.register_shortcut('CtrlCmd-D', focused(lambda e: self._editor.delete_row(e)))
+        # self.register_shortcut('CtrlCmd-D', focused(lambda e: self._editor.delete_row(e)))
         self.register_shortcut('CtrlCmd-I', focused(lambda e: self._editor.insert_row(e)))
         self.register_shortcut('CtrlCmd-3', focused(lambda e: self._editor.execute_comment(e)))
         self.register_shortcut('CtrlCmd-Shift-3', focused(lambda e: self._editor.execute_sharp_comment(e)))
@@ -926,6 +926,8 @@ class SourceEditor(wx.Panel):
             self.execute_variable_creator(list_variable=(keycode == ord('2')),
                                           dict_variable=(keycode == ord('5')))
             self.store_position()
+        elif keycode == ord('D') and event.ControlDown():
+            self.delete_row(event)
         else:
             event.Skip()
         """
@@ -1006,11 +1008,14 @@ class SourceEditor(wx.Panel):
         ini_line = self._editor.LineFromPosition(start)
         end_line = self._editor.LineFromPosition(end)
         begpos = self._editor.PositionFromLine(ini_line)
-        endpos = self._editor.PositionFromLine(end_line+1)
         self._editor.SelectNone()
-        self._editor.Remove(begpos, endpos)
-        #print(f"DEBUG: delete_row Variables: select start={start}, end={end} cursor={cursor}"
-        #      f" ini_line={ini_line} end_line={end_line} begpos={begpos} endpos={endpos}")
+        # print(f"DEBUG: delete_row Variables: select start={start}, end={end} cursor={cursor}"
+        #       f" ini_line={ini_line} end_line={end_line} begpos={begpos} endpos={endpos}")
+        if start == end:
+            end_line = ini_line
+        for line in range(ini_line, end_line + 1):
+            self._editor.GotoLine(ini_line)
+            self._editor.LineDelete()
         # cursor position when doing block select is always the end of the selection
         if ini_line != end_line:
             self._editor.SetCurrentPos(begpos)
