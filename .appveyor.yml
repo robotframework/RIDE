@@ -47,11 +47,11 @@ shallow_clone: false                 # default is "false"
 clone_depth: 5                      # clone entire repository history if not defined
 
 # this is how to allow failing jobs in the matrix
-matrix:
-  fast_finish: false     # set this flag to immediately finish build once one of the jobs fails.
-  allow_failures:
-    - platform: x64
-      configuration: Release
+# matrix:
+#  fast_finish: false     # set this flag to immediately finish build once one of the jobs fails.
+#  allow_failures:
+#    - platform: x64
+#      configuration: Release
 
 # environment:
   # matrix:
