@@ -68,9 +68,9 @@ build: off
 
 # scripts that run after cloning repository
 install:
-  - python3 -m pip install -r requirements-dev.txt
-  - python3 -m pip install -r requirements.txt
-  - python3 -m pip install .
+  - C:\Python310-x64\python -m pip install -r requirements-dev.txt
+  - C:\Python310-x64\python -m pip install -r requirements.txt
+  - C:\Python310-x64\python -m pip install .
 
 #---------------------------------#
 #       tests configuration       #
