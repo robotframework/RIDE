@@ -30,15 +30,15 @@ max_jobs: 1
 #---------------------------------#
 
 # Build worker image (VM template)
-
-image: macos-bigsur
+image: Visual Studio 2022
+# image: macos-bigsur
 
 # scripts that are called at very beginning, before repo cloning
 init:
   - git config --global core.autocrlf input
 
 # clone directory
-# clone_folder: c:\projects\RIDE
+clone_folder: c:\projects\RIDE
 
 # fetch repository as zip archive
 shallow_clone: false                 # default is "false"
@@ -59,16 +59,15 @@ clone_depth: 5                      # clone entire repository history if not def
   # - TOXENV: py37
   # - TOXENV: py38
 
-environment:
-  matrix:
-    - APPVEYOR_BUILD_WORKER_IMAGE: macOS
-      TOXENV: py38
+# environment:
+#  matrix:
+#    - APPVEYOR_BUILD_WORKER_IMAGE: macOS
+#      TOXENV: py38
 
 build: off
 
 # scripts that run after cloning repository
 install:
-  - python3 -m pip install https://files.pythonhosted.org/packages/ef/1e/c651e38fafdc20eb1253ffc852efd7163d9d302a0811f2f01279126d0f15/wxPython-4.2.0-cp38-cp38-macosx_11_0_universal2.whl
   - python3 -m pip install -r requirements-dev.txt
   - python3 -m pip install -r requirements.txt
   - python3 -m pip install .
