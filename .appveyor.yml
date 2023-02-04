@@ -62,14 +62,13 @@ matrix:
 environment:
   matrix:
     - APPVEYOR_BUILD_WORKER_IMAGE: macOS
-      TOXENV: py310
+      TOXENV: py38
 
 build: off
 
 # scripts that run after cloning repository
 install:
-  - python3 --version
-  - python3 -m pip install https://files.pythonhosted.org/packages/28/9f/26ceeefbe5b24782e7e80642652f18dfdbcc941a7933366c1cfee8ff9c03/wxPython-4.2.0-cp310-cp310-macosx_10_10_universal2.whl
+  - python3 -m pip install https://files.pythonhosted.org/packages/ef/1e/c651e38fafdc20eb1253ffc852efd7163d9d302a0811f2f01279126d0f15/wxPython-4.2.0-cp38-cp38-macosx_11_0_universal2.whl
   - python3 -m pip install -r requirements-dev.txt
   - python3 -m pip install -r requirements.txt
   - python3 -m pip install .
