@@ -10,6 +10,7 @@ branches:
   # whitelist
   only:
     - master
+    - devops
 
   # blacklist
   except:
@@ -29,14 +30,15 @@ max_jobs: 1
 #---------------------------------#
 
 # Build worker image (VM template)
-image: Visual Studio 2015
+
+image: macos-catalina
 
 # scripts that are called at very beginning, before repo cloning
 init:
   - git config --global core.autocrlf input
 
 # clone directory
-clone_folder: c:\projects\RIDE
+# clone_folder: c:\projects\RIDE
 
 # fetch repository as zip archive
 shallow_clone: false                 # default is "false"
@@ -51,17 +53,26 @@ matrix:
     - platform: x64
       configuration: Release
 
+# environment:
+  # matrix:
+  # - TOXENV: py36
+  # - TOXENV: py37
+  # - TOXENV: py38
+
 environment:
   matrix:
-  - TOXENV: py38
-  - TOXENV: py39
-  - TOXENV: py310
+    - APPVEYOR_BUILD_WORKER_IMAGE: macOS
+      TOXENV: py39
 
 build: off
 
 # scripts that run after cloning repository
 install:
-  - cmd: pip install tox
+  - brew install python@3.9
+  - python3.9 -m pip install https://files.pythonhosted.org/packages/2c/a8/7027e8ca3ba20dc2ed2acd556e31941cb44097ab87d6f81d646a79de4eab/wxPython-4.1.1-cp39-cp39-macosx_10_10_x86_64.whl
+  - python3.9 -m pip install -r requirements-dev.txt
+  - python3.9 -m pip install -r requirements.txt
+  - python3.9 -m pip install .
 
 #---------------------------------#
 #       tests configuration       #
@@ -69,4 +80,4 @@ install:
 
 # to run your custom scripts instead of automatic tests
 test_script:
-  - tox
+  - invoke test-ci

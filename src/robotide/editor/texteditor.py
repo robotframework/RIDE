@@ -85,7 +85,8 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         self.register_shortcut('CtrlCmd-Z', focused(lambda e: self._editor.undo()))
         self.register_shortcut('CtrlCmd-Y', focused(lambda e: self._editor.redo()))
         # self.register_shortcut('Del', focused(lambda e: self._editor.delete()))
-        self.register_shortcut('CtrlCmd-D', focused(lambda e: self._editor.delete_row(e)))
+        # self.register_shortcut('CtrlCmd-D', focused(lambda e: self._editor.delete_row(e)))
+        self.register_shortcut('CtrlCmd-I', focused(lambda e: self._editor.insert_row(e)))
         self.register_shortcut('CtrlCmd-3', focused(lambda e: self._editor.execute_comment(e)))
         self.register_shortcut('CtrlCmd-Shift-3', focused(lambda e: self._editor.execute_sharp_comment(e)))
         self.register_shortcut('CtrlCmd-4', focused(lambda e: self._editor.execute_uncomment(e)))
@@ -702,6 +703,31 @@ class SourceEditor(wx.Panel):
         self._editor.SetCurrentPos(ini)
         self._editor.SetAnchor(fini)
 
+    def indent_line(self, line):
+        if line > 0:
+            pos = self._editor.PositionFromLine(line)
+            text = self._editor.GetLine(line-1)
+            lenline = len(text)
+            if lenline > 0:
+                idx = 0
+                while idx < lenline and text[idx] == ' ':
+                    idx += 1
+                tsize = idx // self._tab_size
+                if idx < lenline and (text.strip().startswith("FOR") or text.strip().startswith("IF")
+                                      or text.strip().startswith("ELSE") or text.strip().startswith("TRY")
+                                      or text.strip().startswith("EXCEPT") or text.strip().startswith("WHILE")):
+                    tsize += 1
+                elif tsize == 0:
+                    text = text.lower()
+                    if text.startswith("**"):
+                        if not ("variables" in text or "settings" in text):
+                            tsize = 1
+                self._editor.SetCurrentPos(pos)
+                self._editor.SetSelection(pos, pos)
+                self._editor.SetInsertionPoint(pos)
+                for _ in range(tsize):
+                    self.write_ident()
+
     def indent_block(self):
         start, end = self._editor.GetSelection()
         caret = self._editor.GetCurrentPos()
@@ -900,6 +926,8 @@ class SourceEditor(wx.Panel):
             self.execute_variable_creator(list_variable=(keycode == ord('2')),
                                           dict_variable=(keycode == ord('5')))
             self.store_position()
+        elif keycode == ord('D') and event.ControlDown():
+            self.delete_row(event)
         else:
             event.Skip()
         """
@@ -980,11 +1008,14 @@ class SourceEditor(wx.Panel):
         ini_line = self._editor.LineFromPosition(start)
         end_line = self._editor.LineFromPosition(end)
         begpos = self._editor.PositionFromLine(ini_line)
-        endpos = self._editor.PositionFromLine(end_line+1)
         self._editor.SelectNone()
-        self._editor.Remove(begpos, endpos)
-        #print(f"DEBUG: delete_row Variables: select start={start}, end={end} cursor={cursor}"
-        #      f" ini_line={ini_line} end_line={end_line} begpos={begpos} endpos={endpos}")
+        # print(f"DEBUG: delete_row Variables: select start={start}, end={end} cursor={cursor}"
+        #       f" ini_line={ini_line} end_line={end_line} begpos={begpos} endpos={endpos}")
+        if start == end:
+            end_line = ini_line
+        for line in range(ini_line, end_line + 1):
+            self._editor.GotoLine(ini_line)
+            self._editor.LineDelete()
         # cursor position when doing block select is always the end of the selection
         if ini_line != end_line:
             self._editor.SetCurrentPos(begpos)
@@ -992,6 +1023,22 @@ class SourceEditor(wx.Panel):
         else:
             self._editor.SetCurrentPos(cursor)
             self._editor.SetAnchor(cursor)
+        self.store_position()
+
+    def insert_row(self, event):
+        start, end = self._editor.GetSelection()
+        ini_line = self._editor.LineFromPosition(start)
+        end_line = self._editor.LineFromPosition(end)
+        delta = end_line - ini_line
+        positionfromline = self._editor.PositionFromLine(ini_line)
+        self._editor.SelectNone()
+        self._editor.InsertText(positionfromline, '\n')
+        for nl in range(delta):
+            self._editor.InsertText(positionfromline + nl, '\n')
+        self._editor.SetCurrentPos(positionfromline)
+        self._editor.SetAnchor(positionfromline)
+        self._editor.GotoLine(ini_line)
+        self.indent_line(ini_line)
         self.store_position()
 
     def execute_comment(self, event):
@@ -1166,7 +1213,13 @@ class SourceEditor(wx.Panel):
                     if idx + 1 < lenline and row[idx:idx+1] == '#':
                         if idx + 2 < lenline and row[idx+1:idx+2] == ' ':
                             size = 2
-                        self._editor.DeleteRange(pos + idx, size)
+                        # Here we clean up escaped spaces from Apply
+                        if idx + size < lenline:
+                            newrow = row[idx + size:]
+                            newrow = newrow.replace('\\ ', ' ')
+                            size += len(row[idx:]) - len(newrow) - size
+                            self._editor.DeleteRange(pos + idx, len(newrow) + size)
+                            self._editor.InsertText(pos + idx, newrow)
                         count += size
         elif start == end:  # On a single row, no selection
             pos = self._editor.PositionFromLine(ini_line)
@@ -1181,7 +1234,13 @@ class SourceEditor(wx.Panel):
                     if idx + 1 < lenline and row[idx:idx + 1] == '#':
                         if idx + 2 < lenline and row[idx + 1:idx + 2] == ' ':
                             size = 2
-                        self._editor.DeleteRange(pos + idx, size)
+                        # Here we clean up escaped spaces from Apply
+                        if idx + size < lenline:
+                            newrow = row[idx + size:]
+                            newrow = newrow.replace('\\ ', ' ')
+                            size += len(row[idx:]) - len(newrow) - size
+                            self._editor.DeleteRange(pos + idx, len(newrow) + size)
+                            self._editor.InsertText(pos + idx, newrow )
                         count += size
                     else:
                         idx += 1
@@ -1203,7 +1262,13 @@ class SourceEditor(wx.Panel):
                     if idx + 1 < lenline and row[idx:idx + 1] == '#':
                         if idx + 2 < lenline and row[idx + 1:idx + 2] == ' ':
                             size = 2
-                        self._editor.DeleteRange(pos + idx, size)
+                        # Here we clean up escaped spaces from Apply
+                        if idx + size < lenline:
+                            newrow = row[idx + size:]
+                            newrow = newrow.replace('\\ ', ' ')
+                            size += len(row[idx:]) - len(newrow) - size
+                            self._editor.DeleteRange(pos + idx, len(newrow) + size)
+                            self._editor.InsertText(pos + idx, newrow)
                         count += size
                     else:
                         idx -= 1
@@ -1218,8 +1283,6 @@ class SourceEditor(wx.Panel):
             ini = new_end
             fini = new_start
         self._editor.SetSelection(new_start, new_end)  # TODO: For some reason the selection is not restored!
-        self._editor.SetCurrentPos(ini)
-        self._editor.SetAnchor(fini)
         self._editor.SetCurrentPos(cursor - count)
         self.store_position()
 

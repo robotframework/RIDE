@@ -10,11 +10,15 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Added
 
+- Added insert and delete rows to Text Editor, by using ``Ctrl-I`` and ``Ctrl-D``
+
 === Removed
 
 === Changed
 
 === Fixed
+
+- Fixed blank Grid Editor at keywords with steps commented with ``\# ``, by using ``Ctrl-Shift-3 on Text Editor
 
 == https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.0b3.rst[2.0b3] - 2023-01-15
 
