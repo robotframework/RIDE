@@ -56,8 +56,10 @@ pip install -U --pre robotframework-ride
 
 
 == Unit testing statuses:
-Linux (py36, py37, py38, py39): image:https://app.travis-ci.com/HelioGuilherme66/RIDE.svg?branch=master[Unit Tests, link=https://app.travis-ci.com/github/HelioGuilherme66/RIDE]
-Windows (py36, py37, py38): image:https://ci.appveyor.com/api/projects/status/github/HelioGuilherme66/RIDE?branch=master&svg=true[Unit Tests, link=https://ci.appveyor.com/project/HelioGuilherme66/ride]
+
+// Linux (py36, py37, py38, py39): image:https://app.travis-ci.com/HelioGuilherme66/RIDE.svg?branch=master[Unit Tests, link=https://app.travis-ci.com/github/HelioGuilherme66/RIDE]
+
+Windows (Python 3.10): image:https://ci.appveyor.com/api/projects/status/github/HelioGuilherme66/RIDE?branch=master&svg=true[Unit Tests, link=https://ci.appveyor.com/project/HelioGuilherme66/ride]
 
 Quality Gate Status: image:https://sonarcloud.io/api/project_badges/measure?project=HelioGuilherme66_RIDE&metric=alert_status[SonarCloud, link=https://sonarcloud.io/summary/new_code?id=HelioGuilherme66_RIDE]
 
