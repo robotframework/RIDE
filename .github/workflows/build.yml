@@ -29,8 +29,6 @@ jobs:
         run: pip install -r requirements-dev.txt
       - name: Run Xvfb
         run: Xvfb :1 -noreset &
-      - name: Export DISPLAY
-        run: export DISPLAY=:1
       - name: Test Install RIDE
         run: pip install .
       - name: Run RIDE unit-tests
@@ -40,4 +38,5 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          DISPLAY: :1
 
