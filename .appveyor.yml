@@ -78,4 +78,5 @@ install:
 
 # to run your custom scripts instead of automatic tests
 test_script:
+  - set PATH=C:\Python310-x64;C:\Python310-x64\Scripts;%PATH%
   - C:\Python310-x64\python -m invoke test-ci
