@@ -10,6 +10,8 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Added
 
+- Added insert and delete rows to Text Editor, by using ``Ctrl-I`` and ``Ctrl-D``
+
 === Removed
 
 === Changed
