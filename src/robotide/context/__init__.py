@@ -365,6 +365,10 @@ SHORTCUT_KEYS = '''\
         <td>Move row(s) down</td>
     </tr>
     <tr>
+        <td>CtrlCmd-D</td>
+        <td>Delete row(s)</td>
+    </tr>
+    <tr>
         <td>CtrlCmd-I</td>
         <td>Insert row(s)</td>
     </tr>
