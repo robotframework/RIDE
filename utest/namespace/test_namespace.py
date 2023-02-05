@@ -168,6 +168,11 @@ class TestKeywordSuggestions(_DataFileTest):
             sugs, 'resource_from_resource_with_variable.robot')
 
     def test_library_from_resourcefile_variable(self):
+        import os
+        import pytest
+        DISPLAY = os.getenv('DISPLAY')
+        if not DISPLAY:
+            pytest.skip("Skipped because of missing DISPLAY")  # Avoid failing unit tests in system without X11
         sugs = self.ns.get_suggestions_for(self.kw, 'Execute Manual')
         self._assert_import_kws(sugs, 'Dialogs')
 
@@ -303,6 +308,11 @@ class TestKeywordSuggestions(_DataFileTest):
         self._assert_import_kws(sugs[:2], ArgumentInfo.SOURCE)
 
     def test_suggestions_for_datafile(self):
+        import os
+        import pytest
+        DISPLAY = os.getenv('DISPLAY')
+        if not DISPLAY:
+            pytest.skip("Skipped because of missing DISPLAY")  # Avoid failing unit tests in system without X11
         sugs = self.ns.get_suggestions_for(self.tcf_ctrl, 'Execute Manual')
         self._assert_import_kws(sugs, 'Dialogs')
         sugs = self.ns.get_suggestions_for(self.tcf_ctrl, '${libna')
