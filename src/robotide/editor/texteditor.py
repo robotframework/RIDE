@@ -932,10 +932,10 @@ class SourceEditor(wx.Panel):
             event.Skip()
         """
         elif keycode == ord('3') and event.ControlDown() and event.ShiftDown():
-            self.execute_add_text(add_text='# ', on_the_left=True, on_the_right=False)
+            self.execute_sharp_comment()
             self.store_position()
         elif keycode == ord('4') and event.ControlDown() and event.ShiftDown():
-            self.execute_remove_text(remove_text='# ', on_the_left=True, on_the_right=False)
+            self.execute_sharp_uncomment()
             self.store_position()
         """
 
@@ -1197,7 +1197,6 @@ class SourceEditor(wx.Panel):
         spaces = ' ' * self._tab_size
         # self._editor.SelectNone()
         count = 0
-        # self.execute_remove_text(remove_text='# ', on_the_left=True, on_the_right=False)
         maxsize = self._editor.GetLineCount()
         # If the selection spans on more than one line:
         if ini_line < end_line:

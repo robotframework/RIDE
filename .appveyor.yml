@@ -30,8 +30,8 @@ max_jobs: 1
 #---------------------------------#
 
 # Build worker image (VM template)
-
-image: macos-catalina
+image: Visual Studio 2022
+# image: macos-bigsur
 
 # scripts that are called at very beginning, before repo cloning
 init:
@@ -47,11 +47,11 @@ shallow_clone: false                 # default is "false"
 clone_depth: 5                      # clone entire repository history if not defined
 
 # this is how to allow failing jobs in the matrix
-matrix:
-  fast_finish: false     # set this flag to immediately finish build once one of the jobs fails.
-  allow_failures:
-    - platform: x64
-      configuration: Release
+# matrix:
+#  fast_finish: false     # set this flag to immediately finish build once one of the jobs fails.
+#  allow_failures:
+#    - platform: x64
+#      configuration: Release
 
 # environment:
   # matrix:
@@ -59,20 +59,18 @@ matrix:
   # - TOXENV: py37
   # - TOXENV: py38
 
-environment:
-  matrix:
-    - APPVEYOR_BUILD_WORKER_IMAGE: macOS
-      TOXENV: py39
+# environment:
+#  matrix:
+#    - APPVEYOR_BUILD_WORKER_IMAGE: macOS
+#      TOXENV: py38
 
 build: off
 
 # scripts that run after cloning repository
 install:
-  - brew install python@3.9
-  - python3.9 -m pip install https://files.pythonhosted.org/packages/2c/a8/7027e8ca3ba20dc2ed2acd556e31941cb44097ab87d6f81d646a79de4eab/wxPython-4.1.1-cp39-cp39-macosx_10_10_x86_64.whl
-  - python3.9 -m pip install -r requirements-dev.txt
-  - python3.9 -m pip install -r requirements.txt
-  - python3.9 -m pip install .
+  - C:\Python310-x64\python -m pip install -r requirements-dev.txt
+  - C:\Python310-x64\python -m pip install -r requirements.txt
+  - C:\Python310-x64\python -m pip install .
 
 #---------------------------------#
 #       tests configuration       #
@@ -80,4 +78,5 @@ install:
 
 # to run your custom scripts instead of automatic tests
 test_script:
-  - invoke test-ci
+  - set PATH=C:\Python310-x64;C:\Python310-x64\Scripts;%PATH%
+  - C:\Python310-x64\python -m invoke test-ci
