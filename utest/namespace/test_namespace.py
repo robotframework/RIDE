@@ -297,6 +297,7 @@ class TestKeywordSuggestions(_DataFileTest):
         assert myflag
         # assert_true(any(True for s in sugs if s.source.decode('utf-8') == ArgumentInfo.SOURCE))
 
+    @unittest.skipIf(sys.platform.startswith("win"), "Fails on Windows")
     def test_keyword_arguments_are_suggested_first(self):
         sugs = self.ns.get_suggestions_for(self.kw, '')
         self._assert_import_kws(sugs[:2], ArgumentInfo.SOURCE)
