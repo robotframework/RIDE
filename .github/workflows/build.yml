@@ -15,12 +15,8 @@ jobs:
           fetch-depth: 0
       - name: Install missing library
         run: sudo apt-get install libnotify4 libsdl1.2debian libsdl2.2 -y
-      - name: Install and run Xvfb
+      - name: Install Xvfb
         run: sudo apt-get install xvfb -y
-      - name: Run Xvfb
-        run: Xvfb :1 -noreset &
-      - name: Export DISPLAY
-        run: export DISPLAY=:1
       - name: Setup Python
         uses: actions/setup-python@v2
         with:
@@ -31,6 +27,10 @@ jobs:
         run: pip install https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-22.04/wxPython-4.2.0-cp310-cp310-linux_x86_64.whl
       - name: Install RIDE dependencies
         run: pip install -r requirements-dev.txt
+      - name: Run Xvfb
+        run: Xvfb :1 -noreset &
+      - name: Export DISPLAY
+        run: export DISPLAY=:1
       - name: Test Install RIDE
         run: pip install .
       - name: Run RIDE unit-tests
