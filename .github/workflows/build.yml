@@ -17,12 +17,16 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python }}
-      - name: Install tox and any other packages
-        run: pip install tox
-      - name: Run tox
-        run: tox -e py
+      - name: Install invoke and any other packages
+        run: pip install coverage invoke pytest
       - name: Install wxPython
         run: pip install https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-22.04/wxPython-4.2.0-cp310-cp310-linux_x86_64.whl
+      - name: Install RIDE dependencies
+        run: pip install -r requirements-dev.txt
+      - name: Test Install RIDE
+        run: pip install .
+      - name: Run RIDE unit-tests
+        run: invoke test-ci
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
