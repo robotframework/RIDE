@@ -33,6 +33,11 @@ import unittest
 from robotide.editor.gridbase import GridEditor
 
 # wx needs to imported last so that robotide can select correct wx version.
+import os
+import pytest
+DISPLAY = os.getenv('DISPLAY')
+if not DISPLAY:
+    pytest.skip("Skipped because of missing DISPLAY", allow_module_level=True) # Avoid failing unit tests in system without X11
 import wx
 from robotide.context import IS_WINDOWS
 
