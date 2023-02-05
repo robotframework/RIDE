@@ -16,6 +16,10 @@
 import unittest
 import time
 import os
+import pytest
+DISPLAY = os.getenv('DISPLAY')
+if not DISPLAY:
+    pytest.skip("Skipped because of missing DISPLAY", allow_module_level=True) # Avoid failing unit tests in system without X11
 import sys
 from robotide.run.runanything import RunConfig
 from robotide.run.ui import Runner

@@ -13,6 +13,11 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import os
+import pytest
+DISPLAY = os.getenv('DISPLAY')
+if not DISPLAY:
+    pytest.skip("Skipped because of missing DISPLAY", allow_module_level=True) # Avoid failing unit tests in system without X11
 import wx
 import unittest
 from robotide.controller.filecontrollers import TestCaseFileController
