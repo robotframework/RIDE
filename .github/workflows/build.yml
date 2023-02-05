@@ -15,6 +15,12 @@ jobs:
           fetch-depth: 0
       - name: Install missing library
         run: sudo apt-get install libnotify4 libsdl1.2debian libsdl2.2 -y
+      - name: Install and run Xvfb
+        run: sudo apt-get install xvfb -y
+      - name: Run Xvfb
+        run: Xvfb :1 -noreset &
+      - name: Export DISPLAY
+        run: export DISPLAY=:1
       - name: Setup Python
         uses: actions/setup-python@v2
         with:
