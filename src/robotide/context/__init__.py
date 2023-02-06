@@ -357,6 +357,14 @@ SHORTCUT_KEYS = '''\
         <td>Make list variable body</td>
     </tr>
     <tr>
+        <td>Alt-Up</td>
+        <td>Move row(s) up</td>
+    </tr>
+    <tr>
+        <td>Alt-Down</td>
+        <td>Move row(s) down</td>
+    </tr>
+    <tr>
         <td>CtrlCmd-D</td>
         <td>Delete row(s)</td>
     </tr>
