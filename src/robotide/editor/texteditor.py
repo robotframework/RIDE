@@ -1026,6 +1026,7 @@ class SourceEditor(wx.Panel):
             endpos = self._editor.PositionFromLine(end_line+1)
             self._editor.Replace(begpos, endpos, rowselblock)
             self._editor.SetSelection(begpos, endpos-lenabove-1)
+            # TODO: recalculate line identation for new position and old
             #print(f"DEBUG: move_row_up Variables: select start={start}, end={end} cursor={cursor}"
             #    f" ini_line={ini_line} end_line={end_line} begpos={begpos} endpos={endpos} lenabove={lenabove}")
 
@@ -1052,6 +1053,7 @@ class SourceEditor(wx.Panel):
         endpos = self._editor.PositionFromLine(end_line+2)
         self._editor.Replace(begpos, endpos, rowselblock)
         self._editor.SetSelection(begpos+lenbelow, endpos-1)
+        # TODO: recalculate line identation for new position and old
         #print(f"DEBUG: move_row_down Variables: select start={start}, end={end} cursor={cursor}"
         #    f" ini_line={ini_line} end_line={end_line} begpos={begpos} endpos={endpos} lenbelow={lenbelow}")
 
