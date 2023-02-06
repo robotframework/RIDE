@@ -85,6 +85,8 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         self.register_shortcut('CtrlCmd-Z', focused(lambda e: self._editor.undo()))
         self.register_shortcut('CtrlCmd-Y', focused(lambda e: self._editor.redo()))
         # self.register_shortcut('Del', focused(lambda e: self._editor.delete()))
+        self.register_shortcut('Alt-Up', focused(lambda e: self._editor.move_row_up(e)))
+        self.register_shortcut('Alt-Down', focused(lambda e: self._editor.move_row_down(e)))
         # self.register_shortcut('CtrlCmd-D', focused(lambda e: self._editor.delete_row(e)))
         self.register_shortcut('CtrlCmd-I', focused(lambda e: self._editor.insert_row(e)))
         self.register_shortcut('CtrlCmd-3', focused(lambda e: self._editor.execute_comment(e)))
@@ -1001,6 +1003,59 @@ class SourceEditor(wx.Panel):
         else:
             close_symbol = open_symbol
         return open_symbol+value+close_symbol
+
+    def move_row_up(self, event):
+        start, end = self._editor.GetSelection()
+        cursor = self._editor.GetCurrentPos()
+        ini_line = self._editor.LineFromPosition(start)
+        # selection not on top?
+        if ini_line > 0:
+            end_line = self._editor.LineFromPosition(end)
+            # get the previous row content and length
+            rowabove = self._editor.GetLine(ini_line-1)
+            lenabove = len(rowabove.encode('utf-8'))
+            # get the content of the block rows
+            rowselblock = ''
+            rowcnt = ini_line
+            while rowcnt <= end_line:
+                rowselblock += self._editor.GetLine(rowcnt)
+                rowcnt += 1
+            # add the content of previous row
+            rowselblock += rowabove
+            begpos = self._editor.PositionFromLine(ini_line-1)
+            endpos = self._editor.PositionFromLine(end_line+1)
+            self._editor.Replace(begpos, endpos, rowselblock)
+            self._editor.SetSelection(begpos, endpos-lenabove-1)
+            # TODO: recalculate line identation for new position and old
+            #print(f"DEBUG: move_row_up Variables: select start={start}, end={end} cursor={cursor}"
+            #    f" ini_line={ini_line} end_line={end_line} begpos={begpos} endpos={endpos} lenabove={lenabove}")
+
+    def move_row_down(self, event):
+        start, end = self._editor.GetSelection()
+        cursor = self._editor.GetCurrentPos()
+        ini_line = self._editor.LineFromPosition(start)
+        end_line = self._editor.LineFromPosition(end)
+        # get the next row content and length
+        rowbelow = self._editor.GetLine(end_line+1)
+        lenbelow = len(rowbelow.encode('utf-8'))
+        # get the content of the block rows after adding the content below first
+        # no new rows anymore?
+        if lenbelow == 0:
+            rowselblock = '\n'
+            lenbelow = 1
+        else:
+            rowselblock = rowbelow
+        rowcnt = ini_line
+        while rowcnt <= end_line:
+            rowselblock += self._editor.GetLine(rowcnt)
+            rowcnt += 1
+        begpos = self._editor.PositionFromLine(ini_line)
+        endpos = self._editor.PositionFromLine(end_line+2)
+        self._editor.Replace(begpos, endpos, rowselblock)
+        self._editor.SetSelection(begpos+lenbelow, endpos-1)
+        # TODO: recalculate line identation for new position and old
+        #print(f"DEBUG: move_row_down Variables: select start={start}, end={end} cursor={cursor}"
+        #    f" ini_line={ini_line} end_line={end_line} begpos={begpos} endpos={endpos} lenbelow={lenbelow}")
 
     def delete_row(self, event):
         start, end = self._editor.GetSelection()
