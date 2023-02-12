@@ -1182,54 +1182,47 @@ class SourceEditor(wx.Panel):
 
     def insert_cell(self, event):
         start, end = self._editor.GetSelection()
-        cursor = self._editor.GetCurrentPos()
         ini_line = self._editor.LineFromPosition(start)
         end_line = self._editor.LineFromPosition(end)
         begpos = self._editor.PositionFromLine(ini_line)
         begend = self._editor.PositionFromLine(ini_line+1)
         endpos = self._editor.PositionFromLine(end_line+1)
-        #print(f"DEBUG: insert_cell VariablesI: select start={start}, end={end} cursor={cursor}"
-        #    f" ini_line={ini_line} end_line={end_line} begpos={begpos} endpos={endpos}")
+        # print(f"DEBUG: insert_cell VariablesI: select start={start}, end={end} cursor={cursor}"
+        #     f" ini_line={ini_line} end_line={end_line} begpos={begpos} endpos={endpos}")
         cell_no_beg = self._get_cell_no(begpos, endpos, start)
         cell_pos_beg = self._get_position_of_cell(begpos, endpos, cell_no_beg)
-        cell_tot_ini = self._get_number_of_cells(begpos, begend)
-        # if there is a selection subtract 1 from endpos to circumvent cursor being on end of cell --> otherwise no will be next cell no
+        # if there is a selection subtract 1 from endpos to circumvent cursor being on end of cell
+        # --> otherwise no will be next cell no
         if start != end:
             cell_no_end = self._get_cell_no(begpos, endpos, end-1)
         else:
             cell_no_end = self._get_cell_no(begpos, endpos, end)
-        cell_pos_end = self._get_position_of_cell(begpos, endpos, cell_no_end)
-        #print(f"DEBUG: cell range to handle beg={cell_no_beg} tot_line={cell_tot_ini} end={cell_no_end}")
+        #  print(f"DEBUG: cell range to handle beg={cell_no_beg} tot_line={cell_tot_ini} end={cell_no_end}")
         celltab = ' ' * self._tab_size
-        cellval = '\ ' # needs to be something otherwise it gets cleaned up by sanitizer
         # If the selection spans more than one line:
         if ini_line < end_line:   # TODO: do inserts in such a way that they can be undone in 1 undo
-            cells_to_insert = cell_tot_ini - cell_no_beg + 1
-            amount_of_lines = end_line - ini_line
             new_start = cell_pos_beg
-            #print(f"DEBUG: insert {cells_to_insert} cell(s) before cell={cell_no_beg} on amount of lines={amount_of_lines}")
             for line in range(ini_line, end_line+1):
                 begthis = self._editor.PositionFromLine(line)
                 endthis = self._editor.PositionFromLine(line+1)
                 cell_pos_beg = self._get_position_of_cell(begthis, endthis, cell_no_beg)
-                self._editor.InsertText(cell_pos_beg, (celltab + cellval) * cells_to_insert)
-            new_end = cell_pos_beg + (len((celltab + cellval).encode('utf-8')) * cells_to_insert)
+                self._editor.InsertText(cell_pos_beg, celltab)
+            new_end = cell_pos_beg + (len(celltab.encode('utf-8')))
         elif start == end:  # On a single row, no selection
-            #print(f"DEBUG: insert 1 cell before cell={cell_no_beg} on line={ini_line}")
-            self._editor.InsertText(cell_pos_beg, celltab + cellval)
+            # print(f"DEBUG: insert 1 cell before cell={cell_no_beg} on line={ini_line}")
+            self._editor.InsertText(cell_pos_beg, celltab)
             new_start = cell_pos_beg
-            new_end   = cell_pos_beg + len((celltab + cellval).encode('utf-8'))
+            new_end = cell_pos_beg + len(celltab.encode('utf-8'))
         else:  # On a single row, with selection
             cells_to_insert = cell_no_end - cell_no_beg + 1
-            #print(f"DEBUG: insert {cells_to_insert} cell(s) before cell={cell_no_beg} on line={ini_line}")
+            #  print(f"DEBUG: insert {cells_to_insert} cell(s) before cell={cell_no_beg} on line={ini_line}")
             # insert at once so undo handles it correct
-            self._editor.InsertText(cell_pos_beg, (celltab + cellval) * cells_to_insert)
+            self._editor.InsertText(cell_pos_beg, celltab * cells_to_insert)
             new_start = cell_pos_beg
-            new_end   = cell_pos_beg + (len((celltab + cellval).encode('utf-8')) * cells_to_insert)
-        # subtract 1 from endpos to circumvent cursor being on end of cell --> otherwise no will be next cell no
-        new_end -= 1
+            new_end = cell_pos_beg + (len(celltab.encode('utf-8')) * cells_to_insert)
         # SetSelection and SetCurrentPos + Store_position overrule each other so only use one of them
         self._editor.SetSelection(new_start, new_end)
+        self._editor.SetAnchor(new_end)
 
     def _get_cell_no(self, begpos, endpos, findpos):
         # get cell number from range begpos-endpos using findpos 
