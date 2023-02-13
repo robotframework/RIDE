@@ -86,6 +86,10 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         self.register_shortcut('CtrlCmd-Y', focused(lambda e: self._editor.redo()))
         # self.register_shortcut('Del', focused(lambda e: self._editor.delete()))
         self.register_shortcut('CtrlCmd-Shift-I', focused(lambda e: self._editor.insert_cell(e)))
+        self.register_shortcut('Alt-Up', focused(lambda e: self._editor.move_row_up(e)))
+        self.register_shortcut('Alt-Down', focused(lambda e: self._editor.move_row_down(e)))
+        # self.register_shortcut('CtrlCmd-D', focused(lambda e: self._editor.delete_row(e)))
+        self.register_shortcut('CtrlCmd-I', focused(lambda e: self._editor.insert_row(e)))
         self.register_shortcut('CtrlCmd-3', focused(lambda e: self._editor.execute_comment(e)))
         self.register_shortcut('CtrlCmd-Shift-3', focused(lambda e: self._editor.execute_sharp_comment(e)))
         self.register_shortcut('CtrlCmd-4', focused(lambda e: self._editor.execute_uncomment(e)))
@@ -702,6 +706,31 @@ class SourceEditor(wx.Panel):
         self._editor.SetCurrentPos(ini)
         self._editor.SetAnchor(fini)
 
+    def indent_line(self, line):
+        if line > 0:
+            pos = self._editor.PositionFromLine(line)
+            text = self._editor.GetLine(line-1)
+            lenline = len(text)
+            if lenline > 0:
+                idx = 0
+                while idx < lenline and text[idx] == ' ':
+                    idx += 1
+                tsize = idx // self._tab_size
+                if idx < lenline and (text.strip().startswith("FOR") or text.strip().startswith("IF")
+                                      or text.strip().startswith("ELSE") or text.strip().startswith("TRY")
+                                      or text.strip().startswith("EXCEPT") or text.strip().startswith("WHILE")):
+                    tsize += 1
+                elif tsize == 0:
+                    text = text.lower()
+                    if text.startswith("**"):
+                        if not ("variables" in text or "settings" in text):
+                            tsize = 1
+                self._editor.SetCurrentPos(pos)
+                self._editor.SetSelection(pos, pos)
+                self._editor.SetInsertionPoint(pos)
+                for _ in range(tsize):
+                    self.write_ident()
+
     def indent_block(self):
         start, end = self._editor.GetSelection()
         caret = self._editor.GetCurrentPos()
@@ -900,14 +929,16 @@ class SourceEditor(wx.Panel):
             self.execute_variable_creator(list_variable=(keycode == ord('2')),
                                           dict_variable=(keycode == ord('5')))
             self.store_position()
+        elif keycode == ord('D') and event.ControlDown():
+            self.delete_row(event)
         else:
             event.Skip()
         """
         elif keycode == ord('3') and event.ControlDown() and event.ShiftDown():
-            self.execute_add_text(add_text='# ', on_the_left=True, on_the_right=False)
+            self.execute_sharp_comment()
             self.store_position()
         elif keycode == ord('4') and event.ControlDown() and event.ShiftDown():
-            self.execute_remove_text(remove_text='# ', on_the_left=True, on_the_right=False)
+            self.execute_sharp_uncomment()
             self.store_position()
         """
 
@@ -973,6 +1004,98 @@ class SourceEditor(wx.Panel):
         else:
             close_symbol = open_symbol
         return open_symbol+value+close_symbol
+
+    def move_row_up(self, event):
+        start, end = self._editor.GetSelection()
+        cursor = self._editor.GetCurrentPos()
+        ini_line = self._editor.LineFromPosition(start)
+        # selection not on top?
+        if ini_line > 0:
+            end_line = self._editor.LineFromPosition(end)
+            # get the previous row content and length
+            rowabove = self._editor.GetLine(ini_line-1)
+            lenabove = len(rowabove.encode('utf-8'))
+            # get the content of the block rows
+            rowselblock = ''
+            rowcnt = ini_line
+            while rowcnt <= end_line:
+                rowselblock += self._editor.GetLine(rowcnt)
+                rowcnt += 1
+            # add the content of previous row
+            rowselblock += rowabove
+            begpos = self._editor.PositionFromLine(ini_line-1)
+            endpos = self._editor.PositionFromLine(end_line+1)
+            self._editor.Replace(begpos, endpos, rowselblock)
+            self._editor.SetSelection(begpos, endpos-lenabove-1)
+            # TODO: recalculate line identation for new position and old
+            #print(f"DEBUG: move_row_up Variables: select start={start}, end={end} cursor={cursor}"
+            #    f" ini_line={ini_line} end_line={end_line} begpos={begpos} endpos={endpos} lenabove={lenabove}")
+
+    def move_row_down(self, event):
+        start, end = self._editor.GetSelection()
+        cursor = self._editor.GetCurrentPos()
+        ini_line = self._editor.LineFromPosition(start)
+        end_line = self._editor.LineFromPosition(end)
+        # get the next row content and length
+        rowbelow = self._editor.GetLine(end_line+1)
+        lenbelow = len(rowbelow.encode('utf-8'))
+        # get the content of the block rows after adding the content below first
+        # no new rows anymore?
+        if lenbelow == 0:
+            rowselblock = '\n'
+            lenbelow = 1
+        else:
+            rowselblock = rowbelow
+        rowcnt = ini_line
+        while rowcnt <= end_line:
+            rowselblock += self._editor.GetLine(rowcnt)
+            rowcnt += 1
+        begpos = self._editor.PositionFromLine(ini_line)
+        endpos = self._editor.PositionFromLine(end_line+2)
+        self._editor.Replace(begpos, endpos, rowselblock)
+        self._editor.SetSelection(begpos+lenbelow, endpos-1)
+        # TODO: recalculate line identation for new position and old
+        #print(f"DEBUG: move_row_down Variables: select start={start}, end={end} cursor={cursor}"
+        #    f" ini_line={ini_line} end_line={end_line} begpos={begpos} endpos={endpos} lenbelow={lenbelow}")
+
+    def delete_row(self, event):
+        start, end = self._editor.GetSelection()
+        cursor = self._editor.GetCurrentPos()
+        ini_line = self._editor.LineFromPosition(start)
+        end_line = self._editor.LineFromPosition(end)
+        begpos = self._editor.PositionFromLine(ini_line)
+        self._editor.SelectNone()
+        # print(f"DEBUG: delete_row Variables: select start={start}, end={end} cursor={cursor}"
+        #       f" ini_line={ini_line} end_line={end_line} begpos={begpos} endpos={endpos}")
+        if start == end:
+            end_line = ini_line
+        for line in range(ini_line, end_line + 1):
+            self._editor.GotoLine(ini_line)
+            self._editor.LineDelete()
+        # cursor position when doing block select is always the end of the selection
+        if ini_line != end_line:
+            self._editor.SetCurrentPos(begpos)
+            self._editor.SetAnchor(begpos)
+        else:
+            self._editor.SetCurrentPos(cursor)
+            self._editor.SetAnchor(cursor)
+        self.store_position()
+
+    def insert_row(self, event):
+        start, end = self._editor.GetSelection()
+        ini_line = self._editor.LineFromPosition(start)
+        end_line = self._editor.LineFromPosition(end)
+        delta = end_line - ini_line
+        positionfromline = self._editor.PositionFromLine(ini_line)
+        self._editor.SelectNone()
+        self._editor.InsertText(positionfromline, '\n')
+        for nl in range(delta):
+            self._editor.InsertText(positionfromline + nl, '\n')
+        self._editor.SetCurrentPos(positionfromline)
+        self._editor.SetAnchor(positionfromline)
+        self._editor.GotoLine(ini_line)
+        self.indent_line(ini_line)
+        self.store_position()
 
     def execute_comment(self, event):
         start, end = self._editor.GetSelection()
@@ -1059,54 +1182,47 @@ class SourceEditor(wx.Panel):
 
     def insert_cell(self, event):
         start, end = self._editor.GetSelection()
-        cursor = self._editor.GetCurrentPos()
         ini_line = self._editor.LineFromPosition(start)
         end_line = self._editor.LineFromPosition(end)
         begpos = self._editor.PositionFromLine(ini_line)
         begend = self._editor.PositionFromLine(ini_line+1)
         endpos = self._editor.PositionFromLine(end_line+1)
-        #print(f"DEBUG: insert_cell VariablesI: select start={start}, end={end} cursor={cursor}"
-        #    f" ini_line={ini_line} end_line={end_line} begpos={begpos} endpos={endpos}")
+        # print(f"DEBUG: insert_cell VariablesI: select start={start}, end={end} cursor={cursor}"
+        #     f" ini_line={ini_line} end_line={end_line} begpos={begpos} endpos={endpos}")
         cell_no_beg = self._get_cell_no(begpos, endpos, start)
         cell_pos_beg = self._get_position_of_cell(begpos, endpos, cell_no_beg)
-        cell_tot_ini = self._get_number_of_cells(begpos, begend)
-        # if there is a selection subtract 1 from endpos to circumvent cursor being on end of cell --> otherwise no will be next cell no
+        # if there is a selection subtract 1 from endpos to circumvent cursor being on end of cell
+        # --> otherwise no will be next cell no
         if start != end:
             cell_no_end = self._get_cell_no(begpos, endpos, end-1)
         else:
             cell_no_end = self._get_cell_no(begpos, endpos, end)
-        cell_pos_end = self._get_position_of_cell(begpos, endpos, cell_no_end)
-        #print(f"DEBUG: cell range to handle beg={cell_no_beg} tot_line={cell_tot_ini} end={cell_no_end}")
+        #  print(f"DEBUG: cell range to handle beg={cell_no_beg} tot_line={cell_tot_ini} end={cell_no_end}")
         celltab = ' ' * self._tab_size
-        cellval = '\ ' # needs to be something otherwise it gets cleaned up by sanitizer
         # If the selection spans more than one line:
         if ini_line < end_line:   # TODO: do inserts in such a way that they can be undone in 1 undo
-            cells_to_insert = cell_tot_ini - cell_no_beg + 1
-            amount_of_lines = end_line - ini_line
             new_start = cell_pos_beg
-            #print(f"DEBUG: insert {cells_to_insert} cell(s) before cell={cell_no_beg} on amount of lines={amount_of_lines}")
             for line in range(ini_line, end_line+1):
                 begthis = self._editor.PositionFromLine(line)
                 endthis = self._editor.PositionFromLine(line+1)
                 cell_pos_beg = self._get_position_of_cell(begthis, endthis, cell_no_beg)
-                self._editor.InsertText(cell_pos_beg, (celltab + cellval) * cells_to_insert)
-            new_end = cell_pos_beg + (len((celltab + cellval).encode('utf-8')) * cells_to_insert)
+                self._editor.InsertText(cell_pos_beg, celltab)
+            new_end = cell_pos_beg + (len(celltab.encode('utf-8')))
         elif start == end:  # On a single row, no selection
-            #print(f"DEBUG: insert 1 cell before cell={cell_no_beg} on line={ini_line}")
-            self._editor.InsertText(cell_pos_beg, celltab + cellval)
+            # print(f"DEBUG: insert 1 cell before cell={cell_no_beg} on line={ini_line}")
+            self._editor.InsertText(cell_pos_beg, celltab)
             new_start = cell_pos_beg
-            new_end   = cell_pos_beg + len((celltab + cellval).encode('utf-8'))
+            new_end = cell_pos_beg + len(celltab.encode('utf-8'))
         else:  # On a single row, with selection
             cells_to_insert = cell_no_end - cell_no_beg + 1
-            #print(f"DEBUG: insert {cells_to_insert} cell(s) before cell={cell_no_beg} on line={ini_line}")
+            #  print(f"DEBUG: insert {cells_to_insert} cell(s) before cell={cell_no_beg} on line={ini_line}")
             # insert at once so undo handles it correct
-            self._editor.InsertText(cell_pos_beg, (celltab + cellval) * cells_to_insert)
+            self._editor.InsertText(cell_pos_beg, celltab * cells_to_insert)
             new_start = cell_pos_beg
-            new_end   = cell_pos_beg + (len((celltab + cellval).encode('utf-8')) * cells_to_insert)
-        # subtract 1 from endpos to circumvent cursor being on end of cell --> otherwise no will be next cell no
-        new_end -= 1
+            new_end = cell_pos_beg + (len(celltab.encode('utf-8')) * cells_to_insert)
         # SetSelection and SetCurrentPos + Store_position overrule each other so only use one of them
         self._editor.SetSelection(new_start, new_end)
+        self._editor.SetAnchor(new_end)
 
     def _get_cell_no(self, begpos, endpos, findpos):
         # get cell number from range begpos-endpos using findpos 
@@ -1229,7 +1345,6 @@ class SourceEditor(wx.Panel):
         spaces = ' ' * self._tab_size
         # self._editor.SelectNone()
         count = 0
-        # self.execute_remove_text(remove_text='# ', on_the_left=True, on_the_right=False)
         maxsize = self._editor.GetLineCount()
         # If the selection spans on more than one line:
         if ini_line < end_line:
@@ -1245,7 +1360,13 @@ class SourceEditor(wx.Panel):
                     if idx + 1 < lenline and row[idx:idx+1] == '#':
                         if idx + 2 < lenline and row[idx+1:idx+2] == ' ':
                             size = 2
-                        self._editor.DeleteRange(pos + idx, size)
+                        # Here we clean up escaped spaces from Apply
+                        if idx + size < lenline:
+                            newrow = row[idx + size:]
+                            newrow = newrow.replace('\\ ', ' ')
+                            size += len(row[idx:]) - len(newrow) - size
+                            self._editor.DeleteRange(pos + idx, len(newrow) + size)
+                            self._editor.InsertText(pos + idx, newrow)
                         count += size
         elif start == end:  # On a single row, no selection
             pos = self._editor.PositionFromLine(ini_line)
@@ -1260,7 +1381,13 @@ class SourceEditor(wx.Panel):
                     if idx + 1 < lenline and row[idx:idx + 1] == '#':
                         if idx + 2 < lenline and row[idx + 1:idx + 2] == ' ':
                             size = 2
-                        self._editor.DeleteRange(pos + idx, size)
+                        # Here we clean up escaped spaces from Apply
+                        if idx + size < lenline:
+                            newrow = row[idx + size:]
+                            newrow = newrow.replace('\\ ', ' ')
+                            size += len(row[idx:]) - len(newrow) - size
+                            self._editor.DeleteRange(pos + idx, len(newrow) + size)
+                            self._editor.InsertText(pos + idx, newrow )
                         count += size
                     else:
                         idx += 1
@@ -1282,7 +1409,13 @@ class SourceEditor(wx.Panel):
                     if idx + 1 < lenline and row[idx:idx + 1] == '#':
                         if idx + 2 < lenline and row[idx + 1:idx + 2] == ' ':
                             size = 2
-                        self._editor.DeleteRange(pos + idx, size)
+                        # Here we clean up escaped spaces from Apply
+                        if idx + size < lenline:
+                            newrow = row[idx + size:]
+                            newrow = newrow.replace('\\ ', ' ')
+                            size += len(row[idx:]) - len(newrow) - size
+                            self._editor.DeleteRange(pos + idx, len(newrow) + size)
+                            self._editor.InsertText(pos + idx, newrow)
                         count += size
                     else:
                         idx -= 1
@@ -1297,8 +1430,6 @@ class SourceEditor(wx.Panel):
             ini = new_end
             fini = new_start
         self._editor.SetSelection(new_start, new_end)  # TODO: For some reason the selection is not restored!
-        self._editor.SetCurrentPos(ini)
-        self._editor.SetAnchor(fini)
         self._editor.SetCurrentPos(cursor - count)
         self.store_position()
 

@@ -10,6 +10,7 @@ branches:
   # whitelist
   only:
     - master
+    - devops
 
   # blacklist
   except:
@@ -29,14 +30,15 @@ max_jobs: 1
 #---------------------------------#
 
 # Build worker image (VM template)
-image: Visual Studio 2015
+image: Visual Studio 2022
+# image: macos-bigsur
 
 # scripts that are called at very beginning, before repo cloning
 init:
   - git config --global core.autocrlf input
 
 # clone directory
-clone_folder: c:\projects\RIDE
+# clone_folder: c:\projects\RIDE
 
 # fetch repository as zip archive
 shallow_clone: false                 # default is "false"
@@ -45,23 +47,30 @@ shallow_clone: false                 # default is "false"
 clone_depth: 5                      # clone entire repository history if not defined
 
 # this is how to allow failing jobs in the matrix
-matrix:
-  fast_finish: false     # set this flag to immediately finish build once one of the jobs fails.
-  allow_failures:
-    - platform: x64
-      configuration: Release
+# matrix:
+#  fast_finish: false     # set this flag to immediately finish build once one of the jobs fails.
+#  allow_failures:
+#    - platform: x64
+#      configuration: Release
 
-environment:
-  matrix:
-  - TOXENV: py38
-  - TOXENV: py39
-  - TOXENV: py310
+# environment:
+  # matrix:
+  # - TOXENV: py36
+  # - TOXENV: py37
+  # - TOXENV: py38
+
+# environment:
+#  matrix:
+#    - APPVEYOR_BUILD_WORKER_IMAGE: macOS
+#      TOXENV: py38
 
 build: off
 
 # scripts that run after cloning repository
 install:
-  - cmd: pip install tox
+  - C:\Python310-x64\python -m pip install -r requirements-dev.txt
+  - C:\Python310-x64\python -m pip install -r requirements.txt
+  - C:\Python310-x64\python -m pip install .
 
 #---------------------------------#
 #       tests configuration       #
@@ -69,4 +78,5 @@ install:
 
 # to run your custom scripts instead of automatic tests
 test_script:
-  - tox
+  - set PATH=C:\Python310-x64;C:\Python310-x64\Scripts;%PATH%
+  - C:\Python310-x64\python -m invoke test-ci

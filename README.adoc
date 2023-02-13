@@ -43,6 +43,10 @@ Install current development version with:
 [source, shell]
 pip install -U https://github.com/robotframework/RIDE/archive/master.zip
 
+(31 January 2023) To update the current development version, 2.0rc1 you will have to force it because the number is the same as the previous:
+[source, shell] 
+pip install -U --no-cache-dir --force https://github.com/robotframework/RIDE/archive/master.zip
+
 (3.6 < python < 3.11) Install current Beta version (2.0b3) with:
 [source, shell]
 pip install -U --pre robotframework-ride
@@ -52,8 +56,10 @@ pip install -U --pre robotframework-ride
 
 
 == Unit testing statuses:
-Linux (py36, py37, py38, py39): image:https://app.travis-ci.com/HelioGuilherme66/RIDE.svg?branch=master[Unit Tests, link=https://app.travis-ci.com/github/HelioGuilherme66/RIDE]
-Windows (py36, py37, py38): image:https://ci.appveyor.com/api/projects/status/github/HelioGuilherme66/RIDE?branch=master&svg=true[Unit Tests, link=https://ci.appveyor.com/project/HelioGuilherme66/ride]
+
+// Linux (py36, py37, py38, py39): image:https://app.travis-ci.com/HelioGuilherme66/RIDE.svg?branch=master[Unit Tests, link=https://app.travis-ci.com/github/HelioGuilherme66/RIDE]
+
+Windows (Python 3.10): image:https://ci.appveyor.com/api/projects/status/github/HelioGuilherme66/RIDE?branch=master&svg=true[Unit Tests, link=https://ci.appveyor.com/project/HelioGuilherme66/ride]
 
 Quality Gate Status: image:https://sonarcloud.io/api/project_badges/measure?project=HelioGuilherme66_RIDE&metric=alert_status[SonarCloud, link=https://sonarcloud.io/summary/new_code?id=HelioGuilherme66_RIDE]
 
