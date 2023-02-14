@@ -86,6 +86,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         self.register_shortcut('CtrlCmd-Y', focused(lambda e: self._editor.redo()))
         # self.register_shortcut('Del', focused(lambda e: self._editor.delete()))
         self.register_shortcut('CtrlCmd-Shift-I', focused(lambda e: self._editor.insert_cell(e)))
+        self.register_shortcut('CtrlCmd-Shift-D', focused(lambda e: self._editor.delete_cell(e)))
         self.register_shortcut('Alt-Up', focused(lambda e: self._editor.move_row_up(e)))
         self.register_shortcut('Alt-Down', focused(lambda e: self._editor.move_row_down(e)))
         # self.register_shortcut('CtrlCmd-D', focused(lambda e: self._editor.delete_row(e)))
@@ -1187,7 +1188,7 @@ class SourceEditor(wx.Panel):
         begpos = self._editor.PositionFromLine(ini_line)
         begend = self._editor.PositionFromLine(ini_line+1)
         endpos = self._editor.PositionFromLine(end_line+1)
-        # print(f"DEBUG: insert_cell VariablesI: select start={start}, end={end} cursor={cursor}"
+        # print(f"DEBUG: insert_cell Variables: select start={start}, end={end}"
         #     f" ini_line={ini_line} end_line={end_line} begpos={begpos} endpos={endpos}")
         cell_no_beg = self._get_cell_no(begpos, endpos, start)
         cell_pos_beg = self._get_position_of_cell(begpos, endpos, cell_no_beg)
@@ -1196,8 +1197,8 @@ class SourceEditor(wx.Panel):
         if start != end:
             cell_no_end = self._get_cell_no(begpos, endpos, end-1)
         else:
-            cell_no_end = self._get_cell_no(begpos, endpos, end)
-        #  print(f"DEBUG: cell range to handle beg={cell_no_beg} tot_line={cell_tot_ini} end={cell_no_end}")
+            cell_no_end = cell_no_beg
+        #  print(f"DEBUG: cell range to handle beg={cell_no_beg} end={cell_no_end}")
         celltab = ' ' * self._tab_size
         # If the selection spans more than one line:
         if ini_line < end_line:   # TODO: do inserts in such a way that they can be undone in 1 undo
@@ -1222,7 +1223,47 @@ class SourceEditor(wx.Panel):
             new_end = cell_pos_beg + (len(celltab.encode('utf-8')) * cells_to_insert)
         # SetSelection and SetCurrentPos + Store_position overrule each other so only use one of them
         self._editor.SetSelection(new_start, new_end)
+        # @Helio: SetAnchor overrules the SetSelection if it specifies a different start than SetSelection (but I left your code for now)
         self._editor.SetAnchor(new_end)
+
+    def delete_cell(self, event):
+        start, end = self._editor.GetSelection()
+        ini_line = self._editor.LineFromPosition(start)
+        end_line = self._editor.LineFromPosition(end)
+        begpos = self._editor.PositionFromLine(ini_line)
+        begend = self._editor.PositionFromLine(ini_line+1)
+        endpos = self._editor.PositionFromLine(end_line+1)
+        #print(f"DEBUG: delete_cell Variables: select start={start}, end={end}"
+        #     f" ini_line={ini_line} end_line={end_line} begpos={begpos} endpos={endpos}")
+        cell_no_beg = self._get_cell_no(begpos, endpos, start)
+        cell_pos_beg = self._get_position_of_cell(begpos, endpos, cell_no_beg)
+        # if there is a selection subtract 1 from endpos to circumvent cursor being on end of cell
+        # --> otherwise no will be next cell no
+        if start != end:
+            cell_no_end = self._get_cell_no(begpos, endpos, end-1)
+        else:
+            cell_no_end = cell_no_beg
+        cell_pos_end = self._get_position_of_cell(begpos, endpos, cell_no_end+1)
+        #print(f"DEBUG: cell range to handle beg={cell_no_beg} end={cell_no_end} begpos_begcell={cell_pos_beg} endpos_endcell={cell_pos_end}")
+        # If the selection spans more than one line:
+        if ini_line < end_line:
+            self._editor.Remove(cell_pos_beg, cell_pos_end)
+            new_start = cell_pos_beg
+            new_end = new_start + (end - start)
+        elif start == end:  # On a single row, no selection
+            self._editor.Remove(cell_pos_beg, cell_pos_end)
+            new_start = cell_pos_beg
+            new_end = new_start + (end - start)
+        else:  # On a single row, with selection
+            self._editor.Remove(cell_pos_beg, cell_pos_end)
+            new_start = cell_pos_beg
+            new_end = new_start + (end - start)
+        # SetSelection and SetCurrentPos + Store_position overrule each other so only use one of them
+        #print(f"DEBUG: new range {new_start} to {new_end}")
+        self._editor.SetSelection(new_start, new_end)
+        # @Helio: SetAnchor overrules the SetSelection if it specifies a different start than SetSelection
+        # I am not sure what any selection should be after deleting big ranges
+        self._editor.SetAnchor(new_start)
 
     def _get_cell_no(self, begpos, endpos, findpos):
         # get cell number from range begpos-endpos using findpos 
@@ -1269,6 +1310,8 @@ class SourceEditor(wx.Panel):
                         cellpos = begpos + fndidx
                         break
                     fndidx += 1   # for next search
+        else:  # cell_no does not exist -- return endpos-1
+            cellpos = endpos-1
         #print(f"DEBUG cellpos: cellpos={cellpos}")
         return cellpos
 
