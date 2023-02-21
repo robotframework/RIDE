@@ -36,7 +36,7 @@ class RobotReader(object):
 
     def read(self, file, populator, path=None):
         path = path or getattr(file, 'name', '<file-like object>')
-        process = table_start = preamble = False
+        process = table_start = preamble = comments = False
         # print(f"DEBUG: RFLib RobotReader start Reading file")
         for lineno, line in enumerate(Utf8Reader(file).readlines(), start=1):
             if not self._separator_check:
@@ -45,10 +45,18 @@ class RobotReader(object):
             ####### DEBUG cells = list(self._check_deprecations(cells, path, lineno))
             ####### DEBUG Not parsing # before any table
             if line.lstrip().startswith('#'):
-                 if cells[0] == '':  # There is an initial empty cell, when #
-                     cells.pop(0)
+                if cells[0] == '':  # There is an initial empty cell, when #
+                    cells.pop(0)
                 # populator.add(cells)
                 # continue
+            if cells and cells[0].strip().startswith('*'):  # For the cases of *** Comments ***
+                if cells[0].strip().replace('*', '').lower() in ('comment', 'comments'):
+                    process = True
+                    comments = True
+                elif comments:
+                    comments = False
+                    cells.insert(0, '')
+                # print(f"DEBUG: RFLib RobotReader *** section lineno={lineno} cells={cells}")
             if cells and cells[0].strip().startswith('*') and \
                     populator.start_table([c.replace('*', '').strip()
                                            for c in cells]):
@@ -60,6 +68,9 @@ class RobotReader(object):
                     preamble = True
                 populator.add_preamble(line)
             elif process and not preamble:
+                # We modify, insert cell, to avoid being a new test case, keyword...
+                if comments:  # and cells[0] != '':
+                    cells.insert(0, '')
                 # print(f"DEBUG: robotreader.read original line={line}\nparser={cells}")
                 populator.add(cells)
         return populator.eof()
