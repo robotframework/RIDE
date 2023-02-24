@@ -394,6 +394,10 @@ SHORTCUT_KEYS = '''\
         <td>Insert cell(s)</td>
     </tr>
     <tr>
+        <td>CtrlCmd-Shift-D</td>
+        <td>Delete cell(s)</td>
+    </tr>
+    <tr>
         <td>CtrlCmd-5</td>
         <td>Make dictionary variable body</td>
     </tr>
