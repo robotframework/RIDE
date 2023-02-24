@@ -86,7 +86,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         self.register_shortcut('CtrlCmd-Y', focused(lambda e: self._editor.redo()))
         # self.register_shortcut('Del', focused(lambda e: self._editor.delete()))
         self.register_shortcut('CtrlCmd-Shift-I', focused(lambda e: self._editor.insert_cell(e)))
-        self.register_shortcut('CtrlCmd-Shift-D', focused(lambda e: self._editor.delete_cell(e)))
+        # self.register_shortcut('CtrlCmd-Shift-D', focused(lambda e: self._editor.delete_cell(e)))
         self.register_shortcut('Alt-Up', focused(lambda e: self._editor.move_row_up(e)))
         self.register_shortcut('Alt-Down', focused(lambda e: self._editor.move_row_down(e)))
         # self.register_shortcut('CtrlCmd-D', focused(lambda e: self._editor.delete_row(e)))
@@ -268,7 +268,7 @@ class DataValidationHandler(object):
             data.update_from(m_text)
         else:
             data.update_from(m_text)  # TODO: This is the same code as _reformat == True
-                                      # There is no way to update the model without reformatting
+            # There is no way to update the model without reformatting
             # TODO this only updates the editor, but not the model, changes in Text Editor are not reflected in Grid or
             # when saving
             #  self._editor._editor.set_text(m_text)
@@ -931,7 +931,10 @@ class SourceEditor(wx.Panel):
                                           dict_variable=(keycode == ord('5')))
             self.store_position()
         elif keycode == ord('D') and event.ControlDown():
-            self.delete_row(event)
+            if event.ShiftDown():
+                self.delete_cell(event)
+            else:
+                self.delete_row(event)
         else:
             event.Skip()
         """
