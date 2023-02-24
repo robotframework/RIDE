@@ -50,18 +50,23 @@ class RobotReader(object):
                 # populator.add(cells)
                 # continue
             if cells and cells[0].strip().startswith('*'):  # For the cases of *** Comments ***
-                if cells[0].strip().replace('*', '').lower() in ('comment', 'comments'):
+                if cells[0].replace('*', '').strip().lower() in ('comment', 'comments'):
+                    print(f"DEBUG: robotreader.read detection of comments cells={cells}")
                     process = True
                     comments = True
-                elif comments:
+                    # if not preamble:
+                    #     cells.insert(0, '')
+                else:
+                    # if comments:
+                    #    cells.insert(0, '')  # Last comments block
                     comments = False
-                    cells.insert(0, '')
                 # print(f"DEBUG: RFLib RobotReader *** section lineno={lineno} cells={cells}")
-            if cells and cells[0].strip().startswith('*') and \
-                    populator.start_table([c.replace('*', '').strip()
-                                           for c in cells]):
+            elif cells and cells == ['']:
+                comments = False
+            if cells and cells[0].strip().startswith('*') and not comments and \
+                    populator.start_table([c.replace('*', '').strip() for c in cells]):
                 process = table_start = True
-                preamble = False
+                preamble = comments = False
             elif not table_start:
                 # print(f"DEBUG: RFLib RobotReader Enter Preamble block, lineno={lineno} cells={cells}")
                 if not preamble:
@@ -69,8 +74,9 @@ class RobotReader(object):
                 populator.add_preamble(line)
             elif process and not preamble:
                 # We modify, insert cell, to avoid being a new test case, keyword...
-                if comments:  # and cells[0] != '':
-                    cells.insert(0, '')
+                # if comments:  # and cells[0] != '':
+                #    cells.insert(0, '')
+                #    # print(f"DEBUG: robotreader.read in comments cells={cells}")
                 # print(f"DEBUG: robotreader.read original line={line}\nparser={cells}")
                 populator.add(cells)
         return populator.eof()
