@@ -56,6 +56,7 @@ class FromFilePopulator(object):
         self._populator = NullPopulator()
         self._curdir = self._get_curdir(datafile.directory)
         self._tab_size = tab_size
+        self._comment_table_names = ('comment', 'comments')
 
     def _get_curdir(self, path):
         return path.replace('\\','\\\\') if path else None
@@ -95,10 +96,13 @@ class FromFilePopulator(object):
             raise DataError("Unsupported file format '%s'." % file_format)
 
     def start_table(self, header):
+        # print(f"DEBUG: RFLib populators FromFilePopulator ENTER start_table header={header}")
+        if header[0].lower() in self._comment_table_names:  # don't create a Comments section
+            print(f"DEBUG: RFLib populators FromFilePopulator comments section header={header}")
+            return False
         self._populator.populate()
         table = self._datafile.start_table(DataRow(header).all)
-        self._populator = self._populators[table.type](table) \
-                if table is not None else NullPopulator()
+        self._populator = self._populators[table.type](table) if table is not None else NullPopulator()
         return bool(self._populator)
 
     def eof(self):
