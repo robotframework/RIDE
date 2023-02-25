@@ -60,6 +60,7 @@ class _TestData(object):
     _variable_table_names = 'Variable', 'Variables'
     _testcase_table_names = 'Test Case', 'Test Cases', 'Task', 'Tasks'
     _keyword_table_names = 'Keyword', 'Keywords'
+    # remove Comments section, because we want to keep them as they are in files
     _comment_table_names = 'Comment', 'Comments'
 
     def __init__(self, parent=None, source=None):
@@ -75,6 +76,8 @@ class _TestData(object):
                              (self._testcase_table_names, self.testcase_table),
                              (self._keyword_table_names, self.keyword_table),
                              (self._comment_table_names, None)]:
+            # remove Comments section, because we want to keep them as they are in files
+            # , (self._comment_table_names, None)]:
             for name in names:
                 yield name, table
 
@@ -112,8 +115,9 @@ class _TestData(object):
     def _resolve_deprecated_table(self, used_name):
         normalized = normalize(used_name)
         for name in (self._setting_table_names + self._variable_table_names +
-                     self._testcase_table_names + self._keyword_table_names +
-                     self._comment_table_names):
+                     self._testcase_table_names + self._keyword_table_names):
+            # remove Comments section, because we want to keep them as they are in files
+            # + self._comment_table_names):
             if normalize(name) == normalized:
                 self._report_deprecated_table(used_name, name)
                 return name

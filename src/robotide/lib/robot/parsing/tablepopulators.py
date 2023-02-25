@@ -70,6 +70,7 @@ class _TablePopulator(Populator):
             self._populator.populate()
             self._populator = self._get_populator(row)
             # DEBUG: Not using comments self._consume_standalone_comments()
+        print(f"DEBUG: tablepopulators _TablePopulator _add row={row.data}")
         self._populator.add(row)
 
     def _is_continuing(self, row):
@@ -380,6 +381,7 @@ class StepPopulator(_PropertyPopulator):
         if row.cells == ['...']:
             self._deprecate_continuation_without_values()
         self._value.extend(row.data)
+        # print(f"DEBUG: tablepopulators StepPopulator _add row={row.data}")
 
     def populate(self):
         if self._value or self._comments.value:
