@@ -26,12 +26,12 @@ else:
     output = pypandoc.convert_file(destination_path, 'rst', format='html')
     with open(source_path, "w") as rst:
         rst.write(output)
-
+"""
 docutils.core.publish_file(
     source_path=source_path,
     destination_path="../src/robotide/application/release_notes.html",
     writer_name="html")
-
+"""
 # Replace { by 	&#123; and } by &#125;
 print("Now paste content of ../src/robotide/application/release_notes.html to"
       " RELEASE_NOTES in ../src/robotide/application/releasenotes.py")
@@ -40,7 +40,7 @@ source_path = "../CHANGELOG.adoc"
 directory = "../src/robotide/application"
 destination_path = directory + "/CHANGELOG.html"
 
-run(["a2x3", "-f", "xhtml", "-D", directory, source_path])
+run(["a2x3", "-f", "xhtml", "-L", "-D", directory, source_path])
 
 # Remove ToC
 import re
@@ -49,6 +49,6 @@ with open(destination_path, "r") as sources:
     lines = sources.readlines()
 with open(destination_path, "w") as sources:
     for line in lines:
-        sources.write(re.sub(r'<div class=\"toc\">.*<p>All notable', '<p>All notable', line))
+        sources.write(re.sub(r"<div class=\"toc\">.*<p>All notable", "<p>All notable", line))
 
 print(f"Check quality of {destination_path}")

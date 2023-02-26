@@ -10,6 +10,16 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Added
 
+=== Removed
+
+=== Changed
+
+=== Fixed
+
+== https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.0rc1.rst[2.0rc1] - 2023-02-26
+
+=== Added
+
 - Added insert and delete cells to Text Editor, by using ``Ctrl-Shift-I`` and ``Ctrl-Shift-D``
 - Added move up and move down rows to Text Editor, by using ``Alt-Up`` and ``Alt-Down``
 - Added insert and delete rows to Text Editor, by using ``Ctrl-I`` and ``Ctrl-D``
