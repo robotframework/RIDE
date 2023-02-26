@@ -70,7 +70,7 @@ class _TablePopulator(Populator):
             self._populator.populate()
             self._populator = self._get_populator(row)
             # DEBUG: Not using comments self._consume_standalone_comments()
-        print(f"DEBUG: tablepopulators _TablePopulator _add row={row.data}")
+        # print(f"DEBUG: tablepopulators _TablePopulator _add row={row.data}")
         self._populator.add(row)
 
     def _is_continuing(self, row):

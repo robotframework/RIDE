@@ -98,7 +98,7 @@ class FromFilePopulator(object):
     def start_table(self, header):
         # print(f"DEBUG: RFLib populators FromFilePopulator ENTER start_table header={header}")
         if header[0].lower() in self._comment_table_names:  # don't create a Comments section
-            print(f"DEBUG: RFLib populators FromFilePopulator comments section header={header}")
+            # print(f"DEBUG: RFLib populators FromFilePopulator comments section header={header}")
             return False
         self._populator.populate()
         table = self._datafile.start_table(DataRow(header).all)

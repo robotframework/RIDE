@@ -51,7 +51,7 @@ class RobotReader(object):
                 # continue
             if cells and cells[0].strip().startswith('*'):  # For the cases of *** Comments ***
                 if cells[0].replace('*', '').strip().lower() in ('comment', 'comments'):
-                    print(f"DEBUG: robotreader.read detection of comments cells={cells}")
+                    # print(f"DEBUG: robotreader.read detection of comments cells={cells}")
                     process = True
                     comments = True
                     # if not preamble:
