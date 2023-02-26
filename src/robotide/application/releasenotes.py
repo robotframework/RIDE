@@ -64,7 +64,8 @@ class ReleaseNotes(object):
 
     def show_changelog(self, event=None):
         if not self._dialog:
-            self._dialog = HtmlDialog('Offline Change Log', 'Check the online version at https://github.com/robotframework/RIDE/blob/master/CHANGELOG.adoc')
+            self._dialog = HtmlDialog('Offline Change Log', f"Check the online version at https://github.com/"
+                                                            f"robotframework/RIDE/blob/v{VERSION}/CHANGELOG.adoc")
         self._dialog.SetSize(800, 800)
         self._dialog.html_wnd.LoadFile(join(dirname(abspath(__file__)), "CHANGELOG.html"))
         self._dialog.html_wnd.SetBackgroundColour(self.general_settings['background help'])
@@ -137,8 +138,8 @@ RELEASE_NOTES = f"""
 <div class="document">
 
 
-<p><a class="reference external" href="https://github.com/robotframework/RIDE/">RIDE (Robot Framework IDE)</a> v2.0b3 is a new release with major enhancements and bug fixes.
-This version v2.0b3 includes removal of Python 2.7 support. The reference for valid arguments is <a class="reference external" href="http://robotframework.org">Robot Framework</a> installed version, which is at this moment 6.0.2. However, internal library is based on version 3.1.2, to keep compatibility with old formats.</p>
+<p><a class="reference external" href="https://github.com/robotframework/RIDE/">RIDE (Robot Framework IDE)</a> v{VERSION} is a new release with major enhancements and bug fixes.
+This version v{VERSION} includes removal of Python 2.7 support. The reference for valid arguments is <a class="reference external" href="http://robotframework.org">Robot Framework</a> installed version, which is at this moment 6.0.2. However, internal library is based on version 3.1.2, to keep compatibility with old formats.</p>
 <ul class="simple">
 <li>This is the <strong>first version without support for Python 2.7</strong>.</li>
 <li>The last version with support for Python 2.7 was <strong>1.7.4.2</strong>.</li>
@@ -147,9 +148,12 @@ This version v2.0b3 includes removal of Python 2.7 support. The reference for va
 <li>On MacOS to call autocomplete in Grid and Text Editors, you have to use Alt-Space (not Command-Space).</li>
 <li>On Linux and Windows to call autocomplete in Grid and Text Editors, you have to use Ctrl-Space.</li>
 <li>On Text Editor the TAB key adds the defined number of spaces. With Shift moves to the left, and together with Control selects text.</li>
-<li>On Text Editor the <strong>: FOR</strong> loop structure must use Robot Framework 3.1.2 syntax, i.e. <strong>FOR</strong> and <strong>END</strong>.</li>
+<li>Text Editor also accepts the old <strong>: FOR</strong> loop structure, but recommended is <strong>FOR</strong> and <strong>END</strong>.</li>
 <li>On Grid Editor and Linux the auto enclose is only working on cell selection, but not on cell content edit.</li>
-<li>On Text Editor when Saving the selection os tests in Test Suites (Tree) is cleared.</li>
+<li>On Text Editor when Saving the selection of tests in Test Suites (Tree) is cleared.</li>
+<li>Test Suite with <em>*** Comments ***</em> can be edited but newlines are introduced.</li>
+<li>Some argument types detection (and colorization) is not correct in Grid Editor.</li>
+<li>RIDE <strong>DOES NOT KEEP</strong> Test Suites formatting or structure, causing differences in files when used on other IDE or Editors.</li>
 </ul>
 </li>
 </ul>
@@ -172,8 +176,9 @@ This version v2.0b3 includes removal of Python 2.7 support. The reference for va
 <li>Block comment and uncomment on both Grid and Text editors</li>
 <li>Extensive color customization of panel elements via <cite>Tools&gt;Preferences</cite></li>
 <li>Color use on Console and Messages Log panels on Test Run tab</li>
+<li>In Text Editor the same commands as in Grid Editor are now supported: Move Up/Down Rows, Insert or Delete Rows and Insert or Delete 'Cells'</li>
 </ul>
-<p>Please note, that the features and fixes are not yet closed. This pre-release is being done because it has important fixes.</p>
+<p>We hope to implement or complete features and make fixes on next version 2.1 (in the end of 2023).</p>
 <p><strong>The minimal wxPython version is, 4.0.7, and RIDE supports the current version, 4.2.0.</strong></p>
 <p><em>Linux users are advised to install first wxPython from .whl package at</em> <a class="reference external" href="https://extras.wxpython.org/wxPython4/extras/linux/gtk3/">wxPython.org</a>.</p>
 <p>The <a class="reference external" href="https://github.com/robotframework/RIDE/blob/master/CHANGELOG.adoc">CHANGELOG.adoc</a> lists the changes done on the different versions.</p>
@@ -185,9 +190,9 @@ from the <a class="reference external" href="https://github.com/robotframework/R
 You should see <a class="reference external" href="https://forum.robotframework.org/c/tools/ride/">Robot Framework Forum</a> if your problem is already known.</p>
 <p>If you have <a class="reference external" href="http://pip-installer.org">pip</a> installed, just run</p>
 <pre class="literal-block">
-pip install --pre --upgrade robotframework-ride==2.0b3
+pip install --pre --upgrade robotframework-ride=={VERSION}
 </pre>
-<p>to install this <strong>BETA</strong> release, and for the <strong>final</strong> release use</p>
+<p>to install this <strong>RELEASE CANDIDATE</strong> release, and for the <strong>final</strong> release use</p>
 <pre class="literal-block">
 pip install --upgrade robotframework-ride
 </pre>
@@ -201,7 +206,7 @@ If you want to help in the development of RIDE, by reporting issues in current d
 <pre class="literal-block">
 pip install -U https://github.com/robotframework/RIDE/archive/master.zip
 </pre>
-<p>Important document for helping with development is the <cite>CONTRIBUTING.adoc_</cite>.</p>
+<p>Important document for helping with development is the <a class="reference external" href="https://github.com/robotframework/RIDE/blob/master/CONTRIBUTING.adoc">CONTRIBUTING.adoc</a>.</p>
 <p>See the <a class="reference external" href="https://github.com/robotframework/RIDE/wiki/F.A.Q.">FAQ</a> for important info about <cite>: FOR</cite> changes and other known issues and workarounds.</p>
 <p>A possible way to start RIDE is:</p>
 <pre class="literal-block">
@@ -211,6 +216,6 @@ python -m robotide.__init__
 <pre class="literal-block">
 python -m robotide.postinstall -install
 </pre>
-<p>RIDE v2.0b3 was released on 15/Jan/2023.</p>
+<p>RIDE v{VERSION} was released on 25/Feb/2023.</p>
 </div>
 """

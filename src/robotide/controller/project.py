@@ -162,7 +162,7 @@ class Project(_BaseController, WithNamespace):
         return e
 
     def _load_datafile(self, path, load_observer):
-        print(f"DEBUG: project ENTER _load_datafile path={path}")
+        # print(f"DEBUG: project ENTER _load_datafile path={path}")
         datafile = self._loader.load_datafile(path, load_observer)
         if not datafile:
             return None
