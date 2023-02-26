@@ -39,7 +39,7 @@ This is not happening with wxPython 4.2.0.**
 
 **24-jun-2022 A preliminary experiment was done on Fedora 36, Python 3.10.5 and wxPython 4.0.7**
 
-Install current development version with:
+Install current development version (**2.0rc1**) with:
 [source, shell]
 pip install -U https://github.com/robotframework/RIDE/archive/master.zip
 
