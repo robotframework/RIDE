@@ -45,7 +45,7 @@ class DataRow(object):
         # if self._row_continuation_marker in data and self.source:
         #     self._deprecate_escaped_cells_before_continuation(data)
         # return self._purge_empty_cells(data), comments  # DEBUG don't self._purge_empty_cells(comments)
-        print(f"DEBUG: datarow returning data={data} comments={comments}")
+        # print(f"DEBUG: datarow returning data={data} comments={comments}")
         return data, comments  # DEBUG keep empty cells
 
     def _collapse_whitespace(self, cell):
