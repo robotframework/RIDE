@@ -121,6 +121,9 @@ class LibraryCache(object):
         kws.append(obj11)
         obj12 = BlockKeywordInfo('FINALLY', 'To prevent test failures based on messages from keywords. See `BuiltIn.TRY` docs at\n https://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#try-except-syntax.')
         kws.append(obj12)
+        obj13 = BlockKeywordInfo('RETURN',
+                                 'To return from keywords, with optional return values.\n\nArguments: (optional) any.\n\n See `BuiltIn.RETURN` docs at\n https://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#toc-entry-348.', 'ROBOT', 'BuiltIn', '(optional) *values=')
+        kws.append(obj13)
         return kws
 
     def _get_default_libraries(self):
