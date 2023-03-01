@@ -14,42 +14,33 @@ We have a RIDE section topic in https://forum.robotframework.org/c/tools/ride/21
 
 You can use the tag *robotframework-ide* to search and ask on https://stackoverflow.com/questions/tagged/robotframework-ide[StackOverflow].
 
-== **Welcome to the development version of RIDE - next release will be version 2.0**
+== **Welcome to the development version of RIDE - next release will be version 2.1**
 
-If you are looking for the latest released version, you can get the source code from **https://github.com/robotframework/RIDE/releases[releases]** or from branch **https://github.com/robotframework/RIDE/tree/release/1.7.4.2[release/1.7.4.2]**
-See the https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-1.7.4.2.rst[release notes] for latest release version 1.7.4.2.
+If you are looking for the latest released version, you can get the source code from **https://github.com/robotframework/RIDE/releases[releases]** or from branch **https://github.com/robotframework/RIDE/tree/release/2.0[release/2.0]**
 
-**Version 1.7.4.2 was the last release supporting Python 2.7**
+See the https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.0.rst[release notes] for latest release version 2.0.
+
+**Version https://github.com/robotframework/RIDE/tree/release/1.7.4.2[1.7.4.2] was the last release supporting Python 2.7**
 
 
-**Attention, this new version will break old style `:FOR`, and you have to change to `FOR/END` blocks.**
+**The current development version is based on 2.0, supports Python from 3.6 up to 3.10 (1st March 2023).**
 
-**Attention, some problems have been detected when using wxPython 4.1.1, namely a crash when detaching File Explorer and Project panes.
-This is not happening with wxPython 4.2.0.**
+Currently the unit tests are only tested on Python 3.10 (which is the recommended version).
+Likewise, the current version of wxPython, is 4.2.0, but RIDE is known to work with 4.0.7 and 4.1.1 versions.
 
-**The pre-release and current development, supports Python 3.8 (since February 2020).**
+(3.6 < python < 3.11) Install current released version (**2.0**) with:
+[source, shell]
+pip install -U robotframework-ride
 
-**Attention:**
-
-**It is better to use Python 3.6, 3.7, 3.8 or 3.9 and now 3.10.**
-
-**To use Python 3.9, you should have wxPython 4.1.1, and install from `master` (since April 2021).**
-
-**Current development version since 2.0b2.dev19 (20 August 2022) supports Python 3.10 with wxPython 4.2.0.**
-
-**24-jun-2022 A preliminary experiment was done on Fedora 36, Python 3.10.5 and wxPython 4.0.7**
-
-Install current development version (**2.0rc1**) with:
+Install current development version (**2.0.1**) with:
 [source, shell]
 pip install -U https://github.com/robotframework/RIDE/archive/master.zip
 
-(31 January 2023) To update the current development version, 2.0rc1 you will have to force it because the number is the same as the previous:
-[source, shell] 
-pip install -U --no-cache-dir --force https://github.com/robotframework/RIDE/archive/master.zip
+// (3.6 < python < 3.11) Install current Beta version (2.1a1) with:
+// [source, shell]
+// pip install -U --pre robotframework-ride
 
-(3.6 < python < 3.11) Install current Beta version (2.0b3) with:
-[source, shell]
-pip install -U --pre robotframework-ride
+
 
 **See the https://github.com/robotframework/RIDE/wiki/F%2eA%2eQ%2e[FAQ] at https://github.com/robotframework/RIDE/wiki[Wiki]**
 

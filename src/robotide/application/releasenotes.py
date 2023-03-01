@@ -140,6 +140,7 @@ RELEASE_NOTES = f"""
 
 <p><a class="reference external" href="https://github.com/robotframework/RIDE/">RIDE (Robot Framework IDE)</a> v{VERSION} is a new release with major enhancements and bug fixes.
 This version v{VERSION} includes removal of Python 2.7 support. The reference for valid arguments is <a class="reference external" href="http://robotframework.org">Robot Framework</a> installed version, which is at this moment 6.0.2. However, internal library is based on version 3.1.2, to keep compatibility with old formats.</p>
+<p></p>
 <ul class="simple">
 <li>This is the <strong>first version without support for Python 2.7</strong>.</li>
 <li>The last version with support for Python 2.7 was <strong>1.7.4.2</strong>.</li>
@@ -180,7 +181,7 @@ This version v{VERSION} includes removal of Python 2.7 support. The reference fo
 </ul>
 <p>We hope to implement or complete features and make fixes on next version 2.1 (in the end of 2023).</p>
 <p><strong>The minimal wxPython version is, 4.0.7, and RIDE supports the current version, 4.2.0.</strong></p>
-<p><em>Linux users are advised to install first wxPython from .whl package at</em> <a class="reference external" href="https://extras.wxpython.org/wxPython4/extras/linux/gtk3/">wxPython.org</a>.</p>
+<p><em>Linux users are advised to install first wxPython from .whl package at</em> <a class="reference external" href="https://extras.wxpython.org/wxPython4/extras/linux/gtk3/">wxPython.org</a>, or by using the system package manager.</p>
 <p>The <a class="reference external" href="https://github.com/robotframework/RIDE/blob/master/CHANGELOG.adoc">CHANGELOG.adoc</a> lists the changes done on the different versions.</p>
 <p>All issues targeted for RIDE v2.0 can be found
 from the <a class="reference external" href="https://github.com/robotframework/RIDE/issues?q=milestone%3Av2.0">issue tracker milestone</a>.</p>
@@ -188,18 +189,16 @@ from the <a class="reference external" href="https://github.com/robotframework/R
 <a class="reference external" href="http://groups.google.com/group/robotframework-users">robotframework-users</a> mailing list or to the channel #ride on
 <a class="reference external" href="https://robotframework-slack-invite.herokuapp.com">Robot Framework Slack</a>, and possible bugs submitted to the <a class="reference external" href="https://github.com/robotframework/RIDE/issues">issue tracker</a>.
 You should see <a class="reference external" href="https://forum.robotframework.org/c/tools/ride/">Robot Framework Forum</a> if your problem is already known.</p>
-<p>If you have <a class="reference external" href="http://pip-installer.org">pip</a> installed, just run</p>
+<p>To install with <a class="reference external" href="http://pip-installer.org">pip</a> installed, just run</p>
 <pre class="literal-block">
-pip install --pre --upgrade robotframework-ride=={VERSION}
+pip install --upgrade robotframework-ride=={VERSION}
 </pre>
-<p>to install this <strong>RELEASE CANDIDATE</strong> release, and for the <strong>final</strong> release use</p>
+<p>to install exactly this release, which is the same as using</p>
 <pre class="literal-block">
 pip install --upgrade robotframework-ride
 </pre>
-<pre class="literal-block">
-pip install robotframework-ride==2.0
-</pre>
-<p>to install exactly the <strong>final</strong> version. Alternatively you can download the source
+
+<p>Alternatively you can download the source
 distribution from <a class="reference external" href="https://pypi.python.org/pypi/robotframework-ride">PyPI</a> and install it manually. For more details and other
 installation approaches, see the <a class="reference external" href="https://github.com/robotframework/RIDE/wiki/Installation-Instructions">installation instructions</a>.
 If you want to help in the development of RIDE, by reporting issues in current development version, you can install with:</p>
@@ -216,6 +215,6 @@ python -m robotide.__init__
 <pre class="literal-block">
 python -m robotide.postinstall -install
 </pre>
-<p>RIDE v{VERSION} was released on 26/Feb/2023.</p>
+<p>RIDE v{VERSION} was released on 01/Mar/2023.</p>
 </div>
 """

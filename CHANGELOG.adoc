@@ -6,15 +6,184 @@ All notable changes to this project will be documented in this file.
 The format is based on http://keepachangelog.com/en/1.0.0/[Keep a Changelog]
 and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioning].
 
-== https://github.com/robotframework/RIDE[Unreleased]
+// == https://github.com/robotframework/RIDE[Unreleased]
+
+== https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.0.rst[2.0] - 2023-03-01
 
 === Added
+  (2.0rc1 - 2023-02-26)
+- Minimal support to accept `*** Comments ***` sections (unfinished code)
+- Added insert and delete cells to Text Editor, by using ``Ctrl-Shift-I`` and ``Ctrl-Shift-D``
+- Added move up and move down rows to Text Editor, by using ``Alt-Up`` and ``Alt-Down``
+- Added insert and delete rows to Text Editor, by using ``Ctrl-I`` and ``Ctrl-D``
+  (2.0b3 - 2023-01-15)
+- Added swap row up, by using ``Ctrl-T``
+- Added commenting/uncommenting of content with ``\# ``, by using ``Ctrl-Shift-3`` and ``Ctrl-Shift-4``
+- Added support for editing .robot and .resource files with content before sections
+  (2.0b2 - 2022-09-05)
+- Added menu entry at Help -> Offline Change Log to view this file on disk
+- Added skipped tests counter and corresponding colored icon on Project tree
+- Added color processing in console log, when using ``-C`` or ``--consolecolors``
+- Added minimal support to open and edit resource files in Grid Editor
+- Added multiline comment and uncomment in Text Editor
+- Added support for variables recognition in FOR and Set (\*) Variable, where (\*) means Test, Task, Global, Suite, etc.
+- Added documentation and syntax color for IF, ELSE, ELSE IF, WHILE, TRY, EXCEPT, BREAK, CONTINUE
+- Added indentation for nested FOR loops
+- Added a Reformat option when saving files on Preferences -> Saving
+- Added colorization in Text Editor for Tasks
+- Added a dialog to Load or Save settings to .cfg files on Preferences -> General, Grid Editor, Text Editor and Test Runner
+- Added perspectives' persistence for Notebook panels, Edit, Text Editor and Run
+- Added General settings to Preferences, to change Font Size and Face, and colours
+- Added background colour globally on panels and dialogs
+- Added on Run tab a button to open the Logs Directory
+- Added on Run tab a group of elements to define Output Directory, Log and Report filenames with suite names or timestamps, and possibility to keep Console and Message logs
+- Added Python 3.8 unit test support in travis CI
+- Added menu option to ``Move Up`` and ``Move Down`` variables in Tree
+- Added menu option to ``Sort Variables`` in resources from Tree 
+- Added menu option to ``Sort Tests`` and ``Sort Variables`` in suites from Tree
+- Added menu icons (visible on most operating systems)
+- Added RIDE application dock icon on MacOS
+- Added selection of keyword suggestion with TAB key on Text Editor
+- Added RIDE.app to install in Applications on MacOS
+    * Also creates a symbolic link to RIDE.app on user's Desktop
+    * Users will need to edit ``/etc/paths`` to include paths for ``robot`` and other commands like ``chromedriver``, etc
+- Added an Open External File menu option, to open file in Code Editor
+- Added multiline view in Grid Editor
+    * When editing, ``\n`` will be converted to newline, ``\\n`` will remain as is.
+    * When editing, ``\ `` will be converted to whitespace.
+    * When editing, Alt-Enter is the same as ``\n``, converted immediately.
+    * When editing, Ctrl-Up and Ctrl-Down move cursor to start and end of multiline respectively.
+    * When editing, Ctrl-Home and Ctrl-End move cursor to start and end of cell content respectively.
+- Added Del key to clear Grid Editor cell content when in navigation mode (clear like doing Ctrl-X)
+  (2.0b1 - 2020-07-26)
+- Added CHANGELOG.adoc
+- Added ignoring log.html and report.html on reporting HTML test suites
+- Added conditions for wxPython versions equal or higher than 4.1.0
+- Added indent and de-indent with TAB for blocks of text
+- Added auto indent in Text Editor
+- Added enclosing text in Text Editor or selected text with certain symbols
+- Added enclosing text in Grid Editor or selected text with certain symbols
+- Added 8s timer to shortcut creation dialog on install
+- Added process memory limit on Messages Log
 
 === Removed
+  (2.0b2 - 2022-09-05)
+- Removed ``robotframeworklexer`` dependency and local copy
+- Removed alignment flag on grid cell JSON Editor (Ctrl-Shift-J)
+- Removed moving to keyword/variable definition when doing Double-Click in grid cell
+  (2.0b1 - 2020-07-26)
+- Python 2.7 support
+- wxPython/wxPhoenix version conditioning
 
 === Changed
+  (2.0b3 - 2023-01-15)
+- Hiding items in Test Suites explorer with names starting with #
+- Disabled the Close button on the Test Suites explorer
+  This was causing not being possible to restore it, unless editing the settings.cfg file.
+  Other reason was to prevent user to closing it, after detaching the panel, and re-attaching,
+  which has a bug making the Tree not visible.
+  (2.0b2 - 2022-09-05)
+- Unit tests to use ``pytest`` and removed ``nose`` dependency. Support for Python 3.10 at unit test level.
+- Prevent expanding Tests and change selection on Project tree (when right-clicking)
+- Improved Text Edit processing of # comments
+- Improved filesystem changes detection to be less reactive
+- Changed Manage Plugins to be a dialog panel instead of being a notebook tab
+- Added more valid file extensions to Open Test Suite
+- Changed minimum number of rows and columns, because blank cells would not have correct colour
+- The Arguments, Tests filters (include/exclude), Console and Message logs are now in Expandable/Collapsable groups
+- Modified robot passed and failed icons to be easier to differentiate
+- When searching in Text Editor by using Ctrl-G the search is done from the begining of text
+- On MacOS, grid cell will not lose focus anymore when mouse is moving outside of the cell's boundary
+- Changed moving to keyword definition to be with Ctrl-Click (keep Ctrl-B action)
+    * To edit cell use F2 or Double-Click
+- Changed Enter button in navigation mode to start editing cell, and to move to right cell when in edit mode
+- Performance improvements for loading large test suites
+  (2.0b1 - 2020-07-26)
+- Improved filesystem changes detection, with a confirmation dialog to reload workspace
+- Changed dependency on wx.Window on tree panel
+- Improved error and removal of old log files
+- Changed icon background to white
+- Made Project Tree and File Explorer panels, Plugins.
+- wx.NewId() to wx.NewIdRef()
+- Separated AppendText for Messages Log
 
 === Fixed
+  (2.0rc1 - 2023-02-26)
+- Fixed blank Grid Editor at keywords with steps commented with ``\# ``, by using ``Ctrl-Shift-3 on Text Editor
+  (2.0b3 - 2023-01-15)
+. Fixed low performance when opening large projects
+- Fixed comment and uncomment in Grid Editor when cells contain more than one variables assignement
+- Fixed console log stopping to output certain characters, like chinese and latin
+  (2.0b2 - 2022-09-05)
+- Fixed missing menu icons on Linux (was working on Windows)
+- Fixed removal of animation in Project tree when test run is interrupted
+- Fixed console log width to fit visible area, depending on font size
+- Fixed not possible to use filenames/paths with spaces in TestRunner arguments. Use double quotes for space separated values,
+- Fixed error preventing to open old format, HTML test suites:
+    * Yes, we are at RF 5.0.1, but still can open HTML test suites (and then Change to .robot)
+- Fixed broken sorting Tests and Variables in Project tree (right-click menu)
+- Fixed JSON in cell editor not saving nor validating JSON
+- Fixed TestRunner crash when test use SKIP keyword
+- Fixed broken pipe errors when using ``--loglevel  DEBUG:INFO``
+- Fixed various output console encoding issue in different platforms
+- Fixed errors when importing libraries with keyword only arguments (i.e. robotframework-requestschecker)
+- Fixed sys.stderr is None errors if RIDE is launched by pythonw.exe
+- Fixed RIDE cannot close properly when Screenshot library is loaded
+- Fixed incorrect title in manage plugin settings
+- Fixed search in Text Editor with wxPython 4.1.0
+- Fixed resource file will disappear after saving from Text Editor
+- Fixed duplicated resource file/folder in tree nodes
+- Fixed Ctrl-Space causing entire column to be selected in Grid Editor
+- Fixed Del key was clearing cell content on Grid Editor
+- Fixed ``${CURDIR}`` & ``${EXECDIR}`` cannot be recognized in import settings
+- Fixed memory leak when reloading workspace
+- Fixed RIDE desktop shortcut creation when installing by Administrator on Windows
+- Fixed location of icon on Linux RIDE.desktop
+- Fixed incorrect app windows size configuration after maximizing
+- Fixed errors raised when adding external resources
+- Fixed progress dialog is missing when adding external resources
+- Fixed missing keyword suggestions on Resource files in Text Editor
+- Fixed Del key in Text Editor, was not deleting text
+- Fixed duplicated but empty Text Editor tab when Text Editor is the only active editor Plugin
+- Fixed case will be selected invisibly after being modified from Text Editor
+- Fixed some of log messages log level are incorrect sometimes
+- Fixed some of log messages are missing sometimes
+- Fixed smart quotes replace in Grid Editor on MacOS
+- Fixed incorrect arguments parsing when launching RIDE with command ``python -m robotide.\\__init__``
+- Fixed RIDE startup crash when Tree or File Explorer plugins use opened=False setting
+- Fixed error occurring when deleting test cases on Tree
+  (2.0b1 - 2020-07-26)
+- Fixed editing cells in Grid Editor on wxPython 4.1
+- Fixed not saving file after deleting text in Text Editor
+- Fixed elements sizing on Preferences panel
+- Fixed tree selection, because of wrong variable name
+- Fixed encodings on Windows
+- Fixed bugs on Grid Editor
+- Fixed error message on RIDE Log about missing clear_all
+- Fixed tree nodes problems
+- Fixed severe RIDE freeze when selecting all test cases in large test suites
+- Fixed activation of RIDE Log plugin
+- Fixed missing keywords documentation for dynamic libraries (i.e. SeleniumLibrary 4.4.0)
+- Fixed not possible to create new project
+- Fixed missing Save menu option
+- Fixed sounding a beep and no selection when pressing down arrow in keywords help list
+- Fixed output log showing garbled code when the name of the test case contains Chinese
+- Fixed default arguments help
+- Fixed crash when deleting tags
+- Fixed cursor position when creating variables with CTRL-1,2,5
+- Fixed pressing F2 in Grid Editor on MacOS started editor on Project Tree
+- Fixed reprocessing of %date% %time% variables on Windows
+- Fixed not editing cells with F2 and keeping focus
+- Fixed keywords arguments help
+- Fixed Python 3.8 incompatibility
+- Fixed showing Resource files with extension .resource in Tree when not used
+- Fixed RIDE not starting
+- Fixed errors at start due to setlocale()
+- Fixed Settings editor
+- Fixed blank Edit screen
+- Fixed Runner arguments parsing
+- Fixed Runner Log window Chinese and Latin encoding chars on Windows
+
 
 == https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.0rc1.rst[2.0rc1] - 2023-02-26
 
