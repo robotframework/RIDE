@@ -23,10 +23,8 @@ from .loggerhelper import Message
 class StdoutLogSplitter(object):
     """Splits messages logged through stdout (or stderr) into Message objects"""
 
-    _split_from_levels = re.compile('^(?:\*'
-                                    '(TRACE|DEBUG|INFO|HTML|WARN|ERROR)'
-                                    '(:\d+(?:\.\d+)?)?'  # Optional timestamp
-                                    '\*)', re.MULTILINE)
+    _split_from_levels = re.compile(r"""^(?:\*(TRACE|DEBUG|INFO|HTML|WARN|ERROR)(:\d+(?:\.\d+)?)? # Optional timestamp
+\*)""", re.MULTILINE)
 
     def __init__(self, output):
         self._messages = list(self._get_messages(output.strip()))
@@ -48,10 +46,12 @@ class StdoutLogSplitter(object):
             return tokens[1:]
         return ['INFO', None] + tokens
 
-    def _output_started_with_level(self, tokens):
+    @staticmethod
+    def _output_started_with_level(tokens):
         return tokens[0] == ''
 
-    def _format_timestamp(self, millis):
+    @staticmethod
+    def _format_timestamp(millis):
         return format_time(float(millis)/1000, millissep='.')
 
     def __iter__(self):
