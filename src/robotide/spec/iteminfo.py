@@ -336,7 +336,7 @@ class BlockKeywordInfo(_KeywordInfo):
         return self._item_name
 
 
-class _UserKeywordInfo(_KeywordInfo):
+class UserKeywordInfo(_KeywordInfo):
 
     def _source(self, item):
         return os.path.basename(item.source) if item.source else ''
@@ -382,7 +382,7 @@ class _UserKeywordInfo(_KeywordInfo):
 
 
 @total_ordering
-class TestCaseUserKeywordInfo(_UserKeywordInfo):
+class TestCaseUserKeywordInfo(UserKeywordInfo):
     _type = 'test case file'
 
     @property
@@ -401,7 +401,7 @@ class TestCaseUserKeywordInfo(_UserKeywordInfo):
 
 
 @total_ordering
-class ResourceUserKeywordInfo(_UserKeywordInfo):
+class ResourceUserKeywordInfo(UserKeywordInfo):
     _type = 'resource file'
 
     @property
