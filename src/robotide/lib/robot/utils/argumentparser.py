@@ -27,26 +27,20 @@ from robotide.lib.robot.version import get_full_version
 
 from .misc import plural_or_not
 from .encoding import console_decode, system_decode
-from .platform import PY2
 from .utf8reader import Utf8Reader
-from .robottypes import is_falsy, is_integer, is_list_like, is_string, is_unicode
+from .robottypes import is_falsy, is_integer, is_list_like, is_string
 
 
 ESCAPES = dict(
-    space   = ' ', apos    = "'", quot   = '"', lt     = '<', gt     = '>',
-    pipe    = '|', star    = '*', comma  = ',', slash  = '/', semic  = ';',
-    colon   = ':', quest   = '?', hash   = '#', amp    = '&', dollar = '$',
-    percent = '%', at      = '@', exclam = '!', paren1 = '(', paren2 = ')',
-    square1 = '[', square2 = ']', curly1 = '{', curly2 = '}', bslash = '\\'
+    space=' ', apos="'", quot='"', lt='<', gt='>',
+    pipe='|', star='*', comma=',', slash='/', semic=';',
+    colon=':', quest='?', hash='#', amp='&', dollar='$',
+    percent='%', at='@', exclam='!', paren1='(', paren2=')',
+    square1='[', square2=']', curly1='{', curly2='}', bslash='\\'
 )
 
 
 def cmdline2list(args, escaping=False):
-    if PY2 and is_unicode(args):
-        args = args.encode('UTF-8')
-        decode = lambda item: item.decode('UTF-8')
-    else:
-        decode = lambda item: item
     lexer = shlex.shlex(args, posix=True)
     if is_falsy(escaping):
         lexer.escape = ''
@@ -54,19 +48,19 @@ def cmdline2list(args, escaping=False):
     lexer.commenters = ''
     lexer.whitespace_split = True
     try:
-        return [decode(token) for token in lexer]
+        return [token for token in lexer]
     except ValueError as err:
         raise ValueError("Parsing '%s' failed: %s" % (args, err))
 
 
 class ArgumentParser(object):
-    _opt_line_re = re.compile('''
+    _opt_line_re = re.compile(r"""
     ^\s{1,4}      # 1-4 spaces in the beginning of the line
     ((-\S\s)*)    # all possible short options incl. spaces (group 1)
     --(\S{2,})    # required long option (group 3)
     (\s\S+)?      # optional value (group 4)
     (\s\*)?       # optional '*' telling option allowed multiple times (group 5)
-    ''', re.VERBOSE)
+    """, re.VERBOSE)
 
     _quotes_re = re.compile('(.*)(\".*\")(.*)?')
 
@@ -194,7 +188,6 @@ class ArgumentParser(object):
         # print(f"DEBUG: RFlib ENTER _save_filenames res={res}")
         if not res:
             return args.strip().strip().split()
-        clean = []
         # DEBUG: example args
         # --xunit "another output file.xml" --variablefile "a test file for variables.py" -v abc:new
         # --debugfile "debug file.log"
@@ -239,7 +232,8 @@ class ArgumentParser(object):
             raise DataError(err.msg)
         return self._process_opts(opts), self._glob_args(args)
 
-    def _lowercase_long_option(self, opt):
+    @staticmethod
+    def _lowercase_long_option(opt):
         if not opt.startswith('--'):
             return opt
         if '=' not in opt:
@@ -308,7 +302,7 @@ class ArgumentParser(object):
                 opts[name] = value
         return opts
 
-    def _get_default_opts(self):
+    def _get_default_opts(self) -> dict:
         defaults = {}
         for opt in self._long_opts:
             opt = opt.rstrip('=')
@@ -317,7 +311,8 @@ class ArgumentParser(object):
             defaults[opt] = [] if opt in self._multi_opts else None
         return defaults
 
-    def _glob_args(self, args):
+    @staticmethod
+    def _glob_args(args):
         temp = []
         for path in args:
             paths = sorted(glob.glob(path))
@@ -379,7 +374,8 @@ class ArgumentParser(object):
             temp.extend(glob.glob(path))
         return [os.path.abspath(path) for path in temp if path]
 
-    def _split_pythonpath(self, paths):
+    @staticmethod
+    def _split_pythonpath(paths):
         # paths may already contain ':' as separator
         tokens = ':'.join(paths).split(':')
         if os.sep == '/':
@@ -404,7 +400,8 @@ class ArgumentParser(object):
             ret.append(drive)
         return ret
 
-    def _get_available_escapes(self):
+    @staticmethod
+    def _get_available_escapes():
         names = sorted(ESCAPES.keys(), key=str.lower)
         return ', '.join('%s (%s)' % (n, ESCAPES[n]) for n in names)
 
@@ -412,6 +409,7 @@ class ArgumentParser(object):
         msg = self._usage
         if self.version:
             msg = msg.replace('<VERSION>', self.version)
+
         def replace_escapes(res):
             escapes = 'Available escapes: ' + self._get_available_escapes()
             lines = textwrap.wrap(escapes, width=len(res.group(2)))
@@ -432,7 +430,8 @@ class ArgLimitValidator(object):
     def __init__(self, arg_limits):
         self._min_args, self._max_args = self._parse_arg_limits(arg_limits)
 
-    def _parse_arg_limits(self, arg_limits):
+    @staticmethod
+    def _parse_arg_limits(arg_limits):
         if arg_limits is None:
             return 0, sys.maxsize
         if is_integer(arg_limits):
@@ -445,7 +444,8 @@ class ArgLimitValidator(object):
         if not (self._min_args <= len(args) <= self._max_args):
             self._raise_invalid_args(self._min_args, self._max_args, len(args))
 
-    def _raise_invalid_args(self, min_args, max_args, arg_count):
+    @staticmethod
+    def _raise_invalid_args(min_args, max_args, arg_count):
         min_end = plural_or_not(min_args)
         if min_args == max_args:
             expectation = "%d argument%s" % (min_args, min_end)
@@ -489,7 +489,8 @@ class ArgFileParser(object):
             content = self._read_from_stdin()
         return self._process_file(content)
 
-    def _read_from_file(self, path):
+    @staticmethod
+    def _read_from_file(path):
         try:
             with Utf8Reader(path) as reader:
                 return reader.read()
@@ -497,7 +498,8 @@ class ArgFileParser(object):
             raise DataError("Opening argument file '%s' failed: %s"
                             % (path, err))
 
-    def _read_from_stdin(self):
+    @staticmethod
+    def _read_from_stdin():
         return console_decode(sys.__stdin__.read())
 
     def _process_file(self, content):
@@ -519,7 +521,8 @@ class ArgFileParser(object):
             value = value.strip()
         return [option, value]
 
-    def _get_option_separator(self, line):
+    @staticmethod
+    def _get_option_separator(line):
         if ' ' not in line and '=' not in line:
             return None
         if '=' not in line:
