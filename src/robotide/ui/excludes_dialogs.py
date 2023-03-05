@@ -24,7 +24,7 @@ from ..widgets import RIDEDialog, HtmlWindow
 
 
 class ExcludePreferences(PreferencesPanel):
-    location = ('Excludes')
+    location = 'Excludes'
     title = 'Excludes'
 
     def __init__(self, settings, *args, **kwargs):
@@ -56,10 +56,8 @@ class ExcludePreferences(PreferencesPanel):
         self.Bind(EVT_HYPERLINK, self.OnHelp)
 
     def _add_text_box(self, sizer):
-        self._text_box = wx.TextCtrl(self,
-            style=wx.TE_MULTILINE|wx.TE_NOHIDESEL,
-            size=wx.Size(570, 100),
-            value=self._settings.excludes.get_excludes())
+        self._text_box = wx.TextCtrl(self, style=wx.TE_MULTILINE | wx.TE_NOHIDESEL, size=wx.Size(570, 100),
+                                     value=self._settings.excludes.get_excludes())
         self._text_box.SetBackgroundColour(Colour(self.color_secondary_background))
         self._text_box.SetForegroundColour(Colour(self.color_secondary_foreground))
         sizer.Add(self._text_box, proportion=wx.EXPAND)
@@ -77,18 +75,24 @@ class ExcludePreferences(PreferencesPanel):
         sizer.Add(status_and_button_sizer)
 
     def OnSave(self, event):
+        _ = event
         text = self._text_box.GetValue()
         self._settings.excludes.write_excludes(set(text.split('\n')))
         save_label = 'Saved at %s. Reload the project for changes to take an effect.' %\
                      datetime.now().strftime('%H:%M:%S')
         self._status_label.SetLabel(save_label)
 
-    def OnHelp(self, event):
+    @staticmethod
+    def OnHelp(event):
+        _ = event
         dialog = ExcludeHelpDialog()
         dialog.Show()
 
 
 class ExcludeHelpDialog(RIDEDialog):
+    def _execute(self):
+        pass
+
     help = """<font size="5">
 <h1>Excludes</h1>
 <p>
@@ -131,10 +135,10 @@ The following shell-style wildcards are supported:
             <td valign="top" align="center">?</td>
             <td valign="top" align="center">matches any single character</td>
             <td valign="top" align="left">
-                Pattern C:\MyProject\?oo matches:
+                Pattern C:\\MyProject\\?oo matches:
                 <ul>
-                    <li>C:\MyProject\\foo</li>
-                    <li>C:\MyProject\\boo</li>
+                    <li>C:\\MyProject\\foo</li>
+                    <li>C:\\MyProject\\boo</li>
                     <li><i>etc.</i></li>
                 </ul>
             </td>
@@ -143,10 +147,10 @@ The following shell-style wildcards are supported:
             <td valign="top" align="center">[seq]</td>
             <td valign="top" align="center">matches any character in <i>seq</i></td>
             <td valign="top" align="left">
-               Pattern C:\MyProject\[bf]oo matches:
+               Pattern C:\\MyProject\\[bf]oo matches:
                 <ul>
-                    <li>C:\MyProject\\foo</li>
-                    <li>C:\MyProject\\boo</li>
+                    <li>C:\\MyProject\\foo</li>
+                    <li>C:\\MyProject\\boo</li>
                     <li><i>and nothing else</i></li>
                 </ul>
             </td>
