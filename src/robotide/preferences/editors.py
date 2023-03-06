@@ -25,18 +25,18 @@ from ..ui.preferences_dialogs import (PreferencesPanel, SpinChoiceEditor, Intege
 from ..widgets import Label
 from .managesettingsdialog import SaveLoadSettings
 from ..context import IS_WINDOWS
+from functools import lru_cache
 
 try:  # import installed version first
     from pygments.lexers import robotframework as robotframeworklexer
-except ImportError: # Pygments is not installed
+except ImportError:  # Pygments is not installed
     robotframeworklexer = None
 
-ID_SAVELOADSETTINGS = wx.NewId()
+ID_SAVELOADSETTINGS = wx.NewIdRef()
 ID_LOAD = 5551
 ID_SAVE = 5552
 ID_CANCEL = -1
 
-from functools import lru_cache
 
 @lru_cache(maxsize=2)
 def ReadFonts(fixed=False):
@@ -55,6 +55,7 @@ class EditorPreferences(PreferencesPanel):
         super(EditorPreferences, self).__init__(*args, **kwargs)
         self._settings = settings
         self._color_pickers = []
+        self.name = None
 
         # what would make this UI much more usable is if there were a
         # preview window in the dialog that showed all the colors. I
@@ -99,7 +100,8 @@ class EditorPreferences(PreferencesPanel):
             defaults[key] = value
         return defaults
 
-    def _get_path(self):
+    @staticmethod
+    def _get_path():
         return join(dirname(abspath(__file__)), 'settings.cfg')
 
     def _create_font_editor(self):
@@ -108,9 +110,9 @@ class EditorPreferences(PreferencesPanel):
             [str(i) for i in range(8, 16)])
         sizer = wx.FlexGridSizer(rows=3, cols=2, vgap=10, hgap=30)
         l_size = f.label(self)
+        background_color = Colour("light gray")
+        foreground_color = Colour("black")
         if IS_WINDOWS:
-            background_color = Colour("light gray")
-            foreground_color = Colour("black")
             l_size.SetBackgroundColour(background_color)
             l_size.SetOwnBackgroundColour(background_color)
             l_size.SetForegroundColour(foreground_color)
@@ -166,27 +168,26 @@ class TextEditorPreferences(EditorPreferences):
         row = 0
         if robotframeworklexer:
             settings = (
-                        ('argument', 'Argument foreground'),
-                        ('comment', 'Comment foreground'),
-                        ('error', 'Error foreground'),
-                        ('gherkin', 'Gherkin keyword foreground'),
-                        ('heading', 'Heading foreground'),
-                        ('import', 'Import foreground'),
-                        ('variable', 'Variable foreground'),
-                        ('tc_kw_name', 'Keyword definition foreground'),
-                        ('separator', 'Separator'),
-                        ('setting', 'Setting foreground'),
-                        ('syntax', 'Syntax characters'),
-                        ('background', 'Text background'),
-                       )
+                ('argument', 'Argument foreground'),
+                ('comment', 'Comment foreground'),
+                ('error', 'Error foreground'),
+                ('gherkin', 'Gherkin keyword foreground'),
+                ('heading', 'Heading foreground'),
+                ('import', 'Import foreground'),
+                ('variable', 'Variable foreground'),
+                ('tc_kw_name', 'Keyword definition foreground'),
+                ('separator', 'Separator'),
+                ('setting', 'Setting foreground'),
+                ('syntax', 'Syntax characters'),
+                ('background', 'Text background'),
+            )
         else:
             settings = (
-                        ('setting', 'Text foreground'),
-                        ('background', 'Text background'),
-                       )
-        if IS_WINDOWS:
-            background_color = Colour("light gray")
-            foreground_color = Colour("black")
+                ('setting', 'Text foreground'),
+                ('background', 'Text background'),
+            )
+        background_color = Colour("light gray")
+        foreground_color = Colour("black")
         for settings_key, label_text in settings:
             if column == 4:
                 column = 0
@@ -214,8 +215,7 @@ class TextEditorPreferences(EditorPreferences):
             return
         save_settings_dialog = SaveLoadSettings(self, self._settings)
         save_settings_dialog.CenterOnParent()
-        value = save_settings_dialog.ShowModal()
-        # print(f"DEBUG: Value returned by SaveLoadSettings: {value}")
+        save_settings_dialog.ShowModal()
         for picker in self._color_pickers:
             picker.SetColour(self._settings[picker.key])
 
@@ -239,9 +239,9 @@ class GridEditorPreferences(EditorPreferences):
         settings = self._settings
         sizer = wx.FlexGridSizer(rows=6, cols=2, vgap=10, hgap=10)
         l_col_size = self._label_for('Default column size')
+        background_color = Colour("light gray")
+        foreground_color = Colour("black")
         if IS_WINDOWS:
-            background_color = Colour("light gray")
-            foreground_color = Colour("black")
             l_col_size.SetForegroundColour(foreground_color)
             l_col_size.SetBackgroundColour(background_color)
             l_col_size.SetOwnBackgroundColour(background_color)
@@ -331,18 +331,17 @@ class GridEditorPreferences(EditorPreferences):
 
     def _create_background_pickers(self, colors_sizer):
         row = 0
-        if IS_WINDOWS:
-            background_color = Colour("light gray")
-            foreground_color = Colour("black")
+        background_color = Colour("light gray")
+        foreground_color = Colour("black")
         for key, label in (
-            ('background assign', 'Variable Background'),
-            ('background keyword', 'Keyword Background'),
-            ('background mandatory', 'Mandatory Field Background'),
-            ('background optional', 'Optional Field Background'),
-            ('background must be empty', 'Mandatory Empty Field Background'),
-            ('background unknown', 'Unknown Background'),
-            ('background error', 'Error Background'),
-            ('background highlight', 'Highlight Background')
+                ('background assign', 'Variable Background'),
+                ('background keyword', 'Keyword Background'),
+                ('background mandatory', 'Mandatory Field Background'),
+                ('background optional', 'Optional Field Background'),
+                ('background must be empty', 'Mandatory Empty Field Background'),
+                ('background unknown', 'Unknown Background'),
+                ('background error', 'Error Background'),
+                ('background highlight', 'Highlight Background')
         ):
             lbl = wx.StaticText(self, wx.ID_ANY, label)
             if IS_WINDOWS:
@@ -365,8 +364,7 @@ class GridEditorPreferences(EditorPreferences):
             return
         save_settings_dialog = SaveLoadSettings(self, self._settings)
         save_settings_dialog.CenterOnParent()
-        value = save_settings_dialog.ShowModal()
-        # print(f"DEBUG: Value returned by SaveLoadSettings: {value}")
+        save_settings_dialog.ShowModal()
         for picker in self._color_pickers:
             picker.SetColour(self._settings[picker.key])
 
@@ -414,16 +412,15 @@ class TestRunnerPreferences(EditorPreferences):
         container = wx.GridBagSizer()
         row = 0
         column = 0
-        if IS_WINDOWS:
-            background_color = Colour("light gray")
-            foreground_color = Colour("black")
+        background_color = Colour("light gray")
+        foreground_color = Colour("black")
         for settings_key, label_text in (
-            ('foreground', 'Text foreground'),
-            ('background', 'Text background'),
-            ('error', 'Error foreground'),
-            ('fail color', 'Fail foreground'),
-            ('pass color', 'Pass foreground'),
-            ('skip color', 'Skip foreground'),
+                ('foreground', 'Text foreground'),
+                ('background', 'Text background'),
+                ('error', 'Error foreground'),
+                ('fail color', 'Fail foreground'),
+                ('pass color', 'Pass foreground'),
+                ('skip color', 'Skip foreground'),
         ):
             if column == 4:
                 column = 0
@@ -451,8 +448,7 @@ class TestRunnerPreferences(EditorPreferences):
             return
         save_settings_dialog = SaveLoadSettings(self, self._settings)
         save_settings_dialog.CenterOnParent()
-        value = save_settings_dialog.ShowModal()
-        # print(f"DEBUG: Value returned by SaveLoadSettings: {value}")
+        save_settings_dialog.ShowModal()
         for picker in self._color_pickers:
             picker.SetColour(self._settings[picker.key])
 
