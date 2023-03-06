@@ -22,6 +22,7 @@ from .kweditor import KeywordEditor
 
 
 class TestCaseEditor(_RobotTableEditor):
+    __test__ = False
     _settings_open_id = 'test case settings open'
 
     def _populate(self):
@@ -110,6 +111,7 @@ class UserKeywordEditor(TestCaseEditor):
 
     def _create_header(self, name):
         def cb(event):
+            _ = event
             Usages(self.controller, self._tree.highlight).show()
         return FindUsagesHeader(self, name, cb, color_foreground=self.color_secondary_foreground,
-                                               color_background=self.color_secondary_background)
+                                color_background=self.color_secondary_background)

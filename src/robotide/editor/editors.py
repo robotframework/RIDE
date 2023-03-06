@@ -90,6 +90,7 @@ class _RobotTableEditor(EditorPanel):
                            0, wx.EXPAND | wx.ALL, 5)
             # self.sizer.Add((0, 10))  # DEBUG why this?
         self._editors = []
+        self._last_shown_tooltip = None
         self._reset_last_show_tooltip()
         self._populate()
         self.plugin.subscribe(self._settings_changed, RideItemSettingsChanged)
@@ -109,6 +110,7 @@ class _RobotTableEditor(EditorPanel):
                 editor.update_value()
 
     def OnIdle(self, event):
+        _ = event
         if self._last_shown_tooltip and self._mouse_outside_tooltip():
             self._last_shown_tooltip.hide()
             self._reset_last_show_tooltip()
@@ -247,7 +249,8 @@ class Settings(wx.CollapsiblePane):
         editor_cls = self._get_editor_class(controller)
         return editor_cls(self.GetPane(), controller, plugin, tree)
 
-    def _get_editor_class(self, controller):
+    @staticmethod
+    def _get_editor_class(controller):
         if isinstance(controller, DocumentationController):
             return DocumentationEditor
         if isinstance(controller, TagsController):
@@ -300,9 +303,11 @@ class _FileEditor(_RobotTableEditor):
             self._update_source_and_name, RideFileNameChanged)
 
     def _update_source(self, message=None):
+        _ = message
         self._source.SetValue(self.controller.data.source)
 
     def _update_source_and_name(self, message):
+        _ = message
         self._title_display.SetLabel(self.controller.name)
         self._update_source()
 
@@ -377,6 +382,7 @@ class ResourceFileEditor(_FileEditor):
             text += ' (READ ONLY)'
 
         def cb(event):
+            _ = event
             ResourceFileUsages(self.controller, self._tree.highlight).show()
         self._title_display = FindUsagesHeader(self, text, cb, color_foreground=self.color_secondary_foreground,
                                                color_background=self.color_secondary_background)
@@ -384,6 +390,7 @@ class ResourceFileEditor(_FileEditor):
 
 
 class TestCaseFileEditor(_FileEditor):
+    __test__ = False
     _settings_open_id = 'test case file settings open'
 
     def _populate(self):
@@ -405,6 +412,7 @@ class InitFileEditor(TestCaseFileEditor):
         self.plugin.subscribe(self._init_file_removed, RideInitFileRemoved)
 
     def _init_file_removed(self, message):
+        _ = message
         for setting, editor in zip(self.controller.settings, self._editors):
             editor.refresh(setting)
 

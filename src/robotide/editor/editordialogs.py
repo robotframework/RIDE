@@ -60,7 +60,7 @@ class _Dialog(RIDEDialog):
         self._sizer.Add(self._comment_editor)
 
     def _create_line(self):
-        line = wx.StaticLine(self, size=(20,-1), style=wx.LI_HORIZONTAL)
+        line = wx.StaticLine(self, size=(20, -1), style=wx.LI_HORIZONTAL)
         if wx.VERSION < (4, 1, 0):
             self._sizer.Add(line, 0, wx.GROW | wx.ALIGN_CENTER_VERTICAL | wx.RIGHT | wx.TOP, 5)
         else:
@@ -71,7 +71,7 @@ class _Dialog(RIDEDialog):
                         flag=wx.ALL, border=2)
 
     def _create_buttons(self, **kwargs):
-        buttons = self.CreateStdDialogButtonSizer(wx.OK|wx.CANCEL)
+        buttons = self.CreateStdDialogButtonSizer(wx.OK | wx.CANCEL)
         self.SetBackgroundColour(Colour(self.color_background))
         self.SetForegroundColour(Colour(self.color_foreground))
         for item in self.GetChildren():
@@ -80,10 +80,10 @@ class _Dialog(RIDEDialog):
                 item.SetOwnBackgroundColour(Colour(self.color_secondary_background))
                 item.SetForegroundColour(Colour(self.color_secondary_foreground))
                 item.SetOwnForegroundColour(Colour(self.color_secondary_foreground))
-        self._sizer.Add(buttons, 0, wx.ALIGN_CENTER|wx.ALL, 5)
+        self._sizer.Add(buttons, 0, wx.ALIGN_CENTER | wx.ALL, 5)
 
     def get_value(self):
-        return [ e.get_value() for e in self._editors ]
+        return [e.get_value() for e in self._editors]
 
     def get_comment(self):
         return self._comment_editor.get_value()
@@ -251,11 +251,15 @@ class SuiteTeardownDialog(_FixtureDialog):
 
 
 class TestSetupDialog(_FixtureDialog):
+    __test__ = False
+
     def _execute(self):
         pass
 
 
 class TestTeardownDialog(_FixtureDialog):
+    __test__ = False
+
     def _execute(self):
         pass
 
@@ -276,6 +280,8 @@ class TemplateDialog(_FixtureDialog):
 
 
 class TestTemplateDialog(_FixtureDialog):
+    __test__ = False
+
     def _execute(self):
         pass
 
@@ -294,6 +300,7 @@ class ReturnValueDialog(_SettingDialog):
 
 
 class TestTimeoutDialog(_SettingDialog):
+    __test__ = False
     _validator = TimeoutValidator
 
     def _execute(self):
@@ -317,6 +324,7 @@ class MetadataDialog(_Dialog):
 
 
 class TestCaseNameDialog(_Dialog):
+    __test__ = False
     _title = 'New Test Case'
 
     def _add_comment_editor(self, item):
