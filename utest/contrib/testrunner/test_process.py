@@ -21,9 +21,41 @@ from utest.resources import datafilereader
 from robotide.contrib.testrunner.testrunner import Process
 
 if VERSION >= '4.0':
-    console_out = b'==============================================================================\nSmall Test                                                                    \n==============================================================================\nSmall Test.Test                                                               \n==============================================================================\nPassing                                                               | PASS |\n------------------------------------------------------------------------------\nFailing                                                               | FAIL |\nthis fails\n------------------------------------------------------------------------------\nSmall Test.Test                                                       | FAIL |\n2 tests, 1 passed, 1 failed\n==============================================================================\nSmall Test                                                            | FAIL |\n2 tests, 1 passed, 1 failed\n==============================================================================\nOutput:  None\n'
+    console_out = b"==============================================================================\n" \
+                  b"Small Test                                                                    \n" \
+                  b"==============================================================================\n" \
+                  b"Small Test.Test                                                               \n" \
+                  b"==============================================================================\n" \
+                  b"Passing                                                               | PASS |\n" \
+                  b"------------------------------------------------------------------------------\n" \
+                  b"Failing                                                               | FAIL |\n" \
+                  b"this fails\n" \
+                  b"------------------------------------------------------------------------------\n" \
+                  b"Small Test.Test                                                       | FAIL |\n" \
+                  b"2 tests, 1 passed, 1 failed\n" \
+                  b"==============================================================================\n" \
+                  b"Small Test                                                            | FAIL |\n" \
+                  b"2 tests, 1 passed, 1 failed\n" \
+                  b"==============================================================================\n" \
+                  b"Output:  None\n"
 else:
-    console_out = b'==============================================================================\nSmall Test                                                                    \n==============================================================================\nSmall Test.Test                                                               \n==============================================================================\nPassing                                                               | PASS |\n------------------------------------------------------------------------------\nFailing                                                               | FAIL |\nthis fails\n------------------------------------------------------------------------------\nSmall Test.Test                                                       | FAIL |\n2 critical tests, 1 passed, 1 failed\n2 tests total, 1 passed, 1 failed\n==============================================================================\nSmall Test                                                            | FAIL |\n2 critical tests, 1 passed, 1 failed\n2 tests total, 1 passed, 1 failed\n==============================================================================\nOutput:  None\n'
+    console_out = b"==============================================================================\n" \
+                  b"Small Test                                                                    \n" \
+                  b"==============================================================================\n" \
+                  b"Small Test.Test                                                               \n" \
+                  b"==============================================================================\n" \
+                  b"Passing                                                               | PASS |\n" \
+                  b"------------------------------------------------------------------------------\n" \
+                  b"Failing                                                               | FAIL |\n" \
+                  b"this fails\n" \
+                  b"------------------------------------------------------------------------------\n" \
+                  b"Small Test.Test                                                       | FAIL |\n" \
+                  b"2 critical tests, 1 passed, 1 failed\n2 tests total, 1 passed, 1 failed\n" \
+                  b"==============================================================================\n" \
+                  b"Small Test                                                            | FAIL |\n" \
+                  b"2 critical tests, 1 passed, 1 failed\n2 tests total, 1 passed, 1 failed\n" \
+                  b"==============================================================================\n" \
+                  b"Output:  None\n"
 
 
 class ProcessUnicodeTestCase(unittest.TestCase):
@@ -33,18 +65,20 @@ class ProcessUnicodeTestCase(unittest.TestCase):
             Process(r'\xf6').run_command(r'echo \xf6')
         except UnicodeEncodeError:
             self.fail('Should not throw unicode error')
-        except OSError as expected:
+        except OSError:
             pass
 
     def test_running_robot_test(self):
         output, errors = self._run_small_test()
+        print(output, errors)
         parsed_output = bytes(output.replace(b'\r', b''))
         parsed_errors = bytes(errors.replace(b'\r', b''))
         self.assertTrue(parsed_output.startswith(console_out), msg=repr(output))
         # Because of deprecation messages in RF 3.1, from Equal to Regex
-        self.assertRegex(parsed_errors, b".*\[ WARN \] this passes\n")
+        self.assertRegex(parsed_errors, b".*\\[ WARN \\] this passes\n")
 
-    def _run_small_test(self):
+    @staticmethod
+    def _run_small_test():
         p = Process(datafilereader.SMALL_TEST_PATH)
         p.run_command('robot --extension robot:txt --output NONE --log NONE --report NONE .')
         max_time = 7.0
