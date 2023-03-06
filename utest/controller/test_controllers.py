@@ -28,7 +28,7 @@ from robotide.controller.settingcontrollers import (
     ForceTagsController, DefaultTagsController)
 from robotide.controller.tablecontrollers import (
     VariableTableController, MetadataListController, ImportSettingsController,
-    _WithListOperations)
+    WithListOperations)
 from robotide.publish.messages import (
     RideImportSetting, RideImportSettingRemoved, RideImportSettingAdded,
     RideImportSettingChanged)
@@ -43,9 +43,10 @@ SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(),
 sys.path.insert(0, os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
 
 try:
-   from controller_creator import _FakeProject
+    from controller_creator import _FakeProject
 except ModuleNotFoundError:
     from .controller_creator import _FakeProject
+
 
 class _FakeParent(_FakeProject):
     def __init__(self):
@@ -213,9 +214,9 @@ class TagsControllerTest(unittest.TestCase):
         assert not self.ctrl.dirty
 
     def test_escaping_pipes_in_value(self):
-        self.ctrl.set_value('first \| second')
-        assert self.tags.value == ['first | second']
-        assert self.ctrl.display_value == 'first \| second'
+        self.ctrl.set_value("first \\| second")
+        assert self.tags.value == ["first | second"]
+        assert self.ctrl.display_value == "first \\| second"
 
     def test_adding_tag(self):
         self.ctrl.add(Tag('new tag'))
@@ -236,8 +237,7 @@ class TimeoutControllerTest(unittest.TestCase):
         assert self.ctrl.is_set
 
     def test_value_with_empty_timeout(self):
-        assert TimeoutController(self.parent,
-                                        Timeout('Timeout')).display_value == ''
+        assert TimeoutController(self.parent, Timeout('Timeout')).display_value == ''
 
     def test_setting_value_changes_fixture_state(self):
         self.ctrl.set_value('3 s')
@@ -264,7 +264,8 @@ class TimeoutControllerTest(unittest.TestCase):
 
 class ReturnValueControllerTest(unittest.TestCase):
 
-    def test_creation(self):
+    @staticmethod
+    def test_creation():
         ctrl = ReturnValueController(_FakeParent(), Return('[Return]'))
         assert ctrl.label == 'Return Value'
 
@@ -288,16 +289,20 @@ class ImportControllerTest(unittest.TestCase):
         self.tcf.setting_table.add_library('BuiltIn', ['WITH NAME', 'InBuilt'])
         self.tcf_ctrl = TestCaseFileController(self.tcf, ImportControllerTest.FakeParent())
         self.tcf_ctrl.data.directory = 'tmp'
-        self.parent = ImportSettingsController(self.tcf_ctrl, self.tcf.setting_table,
+        self.parent = ImportSettingsController(
+            self.tcf_ctrl, self.tcf.setting_table,
             resource_file_controller_factory=self._resource_file_controller_factory_mock())
         self.add_import_listener = PublisherListener(RideImportSettingAdded)
         self.changed_import_listener = PublisherListener(RideImportSettingChanged)
         self.removed_import_listener = PublisherListener(RideImportSettingRemoved)
         self.import_listener = PublisherListener(RideImportSetting)
 
-    def _resource_file_controller_factory_mock(self):
-        rfcfm = lambda:0
-        rfcfm.find_with_import = lambda *_:None
+    @staticmethod
+    def _resource_file_controller_factory_mock():
+
+        def rfcfm():
+            return 0
+        rfcfm.find_with_import = lambda *_: None
         return rfcfm
 
     def tearDown(self):
@@ -359,14 +364,16 @@ class ImportControllerTest(unittest.TestCase):
         self.parent.add_variables('path', 'argstr')
         self._test_listener('path', 'variables', self.add_import_listener)
 
-    def _test_listener(self, name, type, listener, index=0):
+    def _test_listener(self, name, ltype, listener, index=0):
         data = listener.data[index]
         assert data.name == name
-        assert data.type == type
+        assert data.type == ltype
         assert data.datafile == self.tcf_ctrl
         assert self.import_listener.data[index].name == name
 
-    def _assert_import(self, index, exp_name, exp_args=[], exp_alias=''):
+    def _assert_import(self, index, exp_name, exp_args=None, exp_alias=''):
+        if exp_args is None:
+            exp_args = []
         item = self.parent[index]
         assert item.name == exp_name
         assert item.args == exp_args
@@ -379,9 +386,13 @@ class ImportSettingsControllerTest(unittest.TestCase):
         self.tcf = TestCaseFile()
         filectrl = TestCaseFileController(self.tcf)
         filectrl.resource_import_modified = mock()
-        resource_file_controller_mock = lambda:0
-        resource_file_controller_mock.add_known_import = lambda *_:0
-        resu_factory_mock = lambda:0
+
+        def resource_file_controller_mock():
+            return 0
+        resource_file_controller_mock.add_known_import = lambda *_: 0
+
+        def resu_factory_mock():
+            return 0
         resu_factory_mock.find_with_import = lambda *_: resource_file_controller_mock
         self.ctrl = ImportSettingsController(filectrl, self.tcf.setting_table, resu_factory_mock)
 
@@ -397,7 +408,10 @@ class ImportSettingsControllerTest(unittest.TestCase):
         self.ctrl.add_variables('varfile.py', 'an arg')
         self._assert_import('varfile.py', ['an arg'])
 
-    def _assert_import(self, exp_name, exp_args=[], exp_alias=None):
+    def _assert_import(self, exp_name, exp_args=None, exp_alias=None):
+        if exp_args is None:
+            exp_args = []
+        _ = exp_alias
         imp = self.tcf.setting_table.imports[-1]
         assert imp.name == exp_name
         assert imp.args == exp_args
@@ -483,8 +497,7 @@ class MetadataListControllerTest(unittest.TestCase):
         assert self.ctrl[0].dirty
 
     def test_serialization(self):
-        assert (self._get_metadata(0).as_list() ==
-                      ['Metadata', 'Meta name', 'Some value'])
+        assert (self._get_metadata(0).as_list() == ['Metadata', 'Meta name', 'Some value'])
 
     def _assert_meta_in_ctrl(self, index, name, value):
         assert self.ctrl[index].name == name
@@ -498,7 +511,7 @@ class MetadataListControllerTest(unittest.TestCase):
         return self.tcf.setting_table.metadata[index]
 
 
-class FakeListController(_WithListOperations):
+class FakeListController(WithListOperations):
 
     def __init__(self):
         self._itemslist = ['foo', 'bar', 'quux']

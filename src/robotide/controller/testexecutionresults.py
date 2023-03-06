@@ -18,6 +18,7 @@ from ..publish.messages import (RideTestExecutionStarted, RideTestPaused, RideTe
 
 
 class TestExecutionResults(object):
+    __test__ = False
     RUNNING = 'Running'
     STOPPED = 'Stopped'
     PASSED = 'Passed'

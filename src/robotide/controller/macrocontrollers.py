@@ -70,6 +70,7 @@ class KeywordNameController(ItemNameController):
 
 
 class TestCaseNameController(ItemNameController):
+    __test__ = False
     _name_field = TESTCASE_NAME_FIELD
 
 
@@ -308,6 +309,7 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
 
 
 class TestCaseController(_WithStepsController):
+    __test__ = False
 
     _populator = robotapi.TestCasePopulator
     filename = ""
