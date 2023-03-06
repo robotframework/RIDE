@@ -19,7 +19,7 @@ except ImportError:
     try:
         from robotide.lib.robot.run import USAGE  # Then try the provided version, 3.1.2
     except ImportError:
-        USAGE = """\
+        USAGE = """
 Robot Framework -- A generic test automation framework
 
 Usage:  robot|jybot|irobot [options] data_sources
@@ -313,7 +313,7 @@ Options
                           all given arguments, incl. data sources, are escaped
                           so escape characters ought to be selected carefully.
                           Available escapes: amp (&), apos ('), at (@), bslash
-                          (\), colon (:), comma (,), curly1 ({), curly2 (}),
+                          (\\), colon (:), comma (,), curly1 ({), curly2 (}),
                           dollar ($), exclam (!), gt (>), hash (#), lt (<),
                           paren1 ((), paren2 ()), percent (%), pipe (|), quest
                           (?), quot ("), semic (;), slash (/), space ( ),
