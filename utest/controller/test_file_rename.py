@@ -19,7 +19,8 @@ import unittest
 from robotide.robotapi import TestCaseFile
 from robotide.controller.ctrlcommands import RenameFile
 from robotide.controller.filecontrollers import TestCaseFileController
-from robotide.controller.validators import ERROR_ILLEGAL_CHARACTERS, ERROR_EMPTY_FILENAME, ERROR_NEWLINES_IN_THE_FILENAME, ERROR_FILE_ALREADY_EXISTS
+from robotide.controller.validators import (ERROR_EMPTY_FILENAME, ERROR_NEWLINES_IN_THE_FILENAME,
+                                            ERROR_FILE_ALREADY_EXISTS)
 from robotide.publish import PUBLISHER, RideFileNameChanged, RideInputValidationError
 
 
@@ -29,13 +30,13 @@ class TestRenameTestCaseFile(unittest.TestCase):
     def setUp(self):
         PUBLISHER.subscribe(self._file_name_changed, RideFileNameChanged)
         PUBLISHER.subscribe(self._file_name_error, RideInputValidationError)
-        self._clean_test_files(["quux.robot","some.robot"])
+        self._clean_test_files(["quux.robot", "some.robot"])
 
     def tearDown(self):
         self._clean_test_files()
         PUBLISHER.unsubscribe_all(self)
 
-    def _clean_test_files(self, paths = None):
+    def _clean_test_files(self, paths=None):
         for filename in paths if paths else self._filenames_to_remove:
             try:
                 os.remove(filename)
@@ -50,37 +51,29 @@ class TestRenameTestCaseFile(unittest.TestCase):
 
     def test_rename_changes_basename_but_keeps_extension(self):
         RenameFile('quux').execute(self._create_controller())
-        assert self._error_message == None
+        assert self._error_message is None
         assert self.ctrl.filename == 'quux.robot'
         assert self.ctrl.data.source == self.ctrl.filename
 
     def test_rename_preserves_directory_path(self):
         RenameFile('quux').execute(self._create_controller('foo/bar.html'))
-        assert self._error_message == None
+        assert self._error_message is None
         assert self.ctrl.filename.endswith(os.path.join('foo', 'quux.html'))
 
     def test_rename_deletes_old_path(self):
         RenameFile('quux').execute(self._create_controller())
-        assert self._error_message == None
+        assert self._error_message is None
         assert self.deleted is True
 
     def test_rename_saves_file(self):
         RenameFile('quux').execute(self._create_controller())
-        assert self._error_message == None
+        assert self._error_message is None
         assert self.saved is True
 
     def test_rename_publishes_message(self):
         RenameFile('some').execute(self._create_controller())
-        assert self._error_message == None
+        assert self._error_message is None
         assert self._message == self.ctrl
-
-    """
-    @unittest.skip("Cannot provoke ERROR on Linux")  # Can't produce errors on Linux
-    def test_rename_illegal_character_error(self):
-        RenameFile("dsk\dన\j$''lkfd\{sjflk$'\'fdslkjl\[\]suite....").execute(
-            self._create_controller())
-        assert_equal(self._error_message, ERROR_ILLEGAL_CHARACTERS)
-    """
 
     def test_rename_empty_name_error(self):
         RenameFile("").execute(self._create_controller())
@@ -103,8 +96,14 @@ class TestRenameTestCaseFile(unittest.TestCase):
         self.deleted = False
         self._message = None
         self._error_message = None
-        def save(*args): self.saved = True
-        def remove_from_filesystem(*Args): self.deleted = True
+
+        def save(*args):
+            _ = args
+            self.saved = True
+
+        def remove_from_filesystem(*Args):
+            _ = Args
+            self.deleted = True
         self.ctrl.save = save
         self.ctrl.remove_from_filesystem = remove_from_filesystem
         return self.ctrl
@@ -112,4 +111,3 @@ class TestRenameTestCaseFile(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-

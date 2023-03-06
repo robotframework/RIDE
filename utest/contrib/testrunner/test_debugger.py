@@ -33,10 +33,10 @@ class TestDebugger(unittest.TestCase):
         self.assertFalse(self._debugger.is_paused())
 
     def test_is_breakpoint(self):
-        self.assertTrue(self._debugger.is_breakpoint('BuiltIn.Comment', {'args':['PAUSE']}))
-        self.assertFalse(self._debugger.is_breakpoint('BuiltIn.Log', {'args':['PAUSE']}))
-        self.assertFalse(self._debugger.is_breakpoint('BuiltIn.Comment', {'args':['Something']}))
-        self.assertFalse(self._debugger.is_breakpoint('Foo', {'args':[]}))
+        self.assertTrue(self._debugger.is_breakpoint('BuiltIn.Comment', {'args': ['PAUSE']}))
+        self.assertFalse(self._debugger.is_breakpoint('BuiltIn.Log', {'args': ['PAUSE']}))
+        self.assertFalse(self._debugger.is_breakpoint('BuiltIn.Comment', {'args': ['Something']}))
+        self.assertFalse(self._debugger.is_breakpoint('Foo', {'args': []}))
 
     def test_step_next(self):
         self._debugger.pause()
@@ -58,19 +58,19 @@ class TestDebugger(unittest.TestCase):
 
         with self.execution(test_execution):
             self._verify_done(started)
-            self.assertFalse(first_keyword_done.isSet())
+            self.assertFalse(first_keyword_done.is_set())
             self._debugger.step_next()
             self._verify_done(first_keyword_done)
-            self.assertFalse(second_keyword_done.isSet())
+            self.assertFalse(second_keyword_done.is_set())
             self._debugger.step_next()
             wait_for_step_next_before_entering_debugger.set()
             self._verify_done(second_keyword_done)
-            self.assertFalse(third_keyword_done.isSet())
+            self.assertFalse(third_keyword_done.is_set())
             self._debugger.step_next()
             self._verify_done(third_keyword_done)
 
     def _verify_done(self, event):
-        self.assertTrue(event.wait(timeout=5.0) or event.isSet())
+        self.assertTrue(event.wait(timeout=5.0) or event.is_set())
 
     @contextmanager
     def kw(self, passes=True):
@@ -81,7 +81,7 @@ class TestDebugger(unittest.TestCase):
     @contextmanager
     def execution(self, executed):
         t = threading.Thread(target=executed)
-        t.setDaemon(True)
+        t.daemon = True
         t.start()
         yield
         t.join()
@@ -111,16 +111,16 @@ class TestDebugger(unittest.TestCase):
 
         with self.execution(test_execution):
             self._verify_done(started)
-            self.assertFalse(first_keyword_done.isSet())
+            self.assertFalse(first_keyword_done.is_set())
             self._debugger.step_next()
             self._verify_done(first_keyword_done)
-            self.assertFalse(second_keyword_done.isSet())
+            self.assertFalse(second_keyword_done.is_set())
             self._debugger.step_over()
             self._verify_done(second_keyword_done)
-            self.assertFalse(third_keyword_done.isSet())
+            self.assertFalse(third_keyword_done.is_set())
             self._debugger.step_over()
             self._verify_done(third_keyword_done)
-            self.assertFalse(last_keyword_done.isSet())
+            self.assertFalse(last_keyword_done.is_set())
             self._debugger.step_over()
             self._verify_done(last_keyword_done)
 
@@ -143,10 +143,11 @@ class TestDebugger(unittest.TestCase):
 
         with self.execution(test_execution):
             self._verify_done(before_failure)
-            self.assertFalse(after_failure.isSet())
+            self.assertFalse(after_failure.is_set())
             self._debugger.resume()
             time.sleep(0)
             self._verify_done(after_failure)
+
 
 if __name__ == '__main__':
     unittest.main()
