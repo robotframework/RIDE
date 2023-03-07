@@ -39,12 +39,16 @@ class _AbstractValidator(wx.Validator):
             return False
         return True
 
+    def _validate(self, value):
+        return NotImplemented
+
     def _show_error(self, message, title="Validation Error"):
         ret = wx.MessageBox(message, title, style=wx.ICON_ERROR)
         self._set_focus_to_text_control(self.Window)
         return ret
 
-    def _set_focus_to_text_control(self, ctrl):
+    @staticmethod
+    def _set_focus_to_text_control(ctrl):
         ctrl.SetFocus()
         ctrl.SelectAll()
 
@@ -85,7 +89,8 @@ class ArgumentsValidator(_AbstractValidator):
             return "Invalid argument syntax '%s'" % str(e)  # DEBUG  was arg
         return self._validate_argument_order(types)
 
-    def _get_type(self, arg):
+    @staticmethod
+    def _get_type(arg):
         if robotapi.is_scalar_var(arg):
             return ArgumentTypes.SCALAR
         elif robotapi.is_scalar_var(arg.split("=")[0]):
@@ -97,7 +102,8 @@ class ArgumentsValidator(_AbstractValidator):
         else:
             raise ValueError(arg)
 
-    def _validate_argument_order(self, types):
+    @staticmethod
+    def _validate_argument_order(types):
         prev = ArgumentTypes.SCALAR
         for t in types:
             if t < prev:
@@ -177,8 +183,14 @@ class _NameValidator(_AbstractValidator):
             return ''
         return self._validation_method(name).error_message
 
+    @property
+    def _validation_method(self):
+        return NotImplemented
+
 
 class TestCaseNameValidator(_NameValidator):
+    __test__ = False
+
     @property
     def _validation_method(self):
         return self._controller.validate_test_name

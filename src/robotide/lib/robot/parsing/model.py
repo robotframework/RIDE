@@ -192,6 +192,7 @@ class TestCaseFile(_TestData):
     :param parent: parent object to be used in creation of the model object.
     :param source: path where test data is read from.
     """
+    __test__ = False
 
     def __init__(self, parent=None, source=None, settings=None):
         self.directory = os.path.dirname(source) if source else None
@@ -272,6 +273,7 @@ class TestDataDirectory(_TestData):
     :param parent: parent object to be used in creation of the model object.
     :param source: path where test data is read from.
     """
+    __test__ = False
 
     def __init__(self, parent=None, source=None, settings=None):
         self.directory = source
@@ -441,6 +443,7 @@ class _SettingTable(_Table, _WithSettings):
 
 
 class TestCaseFileSettingTable(_SettingTable):
+    __test__ = False
     _setters = {'Documentation': lambda s: s.doc.populate,
                 'Suite Setup': lambda s: s.suite_setup.populate,
                 'Suite Teardown': lambda s: s.suite_teardown.populate,
@@ -517,6 +520,7 @@ class VariableTable(_Table):
 
 
 class TestCaseTable(_Table):
+    __test__ = False
     type = 'test case'
 
     def __init__(self, parent):
@@ -618,6 +622,7 @@ class _WithSteps(object):
 
 
 class TestCase(_WithSteps, _WithSettings):
+    __test__ = False
 
     def __init__(self, parent, name):
         self.parent = parent

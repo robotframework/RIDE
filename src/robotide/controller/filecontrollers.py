@@ -400,6 +400,7 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
 
 
 class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseController):
+    __test__ = False
 
     def __init__(self, data, project=None, parent=None):
         dir_ = data.directory
@@ -684,6 +685,7 @@ class DirtyRobotDataException(Exception):
 
 
 class TestCaseFileController(_FileSystemElement, _DataController):
+    __test__ = False
 
     def __init__(self, data, project=None, parent=None):
         _FileSystemElement.__init__(self, data.source if data else None, data.directory)

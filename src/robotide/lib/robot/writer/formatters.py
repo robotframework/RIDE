@@ -21,7 +21,7 @@ from .rowsplitter import RowSplitter
 
 
 class _DataFileFormatter(object):
-    _whitespace = re.compile('\s{2,}')
+    _whitespace = re.compile(r"\s{2,}")
     _split_multiline_doc = True
 
     def __init__(self, column_count):
@@ -56,14 +56,16 @@ class _DataFileFormatter(object):
     def _should_align_columns(self, table):
         return self._is_indented_table(table) and bool(table.header[1:])
 
-    def _is_indented_table(self, table):
+    @staticmethod
+    def _is_indented_table(table):
         return table is not None and table.type in ['test case', 'keyword']
 
     def _escape_consecutive_whitespace(self, row):
         return [self._whitespace.sub(self._whitespace_escaper,
                                      cell.replace('\n', ' ')) for cell in row]
 
-    def _whitespace_escaper(self, match):
+    @staticmethod
+    def _whitespace_escaper(match):
         return '\\'.join(match.group(0))
 
     def _format_row(self, row, table=None):
@@ -78,7 +80,8 @@ class TsvFormatter(_DataFileFormatter):
     def _format_header(self, header, table):
         return [self._format_header_cell(cell) for cell in header]
 
-    def _format_header_cell(self, cell):
+    @staticmethod
+    def _format_header_cell(cell):
         return '*%s*' % cell if cell else ''
 
     def _format_row(self, row, table=None):
@@ -87,7 +90,8 @@ class TsvFormatter(_DataFileFormatter):
     def _escape(self, row):
         return self._escape_consecutive_whitespace(self._escape_tabs(row))
 
-    def _escape_tabs(self, row):
+    @staticmethod
+    def _escape_tabs(row):
         return [c.replace('\t', '\\t') for c in row]
 
     def _pad(self, row):
@@ -140,10 +144,12 @@ class PipeFormatter(TxtFormatter):
     def _escape_cells(self, row):
         return [self._escape_empty(self._escape_pipes(cell)) for cell in row]
 
-    def _escape_empty(self, cell):
+    @staticmethod
+    def _escape_empty(cell):
         return cell or '  '
 
-    def _escape_pipes(self, cell):
+    @staticmethod
+    def _escape_pipes(cell):
         if ' | ' in cell:
             cell = cell.replace(' | ', ' \\| ')
         if cell.startswith('| '):

@@ -64,7 +64,7 @@ class ItemInfo(object):
 
     def __cmp__(self, other):
         if self._priority == other._priority:
-            name_cmp = self.m_cmp(self.name.upper(),other.name.upper())
+            name_cmp = self.m_cmp(self.name.upper(), other.name.upper())
             return name_cmp if name_cmp else self.m_cmp(self.source, other.source)
         return self.m_cmp(self._priority, other._priority)
 
@@ -83,14 +83,16 @@ class VariableInfo(ItemInfo):
         self._original_source = source
         self._value = value
 
-    def _source_name(self, source):
+    @staticmethod
+    def _source_name(source):
         return os.path.basename(source) if source else ''
 
     def name_matches(self, pattern):
         normalized = utils.normalize(self._undecorate(pattern))
         return utils.normalize(self.name[2:-1]).startswith(normalized)
 
-    def _undecorate(self, pattern):
+    @staticmethod
+    def _undecorate(pattern):
         def get_prefix_length():
             if pattern[0] not in ['$', '@', '&']:
                 return 0
@@ -179,18 +181,16 @@ class _KeywordInfo(ItemInfo):
                 '</table>'
                 '<table>'
                 '<tr><td>%s</td></tr>'
-                '</table>') % \
-                (self._name(self.item), self._source(self.item), self._type,
-                 self._format_args(self.arguments),
-                 formatter(self.doc))
+                '</table>') % (self._name(self.item), self._source(self.item), self._type,
+                               self._format_args(self.arguments),
+                               formatter(self.doc))
 
-    def _format_args(self, args):
+    @staticmethod
+    def _format_args(args):
         return '[ %s ]' % ' | '.join(args)
 
     def __str__(self):
-        return 'KeywordInfo[name: %s, source: %s, doc: %s]' %(self.name,
-                                                              self.source,
-                                                              self.doc)
+        return 'KeywordInfo[name: %s, source: %s, doc: %s]' % (self.name, self.source, self.doc)
 
     def _name(self, item):
         return item.name
@@ -225,10 +225,12 @@ class _XMLKeywordContent(_KeywordInfo):
     def _name(self, node):
         return node.get('name')
 
-    def _doc(self, node):
+    @staticmethod
+    def _doc(node):
         return node.find('doc').text or ''
 
-    def _parse_args(self, node):
+    @staticmethod
+    def _parse_args(node):
         args_node = node.find('arguments')
         return [arg_node.text for arg_node in args_node.findall('arg')]
 
@@ -261,6 +263,7 @@ class LibraryKeywordInfo(_KeywordInfo):
         return self
 
     def _source(self, item):
+        _ = item
         if self._library_alias:
             return self._library_alias
         return self._item_library_name
@@ -274,7 +277,7 @@ class LibraryKeywordInfo(_KeywordInfo):
 
     def __eq__(self, other):
         if isinstance(other, str):   # DEBUG
-           return self.name.lower() == other.name.lower()  # and self.__hash__ == other.__hash__
+            return self.name.lower() == other.name.lower()  # and self.__hash__ == other.__hash__
 
     def __hash__(self):
         return hash(repr(self))  # self.name)  #
@@ -311,6 +314,7 @@ class BlockKeywordInfo(_KeywordInfo):
         return self
 
     def _source(self, item):
+        _ = item
         if self._library_alias:
             return self._library_alias
         return self._item_library_name
@@ -324,7 +328,7 @@ class BlockKeywordInfo(_KeywordInfo):
 
     def __eq__(self, other):
         if isinstance(other, str):   # DEBUG
-           return self.name == other.name  # must match Capital case
+            return self.name == other.name  # must match Capital case
 
     def __hash__(self):
         return hash(repr(self))  # self.name)  #
@@ -336,12 +340,14 @@ class BlockKeywordInfo(_KeywordInfo):
         return self._item_name
 
 
-class _UserKeywordInfo(_KeywordInfo):
+class UserKeywordInfo(_KeywordInfo):
 
-    def _source(self, item):
+    @staticmethod
+    def _source(item):
         return os.path.basename(item.source) if item.source else ''
 
-    def _doc(self, item):
+    @staticmethod
+    def _doc(item):
         return utils.unescape(item.doc.value)
 
     def _parse_args(self, uk):
@@ -355,7 +361,8 @@ class _UserKeywordInfo(_KeywordInfo):
                 parsed.append(self._parse_kwarg(arg))
         return parsed
 
-    def _is_scalar(self, arg):
+    @staticmethod
+    def _is_scalar(arg):
         return arg.startswith('$')
 
     def _parse_name_and_default(self, arg):
@@ -365,13 +372,16 @@ class _UserKeywordInfo(_KeywordInfo):
             return name
         return name + '=' + parts[1]
 
-    def _strip_var_syntax_chars(self, string):
+    @staticmethod
+    def _strip_var_syntax_chars(string):
         return string[2:-1]
 
-    def _is_list(self, arg):
+    @staticmethod
+    def _is_list(arg):
         return arg.startswith('@')
 
-    def _is_dict(self, arg):
+    @staticmethod
+    def _is_dict(arg):
         return arg.startswith('&')
 
     def _parse_vararg(self, arg):
@@ -382,7 +392,8 @@ class _UserKeywordInfo(_KeywordInfo):
 
 
 @total_ordering
-class TestCaseUserKeywordInfo(_UserKeywordInfo):
+class TestCaseUserKeywordInfo(UserKeywordInfo):
+    __test__ = False
     _type = 'test case file'
 
     @property
@@ -401,7 +412,7 @@ class TestCaseUserKeywordInfo(_UserKeywordInfo):
 
 
 @total_ordering
-class ResourceUserKeywordInfo(_UserKeywordInfo):
+class ResourceUserKeywordInfo(UserKeywordInfo):
     _type = 'resource file'
 
     @property

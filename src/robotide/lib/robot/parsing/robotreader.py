@@ -27,7 +27,7 @@ class RobotReader(object):
         self._spaces = spaces
         # self._space_splitter = re.compile(r"[ \t\xa0]{"+f"{self._spaces}"+"}|\t+")  # Only change when is cell_section
         self._space_splitter = re.compile(r"[ \t\xa0]{2}|\t+")
-        self._pipe_splitter = re.compile(u'[ \t\xa0]+\|(?=[ \t\xa0]+)')
+        self._pipe_splitter = re.compile(r"[ \t\xa0]+\|(?=[ \t\xa0]+)")
         self._pipe_starts = ('|', '| ', '|\t', u'|\xa0')
         self._pipe_ends = (' |', '\t|', u'\xa0|')
         self._separator_check = False
@@ -36,14 +36,15 @@ class RobotReader(object):
 
     def read(self, file, populator, path=None):
         path = path or getattr(file, 'name', '<file-like object>')
+        _ = path
         process = table_start = preamble = comments = False
         # print(f"DEBUG: RFLib RobotReader start Reading file")
         for lineno, line in enumerate(Utf8Reader(file).readlines(), start=1):
             if not self._separator_check:
                 self.check_separator(line.rstrip())
             cells = self.split_row(line.rstrip())
-            ####### DEBUG cells = list(self._check_deprecations(cells, path, lineno))
-            ####### DEBUG Not parsing # before any table
+            # DEBUG cells = list(self._check_deprecations(cells, path, lineno))
+            # DEBUG Not parsing # before any table
             if line.lstrip().startswith('#'):
                 if cells[0] == '':  # There is an initial empty cell, when #
                     cells.pop(0)
@@ -109,7 +110,7 @@ class RobotReader(object):
                     index = 0
                     break
                 try:
-                    if i>0 and line[i-1] != '\\' and (line[i+1] == ' ' or line[i+1] == '#'):
+                    if i > 0 and line[i-1] != '\\' and (line[i+1] == ' ' or line[i+1] == '#'):
                         index = i
                         # print(f"DEBUG: RFLib RobotReader sharp_strip BREAK at # index={index}")
                         break
@@ -139,7 +140,8 @@ class RobotReader(object):
                         row.pop(i)
                 # Remove initial empty cell
                 if len(row) > 1 and first_non_empty > 1 and row[0] == '' and row[1] != '':  # don't cancel indentation
-                    # print(f"DEBUG: RFLib RobotReader sharp_strip removing initial empty cell first_non_empty={first_non_empty}")
+                    # print(f"DEBUG: RFLib RobotReader sharp_strip removing initial empty cell
+                    # first_non_empty={first_non_empty}")
                     row.pop(0)
         # print(f"DEBUG: RFLib RobotReader sharp_strip returning row={row[:]}")
         return row
@@ -159,9 +161,9 @@ class RobotReader(object):
                     msg = 'Collapsing consecutive whitespace'
                 else:
                     msg = 'Converting whitespace characters to ASCII spaces'
-                    LOGGER.warn("%s during parsing is deprecated. Fix %s in file "
-                                "'%s' on line %d."
-                                % (msg, prepr(original), path, line_number))
+                LOGGER.warn("%s during parsing is deprecated. Fix %s in file "
+                            "'%s' on line %d."
+                            % (msg, prepr(original), path, line_number))
             yield normalized
 
     @classmethod

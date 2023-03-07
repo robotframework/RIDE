@@ -23,9 +23,9 @@ from .managesettingsdialog import SaveLoadSettings
 from wx import Colour
 from ..context import IS_WINDOWS
 
-ID_APPLY_TO_PANEL = wx.NewId()
-ID_RESET = wx.NewId()
-ID_SAVELOADSETTINGS = wx.NewId()
+ID_APPLY_TO_PANEL = wx.NewIdRef()
+ID_RESET = wx.NewIdRef()
+ID_SAVELOADSETTINGS = wx.NewIdRef()
 ID_LOAD = 5551
 ID_SAVE = 5552
 ID_CANCEL = -1
@@ -48,6 +48,7 @@ class GeneralPreferences(PreferencesPanel):
         super(GeneralPreferences, self).__init__(*args, **kwargs)
         self._settings = settings
         self._color_pickers = []
+        self.name = None
         self._apply_to_panels = self._settings.get('apply to panels', False)
 
         # what would make this UI much more usable is if there were a
@@ -61,7 +62,8 @@ class GeneralPreferences(PreferencesPanel):
         buttons_sizer = wx.BoxSizer(orient=wx.HORIZONTAL)
         reset = wx.Button(self, ID_RESET, 'Reset colors to default')
         saveloadsettings = wx.Button(self, ID_SAVELOADSETTINGS, 'Save or Load settings')
-        self.cb_apply_to_panels = wx.CheckBox(self, ID_APPLY_TO_PANEL, label="Apply to Project and File Explorer panels")
+        self.cb_apply_to_panels = wx.CheckBox(self, ID_APPLY_TO_PANEL,
+                                              label="Apply to Project and File Explorer panels")
         self.cb_apply_to_panels.Enable()
         self.cb_apply_to_panels.SetValue(self._apply_to_panels)
         if IS_WINDOWS:
@@ -103,9 +105,7 @@ class GeneralPreferences(PreferencesPanel):
             return
         save_settings_dialog = SaveLoadSettings(self, self._settings)  # DEBUG self.__class__.__name__
         save_settings_dialog.CenterOnParent()
-        value = save_settings_dialog.ShowModal()
-        # print(f"DEBUG: Value returned by SaveLoadSettings: {value}")
-        # print(f"DEBUG: OnSaveLoadSettings: Trying to close parent ")
+        save_settings_dialog.ShowModal()
         # Does not look nice but closes Preferences window, so it comes recolored on next call
         # Only working on first use :(
         # TODO: Only close window when Loading, not when Saving (but return is always 5101)
@@ -154,7 +154,8 @@ class GeneralPreferences(PreferencesPanel):
             defaults[key] = value
         return defaults
 
-    def _get_path(self):
+    @staticmethod
+    def _get_path():
         return join(dirname(abspath(__file__)), 'settings.cfg')
 
     def _create_font_editor(self):
@@ -163,9 +164,9 @@ class GeneralPreferences(PreferencesPanel):
             [str(i) for i in range(8, 16)])
         sizer = wx.FlexGridSizer(rows=3, cols=2, vgap=10, hgap=30)
         l_size = f.label(self)
+        background_color = Colour("light gray")
+        foreground_color = Colour("black")
         if IS_WINDOWS:
-            background_color = Colour("light gray")
-            foreground_color = Colour("black")
             l_size.SetBackgroundColour(background_color)
             l_size.SetOwnBackgroundColour(background_color)
             l_size.SetForegroundColour(foreground_color)
@@ -214,7 +215,7 @@ class DefaultPreferences(GeneralPreferences):
 
     def __init__(self, settings, *args, **kwargs):
         super(DefaultPreferences, self).__init__(settings[self.name], *args, **kwargs)
-        #PUBLISHER.subscribe(self.OnSettingsChanged, RideSettingsChanged)
+        # PUBLISHER.subscribe(self.OnSettingsChanged, RideSettingsChanged)
         # print(f"DEBUG: settings_path {settings.get_path()}")
 
     def create_colors_sizer(self):
@@ -222,16 +223,15 @@ class DefaultPreferences(GeneralPreferences):
         column = 0
         row = 0
         settings = (
-                    ('foreground', 'Foreground'),
-                    ('background', 'Background'),
-                    ('secondary foreground', 'Secondary Foreground'),
-                    ('secondary background', 'Secondary Background'),
-                    ('foreground text', 'Text Foreground'),
-                    ('background help', 'Help Background')
-                    )
-        if IS_WINDOWS:
-            background_color = Colour("light gray")
-            foreground_color = Colour("black")
+            ('foreground', 'Foreground'),
+            ('background', 'Background'),
+            ('secondary foreground', 'Secondary Foreground'),
+            ('secondary background', 'Secondary Background'),
+            ('foreground text', 'Text Foreground'),
+            ('background help', 'Help Background')
+        )
+        background_color = Colour("light gray")
+        foreground_color = Colour("black")
         for settings_key, label_text in settings:
             if column == 4:
                 column = 0
@@ -244,12 +244,10 @@ class DefaultPreferences(GeneralPreferences):
                 label.SetOwnForegroundColour(foreground_color)
             button = PreferencesColorPicker(
                 self, wx.ID_ANY, self._settings, settings_key)
-            container.Add(button, (row, column),
-                          flag=wx.ALL | wx.ALIGN_CENTER_VERTICAL, border=4)
+            container.Add(button, (row, column), flag=wx.ALL | wx.ALIGN_CENTER_VERTICAL, border=4)
             self._color_pickers.append(button)
             column += 1
-            container.Add(label, (row, column),
-                          flag=wx.ALIGN_CENTER_VERTICAL | wx.LEFT, border=8)
+            container.Add(label, (row, column), flag=wx.ALIGN_CENTER_VERTICAL | wx.LEFT, border=8)
             column += 1
         return container
 

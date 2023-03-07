@@ -32,11 +32,11 @@ class VariableFileSetter(object):
         self._store = store
 
     def set(self, path_or_variables, args=None, overwrite=False):
-        variables = self._import_if_needed(path_or_variables, args)
+        variables = self.import_if_needed(path_or_variables, args)
         self._set(variables, overwrite)
         return variables
 
-    def _import_if_needed(self, path_or_variables, args=None):
+    def import_if_needed(self, path_or_variables, args=None):
         if not is_string(path_or_variables):
             return path_or_variables
         LOGGER.info("Importing variable file '%s' with args %s"

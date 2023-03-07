@@ -39,12 +39,12 @@ class VariableTableReader(object):
             if not var:
                 continue
             try:
-                yield self._get_name_and_value(var.name, var.value,
-                                               var.report_invalid_syntax)
+                yield self.get_name_and_value(var.name, var.value,
+                                              var.report_invalid_syntax)
             except DataError as err:
                 var.report_invalid_syntax(err)
 
-    def _get_name_and_value(self, name, value, error_reporter):
+    def get_name_and_value(self, name, value, error_reporter):
         return name[2:-1], VariableTableValue(value, name, error_reporter)
 
 

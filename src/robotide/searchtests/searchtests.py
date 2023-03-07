@@ -28,6 +28,7 @@ from ..widgets import ImageProvider
 @total_ordering
 class TestSearchPlugin(Plugin):
     """A plugin for searching tests based on name, tags and documentation"""
+    __test__ = False
     HEADER = 'Search Tests'
     _selection = None
 
@@ -80,9 +81,11 @@ class TestSearchPlugin(Plugin):
         event.Skip()
 
     def show_empty_search(self, event):
+        _ = event
         self.show_search_for('')
 
     def _do_with_selection(self, evt=None):
+        _ = evt
         test, match_location = self._selection
         self.tree.select_node_by_data(test)
         self._dialog.set_focus_to_default_location(test)
@@ -145,6 +148,7 @@ class TagSearchMatcher(object):
 
 
 class TestSearchMatcher(object):
+    __test__ = False
 
     def __init__(self, text):
         self._texts = text.split()
