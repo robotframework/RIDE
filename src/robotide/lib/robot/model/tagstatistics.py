@@ -135,7 +135,7 @@ class TagStatDoc(object):
 
 
 class TagStatLink(object):
-    _match_pattern_tokenizer = re.compile('(\*|\?+)')
+    _match_pattern_tokenizer = re.compile(r"(\*|\?+)")
 
     def __init__(self, pattern, link, title):
         self._regexp = self._get_match_regexp(pattern)
@@ -152,7 +152,8 @@ class TagStatLink(object):
         link, title = self._replace_groups(self._link, self._title, match)
         return link, title
 
-    def _replace_groups(self, link, title, match):
+    @staticmethod
+    def _replace_groups(link, title, match):
         for index, group in enumerate(match.groups()):
             placefolder = '%%%d' % (index+1)
             link = link.replace(placefolder, group)

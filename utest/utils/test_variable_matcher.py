@@ -39,18 +39,20 @@ class _BaseTestIsVariable(object):
 
 
 class TestIsScalarVariable(_BaseTestIsVariable, unittest.TestCase):
-    var_name = '${var name}'
-    var_with_curly_bracket = '${var \}}'
+    var_name = "${var name}"
+    var_with_curly_bracket = r"${var \}}"
 
-    def _test_method(self, value):
+    @staticmethod
+    def _test_method(value):
         return is_scalar_variable(value)
 
 
 class TestIsListVariable(_BaseTestIsVariable, unittest.TestCase):
-    var_name = '@{var name}'
-    var_with_curly_bracket = '@{var \}}'
+    var_name = "@{var name}"
+    var_with_curly_bracket = r"@{var \}}"
 
-    def _test_method(self, value):
+    @staticmethod
+    def _test_method(value):
         return is_list_variable(value)
 
     def test_variable_with_index(self):
@@ -59,6 +61,7 @@ class TestIsListVariable(_BaseTestIsVariable, unittest.TestCase):
     def test_list_variable_subitem(self):
         assert is_list_variable_subitem('@{SOME_LIST}[3]')
         assert not is_list_variable_subitem('@{justlist}')
+
 
 class TestGetVariable(unittest.TestCase):
 
@@ -72,7 +75,8 @@ class TestGetVariable(unittest.TestCase):
         assert get_variable('@{var}[2]') == '@{var}'
 
     def test_variable_not_found(self):
-        assert get_variable('{not var}') == None
+        assert get_variable('{not var}') is None
+
 
 class TestGetVariableBaseName(unittest.TestCase):
 
@@ -92,31 +96,28 @@ class TestGetVariableBaseName(unittest.TestCase):
     def test_calculation_accessed_with_extended_var_syntax(self):
         assert get_variable_basename('${var name + 1 -${23}}') == '${var name}'
 
+
 class TestFindVariables(unittest.TestCase):
 
     def test_find_variables_without_var(self):
         assert find_variable_basenames('some data') == []
 
     def test_find_variables(self):
-        assert (find_variable_basenames('some ${var} and ${another var}') ==
-                      ['${var}', '${another var}'])
+        assert (find_variable_basenames('some ${var} and ${another var}') == ['${var}', '${another var}'])
 
     def test_find_scalar_and_list_variable(self):
-        assert (find_variable_basenames('some ${var} and @{another var}') ==
-                      ['${var}', '@{another var}'])
+        assert (find_variable_basenames('some ${var} and @{another var}') == ['${var}', '@{another var}'])
 
     def test_find_scalar_with_extended_var_syntax(self):
-        assert (find_variable_basenames('some ${var.attr} and ${another var.method()}') ==
-                      ['${var}', '${another var}'])
+        assert (find_variable_basenames('some ${var.attr} and ${another var.method()}') == ['${var}', '${another var}'])
 
     def test_finding_multiple_variables(self):
         assert (find_variable_basenames('hu ${huhu + 5} pupu ${foo} uhhu ${gugy.gug sdknjs +enedb} {{]{}{}{[[}') ==
-                                                ['${huhu}', '${foo}', '${gugy}'])
+                ['${huhu}', '${foo}', '${gugy}'])
 
     def test_finding_variables_when_variable_inside_variable(self):
         assert (find_variable_basenames('some ${var + ${another}} inside') ==
-                      ['${var}']) # We do not support variables inside vars at the moment
-
+                ['${var}'])  # We do not support variables inside vars at the moment
 
 
 if __name__ == "__main__":

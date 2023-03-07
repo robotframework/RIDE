@@ -15,10 +15,9 @@
 
 import re
 
-from robotide.lib.robot.errors import (DataError, ExecutionStatus, HandlerExecutionFailed,
-                          VariableError)
-from robotide.lib.robot.utils import (ErrorDetails, format_assign_message, get_error_message,
-                         is_number, is_string, prepr, type_name)
+from robotide.lib.robot.errors import (DataError, ExecutionStatus, HandlerExecutionFailed, VariableError)
+from robotide.lib.robot.utils import (ErrorDetails, format_assign_message, get_error_message, is_number, is_string,
+                                      prepr, type_name)
 
 
 class VariableAssignment(object):
@@ -82,7 +81,7 @@ class AssignmentValidator(object):
 
 
 class VariableAssigner(object):
-    _valid_extended_attr = re.compile('^[_a-zA-Z]\w*$')
+    _valid_extended_attr = re.compile(r"^[_a-zA-Z]\w*$")
 
     def __init__(self, assignment, context):
         self._assignment = assignment
@@ -98,7 +97,8 @@ class VariableAssigner(object):
         if failure.can_continue(self._context.in_teardown):
             self.assign(failure.return_value)
 
-    def _get_failure(self, exc_type, exc_val, exc_tb):
+    @staticmethod
+    def _get_failure(exc_type, exc_val, exc_tb):
         if isinstance(exc_val, ExecutionStatus):
             return exc_val
         exc_info = (exc_type, exc_val, exc_tb)
@@ -126,22 +126,25 @@ class VariableAssigner(object):
             return False
         try:
             setattr(var, attr, value)
-        except:
+        except Exception:
             raise VariableError("Setting attribute '%s' to variable '%s' "
                                 "failed: %s" % (attr, base, get_error_message()))
         return True
 
-    def _split_extended_assign(self, name):
+    @staticmethod
+    def _split_extended_assign(name):
         base, attr = name.rsplit('.', 1)
         return base.strip() + '}', attr[:-1].strip()
 
-    def _variable_supports_extended_assign(self, var):
+    @staticmethod
+    def _variable_supports_extended_assign(var):
         return not (is_string(var) or is_number(var))
 
     def _is_valid_extended_attribute(self, attr):
         return self._valid_extended_attr.match(attr) is not None
 
-    def _normal_assign(self, name, value, variables):
+    @staticmethod
+    def _normal_assign(name, value, variables):
         variables[name] = value
         # Always return the actually assigned value.
         return value if name[0] == '$' else variables[name]
@@ -159,7 +162,9 @@ def ReturnValueResolver(assignment):
 
 class NoReturnValueResolver(object):
 
-    def resolve(self, return_value):
+    @staticmethod
+    def resolve(return_value):
+        _ = return_value
         return []
 
 
@@ -240,13 +245,15 @@ class ScalarsAndListReturnValueResolver(_MultiReturnValueResolver):
         after = list(zip(after_vars, after_items))
         return before + [(list_var, list_items)] + after
 
-    def _split_variables(self, variables):
+    @staticmethod
+    def _split_variables(variables):
         list_index = [v[0] for v in variables].index('@')
         return (variables[:list_index],
                 variables[list_index],
                 variables[list_index+1:])
 
-    def _split_return(self, return_value, before_vars, after_vars):
+    @staticmethod
+    def _split_return(return_value, before_vars, after_vars):
         list_start = len(before_vars)
         list_end = len(return_value) - len(after_vars)
         return (return_value[:list_start],

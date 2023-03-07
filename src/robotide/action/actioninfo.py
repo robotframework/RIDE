@@ -254,6 +254,7 @@ class ActionInfo(MenuInfo):
                 return int(self._position.split("POSITION-")[-1])
         return -1
 
+
 class SeparatorInfo(MenuInfo):
     """Used to create separators to menus."""
 
@@ -273,7 +274,7 @@ class SeparatorInfo(MenuInfo):
 
 
 class _InsertionPoint(object):
-    _shortcut_remover = re.compile(' {2,}\([^()]+\)$')
+    _shortcut_remover = re.compile(r" {2,}\([^()]+\)$")
 
     def __init__(self, before=None, after=None):
         self._item = before or after

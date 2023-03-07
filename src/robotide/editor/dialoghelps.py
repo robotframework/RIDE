@@ -20,17 +20,18 @@ def get_help(title):
 
 _HELPS = {}
 _EXAMPLES = {
-'ESCAPE': "Possible pipes in the value must be escaped with a backslash like '\|'.",
-'TAG': "Separate tags with a pipe character like 'tag | second tag | 3rd'.",
-'FIXTURE': "Separate possible arguments with a pipe character like 'My Keyword | arg 1 | arg 2'.",
-'TIMEOUT': ("Use time syntax like '1min 10s' or '2 hours' or give the value as seconds.\n"
-            "Optional message can be specified like '3 minutes | My message here'."),
-'ARGUMENTS': ("Specify the arguments separated with a pipe character like '${arg1} | ${arg2}'.\n"
-              "Default values are given using equal sign and the last argument can be a list variable.\n"
-              "Example: '${arg1} | ${arg2}=default value | @{rest}'.\n"
-              "Note. You can use variable shortcuts in this field.")
+    'ESCAPE': "Possible pipes in the value must be escaped with a backslash like '\\|'.",
+    'TAG': "Separate tags with a pipe character like 'tag | second tag | 3rd'.",
+    'FIXTURE': "Separate possible arguments with a pipe character like 'My Keyword | arg 1 | arg 2'.",
+    'TIMEOUT': ("Use time syntax like '1min 10s' or '2 hours' or give the value as seconds.\n"
+                "Optional message can be specified like '3 minutes | My message here'."),
+    'ARGUMENTS': ("Specify the arguments separated with a pipe character like '${arg1} | ${arg2}'.\n"
+                  "Default values are given using equal sign and the last argument can be a list variable.\n"
+                  "Example: '${arg1} | ${arg2}=default value | @{rest}'.\n"
+                  "Note. You can use variable shortcuts in this field.")
 }
 
+current = None
 for row in """
 Scalar Variable
 Give name and value of the variable.

@@ -33,8 +33,7 @@ also be used by other libraries programmatically.
 
 = Terminology =
 
-In the context of this library, ``date`` and ``time`` generally have following
-meanings:
+In the context of this library, ``date`` and ``time`` generally have the following meanings:
 
 - ``date``: An entity with both date and time components but without any
    timezone information. For example, ``2014-06-11 10:07:42``.
@@ -49,7 +48,7 @@ objects match ``date`` and ``time`` as defined by this library.
 
 = Date formats =
 
-Dates can given to and received from keywords in `timestamp`, `custom
+Dates can be given to and received from keywords in `timestamp`, `custom
 timestamp`, `Python datetime` and `epoch time` formats. These formats are
 discussed thoroughly in subsequent sections.
 
@@ -106,7 +105,7 @@ Jython on non-English locales: http://bugs.jython.org/issue2285
 
 Python's standard
 [http://docs.python.org/library/datetime.html#datetime-objects|datetime]
-objects can be used both in input and output. In input they are recognized
+objects can be used both in input and output. In input, they are recognized
 automatically, and in output it is possible to get them by giving ``datetime``
 value to ``result_format`` argument.
 
@@ -124,7 +123,7 @@ Examples:
 | Should Be Equal As Integers | ${datetime.second}      | 42     |
 | Should Be Equal As Integers | ${datetime.microsecond} | 123000 |
 
-== Epoch time ==
+== Epoch ltime ==
 
 Epoch time is the time in seconds since the
 [http://en.wikipedia.org/wiki/Unix_time|UNIX epoch] i.e. 00:00:00.000 (UTC)
@@ -146,8 +145,7 @@ Examples:
 
 == Earliest supported date ==
 
-The earliest date that is supported depends on the date format and to some
-extend on the platform:
+The earliest date that is supported depends on the date format and, to some extent, on the platform:
 
 - Timestamps support year 1900 and above.
 - Python datetime objects support year 1 and above.
@@ -159,7 +157,7 @@ has nowadays.
 
 = Time formats =
 
-Similarly as dates, times can be given to and received from keywords in
+Similarly, as dates, times can be given to and received from keywords in
 various different formats. Supported formats are `number`, `time string`
 (verbose and compact), `timer string` and `Python timedelta`.
 
@@ -238,7 +236,7 @@ Examples:
 
 Python's standard
 [http://docs.python.org/library/datetime.html#datetime.timedelta|timedelta]
-objects are also supported both in input and in output. In input they are
+objects are also supported both in input and in output. In input, they are
 recognized automatically, and in output it is possible to receive them by
 giving ``timedelta`` value to ``result_format`` argument.
 
@@ -310,9 +308,8 @@ import time
 import re
 
 from robotide.lib.robot.version import get_version
-from robotide.lib.robot.utils import (elapsed_time_to_string, is_falsy, is_number,
-                         is_string, roundup, secs_to_timestr, timestr_to_secs,
-                         type_name, IRONPYTHON)
+from robotide.lib.robot.utils import (elapsed_time_to_string, is_falsy, is_number, is_string, roundup, secs_to_timestr,
+                                      timestr_to_secs, type_name, IRONPYTHON)
 
 __version__ = get_version()
 __all__ = ['convert_time', 'convert_date', 'subtract_date_from_date',
@@ -379,7 +376,7 @@ def convert_date(date, result_format='timestamp', exclude_millis=False,
                                            millis=is_falsy(exclude_millis))
 
 
-def convert_time(time, result_format='number', exclude_millis=False):
+def convert_time(ltime, result_format='number', exclude_millis=False):
     """Converts between supported `time formats`.
 
     Arguments:
@@ -396,7 +393,7 @@ def convert_time(time, result_format='number', exclude_millis=False):
     | ${time} =       | Convert Time  | ${3661.5} | timer | exclude_milles=yes |
     | Should Be Equal | ${time}       | 01:01:02          |
     """
-    return Time(time).convert(result_format, millis=is_falsy(exclude_millis))
+    return Time(ltime).convert(result_format, millis=is_falsy(exclude_millis))
 
 
 def subtract_date_from_date(date1, date2, result_format='number',
@@ -421,11 +418,11 @@ def subtract_date_from_date(date1, date2, result_format='number',
     | ${time} =       | Subtract Date From Date | 2014-05-28 12:05:52     | 2014-05-27 12:05:10 | verbose |
     | Should Be Equal | ${time}                 | 1 day 42 seconds        |
     """
-    time = Date(date1, date1_format) - Date(date2, date2_format)
-    return time.convert(result_format, millis=is_falsy(exclude_millis))
+    ltime = Date(date1, date1_format) - Date(date2, date2_format)
+    return ltime.convert(result_format, millis=is_falsy(exclude_millis))
 
 
-def add_time_to_date(date, time, result_format='timestamp',
+def add_time_to_date(date, ltime, result_format='timestamp',
                      exclude_millis=False, date_format=None):
     """Adds time to date and returns the resulting date.
 
@@ -445,11 +442,11 @@ def add_time_to_date(date, time, result_format='timestamp',
     | ${date} =       | Add Time To Date | 2014-05-28 12:05:03.111 | 01:02:03:004 |
     | Should Be Equal | ${date}          | 2014-05-28 13:07:06.115 |
     """
-    date = Date(date, date_format) + Time(time)
+    date = Date(date, date_format) + Time(ltime)
     return date.convert(result_format, millis=is_falsy(exclude_millis))
 
 
-def subtract_time_from_date(date, time, result_format='timestamp',
+def subtract_time_from_date(date, ltime, result_format='timestamp',
                             exclude_millis=False, date_format=None):
     """Subtracts time from date and returns the resulting date.
 
@@ -469,7 +466,7 @@ def subtract_time_from_date(date, time, result_format='timestamp',
     | ${date} =       | Subtract Time From Date | 2014-05-28 13:07:06.115 | 01:02:03:004 |
     | Should Be Equal | ${date}                 | 2014-05-28 12:05:03.111 |
     """
-    date = Date(date, date_format) - Time(time)
+    date = Date(date, date_format) - Time(ltime)
     return date.convert(result_format, millis=is_falsy(exclude_millis))
 
 
@@ -490,8 +487,8 @@ def add_time_to_time(time1, time2, result_format='number',
     | ${time} =       | Add Time To Time | 3 hours 5 minutes | 01:02:03 | timer | exclude_millis=yes |
     | Should Be Equal | ${time}          | 04:07:03          |
     """
-    time = Time(time1) + Time(time2)
-    return time.convert(result_format, millis=is_falsy(exclude_millis))
+    ltime = Time(time1) + Time(time2)
+    return ltime.convert(result_format, millis=is_falsy(exclude_millis))
 
 
 def subtract_time_from_time(time1, time2, result_format='number',
@@ -512,8 +509,8 @@ def subtract_time_from_time(time1, time2, result_format='number',
     | ${time} =       | Subtract Time From Time | ${time}  | 1 minute | compact |
     | Should Be Equal | ${time}                 | - 10s    |
     """
-    time = Time(time1) - Time(time2)
-    return time.convert(result_format, millis=is_falsy(exclude_millis))
+    ltime = Time(time1) - Time(time2)
+    return ltime.convert(result_format, millis=is_falsy(exclude_millis))
 
 
 class Date(object):
@@ -535,7 +532,8 @@ class Date(object):
             return self._string_to_datetime(date, input_format)
         raise ValueError("Unsupported input '%s'." % date)
 
-    def _seconds_to_datetime(self, secs):
+    @staticmethod
+    def _seconds_to_datetime(secs):
         # Workaround microsecond rounding errors with IronPython:
         # https://github.com/IronLanguages/main/issues/1170
         # Also Jython had similar problems, but they seem to be fixed in 2.7.
@@ -550,7 +548,8 @@ class Date(object):
             return self._handle_un_supported_f_directive(ts, input_format)
         return datetime.strptime(ts, input_format)
 
-    def _normalize_timestamp(self, date):
+    @staticmethod
+    def _normalize_timestamp(date):
         ts = ''.join(d for d in date if d.isdigit())
         if not (8 <= len(ts) <= 20):
             raise ValueError("Invalid timestamp '%s'." % date)
@@ -558,13 +557,14 @@ class Date(object):
         return '%s-%s-%s %s:%s:%s.%s' % (ts[:4], ts[4:6], ts[6:8], ts[8:10],
                                          ts[10:12], ts[12:14], ts[14:])
 
-    def _need_to_handle_f_directive(self, format):
+    @staticmethod
+    def _need_to_handle_f_directive(lformat):
         # https://github.com/IronLanguages/main/issues/1169
-        return IRONPYTHON and '%f' in format
+        return IRONPYTHON and '%f' in lformat
 
     def _handle_un_supported_f_directive(self, ts, input_format):
         input_format = self._remove_f_from_format(input_format)
-        match = re.search('\d+$', ts)
+        match = re.search(r"\d+$", ts)
         if not match:
             raise ValueError("time data '%s' does not match format '%s%%f'."
                              % (ts, input_format))
@@ -573,35 +573,37 @@ class Date(object):
         dt = datetime.strptime(ts[:-len(end_digits)], input_format)
         return dt.replace(microsecond=micro)
 
-    def _remove_f_from_format(self, format):
-        if not format.endswith('%f'):
+    @staticmethod
+    def _remove_f_from_format(lformat):
+        if not lformat.endswith('%f'):
             raise ValueError('%f directive is supported only at the end of '
                              'the format string on this Python interpreter.')
-        return format[:-2]
+        return lformat[:-2]
 
-    def convert(self, format, millis=True):
+    def convert(self, lformat, millis=True):
         dt = self.datetime
         if not millis:
             secs = 1 if dt.microsecond >= 5e5 else 0
             dt = dt.replace(microsecond=0) + timedelta(seconds=secs)
-        if '%' in format:
-            return self._convert_to_custom_timestamp(dt, format)
-        format = format.lower()
-        if format == 'timestamp':
+        if '%' in lformat:
+            return self._convert_to_custom_timestamp(dt, lformat)
+        lformat = lformat.lower()
+        if lformat == 'timestamp':
             return self._convert_to_timestamp(dt, millis)
-        if format == 'datetime':
+        if lformat == 'datetime':
             return dt
-        if format == 'epoch':
+        if lformat == 'epoch':
             return self._convert_to_epoch(dt)
-        raise ValueError("Unknown format '%s'." % format)
+        raise ValueError("Unknown format '%s'." % lformat)
 
-    def _convert_to_custom_timestamp(self, dt, format):
-        if not self._need_to_handle_f_directive(format):
-            return dt.strftime(format)
-        format = self._remove_f_from_format(format)
-        return dt.strftime(format) + '%06d' % dt.microsecond
+    def _convert_to_custom_timestamp(self, dt, lformat):
+        if not self._need_to_handle_f_directive(lformat):
+            return dt.strftime(lformat)
+        lformat = self._remove_f_from_format(lformat)
+        return dt.strftime(lformat) + '%06d' % dt.microsecond
 
-    def _convert_to_timestamp(self, dt, millis=True):
+    @staticmethod
+    def _convert_to_timestamp(dt, millis=True):
         if not millis:
             return dt.strftime('%Y-%m-%d %H:%M:%S')
         ms = roundup(dt.microsecond / 1000.0)
@@ -610,7 +612,8 @@ class Date(object):
             ms = 0
         return dt.strftime('%Y-%m-%d %H:%M:%S') + '.%03d' % ms
 
-    def _convert_to_epoch(self, dt):
+    @staticmethod
+    def _convert_to_epoch(dt):
         return time.mktime(dt.timetuple()) + dt.microsecond / 1e6
 
     def __add__(self, other):
@@ -629,39 +632,49 @@ class Date(object):
 
 class Time(object):
 
-    def __init__(self, time):
-        self.seconds = float(self._convert_time_to_seconds(time))
+    def __init__(self, ltime):
+        self.seconds = float(self._convert_time_to_seconds(ltime))
 
-    def _convert_time_to_seconds(self, time):
-        if isinstance(time, timedelta):
-            return time.total_seconds()
+    @staticmethod
+    def _convert_time_to_seconds(ltime):
+        if isinstance(ltime, timedelta):
+            return ltime.total_seconds()
         return timestr_to_secs(time, round_to=None)
 
     @property
     def timedelta(self):
         return timedelta(seconds=self.seconds)
 
-    def convert(self, format, millis=True):
+    def convert(self, lformat, millis=True):
         try:
-            result_converter = getattr(self, '_convert_to_%s' % format.lower())
+            result_converter = getattr(self, '_convert_to_%s' % lformat.lower())
         except AttributeError:
-            raise ValueError("Unknown format '%s'." % format)
+            raise ValueError("Unknown format '%s'." % lformat)
         seconds = self.seconds if millis else float(roundup(self.seconds))
         return result_converter(seconds, millis)
 
-    def _convert_to_number(self, seconds, millis=True):
+    @staticmethod
+    def _convert_to_number(seconds, millis=True):
+        _ = millis
         return seconds
 
-    def _convert_to_verbose(self, seconds, millis=True):
+    @staticmethod
+    def _convert_to_verbose(seconds, millis=True):
+        _ = millis
         return secs_to_timestr(seconds)
 
-    def _convert_to_compact(self, seconds, millis=True):
+    @staticmethod
+    def _convert_to_compact(seconds, millis=True):
+        _ = millis
         return secs_to_timestr(seconds, compact=True)
 
-    def _convert_to_timer(self, seconds, millis=True):
+    @staticmethod
+    def _convert_to_timer(seconds, millis=True):
         return elapsed_time_to_string(seconds * 1000, include_millis=millis)
 
-    def _convert_to_timedelta(self, seconds, millis=True):
+    @staticmethod
+    def _convert_to_timedelta(seconds, millis=True):
+        _ = millis
         return timedelta(seconds=seconds)
 
     def __add__(self, other):

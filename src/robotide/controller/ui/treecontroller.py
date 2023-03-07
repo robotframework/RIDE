@@ -49,11 +49,13 @@ class TreeController(object):
                                                            action=self.OnClearSelected))
 
     def OnGoBack(self, event):
+        _ = event
         node = self._history.back()
         if node:
             self._tree.SelectItem(node)
 
     def OnAddTagToSelected(self, event):
+        _ = event
         if self._test_selection.is_empty():
             return
         name = wx.GetTextFromUser(message='Enter Tag Name', caption='Add Tag To Selected')
@@ -61,9 +63,11 @@ class TreeController(object):
             self._test_selection.add_tag(name)
 
     def OnClearSelected(self, event):
+        _ = event
         self._test_selection.clear_all(message=None)
 
     def OnGoForward(self, event):
+        _ = event
         node = self._history.forward()
         if node:
             self._tree.SelectItem(node)
@@ -181,6 +185,7 @@ class _History(object):
 
 
 class TestSelectionController(object):
+    __test__ = False
 
     def __init__(self):
         self._tests: {TestCaseController} = set()
@@ -192,6 +197,7 @@ class TestSelectionController(object):
         return test in self._tests
 
     def clear_all(self, message):
+        _ = message
         self._tests = set()
         self._send_selection_changed_message()
 
@@ -241,5 +247,6 @@ class TestSelectionController(object):
             if isinstance(tag, DefaultTag):
                 self._add_tag(test, tag.name)
 
-    def _add_tag(self, test, name):
+    @staticmethod
+    def _add_tag(test, name):
         test.tags.execute(ctrlcommands.ChangeTag(Tag(None), name))

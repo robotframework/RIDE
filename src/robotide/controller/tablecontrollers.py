@@ -24,7 +24,7 @@ from . import macrocontrollers  # TestCaseController, UserKeywordController
 from .settingcontrollers import MetadataController, ImportController, VariableController
 
 
-class _WithListOperations(object):
+class WithListOperations(object):
 
     def move_up(self, index):
         if index > 0:
@@ -72,7 +72,7 @@ class _TableController(ControllerWithParent):
         return index_difference
 
 
-class VariableTableController(_TableController, _WithListOperations):
+class VariableTableController(_TableController, WithListOperations):
 
     def __init__(self, parent_controller, table):
         _TableController.__init__(self, parent_controller, table)
@@ -100,7 +100,7 @@ class VariableTableController(_TableController, _WithListOperations):
         if index == 0:
             return False
         ctrl = self[index]
-        _WithListOperations.move_up(self, index)
+        WithListOperations.move_up(self, index)
         other = self[index]
         self.mark_dirty()
         RideVariableMovedUp(item=ctrl, other=other).publish()
@@ -109,7 +109,7 @@ class VariableTableController(_TableController, _WithListOperations):
         if index + 1 == len(self._items):
             return False
         ctrl = self[index]
-        _WithListOperations.move_down(self, index)
+        WithListOperations.move_down(self, index)
         other = self[index]
         self.mark_dirty()
         RideVariableMovedDown(item=ctrl, other=other).publish()
@@ -316,6 +316,7 @@ class _MacroTable(_TableController):
 
 
 class TestCaseTableController(_MacroTable):
+    __test__ = False
     item_type = 'Test case'
     _controller_class = macrocontrollers.TestCaseController
 
@@ -385,7 +386,7 @@ class KeywordTableController(_MacroTable):
         self._table.keywords = keywords_temp
 
 
-class ImportSettingsController(_TableController, _WithListOperations):
+class ImportSettingsController(_TableController, WithListOperations):
 
     def __init__(self, parent_controller, table, resource_file_controller_factory=None):
         _TableController.__init__(self, parent_controller, table)
@@ -415,18 +416,18 @@ class ImportSettingsController(_TableController, _WithListOperations):
     def resource_file_controller_factory(self):
         return self._resource_file_controller_factory
 
-    @overrides(_WithListOperations)
+    @overrides(WithListOperations)
     def _swap(self, ind1, ind2):
         imps = self._import_controllers
         imps[ind1], imps[ind2] = imps[ind2], imps[ind1]
-        _WithListOperations._swap(self, ind1, ind2)
+        WithListOperations._swap(self, ind1, ind2)
 
     def remove_import_data(self, imp):
         self.delete(self._items.data.index(imp))
 
     def delete(self, index):
         item = self[index]
-        _WithListOperations.delete(self, index)
+        WithListOperations.delete(self, index)
         self._import_controllers.pop(index)
         item.publish_removed()
         self.notify_imports_modified()
@@ -469,7 +470,7 @@ class ImportSettingsController(_TableController, _WithListOperations):
         return self._parent.resource_import_modified(path)
 
 
-class MetadataListController(_TableController, _WithListOperations):
+class MetadataListController(_TableController, WithListOperations):
 
     def __iter__(self):
         return iter(MetadataController(self, m) for m in self._items)

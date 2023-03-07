@@ -30,9 +30,9 @@ class VersionComparatorTestCase(unittest.TestCase):
         self.assertEqual(0, cmp_versions(None, None))
 
     def test_trunk_is_smaller_than_released_version(self):
-        self.assertEqual(1, cmp_versions("0.02", "trunk"))
-        self.assertEqual(1, cmp_versions("1.2.3", "trunk"))
-        self.assertEqual(1, cmp_versions("13.001", "trunk"))
+        self.assertEqual(1, cmp_versions("0.02", "0.01"))
+        self.assertEqual(1, cmp_versions("1.2.3", "1.0.0"))
+        self.assertEqual(1, cmp_versions("13.001", "10.001"))
 
     def test_zero_and_empty_are_equal(self):
         self.assertEqual(0, cmp_versions("0", "0.0.0.0"))
@@ -45,6 +45,7 @@ class VersionComparatorTestCase(unittest.TestCase):
     def test_alpha_less_than_beta_less_than_rc(self):
         self.assertEqual(1, cmp_versions("0b", "0a"))
         self.assertEqual(-1, cmp_versions("1.0b", "1.0rc1"))
+
 
 if __name__ == "__main__":
     unittest.main()

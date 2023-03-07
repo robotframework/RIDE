@@ -17,14 +17,13 @@ import re
 
 from .. import utils
 
-_VAR_BODY = r'([^\}]|\\\})*'
-_SCALAR_VARIABLE_MATCHER = re.compile(r'\$\{'+_VAR_BODY+'\}')
-_SCALAR_VARIABLE_LINE_MATCHER = re.compile(r'^(\$\{'+_VAR_BODY+'\}) *=?$')
-_LIST_VARIABLE_MATCHER = re.compile(r'^(@\{'+_VAR_BODY+'\})( ?=?|\[\d*\])$')
-_DICT_VARIABLE_MATCHER = \
-    re.compile(r'^(&\{'+_VAR_BODY+'\})( ?=?|\[[a-zA-Z_]*\])$')
-_LIST_VARIABLE_SUBITEM_END_MATCHER = re.compile(r'\[\d+\]$')
-_DICT_VARIABLE_SUBITEM_END_MATCHER = re.compile(r'\[[a-zA-Z_]+\]$')
+_VAR_BODY = r"([^\}]|\\\})*"
+_SCALAR_VARIABLE_MATCHER = re.compile(r"\$\{" + _VAR_BODY + "}")
+_SCALAR_VARIABLE_LINE_MATCHER = re.compile(r"^(\$\{" + _VAR_BODY + "}) *=?$")
+_LIST_VARIABLE_MATCHER = re.compile(r"^(@\{" + _VAR_BODY + r"})( ?=?|\[\d*])$")
+_DICT_VARIABLE_MATCHER = re.compile(r"^(&\{" + _VAR_BODY + r"})( ?=?|\[[a-zA-Z_]*])$")
+_LIST_VARIABLE_SUBITEM_END_MATCHER = re.compile(r"\[\d+]$")
+_DICT_VARIABLE_SUBITEM_END_MATCHER = re.compile(r"\[[a-zA-Z_]+]$")
 
 
 def is_variable(value):
@@ -63,10 +62,10 @@ def get_variable(value):
 
 
 def get_variable_basename(value):
-    "Return variable without extended variable syntax part"
+    """Return variable without extended variable syntax part"""
     if is_list_variable(value) or is_dict_variable(value):
         return get_variable(value)
-    match = re.match('\${(.+?)[^\s\w-]+.*?}?', value)
+    match = re.match(r"\${(.+?)[^\s\w-]+.*?}?", value)
     if not match:
         return None
     return '${%s}' % (match.groups()[0].strip())

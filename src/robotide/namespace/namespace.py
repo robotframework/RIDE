@@ -24,7 +24,7 @@ from itertools import chain
 from .. import robotapi, utils
 from ..publish import PUBLISHER, RideSettingsChanged, RideLogMessage
 from ..robotapi import VariableFileSetter
-from ..spec.iteminfo import (TestCaseUserKeywordInfo, ResourceUserKeywordInfo, VariableInfo, _UserKeywordInfo,
+from ..spec.iteminfo import (TestCaseUserKeywordInfo, ResourceUserKeywordInfo, VariableInfo, UserKeywordInfo,
                              ArgumentInfo)
 from .cache import LibraryCache, ExpiringCache
 from .resourcefactory import ResourceFactory
@@ -34,6 +34,7 @@ from .embeddedargs import EmbeddedArgsHandler
 class Namespace(object):
 
     def __init__(self, settings):
+        self._context_factory = None
         self._settings = settings
         self._library_manager = None
         self._content_assist_hooks = []
@@ -83,6 +84,7 @@ class Namespace(object):
         self._lib_cache.set_library_manager(library_manager)
 
     def update(self, *args):
+        _ = args
         self._retriever.expire_cache()
         self._context_factory = _RetrieverContextFactory()
         for listener in self._update_listeners:
@@ -186,7 +188,7 @@ class Namespace(object):
 
     def find_user_keyword(self, datafile, kw_name):
         kw = self.find_keyword(datafile, kw_name)
-        return kw if isinstance(kw, _UserKeywordInfo) else None
+        return kw if isinstance(kw, UserKeywordInfo) else None
 
     def is_user_keyword(self, datafile, kw_name):
         return bool(self.find_user_keyword(datafile, kw_name))
@@ -333,7 +335,7 @@ class _VariableStash(object):
         for variable in variable_table:
             try:
                 if variable.name not in self._vars.store:
-                    _, value = reader._get_name_and_value(
+                    _, value = reader.get_name_and_value(
                         variable.name,
                         variable.value,
                         variable.report_invalid_syntax
@@ -341,14 +343,13 @@ class _VariableStash(object):
                     #  print("DEBUG: inside variable.name= %s \n" % variable.name)
                     self.set(variable.name, value.resolve(self._vars),
                              variable_table.source)
-            except Exception as e: #  (robotapi.VariableError, robotapi.DataError):
-                #    # robotapi.VariableError:  # robotapi.DataError
-                # print("DEBUG: Namespace Exception = %s \n" % str(e))
+            except (robotapi.VariableError, robotapi.DataError, Exception):
                 if robotapi.is_var(variable.name):
                     val = self._empty_value_for_variable_type(variable.name)
                     self.set(variable.name, val, variable_table.source)
 
-    def _empty_value_for_variable_type(self, name):
+    @staticmethod
+    def _empty_value_for_variable_type(name):
         if name[0] == '$':
             return ''
         if name[0] == '@':
@@ -358,15 +359,16 @@ class _VariableStash(object):
     def set_from_file(self, varfile_path, args):
         #  print("DEBUG: enter set_from_file %s\n" % (varfile_path))
         try:
-            vars_from_file = VariableFileSetter(None)._import_if_needed(
+            vars_from_file = VariableFileSetter(None).import_if_needed(
                 varfile_path, args)
-        except Exception as e: # robotapi.DataError
+        except (robotapi.DataError, Exception):
             #  print("DEBUG: leave with error set_from_file %s\n" % str(e))
             raise  # return # vars_from_file = {}   # DEBUG
         for name, value in vars_from_file:
             self.set(name, value, varfile_path)
 
-    def _get_prefix(self, value):
+    @staticmethod
+    def _get_prefix(value):
         if utils.is_dict_like(value):
             return '&'
         elif utils.is_list_like(value):
@@ -430,7 +432,8 @@ class DatafileRetriever(object):
         # print("DEBUG: Namespace is_variables_import_ok %s\n" % datafile.source)
         return self._import_vars(ctx, datafile, imp)
 
-    def _get_datafile_keywords(self, datafile):
+    @staticmethod
+    def _get_datafile_keywords(datafile):
         if isinstance(datafile, robotapi.ResourceFile):
             return [ResourceUserKeywordInfo(kw) for kw in datafile.keywords]
         return [TestCaseUserKeywordInfo(kw) for kw in datafile.keywords]
@@ -506,11 +509,12 @@ class DatafileRetriever(object):
         try:
             ctx.vars.set_from_file(varfile_path, args)
             return True
-        except Exception as e:  # robotapi.DataError as e:
+        except (robotapi.DataError, Exception):
             # print("DEBUG: Namespace Error at import_vars: %s\n" % str(e))
             return False  # TODO: log somewhere
 
     def _var_collector(self, res, ctx, items):
+        _ = items
         self._get_vars_recursive(res, ctx)
 
     def get_keywords_cached(self, datafile, context_factory):
@@ -527,13 +531,13 @@ class DatafileRetriever(object):
         return list(self._get_user_keywords_recursive(datafile,
                                                       RetrieverContext()))
 
-    def _get_user_keywords_recursive(self, datafile, ctx):
+    def _get_user_keywords_recursive(self, datafile, contxt):
         kws = set()
         kws.update(datafile.keywords)
         kws_from_res = self._collect_each_res_import(
-            datafile, ctx,
-            lambda res, ctx, kws:
-                kws.update(self._get_user_keywords_recursive(res, ctx)))
+            datafile, contxt,
+            lambda res, ctxt, kwords:
+                kws.update(self._get_user_keywords_recursive(res, contxt)))
         kws.update(kws_from_res)
         return kws
 
@@ -568,7 +572,7 @@ class DatafileRetriever(object):
 
 class _Keywords(object):
 
-    regexp = re.compile("\s*(given|when|then|and|but)\s*(.*)", re.IGNORECASE)
+    regexp = re.compile(r"\s*(given|when|then|and|but)\s*(.*)", re.IGNORECASE)
 
     def __init__(self, keywords):
         self.keywords = robotapi.NormalizedDict(ignore=['_'])
@@ -594,7 +598,7 @@ class _Keywords(object):
         try:
             handler = EmbeddedArgsHandler(kw)
             self.embedded_keywords[handler.name_regexp] = kw
-        except Exception:
+        except (TypeError, Exception):
             pass
 
     def get(self, kw_name):

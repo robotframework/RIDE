@@ -20,12 +20,12 @@ from itertools import cycle
 
 class LinkFormatter(object):
     _image_exts = ('.jpg', '.jpeg', '.png', '.gif', '.bmp')
-    _link = re.compile('\[(.+?\|.*?)\]')
-    _url = re.compile('''
-((^|\ ) ["'\(\[]*)           # begin of line or space and opt. any char "'([
+    _link = re.compile(r"\[(.+?\|.*?)]")
+    _url = re.compile(r"""
+((^|\ ) ["'(\[]*)           # begin of line or space and opt. any char "'([
 ([a-z][\w+-.]*://[^\s|]+?)   # url
-(?=[\]\)|"'.,!?:;]* ($|\ ))   # opt. any char ])"'.,!?:; and end of line or space
-''', re.VERBOSE|re.MULTILINE|re.IGNORECASE)
+(?=[])|"'.,!?:;]* ($|\ ))   # opt. any char ])"'.,!?:; and end of line or space
+""", re.VERBOSE | re.MULTILINE | re.IGNORECASE)
 
     def format_url(self, text):
         return self._format_url(text, format_as_image=False)
@@ -49,7 +49,8 @@ class LinkFormatter(object):
     def _get_link(self, href, content=None):
         return '<a href="%s">%s</a>' % (self._quot(href), content or href)
 
-    def _quot(self, attr):
+    @staticmethod
+    def _quot(attr):
         return attr if '"' not in attr else attr.replace('"', '&quot;')
 
     def format_link(self, text):
@@ -73,33 +74,33 @@ class LinkFormatter(object):
 class LineFormatter(object):
     handles = lambda self, line: True
     newline = '\n'
-    _bold = re.compile('''
+    _bold = re.compile(r"""
 (                         # prefix (group 1)
   (^|\ )                  # begin of line or space
   ["'(]* _?               # optionally any char "'( and optional begin of italic
 )                         #
 \*                        # start of bold
-([^\ ].*?)                # no space and then anything (group 3)
+([^ ].*?)                 # no space and then anything (group 3)
 \*                        # end of bold
 (?=                       # start of postfix (non-capturing group)
   _? ["').,!?:;]*         # optional end of italic and any char "').,!?:;
   ($|\ )                  # end of line or space
 )
-''', re.VERBOSE)
-    _italic = re.compile('''
+""", re.VERBOSE)
+    _italic = re.compile(r"""
 ( (^|\ ) ["'(]* )          # begin of line or space and opt. any char "'(
 _                          # start of italic
-([^\ _].*?)                # no space or underline and then anything
+([^ _].*?)                 # no space or underline and then anything
 _                          # end of italic
 (?= ["').,!?:;]* ($|\ ) )  # opt. any char "').,!?:; and end of line or space
-''', re.VERBOSE)
-    _code = re.compile('''
+""", re.VERBOSE)
+    _code = re.compile(r"""
 ( (^|\ ) ["'(]* )          # same as above with _ changed to ``
 ``
-([^\ `].*?)
+([^ `].*?)
 ``
 (?= ["').,!?:;]* ($|\ ) )
-''', re.VERBOSE)
+""", re.VERBOSE)
 
     def __init__(self):
         self._formatters = [('*', self._format_bold),
@@ -233,15 +234,15 @@ class ParagraphFormatter(_Formatter):
 
 
 class TableFormatter(_Formatter):
-    _table_line = re.compile('^\| (.* |)\|$')
-    _line_splitter = re.compile(' \|(?= )')
+    _table_line = re.compile(r"^\| (.* |)\|$")
+    _line_splitter = re.compile(r" \|(?= )")
     _format_cell_content = LineFormatter().format
 
     def _handles(self, line):
         return self._table_line.match(line) is not None
 
     def format(self, lines):
-        return self._format_table([self._split_to_cells(l) for l in lines])
+        return self._format_table([self._split_to_cells(ln) for ln in lines])
 
     def _split_to_cells(self, line):
         return [cell.strip() for cell in self._line_splitter.split(line[1:-1])]
@@ -290,7 +291,8 @@ class ListFormatter(_Formatter):
                  for line in self._combine_lines(lines)]
         return '\n'.join(['<ul>'] + items + ['</ul>'])
 
-    def _combine_lines(self, lines):
+    @staticmethod
+    def _combine_lines(lines):
         current = []
         for line in lines:
             line = line.strip()
