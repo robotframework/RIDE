@@ -12,10 +12,10 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-
+import typing
 import unittest
 import time
-import urllib as urllib2
+import urllib
 
 from robotide.application.updatenotifier import UpdateNotifierController
 
@@ -36,14 +36,17 @@ class UpdateNotifierTestCase(unittest.TestCase):
         self._url = url
         self.assertEqual(dict, type(settings))
 
-    def _update_notifier_controller(self, settings, current, new, url='some url'):
+    @staticmethod
+    def _update_notifier_controller(settings, current, new, url='some url'):
         ctrl = UpdateNotifierController(settings)
         ctrl.VERSION = current
         ctrl._get_newest_version = lambda: new
         ctrl._get_download_url = lambda v: url if v == new else None
         return ctrl
 
-    def _settings(self, check_for_updates=True, last_update_check=time.time() - 60 * 60 * 24 * 7 - 1):
+    @staticmethod
+    def _settings(check_for_updates: typing.Union[bool, None] = True,
+                  last_update_check: typing.Union[float, None] = time.time() - 60 * 60 * 24 * 7 - 1):
         return {'check for updates': check_for_updates,
                 'last update check': last_update_check}
 
@@ -59,10 +62,10 @@ class UpdateNotifierTestCase(unittest.TestCase):
 
     def test_update_when_trunk_version(self):
         settings = self._settings()
-        ctrl = self._update_notifier_controller(settings, 'trunk', '0.56')
+        ctrl = self._update_notifier_controller(settings, '2.0', '2.0.1')
         ctrl.notify_update_if_needed(self._callback)
         self.assertTrue(self._callback_called)
-        self.assertEqual('0.56', self._version)
+        self.assertEqual('2.0.1', self._version)
         self.assertTrue(settings['check for updates'])
         self.assertTrue(settings['last update check'] > time.time() - 1)
 
@@ -112,7 +115,7 @@ class UpdateNotifierTestCase(unittest.TestCase):
         ctrl = UpdateNotifierController(settings)
 
         def throwTimeoutError():
-            raise urllib2.URLError('timeout')
+            raise urllib.URLError('timeout')
 
         ctrl._get_newest_version = throwTimeoutError
         ctrl.notify_update_if_needed(self._callback)
@@ -126,7 +129,8 @@ class UpdateNotifierTestCase(unittest.TestCase):
         ctrl._get_newest_version = lambda: '1'
 
         def throwTimeoutError(*args):
-            raise urllib2.URLError('timeout')
+            _ = args
+            raise urllib.URLError('timeout')
 
         ctrl._get_download_url = throwTimeoutError
         ctrl.notify_update_if_needed(self._callback)
