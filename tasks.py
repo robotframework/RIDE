@@ -360,13 +360,15 @@ def tags_test(ctx):
 @task
 def test_ci(ctx, test_filter=''):
     """Run unit tests and coverage"""
+    
+    _set_development_path()
 
     test(ctx, test_filter)
 
-    _set_development_path()
     try:
         import subprocess
-        p = subprocess.Popen(["pytest", "-v", "--cov", "--cov-report=xml:.coverage-reports/coverage.xml", "--cov-branch", "utest"])
+        p = subprocess.Popen(["pytest", "--ignore-glob=../../../../usr/*", "--ignore-glob=/usr/lib64/python3.10/site-packages/*", "--ignore-glob=/home2/helio/.local/*",
+                              "-v", "--cov", "--cov-report=xml:.coverage-reports/coverage.xml", "--cov-branch", "./utest"])
         p.communicate('')
     finally:
         pass
