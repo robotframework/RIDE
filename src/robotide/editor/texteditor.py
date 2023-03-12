@@ -1236,8 +1236,6 @@ class SourceEditor(wx.Panel):
         begpos = self._editor.PositionFromLine(ini_line)
         begend = self._editor.PositionFromLine(ini_line+1)
         endpos = self._editor.PositionFromLine(end_line+1)
-        #print(f"DEBUG: delete_cell Variables: select start={start}, end={end}"
-        #     f" ini_line={ini_line} end_line={end_line} begpos={begpos} endpos={endpos}")
         cell_no_beg = self._get_cell_no(begpos, endpos, start)
         cell_pos_beg = self._get_position_of_cell(begpos, endpos, cell_no_beg)
         # if there is a selection subtract 1 from endpos to circumvent cursor being on end of cell
@@ -1247,22 +1245,10 @@ class SourceEditor(wx.Panel):
         else:
             cell_no_end = cell_no_beg
         cell_pos_end = self._get_position_of_cell(begpos, endpos, cell_no_end+1)
-        #print(f"DEBUG: cell range to handle beg={cell_no_beg} end={cell_no_end} begpos_begcell={cell_pos_beg} endpos_endcell={cell_pos_end}")
-        # If the selection spans more than one line:
-        if ini_line < end_line:
-            self._editor.Remove(cell_pos_beg, cell_pos_end)
-            new_start = cell_pos_beg
-            new_end = new_start + (end - start)
-        elif start == end:  # On a single row, no selection
-            self._editor.Remove(cell_pos_beg, cell_pos_end)
-            new_start = cell_pos_beg
-            new_end = new_start + (end - start)
-        else:  # On a single row, with selection
-            self._editor.Remove(cell_pos_beg, cell_pos_end)
-            new_start = cell_pos_beg
-            new_end = new_start + (end - start)
+        self._editor.Remove(cell_pos_beg, cell_pos_end)
+        new_start = cell_pos_beg
+        new_end = new_start + (end - start)
         # SetSelection and SetCurrentPos + Store_position overrule each other so only use one of them
-        #print(f"DEBUG: new range {new_start} to {new_end}")
         self._editor.SetSelection(new_start, new_end)
         # @Helio: SetAnchor overrules the SetSelection if it specifies a different start than SetSelection
         # I am not sure what any selection should be after deleting big ranges
