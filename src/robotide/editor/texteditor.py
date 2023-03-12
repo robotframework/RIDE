@@ -78,9 +78,9 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
             return f
         self.register_shortcut('CtrlCmd-X', focused(lambda e: self._editor.cut()))
         self.register_shortcut('CtrlCmd-C', focused(lambda e: self._editor.copy()))
-        if IS_MAC: # Mac needs this key binding
+        if IS_MAC:  # Mac needs this key binding
             self.register_shortcut('CtrlCmd-A', focused(lambda e: self._editor.select_all()))
-        if IS_WINDOWS or IS_MAC: # Linux does not need this key binding
+        if IS_WINDOWS or IS_MAC:  # Linux does not need this key binding
             self.register_shortcut('CtrlCmd-V', focused(lambda e: self._editor.paste()))
         self.register_shortcut('CtrlCmd-Z', focused(lambda e: self._editor.undo()))
         self.register_shortcut('CtrlCmd-Y', focused(lambda e: self._editor.redo()))
@@ -110,28 +110,26 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         self._editor_component = None
 
     def OnOpen(self, event):
+        _ = event
         self._open()
 
     def _open(self):
         datafile_controller = self.tree.get_selected_datafile_controller()
         if datafile_controller:
-            # print(f"DEBUG: _open called and datafile_controller exist")
             self._open_data_for_controller(datafile_controller)
             self._editor.store_position()
 
     def OnSaving(self, message):
+        _ = message
         if self.is_focused():
             self._editor.save()
             self._editor.GetFocus(None)
         else:
-            # print(f"DEBUG: OnSaving open because was saved from other editor {message}")
             self._open()  # Was saved from other Editor
 
     def OnDataChanged(self, message):
-        # print(f"DEBUG: OnDataChanged entering function {message}")
         if self._should_process_data_changed_message(message):
             if isinstance(message, RideOpenSuite):
-                # print(f"DEBUG: OnDataChanged message {message}")
                 self._editor.reset()
                 self._editor.set_editor_caret_position()
             if isinstance(message, RideNotebookTabChanging):
@@ -146,12 +144,12 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         self._open_tree_selection_in_editor()
         event.Skip()
 
-    def _should_process_data_changed_message(self, message):
+    @staticmethod
+    def _should_process_data_changed_message(message):
         return isinstance(message, RideDataChanged) and \
                not isinstance(message, RideDataChangedToDirty)
 
     def OnTreeSelection(self, message):
-        # print(f"DEBUG: OnTreeSelection entering function {message}")
         self._editor.store_position()
         if self.is_focused():
             next_datafile_controller = message.item and message.item.datafile_controller
@@ -180,18 +178,15 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         except AttributeError:
             return
         if datafile_controller:
-            # print(f"DEBUG: _open_tree_selection_in_editor going to open data")
             self._editor.open(DataFileWrapper(datafile_controller, self.global_settings))
             self._editor._editor.readonly = not datafile_controller.is_modifiable()
         self._editor.set_editor_caret_position()
 
     def _open_data_for_controller(self, datafile_controller):
-        # print(f"DEBUG: _open_data_for_controller going to open data")
         self._editor.selected(DataFileWrapper(datafile_controller, self.global_settings))
         self._editor._editor.readonly = not datafile_controller.is_modifiable()
 
     def OnTabChange(self, message):
-        # print(f"DEBUG: OnTabChange entering function {message}")
         if message.newtab == self.title:
             self._register_shortcuts()
             self._open()
@@ -206,6 +201,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
             self._editor_component.save()
 
     def OnTabChanged(self, event):
+        _ = event
         self._show_editor()
 
     def OnTabChanging(self, message):
@@ -215,7 +211,6 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
     def _apply_txt_changes_to_model(self):
         if not self._editor.save():
             return False
-        # print(f"DEBUG: texteditor _apply_txt_changes_to_model going to RESET dirty={self._editor.dirty}")
         self._editor.reset()
         self._editor.set_editor_caret_position()
         return True
@@ -232,7 +227,8 @@ class DummyController(_WithStepsController):
     def _init(self, data=None):
         self._data = data
 
-    def get_local_variables(self):
+    @staticmethod
+    def get_local_variables():
         return {}
 
     def __eq__(self, other):
@@ -252,12 +248,12 @@ class DataValidationHandler(object):
         self._plugin = plugin
         self._last_answer = None
         self._last_answer_time = 0
+        self._editor = None
 
     def set_editor(self, editor):
         self._editor = editor
 
     def validate_and_update(self, data, text):
-        # print(f"DEBUG: validate ENTER type(text)={type(text)}")
         m_text = text.decode("utf-8")
         if not self._sanity_check(data, m_text):
             handled = self._handle_sanity_check_failure()
@@ -272,42 +268,35 @@ class DataValidationHandler(object):
             # TODO this only updates the editor, but not the model, changes in Text Editor are not reflected in Grid or
             # when saving
             #  self._editor._editor.set_text(m_text)
-            # print(f"DEBUG: validate Non reformatting:")  # {m_text}")
         self._editor.set_editor_caret_position()
         return True
 
     def _sanity_check(self, data, text):
-        # print(f"DEBUG: _sanity_check ENTER type(text)={type(text)}")
         # First remove all lines starting with #
         for line in text.split('\n'):
             comment = line.strip().startswith('#')
-            # print(f"DEBUG: _sanity_check comment={comment} line={line}")
             if comment:
                 text = text.replace(line, '')
-        # print(f"DEBUG: _sanity_check cleaned text={text}")
         formatted_text = data.format_text(text)
         c = self._normalize(formatted_text)
         e = self._normalize(text)
-        # print(f"DEBUG: _sanity_check compare c={c}\n e={e}")
         return len(c) == len(e)
 
-    def _normalize(self, text):
+    @staticmethod
+    def _normalize(text):
         for item in tuple(string.whitespace) + ('...', '*'):
             if item in text:
                 text = text.replace(item, '')
         return text
 
     def _handle_sanity_check_failure(self):
-        if self._last_answer == wx.ID_NO and \
-        time() - self._last_answer_time <= 0.2:
+        if self._last_answer == wx.ID_NO and time() - self._last_answer_time <= 0.2:
             # self._editor._mark_file_dirty(True)
             return False
         # TODO: use widgets.Dialog
-        dlg = wx.MessageDialog(self._editor,
-                              'ERROR: Data sanity check failed!\n'
-                              'Reset changes?',
-                              'Can not apply changes from Txt Editor',
-                              style=wx.YES|wx.NO)
+        dlg = wx.MessageDialog(self._editor, 'ERROR: Data sanity check failed!\n'
+                                             'Reset changes?',
+                                             'Can not apply changes from Txt Editor', style=wx.YES | wx.NO)
         dlg.InheritAttributes()
         """
         dlg.SetBackgroundColour(Colour(200, 222, 40))
@@ -316,10 +305,10 @@ class DataValidationHandler(object):
         dlg.SetOwnForegroundColour(Colour(7, 0, 70))
         """
         # dlg.Refresh(True)
-        id = dlg.ShowModal()
-        self._last_answer = id
+        did = dlg.ShowModal()
+        self._last_answer = did
         self._last_answer_time = time()
-        if id == wx.ID_YES:
+        if did == wx.ID_YES:
             self._editor._revert()
             return True
         # else:
@@ -327,7 +316,7 @@ class DataValidationHandler(object):
         return False
 
 
-class DataFileWrapper(object): # TODO: bad class name
+class DataFileWrapper(object):  # TODO: bad class name
 
     def __init__(self, data, settings):
         self._data = data
@@ -340,15 +329,12 @@ class DataFileWrapper(object): # TODO: bad class name
         return self._data == other._data
 
     def update_from(self, content):
-        # print(f"DEBUG: ENTER update_from type self._data={type(self._data)}")
         self._data.execute(SetDataFile(self._create_target_from(content)))
 
     def _create_target_from(self, content):
         src = BytesIO(content.encode("utf-8"))
         target = self._create_target()
         FromStringIOPopulator(target).populate(src, self._tab_size)
-        # print(f"DEBUG: After populate: type target={type(target)}")
-        # print(f"DEBUG: After populate:\n{target.__reduce__()}")
         return target
 
     def format_text(self, text):
@@ -358,7 +344,6 @@ class DataFileWrapper(object): # TODO: bad class name
         self._data.mark_dirty()
 
     def mark_data_pristine(self):
-        # print(f"DEBUG: texteditor mark_data_pristine calling unmark_dirty")
         self._data.unmark_dirty()
 
     def _create_target(self):
@@ -379,8 +364,7 @@ class DataFileWrapper(object): # TODO: bad class name
         data.save(output=output, format='txt',
                   txt_separating_spaces=self._settings.get(
                       'txt number of spaces', 4))
-        # print(f"DEBUG: In _txt_data returning content {output.getvalue()}")
-        return output.getvalue()  # DEBUG .decode('utf-8')
+        return output.getvalue()
 
 
 class SourceEditor(wx.Panel):
@@ -406,6 +390,8 @@ class SourceEditor(wx.Panel):
         self._tab_open = None
         # self._autocomplete = None
         self._controller_for_context = None
+        self._suggestions = None
+        self._stored_text = None
         PUBLISHER.subscribe(self.OnSettingsChanged, RideSettingsChanged)
         PUBLISHER.subscribe(self.OnTabChange, RideNotebookTabChanging)
 
@@ -423,7 +409,8 @@ class SourceEditor(wx.Panel):
             editor_created = False
             while cnt > 0 and not editor_created:
                 cnt -= 1
-                editor_created = self._parent.GetPageText(cnt) == self._title  # TODO: Later we can adjust for several Text Editor tabs
+                editor_created = self._parent.GetPageText(cnt) == self._title
+                # TODO: Later we can adjust for several Text Editor tabs
             if not editor_created:
                 self.SetSizer(VerticalSizer())
                 self._create_editor_toolbar()
@@ -473,7 +460,9 @@ class SourceEditor(wx.Panel):
         self.Layout()
         self._syntax_colorization_help_exists = True
 
-    def show_help_dialog(self, event):
+    @staticmethod
+    def show_help_dialog(event):
+        _ = event
         content = """<h1>Syntax colorization</h1>
         <p>
         Syntax colorization for Text Edit uses <a href='http://pygments.org/'>Pygments</a> syntax highlighter.
@@ -491,8 +480,8 @@ class SourceEditor(wx.Panel):
         </p>
         <p>
         If you do not have pip or easy_install,
-        <a href='http://pythonhosted.org/an_example_pypi_project/setuptools.html#installing-setuptools-and-easy-install'>follow
-        these instructions</a>.
+        <a href='http://pythonhosted.org/an_example_pypi_project/setuptools.html#installing-setuptools-and-easy-install'
+        >follow these instructions</a>.
         </p>
         <p>
         For more information about installing Pygments, <a href='http://pygments.org/download/'>see the site</a>.
@@ -501,9 +490,10 @@ class SourceEditor(wx.Panel):
         HtmlDialog("Getting syntax colorization", content).Show()
 
     def store_position(self, force=False):
+        _ = force
         if self._editor and self.datafile_controller:
             cur_pos = self._editor.GetCurrentPos()
-            if cur_pos > 0:  # Cheating because it always go to zero
+            if cur_pos > 0:  # Cheating because it always goes to zero
                 self._position = cur_pos
                 self._editor.GotoPos(self._position)
 
@@ -522,7 +512,7 @@ class SourceEditor(wx.Panel):
 
     @property
     def dirty(self):
-        return self._dirty == 1 # self._editor.IsModified() and self._dirty == 1
+        return self._dirty == 1  # self._editor.IsModified() and self._dirty == 1
 
     @property
     def datafile_controller(self):
@@ -531,7 +521,8 @@ class SourceEditor(wx.Panel):
     def OnFind(self, event):
         if self._editor:
             text = self._editor.GetSelectedText()
-            if len(text) > 0 and text.lower() != self._search_field.GetValue().lower() and event.GetEventType() == wx.wxEVT_TOOL:
+            if len(text) > 0 and text.lower() != self._search_field.GetValue().lower() and\
+                    event.GetEventType() == wx.wxEVT_TOOL:
                 # if a search string selected in text and CTRL+G is pressed
                 # put the string into the _search_field
                 self._search_field.SelectAll()
@@ -548,6 +539,7 @@ class SourceEditor(wx.Panel):
             self._find()
 
     def OnFindBackwards(self, event):
+        _ = event
         if self._editor:
             self._find(forward=False)
 
@@ -569,7 +561,8 @@ class SourceEditor(wx.Panel):
         return position
 
     def _show_search_results(self, position, txt):
-        # if text is found start end end of the found text is returned but we do need just starting position which is the first value
+        # if text is found start and end of the found text is returned,
+        # but we do need just starting position which is the first value
         if type(position) is tuple:
             position = position[0]
 
@@ -582,8 +575,9 @@ class SourceEditor(wx.Panel):
             self._search_field_notification.SetLabel('No matches found.')
 
     def OnContentAssist(self, event):
+        _ = event
         self._showing_list = False
-        #if not self.is_focused():
+        # if not self.is_focused():
         #    return
         self.store_position()
         selected = self._editor.get_selected_or_near_text()
@@ -596,29 +590,21 @@ class SourceEditor(wx.Panel):
             self._showing_list = True
 
     def open(self, data):
-        # print(f"DEBUG: Textedit enter open")
         self.reset()
         self._data = data
-        # print(f"DEBUG: Textedit in open before getting SuggestionSource {self._data._data}\n Type data is {type(self._data._data)}")
         try:
             if isinstance(self._data._data, ResourceFileController):
                 self._controller_for_context = DummyController(self._data._data, self._data._data)
-                # print(f"DEBUG: Textedit in before getting to RESOURCE")
-                self._suggestions = SuggestionSource(None,self._controller_for_context)
+                self._suggestions = SuggestionSource(None, self._controller_for_context)
             else:
                 self._suggestions = SuggestionSource(None, self._data._data.tests[0])
-            # print(f"DEBUG: Textedit in open After getting SuggestionSource")
         except IndexError:  # It is a new project, no content yet
-            # print(f"DEBUG: Textedit in open Exception SuggestionSource")
             self._controller_for_context = DummyController(self._data._data, self._data._data)
             self._suggestions = SuggestionSource(None, self._controller_for_context)
-            # self._suggestions = SuggestionSource(None, BuiltInLibrariesSuggester())
         if not self._editor:
             self._stored_text = self._data.content
-            # print(f"DEBUG: open not editor yet self._stored_text= {self._stored_text}")
         else:
             self._editor.set_text(self._data.content)
-            # print(f"DEBUG: open ->existing editor set_text: {self._data.content}")
             self.set_editor_caret_position()
 
     def selected(self, data):
@@ -626,24 +612,20 @@ class SourceEditor(wx.Panel):
             self._create_editor_text_control(self._stored_text)
         if self._data == data:
             return
-        # print(f"DEBUG: selected going to open data")
         self.open(data)
 
     def auto_ident(self):
-        # if not self.is_focused():
-        #    return
         line, _ = self._editor.GetCurLine()
         lenline = len(line)
         linenum = self._editor.GetCurrentLine()
         if lenline > 0:
             idx = 0
-            while idx<lenline and line[idx] == ' ':
+            while idx < lenline and line[idx] == ' ':
                 idx += 1
             tsize = idx // self._tab_size
             if idx < lenline and (line.strip().startswith("FOR") or line.strip().startswith("IF")
-                                      or line.strip().startswith("ELSE")):
+                                  or line.strip().startswith("ELSE")):
                 tsize += 1
-                # print(f"DEBUG: SourceEditor auto_indent after block kw tsize={tsize} linenum={linenum}")
             elif linenum > 0 and tsize == 0:  # Advance if first task/test case or keyword
                 prevline = self._editor.GetLine(linenum-1).lower()
                 if prevline.startswith("**") and not ("variables" in prevline or "settings" in prevline):
@@ -656,7 +638,6 @@ class SourceEditor(wx.Panel):
                 self._editor.SetSelection(pos, pos)
                 self.deindent_block()
                 tsize -= 1
-                # print(f"DEBUG: SourceEditor auto_indent after END block kw tsize={tsize} linenum={linenum}")
             self._editor.NewLine()
             while tsize > 0:
                 self.write_ident()
@@ -765,12 +746,11 @@ class SourceEditor(wx.Panel):
         self._editor.WriteText(spaces)
 
     def reset(self):
-        # print(f"DEBUG: textedit enter RESET calling _mark_file_dirty")
         self._dirty = 0
         self._mark_file_dirty(False)
 
     def save(self, *args):
-        # print(f"DEBUG: enter save path={self.datafile_controller.source}")
+        _ = args
         self.store_position()
         if self.dirty:
             if not self._data_validator.validate_and_update(self._data, self._editor.utf8_text):
@@ -794,17 +774,6 @@ class SourceEditor(wx.Panel):
             f.close()
     """
 
-    """
-    # DEBUG Code not in use
-    def delete(self):
-        if IS_WINDOWS:
-            # print(f"DEBUG: Delete called")
-            if self._editor.GetSelectionStart() == self._editor.GetSelectionEnd():
-                self._editor.CharRight()
-            self._editor.DeleteBack()
-        self._mark_file_dirty(self._editor.GetModify())
-    """
-
     def cut(self):
         self._editor.Cut()
         self._mark_file_dirty(self._editor.GetModify())
@@ -826,7 +795,6 @@ class SourceEditor(wx.Panel):
     def undo(self):
         self._editor.Undo()
         self.store_position()
-        # print(f"DEBUG: TextEditor calling dirty from Undo self._dirty={self._dirty}")
         self._mark_file_dirty(self._dirty == 1 and self._editor.GetModify())
 
     def redo(self):
@@ -853,6 +821,7 @@ class SourceEditor(wx.Panel):
         # TODO Add here binding for keyword help
 
     def LeaveFocus(self, event):
+        _ = event
         self._editor.AcceptsFocusFromKeyboard()
         self.store_position()
         self._editor.SetCaretPeriod(0)
@@ -884,10 +853,8 @@ class SourceEditor(wx.Panel):
             else:
                 self._editor.DeleteRange(selected[0], selected[1] - selected[0])
         if keycode in [wx.WXK_RETURN, wx.WXK_NUMPAD_ENTER]:
-            # print(f"DEBUG: Enter released {keycode}")
             return
         if self.is_focused() and keycode != wx.WXK_CONTROL and self._dirty == 0:
-            # print(f"DEBUG: texteditor OnKeyDown calling _mark_file_dirty  event={event}")
             self._mark_file_dirty(self._editor.GetModify())
         event.Skip()
 
@@ -897,7 +864,6 @@ class SourceEditor(wx.Panel):
         #    print(f"DEBUG: KeyDown Got Focus")
         keycode = event.GetUnicodeKey()
         if event.GetKeyCode() == wx.WXK_DELETE:
-            # print(f"DEBUG: Delete pressed {event.GetKeyCode()}")  # Code never reached on Windows
             return
         if event.GetKeyCode() == wx.WXK_TAB and not event.ControlDown() and not event.ShiftDown():
             if self._showing_list:  # Allows to use Tab for keyword selection
@@ -920,7 +886,7 @@ class SourceEditor(wx.Panel):
                     self._editor.SetSelection(pos, pos)
             else:
                 self.deindent_block()
-        elif event.GetKeyCode() in [ wx.WXK_RETURN, wx.WXK_NUMPAD_ENTER ]:
+        elif event.GetKeyCode() in [wx.WXK_RETURN, wx.WXK_NUMPAD_ENTER]:
             if not self._showing_list:
                 self.auto_ident()
             else:
@@ -1010,8 +976,9 @@ class SourceEditor(wx.Panel):
         return open_symbol+value+close_symbol
 
     def move_row_up(self, event):
+        _ = event
         start, end = self._editor.GetSelection()
-        cursor = self._editor.GetCurrentPos()
+        # cursor = self._editor.GetCurrentPos()
         ini_line = self._editor.LineFromPosition(start)
         # selection not on top?
         if ini_line > 0:
@@ -1032,12 +999,11 @@ class SourceEditor(wx.Panel):
             self._editor.Replace(begpos, endpos, rowselblock)
             self._editor.SetSelection(begpos, endpos-lenabove-1)
             # TODO: recalculate line identation for new position and old
-            #print(f"DEBUG: move_row_up Variables: select start={start}, end={end} cursor={cursor}"
-            #    f" ini_line={ini_line} end_line={end_line} begpos={begpos} endpos={endpos} lenabove={lenabove}")
 
     def move_row_down(self, event):
+        _ = event
         start, end = self._editor.GetSelection()
-        cursor = self._editor.GetCurrentPos()
+        # cursor = self._editor.GetCurrentPos()
         ini_line = self._editor.LineFromPosition(start)
         end_line = self._editor.LineFromPosition(end)
         # get the next row content and length
@@ -1059,18 +1025,15 @@ class SourceEditor(wx.Panel):
         self._editor.Replace(begpos, endpos, rowselblock)
         self._editor.SetSelection(begpos+lenbelow, endpos-1)
         # TODO: recalculate line identation for new position and old
-        #print(f"DEBUG: move_row_down Variables: select start={start}, end={end} cursor={cursor}"
-        #    f" ini_line={ini_line} end_line={end_line} begpos={begpos} endpos={endpos} lenbelow={lenbelow}")
 
     def delete_row(self, event):
+        _ = event
         start, end = self._editor.GetSelection()
         cursor = self._editor.GetCurrentPos()
         ini_line = self._editor.LineFromPosition(start)
         end_line = self._editor.LineFromPosition(end)
         begpos = self._editor.PositionFromLine(ini_line)
         self._editor.SelectNone()
-        # print(f"DEBUG: delete_row Variables: select start={start}, end={end} cursor={cursor}"
-        #       f" ini_line={ini_line} end_line={end_line} begpos={begpos} endpos={endpos}")
         if start == end:
             end_line = ini_line
         for line in range(ini_line, end_line + 1):
@@ -1086,6 +1049,7 @@ class SourceEditor(wx.Panel):
         self.store_position()
 
     def insert_row(self, event):
+        _ = event
         start, end = self._editor.GetSelection()
         ini_line = self._editor.LineFromPosition(start)
         end_line = self._editor.LineFromPosition(end)
@@ -1102,18 +1066,17 @@ class SourceEditor(wx.Panel):
         self.store_position()
 
     def execute_comment(self, event):
+        _ = event
         start, end = self._editor.GetSelection()
         cursor = self._editor.GetCurrentPos()
         ini_line = self._editor.LineFromPosition(start)
         end_line = self._editor.LineFromPosition(end)
         spaces = ' ' * self._tab_size
         comment = 'Comment' + spaces
-        cpos = cursor + len(comment)
+        # cpos = cursor + len(comment)
         count = 0
         self._editor.SelectNone()
         row = ini_line
-        # print(f"DEBUG: execute_comment Variables: select start={start}, end={end} cursor={cursor}"
-        #      f" ini_line={ini_line} end_line={end_line} positionfromline={self._editor.PositionFromLine(row)}")
         while row <= end_line:
             pos = self._editor.PositionFromLine(row)
             self._editor.SetCurrentPos(pos)
@@ -1121,7 +1084,6 @@ class SourceEditor(wx.Panel):
             self._editor.SetInsertionPoint(pos)
             line = self._editor.GetLine(row)
             lenline = len(line)
-            # print(f"DEBUG: execute_comment Line={line}: pos={pos}, row={row} lenline={lenline}")
             if lenline > 0:
                 idx = 0
                 while idx < lenline and line[idx] == ' ':
@@ -1143,6 +1105,7 @@ class SourceEditor(wx.Panel):
         self.store_position()
 
     def execute_uncomment(self, event):
+        _ = event
         start, end = self._editor.GetSelection()
         cursor = self._editor.GetCurrentPos()
         ini_line = self._editor.LineFromPosition(start)
@@ -1150,7 +1113,7 @@ class SourceEditor(wx.Panel):
         spaces = ' ' * self._tab_size
         comment = 'Comment' + spaces
         commentlong = 'BuiltIn.Comment' + spaces
-        cpos = cursor - len(comment)
+        # cpos = cursor - len(comment)
         self._editor.SelectNone()
         count = 0
         row = ini_line
@@ -1163,7 +1126,7 @@ class SourceEditor(wx.Panel):
             lenline = len(line)
             if lenline > 0:
                 idx = 0
-                while idx<lenline and line[idx] == ' ':
+                while idx < lenline and line[idx] == ' ':
                     idx += 1
                 if (line[idx:len(comment) + idx]).lower() == comment.lower():
                     self._editor.DeleteRange(pos + idx, len(comment))
@@ -1185,14 +1148,13 @@ class SourceEditor(wx.Panel):
         self.store_position()
 
     def insert_cell(self, event):
+        _ = event
         start, end = self._editor.GetSelection()
         ini_line = self._editor.LineFromPosition(start)
         end_line = self._editor.LineFromPosition(end)
         begpos = self._editor.PositionFromLine(ini_line)
-        begend = self._editor.PositionFromLine(ini_line+1)
+        # begend = self._editor.PositionFromLine(ini_line+1)
         endpos = self._editor.PositionFromLine(end_line+1)
-        # print(f"DEBUG: insert_cell Variables: select start={start}, end={end}"
-        #     f" ini_line={ini_line} end_line={end_line} begpos={begpos} endpos={endpos}")
         cell_no_beg = self._get_cell_no(begpos, endpos, start)
         cell_pos_beg = self._get_position_of_cell(begpos, endpos, cell_no_beg)
         # if there is a selection subtract 1 from endpos to circumvent cursor being on end of cell
@@ -1213,28 +1175,28 @@ class SourceEditor(wx.Panel):
                 self._editor.InsertText(cell_pos_beg, celltab)
             new_end = cell_pos_beg + (len(celltab.encode('utf-8')))
         elif start == end:  # On a single row, no selection
-            # print(f"DEBUG: insert 1 cell before cell={cell_no_beg} on line={ini_line}")
             self._editor.InsertText(cell_pos_beg, celltab)
             new_start = cell_pos_beg
             new_end = cell_pos_beg + len(celltab.encode('utf-8'))
         else:  # On a single row, with selection
             cells_to_insert = cell_no_end - cell_no_beg + 1
-            #  print(f"DEBUG: insert {cells_to_insert} cell(s) before cell={cell_no_beg} on line={ini_line}")
             # insert at once so undo handles it correct
             self._editor.InsertText(cell_pos_beg, celltab * cells_to_insert)
             new_start = cell_pos_beg
             new_end = cell_pos_beg + (len(celltab.encode('utf-8')) * cells_to_insert)
         # SetSelection and SetCurrentPos + Store_position overrule each other so only use one of them
         self._editor.SetSelection(new_start, new_end)
-        # @Helio: SetAnchor overrules the SetSelection if it specifies a different start than SetSelection (but I left your code for now)
+        # @Helio: SetAnchor overrules the SetSelection if it specifies a different start than
+        # SetSelection (but I left your code for now)
         self._editor.SetAnchor(new_end)
 
     def delete_cell(self, event):
+        _ = event
         start, end = self._editor.GetSelection()
         ini_line = self._editor.LineFromPosition(start)
         end_line = self._editor.LineFromPosition(end)
         begpos = self._editor.PositionFromLine(ini_line)
-        begend = self._editor.PositionFromLine(ini_line+1)
+        # begend = self._editor.PositionFromLine(ini_line+1)
         endpos = self._editor.PositionFromLine(end_line+1)
         cell_no_beg = self._get_cell_no(begpos, endpos, start)
         cell_pos_beg = self._get_position_of_cell(begpos, endpos, cell_no_beg)
@@ -1261,7 +1223,6 @@ class SourceEditor(wx.Panel):
         while cell_no < celltot:
             cell_no += 1
             cellpos = self._get_position_of_cell(begpos, endpos, cell_no)
-            #print(f"DEBUG loop: celltot={celltot} cell_no={cell_no} cellpos={cellpos} findpos={findpos}")
             if cellpos > findpos:
                 cell_no -= 1
                 break
@@ -1269,7 +1230,8 @@ class SourceEditor(wx.Panel):
 
     def _get_number_of_cells(self, begpos, endpos):
         # get number of cells in range begpos-endpos
-        # Warning! GetStringSelection does not work properly if there are diacritics in the content above (!) the selected range
+        # Warning! GetStringSelection does not work properly if there are diacritics in the content above (!)
+        # the selected range
         the_content = self._editor.GetTextRange(begpos, endpos)
         celltab = ' ' * self._tab_size
         return the_content.count(celltab)
@@ -1279,18 +1241,18 @@ class SourceEditor(wx.Panel):
         # TODO: this does not work correctly if first cell within the range is totally empty (so not as \ sanitized)
         cellpos = 0
         cellcnt = self._get_number_of_cells(begpos, endpos)
-        #print(f"DEBUG: cellcnt={cellcnt} cell_no={cell_no}")
-        if cell_no <= cellcnt:    # encode is needed for finding correct position when there are special characters in the content
+        if cell_no <= cellcnt:  # encode is needed for finding correct position when there are special characters
+            # in the content
             celltab = ' ' * self._tab_size
             cellencode = celltab.encode('utf-8')
-            # Warning! GetStringSelection does not work properly if there are diacritics in the content above (!) the selected range
+            # Warning! GetStringSelection does not work properly if there are diacritics in
+            # the content above (!) the selected range
             textrange = self._editor.GetTextRange(begpos, endpos)
             textencode = textrange.encode('utf-8')
             fndcnt = 1  # begpos is always in a cell
             fndidx = 0
             while fndidx != -1:
                 fndidx = textencode.find(cellencode, fndidx)
-                #print(f"DEBUG searched: fndidx={fndidx} text={textencode}")
                 if fndidx != -1:
                     if fndcnt == 1 and fndidx == 0:    # check if begpos is at the beginning of a cell
                         fndcnt -= 1
@@ -1301,10 +1263,10 @@ class SourceEditor(wx.Panel):
                     fndidx += 1   # for next search
         else:  # cell_no does not exist -- return endpos-1
             cellpos = endpos-1
-        #print(f"DEBUG cellpos: cellpos={cellpos}")
         return cellpos
 
     def execute_sharp_comment(self, event):
+        _ = event
         start, end = self._editor.GetSelection()
         cursor = self._editor.GetCurrentPos()
         ini_line = self._editor.LineFromPosition(start)
@@ -1370,6 +1332,7 @@ class SourceEditor(wx.Panel):
         self.store_position()
 
     def execute_sharp_uncomment(self, event):
+        _ = event
         start, end = self._editor.GetSelection()
         cursor = self._editor.GetCurrentPos()
         ini_line = self._editor.LineFromPosition(start)
@@ -1377,7 +1340,7 @@ class SourceEditor(wx.Panel):
         spaces = ' ' * self._tab_size
         # self._editor.SelectNone()
         count = 0
-        maxsize = self._editor.GetLineCount()
+        # maxsize = self._editor.GetLineCount()
         # If the selection spans on more than one line:
         if ini_line < end_line:
             for line in range(ini_line, end_line+1):
@@ -1419,7 +1382,7 @@ class SourceEditor(wx.Panel):
                             newrow = newrow.replace('\\ ', ' ')
                             size += len(row[idx:]) - len(newrow) - size
                             self._editor.DeleteRange(pos + idx, len(newrow) + size)
-                            self._editor.InsertText(pos + idx, newrow )
+                            self._editor.InsertText(pos + idx, newrow)
                         count += size
                     else:
                         idx += 1
@@ -1455,12 +1418,14 @@ class SourceEditor(wx.Panel):
             return
         new_start = start
         new_end = end - count
+        """
         if cursor == start:
             ini = new_start
             fini = new_end
         else:
             ini = new_end
             fini = new_start
+        """
         self._editor.SetSelection(new_start, new_end)  # TODO: For some reason the selection is not restored!
         self._editor.SetCurrentPos(cursor - count)
         self.store_position()
@@ -1481,7 +1446,6 @@ class SourceEditor(wx.Panel):
                 self._data.mark_data_dirty()
                 self._dirty = 1
             elif self._dirty == 1:
-                # print(f"DEBUG: texteditor _mark_file_dirty calling mark_data_pristine _dirty={self._dirty}")
                 self._data.mark_data_pristine()
                 self._dirty = 0
 
@@ -1492,7 +1456,7 @@ class RobotDataEditor(stc.StyledTextCtrl):
     def __init__(self, parent, readonly=False):
         stc.StyledTextCtrl.__init__(self, parent)
         self._settings = parent._parent._app.settings
-        self.readonly=readonly
+        self.readonly = readonly
         self.SetMarginType(self.margin, stc.STC_MARGIN_NUMBER)
         self.SetLexer(stc.STC_LEX_CONTAINER)
         self.SetReadOnly(True)
@@ -1514,9 +1478,11 @@ class RobotDataEditor(stc.StyledTextCtrl):
         return self.GetText().encode('UTF-8')
 
     def OnStyle(self, event):
+        _ = event
         self.stylizer.stylize()
 
     def OnZoom(self, event):
+        _ = event
         self.SetMarginWidth(self.margin, self.calc_margin_width())
         self._set_zoom()
 
@@ -1559,7 +1525,6 @@ class RobotDataEditor(stc.StyledTextCtrl):
 class FromStringIOPopulator(robotapi.populators.FromFilePopulator):
 
     def populate(self, content, tab_size):
-        # print(f"DEBUG: FromStringIOPopulator spaces={tab_size} populate:\n{content}")
         robotapi.RobotReader(spaces=tab_size).read(content, self)
 
 
@@ -1578,7 +1543,7 @@ class RobotStylizer(object):
         PUBLISHER.subscribe(self.OnSettingsChanged, RideSettingsChanged)
 
     def OnSettingsChanged(self, message):
-        '''Redraw the colors if the color settings are modified'''
+        """Redraw the colors if the color settings are modified"""
         section, setting = message.keys
         if section == 'Text Edit':
             self._set_styles(self._readonly)  # TODO: When on read-only file changing background color ignores flag
@@ -1682,7 +1647,7 @@ class RobotStylizer(object):
                         for name, value in settings.items() if value)
 
     def _ensure_default_font_is_valid(self):
-        '''Checks if default font is installed'''
+        """Checks if default font is installed"""
         default_font = self._font_face()
         if default_font not in ReadFonts():
             sys_font = wx.SystemSettings.GetFont(wx.SYS_ANSI_FIXED_FONT)
