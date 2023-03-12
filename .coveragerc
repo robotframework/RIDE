@@ -1,4 +1,5 @@
 [run]
+# include = ./src/* 
 omit =
     # omit anything in a .local directory anywhere
     */.local/*
@@ -6,3 +7,6 @@ omit =
     /usr/*
     # omit utest
     ./utest/*
+    # robot library
+    ./src/robotide/lib/robot/*
+    */.venv/*

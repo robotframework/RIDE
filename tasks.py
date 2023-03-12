@@ -368,8 +368,10 @@ def test_ci(ctx, test_filter=''):
     try:
         import subprocess
         p = subprocess.Popen(["pytest", "--ignore-glob=../../../../usr/*", "--ignore-glob=/usr/lib64/python3.10/site-packages/*", "--ignore-glob=/home2/helio/.local/*",
-                              "-v", "--cov", "--cov-report=xml:.coverage-reports/coverage.xml", "--cov-branch", "./utest"])
+                              "-v", "--cov=.", "--cov-report=html:.coverage-reports/htmlcov", "--cov-report=xml:.coverage-reports/coverage.xml", "--cov-branch", "./utest"])
         p.communicate('')
+        s = subprocess.Popen(["sonar-scanner"])
+        s.communicate('')
     finally:
         pass
 
