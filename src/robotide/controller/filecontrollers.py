@@ -50,8 +50,12 @@ def _get_controller(project, data, parent):
         import tempfile
         if not data.parent:
             data.parent = Project(Namespace(data._settings), data._settings)
-            content= bytes(f"*** Settings ***\nResource    {data.source}\n\n*** Test Cases ***\nEmpty\n  No Operation\n",
-                           encoding='utf-8')
+            content = bytes(f"*** Settings ***\n"
+                            f"Resource    {data.source}\n\n"
+                            f"*** Test Cases ***\n"
+                            f"Empty\n"
+                            f"  No Operation\n",
+                            encoding='utf-8')
             stub = tempfile.NamedTemporaryFile(delete=False)
             with stub:
                 stub.write(content)
@@ -71,10 +75,11 @@ class _FileSystemElement(object):
         self.directory = directory
         self._stat = self._get_stat(filename)
 
-    def _get_stat(self, path):
+    @staticmethod
+    def _get_stat(path):
         if path and os.path.isfile(path):
-            stat = os.stat(path)
-            return stat.st_mtime, stat.st_size
+            stats = os.stat(path)
+            return stats.st_mtime, stats.st_size
         return 0, 0
 
     def refresh_stat(self):
@@ -103,13 +108,18 @@ class _FileSystemElement(object):
     @property
     def source(self):
         """Deprecated, use ``filename`` or ``directory`` instead."""
-        # Todo: remove when backwards compatibility with plugin API can break
+        # DEBUG: remove when backwards compatibility with plugin API can break
         return self.filename or self.directory
 
 
 class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
 
     def __init__(self, data, project=None, parent=None):
+        self.data = data
+        self._variables_table_controller = None
+        self._testcase_table_controller = None
+        self._keywords_table_controller = None
+        self._imports = None
         self._project = project
         if project:
             self._set_namespace_from(project)
@@ -198,7 +208,7 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
     def imports(self):
         if not self._imports:
             self._imports = ImportSettingsController(self, self.data.setting_table,
-                                    self._resource_file_controller_factory)
+                                                     self._resource_file_controller_factory)
         return self._imports
 
     @property
@@ -294,13 +304,13 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
             return None
         return os.path.splitext(self.filename)[1].replace('.', '')
 
-    def set_format(self, format):
-        self.data.source = utils.replace_extension(self.filename, format)
+    def set_format(self, formatt):
+        self.data.source = utils.replace_extension(self.filename, formatt)
         self.filename = self.data.source
 
-    def is_same_format(self, format):
-        if format and self.has_format():
-            return format.lower() == self.get_format().lower()
+    def is_same_format(self, formatt):
+        if formatt and self.has_format():
+            return formatt.lower() == self.get_format().lower()
         return False
 
     def set_basename(self, basename):
@@ -314,8 +324,8 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
             self.remove_from_filesystem(old_file)
 
     def remove_readonly(self, path=None):
-            path = path or self.filename
-            os.chmod(path, stat.S_IWRITE)
+        path = path or self.filename
+        os.chmod(path, stat.S_IWRITE)
 
     def open_filemanager(self, path=None):
         # tested on Win7 x64
@@ -323,33 +333,33 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
         if os.path.exists(path):
             if sys.platform == 'win32':
                 #  There was encoding errors if directory had unicode chars
-                # TODO test on all OS directory names with accented chars, for example 'ccedilla'
+                # DEBUG: test on all OS directory names with accented chars, for example 'ccedilla'
                 os.startfile(r"%s" % os.path.dirname(path), 'explore')
             elif sys.platform.startswith('linux'):
                 # how to detect which explorer is used?
                 # nautilus, dolphin, konqueror
-                # TODO check if explorer exists
-                # TODO get prefered explorer from preferences
+                # DEBUG: check if explorer exists
+                # DEBUG: get prefered explorer from preferences
                 try:
                     subprocess.Popen(["nautilus", "{}".format(
                         os.path.dirname(path))])
-                except OSError or FileNotFoundError:
+                except OSError:
                     try:
                         subprocess.Popen(
                             ["dolphin", "{}".format(os.path.dirname(path))])
-                    except OSError or FileNotFoundError:
+                    except OSError:
                         try:
                             subprocess.Popen(
                                ["konqueror", "{}".format(
                                    os.path.dirname(path))])
-                        except OSError or FileNotFoundError:
+                        except OSError:
                             print("Could not launch explorer. Tried nautilus, "
                                   "dolphin and konqueror.")
             else:
                 try:
                     subprocess.Popen(["finder", "{}".format(
                         os.path.dirname(path))])
-                except OSError or FileNotFoundError:
+                except OSError:
                     subprocess.Popen(["open", "{}".format(
                         os.path.dirname(path))])
 
@@ -361,11 +371,11 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
     def remove_folder_from_filesystem(self, path=None):
         shutil.rmtree(path or self.data.directory)
 
-    def save_with_new_format(self, format):
-        self._project.change_format(self, format)
+    def save_with_new_format(self, formatt):
+        self._project.change_format(self, formatt)
 
-    def save_with_new_format_recursive(self, format):
-        self._project.change_format_recursive(self, format)
+    def save_with_new_format_recursive(self, formatt):
+        self._project.change_format_recursive(self, formatt)
 
     def validate_keyword_name(self, name):
         return self.keywords.validate_name(name)
@@ -392,7 +402,8 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
     def save(self):
         self._project.save(self)
 
-    def get_local_variables(self):
+    @staticmethod
+    def get_local_variables():
         return {}
 
     def is_inside_top_suite(self, res):
@@ -409,7 +420,8 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
         _DataController.__init__(self, data, project, parent)
         self._dir_controllers = {}
 
-    def _filename(self, data):
+    @staticmethod
+    def _filename(data):
         return data.initfile
 
     @property
@@ -429,8 +441,8 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
     @property
     def suites(self):
         return [child for child in self.children if
-                    isinstance(child, TestDataDirectoryController) or
-                    isinstance(child, TestCaseFileController)]
+                isinstance(child, TestDataDirectoryController) or
+                isinstance(child, TestCaseFileController)]
 
     def add_child(self, child):
         self.children.append(child)
@@ -441,7 +453,7 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
                 return True
         return False
 
-    def find_controller_by_longname(self, longname, testname = None):
+    def find_controller_by_longname(self, longname, testname=None):
         return self.find_controller_by_names(longname.split("."), testname)
 
     def find_controller_by_names(self, names, testname):
@@ -474,7 +486,8 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
             if not self._is_robot_ignored_name(filename):
                 self._add_directory_child(children, filename)
 
-    def _is_robot_ignored_name(self, filename):
+    @staticmethod
+    def _is_robot_ignored_name(filename):
         base = os.path.basename(filename)
         robotformat = (".txt", ".robot", ".resource", ".rst", " .rest", ".tsv", ".htm", ".html")
         nonrobot_file = os.path.isfile(filename) and not base.endswith(robotformat)
@@ -497,7 +510,8 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
         self._add_directory_children(dc.children, dc.source, None)
         return dc
 
-    def _is_valid_resource(self, resource):
+    @staticmethod
+    def _is_valid_resource(resource):
         return resource and (resource.setting_table or resource.variable_table or
                              resource.keyword_table or os.stat(resource.source)[6] == 0)
 
@@ -511,7 +525,8 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
         already_in_use += [c.directory for c in children]
         return [f for f in self._get_filenames_in_directory(path) if f not in already_in_use]
 
-    def _get_filenames_in_directory(self, path):
+    @staticmethod
+    def _get_filenames_in_directory(path):
         return [os.path.join(path, f) for f in os.listdir(path)]
 
     def add_child(self, controller):
@@ -521,9 +536,9 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
     def has_format(self):
         return self.data.initfile is not None
 
-    def set_format(self, format):
+    def set_format(self, formatt):
         self.data.initfile = os.path.join(self.data.source, '__init__.%s'
-                                          % format.lower())
+                                          % formatt.lower())
         self.filename = self.data.initfile
 
     def new_test_case_file(self, path):
@@ -672,14 +687,14 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
     def retrieve_test_controllers(self):
         controllers: list[TestCaseController] = []
         for child in self.children:
-            if isinstance(child,TestCaseFileController) or isinstance(child,TestDataDirectoryController):
+            if isinstance(child, TestCaseFileController) or isinstance(child, TestDataDirectoryController):
                 controllers += child.retrieve_test_controllers()
         return controllers
 
 
 class DirtyRobotDataException(Exception):
     """
-    Raised when data is dirty and you are trying to do an operation that requires undirty data.
+    Raised when data is dirty, and you are trying to do an operation that requires undirty data.
     """
     pass
 
@@ -711,10 +726,10 @@ class TestCaseFileController(_FileSystemElement, _DataController):
     def contains_tests(self):
         return bool(self.tests)
 
-    def find_controller_by_longname(self, longname, node_testname = None):
+    def find_controller_by_longname(self, longname, node_testname=None):
         return self.find_controller_by_names(longname.split("."), node_testname)
 
-    def find_controller_by_names(self, names, node_testname = None):
+    def find_controller_by_names(self, names, node_testname=None):
         names = '.'.join(names)
         if not names.startswith(self.name):
             return None
@@ -756,7 +771,7 @@ class TestCaseFileController(_FileSystemElement, _DataController):
     def get_template(self):
         return self.data.setting_table.test_template
 
-    def retrieve_test_controllers(self) :
+    def retrieve_test_controllers(self):
         controllers = []
         for test_ctrl in iter(self.tests):
             controllers.append(test_ctrl)
@@ -838,13 +853,14 @@ class ResourceFileController(_FileSystemElement, _DataController):
     def _find_parent_for(self, project, source):
         if not project:
             return None
-        dir = os.path.dirname(source)
+        ddir = os.path.dirname(source)
         for ctrl in project.datafiles:
-            if ctrl.is_directory_suite() and self._to_os_style(ctrl.directory) == dir:
+            if ctrl.is_directory_suite() and self._to_os_style(ctrl.directory) == ddir:
                 return ctrl
         return None
 
-    def _to_os_style(self, path):
+    @staticmethod
+    def _to_os_style(path):
         return path.replace('/', os.sep)
 
     @property
@@ -855,9 +871,9 @@ class ResourceFileController(_FileSystemElement, _DataController):
     def is_modifiable(self):
         return not self.exists() or not self.is_readonly()
 
-    def set_format(self, format):
-        self._modify_file_name(lambda: _DataController.set_format(self, format),
-                               lambda imp: imp.change_format(format))
+    def set_format(self, formatt):
+        self._modify_file_name(lambda: _DataController.set_format(self, formatt),
+                               lambda imp: imp.change_format(formatt))
 
     def set_basename(self, basename):
         self._modify_file_name(lambda: _DataController.set_basename(self, basename),
@@ -932,7 +948,6 @@ class ResourceFileController(_FileSystemElement, _DataController):
         for usage in source:
             yield usage
 
-
     def _resolve_known_imports(self):
         for imp in self._all_imports():
             if imp.get_imported_controller() is self:
@@ -955,8 +970,7 @@ class ExcludedDirectoryController(_FileSystemElement, ControllerWithParent, With
         self._project = project
         if self._project:
             self._set_namespace_from(self._project)
-            self._resource_file_controller_factory =\
-            self._project.resource_file_controller_factory
+            self._resource_file_controller_factory = self._project.resource_file_controller_factory
         else:
             self._resource_file_controller_factory = None
         self._parent = parent
@@ -1014,7 +1028,8 @@ class ExcludedDirectoryController(_FileSystemElement, ControllerWithParent, With
     def name(self):
         return self.data.name
 
-    def is_directory_suite(self):
+    @staticmethod
+    def is_directory_suite():
         return True
 
     def add_child(self, child):
