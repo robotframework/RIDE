@@ -42,6 +42,13 @@ def read_fonts(fixed=False):
     return names
 
 
+def set_colors(element, bk_color, fg_color):
+    element.SetBackgroundColour(bk_color)
+    element.SetOwnBackgroundColour(bk_color)
+    element.SetForegroundColour(fg_color)
+    element.SetOwnForegroundColour(fg_color)
+
+
 class GeneralPreferences(PreferencesPanel):
 
     def __init__(self, settings, *args, **kwargs):
@@ -69,10 +76,7 @@ class GeneralPreferences(PreferencesPanel):
         if IS_WINDOWS:
             background_color = Colour("light gray")
             foreground_color = Colour("black")
-            self.cb_apply_to_panels.SetForegroundColour(foreground_color)
-            self.cb_apply_to_panels.SetBackgroundColour(background_color)
-            self.cb_apply_to_panels.SetOwnBackgroundColour(background_color)
-            self.cb_apply_to_panels.SetOwnForegroundColour(foreground_color)
+            set_colors(self.cb_apply_to_panels, background_color, foreground_color)
         main_sizer.Add(font_editor)
         main_sizer.Add(colors_sizer)
         main_sizer.Add(self.cb_apply_to_panels)
@@ -167,10 +171,7 @@ class GeneralPreferences(PreferencesPanel):
         background_color = Colour("light gray")
         foreground_color = Colour("black")
         if IS_WINDOWS:
-            l_size.SetBackgroundColour(background_color)
-            l_size.SetOwnBackgroundColour(background_color)
-            l_size.SetForegroundColour(foreground_color)
-            l_size.SetOwnForegroundColour(foreground_color)
+            set_colors(l_size, background_color, foreground_color)
         sizer.AddMany([l_size, f.chooser(self)])
         fixed_font = False
         if 'zoom factor' in self._settings:
@@ -178,28 +179,19 @@ class GeneralPreferences(PreferencesPanel):
                 self._settings, 'zoom factor', 'Zoom Factor', (-10, 20))
             l_zoom = z.label(self)
             if IS_WINDOWS:
-                l_zoom.SetForegroundColour(foreground_color)
-                l_zoom.SetBackgroundColour(background_color)
-                l_zoom.SetOwnBackgroundColour(background_color)
-                l_zoom.SetOwnForegroundColour(foreground_color)
+                set_colors(l_zoom, background_color, foreground_color)
             sizer.AddMany([l_zoom, z.chooser(self)])
         if 'fixed font' in self._settings:
             l_ff, editor = boolean_editor(self, self._settings, 'fixed font', 'Use fixed width font')
             if IS_WINDOWS:
-                l_ff.SetForegroundColour(foreground_color)
-                l_ff.SetBackgroundColour(background_color)
-                l_ff.SetOwnBackgroundColour(background_color)
-                l_ff.SetOwnForegroundColour(foreground_color)
+                set_colors(l_ff, background_color, foreground_color)
             sizer.AddMany([l_ff, editor])
             fixed_font = self._settings['fixed font']
         if 'font face' in self._settings:
             s = StringChoiceEditor(self._settings, 'font face', 'Font Face', read_fonts(fixed_font))
             l_font = s.label(self)
             if IS_WINDOWS:
-                l_font.SetForegroundColour(foreground_color)
-                l_font.SetBackgroundColour(background_color)
-                l_font.SetOwnBackgroundColour(background_color)
-                l_font.SetOwnForegroundColour(foreground_color)
+                set_colors(l_font, background_color, foreground_color)
             sizer.AddMany([l_font, s.chooser(self)])
         sizer.Layout()
         return sizer
@@ -238,10 +230,7 @@ class DefaultPreferences(GeneralPreferences):
                 row += 1
             label = wx.StaticText(self, wx.ID_ANY, label_text)
             if IS_WINDOWS:
-                label.SetForegroundColour(foreground_color)
-                label.SetBackgroundColour(background_color)
-                label.SetOwnBackgroundColour(background_color)
-                label.SetOwnForegroundColour(foreground_color)
+                set_colors(label, background_color, foreground_color)
             button = PreferencesColorPicker(
                 self, wx.ID_ANY, self._settings, settings_key)
             container.Add(button, (row, column), flag=wx.ALL | wx.ALIGN_CENTER_VERTICAL, border=4)
