@@ -405,7 +405,10 @@ def _set_development_path():
     sys.path.insert(0, TEST_DIR)
     sys.path.insert(0, SOURCE_DIR)
     pythonpath = os.getenv('PYTHONPATH')
-    os.environ['PYTHONPATH'] = SOURCE_DIR + ':' + TEST_DIR + ':' + pythonpath
+    if not pythonpath:
+           pythonpath = ""
+    pythonpath = ':' + pythonpath
+    os.environ['PYTHONPATH'] = SOURCE_DIR + ':' + TEST_DIR + pythonpath
 
 
 def _run_sed_on_matching_files(ctx, pattern, sed_expression):
