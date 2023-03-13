@@ -360,14 +360,21 @@ def tags_test(ctx):
 @task
 def test_ci(ctx, test_filter=''):
     """Run unit tests and coverage"""
-
-    test(ctx, test_filter)
-
+    
     _set_development_path()
+
     try:
         import subprocess
-        p = subprocess.Popen(["pytest", "-v", "--cov", "--cov-report=xml:.coverage-reports/coverage.xml", "--cov-branch", "utest"])
-        p.communicate('')
+        c = subprocess.Popen(["coverage", "run" , "-m", "pytest", "--cov-config=.coveragerc", "-k test_", "-v", TEST_DIR])
+        c.communicate('')
+        r = subprocess.Popen(["coverage", "report"])
+        r.communicate('')
+        x = subprocess.Popen(["coverage", "xml"])
+        x.communicate('')
+        h = subprocess.Popen(["coverage", "html"])
+        h.communicate('')
+        s = subprocess.Popen(["sonar-scanner"])
+        s.communicate('')
     finally:
         pass
 
@@ -384,7 +391,7 @@ def _clean(keep_dist=False):
 
 def _remove_bytecode_files():
     for d in SOURCE_DIR, TEST_DIR:
-        _remove_files_matching(d, '.*\.pyc')
+        _remove_files_matching(d, r'.*\.pyc')
 
 
 def _remove_files_matching(directory, pattern):
@@ -397,6 +404,11 @@ def _set_development_path():
     sys.path.insert(0, TEST_DIR+"/controller")
     sys.path.insert(0, TEST_DIR)
     sys.path.insert(0, SOURCE_DIR)
+    pythonpath = os.getenv('PYTHONPATH')
+    if not pythonpath:
+           pythonpath = ""
+    pythonpath = ':' + pythonpath
+    os.environ['PYTHONPATH'] = SOURCE_DIR + ':' + TEST_DIR + pythonpath
 
 
 def _run_sed_on_matching_files(ctx, pattern, sed_expression):

@@ -90,6 +90,9 @@ encoding = {'CONSOLE': CONSOLE_ENCODING,
             'SYSTEM': SYSTEM_ENCODING,
             'OUTPUT': OUTPUT_ENCODING}
 
+FONT_FACE = 'font face'
+STOP_RUNNING_TEST = 'Stop a running test'
+STEP_OVER = 'Step over'
 ID_RUN = wx.NewIdRef()
 ID_RUNDEBUG = wx.NewIdRef()
 ID_STOP = wx.NewIdRef()
@@ -112,7 +115,7 @@ STYLE_FAIL = 4
 ATEXIT_LOCK = threading.RLock()
 
 
-def _RunProfile(name, run_prefix):
+def _run_profile(name, run_prefix):
     return type('Profile', (runprofiles.PybotProfile,),
                 {'name': name, 'get_command': lambda self: run_prefix})
 
@@ -123,30 +126,30 @@ def open_filemanager(path=None):
     if os.path.exists(path_dir):
         if platform == 'win32':
             #  There was encoding errors if directory had unicode chars
-            # TODO test on all OS directory names with accented chars, for example 'ccedilla'
+            # DEBUG: test on all OS directory names with accented chars, for example 'ccedilla'
             os.startfile(r"%s" % path_dir, 'explore')
         elif platform.startswith('linux'):
             # how to detect which explorer is used?
             # nautilus, dolphin, konqueror
-            # TODO check if explorer exists
-            # TODO get prefered explorer from preferences
+            # DEBUG: check if explorer exists
+            # DEBUG: get prefered explorer from preferences
             try:
                 subprocess.Popen(["nautilus", "{}".format(path_dir)])
-            except OSError or FileNotFoundError:
+            except OSError:
                 try:
                     subprocess.Popen(
                         ["dolphin", "{}".format(path_dir)])
-                except OSError or FileNotFoundError:
+                except OSError:
                     try:
                         subprocess.Popen(
                            ["konqueror", "{}".format(path_dir)])
-                    except OSError or FileNotFoundError:
+                    except OSError:
                         print("Could not launch explorer. Tried nautilus, "
                               "dolphin and konqueror.")
         else:
             try:
                 subprocess.Popen(["finder", "{}".format(path_dir)])
-            except OSError or FileNotFoundError:
+            except OSError:
                 subprocess.Popen(["open", "{}".format(path_dir)])
 
 
@@ -173,8 +176,8 @@ class TestRunnerPlugin(Plugin):
                 "skip color": 'yellow'
                 }
 
-    report_regex = re.compile("^Report: {2}(.*\.html)$", re.MULTILINE)
-    log_regex = re.compile("^Log: {5}(.*\.html)$", re.MULTILINE)
+    report_regex = re.compile(r"^Report: {2}(.*\.html)$", re.MULTILINE)
+    log_regex = re.compile(r"^Log: {5}(.*\.html)$", re.MULTILINE)
     title = "Run"
 
     def __init__(self, application=None):
@@ -219,11 +222,13 @@ class TestRunnerPlugin(Plugin):
             self.register_shortcut('Del', self._delete_pressed)
 
     def _delete_pressed(self, event):
+        _ = event
         if self.notebook.current_page_title != self.title:
             return
         self.get_current_profile().delete_pressed()
 
     def _copy_from_log_ctrls(self, event):
+        _ = event
         if self.notebook.current_page_title != self.title:
             return
         if self._console_log_ctrl.GetSTCFocus():
@@ -257,7 +262,7 @@ class TestRunnerPlugin(Plugin):
         stop_action_info = ActionInfo("Tools", "Stop Test Run", self.OnStop,
                                       None, "CtrlCmd-F8",
                                       ImageProvider().TOOLBAR_STOP,
-                                      "Stop a running test", position=11)
+                                      STOP_RUNNING_TEST, position=11)
         self._stop_action = self.register_action(stop_action_info)
 
     def _read_run_profiles(self):
@@ -266,7 +271,7 @@ class TestRunnerPlugin(Plugin):
 
     def _read_run_profiles_from_config(self):
         # Have to keep reference so that these classes are not garbage collected
-        self._profile_classes_from_config = [_RunProfile(name, run_prefix)
+        self._profile_classes_from_config = [_run_profile(name, run_prefix)
                                              for name, run_prefix in
                                              self.run_profiles]
 
@@ -290,8 +295,6 @@ class TestRunnerPlugin(Plugin):
         section, setting = message.keys
         # print("DEBUG: enter OnSettingsChanged section %s" % (section))
         if section == 'Test Run':  # DEBUG temporarily we have two sections
-            # print("DEBUG: setting.get('confirm run')= %s " % setting)
-            # print("DEBUG: new data= %s old %s new %s" % (data.keys, data.old, data.new))
             self.defaults.setdefault(setting, message.new)
             self.save_setting(setting, message.new)
 
@@ -338,39 +341,46 @@ class TestRunnerPlugin(Plugin):
         This sends a SIGINT to the running process, with the
         same effect as typing control-c when running from the
         command line."""
+        _ = event
         self._reset_memory_calc()
         self._append_to_console_log('[ SENDING STOP SIGNAL ]\n',
                                     source='stderr')
         self._test_runner.send_stop_signal()
 
     def OnPause(self, event):
+        _ = event
         self._reset_memory_calc()
         self._append_to_console_log('[ SENDING PAUSE SIGNAL ]\n')
         self._test_runner.send_pause_signal()
 
     def OnContinue(self, event):
+        _ = event
         self._reset_memory_calc()
         self._append_to_console_log('[ SENDING CONTINUE SIGNAL ]\n')
         self._test_runner.send_continue_signal()
 
     def OnStepNext(self, event):
+        _ = event
         self._reset_memory_calc()
         self._append_to_console_log('[ SENDING STEP NEXT SIGNAL ]\n')
         self._test_runner.send_step_next_signal()
 
     def OnStepOver(self, event):
+        _ = event
         self._reset_memory_calc()
         self._append_to_console_log('[ SENDING STEP OVER SIGNAL ]\n')
         self._test_runner.send_step_over_signal()
 
     def OnRun(self, event):
         """ Called when the user clicks or presses the F8, Run Tests """
+        _ = event
         self._run_tests()
 
     def OnRunDebug(self, event):
         """ Called when the user clicks or presses the F9, Run Tests with Debug
             It can still be overwritten in RIDE Arguments line
         """
+        _ = event
         self._run_tests("DEBUG")
 
     def _run_tests(self, log_level='INFO'):
@@ -385,8 +395,6 @@ class TestRunnerPlugin(Plugin):
         profile = self.get_current_profile()
         self.use_colors = self.__getattr__('use colors')
         command_args = self._create_command_args(profile.get_command_args(), log_level, self.use_colors)
-        # wx.MessageBox(f"DEBUG: after _create_command_args {command_args}", "Debug")
-        # print(f"DEBUG: testrunnerplugin _run_tests BEFORE _save_command_args_in_file")
         args_file = self._save_command_args_in_file(command_args)
         # print(f"DEBUG: testrunnerplugin _run_tests AFTER _save_command_args_in_file")
         command = self._create_command(profile.get_command(), args_file)
@@ -499,25 +507,29 @@ class TestRunnerPlugin(Plugin):
         text_ctrl.ClearAll()
         text_ctrl.SetReadOnly(True)
 
-    def OnOpenLogsDirectory(self, evt):
+    def OnOpenLogsDirectory(self, event):
         """Called when the user clicks on the "Open Logs Directory" button"""
+        _ = event
         if os.path.exists(self._logs_directory):
             open_filemanager(self._logs_directory)
         else:
             self._notify_user_no_logs_directory()
 
-    def OnShowReport(self, evt):
+    def OnShowReport(self, event):
+        _ = event
         """Called when the user clicks on the "Report" button"""
         if self._report_file:
             wx.LaunchDefaultBrowser(
                 "file:%s" % os.path.abspath(self._report_file))
 
-    def OnShowLog(self, evt):
+    def OnShowLog(self, event):
         """Called when the user clicks on the "Log" button"""
+        _ = event
         if self._log_file:
             wx.LaunchDefaultBrowser("file:%s" % os.path.abspath(self._log_file))
 
-    def OnProcessEnded(self, evt):
+    def OnProcessEnded(self, event):
+        _ = event
         output, errors, log_message = self._test_runner.get_output_and_errors(
             self.get_current_profile())
         self._append_to_console_log(output)
@@ -553,8 +565,9 @@ class TestRunnerPlugin(Plugin):
         res = regex.search(output)
         return res.group(1) if res and os.path.isfile(res.group(1)) else None
 
-    def OnTimer(self, evt):
+    def OnTimer(self, event):
         """Get process output"""
+        _ = event
         if not self._log_message_queue.empty():
             if self._process.memory_info()[0] <= self._limitmemory:
                 texts = []
@@ -621,7 +634,7 @@ class TestRunnerPlugin(Plugin):
             text_ctrl.GetFirstVisibleLine() + text_ctrl.LinesOnScreen() - 1
 
         text_ctrl.SetReadOnly(False)
-        pos=text_ctrl.GetLastPosition()   # TODO: Process \r with Replace
+        pos = text_ctrl.GetLastPosition()   # DEBUG: Process \r with Replace
         # print(f"DEBUG: _append_text lastposition={pos}")
         text_ctrl.AppendText(text)
         new_text_end = text_ctrl.GetLength()
@@ -692,10 +705,8 @@ class TestRunnerPlugin(Plugin):
                     # print(f"DEBUG: parse_colors reset to NORMAL")
                     self.store_color(idx, None)
                     txt = txt[:idx] + txt[idx+4:]
-                    # idx += 3
                 elif color:
                     txt = txt[:idx] + txt[idx+5:]
-                    # idx += 4
                 if idx >= len(txt):
                     break
             t_size = len(txt)
@@ -704,8 +715,6 @@ class TestRunnerPlugin(Plugin):
         return txt
 
     def store_color(self, idx, color):
-        if not self._color_map:
-            self._color_map = list()
         self._color_map.append((idx, color))
 
     def _get_console_width(self):
@@ -736,8 +745,8 @@ class TestRunnerPlugin(Plugin):
                                  "with DEBUG loglevel")
         toolbar.AddTool(ID_STOP, "Stop", ImageProvider().TOOLBAR_STOP,
                         wx.NullBitmap, wx.ITEM_NORMAL,
-                        shortHelp="Stop a running test",
-                        longHelp="Stop a running test")
+                        shortHelp=STOP_RUNNING_TEST,
+                        longHelp=STOP_RUNNING_TEST)
         toolbar.AddTool(ID_PAUSE, "Pause", ImageProvider().TOOLBAR_PAUSE,
                         wx.NullBitmap, wx.ITEM_NORMAL,
                         shortHelp="Pause test execution",
@@ -750,15 +759,15 @@ class TestRunnerPlugin(Plugin):
         toolbar.AddTool(ID_STEP_NEXT, "Next", ImageProvider().TOOLBAR_NEXT,
                         wx.NullBitmap, wx.ITEM_NORMAL, shortHelp="Step next",
                         longHelp="Step next")
-        toolbar.AddTool(ID_STEP_OVER, "Step over", ImageProvider().TOOLBAR_NEXT,
-                        wx.NullBitmap, wx.ITEM_NORMAL, shortHelp="Step over",
-                        longHelp="Step over")
+        toolbar.AddTool(ID_STEP_OVER, STEP_OVER, ImageProvider().TOOLBAR_NEXT,
+                        wx.NullBitmap, wx.ITEM_NORMAL, shortHelp=STEP_OVER,
+                        longHelp=STEP_OVER)
         toolbar.Realize()
         self._bind_runner_toolbar_events(toolbar)
         return toolbar
 
     def _bind_runner_toolbar_events(self, toolbar):
-        for event, callback, id in (
+        for event, callback, idd in (
                 (wx.EVT_TOOL, self.OnRun, ID_RUN),
                 (wx.EVT_TOOL, self.OnRunDebug, ID_RUNDEBUG),
                 (wx.EVT_TOOL, self.OnStop, ID_STOP),
@@ -766,7 +775,7 @@ class TestRunnerPlugin(Plugin):
                 (wx.EVT_TOOL, self.OnContinue, ID_CONTINUE),
                 (wx.EVT_TOOL, self.OnStepNext, ID_STEP_NEXT),
                 (wx.EVT_TOOL, self.OnStepOver, ID_STEP_OVER)):
-            toolbar.Bind(event, callback, id=id)
+            toolbar.Bind(event, callback, id=idd)
 
     def _build_local_toolbar(self, parent):
         toolbar = wx.ToolBar(parent, wx.ID_ANY,
@@ -821,11 +830,11 @@ class TestRunnerPlugin(Plugin):
         return toolbar
 
     def _bind_local_toolbar_events(self, toolbar):
-        for event, callback, id in (
+        for event, callback, idd in (
                 (wx.EVT_TOOL, self.OnOpenLogsDirectory, ID_OPEN_LOGS_DIR),
                 (wx.EVT_TOOL, self.OnShowReport, ID_SHOW_REPORT),
                 (wx.EVT_TOOL, self.OnShowLog, ID_SHOW_LOG)):
-            toolbar.Bind(event, callback, id=id)
+            toolbar.Bind(event, callback, id=idd)
 
         for event, handler, source in (
                 (wx.EVT_CHECKBOX, self._on_autosave_cb,
@@ -947,10 +956,10 @@ class TestRunnerPlugin(Plugin):
     def _change_item_proportion(panel, item, proportion):
         sizer = panel.GetSizer()
         children = sizer.GetChildren()
-        for itemIndex in range(len(children)):
-            if item == children[itemIndex].Window:
+        for item_index in range(len(children)):
+            if item == children[item_index].Window:
                 sizer.Detach(item)
-                sizer.Insert(itemIndex, item, proportion, wx.EXPAND)
+                sizer.Insert(item_index, item, proportion, wx.EXPAND)
                 return
 
     def _create_collapsible_pane(self, parent, title, expand,
@@ -985,8 +994,8 @@ class TestRunnerPlugin(Plugin):
         return text_ctrl
 
     @staticmethod
-    def _create_check_box(parent, id, label, value, tooltip):
-        cb = wx.CheckBox(parent, id, label)
+    def _create_check_box(parent, idd, label, value, tooltip):
+        cb = wx.CheckBox(parent, idd, label)
         cb.SetToolTip(wx.ToolTip(tooltip))
         cb.SetValue(value)
         return cb
@@ -1003,7 +1012,7 @@ class TestRunnerPlugin(Plugin):
         """Endpoint of the listener interface
 
         This is called via the listener interface. It has an event such as
-        "start_suite", "start_test", etc, along with metadata about the event.
+        "start_suite", "start_test", etc., along with metadata about the event.
          We use this data to update
         the tree and statusbar."""
         if not self.panel:
@@ -1080,10 +1089,12 @@ class TestRunnerPlugin(Plugin):
             self._log_message_queue.put(prefix + message)
 
     def _handle_paused(self, args):
+        _ = args
         wx.CallAfter(self._set_paused)
         self._log_message_queue.put('<<  PAUSED  >>')
 
     def _handle_continue(self, args):
+        _ = args
         wx.CallAfter(self._set_continue)
         self._log_message_queue.put('<< CONTINUE >>')
 
@@ -1115,14 +1126,14 @@ class TestRunnerPlugin(Plugin):
     def _enable_runner_toolbar(self, run, paused):
         stop = not run
         debug = stop and not paused
-        for id, enabled in ((ID_RUN, run),
-                            (ID_RUNDEBUG, run),
-                            (ID_STOP, stop),
-                            (ID_PAUSE, paused),
-                            (ID_CONTINUE, debug),
-                            (ID_STEP_NEXT, debug),
-                            (ID_STEP_OVER, debug)):
-            self._runner_toolbar.EnableTool(id, enabled)
+        for idd, enabled in ((ID_RUN, run),
+                             (ID_RUNDEBUG, run),
+                             (ID_STOP, stop),
+                             (ID_PAUSE, paused),
+                             (ID_CONTINUE, debug),
+                             (ID_STEP_NEXT, debug),
+                             (ID_STEP_OVER, debug)):
+            self._runner_toolbar.EnableTool(idd, enabled)
 
     @staticmethod
     def _notify_user_no_logs_directory():
@@ -1151,6 +1162,7 @@ class ProgressBar(wx.Panel):
         self.pass_color = pass_color
         self.skip_color = skip_color
         self._timer = wx.Timer(self)
+        self._start_time = None
         self.Bind(wx.EVT_TIMER, self.OnTimer)
         self._initialize_state()
 
@@ -1169,6 +1181,7 @@ class ProgressBar(wx.Panel):
 
     def OnTimer(self, event):
         """A handler for timer events; it updates the statusbar"""
+        _ = event
         self._gauge.Show()
         self._gauge.Pulse()
         self._update_message()
@@ -1202,14 +1215,11 @@ class ProgressBar(wx.Panel):
 
     def get_visible_color(self, color):
         color_diff = wx.Colour.GetRGBA(wx.Colour(color)) - wx.Colour.GetRGBA(self._foreground_colour)
-        # print(f"DEBUG: get_visible_color color={wx.Colour.GetRGBA(wx.Colour(color)):0x} default={wx.Colour.GetRGBA(self._foreground_colour):0x}"
-        #       f" color_diff={wx.Colour.GetRGBA(wx.Colour(color_diff)):0x} white={wx.Colour.GetRGBA(wx.Colour('white')):0x}"
-        #       f" black={wx.Colour.GetRGBA(wx.Colour('black')):0x} gray={wx.Colour.GetRGBA(wx.Colour('gray')):0x}")
-        if wx.Colour.GetRGBA(wx.Colour(color)) > wx.Colour.GetRGBA(self._foreground_colour) > wx.Colour.GetRGBA(wx.Colour('gray')):
+        if (wx.Colour.GetRGBA(wx.Colour(color)) > wx.Colour.GetRGBA(self._foreground_colour)
+                > wx.Colour.GetRGBA(wx.Colour('gray'))):
             if color_diff > wx.Colour.GetRGBA(wx.Colour('gray')):
                 return wx.Colour(self._foreground_colour)
         return wx.Colour('black')
-
 
     def _update_message(self):
         """Update the displayed elapsed time, passed and failed counts"""
@@ -1287,14 +1297,15 @@ class OutputStyledTextCtrl(wx.stc.StyledTextCtrl):
 
 
 class OutputStylizer(object):
+
     def __init__(self, editor, settings):
         self.editor = editor
         self.settings = settings._config_obj['Plugins']['Test Runner']
         self._ensure_default_font_is_valid()
         self._set_styles()
-        PUBLISHER.subscribe(self.OnSettingsChanged, RideSettingsChanged)
+        PUBLISHER.subscribe(self.on_settings_changed, RideSettingsChanged)
 
-    def OnSettingsChanged(self, message):
+    def on_settings_changed(self, message):
         """Redraw colors and font if settings are modified"""
         section, setting = message.keys
         if section == 'Test Runner':
@@ -1304,7 +1315,7 @@ class OutputStylizer(object):
         """Sets plugin styles"""
         background = self.settings.get('background', 'white')
         font_size = self.settings.get('font size', 10)
-        font_face = self.settings.get('font face', 'Courier New')
+        font_face = self.settings.get(FONT_FACE, 'Courier New')
         self.fail_color = self.settings.get('fail color', '#FF8E8E')
         self.pass_color = self.settings.get('pass color', '#9FCC9F')
         self.skip_color = self.settings.get('skip color', 'yellow')
@@ -1335,10 +1346,10 @@ class OutputStylizer(object):
 
     def _ensure_default_font_is_valid(self):
         """Checks if default font is installed"""
-        default_font = self.settings.get('font face')
+        default_font = self.settings.get(FONT_FACE)
         if default_font not in ReadFonts():
             sys_font = wx.SystemSettings.GetFont(wx.SYS_ANSI_FIXED_FONT)
-            self.settings['font face'] = sys_font.GetFaceName()
+            self.settings[FONT_FACE] = sys_font.GetFaceName()
 
 
 Robot = PyEmbeddedImage(

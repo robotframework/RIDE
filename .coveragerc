@@ -1,4 +1,7 @@
 [run]
+# include = ./src/* 
+source = ./src
+branch = True
 omit =
     # omit anything in a .local directory anywhere
     */.local/*
@@ -6,3 +9,16 @@ omit =
     /usr/*
     # omit utest
     ./utest/*
+    # robot library
+    ./src/robotide/lib/robot/*
+    */.venv/*
+
+[report]
+skip_empty = True
+ 
+[xml]
+output = ./.coverage-reports/coverage.xml
+
+[html]
+directory = ./.coverage-reports/htmlcov
+
