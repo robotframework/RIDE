@@ -21,8 +21,8 @@ jobs:
         run: wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.7.0.2747-linux.zip
       - name: unzip sonar-scanner
         run: unzip sonar-scanner-cli-4.7.0.2747-linux.zip
-      - name: move sonar-scanner to bin
-        run: sudo chmod +x sonar-scanner && mv sonar-scanner /usr/local/bin
+      - name: link sonar-scanner to bin
+        run: sudo ln -s sonar-scanner-cli-4.7.0.2747-linux/bin/sonar-scanner /usr/local/bin
       - name: Install xorg
         run: sudo apt-get install -y xorg openbox
       - name: Install Xvfb
