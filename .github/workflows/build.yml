@@ -17,6 +17,12 @@ jobs:
         run: sudo apt update -y
       - name: Install missing library
         run: sudo apt-get install libnotify4 libsdl1.2debian libsdl2.2 -y
+      - name: Download sonar-scanner
+        run: wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.7.0.2747-linux.zip
+      - name: unzip sonar-scanner
+        run: unzip sonar-scanner-cli-4.7.0.2747-linux.zip
+      - name: move sonar-scanner to bin
+        run: sudo chmod +x sonar-scanner && mv sonar-scanner /usr/local/bin
       - name: Install xorg
         run: sudo apt-get install -y xorg openbox
       - name: Install Xvfb
@@ -37,8 +43,6 @@ jobs:
         run: pip install .
       - name: Run RIDE unit-tests
         run: invoke test-ci
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

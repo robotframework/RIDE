@@ -373,7 +373,7 @@ def test_ci(ctx, test_filter=''):
         x.communicate('')
         h = subprocess.Popen(["coverage", "html"])
         h.communicate('')
-        s = subprocess.Popen(["sonar-scanner"])
+        s = subprocess.Popen(["sonar-scanner", "-Dsonar.organization=helioguilherme66", "-Dsonar.projectKey=HelioGuilherme66_RIDE", "-Dsonar.sources=src"])
         s.communicate('')
     finally:
         pass
