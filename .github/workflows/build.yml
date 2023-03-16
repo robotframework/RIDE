@@ -22,7 +22,7 @@ jobs:
       - name: unzip sonar-scanner
         run: unzip sonar-scanner-cli-4.7.0.2747-linux.zip
       - name: link sonar-scanner to bin
-        run: sudo ln -s sonar-scanner-cli-4.7.0.2747-linux/bin/sonar-scanner /usr/local/bin
+        run: sudo ln -s sonar-scanner-cli-4.7.0.2747-linux/bin/sonar-scanner /usr/bin/sonar-scanner
       - name: Install xorg
         run: sudo apt-get install -y xorg openbox
       - name: Install Xvfb
