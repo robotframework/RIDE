@@ -58,9 +58,8 @@ class _DataFileWriter(object):
     def _write_table(self, table, is_last):
         self._write_header(table)
         self._write_rows(self._formatter.format_table(table))
-        # if not is_last:
-        #    print(f"DEBUG: writing table {self._formatter.format_header(table)}")
-        #    self._write_empty_row(table)
+        if not is_last:  # DEBUG: make this configurable
+            self._write_empty_row(table)
 
     def _write_header(self, table):
         self._write_row(self._formatter.format_header(table))
