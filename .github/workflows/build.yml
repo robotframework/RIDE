@@ -37,8 +37,18 @@ jobs:
         run: pip install .
       - name: Run RIDE unit-tests
         run: invoke test-ci
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@master
+      - name: Analyze with SonarCloud
+        uses: sonarsource/sonarcloud-github-action@master
+        with:
+          projectBaseDir: ${{ github.workspace }}
+          args: >
+            -Dsonar.organization=helioguilherm66
+            -Dsonar.projectKey=HelioGuilherme66_RIDE
+            -Dsonar.python.coverage.reportPaths=.coverage-reports/coverage.xml
+            -Dsonar.sources=src/
+            -Dsonar.test.exclusions=utest/**
+            -Dsonar.tests=utest/
+            -Dsonar.verbose=true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
