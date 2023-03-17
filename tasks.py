@@ -358,6 +358,27 @@ def tags_test(ctx):
         pass
 
 @task
+def sonar(ctx, test_filter=''):
+    """Run unit tests and coverage and send to SonarCloud"""
+    
+    _set_development_path()
+
+    try:
+        import subprocess
+        c = subprocess.Popen(["coverage", "run" , "-m", "pytest", "--cov-config=.coveragerc", "-k test_", "-v", TEST_DIR])
+        c.communicate('')
+        r = subprocess.Popen(["coverage", "report"])
+        r.communicate('')
+        x = subprocess.Popen(["coverage", "xml"])
+        x.communicate('')
+        h = subprocess.Popen(["coverage", "html"])
+        h.communicate('')
+        s = subprocess.Popen(["sonar-scanner"])
+        s.communicate('')
+    finally:
+        pass
+
+@task
 def test_ci(ctx, test_filter=''):
     """Run unit tests and coverage"""
     
@@ -373,8 +394,6 @@ def test_ci(ctx, test_filter=''):
         x.communicate('')
         h = subprocess.Popen(["coverage", "html"])
         h.communicate('')
-        s = subprocess.Popen(["sonar-scanner", "-Dsonar.organization=helioguilherme66", "-Dsonar.projectKey=HelioGuilherme66_RIDE", "-Dsonar.sources=src"])
-        s.communicate('')
     finally:
         pass
 
