@@ -21,18 +21,6 @@ from wx import html, Colour
 from . import sizers, ButtonWithHandler
 
 
-# TODO: Make this colour configurable
-#HTML_BACKGROUND = (240, 242, 80)  # (200, 222, 40)
-# _settings = RideSettings()
-# general_settings = _settings['General']
-# HTML_BACKGROUND = _settings.get('background help', HTML_BACKGROUND)
-# HTML_BACKGROUND = general_settings['background help']
-# Workaround for circular import
-
-# general_settings = {'background help': HTML_BACKGROUND, 'foreground help': HTML_FOREGROUND,
-#                    'font face': '', 'font size': 11}
-
-
 class HtmlWindow(html.HtmlWindow):
 
     def __init__(self, parent, size=wx.DefaultSize, text=None, color_background=None, color_foreground=None):
@@ -42,15 +30,10 @@ class HtmlWindow(html.HtmlWindow):
         self.general_settings = _settings['General']
         self.color_background_help = color_background if color_background else self.general_settings['background help']
         self.color_foreground_text = color_foreground if color_foreground else self.general_settings['foreground text']
-        # HTML_FONT_FACE = _settings.get('font face', '')
-        # HTML_FONT_SIZE = _settings.get('font size', 11)
         self.SetBorders(2)
         self.SetStandardFonts(size=9)
         if text:
             self.set_content(text)
-        self.SetHTMLBackgroundColour(Colour(self.color_background_help))
-        # print(f"DEBUG: HTML init Dialog color: {Colour(self.general_settings['background help'])}")
-        self.SetForegroundColour(Colour(self.color_foreground_text))
         self.font = self.GetFont()
         self.font.SetFaceName(self.general_settings['font face'])
         self.font.SetPointSize(self.general_settings['font size'])
@@ -60,13 +43,20 @@ class HtmlWindow(html.HtmlWindow):
         self.Bind(wx.EVT_CLOSE, self.close)
 
     def set_content(self, content):
-        bkgcolor = self.color_background_help
-        # print(f"DEBUG: HTML text Dialog color: {bkgcolor}")
-        try:
-            color = ''.join(hex(item)[2:] for item in tuple(bkgcolor))
-            _content = '<body bgcolor=#%s>%s</body>' % (color, content)
-        except TypeError:
-            _content = '<body bgcolor=%s>%s</body>' % (bkgcolor, content)
+        if isinstance(self.color_background_help, tuple):
+            bgcolor = '#' + ''.join(hex(item)[2:] for item in self.color_background_help)
+        else:
+            bgcolor = self.color_background_help
+        if isinstance(self.color_foreground_text, tuple):
+            fgcolor = '#' + ''.join(hex(item)[2:] for item in self.color_foreground_text)
+        else:
+            fgcolor = self.color_foreground_text
+        if content.startswith('<table>'):
+            new_content = content.replace("<table>", f'<div><font color="{fgcolor}"><table>')\
+                .replace("</table>", "</table></font></div>")
+        else:
+            new_content = f'<p><font color="{fgcolor}">' + content + '</font></p>'
+        _content = '<body bgcolor=%s style="color:%s;">%s</body>' % (bgcolor, fgcolor, new_content)
         self.SetPage(_content)
 
     def OnKeyDown(self, event):
@@ -132,7 +122,7 @@ class RIDEDialog(wx.Dialog):
         self.CenterOnParent()
 
     def _create_buttons(self, sizer):
-        buttons = self.CreateStdDialogButtonSizer(wx.OK|wx.CANCEL)
+        buttons = self.CreateStdDialogButtonSizer(wx.OK | wx.CANCEL)
         self.SetBackgroundColour(Colour(self.color_background))
         self.SetForegroundColour(Colour(self.color_foreground))
         for item in self.GetChildren():
@@ -163,6 +153,10 @@ class RIDEDialog(wx.Dialog):
 
 class HtmlDialog(RIDEDialog):
 
+    def _execute(self):
+        """ Nothing to execute in this dialog """
+        pass
+
     def __init__(self, title, content, padding=0, font_size=-1):
         RIDEDialog.__init__(self, title)
         # set Left to Right direction (while we don't have localization)
@@ -174,4 +168,5 @@ class HtmlDialog(RIDEDialog):
         self.SetSizer(szr)
 
     def OnKey(self, event):
+        """ In the event we need to process key events"""
         pass

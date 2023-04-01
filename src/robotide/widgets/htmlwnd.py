@@ -20,11 +20,11 @@ from wx import html, Colour
 
 from ..preferences.settings import RideSettings
 
-#TODO: Make this colour configurable
-# HTML_BACKGROUND = (240, 242, 80)  # (200, 222, 40)
+
 _settings = RideSettings()
 general_settings = _settings['General']
-HTML_BACKGROUND = general_settings['background help']
+BACKGROUND_HELP = 'background help'
+HTML_BACKGROUND = general_settings[BACKGROUND_HELP]
 
 
 class HtmlWindow(html.HtmlWindow):
@@ -38,7 +38,7 @@ class HtmlWindow(html.HtmlWindow):
         self.SetOwnForegroundColour(Colour(7, 0, 70))
         if text:
             self.set_content(text)
-        self.SetHTMLBackgroundColour(Colour(general_settings['background help']))
+        self.SetHTMLBackgroundColour(Colour(general_settings[BACKGROUND_HELP]))
         self.SetForegroundColour(Colour(general_settings['foreground help']))
         self.font = self.GetFont()
         self.font.SetFaceName(general_settings['font face'])
@@ -58,7 +58,8 @@ class HtmlWindow(html.HtmlWindow):
         self.Parent.OnKey(event)
         event.Skip()
 
-    def _is_copy(self, event):
+    @staticmethod
+    def _is_copy(event):
         return event.GetKeyCode() == ord('C') and event.CmdDown()
 
     def _add_selection_to_clipboard(self):
@@ -74,4 +75,3 @@ class HtmlWindow(html.HtmlWindow):
 
     def clear(self):
         self.SetPage('')
-

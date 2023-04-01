@@ -22,7 +22,9 @@ class _PopupWindowBase(wx.Frame):
 
     def __init__(self, size, detachable=True, autohide=False, color_background=POPUP_BACKGROUND,
                  color_foreground=POPUP_FOREGROUND):
-        # print("DEBUG: PopupWindow at init")
+        self._current_details = None
+        self._details = None
+        self._detached_title = None
         self.color_background = color_background
         self.color_foreground = color_foreground
         self.panel = self._create_ui(size)
@@ -34,7 +36,7 @@ class _PopupWindowBase(wx.Frame):
 
     def _create_ui(self, size):
         panel = wx.MiniFrame(self)
-        #TODO: Make this colour dependent on colours cycle or by Library
+        # DEBUG: Make this colour dependent on colours cycle or by Library
         panel.SetBackgroundColour(self.color_background)
         panel.SetForegroundColour(self.color_foreground)
         szr = VerticalSizer()
@@ -62,6 +64,7 @@ class _PopupWindowBase(wx.Frame):
             self.Show()
 
     def hide(self, event=None):
+        _ = event
         self.Show(False)
 
     @property
@@ -74,20 +77,30 @@ class _PopupWindowBase(wx.Frame):
 
     def set_content(self, content, title=None):
         if isinstance(self.color_background, tuple):
-            color = '#' + ''.join(hex(item)[2:] for item in self.color_background)
+            bgcolor = '#' + ''.join(hex(item)[2:] for item in self.color_background)
         else:
-            color = self.color_background
-        self._current_details = '<body bgcolor=%s>%s</body>' % (color, content)
+            bgcolor = self.color_background
+        if isinstance(self.color_foreground, tuple):
+            fgcolor = '#' + ''.join(hex(item)[2:] for item in self.color_foreground)
+        else:
+            fgcolor = self.color_foreground
+        if content.startswith('<table>'):
+            new_content = content.replace("<table>", f'<div><font color="{fgcolor}"><table>')\
+                .replace("</table>", "</table></font></div>")
+        else:
+            new_content = f'<p><font color="{fgcolor}">' + content + '</font></p>'
+        self._current_details = '<body bgcolor=%s style="color:%s;">%s</body>' % (bgcolor, fgcolor, new_content)
         self._details.SetPage(self._current_details)
         self._detached_title = title
+
+    def _set_auto_hiding(self):
+        raise NotImplementedError
 
 
 class RidePopupWindow(wx.PopupWindow, _PopupWindowBase):
 
     def __init__(self, parent, size):
-        wx.PopupWindow.__init__(self, parent,
-                                flags=wx.CAPTION | wx.RESIZE_BORDER | wx.DEFAULT_FRAME_STYLE)
-        # _PopupWindowBase.__init__(self, size, color_background=(40,40,10), color_foreground=(255,120,0))
+        wx.PopupWindow.__init__(self, parent, flags=wx.CAPTION | wx.RESIZE_BORDER | wx.DEFAULT_FRAME_STYLE)
         self.SetSize(size)
 
     def _set_auto_hiding(self):
@@ -109,12 +122,11 @@ class HtmlPopupWindow(RidePopupWindow):
                                   color_foreground=self.color_foreground_text)
 
 
-# TODO: See if we need to have Mac specific window
+# DEBUG: See if we need to have Mac specific window
 class MacRidePopupWindow(wx.MiniFrame, _PopupWindowBase):
 
     def __init__(self, parent, size, detachable=True, autohide=False):
-        wx.MiniFrame.__init__(self, parent, style=wx.SIMPLE_BORDER
-                                                  |wx.RESIZE_BORDER)
+        wx.MiniFrame.__init__(self, parent, style=wx.SIMPLE_BORDER | wx.RESIZE_BORDER)
         # set Left to Right direction (while we don't have localization)
         self.SetLayoutDirection(wx.Layout_LeftToRight)
         from ..preferences import RideSettings
@@ -130,6 +142,7 @@ class MacRidePopupWindow(wx.MiniFrame, _PopupWindowBase):
         self._details.Bind(wx.EVT_MOTION, lambda evt: self.hide())
 
     def OnKey(self, *params):
+        """ In the event we need to process key events"""
         pass
 
 
