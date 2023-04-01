@@ -10,6 +10,10 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 == Fixed
 
+-- Fixed selection and persistance of colors in File Explorer and Project Tree panels
+
+-- Fixed not using defined color for help and HTML content
+
 -- Fixed missing newlines in sections separation
 
 
