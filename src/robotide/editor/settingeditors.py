@@ -133,8 +133,13 @@ class SettingEditor(wx.Panel):
         self._editing = True
         dlg = self._create_editor_dialog()
         if dlg.ShowModal() == wx.ID_OK:
-            self._set_value(dlg.get_value(), dlg.get_comment())
-            self._update_and_notify()
+            value = dlg.get_value()
+            comment = dlg.get_comment()
+            if value != ['']:
+                self._set_value(value, comment)
+                self._update_and_notify()
+            else:
+                wx.CallAfter(self.OnClear, event)
         dlg.Destroy()
         self._editing = False
 
