@@ -31,7 +31,8 @@ from robotide.controller.tablecontrollers import (
     WithListOperations)
 from robotide.publish.messages import (
     RideImportSetting, RideImportSettingRemoved, RideImportSettingAdded,
-    RideImportSettingChanged)
+    RideImportSettingChanged, RideItemSettingsChanged)
+from robotide.publish import PUBLISHER
 from robotide.controller.tags import Tag
 
 from utest.resources.mocks import PublisherListener
@@ -131,6 +132,17 @@ class FixtureControllerTest(unittest.TestCase):
         self.fix.args = ['argh', 'urgh']
         self.parent = _FakeParent()
         self.ctrl = FixtureController(self.parent, self.fix)
+        self._reset_changes()
+        PUBLISHER.subscribe(self._change_detection, RideItemSettingsChanged)
+
+    def tearDown(self):
+        PUBLISHER.unsubscribe(self._change_detection, RideItemSettingsChanged)
+
+    def _reset_changes(self):
+        self._changed = None
+
+    def _change_detection(self, message):
+        self._changed = message
 
     def test_creation(self):
         assert self.ctrl.display_value == 'My Setup | argh | urgh'
@@ -177,6 +189,18 @@ class FixtureControllerTest(unittest.TestCase):
         empty_fixture_controller = FixtureController(self.parent, Fixture('Setup'))
         keyword_regexp = re.compile(r'foo.*bar')
         assert not empty_fixture_controller.contains_keyword(keyword_regexp)
+
+    def test_setting_value_triggers_change_message(self):
+        self.ctrl.set_value('No Operation')
+        assert self._changed is not None
+
+    def test_setting_empty_value_triggers_change_message(self):
+        self.ctrl.set_value('')
+        assert self._changed is not None
+
+    def test_clearing_setting_value_triggers_change_message(self):
+        self.ctrl.clear()
+        assert self._changed is not None
 
 
 class TagsControllerTest(unittest.TestCase):
