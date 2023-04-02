@@ -104,6 +104,7 @@ class _SettingController(ControllerWithParent):
     def clear(self):
         self._data.reset()
         self.mark_dirty()
+        RideItemSettingsChanged(item=self._parent).publish()
 
     def _changed(self, value):
         return value != self._data.value
