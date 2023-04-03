@@ -87,13 +87,20 @@ def generate_resource(number_of_keywords):
 
 
 def generate(directory, suites, tests, keywords):
-    os.mkdir(directory)
+    curdir = os.path.dirname(os.path.realpath(__file__))
+    prefix = os.path.commonpath(directory)  # To keep Snyk happy
+    if prefix == '':
+        safepath = os.path.join(curdir, directory)
+        os.mkdir(safepath)
+    else:
+        print(f"Invalid directory: {prefix}!={curdir}")
+        return
     mysuites = range(suites)
     for suite_index in mysuites:
-        f = open(os.path.join('.', directory, 'suite%s.robot' % suite_index), 'w')
+        f = open(os.path.join(safepath, 'suite%s.robot' % suite_index), 'w')
         f.write(generate_suite(tests, keywords))
         f.close()
-    r = open(os.path.join('.', directory, 'resource.robot'), 'w')
+    r = open(os.path.join(safepath, 'resource.robot'), 'w')
     r.write(generate_resource(keywords))
     r.close()
 
