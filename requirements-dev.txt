@@ -1,4 +1,4 @@
-setuptools
+setuptools >= 65.5.1
 mockito
 invoke
 github3.py
