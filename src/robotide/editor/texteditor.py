@@ -760,9 +760,9 @@ class SourceEditor(wx.Panel):
     def save(self, *args):
         _ = args
         self.store_position()
-        # if self.dirty:
-        if not self._data_validator.validate_and_update(self._data, self._editor.utf8_text):
-            return False
+        if self.dirty:
+            if not self._data_validator.validate_and_update(self._data, self._editor.utf8_text):
+                return False
         # DEBUG: Was resetting when leaving editor
         # self.reset()
         self.GetFocus(None)
