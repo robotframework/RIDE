@@ -79,7 +79,9 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
             def f(event):
                 if self.is_focused() and self._editor.is_focused():
                     func(event)
+
             return f
+
         self.register_shortcut('CtrlCmd-X', focused(lambda e: self._editor.cut()))
         self.register_shortcut('CtrlCmd-C', focused(lambda e: self._editor.copy()))
         if IS_MAC:  # Mac needs this key binding
@@ -89,6 +91,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         self.register_shortcut('CtrlCmd-Z', focused(lambda e: self._editor.undo()))
         self.register_shortcut('CtrlCmd-Y', focused(lambda e: self._editor.redo()))
         # self.register_shortcut('Del', focused(lambda e: self._editor.delete()))
+        self.register_shortcut('CtrlCmd-S', focused(lambda e: self.OnSaving(e)))
         self.register_shortcut('CtrlCmd-Shift-I', focused(lambda e: self._editor.insert_cell(e)))
         # self.register_shortcut('CtrlCmd-Shift-D', focused(lambda e: self._editor.delete_cell(e)))
         self.register_shortcut('Alt-Up', focused(lambda e: self._editor.move_row_up(e)))
@@ -127,8 +130,10 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         _ = message
         if self.is_focused():
             self._editor.save()
-            self._editor.GetFocus(None)
-        else:
+            # print(f"DEBUG: textedit OnSaving ENTER {message=} isfocused={self.is_focused()}")
+            # self._editor.GetFocus(None)
+        elif isinstance(message, RideSaving):
+            # print(f"DEBUG: textedit OnSaving Open Saved from other {message=} isfocused={self.is_focused()}")
             self._open()  # Was saved from other Editor
 
     def OnDataChanged(self, message):
@@ -151,7 +156,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
     @staticmethod
     def _should_process_data_changed_message(message):
         return isinstance(message, RideDataChanged) and \
-               not isinstance(message, RideDataChangedToDirty)
+            not isinstance(message, RideDataChangedToDirty)
 
     def OnTreeSelection(self, message):
         self._editor.store_position()
@@ -224,7 +229,6 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
 
 
 class DummyController(_WithStepsController):
-
     _populator = robotapi.UserKeywordPopulator
     filename = ""
 
@@ -304,7 +308,7 @@ class DataValidationHandler(object):
         # DEBUG: use widgets.Dialog
         dlg = wx.MessageDialog(self._editor, 'ERROR: Data sanity check failed!\n'
                                              'Reset changes?',
-                                             'Can not apply changes from Txt Editor', style=wx.YES | wx.NO)
+                               'Can not apply changes from Txt Editor', style=wx.YES | wx.NO)
         dlg.InheritAttributes()
         """
         dlg.SetBackgroundColour(Colour(200, 222, 40))
@@ -525,7 +529,7 @@ class SourceEditor(wx.Panel):
     def OnFind(self, event):
         if self._editor:
             text = self._editor.GetSelectedText()
-            if len(text) > 0 and text.lower() != self._search_field.GetValue().lower() and\
+            if len(text) > 0 and text.lower() != self._search_field.GetValue().lower() and \
                     event.GetEventType() == wx.wxEVT_TOOL:
                 # if a search string selected in text and CTRL+G is pressed
                 # put the string into the _search_field
@@ -631,7 +635,7 @@ class SourceEditor(wx.Panel):
                                   or line.strip().startswith("ELSE")):
                 tsize += 1
             elif linenum > 0 and tsize == 0:  # Advance if first task/test case or keyword
-                prevline = self._editor.GetLine(linenum-1).lower()
+                prevline = self._editor.GetLine(linenum - 1).lower()
                 if prevline.startswith("**") and not ("variables" in prevline or "settings" in prevline):
                     tsize = 1
                 # DEBUG: elif prevline.startswith("\n"):
@@ -695,7 +699,7 @@ class SourceEditor(wx.Panel):
     def indent_line(self, line):
         if line > 0:
             pos = self._editor.PositionFromLine(line)
-            text = self._editor.GetLine(line-1)
+            text = self._editor.GetLine(line - 1)
             lenline = len(text)
             if lenline > 0:
                 idx = 0
@@ -972,7 +976,7 @@ class SourceEditor(wx.Panel):
             close_symbol = ')'
         else:
             close_symbol = open_symbol
-        return open_symbol+value+close_symbol
+        return open_symbol + value + close_symbol
 
     def move_row_up(self, event):
         _ = event
@@ -982,7 +986,7 @@ class SourceEditor(wx.Panel):
         if ini_line > 0:
             end_line = self._editor.LineFromPosition(end)
             # get the previous row content and length
-            rowabove = self._editor.GetLine(ini_line-1)
+            rowabove = self._editor.GetLine(ini_line - 1)
             lenabove = len(rowabove.encode('utf-8'))
             # get the content of the block rows
             rowselblock = ''
@@ -992,10 +996,10 @@ class SourceEditor(wx.Panel):
                 rowcnt += 1
             # add the content of previous row
             rowselblock += rowabove
-            begpos = self._editor.PositionFromLine(ini_line-1)
-            endpos = self._editor.PositionFromLine(end_line+1)
+            begpos = self._editor.PositionFromLine(ini_line - 1)
+            endpos = self._editor.PositionFromLine(end_line + 1)
             self._editor.Replace(begpos, endpos, rowselblock)
-            self._editor.SetSelection(begpos, endpos-lenabove-1)
+            self._editor.SetSelection(begpos, endpos - lenabove - 1)
             # DEBUG: recalculate line identation for new position and old
 
     def move_row_down(self, event):
@@ -1004,7 +1008,7 @@ class SourceEditor(wx.Panel):
         ini_line = self._editor.LineFromPosition(start)
         end_line = self._editor.LineFromPosition(end)
         # get the next row content and length
-        rowbelow = self._editor.GetLine(end_line+1)
+        rowbelow = self._editor.GetLine(end_line + 1)
         lenbelow = len(rowbelow.encode('utf-8'))
         # get the content of the block rows after adding the content below first
         # no new rows anymore?
@@ -1018,9 +1022,9 @@ class SourceEditor(wx.Panel):
             rowselblock += self._editor.GetLine(rowcnt)
             rowcnt += 1
         begpos = self._editor.PositionFromLine(ini_line)
-        endpos = self._editor.PositionFromLine(end_line+2)
+        endpos = self._editor.PositionFromLine(end_line + 2)
         self._editor.Replace(begpos, endpos, rowselblock)
-        self._editor.SetSelection(begpos+lenbelow, endpos-1)
+        self._editor.SetSelection(begpos + lenbelow, endpos - 1)
         # DEBUG: recalculate line identation for new position and old
 
     def delete_row(self, event):
@@ -1148,23 +1152,23 @@ class SourceEditor(wx.Panel):
         ini_line = self._editor.LineFromPosition(start)
         end_line = self._editor.LineFromPosition(end)
         begpos = self._editor.PositionFromLine(ini_line)
-        endpos = self._editor.PositionFromLine(end_line+1)
+        endpos = self._editor.PositionFromLine(end_line + 1)
         cell_no_beg = self._get_cell_no(begpos, endpos, start)
         cell_pos_beg = self._get_position_of_cell(begpos, endpos, cell_no_beg)
         # if there is a selection subtract 1 from endpos to circumvent cursor being on end of cell
         # --> otherwise no will be next cell no
         if start != end:
-            cell_no_end = self._get_cell_no(begpos, endpos, end-1)
+            cell_no_end = self._get_cell_no(begpos, endpos, end - 1)
         else:
             cell_no_end = cell_no_beg
         #  print(f"DEBUG: cell range to handle beg={cell_no_beg} end={cell_no_end}")
         celltab = ' ' * self._tab_size
         # If the selection spans more than one line:
-        if ini_line < end_line:   # DEBUG: do inserts in such a way that they can be undone in 1 undo
+        if ini_line < end_line:  # DEBUG: do inserts in such a way that they can be undone in 1 undo
             new_start = cell_pos_beg
-            for line in range(ini_line, end_line+1):
+            for line in range(ini_line, end_line + 1):
                 begthis = self._editor.PositionFromLine(line)
-                endthis = self._editor.PositionFromLine(line+1)
+                endthis = self._editor.PositionFromLine(line + 1)
                 cell_pos_beg = self._get_position_of_cell(begthis, endthis, cell_no_beg)
                 self._editor.InsertText(cell_pos_beg, celltab)
             new_end = cell_pos_beg + (len(celltab.encode('utf-8')))
@@ -1190,16 +1194,16 @@ class SourceEditor(wx.Panel):
         ini_line = self._editor.LineFromPosition(start)
         end_line = self._editor.LineFromPosition(end)
         begpos = self._editor.PositionFromLine(ini_line)
-        endpos = self._editor.PositionFromLine(end_line+1)
+        endpos = self._editor.PositionFromLine(end_line + 1)
         cell_no_beg = self._get_cell_no(begpos, endpos, start)
         cell_pos_beg = self._get_position_of_cell(begpos, endpos, cell_no_beg)
         # if there is a selection subtract 1 from endpos to circumvent cursor being on end of cell
         # --> otherwise no will be next cell no
         if start != end:
-            cell_no_end = self._get_cell_no(begpos, endpos, end-1)
+            cell_no_end = self._get_cell_no(begpos, endpos, end - 1)
         else:
             cell_no_end = cell_no_beg
-        cell_pos_end = self._get_position_of_cell(begpos, endpos, cell_no_end+1)
+        cell_pos_end = self._get_position_of_cell(begpos, endpos, cell_no_end + 1)
         self._editor.Remove(cell_pos_beg, cell_pos_end)
         new_start = cell_pos_beg
         new_end = new_start + (end - start)
@@ -1247,15 +1251,15 @@ class SourceEditor(wx.Panel):
             while fndidx != -1:
                 fndidx = textencode.find(cellencode, fndidx)
                 if fndidx != -1:
-                    if fndcnt == 1 and fndidx == 0:    # check if begpos is at the beginning of a cell
+                    if fndcnt == 1 and fndidx == 0:  # check if begpos is at the beginning of a cell
                         fndcnt -= 1
                     fndcnt += 1
                     if cell_no == fndcnt:
                         cellpos = begpos + fndidx
                         break
-                    fndidx += 1   # for next search
+                    fndidx += 1  # for next search
         else:  # cell_no does not exist -- return endpos-1
-            cellpos = endpos-1
+            cellpos = endpos - 1
         return cellpos
 
     def execute_sharp_comment(self, event):
@@ -1269,7 +1273,7 @@ class SourceEditor(wx.Panel):
         maxsize = self._editor.GetLineCount()
         # If the selection spans on more than one line:
         if ini_line < end_line:
-            for line in range(ini_line, end_line+1):
+            for line in range(ini_line, end_line + 1):
                 count += 1
                 if line < maxsize:
                     self._editor.GotoLine(line)
@@ -1303,7 +1307,7 @@ class SourceEditor(wx.Panel):
             if cursor > pos:
                 idx = cursor - pos
                 while idx >= len(spaces):
-                    if row[idx-len(spaces):idx] != spaces:
+                    if row[idx - len(spaces):idx] != spaces:
                         idx -= 1
                     else:
                         break
@@ -1336,7 +1340,7 @@ class SourceEditor(wx.Panel):
         # maxsize = self._editor.GetLineCount()
         # If the selection spans on more than one line:
         if ini_line < end_line:
-            for line in range(ini_line, end_line+1):
+            for line in range(ini_line, end_line + 1):
                 pos = self._editor.PositionFromLine(line)
                 row = self._editor.GetLine(line)
                 lenline = len(row)
@@ -1345,8 +1349,8 @@ class SourceEditor(wx.Panel):
                     while idx < lenline and row[idx] == ' ':
                         idx += 1
                     size = 1
-                    if idx + 1 < lenline and row[idx:idx+1] == '#':
-                        if idx + 2 < lenline and row[idx+1:idx+2] == ' ':
+                    if idx + 1 < lenline and row[idx:idx + 1] == '#':
+                        if idx + 2 < lenline and row[idx + 1:idx + 2] == ' ':
                             size = 2
                         # Here we clean up escaped spaces from Apply
                         if idx + size < lenline:
@@ -1386,7 +1390,7 @@ class SourceEditor(wx.Panel):
             if cursor > pos:
                 idx = cursor - pos
                 while idx >= len(spaces):
-                    if row[idx-len(spaces):idx] != spaces:
+                    if row[idx - len(spaces):idx] != spaces:
                         idx -= 1
                     else:
                         break
@@ -1555,11 +1559,11 @@ class RobotStylizer(object):
             else:
                 bkg = tuple(int(h[i:i + 2], 16) for i in (0, 2, 4))
             if bkg >= (180, 180, 180):
-                bkg = (max(160, bkg[0]-80), max(160, bkg[1]-80),
-                       max(160, bkg[2]-80))
+                bkg = (max(160, bkg[0] - 80), max(160, bkg[1] - 80),
+                       max(160, bkg[2] - 80))
             else:
-                bkg = (min(255, bkg[0]+180), min(255, bkg[1]+180),
-                       min(255, bkg[2]+180))
+                bkg = (min(255, bkg[0] + 180), min(255, bkg[1] + 180),
+                       min(255, bkg[2] + 180))
             background = '#%02X%02X%02X' % bkg
         if robotframeworklexer:
             styles = {
@@ -1645,12 +1649,12 @@ class RobotStylizer(object):
         shift = 0
         for position, token, value in self.lexer.get_tokens_unprocessed(self.editor.GetText()):
             if wx.VERSION < (4, 1, 0):
-                self.editor.StartStyling(position+shift, 31)
+                self.editor.StartStyling(position + shift, 31)
             else:
                 self.editor.StartStyling(position + shift)
             try:
                 self.editor.SetStyling(len(value.encode('utf-8')), self.tokens[token])
-                shift += len(value.encode('utf-8'))-len(value)
+                shift += len(value.encode('utf-8')) - len(value)
             except UnicodeEncodeError:
                 self.editor.SetStyling(len(value), self.tokens[token])
                 shift += len(value) - len(value)
