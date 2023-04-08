@@ -10,6 +10,8 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 == Fixed
 
+-- Fixed missing color definition for keyword call in Text Editor
+
 -- Fixed clearing or emptying fixtures (Setups, Teardowns), now removes headers and synchronizes Text Editor
 
 -- Fixed selection and persistance of colors in File Explorer and Project Tree panels

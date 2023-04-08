@@ -30,7 +30,7 @@ from ..namespace.suggesters import SuggestionSource
 from ..pluginapi import Plugin, TreeAwarePluginMixin
 from ..publish.messages import (RideSaving, RideTreeSelection, RideNotebookTabChanging, RideDataChanged, RideOpenSuite,
                                 RideDataChangedToDirty)
-from ..preferences.editors import ReadFonts
+from ..preferences.editors import read_fonts
 from ..publish import RideSettingsChanged, PUBLISHER
 from ..publish.messages import RideMessage
 from ..widgets import TextField, Label, HtmlDialog
@@ -1643,7 +1643,7 @@ class RobotStylizer(object):
     def _ensure_default_font_is_valid(self):
         """Checks if default font is installed"""
         default_font = self._font_face()
-        if default_font not in ReadFonts():
+        if default_font not in read_fonts():
             sys_font = wx.SystemSettings.GetFont(wx.SYS_ANSI_FIXED_FONT)
             self.settings[PLUGIN_NAME]['font face'] = sys_font.GetFaceName()
 
