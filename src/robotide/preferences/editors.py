@@ -19,7 +19,6 @@ import wx
 from wx import Colour
 from wx.lib.masked import NumCtrl
 
-# from .. import widgets
 from ..ui.preferences_dialogs import (PreferencesPanel, SpinChoiceEditor, IntegerChoiceEditor, boolean_editor,
                                       StringChoiceEditor, PreferencesColorPicker)
 from ..widgets import Label
@@ -36,10 +35,13 @@ ID_SAVELOADSETTINGS = wx.NewIdRef()
 ID_LOAD = 5551
 ID_SAVE = 5552
 ID_CANCEL = -1
+TEXT_BACKGROUND = 'Text background'
+LIGHT_GRAY = 'light gray'
+FIXED_FONT = 'fixed font'
 
 
 @lru_cache(maxsize=2)
-def ReadFonts(fixed=False):
+def read_fonts(fixed=False):
     """Returns list with fixed width fonts"""
     f = wx.FontEnumerator()
     f.EnumerateFacenames()
@@ -117,7 +119,7 @@ class EditorPreferences(PreferencesPanel):
             [str(i) for i in range(8, 16)])
         sizer = wx.FlexGridSizer(rows=3, cols=2, vgap=10, hgap=30)
         l_size = f.label(self)
-        background_color = Colour("light gray")
+        background_color = Colour(LIGHT_GRAY)
         foreground_color = Colour("black")
         if IS_WINDOWS:
             set_colors(l_size, background_color, foreground_color)
@@ -130,14 +132,14 @@ class EditorPreferences(PreferencesPanel):
             if IS_WINDOWS:
                 set_colors(l_zoom, background_color, foreground_color)
             sizer.AddMany([l_zoom, z.chooser(self)])
-        if 'fixed font' in self._settings:
-            l_ff, editor = boolean_editor(self, self._settings, 'fixed font', 'Use fixed width font')
+        if FIXED_FONT in self._settings:
+            l_ff, editor = boolean_editor(self, self._settings, FIXED_FONT, 'Use fixed width font')
             if IS_WINDOWS:
                 set_colors(l_ff, background_color, foreground_color)
             sizer.AddMany([l_ff, editor])
-            fixed_font = self._settings['fixed font']
+            fixed_font = self._settings[FIXED_FONT]
         if 'font face' in self._settings:
-            s = StringChoiceEditor(self._settings, 'font face', 'Font Face', ReadFonts(fixed_font))
+            s = StringChoiceEditor(self._settings, 'font face', 'Font Face', read_fonts(fixed_font))
             l_font = s.label(self)
             if IS_WINDOWS:
                 set_colors(l_font, background_color, foreground_color)
@@ -171,17 +173,18 @@ class TextEditorPreferences(EditorPreferences):
                 ('import', 'Import foreground'),
                 ('variable', 'Variable foreground'),
                 ('tc_kw_name', 'Keyword definition foreground'),
+                ('keyword', 'Keyword call foreground'),
                 ('separator', 'Separator'),
                 ('setting', 'Setting foreground'),
                 ('syntax', 'Syntax characters'),
-                ('background', 'Text background'),
+                ('background', TEXT_BACKGROUND),
             )
         else:
             settings = (
                 ('setting', 'Text foreground'),
-                ('background', 'Text background'),
+                ('background', TEXT_BACKGROUND),
             )
-        background_color = Colour("light gray")
+        background_color = Colour(LIGHT_GRAY)
         foreground_color = Colour("black")
         for settings_key, label_text in settings:
             if column == 4:
@@ -231,7 +234,7 @@ class GridEditorPreferences(EditorPreferences):
         settings = self._settings
         sizer = wx.FlexGridSizer(rows=6, cols=2, vgap=10, hgap=10)
         l_col_size = self._label_for('Default column size')
-        background_color = Colour("light gray")
+        background_color = Colour(LIGHT_GRAY)
         foreground_color = Colour("black")
         if IS_WINDOWS:
             set_colors(l_col_size, background_color, foreground_color)
@@ -294,7 +297,7 @@ class GridEditorPreferences(EditorPreferences):
         ):
             lbl = wx.StaticText(self, wx.ID_ANY, label)
             if IS_WINDOWS:
-                background_color = Colour("light gray")
+                background_color = Colour(LIGHT_GRAY)
                 foreground_color = Colour("black")
                 set_colors(lbl, background_color, foreground_color)
             btn = PreferencesColorPicker(
@@ -308,7 +311,7 @@ class GridEditorPreferences(EditorPreferences):
 
     def _create_background_pickers(self, colors_sizer):
         row = 0
-        background_color = Colour("light gray")
+        background_color = Colour(LIGHT_GRAY)
         foreground_color = Colour("black")
         for key, label in (
                 ('background assign', 'Variable Background'),
@@ -368,7 +371,7 @@ class TestRunnerPreferences(EditorPreferences):
         l_confirm, editor = boolean_editor(self, settings, 'confirm run',
                                            'Asks for confirmation to run all tests if none selected ')
         if IS_WINDOWS:
-            background_color = Colour("light gray")
+            background_color = Colour(LIGHT_GRAY)
             foreground_color = Colour("black")
             set_colors(l_confirm, background_color, foreground_color)
             set_colors(l_usecolor, background_color, foreground_color)
@@ -380,11 +383,11 @@ class TestRunnerPreferences(EditorPreferences):
         container = wx.GridBagSizer()
         row = 0
         column = 0
-        background_color = Colour("light gray")
+        background_color = Colour(LIGHT_GRAY)
         foreground_color = Colour("black")
         for settings_key, label_text in (
                 ('foreground', 'Text foreground'),
-                ('background', 'Text background'),
+                ('background', TEXT_BACKGROUND),
                 ('error', 'Error foreground'),
                 ('fail color', 'Fail foreground'),
                 ('pass color', 'Pass foreground'),
