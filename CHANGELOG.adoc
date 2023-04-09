@@ -8,6 +8,10 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 == https://github.com/robotframework/RIDE[Unreleased]
 
+=== Changed
+
+-- Made ``\n`` visible when editing cells in Grid Editor (problematic in Windows)
+
 == Fixed
 
 -- Fixed missing color definition for keyword call in Text Editor
