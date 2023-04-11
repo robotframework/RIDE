@@ -145,7 +145,7 @@ class KeywordEditor(GridEditor, Plugin):
 
     def _ps_on_resize_grid(self, message):
         _ = message
-        self._resize_grid(self)
+        self._resize_grid()
 
     @requires_focus
     def _resize_grid(self):
@@ -1027,7 +1027,7 @@ class ContentAssistCellEditor(GridCellEditor):
     def execute_sharp_uncomment(self):
         self._tc.execute_sharp_uncomment()
 
-    def Create(self, parent, id, evthandler):
+    def Create(self, parent, idd, evthandler):
         self._tc = ExpandingContentAssistTextCtrl(parent, self._plugin, self._controller)
         self.SetControl(self._tc)
         if evthandler:
