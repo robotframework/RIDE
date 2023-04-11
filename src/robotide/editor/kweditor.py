@@ -95,8 +95,6 @@ class KeywordEditor(GridEditor, Plugin):
     def __init__(self, parent, controller, tree):
         self.settings = parent.plugin.global_settings['Grid']
         self.general_settings = parent.plugin.global_settings['General']
-        # self.color_background_help = self.general_settings.get('background help', (240, 242, 80))
-        # self.color_foreground_text = self.general_settings.get('foreground text', (7, 0, 70))
         self.color_background = self.general_settings['background']
         self.color_foreground = self.general_settings['foreground']
         self.color_secondary_background = self.general_settings['secondary background']
@@ -292,6 +290,7 @@ class KeywordEditor(GridEditor, Plugin):
         event.Skip()
 
     def _col_label_right_click(self, event):
+        # Make sonerlint happy
         pass
 
     def OnLabelLeftClick(self, event):
@@ -314,6 +313,7 @@ class KeywordEditor(GridEditor, Plugin):
             self.SetGridCursor(event.Row, 0)
 
     def _col_label_left_click(self, event):
+        # Make sonerlint happy
         pass
 
     def OnMoveCursorDown(self, event=None):
@@ -322,16 +322,17 @@ class KeywordEditor(GridEditor, Plugin):
     def OnInsertRows(self, event):
         self._execute(AddRows(self.selection.rows()))
         self.ClearSelection()
-        self._resize_grid()
+        self._resize_grid(self)
         self._skip_except_on_mac(event)
 
-    def _skip_except_on_mac(self, event):  # TODO Do we still need this?
+    @staticmethod
+    def _skip_except_on_mac(event):  # DEBUG Do we still need this?
         if event is not None and not IS_MAC:
             # print("DEBUG skip!")
             event.Skip()
 
     def OnInsertCells(self, event=None):
-        # TODO remove below workaround for double actions
+        # DEBUG remove below workaround for double actions
         if self._counter == 1:
             if self._icells == (
                     self.selection.topleft, self.selection.bottomright):
@@ -345,11 +346,11 @@ class KeywordEditor(GridEditor, Plugin):
                         self.selection.bottomright)
         self._execute(InsertCells(self.selection.topleft,
                                   self.selection.bottomright))
-        self._resize_grid()
+        self._resize_grid(self)
         self._skip_except_on_mac(event)
 
     def OnDeleteCells(self, event=None):
-        # TODO remove below workaround for double actions
+        # DEBUG remove below workaround for double actions
         if self._counter == 1:
             if self._dcells == (self.selection.topleft,
                                 self.selection.bottomright):
@@ -361,28 +362,31 @@ class KeywordEditor(GridEditor, Plugin):
 
         self._dcells = (self.selection.topleft, self.selection.bottomright)
         self._execute(DeleteCells(self.selection.topleft, self.selection.bottomright))
-        self._resize_grid()
+        self._resize_grid(self)
         self._skip_except_on_mac(event)
 
     # DEBUG @requires_focus
     def OnCommentRows(self, event=None):
         self._execute(CommentRows(self.selection.rows()))
-        self._resize_grid()
+        self._resize_grid(self)
         self._skip_except_on_mac(event)
 
     # DEBUG @requires_focus
     def OnUncommentRows(self, event=None):
         self._execute(UncommentRows(self.selection.rows()))
-        self._resize_grid()
+        self._resize_grid(self)
         self._skip_except_on_mac(event)
 
     def OnMoveRowsUp(self, event=None):
+        _ = event
         self._row_move(MoveRowsUp, -1)
 
     def OnMoveRowsDown(self, event=None):
+        _ = event
         self._row_move(MoveRowsDown, 1)
 
     def OnSwapRowUp(self, event=None):
+        _ = event
         self._row_move(MoveRowsUp, 1, True)
 
     def _row_move(self, command, change, swap=False):
@@ -403,7 +407,7 @@ class KeywordEditor(GridEditor, Plugin):
                 wx.CallAfter(self._select_rows, [r for r in rows])
             else:
                 wx.CallAfter(self._select_rows, [r + change for r in rows])
-        self._resize_grid()
+        self._resize_grid(self)
 
     def _select_rows(self, rows):
         self.ClearSelection()
@@ -411,12 +415,12 @@ class KeywordEditor(GridEditor, Plugin):
             self.SelectRow(r, True)
 
     def OnMotion(self, event):
-        if IS_MAC:
-            if self.IsCellEditControlShown():
-                return
+        if IS_MAC and self.IsCellEditControlShown():
+            return
         event.Skip()
 
     def _before_saving(self, message):
+        _ = message
         if self.IsCellEditControlShown():
             # Fix: cannot save modifications in edit mode
             # Exit edit mode before saving
@@ -443,6 +447,7 @@ class KeywordEditor(GridEditor, Plugin):
             self.SetColLabelSize(0)
             return
         self.SetColLabelSize(wx.grid.GRID_AUTOSIZE)  # DEBUG
+        col = 0
         for col, header in enumerate(headers):
             self.SetColLabelValue(col, header)
         for empty_col in range(col + 1, self.NumberCols + 1):
@@ -469,8 +474,9 @@ class KeywordEditor(GridEditor, Plugin):
         if self._cell_selected:
             return self.get_single_selection_content()
 
-    def _format_comments(self, data):
-        # TODO: This should be moved to robot.model
+    @staticmethod
+    def _format_comments(data):
+        # DEBUG: This should be moved to robot.model
         in_comment = False
         ret = []
         for cell in data:
@@ -491,6 +497,7 @@ class KeywordEditor(GridEditor, Plugin):
 
     # DEBUG @requires_focus
     def OnCopy(self, event=None):
+        _ = event
         # print("DEBUG: OnCopy called event %s\n" % str(event))
         self.copy()
 
@@ -500,18 +507,20 @@ class KeywordEditor(GridEditor, Plugin):
         self.OnDelete(event)
 
     def OnDelete(self, event=None):
+        _ = event
         if not self.IsCellEditControlShown():
             self._execute(ClearArea(self.selection.topleft,
                                     self.selection.bottomright))
-            self._resize_grid()
+            self._resize_grid(self)
 
     # DEBUG    @requires_focus
     def OnPaste(self, event=None):
+        _ = event
         if self.IsCellEditControlShown():
             self.paste()
         else:
             self._execute_clipboard_command(PasteArea)
-        self._resize_grid()
+        self._resize_grid(self)
 
     def _execute_clipboard_command(self, command_class):
         if not self.IsCellEditControlShown():
@@ -522,27 +531,30 @@ class KeywordEditor(GridEditor, Plugin):
 
     # DEBUG @requires_focus
     def OnInsert(self, event=None):
+        _ = event
         self._execute_clipboard_command(InsertArea)
-        self._resize_grid()
+        self._resize_grid(self)
 
     def OnDeleteRows(self, event):
         self._execute(DeleteRows(self.selection.rows()))
         self.ClearSelection()
-        self._resize_grid()
+        self._resize_grid(self)
         self._skip_except_on_mac(event)
 
     # DEBUG @requires_focus
     def OnUndo(self, event=None):
+        _ = event
         if not self.IsCellEditControlShown():
             self._execute(Undo())
         else:
             self.GetCellEditor(*self.selection.cell).Reset()
-        self._resize_grid()
+        self._resize_grid(self)
 
     # DEBUG @requires_focus
     def OnRedo(self, event=None):
+        _ = event
         self._execute(Redo())
-        self._resize_grid()
+        self._resize_grid(self)
 
     def close(self):
         self._colorizer.close()
@@ -568,7 +580,8 @@ class KeywordEditor(GridEditor, Plugin):
     def refresh_datafile(self, item, event):
         self._tree.refresh_datafile(item, event)
 
-    def _calculate_position(self):
+    @staticmethod
+    def _calculate_position():
         x, y = wx.GetMousePosition()
         return x, y + 20
 
@@ -734,7 +747,6 @@ work.</li>
             self.MoveCursorLeft(event.ShiftDown())
 
     def move_grid_cursor_and_edit(self):
-        # cell = self.cell_under_cursor()
         # self.MoveCursorRight(False)
         self.open_cell_editor()
 
@@ -840,6 +852,7 @@ work.</li>
         self._marked_cell = None
 
     def OnCreateKeyword(self, event):
+        _ = event
         cells = self._data_cells_from_current_row()
         if not cells:
             return
@@ -875,7 +888,7 @@ work.</li>
             self._extract_scalar(cells[0])
         elif min(row for row, _ in cells) == max(row for row, _ in cells):
             self._extract_list(cells)
-        self._resize_grid()
+        self._resize_grid(self)
 
     def OnFindWhereUsed(self, event):
         _ = event
@@ -1030,10 +1043,8 @@ class ContentAssistCellEditor(GridCellEditor):
     def execute_sharp_uncomment(self):
         self._tc.execute_sharp_uncomment()
 
-    def Create(self, parent, id, evthandler):
-        self._parent = parent
-        self._tc = ExpandingContentAssistTextCtrl(
-            parent, self._plugin, self._controller)
+    def Create(self, parent, idd, evthandler):
+        self._tc = ExpandingContentAssistTextCtrl(parent, self._plugin, self._controller)
         self.SetControl(self._tc)
         if evthandler:
             self._tc.PushEventHandler(evthandler)
@@ -1056,12 +1067,16 @@ class ContentAssistCellEditor(GridCellEditor):
         self._tc.SetFocus()
         self._grid = gridd
 
-    def EndEdit(self, row, col, grid, old_val):
-        new_val = self._tc.GetValue()
-        self._tc.dismiss()
-        self._parent.SetFocus()
-        if new_val != old_val:
-            return self._tc.GetValue()
+    def EndEdit(self, row, col, gridd, *ignored):
+        value = self._get_value().replace('\\n', '\n')
+        if value != self._original_value:
+            self._value = value
+            # print(f"DEBUG: kweditor returning ContentAssistCellEditor.EndEdit {value} and moving right")
+            wx.CallAfter(self._grid.move_grid_cursor_and_edit)
+            return value
+        else:
+            self._tc.hide()
+            gridd.SetFocus()
 
     def ApplyEdit(self, row, col, gridd):
         val = self._tc.GetValue()
