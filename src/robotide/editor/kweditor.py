@@ -322,7 +322,7 @@ class KeywordEditor(GridEditor, Plugin):
     def OnInsertRows(self, event):
         self._execute(AddRows(self.selection.rows()))
         self.ClearSelection()
-        self._resize_grid(self)
+        self._resize_grid()
         self._skip_except_on_mac(event)
 
     @staticmethod
@@ -346,7 +346,7 @@ class KeywordEditor(GridEditor, Plugin):
                         self.selection.bottomright)
         self._execute(InsertCells(self.selection.topleft,
                                   self.selection.bottomright))
-        self._resize_grid(self)
+        self._resize_grid()
         self._skip_except_on_mac(event)
 
     def OnDeleteCells(self, event=None):
@@ -362,19 +362,19 @@ class KeywordEditor(GridEditor, Plugin):
 
         self._dcells = (self.selection.topleft, self.selection.bottomright)
         self._execute(DeleteCells(self.selection.topleft, self.selection.bottomright))
-        self._resize_grid(self)
+        self._resize_grid()
         self._skip_except_on_mac(event)
 
     # DEBUG @requires_focus
     def OnCommentRows(self, event=None):
         self._execute(CommentRows(self.selection.rows()))
-        self._resize_grid(self)
+        self._resize_grid()
         self._skip_except_on_mac(event)
 
     # DEBUG @requires_focus
     def OnUncommentRows(self, event=None):
         self._execute(UncommentRows(self.selection.rows()))
-        self._resize_grid(self)
+        self._resize_grid()
         self._skip_except_on_mac(event)
 
     def OnMoveRowsUp(self, event=None):
@@ -407,7 +407,7 @@ class KeywordEditor(GridEditor, Plugin):
                 wx.CallAfter(self._select_rows, [r for r in rows])
             else:
                 wx.CallAfter(self._select_rows, [r + change for r in rows])
-        self._resize_grid(self)
+        self._resize_grid()
 
     def _select_rows(self, rows):
         self.ClearSelection()
@@ -511,7 +511,7 @@ class KeywordEditor(GridEditor, Plugin):
         if not self.IsCellEditControlShown():
             self._execute(ClearArea(self.selection.topleft,
                                     self.selection.bottomright))
-            self._resize_grid(self)
+            self._resize_grid()
 
     # DEBUG    @requires_focus
     def OnPaste(self, event=None):
@@ -520,7 +520,7 @@ class KeywordEditor(GridEditor, Plugin):
             self.paste()
         else:
             self._execute_clipboard_command(PasteArea)
-        self._resize_grid(self)
+        self._resize_grid()
 
     def _execute_clipboard_command(self, command_class):
         if not self.IsCellEditControlShown():
@@ -533,12 +533,12 @@ class KeywordEditor(GridEditor, Plugin):
     def OnInsert(self, event=None):
         _ = event
         self._execute_clipboard_command(InsertArea)
-        self._resize_grid(self)
+        self._resize_grid()
 
     def OnDeleteRows(self, event):
         self._execute(DeleteRows(self.selection.rows()))
         self.ClearSelection()
-        self._resize_grid(self)
+        self._resize_grid()
         self._skip_except_on_mac(event)
 
     # DEBUG @requires_focus
@@ -548,13 +548,13 @@ class KeywordEditor(GridEditor, Plugin):
             self._execute(Undo())
         else:
             self.GetCellEditor(*self.selection.cell).Reset()
-        self._resize_grid(self)
+        self._resize_grid()
 
     # DEBUG @requires_focus
     def OnRedo(self, event=None):
         _ = event
         self._execute(Redo())
-        self._resize_grid(self)
+        self._resize_grid()
 
     def close(self):
         self._colorizer.close()
@@ -650,7 +650,7 @@ class KeywordEditor(GridEditor, Plugin):
             if keycode == wx.WXK_SPACE:
                 self._open_cell_editor_with_content_assist()  # Mac CMD
             elif keycode in [wx.WXK_DOWN, wx.WXK_UP]:
-            # Mac Option key(⌥)
+                # Mac Option key(⌥)
                 self._move_rows(keycode)
             elif keycode == wx.WXK_RETURN:
                 if self.IsCellEditControlShown():
@@ -665,7 +665,7 @@ class KeywordEditor(GridEditor, Plugin):
                 self._move_grid_cursor(event, keycode)
             elif keycode == wx.WXK_RETURN:
                 if self.IsCellEditControlShown():
-                    # fill auto suggestion into cell when pressing enter
+                    # fill auto-suggestion into cell when pressing enter
                     self._get_cell_editor().update_from_suggestion_list()
                     self._move_grid_cursor(event, keycode)
                 else:
@@ -680,7 +680,7 @@ class KeywordEditor(GridEditor, Plugin):
         if keychar < ord(' '):
             return
         if keychar in [ord('['), ord('{'), ord('('), ord("'"), ord('\"'), ord('`')]:
-            self._open_cell_editor().execute_enclose_text(chr(keychar))
+            self.open_cell_editor().execute_enclose_text(chr(keychar))
         else:
             event.Skip()
 
@@ -765,11 +765,11 @@ work.</li>
             self.EnableCellEditControl()
         cell_editor = self._get_cell_editor()
         cell_editor.Show(True)
-        return celleditor
+        return cell_editor
 
     def _open_cell_editor_with_content_assist(self):
         # print(f"DEBUG: kweditor call _open_cell_editor_with_content_assist")
-        wx.CallAfter(self._open_cell_editor().show_content_assist)
+        wx.CallAfter(self.open_cell_editor().show_content_assist)
         # wx.CallAfter(self._move_grid_cursor, wx.grid.GridEvent(), wx.WXK_RETURN)
 
     def _open_cell_editor_and_execute_variable_creator(self, list_variable=False,
@@ -793,11 +793,11 @@ work.</li>
 
     def _open_cell_editor_and_execute_sharp_comment(self):
         # Meant for a single cell selection!
-        wx.CallAfter(self._open_cell_editor().execute_sharp_comment)
+        wx.CallAfter(self.open_cell_editor().execute_sharp_comment)
 
     def _open_cell_editor_and_execute_sharp_uncomment(self):
         # Meant for a single cell selection!
-        wx.CallAfter(self._open_cell_editor().execute_sharp_uncomment)
+        wx.CallAfter(self.open_cell_editor().execute_sharp_uncomment)
 
     def OnCommentCells(self, event):
         _ = event
@@ -888,7 +888,7 @@ work.</li>
             self._extract_scalar(cells[0])
         elif min(row for row, _ in cells) == max(row for row, _ in cells):
             self._extract_list(cells)
-        self._resize_grid(self)
+        self._resize_grid()
 
     def OnFindWhereUsed(self, event):
         _ = event
