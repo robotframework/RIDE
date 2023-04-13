@@ -676,11 +676,14 @@ class KeywordEditor(GridEditor, Plugin):
         event.Skip()
 
     def OnChar(self, event):
-        keychar = event.GetUnicodeKey()
-        if keychar < ord(' '):
+        key_char = event.GetUnicodeKey()
+        key_code, control_down, alt_down = event.GetKeyCode(), event.CmdDown(), event.AltDown()
+        print(f"DEBUG: kweditor {key_char=} chr={chr(key_char)} {key_code=} chr={chr(key_code)}"
+              f"{control_down=} {alt_down=}")
+        if key_char < ord(' '):
             return
-        if keychar in [ord('['), ord('{'), ord('('), ord("'"), ord('\"'), ord('`')]:
-            self.open_cell_editor().execute_enclose_text(chr(keychar))
+        if key_char in [ord('['), ord('{'), ord('('), ord("'"), ord('\"'), ord('`')]:
+            self.open_cell_editor().execute_enclose_text(chr(key_char))
         else:
             event.Skip()
 
