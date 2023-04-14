@@ -56,6 +56,7 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
         self._showing_content_assist = False
         self.Bind(wx.EVT_WINDOW_DESTROY, self.pop_event_handlers)
         self._row = None
+        self._selection = None
         self.gherkin_prefix = ''
         # Store gherkin prefix from input to add \
         # later after search is performed
@@ -83,8 +84,11 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
         return self._popup.is_shown()
 
     def OnKeyDown(self, event):
-        key_code, control_down, alt_down = event.GetKeyCode(), event.CmdDown(), event.AltDown()
-        # print(f"DEBUG: OnKeyDown {key_code=} {control_down=} {alt_down=}")
+        key_code, alt_down = event.GetKeyCode(), event.AltDown()
+        control_down = event.CmdDown() or event.ControlDown()
+        key_char = event.GetUnicodeKey()
+        if key_char not in [ord('['), ord('{'), ord('('), ord("'"), ord('\"'), ord('`')]:
+            self._selection = self.GetStringSelection()
         # Ctrl-Space handling needed for dialogs # DEBUG add Ctrl-m
         if (control_down or alt_down) and key_code in [wx.WXK_SPACE, ord('m')]:
             self.show_content_assist()
@@ -94,17 +98,14 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
             self.OnFocusLost(event, False)
         elif key_code == wx.WXK_ESCAPE and self._popup.is_shown():
             self._popup.hide()
-        elif key_code in [wx.WXK_UP, wx.WXK_DOWN, wx.WXK_PAGEUP, wx.WXK_PAGEDOWN] \
-                and self._popup.is_shown():
+        elif key_code in [wx.WXK_UP, wx.WXK_DOWN, wx.WXK_PAGEUP, wx.WXK_PAGEDOWN] and self._popup.is_shown():
             self._popup.select_and_scroll(key_code)
         elif key_code in (ord('1'), ord('2'), ord('5')) and control_down and not alt_down:
             self.execute_variable_creator(list_variable=(key_code == ord('2')),
                                           dict_variable=(key_code == ord('5')))
-        elif key_code == ord('3') and event.ControlDown() and event.ShiftDown() \
-                and not event.AltDown():
+        elif key_code == ord('3') and control_down and event.ShiftDown() and not alt_down:
             self.execute_sharp_comment()
-        elif key_code == ord('4') and event.ControlDown() and event.ShiftDown() \
-                and not event.AltDown():
+        elif key_code == ord('4') and control_down and event.ShiftDown() and not alt_down:
             self.execute_sharp_uncomment()
         elif self._popup.is_shown() and key_code < 256:
             wx.CallAfter(self._populate_content_assist)
@@ -129,9 +130,6 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
 
     def OnChar(self, event):
         key_char = event.GetUnicodeKey()
-        key_code, control_down, alt_down = event.GetKeyCode(), event.CmdDown(), event.AltDown()
-        print(f"DEBUG: ContentAssist {key_char=} chr={chr(key_char)} {key_code=} chr={chr(key_code)}"
-              f"{control_down=} {alt_down=}")
         if key_char != wx.WXK_RETURN:
             self._show_auto_suggestions_when_enabled()
         if key_char == wx.WXK_NONE:
@@ -139,13 +137,6 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
             return
         if key_char in [ord('['), ord('{'), ord('('), ord("'"), ord('\"'), ord('`')]:
             wx.CallAfter(self.execute_enclose_text, chr(key_char))
-            """
-            # DEBUG: fix recursion error in Linux
-            if platform.lower().startswith('linux'):
-                event.Skip()
-            else:
-                self.execute_enclose_text(chr(key_char))
-            """
         else:
             event.Skip()
 
@@ -157,8 +148,7 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
             symbol = '&'
         else:
             symbol = '$'
-        self.SetValue(self._variable_creator_value(
-            self.Value, symbol, from_, to_))
+        self.SetValue(self._variable_creator_value(self.Value, symbol, from_, to_))
         if from_ == to_:
             self.SetInsertionPoint(from_ + 2)
         else:
@@ -170,10 +160,19 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
         return value[:from_] + symbol + '{' + value[from_:to_] + '}' + value[to_:]
 
     def execute_enclose_text(self, key_code):
-        # DEBUG: move this code to kweditor and fix when in cell editor in Linux
-        # at this point selected text is deleted
+        # DEBUG: move this code to kweditor
         from_, to_ = self.GetSelection()
-        self.SetValue(self._enclose_text(self.Value, key_code, from_, to_))
+        if not self._selection:
+            content = self._enclose_text(self.Value, key_code, from_, to_)
+        else:
+            enclosed = self._enclose_text(self._selection, key_code, 0, len(self._selection))
+            value = self.Value
+            if len(value) <= from_:
+                content = value + enclosed
+            else:
+                content = value[:from_] + enclosed + value[from_:]
+        self.SetValue(content)
+        self._selection = None
         elem = self
         if from_ == to_:
             elem.SetInsertionPoint(from_ + 1)

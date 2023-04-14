@@ -379,6 +379,7 @@ class RideFrame(wx.Frame):
                 pass
             PUBLISHER.unsubscribe(self._set_label, RideTreeSelection)
             RideClosing().publish()
+            # DEBUG: Wrap in try/except for RunTime error
             self._task_bar_icon.Destroy()
             self.Destroy()
             app = wx.GetApp()

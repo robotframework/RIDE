@@ -677,9 +677,6 @@ class KeywordEditor(GridEditor, Plugin):
 
     def OnChar(self, event):
         key_char = event.GetUnicodeKey()
-        key_code, control_down, alt_down = event.GetKeyCode(), event.CmdDown(), event.AltDown()
-        print(f"DEBUG: kweditor {key_char=} chr={chr(key_char)} {key_code=} chr={chr(key_code)}"
-              f"{control_down=} {alt_down=}")
         if key_char < ord(' '):
             return
         if key_char in [ord('['), ord('{'), ord('('), ord("'"), ord('\"'), ord('`')]:
@@ -777,8 +774,8 @@ work.</li>
 
     def _open_cell_editor_and_execute_variable_creator(self, list_variable=False,
                                                        dict_variable=False):
-        self.open_cell_editor()
-        cell_editor = self._get_cell_editor()
+        cell_editor = self.open_cell_editor()
+        # cell_editor = self._get_cell_editor()
         wx.CallAfter(cell_editor.execute_variable_creator,
                      list_variable, dict_variable)
 
