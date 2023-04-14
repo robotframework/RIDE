@@ -35,8 +35,7 @@ from ..controller.ctrlcommands import ChangeCellValue, ClearArea, \
     InsertArea
 from ..editor.cellrenderer import CellRenderer
 from ..pluginapi import Plugin
-from ..publish import (RideItemStepsChanged, RideSaved, RideSettingsChanged,
-                       PUBLISHER, RideBeforeSaving)
+from ..publish import RideItemStepsChanged, RideSaved, PUBLISHER, RideBeforeSaving
 from ..ui.progress import RenameProgressObserver
 from ..usages.UsageRunner import Usages, VariableUsages
 from ..utils import variablematcher
@@ -322,7 +321,7 @@ class KeywordEditor(GridEditor, Plugin):
     def OnInsertRows(self, event):
         self._execute(AddRows(self.selection.rows()))
         self.ClearSelection()
-        self._resize_grid()
+        self._resize_grid(self)
         self._skip_except_on_mac(event)
 
     @staticmethod
@@ -346,7 +345,7 @@ class KeywordEditor(GridEditor, Plugin):
                         self.selection.bottomright)
         self._execute(InsertCells(self.selection.topleft,
                                   self.selection.bottomright))
-        self._resize_grid()
+        self._resize_grid(self)
         self._skip_except_on_mac(event)
 
     def OnDeleteCells(self, event=None):
@@ -362,19 +361,19 @@ class KeywordEditor(GridEditor, Plugin):
 
         self._dcells = (self.selection.topleft, self.selection.bottomright)
         self._execute(DeleteCells(self.selection.topleft, self.selection.bottomright))
-        self._resize_grid()
+        self._resize_grid(self)
         self._skip_except_on_mac(event)
 
     # DEBUG @requires_focus
     def OnCommentRows(self, event=None):
         self._execute(CommentRows(self.selection.rows()))
-        self._resize_grid()
+        self._resize_grid(self)
         self._skip_except_on_mac(event)
 
     # DEBUG @requires_focus
     def OnUncommentRows(self, event=None):
         self._execute(UncommentRows(self.selection.rows()))
-        self._resize_grid()
+        self._resize_grid(self)
         self._skip_except_on_mac(event)
 
     def OnMoveRowsUp(self, event=None):
@@ -511,7 +510,7 @@ class KeywordEditor(GridEditor, Plugin):
         if not self.IsCellEditControlShown():
             self._execute(ClearArea(self.selection.topleft,
                                     self.selection.bottomright))
-            self._resize_grid()
+            self._resize_grid(self)
 
     # DEBUG    @requires_focus
     def OnPaste(self, event=None):
@@ -520,7 +519,7 @@ class KeywordEditor(GridEditor, Plugin):
             self.paste()
         else:
             self._execute_clipboard_command(PasteArea)
-        self._resize_grid()
+        self._resize_grid(self)
 
     def _execute_clipboard_command(self, command_class):
         if not self.IsCellEditControlShown():
@@ -533,12 +532,12 @@ class KeywordEditor(GridEditor, Plugin):
     def OnInsert(self, event=None):
         _ = event
         self._execute_clipboard_command(InsertArea)
-        self._resize_grid()
+        self._resize_grid(self)
 
     def OnDeleteRows(self, event):
         self._execute(DeleteRows(self.selection.rows()))
         self.ClearSelection()
-        self._resize_grid()
+        self._resize_grid(self)
         self._skip_except_on_mac(event)
 
     # DEBUG @requires_focus
@@ -548,13 +547,13 @@ class KeywordEditor(GridEditor, Plugin):
             self._execute(Undo())
         else:
             self.GetCellEditor(*self.selection.cell).Reset()
-        self._resize_grid()
+        self._resize_grid(self)
 
     # DEBUG @requires_focus
     def OnRedo(self, event=None):
         _ = event
         self._execute(Redo())
-        self._resize_grid()
+        self._resize_grid(self)
 
     def close(self):
         self._colorizer.close()
@@ -888,7 +887,7 @@ work.</li>
             self._extract_scalar(cells[0])
         elif min(row for row, _ in cells) == max(row for row, _ in cells):
             self._extract_list(cells)
-        self._resize_grid()
+        self._resize_grid(self)
 
     def OnFindWhereUsed(self, event):
         _ = event

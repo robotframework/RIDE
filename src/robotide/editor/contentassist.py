@@ -238,6 +238,54 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
             return value[:from_]+value[from_:to_].rstrip(remove_text)+value[to_:]
         return value
 
+    def execute_sharp_comment(self):
+        # Todo: Will only comment the left top cell for a multi cell select block!
+        from_, to_ = self.GetSelection()
+        #print(f"DEBUG: value from/to: " + str(from_) + " " + str(to_))
+        #print(f"DEBUG: value selected: " + self.Value)
+        add_text = '# '
+        self.SetValue(self._add_text(self.Value, add_text, True, False, from_, to_))
+        lenadd = len(add_text)
+        elem = self
+        elem.SetInsertionPoint(from_ + lenadd)
+        if from_ != to_:
+            elem.SetInsertionPoint(to_ + lenadd)
+            elem.SetSelection(from_ + lenadd, to_ + lenadd)
+            return
+
+    @staticmethod
+    def _add_text(value, add_text, on_the_left, on_the_right, from_, to_):
+        if on_the_left and on_the_right:
+            return value[:from_]+add_text+value[from_:to_]+add_text+value[to_:]
+        if on_the_left:
+            return value[:from_]+add_text+value[from_:to_]+value[to_:]
+        if on_the_right:
+            return value[:from_]+value[from_:to_]+add_text+value[to_:]
+        return value
+
+    def execute_sharp_uncomment(self):
+        # Todo: Will only uncomment the left top cell for a multi cell select block!
+        from_, to_ = self.GetSelection()
+        lenold = len(self.Value)
+        self.SetValue(self._remove_text(self.Value, '# ', True, False, from_, to_))
+        lenone = len(self.Value)
+        diffone = lenold - lenone
+        elem = self
+        if from_ == to_:
+            elem.SetInsertionPoint(from_ - diffone)
+        else:
+            elem.SetInsertionPoint(to_ - diffone)
+            elem.SetSelection(from_ - diffone, to_ - diffone)
+
+    def _remove_text(self, value, remove_text, on_the_left, on_the_right, from_, to_):
+        if on_the_left and on_the_right:
+            return value[:from_]+value[from_:to_].strip(remove_text)+remove_text+value[to_:]
+        if on_the_left:
+            return value[:from_]+value[from_:to_].lstrip(remove_text)+value[to_:]
+        if on_the_right:
+            return value[:from_]+value[from_:to_].rstrip(remove_text)+value[to_:]
+        return value
+
     def OnFocusLost(self, event, set_value=True):
         event.Skip()
         if not self._popup.is_shown():
