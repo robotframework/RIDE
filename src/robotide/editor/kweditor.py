@@ -61,7 +61,7 @@ class KeywordEditor(GridEditor, Plugin):
     _no_cell = (-1, -1)
     _popup_menu_shown = False
     dirty = property(lambda self: self._controller.dirty)
-    update_value = lambda *args: None
+
     _popup_items = [
                        'Create Keyword',
                        'Extract Keyword',
@@ -137,6 +137,10 @@ class KeywordEditor(GridEditor, Plugin):
             wx.CallAfter(
                 wx.CallLater, 200, self._update_based_on_namespace_change)
 
+    def update_value(self):
+        # will be called in _RobotTableEditor._settings_changed
+        pass
+
     def _update_based_on_namespace_change(self):
         try:
             self._colorize_grid()
@@ -184,8 +188,7 @@ class KeywordEditor(GridEditor, Plugin):
 
     def _configure_grid(self):
         self._set_cells()
-        self.SetDefaultEditor(
-            ContentAssistCellEditor(self._plugin, self._controller))
+        self.SetDefaultEditor(ContentAssistCellEditor(self._plugin, self._controller))
         self._set_fonts()
 
     def _set_fonts(self, update_cells=False):
@@ -403,7 +406,7 @@ class KeywordEditor(GridEditor, Plugin):
                 wx.CallAfter(self._select_rows, [r for r in rows])
             else:
                 wx.CallAfter(self._select_rows, [r + change for r in rows])
-        self._resize_grid(self)
+        self._resize_grid()
 
     def _select_rows(self, rows):
         self.ClearSelection()
@@ -646,6 +649,7 @@ class KeywordEditor(GridEditor, Plugin):
             if keycode == wx.WXK_SPACE:
                 self._open_cell_editor_with_content_assist()  # Mac CMD
             elif keycode in [wx.WXK_DOWN, wx.WXK_UP]:
+                # Mac Option key(⌥)
                 self._move_rows(keycode)
             elif keycode == wx.WXK_RETURN:
                 if self.IsCellEditControlShown():
@@ -660,20 +664,22 @@ class KeywordEditor(GridEditor, Plugin):
                 self._move_grid_cursor(event, keycode)
             elif keycode == wx.WXK_RETURN:
                 if self.IsCellEditControlShown():
+                    # fill auto-suggestion into cell when pressing enter
+                    self._get_cell_editor().update_from_suggestion_list()
                     self._move_grid_cursor(event, keycode)
                 else:
-                    self._open_cell_editor()
+                    self.open_cell_editor()
                 return  # event must not be skipped in this case
             elif keycode == wx.WXK_F2:
-                self._open_cell_editor()
+                self.open_cell_editor()
         event.Skip()
 
     def OnChar(self, event):
-        keychar = event.GetUnicodeKey()
-        if keychar < ord(' '):
+        key_char = event.GetUnicodeKey()
+        if key_char < ord(' '):
             return
-        if keychar in [ord('['), ord('{'), ord('('), ord("'"), ord('\"'), ord('`')]:
-            self._open_cell_editor().execute_enclose_text(chr(keychar))
+        if key_char in [ord('['), ord('{'), ord('('), ord("'"), ord('\"'), ord('`')]:
+            self.open_cell_editor().execute_enclose_text(chr(key_char))
         else:
             event.Skip()
 
@@ -741,7 +747,7 @@ work.</li>
 
     def move_grid_cursor_and_edit(self):
         # self.MoveCursorRight(False)
-        self._open_cell_editor()
+        self.open_cell_editor()
 
     def OnKeyUp(self, event):
         event.Skip()  # DEBUG seen this skip as soon as possible
@@ -749,22 +755,27 @@ work.</li>
         self._hide_link_if_necessary()
         #  event.Skip()
 
-    def _open_cell_editor(self):
+    def _get_cell_editor(self):
+        row = self.GetGridCursorRow()
+        return self.GetCellEditor(self.GetGridCursorCol(), row)
+
+    def open_cell_editor(self):
         if not self.IsCellEditControlEnabled():
             self.EnableCellEditControl()
-        row = self.GetGridCursorRow()
-        celleditor = self.GetCellEditor(self.GetGridCursorCol(), row)
-        celleditor.Show(True)
-        return celleditor
+        cell_editor = self._get_cell_editor()
+        cell_editor.Show(True)
+        return cell_editor
 
     def _open_cell_editor_with_content_assist(self):
         # print(f"DEBUG: kweditor call _open_cell_editor_with_content_assist")
-        wx.CallAfter(self._open_cell_editor().show_content_assist)
+        wx.CallAfter(self.open_cell_editor().show_content_assist)
         # wx.CallAfter(self._move_grid_cursor, wx.grid.GridEvent(), wx.WXK_RETURN)
 
-    def _open_cell_editor_and_execute_variable_creator(
-            self, list_variable=False, dict_variable=False):
-        wx.CallAfter(self._open_cell_editor().execute_variable_creator,
+    def _open_cell_editor_and_execute_variable_creator(self, list_variable=False,
+                                                       dict_variable=False):
+        cell_editor = self.open_cell_editor()
+        # cell_editor = self._get_cell_editor()
+        wx.CallAfter(cell_editor.execute_variable_creator,
                      list_variable, dict_variable)
 
     def OnMakeVariable(self, event):
@@ -781,11 +792,11 @@ work.</li>
 
     def _open_cell_editor_and_execute_sharp_comment(self):
         # Meant for a single cell selection!
-        wx.CallAfter(self._open_cell_editor().execute_sharp_comment)
+        wx.CallAfter(self.open_cell_editor().execute_sharp_comment)
 
     def _open_cell_editor_and_execute_sharp_uncomment(self):
         # Meant for a single cell selection!
-        wx.CallAfter(self._open_cell_editor().execute_sharp_uncomment)
+        wx.CallAfter(self.open_cell_editor().execute_sharp_uncomment)
 
     def OnCommentCells(self, event):
         _ = event
@@ -1013,6 +1024,10 @@ class ContentAssistCellEditor(GridCellEditor):
         _ = args
         if self._tc:
             self._tc.show_content_assist()
+
+    def update_from_suggestion_list(self):
+        if self._tc and self._tc.is_shown():
+            self._tc.fill_suggestion()
 
     def execute_variable_creator(self, list_variable=False,
                                  dict_variable=False):

@@ -22,17 +22,22 @@ from wx.lib.expando import ExpandoTextCtrl
 from wx.lib.filebrowsebutton import FileBrowseButton
 
 from .. import context, utils
-from ..context import IS_MAC
+from ..context import IS_MAC, IS_WX_410_OR_HIGHER
 from ..namespace.suggesters import SuggestionSource
 from ..spec.iteminfo import VariableInfo
 from .popupwindow import RidePopupWindow, HtmlPopupWindow
+from ..publish import PUBLISHER
+from ..publish.messages import RideSettingsChanged
+
 
 _PREFERRED_POPUP_SIZE = (400, 200)
+_AUTO_SUGGESTION_CFG_KEY = "disable auto suggestions"
 
 
-class _ContentAssistTextCtrlBase(object):
+class _ContentAssistTextCtrlBase(wx.TextCtrl):
 
-    def __init__(self, suggestion_source):
+    def __init__(self, suggestion_source, **kw):
+        super().__init__(**kw)
         from ..preferences import RideSettings
         _settings = RideSettings()
         self.general_settings = _settings['General']
@@ -47,60 +52,91 @@ class _ContentAssistTextCtrlBase(object):
         self.Bind(wx.EVT_CHAR, self.OnChar)
         self.Bind(wx.EVT_KILL_FOCUS, self.OnFocusLost)
         self.Bind(wx.EVT_MOVE, self.OnFocusLost)
-        self.Bind(wx.EVT_WINDOW_DESTROY, self.OnDestroy)
+        # self.Bind(wx.EVT_WINDOW_DESTROY, self.OnDestroy)
         self._showing_content_assist = False
+        self.Bind(wx.EVT_WINDOW_DESTROY, self.pop_event_handlers)
         self._row = None
-        self.gherkin_prefix = ''  # Store gherkin prefix from input to add \
+        self._selection = None
+        self.gherkin_prefix = ''
+        # Store gherkin prefix from input to add \
         # later after search is performed
-        if IS_MAC:
+        if IS_MAC and IS_WX_410_OR_HIGHER:
             self.OSXDisableAllSmartSubstitutions()
+        self._is_auto_suggestion_disabled = self._get_auto_suggestion_config()
+        PUBLISHER.subscribe(self.OnSettingsChanged, RideSettingsChanged)
+
+    @staticmethod
+    def _get_auto_suggestion_config():
+        from robotide.context import APP
+        settings = APP.settings['Grid']
+        return settings.get(_AUTO_SUGGESTION_CFG_KEY, False)
+
+    def OnSettingsChanged(self, message):
+        """Update auto suggestion settings from PUBLISHER message"""
+        section, setting = message.keys
+        if section == 'Grid' and _AUTO_SUGGESTION_CFG_KEY in setting:
+            self._is_auto_suggestion_disabled = message.new
 
     def set_row(self, row):
         self._row = row
 
+    def is_shown(self):
+        return self._popup.is_shown()
+
     def OnKeyDown(self, event):
-        # TODO: This might benefit from some cleanup
-        keycode, control_down = event.GetKeyCode(), event.CmdDown()
+        key_code, alt_down = event.GetKeyCode(), event.AltDown()
+        control_down = event.CmdDown() or event.ControlDown()
+        key_char = event.GetUnicodeKey()
+        if key_char not in [ord('['), ord('{'), ord('('), ord("'"), ord('\"'), ord('`')]:
+            self._selection = self.GetStringSelection()
         # Ctrl-Space handling needed for dialogs # DEBUG add Ctrl-m
-        if (control_down or event.AltDown()) and keycode in [wx.WXK_SPACE, ord('m')]:
+        if (control_down or alt_down) and key_code in [wx.WXK_SPACE, ord('m')]:
             self.show_content_assist()
-        elif keycode == wx.WXK_RETURN and self._popup.is_shown():
+        elif key_code == wx.WXK_RETURN and self._popup.is_shown():
             self.OnFocusLost(event)
-        elif keycode == wx.WXK_TAB:
+        elif key_code == wx.WXK_TAB:
             self.OnFocusLost(event, False)
-        elif keycode == wx.WXK_ESCAPE and self._popup.is_shown():
+        elif key_code == wx.WXK_ESCAPE and self._popup.is_shown():
             self._popup.hide()
-        elif keycode in [wx.WXK_UP, wx.WXK_DOWN, wx.WXK_PAGEUP, wx.WXK_PAGEDOWN] \
-                and self._popup.is_shown():
-            self._popup.select_and_scroll(keycode)
-        elif keycode in (ord('1'), ord('2'), ord('5')) and event.ControlDown() and not \
-                event.AltDown():
-            self.execute_variable_creator(list_variable=(keycode == ord('2')),
-                                          dict_variable=(keycode == ord('5')))
-        elif keycode == ord('3') and event.ControlDown() and event.ShiftDown() \
-                and not event.AltDown():
-            self.execute_add_text(add_text='# ', on_the_left=True, on_the_right=False)
-        elif keycode == ord('4') and event.ControlDown() and event.ShiftDown() \
-                and not event.AltDown():
-            self.execute_remove_text(remove_text='# ', on_the_left=True, on_the_right=False)
-        elif self._popup.is_shown() and keycode < 256:
+        elif key_code in [wx.WXK_UP, wx.WXK_DOWN, wx.WXK_PAGEUP, wx.WXK_PAGEDOWN] and self._popup.is_shown():
+            self._popup.select_and_scroll(key_code)
+        elif key_code in (ord('1'), ord('2'), ord('5')) and control_down and not alt_down:
+            self.execute_variable_creator(list_variable=(key_code == ord('2')),
+                                          dict_variable=(key_code == ord('5')))
+        elif key_code == ord('3') and control_down and event.ShiftDown() and not alt_down:
+            self.execute_sharp_comment()
+        elif key_code == ord('4') and control_down and event.ShiftDown() and not alt_down:
+            self.execute_sharp_uncomment()
+        elif self._popup.is_shown() and key_code < 256:
             wx.CallAfter(self._populate_content_assist)
             event.Skip()
+            wx.CallAfter(self._show_auto_suggestions_when_enabled)
+        # Can not catch the following keyEvent from grid cell
+        elif key_code == wx.WXK_RETURN:
+            # fill suggestion in dialogs when pressing enter
+            self.fill_suggestion()
+            event.Skip()
+        # Can not catch the following keyEvent at all
+        # elif key_code == wx.WXK_TAB:
+        #     self.fill_suggestion()
+        # elif key_code == wx.WXK_ESCAPE and self.is_shown():
+        #     self._popup.hide()
         else:
             event.Skip()
 
+    def _show_auto_suggestions_when_enabled(self):
+        if not self._is_auto_suggestion_disabled or self.is_shown():
+            self.show_content_assist()
+
     def OnChar(self, event):
-        keychar = event.GetUnicodeKey()
-        # print(f"DEBUG: OnChar at contentassist {chr(keychar)} {keychar}")
-        if keychar == wx.WXK_NONE:
+        key_char = event.GetUnicodeKey()
+        if key_char != wx.WXK_RETURN:
+            self._show_auto_suggestions_when_enabled()
+        if key_char == wx.WXK_NONE:
             event.Skip()
             return
-        if keychar in [ord('['), ord('{'), ord('('), ord("'"), ord('\"'), ord('`')]:
-            # TODO fix recursion error in Linux
-            if platform.lower().startswith('linux'):
-                event.Skip()
-            else:
-                self.execute_enclose_text(chr(keychar))
+        if key_char in [ord('['), ord('{'), ord('('), ord("'"), ord('\"'), ord('`')]:
+            wx.CallAfter(self.execute_enclose_text, chr(key_char))
         else:
             event.Skip()
 
@@ -112,21 +148,31 @@ class _ContentAssistTextCtrlBase(object):
             symbol = '&'
         else:
             symbol = '$'
-        self.SetValue(self._variable_creator_value(
-            self.Value, symbol, from_, to_))
+        self.SetValue(self._variable_creator_value(self.Value, symbol, from_, to_))
         if from_ == to_:
             self.SetInsertionPoint(from_ + 2)
         else:
             self.SetInsertionPoint(to_ + 3)
             self.SetSelection(from_ + 2, to_ + 2)
 
-    def _variable_creator_value(self, value, symbol, from_, to_):
-        return value[:from_]+symbol+'{'+value[from_:to_]+'}'+value[to_:]
+    @staticmethod
+    def _variable_creator_value(value, symbol, from_, to_):
+        return value[:from_] + symbol + '{' + value[from_:to_] + '}' + value[to_:]
 
-    def execute_enclose_text(self, keycode):
-        # TODO move this code to kweditor and fix when in cell editor in Linux
+    def execute_enclose_text(self, key_code):
+        # DEBUG: move this code to kweditor
         from_, to_ = self.GetSelection()
-        self.SetValue(self._enclose_text(self.Value, keycode, from_, to_))
+        if not self._selection:
+            content = self._enclose_text(self.Value, key_code, from_, to_)
+        else:
+            enclosed = self._enclose_text(self._selection, key_code, 0, len(self._selection))
+            value = self.Value
+            if len(value) <= from_:
+                content = value + enclosed
+            else:
+                content = value[:from_] + enclosed + value[from_:]
+        self.SetValue(content)
+        self._selection = None
         elem = self
         if from_ == to_:
             elem.SetInsertionPoint(from_ + 1)
@@ -134,7 +180,8 @@ class _ContentAssistTextCtrlBase(object):
             elem.SetInsertionPoint(to_ + 2)
             elem.SetSelection(from_ + 1, to_ + 1)
 
-    def _enclose_text(self, value, open_symbol, from_, to_):
+    @staticmethod
+    def _enclose_text(value, open_symbol, from_, to_):
         if open_symbol == '[':
             close_symbol = ']'
         elif open_symbol == '{':
@@ -143,7 +190,53 @@ class _ContentAssistTextCtrlBase(object):
             close_symbol = ')'
         else:
             close_symbol = open_symbol
-        return value[:from_]+open_symbol+value[from_:to_]+close_symbol+value[to_:]
+        return value[:from_] + open_symbol + value[from_:to_] + close_symbol + value[to_:]
+
+    def execute_sharp_comment(self):
+        # DEBUG: Will only comment the left top cell for a multi cell select block!
+        from_, to_ = self.GetSelection()
+        add_text = '# '
+        self.SetValue(self._add_text(self.Value, add_text, True, False, from_, to_))
+        lenadd = len(add_text)
+        elem = self
+        elem.SetInsertionPoint(from_ + lenadd)
+        if from_ != to_:
+            elem.SetInsertionPoint(to_ + lenadd)
+            elem.SetSelection(from_ + lenadd, to_ + lenadd)
+
+    @staticmethod
+    def _add_text(value, add_text, on_the_left, on_the_right, from_, to_):
+        if on_the_left and on_the_right:
+            return value[:from_]+add_text+value[from_:to_]+add_text+value[to_:]
+        if on_the_left:
+            return value[:from_]+add_text+value[from_:to_]+value[to_:]
+        if on_the_right:
+            return value[:from_]+value[from_:to_]+add_text+value[to_:]
+        return value
+
+    def execute_sharp_uncomment(self):
+        # DEBUG: Will only uncomment the left top cell for a multi cell select block!
+        from_, to_ = self.GetSelection()
+        lenold = len(self.Value)
+        self.SetValue(self._remove_text(self.Value, '# ', True, False, from_, to_))
+        lenone = len(self.Value)
+        diffone = lenold - lenone
+        elem = self
+        if from_ == to_:
+            elem.SetInsertionPoint(from_ - diffone)
+        else:
+            elem.SetInsertionPoint(to_ - diffone)
+            elem.SetSelection(from_ - diffone, to_ - diffone)
+
+    @staticmethod
+    def _remove_text(value, remove_text, on_the_left, on_the_right, from_, to_):
+        if on_the_left and on_the_right:
+            return value[:from_]+value[from_:to_].strip(remove_text)+remove_text+value[to_:]
+        if on_the_left:
+            return value[:from_]+value[from_:to_].lstrip(remove_text)+value[to_:]
+        if on_the_right:
+            return value[:from_]+value[from_:to_].rstrip(remove_text)+value[to_:]
+        return value
 
     def execute_sharp_comment(self):
         # Todo: Will only comment the left top cell for a multi cell select block!
@@ -208,6 +301,30 @@ class _ContentAssistTextCtrlBase(object):
             self.Clear()
         self.hide()
 
+    def fill_suggestion(self):
+        if self.gherkin_prefix:
+            value = self.gherkin_prefix + self._popup.get_value() or self.GetValue()
+        else:
+            value = self._popup.get_value() or self.GetValue()
+
+        if value:
+            wrapper_view = self.GetParent().GetParent()
+            if hasattr(wrapper_view, 'open_cell_editor'):
+                # in grid cell, need to make sure cell editor is open
+                wrapper_view.open_cell_editor()
+            self.SetValue(value)
+            self.SetInsertionPoint(len(value))
+
+        self.hide()
+
+    def pop_event_handlers(self, event):
+        _ = event
+        # all pushed eventHandlers need to be popped before close
+        # the last event handler is window object itself - do not pop itself
+        if self:
+            while self.GetEventHandler() is not self:
+                self.PopEventHandler()
+
     def OnDestroy(self, event):
         # all pushed eventHandlers need to be popped before close
         # the last event handler is window object itself - do not pop itself
@@ -230,7 +347,8 @@ class _ContentAssistTextCtrlBase(object):
         (self.gherkin_prefix, value) = self._remove_bdd_prefix(value)
         return self._popup.content_assist_for(value, row=self._row)
 
-    def _remove_bdd_prefix(self, name):
+    @staticmethod
+    def _remove_bdd_prefix(name):
         for match in ['given ', 'when ', 'then ', 'and ', 'but ']:
             if name.lower().startswith(match):
                 return name[:len(match)], name[len(match):]
@@ -249,61 +367,67 @@ class _ContentAssistTextCtrlBase(object):
             return self.gherkin_prefix + suggestion
 
     def hide(self):
+        if not self.is_shown():
+            return
         self._popup.hide()
         self._showing_content_assist = False
 
+    def dismiss(self):
+        if not self.is_shown():
+            return
+        self._popup.dismiss()
 
-class ExpandingContentAssistTextCtrl(_ContentAssistTextCtrlBase,
-                                     ExpandoTextCtrl):
+
+class ExpandingContentAssistTextCtrl(_ContentAssistTextCtrlBase, ExpandoTextCtrl):
 
     def __init__(self, parent, plugin, controller):
-        ExpandoTextCtrl.__init__(self, parent, size=wx.DefaultSize,
-                                 style=wx.WANTS_CHARS|wx.TE_NOHIDESEL)
-        _ContentAssistTextCtrlBase.__init__(self, SuggestionSource(plugin, controller))
+        """ According to class MRO, super().__init__ in  _ContentAssistTextCtrlBase will init ExpandoTextCtrl
+        instance """
+
+        _ContentAssistTextCtrlBase.__init__(self, SuggestionSource(plugin, controller),
+                                            parent=parent, size=wx.DefaultSize,
+                                            style=wx.WANTS_CHARS | wx.TE_NOHIDESEL)
         self.SetBackgroundColour(context.POPUP_BACKGROUND)
         # self.SetOwnBackgroundColour(Colour(200, 222, 40))
         self.SetForegroundColour(context.POPUP_FOREGROUND)
         # self.SetOwnForegroundColour(Colour(7, 0, 70))
 
 
-class ContentAssistTextCtrl(_ContentAssistTextCtrlBase, wx.TextCtrl):
+class ContentAssistTextCtrl(_ContentAssistTextCtrlBase):
 
     def __init__(self, parent, suggestion_source, size=wx.DefaultSize):
-        wx.TextCtrl.__init__(self, parent, size=size, style=wx.WANTS_CHARS|wx.TE_NOHIDESEL)
-        _ContentAssistTextCtrlBase.__init__(self, suggestion_source)
+        super().__init__(suggestion_source, parent=parent,
+                         size=size, style=wx.WANTS_CHARS | wx.TE_NOHIDESEL)
         self.SetBackgroundColour(Colour(self.color_background_help))
         self.SetOwnBackgroundColour(Colour(self.color_background_help))
         self.SetForegroundColour(Colour(self.color_foreground_text))
         self.SetOwnForegroundColour(Colour(self.color_foreground_text))
 
 
-class ContentAssistTextEditor(_ContentAssistTextCtrlBase, wx.TextCtrl):
+class ContentAssistTextEditor(_ContentAssistTextCtrlBase):
 
     def __init__(self, parent, suggestion_source, pos, size=wx.DefaultSize):
-        wx.TextCtrl.__init__(self, parent, -1, "", pos, size=size, style=wx.WANTS_CHARS|wx.BORDER_NONE|wx.WS_EX_TRANSIENT|wx.TE_PROCESS_ENTER|wx.TE_NOHIDESEL)
-        _ContentAssistTextCtrlBase.__init__(self, suggestion_source)
+        super().__init__(suggestion_source,
+                         parent=parent, id=-1, value="", pos=pos, size=size,
+                         style=wx.WANTS_CHARS | wx.BORDER_NONE | wx.WS_EX_TRANSIENT | wx.TE_PROCESS_ENTER |
+                         wx.TE_NOHIDESEL)
         self.SetBackgroundColour(Colour(self.color_background_help))
         self.SetOwnBackgroundColour(Colour(self.color_background_help))
         self.SetForegroundColour(Colour(self.color_foreground_text))
         self.SetOwnForegroundColour(Colour(self.color_foreground_text))
-        """
-        self.SetBackgroundColour(Colour(200, 222, 40))
-        self.SetOwnBackgroundColour(Colour(200, 222, 40))
-        self.SetForegroundColour(Colour(7, 0, 70))
-        self.SetOwnForegroundColour(Colour(7, 0, 70))
-        """
 
 
-class ContentAssistFileButton(_ContentAssistTextCtrlBase, FileBrowseButton):
+class ContentAssistFileButton(FileBrowseButton, _ContentAssistTextCtrlBase):
 
-    def __init__(self, parent, suggestion_source, label, controller,
-                 size=wx.DefaultSize):
+    def __init__(self, parent, suggestion_source, label, controller, size=wx.DefaultSize):
+        self.suggestion_source = suggestion_source
         FileBrowseButton.__init__(self, parent, labelText=label,
                                   size=size, fileMask="*",
                                   changeCallback=self.OnFileChanged)
         self._parent = parent
         self._controller = controller
         self._browsed = False
+
         _ContentAssistTextCtrlBase.__init__(self, suggestion_source)
         self.SetBackgroundColour(Colour(context.POPUP_BACKGROUND))
         self.SetOwnBackgroundColour(Colour(context.POPUP_BACKGROUND))
@@ -312,6 +436,15 @@ class ContentAssistFileButton(_ContentAssistTextCtrlBase, FileBrowseButton):
 
     def Bind(self, *args):
         self.textControl.Bind(*args)
+
+    def createTextControl(self):
+        """Create the text control"""
+        text_control = _ContentAssistTextCtrlBase(parent=self, id=-1, suggestion_source=self.suggestion_source)
+        text_control.SetToolTip(self.toolTip)
+        if self.changeCallback:
+            text_control.Bind(wx.EVT_TEXT, self.OnChanged)
+            text_control.Bind(wx.EVT_COMBOBOX, self.OnChanged)
+        return text_control
 
     def __getattr__(self, item):
         return getattr(self.textControl, item)
@@ -331,6 +464,7 @@ class ContentAssistFileButton(_ContentAssistTextCtrlBase, FileBrowseButton):
             pass
 
     def OnFileChanged(self, evt):
+        _ = evt
         if self._browsed:
             self._browsed = False
             self.SetValue(self._relative_path(self.GetValue()))
@@ -342,7 +476,7 @@ class ContentAssistFileButton(_ContentAssistTextCtrlBase, FileBrowseButton):
             path = relpath(value, src if isdir(src) else dirname(src))
         else:
             path = value
-        return path.replace('\\', '/') if context.IS_WINDOWS else\
+        return path.replace('\\', '/') if context.IS_WINDOWS else \
             path.replace('\\', '\\\\')
 
 
@@ -362,7 +496,7 @@ class Suggestions(object):
         for k, v in self._previous_choices:
             if k == name:
                 return v
-        raise Exception('Item not in choices "%s"' % (name))
+        raise AttributeError('Item not in choices "%s"' % name)
 
     def _get_choices(self, value, row):
         if self._previous_value and value.startswith(self._previous_value):
@@ -372,7 +506,8 @@ class Suggestions(object):
         duplicate_names = self._get_duplicate_names(choices)
         return self._format_choices(choices, value, duplicate_names)
 
-    def _get_duplicate_names(self, choices):
+    @staticmethod
+    def _get_duplicate_names(choices):
         results = set()
         normalized_names = [utils.normalize(ch.name) for ch in choices]
         for choice in choices:
@@ -389,7 +524,8 @@ class Suggestions(object):
         return choice.name if self._matches_unique_shortname(
             choice, prefix, duplicate_names) else choice.longname
 
-    def _matches_unique_shortname(self, choice, prefix, duplicate_names):
+    @staticmethod
+    def _matches_unique_shortname(choice, prefix, duplicate_names):
         if isinstance(choice, VariableInfo):
             return True
         if not utils.normalize(choice.name).startswith(
@@ -407,10 +543,11 @@ class ContentAssistPopup(object):
         self._main_popup = RidePopupWindow(parent, _PREFERRED_POPUP_SIZE)
         self._details_popup = HtmlPopupWindow(parent, _PREFERRED_POPUP_SIZE)
         self._selection = -1
-        self._list = ContentAssistList(self._main_popup,
-                                       self.OnListItemSelected,
-                                       self.OnListItemActivated)
+        self._list: ContentAssistList = ContentAssistList(self._main_popup,
+                                                          self.OnListItemSelected,
+                                                          self.OnListItemActivated)
         self._suggestions = Suggestions(suggestion_source)
+        self._choices = None
 
     def reset(self):
         self._selection = -1
@@ -428,10 +565,12 @@ class ContentAssistPopup(object):
         self._list.populate(self._choices)
         return True
 
-    def _starts(self, val1, val2):
+    @staticmethod
+    def _starts(val1, val2):
         return val1.lower().startswith(val2.lower())
 
     def content_assist_value(self, value):
+        _ = value  # DEBUG: why we have this argument
         if self._selection > -1:
             return self._list.GetItem(self._selection).GetText()
         return None
@@ -446,17 +585,18 @@ class ContentAssistPopup(object):
         self._main_popup.Show()
         self._list.SetFocus()
 
-    def _move_x_where_room(self, start_x):
+    @staticmethod
+    def _move_x_where_room(start_x):
         width = _PREFERRED_POPUP_SIZE[0]
         max_horizontal = wx.GetDisplaySize()[0]
         free_right = max_horizontal - start_x - width
         free_left = start_x - width
-        if max_horizontal - start_x < 2 * width:
-            if free_left > free_right:
-                return start_x - width
+        if max_horizontal - start_x < 2 * width and free_left > free_right:
+            return start_x - width
         return start_x + width
 
-    def _move_y_where_room(self, start_y, cell_height):
+    @staticmethod
+    def _move_y_where_room(start_y, cell_height):
         height = _PREFERRED_POPUP_SIZE[1]
         max_vertical = wx.GetDisplaySize()[1]
         if max_vertical - start_y - cell_height < height:
@@ -466,24 +606,24 @@ class ContentAssistPopup(object):
     def is_shown(self):
         return self._main_popup.IsShown()
 
-    def select_and_scroll(self, keycode):
+    def select_and_scroll(self, key_code):
         sel = self._list.GetFirstSelected()
-        if keycode == wx.WXK_DOWN:
+        if key_code == wx.WXK_DOWN:
             if sel < (self._list.GetItemCount() - 1):
                 self._select_and_scroll(sel + 1)
             else:
                 self._select_and_scroll(0)
-        elif keycode == wx.WXK_UP:
+        elif key_code == wx.WXK_UP:
             if sel > 0:
                 self._select_and_scroll(sel - 1)
             else:
                 self._select_and_scroll(self._list.GetItemCount() - 1)
-        elif keycode == wx.WXK_PAGEDOWN:
-            if self._list.ItemCount - self._selection > 14:
+        elif key_code == wx.WXK_PAGEDOWN:
+            if self._list.GetItemCount() - self._selection > 14:
                 self._select_and_scroll(self._selection + 14)
             else:
-                self._select_and_scroll(self._list.ItemCount - 1)
-        elif keycode == wx.WXK_PAGEUP:
+                self._select_and_scroll(self._list.GetItemCount() - 1)
+        elif key_code == wx.WXK_PAGEUP:
             if self._selection > 14:
                 self._select_and_scroll(self._selection - 14)
             else:
@@ -497,13 +637,18 @@ class ContentAssistPopup(object):
         if value:
             self._parent.SetValue(value)
 
+    def dismiss(self):
+        if not self._list.HasFocus():
+            self.hide()
+
     def hide(self):
         self._selection = -1
         self._main_popup.Show(False)
         self._details_popup.Show(False)
 
     def OnListItemActivated(self, event):
-        self._parent.OnFocusLost(event)
+        _ = event
+        self._parent.fill_suggestion()
 
     def OnListItemSelected(self, event):
         self._selection = event.GetIndex()
@@ -518,6 +663,7 @@ class ContentAssistPopup(object):
 class ContentAssistList(wx.ListCtrl):
 
     def __init__(self, parent, selection_callback, activation_callback=None):
+        self.parent = parent
         from ..preferences import RideSettings
         _settings = RideSettings()
         self.general_settings = _settings['General']

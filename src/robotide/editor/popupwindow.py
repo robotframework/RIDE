@@ -14,8 +14,7 @@
 #  limitations under the License.
 
 import wx
-
-from ..context import POPUP_BACKGROUND, POPUP_FOREGROUND, IS_WINDOWS
+from ..context import POPUP_BACKGROUND, POPUP_FOREGROUND, IS_WINDOWS, IS_MAC
 from ..widgets import VerticalSizer, HtmlWindow, HtmlDialog
 
 
@@ -147,6 +146,6 @@ class MacRidePopupWindow(wx.MiniFrame, _PopupWindowBase):
         pass
 
 
-if wx.PlatformInfo[0] == '__WXMAC__':
+if IS_MAC:
     RidePopupWindow = HtmlPopupWindow = MacRidePopupWindow
 del MacRidePopupWindow

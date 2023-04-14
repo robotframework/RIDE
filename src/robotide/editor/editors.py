@@ -14,8 +14,9 @@
 #  limitations under the License.
 
 import wx
-from wx import Colour
 
+from abc import abstractmethod
+from wx import Colour
 from .settingeditors import (
     DocumentationEditor, SettingEditor, TagsEditor,
     ImportSettingListEditor, VariablesListEditor, MetadataListEditor)
@@ -88,12 +89,15 @@ class _RobotTableEditor(EditorPanel):
         if self.title:
             self.sizer.Add(self._create_header(self.title),
                            0, wx.EXPAND | wx.ALL, 5)
-            # self.sizer.Add((0, 10))  # DEBUG why this?
         self._editors = []
         self._last_shown_tooltip = None
         self._reset_last_show_tooltip()
         self._populate()
         self.plugin.subscribe(self._settings_changed, RideItemSettingsChanged)
+
+    @abstractmethod
+    def _populate(self):
+        pass
 
     def _should_settings_be_open(self):
         if self._settings_open_id not in self.plugin.global_settings:

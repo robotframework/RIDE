@@ -10,19 +10,25 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Changed
 
--- Made ``\n`` visible when editing cells in Grid Editor (problematic in Windows)
+- Keywords auto-suggestion in grid editor does not need shortcut anymore, if you want to disable this feature you can config in `Preferences -> Grid Editor -> Only trigger auto suggestions from shortcuts`
+
+- Made ``\n`` visible when editing cells in Grid Editor (problematic in Windows)
 
 == Fixed
 
--- Fixed missing color definition for keyword call in Text Editor
+- Fixed missing auto-enclosing when in Cell Editor in Linux
 
--- Fixed clearing or emptying fixtures (Setups, Teardowns), now removes headers and synchronizes Text Editor
+- Fixed RIDE will crash when using third party input method in Mac OS
 
--- Fixed selection and persistance of colors in File Explorer and Project Tree panels
+- Fixed missing color definition for keyword call in Text Editor
 
--- Fixed not using defined color for help and HTML content
+- Fixed clearing or emptying fixtures (Setups, Teardowns), now removes headers and synchronizes Text Editor
 
--- Fixed missing newlines in sections separation
+- Fixed selection and persistance of colors in File Explorer and Project Tree panels
+
+- Fixed not using defined color for help and HTML content
+
+- Fixed missing newlines in sections separation
 
 
 == https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.0.rst[2.0] - 2023-03-01

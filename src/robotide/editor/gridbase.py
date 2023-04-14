@@ -71,11 +71,11 @@ class GridEditor(grid.Grid):
         self.Bind(grid.EVT_GRID_RANGE_SELECT, self.OnRangeSelect)
         self.Bind(grid.EVT_GRID_CELL_RIGHT_CLICK, self.OnCellRightClick)
 
-    def register_context_menu_hook(self, callable):
-        self._popup_creator.add_hook(callable)
+    def register_context_menu_hook(self, cb):
+        self._popup_creator.add_hook(cb)
 
-    def unregister_context_menu_hook(self, callable):
-        self._popup_creator.remove_hook(callable)
+    def unregister_context_menu_hook(self, cb):
+        self._popup_creator.remove_hook(cb)
 
     def write_cell(self, row, col, value, update_history=True):
         if update_history:

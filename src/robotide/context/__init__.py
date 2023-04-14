@@ -31,6 +31,7 @@ IS_WINDOWS = os.sep == '\\'
 IS_MAC = sys.platform == 'darwin'
 IS_LINUX = sys.platform == 'linux'
 WX_VERSION = wx.VERSION_STRING
+IS_WX_410_OR_HIGHER = WX_VERSION >= '4.1.0'
 
 if IS_WINDOWS:
     SETTINGS_DIRECTORY = os.path.join(

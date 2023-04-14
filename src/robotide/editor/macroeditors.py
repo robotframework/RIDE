@@ -45,8 +45,7 @@ class TestCaseEditor(_RobotTableEditor):
     def close(self):
         for editor in self._editors:
             editor.close()
-        _RobotTableEditor.close(self)
-        self.kweditor.close()
+        super().close()
         self.plugin.unsubscribe(self._name_changed, RideItemNameChanged)
 
     def save(self):
@@ -101,15 +100,11 @@ class TestCaseEditor(_RobotTableEditor):
     def show_content_assist(self):
         self.kweditor.show_content_assist()
 
-    def view(self):
-        _RobotTableEditor.view(self)
-        self.kweditor.SetFocus()
-
 
 class UserKeywordEditor(TestCaseEditor):
     _settings_open_id = 'user keyword settings open'
 
-    def _create_header(self, name):
+    def _create_header(self, text, readonly=False):
         def cb(event):
             _ = event
             Usages(self.controller, self._tree.highlight).show()
