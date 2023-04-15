@@ -255,6 +255,8 @@ class GridEditorPreferences(EditorPreferences):
         sizer.AddMany([l_word_wrap, editor])
         l_auto_suggest, editor = boolean_editor(self, settings, 'disable auto suggestions',
                                                 'Only trigger auto suggestions from shortcuts')
+        if IS_WINDOWS:
+            set_colors(l_auto_suggest, background_color, foreground_color)
         sizer.AddMany([l_auto_suggest, editor])
         return sizer
 
