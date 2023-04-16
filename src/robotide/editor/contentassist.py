@@ -13,13 +13,11 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from os.path import relpath, dirname, isdir
-from sys import platform
-
 import wx
 from wx import Colour
 from wx.lib.expando import ExpandoTextCtrl
 from wx.lib.filebrowsebutton import FileBrowseButton
+from os.path import relpath, dirname, isdir
 
 from .. import context, utils
 from ..context import IS_MAC, IS_WINDOWS, IS_WX_410_OR_HIGHER
@@ -31,7 +29,7 @@ from ..publish.messages import RideSettingsChanged
 
 
 _PREFERRED_POPUP_SIZE = (400, 200)
-_AUTO_SUGGESTION_CFG_KEY = "disable auto suggestions"
+_AUTO_SUGGESTION_CFG_KEY = "enable auto suggestions"
 
 
 class _ContentAssistTextCtrlBase(wx.TextCtrl):
@@ -62,7 +60,7 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
         # later after search is performed
         if IS_MAC and IS_WX_410_OR_HIGHER:
             self.OSXDisableAllSmartSubstitutions()
-        self._is_auto_suggestion_disabled = self._get_auto_suggestion_config()
+        self._is_auto_suggestion_enabled = self._get_auto_suggestion_config()
         PUBLISHER.subscribe(self.OnSettingsChanged, RideSettingsChanged)
 
     @staticmethod
@@ -75,7 +73,7 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
         """Update auto suggestion settings from PUBLISHER message"""
         section, setting = message.keys
         if section == 'Grid' and _AUTO_SUGGESTION_CFG_KEY in setting:
-            self._is_auto_suggestion_disabled = message.new
+            self._is_auto_suggestion_enabled = message.new
 
     def set_row(self, row):
         self._row = row
@@ -125,7 +123,7 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
             event.Skip()
 
     def _show_auto_suggestions_when_enabled(self):
-        if not self._is_auto_suggestion_disabled or not self.is_shown():
+        if self._is_auto_suggestion_enabled or self.is_shown():
             self.show_content_assist()
 
     def OnChar(self, event):
@@ -258,7 +256,6 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
             value = self.gherkin_prefix + self._popup.get_value() or self.GetValue()
         else:
             value = self._popup.get_value() or self.GetValue()
-
         if value:
             wrapper_view = self.GetParent().GetParent()
             if hasattr(wrapper_view, 'open_cell_editor'):
@@ -266,7 +263,6 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
                 wrapper_view.open_cell_editor()
             self.SetValue(value)
             self.SetInsertionPoint(len(value))
-
         self.hide()
 
     def pop_event_handlers(self, event):
@@ -278,6 +274,7 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
                 self.PopEventHandler()
 
     def OnDestroy(self, event):
+        _ = event
         # all pushed eventHandlers need to be popped before close
         # the last event handler is window object itself - do not pop itself
         while self.GetEventHandler() is not self:
@@ -406,6 +403,7 @@ class ContentAssistFileButton(FileBrowseButton):
         self._browsed = False
 
     def OnDestroy(self, event):
+        _ = event
         # all pushed eventHandlers need to be popped before close
         # the last event handler is window object itself - do not pop itself
         try:
@@ -559,26 +557,17 @@ class ContentAssistPopup(object):
 
     def select_and_scroll(self, key_code):
         sel = self._list.GetFirstSelected()
+        count = self._list.GetItemCount()
+        pos = 0
         if key_code == wx.WXK_DOWN:
-            if sel < (self._list.GetItemCount() - 1):
-                self._select_and_scroll(sel + 1)
-            else:
-                self._select_and_scroll(0)
+            pos = sel + 1 if sel < count - 1 else 0
         elif key_code == wx.WXK_UP:
-            if sel > 0:
-                self._select_and_scroll(sel - 1)
-            else:
-                self._select_and_scroll(self._list.GetItemCount() - 1)
+            pos = sel - 1 if sel > 0 else count - 1
         elif key_code == wx.WXK_PAGEDOWN:
-            if self._list.GetItemCount() - self._selection > 14:
-                self._select_and_scroll(self._selection + 14)
-            else:
-                self._select_and_scroll(self._list.GetItemCount() - 1)
+            pos = self._selection + 14 if count - self._selection > 14 else count - 1
         elif key_code == wx.WXK_PAGEUP:
-            if self._selection > 14:
-                self._select_and_scroll(self._selection - 14)
-            else:
-                self._select_and_scroll(0)
+            pos = self._selection - 14 if self._selection > 14 else 0
+        self._select_and_scroll(pos)
 
     def _select_and_scroll(self, selection):
         self._selection = selection

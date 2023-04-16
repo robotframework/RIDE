@@ -10,7 +10,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Changed
 
-- Keywords auto-suggestion in grid editor does not need shortcut anymore, if you want to disable this feature you can config in `Preferences -> Grid Editor -> Only trigger auto suggestions from shortcuts`
+- Allow to do auto-suggestions of keywords in grid editor without a shortcut, if you want to enable or disable this feature you can config in `Preferences -> Grid Editor -> Enable auto suggestions`
 
 - Made ``\n`` visible when editing cells in Grid Editor (problematic in Windows)
 
