@@ -124,10 +124,8 @@ class FileNameEditor(ValueEditor):
     _sizer_flags_for_editor = 0
     _sizer_flags_for_label = wx.TOP | wx.BOTTOM | wx.LEFT
 
-    def __init__(self, parent, value, label, controller, validator=None,
-                 settings=None, suggestion_source=None):
-        self._suggestion_source = suggestion_source or SuggestionSource(
-            parent.plugin, None)
+    def __init__(self, parent, value, label, controller, validator=None, settings=None, suggestion_source=None):
+        self._suggestion_source = suggestion_source or SuggestionSource(parent.plugin, None)
         self._controller = controller
         self._label = label
         self._parent = parent
@@ -137,8 +135,7 @@ class FileNameEditor(ValueEditor):
         self._parent.setFocusToOK()
 
     def _get_text_ctrl(self):
-        filename_ctrl = ContentAssistFileButton(self, self._suggestion_source, '',
-                                       self._controller, (500, -1))
+        filename_ctrl = ContentAssistFileButton(self, self._suggestion_source, '', self._controller, (500, -1))
         filename_ctrl.SetBackgroundColour(Colour(self.color_secondary_background))
         filename_ctrl.SetForegroundColour(Colour(self.color_secondary_foreground))
         return filename_ctrl
