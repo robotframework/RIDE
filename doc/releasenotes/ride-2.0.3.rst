@@ -2,8 +2,8 @@
 
    `RIDE (Robot Framework
    IDE) <https://github.com/robotframework/RIDE/>`__ v2.0.3 is a new
-   release with minor enhancements and bug fixes. The reference for valid
-   arguments is `Robot Framework <http://robotframework.org>`__
+   release with minor enhancements and bug fixes. The reference for
+   valid arguments is `Robot Framework <http://robotframework.org>`__
    installed version, which is at this moment 6.0.2. However, internal
    library is based on version 3.1.2, to keep compatibility with old
    formats.
@@ -11,8 +11,10 @@
    -  This version supports Python 3.6 up to 3.10.
    -  There are some changes, or known issues:
 
-      -  Newlines in Grid Editor are not visible when in navigation mode, but visible in edit mode.
-      -  Auto suggestions in Grid Editor can be enabled to not use shortcut to show list.
+      -  Newlines in Grid Editor are not visible when in navigation
+         mode, but visible in edit mode.
+      -  Auto suggestions in Grid Editor can be enabled to not use
+         shortcut to show list.
       -  On Text Editor when Saving the selection of tests in Test
          Suites (Tree) is cleared.
       -  Test Suite with *\**\* Comments \**\** can be edited but
@@ -24,27 +26,36 @@
 
    **New Features and Fixes Highlights**
 
-      - Keywords auto-suggestion in grid editor does not need shortcut anymore, if you want to enable or disable this feature you can config in `Preferences -> Grid Editor -> Enable auto suggestions`
+   -  Keywords auto-suggestion in grid editor does not need shortcut
+      anymore, if you want to enable or disable this feature you can
+      config in \`Preferences -> Grid Editor -> Enable auto
+      suggestions\`
 
-      - Made ``\n`` visible when editing cells in Grid Editor (problematic in Windows)
+   -  Made
 
-      - Fixed missing auto-enclosing when in Cell Editor in Linux
+      ::
 
-      - Fixed RIDE will crash when using third party input method in Mac OS
+      visible when editing cells in Grid Editor (problematic in Windows)
 
-      - Fixed missing color definition for keyword call in Text Editor
+   -  Fixed missing auto-enclosing when in Cell Editor in Linux
 
-      - Fixed clearing or emptying fixtures (Setups, Teardowns), now removes headers and synchronizes Text Editor
+   -  Fixed RIDE will crash when using third party input method in Mac
+      OS
 
-      - Fixed selection and persistance of colors in File Explorer and Project Tree panels
+   -  Fixed missing color definition for keyword call in Text Editor
 
-      - Fixed not using defined color for help and HTML content
+   -  Fixed clearing or emptying fixtures (Setups, Teardowns), now
+      removes headers and synchronizes Text Editor
 
-      - Fixed missing newlines in sections separation
+   -  Fixed selection and persistance of colors in File Explorer and
+      Project Tree panels
 
+   -  Fixed not using defined color for help and HTML content
+
+   -  Fixed missing newlines in sections separation
 
    We hope to implement or complete features and make fixes on next
-   version 2.1 (in the end of 2023).
+   major version 2.1 (in the end of 2023).
 
    **The minimal wxPython version is, 4.0.7, and RIDE supports the
    current version, 4.2.0.**

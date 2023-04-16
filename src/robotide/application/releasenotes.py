@@ -145,23 +145,15 @@ RELEASE_NOTES = f"""
 
 
 <p><a class="reference external" href="https://github.com/robotframework/RIDE/">RIDE (Robot Framework IDE)</a>
- v{VERSION} is a new release with major enhancements and bug fixes.
-This version v{VERSION} includes removal of Python 2.7 support. The reference for valid arguments is
+ v{VERSION} is a new release with minor enhancements and bug fixes. The reference for valid arguments is
  <a class="reference external" href="http://robotframework.org">Robot Framework</a> installed version, which is at this
   moment 6.0.2. However, internal library is based on version 3.1.2, to keep compatibility with old formats.</p>
 <p></p>
 <ul class="simple">
-<li>This is the <strong>first version without support for Python 2.7</strong>.</li>
-<li>The last version with support for Python 2.7 was <strong>1.7.4.2</strong>.</li>
-<li>Support for Python 3.6 up to 3.10 (current version on this date).</li>
-<li>There are some important changes, or known issues:<ul>
-<li>On MacOS to call autocomplete in Grid and Text Editors, you have to use Alt-Space (not Command-Space).</li>
-<li>On Linux and Windows to call autocomplete in Grid and Text Editors, you have to use Ctrl-Space.</li>
-<li>On Text Editor the TAB key adds the defined number of spaces. With Shift moves to the left, and together with
- Control selects text.</li>
-<li>Text Editor also accepts the old <strong>: FOR</strong> loop structure, but recommended is <strong>FOR</strong>
- and <strong>END</strong>.</li>
-<li>On Grid Editor and Linux the auto enclose is only working on cell selection, but not on cell content edit.</li>
+<li>This version supports Python 3.6 up to 3.10.</li>
+<li>There are some changes, or known issues:<ul>
+<li>Newlines in Grid Editor are not visible when in navigation mode, but visible in edit mode.</li>
+<li>Auto suggestions in Grid Editor can be enabled to not use shortcut to show list.</li>
 <li>On Text Editor when Saving the selection of tests in Test Suites (Tree) is cleared.</li>
 <li>Test Suite with <em>*** Comments ***</em> can be edited but newlines are introduced.</li>
 <li>Some argument types detection (and colorization) is not correct in Grid Editor.</li>
@@ -172,36 +164,34 @@ This version v{VERSION} includes removal of Python 2.7 support. The reference fo
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
-<li>Auto enclose text in &#123;&#125;, [], &quot;&quot;, ''</li>
-<li>Auto indent in Text Editor on new lines</li>
-<li>Block indent in Text Editor (TAB on block of selected text)</li>
-<li>Ctrl-number with number, 1-5 also working on Text Editor:<ol class="arabic">
-<li>create scalar variable</li>
-<li>create list variable</li>
-<li>Comment line (with Shift comment content with #)</li>
-<li>Uncomment line (with Shift uncomment content with #)</li>
-<li>create dictionary variable</li>
-</ol>
-</li>
-<li>Persistence of the position and state of detached panels, File Explorer and Test Suites</li>
-<li>File Explorer and Test Suites panels are now Plugins and can be disabled or enabled and made Visible with F11 (
- Test Suites with F12, but disabled for now)</li>
-<li>File Explorer now shows selected file when RIDE starts</li>
-<li>Block comment and uncomment on both Grid and Text editors</li>
-<li>Extensive color customization of panel elements via <cite>Tools&gt;Preferences</cite></li>
-<li>Color use on Console and Messages Log panels on Test Run tab</li>
-<li>In Text Editor the same commands as in Grid Editor are now supported: Move Up/Down Rows, Insert or Delete Rows and
- Insert or Delete 'Cells'</li>
+<li>Keywords auto-suggestion in grid editor does not need shortcut anymore, if you want to enable or disable this
+ feature you can config in `Preferences -> Grid Editor -> Enable auto suggestions`</li>
+
+<li>Made <pre>\n</pre> visible when editing cells in Grid Editor (problematic in Windows)</li>
+
+<li>Fixed missing auto-enclosing when in Cell Editor in Linux</li>
+
+<li>Fixed RIDE will crash when using third party input method in Mac OS</li>
+
+<li>Fixed missing color definition for keyword call in Text Editor</li>
+
+<li>Fixed clearing or emptying fixtures (Setups, Teardowns), now removes headers and synchronizes Text Editor</li>
+
+<li>Fixed selection and persistance of colors in File Explorer and Project Tree panels</li>
+
+<li>Fixed not using defined color for help and HTML content</li>
+
+<li>Fixed missing newlines in sections separation</li>
 </ul>
-<p>We hope to implement or complete features and make fixes on next version 2.1 (in the end of 2023).</p>
+<p>We hope to implement or complete features and make fixes on next major version 2.1 (in the end of 2023).</p>
 <p><strong>The minimal wxPython version is, 4.0.7, and RIDE supports the current version, 4.2.0.</strong></p>
 <p><em>Linux users are advised to install first wxPython from .whl package at</em> <a class="reference external"
  href="https://extras.wxpython.org/wxPython4/extras/linux/gtk3/">wxPython.org</a>, or by using the system package
   manager.</p>
 <p>The <a class="reference external" href="https://github.com/robotframework/RIDE/blob/master/CHANGELOG.adoc">
 CHANGELOG.adoc</a> lists the changes done on the different versions.</p>
-<p>All issues targeted for RIDE v2.0 can be found
-from the <a class="reference external" href="https://github.com/robotframework/RIDE/issues?q=milestone%3Av2.0">issue
+<p>All issues targeted for RIDE v2.1 can be found
+from the <a class="reference external" href="https://github.com/robotframework/RIDE/issues?q=milestone%3Av2.1">issue
  tracker milestone</a>.</p>
 <p>Questions and comments related to the release can be sent to the
 <a class="reference external" href="http://groups.google.com/group/robotframework-users">robotframework-users</a>
@@ -242,6 +232,6 @@ python -m robotide.__init__
 <pre class="literal-block">
 python -m robotide.postinstall -install
 </pre>
-<p>RIDE v{VERSION} was released on 01/Mar/2023.</p>
+<p>RIDE v{VERSION} was released on 16/Apr/2023.</p>
 </div>
 """
