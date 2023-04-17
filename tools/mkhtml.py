@@ -11,7 +11,7 @@ assert Path.cwd().resolve() == Path(__file__).resolve().parent
 sys.path.insert(0, '../src')
 from robotide.version import VERSION
 from robotide.application.releasenotes import RELEASE_NOTES
-source_path = "../doc/releasenotes/ride-"+".".join([str(x) for x in VERSION.split('.')[:2]]).replace('v','')+".rst"
+source_path = "../doc/releasenotes/ride-"+".".join([str(x) for x in VERSION.split('.')]).replace('v','')+".rst"
 
 # Reverted flow: First edit ../src/robotide/application/releasenotes.py and then generate ride-VERSION.rst
 if exists(source_path):
