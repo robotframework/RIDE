@@ -6,7 +6,11 @@ All notable changes to this project will be documented in this file.
 The format is based on http://keepachangelog.com/en/1.0.0/[Keep a Changelog]
 and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioning].
 
-// == https://github.com/robotframework/RIDE[Unreleased]
+== https://github.com/robotframework/RIDE[Unreleased]
+
+=== Added
+
+- Added the note, 'Colors will be active after next RIDE restart.' to the Preferences of Test Runner.
 
 == https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.0.3.rst[2.0.3] - 2023-04-16
 
@@ -14,7 +18,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 - Allow to do auto-suggestions of keywords in grid editor without a shortcut, if you want to enable or disable this feature you can config in `Preferences -> Grid Editor -> Enable auto suggestions`
 
-- Made ``\n`` visible when editing cells in Grid Editor (problematic in Windows)
+- Made ``\\n`` visible when editing cells in Grid Editor (problematic in Windows)
 
 == Fixed
 
@@ -74,8 +78,8 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
     * Users will need to edit ``/etc/paths`` to include paths for ``robot`` and other commands like ``chromedriver``, etc
 - Added an Open External File menu option, to open file in Code Editor
 - Added multiline view in Grid Editor
-    * When editing, ``\n`` will be converted to newline, ``\\n`` will remain as is.
-    * When editing, ``\ `` will be converted to whitespace.
+    * When editing, ``\\n`` will be converted to newline, ``\\\\n`` will remain as is.
+    * When editing, ``\\ `` will be converted to whitespace.
     * When editing, Alt-Enter is the same as ``\n``, converted immediately.
     * When editing, Ctrl-Up and Ctrl-Down move cursor to start and end of multiline respectively.
     * When editing, Ctrl-Home and Ctrl-End move cursor to start and end of cell content respectively.
