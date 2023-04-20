@@ -359,6 +359,7 @@ class TestRunnerPreferences(EditorPreferences):
     def __init__(self, settings, *args, **kwargs):
         super(TestRunnerPreferences, self).__init__(
             settings['Plugins'][self.name], *args, **kwargs)
+        self.Sizer.Add(wx.StaticText(self, wx.ID_ANY, "Colors will be active after next RIDE restart."))
         self.Sizer.Add(self._create_test_runner_config_editor())
 
     def _create_test_runner_config_editor(self):

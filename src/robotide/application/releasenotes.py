@@ -167,7 +167,7 @@ RELEASE_NOTES = f"""
 <li>Keywords auto-suggestion in grid editor does not need shortcut anymore, if you want to enable or disable this
  feature you can config in `Preferences -> Grid Editor -> Enable auto suggestions`</li>
 
-<li>Made <pre>\n</pre> visible when editing cells in Grid Editor (problematic in Windows)</li>
+<li>Made <pre>\\n</pre> visible when editing cells in Grid Editor (problematic in Windows)</li>
 
 <li>Fixed missing auto-enclosing when in Cell Editor in Linux</li>
 
