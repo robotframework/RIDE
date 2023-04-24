@@ -61,7 +61,7 @@ _TEST_WITH_TWO_IF_BLOCKS = ['If blocks',
                             '  Log  Last line to move up']
 
 
-class IfBlocks(TestCaseCommandTest):
+class IfBlocksMoveDown(TestCaseCommandTest):
 
     def _create_data(self):
         return _TEST_WITH_TWO_IF_BLOCKS[:]
@@ -152,3 +152,96 @@ class IfBlocks(TestCaseCommandTest):
         self._verify_step(16, '', ['', 'No Operation'])  # kept indent
         self._verify_step(17, '', ['END'])  # kept no indent
         self._verify_step(18, '', ['ELSE'])  # kept no indent
+
+
+class IfBlocksMoveUp(TestCaseCommandTest):
+
+    def _create_data(self):
+        return _TEST_WITH_TWO_IF_BLOCKS[:]
+
+    def test_move_up_last_line_into_block(self):
+        self._exec(MoveRowsUp((19,)))
+        self._verify_step(18, '', ['', 'Log', 'Last line to move up'])
+        self._verify_step(19, '', ['END'])
+        # print("Test After MoveRowsUp:")
+        # for el in self._ctrl.steps:
+        #     print(f"{el.as_list()}")
+
+    def test_move_up_if_line_into_block(self):
+        self._exec(MoveRowsUp((12,)))
+        self._verify_step(11, '', ['IF', '"${test}" != "test"'])  # keep no indent
+        self._verify_step(12, '', ['END'])  # kept no indent
+
+    def test_move_up_line_inside_block(self):
+        self._exec(MoveRowsUp((17,)))
+        self._verify_step(16, '', ['', 'No Operation'])  # kept indent
+        self._verify_step(17, '', ['', 'Log', 'last branch'])  # kept indent
+
+    def test_move_up_line_inside_block_after_elseif(self):
+        self._exec(MoveRowsUp((6,)))
+        self._verify_step(5, '', ['', 'Log', 'second branch'])  # kept indent
+        self._verify_step(6, '', ['ELSE IF', '"${test}" == "test"'])  # kept no indent
+        self._verify_step(7, '', ['', 'No Operation'])  # kept indent
+
+    def test_move_up_line_inside_block_after_else(self):
+        self._exec(MoveRowsUp((9,)))
+        self._verify_step(8, '', ['', 'Log', 'False'])  # kept indent
+        self._verify_step(9, '', ['ELSE'])  # kept no indent
+        self._verify_step(10, '', ['', 'No Operation'])  # kept indent
+
+    def test_move_up_line_out_of_block(self):
+        self._exec(MoveRowsUp((13,)))
+        self._verify_step(12, '', ['Log', 'Not test'])  # decrease indent
+        self._verify_step(13, '', ['IF', '"${test}" != "test"'])  # kept no indent
+        self._verify_step(14, '', ['', 'No Operation'])  # kept indent
+
+    def test_move_up_end_inside_if_block(self):
+        self._exec(MoveRowsUp((11,)))
+        self._verify_step(10, '', ['END'])   # kept no indent
+        self._verify_step(11, '', ['No Operation'])  # decrease indent
+        self._verify_step(12, '', ['IF', '"${test}" != "test"'])  # kept no indent
+
+    def test_move_up_end_to_first_line(self):
+        self._exec(MoveRowsUp((11,)))
+        self._exec(MoveRowsUp((10,)))
+        self._exec(MoveRowsUp((9,)))
+        self._exec(MoveRowsUp((8,)))
+        self._exec(MoveRowsUp((7,)))
+        self._exec(MoveRowsUp((6,)))
+        self._exec(MoveRowsUp((5,)))
+        self._verify_step(6, '', ['ELSE IF', '"${test}" == "test"'])  # kept indent
+        self._exec(MoveRowsUp((4,)))
+        self._exec(MoveRowsUp((3,)))
+        self._exec(MoveRowsUp((2,)))
+        self._exec(MoveRowsUp((1,)))
+        self._verify_step(0, '', ['END'])   # kept no indent
+        self._verify_step(1, '', ['Log', 'First line to move down'])  # kept indent
+        self._verify_step(2, '', ['${test}=', 'Set Variable', 'test'])  # kept indent
+        self._verify_step(3, '', ['IF', '"${test}" == "true"'])  # kept no indent
+        self._verify_step(4, '', ['Log', 'True'])  # decrased indent, because was outside END
+        self._verify_step(5, '', ['No Operation'])  # decrased indent, because was outside END
+        print("Test After MoveRowsUp:")
+        for el in self._ctrl.steps:
+            print(f"{el.as_list()}")
+
+    def test_move_up_elseif_inside_block(self):
+        self._exec(MoveRowsUp((5,)))
+        self._verify_step(3, '', ['', 'Log', 'True'])  # kept indent
+        self._verify_step(4, '', ['ELSE IF', '"${test}" == "test"'])  # kept no indent
+        self._verify_step(5, '', ['', 'No Operation'])  # kept indent
+
+    def test_move_up_else_inside_block(self):
+        self._exec(MoveRowsUp((8,)))
+        self._verify_step(6, '', ['', 'Log', 'second branch'])  # kept indent
+        self._verify_step(7, '', ['ELSE'])  # kept no indent
+        self._verify_step(8, '', ['', 'No Operation'])  # kept indent
+
+    def test_move_up_else_out_of_if(self):
+        self._exec(MoveRowsUp((15,)))
+        self._exec(MoveRowsUp((14,)))
+        self._exec(MoveRowsUp((13,)))
+        self._verify_step(11, '', ['END'])  # kept no indent
+        self._verify_step(12, '', ['ELSE'])  # kept no indent
+        self._verify_step(13, '', ['IF', '"${test}" != "test"'])  # kept no indent
+        self._verify_step(14, '', ['', 'Log', 'Not test'])  # kept indent
+        self._verify_step(15, '', ['', 'No Operation'])  # kept indent

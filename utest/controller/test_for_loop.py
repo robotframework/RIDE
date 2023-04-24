@@ -227,7 +227,6 @@ class TestForLoop(unittest.TestCase):
         test.execute(DeleteCell(0, 0))
         self.assertEqual(test.steps[0].as_list(), ['Foo', '# comment'])
 
-    # @unittest.skip("Test is losing forloop step")  # FIXME see comment
     def test_move_for_loop_over_another_for_loop(self):
         loop_1 = 'FOR  ${i}  IN  1  2  3  4'.split('  ')
         end_1 = ['END']
@@ -236,31 +235,20 @@ class TestForLoop(unittest.TestCase):
         inside_2 = ['', 'Fail']
         test = self.project.datafiles[1].tests[17]
         self._verify_steps(test.steps, loop_1, inside_1, end_1, loop_2, inside_2, end_1)
-        print("DEBUG: BEFORE MOVE UP FOR Test 17:")
-        for s in test.steps:
-            print(f"{s.as_list()}")
+        # print("DEBUG: BEFORE MOVE UP FOR Test 17:")
+        # for s in test.steps:
+        #     print(f"{s.as_list()}")
         test.execute(MoveRowsUp([3]))
-        print("DEBUG: AFTER MOVE UP FOR Test 17:")
-        for s in test.steps:
-            print(f"{s.as_list()}")
-        # Actually the previous output shows the correct structure, but then the verification fails.
-        # If we change MoveRowsUp() to return False, the test passes, but other tests will fail, one of them is
-        # a trivial fix, but other 5 are not. This was the motivation to skip this test for now.
-        self._verify_steps(test.steps, loop_1, inside_1, [''] + loop_2, [''] + end_1, inside_2, end_1)
-        """
+        # print("DEBUG: AFTER MOVE UP FOR Test 17--1:")
+        # for s in test.steps:
+        #     print(f"{s.as_list()}")
+        self._verify_steps(test.steps, loop_1, inside_1, loop_2, end_1, inside_2, end_1)
         test.execute(MoveRowsUp([2]))
-        self._verify_steps(test.steps, loop_1, [''] + loop_2, [''] + inside_1, [''] + end_1, inside_2, end_1)
-        print("DEBUG: BEFORE Test 17:")
-        for s in test.steps:
-            print(f"{s.as_list()}")
+        self._verify_steps(test.steps, loop_1, loop_2, inside_1, end_1, inside_2, end_1)
         test.execute(MoveRowsUp([1]))
-        print("DEBUG: AFTER MOVE Test 17:")
-        for s in test.steps:
-            print(f"#_{s.as_list()}_#{type(s)}")
-        """
-        #self._verify_steps(test.steps, loop_2, [''] + loop_1, [''] + inside_1, [''] + end_1, inside_2, end_1)
-        # test.execute(MoveRowsDown([0]))
-        # self._verify_steps(test.steps, loop_1, [''] + loop_2, inside_1, [''] + end_1, inside_2, end_1)
+        self._verify_steps(test.steps, loop_2, loop_1, inside_1, end_1, inside_2, end_1)
+        test.execute(MoveRowsDown([0]))
+        self._verify_steps(test.steps, loop_1, ['']+loop_2, inside_1, end_1, inside_2, end_1)
 
     def test_move_for_loop_header_between_for_loops(self):
         test = self.project.datafiles[1].tests[18]
