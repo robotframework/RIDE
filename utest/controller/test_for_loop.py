@@ -235,9 +235,9 @@ class TestForLoop(unittest.TestCase):
         inside_2 = ['', 'Fail']
         test = self.project.datafiles[1].tests[17]
         self._verify_steps(test.steps, loop_1, inside_1, end_1, loop_2, inside_2, end_1)
-        # print("DEBUG: BEFORE MOVE UP FOR Test 17:")
-        # for s in test.steps:
-        #     print(f"{s.as_list()}")
+        print("DEBUG: BEFORE MOVE UP FOR Test 17:")
+        for s in test.steps:
+            print(f"{s.as_list()}")
         test.execute(MoveRowsUp([3]))
         # print("DEBUG: AFTER MOVE UP FOR Test 17--1:")
         # for s in test.steps:
@@ -247,13 +247,25 @@ class TestForLoop(unittest.TestCase):
         self._verify_steps(test.steps, loop_1, loop_2, inside_1, end_1, inside_2, end_1)
         test.execute(MoveRowsUp([1]))
         self._verify_steps(test.steps, loop_2, loop_1, inside_1, end_1, inside_2, end_1)
+        print("DEBUG: BEFORE MOVE down FOR Test 17:")
+        for s in test.steps:
+            print(f"{s.as_list()}")
         test.execute(MoveRowsDown([0]))
-        self._verify_steps(test.steps, loop_1, ['']+loop_2, inside_1, end_1, inside_2, end_1)
+        print("DEBUG: AFTER  MOVE Down FOR Test 17:")
+        for s in test.steps:
+            print(f"{s.as_list()}")
+        self._verify_steps(test.steps, loop_1, loop_2, inside_1, end_1, inside_2, end_1)
 
     def test_move_for_loop_header_between_for_loops(self):
         test = self.project.datafiles[1].tests[18]
+        # print("DEBUG: BEFORE MOVE Down FOR Test 18:")
+        # for s in test.steps:
+        #     print(f"{s.as_list()}")
         test.execute(MoveRowsDown([3]))
-        self.assertEqual(test.steps[4].as_list()[2], '${j}')
+        # print("DEBUG: AFTER MOVE Down FOR Test 18:")
+        # for s in test.steps:
+        #     print(f"{s.as_list()}")
+        self.assertEqual(test.steps[4].as_list()[1], '${j}')
 
     def test_move_for_loop_in_mulitlevels(self):
         # FIXME

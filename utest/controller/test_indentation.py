@@ -245,3 +245,66 @@ class IfBlocksMoveUp(TestCaseCommandTest):
         self._verify_step(13, '', ['IF', '"${test}" != "test"'])  # kept no indent
         self._verify_step(14, '', ['', 'Log', 'Not test'])  # kept indent
         self._verify_step(15, '', ['', 'No Operation'])  # kept indent
+
+
+_TEST_WITH_WHILE_BLOCKS = ['While blocks',
+                           '  WHILE  True  limit=4',
+                           '    Log  First while',
+                           '    No Operation',
+                           '    ${test}=  Set Variable  ${1}',
+                           '    WHILE  ${test} < ${3}  limit=4',
+                           '      Log  Second while',
+                           '      ${test}=  Set Variable  ${test + 1}',
+                           '    END',
+                           '    Log  Final step',
+                           '  END']
+
+
+class WhileBlocksMoveDown(TestCaseCommandTest):
+
+    def _create_data(self):
+        return _TEST_WITH_WHILE_BLOCKS[:]
+
+    def test_move_down_first_while(self):
+        self._exec(MoveRowsDown((0,)))
+        self._verify_step(0, '', ['Log', 'First while'])
+        self._verify_step(1, '', ['WHILE', 'True', 'limit=4'])
+        self._exec(MoveRowsDown((1,)))
+        self._verify_step(1, '', ['No Operation'])
+        self._verify_step(2, '', ['WHILE', 'True', 'limit=4'])
+        self._exec(MoveRowsDown((2,)))
+        self._verify_step(1, '', ['No Operation'])
+        self._verify_step(2, '', ['${test}=', 'Set Variable', '${1}'])
+        self._verify_step(3, '', ['WHILE', 'True', 'limit=4'])
+        self._exec(MoveRowsDown((3,)))
+        self._verify_step(1, '', ['No Operation'])
+        self._verify_step(2, '', ['${test}=', 'Set Variable', '${1}'])
+        self._verify_step(3, '', ['WHILE', '${test} < ${3}', 'limit=4'])
+        self._verify_step(4, '', ['', 'WHILE', 'True', 'limit=4'])
+        self._verify_step(5, '', ['', '', 'Log', 'Second while'])
+        self._exec(MoveRowsDown((4,)))
+        self._verify_step(1, '', ['No Operation'])
+        self._verify_step(2, '', ['${test}=', 'Set Variable', '${1}'])
+        self._verify_step(3, '', ['WHILE', '${test} < ${3}', 'limit=4'])
+        self._verify_step(4, '', ['', 'Log', 'Second while'])
+        self._verify_step(5, '', ['', 'WHILE', 'True', 'limit=4'])
+        self._verify_step(6, '', ['', '', '${test}=', 'Set Variable', '${test + 1}'])
+        self._exec(MoveRowsDown((5,)))
+        self._verify_step(4, '', ['', 'Log', 'Second while'])
+        self._verify_step(5, '', ['', '${test}=', 'Set Variable', '${test + 1}'])
+        self._verify_step(6, '', ['', 'WHILE', 'True', 'limit=4'])
+        self._verify_step(7, '', ['', 'END'])
+        self._exec(MoveRowsDown((6,)))
+        self._verify_step(5, '', ['', '${test}=', 'Set Variable', '${test + 1}'])
+        self._verify_step(6, '', ['', 'END'])
+        self._verify_step(7, '', ['', 'WHILE', 'True', 'limit=4'])
+        self._verify_step(8, '', ['', 'Log', 'Final step'])
+        self._exec(MoveRowsDown((7,)))
+        print("Test After MoveRowsDown:")
+        for el in self._ctrl.steps:
+            print(f"{el.as_list()}")
+        self._verify_step(5, '', ['', '${test}=', 'Set Variable', '${test + 1}'])
+        self._verify_step(6, '', ['', 'END'])
+        self._verify_step(7, '', ['', 'Log', 'Final step'])
+        self._verify_step(8, '', ['', 'WHILE', 'True', 'limit=4'])
+        self._verify_step(9, '', ['END'])
