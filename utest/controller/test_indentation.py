@@ -78,7 +78,7 @@ class IfBlocksMoveDown(TestCaseCommandTest):
 
     def test_move_down_if_line_into_block(self):
         self._exec(MoveRowsDown((2,)))
-        self._verify_step(2, '', ['Log', 'True'])  # descreased indent
+        self._verify_step(2, '', ['Log', 'True'])  # decreased indent
         self._verify_step(3, '', ['IF', '"${test}" == "true"'])  # kept no indent
 
     def test_move_down_line_inside_block(self):
@@ -300,11 +300,40 @@ class WhileBlocksMoveDown(TestCaseCommandTest):
         self._verify_step(7, '', ['', 'WHILE', 'True', 'limit=4'])
         self._verify_step(8, '', ['', 'Log', 'Final step'])
         self._exec(MoveRowsDown((7,)))
-        print("Test After MoveRowsDown:")
-        for el in self._ctrl.steps:
-            print(f"{el.as_list()}")
         self._verify_step(5, '', ['', '${test}=', 'Set Variable', '${test + 1}'])
         self._verify_step(6, '', ['', 'END'])
         self._verify_step(7, '', ['', 'Log', 'Final step'])
         self._verify_step(8, '', ['', 'WHILE', 'True', 'limit=4'])
+        self._verify_step(9, '', ['END'])
+        self._exec(MoveRowsDown((8,)))
+        self._verify_step(5, '', ['', '${test}=', 'Set Variable', '${test + 1}'])
+        self._verify_step(6, '', ['', 'END'])
+        self._verify_step(7, '', ['', 'Log', 'Final step'])
+        self._verify_step(8, '', ['END'])
+        self._verify_step(9, '', ['WHILE', 'True', 'limit=4'])
+        # Extra test, move after last test line
+        self._exec(MoveRowsDown((9,)))
+        # print("Test After MoveRowsDown:")
+        # for el in self._ctrl.steps:
+        #     print(f"{el.as_list()}")
+        self._verify_step(5, '', ['', '${test}=', 'Set Variable', '${test + 1}'])
+        self._verify_step(6, '', ['', 'END'])
+        self._verify_step(7, '', ['', 'Log', 'Final step'])
+        self._verify_step(8, '', ['END'])
+        self._verify_step(9, '', ['WHILE', 'True', 'limit=4'])
+
+    def test_move_down_inner_while_block(self):
+        self._exec(MoveRowsDown([4,7]))
+        # print("Test After MoveRowsDown:")
+        # for el in self._ctrl.steps:
+        #     print(f"{el.as_list()}")
+        self._verify_step(0, '', ['WHILE', 'True', 'limit=4'])
+        self._verify_step(1, '', ['', 'Log', 'First while'])
+        self._verify_step(2, '', ['', 'No Operation'])
+        self._verify_step(3, '', ['', '${test}=', 'Set Variable', '${1}'])
+        self._verify_step(4, '', ['', 'Log', 'Final step'])
+        self._verify_step(5, '', ['', 'WHILE', '${test} < ${3}', 'limit=4'])
+        self._verify_step(6, '', ['', '', 'Log', 'Second while'])
+        self._verify_step(7, '', ['', '', '${test}=', 'Set Variable', '${test + 1}'])
+        self._verify_step(8, '', ['', 'END'])
         self._verify_step(9, '', ['END'])
