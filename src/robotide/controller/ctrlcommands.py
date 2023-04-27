@@ -17,22 +17,10 @@ import os
 import re
 import time
 from itertools import chain
-
-# from .filecontrollers import ResourceFileController
-# ResourceFileController
-# from . import macrocontrollers
-# from .macrocontrollers import KeywordNameController, ForLoopStepController, TestCaseController
-# from mercurial.match import predicatematcher
-
 from . import settingcontrollers
-# import _SettingController, VariableController
-# from . import tablecontrollers
-# import VariableTableController
 from . import validators
-# import BaseNameValidator
 from ..namespace.embeddedargs import EmbeddedArgsHandler
 from ..namespace import namespace
-# from ..namespace.namespace import _VariableStash
 from ..publish.messages import (RideSelectResource, RideFileNameChanged, RideSaving, RideSaved, RideSaveAll,
                                 RideExcludesChanged)
 from ..utils import overrides, variablematcher
@@ -1350,7 +1338,7 @@ class MoveRowsUp(_StepsChangingCommand):
 class MoveRowsDown(_StepsChangingCommand):
     """ Moves a single row down, argument single element list, or lines in a range for a two elements argument """
 
-    def __init__(self, rows:list):
+    def __init__(self, rows: (list, tuple)):
         self._rows = rows
         self._context = []
 
@@ -1358,9 +1346,14 @@ class MoveRowsDown(_StepsChangingCommand):
         return [self._rows]
 
     def change_steps(self, context):  # NOTE: Nevermind the quality of this code. Unit tests are passing ;)
-        if len(self._rows) == 0 or self._last_row >= len(context.steps) - 1:
+        if len(self._rows) == 0 or self._last_row >= len(context.steps) - 1 or self._rows[0] < 0 or self._rows[-1] < 0:
             return False
-        rows = [self._rows[0]] if len(self._rows) == 1 else range(self._rows[-1], self._rows[0]-1, -1)
+        if len(self._rows) == 1:
+            rows = [self._rows[0]]
+        elif self._rows[-1] <= self._rows[0]:
+            rows = range(self._rows[0], self._rows[-1] - 1, -1)
+        else:
+            rows = range(self._rows[-1], self._rows[0] - 1, -1)
         number_of_steps_before = len(context.steps)
         for row in rows:
             moving_start = context.steps[row]._first_non_empty_cell()
@@ -1376,26 +1369,10 @@ class MoveRowsDown(_StepsChangingCommand):
             # DEBUG: Add protection IndexError when moving down on empty lines
             increase_indent = moving_start < existing_start and context.steps[row].as_list()[moving_start] != 'END' \
                               and is_indent_start(context.steps[row+1].as_list()[existing_start])
-            # if not increase_indent and (context.steps[row].as_list()[moving_start] == 'END' and keep_indent) and \
-            #         not is_indent_start(context.steps[row+1].as_list()[existing_start]):
-            #     increase_indent = True
-            # if previous_start:
-            prev_decrease_indent = previous_start <= moving_start < existing_start and context.steps[row].as_list()[moving_start] != 'END'
-            print(f"DEBUG: MoveRowsDown before: DEFINE {previous_start=} {moving_start=} {existing_start=} {prev_decrease_indent=}")
-            prev_increase_indent = context.steps[row].as_list()[moving_start] == 'END' and previous_start > existing_start
-            # if prev_decrease_indent and not is_indent_start(context.steps[row+1].as_list()[existing_start]):
-            #     increase_indent = False
-            # else:
-            #     prev_decrease_indent = row > 0 and moving_start < existing_start and \
-            #                            context.steps[row].as_list()[moving_start] != 'END'
-            #    prev_increase_indent = moving_start > existing_start
-            """
-            if (previous_start > existing_start and
-               context.steps[row].as_list()[moving_start] != 'END' or
-               context.steps[row+1].as_list()[existing_start] == 'END' or
-               not is_indent_inner(context.steps[row+1].as_list()[existing_start])):
-                prev_decrease_indent = True
-            """
+            prev_decrease_indent = previous_start <= moving_start < existing_start and\
+                                   context.steps[row].as_list()[moving_start] != 'END'
+            prev_increase_indent = context.steps[row].as_list()[moving_start] == 'END' and\
+                                   previous_start > existing_start
             if is_indent_start(context.steps[row+1].as_list()[existing_start]) and \
                     context.steps[row].as_list()[moving_start] != 'END' and keep_indent:
                 if not is_indent_start(context.steps[row].as_list()[moving_start]):
@@ -1406,53 +1383,46 @@ class MoveRowsDown(_StepsChangingCommand):
             if not keep_indent:
                 if (context.steps[row + 1].as_list()[existing_start] == 'END') or (
                         not increase_indent and is_indent_start(context.steps[row].as_list()[moving_start])):
-                    print(f"DEBUG: MoveRowsDown before: CHANGED {decrease_indent=}")
                     decrease_indent = True
-            print(f"DEBUG: MoveRowsDown before: {row=} {context.steps[row].as_list()}\n "
-                  f"next {row+1} {context.steps[row + 1].as_list()} {decrease_indent=}"
-                  f"\n{increase_indent=} {keep_indent=} {existing_start=} {moving_start=}"
-                  f"{prev_decrease_indent=} {prev_increase_indent=}")
+            # print(f"DEBUG: MoveRowsDown before: {row=} {context.steps[row].as_list()}\n "
+            #       f"next {row+1} {context.steps[row + 1].as_list()} {decrease_indent=}"
+            #       f"\n{increase_indent=} {keep_indent=} {existing_start=} {moving_start=}"
+            #       f"{prev_decrease_indent=} {prev_increase_indent=}")
             context.move_step_down(row)
-            print(f"DEBUG: MoveRowsDown after move: {[context.steps[r].as_list() for r in range(len(context.steps))]}")
             new_existing_start = context.steps[row]._first_non_empty_cell()
             new_moved_start = context.steps[row+1]._first_non_empty_cell()
             previous_start = context.steps[row-1]._first_non_empty_cell() if row >= 1 else moving_start
-            if prev_decrease_indent and new_existing_start == existing_start and (
-                    is_indent_inner(context.steps[row + 1].as_list()[new_moved_start])
-                    or context.steps[row].as_list()[new_existing_start] == 'END' or previous_start == new_existing_start):
+            if row > 0 and prev_decrease_indent and new_existing_start == existing_start and (
+                    is_indent_inner(context.steps[row+1].as_list()[new_moved_start])
+                    or context.steps[row].as_list()[new_existing_start] == 'END'
+                    or previous_start == new_existing_start):
                 prev_decrease_indent = False
-                print(f"DEBUG: MoveRowsDown before: CHANGED after moved {previous_start=} "
-                      f"{new_moved_start=} {new_existing_start=} {prev_decrease_indent=}")
-            # prev_decrease_indent = prev_decrease_indent  # new_existing_start > existing_start and previous_start != existing_start
             if is_indent_start(context.steps[row+1].as_list()[new_moved_start]) and new_moved_start > moving_start:
                 increase_indent = False  # Compensation for auto indent
-            if decrease_indent and (new_moved_start == moving_start and is_indent_start(context.steps[row+1].as_list()[new_moved_start])
-                    and (prev_decrease_indent and context.steps[row].as_list()[new_existing_start] != 'END')):
+            if decrease_indent and (new_moved_start == moving_start
+                                    and is_indent_start(context.steps[row+1].as_list()[new_moved_start]) and
+                                    (prev_decrease_indent and
+                                     context.steps[row].as_list()[new_existing_start] != 'END')):
                 decrease_indent = False  # Compensation for auto indent
-            print(f"DEBUG: MoveRowsDown after move: {decrease_indent=} {increase_indent=} "
-                  f"{keep_indent=} {existing_start=}"
-                  f" {moving_start=} {new_existing_start=} {new_moved_start=}"
-                  f"{prev_decrease_indent=} {prev_increase_indent=}")
+            # print(f"DEBUG: MoveRowsDown after move: {decrease_indent=} {increase_indent=} "
+            #       f"{keep_indent=} {existing_start=}"
+            #       f" {moving_start=} {new_existing_start=} {new_moved_start=}"
+            #       f"{prev_decrease_indent=} {prev_increase_indent=}")
             if decrease_indent:
-                print(f"DEBUG: MoveRowsDown before decrease row: {row+1} {context.steps[row+1].as_list()}")
                 context.steps[row+1].shift_left(moving_start)
             if prev_decrease_indent:
-                print(f"DEBUG: MoveRowsDown before prev decrease row: {row} {context.steps[row].as_list()}")
                 context.steps[row].shift_left(new_existing_start)
                 # continue
             if prev_increase_indent and not is_indent_start(context.steps[row].as_list()[new_existing_start]):
-                print(f"DEBUG: MoveRowsDown before prev increase row: {row} {context.steps[row].as_list()}")
                 context.steps[row].shift_right(new_existing_start)
-            if increase_indent and not keep_indent:  # and new_moved_start <= moving_start:
+            if increase_indent and not keep_indent:
                 context.steps[row+1].shift_right(0)
-            # if increase_indent and keep_indent:
-            #    context.steps[row].shift_right(0)
         assert len(context.steps) == number_of_steps_before
         return True
 
     @property
     def _last_row(self):
-        return self._rows[-1]
+        return self._rows[-1] if self._rows[-1] >= self._rows[0] else self._rows[0]
 
     def _get_undo_command(self):
         return MoveRowsUp([r + 1 for r in self._rows])
@@ -1507,7 +1477,7 @@ def DeleteRows(rows):
 
 
 def AddRows(rows):
-    # TODO: Refactor to use AddRows(_StepsChangingCommand) command
+    # DEBUG: Refactor to use AddRows(_StepsChangingCommand) command
     first_row = sorted(rows)[0]
     return StepsChangingCompositeCommand(*[AddRow(first_row) for _ in rows])
 
