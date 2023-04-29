@@ -255,9 +255,6 @@ class IfBlocksMoveUp(TestCaseCommandTest):
         self._verify_step(3, '', ['IF', TESTTRUE])  # kept no indent
         self._verify_step(4, '', ['Log', 'True'])  # decrased indent, because was outside END
         self._verify_step(5, '', [NOOPERATION])  # decrased indent, because was outside END
-        print("Test After MoveRowsUp:")
-        for el in self._ctrl.steps:
-            print(f"{el.as_list()}")
 
     def test_move_up_elseif_inside_block(self):
         self._exec(MoveRowsUp((5,)))
@@ -398,9 +395,9 @@ class WhileBlocksMoveDown(TestCaseCommandTest):
 
     def test_move_down_while_range_all_but_last(self):
         self._exec(MoveRowsDown([0, 8]))
-        print("Test After MoveRowsDown:")
-        for el in self._ctrl.steps:
-            print(f"{el.as_list()}")
+        # print("Test After MoveRowsDown:")
+        # for el in self._ctrl.steps:
+        #    print(f"{el.as_list()}")
         self._verify_step(0, '', ['END'])
         self._verify_step(1, '', ['WHILE', 'True', LIMIT])
         self._verify_step(2, '', ['', 'Log', FIRSTWHILE])
@@ -411,6 +408,200 @@ class WhileBlocksMoveDown(TestCaseCommandTest):
         self._verify_step(7, '', ['', TESTAS, SETVAR, STEST1])  # decreased indent
         self._verify_step(8, '', ['END'])  # decreased indent because of moving up END
         self._verify_step(9, '', ['Log', FINALSTEP])  # decreased indent because of moving up END
+
+
+class WhileBlocksMoveUp(TestCaseCommandTest):
+
+    def _create_data(self):
+        return _TEST_WITH_WHILE_BLOCKS[:] + ['  Log  Last line to move up']
+
+    def test_move_up_last_line(self):
+        self._exec(MoveRowsUp((10,)))
+        self._verify_step(8, '', ['', 'Log', FINALSTEP])
+        self._verify_step(9, '', ['', 'Log', 'Last line to move up'])
+        self._verify_step(10, '', ['END'])
+
+    def test_move_up_two_while_lines(self):
+        self._exec(MoveRowsUp([1, 2]))
+        self._verify_step(0, '', ['Log', FIRSTWHILE])
+        self._verify_step(1, '', [NOOPERATION])
+        self._verify_step(2, '', ['WHILE', 'True', LIMIT])
+        self._verify_step(3, '', ['', TESTAS, SETVAR, '${1}'])
+        self._verify_step(4, '', ['', 'WHILE', TESTL3, LIMIT])
+
+    def test_move_up_inner_while_block(self):
+        self._exec(MoveRowsUp([4, 8]))
+        self._verify_step(0, '', ['WHILE', 'True', LIMIT])
+        self._verify_step(1, '', ['', 'Log', FIRSTWHILE])
+        self._verify_step(2, '', ['', NOOPERATION])
+        self._verify_step(3, '', ['', 'WHILE', TESTL3, LIMIT])
+        self._verify_step(4, '', ['', '', 'Log', SECONDWHILE])
+        self._verify_step(5, '', ['', '', TESTAS, SETVAR, STEST1])
+        self._verify_step(6, '', ['', 'END'])
+        self._verify_step(7, '', ['', 'Log', FINALSTEP])
+        self._verify_step(8, '', ['', TESTAS, SETVAR, '${1}'])
+        self._verify_step(9, '', ['END'])
+        self._verify_step(10, '', ['Log', 'Last line to move up'])
+
+    def test_move_up_while_range_reverted(self):
+        self._exec(MoveRowsUp([8, 4]))
+        self._verify_step(0, '', ['WHILE', 'True', LIMIT])
+        self._verify_step(1, '', ['', 'Log', FIRSTWHILE])
+        self._verify_step(2, '', ['', NOOPERATION])
+        self._verify_step(3, '', ['', 'WHILE', TESTL3, LIMIT])
+        self._verify_step(4, '', ['', '', 'Log', SECONDWHILE])
+        self._verify_step(5, '', ['', '', TESTAS, SETVAR, STEST1])
+        self._verify_step(6, '', ['', 'END'])
+        self._verify_step(7, '', ['', 'Log', FINALSTEP])
+        self._verify_step(8, '', ['', TESTAS, SETVAR, '${1}'])
+        self._verify_step(9, '', ['END'])
+        self._verify_step(10, '', ['Log', 'Last line to move up'])
+
+    def test_move_up_while_range_equal(self):
+        self._exec(MoveRowsUp([8, 8]))
+        self._verify_step(0, '', ['WHILE', 'True', LIMIT])
+        self._verify_step(1, '', ['', 'Log', FIRSTWHILE])
+        self._verify_step(2, '', ['', NOOPERATION])
+        self._verify_step(3, '', ['', TESTAS, SETVAR, '${1}'])
+        self._verify_step(4, '', ['', 'WHILE', TESTL3, LIMIT])
+        self._verify_step(5, '', ['', '', 'Log', SECONDWHILE])
+        self._verify_step(6, '', ['', '', TESTAS, SETVAR, STEST1])
+        self._verify_step(7, '', ['', '', 'Log', FINALSTEP])
+        self._verify_step(8, '', ['', 'END'])
+        self._verify_step(9, '', ['END'])
+        self._verify_step(10, '', ['Log', 'Last line to move up'])
+
+    def test_move_up_while_range_invalid_start(self):
+        self._exec(MoveRowsUp([-1, 10]))
+        self._verify_step(9, '', ['END'])
+        self._verify_step(10, '', ['Log', 'Last line to move up'])
+
+    def test_move_up_while_range_invalid_end(self):
+        self._exec(MoveRowsUp([10, -1]))
+        self._verify_step(9, '', ['END'])
+        self._verify_step(10, '', ['Log', 'Last line to move up'])
+
+    def test_move_up_while_range_out(self):
+        self._exec(MoveRowsUp([11, 0]))
+        self._verify_step(9, '', ['END'])
+        self._verify_step(10, '', ['Log', 'Last line to move up'])
+
+    def test_move_up_while_range_full(self):
+        self._exec(MoveRowsUp([0, 10]))
+        self._verify_step(9, '', ['END'])
+        self._verify_step(10, '', ['Log', 'Last line to move up'])
+
+    def test_move_up_while_range_all_but_first(self):
+        self._exec(MoveRowsUp([1, 10]))
+        print("Test After MoveRowsUp:")
+        for el in self._ctrl.steps:
+            print(f"{el.as_list()}")
+        self._verify_step(0, '', ['Log', FIRSTWHILE])
+        self._verify_step(1, '', [NOOPERATION])
+        self._verify_step(2, '', [TESTAS, SETVAR, '${1}'])
+        self._verify_step(3, '', ['WHILE', TESTL3, LIMIT])
+        self._verify_step(4, '', ['', 'Log', SECONDWHILE])
+        self._verify_step(5, '', ['', TESTAS, SETVAR, STEST1])
+        self._verify_step(6, '', ['', 'END'])
+        self._verify_step(7, '', ['', 'Log', FINALSTEP])
+        self._verify_step(8, '', ['END'])
+        self._verify_step(9, '', ['Log', 'Last line to move up'])
+        self._verify_step(10, '', ['WHILE', 'True', LIMIT])
+
+    def test_move_up_while_full_sequence(self):
+        self._exec(MoveRowsUp([1]))
+        self._verify_step(0, '', ['Log', FIRSTWHILE])
+        self._verify_step(1, '', ['WHILE', 'True', LIMIT])
+        self._verify_step(2, '', ['', NOOPERATION])
+        self._verify_step(3, '', ['', TESTAS, SETVAR, '${1}'])
+        self._exec(MoveRowsUp([2]))
+        self._verify_step(0, '', ['Log', FIRSTWHILE])
+        self._verify_step(1, '', [NOOPERATION])
+        self._verify_step(2, '', ['WHILE', 'True', LIMIT])
+        self._verify_step(3, '', ['', TESTAS, SETVAR, '${1}'])
+        self._verify_step(4, '', ['', 'WHILE', TESTL3, LIMIT])
+        self._exec(MoveRowsUp([3]))
+        self._verify_step(0, '', ['Log', FIRSTWHILE])
+        self._verify_step(1, '', [NOOPERATION])
+        self._verify_step(2, '', [TESTAS, SETVAR, '${1}'])
+        self._verify_step(3, '', ['WHILE', 'True', LIMIT])
+        self._verify_step(4, '', ['', 'WHILE', TESTL3, LIMIT])
+        self._exec(MoveRowsUp([4]))
+        self._verify_step(0, '', ['Log', FIRSTWHILE])
+        self._verify_step(1, '', [NOOPERATION])
+        self._verify_step(2, '', [TESTAS, SETVAR, '${1}'])
+        self._verify_step(3, '', ['WHILE', TESTL3, LIMIT])
+        self._verify_step(4, '', ['', 'WHILE', 'True', LIMIT])
+        self._verify_step(5, '', ['', '', 'Log', SECONDWHILE])
+        self._verify_step(6, '', ['', '', TESTAS, SETVAR, STEST1])
+        self._exec(MoveRowsUp([5]))
+        self._verify_step(0, '', ['Log', FIRSTWHILE])
+        self._verify_step(1, '', [NOOPERATION])
+        self._verify_step(2, '', [TESTAS, SETVAR, '${1}'])
+        self._verify_step(3, '', ['WHILE', TESTL3, LIMIT])
+        self._verify_step(4, '', ['', 'Log', SECONDWHILE])
+        self._verify_step(5, '', ['', 'WHILE', 'True', LIMIT])
+        self._verify_step(6, '', ['', '', TESTAS, SETVAR, STEST1])
+        self._exec(MoveRowsUp([6]))
+        self._verify_step(0, '', ['Log', FIRSTWHILE])
+        self._verify_step(1, '', [NOOPERATION])
+        self._verify_step(2, '', [TESTAS, SETVAR, '${1}'])
+        self._verify_step(3, '', ['WHILE', TESTL3, LIMIT])
+        self._verify_step(4, '', ['', 'Log', SECONDWHILE])
+        self._verify_step(5, '', ['', TESTAS, SETVAR, STEST1])
+        self._verify_step(6, '', ['', 'WHILE', 'True', LIMIT])
+        self._verify_step(7, '', ['', 'END'])
+        self._exec(MoveRowsUp([7]))
+        self._verify_step(0, '', ['Log', FIRSTWHILE])
+        self._verify_step(1, '', [NOOPERATION])
+        self._verify_step(2, '', [TESTAS, SETVAR, '${1}'])
+        self._verify_step(3, '', ['WHILE', TESTL3, LIMIT])
+        self._verify_step(4, '', ['', 'Log', SECONDWHILE])
+        self._verify_step(5, '', ['', TESTAS, SETVAR, STEST1])
+        self._verify_step(6, '', ['', 'END'])
+        self._verify_step(7, '', ['', 'WHILE', 'True', LIMIT])
+        self._verify_step(8, '', ['', 'Log', FINALSTEP])
+        self._exec(MoveRowsUp([8]))
+        self._verify_step(0, '', ['Log', FIRSTWHILE])
+        self._verify_step(1, '', [NOOPERATION])
+        self._verify_step(2, '', [TESTAS, SETVAR, '${1}'])
+        self._verify_step(3, '', ['WHILE', TESTL3, LIMIT])
+        self._verify_step(4, '', ['', 'Log', SECONDWHILE])
+        self._verify_step(5, '', ['', TESTAS, SETVAR, STEST1])
+        self._verify_step(6, '', ['', 'END'])
+        self._verify_step(7, '', ['', 'Log', FINALSTEP])
+        self._verify_step(8, '', ['', 'WHILE', 'True', LIMIT])
+        self._verify_step(9, '', ['END'])
+        self._exec(MoveRowsUp([9]))
+        # print("Test After MoveRowsUp:")
+        # for el in self._ctrl.steps:
+        #     print(f"{el.as_list()}")
+        self._verify_step(0, '', ['Log', FIRSTWHILE])
+        self._verify_step(1, '', [NOOPERATION])
+        self._verify_step(2, '', [TESTAS, SETVAR, '${1}'])
+        self._verify_step(3, '', ['WHILE', TESTL3, LIMIT])
+        self._verify_step(4, '', ['', 'Log', SECONDWHILE])
+        self._verify_step(5, '', ['', TESTAS, SETVAR, STEST1])
+        self._verify_step(6, '', ['', 'END'])
+        self._verify_step(7, '', ['', 'Log', FINALSTEP])
+        self._verify_step(8, '', ['END'])
+        self._verify_step(9, '', ['WHILE', 'True', LIMIT])
+        self._verify_step(10, '', ['Log', 'Last line to move up'])
+        self._exec(MoveRowsUp([10]))
+        # print("Test After MoveRowsUp:")
+        # for el in self._ctrl.steps:
+        #     print(f"{el.as_list()}")
+        self._verify_step(0, '', ['Log', FIRSTWHILE])
+        self._verify_step(1, '', [NOOPERATION])
+        self._verify_step(2, '', [TESTAS, SETVAR, '${1}'])
+        self._verify_step(3, '', ['WHILE', TESTL3, LIMIT])
+        self._verify_step(4, '', ['', 'Log', SECONDWHILE])
+        self._verify_step(5, '', ['', TESTAS, SETVAR, STEST1])
+        self._verify_step(6, '', ['', 'END'])
+        self._verify_step(7, '', ['', 'Log', FINALSTEP])
+        self._verify_step(8, '', ['END'])
+        self._verify_step(9, '', ['Log', 'Last line to move up'])
+        self._verify_step(10, '', ['WHILE', 'True', LIMIT])
 
 
 class TryBlockMoveDown(TestCaseCommandTest):
