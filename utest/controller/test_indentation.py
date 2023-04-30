@@ -238,6 +238,9 @@ class IfBlocksMoveUp(TestCaseCommandTest):
 
     def test_move_up_end_to_first_line(self):
         self._exec(MoveRowsUp((11,)))
+        # print("Test After MoveRowsUp:")
+        # for el in self._ctrl.steps:
+        #     print(f"{el.as_list()}")
         self._exec(MoveRowsUp((10,)))
         self._exec(MoveRowsUp((9,)))
         self._exec(MoveRowsUp((8,)))
@@ -274,9 +277,9 @@ class IfBlocksMoveUp(TestCaseCommandTest):
         self._exec(MoveRowsUp((13,)))
         self._verify_step(11, '', ['END'])  # kept no indent
         self._verify_step(12, '', ['ELSE'])  # kept no indent
-        self._verify_step(13, '', ['IF', TESTNOT])  # kept no indent
+        self._verify_step(13, '', ['', 'IF', TESTNOT])  # added indent
         self._verify_step(14, '', ['', 'Log', NOTEST])  # kept indent
-        self._verify_step(15, '', ['', NOOPERATION])  # kept indent
+        self._verify_step(15, '', ['',  NOOPERATION])  # kept indent
 
 
 class WhileBlocksMoveDown(TestCaseCommandTest):
