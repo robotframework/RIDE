@@ -301,7 +301,7 @@ class TestDataDirectoryControllerTest(unittest.TestCase):
 
     def _mock_project(self):
         project = lambda:0
-        project._namespace = lambda:0
+        project.namespace = lambda:0
         project.resource_file_controller_factory = lambda:0
         project.is_datafile_dirty = lambda *_:False
         project._settings = lambda:0

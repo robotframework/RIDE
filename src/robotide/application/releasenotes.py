@@ -117,7 +117,7 @@ class ReleaseNotes(object):
 
 date = time.strftime('%d/%m/%Y', time.localtime(os.path.getmtime(__file__)))
 version = VERSION
-milestone = re.split('[ab-]', VERSION)[0]
+# milestone = re.split('[ab-]', VERSION)[0]
 
 WELCOME_TEXT = f"""
 <h2>Welcome to use RIDE version {version}</h2>
@@ -145,7 +145,7 @@ RELEASE_NOTES = f"""
 
 
 <p><a class="reference external" href="https://github.com/robotframework/RIDE/">RIDE (Robot Framework IDE)</a>
- v{VERSION} is a new release with minor enhancements and bug fixes. The reference for valid arguments is
+ {VERSION} is a new release with minor enhancements and bug fixes. The reference for valid arguments is
  <a class="reference external" href="http://robotframework.org">Robot Framework</a> installed version, which is at this
   moment 6.0.2. However, internal library is based on version 3.1.2, to keep compatibility with old formats.</p>
 <p></p>
@@ -167,7 +167,7 @@ RELEASE_NOTES = f"""
 <li>Keywords auto-suggestion in grid editor does not need shortcut anymore, if you want to enable or disable this
  feature you can config in `Preferences -> Grid Editor -> Enable auto suggestions`</li>
 
-<li>Made <pre>\\n</pre> visible when editing cells in Grid Editor (problematic in Windows)</li>
+<li>Made \\n visible when editing cells in Grid Editor (problematic in Windows)</li>
 
 <li>Fixed missing auto-enclosing when in Cell Editor in Linux</li>
 
@@ -232,6 +232,6 @@ python -m robotide.__init__
 <pre class="literal-block">
 python -m robotide.postinstall -install
 </pre>
-<p>RIDE v{VERSION} was released on 16/Apr/2023.</p>
+<p>RIDE {VERSION} was released on 16/Apr/2023.</p>
 </div>
 """

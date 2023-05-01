@@ -57,7 +57,7 @@ class EditorPlugin(Plugin, TreeAwarePluginMixin):
     def __init__(self, application):
         Plugin.__init__(self, application)
         self._tab = None
-        self._grid_popup_creator = PopupCreator()
+        self.grid_popup_creator = PopupCreator()
         self._creator = EditorCreator(self.register_editor)
         self._editor = None
 
@@ -103,10 +103,10 @@ class EditorPlugin(Plugin, TreeAwarePluginMixin):
         If user selects one of the returned PopupMenuItem, related function
         is called with one argument, the wx event.
         """
-        self._grid_popup_creator.add_hook(hook)
+        self.grid_popup_creator.add_hook(hook)
 
     def unregister_context_menu_hook_to_grid(self, hook):
-        self._grid_popup_creator.remove_hook(hook)
+        self.grid_popup_creator.remove_hook(hook)
 
     def _show_editor(self):
         if not self._tab:

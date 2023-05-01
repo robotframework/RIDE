@@ -1292,7 +1292,7 @@ class OutputStyledTextCtrl(wx.stc.StyledTextCtrl):
             if not parent:
                 raise ValueError('Value does not contain NoteBook as parent')
             if isinstance(parent, NoteBook):
-                return parent._app.settings
+                return parent.app.settings
             parent = parent.GetParent()
 
 

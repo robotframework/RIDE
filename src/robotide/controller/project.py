@@ -112,11 +112,11 @@ class Project(_BaseController, WithNamespace):
         from .filecontrollers import DataController, ResourceFileControllerFactory
         self.update_default_dir(datafile.directory)
         self._controller = DataController(datafile, self)
-        self._resource_file_controller_factory = ResourceFileControllerFactory(self._namespace, self)
+        self._resource_file_controller_factory = ResourceFileControllerFactory(self.namespace, self)
         RideNewProject(path=datafile.source, datafile=datafile).publish()
 
     def new_resource(self, path, parent=None):
-        res = self._namespace.new_resource(path)
+        res = self.namespace.new_resource(path)
         resource_controller = self._create_resource_controller(res, parent)
         return resource_controller
 
@@ -170,7 +170,7 @@ class Project(_BaseController, WithNamespace):
         return datafile
 
     def _populate_from_datafile(self, path, datafile, load_observer):
-        self.__init__(self._namespace, self._settings, library_manager=self._library_manager)
+        self.__init__(self.namespace, self._settings, library_manager=self._library_manager)
         resources = self._loader.resources_for(datafile, load_observer)
         self._create_controllers(datafile, resources)
         RideOpenSuite(path=path, datafile=self._controller).publish()
@@ -302,7 +302,7 @@ class Project(_BaseController, WithNamespace):
         return [df for df in self.data.iter_datafiles() if not (df in self.resources)]
 
     def resource_import_modified(self, path, directory):
-        resource = self._namespace.get_resource(path, directory)
+        resource = self.namespace.get_resource(path, directory)
         if resource:
             return self._create_resource_controller(resource)
 

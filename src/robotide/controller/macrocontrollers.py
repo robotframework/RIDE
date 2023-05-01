@@ -51,7 +51,7 @@ class ItemNameController(object):
         return variablematcher.value_contains_variable(self._item.name, name)
 
     def replace_keyword(self, new_name, old_value=None):
-        print(f"DEBUG: macrocontrollers.py replace_keyword new_name={new_name}")
+        print(f"DEBUG: macrocontrollers.py replace_keyword new_name={new_name} old_value={old_value}")
         self._item.rename(new_name)
 
     def rename(self, new_name):
@@ -74,7 +74,7 @@ class TestCaseNameController(ItemNameController):
     _name_field = TESTCASE_NAME_FIELD
 
 
-class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
+class WithStepsController(ControllerWithParent, WithUndoRedoStacks):
 
     def __init__(self, parent_controller, data):
         self._parent = parent_controller
@@ -130,7 +130,7 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         return self.steps[index]
 
     def index_of_step(self, step):
-        return [s._step for s in self.steps].index(step)
+        return [s.step_controller_step for s in self.steps].index(step)
 
     def replace_step(self, index, new_step):
         corrected_index = index
@@ -141,10 +141,7 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         self._has_steps_changed = True
 
     def move_step_up(self, index):
-        # print(f"DEBUG: macrocontrollers move_step_up index={index} step={self.step(index).as_list()}")
         self.step(index).move_up()
-        # print(f"DEBUG: macrocontrollers move_step_up AFTER index-1={index-1} step={self.step(index-1).as_list()}")
-        # print(f"DEBUG: macrocontrollers move_step_up AFTER index={index} step={self.step(index).as_list()}")
         self._has_steps_changed = True
 
     def move_step_down(self, index):
@@ -159,12 +156,12 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         self.datafile_controller.update_namespace()
 
     def get_local_namespace(self):
-        # print(f"DEBUG: local namespace controller._namespace {self.datafile_controller._namespace}")
-        return LocalNamespace(self, self.datafile_controller._namespace)
+        # print(f"DEBUG: local namespace controller.namespace {self.datafile_controller.namespace}")
+        return LocalNamespace(self, self.datafile_controller.namespace)
 
     def get_local_namespace_for_row(self, row):
-        # print(f"DEBUG: local namespace_for_row controller._namespace {self.datafile_controller._namespace} row {row}")
-        return LocalNamespace(self, self.datafile_controller._namespace, row)
+        # print(f"DEBUG: local namespace_for_row controller.namespace {self.datafile_controller.namespace} row {row}")
+        return LocalNamespace(self, self.datafile_controller.namespace, row)
 
     def get_cell_info(self, row, col):
         steps = self.steps
@@ -203,7 +200,8 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         return [index for index, step in enumerate(self.steps)
                 if self._is_empty_step(step)]
 
-    def _is_empty_step(self, step):
+    @staticmethod
+    def _is_empty_step(step):
         return step.as_list() in [[], ['']]
 
     def remove_step(self, index):
@@ -218,7 +216,7 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         self._has_steps_changed = True
 
     def add_step(self, index, step=None):
-        # print(f"\nDEBUG: _WithStepsController enter add_step step={step}")
+        # print(f"\nDEBUG: WithStepsController enter add_step step={step}")
         if step is None:
             step = _empty_step()
         if index == len(self.steps):
@@ -235,7 +233,8 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
             raise ValueError(validation.error_message)
         return self.datafile_controller.create_keyword(name, argstr)
 
-    def _remove_bdd_prefix(self, name):
+    @staticmethod
+    def _remove_bdd_prefix(name):
         matcher = name.lower()
         for match in ['given ', 'when ', 'then ', 'and ', 'but ']:
             if matcher.startswith(match):
@@ -251,13 +250,12 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         self._create_extracted_kw(name, argstr, extracted_steps)
 
     def get_raw_steps(self):
-        # Reveales inner state so can't be sure if cache is up to date
+        # Reveales inner state so can't be sure if cache is up-to-date
         self._has_steps_changed = True
         return self.data.steps
 
     def set_raw_steps(self, steps):
-        self.data.steps = steps
-        self._has_steps_changed = True
+        self.set_steps(steps)
 
     def _extract_steps(self, step_range):
         rem_start, rem_end = step_range
@@ -308,7 +306,7 @@ class _WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         messageclass(item=self).publish()
 
 
-class TestCaseController(_WithStepsController):
+class TestCaseController(WithStepsController):
     __test__ = False
 
     _populator = robotapi.TestCasePopulator
@@ -400,21 +398,21 @@ class TestCaseController(_WithStepsController):
 
     @run_passed.setter
     def run_passed(self, value):
-        if value == True:
-            self._run_passed = True  # Test execution passed
-        elif value == False:
-            self._run_passed = False  # Test execution failed
-        else:
+        if value not in [True, False, None]:
             self._run_passed = None  # Test did not run
+        if value:
+            self._run_passed = True  # Test execution passed
+        else:
+            self._run_passed = False  # Test execution failed
 
 
-class UserKeywordController(_WithStepsController):
+class UserKeywordController(WithStepsController):
     _populator = robotapi.UserKeywordPopulator
     _TEARDOWN_NOT_SET = object()
     _teardown = _TEARDOWN_NOT_SET
 
     def _init(self, kw):
-        self._kw = kw
+        self.kw = kw
         # Needed for API compatibility in tag search
         self.force_tags = []
         self.default_tags = []
@@ -424,7 +422,7 @@ class UserKeywordController(_WithStepsController):
             return True
         if other.__class__ != self.__class__:
             return False
-        return self._kw == other._kw
+        return self.kw == other.kw
 
     def __hash__(self):
         return hash(repr(self))
@@ -440,35 +438,35 @@ class UserKeywordController(_WithStepsController):
         return KeywordNameController(self)
 
     def move_up(self):
-        return self._parent.move_up(self._kw)
+        return self._parent.move_up(self.kw)
 
     def move_down(self):
-        return self._parent.move_down(self._kw)
+        return self._parent.move_down(self.kw)
 
     @property
     def settings(self):
         result = [
-            DocumentationController(self, self._kw.doc),
-            ArgumentsController(self, self._kw.args),
+            DocumentationController(self, self.kw.doc),
+            ArgumentsController(self, self.kw.args),
             self.teardown,
-            ReturnValueController(self, self._kw.return_),
-            TimeoutController(self, self._kw.timeout),
-            TagsController(self, self._kw.tags),
+            ReturnValueController(self, self.kw.return_),
+            TimeoutController(self, self.kw.timeout),
+            TagsController(self, self.kw.tags),
         ]
         return result
 
     @property
     def teardown(self):
         if self._teardown == self._TEARDOWN_NOT_SET:
-            self._teardown = FixtureController(self, self._kw.teardown)
+            self._teardown = FixtureController(self, self.kw.teardown)
         return self._teardown
 
     @property
     def arguments(self):
-        return ArgumentsController(self, self._kw.args)
+        return ArgumentsController(self, self.kw.args)
 
     def validate_keyword_name(self, name):
         return self._parent.validate_name(name)
 
     def get_local_variables(self):
-        return parse_arguments_to_var_dict(self._kw.args.value, self._kw.name)
+        return parse_arguments_to_var_dict(self.kw.args.value, self.kw.name)

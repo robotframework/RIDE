@@ -18,29 +18,18 @@ try:
 except ImportError:
     import wx.lib.agw.aui as aui
 
-from wx import Colour
-
 from ..publish import RideNotebookTabChanging, RideNotebookTabChanged
 
 
 class NoteBook(aui.AuiNotebook):
 
     def __init__(self, parent, app, style):
-        self._app = app
+        self.app = app
         self._notebook_style = style
         # style = fnb.FNB_NODRAG|fnb.FNB_HIDE_ON_SINGLE_TAB|fnb.FNB_VC8
         # fnb.FlatNotebook.__init__(self, parent, style=style)
         # default style=0, experiment others
         aui.AuiNotebook.__init__(self, parent, style=3, agwStyle=self._notebook_style)
-        """
-        self.SetBackgroundColour(Colour(200, 222, 40))
-        self.SetOwnBackgroundColour(Colour(200, 222, 40))
-        self.SetForegroundColour(Colour(7, 0, 70))
-        self.SetOwnForegroundColour(Colour(7, 0, 70))
-        """
-        # self.SetBackgroundColour(parent.color_background_help)
-        # print(f"DEBUG: Notebook  parent.color_background_help {parent.color_background_help}")
-        # self.SetForegroundColour(parent.color_foreground_text)
         self.Bind(aui.EVT_AUINOTEBOOK_PAGE_CLOSE, self.OnTabClosing)
         self.Bind(aui.EVT_AUINOTEBOOK_PAGE_CHANGING, self.OnTabChanging)
         self.Bind(aui.EVT_AUINOTEBOOK_PAGE_CHANGED, self.OnTabChanged)
@@ -112,13 +101,14 @@ class NoteBook(aui.AuiNotebook):
         event.Skip()
 
     def OnTabChanged(self, event):
+        _ = event
         if not self._tab_changed():
             self._tab_closing = False
             return
         RideNotebookTabChanged().publish()
 
     def _tab_changed(self):
-        """Change event is send even when no tab available or tab is closed"""
+        """Change event is sent even when no tab available or tab is closed"""
         if not self.GetPageCount() or self._tab_closing:
             return False
         return True

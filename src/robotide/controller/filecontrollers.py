@@ -477,7 +477,7 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
         return children
 
     def _can_add_directory_children(self, data):
-        return data.source and os.path.isdir(data.source) and self._namespace
+        return data.source and os.path.isdir(data.source) and self.namespace
 
     def _add_directory_children(self, children, path, initfile):
         if not children:
@@ -499,7 +499,7 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
         if os.path.isdir(filename):
             children.append(self._directory_controller(filename))
         else:
-            r = self._namespace.get_resource(filename, report_status=False)
+            r = self.namespace.get_resource(filename, report_status=False)
             if self._is_valid_resource(r):
                 children.append(self._resource_controller(r))
 
@@ -836,7 +836,7 @@ class ResourceFileController(_FileSystemElement, _DataController):
         if resource_file_controller_factory:
             self._resource_file_controller_factory = resource_file_controller_factory
         else:
-            self._resource_file_controller_factory = ResourceFileControllerFactory(self._namespace, project)
+            self._resource_file_controller_factory = ResourceFileControllerFactory(self.namespace, project)
         self._known_imports = set()
         _FileSystemElement.__init__(self, data.source if data else None, data.directory)
         _DataController.__init__(self, data, project,
@@ -900,7 +900,7 @@ class ResourceFileController(_FileSystemElement, _DataController):
         resource_imports = [resource_import_ for resource_import_ in self.get_where_used()]
         for resource_import in resource_imports:
             notification(resource_import)
-        self._namespace.resource_filename_changed(old, self.filename)
+        self.namespace.resource_filename_changed(old, self.filename)
 
     def _settings(self):
         return [DocumentationController(self, self.data.setting_table.doc)]

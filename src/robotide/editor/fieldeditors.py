@@ -55,16 +55,16 @@ class ValueEditor(wx.Panel):
             sizer.Add(Label(self, label=self._label, size=(80, -1)), 0,
                       self._sizer_flags_for_label, 5)
         self._editor = self._get_text_ctrl()
-        # self._editor.SetDefaultStyle(wx.TextAttr(wx.TEXT_ATTR_CHARACTER))
-        # self._editor.SetBackgroundColour(Colour(self.color_secondary_background))
-        # self._editor.SetOwnBackgroundColour(Colour(self.color_secondary_background))
-        # self._editor.SetForegroundColour(Colour(self.color_secondary_foreground))
-        # self._editor.SetOwnForegroundColour(Colour(self.color_secondary_foreground))
+        # self.source_editor.SetDefaultStyle(wx.TextAttr(wx.TEXT_ATTR_CHARACTER))
+        # self.source_editor.SetBackgroundColour(Colour(self.color_secondary_background))
+        # self.source_editor.SetOwnBackgroundColour(Colour(self.color_secondary_background))
+        # self.source_editor.SetForegroundColour(Colour(self.color_secondary_foreground))
+        # self.source_editor.SetOwnForegroundColour(Colour(self.color_secondary_foreground))
         self._editor.AppendText(value)
         sizer.Add(self._editor, 1, self._sizer_flags_for_editor, 3)
         self._sizer.Add(sizer, 1, wx.EXPAND)
         self._editor.Bind(wx.EVT_KEY_DOWN, self.on_key_down)
-        # print("DEBUG: ValueEditor _create_editor: %s\n" % (self._editor.__repr__()))
+        # print("DEBUG: ValueEditor _create_editor: %s\n" % (self.source_editor.__repr__()))
 
     def _get_text_ctrl(self):
         editor = wx.TextCtrl(self, size=(600, -1))
@@ -78,7 +78,7 @@ class ValueEditor(wx.Panel):
         self._editor.SetValidator(validator)
 
     def get_value(self):
-        # print("DEBUG: ValueEditor get_value: %s" % self._editor.GetValue())
+        # print("DEBUG: ValueEditor get_value: %s" % self.source_editor.GetValue())
         return self._editor.GetValue()
 
     def set_focus(self):
