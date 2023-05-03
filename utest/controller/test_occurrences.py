@@ -58,7 +58,7 @@ def TestCaseControllerWithSteps(project=None, source='some_suite.robot'):
     project._controller = tcf_ctrl
     tctablectrl = TestCaseTableController(tcf_ctrl,
                                           tcf.testcase_table)
-    return TestCaseController(tctablectrl, testcase), project._namespace
+    return TestCaseController(tctablectrl, testcase), project.namespace
 
 
 def _create_testcase(tcf):

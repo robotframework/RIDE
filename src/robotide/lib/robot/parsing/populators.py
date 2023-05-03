@@ -31,7 +31,7 @@ from .restreader import RestReader
 
 
 READERS = {'html': HtmlReader, 'htm': HtmlReader, 'xhtml': HtmlReader,
-           'tsv': TsvReader , 'rst': RestReader, 'rest': RestReader,
+           'tsv': TsvReader, 'rst': RestReader, 'rest': RestReader,
            'txt': RobotReader, 'robot': RobotReader}
 
 # Hook for external tools for altering ${CURDIR} processing
@@ -58,8 +58,9 @@ class FromFilePopulator(object):
         self._tab_size = tab_size
         self._comment_table_names = ('comment', 'comments')
 
-    def _get_curdir(self, path):
-        return path.replace('\\','\\\\') if path else None
+    @staticmethod
+    def _get_curdir(path):
+        return path.replace('\\', '\\\\') if path else None
 
     def add_preamble(self, row):
         self._datafile.add_preamble(row)
@@ -76,7 +77,8 @@ class FromFilePopulator(object):
         finally:
             source.close()
 
-    def _open(self, path):
+    @staticmethod
+    def _open(path):
         if not os.path.isfile(path):
             raise DataError("File or directory to execute does not exist.")
         try:
@@ -138,18 +140,18 @@ class FromDirectoryPopulator(object):
         if init_file:
             self._populate_init_file(datadir, init_file, tab_size)
         if recurse:
-            self._populate_children(datadir, children, include_extensions,
-                                    include_suites, tab_size)
+            self._populate_children(datadir, children, include_extensions, include_suites)
 
-    def _populate_init_file(self, datadir, init_file, tab_size):
+    @staticmethod
+    def _populate_init_file(datadir, init_file, tab_size):
         datadir.initfile = init_file
         try:
             FromFilePopulator(datadir, tab_size).populate(init_file)
         except DataError as err:
             LOGGER.error(err.message)
 
-    def _populate_children(self, datadir, children, include_extensions,
-                           include_suites, tab_size):
+    @staticmethod
+    def _populate_children(datadir, children, include_extensions, include_suites):
         for child in children:
             try:
                 datadir.add_child(child, include_suites, include_extensions)
@@ -169,7 +171,8 @@ class FromDirectoryPopulator(object):
             return None
         return incl_suites
 
-    def _create_included_suites(self, incl_suites):
+    @staticmethod
+    def _create_included_suites(incl_suites):
         for suite in incl_suites:
             yield suite
             while '.' in suite:
@@ -211,7 +214,8 @@ class FromDirectoryPopulator(object):
                 self._extension_is_accepted(ext, incl_extensions) and
                 os.path.isfile(path))
 
-    def _extension_is_accepted(self, ext, incl_extensions):
+    @staticmethod
+    def _extension_is_accepted(ext, incl_extensions):
         if incl_extensions:
             return ext in incl_extensions
         return ext in READERS
@@ -230,5 +234,6 @@ class FromDirectoryPopulator(object):
             return True
         return incl_suites.match(self._split_prefix(name))
 
-    def _split_prefix(self, name):
+    @staticmethod
+    def _split_prefix(name):
         return name.split('__', 1)[-1]

@@ -27,13 +27,13 @@ class LocalMacroNamespace(object):
 
     def __init__(self, controller, namespace):
         self._controller = controller
-        self._namespace = namespace
+        self.namespace = namespace
 
     def get_suggestions(self, start):
-        return self._namespace.get_suggestions_for(self._controller, start)
+        return self.namespace.get_suggestions_for(self._controller, start)
 
     def has_name(self, value):
-        for sug in self._namespace.get_suggestions_for(self._controller, value):
+        for sug in self.namespace.get_suggestions_for(self._controller, value):
             if sug.name == value:
                 return True
             try:

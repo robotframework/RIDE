@@ -373,7 +373,7 @@ def sonar(ctx, test_filter=''):
         x.communicate('')
         h = subprocess.Popen(["coverage", "html"])
         h.communicate('')
-        s = subprocess.Popen(["sonar-scanner"])
+        s = subprocess.Popen(["sonar-scanner", "-D", "sonar.projectVersion='v"+VERSION+"'"])
         s.communicate('')
     finally:
         pass

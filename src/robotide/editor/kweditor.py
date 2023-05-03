@@ -101,7 +101,7 @@ class KeywordEditor(GridEditor, Plugin):
         self.color_background_help = self.general_settings['background help']
         self.color_foreground_text = self.general_settings['foreground text']
         GridEditor.__init__(self, parent, len(controller.steps) + 5, max((controller.max_columns + 1), 5),
-                            parent.plugin._grid_popup_creator)
+                            parent.plugin.grid_popup_creator)
         self._parent = parent
         self._plugin = parent.plugin
         self._cell_selected = False
@@ -601,78 +601,95 @@ class KeywordEditor(GridEditor, Plugin):
             shiftdown = False
         self.MoveCursorDown(shiftdown)
 
+    def _call_ctrl_shift_function(self, event: object, keycode: int):
+        if keycode == ord('I'):
+            self.OnInsertCells()
+        elif keycode == ord('J'):
+            self.OnJsonEditor(event)
+        elif keycode == ord('D'):
+            self.OnDeleteCells()
+        """
+        elif keycode == ord('3'):
+            self._open_cell_editor_and_execute_sharp_comment()
+        elif keycode == ord('4'):
+            self._open_cell_editor_and_execute_sharp_uncomment()
+        """
+        return True
+
+    def _call_ctrl_function(self, event: object, keycode: int):
+        if keycode == wx.WXK_SPACE:
+            self._open_cell_editor_with_content_assist()
+            return False  # event must not be skipped in this case
+        elif keycode == ord('C'):
+            self.OnCopy(event)
+        elif keycode == ord('X'):
+            self.OnCut(event)
+        elif keycode == ord('V'):
+            self.OnPaste(event)
+        elif keycode == ord('Z'):
+            self.OnUndo(event)
+        elif keycode == ord('A'):
+            self.OnSelectAll(event)
+        elif keycode == ord('B'):
+            self._navigate_to_matching_user_keyword(
+                self.GetGridCursorRow(), self.GetGridCursorCol())
+        elif keycode == ord('F'):
+            if not self.has_focus():
+                self.SetFocus()  # Avoiding Search field on Text Edit
+        elif keycode in (ord('1'), ord('2'), ord('5')):
+            self._open_cell_editor_and_execute_variable_creator(
+                list_variable=(keycode == ord('2')),
+                dict_variable=(keycode == ord('5')))
+        elif keycode == ord('T'):
+            self._row_move(MoveRowsUp, 1, True)
+        else:
+            self.show_cell_information()
+        return True
+
+    def _call_direct_function(self, event: object, keycode: int):
+        if keycode == wx.WXK_WINDOWS_MENU:
+            self.OnCellRightClick(event)
+        elif keycode == wx.WXK_BACK:
+            self._move_grid_cursor(event, keycode)
+        elif keycode == wx.WXK_RETURN:
+            if self.IsCellEditControlShown():
+                # fill auto-suggestion into cell when pressing enter
+                self._get_cell_editor().update_from_suggestion_list()
+                self._move_grid_cursor(event, keycode)
+            else:
+                self.open_cell_editor()
+            return False  # event must not be skipped in this case
+        elif keycode == wx.WXK_F2:
+            self.open_cell_editor()
+        return True
+
+    def _call_alt_function(self, event, keycode: int):
+        if keycode == wx.WXK_SPACE:
+            self._open_cell_editor_with_content_assist()  # Mac CMD
+        elif keycode in [wx.WXK_DOWN, wx.WXK_UP]:
+            # Mac Option key(⌥)
+            self._move_rows(keycode)
+        elif keycode == wx.WXK_RETURN:
+            if self.IsCellEditControlShown():
+                event.GetEventObject().WriteText(linesep)
+            else:
+                self._move_cursor_down(event)
+            return False  # event must not be skipped in this case
+        return True
+
     def OnKeyDown(self, event):
         keycode = event.GetUnicodeKey() or event.GetKeyCode()
         if event.ControlDown():
             if event.ShiftDown():
-                if keycode == ord('I'):
-                    self.OnInsertCells()
-                elif keycode == ord('J'):
-                    self.OnJsonEditor(event)
-                elif keycode == ord('D'):
-                    self.OnDeleteCells()
-                """
-                elif keycode == ord('3'):
-                    self._open_cell_editor_and_execute_sharp_comment()
-                elif keycode == ord('4'):
-                    self._open_cell_editor_and_execute_sharp_uncomment()
-                """
+                skip = self._call_ctrl_shift_function(event, keycode)
             else:
-                if keycode == wx.WXK_SPACE:
-                    self._open_cell_editor_with_content_assist()
-                    return  # event must not be skipped in this case
-                elif keycode == ord('C'):
-                    self.OnCopy(event)
-                elif keycode == ord('X'):
-                    self.OnCut(event)
-                elif keycode == ord('V'):
-                    self.OnPaste(event)
-                elif keycode == ord('Z'):
-                    self.OnUndo(event)
-                elif keycode == ord('A'):
-                    self.OnSelectAll(event)
-                elif keycode == ord('B'):
-                    self._navigate_to_matching_user_keyword(
-                        self.GetGridCursorRow(), self.GetGridCursorCol())
-                elif keycode == ord('F'):
-                    if not self.has_focus():
-                        self.SetFocus()  # Avoiding Search field on Text Edit
-                elif keycode in (ord('1'), ord('2'), ord('5')):
-                    self._open_cell_editor_and_execute_variable_creator(
-                        list_variable=(keycode == ord('2')),
-                        dict_variable=(keycode == ord('5')))
-                elif keycode == ord('T'):
-                    self._row_move(MoveRowsUp, 1, True)
-                else:
-                    self.show_cell_information()
+                skip = self._call_ctrl_function(event, keycode)
         elif event.AltDown():
-            if keycode == wx.WXK_SPACE:
-                self._open_cell_editor_with_content_assist()  # Mac CMD
-            elif keycode in [wx.WXK_DOWN, wx.WXK_UP]:
-                # Mac Option key(⌥)
-                self._move_rows(keycode)
-            elif keycode == wx.WXK_RETURN:
-                if self.IsCellEditControlShown():
-                    event.GetEventObject().WriteText(linesep)
-                else:
-                    self._move_cursor_down(event)
-                return  # event must not be skipped in this case
+            skip = self._call_alt_function(event, keycode)
         else:
-            if keycode == wx.WXK_WINDOWS_MENU:
-                self.OnCellRightClick(event)
-            elif keycode == wx.WXK_BACK:
-                self._move_grid_cursor(event, keycode)
-            elif keycode == wx.WXK_RETURN:
-                if self.IsCellEditControlShown():
-                    # fill auto-suggestion into cell when pressing enter
-                    self._get_cell_editor().update_from_suggestion_list()
-                    self._move_grid_cursor(event, keycode)
-                else:
-                    self.open_cell_editor()
-                return  # event must not be skipped in this case
-            elif keycode == wx.WXK_F2:
-                self.open_cell_editor()
-        event.Skip()
+            skip = self._call_direct_function(event, keycode)
+        if skip:
+            event.Skip()
 
     def OnChar(self, event):
         key_char = event.GetUnicodeKey()
@@ -774,7 +791,6 @@ work.</li>
     def _open_cell_editor_and_execute_variable_creator(self, list_variable=False,
                                                        dict_variable=False):
         cell_editor = self.open_cell_editor()
-        # cell_editor = self._get_cell_editor()
         wx.CallAfter(cell_editor.execute_variable_creator,
                      list_variable, dict_variable)
 

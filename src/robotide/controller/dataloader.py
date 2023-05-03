@@ -22,8 +22,8 @@ from .. import robotapi
 class DataLoader(object):
 
     def __init__(self, namespace, settings):
-        self._namespace = namespace
-        self._namespace.reset_resource_and_library_cache()
+        self.namespace = namespace
+        self.namespace.reset_resource_and_library_cache()
         self._settings = settings
 
     def load_datafile(self, path, load_observer):
@@ -34,11 +34,11 @@ class DataLoader(object):
 
     def load_resource_file(self, datafile, load_observer):
         return self._load(_ResourceLoader(
-            datafile, self._namespace.get_resource), load_observer)
+            datafile, self.namespace.get_resource), load_observer)
 
     def resources_for(self, datafile, load_observer):
         return self._load(_ResourceLoader(
-            datafile, self._namespace.get_resources), load_observer)
+            datafile, self.namespace.get_resources), load_observer)
 
     def _load(self, loader, load_observer):
         self._wait_until_loaded(loader, load_observer)

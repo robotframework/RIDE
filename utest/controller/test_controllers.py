@@ -297,7 +297,7 @@ class ReturnValueControllerTest(unittest.TestCase):
 class ImportControllerTest(unittest.TestCase):
     class FakeParent(_FakeProject):
 
-        _namespace = None
+        namespace = None
 
         @property
         def directory(self):

@@ -110,7 +110,7 @@ class _UnitTestsWithWorkingResourceImports(unittest.TestCase):
         res = ResourceFile(source=res_path)
         self.res_controller = \
             self.project._resource_file_controller_factory.create(res)
-        self.project._namespace._resource_factory.cache[os.path.normcase(res_path)] = res
+        self.project.namespace._resource_factory.cache[os.path.normcase(res_path)] = res
 
     @property
     def import_setting(self):

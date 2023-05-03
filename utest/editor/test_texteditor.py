@@ -163,7 +163,7 @@ class TestEditorCommands(unittest.TestCase):
         """
         self.app.project.load_datafile(datafilereader.TESTCASEFILE_WITH_EVERYTHING, MessageRecordingLoadObserver())
         print(f"DEBUG: project source={self.app.project.data.source} plugin={self.plugin.name}")
-        print(f"DEBUG: project is_focused={self.plugin._editor.is_focused()} plugin enabled? "
+        print(f"DEBUG: project is_focused={self.plugin.source_editor.is_focused()} plugin enabled? "
               f"{self.plugin.initially_enabled}")
         print(f"DEBUG: project datafile={self.plugin.get_selected_datafile()}")
         print(f"DEBUG: selected datafile_controller={self.app.tree.get_selected_datafile_controller()}")
@@ -175,19 +175,19 @@ class TestEditorCommands(unittest.TestCase):
         print(f"DEBUG: tree first item_text={item.GetText()} item_data={item.GetData()}")
         print(f"DEBUG: from plugin frompl={frompl.GetText()} frompl_data={frompl.GetData()}")
         """
-        self.plugin._editor_component._editor.set_text("Hello World!")
+        self.plugin._editor_component.source_editor.set_text("Hello World!")
         # print(f"DEBUG: editor is_focused={self.plugin._editor_component.is_focused()}")
         self.plugin._editor_component.insert_row(None)
-        fulltext = self.plugin._editor_component._editor.GetText()
+        fulltext = self.plugin._editor_component.source_editor.GetText()
         assert fulltext == "\nHello World!"
         # Uncomment next lines if you want to see the app
         # wx.CallLater(5000, self.app.ExitMainLoop)
         # self.app.MainLoop()
 
     def test_delete_row_single(self):
-        self.plugin._editor_component._editor.set_text("\nHello World!")
+        self.plugin._editor_component.source_editor.set_text("\nHello World!")
         self.plugin._editor_component.delete_row(None)
-        fulltext = self.plugin._editor_component._editor.GetText()
+        fulltext = self.plugin._editor_component.source_editor.GetText()
         assert fulltext == "Hello World!"
         # Uncomment next lines if you want to see the app
         # wx.CallLater(5000, self.app.ExitMainLoop)
@@ -204,11 +204,11 @@ class TestEditorCommands(unittest.TestCase):
 
     def test_move_row_up(self):
         content = ['1 - Line one\n', '2 - Line two\n', '3 - Line three\n']
-        self.plugin._editor_component._editor.set_text(''.join(content))
+        self.plugin._editor_component.source_editor.set_text(''.join(content))
         pos = len('1 - Line one\n')
-        self.plugin._editor_component._editor.SetSelection(pos+1, pos+4)
+        self.plugin._editor_component.source_editor.SetSelection(pos + 1, pos + 4)
         self.plugin._editor_component.move_row_up(None)
-        fulltext = self.plugin._editor_component._editor.GetText()
+        fulltext = self.plugin._editor_component.source_editor.GetText()
         assert fulltext == content[1] + content[0] + content[2]
         # Uncomment next lines if you want to see the app
         # wx.CallLater(5000, self.app.ExitMainLoop)
@@ -216,11 +216,11 @@ class TestEditorCommands(unittest.TestCase):
 
     def test_move_row_down(self):
         content = ['1 - Line one\n', '2 - Line two\n', '3 - Line three\n']
-        self.plugin._editor_component._editor.set_text(''.join(content))
+        self.plugin._editor_component.source_editor.set_text(''.join(content))
         pos = len('1 - Line one\n')
-        self.plugin._editor_component._editor.SetSelection(pos+1, pos+4)
+        self.plugin._editor_component.source_editor.SetSelection(pos + 1, pos + 4)
         self.plugin._editor_component.move_row_down(None)
-        fulltext = self.plugin._editor_component._editor.GetText()
+        fulltext = self.plugin._editor_component.source_editor.GetText()
         assert fulltext == content[0] + content[2] + content[1]
         # Uncomment next lines if you want to see the app
         # wx.CallLater(5000, self.app.ExitMainLoop)
@@ -228,12 +228,12 @@ class TestEditorCommands(unittest.TestCase):
 
     def test_execute_comment(self):
         content = ['1 - Line one\n', '2 - Line two\n', '3 - Line three\n']
-        self.plugin._editor_component._editor.set_text(''.join(content))
+        self.plugin._editor_component.source_editor.set_text(''.join(content))
         pos = len('1 - Line one\n')
-        spaces = ' ' * self.plugin._editor_component._tab_size
-        self.plugin._editor_component._editor.SetSelection(pos+1, pos+4)
+        spaces = ' ' * self.plugin._editor_component.tab_size
+        self.plugin._editor_component.source_editor.SetSelection(pos + 1, pos + 4)
         self.plugin._editor_component.execute_comment(None)
-        fulltext = self.plugin._editor_component._editor.GetText()
+        fulltext = self.plugin._editor_component.source_editor.GetText()
         assert fulltext == content[0] + 'Comment' + spaces + content[1] + content[2]
         # print(f"DEBUG: fulltext:\n{fulltext}")
         # Uncomment next lines if you want to see the app
@@ -242,12 +242,12 @@ class TestEditorCommands(unittest.TestCase):
 
     def test_execute_uncomment(self):
         pos = len('1 - Line one\n')
-        spaces = ' ' * self.plugin._editor_component._tab_size
+        spaces = ' ' * self.plugin._editor_component.tab_size
         content = ['1 - Line one\n', '2 - Line two\n', '3 - Line three\n']
-        self.plugin._editor_component._editor.set_text(content[0] + 'Comment' + spaces + content[1] + content[2])
-        self.plugin._editor_component._editor.SetSelection(pos+1, pos+4)
+        self.plugin._editor_component.source_editor.set_text(content[0] + 'Comment' + spaces + content[1] + content[2])
+        self.plugin._editor_component.source_editor.SetSelection(pos + 1, pos + 4)
         self.plugin._editor_component.execute_uncomment(None)
-        fulltext = self.plugin._editor_component._editor.GetText()
+        fulltext = self.plugin._editor_component.source_editor.GetText()
         assert fulltext == content[0] + content[1] + content[2]
         # print(f"DEBUG: fulltext:\n{fulltext}")
         # Uncomment next lines if you want to see the app
@@ -255,14 +255,14 @@ class TestEditorCommands(unittest.TestCase):
         # self.app.MainLoop()
 
     def test_insert_cell_two_lines(self):
-        spaces = ' ' * self.plugin._editor_component._tab_size
+        spaces = ' ' * self.plugin._editor_component.tab_size
         content = [spaces + '1 - Line one\n', spaces + '2 - Line two\n', spaces + '3 - Line three\n']
         pos = len(content[0])
-        self.plugin._editor_component._editor.set_text(''.join(content))
-        self.plugin._editor_component._editor.SetAnchor(len(spaces) + pos + 2)
-        self.plugin._editor_component._editor.SetSelection(0, pos + 2)
+        self.plugin._editor_component.source_editor.set_text(''.join(content))
+        self.plugin._editor_component.source_editor.SetAnchor(len(spaces) + pos + 2)
+        self.plugin._editor_component.source_editor.SetSelection(0, pos + 2)
         self.plugin._editor_component.insert_cell(None)
-        fulltext = self.plugin._editor_component._editor.GetText()
+        fulltext = self.plugin._editor_component.source_editor.GetText()
         # print(f"DEBUG: fulltext:\n{fulltext}")
         assert fulltext == spaces + content[0] + spaces + content[1] + content[2]
         # Uncomment next lines if you want to see the app
@@ -270,14 +270,14 @@ class TestEditorCommands(unittest.TestCase):
         # self.app.MainLoop()
 
     def test_insert_cell_no_selection(self):
-        spaces = ' ' * self.plugin._editor_component._tab_size
+        spaces = ' ' * self.plugin._editor_component.tab_size
         content = [spaces + '1 - Line one' + spaces + 'with cells' + spaces + 'last text\n']
         pos = len(spaces + '1 - Line one' + spaces) + 1
-        self.plugin._editor_component._editor.set_text(''.join(content))
-        self.plugin._editor_component._editor.SetAnchor(pos)
-        self.plugin._editor_component._editor.SetSelection(pos, pos)
+        self.plugin._editor_component.source_editor.set_text(''.join(content))
+        self.plugin._editor_component.source_editor.SetAnchor(pos)
+        self.plugin._editor_component.source_editor.SetSelection(pos, pos)
         self.plugin._editor_component.insert_cell(None)
-        fulltext = self.plugin._editor_component._editor.GetText()
+        fulltext = self.plugin._editor_component.source_editor.GetText()
         # print(f"DEBUG: fulltext:\n{fulltext}")
         assert fulltext == spaces + '1 - Line one' + spaces + spaces + 'with cells' + spaces + 'last text\n'
         # Uncomment next lines if you want to see the app
@@ -285,14 +285,14 @@ class TestEditorCommands(unittest.TestCase):
         # self.app.MainLoop()
 
     def test_insert_cell_with_selection(self):
-        spaces = ' ' * self.plugin._editor_component._tab_size
+        spaces = ' ' * self.plugin._editor_component.tab_size
         content = [spaces + '1 - Line one' + spaces + 'with cells' + spaces + 'last text\n']
         pos = len(spaces + '1 - Line one' + spaces + 'with cells' + spaces)
-        self.plugin._editor_component._editor.set_text(''.join(content))
-        self.plugin._editor_component._editor.SetAnchor(pos + 6)
-        self.plugin._editor_component._editor.SetSelection(pos, pos + 6)
+        self.plugin._editor_component.source_editor.set_text(''.join(content))
+        self.plugin._editor_component.source_editor.SetAnchor(pos + 6)
+        self.plugin._editor_component.source_editor.SetSelection(pos, pos + 6)
         self.plugin._editor_component.insert_cell(None)
-        fulltext = self.plugin._editor_component._editor.GetText()
+        fulltext = self.plugin._editor_component.source_editor.GetText()
         # print(f"DEBUG: fulltext:\n{fulltext}")
         assert fulltext == spaces + '1 - Line one' + spaces + 'with cells' + spaces + spaces + 'last text\n'
         # Uncomment next lines if you want to see the app
@@ -300,14 +300,14 @@ class TestEditorCommands(unittest.TestCase):
         # self.app.MainLoop()
 
     def test_delete_cell(self):
-        spaces = ' ' * self.plugin._editor_component._tab_size
+        spaces = ' ' * self.plugin._editor_component.tab_size
         content = [spaces + '1 - Line one' + spaces + 'with cells' + spaces + 'last text\n']
         pos = len(spaces + '1 - Line one' + spaces + 'with cells')
-        self.plugin._editor_component._editor.set_text(''.join(content))
-        self.plugin._editor_component._editor.SetAnchor(pos)
-        self.plugin._editor_component._editor.SetSelection(pos - len('with cells'), pos)
+        self.plugin._editor_component.source_editor.set_text(''.join(content))
+        self.plugin._editor_component.source_editor.SetAnchor(pos)
+        self.plugin._editor_component.source_editor.SetSelection(pos - len('with cells'), pos)
         self.plugin._editor_component.delete_cell(None)
-        fulltext = self.plugin._editor_component._editor.GetText()
+        fulltext = self.plugin._editor_component.source_editor.GetText()
         # print(f"DEBUG: fulltext:\n{fulltext}")
         assert fulltext == spaces + '1 - Line one' + spaces + 'last text\n'
         # Uncomment next lines if you want to see the app
@@ -315,14 +315,14 @@ class TestEditorCommands(unittest.TestCase):
         # self.app.MainLoop()
 
     def test_execute_sharp_comment_two_lines(self):
-        spaces = ' ' * self.plugin._editor_component._tab_size
+        spaces = ' ' * self.plugin._editor_component.tab_size
         content = [spaces, '1 - Line one\n', spaces, '2 - Line two\n', spaces, '3 - Line three\n']
         end = len(spaces + content[1])
-        self.plugin._editor_component._editor.set_text(''.join(content))
-        self.plugin._editor_component._editor.SetAnchor(len(spaces) + end + len(spaces + content[3]) - 1)
-        self.plugin._editor_component._editor.SetSelection(len(spaces), end + len(spaces + content[3]) - 1)
+        self.plugin._editor_component.source_editor.set_text(''.join(content))
+        self.plugin._editor_component.source_editor.SetAnchor(len(spaces) + end + len(spaces + content[3]) - 1)
+        self.plugin._editor_component.source_editor.SetSelection(len(spaces), end + len(spaces + content[3]) - 1)
         self.plugin._editor_component.execute_sharp_comment(None)
-        fulltext = self.plugin._editor_component._editor.GetText()
+        fulltext = self.plugin._editor_component.source_editor.GetText()
         print(f"DEBUG: fulltext:\n{fulltext}")
         assert fulltext == spaces + '# ' + content[1] + spaces + '# ' + content[3] + spaces + content[5]
         # Uncomment next lines if you want to see the app
@@ -330,14 +330,14 @@ class TestEditorCommands(unittest.TestCase):
         # self.app.MainLoop()
 
     def test_execute_sharp_comment_no_selection(self):
-        spaces = ' ' * self.plugin._editor_component._tab_size
+        spaces = ' ' * self.plugin._editor_component.tab_size
         content = [spaces + '1 - Line one' + spaces + 'with cells' + spaces + 'last text\n']
         pos = len(spaces + '1 - Line one' + spaces+ 'with cells')
-        self.plugin._editor_component._editor.set_text(''.join(content))
-        self.plugin._editor_component._editor.SetAnchor(pos)
-        self.plugin._editor_component._editor.SetSelection(pos, pos)
+        self.plugin._editor_component.source_editor.set_text(''.join(content))
+        self.plugin._editor_component.source_editor.SetAnchor(pos)
+        self.plugin._editor_component.source_editor.SetSelection(pos, pos)
         self.plugin._editor_component.execute_sharp_comment(None)
-        fulltext = self.plugin._editor_component._editor.GetText()
+        fulltext = self.plugin._editor_component.source_editor.GetText()
         print(f"DEBUG: fulltext:\n{fulltext}")
         assert fulltext == spaces + '# ' + '1 - Line one' + spaces + 'with cells' + spaces + 'last text\n'
         # Uncomment next lines if you want to see the app
@@ -345,14 +345,14 @@ class TestEditorCommands(unittest.TestCase):
         # self.app.MainLoop()
 
     def test_execute_sharp_comment_with_selection(self):
-        spaces = ' ' * self.plugin._editor_component._tab_size
+        spaces = ' ' * self.plugin._editor_component.tab_size
         content = [spaces + '1 - Line one' + spaces + 'with cells' + spaces + 'last text\n']
         pos = len(spaces + '1 - Line one' + spaces+ 'with cells')
-        self.plugin._editor_component._editor.set_text(''.join(content))
-        self.plugin._editor_component._editor.SetAnchor(pos)
-        self.plugin._editor_component._editor.SetSelection(pos - len('with cells'), pos)
+        self.plugin._editor_component.source_editor.set_text(''.join(content))
+        self.plugin._editor_component.source_editor.SetAnchor(pos)
+        self.plugin._editor_component.source_editor.SetSelection(pos - len('with cells'), pos)
         self.plugin._editor_component.execute_sharp_comment(None)
-        fulltext = self.plugin._editor_component._editor.GetText()
+        fulltext = self.plugin._editor_component.source_editor.GetText()
         # print(f"DEBUG: fulltext:\n{fulltext}")
         assert fulltext == spaces + '1 - Line one' + spaces + '# ' + 'with cells' + spaces + 'last text\n'
         # Uncomment next lines if you want to see the app
@@ -360,14 +360,14 @@ class TestEditorCommands(unittest.TestCase):
         # self.app.MainLoop()
 
     def test_execute_sharp_uncomment_two_lines(self):
-        spaces = ' ' * self.plugin._editor_component._tab_size
+        spaces = ' ' * self.plugin._editor_component.tab_size
         content = [spaces + '# ', '1 - Line one\n', spaces + '# ', '2 - Line two\n', spaces, '3 - Line three\n']
         end = len(spaces + content[1])
-        self.plugin._editor_component._editor.set_text(''.join(content))
-        self.plugin._editor_component._editor.SetAnchor(len(spaces) + end + len(spaces + content[3]) - 1)
-        self.plugin._editor_component._editor.SetSelection(len(spaces), end + len(spaces + content[3]) - 1)
+        self.plugin._editor_component.source_editor.set_text(''.join(content))
+        self.plugin._editor_component.source_editor.SetAnchor(len(spaces) + end + len(spaces + content[3]) - 1)
+        self.plugin._editor_component.source_editor.SetSelection(len(spaces), end + len(spaces + content[3]) - 1)
         self.plugin._editor_component.execute_sharp_uncomment(None)
-        fulltext = self.plugin._editor_component._editor.GetText()
+        fulltext = self.plugin._editor_component.source_editor.GetText()
         # print(f"DEBUG: fulltext:\n{fulltext}")
         assert fulltext == spaces + content[1] + spaces + content[3] + spaces + content[5]
         # Uncomment next lines if you want to see the app
@@ -375,14 +375,14 @@ class TestEditorCommands(unittest.TestCase):
         # self.app.MainLoop()
 
     def test_execute_sharp_uncomment_no_selection(self):
-        spaces = ' ' * self.plugin._editor_component._tab_size
+        spaces = ' ' * self.plugin._editor_component.tab_size
         content = [spaces + '# ' + '1 - Line one' + spaces + 'with cells' + spaces + 'last text\n']
         pos = len(spaces + '1 - Line one' + spaces+ 'with cells')
-        self.plugin._editor_component._editor.set_text(''.join(content))
-        self.plugin._editor_component._editor.SetAnchor(pos)
-        self.plugin._editor_component._editor.SetSelection(pos, pos)
+        self.plugin._editor_component.source_editor.set_text(''.join(content))
+        self.plugin._editor_component.source_editor.SetAnchor(pos)
+        self.plugin._editor_component.source_editor.SetSelection(pos, pos)
         self.plugin._editor_component.execute_sharp_uncomment(None)
-        fulltext = self.plugin._editor_component._editor.GetText()
+        fulltext = self.plugin._editor_component.source_editor.GetText()
         # print(f"DEBUG: fulltext:\n{fulltext}")
         assert fulltext == spaces + '1 - Line one' + spaces + 'with cells' + spaces + 'last text\n'
         # Uncomment next lines if you want to see the app
@@ -390,14 +390,14 @@ class TestEditorCommands(unittest.TestCase):
         # self.app.MainLoop()
 
     def test_execute_sharp_uncomment_with_selection(self):
-        spaces = ' ' * self.plugin._editor_component._tab_size
+        spaces = ' ' * self.plugin._editor_component.tab_size
         content = [spaces + '1 - Line one' + spaces + '# ' + 'with cells' + spaces + 'last text\n']
         pos = len(spaces + '1 - Line one' + spaces + '# ' + 'with cells')
-        self.plugin._editor_component._editor.set_text(''.join(content))
-        self.plugin._editor_component._editor.SetAnchor(pos)
-        self.plugin._editor_component._editor.SetSelection(pos - len('with cells'), pos)
+        self.plugin._editor_component.source_editor.set_text(''.join(content))
+        self.plugin._editor_component.source_editor.SetAnchor(pos)
+        self.plugin._editor_component.source_editor.SetSelection(pos - len('with cells'), pos)
         self.plugin._editor_component.execute_sharp_uncomment(None)
-        fulltext = self.plugin._editor_component._editor.GetText()
+        fulltext = self.plugin._editor_component.source_editor.GetText()
         # print(f"DEBUG: fulltext:\n{fulltext}")
         assert fulltext == spaces + '1 - Line one' + spaces + 'with cells' + spaces + 'last text\n'
         # Uncomment next lines if you want to see the app

@@ -69,56 +69,56 @@ class ControllerWithParent(_BaseController):
 
 
 class WithNamespace(object):
-    _namespace = None # Ensure namespace exists
+    namespace = None # Ensure namespace exists
 
     def _set_namespace_from(self, controller):
-        self._set_namespace(controller._namespace)
+        self._set_namespace(controller.namespace)
 
     def _set_namespace(self, namespace):
-        self._namespace = namespace
+        self.namespace = namespace
 
     def get_namespace(self):
-        return self._namespace
+        return self.namespace
 
     def update_namespace(self):
-        if not self._namespace:
+        if not self.namespace:
             return
-        self._namespace.update()
+        self.namespace.update()
 
     def register_for_namespace_updates(self, listener):
-        if not self._namespace:
+        if not self.namespace:
             return
-        self._namespace.register_update_listener(listener)
+        self.namespace.register_update_listener(listener)
 
     def unregister_namespace_updates(self, listener):
-        if not self._namespace:
+        if not self.namespace:
             return
-        self._namespace.unregister_update_listener(listener)
+        self.namespace.unregister_update_listener(listener)
 
     def clear_namespace_update_listeners(self):
-        self._namespace.clear_update_listeners()
+        self.namespace.clear_update_listeners()
 
     def is_user_keyword(self, datafile, value):
-        return self._namespace.is_user_keyword(datafile, value)
+        return self.namespace.is_user_keyword(datafile, value)
 
     def is_library_keyword(self, datafile, value):
-        return self._namespace.is_library_keyword(datafile, value)
+        return self.namespace.is_library_keyword(datafile, value)
 
     def get_all_keywords_from(self, *datafiles):
-        return self._namespace.get_all_keywords(*datafiles)
+        return self.namespace.get_all_keywords(*datafiles)
 
     def get_all_cached_library_names(self):
-        return self._namespace.get_all_cached_library_names()
+        return self.namespace.get_all_cached_library_names()
 
     def keyword_info(self, datafile, keyword_name):
-        return self._namespace.find_keyword(datafile, keyword_name)
+        return self.namespace.find_keyword(datafile, keyword_name)
 
     def is_library_import_ok(self, imp):
-        return self._namespace.is_library_import_ok(self.datafile, imp)
+        return self.namespace.is_library_import_ok(self.datafile, imp)
 
     def is_variables_import_ok(self, imp):
         # print("DEBUG: BaseController is_variables_import_ok %s\n" % imp.name)
-        return self._namespace.is_variables_import_ok(self.datafile, imp)
+        return self.namespace.is_variables_import_ok(self.datafile, imp)
 
 
 class WithUndoRedoStacks(object):

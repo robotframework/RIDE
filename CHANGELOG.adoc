@@ -12,6 +12,10 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 - Added the note, 'Colors will be active after next RIDE restart.' to the Preferences of Test Runner.
 
+== Fixed
+
+- Fixed auto-indent on block commands in Text Editor
+
 == https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.0.3.rst[2.0.3] - 2023-04-16
 
 === Changed
