@@ -90,13 +90,13 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
             self.register_shortcut('CtrlCmd-V', focused(lambda e: self._editor.paste()))
         self.register_shortcut('CtrlCmd-Z', focused(lambda e: self._editor.undo()))
         self.register_shortcut('CtrlCmd-Y', focused(lambda e: self._editor.redo()))
-        # self.register_shortcut('Del', focused(lambda e: self.source_editor.delete()))
+        # self.register_shortcut('Del', focused(lambda e: self._editor.delete()))
         self.register_shortcut('CtrlCmd-S', focused(lambda e: self.OnSaving(e)))
         self.register_shortcut('CtrlCmd-Shift-I', focused(lambda e: self._editor.insert_cell(e)))
-        # self.register_shortcut('CtrlCmd-Shift-D', focused(lambda e: self.source_editor.delete_cell(e)))
+        # self.register_shortcut('CtrlCmd-Shift-D', focused(lambda e: self._editor.delete_cell(e)))
         self.register_shortcut('Alt-Up', focused(lambda e: self._editor.move_row_up(e)))
         self.register_shortcut('Alt-Down', focused(lambda e: self._editor.move_row_down(e)))
-        # self.register_shortcut('CtrlCmd-D', focused(lambda e: self.source_editor.delete_row(e)))
+        # self.register_shortcut('CtrlCmd-D', focused(lambda e: self._editor.delete_row(e)))
         self.register_shortcut('CtrlCmd-I', focused(lambda e: self._editor.insert_row(e)))
         self.register_shortcut('CtrlCmd-3', focused(lambda e: self._editor.execute_comment(e)))
         self.register_shortcut('CtrlCmd-Shift-3', focused(lambda e: self._editor.execute_sharp_comment(e)))
@@ -236,7 +236,7 @@ class DummyController(WithStepsController):
     filename = ""
 
     def _init(self, data=None):
-        self._data = data
+        self.data = data
 
     @staticmethod
     def get_local_variables():
@@ -247,7 +247,7 @@ class DummyController(WithStepsController):
             return True
         if other.__class__ != self.__class__:
             return False
-        return self._data == other.wrapper_data
+        return self.data == other.data
 
     def __hash__(self):
         return hash(repr(self))
