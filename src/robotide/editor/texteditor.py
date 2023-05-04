@@ -236,7 +236,7 @@ class DummyController(WithStepsController):
     filename = ""
 
     def _init(self, data=None):
-        self._data = data
+        self.data = data
 
     @staticmethod
     def get_local_variables():
@@ -247,7 +247,7 @@ class DummyController(WithStepsController):
             return True
         if other.__class__ != self.__class__:
             return False
-        return self._data == other.wrapper_data
+        return self.data == other.data
 
     def __hash__(self):
         return hash(repr(self))
