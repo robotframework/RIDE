@@ -59,5 +59,15 @@ class FileWriter:
                     f.write(b"\n")
         else:
             f = codecs.open(file_path, mode, "UTF-8")
-            f.write("\n".join(lines))
+            # DEBUG: f.write("\n".join(lines))
+            for item in lines:
+                if isinstance(item, str):
+                    f.write(item)
+                    f.write("\n")
+                else:
+                    try:
+                        f.write(item.decode('UTF-8'))
+                        f.write("\n")
+                    except (UnicodeError, TypeError):
+                        raise
         f.close()
