@@ -1,4 +1,4 @@
-#name: Build
+name: Sonar
 on:
   push:
     branches:
@@ -42,7 +42,7 @@ jobs:
         with:
           projectBaseDir: ${{ github.workspace }}
           args: >
-            -Dsonar.organization=helioguilherm66
+            -Dsonar.organization=helioguilherme66
             -Dsonar.projectKey=HelioGuilherme66_RIDE
             -Dsonar.python.coverage.reportPaths=.coverage-reports/coverage.xml
             -Dsonar.sources=src/
