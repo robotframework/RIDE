@@ -16,7 +16,7 @@
 # from .ctrlcommands import FindOccurrences, FindVariableOccurrences, _Command, SaveFile
 # from .ctrlcommands import SortTests, SortVariables
 from .dataloader import DataLoader
-from .filecontrollers import DataController, ResourceFileController
+from .filecontrollers import data_controller, ResourceFileController
 from .project import Project
 from .macrocontrollers import TestCaseController, UserKeywordController, KeywordNameController, ForLoopStepController
 from .ui.treecontroller import TreeController, TestSelectionController

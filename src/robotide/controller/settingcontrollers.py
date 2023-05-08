@@ -18,9 +18,10 @@ from itertools import chain
 from os import linesep
 
 from .. import robotapi, utils
-from ..publish.messages import (RideImportSettingChanged,RideImportSettingRemoved, RideVariableUpdated,
+from ..robotapi import ALIAS_MARKER
+from ..publish.messages import (RideImportSettingChanged, RideImportSettingRemoved, RideVariableUpdated,
                                 RideItemSettingsChanged, RideImportSettingAdded)
-from ..utils import overrides, variablematcher
+from ..utils import variablematcher
 from .basecontroller import ControllerWithParent
 from .tags import Tag, ForcedTag, DefaultTag
 
@@ -31,6 +32,9 @@ class _SettingController(ControllerWithParent):
         self._data = data
         self.label = self._label(self._data)
         self._init(self._data)
+
+    def _init(self, data):
+        raise NotImplementedError
 
     def _label(self, data):
         label = data.setting_name
@@ -112,7 +116,8 @@ class _SettingController(ControllerWithParent):
     def _set(self, value):
         self._data.value = value
 
-    def _split_from_separators(self, value):
+    @staticmethod
+    def _split_from_separators(value):
         return utils.split_value(value)
 
 
@@ -129,7 +134,6 @@ class DocumentationController(_SettingController):
     def value(self):
         return self._doc.value
 
-    @overrides(_SettingController)
     def contains_keyword(self, name):
         return False
 
@@ -159,13 +163,15 @@ class DocumentationController(_SettingController):
     def _newline_replacer(self, match):
         return self._replacer(linesep, match)
 
-    def _replacer(self, char, match):
+    @staticmethod
+    def _replacer(char, match):
         slashes = len(match.group(1))
         if slashes % 2 == 1:
             return '\\' * (slashes - 1) + char
         return match.group()
 
-    def _escape_newlines_and_leading_hash(self, item):
+    @staticmethod
+    def _escape_newlines_and_leading_hash(item):
         for newline in ('\r\n', '\n', '\r'):
             item = item.replace(newline, '\\n')
         if item.strip().startswith('#'):
@@ -183,6 +189,7 @@ class FixtureController(_SettingController):
         return self._fixture.name
 
     def replace_keyword(self, new_name, old_value=None):
+        _ = old_value
         self._fixture.name = new_name
         self.mark_dirty()
 
@@ -203,40 +210,40 @@ class FixtureController(_SettingController):
 class TagsController(_SettingController):
 
     def _init(self, tags):
-        self._tags = tags
+        self.tags = tags
 
     def empty_tag(self):
         return Tag(None, controller=self)
 
     def _changed(self, value):
-        return self._tags.value != self._split_from_separators(value)
+        return self.tags.value != self._split_from_separators(value)
 
     def set_from(self, other):
-        if other.is_set and other._tags.value is not None:
+        if other.is_set and other.tags.value is not None:
             self.set_value(other.value)
         self.set_comment(other.comment)
 
     def _set(self, value):
-        self._tags.value = self._split_from_separators(value)
+        self.tags.value = self._split_from_separators(value)
 
     def add(self, tag):
-        if self._tags.value is None:
-            self._tags.value = []
-        tag.set_index(len(self._tags.value))
-        self._tags.value.append(tag.name)
+        if self.tags.value is None:
+            self.tags.value = []
+        tag.set_index(len(self.tags.value))
+        self.tags.value.append(tag.name)
 
     def remove(self, tag):
-        if tag in self._tags.value:
-            self._tags.value.remove(tag)
+        if tag in self.tags.value:
+            self.tags.value.remove(tag)
 
     def __iter__(self):
         forced = self._parent.force_tags
-        if self._tags.value is None:
+        if self.tags.value is None:
             return chain(forced, self._parent.default_tags).__iter__()
-        if len(self._tags.value) == 0:
+        if len(self.tags.value) == 0:
             return chain(forced, [Tag('', controller=self)])
         own_tags = (Tag(t, index, self)
-                    for index, t in enumerate(self._tags.value))
+                    for index, t in enumerate(self.tags.value))
         return chain(forced, own_tags).__iter__()
 
     @property
@@ -254,10 +261,10 @@ class DefaultTagsController(TagsController):
         return DefaultTag(None, controller=self)
 
     def __iter__(self):
-        if self._tags.value is None:
+        if self.tags.value is None:
             return [].__iter__()
         return (DefaultTag(t, index, self)
-                for index, t in enumerate(self._tags.value)).__iter__()
+                for index, t in enumerate(self.tags.value)).__iter__()
 
 
 class ForceTagsController(TagsController):
@@ -275,24 +282,22 @@ class ForceTagsController(TagsController):
             return False
         if not isinstance(other, self.__class__):
             return False
-        return self._tags == other._tags
+        return self.tags == other.tags
 
     def _recursive_gather_from(self, obj, result):
         if obj is None:
             return result
         try:
-            force_tags = obj._setting_table.force_tags
-            # print(f"DEBUG: SettingsController _recursive_gather_from force_tags={force_tags}")
+            force_tags = obj.setting_table.force_tags
         except AttributeError:  # In the case of a .resource file, there is no Forced Tags fields
-            # print(f"DEBUG: SettingsController _recursive_gather_from resource AttributeError")
-            # force_tags = dict(value=None)
             return result
         # print(f"DEBUG: SettingsController _recursive_gather_from force_tags={force_tags}, obj.parent={obj.parent}")
         return self._recursive_gather_from(
             obj.parent,
             self._gather_from_data(force_tags, obj.force_tags) + result)
 
-    def _gather_from_data(self, tags, parent):
+    @staticmethod
+    def _gather_from_data(tags, parent):
         if tags.value is None:
             return []
         # print(f"DEBUG: SettingsController _gather_from_data entry tags={tags.value}")
@@ -314,7 +319,8 @@ class TimeoutController(_SettingController):
         self._timeout.value = value
         self._timeout.message = message
 
-    def _parse(self, value):
+    @staticmethod
+    def _parse(value):
         parts = value.split('|', 1)
         val = parts[0].strip() if parts else ''
         msg = parts[1].strip() if len(parts) == 2 else ''
@@ -339,6 +345,7 @@ class TemplateController(_SettingController):
         return self._template.value
 
     def replace_keyword(self, new_name, old_name=None):
+        _ = old_name
         self._template.value = new_name
         self.mark_dirty()
 
@@ -388,7 +395,7 @@ class MetadataController(_SettingController):
     def value(self):
         return self._meta.value
 
-    def set_value(self, name, value):
+    def set_value(self, name=None, value=None):
         self._meta.name = name
         self._meta.value = value
         self._parent.mark_dirty()
@@ -397,7 +404,7 @@ class MetadataController(_SettingController):
 class VariableController(_SettingController):
 
     def _init(self, var):
-        self._var = var
+        self.var = var
 
     def _label(self, data):
         return ''
@@ -407,15 +414,15 @@ class VariableController(_SettingController):
 
     @property
     def name(self):
-        return self._var.name
+        return self.var.name
 
     @property
     def value(self):
-        return self._var.value
+        return self.var.value
 
     @property
     def comment(self):
-        return self._var.comment
+        return self.var.comment
 
     @property
     def data(self):
@@ -425,11 +432,11 @@ class VariableController(_SettingController):
     def index(self):
         return self.parent.index(self)
 
-    def set_value(self, name, value):
+    def set_value(self, name=None, value=None):
         if isinstance(value, str):
             value = [value]
-        self._var.name = name
-        self._var.value = value
+        self.var.name = name
+        self.var.value = value
         self._parent.mark_dirty()
 
     def has_data(self):
@@ -462,13 +469,13 @@ class VariableController(_SettingController):
             return True
         if other.__class__ != self.__class__:
             return False
-        return self._var == other._var
+        return self.var == other.var
 
     def __hash__(self):
-        return hash(self._var) + 1
+        return hash(self.var) + 1
 
 
-def ImportController(parent, import_):
+def import_controller(parent, import_):
     if import_.type == 'Resource':
         return ResourceImportController(parent, import_)
     elif import_.type == 'Library':
@@ -477,6 +484,10 @@ def ImportController(parent, import_):
 
 
 class _ImportController(_SettingController):
+
+    def __init__(self, parent_controller, data):
+        super().__init__(parent_controller, data)
+        self.is_resource = None
 
     def _init(self, import_):
         self._import = import_
@@ -499,7 +510,7 @@ class _ImportController(_SettingController):
 
     @property
     def display_value(self):
-        value = self.args + (['WITH NAME', self.alias] if self.alias else [])
+        value = self.args + ([ALIAS_MARKER, self.alias] if self.alias else [])
         return ' | '.join(value)
 
     @property
@@ -551,6 +562,10 @@ class ResourceImportController(_ImportController):
     _resolved_import = False
     _previous_imported_controller = None
 
+    def __init__(self, parent_controller, data):
+        super().__init__(parent_controller, data)
+        self._imported_resource_controller = None
+
     def set_value(self, name, args=None, alias=''):
         self._previous_imported_controller = self.get_imported_controller()
         self.unresolve()
@@ -558,27 +573,23 @@ class ResourceImportController(_ImportController):
 
     def get_imported_controller(self):
         if not self._resolved_import:
-            self._imported_resource_controller = \
-                self.parent.resource_file_controller_factory.find_with_import(
-                    self._import)
+            self._imported_resource_controller = self.parent.resource_file_controller_factory.find_with_import(
+                self._import)
             if self._imported_resource_controller:
                 self._imported_resource_controller.add_known_import(self)
             self._resolved_import = True
         return self._imported_resource_controller
 
-    @overrides(_ImportController)
     def has_error(self):
         # un-resolve before checking import errors
         self.unresolve()
         return self.get_imported_controller() is None
 
-    @overrides(_ImportController)
     def publish_added(self):
         # Resolve the import <-> ResourceFileController link
         self.get_imported_controller()
         _ImportController.publish_added(self)
 
-    @overrides(_ImportController)
     def publish_removed(self):
         self._previous_imported_controller = self.get_imported_controller()
         # Unresolve the import <-> ResourceFileController link
@@ -609,9 +620,9 @@ class ResourceImportController(_ImportController):
             # variables, can't know if import is still resolved
             self.unresolve()
 
-    def change_format(self, format):
+    def change_format(self, cformat):
         if self._has_format():
-            self.set_value(utils.replace_extension(self.name, format))
+            self.set_value(utils.replace_extension(self.name, cformat))
         else:
             self.unresolve()
 
@@ -625,7 +636,6 @@ class ResourceImportController(_ImportController):
 class LibraryImportController(_ImportController):
     is_resource = False
 
-    @overrides(_ImportController)
     def has_error(self):
         return not self.parent.parent.is_library_import_ok(self._data)
 
@@ -633,6 +643,5 @@ class LibraryImportController(_ImportController):
 class VariablesImportController(_ImportController):
     is_resource = False
 
-    @overrides(_ImportController)
     def has_error(self):
         return not self.parent.parent.is_variables_import_ok(self._data)

@@ -27,8 +27,8 @@ from .lib.robot.parsing.model import (
     Variable, Step, ForLoop, VariableTable, KeywordTable, TestCaseTable,
     TestCaseFileSettingTable)
 from .lib.robot.parsing.populators import FromFilePopulator
-from .lib.robot.parsing.settings import (Library, Resource, Variables, Comment, _Import, Template,
-    Fixture, Documentation, Timeout, Tags, Return)
+from .lib.robot.parsing.settings import (Library, Resource, Variables, Comment, _Import, Template, Fixture,
+                                         Documentation, Timeout, Tags, Return)
 from .lib.robot.parsing.tablepopulators import UserKeywordPopulator, TestCasePopulator
 from .lib.robot.parsing.robotreader import RobotReader
 from .lib.robot.running import TestLibrary, EXECUTION_CONTEXTS
@@ -40,19 +40,16 @@ from .lib.robot.variables import Variables as RobotVariables
 from .lib.robot.variables import is_scalar_var, is_list_var, is_var, is_dict_var, VariableSplitter
 from .lib.robot.variables.filesetter import VariableFileSetter
 from .lib.robot.variables.tablesetter import VariableTableReader
-from .lib.robot.version import get_version
-
-
-ROBOT_VERSION = get_version()
+from .lib.robot.version import ROBOT_VERSION, ALIAS_MARKER
 
 # Monkey patch LEVELS
 LOG_LEVELS = {
-  'NONE'  : 7,
-  'SKIP'  : 6,
-  'FAIL'  : 5,
-  'ERROR' : 4,
-  'WARN'  : 3,
-  'INFO'  : 2,
-  'DEBUG' : 1,
-  'TRACE' : 0,
+  'NONE': 7,
+  'SKIP': 6,
+  'FAIL': 5,
+  'ERROR': 4,
+  'WARN': 3,
+  'INFO': 2,
+  'DEBUG': 1,
+  'TRACE': 0,
 }

@@ -18,10 +18,10 @@ from ..publish import (RideTestCaseRemoved, RideVariableAdded, RideVariableRemov
                        RideVariableMovedDown, RideUserKeywordRemoved, RideUserKeywordAdded, RideTestCaseAdded)
 from ..publish.messages import RideItemMovedUp, RideItemMovedDown
 from ..robotapi import is_list_var, is_scalar_var, is_dict_var
-from ..utils import overrides, variablematcher
+from ..utils import variablematcher
 from .basecontroller import ControllerWithParent
 from . import macrocontrollers  # TestCaseController, UserKeywordController
-from .settingcontrollers import MetadataController, ImportController, VariableController
+from .settingcontrollers import MetadataController, import_controller, VariableController
 
 
 class WithListOperations(object):
@@ -59,7 +59,8 @@ class _TableController(ControllerWithParent):
         self._parent = parent_controller
         self._table = table
 
-    def _index_difference(self, original_list, sorted_list):
+    @staticmethod
+    def _index_difference(original_list, sorted_list):
         """Determines the difference in sorting order for undo/redo"""
         index_difference = []
         for item in original_list:
@@ -167,10 +168,10 @@ class VariableTableController(_TableController, WithListOperations):
         self._table.variables = variables_sorted
         return index_difference
 
-    def restore_variable_order(self, list):
+    def restore_variable_order(self, rlist):
         """Restores the old order of the variable list"""
         variables_temp = []
-        for i in list:
+        for i in rlist:
             variables_temp.append(self._table.variables[i])
         self._table.variables = variables_temp
 
@@ -237,7 +238,7 @@ class MacroNameValidation(_NameValidation):
 class _MacroTable(_TableController):
 
     @property
-    def _items(self):
+    def items(self):
         raise NotImplementedError(self.__class__)
 
     def __iter__(self):
@@ -255,13 +256,13 @@ class _MacroTable(_TableController):
         return self._item_to_controller_attribute
 
     def __len__(self):
-        return len(self._items)
+        return len(self.items)
 
     def __getitem__(self, index):
-        return self._create_controller(self._items[index])
+        return self._create_controller(self.items[index])
 
     def move_up(self, item):
-        items = self._items
+        items = self.items
         idx = items.index(item)
         if idx == 0:
             return False
@@ -272,7 +273,7 @@ class _MacroTable(_TableController):
         return True
 
     def move_down(self, item):
-        items = self._items
+        items = self.items
         idx = items.index(item)
         if idx + 1 == len(items):
             return False
@@ -286,7 +287,7 @@ class _MacroTable(_TableController):
         return MacroNameValidation(self, name, named_ctrl)
 
     def delete(self, ctrl):
-        self._items.remove(ctrl.data)
+        self.items.remove(ctrl.data)
         if ctrl.data in self._item_to_controller:
             del self._item_to_controller[ctrl.data]
         self.datafile_controller.update_namespace()
@@ -296,7 +297,7 @@ class _MacroTable(_TableController):
     def add(self, ctrl):
         item = ctrl.data
         item.parent = self._table
-        self._items.append(item)
+        self.items.append(item)
         new_controller = self._create_controller(item)
         self.datafile_controller.update_namespace()
         self.mark_dirty()
@@ -312,6 +313,7 @@ class _MacroTable(_TableController):
         return ctrl
 
     def _configure_controller(self, ctrl, config):
+        """ Don't know this exists ;) """
         pass
 
 
@@ -321,7 +323,7 @@ class TestCaseTableController(_MacroTable):
     _controller_class = macrocontrollers.TestCaseController
 
     @property
-    def _items(self):
+    def items(self):
         return self._table.tests
 
     def _notify_creation(self, name, ctrl):
@@ -340,10 +342,10 @@ class TestCaseTableController(_MacroTable):
         self._table.tests = tests_sorted
         return index_difference
 
-    def restore_test_order(self, list):
+    def restore_test_order(self, rlist):
         """Restores the old order of the test list"""
         tests_temp = []
-        for i in list:
+        for i in rlist:
             tests_temp.append(self._table.tests[i])
         self._table.tests = tests_temp
 
@@ -353,7 +355,7 @@ class KeywordTableController(_MacroTable):
     _controller_class = macrocontrollers.UserKeywordController
 
     @property
-    def _items(self):
+    def items(self):
         return self._table.keywords
 
     def _notify_creation(self, name, ctrl):
@@ -378,10 +380,10 @@ class KeywordTableController(_MacroTable):
         self._table.keywords = keywords_sorted
         return index_difference
 
-    def restore_keyword_order(self, list):
+    def restore_keyword_order(self, rlist):
         """Restores the old order of the keyword list"""
         keywords_temp = []
-        for i in list:
+        for i in rlist:
             keywords_temp.append(self._table.keywords[i])
         self._table.keywords = keywords_temp
 
@@ -406,7 +408,7 @@ class ImportSettingsController(_TableController, WithListOperations):
         return self.__import_controllers
 
     def _import_controller(self, import_):
-        return ImportController(self, import_)
+        return import_controller(self, import_)
 
     @property
     def _items(self):
@@ -416,7 +418,6 @@ class ImportSettingsController(_TableController, WithListOperations):
     def resource_file_controller_factory(self):
         return self._resource_file_controller_factory
 
-    @overrides(WithListOperations)
     def _swap(self, ind1, ind2):
         imps = self._import_controllers
         imps[ind1], imps[ind2] = imps[ind2], imps[ind1]

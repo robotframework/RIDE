@@ -17,12 +17,13 @@ import re
 
 from .platform import PY3
 from .robottypes import is_string
+from ..version import ALIAS_MARKER
 
 
 if PY3:
     unichr = chr
 
-_CONTROL_WORDS = frozenset(('ELSE', 'ELSE IF', 'AND', 'WITH NAME'))
+_CONTROL_WORDS = frozenset(('ELSE', 'ELSE IF', 'AND', ALIAS_MARKER, 'WITH NAME'))
 _SEQUENCES_TO_BE_ESCAPED = ('\\', '${', '@{', '%{', '&{', '*{', '=')
 
 

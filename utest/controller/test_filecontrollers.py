@@ -304,15 +304,15 @@ class TestDataDirectoryControllerTest(unittest.TestCase):
         project.namespace = lambda:0
         project.resource_file_controller_factory = lambda:0
         project.is_datafile_dirty = lambda *_:False
-        project._settings = lambda:0
-        project._settings.excludes = lambda:0
+        project.internal_settings = lambda:0
+        project.internal_settings.excludes = lambda:0
         self.called = False
 
         def update_excludes(new_excludes):
             self.assertEqual(len(new_excludes), 1)
             self.assertTrue(new_excludes[0].endswith('source'))
             self.called = True
-        project._settings.excludes.update_excludes = update_excludes
+        project.internal_settings.excludes.update_excludes = update_excludes
         return project
 
 

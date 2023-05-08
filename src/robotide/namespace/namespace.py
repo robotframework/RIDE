@@ -35,7 +35,7 @@ class Namespace(object):
 
     def __init__(self, settings):
         self._context_factory = None
-        self._settings = settings
+        self.settings = settings
         self._library_manager = None
         self._content_assist_hooks = []
         self._update_listeners = set()
@@ -45,8 +45,8 @@ class Namespace(object):
 
     def _init_caches(self):
         self._lib_cache = LibraryCache(
-            self._settings, self.update, self._library_manager)
-        self._resource_factory = ResourceFactory(self._settings)
+            self.settings, self.update, self._library_manager)
+        self._resource_factory = ResourceFactory(self.settings)
         self._retriever = DatafileRetriever(self._lib_cache,
                                             self._resource_factory, self)
         self._context_factory = _RetrieverContextFactory()
@@ -55,7 +55,7 @@ class Namespace(object):
         """Add user configured paths to PYTHONAPATH.
         """
         path_idx = 0
-        for path in self._settings.get('pythonpath', []):
+        for path in self.settings.get('pythonpath', []):
             if path not in sys.path:
                 normalized = path.replace('/', os.sep)
                 sys.path.insert(path_idx, normalized)
@@ -357,13 +357,11 @@ class _VariableStash(object):
         return {}
 
     def set_from_file(self, varfile_path, args):
-        #  print("DEBUG: enter set_from_file %s\n" % (varfile_path))
         try:
             vars_from_file = VariableFileSetter(None).import_if_needed(
                 varfile_path, args)
-        except (robotapi.DataError, Exception):
-            #  print("DEBUG: leave with error set_from_file %s\n" % str(e))
-            raise  # return # vars_from_file = {}   # DEBUG
+        except (robotapi.DataError, Exception) as e:
+            raise e
         for name, value in vars_from_file:
             self.set(name, value, varfile_path)
 
@@ -511,7 +509,7 @@ class DatafileRetriever(object):
             return True
         except (robotapi.DataError, Exception):
             # print("DEBUG: Namespace Error at import_vars: %s\n" % str(e))
-            return False  # TODO: log somewhere
+            return False  # DEBUG: log somewhere
 
     def _var_collector(self, res, ctx, items):
         _ = items
@@ -584,7 +582,7 @@ class _Keywords(object):
             self._add_keyword(kw)
 
     def _add_keyword(self, kw):
-        # TODO: this hack creates a preference for local keywords over
+        # DEBUG: this hack creates a preference for local keywords over
         # resources and libraries Namespace should be rewritten to handle
         # keyword preference order
         if kw.name not in self.keywords:

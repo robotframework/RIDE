@@ -717,8 +717,8 @@ class RideFrame(wx.Frame):
             # print(f"DEBUG: OnSettings section: {message._is_section('General')} background {background}"
                   f" foreground {foreground}")
             if message._is_section('General'):
-                _settings = RideSettings()
-                _general_settings = _settings['General']
+                internal_settings = RideSettings()
+                _general_settings = internal_settings['General']
                 children = self.GetChildren()
                 for child in children:
                     child.SetBackgroundColour(Colour(_general_settings['background']))

@@ -24,9 +24,7 @@ from ..context import LOG
 from ..controller.ctrlcommands import NullObserver, SaveFile
 from ..publish.messages import RideOpenSuite, RideNewProject, RideFileNameChanged
 from .. import spec
-# from ..spec.librarymanager import LibraryManager
 from ..spec.xmlreaders import SpecInitializer
-from ..utils import overrides
 
 
 class Project(_BaseController, WithNamespace):
@@ -38,7 +36,7 @@ class Project(_BaseController, WithNamespace):
             self._library_manager.start()
         self._name_space = namespace
         self._set_namespace(self._name_space)
-        self._settings = settings
+        self.internal_settings = settings
         self._loader = DataLoader(self._name_space, settings)
         self._controller = None
         self.name = None
@@ -59,7 +57,6 @@ class Project(_BaseController, WithNamespace):
         self._library_manager.stop()
         self._library_manager = None
 
-    @overrides(WithNamespace)
     def _set_namespace(self, namespace):
         namespace.set_library_manager(self._library_manager)
         WithNamespace._set_namespace(self, namespace)
@@ -70,15 +67,15 @@ class Project(_BaseController, WithNamespace):
 
     @property
     def default_dir(self):
-        return os.path.abspath(self._settings.get('default directory', ''))
+        return os.path.abspath(self.internal_settings.get('default directory', ''))
 
     def update_default_dir(self, path):
         default_dir = path if os.path.isdir(path) else os.path.dirname(path)
-        self._settings.set('default directory', default_dir)
+        self.internal_settings.set('default directory', default_dir)
         self._name_space.update_exec_dir_global_var(default_dir)
         self._name_space.update_cur_dir_global_var(default_dir)
 
-    # TODO: in all other controllers data returns a robot data model object.
+    # DEBUG: in all other controllers data returns a robot data model object.
     @property
     def data(self):
         return self._controller
@@ -109,9 +106,9 @@ class Project(_BaseController, WithNamespace):
         self._new_project(NewTestCaseFile(path))
 
     def _new_project(self, datafile):
-        from .filecontrollers import DataController, ResourceFileControllerFactory
+        from .filecontrollers import data_controller, ResourceFileControllerFactory
         self.update_default_dir(datafile.directory)
-        self._controller = DataController(datafile, self)
+        self._controller = data_controller(datafile, self)
         self._resource_file_controller_factory = ResourceFileControllerFactory(self.namespace, self)
         RideNewProject(path=datafile.source, datafile=datafile).publish()
 
@@ -136,10 +133,10 @@ class Project(_BaseController, WithNamespace):
             pass
 
     def is_excluded(self, source):
-        return self._settings.excludes.contains(source) if self._settings else False
+        return self.internal_settings.excludes.contains(source) if self.internal_settings else False
 
     def _load_initfile(self, path, load_observer):
-        if not os.path.splitext(os.path.split(path)[1])[0] == '__init__':
+        if os.path.splitext(os.path.split(path)[1])[0] != '__init__':
             return None
         initfile = self._loader.load_initfile(path, load_observer)
         if not initfile:
@@ -170,20 +167,20 @@ class Project(_BaseController, WithNamespace):
         return datafile
 
     def _populate_from_datafile(self, path, datafile, load_observer):
-        self.__init__(self.namespace, self._settings, library_manager=self._library_manager)
+        self.__init__(self.namespace, self.internal_settings, library_manager=self._library_manager)
         resources = self._loader.resources_for(datafile, load_observer)
         self._create_controllers(datafile, resources)
         RideOpenSuite(path=path, datafile=self._controller).publish()
         load_observer.finish()
 
     def _create_controllers(self, datafile, resources):
-        from .filecontrollers import DataController
+        from .filecontrollers import data_controller
         self.clear_namespace_update_listeners()
-        self._controller = DataController(datafile, self)
+        self._controller = data_controller(datafile, self)
         new_resource_controllers = []
         for r in resources:
-            self._create_resource_controller(r, resource_created_callback=lambda controller:
-                                             new_resource_controllers.append(controller))
+            self._create_resource_controller(r, resource_created_callback=lambda r_controller:
+                                             new_resource_controllers.append(r_controller))
         for controller in new_resource_controllers:
             self._inform_resource_created(controller)
 
@@ -261,12 +258,12 @@ class Project(_BaseController, WithNamespace):
                 return True
         return False
 
-    def change_format(self, controller, format):
-        if controller.is_same_format(format):
+    def change_format(self, controller, cformat):
+        if controller.is_same_format(cformat):
             return
         old_path = controller.filename
-        controller.set_format(format)
-        controller.execute(SaveFile(self._settings.get('reformat', False)))
+        controller.set_format(cformat)
+        controller.execute(SaveFile(self.internal_settings.get('reformat', False)))
         if old_path:
             self._remove_file(old_path)
             RideFileNameChanged(old_filename=old_path,
@@ -276,9 +273,9 @@ class Project(_BaseController, WithNamespace):
         if path and os.path.isfile(path):
             os.remove(path)
 
-    def change_format_recursive(self, controller, format):
+    def change_format_recursive(self, controller, cformat):
         for datafile in controller.iter_datafiles():
-            self.change_format(datafile, format)
+            self.change_format(datafile, cformat)
 
     def remove_datafile(self, controller):
         if controller is self._controller:
@@ -299,7 +296,7 @@ class Project(_BaseController, WithNamespace):
     def _suites(self):
         if not self.data:
             return []
-        return [df for df in self.data.iter_datafiles() if not (df in self.resources)]
+        return [df for df in self.data.iter_datafiles() if df not in self.resources]
 
     def resource_import_modified(self, path, directory):
         resource = self.namespace.get_resource(path, directory)

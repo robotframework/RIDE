@@ -238,8 +238,8 @@ class ResourceFile(_TestData):
         self.variable_table = VariableTable(self)
         self.testcase_table = TestCaseTable(self)
         self.keyword_table = KeywordTable(self)
-        self._settings = settings
-        self._tab_size = self._settings.get('txt number of spaces', 2) if self._settings else 2
+        self.settings = settings
+        self._tab_size = self.settings.get('txt number of spaces', 2) if self.settings else 2
         _TestData.__init__(self, source=source)
 
     def populate(self):
@@ -842,7 +842,6 @@ class Step(object):
     cells = []
 
     def __init__(self, content, comment=None):
-        # print(f"DEBUG: RFLib Model enter init Step: ENTER cell content={content} comment={comment}")
         if isinstance(content, Step):
             size = len(content)
             self.cells = content.cells  # .as_list()
@@ -857,8 +856,6 @@ class Step(object):
                 self.cells.extend(comment)
             elif isinstance(comment, str):
                 self.cells.append(comment)
-        # if self.cells:
-        #     print(f"DEBUG: model _first_non_empty_cell: {self.cells}")
         index = self.first_non_empty_cell(content)  # Called first to set self.inner_kw_pos
         self.inner_kw_pos = index
         self.normal_assign = None
@@ -970,17 +967,23 @@ class Step(object):
         """
         # print(f"DEBUG RFLib Model Step: as_list() ENTER assign={self.assign}\n"
         #       f"cells={self.cells[:]}")
+        _ = include_comment
         if indent:
             return [''] + self.cells[:]
         return self.cells[:]
 
     def first_non_empty_cell(self, content=None):
-        # print(f"DEBUG: model enter _first_non_empty_cell")
+        _ = content
         size = len(self.cells)
         index = 0
         while index < size and self.cells[index] == '':
             index += 1
-        return index if 0 <= index < size else index - 1 if index - 1 > 0 else 0
+        if 0 <= index < size:
+            return index
+        elif index - 1 > 0:
+            return index - 1
+        else:
+            return 0
 
     def first_empty_cell(self):
         index = self.inner_kw_pos
@@ -1020,12 +1023,6 @@ class Step(object):
         # Compensation for kw==comment
         if kw and self.comment and kw == self.comment.as_list():
             seglen -= 1
-        # print(f"DEBUG RFLib Model Step: len indent={len(self.indent)} assign= {len(self.assign)}\n"
-        #      f" assign= {self.assign[:]} kw={len(kw)} KW={kw}"
-        #      f" args={len(self.args)} \n args={self.args[:]} commt={len(self.comment)}"
-        #      f" comment={self.comment.as_list()}")
-        # print(f"DEBUG RFLib Model Step: len computed={seglen} cells_len={cells_len} cells={self.cells}")
-        # assert seglen == cells_len
         return cells_len
 
 

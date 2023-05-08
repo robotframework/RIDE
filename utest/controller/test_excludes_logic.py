@@ -27,7 +27,7 @@ class TestExcludesLogic(unittest.TestCase):
         self.project = datafilereader.construct_project(datafilereader.SIMPLE_TEST_SUITE_PATH, tempfile.gettempdir())
 
     def tearDown(self):
-        p = self.project._settings.excludes._exclude_file_path
+        p = self.project.internal_settings.excludes._exclude_file_path
         if os.path.exists(p):
             os.remove(p)
 

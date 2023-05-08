@@ -71,7 +71,7 @@ class ReleaseNotes(object):
         _ = event
         if not self._dialog:
             self._dialog = HtmlDialog('Offline Change Log', f"Check the online version at https://github.com/"
-                                                            f"robotframework/RIDE/blob/v{VERSION}/CHANGELOG.adoc")
+                                                            f"robotframework/RIDE/blob/{VERSION}/CHANGELOG.adoc")
         self._dialog.SetSize(800, 800)
         # DEBUG: If we LoadFile, we cannot change the foreground color
         # self._dialog.html_wnd.LoadFile(join(dirname(abspath(__file__)), "CHANGELOG.html"))
@@ -117,7 +117,7 @@ class ReleaseNotes(object):
 
 date = time.strftime('%d/%m/%Y', time.localtime(os.path.getmtime(__file__)))
 version = VERSION
-# milestone = re.split('[ab-]', VERSION)[0]
+milestone = re.split('[ab-]', VERSION)[0]
 
 WELCOME_TEXT = f"""
 <h2>Welcome to use RIDE version {version}</h2>
@@ -164,10 +164,18 @@ RELEASE_NOTES = f"""
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
+<li>Added <b>FOR</b> scope markers (<b>IN</b>, <b>IN RANGE</b>, <b>IN ENUMERATE</b>, <b>IN ZIP</b>)
+ to auto-complete list</li>
+<li>Added support to read environment variable <b>ROBOT_VERSION</b> to apply some conditions</li>
+<li>Added notes on Test Timeout Grid Editor field and in Preferences of Test Runner</li>
 <li>Keywords auto-suggestion in grid editor does not need shortcut anymore, if you want to enable or disable this
  feature you can config in `Preferences -> Grid Editor -> Enable auto suggestions`</li>
 
 <li>Made \\n visible when editing cells in Grid Editor (problematic in Windows)</li>
+<li>Changed alias marker on library imports to consider variable <b>ROBOT_VERSION</b>.
+ If version is lower than 6.0, uses <b>WITH NAME</b>, otherwise will use <b>AS</b></li>
+
+<li>Fixed auto-indent on block commands in Text Editor</li>
 
 <li>Fixed missing auto-enclosing when in Cell Editor in Linux</li>
 
@@ -232,6 +240,6 @@ python -m robotide.__init__
 <pre class="literal-block">
 python -m robotide.postinstall -install
 </pre>
-<p>RIDE {VERSION} was released on 16/Apr/2023.</p>
+<p>RIDE {VERSION} was released on 08/May/2023.</p>
 </div>
 """

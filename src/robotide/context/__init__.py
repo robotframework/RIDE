@@ -46,7 +46,7 @@ if not os.path.isdir(LIBRARY_XML_DIRECTORY):
 SETTING_EDITOR_WIDTH = 450
 SETTING_LABEL_WIDTH = 150
 SETTING_ROW_HEIGHT = 25
-# TODO: Make this colour configurable
+# DEBUG: Make this colour configurable
 POPUP_BACKGROUND = (240, 242, 80)  # (255, 255, 187)
 POPUP_FOREGROUND = (40, 40, 0)  # (255, 255, 187)
 
