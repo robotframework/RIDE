@@ -12,6 +12,7 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+from ..robotapi import ALIAS_MARKER
 
 
 def get_help(title):
@@ -24,11 +25,15 @@ _EXAMPLES = {
     'TAG': "Separate tags with a pipe character like 'tag | second tag | 3rd'.",
     'FIXTURE': "Separate possible arguments with a pipe character like 'My Keyword | arg 1 | arg 2'.",
     'TIMEOUT': ("Use time syntax like '1min 10s' or '2 hours' or give the value as seconds.\n"
-                "Optional message can be specified like '3 minutes | My message here'."),
+                "Before Robot v3.0.1 an optional message could have been specified like '3 minutes | My message here'."
+                ""),
     'ARGUMENTS': ("Specify the arguments separated with a pipe character like '${arg1} | ${arg2}'.\n"
                   "Default values are given using equal sign and the last argument can be a list variable.\n"
                   "Example: '${arg1} | ${arg2}=default value | @{rest}'.\n"
-                  "Note. You can use variable shortcuts in this field.")
+                  "Note. You can use variable shortcuts in this field."),
+    'ALIAS': ("Alias can be used to import same library multiple times with different names.\n"
+              "Alias is prepended with: "+ALIAS_MARKER+" . Note that since Robot v6.0, imports with old WITH NAME are"
+              " replaced by AS.")
 }
 
 current = None
@@ -46,7 +51,7 @@ Individual items must be in format `key=value`
 Library
 Give name, optional arguments and optional alias of the library to import.
 Separate multiple arguments with a pipe character like 'arg 1 | arg 2'.
-Alias can be used to import same library multiple times with different names.
+%(ALIAS)s
 
 Variables
 Give path and optional arguments of the variable file to import.

@@ -18,13 +18,14 @@ import os
 import sys
 import unittest
 from mockito import mock
+from robotide.robotapi import ALIAS_MARKER
 
 from robotide.robotapi import (
     Fixture, Documentation, Timeout, Tags, Return, TestCaseFile)
 from robotide.controller.filecontrollers import TestCaseFileController
 from robotide.controller.settingcontrollers import (
     DocumentationController, FixtureController, TagsController,
-    ImportController, ReturnValueController, TimeoutController,
+    import_controller, ReturnValueController, TimeoutController,
     ForceTagsController, DefaultTagsController)
 from robotide.controller.tablecontrollers import (
     VariableTableController, MetadataListController, ImportSettingsController,
@@ -342,32 +343,32 @@ class ImportControllerTest(unittest.TestCase):
     def test_display_value(self):
         assert self.parent[0].display_value == 'foo | bar'
         assert self.parent[1].display_value == ''
-        assert self.parent[2].display_value == 'WITH NAME | InBuilt'
+        assert self.parent[2].display_value == ALIAS_MARKER + ' | InBuilt'  # Changed from old format 'WITH NAME'
 
     def test_editing(self):
-        ctrl = ImportController(self.parent, self.parent[1]._import)
-        ctrl.set_value('foo')
+        ctrl = import_controller(self.parent, self.parent[1]._import)
+        ctrl.set_value(name='foo')
         self._assert_import(1, 'foo')
         assert self.parent.dirty
 
     def test_editing_with_args(self):
-        ctrl = ImportController(self.parent, self.parent[0]._import)
-        ctrl.set_value('bar', 'quux')
+        ctrl = import_controller(self.parent, self.parent[0]._import)
+        ctrl.set_value(name='bar', args='quux')
         self._assert_import(0, 'bar', ['quux'])
         assert self.parent.dirty
-        ctrl.set_value('name', 'a1 | a2')
+        ctrl.set_value(name='name', args='a1 | a2')
         self._assert_import(0, 'name', ['a1', 'a2'])
 
     def test_editing_with_alias(self):
-        ctrl = ImportController(self.parent, self.parent[0]._import)
-        ctrl.set_value('newname', '', 'namenew')
+        ctrl = import_controller(self.parent, self.parent[0]._import)
+        ctrl.set_value(name='newname', args='', alias='namenew')
         self._assert_import(0, 'newname', exp_alias='namenew')
-        ctrl.set_value('again')
+        ctrl.set_value(name='again')
         self._assert_import(0, 'again')
 
     def test_publishing_change(self):
-        ctrl = ImportController(self.parent, self.parent[1]._import)
-        ctrl.set_value('new name')
+        ctrl = import_controller(self.parent, self.parent[1]._import)
+        ctrl.set_value(name='new name')
         self._test_listener('new name', 'resource', self.changed_import_listener)
 
     def test_publishing_remove(self):
@@ -516,7 +517,7 @@ class MetadataListControllerTest(unittest.TestCase):
         self._assert_meta_in_ctrl(0, 'Meta name', 'Some value')
 
     def test_editing(self):
-        self.ctrl[0].set_value('New name', 'another value')
+        self.ctrl[0].set_value(name='New name', value='another value')
         self._assert_meta_in_model(0, 'New name', 'another value')
         assert self.ctrl[0].dirty
 

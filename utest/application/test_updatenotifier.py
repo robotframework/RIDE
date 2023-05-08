@@ -45,13 +45,13 @@ class UpdateNotifierTestCase(unittest.TestCase):
         return ctrl
 
     @staticmethod
-    def _settings(check_for_updates: typing.Union[bool, None] = True,
-                  last_update_check: typing.Union[float, None] = time.time() - 60 * 60 * 24 * 7 - 1):
+    def internal_settings(check_for_updates: typing.Union[bool, None] = True,
+                          last_update_check: typing.Union[float, None] = time.time() - 60 * 60 * 24 * 7 - 1):
         return {'check for updates': check_for_updates,
                 'last update check': last_update_check}
 
     def test_normal_update(self):
-        settings = self._settings()
+        settings = self.internal_settings()
         ctrl = self._update_notifier_controller(settings, '0', '1', 'http://xyz.abc.efg.di')
         ctrl.notify_update_if_needed(self._callback)
         self.assertEqual('1', self._version)
@@ -61,7 +61,7 @@ class UpdateNotifierTestCase(unittest.TestCase):
         self.assertTrue(settings['last update check'] > time.time() - 1)
 
     def test_update_when_trunk_version(self):
-        settings = self._settings()
+        settings = self.internal_settings()
         ctrl = self._update_notifier_controller(settings, '2.0', '2.0.1')
         ctrl.notify_update_if_needed(self._callback)
         self.assertTrue(self._callback_called)
@@ -71,7 +71,7 @@ class UpdateNotifierTestCase(unittest.TestCase):
 
     def test_last_update_done_less_than_a_week_ago(self):
         original_time = time.time() - 60 * 60 * 24 * 3
-        settings = self._settings(last_update_check=original_time)
+        settings = self.internal_settings(last_update_check=original_time)
         ctrl = UpdateNotifierController(settings)
         ctrl.notify_update_if_needed(self._callback)
         self.assertTrue(settings['check for updates'])
@@ -79,7 +79,7 @@ class UpdateNotifierTestCase(unittest.TestCase):
         self.assertFalse(self._callback_called)
 
     def test_check_for_updates_is_false(self):
-        settings = self._settings(check_for_updates=False)
+        settings = self.internal_settings(check_for_updates=False)
         original_time = settings['last update check']
         ctrl = UpdateNotifierController(settings)
         ctrl.notify_update_if_needed(self._callback)
@@ -88,14 +88,14 @@ class UpdateNotifierTestCase(unittest.TestCase):
         self.assertFalse(self._callback_called)
 
     def test_no_update_found(self):
-        settings = self._settings()
+        settings = self.internal_settings()
         ctrl = self._update_notifier_controller(settings, '0.55', '0.55')
         ctrl.notify_update_if_needed(self._callback)
         self.assertTrue(settings['last update check'] > time.time() - 1)
         self.assertFalse(self._callback_called)
 
     def test_first_run_sets_settings_correctly_and_checks_for_updates(self):
-        settings = self._settings(check_for_updates=None, last_update_check=None)
+        settings = self.internal_settings(check_for_updates=None, last_update_check=None)
         ctrl = self._update_notifier_controller(settings, '1.0.2', '1.0.2')
         ctrl.notify_update_if_needed(self._callback)
         self.assertTrue(settings['last update check'] > time.time() - 1)
@@ -103,7 +103,7 @@ class UpdateNotifierTestCase(unittest.TestCase):
         self.assertFalse(self._callback_called)
 
     def test_first_run_sets_settings_correctly_and_finds_an_update(self):
-        settings = self._settings(check_for_updates=None, last_update_check=None)
+        settings = self.internal_settings(check_for_updates=None, last_update_check=None)
         ctrl = self._update_notifier_controller(settings, '1.2', '2.0')
         ctrl.notify_update_if_needed(self._callback)
         self.assertTrue(settings['last update check'] > time.time() - 1)
@@ -111,7 +111,7 @@ class UpdateNotifierTestCase(unittest.TestCase):
         self.assertTrue(self._callback_called)
 
     def test_checking_timeouts(self):
-        settings = self._settings()
+        settings = self.internal_settings()
         ctrl = UpdateNotifierController(settings)
 
         def throwTimeoutError():
@@ -123,7 +123,7 @@ class UpdateNotifierTestCase(unittest.TestCase):
         self.assertFalse(self._callback_called)
 
     def test_download_url_checking_timeouts(self):
-        settings = self._settings()
+        settings = self.internal_settings()
         ctrl = UpdateNotifierController(settings)
         ctrl.VERSION = '0'
         ctrl._get_newest_version = lambda: '1'
@@ -138,7 +138,7 @@ class UpdateNotifierTestCase(unittest.TestCase):
         self.assertFalse(self._callback_called)
 
     def test_server_returns_no_versions(self):
-        settings = self._settings()
+        settings = self.internal_settings()
         ctrl = self._update_notifier_controller(settings, '1.2.2', None)
         ctrl.notify_update_if_needed(self._callback)
         self.assertTrue(settings['last update check'] > time.time() - 1)
@@ -146,7 +146,7 @@ class UpdateNotifierTestCase(unittest.TestCase):
         self.assertFalse(self._callback_called)
 
     def test_server_returns_older_version(self):
-        settings = self._settings()
+        settings = self.internal_settings()
         ctrl = self._update_notifier_controller(settings, '0.44', '0.43.1')
         ctrl.notify_update_if_needed(self._callback)
         self.assertTrue(settings['last update check'] > time.time() - 1)

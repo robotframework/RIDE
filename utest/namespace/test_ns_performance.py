@@ -84,7 +84,7 @@ class TestNamespacePerformance(unittest.TestCase):
         ns = Namespace(FakeSettings())
         library_manager = LibraryManager(':memory:')
         library_manager.create_database()
-        project = Project(ns, settings=ns._settings, library_manager=library_manager)
+        project = Project(ns, settings=ns.settings, library_manager=library_manager)
         project.load_datafile(testcasefile,
                             MessageRecordingLoadObserver())
         return ns, project._controller.data, library_manager

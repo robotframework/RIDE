@@ -32,7 +32,7 @@ class TestFormatChange(unittest.TestCase):
 
     def setUp(self):
         ns = Namespace(FakeSettings())
-        self.project = ProjectChecker(ns, settings=ns._settings)
+        self.project = ProjectChecker(ns, settings=ns.settings)
 
     def test_format_change_to_tsv(self):
         self._test_format_change('tsv')

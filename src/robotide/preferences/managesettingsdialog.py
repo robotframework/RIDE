@@ -72,11 +72,11 @@ class SaveLoadSettings(RIDEDialog):
         # print(f"DEBUG: SaveLoad returncode {self.GetReturnCode()}")
         if os.path.isfile(file):  # Test validity settings
             # print(f"DEBUG: Selected file is {file}.")
-            # print(f"DEBUG: load_and_merge BEFORE: {self._settings['background']}")
+            # print(f"DEBUG: load_and_merge BEFORE: {self.internal_settings['background']}")
             self.Freeze()
             self.load_and_merge(file)
             self.Thaw()
-            # print(f"DEBUG: load_and_merge AFTER: {self._settings['background']}")
+            # print(f"DEBUG: load_and_merge AFTER: {self.internal_settings['background']}")
             self._parent.Refresh()
             self._parent.GetParent().Refresh()
             self.SetReturnCode(ID_LOAD)

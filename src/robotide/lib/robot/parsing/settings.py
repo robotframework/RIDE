@@ -16,6 +16,7 @@
 from robotide.lib.robot.utils import is_string, py2to3, unicode
 
 from .comments import Comment
+from ..version import ALIAS_MARKER
 
 
 @py2to3
@@ -301,14 +302,14 @@ class Library(_Import):
         _Import.__init__(self, parent, name, args, alias, comment)
 
     def _split_possible_alias(self, args):
-        if len(args) > 1 and args[-2] == 'WITH NAME':
+        if len(args) > 1 and (args[-2] == ALIAS_MARKER or args[-2] == 'WITH NAME'):
             return args[:-2], args[-1]
         return args, None
 
     def _data_as_list(self):
         data = ['Library', self.name] + self.args
         if self.alias:
-            data += ['WITH NAME', self.alias]
+            data += [ALIAS_MARKER, self.alias]
         return data
 
 

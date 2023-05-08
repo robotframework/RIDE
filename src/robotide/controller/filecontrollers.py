@@ -16,12 +16,9 @@
 import os
 import shutil
 import stat
+import subprocess
 import sys
 from itertools import chain
-try:
-    import subprocess32 as subprocess
-except ImportError:
-    import subprocess
 from .dataloader import ExcludedDirectory, TestData
 from ..publish import (RideDataFileRemoved, RideInitFileRemoved, RideDataChangedToDirty, RideDataDirtyCleared,
                        RideSuiteAdded, RideItemSettingsChanged)
@@ -31,7 +28,6 @@ from .. import utils
 
 from .basecontroller import WithUndoRedoStacks, _BaseController, WithNamespace, ControllerWithParent
 from .robotdata import NewTestCaseFile, NewTestDataDirectory
-from ..utils import overrides
 from .settingcontrollers import (DocumentationController, FixtureController, TimeoutController, TemplateController,
                                  DefaultTagsController, ForceTagsController)
 from .tablecontrollers import (VariableTableController, TestCaseTableController, KeywordTableController,
@@ -49,7 +45,7 @@ def _get_controller(project, data, parent):
         from ..namespace import Namespace
         import tempfile
         if not data.parent:
-            data.parent = Project(Namespace(data._settings), data._settings)
+            data.parent = Project(Namespace(data.settings), data.settings)
             content = bytes(f"*** Settings ***\n"
                             f"Resource    {data.source}\n\n"
                             f"*** Test Cases ***\n"
@@ -64,7 +60,7 @@ def _get_controller(project, data, parent):
     return TestDataDirectoryController(data, project, parent)
 
 
-def DataController(data, project, parent=None):
+def data_controller(data, project, parent=None):
     return _get_controller(project, data, parent)
 
 
@@ -154,9 +150,9 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
 
     @property
     def settings(self):
-        return self._settings()
+        return self.internal_settings()
 
-    def _settings(self):
+    def internal_settings(self):
         ss = self.data.setting_table
         return [DocumentationController(self, ss.doc),
                 FixtureController(self, ss.suite_setup),
@@ -166,12 +162,12 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
                 self.force_tags]
 
     @property
-    def _setting_table(self):
+    def setting_table(self):
         return self.data.setting_table
 
     @property
     def force_tags(self):
-        return ForceTagsController(self, self._setting_table.force_tags)
+        return ForceTagsController(self, self.setting_table.force_tags)
 
     @property
     def variables(self):
@@ -293,7 +289,7 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
 
     def get_keyword_names(self):
         if self.keywords:
-            return [kw.name for kw in self.keywords._items]
+            return [kw.name for kw in self.keywords.items]
         return None
 
     def has_format(self):
@@ -444,8 +440,9 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
                 isinstance(child, TestDataDirectoryController) or
                 isinstance(child, TestCaseFileController)]
 
-    def add_child(self, child):
-        self.children.append(child)
+    def add_child(self, controller):
+        assert controller not in self.children
+        self.children.append(controller)
 
     def contains_tests(self):
         for suite in self.suites:
@@ -471,7 +468,7 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
         return self._project.is_excluded(self.source) if self._project else False
 
     def _children(self, data):
-        children = [DataController(child, self._project, self) for child in data.children]
+        children = [data_controller(child, self._project, self) for child in data.children]
         if self._can_add_directory_children(data):
             self._add_directory_children(children, data.source, data.initfile)
         return children
@@ -529,10 +526,6 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
     def _get_filenames_in_directory(path):
         return [os.path.join(path, f) for f in os.listdir(path)]
 
-    def add_child(self, controller):
-        assert controller not in self.children
-        self.children.append(controller)
-
     def has_format(self):
         return self.data.initfile is not None
 
@@ -552,7 +545,7 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
     def _new_data_controller(self, datafile):
         self.data.children.append(datafile)
         datafile.parent = self.data
-        self.children.append(DataController(datafile, self._project, self))
+        self.children.append(data_controller(datafile, self._project, self))
         return self.children[-1]
 
     def notify_suite_added(self, suite):
@@ -678,7 +671,7 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
     def exclude(self):
         if self._project.is_datafile_dirty(self):
             raise DirtyRobotDataException()
-        self._project._settings.excludes.update_excludes([self.directory])
+        self._project.internal_settings.excludes.update_excludes([self.directory])
         index = self.parent.children.index(self)
         result = ExcludedDirectoryController(self.data, self._project, self.parent)
         self.parent.children[index] = result
@@ -706,9 +699,9 @@ class TestCaseFileController(_FileSystemElement, _DataController):
         _FileSystemElement.__init__(self, data.source if data else None, data.directory)
         _DataController.__init__(self, data, project, parent)
 
-    def _settings(self):
-        ss = self._setting_table
-        sett = _DataController._settings(self)
+    def internal_settings(self):
+        ss = self.setting_table
+        sett = _DataController.internal_settings(self)
         sett.insert(-1, TemplateController(self, ss.test_template))
         sett.insert(-1, TimeoutController(self, ss.test_timeout))
         return sett + [self.default_tags]
@@ -744,7 +737,7 @@ class TestCaseFileController(_FileSystemElement, _DataController):
 
     @property
     def default_tags(self):
-        return DefaultTagsController(self, self._setting_table.default_tags)
+        return DefaultTagsController(self, self.setting_table.default_tags)
 
     def is_modifiable(self):
         return not self.exists() or not self.is_readonly()
@@ -902,7 +895,7 @@ class ResourceFileController(_FileSystemElement, _DataController):
             notification(resource_import)
         self.namespace.resource_filename_changed(old, self.filename)
 
-    def _settings(self):
+    def internal_settings(self):
         return [DocumentationController(self, self.data.setting_table.doc)]
 
     def validate_name(self, name):
@@ -960,6 +953,7 @@ class ResourceFileController(_FileSystemElement, _DataController):
                 yield imp
 
     def remove_child(self, controller):
+        """ Does not have children """
         pass
 
 
@@ -983,9 +977,9 @@ class ExcludedDirectoryController(_FileSystemElement, ControllerWithParent, With
 
     @property
     def settings(self):
-        return self._settings()
+        return self.internal_settings()
 
-    def _settings(self):
+    def internal_settings(self):
         ss = self.data.setting_table
         return [DocumentationController(self, ss.doc),
                 FixtureController(self, ss.suite_setup),
@@ -995,12 +989,12 @@ class ExcludedDirectoryController(_FileSystemElement, ControllerWithParent, With
                 self.force_tags]
 
     @property
-    def _setting_table(self):
+    def setting_table(self):
         return self.data.setting_table
 
     @property
     def force_tags(self):
-        return ForceTagsController(self, self._setting_table.force_tags)
+        return ForceTagsController(self, self.setting_table.force_tags)
 
     @property
     def dirty(self):
@@ -1009,14 +1003,13 @@ class ExcludedDirectoryController(_FileSystemElement, ControllerWithParent, With
     def keyword_info(self, keyword_name):
         return WithNamespace.keyword_info(self, self.data, keyword_name)
 
-    @overrides(_BaseController)
     def is_excluded(self):
         return True
 
     def remove_from_excludes(self):
-        self._project._settings.excludes.remove_path(self.source)
+        self._project.internal_settings.excludes.remove_path(self.source)
         index = self.parent.children.index(self)
-        td = TestData(self.data.source, self.parent.data, self._project._settings)
+        td = TestData(self.data.source, self.parent.data, self._project.internal_settings)
         result = TestDataDirectoryController(td, self._project, self.parent)
         self.parent.children[index] = result
         return result

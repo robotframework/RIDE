@@ -1,16 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>Changelog</title><link rel="stylesheet" type="text/css" href="docbook-xsl.css" /><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot" /></head><body><div xml:lang="en" class="article" lang="en"><div class="titlepage"><div><div><h2 class="title"><a id="idm45643391479856"></a>Changelog</h2></div></div><hr /></div><p>All notable changes to this project will be documented in this file.</p><p>The format is based on <a class="ulink" href="http://keepachangelog.com/en/1.0.0/" target="_top">Keep a Changelog</a>
-and this project adheres to <a class="ulink" href="http://semver.org/spec/v2.0.0.html" target="_top">Semantic Versioning</a>.</p><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_ulink_url_https_github_com_robotframework_ride_unreleased_ulink"></a>1. <a class="ulink" href="https://github.com/robotframework/RIDE" target="_top">Unreleased</a></h2></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_added"></a>1.1. Added</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>Changelog</title><link rel="stylesheet" type="text/css" href="docbook-xsl.css" /><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot" /></head><body><div xml:lang="en" class="article" lang="en"><div class="titlepage"><div><div><h2 class="title"><a id="idm45693983326912"></a>Changelog</h2></div></div><hr /></div>
+<p>All notable changes to this project will be documented in this file.</p><p>The format is based on <a class="ulink" href="http://keepachangelog.com/en/1.0.0/" target="_top">Keep a Changelog</a>
+and this project adheres to <a class="ulink" href="http://semver.org/spec/v2.0.0.html" target="_top">Semantic Versioning</a>.</p><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_ulink_url_https_github_com_robotframework_ride_blob_master_doc_releasenotes_ride_2_0_5_rst_2_0_5_ulink_2023_05_08"></a>1. <a class="ulink" href="https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.0.5.rst" target="_top">2.0.5</a> - 2023-05-08</h2></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_added"></a>1.1. Added</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+Added ``FOR`` scope markers (``IN``, ``IN RANGE``, ``IN ENUMERATE``, ``IN ZIP``) to auto-complete list
+</li><li class="listitem">
+Added support to read environment variable ``ROBOT_VERSION`` to apply some conditions.
+</li><li class="listitem">
+Added note on Test Timeout that <span class="strong"><strong>timeout message</strong></span> is not supported since Robot v3.0.1
+</li><li class="listitem">
 Added the note, <span class="emphasis"><em>Colors will be active after next RIDE restart.</em></span> to the Preferences of Test Runner.
-</li></ul></div></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_fixed"></a>3. Fixed</h2></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
-<li class="listitem">
+</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_changed"></a>1.2. Changed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+Changed alias marker on library imports to consider variable ``ROBOT_VERSION``. If version is lower than 6.0, uses ``<span class="emphasis"><em>WITH NAME</em></span>``, otherwise will use ``<span class="emphasis"><em>AS</em></span>``
+</li></ul></div></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_fixed"></a>2. Fixed</h2></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
 Fixed auto-indent on block commands in Text Editor
-</li></ul></div></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_ulink_url_https_github_com_robotframework_ride_blob_master_doc_releasenotes_ride_2_0_3_rst_2_0_3_ulink_2023_04_16"></a>2. <a class="ulink" href="https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.0.3.rst" target="_top">2.0.3</a> - 2023-04-16</h2></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_changed"></a>2.1. Changed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_ulink_url_https_github_com_robotframework_ride_blob_master_doc_releasenotes_ride_2_0_3_rst_2_0_3_ulink_2023_04_16"></a>3. <a class="ulink" href="https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.0.3.rst" target="_top">2.0.3</a> - 2023-04-16</h2></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_changed_2"></a>3.1. Changed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
 Allow to do auto-suggestions of keywords in grid editor without a shortcut, if you want to enable or disable this feature you can config in <code class="literal">Preferences -&gt; Grid Editor -&gt; Enable auto suggestions</code>
 </li><li class="listitem">
 Made ``\\n`` visible when editing cells in Grid Editor (problematic in Windows)
-</li></ul></div></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_fixed"></a>3. Fixed</h2></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; ">
-<li class="listitem">
+</li></ul></div></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_fixed_2"></a>4. Fixed</h2></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
 Fixed missing auto-enclosing when in Cell Editor in Linux
 </li><li class="listitem">
 Fixed RIDE will crash when using third party input method in Mac OS
@@ -24,7 +31,7 @@ Fixed selection and persistance of colors in File Explorer and Project Tree pane
 Fixed not using defined color for help and HTML content
 </li><li class="listitem">
 Fixed missing newlines in sections separation
-</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_ulink_url_https_github_com_robotframework_ride_blob_master_doc_releasenotes_ride_2_0_rst_2_0_ulink_2023_03_01"></a>4. <a class="ulink" href="https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.0.rst" target="_top">2.0</a> - 2023-03-01</h2></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_added_2"></a>4.1. Added</h3></div></div></div><pre class="literallayout">  (2.0rc1 - 2023-02-26)
+</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_ulink_url_https_github_com_robotframework_ride_blob_master_doc_releasenotes_ride_2_0_rst_2_0_ulink_2023_03_01"></a>5. <a class="ulink" href="https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.0.rst" target="_top">2.0</a> - 2023-03-01</h2></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_added_2"></a>5.1. Added</h3></div></div></div><pre class="literallayout">  (2.0rc1 - 2023-02-26)
 - Minimal support to accept `*** Comments ***` sections (unfinished code)
 - Added insert and delete cells to Text Editor, by using ``Ctrl-Shift-I`` and ``Ctrl-Shift-D``
 - Added move up and move down rows to Text Editor, by using ``Alt-Up`` and ``Alt-Down``
@@ -77,13 +84,13 @@ Fixed missing newlines in sections separation
 - Added enclosing text in Text Editor or selected text with certain symbols
 - Added enclosing text in Grid Editor or selected text with certain symbols
 - Added 8s timer to shortcut creation dialog on install
-- Added process memory limit on Messages Log</pre></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_removed"></a>4.2. Removed</h3></div></div></div><pre class="literallayout">  (2.0b2 - 2022-09-05)
+- Added process memory limit on Messages Log</pre></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_removed"></a>5.2. Removed</h3></div></div></div><pre class="literallayout">  (2.0b2 - 2022-09-05)
 - Removed ``robotframeworklexer`` dependency and local copy
 - Removed alignment flag on grid cell JSON Editor (Ctrl-Shift-J)
 - Removed moving to keyword/variable definition when doing Double-Click in grid cell
   (2.0b1 - 2020-07-26)
 - Python 2.7 support
-- wxPython/wxPhoenix version conditioning</pre></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_changed_2"></a>4.3. Changed</h3></div></div></div><pre class="literallayout">  (2.0b3 - 2023-01-15)
+- wxPython/wxPhoenix version conditioning</pre></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_changed_3"></a>5.3. Changed</h3></div></div></div><pre class="literallayout">  (2.0b3 - 2023-01-15)
 - Hiding items in Test Suites explorer with names starting with #
 - Disabled the Close button on the Test Suites explorer
   This was causing not being possible to restore it, unless editing the settings.cfg file.
@@ -112,7 +119,7 @@ Fixed missing newlines in sections separation
 - Changed icon background to white
 - Made Project Tree and File Explorer panels, Plugins.
 - wx.NewId() to wx.NewIdRef()
-- Separated AppendText for Messages Log</pre></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_fixed_2"></a>4.4. Fixed</h3></div></div></div><pre class="literallayout">  (2.0rc1 - 2023-02-26)
+- Separated AppendText for Messages Log</pre></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_fixed_3"></a>5.4. Fixed</h3></div></div></div><pre class="literallayout">  (2.0rc1 - 2023-02-26)
 - Fixed blank Grid Editor at keywords with steps commented with ``\# ``, by using ``Ctrl-Shift-3 on Text Editor
   (2.0b3 - 2023-01-15)
 . Fixed low performance when opening large projects
@@ -186,7 +193,7 @@ Fixed missing newlines in sections separation
 - Fixed Settings editor
 - Fixed blank Edit screen
 - Fixed Runner arguments parsing
-- Fixed Runner Log window Chinese and Latin encoding chars on Windows</pre></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_ulink_url_https_github_com_robotframework_ride_blob_master_doc_releasenotes_ride_2_0rc1_rst_2_0rc1_ulink_2023_02_26"></a>5. <a class="ulink" href="https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.0rc1.rst" target="_top">2.0rc1</a> - 2023-02-26</h2></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_added_3"></a>5.1. Added</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+- Fixed Runner Log window Chinese and Latin encoding chars on Windows</pre></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_ulink_url_https_github_com_robotframework_ride_blob_master_doc_releasenotes_ride_2_0rc1_rst_2_0rc1_ulink_2023_02_26"></a>6. <a class="ulink" href="https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.0rc1.rst" target="_top">2.0rc1</a> - 2023-02-26</h2></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_added_3"></a>6.1. Added</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
 Minimal support to accept <code class="literal">*** Comments ***</code> sections (unfinished code)
 </li><li class="listitem">
 Added insert and delete cells to Text Editor, by using ``Ctrl-Shift-I`` and ``Ctrl-Shift-D``
@@ -194,30 +201,30 @@ Added insert and delete cells to Text Editor, by using ``Ctrl-Shift-I`` and ``Ct
 Added move up and move down rows to Text Editor, by using ``Alt-Up`` and ``Alt-Down``
 </li><li class="listitem">
 Added insert and delete rows to Text Editor, by using ``Ctrl-I`` and ``Ctrl-D``
-</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_removed_2"></a>5.2. Removed</h3></div></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_changed_3"></a>5.3. Changed</h3></div></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_fixed_3"></a>5.4. Fixed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_removed_2"></a>6.2. Removed</h3></div></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_changed_4"></a>6.3. Changed</h3></div></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_fixed_4"></a>6.4. Fixed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
 Fixed blank Grid Editor at keywords with steps commented with ``\# ``, by using ``Ctrl-Shift-3 on Text Editor
-</li></ul></div></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_ulink_url_https_github_com_robotframework_ride_blob_master_doc_releasenotes_ride_2_0b3_rst_2_0b3_ulink_2023_01_15"></a>6. <a class="ulink" href="https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.0b3.rst" target="_top">2.0b3</a> - 2023-01-15</h2></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_added_4"></a>6.1. Added</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+</li></ul></div></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_ulink_url_https_github_com_robotframework_ride_blob_master_doc_releasenotes_ride_2_0b3_rst_2_0b3_ulink_2023_01_15"></a>7. <a class="ulink" href="https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.0b3.rst" target="_top">2.0b3</a> - 2023-01-15</h2></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_added_4"></a>7.1. Added</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
 Added swap row up, by using ``Ctrl-T``
 </li><li class="listitem">
 Added commenting/uncommenting of content with ``\# ``, by using ``Ctrl-Shift-3`` and ``Ctrl-Shift-4``
 </li><li class="listitem">
 Added support for editing .robot and .resource files with content before sections
-</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_removed_3"></a>6.2. Removed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_removed_3"></a>7.2. Removed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
 None
-</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_changed_4"></a>6.3. Changed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_changed_5"></a>7.3. Changed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
 Hiding items in Test Suites explorer with names starting with #
 </li><li class="listitem">
 Disabled the Close button on the Test Suites explorer
   This was causing not being possible to restore it, unless editing the settings.cfg file.
   Other reason was to prevent user to closing it, after detaching the panel, and re-attaching,
   which has a bug making the Tree not visible.
-</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_fixed_4"></a>6.4. Fixed</h3></div></div></div><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p class="simpara">
+</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_fixed_5"></a>7.4. Fixed</h3></div></div></div><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p class="simpara">
 Fixed low performance when opening large projects
 </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
 Fixed comment and uncomment in Grid Editor when cells contain more than one variables assignement
 </li><li class="listitem">
 Fixed console log stopping to output certain characters, like chinese and latin
-</li></ul></div></li></ol></div></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_ulink_url_https_github_com_robotframework_ride_blob_master_doc_releasenotes_ride_2_0b2_rst_2_0b2_ulink_2022_09_05"></a>7. <a class="ulink" href="https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.0b2.rst" target="_top">2.0b2</a> - 2022-09-05</h2></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_added_5"></a>7.1. Added</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+</li></ul></div></li></ol></div></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_ulink_url_https_github_com_robotframework_ride_blob_master_doc_releasenotes_ride_2_0b2_rst_2_0b2_ulink_2022_09_05"></a>8. <a class="ulink" href="https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.0b2.rst" target="_top">2.0b2</a> - 2022-09-05</h2></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_added_5"></a>8.1. Added</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
 Added menu entry at Help → Offline Change Log to view this file on disk
 </li><li class="listitem">
 Added skipped tests counter and corresponding colored icon on Project tree
@@ -285,13 +292,13 @@ When editing, Ctrl-Up and Ctrl-Down move cursor to start and end of multiline re
 When editing, Ctrl-Home and Ctrl-End move cursor to start and end of cell content respectively.
 </li></ul></div></li><li class="listitem">
 Added Del key to clear Grid Editor cell content when in navigation mode (clear like doing Ctrl-X)
-</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_removed_4"></a>7.2. Removed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_removed_4"></a>8.2. Removed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
 Removed ``robotframeworklexer`` dependency and local copy
 </li><li class="listitem">
 Removed alignment flag on grid cell JSON Editor (Ctrl-Shift-J)
 </li><li class="listitem">
 Removed moving to keyword/variable definition when doing Double-Click in grid cell
-</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_changed_5"></a>7.3. Changed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_changed_6"></a>8.3. Changed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
 Unit tests to use ``pytest`` and removed ``nose`` dependency. Support for Python 3.10 at unit test level.
 </li><li class="listitem">
 Prevent expanding Tests and change selection on Project tree (when right-clicking)
@@ -321,7 +328,7 @@ To edit cell use F2 or Double-Click
 Changed Enter button in navigation mode to start editing cell, and to move to right cell when in edit mode
 </li><li class="listitem">
 Performance improvements for loading large test suites
-</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_fixed_5"></a>7.4. Fixed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_fixed_6"></a>8.4. Fixed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
 Fixed missing menu icons on Linux (was working on Windows)
 </li><li class="listitem">
 Fixed removal of animation in Project tree when test run is interrupted
@@ -394,7 +401,7 @@ Fixed incorrect arguments parsing when launching RIDE with command ``python -m r
 Fixed RIDE startup crash when Tree or File Explorer plugins use opened=False setting
 </li><li class="listitem">
 Fixed error occurring when deleting test cases on Tree
-</li></ul></div></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_ulink_url_https_github_com_robotframework_ride_blob_master_doc_releasenotes_ride_2_0b1_rst_2_0b1_ulink_2020_07_26"></a>8. <a class="ulink" href="https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.0b1.rst" target="_top">2.0b1</a> - 2020-07-26</h2></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_added_6"></a>8.1. Added</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+</li></ul></div></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_ulink_url_https_github_com_robotframework_ride_blob_master_doc_releasenotes_ride_2_0b1_rst_2_0b1_ulink_2020_07_26"></a>9. <a class="ulink" href="https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.0b1.rst" target="_top">2.0b1</a> - 2020-07-26</h2></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_added_6"></a>9.1. Added</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
 Added CHANGELOG.adoc
 </li><li class="listitem">
 Added ignoring log.html and report.html on reporting HTML test suites
@@ -412,11 +419,11 @@ Added enclosing text in Grid Editor or selected text with certain symbols
 Added 8s timer to shortcut creation dialog on install
 </li><li class="listitem">
 Added process memory limit on Messages Log
-</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_removed_5"></a>8.2. Removed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_removed_5"></a>9.2. Removed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
 Python 2.7 support
 </li><li class="listitem">
 wxPython/wxPhoenix version conditioning
-</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_changed_6"></a>8.3. Changed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_changed_7"></a>9.3. Changed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
 Improved filesystem changes detection, with a confirmation dialog to reload workspace
 </li><li class="listitem">
 Changed dependency on wx.Window on tree panel
@@ -430,7 +437,7 @@ Made Project Tree and File Explorer panels, Plugins.
 wx.NewId() to wx.NewIdRef()
 </li><li class="listitem">
 Separated AppendText for Messages Log
-</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_fixed_6"></a>8.4. Fixed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_fixed_7"></a>9.4. Fixed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
 Fixed editing cells in Grid Editor on wxPython 4.1
 </li><li class="listitem">
 Fixed not saving file after deleting text in Text Editor
@@ -490,12 +497,12 @@ Fixed blank Edit screen
 Fixed Runner arguments parsing
 </li><li class="listitem">
 Fixed Runner Log window Chinese and Latin encoding chars on Windows
-</li></ul></div></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_ulink_url_https_github_com_robotframework_ride_blob_master_doc_releasenotes_ride_1_7_4_2_rst_1_7_4_2_ulink_2020_01_20"></a>9. <a class="ulink" href="https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-1.7.4.2.rst" target="_top">1.7.4.2</a> - 2020-01-20</h2></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_added_7"></a>9.1. Added</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+</li></ul></div></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_ulink_url_https_github_com_robotframework_ride_blob_master_doc_releasenotes_ride_1_7_4_2_rst_1_7_4_2_ulink_2020_01_20"></a>10. <a class="ulink" href="https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-1.7.4.2.rst" target="_top">1.7.4.2</a> - 2020-01-20</h2></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_added_7"></a>10.1. Added</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
 wxPython version locked up to 4.0.7.post2.
-</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_removed_6"></a>9.2. Removed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_removed_6"></a>10.2. Removed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
 None
-</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_changed_7"></a>9.3. Changed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_changed_8"></a>10.3. Changed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
 None
-</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_fixed_7"></a>9.4. Fixed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_fixed_8"></a>10.4. Fixed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
 None
 </li></ul></div></div></div></div></body></html>

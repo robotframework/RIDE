@@ -20,7 +20,7 @@ class RowSplitter(object):
     _comment_mark = '#'
     _empty_cell_escape = ''  # '${EMPTY}'
     _line_continuation = '...'
-    _setting_table = 'setting'
+    setting_table = 'setting'
     _indented_tables = ('test case', 'keyword')
     _split_from = ('ELSE', 'ELSE IF', 'AND')
 
@@ -49,7 +49,7 @@ class RowSplitter(object):
         return len(list(itertools.takewhile(lambda x: x in ignore, row)))
 
     def _is_doc_row(self, row, table_type):
-        if table_type == self._setting_table:
+        if table_type == self.setting_table:
             return len(row) > 1 and row[0] == 'Documentation'
         if table_type in self._indented_tables:
             return len(row) > 2 and row[1] == '[Documentation]'

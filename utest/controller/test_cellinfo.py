@@ -245,7 +245,7 @@ class TestCellInfo(unittest.TestCase):
         # print(f"\nDEBUG: cellinfo test_for_loop_in_header: {forlooped_case.get_cell_info(0, 0).cell_type}")
         self._verify_cell_info(0, 0, ContentType.LIBRARY_KEYWORD, CellType.KEYWORD, forlooped_case)
         self._verify_cell_info(0, 1, ContentType.VARIABLE, CellType.ASSIGN, forlooped_case)
-        self._verify_cell_info(0, 2, ContentType.STRING, CellType.MANDATORY, forlooped_case)
+        self._verify_cell_info(0, 2, ContentType.LIBRARY_KEYWORD, CellType.KEYWORD, forlooped_case)  # IN is like kw
         self._verify_cell_info(0, 3, ContentType.STRING, CellType.OPTIONAL, forlooped_case)
         self._verify_cell_info(0, 4, ContentType.STRING, CellType.OPTIONAL, forlooped_case)
         self._verify_cell_info(0, 5, ContentType.EMPTY, CellType.OPTIONAL, forlooped_case)
@@ -274,7 +274,7 @@ class TestCellInfo(unittest.TestCase):
         # Because FOR and END now have documentation
         self._verify_cell_info(in_range_header_index, 0, ContentType.LIBRARY_KEYWORD, CellType.KEYWORD, forlooped_case)
         self._verify_cell_info(in_range_header_index, 1, ContentType.VARIABLE, CellType.ASSIGN, forlooped_case)
-        self._verify_cell_info(in_range_header_index, 2, ContentType.STRING, CellType.MANDATORY, forlooped_case)
+        self._verify_cell_info(in_range_header_index, 2, ContentType.LIBRARY_KEYWORD, CellType.KEYWORD, forlooped_case)
         self._verify_cell_info(in_range_header_index, 3, ContentType.STRING, CellType.OPTIONAL, forlooped_case)
         self._verify_cell_info(in_range_header_index, 4, ContentType.EMPTY, CellType.OPTIONAL, forlooped_case)
         self._verify_cell_info(in_range_header_index, 5, ContentType.EMPTY, CellType.OPTIONAL, forlooped_case)

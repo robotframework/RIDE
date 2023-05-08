@@ -19,7 +19,7 @@ from robotide.pluginapi import Plugin
 from robotide.namespace import Namespace
 from robotide.spec.iteminfo import ItemInfo
 from robotide.robotapi import TestCaseFile
-from robotide.controller.filecontrollers import DataController
+from robotide.controller.filecontrollers import data_controller
 from utest.resources import FakeApplication
 from robotide.spec.librarymanager import LibraryManager
 
@@ -47,7 +47,7 @@ class TestContentAssistHook(unittest.TestCase):
         library_manager.stop()
 
     def _assert_contains(self, name):
-        controller = DataController(TestCaseFile(), None)
+        controller = data_controller(TestCaseFile(), None)
         for val in self.app.namespace.get_suggestions_for(controller, 'given'):
             if val.name == name:
                 return

@@ -31,6 +31,7 @@ class TestSearchPlugin(Plugin):
     __test__ = False
     HEADER = 'Search Tests'
     _selection = None
+    _dialog = None
 
     def enable(self):
         self.register_action(ActionInfo(
@@ -198,7 +199,7 @@ class SearchResult(object):
             return names
         tags = self._compare(
             self._is_tag_match(), other._is_tag_match(),
-            self._tags(), other._tags())
+            self.tags(), other.tags())
         if tags:
             return tags
         return self.m_cmp(self._test.name, other._test.name)
@@ -217,7 +218,7 @@ class SearchResult(object):
             self.__total_matches = sum(
                 1 for word in self._search_terms_lower
                 if word in self._test.name.lower()
-                or any(word in t for t in self._tags())
+                or any(word in t for t in self.tags())
                 or word in self._test.documentation.value.lower())
         return self.__total_matches
 
@@ -228,9 +229,9 @@ class SearchResult(object):
         return self._match_in(self._test.name.lower())
 
     def _is_tag_match(self):
-        return any(self._match_in(t) for t in self._tags())
+        return any(self._match_in(t) for t in self.tags())
 
-    def _tags(self):
+    def tags(self):
         if self.__tags is None:
             self.__tags = [str(tag).lower() for tag in self._test.tags]
         return self.__tags

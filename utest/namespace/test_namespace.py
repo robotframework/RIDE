@@ -5,7 +5,7 @@ from robotide.robotapi import (
     TestCaseFile, Resource, VariableTable, TestDataDirectory)
 from robotide.context import IS_WINDOWS
 from robotide.namespace.namespace import _VariableStash
-from robotide.controller.filecontrollers import DataController
+from robotide.controller.filecontrollers import data_controller
 from robotide.spec.iteminfo import ArgumentInfo, VariableInfo
 from robotide.spec.librarymanager import LibraryManager
 from robotide.utils import normpath
@@ -88,7 +88,7 @@ class _DataFileTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.tcf = _build_test_case_file()
-        cls.tcf_ctrl = DataController(cls.tcf, None)
+        cls.tcf_ctrl = data_controller(cls.tcf, None)
         cls.kw = cls.tcf_ctrl.keywords[0]
         cls.ns = Namespace(FakeSettings())
         cls.library_manager = LibraryManager(':memory:')
@@ -249,7 +249,7 @@ class TestKeywordSuggestions(_DataFileTest):
         assert len(sugs) > 0
 
     def _get_controller(self, source):
-        return DataController(TestCaseFile(source=source).populate(), None)
+        return data_controller(TestCaseFile(source=source).populate(), None)
 
     def test_library_arguments_are_resolved(self):
         sugs = self.ns.get_suggestions_for(
