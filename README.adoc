@@ -28,12 +28,13 @@ See the https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride
 Currently the unit tests are only tested on Python 3.10 (which is the recommended version).
 Likewise, the current version of wxPython, is 4.2.0, but RIDE is known to work with 4.0.7 and 4.1.1 versions.
 
-(3.6 < python < 3.11) Install current released version (**2.0.4**) with:
-[source, shell]
-pip install -U robotframework-ride
-Install current development version (**2.0.4**) with:
-[source, shell]
-pip install -U https://github.com/robotframework/RIDE/archive/master.zip
+(3.6 < python < 3.11) Install current released version (*2.0.5*) with:
+
+`pip install -U robotframework-ride`
+
+Install current development version (**2.0.5**) with:
+
+`pip install -U https://github.com/robotframework/RIDE/archive/master.zip`
 
 // (3.6 < python < 3.11) Install current Beta version (2.1a1) with:
 // [source, shell]
