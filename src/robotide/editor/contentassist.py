@@ -90,6 +90,16 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
         # Ctrl-Space handling needed for dialogs # DEBUG add Ctrl-m
         if (control_down or alt_down) and key_code in [wx.WXK_SPACE, ord('m')]:
             self.show_content_assist()
+        elif key_code in (wx.WXK_RIGHT, wx.WXK_LEFT):  # To skip list and continue editing
+            if self._popup.is_shown():
+                value = self.GetValue()
+                if value:
+                    self.SetValue(value)
+                    self.SetInsertionPoint(len(value))
+                    self._popup.hide()
+                    self.reset()
+            else:
+                event.Skip()
         elif key_code == wx.WXK_RETURN and self._popup.is_shown():
             self.OnFocusLost(event)
         elif key_code == wx.WXK_TAB:
@@ -493,8 +503,8 @@ class ContentAssistPopup(object):
         self._details_popup = HtmlPopupWindow(parent, _PREFERRED_POPUP_SIZE)
         self._selection = -1
         self._list: ContentAssistList = ContentAssistList(self._main_popup,
-                                                          self.OnListItemSelected,
-                                                          self.OnListItemActivated)
+                                                          self.on_list_item_selected,
+                                                          self.on_list_item_activated)
         self._suggestions = Suggestions(suggestion_source)
         self._choices = None
 
@@ -586,11 +596,11 @@ class ContentAssistPopup(object):
         self._main_popup.Show(False)
         self._details_popup.Show(False)
 
-    def OnListItemActivated(self, event):
+    def on_list_item_activated(self, event):
         _ = event
         self._parent.fill_suggestion()
 
-    def OnListItemSelected(self, event):
+    def on_list_item_selected(self, event):
         self._selection = event.GetIndex()
         item = self._suggestions.get_item(event.GetText())
         if item.details:

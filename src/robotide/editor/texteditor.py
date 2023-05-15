@@ -501,12 +501,12 @@ class SourceEditor(wx.Panel):
         HtmlDialog("Getting syntax colorization", content).Show()
 
     def store_position(self, force=False):
-        _ = force
         if self.source_editor and self.datafile_controller:
             cur_pos = self.source_editor.GetCurrentPos()
             if cur_pos > 0:  # Cheating because it always goes to zero
                 self._position = cur_pos
-                self.source_editor.GotoPos(self._position)
+                if force:
+                    self.source_editor.GotoPos(self._position)
 
     def set_editor_caret_position(self):
         if not self.is_focused():  # DEBUG was typing text when at Grid Editor
@@ -587,9 +587,9 @@ class SourceEditor(wx.Panel):
 
     def OnContentAssist(self, event):
         _ = event
-        self._showing_list = False
-        # if not self.is_focused():
-        #    return
+        if self._showing_list:
+            self._showing_list = False  # Avoid double calls
+            return
         self.store_position()
         selected = self.source_editor.get_selected_or_near_text()
         sugs = [s.name for s in self._suggestions.get_suggestions(
@@ -599,6 +599,8 @@ class SourceEditor(wx.Panel):
             self.source_editor.AutoCompSetSeparator(ord(';'))
             self.source_editor.AutoCompShow(0, ";".join(sugs))
             self._showing_list = True
+        else:
+            self.source_editor.SetInsertionPoint(self._position)  # We should know if list was canceled or value change
 
     def open(self, data):
         self.reset()
@@ -1500,25 +1502,29 @@ class RobotDataEditor(stc.StyledTextCtrl):
     def get_selected_or_near_text(self):
         # First get selected text
         selected = self.GetSelectedText()
-        self.SetInsertionPoint(self.GetInsertionPoint() - len(selected))
         if selected:
+            self.SetInsertionPoint(self.GetSelectionStart())
             return selected
         # Next get text on the left
-        self.SetSelectionEnd(self.GetInsertionPoint())
+        cur_pos = self.GetInsertionPoint()
         self.WordLeftEndExtend()
         selected = self.GetSelectedText()
-        select = selected.strip()
-        self.SetInsertionPoint(self.GetInsertionPoint() + len(selected)
-                               - len(select))
+        select = selected.lstrip()
         if select and len(select) > 0:
+            start_pos = cur_pos - len(select)
+            self.SetInsertionPoint(start_pos)
+            self.SetSelectionStart(start_pos)
+            self.SetSelectionEnd(cur_pos - len(select))
             return select
         # Finally get text on the right
-        self.SetSelectionStart(self.GetInsertionPoint())
+        cur_pos = self.GetInsertionPoint()
+        self.SetSelectionStart(cur_pos)
         self.WordRightEndExtend()
         selected = self.GetSelectedText()
         select = selected.strip()
-        self.SetInsertionPoint(self.GetInsertionPoint() - len(select))
         if select and len(select) > 0:
+            cur_pos = self.GetInsertionPoint()
+            self.SetInsertionPoint(cur_pos - len(select))
             return select
 
 
