@@ -1077,17 +1077,21 @@ class ContentAssistCellEditor(GridCellEditor):
         self._tc.SetForegroundColour(self.color_foreground_text)
         self._tc.set_row(row)
         self._original_value = gridd.GetCellValue(row, col)
-        self._tc.SetValue(self._original_value.replace('\n', '\\n'))
+        if self._original_value:
+            temp_value = self._original_value.replace("\n", "\\n")
+            self._tc.SetValue(temp_value)
         self._tc.SetSelection(0, self._tc.GetLastPosition())
         self._tc.SetFocus()
         self._grid = gridd
 
     def EndEdit(self, row, col, gridd, *ignored):
-        value = self._get_value().replace('\\n', '\n')
+        value = self._get_value()  # .replace('\\n', '\n')
+        if value:
+            temp_value = value.replace("\\n", "\n")
+            value = temp_value
         if value != self._original_value:
             self._value = value
-            # print(f"DEBUG: kweditor returning ContentAssistCellEditor.EndEdit {value} and moving right")
-            wx.CallAfter(self._grid.move_grid_cursor_and_edit)
+            # DEBUG: this is not needed wx.CallAfter(self._grid.move_grid_cursor_and_edit)
             return value
         else:
             self._tc.hide()
