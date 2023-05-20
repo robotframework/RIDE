@@ -361,6 +361,8 @@ class _VariableStash(object):
             vars_from_file = VariableFileSetter(None).import_if_needed(
                 varfile_path, args)
         except (robotapi.DataError, Exception) as e:
+            print(f"namespace._VariableStash.set_from_file: unexpected DataError: variable_path {varfile_path} "
+                  f"args {args}")
             raise e
         for name, value in vars_from_file:
             self.set(name, value, varfile_path)
@@ -596,7 +598,7 @@ class _Keywords(object):
         try:
             handler = EmbeddedArgsHandler(kw)
             self.embedded_keywords[handler.name_regexp] = kw
-        except (TypeError, Exception):
+        except TypeError:
             pass
 
     def get(self, kw_name):
