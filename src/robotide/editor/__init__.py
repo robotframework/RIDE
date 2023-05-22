@@ -14,13 +14,11 @@
 #  limitations under the License.
 
 import wx
-from wx import Colour
 
 from .editorcreator import EditorCreator
 from ..pluginapi import (Plugin, ActionInfoCollection, TreeAwarePluginMixin)
 from ..publish import (RideTreeSelection, RideNotebookTabChanging, RideNotebookTabChanged, RideSaving)
 from ..publish.messages import RideDataFileRemoved
-from ..utils import overrides
 from ..widgets import PopupCreator
 
 _EDIT = """
@@ -130,16 +128,17 @@ class EditorPlugin(Plugin, TreeAwarePluginMixin):
         if self._editor:
             self._editor.tree_item_selected(message.item)
 
-    @overrides(Plugin)
     def get_selected_datafile(self):
         if self._editor and self._editor.controller:
             return self._editor.controller.datafile
         return Plugin.get_selected_datafile(self)
 
     def OnOpenEditor(self, event):
+        _ = event
         self._show_editor()
 
     def OnTabChanged(self, message):
+        _ = message
         self._show_editor()
 
     def OnTabChanging(self, message):
@@ -147,10 +146,12 @@ class EditorPlugin(Plugin, TreeAwarePluginMixin):
             self._tab.save()
 
     def OnSaveToModel(self, message):
+        _ = message
         if self._tab:
             self._tab.save()
 
     def OnFileDeleted(self, message):
+        _ = message
         self._create_editor()
 
 
@@ -186,60 +187,79 @@ class _EditorTab(wx.Panel):
         self.Show(False)
 
     def OnSave(self, event):
+        _ = event
         self.plugin.save_selected_datafile()
 
     def OnUndo(self, event):
+        _ = event
         self.editor.undo()
 
     def OnRedo(self, event):
+        _ = event
         self.editor.redo()
 
     def OnCut(self, event):
+        _ = event
         self.editor.cut()
 
     def OnCopy(self, event):
+        _ = event
         self.editor.copy()
 
     def OnPaste(self, event):
+        _ = event
         self.editor.paste()
 
     def OnInsert(self, event):
+        _ = event
         self.editor.insert()
 
     def OnInsertCells(self, event):
+        _ = event
         self.editor.insert_cells()
 
     def OnDeleteCells(self, event):
+        _ = event
         # print("DEBUG init delete cells call")
         self.editor.delete_cells()
 
     def OnInsertRows(self, event):
+        _ = event
         self.editor.insert_rows()
 
     def OnDeleteRows(self, event):
+        _ = event
         wx.CallAfter(self.editor.delete_rows)
 
     def OnDelete(self, event):
+        _ = event
         self.editor.delete()
 
     def OnCommentRows(self, event):
+        _ = event
         self.editor.comment_rows()
 
     def OnUncommentRows(self, event):
+        _ = event
         self.editor.uncomment_rows()
 
     def OnCommentCells(self, event):
+        _ = event
         self.editor.comment_cells()
 
     def OnUncommentCells(self, event):
+        _ = event
         self.editor.uncomment_cells()
 
     def OnContentAssistance(self, event):
+        _ = event
         self.editor.show_content_assist()
 
     def save(self, message=None):
+        _ = message
         if self.editor:
             self.editor.save()
 
     def OnKey(self, *args):
+        """ Intentional override """
         pass
