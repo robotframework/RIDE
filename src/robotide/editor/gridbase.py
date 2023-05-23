@@ -23,6 +23,8 @@ from .clipboard import ClipboardHandler
 from ..context import IS_WINDOWS
 from ..widgets import PopupCreator, PopupMenuItems
 
+FILTER_NEWLINES = True
+
 
 class GridEditor(grid.Grid):
     _col_add_threshold = 6
@@ -81,9 +83,9 @@ class GridEditor(grid.Grid):
         if update_history:
             self._update_history()
         self._expand_if_necessary(row, col)
-        # TODO: Make below action configurable
-        # unescape \n to support multi lines display in grid cells
-        value = self._unescape_newlines_and_whitespaces(value)
+        if FILTER_NEWLINES:
+            # unescape \n to support multi lines display in grid cells
+            value = self._unescape_newlines_and_whitespaces(value)
         self.SetCellValue(row, col, value)
 
     def _unescape_newlines_and_whitespaces(self, item):
