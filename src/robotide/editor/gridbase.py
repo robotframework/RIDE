@@ -23,7 +23,7 @@ from .clipboard import ClipboardHandler
 from ..context import IS_WINDOWS
 from ..widgets import PopupCreator, PopupMenuItems
 
-FILTER_NEWLINES = True
+# FILTER_NEWLINES = True
 
 
 class GridEditor(grid.Grid):
@@ -48,6 +48,7 @@ class GridEditor(grid.Grid):
             _settings = RideSettings()
             self.general_settings = _settings['General']
             self.settings = _settings['Grid']
+        self.filter_newlines = self.settings.get("filter newlines", True)
         self.color_background = self.settings['background unknown']
         self.color_foreground = self.settings['text empty']
         self.color_background_help = self.general_settings['background help']
@@ -83,7 +84,7 @@ class GridEditor(grid.Grid):
         if update_history:
             self._update_history()
         self._expand_if_necessary(row, col)
-        if FILTER_NEWLINES:
+        if self.filter_newlines:
             # unescape \n to support multi lines display in grid cells
             value = self._unescape_newlines_and_whitespaces(value)
         self.SetCellValue(row, col, value)

@@ -42,7 +42,7 @@ from ..utils import variablematcher
 from ..widgets import RIDEDialog, PopupMenu, PopupMenuItems
 
 _DEFAULT_FONT_SIZE = 11
-FILTER_NEWLINES = True
+# FILTER_NEWLINES = True
 
 
 def requires_focus(function):
@@ -1025,6 +1025,7 @@ class ContentAssistCellEditor(GridCellEditor):
     def __init__(self, plugin, controller):
         self.settings = plugin.global_settings['Grid']
         self.general_settings = plugin.global_settings['General']
+        self.filter_newlines = self.settings.get("filter newlines", True)
         self.color_background_help = self.general_settings['background help']
         self.color_foreground_text = self.general_settings['foreground text']
         GridCellEditor.__init__(self)
@@ -1079,7 +1080,7 @@ class ContentAssistCellEditor(GridCellEditor):
         self._tc.set_row(row)
         self._original_value = gridd.GetCellValue(row, col)
         if self._original_value:
-            if FILTER_NEWLINES:
+            if self.filter_newlines:
                 temp_value = self._original_value.replace(r'\n', '\\n')
                 self._tc.SetValue(temp_value)
             else:
@@ -1090,7 +1091,7 @@ class ContentAssistCellEditor(GridCellEditor):
 
     def EndEdit(self, row, col, gridd, *ignored):
         value = self._get_value()
-        if value and FILTER_NEWLINES:
+        if value and self.filter_newlines:
             temp_value = value.replace('\\n', r'\n')
             value = temp_value
         if value != self._original_value:
