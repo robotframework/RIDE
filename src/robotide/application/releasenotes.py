@@ -152,8 +152,7 @@ RELEASE_NOTES = f"""
 <ul class="simple">
 <li>This version supports Python 3.6 up to 3.10.</li>
 <li>There are some changes, or known issues:<ul>
-<li>Newlines in Grid Editor are not visible when in navigation mode, but visible in edit mode.</li>
-<li>Auto suggestions in Grid Editor can be enabled to not use shortcut to show list.</li>
+<li>Newlines in Grid Editor can be made visible with the `filter newlines` set to False.</li>
 <li>On Text Editor when Saving the selection of tests in Test Suites (Tree) is cleared.</li>
 <li>Test Suite with <em>*** Comments ***</em> can be edited but newlines are introduced.</li>
 <li>Some argument types detection (and colorization) is not correct in Grid Editor.</li>
@@ -164,32 +163,9 @@ RELEASE_NOTES = f"""
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
-<li>Added <b>FOR</b> scope markers (<b>IN</b>, <b>IN RANGE</b>, <b>IN ENUMERATE</b>, <b>IN ZIP</b>)
- to auto-complete list</li>
-<li>Added support to read environment variable <b>ROBOT_VERSION</b> to apply some conditions</li>
-<li>Added notes on Test Timeout Grid Editor field and in Preferences of Test Runner</li>
-<li>Keywords auto-suggestion in grid editor does not need shortcut anymore, if you want to enable or disable this
- feature you can config in `Preferences -> Grid Editor -> Enable auto suggestions`</li>
-
-<li>Made \\n visible when editing cells in Grid Editor (problematic in Windows)</li>
-<li>Changed alias marker on library imports to consider variable <b>ROBOT_VERSION</b>.
- If version is lower than 6.0, uses <b>WITH NAME</b>, otherwise will use <b>AS</b></li>
-
-<li>Fixed auto-indent on block commands in Text Editor</li>
-
-<li>Fixed missing auto-enclosing when in Cell Editor in Linux</li>
-
-<li>Fixed RIDE will crash when using third party input method in Mac OS</li>
-
-<li>Fixed missing color definition for keyword call in Text Editor</li>
-
-<li>Fixed clearing or emptying fixtures (Setups, Teardowns), now removes headers and synchronizes Text Editor</li>
-
-<li>Fixed selection and persistance of colors in File Explorer and Project Tree panels</li>
-
-<li>Fixed not using defined color for help and HTML content</li>
-
-<li>Fixed missing newlines in sections separation</li>
+<li>Newlines in Grid Editor can be made visible with the `filter newlines` set to False, by editing `settings.cfg`</li>
+<li>Improve auto-suggestions of keywords in Grid Editor by allowing to close suggestions list with keys ARROW_LEFT or ARROW_RIGHT</li>
+<li>Improve Text Editor auto-suggestions by using: selected text, text at left or at right of cursor</li>
 </ul>
 <p>We hope to implement or complete features and make fixes on next major version 2.1 (in the end of 2023).</p>
 <p><strong>The minimal wxPython version is, 4.0.7, and RIDE supports the current version, 4.2.0.</strong></p>
@@ -240,6 +216,6 @@ python -m robotide.__init__
 <pre class="literal-block">
 python -m robotide.postinstall -install
 </pre>
-<p>RIDE {VERSION} was released on 08/May/2023.</p>
+<p>RIDE {VERSION} was released on 24/May/2023.</p>
 </div>
 """

@@ -38,6 +38,34 @@ from sys import getfilesystemencoding
 OUTPUT_ENCODING = getfilesystemencoding()
 
 
+def _write_windows(fh, lines):
+    for item in lines:
+        if isinstance(item, str):
+            enc_arg = item.encode('UTF-8')  # OUTPUT_ENCODING
+        else:
+            enc_arg = item
+        try:
+            fh.write(enc_arg)
+            fh.write("\n".encode(OUTPUT_ENCODING))
+        except UnicodeError:
+            fh.write(bytes(item, 'UTF-8'))
+            fh.write(b"\n")
+
+
+def _write_linux(fh, lines):
+    for item in lines:
+        if isinstance(item, str):
+            fh.write(item)
+            fh.write("\n")
+        else:
+            try:
+                fh.write(item.decode('UTF-8'))
+                fh.write("\n")
+            except (UnicodeError, TypeError) as e:
+                print(f"FileWriter: unexpected UnicodeError or TypeError at position: {fh.tell()}")
+                raise e
+
+
 class FileWriter:
 
     @staticmethod
@@ -46,28 +74,9 @@ class FileWriter:
             os.makedirs(os.path.dirname(file_path))
         if IS_WINDOWS:
             f = codecs.open(file_path, mode=windows_mode)
-            for item in lines:
-                if isinstance(item, str):
-                    enc_arg = item.encode('UTF-8')  # OUTPUT_ENCODING
-                else:
-                    enc_arg = item
-                try:
-                    f.write(enc_arg)
-                    f.write("\n".encode(OUTPUT_ENCODING))
-                except UnicodeError:
-                    f.write(bytes(item, 'UTF-8'))
-                    f.write(b"\n")
+            _write_windows(f, lines)
         else:
             f = codecs.open(file_path, mode, "UTF-8")
             # DEBUG: f.write("\n".join(lines))
-            for item in lines:
-                if isinstance(item, str):
-                    f.write(item)
-                    f.write("\n")
-                else:
-                    try:
-                        f.write(item.decode('UTF-8'))
-                        f.write("\n")
-                    except (UnicodeError, TypeError):
-                        raise
+            _write_linux(f, lines)
         f.close()
