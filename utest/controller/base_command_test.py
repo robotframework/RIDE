@@ -18,6 +18,8 @@ import os
 import pathlib
 import shutil
 import sys
+from robotide.publish import PUBLISHER
+from robotide.publish.messages import RideItemStepsChanged
 
 # Workaround for relative import in non-module
 # see https://stackoverflow.com/questions/16981921/relative-imports-in-python-3
@@ -27,10 +29,7 @@ SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(),
 sys.path.insert(0, os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
 SCRIPT_DIR = os.path.dirname(pathlib.Path(__file__).parent)
 sys.path.insert(0, SCRIPT_DIR)
-
-from robotide.publish import PUBLISHER
-from robotide.publish.messages import RideItemStepsChanged
-from controller.controller_creator import _FakeProject, testcase_controller, BASE_DATA
+from controller_creator import _FakeProject, testcase_controller, BASE_DATA
 
 
 class TestCaseCommandTest(unittest.TestCase, _FakeProject):
@@ -38,13 +37,12 @@ class TestCaseCommandTest(unittest.TestCase, _FakeProject):
     resource_file_controller_factory = None
 
     def setUp(self):
-        # self._steps = None
         self._data = self._create_data()
         self._ctrl = testcase_controller(self, data=self._data)
         PUBLISHER.subscribe(self._test_changed, RideItemStepsChanged)
         self._orig_number_of_steps = len(self._ctrl.steps)
         self._steps = self._ctrl.steps
-        print(f"\nBase Data")
+        print("\nBase Data")
         for row in self._steps:
             print(f"{row.as_list()}")
         print(f"DEBUG: base setup  self._orig_number_of_steps={self._orig_number_of_steps}")
@@ -61,9 +59,6 @@ class TestCaseCommandTest(unittest.TestCase, _FakeProject):
     def save(self, controller):
         self._file_saved = (controller == self._ctrl.datafile_controller)
 
-    # def tearDown(self):
-    #     PUBLISHER.unsubscribe(self._test_changed, RideItemStepsChanged)
-
     def _get_macros(self):
         return [m for m in self._ctrl._parent]
 
@@ -73,7 +68,8 @@ class TestCaseCommandTest(unittest.TestCase, _FakeProject):
     def _data_row(self, line):
         return self._data.index(line) - 1
 
-    def _data_step_as_list(self, step_data):
+    @staticmethod
+    def _data_step_as_list(step_data):
         return step_data.split('  ')[:]
 
     def _exec(self, command):
@@ -86,8 +82,6 @@ class TestCaseCommandTest(unittest.TestCase, _FakeProject):
     def _verify_step_unchanged(self, step_data):
         row = self._data_row(step_data)
         step = self._steps[row].as_list()
-        # if step and step[0] != '':
-        #    step = [''] + step
         step = [''] + step
         assert step == self._data_step_as_list(step_data)[:]
 
@@ -106,7 +100,9 @@ class TestCaseCommandTest(unittest.TestCase, _FakeProject):
     def _verify_step_is_empty(self, index):
         assert self._steps[index].as_list() == []
 
-    def _verify_step(self, index, exp_name, exp_args=[], exp_comment=None, kw=True):
+    def _verify_step(self, index, exp_name, exp_args=None, exp_comment=None, kw=True):
+        if not exp_args:
+            exp_args = []
         if exp_name == '':
             exp_name = []
         else:
@@ -125,4 +121,3 @@ class TestCaseCommandTest(unittest.TestCase, _FakeProject):
 
 if __name__ == '__main__':
     unittest.main()
-

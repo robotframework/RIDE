@@ -16,6 +16,8 @@
 import os
 import sys
 import unittest
+from robotide.controller.tags import Tag, DefaultTag, ForcedTag
+from robotide.controller.ctrlcommands import ChangeTag
 
 # Workaround for relative import in non-module
 # see https://stackoverflow.com/questions/16981921/relative-imports-in-python-3
@@ -28,9 +30,6 @@ try:
     from controller_creator import testcase_controller
 except ModuleNotFoundError:
     from .controller_creator import testcase_controller
-
-from robotide.controller.tags import Tag, DefaultTag, ForcedTag
-from robotide.controller.ctrlcommands import ChangeTag
 
 
 class Test(unittest.TestCase):
@@ -146,6 +145,6 @@ class Test(unittest.TestCase):
     def _tag_with_name_does_not_exists(self, name):
         assert not any(t for t in self.tags if t.name == name)
 
+
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
     unittest.main()
