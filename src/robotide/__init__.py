@@ -35,8 +35,8 @@ import sys
 from string import Template
 
 errorMessageTemplate = Template("""$reason
-RIDE depends on wx (wxPython). Historically, the last supported version was 2.8.12.1 with unicode support.\
-At the time of this release the current wxPython version is 4.0.7.post2.\
+RIDE depends on wx (wxPython). Known versions for Python3 are: 4.0.7.post2, 4.1.1 and 4.2.0.\
+At the time of this release the current wxPython version is 4.2.0.\
 You can install with 'pip install wxPython' on most operating systems, or find the \
 the download link from https://wxPython.org/""")
 
@@ -106,13 +106,21 @@ def _run(inpath=None, updatecheck=True, debug_console=False):
 def _replace_std_for_win():
 
     class NullStream:
-        def close(self): pass
+        def close(self):
+            """ Override """
+            pass
 
-        def flush(self): pass
+        def flush(self):
+            """ Override """
+            pass
 
-        def write(self, line): pass
+        def write(self, line):
+            """ Override """
+            pass
 
-        def writelines(self, sequence): pass
+        def writelines(self, sequence):
+            """ Override """
+            pass
 
     if sys.executable.endswith('pythonw.exe'):
         # In windows, when launching RIDE with pythonw.exe
@@ -124,12 +132,12 @@ def _replace_std_for_win():
 
 
 def _show_old_wxpython_warning_if_needed(parent=None):
-    if wx.VERSION <=(4, 0, 4, '', ''):
+    if wx.VERSION <= (4, 0, 4, '', ''):
         title = "Please upgrade your wxPython installation"
         message = ("RIDE needs a newer wxPython version. Your current "
                    "version is %s."
                    "\n"
-                   "At the time of this release the current wxPython version is 4.0.7.post2. See "
+                   "At the time of this release the current wxPython version is 4.2.0. See "
                    "https://wxPython.org/ for downloads and instructions."
                    % wx.VERSION_STRING)
         style = wx.ICON_EXCLAMATION
@@ -138,10 +146,6 @@ def _show_old_wxpython_warning_if_needed(parent=None):
             parent = wx.Frame(None, size=(0, 0))
         sys.stderr.write("{0}\n{1}\n".format(title, message))
         dlg = wx.MessageDialog(parent, message=message, caption=title, style=style)
-        """
-        dlg.SetBackgroundColour(Colour(200, 222, 40))
-        dlg.SetForegroundColour(Colour(7, 0, 70))
-        """
         dlg.ShowModal()
 
 

@@ -19,57 +19,56 @@ from getopt import getopt, GetoptError
 from random import randint
 import os
 
-SUITE=\
-"""*** Settings ***
-Resource    resource.robot
+SUITE = \
+    """*** Settings ***
+    Resource    resource.robot
+    
+    *** Test Cases ***
+    %TESTCASES%
+    
+    *** Keywords ***
+    Test Keyword
+        Log jee
+    """
 
-*** Test Cases ***
-%TESTCASES%
+RESOURCE = \
+    """*** Variables ***
+    @{Resource Var}  MOI
+    
+    *** Keywords ***
+    %KEYWORDS%
+    """
 
-*** Keywords ***
-Test Keyword
-    Log jee
-"""
+KEYWORD_TEMPLATE = \
+    """My Keyword %KW_ID%
+        No Operation"""
 
-RESOURCE=\
-"""*** Variables ***
-@{Resource Var}  MOI
-
-*** Keywords ***
-%KEYWORDS%
-"""
-
-KEYWORD_TEMPLATE=\
-"""My Keyword %KW_ID%
-    No Operation"""
-
-TEST_CASE_TEMPLATE=\
-"""My Test %TEST_ID%
-    My Keyword %KW_ID%
-    Log  moi
-    Test Keyword
-    Log  moi
-    Test Keyword
-    Log  moi
-    Test Keyword
-    Log  moi
-    Test Keyword
-    Log  moi
-    Test Keyword
-    My Keyword %KW_ID%
-    Test Keyword
-    Log  moi
-    Test Keyword
-    Log  moi
-    Test Keyword
-    Log  moi"""
+TEST_CASE_TEMPLATE = \
+    """My Test %TEST_ID%
+        My Keyword %KW_ID%
+        Log  moi
+        Test Keyword
+        Log  moi
+        Test Keyword
+        Log  moi
+        Test Keyword
+        Log  moi
+        Test Keyword
+        Log  moi
+        Test Keyword
+        My Keyword %KW_ID%
+        Test Keyword
+        Log  moi
+        Test Keyword
+        Log  moi
+        Test Keyword
+        Log  moi"""
 
 
 def generate_tests(number_of_tests, number_of_keywords):
     mytests = range(number_of_tests)
-    return '\n'.join(TEST_CASE_TEMPLATE.replace('%TEST_ID%', str(test_id))\
-                      .replace('%KW_ID%', str(randint(0,number_of_keywords-1)))\
-                      for test_id in mytests)
+    return '\n'.join(TEST_CASE_TEMPLATE.replace('%TEST_ID%', str(test_id))
+                     .replace('%KW_ID%', str(randint(0, number_of_keywords-1))) for test_id in mytests)
 
 
 def generate_keywords(number_of_keywords):
@@ -97,10 +96,10 @@ def generate(directory, suites, tests, keywords):
         return
     mysuites = range(suites)
     for suite_index in mysuites:
-        f = open(os.path.join(safepath, 'suite%s.robot' % suite_index), 'w')
+        f = open(os.path.commonpath(os.path.join(safepath, 'suite%s.robot' % suite_index)), 'w')
         f.write(generate_suite(tests, keywords))
         f.close()
-    r = open(os.path.join(safepath, 'resource.robot'), 'w')
+    r = open(os.path.commonpath(os.path.join(safepath, 'resource.robot')), 'w')
     r.write(generate_resource(keywords))
     r.close()
 
@@ -121,6 +120,7 @@ def main(args):
             print(opts)
         usage()
         sys.exit(2)
+    directory = suites = tests = keywords = None
     for opt, arg in opts:
         if opt == '-d':
             directory = arg
@@ -132,7 +132,7 @@ def main(args):
             keywords = int(arg)
     generate(directory, suites, tests, keywords)
 
+
 if __name__ == '__main__':
     import sys
     main(sys.argv[1:])
-
