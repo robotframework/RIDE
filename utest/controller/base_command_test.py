@@ -29,7 +29,7 @@ SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(),
 sys.path.insert(0, os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
 SCRIPT_DIR = os.path.dirname(pathlib.Path(__file__).parent)
 sys.path.insert(0, SCRIPT_DIR)
-from controller_creator import _FakeProject, testcase_controller, BASE_DATA
+from controller.controller_creator import _FakeProject, testcase_controller, BASE_DATA
 
 
 class TestCaseCommandTest(unittest.TestCase, _FakeProject):
