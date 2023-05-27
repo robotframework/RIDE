@@ -42,7 +42,6 @@ from ..utils import variablematcher
 from ..widgets import RIDEDialog, PopupMenu, PopupMenuItems
 
 _DEFAULT_FONT_SIZE = 11
-# FILTER_NEWLINES = True
 
 
 def requires_focus(function):
