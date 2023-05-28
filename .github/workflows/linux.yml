@@ -71,8 +71,8 @@ jobs:
         submodules: false
     - name: Configure container environment
       run: |
-        sudo dnf update
-        sudo dnf install git
+        sudo dnf update -y
+        sudo dnf install -y git
         git config --global --add safe.directory ${GITHUB_WORKSPACE}
     - name: Fetch tags
       run: |
@@ -103,7 +103,7 @@ jobs:
         git fetch --prune --depth=1 --no-recurse-submodules
     - name: Setup environment
       run: |
-        sudo apt update
+        sudo apt update -y
         pip install https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-22.04/wxPython-4.2.0-cp310-cp310-linux_x86_64.whl
         pip install -r requirements-dev.txt
     - name: Run tests
