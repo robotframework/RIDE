@@ -68,7 +68,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3.3.0
       with:
-        submodules: true
+        submodules: false
     - name: Configure container environment
       run: |
         git config --global --add safe.directory ${GITHUB_WORKSPACE}
@@ -103,7 +103,7 @@ jobs:
     - name: Setup environment
       run: |
         sudo apt update
-        sudo apt install xvfb
+        pip install https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-22.04/wxPython-4.2.0-cp310-cp310-linux_x86_64.whl
         pip install -r requirements-dev.txt
     - name: Run tests
       run: |
