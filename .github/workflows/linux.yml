@@ -79,8 +79,8 @@ jobs:
         git fetch --prune --depth=1 --no-recurse-submodules
     - name: Setup environment
       run: |
-        sudo dnf install python3-wxpython4 xvfb
-        pip install -r requirements-dev.txt
+        sudo dnf install -y python3-wxpython4 xvfb
+        sudo pip install -r requirements-dev.txt
     - name: Run tests
       run: |
         invoke test-ci
@@ -104,8 +104,8 @@ jobs:
     - name: Setup environment
       run: |
         sudo apt update -y
-        pip install https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-22.04/wxPython-4.2.0-cp310-cp310-linux_x86_64.whl
-        pip install -r requirements-dev.txt
+        sudo pip install https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-22.04/wxPython-4.2.0-cp310-cp310-linux_x86_64.whl
+        sudo pip install -r requirements-dev.txt
     - name: Run tests
       run: |
         invoke test-ci
