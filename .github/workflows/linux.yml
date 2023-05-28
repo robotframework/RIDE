@@ -71,13 +71,14 @@ jobs:
         submodules: false
     - name: Configure container environment
       run: |
+        sudo dnf update
+        sudo dnf install git
         git config --global --add safe.directory ${GITHUB_WORKSPACE}
     - name: Fetch tags
       run: |
         git fetch --prune --depth=1 --no-recurse-submodules
     - name: Setup environment
       run: |
-        sudo dnf update
         sudo dnf install python3-wxpython4 xvfb
         pip install -r requirements-dev.txt
     - name: Run tests
@@ -86,7 +87,7 @@ jobs:
     - name: Install and run
       run: |
         pip install .
-        xvfb-run --server-args="-screen 0, 1280x720x24" -a ride
+        xvfb-run --server-args="-screen 0, 1280x720x24" -a ride.py
   debian:
     name: Debian
     runs-on: ubuntu-latest
@@ -111,4 +112,4 @@ jobs:
     - name: Install and run
       run: |
         pip install .
-        xvfb-run --server-args="-screen 0, 1280x720x24" -a ride
+        xvfb-run --server-args="-screen 0, 1280x720x24" -a ride.py
