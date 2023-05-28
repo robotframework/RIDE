@@ -76,7 +76,7 @@ jobs:
         git config --global --add safe.directory ${GITHUB_WORKSPACE}
     - name: Setup environment
       run: |
-        sudo dnf install -y python3-wxpython4 xvfb
+        sudo dnf install -y python3-wxpython4 xorg-x11-server-Xvfb
         sudo pip install -r requirements-dev.txt
     - name: Run tests
       run: |
@@ -99,16 +99,12 @@ jobs:
     - name: Fetch tags
       run: |
         git fetch --prune --depth=1 --no-recurse-submodules
-    - name: Setup environment
+    - name: Setup environment and Run
       run: |
         sudo apt update -y
         sudo pip install https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-22.04/wxPython-4.2.0-cp310-cp310-linux_x86_64.whl
         sudo pip install -r requirements-dev.txt
-    - name: Run tests
-      run: |
         invoke test-ci
-    - name: Install and run
-      run: |
         pip install .
         which ride.py
         xvfb-run --server-args="-screen 0, 1280x720x24" -a ride.py
