@@ -1,0 +1,114 @@
+name: Linux
+on:
+  push:
+    branches-ignore:
+      - '**/sources/**'
+      - '**/windows/**'
+      - '**/macos/**'
+    paths-ignore:
+      - '.github/workflows/sources.yml'
+      - '.github/workflows/sonar.yml'
+      - '.github/workflows/macos.yml'
+      - '.github/workflows/windows.yml'
+      - 'tools/**'
+      - 'rtest/**'
+      - 'doc/**'
+      - '.appveyor.yml'
+      - '.coveragerc'
+      - '.gitattributes'
+      - '.pylintrc'
+      - '.travis.yml'
+      - '.whitesource'
+      - 'AUTHORS.txt'
+      - 'BUILD.rest'
+      - 'CHANGELOG.adoc'
+      - 'CONTRIBUTING.adoc'
+      - 'COPYRIGHT.txt'
+      - 'LICENSE.txt'
+      - 'MANIFEST.in'
+      - 'README.adoc'
+      - 'README.rest'
+      - 'rfgen.py'
+      - 'tox.ini'
+  pull_request:
+    paths-ignore:
+      - '.github/workflows/sources.yml'
+      - '.github/workflows/sonar.yml'
+      - '.github/workflows/macos.yml'
+      - '.github/workflows/windows.yml'
+      - 'tools/**'
+      - 'rtest/**'
+      - 'doc/**'
+      - '.appveyor.yml'
+      - '.coveragerc'
+      - '.gitattributes'
+      - '.pylintrc'
+      - '.travis.yml'
+      - '.whitesource'
+      - 'AUTHORS.txt'
+      - 'BUILD.rest'
+      - 'CHANGELOG.adoc'
+      - 'CONTRIBUTING.adoc'
+      - 'COPYRIGHT.txt'
+      - 'LICENSE.txt'
+      - 'MANIFEST.in'
+      - 'README.adoc'
+      - 'README.rest'
+      - 'rfgen.py'
+      - 'tox.ini'
+
+jobs:
+  fedora:
+    name: Fedora
+    runs-on: ubuntu-latest
+    if: ${{ !contains(github.ref, '/debian/') }}
+    container:
+      image: fedora:latest
+      options: --privileged
+    steps:
+    - uses: actions/checkout@v3.3.0
+      with:
+        submodules: true
+    - name: Configure container environment
+      run: |
+        git config --global --add safe.directory ${GITHUB_WORKSPACE}
+    - name: Fetch tags
+      run: |
+        git fetch --prune --depth=1 --no-recurse-submodules
+    - name: Setup environment
+      run: |
+        sudo dnf update
+        sudo dnf install python3-wxpython4 xvfb
+        pip install -r requirements-dev.txt
+    - name: Run tests
+      run: |
+        invoke test-ci
+    - name: Install and run
+      run: |
+        pip install .
+        xvfb-run --server-args="-screen 0, 1280x720x24" -a ride
+  debian:
+    name: Debian
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    if: ${{ !contains(github.ref, '/fedora/') }}
+    steps:
+    - uses: actions/checkout@v3.3.0
+      with:
+        submodules: false
+    - name: Fetch tags
+      run: |
+        git fetch --prune --depth=1 --no-recurse-submodules
+    - name: Setup environment
+      run: |
+        sudo apt update
+        sudo apt install xvfb
+        pip install -r requirements-dev.txt
+    - name: Run tests
+      run: |
+        invoke test-ci
+    - name: Install and run
+      run: |
+        pip install .
+        xvfb-run --server-args="-screen 0, 1280x720x24" -a ride
