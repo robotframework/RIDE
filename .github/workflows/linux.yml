@@ -74,9 +74,6 @@ jobs:
         sudo dnf update -y
         sudo dnf install -y git
         git config --global --add safe.directory ${GITHUB_WORKSPACE}
-    - name: Fetch tags
-      run: |
-        git fetch --prune --depth=1 --no-recurse-submodules
     - name: Setup environment
       run: |
         sudo dnf install -y python3-wxpython4 xvfb
@@ -87,6 +84,7 @@ jobs:
     - name: Install and run
       run: |
         pip install .
+        which ride.py
         xvfb-run --server-args="-screen 0, 1280x720x24" -a ride.py
   debian:
     name: Debian
@@ -112,4 +110,5 @@ jobs:
     - name: Install and run
       run: |
         pip install .
+        which ride.py
         xvfb-run --server-args="-screen 0, 1280x720x24" -a ride.py
