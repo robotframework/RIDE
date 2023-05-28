@@ -49,7 +49,7 @@ Install current development version (**2.0.6dev#**) with:
 == Unit testing statuses:
 
 // Linux (py36, py37, py38, py39): image:https://app.travis-ci.com/HelioGuilherme66/RIDE.svg?branch=master[Unit Tests, link=https://app.travis-ci.com/github/HelioGuilherme66/RIDE]
-
+Linux (Fedora 38: py3.11, Ubuntu 22.04: py3.10): image:https://github.com/HelioGuilherme66/RIDE/actions/workflows/linux.yml/badge.svg[Unit Tests, link=https://github.com/HelioGuilherme66/RIDE/actions/workflows/linux.yml]
 Windows (Python 3.10): image:https://ci.appveyor.com/api/projects/status/github/HelioGuilherme66/RIDE?branch=master&svg=true[Unit Tests, link=https://ci.appveyor.com/project/HelioGuilherme66/ride]
 
 Quality Gate Status: image:https://sonarcloud.io/api/project_badges/measure?project=HelioGuilherme66_RIDE&metric=alert_status[SonarCloud, link=https://sonarcloud.io/summary/new_code?id=HelioGuilherme66_RIDE]

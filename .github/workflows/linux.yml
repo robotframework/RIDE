@@ -81,8 +81,9 @@ jobs:
         sudo pip install -r requirements-dev.txt
     - name: Run tests
       run: |
-        sudo Xvfb &
-        DISPLAY=:0 invoke test-ci
+        Xvfb &
+        export DISPLAY=:0
+        invoke test-ci
     - name: Install and run
       run: |
         pip install .
@@ -108,8 +109,9 @@ jobs:
         sudo apt install -y libsdl1.2debian libsdl2-2.0-0 libnotify4
         sudo pip install https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-22.04/wxPython-4.2.0-cp310-cp310-linux_x86_64.whl
         sudo pip install -r requirements-dev.txt
-        sudo Xvfb &
-        DISPLAY=:0 invoke test-ci
+        Xvfb &
+        export DISPLAY=:0
+        invoke test-ci
         pip install .
         which ride.py
         xvfb-run --server-args="-screen 0, 1280x720x24" -a ride.py &
