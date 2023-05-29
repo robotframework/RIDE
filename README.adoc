@@ -48,7 +48,8 @@ Install current development version (**2.0.6dev#**) with:
 
 == Unit testing statuses:
 
-// Linux (py36, py37, py38, py39): image:https://app.travis-ci.com/HelioGuilherme66/RIDE.svg?branch=master[Unit Tests, link=https://app.travis-ci.com/github/HelioGuilherme66/RIDE]
+// Linux (py36, py37, py38, py39): image:https://app.travis-ci.com/HelioGuilherme66/RIDE.svg?branch=master[Unit Tests, link=https://app.travis-ci.com/github/HelioGuilherme66/RIDE] 
+Linux (Fedora 38: py3.11, Ubuntu 22.04: py3.10): image:https://img.shields.io/github/actions/workflow/status/HelioGuilherme66/RIDE/linux.yml[Unit Tests, link=https://github.com/HelioGuilherme66/RIDE/actions/workflows/linux.yml]
 
 Windows (Python 3.10): image:https://ci.appveyor.com/api/projects/status/github/HelioGuilherme66/RIDE?branch=master&svg=true[Unit Tests, link=https://ci.appveyor.com/project/HelioGuilherme66/ride]
 
