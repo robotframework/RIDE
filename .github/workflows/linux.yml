@@ -77,13 +77,13 @@ jobs:
     - name: Setup environment
       run: |
         sudo dnf install -y python3-wxpython4 xorg-x11-server-Xvfb python3-pip psmisc
-        sudo pip install wheel
-        sudo pip install -r requirements-dev.txt
+        sudo -H pip install wheel
+        sudo -H pip install -r requirements-dev.txt
     - name: Run tests
       run: |
         Xvfb &
         export DISPLAY=:0
-        invoke test-ci
+        invoke test-ci &
     - name: Install and run
       run: |
         pip install .
