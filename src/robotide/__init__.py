@@ -44,7 +44,7 @@ try:
     import wx
     import wx.lib.inspection
     from wx import Colour
-except ImportError:
+except ModuleNotFoundError:
     print(errorMessageTemplate.substitute(reason="wxPython not found."))
     sys.exit(1)
 
