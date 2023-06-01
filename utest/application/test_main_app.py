@@ -12,25 +12,39 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import copy
-import sys
 import unittest
 import pytest
+from pytest import MonkeyPatch
+import builtins
+
+real_import = builtins.__import__
+
+
+def myimport(name, globals, locals, fromlist, level):
+    # DEBUG print(f"DEBUG: called myimport! name={name}")
+    if name == 'wx':
+        return real_import('wx_error', globals, locals, fromlist, level)
+    if name == '':  # This is when is called "from . import version"
+        raise ImportError
+    return real_import(name, globals, locals, fromlist, level)
+
+
+class TestWxImport(unittest.TestCase):
+
+    def tearDown(self):
+        builtins.__import__ = real_import
+
+    def test_missing_wx(self):  # This test passed in PyCharm but not when run in command line
+        builtins.__import__ = myimport
+        with pytest.raises((ModuleNotFoundError, SystemExit)):  # (ImportError, ModuleNotFoundError, SystemExit)):
+            import robotide
+            print(dir(robotide))
 
 
 class TestMain(unittest.TestCase):
 
-    def test_missing_wx(self):  # This test passes when running alone, but fails when all
-        old_path = copy.deepcopy(sys.path)
-        indexes = [idx for idx, s in enumerate(sys.path) if 'python' in s.lower()]
-        for idx in indexes:
-            sys.path[idx] = ''
-        try:
-            with pytest.raises((ImportError, ModuleNotFoundError, SystemExit)):
-                import robotide
-                print(dir(robotide))
-        finally:
-            sys.path = old_path
+    def tearDown(self):
+        builtins.__import__ = real_import
 
     def test_main_call_with_extra_args(self):
         from robotide import main
@@ -49,6 +63,28 @@ class TestMain(unittest.TestCase):
             result = main('--version')
             print(f"DEBUG: Result is {result}")
             assert result.startswith('v2.0')
+
+    def test_main_call_with_fail_version(self):
+        import robotide
+        with MonkeyPatch().context():
+            with pytest.raises((ImportError, SystemExit)):
+                builtins.__import__ = myimport
+                result = robotide.main('--version')  # Need to capture output
+                # DEBUG print(f"DEBUG: Result is {result}")
+                assert result.startswith('v2.0')
+
+    def test_parse_args(self):
+        from robotide import _parse_args
+        noupdatecheck, debug_console, inpath = _parse_args(args=None)
+        assert (noupdatecheck, debug_console, inpath) == (False, False, None)
+        noupdatecheck, debug_console, inpath = _parse_args(args=('--noupdatecheck', 'no file'))
+        assert (noupdatecheck, debug_console, inpath) == (True, False, 'no file')
+        noupdatecheck, debug_console, inpath = _parse_args(args=('--noupdatecheck', '--debugconsole'))
+        assert (noupdatecheck, debug_console, inpath) == (True, True, None)
+        noupdatecheck, debug_console, inpath = _parse_args(args='')
+        assert (noupdatecheck, debug_console, inpath) == (False, False, None)
+        noupdatecheck, debug_console, inpath = _parse_args(args=('--garbagein', '--garbageout'))
+        assert (noupdatecheck, debug_console, inpath) == (False, False, '--garbageout')  # returns always last arg
 
 
 if __name__ == '__main__':
