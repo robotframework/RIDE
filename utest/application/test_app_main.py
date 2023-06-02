@@ -22,8 +22,8 @@ real_import = builtins.__import__
 
 def myimport(name, globals, locals, fromlist, level):
     # DEBUG print(f"DEBUG: called myimport! name={name}")
-    if name == 'wx':
-        return real_import('wx_error', globals, locals, fromlist, level)
+    if name in ['wx', 'Colour', 'wx.lib.inspection']:
+        raise ModuleNotFoundError  # real_import('wx_error', globals, locals, fromlist, level)
     if name == '':  # This is when is called "from . import version"
         raise ImportError
     return real_import(name, globals, locals, fromlist, level)
@@ -35,10 +35,11 @@ class TestWxImport(unittest.TestCase):
         builtins.__import__ = real_import
 
     def test_missing_wx(self):  # This test passed in PyCharm but not when run in command line
-        builtins.__import__ = myimport
-        with pytest.raises((ModuleNotFoundError, SystemExit)):  # (ImportError, ModuleNotFoundError, SystemExit)):
-            import robotide
-            print(dir(robotide))
+        with MonkeyPatch().context():
+            builtins.__import__ = myimport
+            with pytest.raises((ModuleNotFoundError, SystemExit)):  # (ImportError, ModuleNotFoundError, SystemExit)):
+                import robotide
+                print(dir(robotide))
 
 
 class TestMain(unittest.TestCase):
