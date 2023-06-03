@@ -13,9 +13,6 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import re
-from os import linesep
-
 import wx
 from wx import grid, Colour
 
