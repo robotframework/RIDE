@@ -11,7 +11,7 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-
+import subprocess
 import unittest
 import pytest
 from pytest import MonkeyPatch
@@ -24,7 +24,7 @@ def myimport(name, globals, locals, fromlist, level):
     # DEBUG print(f"DEBUG: called myimport! name={name}")
     if name in ['wx', 'Colour', 'wx.lib.inspection']:
         raise ModuleNotFoundError  # real_import('wx_error', globals, locals, fromlist, level)
-    if name == '':  # This is when is called "from . import version"
+    if name == '' or name == 'robotide.application':  # This '' is when is called "from . import version"
         raise ImportError
     return real_import(name, globals, locals, fromlist, level)
 
@@ -88,6 +88,19 @@ class TestMain(unittest.TestCase):
         assert (noupdatecheck, debug_console, inpath) == (False, False, None)
         noupdatecheck, debug_console, inpath = _parse_args(args=('--garbagein', '--garbageout'))
         assert (noupdatecheck, debug_console, inpath) == (False, False, '--garbageout')  # returns always last arg
+
+    def test_run_call_with_fail_import(self):
+        import robotide.application
+
+        def side_effect(one: bool= False, two: bool= False):
+            print(f"DEBUG: side_effect Called with {one=} {two=}")
+
+        with MonkeyPatch().context() as m:
+            m.setattr(robotide, '_show_old_wxpython_warning_if_needed', side_effect)
+            # DEBUG m.setattr(wx, 'VERSION', (4, 0, 0, '', ''))
+            with pytest.raises(ImportError):
+                builtins.__import__ = myimport
+                robotide._run(False, False)
 
 
 if __name__ == '__main__':
