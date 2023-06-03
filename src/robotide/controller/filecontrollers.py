@@ -323,6 +323,19 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
         path = path or self.filename
         os.chmod(path, stat.S_IWRITE)
 
+    @staticmethod
+    def _explorer_linux(path):
+        try:
+            subprocess.Popen(["nautilus", "{}".format(os.path.dirname(path))])
+        except OSError:
+            try:
+                subprocess.Popen(["dolphin", "{}".format(os.path.dirname(path))])
+            except OSError:
+                try:
+                    subprocess.Popen(["konqueror", "{}".format(os.path.dirname(path))])
+                except OSError:
+                    print("Could not launch explorer. Tried nautilus, dolphin and konqueror.")
+
     def open_filemanager(self, path=None):
         # tested on Win7 x64
         path = path or self.filename
@@ -336,28 +349,12 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
                 # nautilus, dolphin, konqueror
                 # DEBUG: check if explorer exists
                 # DEBUG: get prefered explorer from preferences
-                try:
-                    subprocess.Popen(["nautilus", "{}".format(
-                        os.path.dirname(path))])
-                except OSError:
-                    try:
-                        subprocess.Popen(
-                            ["dolphin", "{}".format(os.path.dirname(path))])
-                    except OSError:
-                        try:
-                            subprocess.Popen(
-                               ["konqueror", "{}".format(
-                                   os.path.dirname(path))])
-                        except OSError:
-                            print("Could not launch explorer. Tried nautilus, "
-                                  "dolphin and konqueror.")
+                self._explorer_linux(path)
             else:
                 try:
-                    subprocess.Popen(["finder", "{}".format(
-                        os.path.dirname(path))])
+                    subprocess.Popen(["finder", "{}".format(os.path.dirname(path))])
                 except OSError:
-                    subprocess.Popen(["open", "{}".format(
-                        os.path.dirname(path))])
+                    subprocess.Popen(["open", "{}".format(os.path.dirname(path))])
 
     def remove_from_filesystem(self, path=None):
         path = path or self.filename

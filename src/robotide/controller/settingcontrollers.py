@@ -15,13 +15,12 @@
 
 import re
 from itertools import chain
-from os import linesep
 
 from .. import robotapi, utils
 from ..robotapi import ALIAS_MARKER
 from ..publish.messages import (RideImportSettingChanged, RideImportSettingRemoved, RideVariableUpdated,
                                 RideItemSettingsChanged, RideImportSettingAdded)
-from ..utils import variablematcher
+from ..utils import variablematcher, unescape_newlines_and_whitespaces
 from .basecontroller import ControllerWithParent
 from .tags import Tag, ForcedTag, DefaultTag
 
@@ -138,7 +137,7 @@ class DocumentationController(_SettingController):
         return False
 
     def _get_editable_value(self):
-        return self._unescape_newlines_and_whitespaces(self.value)
+        return unescape_newlines_and_whitespaces(self.value)
 
     def _set_editable_value(self, value):
         self.set_value(self._escape_newlines_and_leading_hash(value))
@@ -148,27 +147,6 @@ class DocumentationController(_SettingController):
     @property
     def visible_value(self):
         return utils.html_format(utils.unescape(self.value))
-
-    def _unescape_newlines_and_whitespaces(self, item):
-        for regexp in self._regexps:
-            if regexp.pattern.endswith(' '):
-                item = regexp.sub(self._whitespace_replacer, item)
-            else:
-                item = regexp.sub(self._newline_replacer, item)
-        return item
-
-    def _whitespace_replacer(self, match):
-        return self._replacer(' ', match)
-
-    def _newline_replacer(self, match):
-        return self._replacer(linesep, match)
-
-    @staticmethod
-    def _replacer(char, match):
-        slashes = len(match.group(1))
-        if slashes % 2 == 1:
-            return '\\' * (slashes - 1) + char
-        return match.group()
 
     @staticmethod
     def _escape_newlines_and_leading_hash(item):

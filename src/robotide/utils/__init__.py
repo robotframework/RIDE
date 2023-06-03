@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 import os
+import re
 import sys
 import inspect
 import subprocess
@@ -106,7 +107,7 @@ def is_same_drive(path1, path2):
 
 def run_python_command(command, mode='c'):
     cmd = [sys.executable, '-{0}'.format(mode)] + command
-    # TODO Let the user select which robot to use
+    # DEBUG: Let the user select which robot to use
     process = subprocess.Popen(
         cmd,
         stdout=subprocess.PIPE,
@@ -132,3 +133,33 @@ def converttypes(data, prefer_str=True):
     if data_type == dict:
         data = data.items()
     return data_type(map(converttypes, data))
+
+
+_regexps = (re.compile(r'(\\+)r\\n'),
+            re.compile(r'(\\+)n'),
+            re.compile(r'(\\+)r'),
+            re.compile(r'(\\+) '))
+
+
+def unescape_newlines_and_whitespaces(item):
+    for regexp in _regexps:
+        if regexp.pattern.endswith(' '):
+            item = regexp.sub(_whitespace_replacer, item)
+        else:
+            item = regexp.sub(_newline_replacer, item)
+    return item
+
+
+def _whitespace_replacer(match):
+    return _replacer(' ', match)
+
+
+def _newline_replacer(match):
+    return _replacer(os.linesep, match)
+
+
+def _replacer(char, match):
+    slashes = len(match.group(1))
+    if slashes % 2 == 1:
+        return '\\' * (slashes - 1) + char
+    return match.group()
