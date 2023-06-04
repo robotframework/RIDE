@@ -100,7 +100,7 @@ class PreferenceEditor(wx.Dialog):
                 # for a notebook, each notebook page gets a container,
                 # and that container will only show one panel
                 container = PanelContainer(self._notebook)
-                panel = container.AddPanel(panel_class)
+                panel = container.AddPanel(panel_class, self._settings)
                 container.ShowPanel(panel)
                 self._notebook.AddPage(container, panel.GetTitle())
             sizer = wx.BoxSizer(wx.VERTICAL)
@@ -113,7 +113,7 @@ class PreferenceEditor(wx.Dialog):
             sizer.Add(self._container, 1, wx.EXPAND)
             self.SetSizer(sizer)
 
-            panel = self._container.AddPanel(panels[0])
+            panel = self._container.AddPanel(panels[0], self._settings)
             self._container.ShowPanel(panel)
 
     def OnClose(self, evt):

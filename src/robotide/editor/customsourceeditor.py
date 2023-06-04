@@ -971,7 +971,8 @@ _platformNames = ["wxMSW", "wxGTK", "wxMac"]
 def main(filepath, frame=None):
     __name__ = 'Editor'
     app = wx.App()
-    frame = wx.Frame(None)
+    if frame is None:
+        frame = wx.Frame(None)
     panel = CodeEditorPanel(frame, None, filepath)
     frame.Show(True)
     app.MainLoop()

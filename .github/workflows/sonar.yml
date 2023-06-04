@@ -36,7 +36,9 @@ jobs:
       - name: Test Install RIDE
         run: pip install .
       - name: Run RIDE unit-tests
-        run: invoke test-ci
+        run: |
+          export DISPLAY=:1
+          invoke test-ci
       - name: Analyze with SonarCloud
         uses: sonarsource/sonarcloud-github-action@master
         with:

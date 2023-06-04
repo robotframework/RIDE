@@ -526,10 +526,11 @@ class RideFrame(wx.Frame):
         err = None
         try:
             err = self._controller.load_datafile(path, LoadProgressObserver(self))
-        finally:
             if isinstance(err, UserWarning):
-                # raise err  # Just leave message in Parser Log
+                # DEBUG: raise err  # Just leave message in Parser Log
                 return False
+        except UserWarning:
+            return False
         self._populate_tree()
         return True
 
@@ -622,8 +623,7 @@ class RideFrame(wx.Frame):
 
     @staticmethod
     def OnUserGuide(event):
-        wx.LaunchDefaultBrowser("http://robotframework.org/robotframework/"
-                                "#user-guide")
+        wx.LaunchDefaultBrowser("https://robotframework.org/robotframework/#user-guide")
 
     @staticmethod
     def OnWiki(event):
