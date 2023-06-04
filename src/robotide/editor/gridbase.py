@@ -13,17 +13,13 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import re
-from os import linesep
-
 import wx
 from wx import grid, Colour
 
 from .clipboard import ClipboardHandler
 from ..context import IS_WINDOWS
+from ..utils import unescape_newlines_and_whitespaces
 from ..widgets import PopupCreator, PopupMenuItems
-
-# FILTER_NEWLINES = True
 
 
 class GridEditor(grid.Grid):
@@ -33,10 +29,6 @@ class GridEditor(grid.Grid):
         'Insert Rows\tCtrl-I', 'Delete Rows\tCtrl-D', '---',
         'Select All\tCtrl-A', '---', 'Cut\tCtrl-X', 'Copy\tCtrl-C',
         'Paste\tCtrl-V', 'Insert\tCtrl-Shift-V', '---', 'Delete\tDel']
-    _regexps = (re.compile(r'(\\+)r\\n'),
-                re.compile(r'(\\+)n'),
-                re.compile(r'(\\+)r'),
-                re.compile(r'(\\+) '))
 
     def __init__(self, parent, num_rows, num_cols, popup_creator=None):
         grid.Grid.__init__(self, parent)
@@ -86,35 +78,15 @@ class GridEditor(grid.Grid):
         self._expand_if_necessary(row, col)
         if self.filter_newlines:
             # unescape \n to support multi lines display in grid cells
-            value = self._unescape_newlines_and_whitespaces(value)
+            value = unescape_newlines_and_whitespaces(value)
         self.SetCellValue(row, col, value)
-
-    def _unescape_newlines_and_whitespaces(self, item):
-        for regexp in self._regexps:
-            if regexp.pattern.endswith(' '):
-                item = regexp.sub(self._whitespace_replacer, item)
-            else:
-                item = regexp.sub(self._newline_replacer, item)
-        return item
-
-    def _whitespace_replacer(self, match):
-        return self._replacer(' ', match)
-
-    def _newline_replacer(self, match):
-        return self._replacer(linesep, match)
-
-    def _replacer(self, char, match):
-        slashes = len(match.group(1))
-        if slashes % 2 == 1:
-            return '\\' * (slashes - 1) + char
-        return match.group()
 
     def _expand_if_necessary(self, row, col):
         # Changed col and row fill because of blank spacing not changing color
         # print(f"DEBUG: GridEditor ENTER_expand_if_necessary row={row}, col={col}")
-        while self.NumberRows <= max(1, row+1, 10-row): # DEBUG 25 makes slower rendering
+        while self.NumberRows <= max(1, row+1, 10-row):  # DEBUG 25 makes slower rendering
             self.AppendRows(1)
-        while self.NumberCols <= max(1, col+1, 10-col): # DEBUG 40 makes slower rendering
+        while self.NumberCols <= max(1, col+1, 10-col):  # DEBUG 40 makes slower rendering
             self.AppendCols(max(1, self._col_add_threshold))  # DEBUG: was infinite when value was 0
 
     def has_focus(self):
@@ -192,9 +164,10 @@ class GridEditor(grid.Grid):
 
     def _get_block_content(self, row_range, col_range):
         return [[self.GetCellValue(row, col) for col in col_range]
-                 for row in row_range]
+                for row in row_range]
 
-    def _strip_trailing_empty_cells(self, rowdata):
+    @staticmethod
+    def _strip_trailing_empty_cells(rowdata):
         while rowdata and not rowdata[-1]:
             rowdata.pop()
         return rowdata
@@ -234,23 +207,23 @@ class GridEditor(grid.Grid):
             self._ensure_selected_row_is_visible(event.BottomRow)
 
     def _ensure_selected_row_is_visible(self, bottom_row):
-        if not self.IsVisible(bottom_row , 0) and bottom_row < self.NumberRows and \
+        if not self.IsVisible(bottom_row, 0) and bottom_row < self.NumberRows and \
                 self._is_whole_row_selection():
             self.MakeCellVisible(bottom_row, 0)
 
     def OnCellRightClick(self, event):
         if hasattr(event, 'Row') and hasattr(event, 'Col'):
-            if not (event.Row, event.Col) in self.selection.cells():
+            if (event.Row, event.Col) not in self.selection.cells():
                 self.select(event.Row, event.Col)
                 self.selection.set_from_single_selection(event)
         self._popup_creator.show(self, PopupMenuItems(self, self._popup_items),
                                  self.get_selected_content())
 
-    # TODO This code is overriden at fieldeditors
+    # DEBUG: This code is overriden at fieldeditors
     def OnInsertCells(self, event):
         self._insert_or_delete_cells(self._insert_cells, event)
 
-    # TODO This code is overriden at fieldeditors
+    # DEBUG:This code is overriden at fieldeditors
     def OnDeleteCells(self, event):
         # print("DEBUG delete cells %s" % event)
         self._insert_or_delete_cells(self._delete_cells, event)
@@ -291,13 +264,13 @@ class GridEditor(grid.Grid):
         self.GetParent().Sizer.Layout()
 
 
-# TODO: refactor this internal state away if possible
+# DEBUG: refactor this internal state away if possible
 class _GridSelection(object):
     cell = property(lambda self: (self.topleft.row, self.topleft.col))
 
-    def __init__(self, grid):
+    def __init__(self, gridd):
         self._set((0, 0))
-        self._grid = grid
+        self._grid = gridd
 
     def _set(self, topleft, bottomright=None):
         self.topleft = _Cell(topleft[0], topleft[1])
@@ -312,18 +285,19 @@ class _GridSelection(object):
     def set_from_single_selection(self, event):
         self._set((event.Row, event.Col))
 
-    def set_from_range_selection(self, grid, event):
-        self._set(*self._get_bounding_coordinates(grid, event))
+    def set_from_range_selection(self, gridd, event):
+        self._set(*self._get_bounding_coordinates(gridd, event))
 
     def clear(self):
         selection = (self._grid.GetGridCursorRow(), self._grid.GetGridCursorCol())
         self._set(selection)
 
-    def _get_bounding_coordinates(self, grid, event):
-        whole_row_selection = sorted(grid.SelectedRows)
+    @staticmethod
+    def _get_bounding_coordinates(gridd, event):
+        whole_row_selection = sorted(gridd.SelectedRows)
         if whole_row_selection:
             return (whole_row_selection[0], 0), \
-                   (whole_row_selection[-1], grid.NumberCols - 1)
+                   (whole_row_selection[-1], gridd.NumberCols - 1)
         return (event.TopLeftCoords.Row, event.TopLeftCoords.Col), \
                (event.BottomRightCoords.Row, event.BottomRightCoords.Col)
 
@@ -338,7 +312,7 @@ class _GridSelection(object):
     def cells(self):
         """Return selected cells as a list of tuples (row, column)."""
         return [(row, col) for col in self.cols()
-                           for row in self.rows()]
+                for row in self.rows()]
 
 
 class _Cell(object):

@@ -20,9 +20,10 @@ import wx
 from wx import grid
 from wx.grid import GridCellEditor
 
+from os import linesep
 from .contentassist import ExpandingContentAssistTextCtrl
 from .editordialogs import UserKeywordNameDialog, ScalarVariableDialog, ListVariableDialog
-from .gridbase import GridEditor, linesep
+from .gridbase import GridEditor
 from .gridcolorizer import Colorizer
 from .tooltips import GridToolTips
 from .. import robotapi
@@ -42,7 +43,6 @@ from ..utils import variablematcher
 from ..widgets import RIDEDialog, PopupMenu, PopupMenuItems
 
 _DEFAULT_FONT_SIZE = 11
-# FILTER_NEWLINES = True
 
 
 def requires_focus(function):

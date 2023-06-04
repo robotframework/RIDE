@@ -20,7 +20,7 @@ DISPLAY = os.getenv('DISPLAY')
 if not DISPLAY:
     pytest.skip("Skipped because of missing DISPLAY", allow_module_level=True) # Avoid failing unit tests in system without X11
 import wx
-from editor.fakeplugin import FakePlugin
+from .fakeplugin import FakePlugin
 from robotide.controller.macrocontrollers import TestCaseController
 from robotide.editor.macroeditors import TestCaseEditor
 
@@ -59,6 +59,7 @@ class MockKwEditor(object):
 class MacroEditorTest(unittest.TestCase):
 
     def setUp(self):
+        myapp = wx.App(None)
         controller = TestCaseController(IncredibleMock(), IncredibleMock())
         plugin = FakePlugin({}, controller)
         self.tc_editor = TestCaseEditor(

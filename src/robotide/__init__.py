@@ -44,7 +44,7 @@ try:
     import wx
     import wx.lib.inspection
     from wx import Colour
-except ImportError:
+except ModuleNotFoundError:
     print(errorMessageTemplate.substitute(reason="wxPython not found."))
     sys.exit(1)
 
@@ -86,6 +86,7 @@ def _parse_args(args):
 
 
 def _run(inpath=None, updatecheck=True, debug_console=False):
+    # print(f"DEBUG: ENTER _run {inpath=}, {updatecheck=}, {debug_console=}")
     try:
         from robotide.application import RIDE
         from robotide.application import debugconsole
@@ -132,6 +133,7 @@ def _replace_std_for_win():
 
 
 def _show_old_wxpython_warning_if_needed(parent=None):
+    # print("DEBUG: ENTER _show_old_wxpython_warning_if_needed")
     if wx.VERSION <= (4, 0, 4, '', ''):
         title = "Please upgrade your wxPython installation"
         message = ("RIDE needs a newer wxPython version. Your current "
