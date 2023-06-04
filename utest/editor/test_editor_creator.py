@@ -47,7 +47,6 @@ DATADIR = 'fake'
 DATAPATH = '%s/path' % DATADIR
 TestCaseFileEditor._populate = lambda self: None
 
-app = wx.App(None)
 
 class EditorCreatorTest(unittest.TestCase):
 
@@ -72,6 +71,7 @@ class EditorCreatorTest(unittest.TestCase):
         assert isinstance(editor, TestCaseFileEditor)
 
     def _editor_for(self, plugin):
+        app = wx.App(None)
         return self.creator.editor_for(plugin, wx.Frame(None), None)
 
     def test_creating_editor_with_variable(self):
@@ -110,6 +110,7 @@ class EditorCreatorTest(unittest.TestCase):
         assert ed.destroy.called
 
     def _datafile_editor(self):
+        app = wx.App(None)
         return self.creator.editor_for(self._datafile_plugin(),
                                        wx.Frame(None), None)
 

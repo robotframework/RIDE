@@ -37,7 +37,7 @@ import os
 import pytest
 DISPLAY = os.getenv('DISPLAY')
 if not DISPLAY:
-    pytest.skip("Skipped because of missing DISPLAY", allow_module_level=True) # Avoid failing unit tests in system without X11
+    pytest.skip("Skipped because of missing DISPLAY", allow_module_level=True)  # Avoid failing unit tests in system without X11
 import wx
 from robotide.context import IS_WINDOWS
 
@@ -45,15 +45,19 @@ DATA = [['kw1', '', ''],
         ['kw2', 'arg1', ''],
         ['kw3', 'arg1', 'arg2']]
 
-app = wx.App(None)
+myapp = wx.App(None)
+
 
 class _FakeMainFrame(wx.Frame):
+    myapp = wx.App(None)
+
     def __init__(self):
         wx.Frame.__init__(self, None)
         self.plugin = None
 
 
 def EditorWithData():
+    myapp = wx.App(None)
     grid = GridEditor(_FakeMainFrame(), 5, 5)
     for ridx, rdata in enumerate(DATA):
         for cidx, cdata in enumerate(rdata):

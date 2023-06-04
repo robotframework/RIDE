@@ -15,6 +15,8 @@ omit =
 
 [report]
 skip_empty = True
+exclude_lines =
+    if __name__ == '__main__':
  
 [xml]
 output = ./.coverage-reports/coverage.xml
