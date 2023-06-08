@@ -11,6 +11,7 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+import sys
 import unittest
 import pytest
 from pytest import MonkeyPatch
@@ -34,12 +35,17 @@ class TestWxImport(unittest.TestCase):
     def tearDown(self):
         builtins.__import__ = real_import
 
+    @pytest.mark.order(1)
     def test_missing_wx(self):  # This test passed in PyCharm but not when run in command line
         with MonkeyPatch().context() as m:
             with pytest.raises((ModuleNotFoundError, SystemExit)):  # (ImportError, ModuleNotFoundError, SystemExit)):
+                sys.modules.pop('wx.lib.inspection', None)
                 builtins.__import__ = myimport
                 import robotide
                 print(dir(robotide))
+
+
+builtins.__import__ = real_import
 
 
 class TestMain(unittest.TestCase):
