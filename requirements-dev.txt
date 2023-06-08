@@ -5,7 +5,9 @@ github3.py
 memory-profiler
 pylint
 pytest
+coverage
 pytest-cov
+pytest-order
 # To make a relase you need asciidoc3 (a2x3)
 # asciidoc3
 # Include also normal project requirements.
