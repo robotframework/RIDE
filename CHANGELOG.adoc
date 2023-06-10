@@ -14,6 +14,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Changed
 
+- Changed ``tasks.py`` to test ``utest/application/test_app_main.py`` isolated from the other tests
 - Improve auto-suggestions of keywords in Grid Editor by allowing to close suggestions list with keys ARROW_LEFT or ARROW_RIGHT
 - Improve Text Editor auto-suggestions by using: selected text, text at left or at right of cursor
 

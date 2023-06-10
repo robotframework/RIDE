@@ -11,7 +11,7 @@ assert Path.cwd().resolve() == Path(__file__).resolve().parent
 sys.path.insert(0, '../src')
 from robotide.version import VERSION
 from robotide.application.releasenotes import RELEASE_NOTES
-source_path = "../doc/releasenotes/ride-"+".".join([str(x) for x in VERSION.split('.')]).replace('v','')+".rst"
+source_path = "../doc/releasenotes/ride-"+".".join([str(x) for x in VERSION.split('.')]).replace('v2','2')+".rst"
 
 # Reverted flow: First edit ../src/robotide/application/releasenotes.py and then generate ride-VERSION.rst
 if exists(source_path):
@@ -45,9 +45,9 @@ run(["a2x3", "-f", "xhtml", "-L", "-D", directory, source_path])
 # Remove ToC
 import re
 # <div class="toc"> <p>All notable
-with open(destination_path, "r") as sources:
+with open(destination_path, "r", encoding="utf-8") as sources:
     lines = sources.readlines()
-with open(destination_path, "w") as sources:
+with open(destination_path, "w", encoding="utf-8") as sources:
     for line in lines:
         sources.write(re.sub(r"<div class=\"toc\">.*<p>All notable", "<p>All notable", line))
 
