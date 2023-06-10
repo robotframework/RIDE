@@ -215,8 +215,8 @@ class ActionInfo(MenuInfo):
             The positional value of an item in the menu. Provided for ordering
             Tools menu. Defaults to -1.
 
-        __ http://docs.wxwidgets.org/stable/wx_keycodes.html#keycodes
-        __ http://www.wxpython.org/docs/api/wx.ArtProvider-class.html
+        __ https://docs.wxwidgets.org/stable/wx_keycodes.html#keycodes
+        __ https://www.wxpython.org/docs/api/wx.ArtProvider-class.html
         """
         MenuInfo.__init__(self)
         self.menu_name = menu_name

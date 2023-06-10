@@ -55,14 +55,17 @@ SYSTEM_INFO = "Started RIDE %s using python version %s with wx version %s in %s.
               (VERSION, pyversion, WX_VERSION, sys.platform)
 ABOUT_RIDE = '''<h3>RIDE -- Robot Framework Test Data Editor</h3>
 <p>RIDE %s running on Python %s.</p>
-<p>RIDE is a test data editor for <a href="http://robotframework.org">Robot Framework</a>.
+<p>RIDE is a test data editor for <a href="https://robotframework.org/">Robot Framework</a>.
 For more information, see project pages at
 <a href="https://github.com/robotframework/RIDE">https://github.com/robotframework/RIDE</a>.</p>
-<p>Some of the icons are from <a href="http://www.famfamfam.com/lab/icons/silk/">Silk Icons</a>.</p>
+<p>Some of the icons are from <a href="https://github.com/legacy-icons/famfamfam-silk/">Silk Icons</a>.</p>
+<!-- Originally from http://www.famfamfam.com/lab/icons/silk/ 404 in 10-june-2023-->
 <p><br/><br/><a href="https://github.com/HelioGuilherme66">Hélio Guilherme</a> the maintainer of the project thanks the 
 original authors and all users and collaborators.<br/>
+<!--
 A very special thanks to <b><a href="https://github.com/Nyral">Nyral</a></b> and <b><a href="https://github.com/jnhyperi
-on">Johnny.H</a></b> the most commited in helping RIDE development and maintenance.</p>
+on">Johnny.H</a></b> the most commited in helping RIDE development and maintenance.
+--></p>
 ''' % (VERSION, pyversion)
 
 

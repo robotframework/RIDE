@@ -55,7 +55,7 @@ processed with `rebot` tool. Run `rebot --help` for more information.
 
 Robot Framework is open source software released under Apache License 2.0. Its
 copyrights are owned and development supported by Nokia Solutions and Networks.
-For more information about the framework see http://robotframework.org/.
+For more information about the framework see https://robotframework.org/.
 
 Options
 =======
@@ -66,7 +66,7 @@ Options
  -D --doc documentation   Set the documentation of the top level test suite.
                           Underscores in the documentation are converted to
                           spaces and it may also contain simple HTML formatting
-                          (e.g. *bold* and http://url/).
+                          (e.g. *bold* and https://url/).
  -M --metadata name:value *  Set metadata of the top level suite. Underscores
                           in the name and value are converted to spaces. Value
                           can contain same HTML formatting as --doc.
@@ -189,7 +189,7 @@ Options
                           any char). Documentation can contain formatting
                           similarly as with --doc option.
                           Examples: --tagdoc mytag:My_documentation
-                                    --tagdoc regression:*See*_http://info.html
+                                    --tagdoc regression:*See*_https://info.html
                                     --tagdoc owner-*:Original_author
     --tagstatlink pattern:link:title *  Add external links into `Statistics by
                           Tag`. Pattern can contain characters `*` (matches
@@ -198,8 +198,8 @@ Options
                           and title with syntax %N, where N is index of the
                           match (starting from 1). In title underscores are
                           automatically converted to spaces.
-                          Examples: --tagstatlink mytag:http://my.domain:Link
-                          --tagstatlink bug-*:http://tracker/id=%1:Bug_Tracker
+                          Examples: --tagstatlink mytag:https://my.domain:Link
+                          --tagstatlink bug-*:https://tracker/id=%1:Bug_Tracker
     --removekeywords all|passed|for|wuks|name:<pattern>|tag:<pattern> *
                           Remove keyword data from the generated log file.
                           Keywords containing warnings are not removed except

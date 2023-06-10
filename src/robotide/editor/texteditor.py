@@ -476,7 +476,7 @@ class SourceEditor(wx.Panel):
         _ = event
         content = """<h1>Syntax colorization</h1>
         <p>
-        Syntax colorization for Text Edit uses <a href='http://pygments.org/'>Pygments</a> syntax highlighter.
+        Syntax colorization for Text Edit uses <a href='https://pygments.org/'>Pygments</a> syntax highlighter.
         </p>
         <p>
         Install Pygments from command line with:
@@ -491,11 +491,11 @@ class SourceEditor(wx.Panel):
         </p>
         <p>
         If you do not have pip or easy_install,
-        <a href='http://pythonhosted.org/an_example_pypi_project/setuptools.html#installing-setuptools-and-easy-install'
+        <a href='https://pythonhosted.org/an_example_pypi_project/setuptools.html#installing-setuptools-and-easy-install'
         >follow these instructions</a>.
         </p>
         <p>
-        For more information about installing Pygments, <a href='http://pygments.org/download/'>see the site</a>.
+        For more information about installing Pygments, <a href='https://pygments.org/download/'>see the site</a>.
         </p>
         """
         HtmlDialog("Getting syntax colorization", content).Show()
