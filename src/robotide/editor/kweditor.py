@@ -1096,7 +1096,7 @@ class ContentAssistCellEditor(GridCellEditor):
             value = temp_value
         if value != self._original_value:
             self._value = value
-            # DEBUG: this is not needed wx.CallAfter(self._grid.move_grid_cursor_and_edit)
+            wx.CallAfter(self._grid.move_grid_cursor_and_edit)
             return value
         else:
             self._tc.hide()

@@ -948,12 +948,14 @@ class SourceEditor(wx.Panel):
         if size == 0:
             self.source_editor.SetInsertionPoint(to_)
             self.source_editor.InsertText(from_, self._variable_creator_value(symbol))
+            self.source_editor.SetSelection(from_ + 2, from_ + 2,)
             self.source_editor.SetInsertionPoint(from_ + 2)
         else:
             self.source_editor.DeleteRange(from_, size)
             self.source_editor.SetInsertionPoint(from_)
             self.source_editor.ReplaceSelection(self._variable_creator_value(symbol, text))
-            self.source_editor.SetSelection(from_ + 2, from_ + size + 2)
+            self.source_editor.SetSelection(from_ + size + 2, from_ + size + 2)
+            self.source_editor.SetInsertionPoint(from_ + size + 2)
 
     @staticmethod
     def _variable_creator_value(symbol, value=''):

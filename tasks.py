@@ -185,6 +185,9 @@ def test(ctx, test_filter=''):
     additional_args = []
     if test_filter:
         additional_args.append(test_filter)
+    result = pytestrun(args=["utest/application/test_app_main.py"] + additional_args)
+    assert result == 0 
+    additional_args.append("--ignore=utest/application/test_app_main.py")
     result = pytestrun(args=[TEST_DIR] + additional_args)
     assert result == 0 
 
@@ -385,17 +388,9 @@ def sonar(ctx, test_filter=''):
     _set_development_path()
 
     try:
+        test_ci(ctx, test_filter)
         import subprocess
-        c = subprocess.Popen(["coverage", "run", "-m", "pytest", "--cov-config=.coveragerc", "-k test_", "-v",
-                              TEST_DIR])
-        c.communicate(b'')
-        r = subprocess.Popen(["coverage", "report"])
-        r.communicate(b'')
-        x = subprocess.Popen(["coverage", "xml"])
-        x.communicate(b'')
-        h = subprocess.Popen(["coverage", "html"])
-        h.communicate(b'')
-        s = subprocess.Popen(["sonar-scanner", "-D", "sonar.projectVersion='v"+VERSION+"'"])
+        s = subprocess.Popen(["sonar-scanner", "-D", "sonar.projectVersion='"+VERSION+"'"])
         s.communicate(b'')
     finally:
         """ Nothing to do """
@@ -412,8 +407,12 @@ def test_ci(ctx, test_filter=''):
 
     try:
         import subprocess
-        c = subprocess.Popen(["coverage", "run", "-m", "pytest", "--cov-config=.coveragerc", "-k test_", "-v",
-                              TEST_DIR])
+
+        a = subprocess.Popen(["coverage", "run", "-a", "-m", "pytest", "--cov-config=.coveragerc", "-k test_", "-v", "utest/application/test_app_main.py"])
+        a.communicate(b'')
+        b = subprocess.Popen(["coverage", "run", "-a", "-m", "pytest", "--ignore=utest/application/test_app_main.py", "--cov-config=.coveragerc", "-k test_", "-v", TEST_DIR])
+        b.communicate(b'')
+        c = subprocess.Popen(["coverage", "combine"])
         c.communicate(b'')
         r = subprocess.Popen(["coverage", "report"])
         r.communicate(b'')
