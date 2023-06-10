@@ -49,6 +49,10 @@ with open(destination_path, "r", encoding="utf-8") as sources:
     lines = sources.readlines()
 with open(destination_path, "w", encoding="utf-8") as sources:
     for line in lines:
-        sources.write(re.sub(r"<div class=\"toc\">.*<p>All notable", "<p>All notable", line))
+# xml:lang="en"
+        mod_line = re.sub(r"\"><head>", "\" xml:lang=\"en\"><head>", line)
+        mod_line = re.sub(r"<div class=\"toc\">.*<p>All notable", "<p>All notable", mod_line)
+        sources.write(mod_line)
+    sources.write('\n')
 
 print(f"Check quality of {destination_path}")

@@ -68,9 +68,9 @@ build: off
 
 # scripts that run after cloning repository
 install:
-  - C:\Python310-x64\python -m pip install -r requirements-dev.txt
-  - C:\Python310-x64\python -m pip install -r requirements.txt
-  - C:\Python310-x64\python -m pip install .
+  - C:\Python311-x64\python -m pip install -r requirements-dev.txt
+  - C:\Python311-x64\python -m pip install -r requirements.txt
+  - C:\Python311-x64\python -m pip install .
 
 #---------------------------------#
 #       tests configuration       #
@@ -78,5 +78,5 @@ install:
 
 # to run your custom scripts instead of automatic tests
 test_script:
-  - set PATH=C:\Python310-x64;C:\Python310-x64\Scripts;%PATH%
-  - C:\Python310-x64\python -m invoke test-ci
+  - set PATH=C:\Python311-x64;C:\Python311-x64\Scripts;%PATH%
+  - C:\Python311-x64\python -m invoke test-ci
