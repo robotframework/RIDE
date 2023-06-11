@@ -167,8 +167,14 @@ class FixtureController(_SettingController):
         return self._fixture.name
 
     def replace_keyword(self, new_name, old_value=None):
-        _ = old_value
-        self._fixture.name = new_name
+        # print(f"DEBUG: settingcontrollers.py replace_keyword new_name={new_name} existing name={self._fixture.name}"
+        #       f"\nold_value={old_value}")
+        if self._fixture.name == old_value:
+            self._fixture.name = new_name
+        else:
+            for idx, argument in enumerate(self._fixture.args):
+                if argument == old_value:
+                    self._fixture.args[idx] = new_name
         self.mark_dirty()
 
     def _changed(self, value):

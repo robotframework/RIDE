@@ -20,6 +20,7 @@ import shutil
 import sys
 from robotide.publish import PUBLISHER
 from robotide.publish.messages import RideItemStepsChanged
+from .controller_creator import _FakeProject, testcase_controller, BASE_DATA
 
 # Workaround for relative import in non-module
 # see https://stackoverflow.com/questions/16981921/relative-imports-in-python-3
@@ -29,7 +30,6 @@ SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(),
 sys.path.insert(0, os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
 SCRIPT_DIR = os.path.dirname(pathlib.Path(__file__).parent)
 sys.path.insert(0, SCRIPT_DIR)
-from controller.controller_creator import _FakeProject, testcase_controller, BASE_DATA
 
 
 class TestCaseCommandTest(unittest.TestCase, _FakeProject):

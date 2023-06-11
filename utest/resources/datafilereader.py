@@ -40,6 +40,7 @@ KW1000_TESTCASEFILE = _makepath('performance', 'suite_kw1000.robot')
 KW2000_TESTCASEFILE = _makepath('performance', 'suite_kw2000.robot')
 KW3000_TESTCASEFILE = _makepath('performance', 'suite_kw3000.robot')
 KW4000_TESTCASEFILE = _makepath('performance', 'suite_kw4000.robot')
+COMPLEX_TEST = _makepath('complex_tests', 'TestSuite.robot')
 RESOURCE_WITH_VARIABLE_IN_PATH = _makepath(RESOURCES_DIR, 'resu.${extension}')
 LIBRARY_WITH_SPACES_IN_PATH = _makepath('lib with spaces', 'spacelib.py')
 TESTCASEFILE_WITH_RESOURCES_WITH_VARIABLES_FROM_VARIABLE_FILE = \
