@@ -144,7 +144,7 @@ class BaseProfile(object):
 
 RF_INSTALLATION_NOT_FOUND = """Robot Framework installation not found.<br>
 To run tests, you need to install Robot Framework separately.<br>
-See <a href="http://robotframework.org">http://robotframework.org</a> for
+See <a href="https://robotframework.org/">https://robotframework.org/</a> for
 installation instructions.
 """
 

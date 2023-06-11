@@ -146,12 +146,13 @@ RELEASE_NOTES = f"""
 
 <p><a class="reference external" href="https://github.com/robotframework/RIDE/">RIDE (Robot Framework IDE)</a>
  {VERSION} is a new release with minor enhancements and bug fixes. The reference for valid arguments is
- <a class="reference external" href="http://robotframework.org">Robot Framework</a> installed version, which is at this
+ <a class="reference external" href="https://robotframework.org/">Robot Framework</a> installed version, which is at this
   moment 6.0.2. However, internal library is based on version 3.1.2, to keep compatibility with old formats.</p>
 <p></p>
 <ul class="simple">
-<li>This version supports Python 3.6 up to 3.10.</li>
+<li>This version supports Python 3.6 up to 3.11.</li>
 <li>There are some changes, or known issues:<ul>
+<li>When editing in Grid Editor with content assistance, the selected content can be edited by escaping the list of suggestions with keys ARROW_LEFT or ARROW_RIGHT.</li>
 <li>Newlines in Grid Editor can be made visible with the `filter newlines` set to False.</li>
 <li>On Text Editor when Saving the selection of tests in Test Suites (Tree) is cleared.</li>
 <li>Test Suite with <em>*** Comments ***</em> can be edited but newlines are introduced.</li>
@@ -168,7 +169,7 @@ RELEASE_NOTES = f"""
 <li>Improve Text Editor auto-suggestions by using: selected text, text at left or at right of cursor</li>
 </ul>
 <p>We hope to implement or complete features and make fixes on next major version 2.1 (in the end of 2023).</p>
-<p><strong>The minimal wxPython version is, 4.0.7, and RIDE supports the current version, 4.2.0.</strong></p>
+<p><strong>The minimal wxPython version is, 4.0.7, and RIDE supports the current version, 4.2.1.</strong></p>
 <p><em>Linux users are advised to install first wxPython from .whl package at</em> <a class="reference external"
  href="https://extras.wxpython.org/wxPython4/extras/linux/gtk3/">wxPython.org</a>, or by using the system package
   manager.</p>
@@ -178,14 +179,14 @@ CHANGELOG.adoc</a> lists the changes done on the different versions.</p>
 from the <a class="reference external" href="https://github.com/robotframework/RIDE/issues?q=milestone%3Av2.1">issue
  tracker milestone</a>.</p>
 <p>Questions and comments related to the release can be sent to the
-<a class="reference external" href="http://groups.google.com/group/robotframework-users">robotframework-users</a>
+<a class="reference external" href="https://groups.google.com/group/robotframework-users">robotframework-users</a>
  mailing list or to the channel #ride on
 <a class="reference external" href="https://robotframework-slack-invite.herokuapp.com">Robot Framework Slack</a>,
  and possible bugs submitted to the <a class="reference external" href="https://github.com/robotframework/RIDE/issues">
  issue tracker</a>.
 You should see <a class="reference external" href="https://forum.robotframework.org/c/tools/ride/">Robot Framework
  Forum</a> if your problem is already known.</p>
-<p>To install with <a class="reference external" href="http://pip-installer.org">pip</a> installed, just run</p>
+<p>To install with <a class="reference external" href="https://pypi.org/project/pip/">pip</a> installed, just run</p>
 <pre class="literal-block">
 pip install --upgrade robotframework-ride=={VERSION}
 </pre>
@@ -216,6 +217,6 @@ python -m robotide.__init__
 <pre class="literal-block">
 python -m robotide.postinstall -install
 </pre>
-<p>RIDE {VERSION} was released on 24/May/2023.</p>
+<p>RIDE {VERSION} was released on 10/Jun/2023.</p>
 </div>
 """
