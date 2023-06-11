@@ -13,9 +13,12 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import os
 import sys
 import unittest
-from robotide.controller.ctrlcommands import *
+from robotide.controller.ctrlcommands import RenameKeywordOccurrences, NullObserver
+from .base_command_test import TestCaseCommandTest
+from utest.resources import datafilereader
 
 # Workaround for relative import in non-module
 # see https://stackoverflow.com/questions/16981921/relative-imports-in-python-3
@@ -23,7 +26,6 @@ PACKAGE_PARENT = '..'
 SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(),
                                               os.path.expanduser(__file__))))
 sys.path.insert(0, os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
-from controller.base_command_test import TestCaseCommandTest
 
 
 class TestRenameKeywords(TestCaseCommandTest):
@@ -76,6 +78,32 @@ class TestRenameKeywords(TestCaseCommandTest):
         original_kw, new_kw = myobject._check_gherkin("Given a new Keyword", "Given an old Keyword")
         assert new_kw == "a new Keyword"
         assert original_kw == "an old Keyword"
+
+
+class TestRenameSetupKeywords(unittest.TestCase):
+
+    def setUp(self):
+        self.ctrl = datafilereader.construct_project(datafilereader.COMPLEX_TEST)
+        self.suites = self.ctrl._suites()
+
+    def test_rename_suite_setup_kw(self):
+        kw_list = self.suites[0].get_keyword_names()
+        settings = self.suites[0].setting_table
+        suite_setup = settings.suite_setup.as_list()
+        assert kw_list == ['First KW', 'Second KW', 'Test Setup Keyword', 'Test Teardown Keyword',
+                           'Keyword Teardown Keyword', 'Suite Setup Keyword', 'Test Teardown in Setting']
+        assert suite_setup == ['Suite Setup', 'Run Keywords', 'Suite Setup Keyword', 'AND', 'First KW']
+        observer = NullObserver()
+        myobject = RenameKeywordOccurrences("First KW", "One Keyword", observer)
+        myobject.execute(self.suites[0])
+        kw_list = self.suites[0].get_keyword_names()
+        settings = self.suites[0].setting_table
+        suite_setup = settings.suite_setup.as_list()
+        # print(f"DEBUG: kw.list are: {kw_list} \n suite_setup={suite_setup}")
+        assert kw_list == ['One Keyword', 'Second KW', 'Test Setup Keyword', 'Test Teardown Keyword',
+                           'Keyword Teardown Keyword', 'Suite Setup Keyword', 'Test Teardown in Setting']
+        assert suite_setup == ['Suite Setup', 'Run Keywords', 'Suite Setup Keyword', 'AND', 'One Keyword']
+
 
 if __name__ == "__main__":
     unittest.main()
