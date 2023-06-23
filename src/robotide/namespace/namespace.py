@@ -208,8 +208,12 @@ class Namespace(object):
     def find_keyword(self, datafile, kw_name):
         if not kw_name:
             return None
-        kwds = self._retriever.get_keywords_cached(datafile,
-                                                   self._context_factory)
+        from ..controller.cellinfo import ContentType
+        uppercase_kws = [ContentType.END, ContentType.FOR, ContentType.IF, ContentType.ELSE,
+                         ContentType.ELSEIF, ContentType.WHILE, ContentType.TRY, ContentType.EXCEPT,
+                         ContentType.BREAK, ContentType.CONTINUE, 'IN', 'IN RANGE', 'IN ENUMERATE', 'IN ZIP']
+        casesensitive = (kw_name.upper() != kw_name and kw_name.upper() in uppercase_kws)
+        kwds = self._retriever.get_keywords_cached(datafile, self._context_factory, casesensitive)
         return kwds.get(kw_name)
 
     def is_library_keyword(self, datafile, kw_name):
@@ -517,13 +521,13 @@ class DatafileRetriever(object):
         _ = items
         self._get_vars_recursive(res, ctx)
 
-    def get_keywords_cached(self, datafile, context_factory):
+    def get_keywords_cached(self, datafile, context_factory, casesensitive=False):
         values = self.keyword_cache.get(datafile.source)
         if not values:
             words = self.get_keywords_from(
                 datafile, context_factory.ctx_for_datafile(datafile))
             words.extend(self.default_kws)
-            values = _Keywords(words)
+            values = _Keywords(words, casesensitive)
             self.keyword_cache.put(datafile.source, values)
         return values
 
@@ -574,8 +578,8 @@ class _Keywords(object):
 
     regexp = re.compile(r"\s*(given|when|then|and|but)\s*(.*)", re.IGNORECASE)
 
-    def __init__(self, keywords):
-        self.keywords = robotapi.NormalizedDict(ignore=['_'])
+    def __init__(self, keywords, casesensitive=False):
+        self.keywords = robotapi.NormalizedDict(ignore=['_'], caseless=not casesensitive)
         self.embedded_keywords = {}
         self._add_keywords(keywords)
 
