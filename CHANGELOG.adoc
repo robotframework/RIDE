@@ -10,6 +10,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 == Fixed
 
+- Fixed control commands (``FOR``, ``IF``, ``TRY``, etc) being colorized as valid keywords when typed not in all caps in Grid Editor
 - Fixed title of User Keyword in Grid Editor always showing 'Find Usages' instead of the keyword name
 - Fixed renaming keywords when they were arguments of ``Run Keywords`` in Setups and Teardowns
 

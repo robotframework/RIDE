@@ -14,11 +14,17 @@
 #  limitations under the License.
 
 import unittest
+
+import pytest
+
 from utest.resources import datafilereader
-from robotide.controller.ctrlcommands import ChangeCellValue, DeleteRows, AddKeyword,\
+from robotide.controller.ctrlcommands import ChangeCellValue, DeleteRows, AddKeyword, \
     Undo, PasteArea
-from robotide.controller.cellinfo import CellType, ContentType, CellInfo,\
+from robotide.controller.cellinfo import CellType, ContentType, CellInfo, \
     CellContent, CellPosition
+
+SET_VARIABLE = 'Set Variable'
+LIB_PY = 'libi.py'
 
 
 class TestCellInfoErrors(unittest.TestCase):
@@ -55,9 +61,9 @@ class TestCellInfoErrors(unittest.TestCase):
 
     def test_optional_has_no_error(self):
         assert not CellInfo(CellContent(ContentType.EMPTY, '', ''),
-                              CellPosition(CellType.OPTIONAL, None)).has_error()
+                            CellPosition(CellType.OPTIONAL, None)).has_error()
         assert not CellInfo(CellContent(ContentType.STRING, '', ''),
-                              CellPosition(CellType.OPTIONAL, None)).has_error()
+                            CellPosition(CellType.OPTIONAL, None)).has_error()
 
 
 class TestCellInfo(unittest.TestCase):
@@ -67,7 +73,10 @@ class TestCellInfo(unittest.TestCase):
         cls.project_ctrl = datafilereader.construct_project(datafilereader.ARGUMENTS_PATH)
         cls.testsuite = datafilereader.get_ctrl_by_name('Suite', cls.project_ctrl.datafiles)
         cls.test = cls.testsuite.tests[0]
-        keyword = lambda name: [kw for kw in cls.testsuite.keywords if kw.name == name][0]
+
+        def keyword(name):
+            return [kw for kw in cls.testsuite.keywords if kw.name == name][0]
+
         cls.keyword1 = keyword('KW1')
         cls.keyword2 = keyword('KW2')
         cls.keyword3 = keyword('KW3')
@@ -116,43 +125,33 @@ class TestCellInfo(unittest.TestCase):
     def test_celltype_is_unknown_if_dict_var_given(self):
         self.test.execute(ChangeCellValue(0, 0, self.keyword1.name))
         self.test.execute(ChangeCellValue(0, 1, '&{vars}'))
-        # forlooped_case = self.keyword1
-        # print(f"kw_name:{forlooped_case.name}")
-        # for k in forlooped_case.steps:
-        #    print(f"value: {k.as_list()}")
         self._verify_cell_info(0, 0, ContentType.USER_KEYWORD, CellType.KEYWORD)
         self._verify_cell_info(0, 1, ContentType.UNKNOWN_VARIABLE, CellType.UNKNOWN)
         self._verify_cell_info(0, 2, ContentType.EMPTY, CellType.UNKNOWN)
         self._verify_cell_info(0, 3, ContentType.EMPTY, CellType.UNKNOWN)
 
     def test_list_variables_item_in_keyword_args(self):
-        self.test.execute(PasteArea((0,0), [[self.keyword5.name, '@{LIST_VARIABLE}[0]']]))
+        self.test.execute(PasteArea((0, 0), [[self.keyword5.name, '@{LIST_VARIABLE}[0]']]))
         self._verify_cell_info(0, 0, ContentType.USER_KEYWORD, CellType.KEYWORD)
         self._verify_cell_info(0, 1, ContentType.VARIABLE, CellType.MANDATORY)
         self._verify_cell_info(0, 2, ContentType.EMPTY, CellType.MANDATORY)
 
     def test_dict_variables_item_in_keyword_args(self):
-        self.test.execute(PasteArea((0,0), [[self.keyword5.name, '&{DICT_VARIABLE}[foo]']]))
+        self.test.execute(PasteArea((0, 0), [[self.keyword5.name, '&{DICT_VARIABLE}[foo]']]))
         self._verify_cell_info(0, 0, ContentType.USER_KEYWORD, CellType.KEYWORD)
         self._verify_cell_info(0, 1, ContentType.VARIABLE, CellType.MANDATORY)
         self._verify_cell_info(0, 2, ContentType.EMPTY, CellType.MANDATORY)
 
     def test_variable_is_known_when_defining_it(self):
-        # print("DEBUG: Before Change . test_variable_is_known_when_defining_it:")
-        # for s in self.test.steps:
-        #     print(f"{s.as_list()}\n")
         self.test.execute(ChangeCellValue(0, 0, '${var}='))
-        self.test.execute(ChangeCellValue(0, 1, 'Set Variable'))
+        self.test.execute(ChangeCellValue(0, 1, SET_VARIABLE))
         self.test.execute(ChangeCellValue(0, 2, '${var1}'))
-        # print("\nDEBUG: test_variable_is_known_when_defining_it:")
-        # for s in self.test.steps:
-        #     print(f"{s.as_list()}\n")
         self._verify_cell_info(0, 0, ContentType.VARIABLE, CellType.ASSIGN)
         self._verify_cell_info(0, 2, ContentType.UNKNOWN_VARIABLE, CellType.OPTIONAL)
 
     def test_known_extended_variable_syntax(self):
         self.test.execute(ChangeCellValue(0, 0, '${var}='))
-        self.test.execute(ChangeCellValue(0, 1, 'Set Variable'))
+        self.test.execute(ChangeCellValue(0, 1, SET_VARIABLE))
         self.test.execute(ChangeCellValue(0, 2, 'something'))
         self.test.execute(ChangeCellValue(1, 0, 'log'))
         self.test.execute(ChangeCellValue(1, 2, '${var.lower()}'))
@@ -221,10 +220,7 @@ class TestCellInfo(unittest.TestCase):
     def test_variable_setting(self):
         self.test.execute(ChangeCellValue(0, 0, '${my cool var}='))
         self._verify_cell_info(0, 0, ContentType.VARIABLE, CellType.ASSIGN)
-        self.test.execute(ChangeCellValue(0, 1, 'Set Variable'))
-        # print("\nDEBUG: test_variable_setting:")
-        # for s in self.test.steps:
-        #     print(f"{s.as_list()}\n")
+        self.test.execute(ChangeCellValue(0, 1, SET_VARIABLE))
         self._verify_cell_info(0, 1, ContentType.LIBRARY_KEYWORD, CellType.KEYWORD)
         self._verify_string_change(0, 2, CellType.OPTIONAL)
 
@@ -233,18 +229,79 @@ class TestCellInfo(unittest.TestCase):
         self._verify_cell_info(0, 0, ContentType.USER_KEYWORD, CellType.KEYWORD)
         self._verify_cell_info(0, 1, ContentType.EMPTY, CellType.MUST_BE_EMPTY)
 
+    @pytest.mark.order(1)
+    def test_lower_case_for_is_not_keyword(self):
+        forlooped_case = self.keyword3
+        forlooped_case.execute(ChangeCellValue(0, 0, 'for'))
+        # DEBUG changed FOR to BlockKeywordLibrary
+        # for st in range(0, 6):
+        #     print(f"\n{forlooped_case.get_cell_info(0, st).cell_type} content: "
+        #           f"{forlooped_case.get_cell_info(0, st).content_type} ")
+        # print(f"kw_name:{forlooped_case.name}")
+        # for k in forlooped_case.steps:
+        #     print(f"value: {k.as_list()}")
+        # print(f"\nDEBUG: cellinfo test_for_loop_in_header: {forlooped_case.get_cell_info(0, 0).cell_type}")
+        self._verify_cell_info(0, 0, ContentType.STRING, CellType.UNKNOWN, forlooped_case)
+        self._verify_cell_info(0, 1, ContentType.UNKNOWN_VARIABLE, CellType.UNKNOWN, forlooped_case)
+        self._verify_cell_info(0, 2, ContentType.LIBRARY_KEYWORD, CellType.KEYWORD, forlooped_case)  # IN is like kw
+        self._verify_cell_info(0, 3, ContentType.STRING, CellType.OPTIONAL, forlooped_case)
+        self._verify_cell_info(0, 4, ContentType.STRING, CellType.OPTIONAL, forlooped_case)
+        self._verify_cell_info(0, 5, ContentType.EMPTY, CellType.OPTIONAL, forlooped_case)
+
+    def test_lower_case_log_is_keyword(self):
+        log_case = self.keyword3
+        log_case.execute(ChangeCellValue(0, 0, 'log'))
+        # DEBUG changed FOR to BlockKeywordLibrary
+        # for st in range(0, 6):
+        #     print(f"\n{log_case.get_cell_info(0, st).cell_type} content: "
+        #           f"{log_case.get_cell_info(0, st).content_type} ")
+        # print(f"kw_name:{log_case.name}")
+        # for k in log_case.steps:
+        #     print(f"value: {k.as_list()}")
+        # print(f"\nDEBUG: cellinfo test_for_loop_in_header: {log_case.get_cell_info(0, 0).cell_type}")
+        self._verify_cell_info(0, 0, ContentType.LIBRARY_KEYWORD, CellType.KEYWORD, log_case)
+        self._verify_cell_info(0, 1, ContentType.UNKNOWN_VARIABLE, CellType.MANDATORY, log_case)
+
+    def test_title_case_log_is_keyword(self):
+        log_case = self.keyword3
+        log_case.execute(ChangeCellValue(0, 0, 'Log'))
+        # DEBUG changed FOR to BlockKeywordLibrary
+        # for st in range(0, 6):
+        #     print(f"\n{log_case.get_cell_info(0, st).cell_type} content: "
+        #           f"{log_case.get_cell_info(0, st).content_type} ")
+        # print(f"kw_name:{log_case.name}")
+        # for k in log_case.steps:
+        #    print(f"value: {k.as_list()}")
+        # print(f"\nDEBUG: cellinfo test_for_loop_in_header: {log_case.get_cell_info(0, 0).cell_type}")
+        self._verify_cell_info(0, 0, ContentType.LIBRARY_KEYWORD, CellType.KEYWORD, log_case)
+        self._verify_cell_info(0, 1, ContentType.UNKNOWN_VARIABLE, CellType.MANDATORY, log_case)
+
+    def test_upper_case_log_is_keyword(self):
+        log_case = self.keyword3
+        log_case.execute(ChangeCellValue(0, 0, 'LOG'))
+        # DEBUG changed FOR to BlockKeywordLibrary
+        # for st in range(0, 6):
+        #     print(f"\n{log_case.get_cell_info(0, st).cell_type} content: "
+        #           f"{log_case.get_cell_info(0, st).content_type} ")
+        # print(f"kw_name:{log_case.name}")
+        # for k in log_case.steps:
+        #     print(f"value: {k.as_list()}")
+        # print(f"\nDEBUG: cellinfo test_for_loop_in_header: {log_case.get_cell_info(0, 0).cell_type}")
+        self._verify_cell_info(0, 0, ContentType.LIBRARY_KEYWORD, CellType.KEYWORD, log_case)
+        self._verify_cell_info(0, 1, ContentType.UNKNOWN_VARIABLE, CellType.MANDATORY, log_case)
+
     def test_for_loop_in_header(self):
         forlooped_case = self.keyword3
         # DEBUG changed FOR to BlockKeywordLibrary
-        #for st in range(0, 6):
+        # for st in range(0, 6):
         #    print(f"\n{forlooped_case.get_cell_info(0, st).cell_type} content: "
         #          f"{forlooped_case.get_cell_info(0, st).content_type} ")
-        #print(f"kw_name:{forlooped_case.name}")
-        #for k in forlooped_case.steps:
+        # print(f"kw_name:{forlooped_case.name}")
+        # for k in forlooped_case.steps:
         #    print(f"value: {k.as_list()}")
         # print(f"\nDEBUG: cellinfo test_for_loop_in_header: {forlooped_case.get_cell_info(0, 0).cell_type}")
         self._verify_cell_info(0, 0, ContentType.LIBRARY_KEYWORD, CellType.KEYWORD, forlooped_case)
-        self._verify_cell_info(0, 1, ContentType.VARIABLE, CellType.ASSIGN, forlooped_case)
+        self._verify_cell_info(0, 1, ContentType.UNKNOWN_VARIABLE, CellType.MANDATORY, forlooped_case)
         self._verify_cell_info(0, 2, ContentType.LIBRARY_KEYWORD, CellType.KEYWORD, forlooped_case)  # IN is like kw
         self._verify_cell_info(0, 3, ContentType.STRING, CellType.OPTIONAL, forlooped_case)
         self._verify_cell_info(0, 4, ContentType.STRING, CellType.OPTIONAL, forlooped_case)
@@ -273,7 +330,7 @@ class TestCellInfo(unittest.TestCase):
         # self._verify_cell_info(in_range_header_index, 0, ContentType.STRING, CellType.MANDATORY, forlooped_case)
         # Because FOR and END now have documentation
         self._verify_cell_info(in_range_header_index, 0, ContentType.LIBRARY_KEYWORD, CellType.KEYWORD, forlooped_case)
-        self._verify_cell_info(in_range_header_index, 1, ContentType.VARIABLE, CellType.ASSIGN, forlooped_case)
+        self._verify_cell_info(in_range_header_index, 1, ContentType.UNKNOWN_VARIABLE, CellType.MANDATORY, forlooped_case)
         self._verify_cell_info(in_range_header_index, 2, ContentType.LIBRARY_KEYWORD, CellType.KEYWORD, forlooped_case)
         self._verify_cell_info(in_range_header_index, 3, ContentType.STRING, CellType.OPTIONAL, forlooped_case)
         self._verify_cell_info(in_range_header_index, 4, ContentType.EMPTY, CellType.OPTIONAL, forlooped_case)
@@ -292,24 +349,24 @@ class TestCellInfo(unittest.TestCase):
         self._verify_cell_info(0, 1, ContentType.STRING, CellType.UNKNOWN)
 
     def test_library_import_with_name_and_arguments(self):
-        self.test.execute(ChangeCellValue(0,0, 'alias.Onething'))
+        self.test.execute(ChangeCellValue(0, 0, 'alias.Onething'))
         self._verify_cell_info(0, 0, ContentType.STRING, CellType.UNKNOWN)
-        self.testsuite.imports.add_library('libi.py', 'a | b', 'alias')
+        self.testsuite.imports.add_library(LIB_PY, 'a | b', 'alias')
         self._verify_cell_info(0, 0, ContentType.LIBRARY_KEYWORD, CellType.KEYWORD)
 
     def test_library_import_with_name_and_one_argument(self):
-        self.test.execute(ChangeCellValue(0,0, 'alias2.Onething'))
+        self.test.execute(ChangeCellValue(0, 0, 'alias2.Onething'))
         print("DEBUG: test_library_import_with_name_and_one_argument:")
         for s in self.test.steps:
             print(f"{s.as_list()}")
         self._verify_cell_info(0, 0, ContentType.STRING, CellType.UNKNOWN)
-        self.testsuite.imports.add_library('libi.py', '1', 'alias2')
+        self.testsuite.imports.add_library(LIB_PY, '1', 'alias2')
         self._verify_cell_info(0, 0, ContentType.LIBRARY_KEYWORD, CellType.KEYWORD)
 
     def test_library_import_with_name(self):
-        self.test.execute(ChangeCellValue(0,0, 'alias3.Onething'))
+        self.test.execute(ChangeCellValue(0, 0, 'alias3.Onething'))
         self._verify_cell_info(0, 0, ContentType.STRING, CellType.UNKNOWN)
-        self.testsuite.imports.add_library('libi.py', [], 'alias3')
+        self.testsuite.imports.add_library(LIB_PY, [], 'alias3')
         self._verify_cell_info(0, 0, ContentType.LIBRARY_KEYWORD, CellType.KEYWORD)
 
     def test_library_import_modify(self):
@@ -344,7 +401,7 @@ class TestCellInfo(unittest.TestCase):
         self._verify_cell_info(row, col, ContentType.STRING, celltype)
 
     def _verify_cell_info(self, row, col, contenttype, celltype, macro=None):
-        if macro == None:
+        if macro is None:
             macro = self.test
         cell_info = macro.get_cell_info(row, col)
         print(f"DEBUG:test_cellinfo type cell_type{cell_info.cell_type} content_type{cell_info.content_type}")

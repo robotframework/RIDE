@@ -18,14 +18,14 @@ try:
 except ImportError:
     from collections.abc import MutableMapping  # Python 3.10
 
-from .platform import IRONPYTHON, PY_VERSION, PY3
+from .platform import PY3
 from .robottypes import is_dict_like, is_unicode
 
 
 def normalize(string, ignore=(), caseless=True, spaceless=True):
     """Normalizes given string according to given spec.
 
-    By default string is turned to lower case and all whitespace is removed.
+    By default, string is turned to lower case and all whitespace is removed.
     Additional characters can be removed by giving them in ``ignore`` list.
     """
     empty = u'' if is_unicode(string) else b''
@@ -45,13 +45,12 @@ def normalize(string, ignore=(), caseless=True, spaceless=True):
     return string
 
 
-# http://ironpython.codeplex.com/workitem/33133
-if IRONPYTHON and PY_VERSION < (2, 7, 5):
-    def lower(string):
-        return ('A' + string).lower()[1:]
-else:
-    def lower(string):
-        return string.lower()
+def lower(string):
+    return string.lower()
+
+
+def _normalize(name, ignore=(), caseless=True, spaceless=True):
+    return normalize(name, ignore, caseless, spaceless)
 
 
 class NormalizedDict(MutableMapping):
@@ -68,7 +67,9 @@ class NormalizedDict(MutableMapping):
         """
         self._data = {}
         self._keys = {}
-        self._normalize = lambda s: normalize(s, ignore, caseless, spaceless)
+        self._ignore = ignore
+        self._caseless = caseless
+        self._spaceless = spaceless
         if initial:
             self._add_initial(initial)
 
@@ -78,15 +79,15 @@ class NormalizedDict(MutableMapping):
             self[key] = value
 
     def __getitem__(self, key):
-        return self._data[self._normalize(key)]
+        return self._data[_normalize(key, ignore=self._ignore, caseless=self._caseless, spaceless=self._spaceless)]
 
     def __setitem__(self, key, value):
-        norm_key = self._normalize(key)
+        norm_key = _normalize(key, ignore=self._ignore, caseless=self._caseless, spaceless=self._spaceless)
         self._data[norm_key] = value
         self._keys.setdefault(norm_key, key)
 
     def __delitem__(self, key):
-        norm_key = self._normalize(key)
+        norm_key = _normalize(key, ignore=self._ignore, caseless=self._caseless, spaceless=self._spaceless)
         del self._data[norm_key]
         del self._keys[norm_key]
 
@@ -103,7 +104,7 @@ class NormalizedDict(MutableMapping):
         if not is_dict_like(other):
             return False
         if not isinstance(other, NormalizedDict):
-            other = NormalizedDict(other)
+            other = NormalizedDict(other, caseless=self._caseless)
         return self._data == other._data
 
     def __ne__(self, other):
@@ -113,13 +114,13 @@ class NormalizedDict(MutableMapping):
         copy = NormalizedDict()
         copy._data = self._data.copy()
         copy._keys = self._keys.copy()
-        copy._normalize = self._normalize
+        copy._normalize = _normalize
         return copy
 
     # Speed-ups. Following methods are faster than default implementations.
 
     def __contains__(self, key):
-        return self._normalize(key) in self._data
+        return _normalize(key, ignore=self._ignore, caseless=self._caseless, spaceless=self._spaceless) in self._data
 
     def clear(self):
         self._data.clear()
