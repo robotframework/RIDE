@@ -133,7 +133,7 @@ class _BaseSuiteTreeTest(unittest.TestCase):
         return suite
 
     def _expand_all(self):
-        for node in self._tree._datafile_nodes[1:]:
+        for node in self._tree.datafile_nodes[1:]:
             self._tree._expand_and_render_children(node)
 
     def _get_selected_label(self):
@@ -152,14 +152,14 @@ class _BaseSuiteTreeTest(unittest.TestCase):
 class TestPopulating(_BaseSuiteTreeTest):
 
     def test_suite_count_and_names(self):
-        assert len(self._tree._datafile_nodes) == 5
+        assert len(self._tree.datafile_nodes) == 5
         for idx, name in enumerate(['Top Suite'] +
                                    ['Sub Suite %d' % i for i in range(3)]):
             assert (
-                self._tree.GetItemText(self._tree._datafile_nodes[idx]) == name)
+                    self._tree.GetItemText(self._tree.datafile_nodes[idx]) == name)
 
     def test_file_suite_has_correct_subnodes(self):
-        file_suite = self._tree._datafile_nodes[1]
+        file_suite = self._tree.datafile_nodes[1]
         self._assert_children(file_suite, ['Sub Suite 0 Fake Test 0'])
 
     def _assert_children(self, parent, children):
@@ -228,7 +228,7 @@ class TestNodeRemoval(_BaseSuiteTreeTest):
 class TestRefreshingDataNode(_BaseSuiteTreeTest):
 
     def test_refreshing_suite(self):
-        orig_node_lenght = len(self._tree._datafile_nodes)
+        orig_node_lenght = len(self._tree.datafile_nodes)
         new_name = 'Modified name'
         suite = self._model.data.children[0]
         suite.tests[0].rename(new_name)
@@ -237,10 +237,10 @@ class TestRefreshingDataNode(_BaseSuiteTreeTest):
         snode = self._get_node(suite.display_name)
         tnode = self._tree.GetFirstChild(snode)[0]
         assert self._tree.GetItemText(tnode) == new_name
-        assert orig_node_lenght == len(self._tree._datafile_nodes)
+        assert orig_node_lenght == len(self._tree.datafile_nodes)
 
     def test_refreshing_resource(self):
-        orig_node_lenght = len(self._tree._datafile_nodes)
+        orig_node_lenght = len(self._tree.datafile_nodes)
         new_name = 'Ninjaed Uk Name'
         resource = self._model.resources[0]
         resource.keywords[0].rename(new_name)
@@ -249,7 +249,7 @@ class TestRefreshingDataNode(_BaseSuiteTreeTest):
         rnode = self._get_node(resource.display_name)
         knode = self._tree.GetFirstChild(rnode)[0]
         assert self._tree.GetItemText(knode) == new_name
-        assert orig_node_lenght == len(self._tree._datafile_nodes)
+        assert orig_node_lenght == len(self._tree.datafile_nodes)
 
 
 if __name__ == '__main__':

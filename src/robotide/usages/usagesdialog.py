@@ -95,10 +95,10 @@ class _UsagesListModel(ListModel):
     def _create_image_list(self):
         images = ImageList(16, 16)
         provider = ImageProvider()
-        images.add(provider.TESTCASEIMG)
-        images.add(provider.KEYWORDIMG)
-        images.add(provider.DATAFILEIMG)
-        images.add(provider.DATADIRIMG)
+        images.add_image(provider.TESTCASEIMG)
+        images.add_image(provider.KEYWORDIMG)
+        images.add_image(provider.DATAFILEIMG)
+        images.add_image(provider.DATADIRIMG)
         self._images = images
 
     @property

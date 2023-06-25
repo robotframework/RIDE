@@ -29,6 +29,8 @@ from ..usages.UsageRunner import ResourceFileUsages
 from ..widgets import (
     ButtonWithHandler, Label, HeaderLabel, HorizontalSizer, HtmlWindow)
 
+LIGHT_GREY = 'light grey'
+
 
 class WelcomePage(HtmlWindow):
     undo = cut = copy = paste = delete = comment = uncomment = save \
@@ -40,14 +42,14 @@ class WelcomePage(HtmlWindow):
     def close(self):
         self.Show(False)
 
-    def destroy(self):
+    def w_destroy(self):
         self.close()
         self.Destroy()
 
 
 class EditorPanel(wx.Panel):
     """Base class for all editor panels"""
-    # TODO: Move outside default editor package, document
+    # DEBUG: Move outside default editor package, document
     name = doc = ''
     title = None
     undo = cut = copy = paste = delete = comment = uncomment = save \
@@ -58,9 +60,9 @@ class EditorPanel(wx.Panel):
         from ..preferences import RideSettings
         _settings = RideSettings()
         self.general_settings = _settings['General']
-        self.color_background = self.general_settings.get('background', 'light grey')
+        self.color_background = self.general_settings.get('background', LIGHT_GREY)
         self.color_foreground = self.general_settings.get('foreground', 'black')
-        self.color_secondary_background = self.general_settings.get('secondary background', 'light grey')
+        self.color_secondary_background = self.general_settings.get('secondary background', LIGHT_GREY)
         self.color_secondary_foreground = self.general_settings.get('secondary foreground', 'black')
         self.color_background_help = self.general_settings.get('background help', (240, 242, 80))
         self.color_foreground_text = self.general_settings.get('foreground text', (7, 0, 70))
@@ -73,12 +75,14 @@ class EditorPanel(wx.Panel):
         self._tree = tree
 
     def tree_item_selected(self, item):
+        """ Maybe this needs to be published """
         pass
 
 
 class _RobotTableEditor(EditorPanel):
     name = 'table'
     doc = 'table editor'
+    kweditor = None
     _settings_open_id = 'robot table settings open'
 
     def __init__(self, plugin, parent, controller, tree):
@@ -122,7 +126,7 @@ class _RobotTableEditor(EditorPanel):
     def _mouse_outside_tooltip(self):
         mx, my = wx.GetMousePosition()
         tx, ty = self._last_shown_tooltip.screen_position
-        dx, dy = self._last_shown_tooltip.size
+        dx, dy = self._last_shown_tooltip.pw_size
         return (mx < tx or mx > tx+dx) or (my < ty or my > ty+dy)
 
     def tooltip_allowed(self, tooltip):
@@ -141,7 +145,7 @@ class _RobotTableEditor(EditorPanel):
         self.Unbind(wx.EVT_MOTION)
         self.Show(False)
 
-    def destroy(self):
+    def w_destroy(self):
         self.close()
         self.DestroyLater()
 
@@ -193,9 +197,8 @@ class _RobotTableEditor(EditorPanel):
     def _get_settings_editor(self, setting):
         """Return the settings editor for the given setting object"""
         for child in self.GetChildren():
-            if isinstance(child, SettingEditor):
-                if child._item == setting:
-                    return child
+            if isinstance(child, SettingEditor) and child._item == setting:
+                return child
         return None
 
     def highlight(self, text, expand=True):
@@ -213,9 +216,9 @@ class Settings(wx.CollapsiblePane):
         from ..preferences import RideSettings
         _settings = RideSettings()
         self.general_settings = _settings['General']
-        self.color_background = self.general_settings.get('background', 'light grey')
+        self.color_background = self.general_settings.get('background', LIGHT_GREY)
         self.color_foreground = self.general_settings.get('foreground', 'black')
-        self.color_secondary_background = self.general_settings.get('secondary background', 'light grey')
+        self.color_secondary_background = self.general_settings.get('secondary background', LIGHT_GREY)
         self.color_secondary_foreground = self.general_settings.get('secondary foreground', 'black')
         self.color_background_help = self.general_settings.get('background help', (240, 242, 80))
         self.color_foreground_text = self.general_settings.get('foreground text', (7, 0, 70))
@@ -371,8 +374,9 @@ class FindUsagesHeader(HorizontalSizer):
         HorizontalSizer.__init__(self)
         self._header = HeaderLabel(parent, header)
         self.add_expanding(self._header)
-        self.add(ButtonWithHandler(parent, 'Find Usages', usages_callback, color_secondary_foreground=color_foreground,
-                                   color_secondary_background=color_background))
+        self.add_sizer(ButtonWithHandler(parent, 'Find Usages', usages_callback,
+                                         color_secondary_foreground=color_foreground,
+                                         color_secondary_background=color_background))
 
     def SetLabel(self, label):
         self._header.SetLabel(label)

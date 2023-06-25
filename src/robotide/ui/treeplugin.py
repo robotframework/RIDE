@@ -274,7 +274,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
             event.Skip()
 
     def OnDoubleClick(self, event):
-        item, pos = self.HitTest(self.ScreenToClient(wx.GetMousePosition()))
+        item, _ = self.HitTest(self.ScreenToClient(wx.GetMousePosition()))
         if item:
             handler = self._controller.get_handler(item)
             handler.double_clicked()
@@ -291,11 +291,11 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
         self._dragging = False
         treemixin.DragAndDrop.OnEndDrag(self, event)
 
-    def register_context_menu_hook(self, callable):
-        self._popup_creator.add_hook(callable)
+    def register_context_menu_hook(self, callable_m):
+        self._popup_creator.add_hook(callable_m)
 
-    def unregister_context_menu_hook(self, callable):
-        self._popup_creator.remove_hook(callable)
+    def unregister_context_menu_hook(self, callable_m):
+        self._popup_creator.remove_hook(callable_m)
 
     def _subscribe_to_messages(self):
         subscriptions = [
@@ -337,7 +337,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
         self._remove_datafile_node(tree)
 
     def _set_item_excluded(self, node):
-        self.SetItemTextColour(node, wx.TheColourDatabase.Find("GRAY"))
+        self.SetItemTextColour(node, wx.ColourDatabase.Find("GRAY"))
         self.SetItemItalic(node, True)
         self.SetItemText(node, "%s (excluded)" % self.GetItemText(node))
 
@@ -451,7 +451,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
         self.DeleteAllItems()
         self._root = self.AddRoot('')
         self._resource_root = self._create_resource_root()
-        self._datafile_nodes = []
+        self.datafile_nodes = []
         self._resources = []
         self._controller.clear_history()
 
@@ -506,9 +506,9 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
         # print(f"DEBUG: Called Tree._refresh_view {self.GetParent().GetClassName()}")
         if self._resource_root:
             self.Expand(self._resource_root)
-        if self._datafile_nodes:
-            self._expand_and_render_children(self._datafile_nodes[0])
-            wx.CallAfter(self.SelectItem, self._datafile_nodes[0])
+        if self.datafile_nodes:
+            self._expand_and_render_children(self.datafile_nodes[0])
+            wx.CallAfter(self.SelectItem, self.datafile_nodes[0])
         self.Update()
         # print(f"DEBUG: Called Tree._refresh_view parent={self.GetParent().GetClassName()} self={self}")
 
@@ -518,7 +518,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
             return None
         if controller.dirty:
             self._controller.mark_node_dirty(node)
-        self._datafile_nodes.append(node)
+        self.datafile_nodes.append(node)
         self.SetItemHasChildren(node, True)
 
         for child in controller.children:
@@ -673,7 +673,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
 
     def _datafile_removed(self, message):
         dfnode = self._get_datafile_node(message.datafile.data)
-        self._datafile_nodes.remove(dfnode)
+        self.datafile_nodes.remove(dfnode)
         self.DeleteChildren(dfnode)
         self.Delete(dfnode)
 
@@ -708,7 +708,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
         self.unset_dirty()
 
     def unset_dirty(self):
-        for node in self._datafile_nodes:
+        for node in self.datafile_nodes:
             text = self.GetItemText(node)
             handler = self._controller.get_handler(node)
             if text.startswith('*') and not handler.controller.dirty:
@@ -741,7 +741,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
             self.SelectItem(node)
 
     def _get_datafile_node(self, datafile):
-        for node in self._datafile_nodes:
+        for node in self.datafile_nodes:
             if self._controller.get_handler(node).item == datafile:
                 return node
         return None
@@ -772,7 +772,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
         node = self.GetSelection()
         if not node or node in (self._resource_root, self._root):
             return None
-        while node not in self._datafile_nodes:
+        while node not in self.datafile_nodes:
             node = self.GetItemParent(node)
         return node
 
@@ -871,7 +871,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
         return self.GetItemText(item)
 
     def _get_data_controller_node(self, controller):
-        for node in self._datafile_nodes:
+        for node in self.datafile_nodes:
             if self.GetItemData(node).controller == controller:
                 return node
         return None
@@ -888,9 +888,9 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
 
     def _remove_datafile_node(self, node):
         for child in self.GetItemChildren(node):
-            if child in self._datafile_nodes:
+            if child in self.datafile_nodes:
                 self._remove_datafile_node(child)
-        self._datafile_nodes.remove(node)
+        self.datafile_nodes.remove(node)
         self.Delete(node)
 
     def _handle_pending_selection(self, to_be_selected, parent_node):
@@ -1048,7 +1048,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
         if not self._right_click:
             self._right_click = True
         handler = None
-        item, pos = self.HitTest(self.ScreenToClient(wx.GetMousePosition()), wx.TREE_HITTEST_ONITEMLABEL)
+        item, _ = self.HitTest(self.ScreenToClient(wx.GetMousePosition()), wx.TREE_HITTEST_ONITEMLABEL)
         if item:
             # print(f"DEBUG: tree mouse RightClick pos={pos}")
             handler = self.GetItemData(item)
@@ -1124,22 +1124,22 @@ class TreeLabelEditListener(object):
 
     def __init__(self, tree, action_registerer):
         self._tree = tree
-        tree.Bind(wx.EVT_TREE_BEGIN_LABEL_EDIT, self.OnBeginLabelEdit)
-        tree.Bind(wx.EVT_TREE_END_LABEL_EDIT, self.OnLabelEdited)
-        tree.Bind(wx.EVT_LEFT_DOWN, self.OnLeftDown)
+        tree.Bind(wx.EVT_TREE_BEGIN_LABEL_EDIT, self.on_begin_label_edit)
+        tree.Bind(wx.EVT_TREE_END_LABEL_EDIT, self.on_label_edited)
+        tree.Bind(wx.EVT_LEFT_DOWN, self.on_left_down)
         if IS_WINDOWS:
             # Delete key does not work in windows without registration
             delete_key_action = ActionInfo(
-                None, None, action=self.OnDelete, shortcut='Del')
+                None, None, action=self.on_delete, shortcut='Del')
             action_registerer.register_shortcut(delete_key_action)
         self._editing_label = False
         self._on_label_edit_called = False
 
-    def OnBeginLabelEdit(self, event):
+    def on_begin_label_edit(self, event):
         # See http://code.google.com/p/robotframework-ride/issues/detail?id=756
         self._editing_label = True
         if not self._on_label_edit_called:
-            self.OnLabelEdit()
+            self.on_label_edit()
             event.Veto()
             # On windows CustomTreeCtrl will create Editor component
             # And we want this to be done by the handler -- as it knows if
@@ -1147,7 +1147,7 @@ class TreeLabelEditListener(object):
             # the same way as when pressing F2  so in other words there is
             # a bug if we don't Veto this event
 
-    def OnLabelEdit(self, event=None):
+    def on_label_edit(self, event=None):
         _ = event
         if not self._on_label_edit_called:
             self._on_label_edit_called = True
@@ -1156,7 +1156,7 @@ class TreeLabelEditListener(object):
                 self._on_label_edit_called = False
                 self._editing_label = False
 
-    def OnLabelEdited(self, event):
+    def on_label_edited(self, event):
         self._editing_label = False
         self._on_label_edit_called = False
         self._tree._controller.get_handler(event.GetItem()).end_label_edit(event)
@@ -1175,14 +1175,14 @@ class TreeLabelEditListener(object):
         if control and wx.Window.FindFocus():
             control.StopEditing()
 
-    def OnDelete(self, event):
+    def on_delete(self, event):
         _ = event
         editor = self._tree.GetEditControl()
         if editor and wx.Window.FindFocus() == editor:
             start, end = editor.GetSelection()
             editor.Remove(start, max(end, start + 1))
 
-    def OnLeftDown(self, event):
+    def on_left_down(self, event):
         # See http://code.google.com/p/robotframework-ride/issues/detail?id=756
         if IS_WINDOWS and self._editing_label:
             # This method works only on Windows, luckily the issue 756 exists

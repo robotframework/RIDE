@@ -22,7 +22,7 @@ class _BoxSizer(wx.BoxSizer):
         wx.BoxSizer.__init__(self, orient=self.orientation)
         # print(f"DEBUG: _BoxSizer __init__ after super init, orientation is {self.orientation}")
 
-    def add(self, component, proportion=0, flag=0):
+    def add_sizer(self, component, proportion=0, flag=0):
         # self.Add(component, proportion=proportion, flag=flag)
         self.Add(component, wx.SizerFlags(proportion).Align(flag))
 
