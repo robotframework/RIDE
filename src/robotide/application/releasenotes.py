@@ -156,6 +156,8 @@ RELEASE_NOTES = f"""
 <li>Newlines in Grid Editor can be made visible with the `filter newlines` set to False.</li>
 <li>On Text Editor when Saving the selection of tests in Test Suites (Tree) is cleared.</li>
 <li>Test Suite with <em>*** Comments ***</em> can be edited but newlines are introduced.</li>
+<li>When editing resource files in Text Editor, item may disapper from Project Explorer and content may be lost if clicking Apply.
+ Better to use the Save action, so changed content is not lost.</li>
 <li>Some argument types detection (and colorization) is not correct in Grid Editor.</li>
 <li>RIDE <strong>DOES NOT KEEP</strong> Test Suites formatting or structure, causing differences in files when used
  on other IDE or Editors.</li>
@@ -164,6 +166,7 @@ RELEASE_NOTES = f"""
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
+<li>Control commands (``FOR``, ``IF``, ``TRY``, etc) will only be colorized as valid keywords when typed in all caps in Grid Editor</li>
 <li>Newlines in Grid Editor can be made visible with the `filter newlines` set to False, by editing `settings.cfg`</li>
 <li>Improve auto-suggestions of keywords in Grid Editor by allowing to close suggestions list with keys ARROW_LEFT or ARROW_RIGHT</li>
 <li>Improve Text Editor auto-suggestions by using: selected text, text at left or at right of cursor</li>
@@ -217,6 +220,6 @@ python -m robotide.__init__
 <pre class="literal-block">
 python -m robotide.postinstall -install
 </pre>
-<p>RIDE {VERSION} was released on 10/Jun/2023.</p>
+<p>RIDE {VERSION} was released on 25/Jun/2023.</p>
 </div>
 """
