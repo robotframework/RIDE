@@ -19,8 +19,9 @@ from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
 
 from ..context import ctrl_or_cmd, bind_keys_to_evt_menu, IS_WINDOWS
 from ..controller import ctrlcommands
-# import MoveUp, MoveDown, DeleteItem
 from ..widgets import PopupMenu, PopupMenuItems, ButtonWithHandler, Font
+
+LIGHT_GREY = 'light grey'
 
 
 class ListEditorBase(wx.Panel):
@@ -32,9 +33,9 @@ class ListEditorBase(wx.Panel):
         from ..preferences import RideSettings
         _settings = RideSettings()
         self.general_settings = _settings['General']
-        self.color_background = self.general_settings.get('background', 'light grey')
+        self.color_background = self.general_settings.get('background', LIGHT_GREY)
         self.color_foreground = self.general_settings.get('foreground', 'black')
-        self.color_secondary_background = self.general_settings.get('secondary background', 'light grey')
+        self.color_secondary_background = self.general_settings.get('secondary background', LIGHT_GREY)
         self.color_secondary_foreground = self.general_settings.get('secondary foreground', 'black')
         self.color_background_help = self.general_settings.get('background help', (240, 242, 80))
         self.color_foreground_text = self.general_settings.get('foreground text', (7, 0, 70))
@@ -53,7 +54,7 @@ class ListEditorBase(wx.Panel):
         self._list = self._create_list(columns, data)
         if wx.VERSION >= (4, 1, 0):
             # DEBUG: This is supposed to work on Windows, but it is not
-            result = self._list.SetHeaderAttr(wx.ItemAttr(colText=self.color_foreground,
+            self._list.SetHeaderAttr(wx.ItemAttr(colText=self.color_foreground,
                                                  colBack=self.color_background, font=self._list.GetFont()))
             # print(f"DEBUG: Change colors of table headers {result}")
         sizer.Add(self._list, 1, wx.EXPAND)
@@ -89,15 +90,18 @@ class ListEditorBase(wx.Panel):
         self._selection = event.GetIndex()
 
     def OnItemDeselected(self, event):
+        _ = event
         self._selection = wx.NOT_FOUND
 
     def OnEdit(self, event):
+        """ Just overriding """
         pass
 
     def OnRightClick(self, event):
         PopupMenu(self, PopupMenuItems(self, self._menu))
 
     def OnLeftClick(self, event):
+        """ Just overriding """
         pass
 
     def _bind_keys(self):
@@ -154,7 +158,7 @@ class ListEditorBase(wx.Panel):
         self._list.select_and_ensure_visibility(self._selection)
 
     def select(self, text):
-        self._list.select(text)
+        self._list.txt_select(text)
 
     def has_link_target(self, controller):
         return False
@@ -170,7 +174,7 @@ class ListEditor(ListEditorBase):
 class AutoWidthColumnList(wx.ListCtrl, ListCtrlAutoWidthMixin):
 
     def __init__(self, parent, columns, color_foreground='black',
-                 color_background='light grey', data=None):
+                 color_background=LIGHT_GREY, data=None):
         wx.ListCtrl.__init__(self, parent,
                              style=wx.LC_REPORT | wx.NO_BORDER | wx.LC_SINGLE_SEL | wx.LC_HRULES)
         ListCtrlAutoWidthMixin.__init__(self)
@@ -187,8 +191,6 @@ class AutoWidthColumnList(wx.ListCtrl, ListCtrlAutoWidthMixin):
     def populate(self, columns, data):
         for i, name in enumerate(columns):
             self.InsertColumn(i, name)
-            # self.SetForegroundColour(Colour(self.color_foreground))
-            # self.SetBackgroundColour(Colour(self.color_background))
         self.insert_data(data)
 
     def insert_data(self, data):
@@ -236,13 +238,14 @@ class AutoWidthColumnList(wx.ListCtrl, ListCtrlAutoWidthMixin):
             list_item.SetTextColour(Colour(7, 0, 70))
         self.SetItem(list_item)
 
-    def _underlined_font(self):
+    @staticmethod
+    def _underlined_font():
         font = Font().underlined
         if IS_WINDOWS:
             font.SetPointSize(8)
         return font
 
-    def select(self, text):
+    def txt_select(self, text):
         index = self.FindItem(0, text)
         self.select_and_ensure_visibility(index)
 

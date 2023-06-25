@@ -14,8 +14,6 @@
 #  limitations under the License.
 
 from .lib.robot.parsing import populators
-populators.PROCESS_CURDIR = False
-
 from .lib.robot.errors import DataError, VariableError, Information
 from .lib.robot.model import TagPatterns
 from .lib.robot.output import LOGGER as ROBOT_LOGGER
@@ -27,8 +25,8 @@ from .lib.robot.parsing.model import (
     Variable, Step, ForLoop, VariableTable, KeywordTable, TestCaseTable,
     TestCaseFileSettingTable)
 from .lib.robot.parsing.populators import FromFilePopulator
-from .lib.robot.parsing.settings import (Library, Resource, Variables, Comment, _Import, Template, Fixture,
-                                         Documentation, Timeout, Tags, Return)
+from .lib.robot.parsing.settings import (Library, Resource, Variables, Comment, ImportSetting, Template, Fixture,
+                                         Documentation, Timeout, Tags, Return, Setting)
 from .lib.robot.parsing.tablepopulators import UserKeywordPopulator, TestCasePopulator
 from .lib.robot.parsing.robotreader import RobotReader
 from .lib.robot.running import TestLibrary, EXECUTION_CONTEXTS
@@ -41,6 +39,8 @@ from .lib.robot.variables import is_scalar_var, is_list_var, is_var, is_dict_var
 from .lib.robot.variables.filesetter import VariableFileSetter
 from .lib.robot.variables.tablesetter import VariableTableReader
 from .lib.robot.version import ROBOT_VERSION, ALIAS_MARKER
+
+populators.PROCESS_CURDIR = False
 
 # Monkey patch LEVELS
 LOG_LEVELS = {

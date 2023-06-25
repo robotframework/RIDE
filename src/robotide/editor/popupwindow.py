@@ -72,7 +72,7 @@ class _PopupWindowBase(wx.Frame):
         return self.ScreenPosition
 
     @property
-    def size(self):
+    def pw_size(self):
         return self.Size
 
     def set_content(self, content, title=None):

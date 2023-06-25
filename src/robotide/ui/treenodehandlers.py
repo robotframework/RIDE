@@ -173,7 +173,7 @@ class _ActionHandler:
 class _CanBeRenamed(object):
 
     def OnRename(self, event):
-        self._tree.label_editor.OnLabelEdit()
+        self._tree.label_editor.on_label_edit()
 
     def begin_label_edit(self):
         def label_edit():

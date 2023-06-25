@@ -16,29 +16,27 @@
 
 from .. import robotapi
 from .. import controller
-# from ..controller import Project
 from ..controller.dataloader import TestDataDirectoryWithExcludes
 from ..controller import filecontrollers
-# import ExcludedDirectoryController
 from ..controller.settingcontrollers import VariableController
 from .editors import (InitFileEditor, TestCaseFileEditor, WelcomePage, ResourceFileEditor)
 from .macroeditors import TestCaseEditor, UserKeywordEditor
 
 
-def VariableEditorChooser(plugin, parent, _controller, tree):
+def variable_editor_chooser(plugin, parent, _controller, tree):
     _controller = _controller.datafile_controller
     editor_class = plugin.get_editor(_controller.data.__class__)
     return editor_class(plugin, parent, _controller, tree)
 
 
 class EditorCreator(object):
-    # TODO: Should not use robot.model classes here
+    # DEBUG: Should not use robot.model classes here
     _EDITORS = ((robotapi.TestDataDirectory, InitFileEditor),
                 (robotapi.ResourceFile, ResourceFileEditor),
                 (robotapi.TestCase, TestCaseEditor),
                 (robotapi.TestCaseFile, TestCaseFileEditor),
                 (robotapi.UserKeyword, UserKeywordEditor),
-                (robotapi.Variable, VariableEditorChooser),
+                (robotapi.Variable, variable_editor_chooser),
                 (TestDataDirectoryWithExcludes, InitFileEditor))
 
     def __init__(self, editor_registerer):
@@ -57,9 +55,9 @@ class EditorCreator(object):
         _controller = plugin.get_selected_item()
         if self._invalid(_controller):
             # http://code.google.com/p/robotframework-ride/issues/detail?id=1092
-            if self._editor and tree and (not tree._datafile_nodes or
+            if self._editor and tree and (not tree.datafile_nodes or
                                           self._only_resource_files(tree)):
-                self._editor.destroy()
+                self._editor.w_destroy()
                 self._editor = None
                 return None
             if self._editor:
@@ -83,11 +81,11 @@ class EditorCreator(object):
     def _create_new_editor(self, _controller, editor_panel, plugin, tree):
         editor_class = plugin.get_editor(_controller.data.__class__)
         if self._editor:
-            self._editor.destroy()
+            self._editor.w_destroy()
         editor_panel.Show(False)
         return editor_class(plugin, editor_panel, _controller, tree)
 
     @staticmethod
     def _only_resource_files(tree):
         return all([tree.node_is_resource_file(node)
-                    for node in tree._datafile_nodes])
+                    for node in tree.datafile_nodes])

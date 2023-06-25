@@ -64,7 +64,8 @@ class Setting(object):
     def is_set(self):
         return bool(self.value)
 
-    def is_for_loop(self):
+    @staticmethod
+    def is_for_loop():
         return False
 
     def report_invalid_syntax(self, message, level='ERROR'):
@@ -157,7 +158,8 @@ class Fixture(Setting):
     def keyword(self):
         return self.name or ''
 
-    def is_comment(self):
+    @staticmethod
+    def is_comment():
         return False
 
     def _set_initial_value(self):
@@ -197,7 +199,7 @@ class Timeout(Setting):
             self.value = value[0] if value else ''
             value = value[1:]
         self.message = self._concat_string_with_value(self.message, value)
-        # TODO: Remove custom timeout message support in RF 3.2.
+        # DEBUG: Remove custom timeout message support in RF 3.2.
         if value and self.parent:
             self.parent.report_invalid_syntax(
                 'Using custom timeout messages is deprecated since Robot '
@@ -254,6 +256,7 @@ class Metadata(Setting):
         self._set_comment(comment)
 
     def reset(self):
+        """ Just overriding """
         pass
 
     def is_set(self):
@@ -263,7 +266,7 @@ class Metadata(Setting):
         return [self.setting_name, self.name, self.value]
 
 
-class _Import(Setting):
+class ImportSetting(Setting):
 
     def __init__(self, parent, name, args=None, alias=None, comment=None):
         self.parent = parent
@@ -273,6 +276,7 @@ class _Import(Setting):
         self._set_comment(comment)
 
     def reset(self):
+        """ Just overriding """
         pass
 
     @property
@@ -294,14 +298,15 @@ class _Import(Setting):
             logger.write(message, level)
 
 
-class Library(_Import):
+class Library(ImportSetting):
 
     def __init__(self, parent, name, args=None, alias=None, comment=None):
         if args and not alias:
             args, alias = self._split_possible_alias(args)
-        _Import.__init__(self, parent, name, args, alias, comment)
+        ImportSetting.__init__(self, parent, name, args, alias, comment)
 
-    def _split_possible_alias(self, args):
+    @staticmethod
+    def _split_possible_alias(args):
         if len(args) > 1 and (args[-2] == ALIAS_MARKER or args[-2] == 'WITH NAME'):
             return args[:-2], args[-1]
         return args, None
@@ -313,18 +318,18 @@ class Library(_Import):
         return data
 
 
-class Resource(_Import):
+class Resource(ImportSetting):
 
     def __init__(self, parent, name, invalid_args=None, comment=None):
         if invalid_args:
             name += ' ' + ' '.join(invalid_args)
-        _Import.__init__(self, parent, name, comment=comment)
+        ImportSetting.__init__(self, parent, name, comment=comment)
 
 
-class Variables(_Import):
+class Variables(ImportSetting):
 
     def __init__(self, parent, name, args=None, comment=None):
-        _Import.__init__(self, parent, name, args, comment=comment)
+        ImportSetting.__init__(self, parent, name, args, comment=comment)
 
 
 class _DataList(object):
@@ -339,7 +344,8 @@ class _DataList(object):
     def _add(self, meta):
         self.data.append(meta)
 
-    def _parse_name_and_value(self, value):
+    @staticmethod
+    def _parse_name_and_value(value):
         name = value[0] if value else ''
         return name, value[1:]
 
