@@ -195,3 +195,8 @@ class CellType:
     EXCEPT = 'KEYWORD'
     BREAK = 'KEYWORD'
     CONTINUE = 'KEYWORD'
+
+
+UPPERCASE_KWS = [ContentType.END, ContentType.FOR, ContentType.IF, ContentType.ELSE,
+                 ContentType.ELSEIF, ContentType.WHILE, ContentType.TRY, ContentType.EXCEPT,
+                 ContentType.BREAK, ContentType.CONTINUE, 'IN', 'IN RANGE', 'IN ENUMERATE', 'IN ZIP']

@@ -17,7 +17,7 @@ import re
 
 from .. import robotapi, utils
 from .basecontroller import _BaseController
-from .cellinfo import (CellPosition, CellType, CellInfo, CellContent, ContentType)
+from .cellinfo import CellPosition, CellType, CellInfo, CellContent, ContentType, UPPERCASE_KWS
 from ..namespace.local_namespace import LocalNamespace
 from ..utils import variablematcher
 
@@ -124,11 +124,18 @@ class StepController(_BaseController):
         info = self.get_keyword_info(value_at_col)  # Getting info for the keyword cell
         keyword_col = col if col >= self._keyword_column else self._keyword_column
         if info:
+            casesensitive = (value_at_col.upper() != value_at_col and value_at_col.upper() in UPPERCASE_KWS)
+            if casesensitive:
+                return CellPosition(CellType.UNKNOWN, ContentType.STRING)
             return CellPosition(CellType.KEYWORD, None)
         else:
             while not info and keyword_col > 0 and keyword_col > self._keyword_column:
                 keyword_col -= 1
-                info = self.get_keyword_info(self.get_value(keyword_col))  # Getting info for the previous cell
+                value_at_col = self.get_value(keyword_col)
+                info = self.get_keyword_info(value_at_col)  # Getting info for the previous cell
+            casesensitive = (value_at_col.upper() != value_at_col and value_at_col.upper() in UPPERCASE_KWS)
+            if casesensitive:
+                return CellPosition(CellType.UNKNOWN, None)
         if info:
             args = info.arguments
         else:

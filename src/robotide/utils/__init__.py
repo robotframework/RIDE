@@ -21,7 +21,7 @@ import subprocess
 
 import robotide.lib.robot.utils
 from robotide.lib.robot.utils.encoding import SYSTEM_ENCODING
-from robotide.lib.robot.utils import printable_name, normalize, eq, ET, \
+from robotide.lib.robot.utils import printable_name, normalize, _normalize, eq, ET, \
     HtmlWriter, NormalizedDict, timestr_to_secs, secs_to_timestr, normpath,\
     unic, asserts, unescape, html_escape, attribute_escape, robottime,\
     get_timestamp, Matcher, is_list_like, is_dict_like, system_decode,\

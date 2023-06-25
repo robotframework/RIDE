@@ -433,8 +433,8 @@ class ResourceUserKeywordInfo(UserKeywordInfo):
 
 
 PRIORITIES = {ItemInfo: 50,
+              BlockKeywordInfo: 45,
               LibraryKeywordInfo: 40,
-              BlockKeywordInfo: 35,
               ResourceUserKeywordInfo: 30,
               TestCaseUserKeywordInfo: 20,
               VariableInfo: 10,

@@ -16,10 +16,11 @@
 import unittest
 import random
 
+import pytest
+
 from robotide.lib.robot.libraries.String import String
 
-from robotide.controller.cellinfo import CellInfo, ContentType, CellType,\
-    CellContent, CellPosition
+from robotide.controller.cellinfo import CellInfo, ContentType, CellType, CellContent, CellPosition, UPPERCASE_KWS
 from robotide.editor.gridcolorizer import Colorizer
 
 
@@ -66,6 +67,22 @@ class TestPerformance(unittest.TestCase):
         colorizer = Colorizer(MockGrid(), ControllerWithCellInfo())
         for _ in range(0, 500):
             colorizer._colorize_cell(1,1, self._data[random.randint(0, 4)])
+
+
+@pytest.mark.skip('Needs to be fixed')
+class TestColorIdentification(unittest.TestCase):
+    _type = CellInfo(CellContent(CellType.UNKNOWN, ''), CellPosition(CellType.UNKNOWN, ''))
+    _data = ['Log', 'FOR', 'try', 'for']
+    colorizer = None
+
+    def setup(self):
+        self.colorizer = Colorizer(MockGrid(), ControllerWithCellInfo())
+        for x in range(0, 5):
+            self.colorizer._colorize_cell(x, 1, self._data[random.randint(0, 4)])
+
+    def test_unknown(self):
+        color = self.colorizer._get_text_color(self._data)
+        print(f"DEBUG: color={color.title()}")
 
 
 if __name__ == '__main__':
