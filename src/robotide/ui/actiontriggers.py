@@ -25,22 +25,22 @@ class MenuBar(object):
     def __init__(self, frame):
         self._mb = wx.MenuBar()
         self._name_builder = _NameBuilder()
-        self._frame = frame
+        self.m_frame = frame
         self._accelerators = []
         self._menus = []
         self._create_default_menus()
 
     def take_menu_bar_into_use(self):
-        """This should be called after fully populating menus.
+        """This should be called after fully populating menus,
         Otherwise help menu will not be functional in osx."""
-        self._frame.SetMenuBar(self._mb)
+        self.m_frame.SetMenuBar(self._mb)
 
     def _create_default_menus(self):
         for name in ['File', 'Edit', 'Tools', 'Help']:
             self._create_menu(name, before_help=False)
 
     def _create_menu(self, name, before_help=True):
-        menu = _Menu(self._name_builder.get_name(name), self._frame)
+        menu = _Menu(self._name_builder.get_name(name), self.m_frame)
         self._insert_menu(menu, before_help)
         return menu
 
@@ -142,9 +142,9 @@ class _Menu(object):
         menu_item.set_wx_menu_item(wx_menu_item)
         return menu_item
 
-    def remove_menu_item(self, id):
-        self.wx_menu.Delete(id)
-        del(self._menu_items[id])
+    def remove_menu_item(self, idd):
+        self.wx_menu.Delete(idd)
+        del(self._menu_items[idd])
 
 
 class _NameBuilder(object):
@@ -200,6 +200,7 @@ class _MenuItem(object):
         self._frame = frame
         self._menu = menu
         self.name = name
+        self._wx_menu_item = None
         self._action_delegator = ActionDelegator(self._frame)
         self.id = self._action_delegator.id
 
@@ -234,10 +235,12 @@ class SeparatorMenuItem(_MenuItem):
         # Should get  ITEM_SEPARATOR
         self.id = wx.ID_SEPARATOR
 
-    def _is_enabled(self):
+    @staticmethod
+    def _is_enabled():
         return False
 
     def set_enabled(self):
+        """ Just ignore it """
         pass
 
 

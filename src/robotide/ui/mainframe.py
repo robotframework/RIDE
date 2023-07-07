@@ -18,7 +18,7 @@ import os
 import wx
 import wx.lib.agw.aui as aui
 from wx import Colour
-from wx.adv import TaskBarIcon, TBI_DOCK
+from wx.adv import TaskBarIcon, TBI_DOCK, EVT_TASKBAR_LEFT_DOWN
 
 from .actiontriggers import (MenuBar, ToolBarButton, ShortcutRegistry, _RideSearchMenuItem)
 from .filedialogs import (NewProjectDialog, InitFileFormatDialog)
@@ -30,13 +30,12 @@ from .review import ReviewDialog
 from .treeplugin import Tree
 from ..action import ActionInfoCollection, ActionFactory, SeparatorInfo
 from ..action.shortcut import localize_shortcuts
-from ..context import ABOUT_RIDE, SHORTCUT_KEYS, IS_MAC
+from ..context import ABOUT_RIDE, SHORTCUT_KEYS
 from ..controller.ctrlcommands import SaveFile, SaveAll
 from ..editor import customsourceeditor
 from ..preferences import PreferenceEditor
-from ..preferences.settings import RideSettings, _Section
 from ..publish import (RideSaveAll, RideClosing, RideSaved, PUBLISHER, RideInputValidationError, RideTreeSelection,
-                       RideModificationPrevented, RideBeforeSaving, RideSettingsChanged)
+                       RideModificationPrevented, RideBeforeSaving)
 from ..ui.filedialogs import RobotFilePathDialog
 from ..ui.tagdialogs import ViewAllTagsDialog
 from ..utils import RideFSWatcherHandler
@@ -72,70 +71,8 @@ _menudata = """
 
 ID_CustomizeToolbar = wx.ID_HIGHEST + 1
 ID_SampleItem = ID_CustomizeToolbar + 1
-
-
-"""
-
-# -- DEBUG some testing
-# -- SizeReportCtrl --
-# (a utility control that always reports it's client size)
-
-
-class SizeReportCtrl(wx.Control):
-
-    def __init__(self, parent, id=wx.ID_ANY, pos=wx.DefaultPosition, size=wx.DefaultSize, mgr=None):
-
-        wx.Control.__init__(self, parent, id, pos, size, style=wx.NO_BORDER)
-        self._mgr = mgr
-
-        self.Bind(wx.EVT_PAINT, self.OnPaint)
-        self.Bind(wx.EVT_ERASE_BACKGROUND, self.OnEraseBackground)
-        self.Bind(wx.EVT_SIZE, self.OnSize)
-
-    def OnPaint(self, event):
-
-        dc = wx.PaintDC(self)
-        size = self.GetClientSize()
-
-        s = "Size: %d x %d" % (size.x, size.y)
-
-        dc.SetFont(wx.NORMAL_FONT)
-        w, height = dc.GetTextExtent(s)
-        height += 3
-        dc.SetBrush(wx.WHITE_BRUSH)
-        dc.SetPen(wx.WHITE_PEN)
-        dc.DrawRectangle(0, 0, size.x, size.y)
-        dc.SetPen(wx.LIGHT_GREY_PEN)
-        dc.DrawLine(0, 0, size.x, size.y)
-        dc.DrawLine(0, size.y, size.x, 0)
-        dc.DrawText(s, (size.x-w)/2, (size.y-height*5)/2)
-
-        if self._mgr:
-
-            pi = self._mgr.GetPane(self)
-
-            s = "Layer: %d" % pi.dock_layer
-            w, h = dc.GetTextExtent(s)
-            dc.DrawText(s, (size.x-w)/2, ((size.y-(height*5))/2)+(height*1))
-
-            s = "Dock: %d Row: %d" % (pi.dock_direction, pi.dock_row)
-            w, h = dc.GetTextExtent(s)
-            dc.DrawText(s, (size.x-w)/2, ((size.y-(height*5))/2)+(height*2))
-
-            s = "Position: %d" % pi.dock_pos
-            w, h = dc.GetTextExtent(s)
-            dc.DrawText(s, (size.x-w)/2, ((size.y-(height*5))/2)+(height*3))
-
-            s = "Proportion: %d" % pi.dock_proportion
-            w, h = dc.GetTextExtent(s)
-            dc.DrawText(s, (size.x-w)/2, ((size.y-(height*5))/2)+(height*4))
-
-    def OnEraseBackground(self, event):
-        pass
-
-    def OnSize(self, event):
-        self.Refresh()
-"""
+MAINFRAME_POSITION = 'mainframe position'
+MAINFRAME_MAXIMIZED = 'mainframe maximized'
 
 
 class RideFrame(wx.Frame):
@@ -144,7 +81,7 @@ class RideFrame(wx.Frame):
         size = application.settings.get('mainframe size', (1100, 700))
         # DEBUG self.general_settings = application.settings['General']
         wx.Frame.__init__(self, parent=None, id=wx.ID_ANY, title='RIDE',
-                          pos=application.settings.get('mainframe position', (50, 30)),
+                          pos=application.settings.get(MAINFRAME_POSITION, (50, 30)),
                           size=size, style=wx.DEFAULT_FRAME_STYLE | wx.SUNKEN_BORDER | wx.BORDER_THEME)
 
         # set Left to Right direction (while we don't have localization)
@@ -159,13 +96,13 @@ class RideFrame(wx.Frame):
         self.SetMinSize(wx.Size(400, 300))
 
         self.ensure_on_screen()
-        if application.settings.get('mainframe maximized', False):
+        if application.settings.get(MAINFRAME_MAXIMIZED, False):
             self.Maximize()
         self._application = application
         self._controller = controller
         self._image_provider = ImageProvider()
         self.reformat = application.settings.get('reformat', False)
-        self.general_settings = application.settings['General']  #.get_without_default('General')
+        self.general_settings = application.settings['General']  # .get_without_default('General')
         self.color_background_help = self.general_settings.get('background help', (240, 242, 80))
         self.color_foreground_text = self.general_settings.get('foreground text', (7, 0, 70))
         self.color_background = self.general_settings.get_without_default('background')
@@ -173,7 +110,7 @@ class RideFrame(wx.Frame):
         self.font_face = self.general_settings.get('font face', '')
         self.font_size = self.general_settings.get('font size', 11)
         self._init_ui()
-        self._task_bar_icon = RIDETaskBarIcon(self._image_provider)
+        self._task_bar_icon = RIDETaskBarIcon(self, self._image_provider)
         self._plugin_manager = PluginManager(self.notebook)
         self._review_dialog = None
         self._view_all_tags_dialog = None
@@ -202,7 +139,8 @@ class RideFrame(wx.Frame):
     def _set_label(self, message):
         self.SetTitle(self._create_title(message))
 
-    def _create_title(self, message):
+    @staticmethod
+    def _create_title(message):
         title = 'RIDE'
         if message:
             item = message.item
@@ -211,10 +149,12 @@ class RideFrame(wx.Frame):
                 title += ' (READ ONLY)'
         return title
 
-    def _show_validation_error(self, message):
+    @staticmethod
+    def _show_validation_error(message):
         wx.MessageBox(message.message, 'Validation Error', style=wx.ICON_ERROR)
 
-    def _show_modification_prevented_error(self, message):
+    @staticmethod
+    def _show_modification_prevented_error(message):
         wx.MessageBox("\"%s\" is read only" % message.controller.datafile_controller.filename, "Modification prevented",
                       style=wx.ICON_ERROR)
 
@@ -224,8 +164,8 @@ class RideFrame(wx.Frame):
         # self._mgr.AddPane(wx.Panel(self), aui.AuiPaneInfo().CenterPane())
         # set up default notebook style
         self._notebook_style = aui.AUI_NB_DEFAULT_STYLE | aui.AUI_NB_WINDOWLIST_BUTTON | \
-                               aui.AUI_NB_TAB_EXTERNAL_MOVE | aui.AUI_NB_SUB_NOTEBOOK | aui.AUI_NB_SMART_TABS  #| wx.NO_BORDER
-        # TODO self._notebook_theme = 0 (allow to select themes for notebooks)
+                               aui.AUI_NB_TAB_EXTERNAL_MOVE | aui.AUI_NB_SUB_NOTEBOOK | aui.AUI_NB_SMART_TABS
+        # DEBUG self._notebook_theme = 0 (allow to select themes for notebooks)
         # self.notebook = NoteBook(self.splitter, self._application,
         #                         self._notebook_style)
         self.notebook = NoteBook(self, self._application,
@@ -235,31 +175,14 @@ class RideFrame(wx.Frame):
         self._mgr.AddPane(self.notebook,
                           aui.AuiPaneInfo().Name("notebook_editors").
                           CenterPane().PaneBorder(False))
-        # ############### Test
-        # self._mgr.AddPane(self.CreateTextCtrl(),
-        #                   aui.AuiPaneInfo().Name("text_content").
-        #                   CenterPane().Hide().MinimizeButton(True))
-        #
-        # self._mgr.AddPane(self.CreateHTMLCtrl(),
-        #                   aui.AuiPaneInfo().Name("html_content").
-        #                   CenterPane().Hide().MinimizeButton(True))
-        #
-        # self._mgr.AddPane(self.CreateNotebook(),
-        #                   aui.AuiPaneInfo().Name("notebook_content").
-        #                   CenterPane().PaneBorder(False))
-        # ###################
-        # self._mgr.AddPane(self.CreateSizeReportCtrl(), aui.AuiPaneInfo().
-        #                   Name("test1").Caption(
-        #     "Pane Caption").Top().MinimizeButton(True))
-
         mb = MenuBar(self)
         self.toolbar = ToolBar(self)
         self.toolbar.SetMinSize(wx.Size(100, 60))
         self.toolbar.SetBackgroundColour(Colour(self.color_background))
         self.toolbar.SetForegroundColour(Colour(self.color_foreground))
         # self.SetToolBar(self.toolbar.GetToolBar())
-        mb._frame.SetBackgroundColour(Colour(self.color_background))
-        mb._frame.SetForegroundColour(Colour(self.color_foreground))
+        mb.m_frame.SetBackgroundColour(Colour(self.color_background))
+        mb.m_frame.SetForegroundColour(Colour(self.color_foreground))
         self._mgr.AddPane(self.toolbar, aui.AuiPaneInfo().Name("maintoolbar").
                           ToolbarPane().Top())
         self.actions = ActionRegisterer(self._mgr, mb, self.toolbar,
@@ -283,8 +206,8 @@ class RideFrame(wx.Frame):
         # DEBUG: Next was already called from application.py
         self._mgr.AddPane(self.tree,
                           aui.AuiPaneInfo().Name("tree_content").Caption("Test Suites").CloseButton(False).
-                          LeftDockable())  # TODO: remove .CloseButton(False) when restore is fixed
-        #### self._mgr.GetPane(self.tree).DestroyOnClose()
+                          LeftDockable())  # DEBUG: remove .CloseButton(False) when restore is fixed
+        # DEBUG: self._mgr.GetPane(self.tree).DestroyOnClose()
         # TreePlugin will manage showing the Tree
         self.actions.register_actions(ActionInfoCollection(_menudata, self, self.tree))
         # ##### File explorer panel is always created here
@@ -306,55 +229,6 @@ class RideFrame(wx.Frame):
         # tell the manager to "commit" all the changes just made
         self._mgr.Update()
         # wx.CallLater(2000, RideSettingsChanged(keys=("General", ''), old='', new='').publish)
-
-    """
-    def testToolbar(self):
-
-        # ### More testing
-        prepend_items, append_items = [], []
-        item = aui.AuiToolBarItem()
-
-        item.SetKind(wx.ITEM_SEPARATOR)
-        append_items.append(item)
-
-        item = aui.AuiToolBarItem()
-        item.SetKind(wx.ITEM_NORMAL)
-        item.SetId(ID_CustomizeToolbar)
-        item.SetLabel("Customize...")
-        append_items.append(item)
-
-        tb3 = aui.AuiToolBar(self, -1, wx.DefaultPosition, wx.DefaultSize,
-                             agwStyle=aui.AUI_TB_DEFAULT_STYLE | aui.AUI_TB_OVERFLOW)
-        tb3.SetToolBitmapSize(wx.Size(16, 16))
-        tb3_bmp1 = wx.ArtProvider.GetBitmap(wx.ART_FOLDER, wx.ART_OTHER,
-                                            wx.Size(16, 16))
-        tb3.AddSimpleTool(ID_SampleItem + 16, "Check 1", tb3_bmp1, "Check 1",
-                          aui.ITEM_CHECK)
-        tb3.AddSimpleTool(ID_SampleItem + 17, "Check 2", tb3_bmp1, "Check 2",
-                          aui.ITEM_CHECK)
-        tb3.AddSimpleTool(ID_SampleItem + 18, "Check 3", tb3_bmp1, "Check 3",
-                          aui.ITEM_CHECK)
-        tb3.AddSimpleTool(ID_SampleItem + 19, "Check 4", tb3_bmp1, "Check 4",
-                          aui.ITEM_CHECK)
-        tb3.AddSeparator()
-        tb3.AddSimpleTool(ID_SampleItem + 20, "Radio 1", tb3_bmp1, "Radio 1",
-                          aui.ITEM_RADIO)
-        tb3.AddSimpleTool(ID_SampleItem + 21, "Radio 2", tb3_bmp1, "Radio 2",
-                          aui.ITEM_RADIO)
-        tb3.AddSimpleTool(ID_SampleItem + 22, "Radio 3", tb3_bmp1, "Radio 3",
-                          aui.ITEM_RADIO)
-        tb3.AddSeparator()
-        tb3.AddSimpleTool(ID_SampleItem + 23, "Radio 1 (Group 2)", tb3_bmp1,
-                          "Radio 1 (Group 2)", aui.ITEM_RADIO)
-        tb3.AddSimpleTool(ID_SampleItem + 24, "Radio 2 (Group 2)", tb3_bmp1,
-                          "Radio 2 (Group 2)", aui.ITEM_RADIO)
-        tb3.AddSimpleTool(ID_SampleItem + 25, "Radio 3 (Group 2)", tb3_bmp1,
-                          "Radio 3 (Group 2)", aui.ITEM_RADIO)
-
-        tb3.SetCustomOverflowItems(prepend_items, append_items)
-        tb3.Realize()
-        return tb3
-    """
 
     def get_selected_datafile(self):
         return self.tree.get_selected_datafile()
@@ -380,6 +254,7 @@ class RideFrame(wx.Frame):
             PUBLISHER.unsubscribe(self._set_label, RideTreeSelection)
             RideClosing().publish()
             # DEBUG: Wrap in try/except for RunTime error
+            self._task_bar_icon.RemoveIcon()
             self._task_bar_icon.Destroy()
             self.Destroy()
             app = wx.GetApp()
@@ -397,13 +272,13 @@ class RideFrame(wx.Frame):
         else:
             size = tuple(self.GetSize())
         is_full_screen_mode = size == wx.DisplaySize()
-        self._application.settings['mainframe maximized'] = self.IsMaximized() or is_full_screen_mode
+        self._application.settings[MAINFRAME_MAXIMIZED] = self.IsMaximized() or is_full_screen_mode
         if not is_full_screen_mode:
             self._application.settings['mainframe size'] = size
         if wx.VERSION >= (4, 1, 0):
-            self._application.settings['mainframe position'] = self.DoGetPosition()
+            self._application.settings[MAINFRAME_POSITION] = self.DoGetPosition()
         else:
-            self._application.settings['mainframe position'] = tuple(self.GetPosition())
+            self._application.settings[MAINFRAME_POSITION] = tuple(self.GetPosition())
         event.Skip()
 
     def OnMove(self, event):
@@ -411,16 +286,17 @@ class RideFrame(wx.Frame):
         # don't want to update the position in the settings file
         if not self.IsIconized() and not self.IsMaximized():
             if wx.VERSION >= (4, 1, 0):
-                self._application.settings['mainframe position'] = self.DoGetPosition()
+                self._application.settings[MAINFRAME_POSITION] = self.DoGetPosition()
             else:
-                self._application.settings['mainframe position'] = tuple(self.GetPosition())
+                self._application.settings[MAINFRAME_POSITION] = tuple(self.GetPosition())
         event.Skip()
 
     def OnMaximize(self, event):
-        self._application.settings['mainframe maximized'] = True
+        self._application.settings[MAINFRAME_MAXIMIZED] = True
         event.Skip()
 
     def OnReleasenotes(self, event):
+        """ Is treated in other method """
         pass
 
     def _allowed_to_exit(self):
@@ -439,6 +315,7 @@ class RideFrame(wx.Frame):
         return self._controller.is_dirty()
 
     def OnNewProject(self, event):
+        _ = event
         if not self.check_unsaved_modifications():
             return
         NewProjectDialog(self._controller).execute()
@@ -449,6 +326,7 @@ class RideFrame(wx.Frame):
         self.filemgr.update_tree()
 
     def OnOpenFile(self, event):
+        _ = event
         if not self.filemgr:
             return
         # EVT_DIRCTRL_FILEACTIVATED
@@ -474,7 +352,7 @@ class RideFrame(wx.Frame):
     def OnMenuOpenFile(self, event):
         if not self.filemgr:
             return
-        # TODO: Use widgets/popupmenu tools
+        # DEBUG: Use widgets/popupmenu tools
         path = self.filemgr.GetFilePath()
         if len(path) > 0:
             self.OnOpenFile(event)
@@ -486,6 +364,7 @@ class RideFrame(wx.Frame):
         event.Skip()
 
     def OnOpenExternalFile(self, event):
+        _ = event
         if not self._current_external_dir:
             curdir = self._controller.default_dir
         else:
@@ -501,6 +380,7 @@ class RideFrame(wx.Frame):
             wx.LogError(f"Cannot open file {path}")
 
     def OnOpenTestSuite(self, event):
+        _ = event
         if not self.check_unsaved_modifications():
             return
         path = RobotFilePathDialog(
@@ -523,7 +403,6 @@ class RideFrame(wx.Frame):
         # self._controller.default_dir will only save dir path
         # need to save path to self._application.workspace_path too
         self._application.workspace_path = path
-        err = None
         try:
             err = self._controller.load_datafile(path, LoadProgressObserver(self))
             if isinstance(err, UserWarning):
@@ -540,6 +419,7 @@ class RideFrame(wx.Frame):
             self.filemgr.ReCreateTree()
 
     def OnOpenDirectory(self, event):
+        _ = event
         if self.check_unsaved_modifications():
             path = wx.DirSelector(message="Choose a directory containing Robot"
                                           " files",
@@ -548,10 +428,12 @@ class RideFrame(wx.Frame):
                 self.open_suite(path)
 
     def OnSave(self, event):
+        _ = event
         RideBeforeSaving().publish()
         self.save()
 
     def OnSaveAll(self, event):
+        _ = event
         RideBeforeSaving().publish()
         self.save_all()
 
@@ -574,48 +456,57 @@ class RideFrame(wx.Frame):
         for f in files_without_format:
             self._show_format_dialog_for(f)
 
-    def _show_format_dialog_for(self, file_controller_without_format):
+    @staticmethod
+    def _show_format_dialog_for(file_controller_without_format):
         InitFileFormatDialog(file_controller_without_format).execute()
 
     def OnExit(self, event):
+        _ = event
         self.Close()
 
     def OnManagePlugins(self, event):
+        _ = event
         self._plugin_manager.show(self._application.get_plugins())
 
     def OnViewAllTags(self, event):
+        _ = event
         if self._view_all_tags_dialog is None:
             self._view_all_tags_dialog = ViewAllTagsDialog(self._controller, self)
         self._view_all_tags_dialog.show_dialog()
 
     def OnSearchUnusedKeywords(self, event):
+        _ = event
         if self._review_dialog is None:
             self._review_dialog = ReviewDialog(self._controller, self)
         self._review_dialog.show_dialog()
 
     def OnPreferences(self, event):
+        _ = event
         dlg = PreferenceEditor(self, "RIDE - Preferences",
                                self._application.preferences, style='tree')
         # Changed to non-modal, original comment follows:
-        # I would prefer that this not be modal, but making it non-
-        # modal opens up a can of worms. We don't want to have to deal
+        # I would prefer that this not be modal, but making it non-modal
+        # opens up a can of worms. We don't want to have to deal
         # with settings getting changed out from under us while the
         # dialog is open.
         dlg.Show()
 
     @staticmethod
     def OnAbout(event):
+        _ = event
         dlg = AboutDialog()
         dlg.ShowModal()
         dlg.Destroy()
 
     @staticmethod
     def OnShortcutkeys(event):
+        _ = event
         dialog = ShortcutKeysDialog()
         dialog.Show()
 
     @staticmethod
     def OnReportaProblem(event):
+        _ = event
         wx.LaunchDefaultBrowser("https://github.com/robotframework/RIDE/issues"
                                 "?utf8=%E2%9C%93&q=is%3Aissue+%22search"
                                 "%20your%20problem%22"
@@ -623,10 +514,12 @@ class RideFrame(wx.Frame):
 
     @staticmethod
     def OnUserGuide(event):
+        _ = event
         wx.LaunchDefaultBrowser("https://robotframework.org/robotframework/#user-guide")
 
     @staticmethod
     def OnWiki(event):
+        _ = event
         wx.LaunchDefaultBrowser("https://github.com/robotframework/RIDE/wiki")
 
     def _has_data(self):
@@ -664,14 +557,6 @@ class RideFrame(wx.Frame):
         self.SetPosition(position)
         self.SetSize(size)
 
-    # DEBUG just some testing
-    """
-    def CreateSizeReportCtrl(self, width=80, height=80):
-
-        ctrl = SizeReportCtrl(self, -1, wx.DefaultPosition, wx.Size(width, height), self._mgr)
-        return ctrl
-    """
-
     def show_confirm_reload_dlg(self, event):
         msg = ['Workspace modifications detected on the file system.',
                'Do you want to reload the workspace?',
@@ -683,7 +568,7 @@ class RideFrame(wx.Frame):
         confirmed = ret == wx.YES
         if confirmed:
             # workspace_path should update after open directory/suite
-            # There're two scenarios:
+            # There are two scenarios:
             # 1. path is a directory
             # 2. path is a suite file
             new_path = RideFSWatcherHandler.get_workspace_new_path()
@@ -692,47 +577,19 @@ class RideFrame(wx.Frame):
             else:
                 # in case workspace is totally removed
                 # ask user to open new directory
-                # TODO add some notification msg to users
+                # DEBUG: add some notification msg to users
                 wx.CallAfter(self.OnOpenDirectory, event)
         else:
-            for _ in self._controller.datafiles:
-                if _.has_been_modified_on_disk() or _.has_been_removed_from_disk():
-                    if not os.path.exists(_.directory):
-                        # sub folder is removed, create new one before saving
-                        os.makedirs(_.directory)
-                    _.mark_dirty()
+            self.check_modified_files()
             self.save_all()
-"""
-    def OnSettingsChanged(self, message):
-        #TODO: change to doc Redraw the colors if the color settings are modified
-        # section, setting = data.keys
-        #print(f"DEBUG: OnSettingsChanged enter {repr(message)}")
-        if isinstance(message, _Section):
-            ndata= message
-            # print(f"DEBUG: OnSettingsChanged in Section {type(ndata)}")
-            for key, value in message:
-                # print(f"DEBUG: OnSettingsChanged in key {key} value {value}")
-            background = message.get_without_default('background')
-            foreground = message.get_without_default('foreground')
-            # print(f"DEBUG: OnSettings section: {message._is_section('General')} background {background}"
-                  f" foreground {foreground}")
-            if message._is_section('General'):
-                internal_settings = RideSettings()
-                _general_settings = internal_settings['General']
-                children = self.GetChildren()
-                for child in children:
-                    child.SetBackgroundColour(Colour(_general_settings['background']))
-                    child.SetOwnBackgroundColour(Colour(_general_settings['background']))
-                    child.SetForegroundColour(Colour(_general_settings['foreground']))
-                    child.SetOwnForegroundColour(Colour(_general_settings['foreground']))
-                    font = child.GetFont()
-                    font.SetFaceName(_general_settings['font face'])
-                    font.SetPointSize(_general_settings['font size'])
-                    child.SetFont(font)
-                    child.Refresh(True)
-                    # print(f"DEBUG: OnSettingsChanged child {type(child)}")
-            # print(f"DEBUG: OnSettingsChanged not General")
-"""
+
+    def check_modified_files(self):
+        for _ in self._controller.datafiles:
+            if _.has_been_modified_on_disk() or _.has_been_removed_from_disk():
+                if not os.path.exists(_.directory):
+                    # sub folder is removed, create new one before saving
+                    os.makedirs(_.directory)
+                _.mark_dirty()
 
 
 # Code moved from actiontriggers
@@ -756,16 +613,13 @@ class ToolBar(aui.AuiToolBar):
         self._frame = frame
         # DEBUG If we attach to frame it won't be detachable, and overlaps
         # If self, buttons are not shown
-        self.tb = aui.AuiToolBar(self, -1, wx.DefaultPosition,
-                            wx.DefaultSize,
-                            agwStyle=aui.AUI_TB_DEFAULT_STYLE | aui.AUI_TB_OVERFLOW)
+        self.tb = aui.AuiToolBar(self, -1, wx.DefaultPosition, wx.DefaultSize,
+                                 agwStyle=aui.AUI_TB_DEFAULT_STYLE | aui.AUI_TB_OVERFLOW)
         self.tb.SetToolBitmapSize(wx.Size(16, 16))
         self._buttons = []
         self._search_handlers = {}
         self._current_description = None
         self.SetMinSize(wx.Size(100, 60))
-        # self.tb.SetBackgroundColour(Colour(self._frame.color_background))
-        # self.tb.SetForegroundColour(Colour(self._frame.color_foreground))
         self.tb.SetCustomOverflowItems(prepend_items, append_items)
         self.tb.Realize()
 
@@ -782,8 +636,8 @@ class ToolBar(aui.AuiToolBar):
                 return button
         return None
 
-    def enabled_status_changed(self, id, action):
-        self.EnableTool(id, action.is_active())
+    def enabled_status_changed(self, idd, action):
+        self.EnableTool(idd, action.is_active())
 
     def _create_button(self, action):
         button = ToolBarButton(self._frame, self, action)
@@ -794,7 +648,8 @@ class ToolBar(aui.AuiToolBar):
         self._buttons.append(button)
         return button
 
-    def _format_button_tooltip(self, action):
+    @staticmethod
+    def _format_button_tooltip(action):
         tooltip = action.name.replace('&', '')
         if action.shortcut and action.shortcut.value:
             tooltip = '%s    (%s)' % (tooltip, action.shortcut.value)
@@ -841,9 +696,9 @@ class ActionRegisterer(object):
         separator_action = ActionFactory(SeparatorInfo("Tools"))
         add_separator_after = ["stop test run", "search unused keywords",
                                "preview", "view ride log"]
-        #for key in sorted(self._tools_items.iterkeys()):
+        # for key in sorted(self._tools_items.iterkeys()):
         # print("DEBUG: at register_tools, tools: %s" % self._tools_items)
-        for key in sorted(self._tools_items.keys()):  #DEBUG Python3
+        for key in sorted(self._tools_items.keys()):  # DEBUG Python3
             self._menubar.register(self._tools_items[key])
             # print("DEBUG: key=%s name=%s" % (key, self._tools_items[key].name.lower()))
             if self._tools_items[key].name.lower() in add_separator_after:
@@ -874,6 +729,7 @@ class AboutDialog(RIDEDialog):
         self.SetSizerAndFit(sizer)
 
     def OnKey(self, *args):
+        """ Just ignore keystrokes """
         pass
 
 
@@ -890,17 +746,50 @@ class ShortcutKeysDialog(RIDEDialog):
         self.SetSizerAndFit(sizer)
 
     def OnKey(self, *args):
+        """ Just ignore keystrokes """
         pass
 
-    def _get_platform_specific_shortcut_keys(self):
+    @staticmethod
+    def _get_platform_specific_shortcut_keys():
         return localize_shortcuts(SHORTCUT_KEYS)
 
 
 class RIDETaskBarIcon(TaskBarIcon):
 
-    def __init__(self, img_provider):
+    def __init__(self, frame, img_provider):
         TaskBarIcon.__init__(self, TBI_DOCK)
+        self.frame = frame
         self._img_provider = img_provider
-        # if IS_MAC:
-        #    # only use in mac to display RIDE app icon in dock
         self.SetIcon(wx.Icon(self._img_provider.RIDE_ICON), "RIDE")
+        self.Bind(EVT_TASKBAR_LEFT_DOWN, self.OnClick)
+        self.Bind(wx.EVT_MENU, self.OnTaskBarActivate, id=1)
+        self.Bind(wx.EVT_MENU, self.OnTaskBarDeactivate, id=2)
+        self.Bind(wx.EVT_MENU, self.OnTaskBarClose, id=3)
+
+    def OnClick(self, event):
+        _ = event
+        self.frame.Raise()
+        self.frame.Restore()
+        self.frame.Show(True)
+
+    def CreatePopupMenu(self):
+        menu = wx.Menu()
+        menu.Append(1, 'Show')
+        menu.Append(2, 'Hide')
+        menu.Append(3, 'Close')
+        return menu
+
+    def OnTaskBarClose(self, event):
+        _ = event
+        self.frame.Close()
+
+    def OnTaskBarActivate(self, event):
+        _ = event
+        if not self.frame.IsShown():
+            self.frame.Show()
+            self.frame.Restore()
+
+    def OnTaskBarDeactivate(self, event):
+        _ = event
+        if self.frame.IsShown():
+            self.frame.Hide()

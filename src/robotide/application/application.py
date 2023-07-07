@@ -107,6 +107,7 @@ class RIDE(wx.App):
         self._find_robot_installation()
         self._publish_system_info()
         self.frame.Show()    ####### DEBUG DANGER ZONE
+        self.SetTopWindow(self.frame)
         self.frame._mgr.Update()
         wx.CallLater(200, ReleaseNotes(self).bring_to_front)
         wx.CallLater(200, self.fileexplorerplugin._update_tree)
