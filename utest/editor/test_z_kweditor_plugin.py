@@ -149,8 +149,8 @@ class MyApp(wx.App):
         self.toolbar.SetBackgroundColour((255, 255, 255))
         self.toolbar.SetForegroundColour((0, 0, 0))
         # self.SetToolBar(self.toolbar.GetToolBar())
-        mb._frame.SetBackgroundColour((255, 255, 255))
-        mb._frame.SetForegroundColour((0, 0, 0))
+        mb.m_frame.SetBackgroundColour((255, 255, 255))
+        mb.m_frame.SetForegroundColour((0, 0, 0))
         self._mgr.AddPane(self.toolbar, aui.AuiPaneInfo().Name("maintoolbar").
                           ToolbarPane().Top())
         self.actions = ActionRegisterer(self._mgr, mb, self.toolbar,

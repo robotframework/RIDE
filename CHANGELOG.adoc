@@ -8,10 +8,16 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 == https://github.com/robotframework/RIDE[Unreleased]
 
+=== Added
+
+- Added context menu to RIDE tray icon. Options Show, Hide and Close
+- Added sincronization with Project Explorer to navigate to selected item, Test Case, Keyword, Variable, in Text Editor
+  Note: This feature is working fine in Fedora 38, but not on Windows and macOS.
+
 == Fixed
 
 - Fixed control commands (``FOR``, ``IF``, ``TRY``, etc) being colorized as valid keywords when typed not in all caps in Grid Editor
-- Fixed title of User Keyword in Grid Editor always showing 'Find Usages' instead of the keyword name
+- Fixed title of User Keyword in Grid Editor always showing ``Find Usages`` instead of the keyword name
 - Fixed renaming keywords when they were arguments of ``Run Keywords`` in Setups and Teardowns
 
 == https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.0.6.rst[2.0.6] - 2023-06-10

@@ -152,6 +152,8 @@ RELEASE_NOTES = f"""
 <ul class="simple">
 <li>This version supports Python 3.6 up to 3.11.</li>
 <li>There are some changes, or known issues:<ul>
+<li>RIDE tray icon now shows a context menu with options Show, Hide and Close</li>
+<li>Highlighting and navigation of selected Project Explorer items, in Text Editor</li>
 <li>When editing in Grid Editor with content assistance, the selected content can be edited by escaping the list of suggestions with keys ARROW_LEFT or ARROW_RIGHT.</li>
 <li>Newlines in Grid Editor can be made visible with the `filter newlines` set to False.</li>
 <li>On Text Editor when Saving the selection of tests in Test Suites (Tree) is cleared.</li>
@@ -166,6 +168,9 @@ RELEASE_NOTES = f"""
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
+<li>Added context menu to RIDE tray icon. Options Show, Hide and Close</li>
+<li>Added sincronization with Project Explorer to navigate to selected item, Test Case, Keyword, Variable, in Text
+ Editor</li>
 <li>Control commands (``FOR``, ``IF``, ``TRY``, etc) will only be colorized as valid keywords when typed in all caps in Grid Editor</li>
 <li>Newlines in Grid Editor can be made visible with the `filter newlines` set to False, by editing `settings.cfg`</li>
 <li>Improve auto-suggestions of keywords in Grid Editor by allowing to close suggestions list with keys ARROW_LEFT or ARROW_RIGHT</li>
@@ -220,6 +225,6 @@ python -m robotide.__init__
 <pre class="literal-block">
 python -m robotide.postinstall -install
 </pre>
-<p>RIDE {VERSION} was released on 25/Jun/2023.</p>
+<p>RIDE {VERSION} was released on 07/Jul/2023.</p>
 </div>
 """
