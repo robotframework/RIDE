@@ -16,10 +16,7 @@
 import locale
 import os
 import wx
-locale.setlocale(locale.LC_ALL, 'C')
-
 from contextlib import contextmanager
-
 from ..namespace import Namespace
 from ..controller import Project
 from ..spec import librarydatabase
@@ -40,17 +37,36 @@ from ..utils import RideFSWatcherHandler, run_python_command
 from ..lib.robot.utils.encodingsniffer import get_system_encoding
 from ..publish import PUBLISHER
 from ..publish.messages import RideSettingsChanged
-from ..preferences.settings import _Section
-from wx import Colour
 from ..widgets.button import ButtonWithHandler
+from wx.lib.agw.aui import AuiDefaultToolBarArt
+from wx.lib.agw.aui.auibar import AuiToolBar
+from wx.lib.agw.aui.auibook import AuiTabCtrl, TabFrame
+
+locale.setlocale(locale.LC_ALL, 'C')
+
+BACKGROUND_HELP = 'background help'
+FOREGROUND_TEXT = 'foreground text'
+FONT_SIZE = 'font size'
+FONT_FACE = 'font face'
 
 
-class UnthemableWidgetError(BaseException):
+class UnthemableWidgetError(Exception):
     def __init__(self):
-        BaseException.__init__(self, 'HELP! I have no clue how to theme this.')
+        Exception.__init__(self, 'HELP! I have no clue how to theme this.')
 
 
 class RIDE(wx.App):
+    _controller = None
+    _editor_provider = None
+    _initial_locale = None
+    _plugin_loader = None
+    editor = None
+    fileexplorerplugin = None
+    frame = None
+    namespace = None
+    preferences = None
+    settings = None
+    treeplugin = None
 
     def __init__(self, path=None, updatecheck=True):
         self._updatecheck = updatecheck
@@ -63,21 +79,21 @@ class RIDE(wx.App):
         # self._initial_locale = wx.Locale(wx.LANGUAGE_ARABIC)
         self._initial_locale = wx.Locale(wx.LANGUAGE_ENGLISH_US)
         # Needed for SetToolTipString to work
-        wx.HelpProvider.Set(wx.SimpleHelpProvider())  # TODO adjust to wx versions 
+        wx.HelpProvider.Set(wx.SimpleHelpProvider())  # DEBUG: adjust to wx versions
         self.settings = RideSettings()
         librarydatabase.initialize_database()
         self.preferences = Preferences(self.settings)
         self.namespace = Namespace(self.settings)
         self._controller = Project(self.namespace, self.settings)
         self.frame = RideFrame(self, self._controller)
-        ##### DEBUG  self.frame.Show()
+        # DEBUG  self.frame.Show()
         self._editor_provider = EditorProvider()
         self._plugin_loader = PluginLoader(self, self._get_plugin_dirs(),
                                            coreplugins.get_core_plugins())
         self._plugin_loader.enable_plugins()
         perspective = self.settings.get('AUI Perspective', None)
         if perspective:
-            self.frame._mgr.LoadPerspective(perspective, True)
+            self.frame.aui_mgr.LoadPerspective(perspective, True)
         try:
             nb_perspective = self.settings.get('AUI NB Perspective', None)
             if nb_perspective:
@@ -106,30 +122,31 @@ class RIDE(wx.App):
         self.treeplugin.set_editor(self.editor)
         self._find_robot_installation()
         self._publish_system_info()
-        self.frame.Show()    ####### DEBUG DANGER ZONE
+        self.frame.Show()    # ###### DEBUG DANGER ZONE
         self.SetTopWindow(self.frame)
-        self.frame._mgr.Update()
+        self.frame.aui_mgr.Update()
         wx.CallLater(200, ReleaseNotes(self).bring_to_front)
-        wx.CallLater(200, self.fileexplorerplugin._update_tree)
+        wx.CallLater(200, self.fileexplorerplugin.update_tree)
         if self._updatecheck:
             wx.CallAfter(UpdateNotifierController(self.settings).notify_update_if_needed, UpdateDialog)
         self.Bind(wx.EVT_ACTIVATE_APP, self.OnAppActivate)
         PUBLISHER.subscribe(self.SetGlobalColour, RideSettingsChanged)
         return True
 
-    def _ApplyThemeToWidget(self, widget,
-                            foreColor=wx.BLUE, backColor=wx.LIGHT_GREY, theme={}):
+    @staticmethod
+    def _ApplyThemeToWidget(widget, fore_color=wx.BLUE, back_color=wx.LIGHT_GREY, theme: (None, dict) = None):
+        if theme is None:
+            theme = {'background': back_color, 'foreground': fore_color, 'secondary background': back_color,
+                     'secondary foreground': fore_color}
         background = theme['background']
         foreground = theme['foreground']
         secondary_background = theme['secondary background']
         secondary_foreground = theme['secondary foreground']
-        background_help = theme['background help']
-        foreground_text = theme['foreground text']
-        # font_size = theme['font size']
-        # font_face = theme['font face']
-        if isinstance(widget, wx.lib.agw.aui.auibar.AuiToolBar) or isinstance(widget, ToolBar):
-            auiDefaultToolBarArt = wx.lib.agw.aui.AuiDefaultToolBarArt()
-            auiDefaultToolBarArt.SetDefaultColours(wx.GREEN)
+        background_help = theme[BACKGROUND_HELP]
+        foreground_text = theme[FOREGROUND_TEXT]
+        if isinstance(widget, AuiToolBar) or isinstance(widget, ToolBar):
+            aui_default_tool_bar_art = AuiDefaultToolBarArt()
+            aui_default_tool_bar_art.SetDefaultColours(wx.GREEN)
             widget.SetBackgroundColour(background)
             widget.SetOwnBackgroundColour(background)
             widget.SetForegroundColour(foreground)
@@ -143,8 +160,8 @@ class RIDE(wx.App):
             # or
         elif isinstance(widget, wx.Control):
             if not isinstance(widget, (wx.Button, wx.BitmapButton, ButtonWithHandler)):
-                widget.SetForegroundColour(foreground)  #  or foreColor
-                widget.SetBackgroundColour(background)  # or backColor
+                widget.SetForegroundColour(foreground)
+                widget.SetBackgroundColour(background)
                 widget.SetOwnBackgroundColour(background)
                 widget.SetOwnForegroundColour(foreground)
             else:
@@ -152,12 +169,12 @@ class RIDE(wx.App):
                 widget.SetBackgroundColour(secondary_background)
                 widget.SetOwnBackgroundColour(secondary_background)
                 widget.SetOwnForegroundColour(secondary_foreground)
-        elif isinstance(widget, (wx.TextCtrl, wx.lib.agw.aui.auibook.TabFrame, wx.lib.agw.aui.auibook.AuiTabCtrl)):
-            widget.SetForegroundColour(foreground_text)  # or foreColor
-            widget.SetBackgroundColour(background_help)  # or backColor
+        elif isinstance(widget, (wx.TextCtrl, TabFrame, AuiTabCtrl)):
+            widget.SetForegroundColour(foreground_text)  # or fore_color
+            widget.SetBackgroundColour(background_help)  # or back_color
         elif isinstance(widget, (RideFrame, wx.Panel)):
-            widget.SetForegroundColour(foreground)  # or foreColor
-            widget.SetBackgroundColour(background)  # or foreColor
+            widget.SetForegroundColour(foreground)  # or fore_color
+            widget.SetBackgroundColour(background)  # or fore_color
         elif isinstance(widget, wx.MenuItem):
             widget.SetTextColour(foreground)
             widget.SetBackgroundColour(background)
@@ -167,20 +184,19 @@ class RIDE(wx.App):
             widget.SetOwnBackgroundColour(background)
             widget.SetForegroundColour(foreground)
             widget.SetOwnForegroundColour(foreground)
-            ###### print(f"DEBUG: Application ApplyTheme not specified type(widget) {type(widget)}")
-            # pass
-            # raise UnthemableWidgetError()
 
-    def _WalkWidgets(self, widget, indent=0, indentLevel=4, theme={}):
-        ## print(' ' * indent + widget.__class__.__name__)
+    def _WalkWidgets(self, widget, indent=0, indent_level=4, theme=None):
+        # print(' ' * indent + widget.__class__.__name__)
+        if theme is None:
+            theme = {}
         widget.Freeze()
         # print(f"DEBUG Application General : _WalkWidgets background {theme['background']}")
         self._ApplyThemeToWidget(widget=widget, theme=theme)
         for child in widget.GetChildren():
-            if (not child.IsTopLevel()):  # or isinstance(child, wx.PopupWindow)):
-                indent += indentLevel
-                self._WalkWidgets(child, indent, indentLevel, theme)
-            indent -= indentLevel
+            if not child.IsTopLevel():  # or isinstance(child, wx.PopupWindow)):
+                indent += indent_level
+                self._WalkWidgets(child, indent, indent_level, theme)
+            indent -= indent_level
         widget.Thaw()
 
     def SetGlobalColour(self, message):
@@ -190,8 +206,8 @@ class RIDE(wx.App):
         app = wx.App.Get()
         _root = app.GetTopWindow()
         theme = self.settings.get('General', None)
-        font_size = theme['font size']
-        font_face = theme['font face']
+        font_size = theme[FONT_SIZE]
+        font_face = theme[FONT_FACE]
         font = _root.GetFont()
         font.SetFaceName(font_face)
         font.SetPointSize(font_size)
@@ -201,19 +217,19 @@ class RIDE(wx.App):
         if theme['apply to panels'] and self.fileexplorerplugin.settings['_enabled']:
             self.fileexplorerplugin.settings['background'] = theme['background']
             self.fileexplorerplugin.settings['foreground'] = theme['foreground']
-            self.fileexplorerplugin.settings['foreground text'] = theme['foreground text']
-            self.fileexplorerplugin.settings['background help'] = theme['background help']
-            self.fileexplorerplugin.settings['font size'] = theme['font size']
-            self.fileexplorerplugin.settings['font face'] = theme['font face']
+            self.fileexplorerplugin.settings[FOREGROUND_TEXT] = theme[FOREGROUND_TEXT]
+            self.fileexplorerplugin.settings[BACKGROUND_HELP] = theme[BACKGROUND_HELP]
+            self.fileexplorerplugin.settings[FONT_SIZE] = theme[FONT_SIZE]
+            self.fileexplorerplugin.settings[FONT_FACE] = theme[FONT_FACE]
             if self.fileexplorerplugin.settings['opened']:
                 self.fileexplorerplugin.OnShowFileExplorer(None)
         if theme['apply to panels'] and self.treeplugin.settings['_enabled']:
             self.treeplugin.settings['background'] = theme['background']
             self.treeplugin.settings['foreground'] = theme['foreground']
-            self.treeplugin.settings['foreground text'] = theme['foreground text']
-            self.treeplugin.settings['background help'] = theme['background help']
-            self.treeplugin.settings['font size'] = theme['font size']
-            self.treeplugin.settings['font face'] = theme['font face']
+            self.treeplugin.settings[FOREGROUND_TEXT] = theme[FOREGROUND_TEXT]
+            self.treeplugin.settings[BACKGROUND_HELP] = theme[BACKGROUND_HELP]
+            self.treeplugin.settings[FONT_SIZE] = theme[FONT_SIZE]
+            self.treeplugin.settings[FONT_FACE] = theme[FONT_FACE]
             if self.treeplugin.settings['opened']:
                 self.treeplugin.OnShowTree(None)
         """
@@ -223,10 +239,10 @@ class RIDE(wx.App):
         # print(f"DEBUG: Application General message keys {message.keys} old {message.old} new {message.new}")
         background = general['background']
         foreground = general['foreground']
-        background_help = general['background help']
-        foreground_text = general['foreground text']
-        font_size = general['font size']
-        font_face = general['font face']
+        background_help = general[BACKGROUND_HELP]
+        foreground_text = general[FOREGROUND_TEXT]
+        font_size = general[FONT_SIZE]
+        font_face = general[FONT_FACE]
         font = _root.GetFont()
         font.SetFaceName(font_face)
         font.SetPointSize(font_size)
@@ -262,7 +278,8 @@ class RIDE(wx.App):
                 w.SetFont(font)
             """
 
-    def _publish_system_info(self):
+    @staticmethod
+    def _publish_system_info():
         publish.RideLogMessage(context.SYSTEM_INFO).publish()
 
     @property
@@ -278,10 +295,9 @@ class RIDE(wx.App):
         from ..editor import EditorPlugin
         from ..editor.texteditor import TextEditorPlugin
         for pl in self._plugin_loader.plugins:
-            maybe_editor = pl._plugin
-            if (isinstance(maybe_editor, EditorPlugin) or
-                isinstance(maybe_editor, TextEditorPlugin)) and \
-                maybe_editor.__getattr__("_enabled"):
+            maybe_editor = pl.conn_plugin
+            if (isinstance(maybe_editor, EditorPlugin) or isinstance(maybe_editor, TextEditorPlugin)) and\
+                    maybe_editor.__getattr__("_enabled"):
                 return maybe_editor
 
     def _load_data(self):
@@ -291,7 +307,8 @@ class RIDE(wx.App):
             observer = LoadProgressObserver(self.frame)
             self._controller.load_data(self.workspace_path, observer)
 
-    def _find_robot_installation(self):
+    @staticmethod
+    def _find_robot_installation():
         output = run_python_command(
             ['import robot; print(robot.__file__ + \", \" + robot.__version__)'])
         robot_found = b"ModuleNotFoundError" not in output and output
@@ -302,9 +319,7 @@ class RIDE(wx.App):
                 str(rf_version, system_encoding), str(os.path.dirname(rf_file), system_encoding))).publish()
             return rf_version
         else:
-            publish.RideLogMessage(
-                publish.get_html_message('no_robot'), notify_user=True
-            ).publish()
+            publish.RideLogMessage(publish.get_html_message('no_robot'), notify_user=True).publish()
 
     def _get_latest_path(self):
         recent = self._get_recentfiles_plugin()
@@ -315,8 +330,8 @@ class RIDE(wx.App):
     def _get_recentfiles_plugin(self):
         from ..recentfiles import RecentFilesPlugin
         for pl in self.get_plugins():
-            if isinstance(pl._plugin, RecentFilesPlugin):
-                return pl._plugin
+            if isinstance(pl.conn_plugin, RecentFilesPlugin):
+                return pl.conn_plugin
 
     def get_plugins(self):
         return self._plugin_loader.plugins
@@ -362,9 +377,6 @@ class RIDE(wx.App):
     def OnAppActivate(self, event):
         if self.workspace_path is not None and RideFSWatcherHandler.is_watcher_created():
             if event.GetActive():
-                # print(f"DEBUG: OnAppActivate event.GetActive  is_project_changed_from_disk = {self._controller.is_project_changed_from_disk()}")
-                #print(f"DEBUG: OnAppActivate event.GetActive  is_workspace_dirty = {RideFSWatcherHandler.is_workspace_dirty()}")
-                #DEBUG if self._controller.is_project_changed_from_disk() or \
                 if RideFSWatcherHandler.is_workspace_dirty():
                     self.frame.show_confirm_reload_dlg(event)
                 RideFSWatcherHandler.stop_listening()

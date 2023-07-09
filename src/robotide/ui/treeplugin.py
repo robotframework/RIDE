@@ -163,10 +163,10 @@ class TreePlugin(Plugin):
         html_font_size = self.settings.get('font size', 11)
         self._tree.Show(True)
         self._tree.SetMinSize(wx.Size(200, 225))
-        # self._mgr.DetachPane(self._tree)
-        # self._mgr.Update()
+        # self.aui_mgr.DetachPane(self._tree)
+        # self.aui_mgr.Update()
         # DEBUG: Let's use own method
-        # self._mgr.AddPane(self._tree,
+        # self.aui_mgr.AddPane(self._tree,
         #                   wx.lib.agw.aui.AuiPaneInfo().Name("tree_content").
         #                   Caption("Test Suites").LeftDockable(True).
         #                   CloseButton(True))

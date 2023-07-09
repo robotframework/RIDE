@@ -42,25 +42,25 @@ class PluginConnector(_PluginConnector):
 
     def __init__(self, plugin, application):
         _PluginConnector.__init__(self, plugin.name, plugin.doc)
-        self._plugin = plugin
+        self.conn_plugin = plugin
         self._settings = application.settings['Plugins'].add_section(plugin.name)
         self.config_panel = plugin.config_panel
         self.metadata = plugin.metadata
 
     def enable_on_startup(self):
-        if self._settings.get('_enabled', self._plugin.initially_enabled):
+        if self._settings.get('_enabled', self.conn_plugin.initially_enabled):
             self.enable()
 
     def enable(self):
         self._settings.set('_enabled', True)
         self.enabled = True
-        self._plugin.enable()
+        self.conn_plugin.enable()
 
     def disable(self):
         if self.enabled:
             self._settings.set('_enabled', False)
             self.enabled = False
-            self._plugin.disable()
+            self.conn_plugin.disable()
 
 
 class BrokenPlugin(_PluginConnector):

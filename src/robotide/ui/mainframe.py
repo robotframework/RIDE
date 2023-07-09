@@ -88,10 +88,10 @@ class RideFrame(wx.Frame):
         self.SetLayoutDirection(wx.Layout_LeftToRight)
         # self.SetLayoutDirection(wx.Layout_RightToLeft)
 
-        self._mgr = aui.AuiManager()
+        self.aui_mgr = aui.AuiManager()
 
         # tell AuiManager to manage this frame
-        self._mgr.SetManagedWindow(self)
+        self.aui_mgr.SetManagedWindow(self)
 
         self.SetMinSize(wx.Size(400, 300))
 
@@ -159,9 +159,9 @@ class RideFrame(wx.Frame):
                       style=wx.ICON_ERROR)
 
     def _init_ui(self):
-        # self._mgr.AddPane(wx.Panel(self), aui.AuiPaneInfo().CenterPane())
+        # self.aui_mgr.AddPane(wx.Panel(self), aui.AuiPaneInfo().CenterPane())
         # #### self.splitter = wx.SplitterWindow(self, style=wx.SP_LIVE_UPDATE)
-        # self._mgr.AddPane(wx.Panel(self), aui.AuiPaneInfo().CenterPane())
+        # self.aui_mgr.AddPane(wx.Panel(self), aui.AuiPaneInfo().CenterPane())
         # set up default notebook style
         self._notebook_style = aui.AUI_NB_DEFAULT_STYLE | aui.AUI_NB_WINDOWLIST_BUTTON | \
                                aui.AUI_NB_TAB_EXTERNAL_MOVE | aui.AUI_NB_SUB_NOTEBOOK | aui.AUI_NB_SMART_TABS
@@ -172,9 +172,9 @@ class RideFrame(wx.Frame):
                                  self._notebook_style)
         self.notebook.SetBackgroundColour(Colour(self.color_background))
         self.notebook.SetForegroundColour(Colour(self.color_foreground))
-        self._mgr.AddPane(self.notebook,
-                          aui.AuiPaneInfo().Name("notebook_editors").
-                          CenterPane().PaneBorder(False))
+        self.aui_mgr.AddPane(self.notebook,
+                             aui.AuiPaneInfo().Name("notebook_editors").
+                             CenterPane().PaneBorder(False))
         mb = MenuBar(self)
         self.toolbar = ToolBar(self)
         self.toolbar.SetMinSize(wx.Size(100, 60))
@@ -183,15 +183,15 @@ class RideFrame(wx.Frame):
         # self.SetToolBar(self.toolbar.GetToolBar())
         mb.m_frame.SetBackgroundColour(Colour(self.color_background))
         mb.m_frame.SetForegroundColour(Colour(self.color_foreground))
-        self._mgr.AddPane(self.toolbar, aui.AuiPaneInfo().Name("maintoolbar").
-                          ToolbarPane().Top())
-        self.actions = ActionRegisterer(self._mgr, mb, self.toolbar,
+        self.aui_mgr.AddPane(self.toolbar, aui.AuiPaneInfo().Name("maintoolbar").
+                             ToolbarPane().Top())
+        self.actions = ActionRegisterer(self.aui_mgr, mb, self.toolbar,
                                         ShortcutRegistry(self))
         """
         ##### Test
         tb3 = self.testToolbar()
 
-        self._mgr.AddPane(tb3,
+        self.aui_mgr.AddPane(tb3,
                           aui.AuiPaneInfo().Name("tb3").Caption("Toolbar 3").
                           ToolbarPane().Top().Row(1).Position(1))
         
@@ -202,21 +202,21 @@ class RideFrame(wx.Frame):
         self.tree = Tree(self, self.actions, self._application.settings)
         self.tree.SetMinSize(wx.Size(275, 250))
         # self.leftpanel.Bind(wx.EVT_SIZE, self.tree.OnSize)
-        # self._mgr.AddPane(self.leftpanel, aui.AuiPaneInfo().Name("left_panel").Caption("left_panel").Left())
+        # self.aui_mgr.AddPane(self.leftpanel, aui.AuiPaneInfo().Name("left_panel").Caption("left_panel").Left())
         # DEBUG: Next was already called from application.py
-        self._mgr.AddPane(self.tree,
-                          aui.AuiPaneInfo().Name("tree_content").Caption("Test Suites").CloseButton(False).
-                          LeftDockable())  # DEBUG: remove .CloseButton(False) when restore is fixed
-        # DEBUG: self._mgr.GetPane(self.tree).DestroyOnClose()
+        self.aui_mgr.AddPane(self.tree,
+                             aui.AuiPaneInfo().Name("tree_content").Caption("Test Suites").CloseButton(False).
+                             LeftDockable())  # DEBUG: remove .CloseButton(False) when restore is fixed
+        # DEBUG: self.aui_mgr.GetPane(self.tree).DestroyOnClose()
         # TreePlugin will manage showing the Tree
         self.actions.register_actions(ActionInfoCollection(_menudata, self, self.tree))
         # ##### File explorer panel is always created here
         self.filemgr = FileExplorer(self, self._controller)
         self.filemgr.SetMinSize(wx.Size(275, 250))
         # DEBUG: Next was already called from application.py
-        self._mgr.AddPane(self.filemgr,
-                          aui.AuiPaneInfo().Name("file_manager").
-                          LeftDockable())
+        self.aui_mgr.AddPane(self.filemgr,
+                             aui.AuiPaneInfo().Name("file_manager").
+                             LeftDockable())
 
         mb.take_menu_bar_into_use()
         self.CreateStatusBar(name="StatusBar")
@@ -227,7 +227,7 @@ class RideFrame(wx.Frame):
         # set main frame icon
         self.SetIcons(self._image_provider.PROGICONS)
         # tell the manager to "commit" all the changes just made
-        self._mgr.Update()
+        self.aui_mgr.Update()
         # wx.CallLater(2000, RideSettingsChanged(keys=("General", ''), old='', new='').publish)
 
     def get_selected_datafile(self):
@@ -239,11 +239,11 @@ class RideFrame(wx.Frame):
     def OnClose(self, event):
         if self._allowed_to_exit():
             try:
-                perspective = self._mgr.SavePerspective()
+                perspective = self.aui_mgr.SavePerspective()
                 self._application.settings.set('AUI Perspective', perspective)
                 # deinitialize the frame manager
-                self._mgr.UnInit()
-                del self._mgr
+                self.aui_mgr.UnInit()
+                del self.aui_mgr
             except AttributeError:
                 pass
             try:

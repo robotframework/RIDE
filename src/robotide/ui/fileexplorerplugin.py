@@ -122,9 +122,9 @@ class FileExplorerPlugin(Plugin):
         self._filemgr.Raise()
         self._mgr.Update()
         self.save_setting('opened', True)
-        self._update_tree()
+        self.update_tree()
 
-    def _update_tree(self):
+    def update_tree(self):
         if not self._filemgr:
             return
         self._filemgr.update_tree()

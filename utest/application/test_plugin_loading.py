@@ -78,7 +78,7 @@ class TestPluginLoader(unittest.TestCase):
     def test_plugins_can_disable_other_plugins(self):
         self.loader.enable_plugins()
         self._get_plugin_by_name(
-            'Example Plugin 2')._plugin.turn_off('Example Plugin 1')
+            'Example Plugin 2').conn_plugin.turn_off('Example Plugin 1')
         assert not self._get_plugin_by_name('Example Plugin 1').enabled
 
     def _get_plugin_by_name(self, name):
