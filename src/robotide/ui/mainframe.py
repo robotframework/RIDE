@@ -560,7 +560,7 @@ class RideFrame(wx.Frame):
     def show_confirm_reload_dlg(self, event):
         msg = ['Workspace modifications detected on the file system.',
                'Do you want to reload the workspace?',
-               'Answering <No> will overwrite the changes on disk.']
+               'Answering <No> will ignore the changes on disk.']
         if self._controller.is_dirty():
             msg.insert(2, 'Answering <Yes> will discard unsaved changes.')
         ret = wx.MessageBox('\n'.join(msg), 'Files Changed On Disk',
@@ -579,17 +579,6 @@ class RideFrame(wx.Frame):
                 # ask user to open new directory
                 # DEBUG: add some notification msg to users
                 wx.CallAfter(self.OnOpenDirectory, event)
-        else:
-            self.check_modified_files()
-            self.save_all()
-
-    def check_modified_files(self):
-        for _ in self._controller.datafiles:
-            if _.has_been_modified_on_disk() or _.has_been_removed_from_disk():
-                if not os.path.exists(_.directory):
-                    # sub folder is removed, create new one before saving
-                    os.makedirs(_.directory)
-                _.mark_dirty()
 
 
 # Code moved from actiontriggers
