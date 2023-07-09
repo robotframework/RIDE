@@ -14,18 +14,16 @@
 #  limitations under the License.
 
 import wx
-from wx import Colour
-
+from wx.lib.scrolledpanel import ScrolledPanel
 from ..context import IS_WINDOWS
 from ..controller import ctrlcommands
-# import ChangeTag, ClearSetting
 from ..controller.tags import ForcedTag, DefaultTag
 
 
-class TagsDisplay(wx.lib.scrolledpanel.ScrolledPanel):
+class TagsDisplay(ScrolledPanel):
 
     def __init__(self, parent, controller):
-        wx.lib.scrolledpanel.ScrolledPanel.__init__(self, parent, -1, style=wx.HSCROLL)
+        ScrolledPanel.__init__(self, parent, -1, style=wx.HSCROLL)
         self._controller = controller
         self._sizer = wx.BoxSizer()
         self._tag_boxes = []
@@ -34,10 +32,10 @@ class TagsDisplay(wx.lib.scrolledpanel.ScrolledPanel):
         self.SetSizer(self._sizer)
 
     def add_tag(self, tag):
-        self._add_tagbox(Properties(tag, self._controller))
+        self._add_tagbox(properties(tag, self._controller))
 
-    def _add_tagbox(self, properties):
-        tagbox = TagBox(self, properties)
+    def _add_tagbox(self, tproperties):
+        tagbox = TagBox(self, tproperties)
         self._sizer.Add(tagbox)
         self._tag_boxes.append(tagbox)
 
@@ -61,11 +59,12 @@ class TagsDisplay(wx.lib.scrolledpanel.ScrolledPanel):
             tag_box.saving()
 
     def set_value(self, controller, plugin=None):
+        _ = plugin
         if not self._tag_boxes:
             self._add_tags(list(controller))
         else:
             # in GTK you can have focus in a dead object
-            #  .. this causes Segmentation Faults
+            # this causes Segmentation Faults
             # Thus instead of clearing old values and adding new ones
             # modify the ones that exist
             self._modify_values(controller)
@@ -92,7 +91,7 @@ class TagsDisplay(wx.lib.scrolledpanel.ScrolledPanel):
                     self._controller.execute(ctrlcommands.ClearSetting())
 
     def _modifiable_tags_count(self):
-        return sum(1 for tb in self._tag_boxes[:] if tb._properties.modifiable)
+        return sum(1 for tb in self._tag_boxes[:] if tb.tb_properties.modifiable)
 
     def _set_tags(self, tags, tagboxes, controller):
         if not tags:
@@ -100,7 +99,7 @@ class TagsDisplay(wx.lib.scrolledpanel.ScrolledPanel):
         elif not tagboxes:
             self._add_tags(tags)
         else:
-            tagboxes[0].set_properties(Properties(tags[0], controller))
+            tagboxes[0].set_properties(properties(tags[0], controller))
             self._set_tags(tags[1:], tagboxes[1:], controller)
 
     def _destroy_tagboxes(self, tagboxes):
@@ -112,17 +111,22 @@ class TagsDisplay(wx.lib.scrolledpanel.ScrolledPanel):
         tagbox.Destroy()
         self._tag_boxes.remove(tagbox)
 
-    def GetSelection(self):
+    @staticmethod
+    def GetSelection():
         return None
 
     def get_height(self):
-        return self._sizer.height
+        """ Seems that this method is never called """
+        _, height = self._sizer.GetSize()
+        # print(f"DEBUG: tags height={height}")
+        return height  # DEBUG return self._sizer.height
 
 
 class TagBox(wx.TextCtrl):
+    tb_properties = None
 
-    def __init__(self, parent, properties):
-        wx.TextCtrl.__init__(self, parent, wx.ID_ANY, '', style=wx.TE_CENTER|wx.TE_NOHIDESEL)
+    def __init__(self, parent, tproperties):
+        wx.TextCtrl.__init__(self, parent, wx.ID_ANY, '', style=wx.TE_CENTER | wx.TE_NOHIDESEL)
         """
         self.SetBackgroundColour(Colour(200, 222, 40))
         self.SetOwnBackgroundColour(Colour(200, 222, 40))
@@ -130,7 +134,7 @@ class TagBox(wx.TextCtrl):
         self.SetOwnForegroundColour(Colour(7, 0, 70))
         """
         self._bind()
-        self.set_properties(properties)
+        self.set_properties(tproperties)
 
     def _bind(self):
         for event, handler in [(wx.EVT_SET_FOCUS, self.OnSetFocus),
@@ -140,14 +144,14 @@ class TagBox(wx.TextCtrl):
                                (wx.EVT_CHAR, self.OnChar)]:
             self.Bind(event, handler)
 
-    def set_properties(self, properties):
-        self._properties = properties
+    def set_properties(self, tproperties):
+        self.tb_properties = tproperties
         self._apply_properties()
 
     def _apply_properties(self):
-        self.SetValue(self._properties.text)
-        self.SetToolTip(self._properties.tooltip)
-        self.SetEditable(self._properties.enabled)
+        self.SetValue(self.tb_properties.text)
+        self.SetToolTip(self.tb_properties.tooltip)
+        self.SetEditable(self.tb_properties.enabled)
         size = self._get_size()
         self.SetMaxSize(size)
         self.SetMinSize(size)
@@ -159,8 +163,8 @@ class TagBox(wx.TextCtrl):
         return wx.Size(max(size[0]+offset, 75), max(size[1]+3, 25))
 
     def _colorize(self):
-        self.SetForegroundColour(self._properties.foreground_color)
-        self.SetBackgroundColour(self._properties.background_color)
+        self.SetForegroundColour(self.tb_properties.foreground_color)
+        self.SetBackgroundColour(self.tb_properties.background_color)
 
     def close(self):
         self._update_value()
@@ -169,7 +173,7 @@ class TagBox(wx.TextCtrl):
         self._update_value()
 
     def OnKeyUp(self, event):
-        if self._properties.modifiable:
+        if self.tb_properties.modifiable:
             if event.GetKeyCode() == wx.WXK_ESCAPE:
                 self._cancel_editing()
             elif event.GetKeyCode() == wx.WXK_RETURN:
@@ -183,14 +187,14 @@ class TagBox(wx.TextCtrl):
             event.Skip()
 
     def _cancel_editing(self):
-        self.SetValue(self._properties.text)
+        self.SetValue(self.tb_properties.text)
         self._colorize()
 
     def OnChar(self, event):
         # For some reason at least ESC and F<num> keys are considered chars.
         # We only special case ESC, though.
         if event.GetKeyCode() != wx.WXK_ESCAPE:
-            self._properties.activate(self)
+            self.tb_properties.activate(self)
         event.Skip()
 
     def OnKillFocus(self, event):
@@ -201,10 +205,10 @@ class TagBox(wx.TextCtrl):
             event.Skip()
 
     def _update_value(self):
-        self._properties.change_value(self.value)
+        self.tb_properties.change_value(self.value)
 
     def OnSetFocus(self, event):
-        if self._properties.add_new:
+        if self.tb_properties.add_new:
             wx.CallAfter(self.SelectAll)
         event.Skip()
 
@@ -214,10 +218,10 @@ class TagBox(wx.TextCtrl):
 
     @property
     def add_new(self):
-        return self._properties.add_new
+        return self.tb_properties.add_new
 
 
-def Properties(tag, controller):
+def properties(tag, controller):
     if tag.controller == controller:
         return TagBoxProperties(tag)
     return tag.choose({ForcedTag: ForcedTagBoxProperties,
@@ -225,7 +229,7 @@ def Properties(tag, controller):
 
 
 class _TagBoxProperties(object):
-    # TODO: Use colours from settings
+    # DEBUG: Use colours from settings
     foreground_color = 'black'  # Colour(7, 0, 70)  #
     background_color = 'gray'  # Colour(200, 222, 40) 'white'
     enabled = True
@@ -251,6 +255,7 @@ class _TagBoxProperties(object):
             self._tag.controller.execute(ctrlcommands.ChangeTag(self._tag, value))
 
     def activate(self, tagbox):
+        """ Just ignore it """
         pass
 
 
@@ -259,7 +264,7 @@ class TagBoxProperties(_TagBoxProperties):
 
 
 class AddTagBoxProperties(_TagBoxProperties):
-    # TODO: Use colours from settings
+    # DEBUG: Use colours from settings
     foreground_color = 'gray'  # Colour(200, 222, 40)
     text = '<Add New>'
     tooltip = 'Click to add new tag'
@@ -276,14 +281,14 @@ class AddTagBoxProperties(_TagBoxProperties):
 
 
 class ForcedTagBoxProperties(_TagBoxProperties):
-    #TODO: Use colours from settings
+    # DEBUG: Use colours from settings
     foreground_color = 'red'
     background_color = '#D3D3D3'  # Colour(200, 222, 40)
     enabled = False
 
 
 class DefaultTagBoxProperties(_TagBoxProperties):
-    #TODO: Use colours from settings
+    # DEBUG: Use colours from settings
     foreground_color = '#666666'
     background_color = '#D3D3D3'  # Colour(200, 222, 40)
     enabled = False
