@@ -30,6 +30,7 @@ except ImportError:
                      "or pip install wxPython")
     exit(-1)
 
+from os import environ, chmod, chown
 from os.path import exists, join
 from robotide.widgets import RIDEDialog
 
@@ -42,7 +43,10 @@ Usage: python ride_postinstall.py [options] <-install|-remove>
                 -f    - Force action.
                 -help - This help.
 """.strip()
-# TODO: Add -remove, to remove desktop shortcut
+# DEBUG: Add -remove, to remove desktop shortcut
+
+ROBOT_ICO = "robot.ico"
+DEFAULT_LANGUAGE = environ.get('LANG', '').split(':')
 
 
 def verify_install():
@@ -76,7 +80,7 @@ class MessageDialog(RIDEDialog):
         vbox.Add(self.settimetolivemsg, 0, wx.ALIGN_CENTER | wx.TOP, 10)
         self.SetSizer(vbox)
         self.SetAffirmativeId(wx.ID_OK)
-        self._create_buttons()
+        self._create_buttons(None)
         self.SetBackgroundColour(Colour(self.color_background))
         self.SetForegroundColour(Colour(self.color_foreground))
         self.timer = wx.Timer(self)
@@ -94,15 +98,17 @@ class MessageDialog(RIDEDialog):
         event.Skip()
 
     def OnCancel(self, evt):
+        _ = evt
         self.EndModal(wx.ID_NO)
 
     def OnClose(self, evt):
-        self.EndModal(wx.ID_NO)
+        self.OnCancel(evt)
 
     def OnNo(self, evt):
-        self.EndModal(wx.ID_NO)
+        self.OnCancel(evt)
 
     def onTimer(self, evt):
+        _ = evt
         self.timeToLive -= 1
         self.settimetolivemsg.SetLabel('Closing this dialog box in %ds...' % self.timeToLive)
 
@@ -110,8 +116,8 @@ class MessageDialog(RIDEDialog):
             self.timer.Stop()
             self.EndModal(wx.ID_NO)
 
-    def _create_buttons(self):
-        buttons = self.CreateStdDialogButtonSizer(wx.OK|wx.CANCEL)
+    def _create_buttons(self, sizer):
+        buttons = self.CreateStdDialogButtonSizer(wx.OK | wx.CANCEL)
         self.SetBackgroundColour(Colour(self.color_background))
         self.SetForegroundColour(Colour(self.color_foreground))
         for item in self.GetChildren():
@@ -131,7 +137,7 @@ def _askyesno(title, message, frame=None):
         parent = wx.Frame(frame, size=(0, 0))
     parent.CenterOnScreen()
     dlg = MessageDialog(parent, message, title, ttl=8)
-    result = dlg.ShowModal() in [ wx.ID_YES, wx.ID_OK]
+    result = dlg.ShowModal() in [wx.ID_YES, wx.ID_OK]
     print("Result %s" % result)
     if dlg:
         dlg.Destroy()
@@ -159,12 +165,10 @@ def _askdirectory(title, initialdir, frame=None):
 
 def _create_desktop_shortcut_linux(frame=None):
     from os.path import expanduser
-    from os import environ, chmod, chown
     import subprocess
     import pwd
     import sysconfig
-    DEFAULT_LANGUAGE = environ.get('LANG', '').split(':')
-    # TODO: Add more languages
+    # DEBUG: Add more languages
     desktop = {"de": "Desktop", "en": "Desktop", "es": "Escritorio",
                "fi": r"Työpöytä", "fr": "Bureau", "it": "Scrivania",
                "pt": r"Área de Trabalho"}
@@ -201,15 +205,15 @@ def _create_desktop_shortcut_linux(frame=None):
         if not option_q and not option_f:
             if not _askyesno("Setup", "Create desktop shortcut?", frame):
                 return False
-        roboticon = join(sysconfig.get_paths()["purelib"], "robotide", "widgets", "robot.ico")
+        roboticon = join(sysconfig.get_paths()["purelib"], "robotide", "widgets", ROBOT_ICO)
         if not exists(roboticon):
             try:
                 import robotide as _
-                roboticon = join(_.__path__[0], "widgets", "robot.ico")
+                roboticon = join(_.__path__[0], "widgets", ROBOT_ICO)
             except ImportError:
-                pass
+                _ = None
             if not exists(roboticon):
-                roboticon = join("FIXME: find correct path to: .../site-packages/", "robotide", "widgets", "robot.ico")
+                roboticon = join("FIXME: find correct path to: .../site-packages/", "robotide", "widgets", ROBOT_ICO)
         with open(link, "w+") as shortcut:
             shortcut.write(f"#!/usr/bin/env xdg-open\n[Desktop Entry]\n"
                            f"Exec={sys.executable} -m robotide.__init__\n"
@@ -248,8 +252,8 @@ def _create_desktop_shortcut_mac(frame=None):
             os.remove(user_desktop_link)
         try:
             os.symlink(ride_app_pc_path, user_desktop_link)
-        except Exception:
-            pass
+        except Exception as e:
+            print(e)
 
 
 def _create_desktop_shortcut_windows(frame=None):
@@ -288,7 +292,7 @@ def _create_desktop_shortcut_windows(frame=None):
         from pywintypes import com_error
         try:
             persist_file.Save(public_link, 0)
-            sys.stderr.write(f"Desktop shortcut created for all users.")
+            sys.stderr.write("Desktop shortcut created for all users.")
         except com_error:
             persist_file.Save(link, 0)
 
@@ -332,7 +336,6 @@ def main(args):
     arg = args[-1] if len(args) == 1 and args[-1] in ['-install', '-remove',
                                                       '-help'] else None
     if arg == '-install':
-        doit = True
         platform = sys.platform.lower()
         doit = verify_install()
         if doit:
