@@ -529,7 +529,7 @@ class DeleteItem(_ItemCommand):
 class ClearSetting(_Command):
 
     def execute(self, context):
-        context.clear()
+        context.clear_field()
 
 
 class DeleteFile(_Command):

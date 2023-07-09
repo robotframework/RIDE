@@ -48,7 +48,7 @@ class Tag(_BaseController):
             if len(self.controller.parent.default_tags.value) > 0:
                 self.controller.set_value("")
             else:
-                self.controller.clear()
+                self.controller.clear_field()
 
 
 class ForcedTag(Tag):

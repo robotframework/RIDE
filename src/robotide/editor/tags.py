@@ -49,7 +49,7 @@ class TagsDisplay(wx.lib.scrolledpanel.ScrolledPanel):
         if parent_sizer:
             parent_sizer.Layout()
 
-    def clear(self):
+    def clear_field(self):
         self.set_value(self._controller)
 
     def close(self):

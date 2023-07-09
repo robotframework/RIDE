@@ -27,17 +27,15 @@ from .tags import TagsDisplay
 from .. import context
 from .. import utils
 from ..controller import ctrlcommands
-# import UpdateVariable, UpdateDocumentation, SetValues, AddLibrary, AddResource, AddVariablesFileImport, ClearSetting
-from ..editor.listeditor import ListEditorBase
 from ..publish import PUBLISHER
 from ..publish.messages import (RideImportSetting, RideOpenVariableDialog, RideExecuteSpecXmlImport, RideSaving,
                                 RideVariableAdded, RideVariableUpdated, RideVariableRemoved)
-from ..utils import overrides
 from ..utils.highlightmatcher import highlight_matcher
 from ..widgets import ButtonWithHandler, Label, HtmlWindow, PopupMenu, PopupMenuItems, HtmlDialog
 
 
 class SettingEditor(wx.Panel):
+    popup_timer = None
 
     def __init__(self, parent, controller, plugin, tree):
         wx.Panel.__init__(self, parent)
@@ -158,7 +156,7 @@ class SettingEditor(wx.Panel):
             pass
 
     def _stop_popup_timer(self):
-        if hasattr(self, 'popup_timer'):
+        if hasattr(self, 'popup_timer') and self.popup_timer is not None:
             self.popup_timer.Stop()
 
     def OnEnterWindow(self, event):
@@ -178,16 +176,12 @@ class SettingEditor(wx.Panel):
         event.Skip()
 
     def OnLeaveWindow(self, event):
-        self._stop_popup_timer()
-        try:
-            self._tooltip.hide()
-        except AttributeError:
-            pass
-        event.Skip()
+        self.OnWindowDestroy(event)
 
     def OnPopupTimer(self, event):
+        _ = event
         _tooltipallowed = False
-        # TODO This prevents tool tip for ex. Template edit field in wxPhoenix
+        # DEBUG: This prevents tool tip for ex. Template edit field in wxPhoenix
         try:
             _tooltipallowed = self.Parent.tooltip_allowed(self._tooltip)
         except AttributeError:
@@ -203,7 +197,8 @@ class SettingEditor(wx.Panel):
         kw = self._controller.keyword_name
         return self.plugin.get_keyword_details(kw), kw
 
-    def _tooltip_position(self):
+    @staticmethod
+    def _tooltip_position():
         ms = wx.GetMouseState()
         # ensure that the popup gets focus immediately
         return ms.x-3, ms.y-3
@@ -231,10 +226,12 @@ class SettingEditor(wx.Panel):
         self.update_value()
 
     def OnClear(self, event):
+        _ = event
         self._controller.execute(ctrlcommands.ClearSetting())
         self._update_and_notify()
 
     def _ps_on_update_value(self, message):
+        _ = message
         self.update_value()
 
     def update_value(self):
@@ -243,7 +240,7 @@ class SettingEditor(wx.Panel):
         if self._controller.is_set:
             self._value_display.set_value(self._controller, self.plugin)
         else:
-            self._value_display.clear()
+            self._value_display.clear_field()
 
     def get_selected_datafile_controller(self):
         return self._controller.datafile_controller
@@ -262,7 +259,10 @@ class SettingEditor(wx.Panel):
         return self._value_display.contains(text)
 
 
-class SettingValueDisplay(wx.TextCtrl):
+class SettingValueDisplay(wx.TextCtrl, HtmlPopupWindow):
+    _is_user_keyword = False
+    _keyword_name = None
+    _value = None
 
     def __init__(self, parent):
         wx.TextCtrl.__init__(
@@ -318,7 +318,7 @@ class SettingValueDisplay(wx.TextCtrl):
         self.SetStyle(0, len(self._keyword_name),
                       wx.TextAttr(user_kw_color, self._get_background_colour(), font))
 
-    def clear(self):
+    def clear_field(self):
         self.Clear()
         self._empty_values()
         self._colorize_background()
@@ -354,21 +354,15 @@ class DocumentationEditor(SettingEditor):
         if self._controller:
             self._value_display.set_content(self._controller.visible_value)
 
-    """
-    def _get_tooltip(self):
-        return HtmlPopupWindow(self, (500, 350), detachable=False)
-
-    def _get_details_for_tooltip(self):
-        return self._controller.visible_value, None
-    """
-
     def OnKey(self, event):
         event.Skip()
 
     def OnDisplayMotion(self, event):
+        """ Just ignoring it """
         pass
 
     def _hide_tooltip(self):
+        """ Just ignoring it """
         pass
 
     def _create_editor_dialog(self):
@@ -383,9 +377,11 @@ class DocumentationEditor(SettingEditor):
         return False
 
     def highlight(self, text):
+        """ Just ignoring it """
         pass
 
     def clear_highlight(self):
+        """ Just ignoring it """
         pass
 
 
@@ -396,6 +392,7 @@ class TagsEditor(SettingEditor):
         self.plugin.subscribe(self._saving, RideSaving)
 
     def _saving(self, message):
+        _ = message
         self._tags_display.saving()
 
     def _value_display_control(self):
@@ -408,9 +405,11 @@ class TagsEditor(SettingEditor):
         return False
 
     def highlight(self, text):
+        """ Just ignoring it """
         pass
 
     def clear_highlight(self):
+        """ Just ignoring it """
         pass
 
     def close(self):
@@ -420,6 +419,7 @@ class TagsEditor(SettingEditor):
 
 
 class _AbstractListEditor(ListEditor):
+    _titles = []
 
     def __init__(self, parent, tree, controller):
         ListEditor.__init__(self, parent, self._titles, controller)
@@ -436,12 +436,15 @@ class _AbstractListEditor(ListEditor):
         ListEditor.update_data(self)
 
     def update_value(self):
+        """ Just ignoring it """
         pass
 
     def close(self):
+        """ Just ignoring it """
         pass
 
     def highlight(self, text, expand=False):
+        """ Just ignoring it """
         pass
 
 
@@ -460,9 +463,11 @@ class VariablesListEditor(_AbstractListEditor):
         _AbstractListEditor.__init__(self, parent, tree, controller)
 
     def _update_vars(self, message):
+        _ = message
         ListEditor.update_data(self)
 
-    def get_column_values(self, item):
+    @staticmethod
+    def get_column_values(item):
         return [item.name, item.value
                 if isinstance(item.value, str)
                 else ' | '.join(item.value),
@@ -477,14 +482,17 @@ class VariablesListEditor(_AbstractListEditor):
         self._list.SetFocus()
 
     def OnAddScalar(self, event):
+        _ = event
         self._show_dialog(
             ScalarVariableDialog(self._controller))
 
     def OnAddList(self, event):
+        _ = event
         self._show_dialog(
             ListVariableDialog(self._controller, plugin=self.Parent.plugin))
 
     def OnAddDict(self, event):
+        _ = event
         self._show_dialog(
             DictionaryVariableDialog(self._controller,
                                      plugin=self.Parent.plugin))
@@ -539,7 +547,6 @@ class ImportSettingListEditor(_AbstractListEditor):
         self.SetForegroundColour(Colour(self.color_foreground))
         self.SetOwnForegroundColour(Colour(self.color_foreground))
 
-    @overrides(ListEditorBase)
     def _create_buttons(self):
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(Label(
@@ -565,11 +572,9 @@ class ImportSettingListEditor(_AbstractListEditor):
     def has_link_target(self, controller):
         return controller.is_resource and controller.get_imported_controller()
 
-    @overrides(ListEditorBase)
     def has_error(self, controller):
         return controller.has_error()
 
-    @overrides(ListEditorBase)
     def OnRightClick(self, event):
         PopupMenu(self, PopupMenuItems(self, self._create_item_menu()))
 
@@ -580,7 +585,9 @@ class ImportSettingListEditor(_AbstractListEditor):
             menu = menu[:] + ['Import Library Spec XML']
         return menu
 
-    def OnImportLibrarySpecXml(self, event):
+    @staticmethod
+    def OnImportLibrarySpecXml(event):
+        _ = event
         RideExecuteSpecXmlImport().publish()
 
     def OnEdit(self, event):
@@ -591,22 +598,26 @@ class ImportSettingListEditor(_AbstractListEditor):
             setting, on_empty=self._delete_selected)
 
     def OnLibrary(self, event):
+        _ = event
         self._show_import_editor_dialog(
             LibraryDialog,
             lambda v, c: self._controller.execute(ctrlcommands.AddLibrary(v, c)))
 
     def OnResource(self, event):
+        _ = event
         self._show_import_editor_dialog(
             ResourceDialog,
             lambda v, c: self._controller.execute(ctrlcommands.AddResource(v, c)))
 
     def OnVariables(self, event):
+        _ = event
         self._show_import_editor_dialog(
             VariablesDialog,
             lambda v, c:
                 self._controller.execute(ctrlcommands.AddVariablesFileImport(v, c)))
 
     def OnImportFailedHelp(self, event):
+        _ = event
         if self._import_failed_shown:
             return
         dialog = HtmlDialog('Import failure handling', '''
@@ -620,7 +631,8 @@ class ImportSettingListEditor(_AbstractListEditor):
             adding the XML file with the correct name to PYTHONPATH) to enable keyword completion
             for example for Java libraries.
             Library spec XML can be created using libdoc tool from Robot Framework.
-            For more information see <a href="https://github.com/robotframework/RIDE/wiki/Keyword-Completion#wiki-using-library-specs">wiki</a>.
+            For more information see 
+            <a href="https://github.com/robotframework/RIDE/wiki/Keyword-Completion#wiki-using-library-specs">wiki</a>.
             </li>
         </ul>''')
         dialog.Bind(wx.EVT_CLOSE, self._import_failed_help_closed)
@@ -646,10 +658,12 @@ class ImportSettingListEditor(_AbstractListEditor):
             self.update_data()
         dlg.Destroy()
 
-    def _empty_name(self, value):
+    @staticmethod
+    def _empty_name(value):
         return not value[0]
 
-    def get_column_values(self, item):
+    @staticmethod
+    def get_column_values(item):
         return [item.type, item.name, item.display_value,
                 ListToStringFormatter(item.comment).value]
 
@@ -669,6 +683,7 @@ class MetadataListEditor(_AbstractListEditor):
         dlg.Destroy()
 
     def OnAddMetadata(self, event):
+        _ = event
         dlg = MetadataDialog(self._controller.datafile)
         if dlg.ShowModal() == wx.ID_OK:
             ctrl = self._controller.add_metadata(*dlg.get_value())
@@ -676,6 +691,7 @@ class MetadataListEditor(_AbstractListEditor):
             self.update_data()
         dlg.Destroy()
 
-    def get_column_values(self, item):
+    @staticmethod
+    def get_column_values(item):
         return [item.name, utils.html_escape(item.value),
                 ListToStringFormatter(item.comment).value]
