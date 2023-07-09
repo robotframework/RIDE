@@ -14,7 +14,6 @@
 #  limitations under the License.
 
 from .excludes_dialogs import ExcludePreferences
-# from .fileexplorerplugin import FileExplorer
 from .progress import LoadProgressObserver
 from .treeplugin import Tree
 from .mainframe import ToolBar
