@@ -168,6 +168,7 @@ RELEASE_NOTES = f"""
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
+<li>Improved project file system changes and reloading</li>
 <li>Added context menu to RIDE tray icon. Options Show, Hide and Close</li>
 <li>Added sincronization with Project Explorer to navigate to selected item, Test Case, Keyword, Variable, in Text
  Editor</li>
@@ -225,6 +226,6 @@ python -m robotide.__init__
 <pre class="literal-block">
 python -m robotide.postinstall -install
 </pre>
-<p>RIDE {VERSION} was released on 07/Jul/2023.</p>
+<p>RIDE {VERSION} was released on 09/Jul/2023.</p>
 </div>
 """
