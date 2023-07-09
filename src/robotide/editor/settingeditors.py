@@ -16,7 +16,7 @@
 import wx
 from wx import Colour
 
-from .editordialogs import EditorDialog, DocumentationDialog, MetadataDialog, \
+from .editordialogs import editor_dialog, DocumentationDialog, MetadataDialog, \
     ScalarVariableDialog, ListVariableDialog, DictionaryVariableDialog, LibraryDialog, \
     ResourceDialog, VariablesDialog
 from .formatters import ListToStringFormatter
@@ -142,7 +142,7 @@ class SettingEditor(wx.Panel):
         self._editing = False
 
     def _create_editor_dialog(self):
-        dlg_class = EditorDialog(self._controller)
+        dlg_class = editor_dialog(self._controller)
         return dlg_class(self._datafile, self._controller, self.plugin)
 
     def _set_value(self, value_list, comment):
@@ -593,7 +593,7 @@ class ImportSettingListEditor(_AbstractListEditor):
     def OnEdit(self, event):
         setting = self._get_setting()
         self._show_import_editor_dialog(
-            EditorDialog(setting),
+            editor_dialog(setting),
             lambda v, c: setting.execute(ctrlcommands.SetValues(v, c)),
             setting, on_empty=self._delete_selected)
 

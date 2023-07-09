@@ -703,7 +703,7 @@ class FindOccurrences(_Command):
         return chain(test.settings, test.steps)
 
     def _find_keyword_source(self, datafile_controller):
-        item_info = datafile_controller.keyword_info(self._keyword_name)
+        item_info = datafile_controller.keyword_info(None, self._keyword_name)
         return item_info.source if item_info else None
 
     def _find_occurrences_in(self, items):

@@ -132,7 +132,7 @@ class Project(_BaseController, WithNamespace):
             # print(f"DEBUG: load_data error not valid datafile: {path}")
             pass
 
-    def is_excluded(self, source):
+    def is_excluded(self, source=None):
         return self.internal_settings.excludes.contains(source) if self.internal_settings else False
 
     def _load_initfile(self, path, load_observer):

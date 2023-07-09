@@ -109,6 +109,7 @@ class _FileSystemElement(object):
 
 
 class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
+    directory = None
 
     def __init__(self, data, project=None, parent=None):
         self.data = data
@@ -142,6 +143,7 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
         RideDataFileSet(item=self).publish()
 
     def _children(self, data):
+        _ = data
         return []
 
     @property
@@ -211,13 +213,16 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
     def metadata(self):
         return MetadataListController(self, self.data.setting_table)
 
-    def is_user_keyword(self, value):
+    def is_user_keyword(self, datafile, value):
+        _ = datafile
         return WithNamespace.is_user_keyword(self, self.datafile, value)
 
-    def is_library_keyword(self, value):
+    def is_library_keyword(self, datafile, value):
+        _ = datafile
         return WithNamespace.is_library_keyword(self, self.datafile, value)
 
-    def keyword_info(self, keyword_name):
+    def keyword_info(self, datafile, keyword_name):
+        _ = datafile
         return WithNamespace.keyword_info(self, self.data, keyword_name)
 
     def mark_dirty(self):
@@ -400,7 +405,12 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
         return {}
 
     def is_inside_top_suite(self, res):
+        _ = res
         return False
+
+    @staticmethod
+    def refresh_stat():
+        return NotImplemented
 
 
 class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseController):
@@ -997,7 +1007,8 @@ class ExcludedDirectoryController(_FileSystemElement, ControllerWithParent, With
     def dirty(self):
         return False
 
-    def keyword_info(self, keyword_name):
+    def keyword_info(self, datafile, keyword_name):
+        _ = datafile
         return WithNamespace.keyword_info(self, self.data, keyword_name)
 
     def is_excluded(self):

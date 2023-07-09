@@ -170,13 +170,13 @@ class WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         return steps[row].get_cell_info(col)
 
     def get_keyword_info(self, kw_name):
-        return self.datafile_controller.keyword_info(kw_name)
+        return self.datafile_controller.keyword_info(None, kw_name)
 
     def is_user_keyword(self, value):
-        return self.datafile_controller.is_user_keyword(value)
+        return self.datafile_controller.is_user_keyword(None, value)
 
     def is_library_keyword(self, value):
-        return self.datafile_controller.is_library_keyword(value)
+        return self.datafile_controller.is_library_keyword(None, value)
 
     def delete(self):
         self.datafile_controller.unregister_namespace_updates(

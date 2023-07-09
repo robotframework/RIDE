@@ -27,7 +27,7 @@ from .fieldeditors import (ValueEditor, ListValueEditor, MultiLineEditor, Conten
 from .formatters import ListToStringFormatter
 
 
-def EditorDialog(obj):
+def editor_dialog(obj):
     return globals()[obj.label.replace(' ', '') + 'Dialog']
 
 
@@ -35,7 +35,7 @@ class _Dialog(RIDEDialog):
     _title = property(lambda self: utils.name_from_class(self, drop='Dialog'))
 
     def __init__(self, controller, item=None, plugin=None):
-        # TODO: Get rid of item, everything should be in controller
+        # DEBUG: Get rid of item, everything should be in controller
         RIDEDialog.__init__(self, self._title)
         # set Left to Right direction (while we don't have localization)
         self.SetLayoutDirection(wx.Layout_LeftToRight)
@@ -92,6 +92,7 @@ class _Dialog(RIDEDialog):
         self.FindWindowById(wx.ID_OK).SetFocus()
 
     def _execute(self):
+        """ Just ignore it """
         pass
 
 
@@ -105,6 +106,7 @@ class ScalarVariableDialog(_Dialog):
                 ValueEditor(self, value, 'Value')]
 
     def _execute(self):
+        """ Just ignore it """
         pass
 
 
@@ -119,6 +121,7 @@ class ListVariableDialog(_Dialog):
                                 settings=self.plugin.global_settings)]
 
     def _execute(self):
+        """ Just ignore it """
         pass
 
 
@@ -133,6 +136,7 @@ class DictionaryVariableDialog(_Dialog):
                                 settings=self.plugin.global_settings)]
 
     def _execute(self):
+        """ Just ignore it """
         pass
 
 
@@ -155,6 +159,7 @@ class LibraryDialog(_Dialog):
         return values
 
     def _execute(self):
+        """ Just ignore it """
         pass
 
 
@@ -169,6 +174,7 @@ class VariablesDialog(LibraryDialog):
                 ValueEditor(self, args, 'Args')]
 
     def _execute(self):
+        """ Just ignore it """
         pass
 
 
@@ -180,6 +186,7 @@ class ResourceDialog(_Dialog):
                                suggestion_source=ResourceSuggester(self._controller))]
 
     def _execute(self):
+        """ Just ignore it """
         pass
 
 
@@ -189,6 +196,7 @@ class DocumentationDialog(_Dialog):
         return [MultiLineEditor(self, doc)]
 
     def _add_comment_editor(self, item):
+        """ Just ignore it """
         pass
 
     def get_value(self):
@@ -198,6 +206,7 @@ class DocumentationDialog(_Dialog):
         return ''
 
     def _execute(self):
+        """ Just ignore it """
         pass
 
 
@@ -211,21 +220,25 @@ class _SettingDialog(_Dialog):
         return [editor]
 
     def _execute(self):
+        """ Just ignore it """
         pass
 
 
 class ForceTagsDialog(_SettingDialog):
     def _execute(self):
+        """ Just ignore it """
         pass
 
 
 class DefaultTagsDialog(_SettingDialog):
     def _execute(self):
+        """ Just ignore it """
         pass
 
 
 class TagsDialog(_SettingDialog):
     def _execute(self):
+        """ Just ignore it """
         pass
 
 
@@ -235,6 +248,7 @@ class _FixtureDialog(_SettingDialog):
         return [ContentAssistEditor(self, item.value)]
 
     def _execute(self):
+        """ Just ignore it """
         pass
 
 
@@ -242,11 +256,13 @@ class SuiteSetupDialog(_FixtureDialog):
     tooltip = "Suite Setup is run before any tests"
 
     def _execute(self):
+        """ Just ignore it """
         pass
 
 
 class SuiteTeardownDialog(_FixtureDialog):
     def _execute(self):
+        """ Just ignore it """
         pass
 
 
@@ -254,6 +270,7 @@ class TestSetupDialog(_FixtureDialog):
     __test__ = False
 
     def _execute(self):
+        """ Just ignore it """
         pass
 
 
@@ -261,21 +278,25 @@ class TestTeardownDialog(_FixtureDialog):
     __test__ = False
 
     def _execute(self):
+        """ Just ignore it """
         pass
 
 
 class SetupDialog(_FixtureDialog):
     def _execute(self):
+        """ Just ignore it """
         pass
 
 
 class TeardownDialog(_FixtureDialog):
     def _execute(self):
+        """ Just ignore it """
         pass
 
 
 class TemplateDialog(_FixtureDialog):
     def _execute(self):
+        """ Just ignore it """
         pass
 
 
@@ -283,6 +304,7 @@ class TestTemplateDialog(_FixtureDialog):
     __test__ = False
 
     def _execute(self):
+        """ Just ignore it """
         pass
 
 
@@ -291,11 +313,13 @@ class ArgumentsDialog(_SettingDialog):
         return [ArgumentEditor(self, item.value, 'Arguments', ArgumentsValidator())]
 
     def _execute(self):
+        """ Just ignore it """
         pass
 
 
 class ReturnValueDialog(_SettingDialog):
     def _execute(self):
+        """ Just ignore it """
         pass
 
 
@@ -304,11 +328,13 @@ class TestTimeoutDialog(_SettingDialog):
     _validator = TimeoutValidator
 
     def _execute(self):
+        """ Just ignore it """
         pass
 
 
 class TimeoutDialog(TestTimeoutDialog):
     def _execute(self):
+        """ Just ignore it """
         pass
 
 
@@ -320,6 +346,7 @@ class MetadataDialog(_Dialog):
                 ValueEditor(self, value, 'Value')]
 
     def _execute(self):
+        """ Just ignore it """
         pass
 
 
@@ -328,6 +355,7 @@ class TestCaseNameDialog(_Dialog):
     _title = 'New Test Case'
 
     def _add_comment_editor(self, item):
+        """ Just ignore it """
         pass
 
     def _get_editors(self, test):
@@ -339,6 +367,7 @@ class TestCaseNameDialog(_Dialog):
         return _Dialog.get_value(self)[0]
 
     def _execute(self):
+        """ Just ignore it """
         pass
 
 
@@ -346,6 +375,7 @@ class CopyUserKeywordDialog(_Dialog):
     _title = 'Copy User Keyword'
 
     def _add_comment_editor(self, item):
+        """ Just ignore it """
         pass
 
     def _get_editors(self, uk):
@@ -357,16 +387,19 @@ class CopyUserKeywordDialog(_Dialog):
         return _Dialog.get_value(self)[0]
 
     def _execute(self):
+        """ Just ignore it """
         pass
 
 
 class UserKeywordNameDialog(_Dialog):
     def _execute(self):
+        """ Just ignore it """
         pass
 
     _title = 'New User Keyword'
 
     def _add_comment_editor(self, item):
+        """ Just ignore it """
         pass
 
     def _get_editors(self, uk):
