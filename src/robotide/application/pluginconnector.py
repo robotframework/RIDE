@@ -17,10 +17,11 @@ from .. import utils
 from ..context import LOG
 
 
-def PluginFactory(application, plugin_class):
+def plugin_factory(application, plugin_class):
     try:
         plugin = plugin_class(application)
-    except Exception:
+    except Exception as e:
+        print(e)
         msg, traceback = utils.get_error_details()
         return BrokenPlugin(msg, traceback, plugin_class)
     else:
@@ -35,7 +36,7 @@ class _PluginConnector(object):
         self.error = error
         self.enabled = False
         self.metadata = {}
-        self.config_panel = lambda self: None
+        self.config_panel = lambda meself: None
 
 
 class PluginConnector(_PluginConnector):
@@ -67,10 +68,10 @@ class BrokenPlugin(_PluginConnector):
 
     def __init__(self, error_msg, traceback, plugin_class):
         name = utils.name_from_class(plugin_class, 'Plugin')
-        doc = 'This plugin is disabled because it failed to load properly.\n' \
-               + 'Error: ' + error_msg + '\n' + traceback
+        doc = 'This plugin is disabled because it failed to load properly.\nError: ' + error_msg + '\n' + traceback
         _PluginConnector.__init__(self, name, doc=doc, error=error_msg)
         LOG.error("Taking %s plugin into use failed:\n%s" % (name, error_msg))
 
     def enable_on_startup(self):
+        """ Just ignoring it """
         pass

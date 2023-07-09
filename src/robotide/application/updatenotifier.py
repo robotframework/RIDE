@@ -13,7 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-# Configure wx version to allow running test app in __main__
+# Configure wx uversion to allow running test app in __main__
 
 
 import time
@@ -47,8 +47,8 @@ class UpdateNotifierController(object):
         if self._settings.get(_CHECK_FOR_UPDATES_SETTING, None) is None:
             self._settings[_CHECK_FOR_UPDATES_SETTING] = True
             return True
-        return self._settings[_CHECK_FOR_UPDATES_SETTING] and \
-               time.time() - self._settings.get(_LAST_UPDATE_CHECK_SETTING, 0) > self.SECONDS_IN_WEEK
+        return (self._settings[_CHECK_FOR_UPDATES_SETTING] and
+                time.time() - self._settings.get(_LAST_UPDATE_CHECK_SETTING, 0) > self.SECONDS_IN_WEEK)
 
     def _is_new_version_available(self):
         self._settings[_LAST_UPDATE_CHECK_SETTING] = time.time()
@@ -57,36 +57,35 @@ class UpdateNotifierController(object):
             self._download_url = self._get_download_url(self._newest_version)
         except Exception as e:
             print(e)
-            #There are many possible errors:
-            # - Timeout
-            # - Corrupted data
-            # - Server fault message
-            # - Unexpected change in dataformat
+            # There are many possible errors:
+            #  - Timeout
+            #  - Corrupted data
+            #  - Server fault message
+            #  - Unexpected change in dataformat
             return False
         return cmp_versions(self.VERSION, self._newest_version) == -1
 
     def _get_newest_version(self):
         return self._get_response(('robotframework-ride',), 'package_releases')[0]
 
-    def _get_download_url(self, version):
+    def _get_download_url(self, dversion):
         from time import sleep
         sleep(1)  # To avoid HTTPTooManyRequests
-        return self._get_response(('robotframework-ride', version), 'release_data')['download_url']
+        return self._get_response(('robotframework-ride', dversion), 'release_data')['download_url']
 
-    def _get_response(self, params, method):
+    @staticmethod
+    def _get_response(params, method):
         xmlparm = xmlrpclib.dumps(params, method)
-        req = urllib2.Request('https://pypi.python.org/pypi',
-                              xmlparm.encode('utf-8'),
-                              {'Content-Type':'text/xml'})
+        req = urllib2.Request('https://pypi.python.org/pypi', xmlparm.encode('utf-8'), {'Content-Type': 'text/xml'})
         data = urllib2.urlopen(req, timeout=1).read()
         xml = xmlrpclib.loads(data)[0][0]
         return xml
 
 
 class LocalHtmlWindow(HtmlWindow):
-    def __init__(self, parent, size=(600,400)):
+    def __init__(self, parent, size=(600, 400)):
         HtmlWindow.__init__(self, parent, size)
-        if "gtk2" or "gtk3" in wx.PlatformInfo:
+        if "gtk2" in wx.PlatformInfo or "gtk3" in wx.PlatformInfo:
             self.SetStandardFonts()
 
     def OnLinkClicked(self, link):
@@ -95,7 +94,7 @@ class LocalHtmlWindow(HtmlWindow):
 
 class UpdateDialog(RIDEDialog):
 
-    def __init__(self, version, url, settings):
+    def __init__(self, uversion, url, settings):
         self._settings = settings
         RIDEDialog.__init__(self, title="Update available", size=(400, 400),
                             style=wx.DEFAULT_FRAME_STYLE | wx.FRAME_FLOAT_ON_PARENT)
@@ -105,9 +104,9 @@ class UpdateDialog(RIDEDialog):
         self.SetForegroundColour(Colour(self.color_foreground))
         sizer = wx.BoxSizer(orient=wx.VERTICAL)
         hwin = LocalHtmlWindow(self, size=(400, 200))
-        hwin.set_content(f"New version {version} available from <a href=\"{url}\">{url}</a><br/>"
+        hwin.set_content(f"New version {uversion} available from <a href=\"{url}\">{url}</a><br/>"
                          f"See this version <a href=\"https://github.com/robotframework/RIDE/blob/master/doc"
-                         f"/releasenotes/ride-{version}.rst\">Release Notes</a><br/><br/>"
+                         f"/releasenotes/ride-{uversion}.rst\">Release Notes</a><br/><br/>"
                          f"You can update with the command:<br/><b>pip install -U robotframework-ride</b>"
                          f"<br/><br/>See the latest development <a href=\"https://github.com/robotframework/RIDE"
                          f"/blob/master/CHANGELOG.adoc\">CHANGELOG</a>")
@@ -130,6 +129,7 @@ class UpdateDialog(RIDEDialog):
         self.Destroy()
 
     def OnRemindMeLater(self, event):
+        _ = event
         self.Close(True)
 
     def OnCheckboxChange(self, event):

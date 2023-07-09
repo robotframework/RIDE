@@ -20,14 +20,14 @@ import os
 
 from ..context import LOG
 from ..pluginapi import Plugin
-from .pluginconnector import PluginFactory
+from .pluginconnector import plugin_factory
 
 
 class PluginLoader(object):
 
     def __init__(self, application, load_dirs, standard_classes):
         self._load_errors = []
-        self.plugins = [PluginFactory(application, cls) for cls in standard_classes + self._find_classes(load_dirs)]
+        self.plugins = [plugin_factory(application, cls) for cls in standard_classes + self._find_classes(load_dirs)]
         if self._load_errors:
             LOG.error('\n\n'.join(self._load_errors))
 
@@ -65,7 +65,7 @@ class PluginLoader(object):
         return files
 
     def _import_classes(self, path):
-        dirpath, filename = os.path.split(path)
+        _, filename = os.path.split(path)
         modulename = os.path.splitext(filename)[0]
         spec = importlib.util.spec_from_file_location(modulename, path)
         if spec is None:
