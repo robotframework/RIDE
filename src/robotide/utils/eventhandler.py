@@ -30,7 +30,11 @@ class _RideFSWatcherHandler:
         if self._fs_watcher:
             return
         self._initial_watched_path = path
-        self._fs_watcher = wx.FileSystemWatcher()
+        try:
+            self._fs_watcher = wx.FileSystemWatcher()
+        except Exception as e:
+            print(e)
+            return
         self._fs_watcher.Bind(wx.EVT_FSWATCHER, self._on_fs_event)
 
     def start_listening(self, path):
@@ -41,7 +45,11 @@ class _RideFSWatcherHandler:
             # only watch folders
             # MSW do not support watch single file
             path = os.path.join(path, '')
-            self._fs_watcher.AddTree(path)
+            try:
+                self._fs_watcher.AddTree(path)
+            except Exception as e:
+                print(e)
+                return
             # Add all files to the monitoring list
             from wx import FileSystem
             fs = FileSystem()
@@ -66,7 +74,11 @@ class _RideFSWatcherHandler:
         else:
             self._watched_path.add(path)  # Here we add the file path
             path = os.path.join(os.path.dirname(path), '')
-            self._fs_watcher.Add(path)  # Here we only add the file parent directory
+            try:
+                self._fs_watcher.Add(path)  # Here we only add the file parent directory
+            except Exception as e:
+                print(e)
+                return
 
     def stop_listening(self):
         self._is_workspace_dirty = False
