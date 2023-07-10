@@ -20,12 +20,14 @@ from wx import Colour
 from ..widgets import RIDEDialog, VirtualList, VerticalSizer, ImageList, ImageProvider, ButtonWithHandler
 from ..widgets.list import ListModel
 
+
 class UsagesDialog(RIDEDialog):
 
     def __init__(self, name, usages=None):
+        self._dots = None
         self._name = name
         self._selection_listeners = []
-        title = "'%s'" % (name)
+        title = "'%s'" % name
         RIDEDialog.__init__(self, title=title, size=(650, 400))
         # set Left to Right direction (while we don't have localization)
         self.SetLayoutDirection(wx.Layout_LeftToRight)
@@ -66,6 +68,7 @@ class UsagesDialog(RIDEDialog):
         self._selection_listeners.append(listener)
 
     def _add_view_components(self):
+        """ Just ignore it """
         pass
 
 
@@ -82,7 +85,7 @@ class UsagesDialogWithUserKwNavigation(UsagesDialog):
         self.Sizer.Add(button, 0, wx.ALL, 3)
 
 
-def ResourceImportUsageDialog(name, highlight, controller):
+def resource_import_usage_dialog(name, highlight, controller):
     return UsagesDialogWithUserKwNavigation(name, highlight, controller, usages=ResourceImportListModel([]))
 
 
@@ -106,7 +109,7 @@ class _UsagesListModel(ListModel):
         return self._images
 
     def image(self, item):
-        # TODO: better mechanism for item type recognition
+        # DEBUG: better mechanism for item type recognition
         parent_type = self._usages[item].parent.__class__.__name__
         return {'TestCaseController': 0,
                 'UserKeywordController': 1,

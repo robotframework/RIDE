@@ -81,7 +81,7 @@ class ResourceFileUsages(Usages):
         Usages.__init__(self, controller, highlight)
 
     def _usages_dialog(self):
-        return usagesdialog.ResourceImportUsageDialog(self._controller.display_name, self._highlight, self._controller)
+        return usagesdialog.resource_import_usage_dialog(self._controller.display_name, self._highlight, self._controller)
 
     def _find_usages(self):
         return self._controller.execute(commands.FindResourceUsages())
