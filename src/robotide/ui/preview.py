@@ -33,7 +33,7 @@ class PreviewPlugin(Plugin, TreeAwarePluginMixin):
         self._panel = None
 
     def enable(self):
-        self.register_action(ActionInfo('Tools','Preview', self.OnShowPreview,
+        self.register_action(ActionInfo('Tools', 'Preview', self.OnShowPreview,
                                         shortcut='F6',
                                         doc='Show preview of the current file',
                                         position=71))
@@ -54,6 +54,7 @@ class PreviewPlugin(Plugin, TreeAwarePluginMixin):
         return self.tab_is_visible(self._panel)
 
     def OnShowPreview(self, event):
+        _ = event
         if not self._panel:
             self._panel = PreviewPanel(self, self.notebook)
         self.show_tab(self._panel)
@@ -64,9 +65,11 @@ class PreviewPlugin(Plugin, TreeAwarePluginMixin):
             self._panel.tree_node_selected(message.item)
 
     def OnTabChanged(self, message):
+        _ = message
         self._update_preview(None)
 
     def _update_preview(self, message):
+        _ = message
         if self.is_focused() and self.datafile:
             self._panel.update_preview()
 
@@ -92,6 +95,7 @@ class PreviewPanel(wx.Panel):
         notebook.AddPage(self, "Preview")
 
     def OnPrint(self, evt):
+        _ = evt
         self._printing.preview_text(self._get_content())
 
     @property
@@ -129,7 +133,7 @@ class PreviewPanel(wx.Panel):
 
     def _create_view(self, view_class):
         view = view_class(self)
-        self.Sizer.Add(view, 1, wx.EXPAND|wx.ALL, border=8)
+        self.Sizer.Add(view, 1, wx.EXPAND | wx.ALL, border=8)
         self.Sizer.Layout()
         return view
 
@@ -178,9 +182,10 @@ class HtmlView(wx.html.HtmlWindow):
             self.ScrollToAnchor(anchor)
             self.ScrollLines(-1)
         else:
-            self.Scroll(0,0)
+            self.Scroll(0, 0)
 
-    def _get_anchor(self, data):
+    @staticmethod
+    def _get_anchor(data):
         if isinstance(data, UserKeyword):
             return 'keyword_%s' % data.name
         if isinstance(data, TestCase):
@@ -191,7 +196,7 @@ class HtmlView(wx.html.HtmlWindow):
 class TxtView(wx.TextCtrl):
 
     def __init__(self, parent):
-        wx.TextCtrl.__init__(self, parent, style=wx.TE_MULTILINE|wx.TE_NOHIDESEL)
+        wx.TextCtrl.__init__(self, parent, style=wx.TE_MULTILINE | wx.TE_NOHIDESEL)
         self.SetEditable(False)
         self.SetFont(Font().fixed)
 
@@ -199,4 +204,5 @@ class TxtView(wx.TextCtrl):
         self.SetValue(content)
 
     def scroll_to_subitem(self, item):
+        """ Just ignore it """
         pass
