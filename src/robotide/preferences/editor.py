@@ -20,7 +20,7 @@ Usage:
     dialog = PreferenceEditor(parent, title, preferences, style)
     dialog.ShowModal()
 
-preferences is a any object with attribute preferecne_panels, which in turn
+preferences is an any object with attribute preferecne_panels, which in turn
 is a list or tuple of classes that inherit from PreferencesPanel.
 
 style may have any of the values "auto", "notebook", "tree" or
@@ -39,6 +39,8 @@ from .settings import RideSettings
 # any more than TREE_THRESHOLD panels when style is "auto" forces
 # the UI into showing a hierarchical tree
 TREE_THRESHOLD = 5
+FONT_SIZE = 'font size'
+FONT_FACE = 'font face'
 
 
 class PreferenceEditor(wx.Dialog):
@@ -54,8 +56,8 @@ class PreferenceEditor(wx.Dialog):
         self._settings = preferences.settings
         self._general_settings = self._settings['General']
         self.font = self.GetFont()
-        self.font.SetFaceName(self._general_settings['font face'])
-        self.font.SetPointSize(self._general_settings['font size'])
+        self.font.SetFaceName(self._general_settings[FONT_FACE])
+        self.font.SetPointSize(self._general_settings[FONT_SIZE])
         self.SetFont(self.font)
         self.SetBackgroundColour(Colour(self._general_settings['background']))
         self.SetOwnBackgroundColour(Colour(self._general_settings['secondary background']))
@@ -64,14 +66,13 @@ class PreferenceEditor(wx.Dialog):
         self._closing = False
 
         panels = preferences.preference_panels
-        if style not in ("tree","notebook","single","auto"):
-            raise Exception("invalid style; must be one of 'tree','notebook','single' or 'auto'")
+        if style not in ("tree", "notebook", "single", "auto"):
+            raise AttributeError("invalid style; must be one of 'tree','notebook','single' or 'auto'")
 
         if style == "tree" or (style == "auto" and len(panels) > TREE_THRESHOLD):
-            self._sw = wx.SplitterWindow(self, wx.ID_ANY, style=wx.SP_LIVE_UPDATE|wx.SP_3D)
-            self._tree = wx.TreeCtrl(self._sw, wx.ID_ANY,
-                                     style=wx.TR_HIDE_ROOT|wx.TR_HAS_BUTTONS)
-            # create a single container which will hold all of the
+            self._sw = wx.SplitterWindow(self, wx.ID_ANY, style=wx.SP_LIVE_UPDATE | wx.SP_3D)
+            self._tree = wx.TreeCtrl(self._sw, wx.ID_ANY, style=wx.TR_HIDE_ROOT | wx.TR_HAS_BUTTONS)
+            # create a single container which will hold all the
             # preference panels
             self._container = PanelContainer(self._sw, wx.ID_ANY)
             self._sw.SplitVertically(self._tree, self._container, 210)
@@ -204,15 +205,15 @@ class PanelContainer(wx.Panel):
         self.panels_container = ScrolledPanel(self, wx.ID_ANY, style=wx.TAB_TRAVERSAL)
         self.panels_container.SetupScrolling()
         sizer = wx.BoxSizer(wx.VERTICAL)
-        sizer.Add(self.title, 0, wx.TOP|wx.LEFT|wx.EXPAND, 4)
-        sizer.Add(wx.StaticLine(self), 0, wx.EXPAND|wx.TOP|wx.BOTTOM, 4)
-        sizer.Add(self.panels_container,1, wx.EXPAND)
+        sizer.Add(self.title, 0, wx.TOP | wx.LEFT | wx.EXPAND, 4)
+        sizer.Add(wx.StaticLine(self), 0, wx.EXPAND | wx.TOP | wx.BOTTOM, 4)
+        sizer.Add(self.panels_container, 1, wx.EXPAND)
         self.SetSizer(sizer)
         self.panels_container.SetSizer(wx.BoxSizer(wx.VERTICAL))
 
         font = self.title.GetFont()
-        font.SetFaceName(self.settings['font face'])
-        font.SetPointSize(self.settings['font size'])
+        font.SetFaceName(self.settings[FONT_FACE])
+        font.SetPointSize(self.settings[FONT_SIZE])
         font.MakeLarger()
         self.title.SetFont(font)
         self.title.SetForegroundColour(self.settings['foreground'])
@@ -241,8 +242,8 @@ class PanelContainer(wx.Panel):
         title = getattr(panel, "title", panel.location[-1])
         self.SetTitle(title)
         font = self.title.GetFont()
-        font.SetFaceName(self.settings['font face'])
-        font.SetPointSize(self.settings['font size'])
+        font.SetFaceName(self.settings[FONT_FACE])
+        font.SetPointSize(self.settings[FONT_SIZE])
         self.SetFont(font)
         font.MakeLarger()
         self.title.SetFont(font)

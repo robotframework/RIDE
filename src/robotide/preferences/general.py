@@ -29,6 +29,8 @@ ID_SAVELOADSETTINGS = wx.NewIdRef()
 ID_LOAD = 5551
 ID_SAVE = 5552
 ID_CANCEL = -1
+LIGHT_GRAY = "light gray"
+FIXED_FONT = 'fixed font'
 
 
 @lru_cache(maxsize=2)
@@ -74,7 +76,7 @@ class GeneralPreferences(PreferencesPanel):
         self.cb_apply_to_panels.Enable()
         self.cb_apply_to_panels.SetValue(self._apply_to_panels)
         if IS_WINDOWS:
-            background_color = Colour("light gray")
+            background_color = Colour(LIGHT_GRAY)
             foreground_color = Colour("black")
             set_colors(self.cb_apply_to_panels, background_color, foreground_color)
         main_sizer.Add(font_editor)
@@ -112,7 +114,7 @@ class GeneralPreferences(PreferencesPanel):
         save_settings_dialog.ShowModal()
         # Does not look nice but closes Preferences window, so it comes recolored on next call
         # Only working on first use :(
-        # TODO: Only close window when Loading, not when Saving (but return is always 5101)
+        # DEBUG: Only close window when Loading, not when Saving (but return is always 5101)
         wx.FindWindowByName("RIDE - Preferences").Close(force=True)
 
     def _reload_settings(self):
@@ -168,7 +170,7 @@ class GeneralPreferences(PreferencesPanel):
             [str(i) for i in range(8, 16)])
         sizer = wx.FlexGridSizer(rows=3, cols=2, vgap=10, hgap=30)
         l_size = f.label(self)
-        background_color = Colour("light gray")
+        background_color = Colour(LIGHT_GRAY)
         foreground_color = Colour("black")
         if IS_WINDOWS:
             set_colors(l_size, background_color, foreground_color)
@@ -181,12 +183,12 @@ class GeneralPreferences(PreferencesPanel):
             if IS_WINDOWS:
                 set_colors(l_zoom, background_color, foreground_color)
             sizer.AddMany([l_zoom, z.chooser(self)])
-        if 'fixed font' in self._settings:
-            l_ff, editor = boolean_editor(self, self._settings, 'fixed font', 'Use fixed width font')
+        if FIXED_FONT in self._settings:
+            l_ff, editor = boolean_editor(self, self._settings, FIXED_FONT, 'Use fixed width font')
             if IS_WINDOWS:
                 set_colors(l_ff, background_color, foreground_color)
             sizer.AddMany([l_ff, editor])
-            fixed_font = self._settings['fixed font']
+            fixed_font = self._settings[FIXED_FONT]
         if 'font face' in self._settings:
             s = StringChoiceEditor(self._settings, 'font face', 'Font Face', read_fonts(fixed_font))
             l_font = s.label(self)
@@ -207,8 +209,6 @@ class DefaultPreferences(GeneralPreferences):
 
     def __init__(self, settings, *args, **kwargs):
         super(DefaultPreferences, self).__init__(settings[self.name], *args, **kwargs)
-        # PUBLISHER.subscribe(self.OnSettingsChanged, RideSettingsChanged)
-        # print(f"DEBUG: settings_path {settings.get_path()}")
 
     def create_colors_sizer(self):
         container = wx.GridBagSizer()
@@ -222,7 +222,7 @@ class DefaultPreferences(GeneralPreferences):
             ('foreground text', 'Text Foreground'),
             ('background help', 'Help Background')
         )
-        background_color = Colour("light gray")
+        background_color = Colour(LIGHT_GRAY)
         foreground_color = Colour("black")
         for settings_key, label_text in settings:
             if column == 4:
