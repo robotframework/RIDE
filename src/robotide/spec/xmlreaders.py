@@ -55,13 +55,16 @@ class SpecInitializer(object):
             return xml_file
         return current_xml_file
 
-    def _get_version(self, xml_file):
+    @staticmethod
+    def _get_version(xml_file):
         try:
             return utils.ET.parse(xml_file).getroot().find('version').text
-        except:
+        except Exception as e:
+            print(e)
             return None
 
-    def _list_xml_files_in(self, directory):
+    @staticmethod
+    def _list_xml_files_in(directory):
         for filename in os.listdir(directory):
             path = os.path.join(directory, filename)
             if path.endswith('.xml') and os.path.isfile(path):
@@ -75,15 +78,16 @@ class SpecInitializer(object):
             return []
         try:
             return _parse_xml(specfile, name)
-        except Exception:
-            # TODO: which exception to catch?
+        except Exception as e:
+            # DEBUG: which exception to catch?
+            print(e)
             return []
 
 
 def _parse_xml(file, name):
     root = utils.ET.parse(file).getroot()
     if root.tag != 'keywordspec':
-        # TODO: XML validation errors should be logged
+        # DEBUG: XML validation errors should be logged
         return [], ''
     kw_nodes = root.findall('keywords/kw') + root.findall('kw')
     source_type = root.get('type')
@@ -127,5 +131,6 @@ def get_name_from_xml(path):
         root = utils.ET.parse(path).getroot()
         name = root.get('name')
         return name
-    except:
+    except Exception as e:
+        print(e)
         return None

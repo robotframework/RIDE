@@ -91,6 +91,7 @@ class ExcludePreferences(PreferencesPanel):
 
 class ExcludeHelpDialog(RIDEDialog):
     def _execute(self):
+        """ Just ignore it """
         pass
 
     help = """<font size="5">
@@ -186,6 +187,7 @@ The following shell-style wildcards are supported:
         self.SetSizerAndFit(sizer)
 
     def OnKey(self, *args):
+        """ Just ignore it """
         pass
 
     def close(self):
