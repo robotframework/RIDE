@@ -32,6 +32,8 @@ ALL_KEYWORDS = '<all keywords>'
 ALL_USER_KEYWORDS = '<all user keywords>'
 ALL_LIBRARY_KEYWORDS = '<all library keywords>'
 
+SEARCH_KW = 'Search Keywords'
+
 
 class KeywordSearch(Plugin):
     """A plugin for searching keywords based on name or documentation."""
@@ -41,24 +43,27 @@ class KeywordSearch(Plugin):
         self.all_keywords = []
         self._criteria = _SearchCriteria()
         self.dirty = False
+        self._dialog = None
 
     def enable(self):
-        action = ActionInfo('Tools', 'Search Keywords', self.OnSearch,
+        action = ActionInfo('Tools', SEARCH_KW, self.OnSearch,
                             shortcut='F5',
                             doc='Search keywords from libraries and resources',
                             icon=ImageProvider().KW_SEARCH_ICON,
                             position=51)
         self.register_action(action)
-        self.register_search_action('Search Keywords', self.show_search_for, ImageProvider().KW_SEARCH_ICON)
+        self.register_search_action(SEARCH_KW, self.show_search_for, ImageProvider().KW_SEARCH_ICON)
         self.subscribe(self.mark_dirty, RideOpenSuite, RideOpenResource,
                        RideImportSetting, RideUserKeyword, RideNewProject)
         self._dialog = KeywordSearchDialog(self.frame, self)
         self.tree.register_context_menu_hook(self._search_resource)
 
     def OnSearch(self, event):
+        _ = event
         self._dialog.show_search_with_criteria()
 
     def mark_dirty(self, message):
+        _ = message
         self.dirty = True
 
     def have_keywords_changed(self):
@@ -76,12 +81,13 @@ class KeywordSearch(Plugin):
         return self._search()
 
     def _search(self):
-        return [ kw for kw in self.all_keywords if self._criteria.matches(kw) ]
+        return [kw for kw in self.all_keywords if self._criteria.matches(kw)]
 
     def _search_resource(self, item):
         if isinstance(item, (TestCaseFileController, ResourceFileController)):
-            callable = lambda x: self._show_resource(os.path.basename(item.source))
-            return [PopupMenuItem('Search Keywords', callable=callable)]
+            def _callable():
+                self._show_resource(os.path.basename(item.source))
+            return [PopupMenuItem(SEARCH_KW, callable=_callable)]
         return []
 
     def _show_resource(self, resource):
@@ -93,6 +99,7 @@ class KeywordSearch(Plugin):
     def disable(self):
         self.unregister_actions()
         self.unsubscribe_all()
+
 
 class _SearchCriteria(object):
 
@@ -117,7 +124,8 @@ class _SearchCriteria(object):
             return True
         return self._source_filter == kw.source
 
-    def _contains(self, string, pattern):
+    @staticmethod
+    def _contains(string, pattern):
         return utils.normalize(pattern) in utils.normalize(string)
 
 
@@ -142,7 +150,7 @@ class KeywordSearchDialog(RIDEDialog):
         self._add_search_control()
         self._add_keyword_list()
         self._add_keyword_details()
-        self.SetSize((700,500))
+        self.SetSize((700, 500))
 
     def _add_search_control(self):
         line1 = self._horizontal_sizer()
@@ -153,13 +161,13 @@ class KeywordSearchDialog(RIDEDialog):
         self._add_source_filter(line2)
         self.Sizer.Add(line2, 0, wx.ALL, 3)
 
-    def _horizontal_sizer(self):
+    @staticmethod
+    def _horizontal_sizer():
         return wx.BoxSizer(wx.HORIZONTAL)
 
     def _add_pattern_filter(self, sizer):
         sizer.Add(Label(self, label='Search term: '))
-        self._search_control = wx.SearchCtrl(self, size=(200,-1),
-                                             style=wx.TE_PROCESS_ENTER)
+        self._search_control = wx.SearchCtrl(self, size=(200, -1), style=wx.TE_PROCESS_ENTER)
         self._search_control.SetBackgroundColour(Colour(self.color_secondary_background))
         self._search_control.SetForegroundColour(Colour(self.color_secondary_foreground))
         sizer.Add(self._search_control)
@@ -201,7 +209,9 @@ class KeywordSearchDialog(RIDEDialog):
         self.Sizer.Add(component, 1, wx.EXPAND | wx.ALL, 3)
 
     def OnFindUsages(self, event):
-        Usages(self._plugin.model, self._plugin.tree.highlight, self._last_selected_kw.name,  self._last_selected_kw).show()
+        _ = event
+        Usages(self._plugin.model, self._plugin.tree.highlight, self._last_selected_kw.name,
+               self._last_selected_kw).show()
 
     def _make_bindings(self):
         self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.OnItemSelected, self._list)
@@ -214,7 +224,7 @@ class KeywordSearchDialog(RIDEDialog):
         self.Bind(wx.EVT_COMBOBOX, self.OnSourceFilterChange, self._source_filter)
         self.Bind(wx.EVT_LIST_COL_CLICK, self.OnColClick)
 
-    def OnColClick(self,event):
+    def OnColClick(self, event):
         col = event.GetColumn()
         if self._sort_order.is_sortable_column(col):
             self._sort_order.sort(col)
@@ -222,19 +232,22 @@ class KeywordSearchDialog(RIDEDialog):
         event.Skip()
 
     def OnActivate(self, event):
+        _ = event
         if self._plugin.have_keywords_changed():
             self._update_sources()
             self._populate_search()
 
     def OnUseDocChange(self, event):
+        _ = event
         self._populate_search()
 
     def OnSearch(self, event):
+        _ = event
         self._sort_order.searched(self._get_search_text())
         self._populate_search()
 
     def OnSourceFilterChange(self, event):
-        self._populate_search()
+        self.OnUseDocChange(event)
 
     def OnKey(self, event):
         # Needed for HtmlWindow callback
@@ -254,6 +267,7 @@ class KeywordSearchDialog(RIDEDialog):
             self._source_filter.SetValue(ALL_KEYWORDS)
 
     def OnClose(self, event):
+        _ = event
         self.Hide()
 
     def _populate_search(self):
@@ -270,7 +284,7 @@ class KeywordSearchDialog(RIDEDialog):
         return self._search_control.GetValue().lower()
 
     def _update_keyword_selection(self):
-        if not self._last_selected_kw in self._keywords and self._keywords:
+        if self._keywords and self._last_selected_kw not in self._keywords:
             self._last_selected_kw = self._keywords[0]
         self._update_details()
 
@@ -314,7 +328,8 @@ class _SortOrder(object):
     def swap_direction(self):
         self.sort_up = not self.sort_up
 
-    def is_sortable_column(self, col):
+    @staticmethod
+    def is_sortable_column(col):
         return col < 2
 
     def sort(self, col):
@@ -366,18 +381,20 @@ class _KeywordData(list):
         return lambda kw, kw2: self.m_cmp(self._value_lowerer(kw, atrr_name),
                                           self._value_lowerer(kw2, atrr_name))
 
-    def _value_lowerer(self, kw, attr_name):
+    @staticmethod
+    def _value_lowerer(kw, attr_name):
         return getattr(kw, attr_name).lower()
 
 
 class _KeywordList(wx.ListCtrl, ListCtrlAutoWidthMixin):
 
     def __init__(self, parent, plugin):
-        style = wx.LC_REPORT|wx.NO_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VIRTUAL
+        style = wx.LC_REPORT | wx.NO_BORDER | wx.LC_SINGLE_SEL | wx.LC_HRULES | wx.LC_VIRTUAL
         wx.ListCtrl.__init__(self, parent, style=style)
         ListCtrlAutoWidthMixin.__init__(self)
         self.SetBackgroundColour(Colour(parent.color_background))
         self.SetForegroundColour(Colour(parent.color_foreground))
+        self._keywords = None
         self._plugin = plugin
         self._create_headers()
         self._link_attribute = self._create_link_attribute()
@@ -391,7 +408,8 @@ class _KeywordList(wx.ListCtrl, ListCtrlAutoWidthMixin):
             self.SetForegroundColour(Colour(self.GetParent().color_foreground))
         self.SetColumnWidth(0, 250)
 
-    def _create_link_attribute(self):
+    @staticmethod
+    def _create_link_attribute():
         if wx.VERSION < (4, 1, 0):
             attr = wx.ListItemAttr()
         else:
@@ -430,5 +448,5 @@ class _KeywordList(wx.ListCtrl, ListCtrlAutoWidthMixin):
 
     def OnGetItemImage(self, item):
         if self._keywords[item].is_user_keyword():
-            return 0 # index in self._image_list
-        return -1 # No image
+            return 0  # index in self._image_list
+        return -1  # No image
