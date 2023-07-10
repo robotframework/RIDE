@@ -30,7 +30,7 @@ except ImportError:
                      "or pip install wxPython")
     exit(-1)
 
-from os import environ, chmod, chown
+from os import environ
 from os.path import exists, join
 from robotide.widgets import RIDEDialog
 
@@ -165,6 +165,8 @@ def _askdirectory(title, initialdir, frame=None):
 
 def _create_desktop_shortcut_linux(frame=None):
     from os.path import expanduser
+    from os import chmod, chown
+    from stat import S_IRWXU
     import subprocess
     import pwd
     import sysconfig
@@ -223,7 +225,7 @@ def _create_desktop_shortcut_linux(frame=None):
                            "Type=Application\nX-KDE-SubstituteUID=false\n")
             uid = pwd.getpwnam(user).pw_uid
             chown(link, uid, -1)  # groupid == -1 means keep unchanged
-            chmod(link, 0o744)
+            chmod(link, S_IRWXU)
 
 
 def _create_desktop_shortcut_mac(frame=None):
