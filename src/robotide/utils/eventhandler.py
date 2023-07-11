@@ -41,6 +41,13 @@ class _RideFSWatcherHandler:
         if self._initial_watched_path != path:
             self._initial_watched_path = path
         self.stop_listening()
+        # on MSW we get a popup from wxWidgets
+        # (https://github.com/wxWidgets/wxWidgets/blob/master/src/msw/fswatcher.cpp#L165)
+        # when the path is a network share, like for example WSL: \\wsl.localhost\docker-desktop\tmp\
+        # We avoid the popup by ignoring it
+        if path.startswith('\\\\') and os.sep == '\\':
+            print(f"INFO: Not watching file system changes for path: {path}")
+            return
         if os.path.isdir(path):
             # only watch folders
             # MSW do not support watch single file
