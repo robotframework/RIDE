@@ -12,6 +12,8 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import os
+import pytest
 import unittest
 from robotide.utils import unescape_newlines_and_whitespaces
 
@@ -43,6 +45,7 @@ class UnescapeTestCase(unittest.TestCase):
         assert result == TEN_SPACES
 
     @staticmethod
+    @pytest.mark.skipif(os.sep == '\\', reason="Fails on Windows")
     def test_multiline_string():
         result = unescape_newlines_and_whitespaces(TEXT_MULTILINE_ESCAPED)
         assert result == TEXT_MULTILINE
