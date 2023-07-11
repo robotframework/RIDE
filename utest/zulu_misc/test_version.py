@@ -12,8 +12,10 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import pytest
 import re
 import unittest
+from sys import version_info
 from robotide.version import VERSION
 from typing import Callable, Match, Pattern
 
@@ -71,6 +73,7 @@ class VersionTestCase(unittest.TestCase):
         assert isinstance(VERSION, str)
 
     @staticmethod
+    @pytest.mark.skipif(version_info < (3,9,0), reason="Fails on Python < 3.9")
     def test_version_is_valid():
         clean_v = re.sub(r'dev.*$', '', VERSION)
         result = version_check(clean_v.removeprefix('v'))
