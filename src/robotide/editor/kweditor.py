@@ -28,7 +28,7 @@ from .gridcolorizer import Colorizer
 from .tooltips import GridToolTips
 from .. import robotapi
 from ..context import IS_MAC
-from ..controller.cellinfo import TipMessage, ContentType, CellType
+from ..controller.cellinfo import tip_message, ContentType, CellType
 from ..controller.ctrlcommands import ChangeCellValue, ClearArea, \
     PasteArea, DeleteRows, AddRows, CommentRows, InsertCells, DeleteCells, \
     UncommentRows, Undo, Redo, RenameKeywordOccurrences, ExtractKeyword, \
@@ -225,7 +225,7 @@ class KeywordEditor(GridEditor, Plugin):
             return ''
         cell = self.cell_under_cursor
         cell_info = self._controller.get_cell_info(cell.Row, cell.Col)
-        return TipMessage(cell_info)
+        return tip_message(cell_info)
 
     def OnSettingsChanged(self, message):
         """Redraw the colors if the color settings are modified"""

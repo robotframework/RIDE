@@ -59,10 +59,10 @@ class CellInfo(object):
                                                   self._cell_content.value)
 
 
-def TipMessage(cell):
+def tip_message(cell):
     if not cell:
         return ''
-    tip = _TooltipMessage(cell)  #if not cell.for_loop else _ForLoopTooltipMessage(cell)
+    tip = _TooltipMessage(cell)  # if not cell.for_loop else _ForLoopTooltipMessage(cell)
     return html_escape(str(tip)).replace('\n', '<br />')
 
 
@@ -119,9 +119,12 @@ class _TooltipMessage(object):
         return ''
 
     def _assign(self, cell):
+        _ = cell
         return self.VARIABLE_ASSIGMENT
 
-    def _unknown(self, cell):
+    @staticmethod
+    def _unknown(cell):
+        _ = cell
         return ''
 
     def __nonzero__(self):
@@ -130,30 +133,19 @@ class _TooltipMessage(object):
     def __str__(self):
         return self.message
 
-    """
-    class _ForLoopTooltipMessage(_TooltipMessage):
-
-    TOO_MANY_ARGUMENTS = "Too many parameters in for loop"
-
-    def _get_message(self, cell):
-        if cell.too_many_arguments():
-            return self.TOO_MANY_ARGUMENTS
-        return ''
-    """
-
 
 class CellContent(object):
 
-    def __init__(self, type, value, source=None):
-        self.type = type
+    def __init__(self, ctype, value, source=None):
+        self.type = ctype
         self.value = value
         self.source = source
 
 
 class CellPosition(object):
 
-    def __init__(self, type, argument_name):
-        self.type = type
+    def __init__(self, ctype, argument_name):
+        self.type = ctype
         self.argument_name = argument_name
 
 
