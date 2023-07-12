@@ -14,7 +14,7 @@
 #  limitations under the License.
 
 
-def ActionFactory(action_info):
+def action_factory(action_info):
     if action_info.is_separator():
         return _MenuSeparator(action_info)
     return Action(action_info)

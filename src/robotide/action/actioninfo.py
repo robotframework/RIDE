@@ -21,7 +21,7 @@ from ..widgets import ImageProvider
 from .shortcut import Shortcut
 
 
-def ActionInfoCollection(data, event_handler, container=None):
+def action_info_collection(data, event_handler, container=None):
     """Parses the ``data`` into a list of `ActionInfo` and `SeparatorInfo` objects.
 
     The data is parsed based on the simple DSL documented below.
@@ -249,9 +249,8 @@ class ActionInfo(MenuInfo):
     def position(self):
         if isinstance(self._position, int):
             return self._position
-        elif isinstance(self._position, str):
-            if len(self._position) > 0:
-                return int(self._position.split("POSITION-")[-1])
+        elif isinstance(self._position, str) and len(self._position) > 0:
+            return int(self._position.split("POSITION-")[-1])
         return -1
 
 

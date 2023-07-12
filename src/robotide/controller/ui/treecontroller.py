@@ -16,7 +16,7 @@
 import wx
 
 from robotide import utils
-from robotide.action.actioninfo import ActionInfoCollection, ActionInfo
+from robotide.action.actioninfo import action_info_collection, ActionInfo
 from robotide.context import IS_WINDOWS, ctrl_or_cmd, bind_keys_to_evt_menu
 from ..macrocontrollers import TestCaseController
 from robotide.controller import ctrlcommands
@@ -41,7 +41,7 @@ class TreeController(object):
         self._test_selection = test_selection
 
     def register_tree_actions(self):
-        actions = ActionInfoCollection(tree_actions, self, self._tree)
+        actions = action_info_collection(tree_actions, self, self._tree)
         self._action_registerer.register_actions(actions)
         self._action_registerer.register_action(ActionInfo(menu_name='Edit', name='Add Tag to selected',
                                                            action=self.OnAddTagToSelected))

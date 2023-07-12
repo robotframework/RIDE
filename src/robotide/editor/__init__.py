@@ -16,7 +16,7 @@
 import wx
 
 from .editorcreator import EditorCreator
-from ..pluginapi import (Plugin, ActionInfoCollection, TreeAwarePluginMixin)
+from ..pluginapi import (Plugin, action_info_collection, TreeAwarePluginMixin)
 from ..publish import (RideTreeSelection, RideNotebookTabChanging, RideNotebookTabChanged, RideSaving)
 from ..publish.messages import RideDataFileRemoved
 from ..widgets import PopupCreator
@@ -63,7 +63,7 @@ class EditorPlugin(Plugin, TreeAwarePluginMixin):
         self._creator.register_editors()
         self._show_editor()
         self.register_actions(
-            ActionInfoCollection(_EDIT, self._tab, self._tab))
+            action_info_collection(_EDIT, self._tab, self._tab))
         self.subscribe(self.OnTreeItemSelected, RideTreeSelection)
         self.subscribe(self.OnTabChanged, RideNotebookTabChanged)
         self.subscribe(self.OnTabChanging, RideNotebookTabChanging)

@@ -37,7 +37,7 @@ from robotide.context import IS_WINDOWS
 from robotide.contrib.testrunner.usages import USAGE
 from robotide.lib.robot.utils import format_time
 from robotide.robotapi import DataError, Information
-from robotide.utils import overrides, ArgumentParser
+from robotide.utils import ArgumentParser
 from robotide.widgets import ButtonWithHandler, Label, RIDEDialog
 from sys import getfilesystemencoding
 from wx.lib.filebrowsebutton import FileBrowseButton
@@ -109,7 +109,7 @@ class BaseProfile(object):
     def set_setting(self, name, value):
         """Sets a plugin setting
 
-        setting is automatically prefixed with profile's name and it can be
+        setting is automatically prefixed with profile's name, and it can be
         accessed with direct attribute access. See also __getattr__.
         """
         self.plugin.save_setting(self._get_setting_name(name), value, delay=2)
@@ -118,6 +118,7 @@ class BaseProfile(object):
         return error, self._create_error_log_message(error, returncode)
 
     def _create_error_log_message(self, error, returncode):
+        _ = error, returncode
         return None
 
     def __getattr__(self, name):
@@ -171,6 +172,7 @@ class PybotProfile(BaseProfile):
         BaseProfile.__init__(self, plugin)
         self._defined_arguments = self.arguments
         self._toolbar = None
+        self._mysettings = None
 
     def get_toolbar(self, parent):
         if self._toolbar is None:
@@ -205,7 +207,6 @@ class PybotProfile(BaseProfile):
                 panel = panel.GetPane()
             panel.Enable(enable)
 
-    @overrides(BaseProfile)
     def delete_pressed(self):
         focused = wx.Window.FindFocus()
         if focused not in [self._arguments, self._include_tags,
@@ -283,9 +284,7 @@ class PybotProfile(BaseProfile):
         return self._save_filenames()
 
     def _save_filenames(self):
-        # print(f"DEBUG: Run Profiles _save_filenames enter before parsing  self._defined_arguments {self._defined_arguments}")
         args = self._defined_arguments.replace('\\"', '"')
-        # print(f"DEBUG: Run Profiles _save_filenames enter before detecting quotes args {args}")
         res = self._quotes_re.match(args)
         if not res:
             return args.strip().strip().split()
@@ -323,8 +322,6 @@ class PybotProfile(BaseProfile):
         return clean
 
     def _parse_windows_command(self):
-        # print(f"DEBUG: run_profiles _parse_windows_command: ENTER  self.arguments={self.arguments}")
-        # wx.MessageBox(f"DEBUG: run_profiles _parse_windows_command: ENTER  self.arguments={self.arguments}", "Debug")
         from subprocess import Popen, PIPE
         try:
             p = Popen(['echo', self.arguments], stdin=PIPE, stdout=PIPE,
@@ -337,16 +334,15 @@ class PybotProfile(BaseProfile):
                 os_encoding = os.getenv('RIDE_ENCODING', OUTPUT_ENCODING)
             else:
                 os_encoding = 'cp' + str(code_page)
-            # print(f"DEBUG: run_profiles _parse_windows_command: RAW output ={output} codepage={code_page} {os_encoding}")
             try:
                 output = output.decode(os_encoding)
             except UnicodeDecodeError:
                 wx.MessageBox(f"An UnicodeDecodeError occurred when processing the Arguments."
                               f" The encoding used was '{os_encoding}'. You may try to define the environment variable"
-                              f" RIDE_ENCODING with a proper value. Other possibility, is to replace 'pythonw.exe' by 'python.exe'"
-                              f" in the Desktop Shortcut.", "UnicodeDecodeError")
-            # print(f"DEBUG: run_profiles _parse_windows_command: RAW_decoded output ={output.decode(sys.getfilesystemencoding())}")
-            output = str(output).lstrip("b\'").lstrip('"').replace('\\r\\n', '').replace('\'', '').replace('\\""', '\"').strip()
+                              f" RIDE_ENCODING with a proper value. Other possibility, is to replace 'pythonw.exe' by "
+                              f"'python.exe' in the Desktop Shortcut.", "UnicodeDecodeError")
+            output = str(output).lstrip("b\'").lstrip('"').replace('\\r\\n', '').replace('\'', '').\
+                replace('\\""', '\"').strip()
             # print(f"DEBUG: run_profiles _parse_windows_command: output ={output}")
             even = True
             counter = 0
@@ -359,9 +355,7 @@ class PybotProfile(BaseProfile):
                 .replace('\\\\', '\\').replace('\\r\\n', '')
             if not even:
                 self._defined_arguments = self._defined_arguments.rstrip('"')
-            # print(f"DEBUG: run_profiles _parse_windows_command: success EVEN? {even} self._defined_arguments={self._defined_arguments}")
-        except IOError as e:
-            # print(f"DEBUG: run_profiles _parse_windows_command IOError: {e}")
+        except IOError:
             pass
 
     def _parse_posix_command(self):
@@ -385,9 +379,7 @@ class PybotProfile(BaseProfile):
                 .replace('\\\\', '\\').replace('\\n', '')
             if not even:
                 self._defined_arguments = self._defined_arguments.rstrip('"')
-            # print(f"DEBUG: run_profiles _parse_posix_command: success EVEN? {even} self._defined_arguments={self._defined_arguments}")
-        except IOError as e:
-            # print(f"DEBUG: run_profiles _parse_posix_command IOError: {e}")
+        except IOError:
             pass
 
     @staticmethod
@@ -420,8 +412,7 @@ class PybotProfile(BaseProfile):
         if b'not found' in error \
                 or returncode == 127 or \
                 b'system cannot find the file specified' in error:
-            return pluginapi.RideLogMessage(
-                RF_INSTALLATION_NOT_FOUND, notify_user=True)
+            return pluginapi.RideLogMessage(RF_INSTALLATION_NOT_FOUND, notify_user=True)
         return None
 
     def _get_log_options_panel(self, parent):
@@ -469,10 +460,12 @@ class PybotProfile(BaseProfile):
         return collapsible_pane
 
     def OnOutputDirectoryChanged(self, evt):
+        _ = evt
         value = self._output_directory_text_ctrl.GetValue()
         self.set_setting("output_directory", value)
 
     def _handle_select_directory(self, event):
+        _ = event
         path = self._output_directory_text_ctrl.GetValue()
         dlg = wx.DirDialog(None, "Select Logs Directory",
                            path, wx.DD_DEFAULT_STYLE)
@@ -521,6 +514,7 @@ class PybotProfile(BaseProfile):
         return collapsible_pane
 
     def OnArgumentsChanged(self, evt):
+        _ = evt
         args = self._args_text_ctrl.GetValue()
         self._validate_arguments(args or u'')
         self.set_setting("arguments", args)
@@ -539,6 +533,7 @@ class PybotProfile(BaseProfile):
 
     @staticmethod
     def _get_invalid_message(args):
+        invalid = False
         if not args:
             return None
         try:
@@ -556,8 +551,6 @@ class PybotProfile(BaseProfile):
         except (DataError, Exception) as e:
             if e.message:
                 return e.message
-                # raise DataError(e.message)
-            # print(f"DEBUG: Exception at run_profiles _get_invalid_messagee (Not DataError?) {e}")
         if bool(invalid):
             return f'Unknown option(s): {invalid}'
         return None
@@ -604,6 +597,7 @@ class PybotProfile(BaseProfile):
         return collapsible_pane
 
     def OnCollapsiblePaneChanged(self, evt=None):
+        _ = evt
         parent = self._toolbar.GetParent().GetParent()
         parent.Layout()
 
@@ -616,9 +610,11 @@ class PybotProfile(BaseProfile):
         self._exclude_tags_text_ctrl.Enable(evt.IsChecked())
 
     def OnIncludeTagsChanged(self, evt):
+        _ = evt
         self.set_setting("include_tags", self._include_tags_text_ctrl.GetValue())
 
     def OnExcludeTagsChanged(self, evt):
+        _ = evt
         self.set_setting("exclude_tags", self._exclude_tags_text_ctrl.GetValue())
 
     @staticmethod
@@ -654,7 +650,6 @@ class CustomScriptProfile(PybotProfile):
     def get_cwd(self):
         return os.path.dirname(self.runner_script)
 
-    @overrides(PybotProfile)
     def get_toolbar_items(self, parent):
         return [self._get_run_script_panel(parent),
                 self._get_arguments_panel(parent),
@@ -682,4 +677,5 @@ class CustomScriptProfile(PybotProfile):
         return panel
 
     def OnCustomScriptChanged(self, evt):
+        _ = evt
         self.set_setting("runner_script", self._script_ctrl.GetValue())

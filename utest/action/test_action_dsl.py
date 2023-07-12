@@ -17,7 +17,7 @@
 
 import unittest
 
-from robotide.action.actioninfo import ActionInfoCollection
+from robotide.action.actioninfo import action_info_collection
 from robotide.context import IS_MAC
 
 
@@ -45,7 +45,7 @@ class TestActionInfoCollection(unittest.TestCase):
         Huba | HubaBuba
         """
         handlers = HandlerMock(OnSave='save action', OnHuba='huba action')
-        infos = ActionInfoCollection(data, handlers)
+        infos = action_info_collection(data, handlers)
         assert infos[0].menu_name == 'File'
         assert infos[0].name == 'Save'
         assert infos[0].action == 'save action'
@@ -62,7 +62,7 @@ class TestActionInfoCollection(unittest.TestCase):
         Huba (Alt-D or CtrlCmd-H) | HubaBuba
         """
         handlers = HandlerMock(OnHuba='huba action')
-        infos = ActionInfoCollection(data, handlers)
+        infos = action_info_collection(data, handlers)
         assert infos[0].menu_name == 'Hopla'
         _check_mac(infos[0].name, u'Huba  (Alt-D or Ctrl-H)', u'Huba  (\u2325D or \u2318H)')
         assert infos[0].action == 'huba action'

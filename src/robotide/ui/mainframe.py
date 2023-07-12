@@ -28,7 +28,7 @@ from .pluginmanager import PluginManager
 from .progress import LoadProgressObserver
 from .review import ReviewDialog
 from .treeplugin import Tree
-from ..action import ActionInfoCollection, ActionFactory, SeparatorInfo
+from ..action import action_info_collection, action_factory, SeparatorInfo
 from ..action.shortcut import localize_shortcuts
 from ..context import ABOUT_RIDE, SHORTCUT_KEYS
 from ..controller.ctrlcommands import SaveFile, SaveAll
@@ -209,7 +209,7 @@ class RideFrame(wx.Frame):
                              LeftDockable())  # DEBUG: remove .CloseButton(False) when restore is fixed
         # DEBUG: self.aui_mgr.GetPane(self.tree).DestroyOnClose()
         # TreePlugin will manage showing the Tree
-        self.actions.register_actions(ActionInfoCollection(_menudata, self, self.tree))
+        self.actions.register_actions(action_info_collection(_menudata, self, self.tree))
         # ##### File explorer panel is always created here
         self.filemgr = FileExplorer(self, self._controller)
         self.filemgr.SetMinSize(wx.Size(275, 250))
@@ -667,7 +667,7 @@ class ActionRegisterer(object):
 
     def register_action(self, action_info, update_aui=True):
         menubar_can_be_registered = True
-        action = ActionFactory(action_info)
+        action = action_factory(action_info)
         self._shortcut_registry.register(action)
         if hasattr(action_info, "menu_name"):
             if action_info.menu_name == "Tools":
@@ -682,7 +682,7 @@ class ActionRegisterer(object):
         return action
 
     def register_tools(self):
-        separator_action = ActionFactory(SeparatorInfo("Tools"))
+        separator_action = action_factory(SeparatorInfo("Tools"))
         add_separator_after = ["stop test run", "search unused keywords",
                                "preview", "view ride log"]
         # for key in sorted(self._tools_items.iterkeys()):
@@ -702,7 +702,7 @@ class ActionRegisterer(object):
         self._aui_mgr.Update()
 
     def register_shortcut(self, action_info):
-        action = ActionFactory(action_info)
+        action = action_factory(action_info)
         self._shortcut_registry.register(action)
         return action
 
