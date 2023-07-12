@@ -14,7 +14,7 @@
 #  limitations under the License.
 
 import os
-from robotide.controller.ctrlcommands import AddTestCaseFile, AddTestCase, AddKeyword, AddVariable, ChangeCellValue, AddRow, DeleteRow, InsertCell, DeleteCell, MoveRowsUp, MoveRowsDown, ExtractKeyword, RenameKeywordOccurrences, RenameTest, Undo, Redo, SaveFile, NullObserver, MoveUp, MoveDown, AddLibrary, AddResource, DeleteItem, InsertArea
+from robotide.controller.ctrlcommands import AddTestCaseFile, AddTestCase, AddKeyword, AddVariable, ChangeCellValue, AddRow, DeleteRow, InsertCell, DeleteCell, MoveRowsUp, MoveRowsDown, ExtractKeyword, RenameKeywordOccurrences, RenameTest, Undo, Redo, SaveFile, NullObserver, MoveUp, MoveDown, AddLibrary, AddResource, DeleteItem, insert_area
 from robotide.namespace import Namespace
 from robotide.controller import Project
 from robotide.preferences import RideSettings
@@ -149,8 +149,8 @@ class RIDE(object):
                                             value))
 
     def write_for_loop(self):
-        self._macro_execute(InsertArea((self._rand_row(), 0),
-                            [['FOR', '${i}', 'IN', '1', '2', 'foo'],
+        self._macro_execute(insert_area((self._rand_row(), 0),
+                                        [['FOR', '${i}', 'IN', '1', '2', 'foo'],
                              ['', 'No Operation'],
                              ['END']]))
 

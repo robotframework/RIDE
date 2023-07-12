@@ -21,7 +21,7 @@ from robotide.publish.messages import RideUserKeywordAdded,\
     RideUserKeywordRemoved, RideTestCaseAdded, RideTestCaseRemoved,\
     RideItemNameChanged
 from robotide.controller.ctrlcommands import AddKeyword, RemoveMacro, Undo,\
-    AddTestCase, AddKeywordFromCells, RenameTest
+    AddTestCase, add_keyword_from_cells, RenameTest
 from robotide.publish import PUBLISHER
 
 from controller.base_command_test import testcase_controller
@@ -66,7 +66,7 @@ class _TestMacroCommands(object):
 
     def test_add_keyword_command_with_step(self):
         new_kw_name = 'Akjskajs'
-        self._exec(AddKeywordFromCells([new_kw_name, 'foo', 'bar']))
+        self._exec(add_keyword_from_cells([new_kw_name, 'foo', 'bar']))
         assert self._new_keyword.name == new_kw_name
         assert self._new_keyword.arguments.value == '${arg1} | ${arg2}'
 

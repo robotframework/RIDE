@@ -29,11 +29,11 @@ from .tooltips import GridToolTips
 from .. import robotapi
 from ..context import IS_MAC
 from ..controller.cellinfo import tip_message, ContentType, CellType
-from ..controller.ctrlcommands import ChangeCellValue, ClearArea, \
-    PasteArea, DeleteRows, AddRows, CommentRows, InsertCells, DeleteCells, \
-    UncommentRows, Undo, Redo, RenameKeywordOccurrences, ExtractKeyword, \
-    AddKeywordFromCells, MoveRowsUp, MoveRowsDown, ExtractScalar, ExtractList, \
-    InsertArea
+from ..controller.ctrlcommands import ChangeCellValue, clear_area, \
+    paste_area, delete_rows, add_rows, comment_rows, insert_cells, delete_cells, \
+    uncomment_rows, Undo, Redo, RenameKeywordOccurrences, ExtractKeyword, \
+    add_keyword_from_cells, MoveRowsUp, MoveRowsDown, extract_scalar, extract_list, \
+    insert_area
 from ..editor.cellrenderer import CellRenderer
 from ..pluginapi import Plugin
 from ..publish import RideItemStepsChanged, RideSaved, PUBLISHER, RideBeforeSaving
@@ -320,7 +320,7 @@ class KeywordEditor(GridEditor, Plugin):
         self._move_cursor_down(event)
 
     def OnInsertRows(self, event):
-        self._execute(AddRows(self.selection.rows()))
+        self._execute(add_rows(self.selection.rows()))
         self.ClearSelection()
         self._resize_grid()
         self._skip_except_on_mac(event)
@@ -344,8 +344,8 @@ class KeywordEditor(GridEditor, Plugin):
 
         self._icells = (self.selection.topleft,
                         self.selection.bottomright)
-        self._execute(InsertCells(self.selection.topleft,
-                                  self.selection.bottomright))
+        self._execute(insert_cells(self.selection.topleft,
+                                   self.selection.bottomright))
         self._resize_grid()
         self._skip_except_on_mac(event)
 
@@ -361,19 +361,19 @@ class KeywordEditor(GridEditor, Plugin):
             self._counter = 1
 
         self._dcells = (self.selection.topleft, self.selection.bottomright)
-        self._execute(DeleteCells(self.selection.topleft, self.selection.bottomright))
+        self._execute(delete_cells(self.selection.topleft, self.selection.bottomright))
         self._resize_grid()
         self._skip_except_on_mac(event)
 
     # DEBUG @requires_focus
     def OnCommentRows(self, event=None):
-        self._execute(CommentRows(self.selection.rows()))
+        self._execute(comment_rows(self.selection.rows()))
         self._resize_grid()
         self._skip_except_on_mac(event)
 
     # DEBUG @requires_focus
     def OnUncommentRows(self, event=None):
-        self._execute(UncommentRows(self.selection.rows()))
+        self._execute(uncomment_rows(self.selection.rows()))
         self._resize_grid()
         self._skip_except_on_mac(event)
 
@@ -509,8 +509,8 @@ class KeywordEditor(GridEditor, Plugin):
     def OnDelete(self, event=None):
         _ = event
         if not self.IsCellEditControlShown():
-            self._execute(ClearArea(self.selection.topleft,
-                                    self.selection.bottomright))
+            self._execute(clear_area(self.selection.topleft,
+                                     self.selection.bottomright))
             self._resize_grid()
 
     # DEBUG    @requires_focus
@@ -519,7 +519,7 @@ class KeywordEditor(GridEditor, Plugin):
         if self.IsCellEditControlShown():
             self.paste()
         else:
-            self._execute_clipboard_command(PasteArea)
+            self._execute_clipboard_command(paste_area)
         self._resize_grid()
 
     def _execute_clipboard_command(self, command_class):
@@ -532,11 +532,11 @@ class KeywordEditor(GridEditor, Plugin):
     # DEBUG @requires_focus
     def OnInsert(self, event=None):
         _ = event
-        self._execute_clipboard_command(InsertArea)
+        self._execute_clipboard_command(insert_area)
         self._resize_grid()
 
     def OnDeleteRows(self, event):
-        self._execute(DeleteRows(self.selection.rows()))
+        self._execute(delete_rows(self.selection.rows()))
         self.ClearSelection()
         self._resize_grid()
         self._skip_except_on_mac(event)
@@ -873,7 +873,7 @@ work.</li>
         if not cells:
             return
         try:
-            self._execute(AddKeywordFromCells(cells))
+            self._execute(add_keyword_from_cells(cells))
         except ValueError as err:
             wx.MessageBox(str(err))
 
@@ -943,7 +943,7 @@ work.</li>
         if dlg.ShowModal() == wx.ID_OK:
             name, value = dlg.get_value()
             comment = dlg.get_comment()
-            self._execute(ExtractScalar(name, value, comment, cell))
+            self._execute(extract_scalar(name, value, comment, cell))
 
     def _extract_list(self, cells):
         var = robotapi.Variable(
@@ -954,7 +954,7 @@ work.</li>
         if dlg.ShowModal() == wx.ID_OK:
             name, value = dlg.get_value()
             comment = dlg.get_comment()
-            self._execute(ExtractList(name, value, comment, cells))
+            self._execute(extract_list(name, value, comment, cells))
 
     def OnRenameKeyword(self, event):
         _ = event
