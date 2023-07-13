@@ -19,7 +19,7 @@ import stat
 import subprocess
 import sys
 from itertools import chain
-from .dataloader import ExcludedDirectory, TestData
+from .dataloader import ExcludedDirectory, test_data
 from ..publish import (RideDataFileRemoved, RideInitFileRemoved, RideDataChangedToDirty, RideDataDirtyCleared,
                        RideSuiteAdded, RideItemSettingsChanged)
 from ..publish.messages import RideDataFileSet, RideOpenResource
@@ -1017,7 +1017,7 @@ class ExcludedDirectoryController(_FileSystemElement, ControllerWithParent, With
     def remove_from_excludes(self):
         self._project.internal_settings.excludes.remove_path(self.source)
         index = self.parent.children.index(self)
-        td = TestData(self.data.source, self.parent.data, self._project.internal_settings)
+        td = test_data(self.data.source, self.parent.data, self._project.internal_settings)
         result = TestDataDirectoryController(td, self._project, self.parent)
         self.parent.children[index] = result
         return result
