@@ -49,7 +49,7 @@ from mockito import mock
 
 from robotide.robotapi import Variable
 from robotide.controller import data_controller
-from robotide.controller.robotdata import NewTestCaseFile
+from robotide.controller.robotdata import new_test_case_file
 from robotide.controller.settingcontrollers import VariableController
 from robotide.controller.tablecontrollers import VariableTableController
 from robotide.editor import EditorPlugin

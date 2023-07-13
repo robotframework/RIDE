@@ -1021,8 +1021,8 @@ class ChangeCellValue(_StepsChangingCommand):
             step.insert_value_before(self._col, self._value)
             # print(f"DEBUG: change_steps after insert cell Line: {context.steps[self._row].as_list()}")
         else:
-            step.change(self._col, self._value, not self._insert)
-        self._step(context).remove_empty_columns_from_end(not self._insert)
+            step.change(self._col, self._value)
+        self._step(context).remove_empty_columns_from_end()
         # DEGUG: Next validation is not possible to call when the step is Indented
         # assert self._validate_postcondition(context), 'Should have correct value after change'
         return True
@@ -1113,9 +1113,9 @@ class InsertCell(_StepsChangingCommand):
         return '%s, %s' % (self._row, self._col)
 
     def change_steps(self, context, delete=False):
-        self._step(context).shift_right(self._col, delete=delete)
+        self._step(context).shift_right(self._col)
         if not delete:
-            self._step(context)._recreate(context.steps[self._row].as_list())
+            self._step(context).recreate(context.steps[self._row].as_list())
         assert self._step(context).get_value(self._col) == '', 'Should have an empty value after insert'
         return True
 

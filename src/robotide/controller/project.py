@@ -19,7 +19,7 @@ import tempfile
 
 from .basecontroller import WithNamespace, _BaseController
 from .dataloader import DataLoader
-from .robotdata import NewTestCaseFile, NewTestDataDirectory
+from .robotdata import new_test_case_file, new_test_data_directory
 from ..context import LOG
 from ..controller.ctrlcommands import NullObserver, SaveFile
 from ..publish.messages import RideOpenSuite, RideNewProject, RideFileNameChanged
@@ -100,10 +100,10 @@ class Project(_BaseController, WithNamespace):
         return self._controller.find_controller_by_longname(longname, testname)
 
     def new_directory_project(self, path):
-        self._new_project(NewTestDataDirectory(path))
+        self._new_project(new_test_data_directory(path))
 
     def new_file_project(self, path):
-        self._new_project(NewTestCaseFile(path))
+        self._new_project(new_test_case_file(path))
 
     def _new_project(self, datafile):
         from .filecontrollers import data_controller, ResourceFileControllerFactory

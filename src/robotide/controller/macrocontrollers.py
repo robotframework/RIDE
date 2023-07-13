@@ -83,7 +83,7 @@ class WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         self._has_steps_changed = True
         self._steps_cached = None
         self.datafile_controller.register_for_namespace_updates(
-            self._clear_cached_steps)
+            self.clear_cached_steps)
 
     @property
     def source(self):
@@ -100,7 +100,7 @@ class WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         return self._steps_cached
 
     def set_parent(self, new_parent):
-        self._clear_cached_steps()
+        self.clear_cached_steps()
         ControllerWithParent.set_parent(self, new_parent)
 
     def _recreate_steps(self):
@@ -115,7 +115,7 @@ class WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         self._steps_cached = flattened_steps
         self._has_steps_changed = False
 
-    def _clear_cached_steps(self):
+    def clear_cached_steps(self):
         self._has_steps_changed = True
         self._steps_cached = None
 
@@ -180,7 +180,7 @@ class WithStepsController(ControllerWithParent, WithUndoRedoStacks):
 
     def delete(self):
         self.datafile_controller.unregister_namespace_updates(
-            self._clear_cached_steps)
+            self.clear_cached_steps)
         self._parent.delete(self)
         self.notify_keyword_removed()
 

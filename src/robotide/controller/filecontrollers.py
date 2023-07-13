@@ -27,7 +27,7 @@ from ..robotapi import TestDataDirectory, TestCaseFile, ResourceFile
 from .. import utils
 
 from .basecontroller import WithUndoRedoStacks, _BaseController, WithNamespace, ControllerWithParent
-from .robotdata import NewTestCaseFile, NewTestDataDirectory
+from .robotdata import new_test_case_file, new_test_data_directory
 from .settingcontrollers import (DocumentationController, FixtureController, TimeoutController, TemplateController,
                                  DefaultTagsController, ForceTagsController)
 from .tablecontrollers import (VariableTableController, TestCaseTableController, KeywordTableController,
@@ -542,12 +542,12 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
         self.filename = self.data.initfile
 
     def new_test_case_file(self, path):
-        ctrl = self._new_data_controller(NewTestCaseFile(path))
+        ctrl = self._new_data_controller(new_test_case_file(path))
         ctrl.mark_dirty()
         return ctrl
 
     def new_test_data_directory(self, path):
-        return self._new_data_controller(NewTestDataDirectory(path))
+        return self._new_data_controller(new_test_data_directory(path))
 
     def _new_data_controller(self, datafile):
         self.data.children.append(datafile)
