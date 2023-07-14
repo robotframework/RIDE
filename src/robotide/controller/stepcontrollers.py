@@ -62,7 +62,7 @@ class StepController(_BaseController):
             return []
         if comment:
             return args
-        return args[:-1] + ['${EMPTY}'] if args and args[-1] == '' else args
+        return args[:-1] + ['${EMPTY}'] if args[-1] == '' else args
 
     def get_keyword_info(self, kw):
         if not kw:
