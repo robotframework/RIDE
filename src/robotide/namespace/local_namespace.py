@@ -17,8 +17,8 @@ from robotide import utils
 from robotide.spec.iteminfo import LocalVariableInfo
 
 
-def LocalNamespace(controller, namespace, row=None):
-    if row is not None: # can be 0!
+def local_namespace(controller, namespace, row=None):
+    if row is not None:  # can be 0!
         return LocalRowNamespace(controller, namespace, row)
     return LocalMacroNamespace(controller, namespace)
 
@@ -75,7 +75,8 @@ class LocalRowNamespace(LocalMacroNamespace):
                                                          local_variables))
         return suggestions
 
-    def _could_be_variable(self, start):
+    @staticmethod
+    def _could_be_variable(start):
         return len(start) == 0 or start[0] in ['$', '@', '&']
 
     def has_name(self, value):
@@ -87,9 +88,9 @@ class LocalRowNamespace(LocalMacroNamespace):
                     return True
         return LocalMacroNamespace.has_name(self, value)
 
-    def _remove_duplicates(self, suggestions, local_variables):
+    @staticmethod
+    def _remove_duplicates(suggestions, local_variables):
         def is_unique(gvar):
-            return utils.normalize(gvar.name) not in \
-            [utils.normalize(lvar.name) for lvar in local_variables]
+            return utils.normalize(gvar.name) not in [utils.normalize(lvar.name) for lvar in local_variables]
         unique = [gvar for gvar in suggestions if is_unique(gvar)]
         return unique + local_variables

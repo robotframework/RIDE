@@ -23,7 +23,7 @@ from .settingcontrollers import (DocumentationController, FixtureController, Tag
                                  TemplateController, ArgumentsController, ReturnValueController)
 from .stepcontrollers import ForLoopStepController, StepController, IntendedStepController
 from .tags import Tag
-from ..namespace.local_namespace import LocalNamespace
+from ..namespace.local_namespace import local_namespace
 from ..publish.messages import (RideItemStepsChanged, RideItemNameChanged, RideItemSettingsChanged,
                                 RideUserKeywordRemoved)
 from ..spec.iteminfo import ResourceUserKeywordInfo, TestCaseUserKeywordInfo
@@ -157,11 +157,11 @@ class WithStepsController(ControllerWithParent, WithUndoRedoStacks):
 
     def get_local_namespace(self):
         # print(f"DEBUG: local namespace controller.namespace {self.datafile_controller.namespace}")
-        return LocalNamespace(self, self.datafile_controller.namespace)
+        return local_namespace(self, self.datafile_controller.namespace)
 
     def get_local_namespace_for_row(self, row):
         # print(f"DEBUG: local namespace_for_row controller.namespace {self.datafile_controller.namespace} row {row}")
-        return LocalNamespace(self, self.datafile_controller.namespace, row)
+        return local_namespace(self, self.datafile_controller.namespace, row)
 
     def get_cell_info(self, row, col):
         steps = self.steps

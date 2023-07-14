@@ -18,7 +18,7 @@ import re
 from .. import robotapi, utils
 from .basecontroller import _BaseController
 from .cellinfo import CellPosition, CellType, CellInfo, CellContent, ContentType, UPPERCASE_KWS
-from ..namespace.local_namespace import LocalNamespace
+from ..namespace.local_namespace import local_namespace
 from ..utils import variablematcher
 
 
@@ -223,7 +223,7 @@ class StepController(_BaseController):
 
     def _get_local_namespace(self):
         index = self.parent.index_of_step(self.step_controller_step)
-        return LocalNamespace(
+        return local_namespace(
             self.parent, self.datafile_controller.namespace, index)
 
     def _get_last_none_empty_col_idx(self):
@@ -711,7 +711,7 @@ class IntendedStepController(StepController):
     def _get_local_namespace(self):
         p = self.parent.parent
         index = p.index_of_step(self.step_controller_step)
-        return LocalNamespace(p, self.datafile_controller.namespace, index)
+        return local_namespace(p, self.datafile_controller.namespace, index)
 
     def _get_content_with_type(self, col, position):
         if col < self._keyword_column:
