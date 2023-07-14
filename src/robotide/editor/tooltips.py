@@ -26,21 +26,20 @@ class GridToolTips(object):
         self._information_popup = HtmlPopupWindow(grid, (450, 300))
         self._grid = grid
         self._tooltip_timer = wx.Timer(grid.GetGridWindow())
-        grid.GetGridWindow().Bind(wx.EVT_WINDOW_DESTROY, self.OnGridDestroy)
-        grid.GetGridWindow().Bind(wx.EVT_KILL_FOCUS, self.OnGridFocusLost)
-        grid.GetGridWindow().Bind(wx.EVT_MOTION, self.OnMouseMotion)
-        grid.GetGridWindow().Bind(wx.EVT_TIMER, self.OnShowToolTip)
-        grid.Bind(wx.grid.EVT_GRID_EDITOR_HIDDEN, self.OnGridEditorHidden)
+        grid.GetGridWindow().Bind(wx.EVT_WINDOW_DESTROY, self.on_grid_destroy)
+        grid.GetGridWindow().Bind(wx.EVT_KILL_FOCUS, self.on_grid_focus_lost)
+        grid.GetGridWindow().Bind(wx.EVT_MOTION, self.on_mouse_motion)
+        grid.GetGridWindow().Bind(wx.EVT_TIMER, self.on_show_tool_tip)
+        grid.Bind(wx.grid.EVT_GRID_EDITOR_HIDDEN, self.on_grid_editor_hidden)
 
-    def OnGridDestroy(self, event):
+    def on_grid_destroy(self, event):
         self._tooltip_timer.Stop()
         event.Skip()
 
-    def OnGridFocusLost(self, event):
-        self._tooltip_timer.Stop()
-        event.Skip()
+    def on_grid_focus_lost(self, event):
+        self.on_grid_destroy(event)
 
-    def OnMouseMotion(self, event):
+    def on_mouse_motion(self, event):
         self._hide_tooltip()
         if event.CmdDown():
             self._tooltip_timer.Stop()
@@ -53,21 +52,23 @@ class GridToolTips(object):
     def _start_tooltip_timer(self):
         self._tooltip_timer.Start(1000, True)
 
-    def OnShowToolTip(self, event):
+    def on_show_tool_tip(self, event):
+        _ = event
         self._hide_tooltip()
         content = self._grid.get_tooltip_content()
         if content and self._application_has_focus():
             self._show_tooltip_at(content, self._calculate_tooltip_position())
             self._grid.SetFocus()
 
-    def _application_has_focus(self):
+    @staticmethod
+    def _application_has_focus():
         window = wx.Window.FindFocus()
         if window is None:
             return False
         rect = window.GetTopLevelParent().GetScreenRect()
         return rect.Contains(wx.GetMousePosition())
 
-    def OnGridEditorHidden(self, event):
+    def on_grid_editor_hidden(self, event):
         cell = event.Row, event.Col
         if cell == self._grid.cell_under_cursor:
             self._start_tooltip_timer()
@@ -77,7 +78,8 @@ class GridToolTips(object):
             self._tooltip.set_content(content)
             self._tooltip.show_at(position)
 
-    def _calculate_tooltip_position(self):
+    @staticmethod
+    def _calculate_tooltip_position():
         x, y = wx.GetMousePosition()
         return x + 16, y + 16   # don't place tooltip under cursor
 
