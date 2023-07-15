@@ -48,27 +48,17 @@ class Plugin(object):
         Specifies should the plugin be enabled when first loaded.
         Set in `__init__`.
     """
-    tree = property(lambda self: self.__frame.tree,
-                    doc='Provides access to the suite and resource tree')
-    filemgr = property(lambda self: self.__frame.filemgr,
-                    doc='Provides access to the files and folders explorer')
-    menubar = property(lambda self: self.__frame.GetMenuBar(),
-                       doc='Provides access to the application menubar')
-    toolbar = property(lambda self: self.__frame.GetToolBar(),
-                       doc='Provides access to the application toolbar')
-    notebook = property(lambda self: self.__frame.notebook,
-                        doc='Provides access to the tabbed notebook')
-    model = property(lambda self: self.__app.model,
-                     doc='Provides access to the data model')
-    frame = property(lambda self: self.__frame,
-                     doc='Reference to the RIDE main frame')
-    datafile = property(lambda self: self.get_selected_datafile(),
-                        doc='Currently selected datafile')
-    global_settings = property(lambda self: self.__app.settings,
-                               doc='Settings read from settings.cfg')
+    tree = property(lambda self: self.__frame.tree, doc='Provides access to the suite and resource tree')
+    filemgr = property(lambda self: self.__frame.filemgr, doc='Provides access to the files and folders explorer')
+    menubar = property(lambda self: self.__frame.GetMenuBar(), doc='Provides access to the application menubar')
+    toolbar = property(lambda self: self.__frame.GetToolBar(), doc='Provides access to the application toolbar')
+    notebook = property(lambda self: self.__frame.notebook, doc='Provides access to the tabbed notebook')
+    model = property(lambda self: self.__app.model, doc='Provides access to the data model')
+    frame = property(lambda self: self.__frame, doc='Reference to the RIDE main frame')
+    datafile = property(lambda self: self.get_selected_datafile(), doc='Currently selected datafile')
+    global_settings = property(lambda self: self.__app.settings, doc='Settings read from settings.cfg')
 
-    def __init__(self, application, name=None, doc=None, metadata=None,
-                 default_settings=None, initially_enabled=True):
+    def __init__(self, application, name=None, doc=None, metadata=None, default_settings=None, initially_enabled=True):
         """Initialize the plugin with the provided data.
 
         The provided information is mainly used by the plugin manager. Simple
@@ -91,7 +81,7 @@ class Plugin(object):
             RIDE application reference.
           name
             Name of the plugin. If not specified, the name is got from the
-            plugin class name dropping possible ``Plugin`` from the end.
+            plugin class name-dropping possible ``Plugin`` from the end.
           doc
             Plugin documentation. If not specified, the doc is got from the
             plugin class docstring.
@@ -183,8 +173,9 @@ class Plugin(object):
         The panel returned will be integrated into the plugin manager UI, and
         can be used e.g. to display configurable settings.
 
-        By default there is no configuration panel.
+        By default, there is no configuration panel.
         """
+        _ = parent
         return None
 
     def register_action(self, action_info):
@@ -197,7 +188,7 @@ class Plugin(object):
         All registered actions can be un-registered using the
         `unregister_actions` method.
 
-        If register action is used in menu event handler and it modifies the
+        If register action is used in menu event handler, and it modifies the
         menu that triggered the event, it is safest to wrap register action
         call inside wx.CallAfter function.
 
@@ -303,7 +294,6 @@ class Plugin(object):
     def save_all_unsaved_changes(self):
         """Saves all the data files that are modified."""
         self.__frame.save_all()
-
 
     def get_selected_item(self):
         """Returns the item that is currently selected in the tree.
@@ -442,14 +432,14 @@ class Plugin(object):
         return self.__app.get_editor(item_class)
 
     def highlight_cell(self, tcuk, obj=None, row=-1, column=-1):
-        '''Highlight a specific row/column of a test case or user keyword'''
+        """Highlight a specific row/column of a test case or user keyword"""
         if not self.tree:
             return
         self.tree.select_node_by_data(tcuk)
         self.__app.editor.highlight_cell(obj, row, column)
 
     def highlight(self, data, text):
-        '''Highlight a specific text of a given data's editor'''
+        """Highlight a specific text of a given data's editor"""
         if not self.tree:
             return
         self.tree.highlight(data, text)

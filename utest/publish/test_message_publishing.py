@@ -145,7 +145,7 @@ class TestPublisher(unittest.TestCase):
         TestPublisher.cls_msg = ''
         TestPublisher.cls_msgs.clear()
         PUBLISHER.unsubscribe_all()
-        PUBLISHER._publisher.getTopicMgr().clearTree()
+        PUBLISHER.publisher.getTopicMgr().clearTree()
 
     def test_invalid_topic(self):
         with pytest.raises(TypeError):

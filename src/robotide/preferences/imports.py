@@ -19,6 +19,7 @@ from ..context import IS_WINDOWS
 from ..ui.preferences_dialogs import PreferencesPanel, comma_separated_value_editor
 from wx import Colour
 
+
 class ImportPreferences(PreferencesPanel):
     location = 'Importing'
     title = 'Library imports and PYTHONPATH'
