@@ -94,14 +94,13 @@ class _PluginPanel(RIDEDialog):
         return info
 
     def _create_label(self, parent, text):
-        boldFont = self.GetFont()
-        # boldFont = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT)
+        bold_font = self.GetFont()
         if self.font_face:
-            boldFont.SetFaceName(self.font_face)
-        boldFont.SetWeight(wx.FONTWEIGHT_BOLD)
-        boldFont.SetPointSize(self.font_size)
+            bold_font.SetFaceName(self.font_face)
+        bold_font.SetWeight(wx.FONTWEIGHT_BOLD)
+        bold_font.SetPointSize(self.font_size)
         label = Label(parent, wx.ID_ANY, text)
-        label.SetFont(boldFont)
+        label.SetFont(bold_font)
         return label
 
 
