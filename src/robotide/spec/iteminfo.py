@@ -111,9 +111,8 @@ class VariableInfo(ItemInfo):
     @property
     def details(self):
         value = self._value
-        if self.name.startswith('@'):
-            if value is None:
-                value = '[ ]'
+        if self.name.startswith('@') and value is None:
+            value = '[ ]'
         return ('<table>'
                 '<tr><td><i>Name:</i></td><td>%s</td></tr>'
                 '<tr><td><i>Source:</i></td><td>%s</td></tr>'
@@ -162,8 +161,7 @@ class _KeywordInfo(ItemInfo):
     def __init__(self, item):
         self.doc = self._doc(item).strip()
         self.doc_format = "ROBOT"
-        ItemInfo.__init__(self, self._name(item), self._source(item),
-                          None)
+        ItemInfo.__init__(self, self._name(item), self._source(item), None)
         self.shortdoc = self.doc.splitlines()[0] if self.doc else ''
         self.item = item
 

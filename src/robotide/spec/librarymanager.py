@@ -14,7 +14,7 @@
 #  limitations under the License.
 
 import os
-import queue as Queue
+import queue
 from sqlite3 import OperationalError
 from threading import Thread
 
@@ -29,7 +29,7 @@ class LibraryManager(Thread):
     def __init__(self, database_name, spec_initializer=None):
         self._database_name = database_name
         self._database = None
-        self._messages = Queue.Queue()
+        self._messages = queue.Queue()
         self._spec_initializer = spec_initializer or SpecInitializer()
         Thread.__init__(self)
         self.daemon = True
@@ -51,8 +51,8 @@ class LibraryManager(Thread):
     def get_new_connection_to_library_database(self):
         library_database = LibraryDatabase(self._database_name)
         if self._database_name == ':memory:':
-            # In memory database does not point to the right place..
-            # this is here for unit tests..
+            # In memory database does not point to the right place.
+            # this is here for unit tests.
             library_database.create_database()
         return library_database
 
@@ -115,7 +115,8 @@ class LibraryManager(Thread):
         except OperationalError:
             pass
 
-    def _call(self, callback, *args):
+    @staticmethod
+    def _call(callback, *args):
         try:
             callback(*args)
         except Exception as err:
@@ -127,12 +128,12 @@ class LibraryManager(Thread):
                            timeout=3)
 
     def get_and_insert_keywords(self, library_name, library_args):
-        result_queue = Queue.Queue(maxsize=1)
+        result_queue = queue.Queue(maxsize=1)
         self._messages.put(
             ('insert', library_name, library_args, result_queue), timeout=3)
         try:
             return result_queue.get(timeout=5)
-        except Queue.Empty as e:
+        except queue.Empty as e:
             RideLogMessage(u'Failed to read keywords from library db: {}'
                            .format(str(e))).publish()
             return []
@@ -143,7 +144,8 @@ class LibraryManager(Thread):
     def stop(self):
         self._messages.put(False, timeout=3)
 
-    def _keywords_differ(self, keywords1, keywords2):
+    @staticmethod
+    def _keywords_differ(keywords1, keywords2):
         if keywords1 != keywords2 and None in (keywords1, keywords2):
             return True
         if len(keywords1) != len(keywords2):
@@ -153,8 +155,6 @@ class LibraryManager(Thread):
                 return True
             if k1.doc != k2.doc:
                 return True
-            # if k1.doc_format != k2.doc_format:
-            #     return True
             if k1.arguments != k2.arguments:
                 return True
             if k1.source != k2.source:
