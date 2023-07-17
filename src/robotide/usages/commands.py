@@ -16,10 +16,6 @@
 import os
 
 from ..controller.ctrlcommands import FindOccurrences, FindVariableOccurrences, _Command
-# import FindOccurrences, _Command, FindVariableOccurrences
-# from ..controller import macrocontrollers
-# from ..controller.macrocontrollers import KeywordNameController
-# import KeywordNameController
 
 
 class FindUsages(FindOccurrences):

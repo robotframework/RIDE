@@ -406,9 +406,8 @@ class ReviewRunner(object):
                 if not self._model.searching:
                     break
                 # Check if it is unused
-                if not isinstance(keyword, LibraryKeywordInfo) and keyword.name:
-                    if self._is_unused(keyword):
-                        self._model.add_unused_keyword(keyword)
+                if not isinstance(keyword, LibraryKeywordInfo) and keyword.name and self._is_unused(keyword):
+                    self._model.add_unused_keyword(keyword)
             if not self._model.searching:
                 break
         self._model.end_search()
@@ -460,9 +459,8 @@ class ResultFilter(object):
 class ResultModel(object):
 
     def __init__(self):
-        self.status = ''
-        self.keywords = []
-        self.searching = False
+        self.status = self.keywords = self.searching = None
+        self.clear_search()
 
     def clear_search(self):
         self.status = ''
