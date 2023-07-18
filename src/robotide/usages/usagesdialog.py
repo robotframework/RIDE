@@ -53,12 +53,12 @@ class UsagesDialog(RIDEDialog):
 
     def _update_searching(self, dots):
         self.SetTitle("'%s' - %d matches found - Searching%s" % (self._name, self.usages.total_usages, dots))
-        self.usage_list.refresh()
+        self.usage_list.refresh_items()
 
     def end_searching(self):
         self._dots.stop()
         self.SetTitle("'%s' - %d matches" % (self._name, self.usages.total_usages))
-        self.usage_list.refresh()
+        self.usage_list.refresh_items()
 
     def _usage_selected(self, idx):
         for listener in self._selection_listeners:

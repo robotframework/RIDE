@@ -18,7 +18,6 @@ from functools import (total_ordering, cmp_to_key)
 import wx
 from wx import Colour
 
-from ..utils import overrides
 from ..widgets import (RIDEDialog, VerticalSizer, VirtualList, Label,
                        HelpLabel, ImageProvider)
 from ..widgets.list import ListModel
@@ -78,8 +77,8 @@ class TestsDialog(RIDEDialog):
         controls_sizer.Add(self._create_add_to_selected_button(panel), 0, wx.ALL | wx.EXPAND, 3)
         panel.Sizer.Add(controls_sizer)
         panel.Sizer.Add(self._add_info_text(panel, "Find matches using tag patterns. See RF User "
-                                                   "Guide or 'robot --help' for more information.")
-                        , 0, wx.ALL, 3)
+                                                   "Guide or 'robot --help' for more information."),
+                        0, wx.ALL, 3)
         self._tags_results = _TestSearchListModel([])
         self._tags_list = VirtualList(panel, ['Test', 'Tags', 'Source'], self._tags_results)
         self._tags_list.SetBackgroundColour(Colour(self.color_secondary_background))
@@ -94,7 +93,7 @@ class TestsDialog(RIDEDialog):
         include_line = self._horizontal_sizer()
         include_line.Add(Label(panel, label='Include', size=(80, -1)))
         self._tags_to_include_text = wx.TextCtrl(panel, value='', size=(400, -1),
-                                                 style=wx.TE_PROCESS_ENTER|wx.TE_NOHIDESEL)
+                                                 style=wx.TE_PROCESS_ENTER | wx.TE_NOHIDESEL)
         self._tags_to_include_text.SetBackgroundColour(Colour(self.color_secondary_background))
         self._tags_to_include_text.SetForegroundColour(Colour(self.color_secondary_foreground))
         self._tags_to_include_text.Bind(wx.EVT_TEXT_ENTER, self.OnSearchTags)
@@ -115,7 +114,7 @@ class TestsDialog(RIDEDialog):
         exclude_line = self._horizontal_sizer()
         exclude_line.Add(Label(panel, label='Exclude', size=(80, -1)))
         self._tags_to_exclude_text = wx.TextCtrl(panel, value='', size=(400, -1),
-                                                 style=wx.TE_PROCESS_ENTER|wx.TE_NOHIDESEL)
+                                                 style=wx.TE_PROCESS_ENTER | wx.TE_NOHIDESEL)
         self._tags_to_exclude_text.SetBackgroundColour(Colour(self.color_secondary_background))
         self._tags_to_exclude_text.SetForegroundColour(Colour(self.color_secondary_foreground))
         self._tags_to_exclude_text.Bind(wx.EVT_TEXT_ENTER, self.OnSearchTags)
@@ -130,6 +129,7 @@ class TestsDialog(RIDEDialog):
         return button
 
     def OnSearchTags(self, event):
+        _ = event
         self._tag_search_handler(self._tags_to_include_text.GetValue(),
                                  self._tags_to_exclude_text.GetValue())
 
@@ -141,16 +141,18 @@ class TestsDialog(RIDEDialog):
         return button
 
     def OnAddToSelected(self, event):
+        _ = event
         self._add_to_selected_handler(self._get_current_tests())
 
     def OnSearchTests(self, event):
+        _ = event
         self._fuzzy_search_handler(self._search_control.GetValue())
 
     def set_search_model(self, search_text, results):
         results = list(results)
         self._search_control.SetValue(search_text)
         self._fuzzy_results_text.SetLabel('Results: %d' % len(results))
-        self.tests._tests = results
+        self.tests.sorted_tests = results
         self._refresh_list(self.tests_list)
 
     def set_tag_search_model(self, include_text, exclude_text, results):
@@ -158,16 +160,17 @@ class TestsDialog(RIDEDialog):
         self._tags_to_include_text.SetValue(include_text)
         self._tags_to_exclude_text.SetValue(exclude_text)
         self._tags_results_text.SetLabel('Results: %d' % len(results))
-        self._tags_results._tests = results
+        self._tags_results.sorted_tests = results
         self._refresh_list(self._tags_list)
 
-    def _refresh_list(self, list):
-        list.refresh()
-        list.Refresh()
-        if list.GetItemCount():
-            list._inform_listeners(0)
+    @staticmethod
+    def _refresh_list(llist):
+        llist.refresh_items()
+        llist.Refresh()
+        if llist.GetItemCount():
+            llist.inform_listeners(0)
 
-    def _add_info_text(self, panel, text = ""):
+    def _add_info_text(self, panel, text=""):
         infopanel = self._horizontal_sizer()
         infopanel.Add(HelpLabel(panel, "Info. " + text))
         return infopanel
@@ -191,21 +194,25 @@ class TestsDialog(RIDEDialog):
                                                    "documentation and/or tag."), 0, wx.ALL, 3)
         panel.Sizer.Layout()
 
-    def _horizontal_sizer(self):
+    @staticmethod
+    def _horizontal_sizer():
         return wx.BoxSizer(wx.HORIZONTAL)
 
-    def _vertical_sizer(self):
+    @staticmethod
+    def _vertical_sizer():
         return wx.BoxSizer(wx.VERTICAL)
 
     def _add_pattern_filter(self, sizer, parent):
-        self._search_control = wx.SearchCtrl(parent, value='', size=(200,-1),
+        self._search_control = wx.SearchCtrl(parent, value='', size=(200, -1),
                                              style=wx.TE_PROCESS_ENTER)
         self._search_control.SetBackgroundColour(Colour(self.color_secondary_background))
         self._search_control.SetForegroundColour(Colour(self.color_secondary_foreground))
         self._search_control.SetDescriptiveText('Search term')
-        wrapped = lambda event: self._fuzzy_search_handler(self._search_control.GetValue())
-        self._search_control.Bind(wx.EVT_TEXT_ENTER, wrapped)
+        self._search_control.Bind(wx.EVT_TEXT_ENTER, self.wrapped)
         sizer.Add(self._search_control, 0, wx.ALL, 3)
+
+    def wrapped(self):
+        return self._fuzzy_search_handler(self._search_control.GetValue())
 
     def _select_text_search_result(self, idx):
         if idx != -1:
@@ -219,11 +226,12 @@ class TestsDialog(RIDEDialog):
     def add_selection_listener(self, listener):
         self._selection_listeners.append(listener)
 
-    def _find_index_in_list(self, item, list):
+    @staticmethod
+    def _find_index_in_list(item, llist):
         if item is None:
             return 0
         idx = 0
-        for tc in list:
+        for tc in llist:
             if tc[0] == item:
                 return idx
             idx += 1
@@ -237,9 +245,9 @@ class TestsDialog(RIDEDialog):
 
     def _get_current_tests(self):
         if self._notebook.GetSelection() == 0:
-            return [t for t, _ in self.tests._tests]
+            return [t for t, _ in self.tests.sorted_tests]
         else:
-            return [test for test, _ in self._tags_results._tests]
+            return [test for test, _ in self._tags_results.sorted_tests]
 
     def _set_focus_to_default_location_in_text_search(self, selected):
         if self.tests.count:
@@ -269,18 +277,17 @@ class TestsDialog(RIDEDialog):
 class _TestSearchListModel(ListModel):
 
     def __init__(self, tests):
-        self._tests = sorted(tests, key=cmp_to_key(lambda x, y: self.m_cmp(x[1], y[1])))
+        self.sorted_tests = sorted(tests, key=cmp_to_key(lambda x, y: self.m_cmp(x[1], y[1])))
 
     @property
-    @overrides(ListModel)
     def count(self):
-        return len(self._tests)
+        return len(self.sorted_tests)
 
     def __getitem__(self, item):
-        return self._tests[item]
+        return self.sorted_tests[item]
 
     def item_text(self, row, col):
-        test, match = self._tests[row]
+        test, _ = self.sorted_tests[row]
         if col == 0:
             return test.name
         if col == 1:

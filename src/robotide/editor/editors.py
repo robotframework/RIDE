@@ -422,7 +422,7 @@ class InitFileEditor(TestCaseFileEditor):
     def _init_file_removed(self, message):
         _ = message
         for setting, editor in zip(self.controller.settings, self._editors):
-            editor.refresh(setting)
+            editor.refresh_items(setting)
 
     def close(self):
         self.plugin.unsubscribe(self._init_file_removed, RideInitFileRemoved)

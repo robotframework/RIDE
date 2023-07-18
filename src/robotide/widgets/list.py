@@ -16,14 +16,13 @@
 import os
 
 import wx
-from wx import Colour
 from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
 
 IS_WINDOWS = os.sep == '\\'
 
 
 class VirtualList(wx.ListCtrl, ListCtrlAutoWidthMixin):
-    _style = wx.LC_REPORT|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VIRTUAL
+    _style = wx.LC_REPORT | wx.LC_SINGLE_SEL | wx.LC_HRULES | wx.LC_VIRTUAL
 
     def __init__(self, parent, headers, model):
         wx.ListCtrl.__init__(self, parent, style=self._style)
@@ -44,9 +43,9 @@ class VirtualList(wx.ListCtrl, ListCtrlAutoWidthMixin):
         self.SetImageList(model.images, wx.IMAGE_LIST_SMALL)
 
     def OnLeftDown(self, event):
-        item, flags =  self.HitTest(event.Position)
+        item, flags = self.HitTest(event.Position)
         if flags | wx.LIST_HITTEST_ONITEM:
-            wx.CallAfter(self._inform_listeners, item)
+            wx.CallAfter(self.inform_listeners, item)
         event.Skip()
 
     def _create_headers(self, headers):
@@ -55,7 +54,7 @@ class VirtualList(wx.ListCtrl, ListCtrlAutoWidthMixin):
         self.SetColumnWidth(0, 200)
         self.SetColumnWidth(1, 160)
 
-    def refresh(self):
+    def refresh_items(self):
         self.SetItemCount(self._model.count)
         self.SetImageList(self._model.images, wx.IMAGE_LIST_SMALL)
 
@@ -63,9 +62,9 @@ class VirtualList(wx.ListCtrl, ListCtrlAutoWidthMixin):
         self._selection_listeners.append(listener)
 
     def OnListItemSelected(self, event):
-        self._inform_listeners(event.Index)
+        self.inform_listeners(event.Index)
 
-    def _inform_listeners(self, selected_index):
+    def inform_listeners(self, selected_index):
         for listener in self._selection_listeners:
             listener(selected_index)
 
@@ -90,11 +89,14 @@ class ListModel(object):
         return None
 
     def item_text(self, row, col):
+        _ = row
+        _ = col
         return ''
 
     def image(self, row):
+        _ = row
         return -1
 
     def item_attributes(self, row):
+        _ = row
         return None
-
