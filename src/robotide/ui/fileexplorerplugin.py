@@ -32,7 +32,7 @@ class FileExplorerPlugin(Plugin):
     def __init__(self, application, controller=None):
         Plugin.__init__(self, application, default_settings=self.defaults)
         self._app = application
-        self.settings = self._app.settings._config_obj['Plugins']['File Explorer']
+        self.settings = self._app.settings.config_obj['Plugins']['File Explorer']
         self._parent = wx.App.Get().GetTopWindow()
         self._filemgr = self.filemgr
         self._filemgr.SetThemeEnabled(True)
@@ -88,7 +88,7 @@ class FileExplorerPlugin(Plugin):
             self._filemgr = FileExplorer(self._parent, self._controller)
 
         self._pane = self._mgr.GetPane(self._filemgr)
-        global_settings = self._app.settings._config_obj['General']
+        global_settings = self._app.settings.config_obj['General']
         apply_global = global_settings['apply to panels']
         use_own = self.settings['own colors']
         if apply_global or not use_own:

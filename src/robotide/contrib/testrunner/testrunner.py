@@ -196,8 +196,8 @@ class RideListenerServer(SocketServer.TCPServer):
     """Implements a simple line-buffered socket server"""
     allow_reuse_address = True
 
-    def __init__(self, RequestHandlerClass, callback):
-        SocketServer.TCPServer.__init__(self, ("", 0), RequestHandlerClass)
+    def __init__(self, request_handler_class, callback):
+        SocketServer.TCPServer.__init__(self, ("", 0), request_handler_class)
         self.callback = callback
 
 

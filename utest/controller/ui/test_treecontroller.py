@@ -68,11 +68,11 @@ class _BaseTreeControllerTest(object):
         self.controller.add_to_history(value)
 
     def _go_back_and_return_selection(self):
-        self.controller.OnGoBack(None)
+        self.controller.on_go_back(None)
         return self._tree_mock_items[-1]
 
     def _go_forward_and_return_selection(self):
-        self.controller.OnGoForward(None)
+        self.controller.on_go_forward(None)
         return self._tree_mock_items[-1]
 
 
@@ -112,7 +112,7 @@ class TestNavigationHistory(_BaseTreeControllerTest, unittest.TestCase):
         for name in nodes:
             self._select_node(name)
         for _ in range(3):
-            self.controller.OnGoBack(None)
+            self.controller.on_go_back(None)
         for name in nodes:
             self._go_forward_and_assert_selection(name)
 

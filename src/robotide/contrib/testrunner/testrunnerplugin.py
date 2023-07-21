@@ -576,14 +576,12 @@ class TestRunnerPlugin(Plugin):
                 self._append_to_message_log('\n' + '\n'.join(texts))
             else:
                 if not self._maxmemmsg:
-                    self._maxmemmsg = '\n' + "Messages log exceeded 80% of " \
-                                             "process memory, stopping for now..."
+                    self._maxmemmsg = '\n' + "Messages log exceeded 80% of process memory, stopping for now..."
                     self._append_to_message_log(self._maxmemmsg, "stderr")
         if not self._test_runner.is_running():
             self.OnProcessEnded(None)
             return
-        out_buffer, err_buffer, log_message = \
-            self._test_runner.get_output_and_errors(self.get_current_profile())
+        out_buffer, err_buffer, _ = self._test_runner.get_output_and_errors(self.get_current_profile())
         if len(out_buffer) > 0:
             self._append_to_console_log(out_buffer, source="stdout")
         if len(err_buffer) > 0:
@@ -1300,14 +1298,14 @@ class OutputStylizer(object):
 
     def __init__(self, editor, settings):
         self.editor = editor
-        self.settings = settings._config_obj['Plugins']['Test Runner']
+        self.settings = settings.config_obj['Plugins']['Test Runner']
         self._ensure_default_font_is_valid()
         self._set_styles()
         PUBLISHER.subscribe(self.on_settings_changed, RideSettingsChanged)
 
     def on_settings_changed(self, message):
         """Redraw colors and font if settings are modified"""
-        section, setting = message.keys
+        section, _ = message.keys
         if section == 'Test Runner':
             self._set_styles()
 

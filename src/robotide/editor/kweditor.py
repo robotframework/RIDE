@@ -61,7 +61,7 @@ def requires_focus(function):
 class KeywordEditor(GridEditor, Plugin):
     _no_cell = (-1, -1)
     _popup_menu_shown = False
-    dirty = property(lambda self: self._controller.dirty)
+    dirty = property(lambda self: self.controller.dirty)
 
     _popup_items = [
                        'Create Keyword',

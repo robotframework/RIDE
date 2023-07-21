@@ -394,7 +394,7 @@ class VariableController(_SettingController):
         return ''
 
     def __ne__(self, other):
-        return not (self == other)
+        return self != other
 
     @property
     def name(self):

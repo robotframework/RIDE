@@ -162,7 +162,7 @@ class ViewAllTagsDialog(RIDEDialog, listmix.ColumnSorterMixin):
         unique_tags = utils.NormalizedDict()
         self._tags = utils.NormalizedDict()
         self._test_cases = []
-        for test in self.frame._controller.all_testcases():
+        for test in self.frame.controller.all_testcases():
             self._test_cases.append(test)
             for tag in test.tags:
                 if tag.is_empty() or len(str(tag).strip()) == 0:

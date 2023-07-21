@@ -96,7 +96,7 @@ class TestSearchPlugin(Plugin):
         self._selected_timer.Start(400, True)
 
     def _search_results(self, matcher):
-        current_suite = self.frame._controller.data
+        current_suite = self.frame.controller.data
         if not current_suite:
             return []
         result = self._search(matcher, current_suite)

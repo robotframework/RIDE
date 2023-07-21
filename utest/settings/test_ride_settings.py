@@ -27,7 +27,7 @@ class TestRideSettings(unittest.TestCase):
         settings = RideSettings()
         # print("DEBUG: RideSettings, %s", settings._config_obj.__repr__())
         # print("DEBUG: settings path %s", settings._config_obj['install root'])
-        self.assertTrue(settings._config_obj['mainframe size'])
+        self.assertTrue(settings.config_obj['mainframe size'])
 
 
 class TestGettingPath(unittest.TestCase):

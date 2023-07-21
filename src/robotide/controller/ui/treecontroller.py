@@ -44,17 +44,17 @@ class TreeController(object):
         actions = action_info_collection(tree_actions, self, self._tree)
         self._action_registerer.register_actions(actions)
         self._action_registerer.register_action(ActionInfo(menu_name='Edit', name='Add Tag to selected',
-                                                           action=self.OnAddTagToSelected))
+                                                           action=self.on_add_tag_to_selected))
         self._action_registerer.register_action(ActionInfo(menu_name='Edit', name='Clear Selected',
-                                                           action=self.OnClearSelected))
+                                                           action=self.on_clear_selected))
 
-    def OnGoBack(self, event):
+    def on_go_back(self, event):
         _ = event
         node = self._history.back()
         if node:
             self._tree.SelectItem(node)
 
-    def OnAddTagToSelected(self, event):
+    def on_add_tag_to_selected(self, event):
         _ = event
         if self._test_selection.is_empty():
             return
@@ -62,11 +62,11 @@ class TreeController(object):
         if name:
             self._test_selection.add_tag(name)
 
-    def OnClearSelected(self, event):
+    def on_clear_selected(self, event):
         _ = event
         self._test_selection.clear_all(message=None)
 
-    def OnGoForward(self, event):
+    def on_go_forward(self, event):
         _ = event
         node = self._history.forward()
         if node:
@@ -94,14 +94,14 @@ class TreeController(object):
         def match_handler(n):
             handler = self.get_handler(n)
             return handler and controller is handler.controller
-        return self._find_node_with_predicate(self._tree._root, match_handler)
+        return self._find_node_with_predicate(self._tree.root, match_handler)
 
     def find_node_with_label(self, node, label):
-        matcher = lambda n: utils.eq(self._tree.GetItemText(n), label)
+        def matcher(n): return utils.eq(self._tree.GetItemText(n), label)
         return self._find_node_with_predicate(node, matcher)
 
     def _find_node_with_predicate(self, node, predicate):
-        if node != self._tree._root and predicate(node):
+        if node != self._tree.root and predicate(node):
             return node
         item, cookie = self._tree.GetFirstChild(node)
         while item:
@@ -206,18 +206,18 @@ class TestSelectionController(object):
 
     def select_all(self, tests, selected=True):
         for test in tests:
-            self.select(test, selected, notifySelection=False)
+            self.select(test, selected, notify_selection=False)
         self._send_selection_changed_message()
 
-    def select(self, test: TestCaseController, doSelect=True, notifySelection=True):
+    def select(self, test: TestCaseController, do_select=True, notify_selection=True):
         changed = False
-        if doSelect and not self.is_test_selected(test):
+        if do_select and not self.is_test_selected(test):
             self._tests.add(test)
             changed = True
-        elif not doSelect and self.is_test_selected(test):
+        elif not do_select and self.is_test_selected(test):
             self._tests.remove(test)
             changed = True
-        if notifySelection and changed:
+        if notify_selection and changed:
             self._send_selection_changed_message()
 
     def remove_invalid_cases_selection(self, cases_file_controller):

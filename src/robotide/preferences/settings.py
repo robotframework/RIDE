@@ -233,7 +233,7 @@ class ConfigurationError(Exception):
 class _Section(object):
 
     def __init__(self, section, parent=None, name=''):
-        self._config_obj = section
+        self.config_obj = section
         self._parent = parent
         self._name = name
 
@@ -244,23 +244,23 @@ class _Section(object):
         self.set(name, value)
 
     def __getitem__(self, name):
-        value = self._config_obj[name]
+        value = self.config_obj[name]
         if isinstance(value, Section):
             return _Section(value, self, name)
         return value
 
     def __iter__(self):
-        return iter(self._config_obj)
+        return iter(self.config_obj)
 
     def __len__(self):
-        return len(self._config_obj)
+        return len(self.config_obj)
 
     def iteritems(self):
         """Returns an iterator over the (key,value) items of the section"""
-        return self._config_obj.items()
+        return self.config_obj.items()
 
     def has_setting(self, name):
-        return name in self._config_obj
+        return name in self.config_obj
 
     def get(self, name, default):
         """Returns specified setting or (automatically set) default."""
@@ -289,12 +289,12 @@ class _Section(object):
             raise SectionError("Cannot override section with value.")
         if isinstance(value, _Section):
             if override:
-                self._config_obj[name] = {}
-            for key, _value in value._config_obj.items():
+                self.config_obj[name] = {}
+            for key, _value in value.config_obj.items():
                 self[name].set(key, _value, autosave, override)
-        elif name not in self._config_obj or override:
-            old = self._config_obj[name] if name in self._config_obj else None
-            self._config_obj[name] = value
+        elif name not in self.config_obj or override:
+            old = self.config_obj[name] if name in self.config_obj else None
+            self.config_obj[name] = value
             if autosave:
                 self.save()
             RideSettingsChanged(
@@ -320,16 +320,16 @@ class _Section(object):
 
     def add_section(self, name, **defaults):
         """Creates section or updates existing section with defaults."""
-        if name in self._config_obj and \
-           not isinstance(self._config_obj[name], Section):
+        if name in self.config_obj and \
+           not isinstance(self.config_obj[name], Section):
             raise SectionError('Cannot override value with section.')
-        if name not in self._config_obj:
-            self._config_obj[name] = {}
+        if name not in self.config_obj:
+            self.config_obj[name] = {}
         return self[name].set_defaults(**defaults)
 
     def _is_section(self, name):
-        return name in self._config_obj and \
-            isinstance(self._config_obj[name], Section)
+        return name in self.config_obj and \
+            isinstance(self.config_obj[name], Section)
 
 
 class Settings(_Section):
@@ -342,7 +342,7 @@ class Settings(_Section):
         self.excludes = Excludes(SETTINGS_DIRECTORY)
 
     def save(self):
-        self._config_obj.write()
+        self.config_obj.write()
 
 
 class RideSettings(Settings):

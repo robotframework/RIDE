@@ -191,7 +191,7 @@ class _CanBeRenamed(object):
     def begin_label_edit(self):
         def label_edit():
             # DEBUG: fixme yep.yep.yep.yep.yep
-            node = self._tree._controller.find_node_by_controller(self.controller)
+            node = self._tree.controller.find_node_by_controller(self.controller)
             if node:
                 self._tree.EditLabel(node)
         # Must handle pending events before label edit

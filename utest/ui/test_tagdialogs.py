@@ -111,7 +111,7 @@ class _ViewAllTagsDialog(ViewAllTagsDialog):
         style = wx.SYSTEM_MENU | wx.CAPTION | wx.CLOSE_BOX | wx.CLIP_CHILDREN\
             | wx.FRAME_FLOAT_ON_PARENT
         self.frame = frame
-        self._controller = controller._controller
+        self._controller = controller.controller
         super(_ViewAllTagsDialog, self).__init__(self, self.frame)
         self.model = controller
         self._results = _SortableD()  # utils.NormalizedDict()
