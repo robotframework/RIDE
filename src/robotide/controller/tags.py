@@ -34,7 +34,7 @@ class Tag(_BaseController):
         return self.name == other.name and self.index == other.index
 
     def __ne__(self, other):
-        return self != other
+        return not (self == other)  # This cannot be compared with !=
 
     def __str__(self):
         return self.name

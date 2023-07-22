@@ -77,7 +77,7 @@ class TestMain(unittest.TestCase):
             with pytest.raises((ImportError, SystemExit)):
                 builtins.__import__ = myimport
                 result = robotide.main('--version')  # Need to capture output
-                assert result.startswith('v2.0.6')
+                assert result.startswith('v2.0.7')
 
     def test_parse_args(self):
         from robotide import _parse_args

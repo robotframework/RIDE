@@ -72,10 +72,19 @@ def action_info_collection(data, event_handler, container=None):
     Finding handlers
     ----------------
 
+    (Note: before v2.0.7)
     The given ``event_handler`` must have handler methods that map to the
     specified action names. The mapping is done by prefixing the name with
     ``On``, removing spaces, and capitalizing all words. For example ``Save``
     and ``My Action`` must have handler methods ``OnSave`` and ``OnMyAction``,
+    respectively. If name has content between parenthesis at the end, this
+    content is ignored when creating handler mapping.
+
+    (Note: since v2.0.7)
+    The given ``event_handler`` must have handler methods that map to the
+    specified action names. The mapping is done by prefixing the name with
+    ``on``, replacing spaces by ``_``, and lowercasing all words. For example ``Save``
+    and ``My Action`` must have handler methods ``on_save`` and ``on_my_action``,
     respectively. If name has content between parenthesis at the end, this
     content is ignored when creating handler mapping.
 
@@ -134,7 +143,8 @@ def _create_action_info(eventhandler, menu, container, row):
 
 def _get_eventhandler_name_and_parsed_name(name):
     eventhandler_name, name = _parse_shortcuts_from_name(name)
-    return 'On%s' % eventhandler_name.replace(' ', '').replace('&', ''), name
+    # DEBUG: before v2.0.7 return 'On%s' % eventhandler_name.replace(' ', '').replace('&', ''), name
+    return 'on_%s' % eventhandler_name.strip().replace(' ', '_').replace('&', '').lower(), name
 
 
 def _parse_shortcuts_from_name(name):
