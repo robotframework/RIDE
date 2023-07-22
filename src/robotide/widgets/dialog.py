@@ -62,7 +62,7 @@ class HtmlWindow(html.HtmlWindow):
     def OnKeyDown(self, event):
         if self._is_copy(event):
             self._add_selection_to_clipboard()
-        self.Parent.OnKey(event)
+        self.Parent.on_key(event)
         event.Skip()
 
     @staticmethod

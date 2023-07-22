@@ -99,7 +99,7 @@ class RideFrame(wx.Frame):
         if application.settings.get(MAINFRAME_MAXIMIZED, False):
             self.Maximize()
         self._application = application
-        self._controller = controller
+        self.controller = controller
         self._image_provider = ImageProvider()
         self.reformat = application.settings.get('reformat', False)
         self.general_settings = application.settings['General']  # .get_without_default('General')
@@ -115,12 +115,12 @@ class RideFrame(wx.Frame):
         self._review_dialog = None
         self._view_all_tags_dialog = None
         self._current_external_dir = None
-        self.Bind(wx.EVT_CLOSE, self.OnClose)
-        self.Bind(wx.EVT_SIZE, self.OnSize)
-        self.Bind(wx.EVT_MOVE, self.OnMove)
-        self.Bind(wx.EVT_MAXIMIZE, self.OnMaximize)
-        self.Bind(wx.EVT_DIRCTRL_FILEACTIVATED, self.OnOpenFile)
-        self.Bind(wx.EVT_TREE_ITEM_RIGHT_CLICK, self.OnMenuOpenFile)
+        self.Bind(wx.EVT_CLOSE, self.on_close)
+        self.Bind(wx.EVT_SIZE, self.on_size)
+        self.Bind(wx.EVT_MOVE, self.on_move)
+        self.Bind(wx.EVT_MAXIMIZE, self.on_maximize)
+        self.Bind(wx.EVT_DIRCTRL_FILEACTIVATED, self.on_open_file)
+        self.Bind(wx.EVT_TREE_ITEM_RIGHT_CLICK, self.on_menu_open_file)
         self._subscribe_messages()
         wx.CallAfter(self.actions.register_tools)  # DEBUG
         # DEBUG wx.CallAfter(self.OnSettingsChanged, self.general_settings)
@@ -211,7 +211,7 @@ class RideFrame(wx.Frame):
         # TreePlugin will manage showing the Tree
         self.actions.register_actions(action_info_collection(_menudata, self, self.tree))
         # ##### File explorer panel is always created here
-        self.filemgr = FileExplorer(self, self._controller)
+        self.filemgr = FileExplorer(self, self.controller)
         self.filemgr.SetMinSize(wx.Size(275, 250))
         # DEBUG: Next was already called from application.py
         self.aui_mgr.AddPane(self.filemgr,
@@ -236,7 +236,7 @@ class RideFrame(wx.Frame):
     def get_selected_datafile_controller(self):
         return self.tree.get_selected_datafile_controller()
 
-    def OnClose(self, event):
+    def on_close(self, event):
         if self._allowed_to_exit():
             try:
                 perspective = self.aui_mgr.SavePerspective()
@@ -266,7 +266,7 @@ class RideFrame(wx.Frame):
         else:
             wx.CloseEvent.Veto(event)
 
-    def OnSize(self, event):
+    def on_size(self, event):
         if wx.VERSION >= (4, 1, 0):
             size = self.DoGetSize()
         else:
@@ -281,7 +281,7 @@ class RideFrame(wx.Frame):
             self._application.settings[MAINFRAME_POSITION] = tuple(self.GetPosition())
         event.Skip()
 
-    def OnMove(self, event):
+    def on_move(self, event):
         # When the window is Iconized, a move event is also raised, but we
         # don't want to update the position in the settings file
         if not self.IsIconized() and not self.IsMaximized():
@@ -291,11 +291,11 @@ class RideFrame(wx.Frame):
                 self._application.settings[MAINFRAME_POSITION] = tuple(self.GetPosition())
         event.Skip()
 
-    def OnMaximize(self, event):
+    def on_maximize(self, event):
         self._application.settings[MAINFRAME_MAXIMIZED] = True
         event.Skip()
 
-    def OnReleasenotes(self, event):
+    def on_release_notes(self, event):
         """ Is treated in other method """
         pass
 
@@ -312,20 +312,20 @@ class RideFrame(wx.Frame):
         return True
 
     def has_unsaved_changes(self):
-        return self._controller.is_dirty()
+        return self.controller.is_dirty()
 
     def on_new_project(self, event):
         _ = event
         if not self.check_unsaved_modifications():
             return
-        NewProjectDialog(self._controller).execute()
+        NewProjectDialog(self.controller).execute()
         self._populate_tree()
 
     def _populate_tree(self):
-        self.tree.populate(self._controller)
+        self.tree.populate(self.controller)
         self.filemgr.update_tree()
 
-    def OnOpenFile(self, event):
+    def on_open_file(self, event):
         _ = event
         if not self.filemgr:
             return
@@ -349,13 +349,13 @@ class RideFrame(wx.Frame):
                 return
         customsourceeditor.main(path)
 
-    def OnMenuOpenFile(self, event):
+    def on_menu_open_file(self, event):
         if not self.filemgr:
             return
         # DEBUG: Use widgets/popupmenu tools
         path = self.filemgr.GetFilePath()
         if len(path) > 0:
-            self.OnOpenFile(event)
+            self.on_open_file(event)
         else:
             path = self.filemgr.GetPath()
             if not self.check_unsaved_modifications():
@@ -363,10 +363,10 @@ class RideFrame(wx.Frame):
             self.open_suite(path)  # It is a directory, do not edit
         event.Skip()
 
-    def OnOpenExternalFile(self, event):
+    def on_open_external_file(self, event):
         _ = event
         if not self._current_external_dir:
-            curdir = self._controller.default_dir
+            curdir = self.controller.default_dir
         else:
             curdir = self._current_external_dir
         fdlg = wx.FileDialog(self, defaultDir=curdir, style=wx.FD_OPEN | wx.FD_FILE_MUST_EXIST)
@@ -379,12 +379,12 @@ class RideFrame(wx.Frame):
         except IOError:
             wx.LogError(f"Cannot open file {path}")
 
-    def OnOpenTestSuite(self, event):
+    def on_open_test_suite(self, event):
         _ = event
         if not self.check_unsaved_modifications():
             return
         path = RobotFilePathDialog(
-            self, self._controller, self._application.settings).execute()
+            self, self.controller, self._application.settings).execute()
         if path:
             if self.open_suite(path):
                 return
@@ -399,12 +399,12 @@ class RideFrame(wx.Frame):
         return True
 
     def open_suite(self, path):
-        self._controller.update_default_dir(path)
+        self.controller.update_default_dir(path)
         # self._controller.default_dir will only save dir path
         # need to save path to self._application.workspace_path too
         self._application.workspace_path = path
         try:
-            err = self._controller.load_datafile(path, LoadProgressObserver(self))
+            err = self.controller.load_datafile(path, LoadProgressObserver(self))
             if isinstance(err, UserWarning):
                 # DEBUG: raise err  # Just leave message in Parser Log
                 return False
@@ -418,28 +418,28 @@ class RideFrame(wx.Frame):
         if self.filemgr:
             self.filemgr.ReCreateTree()
 
-    def OnOpenDirectory(self, event):
+    def on_open_directory(self, event):
         _ = event
         if self.check_unsaved_modifications():
             path = wx.DirSelector(message="Choose a directory containing Robot"
                                           " files",
-                                  default_path=self._controller.default_dir)
+                                  default_path=self.controller.default_dir)
             if path:
                 self.open_suite(path)
 
-    def OnSave(self, event):
+    def on_save(self, event):
         _ = event
         RideBeforeSaving().publish()
         self.save()
 
-    def OnSaveAll(self, event):
+    def on_save_all(self, event):
         _ = event
         RideBeforeSaving().publish()
         self.save_all()
 
     def save_all(self):
         self._show_dialog_for_files_without_format()
-        self._controller.execute(SaveAll(self.reformat))
+        self.controller.execute(SaveAll(self.reformat))
 
     def save(self, controller=None):
         if controller is None:
@@ -451,7 +451,7 @@ class RideFrame(wx.Frame):
                 controller.execute(SaveFile(self.reformat))
 
     def _show_dialog_for_files_without_format(self, controller=None):
-        files_without_format = self._controller.get_files_without_format(
+        files_without_format = self.controller.get_files_without_format(
             controller)
         for f in files_without_format:
             self._show_format_dialog_for(f)
@@ -460,27 +460,27 @@ class RideFrame(wx.Frame):
     def _show_format_dialog_for(file_controller_without_format):
         InitFileFormatDialog(file_controller_without_format).execute()
 
-    def OnExit(self, event):
+    def on_exit(self, event):
         _ = event
         self.Close()
 
-    def OnManagePlugins(self, event):
+    def on_manage_plugins(self, event):
         _ = event
         self._plugin_manager.show(self._application.get_plugins())
 
-    def OnViewAllTags(self, event):
+    def on_view_all_tags(self, event):
         _ = event
         if self._view_all_tags_dialog is None:
-            self._view_all_tags_dialog = ViewAllTagsDialog(self._controller, self)
+            self._view_all_tags_dialog = ViewAllTagsDialog(self.controller, self)
         self._view_all_tags_dialog.show_dialog()
 
-    def OnSearchUnusedKeywords(self, event):
+    def on_search_unused_keywords(self, event):
         _ = event
         if self._review_dialog is None:
-            self._review_dialog = ReviewDialog(self._controller, self)
+            self._review_dialog = ReviewDialog(self.controller, self)
         self._review_dialog.show_dialog()
 
-    def OnPreferences(self, event):
+    def on_preferences(self, event):
         _ = event
         dlg = PreferenceEditor(self, "RIDE - Preferences",
                                self._application.preferences, style='tree')
@@ -492,20 +492,20 @@ class RideFrame(wx.Frame):
         dlg.Show()
 
     @staticmethod
-    def OnAbout(event):
+    def on_about(event):
         _ = event
         dlg = AboutDialog()
         dlg.ShowModal()
         dlg.Destroy()
 
     @staticmethod
-    def OnShortcutkeys(event):
+    def on_shortcut_keys(event):
         _ = event
         dialog = ShortcutKeysDialog()
         dialog.Show()
 
     @staticmethod
-    def OnReportaProblem(event):
+    def on_report_a_problem(event):
         _ = event
         wx.LaunchDefaultBrowser("https://github.com/robotframework/RIDE/issues"
                                 "?utf8=%E2%9C%93&q=is%3Aissue+%22search"
@@ -513,20 +513,20 @@ class RideFrame(wx.Frame):
                                 )
 
     @staticmethod
-    def OnUserGuide(event):
+    def on_user_guide(event):
         _ = event
         wx.LaunchDefaultBrowser("https://robotframework.org/robotframework/#user-guide")
 
     @staticmethod
-    def OnWiki(event):
+    def on_wiki(event):
         _ = event
         wx.LaunchDefaultBrowser("https://github.com/robotframework/RIDE/wiki")
 
     def _has_data(self):
-        return self._controller.data is not None
+        return self.controller.data is not None
 
     def _refresh(self):
-        self._controller.update_namespace()
+        self.controller.update_namespace()
 
     # This code is copied from http://wiki.wxpython.org/EnsureFrameIsOnScreen,
     # and adapted to fit our code style.
@@ -561,7 +561,7 @@ class RideFrame(wx.Frame):
         msg = ['Workspace modifications detected on the file system.',
                'Do you want to reload the workspace?',
                'Answering <No> will ignore the changes on disk.']
-        if self._controller.is_dirty():
+        if self.controller.is_dirty():
             msg.insert(2, 'Answering <Yes> will discard unsaved changes.')
         ret = wx.MessageBox('\n'.join(msg), 'Files Changed On Disk',
                             style=wx.YES_NO | wx.ICON_WARNING)
@@ -578,7 +578,7 @@ class RideFrame(wx.Frame):
                 # in case workspace is totally removed
                 # ask user to open new directory
                 # DEBUG: add some notification msg to users
-                wx.CallAfter(self.OnOpenDirectory, event)
+                wx.CallAfter(self.on_open_directory, event)
 
 
 # Code moved from actiontriggers
@@ -717,7 +717,7 @@ class AboutDialog(RIDEDialog):
         sizer.Add(HtmlWindow(self, (650, 200), ABOUT_RIDE), 1, flag=wx.EXPAND)
         self.SetSizerAndFit(sizer)
 
-    def OnKey(self, *args):
+    def on_key(self, *args):
         """ Just ignore keystrokes """
         pass
 
@@ -734,7 +734,7 @@ class ShortcutKeysDialog(RIDEDialog):
                   flag=wx.EXPAND)
         self.SetSizerAndFit(sizer)
 
-    def OnKey(self, *args):
+    def on_key(self, *args):
         """ Just ignore keystrokes """
         pass
 
@@ -750,12 +750,12 @@ class RIDETaskBarIcon(TaskBarIcon):
         self.frame = frame
         self._img_provider = img_provider
         self.SetIcon(wx.Icon(self._img_provider.RIDE_ICON), "RIDE")
-        self.Bind(EVT_TASKBAR_LEFT_DOWN, self.OnClick)
-        self.Bind(wx.EVT_MENU, self.OnTaskBarActivate, id=1)
-        self.Bind(wx.EVT_MENU, self.OnTaskBarDeactivate, id=2)
-        self.Bind(wx.EVT_MENU, self.OnTaskBarClose, id=3)
+        self.Bind(EVT_TASKBAR_LEFT_DOWN, self.on_click)
+        self.Bind(wx.EVT_MENU, self.on_task_bar_activate, id=1)
+        self.Bind(wx.EVT_MENU, self.on_task_bar_deactivate, id=2)
+        self.Bind(wx.EVT_MENU, self.on_task_bar_close, id=3)
 
-    def OnClick(self, event):
+    def on_click(self, event):
         _ = event
         self.frame.Raise()
         self.frame.Restore()
@@ -768,17 +768,17 @@ class RIDETaskBarIcon(TaskBarIcon):
         menu.Append(3, 'Close')
         return menu
 
-    def OnTaskBarClose(self, event):
+    def on_task_bar_close(self, event):
         _ = event
         self.frame.Close()
 
-    def OnTaskBarActivate(self, event):
+    def on_task_bar_activate(self, event):
         _ = event
         if not self.frame.IsShown():
             self.frame.Show()
             self.frame.Restore()
 
-    def OnTaskBarDeactivate(self, event):
+    def on_task_bar_deactivate(self, event):
         _ = event
         if self.frame.IsShown():
             self.frame.Hide()

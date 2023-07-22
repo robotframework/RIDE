@@ -33,9 +33,9 @@ Cu&t | Cut | Ctrlcmd-X
 &Delete | Delete  | Del
 ---
 Comment Rows | Comment selected rows | Ctrlcmd-3
-CommentCells | Comment cells with # | Ctrlcmd-Shift-3
+Comment Cells | Comment cells with # | Ctrlcmd-Shift-3
 Uncomment Rows | Uncomment selected rows | Ctrlcmd-4
-UncommentCells | Uncomment cells with # | Ctrlcmd-Shift-4
+Uncomment Cells | Uncomment cells with # | Ctrlcmd-Shift-4
 ---
 Insert Cells | Insert Cells | Ctrlcmd-Shift-I
 Delete Cells | Delete Cells | Ctrlcmd-Shift-D
@@ -62,13 +62,12 @@ class EditorPlugin(Plugin, TreeAwarePluginMixin):
     def enable(self):
         self._creator.register_editors()
         self._show_editor()
-        self.register_actions(
-            action_info_collection(_EDIT, self._tab, self._tab))
-        self.subscribe(self.OnTreeItemSelected, RideTreeSelection)
-        self.subscribe(self.OnTabChanged, RideNotebookTabChanged)
-        self.subscribe(self.OnTabChanging, RideNotebookTabChanging)
-        self.subscribe(self.OnSaveToModel, RideSaving)
-        self.subscribe(self.OnFileDeleted, RideDataFileRemoved)
+        self.register_actions(action_info_collection(_EDIT, self._tab, self._tab))
+        self.subscribe(self.on_tree_item_selected, RideTreeSelection)
+        self.subscribe(self.on_tab_changed, RideNotebookTabChanged)
+        self.subscribe(self.on_tab_changing, RideNotebookTabChanging)
+        self.subscribe(self.on_save_to_model, RideSaving)
+        self.subscribe(self.on_file_deleted, RideDataFileRemoved)
         self.add_self_as_tree_aware_plugin()
 
     def disable(self):
@@ -117,7 +116,7 @@ class EditorPlugin(Plugin, TreeAwarePluginMixin):
     def _create_editor(self):
         return self._creator.editor_for(self, self._tab, self.tree)
 
-    def OnTreeItemSelected(self, message):
+    def on_tree_item_selected(self, message):
         self._show_editor()
         if not self.is_focused() and \
            not self.is_focus_on_tree_aware_plugin() and \
@@ -133,24 +132,24 @@ class EditorPlugin(Plugin, TreeAwarePluginMixin):
             return self._editor.controller.datafile
         return Plugin.get_selected_datafile(self)
 
-    def OnOpenEditor(self, event):
+    def on_open_editor(self, event):
         _ = event
         self._show_editor()
 
-    def OnTabChanged(self, message):
+    def on_tab_changed(self, message):
         _ = message
         self._show_editor()
 
-    def OnTabChanging(self, message):
+    def on_tab_changing(self, message):
         if 'Edit' in message.oldtab:
             self._tab.save()
 
-    def OnSaveToModel(self, message):
+    def on_save_to_model(self, message):
         _ = message
         if self._tab:
             self._tab.save()
 
-    def OnFileDeleted(self, message):
+    def on_file_deleted(self, message):
         _ = message
         self._create_editor()
 
@@ -186,72 +185,72 @@ class _EditorTab(wx.Panel):
     def hide_editor(self):
         self.Show(False)
 
-    def OnSave(self, event):
+    def on_save(self, event):
         _ = event
         self.plugin.save_selected_datafile()
 
-    def OnUndo(self, event):
+    def on_undo(self, event):
         _ = event
         self.editor.undo()
 
-    def OnRedo(self, event):
+    def on_redo(self, event):
         _ = event
         self.editor.redo()
 
-    def OnCut(self, event):
+    def on_cut(self, event):
         _ = event
         self.editor.cut()
 
-    def OnCopy(self, event):
+    def on_copy(self, event):
         _ = event
         self.editor.copy()
 
-    def OnPaste(self, event):
+    def on_paste(self, event):
         _ = event
         self.editor.paste()
 
-    def OnInsert(self, event):
+    def on_insert(self, event):
         _ = event
         self.editor.insert()
 
-    def OnInsertCells(self, event):
+    def on_insert_cells(self, event):
         _ = event
         self.editor.insert_cells()
 
-    def OnDeleteCells(self, event):
+    def on_delete_cells(self, event):
         _ = event
         # print("DEBUG init delete cells call")
         self.editor.delete_cells()
 
-    def OnInsertRows(self, event):
+    def on_insert_rows(self, event):
         _ = event
         self.editor.insert_rows()
 
-    def OnDeleteRows(self, event):
+    def on_delete_rows(self, event):
         _ = event
         wx.CallAfter(self.editor.delete_rows)
 
-    def OnDelete(self, event):
+    def on_delete(self, event):
         _ = event
         self.editor.delete()
 
-    def OnCommentRows(self, event):
+    def on_comment_rows(self, event):
         _ = event
         self.editor.comment_rows()
 
-    def OnUncommentRows(self, event):
+    def on_uncomment_rows(self, event):
         _ = event
         self.editor.uncomment_rows()
 
-    def OnCommentCells(self, event):
+    def on_comment_cells(self, event):
         _ = event
         self.editor.comment_cells()
 
-    def OnUncommentCells(self, event):
+    def on_uncomment_cells(self, event):
         _ = event
         self.editor.uncomment_cells()
 
-    def OnContentAssistance(self, event):
+    def on_content_assistance(self, event):
         _ = event
         self.editor.show_content_assist()
 
@@ -260,6 +259,6 @@ class _EditorTab(wx.Panel):
         if self.editor:
             self.editor.save()
 
-    def OnKey(self, *args):
+    def on_key(self, *args):
         """ Intentional override """
         pass

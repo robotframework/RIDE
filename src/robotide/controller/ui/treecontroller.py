@@ -138,7 +138,7 @@ class TreeController(object):
             (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('l'),
                 lambda event: self._expanded_handler().OnNewListVariable(event)),
             (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('c'),
-                lambda event: self._expanded_handler().OnCopy(event))
+                lambda event: self._expanded_handler().on_copy(event))
         ]
         if not IS_WINDOWS:
             bindings.append((wx.ACCEL_NORMAL, wx.WXK_LEFT, self._tree.OnLeftArrow))
