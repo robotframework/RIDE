@@ -115,7 +115,7 @@ class TestCaseFileControllerTest(unittest.TestCase):
         new_test = TestCaseController(self.ctrl, TestCase(TestCaseFile(), 'New test'))
         self.ctrl.add_test_or_keyword(new_test)
         assert len(self.ctrl.tests) == 1
-        assert self.ctrl.tests[0]._test.parent.parent is self.ctrl.datafile
+        assert self.ctrl.tests[0].test.parent.parent is self.ctrl.datafile
         assert self.ctrl.dirty
 
     def test_new_test(self):

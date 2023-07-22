@@ -321,7 +321,7 @@ class TestCaseController(WithStepsController):
             return True
         if other.__class__ != self.__class__:
             return False
-        return self._test == other._test
+        return self._test == other.test
 
     def __hash__(self):
         return hash(repr(self))

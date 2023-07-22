@@ -40,6 +40,7 @@ class RecentFilesPlugin(Plugin):
         settings = {'recent_files': [], 'max_number_of_files': 4}
         Plugin.__init__(self, application, default_settings=settings)
         self.recent_files = remove_non_existing_paths(self.recent_files)
+        self._new_project_path = None
 
     def enable(self):
         self._save_currently_loaded_suite()
@@ -76,6 +77,7 @@ class RecentFilesPlugin(Plugin):
         self._new_project_path = message.path
 
     def OnSaved(self, message):
+        _ = message
         if self._new_project_path is not None:
             wx.CallAfter(self._add_to_recent_files, self._new_project_path)
             self._new_project_path = None
@@ -135,13 +137,14 @@ class RecentFileEntry(object):
         self.label = '&%s: %s' % (index, self.filename)
         self.doc = 'Open %s' % self.path
 
-    def OnOpenRecent(self, event):
+    def on_open_recent(self, event):
+        _ = event
         if not self.plugin.frame.check_unsaved_modifications():
             return
         self.plugin.open_suite(self.path)
 
     def get_action_info(self):
-        action_info = ActionInfo('File', self.label, self.OnOpenRecent,
+        action_info = ActionInfo('File', self.label, self.on_open_recent,
                                  doc=self.doc)
         action_info.set_menu_position(before='Exit')
         return action_info

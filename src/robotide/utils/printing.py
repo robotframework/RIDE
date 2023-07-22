@@ -21,14 +21,15 @@ class Printing(HtmlEasyPrinting):
     def __init__(self, parent):
         HtmlEasyPrinting.__init__(self, parentWindow=parent)
 
-    def GetHtmlText(self,text):
+    @staticmethod
+    def GetHtmlText(text):
         text = text.replace('\t', '&nbsp;&nbsp;&nbsp;&nbsp;')
         text = text.replace(' ', '&nbsp;')
-        text = text.replace('\n\n','<p>')
+        text = text.replace('\n\n', '<p>')
         text = text.replace('\n', '<br>')
         return text
 
     def preview_text(self, text):
-        if not '<html>' in text:
+        if '<html>' not in text:
             text = self.GetHtmlText(text)
         HtmlEasyPrinting.PreviewText(self, text)
