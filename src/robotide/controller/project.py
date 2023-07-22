@@ -38,7 +38,7 @@ class Project(_BaseController, WithNamespace):
         self._set_namespace(self._name_space)
         self.internal_settings = settings
         self._loader = DataLoader(self._name_space, settings)
-        self._controller = None
+        self.controller = None
         self.name = None
         self.external_resources = []
         self._resource_file_controller_factory = ResourceFileControllerFactory(self._name_space, self)
@@ -78,11 +78,11 @@ class Project(_BaseController, WithNamespace):
     # DEBUG: in all other controllers data returns a robot data model object.
     @property
     def data(self):
-        return self._controller
+        return self.controller
 
     @property
     def suite(self):
-        return self._controller.data if self._controller else None
+        return self.controller.data if self.controller else None
 
     @property
     def datafiles(self):
@@ -97,7 +97,7 @@ class Project(_BaseController, WithNamespace):
         return self._resource_file_controller_factory
 
     def find_controller_by_longname(self, longname, testname=None):
-        return self._controller.find_controller_by_longname(longname, testname)
+        return self.controller.find_controller_by_longname(longname, testname)
 
     def new_directory_project(self, path):
         self._new_project(new_test_data_directory(path))
@@ -108,7 +108,7 @@ class Project(_BaseController, WithNamespace):
     def _new_project(self, datafile):
         from .filecontrollers import data_controller, ResourceFileControllerFactory
         self.update_default_dir(datafile.directory)
-        self._controller = data_controller(datafile, self)
+        self.controller = data_controller(datafile, self)
         self._resource_file_controller_factory = ResourceFileControllerFactory(self.namespace, self)
         RideNewProject(path=datafile.source, datafile=datafile).publish()
 
@@ -170,13 +170,13 @@ class Project(_BaseController, WithNamespace):
         self.__init__(self.namespace, self.internal_settings, library_manager=self._library_manager)
         resources = self._loader.resources_for(datafile, load_observer)
         self._create_controllers(datafile, resources)
-        RideOpenSuite(path=path, datafile=self._controller).publish()
+        RideOpenSuite(path=path, datafile=self.controller).publish()
         load_observer.finish()
 
     def _create_controllers(self, datafile, resources):
         from .filecontrollers import data_controller
         self.clear_namespace_update_listeners()
-        self._controller = data_controller(datafile, self)
+        self.controller = data_controller(datafile, self)
         new_resource_controllers = []
         for r in resources:
             self._create_resource_controller(r, resource_created_callback=lambda r_controller:
@@ -214,8 +214,8 @@ class Project(_BaseController, WithNamespace):
         controller.notify_opened()
 
     def insert_into_suite_structure(self, resource):
-        if self._controller and self._controller.is_inside_top_suite(resource):
-            self._controller.insert_to_test_data_directory(resource)
+        if self.controller and self.controller.is_inside_top_suite(resource):
+            self.controller.insert_to_test_data_directory(resource)
         else:
             self.external_resources.append(resource)
             self._sort_external_resources()
@@ -278,10 +278,10 @@ class Project(_BaseController, WithNamespace):
             self.change_format(datafile, cformat)
 
     def remove_datafile(self, controller):
-        if controller is self._controller:
-            self._controller = None
+        if controller is self.controller:
+            self.controller = None
         else:
-            self._controller.remove_child(controller)
+            self.controller.remove_child(controller)
 
     def remove_resource(self, controller):
         self._resource_file_controller_factory.remove(controller)

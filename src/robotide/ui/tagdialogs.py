@@ -110,7 +110,7 @@ class ViewAllTagsDialog(RIDEDialog, listmix.ColumnSorterMixin):
     def _make_bindings(self):
         self.Bind(wx.EVT_CLOSE, self._close_dialog)
         self._tags_list.Bind(wx.EVT_LIST_ITEM_RIGHT_CLICK, self.OnRightClick)
-        self._tags_list.Bind(wx.EVT_LIST_COL_CLICK, self.OnColClick)
+        self._tags_list.Bind(wx.EVT_LIST_COL_CLICK, self.on_col_click)
         self._tags_list.Bind(wx.EVT_LIST_ITEM_SELECTED, self.OnSelectItem)
 
     @staticmethod
@@ -186,7 +186,7 @@ class ViewAllTagsDialog(RIDEDialog, listmix.ColumnSorterMixin):
     def GetListCtrl(self):
         return self._tags_list
 
-    def OnColClick(self, event):
+    def on_col_click(self, event):
         self.sort_state = self.GetSortState()
         event.Skip()
 

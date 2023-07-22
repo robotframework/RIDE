@@ -107,7 +107,7 @@ class _BaseSuiteTreeTest(unittest.TestCase):
         library_manager.create_database()
         model = Project(
             Namespace(FakeSettings()), library_manager=library_manager)
-        model._controller = TestDataDirectoryController(suite)
+        model.controller = TestDataDirectoryController(suite)
         rfc = ResourceFileController(res, project=model)
         model.resources.append(rfc)
         model.insert_into_suite_structure(rfc)
