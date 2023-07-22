@@ -314,7 +314,7 @@ class RideFrame(wx.Frame):
     def has_unsaved_changes(self):
         return self._controller.is_dirty()
 
-    def OnNewProject(self, event):
+    def on_new_project(self, event):
         _ = event
         if not self.check_unsaved_modifications():
             return
