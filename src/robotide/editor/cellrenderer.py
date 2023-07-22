@@ -14,6 +14,7 @@
 
 import wx.grid
 
+
 class CellRenderer(wx.grid.GridCellRenderer):
     """
     GridCellAutoWrapStringRenderer()
@@ -28,8 +29,9 @@ class CellRenderer(wx.grid.GridCellRenderer):
         self.auto_fit = auto_fit
         self.word_wrap = word_wrap
 
-    def _wordwrap(self, text, width, dc, breakLongWords=True, margin=0):
-        ''' modification of original wordwrap function without extra space'''
+    @staticmethod
+    def _wordwrap(text, width, dc, break_long_words=True, margin=0):
+        """ modification of original wordwrap function without extra space """
         wrapped_lines = []
         text = text.split('\n')
         for line in text:
@@ -37,35 +39,35 @@ class CellRenderer(wx.grid.GridCellRenderer):
             wid = (width - (2 * margin + 1) * dc.GetTextExtent(' ')[0])
             idx = 0
             start = 0
-            startIdx = 0
-            spcIdx = -1
+            start_idx = 0
+            spc_idx = -1
             while idx < len(line):
                 # remember the last seen space
                 if line[idx] == ' ':
-                    spcIdx = idx
+                    spc_idx = idx
 
                 # have we reached the max width?
-                if pte[idx] - start > wid and (spcIdx != -1 or breakLongWords):
-                    if spcIdx != -1:
-                        idx = min(spcIdx + 1, len(pte) - 1)
-                    wrapped_lines.append(' ' * margin + line[startIdx: idx] + ' ' * margin)
+                if pte[idx] - start > wid and (spc_idx != -1 or break_long_words):
+                    if spc_idx != -1:
+                        idx = min(spc_idx + 1, len(pte) - 1)
+                    wrapped_lines.append(' ' * margin + line[start_idx: idx] + ' ' * margin)
                     start = pte[idx]
-                    startIdx = idx
-                    spcIdx = -1
+                    start_idx = idx
+                    spc_idx = -1
 
                 idx += 1
 
-            wrapped_lines.append(' ' * margin + line[startIdx: idx] + ' ' * margin)
+            wrapped_lines.append(' ' * margin + line[start_idx: idx] + ' ' * margin)
 
         return '\n'.join(wrapped_lines)
 
-    def Draw(self, grid, attr, dc, rect, row, col, isSelected):
+    def Draw(self, grid, attr, dc, rect, row, col, is_selected):
         text = grid.GetCellValue(row, col)
         dc.SetFont(attr.GetFont())
         suggest_width = grid.GetColSize(col)
-        text = self._wordwrap(text, suggest_width, dc, breakLongWords=False)
-        hAlign, vAlign = attr.GetAlignment()
-        if isSelected:
+        text = self._wordwrap(text, suggest_width, dc, break_long_words=False)
+        h_align, v_align = attr.GetAlignment()
+        if is_selected:
             bg = grid.GetSelectionBackground()
             fg = grid.GetSelectionForeground()
         else:
@@ -76,7 +78,7 @@ class CellRenderer(wx.grid.GridCellRenderer):
         dc.SetBrush(wx.Brush(bg, wx.SOLID))
         dc.SetPen(wx.TRANSPARENT_PEN)
         dc.DrawRectangle(rect)
-        grid.DrawTextRectangle(dc, text, rect, hAlign, vAlign)
+        grid.DrawTextRectangle(dc, text, rect, h_align, v_align)
 
     def GetBestSize(self, grid, attr, dc, row, col):
         """The width will be between values `col size` and `max col size`
@@ -98,7 +100,7 @@ class CellRenderer(wx.grid.GridCellRenderer):
 
         if self.word_wrap:
             suggest_width = max(grid.GetColSize(col), col_width)
-            text = self._wordwrap(text, suggest_width, dc, breakLongWords=False)
+            text = self._wordwrap(text, suggest_width, dc, break_long_words=False)
             w, h = dc.GetMultiLineTextExtent(text)
             if self.auto_fit:
                 col_width = min(w, col_width)

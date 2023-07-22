@@ -209,8 +209,8 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
             self._editor.set_editor_caret_position()
             try:
                 self._set_read_only(self._editor.source_editor.readonly)
-            except Exception:  # DEBUG: When using only Text Editor exists error in message topic
-                pass
+            except Exception as e:  # DEBUG: When using only Text Editor exists error in message topic
+                print(e)
         elif message.oldtab == self.title:
             self._editor.remove_and_store_state()
             self.unregister_actions()
@@ -495,7 +495,8 @@ class SourceEditor(wx.Panel):
         </p>
         <p>
         If you do not have pip or easy_install,
-        <a href='https://pythonhosted.org/an_example_pypi_project/setuptools.html#installing-setuptools-and-easy-install'
+        <a 
+        href='https://pythonhosted.org/an_example_pypi_project/setuptools.html#installing-setuptools-and-easy-install'
         >follow these instructions</a>.
         </p>
         <p>
@@ -1575,7 +1576,7 @@ class RobotStylizer(object):
 
     def on_settings_changed(self, message):
         """Redraw the colors if the color settings are modified"""
-        section, setting = message.keys
+        section, _ = message.keys
         if section == PLUGIN_NAME:
             self.set_styles(self._readonly)  # DEBUG: When on read-only file changing background color ignores flag
 

@@ -27,8 +27,9 @@ class ResourceFactory(object):
         self.check_path_from_excludes = self._excludes.contains
         # print("DEBUG: ResourceFactory init path_excludes %s\n" % self.check_path_from_excludes)
 
-    def _with_separator(self, dir):
-        return os.path.abspath(dir) + os.path.sep
+    @staticmethod
+    def _with_separator(ddir):
+        return os.path.abspath(ddir) + os.path.sep
 
     def get_resource(self, directory, name, report_status=True):
         path = self._build_path(directory, name)
@@ -41,7 +42,8 @@ class ResourceFactory(object):
                                       report_status=report_status)
         return None
 
-    def _build_path(self, directory, name):
+    @staticmethod
+    def _build_path(directory, name):
         path = os.path.join(directory, name) if directory else name
         return os.path.abspath(path)
 
@@ -80,6 +82,7 @@ class ResourceFactory(object):
                 self.cache[normalized] = self._load_resource(path, report_status=report_status)
             except Exception as e:
                 # print("DEBUG Resource Factory: exception %s" % str(e))
+                print(e)
                 self.cache[normalized] = None
                 return None
         return self.cache[normalized]
@@ -91,5 +94,6 @@ class ResourceFactory(object):
         robotapi.FromFilePopulator(r).populate(r.source, resource=True)
         return r
 
-    def _normalize(self, path):
+    @staticmethod
+    def _normalize(path):
         return os.path.normcase(os.path.normpath(os.path.abspath(path)))
