@@ -1059,7 +1059,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
     def OnNewTestCase(self, event):
         handler = self.controller.get_handler()
         if handler:
-            handler.OnNewTestCase(event)
+            handler.on_new_test_case(event)
 
     def OnDrop(self, target, dragged):
         dragged = self.controller.get_handler(dragged)

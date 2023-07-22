@@ -109,82 +109,82 @@ class _ActionHandler:
         """ Just ignore it """
         pass
 
-    def OnDelete(self, event):
+    def on_delete(self, event):
         """ Just ignore it """
         pass
 
-    def OnNewSuite(self, event):
+    def on_new_suite(self, event):
         """ Just ignore it """
         pass
 
-    def OnNewDirectory(self, event):
+    def on_new_directory(self, event):
         """ Just ignore it """
         pass
 
-    def OnNewResource(self, event):
+    def on_new_resource(self, event):
         """ Just ignore it """
         pass
 
-    def OnNewUserKeyword(self, event):
+    def on_new_user_keyword(self, event):
         """ Just ignore it """
         pass
 
-    def OnNewTestCase(self, event):
+    def on_new_test_case(self, event):
         """ Just ignore it """
         pass
 
-    def OnNewScalar(self, event):
+    def on_new_scalar(self, event):
         """ Just ignore it """
         pass
 
-    def OnNewListVariable(self, event):
+    def on_new_list_variable(self, event):
         """ Just ignore it """
         pass
 
-    def OnNewDictionaryVariable(self, event):
+    def on_new_dictionary_variable(self, event):
         """ Just ignore it """
         pass
 
-    def OnCopy(self, event):
+    def on_copy(self, event):
         """ Just ignore it """
         pass
 
-    def OnFindUsages(self, event):
+    def on_find_usages(self, event):
         """ Just ignore it """
         pass
 
-    def OnSelectAllTests(self, event):
+    def on_select_all_tests(self, event):
         _ = event
         self._tree.SelectAllTests(self._node)
 
-    def OnDeselectAllTests(self, event):
+    def on_deselect_all_tests(self, event):
         _ = event
         self._tree.SelectAllTests(self._node, False)
 
-    def OnSelectOnlyFailedTests(self, event):
+    def on_select_only_failed_tests(self, event):
         _ = event
         self._tree.SelectFailedTests(self._node)
 
-    def OnSelectOnlyPassedTests(self, event):
+    def on_select_only_passed_tests(self, event):
         _ = event
         self._tree.SelectPassedTests(self._node)
 
-    def OnSafeDelete(self, event):
+    def on_safe_delete(self, event):
         """ Just ignore it """
         pass
 
-    def OnExclude(self, event):
+    def on_exclude(self, event):
         """ Just ignore it """
         pass
 
-    def OnInclude(self, event):
+    def on_include(self, event):
         """ Just ignore it """
         pass
 
 
 class _CanBeRenamed(object):
 
-    def OnRename(self, event):
+    def on_rename(self, event):
         _ = event
         self._tree.label_editor.on_label_edit()
 
@@ -225,7 +225,7 @@ class DirectoryHandler(_ActionHandler):
     can_be_rendered = False
     _actions = [_ActionHandler._label_new_resource]
 
-    def OnNewResource(self, event):
+    def on_new_resource(self, event):
         NewResourceDialog(self.controller, self._settings).execute()
 
 
@@ -291,21 +291,21 @@ class TestDataHandler(_ActionHandler):
         _ = event
         ChangeFormatDialog(self.controller).execute()
 
-    def OnNewUserKeyword(self, event):
+    def on_new_user_keyword(self, event):
         dlg = UserKeywordNameDialog(self.controller)
         if dlg.ShowModal() == wx.ID_OK:
             self.controller.execute(ctrlcommands.AddKeyword(dlg.get_name(), dlg.get_args()))
         dlg.Destroy()
 
-    def OnNewScalar(self, event):
+    def on_new_scalar(self, event):
         self._new_var(ScalarVariableDialog)
 
-    def OnNewListVariable(self, event):
+    def on_new_list_variable(self, event):
         class FakePlugin(object):
             global_settings = self._settings
         self._new_var(ListVariableDialog, plugin=FakePlugin())
 
-    def OnNewDictionaryVariable(self, event):
+    def on_new_dictionary_variable(self, event):
         class FakePlugin(object):
             global_settings = self._settings
         self._new_var(DictionaryVariableDialog, plugin=FakePlugin())
@@ -363,19 +363,19 @@ class TestDataDirectoryHandler(TestDataHandler):
         _ = event
         self._tree.CollapseAllSubNodes(self._node)
 
-    def OnNewSuite(self, event):
+    def on_new_suite(self, event):
         AddSuiteDialog(self.controller, self._settings).execute()
 
-    def OnNewDirectory(self, event):
+    def on_new_directory(self, event):
         AddDirectoryDialog(self.controller, self._settings).execute()
 
-    def OnNewResource(self, event):
+    def on_new_resource(self, event):
         NewResourceDialog(self.controller, self._settings).execute()
 
-    def OnDelete(self, event):
+    def on_delete(self, event):
         FolderDeleteDialog(self.controller).execute()
 
-    def OnExclude(self, event):
+    def on_exclude(self, event):
         try:
             self.controller.execute(ctrlcommands.Exclude())
         except filecontrollers.DirtyRobotDataException:
@@ -445,14 +445,14 @@ class ResourceFileHandler(_FileHandlerThanCanBeRenamed, TestDataHandler):
         _ = event
         self.controller.execute(ctrlcommands.OpenContainingFolder())
 
-    def OnFindUsages(self, event):
+    def on_find_usages(self, event):
         ResourceFileUsages(self.controller, self._tree.highlight).show()
 
-    def OnDelete(self, event):
+    def on_delete(self, event):
         ResourceDeleteDialog(self.controller).execute()
 
-    def OnSafeDelete(self, event):
-        return self.OnDelete(event)
+    def on_safe_delete(self, event):
+        return self.on_delete(event)
 
     def _rename_command(self, label):
         return ctrlcommands.RenameResourceFile(
@@ -500,19 +500,19 @@ class TestCaseFileHandler(_FileHandlerThanCanBeRenamed, TestDataHandler):
         _ = event
         self.controller.execute(ctrlcommands.OpenContainingFolder())
 
-    def OnNewTestCase(self, event):
+    def on_new_test_case(self, event):
         dlg = TestCaseNameDialog(self.controller)
         if dlg.ShowModal() == wx.ID_OK:
             self.controller.execute(ctrlcommands.AddTestCase(dlg.get_name()))
         dlg.Destroy()
 
-    def OnDelete(self, event):
+    def on_delete(self, event):
         if wx.MessageBox('Delete test case file', caption='Confirm',
                          style=wx.YES_NO | wx.ICON_QUESTION) == wx.YES:
             self.controller.execute(ctrlcommands.DeleteFile())
 
-    def OnSafeDelete(self, event):
-        return self.OnDelete(event)
+    def on_safe_delete(self, event):
+        return self.on_delete(event)
 
     def _rename_command(self, label):
         return ctrlcommands.RenameFile(label)
@@ -539,7 +539,7 @@ class _TestOrUserKeywordHandler(_CanBeRenamed, _ActionHandler):
     def rename(self, new_name):
         self.controller.execute(self._create_rename_command(new_name))
 
-    def OnCopy(self, event):
+    def on_copy(self, event):
         dlg = self._copy_name_dialog_class(self.controller, self.item)
         if dlg.ShowModal() == wx.ID_OK:
             self.controller.execute(ctrlcommands.CopyMacroAs(dlg.get_name()))
@@ -555,7 +555,7 @@ class _TestOrUserKeywordHandler(_CanBeRenamed, _ActionHandler):
         if self.controller.move_down():
             self._tree.move_down(self._node)
 
-    def OnDelete(self, event):
+    def on_delete(self, event):
         self.controller.execute(ctrlcommands.RemoveMacro(self.controller))
 
 
@@ -599,7 +599,7 @@ class UserKeywordHandler(_TestOrUserKeywordHandler):
             RenameProgressObserver(self._tree.GetParent()),
             self.controller.info)
 
-    def OnFindUsages(self, event):
+    def on_find_usages(self, event):
         Usages(self.controller, self._tree.highlight).show()
 
 
@@ -619,7 +619,7 @@ class VariableHandler(_CanBeRenamed, _ActionHandler):
     def double_clicked(self):
         RideOpenVariableDialog(controller=self.controller).publish()
 
-    def OnDelete(self, event):
+    def on_delete(self, event):
         self.remove()
 
     def remove(self):
@@ -669,5 +669,5 @@ class ExcludedDirectoryHandler(TestDataDirectoryHandler):
         TestDataHandler.__init__(self, *args)
         self._actions = [_ActionHandler._label_include]
 
-    def OnInclude(self, event):
+    def on_include(self, event):
         self.controller.execute(ctrlcommands.Include())
