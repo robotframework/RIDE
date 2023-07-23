@@ -121,10 +121,10 @@ class TestMain(unittest.TestCase):
                 def __init__(self, path=None, updatecheck=True):
                     self.frame = wx.Frame(None)
 
-                def OnInit(self):
+                def OnInit(self):  # Overrides wx method
                     pass
 
-                def MainLoop(self):
+                def MainLoop(self):  # Overrides wx method
                     pass
 
             with MonkeyPatch().context() as m:

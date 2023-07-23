@@ -46,7 +46,7 @@ class TestSubscribingToEvents(unittest.TestCase):
 
     def test_subscribing_with_string(self):
         with pytest.raises(TypeError):
-            self.plugin.subscribe(self.plugin.OnTestEventClass, 'ride.test')
+            self.plugin.subscribe(self.plugin.on_test_event_class, 'ride.test')
 
     def test_event_with_data(self):
         RideMessageWithData(data_item='Data', more_data=[1, 2, 3]).publish()
@@ -81,13 +81,13 @@ class TestUnsubscribingFromEvents(unittest.TestCase):
             self.plugin.unsubscribe_all()
 
     def test_unsubscribe_with_class(self):
-        self.plugin.unsubscribe(self.plugin.OnTestEventClass, RideTestMessage)
+        self.plugin.unsubscribe(self.plugin.on_test_event_class, RideTestMessage)
         RideTestMessage().publish()
         assert self.plugin.class_handler_topic == None
 
     def test_unsubscribe_with_string(self):
         with pytest.raises(TypeError):
-            self.plugin.unsubscribe(self.plugin.OnTestEventClass, 'RideTestMessage')
+            self.plugin.unsubscribe(self.plugin.on_test_event_class, 'RideTestMessage')
 
     def test_unsubscribing_multiple_times_subscribed_once(self):
         self.plugin.unsubscribe(self.plugin.counting_handler, RideTestMessage)
@@ -116,7 +116,7 @@ class TestUnsubscribingFromEvents(unittest.TestCase):
 
     def test_unsubscribing_from_not_subscribed_event_will_fail(self):
         with pytest.raises(Exception):
-            self.plugin.unsubscribe(self.plugin.OnTestEventClass, UnsubscribedRideTestMessage)
+            self.plugin.unsubscribe(self.plugin.on_test_event_class, UnsubscribedRideTestMessage)
 
     def test_unsubscribe_all(self):
         self.plugin.unsubscribe_all()
@@ -183,18 +183,18 @@ class SubscribingPlugin(Plugin):
         self.class_handler_topic = None
 
     def _subscribe_to_events(self):
-        self.subscribe(self.OnTestEventClass, RideTestMessage)
-        self.subscribe(self.OnTestEventWithData, RideMessageWithData)
+        self.subscribe(self.on_test_event_class, RideTestMessage)
+        self.subscribe(self.on_test_event_with_data, RideMessageWithData)
         for _ in range(5):
             self.subscribe(self.counting_handler, RideTestMessage)
         self.subscribe(self.hierarchical_listener, RideMessage)
         self.subscribe(self.multiple_events_listening_handler, RideTestMessage,
                        RideMessageWithData)
 
-    def OnTestEventClass(self, message):
+    def on_test_event_class(self, message):
         self.class_handler_topic = message.topic()
 
-    def OnTestEventWithData(self, message):
+    def on_test_event_with_data(self, message):
         self.record['data_item'] = message.data_item
         self.record['more_data'] = message.more_data
 

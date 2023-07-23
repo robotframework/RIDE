@@ -20,10 +20,10 @@ from robotide.widgets.popupmenu import PopupMenuItems, PopupMenuItem
 
 class Parent(object):
 
-    def OnDoSomething(self):
+    def on_do_something(self):
         pass
 
-    def OnDo(self):
+    def on_do(self):
         pass
 
 
@@ -60,7 +60,7 @@ class TestPopupMenuItem(unittest.TestCase):
     def test_creation_with_name_and_parent(self):
         parent = Parent()
         item = PopupMenuItem('Do Something', parent=parent)
-        assert item.callable == parent.OnDoSomething
+        assert item.callable == parent.on_do_something
 
     def test_creation_with_name_and_callable(self):
         def _test():
@@ -72,7 +72,7 @@ class TestPopupMenuItem(unittest.TestCase):
         parent = Parent()
         item = PopupMenuItem('Do\tCtrl-x', parent=parent)
         assert item.name == 'Do\tCtrl-x'
-        assert item.callable == parent.OnDo
+        assert item.callable == parent.on_do
 
     def test_creating_separator(self):
         item = PopupMenuItem('---')

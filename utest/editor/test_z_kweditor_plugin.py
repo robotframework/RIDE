@@ -123,7 +123,7 @@ class MyApp(wx.App):
         self.toolbar = None
         self._mgr = None
 
-    def OnInit(self):
+    def OnInit(self):  # Overrides wx method
         self.frame = MainFrame()
         self.SetTopWindow(self.frame)
         self.settings = FakeSettings()
@@ -170,7 +170,7 @@ class MyApp(wx.App):
     def _datafile_controller(self):
         return data_controller(new_test_case_file(datafilereader.TESTCASEFILE_WITH_EVERYTHING), None)
 
-    def OnExit(self):
+    def OnExit(self):  # Overrides wx method
         os.remove(self.file_settings)
 
 

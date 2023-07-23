@@ -89,7 +89,7 @@ class MyApp(wx.App):
         self.toolbar = None
         self._mgr = None
 
-    def OnInit(self):
+    def OnInit(self):  # Overrides wx method
         self.frame = MainFrame()
         self.SetTopWindow(self.frame)
         self.settings = FakeSettings()
