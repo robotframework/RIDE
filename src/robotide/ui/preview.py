@@ -33,12 +33,12 @@ class PreviewPlugin(Plugin, TreeAwarePluginMixin):
         self._panel = None
 
     def enable(self):
-        self.register_action(ActionInfo('Tools', 'Preview', self.OnShowPreview,
+        self.register_action(ActionInfo('Tools', 'Preview', self.on_show_preview,
                                         shortcut='F6',
                                         doc='Show preview of the current file',
                                         position=71))
-        self.subscribe(self.OnTreeSelection, RideTreeSelection)
-        self.subscribe(self.OnTabChanged, RideNotebookTabChanged)
+        self.subscribe(self.on_tree_selection, RideTreeSelection)
+        self.subscribe(self.on_tab_changed, RideNotebookTabChanged)
         self.subscribe(self._update_preview, RideTestCaseAdded)
         self.subscribe(self._update_preview, RideUserKeywordAdded)
         self.add_self_as_tree_aware_plugin()
@@ -53,18 +53,18 @@ class PreviewPlugin(Plugin, TreeAwarePluginMixin):
     def is_focused(self):
         return self.tab_is_visible(self._panel)
 
-    def OnShowPreview(self, event):
+    def on_show_preview(self, event):
         _ = event
         if not self._panel:
             self._panel = PreviewPanel(self, self.notebook)
         self.show_tab(self._panel)
         self._update_preview(None)
 
-    def OnTreeSelection(self, message):
+    def on_tree_selection(self, message):
         if self.is_focused():
             self._panel.tree_node_selected(message.item)
 
-    def OnTabChanged(self, message):
+    def on_tab_changed(self, message):
         _ = message
         self._update_preview(None)
 
@@ -94,7 +94,7 @@ class PreviewPanel(wx.Panel):
         self.Sizer.Add(box)
         notebook.AddPage(self, "Preview")
 
-    def OnPrint(self, evt):
+    def on_print(self, evt):
         _ = evt
         self._printing.preview_text(self._get_content())
 
@@ -111,7 +111,7 @@ class PreviewPanel(wx.Panel):
     def _chooser(self):
         chooser = wx.RadioBox(self, label='Format', choices=self._formats)
         chooser.SetStringSelection(self._format)
-        self.Bind(wx.EVT_RADIOBOX, self.OnTypeChanged, chooser)
+        self.Bind(wx.EVT_RADIOBOX, self.on_type_changed, chooser)
         return chooser
 
     def _print_button(self):
@@ -161,7 +161,7 @@ class PreviewPanel(wx.Panel):
         else:
             return output.getvalue()
 
-    def OnTypeChanged(self, event):
+    def on_type_changed(self, event):
         self._format = event.String
         self.update_preview()
         self._parent.save_setting('format', self._format)

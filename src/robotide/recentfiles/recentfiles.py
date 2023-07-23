@@ -46,22 +46,22 @@ class RecentFilesPlugin(Plugin):
         self._save_currently_loaded_suite()
         self._add_recent_files_to_menu()
         self._new_project_path = None
-        self.subscribe(self.OnSuiteOpened, RideOpenSuite)
-        self.subscribe(self.OnFileNameChanged, RideFileNameChanged)
-        self.subscribe(self.OnNewProjectOpened, RideNewProject)
-        self.subscribe(self.OnSaved, RideSaved)
+        self.subscribe(self.on_suite_opened, RideOpenSuite)
+        self.subscribe(self.on_file_name_changed, RideFileNameChanged)
+        self.subscribe(self.on_new_project_opened, RideNewProject)
+        self.subscribe(self.on_saved, RideSaved)
 
     def disable(self):
         self.unregister_actions()
         self.unsubscribe_all()
 
-    def OnSuiteOpened(self, message):
+    def on_suite_opened(self, message):
         # Update menu with CallAfter to ensure ongoing menu selection
         # handling has finished before menu is changed
         wx.CallAfter(self._add_to_recent_files, message.path)
         self._new_project_path = None
 
-    def OnFileNameChanged(self, message):
+    def on_file_name_changed(self, message):
         self._new_project_path = None
         if not message.old_filename:
             return
@@ -73,10 +73,10 @@ class RecentFilesPlugin(Plugin):
         self.recent_files[index] = new_filename
         self._save_settings_and_update_file_menu()
 
-    def OnNewProjectOpened(self, message):
+    def on_new_project_opened(self, message):
         self._new_project_path = message.path
 
-    def OnSaved(self, message):
+    def on_saved(self, message):
         _ = message
         if self._new_project_path is not None:
             wx.CallAfter(self._add_to_recent_files, self._new_project_path)

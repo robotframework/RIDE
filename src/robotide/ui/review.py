@@ -180,9 +180,9 @@ class ReviewDialog(RIDEDialog):
                   self._filter_source_testcases)
         self.Bind(wx.EVT_CHECKBOX, self._update_filter_source_resources,
                   self._filter_source_resources)
-        self.Bind(wx.EVT_BUTTON, self.OnDeletemarkedkeywords, self._delete_button)
-        self.Bind(wx.EVT_BUTTON, self.OnShowfilestobesearched, self._filter_test_button)
-        self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.OnResultSelected, self._unused_kw_list)
+        self.Bind(wx.EVT_BUTTON, self.on_delete_marked_keywords, self._delete_button)
+        self.Bind(wx.EVT_BUTTON, self.on_show_files_to_be_searched, self._filter_test_button)
+        self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.on_result_selected, self._unused_kw_list)
         self.Bind(wx.EVT_CHECKBOX, self._update_filter_regex, self._filter_regex_switch)
         self.Bind(wx.EVT_COLLAPSIBLEPANE_CHANGED, self._toggle_filter_active, self._filter_pane)
         self.Bind(wx.EVT_LIST_ITEM_CHECKED, self._unused_kw_list.OnCheckItem, self._unused_kw_list)
@@ -243,16 +243,16 @@ class ReviewDialog(RIDEDialog):
         self.label_filter_status.SetLabel('active')
         self.label_filter_status.SetForegroundColour((0, 200, 0))
 
-    def OnSearch(self, event):
+    def on_search(self, event):
         _ = event
         self.begin_searching()
         self._runner.run_review()
 
-    def OnAbort(self, event):
+    def on_abort(self, event):
         _ = event
         self.end_searching()
 
-    def OnDeletemarkedkeywords(self, event):
+    def on_delete_marked_keywords(self, event):
         _ = event
         item = self._unused_kw_list.get_next_checked_item()
         while item:
@@ -268,7 +268,7 @@ class ReviewDialog(RIDEDialog):
             item = self._unused_kw_list.get_next_checked_item()
         self.item_in_kw_list_checked()
 
-    def OnShowfilestobesearched(self, event):
+    def on_show_files_to_be_searched(self, event):
         _ = event
         df_list = self._runner.get_datafile_list()
         if not df_list:
@@ -279,7 +279,7 @@ class ReviewDialog(RIDEDialog):
         dlg = RIDEDialog(parent=self, title="Included files", message=message, style=wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
 
-    def OnResultSelected(self, event):
+    def on_result_selected(self, event):
         self.frame.tree.select_node_by_data(self._unused_kw_list.GetClientData(event.GetData()))
 
     def item_in_kw_list_checked(self):
@@ -495,7 +495,7 @@ class ResultListCtrl(wx.ListCtrl, listmix.CheckListCtrlMixin, listmix.ListCtrlAu
     def set_dialog(self, dialog):
         self._dlg = dialog
 
-    def OnCheckItem(self, event):
+    def OnCheckItem(self, event):  # Overrides wx method
         if self._dlg:
             self._dlg.item_in_kw_list_checked()
         else:

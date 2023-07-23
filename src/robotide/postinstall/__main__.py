@@ -85,29 +85,29 @@ class MessageDialog(RIDEDialog):
         self.SetForegroundColour(Colour(self.color_foreground))
         self.timer = wx.Timer(self)
         self.timer.Start(1000)  # Generate a timer event every second
-        self.Bind(wx.EVT_CLOSE, self.OnClose)
-        self.Bind(wx.EVT_TIMER, self.onTimer, self.timer)
-        self.Bind(wx.EVT_BUTTON, self.OnCancel, id=wx.ID_CANCEL)
-        self.Bind(wx.EVT_BUTTON, self.OnNo, id=wx.ID_NO)
-        self.Bind(wx.EVT_CHAR_HOOK, self.OnKeyPressed)
+        self.Bind(wx.EVT_CLOSE, self.on_close)
+        self.Bind(wx.EVT_TIMER, self.on_timer, self.timer)
+        self.Bind(wx.EVT_BUTTON, self.on_cancel, id=wx.ID_CANCEL)
+        self.Bind(wx.EVT_BUTTON, self.on_no, id=wx.ID_NO)
+        self.Bind(wx.EVT_CHAR_HOOK, self.on_key_pressed)
 
-    def OnKeyPressed(self, event):
+    def on_key_pressed(self, event):
         key_code = event.GetKeyCode()
         if key_code == wx.WXK_ESCAPE:
             self.EndModal(wx.ID_NO)
         event.Skip()
 
-    def OnCancel(self, evt):
+    def on_cancel(self, evt):
         _ = evt
         self.EndModal(wx.ID_NO)
 
-    def OnClose(self, evt):
-        self.OnCancel(evt)
+    def on_close(self, evt):
+        self.on_cancel(evt)
 
-    def OnNo(self, evt):
-        self.OnCancel(evt)
+    def on_no(self, evt):
+        self.on_cancel(evt)
 
-    def onTimer(self, evt):
+    def on_timer(self, evt):
         _ = evt
         self.timeToLive -= 1
         self.settimetolivemsg.SetLabel('Closing this dialog box in %ds...' % self.timeToLive)

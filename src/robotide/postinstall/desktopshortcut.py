@@ -48,10 +48,10 @@ class ShortcutPlugin(Plugin):
         self.unregister_actions()
         self.register_action(ActionInfo('Tools',
                                         'Create RIDE Desktop Shortcut',
-                                        self.OnViewShortcutCreate,
+                                        self.on_view_shortcut_create,
                                         position=85))
 
-    def OnViewShortcutCreate(self, event):
+    def on_view_shortcut_create(self, event):
         _ = event
         self.call_creator(self.notebook)
         # self.disable()

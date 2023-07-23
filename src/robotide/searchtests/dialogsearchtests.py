@@ -96,7 +96,7 @@ class TestsDialog(RIDEDialog):
                                                  style=wx.TE_PROCESS_ENTER | wx.TE_NOHIDESEL)
         self._tags_to_include_text.SetBackgroundColour(Colour(self.color_secondary_background))
         self._tags_to_include_text.SetForegroundColour(Colour(self.color_secondary_foreground))
-        self._tags_to_include_text.Bind(wx.EVT_TEXT_ENTER, self.OnSearchTags)
+        self._tags_to_include_text.Bind(wx.EVT_TEXT_ENTER, self.on_search_tags)
         include_line.Add(self._tags_to_include_text)
         return include_line
 
@@ -106,7 +106,7 @@ class TestsDialog(RIDEDialog):
         button = wx.BitmapButton(panel, -1, img, pos=(10, 20))
         button.SetBackgroundColour(Colour(self.color_secondary_background))
         button.SetForegroundColour(Colour(self.color_secondary_foreground))
-        self.Bind(wx.EVT_BUTTON, self.OnSwitchFields, button)
+        self.Bind(wx.EVT_BUTTON, self.on_switch_fields, button)
         sizer.Add(button)
         return sizer
 
@@ -117,7 +117,7 @@ class TestsDialog(RIDEDialog):
                                                  style=wx.TE_PROCESS_ENTER | wx.TE_NOHIDESEL)
         self._tags_to_exclude_text.SetBackgroundColour(Colour(self.color_secondary_background))
         self._tags_to_exclude_text.SetForegroundColour(Colour(self.color_secondary_foreground))
-        self._tags_to_exclude_text.Bind(wx.EVT_TEXT_ENTER, self.OnSearchTags)
+        self._tags_to_exclude_text.Bind(wx.EVT_TEXT_ENTER, self.on_search_tags)
         exclude_line.Add(self._tags_to_exclude_text)
         return exclude_line
 
@@ -125,10 +125,10 @@ class TestsDialog(RIDEDialog):
         button = wx.Button(panel, label='Search')
         button.SetBackgroundColour(Colour(self.color_secondary_background))
         button.SetForegroundColour(Colour(self.color_secondary_foreground))
-        button.Bind(wx.EVT_BUTTON, self.OnSearchTags)
+        button.Bind(wx.EVT_BUTTON, self.on_search_tags)
         return button
 
-    def OnSearchTags(self, event):
+    def on_search_tags(self, event):
         _ = event
         self._tag_search_handler(self._tags_to_include_text.GetValue(),
                                  self._tags_to_exclude_text.GetValue())
@@ -137,14 +137,14 @@ class TestsDialog(RIDEDialog):
         button = wx.Button(panel, label='Add all to selected')
         button.SetBackgroundColour(Colour(self.color_secondary_background))
         button.SetForegroundColour(Colour(self.color_secondary_foreground))
-        button.Bind(wx.EVT_BUTTON, self.OnAddToSelected)
+        button.Bind(wx.EVT_BUTTON, self.on_add_to_selected)
         return button
 
-    def OnAddToSelected(self, event):
+    def on_add_to_selected(self, event):
         _ = event
         self._add_to_selected_handler(self._get_current_tests())
 
-    def OnSearchTests(self, event):
+    def on_search_tests(self, event):
         _ = event
         self._fuzzy_search_handler(self._search_control.GetValue())
 
@@ -182,12 +182,12 @@ class TestsDialog(RIDEDialog):
         fuzzy_search_button = wx.Button(panel, label='Search')
         fuzzy_search_button.SetBackgroundColour(Colour(self.color_secondary_background))
         fuzzy_search_button.SetForegroundColour(Colour(self.color_secondary_foreground))
-        fuzzy_search_button.Bind(wx.EVT_BUTTON, self.OnSearchTests)
+        fuzzy_search_button.Bind(wx.EVT_BUTTON, self.on_search_tests)
         line1.Add(fuzzy_search_button, 0, wx.ALL | wx.EXPAND, 3)
         add_to_selection_button = wx.Button(panel, label='Add all to selected')
         add_to_selection_button.SetBackgroundColour(Colour(self.color_secondary_background))
         add_to_selection_button.SetForegroundColour(Colour(self.color_secondary_foreground))
-        add_to_selection_button.Bind(wx.EVT_BUTTON, self.OnAddToSelected)
+        add_to_selection_button.Bind(wx.EVT_BUTTON, self.on_add_to_selected)
         line1.Add(add_to_selection_button, 0, wx.ALL | wx.EXPAND, 3)
         panel.Sizer.Add(line1, 0, wx.ALL, 3)
         panel.Sizer.Add(self._add_info_text(panel, "Find matches by test name, "
@@ -263,14 +263,14 @@ class TestsDialog(RIDEDialog):
         else:
             self._tags_to_include_text.SetFocus()
 
-    def OnSwitchFields(self, event):
+    def on_switch_fields(self, event):
         include_txt = self._tags_to_include_text.GetValue()
         exclude_txt = self._tags_to_exclude_text.GetValue()
 
         if len(include_txt.strip()) > 0 or len(exclude_txt.strip()) > 0:
             self._tags_to_include_text.SetValue(exclude_txt)
             self._tags_to_exclude_text.SetValue(include_txt)
-            self.OnSearchTags(event)
+            self.on_search_tags(event)
 
 
 @total_ordering

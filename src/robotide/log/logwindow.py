@@ -35,11 +35,11 @@ class LogWindow(wx.Panel):
         self._output = wx.TextCtrl(self, style=wx.TE_READONLY | wx.TE_MULTILINE | wx.TE_NOHIDESEL)
         self._output.SetBackgroundColour(Colour(self.dlg.color_background))
         self._output.SetForegroundColour(Colour(self.dlg.color_foreground))
-        self._output.Bind(wx.EVT_KEY_DOWN, self.OnKeyDown)
+        self._output.Bind(wx.EVT_KEY_DOWN, self.on_key_down)
         self._log = log
         self._add_to_notebook(notebook)
         self.SetFont(widgets.Font().fixed_log)
-        self.Bind(wx.EVT_SIZE, self.OnSize)
+        self.Bind(wx.EVT_SIZE, self.on_size)
 
     def _create_ui(self):
         self.SetSizer(widgets.VerticalSizer())
@@ -62,11 +62,11 @@ class LogWindow(wx.Panel):
             result += message_to_string(msg, self._removetabs)
         return result
 
-    def OnSize(self, evt):
+    def on_size(self, evt):
         _ = evt
         self._output.SetSize(self.Size)
 
-    def OnKeyDown(self, event):
+    def on_key_down(self, event):
         keycode = event.GetKeyCode()
 
         if event.ControlDown() and keycode == ord('A'):

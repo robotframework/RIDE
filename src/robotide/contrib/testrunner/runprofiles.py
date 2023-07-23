@@ -420,7 +420,7 @@ class PybotProfile(BaseProfile):
             parent, wx.ID_ANY, 'Log options',
             style=wx.CP_DEFAULT_STYLE | wx.CP_NO_TLW_RESIZE)
         collapsible_pane.Bind(wx.EVT_COLLAPSIBLEPANE_CHANGED,
-                              self.OnCollapsiblePaneChanged,
+                              self.on_collapsible_pane_changed,
                               collapsible_pane)
         pane = collapsible_pane.GetPane()
         pane.SetBackgroundColour(self._mysettings.color_background)
@@ -429,7 +429,7 @@ class PybotProfile(BaseProfile):
         self._output_directory_text_ctrl = \
             self._create_text_ctrl(pane, self.output_directory,
                                    "removed due unicode_error (delete this)",
-                                   self.OnOutputDirectoryChanged)
+                                   self.on_output_directory_changed)
         self._output_directory_text_ctrl.SetBackgroundColour(self._mysettings.color_secondary_background)
         self._output_directory_text_ctrl.SetForegroundColour(self._mysettings.color_secondary_foreground)
         button = ButtonWithHandler(pane, "...", self._handle_select_directory)
@@ -443,13 +443,13 @@ class PybotProfile(BaseProfile):
 
         suite_name_outputs_cb = self._create_checkbox(
             pane, self.are_log_names_with_suite_name,
-            "Add suite name to log names", self.OnSuiteNameOutputsCheckBox)
+            "Add suite name to log names", self.on_suite_name_outputs_check_box)
         timestamp_outputs_cb = self._create_checkbox(
             pane, self.are_log_names_with_timestamp,
-            "Add timestamp to log names", self.OnTimestampOutputsCheckbox)
+            "Add timestamp to log names", self.on_timestamp_outputs_checkbox)
         save_logs_cb = self._create_checkbox(
             pane, self.are_saving_logs,
-            "Save Console and Message logs", self.OnSaveLogsCheckbox)
+            "Save Console and Message logs", self.on_save_logs_checkbox)
 
         vertical_sizer = wx.BoxSizer(wx.VERTICAL)
         vertical_sizer.Add(horizontal_sizer, 0, wx.EXPAND)
@@ -459,7 +459,7 @@ class PybotProfile(BaseProfile):
         pane.SetSizer(vertical_sizer)
         return collapsible_pane
 
-    def OnOutputDirectoryChanged(self, evt):
+    def on_output_directory_changed(self, evt):
         _ = evt
         value = self._output_directory_text_ctrl.GetValue()
         self.set_setting("output_directory", value)
@@ -478,13 +478,13 @@ class PybotProfile(BaseProfile):
             self._output_directory_text_ctrl.SetValue(dlg.Path)
         dlg.Destroy()
 
-    def OnSuiteNameOutputsCheckBox(self, evt):
+    def on_suite_name_outputs_check_box(self, evt):
         self.set_setting("are_log_names_with_suite_name", evt.IsChecked())
 
-    def OnTimestampOutputsCheckbox(self, evt):
+    def on_timestamp_outputs_checkbox(self, evt):
         self.set_setting("are_log_names_with_timestamp", evt.IsChecked())
 
-    def OnSaveLogsCheckbox(self, evt):
+    def on_save_logs_checkbox(self, evt):
         self.set_setting("are_saving_logs", evt.IsChecked())
 
     def _get_arguments_panel(self, parent):
@@ -492,7 +492,7 @@ class PybotProfile(BaseProfile):
             parent, wx.ID_ANY, 'Arguments',
             style=wx.CP_DEFAULT_STYLE | wx.CP_NO_TLW_RESIZE)
         collapsible_pane.Bind(wx.EVT_COLLAPSIBLEPANE_CHANGED,
-                              self.OnCollapsiblePaneChanged,
+                              self.on_collapsible_pane_changed,
                               collapsible_pane)
         pane = collapsible_pane.GetPane()
         pane.SetBackgroundColour(self._mysettings.color_background)
@@ -500,7 +500,7 @@ class PybotProfile(BaseProfile):
         self._args_text_ctrl = \
             self._create_text_ctrl(pane, self.arguments,
                                    "removed due unicode_error (delete this)",
-                                   self.OnArgumentsChanged)
+                                   self.on_arguments_changed)
         self._args_text_ctrl.SetToolTip("Arguments for the test run. "
                                         "Arguments are space separated list.")
         self._args_text_ctrl.SetBackgroundColour(self._mysettings.color_secondary_background)
@@ -513,7 +513,7 @@ class PybotProfile(BaseProfile):
         self._validate_arguments(self.arguments or u'')
         return collapsible_pane
 
-    def OnArgumentsChanged(self, evt):
+    def on_arguments_changed(self, evt):
         _ = evt
         args = self._args_text_ctrl.GetValue()
         self._validate_arguments(args or u'')
@@ -561,24 +561,24 @@ class PybotProfile(BaseProfile):
             parent, wx.ID_ANY, 'Tests filters',
             style=wx.CP_DEFAULT_STYLE | wx.CP_NO_TLW_RESIZE)
         collapsible_pane.Bind(wx.EVT_COLLAPSIBLEPANE_CHANGED,
-                              self.OnCollapsiblePaneChanged,
+                              self.on_collapsible_pane_changed,
                               collapsible_pane)
         pane = collapsible_pane.GetPane()
         pane.SetBackgroundColour(self._mysettings.color_background)
         pane.SetForegroundColour(self._mysettings.color_foreground)
         include_cb = self._create_checkbox(pane, self.apply_include_tags,
                                            "Only run tests with these tags:",
-                                           self.OnIncludeCheckbox)
+                                           self.on_include_checkbox)
         exclude_cb = self._create_checkbox(pane, self.apply_exclude_tags,
                                            "Skip tests with these tags:",
-                                           self.OnExcludeCheckbox)
+                                           self.on_exclude_checkbox)
         self._include_tags_text_ctrl = \
             self._create_text_ctrl(pane, self.include_tags, "unicode_error",
-                                   self.OnIncludeTagsChanged,
+                                   self.on_include_tags_changed,
                                    self.apply_include_tags)
         self._exclude_tags_text_ctrl = \
             self._create_text_ctrl(pane, self.exclude_tags, "unicode error",
-                                   self.OnExcludeTagsChanged,
+                                   self.on_exclude_tags_changed,
                                    self.apply_exclude_tags)
         self._include_tags_text_ctrl.SetBackgroundColour(self._mysettings.color_secondary_background)
         self._include_tags_text_ctrl.SetForegroundColour(self._mysettings.color_secondary_foreground)
@@ -596,24 +596,24 @@ class PybotProfile(BaseProfile):
 
         return collapsible_pane
 
-    def OnCollapsiblePaneChanged(self, evt=None):
+    def on_collapsible_pane_changed(self, evt=None):
         _ = evt
         parent = self._toolbar.GetParent().GetParent()
         parent.Layout()
 
-    def OnIncludeCheckbox(self, evt):
+    def on_include_checkbox(self, evt):
         self.set_setting("apply_include_tags", evt.IsChecked())
         self._include_tags_text_ctrl.Enable(evt.IsChecked())
 
-    def OnExcludeCheckbox(self, evt):
+    def on_exclude_checkbox(self, evt):
         self.set_setting("apply_exclude_tags", evt.IsChecked())
         self._exclude_tags_text_ctrl.Enable(evt.IsChecked())
 
-    def OnIncludeTagsChanged(self, evt):
+    def on_include_tags_changed(self, evt):
         _ = evt
         self.set_setting("include_tags", self._include_tags_text_ctrl.GetValue())
 
-    def OnExcludeTagsChanged(self, evt):
+    def on_exclude_tags_changed(self, evt):
         _ = evt
         self.set_setting("exclude_tags", self._exclude_tags_text_ctrl.GetValue())
 
@@ -667,7 +667,7 @@ class CustomScriptProfile(PybotProfile):
         panel = wx.Panel(parent, wx.ID_ANY)
         self._script_ctrl = FileBrowseButton(
             panel, labelText="Script to run tests:", size=(-1, -1),
-            fileMask="*", changeCallback=self.OnCustomScriptChanged)
+            fileMask="*", changeCallback=self.on_custom_script_changed)
         self._script_ctrl.SetValue(self.runner_script)
 
         sizer = wx.BoxSizer(wx.VERTICAL)
@@ -676,6 +676,6 @@ class CustomScriptProfile(PybotProfile):
         panel.SetSizerAndFit(sizer)
         return panel
 
-    def OnCustomScriptChanged(self, evt):
+    def on_custom_script_changed(self, evt):
         _ = evt
         self.set_setting("runner_script", self._script_ctrl.GetValue())

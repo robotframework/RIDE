@@ -79,7 +79,7 @@ class ParserLogPlugin(Plugin):
     def _create_menu(self):
         self.unregister_actions()
         self.register_action(ActionInfo(
-            'Tools', 'View Parser Log', self.OnViewLog, position=83))
+            'Tools', 'View Parser Log', self.on_view_log, position=83))
 
     def _log_message(self, message):
         self._log.append(message)
@@ -94,9 +94,9 @@ class ParserLogPlugin(Plugin):
             font_size = 13 if context.IS_MAC else -1
             widgets.HtmlDialog(message.level, message.message,
                                padding=10, font_size=font_size).Show()
-        self.OnViewLog(message, show_tab=False)
+        self.on_view_log(message, show_tab=False)
 
-    def OnViewLog(self, event, show_tab=True):
+    def on_view_log(self, event, show_tab=True):
         _ = event
         if not self._panel:
             self._panel = LogWindow(self.notebook, self.title, self._log)

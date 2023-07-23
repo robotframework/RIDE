@@ -222,7 +222,7 @@ class RIDE(wx.App):
             self.fileexplorerplugin.settings[FONT_SIZE] = theme[FONT_SIZE]
             self.fileexplorerplugin.settings[FONT_FACE] = theme[FONT_FACE]
             if self.fileexplorerplugin.settings['opened']:
-                self.fileexplorerplugin.OnShowFileExplorer(None)
+                self.fileexplorerplugin.on_show_file_explorer(None)
         if theme['apply to panels'] and self.treeplugin.settings['_enabled']:
             self.treeplugin.settings['background'] = theme['background']
             self.treeplugin.settings['foreground'] = theme['foreground']

@@ -78,7 +78,7 @@ class ViewAllTagsDialog(RIDEDialog, listmix.ColumnSorterMixin):
         self._notebook.AddPage(panel_tag_vw, "The List")
 
     def _build_controls(self):
-        self._clear_button = ButtonWithHandler(self, 'Refresh', self.OnClear)
+        self._clear_button = ButtonWithHandler(self, 'Refresh', self.on_clear)
         self._show_tagged_tests_button = ButtonWithHandler(
             self, 'Included Tag Search')
         self._show_excluded_tests_button = ButtonWithHandler(
@@ -109,9 +109,9 @@ class ViewAllTagsDialog(RIDEDialog, listmix.ColumnSorterMixin):
 
     def _make_bindings(self):
         self.Bind(wx.EVT_CLOSE, self._close_dialog)
-        self._tags_list.Bind(wx.EVT_LIST_ITEM_RIGHT_CLICK, self.OnRightClick)
+        self._tags_list.Bind(wx.EVT_LIST_ITEM_RIGHT_CLICK, self.on_right_click)
         self._tags_list.Bind(wx.EVT_LIST_COL_CLICK, self.on_col_click)
-        self._tags_list.Bind(wx.EVT_LIST_ITEM_SELECTED, self.OnSelectItem)
+        self._tags_list.Bind(wx.EVT_LIST_ITEM_SELECTED, self.on_select_item)
 
     @staticmethod
     def _tag_name_for_sort(tag_name):
@@ -196,26 +196,26 @@ class ViewAllTagsDialog(RIDEDialog, listmix.ColumnSorterMixin):
             tags.append(tag_name)
         return tags
 
-    def OnIncludedTagSearch(self, event):
+    def on_included_tag_search(self, event):
         _ = event
         included_tags = self._add_checked_tags_into_list()
         RideOpenTagSearch(includes=' '.join(included_tags),
                           excludes='').publish()
 
-    def OnExcludedTagSearch(self, event):
+    def on_excluded_tag_search(self, event):
         _ = event
         excluded_tags = self._add_checked_tags_into_list()
         RideOpenTagSearch(includes='',
                           excludes=' '.join(excluded_tags)).publish()
 
-    def OnClear(self, event):
+    def on_clear(self, event):
         _ = event
         self._execute()
         for _, tests in self._results:
             self.tree.DeselectTests(tests)
         self.update_footer()
 
-    def OnSelectAll(self, event):
+    def on_select_all(self, event):
         _ = event
         all_tests = []
         for _, tests in self._results:
@@ -223,32 +223,32 @@ class ViewAllTagsDialog(RIDEDialog, listmix.ColumnSorterMixin):
         self.tree.SelectTests(all_tests)
         self._tags_list.CheckAll()
 
-    def OnRightClick(self, event):
+    def on_right_click(self, event):
         self._index = event.GetIndex()
         menu_items = ["Select all", "Clear", "---", "Rename", "Delete", "---",
                       "Show tests with this tag",
                       "Show tests without this tag"]
         self.tree._popup_creator.show(self, PopupMenuItems(self, menu_items), self._controller)
 
-    def OnSelectItem(self, event):
+    def on_select_item(self, event):
         self._index = event.GetIndex()
         self._tags_list.CheckItem(self._index, not self._tags_list.IsChecked(self._index))
 
-    def OnShowTestsWithThisTag(self, event):
+    def on_show_tests_with_this_tag(self, event):
         _ = event
         if self._index == -1:
             return
         _, tag_name = self._tags_list.get_tag(self._index)
         RideOpenTagSearch(includes=tag_name, excludes="").publish()
 
-    def OnShowTestsWithoutThisTag(self, event):
+    def on_show_tests_without_this_tag(self, event):
         _ = event
         if self._index == -1:
             return
         _, tag_name = self._tags_list.get_tag(self._index)
         RideOpenTagSearch(includes="", excludes=tag_name).publish()
 
-    def OnRename(self, event):
+    def on_rename(self, event):
         _ = event
         if self._index == -1:
             return
@@ -263,7 +263,7 @@ class ViewAllTagsDialog(RIDEDialog, listmix.ColumnSorterMixin):
             for tag_name, tests in self._results:
                 self.tree.DeselectTests(tests)
 
-    def OnDelete(self, event):
+    def on_delete(self, event):
         _ = event
         if self._index == -1:
             return
@@ -314,7 +314,7 @@ class TagsListCtrl(wx.ListCtrl, listmix.CheckListCtrlMixin,
         self._clientData = {}
         self._dlg = None
 
-    def OnCheckItem(self, index, flag):
+    def OnCheckItem(self, index, flag):  # Overrides wx method
         if self._dlg:
             self._dlg.item_in_kw_list_checked(index, flag)
 

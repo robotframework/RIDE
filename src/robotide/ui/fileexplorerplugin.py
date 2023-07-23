@@ -57,13 +57,13 @@ class FileExplorerPlugin(Plugin):
             self._mgr.Update()
 
     def enable(self):
-        self.register_action(ActionInfo('View', 'View File Explorer', self.OnShowFileExplorer,
+        self.register_action(ActionInfo('View', 'View File Explorer', self.on_show_file_explorer,
                                         shortcut='F11',
                                         doc='Show File Explorer panel',
                                         position=1))
         # self.save_setting('opened', True)
         if self.opened:
-            self.OnShowFileExplorer(None)
+            self.on_show_file_explorer(None)
 
     def close_tree(self):
         self._mgr.DetachPane(self._filemgr)
@@ -80,7 +80,7 @@ class FileExplorerPlugin(Plugin):
     def is_focused(self):
         return self._filemgr.HasFocus()
 
-    def OnShowFileExplorer(self, event):
+    def on_show_file_explorer(self, event):
         _ = event
         if not self._parent:
             self._parent = wx.App.Get().GetWindow()  # self.frame

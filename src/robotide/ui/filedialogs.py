@@ -73,7 +73,7 @@ class _CreationDialog(RIDEDialog):
         name_editor.SetValidator(NonEmptyValidator("Name"))
         name_editor.SetBackgroundColour(Colour(self.color_secondary_background))
         name_editor.SetForegroundColour(Colour(self.color_secondary_foreground))
-        self.Bind(wx.EVT_TEXT, self.OnPathChanged, name_editor)
+        self.Bind(wx.EVT_TEXT, self.on_path_changed, name_editor)
         if wx.VERSION < (4, 1, 0):
             disp_sizer.Add(name_editor, 1, wx.ALIGN_CENTRE | wx.ALL | wx.EXPAND, 3)
         else:
@@ -102,7 +102,7 @@ class _CreationDialog(RIDEDialog):
         radios.SetBackgroundColour(Colour(self.color_background))
         radios.SetForegroundColour(Colour(self.color_foreground))
         if callback:
-            self.Bind(wx.EVT_RADIOBOX, self.OnPathChanged, radios)
+            self.Bind(wx.EVT_RADIOBOX, self.on_path_changed, radios)
         sizer.Add(radios, flag=wx.ALIGN_LEFT | wx.RA_SPECIFY_ROWS | wx.ALL, border=5)
         return radios
 
@@ -111,7 +111,7 @@ class _CreationDialog(RIDEDialog):
                                   dialogTitle="Choose Parent Directory",
                                   startDirectory=default_dir,
                                   size=(600, -1), newDirectory=True,
-                                  changeCallback=self.OnPathChanged)
+                                  changeCallback=self.on_path_changed)
         browser.SetBackgroundColour(Colour(self.color_background))
         browser.SetForegroundColour(Colour(self.color_foreground))
         # DEBUG: Change colors on buttons and text field
@@ -160,7 +160,7 @@ class _CreationDialog(RIDEDialog):
             return 'html'
         return self._format_chooser.GetStringSelection().lower()
 
-    def OnPathChanged(self, event):
+    def on_path_changed(self, event):
         if not hasattr(self, "_path_display"):
             return
         self._path_display.SetValue(self._get_path())

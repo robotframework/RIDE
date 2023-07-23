@@ -109,13 +109,13 @@ class _PluginEnablationCheckBox(wx.CheckBox):
     def __init__(self, parent, plugin, activation_callback):
         wx.CheckBox.__init__(self, parent)
         self.SetValue(plugin.enabled)
-        self.Bind(wx.EVT_CHECKBOX, self.OnCheckBox)
+        self.Bind(wx.EVT_CHECKBOX, self.on_check_box)
         if plugin.error:
             self.Enable(False)
         self._plugin = plugin
         self._callback = activation_callback
 
-    def OnCheckBox(self, event):
+    def on_check_box(self, event):
         if event.IsChecked():
             self._execute(self._plugin.enable)
         else:
