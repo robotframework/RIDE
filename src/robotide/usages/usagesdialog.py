@@ -75,7 +75,7 @@ class UsagesDialog(RIDEDialog):
 class UsagesDialogWithUserKwNavigation(UsagesDialog):
 
     def __init__(self, name, highlight, controller, usages=None):
-        self.OnGotodefinition = lambda evt: highlight(controller, name)
+        self.on_go_to_definition = lambda evt: highlight(controller, name)
         UsagesDialog.__init__(self, name, usages=usages)
 
     def _add_view_components(self):
