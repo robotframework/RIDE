@@ -84,13 +84,13 @@ class EditorPreferences(PreferencesPanel):
         buttons_sizer.Add(saveloadsettings)
         main_sizer.Add(buttons_sizer)
         self.SetSizer(main_sizer)
-        self.Bind(wx.EVT_BUTTON, self.OnReset)
-        self.Bind(wx.EVT_BUTTON, self.OnSaveLoadSettings)
+        self.Bind(wx.EVT_BUTTON, self.on_reset)
+        self.Bind(wx.EVT_BUTTON, self.on_save_load_settings)
 
-    def OnSaveLoadSettings(self, event):
+    def on_save_load_settings(self, event):
         raise NotImplementedError('Implement me')
 
-    def OnReset(self, event):
+    def on_reset(self, event):
         defaults = self._read_defaults()
         for picker in self._color_pickers:
             picker.SetColour(defaults[picker.key])
@@ -204,7 +204,7 @@ class TextEditorPreferences(EditorPreferences):
             column += 1
         return container
 
-    def OnSaveLoadSettings(self, event):
+    def on_save_load_settings(self, event):
         if event.GetId() != ID_SAVELOADSETTINGS:
             event.Skip()
             return
@@ -214,7 +214,7 @@ class TextEditorPreferences(EditorPreferences):
         for picker in self._color_pickers:
             picker.SetColour(self._settings[picker.key])
 
-    def OnReset(self, event):
+    def on_reset(self, event):
         defaults = self._read_defaults()
         for picker in self._color_pickers:
             picker.SetColour(defaults[picker.key])
@@ -340,7 +340,7 @@ class GridEditorPreferences(EditorPreferences):
                              flag=wx.ALIGN_CENTER_VERTICAL | wx.LEFT, border=4)
             row += 1
 
-    def OnSaveLoadSettings(self, event):
+    def on_save_load_settings(self, event):
         if event.GetId() != ID_SAVELOADSETTINGS:
             event.Skip()
             return
@@ -416,7 +416,7 @@ class TestRunnerPreferences(EditorPreferences):
             column += 1
         return container
 
-    def OnSaveLoadSettings(self, event):
+    def on_save_load_settings(self, event):
         if event.GetId() != ID_SAVELOADSETTINGS:
             event.Skip()
             return
@@ -426,7 +426,7 @@ class TestRunnerPreferences(EditorPreferences):
         for picker in self._color_pickers:
             picker.SetColour(self._settings[picker.key])
 
-    def OnReset(self, event):
+    def on_reset(self, event):
         defaults = self._read_defaults(plugin=True)
         for picker in self._color_pickers:
             picker.SetColour(defaults[picker.key])

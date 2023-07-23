@@ -88,7 +88,7 @@ class LocalHtmlWindow(HtmlWindow):
         if "gtk2" in wx.PlatformInfo or "gtk3" in wx.PlatformInfo:
             self.SetStandardFonts()
 
-    def OnLinkClicked(self, link):
+    def OnLinkClicked(self, link):  # Overrides wx method
         wx.LaunchDefaultBrowser(link.GetHref())
 
 
@@ -115,9 +115,9 @@ class UpdateDialog(RIDEDialog):
         sizer.Add(hwin)
         checkbox = wx.CheckBox(self, -1, label="I\'m using another method for RIDE updates\n and "
                                                "do not need automatic update checks")
-        checkbox.Bind(wx.EVT_CHECKBOX, handler=self.OnCheckboxChange)
+        checkbox.Bind(wx.EVT_CHECKBOX, handler=self.on_checkbox_change)
         sizer.Add(checkbox)
-        button = ButtonWithHandler(self, label="remind me later", handler=self.OnRemindMeLater)
+        button = ButtonWithHandler(self, label="remind me later", handler=self.on_remind_me_later)
         button.SetBackgroundColour(Colour(self.color_secondary_background))
         button.SetForegroundColour(Colour(self.color_secondary_foreground))
         sizer.Add(button)
@@ -128,10 +128,10 @@ class UpdateDialog(RIDEDialog):
         self.ShowModal()
         self.Destroy()
 
-    def OnRemindMeLater(self, event):
+    def on_remind_me_later(self, event):
         _ = event
         self.Close(True)
 
-    def OnCheckboxChange(self, event):
+    def on_checkbox_change(self, event):
         self._settings[_CHECK_FOR_UPDATES_SETTING] = not event.IsChecked()
         event.Skip()

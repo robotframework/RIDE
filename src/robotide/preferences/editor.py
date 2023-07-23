@@ -50,7 +50,7 @@ class PreferenceEditor(wx.Dialog):
                            style=wx.RESIZE_BORDER | wx.DEFAULT_DIALOG_STYLE)
         # set Left to Right direction (while we don't have localization)
         self.SetLayoutDirection(wx.Layout_LeftToRight)
-        self.Bind(wx.EVT_CLOSE, self.OnClose)
+        self.Bind(wx.EVT_CLOSE, self.on_close)
         self._current_panel = None
         self._panels = []
         self._settings = preferences.settings
@@ -83,7 +83,7 @@ class PreferenceEditor(wx.Dialog):
             self._tree.SetOwnBackgroundColour(Colour(self._general_settings['secondary background']))
             self._tree.SetForegroundColour(Colour(self._general_settings['foreground']))
             self._tree.SetOwnForegroundColour(Colour(self._general_settings['secondary foreground']))
-            self._tree.Bind(wx.EVT_TREE_SEL_CHANGED, self.OnTreeSelection)
+            self._tree.Bind(wx.EVT_TREE_SEL_CHANGED, self.on_tree_selection)
             self._populate_tree(panels)
             self._tree.SelectItem(self._tree.GetFirstChild(self._tree.GetRootItem())[0])
             self.SetSizer(sizer)
@@ -117,11 +117,11 @@ class PreferenceEditor(wx.Dialog):
             panel = self._container.AddPanel(panels[0], self._settings)
             self._container.ShowPanel(panel)
 
-    def OnClose(self, evt):
+    def on_close(self, evt):
         self._closing = True
         evt.Skip()
 
-    def OnTreeSelection(self, event):
+    def on_tree_selection(self, event):
         """Show panel that corresponds to selected tree item
 
         Used only when the hierarchical tree is shown.

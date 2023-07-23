@@ -87,16 +87,16 @@ class GeneralPreferences(PreferencesPanel):
         buttons_sizer.Add(saveloadsettings)
         main_sizer.Add(buttons_sizer)
         self.SetSizerAndFit(main_sizer)
-        self.Bind(wx.EVT_BUTTON, self.OnReset)
-        self.Bind(wx.EVT_BUTTON, self.OnSaveLoadSettings)
-        self.Bind(wx.EVT_CHECKBOX, self.OnCheckBox, self.cb_apply_to_panels)
+        self.Bind(wx.EVT_BUTTON, self.on_reset)
+        self.Bind(wx.EVT_BUTTON, self.on_save_load_settings)
+        self.Bind(wx.EVT_CHECKBOX, self.on_check_box, self.cb_apply_to_panels)
 
-    def OnCheckBox(self, event):
+    def on_check_box(self, event):
         self._apply_to_panels = event.IsChecked()
         self._settings.set('apply to panels', self._apply_to_panels)
         # print(f"DEBUG: Preferences Checkbox set {str(self._apply_to_panels)}")
 
-    def OnReset(self, event):
+    def on_reset(self, event):
         if event.GetId() != ID_RESET:
             event.Skip()
             return
@@ -105,7 +105,7 @@ class GeneralPreferences(PreferencesPanel):
             picker.SetColour(defaults[picker.key])
         # self.Refresh()
 
-    def OnSaveLoadSettings(self, event):
+    def on_save_load_settings(self, event):
         if event.GetId() != ID_SAVELOADSETTINGS:
             event.Skip()
             return
@@ -240,7 +240,7 @@ class DefaultPreferences(GeneralPreferences):
             column += 1
         return container
 
-    def OnReset(self, event):
+    def on_reset(self, event):
         defaults = self._read_defaults()
         for picker in self._color_pickers:
             picker.SetColour(defaults[picker.key])

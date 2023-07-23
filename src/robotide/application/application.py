@@ -74,7 +74,7 @@ class RIDE(wx.App):
         context.APP = self
         wx.App.__init__(self, redirect=False)
 
-    def OnInit(self):
+    def OnInit(self):  # Overrides wx method
         # DEBUG To test RTL
         # self._initial_locale = wx.Locale(wx.LANGUAGE_ARABIC)
         self._initial_locale = wx.Locale(wx.LANGUAGE_ENGLISH_US)
@@ -129,7 +129,7 @@ class RIDE(wx.App):
         wx.CallLater(200, self.fileexplorerplugin.update_tree)
         if self._updatecheck:
             wx.CallAfter(UpdateNotifierController(self.settings).notify_update_if_needed, UpdateDialog)
-        self.Bind(wx.EVT_ACTIVATE_APP, self.OnAppActivate)
+        self.Bind(wx.EVT_ACTIVATE_APP, self.on_app_activate)
         PUBLISHER.subscribe(self.SetGlobalColour, RideSettingsChanged)
         return True
 
@@ -370,11 +370,11 @@ class RIDE(wx.App):
         yield
         del loop
 
-    def OnEventLoopEnter(self, loop):
+    def OnEventLoopEnter(self, loop):  # Overrides wx method
         if loop and wx.EventLoopBase.IsMain(loop):
             RideFSWatcherHandler.create_fs_watcher(self.workspace_path)
 
-    def OnAppActivate(self, event):
+    def on_app_activate(self, event):
         if self.workspace_path is not None and RideFSWatcherHandler.is_watcher_created():
             if event.GetActive():
                 if RideFSWatcherHandler.is_workspace_dirty():

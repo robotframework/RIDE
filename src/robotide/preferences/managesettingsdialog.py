@@ -54,11 +54,11 @@ class SaveLoadSettings(RIDEDialog):
         main_sizer.AddSpacer(10)
         main_sizer.Add(buttons_sizer)
         self.SetSizerAndFit(main_sizer)
-        self.Bind(wx.EVT_BUTTON, self.OnLoad)
-        self.Bind(wx.EVT_BUTTON, self.OnSave)
+        self.Bind(wx.EVT_BUTTON, self.on_load)
+        self.Bind(wx.EVT_BUTTON, self.on_save)
         # print(f"DEBUG: SaveLoad init returncode {self.GetReturnCode()}")
 
-    def OnLoad(self, event):
+    def on_load(self, event):
         if event.GetId() != ID_LOAD:
             event.Skip()
             self.SetReturnCode(ID_CANCEL)
@@ -79,11 +79,11 @@ class SaveLoadSettings(RIDEDialog):
             self.Close()
             return ID_LOAD
 
-    def OnClose(self):
+    def on_close(self):
         self.SetReturnCode(ID_CANCEL)
         return ID_CANCEL
 
-    def OnSave(self, event):
+    def on_save(self, event):
         if event.GetId() != ID_SAVE:
             event.Skip()
             self.SetReturnCode(ID_CANCEL)

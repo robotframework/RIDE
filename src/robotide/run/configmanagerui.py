@@ -113,11 +113,11 @@ class _ConfigListEditor(ListEditorBase):
     def on_edit(self, event):
         self._list.open_editor(self._selection)
 
-    def OnNew(self, event):
+    def on_new(self, event):
         _ = event
         self._list.new_item()
 
-    def OnRemove(self, event):
+    def on_remove(self, event):
         self.on_delete(event)
 
     def new_config(self, data):

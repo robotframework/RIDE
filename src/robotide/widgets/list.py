@@ -36,13 +36,13 @@ class VirtualList(wx.ListCtrl, ListCtrlAutoWidthMixin):
         self._model = model
         self._selection_listeners = []
         self._create_headers(headers)
-        self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.OnListItemSelected)
+        self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.on_list_item_selected)
         if IS_WINDOWS:
-            self.Bind(wx.EVT_LEFT_DOWN, self.OnLeftDown)
+            self.Bind(wx.EVT_LEFT_DOWN, self.on_left_down)
         self.SetItemCount(model.count)
         self.SetImageList(model.images, wx.IMAGE_LIST_SMALL)
 
-    def OnLeftDown(self, event):
+    def on_left_down(self, event):
         item, flags = self.HitTest(event.Position)
         if flags | wx.LIST_HITTEST_ONITEM:
             wx.CallAfter(self.inform_listeners, item)
@@ -61,20 +61,20 @@ class VirtualList(wx.ListCtrl, ListCtrlAutoWidthMixin):
     def add_selection_listener(self, listener):
         self._selection_listeners.append(listener)
 
-    def OnListItemSelected(self, event):
+    def on_list_item_selected(self, event):
         self.inform_listeners(event.Index)
 
     def inform_listeners(self, selected_index):
         for listener in self._selection_listeners:
             listener(selected_index)
 
-    def OnGetItemText(self, row, col):
+    def OnGetItemText(self, row, col):  # Overrides wx method
         return self._model.item_text(row, col)
 
-    def OnGetItemImage(self, item):
+    def OnGetItemImage(self, item):  # Overrides wx method
         return self._model.image(item)
 
-    def OnGetItemAttr(self, item):
+    def OnGetItemAttr(self, item):  # Overrides wx method
         return self._model.item_attributes(item)
 
 
