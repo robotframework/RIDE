@@ -136,12 +136,12 @@ def _create_action_info(eventhandler, menu, container, row):
     if name.startswith('!'):
         name = name[1:]
         container = None
-    eventhandler_name, name = _get_eventhandler_name_and_parsed_name(name)
+    eventhandler_name, name = get_eventhandler_name_and_parsed_name(name)
     action = getattr(eventhandler, eventhandler_name)
     return ActionInfo(menu, name, action, container, shortcut, icon, doc, position)
 
 
-def _get_eventhandler_name_and_parsed_name(name):
+def get_eventhandler_name_and_parsed_name(name):
     eventhandler_name, name = _parse_shortcuts_from_name(name)
     # DEBUG: before v2.0.7 return 'On%s' % eventhandler_name.replace(' ', '').replace('&', ''), name
     return 'on_%s' % eventhandler_name.strip().replace(' ', '_').replace('&', '').lower(), name

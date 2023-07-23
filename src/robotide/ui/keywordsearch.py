@@ -46,7 +46,7 @@ class KeywordSearch(Plugin):
         self._dialog = None
 
     def enable(self):
-        action = ActionInfo('Tools', SEARCH_KW, self.OnSearch,
+        action = ActionInfo('Tools', SEARCH_KW, self.on_search,
                             shortcut='F5',
                             doc='Search keywords from libraries and resources',
                             icon=ImageProvider().KW_SEARCH_ICON,
@@ -58,7 +58,7 @@ class KeywordSearch(Plugin):
         self._dialog = KeywordSearchDialog(self.frame, self)
         self.tree.register_context_menu_hook(self._search_resource)
 
-    def OnSearch(self, event):
+    def on_search(self, event):
         _ = event
         self._dialog.show_search_with_criteria()
 
@@ -87,7 +87,7 @@ class KeywordSearch(Plugin):
         if isinstance(item, (TestCaseFileController, ResourceFileController)):
             def _callable():
                 self._show_resource(os.path.basename(item.source))
-            return [PopupMenuItem(SEARCH_KW, callable=_callable)]
+            return [PopupMenuItem(SEARCH_KW, ccallable=_callable)]
         return []
 
     def _show_resource(self, resource):
@@ -208,52 +208,52 @@ class KeywordSearchDialog(RIDEDialog):
     def _add_to_sizer(self, component):
         self.Sizer.Add(component, 1, wx.EXPAND | wx.ALL, 3)
 
-    def OnFindUsages(self, event):
+    def on_find_usages(self, event):
         _ = event
         Usages(self._plugin.model, self._plugin.tree.highlight, self._last_selected_kw.name,
                self._last_selected_kw).show()
 
     def _make_bindings(self):
-        self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.OnItemSelected, self._list)
-        self.Bind(wx.EVT_SEARCHCTRL_SEARCH_BTN, self.OnSearch,
+        self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.on_item_selected, self._list)
+        self.Bind(wx.EVT_SEARCHCTRL_SEARCH_BTN, self.on_search,
                   self._search_control)
-        self.Bind(wx.EVT_TEXT_ENTER, self.OnSearch, self._search_control)
-        self.Bind(wx.EVT_ACTIVATE, self.OnActivate)
-        self.Bind(wx.EVT_CLOSE, self.OnClose)
-        self.Bind(wx.EVT_CHECKBOX, self.OnUseDocChange, self._use_doc)
-        self.Bind(wx.EVT_COMBOBOX, self.OnSourceFilterChange, self._source_filter)
-        self.Bind(wx.EVT_LIST_COL_CLICK, self.OnColClick)
+        self.Bind(wx.EVT_TEXT_ENTER, self.on_search, self._search_control)
+        self.Bind(wx.EVT_ACTIVATE, self.on_activate)
+        self.Bind(wx.EVT_CLOSE, self.on_close)
+        self.Bind(wx.EVT_CHECKBOX, self.on_use_doc_change, self._use_doc)
+        self.Bind(wx.EVT_COMBOBOX, self.on_source_filter_change, self._source_filter)
+        self.Bind(wx.EVT_LIST_COL_CLICK, self.on_col_click)
 
-    def OnColClick(self, event):
+    def on_col_click(self, event):
         col = event.GetColumn()
         if self._sort_order.is_sortable_column(col):
             self._sort_order.sort(col)
             self._populate_search()
         event.Skip()
 
-    def OnActivate(self, event):
+    def on_activate(self, event):
         _ = event
         if self._plugin.have_keywords_changed():
             self._update_sources()
             self._populate_search()
 
-    def OnUseDocChange(self, event):
+    def on_use_doc_change(self, event):
         _ = event
         self._populate_search()
 
-    def OnSearch(self, event):
+    def on_search(self, event):
         _ = event
         self._sort_order.searched(self._get_search_text())
         self._populate_search()
 
-    def OnSourceFilterChange(self, event):
-        self.OnUseDocChange(event)
+    def on_source_filter_change(self, event):
+        self.on_use_doc_change(event)
 
-    def OnKey(self, event):
+    def on_key(self, event):
         # Needed for HtmlWindow callback
         pass
 
-    def OnItemSelected(self, event):
+    def on_item_selected(self, event):
         self._last_selected_kw = self._keywords[event.Index]
         self._update_details()
 
@@ -266,7 +266,7 @@ class KeywordSearchDialog(RIDEDialog):
         if self._source_filter.GetValue() != selection:
             self._source_filter.SetValue(ALL_KEYWORDS)
 
-    def OnClose(self, event):
+    def on_close(self, event):
         _ = event
         self.Hide()
 
@@ -399,7 +399,7 @@ class _KeywordList(wx.ListCtrl, ListCtrlAutoWidthMixin):
         self._create_headers()
         self._link_attribute = self._create_link_attribute()
         self._image_list = self._create_image_list()
-        self.Bind(wx.EVT_LEFT_UP, self.OnLeftUp)
+        self.Bind(wx.EVT_LEFT_UP, self.on_left_up)
 
     def _create_headers(self):
         for col, title in enumerate(_KeywordData.headers):
@@ -434,7 +434,7 @@ class _KeywordList(wx.ListCtrl, ListCtrlAutoWidthMixin):
             self.Select(index)
             self.Focus(index)
 
-    def OnLeftUp(self, event):
+    def on_left_up(self, event):
         item, flags = self.HitTest(event.Position)
         if item == wx.NOT_FOUND:
             return
@@ -442,11 +442,11 @@ class _KeywordList(wx.ListCtrl, ListCtrlAutoWidthMixin):
         if kw.is_user_keyword() and (flags & wx.LIST_HITTEST_ONITEMICON):
             self._plugin.select_user_keyword_node(kw.item)
 
-    def OnGetItemText(self, row, col):
+    def OnGetItemText(self, row, col):  # Overrides wx method
         kw = self._keywords[row]
         return [kw.name, kw.source, kw.shortdoc][col]
 
-    def OnGetItemImage(self, item):
+    def OnGetItemImage(self, item):  # Overrides wx method
         if self._keywords[item].is_user_keyword():
             return 0  # index in self._image_list
         return -1  # No image

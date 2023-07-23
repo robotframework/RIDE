@@ -91,29 +91,29 @@ class SettingEditor(wx.Panel):
 
     def _create_value_display(self):
         display = self._value_display_control()
-        display.Bind(wx.EVT_ENTER_WINDOW, self.OnEnterWindow)
-        display.Bind(wx.EVT_LEAVE_WINDOW, self.OnLeaveWindow)
-        display.Bind(wx.EVT_WINDOW_DESTROY, self.OnWindowDestroy)
-        display.Bind(wx.EVT_MOTION, self.OnDisplayMotion)
+        display.Bind(wx.EVT_ENTER_WINDOW, self.on_enter_window)
+        display.Bind(wx.EVT_LEAVE_WINDOW, self.on_leave_window)
+        display.Bind(wx.EVT_WINDOW_DESTROY, self.on_window_destroy)
+        display.Bind(wx.EVT_MOTION, self.on_display_motion)
         return display
 
     def _value_display_control(self):
         ctrl = SettingValueDisplay(self)
-        ctrl.Bind(wx.EVT_LEFT_UP, self.OnLeftUp)
-        ctrl.Bind(wx.EVT_KEY_DOWN, self.OnKey)
+        ctrl.Bind(wx.EVT_LEFT_UP, self.on_left_up)
+        ctrl.Bind(wx.EVT_KEY_DOWN, self.on_key)
         return ctrl
 
     def _get_tooltip(self):
         return HtmlPopupWindow(self, (500, 350))
 
-    def OnKey(self, event):
+    def on_key(self, event):
         try:
             self._tooltip.hide()
         except AttributeError:
             pass
         event.Skip()
 
-    def OnDisplayMotion(self, event):
+    def on_display_motion(self, event):
         try:
             self._tooltip.hide()
         except AttributeError:
@@ -126,7 +126,7 @@ class SettingEditor(wx.Panel):
     def refresh_datafile(self, item, event):
         self._tree.refresh_datafile(item, event)
 
-    def OnEdit(self, event=None):
+    def on_edit(self, event=None):
         self._hide_tooltip()
         self._editing = True
         dlg = self._create_editor_dialog()
@@ -137,7 +137,7 @@ class SettingEditor(wx.Panel):
                 self._set_value(value, comment)
                 self._update_and_notify()
             else:
-                wx.CallAfter(self.OnClear, event)
+                wx.CallAfter(self.on_clear, event)
         dlg.Destroy()
         self._editing = False
 
@@ -159,15 +159,15 @@ class SettingEditor(wx.Panel):
         if hasattr(self, 'popup_timer') and self.popup_timer is not None:
             self.popup_timer.Stop()
 
-    def OnEnterWindow(self, event):
+    def on_enter_window(self, event):
         if self._mainframe_has_focus():
-            self.popup_timer = wx.CallLater(500, self.OnPopupTimer, event)
+            self.popup_timer = wx.CallLater(500, self.on_popup_timer, event)
 
     def _mainframe_has_focus(self):
         return wx.GetTopLevelParent(self.FindFocus()) == \
             wx.GetTopLevelParent(self)
 
-    def OnWindowDestroy(self, event):
+    def on_window_destroy(self, event):
         self._stop_popup_timer()
         try:
             self._tooltip.hide()
@@ -175,10 +175,10 @@ class SettingEditor(wx.Panel):
             pass
         event.Skip()
 
-    def OnLeaveWindow(self, event):
-        self.OnWindowDestroy(event)
+    def on_leave_window(self, event):
+        self.on_window_destroy(event)
 
-    def OnPopupTimer(self, event):
+    def on_popup_timer(self, event):
         _ = event
         _tooltipallowed = False
         # DEBUG: This prevents tool tip for ex. Template edit field in wxPhoenix
@@ -203,12 +203,12 @@ class SettingEditor(wx.Panel):
         # ensure that the popup gets focus immediately
         return ms.x-3, ms.y-3
 
-    def OnLeftUp(self, event):
+    def on_left_up(self, event):
         if event.ControlDown() or event.CmdDown():
             self._navigate_to_user_keyword()
         else:
             if self._has_selected_area() and not self._editing:
-                wx.CallAfter(self.OnEdit, event)
+                wx.CallAfter(self.on_edit, event)
             event.Skip()
 
     def _has_selected_area(self):
@@ -225,7 +225,7 @@ class SettingEditor(wx.Panel):
     def _update_and_notify(self):
         self.update_value()
 
-    def OnClear(self, event):
+    def on_clear(self, event):
         _ = event
         self._controller.execute(ctrlcommands.ClearSetting())
         self._update_and_notify()
@@ -347,17 +347,17 @@ class DocumentationEditor(SettingEditor):
                           color_foreground=self.color_secondary_foreground)
         ctrl.SetBackgroundColour(Colour(self.color_secondary_background))
         ctrl.SetForegroundColour(Colour(self.color_secondary_foreground))
-        ctrl.Bind(wx.EVT_LEFT_DOWN, self.OnEdit)
+        ctrl.Bind(wx.EVT_LEFT_DOWN, self.on_edit)
         return ctrl
 
     def update_value(self):
         if self._controller:
             self._value_display.set_content(self._controller.visible_value)
 
-    def OnKey(self, event):
+    def on_key(self, event):
         event.Skip()
 
-    def OnDisplayMotion(self, event):
+    def on_display_motion(self, event):
         """ Just ignoring it """
         pass
 
@@ -397,8 +397,8 @@ class TagsEditor(SettingEditor):
 
     def _value_display_control(self):
         self._tags_display = TagsDisplay(self, self._controller)
-        self._tags_display.Bind(wx.EVT_LEFT_UP, self.OnLeftUp)
-        self._tags_display.Bind(wx.EVT_KEY_DOWN, self.OnKey)
+        self._tags_display.Bind(wx.EVT_LEFT_UP, self.on_left_up)
+        self._tags_display.Bind(wx.EVT_KEY_DOWN, self.on_key)
         return self._tags_display
 
     def contains(self, text):
@@ -473,25 +473,25 @@ class VariablesListEditor(_AbstractListEditor):
                 else ' | '.join(item.value),
                 ListToStringFormatter(item.comment).value]
 
-    def OnMoveUp(self, event):
-        _AbstractListEditor.OnMoveUp(self, event)
+    def on_move_up(self, event):
+        _AbstractListEditor.on_move_up(self, event)
         self._list.SetFocus()
 
-    def OnMoveDown(self, event):
-        _AbstractListEditor.OnMoveDown(self, event)
+    def on_move_down(self, event):
+        _AbstractListEditor.on_move_down(self, event)
         self._list.SetFocus()
 
-    def OnAddScalar(self, event):
+    def on_add_scalar(self, event):
         _ = event
         self._show_dialog(
             ScalarVariableDialog(self._controller))
 
-    def OnAddList(self, event):
+    def on_add_list(self, event):
         _ = event
         self._show_dialog(
             ListVariableDialog(self._controller, plugin=self.Parent.plugin))
 
-    def OnAddDict(self, event):
+    def on_add_dict(self, event):
         _ = event
         self._show_dialog(
             DictionaryVariableDialog(self._controller,
@@ -504,7 +504,7 @@ class VariablesListEditor(_AbstractListEditor):
             self.update_data()
         dlg.Destroy()
 
-    def OnEdit(self, event):
+    def on_edit(self, event):
         var = self._controller[self._selection]
         self._open_var_dialog(var)
 
@@ -558,7 +558,7 @@ class ImportSettingListEditor(_AbstractListEditor):
                                         color_secondary_background=self.color_secondary_background), 0, wx.ALL, 1)
         return sizer
 
-    def OnLeftClick(self, event):
+    def on_left_click(self, event):
         if not self.is_selected:
             return
         if wx.GetMouseState().ControlDown() or wx.GetMouseState().CmdDown():
@@ -575,7 +575,7 @@ class ImportSettingListEditor(_AbstractListEditor):
     def has_error(self, controller):
         return controller.has_error()
 
-    def OnRightClick(self, event):
+    def on_right_click(self, event):
         PopupMenu(self, PopupMenuItems(self, self._create_item_menu()))
 
     def _create_item_menu(self):
@@ -586,37 +586,37 @@ class ImportSettingListEditor(_AbstractListEditor):
         return menu
 
     @staticmethod
-    def OnImportLibrarySpecXml(event):
+    def on_import_library_spec_xml(event):
         _ = event
         RideExecuteSpecXmlImport().publish()
 
-    def OnEdit(self, event):
+    def on_edit(self, event):
         setting = self._get_setting()
         self._show_import_editor_dialog(
             editor_dialog(setting),
             lambda v, c: setting.execute(ctrlcommands.SetValues(v, c)),
             setting, on_empty=self._delete_selected)
 
-    def OnLibrary(self, event):
+    def on_library(self, event):
         _ = event
         self._show_import_editor_dialog(
             LibraryDialog,
             lambda v, c: self._controller.execute(ctrlcommands.AddLibrary(v, c)))
 
-    def OnResource(self, event):
+    def on_resource(self, event):
         _ = event
         self._show_import_editor_dialog(
             ResourceDialog,
             lambda v, c: self._controller.execute(ctrlcommands.AddResource(v, c)))
 
-    def OnVariables(self, event):
+    def on_variables(self, event):
         _ = event
         self._show_import_editor_dialog(
             VariablesDialog,
             lambda v, c:
                 self._controller.execute(ctrlcommands.AddVariablesFileImport(v, c)))
 
-    def OnImportFailedHelp(self, event):
+    def on_import_failed_help(self, event):
         _ = event
         if self._import_failed_shown:
             return
@@ -673,7 +673,7 @@ class MetadataListEditor(_AbstractListEditor):
     _buttons = ['Add Metadata']
     _sortable = False
 
-    def OnEdit(self, event):
+    def on_edit(self, event):
         meta = self._controller[self._selection]
         dlg = MetadataDialog(self._controller.datafile, item=meta)
         if dlg.ShowModal() == wx.ID_OK:
@@ -682,7 +682,7 @@ class MetadataListEditor(_AbstractListEditor):
             self.update_data()
         dlg.Destroy()
 
-    def OnAddMetadata(self, event):
+    def on_add_metadata(self, event):
         _ = event
         dlg = MetadataDialog(self._controller.datafile)
         if dlg.ShowModal() == wx.ID_OK:

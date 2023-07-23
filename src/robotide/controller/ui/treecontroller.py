@@ -122,10 +122,10 @@ class TreeController(object):
 
     def _get_bind_keys(self):
         bindings = [
-            (ctrl_or_cmd(), wx.WXK_UP, self._tree.OnMoveUp),
-            (ctrl_or_cmd(), wx.WXK_DOWN, self._tree.OnMoveDown),
+            (ctrl_or_cmd(), wx.WXK_UP, self._tree.on_move_up),
+            (ctrl_or_cmd(), wx.WXK_DOWN, self._tree.on_move_down),
             (wx.ACCEL_NORMAL, wx.WXK_F2, self._tree.label_editor.on_label_edit),
-            (wx.ACCEL_NORMAL, wx.WXK_WINDOWS_MENU, self._tree.OnRightClick),
+            (wx.ACCEL_NORMAL, wx.WXK_WINDOWS_MENU, self._tree.on_right_click),
             (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('d'), lambda event: self._expanded_handler().on_safe_delete(event)),
             (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('f'),
                 lambda event: self._expanded_handler().on_new_suite(event)),
@@ -141,7 +141,7 @@ class TreeController(object):
                 lambda event: self._expanded_handler().on_copy(event))
         ]
         if not IS_WINDOWS:
-            bindings.append((wx.ACCEL_NORMAL, wx.WXK_LEFT, self._tree.OnLeftArrow))
+            bindings.append((wx.ACCEL_NORMAL, wx.WXK_LEFT, self._tree.on_left_arrow))
         return bindings
 
     def _expanded_handler(self):

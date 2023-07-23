@@ -231,7 +231,7 @@ class RIDE(wx.App):
             self.treeplugin.settings[FONT_SIZE] = theme[FONT_SIZE]
             self.treeplugin.settings[FONT_FACE] = theme[FONT_FACE]
             if self.treeplugin.settings['opened']:
-                self.treeplugin.OnShowTree(None)
+                self.treeplugin.on_show_tree(None)
         """
         all_windows = list()
         general = self.settings.get('General', None)

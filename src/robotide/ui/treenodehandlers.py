@@ -76,6 +76,8 @@ class _ActionHandler:
     _label_collapse_all = 'Collapse all'
     _label_remove_readonly = 'Remove Read Only'
     _label_open_folder = 'Open Containing Folder'
+    _label_move_up = 'Move Up\tCtrl-Up'
+    _label_move_down = 'Move Down\tCtrl-Down'
     _actions = []
 
     def __init__(self, controller, tree, node, settings):
@@ -259,17 +261,17 @@ class TestDataHandler(_ActionHandler):
         _ = new_name
         return False
 
-    def OnSortTests(self, event):
+    def on_sort_tests(self, event):
         _ = event
         """Sorts the tests inside the treenode"""
         self.controller.execute(SortTests())
 
-    def OnSortKeywords(self, event):
+    def on_sort_keywords(self, event):
         _ = event
         """Sorts the keywords inside the treenode"""
         self.controller.execute(ctrlcommands.SortKeywords())
 
-    def OnSortVariables(self, event):
+    def on_sort_variables(self, event):
         _ = event
         """Sorts the variables inside the treenode"""
         self.controller.execute(SortVariables())
@@ -287,7 +289,7 @@ class TestDataHandler(_ActionHandler):
     def set_rendered(self):
         self._rendered = True
 
-    def OnChangeFormat(self, event):
+    def on_change_format(self, event):
         _ = event
         ChangeFormatDialog(self.controller).execute()
 
@@ -355,11 +357,11 @@ class TestDataDirectoryHandler(TestDataHandler):
                               _ActionHandler._label_expand_all,
                               _ActionHandler._label_collapse_all])
 
-    def OnExpandAll(self, event):
+    def on_expand_all(self, event):
         _ = event
         self._tree.ExpandAllSubNodes(self._node)
 
-    def OnCollapseAll(self, event):
+    def on_collapse_all(self, event):
         _ = event
         self._tree.CollapseAllSubNodes(self._node)
 
@@ -433,7 +435,7 @@ class ResourceFileHandler(_FileHandlerThanCanBeRenamed, TestDataHandler):
                 _ActionHandler._label_open_folder
                 ]
                 
-    def OnRemoveReadOnly(self, event):
+    def on_remove_read_only(self, event):
         _ = event
 
         def return_true():
@@ -441,7 +443,7 @@ class ResourceFileHandler(_FileHandlerThanCanBeRenamed, TestDataHandler):
         self.controller.is_modifiable = return_true
         self.controller.execute(ctrlcommands.RemoveReadOnly())
         
-    def OnOpenContainingFolder(self, event):
+    def on_open_containing_folder(self, event):
         _ = event
         self.controller.execute(ctrlcommands.OpenContainingFolder())
 
@@ -488,7 +490,7 @@ class TestCaseFileHandler(_FileHandlerThanCanBeRenamed, TestDataHandler):
                 _ActionHandler._label_open_folder
                 ]
                 
-    def OnRemoveReadOnly(self, event):
+    def on_remove_read_only(self, event):
         _ = event
 
         def return_true():
@@ -496,7 +498,7 @@ class TestCaseFileHandler(_FileHandlerThanCanBeRenamed, TestDataHandler):
         self.controller.is_modifiable = return_true
         self.controller.execute(ctrlcommands.RemoveReadOnly())
         
-    def OnOpenContainingFolder(self, event):
+    def on_open_containing_folder(self, event):
         _ = event
         self.controller.execute(ctrlcommands.OpenContainingFolder())
 
@@ -526,11 +528,11 @@ class _TestOrUserKeywordHandler(_CanBeRenamed, _ActionHandler):
     is_draggable = True
     _actions = [
         _ActionHandler._label_copy_macro,
-        'Move Up\tCtrl-Up',
-        'Move Down\tCtrl-Down',
+        _ActionHandler._label_move_up,
+        _ActionHandler._label_move_down,
         _ActionHandler._label_rename,
         '---',
-        'Delete'
+        _ActionHandler._label_delete_no_kbsc
     ]
 
     def remove(self):
@@ -545,12 +547,12 @@ class _TestOrUserKeywordHandler(_CanBeRenamed, _ActionHandler):
             self.controller.execute(ctrlcommands.CopyMacroAs(dlg.get_name()))
         dlg.Destroy()
 
-    def OnMoveUp(self, event):
+    def on_move_up(self, event):
         _ = event
         if self.controller.move_up():
             self._tree.move_up(self._node)
 
-    def OnMoveDown(self, event):
+    def on_move_down(self, event):
         _ = event
         if self.controller.move_down():
             self._tree.move_down(self._node)
@@ -607,13 +609,13 @@ class VariableHandler(_CanBeRenamed, _ActionHandler):
     accepts_drag = lambda *args: False
     is_draggable = True
     is_variable = True
-    OnMoveUp = OnMoveDown = lambda *args: None
+    # OnMoveUp = OnMoveDown = lambda *args: None
     _actions = [
-        'Move Up\tCtrl-Up',
-        'Move Down\tCtrl-Down',
+        _ActionHandler._label_move_up,
+        _ActionHandler._label_move_down,
         _ActionHandler._label_rename,
         '---',
-        'Delete'
+        _ActionHandler._label_delete_no_kbsc
     ]
 
     def double_clicked(self):
@@ -628,12 +630,12 @@ class VariableHandler(_CanBeRenamed, _ActionHandler):
     def rename(self, new_name):
         self.controller.execute(ctrlcommands.UpdateVariableName(new_name))
 
-    def OnMoveUp(self, event):
+    def on_move_up(self, event):
         _ = event
         if self.controller.move_up():
             self._tree.move_up(self._node)
 
-    def OnMoveDown(self, event):
+    def on_move_down(self, event):
         _ = event
         if self.controller.move_down():
             self._tree.move_down(self._node)
@@ -653,7 +655,7 @@ class ResourceRootHandler(_ActionHandler):
     def item(self):
         return None
 
-    def OnAddResource(self, event):
+    def on_add_resource(self, event):
         _ = event
         path = RobotFilePathDialog(
             self._tree.GetParent(), self.controller, self._settings).execute()

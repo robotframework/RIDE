@@ -88,7 +88,7 @@ class _RobotTableEditor(EditorPanel):
     def __init__(self, plugin, parent, controller, tree):
         EditorPanel.__init__(self, plugin, parent, controller, tree)
         self.sizer = wx.BoxSizer(wx.VERTICAL)
-        self.Bind(wx.EVT_IDLE, self.OnIdle)
+        self.Bind(wx.EVT_IDLE, self.on_idle)
         self.SetSizer(self.sizer)
         if self.title:
             self.sizer.Add(self._create_header(self.title),
@@ -117,7 +117,7 @@ class _RobotTableEditor(EditorPanel):
             for editor in self._editors:
                 editor.update_value()
 
-    def OnIdle(self, event):
+    def on_idle(self, event):
         _ = event
         if self._last_shown_tooltip and self._mouse_outside_tooltip():
             self._last_shown_tooltip.hide()

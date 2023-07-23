@@ -85,8 +85,8 @@ class TreePlugin(Plugin):
         self.pane_id = self._tree.GetId()
         self._model = self.model
         # DEBUG: self.frame.Bind(wx.EVT_MOVE, self.OnShowTree) self.frame.Bind(wx.EVT_SHOW, self.OnShowTree)
-        self._tree.Bind(wx.EVT_SHOW, self.OnShowTree)
-        self._tree.Bind(wx.EVT_MOVE, self.OnTabChanged)
+        self._tree.Bind(wx.EVT_SHOW, self.on_show_tree)
+        self._tree.Bind(wx.EVT_MOVE, self.on_tab_changed)
         # parent, action_registerer, , default_settings={'collapsed':True}
         self._pane = self._mgr.GetPane(self._tree)
         self.font = self._tree.GetFont()
@@ -113,11 +113,11 @@ class TreePlugin(Plugin):
                                         doc='Show Test Suites tree panel',
                                         position=1))
         """
-        self.subscribe(self.OnTreeSelection, RideTreeSelection)
+        self.subscribe(self.on_tree_selection, RideTreeSelection)
         # self.save_setting('opened', True)
         # DEBUG: Add toggle checkbox to menu View/Hide Tree
         if self.opened:
-            self.OnShowTree(None)
+            self.on_show_tree(None)
 
     def close_tree(self):
         self._mgr.DetachPane(self._tree)
@@ -143,7 +143,7 @@ class TreePlugin(Plugin):
     def set_editor(self, editor):
         self._tree.set_editor(editor)
 
-    def OnShowTree(self, event):
+    def on_show_tree(self, event):
         _ = event
         if not self._parent:
             self._parent = self.frame
@@ -186,11 +186,11 @@ class TreePlugin(Plugin):
         self._update_tree()
         self._mgr.Update()
 
-    def OnTreeSelection(self, message):
+    def on_tree_selection(self, message):
         if self.is_focused():
             self._tree.tree_node_selected(message.item)
 
-    def OnTabChanged(self, event):
+    def on_tab_changed(self, event):
         _ = event
         self._update_tree()
 
@@ -258,22 +258,22 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
         self.GetEventHandler().ProcessEvent(le)
 
     def _bind_tree_events(self):
-        self.Bind(wx.EVT_LEFT_DCLICK, self.OnDoubleClick)
-        self.Bind(wx.EVT_TREE_SEL_CHANGED, self.OnSelChanged)
-        self.Bind(wx.EVT_TREE_ITEM_EXPANDING, self.OnTreeItemExpanding)
-        self.Bind(wx.EVT_RIGHT_DOWN, self.OnRightClick)
-        self.Bind(wx.EVT_TREE_SEL_CHANGING, self.OnSelection)
+        self.Bind(wx.EVT_LEFT_DCLICK, self.on_double_click)
+        self.Bind(wx.EVT_TREE_SEL_CHANGED, self.on_sel_changed)
+        self.Bind(wx.EVT_TREE_ITEM_EXPANDING, self.on_tree_item_expanding)
+        self.Bind(wx.EVT_RIGHT_DOWN, self.on_right_click)
+        self.Bind(wx.EVT_TREE_SEL_CHANGING, self.on_selection)
         # self.Bind(wx.EVT_TREE_ITEM_RIGHT_CLICK, self.OnRightClick)
-        self.Bind(wx.EVT_TREE_ITEM_ACTIVATED, self.OnItemActivated)
-        self.Bind(customtreectrl.EVT_TREE_ITEM_CHECKED, self.OnTreeItemChecked)
-        self.Bind(wx.EVT_TREE_ITEM_COLLAPSING, self.OnTreeItemCollapsing)
-        self.Bind(wx.EVT_CLOSE, self.OnClose)
+        self.Bind(wx.EVT_TREE_ITEM_ACTIVATED, self.on_item_activated)
+        self.Bind(customtreectrl.EVT_TREE_ITEM_CHECKED, self.on_tree_item_checked)
+        self.Bind(wx.EVT_TREE_ITEM_COLLAPSING, self.on_tree_item_collapsing)
+        self.Bind(wx.EVT_CLOSE, self.on_close)
 
-    def OnSelection(self, event):
+    def on_selection(self, event):
         if self._right_click:
             event.Skip()
 
-    def OnDoubleClick(self, event):
+    def on_double_click(self, event):
         item, _ = self.HitTest(self.ScreenToClient(wx.GetMousePosition()))
         if item:
             handler = self.controller.get_handler(item)
@@ -283,11 +283,11 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
     def set_editor(self, editor):
         self._editor = editor
 
-    def StartDragging(self):
+    def StartDragging(self):  # Overrides wx method
         self._dragging = True
         treemixin.DragAndDrop.StartDragging(self)
 
-    def OnEndDrag(self, event):
+    def OnEndDrag(self, event):  # Overrides wx method
         self._dragging = False
         treemixin.DragAndDrop.OnEndDrag(self, event)
 
@@ -900,7 +900,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
                 parent_node, to_be_selected)
             wx.CallAfter(self.SelectItem, select_item)
 
-    def OnSelChanged(self, event):
+    def on_sel_changed(self, event):
         node = event.GetItem()
         if not node.IsOk() or self._dragging:
             event.Skip()
@@ -931,13 +931,13 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
             else:
                 node = node.GetParent()
 
-    def OnTreeItemExpanding(self, event):
+    def on_tree_item_expanding(self, event):
         node = event.GetItem()
         if node.IsOk():
             self._render_children(node)
 
     # This exists because CustomTreeItem does not remove animations
-    def OnTreeItemCollapsing(self, event):
+    def on_tree_item_collapsing(self, event):
         item = event.GetItem()
         self._hide_item(item)
         event.Skip()
@@ -1018,32 +1018,32 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
         self._test_selection_controller.unselect_all(all_controllers)
         self._test_selection_controller.select_all(test_controllers)
 
-    def OnClose(self, event):
+    def on_close(self, event):
         _ = event
         print("DEBUG: Tree OnClose hidding")
         self.Hide()
 
-    def OnTreeItemChecked(self, event):
+    def on_tree_item_checked(self, event):
         node: GenericTreeItem = event.GetItem()
         handler: TestCaseHandler = self.controller.get_handler(node=node)
         self._test_selection_controller.select(
                 handler.controller, node.IsChecked())
 
-    def OnItemActivated(self, event):
+    def on_item_activated(self, event):
         node = event.GetItem()
         if self.IsExpanded(node):
             self.Collapse(node)
         elif self.ItemHasChildren(node):
             self._expand_and_render_children(node)
 
-    def OnLeftArrow(self, event):
+    def on_left_arrow(self, event):
         node = self.GetSelection()
         if self.IsExpanded(node):
             self.Collapse(node)
         else:
             event.Skip()
 
-    def OnRightClick(self, event):
+    def on_right_click(self, event):
         _ = event
         if not self._right_click:
             self._right_click = True
@@ -1056,30 +1056,30 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
             handler.show_popup()
             self._right_click = False
 
-    def OnNewTestCase(self, event):
+    def on_new_test_case(self, event):
         handler = self.controller.get_handler()
         if handler:
             handler.on_new_test_case(event)
 
-    def OnDrop(self, target, dragged):
+    def OnDrop(self, target, dragged):  # Overrides wx method
         dragged = self.controller.get_handler(dragged)
         target = self.controller.get_handler(target)
         if target and target.accepts_drag(dragged):
             dragged.controller.execute(MoveTo(target.controller))
         self.Refresh()  # DEBUG Always refresh
 
-    def IsValidDragItem(self, item):
+    def IsValidDragItem(self, item):  # Overrides wx method
         return self.controller.get_handler(item).is_draggable
 
-    def OnMoveUp(self, event):
+    def on_move_up(self, event):
         handler = self.controller.get_handler()
         if handler.is_draggable:
-            handler.OnMoveUp(event)
+            handler.on_move_up(event)
 
-    def OnMoveDown(self, event):
+    def on_move_down(self, event):
         handler = self.controller.get_handler()
         if handler.is_draggable:
-            handler.OnMoveDown(event)
+            handler.on_move_down(event)
 
     def _item_changed(self, message):
         controller = message.item

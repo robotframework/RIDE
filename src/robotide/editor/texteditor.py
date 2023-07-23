@@ -66,10 +66,10 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
 
     def enable(self):
         self.add_self_as_tree_aware_plugin()
-        self.subscribe(self.OnSaving, RideSaving)
-        self.subscribe(self.OnTreeSelection, RideTreeSelection)
-        self.subscribe(self.OnDataChanged, RideMessage)
-        self.subscribe(self.OnTabChange, RideNotebookTabChanging)
+        self.subscribe(self.on_saving, RideSaving)
+        self.subscribe(self.on_tree_selection, RideTreeSelection)
+        self.subscribe(self.on_data_changed, RideMessage)
+        self.subscribe(self.on_tab_change, RideNotebookTabChanging)
         if self._editor.is_focused():
             self._register_shortcuts()
             self._open()
@@ -91,7 +91,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         self.register_shortcut('CtrlCmd-Z', focused(lambda e: self._editor.undo()))
         self.register_shortcut('CtrlCmd-Y', focused(lambda e: self._editor.redo()))
         # self.register_shortcut('Del', focused(lambda e: self.source_editor.delete()))
-        self.register_shortcut('CtrlCmd-S', focused(lambda e: self.OnSaving(e)))
+        self.register_shortcut('CtrlCmd-S', focused(lambda e: self.on_saving(e)))
         self.register_shortcut('CtrlCmd-Shift-I', focused(lambda e: self._editor.insert_cell(e)))
         # self.register_shortcut('CtrlCmd-Shift-D', focused(lambda e: self.source_editor.delete_cell(e)))
         self.register_shortcut('Alt-Up', focused(lambda e: self._editor.move_row_up(e)))
@@ -103,11 +103,11 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         self.register_shortcut('CtrlCmd-4', focused(lambda e: self._editor.execute_uncomment(e)))
         self.register_shortcut('CtrlCmd-Shift-4', focused(lambda e: self._editor.execute_sharp_uncomment(e)))
         self.register_shortcut('CtrlCmd-F', lambda e: self._editor.search_field.SetFocus())
-        self.register_shortcut('CtrlCmd-G', lambda e: self._editor.OnFind(e))
-        self.register_shortcut('CtrlCmd-Shift-G', lambda e: self._editor.OnFindBackwards(e))
-        self.register_shortcut('Ctrl-Space', lambda e: focused(self._editor.OnContentAssist(e)))
-        self.register_shortcut('CtrlCmd-Space', lambda e: focused(self._editor.OnContentAssist(e)))
-        self.register_shortcut('Alt-Space', lambda e: focused(self._editor.OnContentAssist(e)))
+        self.register_shortcut('CtrlCmd-G', lambda e: self._editor.on_find(e))
+        self.register_shortcut('CtrlCmd-Shift-G', lambda e: self._editor.on_find_backwards(e))
+        self.register_shortcut('Ctrl-Space', lambda e: focused(self._editor.on_content_assist(e)))
+        self.register_shortcut('CtrlCmd-Space', lambda e: focused(self._editor.on_content_assist(e)))
+        self.register_shortcut('Alt-Space', lambda e: focused(self._editor.on_content_assist(e)))
 
     def disable(self):
         self.remove_self_from_tree_aware_plugins()
@@ -116,7 +116,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         self.delete_tab(self._editor)
         self._editor_component = None
 
-    def OnOpen(self, event):
+    def on_open(self, event):
         _ = event
         self._open()
 
@@ -126,7 +126,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
             self._open_data_for_controller(datafile_controller)
             self._editor.store_position()
 
-    def OnSaving(self, message):
+    def on_saving(self, message):
         _ = message
         if self.is_focused():
             self._editor.save()
@@ -134,7 +134,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
             # print(f"DEBUG: textedit OnSaving Open Saved from other {message=} isfocused={self.is_focused()}")
             self._open()  # Was saved from other Editor
 
-    def OnDataChanged(self, message):
+    def on_data_changed(self, message):
         """ This block is now inside try/except to avoid errors from unit test """
         try:
             # print(f"DEBUG: textedit OnDataChanged message={message}")
@@ -161,7 +161,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         return isinstance(message, RideDataChanged) and \
             not isinstance(message, RideDataChangedToDirty)
 
-    def OnTreeSelection(self, message):
+    def on_tree_selection(self, message):
         self._editor.store_position()
         if self.is_focused():
             next_datafile_controller = message.item and message.item.datafile_controller
@@ -202,7 +202,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         self._editor.selected(DataFileWrapper(datafile_controller, self.global_settings))
         self._editor.source_editor.readonly = not datafile_controller.is_modifiable()
 
-    def OnTabChange(self, message):
+    def on_tab_change(self, message):
         if message.newtab == self.title:
             self._register_shortcuts()
             self._open()
@@ -216,11 +216,11 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
             self.unregister_actions()
             self._editor_component.save()
 
-    def OnTabChanged(self, event):
+    def on_tab_changed(self, event):
         _ = event
         self._show_editor()
 
-    def OnTabChanging(self, message):
+    def on_tab_changing(self, message):
         if 'Edit' in message.oldtab:
             self._editor.save()
 
@@ -407,15 +407,15 @@ class SourceEditor(wx.Panel):
         self._controller_for_context = None
         self._suggestions = None
         self._stored_text = None
-        PUBLISHER.subscribe(self.OnSettingsChanged, RideSettingsChanged)
-        PUBLISHER.subscribe(self.OnTabChange, RideNotebookTabChanging)
+        PUBLISHER.subscribe(self.on_settings_changed, RideSettingsChanged)
+        PUBLISHER.subscribe(self.on_tab_change, RideNotebookTabChanging)
 
     def is_focused(self):
         # DEBUG: foc = wx.Window.FindFocus()
         # DEBUG: return any(elem == foc for elem in [self]+list(self.GetChildren()))
         return self._tab_open == self._title
 
-    def OnTabChange(self, message):
+    def on_tab_change(self, message):
         self._tab_open = message.newtab
 
     def _create_ui(self, title):
@@ -450,9 +450,9 @@ class SourceEditor(wx.Panel):
         self.search_field = TextField(self, '', process_enters=True)
         self.search_field.SetBackgroundColour(Colour(self.dlg.color_secondary_background))
         self.search_field.SetForegroundColour(Colour(self.dlg.color_secondary_foreground))
-        self.search_field.Bind(wx.EVT_TEXT_ENTER, self.OnFind)
+        self.search_field.Bind(wx.EVT_TEXT_ENTER, self.on_find)
         container_sizer.add_with_padding(self.search_field)
-        button = ButtonWithHandler(self, 'Search', handler=self.OnFind)
+        button = ButtonWithHandler(self, 'Search', handler=self.on_find)
         button.SetBackgroundColour(Colour(self.dlg.color_secondary_background))
         button.SetForegroundColour(Colour(self.dlg.color_secondary_foreground))
         container_sizer.add_with_padding(button)
@@ -534,7 +534,7 @@ class SourceEditor(wx.Panel):
     def datafile_controller(self):
         return self._data.wrapper_data if self._data else None
 
-    def OnFind(self, event):
+    def on_find(self, event):
         if self.source_editor:
             text = self.source_editor.GetSelectedText()
             if len(text) > 0 and text.lower() != self.search_field.GetValue().lower() and \
@@ -554,7 +554,7 @@ class SourceEditor(wx.Panel):
 
             self._find()
 
-    def OnFindBackwards(self, event):
+    def on_find_backwards(self, event):
         _ = event
         if self.source_editor:
             self._find(forward=False)
@@ -608,7 +608,7 @@ class SourceEditor(wx.Panel):
             self.source_editor_parent.SetFocus()
             self.SetFocusFromKbd()
 
-    def OnContentAssist(self, event):
+    def on_content_assist(self, event):
         _ = event
         if self._showing_list:
             self._showing_list = False  # Avoid double calls
@@ -854,9 +854,9 @@ class SourceEditor(wx.Panel):
         self.Sizer.Layout()
         if text is not None:
             self.source_editor.set_text(text)
-        self.source_editor.Bind(wx.EVT_KEY_DOWN, self.OnKeyDown)
-        self.source_editor.Bind(wx.EVT_CHAR, self.OnChar)
-        self.source_editor.Bind(wx.EVT_KEY_UP, self.OnEditorKey)
+        self.source_editor.Bind(wx.EVT_KEY_DOWN, self.on_key_down)
+        self.source_editor.Bind(wx.EVT_CHAR, self.on_char)
+        self.source_editor.Bind(wx.EVT_KEY_UP, self.on_editor_key)
         self.source_editor.Bind(wx.EVT_KILL_FOCUS, self.LeaveFocus)
         self.source_editor.Bind(wx.EVT_SET_FOCUS, self.GetFocus)
         # DEBUG: Add here binding for keyword help
@@ -880,7 +880,7 @@ class SourceEditor(wx.Panel):
         self.reset()
         self.source_editor.set_text(self._data.content)
 
-    def OnEditorKey(self, event):
+    def on_editor_key(self, event):
         keycode = event.GetKeyCode()
         if keycode == wx.WXK_DELETE:  # DEBUG on Windows we only get here, single Text Editor
             selected = self.source_editor.GetSelection()
@@ -896,7 +896,7 @@ class SourceEditor(wx.Panel):
             self._mark_file_dirty(self.source_editor.GetModify())
         event.Skip()
 
-    def OnKeyDown(self, event):
+    def on_key_down(self, event):
         keycode = event.GetUnicodeKey()
         if event.GetKeyCode() == wx.WXK_DELETE:
             return
@@ -947,7 +947,7 @@ class SourceEditor(wx.Panel):
             self.store_position()
         """
 
-    def OnChar(self, event):
+    def on_char(self, event):
         if not self.is_focused():
             self.GetFocus(None)
         keycode = event.GetUnicodeKey()
@@ -1457,7 +1457,7 @@ class SourceEditor(wx.Panel):
         self.source_editor.SetCurrentPos(cursor - count)
         self.store_position()
 
-    def OnSettingsChanged(self, message):
+    def on_settings_changed(self, message):
         """Update tab size if txt spaces size setting is modified"""
         _, setting = message.keys
         if setting == TXT_NUM_SPACES:
@@ -1489,8 +1489,8 @@ class RobotDataEditor(stc.StyledTextCtrl):
         self.SetReadOnly(True)
         self.SetUseTabs(False)
         self.SetTabWidth(parent.tab_size)
-        self.Bind(stc.EVT_STC_STYLENEEDED, self.OnStyle)
-        self.Bind(stc.EVT_STC_ZOOM, self.OnZoom)
+        self.Bind(stc.EVT_STC_STYLENEEDED, self.on_style)
+        self.Bind(stc.EVT_STC_ZOOM, self.on_zoom)
         self.stylizer = RobotStylizer(self, self._settings, self.readonly)
 
     def set_text(self, text):
@@ -1504,11 +1504,11 @@ class RobotDataEditor(stc.StyledTextCtrl):
     def utf8_text(self):
         return self.GetText().encode('UTF-8')
 
-    def OnStyle(self, event):
+    def on_style(self, event):
         _ = event
         self.stylizer.stylize()
 
-    def OnZoom(self, event):
+    def on_zoom(self, event):
         _ = event
         self.SetMarginWidth(self.margin, self.calc_margin_width())
         self._set_zoom()

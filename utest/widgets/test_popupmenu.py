@@ -45,7 +45,7 @@ class TestPopupMenuItems(unittest.TestCase):
         items.add_menu_item(PopupMenuItem('Do', parent=parent))
         assert len(items._items) == 2
         _test = lambda: None
-        items.add_menu_item(PopupMenuItem('Do', callable=_test))
+        items.add_menu_item(PopupMenuItem('Do', ccallable=_test))
         assert len(items._items) == 3
         assert items._items[-1].callable == _test
 

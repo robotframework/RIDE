@@ -135,9 +135,9 @@ class PythonSTC(stc.StyledTextCtrl):
             self.MarkerDefine(stc.STC_MARKNUM_FOLDEROPENMID, stc.STC_MARK_BOXMINUSCONNECTED, "white", "#808080")
             self.MarkerDefine(stc.STC_MARKNUM_FOLDERMIDTAIL, stc.STC_MARK_TCORNER,           "white", "#808080")
 
-        self.Bind(stc.EVT_STC_UPDATEUI, self.OnUpdateUI)
-        self.Bind(stc.EVT_STC_MARGINCLICK, self.OnMarginClick)
-        self.Bind(wx.EVT_KEY_DOWN, self.OnKeyPressed)
+        self.Bind(stc.EVT_STC_UPDATEUI, self.on_update_ui)
+        self.Bind(stc.EVT_STC_MARGINCLICK, self.on_margin_click)
+        self.Bind(wx.EVT_KEY_DOWN, self.on_key_pressed)
 
         # Make some styles,  The lexer defines what each style is used for, we
         # just have to define what each style looks like.  This set is adapted from
@@ -192,7 +192,7 @@ class PythonSTC(stc.StyledTextCtrl):
         self.RegisterImage(2, wx.ArtProvider.GetBitmap(wx.ART_NEW, size=(16, 16)))
         self.RegisterImage(3, wx.ArtProvider.GetBitmap(wx.ART_COPY, size=(16, 16)))
 
-    def OnKeyPressed(self, event):
+    def on_key_pressed(self, event):
         if self.CallTipActive():
             self.CallTipCancel()
         key = event.GetKeyCode()
@@ -229,7 +229,7 @@ class PythonSTC(stc.StyledTextCtrl):
         else:
             event.Skip()
 
-    def OnUpdateUI(self, evt):
+    def on_update_ui(self, evt):
         _ = evt
         # check for matching braces
         brace_at_caret = -1
@@ -261,7 +261,7 @@ class PythonSTC(stc.StyledTextCtrl):
         else:
             self.BraceHighlight(brace_at_caret, brace_opposite)
 
-    def OnMarginClick(self, evt):
+    def on_margin_click(self, evt):
         # fold and unfold as needed
         if evt.GetMargin() == 2:
             if evt.GetShift() and evt.GetControl():
@@ -557,7 +557,7 @@ class CodeEditorPanel(wx.Panel):
         wx.Panel.__init__(self, parent, size=(1, 1))
         self.mainFrame = main_frame
         self.editor = SourceCodeEditor(self)
-        self.editor.RegisterModifiedEvent(self.OnCodeModified)
+        self.editor.RegisterModifiedEvent(self.on_code_modified)
 
         """
         self.SetBackgroundColour(Colour(200, 222, 40))
@@ -568,28 +568,16 @@ class CodeEditorPanel(wx.Panel):
 
         self.btnSave = wx.Button(self, -1, "Save Changes")
         self.btnSave.Enable(False)
-        self.btnSave.Bind(wx.EVT_BUTTON, self.OnSave)
+        self.btnSave.Bind(wx.EVT_BUTTON, self.on_save)
 
         # From FileDialog
         self.btnOpen = wx.Button(self, -1, "Open...")
-        self.btnOpen.Bind(wx.EVT_BUTTON, self.OnButton)
+        self.btnOpen.Bind(wx.EVT_BUTTON, self.on_button)
 
         self.btnSaveAs = wx.Button(self, -1, "Save as...")
-        self.btnSaveAs.Bind(wx.EVT_BUTTON, self.OnButton2)
+        self.btnSaveAs.Bind(wx.EVT_BUTTON, self.on_button2)
         self.controlBox = wx.BoxSizer(wx.HORIZONTAL)
-        """
-        self.radioButtons = {modOriginal: wx.RadioButton(self, -1, "Original",
-                                                         style = wx.RB_GROUP),
-                             modModified: wx.RadioButton(self, -1, "Modified")}
-        self.controlBox.Add(wx.StaticText(self, -1, "Active Version:"), 0,
-                            wx.RIGHT | wx.LEFT | wx.ALIGN_CENTER_VERTICAL, 5)
-        for mod_id, radio_button in self.radioButtons.items():
-            self.controlBox.Add(radio_button, 0, wx.EXPAND | wx.RIGHT, 5)
-            radio_button.modID = mod_id # makes it easier for the event handler
-            radio_button.Bind(wx.EVT_RADIOBUTTON, self.OnRadioButton)
-        """
         self.controlBox.Add(self.btnSave, 0, wx.RIGHT, 5)
-        # self.controlBox.Add(self.btnRestore, 0, wx.RIGHT, 5)
         self.controlBox.Add(self.btnOpen, 0, wx.RIGHT, 5)
         self.controlBox.Add(self.btnSaveAs, 0)
 
@@ -625,16 +613,15 @@ class CodeEditorPanel(wx.Panel):
         if highlight:
             self.editor.SelectLine(line)
 
-    def OnCodeModified(self, event):
+    def on_code_modified(self, event):
         _ = event
         self.btnSave.Enable(self.editor.IsModified())
 
-    def OnSave(self, event, filepath=None):
+    def on_save(self, event, filepath=None):
         if self.path is None:
             self.path = "noname"
-            self.OnButton2(event)
+            self.on_button2(event)
             return
-        # print("DEBUG: OnSave path is init = %s passado %s" % (self.path, path))
         if filepath:
             if filepath != self.path and os.path.isfile(filepath):
                 overwrite_msg = "You are about to overwrite an existing file\n" + \
@@ -671,7 +658,7 @@ class CodeEditorPanel(wx.Panel):
             finally:
                 f.close()
 
-    def OnButton(self, evt):
+    def on_button(self, evt):
         _ = evt
         # Create the dialog. In this case the current directory is forced as the starting
         # directory for the dialog, and no default file name is forced. This can easilly
@@ -720,7 +707,7 @@ class CodeEditorPanel(wx.Panel):
         # BAD things can happen otherwise!
         dlg.Destroy()
 
-    def OnButton2(self, evt):
+    def on_button2(self, evt):
         # Create the dialog. In this case the current directory is forced as the starting
         # directory for the dialog, and no default file name is forced. This can easilly
         # be changed in your program. This is an 'save' dialog.
@@ -763,7 +750,7 @@ class CodeEditorPanel(wx.Panel):
             #
             # store the new path
             # self.path = path
-            self.OnSave(evt, filepath)
+            self.on_save(evt, filepath)
         # Note that the current working dir didn't change. This is good since
         # that's the way we set it up.
         # self.log.WriteText("CWD: %s\n" % os.getcwd())

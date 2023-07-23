@@ -46,10 +46,10 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
         self.color_background_help = self.general_settings['background help']
         self.color_foreground_text = self.general_settings['foreground text']
         self._popup = ContentAssistPopup(self, suggestion_source)
-        self.Bind(wx.EVT_KEY_DOWN, self.OnKeyDown)
-        self.Bind(wx.EVT_CHAR, self.OnChar)
-        self.Bind(wx.EVT_KILL_FOCUS, self.OnFocusLost)
-        self.Bind(wx.EVT_MOVE, self.OnFocusLost)
+        self.Bind(wx.EVT_KEY_DOWN, self.on_key_down)
+        self.Bind(wx.EVT_CHAR, self.on_char)
+        self.Bind(wx.EVT_KILL_FOCUS, self.on_focus_lost)
+        self.Bind(wx.EVT_MOVE, self.on_focus_lost)
         # self.Bind(wx.EVT_WINDOW_DESTROY, self.OnDestroy)
         self._showing_content_assist = False
         self.Bind(wx.EVT_WINDOW_DESTROY, self.pop_event_handlers)
@@ -61,7 +61,7 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
         if IS_MAC and IS_WX_410_OR_HIGHER:
             self.OSXDisableAllSmartSubstitutions()
         self._is_auto_suggestion_enabled = self._get_auto_suggestion_config()
-        PUBLISHER.subscribe(self.OnSettingsChanged, RideSettingsChanged)
+        PUBLISHER.subscribe(self.on_settings_changed, RideSettingsChanged)
 
     @staticmethod
     def _get_auto_suggestion_config():
@@ -69,7 +69,7 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
         settings = APP.settings['Grid']
         return settings.get(_AUTO_SUGGESTION_CFG_KEY, False)
 
-    def OnSettingsChanged(self, message):
+    def on_settings_changed(self, message):
         """Update auto suggestion settings from PUBLISHER message"""
         section, setting = message.keys
         if section == 'Grid' and _AUTO_SUGGESTION_CFG_KEY in setting:
@@ -81,7 +81,7 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
     def is_shown(self):
         return self._popup.is_shown()
 
-    def OnKeyDown(self, event):
+    def on_key_down(self, event):
         key_code, alt_down = event.GetKeyCode(), event.AltDown()
         control_down = event.CmdDown() or event.ControlDown()
         key_char = event.GetUnicodeKey()
@@ -101,9 +101,9 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
             else:
                 event.Skip()
         elif key_code == wx.WXK_RETURN and self._popup.is_shown():
-            self.OnFocusLost(event)
+            self.on_focus_lost(event)
         elif key_code == wx.WXK_TAB:
-            self.OnFocusLost(event, False)
+            self.on_focus_lost(event, False)
         elif key_code == wx.WXK_ESCAPE and self._popup.is_shown():
             self._popup.hide()
         elif key_code in [wx.WXK_UP, wx.WXK_DOWN, wx.WXK_PAGEUP, wx.WXK_PAGEDOWN] and self._popup.is_shown():
@@ -136,7 +136,7 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
         if self._is_auto_suggestion_enabled or self.is_shown():
             self.show_content_assist()
 
-    def OnChar(self, event):
+    def on_char(self, event):
         key_char = event.GetUnicodeKey()
         if key_char != wx.WXK_RETURN:
             self._show_auto_suggestions_when_enabled()
@@ -246,7 +246,7 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
             return value[:from_]+value[from_:to_].rstrip(remove_text)+value[to_:]
         return value
 
-    def OnFocusLost(self, event, set_value=True):
+    def on_focus_lost(self, event, set_value=True):
         event.Skip()
         if not self._popup.is_shown():
             return
@@ -283,7 +283,7 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
             while self.GetEventHandler() is not self:
                 self.PopEventHandler()
 
-    def OnDestroy(self, event):
+    def on_destroy(self, event):
         _ = event
         # all pushed eventHandlers need to be popped before close
         # the last event handler is window object itself - do not pop itself
@@ -382,7 +382,7 @@ class ContentAssistFileButton(FileBrowseButton):
         self.suggestion_source = suggestion_source
         FileBrowseButton.__init__(self, parent, labelText=label,
                                   size=size, fileMask="*",
-                                  changeCallback=self.OnFileChanged)
+                                  changeCallback=self.on_file_changed)
         self._parent = parent
         self._controller = controller
         self._browsed = False
@@ -407,12 +407,12 @@ class ContentAssistFileButton(FileBrowseButton):
     def __getattr__(self, item):
         return getattr(self.textControl, item)
 
-    def OnBrowse(self, evt=None):
+    def OnBrowse(self, evt=None):  # Overrides wx method
         self._browsed = True
         FileBrowseButton.OnBrowse(self, evt)
         self._browsed = False
 
-    def OnDestroy(self, event):
+    def on_destroy(self, event):
         _ = event
         # all pushed eventHandlers need to be popped before close
         # the last event handler is window object itself - do not pop itself
@@ -422,7 +422,7 @@ class ContentAssistFileButton(FileBrowseButton):
         except RuntimeError:
             pass
 
-    def OnFileChanged(self, evt):
+    def on_file_changed(self, evt):
         _ = evt
         if self._browsed:
             self._browsed = False

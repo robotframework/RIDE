@@ -137,11 +137,11 @@ class TagBox(wx.TextCtrl):
         self.set_properties(tproperties)
 
     def _bind(self):
-        for event, handler in [(wx.EVT_SET_FOCUS, self.OnSetFocus),
-                               (wx.EVT_KILL_FOCUS, self.OnKillFocus),
-                               (wx.EVT_LEFT_UP, self.OnSetFocus),
-                               (wx.EVT_KEY_UP, self.OnKeyUp),
-                               (wx.EVT_CHAR, self.OnChar)]:
+        for event, handler in [(wx.EVT_SET_FOCUS, self.on_set_focus),
+                               (wx.EVT_KILL_FOCUS, self.on_kill_focus),
+                               (wx.EVT_LEFT_UP, self.on_set_focus),
+                               (wx.EVT_KEY_UP, self.on_key_up),
+                               (wx.EVT_CHAR, self.on_char)]:
             self.Bind(event, handler)
 
     def set_properties(self, tproperties):
@@ -172,7 +172,7 @@ class TagBox(wx.TextCtrl):
     def saving(self):
         self._update_value()
 
-    def OnKeyUp(self, event):
+    def on_key_up(self, event):
         if self.tb_properties.modifiable:
             if event.GetKeyCode() == wx.WXK_ESCAPE:
                 self._cancel_editing()
@@ -190,14 +190,14 @@ class TagBox(wx.TextCtrl):
         self.SetValue(self.tb_properties.text)
         self._colorize()
 
-    def OnChar(self, event):
+    def on_char(self, event):
         # For some reason at least ESC and F<num> keys are considered chars.
         # We only special case ESC, though.
         if event.GetKeyCode() != wx.WXK_ESCAPE:
             self.tb_properties.activate(self)
         event.Skip()
 
-    def OnKillFocus(self, event):
+    def on_kill_focus(self, event):
         self._update_value()
         # Send skip event only if tagbox is empty and about to be destroyed
         # On some platforms this event is sent too late and causes crash
@@ -207,7 +207,7 @@ class TagBox(wx.TextCtrl):
     def _update_value(self):
         self.tb_properties.change_value(self.value)
 
-    def OnSetFocus(self, event):
+    def on_set_focus(self, event):
         if self.tb_properties.add_new:
             wx.CallAfter(self.SelectAll)
         event.Skip()

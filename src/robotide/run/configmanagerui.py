@@ -110,7 +110,7 @@ class _ConfigListEditor(ListEditorBase):
     def get_data(self):
         return self._list.get_data()
 
-    def OnEdit(self, event):
+    def on_edit(self, event):
         self._list.open_editor(self._selection)
 
     def OnNew(self, event):
@@ -118,7 +118,7 @@ class _ConfigListEditor(ListEditorBase):
         self._list.new_item()
 
     def OnRemove(self, event):
-        self.OnDelete(event)
+        self.on_delete(event)
 
     def new_config(self, data):
         self._controller.add(*data)
@@ -126,9 +126,9 @@ class _ConfigListEditor(ListEditorBase):
     def edit_config(self, index, data):
         self._controller.edit(index, *data)
 
-    def OnDelete(self, event):
+    def on_delete(self, event):
         if not self._editor_open:
-            ListEditorBase.OnDelete(self, event)
+            ListEditorBase.on_delete(self, event)
 
     def editor_open(self):
         self._editor_open = True

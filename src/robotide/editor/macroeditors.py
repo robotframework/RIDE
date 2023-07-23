@@ -52,50 +52,50 @@ class TestCaseEditor(_RobotTableEditor):
         self.kweditor.save()
 
     def undo(self):
-        self.kweditor.OnUndo()
+        self.kweditor.on_undo()
 
     def redo(self):
-        self.kweditor.OnRedo()
+        self.kweditor.on_redo()
 
     def cut(self):
-        self.kweditor.OnCut()
+        self.kweditor.on_cut()
 
     def copy(self):
-        self.kweditor.OnCopy()
+        self.kweditor.on_copy()
 
     def paste(self):
-        self.kweditor.OnPaste()
+        self.kweditor.on_paste()
 
     def insert(self):
-        self.kweditor.OnInsert()
+        self.kweditor.on_insert()
 
     def insert_cells(self):
-        self.kweditor.OnInsertCells()
+        self.kweditor.on_insert_cells()
 
     def delete_cells(self):
         # print("DEBUG macro delete cells ")
-        self.kweditor.OnDeleteCells()
+        self.kweditor.on_delete_cells()
 
     def insert_rows(self):
-        self.kweditor.OnInsertRows(None)  # DEBUG python 3
+        self.kweditor.on_insert_rows(None)  # DEBUG python 3
 
     def delete_rows(self):
-        self.kweditor.OnDeleteRows(None)  # DEBUG python 3
+        self.kweditor.on_delete_rows(None)  # DEBUG python 3
 
     def delete(self):
-        self.kweditor.OnDelete()
+        self.kweditor.on_delete()
 
     def comment_rows(self):
-        self.kweditor.OnCommentRows()
+        self.kweditor.on_comment_rows()
 
     def uncomment_rows(self):
-        self.kweditor.OnUncommentRows()
+        self.kweditor.on_uncomment_rows()
 
     def comment_cells(self):
-        self.kweditor.OnCommentCells(None)
+        self.kweditor.on_comment_cells(None)
 
     def uncomment_cells(self):
-        self.kweditor.OnUncommentCells(None)
+        self.kweditor.on_uncomment_cells(None)
 
     def show_content_assist(self):
         self.kweditor.show_content_assist()
