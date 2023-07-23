@@ -98,9 +98,6 @@ class LibraryDatabase(object):
         library_doc_format = "ROBOT"
         if len(keywords) > 0:
             library_doc_format = keywords[0].doc_format
-            # if any(x.doc_format != library_doc_format for x in keywords):
-            #    print("debug: keywords doc format not
-            #    consistent within library")
 
         cur = self._cursor()
         old_versions = cur.execute('select id from libraries where name = ?  '
@@ -150,7 +147,8 @@ class LibraryDatabase(object):
                        (name, doc_format, str(arguments), time.time()))
         return self._fetch_lib(name, arguments, cursor)
 
-    def _fetch_lib(self, name, arguments, cursor):
+    @staticmethod
+    def _fetch_lib(name, arguments, cursor):
         t = cursor.execute('select max(last_updated) from libraries where name'
                            ' = ?  and arguments = ?',
                            (name, str(arguments))).fetchone()[0]
@@ -158,5 +156,6 @@ class LibraryDatabase(object):
                               '  and arguments = ? and last_updated = ?',
                               (name, str(arguments), t)).fetchone()
 
-    def _insert_library_keywords(self, data, cursor):
+    @staticmethod
+    def _insert_library_keywords(data, cursor):
         cursor.executemany('insert into keywords values (?, ?, ?, ?, ?)', data)

@@ -67,5 +67,5 @@ and shortcut by enabling/disabling those with `action.Action.enable` and
 """
 
 
-from .action import ActionFactory
-from .actioninfo import ActionInfoCollection, SeparatorInfo, ActionInfo
+from .action import action_factory
+from .actioninfo import action_info_collection, SeparatorInfo, ActionInfo

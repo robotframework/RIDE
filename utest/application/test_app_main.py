@@ -77,7 +77,7 @@ class TestMain(unittest.TestCase):
             with pytest.raises((ImportError, SystemExit)):
                 builtins.__import__ = myimport
                 result = robotide.main('--version')  # Need to capture output
-                assert result.startswith('v2.0.6')
+                assert result.startswith('v2.0.7')
 
     def test_parse_args(self):
         from robotide import _parse_args
@@ -121,10 +121,10 @@ class TestMain(unittest.TestCase):
                 def __init__(self, path=None, updatecheck=True):
                     self.frame = wx.Frame(None)
 
-                def OnInit(self):
+                def OnInit(self):  # Overrides wx method
                     pass
 
-                def MainLoop(self):
+                def MainLoop(self):  # Overrides wx method
                     pass
 
             with MonkeyPatch().context() as m:

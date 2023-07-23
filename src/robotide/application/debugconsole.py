@@ -20,8 +20,8 @@ import traceback
 
 def _print_stacks():
     id2name = dict((th.ident, th.name) for th in threading.enumerate())
-    for threadId, stack in sys._current_frames().items():
-        print(id2name[threadId])
+    for thread_id, stack in sys._current_frames().items():
+        print(id2name[thread_id])
         traceback.print_stack(f=stack)
 
 

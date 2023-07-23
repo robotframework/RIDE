@@ -30,9 +30,9 @@ class NoteBook(aui.AuiNotebook):
         # fnb.FlatNotebook.__init__(self, parent, style=style)
         # default style=0, experiment others
         aui.AuiNotebook.__init__(self, parent, style=3, agwStyle=self._notebook_style)
-        self.Bind(aui.EVT_AUINOTEBOOK_PAGE_CLOSE, self.OnTabClosing)
-        self.Bind(aui.EVT_AUINOTEBOOK_PAGE_CHANGING, self.OnTabChanging)
-        self.Bind(aui.EVT_AUINOTEBOOK_PAGE_CHANGED, self.OnTabChanged)
+        self.Bind(aui.EVT_AUINOTEBOOK_PAGE_CLOSE, self.on_tab_closing)
+        self.Bind(aui.EVT_AUINOTEBOOK_PAGE_CHANGING, self.on_tab_changing)
+        self.Bind(aui.EVT_AUINOTEBOOK_PAGE_CHANGED, self.on_tab_changed)
         self._tab_closing = False
         self._tab_state = None
         self._uncloseable = []
@@ -73,13 +73,13 @@ class NoteBook(aui.AuiNotebook):
     def current_page_title(self):
         return self.GetPageText(self.GetSelection())
 
-    def OnTabClosing(self, event):
+    def on_tab_closing(self, event):
         if self.GetPage(event.GetSelection()) in self._uncloseable:
             event.Veto()
             return
         self._tab_closing = True
 
-    def OnTabChanging(self, event):
+    def on_tab_changing(self, event):
         if not self._tab_changed():
             return
         oldselect = event.GetOldSelection()
@@ -100,7 +100,7 @@ class NoteBook(aui.AuiNotebook):
         RideNotebookTabChanging(oldtab=oldtitle, newtab=newtitle).publish()
         event.Skip()
 
-    def OnTabChanged(self, event):
+    def on_tab_changed(self, event):
         _ = event
         if not self._tab_changed():
             self._tab_closing = False

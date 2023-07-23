@@ -17,21 +17,11 @@ import wx
 
 from ..controller import ctrlcommands, filecontrollers, macrocontrollers, settingcontrollers
 from ..controller.ctrlcommands import SortTests, SortVariables
-# import (RenameKeywordOccurrences, RemoveMacro, AddKeyword, AddTestCase, RenameTest,
-#         CopyMacroAs, AddVariable, UpdateVariableName, RenameFile, RenameResourceFile,
-#         DeleteFile, SortKeywords, Include, Exclude, OpenContainingFolder, RemoveReadOnly)
-
-# import (TestDataDirectoryController, ResourceFileController, TestCaseFileController,
-#         ExcludedDirectoryController, DirtyRobotDataException)
-# import TestCaseController, UserKeywordController
-# import VariableController
 from ..editor.editordialogs import (TestCaseNameDialog, UserKeywordNameDialog, ScalarVariableDialog, ListVariableDialog,
                                     CopyUserKeywordDialog, DictionaryVariableDialog)
 from ..publish import RideOpenVariableDialog, RideTestSelectedForRunningChanged, PUBLISHER
 from ..ui.progress import LoadProgressObserver
-from ..ui.resourcedialogs import FolderDeleteDialog
 from ..usages.UsageRunner import Usages, ResourceFileUsages
-from ..utils import overrides
 from ..widgets import PopupMenuItems
 from .filedialogs import (AddSuiteDialog, AddDirectoryDialog, ChangeFormatDialog, NewResourceDialog,
                           RobotFilePathDialog)
@@ -84,7 +74,10 @@ class _ActionHandler:
     _label_expand_all = 'Expand all'
     _label_collapse_all = 'Collapse all'
     _label_remove_readonly = 'Remove Read Only'
-    _label_open_folder =  'Open Containing Folder'
+    _label_open_folder = 'Open Containing Folder'
+    _label_move_up = 'Move Up\tCtrl-Up'
+    _label_move_down = 'Move Down\tCtrl-Down'
+    _actions = []
 
     def __init__(self, controller, tree, node, settings):
         self.controller = controller
@@ -103,83 +96,103 @@ class _ActionHandler:
         return self._node
 
     def show_popup(self):
-        self._popup_creator.show(self._tree, PopupMenuItems(self, self._actions),
-                                 self.controller)
+        self._popup_creator.show(self._tree, PopupMenuItems(self, self._actions), self.controller)
 
-    def begin_label_edit(self):
+    @staticmethod
+    def begin_label_edit():
         return False
 
     def double_clicked(self):
+        """ Just ignore it """
         pass
 
     def end_label_edit(self, event):
+        """ Just ignore it """
         pass
 
-    def OnDelete(self, event):
+    def on_delete(self, event):
+        """ Just ignore it """
         pass
 
-    def OnNewSuite(self, event):
+    def on_new_suite(self, event):
+        """ Just ignore it """
         pass
 
-    def OnNewDirectory(self, event):
+    def on_new_directory(self, event):
+        """ Just ignore it """
         pass
 
-    def OnNewResource(self, event):
+    def on_new_resource(self, event):
+        """ Just ignore it """
         pass
 
-    def OnNewUserKeyword(self, event):
+    def on_new_user_keyword(self, event):
+        """ Just ignore it """
         pass
 
-    def OnNewTestCase(self, event):
+    def on_new_test_case(self, event):
+        """ Just ignore it """
         pass
 
-    def OnNewScalar(self, event):
+    def on_new_scalar(self, event):
+        """ Just ignore it """
         pass
 
-    def OnNewListVariable(self, event):
+    def on_new_list_variable(self, event):
+        """ Just ignore it """
         pass
 
-    def OnNewDictionaryVariable(self, event):
+    def on_new_dictionary_variable(self, event):
+        """ Just ignore it """
         pass
 
-    def OnCopy(self, event):
+    def on_copy(self, event):
+        """ Just ignore it """
         pass
 
-    def OnFindUsages(self, event):
+    def on_find_usages(self, event):
+        """ Just ignore it """
         pass
 
-    def OnSelectAllTests(self, event):
+    def on_select_all_tests(self, event):
+        _ = event
         self._tree.SelectAllTests(self._node)
 
-    def OnDeselectAllTests(self, event):
+    def on_deselect_all_tests(self, event):
+        _ = event
         self._tree.SelectAllTests(self._node, False)
 
-    def OnSelectOnlyFailedTests(self, event):
+    def on_select_only_failed_tests(self, event):
+        _ = event
         self._tree.SelectFailedTests(self._node)
 
-    def OnSelectOnlyPassedTests(self, event):
+    def on_select_only_passed_tests(self, event):
+        _ = event
         self._tree.SelectPassedTests(self._node)
 
-    def OnSafeDelete(self, event):
+    def on_safe_delete(self, event):
+        """ Just ignore it """
         pass
 
-    def OnExclude(self, event):
+    def on_exclude(self, event):
+        """ Just ignore it """
         pass
 
-    def OnInclude(self, event):
+    def on_include(self, event):
+        """ Just ignore it """
         pass
 
 
 class _CanBeRenamed(object):
 
-    def OnRename(self, event):
+    def on_rename(self, event):
+        _ = event
         self._tree.label_editor.on_label_edit()
 
     def begin_label_edit(self):
         def label_edit():
-            # FIXME: yep.yep.yep.yep.yep
-            node = self._tree._controller.find_node_by_controller(
-                self.controller)
+            # DEBUG: fixme yep.yep.yep.yep.yep
+            node = self._tree.controller.find_node_by_controller(self.controller)
             if node:
                 self._tree.EditLabel(node)
         # Must handle pending events before label edit
@@ -202,7 +215,8 @@ class _CanBeRenamed(object):
             return False
         return True
 
-    def _show_validation_error(self, err_msg):
+    @staticmethod
+    def _show_validation_error(err_msg):
         wx.MessageBox(err_msg, 'Validation Error', style=wx.ICON_ERROR)
 
 
@@ -212,14 +226,13 @@ class DirectoryHandler(_ActionHandler):
     can_be_rendered = False
     _actions = [_ActionHandler._label_new_resource]
 
-    def OnNewResource(self, event):
+    def on_new_resource(self, event):
         NewResourceDialog(self.controller, self._settings).execute()
 
 
 class TestDataHandler(_ActionHandler):
-    accepts_drag = lambda self, dragged: (isinstance(dragged, UserKeywordHandler) or
-                                          isinstance(dragged, VariableHandler))
-
+    def accepts_drag(self, dragged):
+        return isinstance(dragged, UserKeywordHandler) or isinstance(dragged, VariableHandler)
     is_draggable = False
     is_test_suite = True
 
@@ -241,18 +254,23 @@ class TestDataHandler(_ActionHandler):
     def do_drop(self, item):
         self.controller.add_test_or_keyword(item)
 
-    def rename(self, new_name):
+    @staticmethod
+    def rename(new_name):
+        _ = new_name
         return False
 
-    def OnSortTests(self, event):
+    def on_sort_tests(self, event):
+        _ = event
         """Sorts the tests inside the treenode"""
         self.controller.execute(SortTests())
 
-    def OnSortKeywords(self, event):
+    def on_sort_keywords(self, event):
+        _ = event
         """Sorts the keywords inside the treenode"""
         self.controller.execute(ctrlcommands.SortKeywords())
 
-    def OnSortVariables(self, event):
+    def on_sort_variables(self, event):
+        _ = event
         """Sorts the variables inside the treenode"""
         self.controller.execute(SortVariables())
 
@@ -269,24 +287,25 @@ class TestDataHandler(_ActionHandler):
     def set_rendered(self):
         self._rendered = True
 
-    def OnChangeFormat(self, event):
+    def on_change_format(self, event):
+        _ = event
         ChangeFormatDialog(self.controller).execute()
 
-    def OnNewUserKeyword(self, event):
+    def on_new_user_keyword(self, event):
         dlg = UserKeywordNameDialog(self.controller)
         if dlg.ShowModal() == wx.ID_OK:
             self.controller.execute(ctrlcommands.AddKeyword(dlg.get_name(), dlg.get_args()))
         dlg.Destroy()
 
-    def OnNewScalar(self, event):
+    def on_new_scalar(self, event):
         self._new_var(ScalarVariableDialog)
 
-    def OnNewListVariable(self, event):
+    def on_new_list_variable(self, event):
         class FakePlugin(object):
             global_settings = self._settings
         self._new_var(ListVariableDialog, plugin=FakePlugin())
 
-    def OnNewDictionaryVariable(self, event):
+    def on_new_dictionary_variable(self, event):
         class FakePlugin(object):
             global_settings = self._settings
         self._new_var(DictionaryVariableDialog, plugin=FakePlugin())
@@ -336,25 +355,27 @@ class TestDataDirectoryHandler(TestDataHandler):
                               _ActionHandler._label_expand_all,
                               _ActionHandler._label_collapse_all])
 
-    def OnExpandAll(self, event):
+    def on_expand_all(self, event):
+        _ = event
         self._tree.ExpandAllSubNodes(self._node)
 
-    def OnCollapseAll(self, event):
+    def on_collapse_all(self, event):
+        _ = event
         self._tree.CollapseAllSubNodes(self._node)
 
-    def OnNewSuite(self, event):
+    def on_new_suite(self, event):
         AddSuiteDialog(self.controller, self._settings).execute()
 
-    def OnNewDirectory(self, event):
+    def on_new_directory(self, event):
         AddDirectoryDialog(self.controller, self._settings).execute()
 
-    def OnNewResource(self, event):
+    def on_new_resource(self, event):
         NewResourceDialog(self.controller, self._settings).execute()
 
-    def OnDelete(self, event):
+    def on_delete(self, event):
         FolderDeleteDialog(self.controller).execute()
 
-    def OnExclude(self, event):
+    def on_exclude(self, event):
         try:
             self.controller.execute(ctrlcommands.Exclude())
         except filecontrollers.DirtyRobotDataException:
@@ -364,13 +385,11 @@ class TestDataDirectoryHandler(TestDataHandler):
 
 class _FileHandlerThanCanBeRenamed(_CanBeRenamed):
 
-    @overrides(_CanBeRenamed)
     def begin_label_edit(self):
         self._old_label = self._node.GetText()
         self._set_node_label(self.controller.basename)
         return _CanBeRenamed.begin_label_edit(self)
 
-    @overrides(_CanBeRenamed)
     def end_label_edit(self, event):
         if not event.IsEditCancelled():
             result = self.controller.execute(
@@ -384,6 +403,7 @@ class _FileHandlerThanCanBeRenamed(_CanBeRenamed):
             self._set_node_label(self._old_label)
 
     def _rename_ok_handler(self):
+        """ Just ignore it """
         pass
 
     def _rename_command(self, label):
@@ -413,26 +433,27 @@ class ResourceFileHandler(_FileHandlerThanCanBeRenamed, TestDataHandler):
                 _ActionHandler._label_open_folder
                 ]
                 
-    def OnRemoveReadOnly(self, event):
+    def on_remove_read_only(self, event):
+        _ = event
 
-        def returnTrue():
+        def return_true():
             return True
-        self.controller.is_modifiable = returnTrue
+        self.controller.is_modifiable = return_true
         self.controller.execute(ctrlcommands.RemoveReadOnly())
         
-    def OnOpenContainingFolder(self, event):
+    def on_open_containing_folder(self, event):
+        _ = event
         self.controller.execute(ctrlcommands.OpenContainingFolder())
 
-    def OnFindUsages(self, event):
+    def on_find_usages(self, event):
         ResourceFileUsages(self.controller, self._tree.highlight).show()
 
-    def OnDelete(self, event):
+    def on_delete(self, event):
         ResourceDeleteDialog(self.controller).execute()
 
-    def OnSafeDelete(self, event):
-        return self.OnDelete(event)
+    def on_safe_delete(self, event):
+        return self.on_delete(event)
 
-    @overrides(_FileHandlerThanCanBeRenamed)
     def _rename_command(self, label):
         return ctrlcommands.RenameResourceFile(
             label, self._check_should_rename_static_imports)
@@ -442,7 +463,9 @@ class ResourceFileHandler(_FileHandlerThanCanBeRenamed, TestDataHandler):
 
 
 class TestCaseFileHandler(_FileHandlerThanCanBeRenamed, TestDataHandler):
-    accepts_drag = lambda *args: True
+    def accepts_drag(self, dragged):
+        _ = dragged
+        return True
     _actions = [_ActionHandler._label_new_test_case,
                 _ActionHandler._label_new_user_keyword,
                 _ActionHandler._label_new_scalar,
@@ -467,50 +490,52 @@ class TestCaseFileHandler(_FileHandlerThanCanBeRenamed, TestDataHandler):
                 _ActionHandler._label_open_folder
                 ]
                 
-    def OnRemoveReadOnly(self, event):
+    def on_remove_read_only(self, event):
+        _ = event
 
-        def returnTrue():
+        def return_true():
             return True
-        self.controller.is_modifiable = returnTrue
+        self.controller.is_modifiable = return_true
         self.controller.execute(ctrlcommands.RemoveReadOnly())
         
-    def OnOpenContainingFolder(self, event):
-
+    def on_open_containing_folder(self, event):
+        _ = event
         self.controller.execute(ctrlcommands.OpenContainingFolder())
 
-    def OnNewTestCase(self, event):
+    def on_new_test_case(self, event):
         dlg = TestCaseNameDialog(self.controller)
         if dlg.ShowModal() == wx.ID_OK:
             self.controller.execute(ctrlcommands.AddTestCase(dlg.get_name()))
         dlg.Destroy()
 
-    def OnDelete(self, event):
+    def on_delete(self, event):
         if wx.MessageBox('Delete test case file', caption='Confirm',
                          style=wx.YES_NO | wx.ICON_QUESTION) == wx.YES:
             self.controller.execute(ctrlcommands.DeleteFile())
 
-    def OnSafeDelete(self, event):
-        return self.OnDelete(event)
+    def on_safe_delete(self, event):
+        return self.on_delete(event)
 
-    @overrides(_FileHandlerThanCanBeRenamed)
     def _rename_command(self, label):
         return ctrlcommands.RenameFile(label)
 
-    @overrides(_FileHandlerThanCanBeRenamed)
     def _rename_ok_handler(self):
-        self._tree.SelectAllTests(self._node,False)
+        self._tree.SelectAllTests(self._node, False)
 
 
 class _TestOrUserKeywordHandler(_CanBeRenamed, _ActionHandler):
-    accepts_drag = lambda *args: False
+    @staticmethod
+    def accepts_drag(dragged):
+        _ = dragged
+        return False
     is_draggable = True
     _actions = [
         _ActionHandler._label_copy_macro,
-        'Move Up\tCtrl-Up',
-        'Move Down\tCtrl-Down',
+        _ActionHandler._label_move_up,
+        _ActionHandler._label_move_down,
         _ActionHandler._label_rename,
         '---',
-        'Delete'
+        _ActionHandler._label_delete_no_kbsc
     ]
 
     def remove(self):
@@ -519,21 +544,23 @@ class _TestOrUserKeywordHandler(_CanBeRenamed, _ActionHandler):
     def rename(self, new_name):
         self.controller.execute(self._create_rename_command(new_name))
 
-    def OnCopy(self, event):
+    def on_copy(self, event):
         dlg = self._copy_name_dialog_class(self.controller, self.item)
         if dlg.ShowModal() == wx.ID_OK:
             self.controller.execute(ctrlcommands.CopyMacroAs(dlg.get_name()))
         dlg.Destroy()
 
-    def OnMoveUp(self, event):
+    def on_move_up(self, event):
+        _ = event
         if self.controller.move_up():
             self._tree.move_up(self._node)
 
-    def OnMoveDown(self, event):
+    def on_move_down(self, event):
+        _ = event
         if self.controller.move_down():
             self._tree.move_down(self._node)
 
-    def OnDelete(self, event):
+    def on_delete(self, event):
         self.controller.execute(ctrlcommands.RemoveMacro(self.controller))
 
 
@@ -548,7 +575,8 @@ class TestCaseHandler(_TestOrUserKeywordHandler):
     def _add_copy_to_tree(self, parent_node, copied):
         self._tree.add_test(parent_node, copied)
 
-    def _create_rename_command(self, new_name):
+    @staticmethod
+    def _create_rename_command(new_name):
         return ctrlcommands.RenameTest(new_name)
 
     def test_selection_changed(self, message):
@@ -576,28 +604,29 @@ class UserKeywordHandler(_TestOrUserKeywordHandler):
             RenameProgressObserver(self._tree.GetParent()),
             self.controller.info)
 
-    def OnFindUsages(self, event):
+    def on_find_usages(self, event):
         Usages(self.controller, self._tree.highlight).show()
 
 
 class VariableHandler(_CanBeRenamed, _ActionHandler):
-    accepts_drag = lambda *args: False
+    @staticmethod
+    def accepts_drag(dragged):
+        _ = dragged
+        return False
     is_draggable = True
     is_variable = True
-    OnMoveUp = OnMoveDown = lambda *args: None
     _actions = [
-        'Move Up\tCtrl-Up',
-        'Move Down\tCtrl-Down',
+        _ActionHandler._label_move_up,
+        _ActionHandler._label_move_down,
         _ActionHandler._label_rename,
         '---',
-        'Delete'
+        _ActionHandler._label_delete_no_kbsc
     ]
 
-    @overrides(_ActionHandler)
     def double_clicked(self):
         RideOpenVariableDialog(controller=self.controller).publish()
 
-    def OnDelete(self, event):
+    def on_delete(self, event):
         self.remove()
 
     def remove(self):
@@ -606,11 +635,13 @@ class VariableHandler(_CanBeRenamed, _ActionHandler):
     def rename(self, new_name):
         self.controller.execute(ctrlcommands.UpdateVariableName(new_name))
 
-    def OnMoveUp(self, event):
+    def on_move_up(self, event):
+        _ = event
         if self.controller.move_up():
             self._tree.move_up(self._node)
 
-    def OnMoveDown(self, event):
+    def on_move_down(self, event):
+        _ = event
         if self.controller.move_down():
             self._tree.move_down(self._node)
 
@@ -621,15 +652,25 @@ class VariableHandler(_CanBeRenamed, _ActionHandler):
 
 class ResourceRootHandler(_ActionHandler):
     can_be_rendered = is_draggable = is_user_keyword = is_test_suite = False
-    rename = lambda self, new_name: False
-    accepts_drag = lambda self, dragged: False
+
+    @staticmethod
+    def rename(new_name):
+        _ = new_name
+        return False
+
+    @staticmethod
+    def accepts_drag(dragged):
+        _ = dragged
+        return False
+
     _actions = [_ActionHandler._label_add_resource]
 
     @property
     def item(self):
         return None
 
-    def OnAddResource(self, event):
+    def on_add_resource(self, event):
+        _ = event
         path = RobotFilePathDialog(
             self._tree.GetParent(), self.controller, self._settings).execute()
         if path:
@@ -644,5 +685,5 @@ class ExcludedDirectoryHandler(TestDataDirectoryHandler):
         TestDataHandler.__init__(self, *args)
         self._actions = [_ActionHandler._label_include]
 
-    def OnInclude(self, event):
+    def on_include(self, event):
         self.controller.execute(ctrlcommands.Include())

@@ -46,12 +46,12 @@ class _UsageDialog(RIDEDialog):
 
     def _add_usages_modifying_help(self, usages):
         if any(u for u in usages if not u.can_be_renamed):
-            help = Label(self,
-                label='Highlighted imports are not modified because they '
-                      'contain variables in resource file name.')
-            help.Wrap(self._width)
-            help.SetForegroundColour('red')
-            self._sizer.add_with_padding(help)
+            hhelp = Label(self,
+                          label='Highlighted imports are not modified because they contain variables in resource file'
+                                ' name.')
+            hhelp.Wrap(self._width)
+            hhelp.SetForegroundColour('red')
+            self._sizer.add_with_padding(hhelp)
 
     def show(self):
         confirmed = self.ShowModal() == wx.ID_OK

@@ -55,11 +55,6 @@ class ValueEditor(wx.Panel):
             sizer.Add(Label(self, label=self._label, size=(80, -1)), 0,
                       self._sizer_flags_for_label, 5)
         self._editor = self._get_text_ctrl()
-        # self.source_editor.SetDefaultStyle(wx.TextAttr(wx.TEXT_ATTR_CHARACTER))
-        # self.source_editor.SetBackgroundColour(Colour(self.color_secondary_background))
-        # self.source_editor.SetOwnBackgroundColour(Colour(self.color_secondary_background))
-        # self.source_editor.SetForegroundColour(Colour(self.color_secondary_foreground))
-        # self.source_editor.SetOwnForegroundColour(Colour(self.color_secondary_foreground))
         self._editor.AppendText(value)
         sizer.Add(self._editor, 1, self._sizer_flags_for_editor, 3)
         self._sizer.Add(sizer, 1, wx.EXPAND)
@@ -87,8 +82,6 @@ class ValueEditor(wx.Panel):
 
     def on_key_down(self, event):
         character = None
-        keycode, control_down = event.GetKeyCode(), event.CmdDown()
-        # print("DEBUG: ValueEditor on_key_down: k=%s Ctrl=%s\n" % (keycode, control_down))
         if event.CmdDown() and event.GetKeyCode() == ord('1'):
             character = '$'
         elif event.CmdDown() and event.GetKeyCode() == ord('2'):
@@ -145,14 +138,15 @@ class VariableNameEditor(ValueEditor):
 
     def _get_text_ctrl(self):
         textctrl = ValueEditor._get_text_ctrl(self)
-        textctrl.Bind(wx.EVT_SET_FOCUS, self.OnFocus)
+        textctrl.Bind(wx.EVT_SET_FOCUS, self.on_focus)
         return textctrl
 
-    def OnFocus(self, event):
+    def on_focus(self, event):
         wx.CallAfter(self.SetSelection, event.GetEventObject())
         event.Skip()
 
     def SetSelection(self, event):
+        _ = event
         self._editor.SetSelection(2, len(self._editor.Value) - 1)
 
 
@@ -169,7 +163,7 @@ class ListValueEditor(ValueEditor):
         self._editor = _EditorGrid(self, value, cols)
         sizer.Add(self._editor, 1, self._sizer_flags_for_editor, 3)
         self._sizer.Add(sizer, 1, wx.EXPAND)
-        self.Bind(wx.EVT_SIZE, self.OnSize)
+        self.Bind(wx.EVT_SIZE, self.on_size)
 
     def _create_components(self, label, cols):
         sizer = wx.BoxSizer(wx.VERTICAL)
@@ -197,21 +191,18 @@ class ListValueEditor(ValueEditor):
         combo.SetOwnBackgroundColour(Colour(self.color_secondary_background))
         combo.SetForegroundColour(Colour(self.color_secondary_foreground))
         combo.SetOwnForegroundColour(Colour(self.color_secondary_foreground))
-        self.Bind(wx.EVT_COMBOBOX, self.OnColumns, source=combo)
+        self.Bind(wx.EVT_COMBOBOX, self.on_columns, source=combo)
         sizer.Add(combo)
         # DEBUG children = self.GetChildren()
         # print(f"DEBUG: Creating columns size selector: attributes bg ={attributes.colBg}\n children={children}")
         return sizer
 
-    def OnColumns(self, event):
+    def on_columns(self, event):
         num_cols = int(event.String)
         self._settings["list variable columns"] = num_cols
         self._editor.set_number_of_columns(num_cols)
 
-    def OnAddRow(self, event):
-        self._editor.add_row()
-
-    def OnSize(self, event):
+    def on_size(self, event):
         self._editor.resize_columns(event.Size[0] - 110)
         event.Skip()
 
@@ -247,15 +238,15 @@ class _EditorGrid(GridEditor):
 
     def _bind_actions(self):
         bind_keys_to_evt_menu(self, self._get_bind_keys())
-        self.Bind(wx.grid.EVT_GRID_EDITOR_SHOWN, self.OnEditorShown)
+        self.Bind(wx.grid.EVT_GRID_EDITOR_SHOWN, self.on_editor_shown)
 
     def _get_bind_keys(self):
-        return [(ctrl_or_cmd(), ord('c'), self.OnCopy),
-                (ctrl_or_cmd(), ord('x'), self.OnCut),
-                (ctrl_or_cmd(), ord('v'), self.OnPaste),
-                (ctrl_or_cmd(), ord('z'), self.OnUndo),
-                (ctrl_or_cmd(), ord('a'), self.OnSelectAll),
-                (wx.ACCEL_NORMAL, wx.WXK_DELETE, self.OnDelete)]
+        return [(ctrl_or_cmd(), ord('c'), self.on_copy),
+                (ctrl_or_cmd(), ord('x'), self.on_cut),
+                (ctrl_or_cmd(), ord('v'), self.on_paste),
+                (ctrl_or_cmd(), ord('z'), self.on_undo),
+                (ctrl_or_cmd(), ord('a'), self.on_select_all),
+                (wx.ACCEL_NORMAL, wx.WXK_DELETE, self.on_delete)]
 
     def _write_content(self, value):
         self.BeginBatch()
@@ -267,13 +258,7 @@ class _EditorGrid(GridEditor):
         self.AutoSizeRows()
 
     def _colorize(self):
-        """
-        for row in range(self.NumberRows):
-            for col in range(self.NumberCols):
-                self.SetCellBackgroundColour(row, col, Colour(200, 222, 40))
-                self.SetCellTextColour(row, col, Colour(7, 0, 70))
-        self.Refresh(True)
-        """
+        """ Just ignore it """
         pass
 
     def get_value(self):
@@ -285,11 +270,11 @@ class _EditorGrid(GridEditor):
             value.pop()
         return value
 
-    def OnEditorShown(self, event):
+    def on_editor_shown(self, event):
         if event.Row >= self.NumberRows - 1:
             self.AppendRows(1)
 
-    def OnInsertCells(self, event):
+    def on_insert_cells(self, event):
         if len(self.selection.rows()) != 1:
             self._insert_cells_to_multiple_rows(event)
             return
@@ -298,7 +283,7 @@ class _EditorGrid(GridEditor):
             return data[:start] + [''] * (end - start) + data[start:]
         self._insert_or_delete_cells_on_single_row(insert_cells, event)
 
-    def OnDeleteCells(self, event):
+    def on_delete_cells(self, event):
         # print("DEBUG delete cells %s" % self.selection.rows())
         if len(self.selection.rows()) != 1:
             self._delete_cells_from_multiple_rows(event)
@@ -318,27 +303,33 @@ class _EditorGrid(GridEditor):
         event.Skip()
 
     def _insert_cells_to_multiple_rows(self, event):
-        GridEditor.OnInsertCells(self, event)
+        GridEditor.on_insert_cells(self, event)
 
     def _delete_cells_from_multiple_rows(self, event):
-        GridEditor.OnDeleteCells(self, event)
+        GridEditor.on_delete_cells(self, event)
 
-    def OnCopy(self, event):
+    def on_copy(self, event):
+        _ = event
         self.copy()
 
-    def OnCut(self, event):
+    def on_cut(self, event):
+        _ = event
         self.cut()
 
-    def OnPaste(self, event):
+    def on_paste(self, event):
+        _ = event
         self.paste()
 
-    def OnDelete(self, event):
+    def on_delete(self, event):
+        _ = event
         self.delete()
 
-    def OnUndo(self, event):
+    def on_undo(self, event):
+        _ = event
         self.undo()
 
-    def OnSelectAll(self, event):
+    def on_select_all(self, event):
+        _ = event
         self.SelectAll()
 
     def resize_columns(self, width):
@@ -366,7 +357,7 @@ class MultiLineEditor(ValueEditor):
     _sizer_flags_for_editor = wx.ALL | wx.EXPAND
 
     def _get_text_ctrl(self):
-        editor = wx.TextCtrl(self, style=wx.TE_MULTILINE|wx.TE_NOHIDESEL, size=(600, 400))
+        editor = wx.TextCtrl(self, style=wx.TE_MULTILINE | wx.TE_NOHIDESEL, size=(600, 400))
         editor.SetBackgroundColour(Colour(self.color_secondary_background))
         editor.SetForegroundColour(Colour(self.color_secondary_foreground))
         """
@@ -391,4 +382,4 @@ class ContentAssistEditor(ValueEditor):
         editor_ctrl.SetBackgroundColour(Colour(self.color_background_help))
         editor_ctrl.SetForegroundColour(Colour(self.color_foreground_text))
         return editor_ctrl
-        #DEBUG size, (500, -1))
+        # DEBUG size, (500, -1))

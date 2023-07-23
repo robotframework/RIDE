@@ -53,7 +53,7 @@ class ExcludePreferences(PreferencesPanel):
         need_help.SetBackgroundColour(Colour(self.color_secondary_background))
         need_help.SetForegroundColour(Colour(self.color_secondary_foreground))
         sizer.Add(need_help)
-        self.Bind(EVT_HYPERLINK, self.OnHelp)
+        self.Bind(EVT_HYPERLINK, self.on_help)
 
     def _add_text_box(self, sizer):
         self._text_box = wx.TextCtrl(self, style=wx.TE_MULTILINE | wx.TE_NOHIDESEL, size=wx.Size(570, 100),
@@ -69,12 +69,12 @@ class ExcludePreferences(PreferencesPanel):
         save_button.SetBackgroundColour(Colour(self.color_secondary_background))
         save_button.SetForegroundColour(Colour(self.color_secondary_foreground))
         status_and_button_sizer.Add(save_button)
-        self.Bind(wx.EVT_BUTTON, self.OnSave)
+        self.Bind(wx.EVT_BUTTON, self.on_save)
         self._status_label = wx.StaticText(self)
         status_and_button_sizer.Add(self._status_label)
         sizer.Add(status_and_button_sizer)
 
-    def OnSave(self, event):
+    def on_save(self, event):
         _ = event
         text = self._text_box.GetValue()
         self._settings.excludes.write_excludes(set(text.split('\n')))
@@ -83,7 +83,7 @@ class ExcludePreferences(PreferencesPanel):
         self._status_label.SetLabel(save_label)
 
     @staticmethod
-    def OnHelp(event):
+    def on_help(event):
         _ = event
         dialog = ExcludeHelpDialog()
         dialog.Show()
@@ -91,6 +91,7 @@ class ExcludePreferences(PreferencesPanel):
 
 class ExcludeHelpDialog(RIDEDialog):
     def _execute(self):
+        """ Just ignore it """
         pass
 
     help = """<font size="5">
@@ -185,7 +186,8 @@ The following shell-style wildcards are supported:
                   flag=wx.EXPAND)
         self.SetSizerAndFit(sizer)
 
-    def OnKey(self, *args):
+    def on_key(self, *args):
+        """ Just ignore it """
         pass
 
     def close(self):

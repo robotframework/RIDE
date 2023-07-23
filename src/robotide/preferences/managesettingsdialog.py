@@ -54,11 +54,11 @@ class SaveLoadSettings(RIDEDialog):
         main_sizer.AddSpacer(10)
         main_sizer.Add(buttons_sizer)
         self.SetSizerAndFit(main_sizer)
-        self.Bind(wx.EVT_BUTTON, self.OnLoad)
-        self.Bind(wx.EVT_BUTTON, self.OnSave)
+        self.Bind(wx.EVT_BUTTON, self.on_load)
+        self.Bind(wx.EVT_BUTTON, self.on_save)
         # print(f"DEBUG: SaveLoad init returncode {self.GetReturnCode()}")
 
-    def OnLoad(self, event):
+    def on_load(self, event):
         if event.GetId() != ID_LOAD:
             event.Skip()
             self.SetReturnCode(ID_CANCEL)
@@ -69,25 +69,21 @@ class SaveLoadSettings(RIDEDialog):
             self.SetReturnCode(ID_CANCEL)
             return ID_CANCEL
         file = load_dlg.GetPath()
-        # print(f"DEBUG: SaveLoad returncode {self.GetReturnCode()}")
         if os.path.isfile(file):  # Test validity settings
-            # print(f"DEBUG: Selected file is {file}.")
-            # print(f"DEBUG: load_and_merge BEFORE: {self.internal_settings['background']}")
             self.Freeze()
             self.load_and_merge(file)
             self.Thaw()
-            # print(f"DEBUG: load_and_merge AFTER: {self.internal_settings['background']}")
             self._parent.Refresh()
             self._parent.GetParent().Refresh()
             self.SetReturnCode(ID_LOAD)
             self.Close()
             return ID_LOAD
 
-    def OnClose(self):
+    def on_close(self):
         self.SetReturnCode(ID_CANCEL)
         return ID_CANCEL
 
-    def OnSave(self, event):
+    def on_save(self, event):
         if event.GetId() != ID_SAVE:
             event.Skip()
             self.SetReturnCode(ID_CANCEL)
@@ -98,10 +94,11 @@ class SaveLoadSettings(RIDEDialog):
             if save_dlg.ShowModal() == wx.ID_CANCEL:
                 self.SetReturnCode(ID_CANCEL)
                 return ID_CANCEL
-            # print(f"DEBUG: SaveLoad returncode {self.GetReturnCode()}")
             pathname = save_dlg.GetPath()
+            """
             filename = os.path.basename(pathname)
             dirname = os.path.dirname(pathname)
+            """
             try:
                 initialize_settings(self._default_path, pathname)
             except IOError:
@@ -113,11 +110,12 @@ class SaveLoadSettings(RIDEDialog):
     def load_and_merge(self, user_path):
         try:
             nnew_settings = ConfigObj(user_path, unrepr=True)
-            mysection=nnew_settings.get(self._section)
+            mysection = nnew_settings.get(self._section)
             if not mysection:
                 mysection = nnew_settings['Plugins'].get(self._section)
                 if not mysection:
-                    raise ConfigurationError("Error trying to get '%s' from file %s" % (f"[Plugins][{self._section}]",user_path))
+                    raise ConfigurationError("Error trying to get '%s' from file %s" % (f"[Plugins][{self._section}]",
+                                                                                        user_path))
 
             for key, value in mysection.items():
                 if self._settings.has_setting(key):
@@ -128,7 +126,7 @@ class SaveLoadSettings(RIDEDialog):
                             else:
                                 self._settings[key].set(k, v)
                     else:
-                        self._settings.set(key,value)
+                        self._settings.set(key, value)
             self._settings.save()
         except UnreprError as err:  # DEBUG errored file
             raise ConfigurationError("Invalid config file '%s': %s" % (user_path, err))

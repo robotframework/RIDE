@@ -18,8 +18,8 @@ import unittest
 import pytest
 
 from utest.resources import datafilereader
-from robotide.controller.ctrlcommands import ChangeCellValue, DeleteRows, AddKeyword, \
-    Undo, PasteArea
+from robotide.controller.ctrlcommands import ChangeCellValue, delete_rows, AddKeyword, \
+    Undo, paste_area
 from robotide.controller.cellinfo import CellType, ContentType, CellInfo, \
     CellContent, CellPosition
 
@@ -88,7 +88,7 @@ class TestCellInfo(unittest.TestCase):
         cls.project_ctrl.close()
 
     def tearDown(self):
-        self.test.execute(DeleteRows([i for i in range(len(self.test.steps))]))
+        self.test.execute(delete_rows([i for i in range(len(self.test.steps))]))
 
     def test_no_cell_info_if_no_data(self):
         print("DEBUG: test_no_cell_info_if_no_data:")
@@ -131,13 +131,13 @@ class TestCellInfo(unittest.TestCase):
         self._verify_cell_info(0, 3, ContentType.EMPTY, CellType.UNKNOWN)
 
     def test_list_variables_item_in_keyword_args(self):
-        self.test.execute(PasteArea((0, 0), [[self.keyword5.name, '@{LIST_VARIABLE}[0]']]))
+        self.test.execute(paste_area((0, 0), [[self.keyword5.name, '@{LIST_VARIABLE}[0]']]))
         self._verify_cell_info(0, 0, ContentType.USER_KEYWORD, CellType.KEYWORD)
         self._verify_cell_info(0, 1, ContentType.VARIABLE, CellType.MANDATORY)
         self._verify_cell_info(0, 2, ContentType.EMPTY, CellType.MANDATORY)
 
     def test_dict_variables_item_in_keyword_args(self):
-        self.test.execute(PasteArea((0, 0), [[self.keyword5.name, '&{DICT_VARIABLE}[foo]']]))
+        self.test.execute(paste_area((0, 0), [[self.keyword5.name, '&{DICT_VARIABLE}[foo]']]))
         self._verify_cell_info(0, 0, ContentType.USER_KEYWORD, CellType.KEYWORD)
         self._verify_cell_info(0, 1, ContentType.VARIABLE, CellType.MANDATORY)
         self._verify_cell_info(0, 2, ContentType.EMPTY, CellType.MANDATORY)
@@ -338,7 +338,7 @@ class TestCellInfo(unittest.TestCase):
         self._verify_cell_info(in_range_header_index, 6, ContentType.EMPTY, CellType.OPTIONAL, forlooped_case)
 
     def test_library_import_add_and_remove(self):
-        self.test.execute(PasteArea((0, 0), [['Get File', 'reaktor.robot']]))
+        self.test.execute(paste_area((0, 0), [['Get File', 'reaktor.robot']]))
         self._verify_cell_info(0, 0, ContentType.STRING, CellType.UNKNOWN)
         self._verify_cell_info(0, 1, ContentType.STRING, CellType.UNKNOWN)
         self.testsuite.imports.add_library('OperatingSystem', [], '')
@@ -370,7 +370,7 @@ class TestCellInfo(unittest.TestCase):
         self._verify_cell_info(0, 0, ContentType.LIBRARY_KEYWORD, CellType.KEYWORD)
 
     def test_library_import_modify(self):
-        self.test.execute(PasteArea((0, 0), [['Get File', 'reaktor.robot']]))
+        self.test.execute(paste_area((0, 0), [['Get File', 'reaktor.robot']]))
         lib = self.testsuite.imports.add_library('WrongOperatingSystem', [], '')
         self._verify_cell_info(0, 0, ContentType.STRING, CellType.UNKNOWN)
         self._verify_cell_info(0, 1, ContentType.STRING, CellType.UNKNOWN)

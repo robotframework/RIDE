@@ -87,7 +87,7 @@ class TestNamespacePerformance(unittest.TestCase):
         project = Project(ns, settings=ns.settings, library_manager=library_manager)
         project.load_datafile(testcasefile,
                             MessageRecordingLoadObserver())
-        return ns, project._controller.data, library_manager
+        return ns, project.controller.data, library_manager
 
     def _execute_keyword_find_function_n_times(self, function, n, filename=TESTCASEFILE_WITH_EVERYTHING):
         ns, testcasefile, library_manager = self._load(filename)

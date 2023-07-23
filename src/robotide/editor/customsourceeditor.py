@@ -30,21 +30,6 @@ import wx
 import wx.stc as stc
 from wx import Colour
 
-# from images import Smiles
-#import Smiles  # Background, code, SmallDnArrow, SmallUpArrow
-
-# ----------------------------------------------------------------------
-
-CodeText = """\
-## This version of the editor has been set up to edit Python source
-## code.  Here is a copy of wxPython/Code/Main.py to play with.
-
-
-"""
-
-# ----------------------------------------------------------------------
-
-
 if wx.Platform == '__WXMSW__':
     faces = {'times': 'Times New Roman',
              'mono': 'Courier New',
@@ -86,10 +71,8 @@ class PythonSTC(stc.StyledTextCtrl):
 
     fold_symbols = 2
 
-    def __init__(self, parent, ID,
-                 pos=wx.DefaultPosition, size=wx.DefaultSize,
-                 style=0):
-        stc.StyledTextCtrl.__init__(self, parent, ID, pos, size, style)
+    def __init__(self, parent, idd, pos=wx.DefaultPosition, size=wx.DefaultSize, style=0):
+        stc.StyledTextCtrl.__init__(self, parent, idd, pos, size, style)
 
         self.CmdKeyAssign(ord('B'), stc.STC_SCMOD_CTRL, stc.STC_CMD_ZOOMIN)
         self.CmdKeyAssign(ord('N'), stc.STC_SCMOD_CTRL, stc.STC_CMD_ZOOMOUT)
@@ -99,19 +82,14 @@ class PythonSTC(stc.StyledTextCtrl):
 
         self.SetProperty("fold", "1")
         self.SetProperty("tab.timmy.whinge.level", "1")
-        self.SetMargins(0,0)
+        self.SetMargins(0, 0)
 
         self.SetViewWhiteSpace(False)
-        #self.SetBufferedDraw(False)
-        #self.SetViewEOL(True)
-        #self.SetEOLMode(stc.STC_EOL_CRLF)
-        #self.SetUseAntiAliasing(True)
-
         self.SetEdgeMode(stc.STC_EDGE_BACKGROUND)
         self.SetEdgeColumn(78)
 
-        # Setup a margin to hold fold markers
-        #self.SetFoldFlags(16)  ###  WHAT IS THIS VALUE?  WHAT ARE THE OTHER FLAGS?  DOES IT MATTER?
+        # Set up a margin to hold fold markers
+        # self.SetFoldFlags(16)  ###  WHAT IS THIS VALUE?  WHAT ARE THE OTHER FLAGS?  DOES IT MATTER?
         self.SetMarginType(2, stc.STC_MARGIN_SYMBOL)
         self.SetMarginMask(2, stc.STC_MASK_FOLDERS)
         self.SetMarginSensitive(2, True)
@@ -157,9 +135,9 @@ class PythonSTC(stc.StyledTextCtrl):
             self.MarkerDefine(stc.STC_MARKNUM_FOLDEROPENMID, stc.STC_MARK_BOXMINUSCONNECTED, "white", "#808080")
             self.MarkerDefine(stc.STC_MARKNUM_FOLDERMIDTAIL, stc.STC_MARK_TCORNER,           "white", "#808080")
 
-        self.Bind(stc.EVT_STC_UPDATEUI, self.OnUpdateUI)
-        self.Bind(stc.EVT_STC_MARGINCLICK, self.OnMarginClick)
-        self.Bind(wx.EVT_KEY_DOWN, self.OnKeyPressed)
+        self.Bind(stc.EVT_STC_UPDATEUI, self.on_update_ui)
+        self.Bind(stc.EVT_STC_MARGINCLICK, self.on_margin_click)
+        self.Bind(wx.EVT_KEY_DOWN, self.on_key_pressed)
 
         # Make some styles,  The lexer defines what each style is used for, we
         # just have to define what each style looks like.  This set is adapted from
@@ -209,15 +187,12 @@ class PythonSTC(stc.StyledTextCtrl):
         self.SetCaretForeground("BLUE")
 
         # register some images for use in the AutoComplete box.
-        #### self.RegisterImage(1, Smiles.GetBitmap())  # DEBUG was images.
-        self.RegisterImage(1,
-            wx.ArtProvider.GetBitmap(wx.ART_FLOPPY, size=(16,16)))
-        self.RegisterImage(2,
-            wx.ArtProvider.GetBitmap(wx.ART_NEW, size=(16,16)))
-        self.RegisterImage(3,
-            wx.ArtProvider.GetBitmap(wx.ART_COPY, size=(16,16)))
+        # self.RegisterImage(1, Smiles.GetBitmap())  # DEBUG was images.
+        self.RegisterImage(1, wx.ArtProvider.GetBitmap(wx.ART_FLOPPY, size=(16, 16)))
+        self.RegisterImage(2, wx.ArtProvider.GetBitmap(wx.ART_NEW, size=(16, 16)))
+        self.RegisterImage(3, wx.ArtProvider.GetBitmap(wx.ART_COPY, size=(16, 16)))
 
-    def OnKeyPressed(self, event):
+    def on_key_pressed(self, event):
         if self.CallTipActive():
             self.CallTipCancel()
         key = event.GetKeyCode()
@@ -233,26 +208,19 @@ class PythonSTC(stc.StyledTextCtrl):
                                  'fubar(param1, param2)')
             # Code completion
             else:
-                #lst = []
-                #for x in range(50000):
-                #    lst.append('%05d' % x)
-                #st = " ".join(lst)
-                #print(len(st))
-                #self.AutoCompShow(0, st)
-
-                kw = keyword.kwlist[:]
+                kw = list(keyword.kwlist[:])
                 kw.append("zzzzzz?2")
                 kw.append("aaaaa?2")
                 kw.append("__init__?3")
                 kw.append("zzaaaaa?2")
                 kw.append("zzbaaaa?2")
                 kw.append("this_is_a_longer_value")
-                #kw.append("this_is_a_much_much_much_much_much_much_much_longer_value")
+                # kw.append("this_is_a_much_much_much_much_much_much_much_longer_value")
 
-                kw.sort()  # Python sorts are case sensitive
+                kw.sort()  # Python sorts are case-sensitive
                 self.AutoCompSetIgnoreCase(False)  # so this needs to match
 
-                # Images are specified with a appended "?type"
+                # Images are specified with an appended "?type"
                 for i in range(len(kw)):
                     if kw[i] in keyword.kwlist:
                         kw[i] = kw[i] + "?1"
@@ -261,105 +229,102 @@ class PythonSTC(stc.StyledTextCtrl):
         else:
             event.Skip()
 
-    def OnUpdateUI(self, evt):
+    def on_update_ui(self, evt):
+        _ = evt
         # check for matching braces
-        braceAtCaret = -1
-        braceOpposite = -1
-        charBefore = None
-        caretPos = self.GetCurrentPos()
+        brace_at_caret = -1
+        brace_opposite = -1
+        char_before = style_before = None
+        caret_pos = self.GetCurrentPos()
 
-        if caretPos > 0:
-            charBefore = self.GetCharAt(caretPos - 1)
-            styleBefore = self.GetStyleAt(caretPos - 1)
+        if caret_pos > 0:
+            char_before = self.GetCharAt(caret_pos - 1)
+            style_before = self.GetStyleAt(caret_pos - 1)
 
         # check before
-        if charBefore and chr(charBefore) in "[]{}()" and styleBefore == stc.STC_P_OPERATOR:
-            braceAtCaret = caretPos - 1
+        if char_before and chr(char_before) in "[]{}()" and style_before == stc.STC_P_OPERATOR:
+            brace_at_caret = caret_pos - 1
 
         # check after
-        if braceAtCaret < 0:
-            charAfter = self.GetCharAt(caretPos)
-            styleAfter = self.GetStyleAt(caretPos)
+        if brace_at_caret < 0:
+            char_after = self.GetCharAt(caret_pos)
+            style_after = self.GetStyleAt(caret_pos)
 
-            if charAfter and chr(charAfter) in "[]{}()" and styleAfter == stc.STC_P_OPERATOR:
-                braceAtCaret = caretPos
+            if char_after and chr(char_after) in "[]{}()" and style_after == stc.STC_P_OPERATOR:
+                brace_at_caret = caret_pos
 
-        if braceAtCaret >= 0:
-            braceOpposite = self.BraceMatch(braceAtCaret)
+        if brace_at_caret >= 0:
+            brace_opposite = self.BraceMatch(brace_at_caret)
 
-        if braceAtCaret != -1  and braceOpposite == -1:
-            self.BraceBadLight(braceAtCaret)
+        if brace_at_caret != -1 and brace_opposite == -1:
+            self.BraceBadLight(brace_at_caret)
         else:
-            self.BraceHighlight(braceAtCaret, braceOpposite)
-            #pt = self.PointFromPosition(braceOpposite)
-            #self.Refresh(True, wxRect(pt.x, pt.y, 5,5))
-            #print(pt)
-            #self.Refresh(False)
+            self.BraceHighlight(brace_at_caret, brace_opposite)
 
-    def OnMarginClick(self, evt):
+    def on_margin_click(self, evt):
         # fold and unfold as needed
         if evt.GetMargin() == 2:
             if evt.GetShift() and evt.GetControl():
                 self.FoldAll()
             else:
-                lineClicked = self.LineFromPosition(evt.GetPosition())
+                line_clicked = self.LineFromPosition(evt.GetPosition())
 
-                if self.GetFoldLevel(lineClicked) & stc.STC_FOLDLEVELHEADERFLAG:
+                if self.GetFoldLevel(line_clicked) & stc.STC_FOLDLEVELHEADERFLAG:
                     if evt.GetShift():
-                        self.SetFoldExpanded(lineClicked, True)
-                        self.Expand(lineClicked, True, True, 1)
+                        self.SetFoldExpanded(line_clicked, True)
+                        self.Expand(line_clicked, True, True, 1)
                     elif evt.GetControl():
-                        if self.GetFoldExpanded(lineClicked):
-                            self.SetFoldExpanded(lineClicked, False)
-                            self.Expand(lineClicked, False, True, 0)
+                        if self.GetFoldExpanded(line_clicked):
+                            self.SetFoldExpanded(line_clicked, False)
+                            self.Expand(line_clicked, False, True, 0)
                         else:
-                            self.SetFoldExpanded(lineClicked, True)
-                            self.Expand(lineClicked, True, True, 100)
+                            self.SetFoldExpanded(line_clicked, True)
+                            self.Expand(line_clicked, True, True, 100)
                     else:
-                        self.ToggleFold(lineClicked)
+                        self.ToggleFold(line_clicked)
 
-    def FoldAll(self):
-        lineCount = self.GetLineCount()
+    def FoldAll(self, action=None):
+        line_count = self.GetLineCount()
         expanding = True
 
         # find out if we are folding or unfolding
-        for lineNum in range(lineCount):
-            if self.GetFoldLevel(lineNum) & stc.STC_FOLDLEVELHEADERFLAG:
-                expanding = not self.GetFoldExpanded(lineNum)
+        for line_num in range(line_count):
+            if self.GetFoldLevel(line_num) & stc.STC_FOLDLEVELHEADERFLAG:
+                expanding = not self.GetFoldExpanded(line_num)
                 break
 
-        lineNum = 0
+        line_num = 0
 
-        while lineNum < lineCount:
-            level = self.GetFoldLevel(lineNum)
+        while line_num < line_count:
+            level = self.GetFoldLevel(line_num)
             if level & stc.STC_FOLDLEVELHEADERFLAG and \
                (level & stc.STC_FOLDLEVELNUMBERMASK) == stc.STC_FOLDLEVELBASE:
 
                 if expanding:
-                    self.SetFoldExpanded(lineNum, True)
-                    lineNum = self.Expand(lineNum, True)
-                    lineNum = lineNum - 1
+                    self.SetFoldExpanded(line_num, True)
+                    line_num = self.Expand(line_num, True)
+                    line_num = line_num - 1
                 else:
-                    lastChild = self.GetLastChild(lineNum, -1)
-                    self.SetFoldExpanded(lineNum, False)
+                    last_child = self.GetLastChild(line_num, -1)
+                    self.SetFoldExpanded(line_num, False)
 
-                    if lastChild > lineNum:
-                        self.HideLines(lineNum+1, lastChild)
+                    if last_child > line_num:
+                        self.HideLines(line_num+1, last_child)
 
-            lineNum = lineNum + 1
+            line_num = line_num + 1
 
-    def Expand(self, line, doExpand, force=False, visLevels=0, level=-1):
-        lastChild = self.GetLastChild(line, level)
+    def Expand(self, line, do_expand, force=False, vis_levels=0, level=-1):
+        last_child = self.GetLastChild(line, level)
         line = line + 1
 
-        while line <= lastChild:
+        while line <= last_child:
             if force:
-                if visLevels > 0:
+                if vis_levels > 0:
                     self.ShowLines(line, line)
                 else:
                     self.HideLines(line, line)
             else:
-                if doExpand:
+                if do_expand:
                     self.ShowLines(line, line)
 
             if level == -1:
@@ -367,18 +332,18 @@ class PythonSTC(stc.StyledTextCtrl):
 
             if level & stc.STC_FOLDLEVELHEADERFLAG:
                 if force:
-                    if visLevels > 1:
+                    if vis_levels > 1:
                         self.SetFoldExpanded(line, True)
                     else:
                         self.SetFoldExpanded(line, False)
 
-                    line = self.Expand(line, doExpand, force, visLevels-1)
+                    line = self.Expand(line, do_expand, force, vis_levels - 1)
 
                 else:
-                    if doExpand and self.GetFoldExpanded(line):
-                        line = self.Expand(line, True, force, visLevels-1)
+                    if do_expand and self.GetFoldExpanded(line):
+                        line = self.Expand(line, True, force, vis_levels - 1)
                     else:
-                        line = self.Expand(line, False, force, visLevels-1)
+                        line = self.Expand(line, False, force, vis_levels - 1)
             else:
                 line = line + 1
 
@@ -394,8 +359,6 @@ class SourceCodeEditor(PythonSTC):
 
     # Some methods to make it compatible with how the wxTextCtrl is used
     def SetValue(self, value):
-        # if wx.USE_UNICODE:
-            # value = value.decode('iso8859_1')
         val = self.GetReadOnly()
         self.SetReadOnly(False)
         self.SetText(value)
@@ -418,7 +381,7 @@ class SourceCodeEditor(PythonSTC):
 
     def ShowPosition(self, pos):
         line = self.LineFromPosition(pos)
-        #self.EnsureVisible(line)
+        # self.EnsureVisible(line)
         self.GotoLine(line)
 
     def GetLastPosition(self):
@@ -459,7 +422,7 @@ class SourceCodeEditor(PythonSTC):
         self.SetProperty("tab.timmy.whinge.level", "1")
 
         # Set left and right margins
-        self.SetMargins(2,2)
+        self.SetMargins(2, 2)
 
         # Set up the numbers in the margin for margin #1
         self.SetMarginType(1, wx.stc.STC_MARGIN_NUMBER)
@@ -469,12 +432,10 @@ class SourceCodeEditor(PythonSTC):
         # Indentation and tab stuff
         self.SetIndent(4)                 # Proscribed indent size for wx
         self.SetIndentationGuides(True)   # Show indent guides
-        self.SetBackSpaceUnIndents(True)  # Backspace unindents rather than
-                                          # delete 1 space
+        self.SetBackSpaceUnIndents(True)  # Backspace unindents rather than delete 1 space
         self.SetTabIndents(True)          # Tab key indents
         self.SetTabWidth(4)               # Proscribed tab size for wx
-        self.SetUseTabs(False)            # Use spaces rather than tabs, or
-                                          # TabTimmy will complain!
+        self.SetUseTabs(False)            # Use spaces rather than tabs, or TabTimmy will complain!
         # White space
         self.SetViewWhiteSpace(False)   # Don't view white space
 
@@ -487,7 +448,7 @@ class SourceCodeEditor(PythonSTC):
         # No right-edge mode indicator
         self.SetEdgeMode(stc.STC_EDGE_NONE)
 
-        # Setup a margin to hold fold markers
+        # Set up a margin to hold fold markers
         self.SetMarginType(2, stc.STC_MARGIN_SYMBOL)
         self.SetMarginMask(2, stc.STC_MASK_FOLDERS)
         self.SetMarginSensitive(2, True)
@@ -495,20 +456,17 @@ class SourceCodeEditor(PythonSTC):
 
         # Global default style
         if wx.Platform == '__WXMSW__':
-            # print("DEBUG: Setup on Windows")
-            self.StyleSetSpec(stc.STC_STYLE_DEFAULT,
-                              'fore:#000000,back:#FFFFFF,face:Space Mono')  # Courier New')
+            self.StyleSetSpec(stc.STC_STYLE_DEFAULT, 'fore:#000000,back:#FFFFFF,face:Space Mono')  # Courier New
         elif wx.Platform == '__WXMAC__':
-            # print("DEBUG: Setup on Mac")
-            # TODO: if this looks fine on Linux too, remove the Mac-specific case
+            # DEBUG: if this looks fine on Linux too, remove the Mac-specific case
             # and use this whenever OS != MSW.
             self.StyleSetSpec(stc.STC_STYLE_DEFAULT,
                               'fore:#000000,back:#FFFFFF,face:Monaco')
         else:
             # print("DEBUG: Setup on Linux")
             defsize = wx.SystemSettings.GetFont(wx.SYS_ANSI_FIXED_FONT).GetPointSize()
-            self.StyleSetSpec(stc.STC_STYLE_DEFAULT,
-                              'fore:#000000,back:#FFFFFF,face:Hack,size:%d'%defsize)  # Courier, Space Mono, Source Pro Mono,
+            # Courier, Space Mono, Source Pro Mono,
+            self.StyleSetSpec(stc.STC_STYLE_DEFAULT, 'fore:#000000,back:#FFFFFF,face:Hack,size:%d' % defsize)
         """
         self.StyleSetBackground(stc.STC_STYLE_DEFAULT, Colour(200, 222, 40))
         self.StyleSetForeground(stc.STC_STYLE_DEFAULT, Colour(7, 0, 70))
@@ -520,11 +478,11 @@ class SourceCodeEditor(PythonSTC):
         # The rest remains unchanged.
 
         # Line numbers in margin
-        self.StyleSetSpec(wx.stc.STC_STYLE_LINENUMBER,'fore:#000000,back:#99A9C2')
+        self.StyleSetSpec(wx.stc.STC_STYLE_LINENUMBER, 'fore:#000000,back:#99A9C2')
         # Highlighted brace
-        self.StyleSetSpec(wx.stc.STC_STYLE_BRACELIGHT,'fore:#00009D,back:#FFFF00')
+        self.StyleSetSpec(wx.stc.STC_STYLE_BRACELIGHT, 'fore:#00009D,back:#FFFF00')
         # Unmatched brace
-        self.StyleSetSpec(wx.stc.STC_STYLE_BRACEBAD,'fore:#00009D,back:#FF0000')
+        self.StyleSetSpec(wx.stc.STC_STYLE_BRACEBAD, 'fore:#00009D,back:#FF0000')
         # Indentation guide
         self.StyleSetSpec(wx.stc.STC_STYLE_INDENTGUIDE, "fore:#CDCDCD")
 
@@ -565,8 +523,8 @@ class SourceCodeEditor(PythonSTC):
         self.SetSelBackground(True, wx.SystemSettings.GetColour(wx.SYS_COLOUR_HIGHLIGHT))
         self.SetSelForeground(True, wx.SystemSettings.GetColour(wx.SYS_COLOUR_HIGHLIGHTTEXT))
 
-    def RegisterModifiedEvent(self, eventHandler):
-        self.Bind(wx.stc.EVT_STC_CHANGE, eventHandler)
+    def RegisterModifiedEvent(self, event_handler):
+        self.Bind(wx.stc.EVT_STC_CHANGE, event_handler)
 
 
 # ---------------------------------------------------------------------------
@@ -579,7 +537,7 @@ modDefault = modOriginal
 # ---------------------------------------------------------------------------
 
 
-def isUTF8Strict(data):
+def is_utf8_strict(data):
     try:
         decoded = data.decode('UTF-8')
     except UnicodeDecodeError:
@@ -593,13 +551,13 @@ def isUTF8Strict(data):
 
 class CodeEditorPanel(wx.Panel):
     """Panel for the 'Code Editor' tab"""
-    def __init__(self, parent, mainFrame, path=None):
+    def __init__(self, parent, main_frame, filepath=None):
         self.log = sys.stdout  # From FileDialog
-        self.path = path
-        wx.Panel.__init__(self, parent, size=(1,1))
-        self.mainFrame = mainFrame
+        self.path = filepath
+        wx.Panel.__init__(self, parent, size=(1, 1))
+        self.mainFrame = main_frame
         self.editor = SourceCodeEditor(self)
-        self.editor.RegisterModifiedEvent(self.OnCodeModified)
+        self.editor.RegisterModifiedEvent(self.on_code_modified)
 
         """
         self.SetBackgroundColour(Colour(200, 222, 40))
@@ -609,32 +567,17 @@ class CodeEditorPanel(wx.Panel):
         """
 
         self.btnSave = wx.Button(self, -1, "Save Changes")
-        # self.btnRestore = wx.Button(self, -1, "Delete Modified")
         self.btnSave.Enable(False)
-        self.btnSave.Bind(wx.EVT_BUTTON, self.OnSave)
-        # self.btnRestore.Bind(wx.EVT_BUTTON, self.OnRestore)
+        self.btnSave.Bind(wx.EVT_BUTTON, self.on_save)
 
         # From FileDialog
         self.btnOpen = wx.Button(self, -1, "Open...")
-        self.btnOpen.Bind(wx.EVT_BUTTON, self.OnButton)
+        self.btnOpen.Bind(wx.EVT_BUTTON, self.on_button)
 
         self.btnSaveAs = wx.Button(self, -1, "Save as...")
-        self.btnSaveAs.Bind(wx.EVT_BUTTON, self.OnButton2)
-
-        self.radioButtons = {modOriginal: wx.RadioButton(self, -1, "Original",
-                                                         style = wx.RB_GROUP),
-                             modModified: wx.RadioButton(self, -1, "Modified")}
-
+        self.btnSaveAs.Bind(wx.EVT_BUTTON, self.on_button2)
         self.controlBox = wx.BoxSizer(wx.HORIZONTAL)
-        self.controlBox.Add(wx.StaticText(self, -1, "Active Version:"), 0,
-                            wx.RIGHT | wx.LEFT | wx.ALIGN_CENTER_VERTICAL, 5)
-        for modID, radioButton in self.radioButtons.items():
-            self.controlBox.Add(radioButton, 0, wx.EXPAND | wx.RIGHT, 5)
-            radioButton.modID = modID # makes it easier for the event handler
-            radioButton.Bind(wx.EVT_RADIOBUTTON, self.OnRadioButton)
-
         self.controlBox.Add(self.btnSave, 0, wx.RIGHT, 5)
-        # self.controlBox.Add(self.btnRestore, 0, wx.RIGHT, 5)
         self.controlBox.Add(self.btnOpen, 0, wx.RIGHT, 5)
         self.controlBox.Add(self.btnSaveAs, 0)
 
@@ -649,21 +592,14 @@ class CodeEditorPanel(wx.Panel):
             # print("DEBUG: path is init = %s" % self.path)
             self.LoadFile(self.path)
 
-    def LoadFile(self, path):
+    def LoadFile(self, filepath):
         # Open
-        f = open(path, "rb")
+        f = open(filepath, "rb")
         try:
             source = f.read()
         finally:
             f.close()
         self.LoadSource(source)
-
-    def ActiveModuleChanged(self):
-        self.LoadSource(self.CodeModules.GetSource())
-        self.UpdateControlState()
-        self.mainFrame.pnl.Freeze()
-        self.ReloadDemo()
-        self.mainFrame.pnl.Thaw()
 
     def LoadSource(self, source):
         self.editor.Clear()
@@ -677,65 +613,34 @@ class CodeEditorPanel(wx.Panel):
         if highlight:
             self.editor.SelectLine(line)
 
-    def UpdateControlState(self):
-        active = self.CodeModules.GetActiveID()
-        # Update the radio/restore buttons
-        for moduleID in self.radioButtons:
-            btn = self.radioButtons[moduleID]
-            if moduleID == active:
-                btn.SetValue(True)
-            else:
-                btn.SetValue(False)
-
-            if self.CodeModules.Exists(moduleID):
-                btn.Enable(True)
-                if moduleID == modModified:
-                    self.btnRestore.Enable(True)
-            else:
-                btn.Enable(False)
-                if moduleID == modModified:
-                    self.btnRestore.Enable(False)
-
-    def OnRadioButton(self, event):
-        radioSelected = event.GetEventObject()
-        modSelected = radioSelected.modID
-        if modSelected != self.CodeModules.GetActiveID():
-            busy = wx.BusyInfo("Reloading Code module...")
-            self.CodeModules.SetActive(modSelected)
-            self.ActiveModuleChanged()
-
-    def ReloadDemo(self):
-        if self.CodeModules.name != __name__:
-            self.mainFrame.RunModule()
-
-    def OnCodeModified(self, event):
+    def on_code_modified(self, event):
+        _ = event
         self.btnSave.Enable(self.editor.IsModified())
 
-    def OnSave(self, event, path=None):
+    def on_save(self, event, filepath=None):
         if self.path is None:
             self.path = "noname"
-            self.OnButton2(event)
+            self.on_button2(event)
             return
-        # print("DEBUG: OnSave path is init = %s passado %s" % (self.path, path))
-        if path:
-            if path != self.path and os.path.isfile(path):
-                overwriteMsg = "You are about to overwrite an existing file\n" + \
+        if filepath:
+            if filepath != self.path and os.path.isfile(filepath):
+                overwrite_msg = "You are about to overwrite an existing file\n" + \
                                "Do you want to continue?"
-                dlg = wx.MessageDialog(self, overwriteMsg, "Editor Writer",
-                                       wx.YES_NO | wx.NO_DEFAULT| wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, overwrite_msg, "Editor Writer",
+                                       wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
                 dlg.SetBackgroundColour(Colour(200, 222, 40))
                 dlg.SetForegroundColour(Colour(7, 0, 70))
                 result = dlg.ShowModal()
                 if result == wx.ID_NO:
                     return
                 dlg.Destroy()
-            self.path = path
+            self.path = filepath
 
         # Save
         f = open(self.path, "wb")
         source = self.editor.GetTextRaw()
         # print("DEBUG: Test is Unicode %s",isUTF8Strict(source))
-        if isUTF8Strict(source):
+        if is_utf8_strict(source):
             try:
                 f.write(source)
                 # print("DEBUG: Saved as Unicode")
@@ -744,35 +649,17 @@ class CodeEditorPanel(wx.Panel):
         else:
             # print("DEBUG: there were problems with source not being Unicode.")
             # Attempt to isolate the problematic bytes
-            bsource = bytearray(source)
+            # DEBUG bytearray(source)
             try:
                 chunksize = 1024
                 for c in range(0, len(source), chunksize):
                     data = [chr(int(x, base=2)) for x in source[c:c + chunksize]]
-                    f.write(''.join(data))
+                    f.write(b''.join(data))
             finally:
                 f.close()
 
-    # busy = wx.BusyInfo("Reloading Code module...")
-        # self.CodeModules.LoadFromFile(modModified, modifiedFilename)
-        #self.ActiveModuleChanged()
-
-        #self.mainFrame.SetTreeModified(True)
-
-    def OnRestore(self, event): # Handles the "Delete Modified" button
-        modifiedFilename = GetModifiedFilename(self.CodeModules.name)
-        self.CodeModules.Delete(modModified)
-        os.unlink(modifiedFilename) # Delete the modified copy
-        busy = wx.BusyInfo("Reloading Code module...")
-
-        self.ActiveModuleChanged()
-
-        self.mainFrame.SetTreeModified(False)
-
-    def OnButton(self, evt):
-        #self.log.WriteText("CWD: %s\n" % os.getcwd())
-        # self.log.write("CWD: %s\n" % os.getcwd())
-
+    def on_button(self, evt):
+        _ = evt
         # Create the dialog. In this case the current directory is forced as the starting
         # directory for the dialog, and no default file name is forced. This can easilly
         # be changed in your program. This is an 'open' dialog, and allows multitple
@@ -789,10 +676,7 @@ class CodeEditorPanel(wx.Panel):
             defaultDir=cwd,
             defaultFile="",
             wildcard=wildcard,
-            style=wx.FD_OPEN |
-                  wx.FD_CHANGE_DIR | wx.FD_FILE_MUST_EXIST |
-                  wx.FD_PREVIEW
-            )  #  wx.FD_MULTIPLE |
+            style=wx.FD_OPEN | wx.FD_CHANGE_DIR | wx.FD_FILE_MUST_EXIST | wx.FD_PREVIEW)  # wx.FD_MULTIPLE |
 
         # Show the dialog and retrieve the user response. If it is the OK response,
         # process the data.
@@ -803,19 +687,16 @@ class CodeEditorPanel(wx.Panel):
             # self.log.WriteText('You selected %d files:' % len(paths))
             # DEBUG self.log.write('You selected %d files:' % len(paths))
 
-            #for path in paths:
-                # self.log.WriteText('           %s\n' % path)
-            #    self.log.write('           %s\n' % path)
-            path = paths[-1]  # just get the last one
+            filepath = paths[-1]  # just get the last one
             # Open
-            f = open(path, "rb")
+            f = open(filepath, "rb")
             try:
                 source = f.read()
             finally:
                 f.close()
 
             # store the new path
-            self.path = path
+            self.path = filepath
             # self.log.write('%s\n' % source)
             self.LoadSource(source)  # Just the last file
         # Compare this with the debug above; did we change working dirs?
@@ -826,10 +707,7 @@ class CodeEditorPanel(wx.Panel):
         # BAD things can happen otherwise!
         dlg.Destroy()
 
-    def OnButton2(self, evt):
-        #self.log.WriteText("CWD: %s\n" % os.getcwd())
-        # self.log.write("CWD: %s\n" % os.getcwd())
-
+    def on_button2(self, evt):
         # Create the dialog. In this case the current directory is forced as the starting
         # directory for the dialog, and no default file name is forced. This can easilly
         # be changed in your program. This is an 'save' dialog.
@@ -856,10 +734,7 @@ class CodeEditorPanel(wx.Panel):
         # Show the dialog and retrieve the user response. If it is the OK response,
         # process the data.
         if dlg.ShowModal() == wx.ID_OK:
-            path = dlg.GetPath()
-            # self.log.WriteText('You selected "%s"' % path)
-            # self.log.write('You selected "%s"\n' % path)
-
+            filepath = dlg.GetPath()
             # Normally, at this point you would save your data using the file and path
             # data that the user provided to you, but since we didn't actually start
             # with any data to work with, that would be difficult.
@@ -875,7 +750,7 @@ class CodeEditorPanel(wx.Panel):
             #
             # store the new path
             # self.path = path
-            self.OnSave(evt, path)
+            self.on_save(evt, filepath)
         # Note that the current working dir didn't change. This is good since
         # that's the way we set it up.
         # self.log.WriteText("CWD: %s\n" % os.getcwd())
@@ -888,16 +763,16 @@ class CodeEditorPanel(wx.Panel):
 
 # ---------------------------------------------------------------------------
 
-def opj(path):
+def opj(filepath):
     """Convert paths to the platform-specific separator"""
-    st = os.path.join(*tuple(path.split('/')))
+    st = os.path.join(*tuple(filepath.split('/')))
     # HACK: on Linux, a leading / gets lost...
-    if path.startswith('/'):
+    if filepath.startswith('/'):
         st = '/' + st
     return st
 
 
-def GetDataDir():
+def get_data_dir():
     """
     Return the standard location on this platform for application data
     """
@@ -905,24 +780,24 @@ def GetDataDir():
     return sp.GetUserDataDir()
 
 
-def GetModifiedDirectory():
+def get_modified_directory():
     """
     Returns the directory where modified versions of the Code files
     are stored
     """
-    return os.path.join(GetDataDir(), "modified")
+    return os.path.join(get_data_dir(), "modified")
 
 
-def GetModifiedFilename(name):
+def get_modified_filename(name):
     """
     Returns the filename of the modified version of the specified Code
     """
     if not name.endswith(".py"):
         name = name + ".py"
-    return os.path.join(GetModifiedDirectory(), name)
+    return os.path.join(get_modified_directory(), name)
 
 
-def GetOriginalFilename(name):
+def get_original_filename(name):
     """
     Returns the filename of the original version of the specified Code
     """
@@ -932,36 +807,36 @@ def GetOriginalFilename(name):
     if os.path.isfile(name):
         return name
 
-    originalDir = os.getcwd()
-    listDir = os.listdir(originalDir)
+    original_dir = os.getcwd()
+    list_dir = os.listdir(original_dir)
     # Loop over the content of the Code directory
-    for item in listDir:
+    for item in list_dir:
         if not os.path.isdir(item):
             # Not a directory, continue
             continue
-        dirFile = os.listdir(item)
+        dir_file = os.listdir(item)
         # See if a file called "name" is there
-        if name in dirFile:
+        if name in dir_file:
             return os.path.join(item, name)
 
     # We must return a string...
     return ""
 
 
-def DoesModifiedExist(name):
+def does_modified_exist(name):
     """Returns whether the specified Code has a modified copy"""
-    if os.path.exists(GetModifiedFilename(name)):
+    if os.path.exists(get_modified_filename(name)):
         return True
     else:
         return False
 
 
-def GetConfig():
-    if not os.path.exists(GetDataDir()):
-        os.makedirs(GetDataDir())
+def get_config():
+    if not os.path.exists(get_data_dir()):
+        os.makedirs(get_data_dir())
 
     config = wx.FileConfig(
-        localFilename=os.path.join(GetDataDir(), "options"))
+        localFilename=os.path.join(get_data_dir(), "options"))
     return config
 
 
@@ -973,7 +848,7 @@ def main(filepath, frame=None):
     app = wx.App()
     if frame is None:
         frame = wx.Frame(None)
-    panel = CodeEditorPanel(frame, None, filepath)
+    CodeEditorPanel(frame, None, filepath)
     frame.Show(True)
     app.MainLoop()
 # ----------------------------------------------------------------------------
@@ -982,7 +857,7 @@ def main(filepath, frame=None):
 
 
 if __name__ == '__main__' and __package__ is None:
-    from os import sys, path
+    from os import path
     sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
     path = None
     try:

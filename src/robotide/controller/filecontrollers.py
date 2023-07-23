@@ -19,7 +19,7 @@ import stat
 import subprocess
 import sys
 from itertools import chain
-from .dataloader import ExcludedDirectory, TestData
+from .dataloader import ExcludedDirectory, test_data
 from ..publish import (RideDataFileRemoved, RideInitFileRemoved, RideDataChangedToDirty, RideDataDirtyCleared,
                        RideSuiteAdded, RideItemSettingsChanged)
 from ..publish.messages import RideDataFileSet, RideOpenResource
@@ -27,7 +27,7 @@ from ..robotapi import TestDataDirectory, TestCaseFile, ResourceFile
 from .. import utils
 
 from .basecontroller import WithUndoRedoStacks, _BaseController, WithNamespace, ControllerWithParent
-from .robotdata import NewTestCaseFile, NewTestDataDirectory
+from .robotdata import new_test_case_file, new_test_data_directory
 from .settingcontrollers import (DocumentationController, FixtureController, TimeoutController, TemplateController,
                                  DefaultTagsController, ForceTagsController)
 from .tablecontrollers import (VariableTableController, TestCaseTableController, KeywordTableController,
@@ -109,6 +109,7 @@ class _FileSystemElement(object):
 
 
 class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
+    directory = None
 
     def __init__(self, data, project=None, parent=None):
         self.data = data
@@ -142,6 +143,7 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
         RideDataFileSet(item=self).publish()
 
     def _children(self, data):
+        _ = data
         return []
 
     @property
@@ -211,13 +213,16 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
     def metadata(self):
         return MetadataListController(self, self.data.setting_table)
 
-    def is_user_keyword(self, value):
+    def is_user_keyword(self, datafile, value):
+        _ = datafile
         return WithNamespace.is_user_keyword(self, self.datafile, value)
 
-    def is_library_keyword(self, value):
+    def is_library_keyword(self, datafile, value):
+        _ = datafile
         return WithNamespace.is_library_keyword(self, self.datafile, value)
 
-    def keyword_info(self, keyword_name):
+    def keyword_info(self, datafile, keyword_name):
+        _ = datafile
         return WithNamespace.keyword_info(self, self.data, keyword_name)
 
     def mark_dirty(self):
@@ -400,7 +405,12 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
         return {}
 
     def is_inside_top_suite(self, res):
+        _ = res
         return False
+
+    @staticmethod
+    def refresh_stat():
+        return NotImplemented
 
 
 class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseController):
@@ -532,12 +542,12 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
         self.filename = self.data.initfile
 
     def new_test_case_file(self, path):
-        ctrl = self._new_data_controller(NewTestCaseFile(path))
+        ctrl = self._new_data_controller(new_test_case_file(path))
         ctrl.mark_dirty()
         return ctrl
 
     def new_test_data_directory(self, path):
-        return self._new_data_controller(NewTestDataDirectory(path))
+        return self._new_data_controller(new_test_data_directory(path))
 
     def _new_data_controller(self, datafile):
         self.data.children.append(datafile)
@@ -997,7 +1007,8 @@ class ExcludedDirectoryController(_FileSystemElement, ControllerWithParent, With
     def dirty(self):
         return False
 
-    def keyword_info(self, keyword_name):
+    def keyword_info(self, datafile, keyword_name):
+        _ = datafile
         return WithNamespace.keyword_info(self, self.data, keyword_name)
 
     def is_excluded(self):
@@ -1006,7 +1017,7 @@ class ExcludedDirectoryController(_FileSystemElement, ControllerWithParent, With
     def remove_from_excludes(self):
         self._project.internal_settings.excludes.remove_path(self.source)
         index = self.parent.children.index(self)
-        td = TestData(self.data.source, self.parent.data, self._project.internal_settings)
+        td = test_data(self.data.source, self.parent.data, self._project.internal_settings)
         result = TestDataDirectoryController(td, self._project, self.parent)
         self.parent.children[index] = result
         return result

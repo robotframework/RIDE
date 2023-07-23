@@ -21,6 +21,10 @@ from .configobj import ConfigObj, ConfigObjError, Section, UnreprError
 from .excludes_class import Excludes
 from ..publish import RideSettingsChanged
 
+FONT_SIZE = 'font size'
+GRID_COLORS = 'Grid Colors'
+USE_INSTALLED = 'use installed robot libraries'
+
 
 def initialize_settings(path, dest_file_name=None):
     if not os.path.exists(SETTINGS_DIRECTORY):
@@ -80,10 +84,6 @@ class SettingsMigrator(object):
             #      (self._old_settings.__repr__(), user_path))
             raise ConfigurationError("Invalid config file '%s': %s" %
                                      (user_path, err))
-        # print("DEBUG: Settings migrator old_settings: %s\nuser_path %s" %
-        # (self._old_settings.__repr__(), self._user_path))
-        # print("DEBUG: Settings migrator default_settings: %s\nsettings_path "
-        # "%s" % (self._default_settings.__repr__(), default_path))
 
     def migrate(self):
         # Add migrations here.
@@ -112,8 +112,6 @@ class SettingsMigrator(object):
             self.migrate_from_6_to_7(self._old_settings)
         if self._old_settings.get(self.SETTINGS_VERSION) == 7:
             self.migrate_from_7_to_8(self._old_settings)
-        # if self._old_settings.get(self.SETTINGS_VERSION) == 8:
-        #     self.migrate_from_8_to_9(self._old_settings)
         self.merge()
 
     def merge(self):
@@ -150,9 +148,9 @@ class SettingsMigrator(object):
 
     def migrate_from_3_to_4(self, settings):
         # See issue http://code.google.com/p/robotframework-ride/issues/detail?id=1124
-        font_size = settings.get('font size', None)
+        font_size = settings.get(FONT_SIZE, None)
         if font_size and font_size == 11:
-            settings['font size'] = 8
+            settings[FONT_SIZE] = 8
         settings[self.SETTINGS_VERSION] = 4
 
     def migrate_from_4_to_5(self, settings):
@@ -160,38 +158,38 @@ class SettingsMigrator(object):
         # see http://code.google.com/p/robotframework-ride/issues/detail?id=1206
         colors = settings.get('Colors', None)
         if colors:
-            settings['Grid Colors'] = colors
+            settings[GRID_COLORS] = colors
             del settings['Colors']
         settings[self.SETTINGS_VERSION] = 5
 
     def migrate_from_5_to_6(self, settings):
         # Made generic Text Edit and Grid sections.
-        grid_colors = settings.get('Grid Colors', None)
+        grid_colors = settings.get(GRID_COLORS, None)
         if grid_colors:
             settings['Grid'] = grid_colors
-            del settings['Grid Colors']
-        grid_font_size = settings.get('font size', None)
+            del settings[GRID_COLORS]
+        grid_font_size = settings.get(FONT_SIZE, None)
         if grid_font_size:
-            settings['Grid']['font size'] = grid_font_size
-            del settings['font size']
+            settings['Grid'][FONT_SIZE] = grid_font_size
+            del settings[FONT_SIZE]
         text_edit_colors = settings.get('Text Edit Colors', None)
         if text_edit_colors:
             settings['Text Edit'] = text_edit_colors
             del settings['Text Edit Colors']
         text_font_size = settings.get('text edit font size', None)
         if text_font_size:
-            settings['Text Edit']['font size'] = text_font_size
+            settings['Text Edit'][FONT_SIZE] = text_font_size
             del settings['text edit font size']
         settings[self.SETTINGS_VERSION] = 6
 
     def migrate_from_6_to_7(self, settings):
-        settings['use installed robot libraries'] = True
+        settings[USE_INSTALLED] = True
         settings[self.SETTINGS_VERSION] = 7
 
     def migrate_from_7_to_8(self, settings):
-        installed_rf_libs = settings.get('use installed robot libraries', None)
+        installed_rf_libs = settings.get(USE_INSTALLED, None)
         if installed_rf_libs:
-            del settings['use installed robot libraries']
+            del settings[USE_INSTALLED]
             for name in [
                          'BuiltIn', 'Collections', 'DateTime', 'Dialogs', 'Easter', 'OperatingSystem', 'Process',
                          'Remote', 'Screenshot', 'String', 'Telnet', 'XML']:
@@ -199,63 +197,6 @@ class SettingsMigrator(object):
                 if os.path.exists(lib_xml_path):
                     os.remove(lib_xml_path)
         settings[self.SETTINGS_VERSION] = 8
-
-    """
-    def migrate_from_8_to_9(self, settings):
-        # mainframe_size = settings.get('mainframe size', (1100, 700))
-        parameters = [
-            'mainframe_size',
-            'mainframe_position',
-            'mainframe_maximized',
-            'default_directory',
-            'list_variable_columns',
-            'list_col_min_width',
-            'list_col_max_width',
-            'auto_imports',
-            'library_xml_directories',
-            'txt_number_of_spaces',
-            'txt_format_separator',
-            'line_separator',
-            'default_file_format',
-            'check_for_updates',
-            'last_update_check',
-            'install_root'
-        ]
-        sec_text = ['font size']  # [Text Edit]
-        sec_grid = [              # [Grid]
-            'font_size',
-            'fixed_font',
-            'col_size',
-            'max_col_size',
-            'auto_size_cols',
-            'text_user_keyword',
-            'text_library_keyword',
-            'text_variable',
-            'text_unknown_variable',
-            'text_commented',
-            'text_string',
-            'text_empty',
-            'background_assign',
-            'background_keyword',
-            'background_mandatory',
-            'background_optional',
-            'background_must_be_empty',
-            'background_unknown',
-            'background_error',
-            'background_highlight'
-        ]
-        try:
-            for keyname in parameters:
-                self._key_with_underscore(settings, keyname)
-            for keyname in sec_text:
-                self._key_with_underscore(settings, keyname, 'Text Edit')
-            for keyname in sec_grid:
-                self._key_with_underscore(settings, keyname, 'Grid')
-        except AttributeError:  # DEBUG Ignore errors
-            #  raise ConfigObjError
-            pass
-        settings[self.SETTINGS_VERSION] = 9
-    """
 
     @staticmethod
     def _key_with_underscore(settings, keyname, section=None):
@@ -292,7 +233,7 @@ class ConfigurationError(Exception):
 class _Section(object):
 
     def __init__(self, section, parent=None, name=''):
-        self._config_obj = section
+        self.config_obj = section
         self._parent = parent
         self._name = name
 
@@ -303,23 +244,23 @@ class _Section(object):
         self.set(name, value)
 
     def __getitem__(self, name):
-        value = self._config_obj[name]
+        value = self.config_obj[name]
         if isinstance(value, Section):
             return _Section(value, self, name)
         return value
 
     def __iter__(self):
-        return iter(self._config_obj)
+        return iter(self.config_obj)
 
     def __len__(self):
-        return len(self._config_obj)
+        return len(self.config_obj)
 
     def iteritems(self):
         """Returns an iterator over the (key,value) items of the section"""
-        return self._config_obj.items()
+        return self.config_obj.items()
 
     def has_setting(self, name):
-        return name in self._config_obj
+        return name in self.config_obj
 
     def get(self, name, default):
         """Returns specified setting or (automatically set) default."""
@@ -348,12 +289,12 @@ class _Section(object):
             raise SectionError("Cannot override section with value.")
         if isinstance(value, _Section):
             if override:
-                self._config_obj[name] = {}
-            for key, _value in value._config_obj.items():
+                self.config_obj[name] = {}
+            for key, _value in value.config_obj.items():
                 self[name].set(key, _value, autosave, override)
-        elif name not in self._config_obj or override:
-            old = self._config_obj[name] if name in self._config_obj else None
-            self._config_obj[name] = value
+        elif name not in self.config_obj or override:
+            old = self.config_obj[name] if name in self.config_obj else None
+            self.config_obj[name] = value
             if autosave:
                 self.save()
             RideSettingsChanged(
@@ -379,16 +320,16 @@ class _Section(object):
 
     def add_section(self, name, **defaults):
         """Creates section or updates existing section with defaults."""
-        if name in self._config_obj and \
-           not isinstance(self._config_obj[name], Section):
+        if name in self.config_obj and \
+           not isinstance(self.config_obj[name], Section):
             raise SectionError('Cannot override value with section.')
-        if name not in self._config_obj:
-            self._config_obj[name] = {}
+        if name not in self.config_obj:
+            self.config_obj[name] = {}
         return self[name].set_defaults(**defaults)
 
     def _is_section(self, name):
-        return name in self._config_obj and \
-            isinstance(self._config_obj[name], Section)
+        return name in self.config_obj and \
+            isinstance(self.config_obj[name], Section)
 
 
 class Settings(_Section):
@@ -401,7 +342,7 @@ class Settings(_Section):
         self.excludes = Excludes(SETTINGS_DIRECTORY)
 
     def save(self):
-        self._config_obj.write()
+        self.config_obj.write()
 
 
 class RideSettings(Settings):

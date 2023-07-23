@@ -45,17 +45,17 @@ class HtmlWindow(html.HtmlWindow):
         self.font.SetPointSize(general_settings['font size'])
         self.SetFont(self.font)
         self.Refresh(True)
-        self.Bind(wx.EVT_KEY_DOWN, self.OnKeyDown)
+        self.Bind(wx.EVT_KEY_DOWN, self.on_key_down)
 
     def set_content(self, content):
         color = ''.join(hex(item)[2:] for item in general_settings['background help'])
         _content = '<body bgcolor=#%s>%s</body>' % (color, content)
         self.SetPage(_content)
 
-    def OnKeyDown(self, event):
+    def on_key_down(self, event):
         if self._is_copy(event):
             self._add_selection_to_clipboard()
-        self.Parent.OnKey(event)
+        self.Parent.on_key(event)
         event.Skip()
 
     @staticmethod
@@ -67,7 +67,7 @@ class HtmlWindow(html.HtmlWindow):
         wx.TheClipboard.SetData(wx.TextDataObject(self.SelectionToText()))
         wx.TheClipboard.Close()
 
-    def OnLinkClicked(self, link):
+    def OnLinkClicked(self, link):  # Overrides wx method
         webbrowser.open(link.Href)
 
     def close(self):

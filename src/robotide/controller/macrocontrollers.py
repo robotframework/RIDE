@@ -23,7 +23,7 @@ from .settingcontrollers import (DocumentationController, FixtureController, Tag
                                  TemplateController, ArgumentsController, ReturnValueController)
 from .stepcontrollers import ForLoopStepController, StepController, IntendedStepController
 from .tags import Tag
-from ..namespace.local_namespace import LocalNamespace
+from ..namespace.local_namespace import local_namespace
 from ..publish.messages import (RideItemStepsChanged, RideItemNameChanged, RideItemSettingsChanged,
                                 RideUserKeywordRemoved)
 from ..spec.iteminfo import ResourceUserKeywordInfo, TestCaseUserKeywordInfo
@@ -83,7 +83,7 @@ class WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         self._has_steps_changed = True
         self._steps_cached = None
         self.datafile_controller.register_for_namespace_updates(
-            self._clear_cached_steps)
+            self.clear_cached_steps)
 
     @property
     def source(self):
@@ -100,7 +100,7 @@ class WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         return self._steps_cached
 
     def set_parent(self, new_parent):
-        self._clear_cached_steps()
+        self.clear_cached_steps()
         ControllerWithParent.set_parent(self, new_parent)
 
     def _recreate_steps(self):
@@ -115,7 +115,7 @@ class WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         self._steps_cached = flattened_steps
         self._has_steps_changed = False
 
-    def _clear_cached_steps(self):
+    def clear_cached_steps(self):
         self._has_steps_changed = True
         self._steps_cached = None
 
@@ -157,11 +157,11 @@ class WithStepsController(ControllerWithParent, WithUndoRedoStacks):
 
     def get_local_namespace(self):
         # print(f"DEBUG: local namespace controller.namespace {self.datafile_controller.namespace}")
-        return LocalNamespace(self, self.datafile_controller.namespace)
+        return local_namespace(self, self.datafile_controller.namespace)
 
     def get_local_namespace_for_row(self, row):
         # print(f"DEBUG: local namespace_for_row controller.namespace {self.datafile_controller.namespace} row {row}")
-        return LocalNamespace(self, self.datafile_controller.namespace, row)
+        return local_namespace(self, self.datafile_controller.namespace, row)
 
     def get_cell_info(self, row, col):
         steps = self.steps
@@ -170,17 +170,17 @@ class WithStepsController(ControllerWithParent, WithUndoRedoStacks):
         return steps[row].get_cell_info(col)
 
     def get_keyword_info(self, kw_name):
-        return self.datafile_controller.keyword_info(kw_name)
+        return self.datafile_controller.keyword_info(None, kw_name)
 
     def is_user_keyword(self, value):
-        return self.datafile_controller.is_user_keyword(value)
+        return self.datafile_controller.is_user_keyword(None, value)
 
     def is_library_keyword(self, value):
-        return self.datafile_controller.is_library_keyword(value)
+        return self.datafile_controller.is_library_keyword(None, value)
 
     def delete(self):
         self.datafile_controller.unregister_namespace_updates(
-            self._clear_cached_steps)
+            self.clear_cached_steps)
         self._parent.delete(self)
         self.notify_keyword_removed()
 

@@ -77,30 +77,30 @@ class ListEditorBase(wx.Panel):
         return sizer
 
     def _make_bindings(self):
-        self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.OnItemSelected)
-        self.Bind(wx.EVT_LIST_ITEM_DESELECTED, self.OnItemDeselected)
-        self.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self.OnEdit)
-        self.Bind(wx.EVT_LIST_ITEM_RIGHT_CLICK, self.OnRightClick)
+        self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.on_item_selected)
+        self.Bind(wx.EVT_LIST_ITEM_DESELECTED, self.on_item_deselected)
+        self.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self.on_edit)
+        self.Bind(wx.EVT_LIST_ITEM_RIGHT_CLICK, self.on_right_click)
         if IS_WINDOWS:
-            self.Bind(wx.EVT_COMMAND_LEFT_CLICK, self.OnLeftClick)
+            self.Bind(wx.EVT_COMMAND_LEFT_CLICK, self.on_left_click)
         else:
-            self._list.Bind(wx.EVT_LEFT_UP, self.OnLeftClick)
+            self._list.Bind(wx.EVT_LEFT_UP, self.on_left_click)
 
-    def OnItemSelected(self, event):
+    def on_item_selected(self, event):
         self._selection = event.GetIndex()
 
-    def OnItemDeselected(self, event):
+    def on_item_deselected(self, event):
         _ = event
         self._selection = wx.NOT_FOUND
 
-    def OnEdit(self, event):
+    def on_edit(self, event):
         """ Just overriding """
         pass
 
-    def OnRightClick(self, event):
+    def on_right_click(self, event):
         PopupMenu(self, PopupMenuItems(self, self._menu))
 
-    def OnLeftClick(self, event):
+    def on_left_click(self, event):
         """ Just overriding """
         pass
 
@@ -108,26 +108,26 @@ class ListEditorBase(wx.Panel):
         bind_keys_to_evt_menu(self, self._get_bind_keys())
 
     def _get_bind_keys(self):
-        return [(ctrl_or_cmd(), wx.WXK_UP, self.OnMoveUp),
-                (ctrl_or_cmd(), wx.WXK_DOWN, self.OnMoveDown),
-                (wx.ACCEL_NORMAL, wx.WXK_WINDOWS_MENU, self.OnRightClick),
-                (wx.ACCEL_NORMAL, wx.WXK_DELETE, self.OnDelete)]
+        return [(ctrl_or_cmd(), wx.WXK_UP, self.on_move_up),
+                (ctrl_or_cmd(), wx.WXK_DOWN, self.on_move_down),
+                (wx.ACCEL_NORMAL, wx.WXK_WINDOWS_MENU, self.on_right_click),
+                (wx.ACCEL_NORMAL, wx.WXK_DELETE, self.on_delete)]
 
-    def OnMoveUp(self, event):
+    def on_move_up(self, event):
         if self._selection < 1:
             return
         self._controller.execute(ctrlcommands.MoveUp(self._selection))
         self.update_data()
         self._list.Select(self._selection - 1, True)
 
-    def OnMoveDown(self, event):
+    def on_move_down(self, event):
         if self._selection == self._list.GetItemCount() - 1 or not self.is_selected:
             return
         self._controller.execute(ctrlcommands.MoveDown(self._selection))
         self.update_data()
         self._list.Select(self._selection + 1, True)
 
-    def OnDelete(self, event):
+    def on_delete(self, event):
         if self.is_selected:
             self._with_column_width_preservation(self._delete_selected)
 

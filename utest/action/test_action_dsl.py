@@ -17,8 +17,10 @@
 
 import unittest
 
-from robotide.action.actioninfo import ActionInfoCollection
+from robotide.action.actioninfo import action_info_collection
 from robotide.context import IS_MAC
+
+HUBA_ACTION = 'huba action'
 
 
 def _check_mac(value, expected, expected_mac):
@@ -44,8 +46,8 @@ class TestActionInfoCollection(unittest.TestCase):
         Save | Save current suite or resource | Ctrl-S
         Huba | HubaBuba
         """
-        handlers = HandlerMock(OnSave='save action', OnHuba='huba action')
-        infos = ActionInfoCollection(data, handlers)
+        handlers = HandlerMock(on_save='save action', on_huba=HUBA_ACTION)
+        infos = action_info_collection(data, handlers)
         assert infos[0].menu_name == 'File'
         assert infos[0].name == 'Save'
         assert infos[0].action == 'save action'
@@ -54,19 +56,19 @@ class TestActionInfoCollection(unittest.TestCase):
 
         assert infos[1].menu_name == 'File'
         assert infos[1].name == 'Huba'
-        assert infos[1].action == 'huba action'
-        assert infos[1].shortcut.value == None
+        assert infos[1].action == HUBA_ACTION
+        assert infos[1].shortcut.value is None
 
     def test_create_entry_with_multi_shortcut(self):
         data = """ [Hopla]
         Huba (Alt-D or CtrlCmd-H) | HubaBuba
         """
-        handlers = HandlerMock(OnHuba='huba action')
-        infos = ActionInfoCollection(data, handlers)
+        handlers = HandlerMock(on_huba=HUBA_ACTION)
+        infos = action_info_collection(data, handlers)
         assert infos[0].menu_name == 'Hopla'
         _check_mac(infos[0].name, u'Huba  (Alt-D or Ctrl-H)', u'Huba  (\u2325D or \u2318H)')
-        assert infos[0].action == 'huba action'
-        assert infos[0].shortcut.value == None
+        assert infos[0].action == HUBA_ACTION
+        assert infos[0].shortcut.value is None
 
 
 if __name__ == "__main__":

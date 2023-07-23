@@ -62,9 +62,9 @@ class GridEditor(grid.Grid):
         self._popup_creator = popup_creator or PopupCreator()
 
     def _bind_to_events(self):
-        self.Bind(grid.EVT_GRID_SELECT_CELL, self.OnSelectCell)
-        self.Bind(grid.EVT_GRID_RANGE_SELECT, self.OnRangeSelect)
-        self.Bind(grid.EVT_GRID_CELL_RIGHT_CLICK, self.OnCellRightClick)
+        self.Bind(grid.EVT_GRID_SELECT_CELL, self.on_select_cell)
+        self.Bind(grid.EVT_GRID_RANGE_SELECT, self.on_range_select)
+        self.Bind(grid.EVT_GRID_CELL_RIGHT_CLICK, self.on_cell_right_click)
 
     def register_context_menu_hook(self, cb):
         self._popup_creator.add_hook(cb)
@@ -185,7 +185,7 @@ class GridEditor(grid.Grid):
                 self.write_cell(row_index, col_index, cell_value, update_history)
         self.EndBatch()
 
-    def OnSelectCell(self, event):
+    def on_select_cell(self, event):
         if self._is_whole_row_selection():
             self.SelectBlock(self.selection.topleft.row, self.selection.topleft.col,
                              self.selection.bottomright.row, self.selection.bottomright.col,
@@ -194,7 +194,7 @@ class GridEditor(grid.Grid):
             self.selection.set_from_single_selection(event)
         event.Skip()
 
-    def OnRangeSelect(self, event):
+    def on_range_select(self, event):
         if not event.Selecting():
             self.selection.clear()
             return
@@ -211,7 +211,7 @@ class GridEditor(grid.Grid):
                 self._is_whole_row_selection():
             self.MakeCellVisible(bottom_row, 0)
 
-    def OnCellRightClick(self, event):
+    def on_cell_right_click(self, event):
         if hasattr(event, 'Row') and hasattr(event, 'Col'):
             if (event.Row, event.Col) not in self.selection.cells():
                 self.select(event.Row, event.Col)
@@ -220,11 +220,11 @@ class GridEditor(grid.Grid):
                                  self.get_selected_content())
 
     # DEBUG: This code is overriden at fieldeditors
-    def OnInsertCells(self, event):
+    def on_insert_cells(self, event):
         self._insert_or_delete_cells(self._insert_cells, event)
 
     # DEBUG:This code is overriden at fieldeditors
-    def OnDeleteCells(self, event):
+    def on_delete_cells(self, event):
         # print("DEBUG delete cells %s" % event)
         self._insert_or_delete_cells(self._delete_cells, event)
 

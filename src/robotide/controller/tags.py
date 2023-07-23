@@ -22,19 +22,19 @@ class Tag(_BaseController):
     def __init__(self, name, index=None, controller=None):
         self.name = name
         self.controller = controller
-        self._index = index
+        self.index = index
 
     def set_index(self, index):
-        self._index = index
+        self.index = index
 
     def is_empty(self):
         return self.name is None
 
     def __eq__(self, other):
-        return self.name == other.name and self._index == other._index
+        return self.name == other.name and self.index == other.index
 
     def __ne__(self, other):
-        return not (self == other)
+        return not (self == other)  # This cannot be compared with !=
 
     def __str__(self):
         return self.name
@@ -48,7 +48,7 @@ class Tag(_BaseController):
             if len(self.controller.parent.default_tags.value) > 0:
                 self.controller.set_value("")
             else:
-                self.controller.clear()
+                self.controller.clear_field()
 
 
 class ForcedTag(Tag):

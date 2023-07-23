@@ -78,7 +78,7 @@ class LogPlugin(Plugin):
     def _create_menu(self):
         self.unregister_actions()
         self.register_action(ActionInfo(
-            'Tools', 'View RIDE Log', self.OnViewLog, position=84))
+            'Tools', 'View RIDE Log', self.on_view_log, position=84))
 
     def _log_message(self, message):
         self._log.append(message)
@@ -94,7 +94,7 @@ class LogPlugin(Plugin):
             widgets.HtmlDialog(message.level, message.message,
                                padding=10, font_size=font_size).Show()
 
-    def OnViewLog(self, event):
+    def on_view_log(self, event):
         _ = event
         if not self._panel:
             self._panel = LogWindow(self.notebook, self.title, self._log)

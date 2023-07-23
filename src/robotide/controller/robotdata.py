@@ -18,14 +18,14 @@ import os
 from .. import robotapi
 
 
-def NewTestCaseFile(path):
+def new_test_case_file(path):
     datafile = robotapi.TestCaseFile(source=path)
     datafile.start_table(['Test Cases'])
     _create_missing_directories(datafile.directory)
     return datafile
 
 
-def NewTestDataDirectory(path):
+def new_test_data_directory(path):
     dirname = os.path.dirname(path)
     datafile = robotapi.TestDataDirectory(source=dirname)
     datafile.initfile = path

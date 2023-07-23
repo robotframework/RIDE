@@ -26,7 +26,7 @@ from mockito import mock
 
 from robotide.robotapi import Variable
 from robotide.controller import data_controller
-from robotide.controller.robotdata import NewTestCaseFile
+from robotide.controller.robotdata import new_test_case_file
 from robotide.controller.settingcontrollers import VariableController
 from robotide.controller.tablecontrollers import VariableTableController
 from robotide.editor import EditorCreator
@@ -128,7 +128,7 @@ class EditorCreatorTest(unittest.TestCase):
         return FakePlugin(self._registered_editors, None)
 
     def _datafile_controller(self):
-        return data_controller(NewTestCaseFile(DATAPATH), None)
+        return data_controller(new_test_case_file(DATAPATH), None)
 
 
 if __name__ == '__main__':

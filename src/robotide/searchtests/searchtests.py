@@ -61,7 +61,7 @@ class TestSearchPlugin(Plugin):
         if self._dialog is None:
             self._create_tests_dialog()
         self.show_search_for_tag_patterns(message.includes, message.excludes)
-        self._dialog._select_page(1)
+        self._dialog.select_page(1)
 
     def _create_tests_dialog(self):
         self._dialog = TestsDialog(
@@ -87,7 +87,7 @@ class TestSearchPlugin(Plugin):
 
     def _do_with_selection(self, evt=None):
         _ = evt
-        test, match_location = self._selection
+        test, _ = self._selection
         self.tree.select_node_by_data(test)
         self._dialog.set_focus_to_default_location(test)
 
@@ -96,7 +96,7 @@ class TestSearchPlugin(Plugin):
         self._selected_timer.Start(400, True)
 
     def _search_results(self, matcher):
-        current_suite = self.frame._controller.data
+        current_suite = self.frame.controller.data
         if not current_suite:
             return []
         result = self._search(matcher, current_suite)
@@ -180,7 +180,7 @@ class SearchResult(object):
     def __init__(self, original_search_terms, search_terms_lower, test):
         self._original_search_terms = original_search_terms
         self._search_terms_lower = search_terms_lower
-        self._test = test
+        self.test = test
         self.__total_matches = None
         self.__tags = None
 
@@ -189,20 +189,20 @@ class SearchResult(object):
     def __cmp__(self, other):
     """
     def _helper_cmp_(self, other):
-        totals, other_totals = self._total_matches(), other._total_matches()
+        totals, other_totals = self.total_matches(), other.total_matches()
         if totals != other_totals:
             return self.m_cmp(other_totals, totals)
         names = self._compare(
-            self._is_name_match(), other._is_name_match(),
-            self._test.name, other._test.name)
+            self.is_name_match(), other.is_name_match(),
+            self.test.name, other.test.name)
         if names:
             return names
         tags = self._compare(
-            self._is_tag_match(), other._is_tag_match(),
+            self.is_tag_match(), other.is_tag_match(),
             self.tags(), other.tags())
         if tags:
             return tags
-        return self.m_cmp(self._test.name, other._test.name)
+        return self.m_cmp(self.test.name, other.test.name)
 
     def _compare(self, my_result, other_result, my_cmp, other_cmp):
         if my_result and not other_result:
@@ -213,31 +213,31 @@ class SearchResult(object):
             return self.m_cmp(my_cmp, other_cmp)
         return 0
 
-    def _total_matches(self):
+    def total_matches(self):
         if not self.__total_matches:
             self.__total_matches = sum(
                 1 for word in self._search_terms_lower
-                if word in self._test.name.lower()
+                if word in self.test.name.lower()
                 or any(word in t for t in self.tags())
-                or word in self._test.documentation.value.lower())
+                or word in self.test.documentation.value.lower())
         return self.__total_matches
 
     def _match_in(self, text):
         return any(word in text for word in self._search_terms_lower)
 
-    def _is_name_match(self):
-        return self._match_in(self._test.name.lower())
+    def is_name_match(self):
+        return self._match_in(self.test.name.lower())
 
-    def _is_tag_match(self):
+    def is_tag_match(self):
         return any(self._match_in(t) for t in self.tags())
 
     def tags(self):
         if self.__tags is None:
-            self.__tags = [str(tag).lower() for tag in self._test.tags]
+            self.__tags = [str(tag).lower() for tag in self.test.tags]
         return self.__tags
 
     def __repr__(self):
-        return self._test.name
+        return self.test.name
 
     @staticmethod
     def m_cmp(a, b):

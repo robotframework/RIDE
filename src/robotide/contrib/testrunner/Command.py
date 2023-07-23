@@ -102,7 +102,6 @@ class Command:
         """
         result = []
         for arg in args:
-            # arg = arg.encode(encoding.SYSTEM_ENCODING)
             if "'" in arg or " " in arg or "&" in arg:
                 # for windows, if there are spaces we need to use
                 # double quotes. Single quotes cause problems

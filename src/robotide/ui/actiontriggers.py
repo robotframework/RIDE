@@ -76,17 +76,17 @@ class _Menu(object):
         self._menu_items = {}
         self._name_builder = _NameBuilder()
         self._open = False
-        self._frame.Bind(wx.EVT_MENU_OPEN, self.OnMenuOpen)
-        self._frame.Bind(wx.EVT_MENU_CLOSE, self.OnMenuClose)
+        self._frame.Bind(wx.EVT_MENU_OPEN, self.on_menu_open)
+        self._frame.Bind(wx.EVT_MENU_CLOSE, self.on_menu_close)
 
-    def OnMenuOpen(self, event):
+    def on_menu_open(self, event):
         if self.wx_menu == event.GetMenu() and not self._open:
             self._open = True
             for menu_item in self._menu_items.values():
                 menu_item.refresh_availability()
         event.Skip()
 
-    def OnMenuClose(self, event):
+    def on_menu_close(self, event):
         if self._open:
             self._open = False
             for menu_item in self._menu_items.values():
@@ -220,6 +220,10 @@ class _MenuItem(object):
 
     def set_enabled(self):
         self._wx_menu_item.Enable(True)
+
+    @staticmethod
+    def _is_enabled():
+        return NotImplemented
 
 
 class MenuItem(_MenuItem):

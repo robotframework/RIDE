@@ -33,6 +33,7 @@ class ShortcutPlugin(Plugin):
         atexit.register(self._close)
 
     def _close(self):
+        """ Just ignore it """
         pass
 
     def enable(self):
@@ -47,12 +48,14 @@ class ShortcutPlugin(Plugin):
         self.unregister_actions()
         self.register_action(ActionInfo('Tools',
                                         'Create RIDE Desktop Shortcut',
-                                        self.OnViewShortcutCreate,
+                                        self.on_view_shortcut_create,
                                         position=85))
 
-    def OnViewShortcutCreate(self, event):
+    def on_view_shortcut_create(self, event):
+        _ = event
         self.call_creator(self.notebook)
         # self.disable()
 
-    def call_creator(self, notebook):
+    @staticmethod
+    def call_creator(notebook):
         return postinstall.caller(notebook.GetParent(), sys.platform.lower())

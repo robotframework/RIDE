@@ -141,7 +141,7 @@ class MacRidePopupWindow(wx.MiniFrame, _PopupWindowBase):
     def _set_auto_hiding(self):
         self._details.Bind(wx.EVT_MOTION, lambda evt: self.hide())
 
-    def OnKey(self, *params):
+    def on_key(self, *params):
         """ In the event we need to process key events"""
         pass
 

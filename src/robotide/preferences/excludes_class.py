@@ -62,7 +62,8 @@ class Excludes(object):
         try:
             return open(self._exclude_file_path, read_write)
         except IOError as e:
-            raise e  # TODO FIXME
+            print(e)
+            raise e  # DEBUG: TODO FIXME
 
     def contains(self, path, excludes=None):
         if not path:

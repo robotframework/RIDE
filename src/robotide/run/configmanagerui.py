@@ -64,9 +64,9 @@ class ConfigManagerDialog(RIDEDialog):
         return editor
 
     def _create_help(self):
-        help = HelpLabel(self, label=_CONFIG_HELP)
-        help.Wrap(700)
-        self.Sizer.Add(help, border=5, flag=wx.TOP)
+        hhelp = HelpLabel(self, label=_CONFIG_HELP)
+        hhelp.Wrap(700)
+        self.Sizer.Add(hhelp, border=5, flag=wx.TOP)
 
     def _create_line(self):
         line = wx.StaticLine(self, size=(20, -1), style=wx.LI_HORIZONTAL)
@@ -75,8 +75,8 @@ class ConfigManagerDialog(RIDEDialog):
         else:
             self.Sizer.Add(line, border=5, flag=wx.GROW | wx.RIGHT | wx.TOP)
 
-    def _create_buttons(self):
-        buttons = self.CreateStdDialogButtonSizer(wx.OK|wx.CANCEL)
+    def _create_buttons(self, sizer=None):
+        buttons = self.CreateStdDialogButtonSizer(wx.OK | wx.CANCEL)
         self.SetBackgroundColour(Colour(self.color_background))
         self.SetForegroundColour(Colour(self.color_foreground))
         for item in self.GetChildren():
@@ -103,20 +103,22 @@ class _ConfigListEditor(ListEditorBase):
         return _TextEditListCtrl(self, columns, color_foreground=self.color_secondary_foreground,
                                  color_background=self.color_secondary_background, data=data)
 
-    def get_column_values(self, config):
+    @staticmethod
+    def get_column_values(config):
         return config.name, config.command, config.doc
 
     def get_data(self):
         return self._list.get_data()
 
-    def OnEdit(self, event):
+    def on_edit(self, event):
         self._list.open_editor(self._selection)
 
-    def OnNew(self, event):
+    def on_new(self, event):
+        _ = event
         self._list.new_item()
 
-    def OnRemove(self, event):
-        self.OnDelete(event)
+    def on_remove(self, event):
+        self.on_delete(event)
 
     def new_config(self, data):
         self._controller.add(*data)
@@ -124,9 +126,9 @@ class _ConfigListEditor(ListEditorBase):
     def edit_config(self, index, data):
         self._controller.edit(index, *data)
 
-    def OnDelete(self, event):
+    def on_delete(self, event):
         if not self._editor_open:
-            ListEditorBase.OnDelete(self, event)
+            ListEditorBase.on_delete(self, event)
 
     def editor_open(self):
         self._editor_open = True
@@ -140,7 +142,7 @@ class _TextEditListCtrl(AutoWidthColumnList, TextEditMixin):
 
     def __init__(self, parent, columns, color_foreground, color_background, data):
         AutoWidthColumnList.__init__(self, parent, columns, color_foreground=color_foreground,
-                                   color_background=color_background, data=data)
+                                     color_background=color_background, data=data)
         TextEditMixin.__init__(self)
 
         self.SetBackgroundColour(Colour(color_background))
@@ -180,10 +182,10 @@ class _TextEditListCtrl(AutoWidthColumnList, TextEditMixin):
         self.open_editor(self.last_index)
 
     def get_data(self):
-        return [ self._get_row(row) for row in range(self.ItemCount) ]
+        return [self._get_row(row) for row in range(self.ItemCount)]
 
     def _get_row(self, row):
-        return [ self.GetItem(row, col).GetText() for col in range(3)]
+        return [self.GetItem(row, col).GetText() for col in range(3)]
 
     def CloseEditor(self, event=None):
         TextEditMixin.CloseEditor(self, event)

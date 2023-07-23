@@ -16,7 +16,7 @@
 import wx
 
 from robotide import utils
-from robotide.action.actioninfo import ActionInfoCollection, ActionInfo
+from robotide.action.actioninfo import action_info_collection, ActionInfo
 from robotide.context import IS_WINDOWS, ctrl_or_cmd, bind_keys_to_evt_menu
 from ..macrocontrollers import TestCaseController
 from robotide.controller import ctrlcommands
@@ -41,20 +41,20 @@ class TreeController(object):
         self._test_selection = test_selection
 
     def register_tree_actions(self):
-        actions = ActionInfoCollection(tree_actions, self, self._tree)
+        actions = action_info_collection(tree_actions, self, self._tree)
         self._action_registerer.register_actions(actions)
         self._action_registerer.register_action(ActionInfo(menu_name='Edit', name='Add Tag to selected',
-                                                           action=self.OnAddTagToSelected))
+                                                           action=self.on_add_tag_to_selected))
         self._action_registerer.register_action(ActionInfo(menu_name='Edit', name='Clear Selected',
-                                                           action=self.OnClearSelected))
+                                                           action=self.on_clear_selected))
 
-    def OnGoBack(self, event):
+    def on_go_back(self, event):
         _ = event
         node = self._history.back()
         if node:
             self._tree.SelectItem(node)
 
-    def OnAddTagToSelected(self, event):
+    def on_add_tag_to_selected(self, event):
         _ = event
         if self._test_selection.is_empty():
             return
@@ -62,11 +62,11 @@ class TreeController(object):
         if name:
             self._test_selection.add_tag(name)
 
-    def OnClearSelected(self, event):
+    def on_clear_selected(self, event):
         _ = event
         self._test_selection.clear_all(message=None)
 
-    def OnGoForward(self, event):
+    def on_go_forward(self, event):
         _ = event
         node = self._history.forward()
         if node:
@@ -94,14 +94,14 @@ class TreeController(object):
         def match_handler(n):
             handler = self.get_handler(n)
             return handler and controller is handler.controller
-        return self._find_node_with_predicate(self._tree._root, match_handler)
+        return self._find_node_with_predicate(self._tree.root, match_handler)
 
     def find_node_with_label(self, node, label):
-        matcher = lambda n: utils.eq(self._tree.GetItemText(n), label)
+        def matcher(n): return utils.eq(self._tree.GetItemText(n), label)
         return self._find_node_with_predicate(node, matcher)
 
     def _find_node_with_predicate(self, node, predicate):
-        if node != self._tree._root and predicate(node):
+        if node != self._tree.root and predicate(node):
             return node
         item, cookie = self._tree.GetFirstChild(node)
         while item:
@@ -122,26 +122,26 @@ class TreeController(object):
 
     def _get_bind_keys(self):
         bindings = [
-            (ctrl_or_cmd(), wx.WXK_UP, self._tree.OnMoveUp),
-            (ctrl_or_cmd(), wx.WXK_DOWN, self._tree.OnMoveDown),
+            (ctrl_or_cmd(), wx.WXK_UP, self._tree.on_move_up),
+            (ctrl_or_cmd(), wx.WXK_DOWN, self._tree.on_move_down),
             (wx.ACCEL_NORMAL, wx.WXK_F2, self._tree.label_editor.on_label_edit),
-            (wx.ACCEL_NORMAL, wx.WXK_WINDOWS_MENU, self._tree.OnRightClick),
-            (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('d'), lambda event: self._expanded_handler().OnSafeDelete(event)),
+            (wx.ACCEL_NORMAL, wx.WXK_WINDOWS_MENU, self._tree.on_right_click),
+            (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('d'), lambda event: self._expanded_handler().on_safe_delete(event)),
             (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('f'),
-                lambda event: self._expanded_handler().OnNewSuite(event)),
+                lambda event: self._expanded_handler().on_new_suite(event)),
             (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('k'),
-                lambda event: self._expanded_handler().OnNewUserKeyword(event)),
+                lambda event: self._expanded_handler().on_new_user_keyword(event)),
             (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('t'),
-                lambda event: self._expanded_handler().OnNewTestCase(event)),
+                lambda event: self._expanded_handler().on_new_test_case(event)),
             (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('v'),
-                lambda event: self._expanded_handler().OnNewScalar(event)),
+                lambda event: self._expanded_handler().on_new_scalar(event)),
             (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('l'),
-                lambda event: self._expanded_handler().OnNewListVariable(event)),
+                lambda event: self._expanded_handler().on_new_list_variable(event)),
             (ctrl_or_cmd() | wx.ACCEL_SHIFT, ord('c'),
-                lambda event: self._expanded_handler().OnCopy(event))
+                lambda event: self._expanded_handler().on_copy(event))
         ]
         if not IS_WINDOWS:
-            bindings.append((wx.ACCEL_NORMAL, wx.WXK_LEFT, self._tree.OnLeftArrow))
+            bindings.append((wx.ACCEL_NORMAL, wx.WXK_LEFT, self._tree.on_left_arrow))
         return bindings
 
     def _expanded_handler(self):
@@ -206,18 +206,18 @@ class TestSelectionController(object):
 
     def select_all(self, tests, selected=True):
         for test in tests:
-            self.select(test, selected, notifySelection=False)
+            self.select(test, selected, notify_selection=False)
         self._send_selection_changed_message()
 
-    def select(self, test: TestCaseController, doSelect=True, notifySelection=True):
+    def select(self, test: TestCaseController, do_select=True, notify_selection=True):
         changed = False
-        if doSelect and not self.is_test_selected(test):
+        if do_select and not self.is_test_selected(test):
             self._tests.add(test)
             changed = True
-        elif not doSelect and self.is_test_selected(test):
+        elif not do_select and self.is_test_selected(test):
             self._tests.remove(test)
             changed = True
-        if notifySelection and changed:
+        if notify_selection and changed:
             self._send_selection_changed_message()
 
     def remove_invalid_cases_selection(self, cases_file_controller):

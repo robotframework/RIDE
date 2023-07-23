@@ -27,7 +27,7 @@ from resources.setting_utils import TestSettingsHelper
 class TestInvalidSettings(TestSettingsHelper):
 
     def test_no_settings_exists(self):
-        self.assertEqual(self.settings._config_obj, {})
+        self.assertEqual(self.settings.config_obj, {})
 
     def test_setting_name_with_space(self):
         self.settings['name with space'] = 0
@@ -87,7 +87,7 @@ and even triple quotes \"\"\" '''
     def _test_settings_types(self, expected):
         for key, value in expected.items():
             self.settings[key] = value
-        self.assertEqual(expected, self._read_settings()._config_obj)
+        self.assertEqual(expected, self._read_settings().config_obj)
 
 
 class TestSettings(TestSettingsHelper):
@@ -122,7 +122,7 @@ class TestSettings(TestSettingsHelper):
         self.settings.set('foo', 'new value', autosave=False)
         self._check_content(self.default, check_self_settings=False)
         expected = {'foo': 'new value', 'hello': 'world'}
-        self.assertEqual(self.settings._config_obj, expected)
+        self.assertEqual(self.settings.config_obj, expected)
         self.settings.save()
         self._check_content(expected)
 
@@ -145,7 +145,7 @@ class TestSettings(TestSettingsHelper):
         self.settings.set_values(
             {'foo': 'new value', 'int': 1}, autosave=False)
         expected = {'foo': 'new value', 'hello': 'world', 'int': 1}
-        self.assertEqual(self.settings._config_obj, expected)
+        self.assertEqual(self.settings.config_obj, expected)
         self._check_content(self.default, check_self_settings=False)
         self.settings.save()
         self._check_content(expected)
@@ -215,24 +215,24 @@ class TestSections(TestSettingsHelper):
 
     def test_add_section(self):
         self.settings.add_section('Plugin 1')
-        self.assertEqual(self.settings['Plugin 1']._config_obj, {})
+        self.assertEqual(self.settings['Plugin 1'].config_obj, {})
 
     def test_add_section_returns_section(self):
         self.assertEqual(
-            self.settings.add_section('Plugin 1')._config_obj, {})
+            self.settings.add_section('Plugin 1').config_obj, {})
 
     def test_add_section_with_default_values(self):
         section = self.settings.add_section('Plugin 1', a='b', one='2')
-        self.assertEqual(section._config_obj, {'a': 'b', 'one': '2'})
-        self.assertEqual(self._read_settings()['Plugin 1']._config_obj,
-                          {'a': 'b', 'one': '2'})
+        self.assertEqual(section.config_obj, {'a': 'b', 'one': '2'})
+        self.assertEqual(self._read_settings()['Plugin 1'].config_obj,
+                         {'a': 'b', 'one': '2'})
 
     def test_add_section_should_not_fail_if_section_already_exists(self):
         self.settings.add_section('Plugin 1')
         self.settings.add_section('Plugin 1')
         self.settings['Plugin 1']['foo'] = 'bar'
-        self.assertEqual(self.settings.add_section('Plugin 1')._config_obj,
-                          {'foo': 'bar'})
+        self.assertEqual(self.settings.add_section('Plugin 1').config_obj,
+                         {'foo': 'bar'})
 
     def test_add_section_should_fail_if_item_with_same_name_already_exists(
             self):
@@ -247,9 +247,9 @@ class TestSections(TestSettingsHelper):
         self.settings.add_section('Plugin 1', foo='bar', hello='world')
         section = self.settings.add_section('Plugin 2', zip=2)
         self.settings.set('Plugin 1', section)
-        self.assertEqual(self.settings['Plugin 1']._config_obj, {'zip': 2})
+        self.assertEqual(self.settings['Plugin 1'].config_obj, {'zip': 2})
         self.assertEqual(
-            self._read_settings()['Plugin 1']._config_obj, {'zip': 2})
+            self._read_settings()['Plugin 1'].config_obj, {'zip': 2})
 
     def test_set_updating_section_with_other_section(self):
         self.settings.add_section('Plugin 1', foo='bar', hello='world')
@@ -257,37 +257,37 @@ class TestSections(TestSettingsHelper):
             'Plugin 2', foo='new value', zip=2)
         self.settings.set('Plugin 1', section, override=False)
         expected = {'foo': 'bar', 'hello': 'world', 'zip': 2}
-        self.assertEqual(self.settings['Plugin 1']._config_obj, expected)
+        self.assertEqual(self.settings['Plugin 1'].config_obj, expected)
         self.assertEqual(
-            self._read_settings()['Plugin 1']._config_obj, expected)
+            self._read_settings()['Plugin 1'].config_obj, expected)
 
     def test_add_sub_section(self):
         self.settings.add_section('Plugin 1')
         self.settings['Plugin 1'].add_section('Plugin 1.1')
         self.assertEqual(
-            self.settings['Plugin 1']['Plugin 1.1']._config_obj, {})
+            self.settings['Plugin 1']['Plugin 1.1'].config_obj, {})
 
     def test_add_settings_to_sub_section(self):
         self.settings.add_section('Plugin 1')
         self.settings['Plugin 1'].add_section('Plugin 1.1')
         self.settings['Plugin 1']['Plugin 1.1']['foo'] = 'bar'
-        self.assertEqual(self.settings['Plugin 1']['Plugin 1.1']._config_obj,
-                          {'foo': 'bar'})
+        self.assertEqual(self.settings['Plugin 1']['Plugin 1.1'].config_obj,
+                         {'foo': 'bar'})
 
     def test_using_section_separately_and_saving(self):
         self.settings.add_section('Plugin 1')
         plugin_settings = self.settings['Plugin 1']
         plugin_settings['foo'] = 'bar'
         plugin_settings.save()
-        self.assertEqual(self._read_settings()['Plugin 1']._config_obj,
-                          {'foo': 'bar'})
+        self.assertEqual(self._read_settings()['Plugin 1'].config_obj,
+                         {'foo': 'bar'})
 
     def test_set_values_to_section(self):
         defaults = {'foo': 'bar', 'hello': 'world'}
         self.settings.add_section('Plugin 1')
         self.settings['Plugin 1'].set_values(defaults)
         self.assertEqual(
-            self._read_settings()['Plugin 1']._config_obj, defaults)
+            self._read_settings()['Plugin 1'].config_obj, defaults)
 
 
 class TestInitializeSettings(TestSettingsHelper):

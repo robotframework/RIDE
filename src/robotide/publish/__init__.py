@@ -63,7 +63,7 @@ will be called with an instance of the message class as an argument. That instan
 contains the topic and possibly some additional information in its attributes.
 
 The following example demonstrates how a plugin can subscribe to an event.
-In this example the ``OnTreeSelection`` method is the listener and the
+In this example the ``on_tree_selection`` method is the listener and the
 ``message`` it receives is an instance of the `RideTreeSelection` class.
 ::
 
@@ -71,9 +71,9 @@ In this example the ``OnTreeSelection`` method is the listener and the
 
     class MyFancyPlugin(Plugin):
        def activate(self):
-           self.subscribe(self.OnTreeSelection, RideTreeSelection)
+           self.subscribe(self.on_tree_selection, RideTreeSelection)
 
-       def OnTreeSelection(self, message):
+       def on_tree_selection(self, message):
            print(message.topic, message.node)
 
 Unsubscribing

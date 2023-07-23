@@ -23,7 +23,7 @@ from ..namespace.embeddedargs import EmbeddedArgsHandler
 from ..namespace import namespace
 from ..publish.messages import (RideSelectResource, RideFileNameChanged, RideSaving, RideSaved, RideSaveAll,
                                 RideExcludesChanged)
-from ..utils import overrides, variablematcher
+from ..utils import variablematcher
 
 
 class Occurrence(object):
@@ -107,7 +107,6 @@ class Occurrence(object):
 
 
 class _Command(object):
-
     modifying = True
 
     def execute(self, context):
@@ -148,7 +147,7 @@ class ChangeTag(_Command):
         self._value = value.strip()
 
     def _params(self):
-        return (self._tag, self._value)
+        return self._tag, self._value
 
     def execute(self, context):
         tags = [tag for tag in context if tag.controller == context]
@@ -279,7 +278,6 @@ class NullObserver(object):
 
 
 class RenameKeywordOccurrences(_ReversibleCommand):
-
     _gherkin_prefix = re.compile('^(Given|When|Then|And|But) ', re.IGNORECASE)
 
     def __init__(self, original_name, new_name, observer, keyword_info=None):
@@ -320,12 +318,7 @@ class RenameKeywordOccurrences(_ReversibleCommand):
 
     def _execute(self, context):
         self._observer.notify()
-        self._occurrences = \
-            self._find_occurrences(context) if self._occurrences is None \
-            else self._occurrences
-        # print(f"DEBUG: ctrlcommands.py RenameKeywordOccurrences ENTER execute\n"
-        #       f"self._params={self._params()}\n"
-        #       f"self._occurrences={self._occurrences}")
+        self._occurrences = self._find_occurrences(context) if self._occurrences is None else self._occurrences
         self._replace_keywords_in(self._occurrences)
         context.update_namespace()
         self._notify_values_changed(self._occurrences)
@@ -547,7 +540,7 @@ class OpenContainingFolder(_Command):
 
 
 class RemoveReadOnly(_Command):
-    
+
     def execute(self, context):
         context.remove_readonly()
 
@@ -656,8 +649,10 @@ class FindOccurrences(_Command):
         self._keyword_name = keyword_name
         self._keyword_info = keyword_info
         self._keyword_regexp = self._create_regexp(keyword_name)
+        self._keyword_source = None
 
-    def _create_regexp(self, keyword_name):
+    @staticmethod
+    def _create_regexp(keyword_name):
         if variablematcher.contains_scalar_variable(keyword_name) and \
                 not variablematcher.is_variable(keyword_name):
             kw = lambda: 0
@@ -680,7 +675,7 @@ class FindOccurrences(_Command):
 
     def _items_from_datafile_should_be_checked(self, datafile):
         if datafile.filename and \
-           os.path.basename(datafile.filename) == self._keyword_source:
+                os.path.basename(datafile.filename) == self._keyword_source:
             return True
         return self._find_keyword_source(datafile) == self._keyword_source
 
@@ -703,7 +698,7 @@ class FindOccurrences(_Command):
         return chain(test.settings, test.steps)
 
     def _find_keyword_source(self, datafile_controller):
-        item_info = datafile_controller.keyword_info(self._keyword_name)
+        item_info = datafile_controller.keyword_info(None, self._keyword_name)
         return item_info.source if item_info else None
 
     def _find_occurrences_in(self, items):
@@ -724,7 +719,6 @@ class FindOccurrences(_Command):
 
 class FindVariableOccurrences(FindOccurrences):
 
-    @overrides(FindOccurrences)
     def _contains_item(self, item):
         self._yield_for_other_threads()
         return item.contains_variable(self._keyword_name)
@@ -763,9 +757,9 @@ class FindVariableOccurrences(FindOccurrences):
                 self._get_all_where_used(self._context)
         elif self._is_imported_variable(self._keyword_name, self._context):
             return datafile in [self._get_source_of_imported_var(
-                                self._keyword_name, self._context)] + \
+                self._keyword_name, self._context)] + \
                 self._get_all_where_used(self._get_source_of_imported_var(
-                                         self._keyword_name, self._context))
+                    self._keyword_name, self._context))
         else:
             return True
 
@@ -816,7 +810,7 @@ class FindVariableOccurrences(FindOccurrences):
         return files
 
 
-def AddKeywordFromCells(cells):
+def add_keyword_from_cells(cells):
     if not cells:
         raise ValueError('Keyword can not be empty')
     while cells[0] == '':
@@ -922,7 +916,7 @@ class RemoveVariable(_ReversibleCommand):
                                          var_controller.comment)
 
     def _execute(self, context):
-        context.datafile_controller.\
+        context.datafile_controller. \
             variables.remove_var(self._var_controller)
 
     def _get_undo_command(self):
@@ -937,7 +931,7 @@ class AddVariable(_ReversibleCommand):
         self._comment = comment
 
     def _execute(self, context):
-        var_controller = context.datafile_controller.\
+        var_controller = context.datafile_controller. \
             variables.add_variable(self._name, self._value, self._comment)
         self._undo_command = RemoveVariable(var_controller)
         return var_controller
@@ -956,6 +950,7 @@ class RecreateMacro(_ReversibleCommand):
         self._user_script = user_script
 
     def _execute(self, context):
+        _ = context
         self._user_script.recreate()
 
     def _get_undo_command(self):
@@ -968,6 +963,7 @@ class RemoveMacro(_ReversibleCommand):
         self._item = item
 
     def _execute(self, context):
+        _ = context
         self._item.delete()
 
     def _get_undo_command(self):
@@ -982,7 +978,7 @@ class ExtractKeyword(_Command):
         self._rows = step_range
 
     def _params(self):
-        return (self._name, self._args, self._rows)
+        return self._name, self._args, self._rows
 
     def execute(self, context):
         context.extract_keyword(self._name, self._args, self._rows)
@@ -990,17 +986,17 @@ class ExtractKeyword(_Command):
         context.clear_undo()
 
 
-def ExtractScalar(name, value, comment, cell):
+def extract_scalar(name, value, comment, cell):
     # print(f"DEBUG: ctrlcommands.py ExtractScalar  name{name} value{value}, comment{comment}, cell{cell}")
     return CompositeCommand(AddVariable(name, value, comment),
                             ChangeCellValue(cell[0], cell[1], name))
 
 
-def ExtractList(name, value, comment, cells):
+def extract_list(name, value, comment, cells):
     row, col = cells[0]
     return CompositeCommand(AddVariable(name, value, comment),
                             ChangeCellValue(row, col, name),
-                            DeleteCells(
+                            delete_cells(
                                 (row, col + 1), (row, col + len(cells) - 1)))
 
 
@@ -1011,6 +1007,7 @@ class ChangeCellValue(_StepsChangingCommand):
         self._col = col
         self._value = self._escape_newlines(value)
         self._insert = insert
+        self._undo_command = None
 
     def change_steps(self, context):
         steps = context.steps
@@ -1020,16 +1017,12 @@ class ChangeCellValue(_StepsChangingCommand):
         step = self._step(context)
         self._undo_command = ChangeCellValue(
             self._row, self._col, step.get_value(self._col), insert=False)
-        # print(f"DEBUG: change_steps before change from_column: ({self._row}, {self._col}, {self._value}) Line: {step.as_list()}")
         if self._insert:
             step.insert_value_before(self._col, self._value)
             # print(f"DEBUG: change_steps after insert cell Line: {context.steps[self._row].as_list()}")
         else:
-            step.change(self._col, self._value, not self._insert)
-        # print(f"DEBUG: change_steps after change from_column: ({self._row}, {self._col}, {self._value}) Line: {context.steps[self._row].as_list()}")
-        self._step(context).remove_empty_columns_from_end(not self._insert)
-        # value = self.step_controller_step(context).get_value(self._col).strip()
-        # print(f"DEBUG: change_steps after change from_column: value={value} self.value = {self._value}")
+            step.change(self._col, self._value)
+        self._step(context).remove_empty_columns_from_end()
         # DEGUG: Next validation is not possible to call when the step is Indented
         # assert self._validate_postcondition(context), 'Should have correct value after change'
         return True
@@ -1047,11 +1040,11 @@ class ChangeCellValue(_StepsChangingCommand):
         if value == should_be:
             return True
         return (value.replace(' ', '') == 'FOR' and
-                should_be.replace(' ', '') == 'FOR') or\
-               (value.replace(' ', '') == 'FOR' and
-                should_be.replace(' ', '').upper() == ':FOR') or\
-               (value.replace(' ', '') == 'END' and
-                should_be.replace(' ', '') == 'END')
+                should_be.replace(' ', '') == 'FOR') or \
+            (value.replace(' ', '') == 'FOR' and
+             should_be.replace(' ', '').upper() == ':FOR') or \
+            (value.replace(' ', '') == 'END' and
+             should_be.replace(' ', '') == 'END')
 
     def _get_undo_command(self):
         return self._undo_command
@@ -1071,7 +1064,7 @@ class SaveFile(_Command):
         datafile_controller = context.datafile_controller
         if self._reformat:
             for macro_controller in chain(datafile_controller.tests, datafile_controller.keywords):
-                     macro_controller.execute(Purify())
+                macro_controller.execute(Purify())
         datafile_controller.save()
         datafile_controller.unmark_dirty()
         RideSaved(path=context.filename).publish()
@@ -1106,7 +1099,7 @@ class Purify(_Command):
             #    step.remove_empty_columns_from_beginning()
             i += 1
         # print(f"DEBUG: Purify before DeleteRows")
-        context.execute(DeleteRows(context.get_empty_rows()))
+        context.execute(delete_rows(context.get_empty_rows()))
         context.notify_steps_changed()
 
 
@@ -1120,11 +1113,9 @@ class InsertCell(_StepsChangingCommand):
         return '%s, %s' % (self._row, self._col)
 
     def change_steps(self, context, delete=False):
-        self._step(context).shift_right(self._col, delete=delete)
+        self._step(context).shift_right(self._col)
         if not delete:
-            # print(f"DEBUG: InsertCell  change_steps row:{self._row} cols:{self._col} row BEFORE _recreate: {context.steps[self._row].as_list()}"
-            #      f"\ntype step={type(self.step_controller_step(context))}")
-            self._step(context)._recreate(context.steps[self._row].as_list())
+            self._step(context).recreate(context.steps[self._row].as_list())
         assert self._step(context).get_value(self._col) == '', 'Should have an empty value after insert'
         return True
 
@@ -1137,7 +1128,7 @@ class DeleteCell(_StepsChangingCommand):
     def __init__(self, row, col):
         self._row = row
         self._col = col
-        # print(f"\nDEBUG: DeleteCell init enter coords ({self._row}, {self._col})")
+        self._undo_command = None
 
     def _params(self):
         return self._row, self._col
@@ -1181,7 +1172,7 @@ class DeleteRow(_RowChangingCommand):
         step = context.steps[self._row]
         # print(f"DEBUG: DeleteRow enter change row={self._row}: {step.as_list()}")
         self._undo_command = StepsChangingCompositeCommand(
-            AddRow(self._row), PasteArea((self._row, 0), [step.as_list()]))
+            AddRow(self._row), paste_area((self._row, 0), [step.as_list()]))
         context.remove_step(self._row)
 
     def _get_undo_command(self):
@@ -1196,7 +1187,7 @@ class AddRow(_RowChangingCommand):
         row = self._row if self._row != -1 else len(context.steps)
         context.add_step(row)
         # print(f"DEBUG: AddRow after adding  = {context.steps}")
-        assert not(any(i for i in self._step(context).as_list() if i)), \
+        assert not (any(i for i in self._step(context).as_list() if i)), \
             'Should have an empty row after add instead %r' % \
             self._step(context).as_list()
 
@@ -1250,12 +1241,12 @@ class MoveRowsUp(_StepsChangingCommand):
         def non_empty_from_left(line):
             assert line >= 0
             steps = context.steps[line].as_list()
-            index = 0
-            while index < len(steps) and steps[index] == '':
-                index += 1
-            if index == len(steps):
+            idx = 0
+            while idx < len(steps) and steps[idx] == '':
+                idx += 1
+            if idx == len(steps):
                 return -1
-            return index
+            return idx
 
         if len(self._rows) == 0 or max(self._rows) > len(context.steps) - 1 or \
                 self._first_row == 0 or min(self._rows) < 0:
@@ -1279,30 +1270,38 @@ class MoveRowsUp(_StepsChangingCommand):
             next_row_col = non_empty_from_left(next_cell_row)
             add_indent = pre_prev_col > index and (not is_indent_inner(context.steps[row].as_list()[index]) and
                                                    context.steps[row].step_controller_step.cells[index] != 'END' or
-                                                   is_indent_start(context.steps[pre_prev_row].step_controller_step.cells[pre_prev_col]))
+                                                   is_indent_start(context.steps[pre_prev_row].step_controller_step.
+                                                                   cells[pre_prev_col]))
             del_indent = (prev_cell > index and context.steps[row].step_controller_step.cells[index] == 'END') or \
-                         (pre_prev_col < index and not is_indent_start(context.steps[pre_prev_row].step_controller_step.cells[pre_prev_col])) or \
-                         (prev_cell < index and not is_indent_start(context.steps[prev_cell_row].step_controller_step.cells[prev_cell]))
-            del_prev_indent = (pre_prev_col < prev_cell) and (
-                is_indent_start(context.steps[prev_cell_row].step_controller_step.cells[prev_cell]))
+                         (pre_prev_col < index and not is_indent_start(context.steps[pre_prev_row].step_controller_step.
+                                                                       cells[pre_prev_col])) or \
+                         (prev_cell < index and not is_indent_start(context.steps[prev_cell_row].step_controller_step.
+                                                                    cells[prev_cell]))
+            del_prev_indent = (pre_prev_col < prev_cell) and (is_indent_start(context.steps[prev_cell_row].
+                                                                              step_controller_step.cells[prev_cell]))
             if is_indent_start(context.steps[row].as_list()[index]) or add_indent:
-                # print(f"DEBUG: MoveRowsUp IS_INDENT_START: {row=} {context.steps[row].as_list()}\n "
-                #       f"{del_indent=} {add_indent=} {prev_cell=} {prev_cell_row=} {pre_prev_col=}"
-                #       f"{del_prev_indent=} {index=} {next_cell_row=} {next_row_col=} ")
                 new_next_indent = (prev_cell == index and
-                                   (not is_indent_start(context.steps[prev_cell_row].step_controller_step.cells[prev_cell])
-                                    and context.steps[prev_cell_row].step_controller_step.cells[prev_cell] != 'END')) or (
-                    next_row_col > prev_cell and is_indent_start(context.steps[prev_cell_row].step_controller_step.cells[prev_cell])
-                ) or (not is_indent_inner(context.steps[row].as_list()[index]) and
-                      context.steps[next_cell_row].step_controller_step.cells[next_row_col] != 'END' and next_row_col < index)
+                                   (not is_indent_start(context.steps[prev_cell_row].step_controller_step.
+                                                        cells[prev_cell])
+                                    and context.steps[prev_cell_row].step_controller_step.cells[prev_cell] != 'END')) \
+                                  or (next_row_col > prev_cell and
+                                      is_indent_start(context.steps[prev_cell_row].
+                                                      step_controller_step.cells[prev_cell])) \
+                                  or (not is_indent_inner(context.steps[row].as_list()[index]) and context.
+                                      steps[next_cell_row].step_controller_step.cells[next_row_col] != 'END' and
+                                      next_row_col < index)
             else:
-                new_next_indent = (pre_prev_col > next_row_col and context.steps[row].step_controller_step.cells[index] != 'END'
+                new_next_indent = (pre_prev_col > next_row_col and
+                                   context.steps[row].step_controller_step.cells[index] != 'END'
                                    and prev_cell < index) or (
-                        next_row_col > prev_cell and
-                        is_indent_start(context.steps[next_cell_row].step_controller_step.cells[next_row_col])
-                        and not is_indent_start(context.steps[prev_cell_row].step_controller_step.cells[prev_cell]))
+                                          next_row_col > prev_cell and
+                                          is_indent_start(
+                                              context.steps[next_cell_row].step_controller_step.cells[next_row_col])
+                                          and not is_indent_start(context.steps[prev_cell_row].
+                                                                  step_controller_step.cells[prev_cell]))
             new_next_deindent = (prev_cell > index and context.steps[row].step_controller_step.cells[index] == 'END')
-            keep_indent = not add_indent and pre_prev_col == index and context.steps[next_cell_row].step_controller_step.cells[next_row_col] == 'END'
+            keep_indent = not add_indent and pre_prev_col == index and\
+                context.steps[next_cell_row].step_controller_step.cells[next_row_col] == 'END'
             context.move_step_up(row)
             new_index = non_empty_from_left(prev_cell_row)
             if new_next_deindent:
@@ -1313,15 +1312,15 @@ class MoveRowsUp(_StepsChangingCommand):
             if new_index > index + 1:  # and (add_indent or not del_indent):
                 context.steps[prev_cell_row].shift_left(0, delete=False)
                 del_indent = True  # not del_indent
-               #  continue
             prev_cell = non_empty_from_left(prev_cell_row)
             if keep_indent and new_index > index:
                 for _ in range(index, new_index):
                     context.steps[prev_cell_row].shift_left(0, delete=False)
-            if add_indent and (not is_indent_start(context.steps[prev_cell_row].step_controller_step.cells[prev_cell]) and
-                               context.steps[row].step_controller_step.cells[index] != 'END') or new_next_indent:
+            if add_indent and (not is_indent_start(context.steps[prev_cell_row].step_controller_step.cells[prev_cell])
+                               and context.steps[row].step_controller_step.cells[index] != 'END') or new_next_indent:
                 context.steps[row].shift_right(0)
-            if add_indent and not is_indent_start(context.steps[prev_cell_row].step_controller_step.cells[pre_prev_col]):
+            if add_indent and not is_indent_start(context.steps[prev_cell_row].step_controller_step.
+                                                  cells[pre_prev_col]):
                 context.steps[prev_cell_row].shift_right(0)  # new_next_indent and\
             if (del_indent and not keep_indent) or \
                     (keep_indent and context.steps[prev_cell_row].step_controller_step.cells[index] == 'END'
@@ -1329,8 +1328,9 @@ class MoveRowsUp(_StepsChangingCommand):
                 context.steps[prev_cell_row].shift_left(0, delete=False)
             if del_prev_indent and not keep_indent:
                 context.steps[prev_cell_row].shift_left(0, delete=False)
-            if keep_indent and prev_cell > index and len(context.steps[prev_cell_row].step_controller_step.cells) > prev_cell and\
-                    context.steps[prev_cell_row].step_controller_step.cells[prev_cell] == 'END':
+            if keep_indent and prev_cell > index and \
+                    len(context.steps[prev_cell_row].step_controller_step.cells) > prev_cell \
+                    and context.steps[prev_cell_row].step_controller_step.cells[prev_cell] == 'END':
                 context.steps[prev_cell_row].shift_left(0, delete=False)
         assert len(context.steps) == number_of_steps_before
         return True
@@ -1369,23 +1369,23 @@ class MoveRowsDown(_StepsChangingCommand):
         number_of_steps_before = len(context.steps)
         for row in rows:
             moving_start = context.steps[row]._first_non_empty_cell()
-            existing_start = context.steps[row+1]._first_non_empty_cell()
+            existing_start = context.steps[row + 1]._first_non_empty_cell()
             keep_indent = moving_start == existing_start  # No indented cells
             if row >= 1:
-                previous_start = context.steps[row-1]._first_non_empty_cell()
+                previous_start = context.steps[row - 1]._first_non_empty_cell()
             else:
                 previous_start = moving_start
             decrease_indent = moving_start > existing_start and (
-                    not is_indent_start(context.steps[row+1].as_list()[existing_start]) and
+                    not is_indent_start(context.steps[row + 1].as_list()[existing_start]) and
                     not is_indent_start(context.steps[row].as_list()[moving_start]))  # after move must decrease
             # DEBUG: Add protection IndexError when moving down on empty lines
-            increase_indent = moving_start < existing_start and context.steps[row].as_list()[moving_start] != 'END' \
-                              and is_indent_start(context.steps[row+1].as_list()[existing_start])
+            increase_indent = moving_start < existing_start and context.steps[row].as_list()[moving_start] != 'END'\
+                and is_indent_start(context.steps[row + 1].as_list()[existing_start])
             prev_decrease_indent = previous_start <= moving_start < existing_start and\
-                                   context.steps[row].as_list()[moving_start] != 'END'
+                context.steps[row].as_list()[moving_start] != 'END'
             prev_increase_indent = context.steps[row].as_list()[moving_start] == 'END' and\
-                                   previous_start > existing_start
-            if is_indent_start(context.steps[row+1].as_list()[existing_start]) and \
+                previous_start > existing_start
+            if is_indent_start(context.steps[row + 1].as_list()[existing_start]) and\
                     context.steps[row].as_list()[moving_start] != 'END' and keep_indent:
                 if not is_indent_start(context.steps[row].as_list()[moving_start]):
                     increase_indent = True
@@ -1402,17 +1402,17 @@ class MoveRowsDown(_StepsChangingCommand):
             #       f"{prev_decrease_indent=} {prev_increase_indent=}")
             context.move_step_down(row)
             new_existing_start = context.steps[row]._first_non_empty_cell()
-            new_moved_start = context.steps[row+1]._first_non_empty_cell()
-            previous_start = context.steps[row-1]._first_non_empty_cell() if row >= 1 else moving_start
+            new_moved_start = context.steps[row + 1]._first_non_empty_cell()
+            previous_start = context.steps[row - 1]._first_non_empty_cell() if row >= 1 else moving_start
             if row > 0 and prev_decrease_indent and new_existing_start == existing_start and (
-                    is_indent_inner(context.steps[row+1].as_list()[new_moved_start])
+                    is_indent_inner(context.steps[row + 1].as_list()[new_moved_start])
                     or context.steps[row].as_list()[new_existing_start] == 'END'
                     or previous_start == new_existing_start):
                 prev_decrease_indent = False
-            if is_indent_start(context.steps[row+1].as_list()[new_moved_start]) and new_moved_start > moving_start:
+            if is_indent_start(context.steps[row + 1].as_list()[new_moved_start]) and new_moved_start > moving_start:
                 increase_indent = False  # Compensation for auto indent
             if decrease_indent and (new_moved_start == moving_start
-                                    and is_indent_start(context.steps[row+1].as_list()[new_moved_start]) and
+                                    and is_indent_start(context.steps[row + 1].as_list()[new_moved_start]) and
                                     (prev_decrease_indent and
                                      context.steps[row].as_list()[new_existing_start] != 'END')):
                 decrease_indent = False  # Compensation for auto indent
@@ -1421,14 +1421,14 @@ class MoveRowsDown(_StepsChangingCommand):
             #       f" {moving_start=} {new_existing_start=} {new_moved_start=}"
             #       f"{prev_decrease_indent=} {prev_increase_indent=}")
             if decrease_indent:
-                context.steps[row+1].shift_left(moving_start)
+                context.steps[row + 1].shift_left(moving_start)
             if prev_decrease_indent:
                 context.steps[row].shift_left(new_existing_start)
                 # continue
             if prev_increase_indent and not is_indent_start(context.steps[row].as_list()[new_existing_start]):
                 context.steps[row].shift_right(new_existing_start)
             if increase_indent and not keep_indent:
-                context.steps[row+1].shift_right(0)
+                context.steps[row + 1].shift_right(0)
         assert len(context.steps) == number_of_steps_before
         return True
 
@@ -1483,26 +1483,26 @@ class StepsChangingCompositeCommand(_StepsChangingCommand, CompositeCommand):
                 for cmd in self._commands]
 
 
-def DeleteRows(rows):
+def delete_rows(rows):
     return StepsChangingCompositeCommand(*[DeleteRow(r)
-                                         for r in reversed(sorted(rows))])
+                                           for r in reversed(sorted(rows))])
 
 
-def AddRows(rows):
+def add_rows(rows):
     # DEBUG: Refactor to use AddRows(_StepsChangingCommand) command
     first_row = sorted(rows)[0]
     return StepsChangingCompositeCommand(*[AddRow(first_row) for _ in rows])
 
 
-def CommentRows(rows):
+def comment_rows(rows):
     return StepsChangingCompositeCommand(*[CommentRow(r) for r in rows])
 
 
-def UncommentRows(rows):
+def uncomment_rows(rows):
     return StepsChangingCompositeCommand(*[UncommentRow(r) for r in rows])
 
 
-def ClearArea(top_left, bottom_right):
+def clear_area(top_left, bottom_right):
     row_s, col_s = top_left
     row_e, col_e = bottom_right
     return StepsChangingCompositeCommand(
@@ -1511,7 +1511,7 @@ def ClearArea(top_left, bottom_right):
           for col in range(col_s, col_e + 1)])
 
 
-def PasteArea(top_left, content):
+def paste_area(top_left, content):
     row_s, col_s = top_left
     return StepsChangingCompositeCommand(
         *[ChangeCellValue(row + row_s, col + col_s, content[row][col])
@@ -1519,11 +1519,11 @@ def PasteArea(top_left, content):
           for col in range(len(content[row]))])
 
 
-def InsertArea(top_left, content):
+def insert_area(top_left, content):
     row, _ = top_left
     return StepsChangingCompositeCommand(
-        AddRows([row+i for i in range(len(content))]),
-        PasteArea(top_left, content))
+        add_rows([row + i for i in range(len(content))]),
+        paste_area(top_left, content))
 
 
 def _rows_from_selection(selection):
@@ -1542,7 +1542,7 @@ def _cols_from_selection(selection):
     return res
 
 
-def InsertCells(top_left, bottom_right):
+def insert_cells(top_left, bottom_right):
     row_s, col_s = top_left
     row_e, col_e = bottom_right
     return StepsChangingCompositeCommand(
@@ -1551,7 +1551,7 @@ def InsertCells(top_left, bottom_right):
           for col in range(col_s, col_e + 1)])
 
 
-def DeleteCells(top_left, bottom_right):
+def delete_cells(top_left, bottom_right):
     row_s, col_s = top_left
     row_e, col_e = bottom_right
     return StepsChangingCompositeCommand(

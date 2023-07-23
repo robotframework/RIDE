@@ -94,14 +94,13 @@ class _PluginPanel(RIDEDialog):
         return info
 
     def _create_label(self, parent, text):
-        boldFont = self.GetFont()
-        # boldFont = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT)
+        bold_font = self.GetFont()
         if self.font_face:
-            boldFont.SetFaceName(self.font_face)
-        boldFont.SetWeight(wx.FONTWEIGHT_BOLD)
-        boldFont.SetPointSize(self.font_size)
+            bold_font.SetFaceName(self.font_face)
+        bold_font.SetWeight(wx.FONTWEIGHT_BOLD)
+        bold_font.SetPointSize(self.font_size)
         label = Label(parent, wx.ID_ANY, text)
-        label.SetFont(boldFont)
+        label.SetFont(bold_font)
         return label
 
 
@@ -110,13 +109,13 @@ class _PluginEnablationCheckBox(wx.CheckBox):
     def __init__(self, parent, plugin, activation_callback):
         wx.CheckBox.__init__(self, parent)
         self.SetValue(plugin.enabled)
-        self.Bind(wx.EVT_CHECKBOX, self.OnCheckBox)
+        self.Bind(wx.EVT_CHECKBOX, self.on_check_box)
         if plugin.error:
             self.Enable(False)
         self._plugin = plugin
         self._callback = activation_callback
 
-    def OnCheckBox(self, event):
+    def on_check_box(self, event):
         if event.IsChecked():
             self._execute(self._plugin.enable)
         else:

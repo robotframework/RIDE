@@ -32,7 +32,7 @@ class FileExplorerPlugin(Plugin):
     def __init__(self, application, controller=None):
         Plugin.__init__(self, application, default_settings=self.defaults)
         self._app = application
-        self.settings = self._app.settings._config_obj['Plugins']['File Explorer']
+        self.settings = self._app.settings.config_obj['Plugins']['File Explorer']
         self._parent = wx.App.Get().GetTopWindow()
         self._filemgr = self.filemgr
         self._filemgr.SetThemeEnabled(True)
@@ -57,13 +57,13 @@ class FileExplorerPlugin(Plugin):
             self._mgr.Update()
 
     def enable(self):
-        self.register_action(ActionInfo('View', 'View File Explorer', self.OnShowFileExplorer,
+        self.register_action(ActionInfo('View', 'View File Explorer', self.on_show_file_explorer,
                                         shortcut='F11',
                                         doc='Show File Explorer panel',
                                         position=1))
         # self.save_setting('opened', True)
         if self.opened:
-            self.OnShowFileExplorer(None)
+            self.on_show_file_explorer(None)
 
     def close_tree(self):
         self._mgr.DetachPane(self._filemgr)
@@ -80,7 +80,7 @@ class FileExplorerPlugin(Plugin):
     def is_focused(self):
         return self._filemgr.HasFocus()
 
-    def OnShowFileExplorer(self, event):
+    def on_show_file_explorer(self, event):
         _ = event
         if not self._parent:
             self._parent = wx.App.Get().GetWindow()  # self.frame
@@ -88,7 +88,7 @@ class FileExplorerPlugin(Plugin):
             self._filemgr = FileExplorer(self._parent, self._controller)
 
         self._pane = self._mgr.GetPane(self._filemgr)
-        global_settings = self._app.settings._config_obj['General']
+        global_settings = self._app.settings.config_obj['General']
         apply_global = global_settings['apply to panels']
         use_own = self.settings['own colors']
         if apply_global or not use_own:
@@ -122,9 +122,9 @@ class FileExplorerPlugin(Plugin):
         self._filemgr.Raise()
         self._mgr.Update()
         self.save_setting('opened', True)
-        self._update_tree()
+        self.update_tree()
 
-    def _update_tree(self):
+    def update_tree(self):
         if not self._filemgr:
             return
         self._filemgr.update_tree()

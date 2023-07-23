@@ -33,12 +33,13 @@ class ReviewDialog(RIDEDialog):
 
     def __init__(self, controller, frame):
         RIDEDialog.__init__(self, parent=frame, title="Search unused keywords",
-                          style=wx.SYSTEM_MENU | wx.CAPTION | wx.CLOSE_BOX | wx.CLIP_CHILDREN |
-                          wx.FRAME_FLOAT_ON_PARENT)
+                            style=wx.SYSTEM_MENU | wx.CAPTION | wx.CLOSE_BOX | wx.CLIP_CHILDREN |
+                            wx.FRAME_FLOAT_ON_PARENT)
         # set Left to Right direction (while we don't have localization)
         self.SetLayoutDirection(wx.Layout_LeftToRight)
         self.index = 0
         self.frame = frame
+        self._dots = None
         self._search_model = ResultModel()
         self._runner = ReviewRunner(controller, self._search_model)
         self._build_ui()
@@ -47,7 +48,7 @@ class ReviewDialog(RIDEDialog):
         self.CenterOnParent()
 
     def _build_ui(self):
-        self.SetSize((800,600))
+        self.SetSize((800, 600))
         self.SetBackgroundColour(Colour(self.color_background))
         self.SetForegroundColour(Colour(self.color_foreground))
         self.SetSizer(wx.BoxSizer(wx.VERTICAL))
@@ -179,9 +180,9 @@ class ReviewDialog(RIDEDialog):
                   self._filter_source_testcases)
         self.Bind(wx.EVT_CHECKBOX, self._update_filter_source_resources,
                   self._filter_source_resources)
-        self.Bind(wx.EVT_BUTTON, self.OnDeletemarkedkeywords, self._delete_button)
-        self.Bind(wx.EVT_BUTTON, self.OnShowfilestobesearched, self._filter_test_button)
-        self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.OnResultSelected, self._unused_kw_list)
+        self.Bind(wx.EVT_BUTTON, self.on_delete_marked_keywords, self._delete_button)
+        self.Bind(wx.EVT_BUTTON, self.on_show_files_to_be_searched, self._filter_test_button)
+        self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.on_result_selected, self._unused_kw_list)
         self.Bind(wx.EVT_CHECKBOX, self._update_filter_regex, self._filter_regex_switch)
         self.Bind(wx.EVT_COLLAPSIBLEPANE_CHANGED, self._toggle_filter_active, self._filter_pane)
         self.Bind(wx.EVT_LIST_ITEM_CHECKED, self._unused_kw_list.OnCheckItem, self._unused_kw_list)
@@ -214,12 +215,15 @@ class ReviewDialog(RIDEDialog):
         self._runner.set_filter_mode(event.GetInt() == 0)
 
     def _update_filter_source_testcases(self, event):
+        _ = event
         self._runner.set_filter_source_testcases(self._filter_source_testcases.IsChecked())
 
     def _update_filter_source_resources(self, event):
+        _ = event
         self._runner.set_filter_source_resources(self._filter_source_resources.IsChecked())
 
     def _update_filter_regex(self, event):
+        _ = event
         self._runner.set_filter_use_regex(self._filter_regex_switch.IsChecked())
 
     def _toggle_filter_active(self, event):
@@ -237,16 +241,19 @@ class ReviewDialog(RIDEDialog):
     def _enable_filter(self):
         self._runner.set_filter_active(True)
         self.label_filter_status.SetLabel('active')
-        self.label_filter_status.SetForegroundColour((0,200,0))
+        self.label_filter_status.SetForegroundColour((0, 200, 0))
 
-    def OnSearch(self, event):
+    def on_search(self, event):
+        _ = event
         self.begin_searching()
-        self._runner._run_review()
+        self._runner.run_review()
 
-    def OnAbort(self, event):
+    def on_abort(self, event):
+        _ = event
         self.end_searching()
 
-    def OnDeletemarkedkeywords(self, event):
+    def on_delete_marked_keywords(self, event):
+        _ = event
         item = self._unused_kw_list.get_next_checked_item()
         while item:
             index = item[0]
@@ -261,8 +268,9 @@ class ReviewDialog(RIDEDialog):
             item = self._unused_kw_list.get_next_checked_item()
         self.item_in_kw_list_checked()
 
-    def OnShowfilestobesearched(self, event):
-        df_list = self._runner._get_datafile_list()
+    def on_show_files_to_be_searched(self, event):
+        _ = event
+        df_list = self._runner.get_datafile_list()
         if not df_list:
             string_list = "(None)"
         else:
@@ -271,7 +279,7 @@ class ReviewDialog(RIDEDialog):
         dlg = RIDEDialog(parent=self, title="Included files", message=message, style=wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
 
-    def OnResultSelected(self, event):
+    def on_result_selected(self, event):
         self.frame.tree.select_node_by_data(self._unused_kw_list.GetClientData(event.GetData()))
 
     def item_in_kw_list_checked(self):
@@ -332,6 +340,7 @@ class ReviewDialog(RIDEDialog):
         self._notebook.SetPageText(0, new_text)
 
     def update_status(self, message, increase=1):
+        _ = increase
         self._status_label.SetLabel(message)
 
     def end_searching(self):
@@ -345,7 +354,8 @@ class ReviewDialog(RIDEDialog):
         self._filter_pane.Enable()
         self._search_button.Enable()
 
-    def send_radiobox_event(self, mycontrol):
+    @staticmethod
+    def send_radiobox_event(mycontrol):
         cmd = wx.CommandEvent(wx.EVT_RADIOBOX.evtType[0])
         cmd.SetEventObject(mycontrol)
         cmd.SetId(mycontrol.GetId())
@@ -377,28 +387,27 @@ class ReviewRunner(object):
     def parse_filter_string(self, filter_string):
         self._filter.set_strings(filter_string.split(','))
 
-    def _get_datafile_list(self):
+    def get_datafile_list(self):
         return [df for df in self._controller.datafiles if self._filter.include_file(df)]
 
-    def _run_review(self):
+    def run_review(self):
         self._model.begin_search()
         Thread(target=self._run).start()
 
     def _run(self):
         self._stop_requested = False
         self._model.status = 'listing datafiles'
-        for df in self._get_datafile_list():
+        for df in self.get_datafile_list():
             libname = os.path.basename(df.source).rsplit('.', 1)[0]
             self._model.status = 'searching from ' + str(libname)
             for keyword in df.keywords:
-                time.sleep(0) # GIVE SPACE TO OTHER THREADS -- Thread.yield in Java
+                time.sleep(0)  # GIVE SPACE TO OTHER THREADS -- Thread.yield in Java
                 self._model.status = "%s.%s" % (libname, keyword.name)
                 if not self._model.searching:
                     break
                 # Check if it is unused
-                if not isinstance(keyword, LibraryKeywordInfo) and keyword.name:
-                    if self._is_unused(keyword):
-                        self._model.add_unused_keyword(keyword)
+                if not isinstance(keyword, LibraryKeywordInfo) and keyword.name and self._is_unused(keyword):
+                    self._model.add_unused_keyword(keyword)
             if not self._model.searching:
                 break
         self._model.end_search()
@@ -450,6 +459,7 @@ class ResultFilter(object):
 class ResultModel(object):
 
     def __init__(self):
+        self.status = self.keywords = self.searching = None
         self.clear_search()
 
     def clear_search(self):
@@ -480,11 +490,12 @@ class ResultListCtrl(wx.ListCtrl, listmix.CheckListCtrlMixin, listmix.ListCtrlAu
         self.SetForegroundColour(Colour(self.GetTopLevelParent().color_foreground))
         self.setResizeColumn(2)
         self._clientData = {}
+        self._dlg = None
 
     def set_dialog(self, dialog):
         self._dlg = dialog
 
-    def OnCheckItem(self, event):
+    def OnCheckItem(self, event):  # Overrides wx method
         if self._dlg:
             self._dlg.item_in_kw_list_checked()
         else:
@@ -498,19 +509,19 @@ class ResultListCtrl(wx.ListCtrl, listmix.CheckListCtrlMixin, listmix.ListCtrlAu
                 checked = self.IsChecked(i)
             if checked:
                 item = self.GetItem(i)
-                return ([i, self.GetClientData(item.GetData()), item])
+                return [i, self.GetClientData(item.GetData()), item]
         return None
 
     def get_number_of_checked_items(self):
-        sum = 0
+        ssum = 0
         for i in range(self.GetItemCount()):
             if wx.VERSION >= (4, 1, 0):
                 checked = self.IsItemChecked(i)
             else:
                 checked = self.IsChecked(i)
             if checked:
-                sum += 1
-        return sum
+                ssum += 1
+        return ssum
 
     def SetClientData(self, index, data):
         self._clientData[index] = data

@@ -51,7 +51,7 @@ from mockito import mock
 
 from robotide.robotapi import Variable
 from robotide.controller import data_controller
-from robotide.controller.robotdata import NewTestCaseFile
+from robotide.controller.robotdata import new_test_case_file
 from robotide.controller.settingcontrollers import VariableController
 from robotide.controller.tablecontrollers import VariableTableController
 from robotide.editor import EditorPlugin, EditorCreator
@@ -123,7 +123,7 @@ class MyApp(wx.App):
         self.toolbar = None
         self._mgr = None
 
-    def OnInit(self):
+    def OnInit(self):  # Overrides wx method
         self.frame = MainFrame()
         self.SetTopWindow(self.frame)
         self.settings = FakeSettings()
@@ -168,9 +168,9 @@ class MyApp(wx.App):
         return True
 
     def _datafile_controller(self):
-        return data_controller(NewTestCaseFile(datafilereader.TESTCASEFILE_WITH_EVERYTHING), None)
+        return data_controller(new_test_case_file(datafilereader.TESTCASEFILE_WITH_EVERYTHING), None)
 
-    def OnExit(self):
+    def OnExit(self):  # Overrides wx method
         os.remove(self.file_settings)
 
 
@@ -240,7 +240,7 @@ class KeywordEditorTest(unittest.TestCase):
         return FakePlugin(self._registered_editors, None)
 
     def _datafile_controller(self):
-        return data_controller(NewTestCaseFile(datafilereader.TESTCASEFILE_WITH_EVERYTHING), None)
+        return data_controller(new_test_case_file(datafilereader.TESTCASEFILE_WITH_EVERYTHING), None)
 
     def tearDown(self):
         self.plugin.unsubscribe_all()

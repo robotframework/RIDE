@@ -76,8 +76,9 @@ import threading
 PLATFORM = platform.python_implementation()
 
 try:
-    import socketserver as SocketServer
+    import socketserver
 except ImportError as e:
+    print(f"Exception at TestRunnerAgent import SocketServer: {e}")
     raise e
 
 try:
@@ -96,6 +97,7 @@ try:
     import json
     _JSONAVAIL = True
 except ImportError:
+    json = None
     _JSONAVAIL = False
 
 try:
@@ -109,9 +111,9 @@ HOST = "localhost"
 # RIDE will expect UTF-8
 # Set output encoding to UTF-8 for piped output streams
 # DEBUG This was working in Linux always!
-#if encoding:
-#    encoding.OUTPUT_ENCODING = 'UTF-8'
-# print("DEBUG: TestRunnerAgent encoding %s\n" % SYSTEM_ENCODING )
+# if encoding:
+#     encoding.OUTPUT_ENCODING = 'UTF-8'
+#  print("DEBUG: TestRunnerAgent encoding %s\n" % SYSTEM_ENCODING )
 
 
 def _is_logged(level):
@@ -185,7 +187,7 @@ class TestRunnerAgent:
         # pass empty args, see https://github.com/nokia/RED/issues/32
 
         # we're cutting args from original attrs dict, because it may contain
-        # objects which are not json-serializable and we don't need them anyway
+        # objects which are not json-serializable, and we don't need them anyway
         attrs_copy = copy.copy(attrs)
         del attrs_copy['args']
         del attrs_copy['doc']
@@ -212,6 +214,7 @@ class TestRunnerAgent:
         self._debugger.end_keyword(attrs['status'] == 'PASS')
 
     def message(self, message):
+        """ Just ignore it """
         pass
 
     def log_message(self, message):
@@ -222,15 +225,18 @@ class TestRunnerAgent:
         self._send_socket("log_file", path)
 
     def output_file(self, path):
+        """ Just ignore it """
         pass
 
     def report_file(self, path):
         self._send_socket("report_file", path)
 
     def summary_file(self, path):
+        """ Just ignore it """
         pass
 
     def debug_file(self, path):
+        """ Just ignore it """
         pass
 
     def close(self):
@@ -247,9 +253,9 @@ class TestRunnerAgent:
             # Iron python does not return right object type if not binary mode
             self.filehandler = self.sock.makefile('wb')
             self.streamhandler = StreamHandler(self.filehandler)
-        except socket.error as e:
+        except socket.error as ex:
             print('unable to open socket to "%s:%s" error: %s'
-                  % (self.host, self.port, str(e)))
+                  % (self.host, self.port, str(ex)))
             self.sock = None
             self.filehandler = None
 
@@ -322,15 +328,15 @@ class RobotDebugger(object):
         return self._state == 'pause'
 
 
-class RobotKillerServer(SocketServer.TCPServer):
+class RobotKillerServer(socketserver.TCPServer):
     allow_reuse_address = True
 
     def __init__(self, debugger):
-        SocketServer.TCPServer.__init__(self, ("", 0), RobotKillerHandler)
+        socketserver.TCPServer.__init__(self, ("", 0), RobotKillerHandler)
         self.debugger = debugger
 
 
-class RobotKillerHandler(SocketServer.StreamRequestHandler):
+class RobotKillerHandler(socketserver.StreamRequestHandler):
     def handle(self):
         data = self.request.makefile('r').read().strip()
         if data == 'kill':
@@ -383,9 +389,8 @@ class DecodeError(StreamError):
     """
     # NOTE: No JSONDecodeError in json in stdlib for python >= 2.6
     wrapped_exceptions = (pickle.UnpicklingError,)
-    if _JSONAVAIL:
-        if hasattr(json, 'JSONDecodeError'):
-            wrapped_exceptions = (pickle.UnpicklingError, json.JSONDecodeError)
+    if _JSONAVAIL and hasattr(json, 'JSONDecodeError'):
+        wrapped_exceptions = (pickle.UnpicklingError, json.JSONDecodeError)
 
 
 def dump(obj, fp):
@@ -399,8 +404,8 @@ def load(fp):
 def dumps(obj):
     """
     Similar method to json dumps, prepending data with message length
-    header. Replaces pickle.dumps, so can be used in place without
-    the memory leaks on receiving side in pickle.loads (related to
+    header. Replaces 'pickle.dumps', so can be used in place without
+    the memory leaks on receiving side in 'pickle.loads' (related to
     memoization of data)
 
     NOTE: Protocol is ignored when json representation is used
@@ -416,7 +421,7 @@ def loads(s):
     header from a string. Message is expected to be encoded by this class as
     well, to have same message length header type.
 
-    Specifically replaces pickle.loads as that function/method has serious
+    Specifically replaces 'pickle.loads' as that function/method has serious
     memory leak issues with long term use of same Unpickler object for
     encoding data to send, specifically related to memoization of data to
     encode.
@@ -429,7 +434,7 @@ class StreamHandler(object):
     """
     This class provides a common streaming approach for the purpose
     of reliably sending data over a socket interface. Replaces usage of
-    Unpickler.load where possible with JSON format prepended by message length
+    'Unpickler.load' where possible with JSON format prepended by message length
     header. Uses json in python stdlib (in python >= 2.6) or simplejson (in
     python < 2.6). If neither are available, falls back to pickle.Pickler and
     pickle.Unpickler, attempting to eliminate memory leakage where possible at
@@ -456,9 +461,9 @@ class StreamHandler(object):
         message length header prepended for sending over a socket, or as a
         pickled object if using python < 2.6 and simplejson is not installed.
 
-        Since pickle.load has memory leak issues with memoization (remembers
+        Since 'pickle.load' has memory leak issues with memoization (remembers
         absolutely everything decoded since instantiation), json is a preferred
-        method to encode/decode for long running processes which pass large
+        method to encode/decode for long-running processes which pass large
         amounts of data back and forth.
         """
         if _JSONAVAIL:
@@ -467,8 +472,8 @@ class StreamHandler(object):
             self._json_decoder = json.JSONDecoder(strict=False).decode
         else:
             def json_not_impl(dummy):
-                raise NotImplementedError(
-                    'Python should include json. Please check your Python installation.')
+                _ = dummy
+                raise NotImplementedError('Python should include json. Please check your Python installation.')
             self._json_decoder = staticmethod(json_not_impl)
             self._json_encoder = staticmethod(json_not_impl)
         self.fp = fp
@@ -476,8 +481,8 @@ class StreamHandler(object):
     def dump(self, obj):
         """
         Similar method to json dump, prepending data with message length
-        header. Replaces pickle.dump, so can be used in place without
-        the memory leaks on receiving side in pickle.load (related to
+        header. Replaces 'pickle.dump', so can be used in place without
+        the memory leaks on receiving side in 'pickle.load' (related to
         memoization of data)
 
         NOTE: Protocol is ignored when json representation is used
@@ -491,9 +496,9 @@ class StreamHandler(object):
                 s = self._json_encoder(obj)
                 write_list.append('J')
                 write_list.extend([str(len(s)), '|', s])
-            except:
+            except Exception as ex:
                 # Probably just failed to JSON-encode an object; try pickle.
-                pass
+                print(f"Exception at StreamHandler.dump(): {ex}")
         if not write_list:
             s = pickle.dumps(obj, pickle.HIGHEST_PROTOCOL)
             write_list.append('P')
@@ -506,7 +511,7 @@ class StreamHandler(object):
         (or socket, or other .read() enabled object). Message is expected to be
         encoded by this class as well, to have same message length header type.
 
-        Specifically replaces pickle.load as that function/method has serious
+        Specifically replaces 'pickle.load' as that function/method has serious
         memory leak issues with long term use of same Unpickler object for
         encoding data to send, specifically related to memoization of data to
         encode.
@@ -527,8 +532,8 @@ class StreamHandler(object):
                 return pickle.loads(buff.getvalue())
             else:
                 raise DecodeError("Message type %r not supported" % msgtype)
-        except DecodeError.wrapped_exceptions as e:
-            raise DecodeError(str(e))
+        except DecodeError.wrapped_exceptions as ex:
+            raise DecodeError(str(ex))
 
     def _load_header(self):
         """

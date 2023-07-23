@@ -24,8 +24,8 @@ from ..publish.messages import RideMessage
 class _Publisher:
 
     def __init__(self):
-        self._publisher = pub.getDefaultPublisher()
-        self._publisher.setListenerExcHandler(ListenerExceptionHandler())
+        self.publisher = pub.getDefaultPublisher()
+        self.publisher.setListenerExcHandler(ListenerExceptionHandler())
 
     @staticmethod
     def _get_topic(topic_cls: Type[RideMessage]) -> str:
@@ -44,14 +44,14 @@ class _Publisher:
     def subscribe(self, listener: Callable, topic: Type[RideMessage]):
         """ The listener's param signature must be (message) """
         self._validate_listener(listener)
-        self._publisher.subscribe(listener, self._get_topic(topic))
+        self.publisher.subscribe(listener, self._get_topic(topic))
 
     def publish(self, topic: Type[RideMessage], message):
         """ All subscribed listeners' param signatures have been guaranteed """
-        self._publisher.sendMessage(self._get_topic(topic), message=message)
+        self.publisher.sendMessage(self._get_topic(topic), message=message)
 
     def unsubscribe(self, listener: Callable, topic: Type[RideMessage]):
-        self._publisher.unsubscribe(listener, self._get_topic(topic))
+        self.publisher.unsubscribe(listener, self._get_topic(topic))
 
     def unsubscribe_all(self, obj=None):
         """ If the given object's:
@@ -73,16 +73,16 @@ class _Publisher:
                 return True
 
         _listener_filter = _listener_filter if obj is not None else None
-        self._publisher.unsubAll(listenerFilter=_listener_filter)
+        self.publisher.unsubAll(listenerFilter=_listener_filter)
 
 
 class ListenerExceptionHandler(pub.IListenerExcHandler):
 
-    def __call__(self, listenerID: str, topicObj: pub.Topic):
+    def __call__(self, listener_id: str, topic_obj: pub.Topic):
         from .messages import RideLogException
-        topic_name = topicObj.getName()
+        topic_name = topic_obj.getName()
         if topic_name != RideLogException.topic():
-            error_msg = 'Error in listener: {}, topic: {}'.format(listenerID, topic_name)
+            error_msg = 'Error in listener: {}, topic: {}'.format(listener_id, topic_name)
             log_message = RideLogException(message=error_msg,
                                            exception=None, level='ERROR')
             sys.stderr.write(log_message.__getattribute__('message'))

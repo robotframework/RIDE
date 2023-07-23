@@ -59,7 +59,7 @@ class ProjectTest(unittest.TestCase):
 
     def test_loading_suite_at_startup(self):
         self._load(MINIMAL_SUITE_PATH)
-        assert self.ctrl._controller is not None
+        assert self.ctrl.controller is not None
         self._test_listeners([MINIMAL_SUITE_PATH], [])
 
     def _test_listeners(self, suite_paths, resource_paths):
@@ -218,7 +218,7 @@ class TestResolvingResourceDirectories(unittest.TestCase):
         assert self.project.external_resources == self.project.resources
 
     def _set_data_directory_controller(self, dir):
-        self.project._controller = TestDataDirectoryController(_data_directory(dir))
+        self.project.controller = TestDataDirectoryController(_data_directory(dir))
 
     def test_resource_file_in_own_directory_is_added_to_top_suite(self):
         self._set_data_directory_controller('foo')
@@ -284,22 +284,22 @@ class TestFindingControllers(unittest.TestCase):
         self.project.close()
 
     def test_finding_root_directory_controller(self):
-        self.project._controller = TestDataDirectoryController(_data_directory('Root'))
+        self.project.controller = TestDataDirectoryController(_data_directory('Root'))
         result = self.project.find_controller_by_longname('Root')
-        assert result == self.project._controller
+        assert result == self.project.controller
 
     def test_finding_subdirectory_controller(self):
         directory_controller = TestDataDirectoryController(_data_directory('Root'))
         subdirectory_controller = TestDataDirectoryController(_data_directory('Sub.suite'))
         directory_controller.add_child(subdirectory_controller)
-        self.project._controller = directory_controller
+        self.project.controller = directory_controller
         result = self.project.find_controller_by_longname('Root.Sub.suite')
         assert result == subdirectory_controller
 
     def test_finding_testcase_controller(self):
         suite_controller = TestCaseFileController(_testcasefile('Suite.robot'))
         test = suite_controller.create_test('Test 1')
-        self.project._controller = suite_controller
+        self.project.controller = suite_controller
         result = self.project.find_controller_by_longname('Suite.Test 1', 'Test 1')
         assert result == test
 
@@ -318,7 +318,7 @@ class TestFindingControllers(unittest.TestCase):
         test2 = suite2_controller.create_test('A')
         directory_controller.add_child(suite1_controller)
         directory_controller.add_child(suite2_controller)
-        self.project._controller = directory_controller
+        self.project.controller = directory_controller
         result1 = self.project.find_controller_by_longname('T.' + test1.longname, test1.display_name)
         assert result1 == test1
         result2 = self.project.find_controller_by_longname('T.' + test2.longname, test2.display_name)
@@ -332,7 +332,7 @@ class TestFindingControllers(unittest.TestCase):
         test2 = suite2_controller.create_test('Te.st')
         directory_controller.add_child(suite1_controller)
         directory_controller.add_child(suite2_controller)
-        self.project._controller = directory_controller
+        self.project.controller = directory_controller
         return test1, test2
 
 

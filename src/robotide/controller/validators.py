@@ -31,11 +31,12 @@ class BaseNameValidator(object):
     def validate(self, context):
         # Try-except is needed to check if file can be created if named like this, using open()
         # http://code.google.com/p/robotframework-ride/issues/detail?id=1111
+        import pathlib
         try:
-            fileName = '%s.%s' % (self._new_basename, context.get_format())
-            filePath = os.path.join(context.directory, fileName)
-            if self._file_exists(filePath):
-                RideInputValidationError(message=ERROR_FILE_ALREADY_EXISTS % filePath).publish()
+            file_name = '%s.%s' % (self._new_basename, context.get_format())
+            file_path = os.path.join(context.directory, file_name)
+            if self._file_exists(file_path):
+                RideInputValidationError(message=ERROR_FILE_ALREADY_EXISTS % file_path).publish()
                 return False
             if '\\n' in self._new_basename or '\n' in self._new_basename:
                 RideInputValidationError(message=ERROR_NEWLINES_IN_THE_FILENAME).publish()
@@ -43,27 +44,26 @@ class BaseNameValidator(object):
             if len(self._new_basename.strip()) == 0:
                 RideInputValidationError(message=ERROR_EMPTY_FILENAME).publish()
                 return False
-            createdDir = False
+            created_dir = False
             try:
-                import pathlib
-                if pathlib.PurePath(filePath).parent != pathlib.PurePath('.'):
+                if pathlib.PurePath(file_path).parent != pathlib.PurePath('.'):
                     #  print("DEBUG: Creating dirs %s", pathlib.PurePath(filePath).parent)
-                    pathlib.Path(pathlib.PurePath(filePath).parent).mkdir(parents=False,
-                                                                          exist_ok=True)
-                    createdDir = True
+                    pathlib.Path(pathlib.PurePath(file_path).parent).mkdir(parents=False, exist_ok=True)
+                    created_dir = True
                 #  print("DEBUG: Creating file %s", filePath)
-                open(filePath, "w").close()
+                open(file_path, "w").close()
             finally:
                 try:
-                    os.remove(filePath)  # If file creation failed, then this will trigger validation error
-                    if createdDir:
-                        os.rmdir(pathlib.PurePath(filePath).parent)
-                except Exception:
-                    pass
+                    os.remove(file_path)  # If file creation failed, then this will trigger validation error
+                    if created_dir:
+                        os.rmdir(pathlib.PurePath(file_path).parent)
+                except Exception as e:
+                    print(e)
             return True
         except (IOError, OSError):
             RideInputValidationError(message=ERROR_ILLEGAL_CHARACTERS).publish()
             return False
 
-    def _file_exists(self, filename):
+    @staticmethod
+    def _file_exists(filename):
         return os.path.exists(filename)

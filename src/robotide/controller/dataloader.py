@@ -44,7 +44,8 @@ class DataLoader(object):
         self._wait_until_loaded(loader, load_observer)
         return loader.result
 
-    def _wait_until_loaded(self, loader, load_observer):
+    @staticmethod
+    def _wait_until_loaded(loader, load_observer):
         loader.start()
         load_observer.notify()
         while loader.is_alive():
@@ -62,8 +63,10 @@ class _DataLoaderThread(Thread):
         try:
             self.result = self._run()
         except Exception as e:
-            # print("DEBUG: exception at DataLoader %s\n" % str(e))
-            pass  # TODO: Log this error somehow
+            print("DEBUG: exception at DataLoader %s\n" % str(e))
+
+    def _run(self):
+        return NotImplemented
 
 
 class _DataLoader(_DataLoaderThread):
@@ -75,7 +78,7 @@ class _DataLoader(_DataLoaderThread):
 
     def _run(self):
         # print(f"DEBUG: Dataloader returning TestData source={self._path}")
-        return TestData(source=self._path, settings=self._settings)
+        return test_data(source=self._path, settings=self._settings)
 
 
 class _InitFileLoader(_DataLoaderThread):
@@ -112,13 +115,13 @@ class TestDataDirectoryWithExcludes(robotapi.TestDataDirectory):
     def add_child(self, path, include_suites, extensions=None,
                   warn_on_skipped=False):
         if not self._settings.excludes.contains(path):
-            self.children.append(TestData(
+            self.children.append(test_data(
                 parent=self, source=path, settings=self._settings))
         else:
             self.children.append(ExcludedDirectory(self, path))
 
 
-def TestData(source, parent=None, settings=None):
+def test_data(source, parent=None, settings=None):
     """Parses a file or directory to a corresponding model object.
 
     :param source: path where test data is read from.
@@ -132,7 +135,7 @@ def TestData(source, parent=None, settings=None):
         data.populate()
         # print("DEBUG: Dataloader after populate %s  %s\n" % (data._tables, data.name))
         return data
-    #print("DEBUG: Dataloader returning TestCaseFile")
+    # print("DEBUG: Dataloader returning TestCaseFile")
     datafile = robotapi.TestCaseFile(parent, source, settings).populate()
     if datafile:
         return datafile

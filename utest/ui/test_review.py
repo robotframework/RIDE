@@ -64,7 +64,7 @@ class TestReview(unittest.TestCase):
         self.runner.parse_filter_string(string)
 
         counter = 0
-        for df in self.runner._get_datafile_list():
+        for df in self.runner.get_datafile_list():
             if df.name not in results:
                 print("\"%s\" should have been filtered out " % df.name)
                 return False

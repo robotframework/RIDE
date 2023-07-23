@@ -85,11 +85,11 @@ class TestRunAnything(UIUnitTestBase):
 
     def _wait_until_finished(self):
         self.runner._process.wait()
-        self.runner.OnTimer()
+        self.runner.on_timer()
 
     def _sleep_and_log_output(self, amount):
         time.sleep(amount)
-        self.runner.OnTimer()
+        self.runner.on_timer()
 
 
 if __name__ == '__main__':

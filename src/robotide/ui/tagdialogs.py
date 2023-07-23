@@ -54,17 +54,6 @@ class ViewAllTagsDialog(RIDEDialog, listmix.ColumnSorterMixin):
         listmix.ColumnSorterMixin.__init__(self, 2)
 
     def _build_ui(self):
-        # self.SetSize((500, 400))
-        # parent_x, parent_y = self.frame.GetPosition()
-        # parent_size_x, parent_size_y = self.frame.tree.GetSize()
-        # self.SetPosition((parent_x + parent_size_x + 50, parent_y + 50))
-        # self.SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_3DFACE))
-        """
-        self.SetBackgroundColour(Colour(200, 222, 40))
-        self.SetOwnBackgroundColour(Colour(200, 222, 40))
-        self.SetForegroundColour(Colour(7, 0, 70))
-        self.SetOwnForegroundColour(Colour(7, 0, 70))
-        """
         self.SetSizer(wx.BoxSizer(wx.VERTICAL))
         self._build_notebook()
         self._build_tag_lister()
@@ -78,8 +67,8 @@ class ViewAllTagsDialog(RIDEDialog, listmix.ColumnSorterMixin):
         panel_tag_vw.SetForegroundColour(Colour(self.color_foreground))
         sizer_tag_vw = wx.BoxSizer(wx.VERTICAL)
         panel_tag_vw.SetSizer(sizer_tag_vw)
-        self._tags_list = TagsListCtrl(panel_tag_vw, style=wx.LC_REPORT, colorBG=self.color_secondary_background,
-                                       colorFG=self.color_secondary_foreground)
+        self._tags_list = TagsListCtrl(panel_tag_vw, style=wx.LC_REPORT, color_bg=self.color_secondary_background,
+                                       color_fg=self.color_secondary_foreground)
         self._tags_list.InsertColumn(0, "Tag", width=200)
         self._tags_list.InsertColumn(1, "Occurrences", width=25,
                                      format=wx.LIST_FORMAT_CENTER)
@@ -89,7 +78,7 @@ class ViewAllTagsDialog(RIDEDialog, listmix.ColumnSorterMixin):
         self._notebook.AddPage(panel_tag_vw, "The List")
 
     def _build_controls(self):
-        self._clear_button = ButtonWithHandler(self, 'Refresh', self.OnClear)
+        self._clear_button = ButtonWithHandler(self, 'Refresh', self.on_clear)
         self._show_tagged_tests_button = ButtonWithHandler(
             self, 'Included Tag Search')
         self._show_excluded_tests_button = ButtonWithHandler(
@@ -120,11 +109,12 @@ class ViewAllTagsDialog(RIDEDialog, listmix.ColumnSorterMixin):
 
     def _make_bindings(self):
         self.Bind(wx.EVT_CLOSE, self._close_dialog)
-        self._tags_list.Bind(wx.EVT_LIST_ITEM_RIGHT_CLICK, self.OnRightClick)
-        self._tags_list.Bind(wx.EVT_LIST_COL_CLICK, self.OnColClick)
-        self._tags_list.Bind(wx.EVT_LIST_ITEM_SELECTED, self.OnSelectItem)
+        self._tags_list.Bind(wx.EVT_LIST_ITEM_RIGHT_CLICK, self.on_right_click)
+        self._tags_list.Bind(wx.EVT_LIST_COL_CLICK, self.on_col_click)
+        self._tags_list.Bind(wx.EVT_LIST_ITEM_SELECTED, self.on_select_item)
 
-    def _tag_name_for_sort(self, tag_name):
+    @staticmethod
+    def _tag_name_for_sort(tag_name):
         return [part if index % 2 == 0 else int(part) for index, part in
                 enumerate(re.split(r'(\d+)', tag_name.lower()))]
 
@@ -165,13 +155,14 @@ class ViewAllTagsDialog(RIDEDialog, listmix.ColumnSorterMixin):
         self._tags_list.ClearAll()
 
     def _add_view_components(self):
+        """ Just ignore it """
         pass
 
     def _search_for_tags(self):
         unique_tags = utils.NormalizedDict()
         self._tags = utils.NormalizedDict()
         self._test_cases = []
-        for test in self.frame._controller.all_testcases():
+        for test in self.frame.controller.all_testcases():
             self._test_cases.append(test)
             for tag in test.tags:
                 if tag.is_empty() or len(str(tag).strip()) == 0:
@@ -195,7 +186,7 @@ class ViewAllTagsDialog(RIDEDialog, listmix.ColumnSorterMixin):
     def GetListCtrl(self):
         return self._tags_list
 
-    def OnColClick(self, event):
+    def on_col_click(self, event):
         self.sort_state = self.GetSortState()
         event.Skip()
 
@@ -205,54 +196,60 @@ class ViewAllTagsDialog(RIDEDialog, listmix.ColumnSorterMixin):
             tags.append(tag_name)
         return tags
 
-    def OnIncludedTagSearch(self, event):
+    def on_included_tag_search(self, event):
+        _ = event
         included_tags = self._add_checked_tags_into_list()
         RideOpenTagSearch(includes=' '.join(included_tags),
                           excludes='').publish()
 
-    def OnExcludedTagSearch(self, event):
+    def on_excluded_tag_search(self, event):
+        _ = event
         excluded_tags = self._add_checked_tags_into_list()
         RideOpenTagSearch(includes='',
                           excludes=' '.join(excluded_tags)).publish()
 
-    def OnClear(self, event):
+    def on_clear(self, event):
+        _ = event
         self._execute()
         for _, tests in self._results:
             self.tree.DeselectTests(tests)
         self.update_footer()
 
-    def OnSelectAll(self, event):
+    def on_select_all(self, event):
+        _ = event
         all_tests = []
         for _, tests in self._results:
             all_tests += tests
         self.tree.SelectTests(all_tests)
         self._tags_list.CheckAll()
 
-    def OnRightClick(self, event):
+    def on_right_click(self, event):
         self._index = event.GetIndex()
         menu_items = ["Select all", "Clear", "---", "Rename", "Delete", "---",
                       "Show tests with this tag",
                       "Show tests without this tag"]
-        self.tree._popup_creator.show(self, PopupMenuItems(self, menu_items),
-                                      self._controller)
+        self.tree._popup_creator.show(self, PopupMenuItems(self, menu_items), self._controller)
 
-    def OnSelectItem(self, event):
+    def on_select_item(self, event):
         self._index = event.GetIndex()
         self._tags_list.CheckItem(self._index, not self._tags_list.IsChecked(self._index))
 
-    def OnShowTestsWithThisTag(self, event):
+    def on_show_tests_with_this_tag(self, event):
+        _ = event
         if self._index == -1:
             return
         _, tag_name = self._tags_list.get_tag(self._index)
         RideOpenTagSearch(includes=tag_name, excludes="").publish()
 
-    def OnShowTestsWithoutThisTag(self, event):
+    def on_show_tests_without_this_tag(self, event):
+        _ = event
         if self._index == -1:
             return
         _, tag_name = self._tags_list.get_tag(self._index)
         RideOpenTagSearch(includes="", excludes=tag_name).publish()
 
-    def OnRename(self, event):
+    def on_rename(self, event):
+        _ = event
         if self._index == -1:
             return
         tests, tag_name = self._tags_list.get_tag(self._index)
@@ -266,7 +263,8 @@ class ViewAllTagsDialog(RIDEDialog, listmix.ColumnSorterMixin):
             for tag_name, tests in self._results:
                 self.tree.DeselectTests(tests)
 
-    def OnDelete(self, event):
+    def on_delete(self, event):
+        _ = event
         if self._index == -1:
             return
         tests, tag_name = self._tags_list.get_tag(self._index)
@@ -301,7 +299,7 @@ class ViewAllTagsDialog(RIDEDialog, listmix.ColumnSorterMixin):
 
 class TagsListCtrl(wx.ListCtrl, listmix.CheckListCtrlMixin,
                    listmix.ListCtrlAutoWidthMixin):
-    def __init__(self, parent, style, colorBG, colorFG):
+    def __init__(self, parent, style, color_bg, color_fg):
         self.parent = parent
         wx.ListCtrl.__init__(self, parent=parent, style=style)
         if wx.VERSION < (4, 1, 0):
@@ -310,12 +308,13 @@ class TagsListCtrl(wx.ListCtrl, listmix.CheckListCtrlMixin,
         if wx.VERSION >= (4, 1, 0):
             # print(f"DEBUG: CheckAll tags")
             self.EnableCheckBoxes(True)
-        self.SetBackgroundColour(Colour(colorBG))
-        self.SetForegroundColour(Colour(colorFG))
+        self.SetBackgroundColour(Colour(color_bg))
+        self.SetForegroundColour(Colour(color_fg))
         self.setResizeColumn(2)
         self._clientData = {}
+        self._dlg = None
 
-    def OnCheckItem(self, index, flag):
+    def OnCheckItem(self, index, flag):  # Overrides wx method
         if self._dlg:
             self._dlg.item_in_kw_list_checked(index, flag)
 
@@ -346,7 +345,6 @@ class TagsListCtrl(wx.ListCtrl, listmix.CheckListCtrlMixin,
         combining delete and insert statements.
 
         Args:
-            index: An int marking the position to insert the row at.
             tag_to_tests: A tuple mapping tests(list, index 0) to a
                           tag(str, index 1).
 

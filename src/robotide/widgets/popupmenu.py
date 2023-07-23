@@ -14,7 +14,7 @@
 #  limitations under the License.
 
 import wx
-from wx import Colour
+
 
 class PopupCreator(object):
 
@@ -72,8 +72,10 @@ class PopupMenu(wx.Menu):
 
 class PopupMenuItems(object):
 
-    def __init__(self, parent=None, menu_names=[]):
+    def __init__(self, parent=None, menu_names=None):
         self._items = []
+        if menu_names is None:
+            menu_names = []
         for item in menu_names:
             self.add_menu_item(PopupMenuItem(item, parent=parent))
 
@@ -89,19 +91,20 @@ class PopupMenuItems(object):
 
 class PopupMenuItem(object):
 
-    def __init__(self, name, callable=None, parent=None):
+    def __init__(self, name, ccallable=None, parent=None):
         self.name = name
-        self.callable = self._get_callable(name, callable, parent)
+        self.callable = self._get_callable(name, ccallable, parent)
 
-    def _get_callable(self, name, callable, parent):
-        if callable:
-            return callable
+    @staticmethod
+    def _get_callable(name, ccallable, parent):
+        from ..action.actioninfo import get_eventhandler_name_and_parsed_name
+        if ccallable:
+            return ccallable
         if name == '---':
             return None
-        handler_name = ''.join(x for x in name.split('\t')[0].title() if not x.isspace())
-        return getattr(parent, 'On'+handler_name)
+        new_name = name.split('\t')[0].lower()
+        handler_name, new_name = get_eventhandler_name_and_parsed_name(new_name)
+        return getattr(parent, handler_name)
 
     def is_separator(self):
         return self.name == '---'
-
-

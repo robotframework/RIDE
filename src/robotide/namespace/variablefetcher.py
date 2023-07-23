@@ -19,10 +19,12 @@ from .. import robotapi
 
 
 def import_varfile(varfile_path, args):
+    """ Seems that this function is never called """
     temp = robotapi.RobotVariables()
     try:
         temp.set_from_file(varfile_path, args)
-    except SystemExit:
+    except Exception as e:  # DEBUG used to be SystemExit
+        print(f"Failed to import variable file: {e}")
         raise robotapi.DataError('Variable file import failed')
     return [(name, _format_value(value), varfile_path)
             for (name, value) in temp.store.data.items()]

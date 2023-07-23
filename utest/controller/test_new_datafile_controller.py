@@ -17,26 +17,26 @@ import os
 import tempfile
 import unittest
 
-from robotide.controller.robotdata import NewTestCaseFile, NewTestDataDirectory
+from robotide.controller.robotdata import new_test_case_file, new_test_data_directory
 
 
 class NewDataFileTest(unittest.TestCase):
 
     def test_creating_new_datafile(self):
-        ctrl = NewTestCaseFile('./foo.robot')
+        ctrl = new_test_case_file('./foo.robot')
         assert ctrl.name == 'Foo'
 
     def test_creating_directory_data(self):
         dirname = os.path.dirname(os.path.abspath(__file__))
         initpath = os.path.join(dirname, '__init__.html')
-        ctrl = NewTestDataDirectory(initpath)
+        ctrl = new_test_data_directory(initpath)
         assert ctrl.name == 'Controller'
 
     def test_creating_new_data_created_missing_subdirs(self):
         dirname = os.path.join(tempfile.gettempdir(), 'rideutest-newdirectory')
         if os.path.isdir(dirname):
             os.rmdir(dirname)
-        ctrl = NewTestCaseFile(os.path.join(dirname, 'mynew_tcf.html'))
+        ctrl = new_test_case_file(os.path.join(dirname, 'mynew_tcf.html'))
         assert ctrl.name == 'Mynew Tcf'
         assert os.path.isdir(dirname)
         os.rmdir(dirname)

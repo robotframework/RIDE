@@ -78,7 +78,7 @@ class PreferencesComboBox(wx.ComboBox):
         self.SetForegroundColour(Colour(7, 0, 70))
         self.SetOwnForegroundColour(Colour(7, 0, 70))
         """
-        self.Bind(wx.EVT_COMBOBOX, self.OnSelect)
+        self.Bind(wx.EVT_COMBOBOX, self.on_select)
 
     def _get_value(self):
         return self.settings[self.key]
@@ -93,7 +93,7 @@ class PreferencesComboBox(wx.ComboBox):
             return wx.Size(max(max(len(str(s)) for s in choices) * 9, 144), 20)
         return wx.DefaultSize
 
-    def OnSelect(self, event):
+    def on_select(self, event):
         self._set_value(str(event.GetEventObject().GetValue()))
         self.settings.save()
 
@@ -127,8 +127,8 @@ class PreferencesSpinControl(wx.SpinCtrl):
         self.SetForegroundColour(Colour(7, 0, 70))
         self.SetOwnForegroundColour(Colour(7, 0, 70))
         """
-        self.Bind(wx.EVT_SPINCTRL, self.OnChange)
-        self.Bind(wx.EVT_TEXT, self.OnChange)
+        self.Bind(wx.EVT_SPINCTRL, self.on_change)
+        self.Bind(wx.EVT_TEXT, self.on_change)
 
     def _get_value(self):
         return self.settings[self.key]
@@ -143,7 +143,7 @@ class PreferencesSpinControl(wx.SpinCtrl):
             return wx.Size(max(len(str(max_value)) * 9, 144), 20)
         return wx.DefaultSize
 
-    def OnChange(self, event):
+    def on_change(self, event):
         self._set_value(event.GetEventObject().GetValue())
         self.settings.save()
 
@@ -165,9 +165,9 @@ class PreferencesColorPicker(wx.ColourPickerCtrl):
         self.SetForegroundColour(Colour(7, 0, 70))
         self.SetOwnForegroundColour(Colour(7, 0, 70))
         """
-        self.Bind(wx.EVT_COLOURPICKER_CHANGED, self.OnPickColor)
+        self.Bind(wx.EVT_COLOURPICKER_CHANGED, self.on_pick_color)
 
-    def OnPickColor(self, event):
+    def on_pick_color(self, event):
         """Set the color for the given key to the color of the widget"""
         color = event.GetColour()
         rgb = color.GetAsString(flags=wx.C2S_HTML_SYNTAX)

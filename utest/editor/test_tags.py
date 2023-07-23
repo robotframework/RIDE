@@ -102,7 +102,7 @@ class TestTagsModifications(unittest.TestCase):
     def test_remove_only_tag(self):
         self.test_set_non_empty_value()
         self._cntrl.tags.clear()
-        self._tags_display.clear()
+        self._tags_display.clear_field()
         assert len(self.tagboxes) == 0
 
 

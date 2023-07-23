@@ -36,7 +36,7 @@ class RunAnything(Plugin):
     def enable(self):
         self._create_menu(self._configs)
 
-    def OnManageConfigurations(self, event):
+    def on_manage_configurations(self, event):
         dlg = ConfigManagerDialog(self._configs, self)
         if dlg.ShowModal() == wx.ID_OK:
             self._configs.update(dlg.get_data())
@@ -48,7 +48,7 @@ class RunAnything(Plugin):
     def _create_menu(self, configs):
         self.unregister_actions()
         self.register_action(ActionInfo('Macros', 'Manage Run Configurations',
-                                        self.OnManageConfigurations))
+                                        self.on_manage_configurations))
         self.register_action(SeparatorInfo('Macros'))
         for index, cfg in enumerate(configs):
             self._add_config_to_menu(cfg, index+1)

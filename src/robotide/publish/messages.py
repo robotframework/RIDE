@@ -18,8 +18,6 @@ import sys
 import traceback
 from .. import utils
 
-from robotide import utils
-
 
 class RideMessage:
     """Base class for all messages sent by RIDE.
@@ -66,7 +64,7 @@ class RideMessage:
         """Publishes the message.
 
         All listeners that have subscribed to the topic of this message will be
-        called with the this instance as an argument.
+        called with this instance as an argument.
 
         Notifications are sent sequentially. Due to the limitations of current
         implementation, if any of the listeners raises an exception, subsequent
@@ -79,7 +77,7 @@ class RideMessage:
 class RideLog(RideMessage):
     """This class represents a general purpose log message.
 
-    Subclasses of this be may used to inform error conditions or to provide
+    Subclasses of this be may be used to inform error conditions or to provide
     some kind of debugging information.
     """
     data = ['message', 'level', 'timestamp', 'notify_user']
@@ -88,7 +86,7 @@ class RideLog(RideMessage):
 class RideLogMessage(RideLog):
     """This class represents a general purpose log message.
 
-    This message may used to inform error conditions or to provide
+    This message may be used to inform error conditions or to provide
     some kind of debugging information.
     """
     data = ['message', 'level', 'timestamp', 'notify_user']
@@ -106,10 +104,10 @@ class RideLogMessage(RideLog):
 
 class RideLogException(RideLog):
     """This class represents a general purpose log message with a traceback
-    appended to message text. Also the original exception is included with
+    appended to message text. Also, the original exception is included with
     the message.
 
-    This message may used to inform error conditions or to provide
+    This message may be used to inform error conditions or to provide
     some kind of debugging information.
     """
     data = ['message', 'level', 'timestamp', 'exception', 'notify_user']
@@ -121,7 +119,7 @@ class RideLogException(RideLog):
         is generated automatically. Message is automatically appended with
         a traceback.
         """
-        exc_type, exc_value, exc_traceback = sys.exc_info()
+        _, _, exc_traceback = sys.exc_info()
         if exc_traceback:
             tb = traceback.extract_tb(exc_traceback)
             message += '\n\nTraceback (most recent call last):\n%s\n%s' % \
@@ -134,7 +132,7 @@ class RideLogException(RideLog):
 class RideParserLogMessage(RideMessage):
     """This class represents a general purpose log message.
 
-    This message may used to inform parser errors and to provide
+    This message may be used to inform parser errors and to provide
     some kind of debugging information.
     """
     data = ['message', 'level', 'timestamp', 'notify_user']
@@ -466,7 +464,7 @@ class RideVariableUpdated(RideDataChanged):
 
 
 class RideOpenTagSearch(RideMessage):
-    """ Sent we when want to open Search Tags)"""
+    """ Sent we when want to open Search Tags """
     data = ['includes', 'excludes']
 
 

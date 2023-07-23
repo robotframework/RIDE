@@ -63,7 +63,7 @@ class TestFormatChange(unittest.TestCase):
 
     def _get_file_controller(self, path):
         self.project.load_datafile(path, MessageRecordingLoadObserver())
-        return self.project._controller
+        return self.project.controller
 
     def _assert_serialized(self, path):
         assert path in self.project.serialized_files
@@ -106,7 +106,7 @@ class _UnitTestsWithWorkingResourceImports(unittest.TestCase):
         library_manager = LibraryManager(':memory:')
         library_manager.create_database()
         self.project = Project(Namespace(FakeSettings()), FakeSettings(), library_manager)
-        self.project._controller = TestCaseFileController(tcf, self.project)
+        self.project.controller = TestCaseFileController(tcf, self.project)
         res = ResourceFile(source=res_path)
         self.res_controller = \
             self.project._resource_file_controller_factory.create(res)
@@ -114,7 +114,7 @@ class _UnitTestsWithWorkingResourceImports(unittest.TestCase):
 
     @property
     def import_setting(self):
-        return self.project._controller.imports[0]
+        return self.project.controller.imports[0]
 
     def _verify_import_reference(self, imp_is_resolved):
         if imp_is_resolved:

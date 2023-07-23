@@ -216,8 +216,8 @@ class TestRunnerPlugin(Plugin):
 
     def _register_shortcuts(self):
         self.register_shortcut('CtrlCmd-C', self._copy_from_log_ctrls)
-        self.register_shortcut('CtrlCmd-L', self.OnShowLog)
-        self.register_shortcut('CtrlCmd-R', self.OnShowReport)
+        self.register_shortcut('CtrlCmd-L', self.on_show_log)
+        self.register_shortcut('CtrlCmd-R', self.on_show_report)
         if IS_WINDOWS or IS_MAC:
             self.register_shortcut('Del', self._delete_pressed)
 
@@ -249,17 +249,17 @@ class TestRunnerPlugin(Plugin):
         self._create_temporary_directory()
 
     def _register_actions(self):
-        run_action_info = ActionInfo("Tools", "Run Tests", self.OnRun, None,
+        run_action_info = ActionInfo("Tools", "Run Tests", self.on_run, None,
                                      "F8", ImageProvider().TOOLBAR_PLAY,
                                      "Run the selected tests", position=10)
         self._run_action = self.register_action(run_action_info)
         run_action_debug = ActionInfo("Tools", "Run Tests with Debug",
-                                      self.OnRunDebug, None,
+                                      self.on_run_debug, None,
                                       "F9", getBugIconBitmap(),
                                       "Run the selected tests with Debug",
                                       position=8)
         self._run_action = self.register_action(run_action_debug)
-        stop_action_info = ActionInfo("Tools", "Stop Test Run", self.OnStop,
+        stop_action_info = ActionInfo("Tools", "Stop Test Run", self.on_stop,
                                       None, "CtrlCmd-F8",
                                       ImageProvider().TOOLBAR_STOP,
                                       STOP_RUNNING_TEST, position=11)
@@ -286,11 +286,11 @@ class TestRunnerPlugin(Plugin):
         return classes
 
     def _subscribe_to_events(self):
-        self.subscribe(self.OnTestSelectedForRunningChanged,
+        self.subscribe(self.on_test_selected_for_running_changed,
                        RideTestSelectedForRunningChanged)
-        self.subscribe(self.OnSettingsChanged, RideSettingsChanged)
+        self.subscribe(self.on_settings_changed, RideSettingsChanged)
 
-    def OnSettingsChanged(self, message):
+    def on_settings_changed(self, message):
         """Updates settings"""
         section, setting = message.keys
         # print("DEBUG: enter OnSettingsChanged section %s" % (section))
@@ -298,7 +298,7 @@ class TestRunnerPlugin(Plugin):
             self.defaults.setdefault(setting, message.new)
             self.save_setting(setting, message.new)
 
-    def OnTestSelectedForRunningChanged(self, message):
+    def on_test_selected_for_running_changed(self, message):
         self._selected_tests = message.tests
 
     def disable(self):
@@ -322,7 +322,7 @@ class TestRunnerPlugin(Plugin):
             if os.path.exists(self._default_output_dir):
                 shutil.rmtree(self._default_output_dir)
 
-    def OnClose(self, event):
+    def on_close(self, event):
         """Shut down the running services and processes"""
         self._test_runner.kill_process()
         if self._process_timer:
@@ -335,7 +335,7 @@ class TestRunnerPlugin(Plugin):
         self._limitmemory = self._initmemory * 1.80
         self._maxmemmsg = None
 
-    def OnStop(self, event):
+    def on_stop(self, event):
         """Called when the user clicks the "Stop" button
 
         This sends a SIGINT to the running process, with the
@@ -347,36 +347,36 @@ class TestRunnerPlugin(Plugin):
                                     source='stderr')
         self._test_runner.send_stop_signal()
 
-    def OnPause(self, event):
+    def on_pause(self, event):
         _ = event
         self._reset_memory_calc()
         self._append_to_console_log('[ SENDING PAUSE SIGNAL ]\n')
         self._test_runner.send_pause_signal()
 
-    def OnContinue(self, event):
+    def on_continue(self, event):
         _ = event
         self._reset_memory_calc()
         self._append_to_console_log('[ SENDING CONTINUE SIGNAL ]\n')
         self._test_runner.send_continue_signal()
 
-    def OnStepNext(self, event):
+    def on_step_next(self, event):
         _ = event
         self._reset_memory_calc()
         self._append_to_console_log('[ SENDING STEP NEXT SIGNAL ]\n')
         self._test_runner.send_step_next_signal()
 
-    def OnStepOver(self, event):
+    def on_step_over(self, event):
         _ = event
         self._reset_memory_calc()
         self._append_to_console_log('[ SENDING STEP OVER SIGNAL ]\n')
         self._test_runner.send_step_over_signal()
 
-    def OnRun(self, event):
+    def on_run(self, event):
         """ Called when the user clicks or presses the F8, Run Tests """
         _ = event
         self._run_tests()
 
-    def OnRunDebug(self, event):
+    def on_run_debug(self, event):
         """ Called when the user clicks or presses the F9, Run Tests with Debug
             It can still be overwritten in RIDE Arguments line
         """
@@ -507,7 +507,7 @@ class TestRunnerPlugin(Plugin):
         text_ctrl.ClearAll()
         text_ctrl.SetReadOnly(True)
 
-    def OnOpenLogsDirectory(self, event):
+    def on_open_logs_directory(self, event):
         """Called when the user clicks on the "Open Logs Directory" button"""
         _ = event
         if os.path.exists(self._logs_directory):
@@ -515,20 +515,20 @@ class TestRunnerPlugin(Plugin):
         else:
             self._notify_user_no_logs_directory()
 
-    def OnShowReport(self, event):
+    def on_show_report(self, event):
         _ = event
         """Called when the user clicks on the "Report" button"""
         if self._report_file:
             wx.LaunchDefaultBrowser(
                 "file:%s" % os.path.abspath(self._report_file))
 
-    def OnShowLog(self, event):
+    def on_show_log(self, event):
         """Called when the user clicks on the "Log" button"""
         _ = event
         if self._log_file:
             wx.LaunchDefaultBrowser("file:%s" % os.path.abspath(self._log_file))
 
-    def OnProcessEnded(self, event):
+    def on_process_ended(self, event):
         _ = event
         output, errors, log_message = self._test_runner.get_output_and_errors(
             self.get_current_profile())
@@ -565,7 +565,7 @@ class TestRunnerPlugin(Plugin):
         res = regex.search(output)
         return res.group(1) if res and os.path.isfile(res.group(1)) else None
 
-    def OnTimer(self, event):
+    def on_timer(self, event):
         """Get process output"""
         _ = event
         if not self._log_message_queue.empty():
@@ -576,14 +576,12 @@ class TestRunnerPlugin(Plugin):
                 self._append_to_message_log('\n' + '\n'.join(texts))
             else:
                 if not self._maxmemmsg:
-                    self._maxmemmsg = '\n' + "Messages log exceeded 80% of " \
-                                             "process memory, stopping for now..."
+                    self._maxmemmsg = '\n' + "Messages log exceeded 80% of process memory, stopping for now..."
                     self._append_to_message_log(self._maxmemmsg, "stderr")
         if not self._test_runner.is_running():
-            self.OnProcessEnded(None)
+            self.on_process_ended(None)
             return
-        out_buffer, err_buffer, log_message = \
-            self._test_runner.get_output_and_errors(self.get_current_profile())
+        out_buffer, err_buffer, _ = self._test_runner.get_output_and_errors(self.get_current_profile())
         if len(out_buffer) > 0:
             self._append_to_console_log(out_buffer, source="stdout")
         if len(err_buffer) > 0:
@@ -768,13 +766,13 @@ class TestRunnerPlugin(Plugin):
 
     def _bind_runner_toolbar_events(self, toolbar):
         for event, callback, idd in (
-                (wx.EVT_TOOL, self.OnRun, ID_RUN),
-                (wx.EVT_TOOL, self.OnRunDebug, ID_RUNDEBUG),
-                (wx.EVT_TOOL, self.OnStop, ID_STOP),
-                (wx.EVT_TOOL, self.OnPause, ID_PAUSE),
-                (wx.EVT_TOOL, self.OnContinue, ID_CONTINUE),
-                (wx.EVT_TOOL, self.OnStepNext, ID_STEP_NEXT),
-                (wx.EVT_TOOL, self.OnStepOver, ID_STEP_OVER)):
+                (wx.EVT_TOOL, self.on_run, ID_RUN),
+                (wx.EVT_TOOL, self.on_run_debug, ID_RUNDEBUG),
+                (wx.EVT_TOOL, self.on_stop, ID_STOP),
+                (wx.EVT_TOOL, self.on_pause, ID_PAUSE),
+                (wx.EVT_TOOL, self.on_continue, ID_CONTINUE),
+                (wx.EVT_TOOL, self.on_step_next, ID_STEP_NEXT),
+                (wx.EVT_TOOL, self.on_step_over, ID_STEP_OVER)):
             toolbar.Bind(event, callback, id=idd)
 
     def _build_local_toolbar(self, parent):
@@ -831,9 +829,9 @@ class TestRunnerPlugin(Plugin):
 
     def _bind_local_toolbar_events(self, toolbar):
         for event, callback, idd in (
-                (wx.EVT_TOOL, self.OnOpenLogsDirectory, ID_OPEN_LOGS_DIR),
-                (wx.EVT_TOOL, self.OnShowReport, ID_SHOW_REPORT),
-                (wx.EVT_TOOL, self.OnShowLog, ID_SHOW_LOG)):
+                (wx.EVT_TOOL, self.on_open_logs_directory, ID_OPEN_LOGS_DIR),
+                (wx.EVT_TOOL, self.on_show_report, ID_SHOW_REPORT),
+                (wx.EVT_TOOL, self.on_show_log, ID_SHOW_LOG)):
             toolbar.Bind(event, callback, id=idd)
 
         for event, handler, source in (
@@ -902,8 +900,8 @@ class TestRunnerPlugin(Plugin):
         self.panel.SetSizer(sizer)
 
         self._process_timer = wx.Timer(self.panel)
-        self.panel.Bind(wx.EVT_TIMER, self.OnTimer)
-        self.panel.Bind(wx.EVT_WINDOW_DESTROY, self.OnClose)
+        self.panel.Bind(wx.EVT_TIMER, self.on_timer)
+        self.panel.Bind(wx.EVT_WINDOW_DESTROY, self.on_close)
 
         self.add_tab(self.panel, self.title, allow_closing=False)
 
@@ -925,11 +923,11 @@ class TestRunnerPlugin(Plugin):
         self._console_log_panel, self._console_log_ctrl = \
             self._create_collapsible_pane(panel, 'Console log',
                                           self.show_console_log,
-                                          self.OnConsoleLogPaneChanged)
+                                          self.on_console_log_pane_changed)
         self._message_log_panel, self._message_log_ctrl = \
             self._create_collapsible_pane(panel, 'Message log',
                                           self.show_message_log,
-                                          self.OnMessageLogPaneChanged)
+                                          self.on_message_log_pane_changed)
 
         panel_sizer = wx.BoxSizer(wx.VERTICAL)
         panel_sizer.Add(self._progress_bar, 0, wx.EXPAND | wx.BOTTOM, 10)
@@ -938,14 +936,14 @@ class TestRunnerPlugin(Plugin):
         panel.SetSizer(panel_sizer)
         return panel
 
-    def OnConsoleLogPaneChanged(self, evt):
+    def on_console_log_pane_changed(self, evt):
         self.save_setting("show_console_log", not evt.Collapsed)
         self._change_item_proportion(self._output_panel,
                                      self._console_log_panel,
                                      int(not evt.Collapsed))
         self._output_panel.Layout()
 
-    def OnMessageLogPaneChanged(self, evt):
+    def on_message_log_pane_changed(self, evt):
         self.save_setting("show_message_log", not evt.Collapsed)
         self._change_item_proportion(self._output_panel,
                                      self._message_log_panel,
@@ -1163,7 +1161,7 @@ class ProgressBar(wx.Panel):
         self.skip_color = skip_color
         self._timer = wx.Timer(self)
         self._start_time = None
-        self.Bind(wx.EVT_TIMER, self.OnTimer)
+        self.Bind(wx.EVT_TIMER, self.on_timer)
         self._initialize_state()
 
     def _initialize_state(self):
@@ -1179,7 +1177,7 @@ class ProgressBar(wx.Panel):
         if self._current_keywords:
             self._current_keywords.pop()
 
-    def OnTimer(self, event):
+    def on_timer(self, event):
         """A handler for timer events; it updates the statusbar"""
         _ = event
         self._gauge.Show()
@@ -1300,14 +1298,14 @@ class OutputStylizer(object):
 
     def __init__(self, editor, settings):
         self.editor = editor
-        self.settings = settings._config_obj['Plugins']['Test Runner']
+        self.settings = settings.config_obj['Plugins']['Test Runner']
         self._ensure_default_font_is_valid()
         self._set_styles()
         PUBLISHER.subscribe(self.on_settings_changed, RideSettingsChanged)
 
     def on_settings_changed(self, message):
         """Redraw colors and font if settings are modified"""
-        section, setting = message.keys
+        section, _ = message.keys
         if section == 'Test Runner':
             self._set_styles()
 

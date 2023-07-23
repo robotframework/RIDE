@@ -21,10 +21,6 @@ from ..controller import filecontrollers
 from ..controller import macrocontrollers
 from ..controller import settingcontrollers
 
-#(TestDataDirectoryController, TestCaseFileController, ResourceFileController, ExcludedDirectoryController)
-# from ..controller.macrocontrollers import TestCaseController, UserKeywordController
-# from ..controller.settingcontrollers import VariableController
-
 _SIZE = (16, 16)
 _BASE = os.path.join(os.path.dirname(__file__), '..', 'widgets')
 
@@ -35,6 +31,8 @@ FAILED_IMAGE_INDEX = 9
 PAUSED_IMAGE_INDEX = 10
 SKIPPED_IMAGE_INDEX = 11
 
+RESOURCE_DIR = 'resource directory'
+
 
 class TreeImageList(wx.ImageList):
 
@@ -43,7 +41,7 @@ class TreeImageList(wx.ImageList):
         self._execution_results = None
         self._images = {
             filecontrollers.TestDataDirectoryController: _TreeImage(self, 'folder.png'),
-            'resource directory': _TreeImage(self, 'folder_wrench.png'),
+            RESOURCE_DIR: _TreeImage(self, 'folder_wrench.png'),
             filecontrollers.TestCaseFileController: _TreeImage(self, 'page_white.png'),
             macrocontrollers.TestCaseController: _TreeImage(self, 'robot.png'),
             macrocontrollers.UserKeywordController: _TreeImage(self, 'cog.png'),
@@ -56,30 +54,36 @@ class TreeImageList(wx.ImageList):
             'skipped': _TreeImage(self, 'robot_skipped.png'),
             filecontrollers.ExcludedDirectoryController: _TreeImage(self, 'folder_excluded.png')
         }
-# 'running': _TreeImage(self, 'robot_running.png'),
+
     @property
     def directory(self):
-        return self._images['resource directory']
+        return self._images[RESOURCE_DIR]
 
     def set_execution_results(self, results):
         self._execution_results = results
 
+    def _get_image(self, controller):
+        if self._execution_results.is_paused(controller):
+            return self._images['paused']
+        if self._execution_results.is_running(controller):
+            return self._images['running']
+        if self._execution_results.has_passed(controller):
+            return self._images['passed']
+        if self._execution_results.has_failed(controller):
+            return self._images['failed']
+        if self._execution_results.has_skipped(controller):
+            return self._images['skipped']
+        return None
+
     def __getitem__(self, controller):
         if controller.__class__ == macrocontrollers.TestCaseController:
             if self._execution_results:
-                if self._execution_results.is_paused(controller):
-                    return self._images['paused']
-                if self._execution_results.is_running(controller):
-                    return self._images['running']
-                if self._execution_results.has_passed(controller):
-                    return self._images['passed']
-                if self._execution_results.has_failed(controller):
-                    return self._images['failed']
-                if self._execution_results.has_skipped(controller):
-                    return self._images['skipped']
+                image = self._get_image(controller)
+                if image is not None:
+                    return image
         elif controller.__class__ == filecontrollers.TestDataDirectoryController:
             if not controller.contains_tests():
-                return self._images['resource directory']
+                return self._images[RESOURCE_DIR]
         return self._images[controller.__class__]
 
 
@@ -89,7 +93,8 @@ class _TreeImage(object):
         self.normal = self._get_image(image_list, normal)
         self.expanded = self._get_image(image_list, expanded) if expanded else self.normal
 
-    def _get_image(self, image_list, source):
+    @staticmethod
+    def _get_image(image_list, source):
         if source.startswith('wx'):
             img = wx.ArtProvider_GetBitmap(source, wx.ART_OTHER, _SIZE)
         else:

@@ -166,7 +166,7 @@ class TestDataFileRemoval(_DataDependentTest):
 
     def test_deleting_source_should_remove_it_from_model(self):
         project = create_project()
-        project._controller = TestCaseFileController(TestCaseFile(source=self._filepath), project)
+        project.controller = TestCaseFileController(TestCaseFile(source=self._filepath), project)
         os.remove(self._filepath)
         ctrl = project.data
         ctrl.remove()
@@ -175,7 +175,7 @@ class TestDataFileRemoval(_DataDependentTest):
 
     def test_deleting_file_suite_under_dir_suite(self):
         project = create_project()
-        project._controller = TestDataDirectoryController(TestDataDirectory(source=self._dirpath).populate(), project)
+        project.controller = TestDataDirectoryController(TestDataDirectory(source=self._dirpath).populate(), project)
         original_children_length = len(project.data.children)
         file_suite = project.data.children[0]
         file_suite.remove()
@@ -189,7 +189,7 @@ class TestDataFileRemoval(_DataDependentTest):
 
     def test_deleting_init_file(self):
         project = create_project()
-        project._controller = TestDataDirectoryController(TestDataDirectory(source=self._dirpath).populate(), project)
+        project.controller = TestDataDirectoryController(TestDataDirectory(source=self._dirpath).populate(), project)
         os.remove(self._init_path)
         project.data.remove()
         with open(self._init_path, 'w') as initfile:
