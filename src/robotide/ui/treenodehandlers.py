@@ -22,7 +22,6 @@ from ..editor.editordialogs import (TestCaseNameDialog, UserKeywordNameDialog, S
 from ..publish import RideOpenVariableDialog, RideTestSelectedForRunningChanged, PUBLISHER
 from ..ui.progress import LoadProgressObserver
 from ..usages.UsageRunner import Usages, ResourceFileUsages
-from ..utils import overrides
 from ..widgets import PopupMenuItems
 from .filedialogs import (AddSuiteDialog, AddDirectoryDialog, ChangeFormatDialog, NewResourceDialog,
                           RobotFilePathDialog)
@@ -232,9 +231,8 @@ class DirectoryHandler(_ActionHandler):
 
 
 class TestDataHandler(_ActionHandler):
-    accepts_drag = lambda self, dragged: (isinstance(dragged, UserKeywordHandler) or
-                                          isinstance(dragged, VariableHandler))
-
+    def accepts_drag(self, dragged):
+        return isinstance(dragged, UserKeywordHandler) or isinstance(dragged, VariableHandler)
     is_draggable = False
     is_test_suite = True
 
@@ -465,7 +463,9 @@ class ResourceFileHandler(_FileHandlerThanCanBeRenamed, TestDataHandler):
 
 
 class TestCaseFileHandler(_FileHandlerThanCanBeRenamed, TestDataHandler):
-    accepts_drag = lambda *args: True
+    def accepts_drag(self, dragged):
+        _ = dragged
+        return True
     _actions = [_ActionHandler._label_new_test_case,
                 _ActionHandler._label_new_user_keyword,
                 _ActionHandler._label_new_scalar,
@@ -524,7 +524,10 @@ class TestCaseFileHandler(_FileHandlerThanCanBeRenamed, TestDataHandler):
 
 
 class _TestOrUserKeywordHandler(_CanBeRenamed, _ActionHandler):
-    accepts_drag = lambda *args: False
+    @staticmethod
+    def accepts_drag(dragged):
+        _ = dragged
+        return False
     is_draggable = True
     _actions = [
         _ActionHandler._label_copy_macro,
@@ -606,10 +609,12 @@ class UserKeywordHandler(_TestOrUserKeywordHandler):
 
 
 class VariableHandler(_CanBeRenamed, _ActionHandler):
-    accepts_drag = lambda *args: False
+    @staticmethod
+    def accepts_drag(dragged):
+        _ = dragged
+        return False
     is_draggable = True
     is_variable = True
-    # OnMoveUp = OnMoveDown = lambda *args: None
     _actions = [
         _ActionHandler._label_move_up,
         _ActionHandler._label_move_down,
@@ -647,8 +652,17 @@ class VariableHandler(_CanBeRenamed, _ActionHandler):
 
 class ResourceRootHandler(_ActionHandler):
     can_be_rendered = is_draggable = is_user_keyword = is_test_suite = False
-    rename = lambda self, new_name: False
-    accepts_drag = lambda self, dragged: False
+
+    @staticmethod
+    def rename(new_name):
+        _ = new_name
+        return False
+
+    @staticmethod
+    def accepts_drag(dragged):
+        _ = dragged
+        return False
+
     _actions = [_ActionHandler._label_add_resource]
 
     @property
