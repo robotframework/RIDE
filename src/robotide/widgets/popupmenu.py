@@ -74,6 +74,8 @@ class PopupMenuItems(object):
 
     def __init__(self, parent=None, menu_names=None):
         self._items = []
+        if menu_names is None:
+            menu_names = []
         for item in menu_names:
             self.add_menu_item(PopupMenuItem(item, parent=parent))
 

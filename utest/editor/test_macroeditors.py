@@ -68,17 +68,17 @@ class MacroEditorTest(unittest.TestCase):
     def test_delegation_to_kw_editor(self):
         for method, kw_method in \
             [('save', 'save'),
-             ('undo', 'OnUndo'),
-             ('redo', 'OnRedo'),
-             ('cut', 'OnCut'),
-             ('copy', 'OnCopy'),
-             ('paste', 'OnPaste'),
-             ('insert', 'OnInsert'),
-             ('insert_cells', 'OnInsertCells'),
-             ('insert_rows', 'OnInsertRows'),
-             ('delete_rows', 'OnDeleteRows'),
-             ('delete_cells', 'OnDeleteCells'),
-             ('delete', 'OnDelete'),
+             ('undo', 'on_undo'),
+             ('redo', 'on_redo'),
+             ('cut', 'on_cut'),
+             ('copy', 'on_copy'),
+             ('paste', 'on_paste'),
+             ('insert', 'on_insert'),
+             ('insert_cells', 'on_insert_cells'),
+             ('insert_rows', 'on_insert_rows'),
+             ('delete_rows', 'on_delete_rows'),
+             ('delete_cells', 'on_delete_cells'),
+             ('delete', 'on_delete'),
              ('show_content_assist', 'show_content_assist')]:
             kw_mock = MockKwEditor()
             self.tc_editor.kweditor = kw_mock
