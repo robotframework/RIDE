@@ -146,8 +146,11 @@ class TestEditorCommands(unittest.TestCase):
                                                                 texteditor.DataValidationHandler(self.plugin))
         self.plugin.enable()
         self.app.project.load_datafile(datafilereader.TESTCASEFILE_WITH_EVERYTHING, MessageRecordingLoadObserver())
+        self.notebook = self.app.book
         self.app.tree.set_editor(self.plugin._editor_component)
         self.app.tree.populate(self.app.project)
+        self.source = self.app.tree.controller
+        self.plugin._open_tree_selection_in_editor()
         self.app.frame.SetStatusText("File:" + self.app.project.data.source)
         # Uncomment next line (and MainLoop in tests) if you want to see the app
         # self.frame.Show()
@@ -421,8 +424,47 @@ class TestEditorCommands(unittest.TestCase):
         # print(f"DEBUG: fulltext:\n{fulltext}")
         assert fulltext == spaces + '1 - Line one' + spaces + 'with cells' + spaces + 'last text\n'
         # Uncomment next lines if you want to see the app
-        wx.CallLater(5000, self.app.ExitMainLoop)
-        self.app.MainLoop()
+        # wx.CallLater(5000, self.app.ExitMainLoop)
+        # self.app.MainLoop()
+
+    def test_check_variables_section(self):
+        pos = len('1 - Line one\n')
+        spaces = ' ' * self.plugin._editor_component.tab_size
+        text = "${ARG}            value"  # Text to find (last item in Variable section)
+        with open(datafilereader.TESTCASEFILE_WITH_EVERYTHING, "r") as fp:  #, MessageRecordingLoadObserver())
+            content = fp.readlines()
+        content = "".join(content)
+        # self.plugin.on_open(None)
+        # datafilecontroller = self.app.tree.get_selected_datafile_controller()
+        # print(f"DEBUG: datafilecontroller={datafilecontroller} controller={self.app.tree.controller}")
+        # self.plugin._open_data_for_controller(self.app.tree.get_selected_datafile_controller())
+        # self.plugin.on_open(wx.EVT_FILECTRL_SELECTIONCHANGED)
+        # content = ['1 - Line one\n', '2 - Line two\n', '3 - Line three\n']
+        # self.plugin._editor_component.source_editor.set_text(
+        #     content[0] + 'Comment' + spaces + content[1] + content[2])
+        self.plugin._editor_component.source_editor.set_text(content)
+        # self.plugin._editor_component.source_editor.SetSelection(pos + 1, pos + 4)
+        # self.plugin._editor_component.execute_uncomment(None)
+        self.plugin._editor_component.store_position(True)
+        self.plugin._editor_component.set_editor_caret_position()
+        position = self.plugin._editor_component._find_text_position(True, text)
+        self.plugin._editor_component._show_search_results(position, text)
+        position = self.plugin._editor_component.source_editor.GetCurrentPos()
+        self.plugin._editor_component.source_editor.InsertText(position, "123\n\n")
+        fulltext = self.plugin._editor_component.source_editor.GetText()
+        # print(f"DEBUG: fulltext:\n{fulltext}")
+        # Activate Apply to cleanup text
+        self.plugin._editor_component._dirty = True
+        # self.plugin._apply_txt_changes_to_model()
+        # DEBUG: THIS IS THE TEST, IT FAILS BECAUSE WE DON'T HAVE data and controller
+        # result = self.plugin._editor_component.save()
+        # print(f"DEBUG: result={result} is_dirty={self.plugin._editor_component.dirty}")
+        after_apply = self.plugin._editor_component.source_editor.GetText()
+        print(f"DEBUG: after_apply len={len(after_apply)} initial content len={len(content)}:\n{after_apply}")
+        # assert fulltext == content[0] + content[1] + content[2]
+        # Uncomment next lines if you want to see the app
+        # wx.CallLater(5000, self.app.ExitMainLoop)
+        # self.app.MainLoop()
 
 
 if __name__ == '__main__':

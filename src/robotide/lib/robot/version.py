@@ -22,13 +22,13 @@ from os import getenv
 VERSION = '3.1.2'  # Original library version
 ROBOT_VERSION = getenv('ROBOT_VERSION')  # Set the version from environment, like "3.1.2"
 if not ROBOT_VERSION:
-    ROBOT_VERSION = (6, 0, 2)  # Define here or use environmnt variable. Condition library alias with AS
+    ROBOT_VERSION = (6, 1, 1)  # Define here or use environment variable. Condition library alias with AS
 else:
     if not isinstance(ROBOT_VERSION, tuple):
         try:
             ROBOT_VERSION = tuple(int(x) for x in ROBOT_VERSION.replace(',', '.').strip('()').split('.')[:])
         except (TypeError, ValueError):
-            ROBOT_VERSION = (6, 0, 2)
+            ROBOT_VERSION = (6, 1, 1)
 
 ALIAS_MARKER = 'AS' if ROBOT_VERSION >= (6, 0, 0) else 'WITH NAME'
 

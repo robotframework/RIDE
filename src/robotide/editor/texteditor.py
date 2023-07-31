@@ -275,18 +275,15 @@ class DataValidationHandler(object):
             if not handled:
                 return False
         self._editor.reset()
-        data.update_from(m_text)
-        """
-        # DEBUG: This is the area where we will implement to not reformat code
-        if self.source_editor._reformat:
-            data.update_from(m_text)
+        if self._editor.reformat:
+            data.update_from(data.format_text(m_text))
         else:
-            data.update_from(m_text)  # TODO: This is the same code as _reformat == True
+            # DEBUG: This is the area where we will implement to not reformat code
+            data.update_from(m_text)
             # There is no way to update the model without reformatting
-            # TODO this only updates the editor, but not the model, changes in Text Editor are not reflected in Grid or
-            # when saving
-            #  self.source_editor.source_editor.set_text(m_text)
-        """
+            # DEBUG: this only updates the editor, but not the model, changes in Text Editor are not reflected
+            # in Grid or when saving
+            # self.source_editor.source_editor.set_text(m_text)
         self._editor.set_editor_caret_position()
         return True
 
@@ -397,7 +394,7 @@ class SourceEditor(wx.Panel):
         self.source_editor_parent = parent
         self._title = title
         self.tab_size = self.source_editor_parent.app.settings.get(TXT_NUM_SPACES, 4)
-        self._reformat = self.source_editor_parent.app.settings.get('reformat', False)
+        self.reformat = self.source_editor_parent.app.settings.get('reformat', False)
         self._create_ui(title)
         self._data = None
         self._dirty = 0  # 0 is False and 1 is True, when changed on this editor
@@ -1463,7 +1460,7 @@ class SourceEditor(wx.Panel):
         if setting == TXT_NUM_SPACES:
             self.tab_size = self.source_editor_parent.app.settings.get(TXT_NUM_SPACES, 4)
         if setting == 'reformat':
-            self._reformat = self.source_editor_parent.app.settings.get('reformat', False)
+            self.reformat = self.source_editor_parent.app.settings.get('reformat', False)
 
     def _mark_file_dirty(self, dirty=True):
         if not self.is_focused():  # DEBUG: Was marking file clean from Grid Editor

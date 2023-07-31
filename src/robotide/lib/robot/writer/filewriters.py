@@ -59,6 +59,10 @@ class _DataFileWriter(object):
         self._write_header(table)
         self._write_rows(self._formatter.format_table(table))
         if not is_last:  # DEBUG: make this configurable
+            # print(f"DEBUG: lib.robot.writer _DataFileWritter write_table empty_row table={table.type}")
+            if table.type == 'variable' and len(list(table)[-1].as_list()) == 0:
+                # DEBUG: This is workaround for newline being added ALWAYS to VariableTable
+                return
             self._write_empty_row(table)
 
     def _write_header(self, table):
@@ -115,7 +119,8 @@ class TsvFileWriter(_DataFileWriter):
         _DataFileWriter.__init__(self, formatter, configuration)
         self._writer = self._get_writer(configuration)
 
-    def _get_writer(self, configuration):
+    @staticmethod
+    def _get_writer(configuration):
         # Custom dialect needed as a workaround for
         # http://ironpython.codeplex.com/workitem/33627
         dialect = csv.excel_tab()
