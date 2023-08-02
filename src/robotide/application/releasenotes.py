@@ -147,7 +147,7 @@ RELEASE_NOTES = f"""
 <p><a class="reference external" href="https://github.com/robotframework/RIDE/">RIDE (Robot Framework IDE)</a>
  {VERSION} is a new release with minor enhancements and bug fixes. The reference for valid arguments is
  <a class="reference external" href="https://robotframework.org/">Robot Framework</a> installed version, which is at this
-  moment 6.0.2. However, internal library is based on version 3.1.2, to keep compatibility with old formats.</p>
+  moment 6.1.1. However, internal library is based on version 3.1.2, to keep compatibility with old formats.</p>
 <p></p>
 <ul class="simple">
 <li>This version supports Python 3.6 up to 3.11.</li>
@@ -168,6 +168,7 @@ RELEASE_NOTES = f"""
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
+<li>Fixed not working the deletion of cells commented with ``# `` in Grid Editor with ``Ctrl-Shift-D``</li> 
 <li>Fixed empty line being always added to the Variables section in Text Editor</li>
 <li>Improved project file system changes and reloading</li>
 <li>Added context menu to RIDE tray icon. Options Show, Hide and Close</li>
@@ -227,6 +228,6 @@ python -m robotide.__init__
 <pre class="literal-block">
 python -m robotide.postinstall -install
 </pre>
-<p>RIDE {VERSION} was released on 30/Jul/2023.</p>
+<p>RIDE {VERSION} was released on 03/Aug/2023.</p>
 </div>
 """

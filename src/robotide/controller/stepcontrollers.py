@@ -380,12 +380,9 @@ class StepController(_BaseController):
             from_column -= 1
         if not delete and from_column == 0 and cells[from_column] != '':
             return
-        comment = self._get_comment(cells)
         if len(cells) > from_column:
-            if comment:
-                cells.pop()
             cells = cells[:from_column] + cells[from_column + 1:]
-            self.recreate(cells, comment)
+            self.recreate(cells)
 
     @staticmethod
     def first_non_empty_cell(cells):

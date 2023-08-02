@@ -178,30 +178,32 @@ class KeywordEditorTest(unittest.TestCase):
 
     def setUp(self):
         self.app = MyApp()
-        settings = self.app.settings
+        self.settings = self.app.settings
         self.frame = self.app.frame
         self.frame.tree = Tree(self.frame, ActionRegisterer(AuiManager(self.frame),
                                                             MenuBar(self.frame), ToolBar(self.frame),
-                                                            ShortcutRegistry(self.frame)), settings)
+                                                            ShortcutRegistry(self.frame)), self.settings)
         self.app.project = Project(self.app.namespace, self.app.settings)
         self._registered_editors = {}
         self.creator = EditorCreator(self._register)
         self.creator.register_editors()
 
         # self.plugin = self._datafile_plugin(self.app)
-        # self.plugin = kweditor.KeywordEditor(self.app, self.frame.tree)
-        # self.plugin._editor_component = kweditor.ContentAssistCellEditor()
+
         """
         texteditor.SourceEditor(self.app.notebook, self.plugin.title,
                                                                 texteditor.DataValidationHandler(self.plugin))
         """
         self.frame.notebook = self.app.notebook
+        #self.plugin = kweditor.KeywordEditor(self.app, self.app.project.controller, self.frame.tree)
         self.plugin = EditorPlugin(self.app)
+        #self.plugin._editor_component = kweditor.ContentAssistCellEditor(self.app.plugin, self.app.project.controller)
         self.plugin.title = 'Editor'
         self._test = self._datafile_controller()  # testcase_controller()
         self._panel = wx.Panel(self.app.frame)
         sizer = wx.BoxSizer()
         self._grid = GridEditor(self._panel, 10, 6).SetSizer(sizer=sizer)
+        # self.plugin._editor_component = kweditor.ContentAssistCellEditor(self._grid, self.app.project.controller)
         # self.editor = TestCaseEditor(self.app, self._grid, self._test, self.app.tree)
         # self.plugin._editor_component = KeywordEditor(self.plugin, self.editor, self.app.tree)
 
@@ -278,6 +280,9 @@ class KeywordEditorTest(unittest.TestCase):
         show = self.creator.editor_for(self.plugin, self._panel, self.frame.tree)
         print(f"DEBUG: Editor is {show}")
         assert show is not None
+        # Uncomment next lines if you want to see the app
+        wx.CallLater(5000, self.app.ExitMainLoop)
+        self.app.MainLoop()
 
 
 if __name__ == '__main__':
