@@ -33,7 +33,7 @@ from ..controller.ctrlcommands import ChangeCellValue, clear_area, \
     paste_area, delete_rows, add_rows, comment_rows, insert_cells, delete_cells, \
     uncomment_rows, Undo, Redo, RenameKeywordOccurrences, ExtractKeyword, \
     add_keyword_from_cells, MoveRowsUp, MoveRowsDown, extract_scalar, extract_list, \
-    insert_area
+    insert_area, sharp_comment_rows, sharp_uncomment_rows
 from ..editor.cellrenderer import CellRenderer
 from ..pluginapi import Plugin
 from ..publish import RideItemStepsChanged, RideSaved, PUBLISHER, RideBeforeSaving
@@ -374,6 +374,16 @@ class KeywordEditor(GridEditor, Plugin):
     # DEBUG @requires_focus
     def on_uncomment_rows(self, event=None):
         self._execute(uncomment_rows(self.selection.rows()))
+        self._resize_grid()
+        self._skip_except_on_mac(event)
+
+    def on_sharp_comment_rows(self, event=None):
+        self._execute(sharp_comment_rows(self.selection.rows()))
+        self._resize_grid()
+        self._skip_except_on_mac(event)
+
+    def on_sharp_uncomment_rows(self, event=None):
+        self._execute(sharp_uncomment_rows(self.selection.rows()))
         self._resize_grid()
         self._skip_except_on_mac(event)
 
@@ -817,11 +827,13 @@ work.</li>
 
     def on_comment_cells(self, event):
         _ = event
-        self._open_cell_editor_and_execute_sharp_comment()
+        self.on_sharp_comment_rows(event)
+        # self._open_cell_editor_and_execute_sharp_comment()
 
     def on_uncomment_cells(self, event):
         _ = event
-        self._open_cell_editor_and_execute_sharp_uncomment()
+        self.on_sharp_uncomment_rows(event)
+        # self._open_cell_editor_and_execute_sharp_uncomment()
 
     def on_cell_right_click(self, event):
         self._tooltips.hide()
