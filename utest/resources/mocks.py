@@ -77,16 +77,17 @@ pythonpath = []
 
 class FakeSettings(Settings):
     def __init__(self, settings=None):
-        fake_cfg = os.path.join(os.path.dirname(__file__), 'fake.cfg')
+        self.fake_cfg = os.path.join(os.path.dirname(__file__), 'fake.cfg')
 
         # make sure fake cfg is clean
-        with open(fake_cfg, 'wb') as f:
+        with open(self.fake_cfg, 'wb') as f:
             f.write(_FAKE_CFG_CONTENT)
 
-        Settings.__init__(self, fake_cfg)
+        Settings.__init__(self, self.fake_cfg)
         self.add_section('Plugins')
         self.set('pythonpath', [])
         self.set('auto imports', [])
+        self.set('global_settings', [])
         if settings:
             for key, val in settings.items():
                 self.set(key, val)

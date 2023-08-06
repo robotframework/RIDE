@@ -168,6 +168,7 @@ RELEASE_NOTES = f"""
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
+<li>Fixed non syncronized expanding/collapse of Settings panel in Grid Editor, on Linux</li>
 <li>Fixed not working the deletion of cells commented with ``# `` in Grid Editor with ``Ctrl-Shift-D``</li> 
 <li>Fixed empty line being always added to the Variables section in Text Editor</li>
 <li>Improved project file system changes and reloading</li>
@@ -228,6 +229,6 @@ python -m robotide.__init__
 <pre class="literal-block">
 python -m robotide.postinstall -install
 </pre>
-<p>RIDE {VERSION} was released on 03/Aug/2023.</p>
+<p>RIDE {VERSION} was released on 06/Aug/2023.</p>
 </div>
 """
