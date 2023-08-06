@@ -325,6 +325,27 @@ class StepController(_BaseController):
         col = self._first_non_empty_cell()  # .step_controller_step.inner_kw_pos
         self.insert_value_before(col, 'Comment')
 
+    def sharp_comment(self):
+        col = self._first_non_empty_cell()
+        self.insert_sharp_comment(col)
+
+    def insert_sharp_comment(self, col):
+        cell_value = self.get_value(col)
+        new_value = "# " + cell_value
+        self.change(col, new_value)
+
+    def sharp_uncomment(self):
+        col = self._first_non_empty_cell()
+        self.remove_sharp_comment(col)
+
+    def remove_sharp_comment(self, col):
+        cell_value = self.get_value(col)
+        if cell_value.startswith('#'):
+            new_value = cell_value.lstrip('#').lstrip(' ')
+        else:
+            return
+        self.change(col, new_value)
+
     def _is_commented(self, col):
         if self._has_comment_keyword():
             return col > self._keyword_column
@@ -380,12 +401,9 @@ class StepController(_BaseController):
             from_column -= 1
         if not delete and from_column == 0 and cells[from_column] != '':
             return
-        comment = self._get_comment(cells)
         if len(cells) > from_column:
-            if comment:
-                cells.pop()
             cells = cells[:from_column] + cells[from_column + 1:]
-            self.recreate(cells, comment)
+            self.recreate(cells)
 
     @staticmethod
     def first_non_empty_cell(cells):

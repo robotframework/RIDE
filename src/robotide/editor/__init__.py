@@ -242,6 +242,14 @@ class _EditorTab(wx.Panel):
         _ = event
         self.editor.uncomment_rows()
 
+    def on_sharp_comment_rows(self, event):
+        _ = event
+        self.editor.sharp_comment_rows()
+
+    def on_sharp_uncomment_rows(self, event):
+        _ = event
+        self.editor.sharp_uncomment_rows()
+
     def on_comment_cells(self, event):
         _ = event
         self.editor.comment_cells()

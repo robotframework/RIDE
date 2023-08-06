@@ -16,6 +16,8 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 == Fixed
 
+- Fixed non syncronized expanding/collapse of Settings panel in Grid Editor, on Linux
+- Fixed not working the deletion of cells commented with ``\# `` in Grid Editor with ``Ctrl-Shift-D``
 - Fixed empty line being always added to the Variables section in Text Editor
 - Fixed wrong project reloading when file system changes detected, and other related problems
 - Fixed control commands (``FOR``, ``IF``, ``TRY``, etc) being colorized as valid keywords when typed not in all caps in Grid Editor

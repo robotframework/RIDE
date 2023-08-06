@@ -1216,6 +1216,26 @@ class UncommentRow(_RowChangingCommand):
         return CommentRow(self._row)
 
 
+class SharpCommentRow(_RowChangingCommand):
+
+    def _change_value(self, context):
+        self._step(context).sharp_comment()
+        return True
+
+    def _get_undo_command(self):
+        return SharpUncommentRow(self._row)
+
+
+class SharpUncommentRow(_RowChangingCommand):
+
+    def _change_value(self, context):
+        self._step(context).sharp_uncomment()
+        return True
+
+    def _get_undo_command(self):
+        return SharpCommentRow(self._row)
+
+
 INDENTED_INNER = ['ELSE', 'ELSE IF', 'EXCEPT', 'FINALLY']
 INDENTED_START = ['FOR', 'IF', 'WHILE', 'TRY'] + INDENTED_INNER
 
@@ -1500,6 +1520,14 @@ def comment_rows(rows):
 
 def uncomment_rows(rows):
     return StepsChangingCompositeCommand(*[UncommentRow(r) for r in rows])
+
+
+def sharp_comment_rows(rows):
+    return StepsChangingCompositeCommand(*[SharpCommentRow(r) for r in rows])
+
+
+def sharp_uncomment_rows(rows):
+    return StepsChangingCompositeCommand(*[SharpUncommentRow(r) for r in rows])
 
 
 def clear_area(top_left, bottom_right):

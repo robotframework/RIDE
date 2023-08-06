@@ -35,7 +35,7 @@ from utest.resources import FakeSettings, FakeEditor
 from robotide.publish import PUBLISHER, RideSuiteAdded, RideNotebookTabChanging
 from robotide.ui.treeplugin import Tree
 from robotide.ui.notebook import NoteBook
-from robotide.editor import kweditor
+from robotide.editor.kweditor import KeywordEditor
 from robotide.editor.gridbase import GridEditor
 from robotide.namespace.namespace import Namespace
 
@@ -93,6 +93,11 @@ app.namespace = mock(Namespace)
 app.settings = FakeSettings()
 app.register_editor()
 """
+
+DATA = [['kw1', '', ''],
+        ['kw2', 'arg1', ''],
+        ['kw3', 'arg1', 'arg2']]
+
 # frame.Show()
 nb_style = aui.AUI_NB_DEFAULT_STYLE | aui.AUI_NB_WINDOWLIST_BUTTON | aui.AUI_NB_TAB_EXTERNAL_MOVE \
            | aui.AUI_NB_SUB_NOTEBOOK | aui.AUI_NB_SMART_TABS
@@ -127,8 +132,8 @@ class MyApp(wx.App):
         self.frame = MainFrame()
         self.SetTopWindow(self.frame)
         self.settings = FakeSettings()
-        _, self.file_settings = tempfile.mkstemp('.cfg', text=True)
-        self.global_settings = RideSettings(self.file_settings)
+        # _, self.file_settings = tempfile.mkstemp('.cfg', text=True)
+        self.global_settings = RideSettings(self.settings.fake_cfg)  #self.file_settings)
         self.global_settings.add_section("Grid")
         self.settings.global_settings = self.global_settings
         self.settings.add_section("Grid")
@@ -178,19 +183,18 @@ class KeywordEditorTest(unittest.TestCase):
 
     def setUp(self):
         self.app = MyApp()
-        settings = self.app.settings
+        self.settings = self.app.settings
         self.frame = self.app.frame
         self.frame.tree = Tree(self.frame, ActionRegisterer(AuiManager(self.frame),
                                                             MenuBar(self.frame), ToolBar(self.frame),
-                                                            ShortcutRegistry(self.frame)), settings)
+                                                            ShortcutRegistry(self.frame)), self.settings)
         self.app.project = Project(self.app.namespace, self.app.settings)
         self._registered_editors = {}
         self.creator = EditorCreator(self._register)
         self.creator.register_editors()
 
         # self.plugin = self._datafile_plugin(self.app)
-        # self.plugin = kweditor.KeywordEditor(self.app, self.frame.tree)
-        # self.plugin._editor_component = kweditor.ContentAssistCellEditor()
+
         """
         texteditor.SourceEditor(self.app.notebook, self.plugin.title,
                                                                 texteditor.DataValidationHandler(self.plugin))
@@ -198,10 +202,14 @@ class KeywordEditorTest(unittest.TestCase):
         self.frame.notebook = self.app.notebook
         self.plugin = EditorPlugin(self.app)
         self.plugin.title = 'Editor'
+        # self._grid = KeywordEditor(self.plugin, self.app.project.controller, self.frame.tree)
+        #self.plugin._editor_component = kweditor.ContentAssistCellEditor(self.app.plugin, self.app.project.controller)
         self._test = self._datafile_controller()  # testcase_controller()
         self._panel = wx.Panel(self.app.frame)
         sizer = wx.BoxSizer()
-        self._grid = GridEditor(self._panel, 10, 6).SetSizer(sizer=sizer)
+        self._grid = GridEditor(self._panel, 10, 6)
+        self._grid.SetSizer(sizer=sizer)
+        # self.plugin._editor_component = kweditor.ContentAssistCellEditor(self._grid, self.app.project.controller)
         # self.editor = TestCaseEditor(self.app, self._grid, self._test, self.app.tree)
         # self.plugin._editor_component = KeywordEditor(self.plugin, self.editor, self.app.tree)
 
@@ -212,6 +220,11 @@ class KeywordEditorTest(unittest.TestCase):
         self.app.project.load_datafile(datafilereader.TESTCASEFILE_WITH_EVERYTHING, MessageRecordingLoadObserver())
         # self.app.tree.set_editor(self.plugin._editor_component)
         self.app.tree.populate(self.app.project)
+
+        for ridx, rdata in enumerate(DATA):
+            for cidx, cdata in enumerate(rdata):
+                self._grid.write_cell(ridx, cidx, cdata, update_history=False)
+
         self.app.frame.SetStatusText("File:" + self.app.project.data.source)
         # Uncomment next line (and MainLoop in tests) if you want to see the app
         self.frame.Show()
@@ -278,6 +291,20 @@ class KeywordEditorTest(unittest.TestCase):
         show = self.creator.editor_for(self.plugin, self._panel, self.frame.tree)
         print(f"DEBUG: Editor is {show}")
         assert show is not None
+        # Uncomment next lines if you want to see the app
+        wx.CallLater(5000, self.app.ExitMainLoop)
+        self.app.MainLoop()
+
+    def test_on_comment_cells(self):
+        self.creator.editor_for(self.plugin, self._panel, self.frame.tree)
+        self._grid.SelectBlock(2, 2, 2, 2)
+        data = self._grid.get_selected_content()
+        print(f"DEBUG: Data Cell is {data}")
+        # self.plugin.on_comment_cells(None)
+        data = self._grid.get_selected_content()
+        print(f"DEBUG: After Sharp Comment Data Cell is {data}")
+        wx.CallLater(5000, self.app.ExitMainLoop)
+        self.app.MainLoop()
 
 
 if __name__ == '__main__':

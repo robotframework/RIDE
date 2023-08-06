@@ -182,6 +182,8 @@ class _RobotTableEditor(EditorPanel):
         self._store_settings_open_status()
         self.GetSizer().Layout()
         self.Refresh()
+        self.Parent.GetSizer().Layout()
+        self.Parent.Refresh()
         if event:
             event.Skip()
 
