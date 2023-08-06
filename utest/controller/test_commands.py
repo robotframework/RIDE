@@ -604,6 +604,42 @@ class ForLoopCases(TestCaseCommandTest):
         # self._verify_step_unchanged('  END')
 
 
+class SharpCommentTests(TestCaseCommandTest):  # DEBUG: on_comment_cells is called from kweditor
+
+    def test_sharp_commenting_many_rows(self):
+        self._exec(sharp_comment_rows([1, 2, 3, 4]))
+        for s in self._steps:
+            print(f"{s.as_list()}")
+        step1 = ['# ' + self._data_step_as_list(STEP2)[1]] + self._data_step_as_list(STEP2)[2:]
+        step2 = ['# ' + self._data_step_as_list(STEP_WITH_COMMENT)[1]] + self._data_step_as_list(STEP_WITH_COMMENT)[2:]
+        step3 = ['# ' + self._data_step_as_list(FOR_LOOP_HEADER)[1]] + self._data_step_as_list(FOR_LOOP_HEADER)[2:]
+        step4 = [''] + ['# ' + self._data_step_as_list(FOR_LOOP_STEP1)[2]] + self._data_step_as_list(FOR_LOOP_STEP1)[3:]
+        self.assertEqual(self._steps[self._data_row(STEP2)].as_list(), step1)
+        self.assertEqual(self._steps[self._data_row(STEP_WITH_COMMENT)].as_list(), step2)
+        self.assertEqual(self._steps[self._data_row(FOR_LOOP_HEADER)].as_list(), step3)
+        self.assertEqual(self._steps[self._data_row(FOR_LOOP_STEP1)].as_list(), step4)
+
+    def test_sharp_uncommenting_many_rows(self):
+        self._exec(sharp_comment_rows([1, 2, 3, 4]))
+        for s in self._steps:
+            print(f"{s.as_list()}")
+        step1 = ['# ' + self._data_step_as_list(STEP2)[1]] + self._data_step_as_list(STEP2)[2:]
+        step2 = ['# ' + self._data_step_as_list(STEP_WITH_COMMENT)[1]] + self._data_step_as_list(STEP_WITH_COMMENT)[2:]
+        step3 = ['# ' + self._data_step_as_list(FOR_LOOP_HEADER)[1]] + self._data_step_as_list(FOR_LOOP_HEADER)[2:]
+        step4 = [''] + ['# ' + self._data_step_as_list(FOR_LOOP_STEP1)[2]] + self._data_step_as_list(FOR_LOOP_STEP1)[3:]
+        self.assertEqual(self._steps[self._data_row(STEP2)].as_list(), step1)
+        self.assertEqual(self._steps[self._data_row(STEP_WITH_COMMENT)].as_list(), step2)
+        self.assertEqual(self._steps[self._data_row(FOR_LOOP_HEADER)].as_list(), step3)
+        self.assertEqual(self._steps[self._data_row(FOR_LOOP_STEP1)].as_list(), step4)
+        self._exec(sharp_uncomment_rows([1, 2, 3, 4]))
+        for s in self._steps:
+            print(f"{s.as_list()}")
+        self.assertEqual(self._steps[self._data_row(STEP2)].as_list(), self._data_step_as_list(STEP2)[1:])
+        self.assertEqual(self._steps[self._data_row(STEP_WITH_COMMENT)].as_list(), self._data_step_as_list(STEP_WITH_COMMENT)[1:])
+        self.assertEqual(self._steps[self._data_row(FOR_LOOP_HEADER)].as_list(), self._data_step_as_list(FOR_LOOP_HEADER)[1:])
+        self.assertEqual(self._steps[self._data_row(FOR_LOOP_STEP1)].as_list(), self._data_step_as_list(FOR_LOOP_STEP1)[1:])
+
+
 class RowMovingTest(TestCaseCommandTest):
 
     def test_row_up(self):

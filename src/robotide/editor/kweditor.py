@@ -825,15 +825,23 @@ work.</li>
         # Meant for a single cell selection!
         wx.CallAfter(self.open_cell_editor().execute_sharp_uncomment)
 
+    def current_cell(self):
+        curcell = [self.GetGridCursorRow(), self.GetGridCursorCol()]
+        return curcell
+
     def on_comment_cells(self, event):
         _ = event
-        self.on_sharp_comment_rows(event)
-        # self._open_cell_editor_and_execute_sharp_comment()
+        if self.GetSelectionBlockTopLeft():
+            self.on_sharp_comment_rows(event)
+        else:
+            self._open_cell_editor_and_execute_sharp_comment()
 
     def on_uncomment_cells(self, event):
         _ = event
-        self.on_sharp_uncomment_rows(event)
-        # self._open_cell_editor_and_execute_sharp_uncomment()
+        if self.GetSelectionBlockTopLeft():
+            self.on_sharp_uncomment_rows(event)
+        else:
+            self._open_cell_editor_and_execute_sharp_uncomment()
 
     def on_cell_right_click(self, event):
         self._tooltips.hide()
