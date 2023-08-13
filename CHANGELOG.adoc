@@ -6,7 +6,23 @@ All notable changes to this project will be documented in this file.
 The format is based on http://keepachangelog.com/en/1.0.0/[Keep a Changelog]
 and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioning].
 
-// == https://github.com/robotframework/RIDE[Unreleased]
+== https://github.com/robotframework/RIDE[Unreleased]
+
+=== Added
+
+-
+
+=== Fixed
+
+-
+
+=== Changed
+
+-
+
+=== Removed
+
+-
 
 == https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.0.7.rst[2.0.7] - 2023-08-13
 
@@ -17,7 +33,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 - Added sincronization with Project Explorer to navigate to selected item, Test Case, Keyword, Variable, in Text Editor
   Note: This feature is working fine in Fedora 38, but not on Windows and macOS.
 
-== Fixed
+=== Fixed
 
 - Fixed non syncronized expanding/collapse of Settings panel in Grid Editor, on Linux
 - Fixed not working the deletion of cells commented with ``\# `` in Grid Editor with ``Ctrl-Shift-D``

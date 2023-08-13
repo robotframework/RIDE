@@ -158,7 +158,7 @@ RELEASE_NOTES = f"""
 <li>Newlines in Grid Editor can be made visible with the `filter newlines` set to False.</li>
 <li>On Text Editor when Saving the selection of tests in Test Suites (Tree) is cleared.</li>
 <li>Test Suite with <em>*** Comments ***</em> can be edited but newlines are introduced.</li>
-<li>When editing resource files in Text Editor, item may disapper from Project Explorer and content may be lost if clicking Apply.
+<li>When editing resource files in Text Editor, item may disappear from Project Explorer and content may be lost if clicking Apply.
  Better to use the Save action, so changed content is not lost.</li>
 <li>Some argument types detection (and colorization) is not correct in Grid Editor.</li>
 <li>RIDE <strong>DOES NOT KEEP</strong> Test Suites formatting or structure, causing differences in files when used
