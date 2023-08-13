@@ -45,7 +45,7 @@ jobs:
             -Dsonar.organization=helioguilherme66
             -Dsonar.projectKey=HelioGuilherme66_RIDE
             -Dsonar.python.coverage.reportPaths=.coverage-reports/coverage.xml
-            -Dsonar.sources=src
+            -Dsonar.sources=src/robotide
             -Dsonar.tests=utest
             -Dsonar.verbose=true
         env:
