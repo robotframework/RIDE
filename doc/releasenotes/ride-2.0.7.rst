@@ -1,21 +1,33 @@
 .. container:: document
 
    `RIDE (Robot Framework
-   IDE) <https://github.com/robotframework/RIDE/>`__ v2.0.6 is a new
+   IDE) <https://github.com/robotframework/RIDE/>`__ v2.0.7 is a new
    release with minor enhancements and bug fixes. The reference for
-   valid arguments is `Robot Framework <http://robotframework.org>`__
-   installed version, which is at this moment 6.0.2. However, internal
+   valid arguments is `Robot Framework <https://robotframework.org/>`__
+   installed version, which is at this moment 6.1.1. However, internal
    library is based on version 3.1.2, to keep compatibility with old
    formats.
 
-   -  This version supports Python 3.6 up to 3.10.
+   -  This version supports Python 3.6 up to 3.11.
    -  There are some changes, or known issues:
 
-      -  Newlines in Grid Editor can be made visible with the `filter newlines` set to False.
+      -  RIDE tray icon now shows a context menu with options Show, Hide
+         and Close
+      -  Highlighting and navigation of selected Project Explorer items,
+         in Text Editor
+      -  When editing in Grid Editor with content assistance, the
+         selected content can be edited by escaping the list of
+         suggestions with keys ARROW_LEFT or ARROW_RIGHT.
+      -  Newlines in Grid Editor can be made visible with the \`filter
+         newlines\` set to False.
       -  On Text Editor when Saving the selection of tests in Test
          Suites (Tree) is cleared.
       -  Test Suite with *\**\* Comments \**\** can be edited but
          newlines are introduced.
+      -  When editing resource files in Text Editor, item may disapper
+         from Project Explorer and content may be lost if clicking
+         Apply. Better to use the Save action, so changed content is not
+         lost.
       -  Some argument types detection (and colorization) is not correct
          in Grid Editor.
       -  RIDE **DOES NOT KEEP** Test Suites formatting or structure,
@@ -23,16 +35,32 @@
 
    **New Features and Fixes Highlights**
 
-   -  Newlines in Grid Editor can be made visible with the `filter newlines` set to False, by editing `settings.cfg`
-   -  Improve auto-suggestions of keywords in Grid Editor by allowing to close suggestions list with keys ARROW_LEFT or ARROW_RIGHT
-   -  Improve Text Editor auto-suggestions by using: selected text, text at left or at right of cursor
-
+   -  Added indication of matching brackets, **()**, **{}**, **[]**, in
+      Text Editor
+   -  Fixed non syncronized expanding/collapse of Settings panel in Grid
+      Editor, on Linux
+   -  Fixed not working the deletion of cells commented with **#** in
+      Grid Editor with **Ctrl-Shift-D**
+   -  Fixed empty line being always added to the Variables section in
+      Text Editor
+   -  Improved project file system changes and reloading
+   -  Added context menu to RIDE tray icon. Options Show, Hide and Close
+   -  Added sincronization with Project Explorer to navigate to selected
+      item, Test Case, Keyword, Variable, in Text Editor
+   -  Control commands (**FOR**, **IF**, **TRY**, etc) will only be
+      colorized as valid keywords when typed in all caps in Grid Editor
+   -  Newlines in Grid Editor can be made visible with the **filter
+      newlines** set to False, by editing *settings.cfg*
+   -  Improve auto-suggestions of keywords in Grid Editor by allowing to
+      close suggestions list with keys ARROW_LEFT or ARROW_RIGHT
+   -  Improve Text Editor auto-suggestions by using: selected text, text
+      at left or at right of cursor
 
    We hope to implement or complete features and make fixes on next
    major version 2.1 (in the end of 2023).
 
    **The minimal wxPython version is, 4.0.7, and RIDE supports the
-   current version, 4.2.0.**
+   current version, 4.2.1.**
 
    *Linux users are advised to install first wxPython from .whl package
    at*
@@ -48,7 +76,7 @@
    milestone <https://github.com/robotframework/RIDE/issues?q=milestone%3Av2.1>`__.
 
    Questions and comments related to the release can be sent to the
-   `robotframework-users <http://groups.google.com/group/robotframework-users>`__
+   `robotframework-users <https://groups.google.com/group/robotframework-users>`__
    mailing list or to the channel #ride on `Robot Framework
    Slack <https://robotframework-slack-invite.herokuapp.com>`__, and
    possible bugs submitted to the `issue
@@ -57,12 +85,12 @@
    Forum <https://forum.robotframework.org/c/tools/ride/>`__ if your
    problem is already known.
 
-   To install with `pip <http://pip-installer.org>`__ installed, just
-   run
+   To install with `pip <https://pypi.org/project/pip/>`__ installed,
+   just run
 
    .. code:: literal-block
 
-      pip install --upgrade robotframework-ride==v2.0.6
+      pip install --upgrade robotframework-ride==v2.0.7
 
    to install exactly this release, which is the same as using
 
@@ -102,4 +130,4 @@
 
       python -m robotide.postinstall -install
 
-   RIDE v2.0.6dev2 was released on 25/May/2023.
+   RIDE v2.0.7 was released on 13/Aug/2023.
