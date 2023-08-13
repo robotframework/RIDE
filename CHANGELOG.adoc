@@ -10,6 +10,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Added
 
+- Added indication of matching brackets, ``()``, ``{}``, ``[]``, in Text Editor
 - Added context menu to RIDE tray icon. Options Show, Hide and Close
 - Added sincronization with Project Explorer to navigate to selected item, Test Case, Keyword, Variable, in Text Editor
   Note: This feature is working fine in Fedora 38, but not on Windows and macOS.

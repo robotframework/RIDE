@@ -168,15 +168,16 @@ RELEASE_NOTES = f"""
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
+<li>Added indication of matching brackets, <b>()</b>, <b>"""'''{}'''f"""</b>, <b>[]</b>, in Text Editor</li>
 <li>Fixed non syncronized expanding/collapse of Settings panel in Grid Editor, on Linux</li>
-<li>Fixed not working the deletion of cells commented with ``# `` in Grid Editor with ``Ctrl-Shift-D``</li> 
+<li>Fixed not working the deletion of cells commented with <b># </b> in Grid Editor with <b>Ctrl-Shift-D</b></li> 
 <li>Fixed empty line being always added to the Variables section in Text Editor</li>
 <li>Improved project file system changes and reloading</li>
 <li>Added context menu to RIDE tray icon. Options Show, Hide and Close</li>
 <li>Added sincronization with Project Explorer to navigate to selected item, Test Case, Keyword, Variable, in Text
  Editor</li>
-<li>Control commands (``FOR``, ``IF``, ``TRY``, etc) will only be colorized as valid keywords when typed in all caps in Grid Editor</li>
-<li>Newlines in Grid Editor can be made visible with the `filter newlines` set to False, by editing `settings.cfg`</li>
+<li>Control commands (<b>FOR</b>, <b>IF</b>, <b>TRY</b>, etc) will only be colorized as valid keywords when typed in all caps in Grid Editor</li>
+<li>Newlines in Grid Editor can be made visible with the <b>filter newlines</b> set to False, by editing <em>settings.cfg</em></li>
 <li>Improve auto-suggestions of keywords in Grid Editor by allowing to close suggestions list with keys ARROW_LEFT or ARROW_RIGHT</li>
 <li>Improve Text Editor auto-suggestions by using: selected text, text at left or at right of cursor</li>
 </ul>
@@ -229,6 +230,6 @@ python -m robotide.__init__
 <pre class="literal-block">
 python -m robotide.postinstall -install
 </pre>
-<p>RIDE {VERSION} was released on 06/Aug/2023.</p>
+<p>RIDE {VERSION} was released on 12/Aug/2023.</p>
 </div>
 """

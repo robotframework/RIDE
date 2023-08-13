@@ -254,9 +254,15 @@ class RideFrame(wx.Frame):
             PUBLISHER.unsubscribe(self._set_label, RideTreeSelection)
             RideClosing().publish()
             # DEBUG: Wrap in try/except for RunTime error
-            self._task_bar_icon.RemoveIcon()
-            self._task_bar_icon.Destroy()
-            self.Destroy()
+            try:
+                self._task_bar_icon.RemoveIcon()
+                self._task_bar_icon.Destroy()
+            except RuntimeError:
+                pass
+            try:
+                self.Destroy()
+            except RuntimeError:
+                pass
             app = wx.GetApp()
             if app is not self._application:
                 # other wx app instance created unexpectedly
