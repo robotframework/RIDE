@@ -14,7 +14,6 @@
 #  limitations under the License.
 
 import string
-import keyword
 from io import StringIO, BytesIO
 from time import time
 
@@ -612,7 +611,7 @@ class SourceEditor(wx.Panel):
             self._showing_list = False  # Avoid double calls
             return
         self.store_position()
-        selected = self.source_editor.get_selected_or_near_text(self._position)
+        selected = self.source_editor.get_selected_or_near_text()
         sugs = []
         for start in selected:
             sugs.extend(s.name for s in self._suggestions.get_suggestions(start))
@@ -1508,7 +1507,6 @@ class RobotDataEditor(stc.StyledTextCtrl):
         if self.CallTipActive():
             self.CallTipCancel()
         key = event.GetKeyCode()
-
         if key == 32 and event.ControlDown():
             pos = self.GetCurrentPos()
 
@@ -1541,7 +1539,7 @@ class RobotDataEditor(stc.StyledTextCtrl):
                 self.AutoCompSetSeparator(ord(';'))
                 self.AutoCompShow(0, ";".join(kw))
                 """
-                selected = self.get_selected_or_near_text(pos)
+                selected = self.get_selected_or_near_text()
                 sugs = []
                 for start in selected:
                     sugs.extend(s.name for s in self.parent._suggestions.get_suggestions(start))
@@ -1549,9 +1547,9 @@ class RobotDataEditor(stc.StyledTextCtrl):
                     sugs = [s for s in sugs if s != '']
                 if sugs:
                     self.AutoCompSetDropRestOfWord(True)
+                    self.AutoCompSetIgnoreCase(True)
                     self.AutoCompSetSeparator(ord(';'))
                     self.AutoCompShow(0, ";".join(sugs))
-                    self._showing_list = True
         else:
             event.Skip()
 
@@ -1586,12 +1584,23 @@ class RobotDataEditor(stc.StyledTextCtrl):
         width = self.TextWidth(style, str(self.GetLineCount()))
         return width + self.TextWidth(style, "1")
 
-    def get_selected_or_near_text(self, position):
+    def get_selected_or_near_text(self):
         content = set()
         # First get selected text
         selected = self.GetSelectedText()
         if selected:
-            self.SetInsertionPoint(self.GetSelectionStart())
+            start_pos = self.GetSelectionStart()
+            if selected.endswith('.'):  # Special cases for libraries prefix
+                self.SetInsertionPoint(start_pos + len(selected))
+            elif len(selected.split('.')) > 1:
+                parts = selected.split('.')
+                self.SetSelectionStart(start_pos + len(parts[0]) + 1)
+                self.SetSelectionEnd(start_pos + len(selected))
+                self.SetInsertionPoint(start_pos + len(parts[0]) + 1)
+            else:
+                self.SetSelectionStart(start_pos)
+                self.SetSelectionEnd(start_pos + len(selected))
+                self.SetInsertionPoint(start_pos + len(selected))
             content.add(selected.strip())
         # Next get text on the left
         text = self.GetCurLine()[0]
@@ -1620,9 +1629,22 @@ class RobotDataEditor(stc.StyledTextCtrl):
             elif end_chr is not None:
                 value = text[pos_in_line:end_chr]
             if value:
-                self.SetInsertionPoint(start_pos)
-                self.SetSelectionStart(start_pos)
-                self.SetSelectionEnd(start_pos + len(value))
+                # self.SetInsertionPoint(self.GetSelectionStart())
+                if start_chr:
+                    start_pos = min_pos + start_chr
+                else:
+                    start_pos = min_pos + pos_in_line
+                if value.endswith('.'):  # Special cases for libraries prefix
+                    self.SetInsertionPoint(start_pos + len(value))
+                elif len(value.split('.')) > 1:
+                    parts = value.split('.')
+                    self.SetSelectionStart(start_pos + len(parts[0]) + 1)
+                    self.SetSelectionEnd(start_pos + len(value))
+                    self.SetInsertionPoint(start_pos + len(parts[0]) + 1)
+                else:
+                    self.SetSelectionStart(start_pos)
+                    self.SetSelectionEnd(start_pos + len(value))
+                    self.SetInsertionPoint(start_pos)
                 content.add(value)
         return content if content else ['']
 

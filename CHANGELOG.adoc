@@ -25,6 +25,10 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 - Fixed title of User Keyword in Grid Editor always showing ``Find Usages`` instead of the keyword name
 - Fixed renaming keywords when they were arguments of ``Run Keywords`` in Setups and Teardowns
 
+=== Changed
+
+- Improve Text Editor auto-suggestions to keep libraries prefixes.
+
 == https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.0.6.rst[2.0.6] - 2023-06-10
 
 === Added

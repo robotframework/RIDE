@@ -104,7 +104,6 @@ class BuiltInLibrariesSuggester(_Suggester):
 
     def get_suggestions(self, name, *args):
         _ = args
-        print(f"DEBUG: suggesters get_suggestions name={name} args{args}")
         return [self._suggestion(n) for n in sorted(robotapi.STDLIB_NAMES)
                 if name.lower() in n.lower() and n not in ['BuiltIn', 'Reserved', 'Easter']]
 
