@@ -10,6 +10,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Added
 
+- Added indication of matching brackets, ``()``, ``{}``, ``[]``, in Text Editor
 - Added context menu to RIDE tray icon. Options Show, Hide and Close
 - Added sincronization with Project Explorer to navigate to selected item, Test Case, Keyword, Variable, in Text Editor
   Note: This feature is working fine in Fedora 38, but not on Windows and macOS.
@@ -23,6 +24,10 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 - Fixed control commands (``FOR``, ``IF``, ``TRY``, etc) being colorized as valid keywords when typed not in all caps in Grid Editor
 - Fixed title of User Keyword in Grid Editor always showing ``Find Usages`` instead of the keyword name
 - Fixed renaming keywords when they were arguments of ``Run Keywords`` in Setups and Teardowns
+
+=== Changed
+
+- Improve Text Editor auto-suggestions to keep libraries prefixes.
 
 == https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.0.6.rst[2.0.6] - 2023-06-10
 

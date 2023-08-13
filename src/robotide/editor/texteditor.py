@@ -612,13 +612,17 @@ class SourceEditor(wx.Panel):
             return
         self.store_position()
         selected = self.source_editor.get_selected_or_near_text()
-        sugs = [s.name for s in self._suggestions.get_suggestions(
-            selected or '')]
+        sugs = []
+        for start in selected:
+            sugs.extend(s.name for s in self._suggestions.get_suggestions(start))
+        if len(sugs) > 0:
+            sugs = [s for s in sugs if s != '']
         if sugs:
             self.source_editor.AutoCompSetDropRestOfWord(True)
             self.source_editor.AutoCompSetSeparator(ord(';'))
             self.source_editor.AutoCompShow(0, ";".join(sugs))
             self._showing_list = True
+            self.set_editor_caret_position()
         else:
             self.source_editor.SetInsertionPoint(self._position)  # We should know if list was canceled or value change
 
@@ -1479,6 +1483,7 @@ class RobotDataEditor(stc.StyledTextCtrl):
 
     def __init__(self, parent, readonly=False):
         stc.StyledTextCtrl.__init__(self, parent)
+        self.parent = parent
         self._settings = parent.source_editor_parent.app.settings
         self.readonly = readonly
         self.SetMarginType(self.margin, stc.STC_MARGIN_NUMBER)
@@ -1486,9 +1491,67 @@ class RobotDataEditor(stc.StyledTextCtrl):
         self.SetReadOnly(True)
         self.SetUseTabs(False)
         self.SetTabWidth(parent.tab_size)
+        self.Bind(stc.EVT_STC_UPDATEUI, self.on_update_ui)
         self.Bind(stc.EVT_STC_STYLENEEDED, self.on_style)
         self.Bind(stc.EVT_STC_ZOOM, self.on_zoom)
+        # DEBUG:
+        self.Bind(wx.EVT_KEY_DOWN, self.on_key_pressed)
         self.stylizer = RobotStylizer(self, self._settings, self.readonly)
+        # register some images for use in the AutoComplete box.
+        # self.RegisterImage(1, Smiles.GetBitmap())  # DEBUG was images.
+        self.RegisterImage(1, wx.ArtProvider.GetBitmap(wx.ART_FLOPPY, size=(16, 16)))
+        self.RegisterImage(2, wx.ArtProvider.GetBitmap(wx.ART_NEW, size=(16, 16)))
+        self.RegisterImage(3, wx.ArtProvider.GetBitmap(wx.ART_COPY, size=(16, 16)))
+
+    def on_key_pressed(self, event):
+        if self.CallTipActive():
+            self.CallTipCancel()
+        key = event.GetKeyCode()
+        if key == 32 and event.ControlDown():
+            pos = self.GetCurrentPos()
+
+            # Tips
+            if event.ShiftDown():
+                self.CallTipSetBackground("yellow")
+                self.CallTipShow(pos, 'lots of of text: blah, blah, blah\n\n'
+                                 'show some suff, maybe parameters..\n\n'
+                                 'fubar(param1, param2)')
+            # Code completion
+            else:
+                """
+                kw = list(keyword.kwlist[:])
+                kw.append("zzzzzz?2")
+                kw.append("aaaaa?2")
+                kw.append("__init__?3")
+                kw.append("zzaaaaa?2")
+                kw.append("zzbaaaa?2")
+                kw.append("this_is_a_longer_value")
+                # kw.append("this_is_a_much_much_much_much_much_much_much_longer_value")
+
+                kw.sort()  # Python sorts are case-sensitive
+                self.AutoCompSetIgnoreCase(True)  # so this needs to match
+
+                # Images are specified with an appended "?type"
+                for i in range(len(kw)):
+                    if kw[i] in keyword.kwlist:
+                        kw[i] = kw[i] + "?1"
+                self.AutoCompSetDropRestOfWord(True)
+                self.AutoCompSetSeparator(ord(';'))
+                self.AutoCompShow(0, ";".join(kw))
+                """
+                selected = self.get_selected_or_near_text()
+                sugs = []
+                for start in selected:
+                    sugs.extend(s.name for s in self.parent._suggestions.get_suggestions(start))
+                if len(sugs) > 0:
+                    sugs = [s for s in sugs if s != '']
+                if sugs:
+                    self.AutoCompSetDropRestOfWord(True)
+                    self.AutoCompSetIgnoreCase(True)
+                    self.AutoCompSetSeparator(ord(';'))
+                    self.AutoCompShow(0, ";".join(sugs))
+        else:
+            event.Skip()
 
     def set_text(self, text):
         self.SetReadOnly(False)
@@ -1522,32 +1585,98 @@ class RobotDataEditor(stc.StyledTextCtrl):
         return width + self.TextWidth(style, "1")
 
     def get_selected_or_near_text(self):
+        content = set()
         # First get selected text
         selected = self.GetSelectedText()
         if selected:
-            self.SetInsertionPoint(self.GetSelectionStart())
-            return selected
+            start_pos = self.GetSelectionStart()
+            if selected.endswith('.'):  # Special cases for libraries prefix
+                self.SetInsertionPoint(start_pos + len(selected))
+            elif len(selected.split('.')) > 1:
+                parts = selected.split('.')
+                self.SetSelectionStart(start_pos + len(parts[0]) + 1)
+                self.SetSelectionEnd(start_pos + len(selected))
+                self.SetInsertionPoint(start_pos + len(parts[0]) + 1)
+            else:
+                self.SetSelectionStart(start_pos)
+                self.SetSelectionEnd(start_pos + len(selected))
+                self.SetInsertionPoint(start_pos + len(selected))
+            content.add(selected.strip())
         # Next get text on the left
-        cur_pos = self.GetInsertionPoint()
-        self.WordLeftEndExtend()
-        selected = self.GetSelectedText()
-        select = selected.lstrip()
-        if select and len(select) > 0:
-            start_pos = cur_pos - len(select)
-            self.SetInsertionPoint(start_pos)
-            self.SetSelectionStart(start_pos)
-            self.SetSelectionEnd(cur_pos - len(select))
-            return select
-        # Finally get text on the right
-        cur_pos = self.GetInsertionPoint()
-        self.SetSelectionStart(cur_pos)
-        self.WordRightEndExtend()
-        selected = self.GetSelectedText()
-        select = selected.strip()
-        if select and len(select) > 0:
-            cur_pos = self.GetInsertionPoint()
-            self.SetInsertionPoint(cur_pos - len(select))
-            return select
+        text = self.GetCurLine()[0]
+        start_pos = self.GetInsertionPoint()
+        line = self.GetCurrentLine()
+        line_end = self.GetLineEndPosition(line)
+        size = self.GetLineLength(line)
+        min_pos = line_end - size
+        pos_in_line = start_pos - min_pos
+        if pos_in_line > 0:
+            start_chr = end_chr = None
+            for i in range(pos_in_line, 1, -1):
+                if text[i] == ' ' and text[i-1] == ' ':
+                    start_chr = i + 1
+                    break
+            for i in range(pos_in_line, size):
+                if text[i] == ' ' and text[i+1] == ' ':
+                    end_chr = i
+                    break
+            value = None
+            if start_chr is not None:
+                if end_chr is not None:
+                    value = text[start_chr:end_chr]
+                else:
+                    value = text[start_chr:].strip()
+            elif end_chr is not None:
+                value = text[pos_in_line:end_chr]
+            if value:
+                # self.SetInsertionPoint(self.GetSelectionStart())
+                if start_chr:
+                    start_pos = min_pos + start_chr
+                else:
+                    start_pos = min_pos + pos_in_line
+                if value.endswith('.'):  # Special cases for libraries prefix
+                    self.SetInsertionPoint(start_pos + len(value))
+                elif len(value.split('.')) > 1:
+                    parts = value.split('.')
+                    self.SetSelectionStart(start_pos + len(parts[0]) + 1)
+                    self.SetSelectionEnd(start_pos + len(value))
+                    self.SetInsertionPoint(start_pos + len(parts[0]) + 1)
+                else:
+                    self.SetSelectionStart(start_pos)
+                    self.SetSelectionEnd(start_pos + len(value))
+                    self.SetInsertionPoint(start_pos)
+                content.add(value)
+        return content if content else ['']
+
+    def on_update_ui(self, evt):
+        _ = evt
+        # check for matching braces
+        brace_at_caret = -1
+        brace_opposite = -1
+        char_before = None
+        caret_pos = self.GetCurrentPos()
+
+        if caret_pos > 0:
+            char_before = self.GetCharAt(caret_pos - 1)
+
+        # check before
+        if char_before and chr(char_before) in "[]{}()":
+            brace_at_caret = caret_pos - 1
+
+        # check after
+        if brace_at_caret < 0:
+            char_after = self.GetCharAt(caret_pos)
+
+            if char_after and chr(char_after) in "[]{}()":
+                brace_at_caret = caret_pos
+
+        if brace_at_caret >= 0:
+            brace_opposite = self.BraceMatch(brace_at_caret)
+
+        if brace_at_caret != -1 and brace_opposite == -1:
+            self.BraceBadLight(brace_at_caret)
+        else:
+            self.BraceHighlight(brace_at_caret, brace_opposite)
 
 
 class FromStringIOPopulator(robotapi.populators.FromFilePopulator):
