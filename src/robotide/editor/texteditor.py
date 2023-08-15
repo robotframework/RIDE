@@ -398,7 +398,7 @@ class SourceEditor(wx.Panel):
         self._create_ui(title)
         self._data = None
         self._dirty = 0  # 0 is False and 1 is True, when changed on this editor
-        self._position = None
+        self._position = 0  # Start at 0 if first time access
         self._showing_list = False
         self._tab_open = None
         self._controller_for_context = None
@@ -503,7 +503,7 @@ class SourceEditor(wx.Panel):
         HtmlDialog("Getting syntax colorization", content).Show()
 
     def store_position(self, force=False):
-        if self.source_editor and self.datafile_controller:
+        if self.source_editor:  # We don't necessarily need a data controller, was: "and self.datafile_controller:"
             cur_pos = self.source_editor.GetCurrentPos()
             if cur_pos > 0:  # Cheating because it always goes to zero
                 self._position = cur_pos
@@ -1550,6 +1550,10 @@ class RobotDataEditor(stc.StyledTextCtrl):
                     self.AutoCompSetIgnoreCase(True)
                     self.AutoCompSetSeparator(ord(';'))
                     self.AutoCompShow(0, ";".join(sugs))
+                else:
+                    self.SetSelectionStart(pos)
+                    self.SetSelectionEnd(pos)
+                    self.SetInsertionPoint(pos)
         else:
             event.Skip()
 
@@ -1608,44 +1612,50 @@ class RobotDataEditor(stc.StyledTextCtrl):
         line = self.GetCurrentLine()
         line_end = self.GetLineEndPosition(line)
         size = self.GetLineLength(line)
-        min_pos = line_end - size
+        star = self.GetLineRaw(line)
+        sz_star = len(star) - 1
+        min_pos = line_end - sz_star
         pos_in_line = start_pos - min_pos
-        if pos_in_line > 0:
-            start_chr = end_chr = None
-            for i in range(pos_in_line, 1, -1):
-                if text[i] == ' ' and text[i-1] == ' ':
-                    start_chr = i + 1
-                    break
+        # print(f"DEBUG: line={text}\nstar={star}\nmin_pos={min_pos} start_pos={start_pos}"
+        #       f" line_end={line_end}\nline={line}"
+        #       f" pos_in_line={pos_in_line} size={size} sz_star={sz_star} lentext={len(text)}")
+        # if pos_in_line > 0:
+        start_chr = end_chr = None
+        for i in range(max(1, min(size, pos_in_line-1)), 1, -1):
+            if text[i] == ' ' and text[i-1] == ' ':
+                start_chr = i + 1
+                break
+        if pos_in_line >= 0:
             for i in range(pos_in_line, size):
                 if text[i] == ' ' and text[i+1] == ' ':
                     end_chr = i
                     break
-            value = None
-            if start_chr is not None:
-                if end_chr is not None:
-                    value = text[start_chr:end_chr]
-                else:
-                    value = text[start_chr:].strip()
-            elif end_chr is not None:
-                value = text[pos_in_line:end_chr]
-            if value:
-                # self.SetInsertionPoint(self.GetSelectionStart())
-                if start_chr:
-                    start_pos = min_pos + start_chr
-                else:
-                    start_pos = min_pos + pos_in_line
-                if value.endswith('.'):  # Special cases for libraries prefix
-                    self.SetInsertionPoint(start_pos + len(value))
-                elif len(value.split('.')) > 1:
-                    parts = value.split('.')
-                    self.SetSelectionStart(start_pos + len(parts[0]) + 1)
-                    self.SetSelectionEnd(start_pos + len(value))
-                    self.SetInsertionPoint(start_pos + len(parts[0]) + 1)
-                else:
-                    self.SetSelectionStart(start_pos)
-                    self.SetSelectionEnd(start_pos + len(value))
-                    self.SetInsertionPoint(start_pos)
-                content.add(value)
+        value = None
+        if start_chr is not None:
+            if end_chr is not None:
+                value = text[start_chr:end_chr]
+            else:
+                value = text[start_chr:].strip()
+        elif end_chr is not None:
+            value = text[pos_in_line:end_chr]
+        if value:
+            # self.SetInsertionPoint(self.GetSelectionStart())
+            if start_chr:
+                start_pos = min_pos + start_chr
+            else:
+                start_pos = min_pos + pos_in_line
+            if value.endswith('.'):  # Special cases for libraries prefix
+                self.SetInsertionPoint(start_pos + len(value))
+            elif len(value.split('.')) > 1:
+                parts = value.split('.')
+                self.SetSelectionStart(start_pos + len(parts[0]) + 1)
+                self.SetSelectionEnd(start_pos + len(value))
+                self.SetInsertionPoint(start_pos + len(parts[0]) + 1)
+            else:
+                self.SetSelectionStart(start_pos)
+                self.SetSelectionEnd(start_pos + len(value))
+                self.SetInsertionPoint(start_pos)
+            content.add(value)
         return content if content else ['']
 
     def on_update_ui(self, evt):

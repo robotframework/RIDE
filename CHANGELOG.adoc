@@ -14,7 +14,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Fixed
 
--
+- Position of cursor in Text Editor auto-suggestions when line contains multibyte characters
 
 === Changed
 

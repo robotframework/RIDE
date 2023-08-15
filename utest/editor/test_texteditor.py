@@ -39,23 +39,10 @@ from robotide.ui.notebook import NoteBook
 from robotide.editor import texteditor
 from robotide.namespace.namespace import Namespace
 
-"""
-th.FakeDirectorySuiteHandler = th.FakeUserKeywordHandler = \
-    th.FakeSuiteHandler = th.FakeTestCaseHandler = \
-    th.FakeResourceHandler = th.TestDataDirectoryHandler
-st.Editor = lambda *args: FakeEditor()
-"""
-"""
-DEBUG: 
-Tree._show_correct_editor = lambda self, x: None
-Tree.get_active_datafile = lambda self: None
-Tree._select = lambda self, node: self.SelectItem(node)
-Tree.get_selected_datafile_controller = lambda self, node: self.SelectItem(node)
-"""
-
 app = wx.App()
 nb_style = aui.AUI_NB_DEFAULT_STYLE | aui.AUI_NB_WINDOWLIST_BUTTON | aui.AUI_NB_TAB_EXTERNAL_MOVE \
            | aui.AUI_NB_SUB_NOTEBOOK | aui.AUI_NB_SMART_TABS
+MYTESTOVERRIDE = 'My Overriding Test Teardown'
 
 
 class MainFrame(wx.Frame):
@@ -153,7 +140,7 @@ class TestEditorCommands(unittest.TestCase):
         self.plugin._open_tree_selection_in_editor()
         self.app.frame.SetStatusText("File:" + self.app.project.data.source)
         # Uncomment next line (and MainLoop in tests) if you want to see the app
-        # self.frame.Show()
+        self.frame.Show()
 
     def tearDown(self):
         self.plugin.unsubscribe_all()
@@ -351,7 +338,7 @@ class TestEditorCommands(unittest.TestCase):
     def test_execute_sharp_comment_no_selection(self):
         spaces = ' ' * self.plugin._editor_component.tab_size
         content = [spaces + '1 - Line one' + spaces + 'with cells' + spaces + 'last text\n']
-        pos = len(spaces + '1 - Line one' + spaces+ 'with cells')
+        pos = len(spaces + '1 - Line one' + spaces + 'with cells')
         self.plugin._editor_component.source_editor.set_text(''.join(content))
         self.plugin._editor_component.source_editor.SetAnchor(pos)
         self.plugin._editor_component.source_editor.SetSelection(pos, pos)
@@ -367,7 +354,7 @@ class TestEditorCommands(unittest.TestCase):
     def test_execute_sharp_comment_with_selection(self):
         spaces = ' ' * self.plugin._editor_component.tab_size
         content = [spaces + '1 - Line one' + spaces + 'with cells' + spaces + 'last text\n']
-        pos = len(spaces + '1 - Line one' + spaces+ 'with cells')
+        pos = len(spaces + '1 - Line one' + spaces + 'with cells')
         self.plugin._editor_component.source_editor.set_text(''.join(content))
         self.plugin._editor_component.source_editor.SetAnchor(pos)
         self.plugin._editor_component.source_editor.SetSelection(pos - len('with cells'), pos)
@@ -399,7 +386,7 @@ class TestEditorCommands(unittest.TestCase):
     def test_execute_sharp_uncomment_no_selection(self):
         spaces = ' ' * self.plugin._editor_component.tab_size
         content = [spaces + '# ' + '1 - Line one' + spaces + 'with cells' + spaces + 'last text\n']
-        pos = len(spaces + '1 - Line one' + spaces+ 'with cells')
+        pos = len(spaces + '1 - Line one' + spaces + 'with cells')
         self.plugin._editor_component.source_editor.set_text(''.join(content))
         self.plugin._editor_component.source_editor.SetAnchor(pos)
         self.plugin._editor_component.source_editor.SetSelection(pos, pos)
@@ -428,10 +415,10 @@ class TestEditorCommands(unittest.TestCase):
         # self.app.MainLoop()
 
     def test_check_variables_section(self):
-        pos = len('1 - Line one\n')
-        spaces = ' ' * self.plugin._editor_component.tab_size
+        # pos = len('1 - Line one\n')
+        # spaces = ' ' * self.plugin._editor_component.tab_size
         text = "${ARG}            value"  # Text to find (last item in Variable section)
-        with open(datafilereader.TESTCASEFILE_WITH_EVERYTHING, "r") as fp:  #, MessageRecordingLoadObserver())
+        with open(datafilereader.TESTCASEFILE_WITH_EVERYTHING, "r") as fp:  # MessageRecordingLoadObserver())
             content = fp.readlines()
         content = "".join(content)
         # self.plugin.on_open(None)
@@ -451,9 +438,9 @@ class TestEditorCommands(unittest.TestCase):
         self.plugin._editor_component._show_search_results(position, text)
         position = self.plugin._editor_component.source_editor.GetCurrentPos()
         self.plugin._editor_component.source_editor.InsertText(position, "123\n\n")
-        fulltext = self.plugin._editor_component.source_editor.GetText()
+        # fulltext = self.plugin._editor_component.source_editor.GetText()
         # print(f"DEBUG: fulltext:\n{fulltext}")
-        # Activate Apply to cleanup text
+        # Activate Apply to clean-up text
         self.plugin._editor_component._dirty = True
         # self.plugin._apply_txt_changes_to_model()
         # DEBUG: THIS IS THE TEST, IT FAILS BECAUSE WE DON'T HAVE data and controller
@@ -466,7 +453,115 @@ class TestEditorCommands(unittest.TestCase):
         # wx.CallLater(5000, self.app.ExitMainLoop)
         # self.app.MainLoop()
 
+    def test_get_selected_or_near_text(self):
+        with open(datafilereader.TESTCASEFILE_WITH_EVERYTHING, "r") as fp:
+            content = fp.readlines()
+        content = "".join(content)
+        self.plugin._editor_component.source_editor.set_text(content)
+        self.plugin._editor_component.source_editor.SetInsertionPoint(0)
+        self.plugin._editor_component.store_position(True)
+        self.plugin._editor_component.set_editor_caret_position()
+        # Should return first line content
+        result = self.plugin._editor_component.source_editor.get_selected_or_near_text()
+        assert result == {'*** Setting ***'}
+        position = self.plugin._editor_component.source_editor.GetCurrentPos()
+        assert position == 0
+
+        # Different positions in content: My Overriding Test Teardown
+        # X marks cursor position, XMy Overriding Test Teardown
+        # Should return My Overriding Test Teardown
+        position = 1565
+        self.plugin._editor_component.source_editor.SetAnchor(position)
+        self.plugin._editor_component.source_editor.SetSelection(position, position)
+        self.plugin._editor_component.source_editor.SetInsertionPoint(position)
+        result = self.plugin._editor_component.source_editor.get_selected_or_near_text()
+        result = list(result)
+        assert result == [MYTESTOVERRIDE]
+        position = self.plugin._editor_component.source_editor.GetCurrentPos()
+        assert position == 1565
+        # X marks cursor position, My XOverriding Test Teardown
+        # Should return My Overriding Test Teardown
+        position = 1568
+        self.plugin._editor_component.source_editor.SetAnchor(position)
+        self.plugin._editor_component.source_editor.SetSelection(position, position)
+        self.plugin._editor_component.source_editor.SetInsertionPoint(position)
+        result = self.plugin._editor_component.source_editor.get_selected_or_near_text()
+        result = list(result)
+        assert result == [MYTESTOVERRIDE]
+        position = self.plugin._editor_component.source_editor.GetCurrentPos()
+        assert position == 1565
+        # X marks cursor position, My OverrXiding Test Teardown
+        # Should return My Overriding Test Teardown
+        position = 1573
+        self.plugin._editor_component.source_editor.SetAnchor(position)
+        self.plugin._editor_component.source_editor.SetSelection(position, position)
+        self.plugin._editor_component.source_editor.SetInsertionPoint(position)
+        result = self.plugin._editor_component.source_editor.get_selected_or_near_text()
+        result = list(result)
+        assert result == [MYTESTOVERRIDE]
+        position = self.plugin._editor_component.source_editor.GetCurrentPos()
+        assert position == 1565
+        # X marks cursor position, My Overriding TestX Teardown
+        # Selected 'Test'
+        # Should return My Overriding Test Teardown, Test
+        position = 1583
+        self.plugin._editor_component.source_editor.SetAnchor(position)
+        self.plugin._editor_component.source_editor.SetSelection(position-len('Test'), position)
+        self.plugin._editor_component.source_editor.SetInsertionPoint(position)
+        result = self.plugin._editor_component.source_editor.get_selected_or_near_text()
+        result = sorted(result)
+        assert result == [MYTESTOVERRIDE, 'Test']
+        position = self.plugin._editor_component.source_editor.GetCurrentPos()
+        assert position == 1565
+        # X marks cursor position, My Overriding TestX Teardown
+        # Should return My Overriding Test Teardown
+        position = 1583
+        self.plugin._editor_component.source_editor.SetAnchor(position)
+        self.plugin._editor_component.source_editor.SetSelection(position, position)
+        self.plugin._editor_component.source_editor.SetInsertionPoint(position)
+        result = self.plugin._editor_component.source_editor.get_selected_or_near_text()
+        result = sorted(result)
+        assert result == [MYTESTOVERRIDE]
+        position = self.plugin._editor_component.source_editor.GetCurrentPos()
+        assert position == 1565
+        # X marks cursor position, My Overriding Test TeardownX
+        # Should return My Overriding Test Teardown
+        position = 1592
+        self.plugin._editor_component.source_editor.SetAnchor(position)
+        self.plugin._editor_component.source_editor.SetSelection(position, position)
+        self.plugin._editor_component.source_editor.SetInsertionPoint(position)
+        result = self.plugin._editor_component.source_editor.get_selected_or_near_text()
+        result = sorted(result)
+        print(f"DEBUG: check position len={position}\n{result}")
+        assert result == [MYTESTOVERRIDE]
+        position = self.plugin._editor_component.source_editor.GetCurrentPos()
+        assert position == 1565
+
+        # Should return [Timeout]
+        text_length = self.plugin._editor_component.source_editor.GetTextLength() - 1
+        self.plugin._editor_component.source_editor.SetAnchor(text_length)
+        self.plugin._editor_component.source_editor.SetSelection(text_length, text_length)
+        self.plugin._editor_component.source_editor.SetInsertionPoint(text_length)
+        result = self.plugin._editor_component.source_editor.get_selected_or_near_text()
+        result = list(result)
+        assert result == ['[Timeout]']
+        position = self.plugin._editor_component.source_editor.GetCurrentPos()
+        assert position == text_length - len(result[0])
+
+        # Should return empty value
+        text_length = self.plugin._editor_component.source_editor.GetTextLength()
+        self.plugin._editor_component.source_editor.SetAnchor(text_length)
+        self.plugin._editor_component.source_editor.SetSelection(text_length, text_length)
+        self.plugin._editor_component.source_editor.SetInsertionPoint(text_length)
+        result = self.plugin._editor_component.source_editor.get_selected_or_near_text()
+        assert result == ['']
+        position = self.plugin._editor_component.source_editor.GetCurrentPos()
+        assert position == text_length
+
+        # Uncomment next lines if you want to see the app
+        wx.CallLater(5000, self.app.ExitMainLoop)
+        self.app.MainLoop()
+
 
 if __name__ == '__main__':
     unittest.main()
-
