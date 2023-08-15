@@ -398,7 +398,7 @@ class SourceEditor(wx.Panel):
         self._create_ui(title)
         self._data = None
         self._dirty = 0  # 0 is False and 1 is True, when changed on this editor
-        self._position = None
+        self._position = 0  # Start at 0 if first time access
         self._showing_list = False
         self._tab_open = None
         self._controller_for_context = None
@@ -503,7 +503,7 @@ class SourceEditor(wx.Panel):
         HtmlDialog("Getting syntax colorization", content).Show()
 
     def store_position(self, force=False):
-        if self.source_editor and self.datafile_controller:
+        if self.source_editor:  # We don't necessarily need a data controller, was: "and self.datafile_controller:"
             cur_pos = self.source_editor.GetCurrentPos()
             if cur_pos > 0:  # Cheating because it always goes to zero
                 self._position = cur_pos
@@ -1625,10 +1625,11 @@ class RobotDataEditor(stc.StyledTextCtrl):
             if text[i] == ' ' and text[i-1] == ' ':
                 start_chr = i + 1
                 break
-        for i in range(pos_in_line, size):
-            if text[i] == ' ' and text[i+1] == ' ':
-                end_chr = i
-                break
+        if pos_in_line >= 0:
+            for i in range(pos_in_line, size):
+                if text[i] == ' ' and text[i+1] == ' ':
+                    end_chr = i
+                    break
         value = None
         if start_chr is not None:
             if end_chr is not None:
