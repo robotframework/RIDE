@@ -239,11 +239,12 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
     @staticmethod
     def _remove_text(value, remove_text, on_the_left, on_the_right, from_, to_):
         if on_the_left and on_the_right:
-            return value[:from_]+value[from_:to_].strip(remove_text)+remove_text+value[to_:]
-        if on_the_left:
-            return value[:from_]+value[from_:to_].lstrip(remove_text)+value[to_:]
-        if on_the_right:
-            return value[:from_]+value[from_:to_].rstrip(remove_text)+value[to_:]
+            value = value[:from_]+value[from_:to_].strip(remove_text) + remove_text+value[to_:]
+        elif on_the_left:
+            value = value[:from_]+value[from_:to_].lstrip(remove_text) + value[to_:]
+        elif on_the_right:
+            value = value[:from_]+value[from_:to_].rstrip(remove_text) + value[to_:]
+        value = value.replace('\\ ', ' ')
         return value
 
     def on_focus_lost(self, event, set_value=True):

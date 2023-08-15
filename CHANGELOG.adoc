@@ -18,7 +18,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Changed
 
--
+- In Grid Editor ``Ctrl-Shift-4`` now replaces escaped spaces ``\\ `` by spaces
 
 === Removed
 

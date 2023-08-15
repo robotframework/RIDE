@@ -341,7 +341,7 @@ class StepController(_BaseController):
     def remove_sharp_comment(self, col):
         cell_value = self.get_value(col)
         if cell_value.startswith('#'):
-            new_value = cell_value.lstrip('#').lstrip(' ')
+            new_value = cell_value.lstrip('#').lstrip(' ').replace('\\ ', ' ')
         else:
             return
         self.change(col, new_value)
