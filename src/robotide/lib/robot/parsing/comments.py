@@ -58,8 +58,17 @@ class Comment(object):
 
     def as_list(self):
         if self._not_commented():
-            self._comment[0] = '# ' + self._comment[0]
+            if isinstance(self._comment, Comment):
+                self._comment[0] = '# ' + self._comment._comment[0]
+            else:
+                self._comment[0] = '# ' + self._comment[0]
+        if isinstance(self._comment, Comment):
+            return self._comment._comment
         return self._comment
 
     def _not_commented(self):
-        return self._comment and self._comment[0] and self._comment[0][0] != '#'
+        if isinstance(self._comment, Comment):
+            return self._comment._comment[0] and self._comment._comment[0][0] != '#'
+        if isinstance(self._comment, list):
+            return self._comment and self._comment[0] and self._comment[0][0] != '#'
+        return False
