@@ -163,8 +163,11 @@ class GridEditor(grid.Grid):
         return self.GetCellValue(*self.selection.cell)
 
     def _get_block_content(self, row_range, col_range):
-        return [[self.GetCellValue(row, col) for col in col_range]
-                for row in row_range]
+        try:
+            content = [[self.GetCellValue(row, col) for col in col_range] for row in row_range]
+        except RuntimeError:
+            return []
+        return content
 
     @staticmethod
     def _strip_trailing_empty_cells(rowdata):

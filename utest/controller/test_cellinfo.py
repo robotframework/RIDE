@@ -114,21 +114,21 @@ class TestCellInfo(unittest.TestCase):
         self._verify_string_change(0, 3, CellType.OPTIONAL)
         self._verify_string_change(0, 4, CellType.OPTIONAL)
 
-    def test_celltype_is_unknown_if_list_var_given(self):
+    def test_celltype_is_not_unknown_if_list_var_given(self):
         self.test.execute(ChangeCellValue(0, 0, self.keyword1.name))
         self.test.execute(ChangeCellValue(0, 1, '@{vars}'))
         self._verify_cell_info(0, 0, ContentType.USER_KEYWORD, CellType.KEYWORD)
-        self._verify_cell_info(0, 1, ContentType.UNKNOWN_VARIABLE, CellType.UNKNOWN)
-        self._verify_cell_info(0, 2, ContentType.EMPTY, CellType.UNKNOWN)
-        self._verify_cell_info(0, 3, ContentType.EMPTY, CellType.UNKNOWN)
+        self._verify_cell_info(0, 1, ContentType.UNKNOWN_VARIABLE, CellType.MANDATORY)
+        self._verify_cell_info(0, 2, ContentType.EMPTY, CellType.OPTIONAL)
+        self._verify_cell_info(0, 3, ContentType.EMPTY, CellType.MUST_BE_EMPTY)
 
-    def test_celltype_is_unknown_if_dict_var_given(self):
+    def test_celltype_is_not_unknown_if_dict_var_given(self):
         self.test.execute(ChangeCellValue(0, 0, self.keyword1.name))
         self.test.execute(ChangeCellValue(0, 1, '&{vars}'))
         self._verify_cell_info(0, 0, ContentType.USER_KEYWORD, CellType.KEYWORD)
-        self._verify_cell_info(0, 1, ContentType.UNKNOWN_VARIABLE, CellType.UNKNOWN)
-        self._verify_cell_info(0, 2, ContentType.EMPTY, CellType.UNKNOWN)
-        self._verify_cell_info(0, 3, ContentType.EMPTY, CellType.UNKNOWN)
+        self._verify_cell_info(0, 1, ContentType.UNKNOWN_VARIABLE, CellType.MANDATORY)
+        self._verify_cell_info(0, 2, ContentType.EMPTY, CellType.OPTIONAL)
+        self._verify_cell_info(0, 3, ContentType.EMPTY, CellType.MUST_BE_EMPTY)
 
     def test_list_variables_item_in_keyword_args(self):
         self.test.execute(paste_area((0, 0), [[self.keyword5.name, '@{LIST_VARIABLE}[0]']]))

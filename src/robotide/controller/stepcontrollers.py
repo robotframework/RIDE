@@ -150,11 +150,15 @@ class StepController(_BaseController):
         if args_amount == 0:
             return CellPosition(CellType.MUST_BE_EMPTY, None)
         mandatory_args_amount = self._number_of_mandatory_arguments(args, args_amount)
+        """
+        # DEBUG: This causes @ or & cells unknown, disable for now 
         if self._has_list_or_dict_var_value_before(col - 1):
             return CellPosition(CellType.UNKNOWN, None)
+        """
         if col <= keyword_col + mandatory_args_amount:
             return CellPosition(CellType.MANDATORY, args[col-keyword_col - 1])
         if col >= keyword_col + args_amount - mandatory_args_amount and self._last_argument_is_varargs(args):
+            # print(f"DEBUG: stepcontrollers _get_cell_position last is vararg={args[-1]}")
             return CellPosition(CellType.OPTIONAL, args[-1])
         if keyword_col + mandatory_args_amount < col <= keyword_col + args_amount:
             return CellPosition(CellType.OPTIONAL, args[col-keyword_col-1])
@@ -163,13 +167,18 @@ class StepController(_BaseController):
     def _number_of_mandatory_arguments(self, args, args_amount):
         defaults = [arg for arg in args if '=' in arg]
         n = args_amount - len(defaults)
+        # detect if @{}, named only indicator is present and decrease counter
+        for arg in args:
+            if arg == '@{}' or arg.startswith('*'):
+                n -= 1
+                break
         if self._last_argument_is_varargs(args):
             n -= 1
-        return n
+        return n if n >= 0 else 0
 
     @staticmethod
     def _last_argument_is_varargs(args):
-        return args[-1].startswith('*')
+        return args[-1].startswith('*') or args[-1].startswith('&{')
 
     def _has_list_or_dict_var_value_before(self, arg_index):
         if self.args:
@@ -218,8 +227,7 @@ class StepController(_BaseController):
             return False
         inner_value = value[2:-1]
         modified = re.split(r'\W', inner_value, 1)[0]
-        return not self._get_local_namespace().has_name(
-            '%s{%s}' % (value[0], modified))
+        return not self._get_local_namespace().has_name('%s{%s}' % (value[0], modified))
 
     def _get_local_namespace(self):
         index = self.parent.index_of_step(self.step_controller_step)
@@ -341,7 +349,7 @@ class StepController(_BaseController):
     def remove_sharp_comment(self, col):
         cell_value = self.get_value(col)
         if cell_value.startswith('#'):
-            new_value = cell_value.lstrip('#').lstrip(' ')
+            new_value = cell_value.lstrip('#').lstrip(' ').replace('\\ ', ' ')
         else:
             return
         self.change(col, new_value)

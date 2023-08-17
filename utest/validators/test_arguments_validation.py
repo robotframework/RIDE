@@ -20,45 +20,50 @@ from robotide.validators import ArgumentsValidator
 
 class Test(unittest.TestCase):
     validate = ArgumentsValidator()._validate
-    validation_error = \
-        'List and scalar arguments must be before named and dictionary arguments'
+    validation_error = 'List and scalar arguments must be before named and dictionary arguments'
+    kwargs_validation_error = 'Only last argument can be kwargs (dictionary argument).'
 
     def test_valid_arguments_validation(self):
         for arg in [
-                "${arg}",
-                "${arg}|${arg2}",
-                "${arg}=",
-                "${arg}=def val",
-                "${a} | ${b}=d | ${c}=\\| | ${d}=",
-                "@{list}",
-                "${a} | ${b} | @{f}",
-                "&{dict}",
-                "${arg} | &{dict}",
-                "@{list} | &{dict}",
-                "${a} | ${b} | @{f} | &{dict}",
-                "${arg}=foo | @{list}"
+            "${arg}",
+            "${arg}|${arg2}",
+            "${arg}=",
+            "${arg}=def val",
+            "${a} | ${b}=d | ${c}=\\| | ${d}=",
+            "@{list}",
+            "${a} | ${b} | @{f}",
+            "&{dict}",
+            "${arg} | &{dict}",
+            "@{list} | &{dict}",
+            "${a} | ${b} | @{f} | &{dict}",
+            "${arg}=foo | @{list}",
+            "@{varargs} | ${named}",
+            "@{} | ${first} | ${second}",
+            "${positional} | @{} | ${named}",
+            "@{varargs} | ${named only} | ${teste} | &{free named}",
+            "@{} | ${named}=default",
+            "@{} | ${optional}=default | ${mandatory} | ${mandatory 2} | ${optional 2}=default 2 | ${mandatory 3}"
         ]:
-            assert self.validate(arg) == None, arg
+            assert self.validate(arg) is None, arg
 
     def test_invalid_arguments_validation(self):
         for arg in ['arg', '@{list}=', '@{list}=fooness']:
-            assert (self.validate(arg) ==
-                          "Invalid argument syntax '%s'" % arg)
+            assert (self.validate(arg) == "Invalid argument syntax '%s'" % arg)
         for arg, err in [("|${a}", ""), ("${a} | ${a2} | invalid", "invalid")]:
-            assert (self.validate(arg) ==
-                          "Invalid argument syntax '%s'" % err)
+            assert (self.validate(arg) == "Invalid argument syntax '%s'" % err)
 
     def test_list_arg_in_incorrect_position(self):
-        for arg in ["@{list} | ${foo}",
-                    "&{dict} | @{list}"]:
+        for arg in ["&{dict} | @{list}"]:
+            assert self.validate(arg) == self.kwargs_validation_error, arg
+
+    def test_kwarg_in_incorrect_position(self):
+        for arg in ["${positional} | @{} | &{options} | ${foo}"]:
             assert self.validate(arg) == self.validation_error, arg
 
     def test_req_arg_after_defaults(self):
-        for arg in ["${a}=default | ${a2}",
-                    "${a} | ${b}=default | ${c}"]:
+        for arg in ["${a}=default | ${a2}", "${a} | ${b}=default | ${c}"]:
             assert self.validate(arg) == self.validation_error
 
 
 if __name__ == '__main__':
     unittest.main()
-
