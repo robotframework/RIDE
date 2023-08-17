@@ -150,8 +150,11 @@ class StepController(_BaseController):
         if args_amount == 0:
             return CellPosition(CellType.MUST_BE_EMPTY, None)
         mandatory_args_amount = self._number_of_mandatory_arguments(args, args_amount)
+        """
+        # DEBUG: This causes @ or & cells unknown, disable for now 
         if self._has_list_or_dict_var_value_before(col - 1):
             return CellPosition(CellType.UNKNOWN, None)
+        """
         if col <= keyword_col + mandatory_args_amount:
             return CellPosition(CellType.MANDATORY, args[col-keyword_col - 1])
         if col >= keyword_col + args_amount - mandatory_args_amount and self._last_argument_is_varargs(args):
@@ -166,12 +169,12 @@ class StepController(_BaseController):
         n = args_amount - len(defaults)
         # detect if @{}, named only indicator is present and decrease counter
         for arg in args:
-            if arg == '@{}':
+            if arg == '@{}' or arg.startswith('*'):
                 n -= 1
                 break
         if self._last_argument_is_varargs(args):
             n -= 1
-        return n
+        return n if n >= 0 else 0
 
     @staticmethod
     def _last_argument_is_varargs(args):
@@ -224,8 +227,7 @@ class StepController(_BaseController):
             return False
         inner_value = value[2:-1]
         modified = re.split(r'\W', inner_value, 1)[0]
-        return not self._get_local_namespace().has_name(
-            '%s{%s}' % (value[0], modified))
+        return not self._get_local_namespace().has_name('%s{%s}' % (value[0], modified))
 
     def _get_local_namespace(self):
         index = self.parent.index_of_step(self.step_controller_step)
