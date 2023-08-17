@@ -155,6 +155,7 @@ class StepController(_BaseController):
         if col <= keyword_col + mandatory_args_amount:
             return CellPosition(CellType.MANDATORY, args[col-keyword_col - 1])
         if col >= keyword_col + args_amount - mandatory_args_amount and self._last_argument_is_varargs(args):
+            # print(f"DEBUG: stepcontrollers _get_cell_position last is vararg={args[-1]}")
             return CellPosition(CellType.OPTIONAL, args[-1])
         if keyword_col + mandatory_args_amount < col <= keyword_col + args_amount:
             return CellPosition(CellType.OPTIONAL, args[col-keyword_col-1])
@@ -163,13 +164,18 @@ class StepController(_BaseController):
     def _number_of_mandatory_arguments(self, args, args_amount):
         defaults = [arg for arg in args if '=' in arg]
         n = args_amount - len(defaults)
+        # detect if @{}, named only indicator is present and decrease counter
+        for arg in args:
+            if arg == '@{}':
+                n -= 1
+                break
         if self._last_argument_is_varargs(args):
             n -= 1
         return n
 
     @staticmethod
     def _last_argument_is_varargs(args):
-        return args[-1].startswith('*')
+        return args[-1].startswith('*') or args[-1].startswith('&{')
 
     def _has_list_or_dict_var_value_before(self, arg_index):
         if self.args:

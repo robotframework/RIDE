@@ -76,7 +76,11 @@ class TimeoutValidator(_AbstractValidator):
 
 
 class ArgumentTypes(object):
-    SCALAR, DEFAULT, LIST, DICT = range(1, 5)
+    NAMED = 1
+    LIST = 2
+    DICT = 3
+    SCALAR = 4
+    DEFAULT = 5
 
 
 class ArgumentsValidator(_AbstractValidator):
@@ -95,6 +99,8 @@ class ArgumentsValidator(_AbstractValidator):
             return ArgumentTypes.SCALAR
         elif robotapi.is_scalar_var(arg.split("=")[0]):
             return ArgumentTypes.DEFAULT
+        elif arg == '@{}':
+            return ArgumentTypes.NAMED
         elif robotapi.is_list_var(arg):
             return ArgumentTypes.LIST
         elif robotapi.is_dict_var(arg):
@@ -104,11 +110,26 @@ class ArgumentsValidator(_AbstractValidator):
 
     @staticmethod
     def _validate_argument_order(types):
-        prev = ArgumentTypes.SCALAR
-        for t in types:
+        prev = types[0]
+        active_named_only = False
+        dict_in_list = False
+        for idx, t in enumerate(types):
+            if prev == ArgumentTypes.DICT:
+                dict_in_list = True
+            if t == ArgumentTypes.NAMED:
+                active_named_only = True
+                prev = ArgumentTypes.DEFAULT  # Force max value
+                continue
+            if idx == len(types)-1:
+                if t in [ArgumentTypes.LIST, ArgumentTypes.DICT] and not dict_in_list:
+                    return None
+                elif t == ArgumentTypes.LIST and dict_in_list:
+                    return "Only last argument can be kwargs (dictionary argument)."
             if t < prev:
-                return ("List and scalar arguments must be before named and "
-                        "dictionary arguments")
+                if ((not active_named_only and t not in [ArgumentTypes.LIST, ArgumentTypes.DICT])
+                        or (active_named_only and t in [ArgumentTypes.LIST, ArgumentTypes.DICT])):
+                    return ("List and scalar arguments must be before named and "
+                            "dictionary arguments")
             prev = t
         return None
 
