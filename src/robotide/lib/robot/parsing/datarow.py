@@ -42,13 +42,10 @@ class DataRow(object):
                 comments.append(cell)
             else:
                 data.append(cell)
-        # if self._row_continuation_marker in data and self.source:
-        #     self._deprecate_escaped_cells_before_continuation(data)
-        # return self._purge_empty_cells(data), comments  # DEBUG don't self._purge_empty_cells(comments)
-        # print(f"DEBUG: datarow returning data={data} comments={comments}")
         return data, comments  # DEBUG keep empty cells
 
-    def _collapse_whitespace(self, cell):
+    @staticmethod
+    def _collapse_whitespace(cell):
         if cell.startswith('#'):
             return cell
         return ' '.join(cell.split())
@@ -72,9 +69,6 @@ class DataRow(object):
 
     @property
     def first_non_empty_cell(self):
-        # print(f"DEBUG: datarow enter _first_non_empty_cell")
-        # if self.cells:
-        #    print(f"DEBUG: datarow _first_non_empty_cell: {self.cells[:]}")
         index = 0
         while index < len(self.cells) and self.cells[index] == '':
             index += 1
@@ -83,8 +77,6 @@ class DataRow(object):
 
     @property
     def head(self):
-        # print(f"DEBUG: datarow head={self.cells[:] if self.cells else 'NONE!!!'}")
-        # return self.cells[self.first_non_empty_cell] if self.cells else ''
         return self.cells[0] if self.cells else ''
 
     @property
@@ -111,22 +103,19 @@ class DataRow(object):
         datarow = DataRow([])
         datarow.cells = self.tail
         datarow.comments = self.comments
-        # stack = inspect.stack()
-        # the_class = stack[1][0].f_locals["self"].__class__.__name__
-        # the_method = stack[1][0].f_code.co_name
-        # print("DEBUG: datarow dedent called by {}.{}()".format(the_class, the_method))
-        # print(f"DEBUG: datarow dedent={datarow.all[:]}")
+        """
+        stack = inspect.stack()
+        the_class = stack[1][0].f_locals["self"].__class__.__name__
+        the_method = stack[1][0].f_code.co_name
+        print("DEBUG: datarow dedent called by {}.{}()".format(the_class, the_method))
+        print(f"DEBUG: datarow dedent={datarow.all[:]}")
+        """
         return datarow
 
     def starts_for_loop(self):
-        # head = self.head
         head = self.cells[self.first_non_empty_cell]
         if not self.head:
             self.__setattr__(self.head, head)
-            # print(f"DEBUG: datarow starts_for_loop NEW CALCULATION head={head}")
-        # else:
-        #    head = self.head
-        # print(f"DEBUG: datarow starts_for_loop head={head}")
         if head.startswith(':'):
             return head.replace(':', '').replace(' ', '').upper() == 'FOR'
         return head == 'FOR'
@@ -141,9 +130,26 @@ class DataRow(object):
 
     def is_indented(self):
         return self.head == ''
-        # return self.first_non_empty_cell > 0
+
+    """ DEBUG
+    # In case we need this for the future
+    def add_indent(self, insert=None):
+        if insert:
+            self.cells.insert(0, insert)
+        self.cells.insert(0, '')
+    """
+
+    @property
+    def starts_continuation(self):
+        index = self.first_non_empty_cell
+        if 0 <= index < len(self.cells):
+            return self.cells[index] == self._row_continuation_marker
+        else:
+            return False
 
     def is_continuing(self):
+        if self.starts_continuation:
+            return False
         for cell in self.cells:
             if cell == self._row_continuation_marker:
                 return True

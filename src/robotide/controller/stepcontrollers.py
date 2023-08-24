@@ -140,9 +140,6 @@ class StepController(_BaseController):
             args = []
             value_at_col = self.get_value(col)
             if self.keyword == '...' and self._index() > 0:  # Any block starting with ... is in error
-                print(f"DEBUG: detected continuation marker col={col} parent is {type(self.parent)}")
-                print(f"DEBUG: keyword of step before={self.parent.step(self._index()-1).keyword}")
-                print(f"DEBUG: continuing keyword of step before={self.parent.step(self._index() - 1).continuing_kw}")
                 if value_at_col == '...':
                     drow = 1
                     self.continuing_kw = self.parent.step(self._index()-drow).keyword
@@ -152,15 +149,6 @@ class StepController(_BaseController):
                 info = self.get_keyword_info(self.continuing_kw)  # Getting info for the previous step kw
                 if info:
                     args = info.arguments
-                """
-                else:
-                    info = self.get_keyword_info(self.parent.step(self._index() - 1).continuing_kw)
-                    if info:
-                        args = info.arguments
-                """
-                print(f"DEBUG: index of curent step={self._index()} kw={self.keyword} continuing={self.continuing_kw}")
-            else:
-                print(f"DEBUG: index of curent step not kw nor ... ={self._index()} kw={self.keyword}")
         args_amount = len(args)
         if column > keyword_col and self.get_value(keyword_col) == "FOR" and self.is_assigning(value_at_col):
             return CellPosition(CellType.ASSIGN, None)

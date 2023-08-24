@@ -17,7 +17,7 @@ import re
 
 from robotide.lib.robot.utils import py2to3
 
-from .comments import CommentCache, Comments
+from .comments import Comments
 from .settings import Documentation, MetadataList
 
 
@@ -35,9 +35,11 @@ class Populator(object):
 class NullPopulator(Populator):
 
     def add(self, row):
+        """ To be overriden """
         pass
 
     def populate(self):
+        """ To be overriden """
         pass
 
     def __nonzero__(self):
@@ -49,28 +51,17 @@ class _TablePopulator(Populator):
     def __init__(self, table):
         self._table = table
         self._populator = NullPopulator()
-        # DEBUG: Not using comments self._comment_cache = CommentCache()
 
     def add(self, row):
-        # DEBUG: Not using comments
-        # if self._is_cacheable_comment_row(row):
-        #     self._comment_cache.add(row)
-        # else:
         self._add(row)
 
     def _is_cacheable_comment_row(self, row):
         return row.is_commented()
 
     def _add(self, row):
-        # DEBUG: Not using comments
-        # if self._is_continuing(row):
-        #     self._consume_comments()
-        # else:
         if not self._is_continuing(row):
             self._populator.populate()
             self._populator = self._get_populator(row)
-            # DEBUG: Not using comments self._consume_standalone_comments()
-        # print(f"DEBUG: tablepopulators _TablePopulator _add row={row.data}")
         self._populator.add(row)
 
     def _is_continuing(self, row):
@@ -78,15 +69,6 @@ class _TablePopulator(Populator):
 
     def _get_populator(self, row):
         raise NotImplementedError
-
-    # DEBUG: Not using comments
-    """
-    def _consume_comments(self):
-        self._comment_cache.consume_with(self._populator.add)
-
-    def _consume_standalone_comments(self):
-        self._consume_comments()
-    """
 
     def populate(self):
         # DEBUG: Not using comments self._consume_comments()
@@ -97,6 +79,8 @@ class SettingTablePopulator(_TablePopulator):
 
     def _get_populator(self, row):
         setter = self._table.get_setter(row.head) if row.head else None
+        if row.head == '...':
+            setter = self._table.get_setter('Documentation')
         if not setter:
             return NullPopulator()
         if isinstance(setter.__self__, Documentation):
@@ -110,9 +94,6 @@ class VariableTablePopulator(_TablePopulator):
 
     def _get_populator(self, row):
         return VariablePopulator(self._table.add, row.head)
-
-    def _consume_standalone_comments(self):
-        self._comment_cache.consume_with(self._populate_standalone_comment)
 
     def _populate_standalone_comment(self, comment):
         populator = self._get_populator(comment)
@@ -155,8 +136,6 @@ class ForLoopPopulator(Populator):
         self._declaration_comments = []
 
     def add(self, row):
-        # dedented_row = row.dedent()  # DEBUG remove dedent
-        # print(f"DEBUG: Forloop Add row = {row.data}\ndentented={dedented_row}")
         if not self._loop:
             declaration_ready = self._populate_declaration(row)
             if not declaration_ready:
@@ -165,13 +144,11 @@ class ForLoopPopulator(Populator):
         if not row.is_continuing():
             self._populator.populate()
             self._populator = StepPopulator(self._loop.add_step)
-        # self._populator.add(dedented_row)  #DEBUG remove dedent
         self._populator.add(row)
 
     def _populate_declaration(self, row):
         if row.starts_for_loop() or row.is_continuing():
-            self._declaration.extend(row.dedent().data)  #DEBUG remove dedent
-            # self._declaration.extend(row.data)
+            self._declaration.extend(row.dedent().data)
             self._declaration_comments.extend(row.comments)
             return False
         return True
@@ -192,6 +169,7 @@ class _TestCaseUserKeywordPopulator(Populator):
         self._test_or_uk_creator = test_or_uk_creator
         self._test_or_uk = None
         self._populator = NullPopulator()
+        self._documentation_setting = False
         # DEBUG: Not using comments self._comment_cache = CommentCache()
 
     def add(self, row):
@@ -206,22 +184,15 @@ class _TestCaseUserKeywordPopulator(Populator):
             self._test_or_uk = self._test_or_uk_creator(row.head)
         dedented_row = row.dedent()
         if dedented_row:
-            # print(f"DEBUG: _TestCaseUserKeywordPopulator processing after dedented {dedented_row.cells} {dedented_row.comments}")
             self._handle_data_row(dedented_row)
 
     def _handle_data_row(self, row):
-        ending_for_loop = False
         if not self._continues(row):
             self._populator.populate()
-            if row.all == ['END']:
-                ending_for_loop = self._end_for_loop()
-            self._populator = self._get_populator(row)
-            # DEBUG: Not using comments self._comment_cache.consume_with(self._populate_comment_row)
-        # DEBUG: Not using comments else:
-        # DEBUG: Not using comments     self._comment_cache.consume_with(self._populator.add)
-        # if not ending_for_loop:  # END was being omitted
-        #    print("DEBUG: handle_data_row %s" % row.all)
-        # print("DEBUG: handle_data_row %s" % row.all)
+        else:
+            # Need to add a new row to split by ...
+            self.add(row)
+        self._populator = self._get_populator(row)
         self._populator.add(row)
 
     def _end_for_loop(self):
@@ -247,16 +218,26 @@ class _TestCaseUserKeywordPopulator(Populator):
         # self._comment_cache.consume_with(self._populate_comment_row)
 
     def _get_populator(self, row):
-        if row.starts_test_or_user_keyword_setting():
-            setter = self._setting_setter(row)
-            if not setter:
+        is_setting = row.starts_test_or_user_keyword_setting()
+        if is_setting or self._documentation_setting:
+            setter = None
+            if row.head == '...' and self._documentation_setting:
+                setter = self._test_or_uk.get_setter('Documentation')
+            else:
+                self._documentation_setting = False
+            if not is_setting and not self._documentation_setting:
+                return StepPopulator(self._test_or_uk.add_step)
+            if is_setting and not self._documentation_setting:
+                setter = self._setting_setter(row)
+            if is_setting and not setter:
+                self._documentation_setting = False
                 return NullPopulator()
             if isinstance(setter.__self__, Documentation):
+                self._documentation_setting = True
                 return DocumentationPopulator(setter)
+            self._documentation_setting = False
             return SettingPopulator(setter)
-        # REMOVE SPECIAL FOR PARSING
-        # if row.starts_for_loop():
-        #    return ForLoopPopulator(self._test_or_uk.add_for_loop)
+        self._documentation_setting = False
         return StepPopulator(self._test_or_uk.add_step)
 
     def _setting_setter(self, row):
@@ -281,8 +262,6 @@ class _PropertyPopulator(Populator):
         self._data_added = False
 
     def add(self, row):
-        # print(f"DEBUG: tablepopulators add ENTER row={row}")
-        # self._add(row)
         if not row.is_commented():
             self._add(row)
         self._comments.add(row)
@@ -332,7 +311,11 @@ class DocumentationPopulator(_PropertyPopulator):
         self._setter(self._value, self._comments.value)
 
     def _add(self, row):
-        self._add_to_value(row.dedent().data)
+        if row.data[0] == '...':
+            row.data[0] = '\\n...'
+            self._value.append(''.join(row.data))
+        else:
+            self._add_to_value(row.dedent().data)
 
     def _add_to_value(self, data):
         joiner = self._row_joiner()
