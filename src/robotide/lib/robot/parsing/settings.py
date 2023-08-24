@@ -48,17 +48,24 @@ class Setting(object):
 
     def populate(self, value, comment=None):
         """Mainly used at parsing time, later attributes can be set directly."""
-        if not self._populated:
+        try:
+            start_continuation = value[0].lstrip().startswith('\\n...') or value[0].lstrip().startswith('...')
+        except IndexError:
+            start_continuation = False
+        if not self._populated or start_continuation:
+            if start_continuation:
+                value[0] = value[0].replace('...', '\\n').replace('\\n\\n', '\\n')
             self._populate(value)
             self._set_comment(comment)
             self._populated = True
-        else:
+        elif self._populated and not start_continuation:
             self._set_initial_value()
             self._set_comment(None)
             self.report_invalid_syntax("Setting '%s' used multiple times."
                                        % self.setting_name, 'ERROR')
 
     def _populate(self, value):
+        # self.value.append(self._string_value(value))
         self.value = value
 
     def is_set(self):

@@ -28,6 +28,7 @@ class StepController(_BaseController):
     indent = None
 
     def __init__(self, parent, step):
+        self.continuing_kw = None
         self._init(parent, step)
         self.step_controller_step.args = self._change_last_empty_to_empty_var(
             self.step_controller_step.args, self.step_controller_step.comment)
@@ -137,6 +138,17 @@ class StepController(_BaseController):
             args = info.arguments
         else:
             args = []
+            value_at_col = self.get_value(col)
+            if self.keyword == '...' and self._index() > 0:  # Any block starting with ... is in error
+                if value_at_col == '...':
+                    drow = 1
+                    self.continuing_kw = self.parent.step(self._index()-drow).keyword
+                    while self.continuing_kw == '...' and self._index()-drow > 0:
+                        drow += 1
+                        self.continuing_kw = self.parent.step(self._index() - drow).keyword
+                info = self.get_keyword_info(self.continuing_kw)  # Getting info for the previous step kw
+                if info:
+                    args = info.arguments
         args_amount = len(args)
         if column > keyword_col and self.get_value(keyword_col) == "FOR" and self.is_assigning(value_at_col):
             return CellPosition(CellType.ASSIGN, None)
@@ -180,6 +192,8 @@ class StepController(_BaseController):
     def _last_argument_is_varargs(args):
         return args[-1].startswith('*') or args[-1].startswith('&{')
 
+    """
+    # DEBUG: This is not used anywhere
     def _has_list_or_dict_var_value_before(self, arg_index):
         if self.args:
             for idx, value in enumerate(self.args):
@@ -192,6 +206,7 @@ class StepController(_BaseController):
                    not variablematcher.is_dict_var_access(value):
                     return True
         return False
+    """
 
     def _get_content_with_type(self, col, position):
         value = self.get_value(col)

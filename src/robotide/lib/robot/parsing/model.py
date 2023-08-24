@@ -366,6 +366,9 @@ class _WithSettings(object):
     def get_setter(self, name):
         if name[-1:] == ':':
             name = name[:-1]
+        # Patching for ... setting, this way we don't get a Parser Error on log
+        if name == '...':
+            name = 'Documentation'
         setter = self._get_setter(name)
         if setter is not None:
             return setter
@@ -657,9 +660,6 @@ class TestCase(_WithSteps, _WithSettings):
         return self.parent.directory
 
     def add_for_loop(self, declaration, comment=None):
-        # DEBUG
-        #self.steps.append(ForLoop(self, ['FOR'] + declaration, comment=comment))
-        # print(f"DEBUG: Model add_for_loop init={['FOR'] + declaration} comment:{comment}")
         self.steps.append(Step(['FOR'] + declaration, comment))
         # : Model add_for_loop return steps:{self.steps[-1].as_list()} comment:{comment}")
         return self.steps[-1]
@@ -748,8 +748,7 @@ class ForLoop(_WithSteps):
     :param list declaration: The literal cell values that declare the loop
                              (excluding ":FOR").
     :param str comment: A comment, default None.
-    :ivar str flavor: The value of the 'IN' item, uppercased.
-                      Typically 'IN', 'IN RANGE', 'IN ZIP', or 'IN ENUMERATE'.
+    :ivar str flavor: The value of the 'IN' item, uppercased, typically 'IN', 'IN RANGE', 'IN ZIP', or 'IN ENUMERATE'.
     :ivar list vars: Variables set per-iteration by this loop.
     :ivar list items: Loop values that come after the 'IN' item.
     :ivar str comment: A comment, or None.
@@ -759,8 +758,10 @@ class ForLoop(_WithSteps):
     normalized_flavors = NormalizedDict((f, f) for f in flavors)
     inner_kw_pos = None
 
-    def __init__(self, parent, declaration, indentation=[], comment=None):
+    def __init__(self, parent, declaration, indentation=None, comment=None):
         self.parent = parent
+        if indentation is None:
+            indentation = []
         self.indent = indentation if isinstance(indentation, list) else [indentation]
         isize = idx = 0
         print(f"\nDEBUG: ForLoop init ENTER declaration={declaration[:]}")
@@ -810,6 +811,7 @@ class ForLoop(_WithSteps):
         return True
 
     def as_list(self, indent=True, include_comment=True):
+        _ = indent
         comments = self.comment.as_list() if include_comment else []
         # print(f"DEBUG: Model ForLoop as_list: indent={self.indent[:]} self.first_kw={self.first_kw}\n"
         #       f"{self.vars} + {self.flavor} + {self.items} + {comments}")
@@ -965,8 +967,6 @@ class Step(object):
         the_method = stack[1][0].f_code.co_name
         print("DEBUG: RFLib Model Step called by {}.{}()".format(the_class, the_method))
         """
-        # print(f"DEBUG RFLib Model Step: as_list() ENTER assign={self.assign}\n"
-        #       f"cells={self.cells[:]}")
         _ = include_comment
         if indent:
             return [''] + self.cells[:]
