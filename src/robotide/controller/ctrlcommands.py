@@ -640,12 +640,18 @@ class UpdateVariableName(_Command):
                                        context.comment))
 
 
+def normalize_kw_name(name):
+    name = re.sub('(.)([A-Z][a-z]+)', r'\1 \2', name)
+    return re.sub('([a-z0-9])([A-Z])', r'\1 \2', name).lower().replace('_', ' ')
+
+
 class FindOccurrences(_Command):
     modifying = False
 
     def __init__(self, keyword_name, keyword_info=None):
         if keyword_name.strip() == '':
             raise ValueError('Keyword name can not be "%s"' % keyword_name)
+        self.normalized_name = normalize_kw_name(keyword_name)
         self._keyword_name = keyword_name
         self._keyword_info = keyword_info
         self._keyword_regexp = self._create_regexp(keyword_name)
@@ -702,8 +708,12 @@ class FindOccurrences(_Command):
         return item_info.source if item_info else None
 
     def _find_occurrences_in(self, items):
-        return (Occurrence(item, self._keyword_name) for item in items
-                if self._contains_item(item))
+        from .tablecontrollers import VariableTableController
+        for item in items:
+            if self._contains_item(item) or (not isinstance(item, VariableTableController)
+                                             and (item.contains_keyword(self.normalized_name) or
+                                             item.contains_keyword(self.normalized_name.replace(' ', '_')))):
+                yield Occurrence(item, self._keyword_name)
 
     def _contains_item(self, item):
         self._yield_for_other_threads()
