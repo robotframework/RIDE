@@ -36,9 +36,14 @@ from .lib.robot.running.arguments.embedded import EmbeddedArgumentParser
 from .lib.robot.utils import normpath, NormalizedDict
 from .lib.robot.variables import Variables as RobotVariables
 from .lib.robot.variables import is_scalar_var, is_list_var, is_var, is_dict_var, VariableSplitter
-from .lib.robot.variables.filesetter import VariableFileSetter
 from .lib.robot.variables.tablesetter import VariableTableReader
 from .lib.robot.version import ROBOT_VERSION, ALIAS_MARKER
+try:
+    from robot.variables.filesetter import VariableFileSetter
+    # print("DEBUG: robotapi using installed RobotFramework VariableFileSetter.")
+except ImportError:
+    from .lib.robot.variables.filesetter import VariableFileSetter
+    print("DEBUG: robotapi using RIDE VariableFileSetter (JSON variables will not be recognized).")
 
 populators.PROCESS_CURDIR = False
 
