@@ -359,7 +359,7 @@ class _VariableStash(object):
 
     def set_from_file(self, varfile_path, args):
         try:
-            vars_from_file = VariableFileSetter(None).import_if_needed(
+            vars_from_file = VariableFileSetter(None)._import_if_needed(
                 varfile_path, args)
         except (robotapi.DataError, Exception) as e:
             print(f"namespace._VariableStash.set_from_file: unexpected DataError: variable_path {varfile_path} "
