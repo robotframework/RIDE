@@ -59,7 +59,7 @@ class ValueEditor(wx.Panel):
         sizer.Add(self._editor, 1, self._sizer_flags_for_editor, 3)
         self._sizer.Add(sizer, 1, wx.EXPAND)
         self._editor.Bind(wx.EVT_KEY_DOWN, self.on_key_down)
-        # print("DEBUG: ValueEditor _create_editor: %s\n" % (self.source_editor.__repr__()))
+        # print("DEBUG: ValueEditor _create_editor: %s\n" % (self._editor.__repr__()))
 
     def _get_text_ctrl(self):
         editor = wx.TextCtrl(self, size=(600, -1))
@@ -110,6 +110,7 @@ class ArgumentEditor(ValueEditor):
         self._editor.AppendText(value)
         sizer.Add(self._editor, 1, self._sizer_flags_for_editor, 3)
         self._sizer.Add(sizer, 1, wx.EXPAND)
+        self._editor.Bind(wx.EVT_KEY_DOWN, self.on_key_down)
 
 
 class FileNameEditor(ValueEditor):

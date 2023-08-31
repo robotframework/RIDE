@@ -10,6 +10,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Added
 
+- Added variables creation shortcuts (``Ctrl-1,2,5``) to fields Arguments in Grid Editor
 - Added support for JSON variables, by using the installed Robot Framework import method
 
 === Fixed
