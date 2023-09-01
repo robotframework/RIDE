@@ -15,6 +15,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Fixed
 
+- Fixed exception when finding GREY color for excluded files and directories in Project Tree
 - Colorization of Grid Editor cells after the continuation marker ``...`` and correct parsing of those lines
 - Colorization of Grid Editor cells when contents is list or dictionary variables
 - Validation of Grid Editor arguments types in keywords definitions. Now accepts ``@{}`` named-only marker
