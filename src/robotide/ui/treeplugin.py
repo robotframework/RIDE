@@ -337,7 +337,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
         self._remove_datafile_node(tree)
 
     def _set_item_excluded(self, node):
-        self.SetItemTextColour(node, wx.ColourDatabase.Find(colourName="GRAY"))
+        self.SetItemTextColour(node, wx.TheColourDatabase.Find(colourName="GREY"))
         self.SetItemItalic(node, True)
         self.SetItemText(node, "%s (excluded)" % self.GetItemText(node))
 

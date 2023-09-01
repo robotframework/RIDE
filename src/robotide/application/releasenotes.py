@@ -168,6 +168,7 @@ RELEASE_NOTES = f"""
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
+<li>Fixed exception when finding GREY color for excluded files and directories in Project Tree</li>
 <li>Added support for JSON variables, by using the installed Robot Framework import method</li>
 <li>Colorization of Grid Editor cells after the continuation marker <b>...</b> and correct parsing of those lines</li> 
 <li>Colorization of Grid Editor cells when contents is list or dictionary variables</li>
@@ -233,6 +234,6 @@ python -m robotide.__init__
 <pre class="literal-block">
 python -m robotide.postinstall -install
 </pre>
-<p>RIDE {VERSION} was released on 31/Aug/2023.</p>
+<p>RIDE {VERSION} was released on 1/Sep/2023.</p>
 </div>
 """
