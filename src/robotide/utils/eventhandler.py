@@ -25,6 +25,7 @@ class _RideFSWatcherHandler:
         self._is_workspace_dirty = False
         self._initial_watched_path = None
         self._watched_path = set()
+        self._excluded_path = set()
 
     def create_fs_watcher(self, path):
         if self._fs_watcher:
@@ -41,7 +42,7 @@ class _RideFSWatcherHandler:
         if self._initial_watched_path != path:
             self._initial_watched_path = path
         self.stop_listening()
-        # on MSW we get a popup from wxWidgets
+        # on MSW, we get a popup from wxWidgets
         # (https://github.com/wxWidgets/wxWidgets/blob/master/src/msw/fswatcher.cpp#L165)
         # when the path is a network share, like for example WSL: \\wsl.localhost\docker-desktop\tmp\
         # We avoid the popup by ignoring it
@@ -71,26 +72,109 @@ class _RideFSWatcherHandler:
                 pass
             while file_search:
                 if self._is_valid_file_format(file_search):
-                    # print(f"DEBUG: FileSystemWatcher start_listening file_search={file_search}")
-                    self._watched_path.add(fs.URLToFileName(file_search))
+                    changing_file = fs.URLToFileName(file_search)
+                    self._watched_path.add(changing_file)
+                    try:
+                        self._fs_watcher.Add(changing_file)
+                    except Exception as e:
+                        print(e)
                 try:
                     file_search = fs.FindNext()
                 except AssertionError:
                     pass
             self._watched_path.add(path)
+            self._exclude_paths()
         else:
             self._watched_path.add(path)  # Here we add the file path
-            path = os.path.join(os.path.dirname(path), '')
+            # DEBUG path = os.path.join(os.path.dirname(path), '') # Here we only add the file parent directory
             try:
-                self._fs_watcher.Add(path)  # Here we only add the file parent directory
+                self._fs_watcher.Add(path)
             except Exception as e:
                 print(e)
                 return
+            self._exclude_paths()
 
     def stop_listening(self):
         self._is_workspace_dirty = False
         self._fs_watcher.RemoveAll()
         self._watched_path = set()
+
+    def _exclude_paths(self):
+        for item in self._excluded_path:
+            if os.path.isdir(item):
+                item = os.path.join(item, '')
+                try:
+                    self._fs_watcher.RemoveTree(item)
+                except Exception:
+                    pass
+                # Remove all files to the monitoring list
+                from wx import FileSystem
+                fs = FileSystem()
+                fs.ChangePathTo(item, True)
+                file_search = None
+                try:
+                    file_search = fs.FindFirst("*")
+                except AssertionError:
+                    pass
+                while file_search:
+                    if self._is_valid_file_format(file_search):
+                        changing_file = fs.URLToFileName(file_search)
+                        try:
+                            self._watched_path.remove(changing_file)
+                        except KeyError:
+                            pass
+                        try:
+                            self._fs_watcher.Remove(changing_file)
+                        except Exception:
+                            pass
+                    try:
+                        file_search = fs.FindNext()
+                    except AssertionError:
+                        pass
+                try:
+                    self._watched_path.remove(item)
+                except KeyError:
+                    pass
+            else:
+                if self._is_valid_file_format(item):
+                    try:
+                        self._watched_path.remove(item)
+                    except KeyError:
+                        pass
+                    try:
+                        self._fs_watcher.Remove(item)
+                    except Exception:
+                        pass
+
+    def exclude_listening(self, path):
+        self._excluded_path = set()
+        if isinstance(path, list):
+            for item in path:
+                if os.path.isdir(item):
+                    item = os.path.join(item, '')
+                    self._excluded_path.add(item)
+                    # Remove all files to the monitoring list
+                    from wx import FileSystem
+                    fs = FileSystem()
+                    fs.ChangePathTo(item, True)
+                    file_search = None
+                    try:
+                        file_search = fs.FindFirst("*")
+                    except AssertionError:
+                        pass
+                    while file_search:
+                        if self._is_valid_file_format(file_search):
+                            self._excluded_path.add(fs.URLToFileName(file_search))
+                        try:
+                            file_search = fs.FindNext()
+                        except AssertionError:
+                            pass
+                else:
+                    if self._is_valid_file_format(item):
+                        self._excluded_path.add(item)
+        else:
+            if self._is_valid_file_format(path):
+                self._excluded_path.add(path)
 
     def is_workspace_dirty(self):
         if self._watched_path:
@@ -114,34 +198,44 @@ class _RideFSWatcherHandler:
         change_type = event.GetChangeType()
 
         if change_type == wx.FSW_EVENT_MODIFY:
-            if previous_path in self._watched_path:
+            if previous_path in self._watched_path and previous_path not in self._excluded_path:
                 return True
             return False
 
         if change_type == wx.FSW_EVENT_CREATE:
+            if previous_path in self._excluded_path:
+                return False
             if os.path.isdir(previous_path):
                 return True
             elif os.path.isfile(previous_path):
                 return self._is_valid_file_format(previous_path)
         elif change_type == wx.FSW_EVENT_DELETE:
+            if previous_path in self._excluded_path:
+                return False
             if previous_path in self._watched_path:
                 # workspace root folder / suite file is deleted
                 self._watched_path.remove(previous_path)
                 return True
+            """ DEBUG: Why we are considering not monitored files or directories?
             if previous_path.endswith(os.sep):
                 return True
             else:
                 return self._is_valid_file_format(previous_path)
+            """
         elif change_type == wx.FSW_EVENT_RENAME:
+            if new_path in self._excluded_path:
+                return False
             if previous_path in self._watched_path:
                 # workspace root folder / suite file is renamed
                 self._watched_path.remove(previous_path)
                 self._watched_path.add(new_path)
                 return True
+            """ DEBUG: Why we are considering not monitored files or directories?
             if os.path.isdir(new_path):
                 return True
             elif os.path.isfile(new_path):
                 return self._is_valid_file_format(new_path)
+            """
         else:
             return False
 

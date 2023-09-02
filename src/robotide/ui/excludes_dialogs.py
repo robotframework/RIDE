@@ -20,6 +20,7 @@ from wx import Colour
 from wx.adv import HyperlinkCtrl, EVT_HYPERLINK
 
 from .preferences_dialogs import PreferencesPanel
+from ..publish.messages import RideSettingsChanged
 from ..widgets import RIDEDialog, HtmlWindow
 
 
@@ -44,6 +45,7 @@ class ExcludePreferences(PreferencesPanel):
     def _create_sizer(self):
         sizer = wx.BoxSizer(orient=wx.VERTICAL)
         self._add_help_dialog(sizer)
+        self._add_fs_exclusion_help(sizer)
         self._add_text_box(sizer)
         self._add_button_and_status(sizer)
         self.SetSizer(sizer)
@@ -54,6 +56,13 @@ class ExcludePreferences(PreferencesPanel):
         need_help.SetForegroundColour(Colour(self.color_secondary_foreground))
         sizer.Add(need_help)
         self.Bind(EVT_HYPERLINK, self.on_help)
+
+    def _add_fs_exclusion_help(self, sizer):
+        exclude_help = wx.StaticText(self, label='Since v2.0.8, files are also excluded from filesystem'
+                                                 ' monitoring changes.')
+        exclude_help.SetBackgroundColour(Colour(self._general_settings['background']))
+        exclude_help.SetForegroundColour(Colour(self._general_settings['foreground']))
+        sizer.Add(exclude_help)
 
     def _add_text_box(self, sizer):
         self._text_box = wx.TextCtrl(self, style=wx.TE_MULTILINE | wx.TE_NOHIDESEL, size=wx.Size(570, 100),
@@ -78,6 +87,7 @@ class ExcludePreferences(PreferencesPanel):
         _ = event
         text = self._text_box.GetValue()
         self._settings.excludes.write_excludes(set(text.split('\n')))
+        RideSettingsChanged(keys=('Excludes', 'saved'), old=None, new=None).publish()
         save_label = 'Saved at %s. Reload the project for changes to take an effect.' %\
                      datetime.now().strftime('%H:%M:%S')
         self._status_label.SetLabel(save_label)

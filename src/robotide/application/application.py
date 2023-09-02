@@ -131,6 +131,8 @@ class RIDE(wx.App):
             wx.CallAfter(UpdateNotifierController(self.settings).notify_update_if_needed, UpdateDialog)
         self.Bind(wx.EVT_ACTIVATE_APP, self.on_app_activate)
         PUBLISHER.subscribe(self.SetGlobalColour, RideSettingsChanged)
+        PUBLISHER.subscribe(self.update_excludes, RideSettingsChanged)
+        RideSettingsChanged(keys=('Excludes', 'init'), old=None, new=None).publish()
         return True
 
     @staticmethod
@@ -277,6 +279,16 @@ class RIDE(wx.App):
             if hasattr(w, 'SetFont'):
                 w.SetFont(font)
             """
+
+    @staticmethod
+    def update_excludes(message):
+        if message.keys[0] != "Excludes":
+            return
+        from ..preferences.excludes_class import Excludes
+        excludes = Excludes(context.SETTINGS_DIRECTORY)
+        paths = excludes.get_excludes().split()
+        if paths:
+            RideFSWatcherHandler.exclude_listening(paths)
 
     @staticmethod
     def _publish_system_info():
