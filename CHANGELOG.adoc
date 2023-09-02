@@ -10,6 +10,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Added
 
+- Added exclusion of monitoring filesystem changes for files and directories excluded in Preferences
 - Added variables creation shortcuts (``Ctrl-1,2,5``) to fields Arguments in Grid Editor
 - Added support for JSON variables, by using the installed Robot Framework import method
 
@@ -24,6 +25,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Changed
 
+- Improved file changes detection to only consider valid formats
 - Improved keyword ``Find Usages`` to return more matches. Fails to find mixed spaces and ``_``
 - In Grid Editor ``Ctrl-Shift-4`` now replaces escaped spaces ``\\ `` by spaces
 
