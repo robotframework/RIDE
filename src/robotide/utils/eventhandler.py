@@ -17,6 +17,8 @@ import os
 
 import wx
 
+IS_WINDOWS = os.sep == '\\'
+
 
 class _RideFSWatcherHandler:
 
@@ -46,7 +48,7 @@ class _RideFSWatcherHandler:
         # (https://github.com/wxWidgets/wxWidgets/blob/master/src/msw/fswatcher.cpp#L165)
         # when the path is a network share, like for example WSL: \\wsl.localhost\docker-desktop\tmp\
         # We avoid the popup by ignoring it
-        if path.startswith('\\\\') and os.sep == '\\':
+        if path.startswith('\\\\') and IS_WINDOWS:
             print(f"INFO: Not watching file system changes for path: {path}")
             return
         if os.path.isdir(path):
@@ -74,6 +76,8 @@ class _RideFSWatcherHandler:
                 if self._is_valid_file_format(file_search):
                     changing_file = fs.URLToFileName(file_search)
                     self._watched_path.add(changing_file)
+                    if IS_WINDOWS:  # Here we only add the file parent directory
+                        changing_file = os.path.join(os.path.dirname(changing_file), '')
                     try:
                         self._fs_watcher.Add(changing_file)
                     except Exception as e:
@@ -86,7 +90,8 @@ class _RideFSWatcherHandler:
             self._exclude_paths()
         else:
             self._watched_path.add(path)  # Here we add the file path
-            # DEBUG path = os.path.join(os.path.dirname(path), '') # Here we only add the file parent directory
+            if IS_WINDOWS:
+                path = os.path.join(os.path.dirname(path), '') # Here we only add the file parent directory
             try:
                 self._fs_watcher.Add(path)
             except Exception as e:
