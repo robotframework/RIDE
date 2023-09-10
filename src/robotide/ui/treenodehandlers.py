@@ -19,7 +19,7 @@ from ..controller import ctrlcommands, filecontrollers, macrocontrollers, settin
 from ..controller.ctrlcommands import SortTests, SortVariables
 from ..editor.editordialogs import (TestCaseNameDialog, UserKeywordNameDialog, ScalarVariableDialog, ListVariableDialog,
                                     CopyUserKeywordDialog, DictionaryVariableDialog)
-from ..publish import RideOpenVariableDialog, RideTestSelectedForRunningChanged, PUBLISHER
+from ..publish import RideOpenVariableDialog, RideTestSelectedForRunningChanged, RideSettingsChanged, PUBLISHER
 from ..ui.progress import LoadProgressObserver
 from ..usages.UsageRunner import Usages, ResourceFileUsages
 from ..widgets import PopupMenuItems
@@ -38,7 +38,8 @@ def action_handler_class(controller):
         macrocontrollers.TestCaseController: TestCaseHandler,
         macrocontrollers.UserKeywordController: UserKeywordHandler,
         settingcontrollers.VariableController: VariableHandler,
-        filecontrollers.ExcludedDirectoryController: ExcludedDirectoryHandler
+        filecontrollers.ExcludedDirectoryController: ExcludedDirectoryHandler,
+        filecontrollers.ExcludedFileController: ExcludedDirectoryHandler  # Reuse the same class
     }[controller.__class__]
 
 
@@ -378,6 +379,8 @@ class TestDataDirectoryHandler(TestDataHandler):
     def on_exclude(self, event):
         try:
             self.controller.execute(ctrlcommands.Exclude())
+            # Next is to restart the file monitoring
+            RideSettingsChanged(keys=('Excludes', 'excluded'), old=None, new=None).publish()
         except filecontrollers.DirtyRobotDataException:
             wx.MessageBox('Directory contains unsaved data!\n'
                           'You must save data before excluding.')
@@ -428,11 +431,23 @@ class ResourceFileHandler(_FileHandlerThanCanBeRenamed, TestDataHandler):
                 '---',
                 _ActionHandler._label_sort_variables,
                 _ActionHandler._label_sort_keywords,
+                # DEBUG experiment to allow TestSuites be excluded:
+                '---',
+                _ActionHandler._label_exclude,
                 '---',
                 _ActionHandler._label_remove_readonly,
                 _ActionHandler._label_open_folder
                 ]
-                
+
+    def on_exclude(self, event):
+        try:
+            self.controller.execute(ctrlcommands.Exclude())
+            # Next is to restart the file monitoring
+            RideSettingsChanged(keys=('Excludes', 'excluded'), old=None, new=None).publish()
+        except filecontrollers.DirtyRobotDataException:
+            wx.MessageBox('File contains unsaved data!\n'
+                          'You must save data before excluding.')
+
     def on_remove_read_only(self, event):
         _ = event
 
@@ -485,11 +500,23 @@ class TestCaseFileHandler(_FileHandlerThanCanBeRenamed, TestDataHandler):
                 _ActionHandler._label_deselect_all,
                 _ActionHandler._label_select_failed_tests,
                 _ActionHandler._label_select_passed_tests,
+                # DEBUG experiment to allow TestSuites be excluded:
+                '---',
+                _ActionHandler._label_exclude,
                 '---',
                 _ActionHandler._label_remove_readonly,
                 _ActionHandler._label_open_folder
                 ]
-                
+
+    def on_exclude(self, event):
+        try:
+            self.controller.execute(ctrlcommands.Exclude())
+            # Next is to restart the file monitoring
+            RideSettingsChanged(keys=('Excludes', 'excluded'), old=None, new=None).publish()
+        except filecontrollers.DirtyRobotDataException:
+            wx.MessageBox('File contains unsaved data!\n'
+                          'You must save data before excluding.')
+
     def on_remove_read_only(self, event):
         _ = event
 
@@ -687,3 +714,5 @@ class ExcludedDirectoryHandler(TestDataDirectoryHandler):
 
     def on_include(self, event):
         self.controller.execute(ctrlcommands.Include())
+        # Next is to restart the file monitoring
+        RideSettingsChanged(keys=('Excludes', 'included'), old=None, new=None).publish()

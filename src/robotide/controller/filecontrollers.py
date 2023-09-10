@@ -771,6 +771,17 @@ class TestCaseFileController(_FileSystemElement, _DataController):
     def get_template(self):
         return self.data.setting_table.test_template
 
+    def exclude(self):
+        if self._project.is_datafile_dirty(self):
+            raise DirtyRobotDataException()
+        self._project.internal_settings.excludes.update_excludes([self.source])
+        if self.parent and self.parent.children:
+            index = self.parent.children.index(self)
+        result = ExcludedFileController(self.data, self._project, self.parent)
+        if self.parent and self.parent.children:
+            self.parent.children[index] = result
+        return result
+
     def retrieve_test_controllers(self):
         controllers = []
         for test_ctrl in iter(self.tests):
@@ -963,6 +974,17 @@ class ResourceFileController(_FileSystemElement, _DataController):
         """ Does not have children """
         pass
 
+    def exclude(self):
+        if self._project.is_datafile_dirty(self):
+            raise DirtyRobotDataException()
+        self._project.internal_settings.excludes.update_excludes([self.source])
+        if self.parent and self.parent.children:
+            index = self.parent.children.index(self)
+        result = ExcludedFileController(self.data, self._project, self.parent)
+        if self.parent and self.parent.children:
+            self.parent.children[index] = result
+        return result
+
 
 class ExcludedDirectoryController(_FileSystemElement, ControllerWithParent, WithNamespace):
 
@@ -1018,7 +1040,13 @@ class ExcludedDirectoryController(_FileSystemElement, ControllerWithParent, With
         self._project.internal_settings.excludes.remove_path(self.source)
         index = self.parent.children.index(self)
         td = test_data(self.data.source, self.parent.data, self._project.internal_settings)
-        result = TestDataDirectoryController(td, self._project, self.parent)
+        # We can reach here not from Directory, so proper test must be done
+        if isinstance(td, TestDataDirectory):
+            result = TestDataDirectoryController(td, self._project, self.parent)
+        elif isinstance(td, ResourceFile):
+            result = ResourceFileController(td, self._project, self.parent)
+        else:
+            result = TestCaseFileController(td, self._project, self.parent)
         self.parent.children[index] = result
         return result
 
@@ -1032,6 +1060,145 @@ class ExcludedDirectoryController(_FileSystemElement, ControllerWithParent, With
     @staticmethod
     def is_directory_suite():
         return True
+
+    def add_child(self, child):
+        self.children.append(child)
+
+
+class ExcludedFileController(_FileSystemElement, _DataController):
+    __test__ = False
+
+    def __init__(self, data, project, parent):
+        self.data = data
+        self._project = project
+        if self._project:
+            self._set_namespace_from(self._project)
+            self._resource_file_controller_factory = self._project.resource_file_controller_factory
+        else:
+            self._resource_file_controller_factory = None
+        self._parent = parent
+        self.children = []
+        self._variables_table_controller = None
+        self._testcase_table_controller = None
+        self._keywords_table_controller = None
+        _FileSystemElement.__init__(self, data.source if data else None, data.directory)
+        # _DataController.__init__(self, data, project, parent)
+
+    def internal_settings(self):
+        ss = self.setting_table
+        sett = _DataController.internal_settings(self)
+        sett.insert(-1, TemplateController(self, ss.test_template))
+        sett.insert(-1, TimeoutController(self, ss.test_timeout))
+        return sett + [self.default_tags, self.force_tags]  # OK doing some cheating here ;)
+
+    @property
+    def longname(self):
+        if self.parent:
+            return self.parent.longname + '.' + self.name
+        return self.name
+
+    @property
+    def suites(self):
+        return ()
+
+    @property
+    def tests(self):
+        return ()
+
+    def contains_tests(self):
+        return False
+
+    def find_controller_by_longname(self, longname, node_testname=None):
+        return self.find_controller_by_names(longname.split("."), node_testname)
+
+    def find_controller_by_names(self, names, node_testname=None):
+        names = '.'.join(names)
+        if not names.startswith(self.name):
+            return None
+        if len(self.name) < len(names) and not names.startswith(self.name + '.'):
+            return None
+        if len(names) == 1:
+            return self
+        for test in self.tests:
+            if test.name == node_testname:
+                return test
+        return None
+
+    @property
+    def default_tags(self):
+        return None  # DefaultTagsController(self, self.setting_table.default_tags)
+
+    def is_modifiable(self):
+        return not self.exists() or not self.is_readonly()
+
+    def create_test(self, name):
+        return self.tests.new(name)
+
+    def validate_test_name(self, name):
+        return self.tests.validate_name(name)
+
+    def remove_child(self, controller):
+        if controller is self:
+            self.remove()
+
+    def remove(self):
+        self._project.remove_datafile(self)
+        RideDataFileRemoved(path=self.filename, datafile=self).publish()
+
+    def reload(self):
+        self.__init__(TestCaseFile(parent=self.data.parent, source=self.filename).populate(),
+                      project=self._project,
+                      parent=self.parent)
+
+    def get_template(self):
+        return self.data.setting_table.test_template
+
+    @property
+    def settings(self):
+        return self.internal_settings()
+
+    @property
+    def setting_table(self):
+        return self.data.setting_table
+
+    @property
+    def force_tags(self):  # Yes, I know this is impossible, but is Exclude file, right?
+        return None  # ForceTagsController(self, self.setting_table.force_tags)
+
+    @property
+    def dirty(self):
+        return False
+
+    def keyword_info(self, datafile, keyword_name):
+        return NotImplemented
+        # _ = datafile
+        # return WithNamespace.keyword_info(self, self.data, keyword_name)
+
+    def is_excluded(self):
+        return True
+
+    def remove_from_excludes(self):
+        self._project.internal_settings.excludes.remove_path(self.source)
+        if self._parent.children:
+            index = self._parent.children.index(self)
+        td = test_data(self.data.source, self._parent.data, self._project.internal_settings)
+        # We can reach here not from Directory, so proper test must be done
+        if isinstance(td, TestDataDirectory):
+            result = TestDataDirectoryController(td, self._project, self.parent)
+        elif isinstance(td, ResourceFile):
+            result = ResourceFileController(td, self._project, self.parent)
+        else:
+            result = TestCaseFileController(td, self._project, self.parent)
+        if self._parent.children:
+            self._parent.children[index] = result
+        return result
+
+    def iter_datafiles(self):
+        return [self]
+
+    @property
+    def name(self):
+        return self.data.name
 
     def add_child(self, child):
         self.children.append(child)

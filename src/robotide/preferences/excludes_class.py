@@ -56,11 +56,11 @@ class Excludes(object):
         if not os.path.exists(self._exclude_file_path) and read_write.startswith('r'):
             if not os.path.isdir(self._settings_directory):
                 os.makedirs(self._settings_directory)
-            return open(self._exclude_file_path, 'w+')
+            return open(self._exclude_file_path, 'w+', encoding='utf-8')
         if os.path.isdir(self._exclude_file_path):
             raise NameError('"%s" is a directory, not file' % self._exclude_file_path)
         try:
-            return open(self._exclude_file_path, read_write)
+            return open(self._exclude_file_path, read_write, encoding='utf-8')
         except IOError as e:
             print(e)
             raise e  # DEBUG: TODO FIXME

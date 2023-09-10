@@ -10,6 +10,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Added
 
+- Added Exclude option in context nenu for Test files, previously was only possible for Test Suites folders
 - Added exclusion of monitoring filesystem changes for files and directories excluded in Preferences
 - Added variables creation shortcuts (``Ctrl-1,2,5``) to fields Arguments in Grid Editor
 - Added support for JSON variables, by using the installed Robot Framework import method
