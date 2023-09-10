@@ -284,7 +284,7 @@ class ForceTagsController(TagsController):
     def _gather_from_data(tags, parent):
         if tags.value is None:
             return []
-        # print(f"DEBUG: SettingsController _gather_from_data entry tags={tags.value}")
+        print(f"DEBUG: SettingsController _gather_from_data entry tags={tags.value}")
         return [ForcedTag(t, index, parent)
                 for index, t in enumerate(tags.value)]
 

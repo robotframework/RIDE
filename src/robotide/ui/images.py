@@ -52,7 +52,8 @@ class TreeImageList(wx.ImageList):
             'failed': _TreeImage(self, 'robot_failed.png'),
             'paused': _TreeImage(self, 'robot-pause.gif'),
             'skipped': _TreeImage(self, 'robot_skipped.png'),
-            filecontrollers.ExcludedDirectoryController: _TreeImage(self, 'folder_excluded.png')
+            filecontrollers.ExcludedDirectoryController: _TreeImage(self, 'folder_excluded.png'),
+            filecontrollers.ExcludedFileController: _TreeImage(self, 'folder_excluded.png')
         }
 
     @property
