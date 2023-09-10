@@ -1105,6 +1105,14 @@ class ExcludedFileController(_FileSystemElement, _DataController):
     def tests(self):
         return ()
 
+    @property
+    def imports(self):
+        return ()
+
+    @property
+    def datafile(self):
+        return None
+
     def contains_tests(self):
         return False
 
@@ -1148,7 +1156,7 @@ class ExcludedFileController(_FileSystemElement, _DataController):
     def reload(self):
         self.__init__(TestCaseFile(parent=self.data.parent, source=self.filename).populate(),
                       project=self._project,
-                      parent=self.parent)
+                      parent=self._parent)
 
     def get_template(self):
         return self.data.setting_table.test_template
@@ -1184,17 +1192,17 @@ class ExcludedFileController(_FileSystemElement, _DataController):
         td = test_data(self.data.source, self._parent.data, self._project.internal_settings)
         # We can reach here not from Directory, so proper test must be done
         if isinstance(td, TestDataDirectory):
-            result = TestDataDirectoryController(td, self._project, self.parent)
+            result = TestDataDirectoryController(td, self._project, self._parent)
         elif isinstance(td, ResourceFile):
-            result = ResourceFileController(td, self._project, self.parent)
+            result = ResourceFileController(td, self._project, self._parent)
         else:
-            result = TestCaseFileController(td, self._project, self.parent)
+            result = TestCaseFileController(td, self._project, self._parent)
         if self._parent.children:
             self._parent.children[index] = result
         return result
 
     def iter_datafiles(self):
-        return [self]
+        return []
 
     @property
     def name(self):
