@@ -10,7 +10,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Added
 
-- Added content help pop-up on Text Editor by pressing ``Ctrl-M`` for text at cursor position
+- Added content help pop-up on Text Editor by pressing ``Ctrl-M`` for text at cursor position or selected autocomplete list item
 - Added Exclude option in context nenu for Test files, previously was only possible for Test Suites folders
 - Added exclusion of monitoring filesystem changes for files and directories excluded in Preferences
 - Added variables creation shortcuts (``Ctrl-1,2,5``) to fields Arguments in Grid Editor
