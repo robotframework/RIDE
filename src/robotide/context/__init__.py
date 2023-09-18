@@ -324,6 +324,10 @@ SHORTCUT_KEYS = '''\
         <td>Ctrl-Space or Alt-Space</td>
         <td>Suggestions and auto completion</td>
     </tr>
+        <tr>
+        <td>CtrlCmd-M</td>
+        <td>Help for content at cursor</td>
+    </tr>
     <tr>
         <td>CtrlCmd-T</td>
         <td>Swap current row up</td>
