@@ -168,7 +168,7 @@ RELEASE_NOTES = f"""
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
-<li>Added content help pop-up on Text Editor by pressing <b>Ctrl-M</b> for text at cursor position</li>
+<li>Added content help pop-up on Text Editor by pressing <b>Ctrl-M</b> for text at cursor position or selected autocomplete list item</li>
 <li>Added Exclude option in context nenu for Test files, previously was only possible for Test Suites folders</li>
 <li>Added exclusion of monitoring filesystem changes for files and directories excluded in Preferences</li>
 <li>Fixed exception when finding GREY color for excluded files and directories in Project Tree</li>
@@ -237,6 +237,6 @@ python -m robotide.__init__
 <pre class="literal-block">
 python -m robotide.postinstall -install
 </pre>
-<p>RIDE {VERSION} was released on 18/Sep/2023.</p>
+<p>RIDE {VERSION} was released on 19/Sep/2023.</p>
 </div>
 """

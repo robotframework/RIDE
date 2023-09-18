@@ -325,8 +325,8 @@ SHORTCUT_KEYS = '''\
         <td>Suggestions and auto completion</td>
     </tr>
         <tr>
-        <td>CtrlCmd-M</td>
-        <td>Help for content at cursor</td>
+        <td>CtrlCmd</td>
+        <td>Help for content at cursor or selected autocomplete list item</td>
     </tr>
     <tr>
         <td>CtrlCmd-T</td>

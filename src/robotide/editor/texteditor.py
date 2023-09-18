@@ -884,6 +884,7 @@ class SourceEditor(wx.Panel):
 
     def on_editor_key(self, event):
         keycode = event.GetKeyCode()
+        keyvalue = event.GetUnicodeKey()
         if keycode == wx.WXK_DELETE:  # DEBUG on Windows we only get here, single Text Editor
             selected = self.source_editor.GetSelection()
             if selected[0] == selected[1]:
@@ -896,6 +897,8 @@ class SourceEditor(wx.Panel):
             return
         if self.is_focused() and keycode != wx.WXK_CONTROL and self._dirty == 0:
             self._mark_file_dirty(self.source_editor.GetModify())
+        if keyvalue == wx.WXK_NONE and keycode in [wx.WXK_CONTROL, wx.WXK_RAW_CONTROL]:
+            self.source_editor.hide_kw_doc()
         event.Skip()
 
     def on_key_down(self, event):
@@ -938,7 +941,7 @@ class SourceEditor(wx.Panel):
                 self.delete_cell(event)
             else:
                 self.delete_row(event)
-        elif keycode == ord('M') and event.ControlDown():
+        elif event.ControlDown() and keycode == 0:
             self.source_editor.show_kw_doc()
         else:
             event.Skip()
@@ -1511,19 +1514,22 @@ class RobotDataEditor(stc.StyledTextCtrl):
         self.RegisterImage(3, wx.ArtProvider.GetBitmap(wx.ART_COPY, size=(16, 16)))
 
     def show_kw_doc(self):
-        cursor_pos = self.GetCurrentPos()
-        if cursor_pos != self.old_position:
-            self.old_position = cursor_pos
+        if self.AutoCompActive():
+            selected = [self.AutoCompGetCurrentText()]
+        else:
             selected = self.get_selected_or_near_text(keep_cursor_pos=True)
-            if self.old_select != selected:
-                for kw in selected:
-                    self._show_keyword_details(kw)
+        for kw in selected:
+            self._show_keyword_details(kw)
+
+    def hide_kw_doc(self):
+        if self._information_popup:
+            self._information_popup.hide()
+            self._information_popup = None
 
     def on_key_pressed(self, event):
         if self.CallTipActive():
             self.CallTipCancel()
-        if self._information_popup:
-            self._information_popup.hide()
+        self.hide_kw_doc()
         key = event.GetKeyCode()
         if key == 32 and event.ControlDown():
             pos = self.GetCurrentPos()
@@ -1540,29 +1546,6 @@ class RobotDataEditor(stc.StyledTextCtrl):
                 """
             # Code completion
             else:
-                if self._information_popup:
-                    self._information_popup.hide()
-                """
-                kw = list(keyword.kwlist[:])
-                kw.append("zzzzzz?2")
-                kw.append("aaaaa?2")
-                kw.append("__init__?3")
-                kw.append("zzaaaaa?2")
-                kw.append("zzbaaaa?2")
-                kw.append("this_is_a_longer_value")
-                # kw.append("this_is_a_much_much_much_much_much_much_much_longer_value")
-
-                kw.sort()  # Python sorts are case-sensitive
-                self.AutoCompSetIgnoreCase(True)  # so this needs to match
-
-                # Images are specified with an appended "?type"
-                for i in range(len(kw)):
-                    if kw[i] in keyword.kwlist:
-                        kw[i] = kw[i] + "?1"
-                self.AutoCompSetDropRestOfWord(True)
-                self.AutoCompSetSeparator(ord(';'))
-                self.AutoCompShow(0, ";".join(kw))
-                """
                 selected = self.get_selected_or_near_text()
                 sugs = []
                 for start in selected:
