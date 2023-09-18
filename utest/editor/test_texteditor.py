@@ -129,7 +129,7 @@ class TestEditorCommands(unittest.TestCase):
                                                             ShortcutRegistry(self.frame)), settings)
         self.app.project = Project(self.app.namespace, self.app.settings)
         self.plugin = texteditor.TextEditorPlugin(self.app)
-        self.plugin._editor_component = texteditor.SourceEditor(self.app.book, self.plugin.title,
+        self.plugin._editor_component = texteditor.SourceEditor(self.plugin, self.app.book, self.plugin.title,
                                                                 texteditor.DataValidationHandler(self.plugin))
         self.plugin.enable()
         self.app.project.load_datafile(datafilereader.TESTCASEFILE_WITH_EVERYTHING, MessageRecordingLoadObserver())

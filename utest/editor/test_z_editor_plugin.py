@@ -174,7 +174,7 @@ class EditorPluginTest(unittest.TestCase):
         self.app.project = Project(self.app.namespace, self.app.settings)
 
         self.plugin = texteditor.TextEditorPlugin(self.app)
-        self.plugin._editor_component = texteditor.SourceEditor(self.app.notebook, self.plugin.title,
+        self.plugin._editor_component = texteditor.SourceEditor(self.plugin, self.app.notebook, self.plugin.title,
                                                                 texteditor.DataValidationHandler(self.plugin))
         self.frame.notebook = self.app.notebook
         """

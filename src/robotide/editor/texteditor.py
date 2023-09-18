@@ -20,7 +20,7 @@ from time import time
 import wx
 from wx import stc, Colour
 from wx.adv import HyperlinkCtrl, EVT_HYPERLINK
-
+from .popupwindow import HtmlPopupWindow
 from .. import robotapi
 from ..context import IS_WINDOWS, IS_MAC
 from ..controller.ctrlcommands import SetDataFile, INDENTED_START
@@ -57,7 +57,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
     @property
     def _editor(self):
         if self._editor_component is None:
-            self._editor_component = SourceEditor(self.notebook,
+            self._editor_component = SourceEditor(self, self.notebook,
                                                   self.title,
                                                   DataValidationHandler(self))
             self._refresh_timer = wx.Timer(self._editor_component)
@@ -383,7 +383,7 @@ class DataFileWrapper(object):  # DEBUG: bad class name
 
 class SourceEditor(wx.Panel):
 
-    def __init__(self, parent, title, data_validator):
+    def __init__(self, plugin, parent, title, data_validator):
         wx.Panel.__init__(self, parent)
         self.dlg = RIDEDialog()
         self.SetBackgroundColour(Colour(self.dlg.color_background))
@@ -392,6 +392,7 @@ class SourceEditor(wx.Panel):
         self._data_validator = data_validator
         self._data_validator.set_editor(self)
         self.source_editor_parent = parent
+        self.plugin = plugin
         self._title = title
         self.tab_size = self.source_editor_parent.app.settings.get(TXT_NUM_SPACES, 4)
         self.reformat = self.source_editor_parent.app.settings.get('reformat', False)
@@ -937,6 +938,8 @@ class SourceEditor(wx.Panel):
                 self.delete_cell(event)
             else:
                 self.delete_row(event)
+        elif keycode == ord('M') and event.ControlDown():
+            self.source_editor.show_kw_doc()
         else:
             event.Skip()
         """
@@ -1484,7 +1487,11 @@ class RobotDataEditor(stc.StyledTextCtrl):
     def __init__(self, parent, readonly=False):
         stc.StyledTextCtrl.__init__(self, parent)
         self.parent = parent
+        self._plugin = parent.plugin
         self._settings = parent.source_editor_parent.app.settings
+        self._information_popup = None
+        self.old_position = None
+        self.old_select = []
         self.readonly = readonly
         self.SetMarginType(self.margin, stc.STC_MARGIN_NUMBER)
         self.SetLexer(stc.STC_LEX_CONTAINER)
@@ -1503,21 +1510,38 @@ class RobotDataEditor(stc.StyledTextCtrl):
         self.RegisterImage(2, wx.ArtProvider.GetBitmap(wx.ART_NEW, size=(16, 16)))
         self.RegisterImage(3, wx.ArtProvider.GetBitmap(wx.ART_COPY, size=(16, 16)))
 
+    def show_kw_doc(self):
+        cursor_pos = self.GetCurrentPos()
+        if cursor_pos != self.old_position:
+            self.old_position = cursor_pos
+            selected = self.get_selected_or_near_text(keep_cursor_pos=True)
+            if self.old_select != selected:
+                for kw in selected:
+                    self._show_keyword_details(kw)
+
     def on_key_pressed(self, event):
         if self.CallTipActive():
             self.CallTipCancel()
+        if self._information_popup:
+            self._information_popup.hide()
         key = event.GetKeyCode()
         if key == 32 and event.ControlDown():
             pos = self.GetCurrentPos()
 
             # Tips
             if event.ShiftDown():
+                self.show_kw_doc()
+                """
                 self.CallTipSetBackground("yellow")
-                self.CallTipShow(pos, 'lots of of text: blah, blah, blah\n\n'
-                                 'show some suff, maybe parameters..\n\n'
-                                 'fubar(param1, param2)')
+                self.CallTipShow(pos, f"lots of of text: blah, blah, blah\n\n"
+                                 "show some suff, maybe parameters..\n\n"
+                                 f"fubar(param1, param2)\n\nContext: {selected}"
+                                  )
+                """
             # Code completion
             else:
+                if self._information_popup:
+                    self._information_popup.hide()
                 """
                 kw = list(keyword.kwlist[:])
                 kw.append("zzzzzz?2")
@@ -1588,23 +1612,36 @@ class RobotDataEditor(stc.StyledTextCtrl):
         width = self.TextWidth(style, str(self.GetLineCount()))
         return width + self.TextWidth(style, "1")
 
-    def get_selected_or_near_text(self):
+    def get_selected_or_near_text(self, keep_cursor_pos=False):
         content = set()
+        if keep_cursor_pos:
+            restore_cursor_pos = self.GetInsertionPoint()
+        else:
+            restore_cursor_pos = None
         # First get selected text
         selected = self.GetSelectedText()
         if selected:
             start_pos = self.GetSelectionStart()
             if selected.endswith('.'):  # Special cases for libraries prefix
-                self.SetInsertionPoint(start_pos + len(selected))
+                if restore_cursor_pos:
+                    self.SetInsertionPoint(restore_cursor_pos)
+                else:
+                    self.SetInsertionPoint(start_pos + len(selected))
             elif len(selected.split('.')) > 1:
                 parts = selected.split('.')
                 self.SetSelectionStart(start_pos + len(parts[0]) + 1)
                 self.SetSelectionEnd(start_pos + len(selected))
-                self.SetInsertionPoint(start_pos + len(parts[0]) + 1)
+                if restore_cursor_pos:
+                    self.SetInsertionPoint(restore_cursor_pos)
+                else:
+                    self.SetInsertionPoint(start_pos + len(parts[0]) + 1)
             else:
                 self.SetSelectionStart(start_pos)
                 self.SetSelectionEnd(start_pos + len(selected))
-                self.SetInsertionPoint(start_pos + len(selected))
+                if restore_cursor_pos:
+                    self.SetInsertionPoint(restore_cursor_pos)
+                else:
+                    self.SetInsertionPoint(start_pos + len(selected))
             content.add(selected.strip())
         # Next get text on the left
         text = self.GetCurLine()[0]
@@ -1645,16 +1682,25 @@ class RobotDataEditor(stc.StyledTextCtrl):
             else:
                 start_pos = min_pos + pos_in_line
             if value.endswith('.'):  # Special cases for libraries prefix
-                self.SetInsertionPoint(start_pos + len(value))
+                if restore_cursor_pos:
+                    self.SetInsertionPoint(restore_cursor_pos)
+                else:
+                    self.SetInsertionPoint(start_pos + len(value))
             elif len(value.split('.')) > 1:
-                parts = value.split('.')
-                self.SetSelectionStart(start_pos + len(parts[0]) + 1)
-                self.SetSelectionEnd(start_pos + len(value))
-                self.SetInsertionPoint(start_pos + len(parts[0]) + 1)
+                if restore_cursor_pos:
+                    self.SetInsertionPoint(restore_cursor_pos)
+                else:
+                    parts = value.split('.')
+                    self.SetSelectionStart(start_pos + len(parts[0]) + 1)
+                    self.SetSelectionEnd(start_pos + len(value))
+                    self.SetInsertionPoint(start_pos + len(parts[0]) + 1)
             else:
-                self.SetSelectionStart(start_pos)
-                self.SetSelectionEnd(start_pos + len(value))
-                self.SetInsertionPoint(start_pos)
+                if restore_cursor_pos:
+                    self.SetInsertionPoint(restore_cursor_pos)
+                else:
+                    self.SetSelectionStart(start_pos)
+                    self.SetSelectionEnd(start_pos + len(value))
+                    self.SetInsertionPoint(start_pos)
             content.add(value)
         return content if content else ['']
 
@@ -1687,6 +1733,18 @@ class RobotDataEditor(stc.StyledTextCtrl):
             self.BraceBadLight(brace_at_caret)
         else:
             self.BraceHighlight(brace_at_caret, brace_opposite)
+
+    def _show_keyword_details(self, value):
+        details = self._plugin.get_keyword_details(value)
+        if details:
+            wpos = self.parent.source_editor_parent.GetPosition()
+            npos = self.parent.GetPosition()
+            position = self.GetCurrentPos()
+            position = self.PointFromPosition(position)
+            position = position + wpos + npos
+            self._information_popup = HtmlPopupWindow(self.parent, (450, 300))
+            self._information_popup.set_content(details, value)
+            self._information_popup.show_at(position)
 
 
 class FromStringIOPopulator(robotapi.populators.FromFilePopulator):
