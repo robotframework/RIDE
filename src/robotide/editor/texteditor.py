@@ -1523,7 +1523,9 @@ class RobotDataEditor(stc.StyledTextCtrl):
 
     def hide_kw_doc(self):
         if self._information_popup:
-            self._information_popup.hide()
+            # self._information_popup.hide()
+            self._information_popup.Show(False)
+            self._information_popup.Destroy()
             self._information_popup = None
 
     def on_key_pressed(self, event):
