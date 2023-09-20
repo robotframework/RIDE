@@ -405,6 +405,7 @@ class SourceEditor(wx.Panel):
         self._controller_for_context = None
         self._suggestions = None
         self._stored_text = None
+        self.old_information_popup = None
         PUBLISHER.subscribe(self.on_settings_changed, RideSettingsChanged)
         PUBLISHER.subscribe(self.on_tab_change, RideNotebookTabChanging)
 
@@ -856,15 +857,18 @@ class SourceEditor(wx.Panel):
         self.Sizer.Layout()
         if text is not None:
             self.source_editor.set_text(text)
+        self._kw_doc_timer = wx.Timer(self.source_editor)
         self.source_editor.Bind(wx.EVT_KEY_DOWN, self.on_key_down)
         self.source_editor.Bind(wx.EVT_CHAR, self.on_char)
         self.source_editor.Bind(wx.EVT_KEY_UP, self.on_editor_key)
+        self.source_editor.Bind(wx.EVT_MOTION, self.on_mouse_motion)
         self.source_editor.Bind(wx.EVT_KILL_FOCUS, self.LeaveFocus)
         self.source_editor.Bind(wx.EVT_SET_FOCUS, self.GetFocus)
         # DEBUG: Add here binding for keyword help
 
     def LeaveFocus(self, event):
         _ = event
+        self.source_editor.hide_kw_doc()
         self.source_editor.AcceptsFocusFromKeyboard()
         self.store_position()
         self.source_editor.SetCaretPeriod(0)
@@ -942,6 +946,7 @@ class SourceEditor(wx.Panel):
             else:
                 self.delete_row(event)
         elif event.ControlDown() and keycode == 0:
+            # coords = self._get_screen_coordinates()
             self.source_editor.show_kw_doc()
         else:
             event.Skip()
@@ -953,6 +958,12 @@ class SourceEditor(wx.Panel):
             self.execute_sharp_uncomment()
             self.store_position()
         """
+    @staticmethod
+    def _get_screen_coordinates():
+        point = wx.GetMousePosition()
+        point.x += 25
+        point.y += 25
+        return point
 
     def on_char(self, event):
         if not self.is_focused():
@@ -963,6 +974,20 @@ class SourceEditor(wx.Panel):
             self.store_position()
         else:
             event.Skip()
+
+    def on_mouse_motion(self, event):
+        if event.CmdDown():
+            self._kw_doc_timer.Stop()
+            # self.source_editor.show_kw_doc()
+        else:
+            if self.old_information_popup != self.source_editor._information_popup:
+                self.source_editor.hide_kw_doc()
+                self.old_information_popup = self.source_editor._information_popup
+                self._start_kw_doc_timer()
+        event.Skip()
+
+    def _start_kw_doc_timer(self):
+        self._kw_doc_timer.Start(1000, True)
 
     def execute_variable_creator(self, list_variable=False, dict_variable=False):
         from_, to_ = self.source_editor.GetSelection()
@@ -1493,8 +1518,7 @@ class RobotDataEditor(stc.StyledTextCtrl):
         self._plugin = parent.plugin
         self._settings = parent.source_editor_parent.app.settings
         self._information_popup = None
-        self.old_position = None
-        self.old_select = []
+        self._old_details = None
         self.readonly = readonly
         self.SetMarginType(self.margin, stc.STC_MARGIN_NUMBER)
         self.SetLexer(stc.STC_LEX_CONTAINER)
@@ -1513,23 +1537,24 @@ class RobotDataEditor(stc.StyledTextCtrl):
         self.RegisterImage(2, wx.ArtProvider.GetBitmap(wx.ART_NEW, size=(16, 16)))
         self.RegisterImage(3, wx.ArtProvider.GetBitmap(wx.ART_COPY, size=(16, 16)))
 
-    def show_kw_doc(self):
+    def show_kw_doc(self, coords=None):
         if self.AutoCompActive():
             selected = [self.AutoCompGetCurrentText()]
         else:
             selected = self.get_selected_or_near_text(keep_cursor_pos=True)
         for kw in selected:
-            self._show_keyword_details(kw)
+            self._show_keyword_details(kw, coords)
 
     def hide_kw_doc(self):
-        if self._information_popup:
-            self._information_popup.hide()
-            self._information_popup = None
+        list_of_popups = self.parent.GetChildren()
+        for popup in list_of_popups:
+            if isinstance(popup, HtmlPopupWindow):
+                popup.hide()
+                self._old_details = None
 
     def on_key_pressed(self, event):
         if self.CallTipActive():
             self.CallTipCancel()
-        self.hide_kw_doc()
         key = event.GetKeyCode()
         if key == 32 and event.ControlDown():
             pos = self.GetCurrentPos()
@@ -1717,17 +1742,21 @@ class RobotDataEditor(stc.StyledTextCtrl):
         else:
             self.BraceHighlight(brace_at_caret, brace_opposite)
 
-    def _show_keyword_details(self, value):
+    def _show_keyword_details(self, value, coords=None):
         details = self._plugin.get_keyword_details(value)
-        if details:
-            wpos = self.parent.source_editor_parent.GetPosition()
-            npos = self.parent.GetPosition()
-            position = self.GetCurrentPos()
-            position = self.PointFromPosition(position)
-            position = position + wpos + npos
+        if details and details != self._old_details:  # This is because on Windows keys are sent in repeat
+            if not coords:
+                wpos = self.parent.source_editor_parent.GetPosition()
+                npos = self.parent.GetPosition()
+                position = self.GetCurrentPos()
+                position = self.PointFromPosition(position)
+                position = position + wpos + npos
+            else:
+                position = coords
             self._information_popup = HtmlPopupWindow(self.parent, (450, 300))
             self._information_popup.set_content(details, value)
             self._information_popup.show_at(position)
+            self._old_details = details
 
 
 class FromStringIOPopulator(robotapi.populators.FromFilePopulator):

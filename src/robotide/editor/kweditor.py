@@ -113,7 +113,7 @@ class KeywordEditor(GridEditor, Plugin):
         self._controller.datafile_controller.register_for_namespace_updates(
             self._namespace_updated)
         self._tooltips = GridToolTips(self)
-        self._marked_cell = None
+        self._marked_cell = (-1, -1)
         self._make_bindings()
         self._write_steps(self._controller)
         self.autosize()
@@ -256,9 +256,11 @@ class KeywordEditor(GridEditor, Plugin):
     def _execute(self, command):
         return self._controller.execute(command)
 
-    def _toggle_underlined(self, cell):
+    def _toggle_underlined(self, cell, clear=False):
         font = self.GetCellFont(cell.Row, cell.Col)
-        font.SetUnderlined(not font.Underlined)
+        toggle = not font.GetUnderlined() if not clear else False
+        self._marked_cell = cell if toggle else (-1, -1)
+        font.SetUnderlined(toggle)
         self.SetCellFont(cell.Row, cell.Col, font)
         self.Refresh()
 
@@ -731,7 +733,6 @@ class KeywordEditor(GridEditor, Plugin):
     def _show_user_keyword_link(self, cell, value):
         if cell != self._marked_cell and self._plugin.get_user_keyword(value):
             self._toggle_underlined(cell)
-            self._marked_cell = cell
 
     def _show_keyword_details(self, cell, value):
         details = self._plugin.get_keyword_details(value)
@@ -872,8 +873,7 @@ work.</li>
         value = self.GetCellValue(row, col)
         uk = self._plugin.get_user_keyword(value)
         if uk:
-            self._toggle_underlined((grid.GridCellCoords(row, col)))
-            self._marked_cell = None
+            self._toggle_underlined((grid.GridCellCoords(row, col)), True)
             wx.CallAfter(self._tree.select_user_keyword_node, uk)
             return True
         return False
@@ -882,10 +882,9 @@ work.</li>
         return self.IsShownOnScreen() and self.FindFocus()
 
     def _hide_link_if_necessary(self):
-        if not self._marked_cell:
+        if self._marked_cell == (-1, -1):
             return
-        self._toggle_underlined(self._marked_cell)
-        self._marked_cell = None
+        self._toggle_underlined(self._marked_cell, True)
 
     def on_create_keyword(self, event):
         _ = event
