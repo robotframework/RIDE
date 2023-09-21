@@ -169,7 +169,7 @@ RELEASE_NOTES = f"""
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
 <li>Fixed missing indication of link for User Keyword, when pressing <b>Ctrl</b> in Grid Editor</li>
-<li>Added content help pop-up on Text Editor by pressing <b>Ctrl-M</b> for text at cursor position or selected autocomplete list item</li>
+<li>Added content help pop-up on Text Editor by pressing <b>Ctrl</b> for text at cursor position or selected autocomplete list item</li>
 <li>Added Exclude option in context nenu for Test files, previously was only possible for Test Suites folders</li>
 <li>Added exclusion of monitoring filesystem changes for files and directories excluded in Preferences</li>
 <li>Fixed exception when finding GREY color for excluded files and directories in Project Tree</li>
