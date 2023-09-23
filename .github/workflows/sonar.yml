@@ -44,9 +44,12 @@ jobs:
           args: >
             -Dsonar.organization=helioguilherme66
             -Dsonar.projectKey=HelioGuilherme66_RIDE
-            -Dsonar.python.coverage.reportPaths=.coverage-reports/coverage.xml
-            -Dsonar.sources=src/robotide
+            -Dsonar.core.codeCoveragePlugin=cobertura
+            -Dsonar.python.coverage.reportPaths=.coverage-reports/*coverage*.xml
+            -Dsonar.sources=src
+            -Dsonar.exclusions=**/lib/robot/**/*
             -Dsonar.tests=utest
+            -Dsonar.python.xunit.skipDetails=true
             -Dsonar.verbose=true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any

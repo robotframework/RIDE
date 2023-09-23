@@ -2,6 +2,7 @@
 # include = ./src/* 
 source = ./src
 branch = True
+relative_files = True
 omit =
     # omit anything in a .local directory anywhere
     */.local/*
