@@ -1,6 +1,6 @@
 [run]
 # include = ./src/* 
-source = ./src
+source = src/
 branch = True
 relative_files = True
 omit =
@@ -20,8 +20,8 @@ exclude_lines =
     if __name__ == '__main__':
  
 [xml]
-output = ./.coverage-reports/coverage.xml
+output = .coverage-reports/coverage.xml
 
 [html]
-directory = ./.coverage-reports/htmlcov
+directory = .coverage-reports/htmlcov
 
