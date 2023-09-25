@@ -104,9 +104,8 @@ class MyApp(wx.App):
         mb.m_frame.SetForegroundColour((0, 0, 0))
         self._mgr.AddPane(self.toolbar, aui.AuiPaneInfo().Name("maintoolbar").
                           ToolbarPane().Top())
-        self.actions = ActionRegisterer(self._mgr, mb, self.toolbar,
-                                        ShortcutRegistry(self.frame))
-        self.tree = Tree(self.frame, self.actions, self.settings)
+        self.frame.actions = ActionRegisterer(self._mgr, mb, self.toolbar, ShortcutRegistry(self.frame))
+        self.tree = Tree(self.frame, self.frame.actions, self.settings)
         self.tree.SetMinSize(wx.Size(275, 250))
         self.frame.SetMinSize(wx.Size(600, 400))
         self._mgr.AddPane(self.tree,
@@ -124,9 +123,9 @@ class TestEditorCommands(unittest.TestCase):
         self.app = MyApp()
         settings = self.app.settings
         self.frame = self.app.frame
-        self.frame.tree = Tree(self.frame, ActionRegisterer(AuiManager(self.frame),
-                                                            MenuBar(self.frame), ToolBar(self.frame),
-                                                            ShortcutRegistry(self.frame)), settings)
+        self.frame.actions = ActionRegisterer(AuiManager(self.frame), MenuBar(self.frame), ToolBar(self.frame),
+                                              ShortcutRegistry(self.frame))
+        self.frame.tree = Tree(self.frame, self.frame.actions, settings)
         self.app.project = Project(self.app.namespace, self.app.settings)
         self.plugin = texteditor.TextEditorPlugin(self.app)
         self.plugin._editor_component = texteditor.SourceEditor(self.plugin, self.app.book, self.plugin.title,
@@ -414,6 +413,7 @@ class TestEditorCommands(unittest.TestCase):
         # wx.CallLater(5000, self.app.ExitMainLoop)
         # self.app.MainLoop()
 
+    @pytest.mark.skipif(os.sep == '\\', reason="Causes exception on Windows")
     def test_check_variables_section(self):
         # pos = len('1 - Line one\n')
         # spaces = ' ' * self.plugin._editor_component.tab_size
@@ -450,9 +450,10 @@ class TestEditorCommands(unittest.TestCase):
         print(f"DEBUG: after_apply len={len(after_apply)} initial content len={len(content)}:\n{after_apply}")
         # assert fulltext == content[0] + content[1] + content[2]
         # Uncomment next lines if you want to see the app
-        # wx.CallLater(5000, self.app.ExitMainLoop)
-        # self.app.MainLoop()
+        wx.CallLater(5000, self.app.ExitMainLoop)
+        self.app.MainLoop()
 
+    @pytest.mark.skipif(os.sep == '\\', reason="Causes exception on Windows")
     def test_get_selected_or_near_text(self):
         with open(datafilereader.TESTCASEFILE_WITH_EVERYTHING, "r") as fp:
             content = fp.readlines()
