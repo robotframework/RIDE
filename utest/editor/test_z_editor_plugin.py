@@ -168,9 +168,9 @@ class EditorPluginTest(unittest.TestCase):
         self.app = MyApp()
         settings = self.app.settings
         self.frame = self.app.frame
-        self.frame.tree = Tree(self.frame, ActionRegisterer(AuiManager(self.frame),
-                                                            MenuBar(self.frame), ToolBar(self.frame),
-                                                            ShortcutRegistry(self.frame)), settings)
+        self.frame.actions = ActionRegisterer(AuiManager(self.frame), MenuBar(self.frame), ToolBar(self.frame),
+                                              ShortcutRegistry(self.frame))
+        self.frame.tree = Tree(self.frame, self.frame.actions, settings)
         self.app.project = Project(self.app.namespace, self.app.settings)
 
         self.plugin = texteditor.TextEditorPlugin(self.app)

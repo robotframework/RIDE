@@ -21,13 +21,14 @@ import wx
 from wx import stc, Colour
 from wx.adv import HyperlinkCtrl, EVT_HYPERLINK
 from .popupwindow import HtmlPopupWindow
+from . import _EDIT
 from .. import robotapi
 from ..context import IS_WINDOWS, IS_MAC
 from ..controller.ctrlcommands import SetDataFile, INDENTED_START
 from ..controller.filecontrollers import ResourceFileController
 from ..controller.macrocontrollers import WithStepsController
 from ..namespace.suggesters import SuggestionSource
-from ..pluginapi import Plugin, TreeAwarePluginMixin
+from ..pluginapi import Plugin, action_info_collection, TreeAwarePluginMixin
 from ..publish.messages import (RideSaving, RideTreeSelection, RideNotebookTabChanging, RideDataChanged, RideOpenSuite,
                                 RideDataChangedToDirty)
 from ..preferences.editors import read_fonts
@@ -51,6 +52,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
 
     def __init__(self, application):
         Plugin.__init__(self, application)
+        self._tab = None
         self._editor_component = None
         self.reformat = application.settings.get('reformat', False)
 
@@ -65,11 +67,13 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         return self._editor_component
 
     def enable(self):
-        self.add_self_as_tree_aware_plugin()
+        self._tab = self._editor
+        self.register_actions(action_info_collection(_EDIT, self._tab, self._tab))
         # DEBUG Disable own saving self.subscribe(self.on_saving, RideSaving)
         self.subscribe(self.on_tree_selection, RideTreeSelection)
         self.subscribe(self.on_data_changed, RideMessage)
         self.subscribe(self.on_tab_change, RideNotebookTabChanging)
+        self.add_self_as_tree_aware_plugin()
         if self._editor.is_focused():
             self._register_shortcuts()
             self._open()
@@ -114,6 +118,8 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         self.unsubscribe_all()
         self.unregister_actions()
         self.delete_tab(self._editor)
+        wx.CallLater(500, self.unregister_actions())
+        self._tab = None
         self._editor_component = None
 
     def on_open(self, event):
@@ -206,6 +212,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
 
     def on_tab_change(self, message):
         if message.newtab == self.title:
+            print(f"DEBUG: textedit on_tab_change New Tab old_tab={message.oldtab}")
             self._register_shortcuts()
             self._open()
             self._editor.set_editor_caret_position()
@@ -415,8 +422,9 @@ class SourceEditor(wx.Panel):
         PUBLISHER.subscribe(self.on_tab_change, RideNotebookTabChanging)
 
     def is_focused(self):
-        foc = wx.Window.FindFocus()
-        return any(elem == foc for elem in [self]+list(self.GetChildren())) or self._tab_open == self._title
+        # DEBUG: original method: foc = wx.Window.FindFocus()
+        # DEBUG: any(elem == foc for elem in [self]+list(self.GetChildren()))
+        return self._tab_open == self._title
 
     def on_tab_change(self, message):
         self._tab_open = message.newtab
@@ -824,6 +832,80 @@ class SourceEditor(wx.Panel):
         finally:
             f.close()
     """
+    # Callbacks taken from __init__.py
+    def on_undo(self, event):
+        _ = event
+        self.undo()
+
+    def on_redo(self, event):
+        _ = event
+        self.redo()
+
+    def on_cut(self, event):
+        _ = event
+        self.cut()
+
+    def on_copy(self, event):
+        _ = event
+        self.copy()
+
+    def on_paste(self, event):
+        _ = event
+        self.paste()
+
+    def on_insert(self, event):
+        _ = event
+        print(f"DEBUG: TextEditor called on_insert event={event}")
+        # self.insert_row()
+
+    def on_delete(self, event):
+        _ = event
+        print(f"DEBUG: TextEditor called on_delete event={event}")
+        # self.delete()
+
+    def on_insert_cells(self, event):
+        self.insert_cell(event)
+
+    def on_delete_cells(self, event):
+        self.delete_cell(event)
+
+    def on_comment_rows(self, event):
+        self.execute_comment(event)
+
+    def on_uncomment_rows(self, event):
+        self.execute_uncomment(event)
+
+    def on_sharp_comment_rows(self, event):
+        self.execute_sharp_comment(event)
+
+    def on_sharp_uncomment_rows(self, event):
+        self.execute_sharp_uncomment(event)
+
+    def on_comment_cells(self, event):
+        self.execute_sharp_comment(event)
+
+    def on_uncomment_cells(self, event):
+        self.execute_sharp_uncomment(event)
+
+    def on_insert_rows(self, event):
+        self.insert_row(event)
+
+    def on_delete_rows(self, event):
+        wx.CallAfter(self.delete_row)
+
+    def on_content_assistance(self, event):
+        self.on_content_assist(event)
+
+    """
+    def save(self, message=None):
+        _ = message
+        if self.editor:
+            self.editor.save()
+    """
+
+    def on_key(self, *args):
+        """ Intentional override """
+        pass
 
     def cut(self):
         self.source_editor.Cut()
@@ -1169,9 +1251,11 @@ class SourceEditor(wx.Panel):
 
     def execute_comment(self, event):
         _ = event
+        """
         if self._double_call:
             self._double_call = False
             return
+        """
         start, end = self.source_editor.GetSelection()
         cursor = self.source_editor.GetCurrentPos()
         ini_line = self.source_editor.LineFromPosition(start)
@@ -1207,7 +1291,7 @@ class SourceEditor(wx.Panel):
         self.source_editor.SetCurrentPos(ini)
         self.source_editor.SetAnchor(fini)
         self.store_position()
-        self._double_call = True
+        # self._double_call = True
 
     def execute_uncomment(self, event):
         _ = event
