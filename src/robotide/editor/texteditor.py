@@ -96,16 +96,16 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         self.register_shortcut('CtrlCmd-Y', focused(lambda e: self._editor.redo()))
         # self.register_shortcut('Del', focused(lambda e: self.source_editor.delete()))
         # DEBUG Disable own saving self.register_shortcut('CtrlCmd-S', focused(lambda e: self.on_saving(e)))
-        self.register_shortcut('CtrlCmd-Shift-I', focused(lambda e: self._editor.insert_cell(e)))
+        # self.register_shortcut('CtrlCmd-Shift-I', focused(lambda e: self._editor.insert_cell(e)))
         # self.register_shortcut('CtrlCmd-Shift-D', focused(lambda e: self.source_editor.delete_cell(e)))
-        self.register_shortcut('Alt-Up', focused(lambda e: self._editor.move_row_up(e)))
-        self.register_shortcut('Alt-Down', focused(lambda e: self._editor.move_row_down(e)))
+        # self.register_shortcut('Alt-Up', focused(lambda e: self._editor.move_row_up(e)))
+        # self.register_shortcut('Alt-Down', focused(lambda e: self._editor.move_row_down(e)))
         # self.register_shortcut('CtrlCmd-D', focused(lambda e: self.source_editor.delete_row(e)))
-        self.register_shortcut('CtrlCmd-I', focused(lambda e: self._editor.insert_row(e)))
-        self.register_shortcut('CtrlCmd-3', focused(lambda e: self._editor.execute_comment(e)))
-        self.register_shortcut('CtrlCmd-Shift-3', focused(lambda e: self._editor.execute_sharp_comment(e)))
-        self.register_shortcut('CtrlCmd-4', focused(lambda e: self._editor.execute_uncomment(e)))
-        self.register_shortcut('CtrlCmd-Shift-4', focused(lambda e: self._editor.execute_sharp_uncomment(e)))
+        # self.register_shortcut('CtrlCmd-I', focused(lambda e: self._editor.insert_row(e)))
+        # self.register_shortcut('CtrlCmd-3', focused(lambda e: self._editor.execute_comment(e)))
+        # self.register_shortcut('CtrlCmd-Shift-3', focused(lambda e: self._editor.execute_sharp_comment(e)))
+        # self.register_shortcut('CtrlCmd-4', focused(lambda e: self._editor.execute_uncomment(e)))
+        # self.register_shortcut('CtrlCmd-Shift-4', focused(lambda e: self._editor.execute_sharp_uncomment(e)))
         self.register_shortcut('CtrlCmd-F', lambda e: self._editor.search_field.SetFocus())
         self.register_shortcut('CtrlCmd-G', lambda e: self._editor.on_find(e))
         self.register_shortcut('CtrlCmd-Shift-G', lambda e: self._editor.on_find_backwards(e))
@@ -415,7 +415,6 @@ class SourceEditor(wx.Panel):
         self._suggestions = None
         self._stored_text = None
         self._ctrl_action = None
-        self._double_call = False
         self.is_saving = False  # To avoid double calls to save
         self.old_information_popup = None
         PUBLISHER.subscribe(self.on_settings_changed, RideSettingsChanged)
@@ -891,7 +890,13 @@ class SourceEditor(wx.Panel):
         self.insert_row(event)
 
     def on_delete_rows(self, event):
-        wx.CallAfter(self.delete_row)
+        wx.CallAfter(self.delete_row, event)
+
+    def on_move_rows_up(self, event):
+        self.move_row_up(event)
+
+    def on_move_rows_down(self, event):
+        self.move_row_down(event)
 
     def on_content_assistance(self, event):
         self.on_content_assist(event)
@@ -1038,11 +1043,6 @@ class SourceEditor(wx.Panel):
             self.execute_variable_creator(list_variable=(keycode == ord('2')),
                                           dict_variable=(keycode == ord('5')))
             self.store_position()
-        elif keycode == ord('D') and event.ControlDown():
-            if event.ShiftDown():
-                self.delete_cell(event)
-            else:
-                self.delete_row(event)
         elif event.ControlDown() and keycode == 0:  # This must be the last branch to activate actions before doc
             # DEBUG: coords = self._get_screen_coordinates()
             self.source_editor.show_kw_doc()
@@ -1051,6 +1051,11 @@ class SourceEditor(wx.Panel):
 
         # These commands are duplicated by global actions
         """ DEBUG
+        elif keycode == ord('D') and event.ControlDown():
+            if event.ShiftDown():
+                self.delete_cell(event)
+            else:
+                self.delete_row(event)
         elif keycode == ord('3') and event.ControlDown():
             if event.ShiftDown():
                 self.execute_sharp_comment(event)
@@ -1151,9 +1156,6 @@ class SourceEditor(wx.Panel):
 
     def move_row_up(self, event):
         _ = event
-        if self._double_call:
-            self._double_call = False
-            return
         start, end = self.source_editor.GetSelection()
         ini_line = self.source_editor.LineFromPosition(start)
         # selection not on top?
@@ -1175,13 +1177,9 @@ class SourceEditor(wx.Panel):
             self.source_editor.Replace(begpos, endpos, rowselblock)
             self.source_editor.SetSelection(begpos, endpos - lenabove - 1)
             # DEBUG: recalculate line identation for new position and old
-        self._double_call = True
 
     def move_row_down(self, event):
         _ = event
-        if self._double_call:
-            self._double_call = False
-            return
         start, end = self.source_editor.GetSelection()
         ini_line = self.source_editor.LineFromPosition(start)
         end_line = self.source_editor.LineFromPosition(end)
@@ -1204,7 +1202,6 @@ class SourceEditor(wx.Panel):
         self.source_editor.Replace(begpos, endpos, rowselblock)
         self.source_editor.SetSelection(begpos + lenbelow, endpos - 1)
         # DEBUG: recalculate line identation for new position and old
-        self._double_call = True
 
     def delete_row(self, event):
         _ = event
@@ -1230,9 +1227,6 @@ class SourceEditor(wx.Panel):
 
     def insert_row(self, event):
         _ = event
-        if self._double_call:
-            self._double_call = False
-            return
         start, end = self.source_editor.GetSelection()
         ini_line = self.source_editor.LineFromPosition(start)
         end_line = self.source_editor.LineFromPosition(end)
@@ -1247,15 +1241,9 @@ class SourceEditor(wx.Panel):
         self.source_editor.GotoLine(ini_line)
         self.indent_line(ini_line)
         self.store_position()
-        self._double_call = True
 
     def execute_comment(self, event):
         _ = event
-        """
-        if self._double_call:
-            self._double_call = False
-            return
-        """
         start, end = self.source_editor.GetSelection()
         cursor = self.source_editor.GetCurrentPos()
         ini_line = self.source_editor.LineFromPosition(start)
@@ -1291,13 +1279,9 @@ class SourceEditor(wx.Panel):
         self.source_editor.SetCurrentPos(ini)
         self.source_editor.SetAnchor(fini)
         self.store_position()
-        # self._double_call = True
 
     def execute_uncomment(self, event):
         _ = event
-        if self._double_call:
-            self._double_call = False
-            return
         start, end = self.source_editor.GetSelection()
         cursor = self.source_editor.GetCurrentPos()
         ini_line = self.source_editor.LineFromPosition(start)
@@ -1337,13 +1321,9 @@ class SourceEditor(wx.Panel):
         self.source_editor.SetCurrentPos(ini)
         self.source_editor.SetAnchor(fini)
         self.store_position()
-        self._double_call = True
 
     def insert_cell(self, event):
         _ = event
-        if self._double_call:
-            self._double_call = False
-            return
         start, end = self.source_editor.GetSelection()
         ini_line = self.source_editor.LineFromPosition(start)
         end_line = self.source_editor.LineFromPosition(end)
@@ -1383,13 +1363,9 @@ class SourceEditor(wx.Panel):
         # @Helio: SetAnchor overrules the SetSelection if it specifies a different start than
         # SetSelection (but I left your code for now)
         self.source_editor.SetAnchor(new_end)
-        self._double_call = True
 
     def delete_cell(self, event):
         _ = event
-        if self._double_call:
-            self._double_call = False
-            return
         start, end = self.source_editor.GetSelection()
         ini_line = self.source_editor.LineFromPosition(start)
         end_line = self.source_editor.LineFromPosition(end)
@@ -1412,7 +1388,6 @@ class SourceEditor(wx.Panel):
         # @Helio: SetAnchor overrules the SetSelection if it specifies a different start than SetSelection
         # I am not sure what any selection should be after deleting big ranges
         self.source_editor.SetAnchor(new_start)
-        self._double_call = True
 
     def _get_cell_no(self, begpos, endpos, findpos):
         # get cell number from range begpos-endpos using findpos 
@@ -1469,9 +1444,6 @@ class SourceEditor(wx.Panel):
 
     def execute_sharp_comment(self, event):
         _ = event
-        if self._double_call:
-            self._double_call = False
-            return
         start, end = self.source_editor.GetSelection()
         cursor = self.source_editor.GetCurrentPos()
         ini_line = self.source_editor.LineFromPosition(start)
@@ -1535,13 +1507,9 @@ class SourceEditor(wx.Panel):
         self.source_editor.SetAnchor(fini)
         self.source_editor.SetCurrentPos(cursor + count * 2)
         self.store_position()
-        self._double_call = True
 
     def execute_sharp_uncomment(self, event):
         _ = event
-        if self._double_call:
-            self._double_call = False
-            return
         start, end = self.source_editor.GetSelection()
         cursor = self.source_editor.GetCurrentPos()
         ini_line = self.source_editor.LineFromPosition(start)
@@ -1630,7 +1598,6 @@ class SourceEditor(wx.Panel):
         self.source_editor.SetSelection(new_start, new_end)  # DEBUG: For some reason the selection is not restored!
         self.source_editor.SetCurrentPos(cursor - count)
         self.store_position()
-        self._double_call = True
 
     def on_settings_changed(self, message):
         """Update tab size if txt spaces size setting is modified"""

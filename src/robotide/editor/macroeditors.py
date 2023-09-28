@@ -82,6 +82,12 @@ class TestCaseEditor(_RobotTableEditor):
     def delete_rows(self):
         self.kweditor.on_delete_rows(None)  # DEBUG python 3
 
+    def on_move_rows_up(self):
+        self.kweditor.on_move_rows_up()
+
+    def on_move_rows_down(self):
+        self.kweditor.on_move_rows_down()
+
     def delete(self):
         self.kweditor.on_delete()
 

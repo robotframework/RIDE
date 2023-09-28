@@ -679,9 +679,6 @@ class KeywordEditor(GridEditor, Plugin):
     def _call_alt_function(self, event, keycode: int):
         if keycode == wx.WXK_SPACE:
             self._open_cell_editor_with_content_assist()  # Mac CMD
-        elif keycode in [wx.WXK_DOWN, wx.WXK_UP]:
-            # Mac Option key(⌥)
-            self._move_rows(keycode)
         elif keycode == wx.WXK_RETURN:
             if self.IsCellEditControlShown():
                 event.GetEventObject().WriteText(linesep)
@@ -689,6 +686,13 @@ class KeywordEditor(GridEditor, Plugin):
                 self._move_cursor_down(event)
             return False  # event must not be skipped in this case
         return True
+
+        """
+        elif keycode in [wx.WXK_DOWN, wx.WXK_UP]:
+            print(f"DEBUG kweditor call move_rews ky={keycode}")
+            # Mac Option key(⌥)
+            self._move_rows(keycode)
+        """
 
     def on_key_down(self, event):
         keycode = event.GetUnicodeKey() or event.GetKeyCode()
