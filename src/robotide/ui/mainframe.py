@@ -88,7 +88,7 @@ class RideFrame(wx.Frame):
         self.SetLayoutDirection(wx.Layout_LeftToRight)
         # self.SetLayoutDirection(wx.Layout_RightToLeft)
 
-        self.aui_mgr = aui.AuiManager()
+        self.aui_mgr = aui.AuiManager(self)
 
         # tell AuiManager to manage this frame
         self.aui_mgr.SetManagedWindow(self)
@@ -161,10 +161,10 @@ class RideFrame(wx.Frame):
     def _init_ui(self):
         # self.aui_mgr.AddPane(wx.Panel(self), aui.AuiPaneInfo().CenterPane())
         # #### self.splitter = wx.SplitterWindow(self, style=wx.SP_LIVE_UPDATE)
-        # self.aui_mgr.AddPane(wx.Panel(self), aui.AuiPaneInfo().CenterPane())
+        self.aui_mgr.AddPane(wx.Panel(self), aui.AuiPaneInfo().Name("right_pane").Right())
         # set up default notebook style
-        self._notebook_style = aui.AUI_NB_DEFAULT_STYLE | aui.AUI_NB_WINDOWLIST_BUTTON | \
-                               aui.AUI_NB_TAB_EXTERNAL_MOVE | aui.AUI_NB_SUB_NOTEBOOK | aui.AUI_NB_SMART_TABS
+        self._notebook_style = (aui.AUI_NB_DEFAULT_STYLE | aui.AUI_NB_WINDOWLIST_BUTTON |
+                                aui.AUI_NB_TAB_EXTERNAL_MOVE | aui.AUI_NB_SUB_NOTEBOOK | aui.AUI_NB_SMART_TABS)
         # DEBUG self._notebook_theme = 0 (allow to select themes for notebooks)
         # self.notebook = NoteBook(self.splitter, self._application,
         #                         self._notebook_style)
@@ -174,7 +174,7 @@ class RideFrame(wx.Frame):
         self.notebook.SetForegroundColour(Colour(self.color_foreground))
         self.aui_mgr.AddPane(self.notebook,
                              aui.AuiPaneInfo().Name("notebook_editors").
-                             CenterPane().PaneBorder(False))
+                             CenterPane().PaneBorder(True))
         mb = MenuBar(self)
         self.toolbar = ToolBar(self)
         self.toolbar.SetMinSize(wx.Size(100, 60))
@@ -504,10 +504,13 @@ class RideFrame(wx.Frame):
         dlg.ShowModal()
         dlg.Destroy()
 
-    @staticmethod
-    def on_shortcut_keys(event):
+    # @staticmethod
+    def on_shortcut_keys(self, event):
         _ = event
         dialog = ShortcutKeysDialog()
+        # self.aui_mgr.AddPane(dialog.GetContentWindow(),aui.AuiPaneInfo().Name("shortcuts").Caption("Shortcuts Keys").
+        #                      CloseButton(True).RightDockable().Floatable().Float(), self.notebook)
+        # self.aui_mgr.Update()
         dialog.Show()
 
     @staticmethod

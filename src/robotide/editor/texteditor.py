@@ -52,9 +52,10 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
 
     def __init__(self, application):
         Plugin.__init__(self, application)
-        self._tab = None
         self._editor_component = None
+        self._tab = None
         self.reformat = application.settings.get('reformat', False)
+        self._register_shortcuts()
 
     @property
     def _editor(self):
@@ -212,7 +213,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
 
     def on_tab_change(self, message):
         if message.newtab == self.title:
-            print(f"DEBUG: textedit on_tab_change New Tab old_tab={message.oldtab}")
+            self.register_actions(action_info_collection(_EDIT, self._editor, self._editor))
             self._register_shortcuts()
             self._open()
             self._editor.set_editor_caret_position()
@@ -222,7 +223,10 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
                 print(e)
         elif message.oldtab == self.title:
             self._editor.remove_and_store_state()
-            self.unregister_actions()
+            try:
+                self.unregister_actions()
+            except Exception:
+                pass
             self._editor_component.content_save()
 
     def on_tab_changed(self, event):
@@ -409,6 +413,9 @@ class SourceEditor(wx.Panel):
         self._data = None
         self._dirty = 0  # 0 is False and 1 is True, when changed on this editor
         self._position = 0  # Start at 0 if first time access
+        self.restore_start_pos = self._position
+        self.restore_end_pos = self._position
+        self.restore_anchor = self._position
         self._showing_list = False
         self._tab_open = None
         self._controller_for_context = None
@@ -518,6 +525,9 @@ class SourceEditor(wx.Panel):
     def store_position(self, force=False):
         if self.source_editor:  # We don't necessarily need a data controller, was: "and self.datafile_controller:"
             cur_pos = self.source_editor.GetCurrentPos()
+            self.restore_start_pos = self.source_editor.GetSelectionStart()
+            self.restore_end_pos = self.source_editor.GetSelectionEnd()
+            self.restore_anchor = self.source_editor.GetAnchor()
             if cur_pos > 0:  # Cheating because it always goes to zero
                 self._position = cur_pos
                 if force:
@@ -530,8 +540,8 @@ class SourceEditor(wx.Panel):
         self.source_editor.SetFocus()
         if position:
             self.source_editor.SetCurrentPos(position)
-            self.source_editor.SetSelection(position, position)
-            self.source_editor.SetAnchor(position)
+            self.source_editor.SetSelection(self.restore_start_pos, self.restore_end_pos)
+            self.source_editor.SetAnchor(self.restore_anchor)
             self.source_editor.GotoPos(position)
             self.source_editor.Refresh()
             self.source_editor.Update()
@@ -625,9 +635,11 @@ class SourceEditor(wx.Panel):
             return
         self.store_position()
         selected = self.source_editor.get_selected_or_near_text()
+        self.set_editor_caret_position()
         sugs = []
-        for start in selected:
-            sugs.extend(s.name for s in self._suggestions.get_suggestions(start))
+        if selected:
+            for start in selected:
+                sugs.extend(s.name for s in self._suggestions.get_suggestions(start))
         if len(sugs) > 0:
             sugs = [s for s in sugs if s != '']
         if sugs:
@@ -635,9 +647,12 @@ class SourceEditor(wx.Panel):
             self.source_editor.AutoCompSetSeparator(ord(';'))
             self.source_editor.AutoCompShow(0, ";".join(sugs))
             self._showing_list = True
-            self.set_editor_caret_position()
+            # self.set_editor_caret_position()
+        """
         else:
+            # self.set_editor_caret_position() # Restore selected text and caret
             self.source_editor.SetInsertionPoint(self._position)  # We should know if list was canceled or value change
+        """
 
     def open(self, data):
         self.reset()
@@ -682,7 +697,8 @@ class SourceEditor(wx.Panel):
             pos = self.source_editor.GetCurrentPos()
             self.source_editor.SetCurrentPos(pos)
             self.source_editor.SetSelection(pos, pos)
-        self.source_editor.NewLine()
+        print(f"DEBUG: TextEditor SourceEditor _add_auto_indent Add new line {line}")
+        # self.source_editor.NewLine()
         while tsize > 0:
             self.write_ident()
             tsize -= 1
@@ -693,6 +709,7 @@ class SourceEditor(wx.Panel):
         if lenline > 0:
             self._add_auto_indent(line)
         else:
+            print(f"DEBUG: TextEditor SourceEditor Add new line {line}")
             self.source_editor.NewLine()
         pos = self.source_editor.GetCurrentLine()
         self.source_editor.SetCurrentPos(self.source_editor.GetLineEndPosition(pos))
@@ -1010,8 +1027,12 @@ class SourceEditor(wx.Panel):
         :return:
         """
         keycode = event.GetUnicodeKey()
+        raw_key = event.GetKeyCode()
+        # print(f"DEBUG: TextEditor on_key_down event={event} raw_key={raw_key} wx.WXK_C ={wx.WXK_CONTROL}")
         if event.GetKeyCode() == wx.WXK_DELETE:
             return
+        if raw_key != wx.WXK_CONTROL:  # We need to clear doc as soon as possible
+            self.source_editor.hide_kw_doc()
         if event.GetKeyCode() == wx.WXK_TAB and not event.ControlDown() and not event.ShiftDown():
             if self._showing_list:  # Allows to use Tab for keyword selection
                 self._showing_list = False
@@ -1043,14 +1064,16 @@ class SourceEditor(wx.Panel):
             self.execute_variable_creator(list_variable=(keycode == ord('2')),
                                           dict_variable=(keycode == ord('5')))
             self.store_position()
-        elif event.ControlDown() and keycode == 0:  # This must be the last branch to activate actions before doc
+        elif event.ControlDown() and raw_key == wx.WXK_CONTROL:
+            # This must be the last branch to activate actions before doc
             # DEBUG: coords = self._get_screen_coordinates()
             self.source_editor.show_kw_doc()
-        else:
-            event.Skip()
+        event.Skip()
 
         # These commands are duplicated by global actions
         """ DEBUG
+            else:
+        self.source_editor.hide_kw_doc()
         elif keycode == ord('D') and event.ControlDown():
             if event.ShiftDown():
                 self.delete_cell(event)
@@ -1662,26 +1685,27 @@ class RobotDataEditor(stc.StyledTextCtrl):
                 popup.hide()
                 self._old_details = None
 
+    """
     def on_key_pressed(self, event):
         if self.CallTipActive():
             self.CallTipCancel()
         key = event.GetKeyCode()
         if key == 32 and event.ControlDown():
             pos = self.GetCurrentPos()
-
+            print(f"DEBUG: TextEditor RobotDataEditor on_key_pressed pos={pos}")
             # Tips
             if event.ShiftDown():
                 self.show_kw_doc()
-                """
+                '''
                 self.CallTipSetBackground("yellow")
                 self.CallTipShow(pos, f"lots of of text: blah, blah, blah\n\n"
                                  "show some suff, maybe parameters..\n\n"
                                  f"fubar(param1, param2)\n\nContext: {selected}"
                                   )
-                """
+                '''
             # Code completion
             else:
-                selected = self.get_selected_or_near_text()
+                selected = self.get_selected_or_near_text(keep_cursor_pos=False)
                 sugs = []
                 for start in selected:
                     sugs.extend(s.name for s in self.parent._suggestions.get_suggestions(start))
@@ -1693,11 +1717,13 @@ class RobotDataEditor(stc.StyledTextCtrl):
                     self.AutoCompSetSeparator(ord(';'))
                     self.AutoCompShow(0, ";".join(sugs))
                 else:
+                    print(f"DEBUG: TextEditor RobotDataEditor  ending, clear selection pos={pos}")
                     self.SetSelectionStart(pos)
                     self.SetSelectionEnd(pos)
                     self.SetInsertionPoint(pos)
         else:
             event.Skip()
+    """
 
     def set_text(self, text):
         self.SetReadOnly(False)
@@ -1738,6 +1764,10 @@ class RobotDataEditor(stc.StyledTextCtrl):
             restore_cursor_pos = None
         # First get selected text
         selected = self.GetSelectedText()
+        restore_start_pos = self.GetSelectionStart()
+        restore_end_pos = self.GetSelectionEnd()
+        # print(f"DEBUG: TextEditor RobotDataEditor  get_selected_or_near_text, restore_cursor={restore_cursor_pos} "
+        #       f"restore_start_pos={restore_start_pos} restore_end_pos={restore_end_pos} anchor={self.GetAnchor()}")
         if selected:
             start_pos = self.GetSelectionStart()
             if selected.endswith('.'):  # Special cases for libraries prefix
@@ -1823,6 +1853,11 @@ class RobotDataEditor(stc.StyledTextCtrl):
                     self.SetSelectionEnd(start_pos + len(value))
                     self.SetInsertionPoint(start_pos)
             content.add(value)
+        if restore_cursor_pos:
+            self.SetAnchor(restore_cursor_pos)
+            self.SetInsertionPoint(restore_cursor_pos)
+        if restore_start_pos:
+            self.SetSelection(restore_start_pos, restore_end_pos)
         return content if content else ['']
 
     def on_update_ui(self, evt):

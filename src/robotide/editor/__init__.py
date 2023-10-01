@@ -110,7 +110,7 @@ class EditorPlugin(Plugin, TreeAwarePluginMixin):
     def _show_editor(self):
         if not self._tab:
             self._tab = _EditorTab(self)
-            self.add_tab(self._tab, 'Edit', allow_closing=False)
+            self.add_tab(self._tab, self._tab.plugin.name, allow_closing=False)
         if self.is_focused():
             self._editor = self._create_editor()
             self._tab.show_editor(self._editor)
