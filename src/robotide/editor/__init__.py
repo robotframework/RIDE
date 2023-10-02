@@ -41,6 +41,8 @@ Insert Cells | Insert Cells | Ctrlcmd-Shift-I
 Delete Cells | Delete Cells | Ctrlcmd-Shift-D
 Insert Rows | Insert Rows | Ctrlcmd-I
 Delete Rows | Delete Rows | Ctrlcmd-D
+Move Rows Up | Move Rows Up | Alt-Up
+Move Rows Down | Move Rows Down | Alt-Down
 [Tools]
 Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword and variable completions | | | POSITION-70
 """
@@ -108,7 +110,7 @@ class EditorPlugin(Plugin, TreeAwarePluginMixin):
     def _show_editor(self):
         if not self._tab:
             self._tab = _EditorTab(self)
-            self.add_tab(self._tab, 'Edit', allow_closing=False)
+            self.add_tab(self._tab, self._tab.plugin.name, allow_closing=False)
         if self.is_focused():
             self._editor = self._create_editor()
             self._tab.show_editor(self._editor)
@@ -229,6 +231,14 @@ class _EditorTab(wx.Panel):
     def on_delete_rows(self, event):
         _ = event
         wx.CallAfter(self.editor.delete_rows)
+
+    def on_move_rows_up(self, event):
+        _ = event
+        self.editor.on_move_rows_up()
+
+    def on_move_rows_down(self, event):
+        _ = event
+        self.editor.on_move_rows_down()
 
     def on_delete(self, event):
         _ = event

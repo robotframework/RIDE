@@ -21,13 +21,14 @@ import wx
 from wx import stc, Colour
 from wx.adv import HyperlinkCtrl, EVT_HYPERLINK
 from .popupwindow import HtmlPopupWindow
+from . import _EDIT
 from .. import robotapi
 from ..context import IS_WINDOWS, IS_MAC
 from ..controller.ctrlcommands import SetDataFile, INDENTED_START
 from ..controller.filecontrollers import ResourceFileController
 from ..controller.macrocontrollers import WithStepsController
 from ..namespace.suggesters import SuggestionSource
-from ..pluginapi import Plugin, TreeAwarePluginMixin
+from ..pluginapi import Plugin, action_info_collection, TreeAwarePluginMixin
 from ..publish.messages import (RideSaving, RideTreeSelection, RideNotebookTabChanging, RideDataChanged, RideOpenSuite,
                                 RideDataChangedToDirty)
 from ..preferences.editors import read_fonts
@@ -52,7 +53,9 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
     def __init__(self, application):
         Plugin.__init__(self, application)
         self._editor_component = None
+        self._tab = None
         self.reformat = application.settings.get('reformat', False)
+        self._register_shortcuts()
 
     @property
     def _editor(self):
@@ -65,11 +68,13 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         return self._editor_component
 
     def enable(self):
-        self.add_self_as_tree_aware_plugin()
-        self.subscribe(self.on_saving, RideSaving)
+        self._tab = self._editor
+        self.register_actions(action_info_collection(_EDIT, self._tab, self._tab))
+        # DEBUG Disable own saving self.subscribe(self.on_saving, RideSaving)
         self.subscribe(self.on_tree_selection, RideTreeSelection)
         self.subscribe(self.on_data_changed, RideMessage)
         self.subscribe(self.on_tab_change, RideNotebookTabChanging)
+        self.add_self_as_tree_aware_plugin()
         if self._editor.is_focused():
             self._register_shortcuts()
             self._open()
@@ -82,26 +87,27 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
 
             return f
 
-        self.register_shortcut('CtrlCmd-X', focused(lambda e: self._editor.cut()))
-        self.register_shortcut('CtrlCmd-C', focused(lambda e: self._editor.copy()))
+        # self.register_shortcut('CtrlCmd-X', focused(lambda e: self._editor.cut()))
+        # self.register_shortcut('CtrlCmd-C', focused(lambda e: self._editor.copy()))
         if IS_MAC:  # Mac needs this key binding
             self.register_shortcut('CtrlCmd-A', focused(lambda e: self._editor.select_all()))
         if IS_WINDOWS or IS_MAC:  # Linux does not need this key binding
             self.register_shortcut('CtrlCmd-V', focused(lambda e: self._editor.paste()))
-        self.register_shortcut('CtrlCmd-Z', focused(lambda e: self._editor.undo()))
-        self.register_shortcut('CtrlCmd-Y', focused(lambda e: self._editor.redo()))
+        # self.register_shortcut('CtrlCmd-Z', focused(lambda e: self._editor.undo()))
+        # self.register_shortcut('CtrlCmd-Y', focused(lambda e: self._editor.redo()))
         # self.register_shortcut('Del', focused(lambda e: self.source_editor.delete()))
+        # DEBUG Disable own saving
         self.register_shortcut('CtrlCmd-S', focused(lambda e: self.on_saving(e)))
-        self.register_shortcut('CtrlCmd-Shift-I', focused(lambda e: self._editor.insert_cell(e)))
+        # self.register_shortcut('CtrlCmd-Shift-I', focused(lambda e: self._editor.insert_cell(e)))
         # self.register_shortcut('CtrlCmd-Shift-D', focused(lambda e: self.source_editor.delete_cell(e)))
-        self.register_shortcut('Alt-Up', focused(lambda e: self._editor.move_row_up(e)))
-        self.register_shortcut('Alt-Down', focused(lambda e: self._editor.move_row_down(e)))
+        # self.register_shortcut('Alt-Up', focused(lambda e: self._editor.move_row_up(e)))
+        # self.register_shortcut('Alt-Down', focused(lambda e: self._editor.move_row_down(e)))
         # self.register_shortcut('CtrlCmd-D', focused(lambda e: self.source_editor.delete_row(e)))
-        self.register_shortcut('CtrlCmd-I', focused(lambda e: self._editor.insert_row(e)))
-        self.register_shortcut('CtrlCmd-3', focused(lambda e: self._editor.execute_comment(e)))
-        self.register_shortcut('CtrlCmd-Shift-3', focused(lambda e: self._editor.execute_sharp_comment(e)))
-        self.register_shortcut('CtrlCmd-4', focused(lambda e: self._editor.execute_uncomment(e)))
-        self.register_shortcut('CtrlCmd-Shift-4', focused(lambda e: self._editor.execute_sharp_uncomment(e)))
+        # self.register_shortcut('CtrlCmd-I', focused(lambda e: self._editor.insert_row(e)))
+        # self.register_shortcut('CtrlCmd-3', focused(lambda e: self._editor.execute_comment(e)))
+        # self.register_shortcut('CtrlCmd-Shift-3', focused(lambda e: self._editor.execute_sharp_comment(e)))
+        # self.register_shortcut('CtrlCmd-4', focused(lambda e: self._editor.execute_uncomment(e)))
+        # self.register_shortcut('CtrlCmd-Shift-4', focused(lambda e: self._editor.execute_sharp_uncomment(e)))
         self.register_shortcut('CtrlCmd-F', lambda e: self._editor.search_field.SetFocus())
         self.register_shortcut('CtrlCmd-G', lambda e: self._editor.on_find(e))
         self.register_shortcut('CtrlCmd-Shift-G', lambda e: self._editor.on_find_backwards(e))
@@ -114,6 +120,8 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         self.unsubscribe_all()
         self.unregister_actions()
         self.delete_tab(self._editor)
+        wx.CallLater(500, self.unregister_actions())
+        self._tab = None
         self._editor_component = None
 
     def on_open(self, event):
@@ -129,7 +137,9 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
     def on_saving(self, message):
         _ = message
         if self.is_focused():
-            self._editor.save()
+            # print("DEBUG: textedit OnSaving when focused, saving")
+            self._editor.is_saving = False
+            self._editor.content_save()
         elif isinstance(message, RideSaving):
             # print(f"DEBUG: textedit OnSaving Open Saved from other {message=} isfocused={self.is_focused()}")
             self._open()  # Was saved from other Editor
@@ -204,7 +214,9 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
 
     def on_tab_change(self, message):
         if message.newtab == self.title:
-            self._register_shortcuts()
+            # print("DEBUG: texteditor on_tab_change calling register_actions ")
+            # self.register_actions(action_info_collection(_EDIT, self._editor, self._editor))
+            # self._register_shortcuts()
             self._open()
             self._editor.set_editor_caret_position()
             try:
@@ -213,8 +225,15 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
                 print(e)
         elif message.oldtab == self.title:
             self._editor.remove_and_store_state()
-            self.unregister_actions()
-            self._editor_component.save()
+            """
+            try:
+                self.unregister_actions()
+                print("DEBUG: texteditor on_tab_change after called unregister_actions ")
+            except Exception as e:
+                print(e)
+            """
+            self._editor_component.is_saving = False
+            self._editor_component.content_save()
 
     def on_tab_changed(self, event):
         _ = event
@@ -222,10 +241,12 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
 
     def on_tab_changing(self, message):
         if 'Edit' in message.oldtab:
-            self._editor.save()
+            self._editor.is_saving = False
+            self._editor.content_save()
 
     def _apply_txt_changes_to_model(self):
-        if not self._editor.save():
+        self._editor.is_saving = False
+        if not self._editor.content_save():
             return False
         self._editor.reset()
         self._editor.set_editor_caret_position()
@@ -279,7 +300,7 @@ class DataValidationHandler(object):
             data.update_from(data.format_text(m_text))
         else:
             # DEBUG: This is the area where we will implement to not reformat code
-            data.update_from(m_text)
+            data.update_from(text)
             # There is no way to update the model without reformatting
             # DEBUG: this only updates the editor, but not the model, changes in Text Editor are not reflected
             # in Grid or when saving
@@ -400,18 +421,24 @@ class SourceEditor(wx.Panel):
         self._data = None
         self._dirty = 0  # 0 is False and 1 is True, when changed on this editor
         self._position = 0  # Start at 0 if first time access
+        self.restore_start_pos = self._position
+        self.restore_end_pos = self._position
+        self.restore_anchor = self._position
         self._showing_list = False
+        self.autocomp_pos = None
         self._tab_open = None
         self._controller_for_context = None
         self._suggestions = None
         self._stored_text = None
+        self._ctrl_action = None
+        self.is_saving = False  # To avoid double calls to save
         self.old_information_popup = None
         PUBLISHER.subscribe(self.on_settings_changed, RideSettingsChanged)
         PUBLISHER.subscribe(self.on_tab_change, RideNotebookTabChanging)
 
     def is_focused(self):
-        # DEBUG: foc = wx.Window.FindFocus()
-        # DEBUG: return any(elem == foc for elem in [self]+list(self.GetChildren()))
+        # DEBUG: original method: foc = wx.Window.FindFocus()
+        # DEBUG: any(elem == foc for elem in [self]+list(self.GetChildren()))
         return self._tab_open == self._title
 
     def on_tab_change(self, message):
@@ -436,7 +463,7 @@ class SourceEditor(wx.Panel):
         # text about syntax colorization
         self.editor_toolbar = HorizontalSizer()
         default_components = HorizontalSizer()
-        button = ButtonWithHandler(self, 'Apply Changes', handler=lambda e: self.save())
+        button = ButtonWithHandler(self, 'Apply Changes', handler=lambda e: self.content_save())
         button.SetBackgroundColour(Colour(self.dlg.color_secondary_background))
         button.SetForegroundColour(Colour(self.dlg.color_secondary_foreground))
         default_components.add_with_padding(button)
@@ -507,6 +534,9 @@ class SourceEditor(wx.Panel):
     def store_position(self, force=False):
         if self.source_editor:  # We don't necessarily need a data controller, was: "and self.datafile_controller:"
             cur_pos = self.source_editor.GetCurrentPos()
+            self.restore_start_pos = self.source_editor.GetSelectionStart()
+            self.restore_end_pos = self.source_editor.GetSelectionEnd()
+            self.restore_anchor = self.source_editor.GetAnchor()
             if cur_pos > 0:  # Cheating because it always goes to zero
                 self._position = cur_pos
                 if force:
@@ -519,8 +549,8 @@ class SourceEditor(wx.Panel):
         self.source_editor.SetFocus()
         if position:
             self.source_editor.SetCurrentPos(position)
-            self.source_editor.SetSelection(position, position)
-            self.source_editor.SetAnchor(position)
+            self.source_editor.SetSelection(self.restore_start_pos, self.restore_end_pos)
+            self.source_editor.SetAnchor(self.restore_anchor)
             self.source_editor.GotoPos(position)
             self.source_editor.Refresh()
             self.source_editor.Update()
@@ -608,25 +638,43 @@ class SourceEditor(wx.Panel):
             self.SetFocusFromKbd()
 
     def on_content_assist(self, event):
+        """
+        Produces an Auto Complete Suggestions list, from Scintilla. Based on selected content or nearby text.
+        Always add actual imported libraries and resources keywords and BuiltIn.
+        :param event: Not used
+        :return:
+        """
         _ = event
         if self._showing_list:
             self._showing_list = False  # Avoid double calls
             return
         self.store_position()
         selected = self.source_editor.get_selected_or_near_text()
+        self.set_editor_caret_position()
         sugs = []
-        for start in selected:
-            sugs.extend(s.name for s in self._suggestions.get_suggestions(start))
+        if selected:
+            for start in selected:
+                sugs.extend(s.name for s in self._suggestions.get_suggestions(start))
+            # DEBUG: Here, if sugs is still [], then we can get all words from line and repeat suggestions
+            # In another evolution, we can use database of words by frequency (considering future by project db)
+        sugs.extend(s.name for s in self._suggestions.get_suggestions(''))
         if len(sugs) > 0:
             sugs = [s for s in sugs if s != '']
         if sugs:
             self.source_editor.AutoCompSetDropRestOfWord(True)
+            self.source_editor.AutoCompSetIgnoreCase(True)
             self.source_editor.AutoCompSetSeparator(ord(';'))
             self.source_editor.AutoCompShow(0, ";".join(sugs))
+            self.autocomp_pos = self.source_editor.AutoCompPosStart()
             self._showing_list = True
-            self.set_editor_caret_position()
+            # DEBUG: self.set_editor_caret_position()
+            # Needs proper calculation of position to delete already suggestion.
+            # This will be done when selection is effective at on_key_down
+        """
         else:
+            # self.set_editor_caret_position() # Restore selected text and caret
             self.source_editor.SetInsertionPoint(self._position)  # We should know if list was canceled or value change
+        """
 
     def open(self, data):
         self.reset()
@@ -792,14 +840,18 @@ class SourceEditor(wx.Panel):
         self._dirty = 0
         self._mark_file_dirty(False)
 
-    def save(self, *args):
+    def content_save(self, *args):
         _ = args
-        self.store_position()
-        if self.dirty:
-            if not self._data_validator.validate_and_update(self._data, self.source_editor.utf8_text):
-                return False
-        # DEBUG: Was resetting when leaving editor
-        # self.reset()
+        if self.is_focused():
+            self.store_position()
+            if self.dirty and not self.is_saving:
+                self.is_saving = True
+                if not self._data_validator.validate_and_update(self._data, self.source_editor.utf8_text):
+                    self.is_saving = False
+                    return False
+            # DEBUG: Was resetting when leaving editor
+            # if self.is_focused():
+            self.reset()
         self.GetFocus(None)
         return True
 
@@ -817,6 +869,86 @@ class SourceEditor(wx.Panel):
         finally:
             f.close()
     """
+    # Callbacks taken from __init__.py
+    def on_undo(self, event):
+        _ = event
+        self.undo()
+
+    def on_redo(self, event):
+        _ = event
+        self.redo()
+
+    def on_cut(self, event):
+        _ = event
+        self.cut()
+
+    def on_copy(self, event):
+        _ = event
+        self.copy()
+
+    def on_paste(self, event):
+        _ = event
+        self.paste()
+
+    def on_insert(self, event):
+        _ = event
+        print(f"DEBUG: TextEditor called on_insert event={event}")
+        # self.insert_row()
+
+    def on_delete(self, event):
+        _ = event
+        # print(f"DEBUG: TextEditor called on_delete event={event}")
+        # self.delete()
+
+    def on_insert_cells(self, event):
+        self.insert_cell(event)
+
+    def on_delete_cells(self, event):
+        self.delete_cell(event)
+
+    def on_comment_rows(self, event):
+        self.execute_comment(event)
+
+    def on_uncomment_rows(self, event):
+        self.execute_uncomment(event)
+
+    def on_sharp_comment_rows(self, event):
+        self.execute_sharp_comment(event)
+
+    def on_sharp_uncomment_rows(self, event):
+        self.execute_sharp_uncomment(event)
+
+    def on_comment_cells(self, event):
+        self.execute_sharp_comment(event)
+
+    def on_uncomment_cells(self, event):
+        self.execute_sharp_uncomment(event)
+
+    def on_insert_rows(self, event):
+        self.insert_row(event)
+
+    def on_delete_rows(self, event):
+        wx.CallAfter(self.delete_row, event)
+
+    def on_move_rows_up(self, event):
+        self.move_row_up(event)
+
+    def on_move_rows_down(self, event):
+        self.move_row_down(event)
+
+    def on_content_assistance(self, event):
+        self.on_content_assist(event)
+
+    """
+    def save(self, message=None):
+        _ = message
+        if self.editor:
+            self.editor.save()
+    """
+
+    def on_key(self, *args):
+        """ Intentional override """
+        pass
 
     def cut(self):
         self.source_editor.Cut()
@@ -839,7 +971,7 @@ class SourceEditor(wx.Panel):
     def undo(self):
         self.source_editor.Undo()
         self.store_position()
-        self._mark_file_dirty(self._dirty == 1 and self.source_editor.GetModify())
+        self._mark_file_dirty(self.source_editor.GetModify())  # self._dirty == 1 and
 
     def redo(self):
         self.source_editor.Redo()
@@ -889,6 +1021,7 @@ class SourceEditor(wx.Panel):
     def on_editor_key(self, event):
         keycode = event.GetKeyCode()
         keyvalue = event.GetUnicodeKey()
+        # print(f"DEBUG: TextEditor key up focused={self.is_focused()} modify {self.source_editor.GetModify()}")
         if keycode == wx.WXK_DELETE:  # DEBUG on Windows we only get here, single Text Editor
             selected = self.source_editor.GetSelection()
             if selected[0] == selected[1]:
@@ -899,16 +1032,31 @@ class SourceEditor(wx.Panel):
                 self.source_editor.DeleteRange(selected[0], selected[1] - selected[0])
         if keycode in [wx.WXK_RETURN, wx.WXK_NUMPAD_ENTER]:
             return
-        if self.is_focused() and keycode != wx.WXK_CONTROL and self._dirty == 0:
-            self._mark_file_dirty(self.source_editor.GetModify())
         if keyvalue == wx.WXK_NONE and keycode in [wx.WXK_CONTROL, wx.WXK_RAW_CONTROL]:
             self.source_editor.hide_kw_doc()
+        if self.is_focused() and self._dirty == 0:  # DEBUG  and keycode != wx.WXK_CONTROL
+            self._mark_file_dirty(self.source_editor.GetModify())
         event.Skip()
 
     def on_key_down(self, event):
+        """
+        Some events are also in registered actions, because they are caught by kweditor before reaching here.
+        When we use on the Text Editor (Grid Editor plugin disables), we need to catch these keys. This is the
+        case of Ctrl-(Shift)-3 and Ctrl-(Shift)-4.
+
+        :param event:
+        :return:
+        """
         keycode = event.GetUnicodeKey()
+        raw_key = event.GetKeyCode()
+        # print(f"DEBUG: TextEditor on_key_down event={event} raw_key={raw_key} wx.WXK_C ={wx.WXK_CONTROL}")
         if event.GetKeyCode() == wx.WXK_DELETE:
             return
+        if self._showing_list:
+            print(f"DEBUG: textedit on_key_down at autocmoplete, caret={self.autocomp_pos}"
+                  f" text is={self.source_editor.AutoCompComplete()}")
+        if raw_key != wx.WXK_CONTROL:  # We need to clear doc as soon as possible
+            self.source_editor.hide_kw_doc()
         if event.GetKeyCode() == wx.WXK_TAB and not event.ControlDown() and not event.ShiftDown():
             if self._showing_list:  # Allows to use Tab for keyword selection
                 self._showing_list = False
@@ -940,24 +1088,39 @@ class SourceEditor(wx.Panel):
             self.execute_variable_creator(list_variable=(keycode == ord('2')),
                                           dict_variable=(keycode == ord('5')))
             self.store_position()
+        elif (not IS_WINDOWS and not IS_MAC and keycode in (ord('v'), ord('V'))
+              and event.ControlDown() and not event.ShiftDown()):
+            # We need to ignore this in Linux, because it does double-action
+            return
+        elif event.ControlDown() and raw_key == wx.WXK_CONTROL:
+            # This must be the last branch to activate actions before doc
+            # DEBUG: coords = self._get_screen_coordinates()
+            self.source_editor.show_kw_doc()
+            event.Skip()
+        else:
+            event.Skip()
+
+        # These commands are duplicated by global actions
+        """ DEBUG
+            else:
+        self.source_editor.hide_kw_doc()
         elif keycode == ord('D') and event.ControlDown():
             if event.ShiftDown():
                 self.delete_cell(event)
             else:
                 self.delete_row(event)
-        elif event.ControlDown() and keycode == 0:
-            # coords = self._get_screen_coordinates()
-            self.source_editor.show_kw_doc()
-        else:
-            event.Skip()
+        elif keycode == ord('3') and event.ControlDown():
+            if event.ShiftDown():
+                self.execute_sharp_comment(event)
+            else:
+                self.execute_comment(event)
+        elif keycode == ord('4') and event.ControlDown():
+            if event.ShiftDown():
+                self.execute_sharp_uncomment(event)
+            else:
+                self.execute_uncomment(event)
         """
-        elif keycode == ord('3') and event.ControlDown() and event.ShiftDown():
-            self.execute_sharp_comment()
-            self.store_position()
-        elif keycode == ord('4') and event.ControlDown() and event.ShiftDown():
-            self.execute_sharp_uncomment()
-            self.store_position()
-        """
+
     @staticmethod
     def _get_screen_coordinates():
         point = wx.GetMousePosition()
@@ -1528,8 +1691,7 @@ class RobotDataEditor(stc.StyledTextCtrl):
         self.Bind(stc.EVT_STC_UPDATEUI, self.on_update_ui)
         self.Bind(stc.EVT_STC_STYLENEEDED, self.on_style)
         self.Bind(stc.EVT_STC_ZOOM, self.on_zoom)
-        # DEBUG:
-        self.Bind(wx.EVT_KEY_DOWN, self.on_key_pressed)
+        # DEBUG: self.Bind(wx.EVT_KEY_DOWN, self.on_key_pressed)
         self.stylizer = RobotStylizer(self, self._settings, self.readonly)
         # register some images for use in the AutoComplete box.
         # self.RegisterImage(1, Smiles.GetBitmap())  # DEBUG was images.
@@ -1542,8 +1704,9 @@ class RobotDataEditor(stc.StyledTextCtrl):
             selected = [self.AutoCompGetCurrentText()]
         else:
             selected = self.get_selected_or_near_text(keep_cursor_pos=True)
-        for kw in selected:
-            self._show_keyword_details(kw, coords)
+        if selected:
+            for kw in selected:
+                self._show_keyword_details(kw, coords)
 
     def hide_kw_doc(self):
         list_of_popups = self.parent.GetChildren()
@@ -1552,26 +1715,27 @@ class RobotDataEditor(stc.StyledTextCtrl):
                 popup.hide()
                 self._old_details = None
 
+    """
     def on_key_pressed(self, event):
         if self.CallTipActive():
             self.CallTipCancel()
         key = event.GetKeyCode()
         if key == 32 and event.ControlDown():
             pos = self.GetCurrentPos()
-
+            print(f"DEBUG: TextEditor RobotDataEditor on_key_pressed pos={pos}")
             # Tips
             if event.ShiftDown():
                 self.show_kw_doc()
-                """
+                '''
                 self.CallTipSetBackground("yellow")
                 self.CallTipShow(pos, f"lots of of text: blah, blah, blah\n\n"
                                  "show some suff, maybe parameters..\n\n"
                                  f"fubar(param1, param2)\n\nContext: {selected}"
                                   )
-                """
+                '''
             # Code completion
             else:
-                selected = self.get_selected_or_near_text()
+                selected = self.get_selected_or_near_text(keep_cursor_pos=False)
                 sugs = []
                 for start in selected:
                     sugs.extend(s.name for s in self.parent._suggestions.get_suggestions(start))
@@ -1583,11 +1747,13 @@ class RobotDataEditor(stc.StyledTextCtrl):
                     self.AutoCompSetSeparator(ord(';'))
                     self.AutoCompShow(0, ";".join(sugs))
                 else:
+                    print(f"DEBUG: TextEditor RobotDataEditor  ending, clear selection pos={pos}")
                     self.SetSelectionStart(pos)
                     self.SetSelectionEnd(pos)
                     self.SetInsertionPoint(pos)
         else:
             event.Skip()
+    """
 
     def set_text(self, text):
         self.SetReadOnly(False)
@@ -1628,6 +1794,10 @@ class RobotDataEditor(stc.StyledTextCtrl):
             restore_cursor_pos = None
         # First get selected text
         selected = self.GetSelectedText()
+        restore_start_pos = self.GetSelectionStart()
+        restore_end_pos = self.GetSelectionEnd()
+        # print(f"DEBUG: TextEditor RobotDataEditor  get_selected_or_near_text, restore_cursor={restore_cursor_pos} "
+        #       f"restore_start_pos={restore_start_pos} restore_end_pos={restore_end_pos} anchor={self.GetAnchor()}")
         if selected:
             start_pos = self.GetSelectionStart()
             if selected.endswith('.'):  # Special cases for libraries prefix
@@ -1666,15 +1836,18 @@ class RobotDataEditor(stc.StyledTextCtrl):
         #       f" pos_in_line={pos_in_line} size={size} sz_star={sz_star} lentext={len(text)}")
         # if pos_in_line > 0:
         start_chr = end_chr = None
-        for i in range(max(1, min(size, pos_in_line-1)), 1, -1):
-            if text[i] == ' ' and text[i-1] == ' ':
-                start_chr = i + 1
-                break
-        if pos_in_line >= 0:
-            for i in range(pos_in_line, size):
-                if text[i] == ' ' and text[i+1] == ' ':
-                    end_chr = i
+        try:
+            for i in range(max(1, min(size, pos_in_line-1)), 1, -1):
+                if text[i] == ' ' and text[i-1] == ' ':
+                    start_chr = i + 1
                     break
+            if pos_in_line >= 0:
+                for i in range(pos_in_line, size):
+                    if text[i] == ' ' and text[i+1] == ' ':
+                        end_chr = i
+                        break
+        except IndexError:
+            pass
         value = None
         if start_chr is not None:
             if end_chr is not None:
@@ -1710,6 +1883,11 @@ class RobotDataEditor(stc.StyledTextCtrl):
                     self.SetSelectionEnd(start_pos + len(value))
                     self.SetInsertionPoint(start_pos)
             content.add(value)
+        if restore_cursor_pos:
+            self.SetAnchor(restore_cursor_pos)
+            self.SetInsertionPoint(restore_cursor_pos)
+        if restore_start_pos:
+            self.SetSelection(restore_start_pos, restore_end_pos)
         return content if content else ['']
 
     def on_update_ui(self, evt):
