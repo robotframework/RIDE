@@ -168,6 +168,7 @@ RELEASE_NOTES = f"""
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
+<li>Improved content assistance in Text Editor by allowing to filter list as we type</li>
 <li>Fixed resource files dissapearing from Project tree on Windows</li>
 <li>Fixed missing indication of link for User Keyword, when pressing <b>Ctrl</b> in Grid Editor</li>
 <li>Added content help pop-up on Text Editor by pressing <b>Ctrl</b> for text at cursor position or selected autocomplete list item</li>
@@ -239,6 +240,6 @@ python -m robotide.__init__
 <pre class="literal-block">
 python -m robotide.postinstall -install
 </pre>
-<p>RIDE {VERSION} was released on 23/Sep/2023.</p>
+<p>RIDE {VERSION} was released on 5/Oct/2023.</p>
 </div>
 """

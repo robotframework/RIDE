@@ -225,13 +225,6 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
                 print(e)
         elif message.oldtab == self.title:
             self._editor.remove_and_store_state()
-            """
-            try:
-                self.unregister_actions()
-                print("DEBUG: texteditor on_tab_change after called unregister_actions ")
-            except Exception as e:
-                print(e)
-            """
             self._editor_component.is_saving = False
             self._editor_component.content_save()
 
@@ -240,7 +233,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         self._show_editor()
 
     def on_tab_changing(self, message):
-        if 'Edit' in message.oldtab:
+        if 'Editor' in message.oldtab:
             self._editor.is_saving = False
             self._editor.content_save()
 
@@ -426,7 +419,7 @@ class SourceEditor(wx.Panel):
         self.restore_anchor = self._position
         self._showing_list = False
         self.autocomp_pos = None
-        self._tab_open = None
+        self._tab_open = self._title  # When starting standalone this was not being set
         self._controller_for_context = None
         self._suggestions = None
         self._stored_text = None
@@ -644,6 +637,8 @@ class SourceEditor(wx.Panel):
         :param event: Not used
         :return:
         """
+        if not self.is_focused():  # DEBUG was typing text when at Grid Editor
+            return
         _ = event
         if self._showing_list:
             self._showing_list = False  # Avoid double calls
@@ -652,19 +647,23 @@ class SourceEditor(wx.Panel):
         selected = self.source_editor.get_selected_or_near_text()
         self.set_editor_caret_position()
         sugs = []
+        length_entered = 0
         if selected:
             for start in selected:
                 sugs.extend(s.name for s in self._suggestions.get_suggestions(start))
             # DEBUG: Here, if sugs is still [], then we can get all words from line and repeat suggestions
             # In another evolution, we can use database of words by frequency (considering future by project db)
+        sel = [s for s in selected] if selected else []
+        entry_word = sel[0].split('.')[-1].strip()
+        length_entered = len(entry_word)  # Because Libraries prefixed
         sugs.extend(s.name for s in self._suggestions.get_suggestions(''))
         if len(sugs) > 0:
             sugs = [s for s in sugs if s != '']
         if sugs:
-            self.source_editor.AutoCompSetDropRestOfWord(True)
+            self.source_editor.AutoCompSetDropRestOfWord(False)
             self.source_editor.AutoCompSetIgnoreCase(True)
             self.source_editor.AutoCompSetSeparator(ord(';'))
-            self.source_editor.AutoCompShow(0, ";".join(sugs))
+            self.source_editor.AutoCompShow(length_entered, ";".join(sugs))
             self.autocomp_pos = self.source_editor.AutoCompPosStart()
             self._showing_list = True
             # DEBUG: self.set_editor_caret_position()
@@ -842,16 +841,12 @@ class SourceEditor(wx.Panel):
 
     def content_save(self, *args):
         _ = args
-        if self.is_focused():
-            self.store_position()
-            if self.dirty and not self.is_saving:
-                self.is_saving = True
-                if not self._data_validator.validate_and_update(self._data, self.source_editor.utf8_text):
-                    self.is_saving = False
-                    return False
-            # DEBUG: Was resetting when leaving editor
-            # if self.is_focused():
-            self.reset()
+        self.store_position()
+        if self.dirty and not self.is_saving:
+            self.is_saving = True
+            if not self._data_validator.validate_and_update(self._data, self.source_editor.utf8_text):
+                self.is_saving = False
+                return False
         self.GetFocus(None)
         return True
 
@@ -890,15 +885,15 @@ class SourceEditor(wx.Panel):
         _ = event
         self.paste()
 
-    def on_insert(self, event):
+    @staticmethod
+    def on_insert(event):
         _ = event
-        print(f"DEBUG: TextEditor called on_insert event={event}")
+        print(f"DEBUG: TextEditor called on_insert event={event}\n TO BE IMPLEMENTED")
         # self.insert_row()
 
-    def on_delete(self, event):
-        _ = event
-        # print(f"DEBUG: TextEditor called on_delete event={event}")
-        # self.delete()
+    @staticmethod
+    def on_delete(self, event=None):
+        """ Not used """
 
     def on_insert_cells(self, event):
         self.insert_cell(event)
@@ -1052,14 +1047,12 @@ class SourceEditor(wx.Panel):
         # print(f"DEBUG: TextEditor on_key_down event={event} raw_key={raw_key} wx.WXK_C ={wx.WXK_CONTROL}")
         if event.GetKeyCode() == wx.WXK_DELETE:
             return
-        if self._showing_list:
-            print(f"DEBUG: textedit on_key_down at autocmoplete, caret={self.autocomp_pos}"
-                  f" text is={self.source_editor.AutoCompComplete()}")
         if raw_key != wx.WXK_CONTROL:  # We need to clear doc as soon as possible
             self.source_editor.hide_kw_doc()
         if event.GetKeyCode() == wx.WXK_TAB and not event.ControlDown() and not event.ShiftDown():
             if self._showing_list:  # Allows to use Tab for keyword selection
                 self._showing_list = False
+                wx.CallAfter(self.write_ident)  # DEBUG: Make this configurable?
                 event.Skip()
                 return
             selected = self.source_editor.GetSelection()
@@ -1083,6 +1076,7 @@ class SourceEditor(wx.Panel):
                 self.auto_indent()
             else:
                 self._showing_list = False
+                wx.CallAfter(self.write_ident)  # DEBUG: Make this configurable?
                 event.Skip()
         elif keycode in (ord('1'), ord('2'), ord('5')) and event.ControlDown():
             self.execute_variable_creator(list_variable=(keycode == ord('2')),
@@ -1091,6 +1085,9 @@ class SourceEditor(wx.Panel):
         elif (not IS_WINDOWS and not IS_MAC and keycode in (ord('v'), ord('V'))
               and event.ControlDown() and not event.ShiftDown()):
             # We need to ignore this in Linux, because it does double-action
+            return
+        elif keycode in (ord('d'), ord('D')) and event.ControlDown() and not event.ShiftDown():
+            # We need to ignore because Scintilla does Duplicate line
             return
         elif event.ControlDown() and raw_key == wx.WXK_CONTROL:
             # This must be the last branch to activate actions before doc
@@ -1259,23 +1256,15 @@ class SourceEditor(wx.Panel):
     def delete_row(self, event):
         _ = event
         start, end = self.source_editor.GetSelection()
-        cursor = self.source_editor.GetCurrentPos()
         ini_line = self.source_editor.LineFromPosition(start)
-        end_line = self.source_editor.LineFromPosition(end)
-        begpos = self.source_editor.PositionFromLine(ini_line)
         self.source_editor.SelectNone()
         if start == end:
             end_line = ini_line
+        else:
+            end_line = self.source_editor.LineFromPosition(end)
         for _ in range(ini_line, end_line + 1):
             self.source_editor.GotoLine(ini_line)
             self.source_editor.LineDelete()
-        # cursor position when doing block select is always the end of the selection
-        if ini_line != end_line:
-            self.source_editor.SetCurrentPos(begpos)
-            self.source_editor.SetAnchor(begpos)
-        else:
-            self.source_editor.SetCurrentPos(cursor)
-            self.source_editor.SetAnchor(cursor)
         self.store_position()
 
     def insert_row(self, event):
@@ -1691,7 +1680,8 @@ class RobotDataEditor(stc.StyledTextCtrl):
         self.Bind(stc.EVT_STC_UPDATEUI, self.on_update_ui)
         self.Bind(stc.EVT_STC_STYLENEEDED, self.on_style)
         self.Bind(stc.EVT_STC_ZOOM, self.on_zoom)
-        # DEBUG: self.Bind(wx.EVT_KEY_DOWN, self.on_key_pressed)
+        # DEBUG:
+        self.Bind(wx.EVT_KEY_DOWN, self.on_key_pressed)
         self.stylizer = RobotStylizer(self, self._settings, self.readonly)
         # register some images for use in the AutoComplete box.
         # self.RegisterImage(1, Smiles.GetBitmap())  # DEBUG was images.
@@ -1715,14 +1705,13 @@ class RobotDataEditor(stc.StyledTextCtrl):
                 popup.hide()
                 self._old_details = None
 
-    """
     def on_key_pressed(self, event):
         if self.CallTipActive():
             self.CallTipCancel()
         key = event.GetKeyCode()
         if key == 32 and event.ControlDown():
             pos = self.GetCurrentPos()
-            print(f"DEBUG: TextEditor RobotDataEditor on_key_pressed pos={pos}")
+            # print(f"DEBUG: TextEditor RobotDataEditor on_key_pressed pos={pos}")
             # Tips
             if event.ShiftDown():
                 self.show_kw_doc()
@@ -1735,25 +1724,8 @@ class RobotDataEditor(stc.StyledTextCtrl):
                 '''
             # Code completion
             else:
-                selected = self.get_selected_or_near_text(keep_cursor_pos=False)
-                sugs = []
-                for start in selected:
-                    sugs.extend(s.name for s in self.parent._suggestions.get_suggestions(start))
-                if len(sugs) > 0:
-                    sugs = [s for s in sugs if s != '']
-                if sugs:
-                    self.AutoCompSetDropRestOfWord(True)
-                    self.AutoCompSetIgnoreCase(True)
-                    self.AutoCompSetSeparator(ord(';'))
-                    self.AutoCompShow(0, ";".join(sugs))
-                else:
-                    print(f"DEBUG: TextEditor RobotDataEditor  ending, clear selection pos={pos}")
-                    self.SetSelectionStart(pos)
-                    self.SetSelectionEnd(pos)
-                    self.SetInsertionPoint(pos)
-        else:
-            event.Skip()
-    """
+                self.parent.on_content_assist(event)
+        event.Skip()
 
     def set_text(self, text):
         self.SetReadOnly(False)

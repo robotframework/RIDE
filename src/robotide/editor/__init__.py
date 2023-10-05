@@ -143,7 +143,7 @@ class EditorPlugin(Plugin, TreeAwarePluginMixin):
         self._show_editor()
 
     def on_tab_changing(self, message):
-        if 'Edit' in message.oldtab:
+        if 'Editor' in message.oldtab:
             self._tab.save()
 
     def on_save_to_model(self, message):
@@ -230,6 +230,7 @@ class _EditorTab(wx.Panel):
 
     def on_delete_rows(self, event):
         _ = event
+        print(f"DEBUG: Editor __ini__  called {event}")
         wx.CallAfter(self.editor.delete_rows)
 
     def on_move_rows_up(self, event):
