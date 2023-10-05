@@ -647,11 +647,15 @@ class SourceEditor(wx.Panel):
         selected = self.source_editor.get_selected_or_near_text()
         self.set_editor_caret_position()
         sugs = []
+        length_entered = 0
         if selected:
             for start in selected:
                 sugs.extend(s.name for s in self._suggestions.get_suggestions(start))
             # DEBUG: Here, if sugs is still [], then we can get all words from line and repeat suggestions
             # In another evolution, we can use database of words by frequency (considering future by project db)
+        sel = [s for s in selected] if selected else []
+        entry_word = sel[0].split('.')[-1].strip()
+        length_entered = len(entry_word)  # Because Libraries prefixed
         sugs.extend(s.name for s in self._suggestions.get_suggestions(''))
         if len(sugs) > 0:
             sugs = [s for s in sugs if s != '']
@@ -659,7 +663,7 @@ class SourceEditor(wx.Panel):
             self.source_editor.AutoCompSetDropRestOfWord(False)
             self.source_editor.AutoCompSetIgnoreCase(True)
             self.source_editor.AutoCompSetSeparator(ord(';'))
-            self.source_editor.AutoCompShow(0, ";".join(sugs))
+            self.source_editor.AutoCompShow(length_entered, ";".join(sugs))
             self.autocomp_pos = self.source_editor.AutoCompPosStart()
             self._showing_list = True
             # DEBUG: self.set_editor_caret_position()
@@ -1047,8 +1051,8 @@ class SourceEditor(wx.Panel):
             self.source_editor.hide_kw_doc()
         if event.GetKeyCode() == wx.WXK_TAB and not event.ControlDown() and not event.ShiftDown():
             if self._showing_list:  # Allows to use Tab for keyword selection
-                print(f"DEBUG: textedit on_key_down at autocomplete, caret={self.autocomp_pos}"
-                      f" text is={self.source_editor.AutoCompGetCurrentText()}")
+                self._showing_list = False
+                wx.CallAfter(self.write_ident)  # DEBUG: Make this configurable?
                 event.Skip()
                 return
             selected = self.source_editor.GetSelection()
@@ -1072,6 +1076,7 @@ class SourceEditor(wx.Panel):
                 self.auto_indent()
             else:
                 self._showing_list = False
+                wx.CallAfter(self.write_ident)  # DEBUG: Make this configurable?
                 event.Skip()
         elif keycode in (ord('1'), ord('2'), ord('5')) and event.ControlDown():
             self.execute_variable_creator(list_variable=(keycode == ord('2')),
@@ -1252,28 +1257,14 @@ class SourceEditor(wx.Panel):
         _ = event
         start, end = self.source_editor.GetSelection()
         ini_line = self.source_editor.LineFromPosition(start)
-        begpos = self.source_editor.PositionFromLine(ini_line)
         self.source_editor.SelectNone()
         if start == end:
             end_line = ini_line
-            # Delete is not working without selected content
-            # self.source_editor.SetSelection(start, start+1)
         else:
             end_line = self.source_editor.LineFromPosition(end)
         for _ in range(ini_line, end_line + 1):
             self.source_editor.GotoLine(ini_line)
             self.source_editor.LineDelete()
-        # cursor position when doing block select is always the end of the selection
-        """
-        if ini_line != end_line:
-            self.source_editor.SetCurrentPos(begpos)
-            self.source_editor.SetInsertionPoint(begpos)
-            self.source_editor.SetAnchor(begpos)
-        else:
-            self.source_editor.SetCurrentPos(cursor)
-            self.source_editor.SetInsertionPoint(cursor)
-            self.source_editor.SetAnchor(cursor)
-        """
         self.store_position()
 
     def insert_row(self, event):
