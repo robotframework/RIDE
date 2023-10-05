@@ -240,7 +240,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         self._show_editor()
 
     def on_tab_changing(self, message):
-        if 'Edit' in message.oldtab:
+        if 'Editor' in message.oldtab:
             self._editor.is_saving = False
             self._editor.content_save()
 
@@ -426,7 +426,7 @@ class SourceEditor(wx.Panel):
         self.restore_anchor = self._position
         self._showing_list = False
         self.autocomp_pos = None
-        self._tab_open = None
+        self._tab_open = self._title  # When starting standalone this was not being set
         self._controller_for_context = None
         self._suggestions = None
         self._stored_text = None
@@ -644,6 +644,8 @@ class SourceEditor(wx.Panel):
         :param event: Not used
         :return:
         """
+        if not self.is_focused():  # DEBUG was typing text when at Grid Editor
+            return
         _ = event
         if self._showing_list:
             self._showing_list = False  # Avoid double calls
@@ -661,7 +663,7 @@ class SourceEditor(wx.Panel):
         if len(sugs) > 0:
             sugs = [s for s in sugs if s != '']
         if sugs:
-            self.source_editor.AutoCompSetDropRestOfWord(True)
+            self.source_editor.AutoCompSetDropRestOfWord(False)
             self.source_editor.AutoCompSetIgnoreCase(True)
             self.source_editor.AutoCompSetSeparator(ord(';'))
             self.source_editor.AutoCompShow(0, ";".join(sugs))
@@ -851,7 +853,7 @@ class SourceEditor(wx.Panel):
                     return False
             # DEBUG: Was resetting when leaving editor
             # if self.is_focused():
-            self.reset()
+            # self.reset()
         self.GetFocus(None)
         return True
 
@@ -890,12 +892,14 @@ class SourceEditor(wx.Panel):
         _ = event
         self.paste()
 
-    def on_insert(self, event):
+    @staticmethod
+    def on_insert(event):
         _ = event
-        print(f"DEBUG: TextEditor called on_insert event={event}")
+        print(f"DEBUG: TextEditor called on_insert event={event}\n TO BE IMPLEMENTED")
         # self.insert_row()
 
-    def on_delete(self, event):
+    @staticmethod
+    def on_delete(self, event=None):
         _ = event
         # print(f"DEBUG: TextEditor called on_delete event={event}")
         # self.delete()
@@ -1052,14 +1056,12 @@ class SourceEditor(wx.Panel):
         # print(f"DEBUG: TextEditor on_key_down event={event} raw_key={raw_key} wx.WXK_C ={wx.WXK_CONTROL}")
         if event.GetKeyCode() == wx.WXK_DELETE:
             return
-        if self._showing_list:
-            print(f"DEBUG: textedit on_key_down at autocmoplete, caret={self.autocomp_pos}"
-                  f" text is={self.source_editor.AutoCompComplete()}")
         if raw_key != wx.WXK_CONTROL:  # We need to clear doc as soon as possible
             self.source_editor.hide_kw_doc()
         if event.GetKeyCode() == wx.WXK_TAB and not event.ControlDown() and not event.ShiftDown():
             if self._showing_list:  # Allows to use Tab for keyword selection
-                self._showing_list = False
+                print(f"DEBUG: textedit on_key_down at autocomplete, caret={self.autocomp_pos}"
+                      f" text is={self.source_editor.AutoCompGetCurrentText()}")
                 event.Skip()
                 return
             selected = self.source_editor.GetSelection()
@@ -1091,6 +1093,9 @@ class SourceEditor(wx.Panel):
         elif (not IS_WINDOWS and not IS_MAC and keycode in (ord('v'), ord('V'))
               and event.ControlDown() and not event.ShiftDown()):
             # We need to ignore this in Linux, because it does double-action
+            return
+        elif keycode in (ord('d'), ord('D')) and event.ControlDown() and not event.ShiftDown():
+            # We need to ignore because Scintilla does Duplicate line
             return
         elif event.ControlDown() and raw_key == wx.WXK_CONTROL:
             # This must be the last branch to activate actions before doc
@@ -1259,23 +1264,29 @@ class SourceEditor(wx.Panel):
     def delete_row(self, event):
         _ = event
         start, end = self.source_editor.GetSelection()
-        cursor = self.source_editor.GetCurrentPos()
         ini_line = self.source_editor.LineFromPosition(start)
-        end_line = self.source_editor.LineFromPosition(end)
         begpos = self.source_editor.PositionFromLine(ini_line)
         self.source_editor.SelectNone()
         if start == end:
             end_line = ini_line
+            # Delete is not working without selected content
+            # self.source_editor.SetSelection(start, start+1)
+        else:
+            end_line = self.source_editor.LineFromPosition(end)
         for _ in range(ini_line, end_line + 1):
             self.source_editor.GotoLine(ini_line)
             self.source_editor.LineDelete()
         # cursor position when doing block select is always the end of the selection
+        """
         if ini_line != end_line:
             self.source_editor.SetCurrentPos(begpos)
+            self.source_editor.SetInsertionPoint(begpos)
             self.source_editor.SetAnchor(begpos)
         else:
             self.source_editor.SetCurrentPos(cursor)
+            self.source_editor.SetInsertionPoint(cursor)
             self.source_editor.SetAnchor(cursor)
+        """
         self.store_position()
 
     def insert_row(self, event):
@@ -1691,7 +1702,8 @@ class RobotDataEditor(stc.StyledTextCtrl):
         self.Bind(stc.EVT_STC_UPDATEUI, self.on_update_ui)
         self.Bind(stc.EVT_STC_STYLENEEDED, self.on_style)
         self.Bind(stc.EVT_STC_ZOOM, self.on_zoom)
-        # DEBUG: self.Bind(wx.EVT_KEY_DOWN, self.on_key_pressed)
+        # DEBUG:
+        self.Bind(wx.EVT_KEY_DOWN, self.on_key_pressed)
         self.stylizer = RobotStylizer(self, self._settings, self.readonly)
         # register some images for use in the AutoComplete box.
         # self.RegisterImage(1, Smiles.GetBitmap())  # DEBUG was images.
@@ -1715,14 +1727,13 @@ class RobotDataEditor(stc.StyledTextCtrl):
                 popup.hide()
                 self._old_details = None
 
-    """
     def on_key_pressed(self, event):
         if self.CallTipActive():
             self.CallTipCancel()
         key = event.GetKeyCode()
         if key == 32 and event.ControlDown():
             pos = self.GetCurrentPos()
-            print(f"DEBUG: TextEditor RobotDataEditor on_key_pressed pos={pos}")
+            # print(f"DEBUG: TextEditor RobotDataEditor on_key_pressed pos={pos}")
             # Tips
             if event.ShiftDown():
                 self.show_kw_doc()
@@ -1735,25 +1746,8 @@ class RobotDataEditor(stc.StyledTextCtrl):
                 '''
             # Code completion
             else:
-                selected = self.get_selected_or_near_text(keep_cursor_pos=False)
-                sugs = []
-                for start in selected:
-                    sugs.extend(s.name for s in self.parent._suggestions.get_suggestions(start))
-                if len(sugs) > 0:
-                    sugs = [s for s in sugs if s != '']
-                if sugs:
-                    self.AutoCompSetDropRestOfWord(True)
-                    self.AutoCompSetIgnoreCase(True)
-                    self.AutoCompSetSeparator(ord(';'))
-                    self.AutoCompShow(0, ";".join(sugs))
-                else:
-                    print(f"DEBUG: TextEditor RobotDataEditor  ending, clear selection pos={pos}")
-                    self.SetSelectionStart(pos)
-                    self.SetSelectionEnd(pos)
-                    self.SetInsertionPoint(pos)
-        else:
-            event.Skip()
-    """
+                self.parent.on_content_assist(event)
+        event.Skip()
 
     def set_text(self, text):
         self.SetReadOnly(False)
