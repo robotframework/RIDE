@@ -225,13 +225,6 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
                 print(e)
         elif message.oldtab == self.title:
             self._editor.remove_and_store_state()
-            """
-            try:
-                self.unregister_actions()
-                print("DEBUG: texteditor on_tab_change after called unregister_actions ")
-            except Exception as e:
-                print(e)
-            """
             self._editor_component.is_saving = False
             self._editor_component.content_save()
 
@@ -844,16 +837,12 @@ class SourceEditor(wx.Panel):
 
     def content_save(self, *args):
         _ = args
-        if self.is_focused():
-            self.store_position()
-            if self.dirty and not self.is_saving:
-                self.is_saving = True
-                if not self._data_validator.validate_and_update(self._data, self.source_editor.utf8_text):
-                    self.is_saving = False
-                    return False
-            # DEBUG: Was resetting when leaving editor
-            # if self.is_focused():
-            # self.reset()
+        self.store_position()
+        if self.dirty and not self.is_saving:
+            self.is_saving = True
+            if not self._data_validator.validate_and_update(self._data, self.source_editor.utf8_text):
+                self.is_saving = False
+                return False
         self.GetFocus(None)
         return True
 
@@ -900,9 +889,7 @@ class SourceEditor(wx.Panel):
 
     @staticmethod
     def on_delete(self, event=None):
-        _ = event
-        # print(f"DEBUG: TextEditor called on_delete event={event}")
-        # self.delete()
+        """ Not used """
 
     def on_insert_cells(self, event):
         self.insert_cell(event)
