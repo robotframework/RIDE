@@ -168,6 +168,7 @@ RELEASE_NOTES = f"""
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
+<li>Hide continuation markers in Project Tree</li>
 <li>Improved content assistance in Text Editor by allowing to filter list as we type</li>
 <li>Fixed resource files dissapearing from Project tree on Windows</li>
 <li>Fixed missing indication of link for User Keyword, when pressing <b>Ctrl</b> in Grid Editor</li>
@@ -240,6 +241,6 @@ python -m robotide.__init__
 <pre class="literal-block">
 python -m robotide.postinstall -install
 </pre>
-<p>RIDE {VERSION} was released on 5/Oct/2023.</p>
+<p>RIDE {VERSION} was released on 6/Oct/2023.</p>
 </div>
 """

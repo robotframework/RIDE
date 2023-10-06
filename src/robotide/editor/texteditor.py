@@ -87,27 +87,11 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
 
             return f
 
-        # self.register_shortcut('CtrlCmd-X', focused(lambda e: self._editor.cut()))
-        # self.register_shortcut('CtrlCmd-C', focused(lambda e: self._editor.copy()))
         if IS_MAC:  # Mac needs this key binding
             self.register_shortcut('CtrlCmd-A', focused(lambda e: self._editor.select_all()))
         if IS_WINDOWS or IS_MAC:  # Linux does not need this key binding
             self.register_shortcut('CtrlCmd-V', focused(lambda e: self._editor.paste()))
-        # self.register_shortcut('CtrlCmd-Z', focused(lambda e: self._editor.undo()))
-        # self.register_shortcut('CtrlCmd-Y', focused(lambda e: self._editor.redo()))
-        # self.register_shortcut('Del', focused(lambda e: self.source_editor.delete()))
-        # DEBUG Disable own saving
         self.register_shortcut('CtrlCmd-S', focused(lambda e: self.on_saving(e)))
-        # self.register_shortcut('CtrlCmd-Shift-I', focused(lambda e: self._editor.insert_cell(e)))
-        # self.register_shortcut('CtrlCmd-Shift-D', focused(lambda e: self.source_editor.delete_cell(e)))
-        # self.register_shortcut('Alt-Up', focused(lambda e: self._editor.move_row_up(e)))
-        # self.register_shortcut('Alt-Down', focused(lambda e: self._editor.move_row_down(e)))
-        # self.register_shortcut('CtrlCmd-D', focused(lambda e: self.source_editor.delete_row(e)))
-        # self.register_shortcut('CtrlCmd-I', focused(lambda e: self._editor.insert_row(e)))
-        # self.register_shortcut('CtrlCmd-3', focused(lambda e: self._editor.execute_comment(e)))
-        # self.register_shortcut('CtrlCmd-Shift-3', focused(lambda e: self._editor.execute_sharp_comment(e)))
-        # self.register_shortcut('CtrlCmd-4', focused(lambda e: self._editor.execute_uncomment(e)))
-        # self.register_shortcut('CtrlCmd-Shift-4', focused(lambda e: self._editor.execute_sharp_uncomment(e)))
         self.register_shortcut('CtrlCmd-F', lambda e: self._editor.search_field.SetFocus())
         self.register_shortcut('CtrlCmd-G', lambda e: self._editor.on_find(e))
         self.register_shortcut('CtrlCmd-Shift-G', lambda e: self._editor.on_find_backwards(e))
@@ -214,9 +198,6 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
 
     def on_tab_change(self, message):
         if message.newtab == self.title:
-            # print("DEBUG: texteditor on_tab_change calling register_actions ")
-            # self.register_actions(action_info_collection(_EDIT, self._editor, self._editor))
-            # self._register_shortcuts()
             self._open()
             self._editor.set_editor_caret_position()
             try:
@@ -647,7 +628,6 @@ class SourceEditor(wx.Panel):
         selected = self.source_editor.get_selected_or_near_text()
         self.set_editor_caret_position()
         sugs = []
-        length_entered = 0
         if selected:
             for start in selected:
                 sugs.extend(s.name for s in self._suggestions.get_suggestions(start))
@@ -933,13 +913,6 @@ class SourceEditor(wx.Panel):
 
     def on_content_assistance(self, event):
         self.on_content_assist(event)
-
-    """
-    def save(self, message=None):
-        _ = message
-        if self.editor:
-            self.editor.save()
-    """
 
     def on_key(self, *args):
         """ Intentional override """
@@ -1710,8 +1683,6 @@ class RobotDataEditor(stc.StyledTextCtrl):
             self.CallTipCancel()
         key = event.GetKeyCode()
         if key == 32 and event.ControlDown():
-            pos = self.GetCurrentPos()
-            # print(f"DEBUG: TextEditor RobotDataEditor on_key_pressed pos={pos}")
             # Tips
             if event.ShiftDown():
                 self.show_kw_doc()

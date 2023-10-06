@@ -22,11 +22,6 @@ from wx.lib.agw.aui import GetManager
 from wx.lib.agw.customtreectrl import GenericTreeItem
 from wx.lib.mixins import treemixin
 
-# DEBUG: from ..controller.macrocontrollers import TestCaseController
-# DEBUG: from ..controller.ui.treecontroller import TreeController, TestSelectionController
-# DEBUG: from ..controller.filecontrollers import ResourceFileController, TestDataDirectoryController,
-# TestCaseFileController
-
 from ..context import IS_WINDOWS
 from ..publish.messages import (RideTestRunning, RideTestPaused, RideTestPassed, RideTestFailed, RideTestSkipped,
                                 RideTestExecutionStarted, RideTestStopped, RideImportSetting, RideExcludesChanged,
@@ -531,25 +526,10 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
 
     def _create_node_with_handler(self, parent_node, controller, index=None):
         from ..controller.filecontrollers import ResourceFileController
-        if controller.display_name.startswith("#"):  # If it is a comment don't create
+        if (controller.display_name.startswith("#") or
+                controller.display_name.startswith("...")):  # If it is a comment or continuation marker don't create
             return None
 
-        # DEBUG: Why do we need this? This block caused resources to disappear from tree
-        """
-        if IS_WINDOWS and isinstance(controller, ResourceFileController):
-            resourcefile = self._normalize(controller.filename)
-            # print(f"DEBUG: Tree _create_node_with_handler removed condition on WINDOWS for Resources file={resourcefile}")
-        
-            pname = parent_node.GetText()
-            self._resources.append((pname, resourcefile))
-            if IS_WINDOWS:
-                count = 0
-                for (p, r) in self._resources:
-                    if (p, r) == (pname, resourcefile):
-                        count += 1
-                if count > 3:
-                    return None
-        """
         handler_class = action_handler_class(controller)
         with_checkbox = (handler_class == TestCaseHandler and self._checkboxes_for_tests)
         node = self._create_node(parent_node, controller.display_name, self._images[controller],
@@ -1172,7 +1152,7 @@ class TreeLabelEditListener(object):
         # and the another CallAfter because of
         # customtreectrl.TreeTextCtrl#OnChar will call CallAfter(self.Finish)
         # when Enter is pressed --> Results in PyDeadObject if called after
-        # ResetEditControl..
+        # ResetEditControl
         wx.CallAfter(wx.CallAfter, self._stop_editing)
 
     def _stop_editing(self):
