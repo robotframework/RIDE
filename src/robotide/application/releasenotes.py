@@ -168,6 +168,7 @@ RELEASE_NOTES = f"""
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
+<li>Added <b>Test Tags</b> field (new, since Robot Framework 6.0) to Test Suites settings. This field will replace <b>Default</b> and <b>Force Tags</b> settings, after Robot Framework 7.0</li>
 <li>Improved <b>RIDE Log</b> and <b>Parser Log</b> windows to allow Zoom In/Out with <b>Ctrl-Mouse Wheel</b></li>
 <li>Hide continuation markers in Project Tree</li>
 <li>Improved content assistance in Text Editor by allowing to filter list as we type</li>

@@ -29,7 +29,7 @@ from .. import utils
 from .basecontroller import WithUndoRedoStacks, _BaseController, WithNamespace, ControllerWithParent
 from .robotdata import new_test_case_file, new_test_data_directory
 from .settingcontrollers import (DocumentationController, FixtureController, TimeoutController, TemplateController,
-                                 DefaultTagsController, ForceTagsController)
+                                 DefaultTagsController, ForceTagsController, TestTagsController)
 from .tablecontrollers import (VariableTableController, TestCaseTableController, KeywordTableController,
                                ImportSettingsController, MetadataListController)
 from .macrocontrollers import TestCaseController, UserKeywordController
@@ -161,7 +161,7 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
                 FixtureController(self, ss.suite_teardown),
                 FixtureController(self, ss.test_setup),
                 FixtureController(self, ss.test_teardown),
-                self.force_tags]
+                self.force_tags, self.test_tags]
 
     @property
     def setting_table(self):
@@ -170,6 +170,10 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
     @property
     def force_tags(self):
         return ForceTagsController(self, self.setting_table.force_tags)
+
+    @property
+    def test_tags(self):
+        return TestTagsController(self, self.setting_table.test_tags)
 
     @property
     def variables(self):
@@ -1015,7 +1019,7 @@ class ExcludedDirectoryController(_FileSystemElement, ControllerWithParent, With
                 FixtureController(self, ss.suite_teardown),
                 FixtureController(self, ss.test_setup),
                 FixtureController(self, ss.test_teardown),
-                self.force_tags]
+                self.force_tags, self.test_tags]
 
     @property
     def setting_table(self):
@@ -1024,6 +1028,10 @@ class ExcludedDirectoryController(_FileSystemElement, ControllerWithParent, With
     @property
     def force_tags(self):
         return ForceTagsController(self, self.setting_table.force_tags)
+
+    @property
+    def test_tags(self):
+        return TestTagsController(self, self.setting_table.test_tags)
 
     @property
     def dirty(self):
@@ -1089,7 +1097,7 @@ class ExcludedFileController(_FileSystemElement, _DataController):
         sett = _DataController.internal_settings(self)
         sett.insert(-1, TemplateController(self, ss.test_template))
         sett.insert(-1, TimeoutController(self, ss.test_timeout))
-        return sett + [self.default_tags, self.force_tags]  # OK doing some cheating here ;)
+        return sett + [self.default_tags, self.force_tags, self.test_tags]  # OK doing some cheating here ;)
 
     @property
     def longname(self):
@@ -1172,6 +1180,10 @@ class ExcludedFileController(_FileSystemElement, _DataController):
     @property
     def force_tags(self):  # Yes, I know this is impossible, but is Exclude file, right?
         return None  # ForceTagsController(self, self.setting_table.force_tags)
+
+    @property
+    def test_tags(self):  # Yes, I know this is impossible, but is Exclude file, right?
+        return None
 
     @property
     def dirty(self):

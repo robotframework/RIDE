@@ -79,6 +79,13 @@ These tags are set to all test cases in this test suite unless test cases have t
 %(TAG)s
 %(ESCAPE)s
 
+Test Tags
+These tags are applied to all test cases in this test suite. This field exists since Robot Framework 6.0 and will
+ replace Force and Default Tags after version 7.0.
+Inherited tags are not shown in this view.
+%(TAG)s
+%(ESCAPE)s
+
 Tags
 These tags are set to this test case in addition to Force Tags and they override possible Default Tags.
 Inherited tags are not shown in this view.

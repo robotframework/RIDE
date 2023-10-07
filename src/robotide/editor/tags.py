@@ -17,7 +17,7 @@ import wx
 from wx.lib.scrolledpanel import ScrolledPanel
 from ..context import IS_WINDOWS
 from ..controller import ctrlcommands
-from ..controller.tags import ForcedTag, DefaultTag
+from ..controller.tags import ForcedTag, DefaultTag, TestTag
 
 
 class TagsDisplay(ScrolledPanel):
@@ -225,7 +225,8 @@ def properties(tag, controller):
     if tag.controller == controller:
         return TagBoxProperties(tag)
     return tag.choose({ForcedTag: ForcedTagBoxProperties,
-                       DefaultTag: DefaultTagBoxProperties})(tag)
+                       DefaultTag: DefaultTagBoxProperties,
+                       TestTag: TestTagBoxProperties})(tag)
 
 
 class _TagBoxProperties(object):
@@ -290,5 +291,12 @@ class ForcedTagBoxProperties(_TagBoxProperties):
 class DefaultTagBoxProperties(_TagBoxProperties):
     # DEBUG: Use colours from settings
     foreground_color = '#666666'
+    background_color = '#D3D3D3'  # Colour(200, 222, 40)
+    enabled = False
+
+
+class TestTagBoxProperties(_TagBoxProperties):
+    # DEBUG: Use colours from settings
+    foreground_color = 'orange'
     background_color = '#D3D3D3'  # Colour(200, 222, 40)
     enabled = False
