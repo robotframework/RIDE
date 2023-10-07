@@ -18,6 +18,7 @@ from wx import Colour
 
 from .. import widgets
 from ..widgets import RIDEDialog
+from wx.stc import StyledTextCtrl
 
 
 def message_to_string(msg, parserlog=False):
@@ -32,9 +33,13 @@ class LogWindow(wx.Panel):
         self.dlg = RIDEDialog()
         self.title = title
         self._removetabs = self.title == 'Parser Log'
-        self._output = wx.TextCtrl(self, style=wx.TE_READONLY | wx.TE_MULTILINE | wx.TE_NOHIDESEL)
-        self._output.SetBackgroundColour(Colour(self.dlg.color_background))
-        self._output.SetForegroundColour(Colour(self.dlg.color_foreground))
+        self._output = StyledTextCtrl(self, wx.ID_ANY, style=wx.TE_READONLY | wx.TE_MULTILINE | wx.TE_NOHIDESEL)
+        fore = self.dlg.color_foreground
+        backg = self.dlg.color_background
+        self._output.SetBackgroundColour(Colour(backg))
+        self._output.SetForegroundColour(Colour(fore))
+        self._output.StyleSetSpec(wx.stc.STC_STYLE_DEFAULT, f"fore:{fore}, back:{backg}")
+        self._output.StyleSetBackground(wx.stc.STC_STYLE_DEFAULT, backg)
         self._output.Bind(wx.EVT_KEY_DOWN, self.on_key_down)
         self._log = log
         self._add_to_notebook(notebook)
@@ -51,10 +56,17 @@ class LogWindow(wx.Panel):
         self._output.SetSize(self.Size)
 
     def close(self, notebook):
+        self._output.Close()
         notebook.delete_tab(self)
 
     def update_log(self):
-        self._output.SetValue(self._decode_log(self._log))
+        content = self._decode_log(self._log)
+        text_size = len(content)
+        self._output.SetReadOnly(False)
+        self._output.SetText(content)
+        self._output.SetStyling(text_size, wx.stc.STC_STYLE_DEFAULT)
+        self._output.SetReadOnly(True)
+        self._output.Refresh()
 
     def _decode_log(self, log):
         result = ''
