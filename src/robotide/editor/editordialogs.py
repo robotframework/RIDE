@@ -236,6 +236,12 @@ class DefaultTagsDialog(_SettingDialog):
         pass
 
 
+class TestTagsDialog(_SettingDialog):
+    def _execute(self):
+        """ Just ignore it """
+        pass
+
+
 class TagsDialog(_SettingDialog):
     def _execute(self):
         """ Just ignore it """

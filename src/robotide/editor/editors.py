@@ -92,7 +92,7 @@ class _RobotTableEditor(EditorPanel):
         self.SetSizer(self.sizer)
         if self.title:
             self.sizer.Add(self._create_header(self.title),
-                           0, wx.EXPAND | wx.ALL, 5)
+                           0, wx.EXPAND | wx.ALL, 6)
         self._editors = []
         self._last_shown_tooltip = None
         self._reset_last_show_tooltip()
@@ -269,12 +269,6 @@ class Settings(wx.CollapsiblePane):
     def build(self, settings, plugin, tree):
         for setting in settings:
             editor = self.create_editor_for(setting, plugin, tree)
-            """
-            editor.SetBackgroundColour(Colour(200, 222, 40))
-            editor.SetOwnBackgroundColour(Colour(200, 222, 40))
-            editor.SetForegroundColour(Colour(7, 0, 70))
-            editor.SetOwnForegroundColour(Colour(7, 0, 70))
-            """
             self._sizer.Add(editor, 0, wx.ALL | wx.EXPAND, self.BORDER)
             self._editors.append(editor)
             editor.Refresh()

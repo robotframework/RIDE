@@ -57,6 +57,7 @@ class _FakeParent(_FakeProject):
         self.datafile = None
         self.force_tags = ForceTagsController(self, Tags('Force Tags'))
         self.default_tags = DefaultTagsController(self, Tags('Default Tags'))
+        self.test_tags = DefaultTagsController(self, Tags('Test Tags'))
         self._setting_table = self
 
     def mark_dirty(self):

@@ -88,7 +88,7 @@ class TestCaseFileControllerTest(unittest.TestCase):
     def test_creation(self):
         for st in self.ctrl.settings:
             assert st is not None
-        assert len(self.ctrl.settings) == 9
+        assert len(self.ctrl.settings) == 10
         assert not self.ctrl.dirty
 
     def test_has_format(self):
@@ -236,7 +236,7 @@ class TestDataDirectoryControllerTest(unittest.TestCase):
         ctrl = TestDataDirectoryController(self.data)
         for st in ctrl.settings:
             assert st is not None
-        assert len(ctrl.settings) == 6
+        assert len(ctrl.settings) == 7
 
     def test_has_format(self):
         ctrl = TestDataDirectoryController(self.data)

@@ -22,12 +22,14 @@ class TestDefaults(object):
         self.timeout = settings.test_timeout
         self.force_tags = settings.force_tags
         self.default_tags = settings.default_tags
+        self.test_tags = settings.test_tags
         self.template = settings.test_template
         if parent:
             self.setup = self.setup or parent.setup
             self.teardown = self.teardown or parent.teardown
             self.timeout = self.timeout or parent.timeout
             self.force_tags += parent.force_tags
+            self.test_tags += parent.test_tags
 
     def get_test_values(self, test):
         return TestValues(test, self)
@@ -40,4 +42,4 @@ class TestValues(object):
         self.teardown = test.teardown or defaults.teardown
         self.timeout = test.timeout or defaults.timeout
         self.template = test.template or defaults.template
-        self.tags = (test.tags or defaults.default_tags) + defaults.force_tags
+        self.tags = (test.tags or defaults.default_tags) + defaults.force_tags + defaults.test_tags

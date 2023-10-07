@@ -28,6 +28,7 @@ class _TestSearchTest(object):
         parent.register_for_namespace_updates = lambda *_: 0
         parent.force_tags = []
         parent.default_tags = []
+        parent.test_tags = []
         robot_test = TestCase(parent=parent, name=name)
         robot_test.get_setter('documentation')(doc)
         robot_test.get_setter('tags')(tags or [])

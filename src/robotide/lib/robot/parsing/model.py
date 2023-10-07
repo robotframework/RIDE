@@ -45,7 +45,7 @@ def TestData(parent=None, source=None, include_suites=None,
     :returns: :class:`~.model.TestDataDirectory`  if `source` is a directory,
         :class:`~.model.TestCaseFile` otherwise.
     """
-    # TODO: Remove in RF 3.2.
+    # DEBUG: Remove in RF 3.2.
     if warn_on_skipped != 'DEPRECATED':
         warnings.warn("Option 'warn_on_skipped' is deprecated and has no "
                       "effect.", DeprecationWarning)
@@ -77,7 +77,7 @@ class _TestData(object):
                              (self._keyword_table_names, self.keyword_table),
                              (self._comment_table_names, None)]:
             # remove Comments section, because we want to keep them as they are in files
-            # , (self._comment_table_names, None)]:
+            # , (self._comment_table_names, None)
             for name in names:
                 yield name, table
 
@@ -117,7 +117,7 @@ class _TestData(object):
         for name in (self._setting_table_names + self._variable_table_names +
                      self._testcase_table_names + self._keyword_table_names):
             # remove Comments section, because we want to keep them as they are in files
-            # + self._comment_table_names):
+            # + self._comment_table_names
             if normalize(name) == normalized:
                 self._report_deprecated_table(used_name, name)
                 return name
@@ -414,8 +414,9 @@ class _SettingTable(_Table, _WithSettings):
         self.suite_teardown = Fixture('Suite Teardown', self)
         self.test_setup = Fixture('Test Setup', self)
         self.test_teardown = Fixture('Test Teardown', self)
-        self.force_tags = Tags('Force Tags', self)
-        self.default_tags = Tags('Default Tags', self)
+        self.force_tags = Tags('Force Tags', self)  # To deprecate after RF 7.0
+        self.default_tags = Tags('Default Tags', self)  # To deprecate after RF 7.0
+        self.test_tags = Tags('Test Tags', self)  # New since RF 6.0
         self.test_template = Template('Test Template', self)
         self.test_timeout = Timeout('Test Timeout', self)
         self.metadata = MetadataList(self)
@@ -454,6 +455,7 @@ class TestCaseFileSettingTable(_SettingTable):
                 'Test Teardown': lambda s: s.test_teardown.populate,
                 'Force Tags': lambda s: s.force_tags.populate,
                 'Default Tags': lambda s: s.default_tags.populate,
+                'Test Tags': lambda s: s.test_tags.populate,
                 'Test Template': lambda s: s.test_template.populate,
                 'Test Timeout': lambda s: s.test_timeout.populate,
                 'Library': lambda s: s.imports.populate_library,
@@ -468,7 +470,7 @@ class TestCaseFileSettingTable(_SettingTable):
     def __iter__(self):
         for setting in [self.doc, self.suite_setup, self.suite_teardown,
                         self.test_setup, self.test_teardown, self.force_tags,
-                        self.default_tags, self.test_template, self.test_timeout] \
+                        self.default_tags, self.test_tags, self.test_template, self.test_timeout] \
                         + self.metadata.data + self.imports.data:
             yield setting
 
@@ -492,6 +494,7 @@ class InitFileSettingTable(_SettingTable):
                 'Test Teardown': lambda s: s.test_teardown.populate,
                 'Test Timeout': lambda s: s.test_timeout.populate,
                 'Force Tags': lambda s: s.force_tags.populate,
+                'Test Tags': lambda s: s.test_tags.populate,
                 'Library': lambda s: s.imports.populate_library,
                 'Resource': lambda s: s.imports.populate_resource,
                 'Variables': lambda s: s.imports.populate_variables,
@@ -499,7 +502,7 @@ class InitFileSettingTable(_SettingTable):
 
     def __iter__(self):
         for setting in [self.doc, self.suite_setup, self.suite_teardown,
-                        self.test_setup, self.test_teardown, self.force_tags,
+                        self.test_setup, self.test_teardown, self.force_tags, self.test_tags,
                         self.test_timeout] + self.metadata.data + self.imports.data:
             yield setting
 
@@ -875,7 +878,7 @@ class Step(object):
         # print(f"DEBUG: RFLib Model init Step: index={index} inner_kw_pos = {self.inner_kw_pos} indent={self.indent[:]} \ncontent {content}")
         self.args = content[index + 1:] if content and index <= len(content) - 1 else []
         # print(f"DEBUG: RFLib Model init Step: 1st cell len(content)={len(content)} index {index} indent={self.indent[:]}")  # 1st cell: {content[index]}")
-        # TODO: Create setters for Step.name and Step.args, see stepcontrollers.py replace_keyword
+        # DEBUG: Create setters for Step.name and Step.args, see stepcontrollers.py replace_keyword
         if index < len(content):
             self.name = content[index] if content else None
         else:
@@ -899,7 +902,7 @@ class Step(object):
             if 0 <= index < len(cells) and self.is_kind_of_comment(cells[index]):  # Special case for commented content
                 return []
                 # print(f"DEBUG: RFLib Model _get_assign VAR NORMAL (index={index}) inner_kw_pos={self.inner_kw_pos} content={content[:]}")
-            # first handle non FOR cases
+            # first handle non-FOR cases
             idx = 0
             try:
                 if cells[self.inner_kw_pos] != 'FOR':
@@ -953,7 +956,7 @@ class Step(object):
         return self.name.lower() == 'comment' or not (self.assign or self.name or self.args)
 
     def is_for_loop(self):
-        # TODO: remove steps ForLoop: return self.name == 'FOR'
+        # DEBUG: remove steps ForLoop: return self.name == 'FOR'
         return False
 
     def is_set(self):

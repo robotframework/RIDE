@@ -65,3 +65,11 @@ class DefaultTag(Tag):
     def tooltip(self):
         return u'Default tag from suite {0}'.format(
             self.controller.datafile_controller.name)
+
+
+class TestTag(Tag):
+
+    @property
+    def tooltip(self):
+        return u'Apply Test Tags from suite {0} (since Robot Framework 6.0)'.format(
+            self.controller.datafile_controller.name)

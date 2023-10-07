@@ -22,7 +22,7 @@ from ..publish.messages import (RideImportSettingChanged, RideImportSettingRemov
                                 RideItemSettingsChanged, RideImportSettingAdded)
 from ..utils import variablematcher, unescape_newlines_and_whitespaces
 from .basecontroller import ControllerWithParent
-from .tags import Tag, ForcedTag, DefaultTag
+from .tags import Tag, ForcedTag, DefaultTag, TestTag
 
 
 class _SettingController(ControllerWithParent):
@@ -222,13 +222,14 @@ class TagsController(_SettingController):
 
     def __iter__(self):
         forced = self._parent.force_tags
+        test_tags = self._parent.test_tags
         if self.tags.value is None:
-            return chain(forced, self._parent.default_tags).__iter__()
+            return chain(forced, self._parent.default_tags, test_tags).__iter__()
         if len(self.tags.value) == 0:
-            return chain(forced, [Tag('', controller=self)])
+            return chain(forced, test_tags, [Tag('', controller=self)])
         own_tags = (Tag(t, index, self)
                     for index, t in enumerate(self.tags.value))
-        return chain(forced, own_tags).__iter__()
+        return chain(forced, test_tags, own_tags).__iter__()
 
     @property
     def is_set(self):
@@ -284,8 +285,44 @@ class ForceTagsController(TagsController):
     def _gather_from_data(tags, parent):
         if tags.value is None:
             return []
-        print(f"DEBUG: SettingsController _gather_from_data entry tags={tags.value}")
         return [ForcedTag(t, index, parent)
+                for index, t in enumerate(tags.value)]
+
+
+class TestTagsController(TagsController):
+
+    def empty_tag(self):
+        return TestTag(None, controller=self)
+
+    def __iter__(self):
+        return self._recursive_gather_from(self.parent, []).__iter__()
+
+    def __eq__(self, other):
+        if self is other:
+            return True
+        if other is None:
+            return False
+        if not isinstance(other, self.__class__):
+            return False
+        return self.tags == other.tags
+
+    def _recursive_gather_from(self, obj, result):
+        if obj is None:
+            return result
+        try:
+            test_tags = obj.setting_table.test_tags
+        except AttributeError:  # In the case of a .resource file, there is no Test Tags fields
+            return result
+        # print(f"DEBUG: SettingsController _recursive_gather_from force_tags={force_tags}, obj.parent={obj.parent}")
+        return self._recursive_gather_from(
+            obj.parent,
+            self._gather_from_data(test_tags, obj.test_tags) + result)
+
+    @staticmethod
+    def _gather_from_data(tags, parent):
+        if tags.value is None:
+            return []
+        return [TestTag(t, index, parent)
                 for index, t in enumerate(tags.value)]
 
 

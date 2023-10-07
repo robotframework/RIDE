@@ -343,6 +343,10 @@ class TestCaseController(WithStepsController):
         return self.datafile_controller.force_tags
 
     @property
+    def test_tags(self):
+        return self.datafile_controller.test_tags
+
+    @property
     def default_tags(self):
         return self.datafile_controller.default_tags
 
@@ -416,6 +420,7 @@ class UserKeywordController(WithStepsController):
         # Needed for API compatibility in tag search
         self.force_tags = []
         self.default_tags = []
+        self.test_tags = []
 
     def __eq__(self, other):
         if self is other:
