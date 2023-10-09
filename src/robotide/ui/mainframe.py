@@ -67,6 +67,7 @@ _menudata = """
 !Report a Problem | Open browser to SEARCH on the RIDE issue tracker
 !Release notes | Shows release notes
 !About | Information about RIDE
+!Check for Upgrade | Looks at PyPi for new released version
 """
 
 ID_CustomizeToolbar = wx.ID_HIGHEST + 1
@@ -159,15 +160,16 @@ class RideFrame(wx.Frame):
                       style=wx.ICON_ERROR)
 
     def _init_ui(self):
-        # self.aui_mgr.AddPane(wx.Panel(self), aui.AuiPaneInfo().CenterPane())
-        # #### self.splitter = wx.SplitterWindow(self, style=wx.SP_LIVE_UPDATE)
+        """ DEBUG:
+            self.aui_mgr.AddPane(wx.Panel(self), aui.AuiPaneInfo().CenterPane())
+            self.splitter = wx.SplitterWindow(self, style=wx.SP_LIVE_UPDATE)
+        """
         self.aui_mgr.AddPane(wx.Panel(self), aui.AuiPaneInfo().Name("right_pane").Right())
         # set up default notebook style
         self._notebook_style = (aui.AUI_NB_DEFAULT_STYLE | aui.AUI_NB_WINDOWLIST_BUTTON |
                                 aui.AUI_NB_TAB_EXTERNAL_MOVE | aui.AUI_NB_SUB_NOTEBOOK | aui.AUI_NB_SMART_TABS)
-        # DEBUG self._notebook_theme = 0 (allow to select themes for notebooks)
-        # self.notebook = NoteBook(self.splitter, self._application,
-        #                         self._notebook_style)
+        # DEBUG: self._notebook_theme = 0 (allow to select themes for notebooks)
+        # DEBUG:self.notebook = NoteBook(self.splitter, self._application, self._notebook_style)
         self.notebook = NoteBook(self, self._application,
                                  self._notebook_style)
         self.notebook.SetBackgroundColour(Colour(self.color_background))
@@ -504,13 +506,21 @@ class RideFrame(wx.Frame):
         dlg.ShowModal()
         dlg.Destroy()
 
+    def on_check_for_upgrade(self, event):
+        _ = event
+        from ..application.updatenotifier import UpdateNotifierController, UpdateDialog
+        wx.CallAfter(UpdateNotifierController(self.general_settings).notify_update_if_needed,
+                     UpdateDialog, ignore_check_condition=True)
+
     # @staticmethod
     def on_shortcut_keys(self, event):
         _ = event
         dialog = ShortcutKeysDialog()
-        # self.aui_mgr.AddPane(dialog.GetContentWindow(),aui.AuiPaneInfo().Name("shortcuts").Caption("Shortcuts Keys").
-        #                      CloseButton(True).RightDockable().Floatable().Float(), self.notebook)
-        # self.aui_mgr.Update()
+        """ DEBUG:
+            self.aui_mgr.AddPane(dialog.GetContentWindow(),aui.AuiPaneInfo().Name("shortcuts").Caption("Shortcuts Keys")
+                                 .CloseButton(True).RightDockable().Floatable().Float(), self.notebook)
+            self.aui_mgr.Update()
+        """
         dialog.Show()
 
     @staticmethod
