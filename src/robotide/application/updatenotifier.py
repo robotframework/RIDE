@@ -24,8 +24,9 @@ import wx
 from wx import Colour
 
 from .. import version
-from ..utils.versioncomparator import cmp_versions
+from ..utils.versioncomparator import cmp_versions, parse_version
 from ..widgets import ButtonWithHandler, HtmlWindow, RIDEDialog
+from ..postinstall.__main__ import MessageDialog
 
 _CHECK_FOR_UPDATES_SETTING = "check for updates"
 _LAST_UPDATE_CHECK_SETTING = "last update check"
@@ -40,8 +41,27 @@ class UpdateNotifierController(object):
         self._settings = settings
 
     def notify_update_if_needed(self, update_notification_callback):
-        if self._should_check() and self._is_new_version_available():
+        checking_version = self._should_check()
+        if checking_version and self._is_new_version_available():
             update_notification_callback(self._newest_version, self._download_url, self._settings)
+        if checking_version and parse_version(self.VERSION).is_devrelease:
+            VERSION = None
+            dev_version = urllib2.urlopen('https://raw.githubusercontent.com/robotframework/'
+                                          'RIDE/master/src/robotide/version.py', timeout=1).read().decode('utf-8')
+            master_code = compile(dev_version, 'version', 'exec')
+            main_dict = { 'VERSION': VERSION }
+            exec(master_code, main_dict)  # defines VERSION
+            if cmp_versions(self.VERSION, main_dict['VERSION']) == -1:
+                if not _askyesno("Upgrade?", f"New development version is available. You may install"
+                                 f" version {main_dict['VERSION']} with:\npip install -U https://github.com/"
+                                 f"robotframework/RIDE/archive/master.zip", wx.GetActiveWindow()):
+                    return False
+                else:
+                    # Get current PID
+                    # run pip install
+                    # close RIDE on success
+                    # start new RIDE
+                    print("DEBUG: Here will be the installation step.")
 
     def _should_check(self):
         if self._settings.get(_CHECK_FOR_UPDATES_SETTING, None) is None:
@@ -80,6 +100,22 @@ class UpdateNotifierController(object):
         data = urllib2.urlopen(req, timeout=1).read()
         xml = xmlrpclib.loads(data)[0][0]
         return xml
+
+
+def _askyesno(title, message, frame=None):
+    if frame is None:
+        _ = wx.App()
+        parent = wx.Frame(None, size=(0, 0))
+    else:
+        parent = wx.Frame(frame, size=(0, 0))
+    parent.CenterOnScreen()
+    dlg = MessageDialog(parent, message, title, ttl=8)
+    result = dlg.ShowModal() in [wx.ID_YES, wx.ID_OK]
+    print("Result %s" % result)
+    if dlg:
+        dlg.Destroy()
+    parent.Destroy()
+    return result
 
 
 class LocalHtmlWindow(HtmlWindow):

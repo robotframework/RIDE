@@ -13,7 +13,15 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from pkg_resources import parse_version
+try:
+    from pkg_resources import parse_version
+except ImportError:
+    try:
+        from packaging.version import parse as parse_version
+    except ImportError as e:
+        print("RIDE cannot verify versions upgrade because of missing packages."
+              "You can install missing package with:\npip install packaging\nor\npip install setuptools")
+        raise e
 
 
 def cmp_versions(version1, version2):
