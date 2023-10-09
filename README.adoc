@@ -6,7 +6,7 @@ RIDE is a development environment for Robot Framework test cases.
 === Instant Communication ===
 
 Join our **#ride** channel in Robot Framework Slack: https://robotframework.slack.com
-(signup page: https://robotframework-slack-invite.herokuapp.com/)
+(signup page, with insecure connection warning: https://slack.robotframework.org/)
 
 === "Support" sites ===
 
