@@ -16,11 +16,13 @@ import typing
 import unittest
 import time
 import urllib
+import wx
 
 from robotide.application.updatenotifier import UpdateNotifierController
 
 CHECKFORUPDATES = 'check for updates'
 LASTUPDATECHECK = 'last update check'
+
 
 class UpdateNotifierTestCase(unittest.TestCase):
 
@@ -113,15 +115,16 @@ class UpdateNotifierTestCase(unittest.TestCase):
         self.assertTrue(self._callback_called)
 
     def test_checking_timeouts(self):
+        app = wx.App()
         settings = self.internal_settings()
         ctrl = UpdateNotifierController(settings)
 
         def throw_timeout_error():
-            raise urllib.URLError('timeout')
+            raise urllib.error.URLError('timeout')
 
         ctrl._get_newest_version = throw_timeout_error
         ctrl.notify_update_if_needed(self._callback)
-        self.assertTrue(settings[LASTUPDATECHECK] > time.time() - 1)
+        self.assertTrue(settings[LASTUPDATECHECK] > time.time() - 10)  # The dialog timeout in 10 seconds
         self.assertFalse(self._callback_called)
 
     def test_download_url_checking_timeouts(self):
@@ -132,7 +135,7 @@ class UpdateNotifierTestCase(unittest.TestCase):
 
         def throw_timeout_error(*args):
             _ = args
-            raise urllib.URLError('timeout')
+            raise urllib.error.URLError('timeout')
 
         ctrl._get_download_url = throw_timeout_error
         ctrl.notify_update_if_needed(self._callback)
@@ -152,6 +155,33 @@ class UpdateNotifierTestCase(unittest.TestCase):
         ctrl = self._update_notifier_controller(settings, '0.44', '0.43.1')
         ctrl.notify_update_if_needed(self._callback)
         self.assertTrue(settings[LASTUPDATECHECK] > time.time() - 1)
+        self.assertTrue(settings[CHECKFORUPDATES])
+        self.assertFalse(self._callback_called)
+
+    def test_forced_check_released(self):
+        app = wx.App()
+        settings = self.internal_settings()
+        ctrl = self._update_notifier_controller(settings, '0.43.0', '0.43.1')
+        ctrl.notify_update_if_needed(self._callback, ignore_check_condition=True)
+        self.assertTrue(settings[LASTUPDATECHECK] > time.time() - 9)  # The dialog timeout in 10 seconds
+        self.assertTrue(settings[CHECKFORUPDATES])
+        self.assertTrue(self._callback_called)
+
+    def test_forced_check_development(self):
+        app = wx.App()
+        settings = self.internal_settings()
+        ctrl = self._update_notifier_controller(settings, '0.44dev12', '0.44.dev14')
+        ctrl.notify_update_if_needed(self._callback, ignore_check_condition=True)
+        self.assertTrue(settings[LASTUPDATECHECK] > time.time() - 10)  # The dialog timeout in 10 seconds
+        self.assertTrue(settings[CHECKFORUPDATES])
+        self.assertTrue(self._callback_called)
+
+    def test_forced_check_development_ok(self):
+        app = wx.App()
+        settings = self.internal_settings()
+        ctrl = self._update_notifier_controller(settings, '0.44dev12', '0.44.dev12')
+        ctrl.notify_update_if_needed(self._callback, ignore_check_condition=False)
+        self.assertTrue(settings[LASTUPDATECHECK] > time.time() - 10)  # The dialog timeout in 10 seconds
         self.assertTrue(settings[CHECKFORUPDATES])
         self.assertFalse(self._callback_called)
 
