@@ -12,7 +12,8 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-
+import subprocess
+import sys
 # Configure wx uversion to allow running test app in __main__
 
 
@@ -20,12 +21,14 @@ import time
 import urllib.request as urllib2
 import xmlrpc.client as xmlrpclib
 
+import psutil
 import wx
 from wx import Colour
 
 from .. import version
-from ..utils.versioncomparator import cmp_versions
+from ..utils.versioncomparator import cmp_versions, parse_version
 from ..widgets import ButtonWithHandler, HtmlWindow, RIDEDialog
+from ..postinstall.__main__ import MessageDialog
 
 _CHECK_FOR_UPDATES_SETTING = "check for updates"
 _LAST_UPDATE_CHECK_SETTING = "last update check"
@@ -39,9 +42,16 @@ class UpdateNotifierController(object):
     def __init__(self, settings):
         self._settings = settings
 
-    def notify_update_if_needed(self, update_notification_callback):
-        if self._should_check() and self._is_new_version_available():
+    def notify_update_if_needed(self, update_notification_callback, ignore_check_condition=False):
+        if ignore_check_condition:
+            dev_version = checking_version = True
+        else:
+            checking_version = self._should_check()
+            dev_version = parse_version(self.VERSION).is_devrelease
+        if checking_version and self._is_new_version_available():
             update_notification_callback(self._newest_version, self._download_url, self._settings)
+        if checking_version and dev_version:
+            upgrade_from_dev_dialog(version_installed=self.VERSION)
 
     def _should_check(self):
         if self._settings.get(_CHECK_FOR_UPDATES_SETTING, None) is None:
@@ -82,6 +92,91 @@ class UpdateNotifierController(object):
         return xml
 
 
+def upgrade_from_dev_dialog(version_installed):
+    VERSION = None
+    dev_version = urllib2.urlopen('https://raw.githubusercontent.com/robotframework/'
+                                  'RIDE/master/src/robotide/version.py', timeout=1).read().decode('utf-8')
+    master_code = compile(dev_version, 'version', 'exec')
+    main_dict = {'VERSION': VERSION}
+    exec(master_code, main_dict)  # defines VERSION
+    if cmp_versions(version_installed, main_dict['VERSION']) == -1:
+        # Here is the Menu Help->Upgrade insertion part, try to highlight menu
+        if not _askyesno("Upgrade?", f"New development version is available.\nYou may install"
+                                     f" version {main_dict['VERSION']} with:\npip install -U https://github.com/"
+                                     f"robotframework/RIDE/archive/master.zip", wx.GetActiveWindow()):
+            return False
+        else:
+            command = sys.executable + " -m pip install -U https://github.com/robotframework/RIDE/archive/master.zip"
+            do_upgrade(command)
+            return True
+    else:
+        _askyesno("No Upgrade Available", "You have the latest version of RIDE.\nHave a nice day :)",
+                  wx.GetActiveWindow())
+        return False
+
+
+def _askyesno(title, message, frame=None):
+    if frame is None:
+        _ = wx.App()
+        parent = wx.Frame(None, size=(0, 0))
+    else:
+        parent = wx.Frame(frame, size=(0, 0))
+    parent.CenterOnScreen()
+    dlg = MessageDialog(parent, message, title, ttl=8)
+    dlg.Fit()
+    result = dlg.ShowModal() in [wx.ID_YES, wx.ID_OK]
+    # print("DEBUG: updatenotifier _askyesno Result %s" % result)
+    if dlg:
+        dlg.Destroy()
+    # parent.Destroy()
+    return result
+
+
+def _add_content_to_clipboard(content):
+    wx.TheClipboard.Open()
+    wx.TheClipboard.SetData(wx.TextDataObject(content))
+    wx.TheClipboard.Close()
+
+
+def do_upgrade(command):
+    _add_content_to_clipboard(command)
+    # print("DEBUG: Here will be the installation step.")
+    my_pid = psutil.Process()
+    my_pip = subprocess.Popen(command.split(' '), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    result = None
+    count = 0
+    while not result and count < 60:
+        count += 1
+        outs, errs = my_pip.communicate()
+        # DEBUG: Add output to a notebook tab
+        print(f"{outs}\n")
+        result = my_pip.returncode
+        if result == 0:
+            break
+        """ DEBUG: need to get outs line by line
+        except subprocess.SubprocessError:
+            my_pip.kill()
+            outs, errs = my_pip.communicate()
+            result = False
+            # DEBUG: Add output to a notebook tab
+            print(f"{outs}\n")
+            print(f"{errs}\n")
+        """
+        time.sleep(1)
+    if result != 0:
+        _askyesno("Failed to Upgrade", "An error occurred when installing new version",
+                  wx.GetActiveWindow())
+        return False
+    command = sys.executable + " -m robotide.__init__ --noupdatecheck"
+    wx.CallLater(500, subprocess.Popen, command.split(' '), start_new_session=True)
+    # Wait 10 seconds before trying to kill this process
+    """ Not working well:
+    wx.CallLater(10000, psutil.Process.kill, my_pid.pid)
+    """
+    _askyesno("Completed Upgrade", f"You should close this RIDE (Process ID = {my_pid.pid})",
+              wx.GetActiveWindow())
+
+
 class LocalHtmlWindow(HtmlWindow):
     def __init__(self, parent, size=(600, 400)):
         HtmlWindow.__init__(self, parent, size)
@@ -96,6 +191,7 @@ class UpdateDialog(RIDEDialog):
 
     def __init__(self, uversion, url, settings):
         self._settings = settings
+        self._command = sys.executable + f" -m pip install -U robotframework-ride=={uversion}"
         RIDEDialog.__init__(self, title="Update available", size=(400, 400),
                             style=wx.DEFAULT_FRAME_STYLE | wx.FRAME_FLOAT_ON_PARENT)
         # set Left to Right direction (while we don't have localization)
@@ -117,10 +213,17 @@ class UpdateDialog(RIDEDialog):
                                                "do not need automatic update checks")
         checkbox.Bind(wx.EVT_CHECKBOX, handler=self.on_checkbox_change)
         sizer.Add(checkbox)
+        hsizer = wx.BoxSizer(orient=wx.HORIZONTAL)
         button = ButtonWithHandler(self, label="remind me later", handler=self.on_remind_me_later)
         button.SetBackgroundColour(Colour(self.color_secondary_background))
         button.SetForegroundColour(Colour(self.color_secondary_foreground))
-        sizer.Add(button)
+        hsizer.Add(button)
+        hsizer.AddSpacer(50)
+        up_button = ButtonWithHandler(self, label="Upgrade Now", handler=self.on_upgrade_now)
+        up_button.SetBackgroundColour(Colour(self.color_secondary_background))
+        up_button.SetForegroundColour(Colour(self.color_secondary_foreground))
+        hsizer.Add(up_button)
+        sizer.Add(hsizer)
         self.SetSizer(sizer)
         self.CentreOnParent(wx.BOTH)
         self.Fit()
@@ -135,3 +238,8 @@ class UpdateDialog(RIDEDialog):
     def on_checkbox_change(self, event):
         self._settings[_CHECK_FOR_UPDATES_SETTING] = not event.IsChecked()
         event.Skip()
+
+    def on_upgrade_now(self, event):
+        _ = event
+        _add_content_to_clipboard(self._command)
+        do_upgrade(self._command)

@@ -72,11 +72,13 @@ class MessageDialog(RIDEDialog):
 
         self.CenterOnScreen(wx.BOTH)
         self.timeToLive = ttl
-
-        st_msg = wx.StaticText(self, -1, message)
+        st_msg = []
+        for msg in message.split('\n'):
+            st_msg.append(wx.StaticText(self, -1, msg))
         self.settimetolivemsg = wx.StaticText(self, -1, 'Closing this dialog box in %ds...' % self.timeToLive)
         vbox = wx.BoxSizer(wx.VERTICAL)
-        vbox.Add(st_msg, 0, wx.ALIGN_CENTER | wx.TOP, 40)
+        for sp_msg in st_msg:
+            vbox.Add(sp_msg, 0, wx.ALIGN_LEFT | wx.TOP, 10)
         vbox.Add(self.settimetolivemsg, 0, wx.ALIGN_CENTER | wx.TOP, 10)
         self.SetSizer(vbox)
         self.SetAffirmativeId(wx.ID_OK)
