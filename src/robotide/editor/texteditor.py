@@ -388,6 +388,7 @@ class SourceEditor(wx.Panel):
         self._data_validator.set_editor(self)
         self.source_editor_parent = parent
         self.plugin = plugin
+        self.datafile = None
         self._title = title
         self.tab_size = self.source_editor_parent.app.settings.get(TXT_NUM_SPACES, 4)
         self.reformat = self.source_editor_parent.app.settings.get('reformat', False)
@@ -667,6 +668,8 @@ class SourceEditor(wx.Panel):
         except IndexError:  # It is a new project, no content yet
             self._controller_for_context = DummyController(self._data.wrapper_data, self._data.wrapper_data)
             self._suggestions = SuggestionSource(None, self._controller_for_context)
+        if self.plugin.datafile:
+            self.datafile = self.plugin.datafile
         if not self.source_editor:
             self._stored_text = self._data.content
         else:
