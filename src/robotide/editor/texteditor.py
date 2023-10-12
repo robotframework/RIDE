@@ -89,9 +89,9 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
 
         if IS_MAC:  # Mac needs this key binding
             self.register_shortcut('CtrlCmd-A', focused(lambda e: self._editor.select_all()))
-        if IS_WINDOWS or IS_MAC:  # Linux does not need this key binding
             self.register_shortcut('CtrlCmd-V', focused(lambda e: self._editor.paste()))
-        self.register_shortcut('CtrlCmd-S', focused(lambda e: self.on_saving(e)))
+            # IS_WINDOWS and Linux does not need this key binding
+        # self.register_shortcut('CtrlCmd-S', focused(lambda e: self.on_saving(e)))
         self.register_shortcut('CtrlCmd-F', focused(lambda e: self._editor.search_field.SetFocus()))
         # To avoid double actions these moved to on_key_down
         # self.register_shortcut('CtrlCmd-G', focused(lambda e: self._editor.on_find(e)))
@@ -163,6 +163,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
             if self._editor.datafile_controller == message.item.datafile_controller == next_datafile_controller:
                 # print(f"DEBUG: OnTreeSelection Same FILE item type={type(message.item)}")
                 self._editor.locate_tree_item(message.item)
+                return
             if self._editor.dirty and not self._apply_txt_changes_to_model():
                 if self._editor.datafile_controller != next_datafile_controller:
                     self.tree.select_controller_node(self._editor.datafile_controller)
@@ -601,16 +602,19 @@ class SourceEditor(wx.Panel):
         section_start = 0
         name_to_locate = r'^'+item.name
         position = self.source_editor.FindText(section_start, search_end, name_to_locate, STC_FIND_REGEXP)
+        # print(f"DEBUG: TextEditor locate_tree_item name_to_locate={name_to_locate} position={position}")
         if position[0] != -1:
             # DEBUG: Make colours configurable?
             self.source_editor.SetSelBackground(True, Colour('orange'))
             self.source_editor.SetSelForeground(True, Colour('white'))
+            self.source_editor.SetFocus()
             self.source_editor.GotoPos(position[1]+1)
             self.source_editor.SetCurrentPos(position[1])
             self.source_editor.SetAnchor(position[0])
             self.source_editor.SetSelection(position[0], position[1])
+            self.source_editor.SetFocusFromKbd()
             self.source_editor_parent.SetFocus()
-            self.SetFocusFromKbd()
+            self.source_editor.Update()
 
     def on_content_assist(self, event):
         """
