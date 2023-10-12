@@ -89,8 +89,8 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
 
         if IS_MAC:  # Mac needs this key binding
             self.register_shortcut('CtrlCmd-A', focused(lambda e: self._editor.select_all()))
-        if IS_WINDOWS or IS_MAC:  # Linux does not need this key binding
             self.register_shortcut('CtrlCmd-V', focused(lambda e: self._editor.paste()))
+            # IS_WINDOWS and Linux does not need this key binding
         self.register_shortcut('CtrlCmd-S', focused(lambda e: self.on_saving(e)))
         self.register_shortcut('CtrlCmd-F', focused(lambda e: self._editor.search_field.SetFocus()))
         # To avoid double actions these moved to on_key_down
