@@ -92,9 +92,10 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         if IS_WINDOWS or IS_MAC:  # Linux does not need this key binding
             self.register_shortcut('CtrlCmd-V', focused(lambda e: self._editor.paste()))
         self.register_shortcut('CtrlCmd-S', focused(lambda e: self.on_saving(e)))
-        self.register_shortcut('CtrlCmd-F', lambda e: self._editor.search_field.SetFocus())
-        self.register_shortcut('CtrlCmd-G', lambda e: self._editor.on_find(e))
-        self.register_shortcut('CtrlCmd-Shift-G', lambda e: self._editor.on_find_backwards(e))
+        self.register_shortcut('CtrlCmd-F', focused(lambda e: self._editor.search_field.SetFocus()))
+        # To avoid double actions these moved to on_key_down
+        # self.register_shortcut('CtrlCmd-G', focused(lambda e: self._editor.on_find(e)))
+        # self.register_shortcut('CtrlCmd-Shift-G', focused(lambda e: self._editor.on_find_backwards(e)))
         self.register_shortcut('Ctrl-Space', lambda e: focused(self._editor.on_content_assist(e)))
         self.register_shortcut('CtrlCmd-Space', lambda e: focused(self._editor.on_content_assist(e)))
         self.register_shortcut('Alt-Space', lambda e: focused(self._editor.on_content_assist(e)))
@@ -388,6 +389,7 @@ class SourceEditor(wx.Panel):
         self._data_validator.set_editor(self)
         self.source_editor_parent = parent
         self.plugin = plugin
+        self.datafile = None
         self._title = title
         self.tab_size = self.source_editor_parent.app.settings.get(TXT_NUM_SPACES, 4)
         self.reformat = self.source_editor_parent.app.settings.get('reformat', False)
@@ -537,11 +539,11 @@ class SourceEditor(wx.Panel):
     def datafile_controller(self):
         return self._data.wrapper_data if self._data else None
 
-    def on_find(self, event):
+    def on_find(self, event, forward=True):
         if self.source_editor:
             text = self.source_editor.GetSelectedText()
-            if len(text) > 0 and text.lower() != self.search_field.GetValue().lower() and \
-                    event.GetEventType() == wx.wxEVT_TOOL:
+            if (len(text) > 0 and text.lower() != self.search_field.GetValue().lower() and
+                    event.GetEventType() != wx.wxEVT_TOOL):
                 # if a search string selected in text and CTRL+G is pressed
                 # put the string into the search_field
                 self.search_field.SelectAll()
@@ -550,17 +552,16 @@ class SourceEditor(wx.Panel):
                 self.search_field.SetValue(text)
                 self.search_field.SelectAll()
                 self.search_field.Update()
-                # and set the start position to the beginning of the editor
-                self.source_editor.SetAnchor(0)
-                self.source_editor.SetCurrentPos(0)
-                self.source_editor.Update()
-
-            self._find()
+                if forward:
+                    # and set the start position to the beginning of the editor
+                    self.source_editor.SetAnchor(0)
+                    self.source_editor.SetCurrentPos(0)
+                    self.source_editor.Update()
+            self._find(forward)
 
     def on_find_backwards(self, event):
-        _ = event
         if self.source_editor:
-            self._find(forward=False)
+            self.on_find(event, forward=False)
 
     def _find(self, forward=True):
         txt = self.search_field.GetValue().encode('utf-8')
@@ -667,6 +668,8 @@ class SourceEditor(wx.Panel):
         except IndexError:  # It is a new project, no content yet
             self._controller_for_context = DummyController(self._data.wrapper_data, self._data.wrapper_data)
             self._suggestions = SuggestionSource(None, self._controller_for_context)
+        if self.plugin.datafile:
+            self.datafile = self.plugin.datafile
         if not self.source_editor:
             self._stored_text = self._data.content
         else:
@@ -929,8 +932,10 @@ class SourceEditor(wx.Panel):
         focus = wx.Window.FindFocus()
         if focus == self.source_editor:
             self.source_editor.Paste()
+        """ DEBUG: It was double pasting in search_field
         elif focus == self.search_field:
             self.search_field.Paste()
+        """
         self._mark_file_dirty(self.source_editor.GetModify())
 
     def select_all(self):
@@ -1059,6 +1064,12 @@ class SourceEditor(wx.Panel):
               and event.ControlDown() and not event.ShiftDown()):
             # We need to ignore this in Linux, because it does double-action
             return
+        elif keycode in (ord('g'), ord('G')) and event.ControlDown():
+            if event.ShiftDown():
+                wx.CallAfter(self.on_find_backwards, event)
+            else:
+                wx.CallAfter(self.on_find, event)
+            return
         elif keycode in (ord('d'), ord('D')) and event.ControlDown() and not event.ShiftDown():
             # We need to ignore because Scintilla does Duplicate line
             return
@@ -1124,7 +1135,7 @@ class SourceEditor(wx.Panel):
 
     def execute_variable_creator(self, list_variable=False, dict_variable=False):
         from_, to_ = self.source_editor.GetSelection()
-        text = self.source_editor.SelectedText
+        text = self.source_editor.GetSelectedText()
         size = len(bytes(text, encoding='utf-8'))
         to_ = from_ + size
         if list_variable:
@@ -1151,7 +1162,7 @@ class SourceEditor(wx.Panel):
 
     def execute_enclose_text(self, keycode):
         from_, to_ = self.source_editor.GetSelection()
-        text = self.source_editor.SelectedText
+        text = self.source_editor.GetSelectedText()
         size = len(bytes(text, encoding='utf-8'))
         to_ = from_ + size
         if size == 0:
