@@ -609,6 +609,7 @@ class SourceEditor(wx.Panel):
             self.source_editor.SetSelForeground(True, Colour('white'))
             self.source_editor.SetFocus()
             self.source_editor.GotoPos(position[1]+1)
+            self.source_editor.LineScrollUp()
             self.source_editor.SetCurrentPos(position[1])
             self.source_editor.SetAnchor(position[0])
             self.source_editor.SetSelection(position[0], position[1])
