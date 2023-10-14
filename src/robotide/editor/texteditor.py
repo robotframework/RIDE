@@ -1219,6 +1219,34 @@ class SourceEditor(wx.Panel):
             self.source_editor.Replace(begpos, endpos, rowselblock)
             self.source_editor.SetSelection(begpos, endpos - lenabove - 1)
             # DEBUG: recalculate line identation for new position and old
+            old_start = self.first_non_space(rowabove)
+            new_top = self.source_editor.GetLine(ini_line - 1)
+            new_start = self.first_non_space(new_top)
+            was_end_old = rowabove[old_start:old_start+3] == 'END'
+            was_end_new = new_top[new_start:new_start+3] == 'END'
+            print(f"DEBUG: TextEditor move_row_up selection={(begpos, endpos - lenabove - 1)}  "
+                  f"rowabove={rowabove} old_start={old_start} {was_end_old=} new_top={new_top} new_start={new_start} "
+                  f"{was_end_new=}")
+            if new_start <= old_start and was_end_old:
+                self.indent_block()
+            elif new_start > old_start:
+                self.deindent_block()
+
+    @staticmethod
+    def first_non_space(text):
+        idx = 0
+        for idx in range(0, len(text)):
+            if text[idx] != ' ':
+                break
+        return idx
+
+    @staticmethod
+    def last_non_space(text):
+        idx = 0
+        for idx in range(0, len(text)):
+            if text[idx] == ' ':
+                break
+        return idx
 
     def move_row_down(self, event):
         _ = event
@@ -1244,6 +1272,20 @@ class SourceEditor(wx.Panel):
         self.source_editor.Replace(begpos, endpos, rowselblock)
         self.source_editor.SetSelection(begpos + lenbelow, endpos - 1)
         # DEBUG: recalculate line identation for new position and old
+        old_start = self.first_non_space(rowbelow)
+        new_end = self.source_editor.GetLine(end_line + 1)
+        new_start = self.first_non_space(new_end)
+        was_end_old = rowbelow[old_start:old_start + 3] == 'END'
+        old_size = self.last_non_space(rowbelow[old_start:])
+        was_indent_old = rowbelow[old_start:old_start+old_size] in INDENTED_START
+        was_end_new = new_end[new_start:new_start + 3] == 'END'
+        print(f"DEBUG: TextEditor move_row_up selection={(begpos + lenbelow, endpos - 1)}  "
+              f"rowbelow={rowbelow} old_start={old_start} {was_end_old=} new_top={new_end} new_start={new_start} "
+              f"{was_end_new=}")
+        if new_start >= old_start and was_end_old:
+            self.deindent_block()
+        elif new_start < old_start or was_indent_old:
+            self.indent_block()
 
     def delete_row(self, event):
         _ = event
