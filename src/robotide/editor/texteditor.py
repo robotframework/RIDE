@@ -542,7 +542,10 @@ class SourceEditor(wx.Panel):
 
     def on_find(self, event, forward=True):
         if self.source_editor:
-            text = self.source_editor.GetSelectedText()
+            if event.GetEventType() != wx.wxEVT_TEXT_ENTER:  # Was getting selected item from Tree
+                text = self.source_editor.GetSelectedText()
+            else:
+                text = ''
             if (len(text) > 0 and text.lower() != self.search_field.GetValue().lower() and
                     event.GetEventType() != wx.wxEVT_TOOL):
                 # if a search string selected in text and CTRL+G is pressed
