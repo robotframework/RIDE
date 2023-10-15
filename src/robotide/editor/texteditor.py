@@ -1182,59 +1182,59 @@ class SourceEditor(wx.Panel):
         _ = event
         start, end = self.source_editor.GetSelection()
         new_ini_line = ini_line = self.source_editor.LineFromPosition(start)
+        last_line = self.source_editor.GetLineCount()
         # selection not on top?
         if ini_line > 0:
-            end_line = self.source_editor.LineFromPosition(end)
-            # get the previous row content and length
-            rowabove = self.source_editor.GetLine(ini_line - 1)
+            new_end_line = end_line = self.source_editor.LineFromPosition(end - 1)
+            # get the next row content
+            if end_line + 1 < last_line - 3:
+                rowbelow = self.source_editor.GetLine(end_line + 1)
+                # exception if moving block is long assignemnt or arguments with continuation markers extend selection
+                is_marker = self.first_non_space_content(rowbelow)
+                if is_marker == '...':
+                    new_end_line = self.find_initial_keyword(end_line, up=False)
+            if new_end_line != end_line:  # Extend selection
+                new_end_pos = self.source_editor.GetLineEndPosition(new_end_line - 1)
+                last_sel_content = self.source_editor.GetLine(new_end_line - 1)
+                print(f"DEBUG: move_row up initial end_line={end_line} new_end_line={new_end_line-1}"
+                      f" last_sel_content={last_sel_content}"
+                      f" char-1={chr(self.source_editor.GetCharAt(new_end_pos-1))}")
+                self.source_editor.SetSelection(start, new_end_pos-1)
+                # self.source_editor.SetAnchor(new_end_pos-1)
             # exception if is long assignemnt or arguments with continuation markers get top line
+            # get the previous row content
+            rowabove = self.source_editor.GetLine(ini_line - 1)
             is_marker = self.first_non_space_content(rowabove)
             if is_marker == '...':
                 new_ini_line = max(1, self.find_initial_keyword(ini_line))
+            self.source_editor.BeginUndoAction()
             if new_ini_line != ini_line:
                 # Move block to up new_ini_line
-                start_pos = (self.source_editor.GetLineEndPosition(new_ini_line) -
-                             len(self.source_editor.GetLine(new_ini_line)))
-                print(f"DEBUG: move_row up new_ini_line={new_ini_line} {start_pos=} "
-                      f"{self.first_non_space(self.source_editor.GetLine(new_ini_line))}")
-                self.source_editor.SetSelection(start_pos, end)
-                self.source_editor.BeginUndoAction()
+                delta = ini_line - new_ini_line
+                print(f"DEBUG: move_row up new_ini_line={new_ini_line} {delta=}")
+                for _ in range(0, delta):
+                    self.source_editor.MoveSelectedLinesUp()
+            else:
                 self.source_editor.MoveSelectedLinesUp()
-                start, end = self.source_editor.GetSelection()
-                end_pos = self.source_editor.LineFromPosition(end-1)  # One char before
-                nendpos = self.source_editor.GetLineEndPosition(end_pos)
-                self.source_editor.SetAnchor(nendpos)
-                self.source_editor.EndUndoAction()
-                return  # DEBUG: For now no indentation calculation
-            # get the content of the block rows
-            print(f"DEBUG: move_row after line calc ini_line={ini_line}")
-            rowselblock = ''
-            rowcnt = ini_line
-            while rowcnt <= end_line:
-                rowselblock += self.source_editor.GetLine(rowcnt)
-                rowcnt += 1
-            # add the content of previous row
-            rowselblock += rowabove
-            begpos = self.source_editor.PositionFromLine(ini_line - 1)
-            endpos = self.source_editor.PositionFromLine(end_line + 1)
-            self.source_editor.Replace(begpos, endpos, rowselblock)
-            # Compute new positions
-            new_top = self.source_editor.GetLine(ini_line - 1)
-            nbegpos = self.source_editor.GetLineEndPosition(ini_line-1) - len(new_top) + 1
-            nendpos = self.source_editor.GetLineEndPosition(end_line - 1)
-            # Do the selection
-            self.source_editor.SetSelection(nbegpos, nendpos)  # + ipadding - dpadding)
+            self.source_editor.EndUndoAction()
+            # New selection
+            start, end = self.source_editor.GetSelection()
+            end_pos = self.source_editor.LineFromPosition(end - 1)  # One char before
+            nendpos = self.source_editor.GetLineEndPosition(end_pos)
+            self.source_editor.SetAnchor(nendpos)
+            # indentation after move
+            new_top = self.source_editor.GetLine(new_ini_line - 1)
+            rowabove = self.source_editor.GetLine(new_ini_line - 1)
             old_start = self.first_non_space(rowabove)
             new_start = self.first_non_space(new_top)
             was_end_old = rowabove[old_start:old_start+3] == 'END'
             was_end_new = new_top[new_start:new_start+3] == 'END'
-            # DEBUG: recalculate line identation for new position and old
             if (new_start == old_start and was_end_old) or (new_start < old_start and not was_end_new):
                 self.indent_block()
             elif new_start > old_start:
                 self.deindent_block()
 
-    def find_initial_keyword(self, start, up=True):
+    def find_initial_keyword(self, start: int, up=True):
         if up:
             if start <= 3:
                 return
@@ -1269,13 +1269,10 @@ class SourceEditor(wx.Panel):
             while is_marker == '...' and line < last_line - 2:
                 row = self.source_editor.GetLine(line)
                 is_marker = self.first_non_space_content(row)
-                print(f"DEBUG: find_initial_keyword in loop {row=}"
-                      f"\n {is_marker=}")
                 if is_marker != '...':
                     found = True
                     break
                 line += 1
-            print(f"DEBUG: find_initial_keyword in loop returnig {line=} {found=} start={start+1}")
             return line if found else start + 1
 
     def first_non_space_content(self, text):
@@ -1312,7 +1309,7 @@ class SourceEditor(wx.Panel):
         if is_marker == '...':
             new_end_line = self.find_initial_keyword(end_line, up=False)
         if new_end_line != end_line:
-            # Move block to belo new_end_line
+            # Move block to below new_end_line
             end_pos = self.source_editor.GetLineEndPosition(new_end_line-1)
             self.source_editor.SetSelection(start, end_pos)
             self.source_editor.BeginUndoAction()
