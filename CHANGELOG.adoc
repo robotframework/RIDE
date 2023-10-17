@@ -34,6 +34,7 @@ Force Tags settings, after Robot Framework 7.0
 
 === Changed
 
+- Improved Move up/down, ``Alt-UpArrow``/``Alt-DownArrow`` in Text Editor, to have proper indentation and selection
 - Improved **RIDE Log** and **Parser Log** windows to allow Zoom In/Out with ``Ctrl-Mouse Wheel``
 - Hide continuation markers in Project Tree
 - Improved content assistance in Text Editor by allowing to filter list as we type
