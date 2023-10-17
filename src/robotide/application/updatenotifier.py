@@ -32,6 +32,7 @@ from ..postinstall.__main__ import MessageDialog
 
 _CHECK_FOR_UPDATES_SETTING = "check for updates"
 _LAST_UPDATE_CHECK_SETTING = "last update check"
+SPC = "  "
 
 
 class UpdateNotifierController(object):
@@ -100,29 +101,33 @@ def upgrade_from_dev_dialog(version_installed):
     main_dict = {'VERSION': VERSION}
     exec(master_code, main_dict)  # defines VERSION
     if cmp_versions(version_installed, main_dict['VERSION']) == -1:
-        # Here is the Menu Help->Upgrade insertion part, try to highlight menu
-        if not _askyesno("Upgrade?", f"New development version is available.\nYou may install"
-                                     f" version {main_dict['VERSION']} with:\npip install -U https://github.com/"
-                                     f"robotframework/RIDE/archive/master.zip", wx.GetActiveWindow()):
+        # Here is the Menu Help->Upgrade insertion part, try to highlight menu # wx.CANCEL_DEFAULT
+        command = sys.executable + " -m pip install -U https://github.com/robotframework/RIDE/archive/master.zip"
+        _add_content_to_clipboard(command)
+        if not _askyesno("Upgrade?", f"{SPC}New development version is available.{SPC}\n{SPC}You may install"
+                         f" version {main_dict['VERSION']} with:\n{SPC}{command}{SPC}\n\n"
+                         f"{SPC}Click OK to Upgrade now!\n{SPC}After upgrade you will see another dialog informing"
+                         f" to close this RIDE instance.{SPC}\n",
+                         wx.GetActiveWindow(),  no_default=True):
             return False
         else:
-            command = sys.executable + " -m pip install -U https://github.com/robotframework/RIDE/archive/master.zip"
             do_upgrade(command)
             return True
     else:
-        _askyesno("No Upgrade Available", "You have the latest version of RIDE.\nHave a nice day :)",
+        _askyesno("No Upgrade Available", f"{SPC}You have the latest version of RIDE.{SPC}"
+                                          f"\n\n{SPC}              Have a nice day :)\n",
                   wx.GetActiveWindow())
         return False
 
 
-def _askyesno(title, message, frame=None):
+def _askyesno(title, message, frame=None,  no_default=False):
     if frame is None:
-        _ = wx.App()
+        _ = wx.GetApp() or wx.App()
         parent = wx.Frame(None, size=(0, 0))
     else:
         parent = wx.Frame(frame, size=(0, 0))
     parent.CenterOnScreen()
-    dlg = MessageDialog(parent, message, title, ttl=8)
+    dlg = MessageDialog(parent, message, title, ttl=8, no_default=no_default)
     dlg.Fit()
     result = dlg.ShowModal() in [wx.ID_YES, wx.ID_OK]
     # print("DEBUG: updatenotifier _askyesno Result %s" % result)
@@ -150,6 +155,9 @@ def do_upgrade(command):
         outs, errs = my_pip.communicate()
         # DEBUG: Add output to a notebook tab
         print(f"{outs}\n")
+        if errs:
+            print(f"\nERRORS: {errs}\n")
+            errs = None
         result = my_pip.returncode
         if result == 0:
             break
@@ -164,7 +172,7 @@ def do_upgrade(command):
         """
         time.sleep(1)
     if result != 0:
-        _askyesno("Failed to Upgrade", "An error occurred when installing new version",
+        _askyesno("Failed to Upgrade", f"{SPC}An error occurred when installing new version",
                   wx.GetActiveWindow())
         return False
     command = sys.executable + " -m robotide.__init__ --noupdatecheck"
@@ -173,7 +181,7 @@ def do_upgrade(command):
     """ Not working well:
     wx.CallLater(10000, psutil.Process.kill, my_pid.pid)
     """
-    _askyesno("Completed Upgrade", f"You should close this RIDE (Process ID = {my_pid.pid})",
+    _askyesno("Completed Upgrade", f"\n{SPC}You should close this RIDE (Process ID = {my_pid.pid}){SPC}",
               wx.GetActiveWindow())
 
 
@@ -189,22 +197,25 @@ class LocalHtmlWindow(HtmlWindow):
 
 class UpdateDialog(RIDEDialog):
 
-    def __init__(self, uversion, url, settings):
+    def __init__(self, uversion, url, settings, modal=True):
         self._settings = settings
         self._command = sys.executable + f" -m pip install -U robotframework-ride=={uversion}"
-        RIDEDialog.__init__(self, title="Update available", size=(400, 400),
+        _add_content_to_clipboard(self._command)
+        RIDEDialog.__init__(self, title="Update available", size=(600, 400),
                             style=wx.DEFAULT_FRAME_STYLE | wx.FRAME_FLOAT_ON_PARENT)
         # set Left to Right direction (while we don't have localization)
         self.SetLayoutDirection(wx.Layout_LeftToRight)
         self.SetBackgroundColour(Colour(self.color_background))
         self.SetForegroundColour(Colour(self.color_foreground))
         sizer = wx.BoxSizer(orient=wx.VERTICAL)
-        hwin = LocalHtmlWindow(self, size=(400, 200))
-        hwin.set_content(f"New version {uversion} available from <a href=\"{url}\">{url}</a><br/>"
-                         f"See this version <a href=\"https://github.com/robotframework/RIDE/blob/master/doc"
+        hwin = LocalHtmlWindow(self, size=(600, 200))
+        hwin.set_content(f"{SPC}New version {uversion} available from <a href=\"{url}\">{url}</a><br/>"
+                         f"{SPC}See this version <a href=\"https://github.com/robotframework/RIDE/blob/master/doc"
                          f"/releasenotes/ride-{uversion}.rst\">Release Notes</a><br/><br/>"
-                         f"You can update with the command:<br/><b>pip install -U robotframework-ride</b>"
-                         f"<br/><br/>See the latest development <a href=\"https://github.com/robotframework/RIDE"
+                         f"{SPC}You can update with the command:<br/><b>{self._command}</b>"
+                         f"<br/><br/>{SPC}Or, click <b>Upgrade Now</b>.<br/>"
+                         f"{SPC}After upgrade you will see another dialog informing to close this RIDE instance.</b>"
+                         f"<br/><br/>{SPC}See the latest development <a href=\"https://github.com/robotframework/RIDE"
                          f"/blob/master/CHANGELOG.adoc\">CHANGELOG</a>")
         irep = hwin.GetInternalRepresentation()
         hwin.SetSize((irep.GetWidth()+25, irep.GetHeight()+20))
@@ -228,8 +239,11 @@ class UpdateDialog(RIDEDialog):
         self.CentreOnParent(wx.BOTH)
         self.Fit()
         self.SetFocus()
-        self.ShowModal()
-        self.Destroy()
+        if modal:
+            self.ShowModal()
+            self.Destroy()
+        else:
+            self.Show()
 
     def on_remind_me_later(self, event):
         _ = event

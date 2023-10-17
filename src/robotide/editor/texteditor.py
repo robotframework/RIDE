@@ -89,8 +89,8 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
 
         if IS_MAC:  # Mac needs this key binding
             self.register_shortcut('CtrlCmd-A', focused(lambda e: self._editor.select_all()))
-            self.register_shortcut('CtrlCmd-V', focused(lambda e: self._editor.paste()))
-            # IS_WINDOWS and Linux does not need this key binding
+        # No system needs this key binding, because is already global
+        # self.register_shortcut('CtrlCmd-V', focused(lambda e: self._editor.paste()))
         # self.register_shortcut('CtrlCmd-S', focused(lambda e: self.on_saving(e)))
         self.register_shortcut('CtrlCmd-F', focused(lambda e: self._editor.search_field.SetFocus()))
         # To avoid double actions these moved to on_key_down
@@ -276,7 +276,7 @@ class DataValidationHandler(object):
             data.update_from(data.format_text(m_text))
         else:
             # DEBUG: This is the area where we will implement to not reformat code
-            data.update_from(text)
+            data.update_from(m_text)
             # There is no way to update the model without reformatting
             # DEBUG: this only updates the editor, but not the model, changes in Text Editor are not reflected
             # in Grid or when saving
