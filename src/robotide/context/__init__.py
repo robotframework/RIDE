@@ -357,6 +357,14 @@ SHORTCUT_KEYS = '''\
         <td>Find previous search result</td>
     </tr>
     <tr>
+        <td>CtrlCmd-Z</td>
+        <td>Undo</td>
+    </tr>
+    <tr>
+        <td>CtrlCmd-Y</td>
+        <td>Redo</td>
+    </tr>
+    <tr>
         <td>CtrlCmd-1</td>
         <td>Make scalar variable body</td>
     </tr>

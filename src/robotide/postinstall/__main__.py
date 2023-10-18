@@ -67,7 +67,7 @@ def verify_install():
 
 
 class MessageDialog(RIDEDialog):
-    def __init__(self, parent, message, title, ttl=10):
+    def __init__(self, parent, message, title, ttl=10, no_default=False):
         RIDEDialog.__init__(self, title=title, parent=parent, size=(300, 200))
 
         self.CenterOnScreen(wx.BOTH)
@@ -82,7 +82,7 @@ class MessageDialog(RIDEDialog):
         vbox.Add(self.settimetolivemsg, 0, wx.ALIGN_CENTER | wx.TOP, 10)
         self.SetSizer(vbox)
         self.SetAffirmativeId(wx.ID_OK)
-        self._create_buttons(None)
+        self._create_buttons(None, no_default)
         self.SetBackgroundColour(Colour(self.color_background))
         self.SetForegroundColour(Colour(self.color_foreground))
         self.timer = wx.Timer(self)
@@ -118,8 +118,11 @@ class MessageDialog(RIDEDialog):
             self.timer.Stop()
             self.EndModal(wx.ID_NO)
 
-    def _create_buttons(self, sizer):
-        buttons = self.CreateStdDialogButtonSizer(wx.OK | wx.CANCEL)
+    def _create_buttons(self, sizer, no_default=False):
+        flags = wx.OK | wx.CANCEL
+        if no_default:
+            flags |= wx.NO_DEFAULT
+        buttons = self.CreateStdDialogButtonSizer(flags)
         self.SetBackgroundColour(Colour(self.color_background))
         self.SetForegroundColour(Colour(self.color_foreground))
         for item in self.GetChildren():
@@ -131,14 +134,15 @@ class MessageDialog(RIDEDialog):
         self.Sizer.Add(buttons, flag=wx.ALIGN_CENTER | wx.ALL, border=5)
 
 
-def _askyesno(title, message, frame=None):
+def _askyesno(title, message, frame=None,  no_default=False):
     if frame is None:
         _ = wx.App()
         parent = wx.Frame(None, size=(0, 0))
     else:
         parent = wx.Frame(frame, size=(0, 0))
     parent.CenterOnScreen()
-    dlg = MessageDialog(parent, message, title, ttl=8)
+    dlg = MessageDialog(parent, message, title, ttl=8, no_default=no_default)
+    dlg.Fit()
     result = dlg.ShowModal() in [wx.ID_YES, wx.ID_OK]
     print("Result %s" % result)
     if dlg:

@@ -16,9 +16,11 @@ import typing
 import unittest
 import time
 import urllib
+
+import pytest
 import wx
 
-from robotide.application.updatenotifier import UpdateNotifierController
+from robotide.application.updatenotifier import UpdateNotifierController, UpdateDialog
 
 CHECKFORUPDATES = 'check for updates'
 LASTUPDATECHECK = 'last update check'
@@ -184,6 +186,15 @@ class UpdateNotifierTestCase(unittest.TestCase):
         self.assertTrue(settings[LASTUPDATECHECK] > time.time() - 10)  # The dialog timeout in 10 seconds
         self.assertTrue(settings[CHECKFORUPDATES])
         self.assertFalse(self._callback_called)
+
+    def test_normal_update_dialog(self):
+        """ This is not actually doing a test """
+        app = wx.App()
+        settings = self.internal_settings()
+        ctrl=UpdateDialog('1.0.0', 'http://localhost', settings, False)
+        wx.CallLater(3000, ctrl.EndModal,wx.CANCEL)
+        ctrl.ShowModal()
+        ctrl.Destroy()
 
 
 if __name__ == '__main__':
