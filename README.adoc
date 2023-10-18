@@ -56,6 +56,7 @@ Windows (Python 3.11): image:https://ci.appveyor.com/api/projects/status/github/
 Quality Gate Status: image:https://sonarcloud.io/api/project_badges/measure?project=HelioGuilherme66_RIDE&metric=alert_status[SonarCloud, link=https://sonarcloud.io/summary/new_code?id=HelioGuilherme66_RIDE]
 
 '''
+=== Links ===
 
 * https://pypi.python.org/pypi/robotframework-ride[Downloads at PyPi]
 * Statistics at https://pypistats.org/packages/robotframework-ride[PyPi Stats] and https://libraries.io/pypi/robotframework-ride[Libraries.io]
@@ -63,3 +64,10 @@ Quality Gate Status: image:https://sonarcloud.io/api/project_badges/measure?proj
 * Bug report/enhancement request? Use the https://github.com/robotframework/RIDE/issues[issue tracker]
 * Any questions? Do not hesitate to use the https://groups.google.com/group/robotframework-users/[mailing list], or https://forum.robotframework.org/c/tools/ride/21[Robot Framework Forum->Tools>RIDE], or https://stackoverflow.com/questions/tagged/robotframework-ide[StackOverflow].
 * Development information is in https://github.com/robotframework/RIDE/blob/master/BUILD.rest[BUILD] file
+
+'''
+
+== Stargazers over time ==
+
+image:https://starchart.cc/robotframework/RIDE.svg[Stargazers over time, link=https://starchart.cc/robotframework/RIDE]
+
