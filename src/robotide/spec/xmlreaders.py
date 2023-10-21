@@ -117,7 +117,8 @@ def _resolve_path(path, basedir):
         if os.path.isdir(ret) and \
                 os.path.isfile(os.path.join(ret, '__init__.py')):
             return ret
-    raise robotapi.DataError
+    return None
+    # DEBUG raise robotapi.DataError
 
 
 def _get_library_name(name):

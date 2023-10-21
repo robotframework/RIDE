@@ -34,6 +34,7 @@ Force Tags settings, after Robot Framework 7.0
 
 === Changed
 
+- Improved keywords documentation search, by adding current dir to search
 - Improved Move up/down, ``Alt-UpArrow``/``Alt-DownArrow`` in Text Editor, to have proper indentation and selection
 - Improved **RIDE Log** and **Parser Log** windows to allow Zoom In/Out with ``Ctrl-Mouse Wheel``
 - Hide continuation markers in Project Tree

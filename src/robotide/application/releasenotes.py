@@ -168,6 +168,7 @@ RELEASE_NOTES = f"""
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
+<li>Improved keywords documentation search, by adding current dir to search</li>
 <li>Improved Move up/down, <b>Alt-UpArrow</b>/<b>Alt-DownArrow</b> in Text Editor, to have proper indentation and selection</li>
 <li>Added auto update check when development version is installed</li>
 <li>Added menu option <b>Help-&gt;Check for Upgrade</b> which allows to force update check and install development version</li>

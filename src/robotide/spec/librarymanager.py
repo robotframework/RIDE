@@ -18,6 +18,7 @@ import queue
 from sqlite3 import OperationalError
 from threading import Thread
 
+import robotide.robotapi
 from ..publish import RideLogException, RideLogMessage
 from ..spec.librarydatabase import LibraryDatabase
 from ..spec.libraryfetcher import get_import_result
@@ -77,9 +78,23 @@ class LibraryManager(Thread):
 
     def _fetch_keywords(self, library_name, library_args):
         try:
-            path = get_path(
-                library_name.replace('/', os.sep), os.path.abspath('.'))
-            return get_import_result(path, library_args)
+            doc_paths = os.getenv('RIDE_DOC_PATH')
+            collection = []
+            path = get_path(library_name.replace('/', os.sep), os.path.abspath('.'))
+            if path:
+                results = get_import_result(path, library_args)
+                if results:
+                    return results
+            if doc_paths:
+                for p in doc_paths.split(','):
+                    path = get_path(library_name.replace('/', os.sep), p.strip())
+                    if path:
+                        results = get_import_result(path, library_args)
+                        if results:
+                            collection.extend(results)
+            if collection:
+                return collection
+            raise robotide.robotapi.DataError
         except Exception as err:
             try:
                 print('FAILED', library_name, err)

@@ -418,8 +418,12 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
             self.SetItemWindow(node, self._animctrl, False)
             self._animctrl.Play()
         # Make visible the running or paused test
-        self.EnsureVisible(node.GetParent())
+        parent = node.GetParent()
+        self.EnsureVisible(parent)  # DEBUG add animation to parent if suite setup/teardown started
+        self.ExpandAllChildren(parent)
         self.EnsureVisible(node)
+        self.ExpandAllChildren(node)
+        self.Update()
 
     def _get_icon_index_for(self, controller):
         if not self._execution_results:

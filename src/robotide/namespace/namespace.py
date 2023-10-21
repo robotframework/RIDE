@@ -55,13 +55,20 @@ class Namespace(object):
         """Add user configured paths to PYTHONAPATH.
         """
         path_idx = 0
+        dp = os.getenv('RIDE_DOC_PATH')
+        if not dp:
+            doc_paths = ['.']
+        else:
+            doc_paths = dp.split(',')
         for path in self.settings.get('pythonpath', []):
+            if os.path.isdir(path):
+                doc_paths.append(path.replace('/', os.sep))
             if path not in sys.path:
                 normalized = path.replace('/', os.sep)
                 sys.path.insert(path_idx, normalized)
                 path_idx += 1
-                RideLogMessage(u'Inserted \'{0}\' to sys.path.'
-                               .format(normalized)).publish()
+                RideLogMessage(u'Inserted \'{0}\' to sys.path.'.format(normalized)).publish()
+        os.environ['RIDE_DOC_PATH'] = ",".join(doc_paths)
 
     def _setting_changed(self, message):
         section, setting = message.keys
@@ -76,6 +83,13 @@ class Namespace(object):
         self._context_factory.reload_context_global_vars()
 
     def update_cur_dir_global_var(self, cur_dir):
+        dp = os.getenv('RIDE_DOC_PATH')
+        parent_cur_dir=os.path.dirname(os.path.abspath(cur_dir))
+        if dp:
+            if cur_dir not in dp:
+                os.environ['RIDE_DOC_PATH'] = dp + f", {cur_dir}, {parent_cur_dir}"
+        else:
+            os.environ['RIDE_DOC_PATH'] = f"{cur_dir}, {parent_cur_dir}"
         _VariableStash.global_variables['${CURDIR}'] = cur_dir
         self._context_factory.reload_context_global_vars()
 
