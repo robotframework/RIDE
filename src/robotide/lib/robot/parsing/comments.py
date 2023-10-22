@@ -48,7 +48,7 @@ class Comments(object):
 class Comment(object):
 
     def __init__(self, comment_data):
-        if is_string(comment_data):
+        if comment_data and is_string(comment_data):
             comment_data = [comment_data] if comment_data else []
         self._comment = comment_data or []
         # print(f"DEBUG RFLib Comment input={comment_data} self._comment={self._comment}")

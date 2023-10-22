@@ -241,6 +241,10 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
             # print(f"DEBUG: filecontrollers unmark_dirty PUBLISH RideDataDirtyCleared")
             RideDataDirtyCleared(datafile=self).publish()
 
+    @property
+    def is_dirty(self):
+        return self.dirty
+
     def create_keyword(self, name, argstr=''):
         return self.keywords.new(name, argstr)
 
