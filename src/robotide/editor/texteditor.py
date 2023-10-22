@@ -122,7 +122,6 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
     def on_saving(self, message):
         _ = message
         if self.is_focused():
-            # print("DEBUG: textedit OnSaving when focused, saving")
             self._editor.is_saving = False
             self._editor.content_save()
         elif isinstance(message, RideSaving):
@@ -202,6 +201,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         if message.newtab == self.title:
             self._open()
             self._editor.set_editor_caret_position()
+            self._editor._dirty = 1
             try:
                 self._set_read_only(self._editor.source_editor.readonly)
             except Exception as e:  # DEBUG: When using only Text Editor exists error in message topic
@@ -210,15 +210,12 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
             self._editor.remove_and_store_state()
             self._editor_component.is_saving = False
             self._editor_component.content_save()
+            self._editor._dirty = 0
 
     def on_tab_changed(self, event):
         _ = event
         self._show_editor()
-
-    def on_tab_changing(self, message):
-        if 'Editor' in message.oldtab:
-            self._editor.is_saving = False
-            self._editor.content_save()
+        event.Skip()
 
     def _apply_txt_changes_to_model(self):
         self._editor.is_saving = False
@@ -311,13 +308,6 @@ class DataValidationHandler(object):
                                              'Reset changes?',
                                'Can not apply changes from Txt Editor', style=wx.YES | wx.NO)
         dlg.InheritAttributes()
-        """
-        dlg.SetBackgroundColour(Colour(200, 222, 40))
-        dlg.SetOwnBackgroundColour(Colour(200, 222, 40))
-        dlg.SetForegroundColour(Colour(7, 0, 70))
-        dlg.SetOwnForegroundColour(Colour(7, 0, 70))
-        """
-        # dlg.Refresh(True)
         did = dlg.ShowModal()
         self._last_answer = did
         self._last_answer_time = time()
@@ -354,10 +344,12 @@ class DataFileWrapper(object):  # DEBUG: bad class name
         return self._txt_data(self._create_target_from(text))
 
     def mark_data_dirty(self):
-        self.wrapper_data.mark_dirty()
+        if not self.wrapper_data.is_dirty:
+            self.wrapper_data.mark_dirty()
 
     def mark_data_pristine(self):
-        self.wrapper_data.unmark_dirty()
+        if self.wrapper_data.is_dirty:
+            self.wrapper_data.unmark_dirty()
 
     def _create_target(self):
         data = self.wrapper_data.data
@@ -534,7 +526,8 @@ class SourceEditor(wx.Panel):
 
     @property
     def dirty(self):
-        return self._dirty == 1  # self.source_editor.IsModified() and self._dirty == 1
+        return self._dirty == 1 and (self._data.wrapper_data.is_dirty or self.source_editor.IsModified())
+        # return self._dirty == 1  # self.source_editor.IsModified() and self._dirty == 1
 
     @property
     def datafile_controller(self):
@@ -818,7 +811,8 @@ class SourceEditor(wx.Panel):
 
     def reset(self):
         self._dirty = 0
-        self._mark_file_dirty(False)
+        if self._data and not self._data.wrapper_data.is_dirty:
+            self._mark_file_dirty(False)
 
     def content_save(self, *args):
         _ = args
@@ -828,7 +822,7 @@ class SourceEditor(wx.Panel):
             if not self._data_validator.validate_and_update(self._data, self.source_editor.utf8_text):
                 self.is_saving = False
                 return False
-        self.GetFocus(None)
+        # self.GetFocus(None)
         return True
 
     """
@@ -930,10 +924,6 @@ class SourceEditor(wx.Panel):
         focus = wx.Window.FindFocus()
         if focus == self.source_editor:
             self.source_editor.Paste()
-        """ DEBUG: It was double pasting in search_field
-        elif focus == self.search_field:
-            self.search_field.Paste()
-        """
         self._mark_file_dirty(self.source_editor.GetModify())
 
     def select_all(self):
@@ -990,6 +980,9 @@ class SourceEditor(wx.Panel):
         self.source_editor.set_text(self._data.content)
 
     def on_editor_key(self, event):
+        if not self.is_focused():
+            event.Skip()
+            return
         keycode = event.GetKeyCode()
         keyvalue = event.GetUnicodeKey()
         # print(f"DEBUG: TextEditor key up focused={self.is_focused()} modify {self.source_editor.GetModify()}")
@@ -1005,8 +998,8 @@ class SourceEditor(wx.Panel):
             return
         if keyvalue == wx.WXK_NONE and keycode in [wx.WXK_CONTROL, wx.WXK_RAW_CONTROL]:
             self.source_editor.hide_kw_doc()
-        if self.is_focused() and self._dirty == 0:  # DEBUG  and keycode != wx.WXK_CONTROL
-            self._mark_file_dirty(self.source_editor.GetModify())
+        if self.is_focused():  # DEBUG and keycode != wx.WXK_CONTROL and keyvalue >= ord(' ') and self.dirty:
+            self._mark_file_dirty(self.source_editor.IsModified())
         event.Skip()
 
     def on_key_down(self, event):
@@ -1018,6 +1011,9 @@ class SourceEditor(wx.Panel):
         :param event:
         :return:
         """
+        if not self.is_focused():
+            event.Skip()
+            return
         keycode = event.GetUnicodeKey()
         raw_key = event.GetKeyCode()
         # print(f"DEBUG: TextEditor on_key_down event={event} raw_key={raw_key} wx.WXK_C ={wx.WXK_CONTROL}")
@@ -1077,6 +1073,8 @@ class SourceEditor(wx.Panel):
             self.source_editor.show_kw_doc()
             event.Skip()
         else:
+            # if self.dirty and keycode >= ord(' '):
+            self._mark_file_dirty(self.source_editor.IsModified())
             event.Skip()
 
         # These commands are duplicated by global actions
@@ -1775,13 +1773,11 @@ class SourceEditor(wx.Panel):
     def _mark_file_dirty(self, dirty=True):
         if not self.is_focused():  # DEBUG: Was marking file clean from Grid Editor
             return
-        if self._data:
-            if self._dirty == 0 and dirty:
+        if self._data and self._dirty == 1:
+            if dirty:
                 self._data.mark_data_dirty()
-                self._dirty = 1
-            elif self._dirty == 1:
+            else:
                 self._data.mark_data_pristine()
-                self._dirty = 0
 
 
 class RobotDataEditor(stc.StyledTextCtrl):
