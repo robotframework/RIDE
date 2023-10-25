@@ -388,7 +388,7 @@ class SourceEditor(wx.Panel):
         self.reformat = self.source_editor_parent.app.settings.get('reformat', False)
         self._create_ui(title)
         self._data = None
-        self._dirty = 0  # 0 is False and 1 is True, when changed on this editor
+        self._dirty = 1  # 0 is False and 1 is True, when changed on this editor
         self._position = 0  # Start at 0 if first time access
         self.restore_start_pos = self._position
         self.restore_end_pos = self._position
@@ -985,6 +985,7 @@ class SourceEditor(wx.Panel):
             return
         keycode = event.GetKeyCode()
         keyvalue = event.GetUnicodeKey()
+        self._dirty = 1
         # print(f"DEBUG: TextEditor key up focused={self.is_focused()} modify {self.source_editor.GetModify()}")
         if keycode == wx.WXK_DELETE:  # DEBUG on Windows we only get here, single Text Editor
             selected = self.source_editor.GetSelection()
@@ -994,7 +995,9 @@ class SourceEditor(wx.Panel):
                     self.source_editor.DeleteRange(selected[0], 1)
             else:
                 self.source_editor.DeleteRange(selected[0], selected[1] - selected[0])
+            self._mark_file_dirty(self.source_editor.IsModified())
         if keycode in [wx.WXK_RETURN, wx.WXK_NUMPAD_ENTER]:
+            self._mark_file_dirty(self.source_editor.IsModified())
             return
         if keyvalue == wx.WXK_NONE and keycode in [wx.WXK_CONTROL, wx.WXK_RAW_CONTROL]:
             self.source_editor.hide_kw_doc()
@@ -1016,8 +1019,10 @@ class SourceEditor(wx.Panel):
             return
         keycode = event.GetUnicodeKey()
         raw_key = event.GetKeyCode()
+        self._dirty = 1
         # print(f"DEBUG: TextEditor on_key_down event={event} raw_key={raw_key} wx.WXK_C ={wx.WXK_CONTROL}")
         if event.GetKeyCode() == wx.WXK_DELETE:
+            self._mark_file_dirty(self.source_editor.IsModified())
             return
         if raw_key != wx.WXK_CONTROL:  # We need to clear doc as soon as possible
             self.source_editor.hide_kw_doc()
@@ -1026,12 +1031,14 @@ class SourceEditor(wx.Panel):
                 self._showing_list = False
                 wx.CallAfter(self.write_ident)  # DEBUG: Make this configurable?
                 event.Skip()
+                self._mark_file_dirty(self.source_editor.IsModified())
                 return
             selected = self.source_editor.GetSelection()
             if selected[0] == selected[1]:
                 self.write_ident()
             else:
                 self.indent_block()
+            self._mark_file_dirty(self.source_editor.IsModified())
         elif event.GetKeyCode() == wx.WXK_TAB and event.ShiftDown():
             selected = self.source_editor.GetSelection()
             if selected[0] == selected[1]:
@@ -1043,6 +1050,7 @@ class SourceEditor(wx.Panel):
                     self.source_editor.SetSelection(pos, pos)
             else:
                 self.deindent_block()
+                self._mark_file_dirty(self.source_editor.IsModified())
         elif event.GetKeyCode() in [wx.WXK_RETURN, wx.WXK_NUMPAD_ENTER]:
             if not self._showing_list:
                 self.auto_indent()
@@ -1050,13 +1058,16 @@ class SourceEditor(wx.Panel):
                 self._showing_list = False
                 wx.CallAfter(self.write_ident)  # DEBUG: Make this configurable?
                 event.Skip()
+            self._mark_file_dirty(self.source_editor.IsModified())
         elif keycode in (ord('1'), ord('2'), ord('5')) and event.ControlDown():
             self.execute_variable_creator(list_variable=(keycode == ord('2')),
                                           dict_variable=(keycode == ord('5')))
             self.store_position()
+            self._mark_file_dirty(self.source_editor.IsModified())
         elif (not IS_WINDOWS and not IS_MAC and keycode in (ord('v'), ord('V'))
               and event.ControlDown() and not event.ShiftDown()):
             # We need to ignore this in Linux, because it does double-action
+            self._mark_file_dirty(self.source_editor.IsModified())
             return
         elif keycode in (ord('g'), ord('G')) and event.ControlDown():
             if event.ShiftDown():
@@ -1066,6 +1077,7 @@ class SourceEditor(wx.Panel):
             return
         elif keycode in (ord('d'), ord('D')) and event.ControlDown() and not event.ShiftDown():
             # We need to ignore because Scintilla does Duplicate line
+            self._mark_file_dirty(self.source_editor.IsModified())
             return
         elif event.ControlDown() and raw_key == wx.WXK_CONTROL:
             # This must be the last branch to activate actions before doc
