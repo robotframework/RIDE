@@ -152,14 +152,14 @@ RELEASE_NOTES = f"""
 <ul class="simple">
 <li>This version supports Python 3.6 up to 3.11.</li>
 <li>There are some changes, or known issues:<ul>
-<li>RIDE tray icon now shows a context menu with options Show, Hide and Close</li>
-<li>Highlighting and navigation of selected Project Explorer items, in Text Editor</li>
+<li>On Text Editor, pressing <b>Ctrl</b> when the caret/cursor is near a Keyword will show a detachable window with the documentation, at Mouse Pointer position.</li> 
+<li>RIDE tray icon now shows a context menu with options Show, Hide and Close.</li>
+<li>Highlighting and navigation of selected Project Explorer items, in Text Editor.</li>
 <li>When editing in Grid Editor with content assistance, the selected content can be edited by escaping the list of suggestions with keys ARROW_LEFT or ARROW_RIGHT.</li>
-<li>Newlines in Grid Editor can be made visible with the `filter newlines` set to False.</li>
+<li>Newlines in Grid Editor can be made visible with the <b>filter newlines</b> set to False.</li>
 <li>On Text Editor when Saving the selection of tests in Test Suites (Tree) is cleared.</li>
 <li>Test Suite with <em>*** Comments ***</em> can be edited but newlines are introduced.</li>
-<li>When editing resource files in Text Editor, item may disappear from Project Explorer and content may be lost if clicking Apply.
- Better to use the Save action, so changed content is not lost.</li>
+<li>Problems with COPY/PASTE in Text Editor have been reported when using wxPython 4.2.0, but not with version 4.2.1, which we now <em>recommend</em>.</li>
 <li>Some argument types detection (and colorization) is not correct in Grid Editor.</li>
 <li>RIDE <strong>DOES NOT KEEP</strong> Test Suites formatting or structure, causing differences in files when used
  on other IDE or Editors.</li>
@@ -177,7 +177,7 @@ RELEASE_NOTES = f"""
 <li>Improved <b>RIDE Log</b> and <b>Parser Log</b> windows to allow Zoom In/Out with <b>Ctrl-Mouse Wheel</b></li>
 <li>Hide continuation markers in Project Tree</li>
 <li>Improved content assistance in Text Editor by allowing to filter list as we type</li>
-<li>Fixed resource files dissapearing from Project tree on Windows</li>
+<li>Fixed resource files disappearing from Project tree on Windows</li>
 <li>Fixed missing indication of link for User Keyword, when pressing <b>Ctrl</b> in Grid Editor</li>
 <li>Added content help pop-up on Text Editor by pressing <b>Ctrl</b> for text at cursor position or selected autocomplete list item</li>
 <li>Added Exclude option in context nenu for Test files, previously was only possible for Test Suites folders</li>
@@ -187,12 +187,12 @@ RELEASE_NOTES = f"""
 <li>Colorization of Grid Editor cells after the continuation marker <b>...</b> and correct parsing of those lines</li> 
 <li>Colorization of Grid Editor cells when contents is list or dictionary variables</li>
 <li>Added indication of matching brackets, <b>()</b>, <b>"""'''{}'''f"""</b>, <b>[]</b>, in Text Editor</li>
-<li>Fixed non syncronized expanding/collapse of Settings panel in Grid Editor, on Linux</li>
+<li>Fixed non synchronized expanding/collapse of Settings panel in Grid Editor, on Linux</li>
 <li>Fixed not working the deletion of cells commented with <b># </b> in Grid Editor with <b>Ctrl-Shift-D</b></li> 
 <li>Fixed empty line being always added to the Variables section in Text Editor</li>
 <li>Improved project file system changes and reloading</li>
 <li>Added context menu to RIDE tray icon. Options Show, Hide and Close</li>
-<li>Added sincronization with Project Explorer to navigate to selected item, Test Case, Keyword, Variable, in Text
+<li>Added synchronization with Project Explorer to navigate to selected item, Test Case, Keyword, Variable, in Text
  Editor</li>
 <li>Control commands (<b>FOR</b>, <b>IF</b>, <b>TRY</b>, etc) will only be colorized as valid keywords when typed in all caps in Grid Editor</li>
 <li>Newlines in Grid Editor can be made visible with the <b>filter newlines</b> set to False, by editing <em>settings.cfg</em></li>
@@ -248,6 +248,6 @@ python -m robotide.__init__
 <pre class="literal-block">
 python -m robotide.postinstall -install
 </pre>
-<p>RIDE {VERSION} was released on 25/Oct/2023.</p>
+<p>RIDE {VERSION} was released on 26/Oct/2023.</p>
 </div>
 """

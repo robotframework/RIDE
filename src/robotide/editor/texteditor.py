@@ -2022,14 +2022,15 @@ class RobotDataEditor(stc.StyledTextCtrl):
             self.BraceHighlight(brace_at_caret, brace_opposite)
 
     def _show_keyword_details(self, value, coords=None):
+        """
+        Shows the keyword documentation in value at coordinates, coords.
+        :param value: The content to show in detacheable window
+        :param coords: If None they will be mouse pointer coordinates
+        """
         details = self._plugin.get_keyword_details(value)
         if details and details != self._old_details:  # This is because on Windows keys are sent in repeat
             if not coords:
-                wpos = self.parent.source_editor_parent.GetPosition()
-                npos = self.parent.GetPosition()
-                position = self.GetCurrentPos()
-                position = self.PointFromPosition(position)
-                position = position + wpos + npos
+                position = wx.GetMousePosition()
             else:
                 position = coords
             self._information_popup = HtmlPopupWindow(self.parent, (450, 300))
