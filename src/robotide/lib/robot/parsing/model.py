@@ -677,6 +677,7 @@ class VariableTable(_Table):
         # print(f"DEBUG: RFLib model.py VariableTable add {name=}, {value=}, {comment=}")
         if not name:
             return
+        value = [x for x in value if x != '']
         self.variables.append(Variable(self, name, value, comment))
 
     def __iter__(self):
