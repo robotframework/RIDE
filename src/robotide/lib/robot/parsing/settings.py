@@ -348,8 +348,8 @@ class Variables(ImportSetting):
 
     def __init__(self, parent, name, args=None, comment=None):
         # print(f"DEBUG: RFLib settings.py Variables __init__ {name=}, {args=}")
-        args = [x for x in args if x != ''] or []
-        if not name and args:
+        if args and not name:
+            args = [x for x in args if x != ''] or []
             name = args.pop(0)
         ImportSetting.__init__(self, parent, name, args, comment=comment)
 
