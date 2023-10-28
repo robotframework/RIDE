@@ -66,6 +66,8 @@ class Setting(object):
 
     def _populate(self, value):
         # self.value.append(self._string_value(value))
+        if value:
+            value = [x for x in value if x != '']
         self.value = value
 
     def is_set(self):
@@ -277,8 +279,11 @@ class ImportSetting(Setting):
 
     def __init__(self, parent, name, args=None, alias=None, comment=None):
         self.parent = parent
-        self.name = name
-        self.args = args or []
+        self.name = name.strip()
+        if args:
+            self.args = [x for x in args if x != '']
+        else:
+            self.args = []
         self.alias = alias
         self._set_comment(comment)
 
@@ -308,6 +313,12 @@ class ImportSetting(Setting):
 class Library(ImportSetting):
 
     def __init__(self, parent, name, args=None, alias=None, comment=None):
+        if args:
+            args = [x for x in args if x != '']
+        else:
+            args = []
+        if not name and args:
+            name = args.pop(0)
         if args and not alias:
             args, alias = self._split_possible_alias(args)
         ImportSetting.__init__(self, parent, name, args, alias, comment)
@@ -336,6 +347,10 @@ class Resource(ImportSetting):
 class Variables(ImportSetting):
 
     def __init__(self, parent, name, args=None, comment=None):
+        # print(f"DEBUG: RFLib settings.py Variables __init__ {name=}, {args=}")
+        args = [x for x in args if x != ''] or []
+        if not name and args:
+            name = args.pop(0)
         ImportSetting.__init__(self, parent, name, args, comment=comment)
 
 

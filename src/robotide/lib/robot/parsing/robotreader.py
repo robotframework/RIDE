@@ -45,11 +45,13 @@ class RobotReader(object):
             cells = self.split_row(line.rstrip())
             # DEBUG cells = list(self._check_deprecations(cells, path, lineno))
             # DEBUG Not parsing # before any table
+            """
             if line.lstrip().startswith('#'):
                 if cells[0] == '':  # There is an initial empty cell, when #
                     cells.pop(0)
                 # populator.add(cells)
                 # continue
+            """
             if cells and cells[0].strip().startswith('*'):  # For the cases of *** Comments ***
                 if cells[0].replace('*', '').strip().lower() in ('comment', 'comments'):
                     # print(f"DEBUG: robotreader.read detection of comments cells={cells}")
@@ -64,10 +66,10 @@ class RobotReader(object):
                 # print(f"DEBUG: RFLib RobotReader *** section lineno={lineno} cells={cells}")
             elif cells and cells == ['']:
                 comments = False
-            if cells and cells[0].strip().startswith('*') and not comments and \
+            if cells and cells[0].strip().startswith('*') and \
                     populator.start_table([c.replace('*', '').strip() for c in cells]):
                 process = table_start = True
-                preamble = comments = False
+                preamble = False  # DEBUG removed condition  "and not comments" comments =
             elif not table_start:
                 # print(f"DEBUG: RFLib RobotReader Enter Preamble block, lineno={lineno} cells={cells}")
                 if not preamble:
@@ -83,6 +85,11 @@ class RobotReader(object):
         return populator.eof()
 
     def sharp_strip(self, line):
+        # DEBUG
+        row = self._space_splitter.split(line)
+        # print(f"DEBUG: RFLib RobotReader sharp_strip after cells split row={row[:]}")
+        return row
+        # END DEBUG
         row = []
         i = 0
         start_d_quote = end_d_quote = False
@@ -177,17 +184,17 @@ class RobotReader(object):
         return ' '.join(string.split())
 
     def check_separator(self, line):
-        """
         if line.startswith('*') and not self._cell_section:
-            row = line.strip('*').strip(' ')
-            if row in ['Keyword', 'Keywords', 'Test Case', 'Test Cases', 'Task', 'Tasks', 'Variable', 'Variables']:
+            row = line.strip('*').strip().lower()
+            if row in ['keyword', 'keywords', 'test case', 'test cases', 'task', 'tasks', 'variable', 'variables']:
                 self._cell_section = True
                 # self._space_splitter = re.compile(r"[ \t\xa0]{" + f"{self._spaces}" + "}|\t+")
-        """
         if not line.startswith('*') and not line.startswith('#'):
             if not self._separator_check and line[:2] in self._pipe_starts:
                 self._separator_check = True
                 # print(f"DEBUG: RFLib RobotReader check_separator PIPE separator")
+                return
+            if not self._cell_section:
                 return
             idx = 0
             for idx in range(0, len(line)):
@@ -198,4 +205,3 @@ class RobotReader(object):
                 self._space_splitter = re.compile(r"[ \t\xa0]{" + f"{self._spaces}" + "}|\t+")
                 self._separator_check = True
                 # print(f"DEBUG: RFLib RobotReader check_separator changed spaces={self._spaces}")
-        return
