@@ -177,6 +177,8 @@ class Fixture(Setting):
         self.assign = ()
 
     def _populate(self, value):
+        if value and isinstance(value, list):
+            value = [x for x in value if x != '']
         if not self.name:
             self.name = value[0] if value else ''
             value = value[1:]
@@ -204,6 +206,8 @@ class Timeout(Setting):
         self.message = ''
 
     def _populate(self, value):
+        if value and isinstance(value, list):
+            value = [x for x in value if x != '']
         if not self.value:
             self.value = value[0] if value else ''
             value = value[1:]
@@ -348,8 +352,9 @@ class Variables(ImportSetting):
 
     def __init__(self, parent, name, args=None, comment=None):
         # print(f"DEBUG: RFLib settings.py Variables __init__ {name=}, {args=}")
-        if args and not name:
+        if args and isinstance(args, list):
             args = [x for x in args if x != ''] or []
+        if args and not name:
             name = args.pop(0)
         ImportSetting.__init__(self, parent, name, args, comment=comment)
 
