@@ -66,8 +66,8 @@ class Setting(object):
 
     def _populate(self, value):
         # self.value.append(self._string_value(value))
-        if value:
-            value = [x for x in value if x != '']
+        if value and isinstance(value, list):
+            value = [x.strip() for x in value if x != '']
         self.value = value
 
     def is_set(self):
@@ -81,11 +81,13 @@ class Setting(object):
         self.parent.report_invalid_syntax(message, level)
 
     def _string_value(self, value):
-        return value if is_string(value) else ' '.join(value)
+        if value and isinstance(value, list):
+            value = [x.strip() for x in value if x != '']
+        return value.strip() if is_string(value) else ' '.join(value)
 
     def _concat_string_with_value(self, string, value):
         if string:
-            return string + ' ' + self._string_value(value)
+            return string.strip() + ' ' + self._string_value(value)
         return self._string_value(value)
 
     def as_list(self):
@@ -114,12 +116,14 @@ class StringValueJoiner(object):
 
     def join_string_with_value(self, string, value):
         if string:
-            return string + self._separator + self.string_value(value)
+            return string.strip() + self._separator + self.string_value(value)
         return self.string_value(value)
 
     def string_value(self, value):
         if is_string(value):
-            return value
+            return value.strip()
+        if value and isinstance(value, list):
+            value = [x.strip() for x in value if x != '']
         return self._separator.join(value)
 
 
@@ -132,7 +136,9 @@ class Documentation(Setting):
         self.value = self._concat_string_with_value(self.value, value)
 
     def _string_value(self, value):
-        return value if is_string(value) else ''.join(value)
+        if value and isinstance(value, list):
+            value = [x.strip() for x in value if x != '']
+        return value.strip() if is_string(value) else ''.join(value)
 
     def _data_as_list(self):
         return [self.setting_name, self.value]
@@ -178,7 +184,7 @@ class Fixture(Setting):
 
     def _populate(self, value):
         if value and isinstance(value, list):
-            value = [x for x in value if x != '']
+            value = [x.strip() for x in value if x != '']
         if not self.name:
             self.name = value[0] if value else ''
             value = value[1:]
@@ -207,7 +213,7 @@ class Timeout(Setting):
 
     def _populate(self, value):
         if value and isinstance(value, list):
-            value = [x for x in value if x != '']
+            value = [x.strip() for x in value if x != '']
         if not self.value:
             self.value = value[0] if value else ''
             value = value[1:]
@@ -237,6 +243,8 @@ class Tags(Setting):
         self.value = None
 
     def _populate(self, value):
+        if value and isinstance(value, list):
+            value = [x.strip() for x in value if x != '']
         self.value = (self.value or []) + value
 
     def is_set(self):
@@ -263,6 +271,14 @@ class Metadata(Setting):
 
     def __init__(self, parent, name, value, comment=None, joined=False):
         self.parent = parent
+        if value and isinstance(value, list):
+            value = [x.strip() for x in value if x != '']
+        if not name.strip():
+            if value and not value[1:]:
+                value = value[0].split('  ')
+                value = [x.strip() for x in value if x != '']
+            name = value[0]
+            value = value[1:]
         self.name = name
         joiner = StringValueJoiner('' if joined else ' ')
         self.value = joiner.join_string_with_value('', value)
@@ -285,7 +301,7 @@ class ImportSetting(Setting):
         self.parent = parent
         self.name = name.strip()
         if args:
-            self.args = [x for x in args if x != '']
+            self.args = [x.strip() for x in args if x != '']
         else:
             self.args = []
         self.alias = alias
@@ -318,7 +334,7 @@ class Library(ImportSetting):
 
     def __init__(self, parent, name, args=None, alias=None, comment=None):
         if args:
-            args = [x for x in args if x != '']
+            args = [x.strip() for x in args if x != '']
         else:
             args = []
         if not name and args:
@@ -353,7 +369,7 @@ class Variables(ImportSetting):
     def __init__(self, parent, name, args=None, comment=None):
         # print(f"DEBUG: RFLib settings.py Variables __init__ {name=}, {args=}")
         if args and isinstance(args, list):
-            args = [x for x in args if x != ''] or []
+            args = [x.strip() for x in args if x != ''] or []
         if args and not name:
             name = args.pop(0)
         ImportSetting.__init__(self, parent, name, args, comment=comment)
@@ -373,6 +389,8 @@ class _DataList(object):
 
     @staticmethod
     def _parse_name_and_value(value):
+        if value:
+            value = [x.strip() for x in value if x != '']
         name = value[0] if value else ''
         return name, value[1:]
 

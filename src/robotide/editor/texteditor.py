@@ -116,7 +116,8 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
     def _open(self):
         datafile_controller = self.tree.get_selected_datafile_controller()
         if datafile_controller:
-            print(f"DEBUG: texteditor _open preamble={datafile_controller.preamble}")
+            if hasattr(datafile_controller, 'preamble'):  # DEBUG: Is failing at resource files
+                print(f"DEBUG: texteditor _open preamble={datafile_controller.preamble}")
             self._open_data_for_controller(datafile_controller)
             self._editor.store_position()
 

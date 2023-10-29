@@ -239,6 +239,7 @@ class ResourceFile(_TestData):
         self.testcase_table = TestCaseTable(self)
         self.keyword_table = KeywordTable(self)
         self.settings = settings
+        self._preamble = []
         self._tab_size = self.settings.get('txt number of spaces', 2) if self.settings else 2
         _TestData.__init__(self, source=source)
 
