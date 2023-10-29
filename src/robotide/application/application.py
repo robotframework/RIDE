@@ -65,6 +65,7 @@ class RIDE(wx.App):
     frame = None
     namespace = None
     preferences = None
+    robot_version = None
     settings = None
     treeplugin = None
 
@@ -117,10 +118,10 @@ class RIDE(wx.App):
         if not self.fileexplorerplugin.opened:
             self.fileexplorerplugin.close_tree()
         self.editor = self._get_editor()
+        self.robot_version = self._find_robot_installation()
         self._load_data()
         self.treeplugin.populate(self.model)
         self.treeplugin.set_editor(self.editor)
-        self._find_robot_installation()
         self._publish_system_info()
         self.frame.Show()    # ###### DEBUG DANGER ZONE
         self.SetTopWindow(self.frame)

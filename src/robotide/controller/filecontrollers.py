@@ -731,6 +731,10 @@ class TestCaseFileController(_FileSystemElement, _DataController):
     def suites(self):
         return ()
 
+    @property
+    def preamble(self):
+        return self.data.preamble
+
     def contains_tests(self):
         return bool(self.tests)
 

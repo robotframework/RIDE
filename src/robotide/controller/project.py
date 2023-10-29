@@ -118,6 +118,9 @@ class Project(_BaseController, WithNamespace):
         return resource_controller
 
     def load_data(self, path, load_observer=None):
+        from robotide.context import APP
+        robot_version = APP.robot_version
+        print(f"DEBUG: project.py Project ENTER robot version = {robot_version}")
         load_observer = load_observer or NullObserver()
         if self._load_initfile(path, load_observer):
             return
