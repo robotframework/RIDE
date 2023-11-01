@@ -8,7 +8,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 // == https://github.com/robotframework/RIDE[Unreleased]
 
-== https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.0.8.rst[2.0.8] - 2023-11-01
+== https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.0.8.1.rst[2.0.8.1] - 2023-11-01
 
 === Added
 
