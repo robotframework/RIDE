@@ -239,6 +239,7 @@ class ResourceFile(_TestData):
         self.testcase_table = TestCaseTable(self)
         self.keyword_table = KeywordTable(self)
         self.settings = settings
+        self._preamble = []
         self._tab_size = self.settings.get('txt number of spaces', 2) if self.settings else 2
         _TestData.__init__(self, source=source)
 
@@ -439,6 +440,7 @@ class _SettingTable(_Table, _WithSettings):
         return self.imports[-1]
 
     def add_variables(self, name, args=None, comment=None):
+        #  print(f"DEBUG: RFLib model.py _SettingTable add_variables {name=}, {args=}, {comment=}")
         self.imports.add(Variables(self, name, args, comment=comment))
         return self.imports[-1]
 
@@ -519,6 +521,9 @@ class VariableTable(_Table):
         return OldStyleSettingAndVariableTableHeaderMatcher()
 
     def add(self, name, value, comment=None):
+        # print(f"DEBUG: RFLib model.py VariableTable add {name=}, {value=}, {comment=}")
+        if not name:
+            return
         self.variables.append(Variable(self, name, value, comment))
 
     def __iter__(self):
@@ -588,6 +593,8 @@ class Variable(object):
             value = ''
         if is_string(value):
             value = [value]
+        elif isinstance(value, list):
+            value = [x for x in value if x != ''] or []
         self.value = value
         self.comment = Comment(comment)
 

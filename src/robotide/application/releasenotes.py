@@ -168,6 +168,7 @@ RELEASE_NOTES = f"""
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
+<li>Fixed escaped spaces showing in Text Editor on commented cells</li>
 <li>Improved keywords documentation search, by adding current dir to search</li>
 <li>Improved Move up/down, <b>Alt-UpArrow</b>/<b>Alt-DownArrow</b> in Text Editor, to have proper indentation and selection</li>
 <li>Added auto update check when development version is installed</li>
@@ -248,6 +249,6 @@ python -m robotide.__init__
 <pre class="literal-block">
 python -m robotide.postinstall -install
 </pre>
-<p>RIDE {VERSION} was released on 26/Oct/2023.</p>
+<p>RIDE {VERSION} was released on 1/Nov/2023.</p>
 </div>
 """

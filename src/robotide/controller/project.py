@@ -118,6 +118,14 @@ class Project(_BaseController, WithNamespace):
         return resource_controller
 
     def load_data(self, path, load_observer=None):
+        """ DEBUG: To be used in Localization
+        from robotide.context import APP
+        try:
+            robot_version = APP.robot_version
+        except AttributeError:
+            robot_version = b'6.1.1'  # It is failing at unit tests
+        print(f"DEBUG: project.py Project ENTER robot version = {robot_version}")
+        """
         load_observer = load_observer or NullObserver()
         if self._load_initfile(path, load_observer):
             return

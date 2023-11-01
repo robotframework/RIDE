@@ -69,7 +69,7 @@ class FromFilePopulator(object):
         LOGGER.info("Parsing file '%s'." % path)
         source = self._open(path)
         try:
-            # print(f"DEBUG: populators populate READER={self._get_reader(path, resource)}")
+            # print(f"DEBUG: populators populate path={path} READER={self._get_reader(path, resource)}")
             self._get_reader(path, resource).read(source, self)
         except Exception:
             # print(f"DEBUG: populators populate CALLING DATAERROR")

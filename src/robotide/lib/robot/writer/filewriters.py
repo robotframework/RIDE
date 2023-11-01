@@ -60,9 +60,12 @@ class _DataFileWriter(object):
         self._write_rows(self._formatter.format_table(table))
         if not is_last:  # DEBUG: make this configurable
             # print(f"DEBUG: lib.robot.writer _DataFileWritter write_table empty_row table={table.type}")
-            if table.type == 'variable' and len(list(table)[-1].as_list()) == 0:
-                # DEBUG: This is workaround for newline being added ALWAYS to VariableTable
-                return
+            try:
+                if table.type == 'variable' and len(list(table)[-1].as_list()) == 0:
+                    # DEBUG: This is workaround for newline being added ALWAYS to VariableTable
+                    return
+            except IndexError:
+                pass
             self._write_empty_row(table)
 
     def _write_header(self, table):
