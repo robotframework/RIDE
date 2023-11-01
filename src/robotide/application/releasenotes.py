@@ -152,8 +152,6 @@ RELEASE_NOTES = f"""
 <ul class="simple">
 <li>This version supports Python 3.6 up to 3.11.</li>
 <li>There are some changes, or known issues:<ul>
-<li>Saving on Text Editor by pressing <b>Ctrl-S</b> must be done twice, file may stay with modified indication. Confirm if file
-changes when pressing <b>Apply</b> or by moving to the Editor tab.</li>
 <li>On Text Editor, pressing <b>Ctrl</b> when the caret/cursor is near a Keyword will show a detachable window with the documentation, at Mouse Pointer position.</li> 
 <li>RIDE tray icon now shows a context menu with options Show, Hide and Close.</li>
 <li>Highlighting and navigation of selected Project Explorer items, in Text Editor.</li>
