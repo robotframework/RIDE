@@ -16,23 +16,23 @@ You can use the tag *robotframework-ide* to search and ask on https://stackoverf
 
 == **Welcome to the development version of RIDE - next major release will be version 2.1**
 
-If you are looking for the latest released version, you can get the source code from **https://github.com/robotframework/RIDE/releases[releases]** or from branch **https://github.com/robotframework/RIDE/tree/release/2.0.7[release/2.0.7]**
+If you are looking for the latest released version, you can get the source code from **https://github.com/robotframework/RIDE/releases[releases]** or from branch **https://github.com/robotframework/RIDE/tree/release/2.0.8[release/2.0.8]**
 
-See the https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.0.7.rst[release notes] for latest release version 2.0.7.
+See the https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.0.8.rst[release notes] for latest release version 2.0.8.
 
 **Version https://github.com/robotframework/RIDE/tree/release/1.7.4.2[1.7.4.2] was the last release supporting Python 2.7**
 
 
-**The current development version is based on 2.0.7, supports Python from 3.6 up to 3.11 (13th August 2023).**
+**The current development version is based on 2.0.8, supports Python from 3.6 up to 3.11 (1st November 2023).**
 
-Currently the unit tests are only tested on Python 3.10 (which is the recommended version).
+Currently the unit tests are tested on Python 3.10, and 3.11 (which is the recommended version).
 Likewise, the current version of wxPython, is 4.2.1, but RIDE is known to work with 4.0.7 and 4.1.1 versions.
 
-(3.6 < python <= 3.11) Install current released version (*2.0.7*) with:
+(3.6 < python <= 3.11) Install current released version (*2.0.8*) with:
 
 `pip install -U robotframework-ride`
 
-Install current development version (**2.0.8dev#**) with:
+Install current development version (**2.0.9dev#**) with:
 
 `pip install -U https://github.com/robotframework/RIDE/archive/master.zip`
 
