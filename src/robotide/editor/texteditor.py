@@ -71,7 +71,6 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
     def enable(self):
         self._tab = self._editor
         self.register_actions(action_info_collection(_EDIT, self._tab, self._tab))
-        # DEBUG Disable own saving self.subscribe(self.on_saving, RideSaving)
         self.subscribe(self.on_tree_selection, RideTreeSelection)
         self.subscribe(self.on_data_changed, RideMessage)
         self.subscribe(self.on_tab_change, RideNotebookTabChanging)
@@ -92,7 +91,6 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
             self.register_shortcut('CtrlCmd-A', focused(lambda e: self._editor.select_all()))
         # No system needs this key binding, because is already global
         # self.register_shortcut('CtrlCmd-V', focused(lambda e: self._editor.paste()))
-        # self.register_shortcut('CtrlCmd-S', focused(lambda e: self.on_saving(e)))
         self.register_shortcut('CtrlCmd-F', focused(lambda e: self._editor.search_field.SetFocus()))
         # To avoid double actions these moved to on_key_down
         # self.register_shortcut('CtrlCmd-G', focused(lambda e: self._editor.on_find(e)))
@@ -118,25 +116,12 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         datafile_controller = self.tree.get_selected_datafile_controller()
         if datafile_controller:
             self._save_flag = 0
+            """ DEBUG: To be used in Localization
             if hasattr(datafile_controller, 'preamble'):  # DEBUG: Is failing at resource files
                 print(f"DEBUG: texteditor _open preamble={datafile_controller.preamble}")
             self._open_data_for_controller(datafile_controller)
+            """
             self._editor.store_position()
-
-    def on_saving(self, message):
-        _ = message
-        print(f"DEBUG: textedit OnSaving ENTER {message=}")
-        return
-        if self.is_focused():
-            if not self._editor.is_saving:
-                print(f"DEBUG: textedit OnSaving FOCUSED {message} saving={self._editor.is_saving}")
-                self._apply_txt_changes_to_model()
-            else:
-                self._editor.is_saving = False
-            #    # message.Skip()
-        elif isinstance(message, RideSaving):
-            print(f"DEBUG: textedit OnSaving Open Saved from other {message=} isfocused={self.is_focused()}")
-            self._open()  # Was saved from other Editor
 
     def on_data_changed(self, message):
         """ This block is now inside try/except to avoid errors from unit test """

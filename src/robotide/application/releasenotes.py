@@ -152,8 +152,6 @@ RELEASE_NOTES = f"""
 <ul class="simple">
 <li>This version supports Python 3.6 up to 3.11.</li>
 <li>There are some changes, or known issues:<ul>
-<li>Saving on Text Editor by pressing <b>Ctrl-S</b> must be done twice, file may stay with modified indication. Confirm if file
-changes when pressing <b>Apply</b> or by moving to the Editor tab.</li>
 <li>On Text Editor, pressing <b>Ctrl</b> when the caret/cursor is near a Keyword will show a detachable window with the documentation, at Mouse Pointer position.</li> 
 <li>RIDE tray icon now shows a context menu with options Show, Hide and Close.</li>
 <li>Highlighting and navigation of selected Project Explorer items, in Text Editor.</li>
@@ -170,6 +168,7 @@ changes when pressing <b>Apply</b> or by moving to the Editor tab.</li>
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
+<li>Fixed escaped spaces showing in Text Editor on commented cells</li>
 <li>Improved keywords documentation search, by adding current dir to search</li>
 <li>Improved Move up/down, <b>Alt-UpArrow</b>/<b>Alt-DownArrow</b> in Text Editor, to have proper indentation and selection</li>
 <li>Added auto update check when development version is installed</li>
@@ -250,6 +249,6 @@ python -m robotide.__init__
 <pre class="literal-block">
 python -m robotide.postinstall -install
 </pre>
-<p>RIDE {VERSION} was released on 29/Oct/2023.</p>
+<p>RIDE {VERSION} was released on 1/Nov/2023.</p>
 </div>
 """

@@ -23,6 +23,7 @@ Force Tags settings, after Robot Framework 7.0
 
 === Fixed
 
+-
 - Fixed resource files dissapearing from Project tree on Windows
 - Fixed missing indication of link for User Keyword, when pressing ``Ctrl`` in Grid Editor
 - Fixed exception when finding GREY color for excluded files and directories in Project Tree
