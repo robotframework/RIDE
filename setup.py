@@ -42,6 +42,8 @@ LONG_DESCRIPTION = """
 Robot Framework is a generic test automation framework for acceptance
 level testing. RIDE is a lightweight and intuitive editor for Robot
 Framework test data.
+
+Project: https://github.com/robotframework/RIDE#readme
 """.strip()
 
 CLASSIFIERS = """
@@ -51,6 +53,9 @@ Operating System :: OS Independent
 Programming Language :: Python :: 3.6
 Programming Language :: Python :: 3.7
 Programming Language :: Python :: 3.8
+Programming Language :: Python :: 3.9
+Programming Language :: Python :: 3.10
+Programming Language :: Python :: 3.11
 Topic :: Software Development :: Testing
 """.strip().splitlines()
 
@@ -76,6 +81,7 @@ setup(
     version=main_ns['VERSION'],
     description='RIDE :: Robot Framework Test Data Editor',
     long_description=LONG_DESCRIPTION,
+    long_description_content_type='text/markdown',
     license='Apache License 2.0',
     keywords='robotframework testing testautomation',
     platforms='any',

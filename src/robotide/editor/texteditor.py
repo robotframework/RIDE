@@ -133,7 +133,8 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
                     self._editor.set_editor_caret_position()
                 if isinstance(message, RideNotebookTabChanging):  # Not reached
                     return
-                if self.is_focused() and self._save_flag == 0 and isinstance(message, RideSaving):  # Workaround for remarked dirty with Ctrl-S
+                # Workaround for remarked dirty with Ctrl-S
+                if self.is_focused() and self._save_flag == 0 and isinstance(message, RideSaving):
                     self._save_flag = 1
                 if self.is_focused() and self._save_flag == 1 and isinstance(message, RideDataDirtyCleared):
                     self._save_flag = 2
@@ -210,7 +211,6 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         if message.newtab == self.title:
             self._open()
             self._editor.set_editor_caret_position()
-            # self._editor._dirty = 1
             try:
                 self._set_read_only(self._editor.source_editor.readonly)
             except Exception as e:  # DEBUG: When using only Text Editor exists error in message topic
@@ -219,7 +219,6 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
             self._editor.remove_and_store_state()
             self._editor_component.is_saving = False
             self._editor_component.content_save()
-            # self._editor._dirty = 0
 
     def on_tab_changed(self, event):
         _ = event
@@ -397,7 +396,6 @@ class SourceEditor(wx.Panel):
         self.reformat = self.source_editor_parent.app.settings.get('reformat', False)
         self._create_ui(title)
         self._data = None
-        # self._dirty = 1  # 0 is False and 1 is True, when changed on this editor
         self._position = 0  # Start at 0 if first time access
         self.restore_start_pos = self._position
         self.restore_end_pos = self._position
@@ -535,9 +533,7 @@ class SourceEditor(wx.Panel):
 
     @property
     def dirty(self):
-        # return self._dirty == 1 and (self._data.wrapper_data.is_dirty or self.source_editor.GetModify())
-        # return self._dirty == 1  # self.source_editor.GetModify() and self._dirty == 1
-        return self._data.wrapper_data.is_dirty  # or self.source_editor.GetModify()
+        return self._data.wrapper_data.is_dirty if self._data else False
 
     @property
     def datafile_controller(self):
@@ -820,7 +816,6 @@ class SourceEditor(wx.Panel):
         self.source_editor.WriteText(spaces)
 
     def reset(self):
-        # self._dirty = 0
         if self._data and not self._data.wrapper_data.is_dirty:
             self.mark_file_dirty(False)
 
@@ -995,7 +990,6 @@ class SourceEditor(wx.Panel):
             return
         keycode = event.GetKeyCode()
         keyvalue = event.GetUnicodeKey()
-        # self._dirty = 1
         # print(f"DEBUG: TextEditor key up focused={self.is_focused()} modify {self.source_editor.GetModify()}")
         if keycode == wx.WXK_DELETE:  # DEBUG on Windows we only get here, single Text Editor
             selected = self.source_editor.GetSelection()
@@ -1029,7 +1023,6 @@ class SourceEditor(wx.Panel):
             return
         keycode = event.GetUnicodeKey()
         raw_key = event.GetKeyCode()
-        # self._dirty = 1
         # print(f"DEBUG: TextEditor on_key_down event={event} raw_key={raw_key} wx.WXK_C ={wx.WXK_CONTROL}")
         if event.GetKeyCode() == wx.WXK_DELETE:
             self.mark_file_dirty(self.source_editor.GetModify())
