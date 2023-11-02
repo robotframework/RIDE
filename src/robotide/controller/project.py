@@ -41,6 +41,7 @@ class Project(_BaseController, WithNamespace):
         self.controller = None
         self.name = None
         self.external_resources = []
+        self.file_language = None
         self._resource_file_controller_factory = ResourceFileControllerFactory(self._name_space, self)
         self._serializer = Serializer(settings, LOG)
 
@@ -119,13 +120,17 @@ class Project(_BaseController, WithNamespace):
 
     def load_data(self, path, load_observer=None):
         """ DEBUG: To be used in Localization
+        """
         from robotide.context import APP
         try:
             robot_version = APP.robot_version
         except AttributeError:
-            robot_version = b'6.1.1'  # It is failing at unit tests
-        print(f"DEBUG: project.py Project ENTER robot version = {robot_version}")
-        """
+            robot_version = '3.1.2'  # It is failing at unit tests
+        print(f"DEBUG: project.py Project load_data robot version = {robot_version}")
+        from ..lib.compat.parsing.language import check_file_language
+        self.file_language = check_file_language(path)
+        if self.file_language:
+            print(f"DEBUG: project.py Project load_data file_language = {self.file_language}")
         load_observer = load_observer or NullObserver()
         if self._load_initfile(path, load_observer):
             return
