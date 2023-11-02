@@ -129,6 +129,8 @@ class Project(_BaseController, WithNamespace):
         print(f"DEBUG: project.py Project load_data robot version = {robot_version}")
         from ..lib.compat.parsing.language import check_file_language
         self.file_language = check_file_language(path)
+        if self.file_language:
+            print(f"DEBUG: project.py Project load_data file_language = {self.file_language}")
         load_observer = load_observer or NullObserver()
         if self._load_initfile(path, load_observer, self.file_language):
             return
