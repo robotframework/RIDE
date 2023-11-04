@@ -34,7 +34,7 @@ re_set_var = re.compile(r"(?i)^set[ ](\S.*)+variable$")
 
 
 def TestData(parent=None, source=None, include_suites=None,
-             warn_on_skipped='DEPRECATED', extensions=None, settings=None):
+             warn_on_skipped='DEPRECATED', extensions=None, settings=None, language=None):
     """Parses a file or directory to a corresponding model object.
 
     :param parent: Optional parent to be used in creation of the model object.
@@ -50,9 +50,8 @@ def TestData(parent=None, source=None, include_suites=None,
         warnings.warn("Option 'warn_on_skipped' is deprecated and has no "
                       "effect.", DeprecationWarning)
     if os.path.isdir(source):
-        return TestDataDirectory(parent, source, settings).populate(include_suites,
-                                                          extensions)
-    return TestCaseFile(parent, source, settings).populate()
+        return TestDataDirectory(parent, source, settings, language).populate(include_suites, extensions)
+    return TestCaseFile(parent, source, settings, language).populate()
 
 
 class _TestData(object):
@@ -77,8 +76,10 @@ class _TestData(object):
                              (self._testcase_table_names, self.testcase_table),
                              (self._keyword_table_names, self.keyword_table),
                              (self._comment_table_names, None)]
+        # print(f"DEBUG: model.py _TestData._get_tables {self._language=} tables= {tables}")
         if self._language:
-            tables.append(self.get_tables_for(self._language))
+            tables = self.get_tables_for(self._language)
+        # print(f"DEBUG: model.py _TestData._get_tables AFTER  get_tables_for tables= {tables}")
         for names, table in tables:
             # remove Comments section, because we want to keep them as they are in files
             # , (self._comment_table_names, None)
@@ -97,6 +98,10 @@ class _TestData(object):
 
     def add_preamble(self, row):
         self._preamble.append(row)
+        print(f"DEBUG: model.py add_preamble {self._language=} _tables= {self._tables}")
+        # test_table = self.get_tables_for(['pt'])
+        # self._tables = dict(self._get_tables())
+        # print(f"DEBUG: model.py add_preamble PT test_table= {test_table}")
 
     @property
     def preamble(self):
@@ -107,30 +112,38 @@ class _TestData(object):
         self.add_preamble(row)
 
     def get_tables_for(self, language):
-        t_pt = [('Setting', 'Settings', self.setting_table),
-                ('Variable', 'Variables', self.setting_table),
-                ('Test Case', 'Casos de Teste', 'Task', 'Tasks', self.testcase_table),
-                ('Keyword', 'Keywords', self.keyword_table),
-                ('Comment', 'Comments', None)]
-        t_fr = [('Setting', 'Settings', self.setting_table),
-                ('Variable', 'Variables', self.setting_table),
-                ('Test Case', 'Unités De Test', 'Task', 'Tasks', self.testcase_table),
-                ('Keyword', 'Keywords', self.keyword_table),
-                ('Comment', 'Comments', None)]
+        t_en = [(self._setting_table_names, self.setting_table),
+                  (self._variable_table_names, self.variable_table),
+                  (self._testcase_table_names, self.testcase_table),
+                  (self._keyword_table_names, self.keyword_table),
+                  (self._comment_table_names, None)]
+        t_pt = [(('Setting', 'Settings'), self.setting_table),
+                (('Variable', 'Variables'), self.setting_table),
+                (('Test Case', 'Casos De Teste', 'Task', 'Tasks'), self.testcase_table),
+                (('Keyword', 'Keywords'), self.keyword_table),
+                (('Comment', 'Comments'), None)]
+        t_fr = [(('Setting', 'Settings'), self.setting_table),
+                (('Variable', 'Variables'), self.setting_table),
+                (('Test Case', 'Unités De Test', 'Task', 'Tasks'), self.testcase_table),
+                (('Keyword', 'Keywords'), self.keyword_table),
+                (('Comment', 'Comments'), None)]
         # remove Comments section, because we want to keep them as they are in files
         if language[0] == 'pt':
-            return t_pt
+            return t_pt + t_en
         if language[0] == 'fr':
-            return t_fr
+            return t_fr + t_en
+        return t_en
 
     def _find_table(self, header_row):
         name = header_row[0] if header_row else ''
         title = name.title()
+        # print(f"DEBUG: model.py _find_table ENTER {title=} _tables= {self._tables}")
         if title not in self._tables:
             title = self._resolve_deprecated_table(name)
             if title is None:
                 self._report_unrecognized_table(name)
                 return None
+        print(f"DEBUG: model.py _find_table FOUND {title=} return {self._tables[title]}")
         return self._tables[title]
 
     def _resolve_deprecated_table(self, used_name):
@@ -253,16 +266,17 @@ class ResourceFile(_TestData):
     :param source: path where resource file is read from.
     """
 
-    def __init__(self, source=None, settings=None):
+    def __init__(self, source=None, settings=None, language=None):
         self.directory = os.path.dirname(source) if source else None
         self.setting_table = ResourceFileSettingTable(self)
         self.variable_table = VariableTable(self)
         self.testcase_table = TestCaseTable(self)
         self.keyword_table = KeywordTable(self)
         self.settings = settings
+        self.language = language
         self._preamble = []
         self._tab_size = self.settings.get('txt number of spaces', 2) if self.settings else 2
-        _TestData.__init__(self, source=source)
+        _TestData.__init__(self, source=source, language=self.language)
 
     def populate(self):
         FromFilePopulator(self, self._tab_size).populate(self.source, resource=True)
@@ -297,7 +311,7 @@ class TestDataDirectory(_TestData):
     """
     __test__ = False
 
-    def __init__(self, parent=None, source=None, settings=None):
+    def __init__(self, parent=None, source=None, settings=None, language=None):
         self.directory = source
         self.initfile = None
         self.setting_table = InitFileSettingTable(self)
@@ -305,8 +319,9 @@ class TestDataDirectory(_TestData):
         self.testcase_table = TestCaseTable(self)
         self.keyword_table = KeywordTable(self)
         self._settings = settings
+        self.language = language
         self._tab_size = self._settings.get('txt number of spaces', 2) if self._settings else 2
-        _TestData.__init__(self, parent, source)
+        _TestData.__init__(self, parent, source, language=self.language)
 
     def populate(self, include_suites=None, extensions=None, recurse=True):
         FromDirectoryPopulator().populate(self.source, self, include_suites,
@@ -324,11 +339,11 @@ class TestDataDirectory(_TestData):
             return False
         return True
 
-    def add_child(self, path, include_suites, extensions=None):
+    def add_child(self, path, include_suites, extensions=None, language=None):
         self.children.append(TestData(parent=self,
                                       source=path,
                                       include_suites=include_suites,
-                                      extensions=extensions, settings=self._settings))
+                                      extensions=extensions, settings=self._settings, language=language))
 
     def has_tests(self):
         return any(ch.has_tests() for ch in self.children)

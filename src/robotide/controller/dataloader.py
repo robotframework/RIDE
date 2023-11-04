@@ -21,24 +21,23 @@ from .. import robotapi
 
 class DataLoader(object):
 
-    def __init__(self, namespace, settings):
+    def __init__(self, namespace, settings, language=None):
         self.namespace = namespace
         self.namespace.reset_resource_and_library_cache()
         self._settings = settings
+        self.language = language
 
     def load_datafile(self, path, load_observer, language=None):
-        return self._load(_DataLoader(path, self._settings), load_observer)
+        return self._load(_DataLoader(path, self._settings, language=language), load_observer)
 
-    def load_initfile(self, path, load_observer):
-        return self._load(_InitFileLoader(path), load_observer)
+    def load_initfile(self, path, load_observer, language=None):
+        return self._load(_InitFileLoader(path, language=language), load_observer)
 
-    def load_resource_file(self, datafile, load_observer):
-        return self._load(_ResourceLoader(
-            datafile, self.namespace.get_resource), load_observer)
+    def load_resource_file(self, datafile, load_observer, language=None):
+        return self._load(_ResourceLoader(datafile, self.namespace.get_resource, language=language), load_observer)
 
-    def resources_for(self, datafile, load_observer):
-        return self._load(_ResourceLoader(
-            datafile, self.namespace.get_resources), load_observer)
+    def resources_for(self, datafile, load_observer, language=None):
+        return self._load(_ResourceLoader(datafile, self.namespace.get_resources, language=language), load_observer)
 
     def _load(self, loader, load_observer):
         self._wait_until_loaded(loader, load_observer)
@@ -84,13 +83,15 @@ class _DataLoader(_DataLoaderThread):
 
 class _InitFileLoader(_DataLoaderThread):
 
-    def __init__(self, path, settings=None):
+    def __init__(self, path, settings=None, language=None):
         _DataLoaderThread.__init__(self)
         self._path = path
         self._settings = settings
+        self.language = language
 
     def _run(self):
-        result = robotapi.TestDataDirectory(source=os.path.dirname(self._path), settings=self._settings)
+        result = robotapi.TestDataDirectory(source=os.path.dirname(self._path), settings=self._settings,
+                                            language=self.language)
         result.initfile = self._path
         robotapi.FromFilePopulator(result).populate(self._path)
         return result
@@ -98,28 +99,29 @@ class _InitFileLoader(_DataLoaderThread):
 
 class _ResourceLoader(_DataLoaderThread):
 
-    def __init__(self, datafile, resource_loader):
+    def __init__(self, datafile, resource_loader, language=None):
         _DataLoaderThread.__init__(self)
         self._datafile = datafile
+        self.language = language
         self._loader = resource_loader
 
     def _run(self):
-        return self._loader(self._datafile)
+        return self._loader(self._datafile, language=self.language)
 
 
 class TestDataDirectoryWithExcludes(robotapi.TestDataDirectory):
 
-    def __init__(self, parent, source, settings):
+    def __init__(self, parent, source, settings, language=None):
         self._settings = settings
-        robotapi.TestDataDirectory.__init__(self, parent, source, settings=self._settings)
+        robotapi.TestDataDirectory.__init__(self, parent, source, settings=self._settings, language=language)
 
     def add_child(self, path, include_suites, extensions=None,
-                  warn_on_skipped=False):
+                  warn_on_skipped=False, language=None):
         if not self._settings.excludes.contains(path):
             self.children.append(test_data(
-                parent=self, source=path, settings=self._settings))
+                parent=self, source=path, settings=self._settings, language=language))
         else:
-            self.children.append(ExcludedDirectory(self, path))
+            self.children.append(ExcludedDirectory(self, path, language=language))
 
 
 def test_data(source, parent=None, settings=None, language=None):
@@ -136,7 +138,7 @@ def test_data(source, parent=None, settings=None, language=None):
         data.populate()
         # print("DEBUG: Dataloader after populate %s  %s\n" % (data._tables, data.name))
         return data
-    # print("DEBUG: Dataloader returning TestCaseFile")
+    print(f"DEBUG: Dataloader test_data returning TestCaseFile {language=}")
     datafile = robotapi.TestCaseFile(parent, source, settings, language).populate()
     if datafile:
         return datafile
@@ -147,10 +149,10 @@ def test_data(source, parent=None, settings=None, language=None):
 
 
 class ExcludedDirectory(robotapi.TestDataDirectory):
-    def __init__(self, parent, path):
+    def __init__(self, parent, path, language=None):
         self._parent = parent
         self._path = path
-        robotapi.TestDataDirectory.__init__(self, parent, path)
+        robotapi.TestDataDirectory.__init__(self, parent, path, language=language)
 
     def has_tests(self):
         return True

@@ -185,8 +185,8 @@ class Namespace(object):
                 if sug.name_begins_with(start_normalized) or
                 sug.longname_begins_with(start_normalized))
 
-    def get_resources(self, datafile):
-        return self._retriever.get_resources_from(datafile)
+    def get_resources(self, datafile, language=None):
+        return self._retriever.get_resources_from(datafile, language=language)
 
     def get_resource(self, path, directory='', report_status=True):
         return self._resource_factory.get_resource(
@@ -565,18 +565,18 @@ class DatafileRetriever(object):
                 collector(res, ctx, items)
         return items
 
-    def get_resources_from(self, datafile):
-        resources = list(self._get_resources_recursive(datafile,
-                                                       RetrieverContext()))
+    def get_resources_from(self, datafile, language=None):
+        resources = list(self._get_resources_recursive(datafile, RetrieverContext(), language=language))
         resources.sort(key=operator.attrgetter('name'))
         return resources  # DEBUG
 
-    def _get_resources_recursive(self, datafile, ctx):
+    def _get_resources_recursive(self, datafile, ctx, language=None):
+        # DEBUG: at this point it is not relevant the language, we would only need the header
         resources = set()
         res = self._collect_each_res_import(datafile, ctx, self._add_resource)
         resources.update(res)
         for child in datafile.children:
-            resources.update(self._get_resources_recursive(child, ctx))
+            resources.update(self._get_resources_recursive(child, ctx, language=language))
         return resources
 
     def _add_resource(self, res, ctx, items):
