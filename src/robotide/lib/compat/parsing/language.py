@@ -36,7 +36,8 @@ def check_file_language(path):
         return None
     build_lang = Languages(language_string, add_english=False)
     if build_lang:
-        print(f"DEBUG: check_file_language {build_lang.settings}")
+        print(f"DEBUG: check_file_language {build_lang.settings}\n{build_lang.headers}\n{build_lang.true_strings}"
+              f"\n{build_lang.false_strings}\n{build_lang.bdd_prefixes}")
         lang = []
         for ll in build_lang:
             lang.append(ll.code)

@@ -26,7 +26,7 @@ class DataLoader(object):
         self.namespace.reset_resource_and_library_cache()
         self._settings = settings
 
-    def load_datafile(self, path, load_observer):
+    def load_datafile(self, path, load_observer, language=None):
         return self._load(_DataLoader(path, self._settings), load_observer)
 
     def load_initfile(self, path, load_observer):
@@ -71,14 +71,15 @@ class _DataLoaderThread(Thread):
 
 class _DataLoader(_DataLoaderThread):
 
-    def __init__(self, path, settings):
+    def __init__(self, path, settings, language=None):
         _DataLoaderThread.__init__(self)
         self._path = path
         self._settings = settings
+        self._language = language
 
     def _run(self):
         # print(f"DEBUG: Dataloader returning TestData source={self._path}")
-        return test_data(source=self._path, settings=self._settings)
+        return test_data(source=self._path, settings=self._settings, language=self._language)
 
 
 class _InitFileLoader(_DataLoaderThread):
@@ -121,7 +122,7 @@ class TestDataDirectoryWithExcludes(robotapi.TestDataDirectory):
             self.children.append(ExcludedDirectory(self, path))
 
 
-def test_data(source, parent=None, settings=None):
+def test_data(source, parent=None, settings=None, language=None):
     """Parses a file or directory to a corresponding model object.
 
     :param source: path where test data is read from.
@@ -130,17 +131,17 @@ def test_data(source, parent=None, settings=None):
     """
     if os.path.isdir(source):
         # print("DEBUG: Dataloader Is dir getting testdada %s\n" % source)
-        data = TestDataDirectoryWithExcludes(parent, source, settings)
+        data = TestDataDirectoryWithExcludes(parent, source, settings, language)
         # print("DEBUG: Dataloader testdata %s\n" % data.name)
         data.populate()
         # print("DEBUG: Dataloader after populate %s  %s\n" % (data._tables, data.name))
         return data
     # print("DEBUG: Dataloader returning TestCaseFile")
-    datafile = robotapi.TestCaseFile(parent, source, settings).populate()
+    datafile = robotapi.TestCaseFile(parent, source, settings, language).populate()
     if datafile:
         return datafile
     if source.endswith(("resource", "robot")):
-        datafile = robotapi.ResourceFile(source, settings).populate()
+        datafile = robotapi.ResourceFile(source, settings, language).populate()
     # print(f"DEBUG: Dataloader returning TestCaseFile datafile={datafile}, type={type(datafile)}")
     return datafile
 

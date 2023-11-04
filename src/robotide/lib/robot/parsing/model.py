@@ -63,19 +63,23 @@ class _TestData(object):
     # remove Comments section, because we want to keep them as they are in files
     _comment_table_names = 'Comment', 'Comments'
 
-    def __init__(self, parent=None, source=None):
+    def __init__(self, parent=None, source=None, language=None):
         self.parent = parent
         self.source = abspath(source) if source else None
         self.children = []
         self._preamble = []
+        self._language = language
         self._tables = dict(self._get_tables())
 
     def _get_tables(self):
-        for names, table in [(self._setting_table_names, self.setting_table),
+        tables = [(self._setting_table_names, self.setting_table),
                              (self._variable_table_names, self.variable_table),
                              (self._testcase_table_names, self.testcase_table),
                              (self._keyword_table_names, self.keyword_table),
-                             (self._comment_table_names, None)]:
+                             (self._comment_table_names, None)]
+        if self._language:
+            tables.append(self.get_tables_for(self._language))
+        for names, table in tables:
             # remove Comments section, because we want to keep them as they are in files
             # , (self._comment_table_names, None)
             for name in names:
@@ -101,6 +105,23 @@ class _TestData(object):
     @preamble.setter
     def preamble(self, row):
         self.add_preamble(row)
+
+    def get_tables_for(self, language):
+        t_pt = [('Setting', 'Settings', self.setting_table),
+                ('Variable', 'Variables', self.setting_table),
+                ('Test Case', 'Casos de Teste', 'Task', 'Tasks', self.testcase_table),
+                ('Keyword', 'Keywords', self.keyword_table),
+                ('Comment', 'Comments', None)]
+        t_fr = [('Setting', 'Settings', self.setting_table),
+                ('Variable', 'Variables', self.setting_table),
+                ('Test Case', 'Unités De Test', 'Task', 'Tasks', self.testcase_table),
+                ('Keyword', 'Keywords', self.keyword_table),
+                ('Comment', 'Comments', None)]
+        # remove Comments section, because we want to keep them as they are in files
+        if language[0] == 'pt':
+            return t_pt
+        if language[0] == 'fr':
+            return t_fr
 
     def _find_table(self, header_row):
         name = header_row[0] if header_row else ''
@@ -194,7 +215,7 @@ class TestCaseFile(_TestData):
     """
     __test__ = False
 
-    def __init__(self, parent=None, source=None, settings=None):
+    def __init__(self, parent=None, source=None, settings=None, language=None):
         self.directory = os.path.dirname(source) if source else None
         self.setting_table = TestCaseFileSettingTable(self)
         self.variable_table = VariableTable(self)
@@ -202,7 +223,7 @@ class TestCaseFile(_TestData):
         self.keyword_table = KeywordTable(self)
         self._settings = settings
         self._tab_size = self._settings.get('txt number of spaces', 2) if self._settings else 2
-        _TestData.__init__(self, parent, source)
+        _TestData.__init__(self, parent, source, language)
 
     def populate(self):
         FromFilePopulator(self, self._tab_size).populate(self.source)

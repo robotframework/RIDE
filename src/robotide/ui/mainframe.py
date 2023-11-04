@@ -411,6 +411,10 @@ class RideFrame(wx.Frame):
         # self._controller.default_dir will only save dir path
         # need to save path to self._application.workspace_path too
         self._application.workspace_path = path
+        from ..lib.compat.parsing.language import check_file_language
+        self.controller.file_language = check_file_language(path)
+        if self.controller.file_language:
+            print(f"DEBUG: project.py Project load_data file_language = {self.controller.file_language}")
         try:
             err = self.controller.load_datafile(path, LoadProgressObserver(self))
             if isinstance(err, UserWarning):
