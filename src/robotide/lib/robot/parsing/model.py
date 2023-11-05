@@ -98,10 +98,6 @@ class _TestData(object):
 
     def add_preamble(self, row):
         self._preamble.append(row)
-        print(f"DEBUG: model.py add_preamble {self._language=} _tables= {self._tables}")
-        # test_table = self.get_tables_for(['pt'])
-        # self._tables = dict(self._get_tables())
-        # print(f"DEBUG: model.py add_preamble PT test_table= {test_table}")
 
     @property
     def preamble(self):
@@ -117,16 +113,16 @@ class _TestData(object):
                   (self._testcase_table_names, self.testcase_table),
                   (self._keyword_table_names, self.keyword_table),
                   (self._comment_table_names, None)]
-        t_pt = [(('Setting', 'Settings'), self.setting_table),
-                (('Variable', 'Variables'), self.setting_table),
-                (('Test Case', 'Casos De Teste', 'Task', 'Tasks'), self.testcase_table),
-                (('Keyword', 'Keywords'), self.keyword_table),
-                (('Comment', 'Comments'), None)]
-        t_fr = [(('Setting', 'Settings'), self.setting_table),
-                (('Variable', 'Variables'), self.setting_table),
-                (('Test Case', 'Unités De Test', 'Task', 'Tasks'), self.testcase_table),
-                (('Keyword', 'Keywords'), self.keyword_table),
-                (('Comment', 'Comments'), None)]
+        t_pt = [(('Definição', 'Definições'), self.setting_table),
+                (('Variável', 'Variáveis'), self.setting_table),
+                (('Caso de Teste', 'Casos de Teste', 'Tarefa', 'Tarefas'), self.testcase_table),
+                (('Palavra-Chave', 'Palavras-Chave'), self.keyword_table),
+                (('Comentário', 'Comentários'), None)]
+        t_fr = [(('Paramètres',), self.setting_table),
+                (('Variables',), self.setting_table),
+                (('Unités de Test', 'Tâches'), self.testcase_table),
+                (('Mots-Clés',), self.keyword_table),
+                (('Commentaires',), None)]
         # remove Comments section, because we want to keep them as they are in files
         if language[0] == 'pt':
             return t_pt + t_en
@@ -137,7 +133,7 @@ class _TestData(object):
     def _find_table(self, header_row):
         name = header_row[0] if header_row else ''
         title = name.title()
-        # print(f"DEBUG: model.py _find_table ENTER {title=} _tables= {self._tables}")
+        print(f"DEBUG: model.py _find_table ENTER {title=} _tables= {self._tables}")
         if title not in self._tables:
             title = self._resolve_deprecated_table(name)
             if title is None:
