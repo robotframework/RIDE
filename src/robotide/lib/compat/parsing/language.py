@@ -11,7 +11,7 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-
+import os.path
 import re
 import sys
 
@@ -25,7 +25,9 @@ def check_file_language(path):
     :param path: Path to robot or resource file
     :return: language, error or None
     """
-    language_string = read(path)
+    language_string = None
+    if os.path.isfile(path):
+        language_string = read(path)
     if not language_string:
         return None
     # If preamble exists, proceed with language detection

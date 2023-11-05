@@ -106,7 +106,7 @@ class _ResourceLoader(_DataLoaderThread):
         self._loader = resource_loader
 
     def _run(self):
-        return self._loader(self._datafile, language=self.language)
+        return self._loader(self._datafile)
 
 
 class TestDataDirectoryWithExcludes(robotapi.TestDataDirectory):
