@@ -67,6 +67,32 @@ SMALL_TEST_PATH = _makepath('small_test')
 
 IMPORTS = _makepath('imports')
 
+PREAMBLE_NO_LANG = _makepath('language', 'preamble_no_lang.robot')
+PREAMBLE_UNKNOWN_LANG = _makepath('language', 'preamble_unknown_lang.robot')
+VALID_LANG_BG = _makepath('language', 'lang_bg.robot')
+VALID_LANG_BS = _makepath('language', 'lang_bs.robot')
+VALID_LANG_CS = _makepath('language', 'lang_cs.robot')
+VALID_LANG_DE = _makepath('language', 'lang_de.robot')
+VALID_LANG_ES = _makepath('language', 'lang_es.robot')
+VALID_LANG_EN = _makepath('language', 'lang_en.robot')
+VALID_LANG_FR = _makepath('language', 'lang_fr.robot')
+VALID_LANG_FI = _makepath('language', 'lang_fi.robot')
+VALID_LANG_HI = _makepath('language', 'lang_hi.robot')
+VALID_LANG_IT = _makepath('language', 'lang_it.robot')
+VALID_LANG_NL = _makepath('language', 'lang_nl.robot')
+VALID_LANG_PL = _makepath('language', 'lang_pl.robot')
+VALID_LANG_PT_BR = _makepath('language', 'lang_pt_br.robot')
+VALID_LANG_PT = _makepath('language', 'lang_pt.robot')
+VALID_LANG_RO = _makepath('language', 'lang_ro.robot')
+VALID_LANG_RU = _makepath('language', 'lang_ru.robot')
+VALID_LANG_SV = _makepath('language', 'lang_sv.robot')
+VALID_LANG_TH = _makepath('language', 'lang_th.robot')
+VALID_LANG_TR = _makepath('language', 'lang_tr.robot')
+VALID_LANG_UK = _makepath('language', 'lang_uk.robot')
+VALID_LANG_VI = _makepath('language', 'lang_vi.robot')
+VALID_LANG_ZH_CN = _makepath('language', 'lang_zh_cn.robot')
+VALID_LANG_ZH_TW = _makepath('language', 'lang_zh_tw.robot')
+
 
 def construct_project(datapath, temp_dir_for_excludes=None):
     print("DEBUG: construct_project with argpath: %s\n" % datapath)
@@ -76,7 +102,7 @@ def construct_project(datapath, temp_dir_for_excludes=None):
     library_manager.create_database()
     project = Project(Namespace(settings), settings, library_manager)
     print("DEBUG: construct_project Project: %s\n" % project.display_name)
-    project.load_data(datapath)  #, NullObserver())
+    project.load_data(datapath)  # , NullObserver())
     # DEBUG
     print("DEBUG: Path arg is: %s\n" % datapath)
     return project

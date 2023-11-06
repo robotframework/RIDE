@@ -18,11 +18,12 @@ import copy
 import re
 import warnings
 
+from robot.conf.languages import Language
 from robotide.lib.robot.errors import DataError
 from robotide.lib.robot.variables import is_var
 from robotide.lib.robot.output import LOGGER
 from robotide.lib.robot.writer import DataFileWriter
-from robotide.lib.robot.utils import abspath, is_string, normalize, py2to3, NormalizedDict
+from robotide.lib.robot.utils import abspath, is_string, normalize, normalized_headers, py2to3, NormalizedDict
 
 from .comments import Comment
 from .populators import FromFilePopulator, FromDirectoryPopulator, NoTestsFound
@@ -113,33 +114,50 @@ class _TestData(object):
                   (self._testcase_table_names, self.testcase_table),
                   (self._keyword_table_names, self.keyword_table),
                   (self._comment_table_names, None)]
-        t_pt = [(('Definição', 'Definições'), self.setting_table),
-                (('Variável', 'Variáveis'), self.setting_table),
-                (('Caso de Teste', 'Casos de Teste', 'Tarefa', 'Tarefas'), self.testcase_table),
-                (('Palavra-Chave', 'Palavras-Chave'), self.keyword_table),
-                (('Comentário', 'Comentários'), None)]
-        t_fr = [(('Paramètres',), self.setting_table),
-                (('Variables',), self.setting_table),
-                (('Unités de Test', 'Tâches'), self.testcase_table),
-                (('Mots-Clés',), self.keyword_table),
-                (('Commentaires',), None)]
-        # remove Comments section, because we want to keep them as they are in files
-        if language[0] == 'pt':
-            return t_pt + t_en
-        if language[0] == 'fr':
-            return t_fr + t_en
+        try:
+            lang = Language.from_name(language[0])
+        except ValueError:
+            lang = None
+            print(f"DEBUG: model.py get_tables_for Exception at language={language[0]}")
+
+        if isinstance(lang, Language):
+            headers = lang.headers
+            print(f"DEBUG: model.py get_tables_for HEADERS headers={headers}")
+            build_table = []
+            for idx, base in enumerate(t_en):
+                build_headings = []
+                for item in base[0]:
+                    inx = 0
+                    for k, v in zip(headers.keys(), headers.values()):
+                        try:
+                            if v == item:
+                                build_headings.append(list(headers.keys())[inx])
+                        except Exception as e:
+                            pass
+                        inx += 1
+                build_table.append((tuple(build_headings), list(base)[1]))
+            print(f"DEBUG: model.py get_tables_for returning table= {build_table}")
+            return build_table + t_en
         return t_en
 
     def _find_table(self, header_row):
         name = header_row[0] if header_row else ''
         title = name.title()
-        print(f"DEBUG: model.py _find_table ENTER {title=} _tables= {self._tables}")
+        # print(f"DEBUG: model.py _find_table ENTER {title=} _tables= {self._tables}")
+        headers = normalized_headers(self._tables)
+        normalized_name = normalize(name)
+        # print(f"DEBUG: model.py _find_table HEADERS name={normalized_name} headers={headers}")
         if title not in self._tables:
+            if normalized_name in headers:
+                idx = headers.index(normalized_name)
+                title = list(self._tables.keys())[idx]
+                # print(f"DEBUG: model.py _find_table RETURN NEW {title}")
+                return self._tables[title]
             title = self._resolve_deprecated_table(name)
             if title is None:
                 self._report_unrecognized_table(name)
                 return None
-        print(f"DEBUG: model.py _find_table FOUND {title=} return {self._tables[title]}")
+        # print(f"DEBUG: model.py _find_table FOUND {title=} return {self._tables[title]}")
         return self._tables[title]
 
     def _resolve_deprecated_table(self, used_name):

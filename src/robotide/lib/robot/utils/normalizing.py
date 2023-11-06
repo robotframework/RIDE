@@ -53,6 +53,18 @@ def _normalize(name, ignore=(), caseless=True, spaceless=True):
     return normalize(name, ignore, caseless, spaceless)
 
 
+def normalized_headers(table: dict):
+    """
+    Returns the normalized keys from the dictionary
+    :param table: the dict to get headers normalized
+    :return: normalized keys from table
+    """
+    result = []
+    for name in table.keys():
+        result.append(normalize(name))
+    return result
+
+
 class NormalizedDict(MutableMapping):
     """Custom dictionary implementation automatically normalizing keys."""
 
