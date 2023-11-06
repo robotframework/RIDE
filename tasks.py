@@ -408,9 +408,9 @@ def test_ci(ctx, test_filter=''):
     try:
         import subprocess
 
-        a = subprocess.Popen(["coverage", "run", "-a", "-m", "pytest", "--cov-config=.coveragerc", "-k test_", "-v", "utest/application/test_app_main.py"])
+        a = subprocess.Popen(["coverage", "run", "-a", "--data-file=.coverage.1", "-m", "pytest", "--cov-config=.coveragerc", "-k test_", "-v", "utest/application/test_app_main.py"])
         a.communicate(b'')
-        b = subprocess.Popen(["coverage", "run", "-a", "-m", "pytest", "--ignore=utest/application/test_app_main.py", "--cov-config=.coveragerc", "-k test_", "-v", TEST_DIR])
+        b = subprocess.Popen(["coverage", "run", "-a", "--data-file=.coverage.2", "-m", "pytest", "--ignore=utest/application/test_app_main.py", "--cov-config=.coveragerc", "-k test_", "-v", TEST_DIR])
         b.communicate(b'')
         c = subprocess.Popen(["coverage", "combine"])
         c.communicate(b'')
