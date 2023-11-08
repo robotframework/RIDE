@@ -108,6 +108,14 @@ class _TestData(object):
     def preamble(self, row):
         self.add_preamble(row)
 
+    @property
+    def language(self):
+        return self._language
+    
+    @language.setter
+    def language(self, lang):
+        self._language = lang
+
     def get_tables_for(self, language):
         t_en = [(self._setting_table_names, self.setting_table),
                   (self._variable_table_names, self.variable_table),
@@ -244,6 +252,7 @@ class TestCaseFile(_TestData):
 
     def __init__(self, parent=None, source=None, settings=None, language=None):
         self.directory = os.path.dirname(source) if source else None
+        self._language = language
         self.setting_table = TestCaseFileSettingTable(self)
         self.variable_table = VariableTable(self)
         self.testcase_table = TestCaseTable(self)
@@ -333,9 +342,9 @@ class TestDataDirectory(_TestData):
         self.testcase_table = TestCaseTable(self)
         self.keyword_table = KeywordTable(self)
         self._settings = settings
-        self.language = language
+        self._language = language
         self._tab_size = self._settings.get('txt number of spaces', 2) if self._settings else 2
-        _TestData.__init__(self, parent, source, language=self.language)
+        _TestData.__init__(self, parent, source, language=self._language)
 
     def populate(self, include_suites=None, extensions=None, recurse=True):
         FromDirectoryPopulator().populate(self.source, self, include_suites,

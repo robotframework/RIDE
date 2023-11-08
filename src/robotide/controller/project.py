@@ -29,7 +29,7 @@ from ..spec.xmlreaders import SpecInitializer
 
 class Project(_BaseController, WithNamespace):
 
-    def __init__(self, namespace=None, settings=None, library_manager=None):
+    def __init__(self, namespace=None, settings=None, library_manager=None, file_language=None):
         from .filecontrollers import ResourceFileControllerFactory
         self._library_manager = self._construct_library_manager(library_manager, settings)
         if not self._library_manager.is_alive():
@@ -41,7 +41,7 @@ class Project(_BaseController, WithNamespace):
         self.controller = None
         self.name = None
         self.external_resources = []
-        self.file_language = None
+        self.file_language = file_language
         self._resource_file_controller_factory = ResourceFileControllerFactory(self._name_space, self)
         self._serializer = Serializer(settings, LOG)
 

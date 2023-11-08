@@ -735,6 +735,10 @@ class TestCaseFileController(_FileSystemElement, _DataController):
     def preamble(self):
         return self.data.preamble
 
+    @property
+    def language(self):
+        return self.data.language
+
     def contains_tests(self):
         return bool(self.tests)
 

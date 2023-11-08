@@ -120,6 +120,8 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
             """
             if hasattr(datafile_controller, 'preamble'):  # DEBUG: Is failing at resource files
                 print(f"DEBUG: texteditor _open preamble={datafile_controller.preamble}")
+            if hasattr(datafile_controller, 'language'):
+                print(f"DEBUG: texteditor _open language={datafile_controller.language}")
             self._open_data_for_controller(datafile_controller)
             self._editor.store_position()
 
