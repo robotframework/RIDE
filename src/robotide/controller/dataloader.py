@@ -77,7 +77,7 @@ class _DataLoader(_DataLoaderThread):
         self._language = language
 
     def _run(self):
-        # print(f"DEBUG: Dataloader returning TestData source={self._path}")
+        print(f"DEBUG: Dataloader called _run language={self._language} returning TestData source={self._path}")
         return test_data(source=self._path, settings=self._settings, language=self._language)
 
 

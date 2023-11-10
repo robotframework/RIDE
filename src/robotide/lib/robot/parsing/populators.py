@@ -15,6 +15,7 @@
 
 import os
 
+from robotide.lib.compat.parsing import language
 from robotide.lib.robot.errors import DataError
 from robotide.lib.robot.model import SuiteNamePatterns
 from robotide.lib.robot.output import LOGGER
@@ -51,12 +52,13 @@ class FromFilePopulator(object):
                    'tasks': TestTablePopulator,
                    'keyword': KeywordTablePopulator}
 
-    def __init__(self, datafile, tab_size=2):
+    def __init__(self, datafile, tab_size=2, lang=None):
         self._datafile = datafile
         self._populator = NullPopulator()
         self._curdir = self._get_curdir(datafile.directory)
         self._tab_size = tab_size
-        self._comment_table_names = ('comment', 'comments')
+        self._language = lang
+        self._comment_table_names = language.get_headers_for(self._language, ('comment', 'comments'))
 
     @staticmethod
     def _get_curdir(path):
@@ -93,7 +95,7 @@ class FromFilePopulator(object):
         if resource and file_format == 'resource':
             file_format = 'robot'
         try:
-            return READERS[file_format](self._tab_size)
+            return READERS[file_format](self._tab_size, self._language)
         except KeyError:
             raise DataError("Unsupported file format '%s'." % file_format)
 

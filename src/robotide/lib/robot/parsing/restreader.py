@@ -19,11 +19,14 @@ from .htmlreader import HtmlReader
 from .robotreader import RobotReader
 
 
-def RestReader():
+def RestReader(language=None):
     from .restsupport import (publish_doctree, publish_from_doctree,
                               RobotDataStorage)
 
     class RestReader(object):
+
+        def __init__(self, lang=language):
+            self.language = lang  # May be used later, it is here for compatibility with RF 6.1, RIDE > 2.0.8.1
 
         def read(self, rstfile, rawdata):
             doctree = publish_doctree(
@@ -39,7 +42,7 @@ def RestReader():
 
         def _read_text(self, data, rawdata, path):
             robotfile = BytesIO(data.encode('UTF-8'))
-            return RobotReader().read(robotfile, rawdata, path)
+            return RobotReader(language=self.language).read(robotfile, rawdata, path)
 
         def _read_html(self, doctree, rawdata, path):
             htmlfile = BytesIO()

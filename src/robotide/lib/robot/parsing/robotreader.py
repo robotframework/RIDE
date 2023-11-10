@@ -15,6 +15,7 @@
 
 import re
 
+from robotide.lib.compat.parsing import language
 from robotide.lib.robot.output import LOGGER
 from robotide.lib.robot.utils import Utf8Reader, prepr
 
@@ -23,7 +24,7 @@ NBSP = u'\xa0'
 
 class RobotReader(object):
 
-    def __init__(self, spaces=2):
+    def __init__(self, spaces=2, lang=None):
         self._spaces = spaces
         self._space_splitter = re.compile(r"[ \t\xa0]{2}|\t+")
         self._pipe_splitter = re.compile(r"[ \t\xa0]+\|(?=[ \t\xa0]+)")
@@ -31,6 +32,7 @@ class RobotReader(object):
         self._pipe_ends = (' |', '\t|', u'\xa0|')
         self._separator_check = False
         self._cell_section = False
+        self.language = lang
 
     def read(self, file, populator, path=None):
         path = path or getattr(file, 'name', '<file-like object>')
@@ -42,8 +44,9 @@ class RobotReader(object):
                 self.check_separator(line.rstrip())
             cells = self.split_row(line.rstrip())
             if cells and cells[0].strip().startswith('*'):  # For the cases of *** Comments ***
-                if cells[0].replace('*', '').strip().lower() in ('comment', 'comments'):
-                    # print(f"DEBUG: robotreader.read detection of comments cells={cells}")
+                if (cells[0].replace('*', '').strip().lower() in
+                        language.get_headers_for(self.language, ('comment', 'comments'))):
+                    print(f"DEBUG: robotreader.read detection of comments cells={cells}")
                     process = True
             if cells and cells[0].strip().startswith('*') and \
                     populator.start_table([c.replace('*', '').strip() for c in cells]):
@@ -96,7 +99,8 @@ class RobotReader(object):
     def check_separator(self, line):
         if line.startswith('*') and not self._cell_section:
             row = line.strip('*').strip().lower()
-            if row in ['keyword', 'keywords', 'test case', 'test cases', 'task', 'tasks', 'variable', 'variables']:
+            if row in language.get_headers_for(self.language,
+        ['keyword', 'keywords', 'test case', 'test cases', 'task', 'tasks', 'variable', 'variables']):
                 self._cell_section = True
         if not line.startswith('*') and not line.startswith('#'):
             if not self._separator_check and line[:2] in self._pipe_starts:

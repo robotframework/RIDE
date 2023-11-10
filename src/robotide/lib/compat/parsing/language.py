@@ -14,6 +14,7 @@
 import os.path
 import sys
 
+from robot.conf.languages import Language
 from robot.errors import DataError
 from robotide.lib.robot.utils import Utf8Reader
 
@@ -60,3 +61,45 @@ def read(path):
             if row.startswith('Language:'):
                 lang = row[len('Language:'):].strip()
     return lang
+
+
+def get_headers_for(language, tables_headers):
+    _setting_table_names = 'Setting', 'Settings'
+    _variable_table_names = 'Variable', 'Variables'
+    _testcase_table_names = 'Test Case', 'Test Cases', 'Task', 'Tasks'
+    _keyword_table_names = 'Keyword', 'Keywords'
+    _comment_table_names = 'Comment', 'Comments'
+    t_en = [(_setting_table_names,),
+              (_variable_table_names,),
+              (_testcase_table_names,),
+              (_keyword_table_names,),
+              (_comment_table_names,)]
+    assert tables_headers is not None
+    if not language:
+        language = ['en']
+    try:
+        lang = Language.from_name(language[0])  # DEBUG: Consider several languages
+    except ValueError:
+        lang = None
+        print(f"DEBUG: language.py get_headers_for Exception at language={language[0]}")
+
+    if isinstance(lang, Language):
+        headers = lang.headers
+        print(f"DEBUG: language.py get_headers_for HEADERS headers={headers}, table_headers={tables_headers}")
+        build_table = []
+        for item in tables_headers:
+            build_headings = []
+            inx = 0
+            for k, v in zip(headers.keys(), headers.values()):
+                try:
+                    if v.lower() == item.lower():
+                        build_headings.append(list(headers.keys())[inx])
+                        break
+                except Exception as e:
+                    pass
+                inx += 1
+            build_table.extend(build_headings)
+        if build_table:
+            print(f"DEBUG: language.py get_headers_for returning table= {build_table}")
+            return tuple(build_table + list(tables_headers))
+    return tables_headers

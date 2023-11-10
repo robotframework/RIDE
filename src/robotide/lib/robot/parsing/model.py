@@ -123,7 +123,7 @@ class _TestData(object):
                   (self._keyword_table_names, self.keyword_table),
                   (self._comment_table_names, None)]
         try:
-            lang = Language.from_name(language[0])
+            lang = Language.from_name(language[0])  # DEBUG: Consider several languages
         except ValueError:
             lang = None
             print(f"DEBUG: model.py get_tables_for Exception at language={language[0]}")
@@ -252,7 +252,7 @@ class TestCaseFile(_TestData):
 
     def __init__(self, parent=None, source=None, settings=None, language=None):
         self.directory = os.path.dirname(source) if source else None
-        self._language = language
+        self.language = language
         self.setting_table = TestCaseFileSettingTable(self)
         self.variable_table = VariableTable(self)
         self.testcase_table = TestCaseTable(self)
@@ -262,7 +262,7 @@ class TestCaseFile(_TestData):
         _TestData.__init__(self, parent, source, language)
 
     def populate(self):
-        FromFilePopulator(self, self._tab_size).populate(self.source)
+        FromFilePopulator(self, self._tab_size, self.language).populate(self.source)
         self._validate()
         return self
 
