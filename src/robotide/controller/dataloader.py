@@ -16,6 +16,7 @@
 import os
 from threading import Thread
 
+from robotide.lib.compat.parsing import language as lang
 from .. import robotapi
 
 
@@ -77,7 +78,6 @@ class _DataLoader(_DataLoaderThread):
         self._language = language
 
     def _run(self):
-        print(f"DEBUG: Dataloader called _run language={self._language} returning TestData source={self._path}")
         return test_data(source=self._path, settings=self._settings, language=self._language)
 
 
@@ -132,13 +132,12 @@ def test_data(source, parent=None, settings=None, language=None):
         :class:`~.model.TestCaseFile` otherwise.
     """
     if os.path.isdir(source):
-        # print("DEBUG: Dataloader Is dir getting testdada %s\n" % source)
         data = TestDataDirectoryWithExcludes(parent, source, settings, language)
         # print("DEBUG: Dataloader testdata %s\n" % data.name)
         data.populate()
         # print("DEBUG: Dataloader after populate %s  %s\n" % (data._tables, data.name))
         return data
-    print(f"DEBUG: Dataloader test_data returning TestCaseFile {language=}")
+    language = language if language else lang.check_file_language(source)
     datafile = robotapi.TestCaseFile(parent, source, settings, language).populate()
     if datafile:
         return datafile

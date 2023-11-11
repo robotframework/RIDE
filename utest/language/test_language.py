@@ -134,11 +134,11 @@ class TestLanguage(unittest.TestCase):
 
     def test_get_headers_known_language_lw(self):
         headers = language.get_headers_for(['pt'], ['Settings'])
-        assert list(headers) == ['definições', 'settings']
+        assert sorted(headers) == ['definições', 'settings']
 
     def test_get_headers_known_language(self):
         headers = language.get_headers_for(['pt-BR'], ['Settings'], lowercase=False)
-        assert list(headers) == ['Configurações', 'Settings']
+        assert sorted(headers) == ['Configurações', 'Settings']
 
     def test_get_headers_multiple_languages_lw(self):
         headers = language.get_headers_for(['es', 'fr', 'Chinese Simplified ', 'zh-TW'], ['Settings'], lowercase=True)

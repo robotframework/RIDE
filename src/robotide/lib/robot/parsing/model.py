@@ -126,11 +126,10 @@ class _TestData(object):
             lang = Language.from_name(language[0])  # DEBUG: Consider several languages
         except ValueError:
             lang = None
-            print(f"DEBUG: model.py get_tables_for Exception at language={language[0]}")
+            # print(f"DEBUG: model.py get_tables_for Exception at language={language[0]}")
 
         if isinstance(lang, Language):
             headers = lang.headers
-            print(f"DEBUG: model.py get_tables_for HEADERS headers={headers}")
             build_table = []
             for idx, base in enumerate(t_en):
                 build_headings = []
@@ -144,7 +143,7 @@ class _TestData(object):
                             pass
                         inx += 1
                 build_table.append((tuple(build_headings), list(base)[1]))
-            print(f"DEBUG: model.py get_tables_for returning table= {build_table}")
+            # print(f"DEBUG: model.py get_tables_for returning table= {build_table}")
             return build_table + t_en
         return t_en
 
@@ -291,18 +290,18 @@ class ResourceFile(_TestData):
 
     def __init__(self, source=None, settings=None, language=None):
         self.directory = os.path.dirname(source) if source else None
+        self.language = language
         self.setting_table = ResourceFileSettingTable(self)
         self.variable_table = VariableTable(self)
         self.testcase_table = TestCaseTable(self)
         self.keyword_table = KeywordTable(self)
         self.settings = settings
-        self.language = language
         self._preamble = []
         self._tab_size = self.settings.get('txt number of spaces', 2) if self.settings else 2
         _TestData.__init__(self, source=source, language=self.language)
 
     def populate(self):
-        FromFilePopulator(self, self._tab_size).populate(self.source, resource=True)
+        FromFilePopulator(self, self._tab_size, self.language).populate(self.source, resource=True)
         self._report_status()
         return self
 
@@ -337,14 +336,14 @@ class TestDataDirectory(_TestData):
     def __init__(self, parent=None, source=None, settings=None, language=None):
         self.directory = source
         self.initfile = None
+        self.language = language
         self.setting_table = InitFileSettingTable(self)
         self.variable_table = VariableTable(self)
         self.testcase_table = TestCaseTable(self)
         self.keyword_table = KeywordTable(self)
         self._settings = settings
-        self._language = language
         self._tab_size = self._settings.get('txt number of spaces', 2) if self._settings else 2
-        _TestData.__init__(self, parent, source, language=self._language)
+        _TestData.__init__(self, parent, source, language=self.language)
 
     def populate(self, include_suites=None, extensions=None, recurse=True):
         FromDirectoryPopulator().populate(self.source, self, include_suites,

@@ -57,7 +57,10 @@ class FromFilePopulator(object):
         self._populator = NullPopulator()
         self._curdir = self._get_curdir(datafile.directory)
         self._tab_size = tab_size
-        self._language = lang
+        if datafile.source:
+            self._language = lang if lang else language.check_file_language(datafile.source)
+        else:
+            self._language = lang if lang else None
         self._comment_table_names = language.get_headers_for(self._language, ('comment', 'comments'))
 
     @staticmethod
