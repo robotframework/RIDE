@@ -43,8 +43,8 @@ def check_file_language(path):
         sys.stderr.write(f"File language definition returned error: {repr(e)}\n")
         return None
     if build_lang:
-        print(f"DEBUG: check_file_language {build_lang.settings}\n{build_lang.headers}\n{build_lang.true_strings}"
-              f"\n{build_lang.false_strings}\n{build_lang.bdd_prefixes}")
+        # print(f"DEBUG: check_file_language {build_lang.settings}\n{build_lang.headers}\n{build_lang.true_strings}"
+        #      f"\n{build_lang.false_strings}\n{build_lang.bdd_prefixes}")
         lang = []
         for ll in build_lang:
             lang.append(ll.code)
@@ -63,43 +63,54 @@ def read(path):
     return lang
 
 
-def get_headers_for(language, tables_headers):
+def get_headers_for(language, tables_headers, lowercase=True):
     _setting_table_names = 'Setting', 'Settings'
     _variable_table_names = 'Variable', 'Variables'
     _testcase_table_names = 'Test Case', 'Test Cases', 'Task', 'Tasks'
     _keyword_table_names = 'Keyword', 'Keywords'
     _comment_table_names = 'Comment', 'Comments'
     t_en = [(_setting_table_names,),
-              (_variable_table_names,),
-              (_testcase_table_names,),
-              (_keyword_table_names,),
-              (_comment_table_names,)]
+            (_variable_table_names,),
+            (_testcase_table_names,),
+            (_keyword_table_names,),
+            (_comment_table_names,)]
     assert tables_headers is not None
     if not language:
         language = ['en']
-    try:
-        lang = Language.from_name(language[0])  # DEBUG: Consider several languages
-    except ValueError:
-        lang = None
-        print(f"DEBUG: language.py get_headers_for Exception at language={language[0]}")
+    languages = set()
+    for mlang in language:
+        try:
+            lang = Language.from_name(mlang)
+            languages.add(lang)
+        except ValueError:
+            print(f"DEBUG: language.py get_headers_for Exception at language={mlang}")
 
-    if isinstance(lang, Language):
+    tables_headers = [item.lower() for item in list(tables_headers)] if lowercase else tables_headers
+    if not languages:
+        # print("DEBUG: language.py get_headers_for languages set is empty returning original tables_headers")
+        return tables_headers
+
+    build_table = set()
+    for lang in languages:
         headers = lang.headers
-        print(f"DEBUG: language.py get_headers_for HEADERS headers={headers}, table_headers={tables_headers}")
-        build_table = []
+        # print(f"DEBUG: language.py get_headers_for HEADERS headers={headers}, table_headers={tables_headers}")
         for item in tables_headers:
             build_headings = []
             inx = 0
             for k, v in zip(headers.keys(), headers.values()):
                 try:
                     if v.lower() == item.lower():
-                        build_headings.append(list(headers.keys())[inx])
+                        header = list(headers.keys())[inx].lower() if lowercase else list(headers.keys())[inx]
+                        build_headings.append(header)
                         break
                 except Exception as e:
                     pass
                 inx += 1
-            build_table.extend(build_headings)
-        if build_table:
-            print(f"DEBUG: language.py get_headers_for returning table= {build_table}")
-            return tuple(build_table + list(tables_headers))
+            for bh in build_headings:
+                build_table.add(bh)
+    if build_table:
+        # print(f"DEBUG: language.py get_headers_for returning table= {build_table}")
+        for th in tables_headers:
+            build_table.add(th)
+        return tuple(list(build_table))
     return tables_headers

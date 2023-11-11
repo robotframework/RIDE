@@ -38,7 +38,7 @@ class RobotReader(object):
         path = path or getattr(file, 'name', '<file-like object>')
         _ = path
         process = table_start = preamble = False
-        # print(f"DEBUG: RFLib RobotReader start Reading file")
+        # print(f"DEBUG: RFLib RobotReader start Reading file language={self.language}")
         for lineno, line in enumerate(Utf8Reader(file).readlines(), start=1):
             if not self._separator_check:
                 self.check_separator(line.rstrip())
@@ -46,7 +46,7 @@ class RobotReader(object):
             if cells and cells[0].strip().startswith('*'):  # For the cases of *** Comments ***
                 if (cells[0].replace('*', '').strip().lower() in
                         language.get_headers_for(self.language, ('comment', 'comments'))):
-                    print(f"DEBUG: robotreader.read detection of comments cells={cells}")
+                    # print(f"DEBUG: robotreader.read detection of comments cells={cells}")
                     process = True
             if cells and cells[0].strip().startswith('*') and \
                     populator.start_table([c.replace('*', '').strip() for c in cells]):
@@ -97,10 +97,13 @@ class RobotReader(object):
         return ' '.join(string.split())
 
     def check_separator(self, line):
+        # print(f"DEBUG: robotreader.check_separator ENTER line={line}")
         if line.startswith('*') and not self._cell_section:
             row = line.strip('*').strip().lower()
+            # print(f"DEBUG: robotreader.check_separator SECTION CHECK roe={row}")
             if row in language.get_headers_for(self.language,
         ['keyword', 'keywords', 'test case', 'test cases', 'task', 'tasks', 'variable', 'variables']):
+                # print(f"DEBUG: robotreader.check_separator detection of cell section row={row}")
                 self._cell_section = True
         if not line.startswith('*') and not line.startswith('#'):
             if not self._separator_check and line[:2] in self._pipe_starts:

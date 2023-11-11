@@ -124,6 +124,30 @@ class TestLanguage(unittest.TestCase):
         lang = language.check_file_language(datafilereader.VALID_LANG_ZH_TW)
         assert lang == ['zh-TW']
 
+    def test_get_headers_unknown_language_lw(self):
+        headers = language.get_headers_for(['Pirates'], ['Settings'])
+        assert list(headers) == ['settings']
+
+    def test_get_headers_unknown_language(self):
+        headers = language.get_headers_for(['Pirates'], ['Settings'], lowercase=False)
+        assert list(headers) == ['Settings']
+
+    def test_get_headers_known_language_lw(self):
+        headers = language.get_headers_for(['pt'], ['Settings'])
+        assert list(headers) == ['definições', 'settings']
+
+    def test_get_headers_known_language(self):
+        headers = language.get_headers_for(['pt-BR'], ['Settings'], lowercase=False)
+        assert list(headers) == ['Configurações', 'Settings']
+
+    def test_get_headers_multiple_languages_lw(self):
+        headers = language.get_headers_for(['es', 'fr', 'Chinese Simplified ', 'zh-TW'], ['Settings'], lowercase=True)
+        assert sorted(headers) == ['configuraciones', 'paramètres', 'settings', '設置', '设置']
+
+    def test_get_headers_multiple_languages(self):
+        headers = language.get_headers_for(['pt-BR', 'pt', 'Pirates', 'en'], ['Settings'], lowercase=False)
+        assert sorted(headers) == ['Configurações', 'Definições', 'Settings']
+
 
 if __name__ == '__main__':
     unittest.main()
