@@ -216,7 +216,7 @@ class TestFindOccurrencesWithFiles(unittest.TestCase):
         self._assert_usage('Keyword Teardown Keyword', 'Teardown')
 
     def test_finding_from_test_teardown_in_settings(self):
-        self._assert_usage('Test Teardown in Setting', 'Test Teardown')
+        self._assert_usage('Test Teardown in Setting', 'Task Teardown')
 
     def test_occurrences_in_suite_documentation_should_not_be_found(self):
         self._assert_no_usages('suitedocmatch')
@@ -282,13 +282,13 @@ class FindOccurrencesTest(unittest.TestCase):
         assert_occurrence(self.test_ctrl, SUITE_SETUP_KEYWORD,
                           SUITE_NAME, 'Suite Setup')
         assert_occurrence(self.test_ctrl, 'Test Setup Kw',
-                          SUITE_NAME, 'Test Setup')
+                          SUITE_NAME, 'Task Setup')
         assert_occurrence(self.test_ctrl, 'Test Teardown Kw',
-                          SUITE_NAME, 'Test Teardown')
+                          SUITE_NAME, 'Task Teardown')
         assert_occurrence(self.test_ctrl, 'Suite Teardown Kw',
                           SUITE_NAME, 'Suite Teardown')
         assert_occurrence(self.test_ctrl, 'Test Template Kw',
-                          SUITE_NAME, 'Test Template')
+                          SUITE_NAME, 'Task Template')
 
     def test_occurrences_in_user_keywords(self):
         assert_occurrence(self.test_ctrl, KEYWORD_IN_USERKEYWORD1,
@@ -527,13 +527,13 @@ class RenameOccurrenceTest(unittest.TestCase):
 
     def test_rename_in_suite_test_setup(self):
         self._rename(SUITE_TEST_SETUP_KEYWORD, UNUSED_KEYWORD_NAME, SUITE_NAME,
-                     'Test Setup')
+                     'Task Setup')
         self._expected_messages()
         self.assertTrue(self.test_ctrl.dirty)
 
     def test_rename_in_suite_test_template(self):
         self._rename(SUITE_TEST_TEMPLATE_KEYWORD, UNUSED_KEYWORD_NAME,
-                     SUITE_NAME, 'Test Template')
+                     SUITE_NAME, 'Task Template')
         self._expected_messages()
         self.assertTrue(self.test_ctrl.dirty)
 

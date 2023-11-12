@@ -116,6 +116,7 @@ class TxtFormatter(_DataFileFormatter):
         return NullAligner()
 
     def _format_header(self, header, table):
+        print(f"DEBUG: RFLib writer formmaters.py TxtFormatter _format_header headers={header}")
         header = ['*** %s ***' % header[0]] + header[1:]
         aligner = self._aligner_for(table)
         return aligner.align_row(header)

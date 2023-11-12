@@ -28,6 +28,7 @@ from .formatters import ListToStringFormatter
 
 
 def editor_dialog(obj):
+    print(f"DEBUG: editordialogs.py editor_dilog oject name={obj.label.replace(' ', '')} ")
     return globals()[obj.label.replace(' ', '') + 'Dialog']
 
 

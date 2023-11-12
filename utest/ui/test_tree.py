@@ -102,7 +102,7 @@ class _BaseSuiteTreeTest(unittest.TestCase):
                           for i in range(3)]
         res = ResourceFile()
         res.source = 'resource.robot'
-        res.keyword_table.keywords.append(UserKeyword(res, 'Resource Keyword'))
+        res.keyword_table.keywords.append(UserKeyword(res, 'Resource Keyword', ['en']))
         library_manager = LibraryManager(':memory:')
         library_manager.create_database()
         model = Project(
@@ -128,7 +128,7 @@ class _BaseSuiteTreeTest(unittest.TestCase):
         if is_dir:
             suite.directory = source
         suite.keyword_table.keywords = [
-            UserKeyword(suite.keyword_table, '%s Fake UK %d' % (suite.name, i))
+            UserKeyword(suite.keyword_table, '%s Fake UK %d' % (suite.name, i), ['en'])
             for i in range(5)]
         return suite
 

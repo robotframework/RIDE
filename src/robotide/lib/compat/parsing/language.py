@@ -118,7 +118,8 @@ def get_headers_for(language, tables_headers, lowercase=True):
 
 def get_settings_for(language, settings_names):
     assert settings_names is not None
-    assert language is not None
+    if not language:
+        language = ['en']
     languages = set()
     if isinstance(language, list):
         for mlang in language:
@@ -138,7 +139,7 @@ def get_settings_for(language, settings_names):
     build_table = {}
     for lang in languages:
         settings = lang.settings
-        print(f"DEBUG: language.py get_settings_for {lang.name} settings={settings}, \n settings_names={settings_names}")
+        # print(f"DEBUG: language.py get_settings_for {lang.name} settings={settings}, \n settings_names={settings_names}")
         for item in settings_names:
             inx = 0
             for k, v in zip(settings.keys(), settings.values()):
@@ -150,5 +151,5 @@ def get_settings_for(language, settings_names):
                 except Exception as e:
                     pass
                 inx += 1
-    print(f"DEBUG: language.py get_settings_for RETURN build_table={build_table}")
+   #  print(f"DEBUG: language.py get_settings_for RETURN build_table={build_table}")
     return build_table

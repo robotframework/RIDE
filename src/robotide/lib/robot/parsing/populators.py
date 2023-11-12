@@ -77,7 +77,7 @@ class FromFilePopulator(object):
             # print(f"DEBUG: populators populate path={path} READER={self._get_reader(path, resource)}")
             self._get_reader(path, resource).read(source, self)
         except Exception:
-            # print(f"DEBUG: populators populate CALLING DATAERROR")
+            # print("DEBUG: populators populate CALLING DATAERROR")
             raise DataError(get_error_message())
         finally:
             source.close()
@@ -109,6 +109,7 @@ class FromFilePopulator(object):
             return False
         self._populator.populate()
         table = self._datafile.start_table(DataRow(header).all)
+        # print(f"DEBUG: populators start_table header={header} got table={table}")
         self._populator = self._populators[table.type](table) if table is not None else NullPopulator()
         return bool(self._populator)
 
@@ -136,6 +137,10 @@ class FromDirectoryPopulator(object):
     ignored_prefixes = ('_', '.')
     ignored_dirs = ('CVS',)
 
+    def __init__(self, tab_size=2, lang=None):
+        self.tab_size = tab_size
+        self._language = lang
+
     def populate(self, path, datadir, include_suites=None,
                  include_extensions=None, recurse=True, tab_size=2):
         LOGGER.info("Parsing directory '%s'." % path)
@@ -147,19 +152,17 @@ class FromDirectoryPopulator(object):
         if recurse:
             self._populate_children(datadir, children, include_extensions, include_suites)
 
-    @staticmethod
-    def _populate_init_file(datadir, init_file, tab_size):
+    def _populate_init_file(self, datadir, init_file, tab_size):
         datadir.initfile = init_file
         try:
-            FromFilePopulator(datadir, tab_size).populate(init_file)
+            FromFilePopulator(datadir, tab_size, self._language ).populate(init_file)
         except DataError as err:
             LOGGER.error(err.message)
 
-    @staticmethod
-    def _populate_children(datadir, children, include_extensions, include_suites):
+    def _populate_children(self, datadir, children, include_extensions, include_suites):
         for child in children:
             try:
-                datadir.add_child(child, include_suites, include_extensions)
+                datadir.add_child(child, include_suites, include_extensions, language=self._language)
             except NoTestsFound:
                 LOGGER.info("Data source '%s' has no tests or tasks." % child)
             except DataError as err:

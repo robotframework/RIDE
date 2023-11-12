@@ -29,17 +29,17 @@ class DataLoader(object):
         self.language = language
 
     def load_datafile(self, path, load_observer, language=None):
-        return self._load(_DataLoader(path, self._settings, language=language), load_observer)
+        return self._load(_DataLoader(path, self._settings, language=self.language), load_observer)
 
     def load_initfile(self, path, load_observer, language=None):
         print(f"DEBUG: datloder.py DataLoader.load_initfile ENTER self.language={self.language} language={language}")
-        return self._load(_InitFileLoader(path, language=language), load_observer)
+        return self._load(_InitFileLoader(path, language=self.language), load_observer)
 
     def load_resource_file(self, datafile, load_observer, language=None):
-        return self._load(_ResourceLoader(datafile, self.namespace.get_resource, language=language), load_observer)
+        return self._load(_ResourceLoader(datafile, self.namespace.get_resource, language=self.language), load_observer)
 
     def resources_for(self, datafile, load_observer, language=None):
-        return self._load(_ResourceLoader(datafile, self.namespace.get_resources, language=language), load_observer)
+        return self._load(_ResourceLoader(datafile, self.namespace.get_resources, language=self.language), load_observer)
 
     def _load(self, loader, load_observer):
         self._wait_until_loaded(loader, load_observer)
@@ -114,15 +114,16 @@ class TestDataDirectoryWithExcludes(robotapi.TestDataDirectory):
 
     def __init__(self, parent, source, settings, language=None):
         self._settings = settings
-        robotapi.TestDataDirectory.__init__(self, parent, source, settings=self._settings, language=language)
+        self.language = language
+        robotapi.TestDataDirectory.__init__(self, parent, source, settings=self._settings, language=self.language)
 
     def add_child(self, path, include_suites, extensions=None,
                   warn_on_skipped=False, language=None):
         if not self._settings.excludes.contains(path):
             self.children.append(test_data(
-                parent=self, source=path, settings=self._settings, language=language))
+                parent=self, source=path, settings=self._settings, language=self.language))
         else:
-            self.children.append(ExcludedDirectory(self, path, language=language))
+            self.children.append(ExcludedDirectory(self, path, language=self.language))
 
 
 def test_data(source, parent=None, settings=None, language=None):
@@ -143,8 +144,10 @@ def test_data(source, parent=None, settings=None, language=None):
         # print("DEBUG: Dataloader after populate %s  %s\n" % (data._tables, data.name))
         return data
     language = language if language else lang.check_file_language(source)
+    # print(f"DEBUG: Dataloader TestCaseFile getting datafile language={language}")
     datafile = robotapi.TestCaseFile(parent, source, settings, language).populate()
     if datafile:
+        # print(f"DEBUG: Dataloader TestCaseFile return datafile={datafile}")
         return datafile
     if source.endswith(("resource", "robot")):
         datafile = robotapi.ResourceFile(source, settings, language).populate()
@@ -156,7 +159,8 @@ class ExcludedDirectory(robotapi.TestDataDirectory):
     def __init__(self, parent, path, language=None):
         self._parent = parent
         self._path = path
-        robotapi.TestDataDirectory.__init__(self, parent, path, language=language)
+        self.language = language
+        robotapi.TestDataDirectory.__init__(self, parent, path, language=self.language)
 
     def has_tests(self):
         return True
