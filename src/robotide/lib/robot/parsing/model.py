@@ -19,6 +19,7 @@ import re
 import warnings
 
 from robot.conf.languages import Language
+from robotide.lib.compat.parsing import language as lang
 from robotide.lib.robot.errors import DataError
 from robotide.lib.robot.variables import is_var
 from robotide.lib.robot.output import LOGGER
@@ -123,13 +124,13 @@ class _TestData(object):
                   (self._keyword_table_names, self.keyword_table),
                   (self._comment_table_names, None)]
         try:
-            lang = Language.from_name(language[0])  # DEBUG: Consider several languages
+            _lang = Language.from_name(language[0])  # DEBUG: Consider several languages
         except ValueError:
-            lang = None
+            _lang = None
             # print(f"DEBUG: model.py get_tables_for Exception at language={language[0]}")
 
-        if isinstance(lang, Language):
-            headers = lang.headers
+        if isinstance(_lang, Language):
+            headers = _lang.headers
             build_table = []
             for idx, base in enumerate(t_en):
                 build_headings = []
@@ -337,7 +338,8 @@ class TestDataDirectory(_TestData):
         self.directory = source
         self.initfile = None
         self.language = language
-        self.setting_table = InitFileSettingTable(self)
+        print(f"DEBUG: model.py TestDataDirectory init language={self.language}")
+        self.setting_table = InitFileSettingTable(self, self.language)
         self.variable_table = VariableTable(self)
         self.testcase_table = TestCaseTable(self)
         self.keyword_table = KeywordTable(self)
@@ -439,10 +441,10 @@ class _WithSettings(object):
 
     def _get_setter(self, name):
         title = name.title()
-        if title in self._aliases:
+        if title in self._aliases or name in self._aliases:
             title = self._aliases[name]
-        if title in self._setters:
-            return self._setters[title](self)
+        if title in self._setters or name in self._setters:
+            return self._setters[name](self)
         return None
 
     def _get_deprecated_setter(self, name):
@@ -465,9 +467,14 @@ class _WithSettings(object):
 
 class _SettingTable(_Table, _WithSettings):
     type = 'setting'
+    language = []
 
     def __init__(self, parent):
         _Table.__init__(self, parent)
+        if hasattr(self, 'language'):
+            print(f"DEBUG: RFLib model.py _SettingTable INIT language={self.language}")
+        if hasattr(self, '_aliases'):
+            print(f"DEBUG: RFLib model.py _SettingTable INIT _aliases={self._aliases}")
         self.doc = Documentation('Documentation', self)
         self.suite_setup = Fixture('Suite Setup', self)
         self.suite_teardown = Fixture('Suite Teardown', self)
@@ -559,6 +566,14 @@ class InitFileSettingTable(_SettingTable):
                 'Resource': lambda s: s.imports.populate_resource,
                 'Variables': lambda s: s.imports.populate_variables,
                 'Metadata': lambda s: s.metadata.populate}
+
+    def __init__(self, parent, language=None):
+        if language:
+            self.language = language
+            self._aliases = lang.get_settings_for(language,
+['Documentation', 'Suite Setup', 'Suite Teardown', 'Test Setup', 'Test Teardown',
+ 'Test Timeout', 'Force Tags', 'Test Tags', 'Library', 'Resource', 'Variables', 'Metadata'])
+        _SettingTable.__init__(self, parent)
 
     def __iter__(self):
         for setting in [self.doc, self.suite_setup, self.suite_teardown,

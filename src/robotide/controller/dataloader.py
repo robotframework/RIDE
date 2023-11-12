@@ -32,6 +32,7 @@ class DataLoader(object):
         return self._load(_DataLoader(path, self._settings, language=language), load_observer)
 
     def load_initfile(self, path, load_observer, language=None):
+        print(f"DEBUG: datloder.py DataLoader.load_initfile ENTER self.language={self.language} language={language}")
         return self._load(_InitFileLoader(path, language=language), load_observer)
 
     def load_resource_file(self, datafile, load_observer, language=None):
@@ -93,7 +94,7 @@ class _InitFileLoader(_DataLoaderThread):
         result = robotapi.TestDataDirectory(source=os.path.dirname(self._path), settings=self._settings,
                                             language=self.language)
         result.initfile = self._path
-        robotapi.FromFilePopulator(result).populate(self._path)
+        robotapi.FromFilePopulator(result, lang=self.language).populate(self._path)
         return result
 
 
@@ -132,6 +133,10 @@ def test_data(source, parent=None, settings=None, language=None):
         :class:`~.model.TestCaseFile` otherwise.
     """
     if os.path.isdir(source):
+        if not language:
+            init_file = os.path.join(source, '__init__.robot')
+            if os.path.isfile(init_file):
+                language = lang.check_file_language(init_file)
         data = TestDataDirectoryWithExcludes(parent, source, settings, language)
         # print("DEBUG: Dataloader testdata %s\n" % data.name)
         data.populate()
