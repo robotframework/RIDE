@@ -11,4 +11,5 @@ First Test
 
 *** Keywords ***
 First Keyword
+    [Arguments]    ${arg}=None    # This is a comment
     Log To Console    This is First Keyword

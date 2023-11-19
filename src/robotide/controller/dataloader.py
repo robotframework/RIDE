@@ -29,17 +29,34 @@ class DataLoader(object):
         self.language = language
 
     def load_datafile(self, path, load_observer, language=None):
+        if not language:
+            self.language = lang.check_file_language(path)
+        else:
+            self.language = language
         return self._load(_DataLoader(path, self._settings, language=self.language), load_observer)
 
     def load_initfile(self, path, load_observer, language=None):
-        print(f"DEBUG: datloder.py DataLoader.load_initfile ENTER self.language={self.language} language={language}")
+        if not language:
+            self.language = lang.check_file_language(path)
+        else:
+            self.language = language
+        # print(f"DEBUG: datloder.py DataLoader.load_initfile ENTER self.language={self.language} language={language}")
         return self._load(_InitFileLoader(path, language=self.language), load_observer)
 
     def load_resource_file(self, datafile, load_observer, language=None):
+        if not language:
+            self.language = lang.check_file_language(datafile)
+        else:
+            self.language = language
         return self._load(_ResourceLoader(datafile, self.namespace.get_resource, language=self.language), load_observer)
 
     def resources_for(self, datafile, load_observer, language=None):
-        return self._load(_ResourceLoader(datafile, self.namespace.get_resources, language=self.language), load_observer)
+        if not language:
+            self.language = lang.check_file_language(datafile.source)
+        else:
+            self.language = language
+        return self._load(_ResourceLoader(datafile, self.namespace.get_resources, language=self.language),
+                          load_observer)
 
     def _load(self, loader, load_observer):
         self._wait_until_loaded(loader, load_observer)
@@ -76,10 +93,12 @@ class _DataLoader(_DataLoaderThread):
         _DataLoaderThread.__init__(self)
         self._path = path
         self._settings = settings
-        self._language = language
+        self.language = language
 
     def _run(self):
-        return test_data(source=self._path, settings=self._settings, language=self._language)
+        if not self.language:
+            self.language = lang.check_file_language(self._path)
+        return test_data(source=self._path, settings=self._settings, language=self.language)
 
 
 class _InitFileLoader(_DataLoaderThread):
@@ -94,6 +113,8 @@ class _InitFileLoader(_DataLoaderThread):
         result = robotapi.TestDataDirectory(source=os.path.dirname(self._path), settings=self._settings,
                                             language=self.language)
         result.initfile = self._path
+        if not self.language:
+            self.language = lang.check_file_language(self._path)
         robotapi.FromFilePopulator(result, lang=self.language).populate(self._path)
         return result
 
@@ -107,7 +128,7 @@ class _ResourceLoader(_DataLoaderThread):
         self._loader = resource_loader
 
     def _run(self):
-        return self._loader(self._datafile)
+        return self._loader(self._datafile, self.language)
 
 
 class TestDataDirectoryWithExcludes(robotapi.TestDataDirectory):
@@ -120,8 +141,7 @@ class TestDataDirectoryWithExcludes(robotapi.TestDataDirectory):
     def add_child(self, path, include_suites, extensions=None,
                   warn_on_skipped=False, language=None):
         if not self._settings.excludes.contains(path):
-            self.children.append(test_data(
-                parent=self, source=path, settings=self._settings, language=self.language))
+            self.children.append(test_data(parent=self, source=path, settings=self._settings, language=self.language))
         else:
             self.children.append(ExcludedDirectory(self, path, language=self.language))
 

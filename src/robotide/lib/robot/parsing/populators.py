@@ -103,10 +103,11 @@ class FromFilePopulator(object):
             raise DataError("Unsupported file format '%s'." % file_format)
 
     def start_table(self, header):
+        # DEBUG:
         # print(f"DEBUG: RFLib populators FromFilePopulator ENTER start_table header={header}")
-        if header[0].lower() in self._comment_table_names:  # don't create a Comments section
-            # print(f"DEBUG: RFLib populators FromFilePopulator comments section header={header}")
-            return False
+        # if header[0].lower() in self._comment_table_names:  # don't create a Comments section
+        #    print(f"DEBUG: RFLib populators FromFilePopulator comments section header={header}")
+        #    # return False
         self._populator.populate()
         table = self._datafile.start_table(DataRow(header).all)
         # print(f"DEBUG: populators start_table header={header} got table={table}")
@@ -139,14 +140,15 @@ class FromDirectoryPopulator(object):
 
     def __init__(self, tab_size=2, lang=None):
         self.tab_size = tab_size
-        self._language = lang
+        self.language = lang
 
     def populate(self, path, datadir, include_suites=None,
                  include_extensions=None, recurse=True, tab_size=2):
         LOGGER.info("Parsing directory '%s'." % path)
+        if not self.language:
+            self.language = language.check_file_language(path)
         include_suites = self._get_include_suites(path, include_suites)
-        init_file, children = self._get_children(path, include_extensions,
-                                                 include_suites)
+        init_file, children = self._get_children(path, include_extensions, include_suites)
         if init_file:
             self._populate_init_file(datadir, init_file, tab_size)
         if recurse:
@@ -155,14 +157,16 @@ class FromDirectoryPopulator(object):
     def _populate_init_file(self, datadir, init_file, tab_size):
         datadir.initfile = init_file
         try:
-            FromFilePopulator(datadir, tab_size, self._language ).populate(init_file)
+            if not self.language:
+                self.language = language.check_file_language(init_file)
+            FromFilePopulator(datadir, tab_size, self.language).populate(init_file)
         except DataError as err:
             LOGGER.error(err.message)
 
     def _populate_children(self, datadir, children, include_extensions, include_suites):
         for child in children:
             try:
-                datadir.add_child(child, include_suites, include_extensions, language=self._language)
+                datadir.add_child(child, include_suites, include_extensions, language=self.language)
             except NoTestsFound:
                 LOGGER.info("Data source '%s' has no tests or tasks." % child)
             except DataError as err:
@@ -172,8 +176,7 @@ class FromDirectoryPopulator(object):
         if not incl_suites:
             return None
         if not isinstance(incl_suites, SuiteNamePatterns):
-            incl_suites = SuiteNamePatterns(
-                    self._create_included_suites(incl_suites))
+            incl_suites = SuiteNamePatterns(self._create_included_suites(incl_suites))
         # If a directory is included, also all its children should be included.
         if self._is_in_included_suites(os.path.basename(path), incl_suites):
             return None

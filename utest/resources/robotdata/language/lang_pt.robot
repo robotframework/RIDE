@@ -14,4 +14,5 @@ teste primeiro
 
 *** Palavras-Chave ***
 Primeira palavra-chave
+    [Argumentos]    ${arg}=None    # This is a comment
     Log To Console    Esta é a primeira palavra-chave

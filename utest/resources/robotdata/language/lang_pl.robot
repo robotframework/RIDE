@@ -11,4 +11,5 @@ First Test
 
 *** Słowa Kluczowe ***
 First Keyword
+    [Argumenty]    ${arg}=None    # This is a comment
     Log To Console    This is First Keyword

@@ -37,6 +37,7 @@ class RobotReader(object):
     def read(self, file, populator, path=None):
         path = path or getattr(file, 'name', '<file-like object>')
         _ = path
+        # print(f"DEBUG: robotreader.read ENTER path={path}")
         process = table_start = preamble = False
         # print(f"DEBUG: RFLib RobotReader start Reading file language={self.language}")
         for lineno, line in enumerate(Utf8Reader(file).readlines(), start=1):
@@ -98,13 +99,14 @@ class RobotReader(object):
 
     def check_separator(self, line):
         # print(f"DEBUG: robotreader.check_separator ENTER line={line}")
-        if line.startswith('*') and not self._cell_section:
+        if line.startswith('*'):  # DEBUG: we want to recheck for new sections, was: and not self._cell_section:
             row = line.strip('*').strip().lower()
-            # print(f"DEBUG: robotreader.check_separator SECTION CHECK roe={row}")
-            if row in language.get_headers_for(self.language,
-        ['keyword', 'keywords', 'test case', 'test cases', 'task', 'tasks', 'variable', 'variables']):
+            # print(f"DEBUG: robotreader.check_separator SECTION CHECK row={row} lang={self.language}")
+            if row in language.get_headers_for(self.language, ['keyword', 'keywords', 'test case',
+                                                               'test cases', 'task', 'tasks', 'variable', 'variables']):
                 # print(f"DEBUG: robotreader.check_separator detection of cell section row={row}")
                 self._cell_section = True
+                self._separator_check = False
         if not line.startswith('*') and not line.startswith('#'):
             if not self._separator_check and line[:2] in self._pipe_starts:
                 self._separator_check = True

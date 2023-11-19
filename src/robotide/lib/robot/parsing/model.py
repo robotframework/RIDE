@@ -293,6 +293,8 @@ class ResourceFile(_TestData):
     def __init__(self, source=None, settings=None, language=None):
         self.directory = os.path.dirname(source) if source else None
         self.language = language
+        if not self.language and source:
+            self.language = lang.check_file_language(source)
         self.setting_table = ResourceFileSettingTable(self, self.language)
         self.variable_table = VariableTable(self)
         self.testcase_table = TestCaseTable(self, self.language)
@@ -339,7 +341,6 @@ class TestDataDirectory(_TestData):
         self.directory = source
         self.initfile = None
         self.language = language
-        # print(f"DEBUG: model.py TestDataDirectory init language={self.language}")
         self.setting_table = InitFileSettingTable(self, self.language)
         self.variable_table = VariableTable(self)
         self.testcase_table = TestCaseTable(self, self.language)
@@ -453,7 +454,7 @@ class _WithSettings(object):
             return self._setters[self._aliases[name]](self)
         if title in self._aliases:
             title = self._aliases[title]
-        # print(f"DEBUG: RFLib model.py _WithSettings _get_setter AFTER ALIAS title={title} name={name}")
+            return self._setters[title](self)
         if title in self._setters:
             # print(f"DEBUG: RFLib model.py _WithSettings _get_setter 2 RETURNING title={title} self._setters[title]={self._setters[title]}")
             return self._setters[title](self)
@@ -554,9 +555,10 @@ class TestCaseFileSettingTable(_SettingTable):
         if language:
             self.language = language
             self._aliases = lang.get_settings_for(language,
-                                                  ['Documentation', 'Suite Setup', 'Suite Teardown', 'Test Setup',
-                                                   'Test Teardown', 'Force Tags', 'Default Tags', 'Test Tags', 'Test Template',
-                                                   'Test Timeout',  'Library', 'Resource', 'Variables', 'Metadata', 'Task Setup',
+                                                  ['Documentation', 'Suite Setup', 'Suite Teardown',
+                                                   'Test Setup', 'Test Teardown', 'Force Tags', 'Default Tags',
+                                                   'Test Tags', 'Test Template', 'Test Timeout',  'Library',
+                                                   'Resource', 'Variables', 'Metadata','Task Setup',
                                                    'Task Teardown', 'Task Template', 'Task Timeout'])
         _SettingTable.__init__(self, parent)
 
@@ -577,8 +579,7 @@ class ResourceFileSettingTable(_SettingTable):
     def __init__(self, parent, language=None):
         if language:
             self.language = language
-            self._aliases = lang.get_settings_for(language,
-                                                  ['Documentation', 'Library', 'Resource', 'Variables'])
+            self._aliases = lang.get_settings_for(language,['Documentation', 'Library', 'Resource', 'Variables'])
         _SettingTable.__init__(self, parent)
 
     def __iter__(self):
@@ -603,9 +604,10 @@ class InitFileSettingTable(_SettingTable):
     def __init__(self, parent, language=None):
         if language:
             self.language = language
-            self._aliases = lang.get_settings_for(language,
-['Documentation', 'Suite Setup', 'Suite Teardown', 'Test Setup', 'Test Teardown',
- 'Test Timeout', 'Force Tags', 'Test Tags', 'Library', 'Resource', 'Variables', 'Metadata'])
+            self._aliases = lang.get_settings_for(language, ['Documentation', 'Suite Setup',
+                                                             'Suite Teardown', 'Test Setup', 'Test Teardown',
+                                                             'Test Timeout', 'Force Tags', 'Test Tags', 'Library',
+                                                             'Resource', 'Variables', 'Metadata'])
         _SettingTable.__init__(self, parent)
 
     def __iter__(self):
@@ -647,7 +649,6 @@ class TestCaseTable(_Table):
 
     def set_header(self, header):
         if self._header and header:
-            print(f"DEBUG: model.py TestCase set_header before validation: {self._header=} {header=}")
             self._validate_mode(self._header[0], header[0])
         _Table.set_header(self, header)
 
@@ -753,7 +754,8 @@ class TestCase(_WithSteps, _WithSettings):
         self.language = language
         # print(f"DEBUG: model.py TestCase INIT language={self.language}")
         if self.language:
-            self._aliases = lang.get_settings_for(language, ['Documentation', 'Template', 'Tags', 'Setup', 'Teardown', 'Timeout'])
+            self._aliases = lang.get_settings_for(language, ['Arguments', 'Documentation', 'Template',
+                                                             'Tags', 'Setup', 'Teardown', 'Timeout'])
         self.doc = Documentation(self.get_localized_setting_name('[Documentation]'), self)
         self.template = Template(self.get_localized_setting_name('[Template]'), self)
         self.tags = Tags(self.get_localized_setting_name('[Tags]'), self)
@@ -769,6 +771,8 @@ class TestCase(_WithSteps, _WithSettings):
             )
 
     _setters = {'Documentation': lambda s: s.doc.populate,
+                'Arguments': lambda s: s.args.populate,  # This is for UserKeyword
+                'Return': lambda s: s.return_.populate,  # This is for UserKeyword
                 'Template': lambda s: s.template.populate,
                 'Setup': lambda s: s.setup.populate,
                 'Teardown': lambda s: s.teardown.populate,
@@ -841,7 +845,8 @@ class UserKeyword(TestCase):
         self.parent = parent
         self.name = name
         self.language = language
-        self._aliases = lang.get_settings_for(language, ['Documentation', 'Arguments', 'Return', 'Timeout', 'Teardown', 'Tags'])
+        self._aliases = lang.get_settings_for(language, ['Documentation', 'Arguments', 'Return', 'Timeout',
+                                                         'Teardown', 'Tags'])
         self.doc = Documentation(self.get_localized_setting_name('[Documentation]'), self)
         self.args = Arguments(self.get_localized_setting_name('[Arguments]'), self)
         self.return_ = Return(self.get_localized_setting_name('[Return]'), self)
@@ -880,8 +885,7 @@ class UserKeyword(TestCase):
         return [self.args, self.doc, self.tags, self.timeout, self.teardown, self.return_]
 
     def __iter__(self):
-        for element in [self.args, self.doc, self.tags, self.timeout] \
-                        + self.steps + [self.teardown, self.return_]:
+        for element in [self.args, self.doc, self.tags, self.timeout] + self.steps + [self.teardown, self.return_]:
             yield element
 
 
