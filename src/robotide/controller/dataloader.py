@@ -153,6 +153,9 @@ def test_data(source, parent=None, settings=None, language=None):
     :returns: :class:`~.model.TestDataDirectory`  if `source` is a directory,
         :class:`~.model.TestCaseFile` otherwise.
     """
+    # Check if opening an __init__.robot
+    if os.path.basename(source) == '__init__.robot':
+        source = os.path.dirname(source)
     if os.path.isdir(source):
         if not language:
             init_file = os.path.join(source, '__init__.robot')
