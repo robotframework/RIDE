@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generator="Robot 6.1.1 (Python 3.11.6 on linux)" generated="20231119 00:26:05.425" rpa="false" schemaversion="4">
+<suite id="s1" name="Full Test En" source="/home2/helio/github/RIDE/utest/resources/robotdata/language/en/full_test_en.robot">
+<kw name="Log To Console" library="BuiltIn" type="SETUP">
+<arg>Suite Setup</arg>
+<doc>Logs the given message to the console.</doc>
+<status status="PASS" starttime="20231119 00:26:05.569" endtime="20231119 00:26:05.570"/>
+</kw>
+<test id="s1-t1" name="first test" line="29">
+<kw name="Log To Console" library="BuiltIn" type="SETUP">
+<arg>Test Setup</arg>
+<doc>Logs the given message to the console.</doc>
+<status status="PASS" starttime="20231119 00:26:05.573" endtime="20231119 00:26:05.574"/>
+</kw>
+<kw name="First Keyword">
+<tag>first</tag>
+<tag>second</tag>
+<doc>This is the documentation
+A continued line of documentation</doc>
+<kw name="Log To Console" library="BuiltIn">
+<arg>This is the first keyword</arg>
+<doc>Logs the given message to the console.</doc>
+<status status="PASS" starttime="20231119 00:26:05.575" endtime="20231119 00:26:05.576"/>
+</kw>
+<status status="PASS" starttime="20231119 00:26:05.574" endtime="20231119 00:26:05.576"/>
+</kw>
+<kw name="Check Logic" library="full_en">
+<var>${first}</var>
+<arg>'Yes'</arg>
+<tag>logic</tag>
+<doc>Returns True if arg in ['True', 'Yes', 'On']</doc>
+<if>
+<branch type="IF" condition="${arg}">
+<kw name="Log" library="BuiltIn">
+<arg>Arg it is True: arg=${arg}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20231119 00:26:05.579" level="INFO">Arg it is True: arg='Yes'</msg>
+<status status="PASS" starttime="20231119 00:26:05.578" endtime="20231119 00:26:05.579"/>
+</kw>
+<return>
+<value>Yes</value>
+<status status="PASS" starttime="20231119 00:26:05.579" endtime="20231119 00:26:05.579"/>
+</return>
+<status status="PASS" starttime="20231119 00:26:05.577" endtime="20231119 00:26:05.579"/>
+</branch>
+<branch type="ELSE">
+<kw name="Log" library="BuiltIn">
+<arg>Arg it is False: arg=${arg}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="NOT RUN" starttime="20231119 00:26:05.580" endtime="20231119 00:26:05.580"/>
+</kw>
+<return>
+<value>No</value>
+<status status="NOT RUN" starttime="20231119 00:26:05.580" endtime="20231119 00:26:05.580"/>
+</return>
+<status status="NOT RUN" starttime="20231119 00:26:05.579" endtime="20231119 00:26:05.580"/>
+</branch>
+<status status="PASS" starttime="20231119 00:26:05.577" endtime="20231119 00:26:05.580"/>
+</if>
+<msg timestamp="20231119 00:26:05.580" level="INFO">${first} = Yes</msg>
+<status status="PASS" starttime="20231119 00:26:05.577" endtime="20231119 00:26:05.580"/>
+</kw>
+<kw name="Check Logic" library="full_en">
+<var>${second}</var>
+<arg>'Off'</arg>
+<tag>logic</tag>
+<doc>Returns True if arg in ['True', 'Yes', 'On']</doc>
+<if>
+<branch type="IF" condition="${arg}">
+<kw name="Log" library="BuiltIn">
+<arg>Arg it is True: arg=${arg}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20231119 00:26:05.581" level="INFO">Arg it is True: arg='Off'</msg>
+<status status="PASS" starttime="20231119 00:26:05.581" endtime="20231119 00:26:05.582"/>
+</kw>
+<return>
+<value>Yes</value>
+<status status="PASS" starttime="20231119 00:26:05.582" endtime="20231119 00:26:05.582"/>
+</return>
+<status status="PASS" starttime="20231119 00:26:05.581" endtime="20231119 00:26:05.582"/>
+</branch>
+<branch type="ELSE">
+<kw name="Log" library="BuiltIn">
+<arg>Arg it is False: arg=${arg}</arg>
+<doc>Logs the given message with the given level.</doc>
+<status status="NOT RUN" starttime="20231119 00:26:05.582" endtime="20231119 00:26:05.582"/>
+</kw>
+<return>
+<value>No</value>
+<status status="NOT RUN" starttime="20231119 00:26:05.582" endtime="20231119 00:26:05.582"/>
+</return>
+<status status="NOT RUN" starttime="20231119 00:26:05.582" endtime="20231119 00:26:05.582"/>
+</branch>
+<status status="PASS" starttime="20231119 00:26:05.581" endtime="20231119 00:26:05.582"/>
+</if>
+<msg timestamp="20231119 00:26:05.582" level="INFO">${second} = Yes</msg>
+<status status="PASS" starttime="20231119 00:26:05.580" endtime="20231119 00:26:05.582"/>
+</kw>
+<kw name="Log Variables" library="BuiltIn">
+<doc>Logs all variables in the current scope with given log level.</doc>
+<msg timestamp="20231119 00:26:05.584" level="INFO">${/} = /</msg>
+<msg timestamp="20231119 00:26:05.584" level="INFO">${:} = :</msg>
+<msg timestamp="20231119 00:26:05.584" level="INFO">${\n} = 
+</msg>
+<msg timestamp="20231119 00:26:05.584" level="INFO">${DEBUG_FILE} = NONE</msg>
+<msg timestamp="20231119 00:26:05.584" level="INFO">${EXECDIR} = /home2/helio/github/RIDE/utest/resources/robotdata/language/en</msg>
+<msg timestamp="20231119 00:26:05.584" level="INFO">${False} = False</msg>
+<msg timestamp="20231119 00:26:05.584" level="INFO">${first} = Yes</msg>
+<msg timestamp="20231119 00:26:05.584" level="INFO">${LOG_FILE} = /home2/helio/github/RIDE/utest/resources/robotdata/language/en/log.html</msg>
+<msg timestamp="20231119 00:26:05.584" level="INFO">${LOG_LEVEL} = INFO</msg>
+<msg timestamp="20231119 00:26:05.584" level="INFO">&amp;{main_variable} = { secondary=Test }</msg>
+<msg timestamp="20231119 00:26:05.584" level="INFO">${myvar} = 123</msg>
+<msg timestamp="20231119 00:26:05.584" level="INFO">${None} = None</msg>
+<msg timestamp="20231119 00:26:05.584" level="INFO">${null} = None</msg>
+<msg timestamp="20231119 00:26:05.584" level="INFO">&amp;{OPTIONS} = { include=[] | exclude=[] | skip=[] | skip_on_failure=[] }</msg>
+<msg timestamp="20231119 00:26:05.585" level="INFO">${OUTPUT_DIR} = /home2/helio/github/RIDE/utest/resources/robotdata/language/en</msg>
+<msg timestamp="20231119 00:26:05.585" level="INFO">${OUTPUT_FILE} = /home2/helio/github/RIDE/utest/resources/robotdata/language/en/output.xml</msg>
+<msg timestamp="20231119 00:26:05.585" level="INFO">${PREV_TEST_MESSAGE} = </msg>
+<msg timestamp="20231119 00:26:05.585" level="INFO">${PREV_TEST_NAME} = </msg>
+<msg timestamp="20231119 00:26:05.585" level="INFO">${PREV_TEST_STATUS} = </msg>
+<msg timestamp="20231119 00:26:05.585" level="INFO">${REPORT_FILE} = /home2/helio/github/RIDE/utest/resources/robotdata/language/en/report.html</msg>
+<msg timestamp="20231119 00:26:05.585" level="INFO">${second} = Yes</msg>
+<msg timestamp="20231119 00:26:05.585" level="INFO">${secondary} = 1234</msg>
+<msg timestamp="20231119 00:26:05.585" level="INFO">${secondary_variable} = 1234</msg>
+<msg timestamp="20231119 00:26:05.585" level="INFO">${simple} = one</msg>
+<msg timestamp="20231119 00:26:05.585" level="INFO">${SPACE} =  </msg>
+<msg timestamp="20231119 00:26:05.585" level="INFO">${SUITE_DOCUMENTATION} = This is the documentation
+A continued line of documentation</msg>
+<msg timestamp="20231119 00:26:05.585" level="INFO">&amp;{SUITE_METADATA} = { Name=Value }</msg>
+<msg timestamp="20231119 00:26:05.585" level="INFO">${SUITE_NAME} = Full Test En</msg>
+<msg timestamp="20231119 00:26:05.585" level="INFO">${SUITE_SOURCE} = /home2/helio/github/RIDE/utest/resources/robotdata/language/en/full_test_en.robot</msg>
+<msg timestamp="20231119 00:26:05.585" level="INFO">${TEMPDIR} = /tmp</msg>
+<msg timestamp="20231119 00:26:05.585" level="INFO">${TEST_DOCUMENTATION} = This is the documentation
+A continued line of documentation</msg>
+<msg timestamp="20231119 00:26:05.585" level="INFO">${TEST_NAME} = first test</msg>
+<msg timestamp="20231119 00:26:05.585" level="INFO">@{TEST_TAGS} = [ first | second ]</msg>
+<msg timestamp="20231119 00:26:05.585" level="INFO">${True} = True</msg>
+<status status="PASS" starttime="20231119 00:26:05.583" endtime="20231119 00:26:05.586"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>Test executed with success, first=${first}, second=${second}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20231119 00:26:05.587" level="INFO">Test executed with success, first=Yes, second=Yes</msg>
+<status status="PASS" starttime="20231119 00:26:05.586" endtime="20231119 00:26:05.587"/>
+</kw>
+<kw name="Log To Console" library="BuiltIn" type="TEARDOWN">
+<arg>Test Teardown</arg>
+<doc>Logs the given message to the console.</doc>
+<status status="PASS" starttime="20231119 00:26:05.587" endtime="20231119 00:26:05.588"/>
+</kw>
+<doc>This is the documentation
+A continued line of documentation</doc>
+<tag>first</tag>
+<tag>second</tag>
+<timeout value="1 minute"/>
+<status status="PASS" starttime="20231119 00:26:05.571" endtime="20231119 00:26:05.588"/>
+</test>
+<test id="s1-t2" name="second test" line="42">
+<kw name="Log To Console" library="BuiltIn" type="SETUP">
+<arg>Test Setup</arg>
+<doc>Logs the given message to the console.</doc>
+<status status="PASS" starttime="20231119 00:26:05.589" endtime="20231119 00:26:05.589"/>
+</kw>
+<kw name="First Keyword">
+<arg>No Operation</arg>
+<tag>first</tag>
+<tag>second</tag>
+<doc>This is the documentation
+A continued line of documentation</doc>
+<kw name="Log To Console" library="BuiltIn">
+<arg>This is the first keyword</arg>
+<doc>Logs the given message to the console.</doc>
+<status status="PASS" starttime="20231119 00:26:05.590" endtime="20231119 00:26:05.590"/>
+</kw>
+<status status="PASS" starttime="20231119 00:26:05.589" endtime="20231119 00:26:05.590"/>
+</kw>
+<kw name="First Keyword">
+<arg>First Keyword</arg>
+<tag>first</tag>
+<tag>second</tag>
+<doc>This is the documentation
+A continued line of documentation</doc>
+<kw name="Log To Console" library="BuiltIn">
+<arg>This is the first keyword</arg>
+<doc>Logs the given message to the console.</doc>
+<status status="PASS" starttime="20231119 00:26:05.591" endtime="20231119 00:26:05.591"/>
+</kw>
+<status status="PASS" starttime="20231119 00:26:05.590" endtime="20231119 00:26:05.591"/>
+</kw>
+<kw name="First Keyword">
+<arg>Log To Console Test executed with success</arg>
+<tag>first</tag>
+<tag>second</tag>
+<doc>This is the documentation
+A continued line of documentation</doc>
+<kw name="Log To Console" library="BuiltIn">
+<arg>This is the first keyword</arg>
+<doc>Logs the given message to the console.</doc>
+<status status="PASS" starttime="20231119 00:26:05.592" endtime="20231119 00:26:05.592"/>
+</kw>
+<status status="PASS" starttime="20231119 00:26:05.591" endtime="20231119 00:26:05.592"/>
+</kw>
+<kw name="Log To Console" library="BuiltIn" type="TEARDOWN">
+<arg>Test Teardown</arg>
+<doc>Logs the given message to the console.</doc>
+<status status="PASS" starttime="20231119 00:26:05.593" endtime="20231119 00:26:05.593"/>
+</kw>
+<tag>first</tag>
+<tag>second</tag>
+<timeout value="1 minute"/>
+<status status="PASS" starttime="20231119 00:26:05.588" endtime="20231119 00:26:05.593"/>
+</test>
+<test id="s1-t3" name="third test" line="52">
+<kw name="Given &quot;Mr. Smith&quot; is registered" sourcename="${user} is registered">
+<kw name="No Operation" library="BuiltIn">
+<doc>Does absolutely nothing.</doc>
+<status status="PASS" starttime="20231119 00:26:05.594" endtime="20231119 00:26:05.594"/>
+</kw>
+<status status="PASS" starttime="20231119 00:26:05.594" endtime="20231119 00:26:05.594"/>
+</kw>
+<kw name="And &quot;cart&quot; has objects" sourcename="${cart} has objects">
+<kw name="No Operation" library="BuiltIn">
+<doc>Does absolutely nothing.</doc>
+<status status="PASS" starttime="20231119 00:26:05.595" endtime="20231119 00:26:05.595"/>
+</kw>
+<status status="PASS" starttime="20231119 00:26:05.595" endtime="20231119 00:26:05.595"/>
+</kw>
+<kw name="When &quot;Mr. Smith&quot; clicks in checkout" sourcename="${user} clicks in checkout">
+<kw name="No Operation" library="BuiltIn">
+<doc>Does absolutely nothing.</doc>
+<status status="PASS" starttime="20231119 00:26:05.596" endtime="20231119 00:26:05.596"/>
+</kw>
+<status status="PASS" starttime="20231119 00:26:05.595" endtime="20231119 00:26:05.596"/>
+</kw>
+<kw name="Then the total is presented and awaits confirmation">
+<kw name="No Operation" library="BuiltIn">
+<doc>Does absolutely nothing.</doc>
+<status status="PASS" starttime="20231119 00:26:05.597" endtime="20231119 00:26:05.597"/>
+</kw>
+<status status="PASS" starttime="20231119 00:26:05.596" endtime="20231119 00:26:05.597"/>
+</kw>
+<kw name="But it is shown the unavailable payment method">
+<kw name="No Operation" library="BuiltIn">
+<doc>Does absolutely nothing.</doc>
+<status status="PASS" starttime="20231119 00:26:05.597" endtime="20231119 00:26:05.597"/>
+</kw>
+<status status="PASS" starttime="20231119 00:26:05.597" endtime="20231119 00:26:05.598"/>
+</kw>
+<status status="PASS" starttime="20231119 00:26:05.593" endtime="20231119 00:26:05.598"/>
+</test>
+<kw name="Log To Console" library="BuiltIn" type="TEARDOWN">
+<arg>Suite Teardown</arg>
+<doc>Logs the given message to the console.</doc>
+<status status="PASS" starttime="20231119 00:26:05.599" endtime="20231119 00:26:05.599"/>
+</kw>
+<doc>This is the documentation
+A continued line of documentation</doc>
+<meta name="Name">Value</meta>
+<status status="PASS" starttime="20231119 00:26:05.426" endtime="20231119 00:26:05.599"/>
+</suite>
+<statistics>
+<total>
+<stat pass="3" fail="0" skip="0">All Tests</stat>
+</total>
+<tag>
+<stat pass="2" fail="0" skip="0">first</stat>
+<stat pass="2" fail="0" skip="0">second</stat>
+</tag>
+<suite>
+<stat pass="3" fail="0" skip="0" id="s1" name="Full Test En">Full Test En</stat>
+</suite>
+</statistics>
+<errors>
+</errors>
+</robot>
