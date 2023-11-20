@@ -47,7 +47,7 @@ class RobotReader(object):
             if cells and cells[0].strip().startswith('*'):  # For the cases of *** Comments ***
                 if (cells[0].replace('*', '').strip().lower() in
                         language.get_headers_for(self.language, ('comment', 'comments'))):
-                    # print(f"DEBUG: robotreader.read detection of comments cells={cells}")
+                    print(f"DEBUG: robotreader.read detection of comments cells={cells}")
                     process = True
             if cells and cells[0].strip().startswith('*') and \
                     populator.start_table([c.replace('*', '').strip() for c in cells]):

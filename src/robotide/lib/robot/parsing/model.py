@@ -195,6 +195,7 @@ class _TestData(object):
         )
 
     def _table_is_allowed(self, table):
+        _ = table
         return True
 
     @property
@@ -214,7 +215,8 @@ class _TestData(object):
         name = name.replace('_', ' ').strip()
         return name.title() if name.islower() else name
 
-    def _strip_possible_prefix_from_name(self, name):
+    @staticmethod
+    def _strip_possible_prefix_from_name(name):
         return name.split('__', 1)[-1]
 
     @property
