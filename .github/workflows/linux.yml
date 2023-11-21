@@ -77,7 +77,6 @@ jobs:
     - name: Setup environment
       run: |
         sudo dnf install -y sdl12-compat python3-wxpython4 xorg-x11-server-Xvfb python3-pip psmisc
-        sudo -H pip install wheel https://extras.wxpython.org/wxPython4/extras/linux/gtk3/fedora-38/wxPython-4.2.1-cp311-cp311-linux_x86_64.whl
         sudo -H pip install -r requirements-dev.txt
     - name: Run tests
       run: |

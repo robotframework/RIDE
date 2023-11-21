@@ -64,6 +64,14 @@ class Test(unittest.TestCase):
         for arg in ["${a}=default | ${a2}", "${a} | ${b}=default | ${c}"]:
             assert self.validate(arg) == self.validation_error
 
+    def test_empty_argument_validation(self):
+        arg = ""
+        assert self.validate(arg) is None
+        arg = None
+        assert self.validate(arg) is None
+        arg = []
+        assert self.validate(arg) is None
+
 
 if __name__ == '__main__':
     unittest.main()
