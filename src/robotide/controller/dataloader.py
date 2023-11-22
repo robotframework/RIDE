@@ -17,6 +17,7 @@ import os
 from threading import Thread
 
 from robotide.lib.compat.parsing import language as lang
+from robotide.lib.robot.errors import DataError
 from .. import robotapi
 
 
@@ -168,7 +169,11 @@ def test_data(source, parent=None, settings=None, language=None):
         return data
     language = language if language else lang.check_file_language(source)
     # print(f"DEBUG: Dataloader TestCaseFile getting datafile language={language}")
-    datafile = robotapi.TestCaseFile(parent, source, settings, language).populate()
+    datafile = None
+    try:
+        datafile = robotapi.TestCaseFile(parent, source, settings, language).populate()
+    except DataError:
+        pass  # We try once more in case is a Resource
     if datafile:
         # print(f"DEBUG: Dataloader TestCaseFile return datafile={datafile}")
         return datafile
