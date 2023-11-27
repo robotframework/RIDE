@@ -13,13 +13,22 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robotide.lib.robot.utils import is_string, py2to3, unicode
+from robotide.lib.robot.utils import is_string, unicode
+from robotide.lib.compat.parsing import language as lang
 
 from .comments import Comment
 from ..version import ALIAS_MARKER
 
 
-@py2to3
+def get_localized_setting(language: [], english_name: str):
+    settings = lang.get_settings_for(language, (english_name,))
+    try:
+        result = list(settings.keys())[list(settings.values()).index(english_name)]
+    except ValueError:
+        return english_name
+    return result
+
+
 class Setting(object):
 
     def __init__(self, setting_name, parent=None, comment=None):
@@ -103,6 +112,7 @@ class Setting(object):
         return self.is_set()
 
     def __iter__(self):
+        print(f"DEBUG: settings.py Setting __iter__ name= {self.setting_name}")
         return iter(self.value or ())
 
     def __unicode__(self):
@@ -271,6 +281,7 @@ class Metadata(Setting):
 
     def __init__(self, parent, name, value, comment=None, joined=False):
         self.parent = parent
+        self.setting_name = get_localized_setting(parent.language,'Metadata')
         if value and isinstance(value, list):
             value = [x.strip() for x in value if x != '']
         if not name.strip():
@@ -299,6 +310,7 @@ class ImportSetting(Setting):
 
     def __init__(self, parent, name, args=None, alias=None, comment=None):
         self.parent = parent
+        self.setting_name = get_localized_setting(parent.language, self.type)
         self.name = name.strip()
         if args:
             self.args = [x.strip() for x in args if x != '']
@@ -319,7 +331,7 @@ class ImportSetting(Setting):
         return True
 
     def _data_as_list(self):
-        return [self.type, self.name] + self.args
+        return [self.setting_name, self.name] + self.args
 
     def report_invalid_syntax(self, message, level='ERROR', parent=None):
         parent = parent or getattr(self, 'parent', None)
@@ -350,7 +362,7 @@ class Library(ImportSetting):
         return args, None
 
     def _data_as_list(self):
-        data = ['Library', self.name] + self.args
+        data = [self.setting_name, self.name] + self.args
         if self.alias:
             data += [ALIAS_MARKER, self.alias]
         return data

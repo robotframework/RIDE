@@ -41,7 +41,10 @@ class _DataFileFormatter(object):
 
     def format_table(self, table):
         rows = self._extractor.rows_from_table(table)
-        if self._should_split_rows(table):
+        if rows and table.type == 'comments':
+            print(f"DEBUG: formatters.py format_table rows={[r for r in rows]}")
+            return [r for r in rows]
+        if self._should_split_rows(table) and table.type != 'comments':
             rows = self._split_rows(rows, table)
         return (self._format_row(r, table) for r in rows)
 
@@ -104,12 +107,15 @@ class TxtFormatter(_DataFileFormatter):
     _setting_and_variable_name_width = 14
 
     def _format_row(self, row, table=None):
+        print(f"DEBUG: formatters.py format_row ENTER row={row}")
+        if table and table.type == 'comments':
+            return row
         row = self._escape(row)
         aligner = self._aligner_for(table)
         return aligner.align_row(row)
 
     def _aligner_for(self, table):
-        if table and table.type in ['setting', 'variable']:
+        if table and table.type in ['setting', 'variable', 'comments']:
             return FirstColumnAligner(self._setting_and_variable_name_width)
         if self._should_align_columns(table):
             return ColumnAligner(self._test_or_keyword_name_width, table)

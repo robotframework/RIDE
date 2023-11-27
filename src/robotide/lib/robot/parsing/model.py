@@ -24,7 +24,7 @@ from robotide.lib.robot.errors import DataError
 from robotide.lib.robot.variables import is_var
 from robotide.lib.robot.output import LOGGER
 from robotide.lib.robot.writer import DataFileWriter
-from robotide.lib.robot.utils import abspath, is_string, normalize, normalized_headers, py2to3, NormalizedDict
+from robotide.lib.robot.utils import abspath, is_string, normalize, normalized_headers, NormalizedDict
 
 from .comments import Comment
 from .populators import FromFilePopulator, FromDirectoryPopulator, NoTestsFound
@@ -77,7 +77,7 @@ class _TestData(object):
                              (self._variable_table_names, self.variable_table),
                              (self._testcase_table_names, self.testcase_table),
                              (self._keyword_table_names, self.keyword_table),
-                             (self._comment_table_names, None)]
+                             (self._comment_table_names, self.comment_table)]
         # print(f"DEBUG: model.py _TestData._get_tables {self._language=} tables= {tables}")
         if self._language:
             tables = self.get_tables_for(self._language)
@@ -90,9 +90,11 @@ class _TestData(object):
 
     def start_table(self, header_row):
         table = self._find_table(header_row)
+        # print(f"DEBUG: model _TestData comments table={table} header_row={header_row}")
         if table is None or not self._table_is_allowed(table):
             return None
         table.set_header(header_row)
+        # print(f"DEBUG: model _TestData start_table returning table={table} table name={table.name}")
         return table
 
     def has_preamble(self):
@@ -122,7 +124,7 @@ class _TestData(object):
                   (self._variable_table_names, self.variable_table),
                   (self._testcase_table_names, self.testcase_table),
                   (self._keyword_table_names, self.keyword_table),
-                  (self._comment_table_names, None)]
+                  (self._comment_table_names, self.comment_table)]
         try:
             _lang = Language.from_name(language[0])  # DEBUG: Consider several languages
         except ValueError:
@@ -244,7 +246,6 @@ class _TestData(object):
         return DataFileWriter(**options).write(self)
 
 
-@py2to3
 class TestCaseFile(_TestData):
     """The parsed test case file object.
 
@@ -260,6 +261,7 @@ class TestCaseFile(_TestData):
         self.variable_table = VariableTable(self)
         self.testcase_table = TestCaseTable(self, self.language)
         self.keyword_table = KeywordTable(self, self.language)
+        self.comment_table = CommentsTable(self, self.language)
         self._settings = settings
         self._tab_size = self._settings.get('txt number of spaces', 2) if self._settings else 2
         _TestData.__init__(self, parent, source, language)
@@ -279,7 +281,7 @@ class TestCaseFile(_TestData):
 
     def __iter__(self):
         for table in [self.setting_table, self.variable_table,
-                      self.testcase_table, self.keyword_table]:
+                      self.testcase_table, self.keyword_table, self.comment_table]:
             yield table
 
     def __nonzero__(self):
@@ -301,6 +303,7 @@ class ResourceFile(_TestData):
         self.variable_table = VariableTable(self)
         self.testcase_table = TestCaseTable(self, self.language)
         self.keyword_table = KeywordTable(self, self.language)
+        self.comment_table = CommentsTable(self, self.language)
         self.settings = settings
         self._preamble = []
         self._tab_size = self.settings.get('txt number of spaces', 2) if self.settings else 2
@@ -325,7 +328,7 @@ class ResourceFile(_TestData):
         return True
 
     def __iter__(self):
-        for table in [self.setting_table, self.variable_table, self.keyword_table]:
+        for table in [self.setting_table, self.variable_table, self.keyword_table, self.comment_table]:
             yield table
 
 
@@ -347,6 +350,7 @@ class TestDataDirectory(_TestData):
         self.variable_table = VariableTable(self)
         self.testcase_table = TestCaseTable(self, self.language)
         self.keyword_table = KeywordTable(self, self.language)
+        self.comment_table = CommentsTable(self, self.language)
         self._settings = settings
         self._tab_size = self._settings.get('txt number of spaces', 2) if self._settings else 2
         _TestData.__init__(self, parent, source, language=self.language)
@@ -377,11 +381,10 @@ class TestDataDirectory(_TestData):
         return any(ch.has_tests() for ch in self.children)
 
     def __iter__(self):
-        for table in [self.setting_table, self.variable_table, self.keyword_table]:
+        for table in [self.setting_table, self.variable_table, self.keyword_table, self.comment_table]:
             yield table
 
 
-@py2to3
 class _Table(object):
 
     def __init__(self, parent):
@@ -389,7 +392,7 @@ class _Table(object):
         self._header = None
 
     def set_header(self, header):
-        # print(f"DEBUG: model.py _Table set_header== {header}")
+        print(f"DEBUG: model.py _Table set_header== {header}")
         self._header = self._prune_old_style_headers(header)
 
     def _prune_old_style_headers(self, header):
@@ -401,8 +404,8 @@ class _Table(object):
 
     @property
     def header(self):
-        # print(f"DEBUG: model.py _Table property header {self._header} built={self.type.title() + 's'}")
-        return self._header  or [self.type.title() + 's']
+        # print(f"DEBUG: model.py _Table property header {self._header}")
+        return self._header or [self.type.title() + 's']
 
     @property
     def name(self):
@@ -436,7 +439,7 @@ class _WithSettings(object):
             name = name[:-1]
         # Patching for ... setting, this way we don't get a Parser Error on log
         if name == '...':
-            name = 'Documentation'
+            name = self.get_localized_setting_name('Documentation')
         setter = self._get_setter(name)
         if setter is not None:
             return setter
@@ -695,7 +698,68 @@ class KeywordTable(_Table):
         return iter(self.keywords)
 
 
-@py2to3
+class CommentRow(object):
+    row = []
+    is_comments = True
+
+    def __init__(self, content):
+        print(f"DEBUG: RFLib model.py CommentRow init {content=}")
+        self.add(content[0])
+
+    def add(self, row):
+        self.row.append(row)
+
+    def is_set(self):
+        return False
+
+    def is_for_loop(self):
+        return False
+
+    def __iter__(self):
+        print(f"DEBUG: RFLib model.py CommentRow __iter__ return iter({self.row})")
+        for r in self.row:
+            yield r
+
+    """
+    def as_list(self):
+        return self.row
+
+    def __iter__(self):
+        print(f"DEBUG: RFLib model.py CommentRow __iter__ return iter({self.row})")
+        for r in self.row:
+            yield r
+    """
+    """
+    def __iter__(self):
+        for element in [self.row]:
+            yield element
+    """
+
+
+class CommentsTable(_Table):
+    type = 'comments'
+    is_comments = True
+
+    def __init__(self, parent, language=None):
+        self.language = language
+        self.comments = []
+        _Table.__init__(self, parent)
+        print(f"DEBUG: model Comments __init__  {self.language=}")
+
+    def add(self, content):
+        print(f"DEBUG: RFLib model.py Comments add {self.language=}")
+        self.comments.append(CommentRow(content))
+        return self.comments[-1]
+
+    def is_started(self):
+        print(f"DEBUG: RFLib model.py CommentsTable is_started {bool(self._header)}")
+        return bool(self._header)
+
+    def __iter__(self):
+        print(f"DEBUG: RFLib model.py CommentsTable __iter_ {self.comments=}")
+        return iter(self.comments[:])
+
+
 class Variable(object):
 
     def __init__(self, parent, name, value, comment=None):

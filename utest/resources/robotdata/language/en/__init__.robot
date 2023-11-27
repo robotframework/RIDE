@@ -3,6 +3,11 @@ Language: English
 
 # A blank line
 
+*** Comments ***
+This is a comments block
+Second line of comments
+Maybe this block is still in preamble
+
 *** Settings ***
 Library    Collections    # This is a comment
 Resource       full_en.resource    # This is a comment

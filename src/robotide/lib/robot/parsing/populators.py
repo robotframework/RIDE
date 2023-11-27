@@ -24,7 +24,7 @@ from robotide.lib.robot.utils import get_error_message, unic
 from .datarow import DataRow
 from .tablepopulators import (SettingTablePopulator, VariableTablePopulator,
                               TestTablePopulator, KeywordTablePopulator,
-                              NullPopulator)
+                              CommentsTablePopulator, NullPopulator)
 from .htmlreader import HtmlReader
 from .tsvreader import TsvReader
 from .robotreader import RobotReader
@@ -50,7 +50,8 @@ class FromFilePopulator(object):
                    'test cases': TestTablePopulator,
                    'task': TestTablePopulator,
                    'tasks': TestTablePopulator,
-                   'keyword': KeywordTablePopulator}
+                   'keyword': KeywordTablePopulator,
+                   'comments': CommentsTablePopulator}
 
     def __init__(self, datafile, tab_size=2, lang=None):
         self._datafile = datafile
@@ -61,7 +62,7 @@ class FromFilePopulator(object):
             self._language = lang if lang else language.check_file_language(datafile.source)
         else:
             self._language = lang if lang else None
-        self._comment_table_names = language.get_headers_for(self._language, ('comment', 'comments'))
+        # self._comment_table_names = language.get_headers_for(self._language, ('comment', 'comments'))
 
     @staticmethod
     def _get_curdir(path):
@@ -112,6 +113,8 @@ class FromFilePopulator(object):
         table = self._datafile.start_table(DataRow(header).all)
         # print(f"DEBUG: populators start_table header={header} got table={table}")
         self._populator = self._populators[table.type](table) if table is not None else NullPopulator()
+        # print(f"DEBUG: populators start_table AFTER _populators table.type={table.type} table={table}\n"
+        #      f"self._populators={self._populators}")
         return bool(self._populator)
 
     def eof(self):
@@ -120,12 +123,13 @@ class FromFilePopulator(object):
         return bool(self._datafile)
 
     def add(self, row):
-        # print(f"DEBUG: populators enter row={row}")
+        # print(f"DEBUG: populators enter add row={row}")
         if PROCESS_CURDIR and self._curdir:
             row = self._replace_curdirs_in(row)
         data = DataRow(row, self._datafile.source)
         if data:
-            # print(f"DEBUG: populators add data={data.cells} + {data.comments}")
+            # print(f"DEBUG: populators.py FromFilePopulator call _populator add data={data.cells} + {data.comments}\n"
+            #       f"populator = {self._populator}")
             self._populator.add(data)
 
     def _replace_curdirs_in(self, row):

@@ -80,7 +80,7 @@ class SettingTablePopulator(_TablePopulator):
     def _get_populator(self, row):
         setter = self._table.get_setter(row.head) if row.head else None
         if row.head == '...':
-            setter = self._table.get_setter('Documentation')
+            setter = self._table.get_setter(self._table.get_localized_setting_name('Documentation'))
         if not setter:
             return NullPopulator()
         if isinstance(setter.__self__, Documentation):
@@ -88,6 +88,25 @@ class SettingTablePopulator(_TablePopulator):
         if isinstance(setter.__self__, MetadataList):
             return MetadataPopulator(setter)
         return SettingPopulator(setter)
+
+
+class CommentsTablePopulator(_TablePopulator):
+
+    def _get_populator(self, table):
+        # print(f"DEBUG: CommentsTablePopulator enter _get_populator {row=}")
+        return CommentsPopulator(self._table.add)
+    """
+    def add(self, row):
+        self._add(row)
+
+    def _add(self, row):
+        print(f"DEBUG: tablepopulators CommentsTablePopulator _add {row=}")
+        self._value.append(row.cells)
+
+    def populate(self):
+        print(f"DEBUG: tablepopulators.py CommentsTablePopulator enter populate {self.__class__}")
+        self._populator.populate()
+    """
 
 
 class VariableTablePopulator(_TablePopulator):
@@ -339,6 +358,37 @@ class DocumentationPopulator(_PropertyPopulator):
         if not match.group(0).endswith('n'):
             return ' '
         return None
+
+
+class CommentsPopulator(_PropertyPopulator):
+    _item_type = 'comments'
+
+    def __init__(self, setter):
+        _PropertyPopulator.__init__(self, setter)
+        # self.row = row
+        self._value = []
+        print(f"DEBUG: tablepopulators CommentPopulator __init__ setter={setter}")
+
+    """
+    def add(self, row):
+        self._add(row)
+
+    def _add(self, row):
+        print(f"DEBUG: tablepopulators CommentPopulator _add {row=}")
+        self._value.append(row)
+
+    def populate(self):
+        print(f"DEBUG: tablepopulators CommentPopulator populate {self.row.cells=}")
+        self.add(self.row)
+    """
+
+    def _add(self, row):
+        print(f"DEBUG: tablepopulators CommentPopulator _add {row=}")
+        self._value.extend(row.data)
+
+    def populate(self):
+        if self._value:
+            self._setter(self._value)
 
 
 class MetadataPopulator(DocumentationPopulator):

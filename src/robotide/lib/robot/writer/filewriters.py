@@ -57,7 +57,13 @@ class _DataFileWriter(object):
 
     def _write_table(self, table, is_last):
         self._write_header(table)
-        self._write_rows(self._formatter.format_table(table))
+        if table.type == 'comments':
+            print(f"DEBUG: filewriters.py _write_table COMMENTS: {table}")
+            if table.is_started():
+                print("DEBUG: filewriters.py _write_table COMMENTS is started")
+                self._write_rows([row for row in table])
+        else:
+            self._write_rows(self._formatter.format_table(table))
         if not is_last:  # DEBUG: make this configurable
             # print(f"DEBUG: lib.robot.writer _DataFileWritter write_table empty_row table={table.type}")
             try:

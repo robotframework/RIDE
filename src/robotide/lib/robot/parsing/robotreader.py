@@ -47,19 +47,22 @@ class RobotReader(object):
             if cells and cells[0].strip().startswith('*'):  # For the cases of *** Comments ***
                 if (cells[0].replace('*', '').strip().lower() in
                         language.get_headers_for(self.language, ('comment', 'comments'))):
-                    print(f"DEBUG: robotreader.read detection of comments cells={cells}")
+                    # print(f"DEBUG: robotreader.read detection of comments cells={cells}")
                     process = True
             if cells and cells[0].strip().startswith('*') and \
                     populator.start_table([c.replace('*', '').strip() for c in cells]):
                 process = table_start = True
                 preamble = False  # DEBUG removed condition  "and not comments" comments =
+                print(f"DEBUG: RobotReader After table_start head={cells[0].replace('*', '').strip()}")
             elif not table_start:
                 # print(f"DEBUG: RFLib RobotReader Enter Preamble block, lineno={lineno} cells={cells}")
                 if not preamble:
                     preamble = True
                 populator.add_preamble(line)
             elif process and not preamble:
+                # print(f"DEBUG: RFLib RobotReader before add cells={cells} populator is={populator}")
                 populator.add(cells)
+                print(f"DEBUG: RFLib RobotReader after add cells={cells}")
         return populator.eof()
 
     def sharp_strip(self, line):
