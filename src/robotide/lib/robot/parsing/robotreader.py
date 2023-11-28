@@ -50,7 +50,7 @@ class RobotReader(object):
                     # print(f"DEBUG: robotreader.read detection of comments cells={cells}")
                     process = True
             if cells and cells[0].strip().startswith('*') and \
-                    populator.start_table([c.replace('*', '').strip() for c in cells]):
+                    populator.start_table([c.replace('*', '').strip() for c in cells], lineno=lineno):
                 process = table_start = True
                 preamble = False  # DEBUG removed condition  "and not comments" comments =
                 print(f"DEBUG: RobotReader After table_start head={cells[0].replace('*', '').strip()}")

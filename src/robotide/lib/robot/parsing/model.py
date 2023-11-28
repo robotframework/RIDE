@@ -88,12 +88,12 @@ class _TestData(object):
             for name in names:
                 yield name, table
 
-    def start_table(self, header_row):
+    def start_table(self, header_row, lineno: int):
         table = self._find_table(header_row)
         # print(f"DEBUG: model _TestData comments table={table} header_row={header_row}")
         if table is None or not self._table_is_allowed(table):
             return None
-        table.set_header(header_row)
+        table.set_header(header_row, lineno=lineno)
         # print(f"DEBUG: model _TestData start_table returning table={table} table name={table.name}")
         return table
 
@@ -390,10 +390,12 @@ class _Table(object):
     def __init__(self, parent):
         self.parent = parent
         self._header = None
+        self._lineno = None
 
-    def set_header(self, header):
-        print(f"DEBUG: model.py _Table set_header== {header}")
+    def set_header(self, header, lineno:int):
+        print(f"DEBUG: model.py _Table set_header={header} self._lineno={lineno}")
         self._header = self._prune_old_style_headers(header)
+        self._lineno = lineno
 
     def _prune_old_style_headers(self, header):
         if len(header) < 3:
@@ -652,10 +654,10 @@ class TestCaseTable(_Table):
         self.tests = []
         self.language = language
 
-    def set_header(self, header):
+    def set_header(self, header, lineno:int):
         if self._header and header:
             self._validate_mode(self._header[0], header[0])
-        _Table.set_header(self, header)
+        _Table.set_header(self, header, lineno=lineno)
 
     def _validate_mode(self, name1, name2):
         tasks1 = normalize(name1) in ('task', 'tasks')
@@ -717,8 +719,7 @@ class CommentRow(object):
 
     def __iter__(self):
         print(f"DEBUG: RFLib model.py CommentRow __iter__ return iter({self.row})")
-        for r in self.row:
-            yield r
+        return iter(self.row)
 
     """
     def as_list(self):
@@ -757,7 +758,7 @@ class CommentsTable(_Table):
 
     def __iter__(self):
         print(f"DEBUG: RFLib model.py CommentsTable __iter_ {self.comments=}")
-        return iter(self.comments[:])
+        return iter(self.comments)
 
 
 class Variable(object):

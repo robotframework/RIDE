@@ -26,6 +26,17 @@ from .htmlformatter import HtmlFormatter
 from .htmltemplate import TEMPLATE_START, TEMPLATE_END
 
 
+def table_sorter(tables: list) -> list:
+    sorted_tables = []
+    # lower = 0
+    for idx, tab in enumerate(tables):
+        sorted_tables.append((tab._lineno, tab))
+    sorted_result = sorted(sorted_tables)
+    print(f"DEBUG: filewriters, table_sorter result={[z[0] for z in sorted_result]}")
+    sorted_tables = [z[1] for z in sorted_result]
+    return sorted_tables
+
+
 def FileWriter(context):
     """Creates and returns a ``FileWriter`` object.
 
@@ -52,7 +63,8 @@ class _DataFileWriter(object):
         tables = [table for table in datafile if table]
         if datafile.has_preamble:
             self._write_preamble(datafile.preamble)
-        for table in tables:
+        sorted_tables = table_sorter(tables)
+        for table in sorted_tables:
             self._write_table(table, is_last=table is tables[-1])
 
     def _write_table(self, table, is_last):
@@ -61,7 +73,11 @@ class _DataFileWriter(object):
             print(f"DEBUG: filewriters.py _write_table COMMENTS: {table}")
             if table.is_started():
                 print("DEBUG: filewriters.py _write_table COMMENTS is started")
-                self._write_rows([row for row in table])
+                # self._write_rows([row for row in table])
+                for row in list(table)[0]:
+                    print(f"DEBUG: filewriters.py _writing row={row}")
+                    # Comments rows are plain rows
+                    self._write_preamble(row+'\n')
         else:
             self._write_rows(self._formatter.format_table(table))
         if not is_last:  # DEBUG: make this configurable

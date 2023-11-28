@@ -384,7 +384,7 @@ class CommentsPopulator(_PropertyPopulator):
 
     def _add(self, row):
         print(f"DEBUG: tablepopulators CommentPopulator _add {row=}")
-        self._value.extend(row.data)
+        self._value = row.data
 
     def populate(self):
         if self._value:
