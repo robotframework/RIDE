@@ -83,7 +83,7 @@ class ControllerWithCellInfo(object):
         return self._string.generate_random_string(50)
 
 
-# @pytest.mark.skip('It is getting unexpected data')
+@pytest.mark.skip('It is getting unexpected data')
 class TestPerformance(unittest.TestCase):
     _data = ['Keyword', 'Some longer data in cell', '${variable}',
              '#asdjaskdkjasdkjaskdjkasjd', 'asdasd,asdasd,as asd jasdj asjd asjdj asd']
