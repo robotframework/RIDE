@@ -30,6 +30,7 @@ class TestAllFiles(unittest.TestCase):
 
     def test_all_files_can_be_seen(self):
         all_files = self.project.data
+        print(f"DEBUG: test_all_files_can_be_seen all_files={all_files}")
         self.assertEqual(all_files.name, 'All Files')
         self.assertEqual(len(all_files.suites), 3)
         self._verify_names(all_files, 'Used Resource', 'Unused Resource',

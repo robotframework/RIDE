@@ -327,6 +327,10 @@ class ResourceFile(_TestData):
                             "tasks." % self.source)
         return True
 
+    @staticmethod
+    def has_tests():
+        return False
+
     def __iter__(self):
         for table in [self.setting_table, self.variable_table, self.keyword_table, self.comment_table]:
             yield table
