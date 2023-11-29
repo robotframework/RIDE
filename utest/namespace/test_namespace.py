@@ -81,6 +81,7 @@ class ParentMock(object):
     source = '/tmp/example/parentmock'
     directory = '/tmp/example'
     report_invalid_syntax = lambda *args: None
+    language = ['en']
 
 
 class _DataFileTest(unittest.TestCase):

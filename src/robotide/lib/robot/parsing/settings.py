@@ -21,6 +21,8 @@ from ..version import ALIAS_MARKER
 
 
 def get_localized_setting(language: [], english_name: str):
+    if not language:
+        return english_name
     settings = lang.get_settings_for(language, (english_name,))
     try:
         result = list(settings.keys())[list(settings.values()).index(english_name)]
@@ -310,7 +312,7 @@ class ImportSetting(Setting):
 
     def __init__(self, parent, name, args=None, alias=None, comment=None):
         self.parent = parent
-        self.setting_name = get_localized_setting(parent.language, self.type)
+        self.setting_name = get_localized_setting(parent.language, self.type) if parent else self.type
         self.name = name.strip()
         if args:
             self.args = [x.strip() for x in args if x != '']

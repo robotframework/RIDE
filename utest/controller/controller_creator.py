@@ -60,7 +60,7 @@ def create(data):
     tcf = TestCaseFile()
     tcf.directory = '/path/to'
     pop = FromFilePopulator(tcf)
-    pop.start_table(['Test cases'])
+    pop.start_table(['Test cases'], lineno=1)
     # for row in [ [cell for cell in line.split('  ')] for line in data]:
     for line in data:
         row = line.split('  ')
