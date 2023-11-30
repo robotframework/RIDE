@@ -26,10 +26,6 @@ Suite Teardown        Log To Console    Suite Teardown
 *** Variables ***
 ${myvar}    123    # This is a comment
 
-*** Comments ***
-This is a comments block
-Second line of comments
-
 *** Keywords ***
 Suite Keyword 
     [Documentation]    This is the documentation
