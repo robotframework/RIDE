@@ -111,8 +111,11 @@ class FromFilePopulator(object):
         #    # return False
         self._populator.populate()
         table = self._datafile.start_table(DataRow(header).all, lineno=lineno)
-        # print(f"DEBUG: populators start_table header={header} got table={table}")
-        self._populator = self._populators[table.type](table) if table is not None else NullPopulator()
+        # print(f"DEBUG: populators start_table header={header} got table={table} at lineno={lineno}")
+        if header[0] in language.get_headers_for(self._language, ('Comment', 'Comments'), lowercase=False):
+            self._populator = self._populators['comments'](table)
+        else:
+            self._populator = self._populators[table.type](table) if table is not None else NullPopulator()
         # print(f"DEBUG: populators start_table AFTER _populators table.type={table.type} table={table}\n"
         #      f"self._populators={self._populators}")
         return bool(self._populator)

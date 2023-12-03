@@ -283,7 +283,8 @@ class Metadata(Setting):
 
     def __init__(self, parent, name, value, comment=None, joined=False):
         self.parent = parent
-        self.setting_name = get_localized_setting(parent.language,'Metadata')
+        self.setting_name = get_localized_setting(parent.language, 'Metadata')
+        Setting.__init__(self, setting_name=self.setting_name, parent=parent, comment=comment)
         if value and isinstance(value, list):
             value = [x.strip() for x in value if x != '']
         if not name.strip():
@@ -314,6 +315,7 @@ class ImportSetting(Setting):
         self.parent = parent
         self.setting_name = get_localized_setting(parent.language, self.type) if parent else self.type
         self.name = name.strip()
+        Setting.__init__(self, setting_name=self.setting_name, parent=parent, comment=comment)
         if args:
             self.args = [x.strip() for x in args if x != '']
         else:

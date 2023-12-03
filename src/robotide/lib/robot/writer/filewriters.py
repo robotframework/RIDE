@@ -65,19 +65,14 @@ class _DataFileWriter(object):
             self._write_preamble(datafile.preamble)
         sorted_tables = table_sorter(tables)
         for table in sorted_tables:
-            self._write_table(table, is_last=table is tables[-1])
+            self._write_table(table, is_last=table is sorted_tables[-1])
 
     def _write_table(self, table, is_last):
         self._write_header(table)
         if table.type == 'comments':
-            print(f"DEBUG: filewriters.py _write_table COMMENTS: {table}")
+            # print(f"DEBUG: filewriters.py _write_table COMMENTS: {table}")
             if table.is_started():
-                print("DEBUG: filewriters.py _write_table COMMENTS is started")
-                # self._write_rows([row for row in table])
-                for row in list(table)[0]:
-                    print(f"DEBUG: filewriters.py _writing row={row}")
-                    # Comments rows are plain rows
-                    self._write_preamble(row+'\n')
+                self._write_lines(table.section_comments)
         else:
             self._write_rows(self._formatter.format_table(table))
         if not is_last:  # DEBUG: make this configurable
@@ -106,6 +101,10 @@ class _DataFileWriter(object):
     def _write_preamble(self, rows):
         for line in rows:
             self._output.write(line)
+
+    def _write_lines(self, rows):
+        for line in rows:
+            self._output.write(f"{line}\n")
 
 
 class SpaceSeparatedTxtWriter(_DataFileWriter):

@@ -365,26 +365,12 @@ class CommentsPopulator(_PropertyPopulator):
 
     def __init__(self, setter):
         _PropertyPopulator.__init__(self, setter)
-        # self.row = row
         self._value = []
-        print(f"DEBUG: tablepopulators CommentPopulator __init__ setter={setter}")
-
-    """
-    def add(self, row):
-        self._add(row)
+        # print(f"DEBUG: tablepopulators CommentPopulator __init__ setter={setter}")
 
     def _add(self, row):
-        print(f"DEBUG: tablepopulators CommentPopulator _add {row=}")
-        self._value.append(row)
-
-    def populate(self):
-        print(f"DEBUG: tablepopulators CommentPopulator populate {self.row.cells=}")
-        self.add(self.row)
-    """
-
-    def _add(self, row):
-        print(f"DEBUG: tablepopulators CommentPopulator _add {row=}")
-        self._value = row.data
+        # print(f"DEBUG: tablepopulators CommentPopulator _add {row=}")
+        self._setter(row.data)
 
     def populate(self):
         if self._value:

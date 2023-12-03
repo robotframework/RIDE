@@ -70,6 +70,7 @@ class _TestData(object):
         self.children = []
         self._preamble = []
         self._language = language
+        # self.comment_table = None
         self._tables = dict(self._get_tables())
 
     def _get_tables(self):
@@ -77,7 +78,7 @@ class _TestData(object):
                              (self._variable_table_names, self.variable_table),
                              (self._testcase_table_names, self.testcase_table),
                              (self._keyword_table_names, self.keyword_table),
-                             (self._comment_table_names, self.comment_table)]
+                  [self._comment_table_names, self.comment_table]]
         # print(f"DEBUG: model.py _TestData._get_tables {self._language=} tables= {tables}")
         if self._language:
             tables = self.get_tables_for(self._language)
@@ -89,12 +90,31 @@ class _TestData(object):
                 yield name, table
 
     def start_table(self, header_row, lineno: int):
-        table = self._find_table(header_row)
-        # print(f"DEBUG: model _TestData comments table={table} header_row={header_row}")
+        """
+        local_header = lang.get_headers_for(self.language, ('Comments',))
+        print(f"DEBUG: model _TestData start_table ENTER  header_row[0]={ header_row[0]} lineno={lineno}\n"
+              f"language={self.language} local_header={local_header}")
+        """
+        if header_row[0] in lang.get_headers_for(self.language, ('Comments',), lowercase=False):
+            self.comment_table = table = CommentsTable(self, self.language)  # Multiple creation of table only if exists
+            self.tables.append(self.comment_table)
+        else:
+            table = self._find_table(header_row)
+        # print(f"DEBUG: model _TestData start_table table={table} header_row={header_row}")
         if table is None or not self._table_is_allowed(table):
             return None
+        if table.type == 'test case':
+            self.testcase_table = table = TestCaseTable(self, self.language)
+            self.tables.append(self.testcase_table)
+        if table.type == 'keyword':
+            self.keyword_table = table = KeywordTable(self, self.language)
+            self.tables.append(self.keyword_table)
+        if table.type == 'variable':
+            self.variable_table = table = VariableTable(self)
+            self.tables.append(self.variable_table)
         table.set_header(header_row, lineno=lineno)
-        # print(f"DEBUG: model _TestData start_table returning table={table} table name={table.name}")
+        # print(f"DEBUG: model _TestData start_table returning table={table} table name={table.name}\n"
+        #       f"table.type={table.type}")
         return table
 
     def has_preamble(self):
@@ -123,8 +143,7 @@ class _TestData(object):
         t_en = [(self._setting_table_names, self.setting_table),
                   (self._variable_table_names, self.variable_table),
                   (self._testcase_table_names, self.testcase_table),
-                  (self._keyword_table_names, self.keyword_table),
-                  (self._comment_table_names, self.comment_table)]
+                  (self._keyword_table_names, self.keyword_table), [self._comment_table_names, self.comment_table]]
         try:
             _lang = Language.from_name(language[0])  # DEBUG: Consider several languages
         except ValueError:
@@ -261,7 +280,8 @@ class TestCaseFile(_TestData):
         self.variable_table = VariableTable(self)
         self.testcase_table = TestCaseTable(self, self.language)
         self.keyword_table = KeywordTable(self, self.language)
-        self.comment_table = CommentsTable(self, self.language)
+        self.comment_table = None  # DEBUG: CommentsTable(self, self.language)
+        self.tables = [self.setting_table, self.variable_table, self.keyword_table, self.comment_table]
         self._settings = settings
         self._tab_size = self._settings.get('txt number of spaces', 2) if self._settings else 2
         _TestData.__init__(self, parent, source, language)
@@ -280,8 +300,7 @@ class TestCaseFile(_TestData):
         return True
 
     def __iter__(self):
-        for table in [self.setting_table, self.variable_table,
-                      self.testcase_table, self.keyword_table, self.comment_table]:
+        for table in self.tables:
             yield table
 
     def __nonzero__(self):
@@ -303,7 +322,8 @@ class ResourceFile(_TestData):
         self.variable_table = VariableTable(self)
         self.testcase_table = TestCaseTable(self, self.language)
         self.keyword_table = KeywordTable(self, self.language)
-        self.comment_table = CommentsTable(self, self.language)
+        self.comment_table = None  # DEBUG: CommentsTable(self, self.language)
+        self.tables = [self.setting_table, self.variable_table, self.keyword_table, self.comment_table]
         self.settings = settings
         self._preamble = []
         self._tab_size = self.settings.get('txt number of spaces', 2) if self.settings else 2
@@ -332,7 +352,7 @@ class ResourceFile(_TestData):
         return False
 
     def __iter__(self):
-        for table in [self.setting_table, self.variable_table, self.keyword_table, self.comment_table]:
+        for table in self.tables:
             yield table
 
 
@@ -354,7 +374,8 @@ class TestDataDirectory(_TestData):
         self.variable_table = VariableTable(self)
         self.testcase_table = TestCaseTable(self, self.language)
         self.keyword_table = KeywordTable(self, self.language)
-        self.comment_table = CommentsTable(self, self.language)
+        self.comment_table = None  # DEBUG: CommentsTable(self, self.language)
+        self.tables = [self.setting_table, self.variable_table, self.keyword_table, self.comment_table]
         self._settings = settings
         self._tab_size = self._settings.get('txt number of spaces', 2) if self._settings else 2
         _TestData.__init__(self, parent, source, language=self.language)
@@ -385,7 +406,7 @@ class TestDataDirectory(_TestData):
         return any(ch.has_tests() for ch in self.children)
 
     def __iter__(self):
-        for table in [self.setting_table, self.variable_table, self.keyword_table, self.comment_table]:
+        for table in self.tables:
             yield table
 
 
@@ -397,7 +418,7 @@ class _Table(object):
         self._lineno = None
 
     def set_header(self, header, lineno:int):
-        print(f"DEBUG: model.py _Table set_header={header} self._lineno={lineno}")
+        # print(f"DEBUG: model.py _Table set_header={header} self._lineno={lineno}")
         self._header = self._prune_old_style_headers(header)
         self._lineno = lineno
 
@@ -658,7 +679,7 @@ class TestCaseTable(_Table):
         self.tests = []
         self.language = language
 
-    def set_header(self, header, lineno:int):
+    def set_header(self, header, lineno: int):
         if self._header and header:
             self._validate_mode(self._header[0], header[0])
         _Table.set_header(self, header, lineno=lineno)
@@ -704,65 +725,30 @@ class KeywordTable(_Table):
         return iter(self.keywords)
 
 
-class CommentRow(object):
-    row = []
-    is_comments = True
-
-    def __init__(self, content):
-        print(f"DEBUG: RFLib model.py CommentRow init {content=}")
-        self.add(content[0])
-
-    def add(self, row):
-        self.row.append(row)
-
-    def is_set(self):
-        return False
-
-    def is_for_loop(self):
-        return False
-
-    def __iter__(self):
-        print(f"DEBUG: RFLib model.py CommentRow __iter__ return iter({self.row})")
-        return iter(self.row)
-
-    """
-    def as_list(self):
-        return self.row
-
-    def __iter__(self):
-        print(f"DEBUG: RFLib model.py CommentRow __iter__ return iter({self.row})")
-        for r in self.row:
-            yield r
-    """
-    """
-    def __iter__(self):
-        for element in [self.row]:
-            yield element
-    """
-
-
 class CommentsTable(_Table):
     type = 'comments'
     is_comments = True
 
     def __init__(self, parent, language=None):
         self.language = language
-        self.comments = []
+        self.section_comments = []
         _Table.__init__(self, parent)
-        print(f"DEBUG: model Comments __init__  {self.language=}")
+        # print(f"DEBUG: model Comments __init__  {self.language=} lineno= {self._lineno}")
 
     def add(self, content):
-        print(f"DEBUG: RFLib model.py Comments add {self.language=}")
-        self.comments.append(CommentRow(content))
-        return self.comments[-1]
+        # print(f"DEBUG: RFLib model.py Comments add {self.language=}")
+        self.section_comments.append(''.join(content))  # , self._lineno])  # CommentRow(content, self._lineno))
 
     def is_started(self):
-        print(f"DEBUG: RFLib model.py CommentsTable is_started {bool(self._header)}")
+        # print(f"DEBUG: RFLib model.py CommentsTable is_started {bool(self._header)}")
         return bool(self._header)
 
+    def __len__(self):
+        return len(self.section_comments)  # sum(1 for _ in self.section_comments)
+
     def __iter__(self):
-        print(f"DEBUG: RFLib model.py CommentsTable __iter_ {self.comments=}")
-        return iter(self.comments)
+        # print(f"DEBUG: RFLib model.py CommentsTable __iter_ {self.section_comments=}")
+        iter(self.section_comments)
 
 
 class Variable(object):
@@ -904,9 +890,7 @@ class TestCase(_WithSteps, _WithSettings):
                 self.teardown]
 
     def __iter__(self):
-        for element in [self.doc, self.tags, self.setup,
-                        self.template, self.timeout] \
-                        + self.steps + [self.teardown]:
+        for element in [self.doc, self.tags, self.setup, self.template, self.timeout] + self.steps + [self.teardown]:
             yield element
 
 
