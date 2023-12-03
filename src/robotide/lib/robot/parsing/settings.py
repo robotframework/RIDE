@@ -315,6 +315,10 @@ class ImportSetting(Setting):
 
     def __init__(self, parent, name, args=None, alias=None, comment=None):
         self.parent = parent
+        if parent:
+            self.setting_name = get_localized_setting(parent.language, self.type)
+        else:
+            self.setting_name = self.type
         self.name = name.strip()
         Setting.__init__(self, setting_name=self.setting_name, parent=parent, comment=comment)
         if args:
@@ -358,7 +362,6 @@ class Library(ImportSetting):
             name = args.pop(0)
         if args and not alias:
             args, alias = self._split_possible_alias(args)
-        self.setting_name = get_localized_setting(parent.language, 'Library')
         ImportSetting.__init__(self, parent, name, args, alias, comment)
 
     @staticmethod
