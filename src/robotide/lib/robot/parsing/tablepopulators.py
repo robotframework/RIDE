@@ -15,6 +15,8 @@
 
 import re
 
+from robotide.lib.robot.utils import py2to3
+
 from .comments import Comments
 from .settings import Documentation, MetadataList
 
@@ -29,6 +31,7 @@ class Populator(object):
         raise NotImplementedError
 
 
+@py2to3
 class NullPopulator(Populator):
 
     def add(self, row):

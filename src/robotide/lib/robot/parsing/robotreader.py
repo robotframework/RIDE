@@ -44,11 +44,6 @@ class RobotReader(object):
             if not self._separator_check:
                 self.check_separator(line.rstrip())
             cells = self.split_row(line.rstrip())
-            if cells and cells[0].strip().startswith('*'):  # For the cases of *** Comments ***
-                if (cells[0].replace('*', '').strip().lower() in
-                        language.get_headers_for(self.language, ('comment', 'comments'))):
-                    # print(f"DEBUG: robotreader.read detection of comments cells={cells}")
-                    process = True
             if cells and cells[0].strip().startswith('*') and \
                     populator.start_table([c.replace('*', '').strip() for c in cells], lineno=lineno,
                                           llang=self.language):
