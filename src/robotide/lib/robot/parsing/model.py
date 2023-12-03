@@ -462,7 +462,9 @@ class _WithSettings(object):
     _aliases = {}
 
     def get_setter(self, name):
-        if name[-1:] == ':':
+        if name.startswith('#'):
+            return None
+        if name.endswith(':'):
             name = name[:-1]
         # Patching for ... setting, this way we don't get a Parser Error on log
         if name == '...':
@@ -479,16 +481,13 @@ class _WithSettings(object):
     def _get_setter(self, name):
         title = name.title()
         if name in self._setters:
-            # print(f"DEBUG: RFLib model.py _WithSettings _get_setter DIRECT RETURNING title={title} self._setters[name]={self._setters[name]}")
             return self._setters[name](self)
         if name in self._aliases:
-            # print(f"DEBUG: RFLib model.py _WithSettings _get_setter BY ALIAS RETURNING title={title} self._aliases[name]={self._aliases[name]}")
             return self._setters[self._aliases[name]](self)
         if title in self._aliases:
             title = self._aliases[title]
             return self._setters[title](self)
         if title in self._setters:
-            # print(f"DEBUG: RFLib model.py _WithSettings _get_setter 2 RETURNING title={title} self._setters[title]={self._setters[title]}")
             return self._setters[title](self)
         return None
 
@@ -507,6 +506,9 @@ class _WithSettings(object):
         )
 
     def report_invalid_syntax(self, message, level='ERROR'):
+        raise NotImplementedError
+
+    def get_localized_setting_name(self, english_name: str):
         raise NotImplementedError
 
 
@@ -736,7 +738,7 @@ class CommentsTable(_Table):
         # print(f"DEBUG: model Comments __init__  {self.language=} lineno= {self._lineno}")
 
     def add(self, content):
-        # print(f"DEBUG: RFLib model.py Comments add {self.language=}")
+        # print(f"DEBUG: model.py CommentsTable add content={content}")
         self.section_comments.append(''.join(content))  # , self._lineno])  # CommentRow(content, self._lineno))
 
     def is_started(self):

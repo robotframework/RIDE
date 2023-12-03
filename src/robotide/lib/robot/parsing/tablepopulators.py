@@ -15,8 +15,6 @@
 
 import re
 
-from robotide.lib.robot.utils import py2to3
-
 from .comments import Comments
 from .settings import Documentation, MetadataList
 
@@ -31,7 +29,6 @@ class Populator(object):
         raise NotImplementedError
 
 
-@py2to3
 class NullPopulator(Populator):
 
     def add(self, row):
@@ -65,7 +62,11 @@ class _TablePopulator(Populator):
         self._populator.add(row)
 
     def _is_continuing(self, row):
-        return row.is_continuing() and self._populator
+        try:
+            continuing = row.is_continuing()
+            return continuing and self._populator
+        except AttributeError:
+            return False
 
     def _get_populator(self, row):
         raise NotImplementedError
@@ -95,18 +96,6 @@ class CommentsTablePopulator(_TablePopulator):
     def _get_populator(self, table):
         # print(f"DEBUG: CommentsTablePopulator enter _get_populator {row=}")
         return CommentsPopulator(self._table.add)
-    """
-    def add(self, row):
-        self._add(row)
-
-    def _add(self, row):
-        print(f"DEBUG: tablepopulators CommentsTablePopulator _add {row=}")
-        self._value.append(row.cells)
-
-    def populate(self):
-        print(f"DEBUG: tablepopulators.py CommentsTablePopulator enter populate {self.__class__}")
-        self._populator.populate()
-    """
 
 
 class VariableTablePopulator(_TablePopulator):
@@ -370,10 +359,14 @@ class CommentsPopulator(_PropertyPopulator):
 
     def _add(self, row):
         # print(f"DEBUG: tablepopulators CommentPopulator _add {row=}")
-        self._setter(row.data)
+        if isinstance(row, list):
+            self._setter(row)
+        else:
+            self._setter(row.data+['  ']+row.comments)
 
     def populate(self):
         if self._value:
+            print(f"DEBUG: tablepopulators CommentPopulator populate {self._value=}")
             self._setter(self._value)
 
 

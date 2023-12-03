@@ -28,11 +28,9 @@ from .htmltemplate import TEMPLATE_START, TEMPLATE_END
 
 def table_sorter(tables: list) -> list:
     sorted_tables = []
-    # lower = 0
     for idx, tab in enumerate(tables):
         sorted_tables.append((tab._lineno, tab))
     sorted_result = sorted(sorted_tables)
-    print(f"DEBUG: filewriters, table_sorter result={[z[0] for z in sorted_result]}")
     sorted_tables = [z[1] for z in sorted_result]
     return sorted_tables
 
@@ -78,7 +76,7 @@ class _DataFileWriter(object):
         if not is_last:  # DEBUG: make this configurable
             # print(f"DEBUG: lib.robot.writer _DataFileWritter write_table empty_row table={table.type}")
             try:
-                if table.type == 'variable' and len(list(table)[-1].as_list()) == 0:
+                if table.type == 'comments' or table.type == 'variable' and len(list(table)[-1].as_list()) == 0:
                     # DEBUG: This is workaround for newline being added ALWAYS to VariableTable
                     return
             except IndexError:

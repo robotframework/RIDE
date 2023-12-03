@@ -114,7 +114,7 @@ class Setting(object):
         return self.is_set()
 
     def __iter__(self):
-        print(f"DEBUG: settings.py Setting __iter__ name= {self.setting_name}")
+        # print(f"DEBUG: settings.py Setting __iter__ name= {self.setting_name}")
         return iter(self.value or ())
 
     def __unicode__(self):
@@ -313,7 +313,10 @@ class ImportSetting(Setting):
 
     def __init__(self, parent, name, args=None, alias=None, comment=None):
         self.parent = parent
-        self.setting_name = get_localized_setting(parent.language, self.type) if parent else self.type
+        if parent:
+            self.setting_name = get_localized_setting(parent.language, self.type)
+        else:
+            self.setting_name = self.type
         self.name = name.strip()
         Setting.__init__(self, setting_name=self.setting_name, parent=parent, comment=comment)
         if args:
