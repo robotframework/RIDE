@@ -72,6 +72,7 @@ class EditorPanel(wx.Panel):
         self.SetForegroundColour(Colour(self.color_foreground))
         self.plugin = plugin
         self.controller = controller
+        self.language = controller.datafile_controller.language
         self._tree = tree
 
     def tree_item_selected(self, item):

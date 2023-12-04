@@ -28,7 +28,7 @@ class ListEditorBase(wx.Panel):
     _menu = ['Edit', 'Move Up\tCtrl-Up', 'Move Down\tCtrl-Down', '---', 'Delete']
     _buttons = []
 
-    def __init__(self, parent, columns, controller):
+    def __init__(self, parent, columns, controller, label=None):
         wx.Panel.__init__(self, parent)
         from ..preferences import RideSettings
         _settings = RideSettings()

@@ -153,3 +153,25 @@ def get_settings_for(language, settings_names):
                 inx += 1
    #  print(f"DEBUG: language.py get_settings_for RETURN build_table={build_table}")
     return build_table
+
+
+def get_english_label(lang, label):
+    assert label is not None
+    mlang = None
+    if isinstance(lang, list):
+        try:
+            mlang = Language.from_name(lang[0])  # Only care for a single language
+        except ValueError:
+            print(f"DEBUG: language.py get_english_label Exception at language={lang}")
+    else:
+        mlang = Language.from_name(lang)
+    if not mlang:
+        print(f"DEBUG: language.py get_english_label lang={lang} not found")
+        return None
+    setting_names = list(mlang.settings.keys())
+    try:
+        index = setting_names.index(label)
+    except ValueError:
+        return label
+    en_label = list(mlang.settings.values())[index]
+    return en_label

@@ -25,19 +25,23 @@ from .dialoghelps import get_help
 from .fieldeditors import (ValueEditor, ListValueEditor, MultiLineEditor, ContentAssistEditor, VariableNameEditor,
                            ArgumentEditor, FileNameEditor)
 from .formatters import ListToStringFormatter
+from robotide.lib.compat.parsing import language
 
 
-def editor_dialog(obj):
-    print(f"DEBUG: editordialogs.py editor_dilog oject name={obj.label.replace(' ', '')} ")
-    return globals()[obj.label.replace(' ', '') + 'Dialog']
+def editor_dialog(obj, lang='en'):
+    english_label=language.get_english_label(lang, obj.label)
+    # print(f"DEBUG: editordialogs.py editor_dialog object name={obj.label} english_label={english_label} ")
+    return globals()[english_label.replace(' ', '') + 'Dialog']
 
 
 class _Dialog(RIDEDialog):
     _title = property(lambda self: utils.name_from_class(self, drop='Dialog'))
 
-    def __init__(self, controller, item=None, plugin=None):
+    def __init__(self, controller, item=None, plugin=None, title=None):
         # DEBUG: Get rid of item, everything should be in controller
-        RIDEDialog.__init__(self, self._title)
+        if not title:
+            title = self._title
+        RIDEDialog.__init__(self, title)
         # set Left to Right direction (while we don't have localization)
         self.SetLayoutDirection(wx.Layout_LeftToRight)
         self.SetExtraStyle(wx.WS_EX_VALIDATE_RECURSIVELY)

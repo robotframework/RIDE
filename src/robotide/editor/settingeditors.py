@@ -55,6 +55,8 @@ class SettingEditor(wx.Panel):
         self.SetForegroundColour(Colour(self.color_foreground))
         self.SetOwnForegroundColour(Colour(self.color_foreground))
         self._controller = controller
+        self._language = controller.datafile_controller.language
+        # print(f"DEBUG: settings.py SettingEditor __init__ language={self._language}")
         self.plugin = plugin
         self._datafile = controller.datafile
         self._create_controls()
@@ -73,6 +75,7 @@ class SettingEditor(wx.Panel):
         sizer.Add(Label(
             self, label=self._controller.label,
             size=(context.SETTING_LABEL_WIDTH, context.SETTING_ROW_HEIGHT)))
+        # print(f"DEBUG: settings.py SettingEditor _create_controls self._controller.label={self._controller.label}")
         self._value_display = self._create_value_display()
         self.update_value()
         self._tooltip = self._get_tooltip()
@@ -142,7 +145,9 @@ class SettingEditor(wx.Panel):
         self._editing = False
 
     def _create_editor_dialog(self):
-        dlg_class = editor_dialog(self._controller)
+        print(f"DEBUG: settings.py SettingEditor _create_editor_dialog calling editor_dialog for={self._controller.label}"
+              f"\n ")
+        dlg_class = editor_dialog(self._controller, self._language)
         return dlg_class(self._datafile, self._controller, self.plugin)
 
     def _set_value(self, value_list, comment):
@@ -366,6 +371,7 @@ class DocumentationEditor(SettingEditor):
         pass
 
     def _create_editor_dialog(self):
+        print(f"DEBUG: settingeditors.py DocumentationEditor _create_editor_dialog {self._language}")
         return DocumentationDialog(self._datafile,
                                    self._controller.editable_value)
 
@@ -421,7 +427,7 @@ class TagsEditor(SettingEditor):
 class _AbstractListEditor(ListEditor):
     _titles = []
 
-    def __init__(self, parent, tree, controller):
+    def __init__(self, parent, tree, controller, label=None):
         ListEditor.__init__(self, parent, self._titles, controller)
         self._datafile = controller.datafile
         self._tree = tree
@@ -539,7 +545,7 @@ class ImportSettingListEditor(_AbstractListEditor):
     _titles = ['Import', 'Name / Path', 'Arguments', 'Comment']
     _buttons = ['Library', 'Resource', 'Variables', 'Import Failed Help']
 
-    def __init__(self, parent, tree, controller):
+    def __init__(self, parent, tree, controller, lang=None):
         self._import_failed_shown = False
         _AbstractListEditor.__init__(self, parent, tree, controller)
         self.SetBackgroundColour(Colour(self.color_background))
@@ -614,7 +620,8 @@ class ImportSettingListEditor(_AbstractListEditor):
         self._show_import_editor_dialog(
             VariablesDialog,
             lambda v, c:
-                self._controller.execute(ctrlcommands.AddVariablesFileImport(v, c)))
+                self._controller.execute(ctrlcommands.AddVariablesFileImport(v, c)),
+            title='Variáveis')  # DEBUG
 
     def on_import_failed_help(self, event):
         _ = event
@@ -646,9 +653,8 @@ class ImportSettingListEditor(_AbstractListEditor):
     def _get_setting(self):
         return self._controller[self._selection]
 
-    def _show_import_editor_dialog(
-            self, dialog, creator_or_setter, item=None, on_empty=None):
-        dlg = dialog(self._controller, item=item)
+    def _show_import_editor_dialog(self, dialog, creator_or_setter, item=None, on_empty=None, title=None):
+        dlg = dialog(self._controller, item=item, title=title)
         if dlg.ShowModal() == wx.ID_OK:
             value = dlg.get_value()
             if not self._empty_name(value):
