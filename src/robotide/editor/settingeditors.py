@@ -55,7 +55,11 @@ class SettingEditor(wx.Panel):
         self.SetForegroundColour(Colour(self.color_foreground))
         self.SetOwnForegroundColour(Colour(self.color_foreground))
         self._controller = controller
-        self._language = controller.datafile_controller.language
+        try:
+            # print(f"DEBUG: settings.py dir controller= {dir(controller.datafile_controller)}")
+            self._language = controller.datafile_controller.language
+        except AttributeError:
+            self._language = ['en']
         # print(f"DEBUG: settings.py SettingEditor __init__ language={self._language}")
         self.plugin = plugin
         self._datafile = controller.datafile

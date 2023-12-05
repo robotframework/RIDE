@@ -157,6 +157,8 @@ def get_settings_for(language, settings_names):
 
 def get_english_label(lang, label):
     assert label is not None
+    if not lang:
+        lang = ['en']
     mlang = None
     if isinstance(lang, list):
         try:
