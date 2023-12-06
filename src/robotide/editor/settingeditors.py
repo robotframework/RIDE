@@ -56,8 +56,7 @@ class SettingEditor(wx.Panel):
         self.SetOwnForegroundColour(Colour(self.color_foreground))
         self._controller = controller
         try:
-            # print(f"DEBUG: settings.py dir controller= {dir(controller.datafile_controller)}")
-            self._language = controller.datafile_controller.language
+            self._language = self._controller.language
         except AttributeError:
             self._language = ['en']
         # print(f"DEBUG: settings.py SettingEditor __init__ language={self._language}")
@@ -149,8 +148,6 @@ class SettingEditor(wx.Panel):
         self._editing = False
 
     def _create_editor_dialog(self):
-        print(f"DEBUG: settings.py SettingEditor _create_editor_dialog calling editor_dialog for={self._controller.label}"
-              f"\n ")
         dlg_class = editor_dialog(self._controller, self._language)
         return dlg_class(self._datafile, self._controller, self.plugin)
 
@@ -375,7 +372,7 @@ class DocumentationEditor(SettingEditor):
         pass
 
     def _create_editor_dialog(self):
-        print(f"DEBUG: settingeditors.py DocumentationEditor _create_editor_dialog {self._language}")
+        # print(f"DEBUG: settingeditors.py DocumentationEditor _create_editor_dialog {self._language}")
         return DocumentationDialog(self._datafile,
                                    self._controller.editable_value)
 
@@ -432,6 +429,11 @@ class _AbstractListEditor(ListEditor):
     _titles = []
 
     def __init__(self, parent, tree, controller, label=None):
+        try:
+            # print(f"DEBUG: settingeditors.py _AbstractListEditor dir language={controller.parent.datafile._language}")
+            self._language = controller.parent.datafile._language
+        except AttributeError:
+            self._language = ['en']
         ListEditor.__init__(self, parent, self._titles, controller)
         self._datafile = controller.datafile
         self._tree = tree
@@ -551,6 +553,10 @@ class ImportSettingListEditor(_AbstractListEditor):
 
     def __init__(self, parent, tree, controller, lang=None):
         self._import_failed_shown = False
+        try:
+            self._language = controller.parent.datafile._language
+        except AttributeError:
+            self._language = ['en']
         _AbstractListEditor.__init__(self, parent, tree, controller)
         self.SetBackgroundColour(Colour(self.color_background))
         self.SetOwnBackgroundColour(Colour(self.color_background))
@@ -603,7 +609,7 @@ class ImportSettingListEditor(_AbstractListEditor):
     def on_edit(self, event):
         setting = self._get_setting()
         self._show_import_editor_dialog(
-            editor_dialog(setting),
+            editor_dialog(setting, self._language),
             lambda v, c: setting.execute(ctrlcommands.SetValues(v, c)),
             setting, on_empty=self._delete_selected)
 

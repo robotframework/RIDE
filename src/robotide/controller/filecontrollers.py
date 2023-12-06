@@ -125,6 +125,11 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
         else:
             self._resource_file_controller_factory = None
         self.parent = parent
+        try:
+            self._language = self.data._language
+            # print(f"DEBUG: filecontrollers.py _DataController language set = {self._language}")
+        except AttributeError:
+            self._language = ['en']
         self.set_datafile(data)
         self.dirty = False
         self.children = self._children(data)
@@ -442,6 +447,10 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
     @property
     def display_name(self):
         return self.data.name
+
+    @property
+    def language(self):
+        return self._language
 
     @property
     def longname(self):
