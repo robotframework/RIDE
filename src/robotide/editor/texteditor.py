@@ -123,6 +123,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
                 print(f"DEBUG: texteditor _open preamble={datafile_controller.preamble}")
             if hasattr(datafile_controller, 'language'):
                 self._doc_language = datafile_controller.language
+                self._editor.language = datafile_controller.language
                 print(f"DEBUG: texteditor _open language={datafile_controller.language}")
             self._open_data_for_controller(datafile_controller)
             self._editor.store_position()
@@ -170,7 +171,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
                           and not isinstance(message, RideDataChangedToDirty)
 
     def on_tree_selection(self, message):
-        print(f"DEBUG: texteditor.py OnTreeSelection on_tree_selection ENTER type={type(message.item)}")
+        # print(f"DEBUG: texteditor.py TextEditorPlugin on_tree_selection ENTER type={type(message.item)}")
         self._editor.store_position()
         if self.is_focused():
             next_datafile_controller = message.item and message.item.datafile_controller
@@ -201,17 +202,21 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
     def _open_tree_selection_in_editor(self):
         try:
             datafile_controller = self.tree.get_selected_datafile_controller()
+            if datafile_controller:
+                self._editor.language = datafile_controller.language
         except AttributeError:
             return
         if datafile_controller:
-            self.global_settings['language'] = self._doc_language
-            self._editor.open(DataFileWrapper(datafile_controller, self.global_settings, self._doc_language))
+            self._editor.language = datafile_controller.language
+            self.global_settings['language'] = datafile_controller.language
+            self._editor.open(DataFileWrapper(datafile_controller, self.global_settings, self._editor.language))
             self._editor.source_editor.readonly = not datafile_controller.is_modifiable()
         self._editor.set_editor_caret_position()
 
     def _open_data_for_controller(self, datafile_controller):
-        self.global_settings['language'] = self._doc_language
-        self._editor.selected(DataFileWrapper(datafile_controller, self.global_settings, self._doc_language))
+        self._editor.language = datafile_controller.language
+        self.global_settings['language'] = datafile_controller.language
+        self._editor.selected(DataFileWrapper(datafile_controller, self.global_settings, self._editor.language))
         self._editor.source_editor.readonly = not datafile_controller.is_modifiable()
 
     def on_tab_change(self, message):
@@ -403,6 +408,7 @@ class SourceEditor(wx.Panel):
         self._title = title
         self.tab_size = self.source_editor_parent.app.settings.get(TXT_NUM_SPACES, 4)
         self.reformat = self.source_editor_parent.app.settings.get('reformat', False)
+        self._doc_language = None
         self._create_ui(title)
         self._data = None
         self._position = 0  # Start at 0 if first time access
@@ -548,6 +554,14 @@ class SourceEditor(wx.Panel):
     def datafile_controller(self):
         return self._data.wrapper_data if self._data else None
 
+    @property
+    def language(self):
+        return self._doc_language
+
+    @language.setter
+    def language(self, flanguage):
+        self._doc_language = flanguage
+
     def on_find(self, event, forward=True):
         if self.source_editor:
             if event.GetEventType() != wx.wxEVT_TEXT_ENTER:  # Was getting selected item from Tree
@@ -675,6 +689,8 @@ class SourceEditor(wx.Panel):
     def open(self, data):
         self.reset()
         self._data = data
+        self.language = self._data._doc_language
+        print(f"DEBUG: texteditor.py SourceEditor open ENTER language={self.language}")
         try:
             if isinstance(self._data.wrapper_data, ResourceFileController):
                 self._controller_for_context = DummyController(self._data.wrapper_data, self._data.wrapper_data)
@@ -1810,6 +1826,7 @@ class RobotDataEditor(stc.StyledTextCtrl):
     def __init__(self, parent, readonly=False):
         stc.StyledTextCtrl.__init__(self, parent)
         self.parent = parent
+        print(f"DEBUG: texteditor.py RobotDataEditor __init__ language={self.parent.language}")
         self._plugin = parent.plugin
         self._settings = parent.source_editor_parent.app.settings
         self._information_popup = None

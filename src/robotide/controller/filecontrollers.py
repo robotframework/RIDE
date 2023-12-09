@@ -904,6 +904,10 @@ class ResourceFileController(_FileSystemElement, _DataController):
         _, tail = os.path.split(self.data.source)
         return tail
 
+    @property
+    def language(self):
+        return self._language
+
     def is_modifiable(self):
         return not self.exists() or not self.is_readonly()
 
