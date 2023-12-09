@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 import itertools
+from robotide.lib.compat.parsing.language import get_settings_for
 
 
 class RowSplitter(object):
@@ -24,9 +25,10 @@ class RowSplitter(object):
     _indented_tables = ('test case', 'keyword')
     _split_from = ('ELSE', 'ELSE IF', 'AND')
 
-    def __init__(self, cols=8, split_multiline_doc=False):
+    def __init__(self, cols=8, split_multiline_doc=False, language=None):
         self._cols = cols
         self._split_multiline_doc = split_multiline_doc
+        self._language = language
 
     def split(self, row, table_type):
         if not row:
@@ -50,9 +52,9 @@ class RowSplitter(object):
 
     def _is_doc_row(self, row, table_type):
         if table_type == self.setting_table:
-            return len(row) > 1 and row[0] == 'Documentation'
+            return len(row) > 1 and row[0] in get_settings_for(self._language, ('Documentation',))
         if table_type in self._indented_tables:
-            return len(row) > 2 and row[1] == '[Documentation]'
+            return len(row) > 2 and row[1].strip('[]') in get_settings_for(self._language, ('Documentation',))
         return False
 
     def _split_doc_row(self, row, indent):

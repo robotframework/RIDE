@@ -80,6 +80,7 @@ class SettingTablePopulator(_TablePopulator):
 
     def _get_populator(self, row):
         setter = self._table.get_setter(row.head) if row.head else None
+        # print(f"DEBUG: tablepopulators.py SettingTablePopulator enter _get_populator {row.head=}")
         if row.head == '...':
             setter = self._table.get_setter(self._table.get_localized_setting_name('Documentation'))
         if not setter:

@@ -54,6 +54,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         Plugin.__init__(self, application)
         self._editor_component = None
         self._tab = None
+        self._doc_language = None
         self._save_flag = 0  # See
         self.reformat = application.settings.get('reformat', False)
         self._register_shortcuts()
@@ -121,6 +122,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
             if hasattr(datafile_controller, 'preamble'):  # DEBUG: Is failing at resource files
                 print(f"DEBUG: texteditor _open preamble={datafile_controller.preamble}")
             if hasattr(datafile_controller, 'language'):
+                self._doc_language = datafile_controller.language
                 print(f"DEBUG: texteditor _open language={datafile_controller.language}")
             self._open_data_for_controller(datafile_controller)
             self._editor.store_position()
@@ -168,6 +170,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
                           and not isinstance(message, RideDataChangedToDirty)
 
     def on_tree_selection(self, message):
+        print(f"DEBUG: texteditor.py OnTreeSelection on_tree_selection ENTER type={type(message.item)}")
         self._editor.store_position()
         if self.is_focused():
             next_datafile_controller = message.item and message.item.datafile_controller
@@ -201,12 +204,14 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         except AttributeError:
             return
         if datafile_controller:
-            self._editor.open(DataFileWrapper(datafile_controller, self.global_settings))
+            self.global_settings['language'] = self._doc_language
+            self._editor.open(DataFileWrapper(datafile_controller, self.global_settings, self._doc_language))
             self._editor.source_editor.readonly = not datafile_controller.is_modifiable()
         self._editor.set_editor_caret_position()
 
     def _open_data_for_controller(self, datafile_controller):
-        self._editor.selected(DataFileWrapper(datafile_controller, self.global_settings))
+        self.global_settings['language'] = self._doc_language
+        self._editor.selected(DataFileWrapper(datafile_controller, self.global_settings, self._doc_language))
         self._editor.source_editor.readonly = not datafile_controller.is_modifiable()
 
     def on_tab_change(self, message):
@@ -331,10 +336,11 @@ class DataValidationHandler(object):
 
 class DataFileWrapper(object):  # DEBUG: bad class name
 
-    def __init__(self, data, settings):
+    def __init__(self, data, settings, language=None):
         self.wrapper_data = data
         self._settings = settings
         self._tab_size = self._settings.get(TXT_NUM_SPACES, 2) if self._settings else 2
+        self._doc_language = language
 
     def __eq__(self, other):
         if other is None:
@@ -376,7 +382,8 @@ class DataFileWrapper(object):  # DEBUG: bad class name
 
     def _txt_data(self, data):
         output = StringIO()
-        data.save(output=output, format='txt', txt_separating_spaces=self._settings.get(TXT_NUM_SPACES, 4))
+        data.save(output=output, fformat='txt', txt_separating_spaces=self._settings.get(TXT_NUM_SPACES, 4),
+                  language=self._doc_language)
         return output.getvalue()
 
 

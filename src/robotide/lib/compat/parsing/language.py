@@ -14,7 +14,11 @@
 import os.path
 import sys
 
-from robot.conf.languages import Language
+try:
+    from robot.conf.languages import Language
+except ImportError as e:
+    sys.stderr.write(f"Trying to import robot's languages module returned error: {repr(e)}\n")
+    sys.stderr.write("You need to have Robot Framework v6.0 or newer to use languages in test suites.\n")
 from robot.errors import DataError
 from robotide.lib.robot.utils import Utf8Reader
 
@@ -139,7 +143,6 @@ def get_settings_for(language, settings_names):
     build_table = {}
     for lang in languages:
         settings = lang.settings
-        # print(f"DEBUG: language.py get_settings_for {lang.name} settings={settings}, \n settings_names={settings_names}")
         for item in settings_names:
             inx = 0
             for k, v in zip(settings.keys(), settings.values()):
@@ -151,7 +154,7 @@ def get_settings_for(language, settings_names):
                 except Exception as e:
                     pass
                 inx += 1
-   #  print(f"DEBUG: language.py get_settings_for RETURN build_table={build_table}")
+    #  print(f"DEBUG: language.py get_settings_for RETURN build_table={build_table}")
     return build_table
 
 

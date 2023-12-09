@@ -56,6 +56,7 @@ class _DataFileWriter(object):
     def __init__(self, formatter, configuration):
         self._formatter = formatter
         self._output = configuration.output
+        self.language = configuration.language
 
     def write(self, datafile):
         tables = [table for table in datafile if table]
@@ -108,7 +109,7 @@ class _DataFileWriter(object):
 class SpaceSeparatedTxtWriter(_DataFileWriter):
 
     def __init__(self, configuration):
-        formatter = TxtFormatter(configuration.txt_column_count)
+        formatter = TxtFormatter(configuration.txt_column_count, configuration.language)
         self._separator = ' ' * configuration.txt_separating_spaces
         _DataFileWriter.__init__(self, formatter, configuration)
 

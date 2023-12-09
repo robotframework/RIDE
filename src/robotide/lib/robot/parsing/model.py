@@ -262,6 +262,7 @@ class _TestData(object):
 
         See also :py:class:`robot.writer.datafilewriter.DataFileWriter`
         """
+        options['language'] = self.language
         return DataFileWriter(**options).write(self)
 
 

@@ -23,9 +23,12 @@ from .rowsplitter import RowSplitter
 class _DataFileFormatter(object):
     _whitespace = re.compile(r"\s{2,}")
     _split_multiline_doc = True
+    language = None
 
-    def __init__(self, column_count):
-        self._splitter = RowSplitter(column_count, self._split_multiline_doc)
+    def __init__(self, column_count, language=None):
+        if language:
+            self.language = language
+        self._splitter = RowSplitter(column_count, self._split_multiline_doc, self.language)
         self._column_count = column_count
         self._extractor = DataExtractor(self._want_names_on_first_content_row)
 
