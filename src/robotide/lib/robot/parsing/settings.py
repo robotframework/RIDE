@@ -36,6 +36,7 @@ class Setting(object):
     def __init__(self, setting_name, parent=None, comment=None):
         self.setting_name = setting_name
         self.parent = parent
+        # print(f"DEBUG: settings.py Setting __init__ name= {self.setting_name}")
         self._set_initial_value()
         self._set_comment(comment)
         self._populated = False
@@ -313,10 +314,6 @@ class ImportSetting(Setting):
 
     def __init__(self, parent, name, args=None, alias=None, comment=None):
         self.parent = parent
-        if parent:
-            self.setting_name = get_localized_setting(parent.language, self.type)
-        else:
-            self.setting_name = self.type
         self.name = name.strip()
         Setting.__init__(self, setting_name=self.setting_name, parent=parent, comment=comment)
         if args:
@@ -360,6 +357,7 @@ class Library(ImportSetting):
             name = args.pop(0)
         if args and not alias:
             args, alias = self._split_possible_alias(args)
+        self.setting_name = get_localized_setting(parent.language, 'Library')
         ImportSetting.__init__(self, parent, name, args, alias, comment)
 
     @staticmethod
@@ -380,6 +378,7 @@ class Resource(ImportSetting):
     def __init__(self, parent, name, invalid_args=None, comment=None):
         if invalid_args:
             name += ' ' + ' '.join(invalid_args)
+        self.setting_name = get_localized_setting(parent.language, 'Resource')
         ImportSetting.__init__(self, parent, name, comment=comment)
 
 
@@ -391,6 +390,7 @@ class Variables(ImportSetting):
             args = [x.strip() for x in args if x != ''] or []
         if args and not name:
             name = args.pop(0)
+        self.setting_name = get_localized_setting(parent.language, 'Variables')
         ImportSetting.__init__(self, parent, name, args, comment=comment)
 
 
