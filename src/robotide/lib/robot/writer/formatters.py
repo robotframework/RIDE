@@ -113,6 +113,9 @@ class TxtFormatter(_DataFileFormatter):
         # print(f"DEBUG: formatters.py format_row ENTER row={row}")
         if table and table.type == 'comments':
             return row
+        # Unit tests failing here with row[0]==None
+        if row and row[0] is None:
+            row[0] = ' '
         row = self._escape(row)
         aligner = self._aligner_for(table)
         return aligner.align_row(row)

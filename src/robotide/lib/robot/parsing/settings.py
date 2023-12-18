@@ -311,6 +311,7 @@ class Metadata(Setting):
 
 
 class ImportSetting(Setting):
+    setting_name = None
 
     def __init__(self, parent, name, args=None, alias=None, comment=None):
         self.parent = parent
@@ -378,7 +379,10 @@ class Resource(ImportSetting):
     def __init__(self, parent, name, invalid_args=None, comment=None):
         if invalid_args:
             name += ' ' + ' '.join(invalid_args)
-        self.setting_name = get_localized_setting(parent.language, 'Resource')
+        try:
+            self.setting_name = get_localized_setting(parent.language, 'Resource')
+        except AttributeError:  # Unit tests were failing here
+            self.setting_name = get_localized_setting(None, 'Resource')
         ImportSetting.__init__(self, parent, name, comment=comment)
 
 

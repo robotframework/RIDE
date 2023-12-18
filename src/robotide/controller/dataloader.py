@@ -173,6 +173,7 @@ def test_data(source, parent=None, settings=None, language=None):
     try:
         datafile = robotapi.TestCaseFile(parent, source, settings, language).populate()
     except DataError:
+        # print(f"DEBUG: Dataloader TestCaseFile testdata DataError source={source}")
         pass  # We try once more in case is a Resource
     if datafile:
         # print(f"DEBUG: Dataloader TestCaseFile return datafile={datafile}")

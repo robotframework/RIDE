@@ -30,7 +30,7 @@ from robotide.publish.messages import RideDataFileRemoved
 from robotide.publish import PUBLISHER
 from robotide.namespace.namespace import Namespace
 from robotide.spec.librarymanager import LibraryManager
-from resources.mocks import FakeSettings
+from ..resources.mocks import FakeSettings
 
 
 def create_test_data(path, filepath, resourcepath, initpath):

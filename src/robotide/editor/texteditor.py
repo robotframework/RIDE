@@ -12,7 +12,7 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-
+import gc
 import string
 from io import StringIO, BytesIO
 from time import time
@@ -20,6 +20,7 @@ from time import time
 import wx
 from wx import stc, Colour
 from wx.adv import HyperlinkCtrl, EVT_HYPERLINK
+from multiprocessing import shared_memory
 from .popupwindow import HtmlPopupWindow
 from . import _EDIT
 from .. import robotapi
@@ -37,8 +38,8 @@ from ..publish.messages import RideMessage
 from ..widgets import TextField, Label, HtmlDialog
 from ..widgets import VerticalSizer, HorizontalSizer, ButtonWithHandler, RIDEDialog
 
-try:  # import installed version first
-    from pygments.lexers import robotframework as robotframeworklexer
+try:  # import our modified version
+    from robotide.lib.compat.pygments import robotframework as robotframeworklexer
 except ImportError:
     robotframeworklexer = None
 
@@ -119,12 +120,12 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
             self._save_flag = 0
             """ DEBUG: To be used in Localization
             """
-            if hasattr(datafile_controller, 'preamble'):  # DEBUG: Is failing at resource files
-                print(f"DEBUG: texteditor _open preamble={datafile_controller.preamble}")
+            # if hasattr(datafile_controller, 'preamble'):  # DEBUG: Is failing at resource files
+            #     print(f"DEBUG: texteditor _open preamble={datafile_controller.preamble}")
             if hasattr(datafile_controller, 'language'):
                 self._doc_language = datafile_controller.language
                 self._editor.language = datafile_controller.language
-                print(f"DEBUG: texteditor _open language={datafile_controller.language}")
+                # print(f"DEBUG: texteditor _open language={datafile_controller.language}")
             self._open_data_for_controller(datafile_controller)
             self._editor.store_position()
 
@@ -446,7 +447,7 @@ class SourceEditor(wx.Panel):
             if not editor_created:
                 self.SetSizer(VerticalSizer())
                 self._create_editor_toolbar()
-                self._create_editor_text_control()
+                self._create_editor_text_control(language=self.language)
                 self.source_editor_parent.add_tab(self, title, allow_closing=False)
 
     def _create_editor_toolbar(self):
@@ -690,7 +691,7 @@ class SourceEditor(wx.Panel):
         self.reset()
         self._data = data
         self.language = self._data._doc_language
-        print(f"DEBUG: texteditor.py SourceEditor open ENTER language={self.language}")
+        # print(f"DEBUG: texteditor.py SourceEditor open ENTER language={self.language}")
         try:
             if isinstance(self._data.wrapper_data, ResourceFileController):
                 self._controller_for_context = DummyController(self._data.wrapper_data, self._data.wrapper_data)
@@ -704,13 +705,17 @@ class SourceEditor(wx.Panel):
             self.datafile = self.plugin.datafile
         if not self.source_editor:
             self._stored_text = self._data.content
+            self._create_editor_text_control(text=self._stored_text, language=self.language)
         else:
+            self.source_editor.set_language(self.language)
             self.source_editor.set_text(self._data.content)
             self.set_editor_caret_position()
 
     def selected(self, data):
         if not self.source_editor:
-            self._create_editor_text_control(self._stored_text)
+            self._create_editor_text_control(text=self._stored_text, language=self.language)
+        else:
+            self.source_editor.set_language(self.language)
         if self._data == data:
             return
         self.open(data)
@@ -974,8 +979,8 @@ class SourceEditor(wx.Panel):
             self.store_position()
             self._stored_text = self.source_editor.GetText()
 
-    def _create_editor_text_control(self, text=None):
-        self.source_editor = RobotDataEditor(self)
+    def _create_editor_text_control(self, text=None, language=None):
+        self.source_editor = RobotDataEditor(self, language)
         self.Sizer.add_expanding(self.source_editor)
         self.Sizer.Layout()
         if text is not None:
@@ -1823,10 +1828,10 @@ class SourceEditor(wx.Panel):
 class RobotDataEditor(stc.StyledTextCtrl):
     margin = 1
 
-    def __init__(self, parent, readonly=False):
+    def __init__(self, parent, readonly=False, language=None):
         stc.StyledTextCtrl.__init__(self, parent)
         self.parent = parent
-        print(f"DEBUG: texteditor.py RobotDataEditor __init__ language={self.parent.language}")
+        self.language = language
         self._plugin = parent.plugin
         self._settings = parent.source_editor_parent.app.settings
         self._information_popup = None
@@ -1891,6 +1896,10 @@ class RobotDataEditor(stc.StyledTextCtrl):
         self.stylizer.stylize()
         self.EmptyUndoBuffer()
         self.SetMarginWidth(self.margin, self.calc_margin_width())
+
+    def set_language(self, dlanguage):
+        self.language = dlanguage
+        self.stylizer = RobotStylizer(self, self._settings, self.readonly, self.language)
 
     @property
     def utf8_text(self):
@@ -2075,15 +2084,23 @@ class FromStringIOPopulator(robotapi.populators.FromFilePopulator):
 
 
 class RobotStylizer(object):
-    def __init__(self, editor, settings, readonly=False):
+    def __init__(self, editor, settings, readonly=False, language=None):
         self.tokens = {}
         self.editor = editor
         self.lexer = None
         self.settings = settings
         self._readonly = readonly
         self._ensure_default_font_is_valid()
+        try:
+            set_lang = shared_memory.ShareableList(name="language")
+        except AttributeError:  # Unittests fails here
+            set_lang = []
+        set_lang[0] = language[0] if language is not None else 'en'
+        self.language = [set_lang[0]]
+        options = { 'language': self.language }
+        # print(f"DEBUG: texteditor.py RobotStylizer _init_ language={self.language}\n")
         if robotframeworklexer:
-            self.lexer = robotframeworklexer.RobotFrameworkLexer()
+            self.lexer = robotframeworklexer.RobotFrameworkLexer(**options)
         else:
             self.editor.GetParent().create_syntax_colorization_help()
         self.set_styles(self._readonly)
@@ -2205,6 +2222,7 @@ class RobotStylizer(object):
         self.editor.ConvertEOLs(2)
         shift = 0
         for position, token, value in self.lexer.get_tokens_unprocessed(self.editor.GetText()):
+            # print(f"DEBUG: texteditor.py RobotStylizer stylize token={token} value={value}")
             if wx.VERSION < (4, 1, 0):
                 self.editor.StartStyling(position + shift, 31)
             else:

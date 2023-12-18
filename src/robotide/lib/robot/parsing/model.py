@@ -382,9 +382,16 @@ class TestDataDirectory(_TestData):
         _TestData.__init__(self, parent, source, language=self.language)
 
     def populate(self, include_suites=None, extensions=None, recurse=True):
+        # print(f"DEBUG: Dataloader TestDataDirectory ENTER populate DataError source={self.source}")
         FromDirectoryPopulator().populate(self.source, self, include_suites,
                                           extensions, recurse, self._tab_size)
-        self.children = [ch for ch in self.children if ch.has_tests()]
+        ch_list = []
+        for ch in self.children:
+            if ch is not None and ch.has_tests():
+                # print(f"DEBUG: Dataloader TestDataDirectory ENTER populate children source={ch.source}")
+                ch_list.append(ch)
+        self.children = ch_list
+        # DEBUG self.children = [ch for ch in self.children if ch.has_tests()]  # Attr has_tests missing in html logs
         return self
 
     def _get_basename(self):
@@ -404,7 +411,7 @@ class TestDataDirectory(_TestData):
                                       extensions=extensions, settings=self._settings, language=language))
 
     def has_tests(self):
-        return any(ch.has_tests() for ch in self.children)
+        return any(ch.has_tests() for ch in self.children) if self.children else None
 
     def __iter__(self):
         for table in self.tables:

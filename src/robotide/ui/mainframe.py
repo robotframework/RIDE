@@ -19,6 +19,7 @@ import wx
 import wx.lib.agw.aui as aui
 from wx import Colour
 from wx.adv import TaskBarIcon, TBI_DOCK, EVT_TASKBAR_LEFT_DOWN
+from multiprocessing import shared_memory
 
 from .actiontriggers import (MenuBar, ToolBarButton, ShortcutRegistry, _RideSearchMenuItem)
 from .filedialogs import (NewProjectDialog, InitFileFormatDialog)
@@ -85,6 +86,8 @@ class RideFrame(wx.Frame):
                           pos=application.settings.get(MAINFRAME_POSITION, (50, 30)),
                           size=size, style=wx.DEFAULT_FRAME_STYLE | wx.SUNKEN_BORDER | wx.BORDER_THEME)
 
+        # Shared memory to store language definition
+        self.sharemem = shared_memory.ShareableList(['en'], name="language")
         # set Left to Right direction (while we don't have localization)
         self.SetLayoutDirection(wx.Layout_LeftToRight)
         # self.SetLayoutDirection(wx.Layout_RightToLeft)
@@ -414,7 +417,10 @@ class RideFrame(wx.Frame):
         from ..lib.compat.parsing.language import check_file_language
         self.controller.file_language = check_file_language(path)
         if self.controller.file_language:
-            print(f"DEBUG: project.py Project load_data file_language = {self.controller.file_language}")
+            set_lang=shared_memory.ShareableList(name="language")
+            set_lang[0] = self.controller.file_language[0]
+            # print(f"DEBUG: project.py Project load_data file_language = {self.controller.file_language}\n"
+            #       f"sharedmem={set_lang}")
         try:
             err = self.controller.load_datafile(path, LoadProgressObserver(self))
             if isinstance(err, UserWarning):
@@ -474,6 +480,8 @@ class RideFrame(wx.Frame):
 
     def on_exit(self, event):
         _ = event
+        self.sharemem.shm.close()
+        self.sharemem.shm.unlink()
         self.Close()
 
     def on_manage_plugins(self, event):
