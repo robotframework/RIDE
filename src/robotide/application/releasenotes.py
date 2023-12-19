@@ -150,16 +150,22 @@ RELEASE_NOTES = f"""
   moment 6.1.1. However, internal library is based on version 3.1.2, to keep compatibility with old formats.</p>
 <p></p>
 <ul class="simple">
-<li>This version supports Python 3.6 up to 3.11.</li>
+<li>This version supports Python 3.8 up to 3.11.</li>
 <li>There are some changes, or known issues:<ul>
-<li>On Text Editor, pressing <b>Ctrl</b> when the caret/cursor is near a Keyword will show a detachable window with the documentation, at Mouse Pointer position.</li> 
+<li>Removed support for Python 3.6 and 3.7</li>
+<li>Added support for language configured test suites, with languages from installed Robot Framework version 6.0, or 
+higher.</li> 
+<li>On Text Editor, pressing <b>Ctrl</b> when the caret/cursor is near a Keyword will show a detachable window with the 
+documentation, at Mouse Pointer position.</li> 
 <li>RIDE tray icon now shows a context menu with options Show, Hide and Close.</li>
 <li>Highlighting and navigation of selected Project Explorer items, in Text Editor.</li>
-<li>When editing in Grid Editor with content assistance, the selected content can be edited by escaping the list of suggestions with keys ARROW_LEFT or ARROW_RIGHT.</li>
+<li>When editing in Grid Editor with content assistance, the selected content can be edited by escaping the list of 
+suggestions with keys ARROW_LEFT or ARROW_RIGHT.</li>
 <li>Newlines in Grid Editor can be made visible with the <b>filter newlines</b> set to False.</li>
 <li>On Text Editor when Saving the selection of tests in Test Suites (Tree) is cleared.</li>
 <li>Test Suite with <em>*** Comments ***</em> can be edited but newlines are introduced.</li>
-<li>Problems with COPY/PASTE in Text Editor have been reported when using wxPython 4.2.0, but not with version 4.2.1, which we now <em>recommend</em>.</li>
+<li>Problems with COPY/PASTE in Text Editor have been reported when using wxPython 4.2.0, but not with version 4.2.1, 
+which we now <em>recommend</em>.</li>
 <li>Some argument types detection (and colorization) is not correct in Grid Editor.</li>
 <li>RIDE <strong>DOES NOT KEEP</strong> Test Suites formatting or structure, causing differences in files when used
  on other IDE or Editors.</li>
@@ -168,20 +174,26 @@ RELEASE_NOTES = f"""
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
+<li>Added support for language configured test suites. Fields are shown in the language of the files in Grid Editor. 
+Colorization for language configured files is working in Text Editor.</li>
 <li>Fixed New User Keyword dialog not allowing empty Arguments field</li>
 <li>Fixed escaped spaces showing in Text Editor on commented cells</li>
 <li>Improved keywords documentation search, by adding current dir to search</li>
-<li>Improved Move up/down, <b>Alt-UpArrow</b>/<b>Alt-DownArrow</b> in Text Editor, to have proper indentation and selection</li>
+<li>Improved Move up/down, <b>Alt-UpArrow</b>/<b>Alt-DownArrow</b> in Text Editor, to have proper indentation and 
+selection</li>
 <li>Added auto update check when development version is installed</li>
-<li>Added menu option <b>Help-&gt;Check for Upgrade</b> which allows to force update check and install development version</li>
+<li>Added menu option <b>Help-&gt;Check for Upgrade</b> which allows to force update check and install development 
+version</li>
 <li>Added <b>Upgrade Now</b> action to update dialog.</li>
-<li>Added <b>Test Tags</b> field (new, since Robot Framework 6.0) to Test Suites settings. This field will replace <b>Default</b> and <b>Force Tags</b> settings, after Robot Framework 7.0</li>
+<li>Added <b>Test Tags</b> field (new, since Robot Framework 6.0) to Test Suites settings. This field will replace 
+<b>Default</b> and <b>Force Tags</b> settings, after Robot Framework 7.0</li>
 <li>Improved <b>RIDE Log</b> and <b>Parser Log</b> windows to allow Zoom In/Out with <b>Ctrl-Mouse Wheel</b></li>
 <li>Hide continuation markers in Project Tree</li>
 <li>Improved content assistance in Text Editor by allowing to filter list as we type</li>
 <li>Fixed resource files disappearing from Project tree on Windows</li>
 <li>Fixed missing indication of link for User Keyword, when pressing <b>Ctrl</b> in Grid Editor</li>
-<li>Added content help pop-up on Text Editor by pressing <b>Ctrl</b> for text at cursor position or selected autocomplete list item</li>
+<li>Added content help pop-up on Text Editor by pressing <b>Ctrl</b> for text at cursor position or selected 
+autocomplete list item</li>
 <li>Added Exclude option in context nenu for Test files, previously was only possible for Test Suites folders</li>
 <li>Added exclusion of monitoring filesystem changes for files and directories excluded in Preferences</li>
 <li>Fixed exception when finding GREY color for excluded files and directories in Project Tree</li>
@@ -196,9 +208,12 @@ RELEASE_NOTES = f"""
 <li>Added context menu to RIDE tray icon. Options Show, Hide and Close</li>
 <li>Added synchronization with Project Explorer to navigate to selected item, Test Case, Keyword, Variable, in Text
  Editor</li>
-<li>Control commands (<b>FOR</b>, <b>IF</b>, <b>TRY</b>, etc) will only be colorized as valid keywords when typed in all caps in Grid Editor</li>
-<li>Newlines in Grid Editor can be made visible with the <b>filter newlines</b> set to False, by editing <em>settings.cfg</em></li>
-<li>Improve auto-suggestions of keywords in Grid Editor by allowing to close suggestions list with keys ARROW_LEFT or ARROW_RIGHT</li>
+<li>Control commands (<b>FOR</b>, <b>IF</b>, <b>TRY</b>, etc) will only be colorized as valid keywords when typed in 
+all caps in Grid Editor</li>
+<li>Newlines in Grid Editor can be made visible with the <b>filter newlines</b> set to False, by editing 
+<em>settings.cfg</em></li>
+<li>Improve auto-suggestions of keywords in Grid Editor by allowing to close suggestions list with keys ARROW_LEFT or 
+ARROW_RIGHT</li>
 <li>Improve Text Editor auto-suggestions by using: selected text, text at left or at right of cursor</li>
 </ul>
 <p>We hope to implement or complete features and make fixes on next major version 2.1 (in the end of 2023).</p>
@@ -250,6 +265,6 @@ python -m robotide.__init__
 <pre class="literal-block">
 python -m robotide.postinstall -install
 </pre>
-<p>RIDE {VERSION} was released on 20/Nov/2023.</p>
+<p>RIDE {VERSION} was released on 20/Dec/2023.</p>
 </div>
 """

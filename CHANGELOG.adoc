@@ -8,10 +8,19 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 == https://github.com/robotframework/RIDE[Unreleased]
 
+=== Added
+
+- Added support for language configured test suites, with installed Robot Framework version 6.0 or higher.
+- Fields are shown in the language of the files in Grid Editor (will be configurable if future versions).
+- Colorization for language configured files is working in Text Editor.
+
 === Fixed
 
 - Fixed New User Keyword dialog not allowing empty Arguments field
 
+=== Removed
+
+- Removed support for old Python versions, 3.6 nd 3.7.
 
 == https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.0.8.1.rst[2.0.8.1] - 2023-11-01
 
