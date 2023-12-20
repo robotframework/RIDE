@@ -95,7 +95,7 @@ class SettingTablePopulator(_TablePopulator):
 class CommentsTablePopulator(_TablePopulator):
 
     def _get_populator(self, table):
-        # print(f"DEBUG: CommentsTablePopulator enter _get_populator {row=}")
+        print(f"DEBUG: CommentsTablePopulator enter _get_populator self._table={self._table} table={table}")
         return CommentsPopulator(self._table.add)
 
 

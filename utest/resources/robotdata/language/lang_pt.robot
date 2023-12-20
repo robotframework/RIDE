@@ -9,7 +9,7 @@ Second line of comments
 Maybe this block is still in preamble
 
 *** Definições ***
-Library    Process
+Biblioteca        Process
 
 *** Casos de Teste ***
 teste primeiro

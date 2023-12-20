@@ -480,8 +480,11 @@ class RideFrame(wx.Frame):
 
     def on_exit(self, event):
         _ = event
-        self.sharemem.shm.close()
-        self.sharemem.shm.unlink()
+        try:
+            self.sharemem.shm.close()
+            self.sharemem.shm.unlink()
+        except FileNotFoundError:
+            pass
         self.Close()
 
     def on_manage_plugins(self, event):

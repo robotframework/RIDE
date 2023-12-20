@@ -285,8 +285,9 @@ class DataValidationHandler(object):
 
     def validate_and_update(self, data, text):
         m_text = text.decode("utf-8")
-        if not self._sanity_check(data, m_text):
-            handled = self._handle_sanity_check_failure()
+        result = self._sanity_check(data, m_text)
+        if isinstance(result, tuple) :
+            handled = self._handle_sanity_check_failure(result)
             if not handled:
                 return False
         self._editor.reset()
@@ -303,15 +304,38 @@ class DataValidationHandler(object):
         return True
 
     def _sanity_check(self, data, text):
+        """
         # First remove all lines starting with #
         for line in text.split('\n'):
             comment = line.strip().startswith('#')
             if comment:
                 text = text.replace(line, '')
+        """
+        from robotide.lib.compat.parsing import ErrorReporter
+        from robot.parsing.parser.parser import get_model
+        from robotide.lib.robot.errors import DataError
+
+        print(f"DEBUG: textedit.py _sanity_check data is type={type(data)}")
+        model = get_model(text)
+        print(f"DEBUG: textedit.py _sanity_check model is {model}")
+        validator = ErrorReporter()
+        result = None
+        try:
+            validator.visit(model)
+        except DataError as err:
+            result = (err.message, err.details)
+        model.save("/tmp/model_saved_from_RIDE.robot")
+        print(f"DEBUG: textedit.py _sanity_check after calling validator {validator}\n"
+              f"Save model in /tmp/model_saved_from_RIDE.robot"
+              f" result={result}")
+        return True if not result else result
+
+        """ DEBUG
         formatted_text = data.format_text(text)
         c = self._normalize(formatted_text)
         e = self._normalize(text)
         return len(c) == len(e)
+        """
 
     @staticmethod
     def _normalize(text):
@@ -320,14 +344,14 @@ class DataValidationHandler(object):
                 text = text.replace(item, '')
         return text
 
-    def _handle_sanity_check_failure(self):
+    def _handle_sanity_check_failure(self, message):
         if self._last_answer == wx.ID_NO and time() - self._last_answer_time <= 0.2:
             # self.source_editor._mark_file_dirty(True)
             return False
         # DEBUG: use widgets.Dialog
-        dlg = wx.MessageDialog(self._editor, 'ERROR: Data sanity check failed!\n'
-                                             'Reset changes?',
-                               'Can not apply changes from Txt Editor', style=wx.YES | wx.NO)
+        dlg = wx.MessageDialog(self._editor, f"ERROR: Data sanity check failed!\nError at line {message[1]}:\n"
+                                             f"{message[0]}\n\nReset changes?",
+                               "Can not apply changes from Text Editor", style=wx.YES | wx.NO)
         dlg.InheritAttributes()
         did = dlg.ShowModal()
         self._last_answer = did
