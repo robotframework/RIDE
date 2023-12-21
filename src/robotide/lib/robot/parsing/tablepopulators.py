@@ -95,7 +95,7 @@ class SettingTablePopulator(_TablePopulator):
 class CommentsTablePopulator(_TablePopulator):
 
     def _get_populator(self, table):
-        print(f"DEBUG: CommentsTablePopulator enter _get_populator self._table={self._table} table={table}")
+        # print(f"DEBUG: CommentsTablePopulator enter _get_populator self._table={self._table} table={table}")
         return CommentsPopulator(self._table.add)
 
 
@@ -363,7 +363,8 @@ class CommentsPopulator(_PropertyPopulator):
         if isinstance(row, list):
             self._setter(row)
         else:
-            self._setter(row.data+['  ']+row.comments)
+            content = row.data+['  ']+row.comments if row.comments else row.data
+            self._setter(content)
 
     def populate(self):
         if self._value:
