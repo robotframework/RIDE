@@ -507,7 +507,7 @@ class SourceEditor(wx.Panel):
         label = Label(self, label="Syntax colorization disabled due to missing requirements.")
         link = HyperlinkCtrl(self, -1, label="Get help", url="")
         link.Bind(EVT_HYPERLINK, self.show_help_dialog)
-        flags = wx.ALIGN_CENTER_VERTICAL | wx.ALIGN_RIGHT
+        flags = wx.ALIGN_RIGHT
         syntax_colorization_help_sizer = wx.BoxSizer(wx.VERTICAL)
         syntax_colorization_help_sizer.AddMany([
             (label, 0, flags),

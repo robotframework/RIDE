@@ -92,8 +92,8 @@ class _TestData(object):
     def start_table(self, header_row, lineno: int, llang: list):
         self._language = llang
         # local_header = lang.get_headers_for(llang, ('Comments',))
-        print(f"DEBUG: model _TestData start_table ENTER  header_row[0]={ header_row[0]} lineno={lineno}\n"
-              f"language={llang}")  # local_header={local_header}")
+        # print(f"DEBUG: model _TestData start_table ENTER  header_row[0]={ header_row[0]} lineno={lineno}\n"
+        #       f"language={llang}")  # local_header={local_header}")
         if header_row[0] in lang.get_headers_for(llang, ('Comments',), lowercase=False):
             self.comment_table = table = CommentsTable(self, llang)  # Multiple creation of table only if exists
             self.tables.append(self.comment_table)
