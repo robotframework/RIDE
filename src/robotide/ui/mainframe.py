@@ -87,7 +87,10 @@ class RideFrame(wx.Frame):
                           size=size, style=wx.DEFAULT_FRAME_STYLE | wx.SUNKEN_BORDER | wx.BORDER_THEME)
 
         # Shared memory to store language definition
-        self.sharemem = shared_memory.ShareableList(['en'], name="language")
+        try:
+            self.sharemem = shared_memory.ShareableList(['en'], name="language")
+        except FileExistsError:  # Other instance created file
+            self.sharemem = shared_memory.ShareableList(name="language")
         # set Left to Right direction (while we don't have localization)
         self.SetLayoutDirection(wx.Layout_LeftToRight)
         # self.SetLayoutDirection(wx.Layout_RightToLeft)
