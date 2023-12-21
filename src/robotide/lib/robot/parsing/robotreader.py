@@ -45,7 +45,8 @@ class RobotReader(object):
                 self.check_separator(line.rstrip())
             cells = self.split_row(line.rstrip())
             if cells and cells[0].strip().startswith('*') and \
-                    populator.start_table([c.replace('*', '').strip() for c in cells], lineno=lineno):
+                    populator.start_table([c.replace('*', '').strip() for c in cells], lineno=lineno,
+                                          llang=self.language):
                 process = table_start = True
                 preamble = False  # DEBUG removed condition  "and not comments" comments =
                 # print(f"DEBUG: RobotReader After table_start head={cells[0].replace('*', '').strip()}")

@@ -4,13 +4,11 @@ Language: Portuguese
 # Mais uma linha em branco
 
 *** Comentários ***
-This is a comments block
-Second line of comments
-Maybe this block is still in preamble
-
-*** Definições ***
-Biblioteca        Process
-
+This is a comments block  
+Second line of comments a  
+Maybe this block is still in preamble  
+One more line  
+  
 *** Casos de Teste ***
 teste primeiro
     No Operation

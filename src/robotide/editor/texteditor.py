@@ -2104,7 +2104,12 @@ class RobotDataEditor(stc.StyledTextCtrl):
 class FromStringIOPopulator(robotapi.populators.FromFilePopulator):
 
     def populate(self, content: [str, BytesIO], tab_size: int):
-        robotapi.RobotReader(spaces=tab_size).read(content, self)
+        try:
+            set_lang = shared_memory.ShareableList(name="language")
+            language = [set_lang[0]]
+        except AttributeError:
+            language = ['en']
+        robotapi.RobotReader(spaces=tab_size, lang=language).read(content, self)
 
 
 class RobotStylizer(object):

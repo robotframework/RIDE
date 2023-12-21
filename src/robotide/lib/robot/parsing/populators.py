@@ -103,16 +103,16 @@ class FromFilePopulator(object):
         except KeyError:
             raise DataError("Unsupported file format '%s'." % file_format)
 
-    def start_table(self, header, lineno: int):
+    def start_table(self, header, lineno: int, llang: list = None):
         # DEBUG:
         # print(f"DEBUG: RFLib populators FromFilePopulator ENTER start_table header={header}")
         # if header[0].lower() in self._comment_table_names:  # don't create a Comments section
         #    print(f"DEBUG: RFLib populators FromFilePopulator comments section header={header}")
         #    # return False
         self._populator.populate()
-        table = self._datafile.start_table(DataRow(header).all, lineno=lineno)
+        table = self._datafile.start_table(DataRow(header).all, lineno=lineno, llang=llang)
         # print(f"DEBUG: populators start_table header={header} got table={table} at lineno={lineno}")
-        if header[0] in language.get_headers_for(self._language, ('Comment', 'Comments'), lowercase=False):
+        if header[0] in language.get_headers_for(llang, ('Comment', 'Comments'), lowercase=False):
             self._populator = self._populators['comments'](table)
         else:
             self._populator = self._populators[table.type](table) if table is not None else NullPopulator()

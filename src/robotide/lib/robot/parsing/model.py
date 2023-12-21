@@ -89,14 +89,13 @@ class _TestData(object):
             for name in names:
                 yield name, table
 
-    def start_table(self, header_row, lineno: int):
-        """
-        local_header = lang.get_headers_for(self.language, ('Comments',))
+    def start_table(self, header_row, lineno: int, llang: list):
+        self._language = llang
+        # local_header = lang.get_headers_for(llang, ('Comments',))
         print(f"DEBUG: model _TestData start_table ENTER  header_row[0]={ header_row[0]} lineno={lineno}\n"
-              f"language={self.language} local_header={local_header}")
-        """
-        if header_row[0] in lang.get_headers_for(self.language, ('Comments',), lowercase=False):
-            self.comment_table = table = CommentsTable(self, self.language)  # Multiple creation of table only if exists
+              f"language={llang}")  # local_header={local_header}")
+        if header_row[0] in lang.get_headers_for(llang, ('Comments',), lowercase=False):
+            self.comment_table = table = CommentsTable(self, llang)  # Multiple creation of table only if exists
             self.tables.append(self.comment_table)
         else:
             table = self._find_table(header_row)
