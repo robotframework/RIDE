@@ -45,13 +45,13 @@ class DataFileWriter(object):
 class WritingContext(object):
     """Contains configuration used in writing a test data file to disk."""
     txt_format = 'txt'
-    html_format = 'html'
+    # html_format = 'html'
     tsv_format = 'tsv'
     robot_format = 'robot'
     txt_column_count = 18
     html_column_count = 5
     tsv_column_count = 8
-    _formats = [txt_format, html_format, tsv_format, robot_format]
+    _formats = [txt_format, tsv_format, robot_format]  # Removed html_format
 
     def __init__(self, datafile, fformat='', output=None, pipe_separated=False,
                  txt_separating_spaces=4, line_separator='\n', language=None):

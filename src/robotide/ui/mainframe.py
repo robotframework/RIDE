@@ -348,8 +348,7 @@ class RideFrame(wx.Frame):
         robottypes = self._application.settings.get('robot types', ['robot',
                                                                     'resource',
                                                                     'txt',
-                                                                    'tsv',
-                                                                    'html'])
+                                                                    'tsv'])  # Removed 'html'
         path = self.filemgr.GetFilePath()
         ext = ''
         if len(path) > 0:

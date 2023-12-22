@@ -25,15 +25,14 @@ from .datarow import DataRow
 from .tablepopulators import (SettingTablePopulator, VariableTablePopulator,
                               TestTablePopulator, KeywordTablePopulator,
                               CommentsTablePopulator, NullPopulator)
-from .htmlreader import HtmlReader
+# from .htmlreader import HtmlReader
 from .tsvreader import TsvReader
 from .robotreader import RobotReader
 from .restreader import RestReader
 
 
-READERS = {'html': HtmlReader, 'htm': HtmlReader, 'xhtml': HtmlReader,
-           'tsv': TsvReader, 'rst': RestReader, 'rest': RestReader,
-           'txt': RobotReader, 'robot': RobotReader}
+READERS = {'tsv': TsvReader, 'rst': RestReader, 'rest': RestReader,
+           'txt': RobotReader, 'robot': RobotReader}  # Removed 'html':HtmlReader, 'htm':HtmlReader, 'xhtml':HtmlReader,
 
 # Hook for external tools for altering ${CURDIR} processing
 PROCESS_CURDIR = True

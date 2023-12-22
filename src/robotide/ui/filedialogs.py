@@ -33,7 +33,7 @@ DEFAULT_FFORMAT = "default file format"
 
 class _CreationDialog(RIDEDialog):
 
-    formats = ["ROBOT", "TXT", "TSV", "HTML"]
+    formats = ["ROBOT", "TXT", "TSV"]  # Removed "HTML"
 
     def __init__(self, default_dir, title):
         sizer = self._init_dialog(title)
@@ -157,7 +157,7 @@ class _CreationDialog(RIDEDialog):
 
     def _get_extension(self):
         if not self._format_chooser:
-            return 'html'
+            return 'robot'
         return self._format_chooser.GetStringSelection().lower()
 
     def on_path_changed(self, event):
@@ -307,11 +307,11 @@ class RobotFilePathDialog(wx.FileDialog):
             ("txt", "Robot data (*.txt)|*.txt"),
             ("resource", "Robot resource file (*.resource)|*.resource"),
             ("tsv", "Robot Tab Separated data (*.tsv)|*.tsv"),
-            ("html", "Robot HTML data (pre 3.2.2) (*.html)|*.html"),
+            # ("html", "Robot HTML data (pre 3.2.2) (*.html)|*.html"),
             ("all", "All files|*.*")
         ]
         default_format = settings.get(DEFAULT_FFORMAT, "robot")
-        robottypes = settings.get('robot types', ['robot', 'resource', 'txt', 'tsv', 'html'])
+        robottypes = settings.get('robot types', ['robot', 'resource', 'txt', 'tsv'])  # , 'html'
         if default_format not in robottypes:
             default_format = "all"
         first = [ft for ft in filetypes if ft[0] == default_format]

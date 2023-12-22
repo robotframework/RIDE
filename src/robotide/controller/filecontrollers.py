@@ -510,7 +510,7 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
     @staticmethod
     def _is_robot_ignored_name(filename):
         base = os.path.basename(filename)
-        robotformat = (".txt", ".robot", ".resource", ".rst", " .rest", ".tsv", ".htm", ".html")
+        robotformat = (".txt", ".robot", ".resource", ".rst", " .rest", ".tsv")  # Removed ".htm", ".html"
         nonrobot_file = os.path.isfile(filename) and not base.endswith(robotformat)
         hidden = base.startswith('.')
         private = base.startswith('_')

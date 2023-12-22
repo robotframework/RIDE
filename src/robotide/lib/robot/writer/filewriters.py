@@ -42,8 +42,8 @@ def FileWriter(context):
         on ``context.format``. ``context`` is also passed to created writer.
     :type context: :class:`~robot.writer.datafilewriter.WritingContext`
     """
-    if context.format == context.html_format:
-        return HtmlFileWriter(context)
+    # if context.format == context.html_format:
+    #     return HtmlFileWriter(context)
     if context.format == context.tsv_format:
         return TsvFileWriter(context)
     if context.pipe_separated:

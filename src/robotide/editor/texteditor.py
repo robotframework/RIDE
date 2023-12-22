@@ -315,19 +315,19 @@ class DataValidationHandler(object):
         from robot.parsing.parser.parser import get_model
         from robotide.lib.robot.errors import DataError
 
-        print(f"DEBUG: textedit.py _sanity_check data is type={type(data)}")
+        # print(f"DEBUG: textedit.py _sanity_check data is type={type(data)}")
         model = get_model(text)
-        print(f"DEBUG: textedit.py _sanity_check model is {model}")
+        # print(f"DEBUG: textedit.py _sanity_check model is {model}")
         validator = ErrorReporter()
         result = None
         try:
             validator.visit(model)
         except DataError as err:
             result = (err.message, err.details)
-        model.save("/tmp/model_saved_from_RIDE.robot")
-        print(f"DEBUG: textedit.py _sanity_check after calling validator {validator}\n"
-              f"Save model in /tmp/model_saved_from_RIDE.robot"
-              f" result={result}")
+        # model.save("/tmp/model_saved_from_RIDE.robot")
+        # print(f"DEBUG: textedit.py _sanity_check after calling validator {validator}\n"
+        #       f"Save model in /tmp/model_saved_from_RIDE.robot"
+        #       f" result={result}")
         return True if not result else result
 
         """ DEBUG
