@@ -1157,6 +1157,8 @@ class SourceEditor(wx.Panel):
             self.source_editor.show_kw_doc()
             event.Skip()
         else:
+            # if self.dirty and keycode >= ord(' '):
+            self.mark_file_dirty(self.source_editor.GetModify())
             event.Skip()
 
         # These commands are duplicated by global actions
