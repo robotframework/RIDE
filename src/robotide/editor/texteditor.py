@@ -132,8 +132,11 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
     def on_data_changed(self, message):
         """ This block is now inside try/except to avoid errors from unit test """
         try:
-            # print(f"DEBUG: textedit OnDataChanged message={message}")
+            if self.is_focused() and isinstance(message, RideDataChangedToDirty):
+                # print("DEBUG: textedit OnDataChanged returning RideDataChangedToDirty")
+                return
             if self._should_process_data_changed_message(message):
+                # print(f"DEBUG: textedit after _should_process_data_changed_message save_flag={self._save_flag}")
                 if isinstance(message, RideOpenSuite):  # Not reached
                     self._editor.reset()
                     self._editor.set_editor_caret_position()
@@ -168,8 +171,8 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
 
     @staticmethod
     def _should_process_data_changed_message(message):
-        return isinstance(message, (RideDataChanged, RideBeforeSaving, RideSaved, RideSaving, RideDataDirtyCleared))\
-                          and not isinstance(message, RideDataChangedToDirty)
+        return isinstance(message, (RideDataChanged, RideBeforeSaving, RideSaved, RideSaving, RideDataDirtyCleared))
+        # and not isinstance(message, RideDataChangedToDirty))
 
     def on_tree_selection(self, message):
         # print(f"DEBUG: texteditor.py TextEditorPlugin on_tree_selection ENTER type={type(message.item)}")
@@ -479,7 +482,8 @@ class SourceEditor(wx.Panel):
         # text about syntax colorization
         self.editor_toolbar = HorizontalSizer()
         default_components = HorizontalSizer()
-        button = ButtonWithHandler(self, 'Apply Changes', handler=lambda e: self.content_save())
+        button = ButtonWithHandler(self, 'Apply Changes',
+                                   handler=lambda e: self.plugin._apply_txt_changes_to_model())
         button.SetBackgroundColour(Colour(self.dlg.color_secondary_background))
         button.SetForegroundColour(Colour(self.dlg.color_secondary_foreground))
         default_components.add_with_padding(button)
@@ -881,7 +885,6 @@ class SourceEditor(wx.Panel):
             if not self._data_validator.validate_and_update(self._data, self.source_editor.utf8_text):
                 self.is_saving = False
                 return False
-        # self.GetFocus(None)
         return True
 
     """
@@ -1142,8 +1145,6 @@ class SourceEditor(wx.Panel):
             self.source_editor.show_kw_doc()
             event.Skip()
         else:
-            # if self.dirty and keycode >= ord(' '):
-            self.mark_file_dirty(self.source_editor.GetModify())
             event.Skip()
 
         # These commands are duplicated by global actions
