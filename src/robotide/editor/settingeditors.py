@@ -21,6 +21,7 @@ from .editordialogs import editor_dialog, DocumentationDialog, MetadataDialog, \
     ResourceDialog, VariablesDialog
 from .formatters import ListToStringFormatter
 from .gridcolorizer import ColorizationSettings
+from ..lib.compat.parsing.language import get_english_label
 from .listeditor import ListEditor
 from .popupwindow import HtmlPopupWindow
 from .tags import TagsDisplay
@@ -75,10 +76,11 @@ class SettingEditor(wx.Panel):
     def _create_controls(self):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         sizer.Add((5, 0))
-        sizer.Add(Label(
+        label = Label(
             self, label=self._controller.label,
-            size=(context.SETTING_LABEL_WIDTH, context.SETTING_ROW_HEIGHT)))
-        print(f"DEBUG: settingseditors.py SettingEditor _create_controls self._controller.label={self._controller.label}")
+            size=(context.SETTING_LABEL_WIDTH, context.SETTING_ROW_HEIGHT))  # Always show the English label as tooltip
+        label.SetToolTip(get_english_label(self._language, self._controller.label))
+        sizer.Add(label)
         self._value_display = self._create_value_display()
         self.update_value()
         self._tooltip = self._get_tooltip()
@@ -186,7 +188,7 @@ class SettingEditor(wx.Panel):
 
     def on_popup_timer(self, event):
         _ = event
-        _tooltipallowed = False
+        _tooltipallowed = True
         # DEBUG: This prevents tool tip for ex. Template edit field in wxPhoenix
         try:
             _tooltipallowed = self.Parent.tooltip_allowed(self._tooltip)
