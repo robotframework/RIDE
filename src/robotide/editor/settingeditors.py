@@ -16,6 +16,7 @@
 import wx
 from wx import Colour
 
+from multiprocessing import shared_memory
 from .editordialogs import editor_dialog, DocumentationDialog, MetadataDialog, \
     ScalarVariableDialog, ListVariableDialog, DictionaryVariableDialog, LibraryDialog, \
     ResourceDialog, VariablesDialog
@@ -57,9 +58,13 @@ class SettingEditor(wx.Panel):
         self.SetOwnForegroundColour(Colour(self.color_foreground))
         self._controller = controller
         try:
-            self._language = self._controller.language
+            set_lang = shared_memory.ShareableList(name="language")
+            self._language = [set_lang[0]]
         except AttributeError:
-            self._language = ['en']
+            try:
+                self._language = self._controller.language
+            except AttributeError:
+                self._language = ['en']
         # print(f"DEBUG: settings.py SettingEditor __init__ language={self._language}")
         self.plugin = plugin
         self._datafile = controller.datafile
@@ -633,7 +638,7 @@ class ImportSettingListEditor(_AbstractListEditor):
             VariablesDialog,
             lambda v, c:
                 self._controller.execute(ctrlcommands.AddVariablesFileImport(v, c)),
-            title='Variáveis')  # DEBUG
+            title='Variables')  # DEBUG
 
     def on_import_failed_help(self, event):
         _ = event

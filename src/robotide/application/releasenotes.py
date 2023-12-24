@@ -174,8 +174,8 @@ which we now <em>recommend</em>.</li>
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
-<li>Added support for language configured test suites. Fields are shown in the language of the files in Grid Editor. 
-Colorization for language configured files is working in Text Editor.</li>
+<li>Added support for language configured test suites. Fields are shown in the language of the files in Grid Editor.
+ Tooltips are always shown in English. Colorization for language configured files is working in Text Editor.</li>
 <li>Fixed New User Keyword dialog not allowing empty Arguments field</li>
 <li>Fixed escaped spaces showing in Text Editor on commented cells</li>
 <li>Improved keywords documentation search, by adding current dir to search</li>
@@ -265,6 +265,6 @@ python -m robotide.__init__
 <pre class="literal-block">
 python -m robotide.postinstall -install
 </pre>
-<p>RIDE {VERSION} was released on 20/Dec/2023.</p>
+<p>RIDE {VERSION} was released on 24/Dec/2023.</p>
 </div>
 """

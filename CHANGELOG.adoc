@@ -12,6 +12,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 - Added support for language configured test suites, with installed Robot Framework version 6.0 or higher.
 - Fields are shown in the language of the files in Grid Editor (will be configurable if future versions).
+- Tooltips for the fields are always shown in English.
 - Colorization for language configured files is working in Text Editor.
 
 === Fixed
