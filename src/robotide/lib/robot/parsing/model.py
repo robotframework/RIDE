@@ -18,7 +18,11 @@ import copy
 import re
 import warnings
 
-from robot.conf.languages import Language
+try:
+    from robot.conf.languages import Language
+except ModuleNotFoundError:
+    Language = None
+
 from robotide.lib.compat.parsing import language as lang
 from robotide.lib.robot.errors import DataError
 from robotide.lib.robot.variables import is_var

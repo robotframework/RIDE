@@ -51,6 +51,9 @@ from pygments.token import Token
 from multiprocessing import shared_memory
 from robotide.lib.compat.parsing.language import Language
 
+if not Language:  # Let's import original
+    raise ImportError
+
 __all__ = ['RobotFrameworkLexer']
 
 

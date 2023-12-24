@@ -19,6 +19,7 @@ try:
 except ImportError as e:
     sys.stderr.write(f"Trying to import robot's languages module returned error: {repr(e)}\n")
     sys.stderr.write("You need to have Robot Framework v6.0 or newer to use languages in test suites.\n")
+    Language = None
 from robot.errors import DataError
 from robotide.lib.robot.utils import Utf8Reader
 
@@ -30,6 +31,8 @@ def check_file_language(path):
     :param path: Path to robot or resource file
     :return: language, error or None
     """
+    if not Language:
+        return None
     language_string = None
     if os.path.isfile(path):
         language_string = read(path)
@@ -78,6 +81,8 @@ def get_headers_for(language, tables_headers, lowercase=True):
             (_testcase_table_names,),
             (_keyword_table_names,),
             (_comment_table_names,)]
+    if not Language:
+        return t_en
     assert tables_headers is not None
     if not language:
         language = ['en']
@@ -122,6 +127,8 @@ def get_headers_for(language, tables_headers, lowercase=True):
 
 def get_settings_for(language, settings_names):
     assert settings_names is not None
+    if not Language:
+        return settings_names
     if not language:
         language = ['en']
     languages = set()
@@ -160,6 +167,8 @@ def get_settings_for(language, settings_names):
 
 def get_english_label(lang, label):
     assert label is not None
+    if not Language:
+        return label
     if not lang:
         lang = ['en']
     mlang = None

@@ -32,7 +32,7 @@ import re
 import time
 import wx
 
-from robotide import pluginapi
+from robotide.publish.messages import RideLogMessage
 from robotide.context import IS_WINDOWS
 from robotide.contrib.testrunner.usages import USAGE
 from robotide.lib.robot.utils import format_time
@@ -412,7 +412,7 @@ class PybotProfile(BaseProfile):
         if b'not found' in error \
                 or returncode == 127 or \
                 b'system cannot find the file specified' in error:
-            return pluginapi.RideLogMessage(RF_INSTALLATION_NOT_FOUND, notify_user=True)
+            return RideLogMessage(RF_INSTALLATION_NOT_FOUND, notify_user=True)
         return None
 
     def _get_log_options_panel(self, parent):

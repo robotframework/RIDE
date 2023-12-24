@@ -38,10 +38,19 @@ from ..publish.messages import RideMessage
 from ..widgets import TextField, Label, HtmlDialog
 from ..widgets import VerticalSizer, HorizontalSizer, ButtonWithHandler, RIDEDialog
 
-try:  # import our modified version
-    from robotide.lib.compat.pygments import robotframework as robotframeworklexer
-except ImportError:
-    robotframeworklexer = None
+from robotide.lib.compat.parsing.language import Language
+robotframeworklexer = None
+if Language:
+    try:  # import our modified version
+        from robotide.lib.compat.pygments import robotframework as robotframeworklexer
+    except ImportError:
+        robotframeworklexer = None
+
+if not robotframeworklexer:
+    try:  # import original version
+        from pygments.lexers import robotframework as robotframeworklexer
+    except ImportError:
+        robotframeworklexer = None
 
 PLUGIN_NAME = 'Text Edit'
 TXT_NUM_SPACES = 'txt number of spaces'

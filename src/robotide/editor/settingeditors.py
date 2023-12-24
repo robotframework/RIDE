@@ -78,7 +78,7 @@ class SettingEditor(wx.Panel):
         sizer.Add(Label(
             self, label=self._controller.label,
             size=(context.SETTING_LABEL_WIDTH, context.SETTING_ROW_HEIGHT)))
-        # print(f"DEBUG: settings.py SettingEditor _create_controls self._controller.label={self._controller.label}")
+        print(f"DEBUG: settingseditors.py SettingEditor _create_controls self._controller.label={self._controller.label}")
         self._value_display = self._create_value_display()
         self.update_value()
         self._tooltip = self._get_tooltip()
