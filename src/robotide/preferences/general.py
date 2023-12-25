@@ -24,7 +24,7 @@ from wx import Colour
 from ..context import IS_WINDOWS
 try:
     from robot.conf import languages
-except ImportError as e:
+except ImportError:
     languages = None
 
 ID_APPLY_TO_PANEL = wx.NewIdRef()
@@ -52,12 +52,8 @@ def read_fonts(fixed=False):
 def read_languages():
     """Returns list with translatqble languages"""
     if languages:
-        names = [('Bulgarian', 'bg'), ('Bosnian', 'bs'), ('Czech', 'cs'), ('German', 'de'), ('English', 'en'),
-                 ('Spanish', 'es'), ('Finnish', 'fi'), ('French', 'fr'), ('Hindi', 'hi'), ('Italian', 'it'),
-                 ('Dutch', 'nl'), ('Polish', 'pl'), ('Portuguese', 'pt'), ('Brazilian Portuguese', 'pt-BR'),
-                 ('Romanian', 'ro'), ('Russian', 'ru'), ('Swedish', 'sv'), ('Thai', 'th'), ('Turkish', 'tr'),
-                 ('Ukrainian', 'uk'), ('Vietnamese', 'vi'), ('Chinese Simplified', 'zh-CN'),
-                 ('Chinese Traditional', 'zh-TW')]
+        from . import Languages
+        names = [n for n in Languages.names]
     else:
         names = [('English', 'en'), ('Portuguese', 'pt')]
     names = [n[0] for n in names if not n[0].startswith('@')]
@@ -227,11 +223,11 @@ class GeneralPreferences(PreferencesPanel):
         background_color = Colour(LIGHT_GRAY)
         foreground_color = Colour("black")
         if 'ui language' in self._settings:
-            l = StringChoiceEditor(self._settings, 'ui language', 'Language', read_languages())
-            l_lang = l.label(self)
+            ll = StringChoiceEditor(self._settings, 'ui language', 'Language', read_languages())
+            l_lang = ll.label(self)
             if IS_WINDOWS:
                 set_colors(l_lang, background_color, foreground_color)
-            sizer.AddMany([l_lang, l.chooser(self)])
+            sizer.AddMany([l_lang, ll.chooser(self)])
         sizer.Layout()
         return sizer
 

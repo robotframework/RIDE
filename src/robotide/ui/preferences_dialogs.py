@@ -69,6 +69,8 @@ class PreferencesComboBox(wx.ComboBox):
     def __init__(self, parent, id, settings, key, choices):
         self.settings = settings
         self.key = key
+        # wx.ComboBox(self, parent, id, self._get_value(), size=self._get_size(choices),
+        #             choices=choices, style=wx.CB_READONLY)
         super(PreferencesComboBox, self).__init__(parent, id, self._get_value(),
                                                   size=self._get_size(choices),
                                                   choices=choices, style=wx.CB_READONLY)
@@ -90,7 +92,7 @@ class PreferencesComboBox(wx.ComboBox):
             This issue only occurs in Linux, for Mac and Windows using default size.
         """
         if IS_LINUX and choices:
-            return wx.Size(max(max(len(str(s)) for s in choices) * 9, 144), 20)
+            return wx.Size(max(max(len(str(s)) for s in choices) * 9, 144), 30)
         return wx.DefaultSize
 
     def on_select(self, event):

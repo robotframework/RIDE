@@ -41,6 +41,10 @@ from ..widgets.button import ButtonWithHandler
 from wx.lib.agw.aui import AuiDefaultToolBarArt
 from wx.lib.agw.aui.auibar import AuiToolBar
 from wx.lib.agw.aui.auibook import AuiTabCtrl, TabFrame
+try:
+    from robot.conf import languages
+except ImportError:
+    languages = None
 
 locale.setlocale(locale.LC_ALL, 'C')
 
@@ -134,6 +138,8 @@ class RIDE(wx.App):
         PUBLISHER.subscribe(self.SetGlobalColour, RideSettingsChanged)
         PUBLISHER.subscribe(self.update_excludes, RideSettingsChanged)
         RideSettingsChanged(keys=('Excludes', 'init'), old=None, new=None).publish()
+        PUBLISHER.subscribe(self.change_locale, RideSettingsChanged)
+        RideSettingsChanged(keys=('General', 'ui interface'), old=None, new=None).publish()
         return True
 
     @staticmethod
@@ -280,6 +286,31 @@ class RIDE(wx.App):
             if hasattr(w, 'SetFont'):
                 w.SetFont(font)
             """
+
+    def change_locale(self, message):
+        if message.keys[0] != "General":
+            return
+        if languages:
+            from ..preferences import Languages
+            names = [n for n in Languages.names]
+        else:
+            names = [('English', 'en', wx.LANGUAGE_ENGLISH)]
+        general = self.settings.get('General', None)
+        language = general.get('ui language', 'English')
+        try:
+            idx = [lang[0] for lang in names].index(language)
+        except IndexError:
+            print(f"DEBUG: application.py RIDE change_locale ERROR: Could not find {language=}")
+            idx = None
+        if idx:
+            code = names[idx][2]
+        else:
+            code = wx.LANGUAGE_ENGLISH
+        print(f"DEBUG: application.py RIDE change_locale {language=}, {code=}")
+        del self._initial_locale
+        self._initial_locale = wx.Locale(code)
+        test = wx.GetTranslation('Application')
+        print(f"DEBUG: application.py RIDE change_locale translation of Application is {test}")
 
     @staticmethod
     def update_excludes(message):
