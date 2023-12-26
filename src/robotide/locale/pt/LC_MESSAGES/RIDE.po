@@ -1,0 +1,148 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR ORGANIZATION
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: RIDE 2.1\n"
+"POT-Creation-Date: 2023-12-26 03:18+0000\n"
+"PO-Revision-Date: 2023-12-26 03:39+0000\n"
+"Last-Translator: Hélio Guilherme <helio_guilherme@hotmail.com>\n"
+"Language-Team: helioxentric@gmail.com\n"
+"Language: pt\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: pygettext.py 1.5\n"
+"X-Generator: Poedit 3.4.1\n"
+
+#: /home/helio/github/RIDE/src/robotide/application/application.py:374
+msgid "Found Robot Framework version %s from %s."
+msgstr ""
+
+#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:48
+msgid ""
+"\n"
+"[File]\n"
+"!&New Project | Create a new top level suite | Ctrlcmd-N | ART_NEW\n"
+"---\n"
+"!&Open Test Suite | Open file containing tests | Ctrlcmd-O | ART_FILE_OPEN\n"
+"!Open &Directory | Open directory containing datafiles | Shift-Ctrlcmd-O | ART_FOLDER_OPEN\n"
+"!Open External File | Open file in Code Editor | | ART_NORMAL_FILE\n"
+"---\n"
+"!&Save | Save selected datafile | Ctrlcmd-S | ART_FILE_SAVE\n"
+"!Save &All | Save all changes | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS\n"
+"---\n"
+"!E&xit | Exit RIDE | Ctrlcmd-Q\n"
+"\n"
+"[Tools]\n"
+"!Search Unused Keywords | | | | POSITION-54\n"
+"!Manage Plugins | | | | POSITION-81\n"
+"!View All Tags | | F7 | | POSITION-82\n"
+"!Preferences | | | | POSITION-99\n"
+"\n"
+"[Help]\n"
+"!Shortcut keys | RIDE shortcut keys\n"
+"!User Guide | Robot Framework User Guide\n"
+"!Wiki | RIDE User Guide (Wiki)\n"
+"!Report a Problem | Open browser to SEARCH on the RIDE issue tracker\n"
+"!Release notes | Shows release notes\n"
+"!About | Information about RIDE\n"
+"!Check for Upgrade | Looks at PyPi for new released version\n"
+msgstr ""
+"\n"
+"[Ficheiro]\n"
+"!&New Project | Create a new top level suite | Ctrlcmd-N | ART_NEW\n"
+"---\n"
+"!&Open Test Suite | Open file containing tests | Ctrlcmd-O | ART_FILE_OPEN\n"
+"!Open &Directory | Open directory containing datafiles | Shift-Ctrlcmd-O | ART_FOLDER_OPEN\n"
+"!Open External File | Open file in Code Editor | | ART_NORMAL_FILE\n"
+"---\n"
+"!&Save | Save selected datafile | Ctrlcmd-S | ART_FILE_SAVE\n"
+"!Save &All | Save all changes | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS\n"
+"---\n"
+"!E&xit | Exit RIDE | Ctrlcmd-Q\n"
+"\n"
+"[Tools]\n"
+"!Search Unused Keywords | | | | POSITION-54\n"
+"!Manage Plugins | | | | POSITION-81\n"
+"!View All Tags | | F7 | | POSITION-82\n"
+"!Preferences | | | | POSITION-99\n"
+"\n"
+"[Help]\n"
+"!Shortcut keys | RIDE shortcut keys\n"
+"!User Guide | Robot Framework User Guide\n"
+"!Wiki | RIDE User Guide (Wiki)\n"
+"!Report a Problem | Open browser to SEARCH on the RIDE issue tracker\n"
+"!Release notes | Shows release notes\n"
+"!About | Information about RIDE\n"
+"!Check for Upgrade | Looks at PyPi for new released version\n"
+
+#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:140
+msgid "Saved %s"
+msgstr ""
+
+#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:141
+msgid "Saved all files"
+msgstr ""
+
+#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:164
+msgid "Validation Error"
+msgstr ""
+
+#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:168
+msgid "\"%s\" is read only"
+msgstr ""
+
+#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:169
+msgid "Modification prevented"
+msgstr ""
+
+#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:321
+msgid ""
+"There are unsaved modifications.\n"
+"Do you want to save your changes before exiting?"
+msgstr ""
+
+#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:323
+#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:413
+msgid "Warning"
+msgstr ""
+
+#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:411
+msgid ""
+"There are unsaved modifications.\n"
+"Do you want to proceed without saving?"
+msgstr ""
+
+#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:447
+msgid "Choose a directory containing Robot files"
+msgstr "Escolha uma diretoria contendo ficheiros Robot"
+
+#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:512
+msgid "RIDE - Preferences"
+msgstr "RIDE - Preferências"
+
+#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:599
+msgid "Workspace modifications detected on the file system."
+msgstr ""
+
+#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:600
+msgid "Do you want to reload the workspace?"
+msgstr ""
+
+#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:601
+msgid "Answering <No> will ignore the changes on disk."
+msgstr ""
+
+#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:603
+msgid "Answering <Yes> will discard unsaved changes."
+msgstr ""
+
+#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:604
+msgid "Files Changed On Disk"
+msgstr ""
+
+#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:766
+msgid "Shortcut keys for RIDE"
+msgstr ""

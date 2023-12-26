@@ -13,6 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import builtins
 import locale
 import os
 import wx
@@ -47,6 +48,10 @@ except ImportError:
     languages = None
 
 locale.setlocale(locale.LC_ALL, 'C')
+# add translation macro to builtin similar to what gettext does
+# generated pot with: /usr/bin/python /usr/bin/pygettext.py -a -d RIDE -o RIDE.pot -p ./locale ../robotide
+_ = wx.GetTranslation
+builtins.__dict__['_'] = wx.GetTranslation
 
 BACKGROUND_HELP = 'background help'
 FOREGROUND_TEXT = 'foreground text'
@@ -62,7 +67,7 @@ class UnthemableWidgetError(Exception):
 class RIDE(wx.App):
     _controller = None
     _editor_provider = None
-    _initial_locale = None
+    _locale = None
     _plugin_loader = None
     editor = None
     fileexplorerplugin = None
@@ -82,7 +87,7 @@ class RIDE(wx.App):
     def OnInit(self):  # Overrides wx method
         # DEBUG To test RTL
         # self._initial_locale = wx.Locale(wx.LANGUAGE_ARABIC)
-        self._initial_locale = wx.Locale(wx.LANGUAGE_ENGLISH_US)
+        self._locale = wx.Locale(wx.LANGUAGE_ENGLISH_US)
         # Needed for SetToolTipString to work
         wx.HelpProvider.Set(wx.SimpleHelpProvider())  # DEBUG: adjust to wx versions
         self.settings = RideSettings()
@@ -307,9 +312,17 @@ class RIDE(wx.App):
         else:
             code = wx.LANGUAGE_ENGLISH
         print(f"DEBUG: application.py RIDE change_locale {language=}, {code=}")
-        del self._initial_locale
-        self._initial_locale = wx.Locale(code)
-        test = wx.GetTranslation('Application')
+        del self._locale
+        self._locale = wx.Locale(code)
+        if self._locale.IsOk():
+            wx.Locale.AddCatalogLookupPathPrefix('locale')
+            print("DEBUG: application.py RIDE change_locale locale OK add catalog\n")
+            cat = self._locale.AddCatalog('RIDE')
+            print(f"DEBUG: result of Add catalog={cat}")
+        else:
+            print("DEBUG: application.py RIDE change_locale locale NOT OK self._initial_locale = None")
+            self._locale = None
+        test = _('Application')
         print(f"DEBUG: application.py RIDE change_locale translation of Application is {test}")
 
     @staticmethod
@@ -359,7 +372,7 @@ class RIDE(wx.App):
         if robot_found:
             system_encoding = get_system_encoding()
             rf_file, rf_version = output.strip().split(b", ")
-            publish.RideLogMessage("Found Robot Framework version %s from %s." % (
+            publish.RideLogMessage(_("Found Robot Framework version %s from %s.") % (
                 str(rf_version, system_encoding), str(os.path.dirname(rf_file), system_encoding))).publish()
             return rf_version
         else:
