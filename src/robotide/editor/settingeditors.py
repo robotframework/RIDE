@@ -13,6 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import builtins
 import wx
 from wx import Colour
 
@@ -34,6 +35,9 @@ from ..publish.messages import (RideImportSetting, RideOpenVariableDialog, RideE
                                 RideVariableAdded, RideVariableUpdated, RideVariableRemoved)
 from ..utils.highlightmatcher import highlight_matcher
 from ..widgets import ButtonWithHandler, Label, HtmlWindow, PopupMenu, PopupMenuItems, HtmlDialog
+
+_ = wx.GetTranslation  # To keep linter/code analyser happy
+builtins.__dict__['_'] = wx.GetTranslation
 
 
 class SettingEditor(wx.Panel):
@@ -91,15 +95,17 @@ class SettingEditor(wx.Panel):
         self._tooltip = self._get_tooltip()
         sizer.Add(self._value_display, 1, wx.EXPAND)
         self._add_edit(sizer)
-        sizer.Add(ButtonWithHandler(self, 'Clear', color_secondary_foreground=self.color_secondary_foreground,
+        sizer.Add(ButtonWithHandler(self, _('Clear'), handler=self.on_clear,
+                                    color_secondary_foreground=self.color_secondary_foreground,
                                     color_secondary_background=self.color_secondary_background))
         sizer.Layout()
         self.SetSizer(sizer)
 
     def _add_edit(self, sizer):
         sizer.Add(
-            ButtonWithHandler(self, 'Edit', color_secondary_foreground=self.color_secondary_foreground,
-                                    color_secondary_background=self.color_secondary_background),
+            ButtonWithHandler(self, _('Edit'), handler=self.on_edit,
+                              color_secondary_foreground=self.color_secondary_foreground,
+                              color_secondary_background=self.color_secondary_background),
             flag=wx.LEFT | wx.RIGHT, border=5)
 
     def _create_value_display(self):
@@ -192,7 +198,7 @@ class SettingEditor(wx.Panel):
         self.on_window_destroy(event)
 
     def on_popup_timer(self, event):
-        _ = event
+        __ = event
         _tooltipallowed = True
         # DEBUG: This prevents tool tip for ex. Template edit field in wxPhoenix
         try:
@@ -239,7 +245,7 @@ class SettingEditor(wx.Panel):
         self.update_value()
 
     def on_clear(self, event):
-        _ = event
+        __ = event
         self._controller.execute(ctrlcommands.ClearSetting())
         self._update_and_notify()
 
@@ -468,8 +474,8 @@ class _AbstractListEditor(ListEditor):
 
 
 class VariablesListEditor(_AbstractListEditor):
-    _titles = ['Variable', 'Value', 'Comment']
-    _buttons = ['Add Scalar', 'Add List', 'Add Dict']
+    _titles = [_('Variable'), _('Value'), _('Comment')]
+    _buttons = [_('Add Scalar'), _('Add List'), _('Add Dict')]
 
     def __init__(self, parent, tree, controller):
         PUBLISHER.subscribe(
@@ -501,17 +507,17 @@ class VariablesListEditor(_AbstractListEditor):
         self._list.SetFocus()
 
     def on_add_scalar(self, event):
-        _ = event
+        __ = event
         self._show_dialog(
             ScalarVariableDialog(self._controller))
 
     def on_add_list(self, event):
-        _ = event
+        __ = event
         self._show_dialog(
             ListVariableDialog(self._controller, plugin=self.Parent.plugin))
 
     def on_add_dict(self, event):
-        _ = event
+        __ = event
         self._show_dialog(
             DictionaryVariableDialog(self._controller,
                                      plugin=self.Parent.plugin))
@@ -555,8 +561,8 @@ class VariablesListEditor(_AbstractListEditor):
 
 
 class ImportSettingListEditor(_AbstractListEditor):
-    _titles = ['Import', 'Name / Path', 'Arguments', 'Comment']
-    _buttons = ['Library', 'Resource', 'Variables', 'Import Failed Help']
+    _titles = [_('Import'), _('Name / Path'), _('Arguments'), _('Comment')]
+    _buttons = [_('Library'), _('Resource'), _('Variables'), _('Import Failed Help')]
 
     def __init__(self, parent, tree, controller, lang=None):
         self._import_failed_shown = False
@@ -610,7 +616,7 @@ class ImportSettingListEditor(_AbstractListEditor):
 
     @staticmethod
     def on_import_library_spec_xml(event):
-        _ = event
+        __ = event
         RideExecuteSpecXmlImport().publish()
 
     def on_edit(self, event):
@@ -621,30 +627,30 @@ class ImportSettingListEditor(_AbstractListEditor):
             setting, on_empty=self._delete_selected)
 
     def on_library(self, event):
-        _ = event
+        __ = event
         self._show_import_editor_dialog(
             LibraryDialog,
             lambda v, c: self._controller.execute(ctrlcommands.AddLibrary(v, c)))
 
     def on_resource(self, event):
-        _ = event
+        __ = event
         self._show_import_editor_dialog(
             ResourceDialog,
             lambda v, c: self._controller.execute(ctrlcommands.AddResource(v, c)))
 
     def on_variables(self, event):
-        _ = event
+        __ = event
         self._show_import_editor_dialog(
             VariablesDialog,
             lambda v, c:
                 self._controller.execute(ctrlcommands.AddVariablesFileImport(v, c)),
-            title='Variables')  # DEBUG
+            title=_('Variables'))  # DEBUG
 
     def on_import_failed_help(self, event):
-        _ = event
+        __ = event
         if self._import_failed_shown:
             return
-        dialog = HtmlDialog('Import failure handling', '''
+        dialog = HtmlDialog(_('Import failure handling'), _('''
         <br>Possible corrections and notes:<br>
         <ul>
             <li>Import failure is shown with red color.</li>
@@ -658,7 +664,7 @@ class ImportSettingListEditor(_AbstractListEditor):
             For more information see 
             <a href="https://github.com/robotframework/RIDE/wiki/Keyword-Completion#wiki-using-library-specs">wiki</a>.
             </li>
-        </ul>''')
+        </ul>'''))
         dialog.Bind(wx.EVT_CLOSE, self._import_failed_help_closed)
         dialog.Show()
         self._import_failed_shown = True
@@ -692,8 +698,8 @@ class ImportSettingListEditor(_AbstractListEditor):
 
 
 class MetadataListEditor(_AbstractListEditor):
-    _titles = ['Metadata', 'Value', 'Comment']
-    _buttons = ['Add Metadata']
+    _titles = [_('Metadata'), _('Value'), _('Comment')]
+    _buttons = [_('Add Metadata')]
     _sortable = False
 
     def on_edit(self, event):
@@ -706,7 +712,7 @@ class MetadataListEditor(_AbstractListEditor):
         dlg.Destroy()
 
     def on_add_metadata(self, event):
-        _ = event
+        __ = event
         dlg = MetadataDialog(self._controller.datafile)
         if dlg.ShowModal() == wx.ID_OK:
             ctrl = self._controller.add_metadata(*dlg.get_value())

@@ -14,12 +14,14 @@
 #  limitations under the License.
 
 import atexit
+import builtins
 import glob
 import io
 import os
 import sys
 import tempfile
 import uuid
+import wx
 
 from .logwindow import LogWindow, message_to_string
 from .. import context
@@ -27,6 +29,9 @@ from .. import widgets
 from ..pluginapi import Plugin
 from ..action import ActionInfo
 from ..publish.messages import RideLog
+
+_ = wx.GetTranslation  # To keep linter/code analyser happy
+builtins.__dict__['_'] = wx.GetTranslation
 
 
 class LogPlugin(Plugin):
@@ -37,7 +42,7 @@ class LogPlugin(Plugin):
             'log_to_console': False,
             'log_to_file': True
         })
-        self.title = 'RIDE Log'
+        self.title = _('RIDE Log')
         self._log = []
         self._panel = None
         self._path = os.path.join(
@@ -78,7 +83,7 @@ class LogPlugin(Plugin):
     def _create_menu(self):
         self.unregister_actions()
         self.register_action(ActionInfo(
-            'Tools', 'View RIDE Log', self.on_view_log, position=84))
+            _('Tools'), _('View RIDE Log'), self.on_view_log, position=84))
 
     def _log_message(self, message):
         self._log.append(message)
@@ -95,7 +100,7 @@ class LogPlugin(Plugin):
                                padding=10, font_size=font_size).Show()
 
     def on_view_log(self, event):
-        _ = event
+        __ = event
         if not self._panel:
             self._panel = LogWindow(self.notebook, self.title, self._log)
             self._panel.update_log()

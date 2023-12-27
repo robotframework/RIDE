@@ -12,7 +12,7 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-import gc
+import builtins
 import string
 from io import StringIO, BytesIO
 from time import time
@@ -51,6 +51,9 @@ if not robotframeworklexer:
         from pygments.lexers import robotframework as robotframeworklexer
     except ImportError:
         robotframeworklexer = None
+
+_ = wx.GetTranslation  # To keep linter/code analyser happy
+builtins.__dict__['_'] = wx.GetTranslation
 
 PLUGIN_NAME = 'Text Edit'
 TXT_NUM_SPACES = 'txt number of spaces'
@@ -120,7 +123,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         self._editor_component = None
 
     def on_open(self, event):
-        _ = event
+        __ = event
         self._open()
 
     def _open(self):
@@ -246,7 +249,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
             self._editor_component.content_save()
 
     def on_tab_changed(self, event):
-        _ = event
+        __ = event
         self._show_editor()
         event.Skip()
 
@@ -361,9 +364,9 @@ class DataValidationHandler(object):
             # self.source_editor._mark_file_dirty(True)
             return False
         # DEBUG: use widgets.Dialog
-        dlg = wx.MessageDialog(self._editor, f"ERROR: Data sanity check failed!\nError at line {message[1]}:\n"
-                                             f"{message[0]}\n\nReset changes?",
-                               "Can not apply changes from Text Editor", style=wx.YES | wx.NO)
+        dlg = wx.MessageDialog(self._editor, f"{_('ERROR: Data sanity check failed!')}\n{_('Error at line')}"
+                                             f" {message[1]}:\n{message[0]}\n\n{_('Reset changes?')}",
+                               _("Can not apply changes from Text Editor"), style=wx.YES | wx.NO)
         dlg.InheritAttributes()
         did = dlg.ShowModal()
         self._last_answer = did
@@ -491,7 +494,7 @@ class SourceEditor(wx.Panel):
         # text about syntax colorization
         self.editor_toolbar = HorizontalSizer()
         default_components = HorizontalSizer()
-        button = ButtonWithHandler(self, 'Apply Changes',
+        button = ButtonWithHandler(self, _('Apply Changes'),
                                    handler=lambda e: self.plugin._apply_txt_changes_to_model())
         button.SetBackgroundColour(Colour(self.dlg.color_secondary_background))
         button.SetForegroundColour(Colour(self.dlg.color_secondary_foreground))
@@ -507,7 +510,7 @@ class SourceEditor(wx.Panel):
         self.search_field.SetForegroundColour(Colour(self.dlg.color_secondary_foreground))
         self.search_field.Bind(wx.EVT_TEXT_ENTER, self.on_find)
         container_sizer.add_with_padding(self.search_field)
-        button = ButtonWithHandler(self, 'Search', handler=self.on_find)
+        button = ButtonWithHandler(self, _('Search'), handler=self.on_find)
         button.SetBackgroundColour(Colour(self.dlg.color_secondary_background))
         button.SetForegroundColour(Colour(self.dlg.color_secondary_foreground))
         container_sizer.add_with_padding(button)
@@ -517,8 +520,8 @@ class SourceEditor(wx.Panel):
     def create_syntax_colorization_help(self):
         if self._syntax_colorization_help_exists:
             return
-        label = Label(self, label="Syntax colorization disabled due to missing requirements.")
-        link = HyperlinkCtrl(self, -1, label="Get help", url="")
+        label = Label(self, label=_("Syntax colorization disabled due to missing requirements."))
+        link = HyperlinkCtrl(self, -1, label=_("Get help"), url="")
         link.Bind(EVT_HYPERLINK, self.show_help_dialog)
         flags = wx.ALIGN_RIGHT
         syntax_colorization_help_sizer = wx.BoxSizer(wx.VERTICAL)
@@ -532,8 +535,8 @@ class SourceEditor(wx.Panel):
 
     @staticmethod
     def show_help_dialog(event):
-        _ = event
-        content = """<h1>Syntax colorization</h1>
+        __ = event
+        content = _("""<h1>Syntax colorization</h1>
         <p>
         Syntax colorization for Text Edit uses <a href='https://pygments.org/'>Pygments</a> syntax highlighter.
         </p>
@@ -557,8 +560,8 @@ class SourceEditor(wx.Panel):
         <p>
         For more information about installing Pygments, <a href='https://pygments.org/download/'>see the site</a>.
         </p>
-        """
-        HtmlDialog("Getting syntax colorization", content).Show()
+        """)
+        HtmlDialog(_("Getting syntax colorization"), content).Show()
 
     def store_position(self, force=False):
         if self.source_editor:  # We don't necessarily need a data controller, was: "and self.datafile_controller:"
@@ -656,7 +659,7 @@ class SourceEditor(wx.Panel):
             self.source_editor.ScrollToLine(self.source_editor.GetCurrentLine())
             self._search_field_notification.SetLabel('')
         else:
-            self._search_field_notification.SetLabel('No matches found.')
+            self._search_field_notification.SetLabel(_('No matches found.'))
 
     def locate_tree_item(self, item):
         """ item is object received from message """
@@ -689,7 +692,7 @@ class SourceEditor(wx.Panel):
         """
         if not self.is_focused():  # DEBUG was typing text when at Grid Editor
             return
-        _ = event
+        __ = event
         if self._showing_list:
             self._showing_list = False  # Avoid double calls
             return
@@ -912,28 +915,28 @@ class SourceEditor(wx.Panel):
     """
     # Callbacks taken from __init__.py
     def on_undo(self, event):
-        _ = event
+        __ = event
         self.undo()
 
     def on_redo(self, event):
-        _ = event
+        __ = event
         self.redo()
 
     def on_cut(self, event):
-        _ = event
+        __ = event
         self.cut()
 
     def on_copy(self, event):
-        _ = event
+        __ = event
         self.copy()
 
     def on_paste(self, event):
-        _ = event
+        __ = event
         self.paste()
 
     @staticmethod
     def on_insert(event):
-        _ = event
+        __ = event
         print(f"DEBUG: TextEditor called on_insert event={event}\n TO BE IMPLEMENTED")
         # self.insert_row()
 
@@ -1031,7 +1034,7 @@ class SourceEditor(wx.Panel):
         # DEBUG: Add here binding for keyword help
 
     def LeaveFocus(self, event):
-        _ = event
+        __ = event
         self.source_editor.hide_kw_doc()
         self.source_editor.AcceptsFocusFromKeyboard()
         self.store_position()
@@ -1264,7 +1267,7 @@ class SourceEditor(wx.Panel):
         return open_symbol + value + close_symbol
 
     def move_row_up(self, event):
-        _ = event
+        __ = event
         start, end = self.source_editor.GetSelection()
         new_ini_line = ini_line = self.source_editor.LineFromPosition(start)
         new_end_line = end_line = self.source_editor.LineFromPosition(end)
@@ -1385,7 +1388,7 @@ class SourceEditor(wx.Panel):
         return idx
 
     def move_row_down(self, event):
-        _ = event
+        __ = event
         start, end = self.source_editor.GetSelection()
         new_ini_line = ini_line = self.source_editor.LineFromPosition(start)
         new_end_line = end_line = self.source_editor.LineFromPosition(end)
@@ -1454,7 +1457,7 @@ class SourceEditor(wx.Panel):
         self.source_editor.SetAnchor(nstartpos)
 
     def delete_row(self, event):
-        _ = event
+        __ = event
         start, end = self.source_editor.GetSelection()
         ini_line = self.source_editor.LineFromPosition(start)
         self.source_editor.SelectNone()
@@ -1468,7 +1471,7 @@ class SourceEditor(wx.Panel):
         self.store_position()
 
     def insert_row(self, event):
-        _ = event
+        __ = event
         start, end = self.source_editor.GetSelection()
         ini_line = self.source_editor.LineFromPosition(start)
         end_line = self.source_editor.LineFromPosition(end)
@@ -1485,7 +1488,7 @@ class SourceEditor(wx.Panel):
         self.store_position()
 
     def execute_comment(self, event):
-        _ = event
+        __ = event
         start, end = self.source_editor.GetSelection()
         cursor = self.source_editor.GetCurrentPos()
         ini_line = self.source_editor.LineFromPosition(start)
@@ -1523,7 +1526,7 @@ class SourceEditor(wx.Panel):
         self.store_position()
 
     def execute_uncomment(self, event):
-        _ = event
+        __ = event
         start, end = self.source_editor.GetSelection()
         cursor = self.source_editor.GetCurrentPos()
         ini_line = self.source_editor.LineFromPosition(start)
@@ -1565,7 +1568,7 @@ class SourceEditor(wx.Panel):
         self.store_position()
 
     def insert_cell(self, event):
-        _ = event
+        __ = event
         start, end = self.source_editor.GetSelection()
         ini_line = self.source_editor.LineFromPosition(start)
         end_line = self.source_editor.LineFromPosition(end)
@@ -1607,7 +1610,7 @@ class SourceEditor(wx.Panel):
         self.source_editor.SetAnchor(new_end)
 
     def delete_cell(self, event):
-        _ = event
+        __ = event
         start, end = self.source_editor.GetSelection()
         ini_line = self.source_editor.LineFromPosition(start)
         end_line = self.source_editor.LineFromPosition(end)
@@ -1685,7 +1688,7 @@ class SourceEditor(wx.Panel):
         return cellpos
 
     def execute_sharp_comment(self, event):
-        _ = event
+        __ = event
         start, end = self.source_editor.GetSelection()
         cursor = self.source_editor.GetCurrentPos()
         ini_line = self.source_editor.LineFromPosition(start)
@@ -1751,7 +1754,7 @@ class SourceEditor(wx.Panel):
         self.store_position()
 
     def execute_sharp_uncomment(self, event):
-        _ = event
+        __ = event
         start, end = self.source_editor.GetSelection()
         cursor = self.source_editor.GetCurrentPos()
         ini_line = self.source_editor.LineFromPosition(start)
@@ -1940,11 +1943,11 @@ class RobotDataEditor(stc.StyledTextCtrl):
         return self.GetText().encode('UTF-8')
 
     def on_style(self, event):
-        _ = event
+        __ = event
         self.stylizer.stylize()
 
     def on_zoom(self, event):
-        _ = event
+        __ = event
         self.SetMarginWidth(self.margin, self.calc_margin_width())
         self._set_zoom()
 

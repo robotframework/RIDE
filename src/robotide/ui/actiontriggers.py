@@ -13,11 +13,26 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import builtins
 import wx
 
 from ..context import IS_WINDOWS, IS_MAC
+_ = wx.GetTranslation  # To keep linter/code analyser happy
+builtins.__dict__['_'] = wx.GetTranslation
 
 ID_CustomizeToolbar = wx.ID_HIGHEST + 1
+
+
+def accel_index(menu: list, item: str) -> int:
+    """ Gets the index from a list ignoring the accelarator marker, &
+    :param menu: list - list to get index
+    :param item: str  - item to find in menu list
+    :returns index: int
+    """
+    for idx, m in enumerate(menu):
+        if m.replace('&', '') == item.replace('&', ''):
+            return idx
+    raise ValueError(f"{item} is not in list")
 
 
 class MenuBar(object):
@@ -36,7 +51,7 @@ class MenuBar(object):
         self.m_frame.SetMenuBar(self._mb)
 
     def _create_default_menus(self):
-        for name in ['File', 'Edit', 'Tools', 'Help']:
+        for name in [_('File'), _('Edit'), _('Tools'), _('Help')]:
             self._create_menu(name, before_help=False)
 
     def _create_menu(self, name, before_help=True):
@@ -46,7 +61,7 @@ class MenuBar(object):
 
     def _insert_menu(self, menu, before_help):
         if before_help:
-            index = [m.name for m in self._menus].index('&Help')
+            index = accel_index([m.name for m in self._menus], _('&Help'))
         else:
             index = len(self._menus)
         self._menus.insert(index, menu)

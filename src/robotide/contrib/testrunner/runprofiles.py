@@ -465,7 +465,7 @@ class PybotProfile(BaseProfile):
         self.set_setting("output_directory", value)
 
     def _handle_select_directory(self, event):
-        _ = event
+        __ = event
         path = self._output_directory_text_ctrl.GetValue()
         dlg = wx.DirDialog(None, "Select Logs Directory",
                            path, wx.DD_DEFAULT_STYLE)

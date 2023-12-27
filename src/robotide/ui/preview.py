@@ -13,7 +13,8 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-
+import builtins
+import wx
 import wx.html
 from io import StringIO
 from ..pluginapi import Plugin, TreeAwarePluginMixin
@@ -22,6 +23,9 @@ from ..publish import (RideTreeSelection, RideNotebookTabChanged, RideTestCaseAd
 from ..robotapi import TestCase, UserKeyword
 from ..widgets import ButtonWithHandler, Font
 from ..utils import Printing
+
+_ = wx.GetTranslation  # To keep linter/code analyser happy
+builtins.__dict__['_'] = wx.GetTranslation
 
 
 class PreviewPlugin(Plugin, TreeAwarePluginMixin):
@@ -33,9 +37,9 @@ class PreviewPlugin(Plugin, TreeAwarePluginMixin):
         self._panel = None
 
     def enable(self):
-        self.register_action(ActionInfo('Tools', 'Preview', self.on_show_preview,
+        self.register_action(ActionInfo(_('Tools'), _('Preview'), self.on_show_preview,
                                         shortcut='F6',
-                                        doc='Show preview of the current file',
+                                        doc=_('Show preview of the current file'),
                                         position=71))
         self.subscribe(self.on_tree_selection, RideTreeSelection)
         self.subscribe(self.on_tab_changed, RideNotebookTabChanged)
@@ -54,7 +58,7 @@ class PreviewPlugin(Plugin, TreeAwarePluginMixin):
         return self.tab_is_visible(self._panel)
 
     def on_show_preview(self, event):
-        _ = event
+        __ = event
         if not self._panel:
             self._panel = PreviewPanel(self, self.notebook)
         self.show_tab(self._panel)
@@ -75,7 +79,7 @@ class PreviewPlugin(Plugin, TreeAwarePluginMixin):
 
 
 class PreviewPanel(wx.Panel):
-    _formats = ['HTML', 'Text (Spaces)', 'Text (Pipes)']
+    _formats = ['HTML', _('Text (Spaces)'), _('Text (Pipes)')]
 
     def __init__(self, parent, notebook):
         wx.Panel.__init__(self, notebook)
@@ -92,7 +96,7 @@ class PreviewPanel(wx.Panel):
         else:
             box.Add(self._print_button(), 1, wx.EXPAND)
         self.Sizer.Add(box)
-        notebook.AddPage(self, "Preview")
+        notebook.AddPage(self, _("Preview"))
 
     def on_print(self, evt):
         _ = evt
@@ -109,13 +113,13 @@ class PreviewPanel(wx.Panel):
         return 'Pipes' in self._format
 
     def _chooser(self):
-        chooser = wx.RadioBox(self, label='Format', choices=self._formats)
+        chooser = wx.RadioBox(self, label=_('Format'), choices=self._formats)
         chooser.SetStringSelection(self._format)
         self.Bind(wx.EVT_RADIOBOX, self.on_type_changed, chooser)
         return chooser
 
     def _print_button(self):
-        return ButtonWithHandler(self, 'Print')
+        return ButtonWithHandler(self, _('Print'), handler=self.on_print)
 
     @property
     def _view(self):

@@ -246,7 +246,7 @@ class UpdateDialog(RIDEDialog):
             self.Show()
 
     def on_remind_me_later(self, event):
-        _ = event
+        __ = event
         self.Close(True)
 
     def on_checkbox_change(self, event):
@@ -254,6 +254,6 @@ class UpdateDialog(RIDEDialog):
         event.Skip()
 
     def on_upgrade_now(self, event):
-        _ = event
+        __ = event
         _add_content_to_clipboard(self._command)
         do_upgrade(self._command)

@@ -139,7 +139,7 @@ class TreePlugin(Plugin):
         self._tree.set_editor(editor)
 
     def on_show_tree(self, event):
-        _ = event
+        __ = event
         if not self._parent:
             self._parent = self.frame
         if not self._tree:  # This is not needed because tree is always created
@@ -186,11 +186,11 @@ class TreePlugin(Plugin):
             self._tree.tree_node_selected(message.item)
 
     def on_tab_changed(self, event):
-        _ = event
+        __ = event
         self._update_tree()
 
     def _update_tree(self, event=None):
-        _ = event
+        __ = event
         self._tree.populate(self._model)
         self._tree.refresh_view()
         self._tree.Update()
@@ -1008,7 +1008,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
         self._test_selection_controller.select_all(test_controllers)
 
     def on_close(self, event):
-        _ = event
+        __ = event
         print("DEBUG: Tree OnClose hidding")
         self.Hide()
 
@@ -1033,7 +1033,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
             event.Skip()
 
     def on_right_click(self, event):
-        _ = event
+        __ = event
         if not self._right_click:
             self._right_click = True
         handler = None
@@ -1137,7 +1137,7 @@ class TreeLabelEditListener(object):
             # a bug if we don't Veto this event
 
     def on_label_edit(self, event=None):
-        _ = event
+        __ = event
         if not self._on_label_edit_called:
             self._on_label_edit_called = True
             handler = self._tree.controller.get_handler()
@@ -1165,7 +1165,7 @@ class TreeLabelEditListener(object):
             control.StopEditing()
 
     def on_delete(self, event):
-        _ = event
+        __ = event
         editor = self._tree.GetEditControl()
         if editor and wx.Window.FindFocus() == editor:
             start, end = editor.GetSelection()

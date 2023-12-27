@@ -114,7 +114,7 @@ class _ConfigListEditor(ListEditorBase):
         self._list.open_editor(self._selection)
 
     def on_new(self, event):
-        _ = event
+        __ = event
         self._list.new_item()
 
     def on_remove(self, event):

@@ -49,13 +49,13 @@ class TreeController(object):
                                                            action=self.on_clear_selected))
 
     def on_go_back(self, event):
-        _ = event
+        __ = event
         node = self._history.back()
         if node:
             self._tree.SelectItem(node)
 
     def on_add_tag_to_selected(self, event):
-        _ = event
+        __ = event
         if self._test_selection.is_empty():
             return
         name = wx.GetTextFromUser(message='Enter Tag Name', caption='Add Tag To Selected')
@@ -63,11 +63,11 @@ class TreeController(object):
             self._test_selection.add_tag(name)
 
     def on_clear_selected(self, event):
-        _ = event
+        __ = event
         self._test_selection.clear_all(message=None)
 
     def on_go_forward(self, event):
-        _ = event
+        __ = event
         node = self._history.forward()
         if node:
             self._tree.SelectItem(node)

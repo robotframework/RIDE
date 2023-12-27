@@ -13,12 +13,16 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import builtins
 import re
 
 import wx
 
 from ..widgets import ImageProvider
 from .shortcut import Shortcut
+
+_ = wx.GetTranslation  # To keep linter/code analyser happy
+builtins.__dict__['_'] = wx.GetTranslation
 
 
 def action_info_collection(data, event_handler, container=None):

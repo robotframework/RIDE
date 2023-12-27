@@ -42,7 +42,7 @@ from ..ui.filedialogs import RobotFilePathDialog
 from ..ui.tagdialogs import ViewAllTagsDialog
 from ..utils import RideFSWatcherHandler
 from ..widgets import RIDEDialog, ImageProvider, HtmlWindow
-_ = wx.GetTranslation
+_ = wx.GetTranslation  # To keep linter/code analyser happy
 builtins.__dict__['_'] = wx.GetTranslation
 
 _menudata = _("""
@@ -156,7 +156,7 @@ class RideFrame(wx.Frame):
             item = message.item
             title += ' - ' + item.datafile.name
             if not item.is_modifiable():
-                title += ' (READ ONLY)'
+                title += _(' (READ ONLY)')
         return title
 
     @staticmethod
@@ -320,8 +320,7 @@ class RideFrame(wx.Frame):
         if self.has_unsaved_changes():
             ret = wx.MessageBox(_("There are unsaved modifications.\n"
                                   "Do you want to save your changes before "
-                                  "exiting?"), _("Warning"),
-                                  wx.ICON_WARNING | wx.CANCEL | wx.YES_NO)
+                                  "exiting?"), _("Warning"), wx.ICON_WARNING | wx.CANCEL | wx.YES_NO)
             if ret == wx.CANCEL:
                 return False
             if ret == wx.YES:
@@ -332,7 +331,7 @@ class RideFrame(wx.Frame):
         return self.controller.is_dirty()
 
     def on_new_project(self, event):
-        __ = event
+        ___ = event
         if not self.check_unsaved_modifications():
             return
         NewProjectDialog(self.controller).execute()
@@ -343,7 +342,7 @@ class RideFrame(wx.Frame):
         self.filemgr.update_tree()
 
     def on_open_file(self, event):
-        __ = event
+        ___ = event
         if not self.filemgr:
             return
         # EVT_DIRCTRL_FILEACTIVATED
@@ -380,7 +379,7 @@ class RideFrame(wx.Frame):
         event.Skip()
 
     def on_open_external_file(self, event):
-        __ = event
+        ___ = event
         if not self._current_external_dir:
             curdir = self.controller.default_dir
         else:
@@ -396,7 +395,7 @@ class RideFrame(wx.Frame):
             wx.LogError(f"Cannot open file {path}")
 
     def on_open_test_suite(self, event):
-        __ = event
+        ___ = event
         if not self.check_unsaved_modifications():
             return
         path = RobotFilePathDialog(
@@ -442,7 +441,7 @@ class RideFrame(wx.Frame):
             self.filemgr.ReCreateTree()
 
     def on_open_directory(self, event):
-        __ = event
+        ___ = event
         if self.check_unsaved_modifications():
             path = wx.DirSelector(message=_("Choose a directory containing Robot files"),
                                   default_path=self.controller.default_dir)
@@ -450,12 +449,12 @@ class RideFrame(wx.Frame):
                 self.open_suite(path)
 
     def on_save(self, event):
-        __ = event
+        ___ = event
         RideBeforeSaving().publish()
         self.save()
 
     def on_save_all(self, event):
-        __ = event
+        ___ = event
         RideBeforeSaving().publish()
         self.save_all()
 
@@ -483,7 +482,7 @@ class RideFrame(wx.Frame):
         InitFileFormatDialog(file_controller_without_format).execute()
 
     def on_exit(self, event):
-        __ = event
+        ___ = event
         try:
             self.sharemem.shm.close()
             self.sharemem.shm.unlink()
@@ -492,23 +491,23 @@ class RideFrame(wx.Frame):
         self.Close()
 
     def on_manage_plugins(self, event):
-        __ = event
+        ___ = event
         self._plugin_manager.show(self._application.get_plugins())
 
     def on_view_all_tags(self, event):
-        __ = event
+        ___ = event
         if self._view_all_tags_dialog is None:
             self._view_all_tags_dialog = ViewAllTagsDialog(self.controller, self)
         self._view_all_tags_dialog.show_dialog()
 
     def on_search_unused_keywords(self, event):
-        __ = event
+        ___ = event
         if self._review_dialog is None:
             self._review_dialog = ReviewDialog(self.controller, self)
         self._review_dialog.show_dialog()
 
     def on_preferences(self, event):
-        __ = event
+        ___ = event
         dlg = PreferenceEditor(self, _("RIDE - Preferences"),
                                self._application.preferences, style='tree')
         # Changed to non-modal, original comment follows:
@@ -520,20 +519,20 @@ class RideFrame(wx.Frame):
 
     @staticmethod
     def on_about(event):
-        __ = event
+        ___ = event
         dlg = AboutDialog()
         dlg.ShowModal()
         dlg.Destroy()
 
     def on_check_for_upgrade(self, event):
-        __ = event
+        ___ = event
         from ..application.updatenotifier import UpdateNotifierController, UpdateDialog
         wx.CallAfter(UpdateNotifierController(self.general_settings).notify_update_if_needed,
                      UpdateDialog, ignore_check_condition=True)
 
-    # @staticmethod
-    def on_shortcut_keys(self, event):
-        __ = event
+    @staticmethod
+    def on_shortcut_keys(event):
+        ___ = event
         dialog = ShortcutKeysDialog()
         """ DEBUG:
             self.aui_mgr.AddPane(dialog.GetContentWindow(),aui.AuiPaneInfo().Name("shortcuts").Caption("Shortcuts Keys")
@@ -544,7 +543,7 @@ class RideFrame(wx.Frame):
 
     @staticmethod
     def on_report_a_problem(event):
-        __ = event
+        ___ = event
         wx.LaunchDefaultBrowser("https://github.com/robotframework/RIDE/issues"
                                 "?utf8=%E2%9C%93&q=is%3Aissue+%22search"
                                 "%20your%20problem%22"
@@ -552,12 +551,12 @@ class RideFrame(wx.Frame):
 
     @staticmethod
     def on_user_guide(event):
-        __ = event
+        ___ = event
         wx.LaunchDefaultBrowser("https://robotframework.org/robotframework/#user-guide")
 
     @staticmethod
     def on_wiki(event):
-        __ = event
+        ___ = event
         wx.LaunchDefaultBrowser("https://github.com/robotframework/RIDE/wiki")
 
     def _has_data(self):
@@ -708,7 +707,7 @@ class ActionRegisterer(object):
         action = action_factory(action_info)
         self._shortcut_registry.register(action)
         if hasattr(action_info, "menu_name"):
-            if action_info.menu_name == "Tools":
+            if action_info.menu_name == _("Tools"):
                 self._tools_items[action_info.position] = action
                 menubar_can_be_registered = False
         if menubar_can_be_registered:
@@ -720,9 +719,9 @@ class ActionRegisterer(object):
         return action
 
     def register_tools(self):
-        separator_action = action_factory(SeparatorInfo("Tools"))
-        add_separator_after = ["stop test run", "search unused keywords",
-                               "preview", "view ride log"]
+        separator_action = action_factory(SeparatorInfo(_("Tools")))
+        add_separator_after = [_("stop test run"), _("search unused keywords"),
+                               _("preview"), _("view ride log")]
         # for key in sorted(self._tools_items.iterkeys()):
         # print("DEBUG: at register_tools, tools: %s" % self._tools_items)
         for key in sorted(self._tools_items.keys()):  # DEBUG Python3
@@ -794,7 +793,7 @@ class RIDETaskBarIcon(TaskBarIcon):
         self.Bind(wx.EVT_MENU, self.on_task_bar_close, id=3)
 
     def on_click(self, event):
-        __ = event
+        ___ = event
         self.frame.Raise()
         self.frame.Restore()
         self.frame.Show(True)
@@ -807,16 +806,16 @@ class RIDETaskBarIcon(TaskBarIcon):
         return menu
 
     def on_task_bar_close(self, event):
-        __ = event
+        ___ = event
         self.frame.Close()
 
     def on_task_bar_activate(self, event):
-        __ = event
+        ___ = event
         if not self.frame.IsShown():
             self.frame.Show()
             self.frame.Restore()
 
     def on_task_bar_deactivate(self, event):
-        __ = event
+        ___ = event
         if self.frame.IsShown():
             self.frame.Hide()

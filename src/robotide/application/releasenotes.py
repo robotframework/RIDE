@@ -61,14 +61,14 @@ class ReleaseNotes(object):
             self.application.settings['version_shown'] = VERSION
 
     def show(self, event=None):
-        _ = event
+        __ = event
         if not self._view:
             self._view = self._create_view()
             self.application.frame.notebook.AddPage(self._view, "Release Notes", select=False)
         self.application.frame.notebook.show_tab(self._view)
 
     def show_changelog(self, event=None):
-        _ = event
+        __ = event
         if not self._dialog:
             self._dialog = HtmlDialog('Offline Change Log', f"Check the online version at https://github.com/"
                                                             f"robotframework/RIDE/blob/{VERSION}/CHANGELOG.adoc")

@@ -14,7 +14,7 @@
 #  limitations under the License.
 
 from functools import (total_ordering, cmp_to_key)
-
+import builtins
 import wx
 
 from .. import robotapi
@@ -24,18 +24,21 @@ from ..publish import RideOpenTagSearch
 from .dialogsearchtests import TestsDialog
 from ..widgets import ImageProvider
 
+_ = wx.GetTranslation  # To keep linter/code analyser happy
+builtins.__dict__['_'] = wx.GetTranslation
+
 
 @total_ordering
 class TestSearchPlugin(Plugin):
     """A plugin for searching tests based on name, tags and documentation"""
     __test__ = False
-    HEADER = 'Search Tests'
+    HEADER = _('Search Tests')
     _selection = None
     _dialog = None
 
     def enable(self):
         self.register_action(ActionInfo(
-            'Tools', self.HEADER, self.show_empty_search,
+            _('Tools'), self.HEADER, self.show_empty_search,
             shortcut='F3', doc=self.__doc__,
             icon=ImageProvider().TEST_SEARCH_ICON, position=50))
         self.register_search_action(
@@ -82,7 +85,7 @@ class TestSearchPlugin(Plugin):
         event.Skip()
 
     def show_empty_search(self, event):
-        _ = event
+        __ = event
         self.show_search_for('')
 
     def _do_with_selection(self, evt=None):

@@ -129,7 +129,7 @@ class TestsDialog(RIDEDialog):
         return button
 
     def on_search_tags(self, event):
-        _ = event
+        __ = event
         self._tag_search_handler(self._tags_to_include_text.GetValue(),
                                  self._tags_to_exclude_text.GetValue())
 
@@ -141,11 +141,11 @@ class TestsDialog(RIDEDialog):
         return button
 
     def on_add_to_selected(self, event):
-        _ = event
+        __ = event
         self._add_to_selected_handler(self._get_current_tests())
 
     def on_search_tests(self, event):
-        _ = event
+        __ = event
         self._fuzzy_search_handler(self._search_control.GetValue())
 
     def set_search_model(self, search_text, results):

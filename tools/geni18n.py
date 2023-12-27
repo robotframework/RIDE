@@ -49,19 +49,23 @@ tCmd = pyExe + ' ' + pyGettext + ' ' + (gtOptions % (langDomain,
                                                      langDomain,
                                                      outFolder,
                                                      appFolder))
-"""
 print ("Generating the .pot file")
 print ("cmd: %s" % tCmd)
-rCode = subprocess.call(tCmd)
+rCode = subprocess.call(tCmd.split(' '))
 print ("return code: %s\n\n" % rCode)
-"""
 
 for tLang in supportedLang:
     # build command for msgfmt
     langDir = os.path.join(appFolder, ('locale/%s/LC_MESSAGES' % tLang))
     poFile = os.path.join(langDir, langDomain + '.po')
+    if os.path.isfile(poFile):
+        tCmd = 'msgmerge' + ' ' + '-U' + ' ' + poFile + ' ' + outFolder + '/' + langDomain + '.pot'
+        print("Updating .po file with .pot\n")
+        print ("cmd: %s" % tCmd)
+        rCode = subprocess.call(tCmd.split(' '))
+        print ("return code: %s\n\n" % rCode)
+
     tCmd = pyExe + ' ' + pyMsgfmt + ' ' + poFile
-    
     print ("Generating the .mo file")
     print ("cmd: %s" % tCmd)
     rCode = subprocess.call(tCmd.split(' '))

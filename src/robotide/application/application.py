@@ -18,6 +18,7 @@ import locale
 import os
 import wx
 from contextlib import contextmanager
+from pathlib import Path
 from ..namespace import Namespace
 from ..controller import Project
 from ..spec import librarydatabase
@@ -50,7 +51,7 @@ except ImportError:
 locale.setlocale(locale.LC_ALL, 'C')
 # add translation macro to builtin similar to what gettext does
 # generated pot with: /usr/bin/python /usr/bin/pygettext.py -a -d RIDE -o RIDE.pot -p ./locale ../robotide
-_ = wx.GetTranslation
+_ = wx.GetTranslation  # To keep linter/code analyser happy
 builtins.__dict__['_'] = wx.GetTranslation
 
 BACKGROUND_HELP = 'background help'
@@ -95,6 +96,11 @@ class RIDE(wx.App):
         self.preferences = Preferences(self.settings)
         self.namespace = Namespace(self.settings)
         self._controller = Project(self.namespace, self.settings)
+
+        class Message:
+            keys = ['General']
+
+        self.change_locale(Message)  # This was done here to have menus translated, but not working
         self.frame = RideFrame(self, self._controller)
         # DEBUG  self.frame.Show()
         self._editor_provider = EditorProvider()
@@ -144,7 +150,7 @@ class RIDE(wx.App):
         PUBLISHER.subscribe(self.update_excludes, RideSettingsChanged)
         RideSettingsChanged(keys=('Excludes', 'init'), old=None, new=None).publish()
         PUBLISHER.subscribe(self.change_locale, RideSettingsChanged)
-        RideSettingsChanged(keys=('General', 'ui interface'), old=None, new=None).publish()
+        # RideSettingsChanged(keys=('General', 'ui interface'), old=None, new=None).publish()
         return True
 
     @staticmethod
@@ -311,19 +317,15 @@ class RIDE(wx.App):
             code = names[idx][2]
         else:
             code = wx.LANGUAGE_ENGLISH
-        print(f"DEBUG: application.py RIDE change_locale {language=}, {code=}")
         del self._locale
         self._locale = wx.Locale(code)
         if self._locale.IsOk():
-            wx.Locale.AddCatalogLookupPathPrefix('locale')
-            print("DEBUG: application.py RIDE change_locale locale OK add catalog\n")
-            cat = self._locale.AddCatalog('RIDE')
-            print(f"DEBUG: result of Add catalog={cat}")
+            lpath = Path(__file__).parent.absolute()
+            lpath = str(Path(Path.joinpath(lpath.parent, 'locale')).absolute())
+            wx.Locale.AddCatalogLookupPathPrefix(lpath)
+            self._locale.AddCatalog('RIDE')
         else:
-            print("DEBUG: application.py RIDE change_locale locale NOT OK self._initial_locale = None")
             self._locale = None
-        test = _('Application')
-        print(f"DEBUG: application.py RIDE change_locale translation of Application is {test}")
 
     @staticmethod
     def update_excludes(message):

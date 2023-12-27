@@ -13,12 +13,15 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-
+import builtins
 import wx
 
 from wx import Colour
 from ..widgets import RIDEDialog, VirtualList, VerticalSizer, ImageList, ImageProvider, ButtonWithHandler
 from ..widgets.list import ListModel
+
+_ = wx.GetTranslation  # To keep linter/code analyser happy
+builtins.__dict__['_'] = wx.GetTranslation
 
 
 class UsagesDialog(RIDEDialog):
@@ -52,12 +55,12 @@ class UsagesDialog(RIDEDialog):
         self._dots.start()
 
     def _update_searching(self, dots):
-        self.SetTitle("'%s' - %d matches found - Searching%s" % (self._name, self.usages.total_usages, dots))
+        self.SetTitle(_("'%s' - %d matches found - Searching%s") % (self._name, self.usages.total_usages, dots))
         self.usage_list.refresh_items()
 
     def end_searching(self):
         self._dots.stop()
-        self.SetTitle("'%s' - %d matches" % (self._name, self.usages.total_usages))
+        self.SetTitle(_("'%s' - %d matches") % (self._name, self.usages.total_usages))
         self.usage_list.refresh_items()
 
     def _usage_selected(self, idx):
@@ -79,7 +82,7 @@ class UsagesDialogWithUserKwNavigation(UsagesDialog):
         UsagesDialog.__init__(self, name, usages=usages)
 
     def _add_view_components(self):
-        button = ButtonWithHandler(self, 'Go to definition')
+        button = ButtonWithHandler(self, _('Go to definition'), handler=self.on_go_to_definition)
         button.SetBackgroundColour(Colour(self.color_secondary_background))
         button.SetForegroundColour(Colour(self.color_secondary_foreground))
         self.Sizer.Add(button, 0, wx.ALL, 3)
@@ -136,7 +139,7 @@ class UsagesListModel(_UsagesListModel):
 
     def __init__(self, usages):
         _UsagesListModel.__init__(self, usages)
-        self.headers = ['Location', 'Usage', 'Source']
+        self.headers = [_('Location'), _('Usage'), _('Source')]
 
     def item_text(self, row, col):
         u = self.usage(row)
@@ -169,7 +172,7 @@ class RecursiveResourceImportListModel(_UsagesListModel):
 
     def __init__(self, usages):
         _UsagesListModel.__init__(self, usages)
-        self.headers = ['Imported name', 'Imported Location', 'Importing Name', 'Importing Location']
+        self.headers = [_('Imported name'), _('Imported Location'), _('Importing Name'), _('Importing Location')]
 
     def item_text(self, row, col):
         u = self.usage(row)
