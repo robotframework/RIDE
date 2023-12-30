@@ -1090,14 +1090,14 @@ class TestRunnerPlugin(Plugin):
             self._log_message_queue.put(prefix + message)
 
     def _handle_paused(self, args):
-        _ = args
+        __ = args
         wx.CallAfter(self._set_paused)
-        self._log_message_queue.put(f"{_('<<  PAUSED  >>')}")
+        self._log_message_queue.put(_('<<  PAUSED  >>'))
 
     def _handle_continue(self, args):
-        _ = args
+        __ = args
         wx.CallAfter(self._set_continue)
-        self._log_message_queue.put(f"{_('<< CONTINUE >>')}")
+        self._log_message_queue.put(_('<< CONTINUE >>'))
 
     def _set_running(self):
         self._run_action.disable()
