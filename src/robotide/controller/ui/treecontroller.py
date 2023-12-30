@@ -29,7 +29,7 @@ _ = wx.GetTranslation  # To keep linter/code analyser happy
 builtins.__dict__['_'] = wx.GetTranslation
 
 current_locale = locale.getlocale()
-navigate = _('[Navigate]', domain='RIDE')
+navigate = _('[Navigate]')
 
 print(f"DEBUG: treecontroller.py locale={current_locale} navigate={navigate}")
 

@@ -745,7 +745,7 @@ class TestRunnerPlugin(Plugin):
                         wx.ITEM_NORMAL, shortHelp=_("Start robot"),
                         longHelp=_("Start running the robot test suite "
                                    "with DEBUG loglevel"))
-        toolbar.AddTool(ID_STOP, "Stop", ImageProvider().TOOLBAR_STOP,
+        toolbar.AddTool(ID_STOP, _("Stop"), ImageProvider().TOOLBAR_STOP,
                         wx.NullBitmap, wx.ITEM_NORMAL,
                         shortHelp=STOP_RUNNING_TEST,
                         longHelp=STOP_RUNNING_TEST)

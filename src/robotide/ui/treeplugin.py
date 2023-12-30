@@ -207,7 +207,8 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
 
     def __init__(self, parent, action_registerer, settings=None):
         from ..controller.ui.treecontroller import TreeController
-
+        print(f"DEBUG: treeplugin.py Tree after importing TreeController  __init__ "
+              f"tranlated label={self._RESOURCES_NODE_LABEL}")
         self._checkboxes_for_tests = False
         self._test_selection_controller = self._create_test_selection_controller()
         self.controller = TreeController(self, action_registerer, settings=settings,
