@@ -22,7 +22,7 @@ from wx import stc, Colour
 from wx.adv import HyperlinkCtrl, EVT_HYPERLINK
 from multiprocessing import shared_memory
 from .popupwindow import HtmlPopupWindow
-from . import _EDIT
+from . import _EDIT, _EDIT_nt
 from .. import robotapi
 from ..context import IS_WINDOWS, IS_MAC
 from ..controller.ctrlcommands import SetDataFile, INDENTED_START
@@ -84,7 +84,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
 
     def enable(self):
         self._tab = self._editor
-        self.register_actions(action_info_collection(_EDIT, self._tab, self._tab))
+        self.register_actions(action_info_collection(_EDIT, self._tab, data_nt=_EDIT_nt, container=self._tab))
         self.subscribe(self.on_tree_selection, RideTreeSelection)
         self.subscribe(self.on_data_changed, RideMessage)
         self.subscribe(self.on_tab_change, RideNotebookTabChanging)
@@ -301,7 +301,7 @@ class DataValidationHandler(object):
     def validate_and_update(self, data, text):
         m_text = text.decode("utf-8")
         result = self._sanity_check(data, m_text)
-        if isinstance(result, tuple) :
+        if isinstance(result, tuple):
             handled = self._handle_sanity_check_failure(result)
             if not handled:
                 return False
@@ -2139,7 +2139,7 @@ class RobotStylizer(object):
             set_lang = []
         set_lang[0] = language[0] if language is not None else 'en'
         self.language = [set_lang[0]]
-        options = { 'language': self.language }
+        options = {'language': self.language}
         # print(f"DEBUG: texteditor.py RobotStylizer _init_ language={self.language}\n")
         if robotframeworklexer:
             self.lexer = robotframeworklexer.RobotFrameworkLexer(**options)

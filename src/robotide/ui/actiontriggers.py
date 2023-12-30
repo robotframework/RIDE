@@ -55,6 +55,7 @@ class MenuBar(object):
             self._create_menu(name, before_help=False)
 
     def _create_menu(self, name, before_help=True):
+        print(f"DEBUG: actiontriggers.py _create_menu ENTER name={name}")
         menu = _Menu(self._name_builder.get_name(name), self.m_frame)
         self._insert_menu(menu, before_help)
         return menu
@@ -86,6 +87,7 @@ class _Menu(object):
 
     def __init__(self, name, frame):
         self.name = name
+        print(f"DEBUG: actiontriggers.py _Menu name={name}")
         self._frame = frame
         self.wx_menu = wx.Menu()
         self._menu_items = {}
@@ -177,6 +179,7 @@ class _NameBuilder(object):
         except ValueError:
             name = self._generate_accelerator(name)
         self._register(name)
+        print(f"DEBUG: actiontriggers.py get_name RETURN name={name}")
         return name
 
     def get_registered_name(self, name):

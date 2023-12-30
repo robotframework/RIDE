@@ -19,7 +19,7 @@ from wx import Colour
 
 class ButtonWithHandler(wx.Button):
 
-    def __init__(self, parent, label, handler=None, width=-1,
+    def __init__(self, parent, label, mk_handler=None, handler=None, width=-1,
                  height=25, color_secondary_foreground='black', color_secondary_background='light grey'):
         wx.Button.__init__(self, parent, label=label,
                            size=(width, height))
@@ -27,7 +27,10 @@ class ButtonWithHandler(wx.Button):
         self.SetOwnBackgroundColour(Colour(color_secondary_background))
         self.SetForegroundColour(Colour(color_secondary_foreground))
         self.SetOwnForegroundColour(Colour(color_secondary_foreground))
-        if not handler:
-            name = 'on_%s' % label.strip().replace(' ', '_').lower()
+        if not handler or mk_handler:
+            if not mk_handler:
+                name = 'on_%s' % label.strip().replace(' ', '_').lower()
+            else:
+                name = 'on_%s' % mk_handler.strip().replace(' ', '_').lower()
             handler = getattr(parent, name)
         parent.Bind(wx.EVT_BUTTON, handler, self)

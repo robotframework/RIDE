@@ -432,7 +432,7 @@ class PybotProfile(BaseProfile):
                                    self.on_output_directory_changed)
         self._output_directory_text_ctrl.SetBackgroundColour(self._mysettings.color_secondary_background)
         self._output_directory_text_ctrl.SetForegroundColour(self._mysettings.color_secondary_foreground)
-        button = ButtonWithHandler(pane, "...", self._handle_select_directory)
+        button = ButtonWithHandler(pane, "...", handler=self._handle_select_directory)
         button.SetBackgroundColour(self._mysettings.color_secondary_background)
         button.SetForegroundColour(self._mysettings.color_secondary_foreground)
         horizontal_sizer = wx.BoxSizer(wx.HORIZONTAL)

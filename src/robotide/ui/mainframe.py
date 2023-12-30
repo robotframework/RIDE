@@ -42,11 +42,11 @@ from ..ui.filedialogs import RobotFilePathDialog
 from ..ui.tagdialogs import ViewAllTagsDialog
 from ..utils import RideFSWatcherHandler
 from ..widgets import RIDEDialog, ImageProvider, HtmlWindow
+
 _ = wx.GetTranslation  # To keep linter/code analyser happy
 builtins.__dict__['_'] = wx.GetTranslation
 
-_menudata = _("""
-[File]
+_menudata = _("""[File]
 !&New Project | Create a new top level suite | Ctrlcmd-N | ART_NEW
 ---
 !&Open Test Suite | Open file containing tests | Ctrlcmd-O | ART_FILE_OPEN
@@ -73,6 +73,34 @@ _menudata = _("""
 !About | Information about RIDE
 !Check for Upgrade | Looks at PyPi for new released version
 """)
+
+_menudata_nt = """[File]
+!&New Project | Create a new top level suite | Ctrlcmd-N | ART_NEW
+---
+!&Open Test Suite | Open file containing tests | Ctrlcmd-O | ART_FILE_OPEN
+!Open &Directory | Open directory containing datafiles | Shift-Ctrlcmd-O | ART_FOLDER_OPEN
+!Open External File | Open file in Code Editor | | ART_NORMAL_FILE
+---
+!&Save | Save selected datafile | Ctrlcmd-S | ART_FILE_SAVE
+!Save &All | Save all changes | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS
+---
+!E&xit | Exit RIDE | Ctrlcmd-Q
+
+[Tools]
+!Search Unused Keywords | | | | POSITION-54
+!Manage Plugins | | | | POSITION-81
+!View All Tags | | F7 | | POSITION-82
+!Preferences | | | | POSITION-99
+
+[Help]
+!Shortcut keys | RIDE shortcut keys
+!User Guide | Robot Framework User Guide
+!Wiki | RIDE User Guide (Wiki)
+!Report a Problem | Open browser to SEARCH on the RIDE issue tracker
+!Release notes | Shows release notes
+!About | Information about RIDE
+!Check for Upgrade | Looks at PyPi for new released version
+"""
 
 ID_CustomizeToolbar = wx.ID_HIGHEST + 1
 ID_SampleItem = ID_CustomizeToolbar + 1
@@ -220,7 +248,8 @@ class RideFrame(wx.Frame):
                              LeftDockable())  # DEBUG: remove .CloseButton(False) when restore is fixed
         # DEBUG: self.aui_mgr.GetPane(self.tree).DestroyOnClose()
         # TreePlugin will manage showing the Tree
-        self.actions.register_actions(action_info_collection(_menudata, self, self.tree))
+        self.actions.register_actions(action_info_collection(_menudata, self, data_nt=_menudata_nt,
+                                                             container=self.tree))
         # ##### File explorer panel is always created here
         self.filemgr = FileExplorer(self, self.controller)
         self.filemgr.SetMinSize(wx.Size(275, 250))
@@ -408,8 +437,7 @@ class RideFrame(wx.Frame):
     def check_unsaved_modifications(self):
         if self.has_unsaved_changes():
             ret = wx.MessageBox(_("There are unsaved modifications.\n"
-                                  "Do you want to proceed without saving?"),
-                                  _("Warning"), wx.ICON_WARNING | wx.YES_NO)
+                                  "Do you want to proceed without saving?"), _("Warning"), wx.ICON_WARNING | wx.YES_NO)
             return ret == wx.YES
         return True
 
@@ -421,7 +449,7 @@ class RideFrame(wx.Frame):
         from ..lib.compat.parsing.language import check_file_language
         self.controller.file_language = check_file_language(path)
         if self.controller.file_language:
-            set_lang=shared_memory.ShareableList(name="language")
+            set_lang = shared_memory.ShareableList(name="language")
             set_lang[0] = self.controller.file_language[0]
             # print(f"DEBUG: project.py Project load_data file_language = {self.controller.file_language}\n"
             #       f"sharedmem={set_lang}")

@@ -743,10 +743,8 @@ class KeywordEditor(GridEditor, Plugin):
         details = self._plugin.get_keyword_details(value)
         if not details:
             info = self._controller.get_cell_info(cell.Row, cell.Col)
-            if info.cell_type == CellType.KEYWORD and info.content_type == \
-                    ContentType.STRING:
-                details = _("""\
-        <b>Keyword was not detected by RIDE</b>
+            if info.cell_type == CellType.KEYWORD and info.content_type == ContentType.STRING:
+                details = _("""<b>Keyword was not detected by RIDE</b>
         <br>Possible corrections:<br>
         <ul>
             <li>Import library or resource file containing the keyword.</li>
@@ -754,8 +752,7 @@ class KeywordEditor(GridEditor, Plugin):
             (Tools / Import Library Spec XML or by adding the XML file with the
             correct name to PYTHONPATH) to enable keyword completion
             for example for Java libraries.
-            Library spec XML can be created using libdoc tool from Robot Frame\
-work.</li>
+            Library spec XML can be created using libdoc tool from Robot Framework.</li>
         </ul>""")
         if details:
             self._tooltips.show_info_at(
@@ -805,11 +802,9 @@ work.</li>
         wx.CallAfter(self.open_cell_editor().show_content_assist)
         # wx.CallAfter(self._move_grid_cursor, wx.grid.GridEvent(), wx.WXK_RETURN)
 
-    def _open_cell_editor_and_execute_variable_creator(self, list_variable=False,
-                                                       dict_variable=False):
+    def _open_cell_editor_and_execute_variable_creator(self, list_variable=False, dict_variable=False):
         cell_editor = self.open_cell_editor()
-        wx.CallAfter(cell_editor.execute_variable_creator,
-                     list_variable, dict_variable)
+        wx.CallAfter(cell_editor.execute_variable_creator, list_variable, dict_variable)
 
     def on_make_variable(self, event):
         __ = event
@@ -1029,9 +1024,7 @@ work.</li>
                     res.InheritAttributes()
                     response = res.ShowModal()
                     if response == wx.ID_YES:
-                        self.cell_value_edited(self.selection.cell[0],
-                                               self.selection.cell[1],
-                                               rich_text.GetValue())
+                        self.cell_value_edited(self.selection.cell[0], self.selection.cell[1], rich_text.GetValue())
 
     # If the json_str is json format, then return True
     @staticmethod

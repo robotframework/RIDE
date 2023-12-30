@@ -562,7 +562,8 @@ class VariablesListEditor(_AbstractListEditor):
 
 class ImportSettingListEditor(_AbstractListEditor):
     _titles = [_('Import'), _('Name / Path'), _('Arguments'), _('Comment')]
-    _buttons = [_('Library'), _('Resource'), _('Variables'), _('Import Failed Help')]
+    _buttons = [(_('Library'), 'Library'), (_('Resource'), 'Resource'), (_('Variables'), 'Variables'),
+                (_('Import Failed Help'), 'Import Failed Help')]
 
     def __init__(self, parent, tree, controller, lang=None):
         self._import_failed_shown = False
@@ -579,10 +580,10 @@ class ImportSettingListEditor(_AbstractListEditor):
     def _create_buttons(self):
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(Label(
-            self, label='Add Import', size=wx.Size(120, 20),
+            self, label=_('Add Import'), size=wx.Size(120, 20),
             style=wx.ALIGN_CENTER))
         for label in self._buttons:
-            sizer.Add(ButtonWithHandler(self, label, width=120,
+            sizer.Add(ButtonWithHandler(self, label[0], width=120,
                                         color_secondary_foreground=self.color_secondary_foreground,
                                         color_secondary_background=self.color_secondary_background), 0, wx.ALL, 1)
         return sizer
@@ -611,7 +612,7 @@ class ImportSettingListEditor(_AbstractListEditor):
         menu = self._menu
         item = self._controller[self._selection]
         if item.has_error() and item.type == 'Library':
-            menu = menu[:] + ['Import Library Spec XML']
+            menu = menu[:] + [_('Import Library Spec XML')]
         return menu
 
     @staticmethod
@@ -650,8 +651,7 @@ class ImportSettingListEditor(_AbstractListEditor):
         __ = event
         if self._import_failed_shown:
             return
-        dialog = HtmlDialog(_('Import failure handling'), _('''
-        <br>Possible corrections and notes:<br>
+        dialog = HtmlDialog(_('Import failure handling'), _('''<br>Possible corrections and notes:<br>
         <ul>
             <li>Import failure is shown with red color.</li>
             <li>See Tools / View RIDE Log for detailed information about the failure.</li>

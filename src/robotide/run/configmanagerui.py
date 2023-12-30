@@ -13,6 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import builtins
 import wx
 from wx import Colour
 from wx.lib.mixins.listctrl import TextEditMixin
@@ -20,7 +21,10 @@ from wx.lib.mixins.listctrl import TextEditMixin
 from ..editor.listeditor import AutoWidthColumnList, ListEditorBase
 from ..widgets import RIDEDialog, HelpLabel, ButtonWithHandler
 
-_CONFIG_HELP = """The specified command string will be split from whitespaces into a command
+_ = wx.GetTranslation  # To keep linter/code analyser happy
+builtins.__dict__['_'] = wx.GetTranslation
+
+_CONFIG_HELP = _("""The specified command string will be split from whitespaces into a command
 and its arguments. If either the command or any of the arguments require
 internal spaces, they must be written as '<SPACE>'.\n
 The command will be executed in the system directly without opening a shell.
@@ -32,13 +36,13 @@ Examples:
     svn update /home/robot
     C:\\Program<SPACE>Files\\App\\prg.exe argument<SPACE>with<SPACE>space,
 Run configurations are stored in the RIDE settings file.
-"""
+""")
 
 
 class ConfigManagerDialog(RIDEDialog):
 
     def __init__(self, configs, plugin):
-        RIDEDialog.__init__(self, title='Manage Run Configurations')
+        RIDEDialog.__init__(self, title=_('Manage Run Configurations'))
         # set Left to Right direction (while we don't have localization)
 
         self.SetBackgroundColour(Colour(self.color_background))
@@ -92,8 +96,9 @@ class ConfigManagerDialog(RIDEDialog):
 
 
 class _ConfigListEditor(ListEditorBase):
-    _buttons = ['New', 'Remove']
-    _columns = ['Name', 'Command', 'Documentation']
+    _buttons = [_('New'), _('Remove')]
+    _buttons_nt = ['New', 'Remove']  # Non-translated names
+    _columns = [_('Name'), _('Command'), _('Documentation')]
 
     def __init__(self, parent, configs):
         self._editor_open = False

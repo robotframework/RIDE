@@ -25,8 +25,7 @@ from ..widgets import PopupCreator
 _ = wx.GetTranslation  # To keep linter/code analyser happy
 builtins.__dict__['_'] = wx.GetTranslation
 
-_EDIT = _("""
-[Edit]
+_EDIT = _("""[Edit]
 &Undo | Undo last modification | Ctrlcmd-Z
 &Redo | Redo modification | Ctrlcmd-Y
 ---
@@ -51,6 +50,31 @@ Move Rows Down | Move Rows Down | Alt-Down
 Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword and variable completions | | | POSITION-70
 """)
 
+_EDIT_nt = """[Edit]
+&Undo | Undo last modification | Ctrlcmd-Z
+&Redo | Redo modification | Ctrlcmd-Y
+---
+Cu&t | Cut | Ctrlcmd-X
+&Copy | Copy | Ctrlcmd-C
+&Paste | Paste | Ctrlcmd-V
+&Insert | Insert | Shift-Ctrl-V
+&Delete | Delete  | Del
+---
+Comment Rows | Comment selected rows | Ctrlcmd-3
+Comment Cells | Comment cells with # | Ctrlcmd-Shift-3
+Uncomment Rows | Uncomment selected rows | Ctrlcmd-4
+Uncomment Cells | Uncomment cells with # | Ctrlcmd-Shift-4
+---
+Insert Cells | Insert Cells | Ctrlcmd-Shift-I
+Delete Cells | Delete Cells | Ctrlcmd-Shift-D
+Insert Rows | Insert Rows | Ctrlcmd-I
+Delete Rows | Delete Rows | Ctrlcmd-D
+Move Rows Up | Move Rows Up | Alt-Up
+Move Rows Down | Move Rows Down | Alt-Down
+[Tools]
+Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword and variable completions | | | POSITION-70
+"""
+
 
 class EditorPlugin(Plugin, TreeAwarePluginMixin):
     """The default editor plugin.
@@ -68,7 +92,7 @@ class EditorPlugin(Plugin, TreeAwarePluginMixin):
     def enable(self):
         self._creator.register_editors()
         self._show_editor()
-        self.register_actions(action_info_collection(_EDIT, self._tab, self._tab))
+        self.register_actions(action_info_collection(_EDIT, self._tab, data_nt=_EDIT_nt, container=self._tab))
         self.subscribe(self.on_tree_item_selected, RideTreeSelection)
         self.subscribe(self.on_tab_changed, RideNotebookTabChanged)
         self.subscribe(self.on_tab_changing, RideNotebookTabChanging)

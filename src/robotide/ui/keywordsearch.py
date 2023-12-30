@@ -350,6 +350,7 @@ class _SortOrder(object):
 
 class _KeywordData(list):
     headers = [_('Name'), _('Source'), _('Description')]
+    headers_attr = ['Name', 'Source', 'Description']  # Non-translated names
 
     def __init__(self, keywords, sort_order, search_criteria=None):
         self.extend(self._sort(keywords, sort_order, search_criteria))
@@ -374,7 +375,7 @@ class _KeywordData(list):
 
     def _sort_by_attr(self, keywords, sort_order):
         return sorted(keywords, key=cmp_to_key(self._get_comparator_for(
-            self.headers[sort_order.column].lower())),
+            self.headers_attr[sort_order.column].lower())),
                       reverse=not sort_order.sort_up)
 
     @staticmethod

@@ -13,6 +13,8 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import builtins
+import locale
 import wx
 
 from robotide import utils
@@ -23,12 +25,24 @@ from robotide.controller import ctrlcommands
 from robotide.controller.tags import Tag, DefaultTag
 from robotide.publish import RideTestSelectedForRunningChanged
 
-tree_actions = """
-[Navigate]
+_ = wx.GetTranslation  # To keep linter/code analyser happy
+builtins.__dict__['_'] = wx.GetTranslation
+
+current_locale = locale.getlocale()
+navigate = _('[Navigate]', domain='RIDE')
+
+print(f"DEBUG: treecontroller.py locale={current_locale} navigate={navigate}")
+
+tree_actions = _("""[Navigate]
+!Go &Back | Go back to previous location in tree | Alt-%s | ART_GO_BACK
+!Go &Forward | Go forward to next location in tree | Alt-%s | ART_GO_FORWARD
+""") % (('Left', 'Right') if IS_WINDOWS else ('Z', 'X'))
+# Left and right cannot be overridden in tree on non Windows OSses, issue 354
+
+tree_actions_nt = """[Navigate]
 !Go &Back | Go back to previous location in tree | Alt-%s | ART_GO_BACK
 !Go &Forward | Go forward to next location in tree | Alt-%s | ART_GO_FORWARD
 """ % (('Left', 'Right') if IS_WINDOWS else ('Z', 'X'))
-# Left and right cannot be overridden in tree on non Windows OSses, issue 354
 
 
 class TreeController(object):
@@ -41,11 +55,12 @@ class TreeController(object):
         self._test_selection = test_selection
 
     def register_tree_actions(self):
-        actions = action_info_collection(tree_actions, self, self._tree)
+        print(f"DEBUG: treecontroller.py register_tree_actions ENTER tree_actions={tree_actions}")
+        actions = action_info_collection(tree_actions, self, data_nt=tree_actions_nt, container=self._tree)
         self._action_registerer.register_actions(actions)
-        self._action_registerer.register_action(ActionInfo(menu_name='Edit', name='Add Tag to selected',
+        self._action_registerer.register_action(ActionInfo(menu_name=_('Edit'), name=_('Add Tag to selected'),
                                                            action=self.on_add_tag_to_selected))
-        self._action_registerer.register_action(ActionInfo(menu_name='Edit', name='Clear Selected',
+        self._action_registerer.register_action(ActionInfo(menu_name=_('Edit'), name=_('Clear Selected'),
                                                            action=self.on_clear_selected))
 
     def on_go_back(self, event):
@@ -58,7 +73,7 @@ class TreeController(object):
         __ = event
         if self._test_selection.is_empty():
             return
-        name = wx.GetTextFromUser(message='Enter Tag Name', caption='Add Tag To Selected')
+        name = wx.GetTextFromUser(message=_('Enter Tag Name'), caption=_('Add Tag To Selected'))
         if name:
             self._test_selection.add_tag(name)
 

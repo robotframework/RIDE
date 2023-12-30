@@ -744,7 +744,7 @@ class TestRunnerPlugin(Plugin):
         toolbar.AddTool(ID_RUNDEBUG, _("Debug"), getBugIconBitmap(), wx.NullBitmap,
                         wx.ITEM_NORMAL, shortHelp=_("Start robot"),
                         longHelp=_("Start running the robot test suite "
-                                 "with DEBUG loglevel"))
+                                   "with DEBUG loglevel"))
         toolbar.AddTool(ID_STOP, "Stop", ImageProvider().TOOLBAR_STOP,
                         wx.NullBitmap, wx.ITEM_NORMAL,
                         shortHelp=STOP_RUNNING_TEST,
@@ -1051,12 +1051,12 @@ class TestRunnerPlugin(Plugin):
     def _handle_start_test(self, args):
         longname = args[1]['longname'].encode('utf-8')
         self._log_message_queue.put(
-            f"Starting test: {longname.decode(encoding['OUTPUT'], 'backslashreplace')}")
+            f"{_('Starting test:')} {longname.decode(encoding['OUTPUT'], 'backslashreplace')}")
 
     def _handle_end_test(self, args):
         longname = args[1]['longname'].encode('utf-8')
         self._log_message_queue.put(
-            f"Ending test: {longname.decode(encoding['OUTPUT'], 'backslashreplace')}\n")
+            f"{_('Ending test:')} {longname.decode(encoding['OUTPUT'], 'backslashreplace')}\n")
         if args[1]['status'] == 'PASS':
             self._progress_bar.add_pass()
         elif args[1]['status'] == 'SKIP':
@@ -1064,7 +1064,7 @@ class TestRunnerPlugin(Plugin):
         elif args[1]['status'] == 'FAIL':
             self._progress_bar.add_fail()
         else:
-            self._log_message_queue.put(f"UNKNOWN STATUS: {args[1]['status']}\n")
+            self._log_message_queue.put(f"{_('UNKNOWN STATUS:')} {args[1]['status']}\n")
 
     def _handle_report_file(self, args):
         self._report_file = args[0]
@@ -1092,12 +1092,12 @@ class TestRunnerPlugin(Plugin):
     def _handle_paused(self, args):
         _ = args
         wx.CallAfter(self._set_paused)
-        self._log_message_queue.put('<<  PAUSED  >>')
+        self._log_message_queue.put(f"{_('<<  PAUSED  >>')}")
 
     def _handle_continue(self, args):
         _ = args
         wx.CallAfter(self._set_continue)
-        self._log_message_queue.put('<< CONTINUE >>')
+        self._log_message_queue.put(f"{_('<< CONTINUE >>')}")
 
     def _set_running(self):
         self._run_action.disable()

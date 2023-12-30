@@ -12,6 +12,7 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+import builtins
 import subprocess
 import sys
 # Configure wx uversion to allow running test app in __main__
@@ -29,6 +30,9 @@ from .. import version
 from ..utils.versioncomparator import cmp_versions, parse_version
 from ..widgets import ButtonWithHandler, HtmlWindow, RIDEDialog
 from ..postinstall.__main__ import MessageDialog
+
+_ = wx.GetTranslation  # To keep linter/code analyser happy
+builtins.__dict__['_'] = wx.GetTranslation
 
 _CHECK_FOR_UPDATES_SETTING = "check for updates"
 _LAST_UPDATE_CHECK_SETTING = "last update check"
@@ -104,18 +108,18 @@ def upgrade_from_dev_dialog(version_installed):
         # Here is the Menu Help->Upgrade insertion part, try to highlight menu # wx.CANCEL_DEFAULT
         command = sys.executable + " -m pip install -U https://github.com/robotframework/RIDE/archive/master.zip"
         _add_content_to_clipboard(command)
-        if not _askyesno("Upgrade?", f"{SPC}New development version is available.{SPC}\n{SPC}You may install"
-                         f" version {main_dict['VERSION']} with:\n{SPC}{command}{SPC}\n\n"
-                         f"{SPC}Click OK to Upgrade now!\n{SPC}After upgrade you will see another dialog informing"
-                         f" to close this RIDE instance.{SPC}\n",
-                         wx.GetActiveWindow(),  no_default=True):
+        if not _askyesno(_("Upgrade?"), f"{SPC}{_('New development version is available.')}{SPC}\n{SPC}"
+                                        f"{_('You may install version ')}{main_dict['VERSION']}{_(' with:')}\n"
+                                        f"{SPC}{command}{SPC}\n\n{SPC}{_('Click OK to Upgrade now!')}\n{SPC}"
+                                        f"{_('After upgrade you will see another dialog informing to close this RIDE instance.')}"
+                                        f"{SPC}\n", wx.GetActiveWindow(),  no_default=True):
             return False
         else:
             do_upgrade(command)
             return True
     else:
-        _askyesno("No Upgrade Available", f"{SPC}You have the latest version of RIDE.{SPC}"
-                                          f"\n\n{SPC}              Have a nice day :)\n",
+        _askyesno(_("No Upgrade Available"), f"{SPC}{_('You have the latest version of RIDE.')}{SPC}"
+                                             f"\n\n{SPC}{_('              Have a nice day :)')}\n",
                   wx.GetActiveWindow())
         return False
 
@@ -172,7 +176,7 @@ def do_upgrade(command):
         """
         time.sleep(1)
     if result != 0:
-        _askyesno("Failed to Upgrade", f"{SPC}An error occurred when installing new version",
+        _askyesno(_("Failed to Upgrade"), f"{SPC}{_('An error occurred when installing new version')}",
                   wx.GetActiveWindow())
         return False
     command = sys.executable + " -m robotide.__init__ --noupdatecheck"
@@ -181,7 +185,7 @@ def do_upgrade(command):
     """ Not working well:
     wx.CallLater(10000, psutil.Process.kill, my_pid.pid)
     """
-    _askyesno("Completed Upgrade", f"\n{SPC}You should close this RIDE (Process ID = {my_pid.pid}){SPC}",
+    _askyesno(_("Completed Upgrade"), f"\n{SPC}{_('You should close this RIDE (Process ID = ')}{my_pid.pid}){SPC}",
               wx.GetActiveWindow())
 
 
@@ -201,7 +205,7 @@ class UpdateDialog(RIDEDialog):
         self._settings = settings
         self._command = sys.executable + f" -m pip install -U robotframework-ride=={uversion}"
         _add_content_to_clipboard(self._command)
-        RIDEDialog.__init__(self, title="Update available", size=(600, 400),
+        RIDEDialog.__init__(self, title=_("Update available"), size=(600, 400),
                             style=wx.DEFAULT_FRAME_STYLE | wx.FRAME_FLOAT_ON_PARENT)
         # set Left to Right direction (while we don't have localization)
         self.SetLayoutDirection(wx.Layout_LeftToRight)
@@ -209,28 +213,28 @@ class UpdateDialog(RIDEDialog):
         self.SetForegroundColour(Colour(self.color_foreground))
         sizer = wx.BoxSizer(orient=wx.VERTICAL)
         hwin = LocalHtmlWindow(self, size=(600, 200))
-        hwin.set_content(f"{SPC}New version {uversion} available from <a href=\"{url}\">{url}</a><br/>"
-                         f"{SPC}See this version <a href=\"https://github.com/robotframework/RIDE/blob/master/doc"
+        hwin.set_content(f"{SPC}{_('New version ')}{uversion}{_(' available from ')}<a href=\"{url}\">{url}</a><br/>"
+                         f"{SPC}{_('See this version ')}<a href=\"https://github.com/robotframework/RIDE/blob/master/doc"
                          f"/releasenotes/ride-{uversion}.rst\">Release Notes</a><br/><br/>"
-                         f"{SPC}You can update with the command:<br/><b>{self._command}</b>"
-                         f"<br/><br/>{SPC}Or, click <b>Upgrade Now</b>.<br/>"
-                         f"{SPC}After upgrade you will see another dialog informing to close this RIDE instance.</b>"
-                         f"<br/><br/>{SPC}See the latest development <a href=\"https://github.com/robotframework/RIDE"
+                         f"{SPC}{_('You can update with the command:')}<br/><b>{self._command}</b>"
+                         f"<br/><br/>{SPC}{_('Or, click <b>Upgrade Now</b>')}.<br/>"
+                         f"{SPC}{_('After upgrade you will see another dialog informing to close this RIDE instance.')}</b>"
+                         f"<br/><br/>{SPC}{_('See the latest development ')}<a href=\"https://github.com/robotframework/RIDE"
                          f"/blob/master/CHANGELOG.adoc\">CHANGELOG</a>")
         irep = hwin.GetInternalRepresentation()
         hwin.SetSize((irep.GetWidth()+25, irep.GetHeight()+20))
         sizer.Add(hwin)
-        checkbox = wx.CheckBox(self, -1, label="I\'m using another method for RIDE updates\n and "
-                                               "do not need automatic update checks")
+        checkbox = wx.CheckBox(self, -1, label=_("I\'m using another method for RIDE updates\n and "
+                                                 "do not need automatic update checks"))
         checkbox.Bind(wx.EVT_CHECKBOX, handler=self.on_checkbox_change)
         sizer.Add(checkbox)
         hsizer = wx.BoxSizer(orient=wx.HORIZONTAL)
-        button = ButtonWithHandler(self, label="remind me later", handler=self.on_remind_me_later)
+        button = ButtonWithHandler(self, label=_("remind me later"), handler=self.on_remind_me_later)
         button.SetBackgroundColour(Colour(self.color_secondary_background))
         button.SetForegroundColour(Colour(self.color_secondary_foreground))
         hsizer.Add(button)
         hsizer.AddSpacer(50)
-        up_button = ButtonWithHandler(self, label="Upgrade Now", handler=self.on_upgrade_now)
+        up_button = ButtonWithHandler(self, label=_("Upgrade Now"), handler=self.on_upgrade_now)
         up_button.SetBackgroundColour(Colour(self.color_secondary_background))
         up_button.SetForegroundColour(Colour(self.color_secondary_foreground))
         hsizer.Add(up_button)

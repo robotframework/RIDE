@@ -101,6 +101,7 @@ class RIDE(wx.App):
             keys = ['General']
 
         self.change_locale(Message)  # This was done here to have menus translated, but not working
+        print(f"DEBUG: application.py RIDE OnInit after changing locale {self._locale.GetCanonicalName()=}")
         self.frame = RideFrame(self, self._controller)
         # DEBUG  self.frame.Show()
         self._editor_provider = EditorProvider()
@@ -150,7 +151,7 @@ class RIDE(wx.App):
         PUBLISHER.subscribe(self.update_excludes, RideSettingsChanged)
         RideSettingsChanged(keys=('Excludes', 'init'), old=None, new=None).publish()
         PUBLISHER.subscribe(self.change_locale, RideSettingsChanged)
-        # RideSettingsChanged(keys=('General', 'ui interface'), old=None, new=None).publish()
+        RideSettingsChanged(keys=('General', 'ui interface'), old=None, new=None).publish()
         return True
 
     @staticmethod
@@ -325,7 +326,7 @@ class RIDE(wx.App):
             wx.Locale.AddCatalogLookupPathPrefix(lpath)
             self._locale.AddCatalog('RIDE')
         else:
-            self._locale = None
+            self._locale = wx.Locale(wx.LANGUAGE_ENGLISH_US)
 
     @staticmethod
     def update_excludes(message):
