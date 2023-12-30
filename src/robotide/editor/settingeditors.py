@@ -606,14 +606,17 @@ class ImportSettingListEditor(_AbstractListEditor):
         return controller.has_error()
 
     def on_right_click(self, event):
-        PopupMenu(self, PopupMenuItems(self, self._create_item_menu()))
+        menu, menu_nt = self._create_item_menu()
+        PopupMenu(self, PopupMenuItems(self, menu_names=menu, menu_names_nt=menu_nt))
 
     def _create_item_menu(self):
         menu = self._menu
+        menu_nt = self._menu_nt
         item = self._controller[self._selection]
         if item.has_error() and item.type == 'Library':
             menu = menu[:] + [_('Import Library Spec XML')]
-        return menu
+            menu_nt = menu_nt[:] + ['Import Library Spec XML']
+        return menu, menu_nt
 
     @staticmethod
     def on_import_library_spec_xml(event):

@@ -221,7 +221,7 @@ class Settings(wx.CollapsiblePane):
 
     def __init__(self, parent):
         wx.CollapsiblePane.__init__(
-            self, parent, wx.ID_ANY, 'Settings',
+            self, parent, wx.ID_ANY, _('Settings'),
             style=wx.CP_DEFAULT_STYLE | wx.CP_NO_TLW_RESIZE)
         from ..preferences import RideSettings
         _settings = RideSettings()
@@ -340,7 +340,7 @@ class _FileEditor(_RobotTableEditor):
     def _create_source_label(self, source):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         sizer.Add((5, 0))
-        sizer.Add(Label(self, label='Source', size=(context.SETTING_LABEL_WIDTH,
+        sizer.Add(Label(self, label=_('Source'), size=(context.SETTING_LABEL_WIDTH,
                                                     context.SETTING_ROW_HEIGHT)))
         self._source = wx.TextCtrl(self, style=wx.TE_READONLY | wx.NO_BORDER)
         self._source.SetBackgroundColour(Colour(self.color_background))
@@ -378,7 +378,7 @@ class FindUsagesHeader(HorizontalSizer):
         HorizontalSizer.__init__(self)
         self._header = HeaderLabel(parent, header)
         self.add_expanding(self._header)
-        self.add_sizer(ButtonWithHandler(parent, _('Find Usages'),mk_handler='Find Usages', handler=usages_callback,
+        self.add_sizer(ButtonWithHandler(parent, _('Find Usages'), handler=usages_callback,
                                          color_secondary_foreground=color_foreground,
                                          color_secondary_background=color_background))
 

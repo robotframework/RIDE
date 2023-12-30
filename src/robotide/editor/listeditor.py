@@ -30,6 +30,7 @@ LIGHT_GREY = 'light grey'
 
 class ListEditorBase(wx.Panel):
     _menu = [_('Edit'), _('Move Up\tCtrl-Up'), _('Move Down\tCtrl-Down'), '---', _('Delete')]
+    _menu_nt = ['Edit', 'Move Up\tCtrl-Up', 'Move Down\tCtrl-Down', '---', 'Delete']
     _buttons = []
     _buttons_nt = []
 
@@ -103,7 +104,7 @@ class ListEditorBase(wx.Panel):
         pass
 
     def on_right_click(self, event):
-        PopupMenu(self, PopupMenuItems(self, self._menu))
+        PopupMenu(self, PopupMenuItems(self, self._menu, self._menu_nt))
 
     def on_left_click(self, event):
         """ Just overriding """

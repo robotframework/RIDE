@@ -72,12 +72,15 @@ class PopupMenu(wx.Menu):
 
 class PopupMenuItems(object):
 
-    def __init__(self, parent=None, menu_names=None):
+    def __init__(self, parent=None, menu_names=None, menu_names_nt=None):
         self._items = []
         if menu_names is None:
             menu_names = []
-        for item in menu_names:
-            self.add_menu_item(PopupMenuItem(item, parent=parent))
+        if not menu_names_nt:
+            menu_names_nt = menu_names
+        for item, item_nt in zip(menu_names, menu_names_nt):
+            print(f"DEBUG: PopupMenuItem value of item={item} item_nt={item_nt}")
+            self.add_menu_item(PopupMenuItem(item, name_nt=item_nt, parent=parent))
 
     def __iter__(self):
         return iter(self._items)
@@ -91,9 +94,11 @@ class PopupMenuItems(object):
 
 class PopupMenuItem(object):
 
-    def __init__(self, name, ccallable=None, parent=None):
+    def __init__(self, name, name_nt=None, ccallable=None, parent=None):
         self.name = name
-        self.callable = self._get_callable(name, ccallable, parent)
+        nname = name_nt if name_nt else name
+        print(f"DEBUG: PopupMenuItem value of nname={nname}")
+        self.callable = self._get_callable(nname, ccallable, parent)
 
     @staticmethod
     def _get_callable(name, ccallable, parent):
