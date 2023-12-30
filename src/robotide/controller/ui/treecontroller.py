@@ -14,7 +14,6 @@
 #  limitations under the License.
 
 import builtins
-import locale
 import wx
 
 from robotide import utils
@@ -28,22 +27,6 @@ from robotide.publish import RideTestSelectedForRunningChanged
 _ = wx.GetTranslation  # To keep linter/code analyser happy
 builtins.__dict__['_'] = wx.GetTranslation
 
-current_locale = locale.getlocale()
-navigate = _('[Navigate]')
-
-print(f"DEBUG: treecontroller.py locale={current_locale} navigate={navigate}")
-
-tree_actions = _("""[Navigate]
-!Go &Back | Go back to previous location in tree | Alt-%s | ART_GO_BACK
-!Go &Forward | Go forward to next location in tree | Alt-%s | ART_GO_FORWARD
-""") % (('Left', 'Right') if IS_WINDOWS else ('Z', 'X'))
-# Left and right cannot be overridden in tree on non Windows OSses, issue 354
-
-tree_actions_nt = """[Navigate]
-!Go &Back | Go back to previous location in tree | Alt-%s | ART_GO_BACK
-!Go &Forward | Go forward to next location in tree | Alt-%s | ART_GO_FORWARD
-""" % (('Left', 'Right') if IS_WINDOWS else ('Z', 'X'))
-
 
 class TreeController(object):
 
@@ -55,6 +38,17 @@ class TreeController(object):
         self._test_selection = test_selection
 
     def register_tree_actions(self):
+        tree_actions = _("""[Navigate]
+        !Go &Back | Go back to previous location in tree | Alt-%s | ART_GO_BACK
+        !Go &Forward | Go forward to next location in tree | Alt-%s | ART_GO_FORWARD
+        """, domain='RIDE') % (('Left', 'Right') if IS_WINDOWS else ('Z', 'X'))
+        # Left and right cannot be overridden in tree on non Windows OSses, issue 354
+
+        tree_actions_nt = """[Navigate]
+        !Go &Back | Go back to previous location in tree | Alt-%s | ART_GO_BACK
+        !Go &Forward | Go forward to next location in tree | Alt-%s | ART_GO_FORWARD
+        """ % (('Left', 'Right') if IS_WINDOWS else ('Z', 'X'))
+
         print(f"DEBUG: treecontroller.py register_tree_actions ENTER tree_actions={tree_actions}")
         actions = action_info_collection(tree_actions, self, data_nt=tree_actions_nt, container=self._tree)
         self._action_registerer.register_actions(actions)

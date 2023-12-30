@@ -82,7 +82,8 @@ class UsagesDialogWithUserKwNavigation(UsagesDialog):
         UsagesDialog.__init__(self, name, usages=usages)
 
     def _add_view_components(self):
-        button = ButtonWithHandler(self, _('Go to definition'), handler=self.on_go_to_definition)
+        button = ButtonWithHandler(self, _('Go to definition'), mk_handler='Go to definition',
+                                   handler=self.on_go_to_definition)
         button.SetBackgroundColour(Colour(self.color_secondary_background))
         button.SetForegroundColour(Colour(self.color_secondary_foreground))
         self.Sizer.Add(button, 0, wx.ALL, 3)

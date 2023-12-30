@@ -95,7 +95,7 @@ class SettingEditor(wx.Panel):
         self._tooltip = self._get_tooltip()
         sizer.Add(self._value_display, 1, wx.EXPAND)
         self._add_edit(sizer)
-        sizer.Add(ButtonWithHandler(self, _('Clear'), handler=self.on_clear,
+        sizer.Add(ButtonWithHandler(self, _('Clear'), mk_handler='Clear', handler=self.on_clear,
                                     color_secondary_foreground=self.color_secondary_foreground,
                                     color_secondary_background=self.color_secondary_background))
         sizer.Layout()
@@ -103,7 +103,7 @@ class SettingEditor(wx.Panel):
 
     def _add_edit(self, sizer):
         sizer.Add(
-            ButtonWithHandler(self, _('Edit'), handler=self.on_edit,
+            ButtonWithHandler(self, _('Edit'), mk_handler='Edit', handler=self.on_edit,
                               color_secondary_foreground=self.color_secondary_foreground,
                               color_secondary_background=self.color_secondary_background),
             flag=wx.LEFT | wx.RIGHT, border=5)
@@ -583,7 +583,7 @@ class ImportSettingListEditor(_AbstractListEditor):
             self, label=_('Add Import'), size=wx.Size(120, 20),
             style=wx.ALIGN_CENTER))
         for label in self._buttons:
-            sizer.Add(ButtonWithHandler(self, label[0], width=120,
+            sizer.Add(ButtonWithHandler(self, label[0], mk_handler=label[1], width=120,
                                         color_secondary_foreground=self.color_secondary_foreground,
                                         color_secondary_background=self.color_secondary_background), 0, wx.ALL, 1)
         return sizer

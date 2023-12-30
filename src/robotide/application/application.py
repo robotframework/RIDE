@@ -26,14 +26,14 @@ from ..ui import LoadProgressObserver
 from ..ui.mainframe import RideFrame
 from .. import publish
 from .. import context, contrib
-from ..context import coreplugins
+# from ..context import coreplugins
 from ..preferences import Preferences, RideSettings
 from ..application.pluginloader import PluginLoader
 from ..application.editorprovider import EditorProvider
 from ..application.releasenotes import ReleaseNotes
 from ..application.updatenotifier import UpdateNotifierController, UpdateDialog
 from ..ui.mainframe import ToolBar
-from ..ui.treeplugin import TreePlugin
+# from ..ui.treeplugin import TreePlugin
 from ..ui.fileexplorerplugin import FileExplorerPlugin
 from ..utils import RideFSWatcherHandler, run_python_command
 from ..lib.robot.utils.encodingsniffer import get_system_encoding
@@ -88,20 +88,23 @@ class RIDE(wx.App):
     def OnInit(self):  # Overrides wx method
         # DEBUG To test RTL
         # self._initial_locale = wx.Locale(wx.LANGUAGE_ARABIC)
-        self._locale = wx.Locale(wx.LANGUAGE_ENGLISH_US)
+        self._locale = wx.Locale(wx.LANGUAGE_PORTUGUESE)  # LANGUAGE_ENGLISH_US)
         # Needed for SetToolTipString to work
         wx.HelpProvider.Set(wx.SimpleHelpProvider())  # DEBUG: adjust to wx versions
         self.settings = RideSettings()
-        librarydatabase.initialize_database()
-        self.preferences = Preferences(self.settings)
-        self.namespace = Namespace(self.settings)
-        self._controller = Project(self.namespace, self.settings)
 
         class Message:
             keys = ['General']
 
         self.change_locale(Message)  # This was done here to have menus translated, but not working
         print(f"DEBUG: application.py RIDE OnInit after changing locale {self._locale.GetCanonicalName()=}")
+        # Importing libraries after setting language
+        from ..context import coreplugins, SETTINGS_DIRECTORY
+        from ..ui.treeplugin import TreePlugin
+        librarydatabase.initialize_database()
+        self.preferences = Preferences(self.settings)
+        self.namespace = Namespace(self.settings)
+        self._controller = Project(self.namespace, self.settings)
         self.frame = RideFrame(self, self._controller)
         # DEBUG  self.frame.Show()
         self._editor_provider = EditorProvider()
@@ -118,7 +121,7 @@ class RIDE(wx.App):
         except Exception as e:
             print(f"RIDE: There was a problem loading panels position."
                   f" Please delete the definition 'AUI NB Perspective' in "
-                  f"{os.path.join(context.SETTINGS_DIRECTORY, 'settings.cfg')}")
+                  f"{os.path.join(SETTINGS_DIRECTORY, 'settings.cfg')}")
             if not isinstance(e, IndexError):  # If is with all notebooks disabled, continue
                 raise e
         self.treeplugin = TreePlugin(self)
@@ -333,14 +336,16 @@ class RIDE(wx.App):
         if message.keys[0] != "Excludes":
             return
         from ..preferences.excludes_class import Excludes
-        excludes = Excludes(context.SETTINGS_DIRECTORY)
+        from ..context import SETTINGS_DIRECTORY
+        excludes = Excludes(SETTINGS_DIRECTORY)
         paths = excludes.get_excludes().split()
         if paths:
             RideFSWatcherHandler.exclude_listening(paths)
 
     @staticmethod
     def _publish_system_info():
-        publish.RideLogMessage(context.SYSTEM_INFO).publish()
+        from ..context import SYSTEM_INFO
+        publish.RideLogMessage(SYSTEM_INFO).publish()
 
     @property
     def model(self):

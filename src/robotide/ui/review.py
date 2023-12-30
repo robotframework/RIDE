@@ -157,10 +157,10 @@ class ReviewDialog(RIDEDialog):
         self._notebook.AddPage(panel_unused_kw, _("Unused Keywords"))
 
     def _build_controls(self):
-        self._search_button = ButtonWithHandler(self, _('Search'), handler=self.on_search)
+        self._search_button = ButtonWithHandler(self, _('Search'), mk_handler='Search', handler=self.on_search)
         self._search_button.SetBackgroundColour(Colour(self.color_secondary_background))
         self._search_button.SetForegroundColour(Colour(self.color_secondary_foreground))
-        self._abort_button = ButtonWithHandler(self, _('Abort'), handler=self.on_abort)
+        self._abort_button = ButtonWithHandler(self, _('Abort'), mk_handler='Abort', handler=self.on_abort)
         self._abort_button.SetBackgroundColour(Colour(self.color_secondary_background))
         self._abort_button.SetForegroundColour(Colour(self.color_secondary_foreground))
         self._status_label = Label(self, label='')

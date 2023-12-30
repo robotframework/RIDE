@@ -119,7 +119,7 @@ class PreviewPanel(wx.Panel):
         return chooser
 
     def _print_button(self):
-        return ButtonWithHandler(self, _('Print'), handler=self.on_print)
+        return ButtonWithHandler(self, _('Print'), mk_handler='Print', handler=self.on_print)
 
     @property
     def _view(self):

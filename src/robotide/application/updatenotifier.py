@@ -229,12 +229,14 @@ class UpdateDialog(RIDEDialog):
         checkbox.Bind(wx.EVT_CHECKBOX, handler=self.on_checkbox_change)
         sizer.Add(checkbox)
         hsizer = wx.BoxSizer(orient=wx.HORIZONTAL)
-        button = ButtonWithHandler(self, label=_("remind me later"), handler=self.on_remind_me_later)
+        button = ButtonWithHandler(self, label=_("remind me later"), mk_handler="remind me later",
+                                   handler=self.on_remind_me_later)
         button.SetBackgroundColour(Colour(self.color_secondary_background))
         button.SetForegroundColour(Colour(self.color_secondary_foreground))
         hsizer.Add(button)
         hsizer.AddSpacer(50)
-        up_button = ButtonWithHandler(self, label=_("Upgrade Now"), handler=self.on_upgrade_now)
+        up_button = ButtonWithHandler(self, label=_("Upgrade Now"), mk_handler="Upgrade Now",
+                                      handler=self.on_upgrade_now)
         up_button.SetBackgroundColour(Colour(self.color_secondary_background))
         up_button.SetForegroundColour(Colour(self.color_secondary_foreground))
         hsizer.Add(up_button)

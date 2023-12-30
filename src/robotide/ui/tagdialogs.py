@@ -82,10 +82,12 @@ class ViewAllTagsDialog(RIDEDialog, listmix.ColumnSorterMixin):
         self._notebook.AddPage(panel_tag_vw, _("The List"))
 
     def _build_controls(self):
-        self._clear_button = ButtonWithHandler(self, _('Refresh'), self.on_clear)
+        self._clear_button = ButtonWithHandler(self, _('Refresh'), handler=self.on_clear)
         self._show_tagged_tests_button = ButtonWithHandler(self, _('Included Tag Search'),
+                                                           mk_handler='Included Tag Search',
                                                            handler=self.on_included_tag_search)
         self._show_excluded_tests_button = ButtonWithHandler(self, _('Excluded Tag Search'),
+                                                             mk_handler='Excluded Tag Search',
                                                              handler=self.on_excluded_tag_search)
         self._clear_button.SetBackgroundColour(Colour(self.color_secondary_background))
         self._clear_button.SetForegroundColour(Colour(self.color_secondary_foreground))
