@@ -65,7 +65,7 @@ class TestPopupMenuItem(unittest.TestCase):
     def test_creation_with_name_and_callable(self):
         def _test():
             pass
-        item = PopupMenuItem('Do Something', _test)
+        item = PopupMenuItem('Do Something', ccallable=_test)
         assert item.callable == _test
 
     def test_creation_with_name_shortcut_in_name(self):
