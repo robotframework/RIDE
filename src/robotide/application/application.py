@@ -314,7 +314,7 @@ class RIDE(wx.App):
         language = general.get('ui language', 'English')
         try:
             idx = [lang[0] for lang in names].index(language)
-        except IndexError:
+        except (IndexError, ValueError):
             print(f"DEBUG: application.py RIDE change_locale ERROR: Could not find {language=}")
             idx = None
         if idx:

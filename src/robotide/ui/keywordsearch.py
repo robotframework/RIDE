@@ -40,7 +40,7 @@ SEARCH_KW = _('Search Keywords')
 
 
 class KeywordSearch(Plugin):
-    """A plugin for searching keywords based on name or documentation."""
+    __doc__ = _("""A plugin for searching keywords based on name or documentation.""")
 
     def __init__(self, app):
         Plugin.__init__(self, app)

@@ -30,7 +30,7 @@ builtins.__dict__['_'] = wx.GetTranslation
 
 @total_ordering
 class TestSearchPlugin(Plugin):
-    """A plugin for searching tests based on name, tags and documentation"""
+    __doc__ = _("""A plugin for searching tests based on name, tags and documentation""")
     __test__ = False
     HEADER = _('Search Tests')
     _selection = None

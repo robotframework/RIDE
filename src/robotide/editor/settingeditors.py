@@ -476,6 +476,7 @@ class _AbstractListEditor(ListEditor):
 class VariablesListEditor(_AbstractListEditor):
     _titles = [_('Variable'), _('Value'), _('Comment')]
     _buttons = [_('Add Scalar'), _('Add List'), _('Add Dict')]
+    _buttons_nt = ['Add Scalar', 'Add List', 'Add Dict']
 
     def __init__(self, parent, tree, controller):
         PUBLISHER.subscribe(
@@ -562,8 +563,8 @@ class VariablesListEditor(_AbstractListEditor):
 
 class ImportSettingListEditor(_AbstractListEditor):
     _titles = [_('Import'), _('Name / Path'), _('Arguments'), _('Comment')]
-    _buttons = [(_('Library'), 'Library'), (_('Resource'), 'Resource'), (_('Variables'), 'Variables'),
-                (_('Import Failed Help'), 'Import Failed Help')]
+    _buttons = [_('Library'), _('Resource'), _('Variables'), _('Import Failed Help')]
+    _buttons_nt = ['Library', 'Resource', 'Variables', 'Import Failed Help']
 
     def __init__(self, parent, tree, controller, lang=None):
         self._import_failed_shown = False
@@ -582,8 +583,8 @@ class ImportSettingListEditor(_AbstractListEditor):
         sizer.Add(Label(
             self, label=_('Add Import'), size=wx.Size(120, 20),
             style=wx.ALIGN_CENTER))
-        for label in self._buttons:
-            sizer.Add(ButtonWithHandler(self, label[0], mk_handler=label[1], width=120,
+        for label, label_nt in zip(self._buttons, self._buttons_nt):
+            sizer.Add(ButtonWithHandler(self, label, mk_handler=label_nt, width=120,
                                         color_secondary_foreground=self.color_secondary_foreground,
                                         color_secondary_background=self.color_secondary_background), 0, wx.ALL, 1)
         return sizer
@@ -703,6 +704,7 @@ class ImportSettingListEditor(_AbstractListEditor):
 class MetadataListEditor(_AbstractListEditor):
     _titles = [_('Metadata'), _('Value'), _('Comment')]
     _buttons = [_('Add Metadata')]
+    _buttons_nt = ['Add Metadata']
     _sortable = False
 
     def on_edit(self, event):

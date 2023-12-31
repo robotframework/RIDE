@@ -158,7 +158,7 @@ def open_filemanager(path=None):
 
 
 class TestRunnerPlugin(Plugin):
-    """A plugin for running tests from within RIDE"""
+    __doc__ = _("""A plugin for running tests from within RIDE""")
     defaults = {"auto_save": False,
                 "confirm run": True,
                 "profile_name": "robot",

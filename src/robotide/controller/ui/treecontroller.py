@@ -49,7 +49,7 @@ class TreeController(object):
         !Go &Forward | Go forward to next location in tree | Alt-%s | ART_GO_FORWARD
         """ % (('Left', 'Right') if IS_WINDOWS else ('Z', 'X'))
 
-        print(f"DEBUG: treecontroller.py register_tree_actions ENTER tree_actions={tree_actions}")
+        # print(f"DEBUG: treecontroller.py register_tree_actions ENTER tree_actions={tree_actions}")
         actions = action_info_collection(tree_actions, self, data_nt=tree_actions_nt, container=self._tree)
         self._action_registerer.register_actions(actions)
         self._action_registerer.register_action(ActionInfo(menu_name=_('Edit'), name=_('Add Tag to selected'),

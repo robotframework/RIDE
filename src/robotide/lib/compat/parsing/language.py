@@ -186,6 +186,7 @@ def get_english_label(lang, label):
     try:
         index = setting_names.index(label)
     except ValueError:
+        # print(f"DEBUG: language.py get_english_label Exception at getting index {lang} returning={label}")
         return label
     en_label = list(mlang.settings.values())[index]
     return en_label

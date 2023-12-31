@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2023-12-31 00:45+0000\n"
+"POT-Creation-Date: 2023-12-31 13:03+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -183,6 +183,11 @@ msgid "Step over"
 msgstr ""
 
 #:
+#: /home/helio/github/RIDE/src/robotide/contrib/testrunner/testrunnerplugin.py:161
+msgid "A plugin for running tests from within RIDE"
+msgstr ""
+
+#:
 #: /home/helio/github/RIDE/src/robotide/contrib/testrunner/testrunnerplugin.py:256
 msgid "Run Tests"
 msgstr ""
@@ -198,8 +203,8 @@ msgstr ""
 #: /home/helio/github/RIDE/src/robotide/spec/specimporter.py:36
 #: /home/helio/github/RIDE/src/robotide/ui/actiontriggers.py:54
 #: /home/helio/github/RIDE/src/robotide/ui/keywordsearch.py:53
-#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:737
-#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:749
+#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:738
+#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:750
 #: /home/helio/github/RIDE/src/robotide/ui/preview.py:40
 msgid "Tools"
 msgstr ""
@@ -929,6 +934,7 @@ msgid ""
 msgstr ""
 
 #: /home/helio/github/RIDE/src/robotide/run/configmanagerui.py:45
+#: /home/helio/github/RIDE/src/robotide/run/runanything.py:54
 msgid "Manage Run Configurations"
 msgstr ""
 
@@ -951,6 +957,21 @@ msgstr ""
 #: /home/helio/github/RIDE/src/robotide/run/configmanagerui.py:101
 #: /home/helio/github/RIDE/src/robotide/ui/keywordsearch.py:352
 msgid "Name"
+msgstr ""
+
+#: /home/helio/github/RIDE/src/robotide/run/runanything.py:30
+msgid ""
+"A plugin for executing commands on the system.\n"
+"\n"
+"    This plugin enables creation of persistent run configurations and\n"
+"    execution of those. Output of the executed command is displayed in a\n"
+"    separate tab."
+msgstr ""
+
+#: /home/helio/github/RIDE/src/robotide/run/runanything.py:54
+#: /home/helio/github/RIDE/src/robotide/run/runanything.py:56
+#: /home/helio/github/RIDE/src/robotide/run/runanything.py:63
+msgid "Macros"
 msgstr ""
 
 #: /home/helio/github/RIDE/src/robotide/searchtests/dialogsearchtests.py:36
@@ -1007,6 +1028,10 @@ msgstr ""
 msgid "Search term"
 msgstr ""
 
+#: /home/helio/github/RIDE/src/robotide/searchtests/searchtests.py:33
+msgid "A plugin for searching tests based on name, tags and documentation"
+msgstr ""
+
 #: /home/helio/github/RIDE/src/robotide/spec/specimporter.py:60
 msgid "Library Spec XML|*.xml|All Files|*.*"
 msgstr ""
@@ -1059,6 +1084,10 @@ msgstr ""
 #: /home/helio/github/RIDE/src/robotide/ui/keywordsearch.py:59
 #: /home/helio/github/RIDE/src/robotide/ui/keywordsearch.py:139
 msgid "Search Keywords"
+msgstr ""
+
+#: /home/helio/github/RIDE/src/robotide/ui/keywordsearch.py:43
+msgid "A plugin for searching keywords based on name or documentation."
 msgstr ""
 
 #: /home/helio/github/RIDE/src/robotide/ui/keywordsearch.py:55
@@ -1132,6 +1161,11 @@ msgstr ""
 msgid "Modification prevented"
 msgstr ""
 
+#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:246
+#: /home/helio/github/RIDE/src/robotide/ui/treeplugin.py:105
+msgid "Test Suites"
+msgstr ""
+
 #: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:349
 msgid ""
 "There are unsaved modifications.\n"
@@ -1177,24 +1211,36 @@ msgstr ""
 msgid "Files Changed On Disk"
 msgstr ""
 
-#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:750
+#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:751
 msgid "search unused keywords"
 msgstr ""
 
-#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:750
+#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:751
 msgid "stop test run"
 msgstr ""
 
-#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:751
+#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:752
 msgid "preview"
 msgstr ""
 
-#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:751
+#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:752
 msgid "view ride log"
 msgstr ""
 
-#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:792
+#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:793
 msgid "Shortcut keys for RIDE"
+msgstr ""
+
+#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:831
+msgid "Show"
+msgstr ""
+
+#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:832
+msgid "Hide"
+msgstr ""
+
+#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:833
+msgid "Close"
 msgstr ""
 
 #: /home/helio/github/RIDE/src/robotide/ui/preview.py:40
@@ -1397,10 +1443,6 @@ msgstr ""
 
 #: /home/helio/github/RIDE/src/robotide/ui/tagdialogs.py:276
 msgid "Delete a tag '%s' ?"
-msgstr ""
-
-#: /home/helio/github/RIDE/src/robotide/ui/treeplugin.py:105
-msgid "Test Suites"
 msgstr ""
 
 #: /home/helio/github/RIDE/src/robotide/ui/treeplugin.py:206
