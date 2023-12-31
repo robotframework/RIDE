@@ -46,62 +46,6 @@ from ..widgets import RIDEDialog, ImageProvider, HtmlWindow
 _ = wx.GetTranslation  # To keep linter/code analyser happy
 builtins.__dict__['_'] = wx.GetTranslation
 
-_menudata = _("""[File]
-!&New Project | Create a new top level suite | Ctrlcmd-N | ART_NEW
----
-!&Open Test Suite | Open file containing tests | Ctrlcmd-O | ART_FILE_OPEN
-!Open &Directory | Open directory containing datafiles | Shift-Ctrlcmd-O | ART_FOLDER_OPEN
-!Open External File | Open file in Code Editor | | ART_NORMAL_FILE
----
-!&Save | Save selected datafile | Ctrlcmd-S | ART_FILE_SAVE
-!Save &All | Save all changes | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS
----
-!E&xit | Exit RIDE | Ctrlcmd-Q
-
-[Tools]
-!Search Unused Keywords | | | | POSITION-54
-!Manage Plugins | | | | POSITION-81
-!View All Tags | | F7 | | POSITION-82
-!Preferences | | | | POSITION-99
-
-[Help]
-!Shortcut keys | RIDE shortcut keys
-!User Guide | Robot Framework User Guide
-!Wiki | RIDE User Guide (Wiki)
-!Report a Problem | Open browser to SEARCH on the RIDE issue tracker
-!Release notes | Shows release notes
-!About | Information about RIDE
-!Check for Upgrade | Looks at PyPi for new released version
-""")
-
-_menudata_nt = """[File]
-!&New Project | Create a new top level suite | Ctrlcmd-N | ART_NEW
----
-!&Open Test Suite | Open file containing tests | Ctrlcmd-O | ART_FILE_OPEN
-!Open &Directory | Open directory containing datafiles | Shift-Ctrlcmd-O | ART_FOLDER_OPEN
-!Open External File | Open file in Code Editor | | ART_NORMAL_FILE
----
-!&Save | Save selected datafile | Ctrlcmd-S | ART_FILE_SAVE
-!Save &All | Save all changes | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS
----
-!E&xit | Exit RIDE | Ctrlcmd-Q
-
-[Tools]
-!Search Unused Keywords | | | | POSITION-54
-!Manage Plugins | | | | POSITION-81
-!View All Tags | | F7 | | POSITION-82
-!Preferences | | | | POSITION-99
-
-[Help]
-!Shortcut keys | RIDE shortcut keys
-!User Guide | Robot Framework User Guide
-!Wiki | RIDE User Guide (Wiki)
-!Report a Problem | Open browser to SEARCH on the RIDE issue tracker
-!Release notes | Shows release notes
-!About | Information about RIDE
-!Check for Upgrade | Looks at PyPi for new released version
-"""
-
 ID_CustomizeToolbar = wx.ID_HIGHEST + 1
 ID_SampleItem = ID_CustomizeToolbar + 1
 MAINFRAME_POSITION = 'mainframe position'
@@ -109,6 +53,61 @@ MAINFRAME_MAXIMIZED = 'mainframe maximized'
 
 
 class RideFrame(wx.Frame):
+    _menudata = _("""[File]
+    !&New Project | Create a new top level suite | Ctrlcmd-N | ART_NEW
+    ---
+    !&Open Test Suite | Open file containing tests | Ctrlcmd-O | ART_FILE_OPEN
+    !Open &Directory | Open directory containing datafiles | Shift-Ctrlcmd-O | ART_FOLDER_OPEN
+    !Open External File | Open file in Code Editor | | ART_NORMAL_FILE
+    ---
+    !&Save | Save selected datafile | Ctrlcmd-S | ART_FILE_SAVE
+    !Save &All | Save all changes | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS
+    ---
+    !E&xit | Exit RIDE | Ctrlcmd-Q
+
+    [Tools]
+    !Search Unused Keywords | | | | POSITION-54
+    !Manage Plugins | | | | POSITION-81
+    !View All Tags | | F7 | | POSITION-82
+    !Preferences | | | | POSITION-99
+
+    [Help]
+    !Shortcut keys | RIDE shortcut keys
+    !User Guide | Robot Framework User Guide
+    !Wiki | RIDE User Guide (Wiki)
+    !Report a Problem | Open browser to SEARCH on the RIDE issue tracker
+    !Release notes | Shows release notes
+    !About | Information about RIDE
+    !Check for Upgrade | Looks at PyPi for new released version
+    """)
+
+    _menudata_nt = """[File]
+    !&New Project | Create a new top level suite | Ctrlcmd-N | ART_NEW
+    ---
+    !&Open Test Suite | Open file containing tests | Ctrlcmd-O | ART_FILE_OPEN
+    !Open &Directory | Open directory containing datafiles | Shift-Ctrlcmd-O | ART_FOLDER_OPEN
+    !Open External File | Open file in Code Editor | | ART_NORMAL_FILE
+    ---
+    !&Save | Save selected datafile | Ctrlcmd-S | ART_FILE_SAVE
+    !Save &All | Save all changes | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS
+    ---
+    !E&xit | Exit RIDE | Ctrlcmd-Q
+
+    [Tools]
+    !Search Unused Keywords | | | | POSITION-54
+    !Manage Plugins | | | | POSITION-81
+    !View All Tags | | F7 | | POSITION-82
+    !Preferences | | | | POSITION-99
+
+    [Help]
+    !Shortcut keys | RIDE shortcut keys
+    !User Guide | Robot Framework User Guide
+    !Wiki | RIDE User Guide (Wiki)
+    !Report a Problem | Open browser to SEARCH on the RIDE issue tracker
+    !Release notes | Shows release notes
+    !About | Information about RIDE
+    !Check for Upgrade | Looks at PyPi for new released version
+    """
 
     def __init__(self, application, controller):
         size = application.settings.get('mainframe size', (1100, 700))
@@ -248,7 +247,7 @@ class RideFrame(wx.Frame):
                              LeftDockable())  # DEBUG: remove .CloseButton(False) when restore is fixed
         # DEBUG: self.aui_mgr.GetPane(self.tree).DestroyOnClose()
         # TreePlugin will manage showing the Tree
-        self.actions.register_actions(action_info_collection(_menudata, self, data_nt=_menudata_nt,
+        self.actions.register_actions(action_info_collection(self._menudata, self, data_nt=self._menudata_nt,
                                                              container=self.tree))
         # ##### File explorer panel is always created here
         self.filemgr = FileExplorer(self, self.controller)

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2023-12-30 12:13+0000\n"
+"POT-Creation-Date: 2023-12-31 00:45+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Generated-By: pygettext.py 1.5\n"
 
 
-#: /home/helio/github/RIDE/src/robotide/application/application.py:378
+#: /home/helio/github/RIDE/src/robotide/application/application.py:383
 msgid "Found Robot Framework version %s from %s."
 msgstr ""
 
@@ -110,7 +110,7 @@ msgstr ""
 msgid "remind me later"
 msgstr ""
 
-#: /home/helio/github/RIDE/src/robotide/application/updatenotifier.py:237
+#: /home/helio/github/RIDE/src/robotide/application/updatenotifier.py:238
 msgid "Upgrade Now"
 msgstr ""
 
@@ -198,8 +198,8 @@ msgstr ""
 #: /home/helio/github/RIDE/src/robotide/spec/specimporter.py:36
 #: /home/helio/github/RIDE/src/robotide/ui/actiontriggers.py:54
 #: /home/helio/github/RIDE/src/robotide/ui/keywordsearch.py:53
-#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:738
-#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:750
+#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:737
+#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:749
 #: /home/helio/github/RIDE/src/robotide/ui/preview.py:40
 msgid "Tools"
 msgstr ""
@@ -477,38 +477,35 @@ msgstr ""
 msgid "     current keyword: "
 msgstr ""
 
-#: /home/helio/github/RIDE/src/robotide/controller/ui/treecontroller.py:32
-msgid "[Navigate]"
-msgstr ""
-
-#: /home/helio/github/RIDE/src/robotide/controller/ui/treecontroller.py:36
+#: /home/helio/github/RIDE/src/robotide/controller/ui/treecontroller.py:41
 msgid ""
 "[Navigate]\n"
-"!Go &Back | Go back to previous location in tree | Alt-%s | ART_GO_BACK\n"
-"!Go &Forward | Go forward to next location in tree | Alt-%s | ART_GO_FORWARD\n"
+"        !Go &Back | Go back to previous location in tree | Alt-%s | ART_GO_BACK\n"
+"        !Go &Forward | Go forward to next location in tree | Alt-%s | ART_GO_FORWARD\n"
+"        "
 msgstr ""
 
-#: /home/helio/github/RIDE/src/robotide/controller/ui/treecontroller.py:61
+#: /home/helio/github/RIDE/src/robotide/controller/ui/treecontroller.py:55
 msgid "Add Tag to selected"
 msgstr ""
 
-#: /home/helio/github/RIDE/src/robotide/controller/ui/treecontroller.py:61
-#: /home/helio/github/RIDE/src/robotide/controller/ui/treecontroller.py:63
+#: /home/helio/github/RIDE/src/robotide/controller/ui/treecontroller.py:55
+#: /home/helio/github/RIDE/src/robotide/controller/ui/treecontroller.py:57
 #: /home/helio/github/RIDE/src/robotide/editor/listeditor.py:32
 #: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:106
 #: /home/helio/github/RIDE/src/robotide/ui/actiontriggers.py:54
 msgid "Edit"
 msgstr ""
 
-#: /home/helio/github/RIDE/src/robotide/controller/ui/treecontroller.py:63
+#: /home/helio/github/RIDE/src/robotide/controller/ui/treecontroller.py:57
 msgid "Clear Selected"
 msgstr ""
 
-#: /home/helio/github/RIDE/src/robotide/controller/ui/treecontroller.py:76
+#: /home/helio/github/RIDE/src/robotide/controller/ui/treecontroller.py:70
 msgid "Add Tag To Selected"
 msgstr ""
 
-#: /home/helio/github/RIDE/src/robotide/controller/ui/treecontroller.py:76
+#: /home/helio/github/RIDE/src/robotide/controller/ui/treecontroller.py:70
 msgid "Enter Tag Name"
 msgstr ""
 
@@ -541,8 +538,20 @@ msgstr ""
 
 #: /home/helio/github/RIDE/src/robotide/editor/editors.py:162
 #: /home/helio/github/RIDE/src/robotide/editor/editors.py:394
-#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:187
+#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:186
 msgid " (READ ONLY)"
+msgstr ""
+
+#: /home/helio/github/RIDE/src/robotide/editor/editors.py:224
+msgid "Settings"
+msgstr ""
+
+#: /home/helio/github/RIDE/src/robotide/editor/editors.py:343
+#: /home/helio/github/RIDE/src/robotide/searchtests/dialogsearchtests.py:61
+#: /home/helio/github/RIDE/src/robotide/searchtests/dialogsearchtests.py:85
+#: /home/helio/github/RIDE/src/robotide/ui/keywordsearch.py:352
+#: /home/helio/github/RIDE/src/robotide/usages/usagesdialog.py:143
+msgid "Source"
 msgstr ""
 
 #: /home/helio/github/RIDE/src/robotide/editor/editors.py:381
@@ -698,6 +707,10 @@ msgstr ""
 
 #: /home/helio/github/RIDE/src/robotide/editor/kweditor.py:1180
 #: /home/helio/github/RIDE/src/robotide/editor/texteditor.py:513
+#: /home/helio/github/RIDE/src/robotide/searchtests/dialogsearchtests.py:49
+#: /home/helio/github/RIDE/src/robotide/searchtests/dialogsearchtests.py:127
+#: /home/helio/github/RIDE/src/robotide/searchtests/dialogsearchtests.py:184
+#: /home/helio/github/RIDE/src/robotide/ui/review.py:98
 #: /home/helio/github/RIDE/src/robotide/ui/review.py:160
 msgid "Search"
 msgstr ""
@@ -711,12 +724,12 @@ msgid "Move Up\tCtrl-Up"
 msgstr ""
 
 #: /home/helio/github/RIDE/src/robotide/editor/listeditor.py:32
-#: /home/helio/github/RIDE/src/robotide/ui/tagdialogs.py:231
+#: /home/helio/github/RIDE/src/robotide/ui/tagdialogs.py:233
 msgid "Delete"
 msgstr ""
 
 #: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:98
-#: /home/helio/github/RIDE/src/robotide/ui/tagdialogs.py:231
+#: /home/helio/github/RIDE/src/robotide/ui/tagdialogs.py:233
 msgid "Clear"
 msgstr ""
 
@@ -726,12 +739,12 @@ msgstr ""
 
 #: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:477
 #: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:564
-#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:701
+#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:704
 msgid "Comment"
 msgstr ""
 
 #: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:477
-#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:701
+#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:704
 msgid "Value"
 msgstr ""
 
@@ -764,7 +777,7 @@ msgid "Resource"
 msgstr ""
 
 #: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:565
-#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:648
+#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:651
 msgid "Variables"
 msgstr ""
 
@@ -776,13 +789,13 @@ msgstr ""
 msgid "Add Import"
 msgstr ""
 
-#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:615
+#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:617
 #: /home/helio/github/RIDE/src/robotide/spec/specimporter.py:33
 #: /home/helio/github/RIDE/src/robotide/spec/specimporter.py:62
 msgid "Import Library Spec XML"
 msgstr ""
 
-#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:654
+#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:657
 msgid ""
 "<br>Possible corrections and notes:<br>\n"
 "        <ul>\n"
@@ -800,15 +813,15 @@ msgid ""
 "        </ul>"
 msgstr ""
 
-#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:654
+#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:657
 msgid "Import failure handling"
 msgstr ""
 
-#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:701
+#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:704
 msgid "Metadata"
 msgstr ""
 
-#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:702
+#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:705
 msgid "Add Metadata"
 msgstr ""
 
@@ -940,8 +953,58 @@ msgstr ""
 msgid "Name"
 msgstr ""
 
+#: /home/helio/github/RIDE/src/robotide/searchtests/dialogsearchtests.py:36
 #: /home/helio/github/RIDE/src/robotide/searchtests/searchtests.py:35
 msgid "Search Tests"
+msgstr ""
+
+#: /home/helio/github/RIDE/src/robotide/searchtests/dialogsearchtests.py:50
+msgid "Tag Search"
+msgstr ""
+
+#: /home/helio/github/RIDE/src/robotide/searchtests/dialogsearchtests.py:61
+#: /home/helio/github/RIDE/src/robotide/searchtests/dialogsearchtests.py:85
+msgid "Tags"
+msgstr ""
+
+#: /home/helio/github/RIDE/src/robotide/searchtests/dialogsearchtests.py:61
+#: /home/helio/github/RIDE/src/robotide/searchtests/dialogsearchtests.py:85
+msgid "Test"
+msgstr ""
+
+#: /home/helio/github/RIDE/src/robotide/searchtests/dialogsearchtests.py:66
+#: /home/helio/github/RIDE/src/robotide/searchtests/dialogsearchtests.py:90
+msgid "Results: "
+msgstr ""
+
+#: /home/helio/github/RIDE/src/robotide/searchtests/dialogsearchtests.py:82
+msgid "Find matches using tag patterns. See RF User Guide or 'robot --help' for more information."
+msgstr ""
+
+#: /home/helio/github/RIDE/src/robotide/searchtests/dialogsearchtests.py:96
+msgid "Include"
+msgstr ""
+
+#: /home/helio/github/RIDE/src/robotide/searchtests/dialogsearchtests.py:139
+#: /home/helio/github/RIDE/src/robotide/searchtests/dialogsearchtests.py:189
+msgid "Add all to selected"
+msgstr ""
+
+#: /home/helio/github/RIDE/src/robotide/searchtests/dialogsearchtests.py:156
+#: /home/helio/github/RIDE/src/robotide/searchtests/dialogsearchtests.py:164
+msgid "Results: %d"
+msgstr ""
+
+#: /home/helio/github/RIDE/src/robotide/searchtests/dialogsearchtests.py:177
+msgid "Info. "
+msgstr ""
+
+#: /home/helio/github/RIDE/src/robotide/searchtests/dialogsearchtests.py:195
+msgid "Find matches by test name, documentation and/or tag."
+msgstr ""
+
+#: /home/helio/github/RIDE/src/robotide/searchtests/dialogsearchtests.py:212
+msgid "Search term"
 msgstr ""
 
 #: /home/helio/github/RIDE/src/robotide/spec/specimporter.py:60
@@ -993,6 +1056,7 @@ msgid "<all library keywords>"
 msgstr ""
 
 #: /home/helio/github/RIDE/src/robotide/ui/keywordsearch.py:39
+#: /home/helio/github/RIDE/src/robotide/ui/keywordsearch.py:59
 #: /home/helio/github/RIDE/src/robotide/ui/keywordsearch.py:139
 msgid "Search Keywords"
 msgstr ""
@@ -1017,123 +1081,119 @@ msgstr ""
 msgid "Description"
 msgstr ""
 
-#: /home/helio/github/RIDE/src/robotide/ui/keywordsearch.py:352
-#: /home/helio/github/RIDE/src/robotide/usages/usagesdialog.py:142
-msgid "Source"
-msgstr ""
-
-#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:49
+#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:56
 msgid ""
 "[File]\n"
-"!&New Project | Create a new top level suite | Ctrlcmd-N | ART_NEW\n"
-"---\n"
-"!&Open Test Suite | Open file containing tests | Ctrlcmd-O | ART_FILE_OPEN\n"
-"!Open &Directory | Open directory containing datafiles | Shift-Ctrlcmd-O | ART_FOLDER_OPEN\n"
-"!Open External File | Open file in Code Editor | | ART_NORMAL_FILE\n"
-"---\n"
-"!&Save | Save selected datafile | Ctrlcmd-S | ART_FILE_SAVE\n"
-"!Save &All | Save all changes | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS\n"
-"---\n"
-"!E&xit | Exit RIDE | Ctrlcmd-Q\n"
+"    !&New Project | Create a new top level suite | Ctrlcmd-N | ART_NEW\n"
+"    ---\n"
+"    !&Open Test Suite | Open file containing tests | Ctrlcmd-O | ART_FILE_OPEN\n"
+"    !Open &Directory | Open directory containing datafiles | Shift-Ctrlcmd-O | ART_FOLDER_OPEN\n"
+"    !Open External File | Open file in Code Editor | | ART_NORMAL_FILE\n"
+"    ---\n"
+"    !&Save | Save selected datafile | Ctrlcmd-S | ART_FILE_SAVE\n"
+"    !Save &All | Save all changes | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS\n"
+"    ---\n"
+"    !E&xit | Exit RIDE | Ctrlcmd-Q\n"
 "\n"
-"[Tools]\n"
-"!Search Unused Keywords | | | | POSITION-54\n"
-"!Manage Plugins | | | | POSITION-81\n"
-"!View All Tags | | F7 | | POSITION-82\n"
-"!Preferences | | | | POSITION-99\n"
+"    [Tools]\n"
+"    !Search Unused Keywords | | | | POSITION-54\n"
+"    !Manage Plugins | | | | POSITION-81\n"
+"    !View All Tags | | F7 | | POSITION-82\n"
+"    !Preferences | | | | POSITION-99\n"
 "\n"
-"[Help]\n"
-"!Shortcut keys | RIDE shortcut keys\n"
-"!User Guide | Robot Framework User Guide\n"
-"!Wiki | RIDE User Guide (Wiki)\n"
-"!Report a Problem | Open browser to SEARCH on the RIDE issue tracker\n"
-"!Release notes | Shows release notes\n"
-"!About | Information about RIDE\n"
-"!Check for Upgrade | Looks at PyPi for new released version\n"
+"    [Help]\n"
+"    !Shortcut keys | RIDE shortcut keys\n"
+"    !User Guide | Robot Framework User Guide\n"
+"    !Wiki | RIDE User Guide (Wiki)\n"
+"    !Report a Problem | Open browser to SEARCH on the RIDE issue tracker\n"
+"    !Release notes | Shows release notes\n"
+"    !About | Information about RIDE\n"
+"    !Check for Upgrade | Looks at PyPi for new released version\n"
+"    "
 msgstr ""
 
-#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:168
+#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:167
 msgid "Saved %s"
 msgstr ""
 
-#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:169
+#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:168
 msgid "Saved all files"
 msgstr ""
 
-#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:192
+#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:191
 msgid "Validation Error"
 msgstr ""
 
-#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:196
+#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:195
 msgid "\"%s\" is read only"
 msgstr ""
 
-#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:197
+#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:196
 msgid "Modification prevented"
 msgstr ""
 
-#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:350
+#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:349
 msgid ""
 "There are unsaved modifications.\n"
 "Do you want to save your changes before exiting?"
 msgstr ""
 
-#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:352
-#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:440
+#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:351
+#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:439
 msgid "Warning"
 msgstr ""
 
-#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:439
+#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:438
 msgid ""
 "There are unsaved modifications.\n"
 "Do you want to proceed without saving?"
 msgstr ""
 
-#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:474
+#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:473
 msgid "Choose a directory containing Robot files"
 msgstr ""
 
-#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:539
+#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:538
 msgid "RIDE - Preferences"
 msgstr ""
 
-#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:626
+#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:625
 msgid "Workspace modifications detected on the file system."
 msgstr ""
 
-#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:627
+#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:626
 msgid "Do you want to reload the workspace?"
 msgstr ""
 
-#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:628
+#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:627
 msgid "Answering <No> will ignore the changes on disk."
 msgstr ""
 
-#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:630
+#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:629
 msgid "Answering <Yes> will discard unsaved changes."
 msgstr ""
 
-#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:631
+#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:630
 msgid "Files Changed On Disk"
 msgstr ""
 
-#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:751
+#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:750
 msgid "search unused keywords"
 msgstr ""
 
-#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:751
+#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:750
 msgid "stop test run"
 msgstr ""
 
-#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:752
+#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:751
 msgid "preview"
 msgstr ""
 
-#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:752
+#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:751
 msgid "view ride log"
 msgstr ""
 
-#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:793
+#: /home/helio/github/RIDE/src/robotide/ui/mainframe.py:792
 msgid "Shortcut keys for RIDE"
 msgstr ""
 
@@ -1177,7 +1237,12 @@ msgid "Filter is"
 msgstr ""
 
 #: /home/helio/github/RIDE/src/robotide/ui/review.py:71
+#: /home/helio/github/RIDE/src/robotide/ui/review.py:242
 msgid "inactive"
+msgstr ""
+
+#: /home/helio/github/RIDE/src/robotide/ui/review.py:84
+msgid "Filter"
 msgstr ""
 
 #: /home/helio/github/RIDE/src/robotide/ui/review.py:91
@@ -1232,9 +1297,17 @@ msgstr ""
 msgid "Abort"
 msgstr ""
 
+#: /home/helio/github/RIDE/src/robotide/ui/review.py:247
+msgid "active"
+msgstr ""
+
 #: /home/helio/github/RIDE/src/robotide/ui/review.py:270
 #: /home/helio/github/RIDE/src/robotide/ui/review.py:353
 msgid "Unused Keywords (%d)"
+msgstr ""
+
+#: /home/helio/github/RIDE/src/robotide/ui/review.py:279
+msgid "(None)"
 msgstr ""
 
 #: /home/helio/github/RIDE/src/robotide/ui/review.py:282
@@ -1287,42 +1360,42 @@ msgstr ""
 msgid "Included Tag Search"
 msgstr ""
 
-#: /home/helio/github/RIDE/src/robotide/ui/tagdialogs.py:88
+#: /home/helio/github/RIDE/src/robotide/ui/tagdialogs.py:89
 msgid "Excluded Tag Search"
 msgstr ""
 
-#: /home/helio/github/RIDE/src/robotide/ui/tagdialogs.py:145
+#: /home/helio/github/RIDE/src/robotide/ui/tagdialogs.py:147
 msgid ""
 "Total tests %d, Tests with tags %d, Unique tags %d\n"
 "Currently selected tests %d"
 msgstr ""
 
-#: /home/helio/github/RIDE/src/robotide/ui/tagdialogs.py:231
+#: /home/helio/github/RIDE/src/robotide/ui/tagdialogs.py:233
 msgid "Select all"
 msgstr ""
 
-#: /home/helio/github/RIDE/src/robotide/ui/tagdialogs.py:231
-#: /home/helio/github/RIDE/src/robotide/ui/tagdialogs.py:260
+#: /home/helio/github/RIDE/src/robotide/ui/tagdialogs.py:233
+#: /home/helio/github/RIDE/src/robotide/ui/tagdialogs.py:262
 msgid "Rename"
 msgstr ""
 
-#: /home/helio/github/RIDE/src/robotide/ui/tagdialogs.py:232
+#: /home/helio/github/RIDE/src/robotide/ui/tagdialogs.py:234
 msgid "Show tests with this tag"
 msgstr ""
 
-#: /home/helio/github/RIDE/src/robotide/ui/tagdialogs.py:232
+#: /home/helio/github/RIDE/src/robotide/ui/tagdialogs.py:234
 msgid "Show tests without this tag"
 msgstr ""
 
-#: /home/helio/github/RIDE/src/robotide/ui/tagdialogs.py:259
+#: /home/helio/github/RIDE/src/robotide/ui/tagdialogs.py:261
 msgid "Renaming tag '%s'."
 msgstr ""
 
-#: /home/helio/github/RIDE/src/robotide/ui/tagdialogs.py:274
+#: /home/helio/github/RIDE/src/robotide/ui/tagdialogs.py:276
 msgid "Confirm"
 msgstr ""
 
-#: /home/helio/github/RIDE/src/robotide/ui/tagdialogs.py:274
+#: /home/helio/github/RIDE/src/robotide/ui/tagdialogs.py:276
 msgid "Delete a tag '%s' ?"
 msgstr ""
 
@@ -1350,27 +1423,27 @@ msgstr ""
 msgid "Go to definition"
 msgstr ""
 
-#: /home/helio/github/RIDE/src/robotide/usages/usagesdialog.py:142
+#: /home/helio/github/RIDE/src/robotide/usages/usagesdialog.py:143
 msgid "Location"
 msgstr ""
 
-#: /home/helio/github/RIDE/src/robotide/usages/usagesdialog.py:142
+#: /home/helio/github/RIDE/src/robotide/usages/usagesdialog.py:143
 msgid "Usage"
 msgstr ""
 
-#: /home/helio/github/RIDE/src/robotide/usages/usagesdialog.py:175
+#: /home/helio/github/RIDE/src/robotide/usages/usagesdialog.py:176
 msgid "Imported Location"
 msgstr ""
 
-#: /home/helio/github/RIDE/src/robotide/usages/usagesdialog.py:175
+#: /home/helio/github/RIDE/src/robotide/usages/usagesdialog.py:176
 msgid "Imported name"
 msgstr ""
 
-#: /home/helio/github/RIDE/src/robotide/usages/usagesdialog.py:175
+#: /home/helio/github/RIDE/src/robotide/usages/usagesdialog.py:176
 msgid "Importing Location"
 msgstr ""
 
-#: /home/helio/github/RIDE/src/robotide/usages/usagesdialog.py:175
+#: /home/helio/github/RIDE/src/robotide/usages/usagesdialog.py:176
 msgid "Importing Name"
 msgstr ""
 

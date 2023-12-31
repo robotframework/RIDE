@@ -81,7 +81,7 @@ class ReviewDialog(RIDEDialog):
         self.Sizer.Add(header_sizer, 0, wx.ALL | wx.EXPAND, 3)
 
     def _build_filter(self):
-        self._filter_pane = MyCollapsiblePane(self, label="Filter",
+        self._filter_pane = MyCollapsiblePane(self, label=_("Filter"),
                                               style=wx.CP_DEFAULT_STYLE | wx.CP_NO_TLW_RESIZE)
         self._filter_pane.SetBackgroundColour(Colour(self.color_background))
         self._filter_pane.SetForegroundColour(Colour(self.color_foreground))
@@ -95,7 +95,7 @@ class ReviewDialog(RIDEDialog):
                                                   "matches if at least one string is part of "
                                                   "the filename.\nIf you don\'t enter any strings, "
                                                   "all opened files are included"))
-        filter_source_box = wx.StaticBox(self._filter_pane.GetPane(), label="Search")
+        filter_source_box = wx.StaticBox(self._filter_pane.GetPane(), label=_("Search"))
         self._filter_source_testcases = wx.CheckBox(self._filter_pane.GetPane(),
                                                     wx.ID_ANY,
                                                     label=_("Test case files"))
@@ -157,10 +157,10 @@ class ReviewDialog(RIDEDialog):
         self._notebook.AddPage(panel_unused_kw, _("Unused Keywords"))
 
     def _build_controls(self):
-        self._search_button = ButtonWithHandler(self, _('Search'), mk_handler='Search', handler=self.on_search)
+        self._search_button = ButtonWithHandler(self, _('Search'), handler=self.on_search)
         self._search_button.SetBackgroundColour(Colour(self.color_secondary_background))
         self._search_button.SetForegroundColour(Colour(self.color_secondary_foreground))
-        self._abort_button = ButtonWithHandler(self, _('Abort'), mk_handler='Abort', handler=self.on_abort)
+        self._abort_button = ButtonWithHandler(self, _('Abort'), handler=self.on_abort)
         self._abort_button.SetBackgroundColour(Colour(self.color_secondary_background))
         self._abort_button.SetForegroundColour(Colour(self.color_secondary_foreground))
         self._status_label = Label(self, label='')
@@ -239,12 +239,12 @@ class ReviewDialog(RIDEDialog):
 
     def _disable_filter(self):
         self._runner.set_filter_active(False)
-        self.label_filter_status.SetLabel('inactive')
+        self.label_filter_status.SetLabel(_('inactive'))
         self.label_filter_status.SetForegroundColour(wx.RED)
 
     def _enable_filter(self):
         self._runner.set_filter_active(True)
-        self.label_filter_status.SetLabel('active')
+        self.label_filter_status.SetLabel(_('active'))
         self.label_filter_status.SetForegroundColour((0, 200, 0))
 
     def on_search(self, event):
@@ -276,7 +276,7 @@ class ReviewDialog(RIDEDialog):
         __ = event
         df_list = self._runner.get_datafile_list()
         if not df_list:
-            string_list = "(None)"
+            string_list = _("(None)")
         else:
             string_list = "\n".join(df.name for df in df_list)
         message = _("Keywords of the following files will be included in the search:\n\n")+string_list

@@ -41,7 +41,7 @@ class TreeController(object):
         tree_actions = _("""[Navigate]
         !Go &Back | Go back to previous location in tree | Alt-%s | ART_GO_BACK
         !Go &Forward | Go forward to next location in tree | Alt-%s | ART_GO_FORWARD
-        """, domain='RIDE') % (('Left', 'Right') if IS_WINDOWS else ('Z', 'X'))
+        """) % (('Left', 'Right') if IS_WINDOWS else ('Z', 'X'))
         # Left and right cannot be overridden in tree on non Windows OSses, issue 354
 
         tree_actions_nt = """[Navigate]
