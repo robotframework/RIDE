@@ -64,9 +64,11 @@ class SettingEditor(wx.Panel):
         try:
             set_lang = shared_memory.ShareableList(name="language")
             self._language = [set_lang[0]]
+            # print(f"DEBUG: settings.py SettingEditor __init__ SHAREDMEM language={self._language}")
         except AttributeError:
             try:
                 self._language = self._controller.language
+                # print(f"DEBUG: settings.py SettingEditor __init__ CONTROLLER language={self._language}")
             except AttributeError:
                 self._language = ['en']
         # print(f"DEBUG: settings.py SettingEditor __init__ language={self._language}")

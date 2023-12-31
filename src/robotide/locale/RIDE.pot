@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2023-12-31 13:03+0000\n"
+"POT-Creation-Date: 2023-12-31 15:48+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -139,7 +139,7 @@ msgid "Select Logs Directory"
 msgstr ""
 
 #: /home/helio/github/RIDE/src/robotide/contrib/testrunner/runprofiles.py:496
-#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:564
+#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:565
 msgid "Arguments"
 msgstr ""
 
@@ -743,13 +743,13 @@ msgid "Variable"
 msgstr ""
 
 #: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:477
-#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:564
-#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:704
+#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:565
+#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:705
 msgid "Comment"
 msgstr ""
 
 #: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:477
-#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:704
+#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:705
 msgid "Value"
 msgstr ""
 
@@ -765,42 +765,42 @@ msgstr ""
 msgid "Add Scalar"
 msgstr ""
 
-#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:564
+#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:565
 msgid "Import"
 msgstr ""
 
-#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:564
+#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:565
 msgid "Name / Path"
-msgstr ""
-
-#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:565
-msgid "Library"
-msgstr ""
-
-#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:565
-msgid "Resource"
-msgstr ""
-
-#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:565
-#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:651
-msgid "Variables"
 msgstr ""
 
 #: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:566
 msgid "Import Failed Help"
 msgstr ""
 
-#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:583
+#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:566
+msgid "Library"
+msgstr ""
+
+#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:566
+msgid "Resource"
+msgstr ""
+
+#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:566
+#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:652
+msgid "Variables"
+msgstr ""
+
+#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:584
 msgid "Add Import"
 msgstr ""
 
-#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:617
+#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:618
 #: /home/helio/github/RIDE/src/robotide/spec/specimporter.py:33
 #: /home/helio/github/RIDE/src/robotide/spec/specimporter.py:62
 msgid "Import Library Spec XML"
 msgstr ""
 
-#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:657
+#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:658
 msgid ""
 "<br>Possible corrections and notes:<br>\n"
 "        <ul>\n"
@@ -818,15 +818,15 @@ msgid ""
 "        </ul>"
 msgstr ""
 
-#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:657
+#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:658
 msgid "Import failure handling"
 msgstr ""
 
-#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:704
+#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:705
 msgid "Metadata"
 msgstr ""
 
-#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:705
+#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:706
 msgid "Add Metadata"
 msgstr ""
 
@@ -1445,7 +1445,7 @@ msgstr ""
 msgid "Delete a tag '%s' ?"
 msgstr ""
 
-#: /home/helio/github/RIDE/src/robotide/ui/treeplugin.py:206
+#: /home/helio/github/RIDE/src/robotide/ui/treeplugin.py:209
 msgid "External Resources"
 msgstr ""
 

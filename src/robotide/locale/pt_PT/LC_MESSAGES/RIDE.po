@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: RIDE 2.1\n"
-"POT-Creation-Date: 2023-12-31 13:03+0000\n"
-"PO-Revision-Date: 2023-12-31 13:12+0000\n"
+"POT-Creation-Date: 2023-12-31 15:48+0000\n"
+"PO-Revision-Date: 2023-12-31 15:50+0000\n"
 "Last-Translator: Hélio Guilherme <helio_guilherme@hotmail.com>\n"
 "Language-Team: helioxentric@gmail.com\n"
 "Language: pt\n"
@@ -147,7 +147,7 @@ msgid "Select Logs Directory"
 msgstr "Selecionar a Diretoria de Registos"
 
 #: /home/helio/github/RIDE/src/robotide/contrib/testrunner/runprofiles.py:496
-#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:564
+#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:565
 msgid "Arguments"
 msgstr "Argumentos"
 
@@ -225,7 +225,7 @@ msgstr "Executar Testes em modo Debug"
 #: /home/helio/github/RIDE/src/robotide/contrib/testrunner/testrunnerplugin.py:263
 msgid "Run the selected tests with Debug"
 msgstr ""
-"Executar os teste selecionados com o nível de registo DEBUG (depuração)"
+"Executar os testes selecionados com o nível de registo DEBUG (depuração)"
 
 #: /home/helio/github/RIDE/src/robotide/contrib/testrunner/testrunnerplugin.py:266
 msgid "Stop Test Run"
@@ -754,13 +754,13 @@ msgid "Variable"
 msgstr "Variável"
 
 #: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:477
-#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:564
-#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:704
+#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:565
+#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:705
 msgid "Comment"
 msgstr "Comentário"
 
 #: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:477
-#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:704
+#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:705
 msgid "Value"
 msgstr "Valor"
 
@@ -776,42 +776,42 @@ msgstr "Adicionar Lista"
 msgid "Add Scalar"
 msgstr "Adicionar Escalar"
 
-#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:564
+#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:565
 msgid "Import"
 msgstr "Importação"
 
-#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:564
+#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:565
 msgid "Name / Path"
 msgstr "Nome / Caminho"
-
-#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:565
-msgid "Library"
-msgstr "Biblioteca"
-
-#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:565
-msgid "Resource"
-msgstr "Recurso"
-
-#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:565
-#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:651
-msgid "Variables"
-msgstr "Variáveis"
 
 #: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:566
 msgid "Import Failed Help"
 msgstr "Ajuda na Falha de Importação"
 
-#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:583
+#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:566
+msgid "Library"
+msgstr "Biblioteca"
+
+#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:566
+msgid "Resource"
+msgstr "Recurso"
+
+#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:566
+#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:652
+msgid "Variables"
+msgstr "Variáveis"
+
+#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:584
 msgid "Add Import"
 msgstr "Adicionar Importação"
 
-#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:617
+#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:618
 #: /home/helio/github/RIDE/src/robotide/spec/specimporter.py:33
 #: /home/helio/github/RIDE/src/robotide/spec/specimporter.py:62
 msgid "Import Library Spec XML"
 msgstr "Importar Especificação de Biblioteca XML"
 
-#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:657
+#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:658
 msgid ""
 "<br>Possible corrections and notes:<br>\n"
 "        <ul>\n"
@@ -856,15 +856,15 @@ msgstr ""
 "            </li>\n"
 "        </ul>"
 
-#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:657
+#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:658
 msgid "Import failure handling"
 msgstr "Gestão de falha de importação"
 
-#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:704
+#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:705
 msgid "Metadata"
 msgstr "Metadados"
 
-#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:705
+#: /home/helio/github/RIDE/src/robotide/editor/settingeditors.py:706
 msgid "Add Metadata"
 msgstr "Adicionar Metadados"
 
@@ -1117,7 +1117,7 @@ msgstr "Resultados: %d"
 
 #: /home/helio/github/RIDE/src/robotide/searchtests/dialogsearchtests.py:177
 msgid "Info. "
-msgstr "Informação "
+msgstr "Info. "
 
 #: /home/helio/github/RIDE/src/robotide/searchtests/dialogsearchtests.py:195
 msgid "Find matches by test name, documentation and/or tag."
@@ -1129,7 +1129,7 @@ msgstr "Termo de pesquisa"
 
 #: /home/helio/github/RIDE/src/robotide/searchtests/searchtests.py:33
 msgid "A plugin for searching tests based on name, tags and documentation"
-msgstr "Um Plugin para procurar testes por nome, etiquetas e documentação."
+msgstr "Um Plugin para procurar testes por nome, etiquetas e documentação"
 
 #: /home/helio/github/RIDE/src/robotide/spec/specimporter.py:60
 msgid "Library Spec XML|*.xml|All Files|*.*"
@@ -1603,7 +1603,7 @@ msgstr "Confirmar"
 msgid "Delete a tag '%s' ?"
 msgstr "Apagar a etiqueta '%s' ?"
 
-#: /home/helio/github/RIDE/src/robotide/ui/treeplugin.py:206
+#: /home/helio/github/RIDE/src/robotide/ui/treeplugin.py:209
 msgid "External Resources"
 msgstr "Recursos Externos"
 

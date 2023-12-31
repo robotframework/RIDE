@@ -15,6 +15,7 @@
 
 import os
 
+from multiprocessing import shared_memory
 from robotide.lib.compat.parsing import language
 from robotide.lib.robot.errors import DataError
 from robotide.lib.robot.model import SuiteNamePatterns
@@ -36,6 +37,16 @@ READERS = {'tsv': TsvReader, 'rst': RestReader, 'rest': RestReader,
 
 # Hook for external tools for altering ${CURDIR} processing
 PROCESS_CURDIR = True
+
+
+def store_language(lang: list):
+    assert lang is not None
+    # Shared memory to store language definition
+    try:
+        sharemem = shared_memory.ShareableList(['en'], name="language")
+    except FileExistsError:  # Other instance created file
+        sharemem = shared_memory.ShareableList(name="language")
+    sharemem[0] = lang[0]
 
 
 class NoTestsFound(DataError):
@@ -61,6 +72,8 @@ class FromFilePopulator(object):
             self._language = lang if lang else language.check_file_language(datafile.source)
         else:
             self._language = lang if lang else None
+        if self._language:
+            store_language(self._language)
         # self._comment_table_names = language.get_headers_for(self._language, ('comment', 'comments'))
 
     @staticmethod
@@ -153,6 +166,8 @@ class FromDirectoryPopulator(object):
         LOGGER.info("Parsing directory '%s'." % path)
         if not self.language:
             self.language = language.check_file_language(path)
+        if self.language:
+            store_language(self.language)
         include_suites = self._get_include_suites(path, include_suites)
         init_file, children = self._get_children(path, include_extensions, include_suites)
         if init_file:
