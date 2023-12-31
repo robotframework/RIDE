@@ -204,8 +204,7 @@ class KeywordSearchDialog(RIDEDialog):
     def _add_keyword_details(self):
         self._details = HtmlWindow(self)
         self._add_to_sizer(self._details)
-        self._find_usages_button = ButtonWithHandler(self, _('Find Usages'), mk_handler='Find Usages',
-                                                     handler=self.on_find_usages)
+        self._find_usages_button = ButtonWithHandler(self, _('Find Usages'), handler=self.on_find_usages)
         self._find_usages_button.SetBackgroundColour(Colour(self.color_secondary_background))
         self._find_usages_button.SetForegroundColour(Colour(self.color_secondary_foreground))
         self.Sizer.Add(self._find_usages_button, 0, wx.ALL, 3)
