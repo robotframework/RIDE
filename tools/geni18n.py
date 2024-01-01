@@ -20,7 +20,7 @@ catalog.
 
 
 # we remove English as source code strings are in English
-supportedLang = ['pt', 'pt_PT']
+supportedLang = ['pt_PT', 'pt_BR']
 # for l in appC.supLang:
 #     if l != u"en":
 #         supportedLang.append(l)
