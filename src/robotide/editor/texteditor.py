@@ -339,7 +339,7 @@ class DataValidationHandler(object):
             validator.visit(model)
         except DataError as err:
             result = (err.message, err.details)
-        # model.save("/tmp/model_saved_from_RIDE.robot")
+        model.save("/tmp/model_saved_from_RIDE.robot")
         # print(f"DEBUG: textedit.py _sanity_check after calling validator {validator}\n"
         #       f"Save model in /tmp/model_saved_from_RIDE.robot"
         #       f" result={result}")
