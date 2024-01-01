@@ -97,15 +97,15 @@ class ColorizationSettings(object):
     def __init__(self, settings=None):
         self._settings = settings
 
-    def get_background_color(self, type):
+    def get_background_color(self, elem_type):
         if not self._settings:
             return self.DEFAULT_BACKGROUND
-        return self._get('background %s' % type)
+        return self._get('background %s' % elem_type)
 
-    def get_text_color(self, type):
+    def get_text_color(self, elem_type):
         if not self._settings:
             return self.DEFAULT_TEXT
-        return self._get('text %s' % type)
+        return self._get('text %s' % elem_type)
 
     def get_highlight_color(self):
         return self.get_background_color('highlight')

@@ -13,6 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import builtins
 import os
 import shutil
 import wx
@@ -23,13 +24,16 @@ from ..pluginapi import Plugin
 from ..publish import PUBLISHER, RideExecuteSpecXmlImport
 from .xmlreaders import get_name_from_xml
 
+_ = wx.GetTranslation  # To keep linter/code analyser happy
+builtins.__dict__['_'] = wx.GetTranslation
+
 
 class SpecImporterPlugin(Plugin):
 
-    HEADER = 'Import Library Spec XML'
+    HEADER = _('Import Library Spec XML')
 
     def enable(self):
-        self.register_action(ActionInfo('Tools', self.HEADER,
+        self.register_action(ActionInfo(_('Tools'), self.HEADER,
                                         self.execute_spec_import, position=83))
         PUBLISHER.subscribe(self._ps_on_execute_spec_import, RideExecuteSpecXmlImport)
 
@@ -53,9 +57,9 @@ class SpecImporterPlugin(Plugin):
         self.model.update_namespace()
 
     def _get_path_to_library_spec(self):
-        wildcard = ('Library Spec XML|*.xml|All Files|*.*')
+        wildcard = (_('Library Spec XML|*.xml|All Files|*.*'))
         dlg = wx.FileDialog(self.frame,
-                            message='Import Library Spec XML',
+                            message=_('Import Library Spec XML'),
                             wildcard=wildcard,
                             defaultDir=self.model.default_dir)  # DEBUG
         # , style=wx.OPEN)
@@ -70,6 +74,8 @@ class SpecImporterPlugin(Plugin):
         name = get_name_from_xml(path)
         if name:
             shutil.copy(path, os.path.join(context.LIBRARY_XML_DIRECTORY, name+'.xml'))
-            wx.MessageBox('Library "%s" imported\nfrom "%s"\nThis may require RIDE restart.' % (name, path), 'Info', wx.OK | wx.ICON_INFORMATION)
+            wx.MessageBox(_('Library "%s" imported\nfrom "%s"\nThis may require RIDE restart.') % (name, path),
+                          _('Info'), wx.OK | wx.ICON_INFORMATION)
         else:
-            wx.MessageBox('Could not import library from file "%s"' % path, 'Import failed', wx.OK | wx.ICON_ERROR)
+            wx.MessageBox(_('Could not import library from file "%s"') % path, _('Import failed'),
+                          wx.OK | wx.ICON_ERROR)

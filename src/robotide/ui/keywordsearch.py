@@ -13,6 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import builtins
 import os.path
 from functools import (cmp_to_key)
 
@@ -28,15 +29,18 @@ from ..publish.messages import RideOpenSuite, RideOpenResource, RideImportSettin
 from ..usages.UsageRunner import Usages
 from ..widgets import PopupMenuItem, ButtonWithHandler, Label, Font, HtmlWindow, ImageProvider, RIDEDialog
 
-ALL_KEYWORDS = '<all keywords>'
-ALL_USER_KEYWORDS = '<all user keywords>'
-ALL_LIBRARY_KEYWORDS = '<all library keywords>'
+_ = wx.GetTranslation  # To keep linter/code analyser happy
+builtins.__dict__['_'] = wx.GetTranslation
 
-SEARCH_KW = 'Search Keywords'
+ALL_KEYWORDS = _('<all keywords>')
+ALL_USER_KEYWORDS = _('<all user keywords>')
+ALL_LIBRARY_KEYWORDS = _('<all library keywords>')
+
+SEARCH_KW = _('Search Keywords')
 
 
 class KeywordSearch(Plugin):
-    """A plugin for searching keywords based on name or documentation."""
+    __doc__ = _("""A plugin for searching keywords based on name or documentation.""")
 
     def __init__(self, app):
         Plugin.__init__(self, app)
@@ -46,20 +50,20 @@ class KeywordSearch(Plugin):
         self._dialog = None
 
     def enable(self):
-        action = ActionInfo('Tools', SEARCH_KW, self.on_search,
+        action = ActionInfo(_('Tools'), SEARCH_KW, self.on_search,
                             shortcut='F5',
-                            doc='Search keywords from libraries and resources',
+                            doc=_('Search keywords from libraries and resources'),
                             icon=ImageProvider().KW_SEARCH_ICON,
                             position=51)
         self.register_action(action)
-        self.register_search_action(SEARCH_KW, self.show_search_for, ImageProvider().KW_SEARCH_ICON)
+        self.register_search_action(_('Search Keywords'), self.show_search_for, ImageProvider().KW_SEARCH_ICON)
         self.subscribe(self.mark_dirty, RideOpenSuite, RideOpenResource,
                        RideImportSetting, RideUserKeyword, RideNewProject)
         self._dialog = KeywordSearchDialog(self.frame, self)
         self.tree.register_context_menu_hook(self._search_resource)
 
     def on_search(self, event):
-        _ = event
+        __ = event
         self._dialog.show_search_with_criteria()
 
     def mark_dirty(self, message):
@@ -132,7 +136,7 @@ class _SearchCriteria(object):
 class KeywordSearchDialog(RIDEDialog):
 
     def __init__(self, parent, searcher):
-        RIDEDialog.__init__(self, title="Search Keywords", parent=parent, size=(650, 400),
+        RIDEDialog.__init__(self, title=_("Search Keywords"), parent=parent, size=(650, 400),
                             style=wx.DEFAULT_FRAME_STYLE | wx.FRAME_FLOAT_ON_PARENT)
         # set Left to Right direction (while we don't have localization)
         self.SetLayoutDirection(wx.Layout_LeftToRight)
@@ -166,19 +170,19 @@ class KeywordSearchDialog(RIDEDialog):
         return wx.BoxSizer(wx.HORIZONTAL)
 
     def _add_pattern_filter(self, sizer):
-        sizer.Add(Label(self, label='Search term: '))
+        sizer.Add(Label(self, label=_('Search term: ')))
         self._search_control = wx.SearchCtrl(self, size=(200, -1), style=wx.TE_PROCESS_ENTER)
         self._search_control.SetBackgroundColour(Colour(self.color_secondary_background))
         self._search_control.SetForegroundColour(Colour(self.color_secondary_foreground))
         sizer.Add(self._search_control)
 
     def _add_doc_filter(self, sizer):
-        self._use_doc = wx.CheckBox(self, label='Search documentation')
+        self._use_doc = wx.CheckBox(self, label=_('Search documentation'))
         self._use_doc.SetValue(True)
         sizer.Add(self._use_doc)
 
     def _add_source_filter(self, sizer):
-        sizer.Add(Label(self, label='Source: '))
+        sizer.Add(Label(self, label=_('Source: ')))
         self._source_filter = wx.ComboBox(self, value=ALL_KEYWORDS, size=(300, -1),
                                           choices=self._get_sources(), style=wx.CB_READONLY)
         self._source_filter.SetBackgroundColour(Colour(self.color_secondary_background))
@@ -200,7 +204,7 @@ class KeywordSearchDialog(RIDEDialog):
     def _add_keyword_details(self):
         self._details = HtmlWindow(self)
         self._add_to_sizer(self._details)
-        self._find_usages_button = ButtonWithHandler(self, 'Find Usages')
+        self._find_usages_button = ButtonWithHandler(self, _('Find Usages'), handler=self.on_find_usages)
         self._find_usages_button.SetBackgroundColour(Colour(self.color_secondary_background))
         self._find_usages_button.SetForegroundColour(Colour(self.color_secondary_foreground))
         self.Sizer.Add(self._find_usages_button, 0, wx.ALL, 3)
@@ -209,7 +213,7 @@ class KeywordSearchDialog(RIDEDialog):
         self.Sizer.Add(component, 1, wx.EXPAND | wx.ALL, 3)
 
     def on_find_usages(self, event):
-        _ = event
+        __ = event
         Usages(self._plugin.model, self._plugin.tree.highlight, self._last_selected_kw.name,
                self._last_selected_kw).show()
 
@@ -232,17 +236,17 @@ class KeywordSearchDialog(RIDEDialog):
         event.Skip()
 
     def on_activate(self, event):
-        _ = event
+        __ = event
         if self._plugin.have_keywords_changed():
             self._update_sources()
             self._populate_search()
 
     def on_use_doc_change(self, event):
-        _ = event
+        __ = event
         self._populate_search()
 
     def on_search(self, event):
-        _ = event
+        __ = event
         self._sort_order.searched(self._get_search_text())
         self._populate_search()
 
@@ -267,7 +271,7 @@ class KeywordSearchDialog(RIDEDialog):
             self._source_filter.SetValue(ALL_KEYWORDS)
 
     def on_close(self, event):
-        _ = event
+        __ = event
         self.Hide()
 
     def _populate_search(self):
@@ -345,7 +349,8 @@ class _SortOrder(object):
 
 
 class _KeywordData(list):
-    headers = ['Name', 'Source', 'Description']
+    headers = [_('Name'), _('Source'), _('Description')]
+    headers_attr = ['Name', 'Source', 'Description']  # Non-translated names
 
     def __init__(self, keywords, sort_order, search_criteria=None):
         self.extend(self._sort(keywords, sort_order, search_criteria))
@@ -370,7 +375,7 @@ class _KeywordData(list):
 
     def _sort_by_attr(self, keywords, sort_order):
         return sorted(keywords, key=cmp_to_key(self._get_comparator_for(
-            self.headers[sort_order.column].lower())),
+            self.headers_attr[sort_order.column].lower())),
                       reverse=not sort_order.sort_up)
 
     @staticmethod

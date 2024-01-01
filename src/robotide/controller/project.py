@@ -29,7 +29,7 @@ from ..spec.xmlreaders import SpecInitializer
 
 class Project(_BaseController, WithNamespace):
 
-    def __init__(self, namespace=None, settings=None, library_manager=None):
+    def __init__(self, namespace=None, settings=None, library_manager=None, file_language=None):
         from .filecontrollers import ResourceFileControllerFactory
         self._library_manager = self._construct_library_manager(library_manager, settings)
         if not self._library_manager.is_alive():
@@ -41,6 +41,7 @@ class Project(_BaseController, WithNamespace):
         self.controller = None
         self.name = None
         self.external_resources = []
+        self.file_language = file_language
         self._resource_file_controller_factory = ResourceFileControllerFactory(self._name_space, self)
         self._serializer = Serializer(settings, LOG)
 
@@ -119,19 +120,21 @@ class Project(_BaseController, WithNamespace):
 
     def load_data(self, path, load_observer=None):
         """ DEBUG: To be used in Localization
+        """
         from robotide.context import APP
         try:
             robot_version = APP.robot_version
         except AttributeError:
-            robot_version = b'6.1.1'  # It is failing at unit tests
-        print(f"DEBUG: project.py Project ENTER robot version = {robot_version}")
-        """
+            robot_version = '3.1.2'  # It is failing at unit tests
+        print(f"DEBUG: project.py Project load_data robot version = {robot_version}")
+        from ..lib.compat.parsing.language import check_file_language
+        self.file_language = check_file_language(path)
         load_observer = load_observer or NullObserver()
-        if self._load_initfile(path, load_observer):
+        if self._load_initfile(path, load_observer, self.file_language):
             return
-        if self._load_datafile(path, load_observer):
+        if self._load_datafile(path, load_observer, self.file_language):
             return
-        if self._load_resource(path, load_observer):
+        if self._load_resource(path, load_observer, self.file_language):
             return
         try:
             load_observer.error("Given file '%s' is not a valid Robot Framework "
@@ -143,39 +146,41 @@ class Project(_BaseController, WithNamespace):
     def is_excluded(self, source=None):
         return self.internal_settings.excludes.contains(source) if self.internal_settings else False
 
-    def _load_initfile(self, path, load_observer):
+    def _load_initfile(self, path, load_observer, language=None):
         if os.path.splitext(os.path.split(path)[1])[0] != '__init__':
             return None
-        initfile = self._loader.load_initfile(path, load_observer)
+        initfile = self._loader.load_initfile(path, load_observer, language)
         if not initfile:
             return None
-        self._populate_from_datafile(path, initfile, load_observer)
+        self._populate_from_datafile(path, initfile, load_observer, language)
         return initfile
 
-    def load_datafile(self, path, load_observer):
-        datafile = self._load_datafile(path, load_observer)
+    def load_datafile(self, path, load_observer, language=None):
+        datafile = self._load_datafile(path, load_observer, language)
         if datafile:
             return datafile
         # print(f"DEBUG: project Before testing Resource load_datafile path={path}")
         # Let's see if it is a .robot file valid as .resource
         if path.endswith((".robot", ".resource")):
-            datafile = self._load_resource(path, load_observer)
+            datafile = self._load_resource(path, load_observer, language)
             if datafile:
                 return datafile
         load_observer.error("Invalid data file '%s'." % path)
         e = UserWarning("Invalid data file")
         return e
 
-    def _load_datafile(self, path, load_observer):
-        # print(f"DEBUG: project ENTER _load_datafile path={path}")
-        datafile = self._loader.load_datafile(path, load_observer)
+    def _load_datafile(self, path, load_observer, language=None):
+        # print(f"DEBUG: project ENTER _load_datafile path={path} self.file_language={self.file_language}"
+        #       f" language={language}")
+        datafile = self._loader.load_datafile(path, load_observer, self.file_language)
         if not datafile:
             return None
-        self._populate_from_datafile(path, datafile, load_observer)
+        self._populate_from_datafile(path, datafile, load_observer, language)
         return datafile
 
-    def _populate_from_datafile(self, path, datafile, load_observer):
-        self.__init__(self.namespace, self.internal_settings, library_manager=self._library_manager)
+    def _populate_from_datafile(self, path, datafile, load_observer, language=None):
+        self.__init__(self.namespace, self.internal_settings, library_manager=self._library_manager,
+                      file_language=language)
         resources = self._loader.resources_for(datafile, load_observer)
         self._create_controllers(datafile, resources)
         RideOpenSuite(path=path, datafile=self.controller).publish()
@@ -192,14 +197,14 @@ class Project(_BaseController, WithNamespace):
         for controller in new_resource_controllers:
             self._inform_resource_created(controller)
 
-    def load_resource(self, path, load_observer):
-        resource = self._load_resource(path, load_observer)
+    def load_resource(self, path, load_observer, language=None):
+        resource = self._load_resource(path, load_observer, language)
         if resource:
             return resource
         load_observer.error("Invalid resource file '%s'." % path)
 
-    def _load_resource(self, path, load_observer):
-        resource = self._loader.load_resource_file(path, load_observer)
+    def _load_resource(self, path, load_observer, language=None):
+        resource = self._loader.load_resource_file(path, load_observer, language)
         if not resource:
             return None
         ctrl = self._create_resource_controller(resource)

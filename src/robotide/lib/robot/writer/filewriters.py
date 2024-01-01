@@ -26,6 +26,15 @@ from .htmlformatter import HtmlFormatter
 from .htmltemplate import TEMPLATE_START, TEMPLATE_END
 
 
+def table_sorter(tables: list) -> list:
+    sorted_tables = []
+    for idx, tab in enumerate(tables):
+        sorted_tables.append((tab._lineno, tab))
+    sorted_result = sorted(sorted_tables)
+    sorted_tables = [z[1] for z in sorted_result]
+    return sorted_tables
+
+
 def FileWriter(context):
     """Creates and returns a ``FileWriter`` object.
 
@@ -33,8 +42,8 @@ def FileWriter(context):
         on ``context.format``. ``context`` is also passed to created writer.
     :type context: :class:`~robot.writer.datafilewriter.WritingContext`
     """
-    if context.format == context.html_format:
-        return HtmlFileWriter(context)
+    # if context.format == context.html_format:
+    #     return HtmlFileWriter(context)
     if context.format == context.tsv_format:
         return TsvFileWriter(context)
     if context.pipe_separated:
@@ -47,21 +56,28 @@ class _DataFileWriter(object):
     def __init__(self, formatter, configuration):
         self._formatter = formatter
         self._output = configuration.output
+        self.language = configuration.language
 
     def write(self, datafile):
         tables = [table for table in datafile if table]
         if datafile.has_preamble:
             self._write_preamble(datafile.preamble)
-        for table in tables:
-            self._write_table(table, is_last=table is tables[-1])
+        sorted_tables = table_sorter(tables)
+        for table in sorted_tables:
+            self._write_table(table, is_last=table is sorted_tables[-1])
 
     def _write_table(self, table, is_last):
         self._write_header(table)
-        self._write_rows(self._formatter.format_table(table))
+        if table.type == 'comments':
+            # print(f"DEBUG: filewriters.py _write_table COMMENTS: {table}")
+            if table.is_started():
+                self._write_lines(table.section_comments)
+        else:
+            self._write_rows(self._formatter.format_table(table))
         if not is_last:  # DEBUG: make this configurable
             # print(f"DEBUG: lib.robot.writer _DataFileWritter write_table empty_row table={table.type}")
             try:
-                if table.type == 'variable' and len(list(table)[-1].as_list()) == 0:
+                if table.type == 'comments' or table.type == 'variable' and len(list(table)[-1].as_list()) == 0:
                     # DEBUG: This is workaround for newline being added ALWAYS to VariableTable
                     return
             except IndexError:
@@ -85,11 +101,15 @@ class _DataFileWriter(object):
         for line in rows:
             self._output.write(line)
 
+    def _write_lines(self, rows):
+        for line in rows:
+            self._output.write(f"{line}\n")
+
 
 class SpaceSeparatedTxtWriter(_DataFileWriter):
 
     def __init__(self, configuration):
-        formatter = TxtFormatter(configuration.txt_column_count)
+        formatter = TxtFormatter(configuration.txt_column_count, configuration.language)
         self._separator = ' ' * configuration.txt_separating_spaces
         _DataFileWriter.__init__(self, formatter, configuration)
 

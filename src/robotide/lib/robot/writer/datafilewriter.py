@@ -45,22 +45,22 @@ class DataFileWriter(object):
 class WritingContext(object):
     """Contains configuration used in writing a test data file to disk."""
     txt_format = 'txt'
-    html_format = 'html'
+    # html_format = 'html'
     tsv_format = 'tsv'
     robot_format = 'robot'
     txt_column_count = 18
     html_column_count = 5
     tsv_column_count = 8
-    _formats = [txt_format, html_format, tsv_format, robot_format]
+    _formats = [txt_format, tsv_format, robot_format]  # Removed html_format
 
-    def __init__(self, datafile, format='', output=None, pipe_separated=False,
-                 txt_separating_spaces=4, line_separator='\n'):
+    def __init__(self, datafile, fformat='', output=None, pipe_separated=False,
+                 txt_separating_spaces=4, line_separator='\n', language=None):
         """
         :param datafile: The datafile to be written.
         :type datafile: :py:class:`~robot.parsing.model.TestCaseFile`,
             :py:class:`~robot.parsing.model.ResourceFile`,
             :py:class:`~robot.parsing.model.TestDataDirectory`
-        :param str format: Output file format. If omitted, read from the
+        :param str fformat: Output file format. If omitted, read from the
             extension of the `source` attribute of the given `datafile`.
         :param output: An open, file-like object used in writing. If
             omitted, value of `source` attribute of the given `datafile` is
@@ -87,9 +87,10 @@ class WritingContext(object):
         self.pipe_separated = pipe_separated
         self.line_separator = line_separator
         self._given_output = output
-        self.format = self._validate_format(format) or self._format_from_file()
+        self.format = self._validate_format(fformat) or self._format_from_file()
         self.txt_separating_spaces = txt_separating_spaces
         self.output = output
+        self.language = language
 
     def __enter__(self):
         if not self.output:
@@ -104,16 +105,17 @@ class WritingContext(object):
         if self._given_output is None:
             self.output.close()
 
-    def _validate_format(self, format):
-        format = format.lower() if format else ''
-        if format and format not in self._formats:
-            raise DataError('Invalid format: %s' % format)
-        return format
+    def _validate_format(self, vformat):
+        vformat = vformat.lower() if vformat else ''
+        if vformat and vformat not in self._formats:
+            raise DataError('Invalid format: %s' % vformat)
+        return vformat
 
     def _format_from_file(self):
         return self._format_from_extension(self._source_from_file())
 
-    def _format_from_extension(self, path):
+    @staticmethod
+    def _format_from_extension(path):
         return os.path.splitext(path)[1][1:].lower()
 
     def _output_path(self):

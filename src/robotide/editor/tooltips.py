@@ -53,7 +53,7 @@ class GridToolTips(object):
         self._tooltip_timer.Start(1000, True)
 
     def on_show_tool_tip(self, event):
-        _ = event
+        __ = event
         self._hide_tooltip()
         content = self._grid.get_tooltip_content()
         if content and self._application_has_focus():

@@ -20,7 +20,7 @@ from .. import robotapi
 
 def new_test_case_file(path):
     datafile = robotapi.TestCaseFile(source=path)
-    datafile.start_table(['Test Cases'])
+    datafile.start_table(['Test Cases'], lineno=1, llang=['en'])  # It is the unique section, so no problem
     _create_missing_directories(datafile.directory)
     return datafile
 

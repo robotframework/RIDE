@@ -16,7 +16,6 @@
 def get_core_plugins():
     from ..run import RunAnything
     from ..recentfiles import RecentFilesPlugin
-    from ..ui.preview import PreviewPlugin
     from ..ui.keywordsearch import KeywordSearch
     from ..ui.treeplugin import TreePlugin
     from ..ui.fileexplorerplugin import FileExplorerPlugin
@@ -28,5 +27,5 @@ def get_core_plugins():
     from ..spec.specimporter import SpecImporterPlugin
     from ..postinstall.desktopshortcut import ShortcutPlugin
 
-    return [LogPlugin, RunAnything, RecentFilesPlugin, PreviewPlugin, SpecImporterPlugin, EditorPlugin, TextEditorPlugin,
+    return [LogPlugin, RunAnything, RecentFilesPlugin, SpecImporterPlugin, EditorPlugin, TextEditorPlugin,
             KeywordSearch, TestSearchPlugin, ShortcutPlugin, ParserLogPlugin, TreePlugin, FileExplorerPlugin]

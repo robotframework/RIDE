@@ -64,12 +64,16 @@ class ControllerWithParent(_BaseController):
     def datafiles(self):
         return self._parent.datafiles
 
+    @property
+    def language(self):
+        return self._parent.datafile_controller._language
+
     def is_modifiable(self):
         return self.datafile_controller.is_modifiable()
 
 
 class WithNamespace(object):
-    namespace = None # Ensure namespace exists
+    namespace = None  # Ensure namespace exists
 
     def _set_namespace_from(self, controller):
         self._set_namespace(controller.namespace)

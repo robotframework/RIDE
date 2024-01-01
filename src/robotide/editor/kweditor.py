@@ -13,6 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import builtins
 import json
 from json.decoder import JSONDecodeError
 
@@ -42,6 +43,9 @@ from ..usages.UsageRunner import Usages, VariableUsages
 from ..utils import variablematcher
 from ..widgets import RIDEDialog, PopupMenu, PopupMenuItems
 
+_ = wx.GetTranslation  # To keep linter/code analyser happy
+builtins.__dict__['_'] = wx.GetTranslation
+
 _DEFAULT_FONT_SIZE = 11
 
 
@@ -64,31 +68,31 @@ class KeywordEditor(GridEditor, Plugin):
     dirty = property(lambda self: self.controller.dirty)
 
     _popup_items = [
-                       'Create Keyword',
-                       'Extract Keyword',
-                       'Extract Variable',
-                       'Rename Keyword',
-                       'Find Where Used',
-                       'JSON Editor\tCtrl-Shift-J',
+                       _('Create Keyword'),
+                       _('Extract Keyword'),
+                       _('Extract Variable'),
+                       _('Rename Keyword'),
+                       _('Find Where Used'),
+                       _('JSON Editor\tCtrl-Shift-J'),
                        '---',
-                       'Go to Definition\tCtrl-B',
+                       _('Go to Definition\tCtrl-B'),
                        '---',
-                       'Undo\tCtrl-Z',
-                       'Redo\tCtrl-Y',
+                       _('Undo\tCtrl-Z'),
+                       _('Redo\tCtrl-Y'),
                        '---',
-                       'Make Variable\tCtrl-1',
-                       'Make List Variable\tCtrl-2',
-                       'Make Dict Variable\tCtrl-5',
+                       _('Make Variable\tCtrl-1'),
+                       _('Make List Variable\tCtrl-2'),
+                       _('Make Dict Variable\tCtrl-5'),
                        '---',
-                       'Comment Cells\tCtrl-Shift-3',
-                       'Uncomment Cells\tCtrl-Shift-4',
-                       'Move Cursor Down\tAlt-Enter',
+                       _('Comment Cells\tCtrl-Shift-3'),
+                       _('Uncomment Cells\tCtrl-Shift-4'),
+                       _('Move Cursor Down\tAlt-Enter'),
                        '---',
-                       'Comment Rows\tCtrl-3',
-                       'Uncomment Rows\tCtrl-4',
-                       'Move Rows Up\tAlt-Up',
-                       'Move Rows Down\tAlt-Down',
-                       'Swap Row Up\tCtrl-T',
+                       _('Comment Rows\tCtrl-3'),
+                       _('Uncomment Rows\tCtrl-4'),
+                       _('Move Rows Up\tAlt-Up'),
+                       _('Move Rows Down\tAlt-Down'),
+                       _('Swap Row Up\tCtrl-T'),
                        '---',
                    ] + GridEditor._popup_items
 
@@ -277,16 +281,16 @@ class KeywordEditor(GridEditor, Plugin):
             self.SelectRow(selected_row, addToSelected=False)
             self.SetGridCursor(event.Row, 0)
         popupitems = [
-                    'Comment Rows\tCtrl-3',
-                    'Uncomment Rows\tCtrl-4',
-                    'Move Rows Up\tAlt-Up',
-                    'Move Rows Down\tAlt-Down',
-                    'Swap Row Up\tCtrl-T',
-                    'Insert Rows\tCtrl-I',
-                    'Delete Rows\tCtrl-D',
+                    _('Comment Rows\tCtrl-3'),
+                    _('Uncomment Rows\tCtrl-4'),
+                    _('Move Rows Up\tAlt-Up'),
+                    _('Move Rows Down\tAlt-Down'),
+                    _('Swap Row Up\tCtrl-T'),
+                    _('Insert Rows\tCtrl-I'),
+                    _('Delete Rows\tCtrl-D'),
                     '---',
-                    'Comment Cells\tCtrl-Shift-3',
-                    'Uncomment Cells\tCtrl-Shift-4',
+                    _('Comment Cells\tCtrl-Shift-3'),
+                    _('Uncomment Cells\tCtrl-Shift-4'),
                     ]
         PopupMenu(self, PopupMenuItems(self, popupitems))
         event.Skip()
@@ -390,15 +394,15 @@ class KeywordEditor(GridEditor, Plugin):
         self._skip_except_on_mac(event)
 
     def on_move_rows_up(self, event=None):
-        _ = event
+        __ = event
         self._row_move(MoveRowsUp, -1)
 
     def on_move_rows_down(self, event=None):
-        _ = event
+        __ = event
         self._row_move(MoveRowsDown, 1)
 
     def on_swap_row_up(self, event=None):
-        _ = event
+        __ = event
         self._row_move(MoveRowsUp, 1, True)
 
     def _row_move(self, command, change, swap=False):
@@ -466,8 +470,7 @@ class KeywordEditor(GridEditor, Plugin):
             self.SetColLabelValue(empty_col, '')
 
     def _colorize_grid(self):
-        selection_content = \
-            self._get_single_selection_content_or_none_on_first_call()
+        selection_content = self._get_single_selection_content_or_none_on_first_call()
         if selection_content is None:
             self.highlight(None)
         else:
@@ -509,7 +512,7 @@ class KeywordEditor(GridEditor, Plugin):
 
     # DEBUG @requires_focus
     def on_copy(self, event=None):
-        _ = event
+        __ = event
         # print("DEBUG: OnCopy called event %s\n" % str(event))
         self.copy()
 
@@ -519,7 +522,7 @@ class KeywordEditor(GridEditor, Plugin):
         self.on_delete(event)
 
     def on_delete(self, event=None):
-        _ = event
+        __ = event
         if not self.IsCellEditControlShown():
             self._execute(clear_area(self.selection.topleft,
                                      self.selection.bottomright))
@@ -527,7 +530,7 @@ class KeywordEditor(GridEditor, Plugin):
 
     # DEBUG    @requires_focus
     def on_paste(self, event=None):
-        _ = event
+        __ = event
         if self.IsCellEditControlShown():
             self.paste()
         else:
@@ -543,7 +546,7 @@ class KeywordEditor(GridEditor, Plugin):
 
     # DEBUG @requires_focus
     def on_insert(self, event=None):
-        _ = event
+        __ = event
         self._execute_clipboard_command(insert_area)
         self._resize_grid()
 
@@ -555,7 +558,7 @@ class KeywordEditor(GridEditor, Plugin):
 
     # DEBUG @requires_focus
     def on_undo(self, event=None):
-        _ = event
+        __ = event
         if not self.IsCellEditControlShown():
             self._execute(Undo())
         else:
@@ -564,7 +567,7 @@ class KeywordEditor(GridEditor, Plugin):
 
     # DEBUG @requires_focus
     def on_redo(self, event=None):
-        _ = event
+        __ = event
         self._execute(Redo())
         self._resize_grid()
 
@@ -574,16 +577,14 @@ class KeywordEditor(GridEditor, Plugin):
         PUBLISHER.unsubscribe_all(self)
         if self._namespace_updated:
             # Prevent re-entry to unregister method
-            self._controller.datafile_controller.unregister_namespace_updates(
-                self._namespace_updated)
+            self._controller.datafile_controller.unregister_namespace_updates(self._namespace_updated)
         self._namespace_updated = None
 
     def save(self):
         self._tooltips.hide()
         if self.IsCellEditControlShown():
             cell_editor = self.GetCellEditor(*self.selection.cell)
-            cell_editor.EndEdit(self.selection.topleft.row,
-                                self.selection.topleft.col, self)
+            cell_editor.EndEdit(self.selection.topleft.row, self.selection.topleft.col, self)
 
     def show_content_assist(self):
         if self.IsCellEditControlShown():
@@ -718,7 +719,7 @@ class KeywordEditor(GridEditor, Plugin):
             event.Skip()
 
     def on_go_to_definition(self, event):
-        _ = event
+        __ = event
         self._navigate_to_matching_user_keyword(
             self.GetGridCursorRow(), self.GetGridCursorCol())
 
@@ -742,10 +743,8 @@ class KeywordEditor(GridEditor, Plugin):
         details = self._plugin.get_keyword_details(value)
         if not details:
             info = self._controller.get_cell_info(cell.Row, cell.Col)
-            if info.cell_type == CellType.KEYWORD and info.content_type == \
-                    ContentType.STRING:
-                details = """\
-        <b>Keyword was not detected by RIDE</b>
+            if info.cell_type == CellType.KEYWORD and info.content_type == ContentType.STRING:
+                details = _("""<b>Keyword was not detected by RIDE</b>
         <br>Possible corrections:<br>
         <ul>
             <li>Import library or resource file containing the keyword.</li>
@@ -753,9 +752,8 @@ class KeywordEditor(GridEditor, Plugin):
             (Tools / Import Library Spec XML or by adding the XML file with the
             correct name to PYTHONPATH) to enable keyword completion
             for example for Java libraries.
-            Library spec XML can be created using libdoc tool from Robot Frame\
-work.</li>
-        </ul>"""
+            Library spec XML can be created using libdoc tool from Robot Framework.</li>
+        </ul>""")
         if details:
             self._tooltips.show_info_at(
                 details, value, self._cell_to_screen_coordinates(cell))
@@ -804,22 +802,20 @@ work.</li>
         wx.CallAfter(self.open_cell_editor().show_content_assist)
         # wx.CallAfter(self._move_grid_cursor, wx.grid.GridEvent(), wx.WXK_RETURN)
 
-    def _open_cell_editor_and_execute_variable_creator(self, list_variable=False,
-                                                       dict_variable=False):
+    def _open_cell_editor_and_execute_variable_creator(self, list_variable=False, dict_variable=False):
         cell_editor = self.open_cell_editor()
-        wx.CallAfter(cell_editor.execute_variable_creator,
-                     list_variable, dict_variable)
+        wx.CallAfter(cell_editor.execute_variable_creator, list_variable, dict_variable)
 
     def on_make_variable(self, event):
-        _ = event
+        __ = event
         self._open_cell_editor_and_execute_variable_creator(list_variable=False)
 
     def on_make_list_variable(self, event):
-        _ = event
+        __ = event
         self._open_cell_editor_and_execute_variable_creator(list_variable=True)
 
     def on_make_dict_variable(self, event):
-        _ = event
+        __ = event
         self._open_cell_editor_and_execute_variable_creator(dict_variable=True)
 
     def _open_cell_editor_and_execute_sharp_comment(self):
@@ -835,14 +831,14 @@ work.</li>
         return curcell
 
     def on_comment_cells(self, event):
-        _ = event
+        __ = event
         if self.GetSelectionBlockTopLeft():
             self.on_sharp_comment_rows(event)
         else:
             self._open_cell_editor_and_execute_sharp_comment()
 
     def on_uncomment_cells(self, event):
-        _ = event
+        __ = event
         if self.GetSelectionBlockTopLeft():
             self.on_sharp_uncomment_rows(event)
         else:
@@ -855,7 +851,7 @@ work.</li>
         self._popup_menu_shown = False
 
     def on_select_all(self, event):
-        _ = event
+        __ = event
         self.SelectAll()
 
     def on_cell_col_size_changed(self, event):
@@ -891,7 +887,7 @@ work.</li>
         self._toggle_underlined(self._marked_cell, True)
 
     def on_create_keyword(self, event):
-        _ = event
+        __ = event
         cells = self._data_cells_from_current_row()
         if not cells:
             return
@@ -913,7 +909,7 @@ work.</li>
         return data
 
     def on_extract_keyword(self, event):
-        _ = event
+        __ = event
         dlg = UserKeywordNameDialog(self._controller)
         if dlg.ShowModal() == wx.ID_OK:
             name, args = dlg.get_value()
@@ -921,7 +917,7 @@ work.</li>
             self._execute(ExtractKeyword(name, args, rows))
 
     def on_extract_variable(self, event):
-        _ = event
+        __ = event
         cells = self.selection.cells()
         if len(cells) == 1:
             self._extract_scalar(cells[0])
@@ -930,7 +926,7 @@ work.</li>
         self._resize_grid()
 
     def on_find_where_used(self, event):
-        _ = event
+        __ = event
         is_variable, searchstring = self._get_is_variable_and_searchstring()
         if searchstring:
             self._execute_find_where_used(is_variable, searchstring)
@@ -980,12 +976,11 @@ work.</li>
             self._execute(extract_list(name, value, comment, cells))
 
     def on_rename_keyword(self, event):
-        _ = event
+        __ = event
         old_name = self._current_cell_value()
         if not old_name.strip() or variablematcher.is_variable(old_name):
             return
-        new_name = wx.GetTextFromUser('New name', 'Rename Keyword',
-                                      default_value=old_name)
+        new_name = wx.GetTextFromUser(_('New name'), _('Rename Keyword'), default_value=old_name)
         if new_name:
             self._execute(RenameKeywordOccurrences(
                 old_name, new_name, RenameProgressObserver(self.GetParent())))
@@ -997,8 +992,8 @@ work.</li>
         dialog = RIDEDialog()
         dialog.SetTitle('JSON Editor')
         dialog.SetSizer(wx.BoxSizer(wx.HORIZONTAL))
-        ok_btn = wx.Button(dialog, wx.ID_OK, "Save")
-        cnl_btn = wx.Button(dialog, wx.ID_CANCEL, "Cancel")
+        ok_btn = wx.Button(dialog, wx.ID_OK, _("Save"))
+        cnl_btn = wx.Button(dialog, wx.ID_CANCEL, _("Cancel"))
         rich_text = wx.TextCtrl(dialog, wx.ID_ANY, "If supported by the native control, this is reversed, and this is"
                                                    " a different font.", size=(400, 475),
                                 style=wx.HSCROLL | wx.TE_MULTILINE | wx.TE_NOHIDESEL)
@@ -1024,14 +1019,12 @@ work.</li>
                 try:
                     json.loads(content)  # Yes, we need the error
                 except JSONDecodeError as e:
-                    res = wx.MessageDialog(dialog, f"Error in JSON: {e}\n\nSave anyway?",
-                                           "Validation Error!", wx.YES_NO)
+                    res = wx.MessageDialog(dialog, f"{_('Error in JSON:')} {e}\n\n{_('Save anyway?')}",
+                                           _("Validation Error!"), wx.YES_NO)
                     res.InheritAttributes()
                     response = res.ShowModal()
                     if response == wx.ID_YES:
-                        self.cell_value_edited(self.selection.cell[0],
-                                               self.selection.cell[1],
-                                               rich_text.GetValue())
+                        self.cell_value_edited(self.selection.cell[0], self.selection.cell[1], rich_text.GetValue())
 
     # If the json_str is json format, then return True
     @staticmethod
@@ -1168,11 +1161,11 @@ class ChooseUsageSearchStringDialog(wx.Dialog):
         self.SetBackgroundColour(Colour(200, 222, 40))
         self.SetForegroundColour(Colour(7, 0, 70))
         """
-        self.caption = "Please select what you want to check for usage"
+        self.caption = _("Please select what you want to check for usage")
         variables = set(variablematcher.find_variable_basenames(cellvalue))
         self.choices = [(False, cellvalue)] + [(True, v) for v in variables]
-        self.choices_string = ["Complete cell content"] + \
-                              ["Variable " + var.replace("&", "&&") for var
+        self.choices_string = [_("Complete cell content")] + \
+                              [_("Variable ") + var.replace("&", "&&") for var
                                in variables]
         self._build_ui()
 
@@ -1184,7 +1177,7 @@ class ChooseUsageSearchStringDialog(wx.Dialog):
         sizer.Add(wx.StaticText(self, label=self.caption), 0, wx.ALL |
                   wx.EXPAND, 5)
         sizer.Add(self.radiobox_choices, 0, wx.ALL | wx.EXPAND, 5)
-        sizer.Add(wx.Button(self, wx.ID_OK, label="Search"),
+        sizer.Add(wx.Button(self, wx.ID_OK, label=_("Search")),
                   0, wx.ALL | wx.ALIGN_CENTER, 5)
         big_sizer = wx.BoxSizer(wx.VERTICAL)
         big_sizer.Add(sizer, 0, wx.ALL, 10)

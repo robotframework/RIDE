@@ -125,6 +125,11 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
         else:
             self._resource_file_controller_factory = None
         self.parent = parent
+        try:
+            self._language = self.data._language
+            # print(f"DEBUG: filecontrollers.py _DataController language set = {self._language}")
+        except AttributeError:
+            self._language = ['en']
         self.set_datafile(data)
         self.dirty = False
         self.children = self._children(data)
@@ -444,6 +449,10 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
         return self.data.name
 
     @property
+    def language(self):
+        return self._language
+
+    @property
     def longname(self):
         if self.parent:
             return self.parent.longname + '.' + self.display_name
@@ -501,7 +510,7 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
     @staticmethod
     def _is_robot_ignored_name(filename):
         base = os.path.basename(filename)
-        robotformat = (".txt", ".robot", ".resource", ".rst", " .rest", ".tsv", ".htm", ".html")
+        robotformat = (".txt", ".robot", ".resource", ".rst", " .rest", ".tsv")  # Removed ".htm", ".html"
         nonrobot_file = os.path.isfile(filename) and not base.endswith(robotformat)
         hidden = base.startswith('.')
         private = base.startswith('_')
@@ -735,6 +744,10 @@ class TestCaseFileController(_FileSystemElement, _DataController):
     def preamble(self):
         return self.data.preamble
 
+    @property
+    def language(self):
+        return self.data.language
+
     def contains_tests(self):
         return bool(self.tests)
 
@@ -890,6 +903,10 @@ class ResourceFileController(_FileSystemElement, _DataController):
     def display_name(self):
         _, tail = os.path.split(self.data.source)
         return tail
+
+    @property
+    def language(self):
+        return self._language
 
     def is_modifiable(self):
         return not self.exists() or not self.is_readonly()

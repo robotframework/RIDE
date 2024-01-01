@@ -27,12 +27,13 @@ build up a command that will be passed in the tests to run as well as
 any additional arguments.
 """
 
+import builtins
 import os
 import re
 import time
 import wx
 
-from robotide import pluginapi
+from robotide.publish.messages import RideLogMessage
 from robotide.context import IS_WINDOWS
 from robotide.contrib.testrunner.usages import USAGE
 from robotide.lib.robot.utils import format_time
@@ -41,6 +42,9 @@ from robotide.utils import ArgumentParser
 from robotide.widgets import ButtonWithHandler, Label, RIDEDialog
 from sys import getfilesystemencoding
 from wx.lib.filebrowsebutton import FileBrowseButton
+
+_ = wx.GetTranslation  # To keep linter/code analyser happy
+builtins.__dict__['_'] = wx.GetTranslation
 
 OUTPUT_ENCODING = getfilesystemencoding()
 
@@ -412,12 +416,12 @@ class PybotProfile(BaseProfile):
         if b'not found' in error \
                 or returncode == 127 or \
                 b'system cannot find the file specified' in error:
-            return pluginapi.RideLogMessage(RF_INSTALLATION_NOT_FOUND, notify_user=True)
+            return RideLogMessage(RF_INSTALLATION_NOT_FOUND, notify_user=True)
         return None
 
     def _get_log_options_panel(self, parent):
         collapsible_pane = wx.CollapsiblePane(
-            parent, wx.ID_ANY, 'Log options',
+            parent, wx.ID_ANY, _('Log options'),
             style=wx.CP_DEFAULT_STYLE | wx.CP_NO_TLW_RESIZE)
         collapsible_pane.Bind(wx.EVT_COLLAPSIBLEPANE_CHANGED,
                               self.on_collapsible_pane_changed,
@@ -425,14 +429,14 @@ class PybotProfile(BaseProfile):
         pane = collapsible_pane.GetPane()
         pane.SetBackgroundColour(self._mysettings.color_background)
         pane.SetForegroundColour(self._mysettings.color_foreground)
-        label = Label(pane, label="Output directory: ")
+        label = Label(pane, label=_("Output directory: "))
         self._output_directory_text_ctrl = \
             self._create_text_ctrl(pane, self.output_directory,
                                    "removed due unicode_error (delete this)",
                                    self.on_output_directory_changed)
         self._output_directory_text_ctrl.SetBackgroundColour(self._mysettings.color_secondary_background)
         self._output_directory_text_ctrl.SetForegroundColour(self._mysettings.color_secondary_foreground)
-        button = ButtonWithHandler(pane, "...", self._handle_select_directory)
+        button = ButtonWithHandler(pane, "...", handler=self._handle_select_directory)
         button.SetBackgroundColour(self._mysettings.color_secondary_background)
         button.SetForegroundColour(self._mysettings.color_secondary_foreground)
         horizontal_sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -443,13 +447,13 @@ class PybotProfile(BaseProfile):
 
         suite_name_outputs_cb = self._create_checkbox(
             pane, self.are_log_names_with_suite_name,
-            "Add suite name to log names", self.on_suite_name_outputs_check_box)
+            _("Add suite name to log names"), self.on_suite_name_outputs_check_box)
         timestamp_outputs_cb = self._create_checkbox(
             pane, self.are_log_names_with_timestamp,
-            "Add timestamp to log names", self.on_timestamp_outputs_checkbox)
+            _("Add timestamp to log names"), self.on_timestamp_outputs_checkbox)
         save_logs_cb = self._create_checkbox(
             pane, self.are_saving_logs,
-            "Save Console and Message logs", self.on_save_logs_checkbox)
+            _("Save Console and Message logs"), self.on_save_logs_checkbox)
 
         vertical_sizer = wx.BoxSizer(wx.VERTICAL)
         vertical_sizer.Add(horizontal_sizer, 0, wx.EXPAND)
@@ -465,9 +469,9 @@ class PybotProfile(BaseProfile):
         self.set_setting("output_directory", value)
 
     def _handle_select_directory(self, event):
-        _ = event
+        __ = event
         path = self._output_directory_text_ctrl.GetValue()
-        dlg = wx.DirDialog(None, "Select Logs Directory",
+        dlg = wx.DirDialog(None, _("Select Logs Directory"),
                            path, wx.DD_DEFAULT_STYLE)
         dlg.SetBackgroundColour(self._mysettings.color_background)
         dlg.SetForegroundColour(self._mysettings.color_foreground)
@@ -489,7 +493,7 @@ class PybotProfile(BaseProfile):
 
     def _get_arguments_panel(self, parent):
         collapsible_pane = wx.CollapsiblePane(
-            parent, wx.ID_ANY, 'Arguments',
+            parent, wx.ID_ANY, _('Arguments'),
             style=wx.CP_DEFAULT_STYLE | wx.CP_NO_TLW_RESIZE)
         collapsible_pane.Bind(wx.EVT_COLLAPSIBLEPANE_CHANGED,
                               self.on_collapsible_pane_changed,
@@ -501,8 +505,8 @@ class PybotProfile(BaseProfile):
             self._create_text_ctrl(pane, self.arguments,
                                    "removed due unicode_error (delete this)",
                                    self.on_arguments_changed)
-        self._args_text_ctrl.SetToolTip("Arguments for the test run. "
-                                        "Arguments are space separated list.")
+        self._args_text_ctrl.SetToolTip(_("Arguments for the test run. "
+                                        "Arguments are space separated list."))
         self._args_text_ctrl.SetBackgroundColour(self._mysettings.color_secondary_background)
         self._args_text_ctrl.SetForegroundColour(self._mysettings.color_secondary_foreground)
         horizontal_sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -527,8 +531,7 @@ class PybotProfile(BaseProfile):
         self._args_text_ctrl.SetForegroundColour(
             'white' if invalid_message else self._mysettings.color_secondary_foreground)
         if not bool(invalid_message):
-            invalid_message = "Arguments for the test run. " \
-                              "Arguments are space separated list."
+            invalid_message = _("Arguments for the test run. Arguments are space separated list.")
         self._args_text_ctrl.SetToolTip(invalid_message)
 
     @staticmethod
@@ -545,20 +548,20 @@ class PybotProfile(BaseProfile):
                     clean_args[idx] = 'arg'
             args = " ".join(clean_args)
             # print(f"DEBUG: run_profiles _get_invalid_message: Check invalid args={args}")
-            _, invalid = ArgumentParser(USAGE).parse_args(args)  # DEBUG .split())
+            __, invalid = ArgumentParser(USAGE).parse_args(args)  # DEBUG .split())
         except Information:
-            return 'Does not execute - help or version option given'
+            return _('Does not execute - help or version option given')
         except (DataError, Exception) as e:
             if e.message:
                 return e.message
         if bool(invalid):
-            return f'Unknown option(s): {invalid}'
+            return f'{_("Unknown option(s):")} {invalid}'
         return None
 
     def _get_tags_panel(self, parent):
         """Create a panel to input include/exclude tags"""
         collapsible_pane = wx.CollapsiblePane(
-            parent, wx.ID_ANY, 'Tests filters',
+            parent, wx.ID_ANY, _('Tests filters'),
             style=wx.CP_DEFAULT_STYLE | wx.CP_NO_TLW_RESIZE)
         collapsible_pane.Bind(wx.EVT_COLLAPSIBLEPANE_CHANGED,
                               self.on_collapsible_pane_changed,
@@ -567,10 +570,10 @@ class PybotProfile(BaseProfile):
         pane.SetBackgroundColour(self._mysettings.color_background)
         pane.SetForegroundColour(self._mysettings.color_foreground)
         include_cb = self._create_checkbox(pane, self.apply_include_tags,
-                                           "Only run tests with these tags:",
+                                           _("Only run tests with these tags:"),
                                            self.on_include_checkbox)
         exclude_cb = self._create_checkbox(pane, self.apply_exclude_tags,
-                                           "Skip tests with these tags:",
+                                           _("Skip tests with these tags:"),
                                            self.on_exclude_checkbox)
         self._include_tags_text_ctrl = \
             self._create_text_ctrl(pane, self.include_tags, "unicode_error",
@@ -666,7 +669,7 @@ class CustomScriptProfile(PybotProfile):
     def _get_run_script_panel(self, parent):
         panel = wx.Panel(parent, wx.ID_ANY)
         self._script_ctrl = FileBrowseButton(
-            panel, labelText="Script to run tests:", size=(-1, -1),
+            panel, labelText=_("Script to run tests:"), size=(-1, -1),
             fileMask="*", changeCallback=self.on_custom_script_changed)
         self._script_ctrl.SetValue(self.runner_script)
 

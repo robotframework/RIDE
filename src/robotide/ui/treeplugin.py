@@ -13,6 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import builtins
 import os
 
 import wx
@@ -42,6 +43,10 @@ from .. import utils
 from .treenodehandlers import ResourceRootHandler, action_handler_class, ResourceFileHandler
 from .images import TreeImageList
 
+_ = wx.GetTranslation  # To keep linter/code analyser happy
+builtins.__dict__['_'] = wx.GetTranslation
+
+
 TREETEXTCOLOUR = Colour(0xA9, 0xA9, 0xA9)
 
 _TREE_ARGS = {'style': wx.HSCROLL | wx.VSCROLL,
@@ -62,6 +67,7 @@ class TreePlugin(Plugin):
 
     def __init__(self, application):
         Plugin.__init__(self, application, default_settings=self.defaults)
+        print("DEBUG: treeplugin.py TreePlugin __init__")
         self._app = application
         self.settings = self._app.settings.config_obj['Plugins']['Tree']
         self._parent = None
@@ -96,7 +102,7 @@ class TreePlugin(Plugin):
             else:
                 register = self._mgr.AddPane
             register(self._tree, wx.lib.agw.aui.AuiPaneInfo().Name("tree_content").
-                     Caption("Test Suites").LeftDockable(True))
+                     Caption(_("Test Suites")).LeftDockable(True))
             self._mgr.Update()
 
     def enable(self):
@@ -139,7 +145,7 @@ class TreePlugin(Plugin):
         self._tree.set_editor(editor)
 
     def on_show_tree(self, event):
-        _ = event
+        __ = event
         if not self._parent:
             self._parent = self.frame
         if not self._tree:  # This is not needed because tree is always created
@@ -186,22 +192,23 @@ class TreePlugin(Plugin):
             self._tree.tree_node_selected(message.item)
 
     def on_tab_changed(self, event):
-        _ = event
+        __ = event
         self._update_tree()
 
     def _update_tree(self, event=None):
-        _ = event
+        __ = event
         self._tree.populate(self._model)
         self._tree.refresh_view()
         self._tree.Update()
 
 
 class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
-    _RESOURCES_NODE_LABEL = 'External Resources'
 
     def __init__(self, parent, action_registerer, settings=None):
         from ..controller.ui.treecontroller import TreeController
-
+        self._RESOURCES_NODE_LABEL = _('External Resources')
+        print(f"DEBUG: treeplugin.py Tree after importing TreeController  __init__ "
+              f"translated label={self._RESOURCES_NODE_LABEL}")
         self._checkboxes_for_tests = False
         self._test_selection_controller = self._create_test_selection_controller()
         self.controller = TreeController(self, action_registerer, settings=settings,
@@ -334,7 +341,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
     def _set_item_excluded(self, node):
         self.SetItemTextColour(node, wx.TheColourDatabase.Find(colourName="GREY"))
         self.SetItemItalic(node, True)
-        self.SetItemText(node, "%s (excluded)" % self.GetItemText(node))
+        self.SetItemText(node, _("%s (excluded)") % self.GetItemText(node))
 
     def _handle_import_setting_message(self, message):
         if message.is_resource():
@@ -1008,7 +1015,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
         self._test_selection_controller.select_all(test_controllers)
 
     def on_close(self, event):
-        _ = event
+        __ = event
         print("DEBUG: Tree OnClose hidding")
         self.Hide()
 
@@ -1033,7 +1040,7 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
             event.Skip()
 
     def on_right_click(self, event):
-        _ = event
+        __ = event
         if not self._right_click:
             self._right_click = True
         handler = None
@@ -1137,7 +1144,7 @@ class TreeLabelEditListener(object):
             # a bug if we don't Veto this event
 
     def on_label_edit(self, event=None):
-        _ = event
+        __ = event
         if not self._on_label_edit_called:
             self._on_label_edit_called = True
             handler = self._tree.controller.get_handler()
@@ -1165,7 +1172,7 @@ class TreeLabelEditListener(object):
             control.StopEditing()
 
     def on_delete(self, event):
-        _ = event
+        __ = event
         editor = self._tree.GetEditControl()
         if editor and wx.Window.FindFocus() == editor:
             start, end = editor.GetSelection()

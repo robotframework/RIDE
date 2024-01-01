@@ -81,7 +81,7 @@ class FileExplorerPlugin(Plugin):
         return self._filemgr.HasFocus()
 
     def on_show_file_explorer(self, event):
-        _ = event
+        __ = event
         if not self._parent:
             self._parent = wx.App.Get().GetWindow()  # self.frame
         if not self._filemgr:  # This is not needed because file explorer is always created

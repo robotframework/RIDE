@@ -147,7 +147,7 @@ class VariableNameEditor(ValueEditor):
         event.Skip()
 
     def SetSelection(self, event):
-        _ = event
+        __ = event
         self._editor.SetSelection(2, len(self._editor.Value) - 1)
 
 
@@ -310,27 +310,27 @@ class _EditorGrid(GridEditor):
         GridEditor.on_delete_cells(self, event)
 
     def on_copy(self, event):
-        _ = event
+        __ = event
         self.copy()
 
     def on_cut(self, event):
-        _ = event
+        __ = event
         self.cut()
 
     def on_paste(self, event):
-        _ = event
+        __ = event
         self.paste()
 
     def on_delete(self, event):
-        _ = event
+        __ = event
         self.delete()
 
     def on_undo(self, event):
-        _ = event
+        __ = event
         self.undo()
 
     def on_select_all(self, event):
-        _ = event
+        __ = event
         self.SelectAll()
 
     def resize_columns(self, width):

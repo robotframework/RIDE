@@ -614,7 +614,7 @@ class CodeEditorPanel(wx.Panel):
             self.editor.SelectLine(line)
 
     def on_code_modified(self, event):
-        _ = event
+        __ = event
         self.btnSave.Enable(self.editor.IsModified())
 
     def on_save(self, event, filepath=None):

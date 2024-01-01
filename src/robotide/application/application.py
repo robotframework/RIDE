@@ -13,10 +13,12 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import builtins
 import locale
 import os
 import wx
 from contextlib import contextmanager
+from pathlib import Path
 from ..namespace import Namespace
 from ..controller import Project
 from ..spec import librarydatabase
@@ -24,14 +26,14 @@ from ..ui import LoadProgressObserver
 from ..ui.mainframe import RideFrame
 from .. import publish
 from .. import context, contrib
-from ..context import coreplugins
+# from ..context import coreplugins
 from ..preferences import Preferences, RideSettings
 from ..application.pluginloader import PluginLoader
 from ..application.editorprovider import EditorProvider
 from ..application.releasenotes import ReleaseNotes
 from ..application.updatenotifier import UpdateNotifierController, UpdateDialog
 from ..ui.mainframe import ToolBar
-from ..ui.treeplugin import TreePlugin
+# from ..ui.treeplugin import TreePlugin
 from ..ui.fileexplorerplugin import FileExplorerPlugin
 from ..utils import RideFSWatcherHandler, run_python_command
 from ..lib.robot.utils.encodingsniffer import get_system_encoding
@@ -41,8 +43,16 @@ from ..widgets.button import ButtonWithHandler
 from wx.lib.agw.aui import AuiDefaultToolBarArt
 from wx.lib.agw.aui.auibar import AuiToolBar
 from wx.lib.agw.aui.auibook import AuiTabCtrl, TabFrame
+try:
+    from robot.conf import languages
+except ImportError:
+    languages = None
 
 locale.setlocale(locale.LC_ALL, 'C')
+# add translation macro to builtin similar to what gettext does
+# generated pot with: /usr/bin/python /usr/bin/pygettext.py -a -d RIDE -o RIDE.pot -p ./locale ../robotide
+_ = wx.GetTranslation  # To keep linter/code analyser happy
+builtins.__dict__['_'] = wx.GetTranslation
 
 BACKGROUND_HELP = 'background help'
 FOREGROUND_TEXT = 'foreground text'
@@ -58,7 +68,7 @@ class UnthemableWidgetError(Exception):
 class RIDE(wx.App):
     _controller = None
     _editor_provider = None
-    _initial_locale = None
+    _locale = None
     _plugin_loader = None
     editor = None
     fileexplorerplugin = None
@@ -78,10 +88,19 @@ class RIDE(wx.App):
     def OnInit(self):  # Overrides wx method
         # DEBUG To test RTL
         # self._initial_locale = wx.Locale(wx.LANGUAGE_ARABIC)
-        self._initial_locale = wx.Locale(wx.LANGUAGE_ENGLISH_US)
+        self._locale = wx.Locale(wx.LANGUAGE_PORTUGUESE)  # LANGUAGE_ENGLISH_US)
         # Needed for SetToolTipString to work
         wx.HelpProvider.Set(wx.SimpleHelpProvider())  # DEBUG: adjust to wx versions
         self.settings = RideSettings()
+
+        class Message:
+            keys = ['General']
+
+        self.change_locale(Message)  # This was done here to have menus translated, but not working
+        print(f"DEBUG: application.py RIDE OnInit after changing locale {self._locale.GetCanonicalName()=}")
+        # Importing libraries after setting language
+        from ..context import coreplugins, SETTINGS_DIRECTORY
+        from ..ui.treeplugin import TreePlugin
         librarydatabase.initialize_database()
         self.preferences = Preferences(self.settings)
         self.namespace = Namespace(self.settings)
@@ -102,7 +121,7 @@ class RIDE(wx.App):
         except Exception as e:
             print(f"RIDE: There was a problem loading panels position."
                   f" Please delete the definition 'AUI NB Perspective' in "
-                  f"{os.path.join(context.SETTINGS_DIRECTORY, 'settings.cfg')}")
+                  f"{os.path.join(SETTINGS_DIRECTORY, 'settings.cfg')}")
             if not isinstance(e, IndexError):  # If is with all notebooks disabled, continue
                 raise e
         self.treeplugin = TreePlugin(self)
@@ -134,6 +153,8 @@ class RIDE(wx.App):
         PUBLISHER.subscribe(self.SetGlobalColour, RideSettingsChanged)
         PUBLISHER.subscribe(self.update_excludes, RideSettingsChanged)
         RideSettingsChanged(keys=('Excludes', 'init'), old=None, new=None).publish()
+        PUBLISHER.subscribe(self.change_locale, RideSettingsChanged)
+        RideSettingsChanged(keys=('General', 'ui interface'), old=None, new=None).publish()
         return True
 
     @staticmethod
@@ -281,19 +302,50 @@ class RIDE(wx.App):
                 w.SetFont(font)
             """
 
+    def change_locale(self, message):
+        if message.keys[0] != "General":
+            return
+        if languages:
+            from ..preferences import Languages
+            names = [n for n in Languages.names]
+        else:
+            names = [('English', 'en', wx.LANGUAGE_ENGLISH)]
+        general = self.settings.get('General', None)
+        language = general.get('ui language', 'English')
+        try:
+            idx = [lang[0] for lang in names].index(language)
+        except (IndexError, ValueError):
+            print(f"DEBUG: application.py RIDE change_locale ERROR: Could not find {language=}")
+            idx = None
+        if idx:
+            code = names[idx][2]
+        else:
+            code = wx.LANGUAGE_ENGLISH
+        del self._locale
+        self._locale = wx.Locale(code)
+        if self._locale.IsOk():
+            lpath = Path(__file__).parent.absolute()
+            lpath = str(Path(Path.joinpath(lpath.parent, 'locale')).absolute())
+            wx.Locale.AddCatalogLookupPathPrefix(lpath)
+            self._locale.AddCatalog('RIDE')
+        else:
+            self._locale = wx.Locale(wx.LANGUAGE_ENGLISH_US)
+
     @staticmethod
     def update_excludes(message):
         if message.keys[0] != "Excludes":
             return
         from ..preferences.excludes_class import Excludes
-        excludes = Excludes(context.SETTINGS_DIRECTORY)
+        from ..context import SETTINGS_DIRECTORY
+        excludes = Excludes(SETTINGS_DIRECTORY)
         paths = excludes.get_excludes().split()
         if paths:
             RideFSWatcherHandler.exclude_listening(paths)
 
     @staticmethod
     def _publish_system_info():
-        publish.RideLogMessage(context.SYSTEM_INFO).publish()
+        from ..context import SYSTEM_INFO
+        publish.RideLogMessage(SYSTEM_INFO).publish()
 
     @property
     def model(self):
@@ -328,7 +380,7 @@ class RIDE(wx.App):
         if robot_found:
             system_encoding = get_system_encoding()
             rf_file, rf_version = output.strip().split(b", ")
-            publish.RideLogMessage("Found Robot Framework version %s from %s." % (
+            publish.RideLogMessage(_("Found Robot Framework version %s from %s.") % (
                 str(rf_version, system_encoding), str(os.path.dirname(rf_file), system_encoding))).publish()
             return rf_version
         else:

@@ -13,6 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import builtins
 import re
 
 import wx
@@ -24,13 +25,16 @@ from ..controller.ctrlcommands import ChangeTag
 from ..publish import RideOpenTagSearch
 from ..widgets import ButtonWithHandler, PopupMenuItems, RIDEDialog
 
+_ = wx.GetTranslation  # To keep linter/code analyser happy
+builtins.__dict__['_'] = wx.GetTranslation
+
 
 class ViewAllTagsDialog(RIDEDialog, listmix.ColumnSorterMixin):
 
     def __init__(self, controller, frame):
         style = wx.SYSTEM_MENU | wx.CAPTION | wx.CLOSE_BOX | wx.CLIP_CHILDREN | \
                 wx.FRAME_FLOAT_ON_PARENT
-        RIDEDialog.__init__(self, parent=frame, title="View all tags", size=(500, 400), style=style)
+        RIDEDialog.__init__(self, parent=frame, title=_("View all tags"), size=(500, 400), style=style)
         self.SetBackgroundColour(Colour(self.color_background))
         self.SetForegroundColour(Colour(self.color_foreground))
         # set Left to Right direction (while we don't have localization)
@@ -69,20 +73,22 @@ class ViewAllTagsDialog(RIDEDialog, listmix.ColumnSorterMixin):
         panel_tag_vw.SetSizer(sizer_tag_vw)
         self._tags_list = TagsListCtrl(panel_tag_vw, style=wx.LC_REPORT, color_bg=self.color_secondary_background,
                                        color_fg=self.color_secondary_foreground)
-        self._tags_list.InsertColumn(0, "Tag", width=200)
-        self._tags_list.InsertColumn(1, "Occurrences", width=25,
+        self._tags_list.InsertColumn(0, _("Tag"), width=200)
+        self._tags_list.InsertColumn(1, _("Occurrences"), width=25,
                                      format=wx.LIST_FORMAT_CENTER)
         self._tags_list.SetMinSize((450, 250))
         self._tags_list.set_dialog(self)
         sizer_tag_vw.Add(self._tags_list, 1, wx.ALL | wx.EXPAND, 3)
-        self._notebook.AddPage(panel_tag_vw, "The List")
+        self._notebook.AddPage(panel_tag_vw, _("The List"))
 
     def _build_controls(self):
-        self._clear_button = ButtonWithHandler(self, 'Refresh', self.on_clear)
-        self._show_tagged_tests_button = ButtonWithHandler(
-            self, 'Included Tag Search')
-        self._show_excluded_tests_button = ButtonWithHandler(
-            self, 'Excluded Tag Search')
+        self._clear_button = ButtonWithHandler(self, _('Refresh'), handler=self.on_clear)
+        self._show_tagged_tests_button = ButtonWithHandler(self, _('Included Tag Search'),
+                                                           mk_handler='Included Tag Search',
+                                                           handler=self.on_included_tag_search)
+        self._show_excluded_tests_button = ButtonWithHandler(self, _('Excluded Tag Search'),
+                                                             mk_handler='Excluded Tag Search',
+                                                             handler=self.on_excluded_tag_search)
         self._clear_button.SetBackgroundColour(Colour(self.color_secondary_background))
         self._clear_button.SetForegroundColour(Colour(self.color_secondary_foreground))
         self._show_tagged_tests_button.SetBackgroundColour(Colour(self.color_secondary_background))
@@ -138,10 +144,9 @@ class ViewAllTagsDialog(RIDEDialog, listmix.ColumnSorterMixin):
         self.SortListItems(self.sort_state[0], self.sort_state[1])
 
     def update_footer(self):
-        footer_string = ("Total tests %d, Tests with tags %d, Unique tags %d\n"
-                         "Currently selected tests %d") % \
-                        (self.total_test_cases, len(self.tagged_test_cases),
-                         self.unique_tags, len(self.selected_tests))
+        footer_string = (_("Total tests %d, Tests with tags %d, Unique tags %d\n"
+                           "Currently selected tests %d")) % (self.total_test_cases, len(self.tagged_test_cases),
+                                                              self.unique_tags, len(self.selected_tests))
         self._footer_text.SetLabel(footer_string)
 
     def show_dialog(self):
@@ -197,26 +202,26 @@ class ViewAllTagsDialog(RIDEDialog, listmix.ColumnSorterMixin):
         return tags
 
     def on_included_tag_search(self, event):
-        _ = event
+        __ = event
         included_tags = self._add_checked_tags_into_list()
         RideOpenTagSearch(includes=' '.join(included_tags),
                           excludes='').publish()
 
     def on_excluded_tag_search(self, event):
-        _ = event
+        __ = event
         excluded_tags = self._add_checked_tags_into_list()
         RideOpenTagSearch(includes='',
                           excludes=' '.join(excluded_tags)).publish()
 
     def on_clear(self, event):
-        _ = event
+        __ = event
         self._execute()
         for _, tests in self._results:
             self.tree.DeselectTests(tests)
         self.update_footer()
 
     def on_select_all(self, event):
-        _ = event
+        __ = event
         all_tests = []
         for _, tests in self._results:
             all_tests += tests
@@ -225,9 +230,8 @@ class ViewAllTagsDialog(RIDEDialog, listmix.ColumnSorterMixin):
 
     def on_right_click(self, event):
         self._index = event.GetIndex()
-        menu_items = ["Select all", "Clear", "---", "Rename", "Delete", "---",
-                      "Show tests with this tag",
-                      "Show tests without this tag"]
+        menu_items = [_("Select all"), _("Clear"), "---", _("Rename"), _("Delete"), "---",
+                      _("Show tests with this tag"), _("Show tests without this tag")]
         self.tree._popup_creator.show(self, PopupMenuItems(self, menu_items), self._controller)
 
     def on_select_item(self, event):
@@ -235,27 +239,27 @@ class ViewAllTagsDialog(RIDEDialog, listmix.ColumnSorterMixin):
         self._tags_list.CheckItem(self._index, not self._tags_list.IsChecked(self._index))
 
     def on_show_tests_with_this_tag(self, event):
-        _ = event
+        __ = event
         if self._index == -1:
             return
         _, tag_name = self._tags_list.get_tag(self._index)
         RideOpenTagSearch(includes=tag_name, excludes="").publish()
 
     def on_show_tests_without_this_tag(self, event):
-        _ = event
+        __ = event
         if self._index == -1:
             return
         _, tag_name = self._tags_list.get_tag(self._index)
         RideOpenTagSearch(includes="", excludes=tag_name).publish()
 
     def on_rename(self, event):
-        _ = event
+        __ = event
         if self._index == -1:
             return
         tests, tag_name = self._tags_list.get_tag(self._index)
         tags_to_rename = self._tags[tag_name.lower()]
-        name = wx.GetTextFromUser(message="Renaming tag '%s'." % tag_name, default_value=tag_name,
-                                  caption='Rename').strip()
+        name = wx.GetTextFromUser(message=_("Renaming tag '%s'.") % tag_name, default_value=tag_name,
+                                  caption=_('Rename')).strip()
         if name:
             for tag in tags_to_rename:
                 tag.controller.execute(ChangeTag(tag, name))
@@ -264,13 +268,12 @@ class ViewAllTagsDialog(RIDEDialog, listmix.ColumnSorterMixin):
                 self.tree.DeselectTests(tests)
 
     def on_delete(self, event):
-        _ = event
+        __ = event
         if self._index == -1:
             return
         tests, tag_name = self._tags_list.get_tag(self._index)
         tags_to_delete = self._tags[tag_name.lower()]
-        if wx.MessageBox(
-            "Delete a tag '%s' ?" % tag_name, caption='Confirm',
+        if wx.MessageBox(_("Delete a tag '%s' ?") % tag_name, caption=_('Confirm'),
                 style=wx.YES_NO | wx.ICON_QUESTION) == wx.YES:
             for tag in tags_to_delete:
                 tag.controller.execute(ChangeTag(tag, ''))

@@ -64,7 +64,7 @@ class _PopupWindowBase(wx.Frame):
             self.Show()
 
     def hide(self, event=None):
-        _ = event
+        __ = event
         self.Show(False)
 
     @property

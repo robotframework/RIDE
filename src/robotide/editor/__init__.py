@@ -13,6 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import builtins
 import wx
 
 from .editorcreator import EditorCreator
@@ -21,8 +22,35 @@ from ..publish import (RideTreeSelection, RideNotebookTabChanging, RideNotebookT
 from ..publish.messages import RideDataFileRemoved
 from ..widgets import PopupCreator
 
-_EDIT = """
-[Edit]
+_ = wx.GetTranslation  # To keep linter/code analyser happy
+builtins.__dict__['_'] = wx.GetTranslation
+
+_EDIT = _("""[Edit]
+&Undo | Undo last modification | Ctrlcmd-Z
+&Redo | Redo modification | Ctrlcmd-Y
+---
+Cu&t | Cut | Ctrlcmd-X
+&Copy | Copy | Ctrlcmd-C
+&Paste | Paste | Ctrlcmd-V
+&Insert | Insert | Shift-Ctrl-V
+&Delete | Delete  | Del
+---
+Comment Rows | Comment selected rows | Ctrlcmd-3
+Comment Cells | Comment cells with # | Ctrlcmd-Shift-3
+Uncomment Rows | Uncomment selected rows | Ctrlcmd-4
+Uncomment Cells | Uncomment cells with # | Ctrlcmd-Shift-4
+---
+Insert Cells | Insert Cells | Ctrlcmd-Shift-I
+Delete Cells | Delete Cells | Ctrlcmd-Shift-D
+Insert Rows | Insert Rows | Ctrlcmd-I
+Delete Rows | Delete Rows | Ctrlcmd-D
+Move Rows Up | Move Rows Up | Alt-Up
+Move Rows Down | Move Rows Down | Alt-Down
+[Tools]
+Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword and variable completions | | | POSITION-70
+""")
+
+_EDIT_nt = """[Edit]
 &Undo | Undo last modification | Ctrlcmd-Z
 &Redo | Redo modification | Ctrlcmd-Y
 ---
@@ -64,7 +92,7 @@ class EditorPlugin(Plugin, TreeAwarePluginMixin):
     def enable(self):
         self._creator.register_editors()
         self._show_editor()
-        self.register_actions(action_info_collection(_EDIT, self._tab, self._tab))
+        self.register_actions(action_info_collection(_EDIT, self._tab, data_nt=_EDIT_nt, container=self._tab))
         self.subscribe(self.on_tree_item_selected, RideTreeSelection)
         self.subscribe(self.on_tab_changed, RideNotebookTabChanged)
         self.subscribe(self.on_tab_changing, RideNotebookTabChanging)
@@ -135,7 +163,7 @@ class EditorPlugin(Plugin, TreeAwarePluginMixin):
         return Plugin.get_selected_datafile(self)
 
     def on_open_editor(self, event):
-        _ = event
+        __ = event
         self._show_editor()
 
     def on_tab_changed(self, message):
@@ -188,89 +216,88 @@ class _EditorTab(wx.Panel):
         self.Show(False)
 
     def on_save(self, event):
-        _ = event
+        __ = event
         self.plugin.save_selected_datafile()
 
     def on_undo(self, event):
-        _ = event
+        __ = event
         self.editor.undo()
 
     def on_redo(self, event):
-        _ = event
+        __ = event
         self.editor.redo()
 
     def on_cut(self, event):
-        _ = event
+        __ = event
         self.editor.cut()
 
     def on_copy(self, event):
-        _ = event
+        __ = event
         self.editor.copy()
 
     def on_paste(self, event):
-        _ = event
+        __ = event
         self.editor.paste()
 
     def on_insert(self, event):
-        _ = event
+        __ = event
         self.editor.insert()
 
     def on_insert_cells(self, event):
-        _ = event
+        __ = event
         self.editor.insert_cells()
 
     def on_delete_cells(self, event):
-        _ = event
+        __ = event
         # print("DEBUG init delete cells call")
         self.editor.delete_cells()
 
     def on_insert_rows(self, event):
-        _ = event
+        __ = event
         self.editor.insert_rows()
 
     def on_delete_rows(self, event):
-        _ = event
-        print(f"DEBUG: Editor __ini__  called {event}")
+        __ = event
         wx.CallAfter(self.editor.delete_rows)
 
     def on_move_rows_up(self, event):
-        _ = event
+        __ = event
         self.editor.on_move_rows_up()
 
     def on_move_rows_down(self, event):
-        _ = event
+        __ = event
         self.editor.on_move_rows_down()
 
     def on_delete(self, event):
-        _ = event
+        __ = event
         self.editor.delete()
 
     def on_comment_rows(self, event):
-        _ = event
+        __ = event
         self.editor.comment_rows()
 
     def on_uncomment_rows(self, event):
-        _ = event
+        __ = event
         self.editor.uncomment_rows()
 
     def on_sharp_comment_rows(self, event):
-        _ = event
+        __ = event
         self.editor.sharp_comment_rows()
 
     def on_sharp_uncomment_rows(self, event):
-        _ = event
+        __ = event
         self.editor.sharp_uncomment_rows()
 
     def on_comment_cells(self, event):
-        _ = event
+        __ = event
         self.editor.comment_cells()
 
     def on_uncomment_cells(self, event):
-        _ = event
+        __ = event
         self.editor.uncomment_cells()
 
     def on_content_assistance(self, event):
-        _ = event
+        __ = event
         self.editor.show_content_assist()
 
     def save(self, message=None):

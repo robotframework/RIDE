@@ -13,6 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import builtins
 import wx
 
 from abc import abstractmethod
@@ -28,6 +29,9 @@ from ..publish import (
 from ..usages.UsageRunner import ResourceFileUsages
 from ..widgets import (
     ButtonWithHandler, Label, HeaderLabel, HorizontalSizer, HtmlWindow)
+
+_ = wx.GetTranslation  # To keep linter/code analyser happy
+builtins.__dict__['_'] = wx.GetTranslation
 
 LIGHT_GREY = 'light grey'
 
@@ -72,6 +76,10 @@ class EditorPanel(wx.Panel):
         self.SetForegroundColour(Colour(self.color_foreground))
         self.plugin = plugin
         self.controller = controller
+        try:
+            self.language = controller.datafile_controller.language
+        except AttributeError:
+            self.language = ['en']
         self._tree = tree
 
     def tree_item_selected(self, item):
@@ -118,7 +126,7 @@ class _RobotTableEditor(EditorPanel):
                 editor.update_value()
 
     def on_idle(self, event):
-        _ = event
+        __ = event
         if self._last_shown_tooltip and self._mouse_outside_tooltip():
             self._last_shown_tooltip.hide()
             self._reset_last_show_tooltip()
@@ -151,7 +159,7 @@ class _RobotTableEditor(EditorPanel):
 
     def _create_header(self, text, readonly=False):
         if readonly:
-            text += ' (READ ONLY)'
+            text += _(' (READ ONLY)')
         self._title_display = HeaderLabel(self, text)
         return self._title_display
 
@@ -213,7 +221,7 @@ class Settings(wx.CollapsiblePane):
 
     def __init__(self, parent):
         wx.CollapsiblePane.__init__(
-            self, parent, wx.ID_ANY, 'Settings',
+            self, parent, wx.ID_ANY, _('Settings'),
             style=wx.CP_DEFAULT_STYLE | wx.CP_NO_TLW_RESIZE)
         from ..preferences import RideSettings
         _settings = RideSettings()
@@ -332,7 +340,7 @@ class _FileEditor(_RobotTableEditor):
     def _create_source_label(self, source):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         sizer.Add((5, 0))
-        sizer.Add(Label(self, label='Source', size=(context.SETTING_LABEL_WIDTH,
+        sizer.Add(Label(self, label=_('Source'), size=(context.SETTING_LABEL_WIDTH,
                                                     context.SETTING_ROW_HEIGHT)))
         self._source = wx.TextCtrl(self, style=wx.TE_READONLY | wx.NO_BORDER)
         self._source.SetBackgroundColour(Colour(self.color_background))
@@ -370,7 +378,7 @@ class FindUsagesHeader(HorizontalSizer):
         HorizontalSizer.__init__(self)
         self._header = HeaderLabel(parent, header)
         self.add_expanding(self._header)
-        self.add_sizer(ButtonWithHandler(parent, 'Find Usages', usages_callback,
+        self.add_sizer(ButtonWithHandler(parent, _('Find Usages'), handler=usages_callback,
                                          color_secondary_foreground=color_foreground,
                                          color_secondary_background=color_background))
 
@@ -383,10 +391,10 @@ class ResourceFileEditor(_FileEditor):
 
     def _create_header(self, text, readonly=False):
         if readonly:
-            text += ' (READ ONLY)'
+            text += _(' (READ ONLY)')
 
         def cb(event):
-            _ = event
+            __ = event
             ResourceFileUsages(self.controller, self._tree.highlight).show()
         self._title_display = FindUsagesHeader(self, text, cb, color_foreground=self.color_secondary_foreground,
                                                color_background=self.color_secondary_background)

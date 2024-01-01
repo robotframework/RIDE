@@ -14,11 +14,16 @@
 #  limitations under the License.
 
 import atexit
+import builtins
 import sys
+import wx
 
 from ..pluginapi import Plugin
 from ..action import ActionInfo
 from ..postinstall import __main__ as postinstall
+
+_ = wx.GetTranslation  # To keep linter/code analyser happy
+builtins.__dict__['_'] = wx.GetTranslation
 
 
 class ShortcutPlugin(Plugin):
@@ -46,13 +51,13 @@ class ShortcutPlugin(Plugin):
 
     def _create_menu(self):
         self.unregister_actions()
-        self.register_action(ActionInfo('Tools',
-                                        'Create RIDE Desktop Shortcut',
+        self.register_action(ActionInfo(_('Tools'),
+                                        _('Create RIDE Desktop Shortcut'),
                                         self.on_view_shortcut_create,
                                         position=85))
 
     def on_view_shortcut_create(self, event):
-        _ = event
+        __ = event
         self.call_creator(self.notebook)
         # self.disable()
 

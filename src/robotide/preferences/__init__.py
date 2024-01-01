@@ -21,6 +21,25 @@ from .saving import SavingPreferences
 from .settings import Settings, initialize_settings, RideSettings
 from ..ui import ExcludePreferences
 
+import wx
+
+
+class Languages:
+    names = [('Bulgarian', 'bg', wx.LANGUAGE_BULGARIAN), ('Bosnian', 'bs', wx.LANGUAGE_BOSNIAN),
+             ('Czech', 'cs', wx.LANGUAGE_CZECH), ('German', 'de', wx.LANGUAGE_GERMAN),
+             ('English', 'en', wx.LANGUAGE_ENGLISH), ('Spanish', 'es', wx.LANGUAGE_SPANISH),
+             ('Finnish', 'fi', wx.LANGUAGE_FINNISH), ('French', 'fr', wx.LANGUAGE_FRENCH),
+             ('Hindi', 'hi', wx.LANGUAGE_HINDI), ('Italian', 'it', wx.LANGUAGE_ITALIAN),
+             ('Dutch', 'nl', wx.LANGUAGE_DUTCH), ('Polish', 'pl', wx.LANGUAGE_POLISH),
+             ('Portuguese', 'pt', wx.LANGUAGE_PORTUGUESE),
+             ('Brazilian Portuguese', 'pt-BR', wx.LANGUAGE_PORTUGUESE_BRAZILIAN),
+             ('Romanian', 'ro', wx.LANGUAGE_ROMANIAN), ('Russian', 'ru', wx.LANGUAGE_RUSSIAN),
+             ('Swedish', 'sv', wx.LANGUAGE_SWEDISH), ('Thai', 'th', wx.LANGUAGE_THAI),
+             ('Turkish', 'tr', wx.LANGUAGE_TURKISH), ('Ukrainian', 'uk', wx.LANGUAGE_UKRAINIAN),
+             ('Vietnamese', 'vi', wx.LANGUAGE_VIETNAMESE),
+             ('Chinese Simplified', 'zh-CN', wx.LANGUAGE_CHINESE_SIMPLIFIED),
+             ('Chinese Traditional', 'zh-TW', wx.LANGUAGE_CHINESE_TRADITIONAL)]
+
 
 class Preferences(object):
 

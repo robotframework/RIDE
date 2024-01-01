@@ -12,7 +12,7 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-
+import builtins
 import string
 from io import StringIO, BytesIO
 from time import time
@@ -20,8 +20,9 @@ from time import time
 import wx
 from wx import stc, Colour
 from wx.adv import HyperlinkCtrl, EVT_HYPERLINK
+from multiprocessing import shared_memory
 from .popupwindow import HtmlPopupWindow
-from . import _EDIT
+from . import _EDIT, _EDIT_nt
 from .. import robotapi
 from ..context import IS_WINDOWS, IS_MAC
 from ..controller.ctrlcommands import SetDataFile, INDENTED_START
@@ -37,10 +38,22 @@ from ..publish.messages import RideMessage
 from ..widgets import TextField, Label, HtmlDialog
 from ..widgets import VerticalSizer, HorizontalSizer, ButtonWithHandler, RIDEDialog
 
-try:  # import installed version first
-    from pygments.lexers import robotframework as robotframeworklexer
-except ImportError:
-    robotframeworklexer = None
+from robotide.lib.compat.parsing.language import Language
+robotframeworklexer = None
+if Language:
+    try:  # import our modified version
+        from robotide.lib.compat.pygments import robotframework as robotframeworklexer
+    except ImportError:
+        robotframeworklexer = None
+
+if not robotframeworklexer:
+    try:  # import original version
+        from pygments.lexers import robotframework as robotframeworklexer
+    except ImportError:
+        robotframeworklexer = None
+
+_ = wx.GetTranslation  # To keep linter/code analyser happy
+builtins.__dict__['_'] = wx.GetTranslation
 
 PLUGIN_NAME = 'Text Edit'
 TXT_NUM_SPACES = 'txt number of spaces'
@@ -54,6 +67,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         Plugin.__init__(self, application)
         self._editor_component = None
         self._tab = None
+        self._doc_language = None
         self._save_flag = 0  # See
         self.reformat = application.settings.get('reformat', False)
         self._register_shortcuts()
@@ -70,7 +84,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
 
     def enable(self):
         self._tab = self._editor
-        self.register_actions(action_info_collection(_EDIT, self._tab, self._tab))
+        self.register_actions(action_info_collection(_EDIT, self._tab, data_nt=_EDIT_nt, container=self._tab))
         self.subscribe(self.on_tree_selection, RideTreeSelection)
         self.subscribe(self.on_data_changed, RideMessage)
         self.subscribe(self.on_tab_change, RideNotebookTabChanging)
@@ -109,7 +123,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         self._editor_component = None
 
     def on_open(self, event):
-        _ = event
+        __ = event
         self._open()
 
     def _open(self):
@@ -117,17 +131,24 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         if datafile_controller:
             self._save_flag = 0
             """ DEBUG: To be used in Localization
-            if hasattr(datafile_controller, 'preamble'):  # DEBUG: Is failing at resource files
-                print(f"DEBUG: texteditor _open preamble={datafile_controller.preamble}")
-            self._open_data_for_controller(datafile_controller)
             """
+            # if hasattr(datafile_controller, 'preamble'):  # DEBUG: Is failing at resource files
+            #     print(f"DEBUG: texteditor _open preamble={datafile_controller.preamble}")
+            if hasattr(datafile_controller, 'language'):
+                self._doc_language = datafile_controller.language
+                self._editor.language = datafile_controller.language
+                # print(f"DEBUG: texteditor _open language={datafile_controller.language}")
+            self._open_data_for_controller(datafile_controller)
             self._editor.store_position()
 
     def on_data_changed(self, message):
         """ This block is now inside try/except to avoid errors from unit test """
         try:
-            # print(f"DEBUG: textedit OnDataChanged message={message}")
+            if self.is_focused() and isinstance(message, RideDataChangedToDirty):
+                # print("DEBUG: textedit OnDataChanged returning RideDataChangedToDirty")
+                return
             if self._should_process_data_changed_message(message):
+                # print(f"DEBUG: textedit after _should_process_data_changed_message save_flag={self._save_flag}")
                 if isinstance(message, RideOpenSuite):  # Not reached
                     self._editor.reset()
                     self._editor.set_editor_caret_position()
@@ -162,10 +183,11 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
 
     @staticmethod
     def _should_process_data_changed_message(message):
-        return isinstance(message, (RideDataChanged, RideBeforeSaving, RideSaved, RideSaving, RideDataDirtyCleared))\
-                          and not isinstance(message, RideDataChangedToDirty)
+        return isinstance(message, (RideDataChanged, RideBeforeSaving, RideSaved, RideSaving, RideDataDirtyCleared))
+        # and not isinstance(message, RideDataChangedToDirty))
 
     def on_tree_selection(self, message):
+        # print(f"DEBUG: texteditor.py TextEditorPlugin on_tree_selection ENTER type={type(message.item)}")
         self._editor.store_position()
         if self.is_focused():
             next_datafile_controller = message.item and message.item.datafile_controller
@@ -196,15 +218,21 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
     def _open_tree_selection_in_editor(self):
         try:
             datafile_controller = self.tree.get_selected_datafile_controller()
+            if datafile_controller:
+                self._editor.language = datafile_controller.language
         except AttributeError:
             return
         if datafile_controller:
-            self._editor.open(DataFileWrapper(datafile_controller, self.global_settings))
+            self._editor.language = datafile_controller.language
+            self.global_settings['language'] = datafile_controller.language
+            self._editor.open(DataFileWrapper(datafile_controller, self.global_settings, self._editor.language))
             self._editor.source_editor.readonly = not datafile_controller.is_modifiable()
         self._editor.set_editor_caret_position()
 
     def _open_data_for_controller(self, datafile_controller):
-        self._editor.selected(DataFileWrapper(datafile_controller, self.global_settings))
+        self._editor.language = datafile_controller.language
+        self.global_settings['language'] = datafile_controller.language
+        self._editor.selected(DataFileWrapper(datafile_controller, self.global_settings, self._editor.language))
         self._editor.source_editor.readonly = not datafile_controller.is_modifiable()
 
     def on_tab_change(self, message):
@@ -221,7 +249,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
             self._editor_component.content_save()
 
     def on_tab_changed(self, event):
-        _ = event
+        __ = event
         self._show_editor()
         event.Skip()
 
@@ -272,8 +300,9 @@ class DataValidationHandler(object):
 
     def validate_and_update(self, data, text):
         m_text = text.decode("utf-8")
-        if not self._sanity_check(data, m_text):
-            handled = self._handle_sanity_check_failure()
+        result = self._sanity_check(data, m_text)
+        if isinstance(result, tuple):
+            handled = self._handle_sanity_check_failure(result)
             if not handled:
                 return False
         self._editor.reset()
@@ -290,15 +319,38 @@ class DataValidationHandler(object):
         return True
 
     def _sanity_check(self, data, text):
+        """
         # First remove all lines starting with #
         for line in text.split('\n'):
             comment = line.strip().startswith('#')
             if comment:
                 text = text.replace(line, '')
+        """
+        from robotide.lib.compat.parsing import ErrorReporter
+        from robot.parsing.parser.parser import get_model
+        from robotide.lib.robot.errors import DataError
+
+        # print(f"DEBUG: textedit.py _sanity_check data is type={type(data)}")
+        model = get_model(text)
+        # print(f"DEBUG: textedit.py _sanity_check model is {model}")
+        validator = ErrorReporter()
+        result = None
+        try:
+            validator.visit(model)
+        except DataError as err:
+            result = (err.message, err.details)
+        model.save("/tmp/model_saved_from_RIDE.robot")
+        # print(f"DEBUG: textedit.py _sanity_check after calling validator {validator}\n"
+        #       f"Save model in /tmp/model_saved_from_RIDE.robot"
+        #       f" result={result}")
+        return True if not result else result
+
+        """ DEBUG
         formatted_text = data.format_text(text)
         c = self._normalize(formatted_text)
         e = self._normalize(text)
         return len(c) == len(e)
+        """
 
     @staticmethod
     def _normalize(text):
@@ -307,14 +359,14 @@ class DataValidationHandler(object):
                 text = text.replace(item, '')
         return text
 
-    def _handle_sanity_check_failure(self):
+    def _handle_sanity_check_failure(self, message):
         if self._last_answer == wx.ID_NO and time() - self._last_answer_time <= 0.2:
             # self.source_editor._mark_file_dirty(True)
             return False
         # DEBUG: use widgets.Dialog
-        dlg = wx.MessageDialog(self._editor, 'ERROR: Data sanity check failed!\n'
-                                             'Reset changes?',
-                               'Can not apply changes from Txt Editor', style=wx.YES | wx.NO)
+        dlg = wx.MessageDialog(self._editor, f"{_('ERROR: Data sanity check failed!')}\n{_('Error at line')}"
+                                             f" {message[1]}:\n{message[0]}\n\n{_('Reset changes?')}",
+                               _("Can not apply changes from Text Editor"), style=wx.YES | wx.NO)
         dlg.InheritAttributes()
         did = dlg.ShowModal()
         self._last_answer = did
@@ -329,10 +381,11 @@ class DataValidationHandler(object):
 
 class DataFileWrapper(object):  # DEBUG: bad class name
 
-    def __init__(self, data, settings):
+    def __init__(self, data, settings, language=None):
         self.wrapper_data = data
         self._settings = settings
         self._tab_size = self._settings.get(TXT_NUM_SPACES, 2) if self._settings else 2
+        self._doc_language = language
 
     def __eq__(self, other):
         if other is None:
@@ -374,7 +427,8 @@ class DataFileWrapper(object):  # DEBUG: bad class name
 
     def _txt_data(self, data):
         output = StringIO()
-        data.save(output=output, format='txt', txt_separating_spaces=self._settings.get(TXT_NUM_SPACES, 4))
+        data.save(output=output, fformat='txt', txt_separating_spaces=self._settings.get(TXT_NUM_SPACES, 4),
+                  language=self._doc_language)
         return output.getvalue()
 
 
@@ -394,6 +448,7 @@ class SourceEditor(wx.Panel):
         self._title = title
         self.tab_size = self.source_editor_parent.app.settings.get(TXT_NUM_SPACES, 4)
         self.reformat = self.source_editor_parent.app.settings.get('reformat', False)
+        self._doc_language = None
         self._create_ui(title)
         self._data = None
         self._position = 0  # Start at 0 if first time access
@@ -431,7 +486,7 @@ class SourceEditor(wx.Panel):
             if not editor_created:
                 self.SetSizer(VerticalSizer())
                 self._create_editor_toolbar()
-                self._create_editor_text_control()
+                self._create_editor_text_control(language=self.language)
                 self.source_editor_parent.add_tab(self, title, allow_closing=False)
 
     def _create_editor_toolbar(self):
@@ -439,7 +494,8 @@ class SourceEditor(wx.Panel):
         # text about syntax colorization
         self.editor_toolbar = HorizontalSizer()
         default_components = HorizontalSizer()
-        button = ButtonWithHandler(self, 'Apply Changes', handler=lambda e: self.content_save())
+        button = ButtonWithHandler(self, _('Apply Changes'),
+                                   handler=lambda e: self.plugin._apply_txt_changes_to_model())
         button.SetBackgroundColour(Colour(self.dlg.color_secondary_background))
         button.SetForegroundColour(Colour(self.dlg.color_secondary_foreground))
         default_components.add_with_padding(button)
@@ -454,7 +510,7 @@ class SourceEditor(wx.Panel):
         self.search_field.SetForegroundColour(Colour(self.dlg.color_secondary_foreground))
         self.search_field.Bind(wx.EVT_TEXT_ENTER, self.on_find)
         container_sizer.add_with_padding(self.search_field)
-        button = ButtonWithHandler(self, 'Search', handler=self.on_find)
+        button = ButtonWithHandler(self, _('Search'), handler=self.on_find)
         button.SetBackgroundColour(Colour(self.dlg.color_secondary_background))
         button.SetForegroundColour(Colour(self.dlg.color_secondary_foreground))
         container_sizer.add_with_padding(button)
@@ -464,10 +520,10 @@ class SourceEditor(wx.Panel):
     def create_syntax_colorization_help(self):
         if self._syntax_colorization_help_exists:
             return
-        label = Label(self, label="Syntax colorization disabled due to missing requirements.")
-        link = HyperlinkCtrl(self, -1, label="Get help", url="")
+        label = Label(self, label=_("Syntax colorization disabled due to missing requirements."))
+        link = HyperlinkCtrl(self, -1, label=_("Get help"), url="")
         link.Bind(EVT_HYPERLINK, self.show_help_dialog)
-        flags = wx.ALIGN_CENTER_VERTICAL | wx.ALIGN_RIGHT
+        flags = wx.ALIGN_RIGHT
         syntax_colorization_help_sizer = wx.BoxSizer(wx.VERTICAL)
         syntax_colorization_help_sizer.AddMany([
             (label, 0, flags),
@@ -479,8 +535,8 @@ class SourceEditor(wx.Panel):
 
     @staticmethod
     def show_help_dialog(event):
-        _ = event
-        content = """<h1>Syntax colorization</h1>
+        __ = event
+        content = _("""<h1>Syntax colorization</h1>
         <p>
         Syntax colorization for Text Edit uses <a href='https://pygments.org/'>Pygments</a> syntax highlighter.
         </p>
@@ -504,8 +560,8 @@ class SourceEditor(wx.Panel):
         <p>
         For more information about installing Pygments, <a href='https://pygments.org/download/'>see the site</a>.
         </p>
-        """
-        HtmlDialog("Getting syntax colorization", content).Show()
+        """)
+        HtmlDialog(_("Getting syntax colorization"), content).Show()
 
     def store_position(self, force=False):
         if self.source_editor:  # We don't necessarily need a data controller, was: "and self.datafile_controller:"
@@ -538,6 +594,14 @@ class SourceEditor(wx.Panel):
     @property
     def datafile_controller(self):
         return self._data.wrapper_data if self._data else None
+
+    @property
+    def language(self):
+        return self._doc_language
+
+    @language.setter
+    def language(self, flanguage):
+        self._doc_language = flanguage
 
     def on_find(self, event, forward=True):
         if self.source_editor:
@@ -595,7 +659,7 @@ class SourceEditor(wx.Panel):
             self.source_editor.ScrollToLine(self.source_editor.GetCurrentLine())
             self._search_field_notification.SetLabel('')
         else:
-            self._search_field_notification.SetLabel('No matches found.')
+            self._search_field_notification.SetLabel(_('No matches found.'))
 
     def locate_tree_item(self, item):
         """ item is object received from message """
@@ -628,7 +692,7 @@ class SourceEditor(wx.Panel):
         """
         if not self.is_focused():  # DEBUG was typing text when at Grid Editor
             return
-        _ = event
+        __ = event
         if self._showing_list:
             self._showing_list = False  # Avoid double calls
             return
@@ -666,6 +730,8 @@ class SourceEditor(wx.Panel):
     def open(self, data):
         self.reset()
         self._data = data
+        self.language = self._data._doc_language
+        # print(f"DEBUG: texteditor.py SourceEditor open ENTER language={self.language}")
         try:
             if isinstance(self._data.wrapper_data, ResourceFileController):
                 self._controller_for_context = DummyController(self._data.wrapper_data, self._data.wrapper_data)
@@ -679,13 +745,17 @@ class SourceEditor(wx.Panel):
             self.datafile = self.plugin.datafile
         if not self.source_editor:
             self._stored_text = self._data.content
+            self._create_editor_text_control(text=self._stored_text, language=self.language)
         else:
+            self.source_editor.set_language(self.language)
             self.source_editor.set_text(self._data.content)
             self.set_editor_caret_position()
 
     def selected(self, data):
         if not self.source_editor:
-            self._create_editor_text_control(self._stored_text)
+            self._create_editor_text_control(text=self._stored_text, language=self.language)
+        else:
+            self.source_editor.set_language(self.language)
         if self._data == data:
             return
         self.open(data)
@@ -827,7 +897,6 @@ class SourceEditor(wx.Panel):
             if not self._data_validator.validate_and_update(self._data, self.source_editor.utf8_text):
                 self.is_saving = False
                 return False
-        # self.GetFocus(None)
         return True
 
     """
@@ -846,28 +915,28 @@ class SourceEditor(wx.Panel):
     """
     # Callbacks taken from __init__.py
     def on_undo(self, event):
-        _ = event
+        __ = event
         self.undo()
 
     def on_redo(self, event):
-        _ = event
+        __ = event
         self.redo()
 
     def on_cut(self, event):
-        _ = event
+        __ = event
         self.cut()
 
     def on_copy(self, event):
-        _ = event
+        __ = event
         self.copy()
 
     def on_paste(self, event):
-        _ = event
+        __ = event
         self.paste()
 
     @staticmethod
     def on_insert(event):
-        _ = event
+        __ = event
         print(f"DEBUG: TextEditor called on_insert event={event}\n TO BE IMPLEMENTED")
         # self.insert_row()
 
@@ -949,8 +1018,8 @@ class SourceEditor(wx.Panel):
             self.store_position()
             self._stored_text = self.source_editor.GetText()
 
-    def _create_editor_text_control(self, text=None):
-        self.source_editor = RobotDataEditor(self)
+    def _create_editor_text_control(self, text=None, language=None):
+        self.source_editor = RobotDataEditor(self, language)
         self.Sizer.add_expanding(self.source_editor)
         self.Sizer.Layout()
         if text is not None:
@@ -965,7 +1034,7 @@ class SourceEditor(wx.Panel):
         # DEBUG: Add here binding for keyword help
 
     def LeaveFocus(self, event):
-        _ = event
+        __ = event
         self.source_editor.hide_kw_doc()
         self.source_editor.AcceptsFocusFromKeyboard()
         self.store_position()
@@ -1088,8 +1157,6 @@ class SourceEditor(wx.Panel):
             self.source_editor.show_kw_doc()
             event.Skip()
         else:
-            # if self.dirty and keycode >= ord(' '):
-            self.mark_file_dirty(self.source_editor.GetModify())
             event.Skip()
 
         # These commands are duplicated by global actions
@@ -1200,7 +1267,7 @@ class SourceEditor(wx.Panel):
         return open_symbol + value + close_symbol
 
     def move_row_up(self, event):
-        _ = event
+        __ = event
         start, end = self.source_editor.GetSelection()
         new_ini_line = ini_line = self.source_editor.LineFromPosition(start)
         new_end_line = end_line = self.source_editor.LineFromPosition(end)
@@ -1321,7 +1388,7 @@ class SourceEditor(wx.Panel):
         return idx
 
     def move_row_down(self, event):
-        _ = event
+        __ = event
         start, end = self.source_editor.GetSelection()
         new_ini_line = ini_line = self.source_editor.LineFromPosition(start)
         new_end_line = end_line = self.source_editor.LineFromPosition(end)
@@ -1390,7 +1457,7 @@ class SourceEditor(wx.Panel):
         self.source_editor.SetAnchor(nstartpos)
 
     def delete_row(self, event):
-        _ = event
+        __ = event
         start, end = self.source_editor.GetSelection()
         ini_line = self.source_editor.LineFromPosition(start)
         self.source_editor.SelectNone()
@@ -1404,7 +1471,7 @@ class SourceEditor(wx.Panel):
         self.store_position()
 
     def insert_row(self, event):
-        _ = event
+        __ = event
         start, end = self.source_editor.GetSelection()
         ini_line = self.source_editor.LineFromPosition(start)
         end_line = self.source_editor.LineFromPosition(end)
@@ -1421,7 +1488,7 @@ class SourceEditor(wx.Panel):
         self.store_position()
 
     def execute_comment(self, event):
-        _ = event
+        __ = event
         start, end = self.source_editor.GetSelection()
         cursor = self.source_editor.GetCurrentPos()
         ini_line = self.source_editor.LineFromPosition(start)
@@ -1459,7 +1526,7 @@ class SourceEditor(wx.Panel):
         self.store_position()
 
     def execute_uncomment(self, event):
-        _ = event
+        __ = event
         start, end = self.source_editor.GetSelection()
         cursor = self.source_editor.GetCurrentPos()
         ini_line = self.source_editor.LineFromPosition(start)
@@ -1501,7 +1568,7 @@ class SourceEditor(wx.Panel):
         self.store_position()
 
     def insert_cell(self, event):
-        _ = event
+        __ = event
         start, end = self.source_editor.GetSelection()
         ini_line = self.source_editor.LineFromPosition(start)
         end_line = self.source_editor.LineFromPosition(end)
@@ -1543,7 +1610,7 @@ class SourceEditor(wx.Panel):
         self.source_editor.SetAnchor(new_end)
 
     def delete_cell(self, event):
-        _ = event
+        __ = event
         start, end = self.source_editor.GetSelection()
         ini_line = self.source_editor.LineFromPosition(start)
         end_line = self.source_editor.LineFromPosition(end)
@@ -1621,7 +1688,7 @@ class SourceEditor(wx.Panel):
         return cellpos
 
     def execute_sharp_comment(self, event):
-        _ = event
+        __ = event
         start, end = self.source_editor.GetSelection()
         cursor = self.source_editor.GetCurrentPos()
         ini_line = self.source_editor.LineFromPosition(start)
@@ -1687,7 +1754,7 @@ class SourceEditor(wx.Panel):
         self.store_position()
 
     def execute_sharp_uncomment(self, event):
-        _ = event
+        __ = event
         start, end = self.source_editor.GetSelection()
         cursor = self.source_editor.GetCurrentPos()
         ini_line = self.source_editor.LineFromPosition(start)
@@ -1798,9 +1865,10 @@ class SourceEditor(wx.Panel):
 class RobotDataEditor(stc.StyledTextCtrl):
     margin = 1
 
-    def __init__(self, parent, readonly=False):
+    def __init__(self, parent, readonly=False, language=None):
         stc.StyledTextCtrl.__init__(self, parent)
         self.parent = parent
+        self.language = language
         self._plugin = parent.plugin
         self._settings = parent.source_editor_parent.app.settings
         self._information_popup = None
@@ -1866,16 +1934,20 @@ class RobotDataEditor(stc.StyledTextCtrl):
         self.EmptyUndoBuffer()
         self.SetMarginWidth(self.margin, self.calc_margin_width())
 
+    def set_language(self, dlanguage):
+        self.language = dlanguage
+        self.stylizer = RobotStylizer(self, self._settings, self.readonly, self.language)
+
     @property
     def utf8_text(self):
         return self.GetText().encode('UTF-8')
 
     def on_style(self, event):
-        _ = event
+        __ = event
         self.stylizer.stylize()
 
     def on_zoom(self, event):
-        _ = event
+        __ = event
         self.SetMarginWidth(self.margin, self.calc_margin_width())
         self._set_zoom()
 
@@ -2045,19 +2117,32 @@ class RobotDataEditor(stc.StyledTextCtrl):
 class FromStringIOPopulator(robotapi.populators.FromFilePopulator):
 
     def populate(self, content: [str, BytesIO], tab_size: int):
-        robotapi.RobotReader(spaces=tab_size).read(content, self)
+        try:
+            set_lang = shared_memory.ShareableList(name="language")
+            language = [set_lang[0]]
+        except AttributeError:
+            language = ['en']
+        robotapi.RobotReader(spaces=tab_size, lang=language).read(content, self)
 
 
 class RobotStylizer(object):
-    def __init__(self, editor, settings, readonly=False):
+    def __init__(self, editor, settings, readonly=False, language=None):
         self.tokens = {}
         self.editor = editor
         self.lexer = None
         self.settings = settings
         self._readonly = readonly
         self._ensure_default_font_is_valid()
+        try:
+            set_lang = shared_memory.ShareableList(name="language")
+        except AttributeError:  # Unittests fails here
+            set_lang = []
+        set_lang[0] = language[0] if language is not None else 'en'
+        self.language = [set_lang[0]]
+        options = {'language': self.language}
+        # print(f"DEBUG: texteditor.py RobotStylizer _init_ language={self.language}\n")
         if robotframeworklexer:
-            self.lexer = robotframeworklexer.RobotFrameworkLexer()
+            self.lexer = robotframeworklexer.RobotFrameworkLexer(**options)
         else:
             self.editor.GetParent().create_syntax_colorization_help()
         self.set_styles(self._readonly)
@@ -2179,6 +2264,7 @@ class RobotStylizer(object):
         self.editor.ConvertEOLs(2)
         shift = 0
         for position, token, value in self.lexer.get_tokens_unprocessed(self.editor.GetText()):
+            # print(f"DEBUG: texteditor.py RobotStylizer stylize token={token} value={value}")
             if wx.VERSION < (4, 1, 0):
                 self.editor.StartStyling(position + shift, 31)
             else:

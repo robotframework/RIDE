@@ -13,6 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import builtins
 import wx
 
 from ..controller.basecontroller import _BaseController
@@ -21,13 +22,16 @@ from ..action import ActionInfo, SeparatorInfo
 from ..run.configmanagerui import ConfigManagerDialog
 from ..run.ui import Runner
 
+_ = wx.GetTranslation  # To keep linter/code analyser happy
+builtins.__dict__['_'] = wx.GetTranslation
+
 
 class RunAnything(Plugin):
-    """A plugin for executing commands on the system.
+    __doc__ = _("""A plugin for executing commands on the system.
 
     This plugin enables creation of persistent run configurations and
     execution of those. Output of the executed command is displayed in a
-    separate tab."""
+    separate tab.""")
 
     def __init__(self, app):
         Plugin.__init__(self, app, default_settings={'configs': []})
@@ -47,16 +51,16 @@ class RunAnything(Plugin):
 
     def _create_menu(self, configs):
         self.unregister_actions()
-        self.register_action(ActionInfo('Macros', 'Manage Run Configurations',
+        self.register_action(ActionInfo(_('Macros'), _('Manage Run Configurations'),
                                         self.on_manage_configurations))
-        self.register_action(SeparatorInfo('Macros'))
+        self.register_action(SeparatorInfo(_('Macros')))
         for index, cfg in enumerate(configs):
             self._add_config_to_menu(cfg, index+1)
 
     def _add_config_to_menu(self, config, index):
         def run(event):
             Runner(config, self.notebook).run()
-        info = ActionInfo('Macros', name='%d: %s' % (index, config.name),
+        info = ActionInfo(_('Macros'), name='%d: %s' % (index, config.name),
                           doc=config.help, action=run)
         self.register_action(info)
 

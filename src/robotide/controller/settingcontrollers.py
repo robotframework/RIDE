@@ -651,7 +651,7 @@ class ResourceImportController(_ImportController):
         parts = self.name.rsplit('.', 1)
         if len(parts) == 1:
             return False
-        return parts[-1].lower() in ['html', 'txt', 'tsv', 'robot', 'resource']
+        return parts[-1].lower() in ['txt', 'tsv', 'robot', 'resource']
 
 
 class LibraryImportController(_ImportController):

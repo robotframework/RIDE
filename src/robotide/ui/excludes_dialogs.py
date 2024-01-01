@@ -84,7 +84,7 @@ class ExcludePreferences(PreferencesPanel):
         sizer.Add(status_and_button_sizer)
 
     def on_save(self, event):
-        _ = event
+        __ = event
         text = self._text_box.GetValue()
         self._settings.excludes.write_excludes(set(text.split('\n')))
         RideSettingsChanged(keys=('Excludes', 'saved'), old=None, new=None).publish()
@@ -94,7 +94,7 @@ class ExcludePreferences(PreferencesPanel):
 
     @staticmethod
     def on_help(event):
-        _ = event
+        __ = event
         dialog = ExcludeHelpDialog()
         dialog.Show()
 

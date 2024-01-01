@@ -118,7 +118,7 @@ class UserKeywordEditor(TestCaseEditor):
 
     def _create_header(self, text, readonly=False):
         def cb(event):
-            _ = event
+            __ = event
             Usages(self.controller, self._tree.highlight).show()
         return FindUsagesHeader(self, text, cb, color_foreground=self.color_secondary_foreground,
                                 color_background=self.color_secondary_background)

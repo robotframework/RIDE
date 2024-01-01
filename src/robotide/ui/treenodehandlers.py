@@ -156,19 +156,19 @@ class _ActionHandler:
         pass
 
     def on_select_all_tests(self, event):
-        _ = event
+        __ = event
         self._tree.SelectAllTests(self._node)
 
     def on_deselect_all_tests(self, event):
-        _ = event
+        __ = event
         self._tree.SelectAllTests(self._node, False)
 
     def on_select_only_failed_tests(self, event):
-        _ = event
+        __ = event
         self._tree.SelectFailedTests(self._node)
 
     def on_select_only_passed_tests(self, event):
-        _ = event
+        __ = event
         self._tree.SelectPassedTests(self._node)
 
     def on_safe_delete(self, event):
@@ -187,7 +187,7 @@ class _ActionHandler:
 class _CanBeRenamed(object):
 
     def on_rename(self, event):
-        _ = event
+        __ = event
         self._tree.label_editor.on_label_edit()
 
     def begin_label_edit(self):
@@ -261,17 +261,17 @@ class TestDataHandler(_ActionHandler):
         return False
 
     def on_sort_tests(self, event):
-        _ = event
+        __ = event
         """Sorts the tests inside the treenode"""
         self.controller.execute(SortTests())
 
     def on_sort_keywords(self, event):
-        _ = event
+        __ = event
         """Sorts the keywords inside the treenode"""
         self.controller.execute(ctrlcommands.SortKeywords())
 
     def on_sort_variables(self, event):
-        _ = event
+        __ = event
         """Sorts the variables inside the treenode"""
         self.controller.execute(SortVariables())
 
@@ -289,7 +289,7 @@ class TestDataHandler(_ActionHandler):
         self._rendered = True
 
     def on_change_format(self, event):
-        _ = event
+        __ = event
         ChangeFormatDialog(self.controller).execute()
 
     def on_new_user_keyword(self, event):
@@ -357,11 +357,11 @@ class TestDataDirectoryHandler(TestDataHandler):
                               _ActionHandler._label_collapse_all])
 
     def on_expand_all(self, event):
-        _ = event
+        __ = event
         self._tree.ExpandAllSubNodes(self._node)
 
     def on_collapse_all(self, event):
-        _ = event
+        __ = event
         self._tree.CollapseAllSubNodes(self._node)
 
     def on_new_suite(self, event):
@@ -449,7 +449,7 @@ class ResourceFileHandler(_FileHandlerThanCanBeRenamed, TestDataHandler):
                           'You must save data before excluding.')
 
     def on_remove_read_only(self, event):
-        _ = event
+        __ = event
 
         def return_true():
             return True
@@ -457,7 +457,7 @@ class ResourceFileHandler(_FileHandlerThanCanBeRenamed, TestDataHandler):
         self.controller.execute(ctrlcommands.RemoveReadOnly())
         
     def on_open_containing_folder(self, event):
-        _ = event
+        __ = event
         self.controller.execute(ctrlcommands.OpenContainingFolder())
 
     def on_find_usages(self, event):
@@ -518,7 +518,7 @@ class TestCaseFileHandler(_FileHandlerThanCanBeRenamed, TestDataHandler):
                           'You must save data before excluding.')
 
     def on_remove_read_only(self, event):
-        _ = event
+        __ = event
 
         def return_true():
             return True
@@ -526,7 +526,7 @@ class TestCaseFileHandler(_FileHandlerThanCanBeRenamed, TestDataHandler):
         self.controller.execute(ctrlcommands.RemoveReadOnly())
         
     def on_open_containing_folder(self, event):
-        _ = event
+        __ = event
         self.controller.execute(ctrlcommands.OpenContainingFolder())
 
     def on_new_test_case(self, event):
@@ -578,12 +578,12 @@ class _TestOrUserKeywordHandler(_CanBeRenamed, _ActionHandler):
         dlg.Destroy()
 
     def on_move_up(self, event):
-        _ = event
+        __ = event
         if self.controller.move_up():
             self._tree.move_up(self._node)
 
     def on_move_down(self, event):
-        _ = event
+        __ = event
         if self.controller.move_down():
             self._tree.move_down(self._node)
 
@@ -663,12 +663,12 @@ class VariableHandler(_CanBeRenamed, _ActionHandler):
         self.controller.execute(ctrlcommands.UpdateVariableName(new_name))
 
     def on_move_up(self, event):
-        _ = event
+        __ = event
         if self.controller.move_up():
             self._tree.move_up(self._node)
 
     def on_move_down(self, event):
-        _ = event
+        __ = event
         if self.controller.move_down():
             self._tree.move_down(self._node)
 
@@ -697,7 +697,7 @@ class ResourceRootHandler(_ActionHandler):
         return None
 
     def on_add_resource(self, event):
-        _ = event
+        __ = event
         path = RobotFilePathDialog(
             self._tree.GetParent(), self.controller, self._settings).execute()
         if path:

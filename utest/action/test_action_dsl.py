@@ -66,7 +66,7 @@ class TestActionInfoCollection(unittest.TestCase):
         handlers = HandlerMock(on_huba=HUBA_ACTION)
         infos = action_info_collection(data, handlers)
         assert infos[0].menu_name == 'Hopla'
-        _check_mac(infos[0].name, u'Huba  (Alt-D or Ctrl-H)', u'Huba  (\u2325D or \u2318H)')
+        _check_mac(infos[0].name, u'Huba (Alt-D or CtrlCmd-H)', u'Huba  (\u2325D or \u2318H)')
         assert infos[0].action == HUBA_ACTION
         assert infos[0].shortcut.value is None
 

@@ -61,7 +61,7 @@ class TestKeywordInfo(unittest.TestCase):
                           '[ arg1 | *args | namedarg1 | namedarg2=default value | **kwargs ]')
 
     def test_uk_arguments_parsing(self):
-        uk = UserKeyword(_FakeTestCaseFile(), 'My User keyword')
+        uk = UserKeyword(_FakeTestCaseFile(), 'My User keyword', ['en'])
         uk.args.value = ['${arg1}', '${arg2}=def', '@{varargs}']
         kw_info = TestCaseUserKeywordInfo(uk)
         exp_source = 'testcase.robot'
@@ -69,7 +69,7 @@ class TestKeywordInfo(unittest.TestCase):
         assert_in_details(kw_info, exp_source, exp_args)
 
     def test_resource_uk_longname(self):
-        uk = UserKeyword(KeywordTable(_FakeResourceFile()), 'UK')
+        uk = UserKeyword(KeywordTable(_FakeResourceFile(), ['en']), 'UK')
         kw_info = ResourceUserKeywordInfo(uk)
         self.assertEqual(kw_info.longname, 'resource.UK')
 

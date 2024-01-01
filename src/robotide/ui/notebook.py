@@ -101,7 +101,7 @@ class NoteBook(aui.AuiNotebook):
         event.Skip()
 
     def on_tab_changed(self, event):
-        _ = event
+        __ = event
         if not self._tab_changed():
             self._tab_closing = False
             return

@@ -22,7 +22,7 @@ class DataExtractor(object):
                                        (lambda t,n: False)
 
     def rows_from_table(self, table):
-        if table.type in ['setting', 'variable']:
+        if table.type in ['setting', 'variable', 'comments']:
             return self._rows_from_item(table)
         return self._rows_from_indented_table(table)
 
@@ -53,6 +53,9 @@ class DataExtractor(object):
                 for row in self._rows_from_item(child, indent+1):
                     yield row
                 # DEBUG Must be explicit yield ['', 'END']
+            if hasattr(child, 'is_comments'):
+                for row in child:
+                    yield row
 
     def _last(self, items, index):
         return index >= len(items) -1

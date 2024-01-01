@@ -46,6 +46,7 @@ You can safely manually remove these directories, except for the one
 being used for a currently running test.
 """
 import atexit
+import builtins
 import datetime
 import shutil
 import subprocess
@@ -83,6 +84,9 @@ from sys import getfilesystemencoding, platform
 from robotide.lib.robot.utils.encodingsniffer import (get_console_encoding,
                                                       get_system_encoding)
 
+_ = wx.GetTranslation  # To keep linter/code analyser happy
+builtins.__dict__['_'] = wx.GetTranslation
+
 CONSOLE_ENCODING = get_console_encoding()
 SYSTEM_ENCODING = get_system_encoding()
 OUTPUT_ENCODING = getfilesystemencoding()
@@ -91,8 +95,8 @@ encoding = {'CONSOLE': CONSOLE_ENCODING,
             'OUTPUT': OUTPUT_ENCODING}
 
 FONT_FACE = 'font face'
-STOP_RUNNING_TEST = 'Stop a running test'
-STEP_OVER = 'Step over'
+STOP_RUNNING_TEST = _('Stop a running test')
+STEP_OVER = _('Step over')
 ID_RUN = wx.NewIdRef()
 ID_RUNDEBUG = wx.NewIdRef()
 ID_STOP = wx.NewIdRef()
@@ -154,7 +158,7 @@ def open_filemanager(path=None):
 
 
 class TestRunnerPlugin(Plugin):
-    """A plugin for running tests from within RIDE"""
+    __doc__ = _("""A plugin for running tests from within RIDE""")
     defaults = {"auto_save": False,
                 "confirm run": True,
                 "profile_name": "robot",
@@ -222,13 +226,13 @@ class TestRunnerPlugin(Plugin):
             self.register_shortcut('Del', self._delete_pressed)
 
     def _delete_pressed(self, event):
-        _ = event
+        __ = event
         if self.notebook.current_page_title != self.title:
             return
         self.get_current_profile().delete_pressed()
 
     def _copy_from_log_ctrls(self, event):
-        _ = event
+        __ = event
         if self.notebook.current_page_title != self.title:
             return
         if self._console_log_ctrl.GetSTCFocus():
@@ -249,17 +253,17 @@ class TestRunnerPlugin(Plugin):
         self._create_temporary_directory()
 
     def _register_actions(self):
-        run_action_info = ActionInfo("Tools", "Run Tests", self.on_run, None,
+        run_action_info = ActionInfo(_("Tools"), _("Run Tests"), self.on_run, None,
                                      "F8", ImageProvider().TOOLBAR_PLAY,
-                                     "Run the selected tests", position=10)
+                                     _("Run the selected tests"), position=10)
         self._run_action = self.register_action(run_action_info)
-        run_action_debug = ActionInfo("Tools", "Run Tests with Debug",
+        run_action_debug = ActionInfo(_("Tools"), _("Run Tests with Debug"),
                                       self.on_run_debug, None,
                                       "F9", getBugIconBitmap(),
-                                      "Run the selected tests with Debug",
+                                      _("Run the selected tests with Debug"),
                                       position=8)
         self._run_action = self.register_action(run_action_debug)
-        stop_action_info = ActionInfo("Tools", "Stop Test Run", self.on_stop,
+        stop_action_info = ActionInfo(_("Tools"), _("Stop Test Run"), self.on_stop,
                                       None, "CtrlCmd-F8",
                                       ImageProvider().TOOLBAR_STOP,
                                       STOP_RUNNING_TEST, position=11)
@@ -341,46 +345,46 @@ class TestRunnerPlugin(Plugin):
         This sends a SIGINT to the running process, with the
         same effect as typing control-c when running from the
         command line."""
-        _ = event
+        __ = event
         self._reset_memory_calc()
-        self._append_to_console_log('[ SENDING STOP SIGNAL ]\n',
+        self._append_to_console_log(_('[ SENDING STOP SIGNAL ]\n'),
                                     source='stderr')
         self._test_runner.send_stop_signal()
 
     def on_pause(self, event):
-        _ = event
+        __ = event
         self._reset_memory_calc()
-        self._append_to_console_log('[ SENDING PAUSE SIGNAL ]\n')
+        self._append_to_console_log(_('[ SENDING PAUSE SIGNAL ]\n'))
         self._test_runner.send_pause_signal()
 
     def on_continue(self, event):
-        _ = event
+        __ = event
         self._reset_memory_calc()
-        self._append_to_console_log('[ SENDING CONTINUE SIGNAL ]\n')
+        self._append_to_console_log(_('[ SENDING CONTINUE SIGNAL ]\n'))
         self._test_runner.send_continue_signal()
 
     def on_step_next(self, event):
-        _ = event
+        __ = event
         self._reset_memory_calc()
-        self._append_to_console_log('[ SENDING STEP NEXT SIGNAL ]\n')
+        self._append_to_console_log(_('[ SENDING STEP NEXT SIGNAL ]\n'))
         self._test_runner.send_step_next_signal()
 
     def on_step_over(self, event):
-        _ = event
+        __ = event
         self._reset_memory_calc()
-        self._append_to_console_log('[ SENDING STEP OVER SIGNAL ]\n')
+        self._append_to_console_log(_('[ SENDING STEP OVER SIGNAL ]\n'))
         self._test_runner.send_step_over_signal()
 
     def on_run(self, event):
         """ Called when the user clicks or presses the F8, Run Tests """
-        _ = event
+        __ = event
         self._run_tests()
 
     def on_run_debug(self, event):
         """ Called when the user clicks or presses the F9, Run Tests with Debug
             It can still be overwritten in RIDE Arguments line
         """
-        _ = event
+        __ = event
         self._run_tests("DEBUG")
 
     def _run_tests(self, log_level='INFO'):
@@ -401,7 +405,7 @@ class TestRunnerPlugin(Plugin):
         self._initialize_variables_for_running(profile.get_settings(), command_args)
         self._initialize_ui_for_running()
         # DEBUG on Py3 it not shows correct if tags with latin chars
-        self._append_to_console_log("command: %s\n" % command)
+        self._append_to_console_log(_("command: %s\n") % command)
         try:
             self._test_runner.run_command(command, self._get_current_working_dir(profile))
             self._process_timer.Start(41)  # roughly 24fps
@@ -471,9 +475,9 @@ class TestRunnerPlugin(Plugin):
 
     @staticmethod
     def _ask_user_to_save_before_running():
-        ret = wx.MessageBox("""There are unsaved modifications.
-        Do you want to save all changes and run the tests?""",
-                            "Unsaved Modifications",
+        ret = wx.MessageBox(_("""There are unsaved modifications.
+        Do you want to save all changes and run the tests?"""),
+                            _("Unsaved Modifications"),
                             wx.ICON_QUESTION | wx.YES_NO)
         return ret == wx.YES
 
@@ -482,9 +486,9 @@ class TestRunnerPlugin(Plugin):
 
     @staticmethod
     def _ask_user_to_run_anyway():
-        ret = wx.MessageBox('No tests selected. \n'
-                            'Continue anyway?',
-                            'No tests selected',
+        ret = wx.MessageBox(_('No tests selected. \n'
+                            'Continue anyway?'),
+                            _('No tests selected'),
                             wx.ICON_QUESTION | wx.YES_NO)
         return ret == wx.YES
 
@@ -509,14 +513,14 @@ class TestRunnerPlugin(Plugin):
 
     def on_open_logs_directory(self, event):
         """Called when the user clicks on the "Open Logs Directory" button"""
-        _ = event
+        __ = event
         if os.path.exists(self._logs_directory):
             open_filemanager(self._logs_directory)
         else:
             self._notify_user_no_logs_directory()
 
     def on_show_report(self, event):
-        _ = event
+        __ = event
         """Called when the user clicks on the "Report" button"""
         if self._report_file:
             wx.LaunchDefaultBrowser(
@@ -524,12 +528,12 @@ class TestRunnerPlugin(Plugin):
 
     def on_show_log(self, event):
         """Called when the user clicks on the "Log" button"""
-        _ = event
+        __ = event
         if self._log_file:
             wx.LaunchDefaultBrowser("file:%s" % os.path.abspath(self._log_file))
 
     def on_process_ended(self, event):
-        _ = event
+        __ = event
         output, errors, log_message = self._test_runner.get_output_and_errors(
             self.get_current_profile())
         self._append_to_console_log(output)
@@ -541,7 +545,7 @@ class TestRunnerPlugin(Plugin):
         self._set_stopped()
         self._progress_bar.Stop()
         now = datetime.datetime.now().timetuple()
-        self._append_to_console_log("\nTest finished {}"
+        self._append_to_console_log(_("\nTest finished {}")
                                     .format(robottime.format_time(now)))
         self._test_runner.command_ended()
         if log_message:
@@ -567,7 +571,7 @@ class TestRunnerPlugin(Plugin):
 
     def on_timer(self, event):
         """Get process output"""
-        _ = event
+        __ = event
         if not self._log_message_queue.empty():
             if self._process.memory_info()[0] <= self._limitmemory:
                 texts = []
@@ -576,7 +580,7 @@ class TestRunnerPlugin(Plugin):
                 self._append_to_message_log('\n' + '\n'.join(texts))
             else:
                 if not self._maxmemmsg:
-                    self._maxmemmsg = '\n' + "Messages log exceeded 80% of process memory, stopping for now..."
+                    self._maxmemmsg = '\n' + _("Messages log exceeded 80% of process memory, stopping for now...")
                     self._append_to_message_log(self._maxmemmsg, "stderr")
         if not self._test_runner.is_running():
             self.on_process_ended(None)
@@ -734,29 +738,29 @@ class TestRunnerPlugin(Plugin):
                              style=wx.TB_HORIZONTAL | wx.TB_HORZ_TEXT | wx.TB_NODIVIDER)
         toolbar.SetBackgroundColour(self._mysettings.color_background)
         toolbar.SetForegroundColour(self._mysettings.color_foreground)
-        toolbar.AddTool(ID_RUN, "Start", ImageProvider().TOOLBAR_PLAY,
-                        wx.NullBitmap, wx.ITEM_NORMAL, shortHelp="Start robot",
-                        longHelp="Start running the robot test suite")
-        toolbar.AddTool(ID_RUNDEBUG, "Debug", getBugIconBitmap(), wx.NullBitmap,
-                        wx.ITEM_NORMAL, shortHelp="Start robot",
-                        longHelp="Start running the robot test suite "
-                                 "with DEBUG loglevel")
-        toolbar.AddTool(ID_STOP, "Stop", ImageProvider().TOOLBAR_STOP,
+        toolbar.AddTool(ID_RUN, _("Start"), ImageProvider().TOOLBAR_PLAY,
+                        wx.NullBitmap, wx.ITEM_NORMAL, shortHelp=_("Start robot"),
+                        longHelp=_("Start running the robot test suite"))
+        toolbar.AddTool(ID_RUNDEBUG, _("Debug"), getBugIconBitmap(), wx.NullBitmap,
+                        wx.ITEM_NORMAL, shortHelp=_("Start robot"),
+                        longHelp=_("Start running the robot test suite "
+                                   "with DEBUG loglevel"))
+        toolbar.AddTool(ID_STOP, _("Stop"), ImageProvider().TOOLBAR_STOP,
                         wx.NullBitmap, wx.ITEM_NORMAL,
                         shortHelp=STOP_RUNNING_TEST,
                         longHelp=STOP_RUNNING_TEST)
-        toolbar.AddTool(ID_PAUSE, "Pause", ImageProvider().TOOLBAR_PAUSE,
+        toolbar.AddTool(ID_PAUSE, _("Pause"), ImageProvider().TOOLBAR_PAUSE,
                         wx.NullBitmap, wx.ITEM_NORMAL,
-                        shortHelp="Pause test execution",
-                        longHelp="Pause test execution")
-        toolbar.AddTool(ID_CONTINUE, "Continue",
+                        shortHelp=_("Pause test execution"),
+                        longHelp=_("Pause test execution"))
+        toolbar.AddTool(ID_CONTINUE, _("Continue"),
                         ImageProvider().TOOLBAR_CONTINUE,
                         wx.NullBitmap, wx.ITEM_NORMAL,
-                        shortHelp="Continue test execution",
-                        longHelp="Continue test execution")
-        toolbar.AddTool(ID_STEP_NEXT, "Next", ImageProvider().TOOLBAR_NEXT,
-                        wx.NullBitmap, wx.ITEM_NORMAL, shortHelp="Step next",
-                        longHelp="Step next")
+                        shortHelp=_("Continue test execution"),
+                        longHelp=_("Continue test execution"))
+        toolbar.AddTool(ID_STEP_NEXT, _("Next"), ImageProvider().TOOLBAR_NEXT,
+                        wx.NullBitmap, wx.ITEM_NORMAL, shortHelp=_("Step next"),
+                        longHelp=_("Step next"))
         toolbar.AddTool(ID_STEP_OVER, STEP_OVER, ImageProvider().TOOLBAR_NEXT,
                         wx.NullBitmap, wx.ITEM_NORMAL, shortHelp=STEP_OVER,
                         longHelp=STEP_OVER)
@@ -781,39 +785,38 @@ class TestRunnerPlugin(Plugin):
         # print(f"DEBUG: toolbar before {toolbar.UseBackgroundColour()}")
         toolbar.SetOwnBackgroundColour(self._mysettings.color_background)
         toolbar.SetOwnForegroundColour(self._mysettings.color_foreground)
-        profile_label = Label(toolbar, label="Execution Profile:  ")
+        profile_label = Label(toolbar, label=_("Execution Profile:  "))
         choices = self._test_runner.get_profile_names()
         self.choice = wx.Choice(toolbar, wx.ID_ANY, choices=choices)
-        self.choice.SetToolTip(wx.ToolTip("Choose which method to use for "
-                                          "running the tests"))
+        self.choice.SetToolTip(wx.ToolTip(_("Choose which method to use for "
+                                          "running the tests")))
         toolbar.AddControl(profile_label)
         toolbar.AddControl(self.choice)
         toolbar.AddSeparator()
         report_image = getReportIconBitmap()
         log_image = getLogIconBitmap()
-        toolbar.AddTool(ID_OPEN_LOGS_DIR, "Open Logs Directory",
+        toolbar.AddTool(ID_OPEN_LOGS_DIR, _("Open Logs Directory"),
                         ImageProvider().DATADIRIMG,
-                        shortHelp="View All Logs in Explorer")
-        toolbar.AddTool(ID_SHOW_REPORT, " Report", report_image,
-                        shortHelp=localize_shortcuts("View Robot Report in "
-                                                     "Browser (CtrlCmd-R)"))
-        toolbar.AddTool(ID_SHOW_LOG, " Log", log_image,
-                        shortHelp=localize_shortcuts("View Robot Log in"
-                                                     " Browser (CtrlCmd-L)"))
+                        shortHelp=_("View All Logs in Explorer"))
+        toolbar.AddTool(ID_SHOW_REPORT, _(" Report"), report_image,
+                        shortHelp=localize_shortcuts(_("View Robot Report in "
+                                                     "Browser (CtrlCmd-R)")))
+        toolbar.AddTool(ID_SHOW_LOG, _(" Log"), log_image,
+                        shortHelp=localize_shortcuts(_("View Robot Log in"
+                                                     " Browser (CtrlCmd-L)")))
         toolbar.AddSeparator()
         # the toolbar API doesn't give us a way to specify padding which
         # is why the label has a couple spaces after the colon. gross,
         # but effective.
         self.autosave_cb = \
-            self._create_check_box(toolbar, ID_AUTOSAVE, " Autosave  ",
-                                   self.auto_save, "Automatically save all "
-                                                   "changes before running")
+            self._create_check_box(toolbar, ID_AUTOSAVE, _(" Autosave  "),
+                                   self.auto_save, _("Automatically save all changes before running"))
         toolbar.AddControl(self.autosave_cb)
 
         self.pause_on_failure_cb = \
             self._create_check_box(toolbar, ID_PAUSE_ON_FAILURE,
-                                   " Pause after failure  ", False,
-                                   "Automatically pause after failing keyword")
+                                   _(" Pause after failure  "), False,
+                                   _("Automatically pause after failing keyword"))
         toolbar.AddControl(self.pause_on_failure_cb)
 
         toolbar.EnableTool(ID_OPEN_LOGS_DIR, False)
@@ -921,11 +924,11 @@ class TestRunnerPlugin(Plugin):
         panel.SetForegroundColour(self._mysettings.color_foreground)
         self._progress_bar = ProgressBar(panel, self.fail_color, self.pass_color, self.skip_color)
         self._console_log_panel, self._console_log_ctrl = \
-            self._create_collapsible_pane(panel, 'Console log',
+            self._create_collapsible_pane(panel, _('Console log'),
                                           self.show_console_log,
                                           self.on_console_log_pane_changed)
         self._message_log_panel, self._message_log_ctrl = \
-            self._create_collapsible_pane(panel, 'Message log',
+            self._create_collapsible_pane(panel, _('Message log'),
                                           self.show_message_log,
                                           self.on_message_log_pane_changed)
 
@@ -1048,12 +1051,12 @@ class TestRunnerPlugin(Plugin):
     def _handle_start_test(self, args):
         longname = args[1]['longname'].encode('utf-8')
         self._log_message_queue.put(
-            f"Starting test: {longname.decode(encoding['OUTPUT'], 'backslashreplace')}")
+            f"{_('Starting test:')} {longname.decode(encoding['OUTPUT'], 'backslashreplace')}")
 
     def _handle_end_test(self, args):
         longname = args[1]['longname'].encode('utf-8')
         self._log_message_queue.put(
-            f"Ending test: {longname.decode(encoding['OUTPUT'], 'backslashreplace')}\n")
+            f"{_('Ending test:')} {longname.decode(encoding['OUTPUT'], 'backslashreplace')}\n")
         if args[1]['status'] == 'PASS':
             self._progress_bar.add_pass()
         elif args[1]['status'] == 'SKIP':
@@ -1061,7 +1064,7 @@ class TestRunnerPlugin(Plugin):
         elif args[1]['status'] == 'FAIL':
             self._progress_bar.add_fail()
         else:
-            self._log_message_queue.put(f"UNKNOWN STATUS: {args[1]['status']}\n")
+            self._log_message_queue.put(f"{_('UNKNOWN STATUS:')} {args[1]['status']}\n")
 
     def _handle_report_file(self, args):
         self._report_file = args[0]
@@ -1087,14 +1090,14 @@ class TestRunnerPlugin(Plugin):
             self._log_message_queue.put(prefix + message)
 
     def _handle_paused(self, args):
-        _ = args
+        __ = args
         wx.CallAfter(self._set_paused)
-        self._log_message_queue.put('<<  PAUSED  >>')
+        self._log_message_queue.put(_('<<  PAUSED  >>'))
 
     def _handle_continue(self, args):
-        _ = args
+        __ = args
         wx.CallAfter(self._set_continue)
-        self._log_message_queue.put('<< CONTINUE >>')
+        self._log_message_queue.put(_('<< CONTINUE >>'))
 
     def _set_running(self):
         self._run_action.disable()
@@ -1135,9 +1138,9 @@ class TestRunnerPlugin(Plugin):
 
     @staticmethod
     def _notify_user_no_logs_directory():
-        wx.MessageBox("There isn't logs directory. \n"
-                      "Please, run the tests and try again",
-                      "No logs directory",
+        wx.MessageBox(_("There isn't logs directory. \n"
+                      "Please, run the tests and try again"),
+                      _("No logs directory"),
                       wx.ICON_INFORMATION | wx.OK)
 
 
@@ -1179,7 +1182,7 @@ class ProgressBar(wx.Panel):
 
     def on_timer(self, event):
         """A handler for timer events; it updates the statusbar"""
-        _ = event
+        __ = event
         self._gauge.Show()
         self._gauge.Pulse()
         self._update_message()
@@ -1222,7 +1225,7 @@ class ProgressBar(wx.Panel):
     def _update_message(self):
         """Update the displayed elapsed time, passed and failed counts"""
         elapsed = time.time() - self._start_time
-        message = "elapsed time: %s     pass: %s     skip: %s     fail: %s" % (
+        message = _("elapsed time: %s     pass: %s     skip: %s     fail: %s") % (
             self._seconds_to_string(elapsed), self._pass, self._skip, self._fail)
         message += self._get_current_keyword_text()
         self._label.SetLabel(message)
@@ -1242,8 +1245,7 @@ class ProgressBar(wx.Panel):
     def _get_current_keyword_text(self):
         if not self._current_keywords:
             return ''
-        return '     current keyword: ' + \
-               self._fix_size(' -> '.join(self._current_keywords), 50)
+        return _('     current keyword: ') + self._fix_size(' -> '.join(self._current_keywords), 50)
 
     @staticmethod
     def _fix_size(text, max_length):

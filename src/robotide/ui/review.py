@@ -13,6 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import builtins
 import os
 import re
 import time
@@ -28,11 +29,14 @@ from ..ui.searchdots import DottedSearch
 from ..usages.commands import FindUsages
 from ..widgets import ButtonWithHandler, Label, RIDEDialog
 
+_ = wx.GetTranslation  # To keep linter/code analyser happy
+builtins.__dict__['_'] = wx.GetTranslation
+
 
 class ReviewDialog(RIDEDialog):
 
     def __init__(self, controller, frame):
-        RIDEDialog.__init__(self, parent=frame, title="Search unused keywords",
+        RIDEDialog.__init__(self, parent=frame, title=_("Search unused keywords"),
                             style=wx.SYSTEM_MENU | wx.CAPTION | wx.CLOSE_BOX | wx.CLIP_CHILDREN |
                             wx.FRAME_FLOAT_ON_PARENT)
         # set Left to Right direction (while we don't have localization)
@@ -59,12 +63,12 @@ class ReviewDialog(RIDEDialog):
         self._build_controls()
 
     def _build_header(self):
-        label_introduction = wx.StaticText(self, label="This dialog helps you finding unused "
-                                                       "keywords within your opened project.\nIf "
-                                                       "you want, you can restrict the search to "
-                                                       "a set of files with the filter.")
-        label_filter_is = wx.StaticText(self, label='Filter is')
-        self.label_filter_status = wx.StaticText(self, label='inactive')
+        label_introduction = wx.StaticText(self, label=_("This dialog helps you finding unused "
+                                                         "keywords within your opened project.\nIf "
+                                                         "you want, you can restrict the search to "
+                                                         "a set of files with the filter."))
+        label_filter_is = wx.StaticText(self, label=_('Filter is'))
+        self.label_filter_status = wx.StaticText(self, label=_('inactive'))
         header_sizer = wx.BoxSizer(wx.HORIZONTAL)
         header_sizer.Add(label_introduction, 0, wx.ALL | wx.EXPAND, 3)
         header_sizer.AddStretchSpacer(1)
@@ -77,32 +81,32 @@ class ReviewDialog(RIDEDialog):
         self.Sizer.Add(header_sizer, 0, wx.ALL | wx.EXPAND, 3)
 
     def _build_filter(self):
-        self._filter_pane = MyCollapsiblePane(self, label="Filter",
+        self._filter_pane = MyCollapsiblePane(self, label=_("Filter"),
                                               style=wx.CP_DEFAULT_STYLE | wx.CP_NO_TLW_RESIZE)
         self._filter_pane.SetBackgroundColour(Colour(self.color_background))
         self._filter_pane.SetForegroundColour(Colour(self.color_foreground))
         self._filter_input = wx.TextCtrl(self._filter_pane.GetPane(),
                                          size=(-1, 20))
         self._filter_regex_switch = wx.CheckBox(self._filter_pane.GetPane(),
-                                                wx.ID_ANY, label="Use RegEx")
+                                                wx.ID_ANY, label=_("Use RegEx"))
         self._filter_info = wx.StaticText(self._filter_pane.GetPane(),
-                                          label="Here you can define one or more strings separated"
-                                                " by comma (e.g. common,abc,123).\nThe filter "
-                                                "matches if at least one string is part of "
-                                                "the filename.\nIf you don\'t enter any strings, "
-                                                "all opened files are included")
-        filter_source_box = wx.StaticBox(self._filter_pane.GetPane(), label="Search")
+                                          label=_("Here you can define one or more strings separated"
+                                                  " by comma (e.g. common,abc,123).\nThe filter "
+                                                  "matches if at least one string is part of "
+                                                  "the filename.\nIf you don\'t enter any strings, "
+                                                  "all opened files are included"))
+        filter_source_box = wx.StaticBox(self._filter_pane.GetPane(), label=_("Search"))
         self._filter_source_testcases = wx.CheckBox(self._filter_pane.GetPane(),
                                                     wx.ID_ANY,
-                                                    label="Test case files")
+                                                    label=_("Test case files"))
         self._filter_source_resources = wx.CheckBox(self._filter_pane.GetPane(),
                                                     wx.ID_ANY,
-                                                    label="Resource files")
+                                                    label=_("Resource files"))
         self._filter_mode = wx.RadioBox(self._filter_pane.GetPane(),
-                                        label="Mode",
-                                        choices=["exclude", "include"])
+                                        label=_("Mode"),
+                                        choices=[_("exclude"), _("include")])
         self._filter_test_button = wx.Button(self._filter_pane.GetPane(),
-                                             wx.ID_INFO, label="Test the filter")
+                                             wx.ID_INFO, label=_("Test the filter"))
         self._filter_test_button.SetBackgroundColour(Colour(self.color_secondary_background))
         self._filter_test_button.SetForegroundColour(Colour(self.color_secondary_foreground))
         filter_box_sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -132,14 +136,14 @@ class ReviewDialog(RIDEDialog):
         panel_unused_kw.SetSizer(sizer_unused_kw)
         self._unused_kw_list = ResultListCtrl(panel_unused_kw,
                                               style=wx.LC_REPORT)
-        self._unused_kw_list.InsertColumn(0, "Keyword", width=400)
-        self._unused_kw_list.InsertColumn(1, "File", width=250)
+        self._unused_kw_list.InsertColumn(0, _("Keyword"), width=400)
+        self._unused_kw_list.InsertColumn(1, _("File"), width=250)
         self._unused_kw_list.SetMinSize((650, 250))
         self._unused_kw_list.set_dialog(self)
         self._unused_kw_list.SetBackgroundColour(Colour(self.color_background))
         self._unused_kw_list.SetForegroundColour(Colour(self.color_foreground))
         self._delete_button = wx.Button(panel_unused_kw, wx.ID_ANY,
-                                        'Delete marked keywords')
+                                        _('Delete marked keywords'))
         self._delete_button.SetBackgroundColour(Colour(self.color_secondary_background))
         self._delete_button.SetForegroundColour(Colour(self.color_secondary_foreground))
         sizer_unused_kw.Add(self._unused_kw_list, 1, wx.ALL | wx.EXPAND, 3)
@@ -150,13 +154,13 @@ class ReviewDialog(RIDEDialog):
         else:
             unused_kw_controls.Add(self._delete_button, 0, wx.ALL, 3)
         sizer_unused_kw.Add(unused_kw_controls, 0, wx.ALL | wx.EXPAND, 3)
-        self._notebook.AddPage(panel_unused_kw, "Unused Keywords")
+        self._notebook.AddPage(panel_unused_kw, _("Unused Keywords"))
 
     def _build_controls(self):
-        self._search_button = ButtonWithHandler(self, 'Search')
+        self._search_button = ButtonWithHandler(self, _('Search'), handler=self.on_search)
         self._search_button.SetBackgroundColour(Colour(self.color_secondary_background))
         self._search_button.SetForegroundColour(Colour(self.color_secondary_foreground))
-        self._abort_button = ButtonWithHandler(self, 'Abort')
+        self._abort_button = ButtonWithHandler(self, _('Abort'), handler=self.on_abort)
         self._abort_button.SetBackgroundColour(Colour(self.color_secondary_background))
         self._abort_button.SetForegroundColour(Colour(self.color_secondary_foreground))
         self._status_label = Label(self, label='')
@@ -215,15 +219,15 @@ class ReviewDialog(RIDEDialog):
         self._runner.set_filter_mode(event.GetInt() == 0)
 
     def _update_filter_source_testcases(self, event):
-        _ = event
+        __ = event
         self._runner.set_filter_source_testcases(self._filter_source_testcases.IsChecked())
 
     def _update_filter_source_resources(self, event):
-        _ = event
+        __ = event
         self._runner.set_filter_source_resources(self._filter_source_resources.IsChecked())
 
     def _update_filter_regex(self, event):
-        _ = event
+        __ = event
         self._runner.set_filter_use_regex(self._filter_regex_switch.IsChecked())
 
     def _toggle_filter_active(self, event):
@@ -235,25 +239,25 @@ class ReviewDialog(RIDEDialog):
 
     def _disable_filter(self):
         self._runner.set_filter_active(False)
-        self.label_filter_status.SetLabel('inactive')
+        self.label_filter_status.SetLabel(_('inactive'))
         self.label_filter_status.SetForegroundColour(wx.RED)
 
     def _enable_filter(self):
         self._runner.set_filter_active(True)
-        self.label_filter_status.SetLabel('active')
+        self.label_filter_status.SetLabel(_('active'))
         self.label_filter_status.SetForegroundColour((0, 200, 0))
 
     def on_search(self, event):
-        _ = event
+        __ = event
         self.begin_searching()
         self._runner.run_review()
 
     def on_abort(self, event):
-        _ = event
+        __ = event
         self.end_searching()
 
     def on_delete_marked_keywords(self, event):
-        _ = event
+        __ = event
         item = self._unused_kw_list.get_next_checked_item()
         while item:
             index = item[0]
@@ -263,20 +267,20 @@ class ReviewDialog(RIDEDialog):
             self._unused_kw_list.DeleteItem(index)
             self._unused_kw_list.RemoveClientData(item_id)
             kw.delete()
-            self._update_notebook_text("Unused Keywords (%d)" % self._unused_kw_list.GetItemCount())
+            self._update_notebook_text(_("Unused Keywords (%d)") % self._unused_kw_list.GetItemCount())
             self.update_status("")
             item = self._unused_kw_list.get_next_checked_item()
         self.item_in_kw_list_checked()
 
     def on_show_files_to_be_searched(self, event):
-        _ = event
+        __ = event
         df_list = self._runner.get_datafile_list()
         if not df_list:
-            string_list = "(None)"
+            string_list = _("(None)")
         else:
             string_list = "\n".join(df.name for df in df_list)
-        message = "Keywords of the following files will be included in the search:\n\n"+string_list
-        dlg = RIDEDialog(parent=self, title="Included files", message=message, style=wx.OK | wx.ICON_INFORMATION)
+        message = _("Keywords of the following files will be included in the search:\n\n")+string_list
+        dlg = RIDEDialog(parent=self, title=_("Included files"), message=message, style=wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
 
     def on_result_selected(self, event):
@@ -313,7 +317,7 @@ class ReviewDialog(RIDEDialog):
 
     def _clear_search_results(self):
         self._unused_kw_list.ClearAll()
-        self._update_notebook_text('Unused Keywords')
+        self._update_notebook_text(_('Unused Keywords'))
         self._delete_button.Disable()
         self._status_label.SetLabel('')
         self._search_model.clear_search()
@@ -332,7 +336,7 @@ class ReviewDialog(RIDEDialog):
         count_before = self._unused_kw_list.GetItemCount()
         for index, kw in list(enumerate(self._search_model.keywords))[count_before:]:
             self.add_result_unused_keyword(index, kw)
-        self.update_status("Searching.%s \t- %s" % (dots, self._search_model.status))
+        self.update_status(_("Searching.%s \t- %s") % (dots, self._search_model.status))
         if not self._search_model.searching:
             self.end_searching()
 
@@ -346,9 +350,8 @@ class ReviewDialog(RIDEDialog):
     def end_searching(self):
         self._dots.stop()
         self._search_model.end_search()
-        self._update_notebook_text('Unused Keywords (%d)' % (self._unused_kw_list.GetItemCount()))
-        self.update_status("Search finished - Found %d Unused Keywords" %
-                           (self._unused_kw_list.GetItemCount()))
+        self._update_notebook_text(_('Unused Keywords (%d)') % (self._unused_kw_list.GetItemCount()))
+        self.update_status(_("Search finished - Found %d Unused Keywords") % (self._unused_kw_list.GetItemCount()))
         self._unused_kw_list.Enable()
         self._abort_button.Disable()
         self._filter_pane.Enable()
@@ -396,10 +399,10 @@ class ReviewRunner(object):
 
     def _run(self):
         self._stop_requested = False
-        self._model.status = 'listing datafiles'
+        self._model.status = _('listing datafiles')
         for df in self.get_datafile_list():
             libname = os.path.basename(df.source).rsplit('.', 1)[0]
-            self._model.status = 'searching from ' + str(libname)
+            self._model.status = _('searching from ') + str(libname)
             for keyword in df.keywords:
                 time.sleep(0)  # GIVE SPACE TO OTHER THREADS -- Thread.yield in Java
                 self._model.status = "%s.%s" % (libname, keyword.name)

@@ -277,7 +277,7 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
         self.hide()
 
     def pop_event_handlers(self, event):
-        _ = event
+        __ = event
         # all pushed eventHandlers need to be popped before close
         # the last event handler is window object itself - do not pop itself
         if self:
@@ -285,7 +285,7 @@ class _ContentAssistTextCtrlBase(wx.TextCtrl):
                 self.PopEventHandler()
 
     def on_destroy(self, event):
-        _ = event
+        __ = event
         # all pushed eventHandlers need to be popped before close
         # the last event handler is window object itself - do not pop itself
         while self.GetEventHandler() is not self:
@@ -414,7 +414,7 @@ class ContentAssistFileButton(FileBrowseButton):
         self._browsed = False
 
     def on_destroy(self, event):
-        _ = event
+        __ = event
         # all pushed eventHandlers need to be popped before close
         # the last event handler is window object itself - do not pop itself
         try:
@@ -598,7 +598,7 @@ class ContentAssistPopup(object):
         self._details_popup.Show(False)
 
     def on_list_item_activated(self, event):
-        _ = event
+        __ = event
         self._parent.fill_suggestion()
 
     def on_list_item_selected(self, event):

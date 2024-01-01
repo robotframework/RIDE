@@ -13,11 +13,26 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import builtins
 import wx
 
 from ..context import IS_WINDOWS, IS_MAC
+_ = wx.GetTranslation  # To keep linter/code analyser happy
+builtins.__dict__['_'] = wx.GetTranslation
 
 ID_CustomizeToolbar = wx.ID_HIGHEST + 1
+
+
+def accel_index(menu: list, item: str) -> int:
+    """ Gets the index from a list ignoring the accelarator marker, &
+    :param menu: list - list to get index
+    :param item: str  - item to find in menu list
+    :returns index: int
+    """
+    for idx, m in enumerate(menu):
+        if m.replace('&', '') == item.replace('&', ''):
+            return idx
+    raise ValueError(f"{item} is not in list")
 
 
 class MenuBar(object):
@@ -36,17 +51,18 @@ class MenuBar(object):
         self.m_frame.SetMenuBar(self._mb)
 
     def _create_default_menus(self):
-        for name in ['File', 'Edit', 'Tools', 'Help']:
+        for name in [_('File'), _('Edit'), _('Tools'), _('Help')]:
             self._create_menu(name, before_help=False)
 
     def _create_menu(self, name, before_help=True):
+        print(f"DEBUG: actiontriggers.py _create_menu ENTER name={name}")
         menu = _Menu(self._name_builder.get_name(name), self.m_frame)
         self._insert_menu(menu, before_help)
         return menu
 
     def _insert_menu(self, menu, before_help):
         if before_help:
-            index = [m.name for m in self._menus].index('&Help')
+            index = accel_index([m.name for m in self._menus], _('&Help'))
         else:
             index = len(self._menus)
         self._menus.insert(index, menu)
@@ -71,6 +87,7 @@ class _Menu(object):
 
     def __init__(self, name, frame):
         self.name = name
+        print(f"DEBUG: actiontriggers.py _Menu name={name}")
         self._frame = frame
         self.wx_menu = wx.Menu()
         self._menu_items = {}
@@ -162,6 +179,7 @@ class _NameBuilder(object):
         except ValueError:
             name = self._generate_accelerator(name)
         self._register(name)
+        # print(f"DEBUG: actiontriggers.py get_name RETURN name={name}")
         return name
 
     def get_registered_name(self, name):

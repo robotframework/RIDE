@@ -16,6 +16,7 @@
 import unittest
 from wx.lib.agw.aui import AuiManager
 import wx.lib.agw.aui as aui
+from multiprocessing import shared_memory
 from functools import total_ordering
 from robotide.ui.tagdialogs import ViewAllTagsDialog
 from utest.resources import datafilereader, MessageRecordingLoadObserver
@@ -166,6 +167,7 @@ class EditorPluginTest(unittest.TestCase):
 
     def setUp(self):
         self.app = MyApp()
+        self.shared_mem = shared_memory.ShareableList(['en'], name="language")
         settings = self.app.settings
         self.frame = self.app.frame
         self.frame.actions = ActionRegisterer(AuiManager(self.frame), MenuBar(self.frame), ToolBar(self.frame),
@@ -203,6 +205,8 @@ class EditorPluginTest(unittest.TestCase):
         wx.CallAfter(self.app.ExitMainLoop)
         # self.app.MainLoop()  # With this here, there is no Segmentation fault
         # wx.CallAfter(wx.Exit)
+        self.shared_mem.shm.close()
+        self.shared_mem.shm.unlink()
         self.app.Destroy()
         self.app = None
         if os.path.exists(DATADIR):

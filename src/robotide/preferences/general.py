@@ -22,6 +22,10 @@ from ..ui.preferences_dialogs import (boolean_editor, PreferencesPanel, IntegerC
 from .managesettingsdialog import SaveLoadSettings
 from wx import Colour
 from ..context import IS_WINDOWS
+try:
+    from robot.conf import languages
+except ImportError:
+    languages = None
 
 ID_APPLY_TO_PANEL = wx.NewIdRef()
 ID_RESET = wx.NewIdRef()
@@ -40,6 +44,19 @@ def read_fonts(fixed=False):
     f.EnumerateFacenames()
     names = f.GetFacenames(fixedWidthOnly=fixed)
     names = [n for n in names if not n.startswith('@')]
+    names.sort()
+    return names
+
+
+@lru_cache(maxsize=2)
+def read_languages():
+    """Returns list with translatqble languages"""
+    if languages:
+        from . import Languages
+        names = [n for n in Languages.names]
+    else:
+        names = [('English', 'en'), ('Portuguese', 'pt')]
+    names = [n[0] for n in names if not n[0].startswith('@')]
     names.sort()
     return names
 
@@ -65,6 +82,7 @@ class GeneralPreferences(PreferencesPanel):
         # don't have the time to do that right now, so this will have
         # to suffice.
 
+        ui_language = self._select_ui_language()
         font_editor = self._create_font_editor()
         colors_sizer = self.create_colors_sizer()
         main_sizer = wx.FlexGridSizer(rows=6, cols=1, vgap=10, hgap=10)
@@ -86,6 +104,8 @@ class GeneralPreferences(PreferencesPanel):
         buttons_sizer.AddSpacer(10)
         buttons_sizer.Add(saveloadsettings)
         main_sizer.Add(buttons_sizer)
+        main_sizer.AddSpacer(10)
+        main_sizer.Add(ui_language)
         self.SetSizerAndFit(main_sizer)
         self.Bind(wx.EVT_BUTTON, self.on_reset)
         self.Bind(wx.EVT_BUTTON, self.on_save_load_settings)
@@ -195,6 +215,19 @@ class GeneralPreferences(PreferencesPanel):
             if IS_WINDOWS:
                 set_colors(l_font, background_color, foreground_color)
             sizer.AddMany([l_font, s.chooser(self)])
+        sizer.Layout()
+        return sizer
+
+    def _select_ui_language(self):
+        sizer = wx.FlexGridSizer(rows=3, cols=2, vgap=10, hgap=30)
+        background_color = Colour(LIGHT_GRAY)
+        foreground_color = Colour("black")
+        if 'ui language' in self._settings:
+            ll = StringChoiceEditor(self._settings, 'ui language', 'Language', read_languages())
+            l_lang = ll.label(self)
+            if IS_WINDOWS:
+                set_colors(l_lang, background_color, foreground_color)
+            sizer.AddMany([l_lang, ll.chooser(self)])
         sizer.Layout()
         return sizer
 

@@ -71,7 +71,7 @@ class LibraryImportListOperationsTest(unittest.TestCase):
         self._parent.mark_dirty = lambda:0
         self._parent.datafile_controller = self._parent
         self._parent.update_namespace = lambda:0
-        self._table = TestCaseFileSettingTable(lambda:0)
+        self._table = TestCaseFileSettingTable(lambda:0, ['en'])
         self.ctrl = ImportSettingsController(self._parent, self._table)
         self._lib1 = self.ctrl.add_library('libbi1', '', '')
         self._lib2 = self.ctrl.add_library('libbi2', '', '')

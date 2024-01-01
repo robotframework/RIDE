@@ -13,18 +13,30 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from robotide.lib.robot.utils import is_string, py2to3, unicode
+from robotide.lib.robot.utils import is_string, unicode
+from robotide.lib.compat.parsing import language as lang
 
 from .comments import Comment
 from ..version import ALIAS_MARKER
 
 
-@py2to3
+def get_localized_setting(language: [], english_name: str):
+    if not language:
+        return english_name
+    settings = lang.get_settings_for(language, (english_name,))
+    try:
+        result = list(settings.keys())[list(settings.values()).index(english_name)]
+    except ValueError:
+        return english_name
+    return result
+
+
 class Setting(object):
 
     def __init__(self, setting_name, parent=None, comment=None):
         self.setting_name = setting_name
         self.parent = parent
+        # print(f"DEBUG: settings.py Setting __init__ name= {self.setting_name}")
         self._set_initial_value()
         self._set_comment(comment)
         self._populated = False
@@ -103,6 +115,7 @@ class Setting(object):
         return self.is_set()
 
     def __iter__(self):
+        # print(f"DEBUG: settings.py Setting __iter__ name= {self.setting_name}")
         return iter(self.value or ())
 
     def __unicode__(self):
@@ -271,6 +284,8 @@ class Metadata(Setting):
 
     def __init__(self, parent, name, value, comment=None, joined=False):
         self.parent = parent
+        self.setting_name = get_localized_setting(parent.language, 'Metadata')
+        Setting.__init__(self, setting_name=self.setting_name, parent=parent, comment=comment)
         if value and isinstance(value, list):
             value = [x.strip() for x in value if x != '']
         if not name.strip():
@@ -296,10 +311,12 @@ class Metadata(Setting):
 
 
 class ImportSetting(Setting):
+    setting_name = None
 
     def __init__(self, parent, name, args=None, alias=None, comment=None):
         self.parent = parent
         self.name = name.strip()
+        Setting.__init__(self, setting_name=self.setting_name, parent=parent, comment=comment)
         if args:
             self.args = [x.strip() for x in args if x != '']
         else:
@@ -319,7 +336,7 @@ class ImportSetting(Setting):
         return True
 
     def _data_as_list(self):
-        return [self.type, self.name] + self.args
+        return [self.setting_name, self.name] + self.args
 
     def report_invalid_syntax(self, message, level='ERROR', parent=None):
         parent = parent or getattr(self, 'parent', None)
@@ -341,6 +358,7 @@ class Library(ImportSetting):
             name = args.pop(0)
         if args and not alias:
             args, alias = self._split_possible_alias(args)
+        self.setting_name = get_localized_setting(parent.language, 'Library')
         ImportSetting.__init__(self, parent, name, args, alias, comment)
 
     @staticmethod
@@ -350,7 +368,7 @@ class Library(ImportSetting):
         return args, None
 
     def _data_as_list(self):
-        data = ['Library', self.name] + self.args
+        data = [self.setting_name, self.name] + self.args
         if self.alias:
             data += [ALIAS_MARKER, self.alias]
         return data
@@ -361,6 +379,10 @@ class Resource(ImportSetting):
     def __init__(self, parent, name, invalid_args=None, comment=None):
         if invalid_args:
             name += ' ' + ' '.join(invalid_args)
+        try:
+            self.setting_name = get_localized_setting(parent.language, 'Resource')
+        except AttributeError:  # Unit tests were failing here
+            self.setting_name = get_localized_setting(None, 'Resource')
         ImportSetting.__init__(self, parent, name, comment=comment)
 
 
@@ -372,6 +394,7 @@ class Variables(ImportSetting):
             args = [x.strip() for x in args if x != ''] or []
         if args and not name:
             name = args.pop(0)
+        self.setting_name = get_localized_setting(parent.language, 'Variables')
         ImportSetting.__init__(self, parent, name, args, comment=comment)
 
 

@@ -34,11 +34,15 @@ class DataRow(object):
         data = []
         comments = []
         # print(f"DEBUG: datarow enter _parse row={row}\n")
+        if row[0].startswith('#'):
+            data.extend(row)
+            return data, comments  # DEBUG keep empty cells
         for cell in row:
             # print(f"DEBUG: datarow before clean cell={cell}")
             cell = self._collapse_whitespace(cell)
             # print(f"DEBUG: datarow after clean cell={cell}")
-            if cell and cell[0] == '#' or comments:
+            # DEBUG: Lets keep # at start of line
+            if cell and cell.startswith('#') or comments:
                 comments.append(cell)
             else:
                 data.append(cell)

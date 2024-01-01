@@ -15,8 +15,6 @@
 
 import re
 
-from robotide.lib.robot.utils import py2to3
-
 from .comments import Comments
 from .settings import Documentation, MetadataList
 
@@ -31,7 +29,6 @@ class Populator(object):
         raise NotImplementedError
 
 
-@py2to3
 class NullPopulator(Populator):
 
     def add(self, row):
@@ -65,7 +62,11 @@ class _TablePopulator(Populator):
         self._populator.add(row)
 
     def _is_continuing(self, row):
-        return row.is_continuing() and self._populator
+        try:
+            continuing = row.is_continuing()
+            return continuing and self._populator
+        except AttributeError:
+            return False
 
     def _get_populator(self, row):
         raise NotImplementedError
@@ -79,8 +80,9 @@ class SettingTablePopulator(_TablePopulator):
 
     def _get_populator(self, row):
         setter = self._table.get_setter(row.head) if row.head else None
+        # print(f"DEBUG: tablepopulators.py SettingTablePopulator enter _get_populator {row.head=}")
         if row.head == '...':
-            setter = self._table.get_setter('Documentation')
+            setter = self._table.get_setter(self._table.get_localized_setting_name('Documentation'))
         if not setter:
             return NullPopulator()
         if isinstance(setter.__self__, Documentation):
@@ -88,6 +90,13 @@ class SettingTablePopulator(_TablePopulator):
         if isinstance(setter.__self__, MetadataList):
             return MetadataPopulator(setter)
         return SettingPopulator(setter)
+
+
+class CommentsTablePopulator(_TablePopulator):
+
+    def _get_populator(self, table):
+        # print(f"DEBUG: CommentsTablePopulator enter _get_populator self._table={self._table} table={table}")
+        return CommentsPopulator(self._table.add)
 
 
 class VariableTablePopulator(_TablePopulator):
@@ -339,6 +348,28 @@ class DocumentationPopulator(_PropertyPopulator):
         if not match.group(0).endswith('n'):
             return ' '
         return None
+
+
+class CommentsPopulator(_PropertyPopulator):
+    _item_type = 'comments'
+
+    def __init__(self, setter):
+        _PropertyPopulator.__init__(self, setter)
+        self._value = []
+        # print(f"DEBUG: tablepopulators CommentPopulator __init__ setter={setter}")
+
+    def _add(self, row):
+        # print(f"DEBUG: tablepopulators CommentPopulator _add {row=}")
+        if isinstance(row, list):
+            self._setter(row)
+        else:
+            content = row.data+['  ']+row.comments if row.comments else row.data
+            self._setter(content)
+
+    def populate(self):
+        if self._value:
+            print(f"DEBUG: tablepopulators CommentPopulator populate {self._value=}")
+            self._setter(self._value)
 
 
 class MetadataPopulator(DocumentationPopulator):

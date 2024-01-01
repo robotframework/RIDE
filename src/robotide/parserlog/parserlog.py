@@ -13,6 +13,7 @@
 #  limitations under the License.
 
 import atexit
+import builtins
 import glob
 import io
 import os
@@ -29,6 +30,9 @@ from ..pluginapi import Plugin
 from ..action import ActionInfo
 from ..publish.messages import RideParserLogMessage
 
+_ = wx.GetTranslation  # To keep linter/code analyser happy
+builtins.__dict__['_'] = wx.GetTranslation
+
 
 class ParserLogPlugin(Plugin):
     """Viewer for parser log messages."""
@@ -38,7 +42,7 @@ class ParserLogPlugin(Plugin):
             'log_to_console': False,
             'log_to_file': True
         })
-        self.title = 'Parser Log'
+        self.title = _('Parser Log')
         self._log = []
         self._panel = None
         self._path = os.path.join(
@@ -78,8 +82,7 @@ class ParserLogPlugin(Plugin):
 
     def _create_menu(self):
         self.unregister_actions()
-        self.register_action(ActionInfo(
-            'Tools', 'View Parser Log', self.on_view_log, position=83))
+        self.register_action(ActionInfo(_('Tools'), _('View Parser Log'), self.on_view_log, position=83))
 
     def _log_message(self, message):
         self._log.append(message)
@@ -97,7 +100,7 @@ class ParserLogPlugin(Plugin):
         self.on_view_log(message, show_tab=False)
 
     def on_view_log(self, event, show_tab=True):
-        _ = event
+        __ = event
         if not self._panel:
             self._panel = LogWindow(self.notebook, self.title, self._log)
             self.notebook.SetPageTextColour(self.notebook.GetPageCount()-1, wx.Colour(255, 165, 0))

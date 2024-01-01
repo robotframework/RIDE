@@ -13,14 +13,17 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import builtins
 import wx
 from wx import Colour
 
+from multiprocessing import shared_memory
 from .editordialogs import editor_dialog, DocumentationDialog, MetadataDialog, \
     ScalarVariableDialog, ListVariableDialog, DictionaryVariableDialog, LibraryDialog, \
     ResourceDialog, VariablesDialog
 from .formatters import ListToStringFormatter
 from .gridcolorizer import ColorizationSettings
+from ..lib.compat.parsing.language import get_english_label
 from .listeditor import ListEditor
 from .popupwindow import HtmlPopupWindow
 from .tags import TagsDisplay
@@ -32,6 +35,9 @@ from ..publish.messages import (RideImportSetting, RideOpenVariableDialog, RideE
                                 RideVariableAdded, RideVariableUpdated, RideVariableRemoved)
 from ..utils.highlightmatcher import highlight_matcher
 from ..widgets import ButtonWithHandler, Label, HtmlWindow, PopupMenu, PopupMenuItems, HtmlDialog
+
+_ = wx.GetTranslation  # To keep linter/code analyser happy
+builtins.__dict__['_'] = wx.GetTranslation
 
 
 class SettingEditor(wx.Panel):
@@ -55,6 +61,17 @@ class SettingEditor(wx.Panel):
         self.SetForegroundColour(Colour(self.color_foreground))
         self.SetOwnForegroundColour(Colour(self.color_foreground))
         self._controller = controller
+        try:
+            set_lang = shared_memory.ShareableList(name="language")
+            self._language = [set_lang[0]]
+            # print(f"DEBUG: settings.py SettingEditor __init__ SHAREDMEM language={self._language}")
+        except AttributeError:
+            try:
+                self._language = self._controller.language
+                # print(f"DEBUG: settings.py SettingEditor __init__ CONTROLLER language={self._language}")
+            except AttributeError:
+                self._language = ['en']
+        # print(f"DEBUG: settings.py SettingEditor __init__ language={self._language}")
         self.plugin = plugin
         self._datafile = controller.datafile
         self._create_controls()
@@ -70,23 +87,27 @@ class SettingEditor(wx.Panel):
     def _create_controls(self):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         sizer.Add((5, 0))
-        sizer.Add(Label(
+        label = Label(
             self, label=self._controller.label,
-            size=(context.SETTING_LABEL_WIDTH, context.SETTING_ROW_HEIGHT)))
+            size=(context.SETTING_LABEL_WIDTH, context.SETTING_ROW_HEIGHT))  # Always show the English label as tooltip
+        label.SetToolTip(get_english_label(self._language, self._controller.label))
+        sizer.Add(label)
         self._value_display = self._create_value_display()
         self.update_value()
         self._tooltip = self._get_tooltip()
         sizer.Add(self._value_display, 1, wx.EXPAND)
         self._add_edit(sizer)
-        sizer.Add(ButtonWithHandler(self, 'Clear', color_secondary_foreground=self.color_secondary_foreground,
+        sizer.Add(ButtonWithHandler(self, _('Clear'), mk_handler='Clear', handler=self.on_clear,
+                                    color_secondary_foreground=self.color_secondary_foreground,
                                     color_secondary_background=self.color_secondary_background))
         sizer.Layout()
         self.SetSizer(sizer)
 
     def _add_edit(self, sizer):
         sizer.Add(
-            ButtonWithHandler(self, 'Edit', color_secondary_foreground=self.color_secondary_foreground,
-                                    color_secondary_background=self.color_secondary_background),
+            ButtonWithHandler(self, _('Edit'), mk_handler='Edit', handler=self.on_edit,
+                              color_secondary_foreground=self.color_secondary_foreground,
+                              color_secondary_background=self.color_secondary_background),
             flag=wx.LEFT | wx.RIGHT, border=5)
 
     def _create_value_display(self):
@@ -142,7 +163,7 @@ class SettingEditor(wx.Panel):
         self._editing = False
 
     def _create_editor_dialog(self):
-        dlg_class = editor_dialog(self._controller)
+        dlg_class = editor_dialog(self._controller, self._language)
         return dlg_class(self._datafile, self._controller, self.plugin)
 
     def _set_value(self, value_list, comment):
@@ -179,8 +200,8 @@ class SettingEditor(wx.Panel):
         self.on_window_destroy(event)
 
     def on_popup_timer(self, event):
-        _ = event
-        _tooltipallowed = False
+        __ = event
+        _tooltipallowed = True
         # DEBUG: This prevents tool tip for ex. Template edit field in wxPhoenix
         try:
             _tooltipallowed = self.Parent.tooltip_allowed(self._tooltip)
@@ -226,7 +247,7 @@ class SettingEditor(wx.Panel):
         self.update_value()
 
     def on_clear(self, event):
-        _ = event
+        __ = event
         self._controller.execute(ctrlcommands.ClearSetting())
         self._update_and_notify()
 
@@ -366,6 +387,7 @@ class DocumentationEditor(SettingEditor):
         pass
 
     def _create_editor_dialog(self):
+        # print(f"DEBUG: settingeditors.py DocumentationEditor _create_editor_dialog {self._language}")
         return DocumentationDialog(self._datafile,
                                    self._controller.editable_value)
 
@@ -421,7 +443,12 @@ class TagsEditor(SettingEditor):
 class _AbstractListEditor(ListEditor):
     _titles = []
 
-    def __init__(self, parent, tree, controller):
+    def __init__(self, parent, tree, controller, label=None):
+        try:
+            # print(f"DEBUG: settingeditors.py _AbstractListEditor dir language={controller.parent.datafile._language}")
+            self._language = controller.parent.datafile._language
+        except AttributeError:
+            self._language = ['en']
         ListEditor.__init__(self, parent, self._titles, controller)
         self._datafile = controller.datafile
         self._tree = tree
@@ -449,8 +476,9 @@ class _AbstractListEditor(ListEditor):
 
 
 class VariablesListEditor(_AbstractListEditor):
-    _titles = ['Variable', 'Value', 'Comment']
-    _buttons = ['Add Scalar', 'Add List', 'Add Dict']
+    _titles = [_('Variable'), _('Value'), _('Comment')]
+    _buttons = [_('Add Scalar'), _('Add List'), _('Add Dict')]
+    _buttons_nt = ['Add Scalar', 'Add List', 'Add Dict']
 
     def __init__(self, parent, tree, controller):
         PUBLISHER.subscribe(
@@ -482,17 +510,17 @@ class VariablesListEditor(_AbstractListEditor):
         self._list.SetFocus()
 
     def on_add_scalar(self, event):
-        _ = event
+        __ = event
         self._show_dialog(
             ScalarVariableDialog(self._controller))
 
     def on_add_list(self, event):
-        _ = event
+        __ = event
         self._show_dialog(
             ListVariableDialog(self._controller, plugin=self.Parent.plugin))
 
     def on_add_dict(self, event):
-        _ = event
+        __ = event
         self._show_dialog(
             DictionaryVariableDialog(self._controller,
                                      plugin=self.Parent.plugin))
@@ -536,11 +564,16 @@ class VariablesListEditor(_AbstractListEditor):
 
 
 class ImportSettingListEditor(_AbstractListEditor):
-    _titles = ['Import', 'Name / Path', 'Arguments', 'Comment']
-    _buttons = ['Library', 'Resource', 'Variables', 'Import Failed Help']
+    _titles = [_('Import'), _('Name / Path'), _('Arguments'), _('Comment')]
+    _buttons = [_('Library'), _('Resource'), _('Variables'), _('Import Failed Help')]
+    _buttons_nt = ['Library', 'Resource', 'Variables', 'Import Failed Help']
 
-    def __init__(self, parent, tree, controller):
+    def __init__(self, parent, tree, controller, lang=None):
         self._import_failed_shown = False
+        try:
+            self._language = controller.parent.datafile._language
+        except AttributeError:
+            self._language = ['en']
         _AbstractListEditor.__init__(self, parent, tree, controller)
         self.SetBackgroundColour(Colour(self.color_background))
         self.SetOwnBackgroundColour(Colour(self.color_background))
@@ -550,10 +583,10 @@ class ImportSettingListEditor(_AbstractListEditor):
     def _create_buttons(self):
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(Label(
-            self, label='Add Import', size=wx.Size(120, 20),
+            self, label=_('Add Import'), size=wx.Size(120, 20),
             style=wx.ALIGN_CENTER))
-        for label in self._buttons:
-            sizer.Add(ButtonWithHandler(self, label, width=120,
+        for label, label_nt in zip(self._buttons, self._buttons_nt):
+            sizer.Add(ButtonWithHandler(self, label, mk_handler=label_nt, width=120,
                                         color_secondary_foreground=self.color_secondary_foreground,
                                         color_secondary_background=self.color_secondary_background), 0, wx.ALL, 1)
         return sizer
@@ -576,52 +609,55 @@ class ImportSettingListEditor(_AbstractListEditor):
         return controller.has_error()
 
     def on_right_click(self, event):
-        PopupMenu(self, PopupMenuItems(self, self._create_item_menu()))
+        menu, menu_nt = self._create_item_menu()
+        PopupMenu(self, PopupMenuItems(self, menu_names=menu, menu_names_nt=menu_nt))
 
     def _create_item_menu(self):
         menu = self._menu
+        menu_nt = self._menu_nt
         item = self._controller[self._selection]
         if item.has_error() and item.type == 'Library':
-            menu = menu[:] + ['Import Library Spec XML']
-        return menu
+            menu = menu[:] + [_('Import Library Spec XML')]
+            menu_nt = menu_nt[:] + ['Import Library Spec XML']
+        return menu, menu_nt
 
     @staticmethod
     def on_import_library_spec_xml(event):
-        _ = event
+        __ = event
         RideExecuteSpecXmlImport().publish()
 
     def on_edit(self, event):
         setting = self._get_setting()
         self._show_import_editor_dialog(
-            editor_dialog(setting),
+            editor_dialog(setting, self._language),
             lambda v, c: setting.execute(ctrlcommands.SetValues(v, c)),
             setting, on_empty=self._delete_selected)
 
     def on_library(self, event):
-        _ = event
+        __ = event
         self._show_import_editor_dialog(
             LibraryDialog,
             lambda v, c: self._controller.execute(ctrlcommands.AddLibrary(v, c)))
 
     def on_resource(self, event):
-        _ = event
+        __ = event
         self._show_import_editor_dialog(
             ResourceDialog,
             lambda v, c: self._controller.execute(ctrlcommands.AddResource(v, c)))
 
     def on_variables(self, event):
-        _ = event
+        __ = event
         self._show_import_editor_dialog(
             VariablesDialog,
             lambda v, c:
-                self._controller.execute(ctrlcommands.AddVariablesFileImport(v, c)))
+                self._controller.execute(ctrlcommands.AddVariablesFileImport(v, c)),
+            title=_('Variables'))  # DEBUG
 
     def on_import_failed_help(self, event):
-        _ = event
+        __ = event
         if self._import_failed_shown:
             return
-        dialog = HtmlDialog('Import failure handling', '''
-        <br>Possible corrections and notes:<br>
+        dialog = HtmlDialog(_('Import failure handling'), _('''<br>Possible corrections and notes:<br>
         <ul>
             <li>Import failure is shown with red color.</li>
             <li>See Tools / View RIDE Log for detailed information about the failure.</li>
@@ -634,7 +670,7 @@ class ImportSettingListEditor(_AbstractListEditor):
             For more information see 
             <a href="https://github.com/robotframework/RIDE/wiki/Keyword-Completion#wiki-using-library-specs">wiki</a>.
             </li>
-        </ul>''')
+        </ul>'''))
         dialog.Bind(wx.EVT_CLOSE, self._import_failed_help_closed)
         dialog.Show()
         self._import_failed_shown = True
@@ -646,9 +682,8 @@ class ImportSettingListEditor(_AbstractListEditor):
     def _get_setting(self):
         return self._controller[self._selection]
 
-    def _show_import_editor_dialog(
-            self, dialog, creator_or_setter, item=None, on_empty=None):
-        dlg = dialog(self._controller, item=item)
+    def _show_import_editor_dialog(self, dialog, creator_or_setter, item=None, on_empty=None, title=None):
+        dlg = dialog(self._controller, item=item, title=title)
         if dlg.ShowModal() == wx.ID_OK:
             value = dlg.get_value()
             if not self._empty_name(value):
@@ -669,8 +704,9 @@ class ImportSettingListEditor(_AbstractListEditor):
 
 
 class MetadataListEditor(_AbstractListEditor):
-    _titles = ['Metadata', 'Value', 'Comment']
-    _buttons = ['Add Metadata']
+    _titles = [_('Metadata'), _('Value'), _('Comment')]
+    _buttons = [_('Add Metadata')]
+    _buttons_nt = ['Add Metadata']
     _sortable = False
 
     def on_edit(self, event):
@@ -683,7 +719,7 @@ class MetadataListEditor(_AbstractListEditor):
         dlg.Destroy()
 
     def on_add_metadata(self, event):
-        _ = event
+        __ = event
         dlg = MetadataDialog(self._controller.datafile)
         if dlg.ShowModal() == wx.ID_OK:
             ctrl = self._controller.add_metadata(*dlg.get_value())

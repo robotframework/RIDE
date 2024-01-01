@@ -35,8 +35,9 @@ class HtmlReader(HTMLParser):
     INITIAL = 1
     PROCESS = 2
 
-    def __init__(self, spaces=2):
+    def __init__(self, spaces=2, language=None):
         self._spaces = spaces
+        _ = language  # Ignored, it is here for compatibility with RF 6.1, RIDE > 2.0.8.1
         HTMLParser.__init__(self)
         self._encoding = 'ISO-8859-1'
         self._handlers = {'table_start' : self.table_start,

@@ -80,13 +80,13 @@ class TestFormatChange(unittest.TestCase):
 
 class ProjectChecker(Project):
 
-    def __init__(self, namespace, settings=None, library_manager=None):
+    def __init__(self, namespace, settings=None, library_manager=None, file_language=None):
         self.removed_files = []
         self.serialized_files = []
         library_manager = library_manager or LibraryManager(':memory:')
         if not library_manager:
             library_manager.create_database()
-        Project.__init__(self, namespace, settings, library_manager)
+        Project.__init__(self, namespace, settings, library_manager, file_language)
 
     def save(self, controller):
         self.serialized_files.append(controller.source)

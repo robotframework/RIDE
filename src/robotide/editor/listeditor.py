@@ -13,6 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import builtins
 import wx
 from wx import Colour
 from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
@@ -21,14 +22,19 @@ from ..context import ctrl_or_cmd, bind_keys_to_evt_menu, IS_WINDOWS
 from ..controller import ctrlcommands
 from ..widgets import PopupMenu, PopupMenuItems, ButtonWithHandler, Font
 
+_ = wx.GetTranslation  # To keep linter/code analyser happy
+builtins.__dict__['_'] = wx.GetTranslation
+
 LIGHT_GREY = 'light grey'
 
 
 class ListEditorBase(wx.Panel):
-    _menu = ['Edit', 'Move Up\tCtrl-Up', 'Move Down\tCtrl-Down', '---', 'Delete']
+    _menu = [_('Edit'), _('Move Up\tCtrl-Up'), _('Move Down\tCtrl-Down'), '---', _('Delete')]
+    _menu_nt = ['Edit', 'Move Up\tCtrl-Up', 'Move Down\tCtrl-Down', '---', 'Delete']
     _buttons = []
+    _buttons_nt = []
 
-    def __init__(self, parent, columns, controller):
+    def __init__(self, parent, columns, controller, label=None):
         wx.Panel.__init__(self, parent)
         from ..preferences import RideSettings
         _settings = RideSettings()
@@ -70,8 +76,8 @@ class ListEditorBase(wx.Panel):
 
     def _create_buttons(self):
         sizer = wx.BoxSizer(wx.VERTICAL)
-        for label in self._buttons:
-            sizer.Add(ButtonWithHandler(self, label, width=120,
+        for label, mk_h in zip(self._buttons, self._buttons_nt):
+            sizer.Add(ButtonWithHandler(self, label, mk_handler=mk_h, width=120,
                                         color_secondary_foreground=self.color_secondary_foreground,
                                         color_secondary_background=self.color_secondary_background), 0, wx.ALL, 1)
         return sizer
@@ -90,7 +96,7 @@ class ListEditorBase(wx.Panel):
         self._selection = event.GetIndex()
 
     def on_item_deselected(self, event):
-        _ = event
+        __ = event
         self._selection = wx.NOT_FOUND
 
     def on_edit(self, event):
@@ -98,7 +104,7 @@ class ListEditorBase(wx.Panel):
         pass
 
     def on_right_click(self, event):
-        PopupMenu(self, PopupMenuItems(self, self._menu))
+        PopupMenu(self, PopupMenuItems(self, self._menu, self._menu_nt))
 
     def on_left_click(self, event):
         """ Just overriding """

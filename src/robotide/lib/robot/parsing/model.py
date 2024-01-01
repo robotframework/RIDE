@@ -18,11 +18,17 @@ import copy
 import re
 import warnings
 
+try:
+    from robot.conf.languages import Language
+except ModuleNotFoundError:
+    Language = None
+
+from robotide.lib.compat.parsing import language as lang
 from robotide.lib.robot.errors import DataError
 from robotide.lib.robot.variables import is_var
 from robotide.lib.robot.output import LOGGER
 from robotide.lib.robot.writer import DataFileWriter
-from robotide.lib.robot.utils import abspath, is_string, normalize, py2to3, NormalizedDict
+from robotide.lib.robot.utils import abspath, is_string, normalize, normalized_headers, NormalizedDict
 
 from .comments import Comment
 from .populators import FromFilePopulator, FromDirectoryPopulator, NoTestsFound
@@ -34,7 +40,7 @@ re_set_var = re.compile(r"(?i)^set[ ](\S.*)+variable$")
 
 
 def TestData(parent=None, source=None, include_suites=None,
-             warn_on_skipped='DEPRECATED', extensions=None, settings=None):
+             warn_on_skipped='DEPRECATED', extensions=None, settings=None, language=None):
     """Parses a file or directory to a corresponding model object.
 
     :param parent: Optional parent to be used in creation of the model object.
@@ -50,9 +56,8 @@ def TestData(parent=None, source=None, include_suites=None,
         warnings.warn("Option 'warn_on_skipped' is deprecated and has no "
                       "effect.", DeprecationWarning)
     if os.path.isdir(source):
-        return TestDataDirectory(parent, source, settings).populate(include_suites,
-                                                          extensions)
-    return TestCaseFile(parent, source, settings).populate()
+        return TestDataDirectory(parent, source, settings, language).populate(include_suites, extensions)
+    return TestCaseFile(parent, source, settings, language).populate()
 
 
 class _TestData(object):
@@ -63,29 +68,56 @@ class _TestData(object):
     # remove Comments section, because we want to keep them as they are in files
     _comment_table_names = 'Comment', 'Comments'
 
-    def __init__(self, parent=None, source=None):
+    def __init__(self, parent=None, source=None, language=None):
         self.parent = parent
         self.source = abspath(source) if source else None
         self.children = []
         self._preamble = []
+        self._language = language
+        # self.comment_table = None
         self._tables = dict(self._get_tables())
 
     def _get_tables(self):
-        for names, table in [(self._setting_table_names, self.setting_table),
+        tables = [(self._setting_table_names, self.setting_table),
                              (self._variable_table_names, self.variable_table),
                              (self._testcase_table_names, self.testcase_table),
                              (self._keyword_table_names, self.keyword_table),
-                             (self._comment_table_names, None)]:
+                  [self._comment_table_names, self.comment_table]]
+        # print(f"DEBUG: model.py _TestData._get_tables {self._language=} tables= {tables}")
+        if self._language:
+            tables = self.get_tables_for(self._language)
+        # print(f"DEBUG: model.py _TestData._get_tables AFTER  get_tables_for tables= {tables}")
+        for names, table in tables:
             # remove Comments section, because we want to keep them as they are in files
             # , (self._comment_table_names, None)
             for name in names:
                 yield name, table
 
-    def start_table(self, header_row):
-        table = self._find_table(header_row)
+    def start_table(self, header_row, lineno: int, llang: list):
+        self._language = llang
+        # local_header = lang.get_headers_for(llang, ('Comments',))
+        # print(f"DEBUG: model _TestData start_table ENTER  header_row[0]={ header_row[0]} lineno={lineno}\n"
+        #       f"language={llang}")  # local_header={local_header}")
+        if header_row[0] in lang.get_headers_for(llang, ('Comments',), lowercase=False):
+            self.comment_table = table = CommentsTable(self, llang)  # Multiple creation of table only if exists
+            self.tables.append(self.comment_table)
+        else:
+            table = self._find_table(header_row)
+        # print(f"DEBUG: model _TestData start_table table={table} header_row={header_row}")
         if table is None or not self._table_is_allowed(table):
             return None
-        table.set_header(header_row)
+        if table.type == 'test case':
+            self.testcase_table = table = TestCaseTable(self, self.language)
+            self.tables.append(self.testcase_table)
+        if table.type == 'keyword':
+            self.keyword_table = table = KeywordTable(self, self.language)
+            self.tables.append(self.keyword_table)
+        if table.type == 'variable':
+            self.variable_table = table = VariableTable(self)
+            self.tables.append(self.variable_table)
+        table.set_header(header_row, lineno=lineno)
+        # print(f"DEBUG: model _TestData start_table returning table={table} table name={table.name}\n"
+        #       f"table.type={table.type}")
         return table
 
     def has_preamble(self):
@@ -102,14 +134,63 @@ class _TestData(object):
     def preamble(self, row):
         self.add_preamble(row)
 
+    @property
+    def language(self):
+        return self._language
+    
+    @language.setter
+    def language(self, llang):
+        self._language = llang
+
+    def get_tables_for(self, language):
+        t_en = [(self._setting_table_names, self.setting_table),
+                  (self._variable_table_names, self.variable_table),
+                  (self._testcase_table_names, self.testcase_table),
+                  (self._keyword_table_names, self.keyword_table), [self._comment_table_names, self.comment_table]]
+        try:
+            _lang = Language.from_name(language[0])  # DEBUG: Consider several languages
+        except ValueError:
+            _lang = None
+            # print(f"DEBUG: model.py get_tables_for Exception at language={language[0]}")
+
+        if isinstance(_lang, Language):
+            headers = _lang.headers
+            build_table = []
+            for idx, base in enumerate(t_en):
+                build_headings = []
+                for item in base[0]:
+                    inx = 0
+                    for k, v in zip(headers.keys(), headers.values()):
+                        try:
+                            if v == item:
+                                build_headings.append(list(headers.keys())[inx])
+                        except Exception as e:
+                            pass
+                        inx += 1
+                build_table.append((tuple(build_headings), list(base)[1]))
+            # print(f"DEBUG: model.py get_tables_for returning table= {build_table}")
+            return build_table + t_en
+        return t_en
+
     def _find_table(self, header_row):
         name = header_row[0] if header_row else ''
         title = name.title()
+        self._tables = dict(self._get_tables())
+        # print(f"DEBUG: model.py _find_table ENTER {title=} _tables= {self._tables}")
+        headers = normalized_headers(self._tables)
+        normalized_name = normalize(name)
+        # print(f"DEBUG: model.py _find_table HEADERS name={normalized_name} headers={headers}")
         if title not in self._tables:
+            if normalized_name in headers:
+                idx = headers.index(normalized_name)
+                title = list(self._tables.keys())[idx]
+                # print(f"DEBUG: model.py _find_table RETURN NEW {title}")
+                return self._tables[title]
             title = self._resolve_deprecated_table(name)
             if title is None:
                 self._report_unrecognized_table(name)
                 return None
+        # print(f"DEBUG: model.py _find_table FOUND {title=} return {self._tables[title]}")
         return self._tables[title]
 
     def _resolve_deprecated_table(self, used_name):
@@ -138,6 +219,7 @@ class _TestData(object):
         )
 
     def _table_is_allowed(self, table):
+        _ = table
         return True
 
     @property
@@ -157,7 +239,8 @@ class _TestData(object):
         name = name.replace('_', ' ').strip()
         return name.title() if name.islower() else name
 
-    def _strip_possible_prefix_from_name(self, name):
+    @staticmethod
+    def _strip_possible_prefix_from_name(name):
         return name.split('__', 1)[-1]
 
     @property
@@ -182,10 +265,10 @@ class _TestData(object):
 
         See also :py:class:`robot.writer.datafilewriter.DataFileWriter`
         """
+        options['language'] = self.language
         return DataFileWriter(**options).write(self)
 
 
-@py2to3
 class TestCaseFile(_TestData):
     """The parsed test case file object.
 
@@ -194,18 +277,21 @@ class TestCaseFile(_TestData):
     """
     __test__ = False
 
-    def __init__(self, parent=None, source=None, settings=None):
+    def __init__(self, parent=None, source=None, settings=None, language=None):
         self.directory = os.path.dirname(source) if source else None
-        self.setting_table = TestCaseFileSettingTable(self)
+        self.language = language
+        self.setting_table = TestCaseFileSettingTable(self, self.language)
         self.variable_table = VariableTable(self)
-        self.testcase_table = TestCaseTable(self)
-        self.keyword_table = KeywordTable(self)
+        self.testcase_table = TestCaseTable(self, self.language)
+        self.keyword_table = KeywordTable(self, self.language)
+        self.comment_table = None  # DEBUG: CommentsTable(self, self.language)
+        self.tables = [self.setting_table, self.variable_table, self.keyword_table, self.comment_table]
         self._settings = settings
         self._tab_size = self._settings.get('txt number of spaces', 2) if self._settings else 2
-        _TestData.__init__(self, parent, source)
+        _TestData.__init__(self, parent, source, language)
 
     def populate(self):
-        FromFilePopulator(self, self._tab_size).populate(self.source)
+        FromFilePopulator(self, self._tab_size, self.language).populate(self.source)
         self._validate()
         return self
 
@@ -218,8 +304,7 @@ class TestCaseFile(_TestData):
         return True
 
     def __iter__(self):
-        for table in [self.setting_table, self.variable_table,
-                      self.testcase_table, self.keyword_table]:
+        for table in self.tables:
             yield table
 
     def __nonzero__(self):
@@ -232,19 +317,24 @@ class ResourceFile(_TestData):
     :param source: path where resource file is read from.
     """
 
-    def __init__(self, source=None, settings=None):
+    def __init__(self, source=None, settings=None, language=None):
         self.directory = os.path.dirname(source) if source else None
-        self.setting_table = ResourceFileSettingTable(self)
+        self.language = language
+        if not self.language and source:
+            self.language = lang.check_file_language(source)
+        self.setting_table = ResourceFileSettingTable(self, self.language)
         self.variable_table = VariableTable(self)
-        self.testcase_table = TestCaseTable(self)
-        self.keyword_table = KeywordTable(self)
+        self.testcase_table = TestCaseTable(self, self.language)
+        self.keyword_table = KeywordTable(self, self.language)
+        self.comment_table = None  # DEBUG: CommentsTable(self, self.language)
+        self.tables = [self.setting_table, self.variable_table, self.keyword_table, self.comment_table]
         self.settings = settings
         self._preamble = []
         self._tab_size = self.settings.get('txt number of spaces', 2) if self.settings else 2
-        _TestData.__init__(self, source=source)
+        _TestData.__init__(self, source=source, language=self.language)
 
     def populate(self):
-        FromFilePopulator(self, self._tab_size).populate(self.source, resource=True)
+        FromFilePopulator(self, self._tab_size, self.language).populate(self.source, resource=True)
         self._report_status()
         return self
 
@@ -261,8 +351,12 @@ class ResourceFile(_TestData):
                             "tasks." % self.source)
         return True
 
+    @staticmethod
+    def has_tests():
+        return False
+
     def __iter__(self):
-        for table in [self.setting_table, self.variable_table, self.keyword_table]:
+        for table in self.tables:
             yield table
 
 
@@ -276,21 +370,31 @@ class TestDataDirectory(_TestData):
     """
     __test__ = False
 
-    def __init__(self, parent=None, source=None, settings=None):
+    def __init__(self, parent=None, source=None, settings=None, language=None):
         self.directory = source
         self.initfile = None
-        self.setting_table = InitFileSettingTable(self)
+        self.language = language
+        self.setting_table = InitFileSettingTable(self, self.language)
         self.variable_table = VariableTable(self)
-        self.testcase_table = TestCaseTable(self)
-        self.keyword_table = KeywordTable(self)
+        self.testcase_table = TestCaseTable(self, self.language)
+        self.keyword_table = KeywordTable(self, self.language)
+        self.comment_table = None  # DEBUG: CommentsTable(self, self.language)
+        self.tables = [self.setting_table, self.variable_table, self.keyword_table, self.comment_table]
         self._settings = settings
         self._tab_size = self._settings.get('txt number of spaces', 2) if self._settings else 2
-        _TestData.__init__(self, parent, source)
+        _TestData.__init__(self, parent, source, language=self.language)
 
     def populate(self, include_suites=None, extensions=None, recurse=True):
+        # print(f"DEBUG: Dataloader TestDataDirectory ENTER populate DataError source={self.source}")
         FromDirectoryPopulator().populate(self.source, self, include_suites,
                                           extensions, recurse, self._tab_size)
-        self.children = [ch for ch in self.children if ch.has_tests()]
+        ch_list = []
+        for ch in self.children:
+            if ch is not None and ch.has_tests():
+                # print(f"DEBUG: Dataloader TestDataDirectory ENTER populate children source={ch.source}")
+                ch_list.append(ch)
+        self.children = ch_list
+        # DEBUG self.children = [ch for ch in self.children if ch.has_tests()]  # Attr has_tests missing in html logs
         return self
 
     def _get_basename(self):
@@ -303,29 +407,31 @@ class TestDataDirectory(_TestData):
             return False
         return True
 
-    def add_child(self, path, include_suites, extensions=None):
+    def add_child(self, path, include_suites, extensions=None, language=None):
         self.children.append(TestData(parent=self,
                                       source=path,
                                       include_suites=include_suites,
-                                      extensions=extensions, settings=self._settings))
+                                      extensions=extensions, settings=self._settings, language=language))
 
     def has_tests(self):
-        return any(ch.has_tests() for ch in self.children)
+        return any(ch.has_tests() for ch in self.children) if self.children else None
 
     def __iter__(self):
-        for table in [self.setting_table, self.variable_table, self.keyword_table]:
+        for table in self.tables:
             yield table
 
 
-@py2to3
 class _Table(object):
 
     def __init__(self, parent):
         self.parent = parent
         self._header = None
+        self._lineno = None
 
-    def set_header(self, header):
+    def set_header(self, header, lineno:int):
+        # print(f"DEBUG: model.py _Table set_header={header} self._lineno={lineno}")
         self._header = self._prune_old_style_headers(header)
+        self._lineno = lineno
 
     def _prune_old_style_headers(self, header):
         if len(header) < 3:
@@ -336,10 +442,12 @@ class _Table(object):
 
     @property
     def header(self):
+        # print(f"DEBUG: model.py _Table property header {self._header}")
         return self._header or [self.type.title() + 's']
 
     @property
     def name(self):
+        # print(f"DEBUG: model.py _Table property name self.header[0]={self._header[0]}")
         return self.header[0]
 
     @property
@@ -365,11 +473,13 @@ class _WithSettings(object):
     _aliases = {}
 
     def get_setter(self, name):
-        if name[-1:] == ':':
+        if name.startswith('#'):
+            return None
+        if name.endswith(':'):
             name = name[:-1]
         # Patching for ... setting, this way we don't get a Parser Error on log
         if name == '...':
-            name = 'Documentation'
+            name = self.get_localized_setting_name('Documentation')
         setter = self._get_setter(name)
         if setter is not None:
             return setter
@@ -381,8 +491,13 @@ class _WithSettings(object):
 
     def _get_setter(self, name):
         title = name.title()
+        if name in self._setters:
+            return self._setters[name](self)
+        if name in self._aliases:
+            return self._setters[self._aliases[name]](self)
         if title in self._aliases:
-            title = self._aliases[name]
+            title = self._aliases[title]
+            return self._setters[title](self)
         if title in self._setters:
             return self._setters[title](self)
         return None
@@ -404,24 +519,36 @@ class _WithSettings(object):
     def report_invalid_syntax(self, message, level='ERROR'):
         raise NotImplementedError
 
+    def get_localized_setting_name(self, english_name: str):
+        raise NotImplementedError
+
 
 class _SettingTable(_Table, _WithSettings):
     type = 'setting'
+    language = []
 
     def __init__(self, parent):
         _Table.__init__(self, parent)
-        self.doc = Documentation('Documentation', self)
-        self.suite_setup = Fixture('Suite Setup', self)
-        self.suite_teardown = Fixture('Suite Teardown', self)
-        self.test_setup = Fixture('Test Setup', self)
-        self.test_teardown = Fixture('Test Teardown', self)
-        self.force_tags = Tags('Force Tags', self)  # To deprecate after RF 7.0
-        self.default_tags = Tags('Default Tags', self)  # To deprecate after RF 7.0
-        self.test_tags = Tags('Test Tags', self)  # New since RF 6.0
-        self.test_template = Template('Test Template', self)
-        self.test_timeout = Timeout('Test Timeout', self)
+        self.doc = Documentation(self.get_localized_setting_name('Documentation'), self)
+        self.suite_setup = Fixture(self.get_localized_setting_name('Suite Setup'), self)
+        self.suite_teardown = Fixture(self.get_localized_setting_name('Suite Teardown'), self)
+        self.test_setup = Fixture(self.get_localized_setting_name('Test Setup'), self)
+        self.test_teardown = Fixture(self.get_localized_setting_name('Test Teardown'), self)
+        self.force_tags = Tags(self.get_localized_setting_name('Force Tags'), self)  # To deprecate after RF 7.0
+        self.default_tags = Tags(self.get_localized_setting_name('Default Tags'), self)  # To deprecate after RF 7.0
+        self.test_tags = Tags(self.get_localized_setting_name('Test Tags'), self)  # New since RF 6.0
+        self.test_template = Template(self.get_localized_setting_name('Test Template'), self)
+        self.test_timeout = Timeout(self.get_localized_setting_name('Test Timeout'), self)
         self.metadata = MetadataList(self)
         self.imports = ImportList(self)
+
+    def get_localized_setting_name(self, english_name):
+        if not self._aliases:  # DEBUG Or localization disabled
+            return english_name
+        for loc, en in self._aliases.items():
+            if en == english_name:
+                return loc
+        return english_name
 
     @property
     def _old_header_matcher(self):
@@ -469,6 +596,17 @@ class TestCaseFileSettingTable(_SettingTable):
                 'Task Template': 'Test Template',
                 'Task Timeout': 'Test Timeout'}
 
+    def __init__(self, parent, language=None):
+        if language:
+            self.language = language
+            self._aliases = lang.get_settings_for(language,
+                                                  ['Documentation', 'Suite Setup', 'Suite Teardown',
+                                                   'Test Setup', 'Test Teardown', 'Force Tags', 'Default Tags',
+                                                   'Test Tags', 'Test Template', 'Test Timeout',  'Library',
+                                                   'Resource', 'Variables', 'Metadata','Task Setup',
+                                                   'Task Teardown', 'Task Template', 'Task Timeout'])
+        _SettingTable.__init__(self, parent)
+
     def __iter__(self):
         for setting in [self.doc, self.suite_setup, self.suite_teardown,
                         self.test_setup, self.test_teardown, self.force_tags,
@@ -482,6 +620,12 @@ class ResourceFileSettingTable(_SettingTable):
                 'Library': lambda s: s.imports.populate_library,
                 'Resource': lambda s: s.imports.populate_resource,
                 'Variables': lambda s: s.imports.populate_variables}
+
+    def __init__(self, parent, language=None):
+        if language:
+            self.language = language
+            self._aliases = lang.get_settings_for(language,['Documentation', 'Library', 'Resource', 'Variables'])
+        _SettingTable.__init__(self, parent)
 
     def __iter__(self):
         for setting in [self.doc] + self.imports.data:
@@ -501,6 +645,15 @@ class InitFileSettingTable(_SettingTable):
                 'Resource': lambda s: s.imports.populate_resource,
                 'Variables': lambda s: s.imports.populate_variables,
                 'Metadata': lambda s: s.metadata.populate}
+
+    def __init__(self, parent, language=None):
+        if language:
+            self.language = language
+            self._aliases = lang.get_settings_for(language, ['Documentation', 'Suite Setup',
+                                                             'Suite Teardown', 'Test Setup', 'Test Teardown',
+                                                             'Test Timeout', 'Force Tags', 'Test Tags', 'Library',
+                                                             'Resource', 'Variables', 'Metadata'])
+        _SettingTable.__init__(self, parent)
 
     def __iter__(self):
         for setting in [self.doc, self.suite_setup, self.suite_teardown,
@@ -534,14 +687,15 @@ class TestCaseTable(_Table):
     __test__ = False
     type = 'test case'
 
-    def __init__(self, parent):
+    def __init__(self, parent, language=None):
         _Table.__init__(self, parent)
         self.tests = []
+        self.language = language
 
-    def set_header(self, header):
+    def set_header(self, header, lineno: int):
         if self._header and header:
             self._validate_mode(self._header[0], header[0])
-        _Table.set_header(self, header)
+        _Table.set_header(self, header, lineno=lineno)
 
     def _validate_mode(self, name1, name2):
         tasks1 = normalize(name1) in ('task', 'tasks')
@@ -554,7 +708,7 @@ class TestCaseTable(_Table):
         return OldStyleTestAndKeywordTableHeaderMatcher()
 
     def add(self, name):
-        self.tests.append(TestCase(self, name))
+        self.tests.append(TestCase(self, name, self.language))
         return self.tests[-1]
 
     def __iter__(self):
@@ -567,7 +721,8 @@ class TestCaseTable(_Table):
 class KeywordTable(_Table):
     type = 'keyword'
 
-    def __init__(self, parent):
+    def __init__(self, parent, language=None):
+        self.language = language
         _Table.__init__(self, parent)
         self.keywords = []
 
@@ -576,14 +731,39 @@ class KeywordTable(_Table):
         return OldStyleTestAndKeywordTableHeaderMatcher()
 
     def add(self, name):
-        self.keywords.append(UserKeyword(self, name))
+        self.keywords.append(UserKeyword(self, name, self.language))
         return self.keywords[-1]
 
     def __iter__(self):
         return iter(self.keywords)
 
 
-@py2to3
+class CommentsTable(_Table):
+    type = 'comments'
+    is_comments = True
+
+    def __init__(self, parent, language=None):
+        self.language = language
+        self.section_comments = []
+        _Table.__init__(self, parent)
+        # print(f"DEBUG: model Comments __init__  {self.language=} lineno= {self._lineno}")
+
+    def add(self, content):
+        # print(f"DEBUG: model.py CommentsTable add content={content}")
+        self.section_comments.append(''.join(content))  # , self._lineno])  # CommentRow(content, self._lineno))
+
+    def is_started(self):
+        # print(f"DEBUG: RFLib model.py CommentsTable is_started {bool(self._header)}")
+        return bool(self._header)
+
+    def __len__(self):
+        return len(self.section_comments)  # sum(1 for _ in self.section_comments)
+
+    def __iter__(self):
+        # print(f"DEBUG: RFLib model.py CommentsTable __iter_ {self.section_comments=}")
+        iter(self.section_comments)
+
+
 class Variable(object):
 
     def __init__(self, parent, name, value, comment=None):
@@ -636,16 +816,22 @@ class _WithSteps(object):
 
 class TestCase(_WithSteps, _WithSettings):
     __test__ = False
+    _aliases = {}
 
-    def __init__(self, parent, name):
+    def __init__(self, parent, name, language=None):
         self.parent = parent
         self.name = name
-        self.doc = Documentation('[Documentation]', self)
-        self.template = Template('[Template]', self)
-        self.tags = Tags('[Tags]', self)
-        self.setup = Fixture('[Setup]', self)
-        self.teardown = Fixture('[Teardown]', self)
-        self.timeout = Timeout('[Timeout]', self)
+        self.language = language
+        # print(f"DEBUG: model.py TestCase INIT language={self.language}")
+        if self.language:
+            self._aliases = lang.get_settings_for(language, ['Arguments', 'Documentation', 'Template',
+                                                             'Tags', 'Setup', 'Teardown', 'Timeout'])
+        self.doc = Documentation(self.get_localized_setting_name('[Documentation]'), self)
+        self.template = Template(self.get_localized_setting_name('[Template]'), self)
+        self.tags = Tags(self.get_localized_setting_name('[Tags]'), self)
+        self.setup = Fixture(self.get_localized_setting_name('[Setup]'), self)
+        self.teardown = Fixture(self.get_localized_setting_name('[Teardown]'), self)
+        self.timeout = Timeout(self.get_localized_setting_name('[Timeout]'), self)
         self.steps = []
         if name == '...':
             self.report_invalid_syntax(
@@ -655,11 +841,21 @@ class TestCase(_WithSteps, _WithSettings):
             )
 
     _setters = {'Documentation': lambda s: s.doc.populate,
+                'Arguments': lambda s: s.args.populate,  # This is for UserKeyword
+                'Return': lambda s: s.return_.populate,  # This is for UserKeyword
                 'Template': lambda s: s.template.populate,
                 'Setup': lambda s: s.setup.populate,
                 'Teardown': lambda s: s.teardown.populate,
                 'Tags': lambda s: s.tags.populate,
                 'Timeout': lambda s: s.timeout.populate}
+
+    def get_localized_setting_name(self, english_name):
+        if not self._aliases:  # DEBUG Or localization disabled
+            return english_name
+        for loc, en in self._aliases.items():
+            if en == english_name.strip('[]'):
+                return f"[{loc}]"
+        return english_name
 
     @property
     def source(self):
@@ -707,23 +903,24 @@ class TestCase(_WithSteps, _WithSettings):
                 self.teardown]
 
     def __iter__(self):
-        for element in [self.doc, self.tags, self.setup,
-                        self.template, self.timeout] \
-                        + self.steps + [self.teardown]:
+        for element in [self.doc, self.tags, self.setup, self.template, self.timeout] + self.steps + [self.teardown]:
             yield element
 
 
 class UserKeyword(TestCase):
 
-    def __init__(self, parent, name):
+    def __init__(self, parent, name, language=None):
         self.parent = parent
         self.name = name
-        self.doc = Documentation('[Documentation]', self)
-        self.args = Arguments('[Arguments]', self)
-        self.return_ = Return('[Return]', self)
-        self.timeout = Timeout('[Timeout]', self)
-        self.teardown = Fixture('[Teardown]', self)
-        self.tags = Tags('[Tags]', self)
+        self.language = language
+        self._aliases = lang.get_settings_for(language, ['Documentation', 'Arguments', 'Return', 'Timeout',
+                                                         'Teardown', 'Tags'])
+        self.doc = Documentation(self.get_localized_setting_name('[Documentation]'), self)
+        self.args = Arguments(self.get_localized_setting_name('[Arguments]'), self)
+        self.return_ = Return(self.get_localized_setting_name('[Return]'), self)
+        self.timeout = Timeout(self.get_localized_setting_name('[Timeout]'), self)
+        self.teardown = Fixture(self.get_localized_setting_name('[Teardown]'), self)
+        self.tags = Tags(self.get_localized_setting_name('[Tags]'), self)
         self.steps = []
         if name == '...':
             self.report_invalid_syntax(
@@ -731,6 +928,7 @@ class UserKeyword(TestCase):
                 "considered line continuation in Robot Framework 3.2.",
                 level='WARN'
             )
+        TestCase.__init__(self, parent, name, language)
 
     _setters = {'Documentation': lambda s: s.doc.populate,
                 'Arguments': lambda s: s.args.populate,
@@ -738,6 +936,14 @@ class UserKeyword(TestCase):
                 'Timeout': lambda s: s.timeout.populate,
                 'Teardown': lambda s: s.teardown.populate,
                 'Tags': lambda s: s.tags.populate}
+
+    def get_localized_setting_name(self, english_name):
+        if not self._aliases:  # DEBUG Or localization disabled
+            return english_name
+        for loc, en in self._aliases.items():
+            if en == english_name.strip('[]'):
+                return f"[{loc}]"
+        return english_name
 
     def _add_to_parent(self, test):
         self.parent.keywords.append(test)
@@ -747,8 +953,7 @@ class UserKeyword(TestCase):
         return [self.args, self.doc, self.tags, self.timeout, self.teardown, self.return_]
 
     def __iter__(self):
-        for element in [self.args, self.doc, self.tags, self.timeout] \
-                        + self.steps + [self.teardown, self.return_]:
+        for element in [self.args, self.doc, self.tags, self.timeout] + self.steps + [self.teardown, self.return_]:
             yield element
 
 
