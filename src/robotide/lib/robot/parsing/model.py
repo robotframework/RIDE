@@ -738,6 +738,44 @@ class KeywordTable(_Table):
         return iter(self.keywords)
 
 
+class CommentRow(object):
+    row = []
+    is_comments = True
+
+    def __init__(self, content):
+        print(f"DEBUG: RFLib model.py CommentRow init {content=}")
+        self.add(content[0])
+
+    def add(self, row):
+        self.row.append(row)
+
+    def is_set(self):
+        return False
+
+    def is_for_loop(self):
+        return False
+
+    def __iter__(self):
+        print(f"DEBUG: RFLib model.py CommentRow __iter__ return iter({self.row})")
+        for r in self.row:
+            yield r
+
+    """
+    def as_list(self):
+        return self.row
+
+    def __iter__(self):
+        print(f"DEBUG: RFLib model.py CommentRow __iter__ return iter({self.row})")
+        for r in self.row:
+            yield r
+    """
+    """
+    def __iter__(self):
+        for element in [self.row]:
+            yield element
+    """
+
+
 class CommentsTable(_Table):
     type = 'comments'
     is_comments = True
