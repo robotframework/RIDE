@@ -13,6 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import builtins
 import os
 
 import wx
@@ -24,6 +25,9 @@ from ..controller.ctrlcommands import (CreateNewResource, AddTestDataDirectory, 
                                        SetFileFormatRecuresively)
 from ..validators import NonEmptyValidator, NewSuitePathValidator, SuiteFileNameValidator
 from ..widgets import Label, RIDEDialog
+
+_ = wx.GetTranslation  # To keep linter/code analyser happy
+builtins.__dict__['_'] = wx.GetTranslation
 
 # This hack needed to set same label width as with other labels
 DirBrowseButton.createLabel = lambda self: Label(self, size=(110, -1), label=self.labelText)
@@ -68,9 +72,9 @@ class _CreationDialog(RIDEDialog):
 
     def _create_name_editor(self, sizer):
         disp_sizer = wx.BoxSizer(wx.HORIZONTAL)
-        self._add_label(disp_sizer, "Name")
+        self._add_label(disp_sizer, _("Name"))
         name_editor = wx.TextCtrl(self)
-        name_editor.SetValidator(NonEmptyValidator("Name"))
+        name_editor.SetValidator(NonEmptyValidator(_("Name")))
         name_editor.SetBackgroundColour(Colour(self.color_secondary_background))
         name_editor.SetForegroundColour(Colour(self.color_secondary_foreground))
         self.Bind(wx.EVT_TEXT, self.on_path_changed, name_editor)
@@ -86,16 +90,16 @@ class _CreationDialog(RIDEDialog):
         sizer.Add(label, flag=wx.CENTER | wx.ALL, border=3)
 
     def _create_type_chooser(self, sizer):
-        return self._create_radiobuttons(sizer, "Type", ["File", "Directory"])
+        return self._create_radiobuttons(sizer, _("Type"), [_("File"), _("Directory")])
 
     def _create_format_chooser(self, sizer, callback=True):
         from ..controller.filecontrollers import ResourceFileController
 
         formats = list(self.formats)
         if ((hasattr(self, '_controller') and isinstance(self._controller, ResourceFileController)) or
-                (hasattr(self, '_title') and self._title == "New Resource File")):
+                (hasattr(self, '_title') and self._title == _("New Resource File"))):
             formats += ["RESOURCE"]
-        return self._create_radiobuttons(sizer, "Format", formats, callback)
+        return self._create_radiobuttons(sizer, _("Format"), formats, callback)
 
     def _create_radiobuttons(self, sizer, label, choices, callback=True):
         radios = wx.RadioBox(self, label=label, choices=choices, majorDimension=4)
@@ -107,8 +111,8 @@ class _CreationDialog(RIDEDialog):
         return radios
 
     def _create_parent_chooser(self, sizer, default_dir):
-        browser = DirBrowseButton(self, labelText="Parent Directory",
-                                  dialogTitle="Choose Parent Directory",
+        browser = DirBrowseButton(self, labelText=_("Parent Directory"),
+                                  dialogTitle=_("Choose Parent Directory"),
                                   startDirectory=default_dir,
                                   size=(600, -1), newDirectory=True,
                                   changeCallback=self.on_path_changed)
@@ -122,10 +126,10 @@ class _CreationDialog(RIDEDialog):
         return browser
 
     def _create_parent_display(self, sizer, path):
-        return self._create_display(sizer, "Parent Directory", path)
+        return self._create_display(sizer, _("Parent Directory"), path)
 
     def _create_path_display(self, sizer, path):
-        return self._create_display(sizer, "Created Path", path,
+        return self._create_display(sizer, _("Created Path"), path,
                                     NewSuitePathValidator())
 
     def _create_display(self, sizer, title, value, validator=None):
@@ -153,7 +157,7 @@ class _CreationDialog(RIDEDialog):
     def _is_dir_type(self):
         if not self._type_chooser:
             return False
-        return self._type_chooser.GetStringSelection() == "Directory"
+        return self._type_chooser.GetStringSelection() == _("Directory")
 
     def _get_extension(self):
         if not self._format_chooser:
@@ -178,7 +182,7 @@ class NewProjectDialog(_CreationDialog):
 
     def __init__(self, project):
         self._controller = project
-        _CreationDialog.__init__(self, project.default_dir, "New Project")
+        _CreationDialog.__init__(self, project.default_dir, _("New Project"))
 
     def _execute(self):
         cmd = CreateNewDirectoryProject if self._is_dir_type()\
@@ -191,7 +195,7 @@ class NewResourceDialog(_WithImmutableParent, _CreationDialog):
     def __init__(self, controller, settings):
         self._path = controller.directory
         _CreationDialog.__init__(self, controller.default_dir,
-                                 "New Resource File")
+                                 _("New Resource File"))
         self._format_chooser.SetStringSelection(
             settings.get(DEFAULT_FFORMAT, "robot"))
         self._controller = controller
@@ -205,7 +209,7 @@ class NewResourceDialog(_WithImmutableParent, _CreationDialog):
 
 class AddSuiteDialog(_WithImmutableParent, _CreationDialog):
 
-    NAME = "Add Suite"
+    NAME = _("Add Suite")
 
     def __init__(self, controller, settings):
         self._controller = controller
@@ -219,7 +223,7 @@ class AddSuiteDialog(_WithImmutableParent, _CreationDialog):
         name_editor.SetBackgroundColour(Colour(self.color_secondary_background))
         name_editor.SetForegroundColour(Colour(self.color_secondary_foreground))
         name_editor.SetValidator(
-            SuiteFileNameValidator("Name", self._is_dir_type))
+            SuiteFileNameValidator(_("Name"), self._is_dir_type))
         return name_editor
 
     def _execute(self):
@@ -229,7 +233,7 @@ class AddSuiteDialog(_WithImmutableParent, _CreationDialog):
 
 class AddDirectoryDialog(AddSuiteDialog):
 
-    NAME = "Add Directory"
+    NAME = _("Add Directory")
 
     def _create_type_chooser(self, sizer):
         return None
@@ -241,7 +245,7 @@ class AddDirectoryDialog(AddSuiteDialog):
 class _FileFormatDialog(_CreationDialog):
 
     def __init__(self, controller):
-        sizer = self._init_dialog("Set Data Format")
+        sizer = self._init_dialog(_("Set Data Format"))
         self._controller = controller
         self._create_help(sizer)
         self._chooser = self._create_format_chooser(sizer, callback=False)
@@ -265,7 +269,7 @@ class ChangeFormatDialog(_FileFormatDialog):
     def _create_recursion_selector(self, sizer):
         if not self._controller.is_directory_suite():
             return None
-        selector = wx.CheckBox(self, label="Change recursively")
+        selector = wx.CheckBox(self, label=_("Change recursively"))
         selector.SetBackgroundColour(Colour(self.color_secondary_background))
         selector.SetForegroundColour(Colour(self.color_secondary_foreground))
         selector.SetValue(True)
@@ -284,7 +288,7 @@ class ChangeFormatDialog(_FileFormatDialog):
 class InitFileFormatDialog(_FileFormatDialog):
 
     def _create_help(self, sizer):
-        ihelp = "Provide format for initialization file in directory\n\"%s\"." \
+        ihelp = _("Provide format for initialization file in directory\n\"%s\".") \
                % self._controller.directory
         sizer.Add(Label(self, label=ihelp), flag=wx.ALL, border=5)
 
@@ -298,17 +302,17 @@ class RobotFilePathDialog(wx.FileDialog):
         self._controller = controller
         style = wx.FD_OPEN
         wx.FileDialog.__init__(self, window, style=style, wildcard=self._get_wildcard(settings),
-                               defaultDir=self._controller.default_dir, message="Open")
+                               defaultDir=self._controller.default_dir, message=_("Open"))
 
     @staticmethod
     def _get_wildcard(settings):
         filetypes = [
-            ("robot", "Robot data (*.robot)|*.robot"),
-            ("txt", "Robot data (*.txt)|*.txt"),
-            ("resource", "Robot resource file (*.resource)|*.resource"),
-            ("tsv", "Robot Tab Separated data (*.tsv)|*.tsv"),
+            ("robot", _("Robot data (*.robot)|*.robot")),
+            ("txt", _("Robot data (*.txt)|*.txt")),
+            ("resource", _("Robot resource file (*.resource)|*.resource")),
+            ("tsv", _("Robot Tab Separated data (*.tsv)|*.tsv")),
             # ("html", "Robot HTML data (pre 3.2.2) (*.html)|*.html"),
-            ("all", "All files|*.*")
+            ("all", _("All files|*.*"))
         ]
         default_format = settings.get(DEFAULT_FFORMAT, "robot")
         robottypes = settings.get('robot types', ['robot', 'resource', 'txt', 'tsv'])  # , 'html'

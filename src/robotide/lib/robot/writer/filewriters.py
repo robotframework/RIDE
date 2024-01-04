@@ -13,11 +13,14 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import builtins
 try:
     import csv
 except ImportError:
     # csv module is missing from IronPython < 2.7.1
     csv = None
+
+import wx
 
 from robotide.lib.robot.utils import HtmlWriter, PY2
 
@@ -25,11 +28,15 @@ from .formatters import TsvFormatter, TxtFormatter, PipeFormatter
 from .htmlformatter import HtmlFormatter
 from .htmltemplate import TEMPLATE_START, TEMPLATE_END
 
+_ = wx.GetTranslation  # To keep linter/code analyser happy
+builtins.__dict__['_'] = wx.GetTranslation
+
 
 def table_sorter(tables: list) -> list:
     sorted_tables = []
     for idx, tab in enumerate(tables):
         sorted_tables.append((tab._lineno, tab))
+    print(f"DEBUG: filewriters.py table_sorter {sorted_tables[:]}")
     sorted_result = sorted(sorted_tables)
     sorted_tables = [z[1] for z in sorted_result]
     return sorted_tables

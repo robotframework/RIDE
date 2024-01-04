@@ -110,7 +110,7 @@ class TxtFormatter(_DataFileFormatter):
     _setting_and_variable_name_width = 14
 
     def _format_row(self, row, table=None):
-        # print(f"DEBUG: formatters.py format_row ENTER row={row}")
+        print(f"DEBUG: formatters.py format_row ENTER row={row}")
         if table and table.type == 'comments':
             return row
         # Unit tests failing here with row[0]==None
@@ -128,7 +128,7 @@ class TxtFormatter(_DataFileFormatter):
         return NullAligner()
 
     def _format_header(self, header, table):
-        # print(f"DEBUG: RFLib writer formmaters.py TxtFormatter _format_header headers={header}")
+        print(f"DEBUG: RFLib writer formmaters.py TxtFormatter _format_header headers={header}")
         header = ['*** %s ***' % header[0]] + header[1:]
         aligner = self._aligner_for(table)
         return aligner.align_row(header)
