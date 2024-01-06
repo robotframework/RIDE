@@ -1,21 +1,22 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: RIDE 2.1\n"
-"POT-Creation-Date: 2024-01-01 19:29+0000\n"
-"PO-Revision-Date: 2024-01-01 18:37\n"
+"POT-Creation-Date: 2024-01-04 00:42+0000\n"
+"PO-Revision-Date: 2024-01-04 00:54+0000\n"
 "Last-Translator: Hélio Guilherme <helio_guilherme@hotmail.com>\n"
 "Language-Team: helioxentric@gmail.com\n"
 "Language: pt_PT\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: pygettext.py 1.5\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: pygettext.py 1.5\n"
 "X-Crowdin-Project: robotframework-ride\n"
 "X-Crowdin-Project-ID: 637294\n"
 "X-Crowdin-Language: pt-PT\n"
 "X-Crowdin-File: RIDE.pot\n"
 "X-Crowdin-File-ID: 2\n"
+"X-Generator: Poedit 3.4.2\n"
 
 #: /home/helio/github/RIDE/src/robotide/application/application.py:383
 msgid "Found Robot Framework version %s from %s."
@@ -1045,6 +1046,9 @@ msgid "Documentation"
 msgstr "Documentação"
 
 #: /home/helio/github/RIDE/src/robotide/run/configmanagerui.py:101
+#: /home/helio/github/RIDE/src/robotide/ui/filedialogs.py:75
+#: /home/helio/github/RIDE/src/robotide/ui/filedialogs.py:77
+#: /home/helio/github/RIDE/src/robotide/ui/filedialogs.py:226
 #: /home/helio/github/RIDE/src/robotide/ui/keywordsearch.py:352
 msgid "Name"
 msgstr "Nome"
@@ -1162,6 +1166,7 @@ msgid "Help"
 msgstr "Ajuda"
 
 #: /home/helio/github/RIDE/src/robotide/ui/actiontriggers.py:54
+#: /home/helio/github/RIDE/src/robotide/ui/filedialogs.py:93
 #: /home/helio/github/RIDE/src/robotide/ui/review.py:140
 msgid "File"
 msgstr "Ficheiro"
@@ -1169,6 +1174,91 @@ msgstr "Ficheiro"
 #: /home/helio/github/RIDE/src/robotide/ui/actiontriggers.py:65
 msgid "&Help"
 msgstr "Ajuda"
+
+#: /home/helio/github/RIDE/src/robotide/ui/filedialogs.py:93
+msgid "Type"
+msgstr "Tipo"
+
+#: /home/helio/github/RIDE/src/robotide/ui/filedialogs.py:93
+#: /home/helio/github/RIDE/src/robotide/ui/filedialogs.py:160
+msgid "Directory"
+msgstr "Diretoria"
+
+#: /home/helio/github/RIDE/src/robotide/ui/filedialogs.py:100
+#: /home/helio/github/RIDE/src/robotide/ui/filedialogs.py:198
+msgid "New Resource File"
+msgstr "Novo Ficheiro de Recursos"
+
+#: /home/helio/github/RIDE/src/robotide/ui/filedialogs.py:102
+#: /home/helio/github/RIDE/src/robotide/ui/preview.py:116
+msgid "Format"
+msgstr "Formato"
+
+#: /home/helio/github/RIDE/src/robotide/ui/filedialogs.py:114
+#: /home/helio/github/RIDE/src/robotide/ui/filedialogs.py:129
+#, fuzzy
+msgid "Parent Directory"
+msgstr "Diretoria Raiz"
+
+#: /home/helio/github/RIDE/src/robotide/ui/filedialogs.py:115
+msgid "Choose Parent Directory"
+msgstr "Escolha a Diretoria Raiz"
+
+#: /home/helio/github/RIDE/src/robotide/ui/filedialogs.py:132
+msgid "Created Path"
+msgstr "Criado o Caminho"
+
+#: /home/helio/github/RIDE/src/robotide/ui/filedialogs.py:185
+msgid "New Project"
+msgstr "Novo Projeto"
+
+#: /home/helio/github/RIDE/src/robotide/ui/filedialogs.py:212
+msgid "Add Suite"
+msgstr "Adicionar Suite"
+
+#: /home/helio/github/RIDE/src/robotide/ui/filedialogs.py:236
+msgid "Add Directory"
+msgstr "Adicionar Diretoria"
+
+#: /home/helio/github/RIDE/src/robotide/ui/filedialogs.py:248
+msgid "Set Data Format"
+msgstr "Definir Formato dos Dados"
+
+#: /home/helio/github/RIDE/src/robotide/ui/filedialogs.py:272
+msgid "Change recursively"
+msgstr "Alterar recursivamente"
+
+#: /home/helio/github/RIDE/src/robotide/ui/filedialogs.py:291
+msgid ""
+"Provide format for initialization file in directory\n"
+"\"%s\"."
+msgstr ""
+"Indique o formato do ficheiro de inicialização na diretoria\n"
+"\"%s\"."
+
+#: /home/helio/github/RIDE/src/robotide/ui/filedialogs.py:305
+msgid "Open"
+msgstr "Abrir"
+
+#: /home/helio/github/RIDE/src/robotide/ui/filedialogs.py:310
+msgid "Robot data (*.robot)|*.robot"
+msgstr "dados de Robot (*.robot)|*.robot"
+
+#: /home/helio/github/RIDE/src/robotide/ui/filedialogs.py:311
+msgid "Robot data (*.txt)|*.txt"
+msgstr "dados de Robot (*.txt)|*.txt"
+
+#: /home/helio/github/RIDE/src/robotide/ui/filedialogs.py:312
+msgid "Robot resource file (*.resource)|*.resource"
+msgstr "ficheiro Robot de recursos (*.resource)|*.resource"
+
+#: /home/helio/github/RIDE/src/robotide/ui/filedialogs.py:313
+msgid "Robot Tab Separated data (*.tsv)|*.tsv"
+msgstr "dados de Robot separados por Tabs (*.tsv)|*.tsv"
+
+#: /home/helio/github/RIDE/src/robotide/ui/filedialogs.py:315
+msgid "All files|*.*"
+msgstr "Todos os ficheiros|*.*"
 
 #: /home/helio/github/RIDE/src/robotide/ui/keywordsearch.py:35
 msgid "<all keywords>"
@@ -1402,10 +1492,6 @@ msgstr "Texto (Barras)"
 #: /home/helio/github/RIDE/src/robotide/ui/preview.py:82
 msgid "Text (Spaces)"
 msgstr "Texto (Espaços)"
-
-#: /home/helio/github/RIDE/src/robotide/ui/preview.py:116
-msgid "Format"
-msgstr "Formato"
 
 #: /home/helio/github/RIDE/src/robotide/ui/preview.py:122
 msgid "Print"
@@ -1646,3 +1732,7 @@ msgstr "Importando Localização"
 #: /home/helio/github/RIDE/src/robotide/usages/usagesdialog.py:176
 msgid "Importing Name"
 msgstr "Importando Nome"
+
+#: /home/helio/github/RIDE/src/robotide/validators/__init__.py:150
+msgid "%s cannot be empty"
+msgstr "%s não pode ser vazio"

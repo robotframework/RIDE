@@ -13,6 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import builtins
 import os
 import wx
 
@@ -146,7 +147,7 @@ class NonEmptyValidator(_AbstractValidator):
 
     def _validate(self, value):
         if not value:
-            return "%s cannot be empty" % self._field_name
+            return _("%s cannot be empty") % self._field_name
         return None
 
 
