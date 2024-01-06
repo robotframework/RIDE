@@ -34,9 +34,12 @@ builtins.__dict__['_'] = wx.GetTranslation
 
 def table_sorter(tables: list) -> list:
     sorted_tables = []
+    prev_tab_line = 0
     for idx, tab in enumerate(tables):
-        sorted_tables.append((tab._lineno, tab))
-    print(f"DEBUG: filewriters.py table_sorter {sorted_tables[:]}")
+        current_tab_line = tab._lineno if tab._lineno is not None else prev_tab_line + 1
+        sorted_tables.append((current_tab_line, tab))
+        prev_tab_line = current_tab_line
+    # print(f"DEBUG: filewriters.py table_sorter {sorted_tables[:]}")
     sorted_result = sorted(sorted_tables)
     sorted_tables = [z[1] for z in sorted_result]
     return sorted_tables
