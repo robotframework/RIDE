@@ -58,7 +58,8 @@ if IS_WINDOWS:
 
 
 class TreePlugin(Plugin):
-    """Provides a tree view for Test Suites """
+    __doc__ = _("""Provides a tree view for Test Suites """)
+
     datafile = property(lambda self: self.get_selected_datafile())
     defaults = {"opened": True,
                 "docked": True,
@@ -67,7 +68,7 @@ class TreePlugin(Plugin):
 
     def __init__(self, application):
         Plugin.__init__(self, application, default_settings=self.defaults)
-        print("DEBUG: treeplugin.py TreePlugin __init__")
+        # print("DEBUG: treeplugin.py TreePlugin __init__")
         self._app = application
         self.settings = self._app.settings.config_obj['Plugins']['Tree']
         self._parent = None
@@ -207,8 +208,8 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
     def __init__(self, parent, action_registerer, settings=None):
         from ..controller.ui.treecontroller import TreeController
         self._RESOURCES_NODE_LABEL = _('External Resources')
-        print(f"DEBUG: treeplugin.py Tree after importing TreeController  __init__ "
-              f"translated label={self._RESOURCES_NODE_LABEL}")
+        # print(f"DEBUG: treeplugin.py Tree after importing TreeController  __init__ "
+        #       f"translated label={self._RESOURCES_NODE_LABEL}")
         self._checkboxes_for_tests = False
         self._test_selection_controller = self._create_test_selection_controller()
         self.controller = TreeController(self, action_registerer, settings=settings,

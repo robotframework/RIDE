@@ -12,6 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import builtins
 import wx
 from wx.lib.agw import customtreectrl
 from wx.lib.agw.aui import GetManager
@@ -20,9 +21,13 @@ from ..controller.project import Project
 from ..pluginapi import Plugin
 from ..pluginapi.plugin import ActionInfo
 
+_ = wx.GetTranslation  # To keep linter/code analyser happy
+builtins.__dict__['_'] = wx.GetTranslation
+
 
 class FileExplorerPlugin(Plugin):
-    """Provides a tree view for Files and Folders. Opens selected item with mouse right-click."""
+    __doc__ = _("""Provides a tree view for Files and Folders. Opens selected item with mouse right-click.""")
+
     datafile = property(lambda self: self.get_selected_datafile())
     defaults = {"opened": True,
                 "docked": True,
@@ -57,9 +62,9 @@ class FileExplorerPlugin(Plugin):
             self._mgr.Update()
 
     def enable(self):
-        self.register_action(ActionInfo('View', 'View File Explorer', self.on_show_file_explorer,
+        self.register_action(ActionInfo(_('View'), _('View File Explorer'), self.on_show_file_explorer,
                                         shortcut='F11',
-                                        doc='Show File Explorer panel',
+                                        doc=_('Show File Explorer panel'),
                                         position=1))
         # self.save_setting('opened', True)
         if self.opened:
@@ -105,7 +110,7 @@ class FileExplorerPlugin(Plugin):
         self._mgr.DetachPane(self._filemgr)
         self._mgr.AddPane(self.filemgr,
                           wx.lib.agw.aui.AuiPaneInfo().Name("file_manager").
-                          Caption("Files").LeftDockable(True).
+                          Caption(_("Files")).LeftDockable(True).
                           CloseButton(True))
         self._filemgr.SetBackgroundStyle(wx.BG_STYLE_SYSTEM)
         self._filemgr.SetBackgroundColour(html_background)

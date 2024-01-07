@@ -62,7 +62,7 @@ class MenuBar(object):
 
     def _insert_menu(self, menu, before_help):
         if before_help:
-            index = accel_index([m.name for m in self._menus], _('&Help'))
+            index = accel_index([m.name for m in self._menus], _('Help'))
         else:
             index = len(self._menus)
         self._menus.insert(index, menu)
@@ -75,9 +75,13 @@ class MenuBar(object):
         menu.add_menu_item(action)
 
     def _find_menu(self, name):
+        t_name = name.replace('&', '')
+        t_registered = self._name_builder.get_registered_name(_(t_name))
         registered = self._name_builder.get_registered_name(name)
-        if not registered:
+        if not t_registered and not registered:
             return None
+        if t_registered:
+            registered = t_registered
         for menu in self._menus:
             if menu.name == registered:
                 return menu
