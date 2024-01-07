@@ -128,7 +128,7 @@ def action_info_collection(data, event_handler, data_nt=None, container=None):
     for row, row_nt in zip(data.splitlines(), data_nt.splitlines()):
         row = row.strip()
         row_nt = row_nt.strip()
-        print(f"DEBUG: actioninfo.py action_info_collection in loop row={row}\noriginal={row_nt} ")
+        # print(f"DEBUG: actioninfo.py action_info_collection in loop row={row}\noriginal={row_nt} ")
         if not row and not row_nt:
             continue
         elif row.startswith('[') and row.endswith(']'):
@@ -140,7 +140,8 @@ def action_info_collection(data, event_handler, data_nt=None, container=None):
 
 
 def _create_action_info(eventhandler, menu, container, row, row_nt):
-    if row.startswith('---'):
+    print(f"DEBUG: actioninfo.py _create_action_info menu={menu} row={row} row_nt={row_nt}")
+    if row_nt.startswith('---'):
         return SeparatorInfo(menu)
     tokens = [t.strip() for t in row.split('|')]
     tokens += [''] * (5-len(tokens))
@@ -154,8 +155,8 @@ def _create_action_info(eventhandler, menu, container, row, row_nt):
         container = None
     eventhandler_name, name_nt = get_eventhandler_name_and_parsed_name(name_nt)
     action = getattr(eventhandler, eventhandler_name)
-    print(f"DEBUG: actioninfo.py _create_action_info menu={menu} eventhandler_name={eventhandler_name},"
-          f" name_nt={name_nt}")
+    # print(f"DEBUG: actioninfo.py _create_action_info menu={menu} eventhandler_name={eventhandler_name},"
+    #       f" name_nt={name_nt}")
     return ActionInfo(menu, name, action, container, shortcut, icon, doc, position)
 
 

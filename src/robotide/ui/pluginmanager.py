@@ -13,6 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import builtins
 import wx
 from wx import Colour
 from wx.adv import HyperlinkCtrl
@@ -21,6 +22,9 @@ from wx.lib.scrolledpanel import ScrolledPanel
 from ..context import LOG
 from ..publish import RideLogException
 from ..widgets import Label, RIDEDialog
+
+_ = wx.GetTranslation  # To keep linter/code analyser happy
+builtins.__dict__['_'] = wx.GetTranslation
 
 
 class PluginManager(object):
@@ -41,7 +45,7 @@ class PluginManager(object):
 class _PluginPanel(RIDEDialog):
 
     def __init__(self, notebook, plugins, activation_callback):
-        RIDEDialog.__init__(self, parent=notebook, title="Manage Plugins", size=(800, 600))
+        RIDEDialog.__init__(self, parent=notebook, title=_("Manage Plugins"), size=(800, 600))
         self.SetBackgroundColour(Colour(self.color_background))
         self.SetForegroundColour(Colour(self.color_foreground))
         sizer = wx.BoxSizer(wx.VERTICAL)
@@ -56,7 +60,7 @@ class _PluginPanel(RIDEDialog):
         self.CenterOnParent()
 
     def _create_header(self):
-        header = Label(self, wx.ID_ANY, "Installed Plugins\n")
+        header = Label(self, wx.ID_ANY, _("Installed Plugins\n"))
         self.font = self.GetFont()
         self.font.SetPointSize(self.font_size)
         if self.font_face is None:
@@ -75,8 +79,8 @@ class _PluginPanel(RIDEDialog):
         panel.SetupScrolling()
         sizer = wx.FlexGridSizer(0, 2, hgap=8, vgap=8)
         sizer.AddGrowableCol(1, 1)
-        sizer.Add(self._create_label(panel, 'Enabled'), 0, wx.BOTTOM, border=8)
-        sizer.Add(self._create_label(panel, 'Plugin'), 0, wx.BOTTOM | wx.EXPAND, border=8)
+        sizer.Add(self._create_label(panel, _('Enabled')), 0, wx.BOTTOM, border=8)
+        sizer.Add(self._create_label(panel, _('Plugin')), 0, wx.BOTTOM | wx.EXPAND, border=8)
         for plugin in sorted(plugins, key=lambda p: p.name):
             sizer.Add(_PluginEnablationCheckBox(panel, plugin,
                                                 activation_callback),
@@ -86,10 +90,8 @@ class _PluginPanel(RIDEDialog):
         return panel
 
     def _create_info_text(self):
-        info = wx.StaticText(self, wx.ID_ANY,
-                             "Info. Enabling and disabling plugins might"
-                             " require RIDE restart "
-                             "for menus to work.")
+        info = wx.StaticText(self, wx.ID_ANY, _("Info. Enabling and disabling plugins might"
+                                                " require RIDE restart for menus to work."))
         info.SetFont(wx.Font(wx.FontInfo(12).Family(wx.FONTFAMILY_SWISS).Bold(False)))
         return info
 

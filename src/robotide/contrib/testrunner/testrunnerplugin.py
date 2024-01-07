@@ -520,8 +520,8 @@ class TestRunnerPlugin(Plugin):
             self._notify_user_no_logs_directory()
 
     def on_show_report(self, event):
-        __ = event
         """Called when the user clicks on the "Report" button"""
+        __ = event
         if self._report_file:
             wx.LaunchDefaultBrowser(
                 "file:%s" % os.path.abspath(self._report_file))
@@ -545,8 +545,7 @@ class TestRunnerPlugin(Plugin):
         self._set_stopped()
         self._progress_bar.Stop()
         now = datetime.datetime.now().timetuple()
-        self._append_to_console_log(_("\nTest finished {}")
-                                    .format(robottime.format_time(now)))
+        self._append_to_console_log(_("\nTest finished {}").format(robottime.format_time(now)))
         self._test_runner.command_ended()
         if log_message:
             log_message.publish()

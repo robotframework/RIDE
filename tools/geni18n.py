@@ -20,7 +20,7 @@ catalog.
 
 
 # we remove English as source code strings are in English
-supportedLang = ['pt_PT', 'pt_BR']
+supportedLang = ['nl', 'pt_BR', 'pt_PT']
 # for l in appC.supLang:
 #     if l != u"en":
 #         supportedLang.append(l)
@@ -28,10 +28,12 @@ supportedLang = ['pt_PT', 'pt_BR']
 import os
 import sys
 import subprocess
+from pathlib import Path
 
 # DEBUG: appFolder = os.getcwd()
 # DEBUG: appFolder = os.path.join(appFolder, '../src/robotide')
-appFolder = '/home/helio/github/RIDE/src/robotide'
+# appFolder = '/home/helio/github/RIDE/src/robotide'
+appFolder = Path(__file__).parent / "../src/robotide"
 langDomain = 'RIDE'
 
 # setup some stuff to get at Python I18N tools/utilities

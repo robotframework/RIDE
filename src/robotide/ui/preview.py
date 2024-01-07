@@ -29,7 +29,8 @@ builtins.__dict__['_'] = wx.GetTranslation
 
 
 class PreviewPlugin(Plugin, TreeAwarePluginMixin):
-    """Provides preview of the test data in HTML, TSV and TXT formats."""
+    __doc__ = _("""(Obsolete) Provides preview of the test data in HTML, TSV and TXT formats.""")
+
     datafile = property(lambda self: self.get_selected_datafile())
 
     def __init__(self, application):

@@ -37,7 +37,7 @@ from ..controller.ctrlcommands import SaveFile, SaveAll
 from ..editor import customsourceeditor
 from ..preferences import PreferenceEditor
 from ..publish import (RideSaveAll, RideClosing, RideSaved, PUBLISHER, RideInputValidationError, RideTreeSelection,
-                       RideModificationPrevented, RideBeforeSaving)
+                       RideModificationPrevented, RideBeforeSaving, RideSettingsChanged)
 from ..ui.filedialogs import RobotFilePathDialog
 from ..ui.tagdialogs import ViewAllTagsDialog
 from ..utils import RideFSWatcherHandler
@@ -53,33 +53,33 @@ MAINFRAME_MAXIMIZED = 'mainframe maximized'
 
 
 class RideFrame(wx.Frame):
-    _menudata = _("""[File]
-    !&New Project | Create a new top level suite | Ctrlcmd-N | ART_NEW
-    ---
-    !&Open Test Suite | Open file containing tests | Ctrlcmd-O | ART_FILE_OPEN
-    !Open &Directory | Open directory containing datafiles | Shift-Ctrlcmd-O | ART_FOLDER_OPEN
-    !Open External File | Open file in Code Editor | | ART_NORMAL_FILE
-    ---
-    !&Save | Save selected datafile | Ctrlcmd-S | ART_FILE_SAVE
-    !Save &All | Save all changes | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS
-    ---
-    !E&xit | Exit RIDE | Ctrlcmd-Q
+    # Menus to translate
+    file_0 = _("[File]\n")
+    file_1 = _("!&New Project | Create a new top level suite | Ctrlcmd-N | ART_NEW\n")
+    SEPARATOR = "---\n"
+    file_2 = _("!&Open Test Suite | Open file containing tests | Ctrlcmd-O | ART_FILE_OPEN\n")
+    file_3 = _("!Open &Directory | Open directory containing datafiles | Shift-Ctrlcmd-O | ART_FOLDER_OPEN\n")
+    file_4 = _("!Open External File | Open file in Code Editor | | ART_NORMAL_FILE\n")
+    file_5 = _("!&Save | Save selected datafile | Ctrlcmd-S | ART_FILE_SAVE\n")
+    file_6 = _("!Save &All | Save all changes | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS\n")
+    file_7 = _("!E&xit | Exit RIDE | Ctrlcmd-Q\n")
+    tool_0 = _("[Tools]\n")
+    tool_1 = _("!Search Unused Keywords | | | | POSITION - 54\n")
+    tool_2 = _("!Manage Plugins | | | | POSITION - 81\n")
+    tool_3 = _("!View All Tags | | F7 | | POSITION - 82\n")
+    tool_4 = _("!Preferences | | | | POSITION - 99\n")
+    help_0 = _("[Help]\n")
+    help_1 = _("!Shortcut keys | RIDE shortcut keys\n")
+    help_2 = _("!User Guide | Robot Framework User Guide\n")
+    help_3 = _("!Wiki | RIDE User Guide (Wiki)\n")
+    help_4 = _("!Report a Problem | Open browser to SEARCH on the RIDE issue tracker\n")
+    help_5 = _("!Release notes | Shows release notes\n")
+    help_6 = _("!About | Information about RIDE\n")
+    help_7 = _("!Check for Upgrade | Looks at PyPi for new released version\n")
 
-    [Tools]
-    !Search Unused Keywords | | | | POSITION-54
-    !Manage Plugins | | | | POSITION-81
-    !View All Tags | | F7 | | POSITION-82
-    !Preferences | | | | POSITION-99
-
-    [Help]
-    !Shortcut keys | RIDE shortcut keys
-    !User Guide | Robot Framework User Guide
-    !Wiki | RIDE User Guide (Wiki)
-    !Report a Problem | Open browser to SEARCH on the RIDE issue tracker
-    !Release notes | Shows release notes
-    !About | Information about RIDE
-    !Check for Upgrade | Looks at PyPi for new released version
-    """)
+    _menudata = (file_0 + file_1 + SEPARATOR + file_2 + file_3 + file_4 + SEPARATOR + file_5 + file_6
+                 + SEPARATOR + file_7 + '\n' + tool_0 + tool_1 + tool_2 + tool_3 + tool_4 + '\n' + help_0
+                 + help_1 + help_2 + help_3 + help_4 + help_5 + help_6 + help_7)
 
     _menudata_nt = """[File]
     !&New Project | Create a new top level suite | Ctrlcmd-N | ART_NEW
@@ -146,6 +146,7 @@ class RideFrame(wx.Frame):
         self.color_foreground = self.general_settings.get_without_default('foreground')
         self.font_face = self.general_settings.get('font face', '')
         self.font_size = self.general_settings.get('font size', 11)
+        self.main_menu = None
         self._init_ui()
         self._task_bar_icon = RIDETaskBarIcon(self, self._image_provider)
         self._plugin_manager = PluginManager(self.notebook)
@@ -169,7 +170,7 @@ class RideFrame(wx.Frame):
             (self._set_label, RideTreeSelection),
             (self._show_validation_error, RideInputValidationError),
             (self._show_modification_prevented_error, RideModificationPrevented),
-            # (self.OnSettingsChanged, RideSettingsChanged)
+            (self.on_ui_language_changed, RideSettingsChanged)
         ]:
             PUBLISHER.subscribe(listener, topic)
 
@@ -200,31 +201,43 @@ class RideFrame(wx.Frame):
             self.aui_mgr.AddPane(wx.Panel(self), aui.AuiPaneInfo().CenterPane())
             self.splitter = wx.SplitterWindow(self, style=wx.SP_LIVE_UPDATE)
         """
-        self.aui_mgr.AddPane(wx.Panel(self), aui.AuiPaneInfo().Name("right_pane").Right())
-        # set up default notebook style
-        self._notebook_style = (aui.AUI_NB_DEFAULT_STYLE | aui.AUI_NB_WINDOWLIST_BUTTON |
-                                aui.AUI_NB_TAB_EXTERNAL_MOVE | aui.AUI_NB_SUB_NOTEBOOK | aui.AUI_NB_SMART_TABS)
-        # DEBUG: self._notebook_theme = 0 (allow to select themes for notebooks)
-        # DEBUG:self.notebook = NoteBook(self.splitter, self._application, self._notebook_style)
-        self.notebook = NoteBook(self, self._application,
-                                 self._notebook_style)
-        self.notebook.SetBackgroundColour(Colour(self.color_background))
-        self.notebook.SetForegroundColour(Colour(self.color_foreground))
-        self.aui_mgr.AddPane(self.notebook,
-                             aui.AuiPaneInfo().Name("notebook_editors").
-                             CenterPane().PaneBorder(True))
-        mb = MenuBar(self)
+        if not self.main_menu:
+            new_ui = True
+        else:
+            new_ui = False
+        if new_ui:  # Only when creating UI we add panes
+            self.aui_mgr.AddPane(wx.Panel(self), aui.AuiPaneInfo().Name("right_pane").Right())
+            # set up default notebook style
+            self._notebook_style = (aui.AUI_NB_DEFAULT_STYLE | aui.AUI_NB_WINDOWLIST_BUTTON |
+                                    aui.AUI_NB_TAB_EXTERNAL_MOVE | aui.AUI_NB_SUB_NOTEBOOK | aui.AUI_NB_SMART_TABS)
+            # DEBUG: self._notebook_theme = 0 (allow to select themes for notebooks)
+            # DEBUG:self.notebook = NoteBook(self.splitter, self._application, self._notebook_style)
+            self.notebook = NoteBook(self, self._application, self._notebook_style)
+            self.notebook.SetBackgroundColour(Colour(self.color_background))
+            self.notebook.SetForegroundColour(Colour(self.color_foreground))
+            self.aui_mgr.AddPane(self.notebook, aui.AuiPaneInfo().Name("notebook_editors").
+                                 CenterPane().PaneBorder(True))
+        # we need to remake Menu if language changes
+        if self.main_menu:
+            del self.main_menu
+            pane = self.aui_mgr.GetPaneByName("maintoolbar")
+            self.aui_mgr.DetachPane(pane)
+            pane.DestroyOnClose(True)
+            self.aui_mgr.ClosePane(pane)
+            del pane
+            # del self.toolbar
+
+        self.main_menu = MenuBar(self)
         self.toolbar = ToolBar(self)
         self.toolbar.SetMinSize(wx.Size(100, 60))
         self.toolbar.SetBackgroundColour(Colour(self.color_background))
         self.toolbar.SetForegroundColour(Colour(self.color_foreground))
         # self.SetToolBar(self.toolbar.GetToolBar())
-        mb.m_frame.SetBackgroundColour(Colour(self.color_background))
-        mb.m_frame.SetForegroundColour(Colour(self.color_foreground))
-        self.aui_mgr.AddPane(self.toolbar, aui.AuiPaneInfo().Name("maintoolbar").
-                             ToolbarPane().Top())
-        self.actions = ActionRegisterer(self.aui_mgr, mb, self.toolbar,
-                                        ShortcutRegistry(self))
+        self.main_menu.m_frame.SetBackgroundColour(Colour(self.color_background))
+        self.main_menu.m_frame.SetForegroundColour(Colour(self.color_foreground))
+
+        self.aui_mgr.AddPane(self.toolbar, aui.AuiPaneInfo().Name("maintoolbar").ToolbarPane().Top())
+        self.actions = ActionRegisterer(self.aui_mgr, self.main_menu, self.toolbar, ShortcutRegistry(self))
         """
         ##### Test
         tb3 = self.testToolbar()
@@ -236,36 +249,37 @@ class RideFrame(wx.Frame):
         ##### End Test
         """
         # self.leftpanel = wx.Panel(self, name="left_panel", size = (275, 250))
-        # Tree is always created here
-        self.tree = Tree(self, self.actions, self._application.settings)
-        self.tree.SetMinSize(wx.Size(275, 250))
-        # self.leftpanel.Bind(wx.EVT_SIZE, self.tree.OnSize)
-        # self.aui_mgr.AddPane(self.leftpanel, aui.AuiPaneInfo().Name("left_panel").Caption("left_panel").Left())
-        # DEBUG: Next was already called from application.py
-        self.aui_mgr.AddPane(self.tree,
-                             aui.AuiPaneInfo().Name("tree_content").Caption(_("Test Suites")).CloseButton(False).
-                             LeftDockable())  # DEBUG: remove .CloseButton(False) when restore is fixed
-        # DEBUG: self.aui_mgr.GetPane(self.tree).DestroyOnClose()
-        # TreePlugin will manage showing the Tree
+        if new_ui:  # Only when creating UI we add panes
+            # Tree is always created here
+            self.tree = Tree(self, self.actions, self._application.settings)
+            self.tree.SetMinSize(wx.Size(275, 250))
+            # self.leftpanel.Bind(wx.EVT_SIZE, self.tree.OnSize)
+            # self.aui_mgr.AddPane(self.leftpanel, aui.AuiPaneInfo().Name("left_panel").Caption("left_panel").Left())
+            # DEBUG: Next was already called from application.py
+            self.aui_mgr.AddPane(self.tree,
+                                 aui.AuiPaneInfo().Name("tree_content").Caption(_("Test Suites")).CloseButton(False).
+                                 LeftDockable())  # DEBUG: remove .CloseButton(False) when restore is fixed
+            # DEBUG: self.aui_mgr.GetPane(self.tree).DestroyOnClose()
+            # TreePlugin will manage showing the Tree
         self.actions.register_actions(action_info_collection(self._menudata, self, data_nt=self._menudata_nt,
                                                              container=self.tree))
-        # ##### File explorer panel is always created here
-        self.filemgr = FileExplorer(self, self.controller)
-        self.filemgr.SetMinSize(wx.Size(275, 250))
-        # DEBUG: Next was already called from application.py
-        self.aui_mgr.AddPane(self.filemgr,
-                             aui.AuiPaneInfo().Name("file_manager").
-                             LeftDockable())
+        if new_ui:  # Only when creating UI we add panes
+            # ##### File explorer panel is always created here
+            self.filemgr = FileExplorer(self, self.controller)
+            self.filemgr.SetMinSize(wx.Size(275, 250))
+            # DEBUG: Next was already called from application.py
+            self.aui_mgr.AddPane(self.filemgr, aui.AuiPaneInfo().Name("file_manager").LeftDockable())
 
-        mb.take_menu_bar_into_use()
-        self.CreateStatusBar(name="StatusBar")
-        self._status_bar = self.FindWindowByName("StatusBar", self)
-        if self._status_bar:
-            self._status_bar.SetBackgroundColour(Colour(self.color_background))
-            self._status_bar.SetForegroundColour(Colour(self.color_foreground))
-        # set main frame icon
-        self.SetIcons(self._image_provider.PROGICONS)
-        # tell the manager to "commit" all the changes just made
+        self.main_menu.take_menu_bar_into_use()
+        if new_ui:  # Only when creating UI we add panes
+            self.CreateStatusBar(name="StatusBar")
+            self._status_bar = self.FindWindowByName("StatusBar", self)
+            if self._status_bar:
+                self._status_bar.SetBackgroundColour(Colour(self.color_background))
+                self._status_bar.SetForegroundColour(Colour(self.color_foreground))
+            # set main frame icon
+            self.SetIcons(self._image_provider.PROGICONS)
+            # tell the manager to "commit" all the changes just made
         self.aui_mgr.Update()
         # wx.CallLater(2000, RideSettingsChanged(keys=("General", ''), old='', new='').publish)
 
@@ -644,6 +658,16 @@ class RideFrame(wx.Frame):
                 # DEBUG: add some notification msg to users
                 wx.CallAfter(self.on_open_directory, event)
 
+    def on_ui_language_changed(self, message):
+        if message.keys[0] != "General":
+            return
+        general = self._application.settings.get('General', None)
+        language = general.get('ui language', 'English')
+        print(f"DEBUG: mainframe.py on_ui_language_changed message.items={message.keys}, menudata={self._menudata}\n"
+              f"language={language}")
+        # DANGER!!! # The below refresh works, but we lose TestRunner buttons in taskbar and Edit menu is broken
+        # wx.CallLater(1000, self._init_ui)  # Let the change happen at application
+
 
 # Code moved from actiontriggers
 class ToolBar(aui.AuiToolBar):
@@ -660,7 +684,7 @@ class ToolBar(aui.AuiToolBar):
         item = aui.AuiToolBarItem()
         item.SetKind(wx.ITEM_NORMAL)
         item.SetId(ID_CustomizeToolbar)
-        item.SetLabel("Customize...")
+        item.SetLabel(_("Customize..."))
         append_items.append(item)
 
         self._frame = frame
@@ -734,7 +758,7 @@ class ActionRegisterer(object):
         action = action_factory(action_info)
         self._shortcut_registry.register(action)
         if hasattr(action_info, "menu_name"):
-            print(f"DEBUG: mainframe.py ActionRegister register_action menu_name={action_info.menu_name}")
+            # print(f"DEBUG: mainframe.py ActionRegister register_action menu_name={action_info.menu_name}")
             if action_info.menu_name == _("Tools"):
                 self._tools_items[action_info.position] = action
                 menubar_can_be_registered = False
