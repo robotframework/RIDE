@@ -1300,19 +1300,19 @@ msgid "[Tools]\n"
 msgstr "[Ferramentas]\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:67
-msgid "!Search Unused Keywords | | | | POSITION - 54\n"
+msgid "!Search Unused Keywords | | | | POSITION-54\n"
 msgstr "!Procurar Palavras-Chave Não Usadas | | | | POSITION-54\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:68
-msgid "!Manage Plugins | | | | POSITION - 81\n"
+msgid "!Manage Plugins | | | | POSITION-81\n"
 msgstr "!Gerir Plugins | | | | POSITION-81\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:69
-msgid "!View All Tags | | F7 | | POSITION - 82\n"
+msgid "!View All Tags | | F7 | | POSITION-82\n"
 msgstr "!Ver Todas as Etiquetas | | F7 | | POSITION-82\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:70
-msgid "!Preferences | | | | POSITION - 99\n"
+msgid "!Preferences | | | | POSITION-99\n"
 msgstr "!Preferências | | | | POSITION-99\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:71
