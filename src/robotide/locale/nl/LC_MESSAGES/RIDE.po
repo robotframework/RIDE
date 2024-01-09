@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
 "POT-Creation-Date: 2024-01-07 21:14+0000\n"
-"PO-Revision-Date: 2024-01-07 22:23+0000\n"
+"PO-Revision-Date: 2024-01-09 14:21+0100\n"
 "Last-Translator: Hélio Guilherme <helio_guilherme@hotmail.com>\n"
 "Language-Team: Dutch\n"
 "Language: nl_NL\n"
@@ -20,7 +20,7 @@ msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/application.py:383
 msgid "Found Robot Framework version %s from %s."
-msgstr "Robot Framework versie %s gevonden van %s."
+msgstr "Robot Framework versie %s gevonden in %s."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:111
 msgid "New development version is available."
@@ -28,7 +28,7 @@ msgstr "Nieuwe ontwikkelversie is beschikbaar."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:111
 msgid "Upgrade?"
-msgstr "Upgraden?"
+msgstr "Bijwerken?"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:112
 msgid " with:"
@@ -40,20 +40,20 @@ msgstr "Je kunt versie installeren "
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:113
 msgid "Click OK to Upgrade now!"
-msgstr "Klik op OK om nu te upgraden!"
+msgstr "Klik op OK om RIDE nu bij te werken!"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:114
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:221
 msgid "After upgrade you will see another dialog informing to close this RIDE instance."
-msgstr "Na de upgrade ziet u een ander dialoogvenster informeren om deze RIDE instantie te sluiten."
+msgstr "Na het bijwerken krijg je een ander dialoogvenster te zien dat je vraagt om deze RIDE instantie te sluiten."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:121
 msgid "No Upgrade Available"
-msgstr "Geen verbetering beschikbaar"
+msgstr "Geen nieuwe versie beschikbaar"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:121
 msgid "You have the latest version of RIDE."
-msgstr "U heeft de laatste versie van RIDE."
+msgstr "U heeft de nieuwste versie van RIDE."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:122
 msgid "              Have a nice day :)"
@@ -65,11 +65,11 @@ msgstr "Fout opgetreden bij het installeren van de nieuwe versie"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:179
 msgid "Failed to Upgrade"
-msgstr "Upgrade mislukt"
+msgstr "Bijwerken mislukt"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:188
 msgid "Completed Upgrade"
-msgstr "Upgrade voltooid"
+msgstr "Klaar met bijwerken"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:188
 msgid "You should close this RIDE (Process ID = "
@@ -97,7 +97,7 @@ msgstr "Je kunt updaten met de opdracht:"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:220
 msgid "Or, click <b>Upgrade Now</b>"
-msgstr "Of, klik <b>Upgrade nu</b>"
+msgstr "Of, klik <b>Nu bijwerken</b>"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:222
 msgid "See the latest development "
@@ -117,7 +117,7 @@ msgstr "herinner me later"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:238
 msgid "Upgrade Now"
-msgstr "Nu upgraden"
+msgstr "Nu bijwerken"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:424
 msgid "Log options"
@@ -146,16 +146,16 @@ msgstr "Selecteer map voor Logs"
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:496
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:567
 msgid "Arguments"
-msgstr "Argumenten"
+msgstr "Parameters"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:508
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:534
 msgid "Arguments for the test run. Arguments are space separated list."
-msgstr "Argumenten voor de test uitvoeren. Argumenten zijn een spatie gescheiden lijst."
+msgstr "Parameters voor het uitvoeren van tests als een spatie-gescheiden lijst."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:553
 msgid "Does not execute - help or version option given"
-msgstr "Draait niet uit - help of versie optie gegeven"
+msgstr "Wordt niet uitgevoerd - help of versie optie gegeven"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:558
 msgid "Unknown option(s):"
@@ -171,7 +171,7 @@ msgstr "Voer alleen tests uit met deze tags:"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:576
 msgid "Skip tests with these tags:"
-msgstr "Test overslaan met deze tags:"
+msgstr "Tests met deze tags overslaan:"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:672
 msgid "Script to run tests:"
@@ -187,7 +187,7 @@ msgstr "Stap over"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:161
 msgid "A plugin for running tests from within RIDE"
-msgstr "Een plugin voor uitvoeren testen van binnen RIDE"
+msgstr "Een plugin voor het uitvoeren van testen vanuit RIDE"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:256
 msgid "Run Tests"
@@ -407,11 +407,11 @@ msgstr "ONBEKENDE STATUS:"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1094
 msgid "<<  PAUSED  >>"
-msgstr "<< GEBRUIKT >>"
+msgstr "<< GEPAUZEERD >>"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1099
 msgid "<< CONTINUE >>"
-msgstr "<< BEVAT >>"
+msgstr "<< HERVAT >>"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1140
 msgid ""
@@ -423,15 +423,15 @@ msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1142
 msgid "No logs directory"
-msgstr "Geen logs map"
+msgstr "Geen logboek map"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1227
 msgid "elapsed time: %s     pass: %s     skip: %s     fail: %s"
-msgstr "verstreken tijd: %s     voorbij: %s     skip: %s     fout: %s"
+msgstr "verstreken tijd: %s     succes: %s     overgeslagen: %s     gefaald: %s"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1247
 msgid "     current keyword: "
-msgstr "     huidig trefwoord: "
+msgstr "     huidig actiewoord: "
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/controller/ui/treecontroller.py:41
 msgid ""
@@ -495,6 +495,29 @@ msgid ""
 "[Tools]\n"
 "Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword and variable completions | | | POSITION-70\n"
 msgstr ""
+"[Bewerken]\n"
+"On&gedaan maken | Laatste wijziging ongedaan maken | Ctrlcmd-Z\n"
+"Op&nieuw doen | Laatste wijziging herhalen | Ctrlcmd-Y\n"
+"---\n"
+"&Knippen | Verplaatsen naar klembord | Ctrlcmd-X\n"
+"K&opiëren | Kopiëren naar klembord | Ctrlcmd-C\n"
+"&Plakken | Plakken van klembord | Ctrlcmd-V\n"
+"&Invoegen | Invoegen | Shift-Ctrl-V\n"
+"&Verwijder | Verwijderen | Del\n"
+"---\n"
+"Rijen commenteren | Geselecteerde rijen als commentaar markeren | Ctrlcmd-3\n"
+"Cellen commenteren | Cell met # als commentaar markeren | Ctrlcmd-Shift-3\n"
+"Rijen oncommenteren | Commentaarmarkering verwijderen van geselecteerde rijen | Ctrlcmd-4\n"
+"Cellen oncommenteren | Commentaarmarkering verwijderen van cell met # | Ctrlcmd-Shift-4\n"
+"---\n"
+"Cellen invoegen | Cellen invoegen | Ctrlcmd-Shift-I\n"
+"Cellen verwijderen | Cellen verwijderen | Ctrlcmd-Shift-D\n"
+"Rijen invoegen | Rijen invoegen | Ctrlcmd-I\n"
+"Rijen verwijderen | Rijen verwijderen | Ctrlcmd-D\n"
+"Rijen omhoog schuiven | Rijen omhoog verplaatsen | Alt-Up\n"
+"Rijen omlaag schuiven | Rijen omlaag verplaatsen | Alt-Down\n"
+"[Hulpmiddelen]\n"
+"Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword and variable completions | | | POSITION-70\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editors.py:162
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editors.py:394
@@ -1001,7 +1024,7 @@ msgstr "Tag Zoeken"
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:61
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:85
 msgid "Tags"
-msgstr "Tags"
+msgstr "Labels"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:61
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:85
@@ -1190,7 +1213,7 @@ msgstr "Bestanden"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:35
 msgid "<all keywords>"
-msgstr ""
+msgstr "<alle actiewoorden>"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:36
 msgid "<all user keywords>"
@@ -1268,7 +1291,7 @@ msgstr "[Hulpmiddelen]\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:67
 msgid "!Search Unused Keywords | | | | POSITION-54\n"
-msgstr "!Search Ongebruikte trefwoorden | | | | POSITION-54\n"
+msgstr "!Zoek ongebruikte actiewoorden | | | | POSITION-54\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:68
 msgid "!Manage Plugins | | | | POSITION-81\n"
@@ -1426,7 +1449,7 @@ msgstr "Afsluiten"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/pluginmanager.py:48
 msgid "Manage Plugins"
-msgstr "Plug-ins beheren"
+msgstr "Plugins beheren"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/pluginmanager.py:63
 msgid "Installed Plugins\n"
@@ -1438,15 +1461,15 @@ msgstr "Ingeschakeld"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/pluginmanager.py:83
 msgid "Plugin"
-msgstr "Plug-in"
+msgstr "Plugin"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/pluginmanager.py:93
 msgid "Info. Enabling and disabling plugins might require RIDE restart for menus to work."
-msgstr "Info. Het inschakelen en uitschakelen van plugins kan RIDE herstart vereisen om menu's te laten werken."
+msgstr "Info. Het in- en uitschakelen van plugins kan een herstart van RIDE vereisen om menu's te laten werken."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/preview.py:32
 msgid "(Obsolete) Provides preview of the test data in HTML, TSV and TXT formats."
-msgstr "(verouderd) Voorziet voorbeeld van de testgegevens in HTML, TSV en TXT formaten."
+msgstr "(verouderd) Geeft een voorbeeld van de testgegevens in HTML, TSV en TXT formaten."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/preview.py:41
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/preview.py:100
@@ -1471,15 +1494,15 @@ msgstr "Afdrukken"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:39
 msgid "Search unused keywords"
-msgstr "Zoek ongebruikte trefwoorden"
+msgstr "Zoek ongebruikte actiewoorden"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:66
 msgid ""
 "This dialog helps you finding unused keywords within your opened project.\n"
 "If you want, you can restrict the search to a set of files with the filter."
 msgstr ""
-"Dit dialoogvenster helpt u ongebruikte trefwoorden in uw geopende project te vinden.\n"
-"Als je wilt, kun je zoeken beperken tot een set bestanden met het filter."
+"Dit dialoogvenster helpt u ongebruikte actiewoorden in uw geopende project te vinden.\n"
+"Als je wilt, kun je het zoeken beperken tot een set bestanden met het filter."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:70
 msgid "Filter is"
@@ -1504,17 +1527,17 @@ msgid ""
 "The filter matches if at least one string is part of the filename.\n"
 "If you don't enter any strings, all opened files are included"
 msgstr ""
-"Hier kunt u een of meer tekenreeksen definiëren gescheiden door een komma (bijv. komma,abc,123).\n"
-"De filter komt overeen als ten minste één tekenreeks deel uitmaakt van de bestandsnaam.\n"
-"Als je geen tekenreeksen invoert, zijn alle geopende bestanden opgenomen"
+"Hier kunt u een of meer tekenreeksen definiëren gescheiden door een komma (bijv. appel,abc,123).\n"
+"Het filter komt overeen als ten minste één tekenreeks deel uitmaakt van de bestandsnaam.\n"
+"Als je geen tekenreeksen invoert, worden alle geopende bestanden meegenomen"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:101
 msgid "Test case files"
-msgstr "Test case bestanden"
+msgstr "Testgeval bestanden"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:104
 msgid "Resource files"
-msgstr "Document bestanden"
+msgstr "Resource bestanden"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:106
 msgid "Mode"
@@ -1534,16 +1557,16 @@ msgstr "Test het filter"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:139
 msgid "Keyword"
-msgstr "Keyword"
+msgstr "Actiewoord"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:146
 msgid "Delete marked keywords"
-msgstr "Gemarkeerde trefwoorden verwijderen"
+msgstr "Gemarkeerde actiewoorden verwijderen"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:157
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:320
 msgid "Unused Keywords"
-msgstr "Ongebruikte trefwoorden"
+msgstr "Ongebruikte actiewoorden"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:163
 msgid "Abort"
@@ -1556,7 +1579,7 @@ msgstr "actief"
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:270
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:353
 msgid "Unused Keywords (%d)"
-msgstr "Ongebruikte trefwoorden (%d)"
+msgstr "Ongebruikte actiewoorden (%d)"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:279
 msgid "(None)"
@@ -1567,7 +1590,7 @@ msgid ""
 "Keywords of the following files will be included in the search:\n"
 "\n"
 msgstr ""
-"Trefwoorden van de volgende bestanden zullen worden opgenomen in de zoekopdracht:\n"
+"Actiewoorden van de volgende bestanden zullen worden opgenomen in de zoekopdracht:\n"
 "\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:283
@@ -1580,7 +1603,7 @@ msgstr "Zoeken.%s        - %s"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:354
 msgid "Search finished - Found %d Unused Keywords"
-msgstr "Search finished - Found %d Unused Keywords"
+msgstr "Klaar met zoeken - %d Ongebruikte actiewoorden gevonden"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:402
 msgid "listing datafiles"
@@ -1592,7 +1615,7 @@ msgstr "zoeken van "
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/tagdialogs.py:37
 msgid "View all tags"
-msgstr "Bekijk alle tags"
+msgstr "Bekijk alle labels"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/tagdialogs.py:76
 msgid "Tag"
@@ -1673,11 +1696,11 @@ msgstr "'%s' - %d overeenkomsten gevonden -%s zoeken"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/usages/usagesdialog.py:63
 msgid "'%s' - %d matches"
-msgstr "'%s' - %d wedstrijden"
+msgstr "'%s' - %d overeenkomsten"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/usages/usagesdialog.py:85
 msgid "Go to definition"
-msgstr "Ga naar de definitie"
+msgstr "Ga naar definitie"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/usages/usagesdialog.py:143
 msgid "Location"
