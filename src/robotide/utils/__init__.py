@@ -163,3 +163,26 @@ def _replacer(char, match):
     if slashes % 2 == 1:
         return '\\' * (slashes - 1) + char
     return match.group()
+
+
+def normalize_lc(string, remove=''):
+    string = string.lower()
+    for char in remove + ' ':
+        if char in string:
+            string = string.replace(char, '')
+    return string
+
+
+def normalize_dict(table: dict) -> dict:
+    ndict = {}
+    for key, value in table.items():
+        if key:
+            k = normalize_lc(key)
+            v = normalize_lc(value)
+            ndict[k] = v
+    return ndict
+
+
+def normalize_pipe_list(data: list) -> str:
+    pipe_list = "|".join(data)
+    return normalize_lc(pipe_list)

@@ -50,6 +50,7 @@ from pygments.lexer import Lexer
 from pygments.token import Token
 from multiprocessing import shared_memory
 from robotide.lib.compat.parsing.language import Language
+from robotide.utils import normalize_lc, normalize_dict, normalize_pipe_list
 
 if not Language:  # Let's import original
     raise ImportError
@@ -69,29 +70,6 @@ SEPARATOR = Token.Punctuation
 SYNTAX = Token.Punctuation
 GHERKIN = Token.Generic.Emph
 ERROR = Token.Error
-
-
-def normalize(string, remove=''):
-    string = string.lower()
-    for char in remove + ' ':
-        if char in string:
-            string = string.replace(char, '')
-    return string
-
-
-def normalize_dict(table: dict) -> dict:
-    ndict = {}
-    for key, value in table.items():
-        if key:
-            k = normalize(key)
-            v = normalize(value)
-            ndict[k] = v
-    return ndict
-
-
-def normalize_pipe_list(data: list) -> str:
-    pipe_list = "|".join(data)
-    return normalize(pipe_list)
 
 
 def get_key_by_value(table: dict, value: str) -> str:
@@ -210,7 +188,7 @@ class RowTokenizer:
         self._table.end_row()
 
     def _start_table(self, header):
-        name = normalize(header, remove='*')
+        name = normalize_lc(header, remove='*')
         return self._tables.get(name, UnknownTable())
 
     def _tokenize(self, value, index, commented, separator, heading):
@@ -355,7 +333,7 @@ class Setting(Tokenizer):
         if index == 1 and self._template_setter:
             self._template_setter(value)
         if index == 0:
-            normalized = normalize(value)
+            normalized = normalize_lc(value)
             if normalized in self._keyword_settings:
                 # print(f"DEBUG: robotframework.py Setting call KeywordCall in _tokenize value={value}")
                 self._custom_tokenizer = KeywordCall(support_assign=False)
@@ -421,7 +399,7 @@ class TestCaseSetting(Setting):
 
     def _tokenize(self, value, index):
         # print(f"DEBUG: robotframework.py TestCaseSetting _tokenize self.new_lang={self.new_lang} value={value}\n")
-        normalized = normalize(value)
+        normalized = normalize_lc(value)
         if normalized in self._keyword_settings:
             self._custom_tokenizer = KeywordCall(support_assign=False)
         if index == 0:
@@ -629,7 +607,7 @@ class SettingTable(_Table):
         # print(f"DEBUG: robotframework.py SettingTable ENTER _tokenize "
         #       f"self.normalized_settings={self.normalized_settings}\n"
         #       f"value={value} new_lang={self.new_lang}")
-        if index == 0 and normalize(value) in (
+        if index == 0 and normalize_lc(value) in (
                 get_key_by_value(self.normalized_settings, 'metadata'),  # DEBUG
                 get_key_by_value(self.normalized_settings, 'template'),
                 get_key_by_value(self.normalized_settings, 'documentation'),
@@ -706,7 +684,7 @@ class TestCaseTable(_Table):
         return value.startswith('[') and value.endswith(']')
 
     def _is_template(self, value):
-        return normalize(value) in (f"[{get_key_by_value(self.normalized_settings, 'template')}]",
+        return normalize_lc(value) in (f"[{get_key_by_value(self.normalized_settings, 'template')}]",
                                     f"[{get_key_by_value(self.normalized_settings, 'testsetup')}]",
                                     f"[{get_key_by_value(self.normalized_settings, 'tasksetup')}]",
                                     f"[{get_key_by_value(self.normalized_settings, 'testteardown')}]",
@@ -718,7 +696,7 @@ class TestCaseTable(_Table):
 
     @staticmethod
     def _is_for_loop(value):
-        return normalize(value, remove=':') == 'for'
+        return normalize_lc(value, remove=':') == 'for'
 
     def set_test_template(self, template):
         self._test_template = self._is_template_set(template)
@@ -728,7 +706,7 @@ class TestCaseTable(_Table):
 
     @staticmethod
     def _is_template_set(template):
-        return normalize(template) not in ('', '\\', 'none', '${empty}')
+        return normalize_lc(template) not in ('', '\\', 'none', '${empty}')
 
 
 class KeywordTable(TestCaseTable):
