@@ -176,7 +176,7 @@ class _TestData(object):
         name = header_row[0] if header_row else ''
         title = name.title()
         self._tables = dict(self._get_tables())
-        # print(f"DEBUG: model.py _find_table ENTER {title=} _tables= {self._tables}")
+        # print(f"DEBUG: model.py _find_table ENTER {title=} \nlanguage={self._language} _tables= {self._tables}")
         headers = normalized_headers(self._tables)
         normalized_name = normalize(name)
         # print(f"DEBUG: model.py _find_table HEADERS name={normalized_name} headers={headers}")

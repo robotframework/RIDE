@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 import os
+from multiprocessing import shared_memory
 from . import FakeSettings
 from robotide.controller import Project
 from robotide.namespace import Namespace
@@ -94,7 +95,7 @@ VALID_LANG_ZH_CN = _makepath('language', 'lang_zh_cn.robot')
 VALID_LANG_ZH_TW = _makepath('language', 'lang_zh_tw.robot')
 
 
-def construct_project(datapath, temp_dir_for_excludes=None):
+def construct_project(datapath, temp_dir_for_excludes=None, file_language=None):
     print("DEBUG: construct_project with argpath: %s\n" % datapath)
     settings = FakeSettings({'excludes': temp_dir_for_excludes, 'txt number of spaces': 2})
     print("DEBUG: construct_project FakeSettings: %s\n" % list(settings.iteritems()))
@@ -105,6 +106,12 @@ def construct_project(datapath, temp_dir_for_excludes=None):
     project.load_data(datapath)  # , NullObserver())
     # DEBUG
     print("DEBUG: Path arg is: %s\n" % datapath)
+    # Shared memory to store language definition
+    language = file_language if file_language else ['en']
+    try:
+        sharemem = shared_memory.ShareableList(language, name="language")
+    except FileExistsError:  # Other instance created file
+        sharemem = shared_memory.ShareableList(name="language")
     return project
 
 
