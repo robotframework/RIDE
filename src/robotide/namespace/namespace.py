@@ -593,7 +593,11 @@ class _Keywords(object):
     def __init__(self, keywords, caseless=True, new_lang=None):
         if not self.new_lang:
             if not new_lang:
-                set_lang = shared_memory.ShareableList(name="language")
+                new_lang = ['en']
+                try:
+                    set_lang = shared_memory.ShareableList(new_lang, name="language")
+                except FileExistsError:  # Other instance created file
+                    set_lang = shared_memory.ShareableList(name="language")
                 self.new_lang = Language.from_name(set_lang[0])
             else:
                 self.new_lang = new_lang
