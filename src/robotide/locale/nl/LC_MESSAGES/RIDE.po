@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2024-01-07 21:14+0000\n"
+"POT-Creation-Date: 2024-01-10 01:44+0000\n"
 "PO-Revision-Date: 2024-01-09 14:21+0100\n"
 "Last-Translator: Hélio Guilherme <helio_guilherme@hotmail.com>\n"
 "Language-Team: Dutch\n"
@@ -40,8 +40,12 @@ msgstr "Klik op OK om RIDE nu bij te werken!"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:114
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:221
-msgid "After upgrade you will see another dialog informing to close this RIDE instance."
-msgstr "Na het bijwerken krijg je een ander dialoogvenster te zien dat je vraagt om deze RIDE instantie te sluiten."
+msgid ""
+"After upgrade you will see another dialog informing to close this RIDE "
+"instance."
+msgstr ""
+"Na het bijwerken krijg je een ander dialoogvenster te zien dat je vraagt om "
+"deze RIDE instantie te sluiten."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:121
 msgid "No Upgrade Available"
@@ -147,7 +151,8 @@ msgstr "Parameters"
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:508
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:534
 msgid "Arguments for the test run. Arguments are space separated list."
-msgstr "Parameters voor het uitvoeren van tests als een spatie-gescheiden lijst."
+msgstr ""
+"Parameters voor het uitvoeren van tests als een spatie-gescheiden lijst."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:553
 msgid "Does not execute - help or version option given"
@@ -423,7 +428,8 @@ msgstr "Geen logboek map"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1227
 msgid "elapsed time: %s     pass: %s     skip: %s     fail: %s"
-msgstr "verstreken tijd: %s     succes: %s     overgeslagen: %s     gefaald: %s"
+msgstr ""
+"verstreken tijd: %s     succes: %s     overgeslagen: %s     gefaald: %s"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1247
 msgid "     current keyword: "
@@ -432,13 +438,17 @@ msgstr "     huidig actiewoord: "
 #: /home2/helio/github/RIDE/tools/../src/robotide/controller/ui/treecontroller.py:41
 msgid ""
 "[Navigate]\n"
-"        !Go &Back | Go back to previous location in tree | Alt-%s | ART_GO_BACK\n"
-"        !Go &Forward | Go forward to next location in tree | Alt-%s | ART_GO_FORWARD\n"
+"        !Go &Back | Go back to previous location in tree | Alt-%s | "
+"ART_GO_BACK\n"
+"        !Go &Forward | Go forward to next location in tree | Alt-%s | "
+"ART_GO_FORWARD\n"
 "        "
 msgstr ""
 "[Navigate]\n"
-"        !O &Ga |O ga terug naar de vorige locatie in bomen | Alt-%s |ART_GO_BACK\n"
-"        !O &Voorwaarts | O Voorwaarts ga naar de volgende locatie in Olli om | Alt-%s | ART_GO_FORWARD\n"
+"        !O &Ga |O ga terug naar de vorige locatie in bomen | Alt-%s |"
+"ART_GO_BACK\n"
+"        !O &Voorwaarts | O Voorwaarts ga naar de volgende locatie in Olli om "
+"| Alt-%s | ART_GO_FORWARD\n"
 "        "
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/controller/ui/treecontroller.py:55
@@ -465,55 +475,117 @@ msgstr "Voeg tag toe aan geselecteerde"
 msgid "Enter Tag Name"
 msgstr "Voer Tag Naam"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:28
-msgid ""
-"[Edit]\n"
-"&Undo | Undo last modification | Ctrlcmd-Z\n"
-"&Redo | Redo modification | Ctrlcmd-Y\n"
-"---\n"
-"Cu&t | Cut | Ctrlcmd-X\n"
-"&Copy | Copy | Ctrlcmd-C\n"
-"&Paste | Paste | Ctrlcmd-V\n"
-"&Insert | Insert | Shift-Ctrl-V\n"
-"&Delete | Delete  | Del\n"
-"---\n"
-"Comment Rows | Comment selected rows | Ctrlcmd-3\n"
-"Comment Cells | Comment cells with # | Ctrlcmd-Shift-3\n"
-"Uncomment Rows | Uncomment selected rows | Ctrlcmd-4\n"
-"Uncomment Cells | Uncomment cells with # | Ctrlcmd-Shift-4\n"
-"---\n"
-"Insert Cells | Insert Cells | Ctrlcmd-Shift-I\n"
-"Delete Cells | Delete Cells | Ctrlcmd-Shift-D\n"
-"Insert Rows | Insert Rows | Ctrlcmd-I\n"
-"Delete Rows | Delete Rows | Ctrlcmd-D\n"
-"Move Rows Up | Move Rows Up | Alt-Up\n"
-"Move Rows Down | Move Rows Down | Alt-Down\n"
-"[Tools]\n"
-"Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword and variable completions | | | POSITION-70\n"
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:61
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:67
+#, fuzzy
+msgid "[Edit]\n"
+msgstr "Bewerken"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:62
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:68
+msgid "&Undo | Undo last modification | Ctrlcmd-Z\n"
 msgstr ""
-"[Bewerken]\n"
-"On&gedaan maken | Laatste wijziging ongedaan maken | Ctrlcmd-Z\n"
-"Op&nieuw doen | Laatste wijziging herhalen | Ctrlcmd-Y\n"
-"---\n"
-"&Knippen | Verplaatsen naar klembord | Ctrlcmd-X\n"
-"K&opiëren | Kopiëren naar klembord | Ctrlcmd-C\n"
-"&Plakken | Plakken van klembord | Ctrlcmd-V\n"
-"&Invoegen | Invoegen | Shift-Ctrl-V\n"
-"&Verwijder | Verwijderen | Del\n"
-"---\n"
-"Rijen commenteren | Geselecteerde rijen als commentaar markeren | Ctrlcmd-3\n"
-"Cellen commenteren | Cell met # als commentaar markeren | Ctrlcmd-Shift-3\n"
-"Rijen oncommenteren | Commentaarmarkering verwijderen van geselecteerde rijen | Ctrlcmd-4\n"
-"Cellen oncommenteren | Commentaarmarkering verwijderen van cell met # | Ctrlcmd-Shift-4\n"
-"---\n"
-"Cellen invoegen | Cellen invoegen | Ctrlcmd-Shift-I\n"
-"Cellen verwijderen | Cellen verwijderen | Ctrlcmd-Shift-D\n"
-"Rijen invoegen | Rijen invoegen | Ctrlcmd-I\n"
-"Rijen verwijderen | Rijen verwijderen | Ctrlcmd-D\n"
-"Rijen omhoog schuiven | Rijen omhoog verplaatsen | Alt-Up\n"
-"Rijen omlaag schuiven | Rijen omlaag verplaatsen | Alt-Down\n"
-"[Hulpmiddelen]\n"
-"Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword and variable completions | | | POSITION-70\n"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:63
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:69
+msgid "&Redo | Redo modification | Ctrlcmd-Y\n"
+msgstr ""
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:65
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:71
+#, fuzzy
+msgid "Cu&t | Cut | Ctrlcmd-X\n"
+msgstr "!E&xit | Exit RIDE | Ctrlcmd-Q\n"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:66
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:72
+msgid "&Copy | Copy | Ctrlcmd-C\n"
+msgstr ""
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:67
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:73
+#, fuzzy
+msgid "&Paste | Paste | Ctrlcmd-V\n"
+msgstr "!E&xit | Exit RIDE | Ctrlcmd-Q\n"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:68
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:74
+msgid "&Insert | Insert | Shift-Ctrl-V\n"
+msgstr ""
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:69
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:75
+msgid "&Delete | Delete  | Del\n"
+msgstr ""
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:70
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:76
+msgid "Comment Rows | Comment selected rows | Ctrlcmd-3\n"
+msgstr ""
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:71
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:77
+#, fuzzy
+msgid "Comment Cells | Comment cells with # | Ctrlcmd-Shift-3\n"
+msgstr "Commentaar Cells Ctrl-Shift-3"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:72
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:78
+msgid "Uncomment Rows | Uncomment selected rows | Ctrlcmd-4\n"
+msgstr ""
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:73
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:79
+#, fuzzy
+msgid "Uncomment Cells | Uncomment cells with # | Ctrlcmd-Shift-4\n"
+msgstr "Commentaar afmetingen, Ctrl-Shift-4"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:74
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:80
+msgid "Insert Cells | Insert Cells | Ctrlcmd-Shift-I\n"
+msgstr ""
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:75
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:81
+msgid "Delete Cells | Delete Cells | Ctrlcmd-Shift-D\n"
+msgstr ""
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:76
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:82
+#, fuzzy
+msgid "Insert Rows | Insert Rows | Ctrlcmd-I\n"
+msgstr "Insert Rows\tCtrl-I"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:77
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:83
+#, fuzzy
+msgid "Delete Rows | Delete Rows | Ctrlcmd-D\n"
+msgstr "Verwijder Rows Ctrl-D"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:78
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:84
+#, fuzzy
+msgid "Move Rows Up | Move Rows Up | Alt-Up\n"
+msgstr "Verplaats rijen optimaal, Alt-Up"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:79
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:85
+#, fuzzy
+msgid "Move Rows Down | Move Rows Down | Alt-Down\n"
+msgstr "Verplaats rijen Beneden        Alt-Down"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:80
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:86
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:66
+msgid "[Tools]\n"
+msgstr "[Hulpmiddelen]\n"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:81
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:87
+msgid ""
+"Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword "
+"and variable completions | | | POSITION-70\n"
+msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editors.py:162
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editors.py:394
@@ -639,12 +711,16 @@ msgid ""
 "<b>Keyword was not detected by RIDE</b>\n"
 "        <br>Possible corrections:<br>\n"
 "        <ul>\n"
-"            <li>Import library or resource file containing the keyword.</li>\n"
-"            <li>For library import errors: Consider importing library spec XML\n"
-"            (Tools / Import Library Spec XML or by adding the XML file with the\n"
+"            <li>Import library or resource file containing the keyword.</"
+"li>\n"
+"            <li>For library import errors: Consider importing library spec "
+"XML\n"
+"            (Tools / Import Library Spec XML or by adding the XML file with "
+"the\n"
 "            correct name to PYTHONPATH) to enable keyword completion\n"
 "            for example for Java libraries.\n"
-"            Library spec XML can be created using libdoc tool from Robot Framework.</li>\n"
+"            Library spec XML can be created using libdoc tool from Robot "
+"Framework.</li>\n"
 "        </ul>"
 msgstr ""
 
@@ -685,7 +761,7 @@ msgid "Variable "
 msgstr "Variabele "
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1180
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:513
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:540
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:49
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:127
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:184
@@ -779,30 +855,43 @@ msgid ""
 "<br>Possible corrections and notes:<br>\n"
 "        <ul>\n"
 "            <li>Import failure is shown with red color.</li>\n"
-"            <li>See Tools / View RIDE Log for detailed information about the failure.</li>\n"
-"            <li>If the import contains a variable that RIDE has not initialized, consider adding the variable\n"
+"            <li>See Tools / View RIDE Log for detailed information about the "
+"failure.</li>\n"
+"            <li>If the import contains a variable that RIDE has not "
+"initialized, consider adding the variable\n"
 "            to variable table with a default value.</li>\n"
-"            <li>For library import failure: Consider importing library spec XML (Tools / Import Library Spec XML or by\n"
-"            adding the XML file with the correct name to PYTHONPATH) to enable keyword completion\n"
+"            <li>For library import failure: Consider importing library spec "
+"XML (Tools / Import Library Spec XML or by\n"
+"            adding the XML file with the correct name to PYTHONPATH) to "
+"enable keyword completion\n"
 "            for example for Java libraries.\n"
-"            Library spec XML can be created using libdoc tool from Robot Framework.\n"
+"            Library spec XML can be created using libdoc tool from Robot "
+"Framework.\n"
 "            For more information see \n"
-"            <a href=\"https://github.com/robotframework/RIDE/wiki/Keyword-Completion#wiki-using-library-specs\">wiki</a>.\n"
+"            <a href=\"https://github.com/robotframework/RIDE/wiki/Keyword-"
+"Completion#wiki-using-library-specs\">wiki</a>.\n"
 "            </li>\n"
 "        </ul>"
 msgstr ""
 "<br>Mogelijke correcties en notities:<br>\n"
 "        <ul>\n"
 "            <li>Fout bij importeren wordt getoond met een rode kleur.</li>\n"
-"            <li>Zie Hulpmiddelen / Bekijk RIDE Log voor gedetailleerde informatie over de fout.</li>\n"
-"            <li>Als de import een variabele bevat die RIDE niet heeft geïnitialiseerd, overweeg om de variabele\n"
-"            toe te voegen aan de tabel met variabele met een standaardwaarde.</li>\n"
-"            <li>Voor importfout van de bibliotheek: Overweeg het importeren van bibliotheek snelheid XML (Tools / Import Library Spec XML of door\n"
-"            het XML-bestand met de juiste naam aan PYTHONPATH) toe te voegen om het sleutelwoord voltooiing\n"
+"            <li>Zie Hulpmiddelen / Bekijk RIDE Log voor gedetailleerde "
+"informatie over de fout.</li>\n"
+"            <li>Als de import een variabele bevat die RIDE niet heeft "
+"geïnitialiseerd, overweeg om de variabele\n"
+"            toe te voegen aan de tabel met variabele met een standaardwaarde."
+"</li>\n"
+"            <li>Voor importfout van de bibliotheek: Overweeg het importeren "
+"van bibliotheek snelheid XML (Tools / Import Library Spec XML of door\n"
+"            het XML-bestand met de juiste naam aan PYTHONPATH) toe te voegen "
+"om het sleutelwoord voltooiing\n"
 "            mogelijk te maken, bijvoorbeeld voor Java bibliotheken.\n"
-"            Bibliotheekspec XML kan worden gemaakt met behulp van libdoc tool van Robot Framework.\n"
+"            Bibliotheekspec XML kan worden gemaakt met behulp van libdoc "
+"tool van Robot Framework.\n"
 "            Voor meer informatie zie \n"
-"            <a href=\"https://github.com/robotframework/RIDE/wiki/Keyword-Completion#wiki-using-library-specs\">wiki</a>.\n"
+"            <a href=\"https://github.com/robotframework/RIDE/wiki/Keyword-"
+"Completion#wiki-using-library-specs\">wiki</a>.\n"
 "            </li>\n"
 "        </ul>"
 
@@ -818,39 +907,40 @@ msgstr "Metagegevens"
 msgid "Add Metadata"
 msgstr "Metagegevens toevoegen"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:367
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:394
 msgid "ERROR: Data sanity check failed!"
 msgstr "FOUT: Data saniteit controle mislukt!"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:367
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:394
 msgid "Error at line"
 msgstr "Fout bij regel"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:368
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:395
 msgid "Reset changes?"
 msgstr "Wijzigingen opnieuw instellen?"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:369
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:396
 msgid "Can not apply changes from Text Editor"
 msgstr "Kan wijzigingen van tekstverwerker niet toepassen"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:497
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:524
 msgid "Apply Changes"
 msgstr "Wijzigingen toepassen"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:523
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:550
 msgid "Syntax colorization disabled due to missing requirements."
 msgstr "Syntaxis gekleurd uitgeschakeld vanwege ontbrekende vereisten."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:524
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:551
 msgid "Get help"
 msgstr "Hulp vragen"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:539
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:566
 msgid ""
 "<h1>Syntax colorization</h1>\n"
 "        <p>\n"
-"        Syntax colorization for Text Edit uses <a href='https://pygments.org/'>Pygments</a> syntax highlighter.\n"
+"        Syntax colorization for Text Edit uses <a href='https://pygments."
+"org/'>Pygments</a> syntax highlighter.\n"
 "        </p>\n"
 "        <p>\n"
 "        Install Pygments from command line with:\n"
@@ -866,17 +956,20 @@ msgid ""
 "        <p>\n"
 "        If you do not have pip or easy_install,\n"
 "        <a \n"
-"        href='https://pythonhosted.org/an_example_pypi_project/setuptools.html#installing-setuptools-and-easy-install'\n"
+"        href='https://pythonhosted.org/an_example_pypi_project/setuptools."
+"html#installing-setuptools-and-easy-install'\n"
 "        >follow these instructions</a>.\n"
 "        </p>\n"
 "        <p>\n"
-"        For more information about installing Pygments, <a href='https://pygments.org/download/'>see the site</a>.\n"
+"        For more information about installing Pygments, <a href='https://"
+"pygments.org/download/'>see the site</a>.\n"
 "        </p>\n"
 "        "
 msgstr ""
 "<h1>Syntax colorization</h1>\n"
 "        <p>\n"
-"        Syntax colorization for Text Edit uses <a href='https://pygments.org/'>Pygments</a> syntax highlighter.\n"
+"        Syntax colorization for Text Edit uses <a href='https://pygments."
+"org/'>Pygments</a> syntax highlighter.\n"
 "        </p>\n"
 "        <p>\n"
 "        Install Pygments from command line with:\n"
@@ -892,19 +985,21 @@ msgstr ""
 "        <p>\n"
 "        If you do not have pip or easy_install,\n"
 "        <a \n"
-"        href='https://pythonhosted.org/an_example_pypi_project/setuptools.html#installing-setuptools-and-easy-install'\n"
+"        href='https://pythonhosted.org/an_example_pypi_project/setuptools."
+"html#installing-setuptools-and-easy-install'\n"
 "        >follow these instructions</a>.\n"
 "        </p>\n"
 "        <p>\n"
-"        For more information about installing Pygments, <a href='https://pygments.org/download/'>see the site</a>.\n"
+"        For more information about installing Pygments, <a href='https://"
+"pygments.org/download/'>see the site</a>.\n"
 "        </p>\n"
 "        "
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:564
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:591
 msgid "Getting syntax colorization"
 msgstr "Syntaxiskleuring verkrijgen"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:662
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:689
 msgid "No matches found."
 msgstr "Geen overeenkomsten gevonden."
 
@@ -934,9 +1029,12 @@ msgid ""
 "and its arguments. If either the command or any of the arguments require\n"
 "internal spaces, they must be written as '<SPACE>'.\n"
 "\n"
-"The command will be executed in the system directly without opening a shell.\n"
-"This means that shell commands and extensions are not available. For example,\n"
-"in Windows batch files to execute must contain the '.bat' extension and 'dir'\n"
+"The command will be executed in the system directly without opening a "
+"shell.\n"
+"This means that shell commands and extensions are not available. For "
+"example,\n"
+"in Windows batch files to execute must contain the '.bat' extension and "
+"'dir'\n"
 "command does not work.\n"
 "\n"
 "Examples:\n"
@@ -945,19 +1043,24 @@ msgid ""
 "    C:\\Program<SPACE>Files\\App\\prg.exe argument<SPACE>with<SPACE>space,\n"
 "Run configurations are stored in the RIDE settings file.\n"
 msgstr ""
-"De opgegeven opdrachttekenreeks zal worden gesplitst van spaties in een opdracht\n"
+"De opgegeven opdrachttekenreeks zal worden gesplitst van spaties in een "
+"opdracht\n"
 "en haar argumenten. Als het commando of een van de argumenten\n"
 "interne ruimte vereisen, moeten ze geschreven worden als '<SPACE>'.\n"
 "\n"
-"Het commando wordt direct in het systeem uitgevoerd zonder een shell te openen.\n"
-"Dit betekent dat shell commando's en extensies niet beschikbaar zijn. Bijvoorbeeld,\n"
-"in de batchbestanden van Windows om uit te voeren moet de ' bevatten. op de extensie en 'dir'\n"
+"Het commando wordt direct in het systeem uitgevoerd zonder een shell te "
+"openen.\n"
+"Dit betekent dat shell commando's en extensies niet beschikbaar zijn. "
+"Bijvoorbeeld,\n"
+"in de batchbestanden van Windows om uit te voeren moet de ' bevatten. op de "
+"extensie en 'dir'\n"
 "commando werkt niet.\n"
 "\n"
 "Voorbeelden:\n"
 "    robot. op --inclusief rook C:\\my_tests\n"
 "    svn update /home/robot\n"
-"    C:\\Programma<SPACE>Files\\App\\prg. xe argument<SPACE>met<SPACE>ruimte,\n"
+"    C:\\Programma<SPACE>Files\\App\\prg. xe "
+"argument<SPACE>met<SPACE>ruimte,\n"
 "Run configuraties worden opgeslagen in het RIDE instellingenbestand.\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/configmanagerui.py:45
@@ -1000,7 +1103,8 @@ msgstr ""
 "Een plugin voor het uitvoeren van opdrachten op het systeem.\n"
 "\n"
 "    Deze plugin maakt het maken van persistente rund-configuraties en\n"
-"    uitvoering van deze mogelijk. Uitvoer van de uitgevoerde opdracht wordt weergegeven in een apart tabblad."
+"    uitvoering van deze mogelijk. Uitvoer van de uitgevoerde opdracht wordt "
+"weergegeven in een apart tabblad."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/runanything.py:54
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/runanything.py:56
@@ -1033,8 +1137,12 @@ msgid "Results: "
 msgstr "Resultaten: "
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:82
-msgid "Find matches using tag patterns. See RF User Guide or 'robot --help' for more information."
-msgstr "Vind overeenkomsten met tagpatronen. Zie RF gebruikershandleiding of 'robot --help' voor meer informatie."
+msgid ""
+"Find matches using tag patterns. See RF User Guide or 'robot --help' for "
+"more information."
+msgstr ""
+"Vind overeenkomsten met tagpatronen. Zie RF gebruikershandleiding of 'robot "
+"--help' voor meer informatie."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:96
 msgid "Include"
@@ -1064,7 +1172,8 @@ msgstr "Zoek term"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/searchtests.py:33
 msgid "A plugin for searching tests based on name, tags and documentation"
-msgstr "Een plugin voor het zoeken van tests gebaseerd op naam, tags en documentatie"
+msgstr ""
+"Een plugin voor het zoeken van tests gebaseerd op naam, tags en documentatie"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/spec/specimporter.py:60
 msgid "Library Spec XML|*.xml|All Files|*.*"
@@ -1188,8 +1297,12 @@ msgid "All files|*.*"
 msgstr "Alle bestanden|*.*"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/fileexplorerplugin.py:29
-msgid "Provides a tree view for Files and Folders. Opens selected item with mouse right-click."
-msgstr "Biedt een boomweergave voor bestanden en mappen. Opent het geselecteerde item met de rechtermuisklik."
+msgid ""
+"Provides a tree view for Files and Folders. Opens selected item with mouse "
+"right-click."
+msgstr ""
+"Biedt een boomweergave voor bestanden en mappen. Opent het geselecteerde "
+"item met de rechtermuisklik."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/fileexplorerplugin.py:65
 msgid "View"
@@ -1227,7 +1340,8 @@ msgstr "Trefwoorden zoeken"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:43
 msgid "A plugin for searching keywords based on name or documentation."
-msgstr "Een plugin voor het zoeken van trefwoorden op basis van naam of documentatie."
+msgstr ""
+"Een plugin voor het zoeken van trefwoorden op basis van naam of documentatie."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:55
 msgid "Search keywords from libraries and resources"
@@ -1255,35 +1369,40 @@ msgstr "[Bestanden]\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:58
 msgid "!&New Project | Create a new top level suite | Ctrlcmd-N | ART_NEW\n"
-msgstr "!&Nieuw Project | Creëert een nieuw topniveau suite | Ctrlcmd-N | ART_NEW\n"
+msgstr ""
+"!&Nieuw Project | Creëert een nieuw topniveau suite | Ctrlcmd-N | ART_NEW\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:60
-msgid "!&Open Test Suite | Open file containing tests | Ctrlcmd-O | ART_FILE_OPEN\n"
-msgstr "!&Open Test Suite | Open bestand met tests | Ctrlcmd-O | ART_FILE_OPEN\n"
+msgid ""
+"!&Open Test Suite | Open file containing tests | Ctrlcmd-O | ART_FILE_OPEN\n"
+msgstr ""
+"!&Open Test Suite | Open bestand met tests | Ctrlcmd-O | ART_FILE_OPEN\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:61
-msgid "!Open &Directory | Open directory containing datafiles | Shift-Ctrlcmd-O | ART_FOLDER_OPEN\n"
-msgstr "!Open de map | Open map met datafiles | Shift-Ctrlcmd-O | ART_FOLDER_OPEN\n"
+msgid ""
+"!Open &Directory | Open directory containing datafiles | Shift-Ctrlcmd-O | "
+"ART_FOLDER_OPEN\n"
+msgstr ""
+"!Open de map | Open map met datafiles | Shift-Ctrlcmd-O | ART_FOLDER_OPEN\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:62
 msgid "!Open External File | Open file in Code Editor | | ART_NORMAL_FILE\n"
-msgstr "!Open Extern bestand | Fixit-bestand in Code Editor | | ART_NORMAL_FILE\n"
+msgstr ""
+"!Open Extern bestand | Fixit-bestand in Code Editor | | ART_NORMAL_FILE\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:63
 msgid "!&Save | Save selected datafile | Ctrlcmd-S | ART_FILE_SAVE\n"
-msgstr "!&Sla Vienna | Bespaar geselecteerde datafile | Ctrlcmd-S | ART_FILE_SAVE\n"
+msgstr ""
+"!&Sla Vienna | Bespaar geselecteerde datafile | Ctrlcmd-S | ART_FILE_SAVE\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:64
 msgid "!Save &All | Save all changes | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS\n"
-msgstr "!Sla alle | Sla alle wijzigingen | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS\n"
+msgstr ""
+"!Sla alle | Sla alle wijzigingen | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:65
 msgid "!E&xit | Exit RIDE | Ctrlcmd-Q\n"
 msgstr "!E&xit | Exit RIDE | Ctrlcmd-Q\n"
-
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:66
-msgid "[Tools]\n"
-msgstr "[Hulpmiddelen]\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:67
 msgid "!Search Unused Keywords | | | | POSITION-54\n"
@@ -1319,7 +1438,8 @@ msgstr "!Wiki | RIDE User Guide (Wiki)\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:75
 msgid "!Report a Problem | Open browser to SEARCH on the RIDE issue tracker\n"
-msgstr "!Meld een Probleem | Open browser naar SEARCH op de RIDE issuetracker\n"
+msgstr ""
+"!Meld een Probleem | Open browser naar SEARCH op de RIDE issuetracker\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:76
 msgid "!Release notes | Shows release notes\n"
@@ -1331,7 +1451,8 @@ msgstr "!Over | Informatie over RIDE\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:78
 msgid "!Check for Upgrade | Looks at PyPi for new released version\n"
-msgstr "!Controleer op Upgrade | Uiterlijk op PyPi voor nieuwe uitgebrachte versie\n"
+msgstr ""
+"!Controleer op Upgrade | Uiterlijk op PyPi voor nieuwe uitgebrachte versie\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:168
 msgid "Saved %s"
@@ -1460,12 +1581,19 @@ msgid "Plugin"
 msgstr "Plugin"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/pluginmanager.py:93
-msgid "Info. Enabling and disabling plugins might require RIDE restart for menus to work."
-msgstr "Info. Het in- en uitschakelen van plugins kan een herstart van RIDE vereisen om menu's te laten werken."
+msgid ""
+"Info. Enabling and disabling plugins might require RIDE restart for menus to "
+"work."
+msgstr ""
+"Info. Het in- en uitschakelen van plugins kan een herstart van RIDE vereisen "
+"om menu's te laten werken."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/preview.py:32
-msgid "(Obsolete) Provides preview of the test data in HTML, TSV and TXT formats."
-msgstr "(verouderd) Geeft een voorbeeld van de testgegevens in HTML, TSV en TXT formaten."
+msgid ""
+"(Obsolete) Provides preview of the test data in HTML, TSV and TXT formats."
+msgstr ""
+"(verouderd) Geeft een voorbeeld van de testgegevens in HTML, TSV en TXT "
+"formaten."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/preview.py:41
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/preview.py:100
@@ -1497,7 +1625,8 @@ msgid ""
 "This dialog helps you finding unused keywords within your opened project.\n"
 "If you want, you can restrict the search to a set of files with the filter."
 msgstr ""
-"Dit dialoogvenster helpt u ongebruikte actiewoorden in uw geopende project te vinden.\n"
+"Dit dialoogvenster helpt u ongebruikte actiewoorden in uw geopende project "
+"te vinden.\n"
 "Als je wilt, kun je het zoeken beperken tot een set bestanden met het filter."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:70
@@ -1519,12 +1648,15 @@ msgstr "Gebruik RegEx"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:93
 msgid ""
-"Here you can define one or more strings separated by comma (e.g. common,abc,123).\n"
+"Here you can define one or more strings separated by comma (e.g. common,"
+"abc,123).\n"
 "The filter matches if at least one string is part of the filename.\n"
 "If you don't enter any strings, all opened files are included"
 msgstr ""
-"Hier kunt u een of meer tekenreeksen definiëren gescheiden door een komma (bijv. appel,abc,123).\n"
-"Het filter komt overeen als ten minste één tekenreeks deel uitmaakt van de bestandsnaam.\n"
+"Hier kunt u een of meer tekenreeksen definiëren gescheiden door een komma "
+"(bijv. appel,abc,123).\n"
+"Het filter komt overeen als ten minste één tekenreeks deel uitmaakt van de "
+"bestandsnaam.\n"
 "Als je geen tekenreeksen invoert, worden alle geopende bestanden meegenomen"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:101
@@ -1586,7 +1718,8 @@ msgid ""
 "Keywords of the following files will be included in the search:\n"
 "\n"
 msgstr ""
-"Actiewoorden van de volgende bestanden zullen worden opgenomen in de zoekopdracht:\n"
+"Actiewoorden van de volgende bestanden zullen worden opgenomen in de "
+"zoekopdracht:\n"
 "\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:283
@@ -1725,3 +1858,58 @@ msgstr "Geïmporteerde naam"
 #: /home2/helio/github/RIDE/tools/../src/robotide/validators/__init__.py:150
 msgid "%s cannot be empty"
 msgstr "%s mag niet leeg zijn"
+
+#~ msgid ""
+#~ "[Edit]\n"
+#~ "&Undo | Undo last modification | Ctrlcmd-Z\n"
+#~ "&Redo | Redo modification | Ctrlcmd-Y\n"
+#~ "---\n"
+#~ "Cu&t | Cut | Ctrlcmd-X\n"
+#~ "&Copy | Copy | Ctrlcmd-C\n"
+#~ "&Paste | Paste | Ctrlcmd-V\n"
+#~ "&Insert | Insert | Shift-Ctrl-V\n"
+#~ "&Delete | Delete  | Del\n"
+#~ "---\n"
+#~ "Comment Rows | Comment selected rows | Ctrlcmd-3\n"
+#~ "Comment Cells | Comment cells with # | Ctrlcmd-Shift-3\n"
+#~ "Uncomment Rows | Uncomment selected rows | Ctrlcmd-4\n"
+#~ "Uncomment Cells | Uncomment cells with # | Ctrlcmd-Shift-4\n"
+#~ "---\n"
+#~ "Insert Cells | Insert Cells | Ctrlcmd-Shift-I\n"
+#~ "Delete Cells | Delete Cells | Ctrlcmd-Shift-D\n"
+#~ "Insert Rows | Insert Rows | Ctrlcmd-I\n"
+#~ "Delete Rows | Delete Rows | Ctrlcmd-D\n"
+#~ "Move Rows Up | Move Rows Up | Alt-Up\n"
+#~ "Move Rows Down | Move Rows Down | Alt-Down\n"
+#~ "[Tools]\n"
+#~ "Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword "
+#~ "and variable completions | | | POSITION-70\n"
+#~ msgstr ""
+#~ "[Bewerken]\n"
+#~ "On&gedaan maken | Laatste wijziging ongedaan maken | Ctrlcmd-Z\n"
+#~ "Op&nieuw doen | Laatste wijziging herhalen | Ctrlcmd-Y\n"
+#~ "---\n"
+#~ "&Knippen | Verplaatsen naar klembord | Ctrlcmd-X\n"
+#~ "K&opiëren | Kopiëren naar klembord | Ctrlcmd-C\n"
+#~ "&Plakken | Plakken van klembord | Ctrlcmd-V\n"
+#~ "&Invoegen | Invoegen | Shift-Ctrl-V\n"
+#~ "&Verwijder | Verwijderen | Del\n"
+#~ "---\n"
+#~ "Rijen commenteren | Geselecteerde rijen als commentaar markeren | "
+#~ "Ctrlcmd-3\n"
+#~ "Cellen commenteren | Cell met # als commentaar markeren | Ctrlcmd-"
+#~ "Shift-3\n"
+#~ "Rijen oncommenteren | Commentaarmarkering verwijderen van geselecteerde "
+#~ "rijen | Ctrlcmd-4\n"
+#~ "Cellen oncommenteren | Commentaarmarkering verwijderen van cell met # | "
+#~ "Ctrlcmd-Shift-4\n"
+#~ "---\n"
+#~ "Cellen invoegen | Cellen invoegen | Ctrlcmd-Shift-I\n"
+#~ "Cellen verwijderen | Cellen verwijderen | Ctrlcmd-Shift-D\n"
+#~ "Rijen invoegen | Rijen invoegen | Ctrlcmd-I\n"
+#~ "Rijen verwijderen | Rijen verwijderen | Ctrlcmd-D\n"
+#~ "Rijen omhoog schuiven | Rijen omhoog verplaatsen | Alt-Up\n"
+#~ "Rijen omlaag schuiven | Rijen omlaag verplaatsen | Alt-Down\n"
+#~ "[Hulpmiddelen]\n"
+#~ "Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword "
+#~ "and variable completions | | | POSITION-70\n"

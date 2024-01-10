@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2024-01-07 23:35+0000\n"
+"POT-Creation-Date: 2024-01-10 01:44+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -553,30 +553,124 @@ msgstr ""
 msgid "Enter Tag Name"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:28
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:61
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:67
 msgid ""
 "[Edit]\n"
+msgstr ""
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:62
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:68
+msgid ""
 "&Undo | Undo last modification | Ctrlcmd-Z\n"
+msgstr ""
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:63
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:69
+msgid ""
 "&Redo | Redo modification | Ctrlcmd-Y\n"
-"---\n"
+msgstr ""
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:65
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:71
+msgid ""
 "Cu&t | Cut | Ctrlcmd-X\n"
+msgstr ""
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:66
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:72
+msgid ""
 "&Copy | Copy | Ctrlcmd-C\n"
+msgstr ""
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:67
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:73
+msgid ""
 "&Paste | Paste | Ctrlcmd-V\n"
+msgstr ""
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:68
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:74
+msgid ""
 "&Insert | Insert | Shift-Ctrl-V\n"
+msgstr ""
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:69
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:75
+msgid ""
 "&Delete | Delete  | Del\n"
-"---\n"
+msgstr ""
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:70
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:76
+msgid ""
 "Comment Rows | Comment selected rows | Ctrlcmd-3\n"
+msgstr ""
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:71
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:77
+msgid ""
 "Comment Cells | Comment cells with # | Ctrlcmd-Shift-3\n"
+msgstr ""
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:72
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:78
+msgid ""
 "Uncomment Rows | Uncomment selected rows | Ctrlcmd-4\n"
+msgstr ""
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:73
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:79
+msgid ""
 "Uncomment Cells | Uncomment cells with # | Ctrlcmd-Shift-4\n"
-"---\n"
+msgstr ""
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:74
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:80
+msgid ""
 "Insert Cells | Insert Cells | Ctrlcmd-Shift-I\n"
+msgstr ""
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:75
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:81
+msgid ""
 "Delete Cells | Delete Cells | Ctrlcmd-Shift-D\n"
+msgstr ""
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:76
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:82
+msgid ""
 "Insert Rows | Insert Rows | Ctrlcmd-I\n"
+msgstr ""
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:77
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:83
+msgid ""
 "Delete Rows | Delete Rows | Ctrlcmd-D\n"
+msgstr ""
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:78
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:84
+msgid ""
 "Move Rows Up | Move Rows Up | Alt-Up\n"
+msgstr ""
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:79
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:85
+msgid ""
 "Move Rows Down | Move Rows Down | Alt-Down\n"
+msgstr ""
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:80
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:86
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:66
+msgid ""
 "[Tools]\n"
+msgstr ""
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:81
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:87
+msgid ""
 "Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword and variable completions | | | POSITION-70\n"
 msgstr ""
 
@@ -750,7 +844,7 @@ msgid "Variable "
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1180
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:513
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:540
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:49
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:127
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:184
@@ -869,35 +963,35 @@ msgstr ""
 msgid "Add Metadata"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:367
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:394
 msgid "ERROR: Data sanity check failed!"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:367
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:394
 msgid "Error at line"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:368
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:395
 msgid "Reset changes?"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:369
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:396
 msgid "Can not apply changes from Text Editor"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:497
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:524
 msgid "Apply Changes"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:523
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:550
 msgid "Syntax colorization disabled due to missing requirements."
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:524
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:551
 msgid "Get help"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:539
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:566
 msgid ""
 "<h1>Syntax colorization</h1>\n"
 "        <p>\n"
@@ -926,11 +1020,11 @@ msgid ""
 "        "
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:564
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:591
 msgid "Getting syntax colorization"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:662
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:689
 msgid "No matches found."
 msgstr ""
 
@@ -1304,11 +1398,6 @@ msgstr ""
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:65
 msgid ""
 "!E&xit | Exit RIDE | Ctrlcmd-Q\n"
-msgstr ""
-
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:66
-msgid ""
-"[Tools]\n"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:67
