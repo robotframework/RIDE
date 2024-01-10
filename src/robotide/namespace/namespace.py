@@ -19,7 +19,8 @@ import re
 import sys
 import tempfile
 from itertools import chain
-
+from multiprocessing import shared_memory
+from robotide.lib.compat.parsing.language import Language
 
 from .. import robotapi, utils
 from ..publish import PUBLISHER, RideSettingsChanged, RideLogMessage
@@ -450,8 +451,8 @@ class DatafileRetriever(object):
     @staticmethod
     def _get_datafile_keywords(datafile):
         if isinstance(datafile, robotapi.ResourceFile):
-            return [ResourceUserKeywordInfo(kw) for kw in datafile.keywords]
-        return [TestCaseUserKeywordInfo(kw) for kw in datafile.keywords]
+            return [ResourceUserKeywordInfo(kw) for kw in datafile.keywords if not kw.name.startswith('#')]
+        return [TestCaseUserKeywordInfo(kw) for kw in datafile.keywords if not kw.name.startswith('#')]
 
     def _get_imported_library_keywords(self, datafile, ctx):
         return self._collect_kws_from_imports(datafile, robotapi.Library,
@@ -499,7 +500,7 @@ class DatafileRetriever(object):
         for child in self._collect_import_of_type(res, robotapi.Resource):
             kws.extend(self._res_kw_recursive_getter(child, ctx))
         kws.extend(self._get_imported_library_keywords(res, ctx))
-        return [ResourceUserKeywordInfo(kw) for kw in res.keywords] + kws
+        return [ResourceUserKeywordInfo(kw) for kw in res.keywords if not kw.name.startswith('#')] + kws
 
     def get_variables_from(self, datafile, ctx=None):
         return self._get_vars_recursive(datafile,
@@ -586,9 +587,22 @@ class DatafileRetriever(object):
 
 class _Keywords(object):
 
+    new_lang = None
     regexp = re.compile(r"\s*(given|when|then|and|but)\s*(.*)", re.IGNORECASE)
 
-    def __init__(self, keywords, caseless=True):
+    def __init__(self, keywords, caseless=True, new_lang=None):
+        if not self.new_lang:
+            if not new_lang:
+                new_lang = ['en']
+                try:
+                    set_lang = shared_memory.ShareableList(new_lang, name="language")
+                except FileExistsError:  # Other instance created file
+                    set_lang = shared_memory.ShareableList(name="language")
+                self.new_lang = Language.from_name(set_lang[0])
+            else:
+                self.new_lang = new_lang
+        self.normalized_bdd_prefixes = utils.normalize_pipe_list(list(self.new_lang.bdd_prefixes))
+        self.gherkin_prefix = re.compile(f'^\\s*({self.normalized_bdd_prefixes})\\s*(.*)', re.IGNORECASE)
         self.keywords = robotapi.NormalizedDict(ignore=['_'], caseless=caseless)
         self.embedded_keywords = {}
         self._add_keywords(keywords)
@@ -627,5 +641,6 @@ class _Keywords(object):
         return None
 
     def _get_bdd_name(self, kw_name):
-        match = self.regexp.match(kw_name)
+        match = self.gherkin_prefix.match(kw_name)
+        # print(f"DEBUG: namespace.py _Keywords _get_bdd_name match={match}")
         return match.group(2) if match else None
