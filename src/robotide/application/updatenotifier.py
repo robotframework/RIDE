@@ -101,13 +101,14 @@ class UpdateNotifierController(object):
 def upgrade_from_dev_dialog(version_installed):
     dev_version = urllib2.urlopen('https://raw.githubusercontent.com/robotframework/'
                                   'RIDE/master/src/robotide/version.py', timeout=1).read().decode('utf-8')
-    VERSION = re.findall("VERSION\s*=\s*'([\w.]*)'", dev_version)[0]
-    if cmp_versions(version_installed, VERSION) == -1:
+    matches = re.findall("VERSION\s*=\s*'([\w.]*)'", dev_version)
+    version_latest = matches[0] if matches else None
+    if cmp_versions(version_installed, version_latest) == -1:
         # Here is the Menu Help->Upgrade insertion part, try to highlight menu # wx.CANCEL_DEFAULT
         command = sys.executable + " -m pip install -U https://github.com/robotframework/RIDE/archive/master.zip"
         _add_content_to_clipboard(command)
         if not _askyesno(_("Upgrade?"), f"{SPC}{_('New development version is available.')}{SPC}\n{SPC}"
-                                        f"{_('You may install version %s with:') % VERSION}\n"
+                                        f"{_('You may install version %s with:') % version_latest}\n"
                                         f"{SPC}{command}{SPC}\n\n{SPC}{_('Click OK to Upgrade now!')}\n{SPC}"
                                         f"{_('After upgrade you will see another dialog informing to close this RIDE instance.')}"
                                         f"{SPC}\n", wx.GetActiveWindow(),  no_default=True):
