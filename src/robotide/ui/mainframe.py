@@ -52,7 +52,7 @@ MAINFRAME_POSITION = 'mainframe position'
 MAINFRAME_MAXIMIZED = 'mainframe maximized'
 
 
-class RideFrame(wx.Frame):
+def get_menudata():
     # Menus to translate
     file_0 = _("[File]\n")
     file_1 = _("!&New Project | Create a new top level suite | Ctrlcmd-N | ART_NEW\n")
@@ -76,10 +76,13 @@ class RideFrame(wx.Frame):
     help_5 = _("!Release notes | Shows release notes\n")
     help_6 = _("!About | Information about RIDE\n")
     help_7 = _("!Check for Upgrade | Looks at PyPi for new released version\n")
+    
+    return (file_0 + file_1 + SEPARATOR + file_2 + file_3 + file_4 + SEPARATOR + file_5 + file_6 + SEPARATOR +
+            file_7 + '\n' + tool_0 + tool_1 + tool_2 + tool_3 + tool_4 + '\n' + help_0 + help_1 + help_2 +
+            help_3 + help_4 + help_5 + help_6 + help_7)
 
-    _menudata = (file_0 + file_1 + SEPARATOR + file_2 + file_3 + file_4 + SEPARATOR + file_5 + file_6
-                 + SEPARATOR + file_7 + '\n' + tool_0 + tool_1 + tool_2 + tool_3 + tool_4 + '\n' + help_0
-                 + help_1 + help_2 + help_3 + help_4 + help_5 + help_6 + help_7)
+
+class RideFrame(wx.Frame):
 
     _menudata_nt = """[File]
     !&New Project | Create a new top level suite | Ctrlcmd-N | ART_NEW
@@ -146,6 +149,7 @@ class RideFrame(wx.Frame):
         self.color_foreground = self.general_settings.get_without_default('foreground')
         self.font_face = self.general_settings.get('font face', '')
         self.font_size = self.general_settings.get('font size', 11)
+        self.ui_language = self.general_settings.get('ui language', 'English')
         self.main_menu = None
         self._init_ui()
         self._task_bar_icon = RIDETaskBarIcon(self, self._image_provider)
@@ -227,6 +231,8 @@ class RideFrame(wx.Frame):
             del pane
             # del self.toolbar
 
+        _menudata = get_menudata()
+
         self.main_menu = MenuBar(self)
         self.toolbar = ToolBar(self)
         self.toolbar.SetMinSize(wx.Size(100, 60))
@@ -261,7 +267,7 @@ class RideFrame(wx.Frame):
                                  LeftDockable())  # DEBUG: remove .CloseButton(False) when restore is fixed
             # DEBUG: self.aui_mgr.GetPane(self.tree).DestroyOnClose()
             # TreePlugin will manage showing the Tree
-        self.actions.register_actions(action_info_collection(self._menudata, self, data_nt=self._menudata_nt,
+        self.actions.register_actions(action_info_collection(_menudata, self, data_nt=self._menudata_nt,
                                                              container=self.tree))
         if new_ui:  # Only when creating UI we add panes
             # ##### File explorer panel is always created here
@@ -661,10 +667,9 @@ class RideFrame(wx.Frame):
     def on_ui_language_changed(self, message):
         if message.keys[0] != "General":
             return
-        general = self._application.settings.get('General', None)
-        language = general.get('ui language', 'English')
-        print(f"DEBUG: mainframe.py on_ui_language_changed message.items={message.keys}, menudata={self._menudata}\n"
-              f"language={language}")
+        self.ui_language = self.general_settings.get('ui language', 'English')
+        # print(f"DEBUG: mainframe.py on_ui_language_changed message.items={message.keys}, menudata={get_menudata}\n"
+        #       f"language={self.ui_language} Translated Warning={_('Warning')} ")
         # DANGER!!! # The below refresh works, but we lose TestRunner buttons in taskbar and Edit menu is broken
         # wx.CallLater(1000, self._init_ui)  # Let the change happen at application
 

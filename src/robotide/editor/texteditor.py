@@ -104,7 +104,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         if self._editor_component is None:
             self._editor_component = SourceEditor(self, self.notebook,
                                                   self.title,
-                                                  DataValidationHandler(self))
+                                                  DataValidationHandler(self, lang=self._doc_language))
             self._refresh_timer = wx.Timer(self._editor_component)
             self._editor_component.Bind(wx.EVT_TIMER, self._on_timer)
         return self._editor_component
@@ -316,16 +316,18 @@ class DummyController(WithStepsController):
 
 class DataValidationHandler(object):
 
-    def __init__(self, plugin):
+    def __init__(self, plugin, lang=None):
         self._plugin = plugin
         self._last_answer = None
         self._last_answer_time = 0
         self._editor = None
+        self._doc_language = lang
 
     def set_editor(self, editor):
         self._editor = editor
 
-    def validate_and_update(self, data, text):
+    def validate_and_update(self, data, text, lang='en'):
+        self._doc_language = lang
         m_text = text.decode("utf-8")
         result = self._sanity_check(data, m_text)
         if isinstance(result, tuple):
@@ -358,8 +360,8 @@ class DataValidationHandler(object):
         from robotide.lib.robot.errors import DataError
 
         # print(f"DEBUG: textedit.py _sanity_check data is type={type(data)}")
-        model = get_model(text)
-        # print(f"DEBUG: textedit.py _sanity_check model is {model}")
+        model = get_model(text, lang=self._doc_language)
+        print(f"DEBUG: textedit.py _sanity_check model is {model} doc language={self._doc_language}")
         validator = ErrorReporter()
         result = None
         try:
@@ -921,7 +923,8 @@ class SourceEditor(wx.Panel):
         self.store_position()
         if self.dirty and not self.is_saving:
             self.is_saving = True
-            if not self._data_validator.validate_and_update(self._data, self.source_editor.utf8_text):
+            if not self._data_validator.validate_and_update(self._data, self.source_editor.utf8_text,
+                                                            lang=self.language):
                 self.is_saving = False
                 return False
         return True
