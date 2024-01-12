@@ -245,7 +245,7 @@ class RideFrame(wx.Frame):
         self.aui_mgr.AddPane(tb3,
                           aui.AuiPaneInfo().Name("tb3").Caption("Toolbar 3").
                           ToolbarPane().Top().Row(1).Position(1))
-        
+
         ##### End Test
         """
         # self.leftpanel = wx.Panel(self, name="left_panel", size = (275, 250))
@@ -637,10 +637,10 @@ class RideFrame(wx.Frame):
 
     def show_confirm_reload_dlg(self, event):
         msg = [_('Workspace modifications detected on the file system.'),
-               _('Do you want to reload the workspace?'),
-               _('Answering <No> will ignore the changes on disk.')]
+               _('Do you want to reload the workspace?')]
         if self.controller.is_dirty():
-            msg.insert(2, _('Answering <Yes> will discard unsaved changes.'))
+            msg += [_('Answering <Yes> will discard unsaved changes.'),
+                    _('Answering <No> will ignore the changes on disk.')]
         ret = wx.MessageBox('\n'.join(msg), _('Files Changed On Disk'),
                             style=wx.YES_NO | wx.ICON_WARNING)
         confirmed = ret == wx.YES
