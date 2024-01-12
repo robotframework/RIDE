@@ -32,12 +32,7 @@ msgstr ""
 
 #:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:112
-msgid " with:"
-msgstr ""
-
-#:
-#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:112
-msgid "You may install version "
+msgid "You may install version %s with:"
 msgstr ""
 
 #:

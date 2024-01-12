@@ -31,12 +31,8 @@ msgid "Upgrade?"
 msgstr "Atualizar?"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:112
-msgid " with:"
-msgstr " com:"
-
-#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:112
-msgid "You may install version "
-msgstr "Você pode instalar a versão "
+msgid "You may install version %s with:"
+msgstr "Você pode instalar a versão %s com:"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:113
 msgid "Click OK to Upgrade now!"
