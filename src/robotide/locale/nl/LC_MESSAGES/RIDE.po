@@ -1343,7 +1343,7 @@ msgstr "Beschrijving"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:57
 msgid "[File]\n"
-msgstr "[Bestanden]\n"
+msgstr "[Bestand]\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:58
 msgid "!&New Project | Create a new top level suite | Ctrlcmd-N | ART_NEW\n"
@@ -1389,11 +1389,11 @@ msgstr "!Beheren van Plugins | | | | POSITION-81\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:69
 msgid "!View All Tags | | F7 | | POSITION-82\n"
-msgstr "! Bekijk Alle Tags | | F7 | | POSITION-82\n"
+msgstr "!Bekijk Alle Tags | | F7 | | POSITION-82\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:70
 msgid "!Preferences | | | | POSITION-99\n"
-msgstr "! Voorkeurt | | | | POSITION-99\n"
+msgstr "!Voorkeuren | | | | POSITION-99\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:71
 msgid "[Help]\n"
