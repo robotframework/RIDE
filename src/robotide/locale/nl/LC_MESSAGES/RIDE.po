@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: robotframework-ride\n"
 "POT-Creation-Date: 2024-01-13 02:31+0000\n"
 "PO-Revision-Date: 2024-01-13 02:57+0000\n"
-"Last-Translator: Hélio Guilherme <helio_guilherme@hotmail.com>\n"
+"Last-Translator: Johan Foederer <github@famfoe.nl>\n"
 "Language-Team: Dutch\n"
 "Language: nl_NL\n"
 "MIME-Version: 1.0\n"
@@ -474,75 +474,75 @@ msgstr "Geef labelnaam"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:31
 msgid "[Edit]\n"
-msgstr ""
+msgstr "[Bewerken]\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:32
 msgid "&Undo | Undo last modification | Ctrlcmd-Z\n"
-msgstr ""
+msgstr "On&gedaan maken | Laatste wijziging ongedaan maken | Ctrlcmd-Z\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:33
 msgid "&Redo | Redo modification | Ctrlcmd-Y\n"
-msgstr ""
+msgstr "Op&nieuw doen | Laatste wijziging herhalen | Ctrlcmd-Y\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:35
 msgid "Cu&t | Cut | Ctrlcmd-X\n"
-msgstr ""
+msgstr "&Knippen | Verplaatsen naar klembord | Ctrlcmd-X\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:36
 msgid "&Copy | Copy | Ctrlcmd-C\n"
-msgstr ""
+msgstr "K&opiëren | Kopiëren naar klembord | Ctrlcmd-C\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:37
 msgid "&Paste | Paste | Ctrlcmd-V\n"
-msgstr ""
+msgstr "&Plakken | Plakken van klembord | Ctrlcmd-V\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:38
 msgid "&Insert | Insert | Shift-Ctrl-V\n"
-msgstr ""
+msgstr "&Invoegen | Invoegen | Shift-Ctrl-V\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:39
 msgid "&Delete | Delete  | Del\n"
-msgstr ""
+msgstr "&Verwijder | Verwijderen | Del\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:40
 msgid "Comment Rows | Comment selected rows | Ctrlcmd-3\n"
-msgstr ""
+msgstr "Rijen commenteren | Geselecteerde rijen als commentaar markeren | Ctrlcmd-3\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:41
 msgid "Comment Cells | Comment cells with # | Ctrlcmd-Shift-3\n"
-msgstr ""
+msgstr "Cellen commenteren | Cell met # als commentaar markeren | Ctrlcmd-Shift-3\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:42
 msgid "Uncomment Rows | Uncomment selected rows | Ctrlcmd-4\n"
-msgstr ""
+msgstr "Rijen oncommenteren | Commentaarmarkering verwijderen van geselecteerde rijen | Ctrlcmd-4\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:43
 msgid "Uncomment Cells | Uncomment cells with # | Ctrlcmd-Shift-4\n"
-msgstr ""
+msgstr "Cellen oncommenteren | Commentaarmarkering verwijderen van cellen met een # | Ctrlcmd-Shift-4\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:44
 msgid "Insert Cells | Insert Cells | Ctrlcmd-Shift-I\n"
-msgstr ""
+msgstr "Cellen invoegen | Cellen invoegen | Ctrlcmd-Shift-I\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:45
 msgid "Delete Cells | Delete Cells | Ctrlcmd-Shift-D\n"
-msgstr ""
+msgstr "Cellen verwijderen | Cellen verwijderen | Ctrlcmd-Shift-D\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:46
 msgid "Insert Rows | Insert Rows | Ctrlcmd-I\n"
-msgstr ""
+msgstr "Rijen invoegen | Rijen invoegen | Ctrlcmd-I\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:47
 msgid "Delete Rows | Delete Rows | Ctrlcmd-D\n"
-msgstr ""
+msgstr "Rijen verwijderen | Rijen verwijderen | Ctrlcmd-D\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:48
 msgid "Move Rows Up | Move Rows Up | Alt-Up\n"
-msgstr ""
+msgstr "Rijen omhoog schuiven | Rijen omhoog verplaatsen | Alt-Up\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:49
 msgid "Move Rows Down | Move Rows Down | Alt-Down\n"
-msgstr ""
+msgstr "Rijen omlaag schuiven | Rijen omlaag verplaatsen | Alt-Down\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:50
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:66
@@ -1379,10 +1379,6 @@ msgstr "!&Alles opslaan | Sla alle wijzigingen op | Ctrlcmd-Shift-S | ART_FILE_S
 msgid "!E&xit | Exit RIDE | Ctrlcmd-Q\n"
 msgstr "!A&fsluiten | RIDE afsluiten | Ctrlcmd-Q\n"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:66
-msgid "[Tools]\n"
-msgstr "[Hulpmiddelen]\n"
-
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:67
 msgid "!Search Unused Keywords | | | | POSITION-54\n"
 msgstr "!Zoek ongebruikte actiewoorden | | | | POSITION-54\n"
@@ -1495,17 +1491,13 @@ msgstr "Er zijn bestanden gewijzigd buiten RIDE."
 msgid "Do you want to reload the workspace?"
 msgstr "Wilt u het project opnieuw laden?"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:641
-msgid "Answering <No> will ignore the changes on disk."
-msgstr "Met <Nee> negeer je de binnenkomende wijzigingen."
-
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:643
 msgid "Answering <Yes> will discard unsaved changes."
 msgstr "Met <Ja> worden niet-opgeslagen wijzigingen overschreven."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:649
 msgid "Answering <No> will ignore the changes on disk."
-msgstr "Het antwoord <No> negeert de wijzigingen op de schijf."
+msgstr "Met <Nee> negeer je de binnenkomende wijzigingen."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:650
 msgid "Files Changed On Disk"
@@ -1841,58 +1833,3 @@ msgstr "Geïmporteerde naam"
 #: /home2/helio/github/RIDE/tools/../src/robotide/validators/__init__.py:150
 msgid "%s cannot be empty"
 msgstr "%s mag niet leeg zijn"
-
-#~ msgid ""
-#~ "[Edit]\n"
-#~ "&Undo | Undo last modification | Ctrlcmd-Z\n"
-#~ "&Redo | Redo modification | Ctrlcmd-Y\n"
-#~ "---\n"
-#~ "Cu&t | Cut | Ctrlcmd-X\n"
-#~ "&Copy | Copy | Ctrlcmd-C\n"
-#~ "&Paste | Paste | Ctrlcmd-V\n"
-#~ "&Insert | Insert | Shift-Ctrl-V\n"
-#~ "&Delete | Delete  | Del\n"
-#~ "---\n"
-#~ "Comment Rows | Comment selected rows | Ctrlcmd-3\n"
-#~ "Comment Cells | Comment cells with # | Ctrlcmd-Shift-3\n"
-#~ "Uncomment Rows | Uncomment selected rows | Ctrlcmd-4\n"
-#~ "Uncomment Cells | Uncomment cells with # | Ctrlcmd-Shift-4\n"
-#~ "---\n"
-#~ "Insert Cells | Insert Cells | Ctrlcmd-Shift-I\n"
-#~ "Delete Cells | Delete Cells | Ctrlcmd-Shift-D\n"
-#~ "Insert Rows | Insert Rows | Ctrlcmd-I\n"
-#~ "Delete Rows | Delete Rows | Ctrlcmd-D\n"
-#~ "Move Rows Up | Move Rows Up | Alt-Up\n"
-#~ "Move Rows Down | Move Rows Down | Alt-Down\n"
-#~ "[Tools]\n"
-#~ "Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword "
-#~ "and variable completions | | | POSITION-70\n"
-#~ msgstr ""
-#~ "[Bewerken]\n"
-#~ "On&gedaan maken | Laatste wijziging ongedaan maken | Ctrlcmd-Z\n"
-#~ "Op&nieuw doen | Laatste wijziging herhalen | Ctrlcmd-Y\n"
-#~ "---\n"
-#~ "&Knippen | Verplaatsen naar klembord | Ctrlcmd-X\n"
-#~ "K&opiëren | Kopiëren naar klembord | Ctrlcmd-C\n"
-#~ "&Plakken | Plakken van klembord | Ctrlcmd-V\n"
-#~ "&Invoegen | Invoegen | Shift-Ctrl-V\n"
-#~ "&Verwijder | Verwijderen | Del\n"
-#~ "---\n"
-#~ "Rijen commenteren | Geselecteerde rijen als commentaar markeren | "
-#~ "Ctrlcmd-3\n"
-#~ "Cellen commenteren | Cell met # als commentaar markeren | Ctrlcmd-"
-#~ "Shift-3\n"
-#~ "Rijen oncommenteren | Commentaarmarkering verwijderen van geselecteerde "
-#~ "rijen | Ctrlcmd-4\n"
-#~ "Cellen oncommenteren | Commentaarmarkering verwijderen van cell met # | "
-#~ "Ctrlcmd-Shift-4\n"
-#~ "---\n"
-#~ "Cellen invoegen | Cellen invoegen | Ctrlcmd-Shift-I\n"
-#~ "Cellen verwijderen | Cellen verwijderen | Ctrlcmd-Shift-D\n"
-#~ "Rijen invoegen | Rijen invoegen | Ctrlcmd-I\n"
-#~ "Rijen verwijderen | Rijen verwijderen | Ctrlcmd-D\n"
-#~ "Rijen omhoog schuiven | Rijen omhoog verplaatsen | Alt-Up\n"
-#~ "Rijen omlaag schuiven | Rijen omlaag verplaatsen | Alt-Down\n"
-#~ "[Hulpmiddelen]\n"
-#~ "Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword "
-#~ "and variable completions | | | POSITION-70\n"
