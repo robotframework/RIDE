@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2024-01-12 02:03+0000\n"
+"POT-Creation-Date: 2024-01-12 23:51+0000\n"
 "PO-Revision-Date: 2024-01-12 03:00+0000\n"
 "Last-Translator: Hélio Guilherme <helio_guilherme@hotmail.com>\n"
 "Language-Team: Portuguese, Brazilian\n"
@@ -24,24 +24,24 @@ msgstr ""
 msgid "Found Robot Framework version %s from %s."
 msgstr "Versão do Robot Framework %s encontrada de %s."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:111
+#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:110
 msgid "New development version is available."
 msgstr "Uma nova versão de desenvolvimento está disponível."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:111
+#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:110
 msgid "Upgrade?"
 msgstr "Atualizar?"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:112
+#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:111
 msgid "You may install version %s with:"
 msgstr "Você pode instalar a versão %s com:"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:113
+#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:112
 msgid "Click OK to Upgrade now!"
 msgstr "Clique em OK para atualizar agora!"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:114
-#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:221
+#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:113
+#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:220
 msgid ""
 "After upgrade you will see another dialog informing to close this RIDE "
 "instance."
@@ -49,63 +49,63 @@ msgstr ""
 "Após a atualização, você verá outro diálogo informando para fechar esta "
 "instância do RIDE."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:121
+#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:120
 msgid "No Upgrade Available"
 msgstr "Nenhuma atualização disponível"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:121
+#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:120
 msgid "You have the latest version of RIDE."
 msgstr "Você tem a última versão do RIDE."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:122
+#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:121
 msgid "              Have a nice day :)"
 msgstr "              Tenha um bom dia :)"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:179
+#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:178
 msgid "An error occurred when installing new version"
 msgstr "Ocorreu um erro ao instalar a nova versão"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:179
+#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:178
 msgid "Failed to Upgrade"
 msgstr "Falha ao atualizar"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:188
+#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:187
 msgid "Completed Upgrade"
 msgstr "Atualização Completada"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:188
+#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:187
 msgid "You should close this RIDE (Process ID = "
 msgstr "Você deve fechar este RIDE (ID do processo = "
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:208
+#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:207
 msgid "Update available"
 msgstr "Atualização disponível"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:216
+#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:215
 msgid " available from "
 msgstr " disponível em "
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:216
+#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:215
 msgid "New version "
 msgstr "Nova versão "
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:217
+#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:216
 msgid "See this version "
 msgstr "Ver esta versão "
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:219
+#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:218
 msgid "You can update with the command:"
 msgstr "Você pode atualizar com o comando:"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:220
+#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:219
 msgid "Or, click <b>Upgrade Now</b>"
 msgstr "Ou, clique em <b>Atualizar Agora</b>"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:222
+#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:221
 msgid "See the latest development "
 msgstr "Ver desenvolvimento mais recente "
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:227
+#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:226
 msgid ""
 "I'm using another method for RIDE updates\n"
 " and do not need automatic update checks"
@@ -113,11 +113,11 @@ msgstr ""
 "Estou usando outro método para atualizações RIDE\n"
 " e não preciso de verificações de atualização automáticas"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:232
+#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:231
 msgid "remind me later"
 msgstr "lembrar-me mais tarde"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:238
+#: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:237
 msgid "Upgrade Now"
 msgstr "Atualizar Agora"
 
@@ -451,7 +451,8 @@ msgid ""
 msgstr ""
 "[Navegação]\n"
 "!Ir para Anterior | Retornar à localização anterior | Alt-%s | ART_GO_BACK\n"
-"!Ir para Seguinte | Avançar para a localização seguinte | Alt-%s | ART_GO_FORWARD\n"
+"!Ir para Seguinte | Avançar para a localização seguinte | Alt-%s | "
+"ART_GO_FORWARD\n"
 " "
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/controller/ui/treecontroller.py:55
@@ -1552,13 +1553,13 @@ msgstr "Modificações no espaço de trabalho detectadas no sistema de arquivos.
 msgid "Do you want to reload the workspace?"
 msgstr "Você deseja recarregar o espaço de trabalho?"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:647
-msgid "Answering <No> will ignore the changes on disk."
-msgstr "Responder <Não> irá ignorar as alterações no disco."
-
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:649
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:648
 msgid "Answering <Yes> will discard unsaved changes."
 msgstr "Responder <Sim> irá descartar as alterações não salvadas."
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:649
+msgid "Answering <No> will ignore the changes on disk."
+msgstr "Responder <Não> irá ignorar as alterações no disco."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:650
 msgid "Files Changed On Disk"
