@@ -13,6 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import builtins
 import os.path
 
 import wx
@@ -21,6 +22,9 @@ from ..pluginapi import Plugin
 from ..action import ActionInfo, SeparatorInfo
 from ..publish import RideOpenSuite, RideFileNameChanged
 from ..publish.messages import RideNewProject, RideSaved
+
+_ = wx.GetTranslation  # To keep linter/code analyser happy
+builtins.__dict__['_'] = wx.GetTranslation
 
 
 def normalize_path(path):
@@ -34,7 +38,7 @@ def remove_non_existing_paths(paths):
 
 
 class RecentFilesPlugin(Plugin):
-    """Add recently opened files to the file menu."""
+    __doc__ = _("""Add recently opened files to the file menu.""")
 
     def __init__(self, application=None):
         settings = {'recent_files': [], 'max_number_of_files': 4}
@@ -111,14 +115,14 @@ class RecentFilesPlugin(Plugin):
 
     def _add_recent_files_to_menu(self):
         if not self.recent_files:
-            action = ActionInfo('File', 'No recent files')
-            action.set_menu_position(before='Exit')
+            action = ActionInfo(_('File'), _('No recent files'))
+            action.set_menu_position(before=_('Exit'))
             self.register_action(action)
         else:
             for n, path in enumerate(self.recent_files):
                 self._add_file_to_menu(path, n)
-        sep = SeparatorInfo('File')
-        sep.set_menu_position(before='Exit')
+        sep = SeparatorInfo(_('File'))
+        sep.set_menu_position(before=_('Exit'))
         self.register_action(sep)
 
     def _add_file_to_menu(self, path, n):
@@ -135,7 +139,7 @@ class RecentFileEntry(object):
         self.filename = os.path.basename(file)
         self.plugin = plugin
         self.label = '&%s: %s' % (index, self.filename)
-        self.doc = 'Open %s' % self.path
+        self.doc = _('Open %s') % self.path
 
     def on_open_recent(self, event):
         __ = event
@@ -144,7 +148,7 @@ class RecentFileEntry(object):
         self.plugin.open_suite(self.path)
 
     def get_action_info(self):
-        action_info = ActionInfo('File', self.label, self.on_open_recent,
+        action_info = ActionInfo(_('File'), self.label, self.on_open_recent,
                                  doc=self.doc)
-        action_info.set_menu_position(before='Exit')
+        action_info.set_menu_position(before=_('Exit'))
         return action_info

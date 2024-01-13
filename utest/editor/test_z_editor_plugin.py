@@ -167,7 +167,10 @@ class EditorPluginTest(unittest.TestCase):
 
     def setUp(self):
         self.app = MyApp()
-        self.shared_mem = shared_memory.ShareableList(['en'], name="language")
+        try:
+            self.shared_mem = shared_memory.ShareableList(['en'], name="language")
+        except FileExistsError:  # Other instance created file
+            self.shared_mem = shared_memory.ShareableList(name="language")
         settings = self.app.settings
         self.frame = self.app.frame
         self.frame.actions = ActionRegisterer(AuiManager(self.frame), MenuBar(self.frame), ToolBar(self.frame),
@@ -177,7 +180,7 @@ class EditorPluginTest(unittest.TestCase):
 
         self.plugin = texteditor.TextEditorPlugin(self.app)
         self.plugin._editor_component = texteditor.SourceEditor(self.plugin, self.app.notebook, self.plugin.title,
-                                                                texteditor.DataValidationHandler(self.plugin))
+                                                                texteditor.DataValidationHandler(self.plugin, lang='en'))
         self.frame.notebook = self.app.notebook
         """
         self.plugin = EditorPlugin(self.app)

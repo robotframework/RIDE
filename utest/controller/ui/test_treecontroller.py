@@ -45,9 +45,7 @@ class TestTreeController(unittest.TestCase):
     def test_register_tree_actions(self):
         mocked_ar = ActionRegistererMock()
         TreeController(None, mocked_ar, None, None).register_tree_actions()
-        self.assertEqual(
-            ["Go &Back", "Go &Forward"],
-            [a.name for a in mocked_ar.action_collections])
+        self.assertEqual(["Go &Back", "Go &Forward"], [a.name for a in mocked_ar.action_collections])
 
 
 class _BaseTreeControllerTest(object):
