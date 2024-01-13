@@ -22,7 +22,7 @@ from wx import stc, Colour
 from wx.adv import HyperlinkCtrl, EVT_HYPERLINK
 from multiprocessing import shared_memory
 from .popupwindow import HtmlPopupWindow
-from . import _EDIT_nt
+from . import _EDIT_nt, get_menudata
 from .. import robotapi
 from ..context import IS_WINDOWS, IS_MAC
 from ..controller.ctrlcommands import SetDataFile, INDENTED_START
@@ -63,33 +63,6 @@ ZOOM_FACTOR = 'zoom factor'
 class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
     title = PLUGIN_NAME
 
-    # Menus to translate
-    edit_0 = _("[Edit]\n")
-    edit_1 = _("&Undo | Undo last modification | Ctrlcmd-Z\n")
-    edit_2 = _("&Redo | Redo modification | Ctrlcmd-Y\n")
-    SEPARATOR = "---\n"
-    edit_3 = _("Cu&t | Cut | Ctrlcmd-X\n")
-    edit_4 = _("&Copy | Copy | Ctrlcmd-C\n")
-    edit_5 = _("&Paste | Paste | Ctrlcmd-V\n")
-    edit_6 = _("&Insert | Insert | Shift-Ctrl-V\n")
-    edit_7 = _("&Delete | Delete  | Del\n")
-    edit_8 = _("Comment Rows | Comment selected rows | Ctrlcmd-3\n")
-    edit_9 = _("Comment Cells | Comment cells with # | Ctrlcmd-Shift-3\n")
-    edit_10 = _("Uncomment Rows | Uncomment selected rows | Ctrlcmd-4\n")
-    edit_11 = _("Uncomment Cells | Uncomment cells with # | Ctrlcmd-Shift-4\n")
-    edit_12 = _("Insert Cells | Insert Cells | Ctrlcmd-Shift-I\n")
-    edit_13 = _("Delete Cells | Delete Cells | Ctrlcmd-Shift-D\n")
-    edit_14 = _("Insert Rows | Insert Rows | Ctrlcmd-I\n")
-    edit_15 = _("Delete Rows | Delete Rows | Ctrlcmd-D\n")
-    edit_16 = _("Move Rows Up | Move Rows Up | Alt-Up\n")
-    edit_17 = _("Move Rows Down | Move Rows Down | Alt-Down\n")
-    tools_0 = _("[Tools]\n")
-    tools_1 = _("Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword and variable completions | | | POSITION-70\n")
-
-    _EDIT = (edit_0 + edit_1 + edit_2 + SEPARATOR + edit_3 + edit_4 + edit_5 + edit_6 + edit_7 + SEPARATOR +
-             edit_8 + edit_9 + edit_10 + edit_11 + SEPARATOR + edit_12 + edit_13 + edit_14 + edit_15 + edit_16 +
-             edit_17 + tools_0 + tools_1)
-
     def __init__(self, application):
         Plugin.__init__(self, application)
         self._editor_component = None
@@ -111,7 +84,8 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
 
     def enable(self):
         self._tab = self._editor
-        self.register_actions(action_info_collection(self._EDIT, self._tab, data_nt=_EDIT_nt, container=self._tab))
+        _menudata = get_menudata()
+        self.register_actions(action_info_collection(_menudata, self._tab, data_nt=_EDIT_nt, container=self._tab))
         self.subscribe(self.on_tree_selection, RideTreeSelection)
         self.subscribe(self.on_data_changed, RideMessage)
         self.subscribe(self.on_tab_change, RideNotebookTabChanging)
