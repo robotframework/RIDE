@@ -88,7 +88,7 @@ class RIDE(wx.App):
     def OnInit(self):  # Overrides wx method
         # DEBUG To test RTL
         # self._initial_locale = wx.Locale(wx.LANGUAGE_ARABIC)
-        self._locale = wx.Locale(wx.LANGUAGE_PORTUGUESE)  # LANGUAGE_ENGLISH_US)
+        self._locale = wx.Locale(wx.LANGUAGE_ENGLISH_US)  # LANGUAGE_PORTUGUESE
         # Needed for SetToolTipString to work
         wx.HelpProvider.Set(wx.SimpleHelpProvider())  # DEBUG: adjust to wx versions
         self.settings = RideSettings()
@@ -97,7 +97,7 @@ class RIDE(wx.App):
             keys = ['General']
 
         self.change_locale(Message)  # This was done here to have menus translated, but not working
-        print(f"DEBUG: application.py RIDE OnInit after changing locale {self._locale.GetCanonicalName()=}")
+        # print(f"DEBUG: application.py RIDE OnInit after changing locale {self._locale.GetCanonicalName()=}")
         # Importing libraries after setting language
         from ..context import coreplugins, SETTINGS_DIRECTORY
         from ..ui.treeplugin import TreePlugin
@@ -319,17 +319,23 @@ class RIDE(wx.App):
             idx = None
         if idx:
             code = names[idx][2]
+            short_code = names[idx][1].replace('-', '_')
         else:
-            code = wx.LANGUAGE_ENGLISH
+            code = wx.LANGUAGE_ENGLISH_WORLD
+            short_code = 'en_GB'
         del self._locale
         self._locale = wx.Locale(code)
+        # print(f"DEBUG: application.py RIDE change_locale {idx=} {language=} {short_code=}")
         if self._locale.IsOk():
+            locale.setlocale(locale.LC_ALL, short_code)
             lpath = Path(__file__).parent.absolute()
             lpath = str(Path(Path.joinpath(lpath.parent, 'locale')).absolute())
+            locale.setlocale(locale.LC_ALL, 'C')
             wx.Locale.AddCatalogLookupPathPrefix(lpath)
             self._locale.AddCatalog('RIDE')
         else:
-            self._locale = wx.Locale(wx.LANGUAGE_ENGLISH_US)
+            locale.setlocale(locale.LC_ALL, short_code)
+            self._locale = wx.Locale(wx.LANGUAGE_ENGLISH_WORLD)
 
     @staticmethod
     def update_excludes(message):

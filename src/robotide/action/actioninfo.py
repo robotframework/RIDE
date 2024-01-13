@@ -133,17 +133,22 @@ def action_info_collection(data, event_handler, data_nt=None, container=None):
             continue
         elif row.startswith('[') and row.endswith(']'):
             menu = row[1:-1].strip()
-            # print(f"DEBUG: actioninfo.py action_info_collection menu={menu}")
+            print(f"DEBUG: actioninfo.py action_info_collection menu={menu}")
         else:
             actions.append(_create_action_info(event_handler, menu, container, row, row_nt))
     return actions
 
 
 def _create_action_info(eventhandler, menu, container, row, row_nt):
-    print(f"DEBUG: actioninfo.py _create_action_info menu={menu} row={row} row_nt={row_nt}")
+    # print(f"DEBUG: actioninfo.py _create_action_info menu={menu} row={row} row_nt={row_nt}")
+    t_menu = _(menu)
+    # if t_menu.startswith('[') and t_menu.endswith(']'):
+    #     t_menu = t_menu[1:-1].strip()
+    t_row = _(row)  # .replace('&', ''))
+    print(f"DEBUG: actioninfo.py _create_action_info menu={t_menu} t_row={t_row} row_nt={row_nt}")
     if row_nt.startswith('---'):
         return SeparatorInfo(menu)
-    tokens = [t.strip() for t in row.split('|')]
+    tokens = [t.strip() for t in t_row.split('|')]
     tokens += [''] * (5-len(tokens))
     name, doc, shortcut, icon, position = tokens
     tokens_nt = [t.strip() for t in row_nt.split('|')]

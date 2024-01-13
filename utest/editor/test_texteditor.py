@@ -123,7 +123,10 @@ class TestEditorCommands(unittest.TestCase):
     def setUp(self):
         self.app = MyApp()
         settings = self.app.settings
-        self.shared_mem = shared_memory.ShareableList(['en'], name="language")
+        try:
+            self.shared_mem = shared_memory.ShareableList(['en'], name="language")
+        except FileExistsError:  # Other instance created file
+            self.shared_mem = shared_memory.ShareableList(name="language")
         self.frame = self.app.frame
         self.frame.actions = ActionRegisterer(AuiManager(self.frame), MenuBar(self.frame), ToolBar(self.frame),
                                               ShortcutRegistry(self.frame))
@@ -131,7 +134,7 @@ class TestEditorCommands(unittest.TestCase):
         self.app.project = Project(self.app.namespace, self.app.settings)
         self.plugin = texteditor.TextEditorPlugin(self.app)
         self.plugin._editor_component = texteditor.SourceEditor(self.plugin, self.app.book, self.plugin.title,
-                                                                texteditor.DataValidationHandler(self.plugin))
+                                                                texteditor.DataValidationHandler(self.plugin, lang='en'))
         self.plugin.enable()
         self.app.project.load_datafile(datafilereader.TESTCASEFILE_WITH_EVERYTHING, MessageRecordingLoadObserver())
         self.notebook = self.app.book

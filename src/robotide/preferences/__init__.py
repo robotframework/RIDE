@@ -25,18 +25,18 @@ import wx
 
 
 class Languages:
-    names = [('Bulgarian', 'bg', wx.LANGUAGE_BULGARIAN), ('Bosnian', 'bs', wx.LANGUAGE_BOSNIAN),
-             ('Czech', 'cs', wx.LANGUAGE_CZECH), ('German', 'de', wx.LANGUAGE_GERMAN),
-             ('English', 'en', wx.LANGUAGE_ENGLISH), ('Spanish', 'es', wx.LANGUAGE_SPANISH),
-             ('Finnish', 'fi', wx.LANGUAGE_FINNISH), ('French', 'fr', wx.LANGUAGE_FRENCH),
-             ('Hindi', 'hi', wx.LANGUAGE_HINDI), ('Italian', 'it', wx.LANGUAGE_ITALIAN),
-             ('Dutch', 'nl', wx.LANGUAGE_DUTCH), ('Polish', 'pl', wx.LANGUAGE_POLISH),
-             ('Portuguese', 'pt', wx.LANGUAGE_PORTUGUESE),
+    names = [('Bulgarian', 'bg-BG', wx.LANGUAGE_BULGARIAN), ('Bosnian', 'bs-BA', wx.LANGUAGE_BOSNIAN),
+             ('Czech', 'cs-CZ', wx.LANGUAGE_CZECH), ('German', 'de-DE', wx.LANGUAGE_GERMAN),
+             ('English', 'en-GB', wx.LANGUAGE_ENGLISH), ('Spanish', 'es-ES', wx.LANGUAGE_SPANISH),
+             ('Finnish', 'fi-FI', wx.LANGUAGE_FINNISH), ('French', 'fr-FR', wx.LANGUAGE_FRENCH),
+             ('Hindi', 'hi-IN', wx.LANGUAGE_HINDI), ('Italian', 'it-IT', wx.LANGUAGE_ITALIAN),
+             ('Dutch', 'nl-NL', wx.LANGUAGE_DUTCH), ('Polish', 'pl-PL', wx.LANGUAGE_POLISH),
+             ('Portuguese', 'pt-PT', wx.LANGUAGE_PORTUGUESE),
              ('Brazilian Portuguese', 'pt-BR', wx.LANGUAGE_PORTUGUESE_BRAZILIAN),
-             ('Romanian', 'ro', wx.LANGUAGE_ROMANIAN), ('Russian', 'ru', wx.LANGUAGE_RUSSIAN),
-             ('Swedish', 'sv', wx.LANGUAGE_SWEDISH), ('Thai', 'th', wx.LANGUAGE_THAI),
-             ('Turkish', 'tr', wx.LANGUAGE_TURKISH), ('Ukrainian', 'uk', wx.LANGUAGE_UKRAINIAN),
-             ('Vietnamese', 'vi', wx.LANGUAGE_VIETNAMESE),
+             ('Romanian', 'ro-RO', wx.LANGUAGE_ROMANIAN), ('Russian', 'ru-RU', wx.LANGUAGE_RUSSIAN),
+             ('Swedish', 'sv-SE', wx.LANGUAGE_SWEDISH), ('Thai', 'th-TH', wx.LANGUAGE_THAI),
+             ('Turkish', 'tr-TR', wx.LANGUAGE_TURKISH), ('Ukrainian', 'uk-UA', wx.LANGUAGE_UKRAINIAN),
+             ('Vietnamese', 'vi-VN', wx.LANGUAGE_VIETNAMESE),
              ('Chinese Simplified', 'zh-CN', wx.LANGUAGE_CHINESE_SIMPLIFIED),
              ('Chinese Traditional', 'zh-TW', wx.LANGUAGE_CHINESE_TRADITIONAL)]
 
