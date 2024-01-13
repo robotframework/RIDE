@@ -32,7 +32,7 @@ from .review import ReviewDialog
 from .treeplugin import Tree
 from ..action import action_info_collection, action_factory, SeparatorInfo
 from ..action.shortcut import localize_shortcuts
-from ..context import ABOUT_RIDE, SHORTCUT_KEYS
+from ..context import get_about_ride, SHORTCUT_KEYS
 from ..controller.ctrlcommands import SaveFile, SaveAll
 from ..editor import customsourceeditor
 from ..preferences import PreferenceEditor
@@ -808,7 +808,8 @@ class AboutDialog(RIDEDialog):
         # set Left to Right direction (while we don't have localization)
         self.SetLayoutDirection(wx.Layout_LeftToRight)
         sizer = wx.BoxSizer(wx.VERTICAL)
-        sizer.Add(HtmlWindow(self, (650, 200), ABOUT_RIDE), 1, flag=wx.EXPAND)
+        content = get_about_ride()
+        sizer.Add(HtmlWindow(self, (650, 350), content), 1, flag=wx.EXPAND)
         self.SetSizerAndFit(sizer)
 
     def on_key(self, *args):

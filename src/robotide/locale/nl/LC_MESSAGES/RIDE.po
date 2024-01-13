@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2024-01-13 02:31+0000\n"
+"POT-Creation-Date: 2024-01-13 20:43+0000\n"
 "PO-Revision-Date: 2024-01-13 02:57+0000\n"
 "Last-Translator: Hélio Guilherme <helio_guilherme@hotmail.com>\n"
 "Language-Team: Dutch\n"
@@ -118,6 +118,46 @@ msgstr "herinner me later"
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:237
 msgid "Upgrade Now"
 msgstr "Nu bijwerken"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:58
+msgid "Started RIDE %s using python version %s with wx version %s in %s."
+msgstr ""
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:71
+msgid "Thanks all RIDE translators: %s"
+msgstr ""
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:73
+msgid "RIDE -- Robot Framework Test Data Editor"
+msgstr ""
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:75
+msgid "RIDE %s running on Python %s."
+msgstr ""
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:76
+msgid "RIDE is a test data editor for %s."
+msgstr ""
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:77
+msgid "For more information, see project pages at %s."
+msgstr ""
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:78
+msgid "Some of the icons are from %s."
+msgstr ""
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:79
+msgid ""
+"%s the maintainer of the project thanks the original authors and all users "
+"and collaborators."
+msgstr ""
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:80
+msgid ""
+"A special thanks to %s for having sponsored the development of translated "
+"test suites content compatibility with %s Version 6.1, in their %s."
+msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:424
 msgid "Log options"
@@ -558,8 +598,17 @@ msgid ""
 "and variable completions | | | POSITION-70\n"
 msgstr ""
 
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:88
+msgid ""
+"The default editor plugin. Also known as Grid or Cell Editor.\n"
+"\n"
+"    This plugin implements editors for the various items of Robot Framework\n"
+"    test data.\n"
+"    "
+msgstr ""
+
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editors.py:162
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editors.py:394
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editors.py:393
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:191
 msgid " (READ ONLY)"
 msgstr " (ALLEEN LEZEN)"
@@ -576,7 +625,7 @@ msgstr "Instellingen"
 msgid "Source"
 msgstr "Bron"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editors.py:381
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editors.py:380
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:207
 msgid "Find Usages"
 msgstr "Gebruik zoeken"
@@ -1540,19 +1589,19 @@ msgstr "voorbeeld"
 msgid "view ride log"
 msgstr "schijflogboek bekijken"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:822
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:823
 msgid "Shortcut keys for RIDE"
 msgstr "Sneltoetsen voor RIDE"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:860
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:861
 msgid "Show"
 msgstr "Weergeven"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:861
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:862
 msgid "Hide"
 msgstr "Verbergen"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:862
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:863
 msgid "Close"
 msgstr "Afsluiten"
 

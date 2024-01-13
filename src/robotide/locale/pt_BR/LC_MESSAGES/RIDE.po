@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2024-01-13 02:31+0000\n"
-"PO-Revision-Date: 2024-01-13 02:58+0000\n"
+"POT-Creation-Date: 2024-01-13 20:43+0000\n"
+"PO-Revision-Date: 2024-01-13 20:52+0000\n"
 "Last-Translator: Hélio Guilherme <helio_guilherme@hotmail.com>\n"
 "Language-Team: Portuguese, Brazilian\n"
 "Language: pt_BR\n"
@@ -17,8 +17,6 @@ msgstr ""
 "X-Crowdin-File: RIDE.pot\n"
 "X-Crowdin-File-ID: 2\n"
 "X-Generator: Poedit 3.4.2\n"
-"X-Poedit-Basepath: ../../pt_PT/LC_MESSAGES\n"
-"X-Poedit-SearchPath-0: RIDE.po\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/application.py:389
 msgid "Found Robot Framework version %s from %s."
@@ -121,9 +119,55 @@ msgstr "lembrar-me mais tarde"
 msgid "Upgrade Now"
 msgstr "Atualizar Agora"
 
+#: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:58
+msgid "Started RIDE %s using python version %s with wx version %s in %s."
+msgstr ""
+"Iniciado o RIDE %s usando Python versão %s com a versão %s do wx em %s."
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:71
+msgid "Thanks all RIDE translators: %s"
+msgstr "Obrigado a todos os tradutores do RIDE: %s"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:73
+msgid "RIDE -- Robot Framework Test Data Editor"
+msgstr "RIDE -- Editor de Dados de Testes para o Robot Framework"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:75
+msgid "RIDE %s running on Python %s."
+msgstr "RIDE %s a correr em Python %s."
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:76
+msgid "RIDE is a test data editor for %s."
+msgstr "RIDE é um editor de dados de testes para o %s."
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:77
+msgid "For more information, see project pages at %s."
+msgstr "Para mais informação, ver as páginas do projeto em %s."
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:78
+msgid "Some of the icons are from %s."
+msgstr "Alguns dos ícones são de %s."
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:79
+msgid ""
+"%s the maintainer of the project thanks the original authors and all users "
+"and collaborators."
+msgstr ""
+"%s o responsável pela manutenção do projeto, agradece aos autores originais "
+"e a todos os utilizadores e colaboradores."
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:80
+msgid ""
+"A special thanks to %s for having sponsored the development of translated "
+"test suites content compatibility with %s Version 6.1, in their %s."
+msgstr ""
+"Um agradecimento especial à %s por ter patrocinado o desenvolvimento da "
+"compatibilidade de suites de testes traduzidas na Versão 6.1 do %s, no "
+"escopo do seu programa, %s."
+
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:424
 msgid "Log options"
-msgstr "Opções de registo"
+msgstr "Opções de Registro"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:432
 msgid "Output directory: "
@@ -131,11 +175,11 @@ msgstr "Diretório de resultados: "
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:450
 msgid "Add suite name to log names"
-msgstr "Adicionar nome do suite aos nomes dos registos"
+msgstr "Adicionar nome do suite aos nomes dos registros"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:453
 msgid "Add timestamp to log names"
-msgstr "Adicionar data e hora aos nomes dos registos"
+msgstr "Adicionar data e hora aos nomes dos registros"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:456
 msgid "Save Console and Message logs"
@@ -564,8 +608,24 @@ msgstr ""
 "Assistência de Conteúdo (Ctrl-Space ou Ctrl-Alt-Space) | Mostra possíveis "
 "palavras-chave e completar variáveis | | | POSITION-70\n"
 
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:88
+msgid ""
+"The default editor plugin. Also known as Grid or Cell Editor.\n"
+"\n"
+"    This plugin implements editors for the various items of Robot Framework\n"
+"    test data.\n"
+"    "
+msgstr ""
+"O plugin Editor por omissão. Também conhecido por Editor em Grelha ou por "
+"Células.\n"
+"\n"
+"    Este plugin, implementa editores para os diferentes campos e elementos "
+"dos dados de testes\n"
+"    do Robot Framework.\n"
+"    "
+
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editors.py:162
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editors.py:394
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editors.py:393
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:191
 msgid " (READ ONLY)"
 msgstr " (APENAS LEITURA)"
@@ -582,7 +642,7 @@ msgstr "Configurações"
 msgid "Source"
 msgstr "Origem"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editors.py:381
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editors.py:380
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:207
 msgid "Find Usages"
 msgstr "Procurar Utilizações"
@@ -1565,19 +1625,19 @@ msgstr "pré-visualizar"
 msgid "view ride log"
 msgstr "ver registro do RIDE"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:822
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:823
 msgid "Shortcut keys for RIDE"
 msgstr "Teclas de atalho para RIDE"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:860
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:861
 msgid "Show"
 msgstr "Mostrar"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:861
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:862
 msgid "Hide"
 msgstr "Esconder"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:862
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:863
 msgid "Close"
 msgstr "Fechar"
 
@@ -1876,54 +1936,3 @@ msgstr "Importando Nome"
 #: /home2/helio/github/RIDE/tools/../src/robotide/validators/__init__.py:150
 msgid "%s cannot be empty"
 msgstr "%s não pode ser vazia"
-
-#~ msgid ""
-#~ "[Edit]\n"
-#~ "&Undo | Undo last modification | Ctrlcmd-Z\n"
-#~ "&Redo | Redo modification | Ctrlcmd-Y\n"
-#~ "---\n"
-#~ "Cu&t | Cut | Ctrlcmd-X\n"
-#~ "&Copy | Copy | Ctrlcmd-C\n"
-#~ "&Paste | Paste | Ctrlcmd-V\n"
-#~ "&Insert | Insert | Shift-Ctrl-V\n"
-#~ "&Delete | Delete  | Del\n"
-#~ "---\n"
-#~ "Comment Rows | Comment selected rows | Ctrlcmd-3\n"
-#~ "Comment Cells | Comment cells with # | Ctrlcmd-Shift-3\n"
-#~ "Uncomment Rows | Uncomment selected rows | Ctrlcmd-4\n"
-#~ "Uncomment Cells | Uncomment cells with # | Ctrlcmd-Shift-4\n"
-#~ "---\n"
-#~ "Insert Cells | Insert Cells | Ctrlcmd-Shift-I\n"
-#~ "Delete Cells | Delete Cells | Ctrlcmd-Shift-D\n"
-#~ "Insert Rows | Insert Rows | Ctrlcmd-I\n"
-#~ "Delete Rows | Delete Rows | Ctrlcmd-D\n"
-#~ "Move Rows Up | Move Rows Up | Alt-Up\n"
-#~ "Move Rows Down | Move Rows Down | Alt-Down\n"
-#~ "[Tools]\n"
-#~ "Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword "
-#~ "and variable completions | | | POSITION-70\n"
-#~ msgstr ""
-#~ "[Editar]\n"
-#~ "Anular | Anular a alteração anterior | Ctrlcmd-Z\n"
-#~ "Refazer | Repetir a alteração anterior | Ctrlcmd-Y\n"
-#~ "---\n"
-#~ "Cor&tar | Cortar | Ctrlcmd-X\n"
-#~ "&Copiar | Copiar | Ctrlcmd-C\n"
-#~ "Colar | Colar | Ctrlcmd-V\n"
-#~ "&Inserir | Inserir | Shift-Ctrl-V\n"
-#~ "Apagar | Apagar | Del\n"
-#~ "---\n"
-#~ "Comentar Linhas | Comentar as linhas selecionadas | Ctrlcmd-3\n"
-#~ "Comentar Células | Comentar células com # | Ctrlcmd-Shift-3\n"
-#~ "Descomentar Linhas | Descomentar as linhas selecionadas | Ctrlcmd-4\n"
-#~ "Descomentar  | Descomentar células com # | Ctrlcmd-Shift-4\n"
-#~ "---\n"
-#~ "Inserir Células | Inserir Células | Ctrlcmd-Shift-I\n"
-#~ "Apagar Células | Apagar Células | Ctrlcmd-Shift-D\n"
-#~ "Inserir Linhas | Inserir Linhas | Ctrlcmd-I\n"
-#~ "Apagar Linhas | Apagar Linhas | Ctrlcmd-D\n"
-#~ "Mover Linhas Acima | Mover Linhas Acima | Alt-Up\n"
-#~ "Mover Linhas Abaixo | Mover Linhas Abaixo | Alt-Down\n"
-#~ "[Ferramentas]\n"
-#~ "Completar Assistido (Ctrl-Space ou Ctrl-Alt-Space) | Mostra sugestões de "
-#~ "palavras-chave e variáveis | | | POSITION-70\n"
