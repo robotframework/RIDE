@@ -56,7 +56,7 @@ def get_menudata():
     # Menus to translate
     file_0 = _("[File]\n")
     file_1 = _("!&New Project | Create a new top level suite | Ctrlcmd-N | ART_NEW\n")
-    SEPARATOR = "---\n"
+    separator = "---\n"
     file_2 = _("!&Open Test Suite | Open file containing tests | Ctrlcmd-O | ART_FILE_OPEN\n")
     file_3 = _("!Open &Directory | Open directory containing datafiles | Shift-Ctrlcmd-O | ART_FOLDER_OPEN\n")
     file_4 = _("!Open External File | Open file in Code Editor | | ART_NORMAL_FILE\n")
@@ -73,13 +73,12 @@ def get_menudata():
     help_2 = _("!User Guide | Robot Framework User Guide\n")
     help_3 = _("!Wiki | RIDE User Guide (Wiki)\n")
     help_4 = _("!Report a Problem | Open browser to SEARCH on the RIDE issue tracker\n")
-    help_5 = _("!Release notes | Shows release notes\n")
     help_6 = _("!About | Information about RIDE\n")
     help_7 = _("!Check for Upgrade | Looks at PyPi for new released version\n")
     
-    return (file_0 + file_1 + SEPARATOR + file_2 + file_3 + file_4 + SEPARATOR + file_5 + file_6 + SEPARATOR +
+    return (file_0 + file_1 + separator + file_2 + file_3 + file_4 + separator + file_5 + file_6 + separator +
             file_7 + '\n' + tool_0 + tool_1 + tool_2 + tool_3 + tool_4 + '\n' + help_0 + help_1 + help_2 +
-            help_3 + help_4 + help_5 + help_6 + help_7)
+            help_3 + help_4 + help_6 + help_7)
 
 
 class RideFrame(wx.Frame):
@@ -107,7 +106,6 @@ class RideFrame(wx.Frame):
     !User Guide | Robot Framework User Guide
     !Wiki | RIDE User Guide (Wiki)
     !Report a Problem | Open browser to SEARCH on the RIDE issue tracker
-    !Release notes | Shows release notes
     !About | Information about RIDE
     !Check for Upgrade | Looks at PyPi for new released version
     """
@@ -229,7 +227,7 @@ class RideFrame(wx.Frame):
             pane.DestroyOnClose(True)
             self.aui_mgr.ClosePane(pane)
             del pane
-            # del self.toolbar
+            # DEBUG: del self.toolbar
 
         _menudata = get_menudata()
 
@@ -254,7 +252,7 @@ class RideFrame(wx.Frame):
 
         ##### End Test
         """
-        # self.leftpanel = wx.Panel(self, name="left_panel", size = (275, 250))
+        # DEBUG: self.leftpanel = wx.Panel(self, name="left_panel", size = (275, 250))
         if new_ui:  # Only when creating UI we add panes
             # Tree is always created here
             self.tree = Tree(self, self.actions, self._application.settings)
@@ -359,10 +357,6 @@ class RideFrame(wx.Frame):
     def on_maximize(self, event):
         self._application.settings[MAINFRAME_MAXIMIZED] = True
         event.Skip()
-
-    def on_release_notes(self, event):
-        """ Is treated in other method """
-        pass
 
     def _allowed_to_exit(self):
         if self.has_unsaved_changes():

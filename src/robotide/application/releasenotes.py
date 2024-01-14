@@ -14,6 +14,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import builtins
 import os
 import re
 import time
@@ -25,6 +26,9 @@ from os.path import abspath, join, dirname
 from ..action import ActionInfo
 from ..version import VERSION
 from ..widgets import HtmlDialog
+
+_ = wx.GetTranslation  # To keep linter/code analyser happy
+builtins.__dict__['_'] = wx.GetTranslation
 
 HTML_FOREGROUND = 'foreground text'
 
@@ -47,12 +51,12 @@ class ReleaseNotes(object):
         self.enable()
 
     def enable(self):
-        self.application.frame.actions.register_action(ActionInfo('Help', 'Release Notes',
+        self.application.frame.actions.register_action(ActionInfo(_('Help'), _('Release Notes'),
                                                                   self.show,
-                                                                  doc='Show the release notes'))
-        self.application.frame.actions.register_action(ActionInfo('Help', 'Offline Change Log',
+                                                                  doc=_('Show the release notes')))
+        self.application.frame.actions.register_action(ActionInfo(_('Help'), _('Offline Change Log'),
                                                                   self.show_changelog,
-                                                                  doc='Show the offline CHANGELOG'))
+                                                                  doc=_('Show the offline CHANGELOG')))
         self.show_if_updated()
 
     def show_if_updated(self):
@@ -64,14 +68,15 @@ class ReleaseNotes(object):
         __ = event
         if not self._view:
             self._view = self._create_view()
-            self.application.frame.notebook.AddPage(self._view, "Release Notes", select=False)
+            self.application.frame.notebook.AddPage(self._view, _("Release Notes"), select=False)
         self.application.frame.notebook.show_tab(self._view)
 
     def show_changelog(self, event=None):
         __ = event
         if not self._dialog:
-            self._dialog = HtmlDialog('Offline Change Log', f"Check the online version at https://github.com/"
-                                                            f"robotframework/RIDE/blob/{VERSION}/CHANGELOG.adoc")
+            self._dialog = HtmlDialog(_('Offline Change Log'),
+                                      _("Check the online version at ") +
+                                      f"https://github.com/robotframework/RIDE/blob/{VERSION}/CHANGELOG.adoc")
         self._dialog.SetSize(800, 800)
         # DEBUG: If we LoadFile, we cannot change the foreground color
         # self._dialog.html_wnd.LoadFile(join(dirname(abspath(__file__)), "CHANGELOG.html"))

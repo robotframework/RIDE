@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2024-01-13 20:43+0000\n"
+"POT-Creation-Date: 2024-01-14 15:27+0000\n"
 "PO-Revision-Date: 2024-01-13 02:57+0000\n"
 "Last-Translator: Hélio Guilherme <helio_guilherme@hotmail.com>\n"
 "Language-Team: Dutch\n"
@@ -21,6 +21,37 @@ msgstr ""
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/application.py:389
 msgid "Found Robot Framework version %s from %s."
 msgstr "Robot Framework versie %s gevonden in %s."
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:54
+#: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:57
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/actiontriggers.py:54
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/actiontriggers.py:65
+msgid "Help"
+msgstr "Hulp"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:54
+#: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:71
+msgid "Release Notes"
+msgstr ""
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:56
+#, fuzzy
+msgid "Show the release notes"
+msgstr "!Release notities | Laat release-aantekeningen zien\n"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:57
+#: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:77
+msgid "Offline Change Log"
+msgstr ""
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:59
+msgid "Show the offline CHANGELOG"
+msgstr ""
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:78
+#, fuzzy
+msgid "Check the online version at "
+msgstr "Bekijk deze versie "
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:110
 msgid "New development version is available."
@@ -244,8 +275,8 @@ msgstr "Testen uitvoeren"
 #: /home2/helio/github/RIDE/tools/../src/robotide/spec/specimporter.py:36
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/actiontriggers.py:54
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:53
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:767
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:779
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:768
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:780
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/preview.py:41
 msgid "Tools"
 msgstr "Hulpmiddelen"
@@ -609,7 +640,7 @@ msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editors.py:162
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editors.py:393
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:191
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:192
 msgid " (READ ONLY)"
 msgstr " (ALLEEN LEZEN)"
 
@@ -1248,11 +1279,6 @@ msgstr "Kan bibliotheek niet importeren uit bestand \"%s\""
 msgid "Import failed"
 msgstr "Importeren mislukt"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/actiontriggers.py:54
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/actiontriggers.py:65
-msgid "Help"
-msgstr "Hulp"
-
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:93
 msgid "Type"
 msgstr "Type"
@@ -1482,10 +1508,6 @@ msgid "!Report a Problem | Open browser to SEARCH on the RIDE issue tracker\n"
 msgstr ""
 "!Meld een Probleem | Open browser naar SEARCH op de RIDE issuetracker\n"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:76
-msgid "!Release notes | Shows release notes\n"
-msgstr "!Release notities | Laat release-aantekeningen zien\n"
-
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:77
 msgid "!About | Information about RIDE\n"
 msgstr "!Over | Informatie over RIDE\n"
@@ -1495,32 +1517,32 @@ msgid "!Check for Upgrade | Looks at PyPi for new released version\n"
 msgstr ""
 "!Controleer op Upgrade | Uiterlijk op PyPi voor nieuwe uitgebrachte versie\n"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:172
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:173
 msgid "Saved %s"
 msgstr "Opgeslagen %s"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:173
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:174
 msgid "Saved all files"
 msgstr "Alle bestanden opgeslagen"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:196
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:197
 msgid "Validation Error"
 msgstr "Validatie Fout"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:200
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:201
 msgid "\"%s\" is read only"
 msgstr "\"%s\" wordt alleen gelezen"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:201
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:202
 msgid "Modification prevented"
 msgstr "Wijziging voorkomen"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:266
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:267
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treeplugin.py:106
 msgid "Test Suites"
 msgstr "Pakketten testen"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:369
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:370
 msgid ""
 "There are unsaved modifications.\n"
 "Do you want to save your changes before exiting?"
@@ -1528,12 +1550,12 @@ msgstr ""
 "Er zijn niet-opgeslagen wijzigingen.\n"
 "Wilt u de wijzigingen opslaan voordat u afsluit?"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:371
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:459
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:372
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:460
 msgid "Warning"
 msgstr "Waarschuwing"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:458
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:459
 msgid ""
 "There are unsaved modifications.\n"
 "Do you want to proceed without saving?"
@@ -1541,67 +1563,67 @@ msgstr ""
 "Er zijn niet-opgeslagen wijzigingen.\n"
 "Wilt u doorgaan zonder op te slaan?"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:493
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:494
 msgid "Choose a directory containing Robot files"
 msgstr "Kies een map met Robot bestanden"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:558
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:559
 msgid "RIDE - Preferences"
 msgstr "RIDE - Voorkeuren"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:645
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:646
 msgid "Workspace modifications detected on the file system."
 msgstr "Werkruimte wijzigingen gedetecteerd op het bestandssysteem."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:646
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:647
 msgid "Do you want to reload the workspace?"
 msgstr "Wilt u de werkruimte herladen?"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:648
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:649
 msgid "Answering <Yes> will discard unsaved changes."
 msgstr "Het antwoord <Yes> zal niet-opgeslagen wijzigingen weggooien."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:649
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:650
 msgid "Answering <No> will ignore the changes on disk."
 msgstr "Het antwoord <No> negeert de wijzigingen op de schijf."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:650
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:651
 msgid "Files Changed On Disk"
 msgstr "Gewijzigde bestanden op schijf"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:692
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:693
 msgid "Customize..."
 msgstr "Aanpassen..."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:780
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:781
 msgid "search unused keywords"
 msgstr "zoek ongebruikte trefwoorden"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:780
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:781
 msgid "stop test run"
 msgstr "stop uitvoeren test"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:781
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:782
 msgid "preview"
 msgstr "voorbeeld"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:781
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:782
 msgid "view ride log"
 msgstr "schijflogboek bekijken"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:823
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:824
 msgid "Shortcut keys for RIDE"
 msgstr "Sneltoetsen voor RIDE"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:861
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:862
 msgid "Show"
 msgstr "Weergeven"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:862
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:863
 msgid "Hide"
 msgstr "Verbergen"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:863
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:864
 msgid "Close"
 msgstr "Afsluiten"
 
@@ -1899,58 +1921,3 @@ msgstr "Geïmporteerde naam"
 #: /home2/helio/github/RIDE/tools/../src/robotide/validators/__init__.py:150
 msgid "%s cannot be empty"
 msgstr "%s mag niet leeg zijn"
-
-#~ msgid ""
-#~ "[Edit]\n"
-#~ "&Undo | Undo last modification | Ctrlcmd-Z\n"
-#~ "&Redo | Redo modification | Ctrlcmd-Y\n"
-#~ "---\n"
-#~ "Cu&t | Cut | Ctrlcmd-X\n"
-#~ "&Copy | Copy | Ctrlcmd-C\n"
-#~ "&Paste | Paste | Ctrlcmd-V\n"
-#~ "&Insert | Insert | Shift-Ctrl-V\n"
-#~ "&Delete | Delete  | Del\n"
-#~ "---\n"
-#~ "Comment Rows | Comment selected rows | Ctrlcmd-3\n"
-#~ "Comment Cells | Comment cells with # | Ctrlcmd-Shift-3\n"
-#~ "Uncomment Rows | Uncomment selected rows | Ctrlcmd-4\n"
-#~ "Uncomment Cells | Uncomment cells with # | Ctrlcmd-Shift-4\n"
-#~ "---\n"
-#~ "Insert Cells | Insert Cells | Ctrlcmd-Shift-I\n"
-#~ "Delete Cells | Delete Cells | Ctrlcmd-Shift-D\n"
-#~ "Insert Rows | Insert Rows | Ctrlcmd-I\n"
-#~ "Delete Rows | Delete Rows | Ctrlcmd-D\n"
-#~ "Move Rows Up | Move Rows Up | Alt-Up\n"
-#~ "Move Rows Down | Move Rows Down | Alt-Down\n"
-#~ "[Tools]\n"
-#~ "Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword "
-#~ "and variable completions | | | POSITION-70\n"
-#~ msgstr ""
-#~ "[Bewerken]\n"
-#~ "On&gedaan maken | Laatste wijziging ongedaan maken | Ctrlcmd-Z\n"
-#~ "Op&nieuw doen | Laatste wijziging herhalen | Ctrlcmd-Y\n"
-#~ "---\n"
-#~ "&Knippen | Verplaatsen naar klembord | Ctrlcmd-X\n"
-#~ "K&opiëren | Kopiëren naar klembord | Ctrlcmd-C\n"
-#~ "&Plakken | Plakken van klembord | Ctrlcmd-V\n"
-#~ "&Invoegen | Invoegen | Shift-Ctrl-V\n"
-#~ "&Verwijder | Verwijderen | Del\n"
-#~ "---\n"
-#~ "Rijen commenteren | Geselecteerde rijen als commentaar markeren | "
-#~ "Ctrlcmd-3\n"
-#~ "Cellen commenteren | Cell met # als commentaar markeren | Ctrlcmd-"
-#~ "Shift-3\n"
-#~ "Rijen oncommenteren | Commentaarmarkering verwijderen van geselecteerde "
-#~ "rijen | Ctrlcmd-4\n"
-#~ "Cellen oncommenteren | Commentaarmarkering verwijderen van cell met # | "
-#~ "Ctrlcmd-Shift-4\n"
-#~ "---\n"
-#~ "Cellen invoegen | Cellen invoegen | Ctrlcmd-Shift-I\n"
-#~ "Cellen verwijderen | Cellen verwijderen | Ctrlcmd-Shift-D\n"
-#~ "Rijen invoegen | Rijen invoegen | Ctrlcmd-I\n"
-#~ "Rijen verwijderen | Rijen verwijderen | Ctrlcmd-D\n"
-#~ "Rijen omhoog schuiven | Rijen omhoog verplaatsen | Alt-Up\n"
-#~ "Rijen omlaag schuiven | Rijen omlaag verplaatsen | Alt-Down\n"
-#~ "[Hulpmiddelen]\n"
-#~ "Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword "
-#~ "and variable completions | | | POSITION-70\n"
