@@ -470,6 +470,11 @@ class SourceEditor(wx.Panel):
         PUBLISHER.subscribe(self.on_settings_changed, RideSettingsChanged)
         PUBLISHER.subscribe(self.on_tab_change, RideNotebookTabChanging)
 
+    @property
+    def general_font_size(self):
+        fsize = self.source_editor_parent.app.settings.get('General', None)['font size']
+        return fsize
+
     def is_focused(self):
         # DEBUG: original method: foc = wx.Window.FindFocus()
         # DEBUG: any(elem == foc for elem in [self]+list(self.GetChildren()))
@@ -497,7 +502,7 @@ class SourceEditor(wx.Panel):
         # text about syntax colorization
         self.editor_toolbar = HorizontalSizer()
         default_components = HorizontalSizer()
-        button = ButtonWithHandler(self, _('Apply Changes'),
+        button = ButtonWithHandler(self, _('Apply Changes'), fsize=self.general_font_size,
                                    handler=lambda e: self.plugin._apply_txt_changes_to_model())
         button.SetBackgroundColour(Colour(self.dlg.color_secondary_background))
         button.SetForegroundColour(Colour(self.dlg.color_secondary_foreground))
@@ -507,13 +512,14 @@ class SourceEditor(wx.Panel):
         self.Sizer.add_expanding(self.editor_toolbar, propotion=0)
 
     def _create_search(self, container_sizer):
-        container_sizer.AddSpacer(20)
-        self.search_field = TextField(self, '', process_enters=True)
+        container_sizer.AddSpacer(5)
+        size = wx.Size(160, 32)
+        self.search_field = TextField(self, '', size=size, process_enters=True)
         self.search_field.SetBackgroundColour(Colour(self.dlg.color_secondary_background))
         self.search_field.SetForegroundColour(Colour(self.dlg.color_secondary_foreground))
         self.search_field.Bind(wx.EVT_TEXT_ENTER, self.on_find)
         container_sizer.add_with_padding(self.search_field)
-        button = ButtonWithHandler(self, _('Search'), handler=self.on_find)
+        button = ButtonWithHandler(self, _('Search'), fsize=self.general_font_size, handler=self.on_find)
         button.SetBackgroundColour(Colour(self.dlg.color_secondary_background))
         button.SetForegroundColour(Colour(self.dlg.color_secondary_foreground))
         container_sizer.add_with_padding(button)
