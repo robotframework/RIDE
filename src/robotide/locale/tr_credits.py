@@ -17,17 +17,18 @@ from os.path import abspath, join, dirname
 import re
 
 
-def tr_credits():
+def tr_credits(filename="TRANSLATORS.adoc"):
     """ Returns the list of translators taken from TRANSLATORS.adoc to be used in About dialog."""
 
+    # Added parameter filename because of unit tests
     isref = re.compile("(http.*)(\\[.*])(:)(.*)")
-    with open(join(dirname(abspath(__file__)), "TRANSLATORS.adoc"), 'r', encoding='utf-8') as trf:
+    with open(join(dirname(abspath(__file__)), filename), 'r', encoding='utf-8') as trf:
         content = trf.readlines()
     lines = []
-    lines += ["<ul>"]
+    lines += ["<ul>\n"]
     for tr in content:
         if tr.startswith('-'):
-            row = tr.replace('-', '').strip()
+            row = tr.strip('- ')
             href = isref.findall(row)
             if href:
                 href = href[0]
@@ -35,7 +36,7 @@ def tr_credits():
                 name = href[1].strip('[]')
                 langs = href[-1].strip()
                 row = f'<a href="{url}">{name}</a>: {langs}'
-            lines += [f"<li>{row}</li>"]
+            lines += [f"<li>{row.strip()}</li>\n"]
     lines += ["</ul>"]
 
     return "".join(lines)

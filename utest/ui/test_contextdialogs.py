@@ -17,14 +17,15 @@ import os
 import pytest
 
 DISPLAY = os.getenv('DISPLAY')
-if not DISPLAY:
-    pytest.skip("Skipped because of missing DISPLAY", allow_module_level=True) # Avoid failing unit tests in system without X11
+if not DISPLAY:  # Avoid failing unit tests in system without X11
+    pytest.skip("Skipped because of missing DISPLAY", allow_module_level=True)
 import wx
 from wx.lib.agw.aui import AuiManager
 
 from robotide.robotapi import (TestDataDirectory, TestCaseFile, ResourceFile,
                                TestCase, UserKeyword)
 from robotide.spec.librarymanager import LibraryManager
+from robotide.locale.tr_credits import tr_credits
 from robotide.ui.mainframe import ActionRegisterer, ToolBar, AboutDialog
 from robotide.ui.actiontriggers import MenuBar, ShortcutRegistry
 from robotide.application import Project
@@ -117,7 +118,8 @@ class _BaseDialogTest(unittest.TestCase):
             suite, '%s Fake Test %d' % (suite.name, i)) for i in range(16)]
         return suite
 
-    def _create_suite(self, suite_class, source, is_dir=False):
+    @staticmethod
+    def _create_suite(suite_class, source, is_dir=False):
         suite = suite_class()
         suite.source = source
         if is_dir:
@@ -132,6 +134,32 @@ class TestAboutDialog(_BaseDialogTest):
 
     def test_show_about_dialog(self):
         self.about_dialog.show_dialog()
+
+
+class TestTRCredits(unittest.TestCase):
+
+    def test_tr_credits(self):
+        content = ("==This content is ignored\n\n- Valid non-URL: English, Finnish\n"
+                   "- https://robotframework.org[Robot Framework]: English\n"
+                   "*** More Ignored Content ***\n"
+                   "- <script>alert('This is invalid!');</script>\n"
+                   "- https://robotframework.org/foundation[Robot Framework Foundation]: English\n")
+        expected = ('<ul>\n<li>Valid non-URL: English, Finnish</li>\n<li><a href="https://robotframework.org">'
+                    'Robot Framework</a>: English</li>\n<li><script>alert(\'This is invalid!\');</script></li>\n'
+                    '<li><a href="https://robotframework.org/foundation">Robot Framework Foundation</a>'
+                    ': English</li>\n</ul>')
+
+        refd = os.path.dirname(st.__file__)  # We use this one as reference because our locale is not a module
+        dirname = os.path.dirname(os.path.abspath(os.path.join(refd, '..', 'locale', 'tr_credits.py')))
+        filename = ".test_data"
+        fullname = os.path.join(dirname, filename)
+        with open(fullname, 'w') as fc:
+            fc.write(content)
+
+        result = tr_credits(filename=filename)
+        os.remove(fullname)
+        # print(result)
+        assert result == expected
 
 
 if __name__ == '__main__':
