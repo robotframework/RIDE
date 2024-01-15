@@ -750,8 +750,10 @@ class SourceEditor(wx.Panel):
         except IndexError:  # It is a new project, no content yet
             self._controller_for_context = DummyController(self._data.wrapper_data, self._data.wrapper_data)
             self._suggestions = SuggestionSource(None, self._controller_for_context)
-        if self.plugin.datafile:
+        if hasattr(self.plugin, 'datafile') and self.plugin.datafile:
             self.datafile = self.plugin.datafile
+        else:
+            print(f"DEBUG: Text Editor open NOT DATAFILE path={self.datafile_controller.source}")
         if not self.source_editor:
             self._stored_text = self._data.content
             self._create_editor_text_control(text=self._stored_text, language=self.language)
