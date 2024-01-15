@@ -1,0 +1,6 @@
+= Translators
+ifdef::env-github[:outfilesuffix: .adoc]
+
+- https://github.com/HelioGuilherme66[Hélio Guilherme]: Portuguese, Brazilian Portuguese
+- https://github.com/JFoederer[J. Foederer]: Dutch
+- Unknown: Pirates

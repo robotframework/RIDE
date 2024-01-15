@@ -87,9 +87,9 @@ class SettingEditor(wx.Panel):
     def _create_controls(self):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         sizer.Add((5, 0))
-        label = Label(
-            self, label=self._controller.label,
-            size=(context.SETTING_LABEL_WIDTH, context.SETTING_ROW_HEIGHT))  # Always show the English label as tooltip
+        width = max(len(self._controller.label), context.SETTING_LABEL_WIDTH)
+        label = Label(self, label=self._controller.label,
+                      size=(width, context.SETTING_ROW_HEIGHT))  # Always show the English label as tooltip
         label.SetToolTip(get_english_label(self._language, self._controller.label))
         sizer.Add(label)
         self._value_display = self._create_value_display()
@@ -97,7 +97,7 @@ class SettingEditor(wx.Panel):
         self._tooltip = self._get_tooltip()
         sizer.Add(self._value_display, 1, wx.EXPAND)
         self._add_edit(sizer)
-        sizer.Add(ButtonWithHandler(self, _('Clear'), mk_handler='Clear', handler=self.on_clear,
+        sizer.Add(ButtonWithHandler(self, _('Clear'), mk_handler='Clear', handler=self.on_clear, fsize=self.font_size,
                                     color_secondary_foreground=self.color_secondary_foreground,
                                     color_secondary_background=self.color_secondary_background))
         sizer.Layout()
@@ -105,7 +105,7 @@ class SettingEditor(wx.Panel):
 
     def _add_edit(self, sizer):
         sizer.Add(
-            ButtonWithHandler(self, _('Edit'), mk_handler='Edit', handler=self.on_edit,
+            ButtonWithHandler(self, _('Edit'), mk_handler='Edit', handler=self.on_edit, fsize=self.font_size,
                               color_secondary_foreground=self.color_secondary_foreground,
                               color_secondary_background=self.color_secondary_background),
             flag=wx.LEFT | wx.RIGHT, border=5)
@@ -476,11 +476,11 @@ class _AbstractListEditor(ListEditor):
 
 
 class VariablesListEditor(_AbstractListEditor):
-    _titles = [_('Variable'), _('Value'), _('Comment')]
-    _buttons = [_('Add Scalar'), _('Add List'), _('Add Dict')]
     _buttons_nt = ['Add Scalar', 'Add List', 'Add Dict']
 
     def __init__(self, parent, tree, controller):
+        self._titles = [_('Variable'), _('Value'), _('Comment')]
+        self._buttons = [_('Add Scalar'), _('Add List'), _('Add Dict')]
         PUBLISHER.subscribe(
             self._update_vars, RideVariableAdded)
         PUBLISHER.subscribe(
@@ -564,11 +564,11 @@ class VariablesListEditor(_AbstractListEditor):
 
 
 class ImportSettingListEditor(_AbstractListEditor):
-    _titles = [_('Import'), _('Name / Path'), _('Arguments'), _('Comment')]
-    _buttons = [_('Library'), _('Resource'), _('Variables'), _('Import Failed Help')]
     _buttons_nt = ['Library', 'Resource', 'Variables', 'Import Failed Help']
 
     def __init__(self, parent, tree, controller, lang=None):
+        self._titles = [_('Import'), _('Name / Path'), _('Arguments'), _('Comment')]
+        self._buttons = [_('Library'), _('Resource'), _('Variables'), _('Import Failed Help')]
         self._import_failed_shown = False
         try:
             self._language = controller.parent.datafile._language
@@ -582,11 +582,18 @@ class ImportSettingListEditor(_AbstractListEditor):
 
     def _create_buttons(self):
         sizer = wx.BoxSizer(wx.VERTICAL)
+        label = _('Add Import')
+        lsize = len(label) * self.font_size + 4
         sizer.Add(Label(
-            self, label=_('Add Import'), size=wx.Size(120, 20),
+            self, label=label, size=wx.Size(lsize, 20),
             style=wx.ALIGN_CENTER))
+        # Get max button size
+        bsize = 0
+        for x in self._buttons:
+            bsize = max(bsize, len(x))
+        bsize = bsize * self.font_size + 4
         for label, label_nt in zip(self._buttons, self._buttons_nt):
-            sizer.Add(ButtonWithHandler(self, label, mk_handler=label_nt, width=120,
+            sizer.Add(ButtonWithHandler(self, label, mk_handler=label_nt, width=bsize,
                                         color_secondary_foreground=self.color_secondary_foreground,
                                         color_secondary_background=self.color_secondary_background), 0, wx.ALL, 1)
         return sizer
@@ -651,7 +658,7 @@ class ImportSettingListEditor(_AbstractListEditor):
             VariablesDialog,
             lambda v, c:
                 self._controller.execute(ctrlcommands.AddVariablesFileImport(v, c)),
-            title=_('Variables'))  # DEBUG
+            title=_('Variables'))
 
     def on_import_failed_help(self, event):
         __ = event
@@ -704,10 +711,14 @@ class ImportSettingListEditor(_AbstractListEditor):
 
 
 class MetadataListEditor(_AbstractListEditor):
-    _titles = [_('Metadata'), _('Value'), _('Comment')]
-    _buttons = [_('Add Metadata')]
+
     _buttons_nt = ['Add Metadata']
     _sortable = False
+
+    def __init__(self, parent, tree, controller):
+        self._titles = [_('Metadata'), _('Value'), _('Comment')]
+        self._buttons = [_('Add Metadata')]
+        _AbstractListEditor.__init__(self, parent, tree, controller)
 
     def on_edit(self, event):
         meta = self._controller[self._selection]

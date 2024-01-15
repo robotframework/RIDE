@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2024-01-13 02:31+0000\n"
-"PO-Revision-Date: 2024-01-13 02:57+0000\n"
+"POT-Creation-Date: 2024-01-15 02:48+0000\n"
+"PO-Revision-Date: 2024-01-14 15:09+0000\n"
 "Last-Translator: Hélio Guilherme <helio_guilherme@hotmail.com>\n"
 "Language-Team: Portuguese\n"
 "Language: pt_PT\n"
@@ -20,7 +20,36 @@ msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/application.py:389
 msgid "Found Robot Framework version %s from %s."
-msgstr "Encontrou-se Robot Framework versão %s em %s."
+msgstr "Encontrou-se o Robot Framework versão %s em %s."
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:54
+#: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:57
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/actiontriggers.py:54
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/actiontriggers.py:65
+msgid "Help"
+msgstr "Ajuda"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:54
+#: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:71
+msgid "Release Notes"
+msgstr "Notas da Produção"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:56
+msgid "Show the release notes"
+msgstr "Mostra as notas de produção desta versão (em Inglês)"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:57
+#: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:77
+msgid "Offline Change Log"
+msgstr "Registo de Alterações (offline)"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:59
+msgid "Show the offline CHANGELOG"
+msgstr "Mostra uma cópia do registo de alterações CHANGELOG (em Inglês)"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:78
+msgid "Check the online version at "
+msgstr "Ver a versão original em "
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:110
 msgid "New development version is available."
@@ -119,6 +148,52 @@ msgstr "lembrar-me mais tarde"
 msgid "Upgrade Now"
 msgstr "Atualizar Agora"
 
+#: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:58
+msgid "Started RIDE %s using python version %s with wx version %s in %s."
+msgstr ""
+"Iniciado o RIDE %s usando Python versão %s com a versão %s do wx em %s."
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:71
+msgid "Thanks all RIDE translators: %s"
+msgstr "Obrigado a todos os tradutores do RIDE: %s"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:73
+msgid "RIDE -- Robot Framework Test Data Editor"
+msgstr "RIDE -- Editor de Dados de Testes para o Robot Framework"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:75
+msgid "RIDE %s running on Python %s."
+msgstr "RIDE %s a correr em Python %s."
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:76
+msgid "RIDE is a test data editor for %s."
+msgstr "RIDE é um editor de dados de testes para o %s."
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:77
+msgid "For more information, see project pages at %s."
+msgstr "Para mais informação, ver as páginas do projeto em %s."
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:78
+msgid "Some of the icons are from %s."
+msgstr "Alguns dos ícones são de %s."
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:79
+msgid ""
+"%s the maintainer of the project thanks the original authors and all users "
+"and collaborators."
+msgstr ""
+"%s o responsável pela manutenção do projeto, agradece aos autores originais "
+"e a todos os utilizadores e colaboradores."
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:80
+msgid ""
+"A special thanks to %s for having sponsored the development of translated "
+"test suites content compatibility with %s Version 6.1, in their %s."
+msgstr ""
+"Um agradecimento especial à %s por ter patrocinado o desenvolvimento da "
+"compatibilidade de suites de testes traduzidas na Versão 6.1 do %s, no "
+"âmbito do seu programa, %s."
+
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:424
 msgid "Log options"
 msgstr "Opções de Registo"
@@ -144,7 +219,7 @@ msgid "Select Logs Directory"
 msgstr "Selecionar a Diretoria de Registos"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:496
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:567
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:570
 msgid "Arguments"
 msgstr "Argumentos"
 
@@ -205,8 +280,8 @@ msgstr "Executar testes"
 #: /home2/helio/github/RIDE/tools/../src/robotide/spec/specimporter.py:36
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/actiontriggers.py:54
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:53
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:767
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:779
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:761
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:773
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/preview.py:41
 msgid "Tools"
 msgstr "Ferramentas"
@@ -460,7 +535,7 @@ msgstr "Adicionar Etiqueta aos Selecionados"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/controller/ui/treecontroller.py:55
 #: /home2/helio/github/RIDE/tools/../src/robotide/controller/ui/treecontroller.py:57
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/listeditor.py:32
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/listeditor.py:37
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:108
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/actiontriggers.py:54
 msgid "Edit"
@@ -566,9 +641,25 @@ msgstr ""
 "Assistência de Conteúdo (Ctrl-Space ou Ctrl-Alt-Space) | Mostra possíveis "
 "palavras-chave e variáveis para completar | | | POSITION-70\n"
 
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:88
+msgid ""
+"The default editor plugin. Also known as Grid or Cell Editor.\n"
+"\n"
+"    This plugin implements editors for the various items of Robot Framework\n"
+"    test data.\n"
+"    "
+msgstr ""
+"O plugin Editor por omissão. Também conhecido por Editor em Grelha ou por "
+"Células.\n"
+"\n"
+"    Este plugin, implementa editores para os diferentes campos e elementos "
+"dos dados de testes\n"
+"    do Robot Framework.\n"
+"    "
+
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editors.py:162
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editors.py:394
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:191
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editors.py:393
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:189
 msgid " (READ ONLY)"
 msgstr " (APENAS LEITURA)"
 
@@ -584,7 +675,7 @@ msgstr "Definições"
 msgid "Source"
 msgstr "Origem"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editors.py:381
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editors.py:380
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:207
 msgid "Find Usages"
 msgstr "Procurar Utilizações"
@@ -755,7 +846,7 @@ msgid "Variable "
 msgstr "Variável "
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1180
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:516
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:522
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:49
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:127
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:184
@@ -764,15 +855,15 @@ msgstr "Variável "
 msgid "Search"
 msgstr "Procurar"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/listeditor.py:32
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/listeditor.py:37
 msgid "Move Down\tCtrl-Down"
 msgstr "Mover Abaixo\tCtrl-Down"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/listeditor.py:32
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/listeditor.py:37
 msgid "Move Up\tCtrl-Up"
 msgstr "Mover Acima\tCtrl-Up"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/listeditor.py:32
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/listeditor.py:37
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/tagdialogs.py:233
 msgid "Delete"
 msgstr "Apagar"
@@ -782,69 +873,69 @@ msgstr "Apagar"
 msgid "Clear"
 msgstr "Limpar"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:479
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:482
 msgid "Variable"
 msgstr "Variável"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:479
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:567
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:707
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:482
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:570
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:719
 msgid "Comment"
 msgstr "Comentário"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:479
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:707
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:482
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:719
 msgid "Value"
 msgstr "Valor"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:480
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:483
 msgid "Add Dict"
 msgstr "Adicionar Dicionário"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:480
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:483
 msgid "Add List"
 msgstr "Adicionar Lista"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:480
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:483
 msgid "Add Scalar"
 msgstr "Adicionar Escalar"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:567
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:570
 msgid "Import"
 msgstr "Importação"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:567
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:570
 msgid "Name / Path"
 msgstr "Nome / Caminho"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:568
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:571
 msgid "Import Failed Help"
 msgstr "Ajuda na Falha de Importação"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:568
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:571
 msgid "Library"
 msgstr "Biblioteca"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:568
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:571
 msgid "Resource"
 msgstr "Recurso"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:568
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:654
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:571
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:661
 msgid "Variables"
 msgstr "Variáveis"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:586
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:585
 msgid "Add Import"
 msgstr "Adicionar Importação"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:620
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:627
 #: /home2/helio/github/RIDE/tools/../src/robotide/spec/specimporter.py:33
 #: /home2/helio/github/RIDE/tools/../src/robotide/spec/specimporter.py:62
 msgid "Import Library Spec XML"
 msgstr "Importar Especificação de Biblioteca XML"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:660
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:667
 msgid ""
 "<br>Possible corrections and notes:<br>\n"
 "        <ul>\n"
@@ -889,15 +980,15 @@ msgstr ""
 "            </li>\n"
 "        </ul>"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:660
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:667
 msgid "Import failure handling"
 msgstr "Gestão de falha de importação"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:707
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:719
 msgid "Metadata"
 msgstr "Metadados"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:708
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:720
 msgid "Add Metadata"
 msgstr "Adicionar Metadados"
 
@@ -917,19 +1008,19 @@ msgstr "Repor Alterações?"
 msgid "Can not apply changes from Text Editor"
 msgstr "Não se conseguiu aplicar alterações do Editor de Texto"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:500
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:505
 msgid "Apply Changes"
 msgstr "Aplicar Alterações"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:526
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:532
 msgid "Syntax colorization disabled due to missing requirements."
 msgstr "A colorização de sintaxe está desativada por falha nos requisitos."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:527
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:533
 msgid "Get help"
 msgstr "Obter ajuda"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:542
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:548
 msgid ""
 "<h1>Syntax colorization</h1>\n"
 "        <p>\n"
@@ -989,11 +1080,11 @@ msgstr ""
 "        </p>\n"
 "        "
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:567
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:573
 msgid "Getting syntax colorization"
 msgstr "Obtendo colorização de sintaxe"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:665
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:671
 msgid "No matches found."
 msgstr "Sem correspondências."
 
@@ -1077,11 +1168,12 @@ msgstr ""
 "bat' e o comando 'dir'\n"
 "não funciona.\n"
 "\n"
-"Examples:\n"
-"    robot.bat --include smoke C:\\my_tests\n"
+"Exemplos:\n"
+"    robot.bat --include iniciais C:\\meus_testes\n"
 "    svn update /home/robot\n"
 "    C:\\Program<SPACE>Files\\App\\prg.exe argument<SPACE>with<SPACE>space,\n"
-"Run configurations are stored in the RIDE settings file.\n"
+"As configurações de execução são armazenadas no ficheiro de configurações do "
+"RIDE.\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/configmanagerui.py:45
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/runanything.py:54
@@ -1219,11 +1311,6 @@ msgstr "Não se conseguiu importar biblioteca do ficheiro \"%s\""
 #: /home2/helio/github/RIDE/tools/../src/robotide/spec/specimporter.py:80
 msgid "Import failed"
 msgstr "Falhou a importação"
-
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/actiontriggers.py:54
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/actiontriggers.py:65
-msgid "Help"
-msgstr "Ajuda"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:93
 msgid "Type"
@@ -1458,45 +1545,41 @@ msgstr ""
 "reporte de defeitos\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:76
-msgid "!Release notes | Shows release notes\n"
-msgstr "!Notas da Produção | Mostra as notas de produção desta versão\n"
-
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:77
 msgid "!About | Information about RIDE\n"
 msgstr "!Acerca de | Informação acerca do RIDE\n"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:78
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:77
 msgid "!Check for Upgrade | Looks at PyPi for new released version\n"
 msgstr ""
 "!Verificar Se Há Atualização | Procura em PyPi por uma nova versão "
 "produzida\n"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:172
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:170
 msgid "Saved %s"
 msgstr "Salvado %s"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:173
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:171
 msgid "Saved all files"
 msgstr "Salvou-se todos os ficheiros"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:196
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:194
 msgid "Validation Error"
 msgstr "Erro de Validação"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:200
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:198
 msgid "\"%s\" is read only"
 msgstr "\"%s\" é apenas de leitura"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:201
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:199
 msgid "Modification prevented"
 msgstr "Modificação não permitida"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:266
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:264
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treeplugin.py:106
 msgid "Test Suites"
 msgstr "Suites de Teste"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:369
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:363
 msgid ""
 "There are unsaved modifications.\n"
 "Do you want to save your changes before exiting?"
@@ -1504,12 +1587,12 @@ msgstr ""
 "Existem modificações não guardadas.\n"
 "Você quer salvar as alterações antes de sair?"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:371
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:459
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:365
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:453
 msgid "Warning"
 msgstr "Aviso"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:458
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:452
 msgid ""
 "There are unsaved modifications.\n"
 "Do you want to proceed without saving?"
@@ -1517,67 +1600,67 @@ msgstr ""
 "Existem modificações não guardadas.\n"
 "Você quer prosseguir sem salvar?"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:493
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:487
 msgid "Choose a directory containing Robot files"
 msgstr "Escolha uma diretoria contendo ficheiros Robot"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:558
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:552
 msgid "RIDE - Preferences"
 msgstr "RIDE - Preferências"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:645
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:639
 msgid "Workspace modifications detected on the file system."
 msgstr "Detetadas modificações no espaço de trabalho."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:646
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:640
 msgid "Do you want to reload the workspace?"
 msgstr "Você quer reabrir o espaço de trabalho?"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:648
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:642
 msgid "Answering <Yes> will discard unsaved changes."
 msgstr "Responder <Sim> irá descartar as alterações não guardadas."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:649
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:643
 msgid "Answering <No> will ignore the changes on disk."
 msgstr "Responder <Não> irá ignorar as alterações em disco."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:650
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:644
 msgid "Files Changed On Disk"
 msgstr "Ficheiros Modificados No Disco"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:692
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:686
 msgid "Customize..."
 msgstr "Personalizar..."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:780
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:774
 msgid "search unused keywords"
 msgstr "procurar palavras-chave não utilizadas"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:780
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:774
 msgid "stop test run"
 msgstr "parar execução de teste"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:781
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:775
 msgid "preview"
 msgstr "antever"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:781
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:775
 msgid "view ride log"
 msgstr "ver o registo do ride"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:822
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:817
 msgid "Shortcut keys for RIDE"
 msgstr "Teclas de atalho do RIDE"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:860
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:855
 msgid "Show"
 msgstr "Mostrar"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:861
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:856
 msgid "Hide"
 msgstr "Ocultar"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:862
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:857
 msgid "Close"
 msgstr "Fechar"
 
@@ -1876,54 +1959,3 @@ msgstr "Importando Nome"
 #: /home2/helio/github/RIDE/tools/../src/robotide/validators/__init__.py:150
 msgid "%s cannot be empty"
 msgstr "%s não pode ser vazio"
-
-#~ msgid ""
-#~ "[Edit]\n"
-#~ "&Undo | Undo last modification | Ctrlcmd-Z\n"
-#~ "&Redo | Redo modification | Ctrlcmd-Y\n"
-#~ "---\n"
-#~ "Cu&t | Cut | Ctrlcmd-X\n"
-#~ "&Copy | Copy | Ctrlcmd-C\n"
-#~ "&Paste | Paste | Ctrlcmd-V\n"
-#~ "&Insert | Insert | Shift-Ctrl-V\n"
-#~ "&Delete | Delete  | Del\n"
-#~ "---\n"
-#~ "Comment Rows | Comment selected rows | Ctrlcmd-3\n"
-#~ "Comment Cells | Comment cells with # | Ctrlcmd-Shift-3\n"
-#~ "Uncomment Rows | Uncomment selected rows | Ctrlcmd-4\n"
-#~ "Uncomment Cells | Uncomment cells with # | Ctrlcmd-Shift-4\n"
-#~ "---\n"
-#~ "Insert Cells | Insert Cells | Ctrlcmd-Shift-I\n"
-#~ "Delete Cells | Delete Cells | Ctrlcmd-Shift-D\n"
-#~ "Insert Rows | Insert Rows | Ctrlcmd-I\n"
-#~ "Delete Rows | Delete Rows | Ctrlcmd-D\n"
-#~ "Move Rows Up | Move Rows Up | Alt-Up\n"
-#~ "Move Rows Down | Move Rows Down | Alt-Down\n"
-#~ "[Tools]\n"
-#~ "Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword "
-#~ "and variable completions | | | POSITION-70\n"
-#~ msgstr ""
-#~ "[Editar]\n"
-#~ "An&ular | Anular a alteração anterior | Ctrlcmd-Z\n"
-#~ "&Refazer | Repetir alteração | Ctrlcmd-Y\n"
-#~ "---\n"
-#~ "Cor&tar | Cortar | Ctrlcmd-X\n"
-#~ "&Copiar | Copiar | Ctrlcmd-C\n"
-#~ "Colar | Colar | Ctrlcmd-V\n"
-#~ "&Inserir | Inserir | Shift-Ctrl-V\n"
-#~ "Apagar | Apagar  | Del\n"
-#~ "---\n"
-#~ "Comentar Linhas | Comentar as linha selecionadas | Ctrlcmd-3\n"
-#~ "Comentar Células | Comentar as células com # | Ctrlcmd-Shift-3\n"
-#~ "Descomentar Linhas | Descomentar as linha selecionadas | Ctrlcmd-4\n"
-#~ "Descomentar Células | Descomentar as células com # | Ctrlcmd-Shift-4\n"
-#~ "---\n"
-#~ "Inserir Células | Inserir Células | Ctrlcmd-Shift-I\n"
-#~ "Apagar Células | Apagar Células | Ctrlcmd-Shift-D\n"
-#~ "Inserir Linhas | Inserir Linhas | Ctrlcmd-I\n"
-#~ "Apagar Linhas | Apagar Linhas | Ctrlcmd-D\n"
-#~ "Mover Linhas Acima | Mover Linhas Acima | Alt-Up\n"
-#~ "Mover Linhas Abaixo | Mover Linhas Abaixo | Alt-Down\n"
-#~ "[Ferramentas]\n"
-#~ "Assistência de Conteúdo (Ctrl-Space ou Ctrl-Alt-Space) | Mostra possíveis "
-#~ "palavras-chave e completar variáveis | | | POSITION-70\n"
