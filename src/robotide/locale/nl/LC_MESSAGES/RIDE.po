@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
 "POT-Creation-Date: 2024-01-13 02:31+0000\n"
-"PO-Revision-Date: 2024-01-14 18:33+0100\n"
+"PO-Revision-Date: 2024-01-15 08:22+0100\n"
 "Last-Translator: Johan Foederer <github@famfoe.nl>\n"
 "Language-Team: Dutch\n"
 "Language: nl_NL\n"
@@ -32,12 +32,11 @@ msgstr "Hulp"
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:54
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:71
 msgid "Release Notes"
-msgstr ""
+msgstr "Releasebeschrijving"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:56
-#, fuzzy
 msgid "Show the release notes"
-msgstr "!Release notities | Laat release-aantekeningen zien\n"
+msgstr "Toon de releasebeschrijving"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:57
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:77
@@ -176,15 +175,13 @@ msgid "Some of the icons are from %s."
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:79
-msgid ""
-"%s the maintainer of the project thanks the original authors and all users "
-"and collaborators."
+msgid "%s the maintainer of the project thanks the original authors and all users and collaborators."
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:80
 msgid ""
-"A special thanks to %s for having sponsored the development of translated "
-"test suites content compatibility with %s Version 6.1, in their %s."
+"A special thanks to %s for having sponsored the development of translated test suites content compatibility "
+"with %s Version 6.1, in their %s."
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:424
@@ -616,9 +613,11 @@ msgstr "[Hulpmiddelen]\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:51
 msgid ""
-"Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword "
-"and variable completions | | | POSITION-70\n"
+"Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword and variable completions | | | "
+"POSITION-70\n"
 msgstr ""
+"Conte&xt assistent (Ctrl-Space or Ctrl-Alt-Space) | Toon mogelijkheden voor actiewoorden en variabelen | | | "
+"POSITION-70\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:88
 msgid ""
@@ -628,8 +627,6 @@ msgid ""
 "    test data.\n"
 "    "
 msgstr ""
-"Conte&xt assistent (Ctrl-Space or Ctrl-Alt-Space) | Toon mogelijkheden voor actiewoorden en variabelen | | | "
-"POSITION-70\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editors.py:162
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editors.py:393
@@ -1070,7 +1067,7 @@ msgstr "RIDE bureaubladsnelkoppeling maken"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/recentfiles/recentfiles.py:41
 msgid "Add recently opened files to the file menu."
-msgstr "Recent geopende bestanden in Bestandsmenu tonen"
+msgstr "Recent geopende bestanden in Bestandsmenu tonen."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/recentfiles/recentfiles.py:118
 msgid "No recent files"
@@ -1354,7 +1351,7 @@ msgstr "Weergave"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/fileexplorerplugin.py:65
 msgid "View File Explorer"
-msgstr "Bekijk bestandsverkenner"
+msgstr "Toon bestandsverkenner"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/fileexplorerplugin.py:67
 msgid "Show File Explorer panel"
@@ -1448,7 +1445,7 @@ msgstr "!Beheren van Plugins | | | | POSITION-81\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:69
 msgid "!View All Tags | | F7 | | POSITION-82\n"
-msgstr "!Bekijk Alle Tags | | F7 | | POSITION-82\n"
+msgstr "!Bekijk alle labels | | F7 | | POSITION-82\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:70
 msgid "!Preferences | | | | POSITION-99\n"
