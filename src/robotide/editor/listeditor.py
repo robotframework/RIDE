@@ -29,12 +29,12 @@ LIGHT_GREY = 'light grey'
 
 
 class ListEditorBase(wx.Panel):
-    _menu = [_('Edit'), _('Move Up\tCtrl-Up'), _('Move Down\tCtrl-Down'), '---', _('Delete')]
     _menu_nt = ['Edit', 'Move Up\tCtrl-Up', 'Move Down\tCtrl-Down', '---', 'Delete']
     _buttons = []
     _buttons_nt = []
 
     def __init__(self, parent, columns, controller, label=None):
+        self._menu = [_('Edit'), _('Move Up\tCtrl-Up'), _('Move Down\tCtrl-Down'), '---', _('Delete')]
         wx.Panel.__init__(self, parent)
         from ..preferences import RideSettings
         _settings = RideSettings()
@@ -77,7 +77,7 @@ class ListEditorBase(wx.Panel):
     def _create_buttons(self):
         sizer = wx.BoxSizer(wx.VERTICAL)
         for label, mk_h in zip(self._buttons, self._buttons_nt):
-            sizer.Add(ButtonWithHandler(self, label, mk_handler=mk_h, width=120,
+            sizer.Add(ButtonWithHandler(self, label, mk_handler=mk_h, width=-1, fsize=self.font_size,
                                         color_secondary_foreground=self.color_secondary_foreground,
                                         color_secondary_background=self.color_secondary_background), 0, wx.ALL, 1)
         return sizer
