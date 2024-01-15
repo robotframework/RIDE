@@ -83,13 +83,13 @@ Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword and va
 
 
 class EditorPlugin(Plugin, TreeAwarePluginMixin):
-    """The default editor plugin.
+
+    def __init__(self, application):
+        self.__doc__ = _("""The default editor plugin. Also known as Grid or Cell Editor.
 
     This plugin implements editors for the various items of Robot Framework
     test data.
-    """
-
-    def __init__(self, application):
+    """)
         Plugin.__init__(self, application)
         self._tab = None
         self.grid_popup_creator = PopupCreator()
@@ -175,7 +175,7 @@ class EditorPlugin(Plugin, TreeAwarePluginMixin):
         self._show_editor()
 
     def on_tab_changed(self, message):
-        _ = message
+        __ = message
         self._show_editor()
 
     def on_tab_changing(self, message):
@@ -183,12 +183,12 @@ class EditorPlugin(Plugin, TreeAwarePluginMixin):
             self._tab.save()
 
     def on_save_to_model(self, message):
-        _ = message
+        __ = message
         if self._tab:
             self._tab.save()
 
     def on_file_deleted(self, message):
-        _ = message
+        __ = message
         self._create_editor()
 
 
@@ -309,7 +309,7 @@ class _EditorTab(wx.Panel):
         self.editor.show_content_assist()
 
     def save(self, message=None):
-        _ = message
+        __ = message
         if self.editor:
             self.editor.save()
 

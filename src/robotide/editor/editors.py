@@ -41,7 +41,7 @@ class WelcomePage(HtmlWindow):
         = show_content_assist = tree_item_selected = lambda *args: None
 
     def __init__(self, parent):
-        HtmlWindow.__init__(self, parent, text=context.ABOUT_RIDE)
+        HtmlWindow.__init__(self, parent, text=context.get_about_ride())
 
     def close(self):
         self.Show(False)
@@ -340,8 +340,7 @@ class _FileEditor(_RobotTableEditor):
     def _create_source_label(self, source):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         sizer.Add((5, 0))
-        sizer.Add(Label(self, label=_('Source'), size=(context.SETTING_LABEL_WIDTH,
-                                                    context.SETTING_ROW_HEIGHT)))
+        sizer.Add(Label(self, label=_('Source'), size=(context.SETTING_LABEL_WIDTH, context.SETTING_ROW_HEIGHT)))
         self._source = wx.TextCtrl(self, style=wx.TE_READONLY | wx.NO_BORDER)
         self._source.SetBackgroundColour(Colour(self.color_background))
         self._source.SetForegroundColour(Colour(self.color_foreground))

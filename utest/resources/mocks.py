@@ -72,6 +72,8 @@ class _FakeUIObject(object):
 _FAKE_CFG_CONTENT = b'''
 auto imports = []
 pythonpath = []
+[General]
+font size = 10
 '''
 
 

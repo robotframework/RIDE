@@ -14,6 +14,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import builtins
 import os
 import sys
 import wx
@@ -21,6 +22,9 @@ import wx
 from . import logger
 from ..robotapi import ROBOT_LOGGER
 from ..version import VERSION
+
+_ = wx.GetTranslation  # To keep linter/code analyser happy
+builtins.__dict__['_'] = wx.GetTranslation
 
 APP = None
 LOG = logger.Logger()
@@ -51,8 +55,40 @@ POPUP_BACKGROUND = (240, 242, 80)  # (255, 255, 187)
 POPUP_FOREGROUND = (40, 40, 0)  # (255, 255, 187)
 
 pyversion = '.'.join(str(v) for v in sys.version_info[:3])
-SYSTEM_INFO = "Started RIDE %s using python version %s with wx version %s in %s." % \
+SYSTEM_INFO = _("Started RIDE %s using python version %s with wx version %s in %s.") % \
               (VERSION, pyversion, WX_VERSION, sys.platform)
+
+
+def get_about_ride():
+    rf = '<a href="https://robotframework.org/">Robot Framework</a>'
+    ghrf = '<a href="https://github.com/robotframework/RIDE">https://github.com/robotframework/RIDE</a>'
+    si = '<a href="https://github.com/legacy-icons/famfamfam-silk/">Silk Icons</a>'
+    # Note: <!-- Originally from http://www.famfamfam.com/lab/icons/silk/ 404 in 10-june-2023-->
+    mt = '<a href="https://github.com/HelioGuilherme66">Hélio Guilherme</a>'
+    foundation = '<a href="https://robotframework.org/foundation/">Robot Framework Foundation</a>'
+    from ..locale.tr_credits import tr_credits
+    tr = tr_credits()
+    translators = _("Thanks all RIDE translators: %s") % tr
+    rfecosys = '<b>Robot Framework Ecosystem Projects 2023</b>'
+    heading = _("RIDE -- Robot Framework Test Data Editor")
+    content = []
+    content += [_("RIDE %s running on Python %s.") % (VERSION, pyversion)]
+    content += ["<br/>" + _("RIDE is a test data editor for %s.") % rf]
+    content += [_("For more information, see project pages at %s.") % ghrf]
+    content += ["<br/>" + _("Some of the icons are from %s.") % si]
+    maintainer = _("%s the maintainer of the project thanks the original authors and all users and collaborators.") % mt
+    special = _("A special thanks to %s for having sponsored the development of translated test suites content "
+                "compatibility with %s Version 6.1, in their %s.") % (foundation, rf, rfecosys)
+    build_about = []
+    build_about += [f"<h3>{heading}</h3>"]
+    build_about += [f"{line}<br/>" for line in content]
+    build_about += [f"<p><br/>{maintainer}<br/></p>"]
+    build_about += [f"<p>{special}</p>"]
+    build_about += [f"<br/><div>{translators}</div>"]
+
+    return "".join(build_about)
+
+"""
 ABOUT_RIDE = '''<h3>RIDE -- Robot Framework Test Data Editor</h3>
 <p>RIDE %s running on Python %s.</p>
 <p>RIDE is a test data editor for <a href="https://robotframework.org/">Robot Framework</a>.
@@ -67,6 +103,7 @@ A very special thanks to <b><a href="https://github.com/Nyral">Nyral</a></b> and
 on">Johnny.H</a></b> the most commited in helping RIDE development and maintenance.
 --></p>
 ''' % (VERSION, pyversion)
+"""
 
 
 def ctrl_or_cmd():
@@ -84,8 +121,7 @@ def bind_keys_to_evt_menu(target, actions):
     target.SetAcceleratorTable(wx.AcceleratorTable(accelrators))
 
 
-SHORTCUT_KEYS = '''\
-<h2>Shortcut keys in RIDE</h2>
+SHORTCUT_KEYS = '''<h2>Shortcut keys in RIDE</h2>
 <table>
     <tr align="left">
         <th><b>Shortcut</b></th>
