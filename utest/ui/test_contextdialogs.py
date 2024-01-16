@@ -25,7 +25,7 @@ from wx.lib.agw.aui import AuiManager
 from robotide.robotapi import (TestDataDirectory, TestCaseFile, ResourceFile,
                                TestCase, UserKeyword)
 from robotide.spec.librarymanager import LibraryManager
-from robotide.locale.tr_credits import tr_credits
+from robotide.localization.tr_credits import tr_credits
 from robotide.ui.mainframe import ActionRegisterer, ToolBar, AboutDialog
 from robotide.ui.actiontriggers import MenuBar, ShortcutRegistry
 from robotide.application import Project
@@ -150,7 +150,7 @@ class TestTRCredits(unittest.TestCase):
                     ': English</li>\n</ul>')
 
         refd = os.path.dirname(st.__file__)  # We use this one as reference because our locale is not a module
-        dirname = os.path.dirname(os.path.abspath(os.path.join(refd, '..', 'locale', 'tr_credits.py')))
+        dirname = os.path.dirname(os.path.abspath(os.path.join(refd, '..', 'localization', 'tr_credits.py')))
         filename = ".test_data"
         fullname = os.path.join(dirname, filename)
         with open(fullname, 'w') as fc:

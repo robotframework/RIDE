@@ -66,7 +66,7 @@ def get_about_ride():
     # Note: <!-- Originally from http://www.famfamfam.com/lab/icons/silk/ 404 in 10-june-2023-->
     mt = '<a href="https://github.com/HelioGuilherme66">Hélio Guilherme</a>'
     foundation = '<a href="https://robotframework.org/foundation/">Robot Framework Foundation</a>'
-    from ..locale.tr_credits import tr_credits
+    from ..localization.tr_credits import tr_credits
     tr = tr_credits()
     translators = _("Thanks all RIDE translators: %s") % tr
     rfecosys = '<b>Robot Framework Ecosystem Projects 2023</b>'
