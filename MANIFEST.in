@@ -7,4 +7,6 @@ include *.adoc
 recursive-include src *.css *.js *.py *.robot *.txt *.png *.gif *.ico *.cfg *.html
 recursive-include doc *.rst
 recursive-include rtest *.py *.txt
-recursive-include src/robotide/postinstall/RIDE.app
+recursive-include src/robotide/postinstall/RIDE.app *.*
+recursive-include src/robotide/locale *.py *.adoc *.pot *.po *.mo
+

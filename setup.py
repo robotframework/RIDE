@@ -38,6 +38,16 @@ PACKAGE_DATA = {
                              'RIDE.app/Contents/MacOS/RIDE', 'RIDE.app/Contents/Resources/*.icns']
 }
 
+my_list = []
+for curr_dir, _, files in os.walk('src/robotide/localization'):
+    for item in files:
+        if '.' in item:
+             my_list.append(os.path.join(curr_dir, item).replace('\\', '/').replace('./src/robotide/localization/', ''))
+
+PACKAGE_DATA['robotide.localization'] = my_list
+
+print(f"DEBUG: setup.py  {PACKAGE_DATA=}")
+
 LONG_DESCRIPTION = """
 Robot Framework is a generic test automation framework for acceptance
 level testing. RIDE is a lightweight and intuitive editor for Robot

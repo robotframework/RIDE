@@ -50,7 +50,7 @@ except ImportError:
 
 locale.setlocale(locale.LC_ALL, 'C')
 # add translation macro to builtin similar to what gettext does
-# generated pot with: /usr/bin/python /usr/bin/pygettext.py -a -d RIDE -o RIDE.pot -p ./locale ../robotide
+# generated pot with: /usr/bin/python /usr/bin/pygettext.py -a -d RIDE -o RIDE.pot -p ./localization ../robotide
 _ = wx.GetTranslation  # To keep linter/code analyser happy
 builtins.__dict__['_'] = wx.GetTranslation
 
@@ -97,7 +97,7 @@ class RIDE(wx.App):
             keys = ['General']
 
         self.change_locale(Message)  # This was done here to have menus translated, but not working
-        # print(f"DEBUG: application.py RIDE OnInit after changing locale {self._locale.GetCanonicalName()=}")
+        # print(f"DEBUG: application.py RIDE OnInit after changing localization {self._locale.GetCanonicalName()=}")
         # Importing libraries after setting language
         from ..context import coreplugins, SETTINGS_DIRECTORY
         from ..ui.treeplugin import TreePlugin
@@ -329,7 +329,7 @@ class RIDE(wx.App):
         if self._locale.IsOk():
             locale.setlocale(locale.LC_ALL, short_code)
             lpath = Path(__file__).parent.absolute()
-            lpath = str(Path(Path.joinpath(lpath.parent, 'locale')).absolute())
+            lpath = str(Path(Path.joinpath(lpath.parent, 'localization')).absolute())
             locale.setlocale(locale.LC_ALL, 'C')
             wx.Locale.AddCatalogLookupPathPrefix(lpath)
             self._locale.AddCatalog('RIDE')
