@@ -5,9 +5,9 @@ languages defined below.
 
 The .po and .mo files are placed as per convention in
 
-"appfolder/locale/lang/LC_MESSAGES"
+"appfolder/localization/lang/LC_MESSAGES"
 
-The .pot file is placed in the locale folder.
+The .pot file is placed in the localization folder.
 
 This script or something similar should be added to your build process.
 
@@ -20,7 +20,7 @@ catalog.
 
 
 # we remove English as source code strings are in English
-supportedLang = ['nl', 'pt_BR', 'pt_PT']
+supportedLang = ['nl', 'pt_BR', 'pt_PT', 'uk']
 # for l in appC.supLang:
 #     if l != u"en":
 #         supportedLang.append(l)
@@ -43,7 +43,7 @@ pyFolder = os.path.split(pyExe)[0]
 pyI18nFolder = os.path.join(appFolder, 'i18n')
 pyGettext = os.path.join(pyFolder, 'pygettext.py')
 pyMsgfmt = os.path.join(pyFolder, 'msgfmt.py')
-outFolder = os.path.join(appFolder, 'locale')
+outFolder = os.path.join(appFolder, 'localization')
 
 # build command for pygettext
 gtOptions = '-a -d %s -o %s.pot -p %s %s'
@@ -58,7 +58,7 @@ print ("return code: %s\n\n" % rCode)
 
 for tLang in supportedLang:
     # build command for msgfmt
-    langDir = os.path.join(appFolder, ('locale/%s/LC_MESSAGES' % tLang))
+    langDir = os.path.join(appFolder, ('localization/%s/LC_MESSAGES' % tLang))
     poFile = os.path.join(langDir, langDomain + '.po')
     if os.path.isfile(poFile):
         tCmd = 'msgmerge' + ' ' + '-U' + ' ' + poFile + ' ' + outFolder + '/' + langDomain + '.pot'
