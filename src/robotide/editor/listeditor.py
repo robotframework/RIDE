@@ -76,8 +76,14 @@ class ListEditorBase(wx.Panel):
 
     def _create_buttons(self):
         sizer = wx.BoxSizer(wx.VERTICAL)
+        # Get max button size
+        width = 1
+        for x in self._buttons:
+            width = max(width, len(x))
+        fsize = max(8, self.font_size)
+        bsize = width * fsize
         for label, mk_h in zip(self._buttons, self._buttons_nt):
-            sizer.Add(ButtonWithHandler(self, label, mk_handler=mk_h, width=-1, fsize=self.font_size,
+            sizer.Add(ButtonWithHandler(self, label, mk_handler=mk_h, width=bsize, fsize=self.font_size,
                                         color_secondary_foreground=self.color_secondary_foreground,
                                         color_secondary_background=self.color_secondary_background), 0, wx.ALL, 1)
         return sizer

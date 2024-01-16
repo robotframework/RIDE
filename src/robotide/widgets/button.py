@@ -21,8 +21,9 @@ class ButtonWithHandler(wx.Button):
 
     def __init__(self, parent, label, mk_handler=None, handler=None, width=-1,
                  height=25, color_secondary_foreground='black', color_secondary_background='light grey', fsize=10):
+        fsize = max(8, fsize)
         if width == -1:
-            width = len(label) * fsize + 4
+            width = len(label) * fsize
         size = wx.Size(width, height)
         wx.Button.__init__(self, parent, label=label,
                            size=size)
