@@ -161,6 +161,13 @@ class TestTRCredits(unittest.TestCase):
         # print(result)
         assert result == expected
 
+    def test_tr_credits_missing_file(self):
+        dirname = os.path.dirname(st.__file__)
+        filename = ".test_data"
+        fullname = os.path.join(dirname, filename)
+        result = tr_credits(filename=fullname)
+        assert result == ""
+
 
 if __name__ == '__main__':
     unittest.main()
