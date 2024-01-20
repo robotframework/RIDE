@@ -91,8 +91,9 @@ class TestSearchPlugin(Plugin):
     def _do_with_selection(self, evt=None):
         _ = evt
         test, _ = self._selection
-        self.tree.select_node_by_data(test)
-        self._dialog.set_focus_to_default_location(test)
+        if test:
+            self.tree.select_node_by_data(test)
+            self._dialog.set_focus_to_default_location(test)
 
     def _selected(self, selection):
         self._selection = selection
@@ -140,6 +141,9 @@ class TagSearchMatcher(object):
         self._tag_pattern_excludes = robotapi.TagPatterns(excludes.split())
 
     def matches(self, test):
+        # Comments in Tests section are saved, but should not be visible
+        if test.name.startswith('#'):
+            return False
         tags = [str(tag) for tag in test.tags]
         if self._matches(tags):
             return test.longname
@@ -165,6 +169,9 @@ class TestSearchMatcher(object):
 
     def _matches(self, test):
         name = test.name.lower()
+        # Comments in Tests section are saved, but should not be visible
+        if name.startswith('#'):
+            return False
         if self._match_in(name):
             return True
         if any(self._match_in(str(tag).lower()) for tag in test.tags):

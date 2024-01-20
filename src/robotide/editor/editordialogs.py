@@ -13,6 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import builtins
 import wx
 
 from wx import Colour
@@ -26,6 +27,9 @@ from .fieldeditors import (ValueEditor, ListValueEditor, MultiLineEditor, Conten
                            ArgumentEditor, FileNameEditor)
 from .formatters import ListToStringFormatter
 from robotide.lib.compat.parsing import language
+
+_ = wx.GetTranslation  # To keep linter/code analyser happy
+builtins.__dict__['_'] = wx.GetTranslation
 
 
 def editor_dialog(obj, lang='en'):
@@ -62,7 +66,7 @@ class _Dialog(RIDEDialog):
 
     def _add_comment_editor(self, item):
         comment = ListToStringFormatter(item.comment).value if item else ''
-        self._comment_editor = ValueEditor(self, comment, 'Comment')
+        self._comment_editor = ValueEditor(self, comment, _('Comment'))
         self._sizer.Add(self._comment_editor)
 
     def _create_line(self):
@@ -108,8 +112,8 @@ class ScalarVariableDialog(_Dialog):
         name = var.name if var and var.name else '${}'
         value = var.value[0] if var else ''
         validator = ScalarVariableNameValidator(self._controller, name)
-        return [VariableNameEditor(self, name, 'Name', validator),
-                ValueEditor(self, value, 'Value')]
+        return [VariableNameEditor(self, name, _('Name'), validator),
+                ValueEditor(self, value, _('Value'))]
 
     def _execute(self):
         """ Just ignore it """
@@ -122,8 +126,8 @@ class ListVariableDialog(_Dialog):
         name = var.name if var and var.name else '@{}'
         value = var.value if var and var.value else ''
         validator = ListVariableNameValidator(self._controller, name)
-        return [VariableNameEditor(self, name, 'Name', validator),
-                ListValueEditor(self, value, 'Value',
+        return [VariableNameEditor(self, name, _('Name'), validator),
+                ListValueEditor(self, value, _('Value'),
                                 settings=self.plugin.global_settings)]
 
     def _execute(self):
@@ -137,8 +141,8 @@ class DictionaryVariableDialog(_Dialog):
         name = var.name if var and var.name else '&{}'
         value = var.value if var and var.value else ''
         validator = DictionaryVariableNameValidator(self._controller, name)
-        return [VariableNameEditor(self, name, 'Name', validator),
-                ListValueEditor(self, value, 'Value',
+        return [VariableNameEditor(self, name, _('Name'), validator),
+                ListValueEditor(self, value, _('Value'),
                                 settings=self.plugin.global_settings)]
 
     def _execute(self):
@@ -155,9 +159,9 @@ class LibraryDialog(_Dialog):
         args = item and utils.join_value(item.args) or ''
         alias = item.alias if item else ''
         self._suggester = LibrariesSuggester(self._controller, self._history_suggester)
-        return [FileNameEditor(self, name, 'Name', self._controller, suggestion_source=self._suggester),
-                ValueEditor(self, args, 'Args'),
-                ValueEditor(self, alias, 'Alias')]
+        return [FileNameEditor(self, name, _('Name'), self._controller, suggestion_source=self._suggester),
+                ValueEditor(self, args, _('Args')),
+                ValueEditor(self, alias, _('Alias'))]
 
     def get_value(self):
         values = _Dialog.get_value(self)
@@ -176,8 +180,8 @@ class VariablesDialog(LibraryDialog):
     def _get_editors(self, item):
         path = item and item.name or ''
         args = item and utils.join_value(item.args) or ''
-        return [FileNameEditor(self, path, 'Path', self._controller, suggestion_source=self._history_suggester),
-                ValueEditor(self, args, 'Args')]
+        return [FileNameEditor(self, path, _('Path'), self._controller, suggestion_source=self._history_suggester),
+                ValueEditor(self, args, _('Args'))]
 
     def _execute(self):
         """ Just ignore it """
@@ -188,7 +192,7 @@ class ResourceDialog(_Dialog):
 
     def _get_editors(self, item):
         name = item and item.name or ''
-        return [FileNameEditor(self, name, 'Path', self._controller,
+        return [FileNameEditor(self, name, _('Path'), self._controller,
                                suggestion_source=ResourceSuggester(self._controller))]
 
     def _execute(self):
@@ -265,7 +269,7 @@ class _FixtureDialog(_SettingDialog):
 
 
 class SuiteSetupDialog(_FixtureDialog):
-    tooltip = "Suite Setup is run before any tests"
+    tooltip = _("Suite Setup is run before any tests")
 
     def _execute(self):
         """ Just ignore it """
@@ -322,7 +326,7 @@ class TestTemplateDialog(_FixtureDialog):
 
 class ArgumentsDialog(_SettingDialog):
     def _get_editors(self, item):
-        return [ArgumentEditor(self, item.value, 'Arguments', ArgumentsValidator())]
+        return [ArgumentEditor(self, item.value, _('Arguments'), ArgumentsValidator())]
 
     def _execute(self):
         """ Just ignore it """
@@ -354,8 +358,8 @@ class MetadataDialog(_Dialog):
 
     def _get_editors(self, item):
         name, value = item and (item.name, item.value) or ('', '')
-        return [ValueEditor(self, name, 'Name'),
-                ValueEditor(self, value, 'Value')]
+        return [ValueEditor(self, name, _('Name')),
+                ValueEditor(self, value, _('Value'))]
 
     def _execute(self):
         """ Just ignore it """
@@ -364,7 +368,7 @@ class MetadataDialog(_Dialog):
 
 class TestCaseNameDialog(_Dialog):
     __test__ = False
-    _title = 'New Test Case'
+    _title = _('New Test Case')
 
     def _add_comment_editor(self, item):
         """ Just ignore it """
@@ -372,7 +376,7 @@ class TestCaseNameDialog(_Dialog):
 
     def _get_editors(self, test):
         value = test.name if test else ''
-        return [ValueEditor(self, value, 'Name',
+        return [ValueEditor(self, value, _('Name'),
                             TestCaseNameValidator(self._controller))]
 
     def get_name(self):
@@ -384,7 +388,7 @@ class TestCaseNameDialog(_Dialog):
 
 
 class CopyUserKeywordDialog(_Dialog):
-    _title = 'Copy User Keyword'
+    _title = _('Copy User Keyword')
 
     def _add_comment_editor(self, item):
         """ Just ignore it """
@@ -392,7 +396,7 @@ class CopyUserKeywordDialog(_Dialog):
 
     def _get_editors(self, uk):
         value = uk.name if uk else ''
-        return [ValueEditor(self, value, 'Name',
+        return [ValueEditor(self, value, _('Name'),
                             UserKeywordNameValidator(self._controller))]
 
     def get_name(self):
@@ -408,7 +412,7 @@ class UserKeywordNameDialog(_Dialog):
         """ Just ignore it """
         pass
 
-    _title = 'New User Keyword'
+    _title = _('New User Keyword')
 
     def _add_comment_editor(self, item):
         """ Just ignore it """
@@ -417,9 +421,9 @@ class UserKeywordNameDialog(_Dialog):
     def _get_editors(self, uk):
         value = uk.name if uk else ''
         args_value = ' | '.join(uk.args.value) if uk else ''
-        return [ValueEditor(self, value, 'Name',
+        return [ValueEditor(self, value, _('Name'),
                             UserKeywordNameValidator(self._controller)),
-                ArgumentEditor(self, args_value, 'Arguments', ArgumentsValidator())]
+                ArgumentEditor(self, args_value, _('Arguments'), ArgumentsValidator())]
 
     def get_name(self):
         return _Dialog.get_value(self)[0]

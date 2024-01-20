@@ -588,10 +588,11 @@ class ImportSettingListEditor(_AbstractListEditor):
             self, label=label, size=wx.Size(lsize, 20),
             style=wx.ALIGN_CENTER))
         # Get max button size
+        fsize = max(8, self.font_size)
         bsize = 0
         for x in self._buttons:
             bsize = max(bsize, len(x))
-        bsize = bsize * self.font_size + 4
+        bsize = bsize * fsize
         for label, label_nt in zip(self._buttons, self._buttons_nt):
             sizer.Add(ButtonWithHandler(self, label, mk_handler=label_nt, width=bsize,
                                         color_secondary_foreground=self.color_secondary_foreground,

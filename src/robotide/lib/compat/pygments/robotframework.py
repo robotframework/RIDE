@@ -339,7 +339,7 @@ class Setting(Tokenizer):
                 self._custom_tokenizer = KeywordCall(support_assign=False)
             elif normalized in self._import_settings:
                 self._custom_tokenizer = ImportSetting()
-                return ERROR
+                return IMPORT
         elif self._custom_tokenizer:
             return self._custom_tokenizer.tokenize(value)
         return Tokenizer._tokenize(self, value, index)

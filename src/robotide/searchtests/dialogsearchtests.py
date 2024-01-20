@@ -213,7 +213,8 @@ class TestsDialog(RIDEDialog):
         self._search_control.Bind(wx.EVT_TEXT_ENTER, self.wrapped)
         sizer.Add(self._search_control, 0, wx.ALL, 3)
 
-    def wrapped(self):
+    def wrapped(self, event):
+        __ = event
         return self._fuzzy_search_handler(self._search_control.GetValue())
 
     def _select_text_search_result(self, idx):

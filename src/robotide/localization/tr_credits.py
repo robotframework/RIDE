@@ -22,8 +22,11 @@ def tr_credits(filename="TRANSLATORS.adoc"):
 
     # Added parameter filename because of unit tests
     isref = re.compile("(http.*)(\\[.*])(:)(.*)")
-    with open(join(dirname(abspath(__file__)), filename), 'r', encoding='utf-8') as trf:
-        content = trf.readlines()
+    try:
+        with open(join(dirname(abspath(__file__)), filename), 'r', encoding='utf-8') as trf:
+            content = trf.readlines()
+    except FileNotFoundError:
+        return ""
     lines = []
     lines += ["<ul>\n"]
     for tr in content:

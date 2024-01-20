@@ -20,6 +20,8 @@ def get_help(title):
 
 
 _HELPS = {}
+
+
 _EXAMPLES = {
     'ESCAPE': "Possible pipes in the value must be escaped with a backslash like '\\|'.",
     'TAG': "Separate tags with a pipe character like 'tag | second tag | 3rd'.",

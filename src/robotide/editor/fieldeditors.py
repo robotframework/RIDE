@@ -13,6 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import builtins
 import wx
 import wx.grid
 from wx import Colour
@@ -23,6 +24,9 @@ from ..context import ctrl_or_cmd, bind_keys_to_evt_menu
 from ..editor.contentassist import ContentAssistFileButton
 from ..namespace.suggesters import SuggestionSource
 from ..widgets import Label
+
+_ = wx.GetTranslation  # To keep linter/code analyser happy
+builtins.__dict__['_'] = wx.GetTranslation
 
 
 class ValueEditor(wx.Panel):
@@ -178,12 +182,12 @@ class ListValueEditor(ValueEditor):
 
     def _create_column_selector(self, cols):
         sizer = wx.BoxSizer(wx.VERTICAL)
-        col_label = Label(self, label="Columns", size=(80, -1))
+        col_label = Label(self, label=_("Columns"), size=(80, -1))
         sizer.Add(col_label, 0, wx.ALL, 5)
         combo = wx.ComboBox(self, value=str(cols), size=(60, 25),
                             choices=[str(i) for i in range(1, 11)])
-        tool_tip = wx.ToolTip("Number of columns that are shown in this editor."
-                              " Selected value is stored and used globally.")
+        tool_tip = wx.ToolTip(_("Number of columns that are shown in this editor."
+                              " Selected value is stored and used globally."))
         combo.SetToolTip(tool_tip)
         tool_tip.GetWindow().SetBackgroundColour(Colour(self.color_background_help))
         tool_tip.GetWindow().SetForegroundColour(Colour(self.color_foreground_text))
