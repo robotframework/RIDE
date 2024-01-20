@@ -266,6 +266,8 @@ class _TestData(object):
         See also :py:class:`robot.writer.datafilewriter.DataFileWriter`
         """
         options['language'] = self.language
+        print(f"DEBUG: model.py save Call DataFileWriter options={options}\n"
+              f"self.language={self.language} set language={options['language']}")
         return DataFileWriter(**options).write(self)
 
 

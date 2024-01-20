@@ -91,6 +91,8 @@ class WritingContext(object):
         self.txt_separating_spaces = txt_separating_spaces
         self.output = output
         self.language = language
+        print(f"DEBUG: datafilewriter.py WritingContext output={output}\n"
+              f"self.language={self.language} dataile={datafile.source}")
 
     def __enter__(self):
         if not self.output:

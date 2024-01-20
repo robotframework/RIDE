@@ -740,7 +740,7 @@ class SourceEditor(wx.Panel):
         self.reset()
         self._data = data
         self.language = self._data._doc_language
-        # print(f"DEBUG: texteditor.py SourceEditor open ENTER language={self.language}")
+        print(f"DEBUG: texteditor.py SourceEditor open ENTER language={self.language}")
         try:
             if isinstance(self._data.wrapper_data, ResourceFileController):
                 self._controller_for_context = DummyController(self._data.wrapper_data, self._data.wrapper_data)
@@ -905,6 +905,8 @@ class SourceEditor(wx.Panel):
         self.store_position()
         if self.dirty and not self.is_saving:
             self.is_saving = True
+            print(f"DEBUG: TextEditor.py SourceEditor content_save content={self.source_editor.utf8_text}\n"
+                  f"self.language={self.language} data={self._data}")
             if not self._data_validator.validate_and_update(self._data, self.source_editor.utf8_text,
                                                             lang=self.language):
                 self.is_saving = False
