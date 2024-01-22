@@ -77,6 +77,7 @@ class _DataFileWriter(object):
             self._write_table(table, is_last=table is sorted_tables[-1])
 
     def _write_table(self, table, is_last):
+        # print(f"DEBUG: lib.robot.writer _DataFileWriter ENTER _write_table table={table.type}")
         self._write_header(table)
         if table.type == 'comments':
             # print(f"DEBUG: filewriters.py _write_table COMMENTS: {table}")
@@ -119,7 +120,7 @@ class _DataFileWriter(object):
 class SpaceSeparatedTxtWriter(_DataFileWriter):
 
     def __init__(self, configuration):
-        formatter = TxtFormatter(configuration.txt_column_count, configuration.language)
+        formatter = TxtFormatter(column_count=configuration.txt_column_count, language=configuration.language)
         self._separator = ' ' * configuration.txt_separating_spaces
         _DataFileWriter.__init__(self, formatter, configuration)
 

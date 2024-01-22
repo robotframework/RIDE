@@ -52,6 +52,8 @@ class RowSplitter(object):
 
     def _is_doc_row(self, row, table_type):
         if table_type == self.setting_table:
+            # print(f"DEBUG: writer.rowsplitter.py RowSplitter _is_doc_row in setting {self._language=}"
+            #       f"\n row={row}")
             return len(row) > 1 and row[0] in get_settings_for(self._language, ('Documentation',))
         if table_type in self._indented_tables:
             return len(row) > 2 and row[1].strip('[]') in get_settings_for(self._language, ('Documentation',))
