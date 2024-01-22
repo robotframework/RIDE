@@ -91,16 +91,13 @@ class WritingContext(object):
         self.txt_separating_spaces = txt_separating_spaces
         self.output = output
         self.language = language
-        print(f"DEBUG: datafilewriter.py WritingContext output={output}\n"
-              f"self.language={self.language} dataile={datafile.source}")
+        # print(f"DEBUG: datafilewriter.py WritingContext output={output}\n"
+        #       f"self.language={self.language} datafile={datafile.source}")
 
     def __enter__(self):
         if not self.output:
             path = self._output_path()
-            if PY2 and self.format == self.tsv_format:
-                self.output = binary_file_writer(path)
-            else:
-                self.output = file_writer(path, newline=self.line_separator)
+            self.output = file_writer(path, newline=self.line_separator)
         return self
 
     def __exit__(self, *exc_info):

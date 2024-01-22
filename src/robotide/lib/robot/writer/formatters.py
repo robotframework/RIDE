@@ -25,9 +25,10 @@ class _DataFileFormatter(object):
     _split_multiline_doc = True
     language = None
 
-    def __init__(self, column_count, language=None):
+    def __init__(self, column_count, split_multiline_doc=True, language=None):
         if language:
             self.language = language
+        self._split_multiline_doc = split_multiline_doc
         self._splitter = RowSplitter(column_count, self._split_multiline_doc, self.language)
         self._column_count = column_count
         self._extractor = DataExtractor(self._want_names_on_first_content_row)
@@ -40,10 +41,13 @@ class _DataFileFormatter(object):
 
     def format_header(self, table):
         header = self._format_row(table.header)
+        # print(f"DEBUG: formatters.py _DataFileFormatter format_header header={header}")
         return self._format_header(header, table)
 
     def format_table(self, table):
         rows = self._extractor.rows_from_table(table)
+        # if rows:
+        #     print(f"DEBUG: writer formatters.py format_table after extractor table.type={table.type}")
         if rows and table.type == 'comments':
             # print(f"DEBUG: formatters.py format_table rows={[r for r in rows]}")
             return [r for r in rows]
@@ -55,6 +59,9 @@ class _DataFileFormatter(object):
         return not self._should_align_columns(table)
 
     def _split_rows(self, original_rows, table):
+        # print(f"DEBUG: formatters.py _split_rows Printing rows for table={table.type}")
+        # for original in original_rows:
+        #     print(original)
         for original in original_rows:
             for split in self._splitter.split(original, table.type):
                 yield split
@@ -109,8 +116,12 @@ class TxtFormatter(_DataFileFormatter):
     _test_or_keyword_name_width = 18
     _setting_and_variable_name_width = 14
 
+    def __init__(self, column_count, language=None):
+        _DataFileFormatter.__init__(self, column_count=column_count, split_multiline_doc=True, language=language)
+
     def _format_row(self, row, table=None):
-        print(f"DEBUG: formatters.py format_row ENTER row={row}")
+        # if table and table.type == 'setting':
+        #     print(f"DEBUG: formatters.py format_row ENTER setting row={row}")
         if table and table.type == 'comments':
             return row
         # Unit tests failing here with row[0]==None
@@ -128,7 +139,7 @@ class TxtFormatter(_DataFileFormatter):
         return NullAligner()
 
     def _format_header(self, header, table):
-        print(f"DEBUG: RFLib writer formmaters.py TxtFormatter _format_header headers={header}")
+        # print(f"DEBUG: RFLib writer formaters.py TxtFormatter _format_header headers={header} table={table}")
         header = ['*** %s ***' % header[0]] + header[1:]
         aligner = self._aligner_for(table)
         return aligner.align_row(header)

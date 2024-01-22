@@ -26,6 +26,7 @@ from . import _EDIT_nt, get_menudata
 from .. import robotapi
 from ..context import IS_WINDOWS, IS_MAC
 from ..controller.ctrlcommands import SetDataFile, INDENTED_START
+from ..controller.dataloader import TestDataDirectoryWithExcludes
 from ..controller.filecontrollers import ResourceFileController
 from ..controller.macrocontrollers import WithStepsController
 from ..namespace.suggesters import SuggestionSource
@@ -313,6 +314,8 @@ class DataValidationHandler(object):
             data.update_from(data.format_text(m_text))
         else:
             # DEBUG: This is the area where we will implement to not reformat code
+            # print(f"DEBUG: TextEditor.py DataValidationHandler validate_and_update calling update NO REFORMAT"
+            #       f" lang={self._doc_language} text={m_text}")
             data.update_from(m_text)
             # There is no way to update the model without reformatting
             # DEBUG: this only updates the editor, but not the model, changes in Text Editor are not reflected
@@ -322,20 +325,13 @@ class DataValidationHandler(object):
         return True
 
     def _sanity_check(self, data, text):
-        """
-        # First remove all lines starting with #
-        for line in text.split('\n'):
-            comment = line.strip().startswith('#')
-            if comment:
-                text = text.replace(line, '')
-        """
         from robotide.lib.compat.parsing import ErrorReporter
         from robot.parsing.parser.parser import get_model
         from robotide.lib.robot.errors import DataError
 
         # print(f"DEBUG: textedit.py _sanity_check data is type={type(data)}")
         model = get_model(text, lang=self._doc_language)
-        print(f"DEBUG: textedit.py _sanity_check model is {model} doc language={self._doc_language}")
+        # print(f"DEBUG: textedit.py _sanity_check model is {model} doc language={self._doc_language}")
         validator = ErrorReporter()
         result = None
         try:
@@ -401,7 +397,7 @@ class DataFileWrapper(object):  # DEBUG: bad class name
     def _create_target_from(self, content):
         src = BytesIO(content.encode("utf-8"))
         target = self._create_target()
-        FromStringIOPopulator(target).populate(src, self._tab_size)
+        FromStringIOPopulator(target, lang=self._doc_language).populate(src, self._tab_size)
         return target
 
     def format_text(self, text):
@@ -419,7 +415,13 @@ class DataFileWrapper(object):  # DEBUG: bad class name
         data = self.wrapper_data.data
         target_class = type(data)
         if isinstance(data, robotapi.TestDataDirectory):
-            target = robotapi.TestDataDirectory(source=self.wrapper_data.directory)
+            target = robotapi.TestDataDirectory(parent=None, source=self.wrapper_data.directory,
+                                                settings=self._settings, language=self._doc_language)
+            target.initfile = data.initfile
+            return target
+        elif isinstance(data, TestDataDirectoryWithExcludes):
+            target = TestDataDirectoryWithExcludes(parent=None, source=self.wrapper_data.directory,
+                                                   settings=self._settings, language=self._doc_language)
             target.initfile = data.initfile
             return target
         return target_class(source=self.wrapper_data.source)
@@ -432,7 +434,9 @@ class DataFileWrapper(object):  # DEBUG: bad class name
         output = StringIO()
         data.save(output=output, fformat='txt', txt_separating_spaces=self._settings.get(TXT_NUM_SPACES, 4),
                   language=self._doc_language)
-        return output.getvalue()
+        text = output.getvalue()
+        # print(f"DEBUG: textedit.py DataFileWrapper content _txt_data = {text=} language={self._doc_language}")
+        return text
 
 
 class SourceEditor(wx.Panel):
@@ -905,8 +909,8 @@ class SourceEditor(wx.Panel):
         self.store_position()
         if self.dirty and not self.is_saving:
             self.is_saving = True
-            print(f"DEBUG: TextEditor.py SourceEditor content_save content={self.source_editor.utf8_text}\n"
-                  f"self.language={self.language} data={self._data}")
+            # print(f"DEBUG: TextEditor.py SourceEditor content_save content={self.source_editor.utf8_text}\n"
+            #       f"self.language={self.language} data={self._data}")
             if not self._data_validator.validate_and_update(self._data, self.source_editor.utf8_text,
                                                             lang=self.language):
                 self.is_saving = False
@@ -2132,8 +2136,11 @@ class FromStringIOPopulator(robotapi.populators.FromFilePopulator):
 
     def populate(self, content: [str, BytesIO], tab_size: int):
         try:
-            set_lang = shared_memory.ShareableList(name="language")
-            language = [set_lang[0]]
+            if not self._language:
+                set_lang = shared_memory.ShareableList(name="language")
+                language = [set_lang[0]]
+            else:
+                language = self._language
         except AttributeError:
             language = ['en']
         robotapi.RobotReader(spaces=tab_size, lang=language).read(content, self)

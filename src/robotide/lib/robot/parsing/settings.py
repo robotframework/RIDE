@@ -13,6 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+from multiprocessing import shared_memory
 from robotide.lib.robot.utils import is_string, unicode
 from robotide.lib.compat.parsing import language as lang
 
@@ -32,11 +33,18 @@ def get_localized_setting(language: [], english_name: str):
 
 
 class Setting(object):
+    language = None
 
     def __init__(self, setting_name, parent=None, comment=None):
-        self.setting_name = setting_name
         self.parent = parent
-        # print(f"DEBUG: settings.py Setting __init__ name= {self.setting_name}")
+        try:
+            self.language = parent.language
+            if not self.language:
+                set_lang = shared_memory.ShareableList(name="language")
+                self.language = [set_lang[0]]
+        except (AttributeError, FileNotFoundError):
+            self.language = ['en']
+        self.setting_name = get_localized_setting(self.language, setting_name)
         self._set_initial_value()
         self._set_comment(comment)
         self._populated = False
@@ -154,6 +162,13 @@ class Documentation(Setting):
         return value.strip() if is_string(value) else ''.join(value)
 
     def _data_as_list(self):
+        """ DEBUG
+        name = get_localized_setting(self.parent.language, self.setting_name)
+        print(f"DEBUG: parsing.settings.py Documentation _data_as_list name={name} "
+              f" setting_name= {self.setting_name} value={self.value}")
+        if self.setting_name != name:
+            return [name, self.value]
+        """
         return [self.setting_name, self.value]
 
 
@@ -316,7 +331,7 @@ class ImportSetting(Setting):
     def __init__(self, parent, name, args=None, alias=None, comment=None):
         self.parent = parent
         if parent:
-            self.setting_name = get_localized_setting(parent.language, self.type)
+            self.setting_name = get_localized_setting(parent.language, self.setting_name)
         else:
             self.setting_name = self.type
         self.name = name.strip()
