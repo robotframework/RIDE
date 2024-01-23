@@ -322,7 +322,7 @@ class RIDE(wx.App):
             short_code = names[idx][1].replace('-', '_')
         else:
             code = wx.LANGUAGE_ENGLISH_WORLD
-            short_code = 'en_GB'
+            short_code = 'en_US.UTF-8'  # 'en_GB'
         del self._locale
         self._locale = wx.Locale(code)
         # print(f"DEBUG: application.py RIDE change_locale {idx=} {language=} {short_code=}")
