@@ -123,7 +123,7 @@ def _is_logged(level):
     out = current.output
     if out is None:
         return True
-    return out._xmllogger._log_message_is_logged(level)
+    return out._is_logged(level)
 
 
 class TestRunnerAgent:
