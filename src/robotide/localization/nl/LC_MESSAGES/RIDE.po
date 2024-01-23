@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
 "POT-Creation-Date: 2024-01-17 00:58+0000\n"
-"PO-Revision-Date: 2024-01-16 12:12+0100\n"
+"PO-Revision-Date: 2024-01-23 10:27+0100\n"
 "Last-Translator: Johan Foederer <github@famfoe.nl>\n"
 "Language-Team: Dutch\n"
 "Language: nl_NL\n"
@@ -695,34 +695,32 @@ msgstr "Waarde"
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:163
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:184
 msgid "Args"
-msgstr ""
+msgstr "Parameters"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:164
 msgid "Alias"
-msgstr ""
+msgstr "Alias"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:183
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:195
 msgid "Path"
-msgstr ""
+msgstr "Lokatie"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:272
 msgid "Suite Setup is run before any tests"
-msgstr ""
+msgstr "Suitevoorbereiding wordt uitgevoerd vóór de testgevallen"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:371
 msgid "New Test Case"
-msgstr ""
+msgstr "Nieuw testgeval"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:391
-#, fuzzy
 msgid "Copy User Keyword"
-msgstr "Ongebruikte actiewoorden"
+msgstr "Kopieer gebruiker actiewoord"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:415
-#, fuzzy
 msgid "New User Keyword"
-msgstr "Ongebruikte actiewoorden"
+msgstr "Nieuw gebruiker actiewoord"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editors.py:162
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editors.py:393
@@ -749,13 +747,15 @@ msgstr "Vind gebruik"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/fieldeditors.py:185
 msgid "Columns"
-msgstr ""
+msgstr "Kolommen"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/fieldeditors.py:189
 msgid ""
 "Number of columns that are shown in this editor. Selected value is stored "
 "and used globally."
 msgstr ""
+"Het aantal kolommen dat wordt getoond in deze editor. Dit is één instelling "
+"voor alle lijsten."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:71
 msgid "Create Keyword"
