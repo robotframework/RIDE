@@ -116,16 +116,6 @@ HOST = "localhost"
 #  print("DEBUG: TestRunnerAgent encoding %s\n" % SYSTEM_ENCODING )
 
 
-def _is_logged(level):
-    current = EXECUTION_CONTEXTS.current
-    if current is None:
-        return True
-    out = current.output
-    if out is None:
-        return True
-    return out._is_logged(level)
-
-
 class TestRunnerAgent:
     """Pass all listener events to a remote listener
 
@@ -218,8 +208,7 @@ class TestRunnerAgent:
         pass
 
     def log_message(self, message):
-        if _is_logged(message['level']):
-            self._send_socket("log_message", message)
+        self._send_socket("log_message", message)
 
     def log_file(self, path):
         self._send_socket("log_file", path)
