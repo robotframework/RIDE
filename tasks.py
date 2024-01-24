@@ -160,9 +160,8 @@ with open("src/robotide/version.py") as f:
     code = compile(f.read(), "version.py", 'exec')
     exec(code)
 
-FINAL_RELEASE = bool(re.match("^(\d*\.){1,2}\d*$", VERSION))
-wxPythonDownloadUrl = \
-    "https://wxpython.org/"
+FINAL_RELEASE = bool(re.match("^(\\d*\\.){1,2}\\d*$", VERSION))
+wxPythonDownloadUrl = "https://wxpython.org/"
 
 
 # Developemnt tasks
@@ -226,10 +225,10 @@ def update_robot(ctx, _version=''):
     ctx.run('cp -r ../robotframework/src/robot src/robotide/lib/')
     # Prevent .pyc matching grep expressions
     _clean()
-    _run_sed_on_matching_files(ctx, 'from robot\..* import', 's/from robot\./from robotide.lib.robot./')
+    _run_sed_on_matching_files(ctx, 'from robot\\..* import', 's/from robot\\./from robotide.lib.robot./')
     _run_sed_on_matching_files(ctx, 'from robot import', 's/from robot import/from robotide.lib.robot import/')
     with open(join(ROBOTIDE_PACKAGE, 'lib', 'robot-commit'), 'w') as rf_version_file:
-        rf_version_file.write('{}\n'.format(rf_commit_hash))
+        rf_version_file.write('{}\\n'.format(rf_commit_hash))
     _log('Updated bundled Robot Framework to version {}/{}'.format(target, rf_commit_hash))
 
 
@@ -239,8 +238,7 @@ def generate_big_project(ctx, _install=False, upgrade=False, args=''):
     _ = ctx
     _remove_bytecode_files()
     if _install or upgrade:
-        rfgen_url = \
-            "https://raw.github.com/robotframework/Generator/master/rfgen.py"
+        rfgen_url = "https://raw.github.com/robotframework/Generator/master/rfgen.py"
         _log("Installing/upgrading rfgen.py from github.")
         _f = open('rfgen.py', 'wb')
         _f.write(urllib.urlopen(rfgen_url).read())
@@ -437,7 +435,7 @@ def _clean(keep_dist=False):
 
 def _remove_bytecode_files():
     for d in SOURCE_DIR, TEST_DIR:
-        _remove_files_matching(d, r'.*\.pyc')
+        _remove_files_matching(d, r'.*\\.pyc')
 
 
 def _remove_files_matching(directory, pattern):

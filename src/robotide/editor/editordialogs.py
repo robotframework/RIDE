@@ -62,6 +62,7 @@ class _Dialog(RIDEDialog):
         self._create_buttons()
         self.SetSizer(self._sizer)
         self._sizer.Fit(self)
+        self.Layout()
         self._editors[0].set_focus()
 
     def _add_comment_editor(self, item):
@@ -75,10 +76,11 @@ class _Dialog(RIDEDialog):
             self._sizer.Add(line, 0, wx.GROW | wx.ALIGN_CENTER_VERTICAL | wx.RIGHT | wx.TOP, 5)
         else:
             self._sizer.Add(line, 0, wx.GROW | wx.RIGHT | wx.TOP, 5)
+        self._sizer.Fit(self)
 
     def _create_help(self):
-        self._sizer.Add(HelpLabel(self, label=get_help(self._title)),
-                        flag=wx.ALL, border=2)
+        self._sizer.Add(HelpLabel(self, label=get_help(self._title)), flag=wx.ALL, border=2)
+        self._sizer.Fit(self)
 
     def _create_buttons(self, **kwargs):
         buttons = self.CreateStdDialogButtonSizer(wx.OK | wx.CANCEL)
@@ -91,6 +93,7 @@ class _Dialog(RIDEDialog):
                 item.SetForegroundColour(Colour(self.color_secondary_foreground))
                 item.SetOwnForegroundColour(Colour(self.color_secondary_foreground))
         self._sizer.Add(buttons, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+        self._sizer.Fit(self)
 
     def get_value(self):
         return [e.get_value() for e in self._editors]
@@ -127,8 +130,7 @@ class ListVariableDialog(_Dialog):
         value = var.value if var and var.value else ''
         validator = ListVariableNameValidator(self._controller, name)
         return [VariableNameEditor(self, name, _('Name'), validator),
-                ListValueEditor(self, value, _('Value'),
-                                settings=self.plugin.global_settings)]
+                ListValueEditor(self, value, _('Value'), settings=self.plugin.global_settings)]
 
     def _execute(self):
         """ Just ignore it """
@@ -142,8 +144,7 @@ class DictionaryVariableDialog(_Dialog):
         value = var.value if var and var.value else ''
         validator = DictionaryVariableNameValidator(self._controller, name)
         return [VariableNameEditor(self, name, _('Name'), validator),
-                ListValueEditor(self, value, _('Value'),
-                                settings=self.plugin.global_settings)]
+                ListValueEditor(self, value, _('Value'), settings=self.plugin.global_settings)]
 
     def _execute(self):
         """ Just ignore it """
@@ -160,8 +161,7 @@ class LibraryDialog(_Dialog):
         alias = item.alias if item else ''
         self._suggester = LibrariesSuggester(self._controller, self._history_suggester)
         return [FileNameEditor(self, name, _('Name'), self._controller, suggestion_source=self._suggester),
-                ValueEditor(self, args, _('Args')),
-                ValueEditor(self, alias, _('Alias'))]
+                ValueEditor(self, args, _('Args')), ValueEditor(self, alias, _('Alias'))]
 
     def get_value(self):
         values = _Dialog.get_value(self)

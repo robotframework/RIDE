@@ -109,7 +109,6 @@ class RIDEDialog(wx.Dialog):
         self.SetForegroundColour(Colour(self.color_foreground))
         if self.message:
             sizer = wx.BoxSizer(wx.VERTICAL)
-            self.SetSizer(sizer)
             content = wx.StaticText(self, -1, self.message)
             button = wx.Button(self, wx.ID_OK, '', style=style)
             content.SetBackgroundColour(Colour(self.color_background))
@@ -119,6 +118,8 @@ class RIDEDialog(wx.Dialog):
             sizer.Add(content, 0, wx.ALL | wx.EXPAND, 3)
             sizer.Add(wx.StaticText(self, -1, "\n\n"), 0, wx.ALL, 3)
             sizer.Add(button, 0, wx.ALIGN_CENTER | wx.BOTTOM, 5)
+            self.SetSizer(sizer)
+            sizer.Fit(self)
         self.CenterOnParent()
 
     def _create_buttons(self, sizer):
@@ -132,6 +133,7 @@ class RIDEDialog(wx.Dialog):
                 item.SetForegroundColour(Colour(self.color_secondary_foreground))
                 item.SetOwnForegroundColour(Colour(self.color_secondary_foreground))
         sizer.Add(buttons, flag=wx.ALIGN_CENTER | wx.ALL, border=5)
+        sizer.Fit(self)
 
     def _create_horizontal_line(self, sizer):
         line = wx.StaticLine(self, size=(20, -1), style=wx.LI_HORIZONTAL)
@@ -139,6 +141,7 @@ class RIDEDialog(wx.Dialog):
             sizer.Add(line, border=5, flag=wx.GROW | wx.ALIGN_CENTER_VERTICAL | wx.RIGHT | wx.TOP)
         else:
             sizer.Add(line, border=5, flag=wx.GROW | wx.RIGHT | wx.TOP)
+        sizer.Fit(self)
 
     def execute(self):
         retval = None
@@ -162,10 +165,13 @@ class HtmlDialog(RIDEDialog):
         # set Left to Right direction (while we don't have localization)
         self.SetLayoutDirection(wx.Layout_LeftToRight)
         szr = sizers.VerticalSizer()
+        self.SetMinClientSize((200, 300))
         self.html_wnd = HtmlWindow(self, text=content)
         self.html_wnd.SetStandardFonts(size=font_size)
         szr.add_expanding(self.html_wnd, padding=padding)
         self.SetSizer(szr)
+        szr.Fit(self)
+        self.Layout()
 
     def on_key(self, event):
         """ In the event we need to process key events"""
