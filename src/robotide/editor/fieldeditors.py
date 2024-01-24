@@ -52,6 +52,8 @@ class ValueEditor(wx.Panel):
         if validator:
             self.set_validator(validator)
         self.SetSizer(self._sizer)
+        self._sizer.Fit(self)
+        self.Layout()
 
     def _create_editor(self, value, label, settings):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
