@@ -584,7 +584,7 @@ class TestRunnerPlugin(Plugin):
         if not self._test_runner.is_running():
             self.on_process_ended(None)
             return
-        out_buffer, err_buffer, _ = self._test_runner.get_output_and_errors(self.get_current_profile())
+        out_buffer, err_buffer, __ = self._test_runner.get_output_and_errors(self.get_current_profile())
         if len(out_buffer) > 0:
             self._append_to_console_log(out_buffer, source="stdout")
         if len(err_buffer) > 0:
