@@ -1149,10 +1149,10 @@ class ProgressBar(wx.Panel):
     def __init__(self, parent, fail_color='#FF8E8E', pass_color="#9FCC9F", skip_color='yellow'):
         wx.Panel.__init__(self, parent, wx.ID_ANY)
         self._sizer = wx.BoxSizer(wx.HORIZONTAL)
-        self._gauge = wx.Gauge(self, size=(100, 10))
+        self._gauge = wx.Gauge(self, size=(100, 15), style=wx.GA_HORIZONTAL)
         self._label = Label(self)
         self._sizer.Add(self._label, 1, wx.EXPAND | wx.LEFT, 10)
-        self._sizer.Add(self._gauge, 0, wx.ALIGN_CENTER_VERTICAL | wx.RIGHT, 10)
+        self._sizer.Add(self._gauge, 0, wx.ALIGN_CENTER_VERTICAL | wx.RIGHT, 15)
         self._sizer.Layout()
         self.SetSizer(self._sizer)
         self._gauge.Hide()
@@ -1190,10 +1190,11 @@ class ProgressBar(wx.Panel):
         """Signals the start of a test run; initialize progressbar."""
         self._initialize_state()
         self._start_time = time.time()
+        self._gauge.SetForegroundColour(self._default_colour)
         self._gauge.Show()
         self._sizer.Layout()
-        self.SetBackgroundColour(self._default_colour)
         self.SetForegroundColour(self._foreground_colour)
+        self.SetBackgroundColour(self._default_colour)
         self._timer.Start(50)
 
     def Stop(self):
@@ -1224,19 +1225,30 @@ class ProgressBar(wx.Panel):
     def _update_message(self):
         """Update the displayed elapsed time, passed and failed counts"""
         elapsed = time.time() - self._start_time
-        message = _("elapsed time: %s     pass: %s     skip: %s     fail: %s") % (
+        message = _("elapsed time: %s  pass: %s  skip: %s  fail: %s") % (
             self._seconds_to_string(elapsed), self._pass, self._skip, self._fail)
         message += self._get_current_keyword_text()
-        self._label.SetLabel(message)
         if self._fail > 0:
             self.SetForegroundColour(self.get_visible_color(self.fail_color))
             self.SetBackgroundColour(self.fail_color)
+            self._label.SetForegroundColour(self.get_visible_color(self.fail_color))
+            self._label.SetBackgroundColour(self.fail_color)
         elif self._skip > 0:
             self.SetForegroundColour(self.get_visible_color(self.skip_color))
             self.SetBackgroundColour(self.skip_color)
+            self._label.SetForegroundColour(self.get_visible_color(self.skip_color))
+            self._label.SetBackgroundColour(self.skip_color)
         elif self._pass > 0:
             self.SetForegroundColour(self.get_visible_color(self.pass_color))
             self.SetBackgroundColour(self.pass_color)
+            self._label.SetForegroundColour(self.get_visible_color(self.pass_color))
+            self._label.SetBackgroundColour(self.pass_color)
+        else:
+            self.SetForegroundColour(self._foreground_colour)
+            self.SetBackgroundColour(self._default_colour)
+            self._label.SetForegroundColour(self._foreground_colour)
+            self._label.SetBackgroundColour(self._default_colour)
+        self._label.SetLabel(message)
         # not sure why this is required, but without it the background
         # colors don't look right on Windows
         self.Refresh()
@@ -1244,7 +1256,7 @@ class ProgressBar(wx.Panel):
     def _get_current_keyword_text(self):
         if not self._current_keywords:
             return ''
-        return _('     current keyword: ') + self._fix_size(' -> '.join(self._current_keywords), 50)
+        return _('  current keyword: ') + self._fix_size(' -> '.join(self._current_keywords), 50)
 
     @staticmethod
     def _fix_size(text, max_length):
