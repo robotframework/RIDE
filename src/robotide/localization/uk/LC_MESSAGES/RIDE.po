@@ -1,9 +1,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2024-01-17 00:58+0000\n"
-"PO-Revision-Date: 2024-01-15 22:11+0000\n"
-"Last-Translator: \n"
+"POT-Creation-Date: 2024-01-28 18:52+0000\n"
+"PO-Revision-Date: 2024-01-28 19:01+0000\n"
+"Last-Translator: Hélio Guilherme <helio_guilherme@hotmail.com>\n"
 "Language-Team: Ukrainian\n"
 "Language: uk_UA\n"
 "MIME-Version: 1.0\n"
@@ -283,8 +283,8 @@ msgstr "Запустити тести"
 #: /home2/helio/github/RIDE/tools/../src/robotide/spec/specimporter.py:36
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/actiontriggers.py:54
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:53
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:761
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:773
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:763
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:775
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/preview.py:41
 msgid "Tools"
 msgstr "Інструменти"
@@ -503,13 +503,13 @@ msgstr ""
 msgid "No logs directory"
 msgstr "Немає каталогу журналів"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1227
-msgid "elapsed time: %s     pass: %s     skip: %s     fail: %s"
-msgstr "минулий час: %s     pass: %s     пропущено: %s     невдача: %s"
+#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1229
+msgid "elapsed time: %s  pass: %s  skip: %s  fail: %s"
+msgstr "минулий час: %s pass: %s пропущено: %s невдача: %s"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1247
-msgid "     current keyword: "
-msgstr "     поточне ключове слово: "
+#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1260
+msgid "  current keyword: "
+msgstr "  поточне ключове слово: "
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/controller/ui/treecontroller.py:41
 msgid ""
@@ -640,17 +640,17 @@ msgid ""
 "    "
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:69
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:70
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:482
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:570
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:720
 msgid "Comment"
 msgstr "Коментар"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:115
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:129
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:144
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:162
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:118
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:132
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:146
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:163
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:361
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:379
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:399
@@ -663,22 +663,22 @@ msgstr "Коментар"
 msgid "Name"
 msgstr "Ім'я"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:116
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:130
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:145
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:119
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:133
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:147
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:362
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:482
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:720
 msgid "Value"
 msgstr "Цінність"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:163
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:184
-msgid "Args"
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:164
+msgid "Alias"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:164
-msgid "Alias"
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:184
+msgid "Args"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:183
@@ -727,11 +727,11 @@ msgstr "Джерело"
 msgid "Find Usages"
 msgstr "Знайти використання"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/fieldeditors.py:185
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/fieldeditors.py:187
 msgid "Columns"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/fieldeditors.py:189
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/fieldeditors.py:191
 msgid ""
 "Number of columns that are shown in this editor. Selected value is stored "
 "and used globally."
@@ -888,7 +888,7 @@ msgid "Variable "
 msgstr "Змінна "
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1180
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:522
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:527
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:49
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:127
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:184
@@ -1002,35 +1002,35 @@ msgstr "Метадані"
 msgid "Add Metadata"
 msgstr "Додати метадані"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:370
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:367
 msgid "ERROR: Data sanity check failed!"
 msgstr "ПОМИЛКА: Не вдалося перевірити достатність даних!"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:370
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:367
 msgid "Error at line"
 msgstr "Помилка в рядку"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:371
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:368
 msgid "Reset changes?"
 msgstr "Скинути зміни?"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:372
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:369
 msgid "Can not apply changes from Text Editor"
 msgstr "Не можна застосувати зміни з текстового редактора"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:505
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:510
 msgid "Apply Changes"
 msgstr "Застосувати зміни"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:532
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:537
 msgid "Syntax colorization disabled due to missing requirements."
 msgstr "Синтаксичну кольоровізацію вимкнено через відсутні вимоги."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:533
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:538
 msgid "Get help"
 msgstr "Отримати допомогу"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:548
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:553
 msgid ""
 "<h1>Syntax colorization</h1>\n"
 "        <p>\n"
@@ -1062,11 +1062,11 @@ msgid ""
 "        "
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:573
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:578
 msgid "Getting syntax colorization"
 msgstr "Отримання синтаксису забарвлення"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:671
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:676
 msgid "No matches found."
 msgstr "Відповідників не знайдено."
 
@@ -1544,67 +1544,67 @@ msgstr ""
 "Є незбережені зміни.\n"
 "Продовжити без збереження?"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:487
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:489
 msgid "Choose a directory containing Robot files"
 msgstr "Виберіть каталог, що містить файли роботів"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:552
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:554
 msgid "RIDE - Preferences"
 msgstr "RIDE - Параметри"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:639
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:641
 msgid "Workspace modifications detected on the file system."
 msgstr "Зміни робочого простору виявлені у файловій системі."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:640
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:642
 msgid "Do you want to reload the workspace?"
 msgstr "Хочете перезавантажити робочу область?"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:642
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:644
 msgid "Answering <Yes> will discard unsaved changes."
 msgstr "Відповідь <Yes> скасує незбережені зміни."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:643
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:645
 msgid "Answering <No> will ignore the changes on disk."
 msgstr "Відповідь <No> буде ігнорувати зміни на диску."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:644
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:646
 msgid "Files Changed On Disk"
 msgstr "Змінені файли на диску"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:686
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:688
 msgid "Customize..."
 msgstr "Налаштувати..."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:774
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:776
 msgid "search unused keywords"
 msgstr "пошукові ключові слова"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:774
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:776
 msgid "stop test run"
 msgstr "зупинити випробування"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:775
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:777
 msgid "preview"
 msgstr "попередній перегляд"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:775
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:777
 msgid "view ride log"
 msgstr "переглянути журнал поїздки"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:817
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:819
 msgid "Shortcut keys for RIDE"
 msgstr "Комбінації клавіш для RIDE"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:855
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:857
 msgid "Show"
 msgstr "Показати"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:856
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:858
 msgid "Hide"
 msgstr "Приховати"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:857
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:859
 msgid "Close"
 msgstr "Закрити"
 
