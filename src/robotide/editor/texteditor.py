@@ -139,7 +139,9 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
             if hasattr(datafile_controller, 'language'):
                 self._doc_language = datafile_controller.language
                 self._editor.language = datafile_controller.language
-                # print(f"DEBUG: texteditor _open language={datafile_controller.language}")
+                print(f"DEBUG: texteditor _open language={datafile_controller.language}")
+            else:
+                print(f"DEBUG: texteditor _open NO language attribute old_language={self._doc_language}")
             self._open_data_for_controller(datafile_controller)
             self._editor.store_position()
 
@@ -247,8 +249,9 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
                 print(e)
         elif message.oldtab == self.title:
             self._editor.remove_and_store_state()
-            self._editor_component.is_saving = False
-            self._editor_component.content_save()
+            # self._editor_component.is_saving = False
+            # self._editor_component.content_save()
+            self._apply_txt_changes_to_model()
 
     def on_tab_changed(self, event):
         __ = event
