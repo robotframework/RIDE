@@ -78,7 +78,7 @@ jobs:
       run: |
         sudo dnf install -y sdl12-compat python3-wxpython4 xorg-x11-server-Xvfb python3-pip psmisc
         sudo dnf downgrade -y mesa* --refresh
-        sudo dnf install -y glibc-locale-source glibc-langpack-en
+        sudo dnf install -y glibc-locale-source
         export LANG=en_US.UTF-8
         sudo localedef --verbose --force -i en_US -f UTF-8 en_US.UTF-8
         sudo -H pip install -r requirements-dev.txt
@@ -118,6 +118,7 @@ jobs:
         invoke test-ci
         pip install .
         which ride.py
+        export LANG=en_US.utf8
         xvfb-run --server-args="-screen 0, 1280x720x24" -a ride.py &
         sleep 10
         killall xvfb-run
