@@ -79,7 +79,7 @@ jobs:
         sudo dnf install -y sdl12-compat python3-wxpython4 xorg-x11-server-Xvfb python3-pip psmisc
         sudo dnf downgrade -y mesa* --refresh
         export LANG=en_US.UTF-8
-        localedef --verbose --force -i en_US -f UTF-8 en_US.UTF-8
+        sudo localedef --verbose --force -i en_US -f UTF-8 en_US.UTF-8
         sudo -H pip install -r requirements-dev.txt
     - name: Run tests
       run: |
@@ -109,6 +109,7 @@ jobs:
       run: |
         sudo apt update -y
         sudo apt install -y libsdl1.2debian libsdl2-2.0-0 libnotify4
+        sudo locale-gen en_US.UTF-8
         sudo pip install https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-22.04/wxPython-4.2.1-cp310-cp310-linux_x86_64.whl
         sudo pip install -r requirements-dev.txt
         Xvfb &
