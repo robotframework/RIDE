@@ -78,6 +78,8 @@ jobs:
       run: |
         sudo dnf install -y sdl12-compat python3-wxpython4 xorg-x11-server-Xvfb python3-pip psmisc
         sudo dnf downgrade -y mesa* --refresh
+        locale -a
+        export LC_ALL=C
         sudo -H pip install -r requirements-dev.txt
     - name: Run tests
       run: |
