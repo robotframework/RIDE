@@ -110,6 +110,7 @@ class _Dialog(RIDEDialog):
 
 
 class ScalarVariableDialog(_Dialog):
+    _title = _('Scalar Variable')
 
     def _get_editors(self, var):
         name = var.name if var and var.name else '${}'
@@ -124,6 +125,7 @@ class ScalarVariableDialog(_Dialog):
 
 
 class ListVariableDialog(_Dialog):
+    _title = _('List Variable')
 
     def _get_editors(self, var):
         name = var.name if var and var.name else '@{}'
@@ -138,6 +140,7 @@ class ListVariableDialog(_Dialog):
 
 
 class DictionaryVariableDialog(_Dialog):
+    _title = _('Dictionary Variable')
 
     def _get_editors(self, var):
         name = var.name if var and var.name else '&{}'
@@ -152,6 +155,7 @@ class DictionaryVariableDialog(_Dialog):
 
 
 class LibraryDialog(_Dialog):
+    _title = _('Library')
 
     _history_suggester = HistorySuggester()
 
@@ -174,6 +178,7 @@ class LibraryDialog(_Dialog):
 
 
 class VariablesDialog(LibraryDialog):
+    _title = _('Variables')
 
     _history_suggester = HistorySuggester()
 
@@ -189,6 +194,7 @@ class VariablesDialog(LibraryDialog):
 
 
 class ResourceDialog(_Dialog):
+    _title = _('Resource')
 
     def _get_editors(self, item):
         name = item and item.name or ''
@@ -201,6 +207,7 @@ class ResourceDialog(_Dialog):
 
 
 class DocumentationDialog(_Dialog):
+    _title = _('Documentation')
 
     def _get_editors(self, doc):
         return [MultiLineEditor(self, doc)]
@@ -355,6 +362,7 @@ class TimeoutDialog(TestTimeoutDialog):
 
 
 class MetadataDialog(_Dialog):
+    _title = _('Metadata')
 
     def _get_editors(self, item):
         name, value = item and (item.name, item.value) or ('', '')

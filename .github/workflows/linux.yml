@@ -78,9 +78,8 @@ jobs:
       run: |
         sudo dnf install -y sdl12-compat python3-wxpython4 xorg-x11-server-Xvfb python3-pip psmisc
         sudo dnf downgrade -y mesa* --refresh
-        sudo dnf install -y glibc-locale-source glibc-langpack-en
-        export LC_ALL=C
-        sudo localedef -i en_US -f UTF-8 en_US.UTF-8
+        sudo dnf install -y glibc-locale-source glibc-langpack-en langpacks-en
+        sudo localectl set-locale LANG=en_US.UTF-8
         sudo -H pip install -r requirements-dev.txt
     - name: Run tests
       run: |

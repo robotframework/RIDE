@@ -137,11 +137,11 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
             # if hasattr(datafile_controller, 'preamble'):  # DEBUG: Is failing at resource files
             #     print(f"DEBUG: texteditor _open preamble={datafile_controller.preamble}")
             if hasattr(datafile_controller, 'language'):
-                self._doc_language = datafile_controller.language
-                self._editor.language = datafile_controller.language
-                print(f"DEBUG: texteditor _open language={datafile_controller.language}")
-            else:
-                print(f"DEBUG: texteditor _open NO language attribute old_language={self._doc_language}")
+                if datafile_controller.language is not None:
+                    self._doc_language = self._editor.language = datafile_controller.language
+                else:
+                    self._doc_language = self._editor.language = ['en']
+            print(f"DEBUG: texteditor _open language={self._doc_language}")
             self._open_data_for_controller(datafile_controller)
             self._editor.store_position()
 
@@ -746,8 +746,8 @@ class SourceEditor(wx.Panel):
     def open(self, data):
         self.reset()
         self._data = data
-        self.language = self._data._doc_language
-        print(f"DEBUG: texteditor.py SourceEditor open ENTER language={self.language}")
+        self.language = self._data._doc_language if self._data._doc_language is not None else ['en']
+        # print(f"DEBUG: texteditor.py SourceEditor open ENTER language={self.language}")
         try:
             if isinstance(self._data.wrapper_data, ResourceFileController):
                 self._controller_for_context = DummyController(self._data.wrapper_data, self._data.wrapper_data)
