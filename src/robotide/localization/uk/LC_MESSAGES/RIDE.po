@@ -987,6 +987,19 @@ msgstr "Ім'я / Шлях"
 msgid "Import Failed Help"
 msgstr "Допомога при імпорті"
 
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:571
+msgid "Library"
+msgstr "Бібліотека"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:571
+msgid "Resource"
+msgstr "Ресурси"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:571
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:662
+msgid "Variables"
+msgstr "Змінні"
+
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:585
 msgid "Add Import"
 msgstr "Додати імпорт"
@@ -1024,6 +1037,10 @@ msgstr ""
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:671
 msgid "Import failure handling"
 msgstr "Обробка помилок імпорту"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:720
+msgid "Metadata"
+msgstr "Метадані"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:724
 msgid "Add Metadata"

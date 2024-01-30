@@ -1025,6 +1025,19 @@ msgstr "Naam / Lokatie"
 msgid "Import Failed Help"
 msgstr "Import hulp"
 
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:571
+msgid "Library"
+msgstr "Bibliotheek"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:571
+msgid "Resource"
+msgstr "Resource"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:571
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:662
+msgid "Variables"
+msgstr "Variabelen"
+
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:585
 msgid "Add Import"
 msgstr "Import toevoegen"
@@ -1085,6 +1098,10 @@ msgstr ""
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:671
 msgid "Import failure handling"
 msgstr "Hulp bij importfouten"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:720
+msgid "Metadata"
+msgstr "Metagegevens"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:724
 msgid "Add Metadata"
@@ -1291,6 +1308,10 @@ msgstr "Verwijderen"
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/configmanagerui.py:101
 msgid "Command"
 msgstr "Opdracht"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/run/configmanagerui.py:101
+msgid "Documentation"
+msgstr "Opmerkingen"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/runanything.py:30
 msgid ""
