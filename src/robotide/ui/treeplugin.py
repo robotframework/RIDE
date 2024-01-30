@@ -91,7 +91,8 @@ class TreePlugin(Plugin):
         self._tree.Bind(wx.EVT_MOVE, self.on_tab_changed)
         # parent, action_registerer, , default_settings={'collapsed':True}
         self._pane = self._mgr.GetPane(self._tree)
-        self.font = self._tree.GetFont()
+        self.font = wx.Font(self._app.fontinfo)  # self._tree.GetFont()
+        self._tree.SetFont(self.font)
         # print(f"DEBUG: TreePlugin init self.pane_id={self.pane_id} \n"
         #      f"self._pane = {self._pane}")
 
@@ -181,7 +182,7 @@ class TreePlugin(Plugin):
             self.font.SetFaceName(html_font_face)
             self.font.SetPointSize(html_font_size)
             self._tree.SetFont(self.font)
-            self._tree.Refresh()
+        self._tree.Refresh()
         self._tree.Raise()
         self.save_setting('opened', True)
         self._tree.populate(self._model)
