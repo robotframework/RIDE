@@ -71,7 +71,7 @@ class SettingEditor(wx.Panel):
                 # print(f"DEBUG: settings.py SettingEditor __init__ CONTROLLER language={self._language}")
             except AttributeError:
                 self._language = ['en']
-        # print(f"DEBUG: settings.py SettingEditor __init__ language={self._language}")
+        # print(f"DEBUG: settings.py SettingEditor __init__ set_lang={set_lang} language={self._language}")
         self.plugin = plugin
         self._datafile = controller.datafile
         self._create_controls()
@@ -639,19 +639,22 @@ class ImportSettingListEditor(_AbstractListEditor):
         self._show_import_editor_dialog(
             editor_dialog(setting, self._language),
             lambda v, c: setting.execute(ctrlcommands.SetValues(v, c)),
-            setting, on_empty=self._delete_selected)
+            setting, on_empty=self._delete_selected,
+            title=_('Edit'))
 
     def on_library(self, event):
         __ = event
         self._show_import_editor_dialog(
             LibraryDialog,
-            lambda v, c: self._controller.execute(ctrlcommands.AddLibrary(v, c)))
+            lambda v, c: self._controller.execute(ctrlcommands.AddLibrary(v, c)),
+            title=_('Library'))
 
     def on_resource(self, event):
         __ = event
         self._show_import_editor_dialog(
             ResourceDialog,
-            lambda v, c: self._controller.execute(ctrlcommands.AddResource(v, c)))
+            lambda v, c: self._controller.execute(ctrlcommands.AddResource(v, c)),
+            title=_('Resource'))
 
     def on_variables(self, event):
         __ = event
