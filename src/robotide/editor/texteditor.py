@@ -292,6 +292,33 @@ class DummyController(WithStepsController):
         return hash(repr(self))
 
 
+def read_language(content):
+    from tempfile import NamedTemporaryFile
+    from ..lib.compat.parsing.language import read as lread
+
+    with NamedTemporaryFile(delete_on_close=False) as fp:
+        fp.write(content)
+        fp.close()
+        with open(fp.name, mode='rb') as fl:
+            lang = lread(fl)
+    return lang
+
+
+def obtain_language(existing, content):
+    try:
+        set_lang = shared_memory.ShareableList(name="language")
+    except AttributeError:  # Unittests fails here
+        set_lang = []
+    doc_lang = read_language(content)
+    print(f"DEBUG: textedit.py validate_and_update obtain_language={doc_lang}")
+    if doc_lang is not None:
+        mlang = Language.from_name(doc_lang)
+        set_lang = [mlang.code]
+    else:
+        set_lang[0] = existing if existing is not None else 'en'
+    return set_lang
+
+
 class DataValidationHandler(object):
 
     def __init__(self, plugin, lang=None):
@@ -305,8 +332,16 @@ class DataValidationHandler(object):
         self._editor = editor
 
     def validate_and_update(self, data, text, lang='en'):
-        self._doc_language = lang
         m_text = text.decode("utf-8")
+        if "Language: " in m_text:
+            print(f"DEBUG: textedit.py validate_and_update Content has Language setting is {lang}\n"
+                  f"Calling obtain_language: ")
+            doc_lang = obtain_language(lang, text)
+            self._doc_language = doc_lang
+            print(f"DEBUG: textedit.py validate_and_update AFTER obtain_language={doc_lang}")
+        else:
+            self._doc_language = lang if lang is not None else 'en'
+
         result = self._sanity_check(data, m_text)
         if isinstance(result, tuple):
             handled = self._handle_sanity_check_failure(result)

@@ -165,6 +165,7 @@ class TreePlugin(Plugin):
         html_font_face = self.settings.get('font face', '')
         html_font_size = self.settings.get('font size', 11)
         self._tree.Show(True)
+        print(f"DEBUG: treeplugin on_show_tree {html_font_face=}  {html_font_size=}")
         self._tree.SetMinSize(wx.Size(200, 225))
         # self.aui_mgr.DetachPane(self._tree)
         # self.aui_mgr.Update()
@@ -177,7 +178,8 @@ class TreePlugin(Plugin):
         self._tree.SetBackgroundStyle(wx.BG_STYLE_SYSTEM)
         self._tree.SetBackgroundColour(html_background)
         self._tree.SetForegroundColour(html_foreground)
-        self.font = self._tree.GetFont()
+        # self.font = self._tree.GetFont()
+        self._tree.SetFont(self.font)
         if html_font_face is not None:
             self.font.SetFaceName(html_font_face)
             self.font.SetPointSize(html_font_size)
