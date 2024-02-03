@@ -1,0 +1,5 @@
+files:
+  - source: /src/robotide/localization/RIDE.pot
+    translation: /src/robotide/localization/%locale_with_underscore%/LC_MESSAGES/RIDE.po
+  - source: /src/robotide/localization/RIDE.pot
+    translation: /src/robotide/localization/%two_letters_code%/LC_MESSAGES/RIDE.po
