@@ -150,15 +150,17 @@ RELEASE_NOTES = f"""
 
 
 <p><a class="reference external" href="https://github.com/robotframework/RIDE/">RIDE (Robot Framework IDE)</a>
- {VERSION} is a new release with minor enhancements and bug fixes. The reference for valid arguments is
+ {VERSION} is a new release with important enhancements and bug fixes. The reference for valid arguments is
  <a class="reference external" href="https://robotframework.org/">Robot Framework</a> installed version, which is at this
-  moment 6.1.1. However, internal library is based on version 3.1.2, to keep compatibility with old formats.</p>
+  moment 7.0. However, internal library code is originally based on version 3.1.2, but adapted for new versions.</p>
 <p></p>
 <ul class="simple">
-<li>This version supports Python 3.8 up to 3.11.</li>
+<li>This version supports Python 3.8 up to 3.12.</li>
 <li>There are some changes, or known issues:<ul>
 <li>Removed support for Python 3.6 and 3.7</li>
-<li>Added support for language configured test suites, with languages from installed Robot Framework version 6.0, or 
+<li>Added UI localization prepared for all the languages from installed Robot Framework version 6.1, or 
+higher. Major translations are: Dutch, Portuguese and Brazilian Portuguese.</li> 
+<li>Added support for language configured test suites, with languages from installed Robot Framework version 6.1, or 
 higher.</li> 
 <li>On Text Editor, pressing <b>Ctrl</b> when the caret/cursor is near a Keyword will show a detachable window with the 
 documentation, at Mouse Pointer position.</li> 
@@ -179,6 +181,9 @@ which we now <em>recommend</em>.</li>
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
+<li>Added UI localization prepared for all the languages from installed Robot Framework version 6.1, or 
+higher. Language is selected from Tools->Preferences->General.</li>
+<li>Removed support for HTML file format (obsolete since Robot Framework 3.2)</li>
 <li>Added support for language configured test suites. Fields are shown in the language of the files in Grid Editor.
  Tooltips are always shown in English. Colorization for language configured files is working in Text Editor.</li>
 <li>Fixed New User Keyword dialog not allowing empty Arguments field</li>
@@ -270,6 +275,6 @@ python -m robotide.__init__
 <pre class="literal-block">
 python -m robotide.postinstall -install
 </pre>
-<p>RIDE {VERSION} was released on 24/Dec/2023.</p>
+<p>RIDE {VERSION} was released on 04/Feb/2024.</p>
 </div>
 """

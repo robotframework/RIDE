@@ -72,6 +72,7 @@ class RIDE(wx.App):
     _plugin_loader = None
     editor = None
     fileexplorerplugin = None
+    fontinfo = None
     frame = None
     namespace = None
     preferences = None
@@ -105,6 +106,10 @@ class RIDE(wx.App):
         self.preferences = Preferences(self.settings)
         self.namespace = Namespace(self.settings)
         self._controller = Project(self.namespace, self.settings)
+        # Try to get FontInfo as soon as possible
+        font_size = self.settings['General'].get('font size', 12)
+        font_face = self.settings['General'].get('font face', 'Helvetica')
+        self.fontinfo = wx.FontInfo(font_size).FaceName(font_face).Bold(False)
         self.frame = RideFrame(self, self._controller)
         # DEBUG  self.frame.Show()
         self._editor_provider = EditorProvider()

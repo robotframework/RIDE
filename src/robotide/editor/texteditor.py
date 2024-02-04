@@ -141,7 +141,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
                     self._doc_language = self._editor.language = datafile_controller.language
                 else:
                     self._doc_language = self._editor.language = ['en']
-            print(f"DEBUG: texteditor _open language={self._doc_language}")
+            # print(f"DEBUG: texteditor _open language={self._doc_language}")
             self._open_data_for_controller(datafile_controller)
             self._editor.store_position()
 
@@ -292,6 +292,33 @@ class DummyController(WithStepsController):
         return hash(repr(self))
 
 
+def read_language(content):
+    from tempfile import NamedTemporaryFile
+    from ..lib.compat.parsing.language import read as lread
+
+    with NamedTemporaryFile(delete_on_close=False) as fp:
+        fp.write(content)
+        fp.close()
+        with open(fp.name, mode='rb') as fl:
+            lang = lread(fl)
+    return lang
+
+
+def obtain_language(existing, content):
+    try:
+        set_lang = shared_memory.ShareableList(name="language")
+    except AttributeError:  # Unittests fails here
+        set_lang = []
+    doc_lang = read_language(content)
+    # print(f"DEBUG: textedit.py validate_and_update obtain_language={doc_lang}")
+    if doc_lang is not None:
+        mlang = Language.from_name(doc_lang)
+        set_lang[0] = mlang.code
+    else:
+        set_lang[0] = existing[0] if existing is not None else 'en'
+    return [set_lang[0]]
+
+
 class DataValidationHandler(object):
 
     def __init__(self, plugin, lang=None):
@@ -299,14 +326,28 @@ class DataValidationHandler(object):
         self._last_answer = None
         self._last_answer_time = 0
         self._editor = None
-        self._doc_language = lang
+        try:
+            set_lang = shared_memory.ShareableList(name="language")
+        except AttributeError:  # Unittests fails here
+            set_lang = []
+        if set_lang is not None:
+            self._doc_language = set_lang[0]
+        elif lang is not None:
+            self._doc_language = lang
+        else:
+            self._doc_language = 'en'
 
     def set_editor(self, editor):
         self._editor = editor
 
     def validate_and_update(self, data, text, lang='en'):
-        self._doc_language = lang
         m_text = text.decode("utf-8")
+        if "Language: " in m_text:
+            self._doc_language = obtain_language(lang, text)
+        else:
+            self._doc_language = lang if lang is not None else 'en'
+        self._editor.language = self._doc_language
+
         result = self._sanity_check(data, m_text)
         if isinstance(result, tuple):
             handled = self._handle_sanity_check_failure(result)
@@ -341,7 +382,7 @@ class DataValidationHandler(object):
             validator.visit(model)
         except DataError as err:
             result = (err.message, err.details)
-        model.save("/tmp/model_saved_from_RIDE.robot")
+        # model.save("/tmp/model_saved_from_RIDE.robot")
         # print(f"DEBUG: textedit.py _sanity_check after calling validator {validator}\n"
         #       f"Save model in /tmp/model_saved_from_RIDE.robot"
         #       f" result={result}")
@@ -387,7 +428,10 @@ class DataFileWrapper(object):  # DEBUG: bad class name
         self.wrapper_data = data
         self._settings = settings
         self._tab_size = self._settings.get(TXT_NUM_SPACES, 2) if self._settings else 2
-        self._doc_language = language
+        if language is not None:
+            self._doc_language = language
+        else:
+            self._doc_language = ['en']
 
     def __eq__(self, other):
         if other is None:
@@ -399,7 +443,7 @@ class DataFileWrapper(object):  # DEBUG: bad class name
 
     def _create_target_from(self, content):
         src = BytesIO(content.encode("utf-8"))
-        target = self._create_target()
+        target = self._create_target(content.encode("utf-8"))
         FromStringIOPopulator(target, lang=self._doc_language).populate(src, self._tab_size)
         return target
 
@@ -414,9 +458,11 @@ class DataFileWrapper(object):  # DEBUG: bad class name
         if self.wrapper_data.is_dirty:
             self.wrapper_data.unmark_dirty()
 
-    def _create_target(self):
+    def _create_target(self, content=None):
         data = self.wrapper_data.data
         target_class = type(data)
+        self._doc_language = obtain_language(self._doc_language, content=content)
+        # print(f"DEBUG: textedit.py DataFileWrapper _create_target self._doc_language={self._doc_language}")
         if isinstance(data, robotapi.TestDataDirectory):
             target = robotapi.TestDataDirectory(parent=None, source=self.wrapper_data.directory,
                                                 settings=self._settings, language=self._doc_language)
@@ -459,6 +505,13 @@ class SourceEditor(wx.Panel):
         self.tab_size = self.source_editor_parent.app.settings.get(TXT_NUM_SPACES, 4)
         self.reformat = self.source_editor_parent.app.settings.get('reformat', False)
         self._doc_language = None
+        try:
+            set_lang = shared_memory.ShareableList(name="language")
+        except AttributeError:  # Unittests fails here
+            set_lang = []
+        if not set_lang:
+            set_lang[0] = ['en']
+        self._doc_language = set_lang[0]
         self._create_ui(title)
         self._data = None
         self._position = 0  # Start at 0 if first time access
@@ -759,8 +812,8 @@ class SourceEditor(wx.Panel):
             self._suggestions = SuggestionSource(None, self._controller_for_context)
         if hasattr(self.plugin, 'datafile') and self.plugin.datafile:
             self.datafile = self.plugin.datafile
-        else:
-            print(f"DEBUG: Text Editor open NOT DATAFILE path={self.datafile_controller.source}")
+        # else:
+        #     print(f"DEBUG: Text Editor open NOT DATAFILE path={self.datafile_controller.source}")
         if not self.source_editor:
             self._stored_text = self._data.content
             self._create_editor_text_control(text=self._stored_text, language=self.language)

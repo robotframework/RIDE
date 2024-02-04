@@ -126,6 +126,9 @@ class RideFrame(wx.Frame):
         self.SetLayoutDirection(wx.Layout_LeftToRight)
         # self.SetLayoutDirection(wx.Layout_RightToLeft)
 
+        self.fontinfo = application.fontinfo
+        self.SetFont(wx.Font(self.fontinfo))
+
         self.aui_mgr = aui.AuiManager(self)
 
         # tell AuiManager to manage this frame
@@ -215,6 +218,7 @@ class RideFrame(wx.Frame):
             # DEBUG: self._notebook_theme = 0 (allow to select themes for notebooks)
             # DEBUG:self.notebook = NoteBook(self.splitter, self._application, self._notebook_style)
             self.notebook = NoteBook(self, self._application, self._notebook_style)
+            self.notebook.SetFont(wx.Font(self.fontinfo))
             self.notebook.SetBackgroundColour(Colour(self.color_background))
             self.notebook.SetForegroundColour(Colour(self.color_foreground))
             self.aui_mgr.AddPane(self.notebook, aui.AuiPaneInfo().Name("notebook_editors").
@@ -232,6 +236,8 @@ class RideFrame(wx.Frame):
         _menudata = get_menudata()
 
         self.main_menu = MenuBar(self)
+        self.main_menu._mb.SetFont(wx.Font(self.fontinfo))
+        self.main_menu.m_frame.SetFont(wx.Font(self.fontinfo))
         self.toolbar = ToolBar(self)
         self.toolbar.SetMinSize(wx.Size(100, 60))
         self.toolbar.SetBackgroundColour(Colour(self.color_background))
@@ -257,6 +263,7 @@ class RideFrame(wx.Frame):
             # Tree is always created here
             self.tree = Tree(self, self.actions, self._application.settings)
             self.tree.SetMinSize(wx.Size(275, 250))
+            self.tree.SetFont(wx.Font(self.fontinfo))
             # self.leftpanel.Bind(wx.EVT_SIZE, self.tree.OnSize)
             # self.aui_mgr.AddPane(self.leftpanel, aui.AuiPaneInfo().Name("left_panel").Caption("left_panel").Left())
             # DEBUG: Next was already called from application.py
@@ -270,6 +277,7 @@ class RideFrame(wx.Frame):
         if new_ui:  # Only when creating UI we add panes
             # ##### File explorer panel is always created here
             self.filemgr = FileExplorer(self, self.controller)
+            self.filemgr.SetFont(wx.Font(self.fontinfo))
             self.filemgr.SetMinSize(wx.Size(275, 250))
             # DEBUG: Next was already called from application.py
             self.aui_mgr.AddPane(self.filemgr, aui.AuiPaneInfo().Name("file_manager").LeftDockable())
@@ -279,6 +287,7 @@ class RideFrame(wx.Frame):
             self.CreateStatusBar(name="StatusBar")
             self._status_bar = self.FindWindowByName("StatusBar", self)
             if self._status_bar:
+                self._status_bar.SetFont(wx.Font(self.fontinfo))
                 self._status_bar.SetBackgroundColour(Colour(self.color_background))
                 self._status_bar.SetForegroundColour(Colour(self.color_foreground))
             # set main frame icon
@@ -467,7 +476,7 @@ class RideFrame(wx.Frame):
             # print(f"DEBUG: project.py Project load_data file_language = {self.controller.file_language}\n"
             #       f"sharedmem={set_lang}")
         else:
-            set_lang = ['en']
+            set_lang[0] = 'en'
         try:
             err = self.controller.load_datafile(path, LoadProgressObserver(self))
             if isinstance(err, UserWarning):
