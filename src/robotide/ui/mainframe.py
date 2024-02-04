@@ -476,7 +476,7 @@ class RideFrame(wx.Frame):
             # print(f"DEBUG: project.py Project load_data file_language = {self.controller.file_language}\n"
             #       f"sharedmem={set_lang}")
         else:
-            set_lang = ['en']
+            set_lang[0] = 'en'
         try:
             err = self.controller.load_datafile(path, LoadProgressObserver(self))
             if isinstance(err, UserWarning):

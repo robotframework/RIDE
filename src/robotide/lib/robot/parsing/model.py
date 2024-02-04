@@ -106,6 +106,9 @@ class _TestData(object):
         # print(f"DEBUG: model _TestData start_table table={table} header_row={header_row}")
         if table is None or not self._table_is_allowed(table):
             return None
+        if table.type == 'setting':
+            self.setting_table = table = TestCaseFileSettingTable(self, self.language)
+            self.tables.append(self.setting_table)
         if table.type == 'test case':
             self.testcase_table = table = TestCaseTable(self, self.language)
             self.tables.append(self.testcase_table)
@@ -265,9 +268,6 @@ class _TestData(object):
 
         See also :py:class:`robot.writer.datafilewriter.DataFileWriter`
         """
-        options['language'] = self.language
-        print(f"DEBUG: model.py save Call DataFileWriter options={options}\n"
-              f"self.language={self.language} set language={options['language']}")
         return DataFileWriter(**options).write(self)
 
 

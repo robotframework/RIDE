@@ -9,8 +9,10 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 == https://github.com/robotframework/RIDE[Unreleased]
 
 === Added
-
-- Added support for language configured test suites, with installed Robot Framework version 6.0 or higher.
+- Added UI localization prepared for all the languages from installed Robot Framework version 6.1, or
+higher. Major translations are: Dutch, Portuguese and Brazilian Portuguese. Language is selected from
+Tools->Preferences->General.
+- Added support for language configured test suites, with installed Robot Framework version 6.1 or higher.
 - Fields are shown in the language of the files in Grid Editor (will be configurable if future versions).
 - Tooltips for the fields are always shown in English.
 - Colorization for language configured files is working in Text Editor.
@@ -21,6 +23,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Removed
 
+- Removed support for HTML file format (obsolete since Robot Framework 3.2)
 - Removed support for old Python versions, 3.6 nd 3.7.
 
 == https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.0.8.1.rst[2.0.8.1] - 2023-11-01
