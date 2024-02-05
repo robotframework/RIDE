@@ -208,6 +208,8 @@ class KeywordSearchDialog(RIDEDialog):
         self._find_usages_button.SetBackgroundColour(Colour(self.color_secondary_background))
         self._find_usages_button.SetForegroundColour(Colour(self.color_secondary_foreground))
         self.Sizer.Add(self._find_usages_button, 0, wx.ALL, 3)
+        self._results_text = wx.StaticText(self, -1, _('Results: %d') % 0)
+        self.Sizer.Add(self._results_text, 0, wx.ALL, 3)
 
     def _add_to_sizer(self, component):
         self.Sizer.Add(component, 1, wx.EXPAND | wx.ALL, 3)
@@ -279,6 +281,7 @@ class KeywordSearchDialog(RIDEDialog):
                                       self._sort_order, self._get_search_text())
         self._update_keyword_selection()
         self._list.show_keywords(self._keywords, self._last_selected_kw)
+        self._results_text.SetLabel(_('Results: %d') % len(self._keywords))
         self.Refresh()
 
     def _get_search_criteria(self):
