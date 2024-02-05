@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2024-01-30 01:42+0000\n"
-"PO-Revision-Date: 2024-01-30 01:45+0000\n"
+"POT-Creation-Date: 2024-02-04 23:31+0000\n"
+"PO-Revision-Date: 2024-02-04 23:37+0000\n"
 "Last-Translator: Hélio Guilherme <helio_guilherme@hotmail.com>\n"
 "Language-Team: Portuguese\n"
 "Language: pt_PT\n"
@@ -782,6 +782,7 @@ msgstr "Origem"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editors.py:380
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:207
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:70
 msgid "Find Usages"
 msgstr "Procurar Utilizações"
 
@@ -973,17 +974,20 @@ msgid "Search"
 msgstr "Procurar"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/listeditor.py:37
-msgid "Move Down\tCtrl-Down"
-msgstr "Mover Abaixo\tCtrl-Down"
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/tagdialogs.py:233
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:76
+msgid "Delete"
+msgstr "Apagar"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/listeditor.py:37
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:83
 msgid "Move Up\tCtrl-Up"
 msgstr "Mover Acima\tCtrl-Up"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/listeditor.py:37
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/tagdialogs.py:233
-msgid "Delete"
-msgstr "Apagar"
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:84
+msgid "Move Down\tCtrl-Down"
+msgstr "Mover Abaixo\tCtrl-Down"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:100
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/tagdialogs.py:233
@@ -1017,19 +1021,6 @@ msgstr "Nome / Caminho"
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:571
 msgid "Import Failed Help"
 msgstr "Ajuda na Falha de Importação"
-
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:571
-msgid "Library"
-msgstr "Biblioteca"
-
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:571
-msgid "Resource"
-msgstr "Recurso"
-
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:571
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:662
-msgid "Variables"
-msgstr "Variáveis"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:585
 msgid "Add Import"
@@ -1089,10 +1080,6 @@ msgstr ""
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:671
 msgid "Import failure handling"
 msgstr "Gestão de falha de importação"
-
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:720
-msgid "Metadata"
-msgstr "Metadados"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:724
 msgid "Add Metadata"
@@ -1214,6 +1201,392 @@ msgstr "Ver o Registo do Interpretador"
 msgid "Create RIDE Desktop Shortcut"
 msgstr "Criar Atalho para o RIDE no Ambiente de Trabalho"
 
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:42
+msgid "Text background"
+msgstr "Fundo do Texto"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:82
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/general.py:93
+msgid "Reset colors to default"
+msgstr "Reiniciar cores por defeito"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:83
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/general.py:94
+msgid "Save or Load settings"
+msgstr "Salvar ou Carregar definições"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:122
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/general.py:192
+msgid "Font Size"
+msgstr "Tamanho da Fonte"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:134
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/general.py:204
+msgid "Zoom Factor"
+msgstr "Fator Zoom"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:140
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/general.py:210
+msgid "Use fixed width font"
+msgstr "Usar fonte de tamanho fixo"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:146
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/general.py:216
+msgid "Font Face"
+msgstr "Tipo de Fonte"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:158
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:161
+msgid "Text Editor"
+msgstr "Editor de Texto"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:162
+msgid "Text Editor Settings"
+msgstr "Definições do Editor de Texto"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:163
+msgid "Text Edit"
+msgstr "Editor de Texto"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:173
+msgid "Argument foreground"
+msgstr "Texto dos Argumentos"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:174
+msgid "Comment foreground"
+msgstr "Texto dos Comentários"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:175
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:404
+msgid "Error foreground"
+msgstr "Texto de Erro"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:176
+msgid "Gherkin keyword foreground"
+msgstr "Texto de palavra-chave Gherkin"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:177
+msgid "Heading foreground"
+msgstr "Texto de Cabeçalho"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:178
+msgid "Import foreground"
+msgstr "Texto de Importação"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:179
+msgid "Variable foreground"
+msgstr "Texto de Variável"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:180
+msgid "Keyword definition foreground"
+msgstr "Texto de definição de Palavra-Chave"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:181
+msgid "Keyword call foreground"
+msgstr "Texto de chamada de Palavra-Chave"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:182
+msgid "Separator"
+msgstr "Separador"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:183
+msgid "Setting foreground"
+msgstr "Texto de Definição"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:184
+msgid "Syntax characters"
+msgstr "Caracteres de Síntaxe"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:189
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:402
+msgid "Text foreground"
+msgstr "Texto"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:229
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:232
+msgid "Grid Editor"
+msgstr "Editor de Grelha"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:233
+msgid "Grid Editor Settings"
+msgstr "Definições do Editor de Grelha"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:234
+msgid "Grid"
+msgstr "Grelha"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:242
+msgid "Default column size"
+msgstr "Tamanho das Colunas por defeito"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:249
+msgid "Auto size columns"
+msgstr "Auto-ajustar tamanho das Colunas"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:253
+msgid ""
+"Max column size\n"
+"(applies when auto size is on)"
+msgstr ""
+"Tamanho Máximo das Colunas\n"
+"(aplicável quando auto-ajustar estiver ativo)"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:258
+msgid "Word wrap and auto size rows"
+msgstr "Distribuir palavras e auto-ajustar o tamanho das linhas"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:263
+msgid "Enable auto suggestions"
+msgstr "Ativar sugestões ao escrever"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:301
+msgid "User Keyword Foreground"
+msgstr "Texto de Palavra-Chave de Utilizador"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:302
+msgid "Library Keyword Foreground"
+msgstr "Texto de Palavra-Chave de Biblioteca"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:303
+msgid "Variable Foreground"
+msgstr "Texto de Variável"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:304
+msgid "Unknown Variable Foreground"
+msgstr "Texto de Variável Desconhecida"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:305
+msgid "Comments Foreground"
+msgstr "Texto de Comentários"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:306
+msgid "Default Foreground"
+msgstr "Texto por Defeito"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:307
+msgid "Empty Foreground"
+msgstr "Texto em Vazio"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:328
+msgid "Variable Background"
+msgstr "Fundo de Variável"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:329
+msgid "Keyword Background"
+msgstr "Fundo de Palavra-Chave"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:330
+msgid "Mandatory Field Background"
+msgstr "Fundo de Campo Obrigatório"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:331
+msgid "Optional Field Background"
+msgstr "Fundo de Campo Opcional"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:332
+msgid "Mandatory Empty Field Background"
+msgstr "Fundo de Campo Obrigatório Vazio"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:333
+msgid "Unknown Background"
+msgstr "Fundo de Desconhecido"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:334
+msgid "Error Background"
+msgstr "Fundo de Erro"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:335
+msgid "Highlight Background"
+msgstr "Fundo de Destaque"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:361
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:364
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:366
+msgid "Test Runner"
+msgstr "Executor de Testes"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:365
+msgid "Test Runner Settings"
+msgstr "Definições do Executor de Testes"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:369
+msgid "Colors will be active after next RIDE restart."
+msgstr "As cores ficarão ativas após o reiniciar do RIDE."
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:383
+msgid "Shows console colors set by"
+msgstr "Mostra cores na consola ativado por"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:385
+msgid "Asks for confirmation to run all tests if none selected "
+msgstr ""
+"Perguntar pela confirmação de executar todos os testes sem selecionados "
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:405
+msgid "Fail foreground"
+msgstr "Fundo de Falhado"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:406
+msgid "Pass foreground"
+msgstr "Fundo de Passado"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:407
+msgid "Skip foreground"
+msgstr "Fundo de Saltado"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/general.py:96
+msgid "Apply to Project and File Explorer panels"
+msgstr "Aplicar aos painéis de Projeto e Explorador de Ficheiros"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/general.py:141
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/general.py:285
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:554
+msgid "RIDE - Preferences"
+msgstr "RIDE - Preferências"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/general.py:229
+msgid "Language"
+msgstr "Língua"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/general.py:245
+msgid "General"
+msgstr "Definições Gerais"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/general.py:246
+msgid "General Settings"
+msgstr "Definições Gerais"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/general.py:255
+msgid "Foreground"
+msgstr "Texto"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/general.py:256
+msgid "Background"
+msgstr "Fundo"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/general.py:257
+msgid "Secondary Foreground"
+msgstr "Texto Secundário"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/general.py:258
+msgid "Secondary Background"
+msgstr "Fundo Secundário"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/general.py:259
+msgid "Text Foreground"
+msgstr "Texto de Ajuda"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/general.py:260
+msgid "Help Background"
+msgstr "Fundo de Ajuda"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/imports.py:31
+msgid "Library imports and PYTHONPATH"
+msgstr "Importação de Bibliotecas e PYTHONPATH"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/imports.py:32
+msgid "Importing"
+msgstr "Importação"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/imports.py:42
+msgid "Comma separated list of libraries to be automatically imported."
+msgstr ""
+"Lista de bibliotecas separadas por vírgulas para serem automaticamente "
+"importadas."
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/imports.py:44
+msgid ""
+"Comma separated list of directories to be added to PYTHONPATH when libraries "
+"are searched."
+msgstr ""
+"Lista de diretorias separadas por vírgulas para serem adicionadas a "
+"PYTHONPATH para procura de bibliotecas."
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/imports.py:46
+msgid "Comma separated list of directories containing library spec files."
+msgstr ""
+"Lista de diretorias separadas por vírgulas contendo ficheiros de "
+"especificação de bibliotecas."
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/managesettingsdialog.py:41
+msgid "Save or Load Settings"
+msgstr "Salvar ou Carregar Definições"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/managesettingsdialog.py:47
+msgid "Load settings from file..."
+msgstr "Carregar definições a partir de ficheiro..."
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/managesettingsdialog.py:48
+msgid "Save settings to file..."
+msgstr "Salvar definições para ficheiro..."
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/managesettingsdialog.py:53
+msgid "Current directory:"
+msgstr "Diretoria Corrente:"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/managesettingsdialog.py:70
+msgid "File with Settings to Load"
+msgstr "Ficheiro com Definições para Carregar"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/managesettingsdialog.py:96
+msgid "Save Settings to file"
+msgstr "Salvar Definições para ficheiro"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/managesettingsdialog.py:109
+msgid "Could not open settings file \"%s\" for writing"
+msgstr "Não se conseguiu abrir o ficheiro de definições \"%s\" para escrita"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/managesettingsdialog.py:121
+msgid "Error trying to get '%s' from file %s"
+msgstr "Erro ao tentar obter '%s' a partir do ficheiro %s"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/managesettingsdialog.py:136
+msgid "Invalid config file '%s': %s"
+msgstr "Ficheiro de definições inválido '%s': %s"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/saving.py:28
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/saving.py:31
+msgid "Saving"
+msgstr "Salvando"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/saving.py:32
+msgid "Saving Preferences"
+msgstr "Salvando Preferências"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/saving.py:40
+msgid "Reformat?"
+msgstr "Reformatar?"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/saving.py:41
+msgid "Should it recalculate identation on Save?"
+msgstr "Deve-se recalcular indentação ao Salvar?"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/saving.py:53
+msgid "Default file format:"
+msgstr "Formato de ficheiro por Defeito:"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/saving.py:56
+msgid "TXT format separator:"
+msgstr "Separador de formato TXT:"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/saving.py:59
+msgid "Line separator:"
+msgstr "Separador de linhas:"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/saving.py:61
+msgid ""
+"Possible values are native (of current OS) CRLF (Windows) and LF (Unixy)"
+msgstr ""
+"Os valores possíveis são nativo (do SO corrente) CRLF (Windows) e LF (Unixy)"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/saving.py:63
+msgid "Separating spaces"
+msgstr "Espaços de separação"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/saving.py:65
+msgid "Number of spaces between cells when saving in txt format"
+msgstr "Número de espaços entre células ao salvar em formato TXT"
+
 #: /home2/helio/github/RIDE/tools/../src/robotide/recentfiles/recentfiles.py:41
 msgid "Add recently opened files to the file menu."
 msgstr "Adiciona ficheiros abertos recentemente ao menu Ficheiro."
@@ -1298,10 +1671,6 @@ msgstr "Remover"
 msgid "Command"
 msgstr "Comando"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/run/configmanagerui.py:101
-msgid "Documentation"
-msgstr "Documentação"
-
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/runanything.py:30
 msgid ""
 "A plugin for executing commands on the system.\n"
@@ -1355,6 +1724,7 @@ msgstr ""
 "Framework ou 'robot --help' para mais informação."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:96
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:78
 msgid "Include"
 msgstr "Incluir"
 
@@ -1661,6 +2031,7 @@ msgid "Saved all files"
 msgstr "Salvou-se todos os ficheiros"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:194
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:225
 msgid "Validation Error"
 msgstr "Erro de Validação"
 
@@ -1701,10 +2072,6 @@ msgstr ""
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:489
 msgid "Choose a directory containing Robot files"
 msgstr "Escolha uma diretoria contendo ficheiros Robot"
-
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:554
-msgid "RIDE - Preferences"
-msgstr "RIDE - Preferências"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:641
 msgid "Workspace modifications detected on the file system."
@@ -1785,6 +2152,11 @@ msgid ""
 msgstr ""
 "Info. Ativar e desativar Plugins pode necessitar reiniciar o RIDE para que "
 "os menus fiquem corretos."
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/preferences_dialogs.py:34
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/preferences_dialogs.py:35
+msgid "Preferences"
+msgstr "Preferências"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/preview.py:32
 msgid ""
@@ -1999,12 +2371,134 @@ msgid "Renaming tag '%s'."
 msgstr "Renomeando a etiqueta '%s'."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/tagdialogs.py:276
+msgid "Delete a tag '%s' ?"
+msgstr "Apagar a etiqueta '%s' ?"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/tagdialogs.py:276
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:543
 msgid "Confirm"
 msgstr "Confirmar"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/tagdialogs.py:276
-msgid "Delete a tag '%s' ?"
-msgstr "Apagar a etiqueta '%s' ?"
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:55
+msgid "New Suite\tCtrl-Shift-F"
+msgstr "Nova Suíte\tCtrl-Shift-F"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:56
+msgid "New Directory"
+msgstr "Novo Diretoria"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:57
+msgid "New Test Case\tCtrl-Shift-T"
+msgstr "Novo Caso de Teste\tCtrl-Shift-T"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:58
+msgid "New User Keyword\tCtrl-Shift-K"
+msgstr "Nova Palavra-Chave\tCtrl-Shift-K"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:59
+msgid "Sort Variables"
+msgstr "Ordenar Variáveis"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:60
+msgid "Sort Tests"
+msgstr "Ordenar Testes"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:61
+msgid "Sort Keywords"
+msgstr "Ordenar Palavras-Chave"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:62
+msgid "New Scalar\tCtrl-Shift-V"
+msgstr "Novo Escalar\tCtrl-Shift-V"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:63
+msgid "New List Variable\tCtrl-Shift-L"
+msgstr "Nova Variável Lista\tCtrl-Shift-L"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:64
+msgid "New Dictionary Variable"
+msgstr "Nova Variável Dicionário"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:65
+msgid "Change Format"
+msgstr "Alterar Formato"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:66
+msgid "Copy\tCtrl-Shift-C"
+msgstr "Copiar\tCtrl-Shift-C"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:67
+msgid "Rename\tF2"
+msgstr "Renomear\tF2"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:68
+msgid "Add Resource"
+msgstr "Adicionar Recurso"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:69
+msgid "New Resource"
+msgstr "Novo Ficheiro de Recursos"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:71
+msgid "Select All Tests"
+msgstr "Selecionar Todos os Testes"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:72
+msgid "Deselect All Tests"
+msgstr "Desselecionar Todos os Testes"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:73
+msgid "Select Only Failed Tests"
+msgstr "Selecionar Apenas Testes Falhados"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:74
+msgid "Select Only Passed Tests"
+msgstr "Selecionar Apenas Testes Passados"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:75
+msgid "Delete\tCtrl-Shift-D"
+msgstr "Apagar\tCtrl-Shift-D"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:77
+msgid "Exclude"
+msgstr "Excluir"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:79
+msgid "Expand all"
+msgstr "Expandir todos"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:80
+msgid "Collapse all"
+msgstr "Colapsar todos"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:81
+msgid "Remove Read Only"
+msgstr "Remover Apenas Leitura"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:82
+msgid "Open Containing Folder"
+msgstr "Abrir a Pasta Correspondente"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:389
+msgid ""
+"Directory contains unsaved data!\n"
+"You must save data before excluding."
+msgstr ""
+"A diretoria contém dados não salvados!\n"
+"Você tem que salvar os dados antes de excluir."
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:452
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:521
+msgid ""
+"File contains unsaved data!\n"
+"You must save data before excluding."
+msgstr ""
+"O ficheiro contém dados não salvados!\n"
+"Você tem que salvar os dados antes de excluir."
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:543
+msgid "Delete test case file"
+msgstr "Apagar ficheiro de Casos de Teste"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treeplugin.py:61
 msgid "Provides a tree view for Test Suites "

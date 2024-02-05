@@ -13,6 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import builtins
 import textwrap
 
 import wx
@@ -21,14 +22,18 @@ from wx import Colour
 from ..context import IS_LINUX
 from ..widgets import HelpLabel, Label, TextField
 
+_ = wx.GetTranslation  # To keep linter/code analyser happy
+builtins.__dict__['_'] = wx.GetTranslation
+
 
 class PreferencesPanel(wx.Panel):
     """Base class for all preference panels used by PreferencesDialog"""
-    location = ("Preferences",)
-    title = "Preferences"
 
-    def __init__(self, parent=None, *args, **kwargs):
+    def __init__(self, parent=None, name_tr=None, *args, **kwargs):
         self.tree_item = None
+        self.name_tr = name_tr
+        # self.location = (_("Preferences"),)
+        # self.title = _("Preferences")
         wx.Panel.__init__(self, parent, *args, **kwargs)
         """
         self.SetBackgroundColour(Colour(200, 222, 40))

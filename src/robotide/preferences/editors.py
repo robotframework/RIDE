@@ -14,7 +14,7 @@
 #  limitations under the License.
 
 from os.path import abspath, dirname, join
-
+import builtins
 import wx
 from wx import Colour
 from wx.lib.masked import NumCtrl
@@ -31,11 +31,15 @@ try:  # import installed version first
 except ImportError:  # Pygments is not installed
     robotframeworklexer = None
 
+_ = wx.GetTranslation  # To keep linter/code analyser happy
+builtins.__dict__['_'] = wx.GetTranslation
+
+
 ID_SAVELOADSETTINGS = wx.NewIdRef()
 ID_LOAD = 5551
 ID_SAVE = 5552
 ID_CANCEL = -1
-TEXT_BACKGROUND = 'Text background'
+TEXT_BACKGROUND = _('Text background')
 LIGHT_GRAY = 'light gray'
 FIXED_FONT = 'fixed font'
 
@@ -75,8 +79,8 @@ class EditorPreferences(PreferencesPanel):
         colors_sizer = self.create_colors_sizer()
         main_sizer = wx.FlexGridSizer(rows=6, cols=1, vgap=10, hgap=10)
         buttons_sizer = wx.BoxSizer(orient=wx.HORIZONTAL)
-        reset = wx.Button(self, wx.ID_ANY, 'Reset colors to default')
-        saveloadsettings = wx.Button(self, ID_SAVELOADSETTINGS, 'Save or Load settings')
+        reset = wx.Button(self, wx.ID_ANY, _('Reset colors to default'))
+        saveloadsettings = wx.Button(self, ID_SAVELOADSETTINGS, _('Save or Load settings'))
         main_sizer.Add(font_editor)
         main_sizer.Add(colors_sizer)
         buttons_sizer.Add(reset)
@@ -115,7 +119,7 @@ class EditorPreferences(PreferencesPanel):
 
     def _create_font_editor(self):
         f = IntegerChoiceEditor(
-            self._settings, 'font size', 'Font Size',
+            self._settings, 'font size', _('Font Size'),
             [str(i) for i in range(8, 16)])
         sizer = wx.FlexGridSizer(rows=3, cols=2, vgap=10, hgap=30)
         l_size = f.label(self)
@@ -127,19 +131,19 @@ class EditorPreferences(PreferencesPanel):
         fixed_font = False
         if 'zoom factor' in self._settings:
             z = SpinChoiceEditor(
-                self._settings, 'zoom factor', 'Zoom Factor', (-10, 20))
+                self._settings, 'zoom factor', _('Zoom Factor'), (-10, 20))
             l_zoom = z.label(self)
             if IS_WINDOWS:
                 set_colors(l_zoom, background_color, foreground_color)
             sizer.AddMany([l_zoom, z.chooser(self)])
         if FIXED_FONT in self._settings:
-            l_ff, editor = boolean_editor(self, self._settings, FIXED_FONT, 'Use fixed width font')
+            l_ff, editor = boolean_editor(self, self._settings, FIXED_FONT, _('Use fixed width font'))
             if IS_WINDOWS:
                 set_colors(l_ff, background_color, foreground_color)
             sizer.AddMany([l_ff, editor])
             fixed_font = self._settings[FIXED_FONT]
         if 'font face' in self._settings:
-            s = StringChoiceEditor(self._settings, 'font face', 'Font Face', read_fonts(fixed_font))
+            s = StringChoiceEditor(self._settings, 'font face', _('Font Face'), read_fonts(fixed_font))
             l_font = s.label(self)
             if IS_WINDOWS:
                 set_colors(l_font, background_color, foreground_color)
@@ -151,11 +155,12 @@ class EditorPreferences(PreferencesPanel):
 
 
 class TextEditorPreferences(EditorPreferences):
-    location = ("Text Editor",)
-    title = "Text Editor Settings"
-    name = "Text Edit"
+    location = (_("Text Editor"),)
 
     def __init__(self, settings, *args, **kwargs):
+        self.location = (_("Text Editor"),)
+        self.title = _("Text Editor Settings")
+        self.name = "Text Edit"
         super(TextEditorPreferences, self).__init__(
             settings[self.name], *args, **kwargs)
 
@@ -165,23 +170,23 @@ class TextEditorPreferences(EditorPreferences):
         row = 0
         if robotframeworklexer:
             settings = (
-                ('argument', 'Argument foreground'),
-                ('comment', 'Comment foreground'),
-                ('error', 'Error foreground'),
-                ('gherkin', 'Gherkin keyword foreground'),
-                ('heading', 'Heading foreground'),
-                ('import', 'Import foreground'),
-                ('variable', 'Variable foreground'),
-                ('tc_kw_name', 'Keyword definition foreground'),
-                ('keyword', 'Keyword call foreground'),
-                ('separator', 'Separator'),
-                ('setting', 'Setting foreground'),
-                ('syntax', 'Syntax characters'),
+                ('argument', _('Argument foreground')),
+                ('comment', _('Comment foreground')),
+                ('error', _('Error foreground')),
+                ('gherkin', _('Gherkin keyword foreground')),
+                ('heading', _('Heading foreground')),
+                ('import', _('Import foreground')),
+                ('variable', _('Variable foreground')),
+                ('tc_kw_name', _('Keyword definition foreground')),
+                ('keyword', _('Keyword call foreground')),
+                ('separator', _('Separator')),
+                ('setting', _('Setting foreground')),
+                ('syntax', _('Syntax characters')),
                 ('background', TEXT_BACKGROUND),
             )
         else:
             settings = (
-                ('setting', 'Text foreground'),
+                ('setting', _('Text foreground')),
                 ('background', TEXT_BACKGROUND),
             )
         background_color = Colour(LIGHT_GRAY)
@@ -221,11 +226,12 @@ class TextEditorPreferences(EditorPreferences):
 
 
 class GridEditorPreferences(EditorPreferences):
-    location = ("Grid Editor",)
-    title = "Grid Editor Settings"
-    name = "Grid"
+    location = (_("Grid Editor"),)
 
     def __init__(self, settings, *args, **kwargs):
+        self.location = (_("Grid Editor"),)
+        self.title = _("Grid Editor Settings")
+        self.name = "Grid"
         super(GridEditorPreferences, self).__init__(
             settings[self.name], *args, **kwargs)
         self.Sizer.Add(self._create_grid_config_editor())
@@ -233,28 +239,28 @@ class GridEditorPreferences(EditorPreferences):
     def _create_grid_config_editor(self):
         settings = self._settings
         sizer = wx.FlexGridSizer(rows=6, cols=2, vgap=10, hgap=10)
-        l_col_size = self._label_for('Default column size')
+        l_col_size = self._label_for(_('Default column size'))
         background_color = Colour(LIGHT_GRAY)
         foreground_color = Colour("black")
         if IS_WINDOWS:
             set_colors(l_col_size, background_color, foreground_color)
         sizer.Add(l_col_size)
         sizer.Add(self._number_editor(settings, 'col size'))
-        l_auto_size, editor = boolean_editor(self, settings, 'auto size cols', 'Auto size columns')
+        l_auto_size, editor = boolean_editor(self, settings, 'auto size cols', _('Auto size columns'))
         if IS_WINDOWS:
             set_colors(l_auto_size, background_color, foreground_color)
         sizer.AddMany([l_auto_size, editor])
-        l_max_size = self._label_for('Max column size\n(applies when auto size is on)')
+        l_max_size = self._label_for(_('Max column size\n(applies when auto size is on)'))
         if IS_WINDOWS:
             set_colors(l_max_size, background_color, foreground_color)
         sizer.Add(l_max_size)
         sizer.Add(self._number_editor(settings, 'max col size'))
-        l_word_wrap, editor = boolean_editor(self, settings, 'word wrap', 'Word wrap and auto size rows')
+        l_word_wrap, editor = boolean_editor(self, settings, 'word wrap', _('Word wrap and auto size rows'))
         if IS_WINDOWS:
             set_colors(l_word_wrap, background_color, foreground_color)
         sizer.AddMany([l_word_wrap, editor])
         l_auto_suggest, editor = boolean_editor(self, settings, 'enable auto suggestions',
-                                                'Enable auto suggestions')
+                                                _('Enable auto suggestions'))
         if IS_WINDOWS:
             set_colors(l_auto_suggest, background_color, foreground_color)
         sizer.AddMany([l_auto_suggest, editor])
@@ -292,13 +298,13 @@ class GridEditorPreferences(EditorPreferences):
     def _create_foreground_pickers(self, colors_sizer):
         row = 0
         for key, label in (
-            ('text user keyword', 'User Keyword Foreground'),
-            ('text library keyword', 'Library Keyword Foreground'),
-            ('text variable', 'Variable Foreground'),
-            ('text unknown variable', 'Unknown Variable Foreground'),
-            ('text commented', 'Comments Foreground'),
-            ('text string', 'Default Foreground'),
-            ('text empty', 'Empty Foreground'),
+            ('text user keyword', _('User Keyword Foreground')),
+            ('text library keyword', _('Library Keyword Foreground')),
+            ('text variable', _('Variable Foreground')),
+            ('text unknown variable', _('Unknown Variable Foreground')),
+            ('text commented', _('Comments Foreground')),
+            ('text string', _('Default Foreground')),
+            ('text empty', _('Empty Foreground')),
         ):
             lbl = wx.StaticText(self, wx.ID_ANY, label)
             if IS_WINDOWS:
@@ -319,14 +325,14 @@ class GridEditorPreferences(EditorPreferences):
         background_color = Colour(LIGHT_GRAY)
         foreground_color = Colour("black")
         for key, label in (
-                ('background assign', 'Variable Background'),
-                ('background keyword', 'Keyword Background'),
-                ('background mandatory', 'Mandatory Field Background'),
-                ('background optional', 'Optional Field Background'),
-                ('background must be empty', 'Mandatory Empty Field Background'),
-                ('background unknown', 'Unknown Background'),
-                ('background error', 'Error Background'),
-                ('background highlight', 'Highlight Background')
+                ('background assign', _('Variable Background')),
+                ('background keyword', _('Keyword Background')),
+                ('background mandatory', _('Mandatory Field Background')),
+                ('background optional', _('Optional Field Background')),
+                ('background must be empty', _('Mandatory Empty Field Background')),
+                ('background unknown', _('Unknown Background')),
+                ('background error', _('Error Background')),
+                ('background highlight', _('Highlight Background'))
         ):
             lbl = wx.StaticText(self, wx.ID_ANY, label)
             if IS_WINDOWS:
@@ -352,14 +358,15 @@ class GridEditorPreferences(EditorPreferences):
 
 
 class TestRunnerPreferences(EditorPreferences):
-    location = ("Test Runner",)
-    title = "Test Runner Settings"
-    name = "Test Runner"
+    location = (_("Test Runner"),)
 
     def __init__(self, settings, *args, **kwargs):
+        self.location = (_("Test Runner"),)
+        self.title = _("Test Runner Settings")
+        self.name = "Test Runner"
         super(TestRunnerPreferences, self).__init__(
             settings['Plugins'][self.name], *args, **kwargs)
-        self.Sizer.Add(wx.StaticText(self, wx.ID_ANY, "Colors will be active after next RIDE restart."))
+        self.Sizer.Add(wx.StaticText(self, wx.ID_ANY, _("Colors will be active after next RIDE restart.")))
         self.Sizer.Add(self._create_test_runner_config_editor())
 
     def _create_test_runner_config_editor(self):
@@ -373,9 +380,9 @@ class TestRunnerPreferences(EditorPreferences):
         else:
             add_colors = "-C on"
         l_usecolor, usecolor = boolean_editor(self, settings, 'use colors',
-                                              f"Shows console colors set by {add_colors} ")
+                                              f"{_('Shows console colors set by')} {add_colors} ")
         l_confirm, editor = boolean_editor(self, settings, 'confirm run',
-                                           'Asks for confirmation to run all tests if none selected ')
+                                           _('Asks for confirmation to run all tests if none selected '))
         if IS_WINDOWS:
             background_color = Colour(LIGHT_GRAY)
             foreground_color = Colour("black")
@@ -392,12 +399,12 @@ class TestRunnerPreferences(EditorPreferences):
         background_color = Colour(LIGHT_GRAY)
         foreground_color = Colour("black")
         for settings_key, label_text in (
-                ('foreground', 'Text foreground'),
+                ('foreground', _('Text foreground')),
                 ('background', TEXT_BACKGROUND),
-                ('error', 'Error foreground'),
-                ('fail color', 'Fail foreground'),
-                ('pass color', 'Pass foreground'),
-                ('skip color', 'Skip foreground'),
+                ('error', _('Error foreground')),
+                ('fail color', _('Fail foreground')),
+                ('pass color', _('Pass foreground')),
+                ('skip color', _('Skip foreground')),
         ):
             if column == 4:
                 column = 0
