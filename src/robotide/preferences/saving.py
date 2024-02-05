@@ -13,27 +13,33 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import builtins
 import wx
 
 from ..context import IS_WINDOWS
 from ..ui.preferences_dialogs import PreferencesPanel, IntegerChoiceEditor, StringChoiceEditor, boolean_editor
 from wx import Colour
 
+_ = wx.GetTranslation  # To keep linter/code analyser happy
+builtins.__dict__['_'] = wx.GetTranslation
+
 
 class SavingPreferences(PreferencesPanel):
-    location = ('Saving',)
-    title = 'Saving Preferences'
+    location = (_('Saving'),)
 
     def __init__(self, settings, *args, **kwargs):
-        super(SavingPreferences, self).__init__(*args, **kwargs)
+        self.location = (_('Saving'),)
+        self.title = _('Saving Preferences')
+        self.name = 'Saving'
+        super(SavingPreferences, self).__init__(name_tr=_('Saving'), *args, **kwargs)
         self._settings = settings
         self.SetSizer(wx.FlexGridSizer(cols=2))
         self.background_color = Colour("light gray")
         self.foreground_color = Colour("black")
         for editor in self._create_editors(settings):
             self._add_editor(editor)
-        l_reformat, editor = boolean_editor(self, settings, 'reformat', 'Reformat?',
-                                            'Should it recalculate identation on Save?')
+        l_reformat, editor = boolean_editor(self, settings, 'reformat', _('Reformat?'),
+                                            _('Should it recalculate identation on Save?'))
         if IS_WINDOWS:
             l_reformat.SetForegroundColour(self.foreground_color)
             l_reformat.SetBackgroundColour(self.background_color)
@@ -45,18 +51,19 @@ class SavingPreferences(PreferencesPanel):
 
     def _create_editors(self, settings):
         return [
-            StringChoiceEditor(settings, 'default file format', 'Default file format:',
+            StringChoiceEditor(settings, 'default file format', _('Default file format:'),
                                ('txt', 'tsv', 'html', 'robot', 'resource')
                                ),
-            StringChoiceEditor(settings, 'txt format separator', 'TXT format separator:', ('pipe', 'space')
+            StringChoiceEditor(settings, 'txt format separator', _('TXT format separator:'),
+                               ('pipe', 'space')
                                ),
-            StringChoiceEditor(settings, 'line separator', 'Line separator:',
+            StringChoiceEditor(settings, 'line separator', _('Line separator:'),
                                ('native', 'CRLF', 'LF'),
-                               'Possible values are native (of current OS) CRLF (Windows) and LF (Unixy)'
+                               _('Possible values are native (of current OS) CRLF (Windows) and LF (Unixy)')
                                ),
-            IntegerChoiceEditor(settings, 'txt number of spaces', 'Separating spaces',
+            IntegerChoiceEditor(settings, 'txt number of spaces', _('Separating spaces'),
                                 [str(i) for i in range(2, 11)],
-                                'Number of spaces between cells when saving in txt format'
+                                _('Number of spaces between cells when saving in txt format')
                                 )
         ]
 

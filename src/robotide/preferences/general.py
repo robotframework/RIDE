@@ -14,7 +14,7 @@
 
 from functools import lru_cache
 from os.path import abspath, dirname, join
-
+import builtins
 import wx
 
 from ..ui.preferences_dialogs import (boolean_editor, PreferencesPanel, IntegerChoiceEditor, SpinChoiceEditor,
@@ -26,6 +26,9 @@ try:
     from robot.conf import languages
 except ImportError:
     languages = None
+
+_ = wx.GetTranslation  # To keep linter/code analyser happy
+builtins.__dict__['_'] = wx.GetTranslation
 
 ID_APPLY_TO_PANEL = wx.NewIdRef()
 ID_RESET = wx.NewIdRef()
@@ -74,7 +77,7 @@ class GeneralPreferences(PreferencesPanel):
         super(GeneralPreferences, self).__init__(*args, **kwargs)
         self._settings = settings
         self._color_pickers = []
-        self.name = None
+        self.name = 'General'
         self._apply_to_panels = self._settings.get('apply to panels', False)
 
         # what would make this UI much more usable is if there were a
@@ -87,10 +90,10 @@ class GeneralPreferences(PreferencesPanel):
         colors_sizer = self.create_colors_sizer()
         main_sizer = wx.FlexGridSizer(rows=6, cols=1, vgap=10, hgap=10)
         buttons_sizer = wx.BoxSizer(orient=wx.HORIZONTAL)
-        reset = wx.Button(self, ID_RESET, 'Reset colors to default')
-        saveloadsettings = wx.Button(self, ID_SAVELOADSETTINGS, 'Save or Load settings')
+        reset = wx.Button(self, ID_RESET, _('Reset colors to default'))
+        saveloadsettings = wx.Button(self, ID_SAVELOADSETTINGS, _('Save or Load settings'))
         self.cb_apply_to_panels = wx.CheckBox(self, ID_APPLY_TO_PANEL,
-                                              label="Apply to Project and File Explorer panels")
+                                              label=_("Apply to Project and File Explorer panels"))
         self.cb_apply_to_panels.Enable()
         self.cb_apply_to_panels.SetValue(self._apply_to_panels)
         if IS_WINDOWS:
@@ -135,7 +138,7 @@ class GeneralPreferences(PreferencesPanel):
         # Does not look nice but closes Preferences window, so it comes recolored on next call
         # Only working on first use :(
         # DEBUG: Only close window when Loading, not when Saving (but return is always 5101)
-        wx.FindWindowByName("RIDE - Preferences").Close(force=True)
+        wx.FindWindowByName(_("RIDE - Preferences")).Close(force=True)
 
     def _reload_settings(self):
         import os
@@ -186,7 +189,7 @@ class GeneralPreferences(PreferencesPanel):
 
     def _create_font_editor(self):
         f = IntegerChoiceEditor(
-            self._settings, 'font size', 'Font Size',
+            self._settings, 'font size', _('Font Size'),
             [str(i) for i in range(8, 16)])
         sizer = wx.FlexGridSizer(rows=3, cols=2, vgap=10, hgap=30)
         l_size = f.label(self)
@@ -198,19 +201,19 @@ class GeneralPreferences(PreferencesPanel):
         fixed_font = False
         if 'zoom factor' in self._settings:
             z = SpinChoiceEditor(
-                self._settings, 'zoom factor', 'Zoom Factor', (-10, 20))
+                self._settings, 'zoom factor', _('Zoom Factor'), (-10, 20))
             l_zoom = z.label(self)
             if IS_WINDOWS:
                 set_colors(l_zoom, background_color, foreground_color)
             sizer.AddMany([l_zoom, z.chooser(self)])
         if FIXED_FONT in self._settings:
-            l_ff, editor = boolean_editor(self, self._settings, FIXED_FONT, 'Use fixed width font')
+            l_ff, editor = boolean_editor(self, self._settings, FIXED_FONT, _('Use fixed width font'))
             if IS_WINDOWS:
                 set_colors(l_ff, background_color, foreground_color)
             sizer.AddMany([l_ff, editor])
             fixed_font = self._settings[FIXED_FONT]
         if 'font face' in self._settings:
-            s = StringChoiceEditor(self._settings, 'font face', 'Font Face', read_fonts(fixed_font))
+            s = StringChoiceEditor(self._settings, 'font face', _('Font Face'), read_fonts(fixed_font))
             l_font = s.label(self)
             if IS_WINDOWS:
                 set_colors(l_font, background_color, foreground_color)
@@ -223,7 +226,7 @@ class GeneralPreferences(PreferencesPanel):
         background_color = Colour(LIGHT_GRAY)
         foreground_color = Colour("black")
         if 'ui language' in self._settings:
-            ll = StringChoiceEditor(self._settings, 'ui language', 'Language', read_languages())
+            ll = StringChoiceEditor(self._settings, 'ui language', _('Language'), read_languages())
             l_lang = ll.label(self)
             if IS_WINDOWS:
                 set_colors(l_lang, background_color, foreground_color)
@@ -236,24 +239,25 @@ class GeneralPreferences(PreferencesPanel):
 
 
 class DefaultPreferences(GeneralPreferences):
-    location = ("General",)
-    title = "General Settings"
-    name = "General"
+    location = (_("General"),)
 
     def __init__(self, settings, *args, **kwargs):
-        super(DefaultPreferences, self).__init__(settings[self.name], *args, **kwargs)
+        self.location = (_("General"),)
+        self.title = _("General Settings")
+        self.name = "General"
+        super(DefaultPreferences, self).__init__(settings[self.name], name_tr=_("General"), *args, **kwargs)
 
     def create_colors_sizer(self):
         container = wx.GridBagSizer()
         column = 0
         row = 0
         settings = (
-            ('foreground', 'Foreground'),
-            ('background', 'Background'),
-            ('secondary foreground', 'Secondary Foreground'),
-            ('secondary background', 'Secondary Background'),
-            ('foreground text', 'Text Foreground'),
-            ('background help', 'Help Background')
+            ('foreground', _('Foreground')),
+            ('background', _('Background')),
+            ('secondary foreground', _('Secondary Foreground')),
+            ('secondary background', _('Secondary Background')),
+            ('foreground text', _('Text Foreground')),
+            ('background help', _('Help Background'))
         )
         background_color = Colour(LIGHT_GRAY)
         foreground_color = Colour("black")
@@ -278,4 +282,4 @@ class DefaultPreferences(GeneralPreferences):
         for picker in self._color_pickers:
             picker.SetColour(defaults[picker.key])
         # self.Refresh()
-        wx.FindWindowByName("RIDE - Preferences").Close(force=True)
+        wx.FindWindowByName(_("RIDE - Preferences")).Close(force=True)

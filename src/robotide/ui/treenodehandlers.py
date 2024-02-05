@@ -13,6 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import builtins
 import wx
 
 from ..controller import ctrlcommands, filecontrollers, macrocontrollers, settingcontrollers
@@ -28,6 +29,9 @@ from .filedialogs import (AddSuiteDialog, AddDirectoryDialog, ChangeFormatDialog
 from .progress import RenameProgressObserver
 from .resourcedialogs import ResourceRenameDialog, ResourceDeleteDialog
 from ..ui.resourcedialogs import FolderDeleteDialog
+
+_ = wx.GetTranslation  # To keep linter/code analyser happy
+builtins.__dict__['_'] = wx.GetTranslation
 
 
 def action_handler_class(controller):
@@ -48,36 +52,36 @@ class _ActionHandler:
     is_test_suite = False
     is_variable = False
 
-    _label_add_suite = 'New Suite\tCtrl-Shift-F'
-    _label_add_directory = 'New Directory'
-    _label_new_test_case = 'New Test Case\tCtrl-Shift-T'
-    _label_new_user_keyword = 'New User Keyword\tCtrl-Shift-K'
-    _label_sort_variables = 'Sort Variables'
-    _label_sort_tests = 'Sort Tests'
-    _label_sort_keywords = 'Sort Keywords'
-    _label_new_scalar = 'New Scalar\tCtrl-Shift-V'
-    _label_new_list_variable = 'New List Variable\tCtrl-Shift-L'
-    _label_new_dict_variable = 'New Dictionary Variable'
-    _label_change_format = 'Change Format'
-    _label_copy_macro = 'Copy\tCtrl-Shift-C'
-    _label_rename = 'Rename\tF2'
-    _label_add_resource = 'Add Resource'
-    _label_new_resource = 'New Resource'
-    _label_find_usages = 'Find Usages'
-    _label_select_all = 'Select All Tests'
-    _label_deselect_all = 'Deselect All Tests'
-    _label_select_failed_tests = 'Select Only Failed Tests'
-    _label_select_passed_tests = 'Select Only Passed Tests'
-    _label_delete = 'Delete\tCtrl-Shift-D'
-    _label_delete_no_kbsc = 'Delete'
-    _label_exclude = 'Exclude'
-    _label_include = 'Include'
-    _label_expand_all = 'Expand all'
-    _label_collapse_all = 'Collapse all'
-    _label_remove_readonly = 'Remove Read Only'
-    _label_open_folder = 'Open Containing Folder'
-    _label_move_up = 'Move Up\tCtrl-Up'
-    _label_move_down = 'Move Down\tCtrl-Down'
+    _label_add_suite = _('New Suite\tCtrl-Shift-F')
+    _label_add_directory = _('New Directory')
+    _label_new_test_case = _('New Test Case\tCtrl-Shift-T')
+    _label_new_user_keyword = _('New User Keyword\tCtrl-Shift-K')
+    _label_sort_variables = _('Sort Variables')
+    _label_sort_tests = _('Sort Tests')
+    _label_sort_keywords = _('Sort Keywords')
+    _label_new_scalar = _('New Scalar\tCtrl-Shift-V')
+    _label_new_list_variable = _('New List Variable\tCtrl-Shift-L')
+    _label_new_dict_variable = _('New Dictionary Variable')
+    _label_change_format = _('Change Format')
+    _label_copy_macro = _('Copy\tCtrl-Shift-C')
+    _label_rename = _('Rename\tF2')
+    _label_add_resource = _('Add Resource')
+    _label_new_resource = _('New Resource')
+    _label_find_usages = _('Find Usages')
+    _label_select_all = _('Select All Tests')
+    _label_deselect_all = _('Deselect All Tests')
+    _label_select_failed_tests = _('Select Only Failed Tests')
+    _label_select_passed_tests = _('Select Only Passed Tests')
+    _label_delete = _('Delete\tCtrl-Shift-D')
+    _label_delete_no_kbsc = _('Delete')
+    _label_exclude = _('Exclude')
+    _label_include = _('Include')
+    _label_expand_all = _('Expand all')
+    _label_collapse_all = _('Collapse all')
+    _label_remove_readonly = _('Remove Read Only')
+    _label_open_folder = _('Open Containing Folder')
+    _label_move_up = _('Move Up\tCtrl-Up')
+    _label_move_down = _('Move Down\tCtrl-Down')
     _actions = []
 
     def __init__(self, controller, tree, node, settings):
@@ -218,7 +222,7 @@ class _CanBeRenamed(object):
 
     @staticmethod
     def _show_validation_error(err_msg):
-        wx.MessageBox(err_msg, 'Validation Error', style=wx.ICON_ERROR)
+        wx.MessageBox(err_msg, _('Validation Error'), style=wx.ICON_ERROR)
 
 
 class DirectoryHandler(_ActionHandler):
@@ -382,8 +386,8 @@ class TestDataDirectoryHandler(TestDataHandler):
             # Next is to restart the file monitoring
             RideSettingsChanged(keys=('Excludes', 'excluded'), old=None, new=None).publish()
         except filecontrollers.DirtyRobotDataException:
-            wx.MessageBox('Directory contains unsaved data!\n'
-                          'You must save data before excluding.')
+            wx.MessageBox(_('Directory contains unsaved data!\n'
+                          'You must save data before excluding.'))
 
 
 class _FileHandlerThanCanBeRenamed(_CanBeRenamed):
@@ -445,8 +449,8 @@ class ResourceFileHandler(_FileHandlerThanCanBeRenamed, TestDataHandler):
             # Next is to restart the file monitoring
             RideSettingsChanged(keys=('Excludes', 'excluded'), old=None, new=None).publish()
         except filecontrollers.DirtyRobotDataException:
-            wx.MessageBox('File contains unsaved data!\n'
-                          'You must save data before excluding.')
+            wx.MessageBox(_('File contains unsaved data!\n'
+                          'You must save data before excluding.'))
 
     def on_remove_read_only(self, event):
         __ = event
@@ -514,8 +518,8 @@ class TestCaseFileHandler(_FileHandlerThanCanBeRenamed, TestDataHandler):
             # Next is to restart the file monitoring
             RideSettingsChanged(keys=('Excludes', 'excluded'), old=None, new=None).publish()
         except filecontrollers.DirtyRobotDataException:
-            wx.MessageBox('File contains unsaved data!\n'
-                          'You must save data before excluding.')
+            wx.MessageBox(_('File contains unsaved data!\n'
+                          'You must save data before excluding.'))
 
     def on_remove_read_only(self, event):
         __ = event
@@ -536,7 +540,7 @@ class TestCaseFileHandler(_FileHandlerThanCanBeRenamed, TestDataHandler):
         dlg.Destroy()
 
     def on_delete(self, event):
-        if wx.MessageBox('Delete test case file', caption='Confirm',
+        if wx.MessageBox(_('Delete test case file'), caption=_('Confirm'),
                          style=wx.YES_NO | wx.ICON_QUESTION) == wx.YES:
             self.controller.execute(ctrlcommands.DeleteFile())
 
@@ -553,7 +557,7 @@ class TestCaseFileHandler(_FileHandlerThanCanBeRenamed, TestDataHandler):
 class _TestOrUserKeywordHandler(_CanBeRenamed, _ActionHandler):
     @staticmethod
     def accepts_drag(dragged):
-        _ = dragged
+        __ = dragged
         return False
     is_draggable = True
     _actions = [
@@ -638,7 +642,7 @@ class UserKeywordHandler(_TestOrUserKeywordHandler):
 class VariableHandler(_CanBeRenamed, _ActionHandler):
     @staticmethod
     def accepts_drag(dragged):
-        _ = dragged
+        __ = dragged
         return False
     is_draggable = True
     is_variable = True
@@ -687,7 +691,7 @@ class ResourceRootHandler(_ActionHandler):
 
     @staticmethod
     def accepts_drag(dragged):
-        _ = dragged
+        __ = dragged
         return False
 
     _actions = [_ActionHandler._label_add_resource]
