@@ -13,6 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 import builtins
+import os
 import string
 from io import StringIO, BytesIO
 from time import time
@@ -293,15 +294,17 @@ class DummyController(WithStepsController):
 
 
 def read_language(content):
-    from tempfile import NamedTemporaryFile
+    from tempfile import mkstemp
     from ..lib.compat.parsing.language import read as lread
 
-    with NamedTemporaryFile() as fp:
+    fp, fname = mkstemp()
+
+    with open(fp, mode='wb') as fp:
         fp.write(content)
-        fp.seek(0)
-        with open(fp.name, mode='rb') as fl:
-            lang = lread(fl)
         fp.close()
+        with open(fname, mode='rb') as readfp:
+            lang = lread(readfp)
+    os.remove(fname)
     return lang
 
 
