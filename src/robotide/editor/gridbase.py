@@ -13,6 +13,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import builtins
 import wx
 from wx import grid, Colour
 
@@ -21,14 +22,15 @@ from ..context import IS_WINDOWS
 from ..utils import unescape_newlines_and_whitespaces
 from ..widgets import PopupCreator, PopupMenuItems
 
+_ = wx.GetTranslation  # To keep linter/code analyser happy
+builtins.__dict__['_'] = wx.GetTranslation
+
 
 class GridEditor(grid.Grid):
     _col_add_threshold = 6
-    _popup_items = [
-        'Insert Cells\tCtrl-Shift-I', 'Delete Cells\tCtrl-Shift-D',
-        'Insert Rows\tCtrl-I', 'Delete Rows\tCtrl-D', '---',
-        'Select All\tCtrl-A', '---', 'Cut\tCtrl-X', 'Copy\tCtrl-C',
-        'Paste\tCtrl-V', 'Insert\tCtrl-Shift-V', '---', 'Delete\tDel']
+    _popup_items = []
+
+    _popup_items_nt = []
 
     def __init__(self, parent, num_rows, num_cols, popup_creator=None):
         grid.Grid.__init__(self, parent)
@@ -219,7 +221,7 @@ class GridEditor(grid.Grid):
             if (event.Row, event.Col) not in self.selection.cells():
                 self.select(event.Row, event.Col)
                 self.selection.set_from_single_selection(event)
-        self._popup_creator.show(self, PopupMenuItems(self, self._popup_items),
+        self._popup_creator.show(self, PopupMenuItems(self, self._popup_items, self._popup_items_nt),
                                  self.get_selected_content())
 
     # DEBUG: This code is overriden at fieldeditors

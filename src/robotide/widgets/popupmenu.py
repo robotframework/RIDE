@@ -79,7 +79,7 @@ class PopupMenuItems(object):
         if not menu_names_nt:
             menu_names_nt = menu_names
         for item, item_nt in zip(menu_names, menu_names_nt):
-            print(f"DEBUG: PopupMenuItem value of item={item} item_nt={item_nt}")
+            # print(f"DEBUG: PopupMenuItems value of item={item} item_nt={item_nt}")
             self.add_menu_item(PopupMenuItem(item, name_nt=item_nt, parent=parent))
 
     def __iter__(self):
@@ -97,8 +97,9 @@ class PopupMenuItem(object):
     def __init__(self, name, name_nt=None, ccallable=None, parent=None):
         self.name = name
         nname = name_nt if name_nt else name
-        print(f"DEBUG: PopupMenuItem value of nname={nname}")
+        # print(f"DEBUG: PopupMenuItem value of nname={nname}")
         self.callable = self._get_callable(nname, ccallable, parent)
+        # print(f"DEBUG: PopupMenuItem value of name_nt={name_nt} callable={self.callable}")
 
     @staticmethod
     def _get_callable(name, ccallable, parent):
