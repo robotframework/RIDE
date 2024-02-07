@@ -157,24 +157,24 @@ RELEASE_NOTES = f"""
 <ul class="simple">
 <li>This version supports Python 3.8 up to 3.12.</li>
 <li>There are some changes, or known issues:<ul>
-<li>Removed support for Python 3.6 and 3.7</li>
-<li>Added UI localization prepared for all the languages from installed Robot Framework version 6.1, or 
-higher. Major translations are: Dutch, Portuguese and Brazilian Portuguese.</li> 
-<li>Added support for language configured test suites, with languages from installed Robot Framework version 6.1, or 
+<li>❌ - Removed support for Python 3.6 and 3.7</li>
+<li>✔ - Added UI localization prepared for all the languages from installed Robot Framework version 6.1, or 
+higher. Major translations are: Dutch, Portuguese and Brazilian Portuguese. Still missing translation 
+of some elements.</li> 
+<li>✔ - Added support for language configured test suites, with languages from installed Robot Framework version 6.1, or 
 higher.</li> 
-<li>On Text Editor, pressing <b>Ctrl</b> when the caret/cursor is near a Keyword will show a detachable window with the 
+<li>✔ - On Text Editor, pressing <b>Ctrl</b> when the caret/cursor is near a Keyword will show a detachable window with the 
 documentation, at Mouse Pointer position.</li> 
-<li>RIDE tray icon now shows a context menu with options Show, Hide and Close.</li>
-<li>Highlighting and navigation of selected Project Explorer items, in Text Editor.</li>
-<li>When editing in Grid Editor with content assistance, the selected content can be edited by escaping the list of 
+<li>✔ - RIDE tray icon now shows a context menu with options Show, Hide and Close.</li>
+<li>✔ - Highlighting and navigation of selected Project Explorer items, in Text Editor.</li>
+<li>✔ - When editing in Grid Editor with content assistance, the selected content can be edited by escaping the list of 
 suggestions with keys ARROW_LEFT or ARROW_RIGHT.</li>
-<li>Newlines in Grid Editor can be made visible with the <b>filter newlines</b> set to False.</li>
-<li>On Text Editor when Saving the selection of tests in Test Suites (Tree) is cleared.</li>
-<li>Test Suite with <em>*** Comments ***</em> can be edited but newlines are introduced.</li>
-<li>Problems with COPY/PASTE in Text Editor have been reported when using wxPython 4.2.0, but not with version 4.2.1, 
-which we now <em>recommend</em>.</li>
-<li>Some argument types detection (and colorization) is not correct in Grid Editor.</li>
-<li>RIDE <strong>DOES NOT KEEP</strong> Test Suites formatting or structure, causing differences in files when used
+<li>✔ - Newlines in Grid Editor can be made visible with the <b>filter newlines</b> set to False.</li>
+<li>🐞 - On Text Editor when Saving the selection of tests in Test Suites (Tree) is cleared.</li>
+<li>🐞 - Problems with COPY/PASTE in Text Editor have been reported when using wxPython 4.2.0, but not with 
+version 4.2.1, which we now <em>recommend</em>.</li>
+<li>🐞 - Some argument types detection (and colorization) is not correct in Grid Editor.</li>
+<li>🐞 - RIDE <strong>DOES NOT KEEP</strong> Test Suites formatting or structure, causing differences in files when used
  on other IDE or Editors.</li>
 </ul>
 </li>
@@ -275,6 +275,6 @@ python -m robotide.__init__
 <pre class="literal-block">
 python -m robotide.postinstall -install
 </pre>
-<p>RIDE {VERSION} was released on 04/Feb/2024.</p>
+<p>RIDE {VERSION} was released on 07/Feb/2024.</p>
 </div>
 """

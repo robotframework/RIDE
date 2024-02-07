@@ -296,11 +296,12 @@ def read_language(content):
     from tempfile import NamedTemporaryFile
     from ..lib.compat.parsing.language import read as lread
 
-    with NamedTemporaryFile(delete_on_close=False) as fp:
+    with NamedTemporaryFile() as fp:
         fp.write(content)
-        fp.close()
+        fp.seek(0)
         with open(fp.name, mode='rb') as fl:
             lang = lread(fl)
+        fp.close()
     return lang
 
 

@@ -68,12 +68,13 @@ class _TestData(object):
     # remove Comments section, because we want to keep them as they are in files
     _comment_table_names = 'Comment', 'Comments'
 
-    def __init__(self, parent=None, source=None, language=None):
+    def __init__(self, parent=None, source=None, language=None, task=False):
         self.parent = parent
         self.source = abspath(source) if source else None
         self.children = []
         self._preamble = []
         self._language = language
+        self._task = task
         # self.comment_table = None
         self._tables = dict(self._get_tables())
 
@@ -144,6 +145,18 @@ class _TestData(object):
     @language.setter
     def language(self, llang):
         self._language = llang
+
+    @property
+    def task(self):
+        return self._task
+
+    @task.setter
+    def task(self, istask: bool):
+        self._task = istask
+        if self._task:
+            self._testcase_table_names = 'Task', 'Tasks'
+        else:
+            self._testcase_table_names = 'Test Case', 'Test Cases'
 
     def get_tables_for(self, language):
         t_en = [(self._setting_table_names, self.setting_table),
