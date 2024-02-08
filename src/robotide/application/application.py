@@ -319,28 +319,18 @@ class RIDE(wx.App):
         language = general.get('ui language', 'English')
         try:
             idx = [lang[0] for lang in names].index(language)
+            code = names[idx][2]
         except (IndexError, ValueError):
             print(f"DEBUG: application.py RIDE change_locale ERROR: Could not find {language=}")
-            idx = None
-        if idx:
-            code = names[idx][2]
-            short_code = names[idx][1].replace('-', '_')
-        else:
             code = wx.LANGUAGE_ENGLISH_WORLD
-            short_code = 'en_US.UTF-8'  # 'en_GB'
         del self._locale
         self._locale = wx.Locale(code)
-        # print(f"DEBUG: application.py RIDE change_locale {idx=} {language=} {short_code=}")
-        if self._locale.IsOk():
-            locale.setlocale(locale.LC_ALL, short_code)
-            lpath = Path(__file__).parent.absolute()
-            lpath = str(Path(Path.joinpath(lpath.parent, 'localization')).absolute())
-            locale.setlocale(locale.LC_ALL, 'C')
-            wx.Locale.AddCatalogLookupPathPrefix(lpath)
-            self._locale.AddCatalog('RIDE')
-        else:
-            locale.setlocale(locale.LC_ALL, short_code)
+        if not self._locale.IsOk():
             self._locale = wx.Locale(wx.LANGUAGE_ENGLISH_WORLD)
+        lpath = Path(__file__).parent.absolute()
+        lpath = str(Path(Path.joinpath(lpath.parent, 'localization')).absolute())
+        wx.Locale.AddCatalogLookupPathPrefix(lpath)
+        self._locale.AddCatalog('RIDE')
 
     @staticmethod
     def update_excludes(message):
