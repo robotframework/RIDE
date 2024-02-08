@@ -236,13 +236,14 @@ class RideFrame(wx.Frame):
         _menudata = get_menudata()
 
         self.main_menu = MenuBar(self)
-        self.main_menu._mb.SetFont(wx.Font(self.fontinfo))
-        self.main_menu.m_frame.SetFont(wx.Font(self.fontinfo))
+        self.main_menu.take_menu_bar_into_use()
         self.toolbar = ToolBar(self)
         self.toolbar.SetMinSize(wx.Size(100, 60))
         self.toolbar.SetBackgroundColour(Colour(self.color_background))
         self.toolbar.SetForegroundColour(Colour(self.color_foreground))
         # self.SetToolBar(self.toolbar.GetToolBar())
+        self.main_menu._mb.SetFont(wx.Font(self.fontinfo))
+        self.main_menu.m_frame.SetFont(wx.Font(self.fontinfo))
         self.main_menu.m_frame.SetBackgroundColour(Colour(self.color_background))
         self.main_menu.m_frame.SetForegroundColour(Colour(self.color_foreground))
 
@@ -282,7 +283,7 @@ class RideFrame(wx.Frame):
             # DEBUG: Next was already called from application.py
             self.aui_mgr.AddPane(self.filemgr, aui.AuiPaneInfo().Name("file_manager").LeftDockable())
 
-        self.main_menu.take_menu_bar_into_use()
+        # self.main_menu.take_menu_bar_into_use()
         if new_ui:  # Only when creating UI we add panes
             self.CreateStatusBar(name="StatusBar")
             self._status_bar = self.FindWindowByName("StatusBar", self)
