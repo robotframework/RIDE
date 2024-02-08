@@ -14,7 +14,6 @@
 #  limitations under the License.
 
 import builtins
-import locale
 import os
 import wx
 from contextlib import contextmanager
@@ -48,7 +47,6 @@ try:
 except ImportError:
     languages = None
 
-locale.setlocale(locale.LC_ALL, 'C')
 # add translation macro to builtin similar to what gettext does
 # generated pot with: /usr/bin/python /usr/bin/pygettext.py -a -d RIDE -o RIDE.pot -p ./localization ../robotide
 _ = wx.GetTranslation  # To keep linter/code analyser happy
