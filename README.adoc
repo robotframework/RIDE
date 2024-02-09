@@ -1,7 +1,12 @@
 = RIDE
 ifdef::env-github[:outfilesuffix: .adoc]
 
-RIDE is a development environment for Robot Framework test cases.
+RIDE is an IDE (Integrated Development Environment) exclusive for https://robotframework.org[Robot Framework] tests or tasks automation framework.
+
+--
+Robot Framework supports, since version 6.1, files with localized definitions. RIDE was updated to accept those files, and we are working on a localization project to have its GUI in the same languages supported by Robot Framework.
+You can help in this localization project at https://crowdin.com/project/robotframework-ride[Crowdin] image:https://badges.crowdin.net/robotframework-ride/localized.svg[Crowdin, link=https://crowdin.com/project/robotframework-ride]
+
 
 === Instant Communication ===
 
@@ -25,7 +30,7 @@ See the https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride
 **Version https://github.com/robotframework/RIDE/tree/release/1.7.4.2[1.7.4.2] was the last release supporting Python 2.7**
 
 
-**The current development version is based on 2.0.8.1, supports Python from 3.8 up to 3.11 (20th December 2023).**
+**The current development version is based on 2.0.8.1, supports Python from 3.8 up to 3.12 (09th February 2024).**
 
 Currently the unit tests are tested on Python 3.10, and 3.11 (which is the recommended version).
 Likewise, the current version of wxPython, is 4.2.1, but RIDE is known to work with 4.0.7 and 4.1.1 versions.
@@ -34,7 +39,7 @@ Likewise, the current version of wxPython, is 4.2.1, but RIDE is known to work w
 
 `pip install -U robotframework-ride`
 
-(3.8 < python <= 3.11) Install current development version (**2.1a1**) with:
+(3.8 < python <= 3.12) Install current development version (**2.1dev17**) with:
 
 `pip install -U https://github.com/robotframework/RIDE/archive/master.zip`
 
@@ -51,7 +56,7 @@ Likewise, the current version of wxPython, is 4.2.1, but RIDE is known to work w
 == Unit testing statuses:
 
 // Linux (py36, py37, py38, py39): image:https://app.travis-ci.com/HelioGuilherme66/RIDE.svg?branch=master[Unit Tests, link=https://app.travis-ci.com/github/HelioGuilherme66/RIDE] 
-Linux (Fedora 38: py3.11, Ubuntu 22.04: py3.10): image:https://img.shields.io/github/actions/workflow/status/HelioGuilherme66/RIDE/linux.yml[Unit Tests, link=https://github.com/HelioGuilherme66/RIDE/actions/workflows/linux.yml]
+Linux (Fedora 38: py3.12, Ubuntu 22.04: py3.10): image:https://img.shields.io/github/actions/workflow/status/HelioGuilherme66/RIDE/linux.yml[Unit Tests, link=https://github.com/HelioGuilherme66/RIDE/actions/workflows/linux.yml]
 
 Windows (Python 3.11): image:https://ci.appveyor.com/api/projects/status/github/HelioGuilherme66/RIDE?branch=master&svg=true[Unit Tests, link=https://ci.appveyor.com/project/HelioGuilherme66/ride]
 
@@ -60,6 +65,7 @@ Quality Gate Status: image:https://sonarcloud.io/api/project_badges/measure?proj
 '''
 === Links ===
 
+* https://crowdin.com/project/robotframework-ride[Localization at Crowdin]
 * https://pypi.python.org/pypi/robotframework-ride[Downloads at PyPi]
 * Statistics at https://pypistats.org/packages/robotframework-ride[PyPi Stats] and https://libraries.io/pypi/robotframework-ride[Libraries.io]
 * Usage instructions and some tips and tricks can be found from the https://github.com/robotframework/RIDE/wiki[Wiki]
