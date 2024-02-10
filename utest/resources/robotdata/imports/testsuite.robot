@@ -17,3 +17,6 @@ ${LIB}            XML
 *** Test Cases ***
 Some case
     No Operation
+
+Another case
+    Log to Console    ${VARIABLE}

@@ -101,7 +101,7 @@ class UpdateNotifierController(object):
 def upgrade_from_dev_dialog(version_installed):
     dev_version = urllib2.urlopen('https://raw.githubusercontent.com/robotframework/'
                                   'RIDE/master/src/robotide/version.py', timeout=1).read().decode('utf-8')
-    matches = re.findall("VERSION\s*=\s*'([\w.]*)'", dev_version)
+    matches = re.findall(r"VERSION\s*=\s*'([\w.]*)'", dev_version)
     version_latest = matches[0] if matches else None
     if cmp_versions(version_installed, version_latest) == -1:
         # Here is the Menu Help->Upgrade insertion part, try to highlight menu # wx.CANCEL_DEFAULT
