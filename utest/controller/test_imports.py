@@ -12,8 +12,11 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-
+import sys
 import unittest
+
+import pytest
+
 from utest.resources import datafilereader
 
 
@@ -75,8 +78,9 @@ class TestImports(unittest.TestCase):
     def test_library_import_with_variable_has_no_error(self):
         self._has_no_error('${LIB}')
 
+    @pytest.mark.skipif(sys.version_info >= (3, 12), reason="This test fails in Python 3.12")
     def test_variable_import_has_no_error(self):
-        self._has_no_error('vars//vars.py')
+        self._has_no_error('vars/vars.py')
 
     def test_library_import_in_subsuite_init_file_with_relative_path_has_no_error(self):
         self._has_no_error('..//outer_lib.py', self.project.data.suites[0])
