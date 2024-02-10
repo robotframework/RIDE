@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2024-02-07 00:20+0000\n"
+"POT-Creation-Date: 2024-02-09 22:30+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -978,10 +978,6 @@ msgid "Delete Rows\tCtrl-D"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:111
-msgid "---"
-msgstr ""
-
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:111
 msgid "Copy\tCtrl-C"
 msgstr ""
 
@@ -1056,7 +1052,7 @@ msgid "Variable "
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1227
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:582
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:586
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:49
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:127
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:184
@@ -1150,35 +1146,35 @@ msgstr ""
 msgid "Add Metadata"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:410
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:414
 msgid "ERROR: Data sanity check failed!"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:410
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:414
 msgid "Error at line"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:411
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:415
 msgid "Reset changes?"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:412
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:416
 msgid "Can not apply changes from Text Editor"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:565
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:569
 msgid "Apply Changes"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:592
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:596
 msgid "Syntax colorization disabled due to missing requirements."
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:593
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:597
 msgid "Get help"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:608
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:612
 msgid ""
 "<h1>Syntax colorization</h1>\n"
 "        <p>\n"
@@ -1207,11 +1203,11 @@ msgid ""
 "        "
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:633
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:637
 msgid "Getting syntax colorization"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:731
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:735
 msgid "No matches found."
 msgstr ""
 

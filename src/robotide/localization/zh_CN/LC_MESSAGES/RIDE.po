@@ -1,305 +1,267 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2024-02-07 00:20+0000\n"
-"PO-Revision-Date: 2024-02-07 01:11\n"
-"Last-Translator: \n"
+"POT-Creation-Date: 2024-02-09 22:30+0000\n"
+"PO-Revision-Date: 2024-02-10 00:44+0000\n"
+"Last-Translator: Hélio Guilherme <helio_guilherme@hotmail.com>\n"
 "Language-Team: Chinese Simplified\n"
+"Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: pygettext.py 1.5\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+"Generated-By: pygettext.py 1.5\n"
 "X-Crowdin-Project: robotframework-ride\n"
 "X-Crowdin-Project-ID: 637294\n"
 "X-Crowdin-Language: zh-CN\n"
 "X-Crowdin-File: /master/src/robotide/localization/RIDE.pot\n"
 "X-Crowdin-File-ID: 14\n"
-"Language: zh_CN\n"
+"X-Generator: Poedit 3.4.2\n"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/application.py:394
 msgid "Found Robot Framework version %s from %s."
-msgstr ""
+msgstr "从 %s 找到机器人框架版本 %s。"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:54
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:57
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/actiontriggers.py:54
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/actiontriggers.py:65
 msgid "Help"
-msgstr ""
+msgstr "帮助"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:54
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:71
 msgid "Release Notes"
-msgstr ""
+msgstr "发布说明"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:56
 msgid "Show the release notes"
-msgstr ""
+msgstr "显示发布笔记"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:57
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:77
 msgid "Offline Change Log"
-msgstr ""
+msgstr "离线更改日志"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:59
 msgid "Show the offline CHANGELOG"
-msgstr ""
+msgstr "显示离线更改"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:78
 msgid "Check the online version at "
-msgstr ""
+msgstr "检查在线版本于 "
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:110
 msgid "New development version is available."
-msgstr ""
+msgstr "有新的开发版本。"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:110
 msgid "Upgrade?"
-msgstr ""
+msgstr "升级？"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:111
 msgid "You may install version %s with:"
-msgstr ""
+msgstr "您可以安装版本 %s："
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:112
 msgid "Click OK to Upgrade now!"
-msgstr ""
+msgstr "点击确定立即升级！"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:113
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:220
-msgid "After upgrade you will see another dialog informing to close this RIDE instance."
-msgstr ""
+msgid ""
+"After upgrade you will see another dialog informing to close this RIDE "
+"instance."
+msgstr "升级后，您将看到另一个对话框通知关闭此 RIDE 实例。"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:120
 msgid "No Upgrade Available"
-msgstr ""
+msgstr "无可用升级"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:120
 msgid "You have the latest version of RIDE."
-msgstr ""
+msgstr "您有最新版本的 RIDE"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:121
 msgid "              Have a nice day :)"
-msgstr ""
+msgstr "              好一天:)"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:178
 msgid "An error occurred when installing new version"
-msgstr ""
+msgstr "安装新版本时出错"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:178
 msgid "Failed to Upgrade"
-msgstr ""
+msgstr "升级失败"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:187
 msgid "Completed Upgrade"
-msgstr ""
+msgstr "已完成升级"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:187
 msgid "You should close this RIDE (Process ID = "
-msgstr ""
+msgstr "您应该关闭此 RIDE (进程 ID = ) "
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:207
 msgid "Update available"
-msgstr ""
+msgstr "可用更新"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:215
 msgid " available from "
-msgstr ""
+msgstr " 可用于 "
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:215
 msgid "New version "
-msgstr ""
+msgstr "新版本 "
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:216
 msgid "See this version "
-msgstr ""
+msgstr "查看此版本 "
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:218
 msgid "You can update with the command:"
-msgstr ""
+msgstr "您可以更新命令："
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:219
 msgid "Or, click <b>Upgrade Now</b>"
-msgstr ""
+msgstr "或者单击 <b>立即升级</b>"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:221
 msgid "See the latest development "
-msgstr ""
+msgstr "查看最新动态 "
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:226
-msgid "I'm using another method for RIDE updates\n"
+msgid ""
+"I'm using another method for RIDE updates\n"
 " and do not need automatic update checks"
 msgstr ""
+"我正在使用另一种方法更新\n"
+" ，不需要自动更新检查"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:231
 msgid "remind me later"
-msgstr ""
+msgstr "稍后提醒我"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:237
 msgid "Upgrade Now"
-msgstr ""
+msgstr "立即升级"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:58
 msgid "Started RIDE %s using python version %s with wx version %s in %s."
-msgstr ""
+msgstr "开始使用 python 版本 %s 的 RIDE %s 在 %s 中使用 wx 版本 %s。"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:71
 msgid "Thanks all RIDE translators: %s"
-msgstr ""
+msgstr "感谢所有RIDE翻译: %s"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:73
 msgid "RIDE -- Robot Framework Test Data Editor"
-msgstr ""
+msgstr "RIDE -- 机器人框架测试数据编辑器"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:75
 msgid "RIDE %s running on Python %s."
-msgstr ""
+msgstr "在 Python %s 上运行的 RIDE %s。"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:76
 msgid "RIDE is a test data editor for %s."
-msgstr ""
+msgstr "RIDE 是 %s 的测试数据编辑器。"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:77
 msgid "For more information, see project pages at %s."
-msgstr ""
+msgstr "欲了解更多信息，请参阅 %s 的项目页面。"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:78
 msgid "Some of the icons are from %s."
-msgstr ""
+msgstr "某些图标来自 %s"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:79
-msgid "%s the maintainer of the project thanks the original authors and all users and collaborators."
-msgstr ""
+msgid ""
+"%s the maintainer of the project thanks the original authors and all users "
+"and collaborators."
+msgstr "%s 该项目的维护者感谢原作者和所有用户与合作者。"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:80
-msgid "A special thanks to %s for having sponsored the development of translated test suites content compatibility with %s Version 6.1, in their %s."
-msgstr ""
+msgid ""
+"A special thanks to %s for having sponsored the development of translated "
+"test suites content compatibility with %s Version 6.1, in their %s."
+msgstr "特别感谢 %s 赞助开发 %s 版本6.1翻译测试套装内容兼容性的 %s。"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:424
 msgid "Log options"
-msgstr ""
+msgstr "日志选项"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:432
 msgid "Output directory: "
-msgstr ""
+msgstr "输出目录： "
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:450
 msgid "Add suite name to log names"
-msgstr ""
+msgstr "将套件名称添加到日志名"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:453
 msgid "Add timestamp to log names"
-msgstr ""
+msgstr "将时间戳添加到日志名"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:456
 msgid "Save Console and Message logs"
-msgstr ""
+msgstr "保存控制台和消息日志"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:474
 msgid "Select Logs Directory"
-msgstr ""
+msgstr "选择日志目录"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:496
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:336
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:434
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:570
 msgid "Arguments"
-msgstr ""
+msgstr "参数"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:508
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:534
 msgid "Arguments for the test run. Arguments are space separated list."
-msgstr ""
+msgstr "测试运行参数是空格分隔的列表。"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:553
 msgid "Does not execute - help or version option given"
-msgstr ""
+msgstr "不执行 - 提供帮助或版本选项"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:558
 msgid "Unknown option(s):"
-msgstr ""
+msgstr "未知选项 (s):"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:564
 msgid "Tests filters"
-msgstr ""
+msgstr "测试过滤器"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:573
 msgid "Only run tests with these tags:"
-msgstr ""
+msgstr "只运行这些标签的测试："
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:576
 msgid "Skip tests with these tags:"
-msgstr ""
+msgstr "跳过这些标签的测试："
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:672
 msgid "Script to run tests:"
-msgstr ""
+msgstr "运行测试的脚本："
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:98
 msgid "Stop a running test"
-msgstr ""
+msgstr "停止正在运行的测试"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:99
 msgid "Step over"
-msgstr ""
+msgstr "步过"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:161
 msgid "A plugin for running tests from within RIDE"
-msgstr ""
+msgstr "从 RIDE 内部运行测试的插件"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:256
 msgid "Run Tests"
-msgstr ""
+msgstr "运行测试"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:256
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:260
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:266
@@ -314,285 +276,244 @@ msgstr ""
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:784
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/preview.py:41
 msgid "Tools"
-msgstr ""
+msgstr "工具"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:258
 msgid "Run the selected tests"
-msgstr ""
+msgstr "运行选中的测试"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:260
 msgid "Run Tests with Debug"
-msgstr ""
+msgstr "通过调试运行测试"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:263
 msgid "Run the selected tests with Debug"
-msgstr ""
+msgstr "通过调试运行选中的测试"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:266
 msgid "Stop Test Run"
-msgstr ""
+msgstr "停止测试运行"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:350
 msgid "[ SENDING STOP SIGNAL ]\n"
-msgstr ""
+msgstr "[发送待办注册]\n"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:357
 msgid "[ SENDING PAUSE SIGNAL ]\n"
-msgstr ""
+msgstr "[发送签字]\n"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:363
 msgid "[ SENDING CONTINUE SIGNAL ]\n"
-msgstr ""
+msgstr "[正在继续登录]\n"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:369
 msgid "[ SENDING STEP NEXT SIGNAL ]\n"
-msgstr ""
+msgstr "[ 发送下一张签字]\n"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:375
 msgid "[ SENDING STEP OVER SIGNAL ]\n"
-msgstr ""
+msgstr "[ 发送已登录的STEP]\n"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:408
 msgid "command: %s\n"
-msgstr ""
+msgstr "命令: %s\n"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:478
-msgid "There are unsaved modifications.\n"
+msgid ""
+"There are unsaved modifications.\n"
 "        Do you want to save all changes and run the tests?"
 msgstr ""
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:480
 msgid "Unsaved Modifications"
-msgstr ""
+msgstr "未保存的修改"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:489
-msgid "No tests selected. \n"
+msgid ""
+"No tests selected. \n"
 "Continue anyway?"
 msgstr ""
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:491
 msgid "No tests selected"
-msgstr ""
+msgstr "没有选择测试"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:548
-msgid "\n"
+msgid ""
+"\n"
 "Test finished {}"
 msgstr ""
+"\n"
+"测试完成 {}"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:582
 msgid "Messages log exceeded 80% of process memory, stopping for now..."
-msgstr ""
+msgstr "消息日志超过 80% 的过程内存，现在停止..."
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:740
 msgid "Start"
-msgstr ""
+msgstr "开始"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:741
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:744
 msgid "Start robot"
-msgstr ""
+msgstr "启动机器人"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:742
 msgid "Start running the robot test suite"
-msgstr ""
+msgstr "开始运行机器人测试套件"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:743
 msgid "Debug"
-msgstr ""
+msgstr "Debug"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:745
 msgid "Start running the robot test suite with DEBUG loglevel"
-msgstr ""
+msgstr "开始使用DEBUG 日志运行机器人测试套件"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:747
 msgid "Stop"
-msgstr ""
+msgstr "停止"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:751
 msgid "Pause"
-msgstr ""
+msgstr "暂停"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:753
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:754
 msgid "Pause test execution"
-msgstr ""
+msgstr "暂停测试执行"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:755
 msgid "Continue"
-msgstr ""
+msgstr "继续"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:758
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:759
 msgid "Continue test execution"
-msgstr ""
+msgstr "继续测试执行"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:760
 msgid "Next"
-msgstr ""
+msgstr "下一个"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:761
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:762
 msgid "Step next"
-msgstr ""
+msgstr "下一步"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:787
 msgid "Execution Profile:  "
-msgstr ""
+msgstr "执行配置文件：  "
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:790
 msgid "Choose which method to use for running the tests"
-msgstr ""
+msgstr "选择运行测试的方法"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:797
 msgid "Open Logs Directory"
-msgstr ""
+msgstr "打开日志目录"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:799
 msgid "View All Logs in Explorer"
-msgstr ""
+msgstr "在资源管理器中查看所有日志"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:800
 msgid " Report"
-msgstr ""
+msgstr " 报告"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:801
 msgid "View Robot Report in Browser (CtrlCmd-R)"
-msgstr ""
+msgstr "在浏览器(CtrlCmd-R) 中查看机器人报告"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:803
 msgid " Log"
-msgstr ""
+msgstr " 日志"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:804
 msgid "View Robot Log in Browser (CtrlCmd-L)"
-msgstr ""
+msgstr "在浏览器中查看机器人日志 (CtrlCmd-L)"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:811
 msgid " Autosave  "
-msgstr ""
+msgstr " Autosave  "
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:812
 msgid "Automatically save all changes before running"
-msgstr ""
+msgstr "运行前自动保存所有更改"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:817
 msgid " Pause after failure  "
-msgstr ""
+msgstr " 失败后暂停  "
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:818
 msgid "Automatically pause after failing keyword"
-msgstr ""
+msgstr "关键字失败后自动暂停"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:926
 msgid "Console log"
-msgstr ""
+msgstr "控制台日志"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:930
 msgid "Message log"
-msgstr ""
+msgstr "消息日志"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1053
 msgid "Starting test:"
-msgstr ""
+msgstr "开始测试："
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1058
 msgid "Ending test:"
-msgstr ""
+msgstr "结束测试："
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1066
 msgid "UNKNOWN STATUS:"
-msgstr ""
+msgstr "未知状态："
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1094
 msgid "<<  PAUSED  >>"
-msgstr ""
+msgstr "<< 已暂停>>"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1099
 msgid "<< CONTINUE >>"
-msgstr ""
+msgstr "<< CONTINUE >>"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1140
-msgid "There isn't logs directory. \n"
+msgid ""
+"There isn't logs directory. \n"
 "Please, run the tests and try again"
 msgstr ""
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1142
 msgid "No logs directory"
-msgstr ""
+msgstr "没有日志目录"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1228
 msgid "elapsed time: %s  pass: %s  skip: %s  fail: %s"
-msgstr ""
+msgstr "已用时间: %s  通过: %s  跳过: %s  失败: %s"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1259
 msgid "  current keyword: "
-msgstr ""
+msgstr "  当前关键字： "
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/controller/ui/treecontroller.py:41
-msgid "[Navigate]\n"
-"        !Go &Back | Go back to previous location in tree | Alt-%s | ART_GO_BACK\n"
-"        !Go &Forward | Go forward to next location in tree | Alt-%s | ART_GO_FORWARD\n"
+msgid ""
+"[Navigate]\n"
+"        !Go &Back | Go back to previous location in tree | Alt-%s | "
+"ART_GO_BACK\n"
+"        !Go &Forward | Go forward to next location in tree | Alt-%s | "
+"ART_GO_FORWARD\n"
 "        "
 msgstr ""
+"[Navigate]\n"
+"        ！ o &back | 返回前一个位置树树 | Alt-%s | ART_GO_BACK\n"
+"        ！ o &Forward | 转到下一页树中的位置 | Alt-%s | ART_GO_FORWARD\n"
+"        "
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/controller/ui/treecontroller.py:55
 msgid "Add Tag to selected"
-msgstr ""
+msgstr "将标签添加到选中的"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/controller/ui/treecontroller.py:55
 #: /home2/helio/github/RIDE/tools/../src/robotide/controller/ui/treecontroller.py:57
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/listeditor.py:37
@@ -600,38 +521,35 @@ msgstr ""
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:643
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/actiontriggers.py:54
 msgid "Edit"
-msgstr ""
+msgstr "编辑"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/controller/ui/treecontroller.py:57
 msgid "Clear Selected"
-msgstr ""
+msgstr "清除选中项"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/controller/ui/treecontroller.py:70
 msgid "Add Tag To Selected"
-msgstr ""
+msgstr "将标签添加到选中的"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/controller/ui/treecontroller.py:70
 msgid "Enter Tag Name"
-msgstr ""
+msgstr "输入标签名称"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:31
 msgid "[Edit]\n"
-msgstr ""
+msgstr "[Edit]\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:32
 msgid "&Undo | Undo last modification | Ctrlcmd-Z\n"
-msgstr ""
+msgstr "&撤消|撤销上次修改 | Ctrlcmd-Z\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:33
 msgid "&Redo | Redo modification | Ctrlcmd-Y\n"
-msgstr ""
+msgstr "&Redo | 重做修改 | Ctrlcmd-Y\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:35
 msgid "Cu&t | Cut | Ctrlcmd-X\n"
-msgstr ""
+msgstr "剪切|剪切|Ctrlcmd-X\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:36
 msgid "&Copy | Copy | Ctrlcmd-C\n"
@@ -639,7 +557,7 @@ msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:37
 msgid "&Paste | Paste | Ctrlcmd-V\n"
-msgstr ""
+msgstr "粘贴|粘贴 | Ctrlcmd-V\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:38
 msgid "&Insert | Insert | Shift-Ctrl-V\n"
@@ -647,74 +565,85 @@ msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:39
 msgid "&Delete | Delete  | Del\n"
-msgstr ""
+msgstr "&删除 | 删除 | Del\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:40
 msgid "Comment Rows | Comment selected rows | Ctrlcmd-3\n"
-msgstr ""
+msgstr "评论行 | 评论选定行 | Ctrlcmd-3\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:41
 msgid "Comment Cells | Comment cells with # | Ctrlcmd-Shift-3\n"
-msgstr ""
+msgstr "评论单元格 | 评论单元格与 # | Ctrlcmd-Shift-3\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:42
 msgid "Uncomment Rows | Uncomment selected rows | Ctrlcmd-4\n"
-msgstr ""
+msgstr "取消评论行 | 取消评论所选行 | Ctrlcmd-4\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:43
 msgid "Uncomment Cells | Uncomment cells with # | Ctrlcmd-Shift-4\n"
-msgstr ""
+msgstr "取消评论单元格 | 取消注释单元格与 # | Ctrlcmd-Shift-4\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:44
 msgid "Insert Cells | Insert Cells | Ctrlcmd-Shift-I\n"
-msgstr ""
+msgstr "插入单元格 | 插入单元格 | Ctrlcmd-Shift-I\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:45
 msgid "Delete Cells | Delete Cells | Ctrlcmd-Shift-D\n"
-msgstr ""
+msgstr "删除单元格 | 删除单元格 | Ctrlcmd-Shift-D\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:46
 msgid "Insert Rows | Insert Rows | Ctrlcmd-I\n"
-msgstr ""
+msgstr "Insert Rows | Insert Rows | Ctrlcmd-I\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:47
 msgid "Delete Rows | Delete Rows | Ctrlcmd-D\n"
-msgstr ""
+msgstr "删除行 | 删除行 | Ctrlcmd-D\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:48
 msgid "Move Rows Up | Move Rows Up | Alt-Up\n"
-msgstr ""
+msgstr "向上移动行 | 向上移动行 | Alt-Up\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:49
 msgid "Move Rows Down | Move Rows Down | Alt-Down\n"
-msgstr ""
+msgstr "向下移动行 | 向下移动行 | Alt-Down\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:50
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:66
 msgid "[Tools]\n"
-msgstr ""
+msgstr "[Tools]\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:51
-msgid "Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword and variable completions | | | POSITION-70\n"
+msgid ""
+"Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword "
+"and variable completions | | | POSITION-70\n"
 msgstr ""
+"内容帮助 (Ctrl-Space 或 Ctrl-Alt-Space) | 显示可能的关键词和变量补全| | | "
+"POSITION-70\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:88
-msgid "The default editor plugin. Also known as Grid or Cell Editor.\n\n"
+msgid ""
+"The default editor plugin. Also known as Grid or Cell Editor.\n"
+"\n"
 "    This plugin implements editors for the various items of Robot Framework\n"
 "    test data.\n"
 "    "
 msgstr ""
+"默认编辑器插件。也称为网格或单元格编辑器。\n"
+"\n"
+"    此插件实现了机器人框架\n"
+"    测试数据各种项目的编辑器。\n"
+"    "
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:70
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:482
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:570
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:723
 msgid "Comment"
-msgstr ""
+msgstr "评论"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:113
 msgid "Scalar Variable"
-msgstr ""
+msgstr "缩放变量"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:119
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:134
@@ -730,7 +659,7 @@ msgstr ""
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:226
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:355
 msgid "Name"
-msgstr ""
+msgstr "名称"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:120
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:135
@@ -739,83 +668,83 @@ msgstr ""
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:482
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:723
 msgid "Value"
-msgstr ""
+msgstr "值"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:128
 msgid "List Variable"
-msgstr ""
+msgstr "列表变量"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:143
 msgid "Dictionary Variable"
-msgstr ""
+msgstr "字典变量"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:158
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:571
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:650
 msgid "Library"
-msgstr ""
+msgstr "书库"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:168
 msgid "Alias"
-msgstr ""
+msgstr "Alias"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:168
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:189
 msgid "Args"
-msgstr ""
+msgstr "Args"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:181
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:571
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:665
 msgid "Variables"
-msgstr ""
+msgstr "变量"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:188
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:201
 msgid "Path"
-msgstr ""
+msgstr "路径"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:197
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:571
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:657
 msgid "Resource"
-msgstr ""
+msgstr "资源"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:210
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/configmanagerui.py:101
 msgid "Documentation"
-msgstr ""
+msgstr "文件"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:279
 msgid "Suite Setup is run before any tests"
-msgstr ""
+msgstr "在任何测试之前运行Suite 安装程序"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:365
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:723
 msgid "Metadata"
-msgstr ""
+msgstr "元数据"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:379
 msgid "New Test Case"
-msgstr ""
+msgstr "新的测试案例"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:399
 msgid "Copy User Keyword"
-msgstr ""
+msgstr "复制用户关键字"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:423
 msgid "New User Keyword"
-msgstr ""
+msgstr "新用户关键字"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editors.py:162
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editors.py:393
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:192
 msgid " (READ ONLY)"
-msgstr ""
+msgstr " (只读)"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editors.py:224
 msgid "Settings"
-msgstr ""
+msgstr "设置"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editors.py:343
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:61
@@ -823,331 +752,343 @@ msgstr ""
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:355
 #: /home2/helio/github/RIDE/tools/../src/robotide/usages/usagesdialog.py:143
 msgid "Source"
-msgstr ""
+msgstr "来源"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editors.py:380
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:207
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:70
 msgid "Find Usages"
-msgstr ""
+msgstr "查找用法"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/fieldeditors.py:187
 msgid "Columns"
-msgstr ""
+msgstr "列"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/fieldeditors.py:191
-msgid "Number of columns that are shown in this editor. Selected value is stored and used globally."
-msgstr ""
+msgid ""
+"Number of columns that are shown in this editor. Selected value is stored "
+"and used globally."
+msgstr "此编辑器中显示的列数。选定的值是全局存储和使用的。"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:82
 msgid "Create Keyword"
-msgstr ""
+msgstr "创建关键字"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:83
 msgid "Extract Keyword"
-msgstr ""
+msgstr "提取关键字"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:84
 msgid "Extract Variable"
-msgstr ""
+msgstr "提取变量"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:85
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1030
 msgid "Rename Keyword"
-msgstr ""
+msgstr "重命名关键字"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:86
 msgid "Find Where Used"
-msgstr ""
+msgstr "查找已使用的位置"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:87
 msgid "JSON Editor\tCtrl-Shift-J"
-msgstr ""
+msgstr "JSON Editor      Ctrl-Shift-J"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:89
 msgid "Go to Definition\tCtrl-B"
-msgstr ""
+msgstr "转到定义       Ctrl-B"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:91
 msgid "Undo\tCtrl-Z"
-msgstr ""
+msgstr "撤销      Ctrl-Z"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:92
 msgid "Redo\tCtrl-Y"
-msgstr ""
+msgstr "重做      Ctrl-Y"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:94
 msgid "Make Variable\tCtrl-1"
-msgstr ""
+msgstr "变为变量      Ctrl-1"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:95
 msgid "Make List Variable\tCtrl-2"
-msgstr ""
+msgstr "使列表变量      Ctrl-2"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:96
 msgid "Make Dict Variable\tCtrl-5"
-msgstr ""
+msgstr "使Dict 变量      Ctrl-5"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:98
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:327
 msgid "Comment Cells\tCtrl-Shift-3"
-msgstr ""
+msgstr "评论单元      Ctrl-Shift-3"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:99
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:328
 msgid "Uncomment Cells\tCtrl-Shift-4"
-msgstr ""
+msgstr "未评论单元      Ctrl-Shift-4"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:100
 msgid "Move Cursor Down\tAlt-Enter"
-msgstr ""
+msgstr "移动光标下Alt-Enter"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:102
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:319
 msgid "Comment Rows\tCtrl-3"
-msgstr ""
+msgstr "评论行      Ctrl-3"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:103
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:320
 msgid "Uncomment Rows\tCtrl-4"
-msgstr ""
+msgstr "取消评论行      Ctrl-4"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:104
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:321
 msgid "Move Rows Up\tAlt-Up"
-msgstr ""
+msgstr "向上移动行Alt-Up"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:105
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:322
 msgid "Move Rows Down\tAlt-Down"
-msgstr ""
+msgstr "向下移动行Alt-own"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:106
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:323
 msgid "Swap Row Up\tCtrl-T"
-msgstr ""
+msgstr "向上交换行      Ctrl-T"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:109
 msgid "Delete Cells\tCtrl-Shift-D"
-msgstr ""
+msgstr "删除单元格      Ctrl-Shift-D"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:109
 msgid "Insert Cells\tCtrl-Shift-I"
-msgstr ""
+msgstr "插入单元格      Ctrl-Shift-I"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:110
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:324
 msgid "Insert Rows\tCtrl-I"
-msgstr ""
+msgstr "Insert RowsCtrl-I"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:110
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:325
 msgid "Delete Rows\tCtrl-D"
-msgstr ""
-
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:111
-msgid "---"
-msgstr ""
+msgstr "删除行      Ctrl-D"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:111
 msgid "Copy\tCtrl-C"
-msgstr ""
+msgstr "复制      Ctrl-C"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:111
 msgid "Cut\tCtrl-X"
-msgstr ""
+msgstr "剪切      Ctrl-X"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:111
 msgid "Select All\tCtrl-A"
-msgstr ""
+msgstr "选择所有       Ctrl-A"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:112
 msgid "Delete\tDel"
-msgstr ""
+msgstr "删除      Del"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:112
 msgid "Insert\tCtrl-Shift-V"
-msgstr ""
+msgstr "插入      Ctrl-Shift-V"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:112
 msgid "Paste\tCtrl-V"
-msgstr ""
+msgstr "粘贴      Ctrl-V"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:794
-msgid "<b>Keyword was not detected by RIDE</b>\n"
+msgid ""
+"<b>Keyword was not detected by RIDE</b>\n"
 "        <br>Possible corrections:<br>\n"
 "        <ul>\n"
-"            <li>Import library or resource file containing the keyword.</li>\n"
-"            <li>For library import errors: Consider importing library spec XML\n"
-"            (Tools / Import Library Spec XML or by adding the XML file with the\n"
+"            <li>Import library or resource file containing the keyword.</"
+"li>\n"
+"            <li>For library import errors: Consider importing library spec "
+"XML\n"
+"            (Tools / Import Library Spec XML or by adding the XML file with "
+"the\n"
 "            correct name to PYTHONPATH) to enable keyword completion\n"
 "            for example for Java libraries.\n"
-"            Library spec XML can be created using libdoc tool from Robot Framework.</li>\n"
+"            Library spec XML can be created using libdoc tool from Robot "
+"Framework.</li>\n"
 "        </ul>"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1030
 msgid "New name"
-msgstr ""
+msgstr "新名称"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1042
 msgid "Save"
-msgstr ""
+msgstr "保存"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1043
 msgid "Cancel"
-msgstr ""
+msgstr "取消"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1069
 msgid "Error in JSON:"
-msgstr ""
+msgstr "JSON中的错误："
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1069
 msgid "Save anyway?"
-msgstr ""
+msgstr "是否保存？"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1070
 msgid "Validation Error!"
-msgstr ""
+msgstr "验证错误！"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1211
 msgid "Please select what you want to check for usage"
-msgstr ""
+msgstr "请选择您想要检查的用法"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1214
 msgid "Complete cell content"
-msgstr ""
+msgstr "完整单元格内容"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1215
 msgid "Variable "
-msgstr ""
+msgstr "变量 "
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1227
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:582
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:586
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:49
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:127
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:184
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:98
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:160
 msgid "Search"
-msgstr ""
+msgstr "搜索"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/listeditor.py:37
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/tagdialogs.py:233
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:76
 msgid "Delete"
-msgstr ""
+msgstr "删除"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/listeditor.py:37
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:83
 msgid "Move Up\tCtrl-Up"
-msgstr ""
+msgstr "上移      Ctrl-Up"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/listeditor.py:37
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:84
 msgid "Move Down\tCtrl-Down"
-msgstr ""
+msgstr "下移      Ctrl-Down"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:100
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/tagdialogs.py:233
 msgid "Clear"
-msgstr ""
+msgstr "清空"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:482
 msgid "Variable"
-msgstr ""
+msgstr "变量"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:483
 msgid "Add Dict"
-msgstr ""
+msgstr "添加Dict"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:483
 msgid "Add List"
-msgstr ""
+msgstr "添加列表"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:483
 msgid "Add Scalar"
-msgstr ""
+msgstr "添加Scalar"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:570
 msgid "Import"
-msgstr ""
+msgstr "导入"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:570
 msgid "Name / Path"
-msgstr ""
+msgstr "名称 / 路径"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:571
 msgid "Import Failed Help"
-msgstr ""
+msgstr "导入失败的帮助"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:585
 msgid "Add Import"
-msgstr ""
+msgstr "添加导入"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:628
 #: /home2/helio/github/RIDE/tools/../src/robotide/spec/specimporter.py:33
 #: /home2/helio/github/RIDE/tools/../src/robotide/spec/specimporter.py:62
 msgid "Import Library Spec XML"
-msgstr ""
+msgstr "导入库Spec XML"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:671
-msgid "<br>Possible corrections and notes:<br>\n"
+msgid ""
+"<br>Possible corrections and notes:<br>\n"
 "        <ul>\n"
 "            <li>Import failure is shown with red color.</li>\n"
-"            <li>See Tools / View RIDE Log for detailed information about the failure.</li>\n"
-"            <li>If the import contains a variable that RIDE has not initialized, consider adding the variable\n"
+"            <li>See Tools / View RIDE Log for detailed information about the "
+"failure.</li>\n"
+"            <li>If the import contains a variable that RIDE has not "
+"initialized, consider adding the variable\n"
 "            to variable table with a default value.</li>\n"
-"            <li>For library import failure: Consider importing library spec XML (Tools / Import Library Spec XML or by\n"
-"            adding the XML file with the correct name to PYTHONPATH) to enable keyword completion\n"
+"            <li>For library import failure: Consider importing library spec "
+"XML (Tools / Import Library Spec XML or by\n"
+"            adding the XML file with the correct name to PYTHONPATH) to "
+"enable keyword completion\n"
 "            for example for Java libraries.\n"
-"            Library spec XML can be created using libdoc tool from Robot Framework.\n"
+"            Library spec XML can be created using libdoc tool from Robot "
+"Framework.\n"
 "            For more information see \n"
-"            <a href=\"https://github.com/robotframework/RIDE/wiki/Keyword-Completion#wiki-using-library-specs\">wiki</a>.\n"
+"            <a href=\"https://github.com/robotframework/RIDE/wiki/Keyword-"
+"Completion#wiki-using-library-specs\">wiki</a>.\n"
 "            </li>\n"
 "        </ul>"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:671
 msgid "Import failure handling"
-msgstr ""
+msgstr "导入故障处理"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:724
 msgid "Add Metadata"
-msgstr ""
+msgstr "添加元数据"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:410
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:414
 msgid "ERROR: Data sanity check failed!"
-msgstr ""
+msgstr "错误：数据智能检查失败！"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:410
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:414
 msgid "Error at line"
-msgstr ""
+msgstr "行错误"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:411
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:415
 msgid "Reset changes?"
-msgstr ""
+msgstr "重置更改？"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:412
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:416
 msgid "Can not apply changes from Text Editor"
-msgstr ""
+msgstr "无法从文本编辑器应用更改"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:565
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:569
 msgid "Apply Changes"
-msgstr ""
+msgstr "应用更改"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:592
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:596
 msgid "Syntax colorization disabled due to missing requirements."
-msgstr ""
+msgstr "由于缺少要求，语法颜色化已被禁用。"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:593
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:597
 msgid "Get help"
-msgstr ""
+msgstr "获得帮助"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:608
-msgid "<h1>Syntax colorization</h1>\n"
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:612
+msgid ""
+"<h1>Syntax colorization</h1>\n"
 "        <p>\n"
-"        Syntax colorization for Text Edit uses <a href='https://pygments.org/'>Pygments</a> syntax highlighter.\n"
+"        Syntax colorization for Text Edit uses <a href='https://pygments."
+"org/'>Pygments</a> syntax highlighter.\n"
 "        </p>\n"
 "        <p>\n"
 "        Install Pygments from command line with:\n"
@@ -1163,431 +1104,454 @@ msgid "<h1>Syntax colorization</h1>\n"
 "        <p>\n"
 "        If you do not have pip or easy_install,\n"
 "        <a \n"
-"        href='https://pythonhosted.org/an_example_pypi_project/setuptools.html#installing-setuptools-and-easy-install'\n"
+"        href='https://pythonhosted.org/an_example_pypi_project/setuptools."
+"html#installing-setuptools-and-easy-install'\n"
 "        >follow these instructions</a>.\n"
 "        </p>\n"
 "        <p>\n"
-"        For more information about installing Pygments, <a href='https://pygments.org/download/'>see the site</a>.\n"
+"        For more information about installing Pygments, <a href='https://"
+"pygments.org/download/'>see the site</a>.\n"
 "        </p>\n"
 "        "
 msgstr ""
+"<h1>语法颜色化format@@1\n"
+"        <p>\n"
+"        文本编辑语法颜色化使用 <a href='https://pygments.org/'>Pygments</a> "
+"语法高亮。\n"
+"        </p>\n"
+"        <p>\n"
+"        从命令行安装Pygments\n"
+"        <pre>\n"
+"            pip install pygments\n"
+"        </pre>\n"
+"\n"
+"        <pre>\n"
+"            easy_install pygments\n"
+"        </pre>\n"
+"        重启 RIDE。\n"
+"        </p>\n"
+"        <p>\n"
+"        如果您没有pip或easy_install,\n"
+"        <a \n"
+"        href='https://pythonhosted.org/an_example_pypi_project/setuptools."
+"html#installing-setuptools-and-easy-install'\n"
+"        >遵循这些指示</a>\n"
+"        </p>\n"
+"        <p>\n"
+"        关于安装Pygments的更多信息 <a href='https://pygments.org/download/'>"
+"见网站</a>。\n"
+"        </p>\n"
+"        "
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:633
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:637
 msgid "Getting syntax colorization"
-msgstr ""
+msgstr "正在获取语法颜色"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:731
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:735
 msgid "No matches found."
-msgstr ""
+msgstr "未找到匹配项。"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/log/log.py:45
 msgid "RIDE Log"
-msgstr ""
+msgstr "RIDE 日志"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/log/log.py:86
 msgid "View RIDE Log"
-msgstr ""
+msgstr "查看RIDE日志"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/parserlog/parserlog.py:45
 msgid "Parser Log"
-msgstr ""
+msgstr "解析器日志"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/parserlog/parserlog.py:85
 msgid "View Parser Log"
-msgstr ""
+msgstr "查看解析器日志"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/postinstall/desktopshortcut.py:55
 msgid "Create RIDE Desktop Shortcut"
-msgstr ""
+msgstr "创建 RIDE 桌面快捷方式"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:42
 msgid "Text background"
-msgstr ""
+msgstr "文本背景"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:82
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/general.py:93
 msgid "Reset colors to default"
-msgstr ""
+msgstr "重置颜色为默认值"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:83
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/general.py:94
 msgid "Save or Load settings"
-msgstr ""
+msgstr "保存或加载设置"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:122
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/general.py:192
 msgid "Font Size"
-msgstr ""
+msgstr "Font Size"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:134
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/general.py:204
 msgid "Zoom Factor"
-msgstr ""
+msgstr "缩放因子"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:140
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/general.py:210
 msgid "Use fixed width font"
-msgstr ""
+msgstr "使用固定宽度字体"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:146
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/general.py:216
 msgid "Font Face"
-msgstr ""
+msgstr "Font Face"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:158
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:161
 msgid "Text Editor"
-msgstr ""
+msgstr "文本编辑器"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:162
 msgid "Text Editor Settings"
-msgstr ""
+msgstr "文本编辑器设置"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:173
 msgid "Argument foreground"
-msgstr ""
+msgstr "参数前景"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:174
 msgid "Comment foreground"
-msgstr ""
+msgstr "评论前景"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:175
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:404
 msgid "Error foreground"
-msgstr ""
+msgstr "错误前端"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:176
 msgid "Gherkin keyword foreground"
-msgstr ""
+msgstr "Gherkin 关键字前景"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:177
 msgid "Heading foreground"
-msgstr ""
+msgstr "头部前景"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:178
 msgid "Import foreground"
-msgstr ""
+msgstr "导入前景"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:179
 msgid "Variable foreground"
-msgstr ""
+msgstr "变量前景"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:180
 msgid "Keyword definition foreground"
-msgstr ""
+msgstr "关键字定义前景"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:181
 msgid "Keyword call foreground"
-msgstr ""
+msgstr "关键字通话前景"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:182
 msgid "Separator"
-msgstr ""
+msgstr "分隔符"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:183
 msgid "Setting foreground"
-msgstr ""
+msgstr "设置前景"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:184
 msgid "Syntax characters"
-msgstr ""
+msgstr "语法字符"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:189
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:402
 msgid "Text foreground"
-msgstr ""
+msgstr "文本前景"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:229
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:232
 msgid "Grid Editor"
-msgstr ""
+msgstr "网格编辑器"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:233
 msgid "Grid Editor Settings"
-msgstr ""
+msgstr "网格编辑器设置"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:242
 msgid "Default column size"
-msgstr ""
+msgstr "Default column size"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:249
 msgid "Auto size columns"
-msgstr ""
+msgstr "Auto size columns"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:253
-msgid "Max column size\n"
+msgid ""
+"Max column size\n"
 "(applies when auto size is on)"
 msgstr ""
+"最大列大小\n"
+"(自动大小)"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:258
 msgid "Word wrap and auto size rows"
-msgstr ""
+msgstr "自动换行和自动缩放行"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:263
 msgid "Enable auto suggestions"
-msgstr ""
+msgstr "启用自动建议"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:301
 msgid "User Keyword Foreground"
-msgstr ""
+msgstr "用户关键字前景"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:302
 msgid "Library Keyword Foreground"
-msgstr ""
+msgstr "知识库关键词前景"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:303
 msgid "Variable Foreground"
-msgstr ""
+msgstr "变量前景"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:304
 msgid "Unknown Variable Foreground"
-msgstr ""
+msgstr "未知的变量前景"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:305
 msgid "Comments Foreground"
-msgstr ""
+msgstr "评论前景"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:306
 msgid "Default Foreground"
-msgstr ""
+msgstr "默认前景"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:307
 msgid "Empty Foreground"
-msgstr ""
+msgstr "空前景"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:328
 msgid "Variable Background"
-msgstr ""
+msgstr "变量背景"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:329
 msgid "Keyword Background"
-msgstr ""
+msgstr "关键词背景"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:330
 msgid "Mandatory Field Background"
-msgstr ""
+msgstr "必填字段背景"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:331
 msgid "Optional Field Background"
-msgstr ""
+msgstr "可选字段背景"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:332
 msgid "Mandatory Empty Field Background"
-msgstr ""
+msgstr "必填字段背景"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:333
 msgid "Unknown Background"
-msgstr ""
+msgstr "未知背景"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:334
 msgid "Error Background"
-msgstr ""
+msgstr "错误背景"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:335
 msgid "Highlight Background"
-msgstr ""
+msgstr "高亮背景"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:361
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:364
 msgid "Test Runner"
-msgstr ""
+msgstr "测试运行器"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:365
 msgid "Test Runner Settings"
-msgstr ""
+msgstr "测试运行器设置"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:369
 msgid "Colors will be active after next RIDE restart."
-msgstr ""
+msgstr "下次重启后颜色将被激活。"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:383
 msgid "Shows console colors set by"
-msgstr ""
+msgstr "显示控制台颜色设置"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:385
 msgid "Asks for confirmation to run all tests if none selected "
-msgstr ""
+msgstr "如果没有选中请确认以运行所有测试 "
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:405
 msgid "Fail foreground"
-msgstr ""
+msgstr "前景失败"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:406
 msgid "Pass foreground"
-msgstr ""
+msgstr "通过前景"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:407
 msgid "Skip foreground"
-msgstr ""
+msgstr "跳过前景"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/general.py:96
 msgid "Apply to Project and File Explorer panels"
-msgstr ""
+msgstr "应用到项目和文件资源管理器面板"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/general.py:141
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/general.py:285
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:563
 msgid "RIDE - Preferences"
-msgstr ""
+msgstr "RIDE - 首选项"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/general.py:229
 msgid "Language"
-msgstr ""
+msgstr "语言"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/general.py:242
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/general.py:245
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/general.py:248
 msgid "General"
-msgstr ""
+msgstr "A. 概况"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/general.py:246
 msgid "General Settings"
-msgstr ""
+msgstr "常规设置"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/general.py:255
 msgid "Foreground"
-msgstr ""
+msgstr "前景"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/general.py:256
 msgid "Background"
-msgstr ""
+msgstr "二. 背景"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/general.py:257
 msgid "Secondary Foreground"
-msgstr ""
+msgstr "次要前景"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/general.py:258
 msgid "Secondary Background"
-msgstr ""
+msgstr "次要背景"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/general.py:259
 msgid "Text Foreground"
-msgstr ""
+msgstr "文本前景"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/general.py:260
 msgid "Help Background"
-msgstr ""
+msgstr "帮助背景"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/imports.py:28
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/imports.py:32
 msgid "Importing"
-msgstr ""
+msgstr "导入中"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/imports.py:31
 msgid "Library imports and PYTHONPATH"
-msgstr ""
+msgstr "图书馆进口和 PYTHONPATH"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/imports.py:42
 msgid "Comma separated list of libraries to be automatically imported."
-msgstr ""
+msgstr "以逗号分隔的要自动导入的库列表。"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/imports.py:44
-msgid "Comma separated list of directories to be added to PYTHONPATH when libraries are searched."
-msgstr ""
+msgid ""
+"Comma separated list of directories to be added to PYTHONPATH when libraries "
+"are searched."
+msgstr "在搜索库时，逗号分隔要添加到PYTHONPATH 的目录列表。"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/imports.py:46
 msgid "Comma separated list of directories containing library spec files."
-msgstr ""
+msgstr "以逗号分隔的包含库速度文件的目录列表。"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/managesettingsdialog.py:41
 msgid "Save or Load Settings"
-msgstr ""
+msgstr "保存或加载设置"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/managesettingsdialog.py:47
 msgid "Load settings from file..."
-msgstr ""
+msgstr "从文件加载设置..."
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/managesettingsdialog.py:48
 msgid "Save settings to file..."
-msgstr ""
+msgstr "保存设置到文件..."
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/managesettingsdialog.py:53
 msgid "Current directory:"
-msgstr ""
+msgstr "当前目录："
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/managesettingsdialog.py:70
 msgid "File with Settings to Load"
-msgstr ""
+msgstr "要加载的文件"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/managesettingsdialog.py:96
 msgid "Save Settings to file"
-msgstr ""
+msgstr "保存设置到文件"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/managesettingsdialog.py:109
 msgid "Could not open settings file \"%s\" for writing"
-msgstr ""
+msgstr "无法打开设置文件“%s”进行写入"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/managesettingsdialog.py:121
 msgid "Error trying to get '%s' from file %s"
-msgstr ""
+msgstr "尝试从文件 %s 获取%s时出错"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/managesettingsdialog.py:136
 msgid "Invalid config file '%s': %s"
-msgstr ""
+msgstr "无效的配置文件'%s': %s"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/saving.py:28
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/saving.py:31
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/saving.py:34
 msgid "Saving"
-msgstr ""
+msgstr "正在保存"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/saving.py:32
 msgid "Saving Preferences"
-msgstr ""
+msgstr "保存首选项"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/saving.py:41
 msgid "Reformat?"
-msgstr ""
+msgstr "重新格式化？"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/saving.py:42
 msgid "Should it recalculate identation on Save?"
-msgstr ""
+msgstr "保存时是否重新计算空闲？"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/saving.py:54
 msgid "Default file format:"
-msgstr ""
+msgstr "默认文件格式："
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/saving.py:57
 msgid "TXT format separator:"
-msgstr ""
+msgstr "TXT 格式分隔符："
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/saving.py:60
 msgid "Line separator:"
-msgstr ""
+msgstr "行分隔符："
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/saving.py:62
-msgid "Possible values are native (of current OS) CRLF (Windows) and LF (Unixy)"
-msgstr ""
+msgid ""
+"Possible values are native (of current OS) CRLF (Windows) and LF (Unixy)"
+msgstr "可能的值是原生的(当前OS) CRLF (Windows) 和 LF (Unixy)"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/saving.py:64
 msgid "Separating spaces"
-msgstr ""
+msgstr "分离空格"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/saving.py:66
 msgid "Number of spaces between cells when saving in txt format"
-msgstr ""
+msgstr "以txt格式保存时单元格之间的空格"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/recentfiles/recentfiles.py:41
 msgid "Add recently opened files to the file menu."
-msgstr ""
+msgstr "将最近打开的文件添加到文件菜单。"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/recentfiles/recentfiles.py:118
 msgid "No recent files"
-msgstr ""
+msgstr "没有最近的文件"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/recentfiles/recentfiles.py:118
 #: /home2/helio/github/RIDE/tools/../src/robotide/recentfiles/recentfiles.py:124
 #: /home2/helio/github/RIDE/tools/../src/robotide/recentfiles/recentfiles.py:151
@@ -1595,28 +1559,32 @@ msgstr ""
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:93
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:140
 msgid "File"
-msgstr ""
+msgstr "文件"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/recentfiles/recentfiles.py:119
 #: /home2/helio/github/RIDE/tools/../src/robotide/recentfiles/recentfiles.py:125
 #: /home2/helio/github/RIDE/tools/../src/robotide/recentfiles/recentfiles.py:153
 msgid "Exit"
-msgstr ""
+msgstr "退出"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/recentfiles/recentfiles.py:142
 msgid "Open %s"
-msgstr ""
+msgstr "打开 %s"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/configmanagerui.py:27
-msgid "The specified command string will be split from whitespaces into a command\n"
+msgid ""
+"The specified command string will be split from whitespaces into a command\n"
 "and its arguments. If either the command or any of the arguments require\n"
-"internal spaces, they must be written as '<SPACE>'.\n\n"
-"The command will be executed in the system directly without opening a shell.\n"
-"This means that shell commands and extensions are not available. For example,\n"
-"in Windows batch files to execute must contain the '.bat' extension and 'dir'\n"
-"command does not work.\n\n"
+"internal spaces, they must be written as '<SPACE>'.\n"
+"\n"
+"The command will be executed in the system directly without opening a "
+"shell.\n"
+"This means that shell commands and extensions are not available. For "
+"example,\n"
+"in Windows batch files to execute must contain the '.bat' extension and "
+"'dir'\n"
+"command does not work.\n"
+"\n"
 "Examples:\n"
 "    robot.bat --include smoke C:\\my_tests\n"
 "    svn update /home/robot\n"
@@ -1627,335 +1595,343 @@ msgstr ""
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/configmanagerui.py:45
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/runanything.py:54
 msgid "Manage Run Configurations"
-msgstr ""
+msgstr "管理运行配置"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/configmanagerui.py:99
 msgid "New"
-msgstr ""
+msgstr "新的"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/configmanagerui.py:99
 msgid "Remove"
-msgstr ""
+msgstr "删除"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/configmanagerui.py:101
 msgid "Command"
-msgstr ""
+msgstr "命令"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/runanything.py:30
-msgid "A plugin for executing commands on the system.\n\n"
+msgid ""
+"A plugin for executing commands on the system.\n"
+"\n"
 "    This plugin enables creation of persistent run configurations and\n"
 "    execution of those. Output of the executed command is displayed in a\n"
 "    separate tab."
 msgstr ""
+"在系统上执行命令的插件。\n"
+"\n"
+"    此插件允许创建持续运行的配置和\n"
+"    执行这些配置。 执行命令的输出显示在一个\n"
+"    单独标签页。"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/runanything.py:54
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/runanything.py:56
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/runanything.py:63
 msgid "Macros"
-msgstr ""
+msgstr "宏图"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:36
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/searchtests.py:35
 msgid "Search Tests"
-msgstr ""
+msgstr "搜索测试"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:50
 msgid "Tag Search"
-msgstr ""
+msgstr "标签搜索"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:61
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:85
 msgid "Tags"
-msgstr ""
+msgstr "标签"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:61
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:85
 msgid "Test"
-msgstr ""
+msgstr "测试"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:66
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:90
 msgid "Results: "
-msgstr ""
+msgstr "结果： "
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:82
-msgid "Find matches using tag patterns. See RF User Guide or 'robot --help' for more information."
+msgid ""
+"Find matches using tag patterns. See RF User Guide or 'robot --help' for "
+"more information."
 msgstr ""
+"使用标签模式查找匹配。请参阅RF 用户指南或 'robot --help' 获取更多信息。"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:96
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:78
 msgid "Include"
-msgstr ""
+msgstr "包含"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:139
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:189
 msgid "Add all to selected"
-msgstr ""
+msgstr "将全部添加到选中的"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:156
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:164
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:211
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:284
 msgid "Results: %d"
-msgstr ""
+msgstr "结果： %d"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:177
 msgid "Info. "
-msgstr ""
+msgstr "信息 "
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:195
 msgid "Find matches by test name, documentation and/or tag."
-msgstr ""
+msgstr "通过测试名称、文档或标签查找匹配项。"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:212
 msgid "Search term"
-msgstr ""
+msgstr "搜索词"
 
-#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/searchtests.py:33
 msgid "A plugin for searching tests based on name, tags and documentation"
-msgstr ""
+msgstr "基于名称、标签和文档搜索测试的插件"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/spec/specimporter.py:60
 msgid "Library Spec XML|*.xml|All Files|*.*"
-msgstr ""
+msgstr "库 Spec XML|*.xml|所有文件|*.*"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/spec/specimporter.py:77
-msgid "Library \"%s\" imported\n"
+msgid ""
+"Library \"%s\" imported\n"
 "from \"%s\"\n"
 "This may require RIDE restart."
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/spec/specimporter.py:78
 msgid "Info"
-msgstr ""
+msgstr "信息"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/spec/specimporter.py:80
 msgid "Could not import library from file \"%s\""
-msgstr ""
+msgstr "无法从文件中导入库\"%s\""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/spec/specimporter.py:80
 msgid "Import failed"
-msgstr ""
+msgstr "导入失败"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:93
 msgid "Type"
-msgstr ""
+msgstr "类型"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:93
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:160
 msgid "Directory"
-msgstr ""
+msgstr "目录"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:100
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:198
 msgid "New Resource File"
-msgstr ""
+msgstr "新建资源文件"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:102
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/preview.py:117
 msgid "Format"
-msgstr ""
+msgstr "格式"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:114
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:129
 msgid "Parent Directory"
-msgstr ""
+msgstr "父目录"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:115
 msgid "Choose Parent Directory"
-msgstr ""
+msgstr "选择父目录"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:132
 msgid "Created Path"
-msgstr ""
+msgstr "创建路径"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:185
 msgid "New Project"
-msgstr ""
+msgstr "新建项目"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:212
 msgid "Add Suite"
-msgstr ""
+msgstr "添加套件"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:236
 msgid "Add Directory"
-msgstr ""
+msgstr "添加目录"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:248
 msgid "Set Data Format"
-msgstr ""
+msgstr "设置数据格式"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:272
 msgid "Change recursively"
-msgstr ""
+msgstr "递归更改"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:291
-msgid "Provide format for initialization file in directory\n"
+msgid ""
+"Provide format for initialization file in directory\n"
 "\"%s\"."
 msgstr ""
+"在目录\n"
+"\"%s\"中提供初始化文件的格式。"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:305
 msgid "Open"
-msgstr ""
+msgstr "打开"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:310
 msgid "Robot data (*.robot)|*.robot"
-msgstr ""
+msgstr "机器人数据 (*.robot)|*.robot"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:311
 msgid "Robot data (*.txt)|*.txt"
-msgstr ""
+msgstr "Robot 数据 (*.txt)|*.txt"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:312
 msgid "Robot resource file (*.resource)|*.resource"
-msgstr ""
+msgstr "Robot 资源文件 (*.resource)|*.resource"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:313
 msgid "Robot Tab Separated data (*.tsv)|*.tsv"
-msgstr ""
+msgstr "机器人标签页分离数据 (*.tsv)|*.tsv"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:315
 msgid "All files|*.*"
-msgstr ""
+msgstr "所有文件|*.*"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/fileexplorerplugin.py:29
-msgid "Provides a tree view for Files and Folders. Opens selected item with mouse right-click."
-msgstr ""
+msgid ""
+"Provides a tree view for Files and Folders. Opens selected item with mouse "
+"right-click."
+msgstr "为文件和文件夹提供树木视图。用鼠标右键打开选中的项目。"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/fileexplorerplugin.py:65
 msgid "View"
-msgstr ""
+msgstr "查看"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/fileexplorerplugin.py:65
 msgid "View File Explorer"
-msgstr ""
+msgstr "查看文件浏览器"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/fileexplorerplugin.py:67
 msgid "Show File Explorer panel"
-msgstr ""
+msgstr "显示文件资源管理器面板"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/fileexplorerplugin.py:113
 msgid "Files"
-msgstr ""
+msgstr "文件"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:35
 msgid "<all keywords>"
-msgstr ""
+msgstr "<all keywords>"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:36
 msgid "<all user keywords>"
-msgstr ""
+msgstr "<all user keywords>"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:37
 msgid "<all library keywords>"
-msgstr ""
+msgstr "<all library keywords>"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:39
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:59
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:139
 msgid "Search Keywords"
-msgstr ""
+msgstr "搜索关键字"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:43
 msgid "A plugin for searching keywords based on name or documentation."
-msgstr ""
+msgstr "基于名称或文档搜索关键字的插件。"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:55
 msgid "Search keywords from libraries and resources"
-msgstr ""
+msgstr "从库和资源中搜索关键字"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:173
 msgid "Search term: "
-msgstr ""
+msgstr "搜索词： "
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:180
 msgid "Search documentation"
-msgstr ""
+msgstr "搜索文档"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:185
 msgid "Source: "
-msgstr ""
+msgstr "资料来源： "
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:355
 msgid "Description"
-msgstr ""
+msgstr "描述"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:57
 msgid "[File]\n"
-msgstr ""
+msgstr "[File]\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:58
 msgid "!&New Project | Create a new top level suite | Ctrlcmd-N | ART_NEW\n"
-msgstr ""
+msgstr "!&新项目 | 创建新的顶级套装 | Ctrlcmd-N | ART_NEW\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:60
-msgid "!&Open Test Suite | Open file containing tests | Ctrlcmd-O | ART_FILE_OPEN\n"
-msgstr ""
+msgid ""
+"!&Open Test Suite | Open file containing tests | Ctrlcmd-O | ART_FILE_OPEN\n"
+msgstr "!&打开测试套件 | 打开包含测试的文件 | Ctrlcmd-O | ART_FILE_OPEN\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:61
-msgid "!Open &Directory | Open directory containing datafiles | Shift-Ctrlcmd-O | ART_FOLDER_OPEN\n"
+msgid ""
+"!Open &Directory | Open directory containing datafiles | Shift-Ctrlcmd-O | "
+"ART_FOLDER_OPEN\n"
 msgstr ""
+"!Open &Directory | 打开包含数据文件的目录| Shift-Ctrlcmd-O | "
+"ART_FOLDER_OPEN\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:62
 msgid "!Open External File | Open file in Code Editor | | ART_NORMAL_FILE\n"
-msgstr ""
+msgstr "!打开外部文件 | 在代码编辑器中打开文件 | | ART_NORMAL_FILE\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:63
 msgid "!&Save | Save selected datafile | Ctrlcmd-S | ART_FILE_SAVE\n"
-msgstr ""
+msgstr "!&保存 | 保存选中的数据文件 | Ctrlcmd-S | ART_FILE_SAVE\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:64
 msgid "!Save &All | Save all changes | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS\n"
-msgstr ""
+msgstr "!保存 &All | 保存所有更改 | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:65
 msgid "!E&xit | Exit RIDE | Ctrlcmd-Q\n"
-msgstr ""
+msgstr "!E&xit | 退出RIDE | Ctrlcmd-Q\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:67
 msgid "!Search Unused Keywords | | | | POSITION-54\n"
-msgstr ""
+msgstr "!搜索未使用的关键字 | | | | POSITION-54\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:68
 msgid "!Manage Plugins | | | | POSITION-81\n"
-msgstr ""
+msgstr "!管理插件 | | | | POSITION-81\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:69
 msgid "!View All Tags | | F7 | | POSITION-82\n"
-msgstr ""
+msgstr "!查看所有标签 | | F7 | | POSITION-82\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:70
 msgid "!Preferences | | | | POSITION-99\n"
-msgstr ""
+msgstr "!首选项 | | | | POSITION-99\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:71
 msgid "[Help]\n"
-msgstr ""
+msgstr "[Help]\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:72
 msgid "!Shortcut keys | RIDE shortcut keys\n"
-msgstr ""
+msgstr "!快捷键 | RIDE 快捷键\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:73
 msgid "!User Guide | Robot Framework User Guide\n"
-msgstr ""
+msgstr "!User Guide | Robot Framework 用户指南\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:74
 msgid "!Wiki | RIDE User Guide (Wiki)\n"
-msgstr ""
+msgstr "!Wiki | RIDE 用户指南 (Wiki)\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:75
 msgid "!Report a Problem | Open browser to SEARCH on the RIDE issue tracker\n"
@@ -1967,247 +1943,266 @@ msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:77
 msgid "!Check for Upgrade | Looks at PyPi for new released version\n"
-msgstr ""
+msgstr "!检查升级 | PyPi 看看新发布的版本\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:173
 msgid "Saved %s"
-msgstr ""
+msgstr "保存的 %s"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:174
 msgid "Saved all files"
-msgstr ""
+msgstr "保存所有文件"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:197
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:225
 msgid "Validation Error"
-msgstr ""
+msgstr "验证错误"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:201
 msgid "\"%s\" is read only"
-msgstr ""
+msgstr "“%s”只读"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:202
 msgid "Modification prevented"
-msgstr ""
+msgstr "无法修改"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:271
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treeplugin.py:107
 msgid "Test Suites"
-msgstr ""
+msgstr "测试套件"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:372
-msgid "There are unsaved modifications.\n"
+msgid ""
+"There are unsaved modifications.\n"
 "Do you want to save your changes before exiting?"
 msgstr ""
+"有未保存的修改。\n"
+"您想要在退出之前保存您的更改吗？"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:374
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:462
 msgid "Warning"
-msgstr ""
+msgstr "警告"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:461
-msgid "There are unsaved modifications.\n"
+msgid ""
+"There are unsaved modifications.\n"
 "Do you want to proceed without saving?"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:498
 msgid "Choose a directory containing Robot files"
-msgstr ""
+msgstr "选择包含机器人文件的目录"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:650
 msgid "Workspace modifications detected on the file system."
-msgstr ""
+msgstr "在文件系统中检测到工作区修改。"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:651
 msgid "Do you want to reload the workspace?"
-msgstr ""
+msgstr "你想要重新加载工作区吗？"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:653
 msgid "Answering <Yes> will discard unsaved changes."
-msgstr ""
+msgstr "回答 <Yes> 将丢弃未保存的更改。"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:654
 msgid "Answering <No> will ignore the changes on disk."
-msgstr ""
+msgstr "回答 <No> 将忽略磁盘上的更改。"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:655
 msgid "Files Changed On Disk"
-msgstr ""
+msgstr "磁盘上的文件已更改"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:697
 msgid "Customize..."
-msgstr ""
+msgstr "自定义..."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:785
 msgid "search unused keywords"
-msgstr ""
+msgstr "搜索未使用的关键字"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:785
 msgid "stop test run"
-msgstr ""
+msgstr "停止测试运行"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:786
 msgid "preview"
-msgstr ""
+msgstr "预览"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:786
 msgid "view ride log"
-msgstr ""
+msgstr "查看乘坐日志"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:828
 msgid "Shortcut keys for RIDE"
-msgstr ""
+msgstr "RIDE快捷键"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:866
 msgid "Show"
-msgstr ""
+msgstr "显示"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:867
 msgid "Hide"
-msgstr ""
+msgstr "隐藏"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:868
 msgid "Close"
-msgstr ""
+msgstr "关闭"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/pluginmanager.py:48
 msgid "Manage Plugins"
-msgstr ""
+msgstr "管理插件"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/pluginmanager.py:63
 msgid "Installed Plugins\n"
-msgstr ""
+msgstr "已安装的插件\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/pluginmanager.py:82
 msgid "Enabled"
-msgstr ""
+msgstr "已启用"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/pluginmanager.py:83
 msgid "Plugin"
-msgstr ""
+msgstr "插件"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/pluginmanager.py:93
-msgid "Info. Enabling and disabling plugins might require RIDE restart for menus to work."
-msgstr ""
+msgid ""
+"Info. Enabling and disabling plugins might require RIDE restart for menus to "
+"work."
+msgstr "信息。启用和禁用插件可能需要 RIDE 重启以使菜单正常工作。"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/preview.py:32
-msgid "(Obsolete) Provides preview of the test data in HTML, TSV and TXT formats."
-msgstr ""
+msgid ""
+"(Obsolete) Provides preview of the test data in HTML, TSV and TXT formats."
+msgstr "(过时) 提供 HTML、TSV 和 TXT 格式的测试数据预览。"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/preview.py:41
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/preview.py:100
 msgid "Preview"
-msgstr ""
+msgstr "预览"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/preview.py:43
 msgid "Show preview of the current file"
-msgstr ""
+msgstr "显示当前文件的预览"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/preview.py:83
 msgid "Text (Pipes)"
-msgstr ""
+msgstr "文本(ipes)"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/preview.py:83
 msgid "Text (Spaces)"
-msgstr ""
+msgstr "文本(空间)"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/preview.py:123
 msgid "Print"
-msgstr ""
+msgstr "打印"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:39
 msgid "Search unused keywords"
-msgstr ""
+msgstr "搜索未使用的关键字"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:66
-msgid "This dialog helps you finding unused keywords within your opened project.\n"
+msgid ""
+"This dialog helps you finding unused keywords within your opened project.\n"
 "If you want, you can restrict the search to a set of files with the filter."
 msgstr ""
+"此对话框帮助您在打开的项目中找到未使用的关键字。\n"
+"如果您想要，您可以将搜索限制在带过滤器的一组文件中。"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:70
 msgid "Filter is"
-msgstr ""
+msgstr "筛选器是"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:71
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:242
 msgid "inactive"
-msgstr ""
+msgstr "未激活"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:84
 msgid "Filter"
-msgstr ""
+msgstr "筛选器"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:91
 msgid "Use RegEx"
-msgstr ""
+msgstr "使用正则表达式"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:93
-msgid "Here you can define one or more strings separated by comma (e.g. common,abc,123).\n"
+msgid ""
+"Here you can define one or more strings separated by comma (e.g. common,"
+"abc,123).\n"
 "The filter matches if at least one string is part of the filename.\n"
 "If you don't enter any strings, all opened files are included"
 msgstr ""
+"这里您可以定义一个或多个字符串，用逗号分隔(例如common,abc,123)。\n"
+"如果至少有一个字符串是文件名的一部分，过滤器匹配。\n"
+"如果您没有输入任何字符串，所有打开的文件都会被包含"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:101
 msgid "Test case files"
-msgstr ""
+msgstr "测试大小写文件"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:104
 msgid "Resource files"
-msgstr ""
+msgstr "资源文件"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:106
 msgid "Mode"
-msgstr ""
+msgstr "模式"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:107
 msgid "exclude"
-msgstr ""
+msgstr "不包含"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:107
 msgid "include"
-msgstr ""
+msgstr "包含"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:109
 msgid "Test the filter"
-msgstr ""
+msgstr "测试过滤器"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:139
 msgid "Keyword"
-msgstr ""
+msgstr "Keyword"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:146
 msgid "Delete marked keywords"
-msgstr ""
+msgstr "删除标记的关键字"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:157
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:320
 msgid "Unused Keywords"
-msgstr ""
+msgstr "未使用的关键字"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:163
 msgid "Abort"
-msgstr ""
+msgstr "中止"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:247
 msgid "active"
-msgstr ""
+msgstr "已激活"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:270
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:353
 msgid "Unused Keywords (%d)"
-msgstr ""
+msgstr "未使用的关键字 (%d)"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:279
 msgid "(None)"
-msgstr ""
+msgstr "(无)"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:282
-msgid "Keywords of the following files will be included in the search:\n\n"
+msgid ""
+"Keywords of the following files will be included in the search:\n"
+"\n"
 msgstr ""
+"以下文件的关键字将被包含在搜索中：\n"
+"\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:283
 msgid "Included files"
-msgstr ""
+msgstr "包含的文件"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:339
 msgid "Searching.%s \t- %s"
@@ -2215,243 +2210,254 @@ msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:354
 msgid "Search finished - Found %d Unused Keywords"
-msgstr ""
+msgstr "搜索完成 - 找到 %d 未使用的关键字"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:402
 msgid "listing datafiles"
-msgstr ""
+msgstr "列出数据文件"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:405
 msgid "searching from "
-msgstr ""
+msgstr "搜索自 "
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/tagdialogs.py:37
 msgid "View all tags"
-msgstr ""
+msgstr "查看所有标签"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/tagdialogs.py:76
 msgid "Tag"
-msgstr ""
+msgstr "标签"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/tagdialogs.py:77
 msgid "Occurrences"
-msgstr ""
+msgstr "出现的情况"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/tagdialogs.py:82
 msgid "The List"
-msgstr ""
+msgstr "A. 清单"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/tagdialogs.py:85
 msgid "Refresh"
-msgstr ""
+msgstr "刷新"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/tagdialogs.py:86
 msgid "Included Tag Search"
-msgstr ""
+msgstr "包含标签搜索"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/tagdialogs.py:89
 msgid "Excluded Tag Search"
-msgstr ""
+msgstr "排除标签搜索"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/tagdialogs.py:147
-msgid "Total tests %d, Tests with tags %d, Unique tags %d\n"
+msgid ""
+"Total tests %d, Tests with tags %d, Unique tags %d\n"
 "Currently selected tests %d"
 msgstr ""
+"测试总计 %d, 测试标签 %d, 唯一标签 %d\n"
+"当前选择的测试 %d"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/tagdialogs.py:233
 msgid "Select all"
-msgstr ""
+msgstr "选择所有"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/tagdialogs.py:233
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/tagdialogs.py:262
 msgid "Rename"
-msgstr ""
+msgstr "重命名："
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/tagdialogs.py:234
 msgid "Show tests with this tag"
-msgstr ""
+msgstr "显示此标签的测试"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/tagdialogs.py:234
 msgid "Show tests without this tag"
-msgstr ""
+msgstr "显示没有此标签的测试"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/tagdialogs.py:261
 msgid "Renaming tag '%s'."
-msgstr ""
+msgstr "正在重命名标签 '%s'。"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/tagdialogs.py:276
 msgid "Delete a tag '%s' ?"
-msgstr ""
+msgstr "删除标签%s？"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/tagdialogs.py:276
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:543
 msgid "Confirm"
-msgstr ""
+msgstr "确认"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:55
 msgid "New Suite\tCtrl-Shift-F"
-msgstr ""
+msgstr "新建Suite      Ctrl-Shift-F"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:56
 msgid "New Directory"
-msgstr ""
+msgstr "新建目录"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:57
 msgid "New Test Case\tCtrl-Shift-T"
-msgstr ""
+msgstr "新测试案例      Ctrl-Shift-T"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:58
 msgid "New User Keyword\tCtrl-Shift-K"
-msgstr ""
+msgstr "新用户关键字      Ctrl-Shift-K"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:59
 msgid "Sort Variables"
-msgstr ""
+msgstr "排序变量"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:60
 msgid "Sort Tests"
-msgstr ""
+msgstr "排序测试"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:61
 msgid "Sort Keywords"
-msgstr ""
+msgstr "排序关键字"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:62
 msgid "New Scalar\tCtrl-Shift-V"
-msgstr ""
+msgstr "新 Scalar      Ctrl-Shift-V"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:63
 msgid "New List Variable\tCtrl-Shift-L"
-msgstr ""
+msgstr "新建列表变量       Ctrl-Shift-L"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:64
 msgid "New Dictionary Variable"
-msgstr ""
+msgstr "新建字典变量"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:65
 msgid "Change Format"
-msgstr ""
+msgstr "更改格式"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:66
 msgid "Copy\tCtrl-Shift-C"
-msgstr ""
+msgstr "复制      Ctrl-Shift-C"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:67
 msgid "Rename\tF2"
-msgstr ""
+msgstr "Rename\tF2"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:68
 msgid "Add Resource"
-msgstr ""
+msgstr "添加资源"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:69
 msgid "New Resource"
-msgstr ""
+msgstr "新资源"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:71
 msgid "Select All Tests"
-msgstr ""
+msgstr "选择所有测试"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:72
 msgid "Deselect All Tests"
-msgstr ""
+msgstr "取消选择所有测试"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:73
 msgid "Select Only Failed Tests"
-msgstr ""
+msgstr "仅选择失败的测试"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:74
 msgid "Select Only Passed Tests"
-msgstr ""
+msgstr "仅选择通过的测试"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:75
 msgid "Delete\tCtrl-Shift-D"
-msgstr ""
+msgstr "删除      Ctrl-Shift-D"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:77
 msgid "Exclude"
-msgstr ""
+msgstr "不包含"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:79
 msgid "Expand all"
-msgstr ""
+msgstr "展开所有"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:80
 msgid "Collapse all"
-msgstr ""
+msgstr "折叠所有"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:81
 msgid "Remove Read Only"
-msgstr ""
+msgstr "移除只读"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:82
 msgid "Open Containing Folder"
-msgstr ""
+msgstr "打开包含文件夹"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:389
-msgid "Directory contains unsaved data!\n"
+msgid ""
+"Directory contains unsaved data!\n"
 "You must save data before excluding."
 msgstr ""
+"目录包含未保存的数据！\n"
+"您必须先保存数据才能排除。"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:452
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:521
-msgid "File contains unsaved data!\n"
+msgid ""
+"File contains unsaved data!\n"
 "You must save data before excluding."
 msgstr ""
+"文件包含未保存的数据！\n"
+"您必须在排除之前保存数据。"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:543
 msgid "Delete test case file"
-msgstr ""
+msgstr "删除测试案例文件"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treeplugin.py:61
 msgid "Provides a tree view for Test Suites "
-msgstr ""
+msgstr "提供测试套件树视图 "
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treeplugin.py:213
 msgid "External Resources"
-msgstr ""
+msgstr "外部资源"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treeplugin.py:348
 msgid "%s (excluded)"
-msgstr ""
+msgstr "%s (不包括)"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/usages/usagesdialog.py:58
 msgid "'%s' - %d matches found - Searching%s"
-msgstr ""
+msgstr "'%s' - 发现 %d 匹配项 - 正在搜索%s"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/usages/usagesdialog.py:63
 msgid "'%s' - %d matches"
-msgstr ""
+msgstr "'%s- %d 匹配"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/usages/usagesdialog.py:85
 msgid "Go to definition"
-msgstr ""
+msgstr "转到定义"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/usages/usagesdialog.py:143
 msgid "Location"
-msgstr ""
+msgstr "地点"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/usages/usagesdialog.py:143
 msgid "Usage"
-msgstr ""
+msgstr "用法"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/usages/usagesdialog.py:176
 msgid "Imported Location"
-msgstr ""
+msgstr "导入的位置"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/usages/usagesdialog.py:176
 msgid "Imported name"
-msgstr ""
+msgstr "导入的名称"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/usages/usagesdialog.py:176
 msgid "Importing Location"
-msgstr ""
+msgstr "导入位置"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/usages/usagesdialog.py:176
 msgid "Importing Name"
-msgstr ""
+msgstr "导入名称"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/validators/__init__.py:150
 msgid "%s cannot be empty"
-msgstr ""
+msgstr "%s 不能为空"
 
+#~ msgid "---"
+#~ msgstr "---"
