@@ -108,7 +108,7 @@ class KeywordEditor(GridEditor, Plugin):
                           ] + [
             _('Insert Cells\tCtrl-Shift-I'), _('Delete Cells\tCtrl-Shift-D'),
             _('Insert Rows\tCtrl-I'), _('Delete Rows\tCtrl-D'), '---',
-            _('Select All\tCtrl-A'), _('---'), _('Cut\tCtrl-X'), _('Copy\tCtrl-C'),
+            _('Select All\tCtrl-A'), '---', _('Cut\tCtrl-X'), _('Copy\tCtrl-C'),
             _('Paste\tCtrl-V'), _('Insert\tCtrl-Shift-V'), '---', _('Delete\tDel')]
         self._popup_items_nt = [
                                    'Create Keyword',
