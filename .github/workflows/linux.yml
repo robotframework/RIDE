@@ -107,7 +107,6 @@ jobs:
       run: |
         sudo apt update -y
         sudo apt install -y libsdl1.2debian libsdl2-2.0-0 libnotify4
-        sudo locale-gen en_US.UTF-8
         sudo pip install https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-22.04/wxPython-4.2.1-cp310-cp310-linux_x86_64.whl
         sudo pip install -r requirements-dev.txt
         Xvfb &
@@ -117,9 +116,6 @@ jobs:
         which ride.py
         export LC_ALL=C
         export LANG=en_US.utf8
-        echo "$LANG UTF-8" >> /etc/locale.gen
-        sudo locale-gen
-        sudo update-locale --reset LANG=$LANG
         xvfb-run --server-args="-screen 0, 1280x720x24" -a ride.py &
         sleep 10
         killall xvfb-run
