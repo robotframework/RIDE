@@ -83,11 +83,10 @@ jobs:
         sudo locale -a
         sudo -H pip install -r requirements-dev.txt
     - name: Run tests
-      env:
-        GITHUB_ACTIONS: True
       run: |
         Xvfb &
         export DISPLAY=:0
+        export GITHUB_ACTIONS=True
         invoke test-ci
     - name: Install and run
       run: |
