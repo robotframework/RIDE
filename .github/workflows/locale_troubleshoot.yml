@@ -1,0 +1,126 @@
+name: Locale_troubleshoot
+on:
+  push:
+    branches-ignore:
+      - '**/sources/**'
+      - '**/windows/**'
+      - '**/macos/**'
+    paths-ignore:
+      - '.github/workflows/linux.yml'
+      - '.github/workflows/sources.yml'
+      - '.github/workflows/sonar.yml'
+      - '.github/workflows/macos.yml'
+      - '.github/workflows/windows.yml'
+      - 'tools/**'
+      - 'rtest/**'
+      - 'doc/**'
+      - '.appveyor.yml'
+      - '.coveragerc'
+      - '.gitattributes'
+      - '.pylintrc'
+      - '.travis.yml'
+      - '.whitesource'
+      - 'AUTHORS.txt'
+      - 'BUILD.rest'
+      - 'CHANGELOG.adoc'
+      - 'CONTRIBUTING.adoc'
+      - 'COPYRIGHT.txt'
+      - 'LICENSE.txt'
+      - 'MANIFEST.in'
+      - 'README.adoc'
+      - 'README.rest'
+      - 'rfgen.py'
+      - 'tox.ini'
+  pull_request:
+    paths-ignore:
+      - '.github/workflows/linux.yml'
+      - '.github/workflows/sources.yml'
+      - '.github/workflows/sonar.yml'
+      - '.github/workflows/macos.yml'
+      - '.github/workflows/windows.yml'
+      - 'tools/**'
+      - 'rtest/**'
+      - 'doc/**'
+      - '.appveyor.yml'
+      - '.coveragerc'
+      - '.gitattributes'
+      - '.pylintrc'
+      - '.travis.yml'
+      - '.whitesource'
+      - 'AUTHORS.txt'
+      - 'BUILD.rest'
+      - 'CHANGELOG.adoc'
+      - 'CONTRIBUTING.adoc'
+      - 'COPYRIGHT.txt'
+      - 'LICENSE.txt'
+      - 'MANIFEST.in'
+      - 'README.adoc'
+      - 'README.rest'
+      - 'rfgen.py'
+      - 'tox.ini'
+
+jobs:
+  fedora:
+    name: Fedora
+    runs-on: ubuntu-latest
+    if: ${{ !contains(github.ref, '/debian/') }}
+    container:
+      image: fedora:latest
+      options: --privileged
+    steps:
+    - uses: actions/checkout@v3.3.0
+      with:
+        submodules: false
+    - name: Configure container environment
+      run: |
+        sudo dnf update -y
+        sudo dnf install -y git
+        git config --global --add safe.directory ${GITHUB_WORKSPACE}
+    - name: Setup environment
+      run: |
+        sudo dnf install -y sdl12-compat python3-wxpython4 xorg-x11-server-Xvfb python3-pip psmisc
+        sudo dnf downgrade -y mesa* --refresh
+        sudo locale -a
+        sudo -H pip install -r requirements-dev.txt
+    - name: Run tests
+      run: |
+        Xvfb &
+        export DISPLAY=:0
+        invoke test-ci
+    - name: Install and run
+      run: |
+        pip install .
+        xvfb-run --server-args="-screen 0, 1280x720x24" -a ride.py &
+        sleep 10
+        killall xvfb-run
+  debian:
+    name: Debian
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    if: ${{ !contains(github.ref, '/fedora/') }}
+    steps:
+    - uses: actions/checkout@v3.3.0
+      with:
+        submodules: false
+    - name: Fetch tags
+      run: |
+        git fetch --prune --depth=1 --no-recurse-submodules
+    - name: Setup environment
+      run: |
+        sudo apt update -y
+        sudo apt install -y libsdl1.2debian libsdl2-2.0-0 libnotify4
+        sudo pip install https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-22.04/wxPython-4.2.1-cp310-cp310-linux_x86_64.whl
+        sudo locale -a
+        sudo pip install -r requirements-dev.txt
+    - name: Run tests
+      run: |
+        Xvfb &
+        export DISPLAY=:0
+        invoke test-ci
+    - name: Install and run
+      run: |
+        pip install .
+        xvfb-run --server-args="-screen 0, 1280x720x24" -a ride.py &
+        sleep 10
+        killall xvfb-run
