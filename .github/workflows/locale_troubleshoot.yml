@@ -63,8 +63,6 @@ jobs:
   fedora:
     name: Fedora
     runs-on: ubuntu-latest
-    env:
-      GITHUB_ACTIONS: ${{ github.actions }}
     if: ${{ !contains(github.ref, '/debian/') }}
     container:
       image: fedora:latest
@@ -85,6 +83,8 @@ jobs:
         sudo locale -a
         sudo -H pip install -r requirements-dev.txt
     - name: Run tests
+      env:
+        GITHUB_ACTIONS: True
       run: |
         Xvfb &
         export DISPLAY=:0
