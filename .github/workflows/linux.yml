@@ -83,7 +83,7 @@ jobs:
       run: |
         Xvfb &
         export DISPLAY=:0
-        invoke test-ci &
+        invoke test-ci
     - name: Install and run
       run: |
         pip install .

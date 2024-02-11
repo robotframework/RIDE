@@ -465,13 +465,14 @@ class TestEditorCommands(unittest.TestCase):
         with open(datafilereader.TESTCASEFILE_WITH_EVERYTHING, "r") as fp:
             content = fp.readlines()
         content = "".join(content)
+        # print(f"DEBUG: test_texteditor test_get_selected_or_near_text content={content}")
         self.plugin._editor_component.source_editor.set_text(content)
         self.plugin._editor_component.source_editor.SetInsertionPoint(0)
         self.plugin._editor_component.store_position(True)
         self.plugin._editor_component.set_editor_caret_position()
         # Should return first line content
         result = self.plugin._editor_component.source_editor.get_selected_or_near_text(keep_cursor_pos=True)
-        assert result == {'*** Setting ***'}
+        assert result == {'Settings'}
         position = self.plugin._editor_component.source_editor.GetCurrentPos()
         assert position == 0
 
@@ -512,18 +513,21 @@ class TestEditorCommands(unittest.TestCase):
         # X marks cursor position, My Overriding TestX Teardown
         # Selected 'Test'
         # Should return My Overriding Test Teardown, Test
-        position = 1583
+        position = 1568
         self.plugin._editor_component.source_editor.SetAnchor(position)
         self.plugin._editor_component.source_editor.SetSelection(position-len('Test'), position)
         self.plugin._editor_component.source_editor.SetInsertionPoint(position)
+        # print(f"DEBUG: test_texteditor test_get_selected_or_near_text "
+        #       f"getselection={self.plugin._editor_component.source_editor.GetSelectedText()}"
+        #       f" getanchor={self.plugin._editor_component.source_editor.GetAnchor()}")
         result = self.plugin._editor_component.source_editor.get_selected_or_near_text(keep_cursor_pos=False)
         result = sorted(result)
         assert result == [MYTESTOVERRIDE, 'Test']
         position = self.plugin._editor_component.source_editor.GetCurrentPos()
-        assert position == 1583
+        assert position == 1568
         # X marks cursor position, My Overriding TestX Teardown
         # Should return My Overriding Test Teardown
-        position = 1583
+        position = 1568
         self.plugin._editor_component.source_editor.SetAnchor(position)
         self.plugin._editor_component.source_editor.SetSelection(position, position)
         self.plugin._editor_component.source_editor.SetInsertionPoint(position)
@@ -531,10 +535,10 @@ class TestEditorCommands(unittest.TestCase):
         result = sorted(result)
         assert result == [MYTESTOVERRIDE]
         position = self.plugin._editor_component.source_editor.GetCurrentPos()
-        assert position == 1583
+        assert position == 1568
         # X marks cursor position, My Overriding Test TeardownX
         # Should return My Overriding Test Teardown
-        position = 1592
+        position = 1577
         self.plugin._editor_component.source_editor.SetAnchor(position)
         self.plugin._editor_component.source_editor.SetSelection(position, position)
         self.plugin._editor_component.source_editor.SetInsertionPoint(position)
@@ -543,16 +547,16 @@ class TestEditorCommands(unittest.TestCase):
         print(f"DEBUG: check position len={position}\n{result}")
         assert result == [MYTESTOVERRIDE]
         position = self.plugin._editor_component.source_editor.GetCurrentPos()
-        assert position == 1592
+        assert position == 1577
 
-        # Should return [Timeout]
+        # Should return No Operation
         text_length = self.plugin._editor_component.source_editor.GetTextLength() - 1
         self.plugin._editor_component.source_editor.SetAnchor(text_length)
         self.plugin._editor_component.source_editor.SetSelection(text_length, text_length)
         self.plugin._editor_component.source_editor.SetInsertionPoint(text_length)
         result = self.plugin._editor_component.source_editor.get_selected_or_near_text(keep_cursor_pos=False)
         result = list(result)
-        assert result == ['[Timeout]']
+        assert result == ['No Operation']
         position = self.plugin._editor_component.source_editor.GetCurrentPos()
         # print(f"DEBUG: position={position}")
         assert position == text_length  # - len(result[0])

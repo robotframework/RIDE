@@ -1,12 +1,12 @@
-*** Setting ***
+*** Settings ***
 Resource          resource2.robot
 Resource          resource3.robot
 Resource          resource.robot
 
-*** Variable ***
+*** Variables ***
 ${RESOURCE var}    Foo
 
-*** Keyword ***
+*** Keywords ***
 Resource UK
     [Documentation]    This is a user keyword from resource file
     [Timeout]

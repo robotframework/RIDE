@@ -1,4 +1,4 @@
-*** Setting ***    Value
+*** Settings ***
 Documentation     This test data file is used in *RobotIDE* _integration_ tests.
 Suite Setup       My Suite Setup
 Suite Teardown    My Suite Teardown    ${scalar}    @{LIST}
@@ -25,14 +25,14 @@ Variables         ${RES_PATH}/more_varz.py
 Library           ${technology lib}    # defined in varz.py | |
 Library           ${operating system}    # defined in another_resource.robot | |
 
-*** Variable ***    Value
+*** Variables ***
 ${SCALAR}         value
 @{LIST}           1    2    3    4    a    b    c    d
 ${LIB NAME}       Collections
 ${RES_PATH}       ../resources
 ${ARG}            value
 
-*** Test Case ***
+*** Test Cases ***
 My Test
     [Documentation]    This is _test_ *case* documentation
     [Tags]    test 1
@@ -40,7 +40,7 @@ My Test
     Log    Nothing to see
     [Teardown]    My Overriding Test Teardown
 
-*** Keyword ***
+*** Keywords ***
 My Suite Teardown
     [Arguments]    ${scalar arg}    ${default arg}=default    @{list arg}
     [Documentation]    This is *user* _keyword_ documentation
@@ -53,3 +53,4 @@ Duplicate UK
 
 My Test Setup
     [Timeout]
+    No Operation

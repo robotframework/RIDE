@@ -13,6 +13,9 @@ from robotide.spec.librarymanager import LibraryManager
 from robotide.utils import normpath
 from utest.resources.datafilereader import *
 from utest.resources.mocks import FakeSettings
+from robot import version
+
+VERSION = version.VERSION
 
 RESOURCES_DIR = 'resources'
 
@@ -245,7 +248,7 @@ class TestKeywordSuggestions(_DataFileTest):
         self._test_global_variable('space', '${SPACE}')
         self._test_global_variable('EMP', '${EMPTY}')
 
-    @pytest.mark.skipif(sys.version_info >= (3, 12), reason="This test fails in Python 3.12")
+    @pytest.mark.skipif(VERSION == '7.0', reason="This test fails with Robot 7.0")
     def test_vars_from_file(self):
         sugs = self.ns.get_suggestions_for(
             self._get_controller(TESTCASEFILE_WITH_EVERYTHING).keywords[0],
@@ -271,14 +274,14 @@ class TestKeywordSuggestions(_DataFileTest):
             '${Path RESOURCE var')
         assert len(sugs) > 0
 
-    @pytest.mark.skipif(sys.version_info >= (3, 12), reason="This test fails in Python 3.12")
+    @pytest.mark.skipif(VERSION == '7.0', reason="This test fails with Robot 7.0")
     def test_variable_file_arguments_are_resolved(self):
         sugs = self.ns.get_suggestions_for(
             self._get_controller(TESTCASEFILE_WITH_EVERYTHING).keywords[0],
             '${dyn ')
         assert len(sugs) > 0
 
-    @pytest.mark.skipif(sys.version_info >= (3, 12), reason="This test fails in Python 3.12")
+    @pytest.mark.skipif(VERSION == '7.0', reason="This test fails with Robot 7.0")
     def test_variable_file_variables_are_available_in_resource_imports(self):
         sugs = self.ns.get_suggestions_for(self._get_controller(
             TESTCASEFILE_WITH_RESOURCES_WITH_VARIABLES_FROM_VARIABLE_FILE
@@ -311,6 +314,7 @@ class TestKeywordSuggestions(_DataFileTest):
     @unittest.skipIf(sys.platform.startswith("win"), "Fails on Windows")
     def test_keyword_arguments_are_suggested_first(self):
         sugs = self.ns.get_suggestions_for(self.kw, '')
+        print(f"DEBUG: test_namespace.py test_keyword_arguments_are_suggested_first sugs={sugs}")
         self._assert_import_kws(sugs[:2], ArgumentInfo.SOURCE)
 
     def test_suggestions_for_datafile(self):
@@ -324,7 +328,7 @@ class TestKeywordSuggestions(_DataFileTest):
         sugs = self.ns.get_suggestions_for(self.tcf_ctrl, '${libna')
         assert len(sugs) == 1
 
-    @pytest.mark.skipif(sys.version_info >= (3, 12), reason="This test fails in Python 3.12")
+    @pytest.mark.skipif(VERSION == '7.0', reason="This test fails with Robot 7.0")
     def test_variable_sources(self):
         everything_tcf = self._get_controller(TESTCASEFILE_WITH_EVERYTHING)
         self._check_source(everything_tcf, '${arg}', 'everything.robot')

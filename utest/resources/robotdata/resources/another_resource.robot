@@ -1,10 +1,10 @@
-*** Setting ***
+*** Settings ***
 Variables         res_var_file.py
 
-*** Variable ***
+*** Variables ***
 ${OPERATING SYSTEM}    OperatingSystem
 ${RES NAME}       resource4.robot
 
-*** Keyword ***
+*** Keywords ***
 Another Resource UK
     No Operation
