@@ -1,9 +1,7 @@
-*** Setting ***
-
-*** Variable ***
+*** Variables ***
 @{RESOURCE 3 List VARIABLE}    1    2    3    4
 
-*** Keyword ***
+*** Keywords ***
 Resource3 UK
     [Timeout]
     No Operation

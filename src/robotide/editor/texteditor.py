@@ -652,6 +652,7 @@ class SourceEditor(wx.Panel):
             return
         position = self._position
         self.source_editor.SetFocus()
+        print(f"DEBUG: texteditor.py SourceEditor position={position}")
         if position:
             self.source_editor.SetCurrentPos(position)
             self.source_editor.SetSelection(self.restore_start_pos, self.restore_end_pos)
@@ -2102,6 +2103,8 @@ class RobotDataEditor(stc.StyledTextCtrl):
                         break
         except IndexError:
             pass
+        # print(f"DEBUG: TextEditor RobotDataEditor  get_selected_or_near_text, get text on the left {start_chr=}"
+        #       f" {end_chr=} {pos_in_line=}")
         value = None
         if start_chr is not None:
             if end_chr is not None:
@@ -2112,6 +2115,7 @@ class RobotDataEditor(stc.StyledTextCtrl):
             value = text[pos_in_line:end_chr]
         if value:
             # self.SetInsertionPoint(self.GetSelectionStart())
+            # print(f"DEBUG: TextEditor RobotDataEditor  get_selected_or_near_text, get text on the left {value=} ")
             if start_chr:
                 start_pos = min_pos + start_chr
             else:
@@ -2137,6 +2141,11 @@ class RobotDataEditor(stc.StyledTextCtrl):
                     self.SetSelectionEnd(start_pos + len(value))
                     self.SetInsertionPoint(start_pos)
             content.add(value)
+        else:
+            for bit in text.strip().strip('*').split(' '):
+                content.add(bit)
+            content.remove('')
+        # print(f"DEBUG: TextEditor RobotDataEditor  get_selected_or_near_text, content={content} ")
         if restore_cursor_pos:
             self.SetAnchor(restore_cursor_pos)
             self.SetInsertionPoint(restore_cursor_pos)

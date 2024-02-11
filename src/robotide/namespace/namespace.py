@@ -445,7 +445,7 @@ class DatafileRetriever(object):
 
     def is_variables_import_ok(self, datafile, imp, ctx):
         self._get_vars_recursive(datafile, ctx)
-        # print("DEBUG: Namespace is_variables_import_ok %s\n" % datafile.source)
+        # print(f"DEBUG: Namespace is_variables_import_ok source={datafile.source}  imp={imp}")
         return self._import_vars(ctx, datafile, imp)
 
     @staticmethod
@@ -518,8 +518,7 @@ class DatafileRetriever(object):
 
     @staticmethod
     def _import_vars(ctx, datafile, imp):
-        varfile_path = os.path.join(datafile.directory,
-                                    ctx.replace_variables(imp.name))
+        varfile_path = os.path.abspath(os.path.join(datafile.directory, ctx.replace_variables(imp.name)))
         args = [ctx.replace_variables(a) for a in imp.args]
         # print("DEBUG: Namespace _import_vars: %s args %s\n" % (varfile_path, args))
         try:

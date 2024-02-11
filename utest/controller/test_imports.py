@@ -18,12 +18,16 @@ import unittest
 import pytest
 
 from utest.resources import datafilereader
+# from robot import version
+
+# VERSION = version.VERSION
 
 
 class TestImports(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        # print(f"DEBUG: RF version is {VERSION}")
         cls.project = datafilereader.construct_project(datafilereader.IMPORTS)
         suite = cls.project.data.suites[1]
         # print("DEBUG: testimports setup suite: %s\n" % str(cls.project.data.suites))
@@ -38,7 +42,7 @@ class TestImports(unittest.TestCase):
         data_file = data_file or self
         # print("DEBUG: find by name: %s\n" % (data_file.imports))
         for i in data_file.imports:
-            # print("DEBUG: find by name: loop %s\n" % (i.name))
+            # print(f"DEBUG: find by name: loop {i.name} arg={name})\n")
             if i.name == name:
                 print(i.name)
                 return i
@@ -78,9 +82,9 @@ class TestImports(unittest.TestCase):
     def test_library_import_with_variable_has_no_error(self):
         self._has_no_error('${LIB}')
 
-    @pytest.mark.skipif(sys.version_info >= (3, 12), reason="This test fails in Python 3.12")
+    # @pytest.mark.skipif(sys.version_info >= (3, 12), reason="This test fails in Python 3.12")
     def test_variable_import_has_no_error(self):
-        self._has_no_error('vars/vars.py')
+        self._has_no_error('${CURDIR}//vars//vars.py')
 
     def test_library_import_in_subsuite_init_file_with_relative_path_has_no_error(self):
         self._has_no_error('..//outer_lib.py', self.project.data.suites[0])
