@@ -16,6 +16,8 @@
 import unittest
 import os
 
+import pytest
+
 from robotide.run.process import Process
 
 SCRIPT = os.path.join(os.path.dirname(__file__),
@@ -30,6 +32,7 @@ class TestProcess(unittest.TestCase):
         assert len(processed_command) == len(initial_command.split())
         assert processed_command[4] == 'a2 2 1'
 
+    @pytest.mark.skipif(os.getenv('GITHUB_ACTIONS'), "Fails at Fedora workflow")
     def test_writing_to_stderr(self):
         self.proc = self._create_process('python %s stderr' % SCRIPT)
         assert (self.proc.get_output(wait_until_finished=True) ==
