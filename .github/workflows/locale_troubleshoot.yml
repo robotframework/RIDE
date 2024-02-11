@@ -63,6 +63,8 @@ jobs:
   fedora:
     name: Fedora
     runs-on: ubuntu-latest
+    env:
+      GITHUB_ACTIONS: ${{ github.actions }}
     if: ${{ !contains(github.ref, '/debian/') }}
     container:
       image: fedora:latest
