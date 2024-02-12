@@ -227,7 +227,7 @@ class NewProjectDialog(_CreationDialog):
     def _execute(self):
         cmd = CreateNewDirectoryProject if self._is_dir_type()\
             else CreateNewFileProject
-        cmd(self._get_path()).execute(self._controller)
+        cmd(self._get_path(), self._is_task_type).execute(self._controller)
 
 
 class NewResourceDialog(_WithImmutableParent, _CreationDialog):

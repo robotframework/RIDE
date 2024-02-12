@@ -44,6 +44,12 @@ class Setting(object):
                 self.language = [set_lang[0]]
         except (AttributeError, FileNotFoundError):
             self.language = ['en']
+        # DEBUG Starts
+        # from robotide.lib.robot.parsing.model import TestCaseFileSettingTable, InitFileSettingTable
+        # if isinstance(parent, TestCaseFileSettingTable) or isinstance(parent, InitFileSettingTable):
+        #     print(f"DEBUG: settings.py Setting __init__ BEFORE setting_name= {setting_name} "
+        #           f"lang={self.language} parent has tasks={hasattr(parent, 'tasks')} parent type={type(parent)}")
+        # DEBUG Ends
         self.setting_name = get_localized_setting(self.language, setting_name)
         self._set_initial_value()
         self._set_comment(comment)
@@ -114,6 +120,7 @@ class Setting(object):
         return self._data_as_list() + self.comment.as_list()
 
     def _data_as_list(self):
+        # print(f"DEBUG: settings.py Setting _data_as_list setting_name= {self.setting_name}")
         ret = [self.setting_name]
         if self.value:
             ret.extend(self.value)

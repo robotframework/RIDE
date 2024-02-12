@@ -29,13 +29,14 @@ from ..spec.xmlreaders import SpecInitializer
 
 class Project(_BaseController, WithNamespace):
 
-    def __init__(self, namespace=None, settings=None, library_manager=None, file_language=None):
+    def __init__(self, namespace=None, settings=None, library_manager=None, tasks=False, file_language=None):
         from .filecontrollers import ResourceFileControllerFactory
         self._library_manager = self._construct_library_manager(library_manager, settings)
         if not self._library_manager.is_alive():
             self._library_manager.start()
         self._name_space = namespace
         self._set_namespace(self._name_space)
+        self.tasks = tasks
         self.internal_settings = settings
         self._loader = DataLoader(self._name_space, settings)
         self.controller = None
@@ -100,13 +101,13 @@ class Project(_BaseController, WithNamespace):
     def find_controller_by_longname(self, longname, testname=None):
         return self.controller.find_controller_by_longname(longname, testname)
 
-    def new_directory_project(self, path):
-        self._new_project(new_test_data_directory(path))
+    def new_directory_project(self, path, tasks=False):
+        self._new_project(new_test_data_directory(path, tasks=tasks), tasks=tasks)
 
-    def new_file_project(self, path):
-        self._new_project(new_test_case_file(path))
+    def new_file_project(self, path, tasks=False):
+        self._new_project(new_test_case_file(path, tasks=tasks), tasks=tasks)
 
-    def _new_project(self, datafile):
+    def _new_project(self, datafile, tasks=False):
         from .filecontrollers import data_controller, ResourceFileControllerFactory
         self.update_default_dir(datafile.directory)
         self.controller = data_controller(datafile, self)
