@@ -23,6 +23,8 @@ from wx.lib.filebrowsebutton import DirBrowseButton
 from ..controller.ctrlcommands import (CreateNewResource, AddTestDataDirectory, AddTestCaseFile,
                                        CreateNewDirectoryProject, CreateNewFileProject, SetFileFormat,
                                        SetFileFormatRecuresively)
+from ..preferences.general import read_languages, set_colors
+from .preferences_dialogs import boolean_editor, StringChoiceEditor
 from ..validators import NonEmptyValidator, NewSuitePathValidator, SuiteFileNameValidator
 from ..widgets import Label, RIDEDialog
 
@@ -54,7 +56,11 @@ class _CreationDialog(RIDEDialog):
         edit_sizer = wx.BoxSizer(wx.HORIZONTAL)
         edit_sizer.Add(label_sizer, 1, wx.EXPAND)
         edit_sizer.Add(radio_group_sizer)
-        sizer.Add(edit_sizer, 1, wx.EXPAND)
+        sizer.Add(edit_sizer)  # , 1, wx.EXPAND)
+        content_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        self._task_chooser = self._create_task_chooser(self, content_sizer)
+        self._language_chooser = self._create_lang_chooser(content_sizer)
+        sizer.Add(content_sizer, 1, wx.EXPAND)
         self._finalize_dialog(sizer)
         self._name_editor.SetFocus()
 
@@ -62,7 +68,7 @@ class _CreationDialog(RIDEDialog):
         RIDEDialog.__init__(self, title)
         # set Left to Right direction (while we don't have localization)
         self.SetLayoutDirection(wx.Layout_LeftToRight)
-        return wx.BoxSizer(wx.VERTICAL)
+        return wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)  # wx.BoxSizer(wx.VERTICAL)
 
     def _finalize_dialog(self, sizer):
         self._create_horizontal_line(sizer)
@@ -91,6 +97,35 @@ class _CreationDialog(RIDEDialog):
 
     def _create_type_chooser(self, sizer):
         return self._create_radiobuttons(sizer, _("Type"), [_("File"), _("Directory")])
+
+    def _create_task_chooser(self, window, sizer):
+        from ..preferences import RideSettings
+        _settings = RideSettings()
+        label, selector = boolean_editor(window, _settings, 'tasks',
+                                         _("Is Task?")+' ', _("Default for Tasks or Tests sections."))
+        # selector = wx.CheckBox(window, label=_("Is Task?"))
+        selector.SetBackgroundColour(Colour(self.color_background))
+        selector.SetForegroundColour(Colour(self.color_foreground))
+        # self.Bind(wx.EVT_CHECKBOX, self.on_path_changed, selector)
+        task_box = wx.BoxSizer(wx.HORIZONTAL)
+        task_box.AddMany([label, selector])
+        sizer.Add( task_box, flag = wx.ALIGN_LEFT)
+        return selector
+
+    def _create_lang_chooser(self, sizer):
+        from ..preferences import RideSettings
+        _settings = RideSettings()
+        _settings.get('doc language', '')
+        languages = read_languages()
+        languages.insert(0,'')
+        ll = StringChoiceEditor(_settings, 'doc language', _('Language')+' ', languages)
+        l_lang = ll.label(self)
+        set_colors(l_lang, Colour(self.color_background), Colour(self.color_foreground))
+        lang_box = wx.BoxSizer(wx.HORIZONTAL)
+        lang_box.AddMany([l_lang, ll.chooser(self)])
+        sizer.Add(lang_box)
+        sizer.Layout()
+        return ll
 
     def _create_format_chooser(self, sizer, callback=True):
         from ..controller.filecontrollers import ResourceFileController
@@ -158,6 +193,11 @@ class _CreationDialog(RIDEDialog):
         if not self._type_chooser:
             return False
         return self._type_chooser.GetStringSelection() == _("Directory")
+
+    def _is_task_type(self):
+        if not self._task_chooser:
+            return False
+        return self._task_chooser.GetValue()
 
     def _get_extension(self):
         if not self._format_chooser:

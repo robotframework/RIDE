@@ -652,7 +652,7 @@ class SourceEditor(wx.Panel):
             return
         position = self._position
         self.source_editor.SetFocus()
-        print(f"DEBUG: texteditor.py SourceEditor position={position}")
+        # print(f"DEBUG: texteditor.py SourceEditor position={position}")
         if position:
             self.source_editor.SetCurrentPos(position)
             self.source_editor.SetSelection(self.restore_start_pos, self.restore_end_pos)
