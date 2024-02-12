@@ -400,7 +400,7 @@ class TestDataDirectory(_TestData):
         self.initfile = None
         self.tasks = tasks
         self.language = language
-        self.setting_table = InitFileSettingTable(self, self.language)
+        self.setting_table = InitFileSettingTable(self, self.tasks, self.language)
         self.variable_table = VariableTable(self)
         self.testcase_table = TestCaseTable(self, self.tasks, self.language)
         self.keyword_table = KeywordTable(self, self.language)
@@ -646,8 +646,7 @@ class TestCaseFileSettingTable(_SettingTable):
                                                    'Task Tags' if self.tasks else 'Test Tags',
                                                    'Task Template' if self.tasks else 'Test Template',
                                                    'Task Timeout' if self.tasks else 'Test Timeout',  'Library',
-                                                   'Resource', 'Variables', 'Metadata','Task Setup',
-                                                   'Task Teardown', 'Task Template', 'Task Timeout'])
+                                                   'Resource', 'Variables', 'Metadata'])
         _SettingTable.__init__(self, parent, tasks)
 
     def __iter__(self):
