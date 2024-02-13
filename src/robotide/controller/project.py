@@ -104,13 +104,13 @@ class Project(_BaseController, WithNamespace):
     def new_directory_project(self, path, tasks=False):
         self._new_project(new_test_data_directory(path, tasks=tasks), tasks=tasks)
 
-    def new_file_project(self, path, tasks=False):
-        self._new_project(new_test_case_file(path, tasks=tasks), tasks=tasks)
+    def new_file_project(self, path, tasks=False, lang=''):
+        self._new_project(new_test_case_file(path, tasks=tasks, lang=lang), tasks=tasks)
 
     def _new_project(self, datafile, tasks=False):
         from .filecontrollers import data_controller, ResourceFileControllerFactory
         self.update_default_dir(datafile.directory)
-        self.controller = data_controller(datafile, self)
+        self.controller = data_controller(datafile, self, tasks=tasks)
         self._resource_file_controller_factory = ResourceFileControllerFactory(self.namespace, self)
         RideNewProject(path=datafile.source, datafile=datafile).publish()
 

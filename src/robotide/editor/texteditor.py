@@ -318,8 +318,12 @@ def obtain_language(existing, content):
     if doc_lang is not None:
         mlang = Language.from_name(doc_lang)
         set_lang[0] = mlang.code
+    elif len(set_lang) > 0:
+        if existing is not None and isinstance(existing, list):
+            if set_lang[0] != existing[0]:
+                set_lang[0] = existing[0]
     else:
-        set_lang[0] = existing[0] if existing is not None else 'en'
+        set_lang[0] = 'en'
     return [set_lang[0]]
 
 
@@ -2216,19 +2220,24 @@ class FromStringIOPopulator(robotapi.populators.FromFilePopulator):
 
 
 class RobotStylizer(object):
-    def __init__(self, editor, settings, readonly=False, language=None):
+    def __init__(self, editor, settings, readonly=False, language=''):
         self.tokens = {}
         self.editor = editor
         self.lexer = None
         self.settings = settings
         self._readonly = readonly
         self._ensure_default_font_is_valid()
+        print(f"DEBUG: texteditor.py RobotStylizer _init_ ENTER language={language}\n")
         try:
             set_lang = shared_memory.ShareableList(name="language")
         except AttributeError:  # Unittests fails here
             set_lang = []
-        set_lang[0] = language[0] if language is not None else 'en'
-        self.language = [set_lang[0]]
+        if not set_lang:
+            # DEBUG set_lang[0] = language[0] if language is not None and isinstance(language, list) else 'en'
+            self.language = [set_lang[0]]
+        else:
+            ll = language[0] if language is not None and isinstance(language, list) else 'en'
+            self.language = [ll]
         options = {'language': self.language}
         # print(f"DEBUG: texteditor.py RobotStylizer _init_ language={self.language}\n")
         if robotframeworklexer:

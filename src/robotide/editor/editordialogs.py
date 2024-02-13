@@ -33,6 +33,7 @@ builtins.__dict__['_'] = wx.GetTranslation
 
 
 def editor_dialog(obj, lang='en'):
+    set_lang = lang if len(lang) > 0 else 'en'
     english_label = language.get_english_label(lang, obj.label).replace('Task', 'Test')
     # print(f"DEBUG: editordialogs.py editor_dialog object name={obj.label} english_label={english_label}"
     #       f"lang={lang} ")

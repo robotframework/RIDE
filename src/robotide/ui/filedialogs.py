@@ -115,7 +115,9 @@ class _CreationDialog(RIDEDialog):
     def _create_lang_chooser(self, sizer):
         from ..preferences import RideSettings
         _settings = RideSettings()
-        _settings.get('doc language', '')
+        lang = _settings.get('doc language', '')
+        if lang is None:
+            _settings['doc language'] = ''
         languages = read_languages()
         languages.insert(0,'')
         ll = StringChoiceEditor(_settings, 'doc language', _('Language')+' ', languages)
@@ -199,6 +201,19 @@ class _CreationDialog(RIDEDialog):
             return False
         return self._task_chooser.GetValue()
 
+    def selected_language(self):
+        if not self._language_chooser:
+            return ''
+        from ..preferences import RideSettings
+        _settings = RideSettings()
+        # _settings.get('doc language', '')
+        lang = _settings['doc language']
+        if len(lang) == 0:
+            lang = _settings['doc language'] = ''
+            return lang
+        print(f"DEBUG: filedialogs.py _CreationDialog selected_language={lang}")
+        return [lang]
+
     def _get_extension(self):
         if not self._format_chooser:
             return 'robot'
@@ -227,7 +242,7 @@ class NewProjectDialog(_CreationDialog):
     def _execute(self):
         cmd = CreateNewDirectoryProject if self._is_dir_type()\
             else CreateNewFileProject
-        cmd(self._get_path(), self._is_task_type).execute(self._controller)
+        cmd(self._get_path(), self._is_task_type, self.selected_language()).execute(self._controller)
 
 
 class NewResourceDialog(_WithImmutableParent, _CreationDialog):
