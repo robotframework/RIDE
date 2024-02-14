@@ -129,7 +129,7 @@ def get_settings_for(language, settings_names):
     assert settings_names is not None
     if not Language:
         return settings_names
-    if not language:
+    if not language or len(language) == 0:
         language = ['en']
     languages = set()
     if isinstance(language, list):

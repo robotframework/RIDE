@@ -116,10 +116,14 @@ class _CreationDialog(RIDEDialog):
         from ..preferences import RideSettings
         _settings = RideSettings()
         lang = _settings.get('doc language', '')
-        if lang is None:
-            _settings['doc language'] = ''
         languages = read_languages()
-        languages.insert(0,'')
+        if languages[0] != '':
+            languages.insert(0,'')
+        if isinstance(lang, list) and len(lang) > 0:
+            _settings['doc language'] = lang[0]
+        else:
+            _settings['doc language'] = ''
+        print(f"DEBUG: filedialogs.py _CreationDialog _create_lang_chooser languages={languages}")
         ll = StringChoiceEditor(_settings, 'doc language', _('Language')+' ', languages)
         l_lang = ll.label(self)
         set_colors(l_lang, Colour(self.color_background), Colour(self.color_foreground))
@@ -203,14 +207,10 @@ class _CreationDialog(RIDEDialog):
 
     def selected_language(self):
         if not self._language_chooser:
-            return ''
+            return ['']
         from ..preferences import RideSettings
         _settings = RideSettings()
-        # _settings.get('doc language', '')
-        lang = _settings['doc language']
-        if len(lang) == 0:
-            lang = _settings['doc language'] = ''
-            return lang
+        lang = _settings.get('doc language', '')
         print(f"DEBUG: filedialogs.py _CreationDialog selected_language={lang}")
         return [lang]
 

@@ -78,6 +78,7 @@ class _TestData(object):
         # self._testcase_table_names = 'Task', 'Tasks' if self._task else 'Test Case', 'Test Cases'
         # self.comment_table = None
         self._tables = dict(self._get_tables())
+        self.set_doc_language()
 
     def _get_tables(self):
         tables = [(self._setting_table_names, self.setting_table),
@@ -280,6 +281,18 @@ class _TestData(object):
         initfile = getattr(self, 'initfile', None)
         path = os.path.join(self.source, initfile) if initfile else self.source
         LOGGER.write("Error in file '%s': %s" % (path, message), level)
+
+    def set_doc_language(self):
+        if self._language and len(self._language) > 0:
+            if isinstance(self._language, list):
+                language = ", ".join(self._language)
+            else:
+                language = self._language
+            if len(self._preamble) == 0:
+                self._preamble.append(f"Language: {language}\n")
+            else:
+                # DEBUG: We need to replace or decide where to write the language deinition
+                self._preamble[0] = f"Language: {language}\n"
 
     def save(self, **options):
         """Writes this datafile to disk.

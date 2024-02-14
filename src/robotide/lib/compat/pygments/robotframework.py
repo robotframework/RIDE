@@ -97,7 +97,7 @@ class RobotFrameworkLexer(Lexer):
         options['tabsize'] = 2
         options['encoding'] = 'UTF-8'
         Lexer.__init__(self, **options)
-        self.language = options['language']
+        self.language = options.get('doc language', None)
         set_lang = shared_memory.ShareableList(name="language")
         if not self.language:
             # DEBUG self.new_lang = Language.from_name('en')
@@ -105,7 +105,7 @@ class RobotFrameworkLexer(Lexer):
         else:
             self.new_lang = Language.from_name(self.language[0])  # DEBUG: We consider a single language
         # print(f"DEBUG: robotframework.py after RobotFrameworkLexer _init_ mimetypes={self.mimetypes}\n"
-        #      f"options['language']={options['language']}\n"
+        #      f"options['doc language']={options['doc language']}\n"
         #      f"self.new_lang={self.new_lang.code}")
 
     def get_tokens_unprocessed(self, text):

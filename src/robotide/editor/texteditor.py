@@ -229,14 +229,14 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
             return
         if datafile_controller:
             self._editor.language = datafile_controller.language
-            self.global_settings['language'] = datafile_controller.language
+            self.global_settings['doc language'] = datafile_controller.language
             self._editor.open(DataFileWrapper(datafile_controller, self.global_settings, self._editor.language))
             self._editor.source_editor.readonly = not datafile_controller.is_modifiable()
         self._editor.set_editor_caret_position()
 
     def _open_data_for_controller(self, datafile_controller):
         self._editor.language = datafile_controller.language
-        self.global_settings['language'] = datafile_controller.language
+        self.global_settings['doc language'] = datafile_controller.language
         self._editor.selected(DataFileWrapper(datafile_controller, self.global_settings, self._editor.language))
         self._editor.source_editor.readonly = not datafile_controller.is_modifiable()
 
@@ -314,14 +314,21 @@ def obtain_language(existing, content):
     except AttributeError:  # Unittests fails here
         set_lang = []
     doc_lang = read_language(content)
-    # print(f"DEBUG: textedit.py validate_and_update obtain_language={doc_lang}")
+    print(f"DEBUG: textedit.py validate_and_update obtain_language={doc_lang}")
     if doc_lang is not None:
         mlang = Language.from_name(doc_lang)
         set_lang[0] = mlang.code
     elif len(set_lang) > 0:
-        if existing is not None and isinstance(existing, list):
-            if set_lang[0] != existing[0]:
-                set_lang[0] = existing[0]
+        if existing is not None:
+            if isinstance(existing, list):
+                lang = existing[0]
+            else:
+                lang = existing
+            try:
+                mlang = Language.from_name(lang)
+                set_lang[0] = mlang.code
+            except ValueError:
+                set_lang[0] = 'en'
     else:
         set_lang[0] = 'en'
     return [set_lang[0]]
@@ -808,7 +815,10 @@ class SourceEditor(wx.Panel):
     def open(self, data):
         self.reset()
         self._data = data
-        self.language = self._data._doc_language if self._data._doc_language is not None else ['en']
+        if self._data._doc_language is not None and len(self._data._doc_language) > 0:
+            self.language = self._data._doc_language
+        else:
+            self.language = ['en']
         # print(f"DEBUG: texteditor.py SourceEditor open ENTER language={self.language}")
         try:
             if isinstance(self._data.wrapper_data, ResourceFileController):
@@ -2148,7 +2158,10 @@ class RobotDataEditor(stc.StyledTextCtrl):
         else:
             for bit in text.strip().strip('*').split(' '):
                 content.add(bit)
-            content.remove('')
+            try:
+                content.remove('')
+            except KeyError:
+                pass
         # print(f"DEBUG: TextEditor RobotDataEditor  get_selected_or_near_text, content={content} ")
         if restore_cursor_pos:
             self.SetAnchor(restore_cursor_pos)
@@ -2234,10 +2247,12 @@ class RobotStylizer(object):
             set_lang = []
         if not set_lang:
             # DEBUG set_lang[0] = language[0] if language is not None and isinstance(language, list) else 'en'
-            self.language = [set_lang[0]]
+            if len(language) > 0 and isinstance(language, list):
+                self.language = language[0]
+            else:
+                self.language = ['en']
         else:
-            ll = language[0] if language is not None and isinstance(language, list) else 'en'
-            self.language = [ll]
+            self.language = [set_lang[0]]
         options = {'language': self.language}
         # print(f"DEBUG: texteditor.py RobotStylizer _init_ language={self.language}\n")
         if robotframeworklexer:
