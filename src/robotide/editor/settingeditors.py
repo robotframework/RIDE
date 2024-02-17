@@ -71,7 +71,7 @@ class SettingEditor(wx.Panel):
                 # print(f"DEBUG: settings.py SettingEditor __init__ CONTROLLER language={self._language}")
             except AttributeError:
                 self._language = ['en']
-        # print(f"DEBUG: settings.py SettingEditor __init__ set_lang={set_lang} language={self._language}")
+        print(f"DEBUG: settings.py SettingEditor __init__ set_lang={set_lang} language={self._language}")
         self.plugin = plugin
         self._datafile = controller.datafile
         self._create_controls()

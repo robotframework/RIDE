@@ -101,8 +101,8 @@ class Project(_BaseController, WithNamespace):
     def find_controller_by_longname(self, longname, testname=None):
         return self.controller.find_controller_by_longname(longname, testname)
 
-    def new_directory_project(self, path, tasks=False):
-        self._new_project(new_test_data_directory(path, tasks=tasks), tasks=tasks)
+    def new_directory_project(self, path, tasks=False, lang=''):
+        self._new_project(new_test_data_directory(path, tasks=tasks, lang=lang), tasks=tasks)
 
     def new_file_project(self, path, tasks=False, lang=''):
         self._new_project(new_test_case_file(path, tasks=tasks, lang=lang), tasks=tasks)

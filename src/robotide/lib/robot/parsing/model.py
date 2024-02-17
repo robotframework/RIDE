@@ -107,10 +107,10 @@ class _TestData(object):
         else:
             if header_row[0] in lang.get_headers_for(llang, ('Task', 'Tasks'), lowercase=False):
                 self._task = True
-                self._testcase_table_names = 'Task', 'Tasks'
+                # self._testcase_table_names = 'Task', 'Tasks'
             elif header_row[0] in lang.get_headers_for(llang, ('Test', 'Tests'), lowercase=False):
                 self._task = False
-                self._testcase_table_names = 'Test Case', 'Test Cases'
+                # self._testcase_table_names = 'Test Case', 'Test Cases'
             if hasattr(self.parent, 'tasks'):
                 self.parent.tasks = self._task
             table = self._find_table(header_row)
@@ -174,7 +174,7 @@ class _TestData(object):
                   (self._testcase_table_names, self.testcase_table),
                   (self._keyword_table_names, self.keyword_table), [self._comment_table_names, self.comment_table]]
         try:
-            _lang = Language.from_name(language[0])  # DEBUG: Consider several languages
+            _lang = Language.from_name(language[0].replace('_','-'))  # DEBUG: Consider several languages
         except ValueError:
             _lang = None
             # print(f"DEBUG: model.py get_tables_for Exception at language={language[0]}")
@@ -289,10 +289,14 @@ class _TestData(object):
             else:
                 language = self._language
             if len(self._preamble) == 0:
-                self._preamble.append(f"Language: {language}\n")
+                self._preamble.append(f"Language: {language}\n\n")
             else:
-                # DEBUG: We need to replace or decide where to write the language deinition
-                self._preamble[0] = f"Language: {language}\n"
+                # DEBUG: We need to replace or decide where to write the language definition
+                for idx, line in enumerate(self._preamble):
+                    if line.startswith("Language:"):
+                        self._preamble[idx] = f"Language: {language}\n\n"
+                        return
+                self._preamble.insert(0, f"Language: {language}\n\n")
 
     def save(self, **options):
         """Writes this datafile to disk.
@@ -468,7 +472,7 @@ class _Table(object):
         self._lineno = None
 
     def set_header(self, header, lineno:int):
-        # print(f"DEBUG: model.py _Table set_header={header} self._lineno={lineno}")
+        print(f"DEBUG: model.py _Table set_header={header} self._lineno={lineno}")
         self._header = self._prune_old_style_headers(header)
         self._lineno = lineno
 
@@ -566,7 +570,7 @@ class _SettingTable(_Table, _WithSettings):
     type = 'setting'
     language = []
 
-    def __init__(self, parent, tasks=False):
+    def __init__(self, parent, tasks):
         _Table.__init__(self, parent)
         self.tasks = tasks
         self.doc = Documentation(self.get_localized_setting_name('Documentation'), self)
@@ -647,7 +651,7 @@ class TestCaseFileSettingTable(_SettingTable):
                 'Task Timeout': 'Test Timeout',
                 'Task Tags': 'Test Tags'}
 
-    def __init__(self, parent, tasks=False, language=None):
+    def __init__(self, parent, tasks, language=None):
         self.tasks = tasks
         if language:
             self.language = language
@@ -676,11 +680,12 @@ class ResourceFileSettingTable(_SettingTable):
                 'Resource': lambda s: s.imports.populate_resource,
                 'Variables': lambda s: s.imports.populate_variables}
 
-    def __init__(self, parent, language=None):
+    def __init__(self, parent, tasks=False, language=None):
+        self.tasks = False
         if language:
             self.language = language
             self._aliases = lang.get_settings_for(language,['Documentation', 'Library', 'Resource', 'Variables'])
-        _SettingTable.__init__(self, parent)
+        _SettingTable.__init__(self, parent, False)
 
     def __iter__(self):
         for setting in [self.doc] + self.imports.data:

@@ -62,6 +62,24 @@ TXT_NUM_SPACES = 'txt number of spaces'
 ZOOM_FACTOR = 'zoom factor'
 
 
+def get_rf_lang_code(lang: (str, list)) -> str:
+    if isinstance(lang, list):
+        clean_lang = lang
+    else:
+        clean_lang = lang.split(' ')  # The cases we have two words
+    lc = len(clean_lang)
+    if lc > 1 or len(clean_lang[0]) > 2 and clean_lang[0].replace('_', '') == lang:
+        return lang
+    clean_lang = clean_lang[0].replace('-', '_').split('_')  # The cases we have variant code
+    lc = len(clean_lang)
+    if lc == 1:
+        return clean_lang[0].title()
+    with_variant_code = f"{clean_lang[0].title()}{clean_lang[1].title()}"
+    if with_variant_code in ("PtBr", "ZhCn", "ZhTw"):
+        return with_variant_code
+    return clean_lang[0].title()
+
+
 class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
     title = PLUGIN_NAME
 
@@ -316,8 +334,8 @@ def obtain_language(existing, content):
     doc_lang = read_language(content)
     print(f"DEBUG: textedit.py validate_and_update obtain_language={doc_lang}")
     if doc_lang is not None:
-        mlang = Language.from_name(doc_lang)
-        set_lang[0] = mlang.code
+        mlang = Language.from_name(doc_lang.replace('_','-'))
+        set_lang[0] = mlang.code.replace('-','_')
     elif len(set_lang) > 0:
         if existing is not None:
             if isinstance(existing, list):
@@ -325,8 +343,8 @@ def obtain_language(existing, content):
             else:
                 lang = existing
             try:
-                mlang = Language.from_name(lang)
-                set_lang[0] = mlang.code
+                mlang = Language.from_name(lang.replace('_','-'))
+                set_lang[0] = mlang.code.replace('-','_')
             except ValueError:
                 set_lang[0] = 'en'
     else:
@@ -388,8 +406,10 @@ class DataValidationHandler(object):
         from robot.parsing.parser.parser import get_model
         from robotide.lib.robot.errors import DataError
 
-        # print(f"DEBUG: textedit.py _sanity_check data is type={type(data)}")
-        model = get_model(text, lang=self._doc_language)
+        rf_lang = get_rf_lang_code(self._doc_language)
+        print(f"DEBUG: textedit.py _sanity_check data is type={type(data)} lang={self._doc_language},"
+              f" transformed lang={rf_lang}")
+        model = get_model(text, lang=rf_lang)
         # print(f"DEBUG: textedit.py _sanity_check model is {model} doc language={self._doc_language}")
         validator = ErrorReporter()
         result = None

@@ -19,6 +19,7 @@ import os
 import wx
 from wx import Colour
 from wx.lib.filebrowsebutton import DirBrowseButton
+from multiprocessing import shared_memory
 
 from ..controller.ctrlcommands import (CreateNewResource, AddTestDataDirectory, AddTestCaseFile,
                                        CreateNewDirectoryProject, CreateNewFileProject, SetFileFormat,
@@ -27,6 +28,13 @@ from ..preferences.general import read_languages, set_colors
 from .preferences_dialogs import boolean_editor, StringChoiceEditor
 from ..validators import NonEmptyValidator, NewSuitePathValidator, SuiteFileNameValidator
 from ..widgets import Label, RIDEDialog
+try:
+    from robot.conf.languages import Language
+except ImportError as e:
+    import sys
+    sys.stderr.write(f"Trying to import robot's languages module returned error: {repr(e)}\n")
+    sys.stderr.write("You need to have Robot Framework v6.0 or newer to use languages in test suites.\n")
+    Language = None
 
 _ = wx.GetTranslation  # To keep linter/code analyser happy
 builtins.__dict__['_'] = wx.GetTranslation
@@ -212,6 +220,12 @@ class _CreationDialog(RIDEDialog):
         _settings = RideSettings()
         lang = _settings.get('doc language', '')
         print(f"DEBUG: filedialogs.py _CreationDialog selected_language={lang}")
+        set_lang = shared_memory.ShareableList(name="language")
+        if len(lang) > 0:
+            mlang = Language.from_name(lang.replace('_','-'))
+            set_lang[0] = mlang.code.replace('-','_')
+        else:
+            set_lang[0] = 'en'
         return [lang]
 
     def _get_extension(self):

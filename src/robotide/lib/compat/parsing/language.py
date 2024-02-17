@@ -54,7 +54,7 @@ def check_file_language(path):
         #      f"\n{build_lang.false_strings}\n{build_lang.bdd_prefixes}")
         lang = []
         for ll in build_lang:
-            lang.append(ll.code)
+            lang.append(ll.code.replace('-','_'))
         return lang
 
 
@@ -89,7 +89,7 @@ def get_headers_for(language, tables_headers, lowercase=True):
     languages = set()
     for mlang in language:
         try:
-            lang = Language.from_name(mlang)
+            lang = Language.from_name(mlang.replace('_','-'))
             languages.add(lang)
         except ValueError:
             print(f"DEBUG: language.py get_headers_for Exception at language={mlang}")
@@ -135,12 +135,12 @@ def get_settings_for(language, settings_names):
     if isinstance(language, list):
         for mlang in language:
             try:
-                lang = Language.from_name(mlang)
+                lang = Language.from_name(mlang.replace('_','-'))
                 languages.add(lang)
             except ValueError:
                 print(f"DEBUG: language.py get_settings_for Exception at language={mlang}")
     else:
-        lang = Language.from_name(language)
+        lang = Language.from_name(language.replace('_','-'))
         languages.add(lang)
     # DEBUG: settings_names = [item.lower() for item in list(settings_names)]
     if not languages:
@@ -174,11 +174,11 @@ def get_english_label(lang, label):
     mlang = None
     if isinstance(lang, list):
         try:
-            mlang = Language.from_name(lang[0])  # Only care for a single language
+            mlang = Language.from_name(lang[0].replace('_','-'))  # Only care for a single language
         except ValueError:
             print(f"DEBUG: language.py get_english_label Exception at language={lang}")
     else:
-        mlang = Language.from_name(lang)
+        mlang = Language.from_name(lang.replace('_','-'))
     if not mlang:
         print(f"DEBUG: language.py get_english_label lang={lang} not found")
         return None

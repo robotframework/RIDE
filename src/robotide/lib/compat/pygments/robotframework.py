@@ -101,12 +101,12 @@ class RobotFrameworkLexer(Lexer):
         set_lang = shared_memory.ShareableList(name="language")
         if not self.language:
             # DEBUG self.new_lang = Language.from_name('en')
-            self.new_lang = Language.from_name(set_lang[0])
+            self.new_lang = Language.from_name(set_lang[0].replace('_','-'))
         else:
-            self.new_lang = Language.from_name(self.language[0])  # DEBUG: We consider a single language
+            self.new_lang = Language.from_name(self.language[0].replace('_','-'))  # DEBUG: We consider a single language
         # print(f"DEBUG: robotframework.py after RobotFrameworkLexer _init_ mimetypes={self.mimetypes}\n"
         #      f"options['doc language']={options['doc language']}\n"
-        #      f"self.new_lang={self.new_lang.code}")
+        #      f"self.new_lang={self.new_lang.code.replace('-','_')}")
 
     def get_tokens_unprocessed(self, text):
         row_tokenizer = RowTokenizer(self.new_lang)
@@ -151,7 +151,7 @@ class RowTokenizer:
         if not self.new_lang:
             if not new_lang:
                 set_lang = shared_memory.ShareableList(name="language")
-                self.new_lang = Language.from_name(set_lang[0])
+                self.new_lang = Language.from_name(set_lang[0].replace('_','-'))
             else:
                 self.new_lang = new_lang
         self._table = UnknownTable()
@@ -236,7 +236,7 @@ class Tokenizer:
         if not self.new_lang:
             if not new_lang:
                 set_lang = shared_memory.ShareableList(name="language")
-                self.new_lang = Language.from_name(set_lang[0])
+                self.new_lang = Language.from_name(set_lang[0].replace('_','-'))
             else:
                 self.new_lang = new_lang
         self._index = 0
@@ -285,7 +285,7 @@ class Setting(Tokenizer):
         if not self.new_lang:
             if not new_lang:
                 set_lang = shared_memory.ShareableList(name="language")
-                self.new_lang = Language.from_name(set_lang[0])
+                self.new_lang = Language.from_name(set_lang[0].replace('_','-'))
             else:
                 self.new_lang = new_lang
         # print(f"DEBUG: robotframework.py Setting self.new_lang={self.new_lang}\n")
@@ -353,7 +353,7 @@ class ImportSetting(Tokenizer):
         if not self.new_lang:
             if not new_lang:
                 set_lang = shared_memory.ShareableList(name="language")
-                self.new_lang = Language.from_name(set_lang[0])
+                self.new_lang = Language.from_name(set_lang[0].replace('_','-'))
             else:
                 self.new_lang = new_lang
         self.normalized_settings = normalize_dict(self.new_lang.settings)
@@ -375,7 +375,7 @@ class TestCaseSetting(Setting):
         if not self.new_lang:
             if not new_lang:
                 set_lang = shared_memory.ShareableList(name="language")
-                self.new_lang = Language.from_name(set_lang[0])
+                self.new_lang = Language.from_name(set_lang[0].replace('_','-'))
             else:
                 self.new_lang = new_lang
         self.normalized_settings = normalize_dict(self.new_lang.settings)
@@ -420,7 +420,7 @@ class KeywordSetting(TestCaseSetting):
         if not self.new_lang:
             if not new_lang:
                 set_lang = shared_memory.ShareableList(name="language")
-                self.new_lang = Language.from_name(set_lang[0])
+                self.new_lang = Language.from_name(set_lang[0].replace('_','-'))
             else:
                 self.new_lang = new_lang
         self.normalized_settings = normalize_dict(self.new_lang.settings)
@@ -456,7 +456,7 @@ class KeywordCall(Tokenizer):
         if not self.new_lang:
             if not new_lang:
                 set_lang = shared_memory.ShareableList(name="language")
-                self.new_lang = Language.from_name(set_lang[0])
+                self.new_lang = Language.from_name(set_lang[0].replace('_','-'))
             else:
                 self.new_lang = new_lang
         # print(f"DEBUG: robotframework.py KeywordCall __init__ lang={self.new_lang}")
@@ -485,7 +485,7 @@ class GherkinTokenizer(object):
         if not self.new_lang:
             if not new_lang:
                 set_lang = shared_memory.ShareableList(name="language")
-                self.new_lang = Language.from_name(set_lang[0])
+                self.new_lang = Language.from_name(set_lang[0].replace('_','-'))
             else:
                 self.new_lang = new_lang
         self.normalized_bdd_prefixes = normalize_pipe_list(list(self.new_lang.bdd_prefixes))
@@ -539,7 +539,7 @@ class _Table:
         if not self.new_lang:
             if not new_lang:
                 set_lang = shared_memory.ShareableList(name="language")
-                self.new_lang = Language.from_name(set_lang[0])
+                self.new_lang = Language.from_name(set_lang[0].replace('_','-'))
             else:
                 self.new_lang = new_lang
         self._tokenizer = self._tokenizer_class()
@@ -596,7 +596,7 @@ class SettingTable(_Table):
         if not self.new_lang:
             if not new_lang:
                 set_lang = shared_memory.ShareableList(name="language")
-                self.new_lang = Language.from_name(set_lang[0])
+                self.new_lang = Language.from_name(set_lang[0].replace('_','-'))
             else:
                 self.new_lang = new_lang
         self.normalized_settings = normalize_dict(self.new_lang.settings)
@@ -639,7 +639,7 @@ class TestCaseTable(_Table):
         if not self.new_lang:
             if not new_lang:
                 set_lang = shared_memory.ShareableList(name="language")
-                self.new_lang = Language.from_name(set_lang[0])
+                self.new_lang = Language.from_name(set_lang[0].replace('_','-'))
             else:
                 self.new_lang = new_lang
         # print(f"DEBUG: robotframework.py TestCaseTable __init__ self.new_lang={self.new_lang}")
