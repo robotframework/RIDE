@@ -1587,12 +1587,12 @@ msgstr "Bestandsformaat"
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/saving.py:41
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:113
 msgid "Is Task?"
-msgstr ""
+msgstr "Is de taak?"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/saving.py:42
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:113
 msgid "Default for Tasks or Tests sections."
-msgstr ""
+msgstr "Standaard voor taken of tests secties."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/saving.py:43
 msgid "Reformat?"
@@ -2594,5 +2594,3 @@ msgstr "Importeernaam"
 msgid "%s cannot be empty"
 msgstr "%s mag niet leeg zijn"
 
-#~ msgid "Saving Preferences"
-#~ msgstr "Bestandsformaatvoorkeuren"
