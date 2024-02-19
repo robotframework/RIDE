@@ -2584,3 +2584,4 @@ msgstr "Importando Nome"
 #: /home2/helio/github/RIDE/tools/../src/robotide/validators/__init__.py:150
 msgid "%s cannot be empty"
 msgstr "%s não pode ser vazia"
+
