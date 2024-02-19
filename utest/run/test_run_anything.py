@@ -51,14 +51,14 @@ class _FakeOutputWindow(object):
 
 class TestRunAnything(UIUnitTestBase):
 
-    @pytest.mark.skipif(os.getenv('GITHUB_ACTIONS'), "Fails at Fedora workflow")
+    @pytest.mark.skipif(os.getenv('GITHUB_ACTIONS'), reason="Fails at Fedora workflow")
     def test_run(self):
         self.runner = self._create_runner('python %s count_args a b c' % SCRIPT)
         self._wait_until_finished()
         assert self.runner.finished
         assert self.runner.outstr == '3\n'
 
-    @pytest.mark.skipif(os.getenv('GITHUB_ACTIONS'), "Fails at Fedora workflow")
+    @pytest.mark.skipif(os.getenv('GITHUB_ACTIONS'), reason="Fails at Fedora workflow")
     def test_stopping(self):
         self.runner = self._create_runner('python %s output 0.8' % SCRIPT)
         time.sleep(0.3)
@@ -73,7 +73,7 @@ class TestRunAnything(UIUnitTestBase):
         assert self.runner.finished
         assert self.runner.outstr
 
-    @pytest.mark.skipif(os.getenv('GITHUB_ACTIONS'), "Fails at Fedora workflow")
+    @pytest.mark.skipif(os.getenv('GITHUB_ACTIONS'), reason="Fails at Fedora workflow")
     def test_stderr(self):
         self.runner = self._create_runner('python %s stderr' % SCRIPT)
         self._wait_until_finished()

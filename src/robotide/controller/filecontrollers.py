@@ -35,9 +35,9 @@ from .tablecontrollers import (VariableTableController, TestCaseTableController,
 from .macrocontrollers import TestCaseController, UserKeywordController
 
 
-def _get_controller(project, data, parent):
+def _get_controller(project, data, parent, tasks=False):
     if isinstance(data, TestCaseFile):
-        return TestCaseFileController(data, project, parent)
+        return TestCaseFileController(data, project, tasks=tasks)
     if isinstance(data, ExcludedDirectory):
         return ExcludedDirectoryController(data, project, parent)
     if isinstance(data, ResourceFile):
@@ -57,11 +57,11 @@ def _get_controller(project, data, parent):
                 stub.write(content)
             data.parent.load_data(stub.name)
         return TestCaseFileController(data, project, data.parent)  # DEBUG Here we create a dummy Project
-    return TestDataDirectoryController(data, project, parent)
+    return TestDataDirectoryController(data, project, parent, tasks=tasks)
 
 
-def data_controller(data, project, parent=None):
-    return _get_controller(project, data, parent)
+def data_controller(data, project, parent=None, tasks=False):
+    return _get_controller(project, data, parent, tasks=tasks)
 
 
 class _FileSystemElement(object):
@@ -429,12 +429,13 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
 class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseController):
     __test__ = False
 
-    def __init__(self, data, project=None, parent=None):
+    def __init__(self, data, project=None, parent=None, tasks=False):
         dir_ = data.directory
         dir_ = os.path.abspath(dir_) if isinstance(dir_, str) else dir_
         _FileSystemElement.__init__(self, self._filename(data), dir_)
         _DataController.__init__(self, data, project, parent)
         self._dir_controllers = {}
+        self.tasks = tasks
 
     @staticmethod
     def _filename(data):
@@ -559,17 +560,17 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
         self.filename = self.data.initfile
 
     def new_test_case_file(self, path):
-        ctrl = self._new_data_controller(new_test_case_file(path))
+        ctrl = self._new_data_controller(new_test_case_file(path, tasks=self.tasks))
         ctrl.mark_dirty()
         return ctrl
 
     def new_test_data_directory(self, path):
-        return self._new_data_controller(new_test_data_directory(path))
+        return self._new_data_controller(new_test_data_directory(path, tasks=self.tasks))
 
     def _new_data_controller(self, datafile):
         self.data.children.append(datafile)
         datafile.parent = self.data
-        self.children.append(data_controller(datafile, self._project, self))
+        self.children.append(data_controller(datafile, self._project, self, tasks=self.tasks))
         return self.children[-1]
 
     def notify_suite_added(self, suite):
@@ -579,7 +580,7 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
         return True
 
     def reload(self):
-        self.__init__(TestDataDirectory(source=self.directory, parent=self.data.parent).populate(),
+        self.__init__(TestDataDirectory(source=self.directory, parent=self.data.parent, tasks=self.tasks).populate(),
                       self._project, parent=self.parent)
 
     def remove(self):
@@ -676,8 +677,8 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
             if not dirname:
                 continue
             target_dir = os.path.join(target.directory, dirname)
-            dir_ctrl = TestDataDirectoryController(TestDataDirectory(source=target_dir),
-                                                   self._project, self)
+            dir_ctrl = TestDataDirectoryController(TestDataDirectory(source=target_dir, tasks=self.tasks),
+                                                   self._project, self, tasks=self.tasks)
             target._dir_controllers[target.directory] = dir_ctrl
             target.add_child(dir_ctrl)
             if target_dir == res_dir:
@@ -719,9 +720,10 @@ class DirtyRobotDataException(Exception):
 class TestCaseFileController(_FileSystemElement, _DataController):
     __test__ = False
 
-    def __init__(self, data, project=None, parent=None):
+    def __init__(self, data, project=None, parent=None, tasks=False):
         _FileSystemElement.__init__(self, data.source if data else None, data.directory)
         _DataController.__init__(self, data, project, parent)
+        self.tasks = tasks
 
     def internal_settings(self):
         ss = self.setting_table
@@ -789,7 +791,7 @@ class TestCaseFileController(_FileSystemElement, _DataController):
         RideDataFileRemoved(path=self.filename, datafile=self).publish()
 
     def reload(self):
-        self.__init__(TestCaseFile(parent=self.data.parent, source=self.filename).populate(),
+        self.__init__(TestCaseFile(parent=self.data.parent, source=self.filename, tasks=self.tasks).populate(),
                       project=self._project,
                       parent=self.parent)
 

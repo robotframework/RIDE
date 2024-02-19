@@ -162,8 +162,8 @@ def test_data(source, parent=None, settings=None, language=None):
             init_file = os.path.join(source, '__init__.robot')
             if os.path.isfile(init_file):
                 language = lang.check_file_language(init_file)
-                print(f"DEBUG: Dataloader TestCaseFile init file {init_file=}\n"
-                      f" language={language} {source=}")
+                # print(f"DEBUG: Dataloader TestCaseFile init file {init_file=}\n"
+                #       f" language={language} {source=}")
         data = TestDataDirectoryWithExcludes(parent, source, settings, language)
         # print("DEBUG: Dataloader testdata %s\n" % data.name)
         data.populate()
