@@ -62,6 +62,65 @@ TXT_NUM_SPACES = 'txt number of spaces'
 ZOOM_FACTOR = 'zoom factor'
 
 
+def read_language(content):
+    from tempfile import mkstemp
+    from ..lib.compat.parsing.language import read as lread
+
+    fp, fname = mkstemp()
+
+    with open(fp, mode='wb') as fp:
+        fp.write(content)
+        fp.close()
+        with open(fname, mode='rb') as readfp:
+            lang = lread(readfp)
+    os.remove(fname)
+    return lang
+
+
+def obtain_language(existing, content):
+    try:
+        set_lang = shared_memory.ShareableList(name="language")
+    except AttributeError:  # Unittests fails here
+        set_lang = []
+    doc_lang = read_language(content)
+    # print(f"DEBUG: textedit.py validate_and_update obtain_language={doc_lang}")
+    if doc_lang is not None:
+        mlang = Language.from_name(doc_lang.replace('_','-'))
+        set_lang[0] = get_rf_lang_code(mlang.code)  # .code.replace('-','_')
+    elif len(set_lang) > 0:
+        if existing is not None:
+            if isinstance(existing, list):
+                lang = existing[0]
+            else:
+                lang = existing
+            try:
+                mlang = Language.from_name(lang.replace('_', '-'))
+                set_lang[0] = get_rf_lang_code(mlang.code)  # .replace('-', '_')
+            except ValueError:
+                set_lang[0] = 'en'
+    else:
+        set_lang[0] = 'en'
+    return [set_lang[0]]
+
+
+def get_rf_lang_code(lang: (str, list)) -> str:
+    if isinstance(lang, list):
+        clean_lang = lang
+    else:
+        clean_lang = lang.split(' ')  # The cases we have two words
+    lc = len(clean_lang)
+    if lc > 1 or len(clean_lang[0]) > 2 and clean_lang[0].replace('_', '') == lang:
+        return lang
+    clean_lang = clean_lang[0].replace('-', '_').split('_')  # The cases we have variant code
+    lc = len(clean_lang)
+    if lc == 1:
+        return clean_lang[0].title()
+    with_variant_code = f"{clean_lang[0].title()}{clean_lang[1].title()}"
+    if with_variant_code in ("PtBr", "ZhCn", "ZhTw"):
+        return with_variant_code
+    return clean_lang[0].title()
+
+
 class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
     title = PLUGIN_NAME
 
@@ -229,14 +288,14 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
             return
         if datafile_controller:
             self._editor.language = datafile_controller.language
-            self.global_settings['language'] = datafile_controller.language
+            self.global_settings['doc language'] = datafile_controller.language
             self._editor.open(DataFileWrapper(datafile_controller, self.global_settings, self._editor.language))
             self._editor.source_editor.readonly = not datafile_controller.is_modifiable()
         self._editor.set_editor_caret_position()
 
     def _open_data_for_controller(self, datafile_controller):
         self._editor.language = datafile_controller.language
-        self.global_settings['language'] = datafile_controller.language
+        self.global_settings['doc language'] = datafile_controller.language
         self._editor.selected(DataFileWrapper(datafile_controller, self.global_settings, self._editor.language))
         self._editor.source_editor.readonly = not datafile_controller.is_modifiable()
 
@@ -293,36 +352,6 @@ class DummyController(WithStepsController):
         return hash(repr(self))
 
 
-def read_language(content):
-    from tempfile import mkstemp
-    from ..lib.compat.parsing.language import read as lread
-
-    fp, fname = mkstemp()
-
-    with open(fp, mode='wb') as fp:
-        fp.write(content)
-        fp.close()
-        with open(fname, mode='rb') as readfp:
-            lang = lread(readfp)
-    os.remove(fname)
-    return lang
-
-
-def obtain_language(existing, content):
-    try:
-        set_lang = shared_memory.ShareableList(name="language")
-    except AttributeError:  # Unittests fails here
-        set_lang = []
-    doc_lang = read_language(content)
-    # print(f"DEBUG: textedit.py validate_and_update obtain_language={doc_lang}")
-    if doc_lang is not None:
-        mlang = Language.from_name(doc_lang)
-        set_lang[0] = mlang.code
-    else:
-        set_lang[0] = existing[0] if existing is not None else 'en'
-    return [set_lang[0]]
-
-
 class DataValidationHandler(object):
 
     def __init__(self, plugin, lang=None):
@@ -348,8 +377,11 @@ class DataValidationHandler(object):
         m_text = text.decode("utf-8")
         if "Language: " in m_text:
             self._doc_language = obtain_language(lang, text)
+            # print(f"DEBUG: textedit.py validate_and_update Language in doc--> lang={self._doc_language}")
         else:
             self._doc_language = lang if lang is not None else 'en'
+            # print(f"DEBUG: textedit.py validate_and_update NO Language in doc--> arg lang={lang} "
+            #       f"set to={self._doc_language}")
         self._editor.language = self._doc_language
 
         result = self._sanity_check(data, m_text)
@@ -377,8 +409,10 @@ class DataValidationHandler(object):
         from robot.parsing.parser.parser import get_model
         from robotide.lib.robot.errors import DataError
 
-        # print(f"DEBUG: textedit.py _sanity_check data is type={type(data)}")
-        model = get_model(text, lang=self._doc_language)
+        rf_lang = get_rf_lang_code(self._doc_language)
+        # print(f"DEBUG: textedit.py _sanity_check data is type={type(data)} lang={self._doc_language},"
+        #       f" transformed lang={rf_lang}")
+        model = get_model(text, lang=rf_lang)
         # print(f"DEBUG: textedit.py _sanity_check model is {model} doc language={self._doc_language}")
         validator = ErrorReporter()
         result = None
@@ -652,7 +686,7 @@ class SourceEditor(wx.Panel):
             return
         position = self._position
         self.source_editor.SetFocus()
-        print(f"DEBUG: texteditor.py SourceEditor position={position}")
+        # print(f"DEBUG: texteditor.py SourceEditor position={position}")
         if position:
             self.source_editor.SetCurrentPos(position)
             self.source_editor.SetSelection(self.restore_start_pos, self.restore_end_pos)
@@ -804,7 +838,10 @@ class SourceEditor(wx.Panel):
     def open(self, data):
         self.reset()
         self._data = data
-        self.language = self._data._doc_language if self._data._doc_language is not None else ['en']
+        if self._data._doc_language is not None and len(self._data._doc_language) > 0:
+            self.language = self._data._doc_language
+        else:
+            self.language = ['en']
         # print(f"DEBUG: texteditor.py SourceEditor open ENTER language={self.language}")
         try:
             if isinstance(self._data.wrapper_data, ResourceFileController):
@@ -2144,7 +2181,10 @@ class RobotDataEditor(stc.StyledTextCtrl):
         else:
             for bit in text.strip().strip('*').split(' '):
                 content.add(bit)
-            content.remove('')
+            try:
+                content.remove('')
+            except KeyError:
+                pass
         # print(f"DEBUG: TextEditor RobotDataEditor  get_selected_or_near_text, content={content} ")
         if restore_cursor_pos:
             self.SetAnchor(restore_cursor_pos)
@@ -2216,19 +2256,26 @@ class FromStringIOPopulator(robotapi.populators.FromFilePopulator):
 
 
 class RobotStylizer(object):
-    def __init__(self, editor, settings, readonly=False, language=None):
+    def __init__(self, editor, settings, readonly=False, language=''):
         self.tokens = {}
         self.editor = editor
         self.lexer = None
         self.settings = settings
         self._readonly = readonly
         self._ensure_default_font_is_valid()
+        # print(f"DEBUG: texteditor.py RobotStylizer _init_ ENTER language={language}\n")
         try:
             set_lang = shared_memory.ShareableList(name="language")
         except AttributeError:  # Unittests fails here
             set_lang = []
-        set_lang[0] = language[0] if language is not None else 'en'
-        self.language = [set_lang[0]]
+        if not set_lang:
+            # DEBUG set_lang[0] = language[0] if language is not None and isinstance(language, list) else 'en'
+            if len(language) > 0 and isinstance(language, list):
+                self.language = language[0]
+            else:
+                self.language = ['en']
+        else:
+            self.language = [set_lang[0]]
         options = {'language': self.language}
         # print(f"DEBUG: texteditor.py RobotStylizer _init_ language={self.language}\n")
         if robotframeworklexer:

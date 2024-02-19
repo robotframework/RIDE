@@ -158,6 +158,7 @@ RELEASE_NOTES = f"""
 <li>This version supports Python 3.8 up to 3.12.</li>
 <li>There are some changes, or known issues:<ul>
 <li>❌ - Removed support for Python 3.6 and 3.7</li>
+<li>✔ - Added a selector for Tasks and Language to the New Project dialog.</li>
 <li>✔ - Added UI localization prepared for all the languages from installed Robot Framework version 6.1, or 
 higher. Major translations are: Dutch, Portuguese and Brazilian Portuguese. Still missing translation 
 of some elements.</li> 
@@ -181,6 +182,8 @@ version 4.2.1, which we now <em>recommend</em>.</li>
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
+<li>Added a selector for Tasks and Language to the New Project dialog. Still some problems: Tasks type changes to Tests,
+localized sections only stay translated after Apply in Text Editor.</li>
 <li>Added UI localization prepared for all the languages from installed Robot Framework version 6.1, or 
 higher. Language is selected from Tools->Preferences->General.</li>
 <li>Removed support for HTML file format (obsolete since Robot Framework 3.2)</li>
@@ -275,6 +278,6 @@ python -m robotide.__init__
 <pre class="literal-block">
 python -m robotide.postinstall -install
 </pre>
-<p>RIDE {VERSION} was released on 07/Feb/2024.</p>
+<p>RIDE {VERSION} was released on 19/Feb/2024.</p>
 </div>
 """

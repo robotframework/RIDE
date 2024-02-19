@@ -82,7 +82,7 @@ class TestLanguage(unittest.TestCase):
 
     def test_check_file_lang_pt_br(self):
         lang = language.check_file_language(datafilereader.VALID_LANG_PT_BR)
-        assert lang == ['pt-BR']
+        assert lang == ['pt_BR']
 
     def test_check_file_lang_pt(self):
         lang = language.check_file_language(datafilereader.VALID_LANG_PT)
@@ -118,11 +118,11 @@ class TestLanguage(unittest.TestCase):
 
     def test_check_file_lang_zh_cn(self):
         lang = language.check_file_language(datafilereader.VALID_LANG_ZH_CN)
-        assert lang == ['zh-CN']
+        assert lang == ['zh_CN']
 
     def test_check_file_lang_zh_tw(self):
         lang = language.check_file_language(datafilereader.VALID_LANG_ZH_TW)
-        assert lang == ['zh-TW']
+        assert lang == ['zh_TW']
 
     def test_get_headers_unknown_language_lw(self):
         headers = language.get_headers_for(['Pirates'], ['Settings'])

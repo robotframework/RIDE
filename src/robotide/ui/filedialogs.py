@@ -19,12 +19,22 @@ import os
 import wx
 from wx import Colour
 from wx.lib.filebrowsebutton import DirBrowseButton
+from multiprocessing import shared_memory
 
 from ..controller.ctrlcommands import (CreateNewResource, AddTestDataDirectory, AddTestCaseFile,
                                        CreateNewDirectoryProject, CreateNewFileProject, SetFileFormat,
                                        SetFileFormatRecuresively)
+from ..preferences.general import read_languages, set_colors
+from .preferences_dialogs import boolean_editor, StringChoiceEditor
 from ..validators import NonEmptyValidator, NewSuitePathValidator, SuiteFileNameValidator
 from ..widgets import Label, RIDEDialog
+try:
+    from robot.conf.languages import Language
+except ImportError as e:
+    import sys
+    sys.stderr.write(f"Trying to import robot's languages module returned error: {repr(e)}\n")
+    sys.stderr.write("You need to have Robot Framework v6.0 or newer to use languages in test suites.\n")
+    Language = None
 
 _ = wx.GetTranslation  # To keep linter/code analyser happy
 builtins.__dict__['_'] = wx.GetTranslation
@@ -54,7 +64,11 @@ class _CreationDialog(RIDEDialog):
         edit_sizer = wx.BoxSizer(wx.HORIZONTAL)
         edit_sizer.Add(label_sizer, 1, wx.EXPAND)
         edit_sizer.Add(radio_group_sizer)
-        sizer.Add(edit_sizer, 1, wx.EXPAND)
+        sizer.Add(edit_sizer)  # , 1, wx.EXPAND)
+        content_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        self._task_chooser = self._create_task_chooser(self, content_sizer)
+        self._language_chooser = self._create_lang_chooser(content_sizer)
+        sizer.Add(content_sizer, 1, wx.EXPAND)
         self._finalize_dialog(sizer)
         self._name_editor.SetFocus()
 
@@ -62,7 +76,7 @@ class _CreationDialog(RIDEDialog):
         RIDEDialog.__init__(self, title)
         # set Left to Right direction (while we don't have localization)
         self.SetLayoutDirection(wx.Layout_LeftToRight)
-        return wx.BoxSizer(wx.VERTICAL)
+        return wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)  # wx.BoxSizer(wx.VERTICAL)
 
     def _finalize_dialog(self, sizer):
         self._create_horizontal_line(sizer)
@@ -91,6 +105,43 @@ class _CreationDialog(RIDEDialog):
 
     def _create_type_chooser(self, sizer):
         return self._create_radiobuttons(sizer, _("Type"), [_("File"), _("Directory")])
+
+    def _create_task_chooser(self, window, sizer):
+        from ..preferences import RideSettings
+        _settings = RideSettings()
+        label, selector = boolean_editor(window, _settings, 'tasks',
+                                         _("Is Task?")+' ', _("Default for Tasks or Tests sections."))
+        # selector = wx.CheckBox(window, label=_("Is Task?"))
+        selector.SetBackgroundColour(Colour(self.color_background))
+        selector.SetForegroundColour(Colour(self.color_foreground))
+        # self.Bind(wx.EVT_CHECKBOX, self.on_path_changed, selector)
+        task_box = wx.BoxSizer(wx.HORIZONTAL)
+        task_box.AddMany([label, selector])
+        sizer.Add( task_box, flag = wx.ALIGN_LEFT)
+        return selector
+
+    def _create_lang_chooser(self, sizer):
+        from ..preferences import RideSettings
+        _settings = RideSettings()
+        lang = _settings.get('doc language', '')
+        languages = read_languages()
+        if languages[0] != '':
+            languages.insert(0,'')
+        if isinstance(lang, list) and len(lang) > 0:
+            _settings['doc language'] = lang[0]
+        elif lang and len(lang) > 0:
+            _settings['doc language'] = lang
+        else:
+            _settings['doc language'] = ''
+        # print(f"DEBUG: filedialogs.py _CreationDialog _create_lang_chooser languages={languages}")
+        ll = StringChoiceEditor(_settings, 'doc language', _('Language')+' ', languages)
+        l_lang = ll.label(self)
+        set_colors(l_lang, Colour(self.color_background), Colour(self.color_foreground))
+        lang_box = wx.BoxSizer(wx.HORIZONTAL)
+        lang_box.AddMany([l_lang, ll.chooser(self)])
+        sizer.Add(lang_box)
+        sizer.Layout()
+        return ll
 
     def _create_format_chooser(self, sizer, callback=True):
         from ..controller.filecontrollers import ResourceFileController
@@ -159,6 +210,28 @@ class _CreationDialog(RIDEDialog):
             return False
         return self._type_chooser.GetStringSelection() == _("Directory")
 
+    def _is_task_type(self):
+        if not self._task_chooser:
+            return False
+        return self._task_chooser.GetValue()
+
+    def selected_language(self):
+        if not self._language_chooser:
+            return ['']
+        from ..preferences import RideSettings
+        _settings = RideSettings()
+        lang = _settings.get('doc language', '')
+        # print(f"DEBUG: filedialogs.py _CreationDialog selected_language={lang}")
+        set_lang = shared_memory.ShareableList(name="language")
+        if lang and len(lang) > 0:
+            mlang = Language.from_name(lang.replace('_','-'))
+            set_lang[0] = mlang.code.replace('-','_')
+        elif len(set_lang[0]) > 0:
+            return [set_lang[0]]
+        else:
+            set_lang[0] = 'en'
+        return [lang]
+
     def _get_extension(self):
         if not self._format_chooser:
             return 'robot'
@@ -182,12 +255,14 @@ class NewProjectDialog(_CreationDialog):
 
     def __init__(self, project):
         self._controller = project
-        _CreationDialog.__init__(self, project.default_dir, _("New Project"))
+        self.dlg = _CreationDialog.__init__(self, project.default_dir, _("New Project"))
 
     def _execute(self):
         cmd = CreateNewDirectoryProject if self._is_dir_type()\
             else CreateNewFileProject
-        cmd(self._get_path()).execute(self._controller)
+        self.language = self.selected_language()
+        cmd(self._get_path(), self._is_task_type, self.language).execute(self._controller)
+        del self.dlg
 
 
 class NewResourceDialog(_WithImmutableParent, _CreationDialog):

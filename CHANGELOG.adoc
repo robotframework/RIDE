@@ -9,6 +9,9 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 == https://github.com/robotframework/RIDE[Unreleased]
 
 === Added
+
+- Added a selector for Tasks and Language to the New Project dialog. Still some problems: Tasks type changes to Tests,
+localized sections only stay translated after Apply in Text Editor.
 - Added UI localization prepared for all the languages from installed Robot Framework version 6.1, or
 higher. Major translations are: Dutch, Portuguese and Brazilian Portuguese. Language is selected from
 Tools->Preferences->General.

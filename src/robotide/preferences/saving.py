@@ -29,7 +29,7 @@ class SavingPreferences(PreferencesPanel):
 
     def __init__(self, settings, *args, **kwargs):
         self.location = (_('Saving'),)
-        self.title = _('Saving Preferences')
+        self.title = _('Saving')
         self.name = 'Saving'
         super(SavingPreferences, self).__init__(name_tr=_('Saving'), *args, **kwargs)
         self._settings = settings
@@ -38,13 +38,20 @@ class SavingPreferences(PreferencesPanel):
         self.foreground_color = Colour("black")
         for editor in self._create_editors(settings):
             self._add_editor(editor)
+        label, selector = boolean_editor(self, settings, 'tasks', _("Is Task?"),
+                                         _("Default for Tasks or Tests sections."))
         l_reformat, editor = boolean_editor(self, settings, 'reformat', _('Reformat?'),
                                             _('Should it recalculate identation on Save?'))
         if IS_WINDOWS:
+            label.SetForegroundColour(self.foreground_color)
+            label.SetBackgroundColour(self.background_color)
+            label.SetOwnBackgroundColour(self.background_color)
+            label.SetOwnForegroundColour(self.foreground_color)
             l_reformat.SetForegroundColour(self.foreground_color)
             l_reformat.SetBackgroundColour(self.background_color)
             l_reformat.SetOwnBackgroundColour(self.background_color)
             l_reformat.SetOwnForegroundColour(self.foreground_color)
+        self.Sizer.AddMany([label, selector])
         self.Sizer.AddMany([l_reformat, editor])
         self.Sizer.Layout()
         self.Update()

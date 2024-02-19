@@ -100,6 +100,7 @@ class GeneralPreferences(PreferencesPanel):
             background_color = Colour(LIGHT_GRAY)
             foreground_color = Colour("black")
             set_colors(self.cb_apply_to_panels, background_color, foreground_color)
+        # set_colors(ui_language, Colour(self.color_background), Colour(self.color_foreground))
         main_sizer.Add(font_editor)
         main_sizer.Add(colors_sizer)
         main_sizer.Add(self.cb_apply_to_panels)

@@ -40,7 +40,7 @@ def table_sorter(tables: list) -> list:
         sorted_tables.append((current_tab_line, tab))
         prev_tab_line = current_tab_line
     # print(f"DEBUG: filewriters.py table_sorter {sorted_tables[:]}")
-    sorted_result = sorted(sorted_tables)
+    sorted_result = sorted(sorted_tables, key=lambda x: x[0] in sorted_tables)
     sorted_tables = [z[1] for z in sorted_result]
     return sorted_tables
 
