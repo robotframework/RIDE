@@ -112,6 +112,22 @@ class TsvFormatter(_DataFileFormatter):
         return row + [''] * (self._column_count - len(row))
 
 
+from robotide.lib.compat.parsing.language import get_headers_for
+
+
+def translate_header(header: str, language=None) -> str:
+    if not language:
+        return header
+    tr_header = list(get_headers_for(language, header, lowercase=False))
+    if len(tr_header) > 1:
+        print(f"DEBUG: formatters.py translate_header  header={header} language={language}"
+              f" before pop tr_header={tr_header}")
+        tr_header.pop(tr_header.index(header))
+    tr_header = tr_header[0]
+    print(f"DEBUG: formatters.py translate_header  header={tr_header}")
+    return tr_header
+
+
 class TxtFormatter(_DataFileFormatter):
     _test_or_keyword_name_width = 18
     _setting_and_variable_name_width = 14
@@ -140,7 +156,7 @@ class TxtFormatter(_DataFileFormatter):
 
     def _format_header(self, header, table):
         # print(f"DEBUG: RFLib writer formaters.py TxtFormatter _format_header headers={header} table={table}")
-        header = ['*** %s ***' % header[0]] + header[1:]
+        header = ['*** %s ***' % translate_header(header[0])] + header[1:]
         aligner = self._aligner_for(table)
         return aligner.align_row(header)
 

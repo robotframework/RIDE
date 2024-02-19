@@ -129,9 +129,11 @@ class _CreationDialog(RIDEDialog):
             languages.insert(0,'')
         if isinstance(lang, list) and len(lang) > 0:
             _settings['doc language'] = lang[0]
+        elif lang and len(lang) > 0:
+            _settings['doc language'] = lang
         else:
             _settings['doc language'] = ''
-        print(f"DEBUG: filedialogs.py _CreationDialog _create_lang_chooser languages={languages}")
+        # print(f"DEBUG: filedialogs.py _CreationDialog _create_lang_chooser languages={languages}")
         ll = StringChoiceEditor(_settings, 'doc language', _('Language')+' ', languages)
         l_lang = ll.label(self)
         set_colors(l_lang, Colour(self.color_background), Colour(self.color_foreground))
@@ -219,11 +221,13 @@ class _CreationDialog(RIDEDialog):
         from ..preferences import RideSettings
         _settings = RideSettings()
         lang = _settings.get('doc language', '')
-        print(f"DEBUG: filedialogs.py _CreationDialog selected_language={lang}")
+        # print(f"DEBUG: filedialogs.py _CreationDialog selected_language={lang}")
         set_lang = shared_memory.ShareableList(name="language")
-        if len(lang) > 0:
+        if lang and len(lang) > 0:
             mlang = Language.from_name(lang.replace('_','-'))
             set_lang[0] = mlang.code.replace('-','_')
+        elif len(set_lang[0]) > 0:
+            return [set_lang[0]]
         else:
             set_lang[0] = 'en'
         return [lang]
@@ -251,12 +255,14 @@ class NewProjectDialog(_CreationDialog):
 
     def __init__(self, project):
         self._controller = project
-        _CreationDialog.__init__(self, project.default_dir, _("New Project"))
+        self.dlg = _CreationDialog.__init__(self, project.default_dir, _("New Project"))
 
     def _execute(self):
         cmd = CreateNewDirectoryProject if self._is_dir_type()\
             else CreateNewFileProject
-        cmd(self._get_path(), self._is_task_type, self.selected_language()).execute(self._controller)
+        self.language = self.selected_language()
+        cmd(self._get_path(), self._is_task_type, self.language).execute(self._controller)
+        del self.dlg
 
 
 class NewResourceDialog(_WithImmutableParent, _CreationDialog):

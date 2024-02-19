@@ -78,7 +78,7 @@ class _TestData(object):
         # self._testcase_table_names = 'Task', 'Tasks' if self._task else 'Test Case', 'Test Cases'
         # self.comment_table = None
         self._tables = dict(self._get_tables())
-        self.set_doc_language()
+        # self.set_doc_language()
 
     def _get_tables(self):
         tables = [(self._setting_table_names, self.setting_table),
@@ -288,15 +288,20 @@ class _TestData(object):
                 language = ", ".join(self._language)
             else:
                 language = self._language
+            # print(f"DEBUG: model.py  set_doc_language language={language}")
             if len(self._preamble) == 0:
                 self._preamble.append(f"Language: {language}\n\n")
+                # print(f"DEBUG: model.py  set_doc_language EMPTY PREAMBLE self._preamble={self._preamble}")
             else:
                 # DEBUG: We need to replace or decide where to write the language definition
                 for idx, line in enumerate(self._preamble):
                     if line.startswith("Language:"):
                         self._preamble[idx] = f"Language: {language}\n\n"
+                        # print(f"DEBUG: model.py  set_doc_language EXITING LANG PREAMBLE index={idx} "
+                        #       f"self._preamble={self._preamble}")
                         return
                 self._preamble.insert(0, f"Language: {language}\n\n")
+                # print(f"DEBUG: model.py  set_doc_language EMPTY PREAMBLE INSERTING self._preamble={self._preamble}")
 
     def save(self, **options):
         """Writes this datafile to disk.
@@ -464,6 +469,9 @@ class TestDataDirectory(_TestData):
             yield table
 
 
+from robotide.lib.compat.parsing.language import get_headers_for
+
+
 class _Table(object):
 
     def __init__(self, parent):
@@ -472,8 +480,15 @@ class _Table(object):
         self._lineno = None
 
     def set_header(self, header, lineno:int):
-        print(f"DEBUG: model.py _Table set_header={header} self._lineno={lineno}")
-        self._header = self._prune_old_style_headers(header)
+        tr_header = list(get_headers_for(self.language, header, lowercase=False))
+        if len(tr_header) > 1:
+            # print(f"DEBUG: model.py _Table set_header={header} before pop tr_header={tr_header}")
+            tr_header.pop(tr_header.index(header[0]))
+        else:
+            tr_header = [tr_header[0]]
+        # print(f"DEBUG: model.py _Table set_header={header} self._lineno={lineno}"
+        #       f" language={self.language} tr_header={tr_header}")
+        self._header = self._prune_old_style_headers(tr_header)
         self._lineno = lineno
 
     def _prune_old_style_headers(self, header):
@@ -657,13 +672,21 @@ class TestCaseFileSettingTable(_SettingTable):
             self.language = language
             self._aliases = lang.get_settings_for(language,
                                                   ['Documentation', 'Suite Setup', 'Suite Teardown',
-                                                   'Task Setup' if self.tasks else 'Test Setup',
+                                                   'Task Setup', 'Test Setup',
+                                                   'Task Teardown', 'Test Teardown',
+                                                   'Force Tags', 'Default Tags',
+                                                   'Task Tags', 'Test Tags',
+                                                   'Task Template', 'Test Template',
+                                                   'Task Timeout', 'Test Timeout',  'Library',
+                                                   'Resource', 'Variables', 'Metadata'])
+        """
+        'Task Setup' if self.tasks else 'Test Setup',
                                                    'Task Teardown' if self.tasks else 'Test Teardown',
                                                    'Force Tags', 'Default Tags',
                                                    'Task Tags' if self.tasks else 'Test Tags',
                                                    'Task Template' if self.tasks else 'Test Template',
                                                    'Task Timeout' if self.tasks else 'Test Timeout',  'Library',
-                                                   'Resource', 'Variables', 'Metadata'])
+        """
         _SettingTable.__init__(self, parent, tasks)
 
     def __iter__(self):
@@ -716,12 +739,19 @@ class InitFileSettingTable(_SettingTable):
             self.language = language
             self._aliases = lang.get_settings_for(language, ['Documentation', 'Suite Setup',
                                                              'Suite Teardown',
-                                                             'Task Setup' if self.tasks else 'Test Setup',
+                                                             'Task Setup', 'Test Setup',
+                                                             'Task Teardown', 'Test Teardown',
+                                                             'Task Timeout', 'Test Timeout',
+                                                             'Force Tags',
+                                                             'Task Tags', 'Test Tags', 'Library',
+                                                             'Resource', 'Variables', 'Metadata'])
+        """
+                                                                     'Task Setup' if self.tasks else 'Test Setup',
                                                              'Task Teardown' if self.tasks else 'Test Teardown',
                                                              'Task Timeout' if self.tasks else 'Test Timeout',
                                                              'Force Tags',
                                                              'Task Tags' if self.tasks else 'Test Tags', 'Library',
-                                                             'Resource', 'Variables', 'Metadata'])
+        """
         _SettingTable.__init__(self, parent, tasks)
 
     def __iter__(self):
@@ -737,6 +767,7 @@ class VariableTable(_Table):
     def __init__(self, parent):
         _Table.__init__(self, parent)
         self.variables = []
+        self.language = ''
 
     @property
     def _old_header_matcher(self):
@@ -754,7 +785,7 @@ class VariableTable(_Table):
 
 class TestCaseTable(_Table):
     __test__ = False
-    type = 'test case'
+    # type = 'test case'
 
     def __init__(self, parent, tasks=False, language=None):
         _Table.__init__(self, parent)
@@ -771,6 +802,8 @@ class TestCaseTable(_Table):
     def set_header(self, header, lineno: int):
         if self._header and header:
             self._validate_mode(self._header[0], header[0])
+        # print(f"DEBUG: model.py TestCaseTable set_header self._header={self._header} "
+        #       f"calling _Table.set_header header={header}")
         _Table.set_header(self, header, lineno=lineno)
         self.propagate_up()
 

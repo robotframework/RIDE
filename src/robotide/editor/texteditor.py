@@ -62,6 +62,47 @@ TXT_NUM_SPACES = 'txt number of spaces'
 ZOOM_FACTOR = 'zoom factor'
 
 
+def read_language(content):
+    from tempfile import mkstemp
+    from ..lib.compat.parsing.language import read as lread
+
+    fp, fname = mkstemp()
+
+    with open(fp, mode='wb') as fp:
+        fp.write(content)
+        fp.close()
+        with open(fname, mode='rb') as readfp:
+            lang = lread(readfp)
+    os.remove(fname)
+    return lang
+
+
+def obtain_language(existing, content):
+    try:
+        set_lang = shared_memory.ShareableList(name="language")
+    except AttributeError:  # Unittests fails here
+        set_lang = []
+    doc_lang = read_language(content)
+    # print(f"DEBUG: textedit.py validate_and_update obtain_language={doc_lang}")
+    if doc_lang is not None:
+        mlang = Language.from_name(doc_lang.replace('_','-'))
+        set_lang[0] = get_rf_lang_code(mlang.code)  # .code.replace('-','_')
+    elif len(set_lang) > 0:
+        if existing is not None:
+            if isinstance(existing, list):
+                lang = existing[0]
+            else:
+                lang = existing
+            try:
+                mlang = Language.from_name(lang.replace('_', '-'))
+                set_lang[0] = get_rf_lang_code(mlang.code)  # .replace('-', '_')
+            except ValueError:
+                set_lang[0] = 'en'
+    else:
+        set_lang[0] = 'en'
+    return [set_lang[0]]
+
+
 def get_rf_lang_code(lang: (str, list)) -> str:
     if isinstance(lang, list):
         clean_lang = lang
@@ -311,47 +352,6 @@ class DummyController(WithStepsController):
         return hash(repr(self))
 
 
-def read_language(content):
-    from tempfile import mkstemp
-    from ..lib.compat.parsing.language import read as lread
-
-    fp, fname = mkstemp()
-
-    with open(fp, mode='wb') as fp:
-        fp.write(content)
-        fp.close()
-        with open(fname, mode='rb') as readfp:
-            lang = lread(readfp)
-    os.remove(fname)
-    return lang
-
-
-def obtain_language(existing, content):
-    try:
-        set_lang = shared_memory.ShareableList(name="language")
-    except AttributeError:  # Unittests fails here
-        set_lang = []
-    doc_lang = read_language(content)
-    print(f"DEBUG: textedit.py validate_and_update obtain_language={doc_lang}")
-    if doc_lang is not None:
-        mlang = Language.from_name(doc_lang.replace('_','-'))
-        set_lang[0] = mlang.code.replace('-','_')
-    elif len(set_lang) > 0:
-        if existing is not None:
-            if isinstance(existing, list):
-                lang = existing[0]
-            else:
-                lang = existing
-            try:
-                mlang = Language.from_name(lang.replace('_','-'))
-                set_lang[0] = mlang.code.replace('-','_')
-            except ValueError:
-                set_lang[0] = 'en'
-    else:
-        set_lang[0] = 'en'
-    return [set_lang[0]]
-
-
 class DataValidationHandler(object):
 
     def __init__(self, plugin, lang=None):
@@ -377,8 +377,11 @@ class DataValidationHandler(object):
         m_text = text.decode("utf-8")
         if "Language: " in m_text:
             self._doc_language = obtain_language(lang, text)
+            # print(f"DEBUG: textedit.py validate_and_update Language in doc--> lang={self._doc_language}")
         else:
             self._doc_language = lang if lang is not None else 'en'
+            # print(f"DEBUG: textedit.py validate_and_update NO Language in doc--> arg lang={lang} "
+            #       f"set to={self._doc_language}")
         self._editor.language = self._doc_language
 
         result = self._sanity_check(data, m_text)
@@ -407,8 +410,8 @@ class DataValidationHandler(object):
         from robotide.lib.robot.errors import DataError
 
         rf_lang = get_rf_lang_code(self._doc_language)
-        print(f"DEBUG: textedit.py _sanity_check data is type={type(data)} lang={self._doc_language},"
-              f" transformed lang={rf_lang}")
+        # print(f"DEBUG: textedit.py _sanity_check data is type={type(data)} lang={self._doc_language},"
+        #       f" transformed lang={rf_lang}")
         model = get_model(text, lang=rf_lang)
         # print(f"DEBUG: textedit.py _sanity_check model is {model} doc language={self._doc_language}")
         validator = ErrorReporter()
@@ -2260,7 +2263,7 @@ class RobotStylizer(object):
         self.settings = settings
         self._readonly = readonly
         self._ensure_default_font_is_valid()
-        print(f"DEBUG: texteditor.py RobotStylizer _init_ ENTER language={language}\n")
+        # print(f"DEBUG: texteditor.py RobotStylizer _init_ ENTER language={language}\n")
         try:
             set_lang = shared_memory.ShareableList(name="language")
         except AttributeError:  # Unittests fails here
