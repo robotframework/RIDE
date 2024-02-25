@@ -529,25 +529,37 @@ class _Table(object):
 class _WithSettings(object):
     _setters = {}
     _aliases = {}
+    current_setter = None
 
     def get_setter(self, name):
-        if name.startswith('#'):
-            return None
-        if name.endswith(':'):
+        # print(f"DEBUG: model.py _WithSettings ENTER name={name}")
+        if name.startswith('#') or name == '...':
+            # print(f"DEBUG: model.py _WithSettings BLOCK # or ... name={name} current_setter={self.current_setter}")
+            if isinstance(self.current_setter, Documentation):
+                # Patching for ... setting, this way we don't get a Parser Error on log
+                name = self.get_localized_setting_name('Documentation')
+            else:
+                # print(f"DEBUG: model.py _WithSettings returning current_setter={self.current_setter}")
+                return self.current_setter
+        elif name.endswith(':'):
             name = name[:-1]
-        # Patching for ... setting, this way we don't get a Parser Error on log
-        if name == '...':
-            name = self.get_localized_setting_name('Documentation')
+        # print(f"DEBUG: model.py _WithSettings get_setter name={name} ... current_setter={self.current_setter}")
         setter = self._get_setter(name)
         if setter is not None:
+            self.current_setter = setter
             return setter
         setter = self._get_deprecated_setter(name)
         if setter is not None:
+            self.current_setter = setter
             return setter
         self.report_invalid_syntax("Non-existing setting '%s'." % name)
+        self.current_setter = None
         return None
 
     def _get_setter(self, name):
+        if name == '...':
+            # print(f"DEBUG: model.py _WithSettings _get_setter returning current_setter={self.current_setter}")
+            return self.current_setter
         title = name.title()
         if name in self._setters:
             return self._setters[name](self)

@@ -99,7 +99,14 @@ class DataRow(object):
     def data(self):
         if self.is_continuing():
             index = self.cells.index(self._row_continuation_marker) + 1
-            return self.cells[index:]
+            start = 0
+            if len(self.cells) > 1:
+                for idx in range(index, len(self.cells)):
+                    start = idx
+                    if self.cells[idx] != '':
+                        break
+            print(f"DEBUG: datarow data returning from continuation row idx={start} data={self.cells[start:]}")
+            return self.cells[start:]
         return self.cells
 
     def dedent(self):
@@ -152,8 +159,9 @@ class DataRow(object):
             return False
 
     def is_continuing(self):
-        if self.starts_continuation:
-            return False
+        # DEBUG: Next code causes some settings with Run Keywords and long chain of ANDs to be lost
+        # if self.starts_continuation:
+        #     return False
         for cell in self.cells:
             if cell == self._row_continuation_marker:
                 return True

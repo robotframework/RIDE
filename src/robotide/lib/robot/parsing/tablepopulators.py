@@ -64,6 +64,7 @@ class _TablePopulator(Populator):
     def _is_continuing(self, row):
         try:
             continuing = row.is_continuing()
+            print(f"DEBUG: tablepopulators.py _TablePopulator _is_continuing {continuing=} {row.head=}")
             return continuing and self._populator
         except AttributeError:
             return False
@@ -80,8 +81,10 @@ class SettingTablePopulator(_TablePopulator):
 
     def _get_populator(self, row):
         setter = self._table.get_setter(row.head) if row.head else None
-        # print(f"DEBUG: tablepopulators.py SettingTablePopulator enter _get_populator {row.head=}")
+        print(f"DEBUG: tablepopulators.py SettingTablePopulator enter _get_populator {row.head=}")
         if row.head == '...':
+            print(f"DEBUG: tablepopulators.py SettingTablePopulator _get_populator CELL CONTINUATION row={row.data}"
+                  f" setter={setter}")
             setter = self._table.get_setter(self._table.get_localized_setting_name('Documentation'))
         if not setter:
             return NullPopulator()
@@ -172,14 +175,16 @@ class ForLoopPopulator(Populator):
         self._populator.populate()
 
 
-class _TestCaseUserKeywordPopulator(Populator):
+class _TestCaseUserKeywordPopulator(_TablePopulator):
 
     def __init__(self, test_or_uk_creator):
         self._test_or_uk_creator = test_or_uk_creator
         self._test_or_uk = None
         self._populator = NullPopulator()
         self._documentation_setting = False
+        self.current_setter = None
         # DEBUG: Not using comments self._comment_cache = CommentCache()
+        print(f"DEBUG: model.py _TestCaseUserKeywordPopulator INIT testoruk={self._test_or_uk_creator}")
 
     def add(self, row):
         # if row:
@@ -228,23 +233,24 @@ class _TestCaseUserKeywordPopulator(Populator):
 
     def _get_populator(self, row):
         is_setting = row.starts_test_or_user_keyword_setting()
-        if is_setting or self._documentation_setting:
-            setter = None
-            if row.head == '...' and self._documentation_setting:
-                setter = self._test_or_uk.get_setter('Documentation')
-            else:
-                self._documentation_setting = False
-            if not is_setting and not self._documentation_setting:
-                return StepPopulator(self._test_or_uk.add_step)
-            if is_setting and not self._documentation_setting:
-                setter = self._setting_setter(row)
-            if is_setting and not setter:
-                self._documentation_setting = False
-                return NullPopulator()
-            if isinstance(setter.__self__, Documentation):
+        print(f"DEBUG: model.py _TestCaseUserKeywordPopulator _get_populator {is_setting=} or doc row={row.head}"
+              f" self._documentation_setting={self._documentation_setting} row_continue={row.is_continuing()}"
+              f"\n row={row.all}")
+        if row.head == '...' and row.is_continuing():  # self._documentation_setting:
+            setter = self._test_or_uk.get_setter('Documentation')
+            # self._test_or_uk.get_localized_setting_name('[Documentation]'))
+            print(f"DEBUG: model.py _TestCaseUserKeywordPopulator _get_populator at row ... row={row.head}")
+            # f"setter ={setter}")
+            # return StepPopulator(self._test_or_uk.add_step)
+            return DocumentationPopulator(setter)
+        if is_setting:
+            setter = self._setting_setter(row)
+            if isinstance(setter, Documentation):
                 self._documentation_setting = True
+                self.current_setter = setter
                 return DocumentationPopulator(setter)
-            self._documentation_setting = False
+            if not setter:
+                return NullPopulator()
             return SettingPopulator(setter)
         self._documentation_setting = False
         return StepPopulator(self._test_or_uk.add_step)
