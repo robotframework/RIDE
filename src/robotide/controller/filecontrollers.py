@@ -37,7 +37,7 @@ from .macrocontrollers import TestCaseController, UserKeywordController
 
 def _get_controller(project, data, parent, tasks=False):
     if isinstance(data, TestCaseFile):
-        return TestCaseFileController(data, project, tasks=tasks)
+        return TestCaseFileController(data, project, parent, tasks=tasks)
     if isinstance(data, ExcludedDirectory):
         return ExcludedDirectoryController(data, project, parent)
     if isinstance(data, ResourceFile):
