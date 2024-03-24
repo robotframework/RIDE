@@ -87,7 +87,7 @@ class DataRow(object):
     def tail(self):
         # print(f"DEBUG: datarow tail={self.cells[self.first_non_empty_cell:]}")
         # We want to keep indentation, so we only remove first empty cell
-        # index = 1 if len(self.cells) > 1 else 0
+        # index = 1 if len(self.cells) > 1 and self.cells[0] != self._row_continuation_marker else 0
         # return self.cells[self.first_non_empty_cell:]
         return self.cells[1:]
 
@@ -103,10 +103,10 @@ class DataRow(object):
             if len(self.cells) > 1:
                 for idx in range(index, len(self.cells)):
                     start = idx
-                    if self.cells[idx] != '':
+                    if self.cells[start] != '':
                         break
-            print(f"DEBUG: datarow data returning from continuation row idx={start} data={self.cells[start:]}")
-            return self.cells[start:]
+                # print(f"DEBUG: datarow.py data returning from continuation row idx={start} data={self.cells}")
+                return self.cells[start:]
         return self.cells
 
     def dedent(self):

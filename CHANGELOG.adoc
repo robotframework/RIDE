@@ -22,6 +22,7 @@ Tools->Preferences->General.
 
 === Fixed
 
+- Fixed wrong continuation of long chains of keywords in Setups, Teardowns or Documentation
 - Fixed New User Keyword dialog not allowing empty Arguments field
 
 === Removed

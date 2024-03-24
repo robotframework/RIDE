@@ -64,7 +64,6 @@ class _TablePopulator(Populator):
     def _is_continuing(self, row):
         try:
             continuing = row.is_continuing()
-            print(f"DEBUG: tablepopulators.py _TablePopulator _is_continuing {continuing=} {row.head=}")
             return continuing and self._populator
         except AttributeError:
             return False
@@ -81,11 +80,6 @@ class SettingTablePopulator(_TablePopulator):
 
     def _get_populator(self, row):
         setter = self._table.get_setter(row.head) if row.head else None
-        print(f"DEBUG: tablepopulators.py SettingTablePopulator enter _get_populator {row.head=}")
-        if row.head == '...':
-            print(f"DEBUG: tablepopulators.py SettingTablePopulator _get_populator CELL CONTINUATION row={row.data}"
-                  f" setter={setter}")
-            setter = self._table.get_setter(self._table.get_localized_setting_name('Documentation'))
         if not setter:
             return NullPopulator()
         if isinstance(setter.__self__, Documentation):
@@ -181,31 +175,31 @@ class _TestCaseUserKeywordPopulator(_TablePopulator):
         self._test_or_uk_creator = test_or_uk_creator
         self._test_or_uk = None
         self._populator = NullPopulator()
-        self._documentation_setting = False
+        self._documentation_setting = False  # We want to use the same populator and not add
+        self._fixture_setting = False        # a new line in these two cases
         self.current_setter = None
-        # DEBUG: Not using comments self._comment_cache = CommentCache()
-        print(f"DEBUG: model.py _TestCaseUserKeywordPopulator INIT testoruk={self._test_or_uk_creator}")
+        self.current_populator = None
+        self.row_continue = False
 
     def add(self, row):
-        # if row:
-        #    print(f"DEBUG: _TestCaseUserKeywordPopulator enter row {row.cells} {row.comments}")
-        # DEBUG: Not using comments
-        # if row.is_commented():
-        #    self._comment_cache.add(row)
-        #    # print(f"DEBUG: _TestCaseUserKeywordPopulator returning from comment {row.cells} {row.comments}")
-        #    return
         if not self._test_or_uk:
             self._test_or_uk = self._test_or_uk_creator(row.head)
+
+        if row.head == '...':
+            self.row_continue = True
+        else:
+            self.row_continue = False
         dedented_row = row.dedent()
         if dedented_row:
             self._handle_data_row(dedented_row)
 
     def _handle_data_row(self, row):
-        if not self._continues(row):
+        if not self._continues(row) and not self.row_continue:
             self._populator.populate()
         else:
             # Need to add a new row to split by ...
-            self.add(row)
+            if not self._documentation_setting and not self._fixture_setting:
+                self.add(row)
         self._populator = self._get_populator(row)
         self._populator.add(row)
 
@@ -218,8 +212,8 @@ class _TestCaseUserKeywordPopulator(_TablePopulator):
         return isinstance(self._populator, ForLoopPopulator)
 
     def _continues(self, row):
-        return (row.is_continuing() and self._populator or
-                self._populating_for_loop() and row.is_indented())
+        return ((row.is_continuing() and self._populator is not None) or
+                (self._populating_for_loop() and row.is_indented()))
 
     def _populate_comment_row(self, crow):
         # print("DEBUG: _populate_comment_row ENTER %s" % crow)
@@ -233,27 +227,31 @@ class _TestCaseUserKeywordPopulator(_TablePopulator):
 
     def _get_populator(self, row):
         is_setting = row.starts_test_or_user_keyword_setting()
-        print(f"DEBUG: model.py _TestCaseUserKeywordPopulator _get_populator {is_setting=} or doc row={row.head}"
-              f" self._documentation_setting={self._documentation_setting} row_continue={row.is_continuing()}"
-              f"\n row={row.all}")
-        if row.head == '...' and row.is_continuing():  # self._documentation_setting:
-            setter = self._test_or_uk.get_setter('Documentation')
-            # self._test_or_uk.get_localized_setting_name('[Documentation]'))
-            print(f"DEBUG: model.py _TestCaseUserKeywordPopulator _get_populator at row ... row={row.head}")
-            # f"setter ={setter}")
-            # return StepPopulator(self._test_or_uk.add_step)
-            return DocumentationPopulator(setter)
+        localized_doc = self._test_or_uk.get_localized_setting_name('[Documentation]')
         if is_setting:
+            self._documentation_setting = row.head == localized_doc
             setter = self._setting_setter(row)
-            if isinstance(setter, Documentation):
-                self._documentation_setting = True
-                self.current_setter = setter
-                return DocumentationPopulator(setter)
+            if setter and self._documentation_setting:
+                self.current_populator = DocumentationPopulator(setter)
+                return self.current_populator
             if not setter:
-                return NullPopulator()
-            return SettingPopulator(setter)
-        self._documentation_setting = False
-        return StepPopulator(self._test_or_uk.add_step)
+                self.current_populator = NullPopulator()
+                return self.current_populator
+            self._fixture_setting = row.head in self.localized_fixtures()
+            self.current_populator = SettingPopulator(setter)
+            return self.current_populator
+        if self._documentation_setting or self._fixture_setting or self.row_continue:
+            return self.current_populator
+        self._documentation_setting = self._fixture_setting = False
+        self.current_populator = StepPopulator(self._test_or_uk.add_step)
+        return self.current_populator
+
+    def localized_fixtures(self):
+        l_fixtures = []
+        for fix in ['[Setup]', '[Teardown]', 'Suite Setup', 'Suite Teardown', 'Test Setup',
+                    'Test Teardown', 'Task Setup', 'Task Teardown']:
+            l_fixtures.append(self._test_or_uk.get_localized_setting_name(fix))
+        return l_fixtures
 
     def _setting_setter(self, row):
         setting_name = row.test_or_user_keyword_setting_name()
@@ -326,8 +324,8 @@ class DocumentationPopulator(_PropertyPopulator):
         self._setter(self._value, self._comments.value)
 
     def _add(self, row):
-        if row.data[0] == '...':
-            row.data[0] = '\\n...'
+        if row.cells[0] == '...':
+            row.cells[0] = '\\n'
             self._value.append(''.join(row.data))
         else:
             self._add_to_value(row.dedent().data)
@@ -374,7 +372,6 @@ class CommentsPopulator(_PropertyPopulator):
 
     def populate(self):
         if self._value:
-            print(f"DEBUG: tablepopulators CommentPopulator populate {self._value=}")
             self._setter(self._value)
 
 
@@ -401,7 +398,6 @@ class StepPopulator(_PropertyPopulator):
         if row.cells == ['...']:
             self._deprecate_continuation_without_values()
         self._value.extend(row.data)
-        # print(f"DEBUG: tablepopulators StepPopulator _add row={row.data}")
 
     def populate(self):
         if self._value or self._comments.value:
