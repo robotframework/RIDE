@@ -228,19 +228,29 @@ class _TestCaseUserKeywordPopulator(_TablePopulator):
     def _get_populator(self, row):
         is_setting = row.starts_test_or_user_keyword_setting()
         localized_doc = self._test_or_uk.get_localized_setting_name('[Documentation]')
+        self.row_continue = row.head == '...'
         if is_setting:
             self._documentation_setting = row.head == localized_doc
+            # print(f"DEBUG: tablepopulators.py TestCaseUserKwPopulator head={row.head} localized_doc={localized_doc}")
             setter = self._setting_setter(row)
             if setter and self._documentation_setting:
+                self._fixture_setting = False
                 self.current_populator = DocumentationPopulator(setter)
                 return self.current_populator
             if not setter:
+                self._documentation_setting = self._fixture_setting = False
                 self.current_populator = NullPopulator()
                 return self.current_populator
+            self._documentation_setting = False
             self._fixture_setting = row.head in self.localized_fixtures()
+            # print(f"DEBUG: tablepopulators.py TestCaseUserKwPopulator head={row.head}"
+            #       f"\n localized_fixture={self.localized_fixtures()}")
             self.current_populator = SettingPopulator(setter)
             return self.current_populator
-        if self._documentation_setting or self._fixture_setting or self.row_continue:
+        if self.row_continue and (self._documentation_setting or self._fixture_setting):
+            # print(f"DEBUG: tablepopulators.py TestCaseUserKwPopulator head={row.head} {self.row_continue}"
+            #       f" {self._documentation_setting=} {self._fixture_setting=}"
+            #       f" RETURNING {self.current_populator}")
             return self.current_populator
         self._documentation_setting = self._fixture_setting = False
         self.current_populator = StepPopulator(self._test_or_uk.add_step)
@@ -283,6 +293,8 @@ class _PropertyPopulator(Populator):
         if row.cells == ['...']:
             self._deprecate_continuation_without_values()
         self._value.extend(row.tail if not self._data_added else row.data)
+        # print(f"DEBUG: tablepopulators.py _PropertyPopulator {self._data_added=} _add row.cells={row.cells}"
+        #       f" ADDED value={self._value}")
         self._data_added = True
 
     def _deprecate_continuation_without_values(self):
@@ -311,6 +323,8 @@ class VariablePopulator(_PropertyPopulator):
 class SettingPopulator(_PropertyPopulator):
 
     def populate(self):
+        # print(f"DEBUG: tablepopulators.py SettingPopulator populate {self._data_added=}"
+        #       f" current value={self._value} setter={self._setter}")
         self._setter(self._value, self._comments.value)
 
     def _get_deprecation_location(self):
@@ -321,6 +335,8 @@ class DocumentationPopulator(_PropertyPopulator):
     _end_of_line_escapes = re.compile(r'(\\+)n?$')
 
     def populate(self):
+        # print(f"DEBUG: tablepopulators.py DocumentationPopulator populate {self._data_added=}"
+        #       f" current value={self._value} setter={self._setter}")
         self._setter(self._value, self._comments.value)
 
     def _add(self, row):
