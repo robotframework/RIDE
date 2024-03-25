@@ -127,18 +127,12 @@ class RIDE(wx.App):
                   f"{os.path.join(SETTINGS_DIRECTORY, 'settings.cfg')}")
             if not isinstance(e, IndexError):  # If is with all notebooks disabled, continue
                 raise e
+        self.fileexplorerplugin = FileExplorerPlugin(self, self._controller)
         self.treeplugin = TreePlugin(self)
         if self.treeplugin.settings['_enabled']:
             self.treeplugin.register_frame(self.frame)
-        self.fileexplorerplugin = FileExplorerPlugin(self, self._controller)
-        if self.fileexplorerplugin.settings['_enabled']:
-            self.fileexplorerplugin.register_frame(self.frame)
         if not self.treeplugin.opened:
             self.treeplugin.close_tree()
-        # else:
-        #     wx.CallLater(200, self.treeplugin.populate, self.model)
-        if not self.fileexplorerplugin.opened:
-            self.fileexplorerplugin.close_tree()
         self.editor = self._get_editor()
         self.robot_version = self._find_robot_installation()
         self._load_data()
@@ -149,7 +143,6 @@ class RIDE(wx.App):
         self.SetTopWindow(self.frame)
         self.frame.aui_mgr.Update()
         wx.CallLater(200, ReleaseNotes(self).bring_to_front)
-        wx.CallLater(200, self.fileexplorerplugin.update_tree)
         if self._updatecheck:
             wx.CallAfter(UpdateNotifierController(self.settings).notify_update_if_needed, UpdateDialog)
         self.Bind(wx.EVT_ACTIVATE_APP, self.on_app_activate)
@@ -249,7 +242,7 @@ class RIDE(wx.App):
             self.fileexplorerplugin.settings[FONT_SIZE] = theme[FONT_SIZE]
             self.fileexplorerplugin.settings[FONT_FACE] = theme[FONT_FACE]
             if self.fileexplorerplugin.settings['opened']:
-                self.fileexplorerplugin.on_show_file_explorer(None)
+                self.fileexplorerplugin.show_file_explorer()
         if theme['apply to panels'] and self.treeplugin.settings['_enabled']:
             self.treeplugin.settings['background'] = theme['background']
             self.treeplugin.settings['foreground'] = theme['foreground']

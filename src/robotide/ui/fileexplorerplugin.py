@@ -57,36 +57,37 @@ class FileExplorerPlugin(Plugin):
                 register = self._mgr.AddPane
 
             register(self._filemgr, wx.lib.agw.aui.AuiPaneInfo().Name("file_manager").
-                     Caption("Files").LeftDockable(True).CloseButton(True))
+                     Caption("Files").LeftDockable(True).CloseButton(False))
 
             self._mgr.Update()
 
     def enable(self):
-        self.register_action(ActionInfo(_('View'), _('View File Explorer'), self.on_show_file_explorer,
+        self.register_action(ActionInfo(_('View'), _('View File Explorer'), self.toggle_view,
                                         shortcut='F11',
                                         doc=_('Show File Explorer panel'),
                                         position=1))
-        # self.save_setting('opened', True)
-        if self.opened:
-            self.on_show_file_explorer(None)
+        self.show_file_explorer()
+        if not self.opened:
+            self.close_tree()
 
     def close_tree(self):
+        self.save_setting('opened', False)
         self._mgr.DetachPane(self._filemgr)
         self._filemgr.Hide()
         self._mgr.Update()
-        self.save_setting('opened', False)
-
-    def disable(self):
-        self.close_tree()
-        # self.save_setting('opened', False)
-        self.unsubscribe_all()
-        self.unregister_actions()
 
     def is_focused(self):
         return self._filemgr.HasFocus()
 
-    def on_show_file_explorer(self, event):
+    def toggle_view(self, event):
         __ = event
+        self.save_setting('opened', not self.opened)
+        if self.opened:
+            self.show_file_explorer()
+        else:
+            self.close_tree()
+
+    def show_file_explorer(self):
         if not self._parent:
             self._parent = wx.App.Get().GetWindow()  # self.frame
         if not self._filemgr:  # This is not needed because file explorer is always created
@@ -111,7 +112,7 @@ class FileExplorerPlugin(Plugin):
         self._mgr.AddPane(self.filemgr,
                           wx.lib.agw.aui.AuiPaneInfo().Name("file_manager").
                           Caption(_("Files")).LeftDockable(True).
-                          CloseButton(True))
+                          CloseButton(False))
         self._filemgr.SetBackgroundStyle(wx.BG_STYLE_SYSTEM)
         self._filemgr.SetBackgroundColour(html_background)
         self._filemgr.SetForegroundColour(html_foreground)
@@ -126,7 +127,6 @@ class FileExplorerPlugin(Plugin):
         self._filetreectrl.Refresh()
         self._filemgr.Raise()
         self._mgr.Update()
-        self.save_setting('opened', True)
         self.update_tree()
 
     def update_tree(self):
