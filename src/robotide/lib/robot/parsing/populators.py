@@ -55,6 +55,7 @@ class NoTestsFound(DataError):
 
 class FromFilePopulator(object):
     _populators = {'setting': SettingTablePopulator,
+                   'settings': SettingTablePopulator,
                    'variable': VariableTablePopulator,
                    'test case': TestTablePopulator,
                    'test cases': TestTablePopulator,
@@ -138,7 +139,7 @@ class FromFilePopulator(object):
         return bool(self._datafile)
 
     def add(self, row):
-        # print(f"DEBUG: populators enter add row={row}")
+        # print(f"DEBUG: populators.py FromFilePopulator enter add row={row}")
         if PROCESS_CURDIR and self._curdir:
             row = self._replace_curdirs_in(row)
         data = DataRow(row, self._datafile.source)

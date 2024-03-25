@@ -123,7 +123,7 @@ class TestModifiedOnDiskWithDirectorySuite(_DataDependentTest):
         with open(self._init_path, 'a') as file:
             file.write('...  ninja added more documentation\n')
         ctrl.reload()
-        assert (ctrl.settings[0].value == 'Ride unit testing file \\nninja added more documentation')
+        assert (ctrl.settings[0].value == 'Ride unit testing file\\nninja added more documentation')
         assert ctrl.parent == controller_parent
         assert ctrl.data.parent == model_parent
 

@@ -6,7 +6,7 @@ ${anotherVar}  "Nothing but ${EMPTY} ${SPACE}"
 User KW 1
   [Arguments]  ${arg1}  @{arg2}
   ${ServerPort}
-  ${True}  ${False}
+  ${Truth}  ${Falsy}
   [Teardown]  ${resVar}
 
 User KW 2

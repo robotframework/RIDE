@@ -9,7 +9,7 @@ Case 1
   [Setup]  Some Keyword  ${fileVar}
   [Timeout]
   ${ServerHost}  ${ServerPort}
-  ${False}
+  ${Falsy}
 
 Case 2
   [Documentation]  The variable ${log} can be found here

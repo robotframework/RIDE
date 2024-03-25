@@ -84,7 +84,15 @@ class Setting(object):
             self._populate(value)
             self._set_comment(comment)
             self._populated = True
-        elif self._populated and not start_continuation:
+            # print(f"DEBUG: settings.py populate new or continuation value={value} {comment=}")
+            return
+        if self._populated and not start_continuation:
+            # DEBUG
+            # print(f"DEBUG: settings.py populate at branch that would clear data value={value}")
+            # self._populate(value)
+            # self._set_comment(comment)
+            # return
+            # DEBUG END
             self._set_initial_value()
             self._set_comment(None)
             self.report_invalid_syntax("Setting '%s' used multiple times."
@@ -169,13 +177,6 @@ class Documentation(Setting):
         return value.strip() if is_string(value) else ''.join(value)
 
     def _data_as_list(self):
-        """ DEBUG
-        name = get_localized_setting(self.parent.language, self.setting_name)
-        print(f"DEBUG: parsing.settings.py Documentation _data_as_list name={name} "
-              f" setting_name= {self.setting_name} value={self.value}")
-        if self.setting_name != name:
-            return [name, self.value]
-        """
         return [self.setting_name, self.value]
 
 
