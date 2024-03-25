@@ -98,19 +98,14 @@ class _TestData(object):
 
     def start_table(self, header_row, lineno: int, llang: list):
         self._language = llang
-        # local_header = lang.get_headers_for(llang, ('Comments',))
-        # print(f"DEBUG: model _TestData start_table ENTER  header_row[0]={ header_row[0]} lineno={lineno}\n"
-        #       f"language={llang}")  # local_header={local_header}")
         if header_row[0] in lang.get_headers_for(llang, ('Comments',), lowercase=False):
             self.comment_table = table = CommentsTable(self, llang)  # Multiple creation of table only if exists
             self.tables.append(self.comment_table)
         else:
             if header_row[0] in lang.get_headers_for(llang, ('Task', 'Tasks'), lowercase=False):
                 self._task = True
-                # self._testcase_table_names = 'Task', 'Tasks'
             elif header_row[0] in lang.get_headers_for(llang, ('Test', 'Tests'), lowercase=False):
                 self._task = False
-                # self._testcase_table_names = 'Test Case', 'Test Cases'
             if hasattr(self.parent, 'tasks'):
                 self.parent.tasks = self._task
             table = self._find_table(header_row)
@@ -529,25 +524,30 @@ class _Table(object):
 class _WithSettings(object):
     _setters = {}
     _aliases = {}
+    current_setter = None
 
     def get_setter(self, name):
-        if name.startswith('#'):
-            return None
-        if name.endswith(':'):
+        if name.startswith('#') or name.startswith('...'):
+            if self.current_setter is not None:
+                return self.current_setter
+        elif name.endswith(':'):
             name = name[:-1]
-        # Patching for ... setting, this way we don't get a Parser Error on log
-        if name == '...':
-            name = self.get_localized_setting_name('Documentation')
+        # print(f"DEBUG: model.py _WithSettings get_setter name={name} ... current_setter={self.current_setter}")
         setter = self._get_setter(name)
         if setter is not None:
+            self.current_setter = setter
             return setter
         setter = self._get_deprecated_setter(name)
         if setter is not None:
+            self.current_setter = setter
             return setter
         self.report_invalid_syntax("Non-existing setting '%s'." % name)
+        self.current_setter = None
         return None
 
     def _get_setter(self, name):
+        if name == '...':
+            return self.current_setter
         title = name.title()
         if name in self._setters:
             return self._setters[name](self)
