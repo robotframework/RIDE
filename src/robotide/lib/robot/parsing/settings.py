@@ -128,7 +128,6 @@ class Setting(object):
         return self._data_as_list() + self.comment.as_list()
 
     def _data_as_list(self):
-        # print(f"DEBUG: settings.py Setting _data_as_list setting_name= {self.setting_name}")
         ret = [self.setting_name]
         if self.value:
             ret.extend(self.value)
@@ -363,6 +362,11 @@ class ImportSetting(Setting):
         return True
 
     def _data_as_list(self):
+        # Special case when only comment is set
+        comment = self.comment.as_list()
+        if not self.name:
+            data = [] if len(comment) > 0 else ['\n']
+            return data
         return [self.setting_name, self.name] + self.args
 
     def report_invalid_syntax(self, message, level='ERROR', parent=None):
@@ -395,6 +399,11 @@ class Library(ImportSetting):
         return args, None
 
     def _data_as_list(self):
+        # Special case when only comment is set
+        comment = self.comment.as_list()
+        if not self.name:
+            data = [] if len(comment) > 0 else ['\n']
+            return data
         data = [self.setting_name, self.name] + self.args
         if self.alias:
             data += [ALIAS_MARKER, self.alias]
@@ -441,6 +450,8 @@ class _DataList(object):
     def _parse_name_and_value(value):
         if value:
             value = [x.strip() for x in value if x != '']
+        else:
+            return '', []  # The case when we just want the comment or empty row
         name = value[0] if value else ''
         return name, value[1:]
 
