@@ -287,6 +287,10 @@ class _PropertyPopulator(Populator):
     def add(self, row):
         if not row.is_commented():
             self._add(row)
+        if row.head.startswith('#'):
+            print(f"DEBUG: tablepopulators.py _PropertyPopulator {self._data_added=} self._value={self._value}"
+                  f" comments={self._comments.value} self._value={self._value} {row.all=}")
+            # self._value.extend(row.cells)
         self._comments.add(row)
 
     def _add(self, row):
@@ -413,7 +417,10 @@ class StepPopulator(_PropertyPopulator):
     def _add(self, row):
         if row.cells == ['...']:
             self._deprecate_continuation_without_values()
-        self._value.extend(row.data)
+        if row.cells[0] == '...':
+            self._value.extend(row.cells)
+        else:
+            self._value.extend(row.data)
 
     def populate(self):
         if self._value or self._comments.value:
