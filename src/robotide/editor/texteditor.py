@@ -389,7 +389,7 @@ class DataValidationHandler(object):
             handled = self._handle_sanity_check_failure(result)
             if not handled:
                 return False
-        self._editor.reset()
+        # DEBUG: self._editor.reset()
         if self._editor.reformat:
             data.update_from(data.format_text(m_text))
         else:

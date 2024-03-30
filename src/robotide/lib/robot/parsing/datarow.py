@@ -169,7 +169,7 @@ class DataRow(object):
                 return False
 
     def is_commented(self):
-        return bool(not self.cells and self.comments)
+        return bool((self.cells and self.cells[0].startswith('#')) or (not self.cells and self.comments))
 
     def __nonzero__(self):
         return bool(self.cells or self.comments)
