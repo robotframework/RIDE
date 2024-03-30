@@ -182,6 +182,8 @@ version 4.2.1, which we now <em>recommend</em>.</li>
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
+<li>Added minimal support to have comment lines in Import settings. These are not supposed to be edited in Editor, and new lines are added at Text Editor.</li>
+<li>Fixed removal of continuation marker in steps</li>
 <li>Fixed wrong continuation of long chains of keywords in Setups, Teardowns or Documentation.</li>
 <li>Added a selector for Tasks and Language to the New Project dialog. Still some problems: Tasks type changes to Tests,
 localized sections only stay translated after Apply in Text Editor.</li>
@@ -279,6 +281,6 @@ python -m robotide.__init__
 <pre class="literal-block">
 python -m robotide.postinstall -install
 </pre>
-<p>RIDE {VERSION} was released on 25/Mar/2024.</p>
+<p>RIDE {VERSION} was released on 30/Mar/2024.</p>
 </div>
 """

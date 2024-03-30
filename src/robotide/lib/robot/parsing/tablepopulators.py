@@ -288,8 +288,10 @@ class _PropertyPopulator(Populator):
         if not row.is_commented():
             self._add(row)
         if row.head.startswith('#'):
-            print(f"DEBUG: tablepopulators.py _PropertyPopulator {self._data_added=} self._value={self._value}"
-                  f" comments={self._comments.value} self._value={self._value} {row.all=}")
+            self._value = ['']
+            self._setter('', row.all)
+            self._data_added = True
+            return
             # self._value.extend(row.cells)
         self._comments.add(row)
 

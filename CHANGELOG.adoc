@@ -10,6 +10,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Added
 
+- Added minimal support to have comment lines in Import settings. These are not supposed to be edited in Editor, and new lines are added at Text Editor.
 - Added a selector for Tasks and Language to the New Project dialog. Still some problems: Tasks type changes to Tests,
 localized sections only stay translated after Apply in Text Editor.
 - Added UI localization prepared for all the languages from installed Robot Framework version 6.1, or
@@ -22,6 +23,7 @@ Tools->Preferences->General.
 
 === Fixed
 
+- Fixed removal of continuation marker in steps
 - Fixed wrong continuation of long chains of keywords in Setups, Teardowns or Documentation
 - Fixed New User Keyword dialog not allowing empty Arguments field
 
