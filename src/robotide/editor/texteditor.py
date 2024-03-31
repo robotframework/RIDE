@@ -85,7 +85,10 @@ def obtain_language(existing, content):
     doc_lang = read_language(content)
     # print(f"DEBUG: textedit.py validate_and_update obtain_language={doc_lang}")
     if doc_lang is not None:
-        mlang = Language.from_name(doc_lang.replace('_','-'))
+        try:
+            mlang = Language.from_name(doc_lang.replace('_','-'))
+        except ValueError:
+            raise
         set_lang[0] = get_rf_lang_code(mlang.code)  # .code.replace('-','_')
     elif len(set_lang) > 0:
         if existing is not None:
@@ -376,7 +379,11 @@ class DataValidationHandler(object):
     def validate_and_update(self, data, text, lang='en'):
         m_text = text.decode("utf-8")
         if "Language: " in m_text:
-            self._doc_language = obtain_language(lang, text)
+            try:
+                self._doc_language = obtain_language(lang, text)
+            except ValueError:
+                # wx.MessageBox(f"Error when selecting Language: {e}", 'Error')
+                self._doc_language = 'en'
             # print(f"DEBUG: textedit.py validate_and_update Language in doc--> lang={self._doc_language}")
         else:
             self._doc_language = lang if lang is not None else 'en'
@@ -412,7 +419,10 @@ class DataValidationHandler(object):
         rf_lang = get_rf_lang_code(self._doc_language)
         # print(f"DEBUG: textedit.py _sanity_check data is type={type(data)} lang={self._doc_language},"
         #       f" transformed lang={rf_lang}")
-        model = get_model(text, lang=rf_lang)
+        try:
+            model = get_model(text, lang=rf_lang)
+        except AttributeError:
+            return "Failed validation by Robot Framework", "Please, check if Language setting is valid!"
         # print(f"DEBUG: textedit.py _sanity_check model is {model} doc language={self._doc_language}")
         validator = ErrorReporter()
         result = None
