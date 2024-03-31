@@ -287,9 +287,12 @@ class _PropertyPopulator(Populator):
     def add(self, row):
         if not row.is_commented():
             self._add(row)
-        if row.head.startswith('#'):
+        if row.head.startswith('#') and not isinstance(self, VariablePopulator):
             self._value = ['']
-            self._setter('', row.all)
+            if isinstance(self, CommentsPopulator):
+                self._setter(row.all)
+            else:
+                self._setter('', row.all)
             self._data_added = True
             return
             # self._value.extend(row.cells)
