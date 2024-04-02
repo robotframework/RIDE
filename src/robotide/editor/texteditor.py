@@ -87,8 +87,8 @@ def obtain_language(existing, content):
     if doc_lang is not None:
         try:
             mlang = Language.from_name(doc_lang.replace('_','-'))
-        except ValueError:
-            raise
+        except ValueError as e:
+            raise e
         set_lang[0] = get_rf_lang_code(mlang.code)  # .code.replace('-','_')
     elif len(set_lang) > 0:
         if existing is not None:
@@ -378,6 +378,7 @@ class DataValidationHandler(object):
 
     def validate_and_update(self, data, text, lang='en'):
         m_text = text.decode("utf-8")
+        initial_lang = self._doc_language or lang
         if "Language: " in m_text:
             try:
                 self._doc_language = obtain_language(lang, text)
@@ -397,6 +398,9 @@ class DataValidationHandler(object):
             if not handled:
                 return False
         # DEBUG: self._editor.reset()
+        # Language.name() # here get content in En to transform in Lang
+        print(f"DEBUG: texteditor.py validate_and_update {initial_lang=} parameter lang={lang}"
+              f" doc_language={self._doc_language} reformat_flag={self._editor.reformat}")
         if self._editor.reformat:
             data.update_from(data.format_text(m_text))
         else:
@@ -430,7 +434,7 @@ class DataValidationHandler(object):
             validator.visit(model)
         except DataError as err:
             result = (err.message, err.details)
-        # model.save("/tmp/model_saved_from_RIDE.robot")
+        model.save("/tmp/model_saved_from_RIDE.robot")
         # print(f"DEBUG: textedit.py _sanity_check after calling validator {validator}\n"
         #       f"Save model in /tmp/model_saved_from_RIDE.robot"
         #       f" result={result}")

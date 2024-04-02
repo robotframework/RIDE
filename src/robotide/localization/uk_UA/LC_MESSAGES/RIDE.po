@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2024-02-19 03:12+0000\n"
+"POT-Creation-Date: 2024-04-02 01:55+0100\n"
 "PO-Revision-Date: 2024-02-10 02:11\n"
 "Last-Translator: \n"
 "Language-Team: Ukrainian\n"
@@ -218,9 +218,9 @@ msgid "Select Logs Directory"
 msgstr "Виберіть папку зі журналами"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:496
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:337
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:435
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:570
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:341
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:439
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:571
 msgid "Arguments"
 msgstr "Аргументи"
 
@@ -525,7 +525,7 @@ msgstr "Додати мітку до вибраних"
 #: /home2/helio/github/RIDE/tools/../src/robotide/controller/ui/treecontroller.py:57
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/listeditor.py:37
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:108
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:643
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:644
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/actiontriggers.py:54
 msgid "Edit"
 msgstr "Редагувати"
@@ -637,24 +637,24 @@ msgid ""
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:71
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:482
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:570
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:723
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:483
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:571
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:724
 msgid "Comment"
 msgstr "Коментар"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:114
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:118
 msgid "Scalar Variable"
 msgstr "Змінна масштабування"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:120
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:135
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:150
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:168
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:370
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:388
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:408
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:433
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:124
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:139
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:154
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:172
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:374
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:392
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:412
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:437
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/configmanagerui.py:101
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:89
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:91
@@ -663,78 +663,78 @@ msgstr "Змінна масштабування"
 msgid "Name"
 msgstr "Ім'я"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:121
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:136
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:151
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:371
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:482
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:723
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:125
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:140
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:155
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:375
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:483
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:724
 msgid "Value"
 msgstr "Цінність"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:129
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:133
 msgid "List Variable"
 msgstr "Список змінних"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:144
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:148
 msgid "Dictionary Variable"
 msgstr "Змінна у словнику"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:159
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:571
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:650
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:163
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:572
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:651
 msgid "Library"
 msgstr "Бібліотека"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:169
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:173
 msgid "Alias"
 msgstr "Alias"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:169
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:190
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:173
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:194
 msgid "Args"
 msgstr "Args"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:182
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:571
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:665
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:186
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:572
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:666
 msgid "Variables"
 msgstr "Змінні"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:189
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:202
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:193
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:206
 msgid "Path"
 msgstr "Шлях"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:198
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:571
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:657
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:202
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:572
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:658
 msgid "Resource"
 msgstr "Ресурси"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:211
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:215
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/configmanagerui.py:101
 msgid "Documentation"
 msgstr "Документація"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:280
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:284
 msgid "Suite Setup is run before any tests"
 msgstr "Запуск налаштувань Suite перед будь-якими тестами"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:366
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:723
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:370
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:724
 msgid "Metadata"
 msgstr "Метадані"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:380
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:384
 msgid "New Test Case"
 msgstr "Нове випробування"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:400
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:404
 msgid "Copy User Keyword"
 msgstr "Скопіювати ключове слово користувача"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:424
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:428
 msgid "New User Keyword"
 msgstr "Ключове слово користувача"
 
@@ -959,7 +959,7 @@ msgid "Variable "
 msgstr "Змінна "
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1227
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:620
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:634
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:49
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:127
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:184
@@ -989,45 +989,45 @@ msgstr "Переміщення вниз Ctrl-Down"
 msgid "Clear"
 msgstr "Очистити"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:482
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:483
 msgid "Variable"
 msgstr "Змінна"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:483
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:484
 msgid "Add Dict"
 msgstr "Додати словник"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:483
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:484
 msgid "Add List"
 msgstr "Додати список"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:483
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:484
 msgid "Add Scalar"
 msgstr "Додати Скаляр"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:570
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:571
 msgid "Import"
 msgstr "Імпорт"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:570
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:571
 msgid "Name / Path"
 msgstr "Ім'я / Шлях"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:571
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:572
 msgid "Import Failed Help"
 msgstr "Допомога при імпорті"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:585
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:586
 msgid "Add Import"
 msgstr "Додати імпорт"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:628
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:629
 #: /home2/helio/github/RIDE/tools/../src/robotide/spec/specimporter.py:33
 #: /home2/helio/github/RIDE/tools/../src/robotide/spec/specimporter.py:62
 msgid "Import Library Spec XML"
 msgstr "Імпортувати бібліотеку XML"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:671
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:672
 msgid ""
 "<br>Possible corrections and notes:<br>\n"
 "        <ul>\n"
@@ -1051,43 +1051,43 @@ msgid ""
 "        </ul>"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:671
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:672
 msgid "Import failure handling"
 msgstr "Обробка помилок імпорту"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:724
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:725
 msgid "Add Metadata"
 msgstr "Додати метадані"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:448
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:462
 msgid "ERROR: Data sanity check failed!"
 msgstr "ПОМИЛКА: Не вдалося перевірити достатність даних!"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:448
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:462
 msgid "Error at line"
 msgstr "Помилка в рядку"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:449
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:463
 msgid "Reset changes?"
 msgstr "Скинути зміни?"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:450
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:464
 msgid "Can not apply changes from Text Editor"
 msgstr "Не можна застосувати зміни з текстового редактора"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:603
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:617
 msgid "Apply Changes"
 msgstr "Застосувати зміни"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:630
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:644
 msgid "Syntax colorization disabled due to missing requirements."
 msgstr "Синтаксичну кольоровізацію вимкнено через відсутні вимоги."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:631
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:645
 msgid "Get help"
 msgstr "Отримати допомогу"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:646
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:660
 msgid ""
 "<h1>Syntax colorization</h1>\n"
 "        <p>\n"
@@ -1119,11 +1119,11 @@ msgid ""
 "        "
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:671
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:685
 msgid "Getting syntax colorization"
 msgstr "Отримання синтаксису забарвлення"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:770
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:784
 msgid "No matches found."
 msgstr "Відповідників не знайдено."
 
@@ -1904,7 +1904,7 @@ msgstr "!View всі Теги | | F7 | | POSITION-82\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:70
 msgid "!Preferences | | | | POSITION-99\n"
-msgstr "!Preferences | | | POSITION-99\n"
+msgstr "!Preferences | | | | POSITION-99\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:71
 msgid "[Help]\n"

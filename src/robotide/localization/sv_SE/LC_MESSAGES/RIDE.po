@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2024-02-19 03:12+0000\n"
+"POT-Creation-Date: 2024-04-02 01:55+0100\n"
 "PO-Revision-Date: 2024-02-10 02:11\n"
 "Last-Translator: \n"
 "Language-Team: Swedish\n"
@@ -216,9 +216,9 @@ msgid "Select Logs Directory"
 msgstr "Välj Loggkatalog"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:496
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:337
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:435
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:570
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:341
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:439
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:571
 msgid "Arguments"
 msgstr "Argument"
 
@@ -517,10 +517,10 @@ msgid ""
 "        "
 msgstr ""
 "[Navigate]\n"
-"        ! o &Tillbaka <unk> Gå tillbaka till föregående plats i trädet <unk> "
-"Alt-%s <unk> ART_GO_BACK\n"
-"        ! o &Framåt <unk> Gå vidare till nästa plats i trädet <unk> Alt-%s "
-"<unk> ART_GO_FORWARD\n"
+"        ! o &Tillbaka | Gå tillbaka till föregående plats i trädet | Alt-%s "
+"| ART_GO_BACK\n"
+"        ! o &Framåt | Gå vidare till nästa plats i trädet | Alt-%s | "
+"ART_GO_FORWARD\n"
 "        "
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/controller/ui/treecontroller.py:55
@@ -531,7 +531,7 @@ msgstr "Lägg till tagg till vald"
 #: /home2/helio/github/RIDE/tools/../src/robotide/controller/ui/treecontroller.py:57
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/listeditor.py:37
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:108
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:643
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:644
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/actiontriggers.py:54
 msgid "Edit"
 msgstr "Redigera"
@@ -554,58 +554,55 @@ msgstr "[Edit]\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:32
 msgid "&Undo | Undo last modification | Ctrlcmd-Z\n"
-msgstr "&Ångra <unk> Ångra senaste ändringen <unk> Ctrlcmd-Z\n"
+msgstr "&Ångra | Ångra senaste ändringen | Ctrlcmd-Z\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:33
 msgid "&Redo | Redo modification | Ctrlcmd-Y\n"
-msgstr "&Gör om <unk> Gör om modifiering <unk> Ctrlcmd-Y\n"
+msgstr "&Gör om | Gör om modifiering | Ctrlcmd-Y\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:35
 msgid "Cu&t | Cut | Ctrlcmd-X\n"
-msgstr "Cu&t <unk> Cut <unk> Ctrlcmd-X\n"
+msgstr "Cu&t | Cut | Ctrlcmd-X\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:36
 msgid "&Copy | Copy | Ctrlcmd-C\n"
-msgstr "&Kopiera <unk> Kopiera <unk> Ctrlcmd-C\n"
+msgstr "&Kopiera | Kopiera | Ctrlcmd-C\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:37
 msgid "&Paste | Paste | Ctrlcmd-V\n"
-msgstr "&Klistra in <unk> Klistra in <unk> Ctrlcmd-V\n"
+msgstr "&Klistra in | Klistra in | Ctrlcmd-V\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:38
 msgid "&Insert | Insert | Shift-Ctrl-V\n"
-msgstr "&Infoga <unk> Infoga <unk> Shift-Ctrl-V\n"
+msgstr "&Infoga | Infoga | Shift-Ctrl-V\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:39
 msgid "&Delete | Delete  | Del\n"
-msgstr "&Ta bort <unk> Ta bort <unk> Del\n"
+msgstr "&Ta bort | Ta bort | Del\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:40
 msgid "Comment Rows | Comment selected rows | Ctrlcmd-3\n"
-msgstr "Kommentarrader <unk> Kommentera markerade rader <unk> Ctrlcmd-3\n"
+msgstr "Kommentarrader | Kommentera markerade rader | Ctrlcmd-3\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:41
 msgid "Comment Cells | Comment cells with # | Ctrlcmd-Shift-3\n"
-msgstr ""
-"Kommentera celler <unk> Kommentera celler med # <unk> Ctrlcmd-Shift-3\n"
+msgstr "Kommentera celler | Kommentera celler med # | Ctrlcmd-Shift-3\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:42
 msgid "Uncomment Rows | Uncomment selected rows | Ctrlcmd-4\n"
-msgstr ""
-"Avkommentera rader <unk> Ej kommentera markerade rader <unk> Ctrlcmd-4\n"
+msgstr "Avkommentera rader | Ej kommentera markerade rader | Ctrlcmd-4\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:43
 msgid "Uncomment Cells | Uncomment cells with # | Ctrlcmd-Shift-4\n"
-msgstr ""
-"Ej kommentarsceller <unk> Ej kommentarsceller med # <unk> Ctrlcmd-Shift-4\n"
+msgstr "Ej kommentarsceller | Ej kommentarsceller med # | Ctrlcmd-Shift-4\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:44
 msgid "Insert Cells | Insert Cells | Ctrlcmd-Shift-I\n"
-msgstr "Infoga celler <unk> Infoga celler <unk> Ctrlcmd-Shift-I\n"
+msgstr "Infoga celler | Infoga celler | Ctrlcmd-Shift-I\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:45
 msgid "Delete Cells | Delete Cells | Ctrlcmd-Shift-D\n"
-msgstr "Ta bort celler <unk> Ta bort celler <unk> Ctrlcmd-Shift-D\n"
+msgstr "Ta bort celler | Ta bort celler | Ctrlcmd-Shift-D\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:46
 msgid "Insert Rows | Insert Rows | Ctrlcmd-I\n"
@@ -613,15 +610,15 @@ msgstr "Insert Rows | Insert Rows | Ctrlcmd-I\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:47
 msgid "Delete Rows | Delete Rows | Ctrlcmd-D\n"
-msgstr "Ta bort rader <unk> Ta bort rader <unk> Ctrlcmd-D\n"
+msgstr "Ta bort rader | Ta bort rader | Ctrlcmd-D\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:48
 msgid "Move Rows Up | Move Rows Up | Alt-Up\n"
-msgstr "Flytta rader upp <unk> Flytta rader upp <unk> Alt-Up\n"
+msgstr "Flytta rader upp | Flytta rader upp | Alt-Up\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:49
 msgid "Move Rows Down | Move Rows Down | Alt-Down\n"
-msgstr "Flytta rader nedåt <unk> Flytta rader nedåt <unk> Alt-Down\n"
+msgstr "Flytta rader nedåt | Flytta rader nedåt | Alt-Down\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:50
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:66
@@ -633,8 +630,8 @@ msgid ""
 "Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword "
 "and variable completions | | | POSITION-70\n"
 msgstr ""
-"Innehållshjälp (Ctrl-Space eller Ctrl-Alt-Space) <unk> Visa möjliga sökord "
-"och variabelkompletteringar <unk> <unk> <unk> POSITION-70\n"
+"Innehållshjälp (Ctrl-Space eller Ctrl-Alt-Space) | Visa möjliga sökord och "
+"variabelkompletteringar | | | POSITION-70\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:88
 msgid ""
@@ -646,24 +643,24 @@ msgid ""
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:71
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:482
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:570
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:723
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:483
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:571
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:724
 msgid "Comment"
 msgstr "Kommentar"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:114
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:118
 msgid "Scalar Variable"
 msgstr "Skalarvariabel"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:120
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:135
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:150
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:168
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:370
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:388
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:408
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:433
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:124
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:139
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:154
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:172
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:374
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:392
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:412
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:437
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/configmanagerui.py:101
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:89
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:91
@@ -672,78 +669,78 @@ msgstr "Skalarvariabel"
 msgid "Name"
 msgstr "Namn"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:121
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:136
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:151
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:371
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:482
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:723
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:125
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:140
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:155
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:375
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:483
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:724
 msgid "Value"
 msgstr "Värde"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:129
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:133
 msgid "List Variable"
 msgstr "Lista variabel"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:144
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:148
 msgid "Dictionary Variable"
 msgstr "Variabel i ordbok"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:159
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:571
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:650
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:163
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:572
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:651
 msgid "Library"
 msgstr "Bibliotek"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:169
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:173
 msgid "Alias"
 msgstr "Alias"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:169
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:190
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:173
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:194
 msgid "Args"
 msgstr "Args"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:182
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:571
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:665
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:186
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:572
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:666
 msgid "Variables"
 msgstr "Variabler"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:189
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:202
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:193
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:206
 msgid "Path"
 msgstr "Sökväg"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:198
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:571
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:657
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:202
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:572
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:658
 msgid "Resource"
 msgstr "Resurs"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:211
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:215
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/configmanagerui.py:101
 msgid "Documentation"
 msgstr "Dokumentation"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:280
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:284
 msgid "Suite Setup is run before any tests"
 msgstr "Svit Setup körs innan några tester"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:366
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:723
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:370
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:724
 msgid "Metadata"
 msgstr "Metadata"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:380
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:384
 msgid "New Test Case"
 msgstr "Ny testväska"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:400
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:404
 msgid "Copy User Keyword"
 msgstr "Kopiera användarens nyckelord"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:424
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:428
 msgid "New User Keyword"
 msgstr "Nytt sökord för användare"
 
@@ -806,11 +803,11 @@ msgstr "Hitta var används"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:87
 msgid "JSON Editor\tCtrl-Shift-J"
-msgstr "JSON Editor<unk> Ctrl-Shift-J"
+msgstr "JSON Editor\tCtrl-Shift-J"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:89
 msgid "Go to Definition\tCtrl-B"
-msgstr "Gå till Definition<unk> Ctrl-B"
+msgstr "Gå till Definition\tCtrl-B"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:91
 msgid "Undo\tCtrl-Z"
@@ -818,66 +815,66 @@ msgstr "Ångra Ctrl-Z"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:92
 msgid "Redo\tCtrl-Y"
-msgstr "Redo<unk> Ctrl-Y"
+msgstr "Redo\tCtrl-Y"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:94
 msgid "Make Variable\tCtrl-1"
-msgstr "Gör variabel<unk> Ctrl-1"
+msgstr "Gör variabel\tCtrl-1"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:95
 msgid "Make List Variable\tCtrl-2"
-msgstr "Gör listvariabel<unk> Ctrl-2"
+msgstr "Gör listvariabel\tCtrl-2"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:96
 msgid "Make Dict Variable\tCtrl-5"
-msgstr "Gör Diktvariabel<unk> Ctrl-5"
+msgstr "Gör Diktvariabel\tCtrl-5"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:98
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:327
 msgid "Comment Cells\tCtrl-Shift-3"
-msgstr "Kommentera Cells<unk> Ctrl-Shift-3"
+msgstr "Kommentera Cells\tCtrl-Shift-3"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:99
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:328
 msgid "Uncomment Cells\tCtrl-Shift-4"
-msgstr "Uncomment Cells<unk> Ctrl-Shift-4"
+msgstr "Uncomment Cells\tCtrl-Shift-4"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:100
 msgid "Move Cursor Down\tAlt-Enter"
-msgstr "Flytta markören neråt Alt-Enter"
+msgstr "Flytta markören neråt\tAlt-Enter"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:102
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:319
 msgid "Comment Rows\tCtrl-3"
-msgstr "Kommentera Rader<unk> Ctrl-3"
+msgstr "Kommentera Rader\tCtrl-3"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:103
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:320
 msgid "Uncomment Rows\tCtrl-4"
-msgstr "Okommentera Rows<unk> Ctrl-4"
+msgstr "Okommentera Rows\tCtrl-4"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:104
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:321
 msgid "Move Rows Up\tAlt-Up"
-msgstr "Flytta rader uppåt-uppåt-"
+msgstr "Flytta rader uppåt\tAlt-Up"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:105
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:322
 msgid "Move Rows Down\tAlt-Down"
-msgstr "Flytta rader nedåt"
+msgstr "Flytta rader nedåt\tAlt-Down"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:106
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:323
 msgid "Swap Row Up\tCtrl-T"
-msgstr "Växla rad upp Ctrl-T"
+msgstr "Växla rad upp\tCtrl-T"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:109
 msgid "Delete Cells\tCtrl-Shift-D"
-msgstr "Ta bort celler<unk> Ctrl-Shift-D"
+msgstr "Ta bort celler\tCtrl-Shift-D"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:109
 msgid "Insert Cells\tCtrl-Shift-I"
-msgstr "Infoga celler<unk> Ctrl-Shift-Jag"
+msgstr "Infoga celler\tCtrl-Shift-Jag"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:110
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:324
@@ -887,31 +884,31 @@ msgstr "Insert Rows\tCtrl-I"
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:110
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:325
 msgid "Delete Rows\tCtrl-D"
-msgstr "Ta bort Rader<unk> Ctrl-D"
+msgstr "Ta bort Rader\tCtrl-D"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:111
 msgid "Copy\tCtrl-C"
-msgstr "Kopiera-Ctrl-C"
+msgstr "Kopiera\tCtrl-C"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:111
 msgid "Cut\tCtrl-X"
-msgstr "Cut<unk> Ctrl-X"
+msgstr "Cut\tCtrl-X"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:111
 msgid "Select All\tCtrl-A"
-msgstr "Välj All<unk> Ctrl-A"
+msgstr "Välj All\tCtrl-A"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:112
 msgid "Delete\tDel"
-msgstr "Radera"
+msgstr "Radera\tDel"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:112
 msgid "Insert\tCtrl-Shift-V"
-msgstr "Infogar Ctrl-Shift-V"
+msgstr "Infogar\tCtrl-Shift-V"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:112
 msgid "Paste\tCtrl-V"
-msgstr "Pasta Ctrl-V"
+msgstr "Pasta\tCtrl-V"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:794
 msgid ""
@@ -982,7 +979,7 @@ msgid "Variable "
 msgstr "Variabel "
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1227
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:620
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:634
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:49
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:127
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:184
@@ -1012,45 +1009,45 @@ msgstr "Flytta nedåt"
 msgid "Clear"
 msgstr "Rensa"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:482
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:483
 msgid "Variable"
 msgstr "Variabel"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:483
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:484
 msgid "Add Dict"
 msgstr "Lägg till Dict"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:483
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:484
 msgid "Add List"
 msgstr "Lägg till lista"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:483
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:484
 msgid "Add Scalar"
 msgstr "Lägg till skalar"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:570
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:571
 msgid "Import"
 msgstr "Importera"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:570
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:571
 msgid "Name / Path"
 msgstr "Namn / sökväg"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:571
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:572
 msgid "Import Failed Help"
 msgstr "Importera misslyckad hjälp"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:585
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:586
 msgid "Add Import"
 msgstr "Lägg till import"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:628
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:629
 #: /home2/helio/github/RIDE/tools/../src/robotide/spec/specimporter.py:33
 #: /home2/helio/github/RIDE/tools/../src/robotide/spec/specimporter.py:62
 msgid "Import Library Spec XML"
 msgstr "Importera bibliotekets Spec XML"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:671
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:672
 msgid ""
 "<br>Possible corrections and notes:<br>\n"
 "        <ul>\n"
@@ -1094,43 +1091,43 @@ msgstr ""
 "            </li>\n"
 "        </ul>"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:671
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:672
 msgid "Import failure handling"
 msgstr "Hantering av import misslyckades"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:724
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:725
 msgid "Add Metadata"
 msgstr "Lägg till metadata"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:448
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:462
 msgid "ERROR: Data sanity check failed!"
 msgstr "FEL: Data sanity check misslyckades!"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:448
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:462
 msgid "Error at line"
 msgstr "Fel på rad"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:449
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:463
 msgid "Reset changes?"
 msgstr "Återställ ändringar?"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:450
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:464
 msgid "Can not apply changes from Text Editor"
 msgstr "Kan inte tillämpa ändringar från textredigerare"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:603
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:617
 msgid "Apply Changes"
 msgstr "Tillämpa ändringar"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:630
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:644
 msgid "Syntax colorization disabled due to missing requirements."
 msgstr "Syntaxfärgning inaktiverad på grund av saknade krav."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:631
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:645
 msgid "Get help"
 msgstr "Få hjälp"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:646
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:660
 msgid ""
 "<h1>Syntax colorization</h1>\n"
 "        <p>\n"
@@ -1190,11 +1187,11 @@ msgstr ""
 "        </p>\n"
 "        "
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:671
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:685
 msgid "Getting syntax colorization"
 msgstr "Hämtar syntaxfärgning"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:770
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:784
 msgid "No matches found."
 msgstr "Inga träffar hittades."
 
@@ -1773,7 +1770,7 @@ msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/spec/specimporter.py:60
 msgid "Library Spec XML|*.xml|All Files|*.*"
-msgstr "Bibliotek Spec XML<unk> *.xml<unk> Alla filer<unk> *.*"
+msgstr "Bibliotek Spec XML| *.xml| Alla filer| *.*"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/spec/specimporter.py:77
 msgid ""
@@ -1863,23 +1860,23 @@ msgstr "Öppna"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:385
 msgid "Robot data (*.robot)|*.robot"
-msgstr "Robot data (*.robot)<unk> *.robot"
+msgstr "Robot data (*.robot)| *.robot"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:386
 msgid "Robot data (*.txt)|*.txt"
-msgstr "Robot data (*.txt)<unk> *.txt"
+msgstr "Robot data (*.txt)| *.txt"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:387
 msgid "Robot resource file (*.resource)|*.resource"
-msgstr "Robot resursfil (*.resource)<unk> *.resource"
+msgstr "Robot resursfil (*.resource)| *.resource"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:388
 msgid "Robot Tab Separated data (*.tsv)|*.tsv"
-msgstr "Robot Tab Separerade data (*.tsv)<unk> *.tsv"
+msgstr "Robot Tab Separerade data (*.tsv)| *.tsv"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:390
 msgid "All files|*.*"
-msgstr "Alla filer<unk> *.*"
+msgstr "Alla filer| *.*"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/fileexplorerplugin.py:29
 msgid ""
@@ -1951,60 +1948,54 @@ msgstr "[File]\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:58
 msgid "!&New Project | Create a new top level suite | Ctrlcmd-N | ART_NEW\n"
-msgstr ""
-"!&Nytt projekt <unk> Skapa en ny toppnivå svit <unk> Ctrlcmd-N <unk> "
-"ART_NEW\n"
+msgstr "!&Nytt projekt | Skapa en ny toppnivå svit | Ctrlcmd-N | ART_NEW\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:60
 msgid ""
 "!&Open Test Suite | Open file containing tests | Ctrlcmd-O | ART_FILE_OPEN\n"
 msgstr ""
-"!&Öppna testsviten <unk> Öppna filen med tester <unk> Ctrlcmd-O <unk> "
-"ART_FILE_OPEN\n"
+"!&Öppna testsviten | Öppna filen med tester | Ctrlcmd-O | ART_FILE_OPEN\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:61
 msgid ""
 "!Open &Directory | Open directory containing datafiles | Shift-Ctrlcmd-O | "
 "ART_FOLDER_OPEN\n"
 msgstr ""
-"!Öppna &Katalog <unk> Öppna katalogen innehåller datafiler <unk> Shift-"
-"Ctrlcmd-O <unk> ART_FOLDER_OPEN\n"
+"!Öppna &Katalog | Öppna katalogen innehåller datafiler | Shift-Ctrlcmd-O | "
+"ART_FOLDER_OPEN\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:62
 msgid "!Open External File | Open file in Code Editor | | ART_NORMAL_FILE\n"
-msgstr ""
-"!Öppna extern fil <unk> Öppna filen i kodredigerare <unk> <unk> "
-"ART_NORMAL_FILE\n"
+msgstr "!Öppna extern fil | Öppna filen i kodredigerare | | ART_NORMAL_FILE\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:63
 msgid "!&Save | Save selected datafile | Ctrlcmd-S | ART_FILE_SAVE\n"
-msgstr "!&Spara <unk> Spara vald datafil <unk> Ctrlcmd-S <unk> ART_FILE_SAVE\n"
+msgstr "!&Spara | Spara vald datafil | Ctrlcmd-S | ART_FILE_SAVE\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:64
 msgid "!Save &All | Save all changes | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS\n"
 msgstr ""
-"!Spara &Alla <unk> Spara alla ändringar <unk> Ctrlcmd-Shift-S <unk> "
-"ART_FILE_SAVE_AS\n"
+"!Spara &Alla | Spara alla ändringar | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:65
 msgid "!E&xit | Exit RIDE | Ctrlcmd-Q\n"
-msgstr "!E&xit <unk> Avsluta RIDE <unk> Ctrlcmd-Q\n"
+msgstr "!E&xit | Avsluta RIDE | Ctrlcmd-Q\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:67
 msgid "!Search Unused Keywords | | | | POSITION-54\n"
-msgstr "!Sök Oanvända sökord <unk> <unk> <unk> <unk> POSITION-54\n"
+msgstr "!Sök Oanvända sökord | | | | POSITION-54\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:68
 msgid "!Manage Plugins | | | | POSITION-81\n"
-msgstr "!Hantera plugins <unk> <unk> <unk> <unk> POSITION-81\n"
+msgstr "!Hantera plugins | | | | POSITION-81\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:69
 msgid "!View All Tags | | F7 | | POSITION-82\n"
-msgstr "!Visa alla taggar <unk> <unk> F7 <unk> POSITION-82\n"
+msgstr "!Visa alla taggar | | F7 | POSITION-82\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:70
 msgid "!Preferences | | | | POSITION-99\n"
-msgstr "!Inställningar <unk> <unk> <unk> <unk> POSITION-99\n"
+msgstr "!Inställningar | | | | POSITION-99\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:71
 msgid "[Help]\n"
@@ -2012,29 +2003,29 @@ msgstr "[Help]\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:72
 msgid "!Shortcut keys | RIDE shortcut keys\n"
-msgstr "!Genvägstangenter <unk> RIDE genvägstangenter\n"
+msgstr "!Genvägstangenter | RIDE genvägstangenter\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:73
 msgid "!User Guide | Robot Framework User Guide\n"
-msgstr "!Användarhandbok <unk> Robot Framework Användarhandbok\n"
+msgstr "!Användarhandbok | Robot Framework Användarhandbok\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:74
 msgid "!Wiki | RIDE User Guide (Wiki)\n"
-msgstr "!Wiki <unk> RIDE användarguide (Wiki)\n"
+msgstr "!Wiki | RIDE användarguide (Wiki)\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:75
 msgid "!Report a Problem | Open browser to SEARCH on the RIDE issue tracker\n"
 msgstr ""
-"!Rapportera ett problem <unk> Öppna webbläsaren för att SÖK på RIDE "
+"!Rapportera ett problem | Öppna webbläsaren för att SÖK på RIDE "
 "ärendehanteraren\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:76
 msgid "!About | Information about RIDE\n"
-msgstr "Om <unk> Information om RIDE\n"
+msgstr "Om | Information om RIDE\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:77
 msgid "!Check for Upgrade | Looks at PyPi for new released version\n"
-msgstr "!Sök efter Uppgradering <unk> Ser ut på PyPi för nya släppta version\n"
+msgstr "!Sök efter Uppgradering | Ser ut på PyPi för nya släppta version\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:175
 msgid "Saved %s"
@@ -2303,7 +2294,7 @@ msgstr "Inkluderade filer"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:339
 msgid "Searching.%s \t- %s"
-msgstr "Söker.%s \t<unk> - %s"
+msgstr "Söker.%s \t- %s"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:354
 msgid "Search finished - Found %d Unused Keywords"
@@ -2385,7 +2376,7 @@ msgstr "Bekräfta"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:55
 msgid "New Suite\tCtrl-Shift-F"
-msgstr "Ny Suite<unk> Ctrl-Shift-F"
+msgstr "Ny Suite\tCtrl-Shift-F"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:56
 msgid "New Directory"
@@ -2393,11 +2384,11 @@ msgstr "Ny katalog"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:57
 msgid "New Test Case\tCtrl-Shift-T"
-msgstr "Nytt testfall Ctrl-Shift-T"
+msgstr "Nytt testfall\tCtrl-Shift-T"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:58
 msgid "New User Keyword\tCtrl-Shift-K"
-msgstr "Ny användare Nyckelord Ctrl-Shift-K"
+msgstr "Ny användare Nyckelord\tCtrl-Shift-K"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:59
 msgid "Sort Variables"
@@ -2413,11 +2404,11 @@ msgstr "Sortera sökord"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:62
 msgid "New Scalar\tCtrl-Shift-V"
-msgstr "Ny Scalar<unk> Ctrl-Shift-V"
+msgstr "Ny Scalar\tCtrl-Shift-V"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:63
 msgid "New List Variable\tCtrl-Shift-L"
-msgstr "Ny lista variabel<unk> Ctrl-Shift-L"
+msgstr "Ny lista variabel\tCtrl-Shift-L"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:64
 msgid "New Dictionary Variable"
@@ -2461,7 +2452,7 @@ msgstr "Välj endast godkända test"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:75
 msgid "Delete\tCtrl-Shift-D"
-msgstr "Ta bort Ctrl-Shift-D"
+msgstr "Ta bort\tCtrl-Shift-D"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:77
 msgid "Exclude"
