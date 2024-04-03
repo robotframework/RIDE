@@ -2469,5 +2469,3 @@ msgstr "Importare nume"
 msgid "%s cannot be empty"
 msgstr "%s nu poate fi gol"
 
-#~ msgid "Saving Preferences"
-#~ msgstr "Se salvează preferințele"
