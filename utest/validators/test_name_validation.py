@@ -60,7 +60,7 @@ class _VariableNameValidationTest(_NameValidationTest):
 
     def setUp(self):
         self._variable_table_ctrl = VariableTableController(
-            self, VariableTable(self))
+            self, VariableTable(self, ['En']))
         self.mock_ctrl()
 
     def add_named(self, name):

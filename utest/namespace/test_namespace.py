@@ -472,7 +472,7 @@ class TestVariableStash(unittest.TestCase):
 
     def test_variable_resolving(self):
         vars = _VariableStash()
-        var_table = VariableTable(ParentMock())
+        var_table = VariableTable(ParentMock(), ['En'])
         var_table.add('${var1}', 'foo')
         var_table.add('${var2}', 'bar')
         vars.set_from_variable_table(var_table)
@@ -481,21 +481,21 @@ class TestVariableStash(unittest.TestCase):
 
     def test_list_variable_index_resolving(self):
         vars = _VariableStash()
-        var_table = VariableTable(ParentMock())
+        var_table = VariableTable(ParentMock(), ['En'])
         var_table.add('@{var}', ['foo', 'bar'])
         vars.set_from_variable_table(var_table)
         assert 'Hi, foo!' == vars.replace_variables('Hi, @{var}[0]!')
 
     def test_dict_variable_key_resolving(self):
         vars = _VariableStash()
-        var_table = VariableTable(ParentMock())
+        var_table = VariableTable(ParentMock(), ['En'])
         var_table.add('&{var}', ['foo=bar'])
         vars.set_from_variable_table(var_table)
         assert 'Hi, bar!' == vars.replace_variables('Hi, &{var}[foo]!')
 
     def test_variable_resolving_with_unresolvable_value(self):
         vars = _VariableStash()
-        var_table = VariableTable(ParentMock())
+        var_table = VariableTable(ParentMock(), ['En'])
         var_table.add('${var1}', '${unresolvable variable}')
         var_table.add('${var2}', 'bar')
         vars.set_from_variable_table(var_table)
