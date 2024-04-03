@@ -122,7 +122,7 @@ class _TestData(object):
             self.keyword_table = table = KeywordTable(self, self.language)
             self.tables.append(self.keyword_table)
         if table.type == 'variable':
-            self.variable_table = table = VariableTable(self)
+            self.variable_table = table = VariableTable(self, self.language)
             self.tables.append(self.variable_table)
         table.set_header(header_row, lineno=lineno)
         # print(f"DEBUG: model _TestData start_table returning table={table} table name={table.name}\n"
@@ -323,7 +323,7 @@ class TestCaseFile(_TestData):
         self.tasks = tasks
         self.language = language
         self.setting_table = TestCaseFileSettingTable(self, self.tasks, self.language)
-        self.variable_table = VariableTable(self)
+        self.variable_table = VariableTable(self, self.language)
         self.testcase_table = TestCaseTable(self, self.tasks, self.language)
         self.keyword_table = KeywordTable(self, self.language)
         self.comment_table = None  # DEBUG: CommentsTable(self, self.language)
@@ -365,7 +365,7 @@ class ResourceFile(_TestData):
         if not self.language and source:
             self.language = lang.check_file_language(source)
         self.setting_table = ResourceFileSettingTable(self, self.language)
-        self.variable_table = VariableTable(self)
+        self.variable_table = VariableTable(self, self.language)
         self.testcase_table = TestCaseTable(self, self.language)
         self.keyword_table = KeywordTable(self, self.language)
         self.comment_table = None  # DEBUG: CommentsTable(self, self.language)
@@ -418,7 +418,7 @@ class TestDataDirectory(_TestData):
         self.tasks = tasks
         self.language = language
         self.setting_table = InitFileSettingTable(self, self.tasks, self.language)
-        self.variable_table = VariableTable(self)
+        self.variable_table = VariableTable(self, self.language)
         self.testcase_table = TestCaseTable(self, self.tasks, self.language)
         self.keyword_table = KeywordTable(self, self.language)
         self.comment_table = None  # DEBUG: CommentsTable(self, self.language)
@@ -764,10 +764,10 @@ class InitFileSettingTable(_SettingTable):
 class VariableTable(_Table):
     type = 'variable'
 
-    def __init__(self, parent):
+    def __init__(self, parent, language=None):
         _Table.__init__(self, parent)
         self.variables = []
-        self.language = ''
+        self.language = language
 
     @property
     def _old_header_matcher(self):

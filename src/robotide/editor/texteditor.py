@@ -399,8 +399,8 @@ class DataValidationHandler(object):
                 return False
         # DEBUG: self._editor.reset()
         # Language.name() # here get content in En to transform in Lang
-        print(f"DEBUG: texteditor.py validate_and_update {initial_lang=} parameter lang={lang}"
-              f" doc_language={self._doc_language} reformat_flag={self._editor.reformat}")
+        # print(f"DEBUG: texteditor.py validate_and_update {initial_lang=} parameter lang={lang}"
+        #       f" doc_language={self._doc_language} reformat_flag={self._editor.reformat}")
         if self._editor.reformat:
             data.update_from(data.format_text(m_text))
         else:

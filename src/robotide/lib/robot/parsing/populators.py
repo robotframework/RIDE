@@ -57,11 +57,13 @@ class FromFilePopulator(object):
     _populators = {'setting': SettingTablePopulator,
                    'settings': SettingTablePopulator,
                    'variable': VariableTablePopulator,
+                   'variables': VariableTablePopulator,
                    'test case': TestTablePopulator,
                    'test cases': TestTablePopulator,
                    'task': TestTablePopulator,
                    'tasks': TestTablePopulator,
                    'keyword': KeywordTablePopulator,
+                   'keywords': KeywordTablePopulator,
                    'comments': CommentsTablePopulator}
 
     def __init__(self, datafile, tab_size=2, lang=None):
@@ -124,7 +126,8 @@ class FromFilePopulator(object):
         #    # return False
         self._populator.populate()
         table = self._datafile.start_table(DataRow(header).all, lineno=lineno, llang=llang)
-        # print(f"DEBUG: populators start_table header={header} got table={table} at lineno={lineno}")
+        # print(f"DEBUG: populators start_table header={header} got table={table} at lineno={lineno}"
+        #       f" llang={llang}")
         if header[0] in language.get_headers_for(llang, ('Comment', 'Comments'), lowercase=False):
             self._populator = self._populators['comments'](table)
         else:
