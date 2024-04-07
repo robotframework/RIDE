@@ -18,7 +18,15 @@ import os
 from .. import robotapi
 
 
-def new_test_case_file(path, tasks=False, lang=''):
+def get_language_from_settings():
+    from ..preferences import RideSettings
+    _settings = RideSettings()
+    lang = _settings.get('doc language', '')
+    return lang
+
+
+def new_test_case_file(path, tasks=False, lang=None):
+    lang = lang if lang else get_language_from_settings()
     if not isinstance(lang, list):
         lang = [lang]
     datafile = robotapi.TestCaseFile(source=path, tasks=tasks, language=lang)
@@ -29,7 +37,8 @@ def new_test_case_file(path, tasks=False, lang=''):
     return datafile
 
 
-def new_test_data_directory(path, tasks=False, lang=''):
+def new_test_data_directory(path, tasks=False, lang=None):
+    lang = lang if lang else get_language_from_settings()
     if not isinstance(lang, list):
         lang = [lang]
     dirname = os.path.dirname(path)
