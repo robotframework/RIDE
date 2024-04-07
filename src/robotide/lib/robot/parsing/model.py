@@ -73,7 +73,7 @@ class _TestData(object):
         self.source = abspath(source) if source else None
         self.children = []
         self._preamble = []
-        self._language = language
+        self._language = language if language and language != ['en'] else ''
         self._task = task
         # self._testcase_table_names = 'Task', 'Tasks' if self._task else 'Test Case', 'Test Cases'
         # self.comment_table = None
@@ -169,8 +169,8 @@ class _TestData(object):
                   (self._testcase_table_names, self.testcase_table),
                   (self._keyword_table_names, self.keyword_table), [self._comment_table_names, self.comment_table]]
         try:
-            _lang = Language.from_name(language[0].replace('_','-'))  # DEBUG: Consider several languages
-        except ValueError:
+            _lang = Language.from_name(language[0].replace('_', '-'))  # DEBUG: Consider several languages
+        except (ValueError, AttributeError):
             _lang = None
             # print(f"DEBUG: model.py get_tables_for Exception at language={language[0]}")
 
@@ -280,10 +280,11 @@ class _TestData(object):
     def set_doc_language(self):
         if self._language and len(self._language) > 0:
             if isinstance(self._language, list):
+                if not self._language[0]:
+                    return
                 language = ", ".join(self._language)
             else:
                 language = self._language
-            # print(f"DEBUG: model.py  set_doc_language language={language}")
             if len(self._preamble) == 0:
                 self._preamble.append(f"Language: {language}\n\n")
                 # print(f"DEBUG: model.py  set_doc_language EMPTY PREAMBLE self._preamble={self._preamble}")
@@ -291,7 +292,12 @@ class _TestData(object):
                 # DEBUG: We need to replace or decide where to write the language definition
                 for idx, line in enumerate(self._preamble):
                     if line.startswith("Language:"):
-                        self._preamble[idx] = f"Language: {language}\n\n"
+                        content = line.split('#')
+                        if len(content) > 1:
+                            content = "#".join(content[1:])
+                        else:
+                            content = ''
+                        self._preamble[idx] = f"Language: {language}{content}\n\n"
                         # print(f"DEBUG: model.py  set_doc_language EXITING LANG PREAMBLE index={idx} "
                         #       f"self._preamble={self._preamble}")
                         return

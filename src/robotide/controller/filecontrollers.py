@@ -720,10 +720,11 @@ class DirtyRobotDataException(Exception):
 class TestCaseFileController(_FileSystemElement, _DataController):
     __test__ = False
 
-    def __init__(self, data, project=None, parent=None, tasks=False):
+    def __init__(self, data, project=None, parent=None, tasks=False, lang=''):
         _FileSystemElement.__init__(self, data.source if data else None, data.directory)
         _DataController.__init__(self, data, project, parent)
         self.tasks = tasks
+        self._language = lang if lang else self.get_language_from_settings()
 
     def internal_settings(self):
         ss = self.setting_table
@@ -731,6 +732,13 @@ class TestCaseFileController(_FileSystemElement, _DataController):
         sett.insert(-1, TemplateController(self, ss.test_template))
         sett.insert(-1, TimeoutController(self, ss.test_timeout))
         return sett + [self.default_tags]
+
+    def get_language_from_settings(self):
+        from ..preferences import RideSettings
+        _settings = RideSettings()
+        lang = _settings.get('doc language', '')
+        self.file_language = lang
+        return lang
 
     @property
     def longname(self):
@@ -791,7 +799,8 @@ class TestCaseFileController(_FileSystemElement, _DataController):
         RideDataFileRemoved(path=self.filename, datafile=self).publish()
 
     def reload(self):
-        self.__init__(TestCaseFile(parent=self.data.parent, source=self.filename, tasks=self.tasks).populate(),
+        self.__init__(TestCaseFile(parent=self.data.parent, source=self.filename, tasks=self.tasks,
+                                   language=self._language).populate(),
                       project=self._project,
                       parent=self.parent)
 
@@ -1189,7 +1198,7 @@ class ExcludedFileController(_FileSystemElement, _DataController):
         RideDataFileRemoved(path=self.filename, datafile=self).publish()
 
     def reload(self):
-        self.__init__(TestCaseFile(parent=self.data.parent, source=self.filename).populate(),
+        self.__init__(TestCaseFile(parent=self.data.parent, source=self.filename, language=self._language).populate(),
                       project=self._project,
                       parent=self._parent)
 
