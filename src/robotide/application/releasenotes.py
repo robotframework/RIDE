@@ -281,6 +281,6 @@ python -m robotide.__init__
 <pre class="literal-block">
 python -m robotide.postinstall -install
 </pre>
-<p>RIDE {VERSION} was released on 30/Mar/2024.</p>
+<p>RIDE {VERSION} was released on 7/Apr/2024.</p>
 </div>
 """

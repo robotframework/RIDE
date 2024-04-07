@@ -43,6 +43,7 @@ builtins.__dict__['_'] = wx.GetTranslation
 DirBrowseButton.createLabel = lambda self: Label(self, size=(110, -1), label=self.labelText)
 
 DEFAULT_FFORMAT = "default file format"
+DOC_LANGUAGE = 'doc language'
 
 
 class _CreationDialog(RIDEDialog):
@@ -111,7 +112,6 @@ class _CreationDialog(RIDEDialog):
         _settings = RideSettings()
         label, selector = boolean_editor(window, _settings, 'tasks',
                                          _("Is Task?")+' ', _("Default for Tasks or Tests sections."))
-        # selector = wx.CheckBox(window, label=_("Is Task?"))
         selector.SetBackgroundColour(Colour(self.color_background))
         selector.SetForegroundColour(Colour(self.color_foreground))
         # self.Bind(wx.EVT_CHECKBOX, self.on_path_changed, selector)
@@ -122,25 +122,34 @@ class _CreationDialog(RIDEDialog):
 
     def _create_lang_chooser(self, sizer):
         from ..preferences import RideSettings
+        from ..lib.compat.parsing.language import get_language_name
         _settings = RideSettings()
-        lang = _settings.get('doc language', '')
+        lang = _settings.get(DOC_LANGUAGE, '')
         languages = read_languages()
         if languages[0] != '':
-            languages.insert(0,'')
+            languages.insert(0, '')
         if isinstance(lang, list) and len(lang) > 0:
-            _settings['doc language'] = lang[0]
+            _settings[DOC_LANGUAGE] = lang[0]
+            lang = lang[0]
         elif lang and len(lang) > 0:
-            _settings['doc language'] = lang
+            _settings[DOC_LANGUAGE] = lang
         else:
-            _settings['doc language'] = ''
-        # print(f"DEBUG: filedialogs.py _CreationDialog _create_lang_chooser languages={languages}")
-        ll = StringChoiceEditor(_settings, 'doc language', _('Language')+' ', languages)
+            _settings[DOC_LANGUAGE] = ''
+        ll = StringChoiceEditor(_settings, DOC_LANGUAGE, _('Language')+' ', languages)
         l_lang = ll.label(self)
         set_colors(l_lang, Colour(self.color_background), Colour(self.color_foreground))
         lang_box = wx.BoxSizer(wx.HORIZONTAL)
-        lang_box.AddMany([l_lang, ll.chooser(self)])
+        chooser = ll.chooser(self)
+        lang_box.AddMany([l_lang, chooser])
         sizer.Add(lang_box)
         sizer.Layout()
+        # Force no selection if lang code is en
+        if lang in ('en', ):  # We will only consider English as the effective setting
+            lang = ''
+        lang_name = get_language_name(lang)
+        if lang_name in languages:
+            index = languages.index(lang_name)
+            ll.SetSelection(chooser, index)
         return ll
 
     def _create_format_chooser(self, sizer, callback=True):
@@ -211,26 +220,31 @@ class _CreationDialog(RIDEDialog):
         return self._type_chooser.GetStringSelection() == _("Directory")
 
     def _is_task_type(self):
-        if not self._task_chooser:
-            return False
-        return self._task_chooser.GetValue()
+        # if not self._task_chooser:
+        #     return False
+        from ..preferences import RideSettings
+        _settings = RideSettings()
+        task = _settings.get('tasks', False)
+        # print(f"DEBUG: filedialogs.py _CreationDialog _is_task_type task={task}")
+        return task  # self._task_chooser.GetValue()
 
     def selected_language(self):
         if not self._language_chooser:
             return ['']
         from ..preferences import RideSettings
         _settings = RideSettings()
-        lang = _settings.get('doc language', '')
-        # print(f"DEBUG: filedialogs.py _CreationDialog selected_language={lang}")
+        lang = _settings.get(DOC_LANGUAGE, '')
         set_lang = shared_memory.ShareableList(name="language")
         if lang and len(lang) > 0:
-            mlang = Language.from_name(lang.replace('_','-'))
-            set_lang[0] = mlang.code.replace('-','_')
-        elif len(set_lang[0]) > 0:
-            return [set_lang[0]]
+            if isinstance(lang, list):
+                lang = lang[0]
+            if lang in ('en',):  # We will only consider English as the effective setting
+                return ['en']
+            mlang = Language.from_name(lang.replace('_', '-'))
+            set_lang[0] = mlang.code.replace('-', '_')
         else:
-            set_lang[0] = 'en'
-        return [lang]
+            return [set_lang[0]]
+        return [mlang.name]
 
     def _get_extension(self):
         if not self._format_chooser:
@@ -261,7 +275,7 @@ class NewProjectDialog(_CreationDialog):
         cmd = CreateNewDirectoryProject if self._is_dir_type()\
             else CreateNewFileProject
         self.language = self.selected_language()
-        cmd(self._get_path(), self._is_task_type, self.language).execute(self._controller)
+        cmd(self._get_path(), self._is_task_type(), self.language).execute(self._controller)
         del self.dlg
 
 
