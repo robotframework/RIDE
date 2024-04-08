@@ -48,7 +48,7 @@ class UpdateNotifierController(object):
     def __init__(self, settings):
         self._settings = settings
 
-    def notify_update_if_needed(self, update_notification_callback, ignore_check_condition=False):
+    def notify_update_if_needed(self, update_notification_callback, ignore_check_condition=False, show_no_update=False):
         if ignore_check_condition:
             dev_version = checking_version = True
         else:
@@ -57,7 +57,7 @@ class UpdateNotifierController(object):
         if checking_version and self._is_new_version_available():
             update_notification_callback(self._newest_version, self._download_url, self._settings)
         if checking_version and dev_version:
-            upgrade_from_dev_dialog(version_installed=self.VERSION)
+            upgrade_from_dev_dialog(version_installed=self.VERSION, show_no_update=show_no_update)
 
     def _should_check(self):
         if self._settings.get(_CHECK_FOR_UPDATES_SETTING, None) is None:
@@ -98,7 +98,7 @@ class UpdateNotifierController(object):
         return xml
 
 
-def upgrade_from_dev_dialog(version_installed):
+def upgrade_from_dev_dialog(version_installed, show_no_update=False):
     dev_version = urllib2.urlopen('https://raw.githubusercontent.com/robotframework/'
                                   'RIDE/master/src/robotide/version.py', timeout=1).read().decode('utf-8')
     matches = re.findall(r"VERSION\s*=\s*'([\w.]*)'", dev_version)
@@ -117,9 +117,10 @@ def upgrade_from_dev_dialog(version_installed):
             do_upgrade(command)
             return True
     else:
-        _askyesno(_("No Upgrade Available"), f"{SPC}{_('You have the latest version of RIDE.')}{SPC}"
-                                             f"\n\n{SPC}{_('              Have a nice day :)')}\n",
-                  wx.GetActiveWindow())
+        if show_no_update:
+            _askyesno(_("No Upgrade Available"), f"{SPC}{_('You have the latest version of RIDE.')}{SPC}"
+                                                 f"\n\n{SPC}{_('              Have a nice day :)')}\n",
+                      wx.GetActiveWindow())
         return False
 
 

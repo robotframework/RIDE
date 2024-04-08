@@ -100,6 +100,21 @@ class UpdateNotifierTestCase(unittest.TestCase):
         self.assertTrue(settings[LASTUPDATECHECK] > time.time() - 1)
         self.assertFalse(self._callback_called)
 
+    def test_no_update_found_dev(self):
+        app = wx.App()
+        settings = self.internal_settings()
+        ctrl = self._update_notifier_controller(settings, '0.56', '0.56')
+        ctrl.notify_update_if_needed(self._callback, ignore_check_condition=False, show_no_update=False)
+        self.assertTrue(settings[LASTUPDATECHECK] > time.time() - 1)
+        self.assertFalse(self._callback_called)
+
+    def test_no_update_found_dev_notify(self):
+        app = wx.App()
+        settings = self.internal_settings()
+        ctrl = self._update_notifier_controller(settings, '0.55', '0.55')
+        ctrl.notify_update_if_needed(self._callback, ignore_check_condition=True, show_no_update=True)
+        self.assertFalse(self._callback_called)
+
     def test_first_run_sets_settings_correctly_and_checks_for_updates(self):
         settings = self.internal_settings(check_for_updates=None, last_update_check=None)
         ctrl = self._update_notifier_controller(settings, '1.0.2', '1.0.2')

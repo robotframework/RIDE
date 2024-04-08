@@ -583,7 +583,7 @@ class RideFrame(wx.Frame):
         __ = event
         from ..application.updatenotifier import UpdateNotifierController, UpdateDialog
         wx.CallAfter(UpdateNotifierController(self.general_settings).notify_update_if_needed,
-                     UpdateDialog, ignore_check_condition=True)
+                     UpdateDialog, ignore_check_condition=True, show_no_update=True)
 
     @staticmethod
     def on_shortcut_keys(event):
