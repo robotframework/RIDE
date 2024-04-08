@@ -90,6 +90,7 @@ class FakeSettings(Settings):
         self.set('pythonpath', [])
         self.set('auto imports', [])
         self.set('global_settings', [])
+        self.set('doc language', 'en')
         if settings:
             for key, val in settings.items():
                 self.set(key, val)
