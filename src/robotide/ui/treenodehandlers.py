@@ -462,7 +462,11 @@ class ResourceFileHandler(_FileHandlerThanCanBeRenamed, TestDataHandler):
         
     def on_open_containing_folder(self, event):
         __ = event
-        self.controller.execute(ctrlcommands.OpenContainingFolder())
+        try:
+            file_manager = self._settings['General']['file manager']
+        except KeyError:
+            file_manager = None
+        self.controller.execute(ctrlcommands.OpenContainingFolder(file_manager))
 
     def on_find_usages(self, event):
         ResourceFileUsages(self.controller, self._tree.highlight).show()
@@ -531,7 +535,11 @@ class TestCaseFileHandler(_FileHandlerThanCanBeRenamed, TestDataHandler):
         
     def on_open_containing_folder(self, event):
         __ = event
-        self.controller.execute(ctrlcommands.OpenContainingFolder())
+        try:
+            file_manager = self._settings['General']['file manager']
+        except KeyError:
+            file_manager = None
+        self.controller.execute(ctrlcommands.OpenContainingFolder(file_manager))
 
     def on_new_test_case(self, event):
         dlg = TestCaseNameDialog(self.controller)
