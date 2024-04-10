@@ -342,37 +342,51 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
         os.chmod(path, stat.S_IWRITE)
 
     @staticmethod
-    def _explorer_linux(path):
+    def _explorer_linux(path, tool):
+        folder = os.path.dirname(path)
+        if tool:
+            try:
+                subprocess.Popen([tool, folder])
+                # print(f"DEBUG: After starting _explorer_linux ={tool}")
+                return
+            except OSError:  # :
+                print(f"DEBUG: Error when launching tool={tool}")
         try:
-            subprocess.Popen(["nautilus", "{}".format(os.path.dirname(path))])
+            subprocess.Popen(["nautilus", folder])
         except OSError:
             try:
-                subprocess.Popen(["dolphin", "{}".format(os.path.dirname(path))])
+                subprocess.Popen(["dolphin", folder])
             except OSError:
                 try:
-                    subprocess.Popen(["konqueror", "{}".format(os.path.dirname(path))])
+                    subprocess.Popen(["konqueror", folder])
                 except OSError:
                     print("Could not launch explorer. Tried nautilus, dolphin and konqueror.")
 
-    def open_filemanager(self, path=None):
-        # tested on Win7 x64
+    def open_filemanager(self, path=None, tool=None):
         path = path or self.filename
         if os.path.exists(path):
+            folder = os.path.dirname(path)
             if sys.platform == 'win32':
-                #  There was encoding errors if directory had unicode chars
-                # DEBUG: test on all OS directory names with accented chars, for example 'ccedilla'
-                os.startfile(r"%s" % os.path.dirname(path), 'explore')
+                if tool:
+                    try:
+                        os.startfile(folder, tool)
+                        return
+                    except OSError:
+                        print(f"DEBUG: Error when launching tool={tool}")
+                os.startfile(folder, 'explore')
             elif sys.platform.startswith('linux'):
-                # how to detect which explorer is used?
-                # nautilus, dolphin, konqueror
-                # DEBUG: check if explorer exists
-                # DEBUG: get prefered explorer from preferences
-                self._explorer_linux(path)
+                self._explorer_linux(path, tool)
             else:
+                if tool:
+                    try:
+                        subprocess.Popen([tool, folder])
+                        return
+                    except OSError:
+                        print(f"DEBUG: Error when launching tool={tool}")
                 try:
-                    subprocess.Popen(["finder", "{}".format(os.path.dirname(path))])
+                    subprocess.Popen(["finder", folder])
                 except OSError:
-                    subprocess.Popen(["open", "{}".format(os.path.dirname(path))])
+                    subprocess.Popen(["open", folder])
 
     def remove_from_filesystem(self, path=None):
         path = path or self.filename
