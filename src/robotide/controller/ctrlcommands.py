@@ -535,8 +535,11 @@ class DeleteFile(_Command):
 class OpenContainingFolder(_Command):
     modifying = False
 
+    def __init__(self, tool: str = None):
+        self.tool = tool
+
     def execute(self, context):
-        context.open_filemanager()
+        context.open_filemanager(tool=self.tool)
 
 
 class RemoveReadOnly(_Command):
