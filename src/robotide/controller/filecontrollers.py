@@ -369,7 +369,7 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
             if sys.platform == 'win32':
                 if tool:
                     try:
-                        os.startfile(folder, tool)
+                        subprocess.Popen([tool, folder])
                         return
                     except OSError:
                         print(f"DEBUG: Error when launching tool={tool}")

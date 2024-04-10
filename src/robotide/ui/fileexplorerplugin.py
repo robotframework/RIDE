@@ -57,7 +57,7 @@ class FileExplorerPlugin(Plugin):
                 register = self._mgr.AddPane
 
             register(self._filemgr, wx.lib.agw.aui.AuiPaneInfo().Name("file_manager").
-                     Caption("Files").LeftDockable(True).CloseButton(False))
+                     Caption(_("Files")).LeftDockable(True).CloseButton(False))
 
             self._mgr.Update()
 
