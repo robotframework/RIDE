@@ -114,19 +114,6 @@ class RIDE(wx.App):
         self._plugin_loader = PluginLoader(self, self._get_plugin_dirs(),
                                            coreplugins.get_core_plugins())
         self._plugin_loader.enable_plugins()
-        perspective = self.settings.get('AUI Perspective', None)
-        if perspective:
-            self.frame.aui_mgr.LoadPerspective(perspective, True)
-        try:
-            nb_perspective = self.settings.get('AUI NB Perspective', None)
-            if nb_perspective:
-                self.frame.notebook.LoadPerspective(nb_perspective)
-        except Exception as e:
-            print(f"RIDE: There was a problem loading panels position."
-                  f" Please delete the definition 'AUI NB Perspective' in "
-                  f"{os.path.join(SETTINGS_DIRECTORY, 'settings.cfg')}")
-            if not isinstance(e, IndexError):  # If is with all notebooks disabled, continue
-                raise e
         self.fileexplorerplugin = FileExplorerPlugin(self, self._controller)
         self.treeplugin = TreePlugin(self)
         if self.treeplugin.settings['_enabled']:
@@ -141,6 +128,19 @@ class RIDE(wx.App):
         self._publish_system_info()
         self.frame.Show()    # ###### DEBUG DANGER ZONE
         self.SetTopWindow(self.frame)
+        perspective = self.settings.get('AUI Perspective', None)
+        if perspective:
+            self.frame.aui_mgr.LoadPerspective(perspective, True)
+        try:
+            nb_perspective = self.settings.get('AUI NB Perspective', None)
+            if nb_perspective:
+                self.frame.notebook.LoadPerspective(nb_perspective)
+        except Exception as e:
+            print(f"RIDE: There was a problem loading panels position."
+                  f" Please delete the definition 'AUI NB Perspective' in "
+                  f"{os.path.join(SETTINGS_DIRECTORY, 'settings.cfg')}")
+            if not isinstance(e, IndexError):  # If is with all notebooks disabled, continue
+                raise e
         self.frame.aui_mgr.Update()
         wx.CallLater(200, ReleaseNotes(self).bring_to_front)
         if self._updatecheck:
