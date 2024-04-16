@@ -33,6 +33,8 @@ from ..ui.resourcedialogs import FolderDeleteDialog
 _ = wx.GetTranslation  # To keep linter/code analyser happy
 builtins.__dict__['_'] = wx.GetTranslation
 
+FILE_MANAGER = 'file manager'
+
 
 def action_handler_class(controller):
     return {
@@ -341,7 +343,8 @@ class TestDataDirectoryHandler(TestDataHandler):
             _ActionHandler._label_new_list_variable,
             _ActionHandler._label_new_dict_variable,
             '---',
-            _ActionHandler._label_change_format
+            _ActionHandler._label_change_format,
+            _ActionHandler._label_open_folder
         ]
         if self.controller.parent:
             self._actions.extend([_ActionHandler._label_delete_no_kbsc])
@@ -379,6 +382,17 @@ class TestDataDirectoryHandler(TestDataHandler):
 
     def on_delete(self, event):
         FolderDeleteDialog(self.controller).execute()
+
+    def on_open_containing_folder(self, event):
+        __ = event
+        try:
+            file_manager = self._settings['General'][FILE_MANAGER]
+        except KeyError:
+            file_manager = None
+        directory = self.controller.source
+        # print(f"DEBUG: treenodecontrollers.py TestDataDirectoryHandler on_open_containing_folder"
+        #       f" directory={directory}")
+        self.controller.execute(ctrlcommands.OpenContainingFolder(tool=file_manager, path=directory))
 
     def on_exclude(self, event):
         try:
@@ -463,7 +477,7 @@ class ResourceFileHandler(_FileHandlerThanCanBeRenamed, TestDataHandler):
     def on_open_containing_folder(self, event):
         __ = event
         try:
-            file_manager = self._settings['General']['file manager']
+            file_manager = self._settings['General'][FILE_MANAGER]
         except KeyError:
             file_manager = None
         self.controller.execute(ctrlcommands.OpenContainingFolder(file_manager))
@@ -536,7 +550,7 @@ class TestCaseFileHandler(_FileHandlerThanCanBeRenamed, TestDataHandler):
     def on_open_containing_folder(self, event):
         __ = event
         try:
-            file_manager = self._settings['General']['file manager']
+            file_manager = self._settings['General'][FILE_MANAGER]
         except KeyError:
             file_manager = None
         self.controller.execute(ctrlcommands.OpenContainingFolder(file_manager))
