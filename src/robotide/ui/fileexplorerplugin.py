@@ -45,6 +45,7 @@ class FileExplorerPlugin(Plugin):
         self._controller = controller
         self._pane = None
         self._filetreectrl = None
+        self.opened = self.settings['opened']
         self.font = self._filemgr.GetFont()
 
     def register_frame(self, parent=None):
@@ -57,7 +58,7 @@ class FileExplorerPlugin(Plugin):
                 register = self._mgr.AddPane
 
             register(self._filemgr, wx.lib.agw.aui.AuiPaneInfo().Name("file_manager").
-                     Caption("Files").LeftDockable(True).CloseButton(False))
+                     Caption(_("Files")).LeftDockable(True).CloseButton(False))
 
             self._mgr.Update()
 
@@ -71,7 +72,8 @@ class FileExplorerPlugin(Plugin):
             self.close_tree()
 
     def close_tree(self):
-        self.save_setting('opened', False)
+        # self.save_setting('opened', False)
+        self.opened = False
         self._mgr.DetachPane(self._filemgr)
         self._filemgr.Hide()
         self._mgr.Update()
@@ -82,7 +84,8 @@ class FileExplorerPlugin(Plugin):
     def toggle_view(self, event):
         __ = event
         self.save_setting('opened', not self.opened)
-        if self.opened:
+        if not self.opened:
+            self.opened = True
             self.show_file_explorer()
         else:
             self.close_tree()
