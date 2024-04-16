@@ -343,7 +343,10 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
 
     @staticmethod
     def _explorer_linux(path, tool):
-        folder = os.path.dirname(path)
+        if not os.path.isfile(path):
+            folder = path
+        else:
+            folder = os.path.dirname(path)
         if tool:
             try:
                 subprocess.Popen([tool, folder])
@@ -364,29 +367,33 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
 
     def open_filemanager(self, path=None, tool=None):
         path = path or self.filename
-        if os.path.exists(path):
+        if not os.path.exists(path):
+            return
+        if not os.path.isfile(path):
+            folder = path
+        else:
             folder = os.path.dirname(path)
-            if sys.platform == 'win32':
-                if tool:
-                    try:
-                        subprocess.Popen([tool, folder])
-                        return
-                    except OSError:
-                        print(f"DEBUG: Error when launching tool={tool}")
-                os.startfile(folder, 'explore')
-            elif sys.platform.startswith('linux'):
-                self._explorer_linux(path, tool)
-            else:
-                if tool:
-                    try:
-                        subprocess.Popen([tool, folder])
-                        return
-                    except OSError:
-                        print(f"DEBUG: Error when launching tool={tool}")
+        if sys.platform == 'win32':
+            if tool:
                 try:
-                    subprocess.Popen(["finder", folder])
+                    subprocess.Popen([tool, folder])
+                    return
                 except OSError:
-                    subprocess.Popen(["open", folder])
+                    print(f"DEBUG: Error when launching tool={tool}")
+            os.startfile(folder, 'explore')
+        elif sys.platform.startswith('linux'):
+            self._explorer_linux(folder, tool)
+        else:
+            if tool:
+                try:
+                    subprocess.Popen([tool, folder])
+                    return
+                except OSError:
+                    print(f"DEBUG: Error when launching tool={tool}")
+            try:
+                subprocess.Popen(["finder", folder])
+            except OSError:
+                subprocess.Popen(["open", folder])
 
     def remove_from_filesystem(self, path=None):
         path = path or self.filename
