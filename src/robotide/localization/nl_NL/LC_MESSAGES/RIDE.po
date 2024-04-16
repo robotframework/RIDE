@@ -734,7 +734,7 @@ msgstr "Lokatie"
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:572
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:658
 msgid "Resource"
-msgstr "Bron"
+msgstr "Resource"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:215
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/configmanagerui.py:101
@@ -906,7 +906,7 @@ msgstr "Rijen verwijderen\tCtrl-D"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:111
 msgid "Copy\tCtrl-C"
-msgstr "Kopieren\tCtrl-C"
+msgstr "Kopiëren\tCtrl-C"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:111
 msgid "Cut\tCtrl-X"
@@ -1050,7 +1050,7 @@ msgstr "Nieuwe waarde"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:571
 msgid "Import"
-msgstr "Importeren"
+msgstr "Import"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:571
 msgid "Name / Path"
@@ -1813,7 +1813,7 @@ msgid ""
 "from \"%s\"\n"
 "This may require RIDE restart."
 msgstr ""
-"Bibliotheek \"%s\" geïmporteerde\n"
+"Bibliotheek \"%s\" geïmporteerd\n"
 "uit \"%s\"\n"
 "Vereist herstart van RIDE."
 
@@ -2190,7 +2190,7 @@ msgstr "Actief"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/pluginmanager.py:83
 msgid "Plugin"
-msgstr "Plug-in"
+msgstr "Plugin"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/pluginmanager.py:93
 msgid ""
@@ -2244,7 +2244,7 @@ msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:70
 msgid "Filter is"
-msgstr "Filteren is"
+msgstr "Filter is"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:71
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:242
@@ -2253,7 +2253,7 @@ msgstr "inactief"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:84
 msgid "Filter"
-msgstr "Filteren"
+msgstr "Filter"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:91
 msgid "Use RegEx"
@@ -2467,7 +2467,7 @@ msgstr "Formaat wijzigen"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:66
 msgid "Copy\tCtrl-Shift-C"
-msgstr "Kopieren\tCtrl-Shift-C"
+msgstr "Kopiëren\tCtrl-Shift-C"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:67
 msgid "Rename\tF2"
