@@ -18,16 +18,32 @@ import os
 from .. import robotapi
 
 
-def new_test_case_file(path):
-    datafile = robotapi.TestCaseFile(source=path)
-    datafile.start_table(['Test Cases'], lineno=1, llang=['en'])  # It is the unique section, so no problem
+def get_language_from_settings():
+    from ..preferences import RideSettings
+    _settings = RideSettings()
+    lang = _settings.get('doc language', '')
+    return lang
+
+
+def new_test_case_file(path, tasks=False, lang=None):
+    lang = lang if lang else get_language_from_settings()
+    if not isinstance(lang, list):
+        lang = [lang]
+    datafile = robotapi.TestCaseFile(source=path, tasks=tasks, language=lang)
+    datafile.set_doc_language()
+    header = 'Tasks' if tasks else 'Test Cases'
+    datafile.start_table([header], lineno=1, llang=lang)  # It is the unique section, so no problem
     _create_missing_directories(datafile.directory)
     return datafile
 
 
-def new_test_data_directory(path):
+def new_test_data_directory(path, tasks=False, lang=None):
+    lang = lang if lang else get_language_from_settings()
+    if not isinstance(lang, list):
+        lang = [lang]
     dirname = os.path.dirname(path)
-    datafile = robotapi.TestDataDirectory(source=dirname)
+    datafile = robotapi.TestDataDirectory(source=dirname, tasks=tasks, language=lang)
+    datafile.set_doc_language()
     datafile.initfile = path
     _create_missing_directories(dirname)
     return datafile

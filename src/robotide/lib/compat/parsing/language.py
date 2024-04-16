@@ -41,21 +41,47 @@ def check_file_language(path):
     # If preamble exists, proceed with language detection
     try:
         from robot.conf.languages import Languages
-    except ImportError as e:
-        sys.stderr.write(f"Trying to import robot's languages module returned error: {repr(e)}\n")
+    except ImportError as err:
+        sys.stderr.write(f"Trying to import robot's languages module returned error: {repr(err)}\n")
         return None
     try:
         build_lang = Languages(language_string, add_english=False)
-    except (DataError, ModuleNotFoundError) as e:
-        sys.stderr.write(f"File language definition returned error: {repr(e)}\n")
+    except (DataError, ModuleNotFoundError) as err:
+        sys.stderr.write(f"File language definition returned error: {repr(err)}\n")
         return None
     if build_lang:
         # print(f"DEBUG: check_file_language {build_lang.settings}\n{build_lang.headers}\n{build_lang.true_strings}"
         #      f"\n{build_lang.false_strings}\n{build_lang.bdd_prefixes}")
         lang = []
         for ll in build_lang:
-            lang.append(ll.code)
+            lang.append(ll.code.replace('-', '_'))
         return lang
+
+
+def get_language_name(lang_code):
+    """
+    Returns the language name if valid from name or code.
+
+    :param lang_code: language code or name
+    :return: language name or None
+    """
+    if lang_code and len(lang_code) < 2:
+        return None
+    if not Language or not lang_code:
+        return None
+    try:
+        from robot.conf.languages import Languages
+    except ImportError as err:
+        sys.stderr.write(f"Trying to import robot's languages module returned error: {repr(err)}\n")
+        return None
+    try:
+        build_lang = Languages(lang_code.replace('_', '-'), add_english=False)
+    except (DataError, ModuleNotFoundError) as err:
+        sys.stderr.write(f"File language definition returned error: {repr(err)}\n")
+        return None
+    if build_lang:
+        for lang in build_lang:
+            return lang.name
 
 
 def read(path):
@@ -66,7 +92,12 @@ def read(path):
             break
         else:
             if row.startswith('Language:'):
-                lang = row[len('Language:'):].strip()
+                content = row.split('#')
+                if len(content) > 1:
+                    content = content[0]
+                else:
+                    content = row
+                lang = content[len('Language:'):].strip()
     return lang
 
 
@@ -89,7 +120,9 @@ def get_headers_for(language, tables_headers, lowercase=True):
     languages = set()
     for mlang in language:
         try:
-            lang = Language.from_name(mlang)
+            if not mlang:
+                mlang = 'en'
+            lang = Language.from_name(mlang.replace('_','-'))
             languages.add(lang)
         except ValueError:
             print(f"DEBUG: language.py get_headers_for Exception at language={mlang}")
@@ -129,18 +162,21 @@ def get_settings_for(language, settings_names):
     assert settings_names is not None
     if not Language:
         return settings_names
-    if not language:
+    if not language or len(language) == 0:
         language = ['en']
     languages = set()
     if isinstance(language, list):
         for mlang in language:
             try:
-                lang = Language.from_name(mlang)
+                if not mlang:
+                    mlang = 'en'
+                lang = Language.from_name(mlang.replace('_', '-'))
                 languages.add(lang)
-            except ValueError:
-                print(f"DEBUG: language.py get_settings_for Exception at language={mlang}")
+            except (ValueError, AttributeError):
+                return settings_names
+                # print(f"DEBUG: language.py get_settings_for Exception at language={mlang}")
     else:
-        lang = Language.from_name(language)
+        lang = Language.from_name(language.replace('_', '-'))
         languages.add(lang)
     # DEBUG: settings_names = [item.lower() for item in list(settings_names)]
     if not languages:
@@ -174,11 +210,11 @@ def get_english_label(lang, label):
     mlang = None
     if isinstance(lang, list):
         try:
-            mlang = Language.from_name(lang[0])  # Only care for a single language
+            mlang = Language.from_name(lang[0].replace('_', '-'))  # Only care for a single language
         except ValueError:
             print(f"DEBUG: language.py get_english_label Exception at language={lang}")
     else:
-        mlang = Language.from_name(lang)
+        mlang = Language.from_name(lang.replace('_','-'))
     if not mlang:
         print(f"DEBUG: language.py get_english_label lang={lang} not found")
         return None

@@ -87,7 +87,7 @@ class DataRow(object):
     def tail(self):
         # print(f"DEBUG: datarow tail={self.cells[self.first_non_empty_cell:]}")
         # We want to keep indentation, so we only remove first empty cell
-        # index = 1 if len(self.cells) > 1 else 0
+        # index = 1 if len(self.cells) > 1 and self.cells[0] != self._row_continuation_marker else 0
         # return self.cells[self.first_non_empty_cell:]
         return self.cells[1:]
 
@@ -99,7 +99,14 @@ class DataRow(object):
     def data(self):
         if self.is_continuing():
             index = self.cells.index(self._row_continuation_marker) + 1
-            return self.cells[index:]
+            start = 0
+            if len(self.cells) > 1:
+                for idx in range(index, len(self.cells)):
+                    start = idx
+                    if self.cells[start] != '':
+                        break
+                # print(f"DEBUG: datarow.py data returning from continuation row idx={start} data={self.cells}")
+                return self.cells[start:]
         return self.cells
 
     def dedent(self):
@@ -152,8 +159,9 @@ class DataRow(object):
             return False
 
     def is_continuing(self):
-        if self.starts_continuation:
-            return False
+        # DEBUG: Next code causes some settings with Run Keywords and long chain of ANDs to be lost
+        # if self.starts_continuation:
+        #     return False
         for cell in self.cells:
             if cell == self._row_continuation_marker:
                 return True
@@ -161,7 +169,7 @@ class DataRow(object):
                 return False
 
     def is_commented(self):
-        return bool(not self.cells and self.comments)
+        return bool((self.cells and self.cells[0].startswith('#')) or (not self.cells and self.comments))
 
     def __nonzero__(self):
         return bool(self.cells or self.comments)

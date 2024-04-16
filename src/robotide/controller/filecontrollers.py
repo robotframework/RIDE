@@ -35,9 +35,9 @@ from .tablecontrollers import (VariableTableController, TestCaseTableController,
 from .macrocontrollers import TestCaseController, UserKeywordController
 
 
-def _get_controller(project, data, parent):
+def _get_controller(project, data, parent, tasks=False):
     if isinstance(data, TestCaseFile):
-        return TestCaseFileController(data, project, parent)
+        return TestCaseFileController(data, project, parent, tasks=tasks)
     if isinstance(data, ExcludedDirectory):
         return ExcludedDirectoryController(data, project, parent)
     if isinstance(data, ResourceFile):
@@ -57,11 +57,11 @@ def _get_controller(project, data, parent):
                 stub.write(content)
             data.parent.load_data(stub.name)
         return TestCaseFileController(data, project, data.parent)  # DEBUG Here we create a dummy Project
-    return TestDataDirectoryController(data, project, parent)
+    return TestDataDirectoryController(data, project, parent, tasks=tasks)
 
 
-def data_controller(data, project, parent=None):
-    return _get_controller(project, data, parent)
+def data_controller(data, project, parent=None, tasks=False):
+    return _get_controller(project, data, parent, tasks=tasks)
 
 
 class _FileSystemElement(object):
@@ -342,37 +342,51 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
         os.chmod(path, stat.S_IWRITE)
 
     @staticmethod
-    def _explorer_linux(path):
+    def _explorer_linux(path, tool):
+        folder = os.path.dirname(path)
+        if tool:
+            try:
+                subprocess.Popen([tool, folder])
+                # print(f"DEBUG: After starting _explorer_linux ={tool}")
+                return
+            except OSError:  # :
+                print(f"DEBUG: Error when launching tool={tool}")
         try:
-            subprocess.Popen(["nautilus", "{}".format(os.path.dirname(path))])
+            subprocess.Popen(["nautilus", folder])
         except OSError:
             try:
-                subprocess.Popen(["dolphin", "{}".format(os.path.dirname(path))])
+                subprocess.Popen(["dolphin", folder])
             except OSError:
                 try:
-                    subprocess.Popen(["konqueror", "{}".format(os.path.dirname(path))])
+                    subprocess.Popen(["konqueror", folder])
                 except OSError:
                     print("Could not launch explorer. Tried nautilus, dolphin and konqueror.")
 
-    def open_filemanager(self, path=None):
-        # tested on Win7 x64
+    def open_filemanager(self, path=None, tool=None):
         path = path or self.filename
         if os.path.exists(path):
+            folder = os.path.dirname(path)
             if sys.platform == 'win32':
-                #  There was encoding errors if directory had unicode chars
-                # DEBUG: test on all OS directory names with accented chars, for example 'ccedilla'
-                os.startfile(r"%s" % os.path.dirname(path), 'explore')
+                if tool:
+                    try:
+                        subprocess.Popen([tool, folder])
+                        return
+                    except OSError:
+                        print(f"DEBUG: Error when launching tool={tool}")
+                os.startfile(folder, 'explore')
             elif sys.platform.startswith('linux'):
-                # how to detect which explorer is used?
-                # nautilus, dolphin, konqueror
-                # DEBUG: check if explorer exists
-                # DEBUG: get prefered explorer from preferences
-                self._explorer_linux(path)
+                self._explorer_linux(path, tool)
             else:
+                if tool:
+                    try:
+                        subprocess.Popen([tool, folder])
+                        return
+                    except OSError:
+                        print(f"DEBUG: Error when launching tool={tool}")
                 try:
-                    subprocess.Popen(["finder", "{}".format(os.path.dirname(path))])
+                    subprocess.Popen(["finder", folder])
                 except OSError:
-                    subprocess.Popen(["open", "{}".format(os.path.dirname(path))])
+                    subprocess.Popen(["open", folder])
 
     def remove_from_filesystem(self, path=None):
         path = path or self.filename
@@ -429,12 +443,13 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
 class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseController):
     __test__ = False
 
-    def __init__(self, data, project=None, parent=None):
+    def __init__(self, data, project=None, parent=None, tasks=False):
         dir_ = data.directory
         dir_ = os.path.abspath(dir_) if isinstance(dir_, str) else dir_
         _FileSystemElement.__init__(self, self._filename(data), dir_)
         _DataController.__init__(self, data, project, parent)
         self._dir_controllers = {}
+        self.tasks = tasks
 
     @staticmethod
     def _filename(data):
@@ -559,17 +574,17 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
         self.filename = self.data.initfile
 
     def new_test_case_file(self, path):
-        ctrl = self._new_data_controller(new_test_case_file(path))
+        ctrl = self._new_data_controller(new_test_case_file(path, tasks=self.tasks))
         ctrl.mark_dirty()
         return ctrl
 
     def new_test_data_directory(self, path):
-        return self._new_data_controller(new_test_data_directory(path))
+        return self._new_data_controller(new_test_data_directory(path, tasks=self.tasks))
 
     def _new_data_controller(self, datafile):
         self.data.children.append(datafile)
         datafile.parent = self.data
-        self.children.append(data_controller(datafile, self._project, self))
+        self.children.append(data_controller(datafile, self._project, self, tasks=self.tasks))
         return self.children[-1]
 
     def notify_suite_added(self, suite):
@@ -579,7 +594,7 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
         return True
 
     def reload(self):
-        self.__init__(TestDataDirectory(source=self.directory, parent=self.data.parent).populate(),
+        self.__init__(TestDataDirectory(source=self.directory, parent=self.data.parent, tasks=self.tasks).populate(),
                       self._project, parent=self.parent)
 
     def remove(self):
@@ -676,8 +691,8 @@ class TestDataDirectoryController(_DataController, _FileSystemElement, _BaseCont
             if not dirname:
                 continue
             target_dir = os.path.join(target.directory, dirname)
-            dir_ctrl = TestDataDirectoryController(TestDataDirectory(source=target_dir),
-                                                   self._project, self)
+            dir_ctrl = TestDataDirectoryController(TestDataDirectory(source=target_dir, tasks=self.tasks),
+                                                   self._project, self, tasks=self.tasks)
             target._dir_controllers[target.directory] = dir_ctrl
             target.add_child(dir_ctrl)
             if target_dir == res_dir:
@@ -719,9 +734,11 @@ class DirtyRobotDataException(Exception):
 class TestCaseFileController(_FileSystemElement, _DataController):
     __test__ = False
 
-    def __init__(self, data, project=None, parent=None):
+    def __init__(self, data, project=None, parent=None, tasks=False, lang=''):
         _FileSystemElement.__init__(self, data.source if data else None, data.directory)
         _DataController.__init__(self, data, project, parent)
+        self.tasks = tasks
+        self._language = lang if lang else self.get_language_from_settings()
 
     def internal_settings(self):
         ss = self.setting_table
@@ -729,6 +746,13 @@ class TestCaseFileController(_FileSystemElement, _DataController):
         sett.insert(-1, TemplateController(self, ss.test_template))
         sett.insert(-1, TimeoutController(self, ss.test_timeout))
         return sett + [self.default_tags]
+
+    def get_language_from_settings(self):
+        from ..preferences import RideSettings
+        _settings = RideSettings()
+        lang = _settings.get('doc language', '')
+        self.file_language = lang
+        return lang
 
     @property
     def longname(self):
@@ -789,7 +813,8 @@ class TestCaseFileController(_FileSystemElement, _DataController):
         RideDataFileRemoved(path=self.filename, datafile=self).publish()
 
     def reload(self):
-        self.__init__(TestCaseFile(parent=self.data.parent, source=self.filename).populate(),
+        self.__init__(TestCaseFile(parent=self.data.parent, source=self.filename, tasks=self.tasks,
+                                   language=self._language).populate(),
                       project=self._project,
                       parent=self.parent)
 
@@ -1187,7 +1212,7 @@ class ExcludedFileController(_FileSystemElement, _DataController):
         RideDataFileRemoved(path=self.filename, datafile=self).publish()
 
     def reload(self):
-        self.__init__(TestCaseFile(parent=self.data.parent, source=self.filename).populate(),
+        self.__init__(TestCaseFile(parent=self.data.parent, source=self.filename, language=self._language).populate(),
                       project=self._project,
                       parent=self._parent)
 

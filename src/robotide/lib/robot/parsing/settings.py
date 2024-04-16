@@ -44,6 +44,12 @@ class Setting(object):
                 self.language = [set_lang[0]]
         except (AttributeError, FileNotFoundError):
             self.language = ['en']
+        # DEBUG Starts
+        # from robotide.lib.robot.parsing.model import TestCaseFileSettingTable, InitFileSettingTable
+        # if isinstance(parent, TestCaseFileSettingTable) or isinstance(parent, InitFileSettingTable):
+        #     print(f"DEBUG: settings.py Setting __init__ BEFORE setting_name= {setting_name} "
+        #           f"lang={self.language} parent has tasks={hasattr(parent, 'tasks')} parent type={type(parent)}")
+        # DEBUG Ends
         self.setting_name = get_localized_setting(self.language, setting_name)
         self._set_initial_value()
         self._set_comment(comment)
@@ -78,7 +84,15 @@ class Setting(object):
             self._populate(value)
             self._set_comment(comment)
             self._populated = True
-        elif self._populated and not start_continuation:
+            # print(f"DEBUG: settings.py populate new or continuation value={value} {comment=}")
+            return
+        if self._populated and not start_continuation:
+            # DEBUG
+            # print(f"DEBUG: settings.py populate at branch that would clear data value={value}")
+            # self._populate(value)
+            # self._set_comment(comment)
+            # return
+            # DEBUG END
             self._set_initial_value()
             self._set_comment(None)
             self.report_invalid_syntax("Setting '%s' used multiple times."
@@ -162,13 +176,6 @@ class Documentation(Setting):
         return value.strip() if is_string(value) else ''.join(value)
 
     def _data_as_list(self):
-        """ DEBUG
-        name = get_localized_setting(self.parent.language, self.setting_name)
-        print(f"DEBUG: parsing.settings.py Documentation _data_as_list name={name} "
-              f" setting_name= {self.setting_name} value={self.value}")
-        if self.setting_name != name:
-            return [name, self.value]
-        """
         return [self.setting_name, self.value]
 
 
@@ -355,6 +362,11 @@ class ImportSetting(Setting):
         return True
 
     def _data_as_list(self):
+        # Special case when only comment is set
+        comment = self.comment.as_list()
+        if not self.name:
+            data = [] if len(comment) > 0 else ['\n']
+            return data
         return [self.setting_name, self.name] + self.args
 
     def report_invalid_syntax(self, message, level='ERROR', parent=None):
@@ -387,6 +399,11 @@ class Library(ImportSetting):
         return args, None
 
     def _data_as_list(self):
+        # Special case when only comment is set
+        comment = self.comment.as_list()
+        if not self.name:
+            data = [] if len(comment) > 0 else ['\n']
+            return data
         data = [self.setting_name, self.name] + self.args
         if self.alias:
             data += [ALIAS_MARKER, self.alias]
@@ -433,6 +450,8 @@ class _DataList(object):
     def _parse_name_and_value(value):
         if value:
             value = [x.strip() for x in value if x != '']
+        else:
+            return '', []  # The case when we just want the comment or empty row
         name = value[0] if value else ''
         return name, value[1:]
 

@@ -211,6 +211,9 @@ class _ChoiceEditor(object):
 class StringChoiceEditor(_ChoiceEditor):
     _editor_class = PreferencesComboBox
 
+    def SetSelection(self, combo, idx):
+        self._editor_class.SetSelection(combo, idx)
+
 
 class IntegerChoiceEditor(_ChoiceEditor):
     _editor_class = IntegerPreferenceComboBox

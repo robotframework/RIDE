@@ -453,6 +453,10 @@ class VariableController(_SettingController):
     def index(self):
         return self.parent.index(self)
 
+    @staticmethod
+    def get_local_variables():
+        return {}
+
     def set_value(self, name=None, value=None):
         if isinstance(value, str):
             value = [value]

@@ -73,10 +73,12 @@ class _TestData(object):
         self.source = abspath(source) if source else None
         self.children = []
         self._preamble = []
-        self._language = language
+        self._language = language if language and language != ['en'] else ''
         self._task = task
+        # self._testcase_table_names = 'Task', 'Tasks' if self._task else 'Test Case', 'Test Cases'
         # self.comment_table = None
         self._tables = dict(self._get_tables())
+        # self.set_doc_language()
 
     def _get_tables(self):
         tables = [(self._setting_table_names, self.setting_table),
@@ -96,28 +98,31 @@ class _TestData(object):
 
     def start_table(self, header_row, lineno: int, llang: list):
         self._language = llang
-        # local_header = lang.get_headers_for(llang, ('Comments',))
-        # print(f"DEBUG: model _TestData start_table ENTER  header_row[0]={ header_row[0]} lineno={lineno}\n"
-        #       f"language={llang}")  # local_header={local_header}")
         if header_row[0] in lang.get_headers_for(llang, ('Comments',), lowercase=False):
             self.comment_table = table = CommentsTable(self, llang)  # Multiple creation of table only if exists
             self.tables.append(self.comment_table)
         else:
+            if header_row[0] in lang.get_headers_for(llang, ('Task', 'Tasks'), lowercase=False):
+                self._task = True
+            elif header_row[0] in lang.get_headers_for(llang, ('Test', 'Tests'), lowercase=False):
+                self._task = False
+            if hasattr(self.parent, 'tasks'):
+                self.parent.tasks = self._task
             table = self._find_table(header_row)
         # print(f"DEBUG: model _TestData start_table table={table} header_row={header_row}")
         if table is None or not self._table_is_allowed(table):
             return None
         if table.type == 'setting':
-            self.setting_table = table = TestCaseFileSettingTable(self, self.language)
+            self.setting_table = table = TestCaseFileSettingTable(self, self._task, self.language)
             self.tables.append(self.setting_table)
-        if table.type == 'test case':
-            self.testcase_table = table = TestCaseTable(self, self.language)
+        if table.type in ('test case', 'task'):
+            self.testcase_table = table = TestCaseTable(self, self._task, self.language)
             self.tables.append(self.testcase_table)
         if table.type == 'keyword':
             self.keyword_table = table = KeywordTable(self, self.language)
             self.tables.append(self.keyword_table)
         if table.type == 'variable':
-            self.variable_table = table = VariableTable(self)
+            self.variable_table = table = VariableTable(self, self.language)
             self.tables.append(self.variable_table)
         table.set_header(header_row, lineno=lineno)
         # print(f"DEBUG: model _TestData start_table returning table={table} table name={table.name}\n"
@@ -164,8 +169,8 @@ class _TestData(object):
                   (self._testcase_table_names, self.testcase_table),
                   (self._keyword_table_names, self.keyword_table), [self._comment_table_names, self.comment_table]]
         try:
-            _lang = Language.from_name(language[0])  # DEBUG: Consider several languages
-        except ValueError:
+            _lang = Language.from_name(language[0].replace('_', '-'))  # DEBUG: Consider several languages
+        except (ValueError, AttributeError):
             _lang = None
             # print(f"DEBUG: model.py get_tables_for Exception at language={language[0]}")
 
@@ -272,6 +277,33 @@ class _TestData(object):
         path = os.path.join(self.source, initfile) if initfile else self.source
         LOGGER.write("Error in file '%s': %s" % (path, message), level)
 
+    def set_doc_language(self):
+        if self._language and len(self._language) > 0:
+            if isinstance(self._language, list):
+                if not self._language[0]:
+                    return
+                language = ", ".join(self._language)
+            else:
+                language = self._language
+            if len(self._preamble) == 0:
+                self._preamble.append(f"Language: {language}\n\n")
+                # print(f"DEBUG: model.py  set_doc_language EMPTY PREAMBLE self._preamble={self._preamble}")
+            else:
+                # DEBUG: We need to replace or decide where to write the language definition
+                for idx, line in enumerate(self._preamble):
+                    if line.startswith("Language:"):
+                        content = line.split('#')
+                        if len(content) > 1:
+                            content = "#".join(content[1:])
+                        else:
+                            content = ''
+                        self._preamble[idx] = f"Language: {language}{content}\n\n"
+                        # print(f"DEBUG: model.py  set_doc_language EXITING LANG PREAMBLE index={idx} "
+                        #       f"self._preamble={self._preamble}")
+                        return
+                self._preamble.insert(0, f"Language: {language}\n\n")
+                # print(f"DEBUG: model.py  set_doc_language EMPTY PREAMBLE INSERTING self._preamble={self._preamble}")
+
     def save(self, **options):
         """Writes this datafile to disk.
 
@@ -292,12 +324,13 @@ class TestCaseFile(_TestData):
     """
     __test__ = False
 
-    def __init__(self, parent=None, source=None, settings=None, language=None):
+    def __init__(self, parent=None, source=None, settings=None, tasks=False, language=None):
         self.directory = os.path.dirname(source) if source else None
+        self.tasks = tasks
         self.language = language
-        self.setting_table = TestCaseFileSettingTable(self, self.language)
-        self.variable_table = VariableTable(self)
-        self.testcase_table = TestCaseTable(self, self.language)
+        self.setting_table = TestCaseFileSettingTable(self, self.tasks, self.language)
+        self.variable_table = VariableTable(self, self.language)
+        self.testcase_table = TestCaseTable(self, self.tasks, self.language)
         self.keyword_table = KeywordTable(self, self.language)
         self.comment_table = None  # DEBUG: CommentsTable(self, self.language)
         self.tables = [self.setting_table, self.variable_table, self.keyword_table, self.comment_table]
@@ -338,7 +371,7 @@ class ResourceFile(_TestData):
         if not self.language and source:
             self.language = lang.check_file_language(source)
         self.setting_table = ResourceFileSettingTable(self, self.language)
-        self.variable_table = VariableTable(self)
+        self.variable_table = VariableTable(self, self.language)
         self.testcase_table = TestCaseTable(self, self.language)
         self.keyword_table = KeywordTable(self, self.language)
         self.comment_table = None  # DEBUG: CommentsTable(self, self.language)
@@ -385,13 +418,14 @@ class TestDataDirectory(_TestData):
     """
     __test__ = False
 
-    def __init__(self, parent=None, source=None, settings=None, language=None):
+    def __init__(self, parent=None, source=None, settings=None, tasks=False, language=None):
         self.directory = source
         self.initfile = None
+        self.tasks = tasks
         self.language = language
-        self.setting_table = InitFileSettingTable(self, self.language)
-        self.variable_table = VariableTable(self)
-        self.testcase_table = TestCaseTable(self, self.language)
+        self.setting_table = InitFileSettingTable(self, self.tasks, self.language)
+        self.variable_table = VariableTable(self, self.language)
+        self.testcase_table = TestCaseTable(self, self.tasks, self.language)
         self.keyword_table = KeywordTable(self, self.language)
         self.comment_table = None  # DEBUG: CommentsTable(self, self.language)
         self.tables = [self.setting_table, self.variable_table, self.keyword_table, self.comment_table]
@@ -436,6 +470,9 @@ class TestDataDirectory(_TestData):
             yield table
 
 
+from robotide.lib.compat.parsing.language import get_headers_for
+
+
 class _Table(object):
 
     def __init__(self, parent):
@@ -444,8 +481,15 @@ class _Table(object):
         self._lineno = None
 
     def set_header(self, header, lineno:int):
-        # print(f"DEBUG: model.py _Table set_header={header} self._lineno={lineno}")
-        self._header = self._prune_old_style_headers(header)
+        tr_header = list(get_headers_for(self.language, header, lowercase=False))
+        if len(tr_header) > 1:
+            # print(f"DEBUG: model.py _Table set_header={header} before pop tr_header={tr_header}")
+            tr_header.pop(tr_header.index(header[0]))
+        else:
+            tr_header = [tr_header[0]]
+        # print(f"DEBUG: model.py _Table set_header={header} self._lineno={lineno}"
+        #       f" language={self.language} tr_header={tr_header}")
+        self._header = self._prune_old_style_headers(tr_header)
         self._lineno = lineno
 
     def _prune_old_style_headers(self, header):
@@ -486,25 +530,30 @@ class _Table(object):
 class _WithSettings(object):
     _setters = {}
     _aliases = {}
+    current_setter = None
 
     def get_setter(self, name):
-        if name.startswith('#'):
-            return None
-        if name.endswith(':'):
+        if name.startswith('#') or name.startswith('...'):
+            if self.current_setter is not None:
+                return self.current_setter
+        elif name.endswith(':'):
             name = name[:-1]
-        # Patching for ... setting, this way we don't get a Parser Error on log
-        if name == '...':
-            name = self.get_localized_setting_name('Documentation')
+        # print(f"DEBUG: model.py _WithSettings get_setter name={name} ... current_setter={self.current_setter}")
         setter = self._get_setter(name)
         if setter is not None:
+            self.current_setter = setter
             return setter
         setter = self._get_deprecated_setter(name)
         if setter is not None:
+            self.current_setter = setter
             return setter
         self.report_invalid_syntax("Non-existing setting '%s'." % name)
+        self.current_setter = None
         return None
 
     def _get_setter(self, name):
+        if name == '...':
+            return self.current_setter
         title = name.title()
         if name in self._setters:
             return self._setters[name](self)
@@ -542,18 +591,24 @@ class _SettingTable(_Table, _WithSettings):
     type = 'setting'
     language = []
 
-    def __init__(self, parent):
+    def __init__(self, parent, tasks):
         _Table.__init__(self, parent)
+        self.tasks = tasks
         self.doc = Documentation(self.get_localized_setting_name('Documentation'), self)
         self.suite_setup = Fixture(self.get_localized_setting_name('Suite Setup'), self)
         self.suite_teardown = Fixture(self.get_localized_setting_name('Suite Teardown'), self)
-        self.test_setup = Fixture(self.get_localized_setting_name('Test Setup'), self)
-        self.test_teardown = Fixture(self.get_localized_setting_name('Test Teardown'), self)
+        self.test_setup = Fixture(self.get_localized_setting_name('Task Setup'
+                                                                  if self.tasks else 'Test Setup'), self)
+        self.test_teardown = Fixture(self.get_localized_setting_name('Task Teardown'
+                                                                     if self.tasks else 'Test Teardown'), self)
         self.force_tags = Tags(self.get_localized_setting_name('Force Tags'), self)  # To deprecate after RF 7.0
         self.default_tags = Tags(self.get_localized_setting_name('Default Tags'), self)  # To deprecate after RF 7.0
-        self.test_tags = Tags(self.get_localized_setting_name('Test Tags'), self)  # New since RF 6.0
-        self.test_template = Template(self.get_localized_setting_name('Test Template'), self)
-        self.test_timeout = Timeout(self.get_localized_setting_name('Test Timeout'), self)
+        self.test_tags = Tags(self.get_localized_setting_name('Task Tags'
+                                                              if self.tasks else 'Test Tags'), self)  # New since RF 6.0
+        self.test_template = Template(self.get_localized_setting_name('Task Template'
+                                                                      if self.tasks else 'Test Template'), self)
+        self.test_timeout = Timeout(self.get_localized_setting_name('Task Timeout'
+                                                                    if self.tasks else 'Test Timeout'), self)
         self.metadata = MetadataList(self)
         self.imports = ImportList(self)
 
@@ -597,11 +652,16 @@ class TestCaseFileSettingTable(_SettingTable):
                 'Suite Teardown': lambda s: s.suite_teardown.populate,
                 'Test Setup': lambda s: s.test_setup.populate,
                 'Test Teardown': lambda s: s.test_teardown.populate,
+                'Task Setup': lambda s: s.test_setup.populate,
+                'Task Teardown': lambda s: s.test_teardown.populate,
                 'Force Tags': lambda s: s.force_tags.populate,
                 'Default Tags': lambda s: s.default_tags.populate,
                 'Test Tags': lambda s: s.test_tags.populate,
                 'Test Template': lambda s: s.test_template.populate,
                 'Test Timeout': lambda s: s.test_timeout.populate,
+                'Task Tags': lambda s: s.test_tags.populate,
+                'Task Template': lambda s: s.test_template.populate,
+                'Task Timeout': lambda s: s.test_timeout.populate,
                 'Library': lambda s: s.imports.populate_library,
                 'Resource': lambda s: s.imports.populate_resource,
                 'Variables': lambda s: s.imports.populate_variables,
@@ -609,18 +669,31 @@ class TestCaseFileSettingTable(_SettingTable):
     _aliases = {'Task Setup': 'Test Setup',
                 'Task Teardown': 'Test Teardown',
                 'Task Template': 'Test Template',
-                'Task Timeout': 'Test Timeout'}
+                'Task Timeout': 'Test Timeout',
+                'Task Tags': 'Test Tags'}
 
-    def __init__(self, parent, language=None):
+    def __init__(self, parent, tasks, language=None):
+        self.tasks = tasks
         if language:
             self.language = language
             self._aliases = lang.get_settings_for(language,
                                                   ['Documentation', 'Suite Setup', 'Suite Teardown',
-                                                   'Test Setup', 'Test Teardown', 'Force Tags', 'Default Tags',
-                                                   'Test Tags', 'Test Template', 'Test Timeout',  'Library',
-                                                   'Resource', 'Variables', 'Metadata','Task Setup',
-                                                   'Task Teardown', 'Task Template', 'Task Timeout'])
-        _SettingTable.__init__(self, parent)
+                                                   'Task Setup', 'Test Setup',
+                                                   'Task Teardown', 'Test Teardown',
+                                                   'Force Tags', 'Default Tags',
+                                                   'Task Tags', 'Test Tags',
+                                                   'Task Template', 'Test Template',
+                                                   'Task Timeout', 'Test Timeout',  'Library',
+                                                   'Resource', 'Variables', 'Metadata'])
+        """
+        'Task Setup' if self.tasks else 'Test Setup',
+                                                   'Task Teardown' if self.tasks else 'Test Teardown',
+                                                   'Force Tags', 'Default Tags',
+                                                   'Task Tags' if self.tasks else 'Test Tags',
+                                                   'Task Template' if self.tasks else 'Test Template',
+                                                   'Task Timeout' if self.tasks else 'Test Timeout',  'Library',
+        """
+        _SettingTable.__init__(self, parent, tasks)
 
     def __iter__(self):
         for setting in [self.doc, self.suite_setup, self.suite_teardown,
@@ -636,11 +709,12 @@ class ResourceFileSettingTable(_SettingTable):
                 'Resource': lambda s: s.imports.populate_resource,
                 'Variables': lambda s: s.imports.populate_variables}
 
-    def __init__(self, parent, language=None):
+    def __init__(self, parent, tasks=False, language=None):
+        self.tasks = False
         if language:
             self.language = language
             self._aliases = lang.get_settings_for(language,['Documentation', 'Library', 'Resource', 'Variables'])
-        _SettingTable.__init__(self, parent)
+        _SettingTable.__init__(self, parent, False)
 
     def __iter__(self):
         for setting in [self.doc] + self.imports.data:
@@ -654,21 +728,37 @@ class InitFileSettingTable(_SettingTable):
                 'Test Setup': lambda s: s.test_setup.populate,
                 'Test Teardown': lambda s: s.test_teardown.populate,
                 'Test Timeout': lambda s: s.test_timeout.populate,
+                'Task Setup': lambda s: s.test_setup.populate,
+                'Task Teardown': lambda s: s.test_teardown.populate,
+                'Task Timeout': lambda s: s.test_timeout.populate,
                 'Force Tags': lambda s: s.force_tags.populate,
                 'Test Tags': lambda s: s.test_tags.populate,
+                'Task Tags': lambda s: s.test_tags.populate,
                 'Library': lambda s: s.imports.populate_library,
                 'Resource': lambda s: s.imports.populate_resource,
                 'Variables': lambda s: s.imports.populate_variables,
                 'Metadata': lambda s: s.metadata.populate}
 
-    def __init__(self, parent, language=None):
+    def __init__(self, parent, tasks=False, language=None):
+        self.tasks = tasks
         if language:
             self.language = language
             self._aliases = lang.get_settings_for(language, ['Documentation', 'Suite Setup',
-                                                             'Suite Teardown', 'Test Setup', 'Test Teardown',
-                                                             'Test Timeout', 'Force Tags', 'Test Tags', 'Library',
+                                                             'Suite Teardown',
+                                                             'Task Setup', 'Test Setup',
+                                                             'Task Teardown', 'Test Teardown',
+                                                             'Task Timeout', 'Test Timeout',
+                                                             'Force Tags',
+                                                             'Task Tags', 'Test Tags', 'Library',
                                                              'Resource', 'Variables', 'Metadata'])
-        _SettingTable.__init__(self, parent)
+        """
+                                                                     'Task Setup' if self.tasks else 'Test Setup',
+                                                             'Task Teardown' if self.tasks else 'Test Teardown',
+                                                             'Task Timeout' if self.tasks else 'Test Timeout',
+                                                             'Force Tags',
+                                                             'Task Tags' if self.tasks else 'Test Tags', 'Library',
+        """
+        _SettingTable.__init__(self, parent, tasks)
 
     def __iter__(self):
         for setting in [self.doc, self.suite_setup, self.suite_teardown,
@@ -680,9 +770,10 @@ class InitFileSettingTable(_SettingTable):
 class VariableTable(_Table):
     type = 'variable'
 
-    def __init__(self, parent):
+    def __init__(self, parent, language=None):
         _Table.__init__(self, parent)
         self.variables = []
+        self.language = language
 
     @property
     def _old_header_matcher(self):
@@ -700,23 +791,43 @@ class VariableTable(_Table):
 
 class TestCaseTable(_Table):
     __test__ = False
-    type = 'test case'
+    # type = 'test case'
 
-    def __init__(self, parent, language=None):
+    def __init__(self, parent, tasks=False, language=None):
         _Table.__init__(self, parent)
         self.tests = []
+        if tasks:
+            self.type = 'task'
+            self.tasks = True
+        else:
+            self.type = 'test case'
+            self.tasks = False
+        self.parent = parent
         self.language = language
 
     def set_header(self, header, lineno: int):
         if self._header and header:
             self._validate_mode(self._header[0], header[0])
+        # print(f"DEBUG: model.py TestCaseTable set_header self._header={self._header} "
+        #       f"calling _Table.set_header header={header}")
         _Table.set_header(self, header, lineno=lineno)
+        self.propagate_up()
 
     def _validate_mode(self, name1, name2):
-        tasks1 = normalize(name1) in ('task', 'tasks')
-        tasks2 = normalize(name2) in ('task', 'tasks')
+        if self.type == 'task':
+            tasks1 = normalize(name1) in ('task', 'tasks')
+            tasks2 = normalize(name2) in ('task', 'tasks')
+        else:
+            tasks1 = normalize(name1) in ('test', 'tests')
+            tasks2 = normalize(name2) in ('test', 'tests')
         if tasks1 is not tasks2:
             raise DataError('One file cannot have both tests and tasks.')
+
+    def propagate_up(self):
+        for p in self.parent:
+            # print(f"DEBUG: model.py TestCaseTable propagate_up p={p}")
+            if isinstance(p, TestCaseFileSettingTable) or isinstance(p, InitFileSettingTable):
+                p.tasks = self.tasks
 
     @property
     def _old_header_matcher(self):
@@ -758,7 +869,7 @@ class CommentRow(object):
     is_comments = True
 
     def __init__(self, content):
-        print(f"DEBUG: RFLib model.py CommentRow init {content=}")
+        # print(f"DEBUG: RFLib model.py CommentRow init {content=}")
         self.add(content[0])
 
     def add(self, row):
@@ -771,7 +882,7 @@ class CommentRow(object):
         return False
 
     def __iter__(self):
-        print(f"DEBUG: RFLib model.py CommentRow __iter__ return iter({self.row})")
+        # print(f"DEBUG: RFLib model.py CommentRow __iter__ return iter({self.row})")
         for r in self.row:
             yield r
 

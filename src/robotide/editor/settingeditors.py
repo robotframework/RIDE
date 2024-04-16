@@ -262,6 +262,7 @@ class SettingEditor(wx.Panel):
             self._value_display.set_value(self._controller, self.plugin)
         else:
             self._value_display.clear_field()
+        self.Refresh()
 
     def get_selected_datafile_controller(self):
         return self._controller.datafile_controller

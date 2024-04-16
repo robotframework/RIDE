@@ -229,6 +229,7 @@ class TestFindOccurrencesWithFiles(unittest.TestCase):
 
     def _assert_usage(self, keyword, usage):
         occ = list(self.ts2.execute(FindUsages(keyword)))
+        print(f"DEBUG: _assert_usage keyword={keyword} usage={usage} occ={occ}\n")
         self.assertEqual(len(occ), 1)
         self.assertEqual(occ[0].usage, usage)
 
@@ -377,14 +378,14 @@ class FindVariableOccurrencesTest(unittest.TestCase):
 
     def test_occurrences_builtin_variable(self):
         check_for_variable_occurrences(self._kw1,
-                                       "${True}",
+                                       "${Truth}",
                                        ((self._case4.name, 'Steps', 1),
                                         (self._case6.name, 'Setup', 1),
                                         (self._case6.name, 'Steps', 1),
                                         (self._kw1.name, 'Steps', 1)))
 
         check_for_variable_occurrences(
-            self._case6, "${False}", ((self._case6.name, 'Documentation', 1),
+            self._case6, "${Falsy}", ((self._case6.name, 'Documentation', 1),
                                       (self._case1.name, 'Steps', 1),
                                       (self._kw1.name, 'Steps', 1)))
 

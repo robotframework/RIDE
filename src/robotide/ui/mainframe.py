@@ -143,6 +143,8 @@ class RideFrame(wx.Frame):
         self.controller = controller
         self._image_provider = ImageProvider()
         self.reformat = application.settings.get('reformat', False)
+        self.tasks = application.settings.get('tasks', False)
+        self.doc_language = application.settings.get('doc language', '')
         self.general_settings = application.settings['General']  # .get_without_default('General')
         self.color_background_help = self.general_settings.get('background help', (240, 242, 80))
         self.color_foreground_text = self.general_settings.get('foreground text', (7, 0, 70))
@@ -581,7 +583,7 @@ class RideFrame(wx.Frame):
         __ = event
         from ..application.updatenotifier import UpdateNotifierController, UpdateDialog
         wx.CallAfter(UpdateNotifierController(self.general_settings).notify_update_if_needed,
-                     UpdateDialog, ignore_check_condition=True)
+                     UpdateDialog, ignore_check_condition=True, show_no_update=True)
 
     @staticmethod
     def on_shortcut_keys(event):

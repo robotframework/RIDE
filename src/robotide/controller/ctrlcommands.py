@@ -535,8 +535,11 @@ class DeleteFile(_Command):
 class OpenContainingFolder(_Command):
     modifying = False
 
+    def __init__(self, tool: str = None):
+        self.tool = tool
+
     def execute(self, context):
-        context.open_filemanager()
+        context.open_filemanager(tool=self.tool)
 
 
 class RemoveReadOnly(_Command):
@@ -883,20 +886,24 @@ class AddTestDataDirectory(_AddDataFile):
 
 class CreateNewFileProject(_Command):
 
-    def __init__(self, path):
+    def __init__(self, path, tasks, lang):
         self._path = path
+        self._tasks = tasks
+        self._lang = lang
 
     def execute(self, context):
-        context.new_file_project(self._path)
+        context.new_file_project(self._path, self._tasks, self._lang)
 
 
 class CreateNewDirectoryProject(_Command):
 
-    def __init__(self, path):
+    def __init__(self, path, tasks, lang):
         self._path = path
+        self._tasks = tasks
+        self._lang = lang
 
     def execute(self, context):
-        context.new_directory_project(self._path)
+        context.new_directory_project(self._path, self._tasks, self._lang)
 
 
 class SetFileFormat(_Command):
