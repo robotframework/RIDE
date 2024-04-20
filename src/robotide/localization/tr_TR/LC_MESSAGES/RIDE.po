@@ -26,7 +26,7 @@ msgstr ""
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/actiontriggers.py:54
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/actiontriggers.py:65
 msgid "Help"
-msgstr ""
+msgstr "Yardım"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:54
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:71
@@ -2395,3 +2395,4 @@ msgstr ""
 #: /home2/helio/github/RIDE/tools/../src/robotide/validators/__init__.py:150
 msgid "%s cannot be empty"
 msgstr ""
+

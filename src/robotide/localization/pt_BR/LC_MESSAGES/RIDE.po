@@ -2584,5 +2584,3 @@ msgstr "Importando Nome"
 msgid "%s cannot be empty"
 msgstr "%s não pode ser vazia"
 
-#~ msgid "Saving Preferences"
-#~ msgstr "Salvando Preferências"

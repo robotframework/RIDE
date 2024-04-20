@@ -10,9 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: pygettext.py 1.5\n"
-"Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 "
-"&& n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 "
-"&& n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
+"Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
 "X-Crowdin-Project: robotframework-ride\n"
 "X-Crowdin-Project-ID: 637294\n"
 "X-Crowdin-Language: uk\n"
@@ -1487,12 +1485,12 @@ msgstr "Заощадження"
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/saving.py:41
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:113
 msgid "Is Task?"
-msgstr ""
+msgstr "Чи є задача?"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/saving.py:42
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:113
 msgid "Default for Tasks or Tests sections."
-msgstr ""
+msgstr "Стандартні для розділів завдань або тестів."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/saving.py:43
 msgid "Reformat?"
@@ -2454,5 +2452,3 @@ msgstr "Імпортується ім'я"
 msgid "%s cannot be empty"
 msgstr "%s не може бути порожнім"
 
-#~ msgid "Saving Preferences"
-#~ msgstr "Збереження налаштувань"

@@ -1511,12 +1511,12 @@ msgstr "正在保存"
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/saving.py:41
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:113
 msgid "Is Task?"
-msgstr ""
+msgstr "任务吗？"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/saving.py:42
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:113
 msgid "Default for Tasks or Tests sections."
-msgstr ""
+msgstr "默认任务或测试部分。"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/saving.py:43
 msgid "Reformat?"
@@ -2466,5 +2466,3 @@ msgstr "导入名称"
 msgid "%s cannot be empty"
 msgstr "%s 不能为空"
 
-#~ msgid "Saving Preferences"
-#~ msgstr "保存首选项"
