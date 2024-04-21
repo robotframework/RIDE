@@ -125,8 +125,8 @@ class _TestData(object):
             self.variable_table = table = VariableTable(self, self.language)
             self.tables.append(self.variable_table)
         table.set_header(header_row, lineno=lineno)
-        # print(f"DEBUG: model _TestData start_table returning table={table} table name={table.name}\n"
-        #       f"table.type={table.type}")
+       #  print(f"DEBUG: model _TestData start_table returning table={table} table name={table.name}\n"
+        #       f"table.type={table.type} \nheader_row={header_row}")
         return table
 
     def has_preamble(self):
@@ -482,10 +482,7 @@ class _Table(object):
 
     def set_header(self, header, lineno:int):
         tr_header = list(get_headers_for(self.language, header, lowercase=False))
-        if len(tr_header) > 1:
-            # print(f"DEBUG: model.py _Table set_header={header} before pop tr_header={tr_header}")
-            tr_header.pop(tr_header.index(header[0]))
-        else:
+        if len(tr_header) == 1:
             tr_header = [tr_header[0]]
         # print(f"DEBUG: model.py _Table set_header={header} self._lineno={lineno}"
         #       f" language={self.language} tr_header={tr_header}")
@@ -506,7 +503,7 @@ class _Table(object):
 
     @property
     def name(self):
-        # print(f"DEBUG: model.py _Table property name self.header[0]={self._header[0]}")
+       #  print(f"DEBUG: model.py _Table property name self.header[0]={self.header[0]}")
         return self.header[0]
 
     @property
