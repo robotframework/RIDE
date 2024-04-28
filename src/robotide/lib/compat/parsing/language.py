@@ -156,7 +156,8 @@ def get_headers_for(language, tables_headers, lowercase=True):
     if build_table:
         new_table = list(build_table)
         for k in new_table:
-            mod_headers.remove(k)
+            if k in mod_headers:
+                mod_headers.remove(k)
         for th in mod_headers:
             if th != '':
                 new_table.append(th)
