@@ -480,6 +480,7 @@ class DataFileWrapper(object):  # DEBUG: bad class name
         self.wrapper_data = data
         self._settings = settings
         self._tab_size = self._settings.get(TXT_NUM_SPACES, 2) if self._settings else 2
+        self._reformat = self._settings.get('reformat', False) if self._settings else False
         if language is not None:
             self._doc_language = language
         else:
@@ -536,8 +537,33 @@ class DataFileWrapper(object):  # DEBUG: bad class name
         data.save(output=output, fformat='txt', txt_separating_spaces=self._settings.get(TXT_NUM_SPACES, 4),
                   language=self._doc_language)
         text = output.getvalue()
-        # print(f"DEBUG: textedit.py DataFileWrapper content _txt_data = {text=} language={self._doc_language}")
+        # if self._reformat:  # DEBUG: This is a good place to call Tidy
+            # text = self.collapse_blanks(text)  # This breaks formatting in Templated tests
+            # print(f"DEBUG: textedit.py DataFileWrapper content _txt_data = {text=} language={self._doc_language}")
         return text
+
+    def collapse_blanks(self, content: str) -> str:
+        spaces = self._tab_size * ' '
+        block = []
+        for ln in content.splitlines():
+            block.append(ln.replace(f'\\{spaces}', '').replace(f'\\\\ ', '').split(spaces))
+        # print(f"DEBUG: texteditor.py collapse_blanks block={block}\n")
+        new_text = ''
+        for ln in block:
+            blank_found = 0
+            for sl in ln:
+                if len(ln) == 1 and sl == '':
+                    blank_found = 0
+                    # sl = '\n'
+                elif len(ln) > 1 and sl == '':
+                    blank_found += 1
+                elif sl != '':
+                    blank_found = 0
+                if blank_found < 2:
+                    new_text += sl + spaces
+            new_text = new_text.strip(' ') + '\n'
+        # print(f"DEBUG: texteditor.py collapse_blanks new_text={new_text}")
+        return new_text
 
 
 class SourceEditor(wx.Panel):

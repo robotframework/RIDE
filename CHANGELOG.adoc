@@ -25,6 +25,7 @@ Tools->Preferences->General.
 
 === Fixed
 
+- Fixed headers and blank spacing in Templated tests
 - Fixed removal of continuation marker in steps
 - Fixed wrong continuation of long chains of keywords in Setups, Teardowns or Documentation
 - Fixed New User Keyword dialog not allowing empty Arguments field

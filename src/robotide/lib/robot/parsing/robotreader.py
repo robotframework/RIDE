@@ -62,9 +62,49 @@ class RobotReader(object):
         return populator.eof()
 
     def sharp_strip(self, line):
-        row = self._space_splitter.split(line)
-        # print(f"DEBUG: RFLib RobotReader sharp_strip after cells split row={row[:]}")
-        return row
+        if self._separator_check:
+            row = self._space_splitter.split(line)
+            # print(f"DEBUG: RFLib RobotReader sharp_strip after cells split spaces={self._spaces} row={row[:]}")
+            return [c.strip() for c in row]
+        row = []
+        start = end = no_spc = spc = 0
+        for idx in range(len(line)):
+            if line[idx] != ' ':
+                no_spc += 1
+                end = idx
+                if spc > max(2, self._spaces - 1) or idx == len(line) - 1:
+                    if idx == len(line) - 1:
+                        end = None
+                    segmt = line[start:end].strip()   # Spaces cell
+                    # print(f"DEBUG: robotreader.py sharp_strip in non_spc {idx=} {segmt} {end=}")
+                    row.append(segmt)
+                    start = idx
+                spc = 0
+            else:
+                spc += 1
+                end = idx
+                if (no_spc > 0 and spc >= max(2, self._spaces - 1)) or idx == len(line) - 1:
+                    if idx == len(line) - 1:
+                        end = None
+                    segmt = line[start:end].strip()  # No spaces cell
+                    # print(f"DEBUG: robotreader.py sharp_strip in spc {idx=} {segmt} {end=}")
+                    row.append(segmt)
+                    start = idx
+                no_spc = 0
+        spc_row = []
+        for r in row:
+            spc_row.extend(r.split(max(2, self._spaces) * ' '))
+            # spc_row.extend(self._space_splitter.split(r))
+        # Remove empty cells after first identation or content
+        content = False
+        for idx, r in enumerate(spc_row):
+            if r != '':
+                content = True
+            if r == '' and content:
+                spc_row.pop(idx)
+        # print(f"DEBUG: robotreader.py sharp_strip splitted line={spc_row[:]}[{len(''.join(spc_row))}]\n"
+        #       f"original line={line}[{len(line)}]")
+        return spc_row
 
     def split_row(self, row):
         if row[:2] in self._pipe_starts:

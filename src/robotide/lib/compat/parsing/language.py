@@ -112,6 +112,7 @@ def get_headers_for(language, tables_headers, lowercase=True):
             (_testcase_table_names,),
             (_keyword_table_names,),
             (_comment_table_names,)]
+    # print(f"DEBUG: language.py get_headers_for ENTER {language=} tables_headers={tables_headers}")
     if not Language:
         return t_en
     assert tables_headers is not None
@@ -131,7 +132,7 @@ def get_headers_for(language, tables_headers, lowercase=True):
     if not languages:
         # print("DEBUG: language.py get_headers_for languages set is empty returning original tables_headers")
         return tables_headers
-
+    # print(f"DEBUG: language.py get_headers_for BEFORE BUILD TABLE {language=} tables_headers={tables_headers}")
     build_table = set()
     for lang in languages:
         headers = lang.headers
@@ -150,11 +151,19 @@ def get_headers_for(language, tables_headers, lowercase=True):
                 inx += 1
             for bh in build_headings:
                 build_table.add(bh)
+    # print(f"DEBUG: language.py get_headers_for BEFORE RE-BUILD TABLE build_table= {build_table}")
+    mod_headers = list(tables_headers)
     if build_table:
-        # print(f"DEBUG: language.py get_headers_for returning table= {build_table}")
-        for th in tables_headers:
-            build_table.add(th)
-        return tuple(list(build_table))
+        new_table = list(build_table)
+        for k in new_table:
+            if k in mod_headers:
+                mod_headers.remove(k)
+        for th in mod_headers:
+            if th != '':
+                new_table.append(th)
+        # print(f"DEBUG: language.py get_headers_for RETURN table= {new_table}")
+        return tuple(new_table)
+    # print(f"DEBUG: language.py get_headers_for RETURN AFTER FAILED BUILD TABLE tables_headers={tables_headers}")
     return tables_headers
 
 
