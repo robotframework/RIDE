@@ -39,6 +39,7 @@ class DataRow(object):
             return data, comments  # DEBUG keep empty cells
         for cell in row:
             # print(f"DEBUG: datarow before clean cell={cell}")
+            # DEBUG:
             cell = self._collapse_whitespace(cell)
             # print(f"DEBUG: datarow after clean cell={cell}")
             # DEBUG: Lets keep # at start of line
@@ -74,7 +75,7 @@ class DataRow(object):
     @property
     def first_non_empty_cell(self):
         index = 0
-        while index < len(self.cells) and self.cells[index] == '':
+        while index < len(self.cells) and (self.cells[index] == '' or self.cells[index].strip() == ''):
             index += 1
         # print(f"DEBUG: datarow RETURNING  _first_non_empty_cell index ={index}")
         return index  # if index < len(self.cells) else index - 1
@@ -107,7 +108,7 @@ class DataRow(object):
                         break
                 # print(f"DEBUG: datarow.py data returning from continuation row idx={start} data={self.cells}")
                 return self.cells[start:]
-        return self.cells
+        return [c.strip() for c in self.cells]  #self.cells
 
     def dedent(self):
         # DEBUG: this is used only for debugging: import inspect
