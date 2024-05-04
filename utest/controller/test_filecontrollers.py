@@ -20,9 +20,9 @@ import shutil
 from robotide.robotapi import TestCase, TestCaseFile, TestDataDirectory
 
 from robotide.controller.filecontrollers import TestCaseFileController, \
-    TestDataDirectoryController, _FileSystemElement
+    TestDataDirectoryController, _FileSystemElement, start_filemanager, explorer_linux, explorer_mac
 from robotide.controller.macrocontrollers import TestCaseController
-from robotide.controller.ctrlcommands import AddTestCaseFile, AddTestDataDirectory,\
+from robotide.controller.ctrlcommands import AddTestCaseFile, AddTestDataDirectory, \
     SortKeywords, SortTests, SortVariables, Undo, Redo
 from robotide.publish import PUBLISHER
 from robotide.publish.messages import RideDataChangedToDirty, RideDataDirtyCleared
@@ -69,13 +69,13 @@ class TestMarkUnMarkDirty(unittest.TestCase):
         self.ctrl.mark_dirty()
         self._has_unsaved_changes = None
         self.ctrl.mark_dirty()
-        assert self._has_unsaved_changes == None
+        assert self._has_unsaved_changes is None
 
     def test_reclearing_dirty_mark_does_not_publish_data_saved_message(self):
         self.ctrl.unmark_dirty()
         self._saved = None
         self.ctrl.unmark_dirty()
-        assert self._saved == None
+        assert self._saved is None
 
 
 class TestCaseFileControllerTest(unittest.TestCase):
@@ -102,7 +102,7 @@ class TestCaseFileControllerTest(unittest.TestCase):
 
     def test_longname(self):
         assert self.ctrl.longname == 'Test.Cases'
-        self.ctrl.parent = lambda:0
+        self.ctrl.parent = lambda: 0
         self.ctrl.parent.longname = 'Parent'
         assert self.ctrl.longname == 'Parent.Test.Cases'
 
@@ -178,6 +178,8 @@ class TestResourceFileControllerTest(unittest.TestCase):
 
     def test_sort_and_restore_keywords(self):
         resource_ctrl = self._get_ctrl_by_name(datafilereader.SIMPLE_TEST_SUITE_RESOURCE_NAME)
+
+        assert resource_ctrl is not None
 
         # Capture keyword list before sorting
         original_keywords = self.ctrl.get_keyword_names()
@@ -261,7 +263,7 @@ class TestDataDirectoryControllerTest(unittest.TestCase):
     def test_longname(self):
         ctrl = TestDataDirectoryController(self.data)
         assert ctrl.longname == 'Source'
-        ctrl.parent = lambda:0
+        ctrl.parent = lambda: 0
         ctrl.parent.longname = 'Parent'
         assert ctrl.longname == 'Parent.Source'
 
@@ -290,7 +292,7 @@ class TestDataDirectoryControllerTest(unittest.TestCase):
         assert suite.data.parent == ctrl.data
 
     def test_exclude(self):
-        parent = lambda:0
+        parent = lambda: 0
         project = self._mock_project()
         ctrl = TestDataDirectoryController(self.data, project, parent)
         parent.children = [ctrl]
@@ -300,12 +302,12 @@ class TestDataDirectoryControllerTest(unittest.TestCase):
         self.assertTrue(self.called)
 
     def _mock_project(self):
-        project = lambda:0
-        project.namespace = lambda:0
-        project.resource_file_controller_factory = lambda:0
-        project.is_datafile_dirty = lambda *_:False
-        project.internal_settings = lambda:0
-        project.internal_settings.excludes = lambda:0
+        project = lambda: 0
+        project.namespace = lambda: 0
+        project.resource_file_controller_factory = lambda: 0
+        project.is_datafile_dirty = lambda *_: False
+        project.internal_settings = lambda: 0
+        project.internal_settings.excludes = lambda: 0
         self.called = False
 
         def update_excludes(new_excludes):
@@ -334,8 +336,7 @@ class DatafileIteratorTest(unittest.TestCase):
                 if controller.filename and controller.filename.endswith('test.robot'):
                     self.in_sub_dir = True
         check_count_and_sub_dir = Checker()
-        [check_count_and_sub_dir(df) for df
-                in self.directory_controller.iter_datafiles()]
+        [check_count_and_sub_dir(df) for df in self.directory_controller.iter_datafiles()]
         assert check_count_and_sub_dir.iteration_count == 5
         assert check_count_and_sub_dir.in_sub_dir
 
@@ -347,6 +348,39 @@ class TestRelativePathTo(unittest.TestCase):
         fse2 = _FileSystemElement('zoo.html', 'goo')
         self.assertEqual('../goo/zoo.html', fse1.relative_path_to(fse2))
         self.assertEqual('../bar/foo.robot', fse2.relative_path_to(fse1))
+
+
+class TestFileManager(unittest.TestCase):
+
+    def test_explorer_linux(self):
+        try:
+            explorer_linux('this_path_does_not_exist')
+        except Exception as e:
+            print(f"DEBUG: TestFileManager raised ERROR {e}")
+
+    def test_explorer_mac(self):
+        try:
+            explorer_mac('this_path_does_not_exist')
+        except Exception as e:
+            print(f"DEBUG: TestFileManager raised ERROR {e}")
+
+    def test_start_filemanager_bad_path(self):
+        try:
+            start_filemanager(path='this_path_does_not_exist')
+        except Exception as e:
+            print(f"DEBUG: TestFileManager raised ERROR {e}")
+
+    def test_start_filemanager_bad_tool(self):
+        try:
+            start_filemanager(path=__file__, tool='this_tool_does_not_exist')
+        except Exception as e:
+            print(f"DEBUG: TestFileManager raised ERROR {e}")
+
+    def test_start_filemanager_good_path(self):
+        try:
+            start_filemanager(path=__file__)
+        except Exception as e:
+            print(f"DEBUG: TestFileManager raised ERROR {e}")
 
 
 if __name__ == '__main__':
