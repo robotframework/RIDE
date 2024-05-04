@@ -72,6 +72,7 @@ from robotide.contrib.testrunner.Command import Command
 from robotide.contrib.testrunner.FileWriter import FileWriter
 from robotide.contrib.testrunner.SettingsParser import SettingsParser
 from robotide.controller.macrocontrollers import TestCaseController
+from robotide.controller.filecontrollers import start_filemanager
 from robotide.publish import RideSettingsChanged, PUBLISHER
 from robotide.publish.messages import RideTestSelectedForRunningChanged
 from robotide.pluginapi import Plugin, ActionInfo
@@ -115,6 +116,7 @@ STYLE_STDERR = 2
 STYLE_PASS = 1
 STYLE_SKIP = 3
 STYLE_FAIL = 4
+FILE_MANAGER = 'file manager'
 
 ATEXIT_LOCK = threading.RLock()
 
@@ -122,39 +124,6 @@ ATEXIT_LOCK = threading.RLock()
 def _run_profile(name, run_prefix):
     return type('Profile', (runprofiles.PybotProfile,),
                 {'name': name, 'get_command': lambda self: run_prefix})
-
-
-def open_filemanager(path=None):
-    path = path or os.path.curdir
-    path_dir = os.path.dirname(path) if os.path.isfile(path) else path
-    if os.path.exists(path_dir):
-        if platform == 'win32':
-            #  There was encoding errors if directory had unicode chars
-            # DEBUG: test on all OS directory names with accented chars, for example 'ccedilla'
-            os.startfile(r"%s" % path_dir, 'explore')
-        elif platform.startswith('linux'):
-            # how to detect which explorer is used?
-            # nautilus, dolphin, konqueror
-            # DEBUG: check if explorer exists
-            # DEBUG: get prefered explorer from preferences
-            try:
-                subprocess.Popen(["nautilus", "{}".format(path_dir)])
-            except OSError:
-                try:
-                    subprocess.Popen(
-                        ["dolphin", "{}".format(path_dir)])
-                except OSError:
-                    try:
-                        subprocess.Popen(
-                           ["konqueror", "{}".format(path_dir)])
-                    except OSError:
-                        print("Could not launch explorer. Tried nautilus, "
-                              "dolphin and konqueror.")
-        else:
-            try:
-                subprocess.Popen(["finder", "{}".format(path_dir)])
-            except OSError:
-                subprocess.Popen(["open", "{}".format(path_dir)])
 
 
 class TestRunnerPlugin(Plugin):
@@ -514,8 +483,13 @@ class TestRunnerPlugin(Plugin):
     def on_open_logs_directory(self, event):
         """Called when the user clicks on the "Open Logs Directory" button"""
         __ = event
+        # Determine explorer defined tool
+        try:
+            tool = self.global_settings['General'][FILE_MANAGER]
+        except KeyError:
+            tool = None
         if os.path.exists(self._logs_directory):
-            open_filemanager(self._logs_directory)
+            start_filemanager(self._logs_directory, tool)
         else:
             self._notify_user_no_logs_directory()
 

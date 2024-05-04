@@ -64,6 +64,47 @@ def data_controller(data, project, parent=None, tasks=False):
     return _get_controller(project, data, parent, tasks=tasks)
 
 
+def explorer_linux(folder):
+    try:
+        subprocess.Popen(["nautilus", folder])
+    except OSError:
+        try:
+            subprocess.Popen(["dolphin", folder])
+        except OSError:
+            try:
+                subprocess.Popen(["konqueror", folder])
+            except OSError:
+                print("Could not launch explorer. Tried nautilus, dolphin and konqueror.")
+
+
+def explorer_mac(folder):
+    try:
+        subprocess.Popen(["finder", folder])
+    except OSError:
+        subprocess.Popen(["open", folder])
+
+
+def start_filemanager(path=None, tool=None):
+    if not os.path.exists(path):
+        return
+    if not os.path.isfile(path):
+        folder = path
+    else:
+        folder = os.path.dirname(path)
+    if tool:
+        try:
+            subprocess.Popen([tool, folder])
+            return
+        except OSError:
+            print(f"DEBUG: Error when launching tool={tool}")
+    if sys.platform == 'win32':
+        os.startfile(folder, 'explore')
+    elif sys.platform.startswith('linux'):
+        explorer_linux(folder)
+    else:
+        explorer_mac(folder)
+
+
 class _FileSystemElement(object):
 
     def __init__(self, filename, directory):
@@ -341,59 +382,9 @@ class _DataController(_BaseController, WithUndoRedoStacks, WithNamespace):
         path = path or self.filename
         os.chmod(path, stat.S_IWRITE)
 
-    @staticmethod
-    def _explorer_linux(path, tool):
-        if not os.path.isfile(path):
-            folder = path
-        else:
-            folder = os.path.dirname(path)
-        if tool:
-            try:
-                subprocess.Popen([tool, folder])
-                # print(f"DEBUG: After starting _explorer_linux ={tool}")
-                return
-            except OSError:  # :
-                print(f"DEBUG: Error when launching tool={tool}")
-        try:
-            subprocess.Popen(["nautilus", folder])
-        except OSError:
-            try:
-                subprocess.Popen(["dolphin", folder])
-            except OSError:
-                try:
-                    subprocess.Popen(["konqueror", folder])
-                except OSError:
-                    print("Could not launch explorer. Tried nautilus, dolphin and konqueror.")
-
     def open_filemanager(self, path=None, tool=None):
         path = path or self.filename
-        if not os.path.exists(path):
-            return
-        if not os.path.isfile(path):
-            folder = path
-        else:
-            folder = os.path.dirname(path)
-        if sys.platform == 'win32':
-            if tool:
-                try:
-                    subprocess.Popen([tool, folder])
-                    return
-                except OSError:
-                    print(f"DEBUG: Error when launching tool={tool}")
-            os.startfile(folder, 'explore')
-        elif sys.platform.startswith('linux'):
-            self._explorer_linux(folder, tool)
-        else:
-            if tool:
-                try:
-                    subprocess.Popen([tool, folder])
-                    return
-                except OSError:
-                    print(f"DEBUG: Error when launching tool={tool}")
-            try:
-                subprocess.Popen(["finder", folder])
-            except OSError:
-                subprocess.Popen(["open", folder])
+        start_filemanager(path, tool)
 
     def remove_from_filesystem(self, path=None):
         path = path or self.filename
