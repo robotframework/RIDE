@@ -30,11 +30,15 @@ dialog.
 
 """
 
+import builtins
 import wx
 from wx import Colour
 from wx.lib.scrolledpanel import ScrolledPanel
 
 from .settings import RideSettings
+
+_ = wx.GetTranslation  # To keep linter/code analyser happy
+builtins.__dict__['_'] = wx.GetTranslation
 
 # any more than TREE_THRESHOLD panels when style is "auto" forces
 # the UI into showing a hierarchical tree
@@ -160,7 +164,7 @@ class PreferenceEditor(wx.Dialog):
     def _get_item(self, location):
         item = self._tree.GetRootItem()
         for text in location:
-            item = self._get_child_item(item, text)
+            item = self._get_child_item(item, _(text))
         return item
 
     def _get_child_item(self, parent, text):
