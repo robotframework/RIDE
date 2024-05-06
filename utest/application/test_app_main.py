@@ -81,16 +81,21 @@ class TestMain(unittest.TestCase):
 
     def test_parse_args(self):
         from robotide import _parse_args
-        noupdatecheck, debug_console, inpath = _parse_args(args=None)
-        assert (noupdatecheck, debug_console, inpath) == (False, False, None)
-        noupdatecheck, debug_console, inpath = _parse_args(args=('--noupdatecheck', 'no file'))
-        assert (noupdatecheck, debug_console, inpath) == (True, False, 'no file')
-        noupdatecheck, debug_console, inpath = _parse_args(args=('--noupdatecheck', '--debugconsole'))
-        assert (noupdatecheck, debug_console, inpath) == (True, True, None)
-        noupdatecheck, debug_console, inpath = _parse_args(args='')
-        assert (noupdatecheck, debug_console, inpath) == (False, False, None)
-        noupdatecheck, debug_console, inpath = _parse_args(args=('--garbagein', '--garbageout'))
-        assert (noupdatecheck, debug_console, inpath) == (False, False, '--garbageout')  # returns always last arg
+        noupdatecheck, debug_console, settings_path, inpath = _parse_args(args=None)
+        assert (noupdatecheck, debug_console, settings_path, inpath) == (False, False, None, None)
+        noupdatecheck, debug_console, settings_path, inpath = _parse_args(args=('--noupdatecheck', 'no file'))
+        assert (noupdatecheck, debug_console, settings_path, inpath) == (True, False, None, 'no file')
+        noupdatecheck, debug_console, settings_path, inpath = _parse_args(args=('--noupdatecheck', '--debugconsole'))
+        assert (noupdatecheck, debug_console, settings_path, inpath) == (True, True, None, None)
+        noupdatecheck, debug_console, settings_path, inpath = _parse_args(args=('--noupdatecheck', '--debugconsole',
+                                                                                '--settingspath', 'mysettings.cfg',
+                                                                                'my_test_suite'))
+        assert (noupdatecheck, debug_console, settings_path, inpath) == (True, True, 'mysettings.cfg', 'my_test_suite')
+        noupdatecheck, debug_console, settings_path, inpath = _parse_args(args='')
+        assert (noupdatecheck, debug_console, settings_path, inpath) == (False, False, None, None)
+        noupdatecheck, debug_console, settings_path, inpath = _parse_args(args=('--garbagein', '--garbageout'))
+        # returns always first arg
+        assert (noupdatecheck, debug_console, settings_path, inpath) == (False, False, None, '--garbagein')
 
     def test_run_call_with_fail_import(self):
         import robotide.application
@@ -133,7 +138,7 @@ class TestMain(unittest.TestCase):
                 m.setattr(wx, 'VERSION', (4, 0, 0, '', ''))
                 from wx import MessageDialog
                 m.setattr(MessageDialog, 'ShowModal', my_show)
-                robotide._run(False, False)
+                robotide._run(False, False, False, None)
 
     def test_run_call_with_new_version_dbg_console(self):
         import robotide.application
@@ -169,7 +174,7 @@ class TestMain(unittest.TestCase):
                 m.setattr(robotide.application, 'RIDE', SideEffect)
                 import wx
                 m.setattr(wx, 'VERSION', (4, 4, 0, '', ''))
-                robotide._run(False, False, True)
+                robotide._run(False, False, True, None)
 
     def test_main_call_with_fail_run(self):
         import robotide

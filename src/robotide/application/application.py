@@ -78,9 +78,10 @@ class RIDE(wx.App):
     settings = None
     treeplugin = None
 
-    def __init__(self, path=None, updatecheck=True):
+    def __init__(self, path=None, updatecheck=True, settingspath=None):
         self._updatecheck = updatecheck
         self.workspace_path = path
+        self.settings_path = settingspath
         context.APP = self
         wx.App.__init__(self, redirect=False)
 
@@ -90,7 +91,7 @@ class RIDE(wx.App):
         self._locale = wx.Locale(wx.LANGUAGE_ENGLISH_US)  # LANGUAGE_PORTUGUESE
         # Needed for SetToolTipString to work
         wx.HelpProvider.Set(wx.SimpleHelpProvider())  # DEBUG: adjust to wx versions
-        self.settings = RideSettings()
+        self.settings = RideSettings(self.settings_path)
 
         class Message:
             keys = ['General']
