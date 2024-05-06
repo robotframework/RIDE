@@ -10,6 +10,10 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Added
 
+- Added command line option, ``--settingspath``, to select a different configuration. For example, you can have different
+colour settings or UI language.
+- Added different settings file, according the actual Python executable, if not the original installed.
+This allows different configurations, like, for example, in a virtual environment
 - Added context option ``Open Containing Folder`` to test suites directories in Project Explorer.
 - Added a setting for a specific file manager by editing the settings.cfg file. Add the string parameter ``file manager`` in the section ``[General]``.
 - Added minimal support to have comment lines in Import settings. These are not supposed to be edited in Editor, and new lines are added at Text Editor.

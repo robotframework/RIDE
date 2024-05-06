@@ -36,6 +36,7 @@ IS_MAC = sys.platform == 'darwin'
 IS_LINUX = sys.platform == 'linux'
 WX_VERSION = wx.VERSION_STRING
 IS_WX_410_OR_HIGHER = WX_VERSION >= '4.1.0'
+EXECUTABLE = sys.executable
 
 if IS_WINDOWS:
     SETTINGS_DIRECTORY = os.path.join(
@@ -87,6 +88,7 @@ def get_about_ride():
     build_about += [f"<br/><div>{translators}</div>"]
 
     return "".join(build_about)
+
 
 """
 ABOUT_RIDE = '''<h3>RIDE -- Robot Framework Test Data Editor</h3>

@@ -16,7 +16,7 @@
 import os
 import shutil
 
-from ..context import SETTINGS_DIRECTORY, LIBRARY_XML_DIRECTORY
+from ..context import SETTINGS_DIRECTORY, LIBRARY_XML_DIRECTORY, EXECUTABLE
 from .configobj import ConfigObj, ConfigObjError, Section, UnreprError
 from .excludes_class import Excludes
 from ..publish import RideSettingsChanged
@@ -29,6 +29,8 @@ USE_INSTALLED = 'use installed robot libraries'
 def initialize_settings(path, dest_file_name=None):
     if not os.path.exists(SETTINGS_DIRECTORY):
         os.makedirs(SETTINGS_DIRECTORY)
+    if not os.path.exists(path):
+        path = os.path.join(SETTINGS_DIRECTORY, path)
     (path, error) = _copy_or_migrate_user_settings(
         SETTINGS_DIRECTORY, path, dest_file_name)
     if error:
@@ -44,6 +46,8 @@ def _copy_or_migrate_user_settings(settings_dir, source_path, dest_file_name):
     is given.
     """
     m_error = None
+    if not os.path.exists(source_path):
+        raise(FileNotFoundError(source_path))
     if not dest_file_name:
         dest_file_name = os.path.basename(source_path)
     settings_path = os.path.join(settings_dir, dest_file_name)
@@ -357,7 +361,18 @@ class RideSettings(Settings):
         Settings.__init__(self, user_path)
         self._settings_dir = os.path.dirname(user_path)
         # print("DEBUG: RideSettings, self._settings_dir %s\n" % self._settings_dir)
-        self.set('install root', os.path.dirname(os.path.dirname(__file__)))
+        self.get('install root', os.path.dirname(os.path.dirname(__file__)))
+        self.executable = self.get('executable', EXECUTABLE)
+        if self.executable != EXECUTABLE:
+            digest = 0
+            for c in EXECUTABLE:
+                digest += ord(c)
+            new_user_path = user_path.replace("settings.cfg", f"settings_{digest}.cfg")
+            new_user_path = initialize_settings(user_path, new_user_path)
+            Settings.__init__(self, new_user_path)
+            self._settings_dir = os.path.dirname(new_user_path)
+            self.set('install root', os.path.dirname(os.path.dirname(__file__)))
+            self.executable = self.set('executable', EXECUTABLE)
 
     def get_path(self, *parts):
         """Returns path which combines settings directory and given parts."""

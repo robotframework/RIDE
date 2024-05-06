@@ -15,7 +15,7 @@
 
 """RIDE -- Robot Framework test data editor
 
-Usage: ride.py [--noupdatecheck] [--debugconsole] [--version] [inpath]
+Usage: ride.py [--noupdatecheck] [--debugconsole] [--settingspath <full path|settings filename>] [--version] [inpath]
 
 RIDE can be started either without any arguments or by giving a path to a test
 data file or directory to be opened.
@@ -23,6 +23,8 @@ data file or directory to be opened.
 To disable update checker use --noupdatecheck.
 
 To start debug console for RIDE problem debugging use --debugconsole option.
+
+To use different settings use the option --settingspath followed by the path to the settings file or file name.
 
 To see RIDE's version use --version.
 
@@ -35,8 +37,8 @@ import sys
 from string import Template
 
 errorMessageTemplate = Template("""$reason
-RIDE depends on wx (wxPython). Known versions for Python3 are: 4.0.7.post2, 4.1.1 and 4.2.0.\
-At the time of this release the current wxPython version is 4.2.0.\
+RIDE depends on wx (wxPython). Known versions for Python3 are: 4.0.7.post2, 4.1.1 and 4.2.1.\
+At the time of this release the current wxPython version is 4.2.1.\
 You can install with 'pip install wxPython' on most operating systems, or find the \
 the download link from https://wxPython.org/""")
 
@@ -55,10 +57,6 @@ sys.path.append(os.path.join(os.path.dirname(__file__), 'lib'))
 
 def main(*args):
     _replace_std_for_win()
-    noupdatecheck, debug_console, inpath = _parse_args(args)
-    if len(args) > 3 or '--help' in args:
-        print(__doc__)
-        sys.exit()
     if '--version' in args:
         try:
             from . import version
@@ -67,8 +65,12 @@ def main(*args):
             sys.exit(1)
         print(version.VERSION)
         sys.exit(0)
+    noupdatecheck, debug_console, settings_path, inpath = _parse_args(args)
+    if len(args) > 3 or '--help' in args:
+        print(__doc__)
+        sys.exit()
     try:
-        _run(inpath, not noupdatecheck, debug_console)
+        _run(inpath, not noupdatecheck, debug_console, settingspath=settings_path)
     except Exception:  # DEBUG
         import traceback
         traceback.print_exception(*sys.exc_info())
@@ -77,15 +79,26 @@ def main(*args):
 
 def _parse_args(args):
     if not args:
-        return False, False, None
-    noupdatecheck = '--noupdatecheck' in args
-    debug_console = '--debugconsole' in args
-    inpath = args[-1] if args[-1] not in ['--noupdatecheck',
-                                          '--debugconsole'] else None
-    return noupdatecheck, debug_console, inpath
+        return False, False, None, None
+    arguments = list(args)
+    noupdatecheck = '--noupdatecheck' in arguments
+    if noupdatecheck:
+        arguments.remove('--noupdatecheck')
+    debug_console = '--debugconsole' in arguments
+    if debug_console:
+        arguments.remove('--debugconsole')
+    settings_path = None
+    if '--settingspath' in arguments:
+        arguments.remove('--settingspath')
+        if len(arguments) > 0:
+            settings_path = arguments.pop(0)
+        else:
+            settings_path = None
+    inpath = arguments[0] if arguments else None
+    return noupdatecheck, debug_console, settings_path, inpath
 
 
-def _run(inpath=None, updatecheck=True, debug_console=False):
+def _run(inpath=None, updatecheck=True, debug_console=False, settingspath=None):
     # print(f"DEBUG: ENTER _run {inpath=}, {updatecheck=}, {debug_console=}")
     try:
         from robotide.application import RIDE
@@ -93,7 +106,7 @@ def _run(inpath=None, updatecheck=True, debug_console=False):
     except ImportError:
         _show_old_wxpython_warning_if_needed()
         raise
-    ride = RIDE(inpath, updatecheck)
+    ride = RIDE(inpath, updatecheck, settingspath=settingspath)
     if wx.VERSION <= (4, 0, 4, '', ''):
         _show_old_wxpython_warning_if_needed(ride.frame)
     else:
@@ -139,7 +152,7 @@ def _show_old_wxpython_warning_if_needed(parent=None):
         message = ("RIDE needs a newer wxPython version. Your current "
                    "version is %s."
                    "\n"
-                   "At the time of this release the current wxPython version is 4.2.0. See "
+                   "At the time of this release the current wxPython version is 4.2.1. See "
                    "https://wxPython.org/ for downloads and instructions."
                    % wx.VERSION_STRING)
         style = wx.ICON_EXCLAMATION

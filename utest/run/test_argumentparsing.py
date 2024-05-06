@@ -22,8 +22,10 @@ class ArgumentParsingTestCase(unittest.TestCase):
     def test_no_args(self):
         self._assert_args([])
 
-    def _assert_args(self, tested, expected_no_update_check=False, expected_debug_console=False, expected_path=None):
-        self.assertEqual((expected_no_update_check, expected_debug_console, expected_path), robotide._parse_args(tested))
+    def _assert_args(self, tested, expected_no_update_check=False, expected_debug_console=False,
+                     expect_settings_path=None, expected_path=None):
+        self.assertEqual((expected_no_update_check, expected_debug_console, expect_settings_path, expected_path),
+                         robotide._parse_args(tested))
 
     def test_path_to_data(self):
         self._assert_args(['data'], expected_path='data')
@@ -39,6 +41,22 @@ class ArgumentParsingTestCase(unittest.TestCase):
 
     def test_debugconsole_and_path(self):
         self._assert_args(['--debugconsole', 'dir'], expected_debug_console=True, expected_path='dir')
+
+    def test_settingspath(self):
+        self._assert_args(['--settingspath'], expect_settings_path=None)
+
+    def test_settingspath_and_filename(self):
+        self._assert_args(['--settingspath', 'my_settings.cfg'],
+                          expect_settings_path='my_settings.cfg')
+
+    def test_settingspath_and_path(self):
+        self._assert_args(['--settingspath', '/tmp/.robotide/ride/my_settings.cfg'],
+                          expect_settings_path='/tmp/.robotide/ride/my_settings.cfg')
+
+    def test_settingspath_path_and_testsuite(self):
+        self._assert_args(['--settingspath', '/tmp/.robotide/ride/my_settings.cfg', 'dir/testsuite.robot'],
+                          expect_settings_path='/tmp/.robotide/ride/my_settings.cfg',
+                          expected_path='dir/testsuite.robot')
 
 
 if __name__ == '__main__':

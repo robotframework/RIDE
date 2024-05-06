@@ -16,6 +16,8 @@
 import unittest
 import os
 
+import pytest
+
 from robotide.preferences import settings
 from robotide.preferences.settings import Settings, SectionError,\
     ConfigurationError, initialize_settings, SettingsMigrator
@@ -296,6 +298,7 @@ class TestInitializeSettings(TestSettingsHelper):
         self._orig_dir = settings.SETTINGS_DIRECTORY
         self.settings_dir = os.path.join(os.path.dirname(__file__), 'ride')
         # print("DEBUG: Settings dir init %s" % self.settings_dir)
+
         settings.SETTINGS_DIRECTORY = self.settings_dir
         self._init_settings_paths()
         self._write_settings("foo = 'bar'\nhello = 'world'\n",
@@ -306,6 +309,8 @@ class TestInitializeSettings(TestSettingsHelper):
         settings.SETTINGS_DIRECTORY = self._orig_dir
         self._remove_path(self.user_settings_path)
         self._remove_path((self.user_settings_path+'_old_broken'))
+        self._remove_path(os.path.join(self.settings_dir, 'new_settings.cfg'))
+        self._remove_path(os.path.join(self.settings_dir, 'my_settings.cfg'))
         os.removedirs(self.settings_dir)
 
     def test_initialize_settings_creates_directory(self):
@@ -315,6 +320,15 @@ class TestInitializeSettings(TestSettingsHelper):
     def test_initialize_settings_copies_settings(self):
         initialize_settings(self.settings_path, 'user.cfg')
         self.assertTrue(os.path.exists(self.settings_dir))
+
+    def test_initialize_settings_raises_error_if_no_source(self):
+        with pytest.raises(FileNotFoundError):
+            initialize_settings('no_settings.cfg', 'user.cfg')
+
+    def test_initialize_settings_builds_default_source_path(self):
+        initialize_settings(self.settings_path, 'new_settings.cfg')
+        path = initialize_settings('new_settings.cfg', 'my_settings.cfg')
+        assert path == os.path.join(settings.SETTINGS_DIRECTORY, 'my_settings.cfg')
 
     def test_initialize_settings_does_merge_when_settings_exists(self):
         os.mkdir(self.settings_dir)

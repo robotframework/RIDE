@@ -158,6 +158,8 @@ RELEASE_NOTES = f"""
 <li>This version supports Python 3.8 up to 3.12.</li>
 <li>There are some changes, or known issues:<ul>
 <li>❌ - Removed support for Python 3.6 and 3.7</li>
+<li>✔ - Added command line option, <b>--settingspath</b>, to select a different configuration.</li>
+<li>✔ - Added different settings file, according the actual Python executable, if not the original installed.</li>
 <li>✔ - Added a selector for Tasks and Language to the New Project dialog.</li>
 <li>✔ - Added UI localization prepared for all the languages from installed Robot Framework version 6.1, or 
 higher. Major translations are: Dutch, Portuguese and Brazilian Portuguese. Still missing translation 
@@ -182,6 +184,8 @@ version 4.2.1, which we now <em>recommend</em>.</li>
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
+<li>Added command line option, <b>--settingspath</b>, to select a different configuration.</li>
+<li>Added different settings file, according the actual Python executable, if not the original installed.</li>
 <li>Fixed headers and blank spacing in Templated tests.</li>
 <li>Added context option <b>Open Containing Folder</b> to test suites directories in Project Explorer.</li>
 <li>Added a setting for a specific file manager by editing the settings.cfg file. Add the string parameter <b>file manager</b>
@@ -285,8 +289,9 @@ python -m robotide.__init__
 <pre class="literal-block">
 python -m robotide.postinstall -install
 </pre>
-<p>RIDE {VERSION} was released on 04/May/2024.</p>
-<br/>
+<p>RIDE {VERSION} was released on 06/May/2024.</p>
+<!-- <br/>
 <h3>May The Fourth Be With You!</h3>
+-->
 </div>
 """
