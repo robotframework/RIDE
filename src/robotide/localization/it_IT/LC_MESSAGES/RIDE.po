@@ -622,7 +622,7 @@ msgstr "Sposta Righe Su | Sposta Righe Su | Alt-Up\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:49
 msgid "Move Rows Down | Move Rows Down | Alt-Down\n"
-msgstr "Sposta Righe Giù | Sposta Righe Giù | Alt-Giù\n"
+msgstr "Sposta Righe Giù | Sposta Righe Giù | Alt-Down\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:50
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:66
