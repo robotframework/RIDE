@@ -2,19 +2,20 @@ msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
 "POT-Creation-Date: 2024-05-07 01:31+0100\n"
-"PO-Revision-Date: 2024-05-07 00:50\n"
-"Last-Translator: \n"
+"PO-Revision-Date: 2024-05-07 23:19+0100\n"
+"Last-Translator: Hélio Guilherme <helio_guilherme@hotmail.com>\n"
 "Language-Team: Italian\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: pygettext.py 1.5\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Generated-By: pygettext.py 1.5\n"
 "X-Crowdin-Project: robotframework-ride\n"
 "X-Crowdin-Project-ID: 637294\n"
 "X-Crowdin-Language: it\n"
 "X-Crowdin-File: /master/src/robotide/localization/RIDE.pot\n"
 "X-Crowdin-File-ID: 14\n"
+"X-Generator: Poedit 3.4.2\n"
 "Language: it_IT\n"
 
 #:
@@ -550,7 +551,7 @@ msgstr "Prova conclusiva:"
 #:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1040
 msgid "UNKNOWN STATUS:"
-msgstr "STATUS SCONOSCIUTO"
+msgstr "STATUS SCONOSCIUTO:"
 
 #:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1068
@@ -667,7 +668,8 @@ msgstr "Celle di commento | celle di commento con # | Ctrlcmd-Shift-3\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:42
 msgid "Uncomment Rows | Uncomment selected rows | Ctrlcmd-4\n"
-msgstr "Annulla commento Righe | Deseleziona le righe selezionate | Ctrlcmd-4\n"
+msgstr ""
+"Annulla commento Righe | Deseleziona le righe selezionate | Ctrlcmd-4\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:43
 msgid "Uncomment Cells | Uncomment cells with # | Ctrlcmd-Shift-4\n"
@@ -695,7 +697,7 @@ msgstr "Sposta Righe Su | Sposta Righe Su | Alt-Up\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:49
 msgid "Move Rows Down | Move Rows Down | Alt-Down\n"
-msgstr "Sposta Righe Giù | Sposta Righe Giù | Alt-Giù\n"
+msgstr "Sposta Righe Giù | Sposta Righe Giù | Alt-Down\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:50
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:66
@@ -931,7 +933,7 @@ msgstr "Sposta Righe Su\tAlt-Up"
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:105
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:322
 msgid "Move Rows Down\tAlt-Down"
-msgstr "Sposta Righe Giù\tAlt-Giù"
+msgstr "Sposta Righe Giù\tAlt-Down"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:106
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:323
@@ -962,7 +964,7 @@ msgstr "Copia\tCtrl-C"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:111
 msgid "Cut\tCtrl-X"
-msgstr "Taglia Ctrl-X"
+msgstr "Taglia\tCtrl-X"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:111
 msgid "Select All\tCtrl-A"
@@ -1911,8 +1913,12 @@ msgid "All files|*.*"
 msgstr "Tutti i file|*.*"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/fileexplorerplugin.py:29
-msgid "Provides a tree view for Files and Folders. Opens selected item with mouse right-click."
-msgstr "Fornisce una vista ad albero per file e cartelle. Apre l'elemento selezionato con il clic destro del mouse."
+msgid ""
+"Provides a tree view for Files and Folders. Opens selected item with mouse "
+"right-click."
+msgstr ""
+"Fornisce una vista ad albero per file e cartelle. Apre l'elemento "
+"selezionato con il clic destro del mouse."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/fileexplorerplugin.py:61
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/fileexplorerplugin.py:117
@@ -1951,7 +1957,9 @@ msgstr "Cerca Parole Chiave"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:43
 msgid "A plugin for searching keywords based on name or documentation."
-msgstr "Un plugin per la ricerca di parole chiave in base al nome o alla documentazione."
+msgstr ""
+"Un plugin per la ricerca di parole chiave in base al nome o alla "
+"documentazione."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:55
 msgid "Search keywords from libraries and resources"
@@ -1979,19 +1987,28 @@ msgstr "[File]\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:58
 msgid "!&New Project | Create a new top level suite | Ctrlcmd-N | ART_NEW\n"
-msgstr "!&Nuovo progetto | Crea una nuova suite di alto livello | Ctrlcmd-N | ART_NEW\n"
+msgstr ""
+"!&Nuovo progetto | Crea una nuova suite di alto livello | Ctrlcmd-N | "
+"ART_NEW\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:60
-msgid "!&Open Test Suite | Open file containing tests | Ctrlcmd-O | ART_FILE_OPEN\n"
-msgstr "!&Open Test Suite | Apri file contenente test | Ctrlcmd-O | ART_FILE_OPEN\n"
+msgid ""
+"!&Open Test Suite | Open file containing tests | Ctrlcmd-O | ART_FILE_OPEN\n"
+msgstr ""
+"!&Open Test Suite | Apri file contenente test | Ctrlcmd-O | ART_FILE_OPEN\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:61
-msgid "!Open &Directory | Open directory containing datafiles | Shift-Ctrlcmd-O | ART_FOLDER_OPEN\n"
-msgstr "!Apri &Directory | Apri directory contenente dati | Shift-Ctrlcmd-O | ART_FOLDER_OPEN\n"
+msgid ""
+"!Open &Directory | Open directory containing datafiles | Shift-Ctrlcmd-O | "
+"ART_FOLDER_OPEN\n"
+msgstr ""
+"!Apri &Directory | Apri directory contenente dati | Shift-Ctrlcmd-O | "
+"ART_FOLDER_OPEN\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:62
 msgid "!Open External File | Open file in Code Editor | | ART_NORMAL_FILE\n"
-msgstr "!Apri file esterno | Apri file nell'editor di codice | | ART_NORMAL_FILE\n"
+msgstr ""
+"!Apri file esterno | Apri file nell'editor di codice | | ART_NORMAL_FILE\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:63
 msgid "!&Save | Save selected datafile | Ctrlcmd-S | ART_FILE_SAVE\n"
@@ -1999,7 +2016,9 @@ msgstr "!&Salva | Salva i dati selezionati | Ctrlcmd-S | ART_FILE_SAVE\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:64
 msgid "!Save &All | Save all changes | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS\n"
-msgstr "!Salva &tutti | Salva tutte le modifiche | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS\n"
+msgstr ""
+"!Salva &tutti | Salva tutte le modifiche | Ctrlcmd-Shift-S | "
+"ART_FILE_SAVE_AS\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:65
 msgid "!E&xit | Exit RIDE | Ctrlcmd-Q\n"
@@ -2047,7 +2066,8 @@ msgstr "!Informazioni su | Informazioni su RIDE\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:77
 msgid "!Check for Upgrade | Looks at PyPi for new released version\n"
-msgstr "!Controlla l'aggiornamento | Ricerca PyPi per la nuova versione rilasciata\n"
+msgstr ""
+"!Controlla l'aggiornamento | Ricerca PyPi per la nuova versione rilasciata\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:175
 msgid "Saved %s"
@@ -2287,8 +2307,12 @@ msgid "(None)"
 msgstr "(Nessuno)"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:282
-msgid "Keywords of the following files will be included in the search:\n\n"
-msgstr "Le parole chiave dei seguenti file saranno incluse nella ricerca:\n\n"
+msgid ""
+"Keywords of the following files will be included in the search:\n"
+"\n"
+msgstr ""
+"Le parole chiave dei seguenti file saranno incluse nella ricerca:\n"
+"\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:283
 msgid "Included files"
