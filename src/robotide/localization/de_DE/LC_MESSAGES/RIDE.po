@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2024-04-20 19:13+0100\n"
+"POT-Creation-Date: 2024-05-06 23:48+0100\n"
 "PO-Revision-Date: 2024-02-19 03:52\n"
 "Last-Translator: \n"
 "Language-Team: German\n"
@@ -17,7 +17,7 @@ msgstr ""
 "X-Crowdin-File: /master/src/robotide/localization/RIDE.pot\n"
 "X-Crowdin-File-ID: 14\n"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/application/application.py:375
+#: /home2/helio/github/RIDE/tools/../src/robotide/application/application.py:376
 msgid "Found Robot Framework version %s from %s."
 msgstr "Robot-Framework Version %s von %s gefunden."
 
@@ -147,36 +147,36 @@ msgstr "später erinnern"
 msgid "Upgrade Now"
 msgstr "Jetzt upgraden"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:58
+#: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:59
 msgid "Started RIDE %s using python version %s with wx version %s in %s."
 msgstr ""
 "RIDE %s mit der Python-Version %s mit der wx-Version %s in %s gestartet."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:71
+#: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:72
 msgid "Thanks all RIDE translators: %s"
 msgstr "Danke an alle RIDE-Übersetzer: %s"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:73
+#: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:74
 msgid "RIDE -- Robot Framework Test Data Editor"
 msgstr "RIDE – Robot-Framework-Testdateneditor"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:75
+#: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:76
 msgid "RIDE %s running on Python %s."
 msgstr "RIDE %s läuft auf Python %s."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:76
+#: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:77
 msgid "RIDE is a test data editor for %s."
 msgstr "RIDE ist ein Testdateneditor für %s."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:77
+#: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:78
 msgid "For more information, see project pages at %s."
 msgstr "Weitere Informationen finden Sie auf den Projektseiten bei %s."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:78
+#: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:79
 msgid "Some of the icons are from %s."
 msgstr "Einige der Symbole sind von %s."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:79
+#: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:80
 msgid ""
 "%s the maintainer of the project thanks the original authors and all users "
 "and collaborators."
@@ -184,7 +184,7 @@ msgstr ""
 "%s der Betreuer des Projekts dankt den ursprünglichen Autoren und allen "
 "Benutzern und Mitarbeitern."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:80
+#: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:81
 msgid ""
 "A special thanks to %s for having sponsored the development of translated "
 "test suites content compatibility with %s Version 6.1, in their %s."
@@ -253,25 +253,25 @@ msgstr "Tests mit diesen Tags überspringen:"
 msgid "Script to run tests:"
 msgstr "Skript zum Ausführen von Tests:"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:98
+#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:99
 msgid "Stop a running test"
 msgstr "Einen laufenden Test stoppen"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:99
+#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:100
 msgid "Step over"
 msgstr "Überspringen"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:161
+#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:130
 msgid "A plugin for running tests from within RIDE"
 msgstr "Ein Plugin zum Ausführen von Tests innerhalb von RIDE"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:256
+#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:225
 msgid "Run Tests"
 msgstr "Tests ausführen"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:256
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:260
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:266
+#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:225
+#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:229
+#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:235
 #: /home2/helio/github/RIDE/tools/../src/robotide/log/log.py:86
 #: /home2/helio/github/RIDE/tools/../src/robotide/parserlog/parserlog.py:85
 #: /home2/helio/github/RIDE/tools/../src/robotide/postinstall/desktopshortcut.py:54
@@ -285,47 +285,47 @@ msgstr "Tests ausführen"
 msgid "Tools"
 msgstr "Werkzeuge"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:258
+#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:227
 msgid "Run the selected tests"
 msgstr "Ausgewählte Tests ausführen"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:260
+#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:229
 msgid "Run Tests with Debug"
 msgstr "Tests mit Debug ausführen"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:263
+#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:232
 msgid "Run the selected tests with Debug"
 msgstr "Ausgewählte Tests mit Debug ausführen"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:266
+#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:235
 msgid "Stop Test Run"
 msgstr "Test Run stoppen"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:350
+#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:319
 msgid "[ SENDING STOP SIGNAL ]\n"
 msgstr "[ SENDING STOP SIGNAL ]\n"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:357
+#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:326
 msgid "[ SENDING PAUSE SIGNAL ]\n"
 msgstr "[ ZAHLUNG SIGNAL SENDEN ]\n"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:363
+#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:332
 msgid "[ SENDING CONTINUE SIGNAL ]\n"
 msgstr "[ SIGNALE VERSENDEN ]\n"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:369
+#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:338
 msgid "[ SENDING STEP NEXT SIGNAL ]\n"
 msgstr "[ STEP SENDEN NEXT SIGNAL ]\n"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:375
+#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:344
 msgid "[ SENDING STEP OVER SIGNAL ]\n"
 msgstr "[ STEP SENDEN SIGNAL]\n"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:408
+#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:377
 msgid "command: %s\n"
 msgstr "Befehl: %s\n"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:478
+#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:447
 msgid ""
 "There are unsaved modifications.\n"
 "        Do you want to save all changes and run the tests?"
@@ -333,11 +333,11 @@ msgstr ""
 "Es gibt ungespeicherte Änderungen.\n"
 "        Möchten Sie alle Änderungen speichern und die Tests ausführen?"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:480
+#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:449
 msgid "Unsaved Modifications"
 msgstr "Ungespeicherte Änderungen"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:489
+#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:458
 msgid ""
 "No tests selected. \n"
 "Continue anyway?"
@@ -345,11 +345,11 @@ msgstr ""
 "Keine Tests ausgewählt. \n"
 "Trotzdem fortfahren?"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:491
+#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:460
 msgid "No tests selected"
 msgstr "Keine Tests ausgewählt"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:548
+#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:522
 msgid ""
 "\n"
 "Test finished {}"
@@ -357,143 +357,143 @@ msgstr ""
 "\n"
 "Test beendet {}"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:582
+#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:556
 msgid "Messages log exceeded 80% of process memory, stopping for now..."
 msgstr ""
 "Nachrichtenprotokoll hat 80% des Prozessspeichers überschritten, jetzt wird "
 "gestoppt..."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:740
+#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:714
 msgid "Start"
 msgstr "Start"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:741
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:744
+#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:715
+#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:718
 msgid "Start robot"
 msgstr "Roboter starten"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:742
+#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:716
 msgid "Start running the robot test suite"
 msgstr "Starten Sie die Robotertestsuite"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:743
+#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:717
 msgid "Debug"
 msgstr "Debug"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:745
+#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:719
 msgid "Start running the robot test suite with DEBUG loglevel"
 msgstr "Starten Sie die Robotertestsuite mit DEBUG loglevel"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:747
+#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:721
 msgid "Stop"
 msgstr "Stoppen"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:751
+#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:725
 msgid "Pause"
 msgstr "Pause"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:753
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:754
+#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:727
+#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:728
 msgid "Pause test execution"
 msgstr "Testausführung pausieren"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:755
+#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:729
 msgid "Continue"
 msgstr "Weiter"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:758
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:759
+#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:732
+#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:733
 msgid "Continue test execution"
 msgstr "Testausführung fortsetzen"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:760
+#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:734
 msgid "Next"
 msgstr "Nächste"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:761
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:762
+#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:735
+#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:736
 msgid "Step next"
 msgstr "Nächster Schritt"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:787
+#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:761
 msgid "Execution Profile:  "
 msgstr "Ausführungsprofil:  "
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:790
+#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:764
 msgid "Choose which method to use for running the tests"
 msgstr ""
 "Wählen Sie, welche Methode für die Durchführung der Tests verwendet werden "
 "soll"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:797
+#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:771
 msgid "Open Logs Directory"
 msgstr "Protokollverzeichnis öffnen"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:799
+#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:773
 msgid "View All Logs in Explorer"
 msgstr "Alle Protokolle im Explorer anzeigen"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:800
+#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:774
 msgid " Report"
 msgstr " Bericht"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:801
+#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:775
 msgid "View Robot Report in Browser (CtrlCmd-R)"
 msgstr "Roboterbericht im Browser anzeigen (CtrlCmd-R)"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:803
+#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:777
 msgid " Log"
 msgstr " Log"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:804
+#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:778
 msgid "View Robot Log in Browser (CtrlCmd-L)"
 msgstr "Roboter-Log im Browser anzeigen (CtrlCmd-L)"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:811
+#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:785
 msgid " Autosave  "
 msgstr " Autosave  "
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:812
+#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:786
 msgid "Automatically save all changes before running"
 msgstr "Alle Änderungen vor dem Ausführen automatisch speichern"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:817
+#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:791
 msgid " Pause after failure  "
 msgstr " Pause nach Fehler  "
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:818
+#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:792
 msgid "Automatically pause after failing keyword"
 msgstr "Automatisch pausieren nach fehlerhaftem Schlüsselwort"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:926
+#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:900
 msgid "Console log"
 msgstr "Konsolen-Log"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:930
+#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:904
 msgid "Message log"
 msgstr "Nachrichtenprotokoll"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1053
+#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1027
 msgid "Starting test:"
 msgstr "Starte Test:"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1058
+#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1032
 msgid "Ending test:"
 msgstr "Test beendet:"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1066
+#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1040
 msgid "UNKNOWN STATUS:"
 msgstr "UNKNOWN STATUS:"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1094
+#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1068
 msgid "<<  PAUSED  >>"
 msgstr "<< PAUSED >>"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1099
+#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1073
 msgid "<< CONTINUE >>"
 msgstr "<< INTINUE >>"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1140
+#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1114
 msgid ""
 "There isn't logs directory. \n"
 "Please, run the tests and try again"
@@ -501,15 +501,15 @@ msgstr ""
 "Es gibt kein Protokollverzeichnis. \n"
 "Bitte führen Sie die Tests aus und versuchen Sie es erneut"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1142
+#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1116
 msgid "No logs directory"
 msgstr "Kein Log-Verzeichnis"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1228
+#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1202
 msgid "elapsed time: %s  pass: %s  skip: %s  fail: %s"
 msgstr "abgelaufene Zeit: %s  Pass: %s  Skip: %s  scheitert: %s"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1259
+#: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1233
 msgid "  current keyword: "
 msgstr "  aktuelles Stichwort: "
 
@@ -993,7 +993,7 @@ msgid "Variable "
 msgstr "Variable "
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1227
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:634
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:660
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:49
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:127
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:184
@@ -1129,19 +1129,19 @@ msgstr "Änderungen zurücksetzen?"
 msgid "Can not apply changes from Text Editor"
 msgstr "Änderungen aus dem Texteditor können nicht angewendet werden"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:617
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:643
 msgid "Apply Changes"
 msgstr "Änderungen anwenden"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:644
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:670
 msgid "Syntax colorization disabled due to missing requirements."
 msgstr "Syntax-Farbgebung aufgrund fehlender Anforderungen deaktiviert."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:645
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:671
 msgid "Get help"
 msgstr "Hilfe erhalten"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:660
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:686
 msgid ""
 "<h1>Syntax colorization</h1>\n"
 "        <p>\n"
@@ -1173,11 +1173,11 @@ msgid ""
 "        "
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:685
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:711
 msgid "Getting syntax colorization"
 msgstr "Syntax-Farbgebung wird abgerufen"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:784
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:810
 msgid "No matches found."
 msgstr "Keine Treffer gefunden."
 
