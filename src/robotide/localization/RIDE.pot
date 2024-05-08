@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2024-05-07 01:31+0100\n"
+"POT-Creation-Date: 2024-05-09 00:21+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,12 +15,12 @@ msgstr ""
 "Generated-By: pygettext.py 1.5\n"
 
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/application.py:376
 msgid "Found Robot Framework version %s from %s."
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:54
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:57
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/actiontriggers.py:54
@@ -28,141 +28,142 @@ msgstr ""
 msgid "Help"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:54
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:71
 msgid "Release Notes"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:56
 msgid "Show the release notes"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:57
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:77
 msgid "Offline Change Log"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:59
 msgid "Show the offline CHANGELOG"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:78
 msgid "Check the online version at "
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:110
 msgid "New development version is available."
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:110
 msgid "Upgrade?"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:111
 msgid "You may install version %s with:"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:112
 msgid "Click OK to Upgrade now!"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:113
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:221
 msgid "After upgrade you will see another dialog informing to close this RIDE instance."
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:121
 msgid "No Upgrade Available"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:121
 msgid "You have the latest version of RIDE."
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:122
 msgid "              Have a nice day :)"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:179
 msgid "An error occurred when installing new version"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:179
 msgid "Failed to Upgrade"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:188
 msgid "Completed Upgrade"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:188
 msgid "You should close this RIDE (Process ID = "
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:208
 msgid "Update available"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:216
 msgid " available from "
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:216
 msgid "New version "
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:217
 msgid "See this version "
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:219
 msgid "You can update with the command:"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:220
 msgid "Or, click <b>Upgrade Now</b>"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:222
 msgid "See the latest development "
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:227
-msgid "I'm using another method for RIDE updates\n"
+msgid ""
+"I'm using another method for RIDE updates\n"
 " and do not need automatic update checks"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:232
 msgid "remind me later"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:238
 msgid "Upgrade Now"
 msgstr ""
@@ -203,37 +204,37 @@ msgstr ""
 msgid "A special thanks to %s for having sponsored the development of translated test suites content compatibility with %s Version 6.1, in their %s."
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:424
 msgid "Log options"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:432
 msgid "Output directory: "
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:450
 msgid "Add suite name to log names"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:453
 msgid "Add timestamp to log names"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:456
 msgid "Save Console and Message logs"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:474
 msgid "Select Logs Directory"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:496
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:341
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:439
@@ -241,63 +242,63 @@ msgstr ""
 msgid "Arguments"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:508
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:534
 msgid "Arguments for the test run. Arguments are space separated list."
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:553
 msgid "Does not execute - help or version option given"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:558
 msgid "Unknown option(s):"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:564
 msgid "Tests filters"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:573
 msgid "Only run tests with these tags:"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:576
 msgid "Skip tests with these tags:"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:672
 msgid "Script to run tests:"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:99
 msgid "Stop a running test"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:100
 msgid "Step over"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:130
 msgid "A plugin for running tests from within RIDE"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:225
 msgid "Run Tests"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:225
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:229
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:235
@@ -314,283 +315,294 @@ msgstr ""
 msgid "Tools"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:227
 msgid "Run the selected tests"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:229
 msgid "Run Tests with Debug"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:232
 msgid "Run the selected tests with Debug"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:235
 msgid "Stop Test Run"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:319
-msgid "[ SENDING STOP SIGNAL ]\n"
+msgid ""
+"[ SENDING STOP SIGNAL ]\n"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:326
-msgid "[ SENDING PAUSE SIGNAL ]\n"
+msgid ""
+"[ SENDING PAUSE SIGNAL ]\n"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:332
-msgid "[ SENDING CONTINUE SIGNAL ]\n"
+msgid ""
+"[ SENDING CONTINUE SIGNAL ]\n"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:338
-msgid "[ SENDING STEP NEXT SIGNAL ]\n"
+msgid ""
+"[ SENDING STEP NEXT SIGNAL ]\n"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:344
-msgid "[ SENDING STEP OVER SIGNAL ]\n"
+msgid ""
+"[ SENDING STEP OVER SIGNAL ]\n"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:377
-msgid "command: %s\n"
+msgid ""
+"command: %s\n"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:447
-msgid "There are unsaved modifications.\n"
+msgid ""
+"There are unsaved modifications.\n"
 "        Do you want to save all changes and run the tests?"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:449
 msgid "Unsaved Modifications"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:458
-msgid "No tests selected. \n"
+msgid ""
+"No tests selected. \n"
 "Continue anyway?"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:460
 msgid "No tests selected"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:522
-msgid "\n"
+msgid ""
+"\n"
 "Test finished {}"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:556
 msgid "Messages log exceeded 80% of process memory, stopping for now..."
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:714
 msgid "Start"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:715
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:718
 msgid "Start robot"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:716
 msgid "Start running the robot test suite"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:717
 msgid "Debug"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:719
 msgid "Start running the robot test suite with DEBUG loglevel"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:721
 msgid "Stop"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:725
 msgid "Pause"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:727
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:728
 msgid "Pause test execution"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:729
 msgid "Continue"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:732
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:733
 msgid "Continue test execution"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:734
 msgid "Next"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:735
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:736
 msgid "Step next"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:761
 msgid "Execution Profile:  "
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:764
 msgid "Choose which method to use for running the tests"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:771
 msgid "Open Logs Directory"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:773
 msgid "View All Logs in Explorer"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:774
 msgid " Report"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:775
 msgid "View Robot Report in Browser (CtrlCmd-R)"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:777
 msgid " Log"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:778
 msgid "View Robot Log in Browser (CtrlCmd-L)"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:785
 msgid " Autosave  "
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:786
 msgid "Automatically save all changes before running"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:791
 msgid " Pause after failure  "
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:792
 msgid "Automatically pause after failing keyword"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:900
 msgid "Console log"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:904
 msgid "Message log"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1027
 msgid "Starting test:"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1032
 msgid "Ending test:"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1040
 msgid "UNKNOWN STATUS:"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1068
 msgid "<<  PAUSED  >>"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1073
 msgid "<< CONTINUE >>"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1114
-msgid "There isn't logs directory. \n"
+msgid ""
+"There isn't logs directory. \n"
 "Please, run the tests and try again"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1116
 msgid "No logs directory"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1202
 msgid "elapsed time: %s  pass: %s  skip: %s  fail: %s"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1233
 msgid "  current keyword: "
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/controller/ui/treecontroller.py:41
-msgid "[Navigate]\n"
+msgid ""
+"[Navigate]\n"
 "        !Go &Back | Go back to previous location in tree | Alt-%s | ART_GO_BACK\n"
 "        !Go &Forward | Go forward to next location in tree | Alt-%s | ART_GO_FORWARD\n"
 "        "
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/controller/ui/treecontroller.py:55
 msgid "Add Tag to selected"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/controller/ui/treecontroller.py:55
 #: /home2/helio/github/RIDE/tools/../src/robotide/controller/ui/treecontroller.py:57
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/listeditor.py:37
@@ -600,104 +612,125 @@ msgstr ""
 msgid "Edit"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/controller/ui/treecontroller.py:57
 msgid "Clear Selected"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/controller/ui/treecontroller.py:70
 msgid "Add Tag To Selected"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/controller/ui/treecontroller.py:70
 msgid "Enter Tag Name"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:31
-msgid "[Edit]\n"
+msgid ""
+"[Edit]\n"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:32
-msgid "&Undo | Undo last modification | Ctrlcmd-Z\n"
+msgid ""
+"&Undo | Undo last modification | Ctrlcmd-Z\n"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:33
-msgid "&Redo | Redo modification | Ctrlcmd-Y\n"
+msgid ""
+"&Redo | Redo modification | Ctrlcmd-Y\n"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:35
-msgid "Cu&t | Cut | Ctrlcmd-X\n"
+msgid ""
+"Cu&t | Cut | Ctrlcmd-X\n"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:36
-msgid "&Copy | Copy | Ctrlcmd-C\n"
+msgid ""
+"&Copy | Copy | Ctrlcmd-C\n"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:37
-msgid "&Paste | Paste | Ctrlcmd-V\n"
+msgid ""
+"&Paste | Paste | Ctrlcmd-V\n"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:38
-msgid "&Insert | Insert | Shift-Ctrl-V\n"
+msgid ""
+"&Insert | Insert | Shift-Ctrl-V\n"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:39
-msgid "&Delete | Delete  | Del\n"
+msgid ""
+"&Delete | Delete  | Del\n"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:40
-msgid "Comment Rows | Comment selected rows | Ctrlcmd-3\n"
+msgid ""
+"Comment Rows | Comment selected rows | Ctrlcmd-3\n"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:41
-msgid "Comment Cells | Comment cells with # | Ctrlcmd-Shift-3\n"
+msgid ""
+"Comment Cells | Comment cells with # | Ctrlcmd-Shift-3\n"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:42
-msgid "Uncomment Rows | Uncomment selected rows | Ctrlcmd-4\n"
+msgid ""
+"Uncomment Rows | Uncomment selected rows | Ctrlcmd-4\n"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:43
-msgid "Uncomment Cells | Uncomment cells with # | Ctrlcmd-Shift-4\n"
+msgid ""
+"Uncomment Cells | Uncomment cells with # | Ctrlcmd-Shift-4\n"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:44
-msgid "Insert Cells | Insert Cells | Ctrlcmd-Shift-I\n"
+msgid ""
+"Insert Cells | Insert Cells | Ctrlcmd-Shift-I\n"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:45
-msgid "Delete Cells | Delete Cells | Ctrlcmd-Shift-D\n"
+msgid ""
+"Delete Cells | Delete Cells | Ctrlcmd-Shift-D\n"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:46
-msgid "Insert Rows | Insert Rows | Ctrlcmd-I\n"
+msgid ""
+"Insert Rows | Insert Rows | Ctrlcmd-I\n"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:47
-msgid "Delete Rows | Delete Rows | Ctrlcmd-D\n"
+msgid ""
+"Delete Rows | Delete Rows | Ctrlcmd-D\n"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:48
-msgid "Move Rows Up | Move Rows Up | Alt-Up\n"
+msgid ""
+"Move Rows Up | Move Rows Up | Alt-Up\n"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:49
-msgid "Move Rows Down | Move Rows Down | Alt-Down\n"
+msgid ""
+"Move Rows Down | Move Rows Down | Alt-Down\n"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:50
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:66
-msgid "[Tools]\n"
+msgid ""
+"[Tools]\n"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:51
-msgid "Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword and variable completions | | | POSITION-70\n"
+msgid ""
+"Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword and variable completions | | | POSITION-70\n"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:88
-msgid "The default editor plugin. Also known as Grid or Cell Editor.\n"
+msgid ""
+"The default editor plugin. Also known as Grid or Cell Editor.\n"
 "\n"
 "    This plugin implements editors for the various items of Robot Framework\n"
 "    test data.\n"
@@ -969,7 +1002,8 @@ msgid "Paste\tCtrl-V"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:794
-msgid "<b>Keyword was not detected by RIDE</b>\n"
+msgid ""
+"<b>Keyword was not detected by RIDE</b>\n"
 "        <br>Possible corrections:<br>\n"
 "        <ul>\n"
 "            <li>Import library or resource file containing the keyword.</li>\n"
@@ -1087,7 +1121,8 @@ msgid "Import Library Spec XML"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:672
-msgid "<br>Possible corrections and notes:<br>\n"
+msgid ""
+"<br>Possible corrections and notes:<br>\n"
 "        <ul>\n"
 "            <li>Import failure is shown with red color.</li>\n"
 "            <li>See Tools / View RIDE Log for detailed information about the failure.</li>\n"
@@ -1140,7 +1175,8 @@ msgid "Get help"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:686
-msgid "<h1>Syntax colorization</h1>\n"
+msgid ""
+"<h1>Syntax colorization</h1>\n"
 "        <p>\n"
 "        Syntax colorization for Text Edit uses <a href='https://pygments.org/'>Pygments</a> syntax highlighter.\n"
 "        </p>\n"
@@ -1191,7 +1227,7 @@ msgstr ""
 msgid "View Parser Log"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/postinstall/desktopshortcut.py:55
 msgid "Create RIDE Desktop Shortcut"
 msgstr ""
@@ -1311,7 +1347,8 @@ msgid "Auto size columns"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:253
-msgid "Max column size\n"
+msgid ""
+"Max column size\n"
 "(applies when auto size is on)"
 msgstr ""
 
@@ -1486,47 +1523,47 @@ msgstr ""
 msgid "Comma separated list of directories containing library spec files."
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/managesettingsdialog.py:41
 msgid "Save or Load Settings"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/managesettingsdialog.py:47
 msgid "Load settings from file..."
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/managesettingsdialog.py:48
 msgid "Save settings to file..."
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/managesettingsdialog.py:53
 msgid "Current directory:"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/managesettingsdialog.py:70
 msgid "File with Settings to Load"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/managesettingsdialog.py:96
 msgid "Save Settings to file"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/managesettingsdialog.py:109
 msgid "Could not open settings file \"%s\" for writing"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/managesettingsdialog.py:121
 msgid "Error trying to get '%s' from file %s"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/managesettingsdialog.py:136
 msgid "Invalid config file '%s': %s"
 msgstr ""
@@ -1580,17 +1617,17 @@ msgstr ""
 msgid "Number of spaces between cells when saving in txt format"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/recentfiles/recentfiles.py:41
 msgid "Add recently opened files to the file menu."
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/recentfiles/recentfiles.py:118
 msgid "No recent files"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/recentfiles/recentfiles.py:118
 #: /home2/helio/github/RIDE/tools/../src/robotide/recentfiles/recentfiles.py:124
 #: /home2/helio/github/RIDE/tools/../src/robotide/recentfiles/recentfiles.py:151
@@ -1600,20 +1637,21 @@ msgstr ""
 msgid "File"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/recentfiles/recentfiles.py:119
 #: /home2/helio/github/RIDE/tools/../src/robotide/recentfiles/recentfiles.py:125
 #: /home2/helio/github/RIDE/tools/../src/robotide/recentfiles/recentfiles.py:153
 msgid "Exit"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/recentfiles/recentfiles.py:142
 msgid "Open %s"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/configmanagerui.py:27
-msgid "The specified command string will be split from whitespaces into a command\n"
+msgid ""
+"The specified command string will be split from whitespaces into a command\n"
 "and its arguments. If either the command or any of the arguments require\n"
 "internal spaces, they must be written as '<SPACE>'.\n"
 "\n"
@@ -1647,7 +1685,8 @@ msgid "Command"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/runanything.py:30
-msgid "A plugin for executing commands on the system.\n"
+msgid ""
+"A plugin for executing commands on the system.\n"
 "\n"
 "    This plugin enables creation of persistent run configurations and\n"
 "    execution of those. Output of the executed command is displayed in a\n"
@@ -1660,53 +1699,53 @@ msgstr ""
 msgid "Macros"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:36
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/searchtests.py:35
 msgid "Search Tests"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:50
 msgid "Tag Search"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:61
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:85
 msgid "Tags"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:61
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:85
 msgid "Test"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:66
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:90
 msgid "Results: "
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:82
 msgid "Find matches using tag patterns. See RF User Guide or 'robot --help' for more information."
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:96
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:80
 msgid "Include"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:139
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:189
 msgid "Add all to selected"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:156
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:164
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:211
@@ -1714,22 +1753,22 @@ msgstr ""
 msgid "Results: %d"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:177
 msgid "Info. "
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:195
 msgid "Find matches by test name, documentation and/or tag."
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:212
 msgid "Search term"
 msgstr ""
 
-
+#:
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/searchtests.py:33
 msgid "A plugin for searching tests based on name, tags and documentation"
 msgstr ""
@@ -1739,7 +1778,8 @@ msgid "Library Spec XML|*.xml|All Files|*.*"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/spec/specimporter.py:77
-msgid "Library \"%s\" imported\n"
+msgid ""
+"Library \"%s\" imported\n"
 "from \"%s\"\n"
 "This may require RIDE restart."
 msgstr ""
@@ -1809,7 +1849,8 @@ msgid "Change recursively"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:380
-msgid "Provide format for initialization file in directory\n"
+msgid ""
+"Provide format for initialization file in directory\n"
 "\"%s\"."
 msgstr ""
 
@@ -1901,79 +1942,98 @@ msgid "Description"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:57
-msgid "[File]\n"
+msgid ""
+"[File]\n"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:58
-msgid "!&New Project | Create a new top level suite | Ctrlcmd-N | ART_NEW\n"
+msgid ""
+"!&New Project | Create a new top level suite | Ctrlcmd-N | ART_NEW\n"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:60
-msgid "!&Open Test Suite | Open file containing tests | Ctrlcmd-O | ART_FILE_OPEN\n"
+msgid ""
+"!&Open Test Suite | Open file containing tests | Ctrlcmd-O | ART_FILE_OPEN\n"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:61
-msgid "!Open &Directory | Open directory containing datafiles | Shift-Ctrlcmd-O | ART_FOLDER_OPEN\n"
+msgid ""
+"!Open &Directory | Open directory containing datafiles | Shift-Ctrlcmd-O | ART_FOLDER_OPEN\n"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:62
-msgid "!Open External File | Open file in Code Editor | | ART_NORMAL_FILE\n"
+msgid ""
+"!Open External File | Open file in Code Editor | | ART_NORMAL_FILE\n"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:63
-msgid "!&Save | Save selected datafile | Ctrlcmd-S | ART_FILE_SAVE\n"
+msgid ""
+"!&Save | Save selected datafile | Ctrlcmd-S | ART_FILE_SAVE\n"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:64
-msgid "!Save &All | Save all changes | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS\n"
+msgid ""
+"!Save &All | Save all changes | Ctrlcmd-Shift-S | ART_FILE_SAVE_AS\n"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:65
-msgid "!E&xit | Exit RIDE | Ctrlcmd-Q\n"
+msgid ""
+"!E&xit | Exit RIDE | Ctrlcmd-Q\n"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:67
-msgid "!Search Unused Keywords | | | | POSITION-54\n"
+msgid ""
+"!Search Unused Keywords | | | | POSITION-54\n"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:68
-msgid "!Manage Plugins | | | | POSITION-81\n"
+msgid ""
+"!Manage Plugins | | | | POSITION-81\n"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:69
-msgid "!View All Tags | | F7 | | POSITION-82\n"
+msgid ""
+"!View All Tags | | F7 | | POSITION-82\n"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:70
-msgid "!Preferences | | | | POSITION-99\n"
+msgid ""
+"!Preferences | | | | POSITION-99\n"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:71
-msgid "[Help]\n"
+msgid ""
+"[Help]\n"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:72
-msgid "!Shortcut keys | RIDE shortcut keys\n"
+msgid ""
+"!Shortcut keys | RIDE shortcut keys\n"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:73
-msgid "!User Guide | Robot Framework User Guide\n"
+msgid ""
+"!User Guide | Robot Framework User Guide\n"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:74
-msgid "!Wiki | RIDE User Guide (Wiki)\n"
+msgid ""
+"!Wiki | RIDE User Guide (Wiki)\n"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:75
-msgid "!Report a Problem | Open browser to SEARCH on the RIDE issue tracker\n"
+msgid ""
+"!Report a Problem | Open browser to SEARCH on the RIDE issue tracker\n"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:76
-msgid "!About | Information about RIDE\n"
+msgid ""
+"!About | Information about RIDE\n"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:77
-msgid "!Check for Upgrade | Looks at PyPi for new released version\n"
+msgid ""
+"!Check for Upgrade | Looks at PyPi for new released version\n"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:175
@@ -2003,7 +2063,8 @@ msgid "Test Suites"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:375
-msgid "There are unsaved modifications.\n"
+msgid ""
+"There are unsaved modifications.\n"
 "Do you want to save your changes before exiting?"
 msgstr ""
 
@@ -2013,7 +2074,8 @@ msgid "Warning"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:464
-msgid "There are unsaved modifications.\n"
+msgid ""
+"There are unsaved modifications.\n"
 "Do you want to proceed without saving?"
 msgstr ""
 
@@ -2082,7 +2144,8 @@ msgid "Manage Plugins"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/pluginmanager.py:63
-msgid "Installed Plugins\n"
+msgid ""
+"Installed Plugins\n"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/pluginmanager.py:82
@@ -2127,7 +2190,8 @@ msgid "Search unused keywords"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:66
-msgid "This dialog helps you finding unused keywords within your opened project.\n"
+msgid ""
+"This dialog helps you finding unused keywords within your opened project.\n"
 "If you want, you can restrict the search to a set of files with the filter."
 msgstr ""
 
@@ -2149,7 +2213,8 @@ msgid "Use RegEx"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:93
-msgid "Here you can define one or more strings separated by comma (e.g. common,abc,123).\n"
+msgid ""
+"Here you can define one or more strings separated by comma (e.g. common,abc,123).\n"
 "The filter matches if at least one string is part of the filename.\n"
 "If you don't enter any strings, all opened files are included"
 msgstr ""
@@ -2209,7 +2274,8 @@ msgid "(None)"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:282
-msgid "Keywords of the following files will be included in the search:\n"
+msgid ""
+"Keywords of the following files will be included in the search:\n"
 "\n"
 msgstr ""
 
@@ -2262,7 +2328,8 @@ msgid "Excluded Tag Search"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/tagdialogs.py:147
-msgid "Total tests %d, Tests with tags %d, Unique tags %d\n"
+msgid ""
+"Total tests %d, Tests with tags %d, Unique tags %d\n"
 "Currently selected tests %d"
 msgstr ""
 
@@ -2397,13 +2464,15 @@ msgid "Open Containing Folder"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:403
-msgid "Directory contains unsaved data!\n"
+msgid ""
+"Directory contains unsaved data!\n"
 "You must save data before excluding."
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:466
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:539
-msgid "File contains unsaved data!\n"
+msgid ""
+"File contains unsaved data!\n"
 "You must save data before excluding."
 msgstr ""
 
