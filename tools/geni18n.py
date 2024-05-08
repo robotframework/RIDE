@@ -53,10 +53,18 @@ tCmd = pyExe + ' ' + pyGettext + ' ' + (gtOptions % (langDomain,
                                                      langDomain,
                                                      outFolder,
                                                      appFolder))
-print ("Generating the .pot file")
-print ("cmd: %s" % tCmd)
+print("Generating the .pot file")
+print("cmd: %s" % tCmd)
 rCode = subprocess.call(tCmd.split(' '))
-print ("return code: %s\n\n" % rCode)
+print("return code: %s\n\n" % rCode)
+
+sCmd = f'sed -i -e /\^\#\:\$/d {outFolder}/{langDomain}.pot'
+
+print(f"Command sed: {sCmd}")
+
+rCode = subprocess.call(sCmd.split(' '))
+print("AFTER REMOVING EMPTY COMMENTS: return code: %s\n\n" % rCode)
+ 
 
 for tLang in supportedLang:
     # build command for msgfmt
@@ -65,12 +73,12 @@ for tLang in supportedLang:
     if os.path.isfile(poFile):
         tCmd = 'msgmerge' + ' ' + '-U' + ' ' + poFile + ' ' + outFolder + '/' + langDomain + '.pot'
         print("Updating .po file with .pot\n")
-        print ("cmd: %s" % tCmd)
+        print("cmd: %s" % tCmd)
         rCode = subprocess.call(tCmd.split(' '))
-        print ("return code: %s\n\n" % rCode)
+        print("return code: %s\n\n" % rCode)
 
     tCmd = pyExe + ' ' + pyMsgfmt + ' ' + poFile
-    print ("Generating the .mo file")
-    print ("cmd: %s" % tCmd)
+    print("Generating the .mo file")
+    print("cmd: %s" % tCmd)
     rCode = subprocess.call(tCmd.split(' '))
-    print ("return code: %s\n\n" % rCode)
+    print("return code: %s\n\n" % rCode)
