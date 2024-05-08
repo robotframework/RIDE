@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
 "POT-Creation-Date: 2024-05-09 00:21+0100\n"
-"PO-Revision-Date: 2024-05-07 00:50\n"
+"PO-Revision-Date: 2024-05-09 00:45+0100\n"
 "Last-Translator: Hélio Guilherme <helio_guilherme@hotmail.com>\n"
 "Language-Team: Spanish\n"
 "Language: es_ES\n"
@@ -613,7 +613,7 @@ msgstr "Eliminar celdas | Eliminar celdas | Ctrlcmd-Shift-D\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:46
 msgid "Insert Rows | Insert Rows | Ctrlcmd-I\n"
-msgstr "Insert Rows | Insert Rows | Ctrlcmd-I\n"
+msgstr "Insertar filas | Insertar filas | Ctrlcmd-I\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:47
 msgid "Delete Rows | Delete Rows | Ctrlcmd-D\n"
@@ -621,7 +621,7 @@ msgstr "Eliminar filas | Eliminar filas | Ctrlcmd-D\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:48
 msgid "Move Rows Up | Move Rows Up | Alt-Up\n"
-msgstr "Mover Rows hacia arriba | Mover Rows hacia arriba | Alt-Up\n"
+msgstr "Mover filas hacia arriba | Mover filas hacia arriba | Alt-Up\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:49
 msgid "Move Rows Down | Move Rows Down | Alt-Down\n"
@@ -886,7 +886,7 @@ msgstr "Insertar celdas\tCtrl-Shift-I"
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:110
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:324
 msgid "Insert Rows\tCtrl-I"
-msgstr "Insert Rows\tCtrl-I"
+msgstr "Insertar filas\tCtrl-I"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:110
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:325

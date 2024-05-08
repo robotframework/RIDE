@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
 "POT-Creation-Date: 2024-05-07 01:31+0100\n"
-"PO-Revision-Date: 2024-05-08 23:01+0100\n"
+"PO-Revision-Date: 2024-05-09 00:39+0100\n"
 "Last-Translator: Hélio Guilherme <helio_guilherme@hotmail.com>\n"
 "Language-Team: French\n"
 "Language: fr_FR\n"
@@ -589,7 +589,7 @@ msgstr "Supprimer des cellules | Supprimer des cellules | Ctrlcmd-Shift-D\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:46
 msgid "Insert Rows | Insert Rows | Ctrlcmd-I\n"
-msgstr "Insert Rows | Insert Rows | Ctrlcmd-I\n"
+msgstr "Insérer Lignes | Insérer des Lignes | Ctrlcmd-I\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:47
 msgid "Delete Rows | Delete Rows | Ctrlcmd-D\n"
