@@ -47,6 +47,7 @@ _ = wx.GetTranslation  # To keep linter/code analyser happy
 builtins.__dict__['_'] = wx.GetTranslation
 
 _DEFAULT_FONT_SIZE = 11
+COL_HEADER_EDITOR = wx.NewId()
 
 
 def requires_focus(function):
@@ -163,6 +164,7 @@ class KeywordEditor(GridEditor, Plugin):
         self._icells = None  # Workaround for double insert actions
         self._namespace_updated = None
         self.InheritAttributes()
+        self.col_label_element = None
         # self.Refresh()
         PUBLISHER.subscribe(self._before_saving, RideBeforeSaving)
         PUBLISHER.subscribe(self._data_changed, RideItemStepsChanged)
@@ -288,6 +290,12 @@ class KeywordEditor(GridEditor, Plugin):
         event.Skip()
 
     def on_kill_focus(self, event):
+        if self.col_label_element:
+            try:
+                self.col_label_element[0].Destroy()
+            except RuntimeError:
+                del self.col_label_element
+                print("DEBUG: on_kill_focus exception called")
         self._tooltips.hide()
         self._hide_link_if_necessary()
         event.Skip()
@@ -305,7 +313,8 @@ class KeywordEditor(GridEditor, Plugin):
 
     def on_label_right_click(self, event):
         if event.Col == -1:
-            self._row_label_right_click(event)
+            if event.Row != -1:
+                self._row_label_right_click(event)
         else:
             self._col_label_right_click(event)
 
@@ -343,12 +352,55 @@ class KeywordEditor(GridEditor, Plugin):
         event.Skip()
 
     def _col_label_right_click(self, event):
-        # Make sonerlint happy
-        pass
+        # Make sonarlint happy
+        print(f"DEBUG: kweditor.py KeywordEditor _col_label_right_click event={event}")
+        headers = self._controller.data.parent.header[1:]
+        if (not headers and event.Col == 0) or (headers and event.Col == len(headers)):
+            self._controller.data.parent.header.append('')
+        print(f"DEBUG: kweditor.py KeywordEditor _col_label_left_click {self._controller.data.parent.header=}")
+        if event.Col + 1 < len(self._controller.data.parent.header) + 1:
+            value = self.GetColLabelValue(event.Col)
+            lpos = self.GetColLeft(event.Col)
+            whandle = self.GetGridColLabelWindow()
+            font_size=self.GetLabelFont().GetPixelSize().width + 4
+            edit = wx.TextCtrl(whandle, COL_HEADER_EDITOR, value, size=(max(4, len(value))*font_size, -1))
+            epos = edit.GetPosition()
+            edit.SetPosition((lpos, epos[1]))
+            edit.Bind(wx.EVT_KEY_DOWN, self.on_col_label_edit)
+            edit.Bind(wx.EVT_KILL_FOCUS, self.on_kill_focus)
+            edit.SetInsertionPointEnd()
+            edit.SelectAll()
+            edit.SetFocus()
+            self.col_label_element = (edit, event.Col)
+            value = self.GetColLabelValue(event.Col)
+            print(f"DEBUG: kweditor.py KeywordEditor _col_label_left_click event Col={event.Col}"
+                  f" value={value} {font_size=} cellundersursor={self.cell_under_cursor}")
+
+    def on_col_label_edit(self, event: wx.KeyEvent):
+        keycode = event.GetKeyCode()
+        print(f"DEBUG: kweditor.py on_col_label_edit {keycode=}")
+        edit, col = self.col_label_element
+        if keycode == wx.WXK_ESCAPE:
+            wx.CallAfter(edit.Destroy)
+        if keycode == wx.WXK_RETURN:
+            element = event.GetPosition()
+            value = edit.GetValue()
+            # if value != self._controller.data.parent.header[col+1]:
+            if value != '':
+                self._controller.data.parent.header[col+1] = value
+            elif col + 1 == len(self._controller.data.parent.header) + 1:
+                self._controller.data.parent.header.pop(col+1)
+            self.SetColLabelValue(col, value)
+            self.AutoSizeColLabelSize(col)
+            self._controller.mark_dirty()
+            wx.CallAfter(edit.Destroy)  # DEBUG: Use a cleanup method
+            print(f"DEBUG: kweditor.py on_col_label_edit {element} ID={COL_HEADER_EDITOR}")
+        event.Skip()
 
     def on_label_left_click(self, event):
         if event.Col == -1:
-            self._row_label_left_click(event)
+            if event.Row != -1:
+                self._row_label_left_click(event)
         else:
             self._col_label_left_click(event)
 
@@ -366,8 +418,18 @@ class KeywordEditor(GridEditor, Plugin):
             self.SetGridCursor(event.Row, 0)
 
     def _col_label_left_click(self, event):
-        # Make sonerlint happy
-        pass
+        # DEBUG: This selection is not valid. We must get top cell and last line with content
+        # self.SelectCol(event.Col)
+        if event.ShiftDown() or event.ControlDown():
+            self.ClearSelection()
+            cursor_col = self.GetGridCursorCol()
+            event_col = event.Col
+            start, end = (cursor_col, event_col) if cursor_col < event_col else (event_col, cursor_col)
+            for col in range(start, end + 1):
+                self.SelectCol(col, addToSelected=True)
+        else:
+            self.SelectCol(event.Col, addToSelected=False)
+            self.SetGridCursor(0, event.Col)
 
     def on_move_cursor_down(self, event=None):
         self._move_cursor_down(event)
@@ -507,13 +569,15 @@ class KeywordEditor(GridEditor, Plugin):
     def _write_headers(self, controller):
         headers = controller.data.parent.header[1:]
         if not headers:
-            self.SetColLabelSize(0)
+            self.SetColLabelSize(20)  # DEBUG We set a small size to activate right and left clicks
+            for empty_col in range(0, 26):  # DEBUG to be sure all are empty, was: self.NumberCols + 1
+                self.SetColLabelValue(empty_col, '')
             return
         self.SetColLabelSize(wx.grid.GRID_AUTOSIZE)  # DEBUG
         col = 0
         for col, header in enumerate(headers):
             self.SetColLabelValue(col, header)
-        for empty_col in range(col + 1, self.NumberCols + 1):
+        for empty_col in range(col + 1, 26):  # DEBUG to be sure all are empty, was: self.NumberCols + 1
             self.SetColLabelValue(empty_col, '')
 
     def _colorize_grid(self):
@@ -707,7 +771,7 @@ class KeywordEditor(GridEditor, Plugin):
             self.show_cell_information()
         return True
 
-    def _call_direct_function(self, event: object, keycode: int):
+    def _call_direct_function(self, event: wx.KeyEvent, keycode: int):
         if keycode == wx.WXK_WINDOWS_MENU:
             self.on_cell_right_click(event)
         elif keycode == wx.WXK_BACK:
