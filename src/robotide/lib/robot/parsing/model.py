@@ -484,6 +484,8 @@ class _Table(object):
         tr_header = list(get_headers_for(self.language, header, lowercase=False))
         if len(tr_header) == 1:
             tr_header = [tr_header[0]]
+        elif header[0] != tr_header[0] and header[0] in tr_header:
+            tr_header.remove(header[0])
         # print(f"DEBUG: model.py _Table set_header={header} self._lineno={lineno}"
         #       f" language={self.language} tr_header={tr_header}")
         self._header = self._prune_old_style_headers(tr_header)

@@ -10,6 +10,8 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Added
 
+- Added actions on columns of Grid Editor: Double-Click or Right Mouse Click, allows to edit the column name for Data
+Driven or Templated; Left Mouse Click, selects the column cells.
 - Added command line option, ``--settingspath``, to select a different configuration. For example, you can have different
 colour settings or UI language.
 - Added different settings file, according the actual Python executable, if not the original installed.
