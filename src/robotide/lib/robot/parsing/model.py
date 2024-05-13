@@ -285,6 +285,7 @@ class _TestData(object):
                 language = ", ".join(self._language)
             else:
                 language = self._language
+            language = language.replace('_', '-')  # To ensure is as RF formta, cases pt-, zn-
             if len(self._preamble) == 0:
                 self._preamble.append(f"Language: {language}\n\n")
                 # print(f"DEBUG: model.py  set_doc_language EMPTY PREAMBLE self._preamble={self._preamble}")
