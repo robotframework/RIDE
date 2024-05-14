@@ -34,6 +34,36 @@ _ = wx.GetTranslation  # To keep linter/code analyser happy
 builtins.__dict__['_'] = wx.GetTranslation
 
 FILE_MANAGER = 'file manager'
+LABEL_ADD_SUITE = 'New Suite\tCtrl-Shift-F'
+LABEL_ADD_DIRECTORY = 'New Directory'
+LABEL_NEW_TEST_CASE = 'New Test Case\tCtrl-Shift-T'
+LABEL_NEW_USER_KEYWORD = 'New User Keyword\tCtrl-Shift-K'
+LABEL_SORT_VARIABLES = 'Sort Variables'
+LABEL_SORT_TESTS = 'Sort Tests'
+LABEL_SORT_KEYWORDS = 'Sort Keywords'
+LABEL_NEW_SCALAR = 'New Scalar\tCtrl-Shift-V'
+LABEL_NEW_LIST_VARIABLE = 'New List Variable\tCtrl-Shift-L'
+LABEL_NEW_DICT_VARIABLE = 'New Dictionary Variable'
+LABEL_CHANGE_FORMAT = 'Change Format'
+LABEL_COPY_MACRO = 'Copy\tCtrl-Shift-C'
+LABEL_RENAME = 'Rename\tF2'
+LABEL_ADD_RESOURCE = 'Add Resource'
+LABEL_NEW_RESOURCE = 'New Resource'
+LABEL_FIND_USAGES = 'Find Usages'
+LABEL_SELECT_ALL = 'Select All Tests'
+LABEL_DESELECT_ALL = 'Deselect All Tests'
+LABEL_SELECT_FAILED_TESTS = 'Select Only Failed Tests'
+LABEL_SELECT_PASSED_TESTS = 'Select Only Passed Tests'
+LABEL_DELETE = 'Delete\tCtrl-Shift-D'
+LABEL_DELETE_NO_KBSC = 'Delete'
+LABEL_EXCLUDE = 'Exclude'
+LABEL_INCLUDE = 'Include'
+LABEL_EXPAND_ALL = 'Expand all'
+LABEL_COLLAPSE_ALL = 'Collapse all'
+LABEL_REMOVE_READONLY = 'Remove Read Only'
+LABEL_OPEN_FOLDER = 'Open Containing Folder'
+LABEL_MOVE_UP = 'Move Up\tCtrl-Up'
+LABEL_MOVE_DOWN = 'Move Down\tCtrl-Down'
 
 
 def action_handler_class(controller):
@@ -54,37 +84,8 @@ class _ActionHandler:
     is_test_suite = False
     is_variable = False
 
-    _label_add_suite = _('New Suite\tCtrl-Shift-F')
-    _label_add_directory = _('New Directory')
-    _label_new_test_case = _('New Test Case\tCtrl-Shift-T')
-    _label_new_user_keyword = _('New User Keyword\tCtrl-Shift-K')
-    _label_sort_variables = _('Sort Variables')
-    _label_sort_tests = _('Sort Tests')
-    _label_sort_keywords = _('Sort Keywords')
-    _label_new_scalar = _('New Scalar\tCtrl-Shift-V')
-    _label_new_list_variable = _('New List Variable\tCtrl-Shift-L')
-    _label_new_dict_variable = _('New Dictionary Variable')
-    _label_change_format = _('Change Format')
-    _label_copy_macro = _('Copy\tCtrl-Shift-C')
-    _label_rename = _('Rename\tF2')
-    _label_add_resource = _('Add Resource')
-    _label_new_resource = _('New Resource')
-    _label_find_usages = _('Find Usages')
-    _label_select_all = _('Select All Tests')
-    _label_deselect_all = _('Deselect All Tests')
-    _label_select_failed_tests = _('Select Only Failed Tests')
-    _label_select_passed_tests = _('Select Only Passed Tests')
-    _label_delete = _('Delete\tCtrl-Shift-D')
-    _label_delete_no_kbsc = _('Delete')
-    _label_exclude = _('Exclude')
-    _label_include = _('Include')
-    _label_expand_all = _('Expand all')
-    _label_collapse_all = _('Collapse all')
-    _label_remove_readonly = _('Remove Read Only')
-    _label_open_folder = _('Open Containing Folder')
-    _label_move_up = _('Move Up\tCtrl-Up')
-    _label_move_down = _('Move Down\tCtrl-Down')
     _actions = []
+    _actions_nt = []
 
     def __init__(self, controller, tree, node, settings):
         self.controller = controller
@@ -103,7 +104,7 @@ class _ActionHandler:
         return self._node
 
     def show_popup(self):
-        self._popup_creator.show(self._tree, PopupMenuItems(self, self._actions), self.controller)
+        self._popup_creator.show(self._tree, PopupMenuItems(self, self._actions, self._actions_nt), self.controller)
 
     @staticmethod
     def begin_label_edit():
@@ -231,7 +232,11 @@ class DirectoryHandler(_ActionHandler):
     is_draggable = False
     is_test_suite = False
     can_be_rendered = False
-    _actions = [_ActionHandler._label_new_resource]
+
+    def __init__(self, *args):
+        _ActionHandler.__init__(self, *args)
+        self._actions = [_('New Resource')]
+        self._actions_nt = [LABEL_NEW_RESOURCE]
 
     def on_new_resource(self, event):
         NewResourceDialog(self.controller, self._settings).execute()
@@ -334,34 +339,54 @@ class TestDataDirectoryHandler(TestDataHandler):
     def __init__(self, *args):
         TestDataHandler.__init__(self, *args)
         self._actions = [
-            _ActionHandler._label_add_suite,
-            _ActionHandler._label_add_directory,
-            _ActionHandler._label_new_resource,
-            '---',
-            _ActionHandler._label_new_user_keyword,
-            _ActionHandler._label_new_scalar,
-            _ActionHandler._label_new_list_variable,
-            _ActionHandler._label_new_dict_variable,
-            '---',
-            _ActionHandler._label_change_format,
-            _ActionHandler._label_open_folder
-        ]
+                        _('New Suite\tCtrl-Shift-F'),
+                        _('New Directory'),
+                        _('New Resource'),
+                        '---',
+                        _('New User Keyword\tCtrl-Shift-K'),
+                        _('New Scalar\tCtrl-Shift-V'),
+                        _('New List Variable\tCtrl-Shift-L'),
+                        _('New Dictionary Variable'),
+                        '---',
+                        _('Change Format'),
+                        _('Open Containing Folder')
+                        ]
+        self._actions_nt = [
+                            LABEL_ADD_SUITE,
+                            LABEL_ADD_DIRECTORY,
+                            LABEL_NEW_RESOURCE,
+                            '---',
+                            LABEL_NEW_USER_KEYWORD,
+                            LABEL_NEW_SCALAR,
+                            LABEL_NEW_LIST_VARIABLE,
+                            LABEL_NEW_DICT_VARIABLE,
+                            '---',
+                            LABEL_CHANGE_FORMAT,
+                            LABEL_OPEN_FOLDER
+                           ]
         if self.controller.parent:
-            self._actions.extend([_ActionHandler._label_delete_no_kbsc])
+            self._actions.extend([_('Delete')])
+            self._actions_nt.extend([LABEL_DELETE_NO_KBSC])
 
         self._actions.extend([
-            '---',
-            _ActionHandler._label_select_all,
-            _ActionHandler._label_deselect_all,
-            _ActionHandler._label_select_failed_tests,
-            _ActionHandler._label_select_passed_tests
-        ])
+                              '---',
+                              _('Select All Tests'),
+                              _('Deselect All Tests'),
+                              _('Select Only Failed Tests'),
+                              _('Select Only Passed Tests')
+                              ])
+        self._actions_nt.extend([
+                                 '---',
+                                 LABEL_SELECT_ALL,
+                                 LABEL_DESELECT_ALL,
+                                 LABEL_SELECT_FAILED_TESTS,
+                                 LABEL_SELECT_PASSED_TESTS
+                                ])
         if self.controller.parent:
-            self._actions.extend(['---',
-                                  _ActionHandler._label_exclude])
-        self._actions.extend(['---',
-                              _ActionHandler._label_expand_all,
-                              _ActionHandler._label_collapse_all])
+            self._actions.extend(['---', _('Exclude')])
+            self._actions_nt.extend(['---', LABEL_EXCLUDE])
+        self._actions.extend(['---', _('Expand all'), _('Collapse all')])
+        self._actions_nt.extend(['---', LABEL_EXPAND_ALL, LABEL_COLLAPSE_ALL])
 
     def on_expand_all(self, event):
         __ = event
@@ -436,26 +461,50 @@ class _FileHandlerThanCanBeRenamed(_CanBeRenamed):
 
 class ResourceFileHandler(_FileHandlerThanCanBeRenamed, TestDataHandler):
     is_test_suite = False
-    _actions = [_ActionHandler._label_new_user_keyword,
-                _ActionHandler._label_new_scalar,
-                _ActionHandler._label_new_list_variable,
-                _ActionHandler._label_new_dict_variable,
-                '---',
-                _ActionHandler._label_rename,
-                _ActionHandler._label_change_format,
-                _ActionHandler._label_sort_keywords,
-                _ActionHandler._label_find_usages,
-                _ActionHandler._label_delete,
-                '---',
-                _ActionHandler._label_sort_variables,
-                _ActionHandler._label_sort_keywords,
-                # DEBUG experiment to allow TestSuites be excluded:
-                '---',
-                _ActionHandler._label_exclude,
-                '---',
-                _ActionHandler._label_remove_readonly,
-                _ActionHandler._label_open_folder
-                ]
+
+    def __init__(self, *args):
+        TestDataHandler.__init__(self, *args)
+        self._actions = [
+                         _('New User Keyword\tCtrl-Shift-K'),
+                         _('New Scalar\tCtrl-Shift-V'),
+                         _('New List Variable\tCtrl-Shift-L'),
+                         _('New Dictionary Variable'),
+                         '---',
+                         _('Rename\tF2'),
+                         _('Change Format'),
+                         _('Sort Keywords'),
+                         _('Find Usages'),
+                         _('Delete\tCtrl-Shift-D'),
+                         '---',
+                         _('Sort Variables'),
+                         _('Sort Keywords'),
+                         '---',
+                         _('Exclude'),
+                         '---',
+                         _('Remove Read Only'),
+                         _('Open Containing Folder')
+                        ]
+        self._actions_nt = [
+                            LABEL_NEW_USER_KEYWORD,
+                            LABEL_NEW_SCALAR,
+                            LABEL_NEW_LIST_VARIABLE,
+                            LABEL_NEW_DICT_VARIABLE,
+                            '---',
+                            LABEL_RENAME,
+                            LABEL_CHANGE_FORMAT,
+                            LABEL_SORT_KEYWORDS,
+                            LABEL_DELETE,
+                            LABEL_FIND_USAGES,
+                            LABEL_DELETE,
+                            '---',
+                            LABEL_SORT_VARIABLES,
+                            LABEL_SORT_KEYWORDS,
+                            '---',
+                            LABEL_EXCLUDE,
+                            '---',
+                            LABEL_REMOVE_READONLY,
+                            LABEL_OPEN_FOLDER
+                           ]
 
     def on_exclude(self, event):
         try:
@@ -500,35 +549,64 @@ class ResourceFileHandler(_FileHandlerThanCanBeRenamed, TestDataHandler):
 
 
 class TestCaseFileHandler(_FileHandlerThanCanBeRenamed, TestDataHandler):
+
+    def __init__(self, *args):
+        TestDataHandler.__init__(self, *args)
+        self._actions = [_('New Test Case\tCtrl-Shift-T'),
+                         _('New User Keyword\tCtrl-Shift-K'),
+                         _('New Scalar\tCtrl-Shift-V'),
+                         _('New List Variable\tCtrl-Shift-L'),
+                         _('New Dictionary Variable'),
+                         '---',
+                         _('Rename\tF2'),
+                         _('Change Format'),
+                         _('Sort Keywords'),
+                         _('Delete\tCtrl-Shift-D'),
+                         '---',
+                         _('Sort Variables'),
+                         _('Sort Tests'),
+                         _('Sort Keywords'),
+                         '---',
+                         _('Select All Tests'),
+                         _('Deselect All Tests'),
+                         _('Select Only Failed Tests'),
+                         _('Select Only Passed Tests'),
+                         '---',
+                         _('Exclude'),
+                         '---',
+                         _('Remove Read Only'),
+                         _('Open Containing Folder')
+                         ]
+        self._actions_nt = [
+                            LABEL_ADD_SUITE,
+                            LABEL_NEW_USER_KEYWORD,
+                            LABEL_NEW_SCALAR,
+                            LABEL_NEW_LIST_VARIABLE,
+                            LABEL_NEW_DICT_VARIABLE,
+                            '---',
+                            LABEL_RENAME,
+                            LABEL_CHANGE_FORMAT,
+                            LABEL_SORT_KEYWORDS,
+                            LABEL_DELETE,
+                            '---',
+                            LABEL_SORT_VARIABLES,
+                            LABEL_SORT_TESTS,
+                            LABEL_SORT_KEYWORDS,
+                            '---',
+                            LABEL_SELECT_ALL,
+                            LABEL_DESELECT_ALL,
+                            LABEL_SELECT_FAILED_TESTS,
+                            LABEL_SELECT_PASSED_TESTS,
+                            '---',
+                            LABEL_EXCLUDE,
+                            '---',
+                            LABEL_REMOVE_READONLY,
+                            LABEL_OPEN_FOLDER
+                           ]
+
     def accepts_drag(self, dragged):
         _ = dragged
         return True
-    _actions = [_ActionHandler._label_new_test_case,
-                _ActionHandler._label_new_user_keyword,
-                _ActionHandler._label_new_scalar,
-                _ActionHandler._label_new_list_variable,
-                _ActionHandler._label_new_dict_variable,
-                '---',
-                _ActionHandler._label_rename,
-                _ActionHandler._label_change_format,
-                _ActionHandler._label_sort_keywords,
-                _ActionHandler._label_delete,
-                '---',
-                _ActionHandler._label_sort_variables,
-                _ActionHandler._label_sort_tests,
-                _ActionHandler._label_sort_keywords,
-                '---',
-                _ActionHandler._label_select_all,
-                _ActionHandler._label_deselect_all,
-                _ActionHandler._label_select_failed_tests,
-                _ActionHandler._label_select_passed_tests,
-                # DEBUG experiment to allow TestSuites be excluded:
-                '---',
-                _ActionHandler._label_exclude,
-                '---',
-                _ActionHandler._label_remove_readonly,
-                _ActionHandler._label_open_folder
-                ]
 
     def on_exclude(self, event):
         try:
@@ -577,19 +655,32 @@ class TestCaseFileHandler(_FileHandlerThanCanBeRenamed, TestDataHandler):
 
 
 class _TestOrUserKeywordHandler(_CanBeRenamed, _ActionHandler):
+    is_draggable = True
+
+    def __init__(self, *args):
+        _ActionHandler.__init__(self, *args)
+        self._actions = [
+                        _('Copy\tCtrl-Shift-C'),
+                        _('Move Up\tCtrl-Up'),
+                        _('Move Down\tCtrl-Down'),
+                        _('Rename\tF2'),
+                        '---',
+                        _('Delete')
+                        ]
+        self._actions_nt = [
+                            LABEL_COPY_MACRO,
+                            LABEL_MOVE_UP,
+                            LABEL_MOVE_DOWN,
+                            LABEL_RENAME,
+                            '---',
+                            LABEL_DELETE_NO_KBSC
+                            ]
+
+
     @staticmethod
     def accepts_drag(dragged):
         __ = dragged
         return False
-    is_draggable = True
-    _actions = [
-        _ActionHandler._label_copy_macro,
-        _ActionHandler._label_move_up,
-        _ActionHandler._label_move_down,
-        _ActionHandler._label_rename,
-        '---',
-        _ActionHandler._label_delete_no_kbsc
-    ]
 
     def remove(self):
         self.controller.delete()
@@ -645,8 +736,11 @@ class UserKeywordHandler(_TestOrUserKeywordHandler):
     is_user_keyword = True
     _datalist = property(lambda self: self.item.datalist)
     _copy_name_dialog_class = CopyUserKeywordDialog
-    _actions = _TestOrUserKeywordHandler._actions + [
-        _ActionHandler._label_find_usages]
+
+    def __init__(self, *args):
+        _TestOrUserKeywordHandler.__init__(self, *args)
+        self._actions = _TestOrUserKeywordHandler._actions + [_('Find Usages')]
+        self._actions_nt = _TestOrUserKeywordHandler._actions_nt + [LABEL_FIND_USAGES]
 
     def _add_copy_to_tree(self, parent_node, copied):
         self._tree.add_keyword(parent_node, copied)
@@ -662,19 +756,30 @@ class UserKeywordHandler(_TestOrUserKeywordHandler):
 
 
 class VariableHandler(_CanBeRenamed, _ActionHandler):
+    is_draggable = True
+    is_variable = True
+
+    def __init__(self, *args):
+        _ActionHandler.__init__(self, *args)
+        self._actions = [
+            _('Move Up\tCtrl-Up'),
+            _('Move Down\tCtrl-Down'),
+            _('Rename\tF2'),
+            '---',
+            _('Delete')
+            ]
+        self._actions_nt = [
+            LABEL_MOVE_UP,
+            LABEL_MOVE_DOWN,
+            LABEL_RENAME,
+            '---',
+            LABEL_DELETE_NO_KBSC
+            ]
+
     @staticmethod
     def accepts_drag(dragged):
         __ = dragged
         return False
-    is_draggable = True
-    is_variable = True
-    _actions = [
-        _ActionHandler._label_move_up,
-        _ActionHandler._label_move_down,
-        _ActionHandler._label_rename,
-        '---',
-        _ActionHandler._label_delete_no_kbsc
-    ]
 
     def double_clicked(self):
         RideOpenVariableDialog(controller=self.controller).publish()
@@ -706,6 +811,11 @@ class VariableHandler(_CanBeRenamed, _ActionHandler):
 class ResourceRootHandler(_ActionHandler):
     can_be_rendered = is_draggable = is_user_keyword = is_test_suite = False
 
+    def __init__(self, *args):
+        _ActionHandler.__init__(self, *args)
+        self._actions = [_('Add Resource')]
+        self._actions_nt = [LABEL_ADD_RESOURCE]
+
     @staticmethod
     def rename(new_name):
         _ = new_name
@@ -715,8 +825,6 @@ class ResourceRootHandler(_ActionHandler):
     def accepts_drag(dragged):
         __ = dragged
         return False
-
-    _actions = [_ActionHandler._label_add_resource]
 
     @property
     def item(self):
@@ -736,7 +844,8 @@ class ExcludedDirectoryHandler(TestDataDirectoryHandler):
 
     def __init__(self, *args):
         TestDataHandler.__init__(self, *args)
-        self._actions = [_ActionHandler._label_include]
+        self._actions = [_('Include')]
+        self._actions_nt = [LABEL_INCLUDE]
 
     def on_include(self, event):
         self.controller.execute(ctrlcommands.Include())
