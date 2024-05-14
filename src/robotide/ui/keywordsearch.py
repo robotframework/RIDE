@@ -89,9 +89,9 @@ class KeywordSearch(Plugin):
 
     def _search_resource(self, item):
         if isinstance(item, (TestCaseFileController, ResourceFileController)):
-            def _callable():
+            def _callable(arg=None):
                 self._show_resource(os.path.basename(item.source))
-            return [PopupMenuItem(SEARCH_KW, ccallable=_callable)]
+            return [PopupMenuItem(SEARCH_KW,'Search Keywords', ccallable=_callable)]
         return []
 
     def _show_resource(self, resource):
@@ -136,7 +136,7 @@ class _SearchCriteria(object):
 class KeywordSearchDialog(RIDEDialog):
 
     def __init__(self, parent, searcher):
-        RIDEDialog.__init__(self, title=_("Search Keywords"), parent=parent, size=(650, 400),
+        RIDEDialog.__init__(self, title=SEARCH_KW, parent=parent, size=(650, 400),
                             style=wx.DEFAULT_FRAME_STYLE | wx.FRAME_FLOAT_ON_PARENT)
         # set Left to Right direction (while we don't have localization)
         self.SetLayoutDirection(wx.Layout_LeftToRight)

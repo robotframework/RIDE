@@ -493,7 +493,6 @@ class ResourceFileHandler(_FileHandlerThanCanBeRenamed, TestDataHandler):
                             LABEL_RENAME,
                             LABEL_CHANGE_FORMAT,
                             LABEL_SORT_KEYWORDS,
-                            LABEL_DELETE,
                             LABEL_FIND_USAGES,
                             LABEL_DELETE,
                             '---',
@@ -522,7 +521,7 @@ class ResourceFileHandler(_FileHandlerThanCanBeRenamed, TestDataHandler):
             return True
         self.controller.is_modifiable = return_true
         self.controller.execute(ctrlcommands.RemoveReadOnly())
-        
+
     def on_open_containing_folder(self, event):
         __ = event
         try:
@@ -578,7 +577,7 @@ class TestCaseFileHandler(_FileHandlerThanCanBeRenamed, TestDataHandler):
                          _('Open Containing Folder')
                          ]
         self._actions_nt = [
-                            LABEL_ADD_SUITE,
+                            LABEL_NEW_TEST_CASE,
                             LABEL_NEW_USER_KEYWORD,
                             LABEL_NEW_SCALAR,
                             LABEL_NEW_LIST_VARIABLE,
