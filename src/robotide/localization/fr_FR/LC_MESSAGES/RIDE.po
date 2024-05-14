@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
 "POT-Creation-Date: 2024-05-09 00:21+0100\n"
-"PO-Revision-Date: 2024-05-12 19:27\n"
+"PO-Revision-Date: 2024-05-14 13:30\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "MIME-Version: 1.0\n"
@@ -20,7 +20,7 @@ msgstr ""
 #:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/application.py:376
 msgid "Found Robot Framework version %s from %s."
-msgstr "La version %s de Robot Framework a été trouvée de %s."
+msgstr "La version %s de Robot Framework a été trouvée dans %s."
 
 #:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:54
@@ -325,42 +325,42 @@ msgstr "Exécuter les tests sélectionnés"
 #:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:229
 msgid "Run Tests with Debug"
-msgstr "Exécuter les tests avec le débogage"
+msgstr "Exécuter les tests en mode \"débogage\""
 
 #:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:232
 msgid "Run the selected tests with Debug"
-msgstr "Exécuter les tests sélectionnés avec débogage"
+msgstr "Exécuter les tests sélectionnés en mode \"débogage\""
 
 #:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:235
 msgid "Stop Test Run"
-msgstr "Arrêter l'exécution de test"
+msgstr "Arrêter l'exécution des tests"
 
 #:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:319
 msgid "[ SENDING STOP SIGNAL ]\n"
-msgstr "[ ENVOYER STOP SIGNAL ]\n"
+msgstr "[ SIGNAL STOP ENVOYÉ ]\n"
 
 #:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:326
 msgid "[ SENDING PAUSE SIGNAL ]\n"
-msgstr "[ ENVOYER LA PAUSE SIGNALE ]\n"
+msgstr "[ SIGNAL PAUSE ENVOYÉ ]\n"
 
 #:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:332
 msgid "[ SENDING CONTINUE SIGNAL ]\n"
-msgstr "[ ENVOYER LA CONTINUE SIGNAL ]\n"
+msgstr "[ SIGNAL CONTINU ENVOYÉ ]\n"
 
 #:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:338
 msgid "[ SENDING STEP NEXT SIGNAL ]\n"
-msgstr "[ ENVOYER L'ÉTAPE SUIVANT SIGNAL ]\n"
+msgstr "[ SIGNAL ÉTAPE SUIVANTE ENVOYÉ ]\n"
 
 #:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:344
 msgid "[ SENDING STEP OVER SIGNAL ]\n"
-msgstr "[ ENVOYER L'ÉTAPE SUPPLÉMENTAIRE ]\n"
+msgstr "[ SIGNAL PASSER ENVOYÉ ]\n"
 
 #:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:377
@@ -401,7 +401,7 @@ msgstr "\n"
 #:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:556
 msgid "Messages log exceeded 80% of process memory, stopping for now..."
-msgstr "Le journal des messages a dépassé 80 % de la mémoire du processus, l'arrêt pour l'instant..."
+msgstr "Le journal des messages a dépassé 80 % de la mémoire du processus, arrêt en cours..."
 
 #:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:714
@@ -412,7 +412,7 @@ msgstr "Début"
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:715
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:718
 msgid "Start robot"
-msgstr "Démarrer le robot"
+msgstr "Démarrer robot"
 
 #:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:716
@@ -422,12 +422,12 @@ msgstr "Lancer la suite de test du robot"
 #:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:717
 msgid "Debug"
-msgstr "Debug"
+msgstr "Débogage"
 
 #:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:719
 msgid "Start running the robot test suite with DEBUG loglevel"
-msgstr "Démarrez la suite de test du robot avec le niveau de log DEBUG"
+msgstr "Démarrer la suite de test de robot avec le niveau de log DEBUG"
 
 #:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:721
@@ -490,22 +490,22 @@ msgstr "Voir tous les logs dans l'explorateur"
 #:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:774
 msgid " Report"
-msgstr " Rapporter"
+msgstr " Rapport"
 
 #:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:775
 msgid "View Robot Report in Browser (CtrlCmd-R)"
-msgstr "Voir le rapport des robots dans le navigateur (CtrlCmd-R)"
+msgstr "Voir le rapport Robot dans le navigateur (CtrlCmd-R)"
 
 #:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:777
 msgid " Log"
-msgstr " Logs"
+msgstr " Journal"
 
 #:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:778
 msgid "View Robot Log in Browser (CtrlCmd-L)"
-msgstr "Voir le navigateur de connexion des robots (CtrlCmd-L)"
+msgstr "Voir le journal Robot dans le navigateur (CtrlCmd-L)"
 
 #:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:785
@@ -555,12 +555,12 @@ msgstr "STATUT INCONNU :"
 #:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1068
 msgid "<<  PAUSED  >>"
-msgstr "<< PAUSED >>"
+msgstr "<< EN PAUSE >>"
 
 #:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1073
 msgid "<< CONTINUE >>"
-msgstr "<< CONTINUE >>"
+msgstr "<< CONTINUER >>"
 
 #:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1114
