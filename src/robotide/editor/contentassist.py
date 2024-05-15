@@ -28,7 +28,7 @@ from ..publish import PUBLISHER
 from ..publish.messages import RideSettingsChanged
 
 
-_PREFERRED_POPUP_SIZE = (400, 200)
+_PREFERRED_POPUP_SIZE = (200, 400)
 _AUTO_SUGGESTION_CFG_KEY = "enable auto suggestions"
 
 
