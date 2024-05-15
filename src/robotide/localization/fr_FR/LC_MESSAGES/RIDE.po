@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
 "POT-Creation-Date: 2024-05-09 00:21+0100\n"
-"PO-Revision-Date: 2024-05-14 13:30\n"
+"PO-Revision-Date: 2024-05-15 20:55\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "MIME-Version: 1.0\n"
@@ -106,7 +106,7 @@ msgstr "Une erreur s'est produite lors de l'installation de la nouvelle version"
 #:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:179
 msgid "Failed to Upgrade"
-msgstr "Échec de la mise à jour"
+msgstr "Échec de mise à jour"
 
 #:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:188
