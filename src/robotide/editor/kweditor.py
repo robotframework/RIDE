@@ -365,7 +365,7 @@ class KeywordEditor(GridEditor, Plugin):
             whandle = self.GetGridColLabelWindow()
             font_size=self.GetLabelFont().GetPixelSize().width + 4
             col_size = max(max(4, len(value))*font_size, self.GetColSize(event.Col))
-            edit = wx.TextCtrl(whandle, COL_HEADER_EDITOR, value, size=(col_size -1),
+            edit = wx.TextCtrl(whandle, COL_HEADER_EDITOR, value, size=(col_size, -1),
                                style=wx.TE_PROCESS_ENTER | wx.TE_NOHIDESEL)
             epos = edit.GetPosition()
             edit.SetPosition((lpos, epos[1]))
