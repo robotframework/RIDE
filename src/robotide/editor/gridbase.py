@@ -105,6 +105,7 @@ class GridEditor(grid.Grid):
     def cell_under_cursor(self):
         x, y = self.ScreenToClient(wx.GetMousePosition())
         x -= self.RowLabelSize
+        y -= self.GetColLabelSize()
         return self.XYToCell(*self.CalcUnscrolledPosition(x, y))
 
     def select(self, row, column):
