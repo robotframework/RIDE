@@ -364,14 +364,18 @@ class KeywordEditor(GridEditor, Plugin):
             lpos = self.GetColLeft(event.Col)
             whandle = self.GetGridColLabelWindow()
             font_size=self.GetLabelFont().GetPixelSize().width + 4
-            edit = wx.TextCtrl(whandle, COL_HEADER_EDITOR, value, size=(max(4, len(value))*font_size, -1))
+            col_size = max(max(4, len(value))*font_size, self.GetColSize(event.Col))
+            edit = wx.TextCtrl(whandle, COL_HEADER_EDITOR, value, size=(col_size, -1),
+                               style=wx.TE_PROCESS_ENTER | wx.TE_NOHIDESEL)
             epos = edit.GetPosition()
             edit.SetPosition((lpos, epos[1]))
             edit.Bind(wx.EVT_KEY_DOWN, self.on_col_label_edit)
+            edit.Bind(wx.EVT_KEY_UP, self.on_col_label_edit)
             edit.SetInsertionPointEnd()
             edit.SelectAll()
             edit.SetFocus()
             self.col_label_element = (edit, event.Col)
+            self._marked_cell = (-1, -1)
             # edit.Bind(wx.EVT_KILL_FOCUS, self.on_kill_focus)
 
     def on_col_label_edit(self, event: wx.KeyEvent):
@@ -391,6 +395,7 @@ class KeywordEditor(GridEditor, Plugin):
             self._controller.mark_dirty()
             self._controller.notify_steps_changed()
             wx.CallAfter(edit.Destroy)
+            return
         event.Skip()
 
     def on_label_left_click(self, event):
