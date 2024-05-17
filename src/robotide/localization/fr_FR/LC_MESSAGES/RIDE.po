@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
 "POT-Creation-Date: 2024-05-09 00:21+0100\n"
-"PO-Revision-Date: 2024-05-15 20:55\n"
+"PO-Revision-Date: 2024-05-17 00:55\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "MIME-Version: 1.0\n"
@@ -106,7 +106,7 @@ msgstr "Une erreur s'est produite lors de l'installation de la nouvelle version"
 #:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:179
 msgid "Failed to Upgrade"
-msgstr "Échec de mise à jour"
+msgstr "Échec de la mise à jour"
 
 #:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:188
@@ -196,7 +196,7 @@ msgstr "Pour plus d'informations, voir les pages du projet sur %s."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:79
 msgid "Some of the icons are from %s."
-msgstr "Certaines des icônes proviennent de %s."
+msgstr "Certaines icônes proviennent de %s."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:80
 msgid "%s the maintainer of the project thanks the original authors and all users and collaborators."
@@ -268,7 +268,7 @@ msgstr "Filtres de tests"
 #:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:573
 msgid "Only run tests with these tags:"
-msgstr "Exécute uniquement les tests avec ces tags :"
+msgstr "Exécuter uniquement les tests avec ces tags :"
 
 #:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:576
@@ -298,7 +298,7 @@ msgstr "Un plugin pour exécuter des tests depuis RIDE"
 #:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:225
 msgid "Run Tests"
-msgstr "Exécuter des tests"
+msgstr "Exécuter les tests"
 
 #:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:225
@@ -350,7 +350,7 @@ msgstr "[ SIGNAL PAUSE ENVOYÉ ]\n"
 #:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:332
 msgid "[ SENDING CONTINUE SIGNAL ]\n"
-msgstr "[ SIGNAL CONTINU ENVOYÉ ]\n"
+msgstr "[ SIGNAL CONTINUER ENVOYÉ ]\n"
 
 #:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:338
@@ -406,7 +406,7 @@ msgstr "Le journal des messages a dépassé 80 % de la mémoire du processus, ar
 #:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:714
 msgid "Start"
-msgstr "Début"
+msgstr "Démarrer"
 
 #:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:715
@@ -417,7 +417,7 @@ msgstr "Démarrer robot"
 #:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:716
 msgid "Start running the robot test suite"
-msgstr "Lancer la suite de test du robot"
+msgstr "Lancer la suite de test robot"
 
 #:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:717
@@ -485,7 +485,7 @@ msgstr "Ouvrir le répertoire des journaux"
 #:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:773
 msgid "View All Logs in Explorer"
-msgstr "Voir tous les logs dans l'explorateur"
+msgstr "Voir tous les journaux dans Explorer"
 
 #:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:774
@@ -510,12 +510,12 @@ msgstr "Voir le journal Robot dans le navigateur (CtrlCmd-L)"
 #:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:785
 msgid " Autosave  "
-msgstr " Autosave  "
+msgstr " Sauvegarde automatique  "
 
 #:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:786
 msgid "Automatically save all changes before running"
-msgstr "Enregistrer automatiquement toutes les modifications avant d'exécuter"
+msgstr "Sauvegarder automatiquement toutes les modifications avant l'exécution"
 
 #:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:791
@@ -525,7 +525,7 @@ msgstr " Pause après échec  "
 #:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:792
 msgid "Automatically pause after failing keyword"
-msgstr "Mettre automatiquement en pause après échec du mot clé"
+msgstr "Mettre automatiquement en pause après l'échec d'un mot-clé"
 
 #:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:900
@@ -566,23 +566,23 @@ msgstr "<< CONTINUER >>"
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1114
 msgid "There isn't logs directory. \n"
 "Please, run the tests and try again"
-msgstr "Il n'y a pas de répertoire des logs. \n"
+msgstr "Il n'y a pas de répertoire des journaux. \n"
 "Veuillez exécuter les tests et réessayer"
 
 #:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1116
 msgid "No logs directory"
-msgstr "Aucun répertoire de logs"
+msgstr "Aucun répertoire de journaux"
 
 #:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1202
 msgid "elapsed time: %s  pass: %s  skip: %s  fail: %s"
-msgstr "temps écoulé : %s  passe : %s  saut : %s  échec : %s"
+msgstr "temps écoulé : %s  passé : %s  ignoré : %s  en échec : %s"
 
 #:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:1233
 msgid "  current keyword: "
-msgstr "  mot clé actuel : "
+msgstr "  mot-clé actuel : "
 
 #:
 #: /home2/helio/github/RIDE/tools/../src/robotide/controller/ui/treecontroller.py:41
@@ -627,7 +627,7 @@ msgstr "Entrez le nom de l'étiquette"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:31
 msgid "[Edit]\n"
-msgstr "[Edit]\n"
+msgstr "[Editer]\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:32
 msgid "&Undo | Undo last modification | Ctrlcmd-Z\n"
@@ -700,7 +700,7 @@ msgstr "Déplacer les lignes vers le bas | Déplacer les lignes vers le bas | Al
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:50
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:66
 msgid "[Tools]\n"
-msgstr "[Tools]\n"
+msgstr "[Outils]\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:51
 msgid "Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword and variable completions | | | POSITION-70\n"
@@ -720,7 +720,7 @@ msgstr "Le plugin \"éditeur\" par défaut. Aussi connu comme l'éditeur de \"Gr
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:571
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:724
 msgid "Comment"
-msgstr "Commenter"
+msgstr "Commentaire"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:118
 msgid "Scalar Variable"
@@ -753,11 +753,11 @@ msgstr "Valeur"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:133
 msgid "List Variable"
-msgstr "Liste des variables"
+msgstr "Variable de type Liste"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:148
 msgid "Dictionary Variable"
-msgstr "Variable de dictionnaire"
+msgstr "Variable de type Dictionnaire"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:163
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:572
