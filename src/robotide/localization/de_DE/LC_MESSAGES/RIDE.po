@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2024-05-06 23:48+0100\n"
+"POT-Creation-Date: 2024-05-17 02:34+0100\n"
 "PO-Revision-Date: 2024-02-19 03:52\n"
 "Last-Translator: \n"
 "Language-Team: German\n"
@@ -777,7 +777,8 @@ msgstr "Quelle"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editors.py:380
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:207
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:72
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:476
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:741
 msgid "Find Usages"
 msgstr "Usages finden"
 
@@ -793,137 +794,137 @@ msgstr ""
 "Anzahl der Spalten, die in diesem Editor angezeigt werden. Der ausgewählte "
 "Wert wird gespeichert und global verwendet."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:82
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:83
 msgid "Create Keyword"
 msgstr "Stichwort erstellen"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:83
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:84
 msgid "Extract Keyword"
 msgstr "Schlüsselwort extrahieren"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:84
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:85
 msgid "Extract Variable"
 msgstr "Variable extrahieren"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:85
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1030
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:86
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1093
 msgid "Rename Keyword"
 msgstr "Schlüsselwort umbenennen"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:86
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:87
 msgid "Find Where Used"
 msgstr "Finden Sie wo verwendet"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:87
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:88
 msgid "JSON Editor\tCtrl-Shift-J"
 msgstr "JSON-Editor      Ctrl-Shift-J"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:89
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:90
 msgid "Go to Definition\tCtrl-B"
 msgstr "Gehe zur Definition      Ctrl-B"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:91
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:92
 msgid "Undo\tCtrl-Z"
 msgstr "Rückgängig      Ctrl-Z"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:92
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:93
 msgid "Redo\tCtrl-Y"
 msgstr "Wiederholen      Ctrl-Y"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:94
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:95
 msgid "Make Variable\tCtrl-1"
 msgstr "Variable erstellen      Ctrl-1"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:95
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:96
 msgid "Make List Variable\tCtrl-2"
 msgstr "Erstelle Liste Variable      Ctrl-2"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:96
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:97
 msgid "Make Dict Variable\tCtrl-5"
 msgstr "Dict Variable erstellen      Ctrl-5"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:98
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:327
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:99
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:338
 msgid "Comment Cells\tCtrl-Shift-3"
 msgstr "Zellen      Ctrl-Shift-3"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:99
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:328
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:100
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:339
 msgid "Uncomment Cells\tCtrl-Shift-4"
 msgstr "Zellen entfernen      Ctrl-Shift-4"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:100
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:101
 msgid "Move Cursor Down\tAlt-Enter"
 msgstr "Cursor nach unten      Alt-Enter"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:102
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:319
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:103
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:330
 msgid "Comment Rows\tCtrl-3"
 msgstr "Zeilen kommentieren      Ctrl-3"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:103
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:320
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:104
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:331
 msgid "Uncomment Rows\tCtrl-4"
 msgstr "Zeilen entfernen      Ctrl-4"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:104
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:321
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:105
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:332
 msgid "Move Rows Up\tAlt-Up"
 msgstr "Zeilen nach oben      Alt-Up"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:105
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:322
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:106
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:333
 msgid "Move Rows Down\tAlt-Down"
 msgstr "Zeilen nach unten      Alt-down"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:106
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:323
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:107
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:334
 msgid "Swap Row Up\tCtrl-T"
 msgstr "Zeile nach oben tauschen      Ctrl-T"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:109
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:110
 msgid "Delete Cells\tCtrl-Shift-D"
 msgstr "Zellen löschen      Ctrl-Shift-D"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:109
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:110
 msgid "Insert Cells\tCtrl-Shift-I"
 msgstr "Zellen einfügen      Ctrl-Shift-I"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:110
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:324
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:111
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:335
 msgid "Insert Rows\tCtrl-I"
 msgstr "Insert Rows\tCtrl-I"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:110
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:325
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:111
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:336
 msgid "Delete Rows\tCtrl-D"
 msgstr "Zeilen löschen      Ctrl-D"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:111
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:112
 msgid "Copy\tCtrl-C"
 msgstr "Kopieren      Ctrl-C"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:111
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:112
 msgid "Cut\tCtrl-X"
 msgstr "Schnitt      Ctrl-X"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:111
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:112
 msgid "Select All\tCtrl-A"
 msgstr "Alle auswählen      Ctrl-A"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:112
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:113
 msgid "Delete\tDel"
 msgstr "Löschen      Del"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:112
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:113
 msgid "Insert\tCtrl-Shift-V"
 msgstr "Einfügen      Ctrl-Shift-V"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:112
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:113
 msgid "Paste\tCtrl-V"
 msgstr "Einfügen      Ctrl-V"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:794
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:857
 msgid ""
 "<b>Keyword was not detected by RIDE</b>\n"
 "        <br>Possible corrections:<br>\n"
@@ -956,43 +957,43 @@ msgstr ""
 "erstellt werden.</li>\n"
 "        </ul>"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1030
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1093
 msgid "New name"
 msgstr "Neuer Name"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1042
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1105
 msgid "Save"
 msgstr "Speichern"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1043
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1106
 msgid "Cancel"
 msgstr "Abbrechen"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1069
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1132
 msgid "Error in JSON:"
 msgstr "Fehler in JSON:"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1069
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1132
 msgid "Save anyway?"
 msgstr "Trotzdem speichern?"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1070
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1133
 msgid "Validation Error!"
 msgstr "Validierungsfehler!"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1211
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1274
 msgid "Please select what you want to check for usage"
 msgstr "Bitte wählen Sie, was Sie auf die Nutzung überprüfen möchten"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1214
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1277
 msgid "Complete cell content"
 msgstr "Kompletter Zelleninhalt"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1215
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1278
 msgid "Variable "
 msgstr "Variable "
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1227
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1290
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:660
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:49
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:127
@@ -1004,17 +1005,21 @@ msgstr "Suchen"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/listeditor.py:37
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/tagdialogs.py:233
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:78
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:368
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:667
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:768
 msgid "Delete"
 msgstr "Löschen"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/listeditor.py:37
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:85
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:663
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:764
 msgid "Move Up\tCtrl-Up"
 msgstr "Nach oben      Ctrl-Oben"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/listeditor.py:37
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:86
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:664
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:765
 msgid "Move Down\tCtrl-Down"
 msgstr "Nach unten      Ctrl-runter"
 
@@ -1729,7 +1734,7 @@ msgstr ""
 "Sie im RF-Benutzerhandbuch oder 'Roboter --help'."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:96
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:80
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:846
 msgid "Include"
 msgstr "Einschließen"
 
@@ -1913,7 +1918,6 @@ msgstr "<all library keywords>"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:39
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:59
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:139
 msgid "Search Keywords"
 msgstr "Suchbegriffe"
 
@@ -2037,7 +2041,7 @@ msgid "Saved all files"
 msgstr "Alle Dateien gespeichert"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:199
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:227
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:228
 msgid "Validation Error"
 msgstr "Validierungsfehler"
 
@@ -2378,111 +2382,94 @@ msgid "Delete a tag '%s' ?"
 msgstr "Tag '%s' löschen?"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/tagdialogs.py:276
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:565
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:642
 msgid "Confirm"
 msgstr "Bestätigen"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:57
-msgid "New Suite\tCtrl-Shift-F"
-msgstr "Neue Anlage      Ctrl-Shift-F"
-
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:58
-msgid "New Directory"
-msgstr "Neues Verzeichnis"
-
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:59
-msgid "New Test Case\tCtrl-Shift-T"
-msgstr "Neuer Testfall      Ctrl-Shift-T"
-
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:60
-msgid "New User Keyword\tCtrl-Shift-K"
-msgstr "Neues Benutzerschlüsselwort      Ctrl-Shift-K"
-
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:61
-msgid "Sort Variables"
-msgstr "Variablen sortieren"
-
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:62
-msgid "Sort Tests"
-msgstr "Tests sortieren"
-
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:63
-msgid "Sort Keywords"
-msgstr "Suchbegriffe sortieren"
-
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:64
-msgid "New Scalar\tCtrl-Shift-V"
-msgstr "Neuer Skalar      Ctrl-Shift-V"
-
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:65
-msgid "New List Variable\tCtrl-Shift-L"
-msgstr "Neue Listenvariable      Ctrl-Shift-L"
-
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:66
-msgid "New Dictionary Variable"
-msgstr "Neue Wörterbuch-Variable"
-
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:67
-msgid "Change Format"
-msgstr "Format ändern"
-
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:68
-msgid "Copy\tCtrl-Shift-C"
-msgstr "Kopieren      Ctrl-Shift-C"
-
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:69
-msgid "Rename\tF2"
-msgstr "Rename\tF2"
-
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:70
-msgid "Add Resource"
-msgstr "Ressource hinzufügen"
-
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:71
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:238
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:344
 msgid "New Resource"
 msgstr "Neue Ressource"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:73
-msgid "Select All Tests"
-msgstr "Alle Tests auswählen"
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:342
+msgid "New Suite\tCtrl-Shift-F"
+msgstr "Neue Anlage      Ctrl-Shift-F"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:74
-msgid "Deselect All Tests"
-msgstr "Alle Tests abwählen"
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:343
+msgid "New Directory"
+msgstr "Neues Verzeichnis"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:75
-msgid "Select Only Failed Tests"
-msgstr "Nur fehlgeschlagene Tests auswählen"
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:346
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:468
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:555
+msgid "New User Keyword\tCtrl-Shift-K"
+msgstr "Neues Benutzerschlüsselwort      Ctrl-Shift-K"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:76
-msgid "Select Only Passed Tests"
-msgstr "Nur bestandene Tests auswählen"
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:347
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:469
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:556
+msgid "New Scalar\tCtrl-Shift-V"
+msgstr "Neuer Skalar      Ctrl-Shift-V"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:77
-msgid "Delete\tCtrl-Shift-D"
-msgstr "Löschen      Ctrl-Shift-D"
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:348
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:470
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:557
+msgid "New List Variable\tCtrl-Shift-L"
+msgstr "Neue Listenvariable      Ctrl-Shift-L"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:79
-msgid "Exclude"
-msgstr "Ausschließen"
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:349
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:471
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:558
+msgid "New Dictionary Variable"
+msgstr "Neue Wörterbuch-Variable"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:81
-msgid "Expand all"
-msgstr "Alle ausklappen"
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:351
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:474
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:561
+msgid "Change Format"
+msgstr "Format ändern"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:82
-msgid "Collapse all"
-msgstr "Alle einklappen"
-
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:83
-msgid "Remove Read Only"
-msgstr "Nur Lesen entfernen"
-
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:84
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:352
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:485
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:577
 msgid "Open Containing Folder"
 msgstr "Containing Ordner öffnen"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:403
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:373
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:569
+msgid "Select All Tests"
+msgstr "Alle Tests auswählen"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:374
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:570
+msgid "Deselect All Tests"
+msgstr "Alle Tests abwählen"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:375
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:571
+msgid "Select Only Failed Tests"
+msgstr "Nur fehlgeschlagene Tests auswählen"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:376
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:572
+msgid "Select Only Passed Tests"
+msgstr "Nur bestandene Tests auswählen"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:386
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:482
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:574
+msgid "Exclude"
+msgstr "Ausschließen"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:388
+msgid "Collapse all"
+msgstr "Alle einklappen"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:388
+msgid "Expand all"
+msgstr "Alle ausklappen"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:428
 msgid ""
 "Directory contains unsaved data!\n"
 "You must save data before excluding."
@@ -2490,8 +2477,37 @@ msgstr ""
 "Verzeichnis enthält ungespeicherte Daten!\n"
 "Sie müssen Daten speichern, bevor Sie dies ausschließen."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:466
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:539
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:473
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:560
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:665
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:766
+msgid "Rename\tF2"
+msgstr "Rename\tF2"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:475
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:480
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:562
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:567
+msgid "Sort Keywords"
+msgstr "Suchbegriffe sortieren"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:477
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:563
+msgid "Delete\tCtrl-Shift-D"
+msgstr "Löschen      Ctrl-Shift-D"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:479
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:565
+msgid "Sort Variables"
+msgstr "Variablen sortieren"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:484
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:576
+msgid "Remove Read Only"
+msgstr "Nur Lesen entfernen"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:514
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:616
 msgid ""
 "File contains unsaved data!\n"
 "You must save data before excluding."
@@ -2499,9 +2515,25 @@ msgstr ""
 "Datei enthält ungespeicherte Daten!\n"
 "Sie müssen Daten speichern, bevor Sie sie ausschließen."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:565
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:554
+msgid "New Test Case\tCtrl-Shift-T"
+msgstr "Neuer Testfall      Ctrl-Shift-T"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:566
+msgid "Sort Tests"
+msgstr "Tests sortieren"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:642
 msgid "Delete test case file"
 msgstr "Testfalldatei löschen"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:662
+msgid "Copy\tCtrl-Shift-C"
+msgstr "Kopieren      Ctrl-Shift-C"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:815
+msgid "Add Resource"
+msgstr "Ressource hinzufügen"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treeplugin.py:61
 msgid "Provides a tree view for Test Suites "
