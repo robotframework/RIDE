@@ -79,7 +79,13 @@ class KeywordEditor(GridEditor, Plugin):
         self.color_foreground_text = self.general_settings['foreground text']
         GridEditor.__init__(self, parent, len(controller.steps) + 5, max((controller.max_columns + 1), 5),
                             parent.plugin.grid_popup_creator)
-        self._popup_items = [
+        self._popup_items = ([
+                             _('Insert Cells\tCtrl-Shift-I'), _('Delete Cells\tCtrl-Shift-D'),
+                             _('Insert Rows\tCtrl-I'), _('Delete Rows\tCtrl-D'), '---',
+                             _('Select All\tCtrl-A'), '---', _('Cut\tCtrl-X'), _('Copy\tCtrl-C'),
+                             _('Paste\tCtrl-V'), _('Insert\tCtrl-Shift-V'), '---', _('Delete\tDel'),
+                             '---'] +
+                             [
                               _('Create Keyword'),
                               _('Extract Keyword'),
                               _('Extract Variable'),
@@ -104,45 +110,41 @@ class KeywordEditor(GridEditor, Plugin):
                               _('Uncomment Rows\tCtrl-4'),
                               _('Move Rows Up\tAlt-Up'),
                               _('Move Rows Down\tAlt-Down'),
-                              _('Swap Row Up\tCtrl-T'),
-                              '---',
-                          ] + [
-            _('Insert Cells\tCtrl-Shift-I'), _('Delete Cells\tCtrl-Shift-D'),
-            _('Insert Rows\tCtrl-I'), _('Delete Rows\tCtrl-D'), '---',
-            _('Select All\tCtrl-A'), '---', _('Cut\tCtrl-X'), _('Copy\tCtrl-C'),
-            _('Paste\tCtrl-V'), _('Insert\tCtrl-Shift-V'), '---', _('Delete\tDel')]
-        self._popup_items_nt = [
-                                   'Create Keyword',
-                                   'Extract Keyword',
-                                   'Extract Variable',
-                                   'Rename Keyword',
-                                   'Find Where Used',
-                                   'JSON Editor\tCtrl-Shift-J',
-                                   '---',
-                                   'Go to Definition\tCtrl-B',
-                                   '---',
-                                   'Undo\tCtrl-Z',
-                                   'Redo\tCtrl-Y',
-                                   '---',
-                                   'Make Variable\tCtrl-1',
-                                   'Make List Variable\tCtrl-2',
-                                   'Make Dict Variable\tCtrl-5',
-                                   '---',
-                                   'Comment Cells\tCtrl-Shift-3',
-                                   'Uncomment Cells\tCtrl-Shift-4',
-                                   'Move Cursor Down\tAlt-Enter',
-                                   '---',
-                                   'Comment Rows\tCtrl-3',
-                                   'Uncomment Rows\tCtrl-4',
-                                   'Move Rows Up\tAlt-Up',
-                                   'Move Rows Down\tAlt-Down',
-                                   'Swap Row Up\tCtrl-T',
-                                   '---',
-                               ] + [
-            'Insert Cells\tCtrl-Shift-I', 'Delete Cells\tCtrl-Shift-D',
-            'Insert Rows\tCtrl-I', 'Delete Rows\tCtrl-D', '---',
-            'Select All\tCtrl-A', '---', 'Cut\tCtrl-X', 'Copy\tCtrl-C',
-            'Paste\tCtrl-V', 'Insert\tCtrl-Shift-V', '---', 'Delete\tDel']
+                              _('Swap Row Up\tCtrl-T')
+                              ])
+        self._popup_items_nt = ([
+                                 'Insert Cells\tCtrl-Shift-I', 'Delete Cells\tCtrl-Shift-D',
+                                 'Insert Rows\tCtrl-I', 'Delete Rows\tCtrl-D', '---',
+                                 'Select All\tCtrl-A', '---', 'Cut\tCtrl-X', 'Copy\tCtrl-C',
+                                 'Paste\tCtrl-V', 'Insert\tCtrl-Shift-V', '---', 'Delete\tDel',
+                                 '---'] +
+                                [
+                                'Create Keyword',
+                                'Extract Keyword',
+                                'Extract Variable',
+                                'Rename Keyword',
+                                'Find Where Used',
+                                'JSON Editor\tCtrl-Shift-J',
+                                '---',
+                                'Go to Definition\tCtrl-B',
+                                '---',
+                                'Undo\tCtrl-Z',
+                                'Redo\tCtrl-Y',
+                                '---',
+                                'Make Variable\tCtrl-1',
+                                'Make List Variable\tCtrl-2',
+                                'Make Dict Variable\tCtrl-5',
+                                '---',
+                                'Comment Cells\tCtrl-Shift-3',
+                                'Uncomment Cells\tCtrl-Shift-4',
+                                'Move Cursor Down\tAlt-Enter',
+                                '---',
+                                'Comment Rows\tCtrl-3',
+                                'Uncomment Rows\tCtrl-4',
+                                'Move Rows Up\tAlt-Up',
+                                'Move Rows Down\tAlt-Down',
+                                'Swap Row Up\tCtrl-T'
+                                ])
         self._parent = parent
         self._plugin = parent.plugin
         self._cell_selected = False
@@ -583,7 +585,7 @@ class KeywordEditor(GridEditor, Plugin):
         selection_content = self._get_single_selection_content_or_none_on_first_call()
         if selection_content is None:
             self.highlight(None)
-        else:
+        elif self._parent:
             self._parent.highlight(selection_content, expand=False)
 
     def highlight(self, text, expand=True):
