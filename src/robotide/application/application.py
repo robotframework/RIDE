@@ -32,7 +32,6 @@ from ..application.editorprovider import EditorProvider
 from ..application.releasenotes import ReleaseNotes
 from ..application.updatenotifier import UpdateNotifierController, UpdateDialog
 from ..ui.mainframe import ToolBar
-# from ..ui.treeplugin import TreePlugin
 from ..ui.fileexplorerplugin import FileExplorerPlugin
 from ..utils import RideFSWatcherHandler, run_python_command
 from ..lib.robot.utils.encodingsniffer import get_system_encoding
@@ -302,6 +301,7 @@ class RIDE(wx.App):
     def change_locale(self, message):
         if message.keys[0] != "General":
             return
+        initial_locale = self._locale.GetName()
         if languages:
             from ..preferences import Languages
             names = [n for n in Languages.names]
@@ -323,6 +323,26 @@ class RIDE(wx.App):
         lpath = str(Path(Path.joinpath(lpath.parent, 'localization')).absolute())
         wx.Locale.AddCatalogLookupPathPrefix(lpath)
         self._locale.AddCatalog('RIDE')
+        if len(message.keys) > 1:  # Avoid initial setting
+            from multiprocessing import shared_memory
+            from .restartutil import restart_dialog
+            new_locale = self._locale.GetName()
+            if initial_locale != new_locale:
+                # print(f"DEBUG: application.py RIDE change_locale CHANGED from {initial_locale} to {new_locale}")
+                if restart_dialog():  # DEBUG: See the in implementation why we don't restart
+                    # print("DEBUG: application.py RIDE change_locale Restart accepted.")
+                    # Shared memory to store language definition
+                    try:
+                        sharemem = shared_memory.ShareableList(['en'], name="language")
+                    except FileExistsError:  # Other instance created file
+                        sharemem = shared_memory.ShareableList(name="language")
+                    finally:
+                        sharemem.shm.close()
+                        sharemem.shm.unlink()
+                    # wx.CallAfter(self.ExitMainLoop)
+                    # wx.CallLater(1000, self.Destroy)
+                    wx.CallLater(1000, self.ExitMainLoop)
+                    # self.DeletePendingEvents()
 
     @staticmethod
     def update_excludes(message):
