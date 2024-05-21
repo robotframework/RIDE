@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
 "POT-Creation-Date: 2024-05-20 00:30+0100\n"
-"PO-Revision-Date: 2024-05-20 00:24\n"
+"PO-Revision-Date: 2024-05-21 01:53\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "MIME-Version: 1.0\n"
@@ -245,7 +245,7 @@ msgstr "Ajouter le nom de la suite aux noms des journaux"
 #:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:453
 msgid "Add timestamp to log names"
-msgstr "Ajouter un horodatage aux noms des journaux"
+msgstr "Ajouter l'horodatage aux noms des journaux"
 
 #:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:456
@@ -274,7 +274,7 @@ msgstr "Arguments pour l'exécution de test. Les arguments sont une liste sépar
 #:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:553
 msgid "Does not execute - help or version option given"
-msgstr "Ne s'exécute pas - help ou version donnée"
+msgstr "Ne s'exécute pas - options d'aide ou de version demandées"
 
 #:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:558
@@ -299,7 +299,7 @@ msgstr "Ignorer les tests avec ces tags :"
 #:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:672
 msgid "Script to run tests:"
-msgstr "Script pour exécuter les tests:"
+msgstr "Script pour exécuter les tests :"
 
 #:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:99
