@@ -13,3 +13,4 @@ pytest-order
 # Include also normal project requirements.
 -r requirements.txt
 
+requests>=2.32.0 # not directly required, pinned by Snyk to avoid a vulnerability
