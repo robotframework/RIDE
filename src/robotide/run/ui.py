@@ -13,11 +13,27 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import sys
+import builtins
 import wx
 
 from .process import Process
 from ..widgets import Label, Font
+
+_ = wx.GetTranslation  # To keep linter/code analyser happy
+builtins.__dict__['_'] = wx.GetTranslation
+
+FINNISHED = _('finished')
+RUN_AGAIN = _('Run Again')
+RUNNING = _('running')
+STOP = _('Stop')
+
+
+def get_label(label: str) -> str:
+    if label == RUN_AGAIN:
+        return 'on_run_again'
+    if label == STOP:
+        return 'on_stop'
+    raise ValueError
 
 
 class Runner(wx.EvtHandler):
@@ -26,6 +42,7 @@ class Runner(wx.EvtHandler):
         wx.EvtHandler.__init__(self)
         self.Bind(wx.EVT_TIMER, self.on_timer)
         self.name = config.name
+        self._process = None
         self._timer = wx.Timer(self)
         self._config = config
         self._window = self._get_output_window(notebook)
@@ -35,10 +52,19 @@ class Runner(wx.EvtHandler):
 
     def run(self):
         self._process = Process(self._config.command)
-        self._process.start()
-        self._timer.Start(500)
+        # print(f"DEBUG: runanything.py Runner run process object={self._process}"
+        #      f"\nCommand: {self._config.command}")
+        if self._process is None:
+            wx.MessageBox(f"FAILED TO RUN {self._config.command}", style=wx.ICON_ERROR)
+            return
+        try:
+            self._process.start()
+            self._timer.Start(500)
+        except Exception as err:
+            wx.MessageBox(str(err), style=wx.ICON_ERROR)
 
     def on_timer(self, event=None):
+        __ = event
         finished = self._process.is_finished()
         self._window.update_output(self._process.get_output(), finished)
         if finished:
@@ -67,10 +93,7 @@ class _OutputWindow(wx.ScrolledWindow):
         self.SetScrollRate(20, 20)
 
     def _create_state_button(self):
-        if sys.version_info[:2] >= (2,6):  # DEBUG Check this condition
-            self._state_button = _StopAndRunAgainButton(self)
-        else:
-            self._state_button = _RunAgainButton(self)
+        self._state_button = _StopAndRunAgainButton(self)
         return self._state_button
 
     def _create_output(self):
@@ -78,7 +101,7 @@ class _OutputWindow(wx.ScrolledWindow):
         return self._output
 
     def _add_to_notebook(self, notebook, name):
-        notebook.add_tab(self, '%s (running)' % name, allow_closing=False)
+        notebook.add_tab(self, f"{name} ({RUNNING})", allow_closing=False)
         notebook.show_tab(self)
 
     def update_output(self, output, finished=False):
@@ -86,16 +109,17 @@ class _OutputWindow(wx.ScrolledWindow):
             self._output.update(output)
             self.SetVirtualSize(self._output.Size)
         if finished:
-            self._rename_tab('%s (finished)' % self._runner.name)
+            self._rename_tab(f"{self._runner.name} ({FINNISHED})")
             self.Parent.allow_closing(self)
             self._state_button.enable_run_again()
 
     def on_stop(self):
+        self.Parent.allow_closing(self)
         self._runner.stop()
 
     def on_run_again(self):
         self._output.clear()
-        self._rename_tab('%s (running)' % self._runner.name)
+        self._rename_tab(f"{self._runner.name} ({RUNNING})")
         self.Parent.disallow_closing(self)
         self._state_button.reset()
         self._runner.run()
@@ -111,7 +135,11 @@ class _OutputDisplay(Label):
         self.SetFont(Font().fixed)
 
     def update(self, addition):
-        self.SetLabel(self.LabelText + addition.decode('UTF-8', 'ignore'))
+        try:
+            self.SetLabel(self.LabelText + addition.decode('UTF-8', 'ignore'))
+        except AttributeError:
+            self.SetLabel(self.LabelText + "ERROR")
+            getattr(self.Parent, 'on_stop')()
 
     def clear(self):
         self.SetLabel('')
@@ -120,36 +148,19 @@ class _OutputDisplay(Label):
 class _StopAndRunAgainButton(wx.Button):
 
     def __init__(self, parent):
-        wx.Button.__init__(self, parent, label='Stop')
+        wx.Button.__init__(self, parent, label=STOP)
         self.Bind(wx.EVT_BUTTON, self.on_click, self)
 
     def on_click(self, event):
+        __ = event
         self.Enable(False)
-        name = 'on_%s' % self.LabelText.strip().replace(' ', '_').lower()
+        name = get_label(self.LabelText)
         getattr(self.Parent, name)()
 
     def enable_run_again(self):
         self.Enable()
-        self.SetLabel('Run Again')
+        self.SetLabel(RUN_AGAIN)
 
     def reset(self):
         self.Enable()
-        self.SetLabel('Stop')
-
-
-class _RunAgainButton(wx.Button):
-
-    def __init__(self, parent):
-        wx.Button.__init__(self, parent, label='Run Again')
-        self.Bind(wx.EVT_BUTTON, self.on_click, self)
-        self.Enable(False)
-
-    def on_click(self, event):
-        self.Parent.on_run_again()
-
-    def enable_run_again(self):
-        self.Enable()
-
-    def reset(self):
-        self.Enable(False)
-
+        self.SetLabel(STOP)

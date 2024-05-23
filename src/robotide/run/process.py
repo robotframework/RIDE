@@ -28,23 +28,22 @@ class Process(object):
         self._out_file = None
         self._out_path = None
         self._out_fd = None
+        self._fuse = False
 
-    def _parse_command(self, command):
+    @staticmethod
+    def _parse_command(command):
         if isinstance(command, str):
             return [val.replace('<SPACE>', ' ') for val in command.split()]
         return command
 
     def start(self):
-        self._out_fd, self._out_path = \
-                        tempfile.mkstemp(prefix='rfproc_', suffix='.txt',
-                                         text=True)
-        self._out_file = open(self._out_path)
+        self._out_fd, self._out_path = tempfile.mkstemp(prefix='rfproc_', suffix='.txt', text=True)
+        self._out_file = open(self._out_path, 'w+b')
         if not self._command:
             self._error = 'The command is missing from this run configuration.'
             return
         try:
-            self._process = subprocess.Popen(self._command, stdout=self._out_fd,
-                                             stderr=subprocess.STDOUT)
+            self._process = subprocess.Popen(self._command, stdout=self._out_fd, stderr=subprocess.STDOUT)
         except OSError as err:
             self._error = str(err)
 
@@ -53,6 +52,7 @@ class Process(object):
 
     def stop(self):
         self._process.kill()
+        self._close_outputs()
 
     def wait(self):
         if self._process is not None:
@@ -62,7 +62,7 @@ class Process(object):
         """Returns the output produced by the process.
 
         If ``wait_until_finished`` is True, blocks until the process is
-        finished and returns all output. Otherwise the currently available
+        finished and returns all output. Otherwise, the currently available
         output is returned immediately.
 
         Currently available output depends on buffering and might not include
@@ -73,22 +73,33 @@ class Process(object):
             return self._error
         if wait_until_finished:
             self._process.wait()
-        output = self._out_file.read()
+        try:
+            output = self._out_file.read()
+        except ValueError:
+            output = b"\nRIDE: ValueError when reading output.\n\n"
+            self._fuse = True
+            self._close_outputs()
+            return output
         if self.is_finished():
             self._close_outputs()
         return output
 
     def _close_outputs(self):
         self._out_file.close()
-        os.close(self._out_fd)
-        self._remove_tempfile()
+        try:
+            if not self._fuse:
+                os.close(self._out_fd)
+            self._remove_tempfile()
+        except ValueError:
+            self._fuse = True
+            return
 
-    def _remove_tempfile(self, attempts=10):
+    def _remove_tempfile(self, attempts=5):
         try:
             os.remove(self._out_path)
         except OSError:
             if not attempts:
-                raise
+                self._fuse = True
+                return
             time.sleep(1)
             self._remove_tempfile(attempts - 1)
-
