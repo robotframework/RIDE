@@ -64,6 +64,7 @@ class Runner(wx.EvtHandler):
             wx.MessageBox(str(err), style=wx.ICON_ERROR)
 
     def on_timer(self, event=None):
+        __ = event
         finished = self._process.is_finished()
         self._window.update_output(self._process.get_output(), finished)
         if finished:
@@ -113,6 +114,7 @@ class _OutputWindow(wx.ScrolledWindow):
             self._state_button.enable_run_again()
 
     def on_stop(self):
+        self.Parent.allow_closing(self)
         self._runner.stop()
 
     def on_run_again(self):
@@ -150,6 +152,7 @@ class _StopAndRunAgainButton(wx.Button):
         self.Bind(wx.EVT_BUTTON, self.on_click, self)
 
     def on_click(self, event):
+        __ = event
         self.Enable(False)
         name = get_label(self.LabelText)
         getattr(self.Parent, name)()

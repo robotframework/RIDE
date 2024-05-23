@@ -31,6 +31,7 @@ Tools->Preferences->General.
 
 === Fixed
 
+- Fixed plugin Run Anything (Macros) not showing output and broken actions.
 - Fixed headers and blank spacing in Templated tests
 - Fixed removal of continuation marker in steps
 - Fixed wrong continuation of long chains of keywords in Setups, Teardowns or Documentation
