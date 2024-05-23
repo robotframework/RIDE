@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2024-05-20 00:30+0100\n"
+"POT-Creation-Date: 2024-05-23 02:48+0100\n"
 "PO-Revision-Date: 2024-05-12 19:27\n"
 "Last-Translator: \n"
 "Language-Team: Italian\n"
@@ -404,6 +404,7 @@ msgid "Start running the robot test suite with DEBUG loglevel"
 msgstr "Inizia ad eseguire la suite di test del robot con il loglevel DEBUG"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:721
+#: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:28
 msgid "Stop"
 msgstr "Ferma"
 
@@ -1745,6 +1746,22 @@ msgstr ""
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/runanything.py:63
 msgid "Macros"
 msgstr "Macro"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:25
+#, fuzzy
+msgid "finished"
+msgstr ""
+"\n"
+"Test terminato {}"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:26
+msgid "Run Again"
+msgstr ""
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:27
+#, fuzzy
+msgid "running"
+msgstr "Attenzione"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:36
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/searchtests.py:35
