@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2024-05-20 00:30+0100\n"
-"PO-Revision-Date: 2024-05-20 00:24\n"
+"POT-Creation-Date: 2024-05-23 02:48+0100\n"
+"PO-Revision-Date: 2024-05-23 02:15\n"
 "Last-Translator: \n"
 "Language-Team: Danish\n"
 "MIME-Version: 1.0\n"
@@ -452,6 +452,7 @@ msgstr "Begynd at køre robotten test suite med DEBUG logniveau"
 
 #:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:721
+#: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:28
 msgid "Stop"
 msgstr "Stop"
 
@@ -1755,6 +1756,18 @@ msgstr "Et plugin til at udføre kommandoer på systemet.\n\n"
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/runanything.py:63
 msgid "Macros"
 msgstr "Makroer"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:25
+msgid "finished"
+msgstr "færdig"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:26
+msgid "Run Again"
+msgstr "Kør Igen"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:27
+msgid "running"
+msgstr "kører"
 
 #:
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:36
