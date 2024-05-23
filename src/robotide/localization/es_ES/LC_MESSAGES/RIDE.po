@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2024-05-20 00:30+0100\n"
-"PO-Revision-Date: 2024-05-20 00:24\n"
+"POT-Creation-Date: 2024-05-23 02:48+0100\n"
+"PO-Revision-Date: 2024-05-23 02:15\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "MIME-Version: 1.0\n"
@@ -20,7 +20,7 @@ msgstr ""
 #:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/application.py:396
 msgid "Found Robot Framework version %s from %s."
-msgstr "Encontrada la versión %s de %s de Robot Framework."
+msgstr "Se encontró la versión %s de %s de Robot Framework."
 
 #:
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/releasenotes.py:54
@@ -452,6 +452,7 @@ msgstr "Comenzar a ejecutar la suite de pruebas de robot con el loglevel DEBUG"
 
 #:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:721
+#: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:28
 msgid "Stop"
 msgstr "Parar"
 
@@ -732,7 +733,9 @@ msgid "The default editor plugin. Also known as Grid or Cell Editor.\n\n"
 "    This plugin implements editors for the various items of Robot Framework\n"
 "    test data.\n"
 "    "
-msgstr ""
+msgstr "El plugin de edición por defecto. Conocido también como Grid o Cell Editor.\n\n"
+"    Este plugin implementa editores para los distintos elementos de datos de prueba de Robot Framework.\n"
+"    "
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:71
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:483
@@ -1010,7 +1013,16 @@ msgid "<b>Keyword was not detected by RIDE</b>\n"
 "            for example for Java libraries.\n"
 "            Library spec XML can be created using libdoc tool from Robot Framework.</li>\n"
 "        </ul>"
-msgstr ""
+msgstr "<b>Palabra clave no detectada por RIDE</b>\n"
+"        <br>Possibles correciones:<br>\n"
+"        <ul>\n"
+"            <li>Importar biblioteca o fichero de recursos que contenga la palabra clave.</li>\n"
+"            <li>Para errores de importación de bibliotecas: Considere la posibilidad de importar XML de especificaciones de biblioteca\n"
+"            (Herramientas / Importar biblioteca Spec XML o añadiendo el archivo XML con el\n"
+"            nombre correcto a PYTHONPATH) para habilitar el completado de palabras clave\n"
+"            por ejemplo para bibliotecas Java.\n"
+"            El XML de especificación de biblioteca puede crearse utilizando la herramienta libdoc de Robot Framework.</li>\n"
+"        </ul>"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1095
 msgid "New name"
@@ -1732,13 +1744,28 @@ msgid "A plugin for executing commands on the system.\n\n"
 "    This plugin enables creation of persistent run configurations and\n"
 "    execution of those. Output of the executed command is displayed in a\n"
 "    separate tab."
-msgstr ""
+msgstr "Un plugin para ejecutar comandos en el sistema.\n\n"
+"    Este plugin permite crear configuraciones de ejecución persistentes y la\n"
+"    ejecución de las mismas. La salida del comando ejecutado se muestra en una\n"
+"    pestaña separada."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/runanything.py:54
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/runanything.py:56
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/runanything.py:63
 msgid "Macros"
 msgstr "Macros"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:25
+msgid "finished"
+msgstr "finalizado"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:26
+msgid "Run Again"
+msgstr "Ejecutar de nuevo"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:27
+msgid "running"
+msgstr "corriendo"
 
 #:
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:36
@@ -1943,15 +1970,15 @@ msgstr "Mostrar panel del Explorador de Archivos"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:35
 msgid "<all keywords>"
-msgstr ""
+msgstr "<todas las palabras clave>"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:36
 msgid "<all user keywords>"
-msgstr ""
+msgstr "<todas las palabras clave del usuario>"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:37
 msgid "<all library keywords>"
-msgstr ""
+msgstr "<todas las palabras clave de la libreria>"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:39
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:59
@@ -2213,7 +2240,8 @@ msgstr "Buscar palabras clave no utilizadas"
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:66
 msgid "This dialog helps you finding unused keywords within your opened project.\n"
 "If you want, you can restrict the search to a set of files with the filter."
-msgstr ""
+msgstr "Este campo le ayuda a encontrar palabras clave no utilizadas dentro del proyecto abierto.\n"
+"Si lo desea, puede restringir la búsqueda a un conjunto de archivos con el filtro."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:70
 msgid "Filter is"
@@ -2236,7 +2264,9 @@ msgstr "Usar RegEx"
 msgid "Here you can define one or more strings separated by comma (e.g. common,abc,123).\n"
 "The filter matches if at least one string is part of the filename.\n"
 "If you don't enter any strings, all opened files are included"
-msgstr ""
+msgstr "Aquí puede definir una o varias cadenas de caracteres separadas por comas (por ejemplo, común,abc,123).\n"
+"El filtro se activará si al menos una cadena forma parte del nombre del fichero.\n"
+"Si no introduce ninguna cadena, se incluirán todos los archivos abiertos"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:101
 msgid "Test case files"
