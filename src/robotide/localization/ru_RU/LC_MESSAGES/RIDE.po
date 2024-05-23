@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2024-05-20 00:30+0100\n"
-"PO-Revision-Date: 2024-05-20 00:24\n"
+"POT-Creation-Date: 2024-05-23 02:48+0100\n"
+"PO-Revision-Date: 2024-05-23 02:16\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "MIME-Version: 1.0\n"
@@ -451,6 +451,7 @@ msgstr "Начать запуск набора тестов роботов с у
 
 #:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:721
+#: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:28
 msgid "Stop"
 msgstr "Остановить"
 
@@ -1743,6 +1744,18 @@ msgstr "Плагин для выполнения команд в системе.
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/runanything.py:63
 msgid "Macros"
 msgstr "Макрос"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:25
+msgid "finished"
+msgstr "завершено"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:26
+msgid "Run Again"
+msgstr "Снова запустить"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:27
+msgid "running"
+msgstr "запущен"
 
 #:
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:36
