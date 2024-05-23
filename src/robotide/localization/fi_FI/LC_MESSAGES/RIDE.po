@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2024-05-20 00:30+0100\n"
-"PO-Revision-Date: 2024-05-20 00:24\n"
+"POT-Creation-Date: 2024-05-23 02:48+0100\n"
+"PO-Revision-Date: 2024-05-23 02:16\n"
 "Last-Translator: \n"
 "Language-Team: Finnish\n"
 "MIME-Version: 1.0\n"
@@ -452,6 +452,7 @@ msgstr "Aloita robotin testaussviitin käyttö DEBUG-logitasolla"
 
 #:
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:721
+#: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:28
 msgid "Stop"
 msgstr "Pysäytä"
 
@@ -1744,6 +1745,18 @@ msgstr "Liitännäinen, jolla voit suorittaa komentoja järjestelmässä.\n\n"
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/runanything.py:63
 msgid "Macros"
 msgstr "Makrot"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:25
+msgid "finished"
+msgstr "valmis"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:26
+msgid "Run Again"
+msgstr "Suorita Uudelleen"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:27
+msgid "running"
+msgstr "käynnissä"
 
 #:
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:36
