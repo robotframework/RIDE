@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2024-05-23 02:48+0100\n"
-"PO-Revision-Date: 2024-05-04 03:50\n"
+"POT-Creation-Date: 2024-05-25 19:10+0100\n"
+"PO-Revision-Date: 2024-05-23 02:16\n"
 "Last-Translator: \n"
 "Language-Team: Dutch\n"
 "Language: nl_NL\n"
@@ -52,20 +52,20 @@ msgstr "Bekijk de online versie op "
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/restartutil.py:31
 msgid "Re-open RIDE for Language Change"
-msgstr ""
+msgstr "Heropen RIDE voor taalwijziging"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/restartutil.py:32
 msgid "Language change will only be correct after re-opening RIDE."
-msgstr ""
+msgstr "De taalwijziging zal alleen correct zijn na het heropenen van de RIDE."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/restartutil.py:33
 msgid "Do you want to CLOSE RIDE now?"
-msgstr ""
+msgstr "Wilt u nu RIDE VERSLUITEN?"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/restartutil.py:53
 #, fuzzy
 msgid "Completed Language Change"
-msgstr "Klaar met bijwerken"
+msgstr "Voltooide taalwijziging"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/restartutil.py:54
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:188
@@ -1761,20 +1761,16 @@ msgid "Macros"
 msgstr "Macros"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:25
-#, fuzzy
 msgid "finished"
-msgstr ""
-"\n"
-"Testrun is beëindigd {}"
+msgstr "klaar"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:26
 msgid "Run Again"
-msgstr ""
+msgstr "Opnieuw uitvoeren"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:27
-#, fuzzy
 msgid "running"
-msgstr "Waarschuwing"
+msgstr "actief"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:36
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/searchtests.py:35

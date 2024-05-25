@@ -1,22 +1,21 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2024-05-23 02:48+0100\n"
-"PO-Revision-Date: 2024-04-02 12:20+0100\n"
+"POT-Creation-Date: 2024-05-25 19:10+0100\n"
+"PO-Revision-Date: 2024-05-23 02:16\n"
 "Last-Translator: \n"
 "Language-Team: Swedish\n"
 "Language: sv_SE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Generated-By: pygettext.py 1.5\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Crowdin-Project: robotframework-ride\n"
 "X-Crowdin-Project-ID: 637294\n"
 "X-Crowdin-Language: sv-SE\n"
 "X-Crowdin-File: /master/src/robotide/localization/RIDE.pot\n"
 "X-Crowdin-File-ID: 14\n"
-"X-Generator: Poedit 3.4.2\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/application.py:396
 msgid "Found Robot Framework version %s from %s."
@@ -53,20 +52,20 @@ msgstr "Kontrollera online-versionen på "
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/restartutil.py:31
 msgid "Re-open RIDE for Language Change"
-msgstr ""
+msgstr "Öppna RIDE igen för språkändring"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/restartutil.py:32
 msgid "Language change will only be correct after re-opening RIDE."
 msgstr ""
+"Språkändringen kommer endast att vara korrekt efter att RIDE öppnats på nytt."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/restartutil.py:33
 msgid "Do you want to CLOSE RIDE now?"
-msgstr ""
+msgstr "Vill du CLOSE RIDE nu?"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/restartutil.py:53
-#, fuzzy
 msgid "Completed Language Change"
-msgstr "Slutförd uppgradering"
+msgstr "Slutförd språkändring"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/restartutil.py:54
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:188
@@ -582,7 +581,7 @@ msgstr "&Gör om | Gör om modifiering | Ctrlcmd-Y\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:35
 msgid "Cu&t | Cut | Ctrlcmd-X\n"
-msgstr "Cu&t | Cut | Ctrlcmd-X\n"
+msgstr "Cu&t <unk> Cut <unk> Ctrlcmd-X\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:36
 msgid "&Copy | Copy | Ctrlcmd-C\n"
@@ -825,7 +824,7 @@ msgstr "Kopiera\tCtrl-C"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:85
 msgid "Cut\tCtrl-X"
-msgstr "Cut\tCtrl-X"
+msgstr "Cut<unk> Ctrl-X"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:85
 msgid "Select All\tCtrl-A"
@@ -866,7 +865,7 @@ msgstr "Hitta var används"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:94
 msgid "JSON Editor\tCtrl-Shift-J"
-msgstr "JSON Editor\tCtrl-Shift-J"
+msgstr "JSON Editor<unk> Ctrl-Shift-J"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:96
 msgid "Go to Definition\tCtrl-B"
@@ -878,7 +877,7 @@ msgstr "Ångra Ctrl-Z"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:99
 msgid "Redo\tCtrl-Y"
-msgstr "Redo\tCtrl-Y"
+msgstr "Redo<unk> Ctrl-Y"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:101
 msgid "Make Variable\tCtrl-1"
@@ -900,7 +899,7 @@ msgstr "Kommentera Cells\tCtrl-Shift-3"
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:106
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:341
 msgid "Uncomment Cells\tCtrl-Shift-4"
-msgstr "Uncomment Cells\tCtrl-Shift-4"
+msgstr "Uncomment Cells<unk> Ctrl-Shift-4"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:107
 msgid "Move Cursor Down\tAlt-Enter"
@@ -1584,12 +1583,12 @@ msgstr "Sparar"
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/saving.py:41
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:114
 msgid "Is Task?"
-msgstr ""
+msgstr "Är uppgiften?"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/saving.py:42
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:114
 msgid "Default for Tasks or Tests sections."
-msgstr ""
+msgstr "Standard för uppgifter eller testsektioner."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/saving.py:43
 msgid "Reformat?"
@@ -1728,20 +1727,16 @@ msgid "Macros"
 msgstr "Makron"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:25
-#, fuzzy
 msgid "finished"
-msgstr ""
-"\n"
-"Test avslutat {}"
+msgstr "färdig"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:26
 msgid "Run Again"
-msgstr ""
+msgstr "Kör igen"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:27
-#, fuzzy
 msgid "running"
-msgstr "Varning"
+msgstr "kör"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:36
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/searchtests.py:35

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2024-05-23 02:48+0100\n"
-"PO-Revision-Date: 2024-02-19 03:52\n"
+"POT-Creation-Date: 2024-05-25 19:10+0100\n"
+"PO-Revision-Date: 2024-05-23 02:16\n"
 "Last-Translator: \n"
 "Language-Team: Finnish\n"
 "Language: fi_FI\n"
@@ -52,20 +52,19 @@ msgstr "Tarkista online versio osoitteesta "
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/restartutil.py:31
 msgid "Re-open RIDE for Language Change"
-msgstr ""
+msgstr "Avaa RIDE uudelleen kielen vaihtamiseksi"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/restartutil.py:32
 msgid "Language change will only be correct after re-opening RIDE."
-msgstr ""
+msgstr "Kielen muutos on oikein vain RIDEn avaamisen jälkeen."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/restartutil.py:33
 msgid "Do you want to CLOSE RIDE now?"
-msgstr ""
+msgstr "Haluatko SULJE RIDE nyt?"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/restartutil.py:53
-#, fuzzy
 msgid "Completed Language Change"
-msgstr "Suoritettu Päivitys"
+msgstr "Valmis Kielen Muutos"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/restartutil.py:54
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:188
@@ -1722,20 +1721,16 @@ msgid "Macros"
 msgstr "Makrot"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:25
-#, fuzzy
 msgid "finished"
-msgstr ""
-"\n"
-"Testi päättynyt {}"
+msgstr "valmis"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:26
 msgid "Run Again"
-msgstr ""
+msgstr "Suorita Uudelleen"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:27
-#, fuzzy
 msgid "running"
-msgstr "Varoitus"
+msgstr "käynnissä"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:36
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/searchtests.py:35
@@ -2024,7 +2019,7 @@ msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:65
 msgid "!E&xit | Exit RIDE | Ctrlcmd-Q\n"
-msgstr "!E&Xit | Poistu RIDE | Ctrlcmd-Q\n"
+msgstr "!Poistu | Poistu RIDE | Ctrlcmd-Q\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:67
 msgid "!Search Unused Keywords | | | | POSITION-54\n"

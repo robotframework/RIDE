@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2024-05-23 02:48+0100\n"
-"PO-Revision-Date: 2024-02-19 03:52\n"
+"POT-Creation-Date: 2024-05-25 19:10+0100\n"
+"PO-Revision-Date: 2024-05-23 02:16\n"
 "Last-Translator: \n"
 "Language-Team: German\n"
 "Language: de_DE\n"
@@ -52,25 +52,27 @@ msgstr "Überprüfen Sie die Online-Version auf "
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/restartutil.py:31
 msgid "Re-open RIDE for Language Change"
-msgstr ""
+msgstr "RIDE zur Änderung der Sprache erneut öffnen"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/restartutil.py:32
 msgid "Language change will only be correct after re-opening RIDE."
 msgstr ""
+"Die Änderung der Sprache ist nur nach der erneuten Aktivierung von RIDE "
+"korrekt."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/restartutil.py:33
 msgid "Do you want to CLOSE RIDE now?"
-msgstr ""
+msgstr "Möchten Sie jetzt RIDE VERLASSEN?"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/restartutil.py:53
 #, fuzzy
 msgid "Completed Language Change"
-msgstr "Abgeschlossene Aktualisierung"
+msgstr "Abgeschlossene Sprachänderung"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/restartutil.py:54
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:188
 msgid "You should close this RIDE (Process ID = "
-msgstr "Sie sollten diese RIDE schließen (Prozess-ID = "
+msgstr "Bitte diese Instanz von RIDE schließen (Prozess-ID = "
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:110
 msgid "New development version is available."
@@ -94,20 +96,20 @@ msgid ""
 "After upgrade you will see another dialog informing to close this RIDE "
 "instance."
 msgstr ""
-"Nach dem Upgrade erscheint ein weiterer Dialog, in dem Sie diese RIDE-"
-"Instanz schließen können."
+"Nach Abschluss der Aktualisierung ermöglicht ein Dialogfeld, diese Instanz "
+"von RIDE zu schließen."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:121
 msgid "No Upgrade Available"
-msgstr "Kein Upgrade verfügbar"
+msgstr "Keine Aktualisierung verfügbar"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:121
 msgid "You have the latest version of RIDE."
-msgstr "Sie haben die neueste RIDE-Version."
+msgstr "Sie haben die neueste Version von RIDE."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:122
 msgid "              Have a nice day :)"
-msgstr "              Habe einen schönen Tag :)"
+msgstr "              Einen schönen Tag noch :)"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:179
 msgid "An error occurred when installing new version"
@@ -115,15 +117,15 @@ msgstr "Fehler beim Installieren der neuen Version"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:179
 msgid "Failed to Upgrade"
-msgstr "Upgrade fehlgeschlagen"
+msgstr "Aktualisierung fehlgeschlagen"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:188
 msgid "Completed Upgrade"
-msgstr "Abgeschlossene Aktualisierung"
+msgstr "Aktualisierung abgeschlossen"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:208
 msgid "Update available"
-msgstr "Update verfügbar"
+msgstr "Aktualisierung verfügbar"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:216
 msgid " available from "
@@ -135,48 +137,47 @@ msgstr "Neue Version "
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:217
 msgid "See this version "
-msgstr "Diese Version ansehen "
+msgstr "Siehe diese Version "
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:219
 msgid "You can update with the command:"
-msgstr "Sie können mit dem Befehl aktualisieren:"
+msgstr "Sie können mit dem folgenden Befehl aktualisieren:"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:220
 msgid "Or, click <b>Upgrade Now</b>"
-msgstr "Oder klicken Sie auf <b>Jetzt upgraden</b>"
+msgstr "Oder klicken Sie auf <b>Jetzt Aktualisieren</b>"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:222
 msgid "See the latest development "
-msgstr "Aktuelle Entwicklung ansehen "
+msgstr "Neueste Entwicklung ansehen "
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:227
 msgid ""
 "I'm using another method for RIDE updates\n"
 " and do not need automatic update checks"
 msgstr ""
-"Ich benutze eine andere Methode für RIDE-Updates\n"
-" und brauche keine automatischen Update-Prüfungen"
+"Ich benutze eine andere Methode für die Aktualisierung von RIDE\n"
+" und benötige keine automatischen Prüfungen auf Aktualisierungen"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:232
 msgid "remind me later"
-msgstr "später erinnern"
+msgstr "Später erinnern"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:238
 msgid "Upgrade Now"
-msgstr "Jetzt upgraden"
+msgstr "Jetzt Aktualisieren"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:59
 msgid "Started RIDE %s using python version %s with wx version %s in %s."
-msgstr ""
-"RIDE %s mit der Python-Version %s mit der wx-Version %s in %s gestartet."
+msgstr "RIDE %s mit Python-Version %s und wx-Version %s auf %s gestartet."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:72
 msgid "Thanks all RIDE translators: %s"
-msgstr "Danke an alle RIDE-Übersetzer: %s"
+msgstr "Danke an alle Übersetzer von RIDE: %s"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:74
 msgid "RIDE -- Robot Framework Test Data Editor"
-msgstr "RIDE – Robot-Framework-Testdateneditor"
+msgstr "RIDE – Robot Framework Testdaten-Editor"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:76
 msgid "RIDE %s running on Python %s."
@@ -184,11 +185,11 @@ msgstr "RIDE %s läuft auf Python %s."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:77
 msgid "RIDE is a test data editor for %s."
-msgstr "RIDE ist ein Testdateneditor für %s."
+msgstr "RIDE ist ein Testdaten-Editor für %s."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:78
 msgid "For more information, see project pages at %s."
-msgstr "Weitere Informationen finden Sie auf den Projektseiten bei %s."
+msgstr "Für weitere Informationen, siehe die Projektseiten auf %s."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:79
 msgid "Some of the icons are from %s."
@@ -199,7 +200,7 @@ msgid ""
 "%s the maintainer of the project thanks the original authors and all users "
 "and collaborators."
 msgstr ""
-"%s der Betreuer des Projekts dankt den ursprünglichen Autoren und allen "
+"%s der Betreuer des Projekts dankt den ursprünglichen Autoren sowie allen "
 "Benutzern und Mitarbeitern."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/context/__init__.py:81
@@ -212,7 +213,7 @@ msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:424
 msgid "Log options"
-msgstr "Log-Optionen"
+msgstr "Protokolloptionen"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:432
 msgid "Output directory: "
@@ -220,7 +221,7 @@ msgstr "Ausgabeverzeichnis: "
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:450
 msgid "Add suite name to log names"
-msgstr "Füge den Namen der Suite zu Lognamen hinzu"
+msgstr "Füge den Namen der Suite zu den Protokollnamen hinzu"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:453
 msgid "Add timestamp to log names"
@@ -228,11 +229,11 @@ msgstr "Zeitstempel zu Protokollnamen hinzufügen"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:456
 msgid "Save Console and Message logs"
-msgstr "Konsole und Nachrichtenprotokolle speichern"
+msgstr "Konsolen- und Nachrichtenprotokolle speichern"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:474
 msgid "Select Logs Directory"
-msgstr "Log-Verzeichnis auswählen"
+msgstr "Protokollverzeichnis auswählen"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/runprofiles.py:496
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:341
@@ -337,7 +338,7 @@ msgstr "[ STEP SENDEN NEXT SIGNAL ]\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:344
 msgid "[ SENDING STEP OVER SIGNAL ]\n"
-msgstr "[ STEP SENDEN SIGNAL]\n"
+msgstr "[ SENDE ÜBERSPRINGEN SIGNAL]\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:377
 msgid "command: %s\n"
@@ -378,8 +379,8 @@ msgstr ""
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:556
 msgid "Messages log exceeded 80% of process memory, stopping for now..."
 msgstr ""
-"Nachrichtenprotokoll hat 80% des Prozessspeichers überschritten, jetzt wird "
-"gestoppt..."
+"Nachrichtenprotokoll hat 80% des Prozessspeichers überschritten und wird "
+"vorerst angehalten..."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:714
 msgid "Start"
@@ -400,7 +401,7 @@ msgstr "Debug"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:719
 msgid "Start running the robot test suite with DEBUG loglevel"
-msgstr "Starten Sie die Robotertestsuite mit DEBUG loglevel"
+msgstr "Starten Sie die Robotertestsuite mit DEBUG Loglevel"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:721
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:28
@@ -575,7 +576,7 @@ msgstr "Tag-Name eingeben"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:31
 msgid "[Edit]\n"
-msgstr "[Edit]\n"
+msgstr "[Editieren]\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:32
 msgid "&Undo | Undo last modification | Ctrlcmd-Z\n"
@@ -1196,6 +1197,34 @@ msgid ""
 "        </p>\n"
 "        "
 msgstr ""
+"<h1>Syntaxfärbung</h1>\n"
+"        <p>\n"
+"        Syntaxfärbung für Text Edit verwendet <a href='https://pygments."
+"org/'>Pygments</a> Syntax Hervorhebung.\n"
+"        </p>\n"
+"        <p>\n"
+"        Pygments über die Befehlszeile installieren:\n"
+"        <pre>\n"
+"            pip install pygments\n"
+"        </pre>\n"
+"        Oder:\n"
+"        <pre>\n"
+"            easy_install pygments\n"
+"        </pre>\n"
+"        Danach RIDE neu starten.\n"
+"        </p>\n"
+"        <p>\n"
+"        Wenn weder pip noch easy_install verfügbar sind,\n"
+"        <a \n"
+"        href='https://pythonhosted.org/an_example_pypi_project/setuptools."
+"html#installing-setuptools-and-easy-install'\n"
+"        >diese Anweisungen befolgen</a>.\n"
+"        </p>\n"
+"        <p>\n"
+"        Weitere Informationen zur Installation von Pygments <a href='https://"
+"pygments.org/download/'>sind auf der Webseite</a>.\n"
+"        </p>\n"
+"        "
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:711
 msgid "Getting syntax colorization"
@@ -1721,20 +1750,16 @@ msgid "Macros"
 msgstr "Makros"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:25
-#, fuzzy
 msgid "finished"
-msgstr ""
-"\n"
-"Test beendet {}"
+msgstr "beendet"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:26
 msgid "Run Again"
-msgstr ""
+msgstr "Erneut ausführen"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:27
-#, fuzzy
 msgid "running"
-msgstr "Warnung"
+msgstr "läuft"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:36
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/searchtests.py:35
@@ -2345,7 +2370,7 @@ msgstr "Suche,%s \t- %s"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:354
 msgid "Search finished - Found %d Unused Keywords"
-msgstr ""
+msgstr "Suche abgeschlossen - %d nicht verwendete Schlüsselwörter gefunden"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:402
 msgid "listing datafiles"

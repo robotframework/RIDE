@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2024-05-23 02:48+0100\n"
-"PO-Revision-Date: 2024-02-10 02:11\n"
+"POT-Creation-Date: 2024-05-25 19:10+0100\n"
+"PO-Revision-Date: 2024-05-23 02:15\n"
 "Last-Translator: \n"
 "Language-Team: Czech\n"
 "Language: cs_CZ\n"
@@ -52,20 +52,19 @@ msgstr "Zkontrolujte online verzi na "
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/restartutil.py:31
 msgid "Re-open RIDE for Language Change"
-msgstr ""
+msgstr "Znovu otevřít RIDE pro změnu jazyka"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/restartutil.py:32
 msgid "Language change will only be correct after re-opening RIDE."
-msgstr ""
+msgstr "Změna jazyka bude korektní pouze po opětovném otevření RIDE."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/restartutil.py:33
 msgid "Do you want to CLOSE RIDE now?"
-msgstr ""
+msgstr "Chcete nyní UZAVŘIT JÍZD?"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/restartutil.py:53
-#, fuzzy
 msgid "Completed Language Change"
-msgstr "Dokončená aktualizace"
+msgstr "Dokončená změna jazyka"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/restartutil.py:54
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:188
@@ -1729,20 +1728,16 @@ msgid "Macros"
 msgstr "Makra"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:25
-#, fuzzy
 msgid "finished"
-msgstr ""
-"\n"
-"Test dokončen {}"
+msgstr "dokončeno"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:26
 msgid "Run Again"
-msgstr ""
+msgstr "Znovu spustit"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:27
-#, fuzzy
 msgid "running"
-msgstr "Varování"
+msgstr "běží"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:36
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/searchtests.py:35
@@ -2622,6 +2617,3 @@ msgstr "Importuji název"
 #: /home2/helio/github/RIDE/tools/../src/robotide/validators/__init__.py:150
 msgid "%s cannot be empty"
 msgstr "%s nemůže být prázdný"
-
-#~ msgid "Saving Preferences"
-#~ msgstr "Ukládání předvoleb"

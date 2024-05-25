@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2024-05-23 02:48+0100\n"
-"PO-Revision-Date: 2024-02-10 02:11\n"
+"POT-Creation-Date: 2024-05-25 19:10+0100\n"
+"PO-Revision-Date: 2024-05-23 02:16\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Language: ru_RU\n"
@@ -54,20 +54,20 @@ msgstr "Проверить онлайн версию на "
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/restartutil.py:31
 msgid "Re-open RIDE for Language Change"
-msgstr ""
+msgstr "Открыть повторно RIDE для изменения языка"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/restartutil.py:32
 msgid "Language change will only be correct after re-opening RIDE."
 msgstr ""
+"Изменение языка будет правильным только после повторного открытия RIDE."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/restartutil.py:33
 msgid "Do you want to CLOSE RIDE now?"
-msgstr ""
+msgstr "Вы хотите ЗАКРЫТЬ сейчас?"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/restartutil.py:53
-#, fuzzy
 msgid "Completed Language Change"
-msgstr "Обновление завершено"
+msgstr "Изменения завершенного языка"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/restartutil.py:54
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/updatenotifier.py:188
@@ -1579,12 +1579,12 @@ msgstr "Сохранение"
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/saving.py:41
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:114
 msgid "Is Task?"
-msgstr ""
+msgstr "Задача?"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/saving.py:42
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:114
 msgid "Default for Tasks or Tests sections."
-msgstr ""
+msgstr "По умолчанию для разделов Задач или Тестов."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/saving.py:43
 msgid "Reformat?"
@@ -1724,16 +1724,15 @@ msgstr "Макрос"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:25
 msgid "finished"
-msgstr ""
+msgstr "завершено"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:26
 msgid "Run Again"
-msgstr ""
+msgstr "Снова запустить"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:27
-#, fuzzy
 msgid "running"
-msgstr "Предупреждение"
+msgstr "запущен"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:36
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/searchtests.py:35
@@ -2614,6 +2613,3 @@ msgstr "Импортирование Имя"
 #: /home2/helio/github/RIDE/tools/../src/robotide/validators/__init__.py:150
 msgid "%s cannot be empty"
 msgstr "%s не может быть пустым"
-
-#~ msgid "Saving Preferences"
-#~ msgstr "Сохранение настроек"
