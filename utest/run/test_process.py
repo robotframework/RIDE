@@ -35,10 +35,10 @@ class TestProcess(unittest.TestCase):
     @pytest.mark.skipif(os.getenv('GITHUB_ACTIONS'), reason="Fails at Fedora workflow")
     def test_writing_to_stderr(self):
         self.proc = self._create_process('python %s stderr' % SCRIPT)
-        assert (self.proc.get_output(wait_until_finished=True) ==
-                      'This is stderr\n')
+        assert (self.proc.get_output(wait_until_finished=True) == b'This is stderr\n')
 
-    def _create_process(self, command):
+    @staticmethod
+    def _create_process(command):
         proc = Process(command)
         proc.start()
         return proc
@@ -46,4 +46,3 @@ class TestProcess(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-

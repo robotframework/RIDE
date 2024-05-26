@@ -17,13 +17,13 @@ import unittest
 import time
 import os
 import pytest
-DISPLAY = os.getenv('DISPLAY')
-if not DISPLAY:
-    pytest.skip("Skipped because of missing DISPLAY", allow_module_level=True) # Avoid failing unit tests in system without X11
-import sys
 from robotide.run.runanything import RunConfig
 from robotide.run.ui import Runner
 from utest.resources import UIUnitTestBase
+DISPLAY = os.getenv('DISPLAY')
+if not DISPLAY:
+    pytest.skip("Skipped because of missing DISPLAY", allow_module_level=True)  # Avoid failing unit tests without X11
+
 
 SCRIPT = os.path.join(os.path.dirname(__file__),
                       'process_test_scripts.py').replace(' ', '<SPACE>')
@@ -43,8 +43,11 @@ class _FakeOutputWindow(object):
 
     def __init__(self):
         self.output = []
+        self.finished = None
 
     def update_output(self, output, finished):
+        if isinstance(output, bytes):
+            output = str(output, encoding='utf-8')
         self.output.append(output)
         self.finished = finished
 
@@ -65,7 +68,7 @@ class TestRunAnything(UIUnitTestBase):
         self.runner.stop()
         self._sleep_and_log_output(0.1)
         assert self.runner.finished
-        assert self.runner.outstr.startswith('start\nrunning ')
+        assert self.runner.outstr == '\nRIDE: ValueError when reading output.\n\n'
 
     def test_error(self):
         self.runner = self._create_runner('invalid command')
@@ -80,7 +83,8 @@ class TestRunAnything(UIUnitTestBase):
         assert self.runner.finished
         assert self.runner.outstr == 'This is stderr\n'
 
-    def _create_runner(self, cmd):
+    @staticmethod
+    def _create_runner(cmd):
         runner = _TestableRunner(RunConfig('test', cmd, ''), None)
         runner.run()
         return runner
