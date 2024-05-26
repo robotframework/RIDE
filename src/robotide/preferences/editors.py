@@ -121,7 +121,7 @@ class EditorPreferences(PreferencesPanel):
         f = IntegerChoiceEditor(
             self._settings, 'font size', _('Font Size'),
             [str(i) for i in range(8, 16)])
-        sizer = wx.FlexGridSizer(rows=3, cols=2, vgap=10, hgap=30)
+        sizer = wx.FlexGridSizer(rows=4, cols=2, vgap=10, hgap=30)
         l_size = f.label(self)
         background_color = Colour(LIGHT_GRAY)
         foreground_color = Colour("black")

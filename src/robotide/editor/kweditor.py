@@ -37,7 +37,7 @@ from ..controller.ctrlcommands import ChangeCellValue, clear_area, \
     insert_area, sharp_comment_rows, sharp_uncomment_rows
 from ..editor.cellrenderer import CellRenderer
 from ..pluginapi import Plugin
-from ..publish import RideItemStepsChanged, RideSaved, PUBLISHER, RideBeforeSaving
+from ..publish import RideItemStepsChanged, RideSaved, PUBLISHER, RideBeforeSaving, RideSettingsChanged
 from ..ui.progress import RenameProgressObserver
 from ..usages.UsageRunner import Usages, VariableUsages
 from ..utils import variablematcher
@@ -48,6 +48,8 @@ builtins.__dict__['_'] = wx.GetTranslation
 
 _DEFAULT_FONT_SIZE = 11
 COL_HEADER_EDITOR = wx.NewId()
+PLUGIN_NAME = 'Editor'
+ZOOM_FACTOR = 'zoom factor'
 
 
 def requires_focus(function):
@@ -70,6 +72,7 @@ class KeywordEditor(GridEditor, Plugin):
 
     def __init__(self, parent, controller, tree):
         self.settings = parent.plugin.global_settings['Grid']
+        self.zoom = self.settings.get(ZOOM_FACTOR, 0)
         self.general_settings = parent.plugin.global_settings['General']
         self.color_background = self.general_settings['background']
         self.color_foreground = self.general_settings['foreground']
@@ -170,7 +173,7 @@ class KeywordEditor(GridEditor, Plugin):
         # self.Refresh()
         PUBLISHER.subscribe(self._before_saving, RideBeforeSaving)
         PUBLISHER.subscribe(self._data_changed, RideItemStepsChanged)
-        # PUBLISHER.subscribe(self.OnSettingsChanged, RideSettingsChanged)
+        PUBLISHER.subscribe(self.on_settings_changed, RideSettingsChanged)
         PUBLISHER.subscribe(self._ps_on_resize_grid, RideSaved)
 
     def _namespace_updated(self):
@@ -237,7 +240,7 @@ class KeywordEditor(GridEditor, Plugin):
 
     def _set_fonts(self, update_cells=False):
         _ = update_cells
-        font_size = self.settings.get('font size', _DEFAULT_FONT_SIZE)
+        font_size = self.settings.get('font size', _DEFAULT_FONT_SIZE) + self.zoom
         font_family = wx.FONTFAMILY_MODERN if self.settings['fixed font'] \
             else wx.FONTFAMILY_DEFAULT
         font_face = self.settings.get('font face', None)
@@ -247,6 +250,11 @@ class KeywordEditor(GridEditor, Plugin):
         else:
             font = wx.Font(font_size, font_family, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, font_face)
         self.SetDefaultCellFont(font)
+        self.SetLabelFont(font)
+        col_size = max(0, font_size)+self.zoom
+        row_size = max(20, font_size)+self.zoom
+        self.SetRowLabelSize(row_size)
+        self.SetColLabelSize(col_size)
         for row in range(self.NumberRows):
             for col in range(self.NumberCols):
                 self.SetCellFont(row, col, font)
@@ -263,6 +271,7 @@ class KeywordEditor(GridEditor, Plugin):
         self.Bind(grid.EVT_GRID_LABEL_LEFT_DCLICK, self._col_label_right_click)
         self.Bind(grid.EVT_GRID_LABEL_LEFT_CLICK, self.on_label_left_click)
         self.Bind(wx.EVT_KILL_FOCUS, self.on_kill_focus)
+        self.Bind(wx.EVT_MOUSEWHEEL, self.on_zoom)
 
     def get_tooltip_content(self):
         if self.IsCellEditControlShown() or self._popup_menu_shown:
@@ -275,7 +284,9 @@ class KeywordEditor(GridEditor, Plugin):
         """Redraw the colors if the color settings are modified"""
         section, setting = message.keys
         if section == 'Grid':
-            if 'font' in setting:
+            if ZOOM_FACTOR in setting:
+                self.zoom = self.settings.get(ZOOM_FACTOR, 0)
+            if 'font' in setting or ZOOM_FACTOR in setting:
                 self._set_fonts(update_cells=True)
             elif ('col size' in setting
                   or 'max col size' in setting
@@ -365,7 +376,7 @@ class KeywordEditor(GridEditor, Plugin):
             value = self._controller.data.parent.header[event.Col+1]
             lpos = self.GetColLeft(event.Col)
             whandle = self.GetGridColLabelWindow()
-            font_size=self.GetLabelFont().GetPixelSize().width + 4
+            font_size = self.GetLabelFont().GetPixelSize().width + 4
             col_size = max(max(4, len(value))*font_size, self.GetColSize(event.Col))
             edit = wx.TextCtrl(whandle, COL_HEADER_EDITOR, value, size=(col_size, -1),
                                style=wx.TE_PROCESS_ENTER | wx.TE_NOHIDESEL)
@@ -829,6 +840,23 @@ class KeywordEditor(GridEditor, Plugin):
             self.open_cell_editor().execute_enclose_text(chr(key_char))
         else:
             event.Skip()
+
+    def on_zoom(self, event):
+        rotation = event.GetWheelRotation()
+        ctrl_down = event.ControlDown()
+        if not ctrl_down:
+            event.Skip()
+            return
+        self._set_zoom(rotation)
+        self.zoom = self.settings.get(ZOOM_FACTOR, 0)
+
+    def _set_zoom(self, rotation):
+        if rotation == 0:  # Special value to reset
+            self.settings.set(ZOOM_FACTOR, 0)
+            return
+        new = 1 if rotation > 0 else -1  # Rotate away from user, increase, to user, decrease
+        old = self.settings.get(ZOOM_FACTOR, 0)  # DEBUG: Condition to zoom limits, [-10, 10]?
+        self.settings.set(ZOOM_FACTOR, old+new)
 
     def on_go_to_definition(self, event):
         __ = event
