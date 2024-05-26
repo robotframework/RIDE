@@ -111,13 +111,13 @@ class _CreationDialog(RIDEDialog):
         from ..preferences import RideSettings
         _settings = RideSettings()
         label, selector = boolean_editor(window, _settings, 'tasks',
-                                         _("Is Task?")+' ', _("Default for Tasks or Tests sections."))
+                                         ' '+_("Is Task?")+' ', _("Default for Tasks or Tests sections."))
         selector.SetBackgroundColour(Colour(self.color_background))
         selector.SetForegroundColour(Colour(self.color_foreground))
         # self.Bind(wx.EVT_CHECKBOX, self.on_path_changed, selector)
         task_box = wx.BoxSizer(wx.HORIZONTAL)
         task_box.AddMany([label, selector])
-        sizer.Add( task_box, flag = wx.ALIGN_LEFT)
+        sizer.Add(task_box, flag=wx.ALIGN_LEFT)
         return selector
 
     def _create_lang_chooser(self, sizer):
@@ -219,7 +219,8 @@ class _CreationDialog(RIDEDialog):
             return False
         return self._type_chooser.GetStringSelection() == _("Directory")
 
-    def _is_task_type(self):
+    @staticmethod
+    def _is_task_type():
         # if not self._task_chooser:
         #     return False
         from ..preferences import RideSettings
