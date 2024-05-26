@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2024-05-25 19:10+0100\n"
+"POT-Creation-Date: 2024-05-26 02:15+0100\n"
 "PO-Revision-Date: 2024-05-23 02:15\n"
 "Last-Translator: \n"
 "Language-Team: Romanian\n"
@@ -697,7 +697,7 @@ msgstr "Variabilă Scalar"
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/configmanagerui.py:101
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:90
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:92
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:315
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:316
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:355
 msgid "Name"
 msgstr "Nume"
@@ -1861,7 +1861,7 @@ msgid "Directory"
 msgstr "Director"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:160
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:287
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:288
 msgid "New Resource File"
 msgstr "Fișier nou de resurse"
 
@@ -1883,27 +1883,27 @@ msgstr "Alege directorul părinte"
 msgid "Created Path"
 msgstr "Cale creată"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:272
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:273
 msgid "New Project"
 msgstr "Proiect nou"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:301
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:302
 msgid "Add Suite"
 msgstr "Adaugă suită"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:325
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:326
 msgid "Add Directory"
 msgstr "Adaugă Director"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:337
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:338
 msgid "Set Data Format"
 msgstr "Setare Format Date"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:361
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:362
 msgid "Change recursively"
 msgstr "Modificare recursivă"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:380
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:381
 msgid ""
 "Provide format for initialization file in directory\n"
 "\"%s\"."
@@ -1911,27 +1911,27 @@ msgstr ""
 "Furnizați formatul pentru fișierul de inițializare în directorul\n"
 "\"%s\"."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:394
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:395
 msgid "Open"
 msgstr "Deschideți"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:399
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:400
 msgid "Robot data (*.robot)|*.robot"
 msgstr "Date robot (*.robot)| *.robot"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:400
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:401
 msgid "Robot data (*.txt)|*.txt"
 msgstr "Date robot (*.txt)| *.txt"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:401
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:402
 msgid "Robot resource file (*.resource)|*.resource"
 msgstr "Fişier resursă robot (*.resource)| *.resource"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:402
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:403
 msgid "Robot Tab Separated data (*.tsv)|*.tsv"
 msgstr "Robot Tab Date separate (*.tsv)| *.tsv"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:404
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:405
 msgid "All files|*.*"
 msgstr "Toate fişierele *.*"
 
