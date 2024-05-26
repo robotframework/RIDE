@@ -123,7 +123,7 @@ class TestMain(unittest.TestCase):
 
             class SideEffect(RIDE):
 
-                def __init__(self, path=None, updatecheck=True):
+                def __init__(self, path=None, updatecheck=True, settingspath=None):
                     self.frame = wx.Frame(None)
 
                 def OnInit(self):  # Overrides wx method
@@ -157,7 +157,7 @@ class TestMain(unittest.TestCase):
 
             class SideEffect(RIDE):
 
-                def __init__(self, path=None, updatecheck=True):
+                def __init__(self, path=None, updatecheck=True, settingspath=None):
                     self.frame = wx.Frame(None)
 
                 def OnInit(self):

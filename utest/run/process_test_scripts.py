@@ -28,8 +28,9 @@ def output(sleep=0.1):
 def count_args(*args):
     print(len(args))
 
+
 def stderr():
     sys.stderr.write('This is stderr\n')
 
-globals()[sys.argv[1]](*sys.argv[2:])
 
+globals()[sys.argv[1]](*sys.argv[2:])
