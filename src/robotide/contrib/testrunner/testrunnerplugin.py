@@ -151,9 +151,10 @@ class TestRunnerPlugin(Plugin):
 
     report_regex = re.compile(r"^Report: {2}(.*\.html)$", re.MULTILINE)
     log_regex = re.compile(r"^Log: {5}(.*\.html)$", re.MULTILINE)
-    title = "Run"
+    title = 'Run'
 
     def __init__(self, application=None):
+        self.title = _('Run')
         Plugin.__init__(self, application, initially_enabled=True,
                         default_settings=self.defaults)
         self.version = "3.1"

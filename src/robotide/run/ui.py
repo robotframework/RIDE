@@ -84,6 +84,7 @@ class _OutputWindow(wx.ScrolledWindow):
         self._create_ui()
         self._add_to_notebook(notebook, runner.name)
         self._runner = runner
+        self._font_size = Font().fixed.GetPointSize()  # DEBUG: This should be the font from General
 
     def _create_ui(self):
         sizer = wx.BoxSizer(wx.VERTICAL)
@@ -112,6 +113,8 @@ class _OutputWindow(wx.ScrolledWindow):
             self._rename_tab(f"{self._runner.name} ({FINNISHED})")
             self.Parent.allow_closing(self)
             self._state_button.enable_run_again()
+            size = (max(85, self._font_size * len(' ' + RUN_AGAIN + ' ')), max(28, self._font_size * 3))
+            self._state_button.SetSize(size)
 
     def on_stop(self):
         self.Parent.allow_closing(self)
@@ -122,6 +125,8 @@ class _OutputWindow(wx.ScrolledWindow):
         self._rename_tab(f"{self._runner.name} ({RUNNING})")
         self.Parent.disallow_closing(self)
         self._state_button.reset()
+        size = (max(85, self._font_size * len(' ' + STOP + ' ')), max(28, self._font_size * 3))
+        self._state_button.SetSize(size)
         self._runner.run()
 
     def _rename_tab(self, name):
@@ -148,7 +153,7 @@ class _OutputDisplay(Label):
 class _StopAndRunAgainButton(wx.Button):
 
     def __init__(self, parent):
-        wx.Button.__init__(self, parent, label=STOP)
+        wx.Button.__init__(self, parent, label=' '+STOP+' ')
         self.Bind(wx.EVT_BUTTON, self.on_click, self)
 
     def on_click(self, event):

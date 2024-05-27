@@ -309,6 +309,10 @@ SHORTCUT_KEYS = '''<h2>Shortcut keys in RIDE</h2>
         <td>Del</td>
         <td>Remove cell content</td>
     </tr>
+    <tr>
+        <td>Ctrl-MouseWheel Roll</td>
+        <td>Increases or Decreases font size (Zoom +/-)</td>
+    </tr>
 </table>
 
 <h3>Tree view</h3>

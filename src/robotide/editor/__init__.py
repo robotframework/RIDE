@@ -90,8 +90,9 @@ class EditorPlugin(Plugin, TreeAwarePluginMixin):
     This plugin implements editors for the various items of Robot Framework
     test data.
     """)
-        Plugin.__init__(self, application)
+        Plugin.__init__(self, application, name='Editor')
         self._tab = None
+        self.name = _('Editor')
         self.grid_popup_creator = PopupCreator()
         self._creator = EditorCreator(self.register_editor)
         self._editor = None

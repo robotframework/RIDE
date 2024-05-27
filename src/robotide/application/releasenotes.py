@@ -158,6 +158,7 @@ RELEASE_NOTES = f"""
 <li>This version supports Python 3.8 up to 3.12.</li>
 <li>There are some changes, or known issues:<ul>
 <li>❌ - Removed support for Python 3.6 and 3.7</li>
+<li>✔ - Added to Grid Editor changing Zoom In/Out with <b>Ctrl-Mouse Wheel</b> and setting at Preferences.</li>
 <li>✔ - Fixed plugin Run Anything (Macros) not showing output and broken actions.</li>
 <li>✔ - Added actions on columns of Grid Editor: Double-Click or Right Mouse Click, allows to edit the column name for Data 
 Driven or Templated; Left Mouse Click, selects the column cells.</li>
@@ -187,6 +188,7 @@ version 4.2.1, which we now <em>recommend</em>.</li>
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
+<li>Added to Grid Editor changing Zoom In/Out with <b>Ctrl-Mouse Wheel</b> and setting at Preferences.</li>
 <li>Fixed plugin Run Anything (Macros) not showing output and broken actions.</li>
 <li>Added actions on columns of Grid Editor: Double-Click or Right Mouse Click, allows to edit the column name for Data 
 Driven or Templated; Left Mouse Click, selects the column cells.</li>
@@ -295,7 +297,7 @@ python -m robotide.__init__
 <pre class="literal-block">
 python -m robotide.postinstall -install
 </pre>
-<p>RIDE {VERSION} was released on 23/May/2024.</p>
+<p>RIDE {VERSION} was released on 27/May/2024.</p>
 <!-- <br/>
 <h3>May The Fourth Be With You!</h3>
 -->

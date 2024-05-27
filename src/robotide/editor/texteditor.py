@@ -128,6 +128,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
     title = PLUGIN_NAME
 
     def __init__(self, application):
+        self.title = _('Text Edit')
         Plugin.__init__(self, application)
         self._editor_component = None
         self._tab = None
@@ -310,6 +311,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
                 self._set_read_only(self._editor.source_editor.readonly)
             except Exception as e:  # DEBUG: When using only Text Editor exists error in message topic
                 print(e)
+            self._editor.Refresh()
         elif message.oldtab == self.title:
             self._editor.remove_and_store_state()
             # self._editor_component.is_saving = False
