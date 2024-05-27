@@ -122,6 +122,8 @@ class Plugin(object):
         For example, setting ``color`` can be accessed directly like
         ``self.color``.
         """
+        if name in ('_Plugin__settings', '_parent'):
+            return
         if '__settings' not in name and self.__settings.has_setting(name):
             return self.__settings[name]
         raise AttributeError("No attribute or settings with name '%s' found" % name)

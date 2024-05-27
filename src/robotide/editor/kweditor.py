@@ -597,6 +597,7 @@ class KeywordEditor(GridEditor, Plugin):
         if selection_content is None:
             self.highlight(None)
         elif self._parent:
+            # print(f"DEBUG: kweditor.py _colorize_grid parent={self._parent} name={self._parent.name}")
             self._parent.highlight(selection_content, expand=False)
 
     def highlight(self, text, expand=True):
