@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2024-05-27 01:07+0100\n"
-"PO-Revision-Date: 2024-05-25 20:33\n"
+"POT-Creation-Date: 2024-05-31 21:51+0100\n"
+"PO-Revision-Date: 2024-05-31 01:25\n"
 "Last-Translator: \n"
 "Language-Team: German\n"
 "Language: de_DE\n"
@@ -284,7 +284,7 @@ msgstr "Ein Plugin zum Ausführen von Tests innerhalb von RIDE"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:157
 msgid "Run"
-msgstr ""
+msgstr "Ausführen"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:226
 msgid "Run Tests"
@@ -406,7 +406,7 @@ msgid "Start running the robot test suite with DEBUG loglevel"
 msgstr "Starten Sie die Robotertestsuite mit DEBUG Loglevel"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:722
-#: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:28
+#: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:29
 msgid "Stop"
 msgstr "Stoppen"
 
@@ -678,9 +678,8 @@ msgstr ""
 "    "
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:95
-#, fuzzy
 msgid "Editor"
-msgstr "Bearbeiten"
+msgstr "Redakteur"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:71
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:483
@@ -1146,9 +1145,8 @@ msgid "Add Metadata"
 msgstr "Metadaten hinzufügen"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:131
-#, fuzzy
 msgid "Text Edit"
-msgstr "Text-Editor"
+msgstr "Text bearbeiten"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:464
 msgid "ERROR: Data sanity check failed!"
@@ -1724,7 +1722,7 @@ msgstr ""
 "gespeichert.\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/configmanagerui.py:45
-#: /home2/helio/github/RIDE/tools/../src/robotide/run/runanything.py:54
+#: /home2/helio/github/RIDE/tools/../src/robotide/run/runanything.py:55
 msgid "Manage Run Configurations"
 msgstr "Ausführungskonfigurationen verwalten"
 
@@ -1755,21 +1753,21 @@ msgstr ""
 "    Ausführung. Die Ausgabe des ausgeführten Befehls wird in einem\n"
 "    separaten Tab angezeigt."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/run/runanything.py:54
-#: /home2/helio/github/RIDE/tools/../src/robotide/run/runanything.py:56
-#: /home2/helio/github/RIDE/tools/../src/robotide/run/runanything.py:63
+#: /home2/helio/github/RIDE/tools/../src/robotide/run/runanything.py:55
+#: /home2/helio/github/RIDE/tools/../src/robotide/run/runanything.py:57
+#: /home2/helio/github/RIDE/tools/../src/robotide/run/runanything.py:65
 msgid "Macros"
 msgstr "Makros"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:25
+#: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:26
 msgid "finished"
 msgstr "beendet"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:26
+#: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:27
 msgid "Run Again"
 msgstr "Erneut ausführen"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:27
+#: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:28
 msgid "running"
 msgstr "läuft"
 

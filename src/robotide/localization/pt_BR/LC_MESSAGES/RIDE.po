@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2024-05-27 01:07+0100\n"
-"PO-Revision-Date: 2024-05-25 20:33\n"
+"POT-Creation-Date: 2024-05-31 21:51+0100\n"
+"PO-Revision-Date: 2024-05-31 01:25\n"
 "Last-Translator: \n"
 "Language-Team: Portuguese, Brazilian\n"
 "Language: pt_BR\n"
@@ -409,7 +409,7 @@ msgstr ""
 "Começar a executar a suíte de teste do robot com o registro DEBUG (Depuração)"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:722
-#: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:28
+#: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:29
 msgid "Stop"
 msgstr "Parar"
 
@@ -1041,13 +1041,13 @@ msgstr "Apagar"
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:663
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:764
 msgid "Move Up\tCtrl-Up"
-msgstr "Mover para Cima\tCtrl-Up"
+msgstr "Mover para Cima    Ctrl-Up"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/listeditor.py:37
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:664
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:765
 msgid "Move Down\tCtrl-Down"
-msgstr "Mover para baixo\tCtrl-Down"
+msgstr "Mover para baixo    Ctrl-Down"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:100
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/tagdialogs.py:233
@@ -1719,7 +1719,7 @@ msgstr ""
 "RIDE.\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/configmanagerui.py:45
-#: /home2/helio/github/RIDE/tools/../src/robotide/run/runanything.py:54
+#: /home2/helio/github/RIDE/tools/../src/robotide/run/runanything.py:55
 msgid "Manage Run Configurations"
 msgstr "Gerenciar Configurações de Execução"
 
@@ -1749,21 +1749,21 @@ msgstr ""
 "execução no sistema.\n"
 "    Os resultados da execução são apresentados num novo separador."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/run/runanything.py:54
-#: /home2/helio/github/RIDE/tools/../src/robotide/run/runanything.py:56
-#: /home2/helio/github/RIDE/tools/../src/robotide/run/runanything.py:63
+#: /home2/helio/github/RIDE/tools/../src/robotide/run/runanything.py:55
+#: /home2/helio/github/RIDE/tools/../src/robotide/run/runanything.py:57
+#: /home2/helio/github/RIDE/tools/../src/robotide/run/runanything.py:65
 msgid "Macros"
 msgstr "Macros"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:25
+#: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:26
 msgid "finished"
 msgstr "concluído"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:26
+#: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:27
 msgid "Run Again"
 msgstr "Rodar Novamente"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:27
+#: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:28
 msgid "running"
 msgstr "rodando"
 

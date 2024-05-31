@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2024-05-27 01:07+0100\n"
-"PO-Revision-Date: 2024-05-25 20:33\n"
+"POT-Creation-Date: 2024-05-31 21:51+0100\n"
+"PO-Revision-Date: 2024-05-31 01:25\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Language: fr_FR\n"
@@ -288,7 +288,7 @@ msgstr "Un plugin pour exécuter des tests depuis RIDE"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:157
 msgid "Run"
-msgstr ""
+msgstr "Exécuter"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:226
 msgid "Run Tests"
@@ -411,7 +411,7 @@ msgid "Start running the robot test suite with DEBUG loglevel"
 msgstr "Démarrer la suite de test de robot avec le niveau de log DEBUG"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:722
-#: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:28
+#: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:29
 msgid "Stop"
 msgstr "Arrêter"
 
@@ -689,9 +689,8 @@ msgstr ""
 "    "
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:95
-#, fuzzy
 msgid "Editor"
-msgstr "Editer"
+msgstr "Editeur"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:71
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:483
@@ -818,7 +817,7 @@ msgstr "Source"
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:476
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:741
 msgid "Find Usages"
-msgstr "Trouver des utilisations"
+msgstr "Rechercher les occurrences"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/fieldeditors.py:187
 msgid "Columns"
@@ -893,7 +892,7 @@ msgstr "Renommer le mot-clé"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:96
 msgid "Find Where Used"
-msgstr "Trouver où utilisé"
+msgstr "Trouver où le mot-clé est utilisé"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:97
 msgid "JSON Editor\tCtrl-Shift-J"
@@ -913,25 +912,25 @@ msgstr "Refaire\tCtrl-Y"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:104
 msgid "Make Variable\tCtrl-1"
-msgstr "Rendre la variable\tCtrl-1"
+msgstr "Créer une variable\tCtrl-1"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:105
 msgid "Make List Variable\tCtrl-2"
-msgstr "Faire une liste de variables\tCtrl-2"
+msgstr "Créer une variable liste\tCtrl-2"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:106
 msgid "Make Dict Variable\tCtrl-5"
-msgstr "Créer une variable de dict\tCtrl-5"
+msgstr "Créer une variable dictionnaire\tCtrl-5"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:108
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:351
 msgid "Comment Cells\tCtrl-Shift-3"
-msgstr "Cellules de commentaire\tCtrl-Shift-3"
+msgstr "Commenter les cellules\tCtrl-Shift-3"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:109
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:352
 msgid "Uncomment Cells\tCtrl-Shift-4"
-msgstr "Décommenter Cells\tCtrl-Shift-4"
+msgstr "Décommenter les cellules\tCtrl-Shift-4"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:110
 msgid "Move Cursor Down\tAlt-Enter"
@@ -940,7 +939,7 @@ msgstr "Déplacer le curseur vers le bas\tAlt-Enter"
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:112
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:343
 msgid "Comment Rows\tCtrl-3"
-msgstr "Commentaire lignes\tCtrl-3"
+msgstr "Commenter les lignes\tCtrl-3"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:113
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:344
@@ -960,7 +959,7 @@ msgstr "Déplacer les lignes vers le bas\tAlt-Down"
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:116
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:347
 msgid "Swap Row Up\tCtrl-T"
-msgstr "Inverser la ligne haut\tCtrl-T"
+msgstr "Inverser avec la ligne du haut\tCtrl-T"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:888
 msgid ""
@@ -1064,7 +1063,7 @@ msgstr "Déplacer vers le bas\tCtrl-Down"
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:100
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/tagdialogs.py:233
 msgid "Clear"
-msgstr "Vider"
+msgstr "Effacer"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:483
 msgid "Variable"
@@ -1158,9 +1157,8 @@ msgid "Add Metadata"
 msgstr "Ajouter des métadonnées"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:131
-#, fuzzy
 msgid "Text Edit"
-msgstr "Éditeur de texte"
+msgstr "Modification du texte"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:464
 msgid "ERROR: Data sanity check failed!"
@@ -1522,7 +1520,7 @@ msgstr "Langue"
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/general.py:246
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/general.py:249
 msgid "General"
-msgstr "Généraux"
+msgstr "Général"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/general.py:247
 msgid "General Settings"
@@ -1636,11 +1634,11 @@ msgstr "Par défaut pour les sections Tâches ou Têtes."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/saving.py:43
 msgid "Reformat?"
-msgstr "Reformater?"
+msgstr "Reformater ?"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/saving.py:44
 msgid "Should it recalculate identation on Save?"
-msgstr "Faut-il recalculer l'identation sur la sauvegarde?"
+msgstr "Faut-il recalculer l'indentation au moment de la sauvegarde ?"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/saving.py:61
 msgid "Default file format:"
@@ -1658,7 +1656,8 @@ msgstr "Séparateur de ligne:"
 msgid ""
 "Possible values are native (of current OS) CRLF (Windows) and LF (Unixy)"
 msgstr ""
-"Les valeurs possibles sont natives (de l'OS) CRLF (Windows) et LF (Unixy)"
+"Les valeurs possibles sont natives (de l'OS utilisé) CRLF (Windows) et LF "
+"(Unixy)"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/saving.py:71
 msgid "Separating spaces"
@@ -1735,7 +1734,7 @@ msgstr ""
 "de RIDE.\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/configmanagerui.py:45
-#: /home2/helio/github/RIDE/tools/../src/robotide/run/runanything.py:54
+#: /home2/helio/github/RIDE/tools/../src/robotide/run/runanything.py:55
 msgid "Manage Run Configurations"
 msgstr "Gérer les configurations d'exécution"
 
@@ -1766,21 +1765,21 @@ msgstr ""
 "    de les exécuter. La sortie de la commande exécutée est affichée dans un\n"
 "    onglet séparé."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/run/runanything.py:54
-#: /home2/helio/github/RIDE/tools/../src/robotide/run/runanything.py:56
-#: /home2/helio/github/RIDE/tools/../src/robotide/run/runanything.py:63
+#: /home2/helio/github/RIDE/tools/../src/robotide/run/runanything.py:55
+#: /home2/helio/github/RIDE/tools/../src/robotide/run/runanything.py:57
+#: /home2/helio/github/RIDE/tools/../src/robotide/run/runanything.py:65
 msgid "Macros"
 msgstr "Macros"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:25
+#: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:26
 msgid "finished"
 msgstr "terminé"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:26
+#: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:27
 msgid "Run Again"
 msgstr "Exécuter à nouveau"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:27
+#: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:28
 msgid "running"
 msgstr "en cours d'exécution"
 

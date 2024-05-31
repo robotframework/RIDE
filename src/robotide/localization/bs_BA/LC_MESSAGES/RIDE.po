@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2024-05-27 01:07+0100\n"
-"PO-Revision-Date: 2024-05-23 02:16\n"
+"POT-Creation-Date: 2024-05-31 21:51+0100\n"
+"PO-Revision-Date: 2024-05-31 01:26\n"
 "Last-Translator: \n"
 "Language-Team: Bosnian\n"
 "Language: bs_BA\n"
@@ -389,7 +389,7 @@ msgid "Start running the robot test suite with DEBUG loglevel"
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:722
-#: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:28
+#: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:29
 msgid "Stop"
 msgstr ""
 
@@ -1591,7 +1591,7 @@ msgid ""
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/configmanagerui.py:45
-#: /home2/helio/github/RIDE/tools/../src/robotide/run/runanything.py:54
+#: /home2/helio/github/RIDE/tools/../src/robotide/run/runanything.py:55
 msgid "Manage Run Configurations"
 msgstr ""
 
@@ -1616,21 +1616,21 @@ msgid ""
 "    separate tab."
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/run/runanything.py:54
-#: /home2/helio/github/RIDE/tools/../src/robotide/run/runanything.py:56
-#: /home2/helio/github/RIDE/tools/../src/robotide/run/runanything.py:63
+#: /home2/helio/github/RIDE/tools/../src/robotide/run/runanything.py:55
+#: /home2/helio/github/RIDE/tools/../src/robotide/run/runanything.py:57
+#: /home2/helio/github/RIDE/tools/../src/robotide/run/runanything.py:65
 msgid "Macros"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:25
+#: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:26
 msgid "finished"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:26
+#: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:27
 msgid "Run Again"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:27
+#: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:28
 msgid "running"
 msgstr ""
 

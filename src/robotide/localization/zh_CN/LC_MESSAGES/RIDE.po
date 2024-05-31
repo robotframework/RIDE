@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2024-05-27 01:07+0100\n"
-"PO-Revision-Date: 2024-05-23 02:16\n"
+"POT-Creation-Date: 2024-05-31 21:51+0100\n"
+"PO-Revision-Date: 2024-05-31 01:25\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh_CN\n"
@@ -276,7 +276,7 @@ msgstr "从 RIDE 内部运行测试的插件"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:157
 msgid "Run"
-msgstr ""
+msgstr "运行"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:226
 msgid "Run Tests"
@@ -392,7 +392,7 @@ msgid "Start running the robot test suite with DEBUG loglevel"
 msgstr "开始使用DEBUG 日志运行机器人测试套件"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:722
-#: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:28
+#: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:29
 msgid "Stop"
 msgstr "停止"
 
@@ -656,9 +656,8 @@ msgstr ""
 "    "
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:95
-#, fuzzy
 msgid "Editor"
-msgstr "编辑"
+msgstr "编辑器"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:71
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:483
@@ -1087,9 +1086,8 @@ msgid "Add Metadata"
 msgstr "添加元数据"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:131
-#, fuzzy
 msgid "Text Edit"
-msgstr "文本编辑器"
+msgstr "文本编辑"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:464
 msgid "ERROR: Data sanity check failed!"
@@ -1637,7 +1635,7 @@ msgid ""
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/configmanagerui.py:45
-#: /home2/helio/github/RIDE/tools/../src/robotide/run/runanything.py:54
+#: /home2/helio/github/RIDE/tools/../src/robotide/run/runanything.py:55
 msgid "Manage Run Configurations"
 msgstr "管理运行配置"
 
@@ -1667,21 +1665,21 @@ msgstr ""
 "    执行这些配置。 执行命令的输出显示在一个\n"
 "    单独标签页。"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/run/runanything.py:54
-#: /home2/helio/github/RIDE/tools/../src/robotide/run/runanything.py:56
-#: /home2/helio/github/RIDE/tools/../src/robotide/run/runanything.py:63
+#: /home2/helio/github/RIDE/tools/../src/robotide/run/runanything.py:55
+#: /home2/helio/github/RIDE/tools/../src/robotide/run/runanything.py:57
+#: /home2/helio/github/RIDE/tools/../src/robotide/run/runanything.py:65
 msgid "Macros"
 msgstr "宏图"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:25
+#: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:26
 msgid "finished"
 msgstr "完成"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:26
+#: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:27
 msgid "Run Again"
 msgstr "再次运行"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:27
+#: /home2/helio/github/RIDE/tools/../src/robotide/run/ui.py:28
 msgid "running"
 msgstr "正在运行"
 
