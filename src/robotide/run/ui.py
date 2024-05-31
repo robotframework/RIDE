@@ -17,7 +17,8 @@ import builtins
 import wx
 
 from .process import Process
-from ..widgets import Label, Font
+from ..widgets import Label, Font, VerticalSizer, HorizontalSizer
+from ..log import LogOutput
 
 _ = wx.GetTranslation  # To keep linter/code analyser happy
 builtins.__dict__['_'] = wx.GetTranslation
@@ -46,6 +47,7 @@ class Runner(wx.EvtHandler):
         self._timer = wx.Timer(self)
         self._config = config
         self._window = self._get_output_window(notebook)
+        self.output_panel = self._window.output_panel
 
     def _get_output_window(self, notebook):
         return _OutputWindow(notebook, self)
@@ -77,29 +79,31 @@ class Runner(wx.EvtHandler):
             wx.MessageBox(str(err), style=wx.ICON_ERROR)
 
 
-class _OutputWindow(wx.ScrolledWindow):
+class _OutputWindow(wx.Panel):  # wx.ScrolledWindow):
 
     def __init__(self, notebook, runner):
-        wx.ScrolledWindow.__init__(self, notebook)
-        self._create_ui()
+        wx.Panel.__init__(self, notebook)
+        self.notebook = notebook
+        self.output_panel = self._create_ui()
         self._add_to_notebook(notebook, runner.name)
         self._runner = runner
         self._font_size = Font().fixed.GetPointSize()  # DEBUG: This should be the font from General
 
     def _create_ui(self):
-        sizer = wx.BoxSizer(wx.VERTICAL)
-        sizer.Add(self._create_state_button())
-        sizer.Add(self._create_output())
-        self.SetSizer(sizer)
-        self.SetScrollRate(20, 20)
+        self.SetSizer(VerticalSizer())
+        self.toolbar = HorizontalSizer()
+        self.toolbar.Add(self._create_state_button())
+        self.Sizer.Add(self.toolbar)
+        wsize = self.GetParent().GetSize()[0]
+        self.Sizer.Add(wx.StaticLine(self, size=(wsize, 5)))
+        output_panel = _OutputDisplay(self)
+        self.Sizer.add_expanding(output_panel)
+        self.Sizer.Layout()
+        return output_panel
 
     def _create_state_button(self):
         self._state_button = _StopAndRunAgainButton(self)
         return self._state_button
-
-    def _create_output(self):
-        self._output = _OutputDisplay(self)
-        return self._output
 
     def _add_to_notebook(self, notebook, name):
         notebook.add_tab(self, f"{name} ({RUNNING})", allow_closing=False)
@@ -107,8 +111,8 @@ class _OutputWindow(wx.ScrolledWindow):
 
     def update_output(self, output, finished=False):
         if output:
-            self._output.update(output)
-            self.SetVirtualSize(self._output.Size)
+            self.output_panel.update(output)
+            self.SetVirtualSize(self.output_panel.Size)
         if finished:
             self._rename_tab(f"{self._runner.name} ({FINNISHED})")
             self.Parent.allow_closing(self)
@@ -121,7 +125,7 @@ class _OutputWindow(wx.ScrolledWindow):
         self._runner.stop()
 
     def on_run_again(self):
-        self._output.clear()
+        self.output_panel.clear()
         self._rename_tab(f"{self._runner.name} ({RUNNING})")
         self.Parent.disallow_closing(self)
         self._state_button.reset()
@@ -133,21 +137,24 @@ class _OutputWindow(wx.ScrolledWindow):
         self.Parent.rename_tab(self, name)
 
 
-class _OutputDisplay(Label):
+class _OutputDisplay(LogOutput):
 
     def __init__(self, parent):
-        Label.__init__(self, parent)
-        self.SetFont(Font().fixed)
+        self._log = []
+        LogOutput.__init__(self, parent)
 
     def update(self, addition):
         try:
-            self.SetLabel(self.LabelText + addition.decode('UTF-8', 'ignore'))
+            self._log.append(addition.decode('UTF-8', 'ignore'))
+            self.update_log(self._log)
         except AttributeError:
-            self.SetLabel(self.LabelText + "ERROR")
+            self._log.append("ERROR")
+            self.update_log(self._log)
             getattr(self.Parent, 'on_stop')()
 
     def clear(self):
-        self.SetLabel('')
+        self._log = ['']
+        self.update_log(self._log)
 
 
 class _StopAndRunAgainButton(wx.Button):
