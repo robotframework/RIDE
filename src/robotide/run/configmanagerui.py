@@ -60,7 +60,7 @@ class ConfigManagerDialog(RIDEDialog):
         self._create_help()
         self._create_line()
         self._create_buttons()
-        self.SetSize((750, 400))
+        self.SetSize((750, 500))
 
     def _create_editor(self, configs):
         editor = _ConfigListEditor(self, configs)

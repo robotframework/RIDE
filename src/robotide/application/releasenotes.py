@@ -188,6 +188,7 @@ version 4.2.1, which we now <em>recommend</em>.</li>
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
+<li>Changed output in plugin Run Anything (Macros) to allow Zoom In/Out, and Copy content.</li>
 <li>Added to Grid Editor changing Zoom In/Out with <b>Ctrl-Mouse Wheel</b> and setting at Preferences.</li>
 <li>Fixed plugin Run Anything (Macros) not showing output and broken actions.</li>
 <li>Added actions on columns of Grid Editor: Double-Click or Right Mouse Click, allows to edit the column name for Data 
@@ -297,7 +298,7 @@ python -m robotide.__init__
 <pre class="literal-block">
 python -m robotide.postinstall -install
 </pre>
-<p>RIDE {VERSION} was released on 27/May/2024.</p>
+<p>RIDE {VERSION} was released on 31/May/2024.</p>
 <!-- <br/>
 <h3>May The Fourth Be With You!</h3>
 -->

@@ -38,6 +38,10 @@ Tools->Preferences->General.
 - Fixed wrong continuation of long chains of keywords in Setups, Teardowns or Documentation
 - Fixed New User Keyword dialog not allowing empty Arguments field
 
+=== Changed
+
+- Changed output in plugin Run Anything (Macros) to allow Zoom In/Out, and Copy content.
+
 === Removed
 
 - Removed support for HTML file format (obsolete since Robot Framework 3.2)

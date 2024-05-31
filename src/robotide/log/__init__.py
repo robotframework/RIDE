@@ -15,3 +15,4 @@
 
 from .log import LogPlugin
 from .logwindow import LogWindow, message_to_string
+from .logoutput import LogOutput

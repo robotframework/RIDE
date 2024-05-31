@@ -36,6 +36,7 @@ class RunAnything(Plugin):
     def __init__(self, app):
         Plugin.__init__(self, app, default_settings={'configs': []})
         self._configs = RunConfigs(self.configs)
+        self.runner = None
 
     def enable(self):
         self._create_menu(self._configs)
@@ -59,10 +60,12 @@ class RunAnything(Plugin):
 
     def _add_config_to_menu(self, config, index):
         def run(event):
-            Runner(config, self.notebook).run()
+            self.runner = Runner(config, self.notebook)
+            self.runner.run()
         info = ActionInfo(_('Macros'), name='%d: %s' % (index, config.name),
                           doc=config.help, action=run)
         self.register_action(info)
+        # self.register_shortcut('CtrlCmd-C', lambda e: self.runner.output_panel.Copy())
 
 
 class RunConfigs(_BaseController):
@@ -97,8 +100,7 @@ class RunConfigs(_BaseController):
         self._swap(index, index+1)
 
     def _swap(self, index1, index2):
-        self._configs[index1], self._configs[index2] = \
-                self._configs[index2], self._configs[index1]
+        self._configs[index1], self._configs[index2] = self._configs[index2], self._configs[index1]
 
     def edit(self, index, name, command, doc):
         config = self._configs[index]

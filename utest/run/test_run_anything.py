@@ -40,6 +40,7 @@ class _TestableRunner(Runner):
 
 class _FakeOutputWindow(object):
     outstr = property(lambda self: ''.join(self.output))
+    output_panel = None
 
     def __init__(self):
         self.output = []
