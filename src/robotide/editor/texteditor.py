@@ -816,7 +816,7 @@ class SourceEditor(wx.Panel):
         from wx.stc import STC_FIND_REGEXP
         search_end = len(self.source_editor.utf8_text)
         section_start = 0
-        name_to_locate = r'^'+item.name
+        name_to_locate = r'^'+item.name+r'.*$'
         position = self.source_editor.FindText(section_start, search_end, name_to_locate, STC_FIND_REGEXP)
         # print(f"DEBUG: TextEditor locate_tree_item name_to_locate={name_to_locate} position={position}")
         if position[0] != -1:
@@ -829,6 +829,16 @@ class SourceEditor(wx.Panel):
             self.source_editor.SetCurrentPos(position[1])
             self.source_editor.SetAnchor(position[0])
             self.source_editor.SetSelection(position[0], position[1])
+            self.source_editor.SetFocusFromKbd()
+            self.source_editor_parent.SetFocus()
+            self.source_editor.Update()
+        else:  # Text was not found, so it is the Test Suite name. Go to line zero.
+            self.source_editor.SetFocus()
+            self.source_editor.GotoPos(1)
+            self.source_editor.LineScrollUp()
+            self.source_editor.SetCurrentPos(1)
+            self.source_editor.SetAnchor(0)
+            self.source_editor.SetSelection(0, self.source_editor.GetLineEndPosition(0))
             self.source_editor.SetFocusFromKbd()
             self.source_editor_parent.SetFocus()
             self.source_editor.Update()
