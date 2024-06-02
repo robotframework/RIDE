@@ -816,7 +816,7 @@ class SourceEditor(wx.Panel):
         from wx.stc import STC_FIND_REGEXP
         search_end = len(self.source_editor.utf8_text)
         section_start = 0
-        name_to_locate = r'^'+item.name
+        name_to_locate = r'^'+item.name+r'.*$'
         position = self.source_editor.FindText(section_start, search_end, name_to_locate, STC_FIND_REGEXP)
         # print(f"DEBUG: TextEditor locate_tree_item name_to_locate={name_to_locate} position={position}")
         if position[0] != -1:
@@ -829,6 +829,16 @@ class SourceEditor(wx.Panel):
             self.source_editor.SetCurrentPos(position[1])
             self.source_editor.SetAnchor(position[0])
             self.source_editor.SetSelection(position[0], position[1])
+            self.source_editor.SetFocusFromKbd()
+            self.source_editor_parent.SetFocus()
+            self.source_editor.Update()
+        else:  # Text was not found, so it is the Test Suite name. Go to line zero.
+            self.source_editor.SetFocus()
+            self.source_editor.GotoPos(1)
+            self.source_editor.LineScrollUp()
+            self.source_editor.SetCurrentPos(1)
+            self.source_editor.SetAnchor(0)
+            self.source_editor.SetSelection(0, self.source_editor.GetLineEndPosition(0))
             self.source_editor.SetFocusFromKbd()
             self.source_editor_parent.SetFocus()
             self.source_editor.Update()
@@ -2042,7 +2052,8 @@ class RobotDataEditor(stc.StyledTextCtrl):
         self.Bind(stc.EVT_STC_ZOOM, self.on_zoom)
         # DEBUG:
         self.Bind(wx.EVT_KEY_DOWN, self.on_key_pressed)
-        self.stylizer = RobotStylizer(self, self._settings, self.readonly)
+        # Only set, after language: self.stylizer = RobotStylizer(self, self._settings, self.readonly)
+        self.stylizer = None
         # register some images for use in the AutoComplete box.
         # self.RegisterImage(1, Smiles.GetBitmap())  # DEBUG was images.
         self.RegisterImage(1, wx.ArtProvider.GetBitmap(wx.ART_FLOPPY, size=(16, 16)))
@@ -2088,12 +2099,24 @@ class RobotDataEditor(stc.StyledTextCtrl):
     def set_text(self, text):
         self.SetReadOnly(False)
         self.SetText(text)
+        self.set_language(self.language)
         self.stylizer.stylize()
         self.EmptyUndoBuffer()
         self.SetMarginWidth(self.margin, self.calc_margin_width())
+        self.Update()
 
     def set_language(self, dlanguage):
-        self.language = dlanguage
+        # self.language = dlanguage
+        content = self.GetTextRaw()
+        # print(f"DEBUG: set_language content={content}\nset_language={dlanguage}")
+        if content and b"Language: " in content:  # We need to recheck the language setting
+            try:
+                self.language = obtain_language(dlanguage, content)
+            except ValueError:
+                # wx.MessageBox(f"Error when selecting Language: {e}", 'Error')
+                self.language = 'En'
+        else:
+            self.language = 'En'
         self.stylizer = RobotStylizer(self, self._settings, self.readonly, self.language)
 
     @property
@@ -2298,26 +2321,20 @@ class FromStringIOPopulator(robotapi.populators.FromFilePopulator):
 
 
 class RobotStylizer(object):
-    def __init__(self, editor, settings, readonly=False, language=''):
+    def __init__(self, editor, settings, readonly=False, language=None):
         self.tokens = {}
         self.editor = editor
         self.lexer = None
         self.settings = settings
         self._readonly = readonly
         self._ensure_default_font_is_valid()
-        # print(f"DEBUG: texteditor.py RobotStylizer _init_ ENTER language={language}\n")
-        try:
-            set_lang = shared_memory.ShareableList(name="language")
-        except AttributeError:  # Unittests fails here
-            set_lang = []
-        if not set_lang:
-            # DEBUG set_lang[0] = language[0] if language is not None and isinstance(language, list) else 'en'
-            if len(language) > 0 and isinstance(language, list):
+        if language:
+            if isinstance(language, list):
                 self.language = language[0]
             else:
-                self.language = ['en']
+                self.language = [language]
         else:
-            self.language = [set_lang[0]]
+            self.language = ['En']
         options = {'language': self.language}
         # print(f"DEBUG: texteditor.py RobotStylizer _init_ language={self.language}\n")
         if robotframeworklexer:
@@ -2438,6 +2455,7 @@ class RobotStylizer(object):
             self.settings[PLUGIN_NAME]['font face'] = sys_font.GetFaceName()
 
     def stylize(self):
+        # print(f"DEBUG: texteditor.py RobotStylizer stylize ENTER lexer={self.lexer}")
         if not self.lexer:
             return
         self.editor.ConvertEOLs(2)

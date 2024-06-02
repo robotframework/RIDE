@@ -594,11 +594,14 @@ class KeywordEditor(GridEditor, Plugin):
 
     def _colorize_grid(self):
         selection_content = self._get_single_selection_content_or_none_on_first_call()
+        # print(f"DEBUG: kweditor.py _colorize_grid ENTER selection_content={selection_content} name={self._parent}")
         if selection_content is None:
-            self.highlight(None)
+            self.GoToCell((0, 0))
+            value = self.GetCellValue((0, 0))
+            self.highlight(value)
         elif self._parent:
             # print(f"DEBUG: kweditor.py _colorize_grid parent={self._parent} name={self._parent.name}")
-            self._parent.highlight(selection_content, expand=False)
+            self._parent.highlight(selection_content, expand=True)
 
     def highlight(self, text, expand=True):
         # Below CallAfter was causing C++ assertions(objects not found)
