@@ -188,6 +188,8 @@ version 4.2.1, which we now <em>recommend</em>.</li>
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
+<li>Fixed keywords Find Usages in Grid Editor not finding certain values when using Gherkin.</li>
+<li>Improved selection of items from Tree in Text Editor. Now finds more items and selects whole line.</li>
 <li>Changed output in plugin Run Anything (Macros) to allow Zoom In/Out, and Copy content.</li>
 <li>Added to Grid Editor changing Zoom In/Out with <b>Ctrl-Mouse Wheel</b> and setting at Preferences.</li>
 <li>Fixed plugin Run Anything (Macros) not showing output and broken actions.</li>
@@ -298,7 +300,7 @@ python -m robotide.__init__
 <pre class="literal-block">
 python -m robotide.postinstall -install
 </pre>
-<p>RIDE {VERSION} was released on 31/May/2024.</p>
+<p>RIDE {VERSION} was released on 02/June/2024.</p>
 <!-- <br/>
 <h3>May The Fourth Be With You!</h3>
 -->

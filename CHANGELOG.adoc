@@ -32,6 +32,7 @@ Tools->Preferences->General.
 
 === Fixed
 
+- Fixed keywords Find Usages in Grid Editor not finding certain values when using Gherkin.
 - Fixed plugin Run Anything (Macros) not showing output and broken actions.
 - Fixed headers and blank spacing in Templated tests
 - Fixed removal of continuation marker in steps
@@ -40,6 +41,7 @@ Tools->Preferences->General.
 
 === Changed
 
+- Improved selection of items from Tree in Text Editor. Now finds more items and selects whole line.
 - Changed output in plugin Run Anything (Macros) to allow Zoom In/Out, and Copy content.
 
 === Removed
