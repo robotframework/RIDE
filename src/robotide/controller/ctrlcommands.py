@@ -669,6 +669,10 @@ class FindOccurrences(_Command):
             kw.arguments = None
             kw.name = keyword_name
             return EmbeddedArgsHandler(kw).name_regexp
+        else:  # Certain kws are not found when with Gherkin
+            name_regexp = fr'^(.*?){re.escape(keyword_name)}$'
+            name = re.compile(name_regexp, re.IGNORECASE)
+            return name
 
     def execute(self, context):
         self._keyword_source = \
