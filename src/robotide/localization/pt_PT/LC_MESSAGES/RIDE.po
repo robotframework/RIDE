@@ -292,7 +292,7 @@ msgstr "Execução"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:226
 msgid "Run Tests"
-msgstr "Executar testes"
+msgstr "Executar Testes"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:226
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:230
@@ -320,12 +320,11 @@ msgstr "Executar Testes em modo Debug"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:233
 msgid "Run the selected tests with Debug"
-msgstr ""
-"Executar os testes selecionados com o nível de registo DEBUG (depuração)"
+msgstr "Executar os testes selecionados com o nível de registo DEBUG (depuração)"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:236
 msgid "Stop Test Run"
-msgstr "Parar Execução de Teste"
+msgstr "Parar Execução do Teste"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:320
 msgid "[ SENDING STOP SIGNAL ]\n"
@@ -357,7 +356,7 @@ msgid ""
 "        Do you want to save all changes and run the tests?"
 msgstr ""
 "Existem modificações não guardadas.\n"
-"        Você quer salvar todas as alterações e correr os testes?"
+"Você quer salvar todas as alterações e correr os testes?"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/contrib/testrunner/testrunnerplugin.py:450
 msgid "Unsaved Modifications"
@@ -609,7 +608,7 @@ msgstr "&Inserir | Inserir acima da posição atual | Shift-Ctrl-V\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:39
 msgid "&Delete | Delete  | Del\n"
-msgstr "Apagar | Apagar | Del\n"
+msgstr "Apagar | Apagar  | Del\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:40
 msgid "Comment Rows | Comment selected rows | Ctrlcmd-3\n"
@@ -645,14 +644,11 @@ msgstr "Eliminar Linhas | Elimina as linhas selecionadas | Ctrlcmd-D\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:48
 msgid "Move Rows Up | Move Rows Up | Alt-Up\n"
-msgstr ""
-"Mover Linhas Acima | Move as linhas selecionadas uma linha acima | Alt-Up\n"
+msgstr "Mover Linhas Acima | Move as linhas selecionadas uma linha acima | Alt-Up\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:49
 msgid "Move Rows Down | Move Rows Down | Alt-Down\n"
-msgstr ""
-"Mover Linhas Abaixo | Move as linhas selecionadas uma linha abaixo | Alt-"
-"Down\n"
+msgstr "Mover Linhas Abaixo | Move as linhas selecionadas uma linha abaixo | Alt-Down\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:50
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:66
@@ -1191,7 +1187,7 @@ msgstr "Apagar Células\tCtrl-Shift-D"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:86
 msgid "Insert Cells\tCtrl-Shift-I"
-msgstr "Inserir Células\tCtrl-Shift-4"
+msgstr "Inserir Células\tCtrl-Shift-I"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:87
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:348
@@ -1205,7 +1201,7 @@ msgstr "Eliminar Linhas\tCtrl-D"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:88
 msgid "Copy\tCtrl-C"
-msgstr "Copiar\tCtrl-Shift-C"
+msgstr "Copiar\tCtrl-C"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:88
 msgid "Cut\tCtrl-X"
@@ -2767,7 +2763,7 @@ msgstr "A lista"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/tagdialogs.py:85
 msgid "Refresh"
-msgstr "Refrescar"
+msgstr "Atualizar"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/tagdialogs.py:86
 msgid "Included Tag Search"
