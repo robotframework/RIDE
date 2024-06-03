@@ -18,6 +18,7 @@ import os
 
 import pytest
 
+from robotide.context import IS_WINDOWS
 from robotide.run.process import Process
 
 SCRIPT = os.path.join(os.path.dirname(__file__),
@@ -35,7 +36,8 @@ class TestProcess(unittest.TestCase):
     @pytest.mark.skipif(os.getenv('GITHUB_ACTIONS'), reason="Fails at Fedora workflow")
     def test_writing_to_stderr(self):
         self.proc = self._create_process('python %s stderr' % SCRIPT)
-        assert (self.proc.get_output(wait_until_finished=True) == b'This is stderr\n')
+        eol = '\r\n' if IS_WINDOWS else '\n'
+        assert (self.proc.get_output(wait_until_finished=True) == bytes(f"This is stderr{eol}", encoding='utf-8'))
 
     @staticmethod
     def _create_process(command):
