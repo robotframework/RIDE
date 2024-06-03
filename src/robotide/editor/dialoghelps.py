@@ -12,163 +12,92 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+
+import builtins
+from wx import GetTranslation
 from ..robotapi import ALIAS_MARKER
+
+_ = GetTranslation  # To keep linter/code analyser happy
+builtins.__dict__['_'] = GetTranslation
 
 
 def get_help(title):
+    _HELPS = {}
+    _EXAMPLES = {
+        'ESCAPE': _("Possible pipes in the value must be escaped with a backslash like '\\|'."),
+        'TAG': _("Separate tags with a pipe character like 'tag | second tag | 3rd'."),
+        'FIXTURE': _("Separate possible arguments with a pipe character like 'My Keyword | arg 1 | arg 2'."),
+        'TIMEOUT': _("Use time syntax like '1min 10s' or '2 hours' or give the value as seconds.\n"
+                     "Before Robot v3.0.1 an optional message could have been specified like "
+                     "'3 minutes | My message here'."),
+        'ARGUMENTS': _("Specify the arguments separated with a pipe character like '${arg1} | ${arg2}'.\n"
+                       "Default values are given using equal sign and the last argument can be a list variable.\n"
+                       "Example: '${arg1} | ${arg2}=default value | @{rest}'.\n"
+                       "Note. You can use variable shortcuts in this field."),
+        'ALIAS': _("Alias can be used to import same library multiple times with different names.\n"
+                   "Alias is prepended with: ") + ALIAS_MARKER +
+        _(" . Note that since Robot v6.0, imports with old WITH NAME are replaced by AS.")
+    }
+    content = ['', "Scalar Variable", _("Give name and value of the variable."), '', "List Variable",
+               _("Give name and value of the variable. Input list variable items into separate cells."), '',
+               "Dictionary Variable",
+               _("Give name and value of the variable. Input dictionary items into separate cells."),
+               _("Individual items must be in format `key=value`"), '', "Library",
+               _("Give name, optional arguments and optional alias of the library to import."),
+               _("Separate multiple arguments with a pipe character like 'arg 1 | arg 2'."), "%(ALIAS)s", '',
+               "Variables", _("Give path and optional arguments of the variable file to import."),
+               _("Separate multiple arguments with a pipe character like 'arg 1 | arg 2'."), "%(ESCAPE)s", '',
+               "Resource", _("Give path to the resource file to import."),
+               _("Existing resources will be automatically loaded to the resource tree."),
+               _("New resources must be created separately."), '', "Documentation", _("Give the documentation."),
+               _("Simple formatting like *bold* and _italic_ can be used."),
+               _("Additionally, URLs are converted to clickable links."), '', "Force Tags",
+               _("These tags are set to all test cases in this test suite."),
+               _("Inherited tags are not shown in this view."), "%(TAG)s", "%(ESCAPE)s", '', "Default Tags",
+               _("These tags are set to all test cases in this test suite unless test cases have their own tags."),
+               "%(TAG)s", "%(ESCAPE)s", '', "Test Tags",
+               _("These tags are applied to all test cases in this test suite. "
+                 "This field exists since Robot Framework 6.0 and will replace "
+                 "Force and Default Tags after version 7.0."), _("Inherited tags are not shown in this view."),
+               "%(TAG)s", "%(ESCAPE)s", '', "Tags",
+               _("These tags are set to this test case in addition to "
+                 "Force Tags and they override possible Default Tags."),
+               _("Inherited tags are not shown in this view."), "%(TAG)s", "%(ESCAPE)s", '', "Suite Setup",
+               _("This keyword is executed before executing any of the test cases or lower level suites."),
+               "%(FIXTURE)s", "%(ESCAPE)s", '', "Suite Teardown",
+               _("This keyword is executed after all test cases and lower level suites have been executed."),
+               "%(FIXTURE)s", "%(ESCAPE)s", '', "Test Setup",
+               _("This keyword is executed before every test case in this suite unless test cases override it."),
+               "%(FIXTURE)s", "%(ESCAPE)s", '', "Test Teardown",
+               _("This keyword is executed after every test case in this suite unless test cases override it."),
+               "%(FIXTURE)s", "%(ESCAPE)s", '', "Setup",
+               _("This keyword is executed before other keywords in this test case."),
+               _("Overrides possible Test Setup set on the suite level."), "%(FIXTURE)s", "%(ESCAPE)s", '', "Teardown",
+               _("This keyword is executed after other keywords in this test case even if the test fails."),
+               _("Overrides possible Test Teardown set on the suite level."), "%(FIXTURE)s", "%(ESCAPE)s", '',
+               "Test Template", _("Specifies the default template keyword used by tests in this suite."),
+               _("The test cases will contain only data to use as arguments to that keyword."), '', "Template",
+               _("Specifies the template keyword to use."),
+               _("The test itself will contain only data to use as arguments to that keyword."), '', "Arguments",
+               "%(ARGUMENTS)s", "%(ESCAPE)s", '', "Return Value",
+               _("Specify the return value. Use a pipe character to separate multiple values."), "%(ESCAPE)s", '',
+               "Test Timeout",
+               _("Maximum time test cases in this suite are allowed to execute before aborting them forcefully."),
+               _("Can be overridden by individual test cases using Timeout setting."), "%(TIMEOUT)s", '', "Timeout",
+               _("Maximum time this test/keyword is allowed to execute before aborting it forcefully."),
+               _("With test cases this setting overrides Test Timeout set on the suite level."), "%(TIMEOUT)s", '',
+               "Metadata", _("Give a name and a value for the suite metadata."), '', "New Test Case",
+               _("Give a name for the new test case."), '', "New User Keyword",
+               _("Give a name and arguments for the new user keyword."), "%(ARGUMENTS)s", '',
+               "Copy User Keyword", _("Give a name for the new user keyword.")]
+    current = None
+    for row in content:
+        row = row.strip()
+        if not row:
+            current = None
+        elif current is None:
+            current = _HELPS.setdefault(row, [])
+        else:
+            current.append(row % _EXAMPLES)
+
     return '\n'.join(_HELPS[title])
-
-
-_HELPS = {}
-
-
-_EXAMPLES = {
-    'ESCAPE': "Possible pipes in the value must be escaped with a backslash like '\\|'.",
-    'TAG': "Separate tags with a pipe character like 'tag | second tag | 3rd'.",
-    'FIXTURE': "Separate possible arguments with a pipe character like 'My Keyword | arg 1 | arg 2'.",
-    'TIMEOUT': ("Use time syntax like '1min 10s' or '2 hours' or give the value as seconds.\n"
-                "Before Robot v3.0.1 an optional message could have been specified like '3 minutes | My message here'."
-                ""),
-    'ARGUMENTS': ("Specify the arguments separated with a pipe character like '${arg1} | ${arg2}'.\n"
-                  "Default values are given using equal sign and the last argument can be a list variable.\n"
-                  "Example: '${arg1} | ${arg2}=default value | @{rest}'.\n"
-                  "Note. You can use variable shortcuts in this field."),
-    'ALIAS': ("Alias can be used to import same library multiple times with different names.\n"
-              "Alias is prepended with: "+ALIAS_MARKER+" . Note that since Robot v6.0, imports with old WITH NAME are"
-              " replaced by AS.")
-}
-
-current = None
-for row in """
-Scalar Variable
-Give name and value of the variable.
-
-List Variable
-Give name and value of the variable. Input list variable items into separate cells.
-
-Dictionary Variable
-Give name and value of the variable. Input dictionary items into separate cells.
-Individual items must be in format `key=value`
-
-Library
-Give name, optional arguments and optional alias of the library to import.
-Separate multiple arguments with a pipe character like 'arg 1 | arg 2'.
-%(ALIAS)s
-
-Variables
-Give path and optional arguments of the variable file to import.
-Separate multiple arguments with a pipe character like 'arg 1 | arg 2'.
-%(ESCAPE)s
-
-Resource
-Give path to the resource file to import.
-Existing resources will be automatically loaded to the resource tree.
-New resources must be created separately.
-
-Documentation
-Give the documentation.
-Simple formatting like *bold* and _italic_ can be used.
-Additionally, URLs are converted to clickable links.
-
-Force Tags
-These tags are set to all test cases in this test suite.
-Inherited tags are not shown in this view.
-%(TAG)s
-%(ESCAPE)s
-
-Default Tags
-These tags are set to all test cases in this test suite unless test cases have their own tags.
-%(TAG)s
-%(ESCAPE)s
-
-Test Tags
-These tags are applied to all test cases in this test suite. This field exists since Robot Framework 6.0 and will
- replace Force and Default Tags after version 7.0.
-Inherited tags are not shown in this view.
-%(TAG)s
-%(ESCAPE)s
-
-Tags
-These tags are set to this test case in addition to Force Tags and they override possible Default Tags.
-Inherited tags are not shown in this view.
-%(TAG)s
-%(ESCAPE)s
-
-Suite Setup
-This keyword is executed before executing any of the test cases or lower level suites.
-%(FIXTURE)s
-%(ESCAPE)s
-
-Suite Teardown
-This keyword is executed after all test cases and lower level suites have been executed.
-%(FIXTURE)s
-%(ESCAPE)s
-
-Test Setup
-This keyword is executed before every test case in this suite unless test cases override it.
-%(FIXTURE)s
-%(ESCAPE)s
-
-Test Teardown
-This keyword is executed after every test case in this suite unless test cases override it.
-%(FIXTURE)s
-%(ESCAPE)s
-
-Setup
-This keyword is executed before other keywords in this test case.
-Overrides possible Test Setup set on the suite level.
-%(FIXTURE)s
-%(ESCAPE)s
-
-Teardown
-This keyword is executed after other keywords in this test case even if the test fails.
-Overrides possible Test Teardown set on the suite level.
-%(FIXTURE)s
-%(ESCAPE)s
-
-Test Template
-Specifies the default template keyword used by tests in this suite.
-The test cases will contain only data to use as arguments to that keyword.
-
-Template
-Specifies the template keyword to use.
-The test itself will contain only data to use as arguments to that keyword.
-
-Arguments
-%(ARGUMENTS)s
-%(ESCAPE)s
-
-Return Value
-Specify the return value. Use a pipe character to separate multiple values.
-%(ESCAPE)s
-
-Test Timeout
-Maximum time test cases in this suite are allowed to execute before aborting them forcefully.
-Can be overridden by individual test cases using Timeout setting.
-%(TIMEOUT)s
-
-Timeout
-Maximum time this test/keyword is allowed to execute before aborting it forcefully.
-With test cases this setting overrides Test Timeout set on the suite level.
-%(TIMEOUT)s
-
-Metadata
-Give a name and a value for the suite metadata.
-
-New Test Case
-Give a name for the new test case.
-
-New User Keyword
-Give a name and arguments for the new user keyword.
-%(ARGUMENTS)s
-
-Copy User Keyword
-Give a name for the new user keyword.
-""".splitlines():
-    row = row.strip()
-    if not row:
-        current = None
-    elif current is None:
-        current = _HELPS.setdefault(row, [])
-    else:
-        current.append(row % _EXAMPLES)
