@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
 "POT-Creation-Date: 2024-06-03 02:24+0100\n"
-"PO-Revision-Date: 2024-06-03 02:26+0100\n"
+"PO-Revision-Date: 2024-06-03 16:44+0100\n"
 "Last-Translator: Hélio Guilherme <helio_guilherme@hotmail.com>\n"
 "Language-Team: Portuguese\n"
 "Language: pt_PT\n"
@@ -16,7 +16,7 @@ msgstr ""
 "X-Crowdin-Language: pt-PT\n"
 "X-Crowdin-File: /master/src/robotide/localization/RIDE.pot\n"
 "X-Crowdin-File-ID: 14\n"
-"X-Generator: Poedit 3.4.4\n"
+"X-Generator: Poedit 3.4.2\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/application.py:396
 msgid "Found Robot Framework version %s from %s."
@@ -759,21 +759,27 @@ msgid ""
 "Give name and value of the variable. Input list variable items into separate "
 "cells."
 msgstr ""
+"Indique o nome e o valor da variável. Introduzir os itens da lista de "
+"variáveis em células separadas."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:44
 msgid ""
 "Give name and value of the variable. Input dictionary items into separate "
 "cells."
 msgstr ""
+"Indique o nome e o valor da variável. Introduzir os itens do dicionário em "
+"células separadas."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:45
 msgid "Individual items must be in format `key=value`"
-msgstr ""
+msgstr "Os itens individuais devem estar no formato `chave=valor`"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:46
 msgid ""
 "Give name, optional arguments and optional alias of the library to import."
 msgstr ""
+"Indique o nome, os argumentos opcionais e o alias opcional da biblioteca a "
+"importar."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:47
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:49
@@ -785,14 +791,18 @@ msgstr ""
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:48
 msgid "Give path and optional arguments of the variable file to import."
 msgstr ""
+"Indique o caminho e os argumentos opcionais do ficheiro de variáveis a "
+"importar."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:50
 msgid "Give path to the resource file to import."
-msgstr ""
+msgstr "Indique o caminho para o ficheiro de recursos a importar."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:51
 msgid "Existing resources will be automatically loaded to the resource tree."
 msgstr ""
+"Os recursos existentes serão automaticamente carregados na árvore de "
+"recursos."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:52
 msgid "Give the documentation."
@@ -800,31 +810,34 @@ msgstr "Escreva a documentação."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:52
 msgid "New resources must be created separately."
-msgstr ""
+msgstr "Novos recursos têm que ser criados separadamente."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:53
 msgid "Simple formatting like *bold* and _italic_ can be used."
-msgstr ""
+msgstr "Pode ser usada uma formatação simples como *negrito* e _itálico_."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:54
 msgid "Additionally, URLs are converted to clickable links."
-msgstr ""
+msgstr "Adicionalmente, os URL serão convertidos para ligações clicáveis."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:55
 msgid "These tags are set to all test cases in this test suite."
 msgstr ""
+"Estas etiquetas são aplicadas a todos os casos de teste nesta suite de teste."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:56
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:61
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:65
 msgid "Inherited tags are not shown in this view."
-msgstr ""
+msgstr "Etiquetas herdadas não serão mostradas nesta vista."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:57
 msgid ""
 "These tags are set to all test cases in this test suite unless test cases "
 "have their own tags."
 msgstr ""
+"Estas etiquetas são aplicadas a todos os casos de teste nesta suite de "
+"teste, desde que não tenham uma etiqueta própria."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:59
 msgid ""
@@ -832,98 +845,128 @@ msgid ""
 "exists since Robot Framework 6.0 and will replace Force and Default Tags "
 "after version 7.0."
 msgstr ""
+"Estas etiquetas são aplicadas a todos os casos de teste nesta suite de "
+"teste. Este campo existe desde o Robot Framework 6.0 e substituirá Forçar "
+"Etiquetas e Etiquetas por Omissão, depois da versão 7.0."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:63
 msgid ""
 "These tags are set to this test case in addition to Force Tags and they "
 "override possible Default Tags."
 msgstr ""
+"Estas etiquetas estão definidas para este caso de teste juntamente com as de "
+"Forçar Etiquetas e removem as eventuais Etiquetas por Omissão."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:66
 msgid ""
 "This keyword is executed before executing any of the test cases or lower "
 "level suites."
 msgstr ""
+"Esta palavra-chave é executada antes de executar algum dos casos de testes "
+"ou suites de teste em níveis abaixo."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:68
 msgid ""
 "This keyword is executed after all test cases and lower level suites have "
 "been executed."
 msgstr ""
+"Esta palavra-chave é executada depois de executar todos os casos de testes e "
+"suites de teste em níveis abaixo."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:70
 msgid ""
 "This keyword is executed before every test case in this suite unless test "
 "cases override it."
 msgstr ""
+"Esta palavra-chave é executada antes de cada caso de teste nesta suite de "
+"teste, se os casos de teste não tiverem esta definição própria."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:72
 msgid ""
 "This keyword is executed after every test case in this suite unless test "
 "cases override it."
 msgstr ""
+"Esta palavra-chave é executada depois de cada caso de teste nesta suite de "
+"teste, se os casos de teste não tiverem esta definição própria."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:74
 msgid "This keyword is executed before other keywords in this test case."
 msgstr ""
+"Esta palavra-chave é executada antes das palavras-chave neste caso de teste."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:75
 msgid "Overrides possible Test Setup set on the suite level."
-msgstr ""
+msgstr "Sobrepõe-se a uma eventual Inicialização de Teste no nível da suite."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:76
 msgid ""
 "This keyword is executed after other keywords in this test case even if the "
 "test fails."
 msgstr ""
+"Esta palavra-chave é executada depois de todas as palavras-chave neste caso "
+"de teste, mesmo que o teste tenha falhado."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:77
 msgid "Overrides possible Test Teardown set on the suite level."
-msgstr ""
+msgstr "Sobrepõe-se a uma eventual Finalização de Teste no nível da suite."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:78
 msgid "Specifies the default template keyword used by tests in this suite."
 msgstr ""
+"Especifica a palavra-chave por omissão como modelo usado nos testes desta "
+"suite."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:79
 msgid ""
 "The test cases will contain only data to use as arguments to that keyword."
 msgstr ""
+"Os casos de teste apenas contêm os dados a serem usados como argumentos para "
+"essa palavra-chave."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:80
 msgid "Specifies the template keyword to use."
-msgstr ""
+msgstr "Especifica a palavra-chave como modelo a usar."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:81
 msgid ""
 "The test itself will contain only data to use as arguments to that keyword."
 msgstr ""
+"O caso de teste apenas contêm os dados a serem usados como argumentos para "
+"essa palavra-chave."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:83
 msgid ""
 "Specify the return value. Use a pipe character to separate multiple values."
 msgstr ""
+"Especifique o valor de retorno. Use uma barra para separar vários valores."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:85
 msgid ""
 "Maximum time test cases in this suite are allowed to execute before aborting "
 "them forcefully."
 msgstr ""
+"Duração máxima para a execução dos casos de teste nesta suite antes de serem "
+"forçosamente interrompidos."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:86
 msgid "Can be overridden by individual test cases using Timeout setting."
 msgstr ""
+"Pode ser sobreposto pela definição individual, Tempo Limite no caso de teste."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:87
 msgid ""
 "Maximum time this test/keyword is allowed to execute before aborting it "
 "forcefully."
 msgstr ""
+"Duração máxima para a execução deste teste ou palavra-chave antes de ser "
+"forçosamente interrompido."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:88
 msgid ""
 "With test cases this setting overrides Test Timeout set on the suite level."
 msgstr ""
+"Quando em casos de teste esta definição sobrepõe-se ao Tempo Limite de Teste "
+"definido no nível da suite."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:89
 msgid "Give a name and a value for the suite metadata."
