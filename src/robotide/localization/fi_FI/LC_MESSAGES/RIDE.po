@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2024-06-03 02:24+0100\n"
-"PO-Revision-Date: 2024-05-31 01:25\n"
+"POT-Creation-Date: 2024-06-04 20:38+0100\n"
+"PO-Revision-Date: 2024-06-03 23:36\n"
 "Last-Translator: \n"
 "Language-Team: Finnish\n"
 "Language: fi_FI\n"
@@ -682,16 +682,20 @@ msgstr "Muokkain"
 msgid ""
 "Possible pipes in the value must be escaped with a backslash like '\\|'."
 msgstr ""
+"Mahdollinen putki arvon on karsittava takaiskurivin kaltaisella ”\\”-"
+"merkillä."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:28
 msgid "Separate tags with a pipe character like 'tag | second tag | 3rd'."
-msgstr ""
+msgstr "Erota tagit, joissa on putkimerkki, kuten 'tag' - toinen tagi •3rd'."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:29
 msgid ""
 "Separate possible arguments with a pipe character like 'My Keyword | arg 1 | "
 "arg 2'."
 msgstr ""
+"Erottele mahdolliset argumentit putkimerkillä kuten 'Oma avainsana' arg 1 ¶ "
+"arg 2'."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:30
 msgid ""
@@ -699,6 +703,9 @@ msgid ""
 "Before Robot v3.0.1 an optional message could have been specified like '3 "
 "minutes | My message here'."
 msgstr ""
+"Käytä aikasyntaksia kuten 1min 10 tai 2 tuntia, tai anna arvo sekunteina.\n"
+"Ennen Robottia v3. .1 valinnainen viesti olisi voitu määritellä, kuten '3 "
+"minuuttia'."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:33
 msgid ""
@@ -716,86 +723,93 @@ msgid ""
 "names.\n"
 "Alias is prepended with: "
 msgstr ""
+"Alioita voidaan käyttää saman kirjaston tuomiseen useita kertoja eri "
+"nimillä.\n"
+"Alias on asetettu etusivulle: "
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:39
 msgid ""
 " . Note that since Robot v6.0, imports with old WITH NAME are replaced by AS."
-msgstr ""
+msgstr " . Huomaa, että koska Robot v6.0, tuonti vanha WITH NAME korvataan AS."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:41
 msgid "Give name and value of the variable."
-msgstr ""
+msgstr "Anna muuttujan nimi ja arvo."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:42
 msgid ""
 "Give name and value of the variable. Input list variable items into separate "
 "cells."
 msgstr ""
+"Anna muuttujan nimi ja arvo. Syötä muuttujan kohdat erillisiin soluihin."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:44
 msgid ""
 "Give name and value of the variable. Input dictionary items into separate "
 "cells."
-msgstr ""
+msgstr "Anna muuttujan nimi ja arvo. Syötä sanakirja erillisiin soluihin."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:45
 msgid "Individual items must be in format `key=value`"
-msgstr ""
+msgstr "Yksittäisten kohteiden on oltava muodossa `key=value`"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:46
 msgid ""
 "Give name, optional arguments and optional alias of the library to import."
 msgstr ""
+"Anna tuotava kirjaston nimi, valinnaiset argumentit ja valinnainen alias"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:47
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:49
 msgid "Separate multiple arguments with a pipe character like 'arg 1 | arg 2'."
-msgstr ""
+msgstr "Erota useat argumentit putkimerkillä kuten 'arg 1' kaarella 2'."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:48
 msgid "Give path and optional arguments of the variable file to import."
-msgstr ""
+msgstr "Anna tuotavan muuttujatiedoston polku ja valinnaiset argumentit."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:50
 msgid "Give path to the resource file to import."
-msgstr ""
+msgstr "Anna polku tuotavaan resurssitiedostoon."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:51
 msgid "Existing resources will be automatically loaded to the resource tree."
-msgstr ""
+msgstr "Olemassa olevat resurssit ladataan automaattisesti resurssipuun."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:52
-#, fuzzy
 msgid "Give the documentation."
-msgstr "Hae dokumentaatiosta"
+msgstr "Anna asiakirjat."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:52
 msgid "New resources must be created separately."
-msgstr ""
+msgstr "Uudet resurssit on luotava erikseen."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:53
 msgid "Simple formatting like *bold* and _italic_ can be used."
-msgstr ""
+msgstr "Yksinkertainen muotoilu kuten *bold* ja _italic_ voidaan käyttää."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:54
 msgid "Additionally, URLs are converted to clickable links."
-msgstr ""
+msgstr "Lisäksi URL-osoitteet muunnetaan klikattaviksi linkeiksi."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:55
 msgid "These tags are set to all test cases in this test suite."
 msgstr ""
+"Nämä tunnisteet on asetettu kaikkiin testikoteloihin tässä testisarjassa."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:56
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:61
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:65
 msgid "Inherited tags are not shown in this view."
-msgstr ""
+msgstr "Perillisiä tageja ei näytetä tässä näkymässä."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:57
 msgid ""
 "These tags are set to all test cases in this test suite unless test cases "
 "have their own tags."
 msgstr ""
+"Nämä tunnisteet on asetettu kaikkiin testikoteloihin tässä testisarjassa, "
+"ellei testauslaatikoissa ole omia tageja."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:59
 msgid ""
@@ -803,114 +817,140 @@ msgid ""
 "exists since Robot Framework 6.0 and will replace Force and Default Tags "
 "after version 7.0."
 msgstr ""
+"Näitä tageja sovelletaan kaikkiin testikoteloihin tässä testisarjassa. Tämä "
+"kenttä on olemassa Robot Framework 6. ja korvaa voimassa ja oletustagien "
+"version 7.0 jälkeen."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:63
 msgid ""
 "These tags are set to this test case in addition to Force Tags and they "
 "override possible Default Tags."
 msgstr ""
+"Nämä tagit on asetettu tähän testikoteloon Force Tagien lisäksi ja ne "
+"ohittavat mahdolliset oletustagit."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:66
 msgid ""
 "This keyword is executed before executing any of the test cases or lower "
 "level suites."
 msgstr ""
+"Tämä avainsana suoritetaan ennen minkään testikotelon tai alemman tason "
+"sviitin suorittamista."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:68
 msgid ""
 "This keyword is executed after all test cases and lower level suites have "
 "been executed."
 msgstr ""
+"Tämä avainsana suoritetaan sen jälkeen, kun kaikki testitapaukset ja alemman "
+"tason sviitit on suoritettu."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:70
 msgid ""
 "This keyword is executed before every test case in this suite unless test "
 "cases override it."
 msgstr ""
+"Tämä avainsana suoritetaan ennen jokaista testitapausta tässä sviitissä, "
+"ellei testitapauksia ohita sitä."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:72
 msgid ""
 "This keyword is executed after every test case in this suite unless test "
 "cases override it."
 msgstr ""
+"Tämä avainsana suoritetaan jokaisen testisarjan jälkeen, paitsi jos "
+"testitapaukset ohittavat sen."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:74
 msgid "This keyword is executed before other keywords in this test case."
 msgstr ""
+"Tämä avainsana suoritetaan ennen muita avainsanoja tässä testikotelossa."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:75
 msgid "Overrides possible Test Setup set on the suite level."
-msgstr ""
+msgstr "Ohittaa mahdolliset testiasetukset jotka on asetettu sviittitasolle."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:76
 msgid ""
 "This keyword is executed after other keywords in this test case even if the "
 "test fails."
 msgstr ""
+"Tämä avainsana suoritetaan muiden avainsanojen jälkeen tässä "
+"testitapauksessa vaikka testi epäonnistuisi."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:77
 msgid "Overrides possible Test Teardown set on the suite level."
-msgstr ""
+msgstr "Ohittaa mahdolliset testien korvaaminen asetettu sviittitasolla."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:78
 msgid "Specifies the default template keyword used by tests in this suite."
-msgstr ""
+msgstr "Määrittää tämän sviitin testien käyttämän oletuspohjan avainsanan."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:79
 msgid ""
 "The test cases will contain only data to use as arguments to that keyword."
 msgstr ""
+"Testitapaukset sisältävät vain tietoja, joita käytetään argumenteina tälle "
+"avainsanalle."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:80
 msgid "Specifies the template keyword to use."
-msgstr ""
+msgstr "Määrittää käytettävän mallin avainsanan."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:81
 msgid ""
 "The test itself will contain only data to use as arguments to that keyword."
 msgstr ""
+"Testi itsessään sisältää vain tietoja, joita käytetään argumenteina tälle "
+"avainsanalle."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:83
 msgid ""
 "Specify the return value. Use a pipe character to separate multiple values."
-msgstr ""
+msgstr "Määritä palautusarvo. Käytä putkimerkkiä erottamaan useita arvoja."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:85
 msgid ""
 "Maximum time test cases in this suite are allowed to execute before aborting "
 "them forcefully."
 msgstr ""
+"Suurin mahdollinen aika testata tapauksia tässä sviitissä sallitaan "
+"suorittaa ennen kuin ne keskeytetään voimakkaasti."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:86
 msgid "Can be overridden by individual test cases using Timeout setting."
-msgstr ""
+msgstr "Yksittäiset testitapaukset voidaan ohittaa aikakatkaisun asetuksella."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:87
 msgid ""
 "Maximum time this test/keyword is allowed to execute before aborting it "
 "forcefully."
 msgstr ""
+"Tämä testi/avainsana on sallittu suorittaa ennen kuin se keskeytetään "
+"voimakkaasti."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:88
 msgid ""
 "With test cases this setting overrides Test Timeout set on the suite level."
 msgstr ""
+"Testaustapauksissa tämä asetus ohittaa testisyklin aikakatkaisun asetettuna "
+"sviittitasolle."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:89
 msgid "Give a name and a value for the suite metadata."
-msgstr ""
+msgstr "Anna nimi ja arvo sarjakuvan metatiedolle."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:90
 msgid "Give a name for the new test case."
-msgstr ""
+msgstr "Anna nimi uudelle testikotelolle."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:91
 msgid "Give a name and arguments for the new user keyword."
-msgstr ""
+msgstr "Anna nimi ja parametrit uudelle käyttäjälle avainsanalle."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:92
 msgid "Give a name for the new user keyword."
-msgstr ""
+msgstr "Anna nimi uudelle käyttäjälle avainsanalle."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:72
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:483
@@ -995,17 +1035,15 @@ msgstr "Dokumentaatio"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:302
 msgid "Force Tags"
-msgstr ""
+msgstr "Pakota Tagit"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:315
-#, fuzzy
 msgid "Default Tags"
-msgstr "Oletus Etuala"
+msgstr "Oletus Tagit"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:328
-#, fuzzy
 msgid "Test Tags"
-msgstr "Uusi Testilaatikko"
+msgstr "Testaa Tagit"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:341
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:61
@@ -1019,50 +1057,47 @@ msgstr "Suite Setup on käynnissä ennen mitään testejä"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:374
 msgid "Suite Setup"
-msgstr ""
+msgstr "Sviitin Asetukset"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:387
 msgid "Suite Teardown"
-msgstr ""
+msgstr "Suivin Purku"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:401
-#, fuzzy
 msgid "Test Setup"
-msgstr "Testaa Sviitit"
+msgstr "Testaa Asetukset"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:415
 msgid "Test Teardown"
-msgstr ""
+msgstr "Testaa Uloskirjaus"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:428
 msgid "Setup"
-msgstr ""
+msgstr "Asetukset"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:441
 msgid "Teardown"
-msgstr ""
+msgstr "Purkaminen"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:454
 msgid "Template"
-msgstr ""
+msgstr "Malli"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:468
-#, fuzzy
 msgid "Test Template"
-msgstr "Testaa suodatin"
+msgstr "Testaa Malli"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:497
 msgid "Return Value"
-msgstr ""
+msgstr "Palautuksen Arvo"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:514
-#, fuzzy
 msgid "Test Timeout"
-msgstr "Testaa suodatin"
+msgstr "Testin Aikakatkaisu"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:528
 msgid "Timeout"
-msgstr ""
+msgstr "Aikakatkaisu"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:541
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:724
