@@ -30,6 +30,7 @@ class Languages:
              ('English', 'en-GB', wx.LANGUAGE_ENGLISH), ('Spanish', 'es-ES', wx.LANGUAGE_SPANISH),
              ('Finnish', 'fi-FI', wx.LANGUAGE_FINNISH), ('French', 'fr-FR', wx.LANGUAGE_FRENCH),
              ('Hindi', 'hi-IN', wx.LANGUAGE_HINDI), ('Italian', 'it-IT', wx.LANGUAGE_ITALIAN),
+             ('Japanese', 'ja', wx.LANGUAGE_JAPANESE), # Since RF 7.0.1
              ('Dutch', 'nl-NL', wx.LANGUAGE_DUTCH), ('Polish', 'pl-PL', wx.LANGUAGE_POLISH),
              ('Portuguese', 'pt-PT', wx.LANGUAGE_PORTUGUESE),
              ('Brazilian Portuguese', 'pt-BR', wx.LANGUAGE_PORTUGUESE_BRAZILIAN),

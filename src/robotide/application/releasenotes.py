@@ -152,7 +152,7 @@ RELEASE_NOTES = f"""
 <p><a class="reference external" href="https://github.com/robotframework/RIDE/">RIDE (Robot Framework IDE)</a>
  {VERSION} is a new release with important enhancements and bug fixes. The reference for valid arguments is
  <a class="reference external" href="https://robotframework.org/">Robot Framework</a> installed version, which is at this
-  moment 7.0. However, internal library code is originally based on version 3.1.2, but adapted for new versions.</p>
+  moment 7.0.1rc1. However, internal library code is originally based on version 3.1.2, but adapted for new versions.</p>
 <p></p>
 <ul class="simple">
 <li>This version supports Python 3.8 up to 3.12.</li>
@@ -188,6 +188,7 @@ version 4.2.1, which we now <em>recommend</em>.</li>
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
+<li>Added UI localization and support for Japanese configured test suites, valid for Robot Framework version 7.0.1 or higher.</li>
 <li>Fixed keywords Find Usages in Grid Editor not finding certain values when using Gherkin.</li>
 <li>Improved selection of items from Tree in Text Editor. Now finds more items and selects whole line.</li>
 <li>Changed output in plugin Run Anything (Macros) to allow Zoom In/Out, and Copy content.</li>
@@ -300,7 +301,7 @@ python -m robotide.__init__
 <pre class="literal-block">
 python -m robotide.postinstall -install
 </pre>
-<p>RIDE {VERSION} was released on 03/June/2024.</p>
+<p>RIDE {VERSION} was released on 05/June/2024.</p>
 <!-- <br/>
 <h3>May The Fourth Be With You!</h3>
 -->
