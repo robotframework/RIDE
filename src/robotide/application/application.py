@@ -225,7 +225,7 @@ class RIDE(wx.App):
         # print(f"DEBUG Application General : Enter SetGlobalColour message= {message.keys[0]}")
         app = wx.App.Get()
         _root = app.GetTopWindow()
-        theme = self.settings.get('General', None)
+        theme = self.settings.get_without_default('General')
         font_size = theme[FONT_SIZE]
         font_face = theme[FONT_FACE]
         font = _root.GetFont()
@@ -307,7 +307,7 @@ class RIDE(wx.App):
             names = [n for n in Languages.names]
         else:
             names = [('English', 'en', wx.LANGUAGE_ENGLISH)]
-        general = self.settings.get('General', None)
+        general = self.settings.get_without_default('General')
         language = general.get('ui language', 'English')
         try:
             idx = [lang[0] for lang in names].index(language)
