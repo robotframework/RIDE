@@ -135,7 +135,7 @@ class Project(_BaseController, WithNamespace):
         try:
             robot_version = APP.robot_version
         except AttributeError:
-            robot_version = '3.1.2'  # It is failing at unit tests
+            robot_version = '7.0.1'  # It is failing at unit tests
         print(f"DEBUG: project.py Project load_data robot version = {robot_version}")
         from ..lib.compat.parsing.language import check_file_language
         self.file_language = check_file_language(path)

@@ -57,7 +57,7 @@ class TestNameDialogTest(UIUnitTestBase):
     def test_get_title(self):
         test_ctrl = file_controller().create_test('A test')
         dlg = TestCaseNameDialog(test_ctrl, item=test_ctrl.data)
-        assert dlg.GetTitle() == TestCaseNameDialog._title
+        assert dlg.GetTitle() == 'New Test Case'
 
     def test_validators(self):
         test_ctrl = file_controller().create_test('A test')
@@ -107,7 +107,7 @@ class TestUserKeywordNameDialog(UIUnitTestBase):
     def test_get_title(self):
         kw_ctrl = file_controller().create_keyword('Keyword it is', '${a1} | ${a2}')
         dlg = UserKeywordNameDialog(kw_ctrl, item=kw_ctrl.data)
-        assert dlg.GetTitle() == UserKeywordNameDialog._title
+        assert dlg.GetTitle() == 'New User Keyword'
 
     def test_validators(self):
         kw_ctrl = file_controller().create_keyword('Keyword it is', '${a1} | ${a2}')

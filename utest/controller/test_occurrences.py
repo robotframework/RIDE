@@ -35,7 +35,7 @@ EMBEDDED_ARGUMENTS_KEYWORD = "Pick '${fruit}' and '${action}' it"
 
 
 def TestCaseControllerWithSteps(project=None, source='some_suite.robot'):
-    tcf = TestCaseFile()
+    tcf = TestCaseFile(language=['English'])
     tcf.source = source
     tcf.setting_table.suite_setup.name = 'Suite Setup Kw'
     tcf.setting_table.test_setup.name = SUITE_TEST_SETUP_KEYWORD
@@ -216,7 +216,7 @@ class TestFindOccurrencesWithFiles(unittest.TestCase):
         self._assert_usage('Keyword Teardown Keyword', 'Teardown')
 
     def test_finding_from_test_teardown_in_settings(self):
-        self._assert_usage('Test Teardown in Setting', 'Task Teardown')
+        self._assert_usage('Test Teardown in Setting', 'Test Teardown')
 
     def test_occurrences_in_suite_documentation_should_not_be_found(self):
         self._assert_no_usages('suitedocmatch')
@@ -237,8 +237,7 @@ class TestFindOccurrencesWithFiles(unittest.TestCase):
         self.assertEqual(list(self.ts2.execute(FindUsages(keyword))), [])
 
     def assert_occurrences(self, ctrl, kw_name, count):
-        assert (sum(1 for _ in ctrl.execute(FindOccurrences(kw_name))) ==
-                     count)
+        assert (sum(1 for _ in ctrl.execute(FindOccurrences(kw_name))) == count)
 
 
 class FindOccurrencesTest(unittest.TestCase):
@@ -272,24 +271,28 @@ class FindOccurrencesTest(unittest.TestCase):
             '${some unknown variable}'))), [])
 
     def test_occurrences_in_test_metadata(self):
+        # self.test_ctrl.parent.parent._language = ['en']
+        # print(f"DEBUG: FindOccurrences test_occurrences_in_test_metadata"
+        #      f" file_language={self.test_ctrl.parent.parent.file_language}\n"
+        #      f" source= {self.test_ctrl.parent.parent.source}\n")
         assert_occurrence(self.test_ctrl, SETUP_KEYWORD,
-                          TEST1_NAME, 'Setup')
+                          'Some Suite', 'Suite Setup')
         assert_occurrence(self.test_ctrl, 'Teardown Kw',
-                          TEST1_NAME, 'Teardown')
+                          'Some Suite', 'Suite Teardown')
         assert_occurrence(self.test_ctrl, TEMPLATE_KEYWORD,
-                          TEST1_NAME, 'Template')
+                          'Some Suite', 'Test Template')
 
     def test_occurrences_in_suite_metadata(self):
         assert_occurrence(self.test_ctrl, SUITE_SETUP_KEYWORD,
                           SUITE_NAME, 'Suite Setup')
         assert_occurrence(self.test_ctrl, 'Test Setup Kw',
-                          SUITE_NAME, 'Task Setup')
+                          SUITE_NAME, 'Test Setup')
         assert_occurrence(self.test_ctrl, 'Test Teardown Kw',
-                          SUITE_NAME, 'Task Teardown')
+                          SUITE_NAME, 'Test Teardown')
         assert_occurrence(self.test_ctrl, 'Suite Teardown Kw',
                           SUITE_NAME, 'Suite Teardown')
         assert_occurrence(self.test_ctrl, 'Test Template Kw',
-                          SUITE_NAME, 'Task Template')
+                          SUITE_NAME, 'Test Template')
 
     def test_occurrences_in_user_keywords(self):
         assert_occurrence(self.test_ctrl, KEYWORD_IN_USERKEYWORD1,
@@ -516,7 +519,7 @@ class RenameOccurrenceTest(unittest.TestCase):
 
     def test_rename_in_test_template(self):
         self._rename(TEMPLATE_KEYWORD, UNUSED_KEYWORD_NAME,
-                     TEST1_NAME, 'Template')
+                     'Some Suite', 'Test Template')
         self._expected_messages(testcase_settings_have_changed=True)
         self.assertTrue(self.test_ctrl.dirty)
 
@@ -528,13 +531,13 @@ class RenameOccurrenceTest(unittest.TestCase):
 
     def test_rename_in_suite_test_setup(self):
         self._rename(SUITE_TEST_SETUP_KEYWORD, UNUSED_KEYWORD_NAME, SUITE_NAME,
-                     'Task Setup')
+                     'Test Setup')
         self._expected_messages()
         self.assertTrue(self.test_ctrl.dirty)
 
     def test_rename_in_suite_test_template(self):
         self._rename(SUITE_TEST_TEMPLATE_KEYWORD, UNUSED_KEYWORD_NAME,
-                     SUITE_NAME, 'Task Template')
+                     SUITE_NAME, 'Test Template')
         self._expected_messages()
         self.assertTrue(self.test_ctrl.dirty)
 
