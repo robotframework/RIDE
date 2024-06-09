@@ -51,8 +51,7 @@ TESTCASEFILE_WITH_RESOURCES_WITH_VARIABLES_FROM_VARIABLE_FILE = \
 SIMPLE_TEST_SUITE_RESOURCE_NAME = 'Testdata Resource'
 SIMPLE_TEST_SUITE_RESOURCE_FILE = 'testdata_resource.robot'
 SIMPLE_TEST_SUITE_INNER_RESOURCE_DIR = 'Resources Folder'
-SIMPLE_TEST_SUITE_PATH = \
-    _makepath('simple_testsuite_with_different_namespaces')
+SIMPLE_TEST_SUITE_PATH = _makepath('simple_testsuite_with_different_namespaces')
 
 FOR_LOOP_PATH = _makepath('forloop')
 
@@ -97,7 +96,7 @@ VALID_LANG_ZH_TW = _makepath('language', 'lang_zh_tw.robot')
 
 def construct_project(datapath, temp_dir_for_excludes=None, file_language=None):
     print("DEBUG: construct_project with argpath: %s\n" % datapath)
-    settings = FakeSettings({'excludes': temp_dir_for_excludes, 'txt number of spaces': 2})
+    settings = FakeSettings({'excludes': temp_dir_for_excludes, 'txt number of spaces': 2, 'doc language': ''})
     print("DEBUG: construct_project FakeSettings: %s\n" % list(settings.iteritems()))
     library_manager = LibraryManager(':memory:')
     library_manager.create_database()

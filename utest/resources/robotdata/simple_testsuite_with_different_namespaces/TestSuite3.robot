@@ -1,3 +1,5 @@
+Language: English
+
 *** Test Cases ***
 My Second Test
    My Keyword

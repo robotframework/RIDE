@@ -1,3 +1,5 @@
+Language: English
+
 *** Settings ***
 Resource    testdata_resource.robot
 Resource    ..${/}resources${/}resu.robot

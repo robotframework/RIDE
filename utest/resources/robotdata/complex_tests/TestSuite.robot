@@ -1,3 +1,5 @@
+Language: English
+
 *** Settings ***
 Suite Setup  Run Keywords  Suite Setup Keyword  AND  First KW
 Test Teardown  Run Keywords  Test Teardown in Setting  AND  Second KW

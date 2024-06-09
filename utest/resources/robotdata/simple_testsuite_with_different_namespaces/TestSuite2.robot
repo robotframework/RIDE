@@ -1,3 +1,5 @@
+Language: English
+
 *** Settings ***
 Documentation  suitedocmatch
 Resource    testdata_resource.robot

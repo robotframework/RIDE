@@ -96,6 +96,10 @@ class TestRenameSetupKeywords(unittest.TestCase):
         kw_list = self.suites[0].get_keyword_names()
         settings = self.suites[0].setting_table
         suite_setup = settings.suite_setup.as_list()
+        # self.ctrl.language = ['en']
+        print(f"DEBUG: TestRenameSetupKeywords test_rename_suite_setup_kw"
+              f" file_language={self.ctrl.file_language}\n"
+              f" source= {self.suites[0].source}\n")
         assert kw_list == ['First KW', 'Second KW', 'Test Setup Keyword', 'Test Teardown Keyword',
                            'Keyword Teardown Keyword', SUITESETUPKW, 'Test Teardown in Setting']
         assert suite_setup == ['Suite Setup', 'Run Keywords', SUITESETUPKW, 'AND', 'First KW']

@@ -1,3 +1,5 @@
+Language: English
+
 *** Settings ***
 Resource    resources${/}inner_resource.robot
 
