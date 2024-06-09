@@ -166,8 +166,10 @@ class GridEditor(grid.Grid):
         return self.GetCellValue(*self.selection.cell)
 
     def _get_block_content(self, row_range, col_range):
+        print(f"DEBUG: editor.gridbase.py _get_block_content ENTER row_range={row_range}, col_range={col_range}")
         try:
             content = [[self.GetCellValue(row, col) for col in col_range] for row in row_range]
+            print(f"DEBUG: editor.gridbase.py _get_block_content content={content}")
         except RuntimeError:
             return []
         return content

@@ -297,11 +297,11 @@ class KeywordEditor(GridEditor, Plugin):
             self.autosize()
             self._colorize_grid()
 
-    def on_select_cell(self, event):
-        self._cell_selected = True
-        GridEditor.on_select_cell(self, event)
-        self._colorize_grid()
+    def on_selected_cell(self, event):
         event.Skip()
+        self._cell_selected = True
+        # GridEditor.on_select_cell(event)
+        self._colorize_grid()
 
     def on_kill_focus(self, event):
         # if self.col_label_element:
