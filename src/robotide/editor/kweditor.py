@@ -236,6 +236,7 @@ class KeywordEditor(GridEditor, Plugin):
         self._set_cells()
         self.SetDefaultEditor(ContentAssistCellEditor(self._plugin, self._controller))
         self._set_fonts()
+        wx.CallAfter(self.GoToCell, (0,0))  # To make cells colorized as soon we select keywords or tests
 
     def _set_fonts(self, update_cells=False):
         _ = update_cells
