@@ -51,6 +51,8 @@ class GridEditor(grid.Grid):
         self.color_secondary_foreground = self.general_settings['secondary foreground']
 
         self._bind_to_events()
+        self.selected = 0
+        self.cells = None
         self.selection = _GridSelection(self)
         self._clipboard_handler = ClipboardHandler(self)
         self._history = _GridState()
@@ -85,7 +87,7 @@ class GridEditor(grid.Grid):
 
     def _expand_if_necessary(self, row, col):
         # Changed col and row fill because of blank spacing not changing color
-        # print(f"DEBUG: GridEditor ENTER_expand_if_necessary row={row}, col={col}")
+        # print(f"DEBUG: GridEditor ENTER _expand_if_necessary row={row}, col={col}")
         while self.NumberRows <= max(1, row+1, 10-row):  # DEBUG 25 makes slower rendering
             self.AppendRows(1)
         while self.NumberCols <= max(1, col+1, 10-col):  # DEBUG 40 makes slower rendering
@@ -153,11 +155,16 @@ class GridEditor(grid.Grid):
         return self.GetCellEditor(*self.selection.cell).GetControl()
 
     def get_selected_content(self):
-        return self._get_block_content(self.selection.rows(),
-                                       self.selection.cols())
+        return self._get_block_content(self.selection.rows(), self.selection.cols())
 
     def get_single_selection_content(self):
-        cells = self.get_selected_content()
+        if 0 <= self.selected <= 2:  # To prevent  max recursion error
+            cells = self._get_block_content(self.selection.rows(), self.selection.cols())  # self.get_selected_content()
+            self.cells = cells
+            self.selected += 1
+        else:
+            cells = self.cells
+            self.selected = -1
         if len(cells) != 1 or len(cells[0]) != 1:
             return None
         return cells[0][0]
@@ -166,10 +173,8 @@ class GridEditor(grid.Grid):
         return self.GetCellValue(*self.selection.cell)
 
     def _get_block_content(self, row_range, col_range):
-        print(f"DEBUG: editor.gridbase.py _get_block_content ENTER row_range={row_range}, col_range={col_range}")
         try:
             content = [[self.GetCellValue(row, col) for col in col_range] for row in row_range]
-            print(f"DEBUG: editor.gridbase.py _get_block_content content={content}")
         except RuntimeError:
             return []
         return content
@@ -200,7 +205,6 @@ class GridEditor(grid.Grid):
                              addToSelected=True)
         else:
             self.selection.set_from_single_selection(event)
-        event.Skip()
 
     def on_range_select(self, event):
         if not event.Selecting():
@@ -211,7 +215,7 @@ class GridEditor(grid.Grid):
             self.SelectBlock(event.TopRow, event.LeftCol,
                              event.BottomRow, event.RightCol, addToSelected=False)
         else:
-            self.selection.set_from_range_selection(self, event)
+            self.selection.set_from_range_selection(event)
             self._ensure_selected_row_is_visible(event.BottomRow)
 
     def _ensure_selected_row_is_visible(self, bottom_row):
@@ -293,21 +297,17 @@ class _GridSelection(object):
     def set_from_single_selection(self, event):
         self._set((event.Row, event.Col))
 
-    def set_from_range_selection(self, gridd, event):
-        self._set(*self._get_bounding_coordinates(gridd, event))
+    def set_from_range_selection(self, event):
+        self._set(*self._get_bounding_coordinates(event))
 
     def clear(self):
         selection = (self._grid.GetGridCursorRow(), self._grid.GetGridCursorCol())
         self._set(selection)
 
     @staticmethod
-    def _get_bounding_coordinates(gridd, event):
-        whole_row_selection = sorted(gridd.SelectedRows)
-        if whole_row_selection:
-            return (whole_row_selection[0], 0), \
-                   (whole_row_selection[-1], gridd.NumberCols - 1)
-        return (event.TopLeftCoords.Row, event.TopLeftCoords.Col), \
-               (event.BottomRightCoords.Row, event.BottomRightCoords.Col)
+    def _get_bounding_coordinates(event):
+        return ((event.TopLeftCoords.Row, event.TopLeftCoords.Col),
+                (event.BottomRightCoords.Row, event.BottomRightCoords.Col))
 
     def rows(self):
         """Returns a list containing indices of rows currently selected."""

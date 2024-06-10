@@ -150,7 +150,6 @@ class KeywordEditor(GridEditor, Plugin):
                                 ])
         self._parent = parent
         self._plugin = parent.plugin
-        self._cell_selected = False
         self._colorizer = Colorizer(self, controller)
         self._controller = controller
         self._configure_grid()
@@ -297,10 +296,10 @@ class KeywordEditor(GridEditor, Plugin):
             self.autosize()
             self._colorize_grid()
 
-    def on_selected_cell(self, event):
+    def on_select_cell(self, event):
         event.Skip()
-        self._cell_selected = True
-        # GridEditor.on_select_cell(event)
+        if self.selected == -1:  # To avoid max recursion error
+            return
         self._colorize_grid()
 
     def on_kill_focus(self, event):
@@ -397,7 +396,7 @@ class KeywordEditor(GridEditor, Plugin):
         if keycode == wx.WXK_ESCAPE:
             wx.CallAfter(edit.Destroy)
         if keycode == wx.WXK_RETURN:
-            element = event.GetPosition()
+            # element = event.GetPosition()
             value = edit.GetValue()
             if value == '':
                 del self._controller.data.parent.header[col+1]
@@ -594,13 +593,11 @@ class KeywordEditor(GridEditor, Plugin):
 
     def _colorize_grid(self):
         selection_content = self._get_single_selection_content_or_none_on_first_call()
-        # print(f"DEBUG: kweditor.py _colorize_grid ENTER selection_content={selection_content} name={self._parent}")
         if selection_content is None:
             self.GoToCell((0, 0))
             value = self.GetCellValue((0, 0))
             self.highlight(value)
         elif self._parent:
-            # print(f"DEBUG: kweditor.py _colorize_grid parent={self._parent} name={self._parent.name}")
             self._parent.highlight(selection_content, expand=True)
 
     def highlight(self, text, expand=True):
@@ -613,8 +610,7 @@ class KeywordEditor(GridEditor, Plugin):
         wx.CallAfter(self.AutoSizeRows, False)
 
     def _get_single_selection_content_or_none_on_first_call(self):
-        if self._cell_selected:
-            return self.get_single_selection_content()
+        return self.get_single_selection_content()
 
     @staticmethod
     def _format_comments(data):
