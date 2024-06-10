@@ -117,10 +117,13 @@ class GridEditor(grid.Grid):
 
     def copy(self):
         # print("DEBUG: GridBase copy() called\n")
+        self._clipboard_handler.clear()
+        self._clipboard_handler.clipboard_content()
         self._clipboard_handler.copy()
 
     def cut(self):
         self._update_history()
+        self._clipboard_handler.clear()
         self._clipboard_handler.cut()
         self._clear_selected_cells()
 

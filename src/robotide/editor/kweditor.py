@@ -166,6 +166,8 @@ class KeywordEditor(GridEditor, Plugin):
         self._counter = 0  # Workaround for double delete actions
         self._dcells = None  # Workaround for double delete actions
         self._icells = None  # Workaround for double insert actions
+        self._copy = 0  # Workaround for double copy/cut actions
+        self._ccells = None  # Workaround for double copy/cut actions
         self._namespace_updated = None
         self.InheritAttributes()
         self.col_label_element = None
@@ -236,7 +238,9 @@ class KeywordEditor(GridEditor, Plugin):
         self._set_cells()
         self.SetDefaultEditor(ContentAssistCellEditor(self._plugin, self._controller))
         self._set_fonts()
-        wx.CallAfter(self.GoToCell, (0,0))  # To make cells colorized as soon we select keywords or tests
+        wx.CallAfter(self.SetGridCursor, (0, 0))  # To make cells colorized as soon we select keywords or tests
+        wx.CallAfter(self.highlight, '')
+        # wx.CallAfter(self.GoToCell,  (0, 0))  # To make cells colorized as soon we select keywords or tests
 
     def _set_fonts(self, update_cells=False):
         _ = update_cells
@@ -599,9 +603,10 @@ class KeywordEditor(GridEditor, Plugin):
     def _colorize_grid(self):
         selection_content = self._get_single_selection_content_or_none_on_first_call()
         if selection_content is None:
-            self.GoToCell((0, 0))
-            value = self.GetCellValue((0, 0))
-            self.highlight(value)
+            self.SetGridCursor((0, 0))
+            # value = self.GetCellValue((0, 0))
+            # self.highlight(value)
+            self.highlight('')
         elif self._parent:
             self._parent.highlight(selection_content, expand=True)
 
@@ -641,27 +646,44 @@ class KeywordEditor(GridEditor, Plugin):
     # DEBUG @requires_focus
     def on_copy(self, event=None):
         __ = event
-        # print("DEBUG: OnCopy called event %s\n" % str(event))
+        if self._copy == 1:
+            if self._ccells == (self.selection.topleft, self.selection.bottomright):
+                self._copy = 0
+                self._ccells = None
+                return
+        else:
+            self._copy = 1
+        print(f"DEBUG: kweditor.py OnCopy called event {str(event)}")
+        # self.cells = self.GetSelectedCells()
+        self._ccells = (self.selection.topleft, self.selection.bottomright)
         self.copy()
 
     # DEBUG @requires_focus
     def on_cut(self, event=None):
+        if self._copy == 1:
+            if self._ccells == (self.selection.topleft, self.selection.bottomright):
+                self._copy = 0
+                self._ccells = None
+                return
+        else:
+            self._copy = 1
         self._clipboard_handler.cut()
         self.on_delete(event)
 
     def on_delete(self, event=None):
         __ = event
         if not self.IsCellEditControlShown():
-            self._execute(clear_area(self.selection.topleft,
-                                     self.selection.bottomright))
+            self._execute(clear_area(self.selection.topleft, self.selection.bottomright))
             self._resize_grid()
 
     # DEBUG    @requires_focus
     def on_paste(self, event=None):
         __ = event
+        print(f"DEBUG: kweditor.py on_paste ENTER selection={self.selection.topleft}, {self.selection.bottomright}")
         if self.IsCellEditControlShown():
             self.paste()
         else:
+            self._execute(clear_area(self.selection.topleft, self.selection.bottomright))
             self._execute_clipboard_command(paste_area)
         self._resize_grid()
 
@@ -669,6 +691,7 @@ class KeywordEditor(GridEditor, Plugin):
         if not self.IsCellEditControlShown():
             data = self._clipboard_handler.clipboard_content()
             if data:
+                print(f"DEBUG: kweditor.py _execute_clipboard_command data= {data}")
                 data = [[data]] if isinstance(data, str) else data
                 self._execute(command_class(self.selection.topleft, data))
 
@@ -1010,6 +1033,8 @@ class KeywordEditor(GridEditor, Plugin):
                 return
         if not self._has_been_clicked:
             self.SetGridCursor(event.Row, event.Col)
+            self.selection.set_from_single_selection(event)
+            self.highlight(self.GetCellValue(event.Row, event.Col))
             self._has_been_clicked = True
         else:
             event.Skip()
