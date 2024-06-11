@@ -298,9 +298,13 @@ class KeywordEditor(GridEditor, Plugin):
             self._colorize_grid()
 
     def on_select_cell(self, event):
-        event.Skip()
-        if self.selected == -1:  # To avoid max recursion error
-            return
+        self._cell_selected = True
+        GridEditor.on_select_cell(self, event)
+        rows = self._is_whole_row_selection()
+        if rows:
+            self.ClearSelection()
+            self.GoToCell(rows[0], 0)
+            wx.CallAfter(self.SelectBlock,rows[0], 0, rows[-1], self.NumberCols-1)
         self._colorize_grid()
 
     def on_kill_focus(self, event):

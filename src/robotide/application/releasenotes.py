@@ -301,9 +301,11 @@ python -m robotide.__init__
 <pre class="literal-block">
 python -m robotide.postinstall -install
 </pre>
-<p>RIDE {VERSION} was released on 10/June/2024.</p>
-<br/>
+<p>RIDE {VERSION} was released on 12/June/2024.</p>
+<!-- <br/>
+<h3>May The Fourth Be With You!</h3>
 <h3>Celebrate the bank holiday, 10th June, Day of Portugal, Portuguese Communities and Camões!!</h3>
 <h3 align='center'>🇵🇹</h3>
+-->
 </div>
 """

@@ -51,7 +51,7 @@ class GridEditor(grid.Grid):
         self.color_secondary_foreground = self.general_settings['secondary foreground']
 
         self._bind_to_events()
-        self.selected = 0
+        self.selected = 2
         self.cells = None
         self.selection = _GridSelection(self)
         self._clipboard_handler = ClipboardHandler(self)
@@ -159,14 +159,24 @@ class GridEditor(grid.Grid):
 
     def get_single_selection_content(self):
         if 0 <= self.selected <= 2:  # To prevent  max recursion error
-            cells = self._get_block_content(self.selection.rows(), self.selection.cols())  # self.get_selected_content()
-            self.cells = cells
-            self.selected += 1
+            cells = self.get_selected_content()
+            if self.cells != cells:
+                self.cells = cells
+                self.selected = 0
+            else:
+                self.selected += 1
         else:
-            cells = self.cells
-            self.selected = -1
+            cells = self._is_whole_row_selection()
+            if cells:
+                cells = [self.GetCellValue(cells[0], 0)]
+                self.cells = cells
+                self.selected = 0
+                return cells[0][0]
+            else:
+                return None
         if len(cells) != 1 or len(cells[0]) != 1:
             return None
+        self.selected = 0
         return cells[0][0]
 
     def _current_cell_value(self):
