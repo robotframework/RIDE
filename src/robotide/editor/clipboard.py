@@ -39,7 +39,7 @@ class _ClipboardHandler(object):
         action if the user is editing a cell, otherwise it places the selected
         range of cells on the data.
         """
-        print(f"DEBUG: Clipboard copy() got called \ncells={self._grid.cells}")
+        # print(f"DEBUG: Clipboard copy() got called \ncells={self._grid.cells}")
         if not self._edit_control_shown():
             self._add_selected_data_to_clipboard()
 
@@ -52,7 +52,7 @@ class _ClipboardHandler(object):
 
     def _add_selected_data_to_clipboard(self):
         content = self._grid.get_selected_content()
-        print(f"DEBUG: Clipboard _add_selected_data_to_clipboard content={content}\n")
+        # print(f"DEBUG: Clipboard _add_selected_data_to_clipboard content={content}\n")
         self._clipboard.set_contents(content)
 
     def paste(self):

@@ -653,7 +653,7 @@ class KeywordEditor(GridEditor, Plugin):
                 return
         else:
             self._copy = 1
-        print(f"DEBUG: kweditor.py OnCopy called event {str(event)}")
+        # print(f"DEBUG: kweditor.py OnCopy called event {str(event)}")
         # self.cells = self.GetSelectedCells()
         self._ccells = (self.selection.topleft, self.selection.bottomright)
         self.copy()
@@ -679,7 +679,7 @@ class KeywordEditor(GridEditor, Plugin):
     # DEBUG    @requires_focus
     def on_paste(self, event=None):
         __ = event
-        print(f"DEBUG: kweditor.py on_paste ENTER selection={self.selection.topleft}, {self.selection.bottomright}")
+        # print(f"DEBUG: kweditor.py on_paste ENTER selection={self.selection.topleft}, {self.selection.bottomright}")
         if self.IsCellEditControlShown():
             self.paste()
         else:
@@ -691,7 +691,7 @@ class KeywordEditor(GridEditor, Plugin):
         if not self.IsCellEditControlShown():
             data = self._clipboard_handler.clipboard_content()
             if data:
-                print(f"DEBUG: kweditor.py _execute_clipboard_command data= {data}")
+                #  print(f"DEBUG: kweditor.py _execute_clipboard_command data= {data}")
                 data = [[data]] if isinstance(data, str) else data
                 self._execute(command_class(self.selection.topleft, data))
 

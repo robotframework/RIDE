@@ -154,6 +154,9 @@ class GridEditor(grid.Grid):
     def _is_whole_row_selection(self):
         return self.SelectedRows
 
+    def _is_whole_column_selection(self):
+        return self.SelectedCols
+
     def get_cell_edit_control(self):
         return self.GetCellEditor(*self.selection.cell).GetControl()
 
@@ -175,6 +178,12 @@ class GridEditor(grid.Grid):
                 self.cells = cells
                 self.selected = 0
                 return cells[0][0]
+            cols = self._is_whole_column_selection()
+            if cols:
+                cols = [self.GetCellValue(0, cols[0])]
+                self.cells = cols
+                self.selected = 0
+                return cols[0][0]
             else:
                 return None
         if len(cells) != 1 or len(cells[0]) != 1:
