@@ -29,12 +29,17 @@ class _ClipboardHandler(object):
     def clipboard_content(self):
         return self._clipboard.get_contents()
 
+    def clear(self):
+        """Clears the content of clipboard.
+        """
+        self._clipboard.set_contents('')
+
     def copy(self):
         """Copy the contents of the selected cell(s). This does a normal copy
         action if the user is editing a cell, otherwise it places the selected
         range of cells on the data.
         """
-        # print("DEBUG: Clipboard copy() got called \n")
+        # print(f"DEBUG: Clipboard copy() got called \ncells={self._grid.cells}")
         if not self._edit_control_shown():
             self._add_selected_data_to_clipboard()
 
@@ -46,7 +51,9 @@ class _ClipboardHandler(object):
         self._add_selected_data_to_clipboard()
 
     def _add_selected_data_to_clipboard(self):
-        self._clipboard.set_contents(self._grid.get_selected_content())
+        content = self._grid.get_selected_content()
+        # print(f"DEBUG: Clipboard _add_selected_data_to_clipboard content={content}\n")
+        self._clipboard.set_contents(content)
 
     def paste(self):
         """Paste the contents of the clipboard. If a cell is being edited just
