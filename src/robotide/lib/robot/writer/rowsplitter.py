@@ -38,7 +38,8 @@ class RowSplitter(object):
             return self._split_doc_row(row, indent)
         return self._split_row(row, indent)
 
-    def _split_empty_row(self):
+    @staticmethod
+    def _split_empty_row():
         yield []
 
     def _get_indent(self, row, table_type):
@@ -46,7 +47,8 @@ class RowSplitter(object):
         min_indent = 1 if table_type in self._indented_tables else 0
         return max(indent, min_indent)
 
-    def _get_first_non_empty_index(self, row, indented=False):
+    @staticmethod
+    def _get_first_non_empty_index(row, indented=False):
         ignore = ['', '...'] if indented else ['']
         return len(list(itertools.takewhile(lambda x: x in ignore, row)))
 
@@ -67,7 +69,8 @@ class RowSplitter(object):
             row = [current] if current else []
             yield self._continue_row(row, indent)
 
-    def _split_doc(self, doc):
+    @staticmethod
+    def _split_doc(doc):
         if '\\n' not in doc:
             return doc, ''
         if '\\n ' in doc:
@@ -77,6 +80,7 @@ class RowSplitter(object):
     def _split_row(self, row, indent):
         while row:
             current, row = self._split(row)
+            # print(f"DEBUG: rowsplitter.py RowSplitter _split_row current={current} row={row}")
             yield self._escape_last_cell_if_empty(current)
             if row:
                 row = self._continue_row(row, indent)
