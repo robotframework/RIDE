@@ -738,8 +738,8 @@ class UserKeywordHandler(_TestOrUserKeywordHandler):
 
     def __init__(self, *args):
         _TestOrUserKeywordHandler.__init__(self, *args)
-        self._actions = _TestOrUserKeywordHandler._actions + [_('Find Usages')]
-        self._actions_nt = _TestOrUserKeywordHandler._actions_nt + [LABEL_FIND_USAGES]
+        self._actions = self._actions + [_('Find Usages')]
+        self._actions_nt = self._actions_nt + [LABEL_FIND_USAGES]
 
     def _add_copy_to_tree(self, parent_node, copied):
         self._tree.add_keyword(parent_node, copied)
