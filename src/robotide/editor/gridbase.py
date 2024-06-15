@@ -183,7 +183,7 @@ class GridEditor(grid.Grid):
                 cols = [self.GetCellValue(0, cols[0])]
                 self.cells = cols
                 self.selected = 0
-                return cols[0][0]
+                return cols[0]
             else:
                 return None
         if len(cells) != 1 or len(cells[0]) != 1:
@@ -221,7 +221,7 @@ class GridEditor(grid.Grid):
         self.EndBatch()
 
     def on_select_cell(self, event):
-        if self._is_whole_row_selection():
+        if self._is_whole_row_selection() or self._is_whole_column_selection():
             self.SelectBlock(self.selection.topleft.row, self.selection.topleft.col,
                              self.selection.bottomright.row, self.selection.bottomright.col,
                              addToSelected=True)
@@ -303,7 +303,7 @@ class _GridSelection(object):
     cell = property(lambda self: (self.topleft.row, self.topleft.col))
 
     def __init__(self, gridd):
-        self._set((0, 0))
+        # self._set((0, 0))
         self._grid = gridd
 
     def _set(self, topleft, bottomright=None):

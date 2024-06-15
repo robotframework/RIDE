@@ -468,35 +468,31 @@ class KeywordEditor(GridEditor, Plugin):
 
     def on_insert_cells(self, event=None):
         # DEBUG remove below workaround for double actions
+        # print(f"DEBUG: kweditor.py KeywordEditor on_insert_cells ENTER counter={self._counter}")
         if self._counter == 1:
-            if self._icells == (
-                    self.selection.topleft, self.selection.bottomright):
-                self._counter = 0
-                self._icells = None
-                return
-        else:
-            self._counter = 1
+            # if self._icells == (self.selection.topleft, self.selection.bottomright):
+            self._counter = 0
+            self._icells = None
+            return
 
-        self._icells = (self.selection.topleft,
-                        self.selection.bottomright)
-        self._execute(insert_cells(self.selection.topleft,
-                                   self.selection.bottomright))
+        self._icells = (self.selection.topleft, self.selection.bottomright)
+        # print(f"DEBUG: kweditor.py KeywordEditor on_insert_cells start, end"
+        #       f" {self._icells[0].row}:{self._icells[0].col}, {self._icells[1].row}:{self._icells[1].col}")
+        self._execute(insert_cells(*self._icells))
+        self._counter = 1
         self._resize_grid()
         self._skip_except_on_mac(event)
 
     def on_delete_cells(self, event=None):
         # DEBUG remove below workaround for double actions
         if self._counter == 1:
-            if self._dcells == (self.selection.topleft,
-                                self.selection.bottomright):
-                self._counter = 0
-                self._dcells = None
-                return
-        else:
-            self._counter = 1
-
+            # if self._dcells == (self.selection.topleft, self.selection.bottomright):
+            self._counter = 0
+            self._dcells = None
+            return
         self._dcells = (self.selection.topleft, self.selection.bottomright)
-        self._execute(delete_cells(self.selection.topleft, self.selection.bottomright))
+        self._execute(delete_cells(*self._dcells))
+        self._counter = 1
         self._resize_grid()
         self._skip_except_on_mac(event)
 
