@@ -333,11 +333,17 @@ class _GridSelection(object):
 
     def rows(self):
         """Returns a list containing indices of rows currently selected."""
-        return range(self.topleft.row, self.bottomright.row + 1)
+        try:
+            return range(self.topleft.row, self.bottomright.row + 1)
+        except Exception:
+            return [0, 1]
 
     def cols(self):
         """Returns a list containing indices of columns currently selected."""
-        return range(self.topleft.col, self.bottomright.col + 1)
+        try:
+            return range(self.topleft.col, self.bottomright.col + 1)
+        except Exception:
+            return [0, 1]
 
     def cells(self):
         """Return selected cells as a list of tuples (row, column)."""
