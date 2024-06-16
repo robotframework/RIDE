@@ -462,9 +462,11 @@ class KeywordEditor(GridEditor, Plugin):
 
     def on_move_cursor_down(self, event=None):
         self._move_cursor_down(event)
+        self.grid_cursor = (self.GetGridCursorRow(), self.GetGridCursorCol())
 
     def on_insert_rows(self, event):
         self._execute(add_rows(self.selection.rows()))
+        self.grid_cursor = (self.GetGridCursorRow(), self.GetGridCursorCol())
         self.ClearSelection()
         self._resize_grid()
         self._skip_except_on_mac(event)
@@ -488,6 +490,7 @@ class KeywordEditor(GridEditor, Plugin):
         # print(f"DEBUG: kweditor.py KeywordEditor on_insert_cells start, end"
         #       f" {self._icells[0].row}:{self._icells[0].col}, {self._icells[1].row}:{self._icells[1].col}")
         self._execute(insert_cells(*self._icells))
+        self.grid_cursor = (self.GetGridCursorRow(), self.GetGridCursorCol())
         self._counter = 1
         self._resize_grid()
         self._skip_except_on_mac(event)
@@ -501,6 +504,7 @@ class KeywordEditor(GridEditor, Plugin):
             return
         self._dcells = (self.selection.topleft, self.selection.bottomright)
         self._execute(delete_cells(*self._dcells))
+        self.grid_cursor = (self.GetGridCursorRow(), self.GetGridCursorCol())
         self._counter = 1
         self._resize_grid()
         self._skip_except_on_mac(event)
@@ -645,6 +649,7 @@ class KeywordEditor(GridEditor, Plugin):
 
     def cell_value_edited(self, row, col, value):
         self._execute(ChangeCellValue(row, col, value))
+        self.GoToCell(self.grid_cursor)
         wx.CallAfter(self.AutoSizeColumn, col, False)
         wx.CallAfter(self.AutoSizeRow, row, False)
 
@@ -753,6 +758,7 @@ class KeywordEditor(GridEditor, Plugin):
             cell_editor.EndEdit(self.selection.topleft.row, self.selection.topleft.col, self)
 
     def show_content_assist(self):
+        self.grid_cursor = (self.GetGridCursorRow(), self.GetGridCursorCol())
         if self.IsCellEditControlShown():
             self.GetCellEditor(*self.selection.cell).show_content_assist(self.selection.cell)
 
@@ -765,12 +771,14 @@ class KeywordEditor(GridEditor, Plugin):
         return x, y + 20
 
     def on_editor(self, event):
+        self.grid_cursor = (self.GetGridCursorRow(), self.GetGridCursorCol())
         self._tooltips.hide()
         row_height = self.GetRowSize(self.selection.topleft.row)
         self.GetCellEditor(*self.selection.cell).SetHeight(row_height)
         event.Skip()
 
     def _move_cursor_down(self, event):
+        self.grid_cursor = (self.GetGridCursorRow(), self.GetGridCursorCol())
         self.DisableCellEditControl()
         if event:
             try:
@@ -953,6 +961,7 @@ class KeywordEditor(GridEditor, Plugin):
             self.on_move_rows_down()
 
     def _move_grid_cursor(self, event, keycode):
+        self.grid_cursor = (self.GetGridCursorRow(), self.GetGridCursorCol())
         self.DisableCellEditControl()
         if keycode == wx.WXK_RETURN:
             self.MoveCursorRight(event.ShiftDown())
@@ -961,6 +970,7 @@ class KeywordEditor(GridEditor, Plugin):
 
     def move_grid_cursor_and_edit(self):
         # self.MoveCursorRight(False)
+        self.grid_cursor = (self.GetGridCursorRow(), self.GetGridCursorCol())
         self.open_cell_editor()
 
     def on_key_up(self, event):
@@ -974,6 +984,7 @@ class KeywordEditor(GridEditor, Plugin):
         return self.GetCellEditor(self.GetGridCursorCol(), row)
 
     def open_cell_editor(self):
+        self.grid_cursor = (self.GetGridCursorRow(), self.GetGridCursorCol())
         if not self.IsCellEditControlEnabled():
             self.EnableCellEditControl()
         cell_editor = self._get_cell_editor()
@@ -1172,6 +1183,7 @@ class KeywordEditor(GridEditor, Plugin):
 
     # Add one new Dialog to edit pretty json String TODO: use better editor with more functions
     def on_json_editor(self, event=None):
+        self.grid_cursor = (self.GetGridCursorRow(), self.GetGridCursorCol())
         if event:
             event.Skip()
         dialog = RIDEDialog()
