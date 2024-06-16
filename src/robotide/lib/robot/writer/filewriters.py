@@ -88,8 +88,9 @@ class _DataFileWriter(object):
         if not is_last:  # DEBUG: make this configurable
             # print(f"DEBUG: lib.robot.writer _DataFileWritter write_table empty_row table={table.type}")
             try:
-                if table.type == 'comments' or table.type == 'variable' and len(list(table)[-1].as_list()) == 0:
+                if table.type == 'variable' and len(list(table)[-1].as_list()) == 0:
                     # DEBUG: This is workaround for newline being added ALWAYS to VariableTable
+                    #  table.type == 'comments' or
                     return
             except IndexError:
                 pass

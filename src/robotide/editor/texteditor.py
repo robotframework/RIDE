@@ -442,19 +442,21 @@ class DataValidationHandler(object):
         #       f" result={result}")
         return True if not result else result
 
-        """ DEBUG
-        formatted_text = data.format_text(text)
-        c = self._normalize(formatted_text)
-        e = self._normalize(text)
-        return len(c) == len(e)
-        """
+    """ DEBUG
+    formatted_text = data.format_text(text)
+    c = self._normalize(formatted_text)
+    e = self._normalize(text)
+    return len(c) == len(e)
+    """
 
+    """ DEBUG: This is no longer used
     @staticmethod
     def _normalize(text):
         for item in tuple(string.whitespace) + ('...', '*'):
             if item in text:
                 text = text.replace(item, '')
         return text
+    """
 
     def _handle_sanity_check_failure(self, message):
         if self._last_answer == wx.ID_NO and time() - self._last_answer_time <= 0.2:
@@ -517,7 +519,8 @@ class DataFileWrapper(object):  # DEBUG: bad class name
         data = self.wrapper_data.data
         target_class = type(data)
         self._doc_language = obtain_language(self._doc_language, content=content)
-        # print(f"DEBUG: textedit.py DataFileWrapper _create_target self._doc_language={self._doc_language}")
+        # print(f"DEBUG: textedit.py DataFileWrapper _create_target self._doc_language={self._doc_language}"
+        #       f"\n target class={target_class}")
         if isinstance(data, robotapi.TestDataDirectory):
             target = robotapi.TestDataDirectory(parent=None, source=self.wrapper_data.directory,
                                                 settings=self._settings, language=self._doc_language)
@@ -544,6 +547,7 @@ class DataFileWrapper(object):  # DEBUG: bad class name
             # print(f"DEBUG: textedit.py DataFileWrapper content _txt_data = {text=} language={self._doc_language}")
         return text
 
+    """ DEBUG: This is no longer used
     def collapse_blanks(self, content: str) -> str:
         spaces = self._tab_size * ' '
         block = []
@@ -566,6 +570,7 @@ class DataFileWrapper(object):  # DEBUG: bad class name
             new_text = new_text.strip(' ') + '\n'
         # print(f"DEBUG: texteditor.py collapse_blanks new_text={new_text}")
         return new_text
+    """
 
 
 class SourceEditor(wx.Panel):

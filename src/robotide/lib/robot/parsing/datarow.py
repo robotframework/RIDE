@@ -98,17 +98,21 @@ class DataRow(object):
 
     @property
     def data(self):
+        """ DEBUG: Keep identation with continuation marker
         if self.is_continuing():
-            index = self.cells.index(self._row_continuation_marker) + 1
+
+            index = self.cells.index(self._row_continuation_marker)  # + 1  DEBUG: Keep the continuation marker
             start = 0
             if len(self.cells) > 1:
                 for idx in range(index, len(self.cells)):
                     start = idx
                     if self.cells[start] != '':
                         break
-                # print(f"DEBUG: datarow.py data returning from continuation row idx={start} data={self.cells}")
+                print(f"DEBUG: datarow.py data returning from continuation row idx={start} data={self.cells}\n"
+                      f"returning {self.cells[start:]}")
                 return self.cells[start:]
-        return [c.strip() for c in self.cells]  #self.cells
+        """
+        return [c.strip() for c in self.cells]
 
     def dedent(self):
         # DEBUG: this is used only for debugging: import inspect

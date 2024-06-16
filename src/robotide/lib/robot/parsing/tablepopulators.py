@@ -114,7 +114,7 @@ class VariableTablePopulator(_TablePopulator):
 class _StepContainingTablePopulator(_TablePopulator):
 
     def _is_continuing(self, row):
-        return row.is_indented() and self._populator or row.is_commented()
+        return row.is_indented() and self._populator or row.is_continuing() or row.is_commented()
 
     def _is_cacheable_comment_row(self, row):
         return row.is_commented() and not self._populator
@@ -191,6 +191,8 @@ class _TestCaseUserKeywordPopulator(_TablePopulator):
             self.row_continue = False
         dedented_row = row.dedent()
         if dedented_row:
+            if self.row_continue:
+                dedented_row.cells.insert(0, '')  # compensation for missing indent in blocks
             self._handle_data_row(dedented_row)
 
     def _handle_data_row(self, row):
@@ -212,8 +214,8 @@ class _TestCaseUserKeywordPopulator(_TablePopulator):
         return isinstance(self._populator, ForLoopPopulator)
 
     def _continues(self, row):
-        return ((row.is_continuing() and self._populator is not None) or
-                (self._populating_for_loop() and row.is_indented()))
+        return row.is_continuing() and self._populator is not None
+        # or (self._populating_for_loop() and row.is_indented()))
 
     def _populate_comment_row(self, crow):
         # print("DEBUG: _populate_comment_row ENTER %s" % crow)
