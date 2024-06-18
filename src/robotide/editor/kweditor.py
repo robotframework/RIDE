@@ -698,30 +698,33 @@ class KeywordEditor(GridEditor, Plugin):
             self._execute(clear_area(self.selection.topleft, self.selection.bottomright))
             self._resize_grid()
 
-    # DEBUG
-    @requires_focus
+    # DEBUG @requires_focus
     def on_paste(self, event=None):
         __ = event
         if self._paste == 1:
             self._paste = 0
             return
-        print(f"DEBUG: kweditor.py on_paste ENTER selection={self.selection.topleft}, {self.selection.bottomright}"
+        print(f"DEBUG: kweditor.py on_paste ENTER selection=({self.selection.topleft.row}, {self.selection.topleft.col})"
+              f" ({self.selection.bottomright.row}, {self.selection.bottomright.col})"
               f"\n self._xcells={self._xcells} event={event}")
         if self.IsCellEditControlShown():
             self.paste()
         else:
             self._execute(clear_area(self.selection.topleft, self.selection.bottomright))
+            print(f"DEBUG: kweditor.py on_paste CALL paste_area selection=({self.selection.topleft.row},"
+                f" {self.selection.topleft.col}) ({self.selection.bottomright.row}, {self.selection.bottomright.col})")
             self._execute_clipboard_command(paste_area)
         self._paste = 1
         self._xcells = None
         self._resize_grid()
 
     def _execute_clipboard_command(self, command_class):
+        print(f"DEBUG: kweditor.py on_paste ENTER _execute_clipboard_command(paste_area) "
+              f"selection=({self.selection.topleft.row}, {self.selection.topleft.col})")
         if not self.IsCellEditControlShown():
             data = self._clipboard_handler.clipboard_content()
             if data:
-                print(f"DEBUG: kweditor.py _execute_clipboard_command data= {data}"
-                      f" paste={self._paste}")
+                print(f"DEBUG: kweditor.py _execute_clipboard_command data= {data} paste={self._paste}")
                 data = [[data]] if isinstance(data, str) else data
                 self._execute(command_class(self.selection.topleft, data))
 
@@ -825,9 +828,10 @@ class KeywordEditor(GridEditor, Plugin):
         elif keycode == ord('C'):
             self.on_copy(event)
         elif keycode == ord('X'):
-            self.on_cut(event)
+            # self.on_cut(event)
+            return False
         elif keycode == ord('V'):
-            self.on_paste(event)
+            # self.on_paste(event)
             return False
         elif keycode == ord('Z'):
             self.on_undo(event)

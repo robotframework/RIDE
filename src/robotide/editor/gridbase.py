@@ -122,6 +122,7 @@ class GridEditor(grid.Grid):
         self._clipboard_handler.copy()
 
     def cut(self):
+        print("DEBUG: gridbase.py ENTER cut")
         self._update_history()
         self._clipboard_handler.clear()
         self._clipboard_handler.cut()
