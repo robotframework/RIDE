@@ -246,6 +246,7 @@ class _EditorTab(wx.Panel):
 
     def on_paste(self, event):
         __ = event
+        print(f"DEBUG: editor/__init__.py on_paste ENTER calling self.editor.paste() event={event}")
         self.editor.paste()
 
     def on_insert(self, event):

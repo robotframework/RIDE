@@ -170,8 +170,11 @@ class KeywordEditor(GridEditor, Plugin):
         self._counter = 0  # Workaround for double delete actions
         self._dcells = None  # Workaround for double delete actions
         self._icells = None  # Workaround for double insert actions
-        self._copy = 0  # Workaround for double copy/cut actions
-        self._ccells = None  # Workaround for double copy/cut actions
+        self._copy = 0  # Workaround for double copy actions
+        self._ccells = None  # Workaround for double copy actions
+        self._cut = 0  # Workaround for double cut actions
+        self._xcells = None  # Workaround for double cut actions
+        self._paste = 0  # Workaround for double paste actions
         self._namespace_updated = None
         self.InheritAttributes()
         self.col_label_element = None
@@ -675,14 +678,18 @@ class KeywordEditor(GridEditor, Plugin):
     # DEBUG
     @requires_focus
     def on_cut(self, event=None):
-        if self._copy == 1:
-            # if self._ccells == (self.selection.topleft, self.selection.bottomright):
-            self._copy = 0
-            self._ccells = None
-            return
-        self._clipboard_handler.cut()
-        self._copy = 1
-        self.on_delete(event)
+        if self._cut == 1:
+            if self._xcells == (self.selection.topleft, self.selection.bottomright):
+                self._cut = 0
+                self._paste = 0
+                self._xcells = None
+                return
+        self._xcells = (self.selection.topleft, self.selection.bottomright)
+        # self._clipboard_handler.cut()
+        self._cut = 1
+        self._paste = 0
+        self.cut()
+        # self.on_delete(event)
 
     @requires_focus
     def on_delete(self, event=None):
@@ -695,19 +702,26 @@ class KeywordEditor(GridEditor, Plugin):
     @requires_focus
     def on_paste(self, event=None):
         __ = event
-        # print(f"DEBUG: kweditor.py on_paste ENTER selection={self.selection.topleft}, {self.selection.bottomright}")
+        if self._paste == 1:
+            self._paste = 0
+            return
+        print(f"DEBUG: kweditor.py on_paste ENTER selection={self.selection.topleft}, {self.selection.bottomright}"
+              f"\n self._xcells={self._xcells} event={event}")
         if self.IsCellEditControlShown():
             self.paste()
         else:
             self._execute(clear_area(self.selection.topleft, self.selection.bottomright))
             self._execute_clipboard_command(paste_area)
+        self._paste = 1
+        self._xcells = None
         self._resize_grid()
 
     def _execute_clipboard_command(self, command_class):
         if not self.IsCellEditControlShown():
             data = self._clipboard_handler.clipboard_content()
             if data:
-                #  print(f"DEBUG: kweditor.py _execute_clipboard_command data= {data}")
+                print(f"DEBUG: kweditor.py _execute_clipboard_command data= {data}"
+                      f" paste={self._paste}")
                 data = [[data]] if isinstance(data, str) else data
                 self._execute(command_class(self.selection.topleft, data))
 
@@ -814,6 +828,7 @@ class KeywordEditor(GridEditor, Plugin):
             self.on_cut(event)
         elif keycode == ord('V'):
             self.on_paste(event)
+            return False
         elif keycode == ord('Z'):
             self.on_undo(event)
         elif keycode == ord('A'):
