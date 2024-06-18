@@ -145,6 +145,7 @@ class RideFrame(wx.Frame):
         self.reformat = application.settings.get('reformat', False)
         self.tasks = application.settings.get('tasks', False)
         self.doc_language = application.settings.get('doc language', '')
+        self._notebook_theme = application.settings.get('notebook theme', 0)
         self.general_settings = application.settings['General']  # .get_without_default('General')
         self.color_background_help = self.general_settings.get('background help', (240, 242, 80))
         self.color_foreground_text = self.general_settings.get('foreground text', (7, 0, 70))
@@ -215,8 +216,9 @@ class RideFrame(wx.Frame):
         if new_ui:  # Only when creating UI we add panes
             self.aui_mgr.AddPane(wx.Panel(self), aui.AuiPaneInfo().Name("right_pane").Right())
             # set up default notebook style
-            self._notebook_style = (aui.AUI_NB_DEFAULT_STYLE | aui.AUI_NB_WINDOWLIST_BUTTON |
+            self._notebook_style = (aui.AUI_NB_DEFAULT_STYLE | aui.AUI_NB_WINDOWLIST_BUTTON | aui.AUI_NB_TAB_FLOAT |
                                     aui.AUI_NB_TAB_EXTERNAL_MOVE | aui.AUI_NB_SUB_NOTEBOOK | aui.AUI_NB_SMART_TABS)
+            self._notebook_style ^= aui.AUI_NB_TAB_FIXED_WIDTH
             # DEBUG: self._notebook_theme = 0 (allow to select themes for notebooks)
             # DEBUG:self.notebook = NoteBook(self.splitter, self._application, self._notebook_style)
             self.notebook = NoteBook(self, self._application, self._notebook_style)
@@ -295,9 +297,31 @@ class RideFrame(wx.Frame):
                 self._status_bar.SetForegroundColour(Colour(self.color_foreground))
             # set main frame icon
             self.SetIcons(self._image_provider.PROGICONS)
-            # tell the manager to "commit" all the changes just made
+        # change notebook theme
+        self.set_notebook_theme()
+        # tell the manager to "commit" all the changes just made
         self.aui_mgr.Update()
         # wx.CallLater(2000, RideSettingsChanged(keys=("General", ''), old='', new='').publish)
+
+    def set_notebook_theme(self):
+        if not self.notebook:
+            return
+        try:
+            self._notebook_theme = int(self._notebook_theme)
+        except ValueError:
+            self._notebook_theme = 0
+        if self._notebook_theme == 1:
+            self.notebook.SetArtProvider(aui.AuiSimpleTabArt())
+        elif self._notebook_theme == 2:
+            self.notebook.SetArtProvider(aui.VC71TabArt())
+        elif self._notebook_theme == 3:
+            self.notebook.SetArtProvider(aui.FF2TabArt())
+        elif self._notebook_theme == 4:
+            self.notebook.SetArtProvider(aui.VC8TabArt())
+        elif self._notebook_theme == 5:
+            self.notebook.SetArtProvider(aui.ChromeTabArt())
+        else:
+            self.notebook.SetArtProvider(aui.AuiDefaultTabArt())
 
     def get_selected_datafile(self):
         return self.tree.get_selected_datafile()

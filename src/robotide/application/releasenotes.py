@@ -188,6 +188,8 @@ version 4.2.1, which we now <em>recommend</em>.</li>
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
+<li>Added configurable style of the tabs in notebook pages, Edit, Text, Run, etc. Parameter <b>notebook theme</b> 
+ takes values from 0 to 5. See wxPython, demo for agw.aui for details.</li>
 <li>Added UI localization and support for Japanese configured test suites, valid for Robot Framework version 7.0.1 or higher.</li>
 <li>Fixed keywords Find Usages in Grid Editor not finding certain values when using Gherkin.</li>
 <li>Improved selection of items from Tree in Text Editor. Now finds more items and selects whole line.</li>
@@ -301,7 +303,7 @@ python -m robotide.__init__
 <pre class="literal-block">
 python -m robotide.postinstall -install
 </pre>
-<p>RIDE {VERSION} was released on 16/June/2024.</p>
+<p>RIDE {VERSION} was released on 18/June/2024.</p>
 <!-- <br/>
 <h3>May The Fourth Be With You!</h3>
 <h3>Celebrate the bank holiday, 10th June, Day of Portugal, Portuguese Communities and Camões!!</h3>
