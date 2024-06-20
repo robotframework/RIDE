@@ -10,7 +10,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Added
 
-- Added configurable style of the tabs in notebook pages, Edit, Text, Run, etc. Parameter <b>notebook theme</b>
+- Added configurable style of the tabs in notebook pages, Edit, Text, Run, etc. Parameter ``notebook theme``
 takes values from 0 to 5. See wxPython, demo for agw.aui for details.
 - Added UI localization and support for Japanese configured test suites, valid for Robot Framework version 7.0.1 or higher.
 - Added to Grid Editor, changing Zoom In/Out with ``Ctrl-Mouse Wheel`` and setting at Preferences.
@@ -44,6 +44,7 @@ Tools->Preferences->General.
 
 === Changed
 
+- Parsing of clipboard content to separate by cells in Grid Editor. NOTE: Need to Apply Changes in Text Editor to be effective.
 - Improved selection of items from Tree in Text Editor. Now finds more items and selects whole line.
 - Changed output in plugin Run Anything (Macros) to allow Zoom In/Out, and Copy content.
 

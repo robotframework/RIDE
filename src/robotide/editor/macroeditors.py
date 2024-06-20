@@ -64,7 +64,6 @@ class TestCaseEditor(_RobotTableEditor):
         self.kweditor.on_copy()
 
     def paste(self):
-        print("DEBUG macroeditors.py macro paste called")
         self.kweditor.on_paste()
 
     def insert(self):

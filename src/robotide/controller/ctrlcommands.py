@@ -1563,7 +1563,6 @@ def clear_area(top_left, bottom_right):
 
 def paste_area(top_left, content):
     row_s, col_s = top_left
-    print(f"DEBUG: ctrlcommands.py ENTER paste_area {row_s=} {col_s=}")
     return StepsChangingCompositeCommand(
         *[ChangeCellValue(row + row_s, col + col_s, content[row][col])
           for row in range(len(content))

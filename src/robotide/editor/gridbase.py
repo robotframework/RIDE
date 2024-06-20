@@ -122,7 +122,6 @@ class GridEditor(grid.Grid):
         self._clipboard_handler.copy()
 
     def cut(self):
-        print("DEBUG: gridbase.py ENTER cut")
         self._update_history()
         self._clipboard_handler.clear()
         self._clipboard_handler.cut()
@@ -133,8 +132,6 @@ class GridEditor(grid.Grid):
             self.write_cell(row, col, '', update_history=False)
 
     def paste(self):
-        print(f"DEBUG: gridbse.py GridEditor ENTER paste  paste={self._paste}"
-              f"\n content={self._clipboard_handler.clipboard_content()}")
         self._update_history()
         self._clipboard_handler.paste()
 
