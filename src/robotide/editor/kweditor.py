@@ -60,7 +60,12 @@ def requires_focus(function):
         if not self.has_focus():
             return
         if self.has_focus() or self.IsCellEditControlShown() or _row_header_selected_on_linux(self):
-            self.grid_cursor = (self.GetGridCursorRow(), self.GetGridCursorCol())
+            selection = self.GetSelectionBlockTopLeft()
+            # self.grid_cursor = (self.GetGridCursorRow(), self.GetGridCursorCol())
+            if not selection:
+                self.grid_cursor = (self.GetGridCursorRow(), self.GetGridCursorCol())
+            else:
+                self.grid_cursor = (selection[0].GetRow(), selection[0].GetCol())
             # print(f"DEBUG: requires_focus grid cursor= {self.grid_cursor}")
             function(self, *args)
             self.SetGridCursor(self.grid_cursor)
@@ -170,8 +175,11 @@ class KeywordEditor(GridEditor, Plugin):
         self._counter = 0  # Workaround for double delete actions
         self._dcells = None  # Workaround for double delete actions
         self._icells = None  # Workaround for double insert actions
-        self._copy = 0  # Workaround for double copy/cut actions
-        self._ccells = None  # Workaround for double copy/cut actions
+        self._copy = 0  # Workaround for double copy actions
+        self._ccells = None  # Workaround for double copy actions
+        self._cut = 0  # Workaround for double cut actions
+        self._xcells = None  # Workaround for double cut actions
+        self._spacing = self._plugin.global_settings['txt number of spaces']
         self._namespace_updated = None
         self.InheritAttributes()
         self.col_label_element = None
@@ -307,13 +315,12 @@ class KeywordEditor(GridEditor, Plugin):
             self._colorize_grid()
 
     def on_select_cell(self, event):
-        self._cell_selected = True
         GridEditor.on_select_cell(self, event)
         rows = self._is_whole_row_selection()
         if rows:
             self.ClearSelection()
             self.GoToCell(rows[0], 0)
-            wx.CallAfter(self.SelectBlock,rows[0], 0, rows[-1], self.NumberCols-1)
+            wx.CallAfter(self.SelectBlock, rows[0], 0, rows[-1], self.NumberCols-1)
         self._colorize_grid()
 
     def on_focus(self, event):
@@ -481,7 +488,6 @@ class KeywordEditor(GridEditor, Plugin):
         # DEBUG remove below workaround for double actions
         # print(f"DEBUG: kweditor.py KeywordEditor on_insert_cells ENTER counter={self._counter}")
         if self._counter == 1:
-            # if self._icells == (self.selection.topleft, self.selection.bottomright):
             self._counter = 0
             self._icells = None
             return
@@ -498,7 +504,6 @@ class KeywordEditor(GridEditor, Plugin):
     def on_delete_cells(self, event=None):
         # DEBUG remove below workaround for double actions
         if self._counter == 1:
-            # if self._dcells == (self.selection.topleft, self.selection.bottomright):
             self._counter = 0
             self._dcells = None
             return
@@ -667,21 +672,21 @@ class KeywordEditor(GridEditor, Plugin):
                 return
         else:
             self._copy = 1
-        # print(f"DEBUG: kweditor.py OnCopy called event {str(event)}")
-        # self.cells = self.GetSelectedCells()
         self._ccells = (self.selection.topleft, self.selection.bottomright)
         self.copy()
 
     # DEBUG
     @requires_focus
     def on_cut(self, event=None):
-        if self._copy == 1:
-            # if self._ccells == (self.selection.topleft, self.selection.bottomright):
-            self._copy = 0
-            self._ccells = None
-            return
-        self._clipboard_handler.cut()
-        self._copy = 1
+        if self._cut == 1:
+            if self._xcells == (self.selection.topleft, self.selection.bottomright):
+                self._cut = 0
+                self._xcells = None
+                return
+        self._xcells = (self.selection.topleft, self.selection.bottomright)
+        # self._clipboard_handler.cut()
+        self._cut = 1
+        self.cut()
         self.on_delete(event)
 
     @requires_focus
@@ -695,11 +700,16 @@ class KeywordEditor(GridEditor, Plugin):
     @requires_focus
     def on_paste(self, event=None):
         __ = event
-        # print(f"DEBUG: kweditor.py on_paste ENTER selection={self.selection.topleft}, {self.selection.bottomright}")
         if self.IsCellEditControlShown():
             self.paste()
         else:
-            self._execute(clear_area(self.selection.topleft, self.selection.bottomright))
+            selectionblock = [self.GetSelectionBlockTopLeft(), self.GetSelectionBlockBottomRight()]
+            if selectionblock[0]:
+                selection_topleft = (selectionblock[0][0].GetRow(), selectionblock[0][0].GetCol())
+                selection_bottomright = (selectionblock[1][0].GetRow(), selectionblock[1][0].GetCol())
+            else:
+                selection_topleft = selection_bottomright = self.grid_cursor
+            self._execute(clear_area(selection_topleft, selection_bottomright))
             self._execute_clipboard_command(paste_area)
         self._resize_grid()
 
@@ -707,9 +717,23 @@ class KeywordEditor(GridEditor, Plugin):
         if not self.IsCellEditControlShown():
             data = self._clipboard_handler.clipboard_content()
             if data:
-                #  print(f"DEBUG: kweditor.py _execute_clipboard_command data= {data}")
-                data = [[data]] if isinstance(data, str) else data
-                self._execute(command_class(self.selection.topleft, data))
+                if isinstance(data, str):
+                    data = [[self._string_to_cell(data)]]
+                elif isinstance(data, list) and isinstance(data[0], list):
+                    main_data = []
+                    for ldata in data:
+                        new_data = []
+                        for rdata in ldata:
+                            sdata = self._string_to_cell(rdata)
+                            new_data.append(sdata)
+                        main_data.append(new_data)
+                    data = main_data
+                self._execute(command_class(self.grid_cursor, data))
+
+    def _string_to_cell(self, content: str) -> str:
+        spaces = ' ' * self._spacing
+        cells = content.replace(' | ', spaces).replace(spaces, '\t').strip()  # TODO: Make this cells
+        return cells
 
     # DEBUG
     @requires_focus
@@ -811,9 +835,11 @@ class KeywordEditor(GridEditor, Plugin):
         elif keycode == ord('C'):
             self.on_copy(event)
         elif keycode == ord('X'):
-            self.on_cut(event)
+            # self.on_cut(event)
+            return False
         elif keycode == ord('V'):
-            self.on_paste(event)
+            # self.on_paste(event)
+            return False
         elif keycode == ord('Z'):
             self.on_undo(event)
         elif keycode == ord('A'):
