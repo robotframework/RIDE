@@ -181,6 +181,28 @@ class LibraryCache(object):
         kws.append(obj16)
         obj17 = BlockKeywordInfo('IN ZIP', SELECTOR_FOR, 'ROBOT', 'BuiltIn', ARG_VALUES)
         kws.append(obj17)
+        from robotide.context import APP
+        try:
+            robot_version = APP.robot_version
+        except AttributeError:
+            robot_version = b'7.0.1'
+        try:
+            rbt_version = int(str(robot_version, encoding='UTF-8').replace('.', ''))
+        except ValueError:
+            rbt_version = 701
+        var_note = "*NOTE:* This marker exists since version 7.0" + (f" and is an error to use because your "
+                                                                     f"version of Robot Framework is"
+                                                                     f" {str(robot_version, encoding='UTF-8')}"
+                                                                     if rbt_version < 700 else ".")
+        var_doc = ('To create variables inside tests and user keywords.\n\nArguments: (scalar|list|dictionary) name of '
+                   'variable, value of appropriate type, (optional) separator=, (optional) scope=(LOCAL|TEST|'
+                   'SUITE|GLOBAL).\n\nThe separator is by default a space to join multiline string scalars, and should '
+                   'be the last value.\n\nThe scope is LOCAL by default and should be the last value.'
+                   f'\n\n{var_note}\n\n See `BuiltIn.VAR` docs at\n https://robotframework.org/robotframework/latest/'
+                   'RobotFrameworkUserGuide.html#toc-entry-329.')
+
+        obj18 = BlockKeywordInfo('VAR', var_doc, 'ROBOT', 'BuiltIn', ARG_VALUES)
+        kws.append(obj18)
         return kws
 
     def _get_default_libraries(self):

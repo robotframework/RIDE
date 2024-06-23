@@ -158,6 +158,7 @@ RELEASE_NOTES = f"""
 <li>This version supports Python 3.8 up to 3.12.</li>
 <li>There are some changes, or known issues:<ul>
 <li>❌ - Removed support for Python 3.6 and 3.7</li>
+<li>✔ - Added support for new VAR marker, since Robot Framework version 7.0.</li>
 <li>✔ - Added to Grid Editor changing Zoom In/Out with <b>Ctrl-Mouse Wheel</b> and setting at Preferences.</li>
 <li>✔ - Fixed plugin Run Anything (Macros) not showing output and broken actions.</li>
 <li>✔ - Added actions on columns of Grid Editor: Double-Click or Right Mouse Click, allows to edit the column name for Data 
@@ -188,6 +189,7 @@ version 4.2.1, which we now <em>recommend</em>.</li>
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
+<li>Added support for new VAR marker, since Robot Framework version 7.0.</li>
 <li>Added configurable style of the tabs in notebook pages, Edit, Text, Run, etc. Parameter <b>notebook theme</b> 
  takes values from 0 to 5. See wxPython, demo for agw.aui for details.</li>
 <li>Added UI localization and support for Japanese configured test suites, valid for Robot Framework version 7.0.1 or higher.</li>
@@ -303,7 +305,7 @@ python -m robotide.__init__
 <pre class="literal-block">
 python -m robotide.postinstall -install
 </pre>
-<p>RIDE {VERSION} was released on 20/June/2024.</p>
+<p>RIDE {VERSION} was released on 23/June/2024.</p>
 <!-- <br/>
 <h3>May The Fourth Be With You!</h3>
 <h3>Celebrate the bank holiday, 10th June, Day of Portugal, Portuguese Communities and Camões!!</h3>
