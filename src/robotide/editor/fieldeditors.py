@@ -23,6 +23,7 @@ from .gridbase import GridEditor
 from ..context import ctrl_or_cmd, bind_keys_to_evt_menu
 from ..editor.contentassist import ContentAssistFileButton
 from ..namespace.suggesters import SuggestionSource
+from ..utils import split_value
 from ..widgets import Label
 
 _ = wx.GetTranslation  # To keep linter/code analyser happy
@@ -34,10 +35,10 @@ class ValueEditor(wx.Panel):
     _sizer_flags_for_editor = wx.ALL
     _sizer_flags_for_label = wx.ALL
 
-    def __init__(self, parent, value, label=None, validator=None,
-                 settings=None):
+    def __init__(self, parent, value, label=None, validator=None, settings=None, split=False):
         wx.Panel.__init__(self, parent)
         self._label = label
+        self.split = split
         self._sizer = wx.BoxSizer(wx.VERTICAL)
         from ..preferences import RideSettings
         _settings = RideSettings()
@@ -80,7 +81,10 @@ class ValueEditor(wx.Panel):
 
     def get_value(self):
         # print("DEBUG: ValueEditor get_value: %s" % self.source_editor.GetValue())
-        return self._editor.GetValue()
+        value = self._editor.GetValue()
+        if not self.split:
+            return value
+        return split_value(value)
 
     def set_focus(self):
         self._editor.SetFocus()
