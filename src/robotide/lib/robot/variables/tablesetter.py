@@ -44,16 +44,17 @@ class VariableTableReader(object):
             except DataError as err:
                 var.report_invalid_syntax(err)
 
-    def get_name_and_value(self, name, value, error_reporter):
+    @staticmethod
+    def get_name_and_value(name, value, error_reporter):
         return name[2:-1], VariableTableValue(value, name, error_reporter)
 
 
 def VariableTableValue(value, name, error_reporter=None):
     validate_var(name)
-    VariableTableValue = {'$': ScalarVariableTableValue,
+    variabletablevalue = {'$': ScalarVariableTableValue,
                           '@': ListVariableTableValue,
                           '&': DictVariableTableValue}[name[0]]
-    return VariableTableValue(value, error_reporter)
+    return variabletablevalue(value, error_reporter)
 
 
 class VariableTableValueBase(object):
@@ -95,9 +96,15 @@ class ScalarVariableTableValue(VariableTableValueBase):
         separator = None
         if is_string(values):
             values = [values]
-        elif values and values[0].startswith('SEPARATOR='):
-            separator = values[0][10:]
-            values = values[1:]
+        elif values:
+            if values[0].startswith('SEPARATOR='):
+                separator = values[0][10:]
+                values = values[1:]
+            elif values[-1].startswith('separator='):  # New in RF 7.0
+                separator = values[-1][10:]
+                values = values[:-2]
+        # if '...' in values:
+        #     values = [elem for elem in values if elem != '...']
         return separator, values
 
     def _replace_variables(self, values, variables):
@@ -111,7 +118,8 @@ class ScalarVariableTableValue(VariableTableValueBase):
         values = variables.replace_list(values)
         return separator.join(unic(item) for item in values)
 
-    def _is_single_value(self, separator, values):
+    @staticmethod
+    def _is_single_value(separator, values):
         return (separator is None and len(values) == 1 and
                 not VariableSplitter(values[0]).is_list_variable())
 
@@ -127,7 +135,8 @@ class DictVariableTableValue(VariableTableValueBase):
     def _format_values(self, values):
         return list(self._yield_formatted(values))
 
-    def _yield_formatted(self, values):
+    @staticmethod
+    def _yield_formatted(values):
         for item in values:
             if VariableSplitter(item).is_dict_variable():
                 yield item
@@ -145,7 +154,8 @@ class DictVariableTableValue(VariableTableValueBase):
         except TypeError as err:
             raise DataError('Creating dictionary failed: %s' % err)
 
-    def _yield_replaced(self, values, replace_scalar):
+    @staticmethod
+    def _yield_replaced(values, replace_scalar):
         for item in values:
             if isinstance(item, tuple):
                 key, values = item

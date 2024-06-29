@@ -285,8 +285,14 @@ class _PropertyPopulator(Populator):
         self._value = []
         self._comments = Comments()
         self._data_added = False
+        self.row_continue = False
 
     def add(self, row):
+        if isinstance(self, VariablePopulator):
+            if row.head == '...':
+                self.row_continue = True
+            else:
+                self.row_continue = False
         if not row.is_commented():
             self._add(row)
         if row.head.startswith('#') and not isinstance(self, VariablePopulator):
@@ -303,7 +309,7 @@ class _PropertyPopulator(Populator):
     def _add(self, row):
         if row.cells == ['...']:
             self._deprecate_continuation_without_values()
-        self._value.extend(row.tail if not self._data_added else row.data)
+        self._value.extend(row.tail if self.row_continue or not self._data_added else row.data)
         # print(f"DEBUG: tablepopulators.py _PropertyPopulator {self._data_added=} _add row.cells={row.cells}"
         #       f" ADDED value={self._value}")
         self._data_added = True
@@ -325,6 +331,8 @@ class VariablePopulator(_PropertyPopulator):
         self._name = name
 
     def populate(self):
+        # print(f"DEBUG: tablepopulators.py VariablePopulator populate {self._data_added=}"
+        #       f" varaible name={self._name} current value={self._value} setter={self._setter}")
         self._setter(self._name, self._value, self._comments.value)
 
     def _get_deprecation_location(self):

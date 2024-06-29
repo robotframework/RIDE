@@ -189,6 +189,8 @@ version 4.2.1, which we now <em>recommend</em>.</li>
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
+<li>Fixed multiline variables in Variables section. In Text Editor they are separated by ... continuation marker.
+In Grid Editor use | (pipe) to separate lines.</li>
 <li>Added support for new VAR marker, since Robot Framework version 7.0.</li>
 <li>Added configurable style of the tabs in notebook pages, Edit, Text, Run, etc. Parameter <b>notebook theme</b> 
  takes values from 0 to 5. See wxPython, demo for agw.aui for details.</li>
@@ -305,7 +307,7 @@ python -m robotide.__init__
 <pre class="literal-block">
 python -m robotide.postinstall -install
 </pre>
-<p>RIDE {VERSION} was released on 23/June/2024.</p>
+<p>RIDE {VERSION} was released on 29/June/2024.</p>
 <!-- <br/>
 <h3>May The Fourth Be With You!</h3>
 <h3>Celebrate the bank holiday, 10th June, Day of Portugal, Portuguese Communities and Camões!!</h3>

@@ -125,10 +125,10 @@ class ScalarVariableDialog(_Dialog):
 
     def _get_editors(self, var):
         name = var.name if var and var.name else '${}'
-        value = var.value[0] if var else ''
+        value = utils.join_value(var.value) if var else ''
+        # print(f"DEBUG: editor.editordialogs.py  ScalarVariableDialog _get_editors value={value}")
         validator = ScalarVariableNameValidator(self._controller, name)
-        return [VariableNameEditor(self, name, _('Name'), validator),
-                ValueEditor(self, value, _('Value'))]
+        return [VariableNameEditor(self, name, _('Name'), validator), ValueEditor(self, value, _('Value'), split=True)]
 
     def _execute(self):
         """ Just ignore it """
