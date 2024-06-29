@@ -103,8 +103,8 @@ class ScalarVariableTableValue(VariableTableValueBase):
             elif values[-1].startswith('separator='):  # New in RF 7.0
                 separator = values[-1][10:]
                 values = values[:-2]
-        if '...' in values:
-            values = [elem for elem in values if elem != '...']
+        # if '...' in values:
+        #     values = [elem for elem in values if elem != '...']
         return separator, values
 
     def _replace_variables(self, values, variables):

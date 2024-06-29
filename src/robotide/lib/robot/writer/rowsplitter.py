@@ -23,14 +23,17 @@ class RowSplitter(object):
     _line_continuation = '...'
     setting_table = 'setting'
     _indented_tables = ('test case', 'keyword')
-    _split_from = ('ELSE', 'ELSE IF', 'AND')
+    _split_from = ('ELSE', 'ELSE IF', 'AND', 'VAR')
 
-    def __init__(self, cols=8, split_multiline_doc=False, language=None):
+    def __init__(self, cols=8, split_multiline_doc=False, split_multiline_var=True, language=None):
         self._cols = cols
         self._split_multiline_doc = split_multiline_doc
+        self._split_multiline_var = split_multiline_var
         self._language = language
+        self._table_type = None
 
     def split(self, row, table_type):
+        self._table_type = table_type
         if not row:
             return self._split_empty_row()
         indent = self._get_indent(row, table_type)
@@ -44,6 +47,7 @@ class RowSplitter(object):
 
     def _get_indent(self, row, table_type):
         indent = self._get_first_non_empty_index(row)
+        # print(f"DEBUG: rowsplitter.py RowSplitter _get_indent indent={indent} row={row} ")
         min_indent = 1 if table_type in self._indented_tables else 0
         return max(indent, min_indent)
 
@@ -78,15 +82,24 @@ class RowSplitter(object):
         return doc.split('\\n', 1)
 
     def _split_row(self, row, indent):
+        if self._table_type == 'variable' and self._split_multiline_var:
+            # print(f"DEBUG: rowsplitter.py RowSplitter _split_row tabel Variable row={row}")
+            split_at = 2
+        else:
+            split_at = None
         while row:
-            current, row = self._split(row)
-            # print(f"DEBUG: rowsplitter.py RowSplitter _split_row current={current} row={row}")
+            current, row = self._split(row, forced_index=split_at)
+            # print(f"DEBUG: rowsplitter.py RowSplitter _split_row current={current} row={row} table "
+            #       f"type={self._table_type}")
             yield self._escape_last_cell_if_empty(current)
             if row:
                 row = self._continue_row(row, indent)
 
-    def _split(self, data):
-        index = min(self._get_possible_split_indices(data))
+    def _split(self, data, forced_index=None):
+        if not forced_index:
+            index = min(self._get_possible_split_indices(data))
+        else:
+            index = forced_index if len(data) > forced_index else min(self._get_possible_split_indices(data))
         current, rest = data[:index], data[index:]
         rest = self._comment_rest_if_needed(current, rest)
         return current, rest

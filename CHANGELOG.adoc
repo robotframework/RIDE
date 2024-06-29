@@ -36,6 +36,8 @@ Tools->Preferences->General.
 
 === Fixed
 
+- Fixed multiline variables in Variables section. In Text Editor they are separated by ... continuation marker.
+In Grid Editor use | (pipe) to separate lines.
 - Fixed keywords Find Usages in Grid Editor not finding certain values when using Gherkin.
 - Fixed plugin Run Anything (Macros) not showing output and broken actions.
 - Fixed headers and blank spacing in Templated tests
