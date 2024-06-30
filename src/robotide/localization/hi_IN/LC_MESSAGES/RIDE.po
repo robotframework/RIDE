@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2024-06-23 02:46+0100\n"
+"POT-Creation-Date: 2024-06-30 15:03+0100\n"
 "PO-Revision-Date: 2024-06-04 22:55\n"
 "Last-Translator: \n"
 "Language-Team: Hindi\n"
@@ -889,7 +889,7 @@ msgstr ""
 msgid "Scalar Variable"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:130
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:131
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:150
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:170
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:196
@@ -1067,11 +1067,11 @@ msgstr ""
 msgid "Find Usages"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/fieldeditors.py:187
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/fieldeditors.py:191
 msgid "Columns"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/fieldeditors.py:191
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/fieldeditors.py:195
 msgid ""
 "Number of columns that are shown in this editor. Selected value is stored "
 "and used globally."

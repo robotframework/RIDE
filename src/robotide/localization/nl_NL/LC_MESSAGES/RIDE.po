@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2024-06-23 02:46+0100\n"
-"PO-Revision-Date: 2024-06-04 22:54\n"
+"POT-Creation-Date: 2024-06-30 15:03+0100\n"
+"PO-Revision-Date: 2024-06-29 02:11\n"
 "Last-Translator: \n"
 "Language-Team: Dutch\n"
 "Language: nl_NL\n"
@@ -742,32 +742,31 @@ msgstr ""
 msgid ""
 " . Note that since Robot v6.0, imports with old WITH NAME are replaced by AS."
 msgstr ""
-" . Merk op dat sinds Robot v6.0, import met oude MET NAAM wordt vervangen "
-"door AS."
+" . Merk op dat sinds Robot v6.0 imports die voorheen WITH NAME gebruikten nu "
+"AS gebruiken."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:41
 msgid "Give name and value of the variable."
-msgstr "Geef naam en waarde van de variabele."
+msgstr "Geef de variabele een naam en waarde."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:42
 msgid ""
 "Give name and value of the variable. Input list variable items into separate "
 "cells."
 msgstr ""
-"Geef naam en waarde van de variabele. Voer variabele items in in in aparte "
-"cellen."
+"Geef de variabele een naam en waarden. Zet elke waarde in zijn eigen cel."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:44
 msgid ""
 "Give name and value of the variable. Input dictionary items into separate "
 "cells."
 msgstr ""
-"Geef naam en waarde van de variabele. Voer woordenboekitems in in in aparte "
-"cellen."
+"Geef de variabele een naam en waarden. Zet elk sleutel-waarde paar in zijn "
+"eigen cel."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:45
 msgid "Individual items must be in format `key=value`"
-msgstr "Individuele items moeten in formaat `key=value` zijn"
+msgstr "Elke cel moet de vorm `sleutel=waarde` hebben."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:46
 msgid ""
@@ -986,7 +985,7 @@ msgstr "Opmerking"
 msgid "Scalar Variable"
 msgstr "Variabele"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:130
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:131
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:150
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:170
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:196
@@ -1062,11 +1061,11 @@ msgstr "Forceer Labels"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:315
 msgid "Default Tags"
-msgstr "Standaard Labels"
+msgstr "Standaardlabels"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:328
 msgid "Test Tags"
-msgstr "Tags testen"
+msgstr "Test Labels"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:341
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:61
@@ -1080,27 +1079,27 @@ msgstr "Suitevoorbereiding wordt uitgevoerd vóór de testgevallen"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:374
 msgid "Suite Setup"
-msgstr "Suite configuratie"
+msgstr "Suitevoorbereiding"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:387
 msgid "Suite Teardown"
-msgstr "Suite Demontage"
+msgstr "Suite-afronding"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:401
 msgid "Test Setup"
-msgstr "Installatie testen"
+msgstr "Testvoorbereiding"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:415
 msgid "Test Teardown"
-msgstr "Test Demontage"
+msgstr "Testafronding"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:428
 msgid "Setup"
-msgstr "Instellen"
+msgstr "Voorbereiding"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:441
 msgid "Teardown"
-msgstr "Demontage"
+msgstr "Afronding"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:454
 msgid "Template"
@@ -1108,19 +1107,19 @@ msgstr "Sjabloon"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:468
 msgid "Test Template"
-msgstr "Test sjabloon"
+msgstr "Testsjabloon"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:497
 msgid "Return Value"
-msgstr "Waarde retourneren"
+msgstr "Returnwaarde"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:514
 msgid "Test Timeout"
-msgstr "Test time-out"
+msgstr "Testtijdslimiet"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:528
 msgid "Timeout"
-msgstr "Time-out"
+msgstr "Tijdslimiet"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:541
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:724
@@ -1164,11 +1163,11 @@ msgstr "Herkomst"
 msgid "Find Usages"
 msgstr "Vind gebruik"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/fieldeditors.py:187
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/fieldeditors.py:191
 msgid "Columns"
 msgstr "Kolommen"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/fieldeditors.py:191
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/fieldeditors.py:195
 msgid ""
 "Number of columns that are shown in this editor. Selected value is stored "
 "and used globally."
