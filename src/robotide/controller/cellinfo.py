@@ -94,7 +94,8 @@ class _TooltipMessage(object):
             CellType.MUST_BE_EMPTY: self._must_be_empty,
             CellType.UNKNOWN: self._unknown,
             CellType.END: self._keyword,
-            CellType.FOR: self._keyword
+            CellType.FOR: self._keyword,
+            CellType.VAR: self._assign
         }
         return (handlers[cell.cell_type](cell) + message).strip()
 
@@ -162,7 +163,8 @@ class ContentType:
     EXCEPT = 'EXCEPT'
     BREAK = 'BREAK'
     CONTINUE = 'CONTINUE'
-    KEYWORDS = (USER_KEYWORD, LIBRARY_KEYWORD, END, FOR, IF, ELSE, ELSEIF, WHILE, TRY, EXCEPT, BREAK, CONTINUE)
+    VAR = 'VAR'
+    KEYWORDS = (USER_KEYWORD, LIBRARY_KEYWORD, END, FOR, IF, ELSE, ELSEIF, WHILE, TRY, EXCEPT, BREAK, CONTINUE, VAR)
     VARIABLE = 'VARIABLE'
     UNKNOWN_VARIABLE = 'UNKNOWN_VARIABLE'
     COMMENTED = 'COMMENTED'
@@ -187,8 +189,9 @@ class CellType:
     EXCEPT = 'KEYWORD'
     BREAK = 'KEYWORD'
     CONTINUE = 'KEYWORD'
+    VAR = 'ASSIGN'
 
 
 UPPERCASE_KWS = [ContentType.END, ContentType.FOR, ContentType.IF, ContentType.ELSE,
                  ContentType.ELSEIF, ContentType.WHILE, ContentType.TRY, ContentType.EXCEPT,
-                 ContentType.BREAK, ContentType.CONTINUE, 'IN', 'IN RANGE', 'IN ENUMERATE', 'IN ZIP']
+                 ContentType.BREAK, ContentType.CONTINUE, ContentType.VAR, 'IN', 'IN RANGE', 'IN ENUMERATE', 'IN ZIP']

@@ -201,7 +201,8 @@ class LibraryCache(object):
                    f'\n\n{var_note}\n\n See `BuiltIn.VAR` docs at\n https://robotframework.org/robotframework/latest/'
                    'RobotFrameworkUserGuide.html#toc-entry-329.')
 
-        obj18 = BlockKeywordInfo('VAR', var_doc, 'ROBOT', 'BuiltIn', ARG_VALUES)
+        obj18 = BlockKeywordInfo('VAR', var_doc, 'ROBOT', 'BuiltIn',
+                                 'name_of_variable', ARG_VALUES)
         kws.append(obj18)
         return kws
 
