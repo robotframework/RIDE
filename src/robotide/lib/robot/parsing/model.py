@@ -1277,11 +1277,12 @@ class Step(object):
                 self.normal_assign = True
             if 0 <= index < len(cells) and self.is_kind_of_comment(cells[index]):  # Special case for commented content
                 return []
-                # print(f"DEBUG: RFLib Model _get_assign VAR NORMAL (index={index}) inner_kw_pos={self.inner_kw_pos} content={content[:]}")
+            # print(f"DEBUG: RFLib Model _get_assign VAR NORMAL (index={index}) inner_kw_pos={self.inner_kw_pos}"
+            #      f" content={cells[:]}")
             # first handle non-FOR cases
             idx = 0
             try:
-                if cells[self.inner_kw_pos] != 'FOR':
+                if cells[self.inner_kw_pos] != 'FOR' and cells[self.inner_kw_pos] != 'VAR':
                     while idx < len(cells):
                         if is_var(cells[idx].rstrip('=')):
                             assign.append(cells.pop(idx))
@@ -1290,7 +1291,8 @@ class Step(object):
                         else:
                             break
                         idx += 1
-                    # print(f"DEBUG: RFLib Model _get_assign RETURN assign={assign} size of content={len(content)}")
+                    # print(f"DEBUG: RFLib Model _get_assign RETURN assign={assign} size of content={len(cells)}"
+                    #      f" cells[self.inner_kw_pos]={cells[self.inner_kw_pos]}")
                     return assign
             except IndexError:
                 pass
@@ -1300,8 +1302,11 @@ class Step(object):
                     positional = True
                 else:
                     positional = False
-                if not positional and self.inner_kw_pos < idx <= self.inner_kw_pos + 3 < len(cells) and cells[self.inner_kw_pos] == 'FOR':
-                    # print(f"DEBUG: RFLib Model _get_assign idx={idx} +1{self.inner_kw_pos + 1}:{idx+1} +2{self.inner_kw_pos + 2}:{idx+2}"
+                if not positional and ((self.inner_kw_pos < idx <= self.inner_kw_pos + 3 < len(cells) and
+                                       cells[self.inner_kw_pos] == 'FOR') or
+                        (self.inner_kw_pos < idx < len(cells) and cells[self.inner_kw_pos] == 'VAR')):
+                    # print(f"DEBUG: RFLib Model _get_assign idx={idx} +1{self.inner_kw_pos + 1}:
+                    # {idx+1} +2{self.inner_kw_pos + 2}:{idx+2}"
                     #      f"FOR content1={content[self.inner_kw_pos + 1]}"
                     #      f" content2={content[self.inner_kw_pos + 2]} size of content={len(content)}")
                     if idx + 2 < len(cells):  # idx < self.inner_kw_pos + 3 and
@@ -1315,17 +1320,18 @@ class Step(object):
                     if idx == self.inner_kw_pos + 1:
                         positional = True
                         self.normal_assign = False
-                        # print(f"DEBUG: RFLib Model _get_assign FOR idx={idx} first loop var")
+                        # print(f"DEBUG: RFLib Model _get_assign FOR or VAR idx={idx} first loop var")
                     # else:
                     #    positional = False
-                if not positional and self.inner_kw_pos < idx <= self.inner_kw_pos + 1 < len(cells) and re_set_var.match(cells[self.inner_kw_pos]):
+                if (not positional and self.inner_kw_pos < idx <= self.inner_kw_pos + 1 < len(cells) and
+                        re_set_var.match(cells[self.inner_kw_pos])):
                     positional = True
                     self.normal_assign = False
-                if is_var(cells[idx].rstrip('=')) and positional:  # and self.normal_assign:
+                if is_var(cells[idx].rstrip('=').strip()) and positional:  # and self.normal_assign:
                     assign.append(cells.pop(idx))
                     idx -= 1  # We need to recheck var in case of IN ENUMERATE
                 idx += 1
-        # print(f"DEBUG: RFLib Model _get_assign idx={idx} size of content={len(content)}")
+        # print(f"DEBUG: RFLib Model _get_assign idx={idx} size of content={len(cells)} RETURN assign={assign}")
         return assign
 
     def is_comment(self):

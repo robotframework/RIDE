@@ -150,7 +150,10 @@ class StepController(_BaseController):
                 if info:
                     args = info.arguments
         args_amount = len(args)
-        if column > keyword_col and self.get_value(keyword_col) == "FOR" and self.is_assigning(value_at_col):
+        if (column > keyword_col and (self.get_value(keyword_col) == "FOR" or self.get_value(keyword_col) == "VAR")
+                and self.is_assigning(value_at_col)):
+            # print(f"DEBUG: stepcontrollers.py StepController _get_cell_position VAR or FOR assign "
+            #       f"value_at_col={value_at_col}")
             return CellPosition(CellType.ASSIGN, None)
         if column <= keyword_col and self.is_assigning(value_at_col):
             return CellPosition(CellType.ASSIGN, None)

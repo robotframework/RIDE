@@ -18,10 +18,8 @@ import unittest
 import pytest
 
 from utest.resources import datafilereader
-from robotide.controller.ctrlcommands import ChangeCellValue, delete_rows, AddKeyword, \
-    Undo, paste_area
-from robotide.controller.cellinfo import CellType, ContentType, CellInfo, \
-    CellContent, CellPosition
+from robotide.controller.ctrlcommands import ChangeCellValue, delete_rows, AddKeyword, Undo, paste_area
+from robotide.controller.cellinfo import CellType, ContentType, CellInfo, CellContent, CellPosition
 
 SET_VARIABLE = 'Set Variable'
 LIB_PY = 'libi.py'
@@ -223,6 +221,14 @@ class TestCellInfo(unittest.TestCase):
         self.test.execute(ChangeCellValue(0, 1, SET_VARIABLE))
         self._verify_cell_info(0, 1, ContentType.LIBRARY_KEYWORD, CellType.KEYWORD)
         self._verify_string_change(0, 2, CellType.OPTIONAL)
+
+    def test_variable_defined_by_var(self):
+        self.test.execute(ChangeCellValue(0, 0, 'VAR'))
+        self._verify_cell_info(0, 0, ContentType.LIBRARY_KEYWORD, CellType.KEYWORD)
+        self.test.execute(ChangeCellValue(0, 1, '${my cool var}'))
+        self._verify_cell_info(0, 1, ContentType.UNKNOWN_VARIABLE, CellType.OPTIONAL)
+        self.test.execute(ChangeCellValue(0, 2, 'my cool var value'))
+        self._verify_cell_info(0, 2, ContentType.STRING, CellType.OPTIONAL)
 
     def test_keyword_without_args(self):
         self.test.execute(ChangeCellValue(0, 0, self.keyword3.name))
