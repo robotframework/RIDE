@@ -276,6 +276,7 @@ class Settings(wx.CollapsiblePane):
 
     def build(self, settings, plugin, tree):
         for setting in settings:
+            # print(f"DEBUG: editors.py Settings build plugin={plugin.name} setting={setting.label}")
             editor = self.create_editor_for(setting, plugin, tree)
             self._sizer.Add(editor, 0, wx.ALL | wx.EXPAND, self.BORDER)
             self._editors.append(editor)

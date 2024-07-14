@@ -1077,10 +1077,11 @@ class UserKeyword(TestCase):
         self.parent = parent
         self.name = name
         self.language = language
-        self._aliases = lang.get_settings_for(language, ['Documentation', 'Arguments', 'Return', 'Timeout',
-                                                         'Teardown', 'Tags'])
+        self._aliases = lang.get_settings_for(language, ['Documentation', 'Arguments', 'Setup', 'Return',
+                                                         'Timeout', 'Teardown', 'Tags'])
         self.doc = Documentation(self.get_localized_setting_name('[Documentation]'), self)
         self.args = Arguments(self.get_localized_setting_name('[Arguments]'), self)
+        self.setup_ = Fixture(self.get_localized_setting_name('[Setup]'), self)  # New in RF 7.0
         self.return_ = Return(self.get_localized_setting_name('[Return]'), self)
         self.timeout = Timeout(self.get_localized_setting_name('[Timeout]'), self)
         self.teardown = Fixture(self.get_localized_setting_name('[Teardown]'), self)
@@ -1096,6 +1097,7 @@ class UserKeyword(TestCase):
 
     _setters = {'Documentation': lambda s: s.doc.populate,
                 'Arguments': lambda s: s.args.populate,
+                'Setup': lambda s: s.setup_.populate,  # New in RF 7.0
                 'Return': lambda s: s.return_.populate,
                 'Timeout': lambda s: s.timeout.populate,
                 'Teardown': lambda s: s.teardown.populate,
@@ -1114,10 +1116,11 @@ class UserKeyword(TestCase):
 
     @property
     def settings(self):
-        return [self.args, self.doc, self.tags, self.timeout, self.teardown, self.return_]
+        return [self.args, self.doc, self.setup_, self.tags,  self.timeout, self.teardown, self.return_]
 
     def __iter__(self):
-        for element in [self.args, self.doc, self.tags, self.timeout] + self.steps + [self.teardown, self.return_]:
+        for element in ([self.args, self.doc, self.setup_, self.tags, self.timeout] + self.steps +
+                        [self.teardown, self.return_]):
             yield element
 
 

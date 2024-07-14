@@ -10,6 +10,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Added
 
+- Added support for Setup in keywords, since Robot Framework version 7.0.
 - Added support for new VAR marker, since Robot Framework version 7.0.
 - Added configurable style of the tabs in notebook pages, Edit, Text, Run, etc. Parameter ``notebook theme``
 takes values from 0 to 5. See wxPython, demo for agw.aui for details.
