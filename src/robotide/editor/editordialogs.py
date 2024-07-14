@@ -426,6 +426,7 @@ class SetupDialog(_FixtureDialog):
     def __init__(self, controller, item=None, plugin=None, title=None, title_nt='Setup'):
         __ = title
         self._title = _('Setup')
+        # print(f"DEBUG: editordialogs.py SetupDialog ENTER item={item}")
         _FixtureDialog.__init__(self, controller, item=item, plugin=plugin, title=self._title, title_nt=title_nt)
 
     def _execute(self):
@@ -439,6 +440,7 @@ class TeardownDialog(_FixtureDialog):
     def __init__(self, controller, item=None, plugin=None, title=None, title_nt='Teardown'):
         __ = title
         self._title = _('Teardown')
+        # print(f"DEBUG: editordialogs.py TeardownDialog ENTER item={item}")
         _FixtureDialog.__init__(self, controller, item=item, plugin=plugin, title=self._title, title_nt=title_nt)
 
     def _execute(self):

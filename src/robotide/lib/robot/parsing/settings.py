@@ -137,7 +137,6 @@ class Setting(object):
         return self.is_set()
 
     def __iter__(self):
-        # print(f"DEBUG: settings.py Setting __iter__ name= {self.setting_name}")
         return iter(self.value or ())
 
     def __unicode__(self):
