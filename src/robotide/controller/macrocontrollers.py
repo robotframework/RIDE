@@ -414,6 +414,8 @@ class UserKeywordController(WithStepsController):
     _populator = robotapi.UserKeywordPopulator
     _TEARDOWN_NOT_SET = object()
     _teardown = _TEARDOWN_NOT_SET
+    _SETUP_NOT_SET = object()
+    _setup = _SETUP_NOT_SET
 
     def _init(self, kw):
         self.kw = kw
@@ -453,12 +455,19 @@ class UserKeywordController(WithStepsController):
         result = [
             DocumentationController(self, self.kw.doc),
             ArgumentsController(self, self.kw.args),
+            self.setup,
             self.teardown,
             ReturnValueController(self, self.kw.return_),
             TimeoutController(self, self.kw.timeout),
             TagsController(self, self.kw.tags),
         ]
         return result
+
+    @property
+    def setup(self):
+        if self._setup == self._SETUP_NOT_SET:
+            self._setup = FixtureController(self, self.kw.setup_)
+        return self._setup
 
     @property
     def teardown(self):

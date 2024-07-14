@@ -158,6 +158,7 @@ RELEASE_NOTES = f"""
 <li>This version supports Python 3.8 up to 3.12.</li>
 <li>There are some changes, or known issues:<ul>
 <li>❌ - Removed support for Python 3.6 and 3.7</li>
+<li>✔ - Added support for Setup in keywords, since Robot Framework version 7.0.</li>
 <li>✔ - Added support for new VAR marker, since Robot Framework version 7.0.</li>
 <li>✔ - Added to Grid Editor changing Zoom In/Out with <b>Ctrl-Mouse Wheel</b> and setting at Preferences.</li>
 <li>✔ - Fixed plugin Run Anything (Macros) not showing output and broken actions.</li>
@@ -189,6 +190,7 @@ version 4.2.1, which we now <em>recommend</em>.</li>
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
+<li>Added support for Setup in keywords, since Robot Framework version 7.0.</li>
 <li>Fixed multiline variables in Variables section. In Text Editor they are separated by ... continuation marker.
 In Grid Editor use | (pipe) to separate lines.</li>
 <li>Added support for new VAR marker, since Robot Framework version 7.0.</li>
