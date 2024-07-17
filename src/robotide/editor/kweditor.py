@@ -60,15 +60,7 @@ def requires_focus(function):
         if not self.has_focus():
             return
         if self.has_focus() or self.IsCellEditControlShown() or _row_header_selected_on_linux(self):
-            selection = self.GetSelectionBlockTopLeft()
-            # self.grid_cursor = (self.GetGridCursorRow(), self.GetGridCursorCol())
-            if not selection:
-                self.grid_cursor = (self.GetGridCursorRow(), self.GetGridCursorCol())
-            else:
-                self.grid_cursor = (selection[0].GetRow(), selection[0].GetCol())
-            # print(f"DEBUG: requires_focus grid cursor= {self.grid_cursor}")
             function(self, *args)
-            self.SetGridCursor(self.grid_cursor)
 
     return decorated_function
 
@@ -90,7 +82,6 @@ class KeywordEditor(GridEditor, Plugin):
         self.color_foreground_text = self.general_settings['foreground text']
         GridEditor.__init__(self, parent, len(controller.steps) + 5, max((controller.max_columns + 1), 5),
                             parent.plugin.grid_popup_creator)
-        self.grid_cursor = (0, 0)
         self._popup_items = ([
                              _('Insert Cells\tCtrl-Shift-I'), _('Delete Cells\tCtrl-Shift-D'),
                              _('Insert Rows\tCtrl-I'), _('Delete Rows\tCtrl-D'), '---',
@@ -159,6 +150,7 @@ class KeywordEditor(GridEditor, Plugin):
                                 ])
         self._parent = parent
         self._plugin = parent.plugin
+        self._cell_selected = False
         self._colorizer = Colorizer(self, controller)
         self._controller = controller
         self._configure_grid()
@@ -175,10 +167,6 @@ class KeywordEditor(GridEditor, Plugin):
         self._counter = 0  # Workaround for double delete actions
         self._dcells = None  # Workaround for double delete actions
         self._icells = None  # Workaround for double insert actions
-        self._copy = 0  # Workaround for double copy actions
-        self._ccells = None  # Workaround for double copy actions
-        self._cut = 0  # Workaround for double cut actions
-        self._xcells = None  # Workaround for double cut actions
         self._spacing = self._plugin.global_settings['txt number of spaces']
         self._namespace_updated = None
         self.InheritAttributes()
@@ -288,7 +276,6 @@ class KeywordEditor(GridEditor, Plugin):
         self.Bind(grid.EVT_GRID_LABEL_LEFT_CLICK, self.on_label_left_click)
         self.Bind(wx.EVT_KILL_FOCUS, self.on_kill_focus)
         self.Bind(wx.EVT_MOUSEWHEEL, self.on_zoom)
-        self.Bind(wx.EVT_SET_FOCUS, self.on_focus)  # Attempt to keep cursor on a cell always (not really working)
 
     def get_tooltip_content(self):
         if self.IsCellEditControlShown() or self._popup_menu_shown:
@@ -315,6 +302,7 @@ class KeywordEditor(GridEditor, Plugin):
             self._colorize_grid()
 
     def on_select_cell(self, event):
+        self._cell_selected = True
         GridEditor.on_select_cell(self, event)
         rows = self._is_whole_row_selection()
         if rows:
@@ -322,9 +310,6 @@ class KeywordEditor(GridEditor, Plugin):
             self.GoToCell(rows[0], 0)
             wx.CallAfter(self.SelectBlock, rows[0], 0, rows[-1], self.NumberCols-1)
         self._colorize_grid()
-
-    def on_focus(self, event):
-        self.GoToCell(self.grid_cursor)
         event.Skip()
 
     def on_kill_focus(self, event):
@@ -469,11 +454,9 @@ class KeywordEditor(GridEditor, Plugin):
 
     def on_move_cursor_down(self, event=None):
         self._move_cursor_down(event)
-        self.grid_cursor = (self.GetGridCursorRow(), self.GetGridCursorCol())
 
     def on_insert_rows(self, event):
         self._execute(add_rows(self.selection.rows()))
-        self.grid_cursor = (self.GetGridCursorRow(), self.GetGridCursorCol())
         self.ClearSelection()
         self._resize_grid()
         self._skip_except_on_mac(event)
@@ -486,31 +469,35 @@ class KeywordEditor(GridEditor, Plugin):
 
     def on_insert_cells(self, event=None):
         # DEBUG remove below workaround for double actions
-        # print(f"DEBUG: kweditor.py KeywordEditor on_insert_cells ENTER counter={self._counter}")
         if self._counter == 1:
-            self._counter = 0
-            self._icells = None
-            return
+            if self._icells == (
+                    self.selection.topleft, self.selection.bottomright):
+                self._counter = 0
+                self._icells = None
+                return
+        else:
+            self._counter = 1
 
-        self._icells = (self.selection.topleft, self.selection.bottomright)
-        # print(f"DEBUG: kweditor.py KeywordEditor on_insert_cells start, end"
-        #       f" {self._icells[0].row}:{self._icells[0].col}, {self._icells[1].row}:{self._icells[1].col}")
-        self._execute(insert_cells(*self._icells))
-        self.grid_cursor = (self.GetGridCursorRow(), self.GetGridCursorCol())
-        self._counter = 1
+        self._icells = (self.selection.topleft,
+                        self.selection.bottomright)
+        self._execute(insert_cells(self.selection.topleft,
+                                   self.selection.bottomright))
         self._resize_grid()
         self._skip_except_on_mac(event)
 
     def on_delete_cells(self, event=None):
         # DEBUG remove below workaround for double actions
         if self._counter == 1:
-            self._counter = 0
-            self._dcells = None
-            return
+            if self._dcells == (self.selection.topleft,
+                                self.selection.bottomright):
+                self._counter = 0
+                self._dcells = None
+                return
+        else:
+            self._counter = 1
+
         self._dcells = (self.selection.topleft, self.selection.bottomright)
-        self._execute(delete_cells(*self._dcells))
-        self.grid_cursor = (self.GetGridCursorRow(), self.GetGridCursorCol())
-        self._counter = 1
+        self._execute(delete_cells(self.selection.topleft, self.selection.bottomright))
         self._resize_grid()
         self._skip_except_on_mac(event)
 
@@ -536,17 +523,14 @@ class KeywordEditor(GridEditor, Plugin):
         self._resize_grid()
         self._skip_except_on_mac(event)
 
-    @requires_focus
     def on_move_rows_up(self, event=None):
         __ = event
         self._row_move(MoveRowsUp, -1)
 
-    @requires_focus
     def on_move_rows_down(self, event=None):
         __ = event
         self._row_move(MoveRowsDown, 1)
 
-    @requires_focus
     def on_swap_row_up(self, event=None):
         __ = event
         self._row_move(MoveRowsUp, 1, True)
@@ -620,12 +604,10 @@ class KeywordEditor(GridEditor, Plugin):
     def _colorize_grid(self):
         selection_content = self._get_single_selection_content_or_none_on_first_call()
         if selection_content is None:
-            self.SetGridCursor((0, 0))
-            # value = self.GetCellValue((0, 0))
-            # self.highlight(value)
-            self.highlight('')
+            self.highlight(None)
         elif self._parent:
-            self._parent.highlight(selection_content, expand=True)
+            # print(f"DEBUG: kweditor.py _colorize_grid parent={self._parent} name={self._parent.name}")
+            self._parent.highlight(selection_content, expand=False)
 
     def highlight(self, text, expand=True):
         # Below CallAfter was causing C++ assertions(objects not found)
@@ -637,7 +619,8 @@ class KeywordEditor(GridEditor, Plugin):
         wx.CallAfter(self.AutoSizeRows, False)
 
     def _get_single_selection_content_or_none_on_first_call(self):
-        return self.get_single_selection_content()
+        if self._cell_selected:
+            return self.get_single_selection_content()
 
     @staticmethod
     def _format_comments(data):
@@ -654,62 +637,38 @@ class KeywordEditor(GridEditor, Plugin):
 
     def cell_value_edited(self, row, col, value):
         self._execute(ChangeCellValue(row, col, value))
-        self.GoToCell(self.grid_cursor)
         wx.CallAfter(self.AutoSizeColumn, col, False)
         wx.CallAfter(self.AutoSizeRow, row, False)
 
     def get_selected_datafile_controller(self):
         return self._controller.datafile_controller
 
-    # DEBUG
-    @requires_focus
+    # DEBUG @requires_focus
     def on_copy(self, event=None):
         __ = event
-        if self._copy == 1:
-            if self._ccells == (self.selection.topleft, self.selection.bottomright):
-                self._copy = 0
-                self._ccells = None
-                return
-        else:
-            self._copy = 1
-        self._ccells = (self.selection.topleft, self.selection.bottomright)
+        # print("DEBUG: OnCopy called event %s\n" % str(event))
         self.copy()
 
-    # DEBUG
-    @requires_focus
+    # DEBUG @requires_focus
     def on_cut(self, event=None):
-        if self._cut == 1:
-            if self._xcells == (self.selection.topleft, self.selection.bottomright):
-                self._cut = 0
-                self._xcells = None
-                return
-        self._xcells = (self.selection.topleft, self.selection.bottomright)
         # self._clipboard_handler.cut()
-        self._cut = 1
+        # print(f"DEBUG: kweditor.py on_cut called event {str(event)}")
         self.cut()
         self.on_delete(event)
 
-    @requires_focus
     def on_delete(self, event=None):
         __ = event
         if not self.IsCellEditControlShown():
-            self._execute(clear_area(self.selection.topleft, self.selection.bottomright))
+            self._execute(clear_area(self.selection.topleft,
+                                     self.selection.bottomright))
             self._resize_grid()
 
-    # DEBUG
-    @requires_focus
+    # DEBUG    @requires_focus
     def on_paste(self, event=None):
         __ = event
         if self.IsCellEditControlShown():
             self.paste()
         else:
-            selectionblock = [self.GetSelectionBlockTopLeft(), self.GetSelectionBlockBottomRight()]
-            if selectionblock[0]:
-                selection_topleft = (selectionblock[0][0].GetRow(), selectionblock[0][0].GetCol())
-                selection_bottomright = (selectionblock[1][0].GetRow(), selectionblock[1][0].GetCol())
-            else:
-                selection_topleft = selection_bottomright = self.grid_cursor
-            self._execute(clear_area(selection_topleft, selection_bottomright))
             self._execute_clipboard_command(paste_area)
         self._resize_grid()
 
@@ -728,7 +687,7 @@ class KeywordEditor(GridEditor, Plugin):
                             new_data.append(sdata)
                         main_data.append(new_data)
                     data = main_data
-                self._execute(command_class(self.grid_cursor, data))
+                self._execute(command_class(self.selection.topleft, data))
 
     def _string_to_cell(self, content: str) -> str:
         spaces = ' ' * self._spacing
@@ -742,15 +701,13 @@ class KeywordEditor(GridEditor, Plugin):
         self._execute_clipboard_command(insert_area)
         self._resize_grid()
 
-    @requires_focus
     def on_delete_rows(self, event):
         self._execute(delete_rows(self.selection.rows()))
         self.ClearSelection()
         self._resize_grid()
         self._skip_except_on_mac(event)
 
-    # DEBUG
-    @requires_focus
+    # DEBUG @requires_focus
     def on_undo(self, event=None):
         __ = event
         if not self.IsCellEditControlShown():
@@ -759,8 +716,7 @@ class KeywordEditor(GridEditor, Plugin):
             self.GetCellEditor(*self.selection.cell).Reset()
         self._resize_grid()
 
-    # DEBUG
-    @requires_focus
+    # DEBUG @requires_focus
     def on_redo(self, event=None):
         __ = event
         self._execute(Redo())
@@ -782,7 +738,6 @@ class KeywordEditor(GridEditor, Plugin):
             cell_editor.EndEdit(self.selection.topleft.row, self.selection.topleft.col, self)
 
     def show_content_assist(self):
-        self.grid_cursor = (self.GetGridCursorRow(), self.GetGridCursorCol())
         if self.IsCellEditControlShown():
             self.GetCellEditor(*self.selection.cell).show_content_assist(self.selection.cell)
 
@@ -795,14 +750,12 @@ class KeywordEditor(GridEditor, Plugin):
         return x, y + 20
 
     def on_editor(self, event):
-        self.grid_cursor = (self.GetGridCursorRow(), self.GetGridCursorCol())
         self._tooltips.hide()
         row_height = self.GetRowSize(self.selection.topleft.row)
         self.GetCellEditor(*self.selection.cell).SetHeight(row_height)
         event.Skip()
 
     def _move_cursor_down(self, event):
-        self.grid_cursor = (self.GetGridCursorRow(), self.GetGridCursorCol())
         self.DisableCellEditControl()
         if event:
             try:
@@ -835,11 +788,11 @@ class KeywordEditor(GridEditor, Plugin):
         elif keycode == ord('C'):
             self.on_copy(event)
         elif keycode == ord('X'):
+            # print("DEBUG: kweditor.py _call_ctrl_function Pressed CTRL-X")
             # self.on_cut(event)
             return False
         elif keycode == ord('V'):
-            # self.on_paste(event)
-            return False
+            self.on_paste(event)
         elif keycode == ord('Z'):
             self.on_undo(event)
         elif keycode == ord('A'):
@@ -987,7 +940,6 @@ class KeywordEditor(GridEditor, Plugin):
             self.on_move_rows_down()
 
     def _move_grid_cursor(self, event, keycode):
-        self.grid_cursor = (self.GetGridCursorRow(), self.GetGridCursorCol())
         self.DisableCellEditControl()
         if keycode == wx.WXK_RETURN:
             self.MoveCursorRight(event.ShiftDown())
@@ -996,7 +948,6 @@ class KeywordEditor(GridEditor, Plugin):
 
     def move_grid_cursor_and_edit(self):
         # self.MoveCursorRight(False)
-        self.grid_cursor = (self.GetGridCursorRow(), self.GetGridCursorCol())
         self.open_cell_editor()
 
     def on_key_up(self, event):
@@ -1010,7 +961,6 @@ class KeywordEditor(GridEditor, Plugin):
         return self.GetCellEditor(self.GetGridCursorCol(), row)
 
     def open_cell_editor(self):
-        self.grid_cursor = (self.GetGridCursorRow(), self.GetGridCursorCol())
         if not self.IsCellEditControlEnabled():
             self.EnableCellEditControl()
         cell_editor = self._get_cell_editor()
@@ -1085,8 +1035,6 @@ class KeywordEditor(GridEditor, Plugin):
                 return
         if not self._has_been_clicked:
             self.SetGridCursor(event.Row, event.Col)
-            self.selection.set_from_single_selection(event)
-            self.highlight(self.GetCellValue(event.Row, event.Col))
             self._has_been_clicked = True
         else:
             event.Skip()
@@ -1209,7 +1157,6 @@ class KeywordEditor(GridEditor, Plugin):
 
     # Add one new Dialog to edit pretty json String TODO: use better editor with more functions
     def on_json_editor(self, event=None):
-        self.grid_cursor = (self.GetGridCursorRow(), self.GetGridCursorCol())
         if event:
             event.Skip()
         dialog = RIDEDialog()
