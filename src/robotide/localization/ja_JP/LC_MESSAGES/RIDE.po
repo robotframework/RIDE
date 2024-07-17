@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
 "POT-Creation-Date: 2024-07-14 20:30+0100\n"
-"PO-Revision-Date: 2024-07-14 20:07\n"
+"PO-Revision-Date: 2024-07-17 01:27\n"
 "Last-Translator: \n"
 "Language-Team: Japanese\n"
 "MIME-Version: 1.0\n"
@@ -869,82 +869,60 @@ msgid "This keyword is executed after every test case in this suite unless test 
 msgstr "このキーワードは、テストケースがそれを上書きしない限り、このスイートのすべてのテストケースの後に実行されます。"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:74
-#, fuzzy
-msgid ""
-"This keyword is executed before other keywords in this test case or keyword."
-msgstr "このキーワードは、このテストケースで他のキーワードの前に実行されます。"
+msgid "This keyword is executed before other keywords in this test case or keyword."
+msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:75
-#, fuzzy
 msgid "In test cases, overrides possible Test Setup set on the suite level."
-msgstr "上書き可能 スイートレベルで設定されたテストセットアップ。"
+msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:76
 msgid "Setup in keywords exists since Robot v7.0."
 msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:77
-#, fuzzy
-msgid ""
-"This keyword is executed after other keywords in this test case or keyword "
-"even if the test or keyword fails."
+msgid "This keyword is executed after other keywords in this test case or keyword even if the test or keyword fails."
 msgstr ""
-"このキーワードは、テストが失敗しても、このテストケースの他のキーワードの後に"
-"実行されます。"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:79
-#, fuzzy
 msgid "In test cases, overrides possible Test Teardown set on the suite level."
-msgstr "上書き可能 スイートレベルに設定されたテスト分解テスト。"
+msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:81
 msgid "Specifies the default template keyword used by tests in this suite."
 msgstr "このスイートのテストで使用されるデフォルトのテンプレートキーワードを指定します。"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:82
-msgid ""
-"The test cases will contain only data to use as arguments to that keyword."
-msgstr ""
-"テストケースには、キーワードの引数として使用するデータのみが含まれます。"
+msgid "The test cases will contain only data to use as arguments to that keyword."
+msgstr "テストケースには、キーワードの引数として使用するデータのみが含まれます。"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:83
 msgid "Specifies the template keyword to use."
 msgstr "使用するテンプレートキーワードを指定します。"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:84
-msgid ""
-"The test itself will contain only data to use as arguments to that keyword."
+msgid "The test itself will contain only data to use as arguments to that keyword."
 msgstr "テスト自体には、キーワードの引数として使用するデータのみが含まれます。"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:86
-msgid ""
-"Specify the return value. Use a pipe character to separate multiple values."
+msgid "Specify the return value. Use a pipe character to separate multiple values."
 msgstr "戻り値を指定します。複数の値を区切るにはパイプ文字を使用します。"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:89
-msgid ""
-"Maximum time test cases in this suite are allowed to execute before aborting "
-"them forcefully."
-msgstr ""
-"このスイートの最大時間テストケースは、強制的に中断する前に実行することができ"
-"ます。"
+msgid "Maximum time test cases in this suite are allowed to execute before aborting them forcefully."
+msgstr "このスイートの最大時間テストケースは、強制的に中断する前に実行することができます。"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:90
 msgid "Can be overridden by individual test cases using Timeout setting."
 msgstr "タイムアウト設定を使用して、個々のテストケースでオーバーライドすることができます。"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:91
-msgid ""
-"Maximum time this test/keyword is allowed to execute before aborting it "
-"forcefully."
+msgid "Maximum time this test/keyword is allowed to execute before aborting it forcefully."
 msgstr "このテスト/キーワードを強制的に中断する前に実行できる最大時間。"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:92
-msgid ""
-"With test cases this setting overrides Test Timeout set on the suite level."
-msgstr ""
-"テストケースでは、この設定はスイートレベルで設定されたTest Timeoutを上書きし"
-"ます。"
+msgid "With test cases this setting overrides Test Timeout set on the suite level."
+msgstr "テストケースでは、この設定はスイートレベルで設定されたTest Timeoutを上書きします。"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:93
 msgid "Give a name and a value for the suite metadata."
