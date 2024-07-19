@@ -19,7 +19,7 @@ from io import StringIO, BytesIO
 from time import time
 
 import wx
-from wx import stc, Colour
+from wx import stc, Colour, MenuEvent
 from wx.adv import HyperlinkCtrl, EVT_HYPERLINK
 from multiprocessing import shared_memory
 from .popupwindow import HtmlPopupWindow
@@ -86,7 +86,7 @@ def obtain_language(existing, content):
     # print(f"DEBUG: textedit.py validate_and_update obtain_language={doc_lang}")
     if doc_lang is not None:
         try:
-            mlang = Language.from_name(doc_lang.replace('_','-'))
+            mlang = Language.from_name(doc_lang.replace('_', '-'))
         except ValueError as e:
             raise e
         set_lang[0] = get_rf_lang_code(mlang.code)  # .code.replace('-','_')
@@ -543,8 +543,8 @@ class DataFileWrapper(object):  # DEBUG: bad class name
                   language=self._doc_language)
         text = output.getvalue()
         # if self._reformat:  # DEBUG: This is a good place to call Tidy
-            # text = self.collapse_blanks(text)  # This breaks formatting in Templated tests
-            # print(f"DEBUG: textedit.py DataFileWrapper content _txt_data = {text=} language={self._doc_language}")
+        #   text = self.collapse_blanks(text)  # This breaks formatting in Templated tests
+        #   print(f"DEBUG: textedit.py DataFileWrapper content _txt_data = {text=} language={self._doc_language}")
         return text
 
     """ DEBUG: This is no longer used
@@ -1204,7 +1204,14 @@ class SourceEditor(wx.Panel):
         self.source_editor.Bind(wx.EVT_MOTION, self.on_mouse_motion)
         self.source_editor.Bind(wx.EVT_KILL_FOCUS, self.LeaveFocus)
         self.source_editor.Bind(wx.EVT_SET_FOCUS, self.GetFocus)
+        self.source_editor.Bind(wx.EVT_MENU, self.on_menu)
         # DEBUG: Add here binding for keyword help
+
+    def on_menu(self, event):
+        m_id=event.GetId()
+        if m_id in (12, 14):  # Cut and Paste
+            self.mark_file_dirty(True)  # DEBUG: Forcing dirty, even if it may not be
+        event.Skip()
 
     def LeaveFocus(self, event):
         __ = event
