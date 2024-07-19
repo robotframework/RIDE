@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
 "POT-Creation-Date: 2024-07-14 20:30+0100\n"
-"PO-Revision-Date: 2024-07-17 01:27\n"
+"PO-Revision-Date: 2024-07-19 01:55\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "MIME-Version: 1.0\n"
@@ -795,7 +795,7 @@ msgstr "Donne le nom et la valeur de la variable. Entrez les éléments de la va
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:44
 msgid "Give name and value of the variable. Input dictionary items into separate cells."
-msgstr "Donne le nom et la valeur de la variable. Éléments de dictionnaire d'entrée dans des cellules séparées."
+msgstr "Donne le nom et la valeur de la variable. Entrez les éléments de dictionnaire dans des cellules séparées."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:45
 msgid "Individual items must be in format `key=value`"
@@ -803,7 +803,7 @@ msgstr "Les éléments individuels doivent être au format `key=value`"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:46
 msgid "Give name, optional arguments and optional alias of the library to import."
-msgstr "Donnez le nom, les arguments optionnels et les alias optionnels de la bibliothèque à importer."
+msgstr "Donnez le nom, les arguments et les alias optionnels de la bibliothèque à importer."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:47
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:49
@@ -828,7 +828,7 @@ msgstr "Donner la documentation."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:52
 msgid "New resources must be created separately."
-msgstr "De nouvelles ressources doivent être créées séparément."
+msgstr "Les nouvelles ressources doivent être créées séparément."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:53
 msgid "Simple formatting like *bold* and _italic_ can be used."
@@ -840,7 +840,7 @@ msgstr "De plus, les URLs sont converties en liens cliquables."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:55
 msgid "These tags are set to all test cases in this test suite."
-msgstr "Ces balises sont définies à tous les cas de test de cette suite de test."
+msgstr "Ces tags sont communs à tous les cas de test de cette suite de test."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:56
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/dialoghelps.py:61
