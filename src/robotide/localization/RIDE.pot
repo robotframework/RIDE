@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2024-07-14 20:30+0100\n"
+"POT-Creation-Date: 2024-07-20 20:00+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1165,137 +1165,137 @@ msgstr ""
 msgid "Number of columns that are shown in this editor. Selected value is stored and used globally."
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:95
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:86
 msgid "Delete Cells\tCtrl-Shift-D"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:95
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:86
 msgid "Insert Cells\tCtrl-Shift-I"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:96
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:372
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:87
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:357
 msgid "Insert Rows\tCtrl-I"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:96
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:373
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:87
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:358
 msgid "Delete Rows\tCtrl-D"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:97
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:88
 msgid "Copy\tCtrl-C"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:97
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:88
 msgid "Cut\tCtrl-X"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:97
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:88
 msgid "Select All\tCtrl-A"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:98
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:89
 msgid "Delete\tDel"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:98
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:89
 msgid "Insert\tCtrl-Shift-V"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:98
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:89
 msgid "Paste\tCtrl-V"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:101
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:92
 msgid "Create Keyword"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:102
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:93
 msgid "Extract Keyword"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:103
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:94
 msgid "Extract Variable"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:104
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1205
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:95
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1153
 msgid "Rename Keyword"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:105
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:96
 msgid "Find Where Used"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:106
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:97
 msgid "JSON Editor\tCtrl-Shift-J"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:108
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:99
 msgid "Go to Definition\tCtrl-B"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:110
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:101
 msgid "Undo\tCtrl-Z"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:111
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:102
 msgid "Redo\tCtrl-Y"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:113
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:104
 msgid "Make Variable\tCtrl-1"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:114
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:105
 msgid "Make List Variable\tCtrl-2"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:115
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:106
 msgid "Make Dict Variable\tCtrl-5"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:117
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:375
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:108
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:360
 msgid "Comment Cells\tCtrl-Shift-3"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:118
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:376
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:109
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:361
 msgid "Uncomment Cells\tCtrl-Shift-4"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:119
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:110
 msgid "Move Cursor Down\tAlt-Enter"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:121
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:367
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:112
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:352
 msgid "Comment Rows\tCtrl-3"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:122
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:368
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:113
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:353
 msgid "Uncomment Rows\tCtrl-4"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:123
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:369
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:114
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:354
 msgid "Move Rows Up\tAlt-Up"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:124
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:370
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:115
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:355
 msgid "Move Rows Down\tAlt-Down"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:125
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:371
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:116
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:356
 msgid "Swap Row Up\tCtrl-T"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:964
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:917
 msgid ""
 "<b>Keyword was not detected by RIDE</b>\n"
 "        <br>Possible corrections:<br>\n"
@@ -1309,43 +1309,43 @@ msgid ""
 "        </ul>"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1205
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1153
 msgid "New name"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1218
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1165
 msgid "Save"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1219
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1166
 msgid "Cancel"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1245
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1192
 msgid "Error in JSON:"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1245
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1192
 msgid "Save anyway?"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1246
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1193
 msgid "Validation Error!"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1387
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1334
 msgid "Please select what you want to check for usage"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1390
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1337
 msgid "Complete cell content"
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1391
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1338
 msgid "Variable "
 msgstr ""
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1403
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1350
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:667
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:49
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:127

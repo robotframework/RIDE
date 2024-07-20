@@ -48,6 +48,7 @@ In Grid Editor use | (pipe) to separate lines.
 
 === Changed
 
+- Improved release packaging of RIDE, by using entry_points in setuptools configuration.
 - Parsing of clipboard content to separate by cells in Grid Editor. NOTE: Need to Apply Changes in Text Editor to be effective.
 - Improved selection of items from Tree in Text Editor. Now finds more items and selects whole line.
 - Changed output in plugin Run Anything (Macros) to allow Zoom In/Out, and Copy content.
