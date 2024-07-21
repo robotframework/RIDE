@@ -328,7 +328,7 @@ def caller(frame, platform):
     return create_desktop_shortcut(platform, frame)
 
 
-def main(args):
+def main(*args):
     # Options
     global option_q
     global option_f
