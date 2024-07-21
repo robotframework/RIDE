@@ -280,11 +280,11 @@ You should see <a class="reference external" href="https://forum.robotframework.
  Forum</a> if your problem is already known.</p>
 <p>To install with <a class="reference external" href="https://pypi.org/project/pip/">pip</a> installed, just run</p>
 <pre class="literal-block">
-pip install --upgrade robotframework-ride=={VERSION}
+pip install --upgrade --pre robotframework-ride=={VERSION}
 </pre>
 <p>to install exactly this release, which is the same as using</p>
 <pre class="literal-block">
-pip install --upgrade robotframework-ride
+pip install --upgrade --pre robotframework-ride
 </pre>
 
 <p>Alternatively you can download the source
@@ -309,7 +309,7 @@ python -m robotide.__init__
 <pre class="literal-block">
 python -m robotide.postinstall -install
 </pre>
-<p>RIDE {VERSION} was released on 20/July/2024.</p>
+<p>RIDE {VERSION} was released on 21/July/2024.</p>
 <!-- <br/>
 <h3>May The Fourth Be With You!</h3>
 <h3>Celebrate the bank holiday, 10th June, Day of Portugal, Portuguese Communities and Camões!!</h3>
