@@ -161,8 +161,8 @@ class TextEditorPreferences(EditorPreferences):
         self.location = (_("Text Editor"),)
         self.title = _("Text Editor Settings")
         self.name = "Text Edit"
-        super(TextEditorPreferences, self).__init__(
-            settings[self.name], *args, **kwargs)
+        super(TextEditorPreferences, self).__init__(settings[self.name], *args, **kwargs)
+        self.Sizer.Add(self._create_text_config_editor())
 
     def create_colors_sizer(self):
         container = wx.GridBagSizer()
@@ -223,6 +223,18 @@ class TextEditorPreferences(EditorPreferences):
         defaults = self._read_defaults()
         for picker in self._color_pickers:
             picker.SetColour(defaults[picker.key])
+
+    def _create_text_config_editor(self):
+        settings = self._settings
+        sizer = wx.FlexGridSizer(rows=2, cols=2, vgap=10, hgap=10)
+        background_color = Colour(LIGHT_GRAY)
+        foreground_color = Colour("black")
+        l_auto_suggest, editor = boolean_editor(self, settings, 'enable auto suggestions',
+                                                _('Enable auto suggestions'))
+        if IS_WINDOWS:
+            set_colors(l_auto_suggest, background_color, foreground_color)
+        sizer.AddMany([l_auto_suggest, editor])
+        return sizer
 
 
 class GridEditorPreferences(EditorPreferences):

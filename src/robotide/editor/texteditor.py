@@ -57,6 +57,7 @@ if not robotframeworklexer:
 _ = wx.GetTranslation  # To keep linter/code analyser happy
 builtins.__dict__['_'] = wx.GetTranslation
 
+AUTO_SUGGESTIONS = 'enable auto suggestions'
 PLUGIN_NAME = 'Text Edit'
 TXT_NUM_SPACES = 'txt number of spaces'
 ZOOM_FACTOR = 'zoom factor'
@@ -2066,6 +2067,8 @@ class RobotDataEditor(stc.StyledTextCtrl):
         self.Bind(wx.EVT_KEY_DOWN, self.on_key_pressed)
         # Only set, after language: self.stylizer = RobotStylizer(self, self._settings, self.readonly)
         self.stylizer = None
+        self.key_trigger = 0
+        self.autocomplete = self._settings[PLUGIN_NAME].get(AUTO_SUGGESTIONS, False)
         # register some images for use in the AutoComplete box.
         # self.RegisterImage(1, Smiles.GetBitmap())  # DEBUG was images.
         self.RegisterImage(1, wx.ArtProvider.GetBitmap(wx.ART_FLOPPY, size=(16, 16)))
@@ -2106,6 +2109,16 @@ class RobotDataEditor(stc.StyledTextCtrl):
             # Code completion
             else:
                 self.parent.on_content_assist(event)
+        else:
+            if self.autocomplete:
+                if key > 32 and self.key_trigger > -1:
+                    if self.key_trigger < 2:
+                        self.key_trigger += 1
+                    else:
+                        self.key_trigger = -1
+                        self.parent.on_content_assist(event)
+                else:
+                    self.key_trigger = 0
         event.Skip()
 
     def set_text(self, text):
@@ -2361,6 +2374,7 @@ class RobotStylizer(object):
         section, _ = message.keys
         if section == PLUGIN_NAME:
             self.set_styles(self._readonly)  # DEBUG: When on read-only file changing background color ignores flag
+            self.editor.autocomplete = self.settings[PLUGIN_NAME].get(AUTO_SUGGESTIONS, False)
 
     def _font_size(self):
         return self.settings[PLUGIN_NAME].get('font size', 10)

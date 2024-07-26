@@ -158,6 +158,8 @@ RELEASE_NOTES = f"""
 <li>This version supports Python 3.8 up to 3.12.</li>
 <li>There are some changes, or known issues:<ul>
 <li>❌ - Removed support for Python 3.6 and 3.7</li>
+<li>✔ - Allow to do auto-suggestions of keywords in Text Editor without a shortcut, if you want to enable or disable 
+this feature you can config in `Tools -> Preferences -> Text Editor -> Enable auto suggestions`.</li>
 <li>✔ - Added support for Setup in keywords, since Robot Framework version 7.0.</li>
 <li>✔ - Added support for new VAR marker, since Robot Framework version 7.0.</li>
 <li>✔ - Added to Grid Editor changing Zoom In/Out with <b>Ctrl-Mouse Wheel</b> and setting at Preferences.</li>
@@ -309,7 +311,7 @@ python -m robotide.__init__
 <pre class="literal-block">
 python -m robotide.postinstall -install
 </pre>
-<p>RIDE {VERSION} was released on 22/July/2024.</p>
+<p>RIDE {VERSION} was released on 26/July/2024.</p>
 <!-- <br/>
 <h3>May The Fourth Be With You!</h3>
 <h3>Celebrate the bank holiday, 10th June, Day of Portugal, Portuguese Communities and Camões!!</h3>
