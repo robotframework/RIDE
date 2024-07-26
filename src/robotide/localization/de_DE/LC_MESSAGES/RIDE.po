@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2024-07-20 20:00+0100\n"
+"POT-Creation-Date: 2024-07-27 00:24+0100\n"
 "PO-Revision-Date: 2024-07-17 01:27\n"
 "Last-Translator: \n"
 "Language-Team: German\n"
@@ -1383,7 +1383,7 @@ msgid "Variable "
 msgstr "Variable "
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1350
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:667
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:668
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:49
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:127
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:184
@@ -1507,39 +1507,39 @@ msgstr "Fehler beim Importieren"
 msgid "Add Metadata"
 msgstr "Metadaten hinzufügen"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:131
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:132
 msgid "Text Edit"
 msgstr "Text bearbeiten"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:466
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:467
 msgid "ERROR: Data sanity check failed!"
 msgstr "FEHLER: Datensicherheitsprüfung fehlgeschlagen!"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:466
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:467
 msgid "Error at line"
 msgstr "Fehler in Zeile"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:467
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:468
 msgid "Reset changes?"
 msgstr "Änderungen zurücksetzen?"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:468
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:469
 msgid "Can not apply changes from Text Editor"
 msgstr "Änderungen aus dem Texteditor können nicht angewendet werden"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:650
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:651
 msgid "Apply Changes"
 msgstr "Änderungen anwenden"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:677
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:678
 msgid "Syntax colorization disabled due to missing requirements."
 msgstr "Syntax-Farbgebung aufgrund fehlender Anforderungen deaktiviert."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:678
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:679
 msgid "Get help"
 msgstr "Hilfe erhalten"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:693
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:694
 msgid ""
 "<h1>Syntax colorization</h1>\n"
 "        <p>\n"
@@ -1599,11 +1599,11 @@ msgstr ""
 "        </p>\n"
 "        "
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:718
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:719
 msgid "Getting syntax colorization"
 msgstr "Syntax-Farbgebung wird abgerufen"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:817
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:818
 msgid "No matches found."
 msgstr "Keine Treffer gefunden."
 
@@ -1679,7 +1679,7 @@ msgid "Comment foreground"
 msgstr "Kommentar-Vordergrund"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:175
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:404
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:416
 msgid "Error foreground"
 msgstr "Fehler im Vordergrund"
 
@@ -1720,28 +1720,33 @@ msgid "Syntax characters"
 msgstr "Syntaxzeichen"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:189
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:402
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:414
 msgid "Text foreground"
 msgstr "Text im Vordergrund"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:229
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:232
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:233
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:275
+msgid "Enable auto suggestions"
+msgstr "Auto-Vorschläge aktivieren"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:241
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:244
 msgid "Grid Editor"
 msgstr "Raster-Editor"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:233
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:245
 msgid "Grid Editor Settings"
 msgstr "Raster-Editor-Einstellungen"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:242
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:254
 msgid "Default column size"
 msgstr "Default column size"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:249
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:261
 msgid "Auto size columns"
 msgstr "Auto size columns"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:253
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:265
 msgid ""
 "Max column size\n"
 "(applies when auto size is on)"
@@ -1749,105 +1754,101 @@ msgstr ""
 "Maximale Spaltengröße\n"
 "(gilt wenn die automatische Größe eingeschaltet ist)"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:258
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:270
 msgid "Word wrap and auto size rows"
 msgstr "Textumbruch und automatische Zeilen"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:263
-msgid "Enable auto suggestions"
-msgstr "Auto-Vorschläge aktivieren"
-
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:301
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:313
 msgid "User Keyword Foreground"
 msgstr "Benutzerschlüsselwort-Vordergrund"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:302
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:314
 msgid "Library Keyword Foreground"
 msgstr "Bibliotheks-Schlüsselwort-Vordergrund"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:303
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:315
 msgid "Variable Foreground"
 msgstr "Variabler Vordergrund"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:304
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:316
 msgid "Unknown Variable Foreground"
 msgstr "Unbekannte Variable Vordergrund"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:305
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:317
 msgid "Comments Foreground"
 msgstr "Kommentar-Vordergrund"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:306
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:318
 msgid "Default Foreground"
 msgstr "Standard Vordergrund"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:307
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:319
 msgid "Empty Foreground"
 msgstr "Leerer Vordergrund"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:328
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:340
 msgid "Variable Background"
 msgstr "Variabler Hintergrund"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:329
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:341
 msgid "Keyword Background"
 msgstr "Keyword-Hintergrund"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:330
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:342
 msgid "Mandatory Field Background"
 msgstr "Pflichtfeld-Hintergrund"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:331
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:343
 msgid "Optional Field Background"
 msgstr "Optionaler Feldhintergrund"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:332
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:344
 msgid "Mandatory Empty Field Background"
 msgstr "Pflichtfeld Hintergrund leeren"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:333
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:345
 msgid "Unknown Background"
 msgstr "Unbekannter Hintergrund"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:334
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:346
 msgid "Error Background"
 msgstr "Fehlerhintergrund"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:335
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:347
 msgid "Highlight Background"
 msgstr "Hintergrund hervorheben"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:361
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:364
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:373
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:376
 msgid "Test Runner"
 msgstr "Testläufer"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:365
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:377
 msgid "Test Runner Settings"
 msgstr "Läufer Einstellungen testen"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:369
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:381
 msgid "Colors will be active after next RIDE restart."
 msgstr "Farben werden nach dem nächsten RIDE Neustart aktiv."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:383
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:395
 msgid "Shows console colors set by"
 msgstr "Zeigt die Farben der Konsole von"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:385
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:397
 msgid "Asks for confirmation to run all tests if none selected "
 msgstr ""
 "Bittet um Bestätigung alle Tests auszuführen, wenn keine ausgewählt wurde "
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:405
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:417
 msgid "Fail foreground"
 msgstr "Fehler im Vordergrund"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:406
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:418
 msgid "Pass foreground"
 msgstr "Vordergrundspur übergeben"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:407
+#: /home2/helio/github/RIDE/tools/../src/robotide/preferences/editors.py:419
 msgid "Skip foreground"
 msgstr "Vordergrund überspringen"
 
