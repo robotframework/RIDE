@@ -2109,8 +2109,9 @@ class RobotDataEditor(stc.StyledTextCtrl):
             # Code completion
             else:
                 self.parent.on_content_assist(event)
+            self.key_trigger = 0
         else:
-            if self.autocomplete:
+            if self.autocomplete and not event.ControlDown():
                 if key > 32 and self.key_trigger > -1:
                     if self.key_trigger < 2:
                         self.key_trigger += 1
