@@ -152,12 +152,13 @@ RELEASE_NOTES = f"""
 <p><a class="reference external" href="https://github.com/robotframework/RIDE/">RIDE (Robot Framework IDE)</a>
  {VERSION} is a new release with important enhancements and bug fixes. The reference for valid arguments is
  <a class="reference external" href="https://robotframework.org/">Robot Framework</a> installed version, which is at this
-  moment 7.0.1rc1. However, internal library code is originally based on version 3.1.2, but adapted for new versions.</p>
+  moment 7.0.1. However, internal library code is originally based on version 3.1.2, but adapted for new versions.</p>
 <p></p>
 <ul class="simple">
 <li>This version supports Python 3.8 up to 3.12.</li>
 <li>There are some changes, or known issues:<ul>
 <li>❌ - Removed support for Python 3.6 and 3.7</li>
+<li>🐞 - When starting RIDE from <b>ride</b> script or executable, when closing RIDE restarts before definite close.</li>
 <li>✔ - Allow to do auto-suggestions of keywords in Text Editor without a shortcut, if you want to enable or disable 
 this feature you can config in `Tools -> Preferences -> Text Editor -> Enable auto suggestions`.</li>
 <li>✔ - Added support for Setup in keywords, since Robot Framework version 7.0.</li>
@@ -192,6 +193,8 @@ version 4.2.1, which we now <em>recommend</em>.</li>
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
+<li>Allow to do auto-suggestions of keywords in Text Editor without a shortcut, if you want to enable or disable 
+this feature you can config in `Tools -> Preferences -> Text Editor -> Enable auto suggestions`.</li>
 <li>Added support for Setup in keywords, since Robot Framework version 7.0.</li>
 <li>Fixed multiline variables in Variables section. In Text Editor they are separated by ... continuation marker.
 In Grid Editor use | (pipe) to separate lines.</li>
@@ -311,7 +314,7 @@ python -m robotide.__init__
 <pre class="literal-block">
 python -m robotide.postinstall -install
 </pre>
-<p>RIDE {VERSION} was released on 26/July/2024.</p>
+<p>RIDE {VERSION} was released on 29/July/2024.</p>
 <!-- <br/>
 <h3>May The Fourth Be With You!</h3>
 <h3>Celebrate the bank holiday, 10th June, Day of Portugal, Portuguese Communities and Camões!!</h3>
