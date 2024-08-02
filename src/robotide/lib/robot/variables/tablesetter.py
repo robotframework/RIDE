@@ -65,6 +65,10 @@ class VariableTableValueBase(object):
         self._resolving = False
 
     def _format_values(self, values):
+        # print(f"DEBUG: tablesetter.py VariableTableValueBase ENTER values={values}")
+        if '...' in values:
+            values = [elem for elem in values if elem != '...']
+            # print(f"DEBUG: tablesetter.py VariableTableValueBase REMOVED ... values={values}")
         return values
 
     def resolve(self, variables):
@@ -103,8 +107,8 @@ class ScalarVariableTableValue(VariableTableValueBase):
             elif values[-1].startswith('separator='):  # New in RF 7.0
                 separator = values[-1][10:]
                 values = values[:-2]
-        # if '...' in values:
-        #     values = [elem for elem in values if elem != '...']
+            if not separator and '...' in values:
+                values = [elem for elem in values if elem != '...']
         return separator, values
 
     def _replace_variables(self, values, variables):

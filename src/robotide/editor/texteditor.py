@@ -312,6 +312,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
                 self._set_read_only(self._editor.source_editor.readonly)
             except Exception as e:  # DEBUG: When using only Text Editor exists error in message topic
                 print(e)
+            wx.CallAfter(self._editor.source_editor.on_style, None)  # DEBUG Sometimes when we enter Text Edit, styles are not applied
             self._editor.Refresh()
         elif message.oldtab == self.title:
             self._editor.remove_and_store_state()
