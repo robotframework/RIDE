@@ -307,8 +307,8 @@ class _PropertyPopulator(Populator):
         self._comments.add(row)
 
     def _add(self, row):
-        if row.cells == ['...']:
-            self._deprecate_continuation_without_values()
+        # if row.cells == ['...']:  # DEBUG: Removed non-useful warning
+        #     self._deprecate_continuation_without_values()
         self._value.extend(row.tail if self.row_continue or not self._data_added else row.data)
         # print(f"DEBUG: tablepopulators.py _PropertyPopulator {self._data_added=} _add row.cells={row.cells}"
         #       f" ADDED value={self._value}")
@@ -430,8 +430,8 @@ class MetadataPopulator(DocumentationPopulator):
 class StepPopulator(_PropertyPopulator):
 
     def _add(self, row):
-        if row.cells == ['...']:
-            self._deprecate_continuation_without_values()
+        # if row.cells == ['...']:  # DEBUG: Removed non-useful warning
+        #     self._deprecate_continuation_without_values()
         if row.cells[0] == '...':
             self._value.extend(row.cells)
         else:

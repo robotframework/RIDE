@@ -68,7 +68,7 @@ class MacroEditorTest(unittest.TestCase):
     def test_delegation_to_kw_editor(self):
         for method, kw_method in \
             [('save', 'save'),
-             ('undo', 'on_undo'),
+             # ('undo', 'on_undo'),  # Disabled because of double Ctrl-Z
              ('redo', 'on_redo'),
              ('cut', 'on_cut'),
              ('copy', 'on_copy'),
@@ -84,7 +84,8 @@ class MacroEditorTest(unittest.TestCase):
             self.tc_editor.kweditor = kw_mock
             getattr(kw_mock, kw_method).is_to_be_called()
             getattr(self.tc_editor, method)()
-            assert getattr(kw_mock, kw_method).has_been_called(), f"Should have called \"{kw_method}\" when calling \"{method}\""
+            assert getattr(kw_mock, kw_method).has_been_called(), (f"Should have called \""
+                                                                   f"{kw_method}\" when calling \"{method}\"")
 
 
 if __name__ == '__main__':
