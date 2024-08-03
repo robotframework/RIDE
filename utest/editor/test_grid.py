@@ -92,6 +92,13 @@ if not IS_WINDOWS:
             self._editor = EditorWithData()
 
         def test_copy_one_cell(self):
+            print("")
+            for row in range(3):
+                text = f"{row}: "
+                for col in range(3):
+                    cell = self._editor.GetCellValue(row, col)
+                    text += f" {cell} |"
+                print(f"{text}")
             self._copy_block_and_verify((0, 0, 0, 0), [['kw1']])
 
         def test_copy_row(self):
@@ -103,8 +110,8 @@ if not IS_WINDOWS:
         def _copy_block_and_verify(self, block, exp_content):
             self._editor.SelectBlock(*block)
             self._editor.copy()
-            assert (self._editor._clipboard_handler._clipboard.get_contents() ==
-                          exp_content)
+            print(f"\nClipboard Content: {self._editor._clipboard_handler._clipboard.get_contents()}")
+            assert (self._editor._clipboard_handler._clipboard.get_contents() == exp_content)
             self._verify_grid_content(DATA)
 
         def test_cut_one_cell(self):
