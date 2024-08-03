@@ -205,6 +205,7 @@ class KeywordEditor(GridEditor, Plugin):
             self.AutoSizeColumns(False)
         if self.settings.get("word wrap", True):
             self.AutoSizeRows(False)
+        self.SetFocus()
 
     def _set_cells(self):
         col_size = self.settings.get("col size", 150)
@@ -794,6 +795,7 @@ class KeywordEditor(GridEditor, Plugin):
         elif keycode == ord('V'):
             self.on_paste(event)
         elif keycode == ord('Z'):
+            # print("DEBUG: kweditor.py _call_ctrl_function Pressed CTRL-Z")
             self.on_undo(event)
         elif keycode == ord('A'):
             self.on_select_all(event)
@@ -859,6 +861,7 @@ class KeywordEditor(GridEditor, Plugin):
             skip = self._call_alt_function(event, keycode)
         else:
             skip = self._call_direct_function(event, keycode)
+        self.SetFocus()
         if skip:
             event.Skip()
 

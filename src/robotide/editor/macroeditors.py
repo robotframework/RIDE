@@ -52,7 +52,9 @@ class TestCaseEditor(_RobotTableEditor):
         self.kweditor.save()
 
     def undo(self):
-        self.kweditor.on_undo()
+        # DEBUG: On Linux we were having double Ctrl-Z action
+        # self.kweditor.on_undo()
+        pass
 
     def redo(self):
         self.kweditor.on_redo()
