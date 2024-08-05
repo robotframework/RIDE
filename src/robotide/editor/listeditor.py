@@ -15,11 +15,13 @@
 
 import builtins
 import wx
+from multiprocessing import shared_memory
 from wx import Colour
 from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
 
 from ..context import ctrl_or_cmd, bind_keys_to_evt_menu, IS_WINDOWS
 from ..controller import ctrlcommands
+from ..lib.compat.parsing.language import get_localized_setting
 from ..widgets import PopupMenu, PopupMenuItems, ButtonWithHandler, Font
 
 _ = wx.GetTranslation  # To keep linter/code analyser happy
@@ -198,7 +200,18 @@ class AutoWidthColumnList(wx.ListCtrl, ListCtrlAutoWidthMixin):
         self.SetOwnForegroundColour(Colour(color_foreground))
         # self.EnableAlternateRowColours(True)
         self._parent = parent
+        self._doc_language = None
+        self.set_language()
         self.populate(columns, data or [])
+
+    def set_language(self):
+        try:
+            set_lang = shared_memory.ShareableList(name="language")
+        except AttributeError:  # Unittests fails here
+            set_lang = []
+        if not set_lang:
+            set_lang[0] = ['en']
+        self._doc_language = set_lang[0]
 
     def populate(self, columns, data):
         for i, name in enumerate(columns):
@@ -212,7 +225,9 @@ class AutoWidthColumnList(wx.ListCtrl, ListCtrlAutoWidthMixin):
     def _insert_data(self, data):
         for row, item in enumerate(data):
             rowdata = self._parent.get_column_values(item)
-            self.InsertItem(row, rowdata[0])
+            data_name = get_localized_setting(self._doc_language, rowdata[0])
+            # print(f"DEBUG: listeditor.py AutoWidthColumnList _insert_data {row=}:{rowdata[0]} data_name={data_name}")
+            self.InsertItem(row, data_name)
             for i in range(1, len(rowdata)):
                 data = rowdata[i] is not None and rowdata[i] or ''
                 self.SetItem(row, i, data)

@@ -235,3 +235,14 @@ def get_english_label(lang, label):
         return label
     en_label = list(mlang.settings.values())[index]
     return en_label
+
+
+def get_localized_setting(language: [], english_name: str):
+    if not language:
+        return english_name
+    settings = get_settings_for(language, (english_name,))
+    try:
+        result = list(settings.keys())[list(settings.values()).index(english_name)]
+    except ValueError:
+        return english_name
+    return result

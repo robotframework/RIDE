@@ -15,21 +15,10 @@
 
 from multiprocessing import shared_memory
 from robotide.lib.robot.utils import is_string, unicode
-from robotide.lib.compat.parsing import language as lang
+from robotide.lib.compat.parsing.language import get_localized_setting
 
 from .comments import Comment
 from ..version import ALIAS_MARKER
-
-
-def get_localized_setting(language: [], english_name: str):
-    if not language:
-        return english_name
-    settings = lang.get_settings_for(language, (english_name,))
-    try:
-        result = list(settings.keys())[list(settings.values()).index(english_name)]
-    except ValueError:
-        return english_name
-    return result
 
 
 class Setting(object):
