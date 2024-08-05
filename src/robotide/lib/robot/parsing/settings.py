@@ -101,7 +101,7 @@ class Setting(object):
     def _populate(self, value):
         # self.value.append(self._string_value(value))
         if value and isinstance(value, list):
-            value = [x.strip() for x in value if x != '']
+            value = [x.strip() for x in value if x != '' and x != '...']  # Remove ... from list
         self.value = value
 
     def is_set(self):
@@ -218,7 +218,7 @@ class Fixture(Setting):
 
     def _populate(self, value):
         if value and isinstance(value, list):
-            value = [x.strip() for x in value if x != '']
+            value = [x.strip() for x in value if x != '' and x != '...']  # Remove ... from list
         if not self.name:
             self.name = value[0] if value else ''
             value = value[1:]
@@ -389,6 +389,7 @@ class Library(ImportSetting):
         if args and not alias:
             args, alias = self._split_possible_alias(args)
         self.setting_name = get_localized_setting(parent.language, 'Library')
+        # print(f"DEBUG: settings.py Library {self.setting_name=}")
         ImportSetting.__init__(self, parent, name, args, alias, comment)
 
     @staticmethod
@@ -418,6 +419,7 @@ class Resource(ImportSetting):
             self.setting_name = get_localized_setting(parent.language, 'Resource')
         except AttributeError:  # Unit tests were failing here
             self.setting_name = get_localized_setting(None, 'Resource')
+        # print(f"DEBUG: settings.py Resource {self.setting_name=}")
         ImportSetting.__init__(self, parent, name, comment=comment)
 
 
@@ -430,6 +432,7 @@ class Variables(ImportSetting):
         if args and not name:
             name = args.pop(0)
         self.setting_name = get_localized_setting(parent.language, 'Variables')
+        # print(f"DEBUG: settings.py Variables {self.setting_name=}")
         ImportSetting.__init__(self, parent, name, args, comment=comment)
 
 

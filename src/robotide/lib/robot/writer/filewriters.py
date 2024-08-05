@@ -83,6 +83,8 @@ class _DataFileWriter(object):
             # print(f"DEBUG: filewriters.py _write_table COMMENTS: {table}")
             if table.is_started():
                 self._write_lines(table.section_comments)
+                # if len(table.section_comments[-1]) == 0:
+            return  # Don't add empty line
         else:
             self._write_rows(self._formatter.format_table(table))
         if not is_last:  # DEBUG: make this configurable
