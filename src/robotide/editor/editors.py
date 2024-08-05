@@ -51,7 +51,7 @@ class WelcomePage(HtmlWindow):
         self.Destroy()
 
 
-class EditorPanel(wx.Panel):
+class EditorPanel(wx.lib.scrolledpanel.ScrolledPanel):
     """Base class for all editor panels"""
     # DEBUG: Move outside default editor package, document
     name = doc = ''
@@ -60,7 +60,7 @@ class EditorPanel(wx.Panel):
         = show_content_assist = lambda self: None
 
     def __init__(self, plugin, parent, controller, tree):
-        wx.Panel.__init__(self, parent)
+        wx.lib.scrolledpanel.ScrolledPanel.__init__(self, parent)
         from ..preferences import RideSettings
         _settings = RideSettings()
         self.general_settings = _settings['General']
@@ -106,6 +106,7 @@ class _RobotTableEditor(EditorPanel):
         self._reset_last_show_tooltip()
         self._populate()
         self.plugin.subscribe(self._settings_changed, RideItemSettingsChanged)
+        self.SetupScrolling()
 
     @abstractmethod
     def _populate(self):
@@ -282,6 +283,7 @@ class Settings(wx.CollapsiblePane):
             self._editors.append(editor)
             editor.Refresh()
         self.GetPane().SetSizer(self._sizer)
+        self._sizer.Layout()
 
     def _recalc_size(self, event=None):
         expand_button_height = 34

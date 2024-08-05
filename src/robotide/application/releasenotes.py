@@ -193,6 +193,7 @@ version 4.2.1, which we now <em>recommend</em>.</li>
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
+<li>Fixed obsfuscation of Libraries and Metadata panels when expanding Settings in Grid Editor and Linux systems.</li>
 <li>Allow to do auto-suggestions of keywords in Text Editor without a shortcut, if you want to enable or disable 
 this feature you can config in `Tools -> Preferences -> Text Editor -> Enable auto suggestions`.</li>
 <li>Added support for Setup in keywords, since Robot Framework version 7.0.</li>
@@ -265,7 +266,7 @@ all caps in Grid Editor</li>
 ARROW_RIGHT</li>
 <li>Improve Text Editor auto-suggestions by using: selected text, text at left or at right of cursor</li>
 </ul>
-<p>We hope to implement or complete features and make fixes on next major version 2.1 (in the end of 2023).</p>
+<p>We hope to implement or complete features and make fixes on next major version 2.1 (in end of Summer of 2024).</p>
 <p><strong>The minimal wxPython version is, 4.0.7, and RIDE supports the current version, 4.2.1.</strong></p>
 <p><em>Linux users are advised to install first wxPython from .whl package at</em> <a class="reference external"
  href="https://extras.wxpython.org/wxPython4/extras/linux/gtk3/">wxPython.org</a>, or by using the system package
