@@ -2,6 +2,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>Changelog</title><link rel="stylesheet" type="text/css" href="docbook-xsl.css" /><meta name="generator" content="DocBook XSL Stylesheets Vsnapshot" /></head><body><div xml:lang="en" class="article" lang="en"><div class="titlepage"><div><div><h2 class="title"><a id="id1337"></a>Changelog</h2></div></div><hr /></div><p>All notable changes to this project will be documented in this file.</p><p>The format is based on <a class="ulink" href="http://keepachangelog.com/en/1.0.0/" target="_top">Keep a Changelog</a>
 and this project adheres to <a class="ulink" href="http://semver.org/spec/v2.0.0.html" target="_top">Semantic Versioning</a>.</p><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_ulink_url_https_github_com_robotframework_ride_unreleased_ulink"></a>1. <a class="ulink" href="https://github.com/robotframework/RIDE" target="_top">Unreleased</a></h2></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_changed"></a>1.1. Changed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
 Allow to do auto-suggestions of keywords in Text Editor without a shortcut, if you want to enable or disable this feature you can config in <code class="literal">Tools -&gt; Preferences -&gt; Text Editor -&gt; Enable auto suggestions</code>.
+</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_fixed"></a>1.2. Fixed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+Fixed obsfuscation of Libraries and Metadata panels when expanding Settings in Grid Editor and Linux systems.
 </li></ul></div></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_ulink_url_https_github_com_robotframework_ride_blob_master_doc_releasenotes_ride_2_1a3_rst_2_1a3_ulink_2024_07_22"></a>2. <a class="ulink" href="https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.1a3.rst" target="_top">2.1a3</a> - 2024-07-22</h2></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_added"></a>2.1. Added</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
 Added support for Setup in keywords, since Robot Framework version 7.0.
 </li><li class="listitem">
@@ -43,7 +45,7 @@ Fields are shown in the language of the files in Grid Editor (will be configurab
 Tooltips for the fields are always shown in English.
 </li><li class="listitem">
 Colorization for language configured files is working in Text Editor.
-</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_fixed"></a>2.2. Fixed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_fixed_2"></a>2.2. Fixed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
 Fixed multiline variables in Variables section. In Text Editor they are separated by … continuation marker.
 In Grid Editor use | (pipe) to separate lines.
 </li><li class="listitem">
@@ -89,7 +91,7 @@ Added exclusion of monitoring filesystem changes for files and directories exclu
 Added variables creation shortcuts (``Ctrl-1,2,5``) to fields Arguments in Grid Editor
 </li><li class="listitem">
 Added support for JSON variables, by using the installed Robot Framework import method
-</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_fixed_2"></a>3.2. Fixed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_fixed_3"></a>3.2. Fixed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
 Fixed escaped spaces showing in Text Editor on commented cells
 </li><li class="listitem">
 Fixed resource files dissapearing from Project tree on Windows
@@ -130,7 +132,7 @@ Added context menu to RIDE tray icon. Options Show, Hide and Close
 </li><li class="listitem">
 Added sincronization with Project Explorer to navigate to selected item, Test Case, Keyword, Variable, in Text Editor
   Note: This feature is working fine in Fedora 38, but not on Windows and macOS.
-</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_fixed_3"></a>4.2. Fixed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_fixed_4"></a>4.2. Fixed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
 Fixed non syncronized expanding/collapse of Settings panel in Grid Editor, on Linux
 </li><li class="listitem">
 Fixed not working the deletion of cells commented with ``\# `` in Grid Editor with ``Ctrl-Shift-D``
@@ -164,13 +166,13 @@ Added note on Test Timeout that <span class="strong"><strong>timeout message</st
 Added the note, <span class="emphasis"><em>Colors will be active after next RIDE restart.</em></span> to the Preferences of Test Runner.
 </li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_changed_6"></a>6.2. Changed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
 Changed alias marker on library imports to consider variable ``ROBOT_VERSION``. If version is lower than 6.0, uses ``<span class="emphasis"><em>WITH NAME</em></span>``, otherwise will use ``<span class="emphasis"><em>AS</em></span>``
-</li></ul></div></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_fixed_4"></a>7. Fixed</h2></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+</li></ul></div></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_fixed_5"></a>7. Fixed</h2></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
 Fixed auto-indent on block commands in Text Editor
 </li></ul></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_ulink_url_https_github_com_robotframework_ride_blob_master_doc_releasenotes_ride_2_0_3_rst_2_0_3_ulink_2023_04_16"></a>8. <a class="ulink" href="https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.0.3.rst" target="_top">2.0.3</a> - 2023-04-16</h2></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_changed_7"></a>8.1. Changed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
 Allow to do auto-suggestions of keywords in Grid Editor without a shortcut, if you want to enable or disable this feature you can config in <code class="literal">Tools-&gt; Preferences -&gt; Grid Editor -&gt; Enable auto suggestions</code>
 </li><li class="listitem">
 Made ``\\n`` visible when editing cells in Grid Editor (problematic in Windows)
-</li></ul></div></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_fixed_5"></a>9. Fixed</h2></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+</li></ul></div></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_fixed_6"></a>9. Fixed</h2></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
 Fixed missing auto-enclosing when in Cell Editor in Linux
 </li><li class="listitem">
 Fixed RIDE will crash when using third party input method in Mac OS
@@ -272,7 +274,7 @@ Fixed missing newlines in sections separation
 - Changed icon background to white
 - Made Project Tree and File Explorer panels, Plugins.
 - wx.NewId() to wx.NewIdRef()
-- Separated AppendText for Messages Log</pre></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_fixed_6"></a>10.4. Fixed</h3></div></div></div><pre class="literallayout">  (2.0rc1 - 2023-02-26)
+- Separated AppendText for Messages Log</pre></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_fixed_7"></a>10.4. Fixed</h3></div></div></div><pre class="literallayout">  (2.0rc1 - 2023-02-26)
 - Fixed blank Grid Editor at keywords with steps commented with ``\# ``, by using ``Ctrl-Shift-3 on Text Editor
   (2.0b3 - 2023-01-15)
 . Fixed low performance when opening large projects
@@ -354,7 +356,7 @@ Added insert and delete cells to Text Editor, by using ``Ctrl-Shift-I`` and ``Ct
 Added move up and move down rows to Text Editor, by using ``Alt-Up`` and ``Alt-Down``
 </li><li class="listitem">
 Added insert and delete rows to Text Editor, by using ``Ctrl-I`` and ``Ctrl-D``
-</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_removed_4"></a>11.2. Removed</h3></div></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_changed_9"></a>11.3. Changed</h3></div></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_fixed_7"></a>11.4. Fixed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_removed_4"></a>11.2. Removed</h3></div></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_changed_9"></a>11.3. Changed</h3></div></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_fixed_8"></a>11.4. Fixed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
 Fixed blank Grid Editor at keywords with steps commented with ``\# ``, by using ``Ctrl-Shift-3 on Text Editor
 </li></ul></div></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_ulink_url_https_github_com_robotframework_ride_blob_master_doc_releasenotes_ride_2_0b3_rst_2_0b3_ulink_2023_01_15"></a>12. <a class="ulink" href="https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.0b3.rst" target="_top">2.0b3</a> - 2023-01-15</h2></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_added_8"></a>12.1. Added</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
 Added swap row up, by using ``Ctrl-T``
@@ -371,7 +373,7 @@ Disabled the Close button on the Test Suites explorer
   This was causing not being possible to restore it, unless editing the settings.cfg file.
   Other reason was to prevent user to closing it, after detaching the panel, and re-attaching,
   which has a bug making the Tree not visible.
-</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_fixed_8"></a>12.4. Fixed</h3></div></div></div><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p class="simpara">
+</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_fixed_9"></a>12.4. Fixed</h3></div></div></div><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p class="simpara">
 Fixed low performance when opening large projects
 </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
 Fixed comment and uncomment in Grid Editor when cells contain more than one variables assignement
@@ -481,7 +483,7 @@ To edit cell use F2 or Double-Click
 Changed Enter button in navigation mode to start editing cell, and to move to right cell when in edit mode
 </li><li class="listitem">
 Performance improvements for loading large test suites
-</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_fixed_9"></a>13.4. Fixed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_fixed_10"></a>13.4. Fixed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
 Fixed missing menu icons on Linux (was working on Windows)
 </li><li class="listitem">
 Fixed removal of animation in Project tree when test run is interrupted
@@ -590,7 +592,7 @@ Made Project Tree and File Explorer panels, Plugins.
 wx.NewId() to wx.NewIdRef()
 </li><li class="listitem">
 Separated AppendText for Messages Log
-</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_fixed_10"></a>14.4. Fixed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_fixed_11"></a>14.4. Fixed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
 Fixed editing cells in Grid Editor on wxPython 4.1
 </li><li class="listitem">
 Fixed not saving file after deleting text in Text Editor
@@ -656,6 +658,6 @@ wxPython version locked up to 4.0.7.post2.
 None
 </li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_changed_13"></a>15.3. Changed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
 None
-</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_fixed_11"></a>15.4. Fixed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a id="_fixed_12"></a>15.4. Fixed</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
 None
 </li></ul></div></div></div></div></body></html>
