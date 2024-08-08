@@ -2060,6 +2060,13 @@ class RobotDataEditor(stc.StyledTextCtrl):
         self.SetLexer(stc.STC_LEX_CONTAINER)
         self.SetReadOnly(True)
         self.SetUseTabs(False)
+        caret_colour = self._settings[PLUGIN_NAME].get('setting', 'black')
+        self._background = self._settings[PLUGIN_NAME].get('background', 'white')
+        caret_colour = self.get_visible_color(caret_colour)
+        self.SetCaretForeground(Colour(caret_colour))
+        caret_style = self._settings[PLUGIN_NAME].get('caret style', 'block')
+        caret_style = stc.STC_CARETSTYLE_BLOCK if caret_style.lower() == 'block' else stc.STC_CARETSTYLE_LINE
+        self.SetCaretStyle(caret_style)
         self.SetTabWidth(parent.tab_size)
         self.Bind(stc.EVT_STC_UPDATEUI, self.on_update_ui)
         self.Bind(stc.EVT_STC_STYLENEEDED, self.on_style)
@@ -2168,7 +2175,7 @@ class RobotDataEditor(stc.StyledTextCtrl):
     def calc_margin_width(self):
         style = stc.STC_STYLE_LINENUMBER
         width = self.TextWidth(style, str(self.GetLineCount()))
-        return width + self.TextWidth(style, "1")
+        return width + self.TextWidth(style, "M")
 
     def get_selected_or_near_text(self, keep_cursor_pos=False):
         content = set()
@@ -2332,6 +2339,18 @@ class RobotDataEditor(stc.StyledTextCtrl):
             self._information_popup.show_at(position)
             self._old_details = details
 
+    def get_visible_color(self, colour):
+        color_diff1 = abs(Colour.GetRGBA(Colour(colour)) - Colour.GetRGBA(Colour(self._background)))
+        color_diff2 = abs(Colour.GetRGBA(Colour('gray')) - Colour.GetRGBA(Colour(self._background)))
+        color_diff3 = abs(Colour.GetRGBA(Colour(colour)) - Colour.GetRGBA(Colour('gray')))
+        if color_diff1 > color_diff2:
+            return Colour(colour)
+        elif color_diff2 > color_diff3:
+            return Colour('gray')
+        elif color_diff1 < color_diff3:
+            return Colour(colour)
+        return Colour('black')
+
 
 class FromStringIOPopulator(robotapi.populators.FromFilePopulator):
 
@@ -2377,6 +2396,12 @@ class RobotStylizer(object):
         if section == PLUGIN_NAME:
             self.set_styles(self._readonly)  # DEBUG: When on read-only file changing background color ignores flag
             self.editor.autocomplete = self.settings[PLUGIN_NAME].get(AUTO_SUGGESTIONS, False)
+            caret_colour = self.settings[PLUGIN_NAME].get('setting', 'black')
+            caret_colour = self.editor.get_visible_color(caret_colour)
+            self.editor.SetCaretForeground(Colour(caret_colour))
+            caret_style = self.settings[PLUGIN_NAME].get('caret style', 'block')
+            caret_style = stc.STC_CARETSTYLE_BLOCK if caret_style.lower() == 'block' else stc.STC_CARETSTYLE_LINE
+            self.editor.SetCaretStyle(caret_style)
 
     def _font_size(self):
         return self.settings[PLUGIN_NAME].get('font size', 10)
