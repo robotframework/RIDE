@@ -158,7 +158,7 @@ RELEASE_NOTES = f"""
 <li>This version supports Python 3.8 up to 3.12.</li>
 <li>There are some changes, or known issues:<ul>
 <li>❌ - Removed support for Python 3.6 and 3.7</li>
-<li>✔ - Added <b>caret style/b> to change insert caret to 'block' or 'line' in Text Editor, by editing 
+<li>✔ - Added <b>caret style</b> to change insert caret to 'block' or 'line' in Text Editor, by editing 
 <em>settings.cfg</em>. The color of the caret is the same as 'setting' and will be adjusted for better contrast with the
  background.</li>
 <li>🐞 - When starting RIDE from <b>ride</b> script or executable, when closing RIDE restarts before definite close.</li>
@@ -196,7 +196,7 @@ version 4.2.1, which we now <em>recommend</em>.</li>
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
-<li>Added <b>caret style/b> to change insert caret to 'block' or 'line' in Text Editor, by editing 
+<li>Added <b>caret style</b> to change insert caret to 'block' or 'line' in Text Editor, by editing 
 <em>settings.cfg</em>. The color of the caret is the same as 'setting' and will be adjusted for better contrast with the
  background.</li>
 <li>Fixed obsfuscation of Libraries and Metadata panels when expanding Settings in Grid Editor and Linux systems.</li>
