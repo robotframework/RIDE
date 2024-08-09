@@ -12,7 +12,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 === Added
 
 - Added option ``caret style`` to change insert caret to `block` or `line` in Text Editor, by editing ``settings.cfg``.
-The color of the caret is the same as `setting` and will be adjusted for better contrast with the backgound.
+The color of the caret is the same as `setting` and will be adjusted for better contrast with the background.
 
 === Changed
 
@@ -20,6 +20,7 @@ The color of the caret is the same as `setting` and will be adjusted for better 
 
 === Fixed
 
+- Fixed delete variable from Test Suite settings remaining in Project Explorer.
 - Fixed obsfuscation of Libraries and Metadata panels when expanding Settings in Grid Editor and Linux systems.
 
 == https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.1a3.rst[2.1a3] - 2024-07-22
@@ -47,7 +48,7 @@ localized sections only stay translated after Apply in Text Editor.
 higher. Major translations are: Dutch, Portuguese and Brazilian Portuguese. Language is selected from
 Tools->Preferences->General.
 - Added support for language configured test suites, with installed Robot Framework version 6.1 or higher.
-- Fields are shown in the language of the files in Grid Editor (will be configurable if future versions).
+- Fields are shown in the language of the files in Grid Editor (will be configurable in future versions).
 - Tooltips for the fields are always shown in English.
 - Colorization for language configured files is working in Text Editor.
 

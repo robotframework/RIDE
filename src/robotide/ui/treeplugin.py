@@ -696,9 +696,8 @@ class Tree(treemixin.DragAndDrop, customtreectrl.CustomTreeCtrl, wx.Panel):
             return
         parent = self.GetItemParent(node)
         self.controller.mark_node_dirty(parent)
-        if self.IsSelected(node):
-            self.Delete(node)
-            wx.CallAfter(self.SelectItem, parent)
+        self.Delete(node)
+        wx.CallAfter(self.SelectItem, parent)
 
     def _data_dirty(self, message):
         self.controller.mark_controller_dirty(message.datafile)
