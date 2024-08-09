@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2024-07-27 00:24+0100\n"
+"POT-Creation-Date: 2024-08-09 23:52+0100\n"
 "PO-Revision-Date: 2024-07-17 01:27\n"
 "Last-Translator: \n"
 "Language-Team: Finnish\n"
@@ -553,7 +553,7 @@ msgstr "Lisää tunniste valittuun"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/controller/ui/treecontroller.py:55
 #: /home2/helio/github/RIDE/tools/../src/robotide/controller/ui/treecontroller.py:57
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/listeditor.py:37
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/listeditor.py:39
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:108
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:644
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/actiontriggers.py:54
@@ -1125,17 +1125,17 @@ msgstr "Kopioi Käyttäjän Avainsana"
 msgid "New User Keyword"
 msgstr "Uusi Käyttäjän Avainsana"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editors.py:162
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editors.py:394
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editors.py:163
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editors.py:396
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:195
 msgid " (READ ONLY)"
 msgstr " LUE VAIN"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editors.py:224
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editors.py:225
 msgid "Settings"
 msgstr "Asetukset"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editors.py:344
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editors.py:346
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:61
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:85
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:355
@@ -1143,7 +1143,7 @@ msgstr "Asetukset"
 msgid "Source"
 msgstr "Lähde"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editors.py:381
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editors.py:383
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:207
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:476
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:741
@@ -1171,12 +1171,12 @@ msgid "Insert Cells\tCtrl-Shift-I"
 msgstr "Lisää Soluja      Ctrl-Shift-I"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:87
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:357
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:358
 msgid "Insert Rows\tCtrl-I"
 msgstr "Insert Rows       Ctrl-I"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:87
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:358
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:359
 msgid "Delete Rows\tCtrl-D"
 msgstr "Poista Rivejä       Ctrl-D"
 
@@ -1217,7 +1217,7 @@ msgid "Extract Variable"
 msgstr "Pura Muuttuja"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:95
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1153
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1156
 msgid "Rename Keyword"
 msgstr "Nimeä Avainsana Uudelleen"
 
@@ -1254,12 +1254,12 @@ msgid "Make Dict Variable\tCtrl-5"
 msgstr "Tee Dict Muuttuja      Ctrl-5"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:108
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:360
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:361
 msgid "Comment Cells\tCtrl-Shift-3"
 msgstr "Kommentti Solut      Ctrl-Shift-3"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:109
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:361
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:362
 msgid "Uncomment Cells\tCtrl-Shift-4"
 msgstr "Kommentin Poisto Kennoista      Ctrl-Shift-4"
 
@@ -1268,31 +1268,31 @@ msgid "Move Cursor Down\tAlt-Enter"
 msgstr "Siirrä Kohdistinta Alas      Alt-Enter"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:112
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:352
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:353
 msgid "Comment Rows\tCtrl-3"
 msgstr "Kommentti Rivit      Ctrl-3"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:113
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:353
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:354
 msgid "Uncomment Rows\tCtrl-4"
 msgstr "Kommentoi Rivejä      Ctrl-4"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:114
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:354
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:355
 msgid "Move Rows Up\tAlt-Up"
 msgstr "Siirrä Rivit Ylös Alt-Up"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:115
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:355
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:356
 msgid "Move Rows Down\tAlt-Down"
 msgstr "Siirrä Rivit Alas       Alt-Down"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:116
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:356
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:357
 msgid "Swap Row Up\tCtrl-T"
 msgstr "Vaihda Rivi Ylös      Ctrl-T"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:917
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:920
 msgid ""
 "<b>Keyword was not detected by RIDE</b>\n"
 "        <br>Possible corrections:<br>\n"
@@ -1323,44 +1323,44 @@ msgstr ""
 "Framework.</li>\n"
 "        </ul>"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1153
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1156
 msgid "New name"
 msgstr "Uusi nimi"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1165
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1168
 msgid "Save"
 msgstr "Tallenna"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1166
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1169
 msgid "Cancel"
 msgstr "Peruuta"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1192
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1195
 msgid "Error in JSON:"
 msgstr "Virhe JSON:"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1192
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1195
 msgid "Save anyway?"
 msgstr "Tallennetaanko silti?"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1193
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1196
 msgid "Validation Error!"
 msgstr "Vahvistus Virhe!"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1334
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1337
 msgid "Please select what you want to check for usage"
 msgstr "Ole hyvä ja valitse mitä haluat käyttää"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1337
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1340
 msgid "Complete cell content"
 msgstr "Täydellinen solun sisältö"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1338
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1341
 msgid "Variable "
 msgstr "Muuttuja "
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1350
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:668
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1353
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:669
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:49
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:127
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:184
@@ -1369,7 +1369,7 @@ msgstr "Muuttuja "
 msgid "Search"
 msgstr "Etsi"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/listeditor.py:37
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/listeditor.py:39
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/tagdialogs.py:233
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:368
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:667
@@ -1377,13 +1377,13 @@ msgstr "Etsi"
 msgid "Delete"
 msgstr "Poista"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/listeditor.py:37
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/listeditor.py:39
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:663
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:764
 msgid "Move Up\tCtrl-Up"
 msgstr "Siirrä       Ctrl-Ylös"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/listeditor.py:37
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/listeditor.py:39
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:664
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:765
 msgid "Move Down\tCtrl-Down"
@@ -1488,35 +1488,35 @@ msgstr "Lisää Metatiedot"
 msgid "Text Edit"
 msgstr "Tekstin Muokkaus"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:467
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:468
 msgid "ERROR: Data sanity check failed!"
 msgstr "VIRHE: Tietojen saniteettitarkistus epäonnistui!"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:467
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:468
 msgid "Error at line"
 msgstr "Virhe rivillä"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:468
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:469
 msgid "Reset changes?"
 msgstr "Palauta muutokset?"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:469
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:470
 msgid "Can not apply changes from Text Editor"
 msgstr "Tekstieditorista ei voi käyttää muutoksia"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:651
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:652
 msgid "Apply Changes"
 msgstr "Ota Muutokset Käyttöön"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:678
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:679
 msgid "Syntax colorization disabled due to missing requirements."
 msgstr "Syntaksin väritys poistettiin käytöstä puuttuvien vaatimusten vuoksi."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:679
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:680
 msgid "Get help"
 msgstr "Hae apua"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:694
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:695
 msgid ""
 "<h1>Syntax colorization</h1>\n"
 "        <p>\n"
@@ -1576,11 +1576,11 @@ msgstr ""
 "        </p>\n"
 "        "
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:719
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:720
 msgid "Getting syntax colorization"
 msgstr "Haetaan syntaksin väristämistä"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:818
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:819
 msgid "No matches found."
 msgstr "Vastaavuuksia ei löytynyt."
 
