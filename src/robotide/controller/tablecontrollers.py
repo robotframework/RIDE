@@ -151,8 +151,7 @@ class VariableTableController(_TableController, WithListOperations):
 
     def notify_variable_removed(self, ctrl):
         self.datafile_controller.update_namespace()
-        RideVariableRemoved(datafile=self.datafile,
-                            name=ctrl.name, item=ctrl).publish()
+        RideVariableRemoved(datafile=self.datafile, name=ctrl.name, item=ctrl).publish()
 
     def contains_variable(self, name):
         vars_as_list = []
