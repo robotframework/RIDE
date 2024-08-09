@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2024-07-27 00:24+0100\n"
+"POT-Creation-Date: 2024-08-09 23:52+0100\n"
 "PO-Revision-Date: 2024-07-17 01:27\n"
 "Last-Translator: \n"
 "Language-Team: Czech\n"
@@ -549,7 +549,7 @@ msgstr "Přidat značku k vybranému"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/controller/ui/treecontroller.py:55
 #: /home2/helio/github/RIDE/tools/../src/robotide/controller/ui/treecontroller.py:57
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/listeditor.py:37
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/listeditor.py:39
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:108
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:644
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/actiontriggers.py:54
@@ -1129,17 +1129,17 @@ msgstr "Kopírovat klíčové slovo uživatele"
 msgid "New User Keyword"
 msgstr "Klíčové slovo nového uživatele"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editors.py:162
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editors.py:394
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editors.py:163
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editors.py:396
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:195
 msgid " (READ ONLY)"
 msgstr " POUZE ČTOVAT"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editors.py:224
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editors.py:225
 msgid "Settings"
 msgstr "Nastavení"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editors.py:344
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editors.py:346
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:61
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:85
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:355
@@ -1147,7 +1147,7 @@ msgstr "Nastavení"
 msgid "Source"
 msgstr "Zdroj"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editors.py:381
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/editors.py:383
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:207
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:476
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:741
@@ -1175,12 +1175,12 @@ msgid "Insert Cells\tCtrl-Shift-I"
 msgstr "Vložit buňky Ctrl-Shift-I"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:87
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:357
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:358
 msgid "Insert Rows\tCtrl-I"
 msgstr "Insert Rows\tCtrl-I"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:87
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:358
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:359
 msgid "Delete Rows\tCtrl-D"
 msgstr "Odstranit řádky Ctrl-D"
 
@@ -1221,7 +1221,7 @@ msgid "Extract Variable"
 msgstr "Extrahovat proměnnou"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:95
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1153
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1156
 msgid "Rename Keyword"
 msgstr "Přejmenovat klíčové slovo"
 
@@ -1258,12 +1258,12 @@ msgid "Make Dict Variable\tCtrl-5"
 msgstr "Vytvořit Dict proměnnou Ctrl-5"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:108
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:360
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:361
 msgid "Comment Cells\tCtrl-Shift-3"
 msgstr "Buňka komentářeCtrl-Shift-3"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:109
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:361
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:362
 msgid "Uncomment Cells\tCtrl-Shift-4"
 msgstr "Vrátit buňku Ctrl-Shift-4"
 
@@ -1272,31 +1272,31 @@ msgid "Move Cursor Down\tAlt-Enter"
 msgstr "Přesunout kurzor dolů\tAlt-Enter"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:112
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:352
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:353
 msgid "Comment Rows\tCtrl-3"
 msgstr "Řádky komentáře Ctrl-3"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:113
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:353
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:354
 msgid "Uncomment Rows\tCtrl-4"
 msgstr "Zrušit komentář řádků Ctrl-4"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:114
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:354
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:355
 msgid "Move Rows Up\tAlt-Up"
 msgstr "Přesunout řádky nahoru, Alt-Up"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:115
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:355
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:356
 msgid "Move Rows Down\tAlt-Down"
 msgstr "Přesunout řádky dolů\tAlt-Down"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:116
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:356
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:357
 msgid "Swap Row Up\tCtrl-T"
 msgstr "Prohodit řádek nahoru, Ctrl-T"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:917
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:920
 msgid ""
 "<b>Keyword was not detected by RIDE</b>\n"
 "        <br>Possible corrections:<br>\n"
@@ -1328,44 +1328,44 @@ msgstr ""
 "Framework.</li>\n"
 "        </ul>"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1153
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1156
 msgid "New name"
 msgstr "Nové jméno"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1165
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1168
 msgid "Save"
 msgstr "Uložit"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1166
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1169
 msgid "Cancel"
 msgstr "Zrušit"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1192
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1195
 msgid "Error in JSON:"
 msgstr "Chyba v JSON:"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1192
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1195
 msgid "Save anyway?"
 msgstr "Přesto uložit?"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1193
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1196
 msgid "Validation Error!"
 msgstr "Chyba ověření!"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1334
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1337
 msgid "Please select what you want to check for usage"
 msgstr "Vyberte, co chcete zkontrolovat pro použití"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1337
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1340
 msgid "Complete cell content"
 msgstr "Úplný obsah buňky"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1338
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1341
 msgid "Variable "
 msgstr "Proměnná "
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1350
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:668
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:1353
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:669
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:49
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:127
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:184
@@ -1374,7 +1374,7 @@ msgstr "Proměnná "
 msgid "Search"
 msgstr "Hledat"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/listeditor.py:37
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/listeditor.py:39
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/tagdialogs.py:233
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:368
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:667
@@ -1382,13 +1382,13 @@ msgstr "Hledat"
 msgid "Delete"
 msgstr "Vymazat"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/listeditor.py:37
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/listeditor.py:39
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:663
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:764
 msgid "Move Up\tCtrl-Up"
 msgstr "Přesunout nahoru Ctrl-Up"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/listeditor.py:37
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/listeditor.py:39
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:664
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:765
 msgid "Move Down\tCtrl-Down"
@@ -1493,35 +1493,35 @@ msgstr "Přidat metadata"
 msgid "Text Edit"
 msgstr "Upravit text"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:467
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:468
 msgid "ERROR: Data sanity check failed!"
 msgstr "CHYBA: Kontrola správnosti dat selhala!"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:467
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:468
 msgid "Error at line"
 msgstr "Chyba na řádku"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:468
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:469
 msgid "Reset changes?"
 msgstr "Obnovit změny?"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:469
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:470
 msgid "Can not apply changes from Text Editor"
 msgstr "Nelze použít změny z textového editoru"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:651
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:652
 msgid "Apply Changes"
 msgstr "Použít změny"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:678
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:679
 msgid "Syntax colorization disabled due to missing requirements."
 msgstr "Barvení syntaxe zakázáno kvůli chybějícím požadavkům."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:679
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:680
 msgid "Get help"
 msgstr "Získat pomoc"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:694
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:695
 msgid ""
 "<h1>Syntax colorization</h1>\n"
 "        <p>\n"
@@ -1582,11 +1582,11 @@ msgstr ""
 "        </p>\n"
 "        "
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:719
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:720
 msgid "Getting syntax colorization"
 msgstr "Získávám barvení syntaxe"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:818
+#: /home2/helio/github/RIDE/tools/../src/robotide/editor/texteditor.py:819
 msgid "No matches found."
 msgstr "Nebyly nalezeny žádné shody."
 
