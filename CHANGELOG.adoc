@@ -20,6 +20,7 @@ The color of the caret is the same as `setting` and will be adjusted for better 
 
 === Fixed
 
+- Fixed delete variable from Test Suite settings remaining in Project Explorer.
 - Fixed obsfuscation of Libraries and Metadata panels when expanding Settings in Grid Editor and Linux systems.
 
 == https://github.com/robotframework/RIDE/blob/master/doc/releasenotes/ride-2.1a3.rst[2.1a3] - 2024-07-22

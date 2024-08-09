@@ -196,6 +196,7 @@ version 4.2.1, which we now <em>recommend</em>.</li>
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
+<li>Fixed delete variable from Test Suite settings remaining in Project Explorer.</li>
 <li>Added <b>caret style</b> to change insert caret to 'block' or 'line' in Text Editor, by editing 
 <em>settings.cfg</em>. The color of the caret is the same as 'setting' and will be adjusted for better contrast with the
  background.</li>
@@ -321,7 +322,7 @@ python -m robotide.__init__
 <pre class="literal-block">
 python -m robotide.postinstall -install
 </pre>
-<p>RIDE {VERSION} was released on 08/August/2024.</p>
+<p>RIDE {VERSION} was released on 09/August/2024.</p>
 <!-- <br/>
 <h3>May The Fourth Be With You!</h3>
 <h3>Celebrate the bank holiday, 10th June, Day of Portugal, Portuguese Communities and Camões!!</h3>
