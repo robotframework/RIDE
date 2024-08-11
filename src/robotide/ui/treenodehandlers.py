@@ -104,6 +104,9 @@ class _ActionHandler:
         return self._node
 
     def show_popup(self):
+        node = self._tree.controller.find_node_by_controller(self.controller)
+        if node:
+            wx.CallLater(500, self._tree.SelectItem, node)
         self._popup_creator.show(self._tree, PopupMenuItems(self, self._actions, self._actions_nt), self.controller)
 
     @staticmethod
