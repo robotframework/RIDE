@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2024-08-09 23:52+0100\n"
+"POT-Creation-Date: 2024-08-11 11:13+0100\n"
 "PO-Revision-Date: 2024-07-17 01:27\n"
 "Last-Translator: \n"
 "Language-Team: Romanian\n"
@@ -1172,8 +1172,8 @@ msgstr "Sursa"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editors.py:383
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:207
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:476
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:741
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:479
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:744
 msgid "Find Usages"
 msgstr "Găsește utilizări"
 
@@ -1399,21 +1399,21 @@ msgstr "Caută"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/listeditor.py:39
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/tagdialogs.py:233
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:368
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:667
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:768
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:371
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:670
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:771
 msgid "Delete"
 msgstr "Ștergere"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/listeditor.py:39
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:663
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:764
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:666
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:767
 msgid "Move Up\tCtrl-Up"
 msgstr "Mutați \tCtrl-up"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/listeditor.py:39
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:664
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:765
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:667
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:768
 msgid "Move Down\tCtrl-Down"
 msgstr "Mută Down\tCtrl-Jos"
 
@@ -2166,9 +2166,16 @@ msgstr ""
 "sau 'robot --help' pentru mai multe informații."
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:96
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:846
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:849
 msgid "Include"
 msgstr "Include"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:117
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:389
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:485
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:577
+msgid "Exclude"
+msgstr "Excludere"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:139
 #: /home2/helio/github/RIDE/tools/../src/robotide/searchtests/dialogsearchtests.py:189
@@ -2478,7 +2485,7 @@ msgid "Saved all files"
 msgstr "Toate fişierele salvate"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:200
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:228
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:231
 msgid "Validation Error"
 msgstr "Eroare de validare"
 
@@ -2815,94 +2822,88 @@ msgid "Delete a tag '%s' ?"
 msgstr "Ștergeți eticheta '%s' ?"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/tagdialogs.py:276
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:642
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:645
 msgid "Confirm"
 msgstr "Confirmare"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:238
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:344
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:241
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:347
 msgid "New Resource"
 msgstr "Resursă nouă"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:342
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:345
 msgid "New Suite\tCtrl-Shift-F"
 msgstr "Suite nou\tCtrl-Shift-F"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:343
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:346
 msgid "New Directory"
 msgstr "Director nou"
-
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:346
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:468
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:555
-msgid "New User Keyword\tCtrl-Shift-K"
-msgstr "Cuvinte cheie noi\tCtrl-Shift-K"
-
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:347
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:469
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:556
-msgid "New Scalar\tCtrl-Shift-V"
-msgstr "Scalar Nou\tCtrl-Shift-V"
-
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:348
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:470
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:557
-msgid "New List Variable\tCtrl-Shift-L"
-msgstr "Noua listă Variabilă\tCtrl-Shift-L"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:349
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:471
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:558
+msgid "New User Keyword\tCtrl-Shift-K"
+msgstr "Cuvinte cheie noi\tCtrl-Shift-K"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:350
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:472
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:559
+msgid "New Scalar\tCtrl-Shift-V"
+msgstr "Scalar Nou\tCtrl-Shift-V"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:351
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:473
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:560
+msgid "New List Variable\tCtrl-Shift-L"
+msgstr "Noua listă Variabilă\tCtrl-Shift-L"
+
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:352
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:474
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:561
 msgid "New Dictionary Variable"
 msgstr "Variabilă Dicționar nouă"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:351
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:474
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:561
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:354
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:477
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:564
 msgid "Change Format"
 msgstr "Schimbă formatul"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:352
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:485
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:577
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:355
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:488
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:580
 msgid "Open Containing Folder"
 msgstr "Deschide dosarul care conține"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:373
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:569
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:376
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:572
 msgid "Select All Tests"
 msgstr "Selectează toate testele"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:374
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:570
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:377
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:573
 msgid "Deselect All Tests"
 msgstr "Deselectează toate testele"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:375
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:571
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:378
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:574
 msgid "Select Only Failed Tests"
 msgstr "Selectează doar teste eșuate"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:376
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:572
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:379
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:575
 msgid "Select Only Passed Tests"
 msgstr "Selectaţi doar testele trecute"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:386
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:482
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:574
-msgid "Exclude"
-msgstr "Excludere"
-
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:388
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:391
 msgid "Collapse all"
 msgstr "Restrânge tot"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:388
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:391
 msgid "Expand all"
 msgstr "Extinde tot"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:428
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:431
 msgid ""
 "Directory contains unsaved data!\n"
 "You must save data before excluding."
@@ -2910,37 +2911,37 @@ msgstr ""
 "Directorul conține date nesalvate!\n"
 "Trebuie să salvați datele înainte de a le exclude."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:473
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:560
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:665
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:766
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:476
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:563
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:668
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:769
 msgid "Rename\tF2"
 msgstr "Rename\tF2"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:475
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:480
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:562
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:567
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:478
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:483
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:565
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:570
 msgid "Sort Keywords"
 msgstr "Sortare cuvinte cheie"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:477
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:563
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:480
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:566
 msgid "Delete\tCtrl-Shift-D"
 msgstr "Şterge\tCtrl-Shift-D"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:479
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:565
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:482
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:568
 msgid "Sort Variables"
 msgstr "Sortați variabilele"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:484
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:576
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:487
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:579
 msgid "Remove Read Only"
 msgstr "Elimină doar citire"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:514
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:616
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:517
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:619
 msgid ""
 "File contains unsaved data!\n"
 "You must save data before excluding."
@@ -2948,23 +2949,23 @@ msgstr ""
 "Fișierul conține date nesalvate!\n"
 "Trebuie să salvați date înainte de a fi exclus."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:554
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:557
 msgid "New Test Case\tCtrl-Shift-T"
 msgstr "Test nou Case\tCtrl-Shift-T"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:566
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:569
 msgid "Sort Tests"
 msgstr "Sortați testele"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:642
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:645
 msgid "Delete test case file"
 msgstr "Ştergeţi fişierul de caz test"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:662
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:665
 msgid "Copy\tCtrl-Shift-C"
 msgstr "Copii tip\tCtrl-Shift-C"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:815
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:818
 msgid "Add Resource"
 msgstr "Adaugă resursă"
 

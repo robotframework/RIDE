@@ -114,7 +114,7 @@ class TestsDialog(RIDEDialog):
 
     def _create_exclude_line(self, panel):
         exclude_line = self._horizontal_sizer()
-        exclude_line.Add(Label(panel, label='Exclude', size=(80, -1)))
+        exclude_line.Add(Label(panel, label=_('Exclude'), size=(80, -1)))
         self._tags_to_exclude_text = wx.TextCtrl(panel, value='', size=(400, -1),
                                                  style=wx.TE_PROCESS_ENTER | wx.TE_NOHIDESEL)
         self._tags_to_exclude_text.SetBackgroundColour(Colour(self.color_secondary_background))
