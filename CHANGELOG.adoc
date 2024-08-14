@@ -11,6 +11,7 @@ and this project adheres to http://semver.org/spec/v2.0.0.html[Semantic Versioni
 
 === Added
 
+- Added Korean language support for UI, experimental.
 - Added option ``caret style`` to change insert caret to `block` or `line` in Text Editor, by editing ``settings.cfg``.
 The color of the caret is the same as `setting` and will be adjusted for better contrast with the background.
 

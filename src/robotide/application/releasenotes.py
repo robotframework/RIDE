@@ -158,6 +158,7 @@ RELEASE_NOTES = f"""
 <li>This version supports Python 3.8 up to 3.12.</li>
 <li>There are some changes, or known issues:<ul>
 <li>❌ - Removed support for Python 3.6 and 3.7</li>
+<li>✔ - Added Korean language support for UI, experimental.</li>
 <li>✔ - Added <b>caret style</b> to change insert caret to 'block' or 'line' in Text Editor, by editing 
 <em>settings.cfg</em>. The color of the caret is the same as 'setting' and will be adjusted for better contrast with the
  background.</li>
@@ -196,6 +197,7 @@ version 4.2.1, which we now <em>recommend</em>.</li>
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
+<li>Added Korean language support for UI, experimental.</li>
 <li>Fixed wrong item selection, like Test Suite, when doing right-click actions in Project Explorer.</li>
 <li>Fixed delete variable from Test Suite settings remaining in Project Explorer.</li>
 <li>Added <b>caret style</b> to change insert caret to 'block' or 'line' in Text Editor, by editing 
