@@ -2,20 +2,21 @@ msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
 "POT-Creation-Date: 2024-08-11 11:13+0100\n"
-"PO-Revision-Date: 2024-07-17 01:27\n"
-"Last-Translator: \n"
+"PO-Revision-Date: 2024-08-14 00:56+0100\n"
+"Last-Translator: Hélio Guilherme <helio_guilherme@hotmail.com>\n"
 "Language-Team: Japanese\n"
 "Language: ja_JP\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: pygettext.py 1.5\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+"Generated-By: pygettext.py 1.5\n"
 "X-Crowdin-Project: robotframework-ride\n"
 "X-Crowdin-Project-ID: 637294\n"
 "X-Crowdin-Language: ja\n"
 "X-Crowdin-File: /master/src/robotide/localization/RIDE.pot\n"
 "X-Crowdin-File-ID: 14\n"
+"X-Generator: Poedit 3.4.4\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/application.py:396
 msgid "Found Robot Framework version %s from %s."
@@ -631,11 +632,11 @@ msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:48
 msgid "Move Rows Up | Move Rows Up | Alt-Up\n"
-msgstr "Move Rows Up | Move Rows Up | Move Rows Up | Alt-Up\n"
+msgstr "Move Rows Up | Move Rows Up | Alt-Up\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:49
 msgid "Move Rows Down | Move Rows Down | Alt-Down\n"
-msgstr "Move Rows | Move Rows Down | Alt-Down\n"
+msgstr "Move Rows  Down| Move Rows Down | Alt-Down\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:50
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:66
@@ -647,8 +648,8 @@ msgid ""
 "Content Assistance (Ctrl-Space or Ctrl-Alt-Space) | Show possible keyword "
 "and variable completions | | | POSITION-70\n"
 msgstr ""
-"コンテンツ支援 (Ctrl-SpaceまたはCtrl-Alt-Space) | キーワードと変数補完を表"
-"示| | | POSITION-70\n"
+"コンテンツ支援 (Ctrl-SpaceまたはCtrl-Alt-Space) | キーワードと変数補完を表示 "
+"| | | POSITION-70\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:88
 msgid ""

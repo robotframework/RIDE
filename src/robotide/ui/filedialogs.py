@@ -30,11 +30,12 @@ from ..validators import NonEmptyValidator, NewSuitePathValidator, SuiteFileName
 from ..widgets import Label, RIDEDialog
 try:
     from robot.conf.languages import Language
-except ImportError as e:
-    import sys
-    sys.stderr.write(f"Trying to import robot's languages module returned error: {repr(e)}\n")
-    sys.stderr.write("You need to have Robot Framework v6.0 or newer to use languages in test suites.\n")
-    Language = None
+except ImportError:
+    try:
+        from robotide.lib.compat.parsing.languages import Language
+    except ImportError:
+        Language = None
+
 
 _ = wx.GetTranslation  # To keep linter/code analyser happy
 builtins.__dict__['_'] = wx.GetTranslation

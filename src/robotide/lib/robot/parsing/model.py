@@ -21,7 +21,10 @@ import warnings
 try:
     from robot.conf.languages import Language
 except ModuleNotFoundError:
-    Language = None
+    try:
+        from robotide.lib.compat.parsing.languages import Language
+    except ImportError:
+        Language = None
 
 from robotide.lib.compat.parsing import language as lang
 from robotide.lib.robot.errors import DataError

@@ -2,21 +2,22 @@ msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
 "POT-Creation-Date: 2024-08-11 11:13+0100\n"
-"PO-Revision-Date: 2024-07-17 01:27\n"
-"Last-Translator: \n"
+"PO-Revision-Date: 2024-08-14 00:43+0100\n"
+"Last-Translator: Hélio Guilherme <helio_guilherme@hotmail.com>\n"
 "Language-Team: Romanian\n"
 "Language: ro_RO\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: pygettext.py 1.5\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : (n==0 || (n%100>0 && "
 "n%100<20)) ? 1 : 2);\n"
+"Generated-By: pygettext.py 1.5\n"
 "X-Crowdin-Project: robotframework-ride\n"
 "X-Crowdin-Project-ID: 637294\n"
 "X-Crowdin-Language: ro\n"
 "X-Crowdin-File: /master/src/robotide/localization/RIDE.pot\n"
 "X-Crowdin-File-ID: 14\n"
+"X-Generator: Poedit 3.4.4\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/application.py:396
 msgid "Found Robot Framework version %s from %s."
@@ -649,7 +650,7 @@ msgstr "Mută rândurile sus | Mută rândurile în sus | Alt-Up\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:49
 msgid "Move Rows Down | Move Rows Down | Alt-Down\n"
-msgstr "Mută rândurile în jos | Mută rândurile Jos | Alt-Jos\n"
+msgstr "Mută rândurile în jos | Mută rândurile Jos | Alt-Down\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/__init__.py:50
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:66
@@ -1262,7 +1263,7 @@ msgstr "Du-te la Definitional\tCtrl-B"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:101
 msgid "Undo\tCtrl-Z"
-msgstr "x \tCtrl-Z"
+msgstr ""
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/kweditor.py:102
 msgid "Redo\tCtrl-Y"
@@ -1415,7 +1416,7 @@ msgstr "Mutați \tCtrl-up"
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:667
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/treenodehandlers.py:768
 msgid "Move Down\tCtrl-Down"
-msgstr "Mută Down\tCtrl-Jos"
+msgstr "Mută Down\tCtrl-Down"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/settingeditors.py:100
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/tagdialogs.py:233
