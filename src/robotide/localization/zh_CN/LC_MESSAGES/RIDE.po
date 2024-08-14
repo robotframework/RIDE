@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2024-08-11 11:13+0100\n"
+"POT-Creation-Date: 2024-08-14 02:29+0100\n"
 "PO-Revision-Date: 2024-07-17 01:27\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
@@ -925,9 +925,9 @@ msgstr "缩放变量"
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:596
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:626
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/configmanagerui.py:101
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:90
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:92
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:316
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:91
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:93
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:317
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:355
 msgid "Name"
 msgstr "名称"
@@ -1748,7 +1748,7 @@ msgid "RIDE - Preferences"
 msgstr "RIDE - 首选项"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/general.py:230
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:138
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:139
 msgid "Language"
 msgstr "语言"
 
@@ -1853,12 +1853,12 @@ msgid "Saving"
 msgstr "正在保存"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/saving.py:41
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:114
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:115
 msgid "Is Task?"
 msgstr "任务吗？"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/saving.py:42
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:114
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:115
 msgid "Default for Tasks or Tests sections."
 msgstr "默认任务或测试部分。"
 
@@ -1907,7 +1907,7 @@ msgstr "没有最近的文件"
 #: /home2/helio/github/RIDE/tools/../src/robotide/recentfiles/recentfiles.py:124
 #: /home2/helio/github/RIDE/tools/../src/robotide/recentfiles/recentfiles.py:151
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/actiontriggers.py:54
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:108
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:109
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:140
 msgid "File"
 msgstr "文件"
@@ -2081,59 +2081,59 @@ msgstr "无法从文件中导入库\"%s\""
 msgid "Import failed"
 msgstr "导入失败"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:108
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:109
 msgid "Type"
 msgstr "类型"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:108
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:220
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:109
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:221
 msgid "Directory"
 msgstr "目录"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:160
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:288
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:161
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:289
 msgid "New Resource File"
 msgstr "新建资源文件"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:162
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:163
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/preview.py:117
 msgid "Format"
 msgstr "格式"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:174
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:189
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:175
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:190
 msgid "Parent Directory"
 msgstr "父目录"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:175
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:176
 msgid "Choose Parent Directory"
 msgstr "选择父目录"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:192
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:193
 msgid "Created Path"
 msgstr "创建路径"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:273
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:274
 msgid "New Project"
 msgstr "新建项目"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:302
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:303
 msgid "Add Suite"
 msgstr "添加套件"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:326
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:327
 msgid "Add Directory"
 msgstr "添加目录"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:338
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:339
 msgid "Set Data Format"
 msgstr "设置数据格式"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:362
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:363
 msgid "Change recursively"
 msgstr "递归更改"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:381
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:382
 msgid ""
 "Provide format for initialization file in directory\n"
 "\"%s\"."
@@ -2141,27 +2141,27 @@ msgstr ""
 "在目录\n"
 "\"%s\"中提供初始化文件的格式。"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:395
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:396
 msgid "Open"
 msgstr "打开"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:400
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:401
 msgid "Robot data (*.robot)|*.robot"
 msgstr "机器人数据 (*.robot)|*.robot"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:401
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:402
 msgid "Robot data (*.txt)|*.txt"
 msgstr "Robot 数据 (*.txt)|*.txt"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:402
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:403
 msgid "Robot resource file (*.resource)|*.resource"
 msgstr "Robot 资源文件 (*.resource)|*.resource"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:403
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:404
 msgid "Robot Tab Separated data (*.tsv)|*.tsv"
 msgstr "机器人标签页分离数据 (*.tsv)|*.tsv"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:405
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:406
 msgid "All files|*.*"
 msgstr "所有文件|*.*"
 
