@@ -226,6 +226,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
                 # Workaround for remarked dirty with Ctrl-S
                 if self.is_focused() and self._save_flag == 0 and isinstance(message, RideSaving):
                     self._save_flag = 1
+                    RideBeforeSaving().publish()
                 if self.is_focused() and self._save_flag == 1 and isinstance(message, RideDataDirtyCleared):
                     self._save_flag = 2
                 if self.is_focused() and self._save_flag == 2 and isinstance(message, RideSaved):
@@ -235,7 +236,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
                 # if self.is_focused() and self._save_flag == 3 and isinstance(message, RideDataChangedToDirty):
                 #     self._save_flag = 4
                 #     wx.CallAfter(self._editor.mark_file_dirty, False)
-                if self.is_focused() and isinstance(message, RideBeforeSaving):
+                if isinstance(message, RideBeforeSaving):
                     self._editor.is_saving = False
                     # Reset counter for Workaround for remarked dirty with Ctrl-S
                     self._save_flag = 0
