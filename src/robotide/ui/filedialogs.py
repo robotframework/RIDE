@@ -32,7 +32,7 @@ try:
     from robot.conf.languages import Language
 except ImportError:
     try:
-        from robotide.lib.compat.parsing.languages import Language
+        from ..lib.compat.parsing.languages import Language
     except ImportError:
         Language = None
 
@@ -129,6 +129,10 @@ class _CreationDialog(RIDEDialog):
         languages = read_languages()
         if languages[0] != '':
             languages.insert(0, '')
+        # Remove non-existing language, Korean
+        for value in languages:
+            if value == 'Korean':
+                languages.remove(value)
         if isinstance(lang, list) and len(lang) > 0:
             _settings[DOC_LANGUAGE] = lang[0]
             lang = lang[0]
@@ -242,8 +246,12 @@ class _CreationDialog(RIDEDialog):
                 lang = lang[0]
             if lang in ('en',):  # We will only consider English as the effective setting
                 return ['en']
-            mlang = Language.from_name(lang.replace('_', '-'))
-            set_lang[0] = mlang.code.replace('-', '_')
+            try:
+                mlang = Language.from_name(lang.replace('_', '-'))
+                set_lang[0] = mlang.code.replace('-', '_')
+            except ValueError:  # For the case of missing language, like Ko
+                set_lang[0] = 'en'
+                return ['en']
         else:
             return [set_lang[0]]
         return [mlang.name]
