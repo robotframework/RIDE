@@ -20,8 +20,9 @@ catalog.
 
 
 # we remove English as source code strings are in English
-supportedLang = ['bg_BG', 'da_DK', 'es_ES', 'hi_IN', 'it_IT', 'ja_JP', 'pl_PL', 'sv_SE', 'uk_UA', 'zh_TW', 'bs_BA', 'de_DE', 'fi_FI',
-                 'hu_HU', 'pt_BR', 'ro_RO', 'th_TH', 'tr_TR', 'vi_VN', 'cs_CZ', 'en_US', 'fr_FR', 'nl_NL', 'pt_PT', 'ru_RU', 'zh_CN' ]
+supportedLang = ['bg_BG', 'da_DK', 'es_ES', 'hi_IN', 'it_IT', 'ja_JP', 'ko_KR', 'pl_PL', 'sv_SE', 'uk_UA', 'zh_TW', 'bs_BA',
+                 'de_DE', 'fi_FI', 'hu_HU', 'pt_BR', 'ro_RO', 'th_TH', 'tr_TR', 'vi_VN', 'cs_CZ', 'en_US', 'fr_FR', 'nl_NL',
+                 'pt_PT', 'ru_RU', 'zh_CN' ]
 
 # for l in appC.supLang:
 #     if l != u"en":

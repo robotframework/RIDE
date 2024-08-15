@@ -1,23 +1,24 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: robotframework-ride\n"
-"POT-Creation-Date: 2024-08-11 11:13+0100\n"
-"PO-Revision-Date: 2024-07-17 01:27\n"
-"Last-Translator: \n"
+"POT-Creation-Date: 2024-08-14 02:29+0100\n"
+"PO-Revision-Date: 2024-08-14 01:28+0100\n"
+"Last-Translator: Hélio Guilherme <helio_guilherme@hotmail.com>\n"
 "Language-Team: Russian\n"
 "Language: ru_RU\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: pygettext.py 1.5\n"
 "Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 "
 "&& n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 "
 "&& n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
+"Generated-By: pygettext.py 1.5\n"
 "X-Crowdin-Project: robotframework-ride\n"
 "X-Crowdin-Project-ID: 637294\n"
 "X-Crowdin-Language: ru\n"
 "X-Crowdin-File: /master/src/robotide/localization/RIDE.pot\n"
 "X-Crowdin-File-ID: 14\n"
+"X-Generator: Poedit 3.4.4\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/application/application.py:396
 msgid "Found Robot Framework version %s from %s."
@@ -543,10 +544,10 @@ msgid ""
 "        "
 msgstr ""
 "[Navigate]\n"
-"        ! o &Back | Вернуться к предыдущему местоположению в дереве | Alt-%s "
-"| ART_GO_BACK\n"
-"        ! o &Вперед | Перейти к следующему местоположению в дереве | Alt-%s "
-"| ART_GO_FORWARD\n"
+"        !Вернуться | Вернуться к предыдущему местоположению в дереве | Alt-"
+"%s | ART_GO_BACK\n"
+"        !Двигаться вперед | Перейти к следующему местоположению в дереве | "
+"Alt-%s | ART_GO_FORWARD\n"
 "        "
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/controller/ui/treecontroller.py:55
@@ -994,9 +995,9 @@ msgstr "Скалярная переменная"
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:596
 #: /home2/helio/github/RIDE/tools/../src/robotide/editor/editordialogs.py:626
 #: /home2/helio/github/RIDE/tools/../src/robotide/run/configmanagerui.py:101
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:90
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:92
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:316
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:91
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:93
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:317
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/keywordsearch.py:355
 msgid "Name"
 msgstr "Наименование"
@@ -1837,7 +1838,7 @@ msgid "RIDE - Preferences"
 msgstr "RIDE - настройки"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/general.py:230
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:138
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:139
 msgid "Language"
 msgstr "Язык"
 
@@ -1946,12 +1947,12 @@ msgid "Saving"
 msgstr "Сохранение"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/saving.py:41
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:114
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:115
 msgid "Is Task?"
 msgstr "Задача?"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/preferences/saving.py:42
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:114
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:115
 msgid "Default for Tasks or Tests sections."
 msgstr "По умолчанию для разделов Задач или Тестов."
 
@@ -2002,7 +2003,7 @@ msgstr "Нет недавних файлов"
 #: /home2/helio/github/RIDE/tools/../src/robotide/recentfiles/recentfiles.py:124
 #: /home2/helio/github/RIDE/tools/../src/robotide/recentfiles/recentfiles.py:151
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/actiontriggers.py:54
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:108
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:109
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/review.py:140
 msgid "File"
 msgstr "Файл"
@@ -2196,59 +2197,59 @@ msgstr "Не удалось импортировать библиотеку из
 msgid "Import failed"
 msgstr "Не удалось импортировать"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:108
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:109
 msgid "Type"
 msgstr "Тип"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:108
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:220
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:109
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:221
 msgid "Directory"
 msgstr "Каталог"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:160
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:288
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:161
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:289
 msgid "New Resource File"
 msgstr "Новый файл ресурсов"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:162
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:163
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/preview.py:117
 msgid "Format"
 msgstr "Формат"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:174
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:189
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:175
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:190
 msgid "Parent Directory"
 msgstr "Родительская папка"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:175
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:176
 msgid "Choose Parent Directory"
 msgstr "Выберите родительский каталог"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:192
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:193
 msgid "Created Path"
 msgstr "Путь создан"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:273
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:274
 msgid "New Project"
 msgstr "Новый проект"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:302
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:303
 msgid "Add Suite"
 msgstr "Добавить Suite"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:326
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:327
 msgid "Add Directory"
 msgstr "Добавить директорию"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:338
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:339
 msgid "Set Data Format"
 msgstr "Установить формат данных"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:362
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:363
 msgid "Change recursively"
 msgstr "Изменить рекурсивно"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:381
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:382
 msgid ""
 "Provide format for initialization file in directory\n"
 "\"%s\"."
@@ -2256,27 +2257,27 @@ msgstr ""
 "Предоставьте формат файла инициализации в директории\n"
 "\"%s."
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:395
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:396
 msgid "Open"
 msgstr "Открыть"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:400
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:401
 msgid "Robot data (*.robot)|*.robot"
 msgstr "Данные робота (*.robot)|*.robot"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:401
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:402
 msgid "Robot data (*.txt)|*.txt"
 msgstr "Данные робота (*.txt)|*.txt"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:402
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:403
 msgid "Robot resource file (*.resource)|*.resource"
 msgstr "Файл ресурса робота (*.resource)|*.resource"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:403
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:404
 msgid "Robot Tab Separated data (*.tsv)|*.tsv"
 msgstr "Данные вкладки робота (*.tsv)|*.tsv"
 
-#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:405
+#: /home2/helio/github/RIDE/tools/../src/robotide/ui/filedialogs.py:406
 msgid "All files|*.*"
 msgstr "Все файлы|*.*"
 
@@ -2394,7 +2395,7 @@ msgstr "!Поиск неиспользованных ключевых слов |
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:68
 msgid "!Manage Plugins | | | | POSITION-81\n"
-msgstr "!Управление плагинами | | | | | POSITION-81\n"
+msgstr "!Управление плагинами | | | | POSITION-81\n"
 
 #: /home2/helio/github/RIDE/tools/../src/robotide/ui/mainframe.py:69
 msgid "!View All Tags | | F7 | | POSITION-82\n"

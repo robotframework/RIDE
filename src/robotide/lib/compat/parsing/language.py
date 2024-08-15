@@ -19,7 +19,11 @@ try:
 except ImportError as e:
     sys.stderr.write(f"Trying to import robot's languages module returned error: {repr(e)}\n")
     sys.stderr.write("You need to have Robot Framework v6.0 or newer to use languages in test suites.\n")
-    Language = None
+    try:
+        # Using local copy of https://github.com/robotframework/robotframework/blob/v7.0.1/src/robot/conf/languages.py
+        from .languages import Language
+    except ImportError:
+        Language = None
 from robot.errors import DataError
 from robotide.lib.robot.utils import Utf8Reader
 
@@ -43,7 +47,10 @@ def check_file_language(path):
         from robot.conf.languages import Languages
     except ImportError as err:
         sys.stderr.write(f"Trying to import robot's languages module returned error: {repr(err)}\n")
-        return None
+        try:
+            from .languages import Languages
+        except ImportError:
+            return None
     try:
         build_lang = Languages(language_string, add_english=False)
     except (DataError, ModuleNotFoundError) as err:
@@ -73,7 +80,10 @@ def get_language_name(lang_code):
         from robot.conf.languages import Languages
     except ImportError as err:
         sys.stderr.write(f"Trying to import robot's languages module returned error: {repr(err)}\n")
-        return None
+        try:
+            from .languages import Languages
+        except ImportError:
+            return None
     try:
         build_lang = Languages(lang_code.replace('_', '-'), add_english=False)
     except (DataError, ModuleNotFoundError) as err:
@@ -123,7 +133,7 @@ def get_headers_for(language, tables_headers, lowercase=True):
         try:
             if not mlang:
                 mlang = 'en'
-            lang = Language.from_name(mlang.replace('_','-'))
+            lang = Language.from_name(mlang.replace('_', '-'))
             languages.add(lang)
         except ValueError:
             print(f"DEBUG: language.py get_headers_for Exception at language={mlang}")
@@ -146,7 +156,8 @@ def get_headers_for(language, tables_headers, lowercase=True):
                         header = list(headers.keys())[inx].lower() if lowercase else list(headers.keys())[inx]
                         build_headings.append(header)
                         break
-                except Exception as e:
+                except Exception as ex:
+                    print(f"DEBUG: robotide.lib.compat.parsing.language.py get_headers: {ex}")
                     pass
                 inx += 1
             for bh in build_headings:
@@ -203,7 +214,8 @@ def get_settings_for(language, settings_names):
                         setting = list(settings.keys())[inx]
                         build_table[setting] = item
                         break
-                except Exception as e:
+                except Exception as ex:
+                    print(f"DEBUG: robotide.lib.compat.parsing.language.py get_settings: {ex}")
                     pass
                 inx += 1
     #  print(f"DEBUG: language.py get_settings_for RETURN build_table={build_table}")
@@ -223,7 +235,7 @@ def get_english_label(lang, label):
         except ValueError:
             print(f"DEBUG: language.py get_english_label Exception at language={lang}")
     else:
-        mlang = Language.from_name(lang.replace('_','-'))
+        mlang = Language.from_name(lang.replace('_', '-'))
     if not mlang:
         print(f"DEBUG: language.py get_english_label lang={lang} not found")
         return None
