@@ -145,6 +145,12 @@ class TestTestSelectionController(UIUnitTestBase):
         self._tsc.select(self._create_test())
         self.assertFalse(self._tsc.is_empty())
 
+    def test_remove_invalid_cases_selection(self):
+        self._tsc.select(self._create_test())
+        new_test = self._create_test()
+        self._tsc.remove_invalid_cases_selection(new_test.datafile_controller)
+        self.assertFalse(self._tsc.is_empty())
+
     def test_test_selection_is_empty_after_removing_same_test_from_there_even_when_it_is_not_the_same_object(self):
         test = self._create_test()
         self._tsc.select(test)

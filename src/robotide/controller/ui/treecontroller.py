@@ -230,12 +230,20 @@ class TestSelectionController(object):
             self._send_selection_changed_message()
 
     def remove_invalid_cases_selection(self, cases_file_controller):
+        from .. import ResourceFileController
         invalid_cases = list()
+        to_select_cases = list()
         for test in self._tests:
             if test.datafile_controller == cases_file_controller:
+                if not isinstance(cases_file_controller, ResourceFileController):
+                    for newobj in cases_file_controller.tests:
+                        if test.longname == newobj.longname:
+                            to_select_cases.append(newobj)
                 invalid_cases.append(test)
         for _ in invalid_cases:
             self._tests.remove(_)
+        for test in to_select_cases:
+            self.select(test, True, False)
         self._send_selection_changed_message()
 
     def _send_selection_changed_message(self):
