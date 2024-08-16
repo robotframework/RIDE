@@ -226,6 +226,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
                 # Workaround for remarked dirty with Ctrl-S
                 if self.is_focused() and self._save_flag == 0 and isinstance(message, RideSaving):
                     self._save_flag = 1
+                    RideBeforeSaving().publish()
                 if self.is_focused() and self._save_flag == 1 and isinstance(message, RideDataDirtyCleared):
                     self._save_flag = 2
                 if self.is_focused() and self._save_flag == 2 and isinstance(message, RideSaved):
@@ -235,7 +236,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
                 # if self.is_focused() and self._save_flag == 3 and isinstance(message, RideDataChangedToDirty):
                 #     self._save_flag = 4
                 #     wx.CallAfter(self._editor.mark_file_dirty, False)
-                if self.is_focused() and isinstance(message, RideBeforeSaving):
+                if isinstance(message, RideBeforeSaving):
                     self._editor.is_saving = False
                     # Reset counter for Workaround for remarked dirty with Ctrl-S
                     self._save_flag = 0
@@ -1242,7 +1243,13 @@ class SourceEditor(wx.Panel):
         keycode = event.GetKeyCode()
         keyvalue = event.GetUnicodeKey()
         # print(f"DEBUG: TextEditor key up focused={self.is_focused()} modify {self.source_editor.GetModify()}")
-        if keycode == wx.WXK_DELETE:  # DEBUG on Windows we only get here, single Text Editor
+        if keycode in [wx.WXK_RETURN, wx.WXK_NUMPAD_ENTER]:
+            self.mark_file_dirty(self.source_editor.GetModify())
+            return
+        if keyvalue == wx.WXK_NONE and keycode in [wx.WXK_CONTROL, wx.WXK_RAW_CONTROL]:
+            self.source_editor.hide_kw_doc()
+        elif keycode == wx.WXK_DELETE or (keyvalue != wx.WXK_NONE and keycode > keyvalue):
+            # DEBUG on Windows we only get here, single Text Editor
             selected = self.source_editor.GetSelection()
             if selected[0] == selected[1]:
                 pos = self.source_editor.GetInsertionPoint()
@@ -1250,12 +1257,6 @@ class SourceEditor(wx.Panel):
                     self.source_editor.DeleteRange(selected[0], 1)
             else:
                 self.source_editor.DeleteRange(selected[0], selected[1] - selected[0])
-            self.mark_file_dirty(self.source_editor.GetModify())
-        if keycode in [wx.WXK_RETURN, wx.WXK_NUMPAD_ENTER]:
-            self.mark_file_dirty(self.source_editor.GetModify())
-            return
-        if keyvalue == wx.WXK_NONE and keycode in [wx.WXK_CONTROL, wx.WXK_RAW_CONTROL]:
-            self.source_editor.hide_kw_doc()
         if self.is_focused():  # DEBUG and keycode != wx.WXK_CONTROL and keyvalue >= ord(' ') and self.dirty:
             self.mark_file_dirty(self.source_editor.GetModify())
         event.Skip()
