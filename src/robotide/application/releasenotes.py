@@ -158,6 +158,7 @@ RELEASE_NOTES = f"""
 <li>This version supports Python 3.8 up to 3.12.</li>
 <li>There are some changes, or known issues:<ul>
 <li>❌ - Removed support for Python 3.6 and 3.7</li>
+<li>✔ - Fixed on Text Editor when Saving the selection of tests to run in Test Suites (Tree) is cleared.</li>
 <li>✔ - Added Korean language support for UI, experimental.</li>
 <li>✔ - Added <b>caret style</b> to change insert caret to 'block' or 'line' in Text Editor, by editing 
 <em>settings.cfg</em>. The color of the caret is the same as 'setting' and will be adjusted for better contrast with the
@@ -186,7 +187,6 @@ documentation, at Mouse Pointer position.</li>
 <li>✔ - When editing in Grid Editor with content assistance, the selected content can be edited by escaping the list of 
 suggestions with keys ARROW_LEFT or ARROW_RIGHT.</li>
 <li>✔ - Newlines in Grid Editor can be made visible with the <b>filter newlines</b> set to False.</li>
-<li>🐞 - On Text Editor when Saving the selection of tests in Test Suites (Tree) is cleared.</li>
 <li>🐞 - Problems with COPY/PASTE in Text Editor have been reported when using wxPython 4.2.0, but not with 
 version 4.2.1, which we now <em>recommend</em>.</li>
 <li>🐞 - Some argument types detection (and colorization) is not correct in Grid Editor.</li>
@@ -197,6 +197,7 @@ version 4.2.1, which we now <em>recommend</em>.</li>
 </ul>
 <p><strong>New Features and Fixes Highlights</strong></p>
 <ul class="simple">
+<li>Fixed on Text Editor when Saving the selection of tests to run in Test Suites (Tree) is cleared.</li>
 <li>Added Korean language support for UI, experimental.</li>
 <li>Fixed wrong item selection, like Test Suite, when doing right-click actions in Project Explorer.</li>
 <li>Fixed delete variable from Test Suite settings remaining in Project Explorer.</li>

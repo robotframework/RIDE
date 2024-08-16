@@ -134,7 +134,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         self._editor_component = None
         self._tab = None
         self._doc_language = None
-        self._save_flag = 0  # See
+        self._save_flag = 0
         self.reformat = application.settings.get('reformat', False)
         self._register_shortcuts()
 
@@ -257,7 +257,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
         # and not isinstance(message, RideDataChangedToDirty))
 
     def on_tree_selection(self, message):
-        # print(f"DEBUG: texteditor.py TextEditorPlugin on_tree_selection ENTER type={type(message.item)}")
+        # print(f"DEBUG: texteditor.py TextEditorPlugin on_tree_selection ENTER {message=} type={type(message.item)}")
         self._editor.store_position()
         if self.is_focused():
             next_datafile_controller = message.item and message.item.datafile_controller
