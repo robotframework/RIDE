@@ -40,7 +40,7 @@ from ..publish.messages import RideMessage
 from ..widgets import TextField, Label, HtmlDialog
 from ..widgets import VerticalSizer, HorizontalSizer, ButtonWithHandler, RIDEDialog
 
-from robotide.lib.compat.parsing.language import Language
+from robotide.lib.compat.parsing.language import Language, get_headers_for, get_settings_for, get_language_name
 robotframeworklexer = None
 if Language:
     try:  # import our modified version
@@ -123,6 +123,39 @@ def get_rf_lang_code(lang: (str, list)) -> str:
     if with_variant_code in ("PtBr", "ZhCn", "ZhTw"):
         return with_variant_code
     return clean_lang[0].title()
+
+
+def transform_doc_language(old_lang, new_lang, m_text):
+    print(f"DEBUG: texteditor.py transform_doc_language ENTER old_lang={old_lang} new_lang={new_lang}"
+          f"\n T old_lang={type(old_lang)} T new_lang={type(new_lang)}")
+    if isinstance(old_lang, list):
+        old_lang = old_lang[0]
+    if isinstance(new_lang, list):
+        new_lang = new_lang[0]
+    old_lang = old_lang.title()
+    new_lang = new_lang.title()
+    if old_lang == new_lang:
+        return m_text
+    try:
+        old_lang_class = Language.from_name(old_lang)
+    except ValueError as ex:
+        print(ex)
+        return m_text
+    try:
+        new_lang_class = Language.from_name(new_lang)
+    except ValueError as ex:
+        print(ex)
+        return m_text
+    old_lang_name = old_lang_class.name
+    old_lang_headers = old_lang_class.headers
+    new_lang_name = new_lang_class.name
+    new_lang_headers = new_lang_class.headers
+    if old_lang_name == new_lang_name:
+        return m_text
+    print(f"DEBUG: texteditor.py transform_doc_language old_lang_name={old_lang_name} "
+          f"headers={old_lang_headers}\n new_lang_name={new_lang_name}"
+          f" headers={new_lang_headers}")
+    return m_text
 
 
 class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
@@ -397,6 +430,12 @@ class DataValidationHandler(object):
             #       f"set to={self._doc_language}")
         self._editor.language = self._doc_language
 
+        # if initial_lang[0].lower() != self._doc_language[0].lower():
+        print(f"DEBUG: textedit.py validate_and_update Language in doc--> lang={self._doc_language}"
+              f" initial_lang={initial_lang}")
+        m_text = transform_doc_language(initial_lang, self._doc_language, m_text)
+
+        print(f"DEBUG: textedit.py validate_and_update AFTER TRANSFORM m_text={m_text}")
         result = self._sanity_check(data, m_text)
         if isinstance(result, tuple):
             handled = self._handle_sanity_check_failure(result)
