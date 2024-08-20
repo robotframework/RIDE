@@ -140,14 +140,16 @@ def transform_doc_language(old_lang, new_lang, m_text, node_info: tuple =('', ))
         old_lang_class = Language.from_name(old_lang)
     except ValueError as ex:
         print(ex)
-        return m_text
+        # return m_text  # DEBUG:
+        old_lang_class = Language.from_name('English')
     try:
         new_lang_class = Language.from_name(new_lang)
     except ValueError as ex:
         print(ex)
-        return m_text
-    old_lang_name = old_lang_class.name or 'English'
-    new_lang_name = new_lang_class.name or 'English'
+        # return m_text  # DEBUG:
+        new_lang_class = Language.from_name('English')
+    old_lang_name = old_lang_class.name
+    new_lang_name = new_lang_class.name
     if old_lang_name == new_lang_name:
         return m_text
     old_lang_headers = old_lang_class.headers
@@ -160,24 +162,25 @@ def transform_doc_language(old_lang, new_lang, m_text, node_info: tuple =('', ))
           f"\nheaders={new_lang_headers}\nnew_lang_bdd_prefixes={new_lang_bdd_prefixes}")
     if node_info != ('', ):
         if node_info[0] == 'ERROR':
-            line = node_info[1]
-            print(f"DEBUG: textedit.py transform_doc_language ERROR: {line}")
+            c_msg = node_info[1].replace('Token(', '').replace(')', '').split(',')
+            line = c_msg[1].replace('\'', '').strip()
+            # print(f"DEBUG: textedit.py transform_doc_language ERROR:{line}")
             if line.startswith('Language: '):
                 tail = line.replace('Language: ', '')
+                # print(f"DEBUG: textedit.py transform_doc_language INSIDE BLOCK {tail=}")
                 m_text = m_text.replace('Language: ' + tail, 'Language: English' + '  # ' + tail)
                 for old, en in zip(old_lang_headers.keys(), old_lang_headers.values()):
                     m_text = m_text.replace(old, en)
+                return m_text
         if node_info[0] == 'INVALID_HEADER':
-            print(f"DEBUG: textedit.py transform_doc_language INVALID_HEADER: {node_info[1]}")
+            # print(f"DEBUG: textedit.py transform_doc_language INVALID_HEADER: {node_info[1]}")
             old_header = node_info[1].split(',')[1]
             old_header = old_header.replace('* ', '').replace(' *', '').replace('*', '').strip('\' ')
-            # en_label = get_english_label(old_lang, old_header)
             headers = list(old_lang_headers.keys())
-            print(f"DEBUG: language.py get_english_label  headers list={headers}\n old_header=\"{old_header}\"")
             try:
                 idx = headers.index(old_header)
             except ValueError:
-                print(f"DEBUG: language.py get_english_label Exception at getting index {old_lang} returning= m_text")
+                # print(f"DEBUG: language.py get_english_label Exception at getting index {old_lang} returning= m_text")
                 return m_text
             en_label = list(old_lang_headers.values())[idx]
             new_header = list(new_lang_headers.keys())[idx]
@@ -265,7 +268,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
             if hasattr(datafile_controller, 'language'):
                 if datafile_controller.language is not None:
                     self._doc_language = self._editor.language = datafile_controller.language
-                    print(f"DEBUG: texteditor _open  SET FROM CONTROLLER language={self._doc_language}")
+                    # print(f"DEBUG: texteditor _open  SET FROM CONTROLLER language={self._doc_language}")
                 else:
                     self._doc_language = self._editor.language = ['en']
             # print(f"DEBUG: texteditor _open language={self._doc_language}")
@@ -390,7 +393,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
 
     def _apply_txt_changes_to_model(self):
         self._editor.is_saving = False
-        print(f"DEBUG: textedit.py _apply_txt_changes_to_model CALLl content_save lang={self._doc_language}")
+        print(f"DEBUG: textedit.py _apply_txt_changes_to_model CALL content_save lang={self._doc_language}")
         if not self._editor.content_save(lang=self._doc_language):
             return False
         self._editor.reset()
@@ -447,7 +450,7 @@ class DataValidationHandler(object):
     def validate_and_update(self, data, text, lang='en'):
         from robotide.lib.robot.errors import DataError
         m_text = text.decode("utf-8")
-        initial_lang = lang  # self._doc_language or
+        initial_lang = lang if lang is not None else self._doc_language  # self._doc_language or
         if "Language: " in m_text:
             try:
                 self._doc_language = obtain_language(lang, text)
@@ -463,7 +466,7 @@ class DataValidationHandler(object):
 
         try:
             result = self._sanity_check(data, m_text)  # First check
-            print(f"DEBUG: textedit.py validate_and_update Language after sanity_check result={result}")
+            # print(f"DEBUG: textedit.py validate_and_update Language after sanity_check result={result}")
         except DataError as err:
             result = (err.message, err.details)
 
@@ -472,7 +475,10 @@ class DataValidationHandler(object):
                   f" initial_lang={initial_lang}")
             m_text = transform_doc_language(initial_lang, self._doc_language, m_text, node_info=result)
             print(f"DEBUG: textedit.py validate_and_update AFTER TRANSFORM m_text=\n{m_text}")
-        result = self._sanity_check(data, m_text)  # Check if language chamged and is valid content
+        try:
+            result = self._sanity_check(data, m_text)  # Check if language changed and is valid content
+        except DataError as err:
+            result = (err.message, err.details)
         if isinstance(result, tuple):
             handled = self._handle_sanity_check_failure(result)
             if not handled:
@@ -503,34 +509,33 @@ class DataValidationHandler(object):
         rf_lang = get_rf_lang_code(self._doc_language)
         print(f"DEBUG: textedit.py _sanity_check data is type={type(data)} lang={self._doc_language},"
               f" transformed lang={rf_lang}")
-        try:
-            model = get_model(text, lang=rf_lang)
-        except AttributeError:
-            return "Failed validation by Robot Framework", "Please, check if Language setting is valid!"
-        print(f"DEBUG: textedit.py _sanity_check model is {repr(model)} doc language={self._doc_language}\n"
-              f"NEXT is the get_tokens output")
         from robot.api.parsing import get_tokens
         for token in get_tokens(text):
             print(repr(token))
             if token.type == token.ERROR:
                 print("DEBUG: textedit.py _sanity_check TOKEN in ERROR")
                 result = 'ERROR', repr(token)
+                return result
                 # raise DataError('ERROR', repr(token))
             if token.type == token.INVALID_HEADER:
                 print("DEBUG: textedit.py _sanity_check TOKEN in INVALID_HEADER")
                 result = 'INVALID_HEADER', repr(token)
-                raise DataError('INVALID_HEADER', repr(token))
-        if result:
-            return result
+                return result
+                # raise DataError('INVALID_HEADER', repr(token))
+
+        try:
+            model = get_model(text, lang=rf_lang)
+        except AttributeError:
+            return "Failed validation by Robot Framework", "Please, check if Language setting is valid!"
         validator = ErrorReporter()
         try:
             validator.visit(model)
         except DataError as err:
             result = (err.message, err.details)
         model.save("/tmp/model_saved_from_RIDE.robot")
-        print(f"DEBUG: textedit.py _sanity_check after calling validator {validator}\n"
-              f"Save model in /tmp/model_saved_from_RIDE.robot"
-              f" result={result}")
+        # print(f"DEBUG: textedit.py _sanity_check after calling validator {validator}\n"
+        #       f"Save model in /tmp/model_saved_from_RIDE.robot"
+        #       f" result={result}")
         return True if not result else result
 
     """ DEBUG
@@ -550,6 +555,10 @@ class DataValidationHandler(object):
     """
 
     def _handle_sanity_check_failure(self, message):
+        if message[1].startswith('Token('):
+            c_msg = message[1].replace('Token(', '').replace(')', '').split(',')
+            message = [" ".join(c_msg[4:]), c_msg[2].strip()]
+
         if self._last_answer == wx.ID_NO and time() - self._last_answer_time <= 0.2:
             # self.source_editor._mark_file_dirty(True)
             return False
@@ -1323,7 +1332,7 @@ class SourceEditor(wx.Panel):
     def revert(self):
         self.reset()
         self.source_editor.Undo()
-        self.source_editor.set_text(self._data.content)
+        # self.source_editor.set_text(self._data.content)
 
     def on_editor_key(self, event):
         if not self.is_focused():
