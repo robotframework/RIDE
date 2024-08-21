@@ -156,8 +156,60 @@ def transform_doc_language(old_lang, new_lang, m_text, node_info: tuple =('', ))
     old_lang_bdd_prefixes = old_lang_class.bdd_prefixes
     new_lang_headers = new_lang_class.headers
     new_lang_bdd_prefixes = new_lang_class.bdd_prefixes
+    """
     old_lang_settings = old_lang_class.settings
     new_lang_settings = new_lang_class.settings
+    """
+    old_library_setting = old_lang_class.library_setting
+    old_resource_setting = old_lang_class.resource_setting
+    old_variables_setting = old_lang_class.variables_setting
+    old_name_setting = old_lang_class.name_setting
+    old_documentation_setting = old_lang_class.documentation_setting
+    old_metadata_setting = old_lang_class.metadata_setting
+    old_suite_setup_setting = old_lang_class.suite_setup_setting
+    old_suite_teardown_setting = old_lang_class.suite_teardown_setting
+    old_test_setup_setting = old_lang_class.test_setup_setting
+    old_task_setup_setting = old_lang_class.task_setup_setting
+    old_test_teardown_setting = old_lang_class.test_teardown_setting
+    old_task_teardown_setting = old_lang_class.task_teardown_setting
+    old_test_template_setting = old_lang_class.test_template_setting
+    old_task_template_setting = old_lang_class.task_template_setting
+    old_test_timeout_setting = old_lang_class.test_timeout_setting
+    old_task_timeout_setting = old_lang_class.task_timeout_setting
+    old_test_tags_setting = old_lang_class.test_tags_setting
+    old_task_tags_setting = old_lang_class.task_tags_setting
+    old_keyword_tags_setting = old_lang_class.keyword_tags_setting
+    old_tags_setting = old_lang_class.tags_setting
+    old_setup_setting = old_lang_class.setup_setting
+    old_teardown_setting = old_lang_class.teardown_setting
+    old_template_setting = old_lang_class.template_setting
+    old_timeout_setting = old_lang_class.timeout_setting
+    old_arguments_setting = old_lang_class.arguments_setting
+    new_library_setting = new_lang_class.library_setting
+    new_resource_setting = new_lang_class.resource_setting
+    new_variables_setting = new_lang_class.variables_setting
+    new_name_setting = new_lang_class.name_setting
+    new_documentation_setting = new_lang_class.documentation_setting
+    new_metadata_setting = new_lang_class.metadata_setting
+    new_suite_setup_setting = new_lang_class.suite_setup_setting
+    new_suite_teardown_setting = new_lang_class.suite_teardown_setting
+    new_test_setup_setting = new_lang_class.test_setup_setting
+    new_task_setup_setting = new_lang_class.task_setup_setting
+    new_test_teardown_setting = new_lang_class.test_teardown_setting
+    new_task_teardown_setting = new_lang_class.task_teardown_setting
+    new_test_template_setting = new_lang_class.test_template_setting
+    new_task_template_setting = new_lang_class.task_template_setting
+    new_test_timeout_setting = new_lang_class.test_timeout_setting
+    new_task_timeout_setting = new_lang_class.task_timeout_setting
+    new_test_tags_setting = new_lang_class.test_tags_setting
+    new_task_tags_setting = new_lang_class.task_tags_setting
+    new_keyword_tags_setting = new_lang_class.keyword_tags_setting
+    new_tags_setting = new_lang_class.tags_setting
+    new_setup_setting = new_lang_class.setup_setting
+    new_teardown_setting = new_lang_class.teardown_setting
+    new_template_setting = new_lang_class.template_setting
+    new_timeout_setting = new_lang_class.timeout_setting
+    new_arguments_setting = new_lang_class.arguments_setting
     old_lang_given_prefixes = old_lang_class.given_prefixes
     old_lang_when_prefixes = old_lang_class.when_prefixes
     old_lang_then_prefixes = old_lang_class.then_prefixes
@@ -176,7 +228,6 @@ def transform_doc_language(old_lang, new_lang, m_text, node_info: tuple =('', ))
           f"new_lang={new_lang}\n"
           f"headers={old_lang_headers}\n old_lang_bdd_prefixes={old_lang_bdd_prefixes}\nnew_lang_name={new_lang_name}"
           f"\nheaders={new_lang_headers}\nnew_lang_bdd_prefixes={new_lang_bdd_prefixes}\n")
-    print(f"DEBUG: texteditor.py transform_doc_language\n{old_lang_settings=}\n{new_lang_settings=}\n")
     print(f"DEBUG: texteditor.py transform_doc_language\n{old_true_strings=} {old_false_strings=}\n"
           f"{new_true_strings=} {new_false_strings=}")
     if node_info != ('', ):
@@ -207,8 +258,38 @@ def transform_doc_language(old_lang, new_lang, m_text, node_info: tuple =('', ))
 
     for old, new in zip(old_lang_headers.keys(), new_lang_headers.keys()):
         m_text = re.sub(fr'\b{old}\b', new, m_text)
+    """
     for old, new in zip(old_lang_settings.keys(), new_lang_settings.keys()):
         m_text = re.sub(fr'\b{old}\b', new, m_text)
+    """
+    # Settings must be replaced individually
+    # Order of replacements seems to be important
+    m_text = re.sub(fr'\b{old_documentation_setting}\b', new_documentation_setting, m_text)
+    m_text = re.sub(fr'\b{old_arguments_setting}\b', new_arguments_setting, m_text)
+    m_text = re.sub(fr'\b{old_tags_setting}\b', new_tags_setting, m_text)
+    m_text = re.sub(fr'\b{old_setup_setting}\b', new_setup_setting, m_text)
+    m_text = re.sub(fr'\b{old_suite_setup_setting}\b', new_suite_setup_setting, m_text)
+    m_text = re.sub(fr'\b{old_test_setup_setting}\b', new_test_setup_setting, m_text)
+    m_text = re.sub(fr'\b{old_task_setup_setting}\b', new_task_setup_setting, m_text)
+    m_text = re.sub(fr'\b{old_template_setting}\b', new_template_setting, m_text)
+    m_text = re.sub(fr'\b{old_suite_teardown_setting}\b', new_suite_teardown_setting, m_text)
+    m_text = re.sub(fr'\b{old_test_teardown_setting}\b', new_test_teardown_setting, m_text)
+    m_text = re.sub(fr'\b{old_task_teardown_setting}\b', new_task_teardown_setting, m_text)
+    m_text = re.sub(fr'\b{old_teardown_setting}\b', new_teardown_setting, m_text)
+    m_text = re.sub(fr'\b{old_library_setting}\b', new_library_setting, m_text)
+    m_text = re.sub(fr'\b{old_resource_setting}\b', new_resource_setting, m_text)
+    m_text = re.sub(fr'\b{old_variables_setting}\b', new_variables_setting, m_text)
+    m_text = re.sub(fr'\b{old_name_setting}\b', new_name_setting, m_text)
+    m_text = re.sub(fr'\b{old_metadata_setting}\b', new_metadata_setting, m_text)
+    m_text = re.sub(fr'\b{old_test_template_setting}\b', new_test_template_setting, m_text)
+    m_text = re.sub(fr'\b{old_task_template_setting}\b', new_task_template_setting, m_text)
+    m_text = re.sub(fr'\b{old_test_tags_setting}\b', new_test_tags_setting, m_text)
+    m_text = re.sub(fr'\b{old_task_tags_setting}\b', new_task_tags_setting, m_text)
+    m_text = re.sub(fr'\b{old_keyword_tags_setting}\b', new_keyword_tags_setting, m_text)
+    m_text = re.sub(fr'\b{old_test_timeout_setting}\b', new_test_timeout_setting, m_text)
+    m_text = re.sub(fr'\b{old_task_timeout_setting}\b', new_task_timeout_setting, m_text)
+    m_text = re.sub(fr'\b{old_timeout_setting}\b', new_timeout_setting, m_text)
+
     for old, new in zip(old_lang_given_prefixes, new_lang_given_prefixes):
         m_text = re.sub(fr'\b{old}\b', new, m_text)
     for old, new in zip(old_lang_when_prefixes, new_lang_when_prefixes):
