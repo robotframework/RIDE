@@ -14,7 +14,7 @@
 #  limitations under the License.
 import builtins
 import os
-import string
+import re
 from io import StringIO, BytesIO
 from time import time
 
@@ -156,10 +156,29 @@ def transform_doc_language(old_lang, new_lang, m_text, node_info: tuple =('', ))
     old_lang_bdd_prefixes = old_lang_class.bdd_prefixes
     new_lang_headers = new_lang_class.headers
     new_lang_bdd_prefixes = new_lang_class.bdd_prefixes
+    old_lang_settings = old_lang_class.settings
+    new_lang_settings = new_lang_class.settings
+    old_lang_given_prefixes = old_lang_class.given_prefixes
+    old_lang_when_prefixes = old_lang_class.when_prefixes
+    old_lang_then_prefixes = old_lang_class.then_prefixes
+    old_lang_and_prefixes = old_lang_class.and_prefixes
+    old_lang_but_prefixes = old_lang_class.but_prefixes
+    new_lang_given_prefixes = new_lang_class.given_prefixes
+    new_lang_when_prefixes = new_lang_class.when_prefixes
+    new_lang_then_prefixes = new_lang_class.then_prefixes
+    new_lang_and_prefixes = new_lang_class.and_prefixes
+    new_lang_but_prefixes = new_lang_class.but_prefixes
+    old_true_strings = old_lang_class.true_strings
+    old_false_strings = old_lang_class.false_strings
+    new_true_strings = new_lang_class.true_strings
+    new_false_strings = new_lang_class.false_strings
     print(f"DEBUG: texteditor.py transform_doc_language\n  old_lang_name={old_lang_name} old_lang={old_lang} "
           f"new_lang={new_lang}\n"
           f"headers={old_lang_headers}\n old_lang_bdd_prefixes={old_lang_bdd_prefixes}\nnew_lang_name={new_lang_name}"
-          f"\nheaders={new_lang_headers}\nnew_lang_bdd_prefixes={new_lang_bdd_prefixes}")
+          f"\nheaders={new_lang_headers}\nnew_lang_bdd_prefixes={new_lang_bdd_prefixes}\n")
+    print(f"DEBUG: texteditor.py transform_doc_language\n{old_lang_settings=}\n{new_lang_settings=}\n")
+    print(f"DEBUG: texteditor.py transform_doc_language\n{old_true_strings=} {old_false_strings=}\n"
+          f"{new_true_strings=} {new_false_strings=}")
     if node_info != ('', ):
         if node_info[0] == 'ERROR':
             c_msg = node_info[1].replace('Token(', '').replace(')', '').split(',')
@@ -169,9 +188,7 @@ def transform_doc_language(old_lang, new_lang, m_text, node_info: tuple =('', ))
                 tail = line.replace('Language: ', '')
                 # print(f"DEBUG: textedit.py transform_doc_language INSIDE BLOCK {tail=}")
                 m_text = m_text.replace('Language: ' + tail, 'Language: English' + '  # ' + tail)
-                for old, en in zip(old_lang_headers.keys(), old_lang_headers.values()):
-                    m_text = m_text.replace(old, en)
-                return m_text
+        """        
         if node_info[0] == 'INVALID_HEADER':
             # print(f"DEBUG: textedit.py transform_doc_language INVALID_HEADER: {node_info[1]}")
             old_header = node_info[1].split(',')[1]
@@ -186,6 +203,26 @@ def transform_doc_language(old_lang, new_lang, m_text, node_info: tuple =('', ))
             new_header = list(new_lang_headers.keys())[idx]
             print(f"DEBUG: textedit.py transform_doc_language OLD_HEADER: {old_header} en_label={en_label} {new_header=}")
             m_text = m_text.replace(old_header, new_header)
+        """
+
+    for old, new in zip(old_lang_headers.keys(), new_lang_headers.keys()):
+        m_text = re.sub(fr'\b{old}\b', new, m_text)
+    for old, new in zip(old_lang_settings.keys(), new_lang_settings.keys()):
+        m_text = re.sub(fr'\b{old}\b', new, m_text)
+    for old, new in zip(old_lang_given_prefixes, new_lang_given_prefixes):
+        m_text = re.sub(fr'\b{old}\b', new, m_text)
+    for old, new in zip(old_lang_when_prefixes, new_lang_when_prefixes):
+        m_text = re.sub(fr'\b{old}\b', new, m_text)
+    for old, new in zip(old_lang_then_prefixes, new_lang_then_prefixes):
+        m_text = re.sub(fr'\b{old}\b', new, m_text)
+    for old, new in zip(old_lang_and_prefixes, new_lang_and_prefixes):
+        m_text = re.sub(fr'\b{old}\b', new, m_text)
+    for old, new in zip(old_lang_but_prefixes, new_lang_but_prefixes):
+        m_text = re.sub(fr'\b{old}\b', new, m_text)
+    for old, new in zip(old_true_strings, new_true_strings):
+        m_text = re.sub(fr'\b{old}\b', new, m_text)
+    for old, new in zip(old_false_strings, new_false_strings):
+        m_text = re.sub(fr'\b{old}\b', new, m_text)
     return m_text
 
 
@@ -507,18 +544,18 @@ class DataValidationHandler(object):
         from robotide.lib.robot.errors import DataError
         result = None
         rf_lang = get_rf_lang_code(self._doc_language)
-        print(f"DEBUG: textedit.py _sanity_check data is type={type(data)} lang={self._doc_language},"
-              f" transformed lang={rf_lang}")
+        # print(f"DEBUG: textedit.py _sanity_check data is type={type(data)} lang={self._doc_language},"
+        #       f" transformed lang={rf_lang}")
         from robot.api.parsing import get_tokens
         for token in get_tokens(text):
-            print(repr(token))
+            # print(repr(token))
             if token.type == token.ERROR:
-                print("DEBUG: textedit.py _sanity_check TOKEN in ERROR")
+                # print("DEBUG: textedit.py _sanity_check TOKEN in ERROR")
                 result = 'ERROR', repr(token)
                 return result
                 # raise DataError('ERROR', repr(token))
             if token.type == token.INVALID_HEADER:
-                print("DEBUG: textedit.py _sanity_check TOKEN in INVALID_HEADER")
+                # print("DEBUG: textedit.py _sanity_check TOKEN in INVALID_HEADER")
                 result = 'INVALID_HEADER', repr(token)
                 return result
                 # raise DataError('INVALID_HEADER', repr(token))
