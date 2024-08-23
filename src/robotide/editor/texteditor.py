@@ -224,6 +224,13 @@ def transform_doc_language(old_lang, new_lang, m_text, node_info: tuple =('', ))
     old_false_strings = old_lang_class.false_strings
     new_true_strings = new_lang_class.true_strings
     new_false_strings = new_lang_class.false_strings
+    en_lang_class = Language.from_name('English')
+    en_lang_given_prefixes = en_lang_class.given_prefixes
+    en_lang_when_prefixes = en_lang_class.when_prefixes
+    en_lang_then_prefixes = en_lang_class.then_prefixes
+    en_lang_and_prefixes = en_lang_class.and_prefixes
+    en_lang_but_prefixes = en_lang_class.but_prefixes
+    
     print(f"DEBUG: texteditor.py transform_doc_language\n  old_lang_name={old_lang_name} old_lang={old_lang} "
           f"new_lang={new_lang}\n"
           f"headers={old_lang_headers}\n old_lang_bdd_prefixes={old_lang_bdd_prefixes}\nnew_lang_name={new_lang_name}"
@@ -257,53 +264,64 @@ def transform_doc_language(old_lang, new_lang, m_text, node_info: tuple =('', ))
         """
 
     for old, new in zip(old_lang_headers.keys(), new_lang_headers.keys()):
-        m_text = re.sub(fr'\b{old}\b', new, m_text)
+        m_text = re.sub(fr"\**\s{old}\s\**", fr"*** {new} ***", m_text)
     """
     for old, new in zip(old_lang_settings.keys(), new_lang_settings.keys()):
         m_text = re.sub(fr'\b{old}\b', new, m_text)
     """
     # Settings must be replaced individually
     # Order of replacements seems to be important
-    m_text = re.sub(fr'\b{old_documentation_setting}\b', new_documentation_setting, m_text)
-    m_text = re.sub(fr'\b{old_arguments_setting}\b', new_arguments_setting, m_text)
-    m_text = re.sub(fr'\b{old_tags_setting}\b', new_tags_setting, m_text)
-    m_text = re.sub(fr'\b{old_setup_setting}\b', new_setup_setting, m_text)
-    m_text = re.sub(fr'\b{old_suite_setup_setting}\b', new_suite_setup_setting, m_text)
-    m_text = re.sub(fr'\b{old_test_setup_setting}\b', new_test_setup_setting, m_text)
-    m_text = re.sub(fr'\b{old_task_setup_setting}\b', new_task_setup_setting, m_text)
-    m_text = re.sub(fr'\b{old_template_setting}\b', new_template_setting, m_text)
-    m_text = re.sub(fr'\b{old_suite_teardown_setting}\b', new_suite_teardown_setting, m_text)
-    m_text = re.sub(fr'\b{old_test_teardown_setting}\b', new_test_teardown_setting, m_text)
-    m_text = re.sub(fr'\b{old_task_teardown_setting}\b', new_task_teardown_setting, m_text)
-    m_text = re.sub(fr'\b{old_teardown_setting}\b', new_teardown_setting, m_text)
-    m_text = re.sub(fr'\b{old_library_setting}\b', new_library_setting, m_text)
-    m_text = re.sub(fr'\b{old_resource_setting}\b', new_resource_setting, m_text)
-    m_text = re.sub(fr'\b{old_variables_setting}\b', new_variables_setting, m_text)
-    m_text = re.sub(fr'\b{old_name_setting}\b', new_name_setting, m_text)
-    m_text = re.sub(fr'\b{old_metadata_setting}\b', new_metadata_setting, m_text)
-    m_text = re.sub(fr'\b{old_test_template_setting}\b', new_test_template_setting, m_text)
-    m_text = re.sub(fr'\b{old_task_template_setting}\b', new_task_template_setting, m_text)
-    m_text = re.sub(fr'\b{old_test_tags_setting}\b', new_test_tags_setting, m_text)
-    m_text = re.sub(fr'\b{old_task_tags_setting}\b', new_task_tags_setting, m_text)
-    m_text = re.sub(fr'\b{old_keyword_tags_setting}\b', new_keyword_tags_setting, m_text)
-    m_text = re.sub(fr'\b{old_test_timeout_setting}\b', new_test_timeout_setting, m_text)
-    m_text = re.sub(fr'\b{old_task_timeout_setting}\b', new_task_timeout_setting, m_text)
-    m_text = re.sub(fr'\b{old_timeout_setting}\b', new_timeout_setting, m_text)
+    m_text = re.sub(fr'\b{old_documentation_setting}\b', fr'{new_documentation_setting}', m_text)
+    m_text = re.sub(fr'\b{old_arguments_setting}\b', fr'{new_arguments_setting}', m_text)
+    m_text = re.sub(fr'\b{old_tags_setting}\b', fr'{new_tags_setting}', m_text)
+    m_text = re.sub(fr'\b{old_setup_setting}\b', fr'{new_setup_setting}', m_text)
+    m_text = re.sub(fr'\b{old_suite_setup_setting}\b', fr'{new_suite_setup_setting}', m_text)
+    m_text = re.sub(fr'\b{old_test_setup_setting}\b', fr'{new_test_setup_setting}', m_text)
+    m_text = re.sub(fr'\b{old_task_setup_setting}\b', fr'{new_task_setup_setting}', m_text)
+    m_text = re.sub(fr'\b{old_template_setting}\b', fr'{new_template_setting}', m_text)
+    m_text = re.sub(fr'\b{old_suite_teardown_setting}\b', fr'{new_suite_teardown_setting}', m_text)
+    m_text = re.sub(fr'\b{old_test_teardown_setting}\b', fr'{new_test_teardown_setting}', m_text)
+    m_text = re.sub(fr'\b{old_task_teardown_setting}\b', fr'{new_task_teardown_setting}', m_text)
+    m_text = re.sub(fr'\b{old_teardown_setting}\b', fr'{new_teardown_setting}', m_text)
+    m_text = re.sub(fr'{old_library_setting}', fr'{new_library_setting}', m_text)
+    m_text = re.sub(fr'\b{old_resource_setting}\b', fr'{new_resource_setting}', m_text)
+    m_text = re.sub(fr'\b{old_variables_setting}\b', fr'{new_variables_setting}', m_text)
+    m_text = re.sub(fr'\b{old_name_setting}\b', fr'{new_name_setting}', m_text)
+    m_text = re.sub(fr'\b{old_metadata_setting}\b', fr'{new_metadata_setting}', m_text)
+    m_text = re.sub(fr'\b{old_test_template_setting}\b', fr'{new_test_template_setting}', m_text)
+    m_text = re.sub(fr'\b{old_task_template_setting}\b', fr'{new_task_template_setting}', m_text)
+    m_text = re.sub(fr'\b{old_test_tags_setting}\b', fr'{new_test_tags_setting}', m_text)
+    m_text = re.sub(fr'\b{old_task_tags_setting}\b', fr'{new_task_tags_setting}', m_text)
+    m_text = re.sub(fr'\b{old_keyword_tags_setting}\b', fr'{new_keyword_tags_setting}', m_text)
+    m_text = re.sub(fr'\b{old_test_timeout_setting}\b', fr'{new_test_timeout_setting}', m_text)
+    m_text = re.sub(fr'\b{old_task_timeout_setting}\b', fr'{new_task_timeout_setting}', m_text)
+    m_text = re.sub(fr'\b{old_timeout_setting}\b', fr'{new_timeout_setting}', m_text)
 
     for old, new in zip(old_lang_given_prefixes, new_lang_given_prefixes):
-        m_text = re.sub(fr'\b{old}\b', new, m_text)
+        m_text = re.sub(fr'\b{old}\b', fr'{new}', m_text)
     for old, new in zip(old_lang_when_prefixes, new_lang_when_prefixes):
-        m_text = re.sub(fr'\b{old}\b', new, m_text)
+        m_text = re.sub(fr'\b{old}\b', fr'{new}', m_text)
     for old, new in zip(old_lang_then_prefixes, new_lang_then_prefixes):
-        m_text = re.sub(fr'\b{old}\b', new, m_text)
+        m_text = re.sub(fr'\b{old}\b', fr'{new}', m_text)
     for old, new in zip(old_lang_and_prefixes, new_lang_and_prefixes):
-        m_text = re.sub(fr'\b{old}\b', new, m_text)
+        m_text = re.sub(fr'\b{old}\b', fr'{new}', m_text)
     for old, new in zip(old_lang_but_prefixes, new_lang_but_prefixes):
-        m_text = re.sub(fr'\b{old}\b', new, m_text)
+        m_text = re.sub(fr'\b{old}\b', fr'{new}', m_text)
     for old, new in zip(old_true_strings, new_true_strings):
-        m_text = re.sub(fr'\b{old}\b', new, m_text)
+        m_text = re.sub(fr'\b{old}\b', fr'{new}', m_text)
     for old, new in zip(old_false_strings, new_false_strings):
-        m_text = re.sub(fr'\b{old}\b', new, m_text)
+        m_text = re.sub(fr'\b{old}\b', fr'{new}', m_text)
+    # Final translation from English
+    for en, new in zip(en_lang_given_prefixes, new_lang_given_prefixes):
+        m_text = re.sub(fr'\b{en}\b', fr'{new}', m_text)
+    for en, new in zip(en_lang_when_prefixes, new_lang_when_prefixes):
+        m_text = re.sub(fr'\b{en}\b', fr'{new}', m_text)
+    for en, new in zip(en_lang_then_prefixes, new_lang_then_prefixes):
+        m_text = re.sub(fr'\b{en}\b', fr'{new}', m_text)
+    for en, new in zip(en_lang_and_prefixes, new_lang_and_prefixes):
+        m_text = re.sub(fr'\b{en}\b', fr'{new}', m_text)
+    for en, new in zip(en_lang_but_prefixes, new_lang_but_prefixes):
+        m_text = re.sub(fr'\b{en}\b', fr'{new}', m_text)
     return m_text
 
 
