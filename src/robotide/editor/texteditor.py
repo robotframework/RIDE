@@ -125,7 +125,7 @@ def get_rf_lang_code(lang: (str, list)) -> str:
     return clean_lang[0].title()
 
 
-def transform_doc_language(old_lang, new_lang, m_text, node_info: tuple =('', )):
+def transform_doc_language(old_lang, new_lang, m_text, node_info: tuple = ('', )):
     print(f"DEBUG: texteditor.py transform_doc_language ENTER old_lang={old_lang} new_lang={new_lang}"
           f"\n T old_lang={type(old_lang)} T new_lang={type(new_lang)}, node_info={node_info}")
     if isinstance(old_lang, list):

@@ -13,6 +13,8 @@
 #  limitations under the License.
 
 import os
+import re
+
 import pytest
 import unittest
 import wx
@@ -571,6 +573,92 @@ class TestEditorCommands(unittest.TestCase):
         position = self.plugin._editor_component.source_editor.GetCurrentPos()
         assert position == text_length
 
+        # Uncomment next lines if you want to see the app
+        wx.CallLater(5000, self.app.ExitMainLoop)
+        self.app.MainLoop()
+
+
+class TestLanguageFunctions(unittest.TestCase):
+
+    def setUp(self):
+        self.app = MyApp()
+        settings = self.app.settings
+        try:
+            self.shared_mem = shared_memory.ShareableList(['en'], name="language")
+        except FileExistsError:  # Other instance created file
+            self.shared_mem = shared_memory.ShareableList(name="language")
+        self.frame = self.app.frame
+        self.frame.actions = ActionRegisterer(AuiManager(self.frame), MenuBar(self.frame), ToolBar(self.frame),
+                                              ShortcutRegistry(self.frame))
+        self.frame.tree = Tree(self.frame, self.frame.actions, settings)
+        self.app.project = Project(self.app.namespace, self.app.settings)
+        self.plugin = texteditor.TextEditorPlugin(self.app)
+        self.plugin._editor_component = texteditor.SourceEditor(self.plugin, self.app.book, self.plugin.title,
+                                                                texteditor.DataValidationHandler(self.plugin, lang='en'))
+        self.plugin.enable()
+        self.app.project.load_datafile(datafilereader.TESTCASEFILE_WITH_EVERYTHING, MessageRecordingLoadObserver())
+        self.notebook = self.app.book
+        self.app.tree.set_editor(self.plugin._editor_component)
+        self.app.tree.populate(self.app.project)
+        self.source = self.app.tree.controller
+        self.plugin._open_tree_selection_in_editor()
+        self.app.frame.SetStatusText("File:" + self.app.project.data.source)
+        # Uncomment next line (and MainLoop in tests) if you want to see the app
+        self.frame.Show()
+
+    def tearDown(self):
+        self.plugin.unsubscribe_all()
+        PUBLISHER.unsubscribe_all()
+        self.app.project.close()
+        wx.CallAfter(self.app.ExitMainLoop)
+        self.app.MainLoop()  # With this here, there is no Segmentation fault
+        # wx.CallAfter(wx.Exit)
+        self.shared_mem.shm.close()
+        self.shared_mem.shm.unlink()
+        self.app.Destroy()
+        self.app = None
+
+    def set_language(self, lang: str):
+        assert lang is not None
+        fulltext = self.plugin._editor_component.source_editor.GetText()
+        if "Language:" in fulltext:
+            new_text = re.sub(r"Language: .*", f"Language: {lang}", fulltext)
+        else:
+            new_text = f"Language: {lang}\n\n{fulltext}"
+        self.plugin._editor_component.source_editor.set_text(new_text)
+
+    def test_read_language_not_set(self):
+        self.plugin._open()
+        with open(datafilereader.TESTCASEFILE_WITH_EVERYTHING, "r") as fp:
+            content = fp.readlines()
+        content = "".join(content)
+        self.plugin._editor_component.source_editor.set_text(content)
+        # print(f"DEBUG: content:\n{content}")
+
+        language = texteditor.read_language(content.encode())
+        assert language is None
+
+        self.set_language('Klingon')
+        fulltext = self.plugin._editor_component.source_editor.GetText()
+        language = texteditor.read_language(fulltext.encode())
+        assert language == "Klingon"
+
+        self.set_language('Chinese Simplified')
+        fulltext = self.plugin._editor_component.source_editor.GetText()
+        language = texteditor.read_language(fulltext.encode())
+        assert language == "Chinese Simplified"
+
+        self.set_language('English')
+        fulltext = self.plugin._editor_component.source_editor.GetText()
+        language = texteditor.read_language(fulltext.encode())
+        assert language == "English"
+
+        # print(f"DEBUG: FINAL fulltext:\n{fulltext}\n"
+        #       f"Language is: {language}")
+        self.plugin._editor_component.source_editor.set_text(fulltext)
+        self.plugin._editor_component.source_editor.Refresh()
+        # print(f"DEBUG: fulltext:\n{fulltext}")
+        # assert fulltext == spaces + '1 - Line one' + spaces + 'with cells' + spaces + spaces + 'last text\n'
         # Uncomment next lines if you want to see the app
         wx.CallLater(5000, self.app.ExitMainLoop)
         self.app.MainLoop()
