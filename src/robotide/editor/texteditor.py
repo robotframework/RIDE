@@ -112,14 +112,14 @@ def get_rf_lang_code(lang: (str, list)) -> str:
         clean_lang = lang
     else:
         clean_lang = lang.split(' ')  # The cases we have two words
-    lc = len(clean_lang)
-    if lc > 1 or len(clean_lang[0]) > 2 and clean_lang[0].replace('_', '') == lang:
-        return lang
+    # lc = len(clean_lang)
+    # if lc > 1 or len(clean_lang[0]) > 2 and clean_lang[0].replace('_', '') == lang:
+    #     return lang
     clean_lang = clean_lang[0].replace('-', '_').split('_')  # The cases we have variant code
     lc = len(clean_lang)
     if lc == 1:
         return clean_lang[0].title()
-    with_variant_code = f"{clean_lang[0].title()}{clean_lang[1].title()}"
+    with_variant_code = f"{clean_lang[0].lower().title()}{clean_lang[1].lower().title()}"
     if with_variant_code in ("PtBr", "ZhCn", "ZhTw"):
         return with_variant_code
     return clean_lang[0].title()

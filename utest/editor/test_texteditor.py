@@ -47,6 +47,23 @@ nb_style = aui.AUI_NB_DEFAULT_STYLE | aui.AUI_NB_WINDOWLIST_BUTTON | aui.AUI_NB_
            | aui.AUI_NB_SUB_NOTEBOOK | aui.AUI_NB_SMART_TABS
 MYTESTOVERRIDE = 'My Overriding Test Teardown'
 
+LANGUAGES = [('Bulgarian', 'bg'), ('Bosnian', 'bs'),
+             ('Czech', 'cs'), ('German', 'de'),
+             ('English', 'en'), ('Spanish', 'es'),
+             ('Finnish', 'fi'), ('French', 'fr'),
+             ('Hindi', 'hi'), ('Italian', 'it'),
+             ('Japanese', 'ja'), # Since RF 7.0.1
+             # Not available yet: ('Korean', 'ko'),  # Future RF after 7.0.1
+             ('Dutch', 'nl'), ('Polish', 'pl'),
+             ('Portuguese', 'pt'),
+             ('Brazilian Portuguese', 'pt-BR'),
+             ('Romanian', 'ro'), ('Russian', 'ru'),
+             ('Swedish', 'sv'), ('Thai', 'th'),
+             ('Turkish', 'tr'), ('Ukrainian', 'uk'),
+             ('Vietnamese', 'vi'),
+             ('Chinese Simplified', 'zh-CN'),
+             ('Chinese Traditional', 'zh-TW')]
+
 
 class MainFrame(wx.Frame):
     book = None
@@ -627,7 +644,7 @@ class TestLanguageFunctions(unittest.TestCase):
             new_text = f"Language: {lang}\n\n{fulltext}"
         self.plugin._editor_component.source_editor.set_text(new_text)
 
-    def test_read_language_not_set(self):
+    def test_read_language(self):
         self.plugin._open()
         with open(datafilereader.TESTCASEFILE_WITH_EVERYTHING, "r") as fp:
             content = fp.readlines()
@@ -662,6 +679,47 @@ class TestLanguageFunctions(unittest.TestCase):
         # Uncomment next lines if you want to see the app
         wx.CallLater(5000, self.app.ExitMainLoop)
         self.app.MainLoop()
+
+    def test_get_rf_lang_code(self):
+        lang = ['en']
+        result = texteditor.get_rf_lang_code(lang)
+        assert result == 'En'
+
+        lang = 'pt'
+        result = texteditor.get_rf_lang_code(lang)
+        assert result == 'Pt'
+
+        lang = 'pt-BR'
+        result = texteditor.get_rf_lang_code(lang)
+        assert result == 'PtBr'
+
+        lang = ['Zh-cn']
+        result = texteditor.get_rf_lang_code(lang)
+        assert result == 'ZhCn'
+
+        lang = 'zh-tw'
+        result = texteditor.get_rf_lang_code(lang)
+        assert result == 'ZhTw'
+
+    def test_obtain_language(self):
+        self.plugin._open()
+        with open(datafilereader.TESTCASEFILE_WITH_EVERYTHING, "r") as fp:
+            content = fp.readlines()
+        content = "".join(content)
+        self.plugin._editor_component.source_editor.set_text(content)
+        # print(f"DEBUG: content:\n{content}")
+
+        for lang in LANGUAGES:
+            self.set_language(lang[0])
+            fulltext = self.plugin._editor_component.source_editor.GetText()
+            result = texteditor.obtain_language('', fulltext.encode())
+            code = texteditor.get_rf_lang_code(lang[1])
+            assert result == [code]
+
+        with pytest.raises(ValueError, match="No language with name 'Klingon' found."):
+            self.set_language('Klingon')
+            fulltext = self.plugin._editor_component.source_editor.GetText()
+            result = texteditor.obtain_language('', fulltext.encode())
 
 
 if __name__ == '__main__':
