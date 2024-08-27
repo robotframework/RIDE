@@ -126,8 +126,8 @@ def get_rf_lang_code(lang: (str, list)) -> str:
 
 
 def transform_doc_language(old_lang, new_lang, m_text, node_info: tuple = ('', )):
-    print(f"DEBUG: texteditor.py transform_doc_language ENTER old_lang={old_lang} new_lang={new_lang}"
-          f"\n T old_lang={type(old_lang)} T new_lang={type(new_lang)}, node_info={node_info}")
+    # print(f"DEBUG: texteditor.py transform_doc_language ENTER old_lang={old_lang} new_lang={new_lang}"
+    #       f"\n T old_lang={type(old_lang)} T new_lang={type(new_lang)}, node_info={node_info}")
     if isinstance(old_lang, list):
         old_lang = old_lang[0]
     if isinstance(new_lang, list):
@@ -230,13 +230,15 @@ def transform_doc_language(old_lang, new_lang, m_text, node_info: tuple = ('', )
     en_lang_then_prefixes = en_lang_class.then_prefixes
     en_lang_and_prefixes = en_lang_class.and_prefixes
     en_lang_but_prefixes = en_lang_class.but_prefixes
-    
-    print(f"DEBUG: texteditor.py transform_doc_language\n  old_lang_name={old_lang_name} old_lang={old_lang} "
-          f"new_lang={new_lang}\n"
-          f"headers={old_lang_headers}\n old_lang_bdd_prefixes={old_lang_bdd_prefixes}\nnew_lang_name={new_lang_name}"
-          f"\nheaders={new_lang_headers}\nnew_lang_bdd_prefixes={new_lang_bdd_prefixes}\n")
-    print(f"DEBUG: texteditor.py transform_doc_language\n{old_true_strings=} {old_false_strings=}\n"
-          f"{new_true_strings=} {new_false_strings=}")
+
+    sinal_correct_language = False  # If error in Language, do final replacement
+
+    # print(f"DEBUG: texteditor.py transform_doc_language\n  old_lang_name={old_lang_name} old_lang={old_lang} "
+    #       f"new_lang={new_lang}\n"
+    #       f"headers={old_lang_headers}\n old_lang_bdd_prefixes={old_lang_bdd_prefixes}\nnew_lang_name={new_lang_name}"
+    #       f"\nheaders={new_lang_headers}\nnew_lang_bdd_prefixes={new_lang_bdd_prefixes}\n")
+    # print(f"DEBUG: texteditor.py transform_doc_language\n{old_true_strings=} {old_false_strings=}\n"
+    #       f"{new_true_strings=} {new_false_strings=}")
     if node_info != ('', ):
         if node_info[0] == 'ERROR':
             c_msg = node_info[1].replace('Token(', '').replace(')', '').split(',')
@@ -246,6 +248,7 @@ def transform_doc_language(old_lang, new_lang, m_text, node_info: tuple = ('', )
                 tail = line.replace('Language: ', '')
                 # print(f"DEBUG: textedit.py transform_doc_language INSIDE BLOCK {tail=}")
                 m_text = m_text.replace('Language: ' + tail, 'Language: English' + '  # ' + tail)
+                sinal_correct_language = True
         """        
         if node_info[0] == 'INVALID_HEADER':
             # print(f"DEBUG: textedit.py transform_doc_language INVALID_HEADER: {node_info[1]}")
@@ -264,7 +267,7 @@ def transform_doc_language(old_lang, new_lang, m_text, node_info: tuple = ('', )
         """
 
     for old, new in zip(old_lang_headers.keys(), new_lang_headers.keys()):
-        m_text = re.sub(fr"\**\s{old}\s\**", fr"*** {new} ***", m_text)
+        m_text = re.sub(r"[*]+\s"+fr"{old}"+r"\s[*]+", fr"*** {new} ***", m_text)
     """
     for old, new in zip(old_lang_settings.keys(), new_lang_settings.keys()):
         m_text = re.sub(fr'\b{old}\b', new, m_text)
@@ -272,56 +275,62 @@ def transform_doc_language(old_lang, new_lang, m_text, node_info: tuple = ('', )
     # Settings must be replaced individually
     # Order of replacements seems to be important
     m_text = re.sub(fr'\b{old_documentation_setting}\b', fr'{new_documentation_setting}', m_text)
-    m_text = re.sub(fr'\b{old_arguments_setting}\b', fr'{new_arguments_setting}', m_text)
-    m_text = re.sub(fr'\b{old_tags_setting}\b', fr'{new_tags_setting}', m_text)
-    m_text = re.sub(fr'\b{old_setup_setting}\b', fr'{new_setup_setting}', m_text)
-    m_text = re.sub(fr'\b{old_suite_setup_setting}\b', fr'{new_suite_setup_setting}', m_text)
-    m_text = re.sub(fr'\b{old_test_setup_setting}\b', fr'{new_test_setup_setting}', m_text)
-    m_text = re.sub(fr'\b{old_task_setup_setting}\b', fr'{new_task_setup_setting}', m_text)
-    m_text = re.sub(fr'\b{old_template_setting}\b', fr'{new_template_setting}', m_text)
-    m_text = re.sub(fr'\b{old_suite_teardown_setting}\b', fr'{new_suite_teardown_setting}', m_text)
-    m_text = re.sub(fr'\b{old_test_teardown_setting}\b', fr'{new_test_teardown_setting}', m_text)
-    m_text = re.sub(fr'\b{old_task_teardown_setting}\b', fr'{new_task_teardown_setting}', m_text)
-    m_text = re.sub(fr'\b{old_teardown_setting}\b', fr'{new_teardown_setting}', m_text)
-    m_text = re.sub(fr'{old_library_setting}', fr'{new_library_setting}', m_text)
-    m_text = re.sub(fr'\b{old_resource_setting}\b', fr'{new_resource_setting}', m_text)
-    m_text = re.sub(fr'\b{old_variables_setting}\b', fr'{new_variables_setting}', m_text)
+    m_text = re.sub(fr'[[]{old_arguments_setting}]', fr'[{new_arguments_setting}]', m_text)
+    m_text = re.sub(fr'{old_suite_setup_setting}\s{2}', fr'{new_suite_setup_setting}  ', m_text)
+    m_text = re.sub(fr'{old_suite_teardown_setting}\s{2}', fr'{new_suite_teardown_setting}  ', m_text)
+    m_text = re.sub(fr'{old_test_setup_setting}\s{2}', fr'{new_test_setup_setting}  ', m_text)
+    m_text = re.sub(fr'{old_task_setup_setting}\s{2}', fr'{new_task_setup_setting}  ', m_text)
+    m_text = re.sub(fr'{old_template_setting}\s{2}', fr'{new_template_setting}  ', m_text)
+    m_text = re.sub(fr'{old_test_teardown_setting}\s{2}', fr'{new_test_teardown_setting}  ', m_text)
+    m_text = re.sub(fr'{old_task_teardown_setting}\s{2}', fr'{new_task_teardown_setting}  ', m_text)
+    m_text = re.sub(fr'{old_library_setting}\s{2}', fr'{new_library_setting}  ', m_text)
+    m_text = re.sub(fr'{old_resource_setting}\s{2}', fr'{new_resource_setting}  ', m_text)
+    m_text = re.sub(fr'{old_variables_setting}\s{2}', fr'{new_variables_setting}  ', m_text)
+    m_text = re.sub(fr'{old_tags_setting}\s{2}', fr'{new_tags_setting}  ', m_text)
+    m_text = re.sub(fr'[[]{old_setup_setting}]', fr'[{new_setup_setting}]', m_text)
+    m_text = re.sub(fr'[[]{old_teardown_setting}]', fr'[{new_teardown_setting}]', m_text)
     m_text = re.sub(fr'\b{old_name_setting}\b', fr'{new_name_setting}', m_text)
     m_text = re.sub(fr'\b{old_metadata_setting}\b', fr'{new_metadata_setting}', m_text)
     m_text = re.sub(fr'\b{old_test_template_setting}\b', fr'{new_test_template_setting}', m_text)
     m_text = re.sub(fr'\b{old_task_template_setting}\b', fr'{new_task_template_setting}', m_text)
-    m_text = re.sub(fr'\b{old_test_tags_setting}\b', fr'{new_test_tags_setting}', m_text)
-    m_text = re.sub(fr'\b{old_task_tags_setting}\b', fr'{new_task_tags_setting}', m_text)
-    m_text = re.sub(fr'\b{old_keyword_tags_setting}\b', fr'{new_keyword_tags_setting}', m_text)
+    m_text = re.sub(fr'[[]{old_test_tags_setting}]', fr'[{new_test_tags_setting}]', m_text)
+    m_text = re.sub(fr'[[]{old_task_tags_setting}]', fr'[{new_task_tags_setting}]', m_text)
+    m_text = re.sub(fr'[[]{old_keyword_tags_setting}]', fr'[{new_keyword_tags_setting}]', m_text)
     m_text = re.sub(fr'\b{old_test_timeout_setting}\b', fr'{new_test_timeout_setting}', m_text)
     m_text = re.sub(fr'\b{old_task_timeout_setting}\b', fr'{new_task_timeout_setting}', m_text)
     m_text = re.sub(fr'\b{old_timeout_setting}\b', fr'{new_timeout_setting}', m_text)
 
     for old, new in zip(old_lang_given_prefixes, new_lang_given_prefixes):
-        m_text = re.sub(fr'\b{old}\b', fr'{new}', m_text)
+        m_text = re.sub(r"\s{2}"+fr"{old}"+r"\s", fr"  {new} ", m_text)
     for old, new in zip(old_lang_when_prefixes, new_lang_when_prefixes):
-        m_text = re.sub(fr'\b{old}\b', fr'{new}', m_text)
+        m_text = re.sub(r"\s{2}"+fr"{old}"+r"\s", fr"  {new} ", m_text)
     for old, new in zip(old_lang_then_prefixes, new_lang_then_prefixes):
-        m_text = re.sub(fr'\b{old}\b', fr'{new}', m_text)
+        m_text = re.sub(r"\s{2}"+fr"{old}"+r"\s", fr"  {new} ", m_text)
     for old, new in zip(old_lang_and_prefixes, new_lang_and_prefixes):
-        m_text = re.sub(fr'\b{old}\b', fr'{new}', m_text)
+        m_text = re.sub(r"\s{2}"+fr"{old}"+r"\s", fr"  {new} ", m_text)
     for old, new in zip(old_lang_but_prefixes, new_lang_but_prefixes):
-        m_text = re.sub(fr'\b{old}\b', fr'{new}', m_text)
+        m_text = re.sub(r"\s{2}"+fr"{old}"+r"\s", fr"  {new} ", m_text)
     for old, new in zip(old_true_strings, new_true_strings):
-        m_text = re.sub(fr'\b{old}\b', fr'{new}', m_text)
+        m_text = re.sub(r"\s{2}"+fr"{old}"+r"\s", fr"  {new} ", m_text)
     for old, new in zip(old_false_strings, new_false_strings):
-        m_text = re.sub(fr'\b{old}\b', fr'{new}', m_text)
+        m_text = re.sub(r"\s{2}"+fr"{old}"+r"\s", fr"  {new} ", m_text)
     # Final translation from English
     for en, new in zip(en_lang_given_prefixes, new_lang_given_prefixes):
-        m_text = re.sub(fr'\b{en}\b', fr'{new}', m_text)
+        m_text = re.sub(r"\s{2}"+fr"{en}"+r"\s", fr"  {new} ", m_text)
     for en, new in zip(en_lang_when_prefixes, new_lang_when_prefixes):
-        m_text = re.sub(fr'\b{en}\b', fr'{new}', m_text)
+        m_text = re.sub(r"\s{2}"+fr"{en}"+r"\s", fr"  {new} ", m_text)
     for en, new in zip(en_lang_then_prefixes, new_lang_then_prefixes):
-        m_text = re.sub(fr'\b{en}\b', fr'{new}', m_text)
+        m_text = re.sub(r"\s{2}"+fr"{en}"+r"\s", fr"  {new} ", m_text)
     for en, new in zip(en_lang_and_prefixes, new_lang_and_prefixes):
-        m_text = re.sub(fr'\b{en}\b', fr'{new}', m_text)
+        m_text = re.sub(r"\s{2}"+fr"{en}"+r"\s", fr"  {new} ", m_text)
     for en, new in zip(en_lang_but_prefixes, new_lang_but_prefixes):
-        m_text = re.sub(fr'\b{en}\b', fr'{new}', m_text)
+        m_text = re.sub(r"\s{2}"+fr"{en}"+r"\s", fr"  {new} ", m_text)
+
+    if sinal_correct_language:
+        m_text = m_text.replace('Language: English', fr'Language: {new_lang_name}')
+    else:
+        m_text = m_text.replace(fr'Language: {old_lang_name}', fr'Language: {new_lang_name}')
+
     return m_text
 
 
@@ -529,7 +538,7 @@ class TextEditorPlugin(Plugin, TreeAwarePluginMixin):
 
     def _apply_txt_changes_to_model(self):
         self._editor.is_saving = False
-        print(f"DEBUG: textedit.py _apply_txt_changes_to_model CALL content_save lang={self._doc_language}")
+        # print(f"DEBUG: textedit.py _apply_txt_changes_to_model CALL content_save lang={self._doc_language}")
         if not self._editor.content_save(lang=self._doc_language):
             return False
         self._editor.reset()
@@ -607,10 +616,7 @@ class DataValidationHandler(object):
             result = (err.message, err.details)
 
         if isinstance(result, tuple):
-            print(f"DEBUG: textedit.py validate_and_update Language in doc--> lang={self._doc_language}"
-                  f" initial_lang={initial_lang}")
             m_text = transform_doc_language(initial_lang, self._doc_language, m_text, node_info=result)
-            print(f"DEBUG: textedit.py validate_and_update AFTER TRANSFORM m_text=\n{m_text}")
         try:
             result = self._sanity_check(data, m_text)  # Check if language changed and is valid content
         except DataError as err:
@@ -1135,7 +1141,7 @@ class SourceEditor(wx.Panel):
             self.language = self._data._doc_language
         else:
             self.language = ['en']
-        print(f"DEBUG: texteditor.py SourceEditor open ENTER language={self.language}")
+        # print(f"DEBUG: texteditor.py SourceEditor open ENTER language={self.language}")
         try:
             if isinstance(self._data.wrapper_data, ResourceFileController):
                 self._controller_for_context = DummyController(self._data.wrapper_data, self._data.wrapper_data)

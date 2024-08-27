@@ -720,6 +720,89 @@ class TestLanguageFunctions(unittest.TestCase):
             self.set_language('Klingon')
             fulltext = self.plugin._editor_component.source_editor.GetText()
             result = texteditor.obtain_language('', fulltext.encode())
+            print(f"This {result=} is not reached.")
+
+    def test_transform_doc_language_no_transform(self):
+        self.plugin._open()
+        with open(datafilereader.TESTCASEFILE_WITH_EVERYTHING, "r") as fp:
+            content = fp.readlines()
+        content = "".join(content)
+        self.plugin._editor_component.source_editor.set_text(content)
+        # print(f"DEBUG: content:\n{content}")
+
+        self.set_language('English')
+        fulltext = self.plugin._editor_component.source_editor.GetText()
+        result = texteditor.transform_doc_language(['klingon'], ['klingon'], fulltext.encode())
+        # print(f"DEBUG: {result=} == {fulltext=}.")
+        assert result == fulltext.encode()
+
+        # self.set_language('English')
+        fulltext = self.plugin._editor_component.source_editor.GetText()
+        result = texteditor.transform_doc_language(['klingon'], ['english'], fulltext.encode())
+        assert result == fulltext.encode()
+
+        # self.set_language('English')
+        fulltext = self.plugin._editor_component.source_editor.GetText()
+        result = texteditor.transform_doc_language(['english'], ['klingon'], fulltext.encode())
+        assert result == fulltext.encode()
+
+    def test_transform_doc_language_in_error(self):
+        self.plugin._open()
+        with open(datafilereader.VALID_LANG_IT, "r") as fp:
+            content = fp.readlines()
+        content = "".join(content)
+        self.plugin._editor_component.source_editor.set_text(content)
+        # print(f"DEBUG: content:\n{content}")
+
+        self.set_language('Klingon')
+        fulltext = self.plugin._editor_component.source_editor.GetText()
+        result = texteditor.transform_doc_language('Klingon', 'Italian', fulltext,
+                                                   ("ERROR",
+                                                    "Token(ERROR, 'Language: Klingon', 1, 0, "
+                                                    "\"Invalid language configuration: Language 'Klingon' not found"
+                                                    " nor importable as a language module.\")"))
+        finaltext = re.sub('Language: .*', fr'Language: Italian  # Klingon', fulltext, count=1)
+
+        # print(f"DEBUG: {result=} \n {finaltext=}.")
+        assert result == finaltext
+
+    def test_transform_doc_language_spanish(self):
+        self.plugin._open()
+        with open(datafilereader.VALID_LANG_EN, "r") as fp:
+            content = fp.readlines()
+        content = "".join(content)
+        self.plugin._editor_component.source_editor.set_text(content)
+        # print(f"DEBUG: content:\n{content}")
+
+        # We try Spanish, because No Operation remains unchanged ;)
+        fulltext = self.plugin._editor_component.source_editor.GetText()
+        result = texteditor.transform_doc_language(['English'], ['Spanish'], fulltext)
+
+        with open(datafilereader.VALID_LANG_ES, "r") as fp:
+            content = fp.readlines()
+        content = "".join(content)
+        print(f"DEBUG: They should be equal:\n"
+              f" {result=}\n"
+              f"{content=}")
+        assert result == content
+
+    """
+    def test_transform_doc_language_generate(self):
+        self.plugin._open()
+        with open(datafilereader.VALID_LANG_EN, "r") as fp:
+            content = fp.readlines()
+        content = "".join(content)
+        self.plugin._editor_component.source_editor.set_text(content)
+        # print(f"DEBUG: content:\n{content}")
+
+        # self.set_language('English')
+        fulltext = self.plugin._editor_component.source_editor.GetText()
+        result = texteditor.transform_doc_language(['English'], ['Japanese'], fulltext)
+        print(f"DEBUG: This should be Japanese:\n"
+              f"{result=}")
+        with open(datafilereader.VALID_LANG_JA, "w") as fp:
+            fp.writelines(result)
+    """
 
 
 if __name__ == '__main__':

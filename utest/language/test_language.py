@@ -72,6 +72,10 @@ class TestLanguage(unittest.TestCase):
         lang = language.check_file_language(datafilereader.VALID_LANG_IT)
         assert lang == ['it']
 
+    def test_check_file_lang_ja(self):
+        lang = language.check_file_language(datafilereader.VALID_LANG_JA)
+        assert lang == ['ja']
+
     def test_check_file_lang_nl(self):
         lang = language.check_file_language(datafilereader.VALID_LANG_NL)
         assert lang == ['nl']
