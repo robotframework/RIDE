@@ -83,6 +83,7 @@ class SettingTablePopulator(_TablePopulator):
         if not setter:
             return NullPopulator()
         if isinstance(setter.__self__, Documentation):
+            # print(f"DEBUG: tablepopulators.py SettingTablePopulator RETURN DocumentationPopulator {setter}")
             return DocumentationPopulator(setter)
         if isinstance(setter.__self__, MetadataList):
             return MetadataPopulator(setter)
@@ -214,6 +215,8 @@ class _TestCaseUserKeywordPopulator(_TablePopulator):
         return isinstance(self._populator, ForLoopPopulator)
 
     def _continues(self, row):
+        # print(f"DEBUG: tablepopulators.py _TestCaseUserKeywordPopulator ENTER _continues {row.is_continuing()}
+        # populator={self._populator}\n")
         return row.is_continuing() and self._populator is not None
         # or (self._populating_for_loop() and row.is_indented()))
 
@@ -231,13 +234,20 @@ class _TestCaseUserKeywordPopulator(_TablePopulator):
         is_setting = row.starts_test_or_user_keyword_setting()
         localized_doc = self._test_or_uk.get_localized_setting_name('[Documentation]')
         self.row_continue = row.head == '...'
+        # print(f"DEBUG: tablepopulators.py TestCaseUserKwPopulator _get_populator head={row.head} "
+        #       f"localized_doc={localized_doc} ROW CONTINUE={self.row_continue}")
         if is_setting:
-            self._documentation_setting = row.head == localized_doc
-            # print(f"DEBUG: tablepopulators.py TestCaseUserKwPopulator head={row.head} localized_doc={localized_doc}")
+            self._documentation_setting = (row.head == localized_doc or row.head == 'Documentation')
+            # print(f"DEBUG: tablepopulators.py TestCaseUserKwPopulator head={row.head} localized_doc={localized_doc}"
+            #      f" self._documentation_setting={self._documentation_setting}")
             setter = self._setting_setter(row)
             if setter and self._documentation_setting:
                 self._fixture_setting = False
                 self.current_populator = DocumentationPopulator(setter)
+                # print(f"DEBUG: tablepopulators.py TestCaseUserKwPopulator head={row.head}"
+                #       f"localized_doc={localized_doc}"
+                #       f" self._documentation_setting={self._documentation_setting}"
+                #       f" current_populator={self.current_populator}")
                 return self.current_populator
             if not setter:
                 self._documentation_setting = self._fixture_setting = False
@@ -288,8 +298,9 @@ class _PropertyPopulator(Populator):
         self.row_continue = False
 
     def add(self, row):
-        if isinstance(self, VariablePopulator):
+        if isinstance(self, VariablePopulator):  # or isinstance(self, DocumentationPopulator):
             if row.head == '...':
+                # print(f"DEBUG: tablepopulators.py _PropertyPopulator add CONTIUNE {row.head=}")
                 self.row_continue = True
             else:
                 self.row_continue = False
@@ -359,9 +370,13 @@ class DocumentationPopulator(_PropertyPopulator):
         self._setter(self._value, self._comments.value)
 
     def _add(self, row):
+        # print(f"DEBUG: tablepopulators.py DocumentationPopulator _add ENTER {row.data=}")
         if row.cells[0] == '...':
             row.cells[0] = '\\n'
-            self._value.append(''.join(row.data))
+            self._value.extend(row.cells)
+            # self._value.append(''.join(row.data))
+            # self._value.extend(row.data)
+            # print(f"DEBUG: tablepopulators.py DocumentationPopulator CURRENT VALUE {self._value=}")
         else:
             self._add_to_value(row.dedent().data)
 

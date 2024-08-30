@@ -4,7 +4,9 @@ Language: Spanish
 # A blank line
 
 *** Configuraciones ***
-Documentación     This test data file is used in *RobotIDE* _integration_ tests.\n1-This is another line of the documentation\n2-A continued line of documentation
+Documentación     This test data file is used in *RobotIDE* _integration_ tests.
+...               1-This is another line of the documentation
+...               2-A continued line of documentation
 Configuración de la Suite    Run Keywords    Log To Console    Suite Setup
 ...               AND    Log    Test
 ...               AND    Log to Console    Test
@@ -12,7 +14,7 @@ Configuración de la Suite    Run Keywords    Log To Console    Suite Setup
 Desmontaje de la Suite    My Suite Teardown    ${scalar}    @{LIST}
 Configuración de prueba    My Test Setup
 Etiquetas de la prueba    new_tag    ride    regeression    # Comment on Tags
-Metadatos         My Meta    data
+Metadatos          My Meta    data
 Biblioteca        seleniumlibrary    # Purposefully wrong case | |
 Biblioteca        Process    # This is a comment
 Recursos          en/full_en.resource
@@ -37,7 +39,8 @@ Biblioteca        ${operating system}    # defined in another_resource.robot | |
 
 *** Variables ***
 ${SCALAR}         value
-@{LIST}           1    2    3    4    a    b    c    d
+@{LIST}           1    2    3    4    a    b    c
+...               d
 ${LIB NAME}       Collections
 ${RES_PATH}       ../resources
 ${ARG}            value
@@ -55,7 +58,8 @@ My Test
     [Desmontaje]    My Overriding Test Teardown
 
 first test
-    [Documentación]    3-This is the documentation\n4-A continued line of documentation
+    [Documentación]    3-This is the documentation
+    ...    4-A continued line of documentation
     [Etiquetas]    first    second
     [Configuración]    Log To Console    Test Setup
     [Tiempo agotado]    60
@@ -100,7 +104,9 @@ My Test Setup
 
 First Keyword
     [Argumentos]    ${arg}=None    @{no_list}    # This is a comment
-    [Documentación]    5-This is the documentation\n\n7-A continued line of documentation
+    [Documentación]    5-This is the documentation
+    ...
+    ...    7-A continued line of documentation
     [Etiquetas]    first    second    # This is a comment
     Log To Console    This is the first keyword
 

@@ -331,6 +331,15 @@ def transform_doc_language(old_lang, new_lang, m_text, node_info: tuple = ('', )
     else:
         m_text = m_text.replace(fr'Language: {old_lang_name}', fr'Language: {new_lang_name}')
 
+    try:
+        set_lang = shared_memory.ShareableList(name="language")
+    except AttributeError:  # Unittests fails here
+        set_lang = []
+    try:
+        mlang = Language.from_name(new_lang_name.replace('_', '-'))
+        set_lang[0] = get_rf_lang_code(mlang.code)
+    except ValueError:
+        set_lang[0] = 'en'
     return m_text
 
 
@@ -697,7 +706,7 @@ class DataValidationHandler(object):
     """
 
     def _handle_sanity_check_failure(self, message):
-        if message[1].startswith('Token('):
+        if isinstance(message[1], str) and message[1].startswith('Token('):
             c_msg = message[1].replace('Token(', '').replace(')', '').split(',')
             message = [" ".join(c_msg[4:]), c_msg[2].strip()]
 

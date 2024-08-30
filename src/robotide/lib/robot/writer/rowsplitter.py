@@ -14,6 +14,7 @@
 #  limitations under the License.
 
 import itertools
+from multiprocessing import shared_memory
 from robotide.lib.compat.parsing.language import get_settings_for
 
 
@@ -29,7 +30,14 @@ class RowSplitter(object):
         self._cols = cols
         self._split_multiline_doc = split_multiline_doc
         self._split_multiline_var = split_multiline_var
-        self._language = language
+        try:
+            if not language:
+                set_lang = shared_memory.ShareableList(name="language")
+                self._language = [set_lang[0]]
+            else:
+                self._language = language
+        except AttributeError:
+            self._language = ['en']
         self._table_type = None
 
     def split(self, row, table_type):
@@ -84,7 +92,7 @@ class RowSplitter(object):
     def _split_row(self, row, indent):
         if self._table_type == 'variable' and self._split_multiline_var:
             # print(f"DEBUG: rowsplitter.py RowSplitter _split_row tabel Variable row={row}")
-            split_at = 2
+            split_at = 8
         else:
             split_at = None
         while row:

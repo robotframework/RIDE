@@ -39,19 +39,12 @@ Library           ${operating system}    # defined in another_resource.robot | |
 
 *** Variables ***
 ${SCALAR}         value
-@{LIST}           1
-...               2
-...               3
-...               4
-...               a
-...               b
-...               c
+@{LIST}           1    2    3    4    a    b    c
 ...               d
 ${LIB NAME}       Collections
 ${RES_PATH}       ../resources
 ${ARG}            value
-${myvar}          123
-...               # This is a comment
+${myvar}          123    # This is a comment
 
 *** Comments ***
 This is a comments block
@@ -59,6 +52,7 @@ Second line of comments
 *** Test Cases ***
 My Test
     [Documentation]    This is _test_ *case* documentation
+    [Tags]    test 1
     [Setup]    My Overriding Test Setup
     Log    Nothing to see
     [Teardown]    My Overriding Test Teardown
@@ -66,17 +60,20 @@ My Test
 first test
     [Documentation]    3-This is the documentation
     ...    4-A continued line of documentation
+    [Tags]    first    second
     [Setup]    Log To Console    Test Setup
     [Timeout]    60
     First Keyword    nonsense
-    ${first}=    Check Logic    'Si'
+    ${first}=    Check Logic    'Yes'
     ${second}=    Check Logic    'Off'
     Log Variables
     Log    Test executed with success, first=${first}, second=${second}
     [Teardown]    Log To Console    Test Teardown
 
 second test
+    [Tags]    first    second    # This is a comment
     [Setup]    Log To Console    Test Setup    # This is a comment
+    [Template]    First Keyword    # This is a comment
     [Timeout]    60    # This is a comment
     No Operation
     Log    this is ddt
@@ -110,6 +107,7 @@ First Keyword
     [Documentation]    5-This is the documentation
     ...
     ...    7-A continued line of documentation
+    [Tags]    first    second    # This is a comment
     Log To Console    This is the first keyword
 
 ${user} is registered

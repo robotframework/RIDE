@@ -778,7 +778,33 @@ class TestLanguageFunctions(unittest.TestCase):
         fulltext = self.plugin._editor_component.source_editor.GetText()
         result = texteditor.transform_doc_language(['English'], ['Spanish'], fulltext)
 
+        # DEBUG: Write to file
+        with open(datafilereader.VALID_LANG_ES + ".temporary", "w") as fp:
+            fp.writelines(result)
+
         with open(datafilereader.VALID_LANG_ES, "r") as fp:
+            content = fp.readlines()
+        content = "".join(content)
+        print(f"DEBUG: They should be equal:\n"
+              f" {result=}\n"
+              f"{content=}")
+        assert result == content
+
+    def test_transform_doc_language_portuguese(self):
+        self.plugin._open()
+        with open(datafilereader.VALID_LANG_EN, "r") as fp:
+            content = fp.readlines()
+        content = "".join(content)
+        self.plugin._editor_component.source_editor.set_text(content)
+
+        fulltext = self.plugin._editor_component.source_editor.GetText()
+        result = texteditor.transform_doc_language(['English'], ['Portuguese'], fulltext)
+
+        # DEBUG: Write to file
+        with open(datafilereader.VALID_LANG_PT + ".temporary", "w") as fp:
+            fp.writelines(result)
+
+        with open(datafilereader.VALID_LANG_PT, "r") as fp:
             content = fp.readlines()
         content = "".join(content)
         print(f"DEBUG: They should be equal:\n"
