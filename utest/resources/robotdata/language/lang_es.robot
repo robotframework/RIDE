@@ -14,7 +14,7 @@ Configuración de la Suite    Run Keywords    Log To Console    Suite Setup
 Desmontaje de la Suite    My Suite Teardown    ${scalar}    @{LIST}
 Configuración de prueba    My Test Setup
 Etiquetas de la prueba    new_tag    ride    regeression    # Comment on Tags
-Metadatos          My Meta    data
+Metadatos         My Meta    data
 Biblioteca        seleniumlibrary    # Purposefully wrong case | |
 Biblioteca        Process    # This is a comment
 Recursos          en/full_en.resource

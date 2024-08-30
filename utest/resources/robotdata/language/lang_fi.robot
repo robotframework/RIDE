@@ -4,7 +4,9 @@ Language: Finnish
 # A blank line
 
 *** Asetukset ***
-Dokumentaatio     This test data file is used in *RobotIDE* _integration_ tests.\n1-This is another line of the documentation\n2-A continued line of documentation
+Dokumentaatio     This test data file is used in *RobotIDE* _integration_ tests.
+...               1-This is another line of the documentation
+...               2-A continued line of documentation
 Setin Alustus     Run Keywords    Log To Console    Suite Setup
 ...               AND    Log    Test
 ...               AND    Log to Console    Test
@@ -38,7 +40,8 @@ Kirjasto          ${operating system}    # defined in another_resource.robot | |
 
 *** Muuttujat ***
 ${SCALAR}         value
-@{LIST}           1    2    3    4    a    b    c    d
+@{LIST}           1    2    3    4    a    b    c
+...               d
 ${LIB NAME}       Collections
 ${RES_PATH}       ../resources
 ${ARG}            value
@@ -56,7 +59,8 @@ My Test
     [Alasajo]    My Overriding Test Teardown
 
 first test
-    [Dokumentaatio]    3-This is the documentation\n4-A continued line of documentation
+    [Dokumentaatio]    3-This is the documentation
+    ...    4-A continued line of documentation
     [Tagit]    first    second
     [Alustus]    Log To Console    Test Setup
     [Aikaraja]    60
@@ -101,7 +105,9 @@ My Test Setup
 
 First Keyword
     [Argumentit]    ${arg}=None    @{no_list}    # This is a comment
-    [Dokumentaatio]    5-This is the documentation\n\n7-A continued line of documentation
+    [Dokumentaatio]    5-This is the documentation
+    ...
+    ...    7-A continued line of documentation
     [Tagit]    first    second    # This is a comment
     Log To Console    This is the first keyword
 

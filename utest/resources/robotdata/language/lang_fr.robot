@@ -40,7 +40,8 @@ Bibliothèque      ${operating system}    # defined in another_resource.robot | 
 
 *** Variables ***
 ${SCALAR}         value
-@{LIST}           1    2    3    4    a    b    c    d
+@{LIST}           1    2    3    4    a    b    c
+...               d
 ${LIB NAME}       Collections
 ${RES_PATH}       ../resources
 ${ARG}            value

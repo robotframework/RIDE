@@ -4,7 +4,9 @@ Language: Japanese
 # A blank line
 
 *** 設定 ***
-ドキュメント            This test data file is used in *RobotIDE* _integration_ tests.\n1-This is another line of the documentation\n2-A continued line of documentation
+ドキュメント            This test data file is used in *RobotIDE* _integration_ test
+...               1-This is another line of the documentation
+...               2-A continued line of documentation
 スイート セットアップ       Run Keywords    Log To Console    Suite Setup
 ...               AND    Log    Test
 ...               AND    Log to Console    Test
@@ -38,7 +40,8 @@ Language: Japanese
 
 *** 変数 ***
 ${SCALAR}         value
-@{LIST}           1    2    3    4    a    b    c    d
+@{LIST}           1    2    3    4    a    b    c
+...               d
 ${LIB NAME}       Collections
 ${RES_PATH}       ../resources
 ${ARG}            value
@@ -56,7 +59,8 @@ My Test
     [ティアダウン]    My Overriding Test Teardown
 
 first test
-    [ドキュメント]    3-This is the documentation\n4-A continued line of documentation
+    [ドキュメント]    3-This is the documentation
+    ...    4-A continued line of documentation
     [タグ]    first    second
     [セットアップ]    Log To Console    Test Setup
     [タイムアウト]    60
@@ -101,7 +105,9 @@ My Test Setup
 
 First Keyword
     [引数]    ${arg}=None    @{no_list}    # This is a comment
-    [ドキュメント]    5-This is the documentation\n\n7-A continued line of documentation
+    [ドキュメント]    5-This is the documentation
+    ...
+    ...    7-A continued line of documentation
     [タグ]    first    second    # This is a comment
     Log To Console    This is the first keyword
 
